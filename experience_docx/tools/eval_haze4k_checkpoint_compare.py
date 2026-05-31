@@ -114,6 +114,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", required=True)
     parser.add_argument("--original_checkpoint", required=True)
+    parser.add_argument("--original_mode", default="original")
+    parser.add_argument("--original_name", default="original")
     parser.add_argument("--modres_checkpoint")
     parser.add_argument("--candidate_checkpoint")
     parser.add_argument("--candidate_mode", default="modres")
@@ -127,8 +129,9 @@ def main():
     if not candidate_checkpoint:
         raise ValueError("Provide --candidate_checkpoint or --modres_checkpoint")
     candidate_name = args.candidate_name or args.candidate_mode
+    reference_name = args.original_name
     runs = [
-        ("original", "original", args.original_checkpoint),
+        (reference_name, args.original_mode, args.original_checkpoint),
         (candidate_name, args.candidate_mode, candidate_checkpoint),
     ]
 
@@ -140,7 +143,7 @@ def main():
         all_rows[label] = rows
         summaries[label] = summary
 
-    original = {row["name"]: row for row in all_rows["original"]}
+    original = {row["name"]: row for row in all_rows[reference_name]}
     candidate = {row["name"]: row for row in all_rows[candidate_name]}
     common = [name for name in original if name in candidate]
     deltas = [candidate[name]["psnr"] - original[name]["psnr"] for name in common]
@@ -185,13 +188,13 @@ def main():
         writer.writerow(
             [
                 "name",
-                "original_psnr",
+                f"{reference_name}_psnr",
                 f"{candidate_name}_psnr",
                 "delta_psnr",
-                "original_ssim",
+                f"{reference_name}_ssim",
                 f"{candidate_name}_ssim",
                 "delta_ssim",
-                "original_time_sec",
+                f"{reference_name}_time_sec",
                 f"{candidate_name}_time_sec",
             ]
         )

@@ -39,22 +39,33 @@ def _log_modulation_stats(model, args, epoch_idx, device):
         averaged = {key: value / count for key, value in sorted(sums[fam_name].items())}
         print(
             "MOD_STATS Epoch: %03d FAM: %s Samples: %d "
-            "gamma_mean: %.8f gamma_std: %.8f gamma_min: %.8f gamma_max: %.8f "
-            "gamma_abs_gt_0.5: %.8f beta_mean: %.8f beta_std: %.8f "
-            "beta_min: %.8f beta_max: %.8f beta_abs_gt_0.1: %.8f" % (
+            "gamma_mean: %.8f gamma_abs_mean: %.8f gamma_std: %.8f "
+            "gamma_min: %.8f gamma_max: %.8f gamma_abs_gt_0.5: %.8f "
+            "gamma_abs_gt_0.05: %.8f gamma_abs_gt_0.10: %.8f gamma_abs_gt_0.09: %.8f "
+            "beta_present: %.0f beta_mean: %.8f beta_abs_mean: %.8f beta_std: %.8f "
+            "beta_min: %.8f beta_max: %.8f beta_abs_gt_0.1: %.8f "
+            "beta_abs_gt_0.02: %.8f beta_abs_gt_0.05: %.8f" % (
                 epoch_idx,
                 fam_name,
                 count,
                 averaged.get('gamma_mean', 0.0),
+                averaged.get('gamma_abs_mean', 0.0),
                 averaged.get('gamma_std', 0.0),
                 averaged.get('gamma_min', 0.0),
                 averaged.get('gamma_max', 0.0),
                 averaged.get('gamma_abs_gt_0.5', 0.0),
+                averaged.get('gamma_abs_gt_0.05', 0.0),
+                averaged.get('gamma_abs_gt_0.10', 0.0),
+                averaged.get('gamma_abs_gt_0.09', 0.0),
+                averaged.get('beta_present', 0.0),
                 averaged.get('beta_mean', 0.0),
+                averaged.get('beta_abs_mean', 0.0),
                 averaged.get('beta_std', 0.0),
                 averaged.get('beta_min', 0.0),
                 averaged.get('beta_max', 0.0),
                 averaged.get('beta_abs_gt_0.1', 0.0),
+                averaged.get('beta_abs_gt_0.02', 0.0),
+                averaged.get('beta_abs_gt_0.05', 0.0),
             )
         )
 

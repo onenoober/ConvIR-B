@@ -48,46 +48,98 @@ class SCM(nn.Module):
 class FAM(nn.Module):
     def __init__(self, channel, mode='original'):
         super(FAM, self).__init__()
-        if mode not in ('original', 'modres'):
+        if mode not in ('original', 'modres', 'modres_bounded', 'modres_gamma_bounded'):
             raise ValueError(f'Unsupported FAM mode: {mode}')
         self.mode = mode
+        self.gamma_max = 0.10
+        self.beta_max = 0.05
         self.merge = BasicConv(channel*2, channel, kernel_size=3, stride=1, relu=False)
-        if self.mode == 'modres':
+        if self.mode != 'original':
+            out_channel = channel if self.mode == 'modres_gamma_bounded' else channel * 2
             rng_state = torch.get_rng_state()
-            self.modulator = nn.Conv2d(channel, channel * 2, kernel_size=1, stride=1, padding=0)
+            self.modulator = nn.Conv2d(channel, out_channel, kernel_size=1, stride=1, padding=0)
             torch.set_rng_state(rng_state)
             nn.init.zeros_(self.modulator.weight)
             nn.init.zeros_(self.modulator.bias)
+
+    def _modulation(self, x2, fused):
+        if self.mode == 'original':
+            return None, None
+        if self.mode == 'modres_gamma_bounded':
+            gamma_raw = self.modulator(x2)
+            gamma = self.gamma_max * torch.tanh(gamma_raw)
+            return gamma, None
+
+        gamma_raw, beta_raw = self.modulator(x2).chunk(2, dim=1)
+        if self.mode == 'modres':
+            return gamma_raw, beta_raw
+
+        gamma = self.gamma_max * torch.tanh(gamma_raw)
+        scale = fused.detach().std(dim=(2, 3), keepdim=True).clamp_min(1e-6)
+        beta = self.beta_max * scale * torch.tanh(beta_raw)
+        return gamma, beta
 
     def forward(self, x1, x2):
         fused = self.merge(torch.cat([x1, x2], dim=1))
         if self.mode == 'original':
             return fused
-        gamma, beta = self.modulator(x2).chunk(2, dim=1)
+        gamma, beta = self._modulation(x2, fused)
+        if beta is None:
+            return fused * (1 + gamma)
         return fused * (1 + gamma) + beta
 
-    def modulation_stats(self, x2):
+    def modulation_stats(self, x1, x2):
         if self.mode == 'original':
             return None
         with torch.no_grad():
-            gamma, beta = self.modulator(x2).chunk(2, dim=1)
-            return {
+            fused = self.merge(torch.cat([x1, x2], dim=1))
+            gamma, beta = self._modulation(x2, fused)
+            stats = {
+                'beta_present': 0.0 if beta is None else 1.0,
                 'gamma_mean': gamma.mean().item(),
+                'gamma_abs_mean': gamma.abs().mean().item(),
                 'gamma_std': gamma.std(unbiased=False).item(),
                 'gamma_min': gamma.min().item(),
                 'gamma_max': gamma.max().item(),
                 'gamma_abs_gt_0.5': (gamma.abs() > 0.5).float().mean().item(),
-                'beta_mean': beta.mean().item(),
-                'beta_std': beta.std(unbiased=False).item(),
-                'beta_min': beta.min().item(),
-                'beta_max': beta.max().item(),
-                'beta_abs_gt_0.1': (beta.abs() > 0.1).float().mean().item(),
+                'gamma_abs_gt_0.05': (gamma.abs() > 0.05).float().mean().item(),
+                'gamma_abs_gt_0.10': (gamma.abs() > 0.10).float().mean().item(),
+                'gamma_abs_gt_0.09': (gamma.abs() > 0.09).float().mean().item(),
             }
+            if beta is None:
+                stats.update({
+                    'beta_mean': 0.0,
+                    'beta_abs_mean': 0.0,
+                    'beta_std': 0.0,
+                    'beta_min': 0.0,
+                    'beta_max': 0.0,
+                    'beta_abs_gt_0.1': 0.0,
+                    'beta_abs_gt_0.02': 0.0,
+                    'beta_abs_gt_0.05': 0.0,
+                })
+            else:
+                stats.update({
+                    'beta_mean': beta.mean().item(),
+                    'beta_abs_mean': beta.abs().mean().item(),
+                    'beta_std': beta.std(unbiased=False).item(),
+                    'beta_min': beta.min().item(),
+                    'beta_max': beta.max().item(),
+                    'beta_abs_gt_0.1': (beta.abs() > 0.1).float().mean().item(),
+                    'beta_abs_gt_0.02': (beta.abs() > 0.02).float().mean().item(),
+                    'beta_abs_gt_0.05': (beta.abs() > 0.05).float().mean().item(),
+                })
+            return stats
 
 class ConvIR(nn.Module):
     def __init__(self, version, data, fam_mode='original'):
         super(ConvIR, self).__init__()
-        if fam_mode not in ('original', 'modres', 'fam2_modres'):
+        if fam_mode not in (
+            'original',
+            'modres',
+            'fam2_modres',
+            'fam2_modres_bounded',
+            'fam2_modres_gamma_bounded',
+        ):
             raise ValueError(f'Unsupported ConvIR FAM mode: {fam_mode}')
         
         if version == 'small':
@@ -132,8 +184,13 @@ class ConvIR(nn.Module):
             ]
         )
 
-        fam1_mode = 'original' if fam_mode == 'fam2_modres' else fam_mode
-        fam2_mode = 'modres' if fam_mode == 'fam2_modres' else fam_mode
+        fam2_modes = {
+            'fam2_modres': 'modres',
+            'fam2_modres_bounded': 'modres_bounded',
+            'fam2_modres_gamma_bounded': 'modres_gamma_bounded',
+        }
+        fam1_mode = 'original' if fam_mode in fam2_modes else fam_mode
+        fam2_mode = fam2_modes.get(fam_mode, fam_mode)
 
         self.FAM1 = FAM(base_channel * 4, fam1_mode)
         self.SCM1 = SCM(base_channel * 4)
@@ -188,8 +245,14 @@ class ConvIR(nn.Module):
         z4 = self.SCM1(x_4)
 
         stats = {}
-        fam1_stats = self.FAM1.modulation_stats(z4)
-        fam2_stats = self.FAM2.modulation_stats(z2)
+        x_ = self.feat_extract[0](x)
+        res1 = self.Encoder[0](x_)
+        z = self.feat_extract[1](res1)
+        fam2_stats = self.FAM2.modulation_stats(z, z2)
+        z = self.FAM2(z, z2)
+        res2 = self.Encoder[1](z)
+        z = self.feat_extract[2](res2)
+        fam1_stats = self.FAM1.modulation_stats(z, z4)
         if fam1_stats is not None:
             stats['FAM1'] = fam1_stats
         if fam2_stats is not None:

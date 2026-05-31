@@ -44,7 +44,18 @@ if __name__ == '__main__':
     parser.add_argument('--model_name', default='ConvIR', type=str)
     parser.add_argument('--data', type=str, default='ITS', choices=['ITS', 'Haze4K', 'NHR', 'GTA5', 'real_haze'])
     parser.add_argument('--version', default='small', choices=['small', 'base', 'large'], type=str)
-    parser.add_argument('--fam_mode', default='original', choices=['original', 'modres', 'fam2_modres'], type=str)
+    parser.add_argument(
+        '--fam_mode',
+        default='original',
+        choices=[
+            'original',
+            'modres',
+            'fam2_modres',
+            'fam2_modres_bounded',
+            'fam2_modres_gamma_bounded',
+        ],
+        type=str,
+    )
     parser.add_argument('--seed', default=-1, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
