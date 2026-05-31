@@ -2,7 +2,8 @@
 
 Date: 2026-06-01
 
-Status: design ready; preflight required before any training run.
+Status: gamma-only 20-epoch gate complete; preservation failed, do not run
+bounded gamma+relative-beta as the second arm yet.
 
 ## Scope
 
@@ -207,13 +208,92 @@ Decision rules:
 - If gamma-only collapses by more than `0.10 dB`, first inspect equivalence,
   train/eval pipeline, and shared initialization before any new mechanism.
 
+## Gamma-Only Gate Evidence
+
+Artifacts:
+
+- Remote run root: `Dehazing/ITS/results/ConvIR-Haze4K-fam2-bounded-gamma-stop20-20260601`.
+- Local logs: `experience_docx/experiment_logs/haze4k_fam2_bounded_gamma_stop20_20260601/`.
+- Training log: `fam2_modres_gamma_bounded_train_stop20_seed3407.log`.
+- Best comparison: `scout_eval_compare_seed3407_stop20_best.json`.
+- Last comparison: `scout_eval_compare_seed3407_stop20_last.json`.
+- Best-vs-Last comparison: `scout_eval_compare_seed3407_stop20_best_vs_last.json`.
+- Best modulation bucket analysis: `modulation_bucket_analysis_seed3407_stop20_best.json`.
+- Last modulation bucket analysis: `modulation_bucket_analysis_seed3407_stop20_last.json`.
+
+Preflight:
+
+- Zero-init equivalence: pass; all three outputs have `max_abs_diff = 0.0` and `mean_abs_diff = 0.0`.
+- Fresh shared initialization: pass; `602` shared keys checked, `max_abs_diff = 0.0`.
+- Parameter count: original `8,630,665`; gamma-only `8,634,825`; delta `+4,160` (`+0.0482%`).
+- Real-batch probe: finite content loss `0.6212853`, FFT loss `11.1377125`, total `1.7350566`, grad L2 `6.4825544`, peak CUDA memory `9416.61 MiB`.
+
+Matched validation curve:
+
+| Epoch | Gamma-only PSNR |
+| --- | ---: |
+| 1 | 20.52 |
+| 2 | 20.99 |
+| 3 | 20.53 |
+| 4 | 22.22 |
+| 5 | 22.09 |
+| 6 | 22.63 |
+| 7 | 22.30 |
+| 8 | 23.56 |
+| 9 | 22.65 |
+| 10 | 22.21 |
+| 11 | 23.26 |
+| 12 | 23.76 |
+| 13 | 23.71 |
+| 14 | 22.86 |
+| 15 | 23.88 |
+| 16 | 23.39 |
+| 17 | 24.21 |
+| 18 | 24.62 |
+| 19 | 24.19 |
+| 20 | 23.74 |
+| Best | 24.62 |
+
+Best checkpoint full-test comparison against matched original:
+
+| Metric | Original Best | Gamma-only Best | Delta |
+| --- | ---: | ---: | ---: |
+| PSNR | 24.6424 | 24.6153 | -0.0271 |
+| SSIM | 0.947803 | 0.939256 | -0.008546 |
+| Median PSNR delta | n/a | n/a | +0.2570 |
+| Strong-reference regressions <= -0.05 dB | n/a | n/a | 181/250 |
+| All-image regressions <= -0.20 dB | n/a | n/a | 424/1000 |
+
+Best checkpoint difficulty buckets:
+
+| Bucket | Mean delta | Median delta | Regressions <= -0.05 dB | gamma abs mean | `|gamma| > 0.05` | `|gamma| > 0.09` |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Hard bottom 25% | +0.8054 | +0.8222 | 61/250 | 0.026507 | 0.149840 | 0.006122 |
+| Medium middle 50% | +0.1800 | +0.4118 | 211/500 | 0.027359 | 0.163024 | 0.006693 |
+| Easy top 25% | -1.2740 | -1.1545 | 181/250 | 0.028362 | 0.173574 | 0.008790 |
+
+Last checkpoint:
+
+| Metric | Value |
+| --- | ---: |
+| Mean PSNR delta vs original Best | -0.9060 |
+| Median PSNR delta vs original Best | -0.5858 |
+| Hard bottom-25% mean delta | +1.1242 |
+| Easy top-25% mean delta | -3.0049 |
+| Strong-reference regressions <= -0.05 dB | 206/250 |
+| Best-vs-Last mean PSNR delta | -0.8789 |
+
+Mechanism interpretation:
+
+- Gamma-only preserves hard-sample gain direction: hard bottom-25% mean delta is `+0.8054 dB`.
+- It fails the easy-preservation and regression gates badly: easy top-25% mean delta is `-1.2740 dB`, and strong-reference regressions are `181/250`.
+- The modulation bucket check is decisive: easy samples are modulated more than hard samples (`gamma_abs_mean 0.028362` vs `0.026507`, `|gamma| > 0.05` ratio `0.173574` vs `0.149840`). This is the opposite of the desired behavior.
+- Since gamma-only also over-corrects easy samples, additive beta was not the sole cause of the previous regression pattern.
+- Last checkpoint is much worse than Best and should not be used for any promotion decision.
+
 ## Decision
 
-- Decision label: start with bounded gamma-only as the most informative next
-  gate.
-- Rationale: previous evidence points to additive beta as the higher-risk term;
-  gamma-only is the cleanest way to test whether FAM2 can become a safe
-  architecture change rather than a hard-sample-only diagnostic.
-- Next action after this card: sync code to `autodl-dehaze3`, run preflight for
-  `fam2_modres_gamma_bounded`, then run the 20-epoch gate only if preflight
-  passes.
+- Decision label: bounded gamma-only fails preservation; keep as diagnostic and do not promote.
+- Do not run `fam2_modres_bounded` as the second arm under the current plan. Gamma-only did not fix easy/strong-case regression, so adding relative beta is unlikely to answer the highest-value question.
+- Next most valuable mechanism: FAM2 modulation needs a haze-aware or confidence gate that suppresses modulation on already-clean/easy samples, rather than merely bounding gamma/beta amplitude.
+- FAM route status: hard-sample signal remains real, so do not discard FAM2; however, no FAM2 variant should enter full/repeat seed until easy bucket modulation becomes lower than hard bucket modulation and strong-reference regressions fall below the written gate.

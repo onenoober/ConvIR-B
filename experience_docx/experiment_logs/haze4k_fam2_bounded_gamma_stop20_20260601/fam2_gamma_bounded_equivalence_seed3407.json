@@ -1,0 +1,46 @@
+{
+  "candidate_mode": "fam2_modres_gamma_bounded",
+  "checkpoint": "",
+  "seed": 3407,
+  "input_shape": [
+    1,
+    3,
+    256,
+    256
+  ],
+  "missing_candidate_keys": [
+    "FAM2.modulator.weight",
+    "FAM2.modulator.bias"
+  ],
+  "original_params": 8630665,
+  "candidate_params": 8634825,
+  "param_delta": 4160,
+  "param_delta_pct": 0.048200225590959676,
+  "fresh_shared_init": {
+    "checked_shared_keys": 602,
+    "max_abs_diff": 0.0,
+    "bad_shared_keys": [],
+    "bad_shared_key_count": 0,
+    "pass": true
+  },
+  "outputs": [
+    {
+      "output_index": 0,
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0
+    },
+    {
+      "output_index": 1,
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0
+    },
+    {
+      "output_index": 2,
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0
+    }
+  ],
+  "max_abs_diff": 0.0,
+  "mean_abs_diff": 0.0,
+  "pass": true
+}
