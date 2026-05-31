@@ -44,10 +44,10 @@ class DeepPoolLayer(nn.Module):
         super(DeepPoolLayer, self).__init__()
         self.pools_sizes = [8,4,2]
 
-        if data == 'ITS' or 'Densehaze' or 'Haze4k' or 'Ihaze' or 'Nhhaze' or 'NHR' or 'Ohaze':
-            dilation = [7,9,11]
-        elif data == 'GTA5':
+        if data.lower() == 'gta5':
             dilation = [5,9,11]
+        else:
+            dilation = [7,9,11]
             
         pools, convs, dynas = [],[],[]
         for j, i in enumerate(self.pools_sizes):
@@ -190,5 +190,4 @@ class MultiShapeKernel(nn.Module):
         x2 = self.square_att(x)
 
         return x1+x2
-
 

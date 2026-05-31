@@ -4,11 +4,33 @@ from data import PairCompose, PairRandomCrop, PairRandomHorizontalFilp, PairToTe
 from torchvision.transforms import functional as F
 from torch.utils.data import Dataset, DataLoader
 
+IMG_EXTENSIONS = ('.bmp', '.jpg', '.jpeg', '.png', '.tif', '.tiff')
+
+
+def _list_images(image_dir):
+    if not os.path.isdir(image_dir):
+        raise FileNotFoundError(f'Image directory does not exist: {image_dir}')
+    return sorted(
+        name for name in os.listdir(image_dir)
+        if name.lower().endswith(IMG_EXTENSIONS)
+        and os.path.isfile(os.path.join(image_dir, name))
+    )
+
+
+def _first_existing_dir(root, names):
+    for name in names:
+        path = os.path.join(root, name)
+        if os.path.isdir(path):
+            return path
+    raise FileNotFoundError(
+        f'None of the expected directories {names} exist under {root}'
+    )
+
 
 def train_dataloader(path, batch_size=64, num_workers=0, data='ITS', use_transform=True):
     image_dir = os.path.join(path, 'train')
 
-    if data == 'real_haze':
+    if data.lower() == 'real_haze':
         crop_size = [800,1184]
     else:
         crop_size = 256
@@ -59,25 +81,54 @@ def valid_dataloader(path, data, batch_size=1, num_workers=0):
 class DeblurDataset(Dataset):
     def __init__(self, image_dir, data, transform=None, is_test=False):
         self.image_dir = image_dir
-        self.image_list = os.listdir(os.path.join(image_dir, 'hazy/'))
-        self.image_list.sort()
         self.transform = transform
         self.is_test = is_test
         self.data = data
+        self.data_key = data.lower()
+
+        if self.data_key == 'haze4k':
+            self.input_dir = _first_existing_dir(image_dir, ('IN', 'haze', 'hazy'))
+            self.label_dir = _first_existing_dir(image_dir, ('GT', 'gt'))
+        elif self.data_key == 'real_haze':
+            self.input_dir = _first_existing_dir(image_dir, ('hazy',))
+            self.label_dir = _first_existing_dir(image_dir, ('GT', 'gt'))
+        else:
+            self.input_dir = _first_existing_dir(image_dir, ('hazy',))
+            self.label_dir = _first_existing_dir(image_dir, ('gt',))
+
+        self.image_list = _list_images(self.input_dir)
+
+    def _label_path(self, image_name):
+        candidates = []
+        stem, ext = os.path.splitext(image_name)
+
+        if self.data_key == 'its':
+            candidates.append(f'{image_name.split("_")[0]}.png')
+        elif self.data_key == 'haze4k':
+            candidates.append(image_name)
+            if '_' in stem:
+                candidates.append(f'{stem.split("_")[0]}{ext}')
+                candidates.append(f'{stem.split("_")[0]}.png')
+        else:
+            candidates.append(image_name)
+
+        for candidate in candidates:
+            path = os.path.join(self.label_dir, candidate)
+            if os.path.isfile(path):
+                return path
+
+        raise FileNotFoundError(
+            f'No matching label for {image_name} in {self.label_dir}; '
+            f'tried {candidates}'
+        )
 
     def __len__(self):
         return len(self.image_list)
 
     def __getitem__(self, idx):
-        if self.data == 'ITS':
-            image = Image.open(os.path.join(self.image_dir, 'hazy', self.image_list[idx]))
-            label = Image.open(os.path.join(self.image_dir, 'gt', self.image_list[idx].split('_')[0]+'.png'))
-        elif self.data == 'real_haze':
-            image = Image.open(os.path.join(self.image_dir, 'hazy', self.image_list[idx]))
-            label = Image.open(os.path.join(self.image_dir, 'gt', self.image_list[idx]).replace('hazy', 'GT'))
-        elif self.data == 'haze4k':
-            image = Image.open(os.path.join(self.image_dir, 'IN', self.image_list[idx]))
-            label = Image.open(os.path.join(self.image_dir, 'GT', self.image_list[idx]))
+        image_name = self.image_list[idx]
+        image = Image.open(os.path.join(self.input_dir, image_name)).convert('RGB')
+        label = Image.open(self._label_path(image_name)).convert('RGB')
 
         if self.transform:
             image, label = self.transform(image, label)
@@ -88,4 +139,3 @@ class DeblurDataset(Dataset):
             name = self.image_list[idx]
             return image, label, name
         return image, label
-

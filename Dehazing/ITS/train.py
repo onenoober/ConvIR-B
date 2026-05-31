@@ -119,6 +119,7 @@ def _train(model, args):
             print('%03d epoch \n Average PSNR %.2f dB' % (epoch_idx, val))
             writer.add_scalar('PSNR', val, epoch_idx)
             if val >= best_psnr:
+                best_psnr = val
                 torch.save({'model': model.state_dict()}, os.path.join(args.model_save_dir, 'Best.pkl'))
     save_name = os.path.join(args.model_save_dir, 'Final.pkl')
     torch.save({'model': model.state_dict()}, save_name)
