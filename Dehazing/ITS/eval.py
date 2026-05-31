@@ -13,11 +13,12 @@ from skimage import img_as_ubyte
 import cv2
 
 def _eval(model, args):
-    state_dict = torch.load(args.test_model)
-    model.load_state_dict(state_dict['model'])
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    dataloader = test_dataloader(args.data_dir, batch_size=1, num_workers=0)
-    torch.cuda.empty_cache()
+    state_dict = torch.load(args.test_model, map_location=device)
+    model.load_state_dict(state_dict['model'])
+    dataloader = test_dataloader(args.data_dir, args.data, batch_size=1, num_workers=0)
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
     adder = Adder()
     model.eval()
     factor = 32
@@ -50,12 +51,14 @@ def _eval(model, args):
             label_numpy = label_img.squeeze(0).cpu().numpy()
 
 
-            label_img = (label_img).cuda()
+            label_img = label_img.to(device)
             psnr_val = 10 * torch.log10(1 / f.mse_loss(pred_clip, label_img))
             down_ratio = max(1, round(min(H, W) / 256))	
             ssim_val = ssim(f.adaptive_avg_pool2d(pred_clip, (int(H / down_ratio), int(W / down_ratio))), 
                             f.adaptive_avg_pool2d(label_img, (int(H / down_ratio), int(W / down_ratio))), 
                             data_range=1, size_average=False)	
+            psnr_val = psnr_val.item()
+            ssim_val = ssim_val.mean().item()
             print('%d iter PSNR_dehazing: %.2f ssim: %f' % (iter_idx + 1, psnr_val, ssim_val))
             ssim_adder(ssim_val)
 
@@ -75,4 +78,3 @@ def _eval(model, args):
         print('The average SSIM is %.5f dB' % (ssim_adder.average()))
 
         print("Average time: %f" % adder.average())
-

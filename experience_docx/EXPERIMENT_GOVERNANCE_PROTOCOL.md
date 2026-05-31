@@ -79,6 +79,13 @@ Before changing the model, establish the baseline:
 
 If the baseline is not verified, no improvement claim is valid yet.
 
+For ConvIR-B, "verified baseline" means evaluating the official pretrained
+checkpoint in the local environment before any from-scratch or modified-model
+training. Record the checkpoint path and hash, official reference PSNR/SSIM,
+local PSNR/SSIM, latency, peak GPU memory, output image path, and a short
+quality note. A reproduction gap is acceptable only after the likely cause is
+written down.
+
 ## Most Valuable Attempt Standard
 
 Choose the route with the highest decision value per unit of cost. This is not
@@ -97,6 +104,12 @@ A candidate is worth a serious run only if it has:
 - a written failure decision.
 
 If failure would not clarify what to do next, the route is under-specified.
+
+For ConvIR-B, phrase the attempt as fixed-budget optimization: a candidate must
+beat or explain its relationship to the local ConvIR-B baseline under declared
+FLOP, latency, memory, data, metric, and training-budget limits. Do not use
+"best effect" as the objective unless the budget constraints are written next
+to it.
 
 ## Primary Variable Rule
 
@@ -203,6 +216,23 @@ should exist.
 Continue past weak global metrics only if mechanism metrics make the next
 budget block informative.
 
+Use successive halving by default when training cost matters:
+
+| Stage | Role |
+| --- | --- |
+| smoke | verify implementation, checkpoint, shape, finite losses, and basic runtime |
+| 5 epoch scout | reject collapse and obvious cost violations |
+| 20 epoch hard gate | decide whether meaningful training is justified |
+| 80 epoch promotion | decide whether full budget is likely to answer the route question |
+| full budget | assign the final decision label |
+
+For ConvIR-B CSD desnowing defaults, the 20-epoch hard gate requires quality to
+be within `0.25 dB` of the matched baseline point or to show a clear target-group
+gain, strong-case regression count <= `2%`, and cost limits still passing. The
+final replacement gate requires at least `+0.10 dB` PSNR, SSIM delta >=
+`-0.001`, FLOPs <= `+5%`, latency <= `+10%`, and final strong-case regression
+count <= `1%`.
+
 ## Mechanism Metric Rule
 
 Choose metrics that match the route's claim.
@@ -216,6 +246,13 @@ Choose metrics that match the route's claim.
 | loss-only change | loss scale, gradient health, target-group gain, no-inference-cost benefit |
 | data or preprocessing change | label/data integrity, group balance, robustness, distribution shift |
 | inference or deployment policy | latency, memory, failure fallback, calibration, no-op behavior |
+
+For ConvIR-B image restoration, every formal route should also record
+per-sample PSNR deltas, worst-10% sample behavior, strong-reference regressions,
+worst-case regressions, latency, peak GPU memory, and artifact counts. Add
+edge/texture-region error, frequency-domain error, selector entropy, selection
+distribution, false intervention, loss scale, or gradient health only when the
+route claims those mechanisms.
 
 ## Control Rule
 

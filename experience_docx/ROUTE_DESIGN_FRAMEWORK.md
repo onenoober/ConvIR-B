@@ -22,6 +22,14 @@ Bad form:
 Try a stronger module and see if the score improves.
 ```
 
+ConvIR-B form for this repository:
+
+```text
+Does changing <one variable> improve <target ConvIR-B failure group> under the
+same data and evaluation contract, while FLOPs, latency, memory, and
+strong-case regressions stay within the written limits?
+```
+
 ## Generic Route Families
 
 | Route family | Core question | Required checks |
@@ -123,6 +131,10 @@ A route is not promoted on a single number alone. Promotion should require:
 - control or held-out support;
 - cost/deployability acceptability;
 - a clear next experiment or finalization plan.
+
+For ConvIR-B, promotion from 20 to 80 epochs should require both matched-budget
+quality and preservation: average PSNR alone is insufficient if the top-baseline
+images regress or if latency/memory exceeds the card's limits.
 
 ## Reopen Rules
 

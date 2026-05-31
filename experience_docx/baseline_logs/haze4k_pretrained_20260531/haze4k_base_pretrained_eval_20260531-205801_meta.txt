@@ -1,0 +1,17 @@
+timestamp=20260531-205801
+python=/root/miniconda3/envs/convir-cu128/bin/python
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+checkpoint=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088  /root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+test_haze_count=1000
+test_gt_count=1000
+torch=2.11.0+cu128
+torchvision=0.26.0+cu128
+cuda=12.8
+cuda_available=True
+gpu=NVIDIA GeForce RTX 5090
+peak_gpu_memory_mib=1329
+wall_seconds=118
+return_code=0
+log=results/ConvIR-Haze4K-pretrained-baseline-20260531/logs/haze4k_base_pretrained_eval_20260531-205801.log
+gpu_log=results/ConvIR-Haze4K-pretrained-baseline-20260531/logs/haze4k_base_pretrained_eval_20260531-205801_nvidia_smi.csv
