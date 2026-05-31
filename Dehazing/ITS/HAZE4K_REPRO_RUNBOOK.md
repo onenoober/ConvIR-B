@@ -124,6 +124,72 @@ $PYTHON main.py \
 Keep `results/ConvIR/Training-Results/Best.pkl` as the best validation PSNR
 checkpoint and `Final.pkl` as the final checkpoint.
 
+## Training Smoke
+
+For a baseline bring-up smoke, keep artifacts isolated from the official
+pretrained evaluation by using a separate model name:
+
+```bash
+cd /root/autodl-tmp/workspace/ConvIR-B/Dehazing/ITS
+$PYTHON main.py \
+  --model_name ConvIR-Haze4K-smoke \
+  --mode train \
+  --version base \
+  --data Haze4K \
+  --data_dir /root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K \
+  --batch_size 8 \
+  --learning_rate 4e-4 \
+  --num_epoch 2 \
+  --print_freq 50 \
+  --num_worker 8 \
+  --save_freq 1 \
+  --valid_freq 1
+```
+
+Smoke result on `autodl-dehaze3`, log
+`results/ConvIR-Haze4K-smoke/logs/train_smoke_20260531-201109.log`:
+
+```text
+Epoch 1 valid PSNR: 20.96 dB
+Epoch 2 valid PSNR: 20.31 dB
+Loss content and FFT loss stayed finite.
+```
+
+Generated checkpoint artifacts:
+
+```text
+results/ConvIR-Haze4K-smoke/Training-Results/Best.pkl
+results/ConvIR-Haze4K-smoke/Training-Results/Final.pkl
+results/ConvIR-Haze4K-smoke/Training-Results/model.pkl
+results/ConvIR-Haze4K-smoke/Training-Results/model_1.pkl
+results/ConvIR-Haze4K-smoke/Training-Results/model_2.pkl
+```
+
+`Best.pkl` was then evaluated with:
+
+```bash
+cd /root/autodl-tmp/workspace/ConvIR-B/Dehazing/ITS
+$PYTHON main.py \
+  --model_name ConvIR-Haze4K-smoke \
+  --mode test \
+  --version base \
+  --data Haze4K \
+  --data_dir /root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K \
+  --test_model results/ConvIR-Haze4K-smoke/Training-Results/Best.pkl
+```
+
+Smoke `Best.pkl` test result, log
+`results/ConvIR-Haze4K-smoke/logs/test_best_smoke_20260531-201541.log`:
+
+```text
+The average PSNR is 20.96 dB
+The average SSIM is 0.90390 dB
+Average time: 0.083701
+```
+
+This is diagnostic only. It proves train, valid, checkpoint save, checkpoint
+load, and test are wired correctly; it is not a from-scratch reproduction claim.
+
 ## First Gate
 
 Do not begin model modifications until:
