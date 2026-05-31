@@ -27,6 +27,11 @@ It defines the reusable logic and constraints for model experimentation:
 - artifact retention and cleanup boundaries;
 - explicit decision labels.
 
+For this repository, start with `CONVIR_B_EXECUTION_GUIDE.md`. The generic
+files define the rules; the ConvIR-B guide binds those rules to the official
+pretrained checkpoints, repository commands, baseline metrics, and fixed-budget
+promotion gates.
+
 ## Files
 
 | File | Use |
@@ -35,11 +40,21 @@ It defines the reusable logic and constraints for model experimentation:
 | `ROUTE_DESIGN_FRAMEWORK.md` | Route families and the questions each route must answer. |
 | `EXPERIMENT_CARD_TEMPLATE.md` | Blank route/experiment card for a new candidate. |
 | `MODEL_EXPERIMENT_START_CHECKLIST.md` | Checklist for starting and governing a model experiment. |
+| `CONVIR_B_EXECUTION_GUIDE.md` | Project-specific baseline-first and fixed-budget guide for ConvIR-B. |
 
 ## Use Sequence
 
-1. copy the directory as-is;
-2. fill a new `EXPERIMENT_CARD_TEMPLATE.md` copy with project-specific facts;
-3. define the new project's documentation map;
-4. verify baseline, data, metrics, and runtime before modifying the model;
-5. treat every route as unproven until it passes its own written gates.
+1. read `CONVIR_B_EXECUTION_GUIDE.md` for the current repository;
+2. download the official pretrained checkpoint for each target task;
+3. run evaluation first and record the local ConvIR-B baseline;
+4. explain any reproduction gap against the root `README.md` result table;
+5. copy `EXPERIMENT_CARD_TEMPLATE.md` only after the baseline is trustworthy;
+6. fill the card with fixed-budget gates, mechanism metrics, and stop rules;
+7. treat every route as unproven until it passes its own written gates.
+
+## Current ConvIR-B Priority
+
+The first useful work is not model modification. The first useful work is a
+local baseline package with official checkpoints, PSNR/SSIM, per-sample deltas,
+latency, peak GPU memory, and saved output-quality notes. Only then can a route
+claim a real positive return.

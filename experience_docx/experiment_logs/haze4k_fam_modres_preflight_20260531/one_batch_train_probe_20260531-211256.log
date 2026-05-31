@@ -1,0 +1,11 @@
+device cuda
+gpu NVIDIA GeForce RTX 5090
+dataset_len 3000
+input_shape (8, 3, 256, 256)
+label_shape (8, 3, 256, 256)
+loss_content 0.39560338854789734
+loss_fft 9.344573020935059
+loss_total 1.3300607204437256
+nonzero_modulator_grad_tensors 4
+peak_memory_mib 9433
+one_batch_train_probe pass

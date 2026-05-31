@@ -31,6 +31,40 @@ Status: <draft | preflight | authorized | running | stopped | completed>
 - Reference entrypoints that must remain stable:
 - Checkpoint/export/resume contract:
 
+## ConvIR-B Baseline Defaults
+
+Use this block for this repository. Fill unknown local values after downloading
+the checkpoint and before authorizing a route. Do not invent checkpoint hashes,
+sample counts, latency, or memory values.
+
+| Field | Default or required value |
+| --- | --- |
+| Target baseline | ConvIR-B from official/repository pretrained checkpoint |
+| Baseline checkpoint local path | `<CKPT_ROOT>/desnowing/<CSD_CONVIR_B_CHECKPOINT>.pkl` |
+| Baseline checkpoint hash | `sha256:<fill after download>` |
+| Checkpoint source | root `README.md` pretrained model link |
+| Official ConvIR-B CSD result | 39.10 PSNR, 0.99 SSIM |
+| Official ConvIR-B model cost | 8.63M parameters, 71.22G FLOPs |
+| CSD evaluation command | `cd Image_desnowing && python main.py --data CSD --version base --save_image True --mode test --data_dir <DATA_ROOT>/CSD --test_model <CKPT>` |
+| CSD training command for matched curves | `cd Image_desnowing && python main.py --data CSD --version base --mode train --data_dir <DATA_ROOT>/CSD --batch_size 8 --num_epoch <5|20|80|full>` |
+| Validation/test split | `CSD/test2000`; verify and record actual image count |
+| Evaluation batch size | 1 |
+| Training crop size | 256 random crop |
+| Training batch size | 8 unless hardware forces a written change |
+| Random seed policy | run seed `3407` for first scout; use `3407, 2026, 929` for promoted claims when feasible |
+| Primary metric | PSNR |
+| Secondary metric | SSIM, per-image PSNR delta, latency, peak GPU memory |
+| Minimum meaningful final gain | `+0.10 dB` PSNR with SSIM delta >= `-0.001` |
+| Maximum FLOPs increase | `+5%` over ConvIR-B |
+| Maximum average latency increase | `+10%` over local ConvIR-B baseline |
+| Maximum peak memory increase | `+10%` over local ConvIR-B baseline and must fit current GPU |
+| Strong-case regression threshold | <= 1% final; <= 2% at 20-epoch gate |
+| Worst-case regression threshold | no unexplained image with PSNR delta <= `-0.20 dB` |
+| Failure default | failed gate becomes diagnostic only; next step must target the failed mechanism, preservation, or cost cause |
+
+Use `CONVIR_B_EXECUTION_GUIDE.md` as the source for task variants such as SRRS,
+Snow100K, deraining, dehazing, and motion deblurring.
+
 ## Most Valuable Attempt
 
 - Why this is the highest-value next attempt:
@@ -83,6 +117,26 @@ being targeted.
 | --- | --- | --- | --- |
 | <metric> | <reason> | <subset> | <artifact> |
 
+Minimum ConvIR-B always-on metrics:
+
+| Metric | Why it matters | Gate subset | Final artifact |
+| --- | --- | --- | --- |
+| per-image PSNR delta vs baseline | catches average-score wins that damage many images | full validation when feasible | CSV or summary table |
+| worst-10% PSNR delta | measures weak-case recovery | full validation or predeclared subset | CSV or summary table |
+| strong-reference regression count | protects images already handled by ConvIR-B | top 25% baseline PSNR group | regression list |
+| worst-case regression count | catches severe local failures | full validation or predeclared subset | regression list |
+| latency and peak GPU memory | enforces fixed-budget comparison | timed eval subset plus full eval where feasible | run log |
+| artifact count by label | catches visual failures not captured by PSNR | saved output sample set | review notes |
+
+Route-specific additions:
+
+| Route type | Required additions |
+| --- | --- |
+| selector/router/mask | entropy, selection distribution, false intervention on strong-reference images |
+| preservation guard | protected-case recall, guard activity, regression count |
+| loss-only change | pixel-loss scale, FFT-loss scale, gradient norm health, target-group gain |
+| architecture change | parameter/FLOP delta, latency delta, neutral-init or no-op behavior, branch activity |
+
 ## Controls
 
 | Control | Purpose | Pass line |
@@ -104,15 +158,25 @@ being targeted.
 - Sample-size policy:
 - Dependency/version assumptions:
 
+ConvIR-B default budget ladder:
+
+| Stage | Budget | Promotion rule |
+| --- | --- | --- |
+| smoke | 0 to 1 epoch or fixed-batch probe | finite loss/gradients, correct shapes, checkpoint/eval path works |
+| scout | 5 epochs | within 0.50 dB of matched baseline scout point and cost limits hold |
+| first hard gate | 20 epochs | within 0.25 dB of matched baseline or clear target-group gain; strong-case regression <= 2% |
+| promotion | 80 epochs | mean PSNR >= matched baseline - 0.10 dB; mechanism metric supports hypothesis |
+| final | full budget | mean PSNR gain >= +0.10 dB; SSIM delta >= -0.001; cost and regression limits pass |
+
 ## Gates
 
 | Gate | Image/global metric rule | Mechanism rule | Stop/continue rule |
 | --- | --- | --- | --- |
-| sanity | <rule> | <rule> | <rule> |
-| early trajectory | <rule> | <rule> | <rule> |
-| first hard gate | <rule> | <rule> | <rule> |
-| promotion | <rule> | <rule> | <rule> |
-| final | <rule> | <rule> | <decision label rule> |
+| sanity | finite loss, output shape equals baseline, eval runs on at least 8 images | loss/branch activity is non-degenerate when relevant | stop if shape, checkpoint, or finite-loss checks fail |
+| early trajectory | 5-epoch PSNR within 0.50 dB of matched baseline scout point | first mechanism signal moves in intended direction or remains neutral | stop unless the failed metric makes the next diagnostic informative |
+| first hard gate | 20-epoch PSNR within 0.25 dB of matched baseline or target-group gain is clear | route-specific mechanism metric supports the hypothesis | promote only if strong-case regression <= 2% and cost limits hold |
+| promotion | 80-epoch mean PSNR >= matched baseline - 0.10 dB | mechanism still supports the hypothesis | continue to full only if regression/cost limits still hold |
+| final | PSNR gain >= +0.10 dB and SSIM delta >= -0.001 | mechanism and controls do not contradict the claim | label as positive candidate only if quality, mechanism, preservation, and cost all pass |
 
 ## Analysis Plan
 

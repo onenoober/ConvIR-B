@@ -38,7 +38,11 @@ def _train(model, args):
     iter_timer = Timer('m')
     best_psnr=-1
 
-    for epoch_idx in range(epoch, args.num_epoch + 1):
+    end_epoch = args.stop_epoch if args.stop_epoch > 0 else args.num_epoch
+    if end_epoch < epoch:
+        raise ValueError(f'stop_epoch {end_epoch} is earlier than resume epoch {epoch}')
+
+    for epoch_idx in range(epoch, end_epoch + 1):
 
         epoch_timer.tic()
         iter_timer.tic()

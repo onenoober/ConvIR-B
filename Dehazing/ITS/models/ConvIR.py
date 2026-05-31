@@ -46,15 +46,26 @@ class SCM(nn.Module):
         return x
 
 class FAM(nn.Module):
-    def __init__(self, channel):
+    def __init__(self, channel, mode='original'):
         super(FAM, self).__init__()
+        if mode not in ('original', 'modres'):
+            raise ValueError(f'Unsupported FAM mode: {mode}')
+        self.mode = mode
         self.merge = BasicConv(channel*2, channel, kernel_size=3, stride=1, relu=False)
+        if self.mode == 'modres':
+            self.modulator = nn.Conv2d(channel, channel * 2, kernel_size=1, stride=1, padding=0)
+            nn.init.zeros_(self.modulator.weight)
+            nn.init.zeros_(self.modulator.bias)
 
     def forward(self, x1, x2):
-        return self.merge(torch.cat([x1, x2], dim=1))
+        fused = self.merge(torch.cat([x1, x2], dim=1))
+        if self.mode == 'original':
+            return fused
+        gamma, beta = self.modulator(x2).chunk(2, dim=1)
+        return fused * (1 + gamma) + beta
 
 class ConvIR(nn.Module):
-    def __init__(self, version, data):
+    def __init__(self, version, data, fam_mode='original'):
         super(ConvIR, self).__init__()
         
         if version == 'small':
@@ -99,9 +110,9 @@ class ConvIR(nn.Module):
             ]
         )
 
-        self.FAM1 = FAM(base_channel * 4)
+        self.FAM1 = FAM(base_channel * 4, fam_mode)
         self.SCM1 = SCM(base_channel * 4)
-        self.FAM2 = FAM(base_channel * 2)
+        self.FAM2 = FAM(base_channel * 2, fam_mode)
         self.SCM2 = SCM(base_channel * 2)
 
     def forward(self, x):
@@ -146,5 +157,5 @@ class ConvIR(nn.Module):
         return outputs
 
 
-def build_net(version, data):
-    return ConvIR(version, data)
+def build_net(version, data, fam_mode='original'):
+    return ConvIR(version, data, fam_mode)

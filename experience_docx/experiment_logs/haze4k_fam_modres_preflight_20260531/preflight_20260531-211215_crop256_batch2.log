@@ -1,0 +1,14 @@
+device cuda
+gpu NVIDIA GeForce RTX 5090
+orig_params 8630665
+modres_params 8672009
+param_delta 41344
+param_delta_pct 0.47903608818092236
+checkpoint_strict_load_original ok
+neutral_max_diffs [0.0, 0.0, 0.0]
+neutral_init ok
+probe_loss 24181.859375
+max_grad 46664208.0
+nonzero_modulator_grad_tensors 4
+finite_forward_backward ok
+preflight_status pass

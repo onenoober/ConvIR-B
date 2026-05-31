@@ -67,6 +67,23 @@ Write where each fact belongs before facts start accumulating.
 - Do not modify the model before this is complete unless the first task is only
   repository bring-up.
 
+### ConvIR-B Baseline Minimum
+
+For this repository, baseline establishment means pretrained-checkpoint
+evaluation before any training or model edits:
+
+- download the official checkpoint from the root `README.md` links;
+- record local checkpoint path, file size, and sha256 hash;
+- run each target task's repository evaluation command;
+- use `--version base` or the task folder's base-equivalent setting for
+  ConvIR-B;
+- record official-reference PSNR/SSIM and local PSNR/SSIM;
+- record dataset split and verified sample count;
+- record inference output directory, average latency, and peak GPU memory;
+- save or export per-sample PSNR where possible;
+- inspect saved outputs for obvious artifacts and list example filenames;
+- label the baseline as accepted only after reproduction gaps are explained.
+
 ## 7. Define First Failure Inventory
 
 Collect the smallest useful evidence for:
@@ -82,6 +99,10 @@ Collect the smallest useful evidence for:
 Convert observations into candidate failure modes. Do not jump directly to a
 solution.
 
+For ConvIR-B restoration tasks, include per-sample PSNR deltas, worst-10%
+samples, strong-reference regressions, texture or edge errors when measurable,
+frequency-domain loss/error when relevant, and runtime or memory outliers.
+
 ## 8. Choose The First Route
 
 Use this filter:
@@ -95,6 +116,10 @@ Use this filter:
 - Does failure teach what not to try next?
 
 If not, rewrite the route.
+
+Write the first route as "fixed budget under ConvIR-B constraints": FLOPs <=
+ConvIR-B +5%, latency <= local baseline +10%, peak memory <= local baseline
++10% and fitting the current GPU, with matched 5/20/80/full epoch gates.
 
 ## 9. Launch Discipline
 
@@ -113,6 +138,11 @@ During launch:
 - record infrastructure failures separately from scientific failures;
 - stop only at written gates or clear runtime failure;
 - do not replace the run with a reduced version and call it equivalent.
+
+For ConvIR-B, use successive halving by default: smoke, 5 epochs, 20 epochs,
+80 epochs, then full budget. A candidate reaches the next stage only when the
+written quality, mechanism, preservation, and cost gates all pass or when the
+card says why the next stage is still informative.
 
 ## 10. After The Run
 
