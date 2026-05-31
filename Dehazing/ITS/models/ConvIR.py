@@ -53,7 +53,9 @@ class FAM(nn.Module):
         self.mode = mode
         self.merge = BasicConv(channel*2, channel, kernel_size=3, stride=1, relu=False)
         if self.mode == 'modres':
+            rng_state = torch.get_rng_state()
             self.modulator = nn.Conv2d(channel, channel * 2, kernel_size=1, stride=1, padding=0)
+            torch.set_rng_state(rng_state)
             nn.init.zeros_(self.modulator.weight)
             nn.init.zeros_(self.modulator.bias)
 
@@ -64,9 +66,29 @@ class FAM(nn.Module):
         gamma, beta = self.modulator(x2).chunk(2, dim=1)
         return fused * (1 + gamma) + beta
 
+    def modulation_stats(self, x2):
+        if self.mode == 'original':
+            return None
+        with torch.no_grad():
+            gamma, beta = self.modulator(x2).chunk(2, dim=1)
+            return {
+                'gamma_mean': gamma.mean().item(),
+                'gamma_std': gamma.std(unbiased=False).item(),
+                'gamma_min': gamma.min().item(),
+                'gamma_max': gamma.max().item(),
+                'gamma_abs_gt_0.5': (gamma.abs() > 0.5).float().mean().item(),
+                'beta_mean': beta.mean().item(),
+                'beta_std': beta.std(unbiased=False).item(),
+                'beta_min': beta.min().item(),
+                'beta_max': beta.max().item(),
+                'beta_abs_gt_0.1': (beta.abs() > 0.1).float().mean().item(),
+            }
+
 class ConvIR(nn.Module):
     def __init__(self, version, data, fam_mode='original'):
         super(ConvIR, self).__init__()
+        if fam_mode not in ('original', 'modres', 'fam2_modres'):
+            raise ValueError(f'Unsupported ConvIR FAM mode: {fam_mode}')
         
         if version == 'small':
             num_res = 4
@@ -110,9 +132,12 @@ class ConvIR(nn.Module):
             ]
         )
 
-        self.FAM1 = FAM(base_channel * 4, fam_mode)
+        fam1_mode = 'original' if fam_mode == 'fam2_modres' else fam_mode
+        fam2_mode = 'modres' if fam_mode == 'fam2_modres' else fam_mode
+
+        self.FAM1 = FAM(base_channel * 4, fam1_mode)
         self.SCM1 = SCM(base_channel * 4)
-        self.FAM2 = FAM(base_channel * 2, fam_mode)
+        self.FAM2 = FAM(base_channel * 2, fam2_mode)
         self.SCM2 = SCM(base_channel * 2)
 
     def forward(self, x):
@@ -155,6 +180,21 @@ class ConvIR(nn.Module):
         outputs.append(z+x)
 
         return outputs
+
+    def collect_modulation_stats(self, x):
+        x_2 = F.interpolate(x, scale_factor=0.5)
+        x_4 = F.interpolate(x_2, scale_factor=0.5)
+        z2 = self.SCM2(x_2)
+        z4 = self.SCM1(x_4)
+
+        stats = {}
+        fam1_stats = self.FAM1.modulation_stats(z4)
+        fam2_stats = self.FAM2.modulation_stats(z2)
+        if fam1_stats is not None:
+            stats['FAM1'] = fam1_stats
+        if fam2_stats is not None:
+            stats['FAM2'] = fam2_stats
+        return stats
 
 
 def build_net(version, data, fam_mode='original'):

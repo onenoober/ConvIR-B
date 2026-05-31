@@ -1,0 +1,46 @@
+{
+  "mode": "fam2_modres",
+  "seed": 3407,
+  "batch_size": 8,
+  "input_shape": [
+    8,
+    3,
+    256,
+    256
+  ],
+  "output_shapes": [
+    [
+      8,
+      3,
+      64,
+      64
+    ],
+    [
+      8,
+      3,
+      128,
+      128
+    ],
+    [
+      8,
+      3,
+      256,
+      256
+    ]
+  ],
+  "loss_content": 0.5585811138153076,
+  "loss_fft": 11.28954029083252,
+  "loss_total": 1.6875351667404175,
+  "loss_finite": true,
+  "grad": {
+    "finite": true,
+    "grad_param_count": 8638985,
+    "grad_l2_norm": 6.152967173662885,
+    "grad_max_abs": 0.3243703246116638
+  },
+  "original_params": 8630665,
+  "candidate_params": 8638985,
+  "param_delta": 8320,
+  "param_delta_pct": 0.09640045118191935,
+  "peak_cuda_mem_mib": 9384.62646484375
+}

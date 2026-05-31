@@ -114,37 +114,45 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", required=True)
     parser.add_argument("--original_checkpoint", required=True)
-    parser.add_argument("--modres_checkpoint", required=True)
+    parser.add_argument("--modres_checkpoint")
+    parser.add_argument("--candidate_checkpoint")
+    parser.add_argument("--candidate_mode", default="modres")
+    parser.add_argument("--candidate_name")
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
     args = parser.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)
-    runs = {
-        "original": args.original_checkpoint,
-        "modres": args.modres_checkpoint,
-    }
+    candidate_checkpoint = args.candidate_checkpoint or args.modres_checkpoint
+    if not candidate_checkpoint:
+        raise ValueError("Provide --candidate_checkpoint or --modres_checkpoint")
+    candidate_name = args.candidate_name or args.candidate_mode
+    runs = [
+        ("original", "original", args.original_checkpoint),
+        (candidate_name, args.candidate_mode, candidate_checkpoint),
+    ]
 
     all_rows = {}
     summaries = {}
-    for mode, checkpoint in runs.items():
+    for label, mode, checkpoint in runs:
         rows, summary = eval_one(mode, checkpoint, args.data_dir)
-        all_rows[mode] = rows
-        summaries[mode] = summary
+        summary["label"] = label
+        all_rows[label] = rows
+        summaries[label] = summary
 
     original = {row["name"]: row for row in all_rows["original"]}
-    modres = {row["name"]: row for row in all_rows["modres"]}
-    common = [name for name in original if name in modres]
-    deltas = [modres[name]["psnr"] - original[name]["psnr"] for name in common]
-    ssim_deltas = [modres[name]["ssim"] - original[name]["ssim"] for name in common]
+    candidate = {row["name"]: row for row in all_rows[candidate_name]}
+    common = [name for name in original if name in candidate]
+    deltas = [candidate[name]["psnr"] - original[name]["psnr"] for name in common]
+    ssim_deltas = [candidate[name]["ssim"] - original[name]["ssim"] for name in common]
 
     strong_cut = percentile([original[name]["psnr"] for name in common], 75)
     strong = [name for name in common if original[name]["psnr"] >= strong_cut]
     strong_regressions = [
-        name for name in strong if (modres[name]["psnr"] - original[name]["psnr"]) <= -0.05
+        name for name in strong if (candidate[name]["psnr"] - original[name]["psnr"]) <= -0.05
     ]
     worst_regressions = [
-        name for name in common if (modres[name]["psnr"] - original[name]["psnr"]) <= -0.20
+        name for name in common if (candidate[name]["psnr"] - original[name]["psnr"]) <= -0.20
     ]
 
     tail_count = max(1, len(deltas) // 10)
@@ -178,13 +186,13 @@ def main():
             [
                 "name",
                 "original_psnr",
-                "modres_psnr",
+                f"{candidate_name}_psnr",
                 "delta_psnr",
                 "original_ssim",
-                "modres_ssim",
+                f"{candidate_name}_ssim",
                 "delta_ssim",
                 "original_time_sec",
-                "modres_time_sec",
+                f"{candidate_name}_time_sec",
             ]
         )
         for name in common:
@@ -192,13 +200,13 @@ def main():
                 [
                     name,
                     original[name]["psnr"],
-                    modres[name]["psnr"],
-                    modres[name]["psnr"] - original[name]["psnr"],
+                    candidate[name]["psnr"],
+                    candidate[name]["psnr"] - original[name]["psnr"],
                     original[name]["ssim"],
-                    modres[name]["ssim"],
-                    modres[name]["ssim"] - original[name]["ssim"],
+                    candidate[name]["ssim"],
+                    candidate[name]["ssim"] - original[name]["ssim"],
                     original[name]["time_sec"],
-                    modres[name]["time_sec"],
+                    candidate[name]["time_sec"],
                 ]
             )
 

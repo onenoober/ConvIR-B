@@ -44,7 +44,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_name', default='ConvIR', type=str)
     parser.add_argument('--data', type=str, default='ITS', choices=['ITS', 'Haze4K', 'NHR', 'GTA5', 'real_haze'])
     parser.add_argument('--version', default='small', choices=['small', 'base', 'large'], type=str)
-    parser.add_argument('--fam_mode', default='original', choices=['original', 'modres'], type=str)
+    parser.add_argument('--fam_mode', default='original', choices=['original', 'modres', 'fam2_modres'], type=str)
     parser.add_argument('--seed', default=-1, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
@@ -60,6 +60,8 @@ if __name__ == '__main__':
     parser.add_argument('--num_worker', type=int, default=8)
     parser.add_argument('--save_freq', type=int, default=10)
     parser.add_argument('--valid_freq', type=int, default=10)
+    parser.add_argument('--mod_stats_freq', type=int, default=0)
+    parser.add_argument('--mod_stats_batches', type=int, default=64)
     parser.add_argument('--resume', type=str, default='')
 
 

@@ -1,0 +1,39 @@
+{
+  "candidate_mode": "fam2_modres",
+  "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+  "seed": 3407,
+  "input_shape": [
+    1,
+    3,
+    256,
+    256
+  ],
+  "missing_candidate_keys": [
+    "FAM2.modulator.weight",
+    "FAM2.modulator.bias"
+  ],
+  "original_params": 8630665,
+  "candidate_params": 8638985,
+  "param_delta": 8320,
+  "param_delta_pct": 0.09640045118191935,
+  "outputs": [
+    {
+      "output_index": 0,
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0
+    },
+    {
+      "output_index": 1,
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0
+    },
+    {
+      "output_index": 2,
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0
+    }
+  ],
+  "max_abs_diff": 0.0,
+  "mean_abs_diff": 0.0,
+  "pass": true
+}
