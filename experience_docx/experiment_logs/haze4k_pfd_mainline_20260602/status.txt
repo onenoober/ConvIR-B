@@ -1,0 +1,8 @@
+start 2026-06-02T01:18:31+08:00
+preflight_pass 2026-06-02T01:18:35+08:00
+train_start ConvIR-Haze4K-A1-init-official-stop20-seed3407-20260602 2026-06-02T01:18:35+08:00
+train_done ConvIR-Haze4K-A1-init-official-stop20-seed3407-20260602 rc=0 2026-06-02T01:52:01+08:00
+train_start ConvIR-Haze4K-PFD-B1-rhfd-stop20-seed3407-20260602 2026-06-02T01:52:01+08:00
+train_done ConvIR-Haze4K-PFD-B1-rhfd-stop20-seed3407-20260602 rc=0 2026-06-02T02:25:39+08:00
+eval_start B1 2026-06-02T02:25:39+08:00
+gate_fail_stop B1 2026-06-02T02:28:20+08:00

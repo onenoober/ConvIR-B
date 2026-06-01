@@ -6,15 +6,19 @@ import os
 import statistics
 import sys
 import time
+from pathlib import Path
 
 import torch
 import torch.nn.functional as f
 from pytorch_msssim import ssim
 
-sys.path.insert(0, os.getcwd())
+REPO_ROOT = Path(__file__).resolve().parents[2]
+ITS_ROOT = REPO_ROOT / "Dehazing" / "ITS"
+sys.path.insert(0, str(ITS_ROOT))
 
 from data import test_dataloader
 from models.ConvIR import build_net
+from models.PFDConvIR import build_pfd_net
 
 
 def percentile(values, pct):
@@ -31,13 +35,27 @@ def percentile(values, pct):
     return ordered[lo] + (ordered[hi] - ordered[lo]) * (pos - lo)
 
 
-def eval_one(mode, checkpoint, data_dir):
+def build_eval_model(arch, mode, args, prefix):
+    if arch == "convir":
+        return build_net("base", "Haze4K", mode)
+    return build_pfd_net(
+        "base",
+        "Haze4K",
+        pfd_rhfd=getattr(args, f"{prefix}_pfd_rhfd"),
+        pfd_hscm=getattr(args, f"{prefix}_pfd_hscm"),
+        pfd_pffb=getattr(args, f"{prefix}_pfd_pffb"),
+        pfd_pffb_high=getattr(args, f"{prefix}_pfd_pffb_high"),
+        pfd_teacher=getattr(args, f"{prefix}_pfd_teacher"),
+    )
+
+
+def eval_one(arch, mode, checkpoint, data_dir, args, prefix):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
         torch.cuda.reset_peak_memory_stats()
 
-    model = build_net("base", "Haze4K", mode).to(device)
+    model = build_eval_model(arch, mode, args, prefix).to(device)
     state = torch.load(checkpoint, map_location=device)
     model.load_state_dict(state["model"])
     model.eval()
@@ -99,6 +117,7 @@ def eval_one(mode, checkpoint, data_dir):
 
     summary = {
         "mode": mode,
+        "arch": arch,
         "checkpoint": checkpoint,
         "count": len(rows),
         "mean_psnr": statistics.mean(row["psnr"] for row in rows),
@@ -114,10 +133,24 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", required=True)
     parser.add_argument("--original_checkpoint", required=True)
+    parser.add_argument("--original_arch", choices=["convir", "pfd"], default="convir")
+    parser.add_argument("--original_mode", default="original")
+    parser.add_argument("--original_name", default="original")
+    parser.add_argument("--original_pfd_rhfd", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--original_pfd_hscm", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--original_pfd_pffb", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--original_pfd_pffb_high", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--original_pfd_teacher", type=int, default=0, choices=[0, 1])
     parser.add_argument("--modres_checkpoint")
     parser.add_argument("--candidate_checkpoint")
+    parser.add_argument("--candidate_arch", choices=["convir", "pfd"], default="convir")
     parser.add_argument("--candidate_mode", default="modres")
     parser.add_argument("--candidate_name")
+    parser.add_argument("--candidate_pfd_rhfd", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--candidate_pfd_hscm", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--candidate_pfd_pffb", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--candidate_pfd_pffb_high", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--candidate_pfd_teacher", type=int, default=0, choices=[0, 1])
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
     args = parser.parse_args()
@@ -128,19 +161,25 @@ def main():
         raise ValueError("Provide --candidate_checkpoint or --modres_checkpoint")
     candidate_name = args.candidate_name or args.candidate_mode
     runs = [
-        ("original", "original", args.original_checkpoint),
-        (candidate_name, args.candidate_mode, candidate_checkpoint),
+        (args.original_name, args.original_arch, args.original_mode, args.original_checkpoint, "original"),
+        (
+            candidate_name,
+            args.candidate_arch,
+            args.candidate_mode,
+            candidate_checkpoint,
+            "candidate",
+        ),
     ]
 
     all_rows = {}
     summaries = {}
-    for label, mode, checkpoint in runs:
-        rows, summary = eval_one(mode, checkpoint, args.data_dir)
+    for label, arch, mode, checkpoint, prefix in runs:
+        rows, summary = eval_one(arch, mode, checkpoint, args.data_dir, args, prefix)
         summary["label"] = label
         all_rows[label] = rows
         summaries[label] = summary
 
-    original = {row["name"]: row for row in all_rows["original"]}
+    original = {row["name"]: row for row in all_rows[args.original_name]}
     candidate = {row["name"]: row for row in all_rows[candidate_name]}
     common = [name for name in original if name in candidate]
     deltas = [candidate[name]["psnr"] - original[name]["psnr"] for name in common]
