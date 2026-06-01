@@ -62,17 +62,18 @@ Retained remote refs:
 
 | Evidence root | Files | Main contents |
 | --- | ---: | --- |
-| `experiment_logs/haze4k_fam_modres_preflight_20260531/` | 2 | FAM preflight and one-batch train probe logs. |
+| `experiment_logs/haze4k_fam_modres_preflight_20260531/` | 3 | FAM preflight and one-batch train probe logs. |
 | `experiment_logs/haze4k_fam_modres_scout_stop5_20260531/` | 8 | Stop5 train logs, compare JSON, per-image CSV, run script, README. |
-| `experiment_logs/haze4k_fam2_modres_preflight_20260531/` | 2 | FAM2 equivalence and real-batch preflight JSON. |
-| `experiment_logs/haze4k_fam2_modres_stop20_20260531/` | 7 | Matched original/FAM2 train logs and stop20 compare JSON/CSV. |
-| `experiment_logs/haze4k_fam2_bounded_gamma_stop20_20260601/` | 18 | Bounded gamma train log, modulation analysis, compare JSON/CSV, run script. |
-| `experiment_logs/haze4k_fam2_conf_gate_stop20_20260601/` | 20 | Confidence-gate train log, proxy separability, modulation analysis, compare JSON/CSV. |
-| `experiment_logs/haze4k_stop20_noise_floor_20260601/` | 8 | Original multi-seed train logs, seed-noise JSON/CSV, tmux text output. |
-| `experiment_logs/haze4k_fam2_selectivity_or_kill_20260601/` | 3 | Selector meta-analysis JSON/CSV and per-image table. |
-| `experiment_logs/haze4k_hardfreq_loss_stop20_20260601/` | 13 | Hard-frequency preflight, train log, Best/Last compare JSON/CSV, run script. |
-| `experiment_logs/haze4k_haze_prior_scm_20260601/` | 10 | Haze-prior preflights, Best/Last compare JSON/CSV, run script, status. |
+| `experiment_logs/haze4k_fam2_modres_preflight_20260531/` | 3 | FAM2 equivalence and real-batch preflight JSON. |
+| `experiment_logs/haze4k_fam2_modres_stop20_20260531/` | 8 | Matched original/FAM2 train logs and stop20 compare JSON/CSV. |
+| `experiment_logs/haze4k_fam2_bounded_gamma_stop20_20260601/` | 19 | Bounded gamma train log, modulation analysis, compare JSON/CSV, run script. |
+| `experiment_logs/haze4k_fam2_conf_gate_stop20_20260601/` | 21 | Confidence-gate train log, proxy separability, modulation analysis, compare JSON/CSV. |
+| `experiment_logs/haze4k_stop20_noise_floor_20260601/` | 9 | Original multi-seed train logs, seed-noise JSON/CSV, tmux text output. |
+| `experiment_logs/haze4k_fam2_selectivity_or_kill_20260601/` | 4 | Selector meta-analysis JSON/CSV and per-image table. |
+| `experiment_logs/haze4k_hardfreq_loss_stop20_20260601/` | 14 | Hard-frequency preflight, train log, Best/Last compare JSON/CSV, run script. |
+| `experiment_logs/haze4k_haze_prior_scm_20260601/` | 11 | Haze-prior preflights, Best/Last compare JSON/CSV, run script, status. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
+| `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 
 ## Current Route Verdict
 

@@ -2,6 +2,11 @@
 
 Date: 2026-05-31
 
+## Read First
+
+- Route card: `../../experiment_cards/2026-05-31-haze4k-fam-feature-modulation.md`
+- Central index: `../../EXPERIMENT_INDEX.md`
+
 Remote root:
 
 ```text
