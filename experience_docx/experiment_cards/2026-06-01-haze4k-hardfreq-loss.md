@@ -2,7 +2,8 @@
 
 Date: 2026-06-01
 
-Status: authorized for cloud stop20 scout.
+Status: completed diagnostic-only; exact `hard_fft_lambda=0.02` route failed
+the stop20 gate and should not be promoted or repeated as-is.
 
 ## Scope
 
@@ -169,3 +170,96 @@ python main.py \
   hard FFT boost and consider a true FFL preflight.
 - If it collapses, restore the original loss path and inspect schedule/noise
   before any new mechanism.
+
+## Stop20 Outcome
+
+Cloud run:
+
+- Host: `autodl-dehaze3`.
+- Local evidence package:
+  `experience_docx/experiment_logs/haze4k_hardfreq_loss_stop20_20260601/`.
+- Cloud raw root:
+  `Dehazing/ITS/results/ConvIR-Haze4K-hardfreq-loss-stop20-20260601/`.
+- Candidate checkpoint family:
+  `ConvIR-Haze4K-hardfreq-loss-stop20-seed3407-20260601`.
+- Baseline comparator:
+  `ConvIR-Haze4K-original-stop20-seed3407-20260531/Training-Results/Best.pkl`.
+
+Preflight passed the mechanical safety checks:
+
+- output shapes matched the original multi-scale contract;
+- hard weights covered `[0.0, 1.0]` for batch size 8;
+- content, FFT, hard FFT, total loss, and gradients were finite;
+- peak CUDA memory was `9288.85 MiB`.
+
+Best checkpoint comparison against the matched original stop20 baseline:
+
+| Metric | Original Best | HardFreq Best | Delta |
+| --- | ---: | ---: | ---: |
+| Mean PSNR | `24.6424` | `24.4298` | `-0.2127` |
+| Mean SSIM | `0.947803` | `0.942971` | `-0.004832` |
+
+Best bucket behavior:
+
+| Bucket by original PSNR | Mean PSNR delta | Median PSNR delta | Positive count |
+| --- | ---: | ---: | ---: |
+| hard bottom 25% | `+0.5999` | `+0.3879` | `154/250` |
+| medium middle 50% | `-0.1072` | `-0.1670` | `232/500` |
+| easy top 25% | `-1.2363` | `-1.3037` | `57/250` |
+
+Regression and stability evidence:
+
+- strong-reference regressions at `delta <= -0.05`: `188/250`;
+- all-image regressions at `delta <= -0.20`: `506/1000`;
+- Last checkpoint: `23.7376 PSNR / 0.928821 SSIM`;
+- Best-vs-Last mean PSNR delta: `-0.6922 dB`.
+
+## Gate Verdict
+
+| Gate | Verdict | Evidence |
+| --- | --- | --- |
+| no collapse | FAIL | Best mean PSNR delta `-0.2127 dB`, below the `-0.10 dB` floor |
+| hard movement | PASS | hard bottom 25% mean delta `+0.5999 dB` |
+| easy preservation | FAIL | easy top 25% mean delta `-1.2363 dB`, below the `-0.05 dB` floor |
+| regression cap | FAIL | strong-reference regressions `188/250`, above cap `25/250` |
+| stability | FAIL | Best-vs-Last mean delta `-0.6922 dB`, below the `-0.30 dB` floor |
+| loss health | PASS | preflight, train log, and epoch summaries stayed finite |
+| cost | PASS | inference graph unchanged; memory fit the card |
+
+Decision label: `FAIL_STOP_HARDFFT_LAMBDA_002`.
+
+Interpretation: the hard-frequency emphasis finds a real hard-sample direction,
+but it buys that gain by damaging easy cases, increasing strong-reference
+regressions, and producing poor Best-to-Last stability. This exact loss setting
+is diagnostic-only. Do not promote it, repeat it as-is, or spend a long run on
+`hard_fft_lambda=0.02`.
+
+Useful follow-up boundary:
+
+- Keep the result as evidence that hard/frequency weighting can move the
+  hard-bottom bucket.
+- Any future frequency route must first reduce global/easy collateral damage,
+  for example through a smaller weight, a safer schedule, or a different
+  frequency weighting formulation; it still needs a fresh preflight and gate
+  card before training.
+
+## Synced Text Artifacts
+
+The GitHub-facing evidence for this stop20 scout is intentionally text-only:
+
+- `hardfreq_loss_preflight_seed3407.json`
+- `hardfreq_loss_preflight_seed3407.manual.json`
+- `hardfreq_loss_train_stop20_seed3407.log`
+- `status.txt`
+- `run_hardfreq_loss_stop20.sh`
+- `scout_eval_compare_seed3407_stop20_best.json`
+- `scout_eval_compare_seed3407_stop20_last.json`
+- `scout_eval_compare_seed3407_stop20_best_vs_last.json`
+- `scout_eval_bucket_analysis_seed3407_stop20_best.json`
+- `scout_eval_bucket_analysis_seed3407_stop20_last.json`
+- `scout_eval_per_image_seed3407_stop20_best.csv`
+- `scout_eval_per_image_seed3407_stop20_last.csv`
+- `scout_eval_per_image_seed3407_stop20_best_vs_last.csv`
+
+No checkpoints, images, arrays, datasets, or raw inference outputs are part of
+the synced evidence package.
