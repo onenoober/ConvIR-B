@@ -1,0 +1,42 @@
+{
+  "runs": {
+    "original": {
+      "mode": "original",
+      "scm_mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-haze-prior-scm/Dehazing/ITS/results/ConvIR-Haze4K-original-hardaux-stop20-seed3407-20260601/Training-Results/Best.pkl",
+      "count": 1000,
+      "mean_psnr": 24.935964665412904,
+      "mean_ssim": 0.9487316641807556,
+      "avg_time_sec_sync": 0.05200279879570007,
+      "median_time_sec_sync": 0.06129646301269531,
+      "peak_cuda_mem_mib": 570.69287109375,
+      "label": "original"
+    },
+    "haze_prior_scm_hardaux": {
+      "mode": "original",
+      "scm_mode": "haze_prior",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-haze-prior-scm/Dehazing/ITS/results/ConvIR-Haze4K-hazeprior-scm-hardaux-stop20-seed3407-20260601/Training-Results/Best.pkl",
+      "count": 1000,
+      "mean_psnr": 24.557032453536987,
+      "mean_ssim": 0.943324374973774,
+      "avg_time_sec_sync": 0.0528192069530487,
+      "median_time_sec_sync": 0.06255745887756348,
+      "peak_cuda_mem_mib": 570.89208984375,
+      "label": "haze_prior_scm_hardaux"
+    }
+  },
+  "comparison": {
+    "common_count": 1000,
+    "mean_psnr_delta": -0.3789322118759155,
+    "median_psnr_delta": -0.3161430358886719,
+    "p5_psnr_delta": -4.274113368988037,
+    "p95_psnr_delta": 3.4039743423461912,
+    "worst10_mean_psnr_delta": -4.632741470336914,
+    "best10_mean_psnr_delta": 3.6546864032745363,
+    "mean_ssim_delta": -0.005407289206981659,
+    "strong_reference_cut_psnr": 27.587097644805908,
+    "strong_reference_count": 250,
+    "strong_regression_count_delta_le_-0.05": 185,
+    "worst_regression_count_delta_le_-0.20": 528
+  }
+}

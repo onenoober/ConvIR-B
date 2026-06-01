@@ -45,6 +45,62 @@ class SCM(nn.Module):
         x = self.main(x)
         return x
 
+
+def build_haze_prior_maps(x):
+    min_rgb = x.min(dim=1, keepdim=True)[0]
+    max_rgb = x.max(dim=1, keepdim=True)[0]
+    dark = -F.max_pool2d(-min_rgb, kernel_size=15, stride=1, padding=7)
+    saturation = max_rgb - min_rgb
+
+    gray = 0.299 * x[:, 0:1] + 0.587 * x[:, 1:2] + 0.114 * x[:, 2:3]
+    grad_x = gray[:, :, :, 1:] - gray[:, :, :, :-1]
+    grad_y = gray[:, :, 1:, :] - gray[:, :, :-1, :]
+    grad_x = F.pad(grad_x.abs(), (0, 1, 0, 0))
+    grad_y = F.pad(grad_y.abs(), (0, 0, 0, 1))
+    grad = grad_x + grad_y
+
+    return torch.cat([min_rgb, max_rgb, dark, saturation, grad], dim=1)
+
+
+class HazePriorSCM(nn.Module):
+    def __init__(self, out_plane):
+        super(HazePriorSCM, self).__init__()
+        self.rgb_scm = SCM(out_plane)
+
+        rng_state = torch.get_rng_state()
+        self.prior_branch = nn.Sequential(
+            BasicConv(5, out_plane // 4, kernel_size=3, stride=1, relu=True),
+            BasicConv(out_plane // 4, out_plane // 2, kernel_size=3, stride=1, relu=True),
+            BasicConv(out_plane // 2, out_plane, kernel_size=1, stride=1, relu=False),
+        )
+        torch.set_rng_state(rng_state)
+        final_conv = self.prior_branch[-1].main[0]
+        nn.init.zeros_(final_conv.weight)
+        if final_conv.bias is not None:
+            nn.init.zeros_(final_conv.bias)
+
+    def forward(self, x):
+        prior = build_haze_prior_maps(x)
+        return self.rgb_scm(x) + self.prior_branch(prior)
+
+    def prior_branch_stats(self, x):
+        with torch.no_grad():
+            prior = build_haze_prior_maps(x)
+            prior_feat = self.prior_branch(prior)
+            rgb_feat = self.rgb_scm(x)
+            return {
+                'prior_min_mean': prior[:, 0:1].mean().item(),
+                'prior_max_mean': prior[:, 1:2].mean().item(),
+                'prior_dark_mean': prior[:, 2:3].mean().item(),
+                'prior_saturation_mean': prior[:, 3:4].mean().item(),
+                'prior_grad_mean': prior[:, 4:5].mean().item(),
+                'rgb_abs_mean': rgb_feat.abs().mean().item(),
+                'prior_branch_abs_mean': prior_feat.abs().mean().item(),
+                'prior_to_rgb_abs_ratio': (
+                    prior_feat.abs().mean() / rgb_feat.abs().mean().clamp_min(1e-6)
+                ).item(),
+            }
+
 class FAM(nn.Module):
     def __init__(self, channel, mode='original'):
         super(FAM, self).__init__()
@@ -196,7 +252,7 @@ class FAM(nn.Module):
             return stats
 
 class ConvIR(nn.Module):
-    def __init__(self, version, data, fam_mode='original'):
+    def __init__(self, version, data, fam_mode='original', scm_mode='original'):
         super(ConvIR, self).__init__()
         if fam_mode not in (
             'original',
@@ -207,6 +263,8 @@ class ConvIR(nn.Module):
             'fam2_modres_gamma_conf_gated',
         ):
             raise ValueError(f'Unsupported ConvIR FAM mode: {fam_mode}')
+        if scm_mode not in ('original', 'haze_prior'):
+            raise ValueError(f'Unsupported ConvIR SCM mode: {scm_mode}')
         
         if version == 'small':
             num_res = 4
@@ -258,11 +316,12 @@ class ConvIR(nn.Module):
         }
         fam1_mode = 'original' if fam_mode in fam2_modes else fam_mode
         fam2_mode = fam2_modes.get(fam_mode, fam_mode)
+        scm_cls = HazePriorSCM if scm_mode == 'haze_prior' else SCM
 
         self.FAM1 = FAM(base_channel * 4, fam1_mode)
-        self.SCM1 = SCM(base_channel * 4)
+        self.SCM1 = scm_cls(base_channel * 4)
         self.FAM2 = FAM(base_channel * 2, fam2_mode)
-        self.SCM2 = SCM(base_channel * 2)
+        self.SCM2 = scm_cls(base_channel * 2)
 
     def forward(self, x):
         x_2 = F.interpolate(x, scale_factor=0.5)
@@ -336,6 +395,16 @@ class ConvIR(nn.Module):
             return None
         return sum(losses) / len(losses)
 
+    def collect_scm_stats(self, x):
+        x_2 = F.interpolate(x, scale_factor=0.5)
+        x_4 = F.interpolate(x_2, scale_factor=0.5)
+        stats = {}
+        if hasattr(self.SCM1, 'prior_branch_stats'):
+            stats['SCM1'] = self.SCM1.prior_branch_stats(x_4)
+        if hasattr(self.SCM2, 'prior_branch_stats'):
+            stats['SCM2'] = self.SCM2.prior_branch_stats(x_2)
+        return stats
 
-def build_net(version, data, fam_mode='original'):
-    return ConvIR(version, data, fam_mode)
+
+def build_net(version, data, fam_mode='original', scm_mode='original'):
+    return ConvIR(version, data, fam_mode, scm_mode)

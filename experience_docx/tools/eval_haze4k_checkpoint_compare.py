@@ -31,13 +31,13 @@ def percentile(values, pct):
     return ordered[lo] + (ordered[hi] - ordered[lo]) * (pos - lo)
 
 
-def eval_one(mode, checkpoint, data_dir):
+def eval_one(mode, scm_mode, checkpoint, data_dir):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
         torch.cuda.reset_peak_memory_stats()
 
-    model = build_net("base", "Haze4K", mode).to(device)
+    model = build_net("base", "Haze4K", mode, scm_mode).to(device)
     state = torch.load(checkpoint, map_location=device)
     model.load_state_dict(state["model"])
     model.eval()
@@ -99,6 +99,7 @@ def eval_one(mode, checkpoint, data_dir):
 
     summary = {
         "mode": mode,
+        "scm_mode": scm_mode,
         "checkpoint": checkpoint,
         "count": len(rows),
         "mean_psnr": statistics.mean(row["psnr"] for row in rows),
@@ -115,10 +116,12 @@ def main():
     parser.add_argument("--data_dir", required=True)
     parser.add_argument("--original_checkpoint", required=True)
     parser.add_argument("--original_mode", default="original")
+    parser.add_argument("--original_scm_mode", default="original")
     parser.add_argument("--original_name", default="original")
     parser.add_argument("--modres_checkpoint")
     parser.add_argument("--candidate_checkpoint")
     parser.add_argument("--candidate_mode", default="modres")
+    parser.add_argument("--candidate_scm_mode", default="original")
     parser.add_argument("--candidate_name")
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
@@ -131,14 +134,14 @@ def main():
     candidate_name = args.candidate_name or args.candidate_mode
     reference_name = args.original_name
     runs = [
-        (reference_name, args.original_mode, args.original_checkpoint),
-        (candidate_name, args.candidate_mode, candidate_checkpoint),
+        (reference_name, args.original_mode, args.original_scm_mode, args.original_checkpoint),
+        (candidate_name, args.candidate_mode, args.candidate_scm_mode, candidate_checkpoint),
     ]
 
     all_rows = {}
     summaries = {}
-    for label, mode, checkpoint in runs:
-        rows, summary = eval_one(mode, checkpoint, args.data_dir)
+    for label, mode, scm_mode, checkpoint in runs:
+        rows, summary = eval_one(mode, scm_mode, checkpoint, args.data_dir)
         summary["label"] = label
         all_rows[label] = rows
         summaries[label] = summary

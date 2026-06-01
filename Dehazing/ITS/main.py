@@ -25,7 +25,7 @@ def main(args):
         os.makedirs('results/' + args.model_name + '/')
     if not os.path.exists(args.result_dir):
         os.makedirs(args.result_dir)
-    model = build_net(args.version, args.data, args.fam_mode)
+    model = build_net(args.version, args.data, args.fam_mode, args.scm_mode)
     # print(model)
 
     if torch.cuda.is_available():
@@ -57,6 +57,7 @@ if __name__ == '__main__':
         ],
         type=str,
     )
+    parser.add_argument('--scm_mode', default='original', choices=['original', 'haze_prior'], type=str)
     parser.add_argument('--seed', default=-1, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
@@ -74,9 +75,15 @@ if __name__ == '__main__':
     parser.add_argument('--valid_freq', type=int, default=10)
     parser.add_argument('--mod_stats_freq', type=int, default=0)
     parser.add_argument('--mod_stats_batches', type=int, default=64)
+    parser.add_argument('--scm_stats_freq', type=int, default=0)
+    parser.add_argument('--scm_stats_batches', type=int, default=64)
     parser.add_argument('--gate_lambda', type=float, default=0.0)
     parser.add_argument('--gate_warmup_epochs', type=int, default=5)
     parser.add_argument('--gate_ramp_epochs', type=int, default=5)
+    parser.add_argument('--loss_mode', default='original', choices=['original', 'hard_aux'], type=str)
+    parser.add_argument('--hard_aux_lambda', type=float, default=0.25)
+    parser.add_argument('--hard_aux_warmup_epochs', type=int, default=3)
+    parser.add_argument('--hard_aux_ramp_epochs', type=int, default=5)
     parser.add_argument('--resume', type=str, default='')
 
 
