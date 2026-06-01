@@ -19,7 +19,8 @@ def load_shared_weights(original, candidate, checkpoint, device):
     result = candidate.load_state_dict(shared, strict=False)
     unexpected = list(result.unexpected_keys)
     missing = list(result.missing_keys)
-    bad_missing = [key for key in missing if ".modulator." not in key]
+    allowed_missing = (".modulator.", ".gate_head.")
+    bad_missing = [key for key in missing if not any(token in key for token in allowed_missing)]
     if unexpected or bad_missing:
         raise RuntimeError(
             f"Unexpected shared-weight load result: missing={missing}, "

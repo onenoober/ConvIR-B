@@ -1,6 +1,6 @@
 # Experiment Governance Protocol
 
-Date: 2026-05-31
+Date: 2026-06-01
 
 Status: generic protocol for model experiments.
 
@@ -53,6 +53,22 @@ Keep experimental work reviewable:
 If the working tree already contains unrelated changes, isolate the new work in
 a separate branch, worktree, or patch before staging.
 
+## Execution Location Rule
+
+Declare where each kind of work is allowed before a run starts.
+
+For projects with a cloud-first policy, the local checkout is for code edits,
+documentation edits, static checks, compilation checks, packaging, and Git
+synchronization only. Do not run experiment-bearing training, evaluation,
+preflight, scout, ablation, or formal comparison locally unless an experiment
+card records an explicit exception and reason.
+
+Run experiment-bearing commands on the documented cloud server or cloud
+workspace. Record the server alias, repository path, environment, dataset root,
+and artifact roots in the experiment card or run log. After completion, pull the
+curated text evidence back to the local checkout before making the route
+decision.
+
 ## Entrypoint Stability Rule
 
 Preserve trusted entrypoints until the experiment explicitly changes them:
@@ -80,11 +96,11 @@ Before changing the model, establish the baseline:
 If the baseline is not verified, no improvement claim is valid yet.
 
 For ConvIR-B, "verified baseline" means evaluating the official pretrained
-checkpoint in the local environment before any from-scratch or modified-model
-training. Record the checkpoint path and hash, official reference PSNR/SSIM,
-local PSNR/SSIM, latency, peak GPU memory, output image path, and a short
-quality note. A reproduction gap is acceptable only after the likely cause is
-written down.
+checkpoint in the declared cloud execution environment before any from-scratch
+or modified-model training. Record the checkpoint path and hash, official
+reference PSNR/SSIM, measured PSNR/SSIM, latency, peak GPU memory, output image
+path, and a short quality note. A reproduction gap is acceptable only after the
+likely cause is written down.
 
 ## Most Valuable Attempt Standard
 
@@ -106,10 +122,10 @@ A candidate is worth a serious run only if it has:
 If failure would not clarify what to do next, the route is under-specified.
 
 For ConvIR-B, phrase the attempt as fixed-budget optimization: a candidate must
-beat or explain its relationship to the local ConvIR-B baseline under declared
-FLOP, latency, memory, data, metric, and training-budget limits. Do not use
-"best effect" as the objective unless the budget constraints are written next
-to it.
+beat or explain its relationship to the matched ConvIR-B baseline under
+declared FLOP, latency, memory, data, metric, and training-budget limits. Do not
+use "best effect" as the objective unless the budget constraints are written
+next to it.
 
 ## Primary Variable Rule
 
@@ -303,6 +319,25 @@ create a curated text-only package:
 
 The package should let a reviewer understand the decision without becoming a
 second raw experiment directory.
+
+## Completion GitHub Sync Rule
+
+Every completed experiment must end with a GitHub synchronization step for
+code, documentation, cards, scripts, summaries, compact logs, and other curated
+text evidence that supports the decision.
+
+- pull cloud text evidence back into the local checkout;
+- keep datasets, checkpoints, model weights, raw images, arrays, and large raw
+  outputs external or ignored;
+- commit the scoped code, documentation, and text evidence on the experiment
+  branch;
+- push the branch to the GitHub remote before starting the next route;
+- verify the remote branch and intended tracked paths after the push;
+- when the evidence is meant to be AI-readable or reviewer-readable by link,
+  verify public/raw readability and record the result.
+
+If synchronization is temporarily blocked, record the blocker and do not treat
+the experiment as fully closed until the GitHub sync audit is complete.
 
 ## Cleanup Rule
 

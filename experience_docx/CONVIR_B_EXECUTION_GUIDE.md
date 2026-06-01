@@ -1,6 +1,6 @@
 # ConvIR-B Execution Guide
 
-Date: 2026-05-31
+Date: 2026-06-01
 
 Status: ConvIR-B project overlay for the generic experiment protocol.
 
@@ -12,17 +12,34 @@ checkpoints, task entrypoints, metrics, and fixed-budget decision gates.
 
 The current phase is baseline establishment. Do not modify the model until the
 official or repository-provided pretrained checkpoint has been evaluated in the
-local environment and any reproduction gap has a written explanation.
+declared cloud execution environment and any reproduction gap has a written
+explanation.
+
+## Execution Environment Defaults
+
+For this repository, the local WSL checkout is the edit, documentation, static
+check, compile check, packaging, and Git synchronization workspace. Do not run
+experiment-bearing HAZE4K preflights, evaluations, scout runs, ablations, or
+formal training locally unless a card records an explicit exception.
+
+Run experiment-bearing commands on the active AutoDL or documented cloud
+server. Each run log or card must record the server alias, repository path,
+Python environment, dataset root, artifact roots, and the command script used.
+After each experiment completes, pull curated text evidence back locally,
+commit it with the relevant code and docs, push the experiment branch to the
+GitHub remote, and verify the remote tracked paths.
 
 ## Required Order
 
 1. Download the official pretrained model for each target task from the root
    `README.md` model links.
-2. Record the checkpoint source, local path, file size, and sha256 hash.
-3. Run the repository evaluation command for the target task and dataset.
-4. Record local baseline PSNR, SSIM when available, per-image PSNR, average
+2. Record the checkpoint source, cloud path, file size, and sha256 hash.
+3. Run the repository evaluation command for the target task and dataset on the
+   declared cloud server.
+4. Record cloud baseline PSNR, SSIM when available, per-image PSNR, average
    latency, peak GPU memory, output path, and qualitative artifact notes.
-5. Compare local results with the official table in the root `README.md`.
+5. Compare measured cloud results with the official table in the root
+   `README.md`.
 6. Explain any reproduction gap before starting a model-change route.
 7. Optimize for best result under a fixed budget, not for an unconstrained
    "best score".
@@ -116,7 +133,7 @@ Every baseline reproduction note must include:
 
 - dataset root and verified sample count;
 - checkpoint source URL;
-- local checkpoint path;
+- cloud checkpoint path;
 - checkpoint sha256;
 - checkpoint file size;
 - git commit or source snapshot;
@@ -136,7 +153,7 @@ Every baseline reproduction note must include:
 The default route question is:
 
 ```text
-Can the candidate beat the local ConvIR-B baseline under the same data,
+Can the candidate beat the matched ConvIR-B baseline under the same data,
 evaluation, and hardware contract while staying within the cost limits?
 ```
 
@@ -146,8 +163,8 @@ Default cost limits for a ConvIR-B replacement route:
 | --- | --- |
 | FLOPs | <= ConvIR-B FLOPs + 5% |
 | Parameters | record always; no increase accepted unless the card explains why |
-| Peak GPU memory | <= local baseline peak memory + 10% and must fit the current GPU |
-| Average latency | <= local baseline average latency + 10% |
+| Peak GPU memory | <= matched baseline peak memory + 10% and must fit the current GPU |
+| Average latency | <= matched baseline average latency + 10% |
 | Inference output size | same as baseline |
 | Checkpoint/export/resume | same contract unless explicitly tested |
 
@@ -188,7 +205,7 @@ diagnostic evidence if they explain a mechanism or rule out a route.
 Do not judge image restoration only by average PSNR. At minimum, record these
 for every formal ConvIR-B route:
 
-- per-image PSNR and per-image delta versus the local ConvIR-B baseline;
+- per-image PSNR and per-image delta versus the matched ConvIR-B baseline;
 - delta distribution: mean, median, worst 10%, best 10%, and p5/p95;
 - strong-reference group: images where baseline PSNR is in the top 25%;
 - strong-case regression count: strong-reference images with PSNR delta <=
@@ -227,7 +244,7 @@ Failure must still teach the next action.
 
 ## What Not To Fix Yet
 
-Until the local baseline package exists, do not freeze:
+Until the cloud-recorded baseline package exists, do not freeze:
 
 - final checkpoint filenames beyond the recorded downloaded file;
 - exact artifact root outside the current machine policy;

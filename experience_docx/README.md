@@ -1,6 +1,6 @@
 # Generic Experiment Protocol
 
-Date: 2026-05-31
+Date: 2026-06-01
 
 Status: model experiment governance package.
 
@@ -13,6 +13,7 @@ It defines the reusable logic and constraints for model experimentation:
 - baseline-first setup;
 - one authoritative place per fact;
 - repository hygiene and isolated work;
+- cloud-first execution boundaries;
 - reference entrypoint stability;
 - route cards before expensive work;
 - one primary variable per first trial;
@@ -24,6 +25,7 @@ It defines the reusable logic and constraints for model experimentation:
 - preservation and regression checks;
 - deployability and leakage controls;
 - text-only evidence package policy;
+- completion GitHub synchronization;
 - artifact retention and cleanup boundaries;
 - explicit decision labels.
 
@@ -46,15 +48,18 @@ promotion gates.
 
 1. read `CONVIR_B_EXECUTION_GUIDE.md` for the current repository;
 2. download the official pretrained checkpoint for each target task;
-3. run evaluation first and record the local ConvIR-B baseline;
+3. run evaluation first on the documented cloud server and record the matched
+   ConvIR-B baseline;
 4. explain any reproduction gap against the root `README.md` result table;
 5. copy `EXPERIMENT_CARD_TEMPLATE.md` only after the baseline is trustworthy;
 6. fill the card with fixed-budget gates, mechanism metrics, and stop rules;
-7. treat every route as unproven until it passes its own written gates.
+7. treat every route as unproven until it passes its own written gates;
+8. after each completed experiment, push scoped code, docs, and curated text
+   evidence to the GitHub experiment branch and verify the remote paths.
 
 ## Current ConvIR-B Priority
 
 The first useful work is not model modification. The first useful work is a
-local baseline package with official checkpoints, PSNR/SSIM, per-sample deltas,
-latency, peak GPU memory, and saved output-quality notes. Only then can a route
-claim a real positive return.
+cloud-recorded baseline package with official checkpoints, PSNR/SSIM,
+per-sample deltas, latency, peak GPU memory, and saved output-quality notes.
+Only then can a route claim a real positive return.

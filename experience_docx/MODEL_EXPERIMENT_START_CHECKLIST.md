@@ -1,6 +1,6 @@
 # Model Experiment Start Checklist
 
-Date: 2026-05-31
+Date: 2026-06-01
 
 Status: checklist for starting and governing a model experiment.
 
@@ -34,6 +34,9 @@ Write where each fact belongs before facts start accumulating.
 - Identify unrelated local changes and leave them untouched.
 - Decide what can be committed and what must remain external.
 - Keep reference entrypoints stable until an experiment card says otherwise.
+- Declare the local/cloud split: local is for edits, static checks, compile
+  checks, packaging, and Git sync; experiment-bearing runs execute on the
+  documented cloud server unless the card records an explicit exception.
 
 ## 4. Verify Data And Metrics
 
@@ -49,7 +52,7 @@ Write where each fact belongs before facts start accumulating.
 
 - Confirm Python or runtime version.
 - Confirm core dependencies.
-- Confirm hardware availability.
+- Confirm cloud server, GPU, and hardware availability.
 - Confirm storage paths.
 - Confirm checkpoint read/write.
 - Confirm logging.
@@ -73,11 +76,11 @@ For this repository, baseline establishment means pretrained-checkpoint
 evaluation before any training or model edits:
 
 - download the official checkpoint from the root `README.md` links;
-- record local checkpoint path, file size, and sha256 hash;
+- record cloud checkpoint path, file size, and sha256 hash;
 - run each target task's repository evaluation command;
 - use `--version base` or the task folder's base-equivalent setting for
   ConvIR-B;
-- record official-reference PSNR/SSIM and local PSNR/SSIM;
+- record official-reference PSNR/SSIM and measured cloud PSNR/SSIM;
 - record dataset split and verified sample count;
 - record inference output directory, average latency, and peak GPU memory;
 - save or export per-sample PSNR where possible;
@@ -118,7 +121,7 @@ Use this filter:
 If not, rewrite the route.
 
 Write the first route as "fixed budget under ConvIR-B constraints": FLOPs <=
-ConvIR-B +5%, latency <= local baseline +10%, peak memory <= local baseline
+ConvIR-B +5%, latency <= matched baseline +10%, peak memory <= matched baseline
 +10% and fitting the current GPU, with matched 5/20/80/full epoch gates.
 
 ## 9. Launch Discipline
@@ -151,6 +154,9 @@ card says why the next stage is still informative.
 - Label the result precisely.
 - Update artifact retention.
 - Write what the result rules in or rules out.
-- If evidence must be shared, create a compact text-only review package.
-- Audit source/local/remote parity for any published evidence package.
+- Pull curated cloud text evidence back into the local checkout.
+- Commit and push scoped code, documentation, cards, scripts, summaries, and
+  compact text logs to the GitHub experiment branch.
+- Audit source/local/remote parity and public/raw readability for any published
+  evidence package.
 - Create the next card only after the decision is clear.

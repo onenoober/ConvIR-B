@@ -1,0 +1,40 @@
+{
+  "runs": {
+    "original": {
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/ITS/results/ConvIR-Haze4K-original-stop20-seed3407-20260531/Training-Results/Best.pkl",
+      "count": 1000,
+      "mean_psnr": 24.642431646347045,
+      "mean_ssim": 0.9478025943636894,
+      "avg_time_sec_sync": 0.05435201692581177,
+      "median_time_sec_sync": 0.0674370527267456,
+      "peak_cuda_mem_mib": 570.69287109375,
+      "label": "original"
+    },
+    "fam2_modres_gamma_conf_gated": {
+      "mode": "fam2_modres_gamma_conf_gated",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/ITS/results/ConvIR-Haze4K-fam2_modres_gamma_conf_gated-stop20-seed3407-20260601/Training-Results/Final.pkl",
+      "count": 1000,
+      "mean_psnr": 24.538878326416015,
+      "mean_ssim": 0.941827536702156,
+      "avg_time_sec_sync": 0.05373878669738769,
+      "median_time_sec_sync": 0.06445479393005371,
+      "peak_cuda_mem_mib": 579.6767578125,
+      "label": "fam2_modres_gamma_conf_gated"
+    }
+  },
+  "comparison": {
+    "common_count": 1000,
+    "mean_psnr_delta": -0.10355331993103027,
+    "median_psnr_delta": -0.05567646026611328,
+    "p5_psnr_delta": -4.8028709411621096,
+    "p95_psnr_delta": 4.311487388610838,
+    "worst10_mean_psnr_delta": -5.1664759635925295,
+    "best10_mean_psnr_delta": 4.5558626747131346,
+    "mean_ssim_delta": -0.005975057661533356,
+    "strong_reference_cut_psnr": 27.257914066314697,
+    "strong_reference_count": 250,
+    "strong_regression_count_delta_le_-0.05": 195,
+    "worst_regression_count_delta_le_-0.20": 475
+  }
+}

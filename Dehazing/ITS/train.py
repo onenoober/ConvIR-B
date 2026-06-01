@@ -10,6 +10,30 @@ import torch.nn as nn
 from warmup_scheduler import GradualWarmupScheduler
 
 
+def _per_image_l1(pred, target):
+    return (pred - target).abs().flatten(1).mean(dim=1)
+
+
+def _easy_rank_weights(per_image_loss):
+    batch_size = per_image_loss.numel()
+    if batch_size <= 1:
+        return torch.ones_like(per_image_loss)
+    order = torch.argsort(per_image_loss, descending=False)
+    ranks = torch.empty_like(per_image_loss)
+    ranks[order] = torch.arange(batch_size, device=per_image_loss.device, dtype=per_image_loss.dtype)
+    return 1.0 - ranks / float(batch_size - 1)
+
+
+def _current_gate_lambda(args, epoch_idx):
+    if args.gate_lambda <= 0:
+        return 0.0
+    if epoch_idx <= args.gate_warmup_epochs:
+        return 0.0
+    ramp_epochs = max(1, args.gate_ramp_epochs)
+    ramp = min(1.0, float(epoch_idx - args.gate_warmup_epochs) / float(ramp_epochs))
+    return args.gate_lambda * ramp
+
+
 def _log_modulation_stats(model, args, epoch_idx, device):
     if args.mod_stats_freq <= 0 or epoch_idx % args.mod_stats_freq != 0:
         return
@@ -42,6 +66,8 @@ def _log_modulation_stats(model, args, epoch_idx, device):
             "gamma_mean: %.8f gamma_abs_mean: %.8f gamma_std: %.8f "
             "gamma_min: %.8f gamma_max: %.8f gamma_abs_gt_0.5: %.8f "
             "gamma_abs_gt_0.05: %.8f gamma_abs_gt_0.10: %.8f gamma_abs_gt_0.09: %.8f "
+            "gate_mean: %.8f gate_std: %.8f gate_min: %.8f gate_max: %.8f "
+            "gamma_base_abs_mean: %.8f effective_gamma_abs_mean: %.8f "
             "beta_present: %.0f beta_mean: %.8f beta_abs_mean: %.8f beta_std: %.8f "
             "beta_min: %.8f beta_max: %.8f beta_abs_gt_0.1: %.8f "
             "beta_abs_gt_0.02: %.8f beta_abs_gt_0.05: %.8f" % (
@@ -57,6 +83,12 @@ def _log_modulation_stats(model, args, epoch_idx, device):
                 averaged.get('gamma_abs_gt_0.05', 0.0),
                 averaged.get('gamma_abs_gt_0.10', 0.0),
                 averaged.get('gamma_abs_gt_0.09', 0.0),
+                averaged.get('gate_mean', 0.0),
+                averaged.get('gate_std', 0.0),
+                averaged.get('gate_min', 0.0),
+                averaged.get('gate_max', 0.0),
+                averaged.get('gamma_base_abs_mean', 0.0),
+                averaged.get('effective_gamma_abs_mean', 0.0),
                 averaged.get('beta_present', 0.0),
                 averaged.get('beta_mean', 0.0),
                 averaged.get('beta_abs_mean', 0.0),
@@ -93,8 +125,10 @@ def _train(model, args):
     writer = SummaryWriter()
     epoch_pixel_adder = Adder()
     epoch_fft_adder = Adder()
+    epoch_gate_adder = Adder()
     iter_pixel_adder = Adder()
     iter_fft_adder = Adder()
+    iter_gate_adder = Adder()
     epoch_timer = Timer('m')
     iter_timer = Timer('m')
     best_psnr=-1
@@ -117,10 +151,11 @@ def _train(model, args):
             pred_img = model(input_img)
             label_img2 = F.interpolate(label_img, scale_factor=0.5, mode='bilinear')
             label_img4 = F.interpolate(label_img, scale_factor=0.25, mode='bilinear')
-            l1 = criterion(pred_img[0], label_img4)
-            l2 = criterion(pred_img[1], label_img2)
-            l3 = criterion(pred_img[2], label_img)
-            loss_content = l1+l2+l3
+            l1_per_image = _per_image_l1(pred_img[0], label_img4)
+            l2_per_image = _per_image_l1(pred_img[1], label_img2)
+            l3_per_image = _per_image_l1(pred_img[2], label_img)
+            loss_content_per_image = l1_per_image + l2_per_image + l3_per_image
+            loss_content = loss_content_per_image.mean()
 
             label_fft1 = torch.fft.fft2(label_img4, dim=(-2,-1))
             label_fft1 = torch.stack((label_fft1.real, label_fft1.imag), -1)
@@ -140,32 +175,46 @@ def _train(model, args):
             pred_fft3 = torch.fft.fft2(pred_img[2], dim=(-2,-1))
             pred_fft3 = torch.stack((pred_fft3.real, pred_fft3.imag), -1)
 
-            f1 = criterion(pred_fft1, label_fft1)
-            f2 = criterion(pred_fft2, label_fft2)
-            f3 = criterion(pred_fft3, label_fft3)
-            loss_fft = f1+f2+f3
+            f1_per_image = _per_image_l1(pred_fft1, label_fft1)
+            f2_per_image = _per_image_l1(pred_fft2, label_fft2)
+            f3_per_image = _per_image_l1(pred_fft3, label_fft3)
+            loss_fft_per_image = f1_per_image + f2_per_image + f3_per_image
+            loss_fft = loss_fft_per_image.mean()
 
             loss = loss_content + 0.1 * loss_fft
+            gate_lambda = _current_gate_lambda(args, epoch_idx)
+            gate_loss = None
+            if gate_lambda > 0 and hasattr(model, 'gate_budget_loss'):
+                restore_loss_per_image = (loss_content_per_image + 0.1 * loss_fft_per_image).detach()
+                easy_weight = _easy_rank_weights(restore_loss_per_image)
+                gate_loss = model.gate_budget_loss(easy_weight)
+                if gate_loss is not None:
+                    loss = loss + gate_lambda * gate_loss
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 0.001)
             optimizer.step()
 
             iter_pixel_adder(loss_content.item())
             iter_fft_adder(loss_fft.item())
+            gate_loss_value = 0.0 if gate_loss is None else gate_loss.item()
+            iter_gate_adder(gate_loss_value)
 
             epoch_pixel_adder(loss_content.item())
             epoch_fft_adder(loss_fft.item())
+            epoch_gate_adder(gate_loss_value)
 
             if (iter_idx + 1) % args.print_freq == 0:
-                print("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f Loss content: %7.4f Loss fft: %7.4f" % (
+                print("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f Loss content: %7.4f Loss fft: %7.4f Gate loss: %.6f Gate lambda: %.6f" % (
                     iter_timer.toc(), epoch_idx, iter_idx + 1, max_iter, scheduler.get_lr()[0], iter_pixel_adder.average(),
-                    iter_fft_adder.average()))
+                    iter_fft_adder.average(), iter_gate_adder.average(), gate_lambda))
                 writer.add_scalar('Pixel Loss', iter_pixel_adder.average(), iter_idx + (epoch_idx-1)* max_iter)
                 writer.add_scalar('FFT Loss', iter_fft_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                writer.add_scalar('Gate Loss', iter_gate_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 
                 iter_timer.tic()
                 iter_pixel_adder.reset()
                 iter_fft_adder.reset()
+                iter_gate_adder.reset()
         overwrite_name = os.path.join(args.model_save_dir, 'model.pkl')
         torch.save({'model': model.state_dict(),
                     'optimizer': optimizer.state_dict(),
@@ -174,10 +223,11 @@ def _train(model, args):
         if epoch_idx % args.save_freq == 0:
             save_name = os.path.join(args.model_save_dir, 'model_%d.pkl' % epoch_idx)
             torch.save({'model': model.state_dict()}, save_name)
-        print("EPOCH: %02d\nElapsed time: %4.2f Epoch Pixel Loss: %7.4f Epoch FFT Loss: %7.4f" % (
-            epoch_idx, epoch_timer.toc(), epoch_pixel_adder.average(), epoch_fft_adder.average()))
+        print("EPOCH: %02d\nElapsed time: %4.2f Epoch Pixel Loss: %7.4f Epoch FFT Loss: %7.4f Epoch Gate Loss: %.6f" % (
+            epoch_idx, epoch_timer.toc(), epoch_pixel_adder.average(), epoch_fft_adder.average(), epoch_gate_adder.average()))
         epoch_fft_adder.reset()
         epoch_pixel_adder.reset()
+        epoch_gate_adder.reset()
         scheduler.step()
         if epoch_idx % args.valid_freq == 0:
             val = _valid(model, args, epoch_idx)

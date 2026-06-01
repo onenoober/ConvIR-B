@@ -48,52 +48,97 @@ class SCM(nn.Module):
 class FAM(nn.Module):
     def __init__(self, channel, mode='original'):
         super(FAM, self).__init__()
-        if mode not in ('original', 'modres', 'modres_bounded', 'modres_gamma_bounded'):
+        if mode not in (
+            'original',
+            'modres',
+            'modres_bounded',
+            'modres_gamma_bounded',
+            'modres_gamma_conf_gated',
+        ):
             raise ValueError(f'Unsupported FAM mode: {mode}')
         self.mode = mode
         self.gamma_max = 0.10
         self.beta_max = 0.05
+        self._last_gate = None
         self.merge = BasicConv(channel*2, channel, kernel_size=3, stride=1, relu=False)
         if self.mode != 'original':
-            out_channel = channel if self.mode == 'modres_gamma_bounded' else channel * 2
+            out_channel = channel if self.mode in (
+                'modres_gamma_bounded',
+                'modres_gamma_conf_gated',
+            ) else channel * 2
             rng_state = torch.get_rng_state()
             self.modulator = nn.Conv2d(channel, out_channel, kernel_size=1, stride=1, padding=0)
             torch.set_rng_state(rng_state)
             nn.init.zeros_(self.modulator.weight)
             nn.init.zeros_(self.modulator.bias)
+        if self.mode == 'modres_gamma_conf_gated':
+            rng_state = torch.get_rng_state()
+            self.gate_head = nn.Linear(channel * 4, 1)
+            torch.set_rng_state(rng_state)
+            nn.init.zeros_(self.gate_head.weight)
+            nn.init.zeros_(self.gate_head.bias)
+
+    def _confidence_gate(self, x2, fused):
+        cond = x2.detach()
+        base = fused.detach()
+        cond_mean = cond.mean(dim=(2, 3))
+        cond_std = cond.std(dim=(2, 3), unbiased=False)
+        base_mean = base.mean(dim=(2, 3))
+        base_std = base.std(dim=(2, 3), unbiased=False)
+        descriptor = torch.cat([cond_mean, cond_std, base_mean, base_std], dim=1)
+        gate = torch.sigmoid(self.gate_head(descriptor)).view(-1, 1, 1, 1)
+        return gate
 
     def _modulation(self, x2, fused):
         if self.mode == 'original':
-            return None, None
+            return None, None, {}
         if self.mode == 'modres_gamma_bounded':
             gamma_raw = self.modulator(x2)
             gamma = self.gamma_max * torch.tanh(gamma_raw)
-            return gamma, None
+            return gamma, None, {}
+        if self.mode == 'modres_gamma_conf_gated':
+            gamma_raw = self.modulator(x2)
+            gamma_base = self.gamma_max * torch.tanh(gamma_raw)
+            gate = self._confidence_gate(x2, fused)
+            gamma = gate * gamma_base
+            return gamma, None, {
+                'gate': gate,
+                'gamma_base': gamma_base,
+            }
 
         gamma_raw, beta_raw = self.modulator(x2).chunk(2, dim=1)
         if self.mode == 'modres':
-            return gamma_raw, beta_raw
+            return gamma_raw, beta_raw, {}
 
         gamma = self.gamma_max * torch.tanh(gamma_raw)
         scale = fused.detach().std(dim=(2, 3), keepdim=True).clamp_min(1e-6)
         beta = self.beta_max * scale * torch.tanh(beta_raw)
-        return gamma, beta
+        return gamma, beta, {}
 
     def forward(self, x1, x2):
         fused = self.merge(torch.cat([x1, x2], dim=1))
+        self._last_gate = None
         if self.mode == 'original':
             return fused
-        gamma, beta = self._modulation(x2, fused)
+        gamma, beta, extra = self._modulation(x2, fused)
+        self._last_gate = extra.get('gate')
         if beta is None:
             return fused * (1 + gamma)
         return fused * (1 + gamma) + beta
+
+    def gate_budget_loss(self, easy_weight):
+        if self._last_gate is None:
+            return None
+        weight = easy_weight.to(device=self._last_gate.device, dtype=self._last_gate.dtype)
+        weight = weight.view(-1, 1, 1, 1)
+        return (weight * self._last_gate).mean()
 
     def modulation_stats(self, x1, x2):
         if self.mode == 'original':
             return None
         with torch.no_grad():
             fused = self.merge(torch.cat([x1, x2], dim=1))
-            gamma, beta = self._modulation(x2, fused)
+            gamma, beta, extra = self._modulation(x2, fused)
             stats = {
                 'beta_present': 0.0 if beta is None else 1.0,
                 'gamma_mean': gamma.mean().item(),
@@ -106,6 +151,26 @@ class FAM(nn.Module):
                 'gamma_abs_gt_0.10': (gamma.abs() > 0.10).float().mean().item(),
                 'gamma_abs_gt_0.09': (gamma.abs() > 0.09).float().mean().item(),
             }
+            gate = extra.get('gate')
+            gamma_base = extra.get('gamma_base')
+            if gate is None:
+                stats.update({
+                    'gate_mean': 0.0,
+                    'gate_std': 0.0,
+                    'gate_min': 0.0,
+                    'gate_max': 0.0,
+                    'gamma_base_abs_mean': gamma.abs().mean().item(),
+                    'effective_gamma_abs_mean': gamma.abs().mean().item(),
+                })
+            else:
+                stats.update({
+                    'gate_mean': gate.mean().item(),
+                    'gate_std': gate.std(unbiased=False).item(),
+                    'gate_min': gate.min().item(),
+                    'gate_max': gate.max().item(),
+                    'gamma_base_abs_mean': gamma_base.abs().mean().item(),
+                    'effective_gamma_abs_mean': gamma.abs().mean().item(),
+                })
             if beta is None:
                 stats.update({
                     'beta_mean': 0.0,
@@ -139,6 +204,7 @@ class ConvIR(nn.Module):
             'fam2_modres',
             'fam2_modres_bounded',
             'fam2_modres_gamma_bounded',
+            'fam2_modres_gamma_conf_gated',
         ):
             raise ValueError(f'Unsupported ConvIR FAM mode: {fam_mode}')
         
@@ -188,6 +254,7 @@ class ConvIR(nn.Module):
             'fam2_modres': 'modres',
             'fam2_modres_bounded': 'modres_bounded',
             'fam2_modres_gamma_bounded': 'modres_gamma_bounded',
+            'fam2_modres_gamma_conf_gated': 'modres_gamma_conf_gated',
         }
         fam1_mode = 'original' if fam_mode in fam2_modes else fam_mode
         fam2_mode = fam2_modes.get(fam_mode, fam_mode)
@@ -258,6 +325,16 @@ class ConvIR(nn.Module):
         if fam2_stats is not None:
             stats['FAM2'] = fam2_stats
         return stats
+
+    def gate_budget_loss(self, easy_weight):
+        losses = []
+        for fam in (self.FAM1, self.FAM2):
+            loss = fam.gate_budget_loss(easy_weight)
+            if loss is not None:
+                losses.append(loss)
+        if not losses:
+            return None
+        return sum(losses) / len(losses)
 
 
 def build_net(version, data, fam_mode='original'):

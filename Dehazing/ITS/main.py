@@ -53,6 +53,7 @@ if __name__ == '__main__':
             'fam2_modres',
             'fam2_modres_bounded',
             'fam2_modres_gamma_bounded',
+            'fam2_modres_gamma_conf_gated',
         ],
         type=str,
     )
@@ -73,6 +74,9 @@ if __name__ == '__main__':
     parser.add_argument('--valid_freq', type=int, default=10)
     parser.add_argument('--mod_stats_freq', type=int, default=0)
     parser.add_argument('--mod_stats_batches', type=int, default=64)
+    parser.add_argument('--gate_lambda', type=float, default=0.0)
+    parser.add_argument('--gate_warmup_epochs', type=int, default=5)
+    parser.add_argument('--gate_ramp_epochs', type=int, default=5)
     parser.add_argument('--resume', type=str, default='')
 
 

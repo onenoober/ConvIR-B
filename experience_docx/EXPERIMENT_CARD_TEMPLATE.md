@@ -33,14 +33,14 @@ Status: <draft | preflight | authorized | running | stopped | completed>
 
 ## ConvIR-B Baseline Defaults
 
-Use this block for this repository. Fill unknown local values after downloading
-the checkpoint and before authorizing a route. Do not invent checkpoint hashes,
-sample counts, latency, or memory values.
+Use this block for this repository. Fill unknown execution-environment values
+after downloading the checkpoint and before authorizing a route. Do not invent
+checkpoint hashes, sample counts, latency, or memory values.
 
 | Field | Default or required value |
 | --- | --- |
 | Target baseline | ConvIR-B from official/repository pretrained checkpoint |
-| Baseline checkpoint local path | `<CKPT_ROOT>/desnowing/<CSD_CONVIR_B_CHECKPOINT>.pkl` |
+| Baseline checkpoint cloud path | `<CKPT_ROOT>/desnowing/<CSD_CONVIR_B_CHECKPOINT>.pkl` |
 | Baseline checkpoint hash | `sha256:<fill after download>` |
 | Checkpoint source | root `README.md` pretrained model link |
 | Official ConvIR-B CSD result | 39.10 PSNR, 0.99 SSIM |
@@ -56,8 +56,8 @@ sample counts, latency, or memory values.
 | Secondary metric | SSIM, per-image PSNR delta, latency, peak GPU memory |
 | Minimum meaningful final gain | `+0.10 dB` PSNR with SSIM delta >= `-0.001` |
 | Maximum FLOPs increase | `+5%` over ConvIR-B |
-| Maximum average latency increase | `+10%` over local ConvIR-B baseline |
-| Maximum peak memory increase | `+10%` over local ConvIR-B baseline and must fit current GPU |
+| Maximum average latency increase | `+10%` over matched ConvIR-B baseline |
+| Maximum peak memory increase | `+10%` over matched ConvIR-B baseline and must fit current GPU |
 | Strong-case regression threshold | <= 1% final; <= 2% at 20-epoch gate |
 | Worst-case regression threshold | no unexplained image with PSNR delta <= `-0.20 dB` |
 | Failure default | failed gate becomes diagnostic only; next step must target the failed mechanism, preservation, or cost cause |
