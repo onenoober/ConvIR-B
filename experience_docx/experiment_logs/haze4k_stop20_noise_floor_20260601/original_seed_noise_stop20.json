@@ -1,0 +1,327 @@
+{
+  "mode": "original",
+  "reference_seed": "3407",
+  "seeds": [
+    "3407",
+    "2027",
+    "8675"
+  ],
+  "common_count": 1000,
+  "runs": {
+    "3407": {
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/ITS/results/ConvIR-Haze4K-original-stop20-seed3407-20260531/Training-Results/Best.pkl",
+      "count": 1000,
+      "mean_psnr": 24.642431646347045,
+      "mean_ssim": 0.9478025943636894,
+      "avg_time_sec_sync": 0.02283606743812561,
+      "median_time_sec_sync": 0.024829387664794922,
+      "peak_cuda_mem_mib": 570.69287109375,
+      "seed": "3407"
+    },
+    "2027": {
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/ITS/results/ConvIR-Haze4K-original-stop20-seed2027-noise-floor-20260601/Training-Results/Best.pkl",
+      "count": 1000,
+      "mean_psnr": 24.98436266422272,
+      "mean_ssim": 0.9502863533496857,
+      "avg_time_sec_sync": 0.022621634721755983,
+      "median_time_sec_sync": 0.02511274814605713,
+      "peak_cuda_mem_mib": 570.61474609375,
+      "seed": "2027"
+    },
+    "8675": {
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/ITS/results/ConvIR-Haze4K-original-stop20-seed8675-noise-floor-20260601/Training-Results/Best.pkl",
+      "count": 1000,
+      "mean_psnr": 24.57195306110382,
+      "mean_ssim": 0.947871807217598,
+      "avg_time_sec_sync": 0.022413792610168456,
+      "median_time_sec_sync": 0.02393925189971924,
+      "peak_cuda_mem_mib": 570.61474609375,
+      "seed": "8675"
+    }
+  },
+  "overall_noise": {
+    "mean_psnr_across_seeds": {
+      "count": 3,
+      "mean": 24.73291579055786,
+      "median": 24.642431646347045,
+      "sample_std": 0.22059228329963118,
+      "min": 24.57195306110382,
+      "max": 24.98436266422272,
+      "range": 0.41240960311889907,
+      "p5": 24.579000919628143,
+      "p95": 24.95016956243515
+    },
+    "mean_ssim_across_seeds": {
+      "count": 3,
+      "mean": 0.948653584976991,
+      "median": 0.947871807217598,
+      "sample_std": 0.0014144423013826043,
+      "min": 0.9478025943636894,
+      "max": 0.9502863533496857,
+      "range": 0.002483758985996287,
+      "p5": 0.9478095156490802,
+      "p95": 0.9500448987364769
+    },
+    "avg_time_sec_across_seeds": {
+      "count": 3,
+      "mean": 0.022623831590016682,
+      "median": 0.022621634721755983,
+      "sample_std": 0.0002111459856454232,
+      "min": 0.022413792610168456,
+      "max": 0.02283606743812561,
+      "range": 0.0004222748279571545,
+      "p5": 0.02243457682132721,
+      "p95": 0.022814624166488648
+    }
+  },
+  "bucket_counts": {
+    "hard_bottom_25pct": 250,
+    "medium_middle_50pct": 500,
+    "easy_top_25pct": 250
+  },
+  "per_seed_buckets": {
+    "3407": {
+      "hard_bottom_25pct": {
+        "count": 250,
+        "mean_psnr": 19.379792266845705,
+        "median_psnr": 19.966118812561035,
+        "mean_ssim": 0.9185492000579834,
+        "median_ssim": 0.929250180721283
+      },
+      "medium_middle_50pct": {
+        "count": 500,
+        "mean_psnr": 24.68963822555542,
+        "median_psnr": 24.690540313720703,
+        "mean_ssim": 0.9519424623250962,
+        "median_ssim": 0.9600707590579987
+      },
+      "easy_top_25pct": {
+        "count": 250,
+        "mean_psnr": 29.81065786743164,
+        "median_psnr": 29.150114059448242,
+        "mean_ssim": 0.9687762527465821,
+        "median_ssim": 0.976537674665451
+      }
+    },
+    "2027": {
+      "hard_bottom_25pct": {
+        "count": 250,
+        "mean_psnr": 20.285986812591553,
+        "median_psnr": 20.467191696166992,
+        "mean_ssim": 0.9245535583496094,
+        "median_ssim": 0.9344714879989624
+      },
+      "medium_middle_50pct": {
+        "count": 500,
+        "mean_psnr": 25.03321746444702,
+        "median_psnr": 25.00291919708252,
+        "mean_ssim": 0.9539236475229264,
+        "median_ssim": 0.961831659078598
+      },
+      "easy_top_25pct": {
+        "count": 250,
+        "mean_psnr": 29.585028915405275,
+        "median_psnr": 29.525134086608887,
+        "mean_ssim": 0.9687445600032807,
+        "median_ssim": 0.9756248295307159
+      }
+    },
+    "8675": {
+      "hard_bottom_25pct": {
+        "count": 250,
+        "mean_psnr": 19.906429851531982,
+        "median_psnr": 20.155221939086914,
+        "mean_ssim": 0.9233502080440521,
+        "median_ssim": 0.937095433473587
+      },
+      "medium_middle_50pct": {
+        "count": 500,
+        "mean_psnr": 24.604822692871092,
+        "median_psnr": 24.46948528289795,
+        "mean_ssim": 0.9509133336544037,
+        "median_ssim": 0.959671139717102
+      },
+      "easy_top_25pct": {
+        "count": 250,
+        "mean_psnr": 29.171737007141115,
+        "median_psnr": 28.875548362731934,
+        "mean_ssim": 0.9663103535175324,
+        "median_ssim": 0.9751555323600769
+      }
+    }
+  },
+  "bucket_noise": {
+    "hard_bottom_25pct": {
+      "mean_psnr_across_seeds": {
+        "count": 3,
+        "mean": 19.857402976989746,
+        "median": 19.906429851531982,
+        "sample_std": 0.4550822612511016,
+        "min": 19.379792266845705,
+        "max": 20.285986812591553,
+        "range": 0.9061945457458478,
+        "p5": 19.432456025314334,
+        "p95": 20.248031116485596
+      },
+      "median_psnr_across_seeds": {
+        "count": 3,
+        "mean": 20.19617748260498,
+        "median": 20.155221939086914,
+        "sample_std": 0.25303463415102373,
+        "min": 19.966118812561035,
+        "max": 20.467191696166992,
+        "range": 0.501072883605957,
+        "p5": 19.98502912521362,
+        "p95": 20.435994720458986
+      },
+      "mean_ssim_across_seeds": {
+        "count": 3,
+        "mean": 0.9221509888172149,
+        "median": 0.9233502080440521,
+        "sample_std": 0.003176739631928706,
+        "min": 0.9185492000579834,
+        "max": 0.9245535583496094,
+        "range": 0.006004358291626044,
+        "p5": 0.9190293008565902,
+        "p95": 0.9244332233190536
+      }
+    },
+    "medium_middle_50pct": {
+      "mean_psnr_across_seeds": {
+        "count": 3,
+        "mean": 24.775892794291178,
+        "median": 24.68963822555542,
+        "sample_std": 0.22684886609644186,
+        "min": 24.604822692871092,
+        "max": 25.03321746444702,
+        "range": 0.42839477157592754,
+        "p5": 24.613304246139524,
+        "p95": 24.99885954055786
+      },
+      "median_psnr_across_seeds": {
+        "count": 3,
+        "mean": 24.72098159790039,
+        "median": 24.690540313720703,
+        "sample_std": 0.2680166767898021,
+        "min": 24.46948528289795,
+        "max": 25.00291919708252,
+        "range": 0.5334339141845703,
+        "p5": 24.491590785980225,
+        "p95": 24.971681308746337
+      },
+      "mean_ssim_across_seeds": {
+        "count": 3,
+        "mean": 0.9522598145008088,
+        "median": 0.9519424623250962,
+        "sample_std": 0.0015300430383904657,
+        "min": 0.9509133336544037,
+        "max": 0.9539236475229264,
+        "range": 0.003010313868522685,
+        "p5": 0.9510162465214729,
+        "p95": 0.9537255290031433
+      }
+    },
+    "easy_top_25pct": {
+      "mean_psnr_across_seeds": {
+        "count": 3,
+        "mean": 29.522474596659343,
+        "median": 29.585028915405275,
+        "sample_std": 0.3240212161632661,
+        "min": 29.171737007141115,
+        "max": 29.81065786743164,
+        "range": 0.6389208602905256,
+        "p5": 29.21306619796753,
+        "p95": 29.788094972229004
+      },
+      "median_psnr_across_seeds": {
+        "count": 3,
+        "mean": 29.18359883626302,
+        "median": 29.150114059448242,
+        "sample_std": 0.32608484459560205,
+        "min": 28.875548362731934,
+        "max": 29.525134086608887,
+        "range": 0.6495857238769531,
+        "p5": 28.903004932403565,
+        "p95": 29.487632083892823
+      },
+      "mean_ssim_across_seeds": {
+        "count": 3,
+        "mean": 0.9679437220891317,
+        "median": 0.9687445600032807,
+        "sample_std": 0.0014146274334646777,
+        "min": 0.9663103535175324,
+        "max": 0.9687762527465821,
+        "range": 0.0024658992290497173,
+        "p5": 0.9665537741661072,
+        "p95": 0.9687730834722519
+      }
+    }
+  },
+  "per_image_noise": {
+    "psnr_sample_std": {
+      "count": 1000,
+      "mean": 1.1047190306905692,
+      "median": 0.9609931810348746,
+      "sample_std": 0.7198434781277916,
+      "min": 0.01447435982081206,
+      "max": 5.322686884406068,
+      "range": 5.308212524585256,
+      "p5": 0.25794870084535193,
+      "p95": 2.4438060048743906
+    },
+    "ssim_sample_std": {
+      "count": 1000,
+      "mean": 0.007950967369052086,
+      "median": 0.0054942353083525615,
+      "sample_std": 0.0079347949136061,
+      "min": 3.919008793484914e-05,
+      "max": 0.07967183245460605,
+      "range": 0.0796326423666712,
+      "p5": 0.0009541534683243111,
+      "p95": 0.023968516666748225
+    },
+    "psnr_sample_std_by_bucket": {
+      "hard_bottom_25pct": {
+        "count": 250,
+        "mean": 1.0837508984529685,
+        "median": 0.8808706841058078,
+        "sample_std": 0.7583802290985422,
+        "min": 0.01447435982081206,
+        "max": 4.651499100590191,
+        "range": 4.6370247407693785,
+        "p5": 0.26543256734922244,
+        "p95": 2.533017827365415
+      },
+      "medium_middle_50pct": {
+        "count": 500,
+        "mean": 1.1036719363489387,
+        "median": 1.0059645976804474,
+        "sample_std": 0.6647129298289415,
+        "min": 0.01994338874034597,
+        "max": 4.247610468378711,
+        "range": 4.227667079638365,
+        "p5": 0.2538566184754555,
+        "p95": 2.4094120932469263
+      },
+      "easy_top_25pct": {
+        "count": 250,
+        "mean": 1.1277813516114314,
+        "median": 0.9555102651064675,
+        "sample_std": 0.7857241005934109,
+        "min": 0.08516305370976385,
+        "max": 5.322686884406068,
+        "range": 5.237523830696304,
+        "p5": 0.2789546867254083,
+        "p95": 2.523245806832895
+      }
+    }
+  },
+  "interpretation_thresholds": {
+    "stable_stop20": "overall mean PSNR sample_std <= 0.10 dB",
+    "underpowered_stop20": "overall mean PSNR sample_std >= 0.30 dB or range >= 0.60 dB",
+    "candidate_claim_rule": "single-seed candidate deltas smaller than the measured noise floor should stay diagnostic-only"
+  }
+}

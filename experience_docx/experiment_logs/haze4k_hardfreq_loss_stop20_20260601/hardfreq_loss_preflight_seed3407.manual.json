@@ -1,0 +1,50 @@
+{
+  "mode": "original",
+  "loss_mode": "hard_fft_boost",
+  "seed": 3407,
+  "batch_size": 8,
+  "input_shape": [
+    8,
+    3,
+    256,
+    256
+  ],
+  "output_shapes": [
+    [
+      8,
+      3,
+      64,
+      64
+    ],
+    [
+      8,
+      3,
+      128,
+      128
+    ],
+    [
+      8,
+      3,
+      256,
+      256
+    ]
+  ],
+  "loss_content": 0.5208044052124023,
+  "loss_fft": 10.306205749511719,
+  "hard_fft_loss": 5.394141674041748,
+  "hard_fft_lambda": 0.02,
+  "loss_total": 1.659307837486267,
+  "loss_finite": true,
+  "hard_weight_mean": 0.5,
+  "hard_weight_min": 0.0,
+  "hard_weight_max": 1.0,
+  "restore_loss_min": 0.9895273447036743,
+  "restore_loss_max": 2.058755874633789,
+  "grad": {
+    "finite": true,
+    "grad_param_count": 8630665,
+    "grad_l2_norm": 5.34231005375342,
+    "grad_max_abs": 0.331952303647995
+  },
+  "peak_cuda_mem_mib": 9288.8486328125
+}
