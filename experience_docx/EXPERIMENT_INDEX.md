@@ -14,6 +14,11 @@ Use this index first when asking what happened, which route is still relevant,
 and where the evidence lives. Use the listed source branch or commit only when
 you need the exact runnable code snapshot.
 
+For future route branches, follow `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`: sync
+cards, text logs, result tables, and AI-readable packages back to `main`, but
+keep diagnostic experiment code on its route branch unless a separate promotion
+decision says otherwise.
+
 ## Branch Cleanup
 
 Remote branch cleanup was done before this evidence sync. The deleted refs were

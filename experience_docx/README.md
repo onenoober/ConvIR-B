@@ -35,6 +35,10 @@ promotion gates.
 For consolidated Haze4K route outcomes and GitHub-readable evidence locations,
 start with `EXPERIMENT_INDEX.md`.
 
+For future `codex/*` experiment branches, follow
+`BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` so evidence returns to `main` without
+merging diagnostic experiment code.
+
 ## Files
 
 | File | Use |
@@ -45,17 +49,20 @@ start with `EXPERIMENT_INDEX.md`.
 | `MODEL_EXPERIMENT_START_CHECKLIST.md` | Checklist for starting and governing a model experiment. |
 | `CONVIR_B_EXECUTION_GUIDE.md` | Project-specific baseline-first and fixed-budget guide for ConvIR-B. |
 | `EXPERIMENT_INDEX.md` | Consolidated Haze4K route outcomes, retained branches, and text evidence roots. |
+| `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` | Required evidence-only sync workflow for future GitHub experiment branches. |
 
 ## Use Sequence
 
 1. read `EXPERIMENT_INDEX.md` if you need the current Haze4K route state;
-2. read `CONVIR_B_EXECUTION_GUIDE.md` for the current repository;
-3. download the official pretrained checkpoint for each target task;
-4. run evaluation first and record the local ConvIR-B baseline;
-5. explain any reproduction gap against the root `README.md` result table;
-6. copy `EXPERIMENT_CARD_TEMPLATE.md` only after the baseline is trustworthy;
-7. fill the card with fixed-budget gates, mechanism metrics, and stop rules;
-8. treat every route as unproven until it passes its own written gates.
+2. read `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` before syncing any route branch
+   back to GitHub `main`;
+3. read `CONVIR_B_EXECUTION_GUIDE.md` for the current repository;
+4. download the official pretrained checkpoint for each target task;
+5. run evaluation first and record the local ConvIR-B baseline;
+6. explain any reproduction gap against the root `README.md` result table;
+7. copy `EXPERIMENT_CARD_TEMPLATE.md` only after the baseline is trustworthy;
+8. fill the card with fixed-budget gates, mechanism metrics, and stop rules;
+9. treat every route as unproven until it passes its own written gates.
 
 ## Current ConvIR-B Priority
 
