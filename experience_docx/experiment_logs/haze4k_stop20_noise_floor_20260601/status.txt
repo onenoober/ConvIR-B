@@ -1,0 +1,10 @@
+start 2026-06-01T13:16:28+08:00
+seeds 3407 2027 8675
+reuse complete original seed 3407 checkpoint /root/autodl-tmp/workspace/ConvIR-B/Dehazing/ITS/results/ConvIR-Haze4K-original-stop20-seed3407-20260531/Training-Results/Best.pkl 2026-06-01T13:16:28+08:00
+archive incomplete original seed 2027 run to /root/autodl-tmp/workspace/ConvIR-B/Dehazing/ITS/results/ConvIR-Haze4K-original-stop20-seed2027-noise-floor-20260601-interrupted-20260601-131628 2026-06-01T13:16:28+08:00
+running original seed 2027 2026-06-01T13:16:28+08:00
+done original seed 2027 rc=0 2026-06-01T13:50:00+08:00
+running original seed 8675 2026-06-01T13:50:00+08:00
+done original seed 8675 rc=0 2026-06-01T14:23:34+08:00
+running original seed-noise eval 2026-06-01T14:23:34+08:00
+complete 2026-06-01T14:25:40+08:00
