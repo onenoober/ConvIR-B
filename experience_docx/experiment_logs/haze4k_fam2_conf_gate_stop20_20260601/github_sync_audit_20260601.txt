@@ -1,0 +1,33 @@
+# GitHub Sync Audit: HAZE4K FAM2 Confidence-Gated Gamma
+
+Date: 2026-06-01
+Branch: codex/haze4k-fam2-confidence-gate
+Remote: github git@github.com:onenoober/ConvIR-B.git
+
+Scope:
+- code changes for fam2_modres_gamma_conf_gated
+- route card and decision summary
+- run script
+- preflight JSON
+- proxy separability CSV/JSON
+- Best/Last comparison JSON/CSV
+- modulation bucket JSON/CSV
+- training/status text logs
+- governance rules for cloud execution and completion GitHub sync
+
+Verification commands:
+- git ls-remote --heads github codex/haze4k-fam2-confidence-gate
+- git ls-tree -r --name-only github/codex/haze4k-fam2-confidence-gate -- experience_docx/experiment_logs/haze4k_fam2_conf_gate_stop20_20260601
+- scan the remote log tree for checkpoint, image, array, archive, and document extensions
+- fetch GitHub raw URLs for the route card, status log, and governance protocol
+
+Result:
+- remote branch exists
+- experiment log tree is present on GitHub
+- forbidden remote artifact extensions: 0
+- route card raw URL returned HTTP 200
+- status log raw URL returned HTTP 200
+- governance protocol raw URL returned HTTP 200
+
+Raw experiment artifacts, datasets, checkpoints, images, arrays, and model
+weights remain external or ignored.
