@@ -1,0 +1,54 @@
+{
+  "stage": "B1",
+  "compare_json": "/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/experience_docx/experiment_logs/haze4k_pfd_mainline_20260602/scout_eval_compare_seed3407_B1_vs_A1_best.json",
+  "bucket_json": "/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/experience_docx/experiment_logs/haze4k_pfd_mainline_20260602/scout_eval_bucket_analysis_seed3407_B1_vs_A1_best.json",
+  "metrics": {
+    "global_mean_delta_psnr": -0.0884686222076416,
+    "hard_bottom25_mean_delta_psnr": 0.38380596923828125,
+    "easy_top25_mean_delta_psnr": -0.334507080078125,
+    "strong_reference_regressions_delta_le_-0.05": 137,
+    "severe_all_image_regressions_delta_le_-0.20": 434
+  },
+  "checks": [
+    {
+      "name": "global_psnr_delta_vs_a1",
+      "value": -0.0884686222076416,
+      "op": ">=",
+      "threshold": -0.05,
+      "pass": false
+    },
+    {
+      "name": "easy_top25_mean_delta",
+      "value": -0.334507080078125,
+      "op": ">=",
+      "threshold": -0.05,
+      "pass": false
+    },
+    {
+      "name": "strong_reference_regressions",
+      "value": 137,
+      "op": "<=",
+      "threshold": 50,
+      "pass": false
+    },
+    {
+      "name": "severe_all_image_regressions",
+      "value": 434,
+      "op": "<",
+      "threshold": 444,
+      "pass": true
+    }
+  ],
+  "automatic_pass": false,
+  "manual_visual_artifact_check": "required_from_fixed_diagnostic_pack",
+  "diagnostic_pack": {
+    "required": true,
+    "dir": "/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/experience_docx/experiment_logs/haze4k_pfd_mainline_20260602/diagnostic_seed3407_B1_vs_A1_best",
+    "status": "complete_pending_human_visual_notes",
+    "report_blocking": true,
+    "summary": "/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/experience_docx/experiment_logs/haze4k_pfd_mainline_20260602/diagnostic_seed3407_B1_vs_A1_best/diagnostic_summary.json",
+    "panel": "/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/experience_docx/experiment_logs/haze4k_pfd_mainline_20260602/diagnostic_seed3407_B1_vs_A1_best/visual_panel_20.png",
+    "visual_notes_template": "/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/experience_docx/experiment_logs/haze4k_pfd_mainline_20260602/diagnostic_seed3407_B1_vs_A1_best/visual_notes_template.md"
+  },
+  "candidate_report_status": "blocked_until_fixed_diagnostic_pack_and_visual_notes_are_reviewed"
+}

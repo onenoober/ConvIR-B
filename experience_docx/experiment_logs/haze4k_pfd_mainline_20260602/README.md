@@ -20,7 +20,8 @@ Status: completed gated stop20 scout; B1 failed preservation gate.
 | `scout_eval_bucket_analysis_seed3407_B1_vs_A1_best.json` | Hard/easy bucket summary for B1. |
 | `scout_eval_per_image_seed3407_B1_vs_A1_best.csv` | Per-image PSNR/SSIM deltas for B1. |
 | `gate_B1_stop20.json` | Automatic B1 gate result. |
-| `diagnostic_seed3407_B1_vs_A1_best/` | Fixed diagnostic sidecar output directory when backfilled. |
+| `gate_B1_stop20_with_diagnostic.json` | B1 gate result after attaching the completed diagnostic sidecar. |
+| `diagnostic_seed3407_B1_vs_A1_best/` | Text-only fixed diagnostic sidecar evidence retained for Git sync. |
 | `run_pfd_mainline_stop20.sh` | Gated stop20 run script. |
 | `status.txt` | Chronological run status stream. |
 | `tmux.out` | Tmux command transcript. |
@@ -37,10 +38,32 @@ samples but failed the overall preservation gate:
 
 Decision: keep as diagnostic only; stop before B2/B3.
 
-## Required Backfill
+## Diagnostic Backfill
 
-The A1/B1 training and evaluation ran with `save_image=False`. Before this route
-is used as a complete closure package, backfill the fixed diagnostic sidecar for
-`seed3407_B1_vs_A1_best` and record visual notes. The updated run script starts
-that pack in the background after future `compare_and_gate` evaluations, so it
-does not interrupt training.
+The A1/B1 training and evaluation ran with `save_image=False`, so the fixed
+diagnostic sidecar was backfilled directly from checkpoints, per-image CSV, and
+bucket JSON on `autodl-dehaze3`.
+
+Retained text evidence:
+
+- `diagnostic_seed3407_B1_vs_A1_best/diagnostic_summary.json`
+- `diagnostic_seed3407_B1_vs_A1_best/sample_manifest.csv`
+- `diagnostic_seed3407_B1_vs_A1_best/output_safety_stats.csv`
+- `diagnostic_seed3407_B1_vs_A1_best/pfd_branch_stats.csv`
+- `diagnostic_seed3407_B1_vs_A1_best/pfd_branch_stats_by_category.json`
+- `diagnostic_seed3407_B1_vs_A1_best/visual_notes_filled.md`
+- `diagnostic_seed3407_B1_vs_A1_best/direct_sidecar_status_20260602.txt`
+
+Raw sample PNG files and `visual_panel_20.png` are artifact outputs only and are
+not part of the GitHub text-evidence sync.
+
+## Diagnostic Conclusion
+
+The sidecar confirms that B1 failure is not metric-only. Catastrophic rows have
+visible brightness/color/range failures, and output safety stats show large
+candidate shifts in luma, RGB mean, and out-of-range ratios.
+
+RHFD activity is low in absolute magnitude but not selective enough across hard
+gain, easy regression, preserved, and catastrophic groups. B1 acts like a broad
+feature residual adapter rather than a preservation-aware hard-case
+intervention. Do not launch B2/B3 from this B1 as-is.

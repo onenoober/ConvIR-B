@@ -1,0 +1,33 @@
+status: completed
+date: 2026-06-02
+server: autodl-dehaze3
+code_source: isolated sidecar code copied from codex/haze4k-pfd-mainline at bdf43de
+code_root: /root/autodl-tmp/workspace/ConvIR-B-pfd-sidecar-code-bdf43de
+experiment_root: /root/autodl-tmp/workspace/ConvIR-B-pfd-mainline
+data_dir: /root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+python: /root/miniconda3/envs/convir-cu128/bin/python
+tag: seed3407_B1_vs_A1_best
+device: cpu
+sidecar_pid: 57877
+gate_watcher_pid: 58204
+sidecar_start: 2026-06-02T12:07:00+08:00
+sidecar_done: 2026-06-02T12:21:08+08:00
+gate_done: 2026-06-02T12:21:08+08:00
+gate_rc: 2
+selected_samples: 57
+missing_selected_samples: 0
+sample_png_count_remote: 741
+
+command_summary:
+  build_haze4k_diagnostic_pack.py was run directly from checkpoints, per-image CSV, and bucket JSON.
+  The full gated training script was not re-run.
+  gate_haze4k_pfd_stop20.py was run after sidecar completion with the diagnostic_dir attached.
+  gate rc=2 is expected because B1 fails the preservation gate.
+
+artifact_policy:
+  Retain text evidence in Git: diagnostic_summary.json, sample_manifest.csv,
+  output_safety_stats.csv, pfd_branch_stats.csv,
+  pfd_branch_stats_by_category.json, visual_notes_filled.md,
+  direct_sidecar_status_20260602.txt, and gate_B1_stop20_with_diagnostic.json.
+  Do not retain samples/*.png or visual_panel_20.png in Git; those remain raw
+  artifact outputs on AutoDL or local temporary review copies.

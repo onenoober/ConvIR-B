@@ -6,3 +6,6 @@ train_start ConvIR-Haze4K-PFD-B1-rhfd-stop20-seed3407-20260602 2026-06-02T01:52:
 train_done ConvIR-Haze4K-PFD-B1-rhfd-stop20-seed3407-20260602 rc=0 2026-06-02T02:25:39+08:00
 eval_start B1 2026-06-02T02:25:39+08:00
 gate_fail_stop B1 2026-06-02T02:28:20+08:00
+diagnostic_sidecar_start B1 tag=seed3407_B1_vs_A1_best server=autodl-dehaze3 device=cpu pid=57877 2026-06-02T12:07:00+08:00
+diagnostic_sidecar_done B1 tag=seed3407_B1_vs_A1_best selected=57 sample_png_count=741 2026-06-02T12:21:08+08:00
+gate_with_diagnostic_done B1 rc=2 output=gate_B1_stop20_with_diagnostic.json 2026-06-02T12:21:08+08:00

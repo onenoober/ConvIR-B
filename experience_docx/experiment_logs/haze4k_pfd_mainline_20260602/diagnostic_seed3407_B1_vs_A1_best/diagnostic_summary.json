@@ -1,0 +1,36 @@
+{
+  "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+  "per_image_csv": "/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/experience_docx/experiment_logs/haze4k_pfd_mainline_20260602/scout_eval_per_image_seed3407_B1_vs_A1_best.csv",
+  "bucket_json": "/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/experience_docx/experiment_logs/haze4k_pfd_mainline_20260602/scout_eval_bucket_analysis_seed3407_B1_vs_A1_best.json",
+  "bucket_json_candidate": "b1",
+  "original": {
+    "name": "a1",
+    "arch": "convir",
+    "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/Dehazing/ITS/results/ConvIR-Haze4K-A1-init-official-stop20-seed3407-20260602/Training-Results/Best.pkl"
+  },
+  "candidate": {
+    "name": "b1",
+    "arch": "pfd",
+    "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/Dehazing/ITS/results/ConvIR-Haze4K-PFD-B1-rhfd-stop20-seed3407-20260602/Training-Results/Best.pkl",
+    "pfd_flags": {
+      "rhfd": 1,
+      "hscm": 0,
+      "pffb": 0,
+      "pffb_high": 0,
+      "teacher": 0
+    }
+  },
+  "selected_count": 57,
+  "missing_selected_names": [],
+  "panel_limit": 20,
+  "category_limit": 10,
+  "max_samples": 70,
+  "files": {
+    "visual_panel": "visual_panel_20.png",
+    "sample_manifest": "sample_manifest.csv",
+    "output_safety_stats": "output_safety_stats.csv",
+    "pfd_branch_stats": "pfd_branch_stats.csv",
+    "pfd_branch_stats_by_category": "pfd_branch_stats_by_category.json",
+    "visual_notes_template": "visual_notes_template.md"
+  }
+}
