@@ -1,0 +1,4 @@
+start root=/root/autodl-tmp/workspace/ConvIR-B-apdr-convir-v0-2rc-conservative-budget tag=apdr_v0_2rc_budget_seed3407 2026-06-02T23:42:29+08:00
+arch_preflight_pass 2026-06-02T23:42:34+08:00
+budget_preflight_start global_epochs=5 spatial_epochs=3 2026-06-02T23:42:34+08:00
+budget_gate_fail_stop apdr_v0_2rc_budget_seed3407 2026-06-03T00:00:00+08:00
