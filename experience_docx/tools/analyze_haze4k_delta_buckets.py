@@ -38,6 +38,10 @@ def correlation(xs, ys):
 def summarize(rows):
     deltas = [row["delta_psnr"] for row in rows]
     ssim_deltas = [row["delta_ssim"] for row in rows]
+    top_gain = max(rows, key=lambda row: row["delta_psnr"])
+    deltas_excluding_top_gain = [
+        row["delta_psnr"] for row in rows if row is not top_gain
+    ]
     return {
         "count": len(rows),
         "mean_delta_psnr": statistics.mean(deltas),
@@ -55,6 +59,11 @@ def summarize(rows):
         "median_delta_ssim": statistics.median(ssim_deltas),
         "worst_10_mean_delta_psnr": statistics.mean(sorted(deltas)[:10]),
         "best_10_mean_delta_psnr": statistics.mean(sorted(deltas)[-10:]),
+        "top1_gain_name": top_gain["name"],
+        "top1_gain_delta_psnr": top_gain["delta_psnr"],
+        "mean_delta_psnr_excluding_top1_gain": statistics.mean(deltas_excluding_top_gain)
+        if deltas_excluding_top_gain
+        else None,
     }
 
 

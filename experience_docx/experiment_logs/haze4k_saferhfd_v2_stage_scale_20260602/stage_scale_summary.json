@@ -1,0 +1,1229 @@
+{
+  "route": "SafeRHFD-v2 stage-wise calibrated B1 RHFD surgery",
+  "thresholds": {
+    "mean_psnr_delta_vs_a0_min": 0.005,
+    "mean_ssim_delta_min": 0.0,
+    "hard_bottom_25pct_delta_min": 0.02,
+    "easy_top_25pct_delta_min": 0.0,
+    "severe_regression_delta_le_-0.20_max": 0,
+    "strong_reference_regression_delta_le_-0.05_max": 0,
+    "global_regression_delta_le_-0.05_max": 10,
+    "hard_median_delta_min": -0.001,
+    "hard_positive_ratio_min": 0.45,
+    "mean_delta_excluding_top1_gain_min": 0.0,
+    "hard_delta_excluding_top1_hard_gain_min": 0.0
+  },
+  "candidate_count": 11,
+  "strict_passing": [],
+  "recommended_candidate": null,
+  "best_failed_candidate": "saferhfd_v2_rhfd2_0.50_rhfd1_0.70_vs_a0",
+  "recommendation_rule": "Prefer strict gate pass; then fewer strong/global regressions; then stronger top-1-excluded mean and hard gains. If no candidate passes the strict gate, do not recommend promotion.",
+  "candidates": [
+    {
+      "tag": "saferhfd_v2_rhfd2_0.50_rhfd1_0.70_vs_a0",
+      "compare_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_compare_saferhfd_v2_rhfd2_0.50_rhfd1_0.70_vs_a0.json",
+      "bucket_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_bucket_analysis_saferhfd_v2_rhfd2_0.50_rhfd1_0.70_vs_a0.json",
+      "per_image_csv": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_per_image_saferhfd_v2_rhfd2_0.50_rhfd1_0.70_vs_a0.csv",
+      "rhfd2_scale": "0.50",
+      "rhfd1_scale": "0.70",
+      "mean_psnr_delta": 0.007790243148803711,
+      "mean_ssim_delta": 1.0677039623260498e-05,
+      "hard_bottom_25pct_delta": 0.0222833251953125,
+      "easy_top_25pct_delta": 0.006925048828125,
+      "severe_regression_delta_le_-0.20": 1,
+      "strong_reference_regression_delta_le_-0.05": 0,
+      "global_regression_delta_le_-0.05": 4,
+      "hard_median_delta": -0.0013570785522460938,
+      "hard_positive_ratio": 0.44,
+      "mean_delta_excluding_top1_gain": 0.0018121473066083661,
+      "hard_delta_excluding_top1_hard_gain": -0.0016428782757985066,
+      "top1_gain_name": "508_0.72_1.04.png",
+      "top1_gain_delta": 5.979907989501953,
+      "top1_hard_gain_name": "508_0.72_1.04.png",
+      "top1_hard_gain_delta": 5.979907989501953,
+      "strict_gate_pass": false,
+      "failed_checks": [
+        "severe_regressions",
+        "hard_median_delta",
+        "hard_positive_ratio",
+        "hard_delta_excluding_top1_hard_gain"
+      ],
+      "gate_checks": [
+        {
+          "name": "mean_psnr_delta_vs_a0",
+          "value": 0.007790243148803711,
+          "op": ">=",
+          "threshold": 0.005,
+          "pass": true
+        },
+        {
+          "name": "mean_ssim_delta",
+          "value": 1.0677039623260498e-05,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_bottom_25pct_delta",
+          "value": 0.0222833251953125,
+          "op": ">=",
+          "threshold": 0.02,
+          "pass": true
+        },
+        {
+          "name": "easy_top_25pct_delta",
+          "value": 0.006925048828125,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "severe_regressions",
+          "value": 1,
+          "op": "<=",
+          "threshold": 0,
+          "pass": false
+        },
+        {
+          "name": "strong_reference_regressions",
+          "value": 0,
+          "op": "<=",
+          "threshold": 0,
+          "pass": true
+        },
+        {
+          "name": "global_regressions",
+          "value": 4,
+          "op": "<=",
+          "threshold": 10,
+          "pass": true
+        },
+        {
+          "name": "hard_median_delta",
+          "value": -0.0013570785522460938,
+          "op": ">=",
+          "threshold": -0.001,
+          "pass": false
+        },
+        {
+          "name": "hard_positive_ratio",
+          "value": 0.44,
+          "op": ">=",
+          "threshold": 0.45,
+          "pass": false
+        },
+        {
+          "name": "mean_delta_excluding_top1_gain",
+          "value": 0.0018121473066083661,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_delta_excluding_top1_hard_gain",
+          "value": -0.0016428782757985066,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": false
+        }
+      ]
+    },
+    {
+      "tag": "saferhfd_v2_rhfd2_0.70_rhfd1_0.50_vs_a0",
+      "compare_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_compare_saferhfd_v2_rhfd2_0.70_rhfd1_0.50_vs_a0.json",
+      "bucket_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_bucket_analysis_saferhfd_v2_rhfd2_0.70_rhfd1_0.50_vs_a0.json",
+      "per_image_csv": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_per_image_saferhfd_v2_rhfd2_0.70_rhfd1_0.50_vs_a0.csv",
+      "rhfd2_scale": "0.70",
+      "rhfd1_scale": "0.50",
+      "mean_psnr_delta": 0.010623071670532227,
+      "mean_ssim_delta": 1.426398754119873e-05,
+      "hard_bottom_25pct_delta": 0.03427576446533203,
+      "easy_top_25pct_delta": 0.007402267456054688,
+      "severe_regression_delta_le_-0.20": 0,
+      "strong_reference_regression_delta_le_-0.05": 0,
+      "global_regression_delta_le_-0.05": 7,
+      "hard_median_delta": -0.0021619796752929688,
+      "hard_positive_ratio": 0.392,
+      "mean_delta_excluding_top1_gain": 0.0016689873314476586,
+      "hard_delta_excluding_top1_hard_gain": -0.0015534626910964169,
+      "top1_gain_name": "508_0.72_1.04.png",
+      "top1_gain_delta": 8.955753326416016,
+      "top1_hard_gain_name": "508_0.72_1.04.png",
+      "top1_hard_gain_delta": 8.955753326416016,
+      "strict_gate_pass": false,
+      "failed_checks": [
+        "hard_median_delta",
+        "hard_positive_ratio",
+        "hard_delta_excluding_top1_hard_gain"
+      ],
+      "gate_checks": [
+        {
+          "name": "mean_psnr_delta_vs_a0",
+          "value": 0.010623071670532227,
+          "op": ">=",
+          "threshold": 0.005,
+          "pass": true
+        },
+        {
+          "name": "mean_ssim_delta",
+          "value": 1.426398754119873e-05,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_bottom_25pct_delta",
+          "value": 0.03427576446533203,
+          "op": ">=",
+          "threshold": 0.02,
+          "pass": true
+        },
+        {
+          "name": "easy_top_25pct_delta",
+          "value": 0.007402267456054688,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "severe_regressions",
+          "value": 0,
+          "op": "<=",
+          "threshold": 0,
+          "pass": true
+        },
+        {
+          "name": "strong_reference_regressions",
+          "value": 0,
+          "op": "<=",
+          "threshold": 0,
+          "pass": true
+        },
+        {
+          "name": "global_regressions",
+          "value": 7,
+          "op": "<=",
+          "threshold": 10,
+          "pass": true
+        },
+        {
+          "name": "hard_median_delta",
+          "value": -0.0021619796752929688,
+          "op": ">=",
+          "threshold": -0.001,
+          "pass": false
+        },
+        {
+          "name": "hard_positive_ratio",
+          "value": 0.392,
+          "op": ">=",
+          "threshold": 0.45,
+          "pass": false
+        },
+        {
+          "name": "mean_delta_excluding_top1_gain",
+          "value": 0.0016689873314476586,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_delta_excluding_top1_hard_gain",
+          "value": -0.0015534626910964169,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": false
+        }
+      ]
+    },
+    {
+      "tag": "saferhfd_v2_rhfd2_0.70_rhfd1_0.70_vs_a0",
+      "compare_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_compare_saferhfd_v2_rhfd2_0.70_rhfd1_0.70_vs_a0.json",
+      "bucket_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_bucket_analysis_saferhfd_v2_rhfd2_0.70_rhfd1_0.70_vs_a0.json",
+      "per_image_csv": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_per_image_saferhfd_v2_rhfd2_0.70_rhfd1_0.70_vs_a0.csv",
+      "rhfd2_scale": "0.70",
+      "rhfd1_scale": "0.70",
+      "mean_psnr_delta": 0.010635049819946289,
+      "mean_ssim_delta": 1.3134121894836427e-05,
+      "hard_bottom_25pct_delta": 0.03317057037353516,
+      "easy_top_25pct_delta": 0.007821853637695313,
+      "severe_regression_delta_le_-0.20": 0,
+      "strong_reference_regression_delta_le_-0.05": 0,
+      "global_regression_delta_le_-0.05": 9,
+      "hard_median_delta": -0.0023431777954101562,
+      "hard_positive_ratio": 0.416,
+      "mean_delta_excluding_top1_gain": 0.0018642051322562798,
+      "hard_delta_excluding_top1_hard_gain": -0.0019279771061786208,
+      "top1_gain_name": "508_0.72_1.04.png",
+      "top1_gain_delta": 8.772708892822266,
+      "top1_hard_gain_name": "508_0.72_1.04.png",
+      "top1_hard_gain_delta": 8.772708892822266,
+      "strict_gate_pass": false,
+      "failed_checks": [
+        "hard_median_delta",
+        "hard_positive_ratio",
+        "hard_delta_excluding_top1_hard_gain"
+      ],
+      "gate_checks": [
+        {
+          "name": "mean_psnr_delta_vs_a0",
+          "value": 0.010635049819946289,
+          "op": ">=",
+          "threshold": 0.005,
+          "pass": true
+        },
+        {
+          "name": "mean_ssim_delta",
+          "value": 1.3134121894836427e-05,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_bottom_25pct_delta",
+          "value": 0.03317057037353516,
+          "op": ">=",
+          "threshold": 0.02,
+          "pass": true
+        },
+        {
+          "name": "easy_top_25pct_delta",
+          "value": 0.007821853637695313,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "severe_regressions",
+          "value": 0,
+          "op": "<=",
+          "threshold": 0,
+          "pass": true
+        },
+        {
+          "name": "strong_reference_regressions",
+          "value": 0,
+          "op": "<=",
+          "threshold": 0,
+          "pass": true
+        },
+        {
+          "name": "global_regressions",
+          "value": 9,
+          "op": "<=",
+          "threshold": 10,
+          "pass": true
+        },
+        {
+          "name": "hard_median_delta",
+          "value": -0.0023431777954101562,
+          "op": ">=",
+          "threshold": -0.001,
+          "pass": false
+        },
+        {
+          "name": "hard_positive_ratio",
+          "value": 0.416,
+          "op": ">=",
+          "threshold": 0.45,
+          "pass": false
+        },
+        {
+          "name": "mean_delta_excluding_top1_gain",
+          "value": 0.0018642051322562798,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_delta_excluding_top1_hard_gain",
+          "value": -0.0019279771061786208,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": false
+        }
+      ]
+    },
+    {
+      "tag": "saferhfd_v2_rhfd2_0.60_rhfd1_0.80_vs_a0",
+      "compare_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_compare_saferhfd_v2_rhfd2_0.60_rhfd1_0.80_vs_a0.json",
+      "bucket_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_bucket_analysis_saferhfd_v2_rhfd2_0.60_rhfd1_0.80_vs_a0.json",
+      "per_image_csv": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_per_image_saferhfd_v2_rhfd2_0.60_rhfd1_0.80_vs_a0.csv",
+      "rhfd2_scale": "0.60",
+      "rhfd1_scale": "0.80",
+      "mean_psnr_delta": 0.009469371795654297,
+      "mean_ssim_delta": 1.1347830295562744e-05,
+      "hard_bottom_25pct_delta": 0.028178253173828126,
+      "easy_top_25pct_delta": 0.007640731811523437,
+      "severe_regression_delta_le_-0.20": 1,
+      "strong_reference_regression_delta_le_-0.05": 1,
+      "global_regression_delta_le_-0.05": 7,
+      "hard_median_delta": -0.00188446044921875,
+      "hard_positive_ratio": 0.432,
+      "mean_delta_excluding_top1_gain": 0.001969895921311937,
+      "hard_delta_excluding_top1_hard_gain": -0.001834869384765625,
+      "top1_gain_name": "508_0.72_1.04.png",
+      "top1_gain_delta": 7.501445770263672,
+      "top1_hard_gain_name": "508_0.72_1.04.png",
+      "top1_hard_gain_delta": 7.501445770263672,
+      "strict_gate_pass": false,
+      "failed_checks": [
+        "severe_regressions",
+        "strong_reference_regressions",
+        "hard_median_delta",
+        "hard_positive_ratio",
+        "hard_delta_excluding_top1_hard_gain"
+      ],
+      "gate_checks": [
+        {
+          "name": "mean_psnr_delta_vs_a0",
+          "value": 0.009469371795654297,
+          "op": ">=",
+          "threshold": 0.005,
+          "pass": true
+        },
+        {
+          "name": "mean_ssim_delta",
+          "value": 1.1347830295562744e-05,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_bottom_25pct_delta",
+          "value": 0.028178253173828126,
+          "op": ">=",
+          "threshold": 0.02,
+          "pass": true
+        },
+        {
+          "name": "easy_top_25pct_delta",
+          "value": 0.007640731811523437,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "severe_regressions",
+          "value": 1,
+          "op": "<=",
+          "threshold": 0,
+          "pass": false
+        },
+        {
+          "name": "strong_reference_regressions",
+          "value": 1,
+          "op": "<=",
+          "threshold": 0,
+          "pass": false
+        },
+        {
+          "name": "global_regressions",
+          "value": 7,
+          "op": "<=",
+          "threshold": 10,
+          "pass": true
+        },
+        {
+          "name": "hard_median_delta",
+          "value": -0.00188446044921875,
+          "op": ">=",
+          "threshold": -0.001,
+          "pass": false
+        },
+        {
+          "name": "hard_positive_ratio",
+          "value": 0.432,
+          "op": ">=",
+          "threshold": 0.45,
+          "pass": false
+        },
+        {
+          "name": "mean_delta_excluding_top1_gain",
+          "value": 0.001969895921311937,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_delta_excluding_top1_hard_gain",
+          "value": -0.001834869384765625,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": false
+        }
+      ]
+    },
+    {
+      "tag": "saferhfd_v2_rhfd2_0.80_rhfd1_0.60_vs_a0",
+      "compare_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_compare_saferhfd_v2_rhfd2_0.80_rhfd1_0.60_vs_a0.json",
+      "bucket_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_bucket_analysis_saferhfd_v2_rhfd2_0.80_rhfd1_0.60_vs_a0.json",
+      "per_image_csv": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_per_image_saferhfd_v2_rhfd2_0.80_rhfd1_0.60_vs_a0.csv",
+      "rhfd2_scale": "0.80",
+      "rhfd1_scale": "0.60",
+      "mean_psnr_delta": 0.011041223526000976,
+      "mean_ssim_delta": 1.4230132102966308e-05,
+      "hard_bottom_25pct_delta": 0.03485784149169922,
+      "easy_top_25pct_delta": 0.008250213623046876,
+      "severe_regression_delta_le_-0.20": 0,
+      "strong_reference_regression_delta_le_-0.05": 1,
+      "global_regression_delta_le_-0.05": 12,
+      "hard_median_delta": -0.0022382736206054688,
+      "hard_positive_ratio": 0.396,
+      "mean_delta_excluding_top1_gain": 0.0018608295643055164,
+      "hard_delta_excluding_top1_hard_gain": -0.001878692443112293,
+      "top1_gain_name": "508_0.72_1.04.png",
+      "top1_gain_delta": 9.182254791259766,
+      "top1_hard_gain_name": "508_0.72_1.04.png",
+      "top1_hard_gain_delta": 9.182254791259766,
+      "strict_gate_pass": false,
+      "failed_checks": [
+        "strong_reference_regressions",
+        "global_regressions",
+        "hard_median_delta",
+        "hard_positive_ratio",
+        "hard_delta_excluding_top1_hard_gain"
+      ],
+      "gate_checks": [
+        {
+          "name": "mean_psnr_delta_vs_a0",
+          "value": 0.011041223526000976,
+          "op": ">=",
+          "threshold": 0.005,
+          "pass": true
+        },
+        {
+          "name": "mean_ssim_delta",
+          "value": 1.4230132102966308e-05,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_bottom_25pct_delta",
+          "value": 0.03485784149169922,
+          "op": ">=",
+          "threshold": 0.02,
+          "pass": true
+        },
+        {
+          "name": "easy_top_25pct_delta",
+          "value": 0.008250213623046876,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "severe_regressions",
+          "value": 0,
+          "op": "<=",
+          "threshold": 0,
+          "pass": true
+        },
+        {
+          "name": "strong_reference_regressions",
+          "value": 1,
+          "op": "<=",
+          "threshold": 0,
+          "pass": false
+        },
+        {
+          "name": "global_regressions",
+          "value": 12,
+          "op": "<=",
+          "threshold": 10,
+          "pass": false
+        },
+        {
+          "name": "hard_median_delta",
+          "value": -0.0022382736206054688,
+          "op": ">=",
+          "threshold": -0.001,
+          "pass": false
+        },
+        {
+          "name": "hard_positive_ratio",
+          "value": 0.396,
+          "op": ">=",
+          "threshold": 0.45,
+          "pass": false
+        },
+        {
+          "name": "mean_delta_excluding_top1_gain",
+          "value": 0.0018608295643055164,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_delta_excluding_top1_hard_gain",
+          "value": -0.001878692443112293,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": false
+        }
+      ]
+    },
+    {
+      "tag": "saferhfd_v2_rhfd2_0.00_rhfd1_0.70_vs_a0",
+      "compare_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_compare_saferhfd_v2_rhfd2_0.00_rhfd1_0.70_vs_a0.json",
+      "bucket_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_bucket_analysis_saferhfd_v2_rhfd2_0.00_rhfd1_0.70_vs_a0.json",
+      "per_image_csv": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_per_image_saferhfd_v2_rhfd2_0.00_rhfd1_0.70_vs_a0.csv",
+      "rhfd2_scale": "0.00",
+      "rhfd1_scale": "0.70",
+      "mean_psnr_delta": -0.0006158885955810547,
+      "mean_ssim_delta": -9.268522262573242e-06,
+      "hard_bottom_25pct_delta": -0.006114051818847656,
+      "easy_top_25pct_delta": 0.001090545654296875,
+      "severe_regression_delta_le_-0.20": 2,
+      "strong_reference_regression_delta_le_-0.05": 2,
+      "global_regression_delta_le_-0.05": 5,
+      "hard_median_delta": 5.340576171875e-05,
+      "hard_positive_ratio": 0.5,
+      "mean_delta_excluding_top1_gain": -0.0006768796537015531,
+      "hard_delta_excluding_top1_hard_gain": -0.006209668385455886,
+      "top1_gain_name": "557_0.68_0.68.png",
+      "top1_gain_delta": 0.060314178466796875,
+      "top1_hard_gain_name": "65_0.89_0.51.png",
+      "top1_hard_gain_delta": 0.017694473266601562,
+      "strict_gate_pass": false,
+      "failed_checks": [
+        "mean_psnr_delta_vs_a0",
+        "mean_ssim_delta",
+        "hard_bottom_25pct_delta",
+        "severe_regressions",
+        "strong_reference_regressions",
+        "mean_delta_excluding_top1_gain",
+        "hard_delta_excluding_top1_hard_gain"
+      ],
+      "gate_checks": [
+        {
+          "name": "mean_psnr_delta_vs_a0",
+          "value": -0.0006158885955810547,
+          "op": ">=",
+          "threshold": 0.005,
+          "pass": false
+        },
+        {
+          "name": "mean_ssim_delta",
+          "value": -9.268522262573242e-06,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": false
+        },
+        {
+          "name": "hard_bottom_25pct_delta",
+          "value": -0.006114051818847656,
+          "op": ">=",
+          "threshold": 0.02,
+          "pass": false
+        },
+        {
+          "name": "easy_top_25pct_delta",
+          "value": 0.001090545654296875,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "severe_regressions",
+          "value": 2,
+          "op": "<=",
+          "threshold": 0,
+          "pass": false
+        },
+        {
+          "name": "strong_reference_regressions",
+          "value": 2,
+          "op": "<=",
+          "threshold": 0,
+          "pass": false
+        },
+        {
+          "name": "global_regressions",
+          "value": 5,
+          "op": "<=",
+          "threshold": 10,
+          "pass": true
+        },
+        {
+          "name": "hard_median_delta",
+          "value": 5.340576171875e-05,
+          "op": ">=",
+          "threshold": -0.001,
+          "pass": true
+        },
+        {
+          "name": "hard_positive_ratio",
+          "value": 0.5,
+          "op": ">=",
+          "threshold": 0.45,
+          "pass": true
+        },
+        {
+          "name": "mean_delta_excluding_top1_gain",
+          "value": -0.0006768796537015531,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": false
+        },
+        {
+          "name": "hard_delta_excluding_top1_hard_gain",
+          "value": -0.006209668385455886,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": false
+        }
+      ]
+    },
+    {
+      "tag": "saferhfd_v2_rhfd2_0.50_rhfd1_1.00_vs_a0",
+      "compare_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_compare_saferhfd_v2_rhfd2_0.50_rhfd1_1.00_vs_a0.json",
+      "bucket_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_bucket_analysis_saferhfd_v2_rhfd2_0.50_rhfd1_1.00_vs_a0.json",
+      "per_image_csv": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_per_image_saferhfd_v2_rhfd2_0.50_rhfd1_1.00_vs_a0.csv",
+      "rhfd2_scale": "0.50",
+      "rhfd1_scale": "1.00",
+      "mean_psnr_delta": 0.007997318267822266,
+      "mean_ssim_delta": 8.909344673156738e-06,
+      "hard_bottom_25pct_delta": 0.021554336547851563,
+      "easy_top_25pct_delta": 0.007490829467773437,
+      "severe_regression_delta_le_-0.20": 1,
+      "strong_reference_regression_delta_le_-0.05": 2,
+      "global_regression_delta_le_-0.05": 6,
+      "hard_median_delta": -0.0004730224609375,
+      "hard_positive_ratio": 0.492,
+      "mean_delta_excluding_top1_gain": 0.0020526202472003255,
+      "hard_delta_excluding_top1_hard_gain": -0.0022416325458082327,
+      "top1_gain_name": "508_0.72_1.04.png",
+      "top1_gain_delta": 5.946750640869141,
+      "top1_hard_gain_name": "508_0.72_1.04.png",
+      "top1_hard_gain_delta": 5.946750640869141,
+      "strict_gate_pass": false,
+      "failed_checks": [
+        "severe_regressions",
+        "strong_reference_regressions",
+        "hard_delta_excluding_top1_hard_gain"
+      ],
+      "gate_checks": [
+        {
+          "name": "mean_psnr_delta_vs_a0",
+          "value": 0.007997318267822266,
+          "op": ">=",
+          "threshold": 0.005,
+          "pass": true
+        },
+        {
+          "name": "mean_ssim_delta",
+          "value": 8.909344673156738e-06,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_bottom_25pct_delta",
+          "value": 0.021554336547851563,
+          "op": ">=",
+          "threshold": 0.02,
+          "pass": true
+        },
+        {
+          "name": "easy_top_25pct_delta",
+          "value": 0.007490829467773437,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "severe_regressions",
+          "value": 1,
+          "op": "<=",
+          "threshold": 0,
+          "pass": false
+        },
+        {
+          "name": "strong_reference_regressions",
+          "value": 2,
+          "op": "<=",
+          "threshold": 0,
+          "pass": false
+        },
+        {
+          "name": "global_regressions",
+          "value": 6,
+          "op": "<=",
+          "threshold": 10,
+          "pass": true
+        },
+        {
+          "name": "hard_median_delta",
+          "value": -0.0004730224609375,
+          "op": ">=",
+          "threshold": -0.001,
+          "pass": true
+        },
+        {
+          "name": "hard_positive_ratio",
+          "value": 0.492,
+          "op": ">=",
+          "threshold": 0.45,
+          "pass": true
+        },
+        {
+          "name": "mean_delta_excluding_top1_gain",
+          "value": 0.0020526202472003255,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_delta_excluding_top1_hard_gain",
+          "value": -0.0022416325458082327,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": false
+        }
+      ]
+    },
+    {
+      "tag": "saferhfd_v2_rhfd2_0.70_rhfd1_1.00_vs_a0",
+      "compare_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_compare_saferhfd_v2_rhfd2_0.70_rhfd1_1.00_vs_a0.json",
+      "bucket_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_bucket_analysis_saferhfd_v2_rhfd2_0.70_rhfd1_1.00_vs_a0.json",
+      "per_image_csv": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_per_image_saferhfd_v2_rhfd2_0.70_rhfd1_1.00_vs_a0.csv",
+      "rhfd2_scale": "0.70",
+      "rhfd1_scale": "1.00",
+      "mean_psnr_delta": 0.010359066009521484,
+      "mean_ssim_delta": 1.1114835739135742e-05,
+      "hard_bottom_25pct_delta": 0.030372734069824218,
+      "easy_top_25pct_delta": 0.008500778198242187,
+      "severe_regression_delta_le_-0.20": 1,
+      "strong_reference_regression_delta_le_-0.05": 3,
+      "global_regression_delta_le_-0.05": 12,
+      "hard_median_delta": -0.0020198822021484375,
+      "hard_positive_ratio": 0.448,
+      "mean_delta_excluding_top1_gain": 0.0021361006392134323,
+      "hard_delta_excluding_top1_hard_gain": -0.0025378231063904054,
+      "top1_gain_name": "508_0.72_1.04.png",
+      "top1_gain_delta": 8.225101470947266,
+      "top1_hard_gain_name": "508_0.72_1.04.png",
+      "top1_hard_gain_delta": 8.225101470947266,
+      "strict_gate_pass": false,
+      "failed_checks": [
+        "severe_regressions",
+        "strong_reference_regressions",
+        "global_regressions",
+        "hard_median_delta",
+        "hard_positive_ratio",
+        "hard_delta_excluding_top1_hard_gain"
+      ],
+      "gate_checks": [
+        {
+          "name": "mean_psnr_delta_vs_a0",
+          "value": 0.010359066009521484,
+          "op": ">=",
+          "threshold": 0.005,
+          "pass": true
+        },
+        {
+          "name": "mean_ssim_delta",
+          "value": 1.1114835739135742e-05,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_bottom_25pct_delta",
+          "value": 0.030372734069824218,
+          "op": ">=",
+          "threshold": 0.02,
+          "pass": true
+        },
+        {
+          "name": "easy_top_25pct_delta",
+          "value": 0.008500778198242187,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "severe_regressions",
+          "value": 1,
+          "op": "<=",
+          "threshold": 0,
+          "pass": false
+        },
+        {
+          "name": "strong_reference_regressions",
+          "value": 3,
+          "op": "<=",
+          "threshold": 0,
+          "pass": false
+        },
+        {
+          "name": "global_regressions",
+          "value": 12,
+          "op": "<=",
+          "threshold": 10,
+          "pass": false
+        },
+        {
+          "name": "hard_median_delta",
+          "value": -0.0020198822021484375,
+          "op": ">=",
+          "threshold": -0.001,
+          "pass": false
+        },
+        {
+          "name": "hard_positive_ratio",
+          "value": 0.448,
+          "op": ">=",
+          "threshold": 0.45,
+          "pass": false
+        },
+        {
+          "name": "mean_delta_excluding_top1_gain",
+          "value": 0.0021361006392134323,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_delta_excluding_top1_hard_gain",
+          "value": -0.0025378231063904054,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": false
+        }
+      ]
+    },
+    {
+      "tag": "saferhfd_v2_rhfd2_0.70_rhfd1_0.00_vs_a0",
+      "compare_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_compare_saferhfd_v2_rhfd2_0.70_rhfd1_0.00_vs_a0.json",
+      "bucket_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_bucket_analysis_saferhfd_v2_rhfd2_0.70_rhfd1_0.00_vs_a0.json",
+      "per_image_csv": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_per_image_saferhfd_v2_rhfd2_0.70_rhfd1_0.00_vs_a0.csv",
+      "rhfd2_scale": "0.70",
+      "rhfd1_scale": "0.00",
+      "mean_psnr_delta": 0.010431190490722657,
+      "mean_ssim_delta": 1.6665041446685792e-05,
+      "hard_bottom_25pct_delta": 0.036702713012695315,
+      "easy_top_25pct_delta": 0.006059555053710938,
+      "severe_regression_delta_le_-0.20": 0,
+      "strong_reference_regression_delta_le_-0.05": 3,
+      "global_regression_delta_le_-0.05": 13,
+      "hard_median_delta": -0.0027685165405273438,
+      "hard_positive_ratio": 0.384,
+      "mean_delta_excluding_top1_gain": 0.000998312765890891,
+      "hard_delta_excluding_top1_hard_gain": -0.001036938893268386,
+      "top1_gain_name": "508_0.72_1.04.png",
+      "top1_gain_delta": 9.433876037597656,
+      "top1_hard_gain_name": "508_0.72_1.04.png",
+      "top1_hard_gain_delta": 9.433876037597656,
+      "strict_gate_pass": false,
+      "failed_checks": [
+        "strong_reference_regressions",
+        "global_regressions",
+        "hard_median_delta",
+        "hard_positive_ratio",
+        "hard_delta_excluding_top1_hard_gain"
+      ],
+      "gate_checks": [
+        {
+          "name": "mean_psnr_delta_vs_a0",
+          "value": 0.010431190490722657,
+          "op": ">=",
+          "threshold": 0.005,
+          "pass": true
+        },
+        {
+          "name": "mean_ssim_delta",
+          "value": 1.6665041446685792e-05,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_bottom_25pct_delta",
+          "value": 0.036702713012695315,
+          "op": ">=",
+          "threshold": 0.02,
+          "pass": true
+        },
+        {
+          "name": "easy_top_25pct_delta",
+          "value": 0.006059555053710938,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "severe_regressions",
+          "value": 0,
+          "op": "<=",
+          "threshold": 0,
+          "pass": true
+        },
+        {
+          "name": "strong_reference_regressions",
+          "value": 3,
+          "op": "<=",
+          "threshold": 0,
+          "pass": false
+        },
+        {
+          "name": "global_regressions",
+          "value": 13,
+          "op": "<=",
+          "threshold": 10,
+          "pass": false
+        },
+        {
+          "name": "hard_median_delta",
+          "value": -0.0027685165405273438,
+          "op": ">=",
+          "threshold": -0.001,
+          "pass": false
+        },
+        {
+          "name": "hard_positive_ratio",
+          "value": 0.384,
+          "op": ">=",
+          "threshold": 0.45,
+          "pass": false
+        },
+        {
+          "name": "mean_delta_excluding_top1_gain",
+          "value": 0.000998312765890891,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_delta_excluding_top1_hard_gain",
+          "value": -0.001036938893268386,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": false
+        }
+      ]
+    },
+    {
+      "tag": "saferhfd_v2_rhfd2_1.00_rhfd1_0.50_vs_a0",
+      "compare_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_compare_saferhfd_v2_rhfd2_1.00_rhfd1_0.50_vs_a0.json",
+      "bucket_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_bucket_analysis_saferhfd_v2_rhfd2_1.00_rhfd1_0.50_vs_a0.json",
+      "per_image_csv": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_per_image_saferhfd_v2_rhfd2_1.00_rhfd1_0.50_vs_a0.csv",
+      "rhfd2_scale": "1.00",
+      "rhfd1_scale": "0.50",
+      "mean_psnr_delta": 0.01255113410949707,
+      "mean_ssim_delta": 1.6618669033050537e-05,
+      "hard_bottom_25pct_delta": 0.04122703552246094,
+      "easy_top_25pct_delta": 0.0086429443359375,
+      "severe_regression_delta_le_-0.20": 0,
+      "strong_reference_regression_delta_le_-0.05": 3,
+      "global_regression_delta_le_-0.05": 24,
+      "hard_median_delta": -0.0039215087890625,
+      "hard_positive_ratio": 0.376,
+      "mean_delta_excluding_top1_gain": 0.0017937191494472988,
+      "hard_delta_excluding_top1_hard_gain": -0.0018170674641927083,
+      "top1_gain_name": "508_0.72_1.04.png",
+      "top1_gain_delta": 10.759208679199219,
+      "top1_hard_gain_name": "508_0.72_1.04.png",
+      "top1_hard_gain_delta": 10.759208679199219,
+      "strict_gate_pass": false,
+      "failed_checks": [
+        "strong_reference_regressions",
+        "global_regressions",
+        "hard_median_delta",
+        "hard_positive_ratio",
+        "hard_delta_excluding_top1_hard_gain"
+      ],
+      "gate_checks": [
+        {
+          "name": "mean_psnr_delta_vs_a0",
+          "value": 0.01255113410949707,
+          "op": ">=",
+          "threshold": 0.005,
+          "pass": true
+        },
+        {
+          "name": "mean_ssim_delta",
+          "value": 1.6618669033050537e-05,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_bottom_25pct_delta",
+          "value": 0.04122703552246094,
+          "op": ">=",
+          "threshold": 0.02,
+          "pass": true
+        },
+        {
+          "name": "easy_top_25pct_delta",
+          "value": 0.0086429443359375,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "severe_regressions",
+          "value": 0,
+          "op": "<=",
+          "threshold": 0,
+          "pass": true
+        },
+        {
+          "name": "strong_reference_regressions",
+          "value": 3,
+          "op": "<=",
+          "threshold": 0,
+          "pass": false
+        },
+        {
+          "name": "global_regressions",
+          "value": 24,
+          "op": "<=",
+          "threshold": 10,
+          "pass": false
+        },
+        {
+          "name": "hard_median_delta",
+          "value": -0.0039215087890625,
+          "op": ">=",
+          "threshold": -0.001,
+          "pass": false
+        },
+        {
+          "name": "hard_positive_ratio",
+          "value": 0.376,
+          "op": ">=",
+          "threshold": 0.45,
+          "pass": false
+        },
+        {
+          "name": "mean_delta_excluding_top1_gain",
+          "value": 0.0017937191494472988,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_delta_excluding_top1_hard_gain",
+          "value": -0.0018170674641927083,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": false
+        }
+      ]
+    },
+    {
+      "tag": "saferhfd_v2_rhfd2_1.00_rhfd1_0.70_vs_a0",
+      "compare_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_compare_saferhfd_v2_rhfd2_1.00_rhfd1_0.70_vs_a0.json",
+      "bucket_json": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_bucket_analysis_saferhfd_v2_rhfd2_1.00_rhfd1_0.70_vs_a0.json",
+      "per_image_csv": "experience_docx/experiment_logs/haze4k_saferhfd_v2_stage_scale_20260602/scout_eval_per_image_saferhfd_v2_rhfd2_1.00_rhfd1_0.70_vs_a0.csv",
+      "rhfd2_scale": "1.00",
+      "rhfd1_scale": "0.70",
+      "mean_psnr_delta": 0.012470856666564941,
+      "mean_ssim_delta": 1.564657688140869e-05,
+      "hard_bottom_25pct_delta": 0.03973342514038086,
+      "easy_top_25pct_delta": 0.0091204833984375,
+      "severe_regression_delta_le_-0.20": 0,
+      "strong_reference_regression_delta_le_-0.05": 5,
+      "global_regression_delta_le_-0.05": 27,
+      "hard_median_delta": -0.0030536651611328125,
+      "hard_positive_ratio": 0.388,
+      "mean_delta_excluding_top1_gain": 0.0020365872540631454,
+      "hard_delta_excluding_top1_hard_gain": -0.0020198783721311025,
+      "top1_gain_name": "508_0.72_1.04.png",
+      "top1_gain_delta": 10.43630599975586,
+      "top1_hard_gain_name": "508_0.72_1.04.png",
+      "top1_hard_gain_delta": 10.43630599975586,
+      "strict_gate_pass": false,
+      "failed_checks": [
+        "strong_reference_regressions",
+        "global_regressions",
+        "hard_median_delta",
+        "hard_positive_ratio",
+        "hard_delta_excluding_top1_hard_gain"
+      ],
+      "gate_checks": [
+        {
+          "name": "mean_psnr_delta_vs_a0",
+          "value": 0.012470856666564941,
+          "op": ">=",
+          "threshold": 0.005,
+          "pass": true
+        },
+        {
+          "name": "mean_ssim_delta",
+          "value": 1.564657688140869e-05,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_bottom_25pct_delta",
+          "value": 0.03973342514038086,
+          "op": ">=",
+          "threshold": 0.02,
+          "pass": true
+        },
+        {
+          "name": "easy_top_25pct_delta",
+          "value": 0.0091204833984375,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "severe_regressions",
+          "value": 0,
+          "op": "<=",
+          "threshold": 0,
+          "pass": true
+        },
+        {
+          "name": "strong_reference_regressions",
+          "value": 5,
+          "op": "<=",
+          "threshold": 0,
+          "pass": false
+        },
+        {
+          "name": "global_regressions",
+          "value": 27,
+          "op": "<=",
+          "threshold": 10,
+          "pass": false
+        },
+        {
+          "name": "hard_median_delta",
+          "value": -0.0030536651611328125,
+          "op": ">=",
+          "threshold": -0.001,
+          "pass": false
+        },
+        {
+          "name": "hard_positive_ratio",
+          "value": 0.388,
+          "op": ">=",
+          "threshold": 0.45,
+          "pass": false
+        },
+        {
+          "name": "mean_delta_excluding_top1_gain",
+          "value": 0.0020365872540631454,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": true
+        },
+        {
+          "name": "hard_delta_excluding_top1_hard_gain",
+          "value": -0.0020198783721311025,
+          "op": ">=",
+          "threshold": 0.0,
+          "pass": false
+        }
+      ]
+    }
+  ]
+}
