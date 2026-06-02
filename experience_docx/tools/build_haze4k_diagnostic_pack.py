@@ -229,6 +229,10 @@ def build_eval_model(arch, mode, args, prefix):
         pfd_pffb=getattr(args, f"{prefix}_pfd_pffb"),
         pfd_pffb_high=getattr(args, f"{prefix}_pfd_pffb_high"),
         pfd_teacher=getattr(args, f"{prefix}_pfd_teacher"),
+        pfd_safe_rhfd=getattr(args, f"{prefix}_pfd_safe_rhfd"),
+        pfd_safe_rhfd_gate_max=getattr(args, f"{prefix}_pfd_safe_rhfd_gate_max"),
+        pfd_safe_rhfd_norm_cap=getattr(args, f"{prefix}_pfd_safe_rhfd_norm_cap"),
+        pfd_safe_rhfd_lowpass_ratio=getattr(args, f"{prefix}_pfd_safe_rhfd_lowpass_ratio"),
     )
 
 
@@ -439,6 +443,10 @@ def main():
     parser.add_argument("--original_pfd_pffb", type=int, default=0, choices=[0, 1])
     parser.add_argument("--original_pfd_pffb_high", type=int, default=0, choices=[0, 1])
     parser.add_argument("--original_pfd_teacher", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--original_pfd_safe_rhfd", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--original_pfd_safe_rhfd_gate_max", type=float, default=1.0)
+    parser.add_argument("--original_pfd_safe_rhfd_norm_cap", type=float, default=0.0035)
+    parser.add_argument("--original_pfd_safe_rhfd_lowpass_ratio", type=float, default=0.20)
     parser.add_argument("--candidate_checkpoint", required=True)
     parser.add_argument("--candidate_arch", choices=["convir", "pfd"], default="convir")
     parser.add_argument("--candidate_mode", default="original")
@@ -448,6 +456,10 @@ def main():
     parser.add_argument("--candidate_pfd_pffb", type=int, default=0, choices=[0, 1])
     parser.add_argument("--candidate_pfd_pffb_high", type=int, default=0, choices=[0, 1])
     parser.add_argument("--candidate_pfd_teacher", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--candidate_pfd_safe_rhfd", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--candidate_pfd_safe_rhfd_gate_max", type=float, default=1.0)
+    parser.add_argument("--candidate_pfd_safe_rhfd_norm_cap", type=float, default=0.0035)
+    parser.add_argument("--candidate_pfd_safe_rhfd_lowpass_ratio", type=float, default=0.20)
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--category_limit", type=int, default=10)
     parser.add_argument("--max_samples", type=int, default=70)
@@ -642,6 +654,10 @@ def main():
                 "pffb": args.candidate_pfd_pffb,
                 "pffb_high": args.candidate_pfd_pffb_high,
                 "teacher": args.candidate_pfd_teacher,
+                "safe_rhfd": args.candidate_pfd_safe_rhfd,
+                "safe_rhfd_gate_max": args.candidate_pfd_safe_rhfd_gate_max,
+                "safe_rhfd_norm_cap": args.candidate_pfd_safe_rhfd_norm_cap,
+                "safe_rhfd_lowpass_ratio": args.candidate_pfd_safe_rhfd_lowpass_ratio,
             },
         },
         "selected_count": len(manifest_rows),

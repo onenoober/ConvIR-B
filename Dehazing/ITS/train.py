@@ -156,11 +156,58 @@ def _log_modulation_stats(model, args, epoch_idx, device):
         )
 
 
+def _configure_pfd_train_scope(model, args):
+    if getattr(args, "arch", "convir") != "pfd":
+        return list(model.parameters())
+
+    scope = getattr(args, "pfd_train_scope", "all")
+    if scope == "all":
+        print("PFD_TRAIN_SCOPE all: all parameters trainable")
+        return list(model.parameters())
+
+    for param in model.parameters():
+        param.requires_grad = False
+
+    pfd_prefixes = []
+    if getattr(model, "pfd_safe_rhfd", False):
+        pfd_prefixes.extend(["PFD_SAFE_RHFD1.", "PFD_SAFE_RHFD2."])
+    if getattr(model, "pfd_rhfd", False):
+        pfd_prefixes.extend(["PFD_RHFD1.", "PFD_RHFD2."])
+    if getattr(model, "pfd_hscm", False):
+        pfd_prefixes.extend(["PFD_HSCM1.", "PFD_HSCM2."])
+    if getattr(model, "pfd_pffb", False):
+        pfd_prefixes.extend(["PFD_PFFB1.", "PFD_PFFB2."])
+
+    if scope == "pfd_only":
+        train_prefixes = tuple(pfd_prefixes)
+    elif scope == "pfd_local":
+        train_prefixes = tuple(pfd_prefixes + ["FAM1.", "FAM2.", "ConvsOut."])
+    else:
+        raise ValueError(f"Unsupported pfd_train_scope: {scope}")
+
+    trainable = 0
+    frozen = 0
+    for name, param in model.named_parameters():
+        if name.startswith(train_prefixes):
+            param.requires_grad = True
+        if param.requires_grad:
+            trainable += param.numel()
+        else:
+            frozen += param.numel()
+
+    trainable_params = [param for param in model.parameters() if param.requires_grad]
+    if not trainable_params:
+        raise RuntimeError("No trainable parameters. Check --pfd_train_scope.")
+    print(f"PFD_TRAIN_SCOPE {scope}: trainable={trainable} frozen={frozen}")
+    return trainable_params
+
+
 def _train(model, args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     criterion = torch.nn.L1Loss()
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate, betas=(0.9, 0.999), eps=1e-8)
+    trainable_params = _configure_pfd_train_scope(model, args)
+    optimizer = torch.optim.Adam(trainable_params, lr=args.learning_rate, betas=(0.9, 0.999), eps=1e-8)
     dataloader = train_dataloader(args.data_dir, args.batch_size, args.num_worker, args.data)
     max_iter = len(dataloader)
     warmup_epochs=3
@@ -236,7 +283,7 @@ def _train(model, args):
 
             loss = loss_content + 0.1 * loss_fft
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 0.001)
+            torch.nn.utils.clip_grad_norm_(trainable_params, 0.001)
             optimizer.step()
 
             iter_pixel_adder(loss_content.item())

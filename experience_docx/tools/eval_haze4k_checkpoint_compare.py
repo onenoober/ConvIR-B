@@ -46,6 +46,10 @@ def build_eval_model(arch, mode, args, prefix):
         pfd_pffb=getattr(args, f"{prefix}_pfd_pffb"),
         pfd_pffb_high=getattr(args, f"{prefix}_pfd_pffb_high"),
         pfd_teacher=getattr(args, f"{prefix}_pfd_teacher"),
+        pfd_safe_rhfd=getattr(args, f"{prefix}_pfd_safe_rhfd"),
+        pfd_safe_rhfd_gate_max=getattr(args, f"{prefix}_pfd_safe_rhfd_gate_max"),
+        pfd_safe_rhfd_norm_cap=getattr(args, f"{prefix}_pfd_safe_rhfd_norm_cap"),
+        pfd_safe_rhfd_lowpass_ratio=getattr(args, f"{prefix}_pfd_safe_rhfd_lowpass_ratio"),
     )
 
 
@@ -141,6 +145,10 @@ def main():
     parser.add_argument("--original_pfd_pffb", type=int, default=0, choices=[0, 1])
     parser.add_argument("--original_pfd_pffb_high", type=int, default=0, choices=[0, 1])
     parser.add_argument("--original_pfd_teacher", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--original_pfd_safe_rhfd", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--original_pfd_safe_rhfd_gate_max", type=float, default=1.0)
+    parser.add_argument("--original_pfd_safe_rhfd_norm_cap", type=float, default=0.0035)
+    parser.add_argument("--original_pfd_safe_rhfd_lowpass_ratio", type=float, default=0.20)
     parser.add_argument("--modres_checkpoint")
     parser.add_argument("--candidate_checkpoint")
     parser.add_argument("--candidate_arch", choices=["convir", "pfd"], default="convir")
@@ -151,6 +159,10 @@ def main():
     parser.add_argument("--candidate_pfd_pffb", type=int, default=0, choices=[0, 1])
     parser.add_argument("--candidate_pfd_pffb_high", type=int, default=0, choices=[0, 1])
     parser.add_argument("--candidate_pfd_teacher", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--candidate_pfd_safe_rhfd", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--candidate_pfd_safe_rhfd_gate_max", type=float, default=1.0)
+    parser.add_argument("--candidate_pfd_safe_rhfd_norm_cap", type=float, default=0.0035)
+    parser.add_argument("--candidate_pfd_safe_rhfd_lowpass_ratio", type=float, default=0.20)
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
     args = parser.parse_args()

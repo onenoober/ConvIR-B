@@ -23,6 +23,10 @@ def build_model(args):
         pfd_pffb=args.pfd_pffb,
         pfd_pffb_high=args.pfd_pffb_high,
         pfd_teacher=args.pfd_teacher,
+        pfd_safe_rhfd=args.pfd_safe_rhfd,
+        pfd_safe_rhfd_gate_max=args.pfd_safe_rhfd_gate_max,
+        pfd_safe_rhfd_norm_cap=args.pfd_safe_rhfd_norm_cap,
+        pfd_safe_rhfd_lowpass_ratio=args.pfd_safe_rhfd_lowpass_ratio,
     )
 
 
@@ -99,6 +103,16 @@ if __name__ == '__main__':
     parser.add_argument('--pfd_pffb', default=0, choices=[0, 1], type=int)
     parser.add_argument('--pfd_pffb_high', default=0, choices=[0, 1], type=int)
     parser.add_argument('--pfd_teacher', default=0, choices=[0, 1], type=int)
+    parser.add_argument('--pfd_safe_rhfd', default=0, choices=[0, 1], type=int)
+    parser.add_argument('--pfd_safe_rhfd_gate_max', default=1.0, type=float)
+    parser.add_argument('--pfd_safe_rhfd_norm_cap', default=0.0035, type=float)
+    parser.add_argument('--pfd_safe_rhfd_lowpass_ratio', default=0.20, type=float)
+    parser.add_argument(
+        '--pfd_train_scope',
+        default='all',
+        choices=['all', 'pfd_only', 'pfd_local'],
+        type=str,
+    )
     parser.add_argument('--seed', default=-1, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
