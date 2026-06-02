@@ -310,7 +310,7 @@ def main():
     parser.add_argument("--apdr_residual_max", type=float, default=0.04)
     parser.add_argument("--apdr_gate_max", type=float, default=0.5)
     parser.add_argument("--apdr_gate_init", type=float, default=0.02)
-    parser.add_argument("--apdr_selector_mode", default="v0", choices=["v0", "v0_2"])
+    parser.add_argument("--apdr_selector_mode", default="v0", choices=["v0", "v0_2", "v0_2r"])
     parser.add_argument("--apdr_active_scales", default="all", choices=["all", "full"])
     parser.add_argument("--apdr_loss_scales", default="all", choices=["all", "full_only"])
     parser.add_argument("--apdr_anchor_lambda", type=float, default=0.0)

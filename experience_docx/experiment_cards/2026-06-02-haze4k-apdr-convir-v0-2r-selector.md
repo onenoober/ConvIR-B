@@ -1,0 +1,97 @@
+# Haze4K APDR-ConvIR v0.2R Selector
+
+Date: 2026-06-02
+
+Status: planned cloud selector-only preflight.
+
+## Scope
+
+- Project: ConvIR-B Haze4K dehazing.
+- Model family: APDR-ConvIR, anchored on official ConvIR-B.
+- Route name: APDR-v0.2R Full-Image Calibrated Hard Router.
+- Dataset or task: Haze4K dehazing.
+- Primary objective: decide whether APDR can learn a deployable full-image
+  hard-case budget before any residual is trained.
+- Execution environment: AutoDL `autodl-dehaze3`, `convir-cu128`.
+- Artifact root: `experience_docx/experiment_logs/haze4k_apdr_v0_2r_selector_20260602/`.
+- Branch or isolated workspace: `codex/haze4k-apdr-convir-v0-2r-fullimage-router`.
+
+## Baseline Contract
+
+- Baseline implementation: original ConvIR-B Haze4K `--arch convir --version base`.
+- Baseline checkpoint or initialization: official Haze4K ConvIR-B checkpoint
+  `/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl`.
+- Dataset and split: Haze4K train/test under
+  `/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K`.
+- Selector output contract: APDR output must remain exactly A0 during this
+  stage; residual head is frozen and model output gating is force-zero.
+- Sample-size policy: full Haze4K test for selector gate.
+
+## Most Valuable Attempt
+
+- Why this is the highest-value next attempt: APDR-v0.2 showed spatial BCE can
+  learn, but `H_img` stayed nearly flat because the image-level selector was
+  trained on random crop difficulty while the gate evaluated full-image A0
+  difficulty.
+- Target failure or opportunity: make the image-level hard budget learn
+  full-image A0 risk before spending residual training budget.
+- Cheap preflight evidence: architecture preflight plus selector-only Phase A/B
+  training where residual output is forced equal to A0.
+- Earliest decisive gate: selector-only full-test gate.
+- What success decides: a residual stop20 stage may be justified using
+  `J = J0 + B_img * S_pixel * bounded_residual`.
+- What failure decides: do not train residuals; the hard-router mechanism is
+  still not deployable.
+
+## Hypothesis
+
+v0.2 failed because its global selector target was effectively crop-level while
+promotion gates are image-level. v0.2R separates the mechanisms:
+
+```text
+z_img = GlobalDensityRouter(full-image x, J0, RGB priors, |x-J0| stats, GAP(feature))
+B_img = train-calibrated sigmoid((z_img - tau_train) / temperature_train)
+S_pixel = SpatialRiskGate(local x, J0, feature, RGB priors)
+M = B_img * S_pixel
+J = J0 during selector-only preflight
+```
+
+Phase A trains only the global router on full-image A0 RMSE targets. Phase B
+freezes the global router and trains only the spatial gate on global-thresholded
+pixel error. Selector-only uses no gate sparsity penalty because preservation is
+already enforced by zero residual output.
+
+## Change
+
+- Code branch: `codex/haze4k-apdr-convir-v0-2r-fullimage-router`.
+- Exact code/config change:
+  - add APDR selector mode `v0_2r`;
+  - add `GlobalDensityRouter`, decoupled from the spatial context;
+  - keep `v0` and `v0_2` selector modes available;
+  - add a selector-only cloud preflight with Phase A global-router training,
+    train-set budget calibration, Phase B spatial-gate training, and full-test
+    gate JSON.
+- Explicitly disabled mechanisms: residual training, depth prior,
+  diffusion/teacher, hard FFT, PFD/RHFD, HSCM, PFFB, FAM modulation, and
+  low-frequency veil.
+
+## Gates
+
+Selector-only gate:
+
+| Rule | Required |
+| --- | ---: |
+| zero-residual output max absolute diff vs A0 | `< 1e-6` |
+| deterministic full-image hard BCE | final `<= 0.55` and drop `>= 0.05` |
+| AUC hard/easy by `z_img` | `>= 0.82` |
+| Spearman(`z_img`, A0 PSNR) | `<= -0.50` |
+| mean(`B_img` hard bottom-25%) | `>= 0.20` |
+| mean(`B_img` easy top-25%) | `<= 0.05` |
+| hard/easy `B_img` ratio | `>= 4.0` |
+| spatial-risk BCE on deterministic train subset | final `<` initial |
+| full-test mean spatial BCE | `<= 0.80` |
+
+Stop rule:
+
+- If selector-only gate fails, stop v0.2R and do not train residual.
+- If selector-only gate passes, write and run a separate residual stop20 gate.

@@ -109,7 +109,7 @@ if __name__ == '__main__':
     parser.add_argument('--apdr_gate_max', default=0.5, type=float)
     parser.add_argument('--apdr_gate_init', default=0.02, type=float)
     parser.add_argument('--apdr_force_zero_gate', default=0, choices=[0, 1], type=int)
-    parser.add_argument('--apdr_selector_mode', default='v0', choices=['v0', 'v0_2'], type=str)
+    parser.add_argument('--apdr_selector_mode', default='v0', choices=['v0', 'v0_2', 'v0_2r'], type=str)
     parser.add_argument(
         '--apdr_active_scales',
         default='all',

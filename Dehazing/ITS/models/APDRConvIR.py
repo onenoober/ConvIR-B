@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 
 from .ConvIR import ConvIR
-from .apdr_modules import APDRScaleAdapter, APDRV02ScaleAdapter
+from .apdr_modules import APDRScaleAdapter, APDRV02RScaleAdapter, APDRV02ScaleAdapter
 
 
 def _active_scale_set(active_scales):
@@ -28,7 +28,7 @@ class APDRConvIR(ConvIR):
     ):
         if apdr_prior_mode != "rgb_haze":
             raise ValueError("APDR only supports apdr_prior_mode='rgb_haze'.")
-        if apdr_selector_mode not in ("v0", "v0_2"):
+        if apdr_selector_mode not in ("v0", "v0_2", "v0_2r"):
             raise ValueError(f"Unsupported apdr_selector_mode: {apdr_selector_mode}")
         super(APDRConvIR, self).__init__(version, data, fam_mode="original")
         self.apdr_prior_mode = apdr_prior_mode
@@ -36,7 +36,12 @@ class APDRConvIR(ConvIR):
         self.apdr_active_scales = apdr_active_scales
         self.apdr_selector_mode = apdr_selector_mode
         self._active_scale_names = _active_scale_set(apdr_active_scales)
-        adapter_cls = APDRV02ScaleAdapter if apdr_selector_mode == "v0_2" else APDRScaleAdapter
+        if apdr_selector_mode == "v0_2":
+            adapter_cls = APDRV02ScaleAdapter
+        elif apdr_selector_mode == "v0_2r":
+            adapter_cls = APDRV02RScaleAdapter
+        else:
+            adapter_cls = APDRScaleAdapter
 
         self.APDR_4 = adapter_cls(
             128,
