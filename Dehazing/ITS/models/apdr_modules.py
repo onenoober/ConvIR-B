@@ -91,4 +91,6 @@ class APDRScaleAdapter(nn.Module):
             "anchor": anchor,
             "output": output,
             "prior": priors,
+            "gate_max": self.gate_max,
+            "residual_max": self.residual_max,
         }

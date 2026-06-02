@@ -127,10 +127,17 @@ def _configure_train_scope(model, args):
     if scope != "apdr_only":
         raise ValueError(f"Unsupported apdr_train_scope: {scope}")
 
+    active_prefixes = ("APDR_",)
+    if hasattr(model, "active_apdr_prefixes"):
+        active_prefixes = model.active_apdr_prefixes()
+
     trainable = 0
     frozen = 0
     for name, param in model.named_parameters():
-        param.requires_grad = name.startswith("APDR_")
+        if name.startswith("APDR_"):
+            param.requires_grad = any(name.startswith(prefix) for prefix in active_prefixes)
+        else:
+            param.requires_grad = False
         if param.requires_grad:
             trainable += param.numel()
         else:
@@ -201,45 +208,49 @@ def _train(model, args):
 
             optimizer.zero_grad()
             pred_img = model(input_img)
-            label_img2 = F.interpolate(label_img, scale_factor=0.5, mode='bilinear')
-            label_img4 = F.interpolate(label_img, scale_factor=0.25, mode='bilinear')
-            l1 = criterion(pred_img[0], label_img4)
-            l2 = criterion(pred_img[1], label_img2)
-            l3 = criterion(pred_img[2], label_img)
-            loss_content = l1+l2+l3
+            if (
+                getattr(args, "arch", "convir") == "apdr"
+                and getattr(args, "apdr_loss_scales", "all") == "full_only"
+            ):
+                scale_pairs = [(pred_img[2], label_img)]
+                apdr_targets = [label_img, label_img, label_img]
+            else:
+                label_img2 = F.interpolate(label_img, scale_factor=0.5, mode='bilinear')
+                label_img4 = F.interpolate(label_img, scale_factor=0.25, mode='bilinear')
+                scale_pairs = [
+                    (pred_img[0], label_img4),
+                    (pred_img[1], label_img2),
+                    (pred_img[2], label_img),
+                ]
+                apdr_targets = [label_img4, label_img2, label_img]
 
-            label_fft1 = torch.fft.fft2(label_img4, dim=(-2,-1))
-            label_fft1 = torch.stack((label_fft1.real, label_fft1.imag), -1)
-
-            pred_fft1 = torch.fft.fft2(pred_img[0], dim=(-2,-1))
-            pred_fft1 = torch.stack((pred_fft1.real, pred_fft1.imag), -1)
-
-            label_fft2 = torch.fft.fft2(label_img2, dim=(-2,-1))
-            label_fft2 = torch.stack((label_fft2.real, label_fft2.imag), -1)
-
-            pred_fft2 = torch.fft.fft2(pred_img[1], dim=(-2,-1))
-            pred_fft2 = torch.stack((pred_fft2.real, pred_fft2.imag), -1)
-
-            label_fft3 = torch.fft.fft2(label_img, dim=(-2,-1))
-            label_fft3 = torch.stack((label_fft3.real, label_fft3.imag), -1)
-
-            pred_fft3 = torch.fft.fft2(pred_img[2], dim=(-2,-1))
-            pred_fft3 = torch.stack((pred_fft3.real, pred_fft3.imag), -1)
-
-            f1 = criterion(pred_fft1, label_fft1)
-            f2 = criterion(pred_fft2, label_fft2)
-            f3 = criterion(pred_fft3, label_fft3)
-            loss_fft = f1+f2+f3
+            loss_content = sum(criterion(pred, target) for pred, target in scale_pairs)
+            loss_fft_terms = []
+            for pred, target in scale_pairs:
+                label_fft = torch.fft.fft2(target, dim=(-2,-1))
+                label_fft = torch.stack((label_fft.real, label_fft.imag), -1)
+                pred_fft = torch.fft.fft2(pred, dim=(-2,-1))
+                pred_fft = torch.stack((pred_fft.real, pred_fft.imag), -1)
+                loss_fft_terms.append(criterion(pred_fft, label_fft))
+            loss_fft = sum(loss_fft_terms)
 
             loss = loss_content + 0.1 * loss_fft
             apdr_reg = {}
             if hasattr(model, 'apdr_regularization'):
                 apdr_reg = model.apdr_regularization()
+            apdr_train_reg = {}
+            if hasattr(model, 'apdr_training_regularization') and getattr(args, "arch", "convir") == "apdr":
+                apdr_train_reg = model.apdr_training_regularization(
+                    apdr_targets,
+                    risk_temperature=args.apdr_risk_temperature,
+                )
                 loss = (
                     loss
-                    + args.apdr_anchor_lambda * apdr_reg.get("apdr_anchor", 0.0)
-                    + args.apdr_gate_lambda * apdr_reg.get("apdr_gate", 0.0)
-                    + args.apdr_residual_lambda * apdr_reg.get("apdr_residual", 0.0)
+                    + args.apdr_anchor_lambda * apdr_train_reg.get("apdr_anchor", 0.0)
+                    + args.apdr_gate_lambda * apdr_train_reg.get("apdr_gate", 0.0)
+                    + args.apdr_residual_lambda * apdr_train_reg.get("apdr_residual", 0.0)
+                    + getattr(args, "apdr_gate_supervision_lambda", 0.0)
+                    * apdr_train_reg.get("apdr_gate_supervision", 0.0)
                 )
             loss.backward()
             torch.nn.utils.clip_grad_norm_(trainable_params, 0.001)
@@ -253,11 +264,12 @@ def _train(model, args):
 
             if (iter_idx + 1) % args.print_freq == 0:
                 apdr_detail = ""
-                if apdr_reg:
-                    apdr_detail = " APDR anchor: %.8f gate: %.8f residual: %.8f" % (
-                        apdr_reg.get("apdr_anchor", 0.0).detach().item(),
-                        apdr_reg.get("apdr_gate", 0.0).detach().item(),
-                        apdr_reg.get("apdr_residual", 0.0).detach().item(),
+                if apdr_train_reg:
+                    apdr_detail = " APDR anchor: %.8f gate_sup: %.8f gate: %.8f residual: %.8f" % (
+                        apdr_train_reg.get("apdr_anchor", 0.0).detach().item(),
+                        apdr_train_reg.get("apdr_gate_supervision", 0.0).detach().item(),
+                        apdr_train_reg.get("apdr_gate", 0.0).detach().item(),
+                        apdr_train_reg.get("apdr_residual", 0.0).detach().item(),
                     )
                 print(("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f "
                        "Loss content: %7.4f Loss fft: %7.4f%s") % (

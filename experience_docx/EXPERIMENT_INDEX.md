@@ -69,6 +69,7 @@ Retained remote refs:
 | PFD mainline stop20 scout | Completed gated stop20 scout | Stage 0 passed; A1 stop20 completed; B1 hard bottom-25% `+0.3838 dB`, global mean delta `-0.0885 dB`, easy top-25% `-0.3345 dB`, strong-reference regressions `137/250`. | Keep as diagnostic; B1 fails the preservation gate, so B2/B3 were not launched. | [card](experiment_cards/2026-06-02-haze4k-pfd-convir-mainline-plan.md) | [logs](experiment_logs/haze4k_pfd_mainline_20260602/) | `github/codex/haze4k-pfd-mainline` |
 | B1r decoder RHFD preservation rescue | Completed gated stop20 rescue | A0-level global delta `+0.0028 dB`, SSIM positive, easy top-25% `-0.0248 dB`, but hard bottom-25% only `+0.0461 dB` and strong-reference regressions `103/250`. | `FAIL_STOP_B1R_DECODER_RHFD_ADAPTER_ONLY`; preservation improved over B1, but hard gain and strong-case gate fail. | [card](experiment_cards/2026-06-02-haze4k-b1r-decoder-rhfd-preserve.md) | [logs](experiment_logs/haze4k_b1r_decoder_rhfd_preserve_20260602/) | `github/codex/haze4k-b1r-decoder-rhfd-preserve` |
 | APDR ConvIR v0 stop20 scout | Completed gated stop20 scout | A0 vs APDR mean PSNR delta `-0.00665 dB`, hard bottom-25% `-0.00097 dB`, easy top-25% `-0.01509 dB`, strong-reference regressions `100/250`. | `FAIL_STOP_APDR_V0_ADAPTER_ONLY`; keep diagnostic-only, do not promote this exact v0 route. | [card](experiment_cards/2026-06-02-haze4k-apdr-convir-v0.md) | [logs](experiment_logs/haze4k_apdr_v0_20260602/) | `codex/haze4k-apdr-convir-v0` |
+| APDR ConvIR v0.1 anchor-risk scout | Completed gated stop20 scout | Mean PSNR delta `+0.00011 dB`; hard bottom-25% `+0.00067 dB`; easy top-25% `-0.00107 dB`; strong-reference regressions `1/250`; severe regressions `0/1000`. | `FAIL_STOP_APDR_V0_1_ANCHOR_RISK_HARD_GAIN`; preservation fixed, hard gain still absent. | [card](experiment_cards/2026-06-02-haze4k-apdr-convir-v0-1.md) | [logs](experiment_logs/haze4k_apdr_v0_1_20260602/) | `codex/haze4k-apdr-convir-v0-1` |
 
 ## Evidence Inventory
 
@@ -87,6 +88,7 @@ Retained remote refs:
 | `experiment_logs/haze4k_pfd_mainline_20260602/` | 11 | Stage 0 JSON, A1/B1 train logs, B1 gate/compare artifacts, run script, status, tmux transcript. |
 | `experiment_logs/haze4k_b1r_decoder_rhfd_preserve_20260602/` | 14 | B1r preflight, adapter-only train logs, stop10/stop20 compare JSON/CSV, gate result, run script, status, tmux transcript. |
 | `experiment_logs/haze4k_apdr_v0_20260602/` | 11 | APDR preflight, corrected stop20 train logs, compare JSON/CSV, bucket analysis, gate result, run script, status, tmux transcripts, README. |
+| `experiment_logs/haze4k_apdr_v0_1_20260602/` | 10 | APDR-v0.1 preflight, stop20 train log, compare JSON/CSV, bucket analysis, gate result, launcher transcript, run script, status, README. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 
@@ -108,6 +110,9 @@ The active conclusion is conservative:
   mechanism; current PFD evidence is diagnostic rather than promotion-ready.
 - `main` should carry the evidence and index, while runnable experimental code
   stays on the retained leaf branches.
+- APDR-v0.1 proved that training-time A0-risk/no-degrade constraints can fix
+  the v0 preservation failure, but it still failed the hard-gain and mean
+  improvement gates; further APDR work needs a stronger hard-case selector.
 
 ## Artifact Boundary
 

@@ -5,6 +5,14 @@ from .ConvIR import ConvIR
 from .apdr_modules import APDRScaleAdapter
 
 
+def _active_scale_set(active_scales):
+    if active_scales == "all":
+        return {"quarter", "half", "full"}
+    if active_scales == "full":
+        return {"full"}
+    raise ValueError(f"Unsupported apdr_active_scales: {active_scales}")
+
+
 class APDRConvIR(ConvIR):
     def __init__(
         self,
@@ -15,12 +23,15 @@ class APDRConvIR(ConvIR):
         apdr_gate_max=0.5,
         apdr_gate_init=0.02,
         apdr_force_zero_gate=False,
+        apdr_active_scales="all",
     ):
         if apdr_prior_mode != "rgb_haze":
             raise ValueError("APDR-v0 only supports apdr_prior_mode='rgb_haze'.")
         super(APDRConvIR, self).__init__(version, data, fam_mode="original")
         self.apdr_prior_mode = apdr_prior_mode
         self.apdr_force_zero_gate = bool(apdr_force_zero_gate)
+        self.apdr_active_scales = apdr_active_scales
+        self._active_scale_names = _active_scale_set(apdr_active_scales)
 
         self.APDR_4 = APDRScaleAdapter(
             128,
@@ -42,13 +53,16 @@ class APDRConvIR(ConvIR):
         )
         self._last_apdr_tensors = None
 
-    def _adapt(self, adapter, hazy, anchor, feature):
+    def _adapt(self, name, adapter, hazy, anchor, feature):
+        active = name in self._active_scale_names
         output, tensors = adapter(
             hazy,
             anchor,
             feature,
-            force_zero_gate=self.apdr_force_zero_gate,
+            force_zero_gate=self.apdr_force_zero_gate or not active,
         )
+        tensors["scale"] = name
+        tensors["active"] = active
         return output, tensors
 
     def forward(self, x):
@@ -73,7 +87,7 @@ class APDRConvIR(ConvIR):
 
         z = self.Decoder[0](z)
         z_ = self.ConvsOut[0](z)
-        out_4, stats_4 = self._adapt(self.APDR_4, x_4, z_ + x_4, z)
+        out_4, stats_4 = self._adapt("quarter", self.APDR_4, x_4, z_ + x_4, z)
         outputs.append(out_4)
         apdr_tensors.append(stats_4)
 
@@ -82,7 +96,7 @@ class APDRConvIR(ConvIR):
         z = self.Convs[0](z)
         z = self.Decoder[1](z)
         z_ = self.ConvsOut[1](z)
-        out_2, stats_2 = self._adapt(self.APDR_2, x_2, z_ + x_2, z)
+        out_2, stats_2 = self._adapt("half", self.APDR_2, x_2, z_ + x_2, z)
         outputs.append(out_2)
         apdr_tensors.append(stats_2)
 
@@ -92,20 +106,74 @@ class APDRConvIR(ConvIR):
         z = self.Decoder[2](z)
         full_feature = z
         z = self.feat_extract[5](z)
-        out_1, stats_1 = self._adapt(self.APDR_1, x, z + x, full_feature)
+        out_1, stats_1 = self._adapt("full", self.APDR_1, x, z + x, full_feature)
         outputs.append(out_1)
         apdr_tensors.append(stats_1)
 
         self._last_apdr_tensors = apdr_tensors
         return outputs
 
+    def active_apdr_prefixes(self):
+        prefixes = []
+        if "quarter" in self._active_scale_names:
+            prefixes.append("APDR_4")
+        if "half" in self._active_scale_names:
+            prefixes.append("APDR_2")
+        if "full" in self._active_scale_names:
+            prefixes.append("APDR_1")
+        return tuple(prefixes)
+
     def apdr_regularization(self):
         if not self._last_apdr_tensors:
             return {}
-        gates = [item["gate"] for item in self._last_apdr_tensors]
-        residuals = [item["residual"] for item in self._last_apdr_tensors]
+        active_items = [item for item in self._last_apdr_tensors if item.get("active", True)]
+        if not active_items:
+            return {}
+        gates = [item["gate"] for item in active_items]
+        residuals = [item["residual"] for item in active_items]
         return {
             "apdr_anchor": sum(residual.abs().mean() for residual in residuals) / len(residuals),
+            "apdr_gate": sum(gate.mean() for gate in gates) / len(gates),
+            "apdr_residual": sum(residual.abs().mean() for residual in residuals) / len(residuals),
+        }
+
+    def apdr_training_regularization(self, targets, risk_temperature=5.0, eps=1e-6):
+        if not self._last_apdr_tensors:
+            return {}
+        active_items = [item for item in self._last_apdr_tensors if item.get("active", True)]
+        if not active_items:
+            return {}
+
+        target_by_scale = {
+            "quarter": targets[0],
+            "half": targets[1],
+            "full": targets[2],
+        }
+        anchor_terms = []
+        gate_supervision_terms = []
+        gates = []
+        residuals = []
+
+        for item in active_items:
+            target = target_by_scale[item["scale"]]
+            anchor = item["anchor"].detach()
+            output = item["output"]
+            gate = item["gate"]
+            residual = item["residual"]
+
+            error = (anchor - target).abs().mean(dim=1, keepdim=True).detach()
+            denom = error.amax(dim=(2, 3), keepdim=True).clamp_min(eps)
+            risk = (error / denom).clamp(0.0, 1.0)
+            safe_weight = torch.exp(-float(risk_temperature) * risk)
+
+            anchor_terms.append((safe_weight * (output - anchor).abs()).mean())
+            gate_supervision_terms.append(F.l1_loss(gate / item["gate_max"], risk))
+            gates.append(gate)
+            residuals.append(residual)
+
+        return {
+            "apdr_anchor": sum(anchor_terms) / len(anchor_terms),
+            "apdr_gate_supervision": sum(gate_supervision_terms) / len(gate_supervision_terms),
             "apdr_gate": sum(gate.mean() for gate in gates) / len(gates),
             "apdr_residual": sum(residual.abs().mean() for residual in residuals) / len(residuals),
         }
@@ -123,6 +191,7 @@ class APDRConvIR(ConvIR):
                 residual_raw = item["residual_raw"]
                 anchor = item["anchor"]
                 stats["scales"][name] = {
+                    "active": 1.0 if item.get("active", True) else 0.0,
                     "gate_mean": gate.mean().item(),
                     "gate_std": gate.std(unbiased=False).item(),
                     "gate_min": gate.min().item(),
@@ -144,6 +213,7 @@ def build_apdr_net(
     apdr_gate_max=0.5,
     apdr_gate_init=0.02,
     apdr_force_zero_gate=False,
+    apdr_active_scales="all",
 ):
     return APDRConvIR(
         version,
@@ -153,4 +223,5 @@ def build_apdr_net(
         apdr_gate_max=apdr_gate_max,
         apdr_gate_init=apdr_gate_init,
         apdr_force_zero_gate=apdr_force_zero_gate,
+        apdr_active_scales=apdr_active_scales,
     )

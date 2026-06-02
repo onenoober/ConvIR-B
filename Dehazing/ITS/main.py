@@ -23,6 +23,7 @@ def build_model(args):
         apdr_gate_max=args.apdr_gate_max,
         apdr_gate_init=args.apdr_gate_init,
         apdr_force_zero_gate=bool(args.apdr_force_zero_gate),
+        apdr_active_scales=args.apdr_active_scales,
     )
 
 
@@ -101,6 +102,12 @@ if __name__ == '__main__':
     parser.add_argument('--apdr_gate_init', default=0.02, type=float)
     parser.add_argument('--apdr_force_zero_gate', default=0, choices=[0, 1], type=int)
     parser.add_argument(
+        '--apdr_active_scales',
+        default='all',
+        choices=['all', 'full'],
+        type=str,
+    )
+    parser.add_argument(
         '--apdr_train_scope',
         default='all',
         choices=['all', 'apdr_only'],
@@ -109,6 +116,14 @@ if __name__ == '__main__':
     parser.add_argument('--apdr_anchor_lambda', default=0.0, type=float)
     parser.add_argument('--apdr_gate_lambda', default=0.0, type=float)
     parser.add_argument('--apdr_residual_lambda', default=0.0, type=float)
+    parser.add_argument('--apdr_gate_supervision_lambda', default=0.0, type=float)
+    parser.add_argument('--apdr_risk_temperature', default=5.0, type=float)
+    parser.add_argument(
+        '--apdr_loss_scales',
+        default='all',
+        choices=['all', 'full_only'],
+        type=str,
+    )
     parser.add_argument('--seed', default=-1, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)

@@ -176,8 +176,14 @@ def summarize_diffs(diffs):
 def configure_apdr_only(model):
     trainable = []
     frozen = []
+    active_prefixes = ("APDR_",)
+    if hasattr(model, "active_apdr_prefixes"):
+        active_prefixes = model.active_apdr_prefixes()
     for name, param in model.named_parameters():
-        param.requires_grad = name.startswith("APDR_")
+        if name.startswith("APDR_"):
+            param.requires_grad = any(name.startswith(prefix) for prefix in active_prefixes)
+        else:
+            param.requires_grad = False
         if param.requires_grad:
             trainable.append((name, param))
         else:
@@ -185,20 +191,37 @@ def configure_apdr_only(model):
     return trainable, frozen
 
 
-def finite_backward(model, x, target):
+def finite_backward(model, x, target, args):
     trainable, frozen = configure_apdr_only(model)
     model.eval()
     for name, module in model.named_modules():
         if name.startswith("APDR_"):
             module.train()
     outputs = model(x)
-    label2 = F.interpolate(target, scale_factor=0.5, mode="bilinear")
-    label4 = F.interpolate(target, scale_factor=0.25, mode="bilinear")
-    loss = (
-        F.l1_loss(outputs[0], label4)
-        + F.l1_loss(outputs[1], label2)
-        + F.l1_loss(outputs[2], target)
-    )
+    if args.apdr_loss_scales == "full_only":
+        scale_pairs = [(outputs[2], target)]
+        apdr_targets = [target, target, target]
+    else:
+        label2 = F.interpolate(target, scale_factor=0.5, mode="bilinear")
+        label4 = F.interpolate(target, scale_factor=0.25, mode="bilinear")
+        scale_pairs = [(outputs[0], label4), (outputs[1], label2), (outputs[2], target)]
+        apdr_targets = [label4, label2, target]
+
+    loss_content = sum(F.l1_loss(pred, label) for pred, label in scale_pairs)
+    loss = loss_content
+    apdr_train_reg = {}
+    if hasattr(model, "apdr_training_regularization"):
+        apdr_train_reg = model.apdr_training_regularization(
+            apdr_targets,
+            risk_temperature=args.apdr_risk_temperature,
+        )
+        loss = (
+            loss
+            + args.apdr_anchor_lambda * apdr_train_reg.get("apdr_anchor", 0.0)
+            + args.apdr_gate_lambda * apdr_train_reg.get("apdr_gate", 0.0)
+            + args.apdr_residual_lambda * apdr_train_reg.get("apdr_residual", 0.0)
+            + args.apdr_gate_supervision_lambda * apdr_train_reg.get("apdr_gate_supervision", 0.0)
+        )
     loss.backward()
 
     nonzero_grad = []
@@ -223,7 +246,13 @@ def finite_backward(model, x, target):
     ]
     return {
         "loss": loss.item(),
+        "loss_content": loss_content.item(),
         "loss_finite": math.isfinite(loss.item()),
+        "apdr_training_regularization": {
+            key: value.detach().item()
+            for key, value in apdr_train_reg.items()
+            if torch.is_tensor(value)
+        },
         "trainable_param_count": sum(param.numel() for _, param in trainable),
         "frozen_param_count": sum(param.numel() for _, param in frozen),
         "trainable_tensor_count": len(trainable),
@@ -255,6 +284,7 @@ def build_pair(args, device):
         apdr_gate_max=args.apdr_gate_max,
         apdr_gate_init=args.apdr_gate_init,
         apdr_force_zero_gate=False,
+        apdr_active_scales=args.apdr_active_scales,
     ).to(device).eval()
     return original, apdr
 
@@ -275,6 +305,13 @@ def main():
     parser.add_argument("--apdr_residual_max", type=float, default=0.04)
     parser.add_argument("--apdr_gate_max", type=float, default=0.5)
     parser.add_argument("--apdr_gate_init", type=float, default=0.02)
+    parser.add_argument("--apdr_active_scales", default="all", choices=["all", "full"])
+    parser.add_argument("--apdr_loss_scales", default="all", choices=["all", "full_only"])
+    parser.add_argument("--apdr_anchor_lambda", type=float, default=0.0)
+    parser.add_argument("--apdr_gate_supervision_lambda", type=float, default=0.0)
+    parser.add_argument("--apdr_gate_lambda", type=float, default=0.0)
+    parser.add_argument("--apdr_residual_lambda", type=float, default=0.0)
+    parser.add_argument("--apdr_risk_temperature", type=float, default=5.0)
     args = parser.parse_args()
 
     set_seed(args.seed)
@@ -361,7 +398,7 @@ def main():
 
     backward_input = real_batch if real_batch is not None else random_input
     backward_target = real_target if real_target is not None else random_target
-    backward = finite_backward(apdr, backward_input, backward_target)
+    backward = finite_backward(apdr, backward_input, backward_target, args)
     stats_input = real_batch if real_batch is not None else random_input
     stats = apdr.collect_apdr_stats(stats_input)
 
@@ -378,6 +415,13 @@ def main():
             "residual_max": args.apdr_residual_max,
             "gate_max": args.apdr_gate_max,
             "gate_init": args.apdr_gate_init,
+            "active_scales": args.apdr_active_scales,
+            "loss_scales": args.apdr_loss_scales,
+            "anchor_lambda": args.apdr_anchor_lambda,
+            "gate_supervision_lambda": args.apdr_gate_supervision_lambda,
+            "gate_lambda": args.apdr_gate_lambda,
+            "residual_lambda": args.apdr_residual_lambda,
+            "risk_temperature": args.apdr_risk_temperature,
         },
         "pair_audit": pair_audit,
         "checkpoint_load": checkpoint_load,
