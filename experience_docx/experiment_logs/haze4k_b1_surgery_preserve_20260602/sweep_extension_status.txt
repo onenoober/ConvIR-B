@@ -1,0 +1,5 @@
+status=complete
+end_time=2026-06-02T13:47:51+08:00
+code_dir=/root/autodl-tmp/workspace/ConvIR-B-pfd-surgery-code-20260602132422
+root=/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline
+scales=0.70 1.00

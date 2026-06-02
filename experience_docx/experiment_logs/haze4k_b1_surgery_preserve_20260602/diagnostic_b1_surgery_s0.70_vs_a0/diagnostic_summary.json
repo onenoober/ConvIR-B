@@ -1,0 +1,36 @@
+{
+  "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+  "per_image_csv": "/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/experience_docx/experiment_logs/haze4k_b1_surgery_preserve_20260602/scout_eval_per_image_b1_surgery_s0.70_vs_a0.csv",
+  "bucket_json": "/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/experience_docx/experiment_logs/haze4k_b1_surgery_preserve_20260602/scout_eval_bucket_analysis_b1_surgery_s0.70_vs_a0.json",
+  "bucket_json_candidate": "b1_surgery_s0.70",
+  "original": {
+    "name": "a0",
+    "arch": "convir",
+    "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl"
+  },
+  "candidate": {
+    "name": "b1_surgery_s0.70",
+    "arch": "pfd",
+    "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/Dehazing/ITS/results/PFD-B1-surgery-rhfd-scale0.70/Training-Results/Best.pkl",
+    "pfd_flags": {
+      "rhfd": 1,
+      "hscm": 0,
+      "pffb": 0,
+      "pffb_high": 0,
+      "teacher": 0
+    }
+  },
+  "selected_count": 38,
+  "missing_selected_names": [],
+  "panel_limit": 20,
+  "category_limit": 10,
+  "max_samples": 70,
+  "files": {
+    "visual_panel": "visual_panel_20.png",
+    "sample_manifest": "sample_manifest.csv",
+    "output_safety_stats": "output_safety_stats.csv",
+    "pfd_branch_stats": "pfd_branch_stats.csv",
+    "pfd_branch_stats_by_category": "pfd_branch_stats_by_category.json",
+    "visual_notes_template": "visual_notes_template.md"
+  }
+}
