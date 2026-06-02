@@ -24,6 +24,7 @@ def build_model(args):
         apdr_gate_init=args.apdr_gate_init,
         apdr_force_zero_gate=bool(args.apdr_force_zero_gate),
         apdr_active_scales=args.apdr_active_scales,
+        apdr_selector_mode=args.apdr_selector_mode,
     )
 
 
@@ -57,6 +58,13 @@ def load_init_model(model, args):
 
 
 def main(args):
+    if (
+        args.arch == 'apdr'
+        and args.apdr_loss_scales == 'full_only'
+        and args.apdr_active_scales != 'full'
+    ):
+        raise ValueError('--apdr_loss_scales full_only requires --apdr_active_scales full')
+
     # CUDNN
     if args.seed >= 0:
         random.seed(args.seed)
@@ -101,6 +109,7 @@ if __name__ == '__main__':
     parser.add_argument('--apdr_gate_max', default=0.5, type=float)
     parser.add_argument('--apdr_gate_init', default=0.02, type=float)
     parser.add_argument('--apdr_force_zero_gate', default=0, choices=[0, 1], type=int)
+    parser.add_argument('--apdr_selector_mode', default='v0', choices=['v0', 'v0_2'], type=str)
     parser.add_argument(
         '--apdr_active_scales',
         default='all',

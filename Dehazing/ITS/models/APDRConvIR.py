@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 
 from .ConvIR import ConvIR
-from .apdr_modules import APDRScaleAdapter
+from .apdr_modules import APDRScaleAdapter, APDRV02ScaleAdapter
 
 
 def _active_scale_set(active_scales):
@@ -24,28 +24,33 @@ class APDRConvIR(ConvIR):
         apdr_gate_init=0.02,
         apdr_force_zero_gate=False,
         apdr_active_scales="all",
+        apdr_selector_mode="v0",
     ):
         if apdr_prior_mode != "rgb_haze":
-            raise ValueError("APDR-v0 only supports apdr_prior_mode='rgb_haze'.")
+            raise ValueError("APDR only supports apdr_prior_mode='rgb_haze'.")
+        if apdr_selector_mode not in ("v0", "v0_2"):
+            raise ValueError(f"Unsupported apdr_selector_mode: {apdr_selector_mode}")
         super(APDRConvIR, self).__init__(version, data, fam_mode="original")
         self.apdr_prior_mode = apdr_prior_mode
         self.apdr_force_zero_gate = bool(apdr_force_zero_gate)
         self.apdr_active_scales = apdr_active_scales
+        self.apdr_selector_mode = apdr_selector_mode
         self._active_scale_names = _active_scale_set(apdr_active_scales)
+        adapter_cls = APDRV02ScaleAdapter if apdr_selector_mode == "v0_2" else APDRScaleAdapter
 
-        self.APDR_4 = APDRScaleAdapter(
+        self.APDR_4 = adapter_cls(
             128,
             residual_max=apdr_residual_max,
             gate_max=apdr_gate_max,
             gate_init=apdr_gate_init,
         )
-        self.APDR_2 = APDRScaleAdapter(
+        self.APDR_2 = adapter_cls(
             64,
             residual_max=apdr_residual_max,
             gate_max=apdr_gate_max,
             gate_init=apdr_gate_init,
         )
-        self.APDR_1 = APDRScaleAdapter(
+        self.APDR_1 = adapter_cls(
             32,
             residual_max=apdr_residual_max,
             gate_max=apdr_gate_max,
@@ -201,6 +206,18 @@ class APDRConvIR(ConvIR):
                     "residual_raw_abs_mean": residual_raw.abs().mean().item(),
                     "anchor_abs_mean": anchor.abs().mean().item(),
                 }
+                if "global_gate" in item:
+                    global_gate = item["global_gate"]
+                    spatial_gate = item["spatial_gate"]
+                    stats["scales"][name].update(
+                        {
+                            "global_gate_mean": global_gate.mean().item(),
+                            "global_gate_min": global_gate.min().item(),
+                            "global_gate_max": global_gate.max().item(),
+                            "spatial_gate_mean": spatial_gate.mean().item(),
+                            "spatial_gate_std": spatial_gate.std(unbiased=False).item(),
+                        }
+                    )
         self.train(was_training)
         return stats
 
@@ -214,6 +231,7 @@ def build_apdr_net(
     apdr_gate_init=0.02,
     apdr_force_zero_gate=False,
     apdr_active_scales="all",
+    apdr_selector_mode="v0",
 ):
     return APDRConvIR(
         version,
@@ -224,4 +242,5 @@ def build_apdr_net(
         apdr_gate_init=apdr_gate_init,
         apdr_force_zero_gate=apdr_force_zero_gate,
         apdr_active_scales=apdr_active_scales,
+        apdr_selector_mode=apdr_selector_mode,
     )

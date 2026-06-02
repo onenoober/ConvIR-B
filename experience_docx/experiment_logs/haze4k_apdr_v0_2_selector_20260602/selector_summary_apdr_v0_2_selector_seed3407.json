@@ -1,0 +1,266 @@
+{
+  "stage": "apdr_v0_2_selector_preflight",
+  "tag": "apdr_v0_2_selector_seed3407",
+  "seed": 3407,
+  "device": "cuda",
+  "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+  "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+  "apdr_config": {
+    "selector_mode": "v0_2",
+    "active_scales": "full",
+    "residual_forced_zero": true,
+    "residual_head_trainable": false,
+    "gate_init": 0.01,
+    "gate_max": 0.5,
+    "residual_max": 0.04
+  },
+  "loss_config": {
+    "hard_selector_lambda": 1.0,
+    "spatial_selector_lambda": 1.0,
+    "rank_lambda": 0.1,
+    "gate_lambda": 0.002,
+    "rank_margin": 0.2
+  },
+  "checkpoint_load": {
+    "missing": [
+      "APDR_4.image_context.0.weight",
+      "APDR_4.image_context.0.bias",
+      "APDR_4.image_context.2.weight",
+      "APDR_4.image_context.2.bias",
+      "APDR_4.feature_context.0.weight",
+      "APDR_4.feature_context.0.bias",
+      "APDR_4.context.0.weight",
+      "APDR_4.context.0.bias",
+      "APDR_4.residual_head.weight",
+      "APDR_4.residual_head.bias",
+      "APDR_4.spatial_gate_head.weight",
+      "APDR_4.spatial_gate_head.bias",
+      "APDR_4.global_gate_head.1.weight",
+      "APDR_4.global_gate_head.1.bias",
+      "APDR_4.global_gate_head.3.weight",
+      "APDR_4.global_gate_head.3.bias",
+      "APDR_2.image_context.0.weight",
+      "APDR_2.image_context.0.bias",
+      "APDR_2.image_context.2.weight",
+      "APDR_2.image_context.2.bias",
+      "APDR_2.feature_context.0.weight",
+      "APDR_2.feature_context.0.bias",
+      "APDR_2.context.0.weight",
+      "APDR_2.context.0.bias",
+      "APDR_2.residual_head.weight",
+      "APDR_2.residual_head.bias",
+      "APDR_2.spatial_gate_head.weight",
+      "APDR_2.spatial_gate_head.bias",
+      "APDR_2.global_gate_head.1.weight",
+      "APDR_2.global_gate_head.1.bias",
+      "APDR_2.global_gate_head.3.weight",
+      "APDR_2.global_gate_head.3.bias",
+      "APDR_1.image_context.0.weight",
+      "APDR_1.image_context.0.bias",
+      "APDR_1.image_context.2.weight",
+      "APDR_1.image_context.2.bias",
+      "APDR_1.feature_context.0.weight",
+      "APDR_1.feature_context.0.bias",
+      "APDR_1.context.0.weight",
+      "APDR_1.context.0.bias",
+      "APDR_1.residual_head.weight",
+      "APDR_1.residual_head.bias",
+      "APDR_1.spatial_gate_head.weight",
+      "APDR_1.spatial_gate_head.bias",
+      "APDR_1.global_gate_head.1.weight",
+      "APDR_1.global_gate_head.1.bias",
+      "APDR_1.global_gate_head.3.weight",
+      "APDR_1.global_gate_head.3.bias"
+    ],
+    "unexpected": []
+  },
+  "calibration": {
+    "train_image_count": 3000,
+    "pixel_sample_count": 6144000,
+    "rmse_q50_train": 0.010500837117433548,
+    "rmse_q90_train": 0.0219538863748312,
+    "pixel_error_q70_train": 0.010038971900939941,
+    "pixel_error_q90_train": 0.021158747375011444,
+    "spatial_tau": 0.011119775474071503
+  },
+  "train_scope": {
+    "trainable_tensor_count": 14,
+    "trainable_param_count": 19850,
+    "frozen_param_count": 8675390,
+    "trainable_tensors_first40": [
+      "APDR_1.image_context.0.weight",
+      "APDR_1.image_context.0.bias",
+      "APDR_1.image_context.2.weight",
+      "APDR_1.image_context.2.bias",
+      "APDR_1.feature_context.0.weight",
+      "APDR_1.feature_context.0.bias",
+      "APDR_1.context.0.weight",
+      "APDR_1.context.0.bias",
+      "APDR_1.spatial_gate_head.weight",
+      "APDR_1.spatial_gate_head.bias",
+      "APDR_1.global_gate_head.1.weight",
+      "APDR_1.global_gate_head.1.bias",
+      "APDR_1.global_gate_head.3.weight",
+      "APDR_1.global_gate_head.3.bias"
+    ]
+  },
+  "history": [
+    {
+      "epoch": 0,
+      "train_subset": {
+        "image_count": 128,
+        "hard_bce": 1.7324592983350158,
+        "spatial_bce": 2.0639835316687822
+      }
+    },
+    {
+      "epoch": 1,
+      "train": {
+        "loss": 0.9084262183507283,
+        "hard_bce": 0.1053808893362681,
+        "spatial_bce": 0.7908184145291647,
+        "rank": 0.1221312613884608,
+        "mask": 0.006894780271609003
+      },
+      "train_subset": {
+        "image_count": 128,
+        "hard_bce": 1.7204617224633694,
+        "spatial_bce": 0.7366116824559867
+      }
+    },
+    {
+      "epoch": 2,
+      "train": {
+        "loss": 0.7959261387189229,
+        "hard_bce": 0.10668124993642171,
+        "spatial_bce": 0.6769094044367472,
+        "rank": 0.12318825952212016,
+        "mask": 0.008329883698374034
+      },
+      "train_subset": {
+        "image_count": 128,
+        "hard_bce": 1.7046172386035323,
+        "spatial_bce": 0.7174621825106442
+      }
+    },
+    {
+      "epoch": 3,
+      "train": {
+        "loss": 0.7906696098645528,
+        "hard_bce": 0.10304740913709005,
+        "spatial_bce": 0.675926766872406,
+        "rank": 0.1167861518462499,
+        "mask": 0.008408423422525327
+      },
+      "train_subset": {
+        "image_count": 128,
+        "hard_bce": 1.7032755622640252,
+        "spatial_bce": 0.7251765984110534
+      }
+    },
+    {
+      "epoch": 4,
+      "train": {
+        "loss": 0.7871082173983256,
+        "hard_bce": 0.10066190234820048,
+        "spatial_bce": 0.6750714173316955,
+        "rank": 0.11358108754952749,
+        "mask": 0.008393120621641477
+      },
+      "train_subset": {
+        "image_count": 128,
+        "hard_bce": 1.7058323565870523,
+        "spatial_bce": 0.7261167066171765
+      }
+    },
+    {
+      "epoch": 5,
+      "train": {
+        "loss": 0.7886821262041728,
+        "hard_bce": 0.10233930945396423,
+        "spatial_bce": 0.6744354267120362,
+        "rank": 0.11890527256329854,
+        "mask": 0.008431763513634602
+      },
+      "train_subset": {
+        "image_count": 128,
+        "hard_bce": 1.704424905590713,
+        "spatial_bce": 0.7292757444083691
+      }
+    }
+  ],
+  "test_summary": {
+    "count": 1000,
+    "hard_bottom_25pct": {
+      "count": 250,
+      "a0_psnr_range": [
+        14.919735155690672,
+        29.73312588863932
+      ],
+      "mean_h_img": 0.021340296030044555
+    },
+    "easy_top_25pct": {
+      "count": 250,
+      "a0_psnr_range": [
+        39.10456740270155,
+        50.0260926757535
+      ],
+      "mean_h_img": 0.021288085967302323
+    },
+    "hard_easy_h_img_ratio": 1.0024525484734712,
+    "spearman_h_img_vs_a0_psnr": -0.35373300471218927,
+    "auc_hard_vs_easy_by_h_img": 0.768624,
+    "strong_reference_count": 250,
+    "strong_reference_mean_h_img": 0.021288085967302323,
+    "mean_spatial_bce": 0.751404914021492,
+    "zero_residual_output": {
+      "max_abs_diff_vs_a0": 0.0,
+      "threshold": 1e-06,
+      "pass": true
+    }
+  },
+  "gate": {
+    "stage": "APDR-v0.2 selector-only preflight",
+    "checks": {
+      "hard_easy_h_img_ratio": {
+        "observed": 1.0024525484734712,
+        "required": ">= 3.0",
+        "pass": false
+      },
+      "spearman_h_img_vs_a0_psnr": {
+        "observed": -0.35373300471218927,
+        "required": "<= -0.45",
+        "pass": false
+      },
+      "auc_hard_vs_easy_by_h_img": {
+        "observed": 0.768624,
+        "required": ">= 0.75",
+        "pass": true
+      },
+      "strong_reference_mean_h_img": {
+        "observed": 0.021288085967302323,
+        "required": "<= 0.05",
+        "pass": true
+      },
+      "spatial_bce_decreased": {
+        "observed": {
+          "first": 2.0639835316687822,
+          "last": 0.7292757444083691
+        },
+        "required": "last < first",
+        "pass": true
+      },
+      "zero_residual_output": {
+        "observed": 0.0,
+        "required": "< 1e-06",
+        "pass": true
+      }
+    },
+    "pass": false
+  },
+  "artifacts": {
+    "per_image_csv": "/root/autodl-tmp/workspace/ConvIR-B-apdr-convir-v0-2/experience_docx/experiment_logs/haze4k_apdr_v0_2_selector_20260602/selector_per_image_apdr_v0_2_selector_seed3407.csv",
+    "history_csv": "/root/autodl-tmp/workspace/ConvIR-B-apdr-convir-v0-2/experience_docx/experiment_logs/haze4k_apdr_v0_2_selector_20260602/selector_history_apdr_v0_2_selector_seed3407.csv"
+  },
+  "pass": false
+}

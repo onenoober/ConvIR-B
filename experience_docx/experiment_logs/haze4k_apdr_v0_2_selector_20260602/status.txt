@@ -1,0 +1,4 @@
+start root=/root/autodl-tmp/workspace/ConvIR-B-apdr-convir-v0-2 tag=apdr_v0_2_selector_seed3407 2026-06-02T21:21:34+08:00
+arch_preflight_pass 2026-06-02T21:21:38+08:00
+selector_preflight_start epochs=5 train_batches=0 2026-06-02T21:21:38+08:00
+selector_gate_fail_stop apdr_v0_2_selector_seed3407 2026-06-02T21:26:54+08:00

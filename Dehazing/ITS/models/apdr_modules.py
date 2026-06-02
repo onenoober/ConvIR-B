@@ -94,3 +94,89 @@ class APDRScaleAdapter(nn.Module):
             "gate_max": self.gate_max,
             "residual_max": self.residual_max,
         }
+
+
+class APDRV02ScaleAdapter(nn.Module):
+    def __init__(
+        self,
+        feature_channels,
+        hidden_channels=24,
+        residual_max=0.04,
+        gate_max=0.5,
+        gate_init=0.01,
+    ):
+        super(APDRV02ScaleAdapter, self).__init__()
+        if residual_max <= 0:
+            raise ValueError("residual_max must be positive.")
+        if gate_max <= 0:
+            raise ValueError("gate_max must be positive.")
+        if not (0.0 < gate_init < gate_max):
+            raise ValueError("gate_init must be in (0, gate_max).")
+
+        self.residual_max = float(residual_max)
+        self.gate_max = float(gate_max)
+        self.gate_init = float(gate_init)
+        self.priors = RGBHazePriorExtractor()
+
+        self.image_context = nn.Sequential(
+            nn.Conv2d(3 + 3 + 6, hidden_channels, kernel_size=3, stride=1, padding=1),
+            nn.GELU(),
+            nn.Conv2d(hidden_channels, hidden_channels, kernel_size=3, stride=1, padding=1),
+            nn.GELU(),
+        )
+        self.feature_context = nn.Sequential(
+            nn.Conv2d(feature_channels, hidden_channels, kernel_size=1, stride=1, padding=0),
+            nn.GELU(),
+        )
+        self.context = nn.Sequential(
+            nn.Conv2d(hidden_channels * 2, hidden_channels, kernel_size=3, stride=1, padding=1),
+            nn.GELU(),
+        )
+        self.residual_head = nn.Conv2d(hidden_channels, 3, kernel_size=3, stride=1, padding=1)
+        self.spatial_gate_head = nn.Conv2d(hidden_channels, 1, kernel_size=3, stride=1, padding=1)
+        self.global_gate_head = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Conv2d(hidden_channels, hidden_channels, kernel_size=1, stride=1, padding=0),
+            nn.GELU(),
+            nn.Conv2d(hidden_channels, 1, kernel_size=1, stride=1, padding=0),
+        )
+
+        nn.init.zeros_(self.residual_head.weight)
+        nn.init.zeros_(self.residual_head.bias)
+        nn.init.zeros_(self.spatial_gate_head.weight)
+        nn.init.constant_(self.spatial_gate_head.bias, _logit(self.gate_init / self.gate_max))
+        nn.init.zeros_(self.global_gate_head[-1].weight)
+        nn.init.constant_(self.global_gate_head[-1].bias, _logit(self.gate_init / self.gate_max))
+
+    def forward(self, hazy, anchor, feature, force_zero_gate=False):
+        priors = self.priors(hazy)
+        image_context = self.image_context(torch.cat([hazy, anchor.detach(), priors], dim=1))
+        feature_context = self.feature_context(feature)
+        context = self.context(torch.cat([image_context, feature_context], dim=1))
+
+        residual_raw = self.residual_max * torch.tanh(self.residual_head(context))
+        spatial_logits = self.spatial_gate_head(context)
+        global_logits = self.global_gate_head(context)
+        spatial_gate_unit = torch.sigmoid(spatial_logits)
+        global_gate_unit = torch.sigmoid(global_logits)
+        gate = self.gate_max * spatial_gate_unit * global_gate_unit
+        if force_zero_gate:
+            gate = torch.zeros_like(gate)
+        residual = gate * residual_raw
+        output = anchor + residual
+        return output, {
+            "gate": gate,
+            "spatial_gate": self.gate_max * spatial_gate_unit,
+            "spatial_gate_unit": spatial_gate_unit,
+            "spatial_logits": spatial_logits,
+            "global_gate": self.gate_max * global_gate_unit,
+            "global_gate_unit": global_gate_unit,
+            "global_logits": global_logits,
+            "residual": residual,
+            "residual_raw": residual_raw,
+            "anchor": anchor,
+            "output": output,
+            "prior": priors,
+            "gate_max": self.gate_max,
+            "residual_max": self.residual_max,
+        }

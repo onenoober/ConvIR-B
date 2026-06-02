@@ -192,6 +192,9 @@ def configure_apdr_only(model):
 
 
 def finite_backward(model, x, target, args):
+    if args.apdr_loss_scales == "full_only" and args.apdr_active_scales != "full":
+        raise ValueError("--apdr_loss_scales full_only requires --apdr_active_scales full")
+
     trainable, frozen = configure_apdr_only(model)
     model.eval()
     for name, module in model.named_modules():
@@ -285,6 +288,7 @@ def build_pair(args, device):
         apdr_gate_init=args.apdr_gate_init,
         apdr_force_zero_gate=False,
         apdr_active_scales=args.apdr_active_scales,
+        apdr_selector_mode=args.apdr_selector_mode,
     ).to(device).eval()
     return original, apdr
 
@@ -294,6 +298,7 @@ def main():
     parser.add_argument("--data_dir", default="")
     parser.add_argument("--checkpoint", default="")
     parser.add_argument("--output", required=True)
+    parser.add_argument("--stage", default="apdr_v0_1_preflight")
     parser.add_argument("--seed", type=int, default=3407)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--height", type=int, default=96)
@@ -305,6 +310,7 @@ def main():
     parser.add_argument("--apdr_residual_max", type=float, default=0.04)
     parser.add_argument("--apdr_gate_max", type=float, default=0.5)
     parser.add_argument("--apdr_gate_init", type=float, default=0.02)
+    parser.add_argument("--apdr_selector_mode", default="v0", choices=["v0", "v0_2"])
     parser.add_argument("--apdr_active_scales", default="all", choices=["all", "full"])
     parser.add_argument("--apdr_loss_scales", default="all", choices=["all", "full_only"])
     parser.add_argument("--apdr_anchor_lambda", type=float, default=0.0)
@@ -313,6 +319,8 @@ def main():
     parser.add_argument("--apdr_residual_lambda", type=float, default=0.0)
     parser.add_argument("--apdr_risk_temperature", type=float, default=5.0)
     args = parser.parse_args()
+    if args.apdr_loss_scales == "full_only" and args.apdr_active_scales != "full":
+        raise ValueError("--apdr_loss_scales full_only requires --apdr_active_scales full")
 
     set_seed(args.seed)
     if args.device == "cuda" and not torch.cuda.is_available():
@@ -405,7 +413,7 @@ def main():
     param_original = count_parameters(original)
     param_apdr = count_parameters(apdr)
     result = {
-        "stage": "apdr_v0_preflight",
+        "stage": args.stage,
         "seed": args.seed,
         "device": str(device),
         "data_dir": args.data_dir,
@@ -415,6 +423,7 @@ def main():
             "residual_max": args.apdr_residual_max,
             "gate_max": args.apdr_gate_max,
             "gate_init": args.apdr_gate_init,
+            "selector_mode": args.apdr_selector_mode,
             "active_scales": args.apdr_active_scales,
             "loss_scales": args.apdr_loss_scales,
             "anchor_lambda": args.apdr_anchor_lambda,
@@ -438,7 +447,7 @@ def main():
         "apdr_stats_initial": stats,
         "params": {
             "original": param_original,
-            "apdr_v0": param_apdr,
+            "apdr_candidate": param_apdr,
             "delta": param_apdr - param_original,
             "delta_pct": (param_apdr - param_original) / param_original * 100.0,
         },

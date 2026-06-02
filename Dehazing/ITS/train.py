@@ -161,6 +161,13 @@ def _set_training_mode(model, args):
 
 
 def _train(model, args):
+    if (
+        getattr(args, "arch", "convir") == "apdr"
+        and getattr(args, "apdr_loss_scales", "all") == "full_only"
+        and getattr(args, "apdr_active_scales", "all") != "full"
+    ):
+        raise ValueError("--apdr_loss_scales full_only requires --apdr_active_scales full")
+
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     criterion = torch.nn.L1Loss()
 

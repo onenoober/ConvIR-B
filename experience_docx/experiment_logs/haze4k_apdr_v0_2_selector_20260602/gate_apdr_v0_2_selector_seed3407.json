@@ -1,0 +1,39 @@
+{
+  "stage": "APDR-v0.2 selector-only preflight",
+  "checks": {
+    "hard_easy_h_img_ratio": {
+      "observed": 1.0024525484734712,
+      "required": ">= 3.0",
+      "pass": false
+    },
+    "spearman_h_img_vs_a0_psnr": {
+      "observed": -0.35373300471218927,
+      "required": "<= -0.45",
+      "pass": false
+    },
+    "auc_hard_vs_easy_by_h_img": {
+      "observed": 0.768624,
+      "required": ">= 0.75",
+      "pass": true
+    },
+    "strong_reference_mean_h_img": {
+      "observed": 0.021288085967302323,
+      "required": "<= 0.05",
+      "pass": true
+    },
+    "spatial_bce_decreased": {
+      "observed": {
+        "first": 2.0639835316687822,
+        "last": 0.7292757444083691
+      },
+      "required": "last < first",
+      "pass": true
+    },
+    "zero_residual_output": {
+      "observed": 0.0,
+      "required": "< 1e-06",
+      "pass": true
+    }
+  },
+  "pass": false
+}

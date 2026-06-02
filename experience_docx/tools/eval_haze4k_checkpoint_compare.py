@@ -45,6 +45,7 @@ def build_model(arch, mode, args, prefix):
             apdr_gate_init=getattr(args, f"{prefix}_apdr_gate_init"),
             apdr_force_zero_gate=getattr(args, f"{prefix}_apdr_force_zero_gate"),
             apdr_active_scales=getattr(args, f"{prefix}_apdr_active_scales"),
+            apdr_selector_mode=getattr(args, f"{prefix}_apdr_selector_mode"),
         )
     raise ValueError(f"Unsupported arch: {arch}")
 
@@ -154,12 +155,14 @@ def main():
     parser.add_argument("--original_apdr_gate_init", type=float, default=0.02)
     parser.add_argument("--original_apdr_force_zero_gate", action="store_true")
     parser.add_argument("--original_apdr_active_scales", default="all", choices=["all", "full"])
+    parser.add_argument("--original_apdr_selector_mode", default="v0", choices=["v0", "v0_2"])
     parser.add_argument("--candidate_apdr_prior_mode", default="rgb_haze", choices=["rgb_haze"])
     parser.add_argument("--candidate_apdr_residual_max", type=float, default=0.04)
     parser.add_argument("--candidate_apdr_gate_max", type=float, default=0.5)
     parser.add_argument("--candidate_apdr_gate_init", type=float, default=0.02)
     parser.add_argument("--candidate_apdr_force_zero_gate", action="store_true")
     parser.add_argument("--candidate_apdr_active_scales", default="all", choices=["all", "full"])
+    parser.add_argument("--candidate_apdr_selector_mode", default="v0", choices=["v0", "v0_2"])
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
     args = parser.parse_args()
