@@ -1,0 +1,59 @@
+{
+  "stage": "B1r",
+  "compare_json": "/root/autodl-tmp/workspace/ConvIR-B-b1r-decoder-rhfd-preserve/experience_docx/experiment_logs/haze4k_b1r_decoder_rhfd_preserve_20260602/scout_eval_compare_seed3407_B1r_stop20_vs_A0_best.json",
+  "bucket_json": "/root/autodl-tmp/workspace/ConvIR-B-b1r-decoder-rhfd-preserve/experience_docx/experiment_logs/haze4k_b1r_decoder_rhfd_preserve_20260602/scout_eval_bucket_analysis_seed3407_B1r_stop20_vs_A0_best.json",
+  "metrics": {
+    "global_mean_delta_psnr": 0.0027779293060302733,
+    "mean_ssim_delta": 5.022120475769043e-05,
+    "hard_bottom25_mean_delta_psnr": 0.04610902404785156,
+    "easy_top25_mean_delta_psnr": -0.024788650512695312,
+    "strong_reference_regressions_delta_le_-0.05": 103,
+    "severe_all_image_regressions_delta_le_-0.20": 57
+  },
+  "checks": [
+    {
+      "name": "global_psnr_delta_vs_a0",
+      "value": 0.0027779293060302733,
+      "op": ">=",
+      "threshold": -0.05,
+      "pass": true
+    },
+    {
+      "name": "mean_ssim_delta_vs_a0",
+      "value": 5.022120475769043e-05,
+      "op": ">=",
+      "threshold": -0.001,
+      "pass": true
+    },
+    {
+      "name": "hard_bottom25_delta_vs_a0",
+      "value": 0.04610902404785156,
+      "op": ">=",
+      "threshold": 0.15,
+      "pass": false
+    },
+    {
+      "name": "easy_top25_mean_delta_vs_a0",
+      "value": -0.024788650512695312,
+      "op": ">=",
+      "threshold": -0.05,
+      "pass": true
+    },
+    {
+      "name": "strong_reference_regressions_vs_a0",
+      "value": 103,
+      "op": "<=",
+      "threshold": 50,
+      "pass": false
+    },
+    {
+      "name": "severe_all_image_regressions_vs_a0",
+      "value": 57,
+      "op": "<=",
+      "threshold": 150,
+      "pass": true
+    }
+  ],
+  "automatic_pass": false,
+  "manual_visual_artifact_check": "pending"
+}

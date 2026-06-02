@@ -1,0 +1,229 @@
+{
+  "stage": "pfd_b1r_decoder_rhfd_preflight",
+  "seed": 3407,
+  "device": "cuda",
+  "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+  "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+  "candidate_flags": {
+    "pfd_decoder_rhfd": true,
+    "pfd_decoder_rhfd_scale": 0.1
+  },
+  "pair_audit": {
+    "train": {
+      "split": "train",
+      "image_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/train",
+      "input_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/train/haze",
+      "label_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/train/gt",
+      "input_count": 3000,
+      "label_count": 3000,
+      "mapped_target_count": 3000,
+      "missing_label_count": 0,
+      "missing_labels": [],
+      "orphan_label_count": 0,
+      "orphan_labels": [],
+      "duplicate_target_mapping_count": 0,
+      "duplicate_target_mappings": {},
+      "duplicate_input_stem_count": 0,
+      "duplicate_input_stems": {},
+      "duplicate_label_stem_count": 0,
+      "duplicate_label_stems": {},
+      "crop_compatible_sample_count": 32,
+      "crop_compatible_failure_count": 0,
+      "crop_compatible_failures": [],
+      "pass": true
+    },
+    "test": {
+      "split": "test",
+      "image_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/test",
+      "input_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/test/haze",
+      "label_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/test/gt",
+      "input_count": 1000,
+      "label_count": 1000,
+      "mapped_target_count": 1000,
+      "missing_label_count": 0,
+      "missing_labels": [],
+      "orphan_label_count": 0,
+      "orphan_labels": [],
+      "duplicate_target_mapping_count": 0,
+      "duplicate_target_mappings": {},
+      "duplicate_input_stem_count": 0,
+      "duplicate_input_stems": {},
+      "duplicate_label_stem_count": 0,
+      "duplicate_label_stems": {},
+      "crop_compatible_sample_count": 32,
+      "crop_compatible_failure_count": 0,
+      "crop_compatible_failures": [],
+      "pass": true
+    }
+  },
+  "checkpoint_load": {
+    "original": {
+      "missing": [],
+      "unexpected": []
+    },
+    "pfd": {
+      "missing": [
+        "PFD_HSCM2.confidence.0.weight",
+        "PFD_HSCM2.confidence.0.bias",
+        "PFD_HSCM2.project.0.weight",
+        "PFD_HSCM2.project.0.bias",
+        "PFD_HSCM2.project.2.weight",
+        "PFD_HSCM2.project.2.bias",
+        "PFD_HSCM1.confidence.0.weight",
+        "PFD_HSCM1.confidence.0.bias",
+        "PFD_HSCM1.project.0.weight",
+        "PFD_HSCM1.project.0.bias",
+        "PFD_HSCM1.project.2.weight",
+        "PFD_HSCM1.project.2.bias",
+        "PFD_RHFD2.body.0.weight",
+        "PFD_RHFD2.body.0.bias",
+        "PFD_RHFD2.body.2.weight",
+        "PFD_RHFD2.body.2.bias",
+        "PFD_RHFD2.body.4.weight",
+        "PFD_RHFD2.body.4.bias",
+        "PFD_RHFD1.body.0.weight",
+        "PFD_RHFD1.body.0.bias",
+        "PFD_RHFD1.body.2.weight",
+        "PFD_RHFD1.body.2.bias",
+        "PFD_RHFD1.body.4.weight",
+        "PFD_RHFD1.body.4.bias",
+        "PFD_PFFB2.project.weight",
+        "PFD_PFFB2.project.bias",
+        "PFD_PFFB1.project.weight",
+        "PFD_PFFB1.project.bias",
+        "PFD_DECODER_RHFD4.body.0.weight",
+        "PFD_DECODER_RHFD4.body.0.bias",
+        "PFD_DECODER_RHFD4.body.2.weight",
+        "PFD_DECODER_RHFD4.body.2.bias",
+        "PFD_DECODER_RHFD4.body.4.weight",
+        "PFD_DECODER_RHFD4.body.4.bias",
+        "PFD_DECODER_RHFD2.body.0.weight",
+        "PFD_DECODER_RHFD2.body.0.bias",
+        "PFD_DECODER_RHFD2.body.2.weight",
+        "PFD_DECODER_RHFD2.body.2.bias",
+        "PFD_DECODER_RHFD2.body.4.weight",
+        "PFD_DECODER_RHFD2.body.4.bias"
+      ],
+      "unexpected": [],
+      "bad_missing": [],
+      "pass": true
+    },
+    "pass": true
+  },
+  "random_tensor_equivalence": {
+    "max_abs_diff": 0.0,
+    "mean_abs_diff": 0.0,
+    "outputs": [
+      {
+        "output_index": 0,
+        "shape": [
+          1,
+          3,
+          64,
+          64
+        ],
+        "max_abs_diff": 0.0,
+        "mean_abs_diff": 0.0
+      },
+      {
+        "output_index": 1,
+        "shape": [
+          1,
+          3,
+          128,
+          128
+        ],
+        "max_abs_diff": 0.0,
+        "mean_abs_diff": 0.0
+      },
+      {
+        "output_index": 2,
+        "shape": [
+          1,
+          3,
+          256,
+          256
+        ],
+        "max_abs_diff": 0.0,
+        "mean_abs_diff": 0.0
+      }
+    ],
+    "pass": true
+  },
+  "real_batch_equivalence": {
+    "max_abs_diff": 0.0,
+    "mean_abs_diff": 0.0,
+    "input_shape": [
+      1,
+      3,
+      256,
+      256
+    ],
+    "outputs": [
+      {
+        "output_index": 0,
+        "shape": [
+          1,
+          3,
+          64,
+          64
+        ],
+        "max_abs_diff": 0.0,
+        "mean_abs_diff": 0.0
+      },
+      {
+        "output_index": 1,
+        "shape": [
+          1,
+          3,
+          128,
+          128
+        ],
+        "max_abs_diff": 0.0,
+        "mean_abs_diff": 0.0
+      },
+      {
+        "output_index": 2,
+        "shape": [
+          1,
+          3,
+          256,
+          256
+        ],
+        "max_abs_diff": 0.0,
+        "mean_abs_diff": 0.0
+      }
+    ],
+    "pass": true
+  },
+  "params": {
+    "original": 8630665,
+    "pfd_candidate": 8700497,
+    "delta": 69832,
+    "delta_pct": 0.8091149407374751
+  },
+  "adapter_only_trainable_summary": {
+    "enabled_prefixes": [
+      "PFD_DECODER_RHFD"
+    ],
+    "trainable_param_count": 3712,
+    "frozen_param_count": 8696785,
+    "trainable_tensor_count": 12,
+    "frozen_tensor_count": 576,
+    "trainable_names_sample": [
+      "PFD_DECODER_RHFD4.body.0.weight",
+      "PFD_DECODER_RHFD4.body.0.bias",
+      "PFD_DECODER_RHFD4.body.2.weight",
+      "PFD_DECODER_RHFD4.body.2.bias",
+      "PFD_DECODER_RHFD4.body.4.weight",
+      "PFD_DECODER_RHFD4.body.4.bias",
+      "PFD_DECODER_RHFD2.body.0.weight",
+      "PFD_DECODER_RHFD2.body.0.bias",
+      "PFD_DECODER_RHFD2.body.2.weight",
+      "PFD_DECODER_RHFD2.body.2.bias",
+      "PFD_DECODER_RHFD2.body.4.weight",
+      "PFD_DECODER_RHFD2.body.4.bias"
+    ]
+  },
+  "pass": true
+}
