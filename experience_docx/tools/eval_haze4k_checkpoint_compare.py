@@ -14,7 +14,8 @@ from pytorch_msssim import ssim
 sys.path.insert(0, os.getcwd())
 
 from data import test_dataloader
-from models.ConvIR import build_net
+from models.APDRConvIR import build_apdr_net
+from models.ConvIR import build_net as build_convir_net
 
 
 def percentile(values, pct):
@@ -31,15 +32,37 @@ def percentile(values, pct):
     return ordered[lo] + (ordered[hi] - ordered[lo]) * (pos - lo)
 
 
-def eval_one(mode, checkpoint, data_dir):
+def build_model(arch, mode, args, prefix):
+    if arch == "convir":
+        return build_convir_net("base", "Haze4K", mode)
+    if arch == "apdr":
+        return build_apdr_net(
+            "base",
+            "Haze4K",
+            apdr_prior_mode=getattr(args, f"{prefix}_apdr_prior_mode"),
+            apdr_residual_max=getattr(args, f"{prefix}_apdr_residual_max"),
+            apdr_gate_max=getattr(args, f"{prefix}_apdr_gate_max"),
+            apdr_gate_init=getattr(args, f"{prefix}_apdr_gate_init"),
+            apdr_force_zero_gate=getattr(args, f"{prefix}_apdr_force_zero_gate"),
+        )
+    raise ValueError(f"Unsupported arch: {arch}")
+
+
+def load_model_state(path, device):
+    state = torch.load(path, map_location=device)
+    if isinstance(state, dict) and "model" in state:
+        return state["model"]
+    return state
+
+
+def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
         torch.cuda.reset_peak_memory_stats()
 
-    model = build_net("base", "Haze4K", mode).to(device)
-    state = torch.load(checkpoint, map_location=device)
-    model.load_state_dict(state["model"])
+    model = build_model(arch, mode, args, prefix).to(device)
+    model.load_state_dict(load_model_state(checkpoint, device))
     model.eval()
 
     dataloader = test_dataloader(data_dir, "Haze4K", batch_size=1, num_workers=0)
@@ -91,13 +114,15 @@ def eval_one(mode, checkpoint, data_dir):
             )
             if (idx + 1) % 100 == 0:
                 mean_psnr = statistics.mean(row["psnr"] for row in rows)
-                print(f"{mode} {idx + 1}/{len(dataloader)} psnr={mean_psnr:.4f}", flush=True)
+                print(f"{label} {idx + 1}/{len(dataloader)} psnr={mean_psnr:.4f}", flush=True)
 
     peak_mem = None
     if torch.cuda.is_available():
         peak_mem = torch.cuda.max_memory_allocated() / 1024**2
 
     summary = {
+        "label": label,
+        "arch": arch,
         "mode": mode,
         "checkpoint": checkpoint,
         "count": len(rows),
@@ -114,10 +139,24 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", required=True)
     parser.add_argument("--original_checkpoint", required=True)
+    parser.add_argument("--original_arch", default="convir", choices=["convir", "apdr"])
+    parser.add_argument("--original_mode", default="original")
+    parser.add_argument("--original_name", default="original")
     parser.add_argument("--modres_checkpoint")
     parser.add_argument("--candidate_checkpoint")
+    parser.add_argument("--candidate_arch", default="convir", choices=["convir", "apdr"])
     parser.add_argument("--candidate_mode", default="modres")
     parser.add_argument("--candidate_name")
+    parser.add_argument("--original_apdr_prior_mode", default="rgb_haze", choices=["rgb_haze"])
+    parser.add_argument("--original_apdr_residual_max", type=float, default=0.04)
+    parser.add_argument("--original_apdr_gate_max", type=float, default=0.5)
+    parser.add_argument("--original_apdr_gate_init", type=float, default=0.02)
+    parser.add_argument("--original_apdr_force_zero_gate", action="store_true")
+    parser.add_argument("--candidate_apdr_prior_mode", default="rgb_haze", choices=["rgb_haze"])
+    parser.add_argument("--candidate_apdr_residual_max", type=float, default=0.04)
+    parser.add_argument("--candidate_apdr_gate_max", type=float, default=0.5)
+    parser.add_argument("--candidate_apdr_gate_init", type=float, default=0.02)
+    parser.add_argument("--candidate_apdr_force_zero_gate", action="store_true")
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
     args = parser.parse_args()
@@ -128,19 +167,18 @@ def main():
         raise ValueError("Provide --candidate_checkpoint or --modres_checkpoint")
     candidate_name = args.candidate_name or args.candidate_mode
     runs = [
-        ("original", "original", args.original_checkpoint),
-        (candidate_name, args.candidate_mode, candidate_checkpoint),
+        (args.original_name, args.original_arch, args.original_mode, args.original_checkpoint, "original"),
+        (candidate_name, args.candidate_arch, args.candidate_mode, candidate_checkpoint, "candidate"),
     ]
 
     all_rows = {}
     summaries = {}
-    for label, mode, checkpoint in runs:
-        rows, summary = eval_one(mode, checkpoint, args.data_dir)
-        summary["label"] = label
+    for label, arch, mode, checkpoint, prefix in runs:
+        rows, summary = eval_one(label, arch, mode, checkpoint, args.data_dir, args, prefix)
         all_rows[label] = rows
         summaries[label] = summary
 
-    original = {row["name"]: row for row in all_rows["original"]}
+    original = {row["name"]: row for row in all_rows[args.original_name]}
     candidate = {row["name"]: row for row in all_rows[candidate_name]}
     common = [name for name in original if name in candidate]
     deltas = [candidate[name]["psnr"] - original[name]["psnr"] for name in common]

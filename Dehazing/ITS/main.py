@@ -2,10 +2,58 @@ import os
 import torch
 import argparse
 import random
+import shutil
 from torch.backends import cudnn
-from models.ConvIR import build_net
+from models.APDRConvIR import build_apdr_net
+from models.ConvIR import build_net as build_convir_net
 from train import _train
 from eval import _eval
+
+
+def build_model(args):
+    if args.arch == 'convir':
+        return build_convir_net(args.version, args.data, args.fam_mode)
+    if args.fam_mode != 'original':
+        raise ValueError('--fam_mode must stay original when --arch apdr is used.')
+    return build_apdr_net(
+        args.version,
+        args.data,
+        apdr_prior_mode=args.apdr_prior_mode,
+        apdr_residual_max=args.apdr_residual_max,
+        apdr_gate_max=args.apdr_gate_max,
+        apdr_gate_init=args.apdr_gate_init,
+        apdr_force_zero_gate=bool(args.apdr_force_zero_gate),
+    )
+
+
+def _load_checkpoint_model(path, map_location):
+    state = torch.load(path, map_location=map_location)
+    if isinstance(state, dict) and 'model' in state:
+        return state['model']
+    return state
+
+
+def load_init_model(model, args):
+    if not args.init_model:
+        return
+    if args.resume:
+        raise ValueError('--init_model initializes weights; --resume restores optimizer state. Use only one.')
+    state = _load_checkpoint_model(args.init_model, 'cpu')
+    if args.arch == 'convir':
+        model.load_state_dict(state)
+        print(f'INIT_MODEL_LOAD path={args.init_model} missing=[] unexpected=[]')
+        return
+    result = model.load_state_dict(state, strict=False)
+    missing = list(result.missing_keys)
+    unexpected = list(result.unexpected_keys)
+    bad_missing = [key for key in missing if not key.startswith('APDR_')]
+    if unexpected or bad_missing:
+        raise RuntimeError(
+            'Unexpected --init_model load result: '
+            f'missing={missing}, unexpected={unexpected}'
+        )
+    print(f'INIT_MODEL_LOAD path={args.init_model} missing={missing} unexpected={unexpected}')
+
 
 def main(args):
     # CUDNN
@@ -25,11 +73,12 @@ def main(args):
         os.makedirs('results/' + args.model_name + '/')
     if not os.path.exists(args.result_dir):
         os.makedirs(args.result_dir)
-    model = build_net(args.version, args.data, args.fam_mode)
+    model = build_model(args)
     # print(model)
 
     if torch.cuda.is_available():
         model.cuda()
+    load_init_model(model, args)
     if args.mode == 'train':
         _train(model, args)
 
@@ -45,6 +94,21 @@ if __name__ == '__main__':
     parser.add_argument('--data', type=str, default='ITS', choices=['ITS', 'Haze4K', 'NHR', 'GTA5', 'real_haze'])
     parser.add_argument('--version', default='small', choices=['small', 'base', 'large'], type=str)
     parser.add_argument('--fam_mode', default='original', choices=['original', 'modres', 'fam2_modres'], type=str)
+    parser.add_argument('--arch', default='convir', choices=['convir', 'apdr'], type=str)
+    parser.add_argument('--apdr_prior_mode', default='rgb_haze', choices=['rgb_haze'], type=str)
+    parser.add_argument('--apdr_residual_max', default=0.04, type=float)
+    parser.add_argument('--apdr_gate_max', default=0.5, type=float)
+    parser.add_argument('--apdr_gate_init', default=0.02, type=float)
+    parser.add_argument('--apdr_force_zero_gate', default=0, choices=[0, 1], type=int)
+    parser.add_argument(
+        '--apdr_train_scope',
+        default='all',
+        choices=['all', 'apdr_only'],
+        type=str,
+    )
+    parser.add_argument('--apdr_anchor_lambda', default=0.0, type=float)
+    parser.add_argument('--apdr_gate_lambda', default=0.0, type=float)
+    parser.add_argument('--apdr_residual_lambda', default=0.0, type=float)
     parser.add_argument('--seed', default=-1, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
@@ -62,6 +126,7 @@ if __name__ == '__main__':
     parser.add_argument('--valid_freq', type=int, default=10)
     parser.add_argument('--mod_stats_freq', type=int, default=0)
     parser.add_argument('--mod_stats_batches', type=int, default=64)
+    parser.add_argument('--init_model', type=str, default='')
     parser.add_argument('--resume', type=str, default='')
 
 
@@ -96,13 +161,15 @@ if __name__ == '__main__':
     args.result_dir = os.path.join('results/', args.model_name, 'images', args.data)
     if not os.path.exists(args.model_save_dir):
         os.makedirs(args.model_save_dir)
-    command = 'cp ' + 'models/layers.py ' + args.model_save_dir
-    os.system(command)
-    command = 'cp ' + 'models/ConvIR.py ' + args.model_save_dir
-    os.system(command)
-    command = 'cp ' + 'train.py ' + args.model_save_dir
-    os.system(command)
-    command = 'cp ' + 'main.py ' + args.model_save_dir
-    os.system(command)
+    for source in (
+        'models/layers.py',
+        'models/ConvIR.py',
+        'models/APDRConvIR.py',
+        'models/apdr_modules.py',
+        'train.py',
+        'main.py',
+    ):
+        if os.path.exists(source):
+            shutil.copy2(source, args.model_save_dir)
     print(args)
     main(args)

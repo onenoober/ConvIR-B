@@ -1,0 +1,297 @@
+{
+  "stage": "apdr_v0_preflight",
+  "seed": 3407,
+  "device": "cuda",
+  "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+  "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+  "apdr_config": {
+    "prior_mode": "rgb_haze",
+    "residual_max": 0.04,
+    "gate_max": 0.5,
+    "gate_init": 0.02
+  },
+  "pair_audit": {
+    "status": "checked",
+    "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+    "train": {
+      "split": "train",
+      "image_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/train",
+      "input_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/train/haze",
+      "label_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/train/gt",
+      "input_count": 3000,
+      "label_count": 3000,
+      "mapped_target_count": 3000,
+      "missing_label_count": 0,
+      "missing_labels": [],
+      "orphan_label_count": 0,
+      "orphan_labels": [],
+      "duplicate_target_mapping_count": 0,
+      "duplicate_target_mappings": {},
+      "duplicate_input_stem_count": 0,
+      "duplicate_input_stems": {},
+      "duplicate_label_stem_count": 0,
+      "duplicate_label_stems": {},
+      "crop_compatible_sample_count": 32,
+      "crop_compatible_failure_count": 0,
+      "crop_compatible_failures": [],
+      "pass": true
+    },
+    "test": {
+      "split": "test",
+      "image_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/test",
+      "input_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/test/haze",
+      "label_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/test/gt",
+      "input_count": 1000,
+      "label_count": 1000,
+      "mapped_target_count": 1000,
+      "missing_label_count": 0,
+      "missing_labels": [],
+      "orphan_label_count": 0,
+      "orphan_labels": [],
+      "duplicate_target_mapping_count": 0,
+      "duplicate_target_mappings": {},
+      "duplicate_input_stem_count": 0,
+      "duplicate_input_stems": {},
+      "duplicate_label_stem_count": 0,
+      "duplicate_label_stems": {},
+      "crop_compatible_sample_count": 32,
+      "crop_compatible_failure_count": 0,
+      "crop_compatible_failures": [],
+      "pass": true
+    },
+    "pass": true
+  },
+  "checkpoint_load": {
+    "status": "loaded",
+    "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+    "original": {
+      "missing": [],
+      "unexpected": []
+    },
+    "apdr": {
+      "missing": [
+        "APDR_4.image_context.0.weight",
+        "APDR_4.image_context.0.bias",
+        "APDR_4.image_context.2.weight",
+        "APDR_4.image_context.2.bias",
+        "APDR_4.feature_context.0.weight",
+        "APDR_4.feature_context.0.bias",
+        "APDR_4.context.0.weight",
+        "APDR_4.context.0.bias",
+        "APDR_4.residual_head.weight",
+        "APDR_4.residual_head.bias",
+        "APDR_4.gate_head.weight",
+        "APDR_4.gate_head.bias",
+        "APDR_2.image_context.0.weight",
+        "APDR_2.image_context.0.bias",
+        "APDR_2.image_context.2.weight",
+        "APDR_2.image_context.2.bias",
+        "APDR_2.feature_context.0.weight",
+        "APDR_2.feature_context.0.bias",
+        "APDR_2.context.0.weight",
+        "APDR_2.context.0.bias",
+        "APDR_2.residual_head.weight",
+        "APDR_2.residual_head.bias",
+        "APDR_2.gate_head.weight",
+        "APDR_2.gate_head.bias",
+        "APDR_1.image_context.0.weight",
+        "APDR_1.image_context.0.bias",
+        "APDR_1.image_context.2.weight",
+        "APDR_1.image_context.2.bias",
+        "APDR_1.feature_context.0.weight",
+        "APDR_1.feature_context.0.bias",
+        "APDR_1.context.0.weight",
+        "APDR_1.context.0.bias",
+        "APDR_1.residual_head.weight",
+        "APDR_1.residual_head.bias",
+        "APDR_1.gate_head.weight",
+        "APDR_1.gate_head.bias"
+      ],
+      "unexpected": [],
+      "bad_missing": [],
+      "pass": true
+    },
+    "pass": true
+  },
+  "random_tensor_equivalence": {
+    "max_abs_diff": 0.0,
+    "mean_abs_diff": 0.0,
+    "outputs": [
+      {
+        "output_index": 0,
+        "shape": [
+          1,
+          3,
+          64,
+          64
+        ],
+        "max_abs_diff": 0.0,
+        "mean_abs_diff": 0.0
+      },
+      {
+        "output_index": 1,
+        "shape": [
+          1,
+          3,
+          128,
+          128
+        ],
+        "max_abs_diff": 0.0,
+        "mean_abs_diff": 0.0
+      },
+      {
+        "output_index": 2,
+        "shape": [
+          1,
+          3,
+          256,
+          256
+        ],
+        "max_abs_diff": 0.0,
+        "mean_abs_diff": 0.0
+      }
+    ],
+    "pass": true
+  },
+  "real_batch_equivalence": {
+    "status": "checked",
+    "max_abs_diff": 0.0,
+    "mean_abs_diff": 0.0,
+    "input_shape": [
+      1,
+      3,
+      256,
+      256
+    ],
+    "outputs": [
+      {
+        "output_index": 0,
+        "shape": [
+          1,
+          3,
+          64,
+          64
+        ],
+        "max_abs_diff": 0.0,
+        "mean_abs_diff": 0.0
+      },
+      {
+        "output_index": 1,
+        "shape": [
+          1,
+          3,
+          128,
+          128
+        ],
+        "max_abs_diff": 0.0,
+        "mean_abs_diff": 0.0
+      },
+      {
+        "output_index": 2,
+        "shape": [
+          1,
+          3,
+          256,
+          256
+        ],
+        "max_abs_diff": 0.0,
+        "mean_abs_diff": 0.0
+      }
+    ],
+    "pass": true
+  },
+  "finite_backward": {
+    "loss": 0.020386511459946632,
+    "loss_finite": true,
+    "trainable_param_count": 62700,
+    "frozen_param_count": 8630665,
+    "trainable_tensor_count": 36,
+    "nonzero_grad_tensor_count": 6,
+    "nonzero_grad_tensors": [
+      "APDR_4.residual_head.weight",
+      "APDR_4.residual_head.bias",
+      "APDR_2.residual_head.weight",
+      "APDR_2.residual_head.bias",
+      "APDR_1.residual_head.weight",
+      "APDR_1.residual_head.bias"
+    ],
+    "zero_grad_tensor_count": 30,
+    "zero_grad_tensors_first30": [
+      "APDR_4.image_context.0.weight",
+      "APDR_4.image_context.0.bias",
+      "APDR_4.image_context.2.weight",
+      "APDR_4.image_context.2.bias",
+      "APDR_4.feature_context.0.weight",
+      "APDR_4.feature_context.0.bias",
+      "APDR_4.context.0.weight",
+      "APDR_4.context.0.bias",
+      "APDR_4.gate_head.weight",
+      "APDR_4.gate_head.bias",
+      "APDR_2.image_context.0.weight",
+      "APDR_2.image_context.0.bias",
+      "APDR_2.image_context.2.weight",
+      "APDR_2.image_context.2.bias",
+      "APDR_2.feature_context.0.weight",
+      "APDR_2.feature_context.0.bias",
+      "APDR_2.context.0.weight",
+      "APDR_2.context.0.bias",
+      "APDR_2.gate_head.weight",
+      "APDR_2.gate_head.bias",
+      "APDR_1.image_context.0.weight",
+      "APDR_1.image_context.0.bias",
+      "APDR_1.image_context.2.weight",
+      "APDR_1.image_context.2.bias",
+      "APDR_1.feature_context.0.weight",
+      "APDR_1.feature_context.0.bias",
+      "APDR_1.context.0.weight",
+      "APDR_1.context.0.bias",
+      "APDR_1.gate_head.weight",
+      "APDR_1.gate_head.bias"
+    ],
+    "nonfinite_grad_tensors": [],
+    "frozen_with_grad_count": 0,
+    "frozen_with_grad_first30": [],
+    "pass": true
+  },
+  "apdr_stats_initial": {
+    "scales": {
+      "quarter": {
+        "gate_mean": 0.019999999552965164,
+        "gate_std": 0.0,
+        "gate_min": 0.019999999552965164,
+        "gate_max": 0.019999999552965164,
+        "residual_abs_mean": 0.0,
+        "residual_abs_max": 0.0,
+        "residual_raw_abs_mean": 0.0,
+        "anchor_abs_mean": 0.31097519397735596
+      },
+      "half": {
+        "gate_mean": 0.019999997690320015,
+        "gate_std": 0.0,
+        "gate_min": 0.019999999552965164,
+        "gate_max": 0.019999999552965164,
+        "residual_abs_mean": 0.0,
+        "residual_abs_max": 0.0,
+        "residual_raw_abs_mean": 0.0,
+        "anchor_abs_mean": 0.31147074699401855
+      },
+      "full": {
+        "gate_mean": 0.019999997690320015,
+        "gate_std": 0.0,
+        "gate_min": 0.019999999552965164,
+        "gate_max": 0.019999999552965164,
+        "residual_abs_mean": 0.0,
+        "residual_abs_max": 0.0,
+        "residual_raw_abs_mean": 0.0,
+        "anchor_abs_mean": 0.3113589286804199
+      }
+    }
+  },
+  "params": {
+    "original": 8630665,
+    "apdr_v0": 8693365,
+    "delta": 62700,
+    "delta_pct": 0.7264793616714356
+  },
+  "pass": true
+}

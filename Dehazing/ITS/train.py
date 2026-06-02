@@ -59,11 +59,107 @@ def _log_modulation_stats(model, args, epoch_idx, device):
         )
 
 
+def _flatten_stat_dict(stats):
+    flat = {}
+
+    def visit(prefix, value):
+        if isinstance(value, dict):
+            for key, child in value.items():
+                visit(f"{prefix}{key.lower()}_", child)
+        elif isinstance(value, (int, float)):
+            flat[prefix[:-1]] = float(value)
+
+    visit("", stats)
+    return flat
+
+
+def _pad_to_factor(input_img, factor=32):
+    h, w = input_img.shape[2], input_img.shape[3]
+    padded_h = ((h + factor) // factor) * factor
+    padded_w = ((w + factor) // factor) * factor
+    padh = padded_h - h if h % factor != 0 else 0
+    padw = padded_w - w if w % factor != 0 else 0
+    if padh or padw:
+        input_img = F.pad(input_img, (0, padw, 0, padh), 'reflect')
+    return input_img
+
+
+def _log_apdr_stats(model, args, epoch_idx, device):
+    if args.mod_stats_freq <= 0 or epoch_idx % args.mod_stats_freq != 0:
+        return
+    if not hasattr(model, 'collect_apdr_stats'):
+        return
+
+    dataloader = valid_dataloader(args.data_dir, args.data, batch_size=1, num_workers=0)
+    sums = {}
+    count = 0
+    was_training = model.training
+    try:
+        model.eval()
+        with torch.no_grad():
+            for batch_idx, batch_data in enumerate(dataloader):
+                if args.mod_stats_batches > 0 and batch_idx >= args.mod_stats_batches:
+                    break
+                input_img = _pad_to_factor(batch_data[0].to(device))
+                flat_stats = _flatten_stat_dict(model.collect_apdr_stats(input_img))
+                for key, value in flat_stats.items():
+                    sums[key] = sums.get(key, 0.0) + value
+                count += 1
+    finally:
+        model.train(was_training)
+
+    if count == 0 or not sums:
+        return
+    averaged = {key: value / count for key, value in sorted(sums.items())}
+    detail = " ".join(f"{key}: {value:.8f}" for key, value in averaged.items())
+    print(f"APDR_STATS Epoch: {epoch_idx:03d} Samples: {count} {detail}")
+
+
+def _configure_train_scope(model, args):
+    if getattr(args, "arch", "convir") != "apdr":
+        return list(model.parameters())
+
+    scope = getattr(args, "apdr_train_scope", "all")
+    if scope == "all":
+        print("APDR_TRAIN_SCOPE all: all parameters trainable")
+        return list(model.parameters())
+
+    if scope != "apdr_only":
+        raise ValueError(f"Unsupported apdr_train_scope: {scope}")
+
+    trainable = 0
+    frozen = 0
+    for name, param in model.named_parameters():
+        param.requires_grad = name.startswith("APDR_")
+        if param.requires_grad:
+            trainable += param.numel()
+        else:
+            frozen += param.numel()
+
+    trainable_params = [param for param in model.parameters() if param.requires_grad]
+    if not trainable_params:
+        raise RuntimeError("No trainable parameters. Check --apdr_train_scope.")
+    print(f"APDR_TRAIN_SCOPE {scope}: trainable={trainable} frozen={frozen}")
+    return trainable_params
+
+
+def _set_training_mode(model, args):
+    if getattr(args, "arch", "convir") == "apdr" and getattr(args, "apdr_train_scope", "all") == "apdr_only":
+        model.eval()
+        for name, module in model.named_modules():
+            if name.startswith("APDR_"):
+                module.train()
+        return
+    model.train()
+
+
 def _train(model, args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     criterion = torch.nn.L1Loss()
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate, betas=(0.9, 0.999), eps=1e-8)
+    trainable_params = _configure_train_scope(model, args)
+    _set_training_mode(model, args)
+    optimizer = torch.optim.Adam(trainable_params, lr=args.learning_rate, betas=(0.9, 0.999), eps=1e-8)
     dataloader = train_dataloader(args.data_dir, args.batch_size, args.num_worker, args.data)
     max_iter = len(dataloader)
     warmup_epochs=3
@@ -93,6 +189,7 @@ def _train(model, args):
         raise ValueError(f'stop_epoch {end_epoch} is earlier than resume epoch {epoch}')
 
     for epoch_idx in range(epoch, end_epoch + 1):
+        _set_training_mode(model, args)
 
         epoch_timer.tic()
         iter_timer.tic()
@@ -135,8 +232,17 @@ def _train(model, args):
             loss_fft = f1+f2+f3
 
             loss = loss_content + 0.1 * loss_fft
+            apdr_reg = {}
+            if hasattr(model, 'apdr_regularization'):
+                apdr_reg = model.apdr_regularization()
+                loss = (
+                    loss
+                    + args.apdr_anchor_lambda * apdr_reg.get("apdr_anchor", 0.0)
+                    + args.apdr_gate_lambda * apdr_reg.get("apdr_gate", 0.0)
+                    + args.apdr_residual_lambda * apdr_reg.get("apdr_residual", 0.0)
+                )
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 0.001)
+            torch.nn.utils.clip_grad_norm_(trainable_params, 0.001)
             optimizer.step()
 
             iter_pixel_adder(loss_content.item())
@@ -146,9 +252,18 @@ def _train(model, args):
             epoch_fft_adder(loss_fft.item())
 
             if (iter_idx + 1) % args.print_freq == 0:
-                print("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f Loss content: %7.4f Loss fft: %7.4f" % (
-                    iter_timer.toc(), epoch_idx, iter_idx + 1, max_iter, scheduler.get_lr()[0], iter_pixel_adder.average(),
-                    iter_fft_adder.average()))
+                apdr_detail = ""
+                if apdr_reg:
+                    apdr_detail = " APDR anchor: %.8f gate: %.8f residual: %.8f" % (
+                        apdr_reg.get("apdr_anchor", 0.0).detach().item(),
+                        apdr_reg.get("apdr_gate", 0.0).detach().item(),
+                        apdr_reg.get("apdr_residual", 0.0).detach().item(),
+                    )
+                print(("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f "
+                       "Loss content: %7.4f Loss fft: %7.4f%s") % (
+                    iter_timer.toc(), epoch_idx, iter_idx + 1, max_iter,
+                    scheduler.get_lr()[0], iter_pixel_adder.average(),
+                    iter_fft_adder.average(), apdr_detail))
                 writer.add_scalar('Pixel Loss', iter_pixel_adder.average(), iter_idx + (epoch_idx-1)* max_iter)
                 writer.add_scalar('FFT Loss', iter_fft_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 
@@ -171,6 +286,8 @@ def _train(model, args):
         if epoch_idx % args.valid_freq == 0:
             val = _valid(model, args, epoch_idx)
             _log_modulation_stats(model, args, epoch_idx, device)
+            _log_apdr_stats(model, args, epoch_idx, device)
+            _set_training_mode(model, args)
             print('%03d epoch \n Average PSNR %.2f dB' % (epoch_idx, val))
             writer.add_scalar('PSNR', val, epoch_idx)
             if val >= best_psnr:

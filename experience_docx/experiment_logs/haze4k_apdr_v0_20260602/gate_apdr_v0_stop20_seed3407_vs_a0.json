@@ -1,0 +1,48 @@
+{
+  "stage": "APDR-v0 stop20",
+  "compare_json": "/root/autodl-tmp/workspace/ConvIR-B-apdr-convir-v0/experience_docx/experiment_logs/haze4k_apdr_v0_20260602/scout_eval_compare_apdr_v0_stop20_seed3407_vs_a0.json",
+  "bucket_json": "/root/autodl-tmp/workspace/ConvIR-B-apdr-convir-v0/experience_docx/experiment_logs/haze4k_apdr_v0_20260602/scout_eval_bucket_analysis_apdr_v0_stop20_seed3407_vs_a0.json",
+  "checks": {
+    "mean_psnr_delta": {
+      "observed": -0.006654308319091797,
+      "required": ">= +0.020",
+      "pass": false
+    },
+    "mean_ssim_delta": {
+      "observed": 1.967012882232666e-05,
+      "required": ">= 0",
+      "pass": true
+    },
+    "hard_bottom_25pct_delta": {
+      "observed": -0.000974853515625,
+      "required": ">= +0.080",
+      "pass": false
+    },
+    "easy_top_25pct_delta": {
+      "observed": -0.015092269897460937,
+      "required": ">= -0.010",
+      "pass": false
+    },
+    "strong_reference_regressions": {
+      "observed": 100,
+      "required": "<= 30 / 250",
+      "pass": false
+    },
+    "severe_regressions": {
+      "observed": 24,
+      "required": "<= 10 / 1000",
+      "pass": false
+    },
+    "worst10_mean_delta": {
+      "observed": -0.175945987701416,
+      "required": "> -0.300",
+      "pass": true
+    },
+    "median_psnr_delta": {
+      "observed": -0.006649971008300781,
+      "required": ">= 0",
+      "pass": false
+    }
+  },
+  "pass": false
+}
