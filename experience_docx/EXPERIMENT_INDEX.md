@@ -1,8 +1,9 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-06-01
+Date: 2026-06-02
 
-Status: evidence index for `codex/main-experiment-evidence-sync`.
+Status: current evidence index for Haze4K route branches through
+`codex/haze4k-saferhfd-v2-train`.
 
 ## Purpose
 
@@ -41,6 +42,10 @@ Retained remote refs:
   loss evidence and prior route history.
 - `github/codex/haze4k-haze-prior-scm`: leaf route containing haze-prior SCM
   evidence, a GitHub-readable text package, and prior route history.
+- `github/codex/haze4k-pfd-mainline`: PFD wrapper/RHFD scout branch plus B1
+  surgery diagnostic evidence.
+- `github/codex/haze4k-saferhfd-v2-train`: SafeRHFD-v2 pfd-only training
+  branch and latest text evidence.
 
 ## Reading Order
 
@@ -63,6 +68,8 @@ Retained remote refs:
 | Hard-aware frequency loss | Completed diagnostic | Best mean PSNR `-0.2127 dB`; hard `+0.5999 dB`; easy `-1.2363 dB`; strong-reference regressions `188/250`; Best-vs-Last `-0.6922 dB`. | `FAIL_STOP_HARDFFT_LAMBDA_002`; do not repeat or promote `hard_fft_lambda=0.02` as-is. | [card](experiment_cards/2026-06-01-haze4k-hardfreq-loss.md) | [logs](experiment_logs/haze4k_hardfreq_loss_stop20_20260601/) | `github/codex/haze4k-hardfreq-loss` |
 | Haze-prior SCM + hard auxiliary | Completed diagnostic | Best mean PSNR `-0.3789 dB`; hard `+0.3501 dB`; easy `-1.6511 dB`; strong-reference regressions `185/250`. | `NO_PROMOTE_STOP20_HAZE_PRIOR_SCM_HARDAUX`; do not promote this exact route. | [card](experiment_cards/2026-06-01-haze4k-haze-prior-scm.md) | [logs](experiment_logs/haze4k_haze_prior_scm_20260601/) | `github/codex/haze4k-haze-prior-scm` |
 | PFD mainline stop20 scout | Completed gated stop20 scout | Stage 0 passed; A1 stop20 completed; B1 hard bottom-25% `+0.3838 dB`, global mean delta `-0.0885 dB`, easy top-25% `-0.3345 dB`, strong-reference regressions `137/250`. | Keep as diagnostic; B1 fails the preservation gate, so B2/B3 were not launched. | [card](experiment_cards/2026-06-02-haze4k-pfd-convir-mainline-plan.md) | [logs](experiment_logs/haze4k_pfd_mainline_20260602/) | `github/codex/haze4k-pfd-mainline` |
+| B1 surgery preservation sweep | Completed no-training diagnostic | `scale=0.70` passed the minimum preservation gate: mean `+0.01064 dB`, hard `+0.03317 dB`, easy `+0.00782 dB`, strong-reference regressions `0/250`. | Use `scale=0.70` as preservation-first surgery evidence; it is not a trained replacement by itself. | derived from [PFD plan](experiment_cards/2026-06-02-haze4k-pfd-convir-mainline-plan.md) | [logs](experiment_logs/haze4k_b1_surgery_preserve_20260602/) | `github/codex/haze4k-pfd-mainline` |
+| SafeRHFD-v2 pfd-only stop20 | Completed cloud stop20 run | Mean `+0.00568 dB`, hard `+0.04890 dB`, easy `-0.00920 dB`, strong-reference regressions `70/250`, severe regressions `18/1000`. | Keep as diagnostic; global gain, hard gain, and strong-reference gates failed. | derived from [PFD plan](experiment_cards/2026-06-02-haze4k-pfd-convir-mainline-plan.md) | [logs](experiment_logs/haze4k_saferhfd_v2_train_20260602/) | `github/codex/haze4k-saferhfd-v2-train` |
 
 ## Evidence Inventory
 
@@ -78,9 +85,12 @@ Retained remote refs:
 | `experiment_logs/haze4k_fam2_selectivity_or_kill_20260601/` | 4 | Selector meta-analysis JSON/CSV and per-image table. |
 | `experiment_logs/haze4k_hardfreq_loss_stop20_20260601/` | 14 | Hard-frequency preflight, train log, Best/Last compare JSON/CSV, run script. |
 | `experiment_logs/haze4k_haze_prior_scm_20260601/` | 11 | Haze-prior preflights, Best/Last compare JSON/CSV, run script, status. |
-| `experiment_logs/haze4k_pfd_mainline_20260602/` | 11 | Stage 0 JSON, A1/B1 train logs, B1 gate/compare artifacts, run script, status, tmux transcript. |
+| `experiment_logs/haze4k_pfd_mainline_20260602/` | 20 | Stage 0 JSON, A1/B1 train logs, B1 gate/compare artifacts, selected diagnostic sidecar, run script, status, tmux transcript. |
+| `experiment_logs/haze4k_b1_surgery_preserve_20260602/` | 36 | No-training B1 surgery sweep, seven scale comparisons, selected scale diagnostics, status files, and run transcripts. |
+| `experiment_logs/haze4k_saferhfd_v2_train_20260602/` | 9 | SafeRHFD-v2 preflight, stop20 train log, compare/bucket/per-image evidence, automatic gate, status, and run script. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
+| `../docs/ai_text_packages/2026-06-02-haze4k-route-summary/` | 3 | Current compact AI-readable route matrix and evidence manifest through SafeRHFD-v2. |
 
 ## Current Route Verdict
 
@@ -90,7 +100,11 @@ The active conclusion is conservative:
   selector route failed.
 - Hard-frequency weighting and haze-prior SCM also moved hard cases but harmed
   global/easy preservation too much.
-- No current route is promotion-ready.
+- PFD B1 moved hard cases but failed preservation; no-training B1 surgery found
+  a safer `scale=0.70` diagnostic candidate.
+- SafeRHFD-v2 training was safer than B1 full-model RHFD, but failed the global,
+  hard-gain, and strong-reference gates.
+- No trained Haze4K replacement route is promotion-ready.
 - `main` should carry the evidence and index, while runnable experimental code
   stays on the retained leaf branches.
 

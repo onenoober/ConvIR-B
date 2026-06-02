@@ -1,5 +1,10 @@
 # HAZE4K B1-Surgery Preserve Sweep 20260602
 
+Date: 2026-06-02
+
+Status: completed no-training diagnostic; `scale=0.70` selected as the
+preservation-first surgery candidate.
+
 ## Purpose
 
 B1-Surgery tests whether the RHFD branch learned in B1 can be reused without carrying over B1's full-backbone fine-tuning regressions.
@@ -49,18 +54,57 @@ The selected diagnostic pack is:
 
 Visual inspection found no B1-style brightness/color/range collapse. Candidate-original differences are small and mostly localized; worst regressions are metric-level or mild texture/residual-haze shifts rather than catastrophic output drift.
 
+## Files
+
+| File | Use |
+| --- | --- |
+| `surgery_sweep_summary.json` | Structured sweep summary, gates, passing scales, and recommendation. |
+| `surgery_sweep_summary.csv` | Scale-by-scale sweep table. |
+| `scout_eval_compare_b1_surgery_s0.05_vs_a0.json` | A0-vs-surgery summary for `scale=0.05`. |
+| `scout_eval_compare_b1_surgery_s0.10_vs_a0.json` | A0-vs-surgery summary for `scale=0.10`. |
+| `scout_eval_compare_b1_surgery_s0.20_vs_a0.json` | A0-vs-surgery summary for `scale=0.20`. |
+| `scout_eval_compare_b1_surgery_s0.30_vs_a0.json` | A0-vs-surgery summary for `scale=0.30`. |
+| `scout_eval_compare_b1_surgery_s0.50_vs_a0.json` | A0-vs-surgery summary for `scale=0.50`. |
+| `scout_eval_compare_b1_surgery_s0.70_vs_a0.json` | A0-vs-surgery summary for selected `scale=0.70`. |
+| `scout_eval_compare_b1_surgery_s1.00_vs_a0.json` | A0-vs-surgery summary for backup `scale=1.00`. |
+| `scout_eval_bucket_analysis_b1_surgery_s0.05_vs_a0.json` | Bucket analysis for `scale=0.05`. |
+| `scout_eval_bucket_analysis_b1_surgery_s0.10_vs_a0.json` | Bucket analysis for `scale=0.10`. |
+| `scout_eval_bucket_analysis_b1_surgery_s0.20_vs_a0.json` | Bucket analysis for `scale=0.20`. |
+| `scout_eval_bucket_analysis_b1_surgery_s0.30_vs_a0.json` | Bucket analysis for `scale=0.30`. |
+| `scout_eval_bucket_analysis_b1_surgery_s0.50_vs_a0.json` | Bucket analysis for `scale=0.50`. |
+| `scout_eval_bucket_analysis_b1_surgery_s0.70_vs_a0.json` | Bucket analysis for selected `scale=0.70`. |
+| `scout_eval_bucket_analysis_b1_surgery_s1.00_vs_a0.json` | Bucket analysis for backup `scale=1.00`. |
+| `scout_eval_per_image_b1_surgery_s0.05_vs_a0.csv` | Per-image deltas for `scale=0.05`. |
+| `scout_eval_per_image_b1_surgery_s0.10_vs_a0.csv` | Per-image deltas for `scale=0.10`. |
+| `scout_eval_per_image_b1_surgery_s0.20_vs_a0.csv` | Per-image deltas for `scale=0.20`. |
+| `scout_eval_per_image_b1_surgery_s0.30_vs_a0.csv` | Per-image deltas for `scale=0.30`. |
+| `scout_eval_per_image_b1_surgery_s0.50_vs_a0.csv` | Per-image deltas for `scale=0.50`. |
+| `scout_eval_per_image_b1_surgery_s0.70_vs_a0.csv` | Per-image deltas for selected `scale=0.70`. |
+| `scout_eval_per_image_b1_surgery_s1.00_vs_a0.csv` | Per-image deltas for backup `scale=1.00`. |
+| `diagnostic_b1_surgery_s0.70_vs_a0/diagnostic_summary.json` | Selected diagnostic pack summary. |
+| `diagnostic_b1_surgery_s0.70_vs_a0/output_safety_stats.csv` | Output safety statistics for selected samples. |
+| `diagnostic_b1_surgery_s0.70_vs_a0/pfd_branch_stats.csv` | PFD branch activity statistics. |
+| `diagnostic_b1_surgery_s0.70_vs_a0/pfd_branch_stats_by_category.json` | Branch statistics grouped by diagnostic category. |
+| `diagnostic_b1_surgery_s0.70_vs_a0/sample_manifest.csv` | Selected sample manifest. |
+| `diagnostic_b1_surgery_s0.70_vs_a0/visual_notes_filled.md` | Filled visual review notes. |
+| `diagnostic_b1_surgery_s0.70_vs_a0/visual_notes_template.md` | Visual review template. |
+| `status.txt` | Chronological status for the sweep. |
+| `sweep_status.txt` | Initial sweep status. |
+| `sweep_stdout.log` | Initial sweep command output. |
+| `sweep_extension_status.txt` | Extension sweep status. |
+| `sweep_extension_stdout.log` | Extension sweep command output. |
+
 ## Artifact Boundary
 
 Commit text-only evidence:
 
 - `surgery_sweep_summary.json`
 - `surgery_sweep_summary.csv`
-- `scout_eval_compare_*.json`
-- `scout_eval_bucket_analysis_*.json`
-- `scout_eval_per_image_*.csv`
-- `sweep*_status.txt`
-- `sweep*_stdout.log`
-- diagnostic CSV/JSON/Markdown files
+- scale-specific compare JSON, bucket JSON, and per-image CSV files listed
+  above;
+- status and stdout text logs listed above;
+- diagnostic CSV/JSON/Markdown files under
+  `diagnostic_b1_surgery_s0.70_vs_a0/`.
 
 Do not commit:
 

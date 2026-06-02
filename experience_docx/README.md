@@ -64,9 +64,16 @@ merging diagnostic experiment code.
 8. fill the card with fixed-budget gates, mechanism metrics, and stop rules;
 9. treat every route as unproven until it passes its own written gates.
 
-## Current ConvIR-B Priority
+## Current ConvIR-B Route State
 
-The first useful work is not model modification. The first useful work is a
-local baseline package with official checkpoints, PSNR/SSIM, per-sample deltas,
-latency, peak GPU memory, and saved output-quality notes. Only then can a route
-claim a real positive return.
+The baseline package now exists and the current Haze4K route state is tracked
+in `EXPERIMENT_INDEX.md`. Use that index as the first stop before starting or
+judging another route.
+
+As of 2026-06-02:
+
+- PFD mainline B1 improved hard cases but failed the preservation gate.
+- B1 surgery `scale=0.70` is the best preservation-first diagnostic candidate,
+  but it is a no-training checkpoint surgery result, not a trained replacement.
+- SafeRHFD-v2 pfd-only training completed and failed its automatic gate.
+- No trained Haze4K replacement route is promotion-ready.
