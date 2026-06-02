@@ -1,0 +1,61 @@
+{
+  "stage": "APDR-v0.2RC conservative budget replay",
+  "replay_gate": {
+    "stage": "APDR-v0.2RC conservative budget replay gate",
+    "checks": {
+      "selected_train_constraints": {
+        "observed": {
+          "hard_mean_b": 0.3738833700807271,
+          "easy_mean_b": 0.00829738540344605,
+          "hard_easy_ratio": 45.06038371140947,
+          "hard_bce_after_calibration": 0.5409127429405565
+        },
+        "required": "hard_mean_b >= 0.35; easy_mean_b <= 0.03; ratio >= 10.0; hard_bce <= 0.55",
+        "pass": true
+      },
+      "zero_residual_output": {
+        "observed": 0.0,
+        "required": "< 1e-06",
+        "pass": true
+      },
+      "auc_hard_vs_easy_by_z_img": {
+        "observed": 0.97664,
+        "required": ">= 0.95",
+        "pass": true
+      },
+      "spearman_z_img_vs_a0_psnr": {
+        "observed": -0.7466395691194065,
+        "required": "<= -0.70",
+        "pass": true
+      },
+      "hard_bottom25_mean_b_cons": {
+        "observed": 0.37834648392490905,
+        "required": ">= 0.35",
+        "pass": true
+      },
+      "easy_top25_mean_b_cons": {
+        "observed": 0.0025310615794420775,
+        "required": "<= 0.03",
+        "pass": true
+      },
+      "strong_reference_mean_b_cons": {
+        "observed": 0.0025310615794420775,
+        "required": "<= 0.03",
+        "pass": true
+      },
+      "hard_easy_b_cons_ratio": {
+        "observed": 149.4813429265945,
+        "required": ">= 10.0",
+        "pass": true
+      },
+      "hard_bce_after_calibration": {
+        "observed": 1.619141792752911,
+        "required": "<= 0.55",
+        "pass": false
+      }
+    },
+    "pass": false
+  },
+  "oracle_gate": null,
+  "pass": false
+}

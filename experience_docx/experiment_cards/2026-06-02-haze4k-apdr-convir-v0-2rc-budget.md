@@ -2,7 +2,7 @@
 
 Date: 2026-06-02
 
-Status: planned cloud conservative-budget replay and oracle ceiling preflight.
+Status: completed cloud conservative-budget replay; replay gate failed.
 
 ## Scope
 
@@ -15,6 +15,25 @@ Status: planned cloud conservative-budget replay and oracle ceiling preflight.
 - Execution environment: AutoDL `autodl-dehaze3`, `convir-cu128`.
 - Artifact root: `experience_docx/experiment_logs/haze4k_apdr_v0_2rc_budget_20260602/`.
 - Branch or isolated workspace: `codex/haze4k-apdr-convir-v0-2rc-conservative-budget`.
+
+## Result Summary
+
+- Cloud run: AutoDL `autodl-dehaze3`, tmux session
+  `apdr_v0_2rc_budget_20260602`, completed at `2026-06-03T00:00:00+08:00`.
+- Source snapshot on cloud: local archive of GitHub commit
+  `6f7bf1dd2badaf6bc14aa14b1c4e091e08ff1f02`.
+- Architecture preflight: pass; residual output remained zero during replay.
+- Candidate grid: `489` budget maps; `33` passed train constraints; `0`
+  passed the full held-out replay gate.
+- Selected train-only candidate: `platt_tau-1.4839_t1_g4`.
+- Train selected metrics: hard mean `0.373883`, easy mean `0.008297`,
+  hard/easy ratio `45.0604`, calibration BCE `0.540913`; train constraints
+  passed.
+- Held-out replay metrics: AUC `0.97664`, Spearman `-0.74664`, hard mean
+  `0.378346`, easy/strong-reference mean `0.002531`, hard/easy ratio
+  `149.481`, zero-output diff `0.0`.
+- Held-out failure: calibration BCE `1.619142` versus required `<= 0.55`.
+- Oracle residual ceiling was not evaluated because the replay gate failed.
 
 ## Baseline Contract
 
@@ -75,6 +94,7 @@ Budget replay gate:
 
 | Rule | Required |
 | --- | ---: |
+| selected candidate train constraints | pass |
 | zero-residual output max diff vs A0 | `< 1e-6` |
 | AUC by `z_img` | `>= 0.95` |
 | Spearman(`z_img`, A0 PSNR) | `<= -0.70` |
@@ -99,3 +119,17 @@ Stop rule:
 - If replay gate fails, stop v0.2RC and do not compute residual training.
 - If replay passes but oracle fails, stop before residual training.
 - If both replay and oracle pass, write a separate residual stop20 plan.
+
+## Decision
+
+`FAIL_STOP_APDR_V0_2RC_BUDGET_CALIBRATION`.
+
+The conservative budget map solves the easy/strong-reference over-open problem:
+held-out easy mean budget fell from v0.2R's `0.146157` to `0.002531`.
+However, no candidate simultaneously satisfied held-out hard/easy budget
+constraints and calibration BCE. The selected train-valid candidate preserved
+ranking and closed easy images, but held-out calibration BCE rose to `1.619142`.
+
+Do not launch residual training from v0.2RC. The next APDR route should add an
+explicit easy/strong-reference veto or otherwise decouple hard detection from
+safe-reference closure, rather than making the single global budget sharper.

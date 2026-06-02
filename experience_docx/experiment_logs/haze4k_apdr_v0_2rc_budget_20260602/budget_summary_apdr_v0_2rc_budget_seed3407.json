@@ -1,0 +1,420 @@
+{
+  "stage": "apdr_v0_2rc_conservative_budget_replay",
+  "tag": "apdr_v0_2rc_budget_seed3407",
+  "seed": 3407,
+  "device": "cuda",
+  "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+  "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+  "checkpoint_load": {
+    "missing": [
+      "APDR_4.global_budget_tau",
+      "APDR_4.global_budget_temperature",
+      "APDR_4.image_context.0.weight",
+      "APDR_4.image_context.0.bias",
+      "APDR_4.image_context.2.weight",
+      "APDR_4.image_context.2.bias",
+      "APDR_4.feature_context.0.weight",
+      "APDR_4.feature_context.0.bias",
+      "APDR_4.context.0.weight",
+      "APDR_4.context.0.bias",
+      "APDR_4.residual_head.weight",
+      "APDR_4.residual_head.bias",
+      "APDR_4.spatial_gate_head.weight",
+      "APDR_4.spatial_gate_head.bias",
+      "APDR_4.global_router.router.0.weight",
+      "APDR_4.global_router.router.0.bias",
+      "APDR_4.global_router.router.2.weight",
+      "APDR_4.global_router.router.2.bias",
+      "APDR_4.global_router.router.4.weight",
+      "APDR_4.global_router.router.4.bias",
+      "APDR_2.global_budget_tau",
+      "APDR_2.global_budget_temperature",
+      "APDR_2.image_context.0.weight",
+      "APDR_2.image_context.0.bias",
+      "APDR_2.image_context.2.weight",
+      "APDR_2.image_context.2.bias",
+      "APDR_2.feature_context.0.weight",
+      "APDR_2.feature_context.0.bias",
+      "APDR_2.context.0.weight",
+      "APDR_2.context.0.bias",
+      "APDR_2.residual_head.weight",
+      "APDR_2.residual_head.bias",
+      "APDR_2.spatial_gate_head.weight",
+      "APDR_2.spatial_gate_head.bias",
+      "APDR_2.global_router.router.0.weight",
+      "APDR_2.global_router.router.0.bias",
+      "APDR_2.global_router.router.2.weight",
+      "APDR_2.global_router.router.2.bias",
+      "APDR_2.global_router.router.4.weight",
+      "APDR_2.global_router.router.4.bias",
+      "APDR_1.global_budget_tau",
+      "APDR_1.global_budget_temperature",
+      "APDR_1.image_context.0.weight",
+      "APDR_1.image_context.0.bias",
+      "APDR_1.image_context.2.weight",
+      "APDR_1.image_context.2.bias",
+      "APDR_1.feature_context.0.weight",
+      "APDR_1.feature_context.0.bias",
+      "APDR_1.context.0.weight",
+      "APDR_1.context.0.bias",
+      "APDR_1.residual_head.weight",
+      "APDR_1.residual_head.bias",
+      "APDR_1.spatial_gate_head.weight",
+      "APDR_1.spatial_gate_head.bias",
+      "APDR_1.global_router.router.0.weight",
+      "APDR_1.global_router.router.0.bias",
+      "APDR_1.global_router.router.2.weight",
+      "APDR_1.global_router.router.2.bias",
+      "APDR_1.global_router.router.4.weight",
+      "APDR_1.global_router.router.4.bias"
+    ],
+    "unexpected": []
+  },
+  "calibration": {
+    "train_image_count": 3000,
+    "pixel_sample_count": 6144000,
+    "rmse_q25_train": 0.007342853583395481,
+    "rmse_q50_train": 0.010500837117433548,
+    "rmse_q75_train": 0.01556253619492054,
+    "rmse_q90_train": 0.0219538863748312,
+    "pixel_error_q70_train": 0.010038971900939941,
+    "pixel_error_q90_train": 0.021158747375011444,
+    "spatial_tau": 0.011119775474071503
+  },
+  "base_budget_calibration": {
+    "train_score_count": 3000,
+    "tau_train": -1.7792601153850556,
+    "temperature_train": 0.7308537074327468,
+    "temperature_floor": 0.05,
+    "hard_top25_score_mean": -0.31755270051956175,
+    "easy_bottom25_score_mean": -3.240967530250549,
+    "hard_top25_budget_mean": 0.7932885008749753,
+    "easy_bottom25_budget_mean": 0.17069683144886483,
+    "hard_easy_budget_ratio_train": 4.6473534051076895
+  },
+  "selected_candidate": {
+    "name": "platt_tau-1.4839_t1_g4",
+    "kind": "platt_power",
+    "tau": -1.4838835716247558,
+    "temperature": 1.0,
+    "gamma": 4.0
+  },
+  "selected_train_metrics": {
+    "candidate": "platt_tau-1.4839_t1_g4",
+    "kind": "platt_power",
+    "hard_mean_b": 0.3738833700807271,
+    "easy_mean_b": 0.00829738540344605,
+    "strong_reference_mean_b": 0.00829738540344605,
+    "hard_easy_ratio": 45.06038371140947,
+    "hard_bce_after_calibration": 0.5409127429405565,
+    "count": 3000
+  },
+  "selected_test_metrics": {
+    "candidate": "platt_tau-1.4839_t1_g4",
+    "kind": "platt_power",
+    "hard_mean_b": 0.37834648392490905,
+    "easy_mean_b": 0.0025310615794420775,
+    "strong_reference_mean_b": 0.0025310615794420775,
+    "hard_easy_ratio": 149.4813429265945,
+    "hard_bce_after_calibration": 1.619141792752911,
+    "count": 1000,
+    "auc_hard_vs_easy_by_z_img": 0.97664,
+    "spearman_z_img_vs_a0_psnr": -0.7466395691194065
+  },
+  "max_abs_diff_vs_a0": 0.0,
+  "global_history": [
+    {
+      "phase": "global",
+      "epoch": 0,
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 1.7080414951778948,
+        "spatial_bce": 2.062084491364658
+      }
+    },
+    {
+      "phase": "global",
+      "epoch": 1,
+      "train": {
+        "loss": 1.0841496792510152,
+        "hard_bce": 0.639025964776675,
+        "focal_bce": 0.6359416100531113,
+        "rank": 0.635764547665914
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.645784484106116,
+        "spatial_bce": 2.062084491364658
+      }
+    },
+    {
+      "phase": "global",
+      "epoch": 2,
+      "train": {
+        "loss": 0.6284910347859065,
+        "hard_bce": 0.47305112824837364,
+        "focal_bce": 0.17275663369088823,
+        "rank": 0.34530793793996173
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6376079792971723,
+        "spatial_bce": 2.062084491364658
+      }
+    },
+    {
+      "phase": "global",
+      "epoch": 3,
+      "train": {
+        "loss": 0.5823477275719245,
+        "hard_bce": 0.44279905503988265,
+        "focal_bce": 0.17206159744330823,
+        "rank": 0.26758935864766437
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6380885518155992,
+        "spatial_bce": 2.062084491364658
+      }
+    },
+    {
+      "phase": "global",
+      "epoch": 4,
+      "train": {
+        "loss": 0.569040007683138,
+        "hard_bce": 0.43369719601670903,
+        "focal_bce": 0.17296688309655034,
+        "rank": 0.24429684162139892
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6319840078940615,
+        "spatial_bce": 2.062084491364658
+      }
+    },
+    {
+      "phase": "global",
+      "epoch": 5,
+      "train": {
+        "loss": 0.5563657198349635,
+        "hard_bce": 0.4315985508263111,
+        "focal_bce": 0.1658104998555125,
+        "rank": 0.20930959049860637
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6302920144225936,
+        "spatial_bce": 2.062084491364658
+      }
+    }
+  ],
+  "spatial_history": [
+    {
+      "phase": "spatial",
+      "epoch": 0,
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6302920144225936,
+        "spatial_bce": 2.062084491364658
+      }
+    },
+    {
+      "phase": "spatial",
+      "epoch": 1,
+      "train": {
+        "loss": 0.7885554418563843,
+        "spatial_bce": 0.7885554418563843
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6302920144225936,
+        "spatial_bce": 0.7370686577633023
+      }
+    },
+    {
+      "phase": "spatial",
+      "epoch": 2,
+      "train": {
+        "loss": 0.6768034941355388,
+        "spatial_bce": 0.6768034941355388
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6302920144225936,
+        "spatial_bce": 0.7349183657206595
+      }
+    },
+    {
+      "phase": "spatial",
+      "epoch": 3,
+      "train": {
+        "loss": 0.6758611920674642,
+        "spatial_bce": 0.6758611920674642
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6302920144225936,
+        "spatial_bce": 0.7336000530049205
+      }
+    }
+  ],
+  "train_scope": {
+    "global": {
+      "phase": "global",
+      "trainable_tensor_count": 6,
+      "trainable_param_count": 5425,
+      "frozen_param_count": 8710359,
+      "trainable_tensors": [
+        "APDR_1.global_router.router.0.weight",
+        "APDR_1.global_router.router.0.bias",
+        "APDR_1.global_router.router.2.weight",
+        "APDR_1.global_router.router.2.bias",
+        "APDR_1.global_router.router.4.weight",
+        "APDR_1.global_router.router.4.bias"
+      ]
+    },
+    "spatial": {
+      "phase": "spatial",
+      "trainable_tensor_count": 10,
+      "trainable_param_count": 19225,
+      "frozen_param_count": 8696559,
+      "trainable_tensors": [
+        "APDR_1.image_context.0.weight",
+        "APDR_1.image_context.0.bias",
+        "APDR_1.image_context.2.weight",
+        "APDR_1.image_context.2.bias",
+        "APDR_1.feature_context.0.weight",
+        "APDR_1.feature_context.0.bias",
+        "APDR_1.context.0.weight",
+        "APDR_1.context.0.bias",
+        "APDR_1.spatial_gate_head.weight",
+        "APDR_1.spatial_gate_head.bias"
+      ]
+    }
+  },
+  "replay_gate": {
+    "stage": "APDR-v0.2RC conservative budget replay gate",
+    "checks": {
+      "selected_train_constraints": {
+        "observed": {
+          "hard_mean_b": 0.3738833700807271,
+          "easy_mean_b": 0.00829738540344605,
+          "hard_easy_ratio": 45.06038371140947,
+          "hard_bce_after_calibration": 0.5409127429405565
+        },
+        "required": "hard_mean_b >= 0.35; easy_mean_b <= 0.03; ratio >= 10.0; hard_bce <= 0.55",
+        "pass": true
+      },
+      "zero_residual_output": {
+        "observed": 0.0,
+        "required": "< 1e-06",
+        "pass": true
+      },
+      "auc_hard_vs_easy_by_z_img": {
+        "observed": 0.97664,
+        "required": ">= 0.95",
+        "pass": true
+      },
+      "spearman_z_img_vs_a0_psnr": {
+        "observed": -0.7466395691194065,
+        "required": "<= -0.70",
+        "pass": true
+      },
+      "hard_bottom25_mean_b_cons": {
+        "observed": 0.37834648392490905,
+        "required": ">= 0.35",
+        "pass": true
+      },
+      "easy_top25_mean_b_cons": {
+        "observed": 0.0025310615794420775,
+        "required": "<= 0.03",
+        "pass": true
+      },
+      "strong_reference_mean_b_cons": {
+        "observed": 0.0025310615794420775,
+        "required": "<= 0.03",
+        "pass": true
+      },
+      "hard_easy_b_cons_ratio": {
+        "observed": 149.4813429265945,
+        "required": ">= 10.0",
+        "pass": true
+      },
+      "hard_bce_after_calibration": {
+        "observed": 1.619141792752911,
+        "required": "<= 0.55",
+        "pass": false
+      }
+    },
+    "pass": false
+  },
+  "oracle": null,
+  "gate": {
+    "stage": "APDR-v0.2RC conservative budget replay",
+    "replay_gate": {
+      "stage": "APDR-v0.2RC conservative budget replay gate",
+      "checks": {
+        "selected_train_constraints": {
+          "observed": {
+            "hard_mean_b": 0.3738833700807271,
+            "easy_mean_b": 0.00829738540344605,
+            "hard_easy_ratio": 45.06038371140947,
+            "hard_bce_after_calibration": 0.5409127429405565
+          },
+          "required": "hard_mean_b >= 0.35; easy_mean_b <= 0.03; ratio >= 10.0; hard_bce <= 0.55",
+          "pass": true
+        },
+        "zero_residual_output": {
+          "observed": 0.0,
+          "required": "< 1e-06",
+          "pass": true
+        },
+        "auc_hard_vs_easy_by_z_img": {
+          "observed": 0.97664,
+          "required": ">= 0.95",
+          "pass": true
+        },
+        "spearman_z_img_vs_a0_psnr": {
+          "observed": -0.7466395691194065,
+          "required": "<= -0.70",
+          "pass": true
+        },
+        "hard_bottom25_mean_b_cons": {
+          "observed": 0.37834648392490905,
+          "required": ">= 0.35",
+          "pass": true
+        },
+        "easy_top25_mean_b_cons": {
+          "observed": 0.0025310615794420775,
+          "required": "<= 0.03",
+          "pass": true
+        },
+        "strong_reference_mean_b_cons": {
+          "observed": 0.0025310615794420775,
+          "required": "<= 0.03",
+          "pass": true
+        },
+        "hard_easy_b_cons_ratio": {
+          "observed": 149.4813429265945,
+          "required": ">= 10.0",
+          "pass": true
+        },
+        "hard_bce_after_calibration": {
+          "observed": 1.619141792752911,
+          "required": "<= 0.55",
+          "pass": false
+        }
+      },
+      "pass": false
+    },
+    "oracle_gate": null,
+    "pass": false
+  },
+  "artifacts": {
+    "train_scores_csv": "/root/autodl-tmp/workspace/ConvIR-B-apdr-convir-v0-2rc-conservative-budget/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_budget_20260602/budget_train_scores_apdr_v0_2rc_budget_seed3407.csv",
+    "test_scores_csv": "/root/autodl-tmp/workspace/ConvIR-B-apdr-convir-v0-2rc-conservative-budget/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_budget_20260602/budget_test_scores_apdr_v0_2rc_budget_seed3407.csv",
+    "candidate_csv": "/root/autodl-tmp/workspace/ConvIR-B-apdr-convir-v0-2rc-conservative-budget/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_budget_20260602/budget_candidates_apdr_v0_2rc_budget_seed3407.csv",
+    "oracle_csv": null
+  },
+  "pass": false
+}
