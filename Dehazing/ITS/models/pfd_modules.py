@@ -23,9 +23,15 @@ class ResidualHardFeatureDelta(nn.Module):
     def stats(self, x):
         with torch.no_grad():
             delta = self.forward(x)
+            feature_norm = x.norm().item()
+            delta_norm = delta.norm().item()
             return {
                 "delta_abs_mean": delta.abs().mean().item(),
                 "delta_abs_max": delta.abs().max().item(),
+                "delta_std": delta.std(unbiased=False).item(),
+                "delta_norm": delta_norm,
+                "feature_norm": feature_norm,
+                "delta_norm_ratio": delta_norm / max(feature_norm, 1e-12),
             }
 
 
@@ -44,8 +50,14 @@ class LowPassResidualDelta(nn.Module):
         with torch.no_grad():
             low = F.avg_pool2d(x, kernel_size=3, stride=1, padding=1)
             delta = self.project(low)
+            feature_norm = x.norm().item()
+            delta_norm = delta.norm().item()
             return {
                 "low_abs_mean": low.abs().mean().item(),
                 "delta_abs_mean": delta.abs().mean().item(),
                 "delta_abs_max": delta.abs().max().item(),
+                "delta_std": delta.std(unbiased=False).item(),
+                "delta_norm": delta_norm,
+                "feature_norm": feature_norm,
+                "delta_norm_ratio": delta_norm / max(feature_norm, 1e-12),
             }

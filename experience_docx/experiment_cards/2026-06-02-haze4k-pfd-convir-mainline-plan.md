@@ -375,6 +375,36 @@ This is weaker scientifically than adding 80-epoch, but much faster.
 - `B2_stop20` and `B3_stop20` were not launched.
 - The route remains diagnostic only.
 
+## Fixed Diagnostic Sidecar Rule
+
+The existing A1/B1 logs were run with `save_image=False`; therefore the metric
+gate is not enough for a final report or closure package. Backfill the fixed
+diagnostic pack from the saved checkpoints, per-image CSV, and bucket JSON
+before treating the visual/artifact question as answered.
+
+For all future PFD stages, `compare_and_gate` must start a background
+diagnostic sidecar immediately after per-image CSV and bucket JSON are written.
+The sidecar must not interrupt training and must not dump all validation
+images. It should use CPU by default when another training job may need the GPU,
+or an explicitly chosen idle GPU when speed matters.
+
+Required sidecar outputs:
+
+- one 20-row visual panel with hazy input, GT, baseline output, candidate
+  output, candidate-baseline difference, baseline error, candidate error,
+  input-baseline residual, and input-candidate residual;
+- per-sample multi-scale outputs: baseline and candidate `1/4`, `1/2`, and
+  full predictions;
+- output safety CSV with prediction range, out-of-range ratios, mean/std, RGB
+  shift, luma shift, and saturation ratio;
+- PFD branch activity CSV and bucket/category JSON for RHFD/HSCM/PFFB modules;
+- visual notes template completed by human review.
+
+Automatic gates may proceed while the sidecar runs in the background, but a
+candidate report, route closure, or manual approval for the next structure
+stage is blocked until `diagnostic_summary.json`, `visual_panel_20.png`,
+`output_safety_stats.csv`, `pfd_branch_stats.csv`, and visual notes exist.
+
 ## Metrics By Stage
 
 Stop20 screen requires only:
@@ -386,6 +416,9 @@ Stop20 screen requires only:
 - severe all-image regressions;
 - one fixed 20-image visual panel;
 - branch activity summary for active modules;
+- multi-scale output panel for fixed samples;
+- output safety statistics for fixed samples;
+- RHFD activity by bucket/category when `--pfd_rhfd 1`;
 - latency/memory only for A1 and the current best candidate unless cost looks
   risky.
 

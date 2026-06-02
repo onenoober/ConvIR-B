@@ -100,6 +100,8 @@ A candidate is worth a serious run only if it has:
 - matched-budget comparison;
 - mechanism metrics;
 - cost and deployability checks;
+- a fixed diagnostic image/stat sidecar when the route can change image
+  structure, preservation, frequency behavior, or feature activity;
 - a written success decision;
 - a written failure decision.
 
@@ -141,6 +143,8 @@ Possible preflights:
 - frozen feature readability;
 - output-level oracle analysis;
 - subset or stratified per-sample analysis;
+- fixed diagnostic visual panels and branch statistics generated from
+  checkpoints, per-image CSV, and bucket JSON;
 - shuffled feature, shuffled label, or permutation controls;
 - held-out group checks.
 
@@ -158,6 +162,7 @@ Write the fair contract before launch:
 - augmentation policy;
 - checkpoint and evaluation cadence;
 - reference baseline;
+- fixed diagnostic sidecar location and completion rule;
 - direct predecessor if any;
 - hardware or runtime assumptions;
 - resume policy;

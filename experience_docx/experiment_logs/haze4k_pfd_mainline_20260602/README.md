@@ -20,6 +20,7 @@ Status: completed gated stop20 scout; B1 failed preservation gate.
 | `scout_eval_bucket_analysis_seed3407_B1_vs_A1_best.json` | Hard/easy bucket summary for B1. |
 | `scout_eval_per_image_seed3407_B1_vs_A1_best.csv` | Per-image PSNR/SSIM deltas for B1. |
 | `gate_B1_stop20.json` | Automatic B1 gate result. |
+| `diagnostic_seed3407_B1_vs_A1_best/` | Fixed diagnostic sidecar output directory when backfilled. |
 | `run_pfd_mainline_stop20.sh` | Gated stop20 run script. |
 | `status.txt` | Chronological run status stream. |
 | `tmux.out` | Tmux command transcript. |
@@ -35,3 +36,11 @@ samples but failed the overall preservation gate:
 - severe regressions: `434/1000`
 
 Decision: keep as diagnostic only; stop before B2/B3.
+
+## Required Backfill
+
+The A1/B1 training and evaluation ran with `save_image=False`. Before this route
+is used as a complete closure package, backfill the fixed diagnostic sidecar for
+`seed3407_B1_vs_A1_best` and record visual notes. The updated run script starts
+that pack in the background after future `compare_and_gate` evaluations, so it
+does not interrupt training.

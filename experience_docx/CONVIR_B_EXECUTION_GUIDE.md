@@ -194,6 +194,14 @@ for every formal ConvIR-B route:
 - strong-case regression count: strong-reference images with PSNR delta <=
   -0.05 dB;
 - worst-case regression count: any image with PSNR delta <= -0.20 dB;
+- fixed diagnostic visual panel, selected from the per-image CSV rather than
+  all validation images. The required set is worst regressions, best gains,
+  hard gains, easy regressions, and ordinary medium regressions;
+- multi-scale checkpoint outputs for the fixed diagnostic set when the model
+  trains with multi-scale supervision: `1/4`, `1/2`, and full output for the
+  baseline and candidate;
+- output safety statistics for the fixed diagnostic set: prediction range,
+  out-of-range ratios, mean/std, RGB and luma shift, and saturation ratio;
 - edge or texture-region error summary if an analysis script exists;
 - FFT loss or frequency-domain error summary when the route touches the loss,
   frequency blocks, or texture recovery;
@@ -208,8 +216,14 @@ Route-specific metrics are added only when relevant:
 | selector, router, mask, or gate | entropy, selection distribution, false intervention on strong-reference images |
 | preservation or no-regression guard | protected-case recall, guard activity, regression count |
 | loss-only change | pixel-loss scale, FFT-loss scale, gradient norm health, target-group gain |
-| architecture change | parameter/FLOP delta, latency delta, neutral-init or no-op behavior, branch activity |
+| architecture change | parameter/FLOP delta, latency delta, neutral-init or no-op behavior, branch activity by fixed diagnostic bucket |
 | schedule or optimizer change | matched-step curve, time-to-threshold, stability, final quality |
+
+The fixed diagnostic pack should be produced as a background sidecar from
+checkpoints, per-image CSV, and bucket JSON. Do not dump every validation image
+from the training loop. The automatic metric gate may continue while the
+sidecar runs, but a candidate report, route closure, or next-stage manual
+approval is blocked until the sidecar finishes and visual notes are recorded.
 
 ## Failure Conclusions
 

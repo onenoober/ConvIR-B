@@ -125,6 +125,9 @@ Minimum ConvIR-B always-on metrics:
 | worst-10% PSNR delta | measures weak-case recovery | full validation or predeclared subset | CSV or summary table |
 | strong-reference regression count | protects images already handled by ConvIR-B | top 25% baseline PSNR group | regression list |
 | worst-case regression count | catches severe local failures | full validation or predeclared subset | regression list |
+| fixed diagnostic visual panel | explains severe regressions and confirms whether failures are metric, range, color, or structure artifacts | selected from per-image CSV/buckets | 20-row panel plus visual notes |
+| fixed diagnostic multi-scale outputs | localizes failures across 1/4, 1/2, and full outputs for multi-scale models | same selected diagnostic set | saved 1/4, 1/2, full images |
+| output safety stats | catches out-of-range, brightness, color, and saturation collapse | same selected diagnostic set | CSV |
 | latency and peak GPU memory | enforces fixed-budget comparison | timed eval subset plus full eval where feasible | run log |
 | artifact count by label | catches visual failures not captured by PSNR | saved output sample set | review notes |
 
@@ -135,7 +138,13 @@ Route-specific additions:
 | selector/router/mask | entropy, selection distribution, false intervention on strong-reference images |
 | preservation guard | protected-case recall, guard activity, regression count |
 | loss-only change | pixel-loss scale, FFT-loss scale, gradient norm health, target-group gain |
-| architecture change | parameter/FLOP delta, latency delta, neutral-init or no-op behavior, branch activity |
+| architecture change | parameter/FLOP delta, latency delta, neutral-init or no-op behavior, branch activity by fixed diagnostic bucket |
+
+Fixed diagnostic packs may run as background sidecars from checkpoints and
+per-image CSV/bucket JSON, so training does not need to pause for image export.
+The metric gate can run before the sidecar finishes, but the card cannot mark a
+candidate closed, promoted, or report-ready until the fixed panel, safety CSV,
+branch activity CSV/JSON, and visual notes are present.
 
 ## Controls
 

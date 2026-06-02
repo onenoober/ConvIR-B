@@ -13,6 +13,9 @@ A1_MODEL=ConvIR-Haze4K-A1-init-official-stop20-seed3407-20260602
 B1_MODEL=ConvIR-Haze4K-PFD-B1-rhfd-stop20-seed3407-20260602
 B2_MODEL=ConvIR-Haze4K-PFD-B2-rhfd-hscm-lite-stop20-seed3407-20260602
 B3_MODEL=ConvIR-Haze4K-PFD-B3-rhfd-hscm-pffb-low-stop20-seed3407-20260602
+DIAG_DEVICE=${DIAG_DEVICE:-cpu}
+DIAG_MAX_SAMPLES=${DIAG_MAX_SAMPLES:-70}
+DIAG_PANEL_LIMIT=${DIAG_PANEL_LIMIT:-20}
 
 mkdir -p "$LOG_DIR"
 cd "$ITS_ROOT"
@@ -51,6 +54,48 @@ run_train() {
   log_status "train_done $model_name rc=$?"
 }
 
+run_diagnostic_pack_background() {
+  local stage="$1"
+  local tag="$2"
+  local original_checkpoint="$3"
+  local candidate_checkpoint="$4"
+  local original_name="$5"
+  local candidate_name="$6"
+  shift 6
+  local diag_dir="$LOG_DIR/diagnostic_${tag}"
+  mkdir -p "$diag_dir"
+  log_status "diagnostic_pack_start_background $stage dir=$diag_dir device=$DIAG_DEVICE"
+  nohup bash -c '
+    set +e
+    py="$1"
+    tool="$2"
+    status="$3"
+    stage="$4"
+    log_path="$5"
+    shift 5
+    "$py" "$tool" "$@" > "$log_path" 2>&1
+    rc=$?
+    echo "diagnostic_pack_done ${stage} rc=${rc} $(date --iso-8601=seconds)" >> "$status"
+    exit "$rc"
+  ' bash "$PY" "$ROOT/experience_docx/tools/build_haze4k_diagnostic_pack.py" "$STATUS" "$stage" "$diag_dir/diagnostic_pack.log" \
+    --data_dir "$DATA_DIR" \
+    --per_image_csv "$LOG_DIR/scout_eval_per_image_${tag}.csv" \
+    --bucket_json "$LOG_DIR/scout_eval_bucket_analysis_${tag}.json" \
+    --original_checkpoint "$original_checkpoint" \
+    --original_name "$original_name" \
+    --candidate_checkpoint "$candidate_checkpoint" \
+    --candidate_name "$candidate_name" \
+    --output_dir "$diag_dir" \
+    --device "$DIAG_DEVICE" \
+    --max_samples "$DIAG_MAX_SAMPLES" \
+    --panel_limit "$DIAG_PANEL_LIMIT" \
+    "$@" > "$diag_dir/nohup.out" 2>&1 &
+  local diag_pid=$!
+  echo "$diag_pid" > "$diag_dir/pid.txt"
+  disown "$diag_pid" || true
+  log_status "diagnostic_pack_pid $stage pid=$diag_pid"
+}
+
 compare_and_gate() {
   local stage="$1"
   local tag="$2"
@@ -76,10 +121,15 @@ compare_and_gate() {
     --candidate_name "$candidate_name" \
     --output "$LOG_DIR/scout_eval_bucket_analysis_${tag}.json"
 
+  run_diagnostic_pack_background "$stage" "$tag" \
+    "$original_checkpoint" "$candidate_checkpoint" "$original_name" "$candidate_name" \
+    "$@"
+
   if "$PY" "$ROOT/experience_docx/tools/gate_haze4k_pfd_stop20.py" \
     --stage "$stage" \
     --compare_json "$LOG_DIR/scout_eval_compare_${tag}.json" \
     --bucket_json "$LOG_DIR/scout_eval_bucket_analysis_${tag}.json" \
+    --diagnostic_dir "$LOG_DIR/diagnostic_${tag}" \
     --output "$LOG_DIR/gate_${stage}_stop20.json"; then
     log_status "gate_pass $stage"
   else

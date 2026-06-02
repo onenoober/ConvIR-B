@@ -1,4 +1,5 @@
 import os
+import math
 import torch
 from data import train_dataloader, valid_dataloader
 from utils import Adder, Timer, check_lr
@@ -8,6 +9,99 @@ import torch.nn.functional as F
 import torch.nn as nn
 
 from warmup_scheduler import GradualWarmupScheduler
+
+
+def _fft_l1_loss(pred, target, criterion, return_band_stats=False):
+    pred_fft = torch.fft.fft2(pred, dim=(-2, -1))
+    target_fft = torch.fft.fft2(target, dim=(-2, -1))
+    loss = criterion(
+        torch.stack((pred_fft.real, pred_fft.imag), -1),
+        torch.stack((target_fft.real, target_fft.imag), -1),
+    )
+    if return_band_stats:
+        return loss, _ortho_fft_full_band_diagnostics(pred_fft, target_fft)
+    return loss
+
+
+def _ortho_fft_full_band_diagnostics(pred_fft, target_fft):
+    with torch.no_grad():
+        height, width = pred_fft.shape[-2], pred_fft.shape[-1]
+        diff = torch.fft.fftshift(
+            (pred_fft.detach() - target_fft.detach()).abs() / math.sqrt(height * width),
+            dim=(-2, -1),
+        )
+        yy = torch.linspace(-1.0, 1.0, height, device=diff.device, dtype=diff.dtype)
+        xx = torch.linspace(-1.0, 1.0, width, device=diff.device, dtype=diff.dtype)
+        grid_y, grid_x = torch.meshgrid(yy, xx, indexing="ij")
+        radius = torch.sqrt(grid_x * grid_x + grid_y * grid_y)
+        low = radius <= 0.20
+        mid = (radius > 0.20) & (radius <= 0.55)
+        high = radius > 0.55
+
+        def masked_mean(mask):
+            mask = mask.view(1, 1, height, width)
+            denom = mask.sum().clamp_min(1).to(diff.dtype) * diff.shape[0] * diff.shape[1]
+            return (diff * mask).sum() / denom
+
+        return {
+            "loss_fft_full_low": masked_mean(low).item(),
+            "loss_fft_full_mid": masked_mean(mid).item(),
+            "loss_fft_full_high": masked_mean(high).item(),
+            "normalized_fft_l1_full_ortho": diff.mean().item(),
+        }
+
+
+def _add_loss_detail(iter_adders, epoch_adders, name, value):
+    if name not in iter_adders:
+        iter_adders[name] = Adder()
+        epoch_adders[name] = Adder()
+    value = float(value.detach().item() if torch.is_tensor(value) else value)
+    iter_adders[name](value)
+    epoch_adders[name](value)
+
+
+def _flatten_stat_dict(stats):
+    flat = {}
+
+    def visit(prefix, value):
+        if isinstance(value, dict):
+            for key, child in value.items():
+                if key == "flags":
+                    continue
+                visit(f"{prefix}{key.lower()}_", child)
+        elif isinstance(value, (int, float)):
+            flat[prefix[:-1]] = float(value)
+
+    visit("", stats)
+    return flat
+
+
+def _log_pfd_stats(model, args, epoch_idx, device):
+    if args.mod_stats_freq <= 0 or epoch_idx % args.mod_stats_freq != 0:
+        return
+    if not hasattr(model, 'collect_pfd_stats'):
+        return
+
+    dataloader = valid_dataloader(args.data_dir, args.data, batch_size=1, num_workers=0)
+    sums = {}
+    count = 0
+    model.eval()
+    with torch.no_grad():
+        for batch_idx, batch_data in enumerate(dataloader):
+            if args.mod_stats_batches > 0 and batch_idx >= args.mod_stats_batches:
+                break
+            input_img = batch_data[0].to(device)
+            flat_stats = _flatten_stat_dict(model.collect_pfd_stats(input_img))
+            for key, value in flat_stats.items():
+                sums[key] = sums.get(key, 0.0) + value
+            count += 1
+    model.train()
+
+    if count == 0 or not sums:
+        return
+    averaged = {key: value / count for key, value in sorted(sums.items())}
+    detail = " ".join(f"{key}: {value:.8f}" for key, value in averaged.items())
+    print(f"PFD_STATS Epoch: {epoch_idx:03d} Samples: {count} {detail}")
 
 
 def _log_modulation_stats(model, args, epoch_idx, device):
@@ -82,8 +176,10 @@ def _train(model, args):
     writer = SummaryWriter()
     epoch_pixel_adder = Adder()
     epoch_fft_adder = Adder()
+    epoch_loss_detail_adders = {}
     iter_pixel_adder = Adder()
     iter_fft_adder = Adder()
+    iter_loss_detail_adders = {}
     epoch_timer = Timer('m')
     iter_timer = Timer('m')
     best_psnr=-1
@@ -111,28 +207,29 @@ def _train(model, args):
             l3 = criterion(pred_img[2], label_img)
             loss_content = l1+l2+l3
 
-            label_fft1 = torch.fft.fft2(label_img4, dim=(-2,-1))
-            label_fft1 = torch.stack((label_fft1.real, label_fft1.imag), -1)
-
-            pred_fft1 = torch.fft.fft2(pred_img[0], dim=(-2,-1))
-            pred_fft1 = torch.stack((pred_fft1.real, pred_fft1.imag), -1)
-
-            label_fft2 = torch.fft.fft2(label_img2, dim=(-2,-1))
-            label_fft2 = torch.stack((label_fft2.real, label_fft2.imag), -1)
-
-            pred_fft2 = torch.fft.fft2(pred_img[1], dim=(-2,-1))
-            pred_fft2 = torch.stack((pred_fft2.real, pred_fft2.imag), -1)
-
-            label_fft3 = torch.fft.fft2(label_img, dim=(-2,-1))
-            label_fft3 = torch.stack((label_fft3.real, label_fft3.imag), -1)
-
-            pred_fft3 = torch.fft.fft2(pred_img[2], dim=(-2,-1))
-            pred_fft3 = torch.stack((pred_fft3.real, pred_fft3.imag), -1)
-
-            f1 = criterion(pred_fft1, label_fft1)
-            f2 = criterion(pred_fft2, label_fft2)
-            f3 = criterion(pred_fft3, label_fft3)
+            f1 = _fft_l1_loss(pred_img[0], label_img4, criterion)
+            f2 = _fft_l1_loss(pred_img[1], label_img2, criterion)
+            f3, fft_band_details = _fft_l1_loss(
+                pred_img[2], label_img, criterion, return_band_stats=True
+            )
             loss_fft = f1+f2+f3
+
+            loss_details = {
+                "loss_content_quarter": l1,
+                "loss_content_half": l2,
+                "loss_content_full": l3,
+                "loss_fft_quarter": f1,
+                "loss_fft_half": f2,
+                "loss_fft_full": f3,
+            }
+            loss_details.update(fft_band_details)
+            for detail_name, detail_value in loss_details.items():
+                _add_loss_detail(
+                    iter_loss_detail_adders,
+                    epoch_loss_detail_adders,
+                    detail_name,
+                    detail_value,
+                )
 
             loss = loss_content + 0.1 * loss_fft
             loss.backward()
@@ -151,10 +248,18 @@ def _train(model, args):
                     iter_fft_adder.average()))
                 writer.add_scalar('Pixel Loss', iter_pixel_adder.average(), iter_idx + (epoch_idx-1)* max_iter)
                 writer.add_scalar('FFT Loss', iter_fft_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                for detail_name, detail_adder in sorted(iter_loss_detail_adders.items()):
+                    writer.add_scalar(
+                        f"Loss detail/{detail_name}",
+                        detail_adder.average(),
+                        iter_idx + (epoch_idx - 1) * max_iter,
+                    )
                 
                 iter_timer.tic()
                 iter_pixel_adder.reset()
                 iter_fft_adder.reset()
+                for detail_adder in iter_loss_detail_adders.values():
+                    detail_adder.reset()
         overwrite_name = os.path.join(args.model_save_dir, 'model.pkl')
         torch.save({'model': model.state_dict(),
                     'optimizer': optimizer.state_dict(),
@@ -165,12 +270,27 @@ def _train(model, args):
             torch.save({'model': model.state_dict()}, save_name)
         print("EPOCH: %02d\nElapsed time: %4.2f Epoch Pixel Loss: %7.4f Epoch FFT Loss: %7.4f" % (
             epoch_idx, epoch_timer.toc(), epoch_pixel_adder.average(), epoch_fft_adder.average()))
+        epoch_detail_values = {
+            name: adder.average()
+            for name, adder in sorted(epoch_loss_detail_adders.items())
+            if adder.count > 0
+        }
+        if epoch_detail_values:
+            detail = " ".join(
+                f"{name}: {value:.8f}" for name, value in epoch_detail_values.items()
+            )
+            print(f"EPOCH_LOSS_DETAIL Epoch: {epoch_idx:03d} {detail}")
+            for detail_name, detail_value in epoch_detail_values.items():
+                writer.add_scalar(f"Epoch loss detail/{detail_name}", detail_value, epoch_idx)
         epoch_fft_adder.reset()
         epoch_pixel_adder.reset()
+        for detail_adder in epoch_loss_detail_adders.values():
+            detail_adder.reset()
         scheduler.step()
         if epoch_idx % args.valid_freq == 0:
             val = _valid(model, args, epoch_idx)
             _log_modulation_stats(model, args, epoch_idx, device)
+            _log_pfd_stats(model, args, epoch_idx, device)
             print('%03d epoch \n Average PSNR %.2f dB' % (epoch_idx, val))
             writer.add_scalar('PSNR', val, epoch_idx)
             if val >= best_psnr:

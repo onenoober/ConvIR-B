@@ -3,6 +3,39 @@ import json
 from pathlib import Path
 
 
+def diagnostic_status(path):
+    if not path:
+        return {
+            "required": True,
+            "dir": None,
+            "status": "not_provided",
+            "report_blocking": True,
+        }
+    diag_dir = Path(path)
+    summary = diag_dir / "diagnostic_summary.json"
+    panel = diag_dir / "visual_panel_20.png"
+    notes = diag_dir / "visual_notes_template.md"
+    if summary.is_file() and panel.is_file() and notes.is_file():
+        return {
+            "required": True,
+            "dir": str(diag_dir),
+            "status": "complete_pending_human_visual_notes",
+            "report_blocking": True,
+            "summary": str(summary),
+            "panel": str(panel),
+            "visual_notes_template": str(notes),
+        }
+    return {
+        "required": True,
+        "dir": str(diag_dir),
+        "status": "pending_background_sidecar",
+        "report_blocking": True,
+        "summary": str(summary),
+        "panel": str(panel),
+        "visual_notes_template": str(notes),
+    }
+
+
 def check(name, value, op, threshold):
     if op == ">=":
         passed = value >= threshold
@@ -28,6 +61,7 @@ def main():
     parser.add_argument("--stage", required=True, choices=["B1", "B2", "B3"])
     parser.add_argument("--compare_json", required=True)
     parser.add_argument("--bucket_json", required=True)
+    parser.add_argument("--diagnostic_dir", default="")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
 
@@ -76,7 +110,9 @@ def main():
         },
         "checks": checks,
         "automatic_pass": all(item["pass"] for item in checks),
-        "manual_visual_artifact_check": "pending",
+        "manual_visual_artifact_check": "required_from_fixed_diagnostic_pack",
+        "diagnostic_pack": diagnostic_status(args.diagnostic_dir),
+        "candidate_report_status": "blocked_until_fixed_diagnostic_pack_and_visual_notes_are_reviewed",
     }
 
     output = Path(args.output)
