@@ -2,7 +2,7 @@
 
 Date: 2026-06-02
 
-Status: preflight-ready rescue route; opened after B1 feature-delta RHFD failed preservation.
+Status: completed gated stop20 rescue; B1r failed hard-gain and strong-reference gates.
 
 ## Scope
 
@@ -135,11 +135,44 @@ If residual haze feedback is injected only into decoder features with detached l
 - Evidence package contents: run script, preflight JSON, train logs, compare/bucket/gate JSON, per-image CSV, status.
 - Evidence package audit: local/remote text-only parity after sync to `main`.
 
+## Outcome
+
+Run: AutoDL `autodl-dehaze3`, branch `0830c11`, seed `3407`.
+
+Preflight passed:
+
+- Haze4K train/test pair audit passed at `3000/3000` train and `1000/1000` test.
+- Official ConvIR-B checkpoint loaded with no original missing or unexpected keys.
+- B1r zero-init random and real-batch equivalence both had `max_abs_diff = 0.0`.
+- Adapter-only trainable set was exactly `PFD_DECODER_RHFD*`: `3712` trainable parameters and `8696785` frozen parameters.
+
+Stop10 Best vs A0:
+
+| Metric | Value |
+| --- | ---: |
+| global mean PSNR delta | `+0.0028 dB` |
+| mean SSIM delta | `+0.000050` |
+| hard bottom-25% delta | `+0.0461 dB` |
+| easy top-25% delta | `-0.0248 dB` |
+| strong-reference regressions | `103/250` |
+| severe regressions | `57/1000` |
+
+Stop20 Best vs A0:
+
+| Metric | Value | Gate |
+| --- | ---: | --- |
+| global mean PSNR delta | `+0.0028 dB` | pass |
+| mean SSIM delta | `+0.000050` | pass |
+| hard bottom-25% delta | `+0.0461 dB` | fail, target `>= +0.15 dB` |
+| easy top-25% delta | `-0.0248 dB` | pass |
+| strong-reference regressions | `103/250` | fail, target `<= 50/250` |
+| severe regressions | `57/1000` | pass |
+
 ## Decision
 
-- Decision label: pending.
-- Image/global metric reason: pending.
-- Mechanism reason: pending.
-- Preservation or regression reason: pending.
-- Cost/deployability reason: pending.
-- What this decides next: B1r pass leads to promotion confirmation or teacher-preserve; B1r fail stops PFD expansion and supports negative-evidence thesis synthesis.
+- Decision label: `FAIL_STOP_B1R_DECODER_RHFD_ADAPTER_ONLY`.
+- Image/global metric reason: A0-level global PSNR and positive SSIM show the adapter-only route is preservation-stable on averages.
+- Mechanism reason: hard bottom-25% gain is only `+0.0461 dB`, below the predeclared `+0.15 dB` mechanism threshold.
+- Preservation or regression reason: easy bucket is preserved, but strong-reference regressions remain too high at `103/250`.
+- Cost/deployability reason: parameter cost is small, but the mechanism signal is too weak for promotion.
+- What this decides next: do not launch B2/B3 from this route. Teacher preservation is not launched from this result because the hard gain is already too small; adding a teacher is likely to reduce the remaining target signal rather than make the candidate promotion-ready.

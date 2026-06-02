@@ -1,6 +1,6 @@
 # Haze4K B1r Decoder RHFD Preserve Logs
 
-Status: script-ready; run artifacts pending cloud execution.
+Status: completed; B1r adapter-only stop20 failed the predeclared B1r gate.
 
 This directory is reserved for the B1r rescue route:
 
@@ -15,7 +15,7 @@ Boundary:
 - keep `--pfd_rhfd 0`, `--pfd_hscm 0`, `--pfd_pffb 0`, and `--pfd_teacher 0`;
 - do not launch B2/B3 or any HSCM/PFFB/hard-frequency/haze-prior variants from this route.
 
-Planned text artifacts:
+Text artifacts:
 
 | File | Purpose |
 | --- | --- |
@@ -31,5 +31,26 @@ Planned text artifacts:
 | `scout_eval_bucket_analysis_seed3407_B1r_stop20_vs_A0_best.json` | Stop20 hard/easy bucket analysis. |
 | `gate_B1r_stop20.json` | Stop20 preservation gate result. |
 | `status.txt` | Timestamped run status. |
+| `tmux.out` | Detached tmux transcript. |
 
 Text-only sync rule: keep checkpoints, images, datasets, arrays, and raw inference outputs out of Git.
+
+## Result Summary
+
+Preflight passed with zero-init equivalence (`max_abs_diff = 0.0`) and exactly
+`3712` trainable B1r adapter parameters.
+
+Stop20 Best vs A0:
+
+| Metric | Value | Gate |
+| --- | ---: | --- |
+| global mean PSNR delta | `+0.0028 dB` | pass |
+| mean SSIM delta | `+0.000050` | pass |
+| hard bottom-25% delta | `+0.0461 dB` | fail |
+| easy top-25% delta | `-0.0248 dB` | pass |
+| strong-reference regressions | `103/250` | fail |
+| severe regressions | `57/1000` | pass |
+
+Decision: `FAIL_STOP_B1R_DECODER_RHFD_ADAPTER_ONLY`. The route is much more
+preservation-stable than B1 feature-delta RHFD, but the hard-case gain is too
+small and strong-reference regressions remain above the gate.

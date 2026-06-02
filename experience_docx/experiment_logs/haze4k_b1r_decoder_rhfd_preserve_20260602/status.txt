@@ -1,0 +1,11 @@
+start 2026-06-02T10:42:17+08:00
+preflight_pass 2026-06-02T10:42:21+08:00
+train_start ConvIR-Haze4K-B1r-decoder-rhfd-adapter-only-stop10-seed3407-20260602 stop_epoch=10 2026-06-02T10:42:21+08:00
+train_done ConvIR-Haze4K-B1r-decoder-rhfd-adapter-only-stop10-seed3407-20260602 rc=0 2026-06-02T10:54:14+08:00
+eval_start B1r_stop10 2026-06-02T10:54:14+08:00
+eval_done B1r_stop10 2026-06-02T10:56:58+08:00
+train_start ConvIR-Haze4K-B1r-decoder-rhfd-adapter-only-stop20-seed3407-20260602 stop_epoch=20 2026-06-02T10:56:58+08:00
+train_done ConvIR-Haze4K-B1r-decoder-rhfd-adapter-only-stop20-seed3407-20260602 rc=0 2026-06-02T11:20:34+08:00
+eval_start B1r_stop20 2026-06-02T11:20:34+08:00
+eval_done B1r_stop20 2026-06-02T11:23:25+08:00
+gate_fail_stop B1r 2026-06-02T11:23:25+08:00
