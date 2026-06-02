@@ -46,6 +46,8 @@ def build_eval_model(arch, mode, args, prefix):
         pfd_pffb=getattr(args, f"{prefix}_pfd_pffb"),
         pfd_pffb_high=getattr(args, f"{prefix}_pfd_pffb_high"),
         pfd_teacher=getattr(args, f"{prefix}_pfd_teacher"),
+        pfd_decoder_rhfd=getattr(args, f"{prefix}_pfd_decoder_rhfd"),
+        pfd_decoder_rhfd_scale=getattr(args, f"{prefix}_pfd_decoder_rhfd_scale"),
     )
 
 
@@ -141,6 +143,8 @@ def main():
     parser.add_argument("--original_pfd_pffb", type=int, default=0, choices=[0, 1])
     parser.add_argument("--original_pfd_pffb_high", type=int, default=0, choices=[0, 1])
     parser.add_argument("--original_pfd_teacher", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--original_pfd_decoder_rhfd", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--original_pfd_decoder_rhfd_scale", type=float, default=0.1)
     parser.add_argument("--modres_checkpoint")
     parser.add_argument("--candidate_checkpoint")
     parser.add_argument("--candidate_arch", choices=["convir", "pfd"], default="convir")
@@ -151,6 +155,8 @@ def main():
     parser.add_argument("--candidate_pfd_pffb", type=int, default=0, choices=[0, 1])
     parser.add_argument("--candidate_pfd_pffb_high", type=int, default=0, choices=[0, 1])
     parser.add_argument("--candidate_pfd_teacher", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--candidate_pfd_decoder_rhfd", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--candidate_pfd_decoder_rhfd_scale", type=float, default=0.1)
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
     args = parser.parse_args()

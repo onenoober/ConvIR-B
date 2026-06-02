@@ -41,6 +41,10 @@ Retained remote refs:
   loss evidence and prior route history.
 - `github/codex/haze4k-haze-prior-scm`: leaf route containing haze-prior SCM
   evidence, a GitHub-readable text package, and prior route history.
+- `github/codex/haze4k-pfd-mainline`: diagnostic PFD mainline branch where B1
+  failed preservation and B2/B3 were not launched.
+- `github/codex/haze4k-b1r-decoder-rhfd-preserve`: active rescue branch for
+  decoder-side RHFD-Lite plus adapter-only preservation training.
 
 ## Reading Order
 
@@ -63,6 +67,7 @@ Retained remote refs:
 | Hard-aware frequency loss | Completed diagnostic | Best mean PSNR `-0.2127 dB`; hard `+0.5999 dB`; easy `-1.2363 dB`; strong-reference regressions `188/250`; Best-vs-Last `-0.6922 dB`. | `FAIL_STOP_HARDFFT_LAMBDA_002`; do not repeat or promote `hard_fft_lambda=0.02` as-is. | [card](experiment_cards/2026-06-01-haze4k-hardfreq-loss.md) | [logs](experiment_logs/haze4k_hardfreq_loss_stop20_20260601/) | `github/codex/haze4k-hardfreq-loss` |
 | Haze-prior SCM + hard auxiliary | Completed diagnostic | Best mean PSNR `-0.3789 dB`; hard `+0.3501 dB`; easy `-1.6511 dB`; strong-reference regressions `185/250`. | `NO_PROMOTE_STOP20_HAZE_PRIOR_SCM_HARDAUX`; do not promote this exact route. | [card](experiment_cards/2026-06-01-haze4k-haze-prior-scm.md) | [logs](experiment_logs/haze4k_haze_prior_scm_20260601/) | `github/codex/haze4k-haze-prior-scm` |
 | PFD mainline stop20 scout | Completed gated stop20 scout | Stage 0 passed; A1 stop20 completed; B1 hard bottom-25% `+0.3838 dB`, global mean delta `-0.0885 dB`, easy top-25% `-0.3345 dB`, strong-reference regressions `137/250`. | Keep as diagnostic; B1 fails the preservation gate, so B2/B3 were not launched. | [card](experiment_cards/2026-06-02-haze4k-pfd-convir-mainline-plan.md) | [logs](experiment_logs/haze4k_pfd_mainline_20260602/) | `github/codex/haze4k-pfd-mainline` |
+| B1r decoder RHFD preservation rescue | Preflight-ready rescue | Recasts RHFD as decoder-side low-scale residual feedback and freezes the ConvIR-B backbone for adapter-only stop10/stop20. | Continue only if zero-init preflight passes; compare B1r against A0 official checkpoint, not A1 stop20. | [card](experiment_cards/2026-06-02-haze4k-b1r-decoder-rhfd-preserve.md) | [logs](experiment_logs/haze4k_b1r_decoder_rhfd_preserve_20260602/) | `github/codex/haze4k-b1r-decoder-rhfd-preserve` |
 
 ## Evidence Inventory
 
@@ -79,6 +84,7 @@ Retained remote refs:
 | `experiment_logs/haze4k_hardfreq_loss_stop20_20260601/` | 14 | Hard-frequency preflight, train log, Best/Last compare JSON/CSV, run script. |
 | `experiment_logs/haze4k_haze_prior_scm_20260601/` | 11 | Haze-prior preflights, Best/Last compare JSON/CSV, run script, status. |
 | `experiment_logs/haze4k_pfd_mainline_20260602/` | 11 | Stage 0 JSON, A1/B1 train logs, B1 gate/compare artifacts, run script, status, tmux transcript. |
+| `experiment_logs/haze4k_b1r_decoder_rhfd_preserve_20260602/` | pending | B1r preflight, adapter-only train logs, compare/gate artifacts, run script, status. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 
@@ -91,6 +97,8 @@ The active conclusion is conservative:
 - Hard-frequency weighting and haze-prior SCM also moved hard cases but harmed
   global/easy preservation too much.
 - No current route is promotion-ready.
+- The active next route is B1r decoder RHFD preservation rescue; do not launch
+  B2/B3 until B1r establishes preservation-safe RHFD behavior.
 - `main` should carry the evidence and index, while runnable experimental code
   stays on the retained leaf branches.
 

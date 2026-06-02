@@ -23,6 +23,8 @@ def build_model(args):
         pfd_pffb=args.pfd_pffb,
         pfd_pffb_high=args.pfd_pffb_high,
         pfd_teacher=args.pfd_teacher,
+        pfd_decoder_rhfd=args.pfd_decoder_rhfd,
+        pfd_decoder_rhfd_scale=args.pfd_decoder_rhfd_scale,
     )
 
 
@@ -99,6 +101,9 @@ if __name__ == '__main__':
     parser.add_argument('--pfd_pffb', default=0, choices=[0, 1], type=int)
     parser.add_argument('--pfd_pffb_high', default=0, choices=[0, 1], type=int)
     parser.add_argument('--pfd_teacher', default=0, choices=[0, 1], type=int)
+    parser.add_argument('--pfd_decoder_rhfd', default=0, choices=[0, 1], type=int)
+    parser.add_argument('--pfd_decoder_rhfd_scale', default=0.1, type=float)
+    parser.add_argument('--pfd_adapter_only', default=0, choices=[0, 1], type=int)
     parser.add_argument('--seed', default=-1, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)

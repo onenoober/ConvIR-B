@@ -3,7 +3,11 @@ import torch.nn.functional as F
 
 from .ConvIR import ConvIR
 from .haze_priors import HazePriorResidual
-from .pfd_modules import LowPassResidualDelta, ResidualHardFeatureDelta
+from .pfd_modules import (
+    DecoderResidualHazeFeedback,
+    LowPassResidualDelta,
+    ResidualHardFeatureDelta,
+)
 
 
 class PFDConvIR(ConvIR):
@@ -16,17 +20,23 @@ class PFDConvIR(ConvIR):
         pfd_pffb=False,
         pfd_pffb_high=False,
         pfd_teacher=False,
+        pfd_decoder_rhfd=False,
+        pfd_decoder_rhfd_scale=0.1,
     ):
         if pfd_pffb_high:
             raise ValueError("PFFB-High is deferred for the PFD mainline.")
         if pfd_teacher:
             raise ValueError("Teacher preservation is conditional and not implemented as a default flag.")
+        if pfd_rhfd and pfd_decoder_rhfd:
+            raise ValueError("Use either feature-side pfd_rhfd or decoder-side pfd_decoder_rhfd, not both.")
         super(PFDConvIR, self).__init__(version, data, fam_mode="original")
         self.pfd_rhfd = bool(pfd_rhfd)
         self.pfd_hscm = bool(pfd_hscm)
         self.pfd_pffb = bool(pfd_pffb)
         self.pfd_pffb_high = bool(pfd_pffb_high)
         self.pfd_teacher = bool(pfd_teacher)
+        self.pfd_decoder_rhfd = bool(pfd_decoder_rhfd)
+        self.pfd_decoder_rhfd_scale = float(pfd_decoder_rhfd_scale)
 
         self.PFD_HSCM2 = HazePriorResidual(64)
         self.PFD_HSCM1 = HazePriorResidual(128)
@@ -34,6 +44,8 @@ class PFDConvIR(ConvIR):
         self.PFD_RHFD1 = ResidualHardFeatureDelta(128)
         self.PFD_PFFB2 = LowPassResidualDelta(64)
         self.PFD_PFFB1 = LowPassResidualDelta(128)
+        self.PFD_DECODER_RHFD4 = DecoderResidualHazeFeedback(64)
+        self.PFD_DECODER_RHFD2 = DecoderResidualHazeFeedback(32)
 
     def _apply_stage(self, x, rhfd, pffb):
         if self.pfd_rhfd:
@@ -67,15 +79,33 @@ class PFDConvIR(ConvIR):
 
         z = self.Decoder[0](z)
         z_ = self.ConvsOut[0](z)
+        out4 = z_ + x_4
         z = self.feat_extract[3](z)
-        outputs.append(z_ + x_4)
+        if self.pfd_decoder_rhfd:
+            residual4 = x_4 - out4
+            fb4 = self.PFD_DECODER_RHFD4(
+                out4.detach(),
+                residual4.detach(),
+                z.shape[-2:],
+            )
+            z = z + self.pfd_decoder_rhfd_scale * fb4
+        outputs.append(out4)
 
         z = torch.cat([z, res2], dim=1)
         z = self.Convs[0](z)
         z = self.Decoder[1](z)
         z_ = self.ConvsOut[1](z)
+        out2 = z_ + x_2
         z = self.feat_extract[4](z)
-        outputs.append(z_ + x_2)
+        if self.pfd_decoder_rhfd:
+            residual2 = x_2 - out2
+            fb2 = self.PFD_DECODER_RHFD2(
+                out2.detach(),
+                residual2.detach(),
+                z.shape[-2:],
+            )
+            z = z + self.pfd_decoder_rhfd_scale * fb2
+        outputs.append(out2)
 
         z = torch.cat([z, res1], dim=1)
         z = self.Convs[1](z)
@@ -95,6 +125,8 @@ class PFDConvIR(ConvIR):
                 "pffb": self.pfd_pffb,
                 "pffb_high": self.pfd_pffb_high,
                 "teacher": self.pfd_teacher,
+                "decoder_rhfd": self.pfd_decoder_rhfd,
+                "decoder_rhfd_scale": self.pfd_decoder_rhfd_scale,
             }
         }
         if self.pfd_hscm:
@@ -111,6 +143,8 @@ def build_pfd_net(
     pfd_pffb=False,
     pfd_pffb_high=False,
     pfd_teacher=False,
+    pfd_decoder_rhfd=False,
+    pfd_decoder_rhfd_scale=0.1,
 ):
     return PFDConvIR(
         version,
@@ -120,4 +154,6 @@ def build_pfd_net(
         pfd_pffb=pfd_pffb,
         pfd_pffb_high=pfd_pffb_high,
         pfd_teacher=pfd_teacher,
+        pfd_decoder_rhfd=pfd_decoder_rhfd,
+        pfd_decoder_rhfd_scale=pfd_decoder_rhfd_scale,
     )

@@ -25,7 +25,7 @@ def check(name, value, op, threshold):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--stage", required=True, choices=["B1", "B2", "B3"])
+    parser.add_argument("--stage", required=True, choices=["B1", "B2", "B3", "B1r"])
     parser.add_argument("--compare_json", required=True)
     parser.add_argument("--bucket_json", required=True)
     parser.add_argument("--output", required=True)
@@ -38,10 +38,20 @@ def main():
     hard = difficulty["hard_bottom_25pct"]["mean_delta_psnr"]
     easy = difficulty["easy_top_25pct"]["mean_delta_psnr"]
     global_delta = comparison["mean_psnr_delta"]
+    ssim_delta = comparison["mean_ssim_delta"]
     strong_regressions = comparison["strong_regression_count_delta_le_-0.05"]
     severe_regressions = comparison["worst_regression_count_delta_le_-0.20"]
 
-    if args.stage == "B1":
+    if args.stage == "B1r":
+        checks = [
+            check("global_psnr_delta_vs_a0", global_delta, ">=", -0.05),
+            check("mean_ssim_delta_vs_a0", ssim_delta, ">=", -0.001),
+            check("hard_bottom25_delta_vs_a0", hard, ">=", 0.15),
+            check("easy_top25_mean_delta_vs_a0", easy, ">=", -0.05),
+            check("strong_reference_regressions_vs_a0", strong_regressions, "<=", 50),
+            check("severe_all_image_regressions_vs_a0", severe_regressions, "<=", 150),
+        ]
+    elif args.stage == "B1":
         checks = [
             check("global_psnr_delta_vs_a1", global_delta, ">=", -0.05),
             check("easy_top25_mean_delta", easy, ">=", -0.05),
@@ -69,6 +79,7 @@ def main():
         "bucket_json": args.bucket_json,
         "metrics": {
             "global_mean_delta_psnr": global_delta,
+            "mean_ssim_delta": ssim_delta,
             "hard_bottom25_mean_delta_psnr": hard,
             "easy_top25_mean_delta_psnr": easy,
             "strong_reference_regressions_delta_le_-0.05": strong_regressions,

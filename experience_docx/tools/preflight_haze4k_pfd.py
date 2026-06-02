@@ -137,6 +137,25 @@ def load_pfd(model, state):
     }
 
 
+def trainable_summary(model, enabled_prefixes=None):
+    enabled_prefixes = tuple(enabled_prefixes or ["PFD_"])
+    trainable = []
+    frozen = []
+    for name, param in model.named_parameters():
+        if name.startswith(enabled_prefixes):
+            trainable.append((name, param.numel()))
+        else:
+            frozen.append((name, param.numel()))
+    return {
+        "enabled_prefixes": list(enabled_prefixes),
+        "trainable_param_count": sum(numel for _, numel in trainable),
+        "frozen_param_count": sum(numel for _, numel in frozen),
+        "trainable_tensor_count": len(trainable),
+        "frozen_tensor_count": len(frozen),
+        "trainable_names_sample": [name for name, _ in trainable[:20]],
+    }
+
+
 def output_diffs(original, candidate, x):
     with torch.no_grad():
         original_out = original(x)
@@ -178,6 +197,8 @@ def main():
     parser.add_argument("--batch_size", type=int, default=1)
     parser.add_argument("--max_abs_threshold", type=float, default=1e-6)
     parser.add_argument("--mean_abs_threshold", type=float, default=1e-7)
+    parser.add_argument("--pfd_decoder_rhfd", type=int, default=0, choices=[0, 1])
+    parser.add_argument("--pfd_decoder_rhfd_scale", type=float, default=0.1)
     args = parser.parse_args()
 
     random.seed(args.seed)
@@ -202,6 +223,8 @@ def main():
         pfd_pffb=False,
         pfd_pffb_high=False,
         pfd_teacher=False,
+        pfd_decoder_rhfd=args.pfd_decoder_rhfd,
+        pfd_decoder_rhfd_scale=args.pfd_decoder_rhfd_scale,
     ).to(device).eval()
 
     original_load = load_original(original, state)
@@ -232,11 +255,15 @@ def main():
         and real_summary["mean_abs_diff"] < args.mean_abs_threshold
     )
     result = {
-        "stage": "pfd_v0_preflight",
+        "stage": "pfd_b1r_decoder_rhfd_preflight" if args.pfd_decoder_rhfd else "pfd_v0_preflight",
         "seed": args.seed,
         "device": str(device),
         "data_dir": args.data_dir,
         "checkpoint": args.checkpoint,
+        "candidate_flags": {
+            "pfd_decoder_rhfd": bool(args.pfd_decoder_rhfd),
+            "pfd_decoder_rhfd_scale": args.pfd_decoder_rhfd_scale,
+        },
         "pair_audit": pair_audit,
         "checkpoint_load": {
             "original": original_load,
@@ -258,10 +285,14 @@ def main():
         },
         "params": {
             "original": param_original,
-            "pfd_v0": param_pfd,
+            "pfd_candidate": param_pfd,
             "delta": param_pfd - param_original,
             "delta_pct": (param_pfd - param_original) / param_original * 100.0,
         },
+        "adapter_only_trainable_summary": trainable_summary(
+            pfd,
+            ["PFD_DECODER_RHFD"] if args.pfd_decoder_rhfd else ["PFD_"],
+        ),
     }
     result["pass"] = (
         pair_pass

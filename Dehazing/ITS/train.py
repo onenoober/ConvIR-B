@@ -10,6 +10,43 @@ import torch.nn as nn
 from warmup_scheduler import GradualWarmupScheduler
 
 
+def _configure_trainable_parameters(model, args):
+    if not getattr(args, 'pfd_adapter_only', 0):
+        for param in model.parameters():
+            param.requires_grad = True
+        mode = 'all'
+    else:
+        active_prefixes = []
+        if getattr(args, 'pfd_decoder_rhfd', 0):
+            active_prefixes.append('PFD_DECODER_RHFD')
+        if getattr(args, 'pfd_rhfd', 0):
+            active_prefixes.append('PFD_RHFD')
+        if getattr(args, 'pfd_hscm', 0):
+            active_prefixes.append('PFD_HSCM')
+        if getattr(args, 'pfd_pffb', 0):
+            active_prefixes.append('PFD_PFFB')
+        if not active_prefixes:
+            raise ValueError('--pfd_adapter_only requires at least one enabled PFD adapter flag')
+        for name, param in model.named_parameters():
+            param.requires_grad = any(name.startswith(prefix) for prefix in active_prefixes)
+        mode = 'pfd_adapter_only:' + ','.join(active_prefixes)
+
+    trainable = sum(param.numel() for param in model.parameters() if param.requires_grad)
+    frozen = sum(param.numel() for param in model.parameters() if not param.requires_grad)
+    names = [name for name, param in model.named_parameters() if param.requires_grad]
+    if not names:
+        raise ValueError(f'No trainable parameters for mode={mode}')
+    print(
+        'TRAINABLE_PARAMS mode=%s trainable=%d frozen=%d first=%s' % (
+            mode,
+            trainable,
+            frozen,
+            ','.join(names[:12]),
+        )
+    )
+    return [param for param in model.parameters() if param.requires_grad]
+
+
 def _log_modulation_stats(model, args, epoch_idx, device):
     if args.mod_stats_freq <= 0 or epoch_idx % args.mod_stats_freq != 0:
         return
@@ -63,7 +100,8 @@ def _train(model, args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     criterion = torch.nn.L1Loss()
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate, betas=(0.9, 0.999), eps=1e-8)
+    trainable_parameters = _configure_trainable_parameters(model, args)
+    optimizer = torch.optim.Adam(trainable_parameters, lr=args.learning_rate, betas=(0.9, 0.999), eps=1e-8)
     dataloader = train_dataloader(args.data_dir, args.batch_size, args.num_worker, args.data)
     max_iter = len(dataloader)
     warmup_epochs=3
@@ -136,7 +174,7 @@ def _train(model, args):
 
             loss = loss_content + 0.1 * loss_fft
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 0.001)
+            torch.nn.utils.clip_grad_norm_(trainable_parameters, 0.001)
             optimizer.step()
 
             iter_pixel_adder(loss_content.item())
