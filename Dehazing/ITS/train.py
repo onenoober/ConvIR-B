@@ -85,17 +85,20 @@ def _log_pfd_stats(model, args, epoch_idx, device):
     dataloader = valid_dataloader(args.data_dir, args.data, batch_size=1, num_workers=0)
     sums = {}
     count = 0
-    model.eval()
-    with torch.no_grad():
-        for batch_idx, batch_data in enumerate(dataloader):
-            if args.mod_stats_batches > 0 and batch_idx >= args.mod_stats_batches:
-                break
-            input_img = batch_data[0].to(device)
-            flat_stats = _flatten_stat_dict(model.collect_pfd_stats(input_img))
-            for key, value in flat_stats.items():
-                sums[key] = sums.get(key, 0.0) + value
-            count += 1
-    model.train()
+    was_training = model.training
+    try:
+        model.eval()
+        with torch.no_grad():
+            for batch_idx, batch_data in enumerate(dataloader):
+                if args.mod_stats_batches > 0 and batch_idx >= args.mod_stats_batches:
+                    break
+                input_img = batch_data[0].to(device)
+                flat_stats = _flatten_stat_dict(model.collect_pfd_stats(input_img))
+                for key, value in flat_stats.items():
+                    sums[key] = sums.get(key, 0.0) + value
+                count += 1
+    finally:
+        model.train(was_training)
 
     if count == 0 or not sums:
         return

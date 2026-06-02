@@ -42,8 +42,7 @@ class PFDConvIR(ConvIR):
             x = x + pffb(x)
         return x
 
-    def _stage_delta_stats(self, feature, module):
-        delta = module(feature)
+    def _stage_delta_stats_from_delta(self, feature, delta):
         feature_norm = feature.norm().item()
         delta_norm = delta.norm().item()
         return {
@@ -124,21 +123,25 @@ class PFDConvIR(ConvIR):
             z = self.feat_extract[1](res1)
             z = self.FAM2(z, z2)
             if self.pfd_rhfd:
-                stats["RHFD2"] = self._stage_delta_stats(z, self.PFD_RHFD2)
-                z = z + self.PFD_RHFD2(z)
+                delta = self.PFD_RHFD2(z)
+                stats["RHFD2"] = self._stage_delta_stats_from_delta(z, delta)
+                z = z + delta
             if self.pfd_pffb:
-                stats["PFFB2"] = self._stage_delta_stats(z, self.PFD_PFFB2)
-                z = z + self.PFD_PFFB2(z)
+                delta = self.PFD_PFFB2(z)
+                stats["PFFB2"] = self._stage_delta_stats_from_delta(z, delta)
+                z = z + delta
             res2 = self.Encoder[1](z)
 
             z = self.feat_extract[2](res2)
             z = self.FAM1(z, z4)
             if self.pfd_rhfd:
-                stats["RHFD1"] = self._stage_delta_stats(z, self.PFD_RHFD1)
-                z = z + self.PFD_RHFD1(z)
+                delta = self.PFD_RHFD1(z)
+                stats["RHFD1"] = self._stage_delta_stats_from_delta(z, delta)
+                z = z + delta
             if self.pfd_pffb:
-                stats["PFFB1"] = self._stage_delta_stats(z, self.PFD_PFFB1)
-                z = z + self.PFD_PFFB1(z)
+                delta = self.PFD_PFFB1(z)
+                stats["PFFB1"] = self._stage_delta_stats_from_delta(z, delta)
+                z = z + delta
             return stats
 
 
