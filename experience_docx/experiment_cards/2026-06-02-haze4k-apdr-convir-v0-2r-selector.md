@@ -2,7 +2,8 @@
 
 Date: 2026-06-02
 
-Status: planned cloud selector-only preflight.
+Status: completed cloud selector-only preflight; failed selector gate, so
+residual training was not launched.
 
 ## Scope
 
@@ -95,3 +96,64 @@ Stop rule:
 
 - If selector-only gate fails, stop v0.2R and do not train residual.
 - If selector-only gate passes, write and run a separate residual stop20 gate.
+
+## Cloud Run Outcome
+
+Cloud execution ran on AutoDL `autodl-dehaze3` in
+`/root/autodl-tmp/workspace/ConvIR-B-apdr-convir-v0-2r-fullimage-router`.
+
+Architecture preflight passed:
+
+- Haze4K pair audit: `3000/3000` train and `1000/1000` test pairs.
+- Official ConvIR-B checkpoint loaded exactly into A0; APDR only missed
+  expected `APDR_*` keys.
+- Zero-init equivalence: random and real-batch `max_abs_diff = 0.0`.
+- APDR-v0.2R candidate parameters: `8,715,784`, delta `85,119`
+  (`0.9862%`) vs official ConvIR-B.
+
+Full-image calibration matched the previous A0 risk distribution:
+
+- Train images: `3000`.
+- Pixel samples: `6,144,000`.
+- RMSE q25/q50/q75/q90: `0.0073429` / `0.0105008` / `0.0155625` /
+  `0.0219539`.
+- Pixel-error q70/q90: `0.0100390` / `0.0211587`.
+- Spatial tau: `0.0111198`.
+
+Selector-only full-test gate:
+
+| Gate | Observed | Required | Result |
+| --- | ---: | ---: | --- |
+| zero-residual max diff vs A0 | `0.0` | `< 1e-6` | pass |
+| deterministic full-image hard BCE | `1.70804 -> 0.630292` | final `<= 0.55`, drop `>= 0.05` | fail |
+| AUC hard vs easy by `z_img` | `0.97664` | `>= 0.82` | pass |
+| Spearman(`z_img`, A0 PSNR) | `-0.74664` | `<= -0.50` | pass |
+| mean `B_img` hard bottom-25% | `0.782352` | `>= 0.20` | pass |
+| mean `B_img` easy top-25% | `0.146157` | `<= 0.05` | fail |
+| hard/easy `B_img` ratio | `5.35281` | `>= 4.0` | pass |
+| spatial BCE, deterministic subset | `2.06208 -> 0.733602` | final `<` initial | pass |
+| full-test mean spatial BCE | `0.757404` | `<= 0.80` | pass |
+
+Mechanism observations:
+
+- The full-image hard router fixed the v0.2 flat-selector failure: test AUC
+  rose from `0.7686` to `0.9766`, and Spearman improved from `-0.3537` to
+  `-0.7466`.
+- Train-calibrated `B_img` separated hard/easy images by ratio, but the easy
+  budget remained too open at `0.146`, above the `0.05` preservation bound.
+- Spatial-risk supervision remained effective after decoupling, with full-test
+  mean spatial BCE `0.7574`.
+- Output stayed exactly equal to A0, so this is a clean selector diagnostic.
+
+## Decision
+
+- Decision label: `FAIL_STOP_APDR_V0_2R_SELECTOR_ONLY`.
+- Main success: full-image global router learned a strong hard/easy ranking.
+- Main failure: budget calibration is not conservative enough for
+  strong-reference preservation, and deterministic hard BCE remains above the
+  predeclared ceiling.
+- Cost/deployability reason: do not launch residual training while easy
+  `B_img` remains too high.
+- What this decides next: APDR is still alive as a selector direction, but the
+  next attempt must tighten budget calibration or train the router with an
+  explicit low-easy-budget constraint before residual training.
