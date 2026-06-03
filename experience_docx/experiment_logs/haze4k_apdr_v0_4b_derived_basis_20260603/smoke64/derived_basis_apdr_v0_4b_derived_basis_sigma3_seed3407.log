@@ -1,0 +1,271 @@
+collected=16
+collected=32
+collected=48
+collected=64
+evaluated=16
+evaluated=32
+evaluated=48
+evaluated=64
+{
+  "stage": "APDR-v0.4B derived low-field basis Gate 0 and coefficient predictability",
+  "tag": "apdr_v0_4b_derived_basis_sigma3_seed3407",
+  "sigma": 3.0,
+  "correctability_tau": 0.9939929842948914,
+  "num_images": 64,
+  "active_count": 47,
+  "low_sizes": [
+    32
+  ],
+  "k_values": [
+    4,
+    8
+  ],
+  "feature_names": [
+    "P_benefit",
+    "proxy_score",
+    "anchor_psnr",
+    "M_safe_mean",
+    "M_safe_nonzero_frac",
+    "x_mean",
+    "x_std",
+    "x_min",
+    "x_max",
+    "anchor_mean",
+    "anchor_std",
+    "anchor_min",
+    "anchor_max",
+    "absdiff_mean",
+    "absdiff_std",
+    "absdiff_min",
+    "absdiff_max",
+    "dark_mean",
+    "dark_std",
+    "dark_min",
+    "dark_max",
+    "bright_mean",
+    "bright_std",
+    "bright_min",
+    "bright_max",
+    "saturation_mean",
+    "saturation_std",
+    "saturation_min",
+    "saturation_max",
+    "gradient_mean",
+    "gradient_std",
+    "gradient_min",
+    "gradient_max",
+    "m_safe_mean",
+    "m_safe_std",
+    "m_safe_min",
+    "m_safe_max",
+    "x_c0_mean",
+    "x_c0_std",
+    "x_c0_min",
+    "x_c0_max",
+    "x_c1_mean",
+    "x_c1_std",
+    "x_c1_min",
+    "x_c1_max",
+    "x_c2_mean",
+    "x_c2_std",
+    "x_c2_min",
+    "x_c2_max",
+    "anchor_c0_mean",
+    "anchor_c0_std",
+    "anchor_c0_min",
+    "anchor_c0_max",
+    "anchor_c1_mean",
+    "anchor_c1_std",
+    "anchor_c1_min",
+    "anchor_c1_max",
+    "anchor_c2_mean",
+    "anchor_c2_std",
+    "anchor_c2_min",
+    "anchor_c2_max",
+    "diff_c0_mean",
+    "diff_c0_std",
+    "diff_c0_min",
+    "diff_c0_max",
+    "diff_c1_mean",
+    "diff_c1_std",
+    "diff_c1_min",
+    "diff_c1_max",
+    "diff_c2_mean",
+    "diff_c2_std",
+    "diff_c2_min",
+    "diff_c2_max"
+  ],
+  "summaries": [
+    {
+      "low_size": 32,
+      "K": 4,
+      "active_count": 47,
+      "explained_weighted_energy": 0.7963077343637445,
+      "count": 64,
+      "open_count": 47,
+      "initial_weighted_delta_l1": 0.01337557753676425,
+      "projection_weighted_delta_l1": 0.005610627374280061,
+      "weighted_delta_l1_drop": 0.5805319539392872,
+      "pred_target_corr": 0.6900301330742684,
+      "mean_output_gain": 0.514640212059021,
+      "mean_oracle_gain": 0.7584288120269775,
+      "oracle_recovery": 0.6785609986039337,
+      "hard_bottom25_output_gain": 1.1503546237945557,
+      "hard_bottom25_oracle_gain": 1.3604223728179932,
+      "easy_top25_output_gain": 0.1371457576751709,
+      "strong_reference_cut_psnr": 39.277915954589844,
+      "strong_reference_regressions": 0,
+      "severe_regressions": 0,
+      "gate0_pass": false,
+      "gate0_checks": {
+        "weighted_delta_l1_drop": {
+          "observed": 0.5805319539392872,
+          "required": ">= 0.60",
+          "pass": false
+        },
+        "pred_target_corr": {
+          "observed": 0.6900301330742684,
+          "required": ">= 0.75",
+          "pass": false
+        },
+        "oracle_recovery": {
+          "observed": 0.6785609986039337,
+          "required": ">= 0.50",
+          "pass": true
+        },
+        "hard_bottom25_gain": {
+          "observed": 1.1503546237945557,
+          "required": ">= +0.60 dB",
+          "pass": true
+        },
+        "easy_top25_gain": {
+          "observed": 0.1371457576751709,
+          "required": ">= -0.010 dB",
+          "pass": true
+        },
+        "strong_reference_regressions": {
+          "observed": 0,
+          "required": "== 0",
+          "pass": true
+        },
+        "severe_regressions": {
+          "observed": 0,
+          "required": "== 0",
+          "pass": true
+        }
+      }
+    },
+    {
+      "low_size": 32,
+      "K": 8,
+      "active_count": 47,
+      "explained_weighted_energy": 0.9048727193471764,
+      "count": 64,
+      "open_count": 47,
+      "initial_weighted_delta_l1": 0.01337557753676425,
+      "projection_weighted_delta_l1": 0.003951692194808327,
+      "weighted_delta_l1_drop": 0.7045591351889916,
+      "pred_target_corr": 0.8346941864236872,
+      "mean_output_gain": 0.6191364526748657,
+      "mean_oracle_gain": 0.7584288120269775,
+      "oracle_recovery": 0.8163408916654433,
+      "hard_bottom25_output_gain": 1.243089199066162,
+      "hard_bottom25_oracle_gain": 1.3604223728179932,
+      "easy_top25_output_gain": 0.23093152046203613,
+      "strong_reference_cut_psnr": 39.277915954589844,
+      "strong_reference_regressions": 0,
+      "severe_regressions": 0,
+      "gate0_pass": true,
+      "gate0_checks": {
+        "weighted_delta_l1_drop": {
+          "observed": 0.7045591351889916,
+          "required": ">= 0.60",
+          "pass": true
+        },
+        "pred_target_corr": {
+          "observed": 0.8346941864236872,
+          "required": ">= 0.75",
+          "pass": true
+        },
+        "oracle_recovery": {
+          "observed": 0.8163408916654433,
+          "required": ">= 0.50",
+          "pass": true
+        },
+        "hard_bottom25_gain": {
+          "observed": 1.243089199066162,
+          "required": ">= +0.60 dB",
+          "pass": true
+        },
+        "easy_top25_gain": {
+          "observed": 0.23093152046203613,
+          "required": ">= -0.010 dB",
+          "pass": true
+        },
+        "strong_reference_regressions": {
+          "observed": 0,
+          "required": "== 0",
+          "pass": true
+        },
+        "severe_regressions": {
+          "observed": 0,
+          "required": "== 0",
+          "pass": true
+        }
+      }
+    }
+  ],
+  "best_by_recovery": {
+    "low_size": 32,
+    "K": 8,
+    "active_count": 47,
+    "explained_weighted_energy": 0.9048727193471764,
+    "count": 64,
+    "open_count": 47,
+    "initial_weighted_delta_l1": 0.01337557753676425,
+    "projection_weighted_delta_l1": 0.003951692194808327,
+    "weighted_delta_l1_drop": 0.7045591351889916,
+    "pred_target_corr": 0.8346941864236872,
+    "mean_output_gain": 0.6191364526748657,
+    "mean_oracle_gain": 0.7584288120269775,
+    "oracle_recovery": 0.8163408916654433,
+    "hard_bottom25_output_gain": 1.243089199066162,
+    "hard_bottom25_oracle_gain": 1.3604223728179932,
+    "easy_top25_output_gain": 0.23093152046203613,
+    "strong_reference_cut_psnr": 39.277915954589844,
+    "strong_reference_regressions": 0,
+    "severe_regressions": 0,
+    "gate0_pass": true
+  },
+  "args": {
+    "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+    "selector_checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl",
+    "correctability_json": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis/experience_docx/experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/correctability_traincalib_apdr_v0_4_correctability_traincalib_sigma3_seed3407.json",
+    "correctability_train_csv": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis/experience_docx/experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/correctability_traincalib_train_oof_apdr_v0_4_correctability_traincalib_sigma3_seed3407.csv",
+    "output_dir": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis/experience_docx/experiment_logs/haze4k_apdr_v0_4b_derived_basis_20260603",
+    "tag": "apdr_v0_4b_derived_basis_sigma3_seed3407",
+    "num_images": 64,
+    "seed": 3407,
+    "num_workers": 0,
+    "device": "cuda",
+    "pca_device": "cpu",
+    "residual_max": 0.04,
+    "kernel_size": 31,
+    "sigma": 3.0,
+    "low_sizes": "32",
+    "k_values": "4,8",
+    "projection_ridge": 1e-05,
+    "coeff_ridge": 0.001,
+    "router_ridge": 1e-05,
+    "folds": 5,
+    "router_probe_count": 32,
+    "pca_oversample": 8,
+    "pca_niter": 4,
+    "progress_freq": 16
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis/experience_docx/experiment_logs/haze4k_apdr_v0_4b_derived_basis_20260603/basis_projection_oracle_sigma3.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis/experience_docx/experiment_logs/haze4k_apdr_v0_4b_derived_basis_20260603/derived_basis_spectrum_sigma3.csv
+wrote /root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis/experience_docx/experiment_logs/haze4k_apdr_v0_4b_derived_basis_20260603/coeff_predictability_cv_sigma3.csv
+wrote /root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis/experience_docx/experiment_logs/haze4k_apdr_v0_4b_derived_basis_20260603/basis_residual_error_groups.csv
+wrote /root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis/experience_docx/experiment_logs/haze4k_apdr_v0_4b_derived_basis_20260603/router_overfit32_coeff_vs_field.csv

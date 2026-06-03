@@ -1,0 +1,463 @@
+collected=100
+collected=200
+collected=300
+collected=400
+collected=500
+collected=600
+collected=700
+collected=800
+collected=900
+collected=1000
+collected=1100
+collected=1200
+collected=1300
+collected=1400
+collected=1500
+collected=1600
+collected=1700
+collected=1800
+collected=1900
+collected=2000
+collected=2100
+collected=2200
+collected=2300
+collected=2400
+collected=2500
+collected=2600
+collected=2700
+collected=2800
+collected=2900
+collected=3000
+K=32 step=1 loss=0.154464 field_l1=0.013298 coeff_mse=0.021330
+K=32 step=100 loss=0.076809 field_l1=0.007310 coeff_mse=0.006752
+K=32 step=200 loss=0.029143 field_l1=0.004841 coeff_mse=0.001512
+K=32 step=300 loss=0.011966 field_l1=0.004260 coeff_mse=0.000439
+K=32 step=400 loss=0.006446 field_l1=0.004159 coeff_mse=0.000235
+K=32 step=500 loss=0.004314 field_l1=0.004122 coeff_mse=0.000138
+K=32 step=600 loss=0.003202 field_l1=0.004103 coeff_mse=0.000078
+K=32 step=700 loss=0.002561 field_l1=0.004087 coeff_mse=0.000039
+K=32 step=800 loss=0.002178 field_l1=0.004075 coeff_mse=0.000017
+K=32 step=900 loss=0.001939 field_l1=0.004070 coeff_mse=0.000009
+K=32 step=1000 loss=0.001820 field_l1=0.004068 coeff_mse=0.000006
+K=32 step=1100 loss=0.001713 field_l1=0.004067 coeff_mse=0.000005
+K=32 step=1200 loss=0.001629 field_l1=0.004066 coeff_mse=0.000003
+K=32 step=1300 loss=0.001792 field_l1=0.004068 coeff_mse=0.000007
+K=32 step=1400 loss=0.001544 field_l1=0.004064 coeff_mse=0.000002
+K=32 step=1500 loss=0.001546 field_l1=0.004064 coeff_mse=0.000002
+K=32 step=1600 loss=0.001490 field_l1=0.004064 coeff_mse=0.000001
+K=32 step=1700 loss=0.001553 field_l1=0.004065 coeff_mse=0.000002
+K=32 step=1800 loss=0.001559 field_l1=0.004067 coeff_mse=0.000003
+K=32 step=1900 loss=0.001448 field_l1=0.004063 coeff_mse=0.000001
+K=32 step=2000 loss=0.001450 field_l1=0.004063 coeff_mse=0.000001
+{
+  "stage": "APDR-v0.4B basis-only coefficient router Gate C train128 mini-val256",
+  "tag": "apdr_v0_4b_basis_router_gatec_train128_minival_sigma3_seed3407",
+  "sigma": 3.0,
+  "correctability_tau": 0.9939929842948914,
+  "basis_num_images": 3000,
+  "train_count": 128,
+  "train_scope_count": 128,
+  "fit_count": 0,
+  "eval_count": 256,
+  "train_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    32,
+    33,
+    36,
+    38,
+    39,
+    41,
+    42,
+    43,
+    44,
+    45,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    57,
+    60,
+    62,
+    65,
+    66,
+    67,
+    68,
+    69,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    82,
+    87,
+    89,
+    90,
+    91,
+    92,
+    93,
+    97,
+    98,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119,
+    121,
+    127
+  ],
+  "feature_names": [
+    "P_benefit",
+    "proxy_score",
+    "anchor_psnr",
+    "M_safe_mean",
+    "M_safe_nonzero_frac",
+    "x_mean",
+    "x_std",
+    "x_min",
+    "x_max",
+    "anchor_mean",
+    "anchor_std",
+    "anchor_min",
+    "anchor_max",
+    "absdiff_mean",
+    "absdiff_std",
+    "absdiff_min",
+    "absdiff_max",
+    "dark_mean",
+    "dark_std",
+    "dark_min",
+    "dark_max",
+    "bright_mean",
+    "bright_std",
+    "bright_min",
+    "bright_max",
+    "saturation_mean",
+    "saturation_std",
+    "saturation_min",
+    "saturation_max",
+    "gradient_mean",
+    "gradient_std",
+    "gradient_min",
+    "gradient_max",
+    "m_safe_mean",
+    "m_safe_std",
+    "m_safe_min",
+    "m_safe_max",
+    "x_c0_mean",
+    "x_c0_std",
+    "x_c0_min",
+    "x_c0_max",
+    "x_c1_mean",
+    "x_c1_std",
+    "x_c1_min",
+    "x_c1_max",
+    "x_c2_mean",
+    "x_c2_std",
+    "x_c2_min",
+    "x_c2_max",
+    "anchor_c0_mean",
+    "anchor_c0_std",
+    "anchor_c0_min",
+    "anchor_c0_max",
+    "anchor_c1_mean",
+    "anchor_c1_std",
+    "anchor_c1_min",
+    "anchor_c1_max",
+    "anchor_c2_mean",
+    "anchor_c2_std",
+    "anchor_c2_min",
+    "anchor_c2_max",
+    "diff_c0_mean",
+    "diff_c0_std",
+    "diff_c0_min",
+    "diff_c0_max",
+    "diff_c1_mean",
+    "diff_c1_std",
+    "diff_c1_min",
+    "diff_c1_max",
+    "diff_c2_mean",
+    "diff_c2_std",
+    "diff_c2_min",
+    "diff_c2_max"
+  ],
+  "summaries": [
+    {
+      "count": 256,
+      "open_count": 204,
+      "initial_weighted_delta_l1": 0.013395369251157488,
+      "projection_weighted_delta_l1": 0.011567682178017902,
+      "weighted_delta_l1_drop": 0.13644170898698119,
+      "pred_target_corr": 0.5121236383137704,
+      "mean_output_gain": 0.3457936942577362,
+      "mean_oracle_gain": 0.9745271354913712,
+      "oracle_recovery": 0.35483228908077746,
+      "hard_bottom25_output_gain": 0.9117097854614258,
+      "hard_bottom25_oracle_gain": 1.3754014372825623,
+      "easy_top25_output_gain": -0.06807678937911987,
+      "strong_reference_cut_psnr": 39.24848175048828,
+      "strong_reference_regressions": 11,
+      "severe_regressions": 25,
+      "low_size": 32,
+      "K": 32,
+      "gateb_checks": {
+        "weighted_delta_l1_drop": {
+          "observed": 0.13644170898698119,
+          "required": ">= 0.50",
+          "pass": false
+        },
+        "pred_target_corr": {
+          "observed": 0.5121236383137704,
+          "required": ">= 0.50",
+          "pass": true
+        },
+        "oracle_recovery": {
+          "observed": 0.35483228908077746,
+          "required": ">= 0.30",
+          "pass": true
+        },
+        "hard_train_gain": {
+          "observed": 0.9117097854614258,
+          "required": ">= +0.30 dB",
+          "pass": true
+        },
+        "easy_train_gain": {
+          "observed": -0.06807678937911987,
+          "required": ">= -0.010 dB",
+          "pass": false
+        },
+        "strong_reference_regressions": {
+          "observed": 11,
+          "required": "== 0",
+          "pass": false
+        },
+        "severe_regressions": {
+          "observed": 25,
+          "required": "== 0",
+          "pass": false
+        }
+      },
+      "gateb_pass": false
+    }
+  ],
+  "split_summaries": [
+    {
+      "count": 128,
+      "open_count": 114,
+      "initial_weighted_delta_l1": 0.012428137586358363,
+      "projection_weighted_delta_l1": 0.01669728376276829,
+      "weighted_delta_l1_drop": -0.34350651066946003,
+      "pred_target_corr": 0.2153804141879,
+      "mean_output_gain": 0.05078321695327759,
+      "mean_oracle_gain": 1.1874545961618423,
+      "oracle_recovery": 0.042766449443559326,
+      "hard_bottom25_output_gain": 0.4308739900588989,
+      "hard_bottom25_oracle_gain": 1.3571204543113708,
+      "easy_top25_output_gain": -0.3551063537597656,
+      "strong_reference_cut_psnr": 39.11322021484375,
+      "strong_reference_regressions": 11,
+      "severe_regressions": 25,
+      "weighted_den": 9129986.202148438,
+      "low_size": 32,
+      "K": 32,
+      "split": "mini_val",
+      "gateb_checks": {
+        "weighted_delta_l1_drop": {
+          "observed": -0.34350651066946003,
+          "required": ">= 0.50",
+          "pass": false
+        },
+        "pred_target_corr": {
+          "observed": 0.2153804141879,
+          "required": ">= 0.50",
+          "pass": false
+        },
+        "oracle_recovery": {
+          "observed": 0.042766449443559326,
+          "required": ">= 0.30",
+          "pass": false
+        },
+        "hard_train_gain": {
+          "observed": 0.4308739900588989,
+          "required": ">= +0.30 dB",
+          "pass": true
+        },
+        "easy_train_gain": {
+          "observed": -0.3551063537597656,
+          "required": ">= -0.010 dB",
+          "pass": false
+        },
+        "strong_reference_regressions": {
+          "observed": 11,
+          "required": "== 0",
+          "pass": false
+        },
+        "severe_regressions": {
+          "observed": 25,
+          "required": "== 0",
+          "pass": false
+        }
+      },
+      "gateb_pass": false
+    },
+    {
+      "count": 128,
+      "open_count": 90,
+      "initial_weighted_delta_l1": 0.014800325577653147,
+      "projection_weighted_delta_l1": 0.0041166583321495505,
+      "weighted_delta_l1_drop": 0.7218535287922823,
+      "pred_target_corr": 0.8879983888732063,
+      "mean_output_gain": 0.6408041715621948,
+      "mean_oracle_gain": 0.7615996748209,
+      "oracle_recovery": 0.8413923912361021,
+      "hard_bottom25_output_gain": 1.2889037132263184,
+      "hard_bottom25_oracle_gain": 1.4175617098808289,
+      "easy_top25_output_gain": 0.18363487720489502,
+      "strong_reference_cut_psnr": 39.58837604522705,
+      "strong_reference_regressions": 0,
+      "severe_regressions": 0,
+      "weighted_den": 6285470.6494140625,
+      "low_size": 32,
+      "K": 32,
+      "split": "train",
+      "gateb_checks": {
+        "weighted_delta_l1_drop": {
+          "observed": 0.7218535287922823,
+          "required": ">= 0.50",
+          "pass": true
+        },
+        "pred_target_corr": {
+          "observed": 0.8879983888732063,
+          "required": ">= 0.50",
+          "pass": true
+        },
+        "oracle_recovery": {
+          "observed": 0.8413923912361021,
+          "required": ">= 0.30",
+          "pass": true
+        },
+        "hard_train_gain": {
+          "observed": 1.2889037132263184,
+          "required": ">= +0.30 dB",
+          "pass": true
+        },
+        "easy_train_gain": {
+          "observed": 0.18363487720489502,
+          "required": ">= -0.010 dB",
+          "pass": true
+        },
+        "strong_reference_regressions": {
+          "observed": 0,
+          "required": "== 0",
+          "pass": true
+        },
+        "severe_regressions": {
+          "observed": 0,
+          "required": "== 0",
+          "pass": true
+        }
+      },
+      "gateb_pass": true
+    }
+  ],
+  "train_lowspace": [
+    {
+      "K": 32,
+      "low_size": 32,
+      "step": 2000,
+      "loss": 0.0014497836818918586,
+      "loss_field": 0.0013988054124638438,
+      "loss_coeff": 0.00023510510800406337,
+      "loss_tv": 0.003957277629524469,
+      "count": 90,
+      "coeff_mse": 8.648402740618621e-07,
+      "coeff_mae": 0.0004514558822847903,
+      "lowspace_weighted_field_l1": 0.004063350885798198,
+      "lowspace_zero_field_l1": 0.014808311419212496,
+      "lowspace_field_l1_drop": 0.7256033607905926,
+      "lowspace_field_corr": 0.9465922713279724
+    }
+  ],
+  "args": {
+    "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+    "selector_checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl",
+    "correctability_json": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis/experience_docx/experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/correctability_traincalib_apdr_v0_4_correctability_traincalib_sigma3_seed3407.json",
+    "correctability_train_csv": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis/experience_docx/experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/correctability_traincalib_train_oof_apdr_v0_4_correctability_traincalib_sigma3_seed3407.csv",
+    "output_dir": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis/experience_docx/experiment_logs/haze4k_apdr_v0_4b_basis_router_gatec_train128_minival_20260603",
+    "tag": "apdr_v0_4b_basis_router_gatec_train128_minival_sigma3_seed3407",
+    "stage_label": "APDR-v0.4B basis-only coefficient router Gate C train128 mini-val256",
+    "artifact_prefix": "basis_router_gatec_train128_minival",
+    "basis_num_images": 0,
+    "train_count": 128,
+    "eval_count": 256,
+    "fit_count": 0,
+    "seed": 3407,
+    "num_workers": 0,
+    "device": "cuda",
+    "pca_device": "cpu",
+    "residual_max": 0.04,
+    "kernel_size": 31,
+    "sigma": 3.0,
+    "low_size": 32,
+    "k_values": "32",
+    "projection_ridge": 1e-05,
+    "hidden_dim": 64,
+    "steps": 2000,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "grad_clip_norm": 1.0,
+    "field_beta": 0.01,
+    "coeff_beta": 0.1,
+    "coeff_lambda": 0.2,
+    "tv_lambda": 0.001,
+    "pca_oversample": 8,
+    "pca_niter": 4,
+    "progress_freq": 100
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis/experience_docx/experiment_logs/haze4k_apdr_v0_4b_basis_router_gatec_train128_minival_20260603/basis_router_gatec_train128_minival_summary_sigma3.json

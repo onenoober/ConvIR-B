@@ -75,6 +75,7 @@ Retained remote refs:
 | APDR ConvIR v0.2RC conservative budget | Completed cloud budget replay | Train-selected budget candidate closed held-out easy/strong-reference mean budget to `0.002531` while retaining hard mean `0.378346`, AUC `0.9766`, Spearman `-0.7466`, and zero-output diff `0.0`; held-out calibration BCE failed at `1.6191`. | `FAIL_STOP_APDR_V0_2RC_BUDGET_CALIBRATION`; no residual/oracle run. Single-head conservative budget closes easy images but is not a deployable calibrated action budget. | [card](experiment_cards/2026-06-02-haze4k-apdr-convir-v0-2rc-budget.md) | [logs](experiment_logs/haze4k_apdr_v0_2rc_budget_20260602/) | `codex/haze4k-apdr-convir-v0-2rc-conservative-budget` |
 | APDR-v0.4 CCLF diagnostics | Completed preflight diagnostics | Cache roundtrip exact; sigma `3` lowpass oracle strongest on train128; sigma `7` free-parameter low recovery `1.0938`, corr `0.9322`; train-calibrated correctability test AUC `1.0`; color branch failed safety/correlation. | `PREFLIGHT_COMPLETE_LOW_FIELD_ONLY_CANDIDATE`; do not run full v0.4C stop20; authorize only a separate v0.4A low-field card. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4-cclf-diagnostics.md) | [logs](experiment_logs/haze4k_apdr_v0_4_cache_scale_20260603/), [low](experiment_logs/haze4k_apdr_v0_4_freeparam_low_20260603/), [color](experiment_logs/haze4k_apdr_v0_4_freeparam_color_20260603/), [correctability](experiment_logs/haze4k_apdr_v0_4_correctability_traincalib_20260603/) | `codex/haze4k-apdr-v0-4-cclf-diagnostics` |
 | APDR-v0.4A Low-Field-Only | Failure-branch diagnostics completed; no Gate C/stop20 | Route card created from v0.4 diagnostics: frozen ConvIR-B, frozen v0.2RC `M_safe`, frozen train-calibrated correctability, cached full-image lowpass delta. ID embedding passes, proving target/loss/cache validity; LowFieldNet-v1, basis, basis+local, and physics veil do not pass deployable Gate B. | `DO_NOT_RUN_STOP20_FROM_CURRENT_LOWFIELD_FORMS`; next route must derive better bases or mapping from successful ID/free-parameter targets. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4a-low-field-only.md) | [sigma3](experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/), [gate-ab](experiment_logs/haze4k_apdr_v0_4a_lowfield_gate_ab_20260603/), [forms](experiment_logs/haze4k_apdr_v0_4a_residual_forms_20260603/) | `codex/haze4k-apdr-v0-4a-low-field-only` |
+| APDR-v0.4B Derived Low-Field Basis | Gate C failed; route stopped | Gate 0 passed for K `16/32/48`, and basis-only router Gate B passed for K16/K32. Gate C K32 train split passed, but mini-val failed with L1 drop `-0.3435`, corr `0.2154`, recovery `0.0428`, easy gain `-0.3551 dB`, strong/severe `11/25`. | `GATEC_FAIL_STOP_BASIS_ROUTER_MAPPING_NO_LOCAL`; current basis-only coefficient router does not generalize, so do not add local correction or run stop20. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4b-derived-lowfield-basis.md) | [gate0](experiment_logs/haze4k_apdr_v0_4b_derived_basis_20260603/), [gateb](experiment_logs/haze4k_apdr_v0_4b_basis_router_gateb_20260603/), [gatec](experiment_logs/haze4k_apdr_v0_4b_basis_router_gatec_train128_minival_20260603/) | `codex/haze4k-apdr-v0-4b-derived-lowfield-basis` |
 
 ## Evidence Inventory
 
@@ -104,6 +105,9 @@ Retained remote refs:
 | `experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/` | 14 | Parallel sigma `3.0` free-parameter low and correctability train-calibration diagnostics for target-alignment only. |
 | `experiment_logs/haze4k_apdr_v0_4a_lowfield_gate_ab_20260603/` | 11+ | APDR-v0.4A LowFieldNet no-op/cache and overfit32 Gate A/B diagnostic artifacts; tensor caches excluded. |
 | `experiment_logs/haze4k_apdr_v0_4a_residual_forms_20260603/` | 35+ | APDR-v0.4A failure-branch diagnostics for ID-embedding, basis-mixture, basis+local, and physics-shaped veil residual forms; tensor caches excluded. |
+| `experiment_logs/haze4k_apdr_v0_4b_derived_basis_20260603/` | 18+ | APDR-v0.4B no-training derived-basis Gate 0, coefficient predictability CV, residual error grouping, and router overfit32 coefficient-vs-field diagnostics plus smoke64 text evidence. |
+| `experiment_logs/haze4k_apdr_v0_4b_basis_router_gateb_20260603/` | 12+ | APDR-v0.4B basis-only coefficient router Gate B diagnostics for K16/K32 plus smoke32 text evidence. |
+| `experiment_logs/haze4k_apdr_v0_4b_basis_router_gatec_train128_minival_20260603/` | 10+ | APDR-v0.4B K32 basis-only coefficient router train128/mini-val Gate C split summary, history, per-image table, groups, logs, status, and tmux exit record. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 
@@ -147,6 +151,10 @@ The active conclusion is conservative:
   passes but deployable basis, basis+local, and veil forms do not pass Gate B;
   do not proceed to Gate C/stop20 without deriving better bases or mappings
   from successful ID/free-parameter targets.
+- APDR-v0.4B derived-basis work passed Gate 0 and basis-only router Gate B, but
+  Gate C failed on mini-val. The current basis-only coefficient router memorizes
+  the train scope and does not generalize; local correction and stop20 are
+  blocked for this form.
 
 ## Artifact Boundary
 

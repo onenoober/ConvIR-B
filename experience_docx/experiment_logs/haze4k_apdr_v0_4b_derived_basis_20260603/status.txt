@@ -1,0 +1,5 @@
+prepared_pending_autodl_run 2026-06-03
+start_v0_4b_derived_basis root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis tag=apdr_v0_4b_derived_basis_sigma3_seed3407 num_images=64 low_sizes=32 k_values=4,8 2026-06-03T16:29:55+08:00
+complete_v0_4b_derived_basis apdr_v0_4b_derived_basis_sigma3_seed3407 2026-06-03T16:30:12+08:00
+start_v0_4b_derived_basis root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis tag=apdr_v0_4b_derived_basis_sigma3_seed3407 num_images=0 low_sizes=32,48 k_values=4,8,16,32,48 2026-06-03T16:31:33+08:00
+complete_v0_4b_derived_basis apdr_v0_4b_derived_basis_sigma3_seed3407 2026-06-03T16:48:09+08:00

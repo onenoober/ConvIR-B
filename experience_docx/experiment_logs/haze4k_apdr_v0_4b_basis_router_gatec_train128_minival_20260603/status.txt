@@ -1,0 +1,2 @@
+start_v0_4b_basis_router_gateb root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis tag=apdr_v0_4b_basis_router_gatec_train128_minival_sigma3_seed3407 basis_num_images=0 train_count=128 eval_count=256 fit_count=0 low_size=32 k_values=32 steps=2000 2026-06-03T17:27:54+08:00
+complete_v0_4b_basis_router_gateb apdr_v0_4b_basis_router_gatec_train128_minival_sigma3_seed3407 2026-06-03T17:32:46+08:00

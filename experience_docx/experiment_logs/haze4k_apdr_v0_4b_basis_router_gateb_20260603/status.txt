@@ -1,0 +1,7 @@
+prepared_pending_autodl_run 2026-06-03
+start_v0_4b_basis_router_gateb root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis tag=apdr_v0_4b_basis_router_gateb_sigma3_seed3407 basis_num_images=128 eval_count=64 fit_count=16 low_size=32 k_values=16 steps=300 2026-06-03T17:08:53+08:00
+complete_v0_4b_basis_router_gateb apdr_v0_4b_basis_router_gateb_sigma3_seed3407 2026-06-03T17:09:17+08:00
+start_v0_4b_basis_router_gateb root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis tag=apdr_v0_4b_basis_router_gateb_sigma3_seed3407 basis_num_images=128 eval_count=32 fit_count=0 low_size=32 k_values=16 steps=300 2026-06-03T17:11:24+08:00
+complete_v0_4b_basis_router_gateb apdr_v0_4b_basis_router_gateb_sigma3_seed3407 2026-06-03T17:11:44+08:00
+start_v0_4b_basis_router_gateb root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-derived-lowfield-basis tag=apdr_v0_4b_basis_router_gateb_sigma3_seed3407 basis_num_images=0 eval_count=32 fit_count=0 low_size=32 k_values=16,32 steps=2000 2026-06-03T17:12:26+08:00
+complete_v0_4b_basis_router_gateb apdr_v0_4b_basis_router_gateb_sigma3_seed3407 2026-06-03T17:17:16+08:00
