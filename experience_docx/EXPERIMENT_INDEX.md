@@ -1,6 +1,6 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-06-02
+Date: 2026-06-03
 
 Status: evidence index for `codex/main-experiment-evidence-sync`.
 
@@ -73,6 +73,8 @@ Retained remote refs:
 | APDR ConvIR v0.2 selector-only | Completed cloud selector-only preflight | AUC hard/easy by `H_img` passed at `0.7686`, spatial BCE fell `2.064 -> 0.729`, and zero-residual output matched A0 exactly, but hard/easy `H_img` ratio was only `1.002` and Spearman was `-0.354`. | `FAIL_STOP_APDR_V0_2_SELECTOR_ONLY`; spatial risk learned, but image-level hard selector is not deployable; do not launch residual. | [card](experiment_cards/2026-06-02-haze4k-apdr-convir-v0-2-selector.md) | [logs](experiment_logs/haze4k_apdr_v0_2_selector_20260602/) | `codex/haze4k-apdr-convir-v0-2` |
 | APDR ConvIR v0.2R full-image router | Completed cloud selector-only preflight | Full-image router produced strong ranking, AUC `0.9766` and Spearman `-0.7466`; spatial BCE fell `2.062 -> 0.734`; zero-residual output matched A0, but easy top-25% mean `B_img` was too high at `0.146`. | `FAIL_STOP_APDR_V0_2R_SELECTOR_ONLY`; hard/easy ranking works, but budget is not conservative enough for residual training. | [card](experiment_cards/2026-06-02-haze4k-apdr-convir-v0-2r-selector.md) | [logs](experiment_logs/haze4k_apdr_v0_2r_selector_20260602/) | `codex/haze4k-apdr-convir-v0-2r-fullimage-router` |
 | APDR ConvIR v0.2RC conservative budget | Completed cloud budget replay | Train-selected budget candidate closed held-out easy/strong-reference mean budget to `0.002531` while retaining hard mean `0.378346`, AUC `0.9766`, Spearman `-0.7466`, and zero-output diff `0.0`; held-out calibration BCE failed at `1.6191`. | `FAIL_STOP_APDR_V0_2RC_BUDGET_CALIBRATION`; no residual/oracle run. Single-head conservative budget closes easy images but is not a deployable calibrated action budget. | [card](experiment_cards/2026-06-02-haze4k-apdr-convir-v0-2rc-budget.md) | [logs](experiment_logs/haze4k_apdr_v0_2rc_budget_20260602/) | `codex/haze4k-apdr-convir-v0-2rc-conservative-budget` |
+| APDR-v0.4 CCLF diagnostics | Completed preflight diagnostics | Cache roundtrip exact; sigma `3` lowpass oracle strongest on train128; sigma `7` free-parameter low recovery `1.0938`, corr `0.9322`; train-calibrated correctability test AUC `1.0`; color branch failed safety/correlation. | `PREFLIGHT_COMPLETE_LOW_FIELD_ONLY_CANDIDATE`; do not run full v0.4C stop20; authorize only a separate v0.4A low-field card. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4-cclf-diagnostics.md) | [logs](experiment_logs/haze4k_apdr_v0_4_cache_scale_20260603/), [low](experiment_logs/haze4k_apdr_v0_4_freeparam_low_20260603/), [color](experiment_logs/haze4k_apdr_v0_4_freeparam_color_20260603/), [correctability](experiment_logs/haze4k_apdr_v0_4_correctability_traincalib_20260603/) | `codex/haze4k-apdr-v0-4-cclf-diagnostics` |
+| APDR-v0.4A Low-Field-Only | Failure-branch diagnostics completed; no Gate C/stop20 | Route card created from v0.4 diagnostics: frozen ConvIR-B, frozen v0.2RC `M_safe`, frozen train-calibrated correctability, cached full-image lowpass delta. ID embedding passes, proving target/loss/cache validity; LowFieldNet-v1, basis, basis+local, and physics veil do not pass deployable Gate B. | `DO_NOT_RUN_STOP20_FROM_CURRENT_LOWFIELD_FORMS`; next route must derive better bases or mapping from successful ID/free-parameter targets. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4a-low-field-only.md) | [sigma3](experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/), [gate-ab](experiment_logs/haze4k_apdr_v0_4a_lowfield_gate_ab_20260603/), [forms](experiment_logs/haze4k_apdr_v0_4a_residual_forms_20260603/) | `codex/haze4k-apdr-v0-4a-low-field-only` |
 
 ## Evidence Inventory
 
@@ -95,6 +97,13 @@ Retained remote refs:
 | `experiment_logs/haze4k_apdr_v0_2_selector_20260602/` | 10 | APDR-v0.2 architecture preflight, selector-only calibration/training log, selector summary JSON, per-image selector CSV, gate result, run script, status, launcher transcript, README. |
 | `experiment_logs/haze4k_apdr_v0_2r_selector_20260602/` | 10 | APDR-v0.2R architecture preflight, full-image router and spatial selector log, selector summary JSON, per-image selector CSV, gate result, run script, status, launcher transcript, README. |
 | `experiment_logs/haze4k_apdr_v0_2rc_budget_20260602/` | 10 | APDR-v0.2RC architecture preflight, train/test budget score CSVs, candidate grid, budget summary JSON, gate result, run script, status, launcher transcript, README. |
+| `experiment_logs/haze4k_apdr_v0_4_cache_scale_20260603/` | 7 | APDR-v0.4 cache exactness and sigma `3/5/7/11/15` lowpass oracle scale sweep. |
+| `experiment_logs/haze4k_apdr_v0_4_freeparam_low_20260603/` | 6 | Sigma `7.0` free-parameter low-field target/application sanity, history, and per-image table. |
+| `experiment_logs/haze4k_apdr_v0_4_freeparam_color_20260603/` | 6 | Sigma `7.0` free-parameter color sanity showing failed correlation/safety. |
+| `experiment_logs/haze4k_apdr_v0_4_correctability_traincalib_20260603/` | 7 | Sigma `7.0` train-calibrated correctability threshold, train OOF/test tables, and history. |
+| `experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/` | 14 | Parallel sigma `3.0` free-parameter low and correctability train-calibration diagnostics for target-alignment only. |
+| `experiment_logs/haze4k_apdr_v0_4a_lowfield_gate_ab_20260603/` | 11+ | APDR-v0.4A LowFieldNet no-op/cache and overfit32 Gate A/B diagnostic artifacts; tensor caches excluded. |
+| `experiment_logs/haze4k_apdr_v0_4a_residual_forms_20260603/` | 35+ | APDR-v0.4A failure-branch diagnostics for ID-embedding, basis-mixture, basis+local, and physics-shaped veil residual forms; tensor caches excluded. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 
@@ -128,6 +137,16 @@ The active conclusion is conservative:
   easy/strong-reference images, but the single-head budget fails held-out
   calibration BCE; do not launch residual until hard-open and easy-veto behavior
   are decoupled.
+- APDR-v0.4 diagnostics changed the next actionable route: `M_safe`,
+  low-frequency target/application, and train-calibrated correctability are
+  useful assets; color, crop recompute, toy residual heads, direct SHED, and
+  hard-frequency/detail routes stay blocked.
+- APDR-v0.4A low-field-only is not stop20-authorized. Sigma `3.0` has enough
+  alignment evidence, but LowFieldNet-v1 failed overfit32 learnability for both
+  sigma `3.0` and sigma `7.0`. Failure-branch diagnostics show ID embedding
+  passes but deployable basis, basis+local, and veil forms do not pass Gate B;
+  do not proceed to Gate C/stop20 without deriving better bases or mappings
+  from successful ID/free-parameter targets.
 
 ## Artifact Boundary
 

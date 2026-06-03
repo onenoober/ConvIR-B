@@ -1,0 +1,5 @@
+group,count,mean_output_gain,mean_oracle_gain
+open_hard,8,0.08338165283203125,1.2408795356750488
+closed_hard,0,,
+open_easy,4,0.1295928955078125,0.8035154342651367
+closed_easy,4,0.0,0.0

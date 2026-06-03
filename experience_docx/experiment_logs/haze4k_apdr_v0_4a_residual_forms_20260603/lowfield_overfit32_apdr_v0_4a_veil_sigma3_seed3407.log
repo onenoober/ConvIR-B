@@ -1,0 +1,269 @@
+step=50 weighted_delta_l1=0.010983 corr=0.1757 mean_gain=0.0090
+step=100 weighted_delta_l1=0.010928 corr=0.2344 mean_gain=0.0119
+step=150 weighted_delta_l1=0.010905 corr=0.2545 mean_gain=0.0133
+step=200 weighted_delta_l1=0.010884 corr=0.2629 mean_gain=0.0147
+step=250 weighted_delta_l1=0.010847 corr=0.2679 mean_gain=0.0176
+step=300 weighted_delta_l1=0.010818 corr=0.2713 mean_gain=0.0205
+step=350 weighted_delta_l1=0.010802 corr=0.2733 mean_gain=0.0226
+step=400 weighted_delta_l1=0.010788 corr=0.2736 mean_gain=0.0243
+step=450 weighted_delta_l1=0.010774 corr=0.2727 mean_gain=0.0265
+step=500 weighted_delta_l1=0.010769 corr=0.2714 mean_gain=0.0271
+step=550 weighted_delta_l1=0.010771 corr=0.2690 mean_gain=0.0274
+step=600 weighted_delta_l1=0.010778 corr=0.2695 mean_gain=0.0271
+step=650 weighted_delta_l1=0.010776 corr=0.2697 mean_gain=0.0268
+step=700 weighted_delta_l1=0.010768 corr=0.2638 mean_gain=0.0268
+step=750 weighted_delta_l1=0.010770 corr=0.2582 mean_gain=0.0273
+step=800 weighted_delta_l1=0.010762 corr=0.2582 mean_gain=0.0280
+{
+  "stage": "APDR-v0.4A LowFieldNet Gate A/B overfit32",
+  "tag": "apdr_v0_4a_veil_sigma3_seed3407",
+  "model_type": "veil",
+  "summary": {
+    "count": 32,
+    "open_count": 26,
+    "initial_weighted_delta_l1": 0.011254005832220432,
+    "final_weighted_delta_l1": 0.010762134449529875,
+    "weighted_delta_l1_drop": 0.04370633799409634,
+    "pred_target_corr": 0.2582150919076342,
+    "mean_output_gain": 0.0279768705368042,
+    "mean_oracle_gain": 0.7453057765960693,
+    "oracle_recovery": 0.03753743955209772,
+    "hard_bottom25_output_gain": 0.04903268814086914,
+    "hard_bottom25_oracle_gain": 1.2408795356750488,
+    "easy_top25_output_gain": -0.00182342529296875,
+    "strong_reference_cut_psnr": 39.57694625854492,
+    "strong_reference_regressions": 0,
+    "severe_regressions": 0
+  },
+  "gate_checks": {
+    "initial_noop_max_abs_diff": {
+      "observed": 0.0,
+      "required": "<= 1e-6",
+      "pass": true
+    },
+    "cache_patch_max_abs_diff": {
+      "observed": 0.0,
+      "required": "<= 1e-8",
+      "pass": true
+    },
+    "backbone_selector_trainable_params": {
+      "observed": 0,
+      "required": "== 0",
+      "pass": true
+    },
+    "weighted_delta_l1_drop": {
+      "observed": 0.04370633799409634,
+      "required": ">= 0.50",
+      "pass": false
+    },
+    "pred_target_corr": {
+      "observed": 0.2582150919076342,
+      "required": ">= 0.50",
+      "pass": false
+    },
+    "oracle_recovery": {
+      "observed": 0.03753743955209772,
+      "required": ">= 0.30",
+      "pass": false
+    },
+    "hard_train_gain": {
+      "observed": 0.04903268814086914,
+      "required": ">= +0.30 dB",
+      "pass": false
+    },
+    "easy_train_gain": {
+      "observed": -0.00182342529296875,
+      "required": ">= -0.010 dB",
+      "pass": true
+    },
+    "strong_reference_regressions": {
+      "observed": 0,
+      "required": "== 0",
+      "pass": true
+    },
+    "severe_regressions": {
+      "observed": 0,
+      "required": "== 0",
+      "pass": true
+    }
+  },
+  "pass": false,
+  "noop_cache_preflight": {
+    "initial_output_max_abs_diff_vs_anchor": 0.0,
+    "initial_weighted_delta_l1": 0.011254005832220432,
+    "initial_pred_target_corr": null,
+    "apdr_trainable_params": 0,
+    "lowfield_trainable_params": 453511,
+    "correctability_tau": 0.9939929842948914,
+    "open_count": 26,
+    "amplitude": {
+      "residual_abs_mean": 0.0,
+      "residual_abs_p95": 0.0,
+      "lowpass_consistency": 0.0,
+      "outside_mask_residual_max": 0.0
+    }
+  },
+  "amplitude_audit": {
+    "residual_abs_mean": 0.0025143143587855045,
+    "residual_abs_p95": 0.004549936391413212,
+    "lowpass_consistency": 4.462254352688433e-05,
+    "outside_mask_residual_max": 0.0
+  },
+  "opened_closed_groups": [
+    {
+      "group": "open_hard",
+      "count": 8,
+      "mean_output_gain": 0.04903268814086914,
+      "mean_oracle_gain": 1.2408795356750488
+    },
+    {
+      "group": "closed_hard",
+      "count": 0,
+      "mean_output_gain": null,
+      "mean_oracle_gain": null
+    },
+    {
+      "group": "open_easy",
+      "count": 4,
+      "mean_output_gain": -0.0036468505859375,
+      "mean_oracle_gain": 0.8035154342651367
+    },
+    {
+      "group": "closed_easy",
+      "count": 4,
+      "mean_output_gain": 0.0,
+      "mean_oracle_gain": 0.0
+    }
+  ],
+  "history": [
+    {
+      "step": 0,
+      "weighted_delta_l1": 0.011254005832220432,
+      "pred_target_corr": null,
+      "mean_output_gain": 0.0
+    },
+    {
+      "step": 50,
+      "weighted_delta_l1": 0.010983090625785976,
+      "pred_target_corr": 0.17569954478396818,
+      "mean_output_gain": 0.00897216796875
+    },
+    {
+      "step": 100,
+      "weighted_delta_l1": 0.010928294135507952,
+      "pred_target_corr": 0.23439588688107996,
+      "mean_output_gain": 0.01186293363571167
+    },
+    {
+      "step": 150,
+      "weighted_delta_l1": 0.010904664135249542,
+      "pred_target_corr": 0.2545053859312947,
+      "mean_output_gain": 0.013322710990905762
+    },
+    {
+      "step": 200,
+      "weighted_delta_l1": 0.010884000225095171,
+      "pred_target_corr": 0.26285490560202074,
+      "mean_output_gain": 0.01474064588546753
+    },
+    {
+      "step": 250,
+      "weighted_delta_l1": 0.010847225942681338,
+      "pred_target_corr": 0.26785889629704446,
+      "mean_output_gain": 0.017570912837982178
+    },
+    {
+      "step": 300,
+      "weighted_delta_l1": 0.010818379169971925,
+      "pred_target_corr": 0.27132624172820496,
+      "mean_output_gain": 0.0205460786819458
+    },
+    {
+      "step": 350,
+      "weighted_delta_l1": 0.010801565461771816,
+      "pred_target_corr": 0.27327332008056915,
+      "mean_output_gain": 0.022620201110839844
+    },
+    {
+      "step": 400,
+      "weighted_delta_l1": 0.010787607195403044,
+      "pred_target_corr": 0.27358098421245813,
+      "mean_output_gain": 0.024305105209350586
+    },
+    {
+      "step": 450,
+      "weighted_delta_l1": 0.010773505073440187,
+      "pred_target_corr": 0.27272679878828615,
+      "mean_output_gain": 0.02651190757751465
+    },
+    {
+      "step": 500,
+      "weighted_delta_l1": 0.010768510341705603,
+      "pred_target_corr": 0.2713824239774392,
+      "mean_output_gain": 0.02708381414413452
+    },
+    {
+      "step": 550,
+      "weighted_delta_l1": 0.010770726278603069,
+      "pred_target_corr": 0.2689717674198059,
+      "mean_output_gain": 0.027447879314422607
+    },
+    {
+      "step": 600,
+      "weighted_delta_l1": 0.010777750346353122,
+      "pred_target_corr": 0.2695263005936375,
+      "mean_output_gain": 0.027118265628814697
+    },
+    {
+      "step": 650,
+      "weighted_delta_l1": 0.01077585181935609,
+      "pred_target_corr": 0.2697312973009852,
+      "mean_output_gain": 0.026832282543182373
+    },
+    {
+      "step": 700,
+      "weighted_delta_l1": 0.010768215883192215,
+      "pred_target_corr": 0.26381179760210216,
+      "mean_output_gain": 0.02677983045578003
+    },
+    {
+      "step": 750,
+      "weighted_delta_l1": 0.010770239326106936,
+      "pred_target_corr": 0.2582494302724416,
+      "mean_output_gain": 0.02731788158416748
+    },
+    {
+      "step": 800,
+      "weighted_delta_l1": 0.010762134449529875,
+      "pred_target_corr": 0.2582150919076342,
+      "mean_output_gain": 0.0279768705368042
+    }
+  ],
+  "args": {
+    "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+    "selector_checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl",
+    "correctability_json": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4a-low-field-only/experience_docx/experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/correctability_traincalib_apdr_v0_4_correctability_traincalib_sigma3_seed3407.json",
+    "correctability_train_csv": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4a-low-field-only/experience_docx/experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/correctability_traincalib_train_oof_apdr_v0_4_correctability_traincalib_sigma3_seed3407.csv",
+    "output_dir": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4a-low-field-only/experience_docx/experiment_logs/haze4k_apdr_v0_4a_residual_forms_20260603",
+    "tag": "apdr_v0_4a_veil_sigma3_seed3407",
+    "num_images": 32,
+    "steps": 800,
+    "learning_rate": 0.0002,
+    "weight_decay": 0.0001,
+    "grad_clip_norm": 1.0,
+    "seed": 3407,
+    "num_workers": 0,
+    "device": "cuda",
+    "residual_max": 0.04,
+    "hidden_channels": 48,
+    "model_type": "veil",
+    "low_size": 32,
+    "num_bases": 16,
+    "kernel_size": 31,
+    "sigma": 3.0,
+    "crop_size": 4096,
+    "lowpass_lambda": 0.05,
+    "tv_lambda": 0.001,
+    "progress_freq": 50
+  }
+}

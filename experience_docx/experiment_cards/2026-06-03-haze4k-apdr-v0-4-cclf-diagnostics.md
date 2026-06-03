@@ -84,9 +84,21 @@ If we replace crop-recomputed residual learning with cached full-image `M_safe` 
 | freeparam-color | `haze4k_apdr_v0_4_freeparam_color_20260603/freeparam_lowcolor_*.json` | fail | corr `0.3899`, hard `+0.3169 dB`, severe regressions `2`; do not merge color into v0.4A |
 | correctability-traincalib | `haze4k_apdr_v0_4_correctability_traincalib_20260603/correctability_traincalib_*.json` | pass | train-calibrated tau `0.9897`; test AUC `1.0`, Spearman `0.9729`, easy open `0.0200`, false-open `0.0`, positive-hard recall `0.9750` |
 
+## Sigma Consistency Boundary
+
+- Sigma `3.0` is the strongest lowpass oracle target in the cache-scale
+  train128 sweep.
+- The free-parameter low and train-calibrated correctability evidence in this
+  card uses sigma `7.0`.
+- Therefore, sigma `7.0` is the safer first v0.4A deployable target because the
+  target/application/gate evidence is internally aligned.
+- Sigma `3.0` remains a high-value parallel diagnostic. It needs its own
+  free-parameter low and correctability train-calibration artifacts before any
+  v0.4A+ or v0.4B target switch.
+
 ## Decision
 
 - Decision label: `PREFLIGHT_COMPLETE_LOW_FIELD_ONLY_CANDIDATE`.
 - Stop20 status: `DO_NOT_RUN_V0_4C_STOP20`.
-- What this decides next: implement a separate deployable v0.4A low-field-only branch that uses cached full-image `M_safe` and train-calibrated correctability; keep color correction as diagnostic/rework only.
+- What this decides next: implement a separate deployable v0.4A low-field-only branch that uses cached full-image `M_safe` and train-calibrated correctability; use sigma `7.0` for the first deployable target, and run sigma `3.0` alignment diagnostics in parallel before considering a switch.
 - Rationale: cache and correctability gates passed, and the low-field target/application sanity is strong despite one conservative loss-drop threshold miss. The color branch failed both correlation/safety quality and should not be bundled into the next trainable route.

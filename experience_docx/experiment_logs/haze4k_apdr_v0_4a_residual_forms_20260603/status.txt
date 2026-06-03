@@ -1,0 +1,14 @@
+start_residual_forms_sigma3_sequence root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4a-low-field-only 2026-06-03T15:00:32+08:00
+start_id_embedding_sigma3 root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4a-low-field-only selector=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl tag=apdr_v0_4a_id_embedding_sigma3_seed3407 2026-06-03T15:00:32+08:00
+gate_pass_id_embedding_sigma3 apdr_v0_4a_id_embedding_sigma3_seed3407 2026-06-03T15:03:53+08:00
+complete_id_embedding_sigma3 apdr_v0_4a_id_embedding_sigma3_seed3407 2026-06-03T15:03:53+08:00
+start_basis_sigma3 root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4a-low-field-only selector=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl tag=apdr_v0_4a_basis_sigma3_seed3407 2026-06-03T15:03:53+08:00
+gate_fail_basis_sigma3 apdr_v0_4a_basis_sigma3_seed3407 2026-06-03T15:07:38+08:00
+complete_basis_sigma3 apdr_v0_4a_basis_sigma3_seed3407 2026-06-03T15:07:38+08:00
+start_veil_sigma3 root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4a-low-field-only selector=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl tag=apdr_v0_4a_veil_sigma3_seed3407 2026-06-03T15:07:38+08:00
+gate_fail_veil_sigma3 apdr_v0_4a_veil_sigma3_seed3407 2026-06-03T15:11:22+08:00
+complete_veil_sigma3 apdr_v0_4a_veil_sigma3_seed3407 2026-06-03T15:11:22+08:00
+complete_residual_forms_sigma3_sequence 2026-06-03T15:11:22+08:00
+start_basis_local_sigma3 root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4a-low-field-only selector=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl tag=apdr_v0_4a_basis_local_sigma3_seed3407 2026-06-03T15:15:02+08:00
+gate_fail_basis_local_sigma3 apdr_v0_4a_basis_local_sigma3_seed3407 2026-06-03T15:19:00+08:00
+complete_basis_local_sigma3 apdr_v0_4a_basis_local_sigma3_seed3407 2026-06-03T15:19:00+08:00

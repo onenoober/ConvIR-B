@@ -1,0 +1,6 @@
+start_lowfield_overfit32_sigma3 root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4a-low-field-only selector=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl tag=apdr_v0_4a_lowfield_overfit32_sigma3_seed3407 2026-06-03T14:36:27+08:00
+gate_fail_lowfield_overfit32_sigma3 apdr_v0_4a_lowfield_overfit32_sigma3_seed3407 2026-06-03T14:40:29+08:00
+complete_lowfield_overfit32_sigma3 apdr_v0_4a_lowfield_overfit32_sigma3_seed3407 2026-06-03T14:40:29+08:00
+start_lowfield_overfit32_sigma7 root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4a-low-field-only selector=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl tag=apdr_v0_4a_lowfield_overfit32_sigma7_seed3407 2026-06-03T14:45:32+08:00
+gate_fail_lowfield_overfit32_sigma7 apdr_v0_4a_lowfield_overfit32_sigma7_seed3407 2026-06-03T14:49:35+08:00
+complete_lowfield_overfit32_sigma7 apdr_v0_4a_lowfield_overfit32_sigma7_seed3407 2026-06-03T14:49:35+08:00
