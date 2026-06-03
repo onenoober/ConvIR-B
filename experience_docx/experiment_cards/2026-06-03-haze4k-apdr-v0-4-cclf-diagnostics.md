@@ -2,7 +2,7 @@
 
 Date: 2026-06-03
 
-Status: preflight diagnostics authorized; no stop20 training until gates pass.
+Status: preflight diagnostics completed; low-field-only v0.4A candidate supported; full low+color v0.4C stop20 remains blocked.
 
 ## Scope
 
@@ -51,11 +51,11 @@ If we replace crop-recomputed residual learning with cached full-image `M_safe` 
 
 | Check | Pass line | Result |
 | --- | --- | --- |
-| cache roundtrip | cached crop mask/target max diff `<= 1e-8` | pending |
-| low target oracle | best lowpass hard gain remains decision-grade | pending |
-| free-param low/color | recovery `>= 0.80`, corr `>= 0.70` | pending |
-| correctability train calibration | easy open `<= 0.05`, positive-hard recall `>= 0.95`, negative false-open `<= 0.02` | pending |
-| stop20 authorization | all above pass | blocked until diagnostics pass |
+| cache roundtrip | cached crop mask/target max diff `<= 1e-8` | pass: max diff `0.0` for mask and all lowpass targets |
+| low target oracle | best lowpass hard gain remains decision-grade | pass: sigma `3` mean `+0.7804`, hard `+1.4176`, easy `+0.2977` |
+| free-param low/color | recovery `>= 0.80`, corr `>= 0.70` | split: low target strong but strict loss-drop gate failed; color failed |
+| correctability train calibration | easy open `<= 0.05`, positive-hard recall `>= 0.95`, negative false-open `<= 0.02` | pass: train easy `0.0493`, test easy `0.0200`, false-open `0.0`, hard recall `0.9750` |
+| stop20 authorization | all above pass | blocked for full v0.4C; only a separate low-field-only implementation card is justified |
 
 ## Mechanism Metrics
 
@@ -75,7 +75,18 @@ If we replace crop-recomputed residual learning with cached full-image `M_safe` 
 | correctability | train and test safety gates pass | train `tau` controls easy/negative false opens | use threshold only if train-calibrated gates pass |
 | stop20 | not authorized by this card | requires a separate deployable branch card | do not run stop20 from diagnostics alone |
 
+## Final Results
+
+| Diagnostic | Artifact | Verdict | Key observations |
+| --- | --- | --- | --- |
+| cache-scale | `haze4k_apdr_v0_4_cache_scale_20260603/cache_scale_summary_*.json` | pass | full-image cache roundtrip exact; best lowpass sigma `3` gives hard `+1.4176 dB` and easy `+0.2977 dB` on the train128 audit |
+| freeparam-low | `haze4k_apdr_v0_4_freeparam_low_20260603/freeparam_lowcolor_*.json` | partial pass signal, strict gate fail | recovery `1.0938`, corr `0.9322`, hard `+1.2484 dB`, easy `+0.4411 dB`, no strong/severe regressions; only loss-drop fraction `0.6762 < 0.80` failed |
+| freeparam-color | `haze4k_apdr_v0_4_freeparam_color_20260603/freeparam_lowcolor_*.json` | fail | corr `0.3899`, hard `+0.3169 dB`, severe regressions `2`; do not merge color into v0.4A |
+| correctability-traincalib | `haze4k_apdr_v0_4_correctability_traincalib_20260603/correctability_traincalib_*.json` | pass | train-calibrated tau `0.9897`; test AUC `1.0`, Spearman `0.9729`, easy open `0.0200`, false-open `0.0`, positive-hard recall `0.9750` |
+
 ## Decision
 
-- Decision label: `PENDING_APDR_V0_4_CCLF_PREFLIGHT`.
-- What this decides next: whether to implement a deployable low-frequency/color field branch or close/rework the v0.4 route before training.
+- Decision label: `PREFLIGHT_COMPLETE_LOW_FIELD_ONLY_CANDIDATE`.
+- Stop20 status: `DO_NOT_RUN_V0_4C_STOP20`.
+- What this decides next: implement a separate deployable v0.4A low-field-only branch that uses cached full-image `M_safe` and train-calibrated correctability; keep color correction as diagnostic/rework only.
+- Rationale: cache and correctability gates passed, and the low-field target/application sanity is strong despite one conservative loss-drop threshold miss. The color branch failed both correlation/safety quality and should not be bundled into the next trainable route.

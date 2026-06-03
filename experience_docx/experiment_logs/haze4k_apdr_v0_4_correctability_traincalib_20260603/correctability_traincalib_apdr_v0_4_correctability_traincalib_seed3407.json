@@ -1,0 +1,339 @@
+{
+  "stage": "APDR-v0.4 CCLF train-calibrated CorrectabilityOpen audit",
+  "tag": "apdr_v0_4_correctability_traincalib_seed3407",
+  "tau_train": 0.9896955490112305,
+  "tau_status": "pass_constraints",
+  "feature_names": [
+    "hazy_c0_mean",
+    "hazy_c0_std",
+    "hazy_c0_p10",
+    "hazy_c0_p90",
+    "hazy_c1_mean",
+    "hazy_c1_std",
+    "hazy_c1_p10",
+    "hazy_c1_p90",
+    "hazy_c2_mean",
+    "hazy_c2_std",
+    "hazy_c2_p10",
+    "hazy_c2_p90",
+    "anchor_c0_mean",
+    "anchor_c0_std",
+    "anchor_c0_p10",
+    "anchor_c0_p90",
+    "anchor_c1_mean",
+    "anchor_c1_std",
+    "anchor_c1_p10",
+    "anchor_c1_p90",
+    "anchor_c2_mean",
+    "anchor_c2_std",
+    "anchor_c2_p10",
+    "anchor_c2_p90",
+    "hazy_minus_anchor_abs_c0_mean",
+    "hazy_minus_anchor_abs_c0_std",
+    "hazy_minus_anchor_abs_c0_p10",
+    "hazy_minus_anchor_abs_c0_p90",
+    "hazy_minus_anchor_abs_c1_mean",
+    "hazy_minus_anchor_abs_c1_std",
+    "hazy_minus_anchor_abs_c1_p10",
+    "hazy_minus_anchor_abs_c1_p90",
+    "hazy_minus_anchor_abs_c2_mean",
+    "hazy_minus_anchor_abs_c2_std",
+    "hazy_minus_anchor_abs_c2_p10",
+    "hazy_minus_anchor_abs_c2_p90",
+    "prior_c0_mean",
+    "prior_c0_std",
+    "prior_c0_p10",
+    "prior_c0_p90",
+    "prior_c1_mean",
+    "prior_c1_std",
+    "prior_c1_p10",
+    "prior_c1_p90",
+    "prior_c2_mean",
+    "prior_c2_std",
+    "prior_c2_p10",
+    "prior_c2_p90",
+    "prior_c3_mean",
+    "prior_c3_std",
+    "prior_c3_p10",
+    "prior_c3_p90",
+    "prior_c4_mean",
+    "prior_c4_std",
+    "prior_c4_p10",
+    "prior_c4_p90",
+    "prior_c5_mean",
+    "prior_c5_std",
+    "prior_c5_p10",
+    "prior_c5_p90",
+    "m_safe_mean",
+    "m_safe_std",
+    "m_safe_p05",
+    "m_safe_p50",
+    "m_safe_p95",
+    "m_safe_max",
+    "spatial_gate_mean",
+    "spatial_gate_std",
+    "spatial_gate_p05",
+    "spatial_gate_p50",
+    "spatial_gate_p95",
+    "spatial_gate_max",
+    "global_budget_mean",
+    "global_score_mean",
+    "hazy_anchor_l1",
+    "hazy_anchor_l2"
+  ],
+  "summary": {
+    "train_oof_count": 3000,
+    "train_oof_labeled_count": 2353,
+    "train_oof_positive_count": 1369,
+    "train_oof_negative_count": 984,
+    "train_oof_auc": 0.9999717911715275,
+    "train_oof_spearman_score_low_gain": 0.9797595831221063,
+    "train_oof_tau": 0.9896955490112305,
+    "train_oof_open_rate": 0.4493333333333333,
+    "train_oof_easy_top25_open_rate": 0.04933333333333333,
+    "train_oof_negative_false_open": 0.0,
+    "train_oof_positive_recall": 0.9430241051862673,
+    "train_oof_positive_hard_recall": 0.9690880989180835,
+    "train_oof_positive_hard_count": 647,
+    "train_oof_mean_score_easy_top25": 0.10991115183011192,
+    "train_oof_mean_score_oracle_positive_hard": 0.9984101493723425,
+    "train_oof_mean_low_oracle_gain": 0.4392077382405599,
+    "train_oof_opened_low_oracle_gain_proxy": 0.9506373419606013,
+    "train_oof_zero_closed_low_oracle_gain_proxy": 0.42715304565429685,
+    "train_oof_hard_anchor_psnr_cut": 36.16156578063965,
+    "train_oof_easy_anchor_psnr_cut": 42.7606725692749,
+    "test_count": 1000,
+    "test_labeled_count": 785,
+    "test_positive_count": 438,
+    "test_negative_count": 347,
+    "test_auc": 1.0,
+    "test_spearman_score_low_gain": 0.9729113774646987,
+    "test_tau": 0.9896955490112305,
+    "test_open_rate": 0.454,
+    "test_easy_top25_open_rate": 0.02,
+    "test_negative_false_open": 0.0,
+    "test_positive_recall": 0.9771689497716894,
+    "test_positive_hard_recall": 0.975,
+    "test_positive_hard_count": 200,
+    "test_mean_score_easy_top25": 0.050901629488174296,
+    "test_mean_score_oracle_positive_hard": 0.999365605711937,
+    "test_mean_low_oracle_gain": 0.38196501731872556,
+    "test_opened_low_oracle_gain_proxy": 0.8215515413998508,
+    "test_zero_closed_low_oracle_gain_proxy": 0.3729843997955322,
+    "test_hard_anchor_psnr_cut": 29.73666477203369,
+    "test_easy_anchor_psnr_cut": 39.08926200866699,
+    "final_train_labeled_count": 2353
+  },
+  "checks": {
+    "train_easy_open": {
+      "observed": 0.04933333333333333,
+      "required": "<= 0.05",
+      "pass": true
+    },
+    "train_positive_hard_recall": {
+      "observed": 0.9690880989180835,
+      "required": ">= 0.95",
+      "pass": true
+    },
+    "train_negative_false_open": {
+      "observed": 0.0,
+      "required": "<= 0.02",
+      "pass": true
+    },
+    "test_auc": {
+      "observed": 1.0,
+      "required": ">= 0.90",
+      "pass": true
+    },
+    "test_spearman": {
+      "observed": 0.9729113774646987,
+      "required": ">= 0.70",
+      "pass": true
+    },
+    "test_easy_open": {
+      "observed": 0.02,
+      "required": "<= 0.05",
+      "pass": true
+    },
+    "test_positive_hard_recall": {
+      "observed": 0.975,
+      "required": ">= 0.95",
+      "pass": true
+    },
+    "test_negative_false_open": {
+      "observed": 0.0,
+      "required": "<= 0.02",
+      "pass": true
+    }
+  },
+  "pass": true,
+  "fold_history": [
+    {
+      "fold": 0,
+      "step": 200,
+      "loss": 0.02421654760837555,
+      "train_auc": 0.9999211720327646
+    },
+    {
+      "fold": 0,
+      "step": 400,
+      "loss": 0.006837259512394667,
+      "train_auc": 1.0
+    },
+    {
+      "fold": 0,
+      "step": 600,
+      "loss": 0.002923289081081748,
+      "train_auc": 1.0
+    },
+    {
+      "fold": 0,
+      "step": 800,
+      "loss": 0.0017524219583719969,
+      "train_auc": 1.0
+    },
+    {
+      "fold": 1,
+      "step": 200,
+      "loss": 0.025804772973060608,
+      "train_auc": 0.9999478978520021
+    },
+    {
+      "fold": 1,
+      "step": 400,
+      "loss": 0.00813902635127306,
+      "train_auc": 0.9999930530469336
+    },
+    {
+      "fold": 1,
+      "step": 600,
+      "loss": 0.004123604856431484,
+      "train_auc": 1.0
+    },
+    {
+      "fold": 1,
+      "step": 800,
+      "loss": 0.002094696741551161,
+      "train_auc": 1.0
+    },
+    {
+      "fold": 2,
+      "step": 200,
+      "loss": 0.024278365075588226,
+      "train_auc": 0.9999674616483232
+    },
+    {
+      "fold": 2,
+      "step": 400,
+      "loss": 0.007240033708512783,
+      "train_auc": 0.9999988379160115
+    },
+    {
+      "fold": 2,
+      "step": 600,
+      "loss": 0.0035835611633956432,
+      "train_auc": 1.0
+    },
+    {
+      "fold": 2,
+      "step": 800,
+      "loss": 0.002166708465665579,
+      "train_auc": 1.0
+    },
+    {
+      "fold": 3,
+      "step": 200,
+      "loss": 0.025652531534433365,
+      "train_auc": 0.9999128251621452
+    },
+    {
+      "fold": 3,
+      "step": 400,
+      "loss": 0.008219624869525433,
+      "train_auc": 0.9999988376688286
+    },
+    {
+      "fold": 3,
+      "step": 600,
+      "loss": 0.0036907910834997892,
+      "train_auc": 1.0
+    },
+    {
+      "fold": 3,
+      "step": 800,
+      "loss": 0.002005687914788723,
+      "train_auc": 1.0
+    },
+    {
+      "fold": 4,
+      "step": 200,
+      "loss": 0.02639910951256752,
+      "train_auc": 0.9998099357258253
+    },
+    {
+      "fold": 4,
+      "step": 400,
+      "loss": 0.008116851560771465,
+      "train_auc": 0.999998841071499
+    },
+    {
+      "fold": 4,
+      "step": 600,
+      "loss": 0.003609884763136506,
+      "train_auc": 1.0
+    },
+    {
+      "fold": 4,
+      "step": 800,
+      "loss": 0.002008512383326888,
+      "train_auc": 1.0
+    }
+  ],
+  "final_history": [
+    {
+      "step": 200,
+      "loss": 0.02580040507018566,
+      "train_auc": 0.9998849376733359
+    },
+    {
+      "step": 400,
+      "loss": 0.007843936793506145,
+      "train_auc": 0.9999985153248172
+    },
+    {
+      "step": 600,
+      "loss": 0.0033783596009016037,
+      "train_auc": 1.0
+    },
+    {
+      "step": 800,
+      "loss": 0.0019352182280272245,
+      "train_auc": 1.0
+    }
+  ],
+  "args": {
+    "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+    "selector_checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl",
+    "output_dir": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4-cclf-diagnostics/experience_docx/experiment_logs/haze4k_apdr_v0_4_correctability_traincalib_20260603",
+    "tag": "apdr_v0_4_correctability_traincalib_seed3407",
+    "train_max_images": 0,
+    "test_max_images": 0,
+    "folds": 5,
+    "seed": 3407,
+    "num_workers": 0,
+    "device": "cuda",
+    "residual_max": 0.04,
+    "kernel_size": 31,
+    "sigma": 7.0,
+    "positive_gain": 0.1,
+    "negative_gain": 0.01,
+    "hidden_dim": 32,
+    "steps": 800,
+    "learning_rate": 0.001,
+    "weight_decay": 0.001,
+    "max_easy_open": 0.05,
+    "max_negative_false_open": 0.02,
+    "min_positive_hard_recall": 0.95,
+    "progress_freq": 200
+  }
+}
