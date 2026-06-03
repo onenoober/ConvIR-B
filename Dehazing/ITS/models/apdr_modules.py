@@ -10,6 +10,19 @@ def _logit(value):
     return math.log(value / (1.0 - value))
 
 
+def _build_residual_body(hidden_channels, residual_capacity):
+    if residual_capacity == "linear":
+        return nn.Identity()
+    if residual_capacity == "shallow_mlp":
+        return nn.Sequential(
+            nn.Conv2d(hidden_channels, hidden_channels, kernel_size=3, stride=1, padding=1),
+            nn.GELU(),
+            nn.Conv2d(hidden_channels, hidden_channels, kernel_size=3, stride=1, padding=1),
+            nn.GELU(),
+        )
+    raise ValueError(f"Unsupported residual_capacity: {residual_capacity}")
+
+
 class RGBHazePriorExtractor(nn.Module):
     def forward(self, x):
         max_rgb = x.max(dim=1, keepdim=True).values
@@ -37,6 +50,7 @@ class APDRScaleAdapter(nn.Module):
         residual_max=0.04,
         gate_max=0.5,
         gate_init=0.02,
+        residual_capacity="linear",
     ):
         super(APDRScaleAdapter, self).__init__()
         if residual_max <= 0:
@@ -65,6 +79,7 @@ class APDRScaleAdapter(nn.Module):
             nn.Conv2d(hidden_channels * 2, hidden_channels, kernel_size=3, stride=1, padding=1),
             nn.GELU(),
         )
+        self.residual_body = _build_residual_body(hidden_channels, residual_capacity)
         self.residual_head = nn.Conv2d(hidden_channels, 3, kernel_size=3, stride=1, padding=1)
         self.gate_head = nn.Conv2d(hidden_channels, 1, kernel_size=3, stride=1, padding=1)
 
@@ -78,7 +93,7 @@ class APDRScaleAdapter(nn.Module):
         image_context = self.image_context(torch.cat([hazy, anchor.detach(), priors], dim=1))
         feature_context = self.feature_context(feature)
         context = self.context(torch.cat([image_context, feature_context], dim=1))
-        residual_raw = self.residual_max * torch.tanh(self.residual_head(context))
+        residual_raw = self.residual_max * torch.tanh(self.residual_head(self.residual_body(context)))
         gate = self.gate_max * torch.sigmoid(self.gate_head(context))
         if force_zero_gate:
             gate = torch.zeros_like(gate)
@@ -104,6 +119,7 @@ class APDRV02ScaleAdapter(nn.Module):
         residual_max=0.04,
         gate_max=0.5,
         gate_init=0.01,
+        residual_capacity="linear",
     ):
         super(APDRV02ScaleAdapter, self).__init__()
         if residual_max <= 0:
@@ -132,6 +148,7 @@ class APDRV02ScaleAdapter(nn.Module):
             nn.Conv2d(hidden_channels * 2, hidden_channels, kernel_size=3, stride=1, padding=1),
             nn.GELU(),
         )
+        self.residual_body = _build_residual_body(hidden_channels, residual_capacity)
         self.residual_head = nn.Conv2d(hidden_channels, 3, kernel_size=3, stride=1, padding=1)
         self.spatial_gate_head = nn.Conv2d(hidden_channels, 1, kernel_size=3, stride=1, padding=1)
         self.global_gate_head = nn.Sequential(
@@ -154,7 +171,7 @@ class APDRV02ScaleAdapter(nn.Module):
         feature_context = self.feature_context(feature)
         context = self.context(torch.cat([image_context, feature_context], dim=1))
 
-        residual_raw = self.residual_max * torch.tanh(self.residual_head(context))
+        residual_raw = self.residual_max * torch.tanh(self.residual_head(self.residual_body(context)))
         spatial_logits = self.spatial_gate_head(context)
         global_logits = self.global_gate_head(context)
         spatial_gate_unit = torch.sigmoid(spatial_logits)
@@ -220,6 +237,7 @@ class APDRV02RScaleAdapter(nn.Module):
         residual_max=0.04,
         gate_max=0.5,
         gate_init=0.01,
+        residual_capacity="linear",
     ):
         super(APDRV02RScaleAdapter, self).__init__()
         if residual_max <= 0:
@@ -248,6 +266,7 @@ class APDRV02RScaleAdapter(nn.Module):
             nn.Conv2d(hidden_channels * 2, hidden_channels, kernel_size=3, stride=1, padding=1),
             nn.GELU(),
         )
+        self.residual_body = _build_residual_body(hidden_channels, residual_capacity)
         self.residual_head = nn.Conv2d(hidden_channels, 3, kernel_size=3, stride=1, padding=1)
         self.spatial_gate_head = nn.Conv2d(hidden_channels, 1, kernel_size=3, stride=1, padding=1)
         self.global_router = GlobalDensityRouter(
@@ -258,15 +277,17 @@ class APDRV02RScaleAdapter(nn.Module):
         )
         self.register_buffer("global_budget_tau", torch.tensor(0.0))
         self.register_buffer("global_budget_temperature", torch.tensor(1.0))
+        self.register_buffer("global_budget_power", torch.tensor(1.0))
 
         nn.init.zeros_(self.residual_head.weight)
         nn.init.zeros_(self.residual_head.bias)
         nn.init.zeros_(self.spatial_gate_head.weight)
         nn.init.constant_(self.spatial_gate_head.bias, _logit(self.gate_init / self.gate_max))
 
-    def set_global_budget_calibration(self, tau, temperature):
+    def set_global_budget_calibration(self, tau, temperature, power=1.0):
         self.global_budget_tau.fill_(float(tau))
         self.global_budget_temperature.fill_(max(float(temperature), 1e-4))
+        self.global_budget_power.fill_(max(float(power), 1e-4))
 
     def forward(self, hazy, anchor, feature, force_zero_gate=False):
         priors = self.priors(hazy)
@@ -274,13 +295,14 @@ class APDRV02RScaleAdapter(nn.Module):
         feature_context = self.feature_context(feature)
         context = self.context(torch.cat([image_context, feature_context], dim=1))
 
-        residual_raw = self.residual_max * torch.tanh(self.residual_head(context))
+        residual_raw = self.residual_max * torch.tanh(self.residual_head(self.residual_body(context)))
         spatial_logits = self.spatial_gate_head(context)
         global_logits = self.global_router(hazy, anchor, feature, priors)
         spatial_gate_unit = torch.sigmoid(spatial_logits)
         global_score_unit = torch.sigmoid(global_logits)
         temperature = self.global_budget_temperature.clamp_min(1e-4)
-        global_budget_unit = torch.sigmoid((global_logits - self.global_budget_tau) / temperature)
+        global_budget_base = torch.sigmoid((global_logits - self.global_budget_tau) / temperature)
+        global_budget_unit = global_budget_base.pow(self.global_budget_power.clamp_min(1e-4))
         gate = self.gate_max * spatial_gate_unit * global_budget_unit
         if force_zero_gate:
             gate = torch.zeros_like(gate)
@@ -294,6 +316,7 @@ class APDRV02RScaleAdapter(nn.Module):
             "global_gate": self.gate_max * global_budget_unit,
             "global_gate_unit": global_budget_unit,
             "global_budget_unit": global_budget_unit,
+            "global_budget_base_unit": global_budget_base,
             "global_score_unit": global_score_unit,
             "global_logits": global_logits,
             "residual": residual,

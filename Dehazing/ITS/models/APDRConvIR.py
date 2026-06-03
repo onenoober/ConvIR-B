@@ -25,16 +25,20 @@ class APDRConvIR(ConvIR):
         apdr_force_zero_gate=False,
         apdr_active_scales="all",
         apdr_selector_mode="v0",
+        apdr_residual_capacity="linear",
     ):
         if apdr_prior_mode != "rgb_haze":
             raise ValueError("APDR only supports apdr_prior_mode='rgb_haze'.")
         if apdr_selector_mode not in ("v0", "v0_2", "v0_2r"):
             raise ValueError(f"Unsupported apdr_selector_mode: {apdr_selector_mode}")
+        if apdr_residual_capacity not in ("linear", "shallow_mlp"):
+            raise ValueError(f"Unsupported apdr_residual_capacity: {apdr_residual_capacity}")
         super(APDRConvIR, self).__init__(version, data, fam_mode="original")
         self.apdr_prior_mode = apdr_prior_mode
         self.apdr_force_zero_gate = bool(apdr_force_zero_gate)
         self.apdr_active_scales = apdr_active_scales
         self.apdr_selector_mode = apdr_selector_mode
+        self.apdr_residual_capacity = apdr_residual_capacity
         self._active_scale_names = _active_scale_set(apdr_active_scales)
         if apdr_selector_mode == "v0_2":
             adapter_cls = APDRV02ScaleAdapter
@@ -48,18 +52,21 @@ class APDRConvIR(ConvIR):
             residual_max=apdr_residual_max,
             gate_max=apdr_gate_max,
             gate_init=apdr_gate_init,
+            residual_capacity=apdr_residual_capacity,
         )
         self.APDR_2 = adapter_cls(
             64,
             residual_max=apdr_residual_max,
             gate_max=apdr_gate_max,
             gate_init=apdr_gate_init,
+            residual_capacity=apdr_residual_capacity,
         )
         self.APDR_1 = adapter_cls(
             32,
             residual_max=apdr_residual_max,
             gate_max=apdr_gate_max,
             gate_init=apdr_gate_init,
+            residual_capacity=apdr_residual_capacity,
         )
         self._last_apdr_tensors = None
 
@@ -160,6 +167,7 @@ class APDRConvIR(ConvIR):
             "full": targets[2],
         }
         anchor_terms = []
+        delta_terms = []
         gate_supervision_terms = []
         gates = []
         residuals = []
@@ -170,19 +178,27 @@ class APDRConvIR(ConvIR):
             output = item["output"]
             gate = item["gate"]
             residual = item["residual"]
+            residual_raw = item["residual_raw"]
 
             error = (anchor - target).abs().mean(dim=1, keepdim=True).detach()
             denom = error.amax(dim=(2, 3), keepdim=True).clamp_min(eps)
             risk = (error / denom).clamp(0.0, 1.0)
             safe_weight = torch.exp(-float(risk_temperature) * risk)
+            delta_star = (target - anchor).clamp(
+                min=-float(item["residual_max"]),
+                max=float(item["residual_max"]),
+            ).detach()
+            delta_weight = (gate / float(item["gate_max"])).detach().clamp(0.0, 1.0)
 
             anchor_terms.append((safe_weight * (output - anchor).abs()).mean())
+            delta_terms.append((delta_weight * (residual_raw - delta_star).abs()).mean())
             gate_supervision_terms.append(F.l1_loss(gate / item["gate_max"], risk))
             gates.append(gate)
             residuals.append(residual)
 
         return {
             "apdr_anchor": sum(anchor_terms) / len(anchor_terms),
+            "apdr_delta_supervision": sum(delta_terms) / len(delta_terms),
             "apdr_gate_supervision": sum(gate_supervision_terms) / len(gate_supervision_terms),
             "apdr_gate": sum(gate.mean() for gate in gates) / len(gates),
             "apdr_residual": sum(residual.abs().mean() for residual in residuals) / len(residuals),
@@ -237,6 +253,7 @@ def build_apdr_net(
     apdr_force_zero_gate=False,
     apdr_active_scales="all",
     apdr_selector_mode="v0",
+    apdr_residual_capacity="linear",
 ):
     return APDRConvIR(
         version,
@@ -248,4 +265,5 @@ def build_apdr_net(
         apdr_force_zero_gate=apdr_force_zero_gate,
         apdr_active_scales=apdr_active_scales,
         apdr_selector_mode=apdr_selector_mode,
+        apdr_residual_capacity=apdr_residual_capacity,
     )

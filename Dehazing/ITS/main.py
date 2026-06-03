@@ -25,6 +25,7 @@ def build_model(args):
         apdr_force_zero_gate=bool(args.apdr_force_zero_gate),
         apdr_active_scales=args.apdr_active_scales,
         apdr_selector_mode=args.apdr_selector_mode,
+        apdr_residual_capacity=args.apdr_residual_capacity,
     )
 
 
@@ -55,6 +56,29 @@ def load_init_model(model, args):
             f'missing={missing}, unexpected={unexpected}'
         )
     print(f'INIT_MODEL_LOAD path={args.init_model} missing={missing} unexpected={unexpected}')
+
+
+def apply_apdr_budget_args(model, args):
+    if args.arch != 'apdr' or args.apdr_global_budget_tau is None:
+        return
+    if args.apdr_global_budget_temperature is None:
+        raise ValueError('--apdr_global_budget_temperature is required when --apdr_global_budget_tau is set.')
+    if not hasattr(model, 'active_apdr_prefixes'):
+        return
+    for prefix in model.active_apdr_prefixes():
+        module = getattr(model, prefix)
+        if hasattr(module, 'set_global_budget_calibration'):
+            module.set_global_budget_calibration(
+                args.apdr_global_budget_tau,
+                args.apdr_global_budget_temperature,
+                args.apdr_global_budget_power,
+            )
+    print(
+        'APDR_BUDGET_CALIBRATION '
+        f'tau={args.apdr_global_budget_tau} '
+        f'temperature={args.apdr_global_budget_temperature} '
+        f'power={args.apdr_global_budget_power}'
+    )
 
 
 def main(args):
@@ -88,6 +112,7 @@ def main(args):
     if torch.cuda.is_available():
         model.cuda()
     load_init_model(model, args)
+    apply_apdr_budget_args(model, args)
     if args.mode == 'train':
         _train(model, args)
 
@@ -110,6 +135,10 @@ if __name__ == '__main__':
     parser.add_argument('--apdr_gate_init', default=0.02, type=float)
     parser.add_argument('--apdr_force_zero_gate', default=0, choices=[0, 1], type=int)
     parser.add_argument('--apdr_selector_mode', default='v0', choices=['v0', 'v0_2', 'v0_2r'], type=str)
+    parser.add_argument('--apdr_residual_capacity', default='linear', choices=['linear', 'shallow_mlp'], type=str)
+    parser.add_argument('--apdr_global_budget_tau', default=None, type=float)
+    parser.add_argument('--apdr_global_budget_temperature', default=None, type=float)
+    parser.add_argument('--apdr_global_budget_power', default=1.0, type=float)
     parser.add_argument(
         '--apdr_active_scales',
         default='all',
@@ -119,12 +148,13 @@ if __name__ == '__main__':
     parser.add_argument(
         '--apdr_train_scope',
         default='all',
-        choices=['all', 'apdr_only'],
+        choices=['all', 'apdr_only', 'apdr_residual_only'],
         type=str,
     )
     parser.add_argument('--apdr_anchor_lambda', default=0.0, type=float)
     parser.add_argument('--apdr_gate_lambda', default=0.0, type=float)
     parser.add_argument('--apdr_residual_lambda', default=0.0, type=float)
+    parser.add_argument('--apdr_delta_lambda', default=0.0, type=float)
     parser.add_argument('--apdr_gate_supervision_lambda', default=0.0, type=float)
     parser.add_argument('--apdr_risk_temperature', default=5.0, type=float)
     parser.add_argument(
@@ -142,6 +172,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size', type=int, default=4)
     parser.add_argument('--learning_rate', type=float, default=1e-4)
     parser.add_argument('--weight_decay', type=float, default=0)
+    parser.add_argument('--grad_clip_norm', type=float, default=0.001)
     parser.add_argument('--num_epoch', type=int, default=300)
     parser.add_argument('--stop_epoch', type=int, default=-1)
     parser.add_argument('--print_freq', type=int, default=100)

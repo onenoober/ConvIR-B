@@ -63,6 +63,42 @@ def apply_candidate(z_img, candidate):
     raise ValueError(f"Unknown candidate kind: {kind}")
 
 
+def selected_budget_calibration(candidate):
+    kind = candidate["kind"]
+    if kind == "base_power":
+        return {
+            "tau": candidate["tau_base"],
+            "temperature": candidate["temperature_base"],
+            "power": candidate["gamma"],
+            "supported_for_checkpoint": True,
+        }
+    if kind == "platt_power":
+        return {
+            "tau": candidate["tau"],
+            "temperature": candidate["temperature"],
+            "power": candidate["gamma"],
+            "supported_for_checkpoint": True,
+        }
+    return {
+        "kind": kind,
+        "supported_for_checkpoint": False,
+        "reason": "shifted_power uses b0 and is not representable by the APDR budget buffers.",
+    }
+
+
+def apply_selected_budget_to_model(apdr, candidate):
+    calibration = selected_budget_calibration(candidate)
+    if not calibration["supported_for_checkpoint"]:
+        return calibration
+    if hasattr(apdr.APDR_1, "set_global_budget_calibration"):
+        apdr.APDR_1.set_global_budget_calibration(
+            calibration["tau"],
+            calibration["temperature"],
+            calibration["power"],
+        )
+    return calibration
+
+
 def average_ranks(values):
     order = sorted(range(len(values)), key=lambda idx: values[idx])
     ranks = [0.0] * len(values)
@@ -420,60 +456,35 @@ def build_replay_gate(train_metrics, test_metrics, max_abs_diff, args):
     }
 
 
-def evaluate_oracle(original, apdr, args, device, calibration, candidate, csv_path):
-    loader = v02r.test_dataloader(args.data_dir, "Haze4K", batch_size=1, num_workers=0)
-    rows = []
-    v02r.set_selector_eval_mode(apdr)
-    original.eval()
-    with torch.no_grad(), csv_path.open("w", newline="", encoding="utf-8") as handle:
-        fieldnames = ["name", "a0_psnr", "oracle_psnr", "delta_psnr", "b_cons", "s_pixel_mean"]
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
-        writer.writeheader()
-        for idx, (input_img, label_img, name) in enumerate(loader):
-            input_img = input_img.to(device)
-            label_img = label_img.to(device)
-            padded, h, w = v02r.pad_to_factor(input_img)
-            a0 = v02r.crop_to(original(padded)[2], h, w)
-            apdr(padded)
-            item = v02r.full_item(apdr)
-            anchor = v02r.crop_to(item["anchor"], h, w)
-            spatial = v02r.crop_to(item["spatial_gate_unit"], h, w)
-            z_img = item["global_logits"].view(-1).item()
-            b_cons = apply_candidate(z_img, candidate)
-            delta_star = (label_img - anchor).clamp(
-                -float(args.apdr_residual_max),
-                float(args.apdr_residual_max),
-            )
-            oracle = (anchor + b_cons * spatial * delta_star).clamp(0.0, 1.0)
-            a0_psnr = psnr(a0, label_img)
-            oracle_psnr = psnr(oracle, label_img)
-            row = {
-                "name": name[0],
-                "a0_psnr": a0_psnr,
-                "oracle_psnr": oracle_psnr,
-                "delta_psnr": oracle_psnr - a0_psnr,
-                "b_cons": b_cons,
-                "s_pixel_mean": spatial.mean().item(),
-            }
-            rows.append(row)
-            writer.writerow(row)
-            if (idx + 1) % args.progress_freq == 0:
-                print(f"oracle_eval {idx + 1}/{len(loader)}", flush=True)
+def bce_contribution(row, candidate):
+    eps = 1e-6
+    target = row["hard_soft"]
+    prob = min(max(apply_candidate(row["z_img"], candidate), eps), 1.0 - eps)
+    return -(target * math.log(prob) + (1.0 - target) * math.log(1.0 - prob))
 
+
+def test_quartiles(rows):
+    ordered = sorted(rows, key=lambda row: row["a0_psnr"])
+    count = len(ordered)
+    k = max(1, count // 4)
+    return ordered[:k], ordered[-k:]
+
+
+def summarize_oracle_variant(rows, delta_key):
     by_psnr = sorted(rows, key=lambda row: row["a0_psnr"])
     count = len(by_psnr)
     k = max(1, count // 4)
     hard = by_psnr[:k]
     easy = by_psnr[-k:]
-    deltas = [row["delta_psnr"] for row in rows]
-    strong_regressions = [row for row in easy if row["delta_psnr"] <= -0.05]
-    severe_regressions = [row for row in rows if row["delta_psnr"] <= -0.20]
+    deltas = [row[delta_key] for row in rows]
+    strong_regressions = [row for row in easy if row[delta_key] <= -0.05]
+    severe_regressions = [row for row in rows if row[delta_key] <= -0.20]
     worst10 = sorted(deltas)[:10]
     summary = {
         "count": count,
         "mean_psnr_delta": statistics.mean(deltas),
-        "hard_bottom25_mean_delta": statistics.mean(row["delta_psnr"] for row in hard),
-        "easy_top25_mean_delta": statistics.mean(row["delta_psnr"] for row in easy),
+        "hard_bottom25_mean_delta": statistics.mean(row[delta_key] for row in hard),
+        "easy_top25_mean_delta": statistics.mean(row[delta_key] for row in easy),
         "strong_reference_regressions": len(strong_regressions),
         "severe_regressions": len(severe_regressions),
         "worst10_image_mean_delta": statistics.mean(worst10),
@@ -507,10 +518,269 @@ def evaluate_oracle(original, apdr, args, device, calibration, candidate, csv_pa
     }
     return {
         "summary": summary,
+        "checks": checks,
+        "pass": all(item["pass"] for item in checks.values()),
+    }
+
+
+def write_bce_deciles(rows, candidate, path):
+    ordered = sorted(rows, key=lambda row: row["a0_psnr"])
+    count = len(ordered)
+    fieldnames = [
+        "decile",
+        "count",
+        "a0_psnr_mean",
+        "hard_soft_mean",
+        "z_img_mean",
+        "b_raw_mean",
+        "b_cons_mean",
+        "bce_mean",
+        "bce_max",
+    ]
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for decile in range(10):
+            start = decile * count // 10
+            end = (decile + 1) * count // 10
+            bucket = ordered[start:end]
+            b_cons = [apply_candidate(row["z_img"], candidate) for row in bucket]
+            bces = [bce_contribution(row, candidate) for row in bucket]
+            writer.writerow(
+                {
+                    "decile": decile,
+                    "count": len(bucket),
+                    "a0_psnr_mean": mean_or_none([row["a0_psnr"] for row in bucket]),
+                    "hard_soft_mean": mean_or_none([row["hard_soft"] for row in bucket]),
+                    "z_img_mean": mean_or_none([row["z_img"] for row in bucket]),
+                    "b_raw_mean": mean_or_none([row["b_base"] for row in bucket]),
+                    "b_cons_mean": mean_or_none(b_cons),
+                    "bce_mean": mean_or_none(bces),
+                    "bce_max": max(bces) if bces else None,
+                }
+            )
+
+
+def threshold_table(rows, value_key, thresholds):
+    return {
+        f"gt_{threshold:g}": {
+            "count": sum(1 for row in rows if row[value_key] > threshold),
+            "fraction": sum(1 for row in rows if row[value_key] > threshold) / max(len(rows), 1),
+        }
+        for threshold in thresholds
+    }
+
+
+def write_threshold_csv(group_rows, value_key, thresholds, group_name, path):
+    fieldnames = ["group", "threshold", "count", "fraction", "total"]
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for threshold in thresholds:
+            count = sum(1 for row in group_rows if row[value_key] > threshold)
+            writer.writerow(
+                {
+                    "group": group_name,
+                    "threshold": threshold,
+                    "count": count,
+                    "fraction": count / max(len(group_rows), 1),
+                    "total": len(group_rows),
+                }
+            )
+
+
+def write_spatial_bottleneck_csv(rows, path):
+    hard, easy = test_quartiles(rows)
+    groups = {"hard_bottom25": hard, "easy_top25": easy, "all": rows}
+    fieldnames = [
+        "group",
+        "count",
+        "s_pixel_mean",
+        "s_pixel_p90_mean",
+        "active_area_gt_0_10_mean",
+        "active_area_gt_0_25_mean",
+        "active_area_gt_0_50_mean",
+    ]
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for group_name, group_rows in groups.items():
+            writer.writerow(
+                {
+                    "group": group_name,
+                    "count": len(group_rows),
+                    "s_pixel_mean": mean_or_none([row["s_pixel_mean"] for row in group_rows]),
+                    "s_pixel_p90_mean": mean_or_none([row["s_pixel_p90"] for row in group_rows]),
+                    "active_area_gt_0_10_mean": mean_or_none(
+                        [row["s_pixel_active_gt_0_10"] for row in group_rows]
+                    ),
+                    "active_area_gt_0_25_mean": mean_or_none(
+                        [row["s_pixel_active_gt_0_25"] for row in group_rows]
+                    ),
+                    "active_area_gt_0_50_mean": mean_or_none(
+                        [row["s_pixel_active_gt_0_50"] for row in group_rows]
+                    ),
+                }
+            )
+
+
+def evaluate_oracle(original, apdr, args, device, calibration, candidate, csv_path, test_rows):
+    loader = v02r.test_dataloader(args.data_dir, "Haze4K", batch_size=1, num_workers=0)
+    rows = []
+    v02r.set_selector_eval_mode(apdr)
+    original.eval()
+
+    hard_test_rows, _ = test_quartiles(test_rows)
+    ideal_hard_names = {row["name"] for row in hard_test_rows}
+
+    with torch.no_grad(), csv_path.open("w", newline="", encoding="utf-8") as handle:
+        fieldnames = [
+            "name",
+            "a0_psnr",
+            "z_img",
+            "b_cons",
+            "hard_soft",
+            "hard_binary",
+            "ideal_hard_safe_mask",
+            "s_pixel_mean",
+            "s_pixel_p90",
+            "s_pixel_active_gt_0_10",
+            "s_pixel_active_gt_0_25",
+            "s_pixel_active_gt_0_50",
+            "oracle_gain_BS",
+            "oracle_gain_Bonly",
+            "oracle_gain_Sonly",
+            "oracle_gain_ideal_BS",
+        ]
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        summary = calibration["summary"]
+        for idx, (input_img, label_img, name) in enumerate(loader):
+            input_img = input_img.to(device)
+            label_img = label_img.to(device)
+            item_name = name[0]
+            padded, h, w = v02r.pad_to_factor(input_img)
+            a0 = v02r.crop_to(original(padded)[2], h, w)
+            apdr(padded)
+            item = v02r.full_item(apdr)
+            anchor = v02r.crop_to(item["anchor"], h, w)
+            spatial = v02r.crop_to(item["spatial_gate_unit"], h, w)
+            z_img = item["global_logits"].view(-1).item()
+            b_cons = apply_candidate(z_img, candidate)
+            error = anchor - label_img
+            rmse = torch.sqrt(error.square().mean()).item()
+            denom = max(summary["rmse_q90_train"] - summary["rmse_q50_train"], 1e-8)
+            hard_soft = min(max((rmse - summary["rmse_q50_train"]) / denom, 0.0), 1.0)
+            hard_binary = None
+            if rmse >= summary["rmse_q75_train"]:
+                hard_binary = 1.0
+            elif rmse <= summary["rmse_q25_train"]:
+                hard_binary = 0.0
+            delta_star = (label_img - anchor).clamp(
+                -float(args.apdr_residual_max),
+                float(args.apdr_residual_max),
+            )
+            ideal_hard_safe_mask = 1.0 if item_name in ideal_hard_names else 0.0
+            oracle_bs = (anchor + b_cons * spatial * delta_star).clamp(0.0, 1.0)
+            oracle_bonly = (anchor + b_cons * delta_star).clamp(0.0, 1.0)
+            oracle_sonly = (anchor + spatial * delta_star).clamp(0.0, 1.0)
+            oracle_ideal_bs = (
+                anchor + ideal_hard_safe_mask * spatial * delta_star
+            ).clamp(0.0, 1.0)
+            a0_psnr = psnr(a0, label_img)
+            flat_spatial = spatial.flatten()
+            row = {
+                "name": item_name,
+                "a0_psnr": a0_psnr,
+                "z_img": z_img,
+                "b_cons": b_cons,
+                "hard_soft": hard_soft,
+                "hard_binary": hard_binary,
+                "ideal_hard_safe_mask": ideal_hard_safe_mask,
+                "s_pixel_mean": spatial.mean().item(),
+                "s_pixel_p90": torch.quantile(flat_spatial.float(), 0.90).item(),
+                "s_pixel_active_gt_0_10": (spatial > 0.10).float().mean().item(),
+                "s_pixel_active_gt_0_25": (spatial > 0.25).float().mean().item(),
+                "s_pixel_active_gt_0_50": (spatial > 0.50).float().mean().item(),
+                "oracle_gain_BS": psnr(oracle_bs, label_img) - a0_psnr,
+                "oracle_gain_Bonly": psnr(oracle_bonly, label_img) - a0_psnr,
+                "oracle_gain_Sonly": psnr(oracle_sonly, label_img) - a0_psnr,
+                "oracle_gain_ideal_BS": psnr(oracle_ideal_bs, label_img) - a0_psnr,
+            }
+            rows.append(row)
+            writer.writerow(row)
+            if (idx + 1) % args.progress_freq == 0:
+                print(f"oracle_eval {idx + 1}/{len(loader)}", flush=True)
+
+    hard_rows, easy_rows = test_quartiles(rows)
+    bce_decile_csv = csv_path.with_name(f"bce_deciles_{args.tag}.csv")
+    easy_leakage_csv = csv_path.with_name(f"budget_leakage_easy_top25_{args.tag}.csv")
+    hard_coverage_csv = csv_path.with_name(f"hard_coverage_bottom25_{args.tag}.csv")
+    spatial_bottleneck_csv = csv_path.with_name(f"spatial_bottleneck_{args.tag}.csv")
+    write_bce_deciles(test_rows, candidate, bce_decile_csv)
+    write_threshold_csv(easy_rows, "b_cons", (0.01, 0.03, 0.05), "easy_top25", easy_leakage_csv)
+    write_threshold_csv(
+        hard_rows,
+        "b_cons",
+        (0.10, 0.20, 0.35, 0.50),
+        "hard_bottom25",
+        hard_coverage_csv,
+    )
+    write_spatial_bottleneck_csv(rows, spatial_bottleneck_csv)
+
+    variants = {
+        "O1_Bcons_Spixel": summarize_oracle_variant(rows, "oracle_gain_BS"),
+        "O2_Bcons_only": summarize_oracle_variant(rows, "oracle_gain_Bonly"),
+        "O3_Spixel_only": summarize_oracle_variant(rows, "oracle_gain_Sonly"),
+        "O4_ideal_hard_safe_Spixel": summarize_oracle_variant(
+            rows,
+            "oracle_gain_ideal_BS",
+        ),
+    }
+    diagnostics = {
+        "budget_leakage_easy_top25": threshold_table(easy_rows, "b_cons", (0.01, 0.03, 0.05)),
+        "hard_coverage_bottom25": threshold_table(
+            hard_rows,
+            "b_cons",
+            (0.10, 0.20, 0.35, 0.50),
+        ),
+        "spatial_bottleneck_hard_bottom25": {
+            "count": len(hard_rows),
+            "s_pixel_mean": mean_or_none([row["s_pixel_mean"] for row in hard_rows]),
+            "s_pixel_p90_mean": mean_or_none([row["s_pixel_p90"] for row in hard_rows]),
+            "active_area_gt_0_10_mean": mean_or_none(
+                [row["s_pixel_active_gt_0_10"] for row in hard_rows]
+            ),
+            "active_area_gt_0_25_mean": mean_or_none(
+                [row["s_pixel_active_gt_0_25"] for row in hard_rows]
+            ),
+            "active_area_gt_0_50_mean": mean_or_none(
+                [row["s_pixel_active_gt_0_50"] for row in hard_rows]
+            ),
+        },
+    }
+    variant_summary_json = csv_path.with_name(f"oracle_variant_summary_{args.tag}.json")
+    variant_summary_json.write_text(
+        json.dumps({"variants": variants, "diagnostics": diagnostics}, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    o1 = variants["O1_Bcons_Spixel"]
+    return {
+        "summary": o1["summary"],
+        "variants": variants,
+        "diagnostics": diagnostics,
         "gate": {
-            "stage": "APDR-v0.2RC oracle residual ceiling",
-            "checks": checks,
-            "pass": all(item["pass"] for item in checks.values()),
+            "stage": "APDR-v0.2RC oracle residual ceiling (O1 B_cons * S_pixel)",
+            "checks": o1["checks"],
+            "pass": o1["pass"],
+        },
+        "artifacts": {
+            "oracle_per_image_csv": str(csv_path),
+            "bce_decile_csv": str(bce_decile_csv),
+            "easy_leakage_csv": str(easy_leakage_csv),
+            "hard_coverage_csv": str(hard_coverage_csv),
+            "spatial_bottleneck_csv": str(spatial_bottleneck_csv),
+            "oracle_variant_summary_json": str(variant_summary_json),
         },
     }
 
@@ -601,6 +871,7 @@ def main():
     parser.add_argument("--train_ratio_min", type=float, default=10.0)
     parser.add_argument("--train_hard_bce_max", type=float, default=0.55)
     parser.add_argument("--run_oracle_on_replay_fail", action="store_true")
+    parser.add_argument("--save_selector_checkpoint", action="store_true")
     parser.add_argument("--fail_on_gate", action="store_true")
     args = parser.parse_args()
 
@@ -636,12 +907,39 @@ def main():
     replay_gate = build_replay_gate(selected_train_metrics, selected_test_metrics, max_abs_diff, args)
     candidate_csv = output_dir / f"budget_candidates_{args.tag}.csv"
     write_candidate_csv(scored, test_rows, selected, candidate_csv)
+    selected_budget = apply_selected_budget_to_model(apdr, selected)
+    selector_checkpoint = None
+    if args.save_selector_checkpoint:
+        if not selected_budget["supported_for_checkpoint"]:
+            raise RuntimeError(
+                "Selected candidate cannot be saved into APDR budget buffers: "
+                f"{selected_budget}"
+            )
+        selector_checkpoint = output_dir / f"selector_checkpoint_{args.tag}.pkl"
+        torch.save(
+            {
+                "model": apdr.state_dict(),
+                "selected_candidate": selected,
+                "selected_budget_calibration": selected_budget,
+                "stage": "APDR-v0.2RC selector checkpoint",
+            },
+            selector_checkpoint,
+        )
 
     oracle = None
     oracle_csv = None
     if replay_gate["pass"] or args.run_oracle_on_replay_fail:
         oracle_csv = output_dir / f"oracle_per_image_{args.tag}.csv"
-        oracle = evaluate_oracle(original, apdr, args, device, calibration, selected, oracle_csv)
+        oracle = evaluate_oracle(
+            original,
+            apdr,
+            args,
+            device,
+            calibration,
+            selected,
+            oracle_csv,
+            test_rows,
+        )
 
     gate = {
         "stage": "APDR-v0.2RC conservative budget replay",
@@ -660,6 +958,7 @@ def main():
         "calibration": calibration["summary"],
         "base_budget_calibration": base_budget_calibration,
         "selected_candidate": selected,
+        "selected_budget_calibration": selected_budget,
         "selected_train_metrics": selected_train_metrics,
         "selected_test_metrics": selected_test_metrics,
         "max_abs_diff_vs_a0": max_abs_diff,
@@ -673,7 +972,9 @@ def main():
             "train_scores_csv": str(train_csv),
             "test_scores_csv": str(test_csv),
             "candidate_csv": str(candidate_csv),
+            "selector_checkpoint": str(selector_checkpoint) if selector_checkpoint else None,
             "oracle_csv": str(oracle_csv) if oracle_csv else None,
+            "oracle_artifacts": oracle.get("artifacts", {}) if oracle else {},
         },
         "pass": gate["pass"],
     }

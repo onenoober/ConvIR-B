@@ -124,7 +124,7 @@ def _configure_train_scope(model, args):
         print("APDR_TRAIN_SCOPE all: all parameters trainable")
         return list(model.parameters())
 
-    if scope != "apdr_only":
+    if scope not in ("apdr_only", "apdr_residual_only"):
         raise ValueError(f"Unsupported apdr_train_scope: {scope}")
 
     active_prefixes = ("APDR_",)
@@ -135,7 +135,13 @@ def _configure_train_scope(model, args):
     frozen = 0
     for name, param in model.named_parameters():
         if name.startswith("APDR_"):
-            param.requires_grad = any(name.startswith(prefix) for prefix in active_prefixes)
+            in_active_scale = any(name.startswith(prefix) for prefix in active_prefixes)
+            if scope == "apdr_residual_only":
+                param.requires_grad = in_active_scale and (
+                    ".residual_body." in name or ".residual_head." in name
+                )
+            else:
+                param.requires_grad = in_active_scale
         else:
             param.requires_grad = False
         if param.requires_grad:
@@ -151,7 +157,10 @@ def _configure_train_scope(model, args):
 
 
 def _set_training_mode(model, args):
-    if getattr(args, "arch", "convir") == "apdr" and getattr(args, "apdr_train_scope", "all") == "apdr_only":
+    if (
+        getattr(args, "arch", "convir") == "apdr"
+        and getattr(args, "apdr_train_scope", "all") != "all"
+    ):
         model.eval()
         for name, module in model.named_modules():
             if name.startswith("APDR_"):
@@ -256,11 +265,14 @@ def _train(model, args):
                     + args.apdr_anchor_lambda * apdr_train_reg.get("apdr_anchor", 0.0)
                     + args.apdr_gate_lambda * apdr_train_reg.get("apdr_gate", 0.0)
                     + args.apdr_residual_lambda * apdr_train_reg.get("apdr_residual", 0.0)
+                    + getattr(args, "apdr_delta_lambda", 0.0)
+                    * apdr_train_reg.get("apdr_delta_supervision", 0.0)
                     + getattr(args, "apdr_gate_supervision_lambda", 0.0)
                     * apdr_train_reg.get("apdr_gate_supervision", 0.0)
                 )
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(trainable_params, 0.001)
+            if args.grad_clip_norm > 0:
+                torch.nn.utils.clip_grad_norm_(trainable_params, args.grad_clip_norm)
             optimizer.step()
 
             iter_pixel_adder(loss_content.item())
@@ -272,8 +284,12 @@ def _train(model, args):
             if (iter_idx + 1) % args.print_freq == 0:
                 apdr_detail = ""
                 if apdr_train_reg:
-                    apdr_detail = " APDR anchor: %.8f gate_sup: %.8f gate: %.8f residual: %.8f" % (
+                    apdr_detail = (
+                        " APDR anchor: %.8f delta: %.8f gate_sup: %.8f "
+                        "gate: %.8f residual: %.8f"
+                    ) % (
                         apdr_train_reg.get("apdr_anchor", 0.0).detach().item(),
+                        apdr_train_reg.get("apdr_delta_supervision", 0.0).detach().item(),
                         apdr_train_reg.get("apdr_gate_supervision", 0.0).detach().item(),
                         apdr_train_reg.get("apdr_gate", 0.0).detach().item(),
                         apdr_train_reg.get("apdr_residual", 0.0).detach().item(),

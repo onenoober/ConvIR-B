@@ -46,6 +46,7 @@ def build_model(arch, mode, args, prefix):
             apdr_force_zero_gate=getattr(args, f"{prefix}_apdr_force_zero_gate"),
             apdr_active_scales=getattr(args, f"{prefix}_apdr_active_scales"),
             apdr_selector_mode=getattr(args, f"{prefix}_apdr_selector_mode"),
+            apdr_residual_capacity=getattr(args, f"{prefix}_apdr_residual_capacity"),
         )
     raise ValueError(f"Unsupported arch: {arch}")
 
@@ -156,6 +157,7 @@ def main():
     parser.add_argument("--original_apdr_force_zero_gate", action="store_true")
     parser.add_argument("--original_apdr_active_scales", default="all", choices=["all", "full"])
     parser.add_argument("--original_apdr_selector_mode", default="v0", choices=["v0", "v0_2", "v0_2r"])
+    parser.add_argument("--original_apdr_residual_capacity", default="linear", choices=["linear", "shallow_mlp"])
     parser.add_argument("--candidate_apdr_prior_mode", default="rgb_haze", choices=["rgb_haze"])
     parser.add_argument("--candidate_apdr_residual_max", type=float, default=0.04)
     parser.add_argument("--candidate_apdr_gate_max", type=float, default=0.5)
@@ -163,6 +165,7 @@ def main():
     parser.add_argument("--candidate_apdr_force_zero_gate", action="store_true")
     parser.add_argument("--candidate_apdr_active_scales", default="all", choices=["all", "full"])
     parser.add_argument("--candidate_apdr_selector_mode", default="v0", choices=["v0", "v0_2", "v0_2r"])
+    parser.add_argument("--candidate_apdr_residual_capacity", default="linear", choices=["linear", "shallow_mlp"])
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
     args = parser.parse_args()
