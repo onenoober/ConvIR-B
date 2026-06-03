@@ -2,9 +2,11 @@
 
 Date: 2026-06-03
 
-Status: E1 OOF audit completed on `autodl-dehaze4`; current locked thresholds
-failed. No stop20, local correction, full spatial router, or trainable residual
-head.
+Status: E1 OOF audit completed on `autodl-dehaze4`, but a post-sync
+implementation audit found a clean-reproducibility mismatch in commit
+`ed38afb`. Current locked thresholds remain blocked; exact v0.4E numbers are
+fixed-code rerun pending. No stop20, local correction, full spatial router, or
+trainable residual head.
 
 ## Scope
 
@@ -68,6 +70,17 @@ Decision label:
 ```text
 E1_FAIL_STOP_CURRENT_LOCKED_THRESHOLDS
 ```
+
+Reproducibility status:
+
+```text
+FIXED_CODE_RERUN_REQUIRED_BEFORE_NUMERIC_SEAL
+```
+
+Post-sync implementation audit found `align_coners` and
+`kenel_size/kernel_size` mismatches in the submitted v0.4E tools. The failure
+direction remains a useful stop signal, but the exact E1 numeric evidence must
+be reproduced from a clean fixed-code checkout before archival sealing.
 
 E1 completed on `autodl-dehaze4` with `exit_code=0`
 (`2026-06-03T21:50:26+08:00` to `2026-06-03T22:39:02+08:00`).

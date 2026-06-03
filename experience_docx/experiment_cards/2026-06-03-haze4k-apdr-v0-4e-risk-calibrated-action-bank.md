@@ -2,9 +2,10 @@
 
 Date: 2026-06-03
 
-Status: E0 locked-threshold intermediate audit passed on `autodl-dehaze4`;
-authorize OOF calibration only. No stop20, local correction, full spatial
-router, or trainable residual head.
+Status: E0 locked-threshold intermediate audit passed on `autodl-dehaze4`, but
+a post-sync implementation audit found a clean-reproducibility mismatch in
+commit `ed38afb`. Authorize fixed-code rerun and OOF calibration review only.
+No stop20, local correction, full spatial router, or trainable residual head.
 
 ## Scope
 
@@ -123,6 +124,17 @@ Decision label:
 ```text
 E0_PASS_AUTHORIZE_OOF_CALIBRATION_ONLY
 ```
+
+Reproducibility status:
+
+```text
+FIXED_CODE_RERUN_REQUIRED_BEFORE_NUMERIC_SEAL
+```
+
+Post-sync implementation audit found `align_coners` and
+`kenel_size/kernel_size` mismatches in the submitted v0.4E tools. The E0 pass
+remains a useful diagnostic direction, but exact numeric evidence must be
+reproduced from a clean fixed-code checkout before archival sealing.
 
 E0 completed on `autodl-dehaze4` with `exit_code=0`
 (`2026-06-03T21:20:40+08:00` to `2026-06-03T21:28:42+08:00`).

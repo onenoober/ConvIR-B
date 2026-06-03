@@ -50,7 +50,7 @@ if "$PY" "$ROOT/experience_docx/tools/audit_haze4k_apdr_v0_4e_oof_calibration.py
   --device cuda \
   --pca_device cpu \
   --residual_max 0.04 \
-  --kenel_size 31 \
+  --kernel_size 31 \
   --sigma 3.0 \
   --low_size "$LOW_SIZE" \
   --k_values "$K_VALUES" \
