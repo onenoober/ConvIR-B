@@ -1,0 +1,180 @@
+collected=100
+collected=200
+collected=300
+collected=400
+collected=500
+collected=600
+collected=700
+collected=800
+collected=900
+collected=1000
+collected=1100
+collected=1200
+collected=1300
+collected=1400
+collected=1500
+collected=1600
+collected=1700
+collected=1800
+collected=1900
+collected=2000
+collected=2100
+collected=2200
+collected=2300
+collected=2400
+collected=2500
+collected=2600
+collected=2700
+collected=2800
+collected=2900
+collected=3000
+evaluated=100
+evaluated=200
+{
+  "stage": "APDR-v0.4B-MT coefficient mapping triage",
+  "tag": "apdr_v0_4b_mapping_triage_sigma3_seed3407",
+  "sigma": 3.0,
+  "correctability_tau": 0.9939929842948914,
+  "basis_num_images": 3000,
+  "train_count": 128,
+  "eval_count": 256,
+  "train_open_count": 90,
+  "mini_val_open_count": 114,
+  "low_size": 32,
+  "k_values": [
+    8,
+    16,
+    32
+  ],
+  "mapper_count": 64,
+  "feature_names": [
+    "P_benefit",
+    "proxy_score",
+    "anchor_psnr",
+    "M_safe_mean",
+    "M_safe_nonzero_frac",
+    "x_mean",
+    "x_std",
+    "x_min",
+    "x_max",
+    "anchor_mean",
+    "anchor_std",
+    "anchor_min",
+    "anchor_max",
+    "absdiff_mean",
+    "absdiff_std",
+    "absdiff_min",
+    "absdiff_max",
+    "dark_mean",
+    "dark_std",
+    "dark_min",
+    "dark_max",
+    "bright_mean",
+    "bright_std",
+    "bright_min",
+    "bright_max",
+    "saturation_mean",
+    "saturation_std",
+    "saturation_min",
+    "saturation_max",
+    "gradient_mean",
+    "gradient_std",
+    "gradient_min",
+    "gradient_max",
+    "m_safe_mean",
+    "m_safe_std",
+    "m_safe_min",
+    "m_safe_max",
+    "x_c0_mean",
+    "x_c0_std",
+    "x_c0_min",
+    "x_c0_max",
+    "x_c1_mean",
+    "x_c1_std",
+    "x_c1_min",
+    "x_c1_max",
+    "x_c2_mean",
+    "x_c2_std",
+    "x_c2_min",
+    "x_c2_max",
+    "anchor_c0_mean",
+    "anchor_c0_std",
+    "anchor_c0_min",
+    "anchor_c0_max",
+    "anchor_c1_mean",
+    "anchor_c1_std",
+    "anchor_c1_min",
+    "anchor_c1_max",
+    "anchor_c2_mean",
+    "anchor_c2_std",
+    "anchor_c2_min",
+    "anchor_c2_max",
+    "diff_c0_mean",
+    "diff_c0_std",
+    "diff_c0_min",
+    "diff_c0_max",
+    "diff_c1_mean",
+    "diff_c1_std",
+    "diff_c1_min",
+    "diff_c1_max",
+    "diff_c2_mean",
+    "diff_c2_std",
+    "diff_c2_min",
+    "diff_c2_max"
+  ],
+  "args": {
+    "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+    "selector_checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl",
+    "correctability_json": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage/experience_docx/experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/correctability_traincalib_apdr_v0_4_correctability_traincalib_sigma3_seed3407.json",
+    "correctability_train_csv": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage/experience_docx/experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/correctability_traincalib_train_oof_apdr_v0_4_correctability_traincalib_sigma3_seed3407.csv",
+    "output_dir": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage/experience_docx/experiment_logs/haze4k_apdr_v0_4b_mapping_triage_20260603",
+    "tag": "apdr_v0_4b_mapping_triage_sigma3_seed3407",
+    "basis_num_images": 0,
+    "train_count": 128,
+    "eval_count": 256,
+    "seed": 3407,
+    "num_workers": 0,
+    "device": "cuda",
+    "pca_device": "cpu",
+    "residual_max": 0.04,
+    "kernel_size": 31,
+    "sigma": 3.0,
+    "low_size": 32,
+    "k_values": "8,16,32",
+    "projection_ridge": 1e-05,
+    "cv_ridge": 0.001,
+    "ridge_values": [
+      0.0001,
+      0.001,
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "pls_components": [
+      2,
+      4,
+      8,
+      12,
+      16
+    ],
+    "knn_values": [
+      1,
+      3,
+      5,
+      9
+    ],
+    "folds": 5,
+    "mlp_hidden_dim": 32,
+    "mlp_steps": 800,
+    "mlp_learning_rate": 0.0005,
+    "mlp_weight_decay": 0.01,
+    "mlp_beta": 0.1,
+    "mlp_patience": 80,
+    "mlp_grad_clip_norm": 1.0,
+    "pca_oversample": 8,
+    "pca_niter": 4,
+    "progress_freq": 100
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage/experience_docx/experiment_logs/haze4k_apdr_v0_4b_mapping_triage_20260603/mapping_triage_summary_sigma3.json
