@@ -1,0 +1,77 @@
+{
+  "stage": "APDR-v0.2RC delta learnability overfit",
+  "summary": {
+    "count": 2,
+    "initial_weighted_delta_l1": 0.012615565766830346,
+    "final_weighted_delta_l1": 0.009243864820266286,
+    "loss_drop_fraction": 0.26726513966017695,
+    "mean_output_gain": 1.018625259399414,
+    "mean_oracle_gain": 1.7664566040039062,
+    "oracle_gain_recovery": 0.5766489010205889,
+    "mean_corr_residual_raw_delta_star": 0.08355026319622993,
+    "hard_bottom25_output_gain": 0.7753562927246094,
+    "hard_bottom25_oracle_gain": 1.50927734375,
+    "mean_m_safe": 0.18519987910985947,
+    "mean_residual_raw_abs": 0.014009079430252314,
+    "mean_delta_star_abs": 0.012712785508483648,
+    "initial_corr_residual_raw_delta_star": null,
+    "history": [
+      {
+        "step": 0,
+        "weighted_delta_l1": 0.012615565766830346,
+        "corr": null,
+        "mean_output_gain": 0.0
+      },
+      {
+        "step": 1,
+        "weighted_delta_l1": 0.008928278058031421,
+        "corr": 0.09705536812543869,
+        "mean_output_gain": 0.5744037628173828
+      },
+      {
+        "step": 2,
+        "weighted_delta_l1": 0.009243864820266286,
+        "corr": 0.08355026319622993,
+        "mean_output_gain": 1.018625259399414
+      }
+    ],
+    "args": {
+      "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+      "selector_checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl",
+      "output_dir": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-3-shed-diagnostics/experience_docx/experiment_logs/haze4k_apdr_v0_3_delta_learnability_20260603/smoke",
+      "tag": "smoke_2img_2step",
+      "num_images": 2,
+      "steps": 2,
+      "learning_rate": 0.001,
+      "grad_clip_norm": 1.0,
+      "seed": 3407,
+      "num_workers": 0,
+      "device": "cuda",
+      "residual_max": 0.04,
+      "progress_freq": 1
+    }
+  },
+  "checks": {
+    "loss_drop_fraction": {
+      "observed": 0.26726513966017695,
+      "required": ">= 0.30",
+      "pass": false
+    },
+    "oracle_gain_recovery": {
+      "observed": 0.5766489010205889,
+      "required": ">= 0.50",
+      "pass": true
+    },
+    "corr_residual_raw_delta_star": {
+      "observed": 0.08355026319622993,
+      "required": ">= 0.40",
+      "pass": false
+    },
+    "hard_train_psnr_gain": {
+      "observed": 0.7753562927246094,
+      "required": ">= +0.30 dB",
+      "pass": true
+    }
+  },
+  "pass": false
+}

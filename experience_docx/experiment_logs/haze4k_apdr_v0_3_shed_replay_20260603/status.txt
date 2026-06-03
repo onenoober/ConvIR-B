@@ -1,0 +1,12 @@
+start root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-3-shed-diagnostics selector=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl 2026-06-03T10:27:21+08:00
+replay_start fam2_only 2026-06-03T10:27:21+08:00
+gate_fail fam2_only 2026-06-03T10:28:52+08:00
+replay_start fam2_conf_gated 2026-06-03T10:28:52+08:00
+gate_fail fam2_conf_gated 2026-06-03T10:30:25+08:00
+replay_start hardfreq 2026-06-03T10:30:25+08:00
+gate_fail hardfreq 2026-06-03T10:31:56+08:00
+replay_start pfd_b1 2026-06-03T10:31:56+08:00
+gate_fail pfd_b1 2026-06-03T10:33:25+08:00
+replay_start haze_prior_scm 2026-06-03T10:33:25+08:00
+gate_fail haze_prior_scm 2026-06-03T10:34:54+08:00
+complete 2026-06-03T10:34:54+08:00

@@ -1,0 +1,113 @@
+{
+  "stage": "APDR-v0.2RC delta learnability overfit",
+  "summary": {
+    "count": 32,
+    "initial_weighted_delta_l1": 0.011822919883463207,
+    "final_weighted_delta_l1": 0.011549347842167556,
+    "loss_drop_fraction": 0.02313912671253889,
+    "mean_output_gain": 0.00916963815689087,
+    "mean_oracle_gain": 0.8285325765609741,
+    "oracle_gain_recovery": 0.011067323622870306,
+    "mean_corr_residual_raw_delta_star": 0.1551922241342254,
+    "hard_bottom25_output_gain": 0.023951292037963867,
+    "hard_bottom25_oracle_gain": 1.3027253150939941,
+    "mean_m_safe": 0.09552436111152929,
+    "mean_residual_raw_abs": 0.0020905136698274873,
+    "mean_delta_star_abs": 0.00986707693664357,
+    "initial_corr_residual_raw_delta_star": null,
+    "history": [
+      {
+        "step": 0,
+        "weighted_delta_l1": 0.011822919883463207,
+        "corr": null,
+        "mean_output_gain": 0.0
+      },
+      {
+        "step": 50,
+        "weighted_delta_l1": 0.011658631631254707,
+        "corr": 0.0544168564483698,
+        "mean_output_gain": 0.00880962610244751
+      },
+      {
+        "step": 100,
+        "weighted_delta_l1": 0.012865078731077912,
+        "corr": 0.07129195707966574,
+        "mean_output_gain": -0.018046677112579346
+      },
+      {
+        "step": 150,
+        "weighted_delta_l1": 0.012057662413199194,
+        "corr": 0.120594955078559,
+        "mean_output_gain": 0.0175168514251709
+      },
+      {
+        "step": 200,
+        "weighted_delta_l1": 0.01156891868482786,
+        "corr": 0.1317747081629932,
+        "mean_output_gain": 0.008269667625427246
+      },
+      {
+        "step": 250,
+        "weighted_delta_l1": 0.01154916087831561,
+        "corr": 0.1498606261493478,
+        "mean_output_gain": 0.012521862983703613
+      },
+      {
+        "step": 300,
+        "weighted_delta_l1": 0.011976776865010572,
+        "corr": 0.13199034665012732,
+        "mean_output_gain": -0.0026503801345825195
+      },
+      {
+        "step": 350,
+        "weighted_delta_l1": 0.011582720871611846,
+        "corr": 0.11135606294556055,
+        "mean_output_gain": 0.014805138111114502
+      },
+      {
+        "step": 400,
+        "weighted_delta_l1": 0.011549347842167556,
+        "corr": 0.1551922241342254,
+        "mean_output_gain": 0.00916963815689087
+      }
+    ],
+    "args": {
+      "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+      "selector_checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl",
+      "output_dir": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-3-shed-diagnostics/experience_docx/experiment_logs/haze4k_apdr_v0_3_delta_learnability_20260603",
+      "tag": "apdr_v0_3_delta_learnability_32_seed3407",
+      "num_images": 32,
+      "steps": 400,
+      "learning_rate": 0.001,
+      "grad_clip_norm": 1.0,
+      "seed": 3407,
+      "num_workers": 0,
+      "device": "cuda",
+      "residual_max": 0.04,
+      "progress_freq": 50
+    }
+  },
+  "checks": {
+    "loss_drop_fraction": {
+      "observed": 0.02313912671253889,
+      "required": ">= 0.30",
+      "pass": false
+    },
+    "oracle_gain_recovery": {
+      "observed": 0.011067323622870306,
+      "required": ">= 0.50",
+      "pass": false
+    },
+    "corr_residual_raw_delta_star": {
+      "observed": 0.1551922241342254,
+      "required": ">= 0.40",
+      "pass": false
+    },
+    "hard_train_psnr_gain": {
+      "observed": 0.023951292037963867,
+      "required": ">= +0.30 dB",
+      "pass": false
+    }
+  },
+  "pass": false
+}
