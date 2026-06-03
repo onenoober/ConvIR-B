@@ -1,0 +1,297 @@
+collected=100
+collected=200
+collected=300
+collected=400
+collected=500
+collected=600
+collected=700
+collected=800
+collected=900
+collected=1000
+collected=1100
+collected=1200
+collected=1300
+collected=1400
+collected=1500
+collected=1600
+collected=1700
+collected=1800
+collected=1900
+collected=2000
+collected=2100
+collected=2200
+collected=2300
+collected=2400
+collected=2500
+collected=2600
+collected=2700
+collected=2800
+collected=2900
+collected=3000
+spatial_collected=100
+spatial_collected=200
+spatial_collected=300
+v04e_evaluated=100
+v04e_evaluated=300
+{
+  "stage": "APDR-v0.4E Risk-Calibrated Selective Action Bank intermediate audit",
+  "tag": "apdr_v0_4e_risk_action_bank_sigma3_seed3407",
+  "status": "locked threshold confirmation plus candidate action intermediate tables; no training",
+  "sigma": 3.0,
+  "correctability_tau": 0.9939929842948914,
+  "basis_num_images": 3000,
+  "train_start": 0,
+  "train_count": 128,
+  "eval_start": 256,
+  "eval_count": 128,
+  "fit_open_count": 90,
+  "confirm_count": 128,
+  "confirm_open_count": 88,
+  "low_size": 32,
+  "k_values": [
+    16
+  ],
+  "candidate_mappers": [
+    "global_plus_spatial_kenel_knn_9",
+    "convir_spatial_kenel_knn_9",
+    "spatial_priors_kenel_knn_9",
+    "spatial_priors_ridge_10",
+    "global_mean_coeff"
+  ],
+  "candidate_k_values": [
+    16
+  ],
+  "candidate_scales": [
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "locked_rules": [
+    {
+      "name": "RuleA_global_plus_spatial_kenel_knn_9_K16_pred_abs_mean_high",
+      "mapper": "global_plus_spatial_kenel_knn_9",
+      "K": 16,
+      "scale": 1.0,
+      "confidence_key": "pred_abs_mean",
+      "direction": "high",
+      "threshold": 0.010107760690152645,
+      "split": "confirm",
+      "gate_pass": true,
+      "gate": "severe=0,strong<=1,easy>=-0.02,mean>=0.05,hard>=0.25,keep>=min_keep",
+      "count": 128,
+      "open_count": 88,
+      "keep_count": 29,
+      "open_keep_count": 29,
+      "initial_weighted_delta_l1": 0.014093639857223514,
+      "projection_weighted_delta_l1": 0.012286521949087546,
+      "weighted_delta_l1_drop": 0.1282222283557042,
+      "mean_gain": 0.15461555123329163,
+      "mean_oracle_gain": 0.9063203930854797,
+      "oracle_recovery": 0.170597012284936,
+      "hard_bottom25_gain": 0.32508325576782227,
+      "hard_bottom25_oracle_gain": 1.2799328565597534,
+      "easy_top25_gain": 0.056243062019348145,
+      "strong_reference_cut_psnr": 38.53410720825195,
+      "strong_regressions": 0,
+      "severe_regressions": 0
+    },
+    {
+      "name": "RuleB_spatial_priors_ridge_10_K16_pred_abs_mean_high",
+      "mapper": "spatial_priors_ridge_10",
+      "K": 16,
+      "scale": 1.0,
+      "confidence_key": "pred_abs_mean",
+      "direction": "high",
+      "threshold": 0.01394791239872575,
+      "split": "confirm",
+      "gate_pass": true,
+      "gate": "severe=0,strong<=1,easy>=-0.02,mean>=0.05,hard>=0.25,keep>=min_keep",
+      "count": 128,
+      "open_count": 88,
+      "keep_count": 45,
+      "open_keep_count": 39,
+      "initial_weighted_delta_l1": 0.014093639857223514,
+      "projection_weighted_delta_l1": 0.012644103235252039,
+      "weighted_delta_l1_drop": 0.1028504088834464,
+      "mean_gain": 0.2141423225402832,
+      "mean_oracle_gain": 0.9063203930854797,
+      "oracle_recovery": 0.23627662377898886,
+      "hard_bottom25_gain": 0.4527803659439087,
+      "hard_bottom25_oracle_gain": 1.2799328565597534,
+      "easy_top25_gain": 0.06253194808959961,
+      "strong_reference_cut_psnr": 38.53410720825195,
+      "strong_regressions": 1,
+      "severe_regressions": 0
+    }
+  ],
+  "all_locked_rules_pass": true,
+  "feature_dims": {
+    "global": 73,
+    "spatial_priors": 240,
+    "convir_spatial": 1440,
+    "global_plus_spatial": 1753
+  },
+  "hook_paths": [
+    "Encoder.0",
+    "Encoder.1",
+    "Encoder.2",
+    "Decoder.0",
+    "Decoder.1",
+    "Decoder.2",
+    "Convs.0",
+    "Convs.1",
+    "APDR_1.context"
+  ],
+  "outputs": {
+    "candidate_action_per_image": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage/experience_docx/experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/v04e_candidate_action_per_image_sigma3.csv",
+    "candidate_action_table": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage/experience_docx/experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/v04e_candidate_action_table.csv",
+    "risk_feature_auc": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage/experience_docx/experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/v04e_risk_feature_auc.csv",
+    "oof_calibration_curve": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage/experience_docx/experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/v04e_oof_calibration_curve.csv",
+    "accepted_vs_rejected_groups": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage/experience_docx/experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/v04e_accepted_vs_rejected_groups.csv",
+    "strong_failure_signature": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage/experience_docx/experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/v04e_strong_failure_signature.csv"
+  },
+  "args": {
+    "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+    "selector_checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl",
+    "correctability_json": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage/experience_docx/experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/correctability_traincalib_apdr_v0_4_correctability_traincalib_sigma3_seed3407.json",
+    "correctability_train_csv": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage/experience_docx/experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/correctability_traincalib_train_oof_apdr_v0_4_correctability_traincalib_sigma3_seed3407.csv",
+    "output_dir": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage/experience_docx/experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603",
+    "tag": "apdr_v0_4e_risk_action_bank_sigma3_seed3407",
+    "basis_num_images": 0,
+    "train_start": 0,
+    "train_count": 128,
+    "eval_start": 256,
+    "eval_count": 128,
+    "fit_split_name": "fit",
+    "eval_split_name": "confirm",
+    "seed": 3407,
+    "num_workers": 0,
+    "device": "cuda",
+    "pca_device": "cpu",
+    "residual_max": 0.04,
+    "kenel_size": 31,
+    "sigma": 3.0,
+    "low_size": 32,
+    "k_values": "16",
+    "candidate_k_values": [
+      16
+    ],
+    "candidate_mappers": [
+      "global_plus_spatial_kenel_knn_9",
+      "convir_spatial_kenel_knn_9",
+      "spatial_priors_kenel_knn_9",
+      "spatial_priors_ridge_10",
+      "global_mean_coeff"
+    ],
+    "scales": [
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "locked_rules": "",
+    "locked_min_keep": 15,
+    "projection_ridge": 1e-05,
+    "ridge_values": [
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "pls_components": [
+      4,
+      8,
+      16
+    ],
+    "knn_values": [
+      5,
+      9
+    ],
+    "pca_oversample": 8,
+    "pca_niter": 4,
+    "spatial_grid": 4,
+    "spatial_proj_channels": 8,
+    "hook_paths": "Encoder.0,Encoder.1,Encoder.2,Decoder.0,Decoder.1,Decoder.2,Convs.0,Convs.1,APDR_1.context",
+    "risk_feature_keys": "pred_abs_mean,pred_abs_max,pred_coeff_norm,pred_low_energy,weighted_residual_norm,nn_distance,confidence_proxy,kenel_confidence,proxy_score,M_safe_mean,M_safe_nonzero_frac",
+    "calibration_score_key": "pred_abs_mean",
+    "calibration_bins": 10,
+    "progress_freq": 100
+  },
+  "global_feature_names": [
+    "P_benefit",
+    "proxy_score",
+    "anchor_psnr",
+    "M_safe_mean",
+    "M_safe_nonzero_frac",
+    "x_mean",
+    "x_std",
+    "x_min",
+    "x_max",
+    "anchor_mean",
+    "anchor_std",
+    "anchor_min",
+    "anchor_max",
+    "absdiff_mean",
+    "absdiff_std",
+    "absdiff_min",
+    "absdiff_max",
+    "dark_mean",
+    "dark_std",
+    "dark_min",
+    "dark_max",
+    "bright_mean",
+    "bright_std",
+    "bright_min",
+    "bright_max",
+    "saturation_mean",
+    "saturation_std",
+    "saturation_min",
+    "saturation_max",
+    "gradient_mean",
+    "gradient_std",
+    "gradient_min",
+    "gradient_max",
+    "m_safe_mean",
+    "m_safe_std",
+    "m_safe_min",
+    "m_safe_max",
+    "x_c0_mean",
+    "x_c0_std",
+    "x_c0_min",
+    "x_c0_max",
+    "x_c1_mean",
+    "x_c1_std",
+    "x_c1_min",
+    "x_c1_max",
+    "x_c2_mean",
+    "x_c2_std",
+    "x_c2_min",
+    "x_c2_max",
+    "anchor_c0_mean",
+    "anchor_c0_std",
+    "anchor_c0_min",
+    "anchor_c0_max",
+    "anchor_c1_mean",
+    "anchor_c1_std",
+    "anchor_c1_min",
+    "anchor_c1_max",
+    "anchor_c2_mean",
+    "anchor_c2_std",
+    "anchor_c2_min",
+    "anchor_c2_max",
+    "diff_c0_mean",
+    "diff_c0_std",
+    "diff_c0_min",
+    "diff_c0_max",
+    "diff_c1_mean",
+    "diff_c1_std",
+    "diff_c1_min",
+    "diff_c1_max",
+    "diff_c2_mean",
+    "diff_c2_std",
+    "diff_c2_min",
+    "diff_c2_max"
+  ]
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage/experience_docx/experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/v04e_locked_threshold_confirm_summary.json
