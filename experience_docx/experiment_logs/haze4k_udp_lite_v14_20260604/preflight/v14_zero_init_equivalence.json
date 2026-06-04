@@ -1,0 +1,83 @@
+{
+  "sample": "1000_0.73_1.8.png",
+  "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+  "fusion_mode": "udp_lite",
+  "active_adapters": "dpfm",
+  "udp_components": "all",
+  "missing_dpga_key_count": 100,
+  "missing_dpga_key_prefix_ok": true,
+  "output_diffs": [
+    {
+      "scale_index": 0,
+      "max_abs": 0.0,
+      "mean_abs": 0.0
+    },
+    {
+      "scale_index": 1,
+      "max_abs": 0.0,
+      "mean_abs": 0.0
+    },
+    {
+      "scale_index": 2,
+      "max_abs": 0.0,
+      "mean_abs": 0.0
+    }
+  ],
+  "max_abs_diff": 0.0,
+  "tolerance": 1e-06,
+  "equivalence_pass": true,
+  "grad_probe_loss": 0.03014085255563259,
+  "grad_rows": [
+    {
+      "name": "DPGA_dpfm1.channel.mlp.2.weight",
+      "grad_abs_sum": 1.856726339610759e-05,
+      "grad_abs_max": 1.23907898341713e-06
+    },
+    {
+      "name": "DPGA_dpfm1.cross.project.weight",
+      "grad_abs_sum": 0.0007948715938255191,
+      "grad_abs_max": 9.337396477349102e-06
+    },
+    {
+      "name": "DPGA_dpfm2.channel.mlp.2.weight",
+      "grad_abs_sum": 0.0001332998654106632,
+      "grad_abs_max": 3.614001570895198e-06
+    },
+    {
+      "name": "DPGA_dpfm2.cross.project.weight",
+      "grad_abs_sum": 0.0020674318075180054,
+      "grad_abs_max": 8.909732059692033e-06
+    },
+    {
+      "name": "DPGA_dpfm4.channel.mlp.2.weight",
+      "grad_abs_sum": 7.541337254224345e-05,
+      "grad_abs_max": 9.271955718759273e-07
+    },
+    {
+      "name": "DPGA_dpfm4.cross.project.weight",
+      "grad_abs_sum": 0.004392944276332855,
+      "grad_abs_max": 4.605257799994433e-06
+    },
+    {
+      "name": "DPGA_agf2.spatial_gate.2.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_agf2.channel_gate.2.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_agf1.spatial_gate.2.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_agf1.channel_gate.2.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    }
+  ],
+  "grad_probe_pass": true
+}

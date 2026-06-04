@@ -1,0 +1,83 @@
+{
+  "sample": "synthetic",
+  "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+  "fusion_mode": "udp_lite",
+  "active_adapters": "all",
+  "udp_components": "all",
+  "missing_dpga_key_count": 100,
+  "missing_dpga_key_prefix_ok": true,
+  "output_diffs": [
+    {
+      "scale_index": 0,
+      "max_abs": 0.0,
+      "mean_abs": 0.0
+    },
+    {
+      "scale_index": 1,
+      "max_abs": 0.0,
+      "mean_abs": 0.0
+    },
+    {
+      "scale_index": 2,
+      "max_abs": 0.0,
+      "mean_abs": 0.0
+    }
+  ],
+  "max_abs_diff": 0.0,
+  "tolerance": 1e-06,
+  "equivalence_pass": true,
+  "grad_probe_loss": 7563.02099609375,
+  "grad_rows": [
+    {
+      "name": "DPGA_dpfm1.channel.mlp.2.weight",
+      "grad_abs_sum": 17279.68359375,
+      "grad_abs_max": 430.9571533203125
+    },
+    {
+      "name": "DPGA_dpfm1.cross.project.weight",
+      "grad_abs_sum": 95403.5,
+      "grad_abs_max": 1180.0384521484375
+    },
+    {
+      "name": "DPGA_dpfm2.channel.mlp.2.weight",
+      "grad_abs_sum": 526145.3125,
+      "grad_abs_max": 21983.74609375
+    },
+    {
+      "name": "DPGA_dpfm2.cross.project.weight",
+      "grad_abs_sum": 770416.5,
+      "grad_abs_max": 2467.186279296875
+    },
+    {
+      "name": "DPGA_dpfm4.channel.mlp.2.weight",
+      "grad_abs_sum": 316131136.0,
+      "grad_abs_max": 4062602.0
+    },
+    {
+      "name": "DPGA_dpfm4.cross.project.weight",
+      "grad_abs_sum": 362474.125,
+      "grad_abs_max": 238.40005493164062
+    },
+    {
+      "name": "DPGA_agf2.spatial_gate.2.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_agf2.channel_gate.2.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_agf1.spatial_gate.2.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_agf1.channel_gate.2.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    }
+  ],
+  "grad_probe_pass": true
+}

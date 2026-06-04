@@ -9,6 +9,15 @@
 - Run all tests, including smoke tests, training, evaluation, and any execution/runtime validation, on `dehaze1` unless the user explicitly overrides this rule for a specific command.
 - If runtime validation is needed, sync the code to `dehaze1` and run it there; if the cloud server is unavailable, report that instead of falling back to local execution.
 
+
+## GitHub Evidence Sync
+
+- After any cloud experiment, training, evaluation, audit, or post-run watcher finishes, syncing text evidence to GitHub is the first-priority archival step.
+- Before considering a completed cloud run closed, sync the cloud evidence back into `experience_docx/`, update the route card, central index, family summary, and evidence README, then commit and push the text evidence to GitHub unless the user explicitly says not to.
+- Treat GitHub as the primary durable share/read location for completed experiment evidence; the cloud server copy is a runtime source, not the final evidence archive.
+- Do not commit checkpoints, model weights, datasets, images, arrays, archives, or raw inference outputs by default; sync only text evidence and small structured artifacts allowed by `experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.
+- If GitHub push is unavailable, report the failure and the exact local evidence paths instead of treating the cloud-only copy as synced.
+
 ## Project Memory And Evidence Authority
 
 - Treat `experience_docx/` as the repository's authoritative project memory for experiment state, governance, route decisions, and evidence locations.

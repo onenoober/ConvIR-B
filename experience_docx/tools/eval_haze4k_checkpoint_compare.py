@@ -54,6 +54,11 @@ def build_model(arch, mode, args, prefix):
             shallow_scale_multiplier=getattr(args, f"{prefix}_dpga_shallow_scale_multiplier"),
             bottleneck_scale_multiplier=getattr(args, f"{prefix}_dpga_bottleneck_scale_multiplier"),
             skip_scale_multiplier=getattr(args, f"{prefix}_dpga_skip_scale_multiplier"),
+            fusion_mode=getattr(args, f"{prefix}_dpga_fusion_mode"),
+            udp_components=getattr(args, f"{prefix}_dpga_udp_components"),
+            udp_window_size=getattr(args, f"{prefix}_dpga_udp_window_size"),
+            udp_num_heads=getattr(args, f"{prefix}_dpga_udp_num_heads"),
+            agf_gate_limit=getattr(args, f"{prefix}_dpga_agf_gate_limit"),
         )
     if arch == "apdr":
         return build_apdr_net(
@@ -269,6 +274,16 @@ def main():
     parser.add_argument("--candidate_dpga_bottleneck_scale_multiplier", type=float, default=1.0)
     parser.add_argument("--original_dpga_skip_scale_multiplier", type=float, default=1.0)
     parser.add_argument("--candidate_dpga_skip_scale_multiplier", type=float, default=1.0)
+    parser.add_argument("--original_dpga_fusion_mode", default="legacy", choices=["legacy", "udp_lite"])
+    parser.add_argument("--candidate_dpga_fusion_mode", default="legacy", choices=["legacy", "udp_lite"])
+    parser.add_argument("--original_dpga_udp_components", default="all")
+    parser.add_argument("--candidate_dpga_udp_components", default="all")
+    parser.add_argument("--original_dpga_udp_window_size", type=int, default=8)
+    parser.add_argument("--candidate_dpga_udp_window_size", type=int, default=8)
+    parser.add_argument("--original_dpga_udp_num_heads", type=int, default=4)
+    parser.add_argument("--candidate_dpga_udp_num_heads", type=int, default=4)
+    parser.add_argument("--original_dpga_agf_gate_limit", type=float, default=0.25)
+    parser.add_argument("--candidate_dpga_agf_gate_limit", type=float, default=0.25)
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
     args = parser.parse_args()

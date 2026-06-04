@@ -50,8 +50,8 @@ def gate_stage(args, regular, hard, prefix):
         ),
         f"{prefix}_hard_mean_delta": check(
             hard["mean_psnr_delta"],
-            ">= 0 dB",
-            hard["mean_psnr_delta"] >= 0,
+            f">= {args.hard_mean_min:+.3f} dB",
+            hard["mean_psnr_delta"] >= args.hard_mean_min,
         ),
         f"{prefix}_hard_ssim_delta": check(
             hard["mean_ssim_delta"],
@@ -92,6 +92,7 @@ def main():
     parser.add_argument("--stage", default="DPGA-v1.3A regular+hard gate")
     parser.add_argument("--regular_mean_min", type=float, default=0.035)
     parser.add_argument("--hard_bottom25_min", type=float, default=0.040)
+    parser.add_argument("--hard_mean_min", type=float, default=0.0)
     parser.add_argument("--worst_budget", type=int, default=12)
     parser.add_argument("--positive_ratio_min", type=float, default=0.0)
     parser.add_argument("--strong_ratio_max", type=float, default=-1.0)

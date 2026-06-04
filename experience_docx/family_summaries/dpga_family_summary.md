@@ -11,10 +11,12 @@ Status: active diagnostic family, not promotion-ready.
   - `../experiment_cards/2026-06-04-haze4k-convir-v1-0-dpga-lite.md`
   - `../experiment_cards/2026-06-04-haze4k-convir-v1-1-dpga-tail-control.md`
   - `../experiment_cards/2026-06-04-haze4k-convir-v1-3-hsdf.md`
+  - `../experiment_cards/2026-06-04-haze4k-convir-v1-4-udp-lite.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_dpga_lite_20260604/`
   - `../experiment_logs/haze4k_dpga_tail_control_20260604/`
   - `../experiment_logs/haze4k_dpga_v13_hsdf_20260604/`
+  - `../experiment_logs/haze4k_udp_lite_v14_20260604/`
 
 ## Established Facts
 
@@ -25,6 +27,7 @@ Status: active diagnostic family, not promotion-ready.
 | DPGA tail-control v1.2 | Shallow-only scale `0.5`, anchor `0.04`; Best mean `+0.042656 dB`, hard bottom-25% `+0.026225 dB`, worst `<= -0.20 dB` regressions rose to `16/300`. | Failed hard gate and worsened tail risk; no higher-scale follow-up without new diagnostic. |
 | DPGA-v1.3A HSDF | Best `val_regular` mean `+0.026333 dB`; Best `val_hard` hard bottom-25 `+0.022099 dB`. | Loss-mask mechanism improved safety but missed hard gate; authorized only v1.3B diagnostic, not locked test. |
 | DPGA-v1.3B HSDF | Best `val_regular` mean `+0.025839 dB`; Best `val_hard` hard bottom-25 `+0.023642 dB`; positive ratio `0.586667`; strong regression ratio `0.200000`; corrected bottleneck-only runtime ablation mean about `+0.000824 dB`. | `FAIL_STOP_V13B_HARD_GATED_BOTTLENECK`; locked test blocked. |
+| ConvIR-Dehaze-v1.4-UDP-Lite | v1.4A adapter-only completed and failed gate: Best `val_regular` mean `+0.028294 dB`, Best `val_hard` mean `+0.020340 dB`, hard bottom-25 `+0.022275 dB`, positive ratio `0.586667`, worst count `19`. Ablation shows `DPFM1-only` is safer/stronger (`val_hard` mean `+0.026774 dB`, worst `0`) while `DPFM2-only` is negative. | `FAIL_V14A_ADAPTER_ONLY_FULL_DPFM123`; locked test blocked. Do not micro-tune full DPFM123 scale/gate; only DPFM1-focused diagnostic or v1.4B fusion-neighbor partial unfreeze is evidence-supported. |
 
 ## Family Verdict
 
@@ -45,6 +48,14 @@ The family remains open only for a new DPGA mechanism that directly addresses
 hard-gain limitation without simply increasing scale or selecting on the locked
 test.
 
+v1.4-UDP-Lite tested the currently preferred reopen mechanism: zero-init
+multi-scale depth/prior fusion (`DPGA_prior_encoder`, `DPGA_dpfm1/2/4`) with
+independent zero-init, module-ablation, and depth-quality audit tooling. The
+cloud A0-equivalence preflight passed, but v1.4A adapter-only failed the
+internal regular+hard gate. The most useful evidence is scale attribution:
+`DPFM1-only` is the only strong/safe contributor, full `DPFM1+2+4` raises tail
+risk, and `DPFM2-only` is a negative contributor.
+
 ## Do Not Repeat Without New Evidence
 
 - Do not promote v1.0 from `Best.pkl` alone; exact stop20/final was borderline
@@ -54,6 +65,10 @@ test.
   worst-tail regressions to `16/300`.
 - Do not continue the current HSDF hard-gated bottleneck route as-is; corrected
   ablation shows bottleneck-only mean contribution about `+0.000824 dB`.
+- Do not treat v1.4 as permission to run locked Haze4K test; v1.4A failed
+  internal `val_regular`/`val_hard` gates.
+- Do not micro-tune full `DPFM1+2+4` scale/gate after v1.4A; ablation shows
+  `DPFM2-only` is negative and full DPFM123 increases tail risk.
 
 ## Reopen Condition
 

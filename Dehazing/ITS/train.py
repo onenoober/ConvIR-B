@@ -371,20 +371,40 @@ def _configure_train_scope(model, args):
         if scope == "all":
             print("DPGA_TRAIN_SCOPE all: all parameters trainable")
             return list(model.parameters())
-        if scope != "adapter_only":
+        if scope not in ("adapter_only", "fusion_neighbor"):
             raise ValueError(f"Unsupported dpga_train_scope: {scope}")
+        neighbor_prefixes = ("FAM1", "FAM2", "SCM1", "SCM2", "Convs.0", "Convs.1")
+        dpga_params = []
+        neighbor_params = []
         trainable = 0
         frozen = 0
         for name, param in model.named_parameters():
-            param.requires_grad = name.startswith("DPGA_")
+            is_dpga = name.startswith("DPGA_")
+            is_neighbor = scope == "fusion_neighbor" and any(name.startswith(prefix) for prefix in neighbor_prefixes)
+            param.requires_grad = is_dpga or is_neighbor
             if param.requires_grad:
                 trainable += param.numel()
+                if is_dpga:
+                    dpga_params.append(param)
+                else:
+                    neighbor_params.append(param)
             else:
                 frozen += param.numel()
-        trainable_params = [param for param in model.parameters() if param.requires_grad]
+        trainable_params = dpga_params + neighbor_params
         if not trainable_params:
             raise RuntimeError("No trainable parameters. Check --dpga_train_scope.")
         print(f"DPGA_TRAIN_SCOPE {scope}: trainable={trainable} frozen={frozen}")
+        if scope == "fusion_neighbor":
+            print(
+                "DPGA_TRAIN_SCOPE fusion_neighbor groups: "
+                f"dpga_params={sum(param.numel() for param in dpga_params)} "
+                f"neighbor_params={sum(param.numel() for param in neighbor_params)} "
+                f"neighbor_lr={args.dpga_neighbor_learning_rate}"
+            )
+            groups = [{"params": dpga_params}]
+            if neighbor_params:
+                groups.append({"params": neighbor_params, "lr": args.dpga_neighbor_learning_rate})
+            return groups
         return trainable_params
 
     scope = getattr(args, "apdr_train_scope", "all")
@@ -430,8 +450,12 @@ def _set_training_mode(model, args):
         and getattr(args, "dpga_train_scope", "adapter_only") != "all"
     ):
         model.eval()
+        scope = getattr(args, "dpga_train_scope", "adapter_only")
+        neighbor_prefixes = ("FAM1", "FAM2", "SCM1", "SCM2", "Convs.0", "Convs.1")
         for name, module in model.named_modules():
-            if name.startswith("DPGA_"):
+            is_dpga = name.startswith("DPGA_")
+            is_neighbor = scope == "fusion_neighbor" and any(name.startswith(prefix) for prefix in neighbor_prefixes)
+            if is_dpga or is_neighbor:
                 module.train()
         return
     if (
@@ -517,6 +541,7 @@ def _train(model, args):
     criterion = torch.nn.L1Loss()
 
     trainable_params = _configure_train_scope(model, args)
+    clip_params = [param for param in model.parameters() if param.requires_grad]
     _set_training_mode(model, args)
     optimizer = torch.optim.Adam(
         trainable_params,
@@ -656,6 +681,12 @@ def _train(model, args):
                     )
                 if "dpga_hard_gate_bce" in dpga_tc_reg:
                     loss = loss + args.dpga_hard_gate_lambda * dpga_tc_reg["dpga_hard_gate_bce"]
+                fusion_delta_lambda = float(getattr(args, "dpga_fusion_delta_lambda", 0.0))
+                if fusion_delta_lambda > 0 and hasattr(model, "dpga_fusion_delta_regularization"):
+                    fusion_delta = model.dpga_fusion_delta_regularization()
+                    if fusion_delta is not None:
+                        dpga_tc_reg["dpga_fusion_delta_norm"] = fusion_delta
+                        loss = loss + fusion_delta_lambda * fusion_delta
             if hasattr(model, 'apdr_training_regularization') and getattr(args, "arch", "convir") == "apdr":
                 apdr_train_reg = model.apdr_training_regularization(
                     apdr_targets,
@@ -673,7 +704,7 @@ def _train(model, args):
                 )
             loss.backward()
             if args.grad_clip_norm > 0:
-                torch.nn.utils.clip_grad_norm_(trainable_params, args.grad_clip_norm)
+                torch.nn.utils.clip_grad_norm_(clip_params, args.grad_clip_norm)
             optimizer.step()
 
             iter_pixel_adder(loss_content.item())
@@ -702,7 +733,7 @@ def _train(model, args):
                         " DPGA_TC anchor: %.8f chroma: %.8f delta: %.8f "
                         "delta_tv: %.8f mask: %.8f high_anchor: %.8f sky: %.8f "
                         "hard_img: %.8f easy_img: %.8f hard_weight: %.8f hard_weight_max: %.8f "
-                        "hard_gate: %.8f hard_gate_bce: %.8f"
+                        "hard_gate: %.8f hard_gate_bce: %.8f fusion_delta: %.8f"
                     ) % (
                         dpga_tc_reg.get("dpga_tc_anchor", zero).detach().item(),
                         dpga_tc_reg.get("dpga_tc_chroma", zero).detach().item(),
@@ -717,6 +748,7 @@ def _train(model, args):
                         dpga_tc_reg.get("hard_region_weight_max", zero).detach().item(),
                         dpga_tc_reg.get("dpga_hard_gate_mean", zero).detach().item(),
                         dpga_tc_reg.get("dpga_hard_gate_bce", zero).detach().item(),
+                        dpga_tc_reg.get("dpga_fusion_delta_norm", zero).detach().item(),
                     )
                 print(("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f "
                        "Loss content: %7.4f Loss fft: %7.4f%s%s") % (

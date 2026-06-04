@@ -34,6 +34,11 @@ def build_model(args):
             shallow_scale_multiplier=args.dpga_shallow_scale_multiplier,
             bottleneck_scale_multiplier=args.dpga_bottleneck_scale_multiplier,
             skip_scale_multiplier=args.dpga_skip_scale_multiplier,
+            fusion_mode=args.dpga_fusion_mode,
+            udp_components=args.dpga_udp_components,
+            udp_window_size=args.dpga_udp_window_size,
+            udp_num_heads=args.dpga_udp_num_heads,
+            agf_gate_limit=args.dpga_agf_gate_limit,
         )
     if args.fam_mode != 'original':
         raise ValueError('--fam_mode must stay original when --arch apdr is used.')
@@ -202,7 +207,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--dpga_train_scope',
         default='adapter_only',
-        choices=['all', 'adapter_only'],
+        choices=['all', 'adapter_only', 'fusion_neighbor'],
         type=str,
     )
     parser.add_argument('--dpga_prior_embed_channels', default=16, type=int)
@@ -219,6 +224,12 @@ if __name__ == '__main__':
     parser.add_argument('--dpga_shallow_scale_multiplier', default=1.0, type=float)
     parser.add_argument('--dpga_bottleneck_scale_multiplier', default=1.0, type=float)
     parser.add_argument('--dpga_skip_scale_multiplier', default=1.0, type=float)
+    parser.add_argument('--dpga_fusion_mode', default='legacy', choices=['legacy', 'udp_lite'], type=str)
+    parser.add_argument('--dpga_udp_components', default='all', type=str)
+    parser.add_argument('--dpga_udp_window_size', default=8, type=int)
+    parser.add_argument('--dpga_udp_num_heads', default=4, type=int)
+    parser.add_argument('--dpga_agf_gate_limit', default=0.25, type=float)
+    parser.add_argument('--dpga_neighbor_learning_rate', default=1e-5, type=float)
     parser.add_argument(
         '--dpga_tc_rec_loss',
         default='l1',
@@ -230,6 +241,7 @@ if __name__ == '__main__':
     parser.add_argument('--dpga_tc_chroma_lambda', default=0.0, type=float)
     parser.add_argument('--dpga_tc_delta_lambda', default=0.0, type=float)
     parser.add_argument('--dpga_tc_delta_tv_lambda', default=0.0, type=float)
+    parser.add_argument('--dpga_fusion_delta_lambda', default=0.0, type=float)
     parser.add_argument('--dpga_tc_anchor_error_threshold', default=0.035, type=float)
     parser.add_argument(
         '--dpga_tc_mask_mode',

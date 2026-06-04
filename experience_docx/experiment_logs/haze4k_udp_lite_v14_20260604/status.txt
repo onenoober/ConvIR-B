@@ -1,0 +1,15 @@
+v14_zero_init_start 2026-06-04T22:00:17+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+v14a_train_start ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604 2026-06-04T22:02:25+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+split_json=/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/internal_val/haze4k_dpga_v13_regular_hard_seed3407.json
+fusion_mode=udp_lite active_adapters=dpfm components=all scale=1.0
+v14a_post_wait_start 2026-06-04T22:11:24+08:00
+v14a_post_eval_start 2026-06-04T22:33:24+08:00
+v14a_post_intermediate_start 2026-06-04T22:37:00+08:00

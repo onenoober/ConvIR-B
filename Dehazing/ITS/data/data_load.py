@@ -338,7 +338,7 @@ def train_dataloader(
         'pin_memory': True,
     }
     if batch_sampler is not None:
-        loader_kwargs['batch_sampler'] = batch_sample
+        loader_kwargs['batch_sampler'] = batch_sampler
     else:
         loader_kwargs['batch_size'] = batch_size
         loader_kwargs['shuffle'] = True
@@ -435,7 +435,7 @@ class DeblurDataset(Dataset):
         return_name=False,
         include_names=None,
     ):
-        self.image_dir = image_di
+        self.image_dir = image_dir
         self.transform = transform
         self.is_test = is_test
         self.return_name = return_name
