@@ -1,0 +1,6 @@
+{
+  "residual_abs_mean": 0.002645477355657552,
+  "residual_abs_p95": 0.005059726536273956,
+  "lowpass_consistency": 3.042576520329021e-05,
+  "outside_mask_residual_max": 0.0
+}

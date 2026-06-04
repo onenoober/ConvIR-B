@@ -1,8 +1,8 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-06-02
+Date: 2026-06-04
 
-Status: evidence index for `codex/main-experiment-evidence-sync`.
+Status: main evidence index with branch-route map link.
 
 ## Purpose
 
@@ -14,44 +14,23 @@ Use this index first when asking what happened, which route is still relevant,
 and where the evidence lives. Use the listed source branch or commit only when
 you need the exact runnable code snapshot.
 
+For the current GitHub branch list, retained runnable snapshots, covered
+historical heads, and guarded cleanup candidates, read
+`BRANCH_ROUTE_INDEX.md`.
+
 For future route branches, follow `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`: sync
 cards, text logs, result tables, and AI-readable packages back to `main`, but
 keep diagnostic experiment code on its route branch unless a separate promotion
 decision says otherwise.
 
-## Branch Cleanup
-
-Remote branch cleanup was done before this evidence sync. The deleted refs were
-not unique heads: each was already an ancestor of one or both retained leaf
-branches, so their commits remain reachable through the retained branches.
-
-| Deleted remote ref | Reason |
-| --- | --- |
-| `codex/haze4k-repro` | Contained by all later Haze4K route branches. |
-| `codex/haze4k-fam2-only` | Contained by later FAM2, hardfreq, and haze-prior branches. |
-| `codex/haze4k-fam2-bounded` | Contained by later confidence-gate, hardfreq, and haze-prior branches. |
-| `codex/haze4k-fam2-confidence-gate` | Contained by later selectivity, hardfreq, and haze-prior branches. |
-| `codex/haze4k-stop20-noise-floor` | Contained by later selectivity, hardfreq, and haze-prior branches. |
-| `codex/haze4k-fam2-selectivity-or-kill` | Contained by both retained leaf branches. |
-
-Retained remote refs:
-
-- `github/main`: stable entry point plus consolidated text evidence.
-- `github/codex/haze4k-hardfreq-loss`: leaf route containing hard frequency
-  loss evidence and prior route history.
-- `github/codex/haze4k-haze-prior-scm`: leaf route containing haze-prior SCM
-  evidence, a GitHub-readable text package, and prior route history.
-- `github/codex/haze4k-pfd-mainline`: diagnostic PFD mainline branch where B1
-  failed preservation and B2/B3 were not launched.
-- `github/codex/haze4k-b1r-decoder-rhfd-preserve`: active rescue branch for
-  decoder-side RHFD-Lite plus adapter-only preservation training.
-
 ## Reading Order
 
 1. Read the summary table below.
-2. Open the route card for the route you care about.
-3. Open the evidence root for JSON/CSV/log detail.
-4. Use the retained source branch only when you need runnable code; do not infer
+2. Read `BRANCH_ROUTE_INDEX.md` if you need to understand GitHub branches or
+   cleanup candidates.
+3. Open the route card for the route you care about.
+4. Open the evidence root for JSON/CSV/log detail.
+5. Use the retained source branch only when you need runnable code; do not infer
    that diagnostic or failed route code belongs in `main`.
 
 ## Route Summary
@@ -70,9 +49,16 @@ Retained remote refs:
 | B1r decoder RHFD preservation rescue | Completed gated stop20 rescue | A0-level global delta `+0.0028 dB`, SSIM positive, easy top-25% `-0.0248 dB`, but hard bottom-25% only `+0.0461 dB` and strong-reference regressions `103/250`. | `FAIL_STOP_B1R_DECODER_RHFD_ADAPTER_ONLY`; preservation improved over B1, but hard gain and strong-case gate fail. | [card](experiment_cards/2026-06-02-haze4k-b1r-decoder-rhfd-preserve.md) | [logs](experiment_logs/haze4k_b1r_decoder_rhfd_preserve_20260602/) | `github/codex/haze4k-b1r-decoder-rhfd-preserve` |
 | APDR ConvIR v0 stop20 scout | Completed gated stop20 scout | A0 vs APDR mean PSNR delta `-0.00665 dB`, hard bottom-25% `-0.00097 dB`, easy top-25% `-0.01509 dB`, strong-reference regressions `100/250`. | `FAIL_STOP_APDR_V0_ADAPTER_ONLY`; keep diagnostic-only, do not promote this exact v0 route. | [card](experiment_cards/2026-06-02-haze4k-apdr-convir-v0.md) | [logs](experiment_logs/haze4k_apdr_v0_20260602/) | `codex/haze4k-apdr-convir-v0` |
 | APDR ConvIR v0.1 anchor-risk scout | Completed gated stop20 scout | Mean PSNR delta `+0.00011 dB`; hard bottom-25% `+0.00067 dB`; easy top-25% `-0.00107 dB`; strong-reference regressions `1/250`; severe regressions `0/1000`. | `FAIL_STOP_APDR_V0_1_ANCHOR_RISK_HARD_GAIN`; preservation fixed, hard gain still absent. | [card](experiment_cards/2026-06-02-haze4k-apdr-convir-v0-1.md) | [logs](experiment_logs/haze4k_apdr_v0_1_20260602/) | `codex/haze4k-apdr-convir-v0-1` |
-| APDR ConvIR v0.2 selector-only | Completed cloud selector-only preflight | AUC hard/easy by `H_img` passed at `0.7686`, spatial BCE fell `2.064 -> 0.729`, and zero-residual output matched A0 exactly, but hard/easy `H_img` ratio was only `1.002` and Spearman was `-0.354`. | `FAIL_STOP_APDR_V0_2_SELECTOR_ONLY`; spatial risk learned, but image-level hard selector is not deployable; do not launch residual. | [card](experiment_cards/2026-06-02-haze4k-apdr-convir-v0-2-selector.md) | [logs](experiment_logs/haze4k_apdr_v0_2_selector_20260602/) | `codex/haze4k-apdr-convir-v0-2` |
+| APDR ConvIR v0.2 selector-only | Completed cloud selector-only preflight | AUC hard/easy by `H_img` passed at `0.7686`, spatial BCE fell `2.064 -> 0.729`, and zero-residual output matched A0 exactly, but hard/easy `H_img` ratio was only `1.002` and Spearman was `-0.354`. | `FAIL_STOP_APDR_V0_2_SELECTOR_ONLY`; spatial risk leaned, but image-level hard selector is not deployable; do not launch residual. | [card](experiment_cards/2026-06-02-haze4k-apdr-convir-v0-2-selector.md) | [logs](experiment_logs/haze4k_apdr_v0_2_selector_20260602/) | `codex/haze4k-apdr-convir-v0-2` |
 | APDR ConvIR v0.2R full-image router | Completed cloud selector-only preflight | Full-image router produced strong ranking, AUC `0.9766` and Spearman `-0.7466`; spatial BCE fell `2.062 -> 0.734`; zero-residual output matched A0, but easy top-25% mean `B_img` was too high at `0.146`. | `FAIL_STOP_APDR_V0_2R_SELECTOR_ONLY`; hard/easy ranking works, but budget is not conservative enough for residual training. | [card](experiment_cards/2026-06-02-haze4k-apdr-convir-v0-2r-selector.md) | [logs](experiment_logs/haze4k_apdr_v0_2r_selector_20260602/) | `codex/haze4k-apdr-convir-v0-2r-fullimage-router` |
 | APDR ConvIR v0.2RC conservative budget | Completed cloud budget replay | Train-selected budget candidate closed held-out easy/strong-reference mean budget to `0.002531` while retaining hard mean `0.378346`, AUC `0.9766`, Spearman `-0.7466`, and zero-output diff `0.0`; held-out calibration BCE failed at `1.6191`. | `FAIL_STOP_APDR_V0_2RC_BUDGET_CALIBRATION`; no residual/oracle run. Single-head conservative budget closes easy images but is not a deployable calibrated action budget. | [card](experiment_cards/2026-06-02-haze4k-apdr-convir-v0-2rc-budget.md) | [logs](experiment_logs/haze4k_apdr_v0_2rc_budget_20260602/) | `codex/haze4k-apdr-convir-v0-2rc-conservative-budget` |
+| APDR-v0.4 CCLF diagnostics | Completed preflight diagnostics | Cache roundtrip exact; sigma `3` lowpass oracle strongest on train128; sigma `7` free-parameter low recovery `1.0938`, corr `0.9322`; train-calibrated correctability test AUC `1.0`; color branch failed safety/correlation. | `PREFLIGHT_COMPLETE_LOW_FIELD_ONLY_CANDIDATE`; do not run full v0.4C stop20; authorize only a separate v0.4A low-field card. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4-cclf-diagnostics.md) | [logs](experiment_logs/haze4k_apdr_v0_4_cache_scale_20260603/), [low](experiment_logs/haze4k_apdr_v0_4_freeparam_low_20260603/), [color](experiment_logs/haze4k_apdr_v0_4_freeparam_color_20260603/), [correctability](experiment_logs/haze4k_apdr_v0_4_correctability_traincalib_20260603/) | `codex/haze4k-apdr-v0-4-cclf-diagnostics` |
+| APDR-v0.4A Low-Field-Only | Failure-branch diagnostics completed; no Gate C/stop20 | Route card created from v0.4 diagnostics: frozen ConvIR-B, frozen v0.2RC `M_safe`, frozen train-calibrated correctability, cached full-image lowpass delta. ID embedding passes, proving target/loss/cache validity; LowFieldNet-v1, basis, basis+local, and physics veil do not pass deployable Gate B. | `DO_NOT_RUN_STOP20_FROM_CURRENT_LOWFIELD_FORMS`; next route must derive better bases or mapping from successful ID/free-parameter targets. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4a-low-field-only.md) | [sigma3](experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/), [gate-ab](experiment_logs/haze4k_apdr_v0_4a_lowfield_gate_ab_20260603/), [forms](experiment_logs/haze4k_apdr_v0_4a_residual_forms_20260603/) | `codex/haze4k-apdr-v0-4a-low-field-only` |
+| APDR-v0.4B Derived Low-Field Basis | Gate C failed; route stopped | Gate 0 passed for K `16/32/48`, and basis-only router Gate B passed for K16/K32. Gate C K32 train split passed, but mini-val failed with L1 drop `-0.3435`, corr `0.2154`, recovery `0.0428`, easy gain `-0.3551 dB`, strong/severe `11/25`. | `GATEC_FAIL_STOP_BASIS_ROUTER_MAPPING_NO_LOCAL`; current basis-only coefficient router does not generalize, so do not add local correction or run stop20. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4b-derived-lowfield-basis.md) | [gate0](experiment_logs/haze4k_apdr_v0_4b_derived_basis_20260603/), [gateb](experiment_logs/haze4k_apdr_v0_4b_basis_router_gateb_20260603/), [gatec](experiment_logs/haze4k_apdr_v0_4b_basis_router_gatec_train128_minival_20260603/) | `codex/haze4k-apdr-v0-4b-derived-lowfield-basis` |
+| APDR-v0.4B-MT Mapping Triage | Completed AutoDL mapper-family diagnostic | Global-stat mappers did not rescue mini-val safety. Nonzero rows produced local hard movement but strong/severe regressions stayed unsafe; best split-level coefficient corr was only about `0.281`, and no-op was the only safe mini-val family. | `MT_FAIL_GLOBAL_STATS_AUTHORIZE_V04D_SPATIAL_PROBE`; do not add local correction or stop20 from global-stat coefficient mapping. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4b-mapping-triage.md) | [logs](experiment_logs/haze4k_apdr_v0_4b_mapping_triage_20260603/) | `codex/haze4k-apdr-v0-4b-mapping-triage` |
+| APDR-v0.4D Spatial Coefficient Probe | Completed AutoDL frozen-spatial diagnostic | Frozen ConvIR spatial features improved some K16 mini-val mean/hard rows, but best nonzero rows still had strong/severe regressions such as `4/6` or `7/11`. Same-split confidence fallback found diagnostic positives, including `global_plus_spatial_kenel_knn_9` K16 with keep `23/128`, mean `+0.1541 dB`, hard `+0.4242 dB`, strong/severe `0/0`. | `SPATIAL_PROBE_FAIL_CONFIDENCE_DIAGNOSTIC_ONLY`; authorize only fixed-threshold confirmation, not full router/local correction/stop20. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4d-spatial-coeff-probe.md) | [logs](experiment_logs/haze4k_apdr_v0_4d_spatial_coeff_probe_20260603/) | `codex/haze4k-apdr-v0-4b-mapping-triage` |
+| APDR-v0.4E Risk-Calibrated Selective Action Bank | Original evidence superseded; E0 stop direction confirmed | Original E0 directory is retained only as implementation-mismatch provenance. Clean `826caaf` rerun reproduced Rule B (`45/128`, mean `+0.2141 dB`, hard `+0.4528 dB`) but Rule A became `missing_candidate` because `*_kenel_knn_9` historical names did not match generated `*_kernel_knn_9` mapper names. Current code repairs mapper/confidence aliases and variable-schema CSV writing. | `STOP_DIRECTION_CONFIRMED_NUMERIC_SEAL_BLOCKED_BY_MAPPER_ALIAS`; no E2/full router/local correction/stop20. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4e-risk-calibrated-action-bank.md) | [superseded-original](experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/), [official-rerun](experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_rerun_20260603_autodl_826caaf/), [repro](experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603/), [autodl-repro](experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603_autodl/) | `codex/haze4k-apdr-v0-4b-mapping-triage` |
+| APDR-v0.4E 5-fold OOF Calibration | Original evidence superseded; E1 failed; stop direction confirmed | Original OOF directory is retained only as implementation-mismatch provenance. Clean `826caaf` rerun completed 3000-image OOF and, after finalize-from-intermediate, reproduced Rule B failure (`150/3000`, coverage `0.0500`, mean `+0.0378 dB`, hard `+0.1352 dB`, severe `1`, recovery `0.0835`) and policy search failure (`0/1600` retained passing). Rule A remains unsealed until alias-corrected full rerun. | `STOP_DIRECTION_CONFIRMED_NUMERIC_SEAL_BLOCKED_BY_MAPPER_ALIAS`; do not run E2, full router, local correction, dense residual, or stop20 from current v0.4E. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4e-oof-calibration.md) | [superseded-original](experiment_logs/haze4k_apdr_v0_4e_oof_calibration_20260603/), [official-rerun](experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/), [repro](experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603/), [autodl-repro](experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603_autodl/) | `codex/haze4k-apdr-v0-4b-mapping-triage` |
 
 ## Evidence Inventory
 
@@ -95,6 +81,24 @@ Retained remote refs:
 | `experiment_logs/haze4k_apdr_v0_2_selector_20260602/` | 10 | APDR-v0.2 architecture preflight, selector-only calibration/training log, selector summary JSON, per-image selector CSV, gate result, run script, status, launcher transcript, README. |
 | `experiment_logs/haze4k_apdr_v0_2r_selector_20260602/` | 10 | APDR-v0.2R architecture preflight, full-image router and spatial selector log, selector summary JSON, per-image selector CSV, gate result, run script, status, launcher transcript, README. |
 | `experiment_logs/haze4k_apdr_v0_2rc_budget_20260602/` | 10 | APDR-v0.2RC architecture preflight, train/test budget score CSVs, candidate grid, budget summary JSON, gate result, run script, status, launcher transcript, README. |
+| `experiment_logs/haze4k_apdr_v0_4_cache_scale_20260603/` | 7 | APDR-v0.4 cache exactness and sigma `3/5/7/11/15` lowpass oracle scale sweep. |
+| `experiment_logs/haze4k_apdr_v0_4_freeparam_low_20260603/` | 6 | Sigma `7.0` free-parameter low-field target/application sanity, history, and per-image table. |
+| `experiment_logs/haze4k_apdr_v0_4_freeparam_color_20260603/` | 6 | Sigma `7.0` free-parameter color sanity showing failed correlation/safety. |
+| `experiment_logs/haze4k_apdr_v0_4_correctability_traincalib_20260603/` | 7 | Sigma `7.0` train-calibrated correctability threshold, train OOF/test tables, and history. |
+| `experiment_logs/haze4k_apdr_v0_4_sigma3_alignment_20260603/` | 14 | Parallel sigma `3.0` free-parameter low and correctability train-calibration diagnostics for target-alignment only. |
+| `experiment_logs/haze4k_apdr_v0_4a_lowfield_gate_ab_20260603/` | 11+ | APDR-v0.4A LowFieldNet no-op/cache and overfit32 Gate A/B diagnostic artifacts; tensor caches excluded. |
+| `experiment_logs/haze4k_apdr_v0_4a_residual_forms_20260603/` | 35+ | APDR-v0.4A failure-branch diagnostics for ID-embedding, basis-mixture, basis+local, and physics-shaped veil residual forms; tensor caches excluded. |
+| `experiment_logs/haze4k_apdr_v0_4b_derived_basis_20260603/` | 18+ | APDR-v0.4B no-training derived-basis Gate 0, coefficient predictability CV, residual error grouping, and router overfit32 coefficient-vs-field diagnostics plus smoke64 text evidence. |
+| `experiment_logs/haze4k_apdr_v0_4b_basis_router_gateb_20260603/` | 12+ | APDR-v0.4B basis-only coefficient router Gate B diagnostics for K16/K32 plus smoke32 text evidence. |
+| `experiment_logs/haze4k_apdr_v0_4b_basis_router_gatec_train128_minival_20260603/` | 10+ | APDR-v0.4B K32 basis-only coefficient router train128/mini-val Gate C split summary, history, per-image table, groups, logs, status, and tmux exit record. |
+| `experiment_logs/haze4k_apdr_v0_4b_mapping_triage_20260603/` | 12+ | APDR-v0.4B-MT global-stat mapper-family triage, coefficient error tables, feature-shift diagnostics, per-image mapping table, and route decision log. |
+| `experiment_logs/haze4k_apdr_v0_4d_spatial_coeff_probe_20260603/` | 12+ | APDR-v0.4D frozen ConvIR spatial coefficient probe plus same-split confidence/no-op fallback sweep. |
+| `experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/` | 13 | Superseded original APDR-v0.4E E0 evidence. Retained for provenance only; do not cite its exact CSV/JSON/log numeric rows as clean-reproducible evidence. Use the `826caaf` official rerun instead. |
+| `experiment_logs/haze4k_apdr_v0_4e_oof_calibration_20260603/` | 18 | Superseded original APDR-v0.4E E1 OOF evidence. Retained for provenance only; do not cite its exact CSV/JSON/log numeric rows as clean-reproducible evidence. Use the `826caaf` official rerun instead. |
+| `experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603/` | 1 | APDR-v0.4E post-sync reproducibility audit documenting `ed38afb` implementation mismatch, local static fix, tool hashes, and required clean AutoDL rerun commands. |
+| `experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603_autodl/` | 3 | AutoDL `826caaf` environment audit, rerun master log, and reproducibility README documenting mapper alias and CSV writer findings. |
+| `experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_rerun_20260603_autodl_826caaf/` | 10 | Clean `826caaf` E0 rerun text evidence, including RuleB reproduction and RuleA missing-candidate mapper-alias finding. |
+| `experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/` | 17 | Clean `826caaf` E1 OOF rerun text evidence, per-image intermediate table, finalize-from-intermediate summary, policy search, and stop-decision tables. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 
@@ -127,7 +131,36 @@ The active conclusion is conservative:
 - APDR-v0.2RC showed that a train-only conservative budget can close
   easy/strong-reference images, but the single-head budget fails held-out
   calibration BCE; do not launch residual until hard-open and easy-veto behavior
-  are decoupled.
+  is decoupled.
+- APDR-v0.4 diagnostics changed the next actionable route: `M_safe`,
+  low-frequency target/application, and train-calibrated correctability are
+  useful assets; color, crop recompute, toy residual heads, direct SHED, and
+  hard-frequency/detail routes stay blocked.
+- APDR-v0.4A low-field-only is not stop20-authorized. Sigma `3.0` has enough
+  alignment evidence, but LowFieldNet-v1 failed overfit32 leanability for both
+  sigma `3.0` and sigma `7.0`. Failure-branch diagnostics show ID embedding
+  passes but deployable basis, basis+local, and veil forms do not pass Gate B;
+  do not proceed to Gate C/stop20 without deriving better bases or mappings
+  from successful ID/free-parameter targets.
+- APDR-v0.4B derived-basis work passed Gate 0 and basis-only router Gate B, but
+  Gate C failed on mini-val. The current basis-only coefficient router memorizes
+  the train scope and does not generalize; local correction and stop20 are
+  blocked for this form.
+- APDR-v0.4B-MT confirmed that global-stat mapper rescue is not safe; no
+  nonzero global-stat mapper clears the mini-val safety gate, so input
+  information or abstention must change before any long run.
+- APDR-v0.4D confirmed that frozen spatial features contain useful hard-case
+  signal but still fail tail safety when applied broadly. Same-split
+  confidence/no-op fallback is a positive diagnostic only.
+- APDR-v0.4E passed the locked-threshold E0 confirmation on an independent
+  train confirm slice. This authorizes OOF calibration only; full spatial
+  router training, local correction, dense residual heads, and stop20 remain
+  blocked unless OOF calibration and a locked held-out policy gate pass.
+- APDR-v0.4E E1 OOF calibration failed. Clean `826caaf` rerun confirmed the
+  stop direction for Rule B and policy search, while also exposing mapper alias
+  drift that blocks exact Rule A numeric sealing. The current v0.4E locked
+  thresholds are stopped; only a separately pre-registered safe-subset route
+  could be considered later.
 
 ## Artifact Boundary
 

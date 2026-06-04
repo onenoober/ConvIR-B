@@ -1,0 +1,10 @@
+start root=/root/autodl-tmp/workspace/ConvIR-B-apdr-convir-v0 2026-06-02T17:46:44+08:00
+preflight_pass 2026-06-02T17:46:48+08:00
+train_start ConvIR-Haze4K-APDR-v0-adapter-only-stop20-seed3407-20260602 2026-06-02T17:46:48+08:00
+restart_after_apdr_stats_padding_fix archived=20260602_1747
+start root=/root/autodl-tmp/workspace/ConvIR-B-apdr-convir-v0 2026-06-02T18:03:20+08:00
+preflight_pass 2026-06-02T18:03:25+08:00
+train_start ConvIR-Haze4K-APDR-v0-adapter-only-stop20-seed3407-20260602 2026-06-02T18:03:25+08:00
+train_done ConvIR-Haze4K-APDR-v0-adapter-only-stop20-seed3407-20260602 2026-06-02T18:25:50+08:00
+eval_start apdr_v0_stop20_seed3407_vs_a0 2026-06-02T18:25:50+08:00
+gate_fail_stop apdr_v0_stop20_seed3407_vs_a0 2026-06-02T18:28:22+08:00

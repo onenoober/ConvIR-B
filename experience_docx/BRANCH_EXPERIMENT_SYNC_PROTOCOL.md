@@ -79,6 +79,8 @@ git restore --source=github/codex/<route> -- \
 Then update:
 
 - `experience_docx/EXPERIMENT_INDEX.md`
+- `experience_docx/BRANCH_ROUTE_INDEX.md` when the branch status, retained
+  leaf, or cleanup posture changes.
 - `docs/ai_text_packages/<summary_or_route>/` if the route should be compactly
   readable by AI from a public link.
 
@@ -124,7 +126,10 @@ If the route has an AI text package, verify at least one raw package file too.
 After evidence is readable from `main`:
 
 - delete temporary evidence-sync branches;
-- delete route branches that are strict ancestors of retained leaf branches;
+- consult `BRANCH_ROUTE_INDEX.md` before pruning public route branches;
+- delete route branches only when they are strict ancestors of retained leaf
+  branches and their evidence is readable from `main` or another retained
+  branch;
 - keep at most the runnable leaf branches needed to reproduce still-relevant
   code snapshots.
 

@@ -1,0 +1,15 @@
+{
+  "initial_output_max_abs_diff_vs_anchor": 0.0,
+  "initial_weighted_delta_l1": 0.011254005832220432,
+  "initial_pred_target_corr": null,
+  "apdr_trainable_params": 0,
+  "lowfield_trainable_params": 231379,
+  "correctability_tau": 0.9939929842948914,
+  "open_count": 26,
+  "amplitude": {
+    "residual_abs_mean": 0.0,
+    "residual_abs_p95": 0.0,
+    "lowpass_consistency": 0.0,
+    "outside_mask_residual_max": 0.0
+  }
+}

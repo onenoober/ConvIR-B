@@ -1,0 +1,2 @@
+start_v0_4e_oof_calibration root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4b-mapping-triage tag=apdr_v0_4e_oof_calibration_sigma3_seed3407 folds=5 low_size=32 k_values=16 scales=0.25,0.50,0.75,1.00 2026-06-03T21:50:26+08:00
+complete_v0_4e_oof_calibration apdr_v0_4e_oof_calibration_sigma3_seed3407 2026-06-03T22:39:02+08:00

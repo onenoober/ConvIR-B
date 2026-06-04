@@ -1,0 +1,258 @@
+{
+  "stage": "APDR-v0.3 residual source oracle ablation",
+  "tag": "smoke10",
+  "variant_results": {
+    "O_full_delta": {
+      "summary": {
+        "count": 10,
+        "mean_psnr_delta": 0.9807806015014648,
+        "median_psnr_delta": 0.9979743957519531,
+        "p5_psnr_delta": 0.034157943725585935,
+        "p95_psnr_delta": 2.1059564590454105,
+        "hard_bottom25_mean_delta": 1.802393913269043,
+        "easy_top25_mean_delta": 0.06133397420247396,
+        "mean_ssim_delta": 0.0037446141242980955,
+        "strong_reference_cut_psnr": 28.04543924331665,
+        "strong_reference_regressions": 0,
+        "severe_regressions": 0,
+        "worst10_image_mean_delta": 0.9807806015014648,
+        "best10_image_mean_delta": 0.9807806015014648
+      },
+      "checks": {
+        "oracle_mean_psnr_delta": {
+          "observed": 0.9807806015014648,
+          "required": ">= +0.050",
+          "pass": true
+        },
+        "oracle_hard_bottom25_delta": {
+          "observed": 1.802393913269043,
+          "required": ">= +0.150",
+          "pass": true
+        },
+        "oracle_easy_top25_delta": {
+          "observed": 0.06133397420247396,
+          "required": ">= -0.005",
+          "pass": true
+        },
+        "oracle_strong_reference_regressions": {
+          "observed": 0,
+          "required": "<= 5 / 250",
+          "pass": true
+        },
+        "oracle_severe_regressions": {
+          "observed": 0,
+          "required": "== 0 / 1000",
+          "pass": true
+        }
+      },
+      "pass": true
+    },
+    "O_low": {
+      "summary": {
+        "count": 10,
+        "mean_psnr_delta": 0.9640890121459961,
+        "median_psnr_delta": 0.9601812362670898,
+        "p5_psnr_delta": 0.030992984771728516,
+        "p95_psnr_delta": 2.082822895050049,
+        "hard_bottom25_mean_delta": 1.7915010452270508,
+        "easy_top25_mean_delta": 0.057398478190104164,
+        "mean_ssim_delta": 0.0033637821674346925,
+        "strong_reference_cut_psnr": 28.04543924331665,
+        "strong_reference_regressions": 0,
+        "severe_regressions": 0,
+        "worst10_image_mean_delta": 0.9640890121459961,
+        "best10_image_mean_delta": 0.9640890121459961
+      },
+      "checks": {
+        "oracle_mean_psnr_delta": {
+          "observed": 0.9640890121459961,
+          "required": ">= +0.050",
+          "pass": true
+        },
+        "oracle_hard_bottom25_delta": {
+          "observed": 1.7915010452270508,
+          "required": ">= +0.150",
+          "pass": true
+        },
+        "oracle_easy_top25_delta": {
+          "observed": 0.057398478190104164,
+          "required": ">= -0.005",
+          "pass": true
+        },
+        "oracle_strong_reference_regressions": {
+          "observed": 0,
+          "required": "<= 5 / 250",
+          "pass": true
+        },
+        "oracle_severe_regressions": {
+          "observed": 0,
+          "required": "== 0 / 1000",
+          "pass": true
+        }
+      },
+      "pass": true
+    },
+    "O_high": {
+      "summary": {
+        "count": 10,
+        "mean_psnr_delta": 0.013159561157226562,
+        "median_psnr_delta": 0.008185386657714844,
+        "p5_psnr_delta": 0.0012498855590820312,
+        "p95_psnr_delta": 0.033075332641601576,
+        "hard_bottom25_mean_delta": 0.007744789123535156,
+        "easy_top25_mean_delta": 0.0038617451985677085,
+        "mean_ssim_delta": 0.0003855288028717041,
+        "strong_reference_cut_psnr": 28.04543924331665,
+        "strong_reference_regressions": 0,
+        "severe_regressions": 0,
+        "worst10_image_mean_delta": 0.013159561157226562,
+        "best10_image_mean_delta": 0.013159561157226562
+      },
+      "checks": {
+        "oracle_mean_psnr_delta": {
+          "observed": 0.013159561157226562,
+          "required": ">= +0.050",
+          "pass": false
+        },
+        "oracle_hard_bottom25_delta": {
+          "observed": 0.007744789123535156,
+          "required": ">= +0.150",
+          "pass": false
+        },
+        "oracle_easy_top25_delta": {
+          "observed": 0.0038617451985677085,
+          "required": ">= -0.005",
+          "pass": true
+        },
+        "oracle_strong_reference_regressions": {
+          "observed": 0,
+          "required": "<= 5 / 250",
+          "pass": true
+        },
+        "oracle_severe_regressions": {
+          "observed": 0,
+          "required": "== 0 / 1000",
+          "pass": true
+        }
+      },
+      "pass": false
+    },
+    "O_color": {
+      "summary": {
+        "count": 10,
+        "mean_psnr_delta": 0.9695384979248047,
+        "median_psnr_delta": 0.9044036865234375,
+        "p5_psnr_delta": 0.017468738555908202,
+        "p95_psnr_delta": 2.1308975219726562,
+        "hard_bottom25_mean_delta": 1.8324718475341797,
+        "easy_top25_mean_delta": 0.047924041748046875,
+        "mean_ssim_delta": 0.0035341918468475343,
+        "strong_reference_cut_psnr": 28.04543924331665,
+        "strong_reference_regressions": 0,
+        "severe_regressions": 0,
+        "worst10_image_mean_delta": 0.9695384979248047,
+        "best10_image_mean_delta": 0.9695384979248047
+      },
+      "checks": {
+        "oracle_mean_psnr_delta": {
+          "observed": 0.9695384979248047,
+          "required": ">= +0.050",
+          "pass": true
+        },
+        "oracle_hard_bottom25_delta": {
+          "observed": 1.8324718475341797,
+          "required": ">= +0.150",
+          "pass": true
+        },
+        "oracle_easy_top25_delta": {
+          "observed": 0.047924041748046875,
+          "required": ">= -0.005",
+          "pass": true
+        },
+        "oracle_strong_reference_regressions": {
+          "observed": 0,
+          "required": "<= 5 / 250",
+          "pass": true
+        },
+        "oracle_severe_regressions": {
+          "observed": 0,
+          "required": "== 0 / 1000",
+          "pass": true
+        }
+      },
+      "pass": true
+    },
+    "O_low_plus_color": {
+      "summary": {
+        "count": 10,
+        "mean_psnr_delta": 0.9680091857910156,
+        "median_psnr_delta": 0.9814319610595703,
+        "p5_psnr_delta": 0.031103897094726562,
+        "p95_psnr_delta": 2.081917476654053,
+        "hard_bottom25_mean_delta": 1.791585922241211,
+        "easy_top25_mean_delta": 0.058848063151041664,
+        "mean_ssim_delta": 0.003424859046936035,
+        "strong_reference_cut_psnr": 28.04543924331665,
+        "strong_reference_regressions": 0,
+        "severe_regressions": 0,
+        "worst10_image_mean_delta": 0.9680091857910156,
+        "best10_image_mean_delta": 0.9680091857910156
+      },
+      "checks": {
+        "oracle_mean_psnr_delta": {
+          "observed": 0.9680091857910156,
+          "required": ">= +0.050",
+          "pass": true
+        },
+        "oracle_hard_bottom25_delta": {
+          "observed": 1.791585922241211,
+          "required": ">= +0.150",
+          "pass": true
+        },
+        "oracle_easy_top25_delta": {
+          "observed": 0.058848063151041664,
+          "required": ">= -0.005",
+          "pass": true
+        },
+        "oracle_strong_reference_regressions": {
+          "observed": 0,
+          "required": "<= 5 / 250",
+          "pass": true
+        },
+        "oracle_severe_regressions": {
+          "observed": 0,
+          "required": "== 0 / 1000",
+          "pass": true
+        }
+      },
+      "pass": true
+    }
+  },
+  "mask_stats": {
+    "m_safe_mean": 0.16716016717255117,
+    "m_safe_p95_mean": 0.18139029066078366,
+    "delta_star_abs_mean": 0.028362554498016834,
+    "low_delta_abs_mean": 0.027852311544120312,
+    "high_delta_abs_mean": 0.0023550097888801248,
+    "color_delta_abs_mean": 0.027815170539543032,
+    "low_plus_color_delta_abs_mean": 0.028113431483507156
+  },
+  "runtime": {
+    "count": 10,
+    "avg_apdr_forward_sec": 0.08985867500305175,
+    "median_apdr_forward_sec": 0.034932851791381836
+  },
+  "args": {
+    "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+    "selector_checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl",
+    "output_dir": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-3-shed-diagnostics/experience_docx/experiment_logs/haze4k_apdr_v0_3_residual_source_oracle_20260603/smoke",
+    "tag": "smoke10",
+    "device": "cuda",
+    "num_workers": 0,
+    "max_images": 10,
+    "residual_max": 0.04,
+    "kernel_size": 31,
+    "sigma": 7.0,
+    "progress_freq": 5
+  }
+}

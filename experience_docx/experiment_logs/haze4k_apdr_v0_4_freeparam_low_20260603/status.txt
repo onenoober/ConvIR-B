@@ -1,0 +1,3 @@
+start_freeparam_low root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4-cclf-diagnostics selector=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl tag=apdr_v0_4_freeparam_low_32_seed3407 2026-06-03T12:48:33+08:00
+gate_fail_freeparam_low apdr_v0_4_freeparam_low_32_seed3407 2026-06-03T13:14:46+08:00
+complete_freeparam_low apdr_v0_4_freeparam_low_32_seed3407 2026-06-03T13:14:46+08:00

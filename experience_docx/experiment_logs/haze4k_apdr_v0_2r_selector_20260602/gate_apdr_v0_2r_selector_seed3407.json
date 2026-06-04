@@ -1,0 +1,57 @@
+{
+  "stage": "APDR-v0.2R full-image calibrated selector-only preflight",
+  "checks": {
+    "zero_residual_output": {
+      "observed": 0.0,
+      "required": "< 1e-06",
+      "pass": true
+    },
+    "deterministic_full_image_hard_bce": {
+      "observed": {
+        "first": 1.7080414951778948,
+        "last": 0.6302920144225936
+      },
+      "required": "last <= 0.55 and first-last >= 0.05",
+      "pass": false
+    },
+    "auc_hard_vs_easy_by_z_img": {
+      "observed": 0.97664,
+      "required": ">= 0.82",
+      "pass": true
+    },
+    "spearman_z_img_vs_a0_psnr": {
+      "observed": -0.7466395691194065,
+      "required": "<= -0.50",
+      "pass": true
+    },
+    "hard_bottom25_mean_b_img": {
+      "observed": 0.7823520376086235,
+      "required": ">= 0.20",
+      "pass": true
+    },
+    "easy_top25_mean_b_img": {
+      "observed": 0.14615737826749683,
+      "required": "<= 0.05",
+      "pass": false
+    },
+    "hard_easy_b_img_ratio": {
+      "observed": 5.352805632410599,
+      "required": ">= 4.0",
+      "pass": true
+    },
+    "spatial_bce_decreased": {
+      "observed": {
+        "first": 2.062084491364658,
+        "last": 0.7336024921387434
+      },
+      "required": "last < first",
+      "pass": true
+    },
+    "test_mean_spatial_bce": {
+      "observed": 0.7574038908481598,
+      "required": "<= 0.80",
+      "pass": true
+    }
+  },
+  "pass": false
+}

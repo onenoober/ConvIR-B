@@ -1,0 +1,10 @@
+launch_sigma3_alignment_parallel session=apdr_v04_sigma3_align_20260603_141738 root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4a-low-field-only 2026-06-03T14:17:38+08:00
+tmux_session=apdr_v04_sigma3_align_20260603_141738
+start_freeparam_low_sigma3 root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4a-low-field-only selector=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl tag=apdr_v0_4_freeparam_low_sigma3_32_seed3407 2026-06-03T14:17:38+08:00
+0: freeparam- (1 panes) [80x24] [layout b25d,80x24,0,0,0] @0
+1: correctability* (1 panes) [80x24] [layout b25e,80x24,0,0,1] @1 (active)
+start_correctability_traincalib_sigma3 root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-4a-low-field-only selector=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl tag=apdr_v0_4_correctability_traincalib_sigma3_seed3407 2026-06-03T14:17:38+08:00
+gate_fail_freeparam_low_sigma3 apdr_v0_4_freeparam_low_sigma3_32_seed3407 2026-06-03T14:20:47+08:00
+complete_freeparam_low_sigma3 apdr_v0_4_freeparam_low_sigma3_32_seed3407 2026-06-03T14:20:47+08:00
+gate_pass_correctability_traincalib_sigma3 apdr_v0_4_correctability_traincalib_sigma3_seed3407 2026-06-03T14:25:36+08:00
+complete_correctability_traincalib_sigma3 apdr_v0_4_correctability_traincalib_sigma3_seed3407 2026-06-03T14:25:36+08:00

@@ -1,0 +1,387 @@
+{
+  "stage": "apdr_v0_2r_selector_preflight",
+  "tag": "apdr_v0_2r_selector_seed3407",
+  "seed": 3407,
+  "device": "cuda",
+  "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+  "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+  "apdr_config": {
+    "selector_mode": "v0_2r",
+    "active_scales": "full",
+    "residual_forced_zero": true,
+    "residual_head_trainable": false,
+    "gate_init": 0.01,
+    "gate_max": 0.5,
+    "residual_max": 0.04,
+    "global_router_decoupled_from_spatial_context": true
+  },
+  "phase_config": {
+    "global_epochs": 5,
+    "spatial_epochs": 3,
+    "global_resize": 384,
+    "global_batch_size": 4,
+    "spatial_batch_size": 8,
+    "global_train_batches_per_epoch": 0,
+    "spatial_train_batches_per_epoch": 0,
+    "loss_eval_images": 256
+  },
+  "loss_config": {
+    "global_bce_lambda": 1.0,
+    "global_focal_lambda": 0.5,
+    "global_rank_lambda": 0.2,
+    "spatial_bce_lambda": 1.0,
+    "gate_sparsity_lambda_selector_only": 0.0,
+    "rank_margin": 1.0
+  },
+  "checkpoint_load": {
+    "missing": [
+      "APDR_4.global_budget_tau",
+      "APDR_4.global_budget_temperature",
+      "APDR_4.image_context.0.weight",
+      "APDR_4.image_context.0.bias",
+      "APDR_4.image_context.2.weight",
+      "APDR_4.image_context.2.bias",
+      "APDR_4.feature_context.0.weight",
+      "APDR_4.feature_context.0.bias",
+      "APDR_4.context.0.weight",
+      "APDR_4.context.0.bias",
+      "APDR_4.residual_head.weight",
+      "APDR_4.residual_head.bias",
+      "APDR_4.spatial_gate_head.weight",
+      "APDR_4.spatial_gate_head.bias",
+      "APDR_4.global_router.router.0.weight",
+      "APDR_4.global_router.router.0.bias",
+      "APDR_4.global_router.router.2.weight",
+      "APDR_4.global_router.router.2.bias",
+      "APDR_4.global_router.router.4.weight",
+      "APDR_4.global_router.router.4.bias",
+      "APDR_2.global_budget_tau",
+      "APDR_2.global_budget_temperature",
+      "APDR_2.image_context.0.weight",
+      "APDR_2.image_context.0.bias",
+      "APDR_2.image_context.2.weight",
+      "APDR_2.image_context.2.bias",
+      "APDR_2.feature_context.0.weight",
+      "APDR_2.feature_context.0.bias",
+      "APDR_2.context.0.weight",
+      "APDR_2.context.0.bias",
+      "APDR_2.residual_head.weight",
+      "APDR_2.residual_head.bias",
+      "APDR_2.spatial_gate_head.weight",
+      "APDR_2.spatial_gate_head.bias",
+      "APDR_2.global_router.router.0.weight",
+      "APDR_2.global_router.router.0.bias",
+      "APDR_2.global_router.router.2.weight",
+      "APDR_2.global_router.router.2.bias",
+      "APDR_2.global_router.router.4.weight",
+      "APDR_2.global_router.router.4.bias",
+      "APDR_1.global_budget_tau",
+      "APDR_1.global_budget_temperature",
+      "APDR_1.image_context.0.weight",
+      "APDR_1.image_context.0.bias",
+      "APDR_1.image_context.2.weight",
+      "APDR_1.image_context.2.bias",
+      "APDR_1.feature_context.0.weight",
+      "APDR_1.feature_context.0.bias",
+      "APDR_1.context.0.weight",
+      "APDR_1.context.0.bias",
+      "APDR_1.residual_head.weight",
+      "APDR_1.residual_head.bias",
+      "APDR_1.spatial_gate_head.weight",
+      "APDR_1.spatial_gate_head.bias",
+      "APDR_1.global_router.router.0.weight",
+      "APDR_1.global_router.router.0.bias",
+      "APDR_1.global_router.router.2.weight",
+      "APDR_1.global_router.router.2.bias",
+      "APDR_1.global_router.router.4.weight",
+      "APDR_1.global_router.router.4.bias"
+    ],
+    "unexpected": []
+  },
+  "calibration": {
+    "train_image_count": 3000,
+    "pixel_sample_count": 6144000,
+    "rmse_q25_train": 0.007342853583395481,
+    "rmse_q50_train": 0.010500837117433548,
+    "rmse_q75_train": 0.01556253619492054,
+    "rmse_q90_train": 0.0219538863748312,
+    "pixel_error_q70_train": 0.010038971900939941,
+    "pixel_error_q90_train": 0.021158747375011444,
+    "spatial_tau": 0.011119775474071503
+  },
+  "budget_calibration": {
+    "train_score_count": 3000,
+    "tau_train": -1.7792601153850556,
+    "temperature_train": 0.7308537074327468,
+    "temperature_floor": 0.05,
+    "hard_top25_score_mean": -0.31755270051956175,
+    "easy_bottom25_score_mean": -3.240967530250549,
+    "hard_top25_budget_mean": 0.7932885008749753,
+    "easy_bottom25_budget_mean": 0.17069683144886483,
+    "hard_easy_budget_ratio_train": 4.6473534051076895
+  },
+  "train_scope": {
+    "global": {
+      "phase": "global",
+      "trainable_tensor_count": 6,
+      "trainable_param_count": 5425,
+      "frozen_param_count": 8710359,
+      "trainable_tensors": [
+        "APDR_1.global_router.router.0.weight",
+        "APDR_1.global_router.router.0.bias",
+        "APDR_1.global_router.router.2.weight",
+        "APDR_1.global_router.router.2.bias",
+        "APDR_1.global_router.router.4.weight",
+        "APDR_1.global_router.router.4.bias"
+      ]
+    },
+    "spatial": {
+      "phase": "spatial",
+      "trainable_tensor_count": 10,
+      "trainable_param_count": 19225,
+      "frozen_param_count": 8696559,
+      "trainable_tensors": [
+        "APDR_1.image_context.0.weight",
+        "APDR_1.image_context.0.bias",
+        "APDR_1.image_context.2.weight",
+        "APDR_1.image_context.2.bias",
+        "APDR_1.feature_context.0.weight",
+        "APDR_1.feature_context.0.bias",
+        "APDR_1.context.0.weight",
+        "APDR_1.context.0.bias",
+        "APDR_1.spatial_gate_head.weight",
+        "APDR_1.spatial_gate_head.bias"
+      ]
+    }
+  },
+  "global_history": [
+    {
+      "phase": "global",
+      "epoch": 0,
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 1.7080414951778948,
+        "spatial_bce": 2.062084491364658
+      }
+    },
+    {
+      "phase": "global",
+      "epoch": 1,
+      "train": {
+        "loss": 1.0841496792510152,
+        "hard_bce": 0.639025964776675,
+        "focal_bce": 0.6359416100531113,
+        "rank": 0.635764547665914
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.645784484106116,
+        "spatial_bce": 2.062084491364658
+      }
+    },
+    {
+      "phase": "global",
+      "epoch": 2,
+      "train": {
+        "loss": 0.6284910347859065,
+        "hard_bce": 0.47305112824837364,
+        "focal_bce": 0.17275663369088823,
+        "rank": 0.34530793793996173
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6376079792971723,
+        "spatial_bce": 2.062084491364658
+      }
+    },
+    {
+      "phase": "global",
+      "epoch": 3,
+      "train": {
+        "loss": 0.5823477275719245,
+        "hard_bce": 0.44279905503988265,
+        "focal_bce": 0.17206159744330823,
+        "rank": 0.26758935864766437
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6380885518155992,
+        "spatial_bce": 2.062084491364658
+      }
+    },
+    {
+      "phase": "global",
+      "epoch": 4,
+      "train": {
+        "loss": 0.569040007683138,
+        "hard_bce": 0.43369719601670903,
+        "focal_bce": 0.17296688309655034,
+        "rank": 0.24429684162139892
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6319840078940615,
+        "spatial_bce": 2.062084491364658
+      }
+    },
+    {
+      "phase": "global",
+      "epoch": 5,
+      "train": {
+        "loss": 0.5563657198349635,
+        "hard_bce": 0.4315985508263111,
+        "focal_bce": 0.1658104998555125,
+        "rank": 0.20930959049860637
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6302920144225936,
+        "spatial_bce": 2.062084491364658
+      }
+    }
+  ],
+  "spatial_history": [
+    {
+      "phase": "spatial",
+      "epoch": 0,
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6302920144225936,
+        "spatial_bce": 2.062084491364658
+      }
+    },
+    {
+      "phase": "spatial",
+      "epoch": 1,
+      "train": {
+        "loss": 0.7885554594993591,
+        "spatial_bce": 0.7885554594993591
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6302920144225936,
+        "spatial_bce": 0.7370684307534248
+      }
+    },
+    {
+      "phase": "spatial",
+      "epoch": 2,
+      "train": {
+        "loss": 0.6768034954071045,
+        "spatial_bce": 0.6768034954071045
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6302920144225936,
+        "spatial_bce": 0.7349186763167381
+      }
+    },
+    {
+      "phase": "spatial",
+      "epoch": 3,
+      "train": {
+        "loss": 0.6758612014452616,
+        "spatial_bce": 0.6758612014452616
+      },
+      "train_subset": {
+        "image_count": 256,
+        "hard_bce": 0.6302920144225936,
+        "spatial_bce": 0.7336024921387434
+      }
+    }
+  ],
+  "test_summary": {
+    "count": 1000,
+    "hard_bottom_25pct": {
+      "count": 250,
+      "a0_psnr_range": [
+        14.919735155690672,
+        29.73312588863932
+      ],
+      "mean_z_img": -0.3257419567108154,
+      "mean_b_img": 0.7823520376086235
+    },
+    "easy_top_25pct": {
+      "count": 250,
+      "a0_psnr_range": [
+        39.10456740270155,
+        50.0260926757535
+      ],
+      "mean_z_img": -3.2808484811782836,
+      "mean_b_img": 0.14615737826749683
+    },
+    "hard_easy_b_img_ratio": 5.352805632410599,
+    "spearman_z_img_vs_a0_psnr": -0.7466395691194065,
+    "auc_hard_vs_easy_by_z_img": 0.97664,
+    "strong_reference_count": 250,
+    "strong_reference_mean_b_img": 0.14615737826749683,
+    "mean_spatial_bce": 0.7574038908481598,
+    "zero_residual_output": {
+      "max_abs_diff_vs_a0": 0.0,
+      "threshold": 1e-06,
+      "pass": true
+    }
+  },
+  "gate": {
+    "stage": "APDR-v0.2R full-image calibrated selector-only preflight",
+    "checks": {
+      "zero_residual_output": {
+        "observed": 0.0,
+        "required": "< 1e-06",
+        "pass": true
+      },
+      "deterministic_full_image_hard_bce": {
+        "observed": {
+          "first": 1.7080414951778948,
+          "last": 0.6302920144225936
+        },
+        "required": "last <= 0.55 and first-last >= 0.05",
+        "pass": false
+      },
+      "auc_hard_vs_easy_by_z_img": {
+        "observed": 0.97664,
+        "required": ">= 0.82",
+        "pass": true
+      },
+      "spearman_z_img_vs_a0_psnr": {
+        "observed": -0.7466395691194065,
+        "required": "<= -0.50",
+        "pass": true
+      },
+      "hard_bottom25_mean_b_img": {
+        "observed": 0.7823520376086235,
+        "required": ">= 0.20",
+        "pass": true
+      },
+      "easy_top25_mean_b_img": {
+        "observed": 0.14615737826749683,
+        "required": "<= 0.05",
+        "pass": false
+      },
+      "hard_easy_b_img_ratio": {
+        "observed": 5.352805632410599,
+        "required": ">= 4.0",
+        "pass": true
+      },
+      "spatial_bce_decreased": {
+        "observed": {
+          "first": 2.062084491364658,
+          "last": 0.7336024921387434
+        },
+        "required": "last < first",
+        "pass": true
+      },
+      "test_mean_spatial_bce": {
+        "observed": 0.7574038908481598,
+        "required": "<= 0.80",
+        "pass": true
+      }
+    },
+    "pass": false
+  },
+  "artifacts": {
+    "per_image_csv": "/root/autodl-tmp/workspace/ConvIR-B-apdr-convir-v0-2r-fullimage-router/experience_docx/experiment_logs/haze4k_apdr_v0_2r_selector_20260602/selector_per_image_apdr_v0_2r_selector_seed3407.csv",
+    "history_csv": "/root/autodl-tmp/workspace/ConvIR-B-apdr-convir-v0-2r-fullimage-router/experience_docx/experiment_logs/haze4k_apdr_v0_2r_selector_20260602/selector_history_apdr_v0_2r_selector_seed3407.csv"
+  },
+  "pass": false
+}

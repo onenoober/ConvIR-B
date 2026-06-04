@@ -1,0 +1,2 @@
+start_residual_source_oracle root=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-3-shed-diagnostics selector=/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl tag=apdr_v0_3_residual_source_oracle_seed3407 2026-06-03T10:49:55+08:00
+complete_residual_source_oracle apdr_v0_3_residual_source_oracle_seed3407 2026-06-03T10:51:16+08:00

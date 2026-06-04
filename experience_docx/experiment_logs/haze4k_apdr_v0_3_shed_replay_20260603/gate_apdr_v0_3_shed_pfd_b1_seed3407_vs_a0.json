@@ -1,0 +1,48 @@
+{
+  "stage": "APDR-v0.3 SHED safe expert replay pfd_b1",
+  "compare_json": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-3-shed-diagnostics/experience_docx/experiment_logs/haze4k_apdr_v0_3_shed_replay_20260603/scout_eval_compare_apdr_v0_3_shed_pfd_b1_seed3407_vs_a0.json",
+  "bucket_json": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-3-shed-diagnostics/experience_docx/experiment_logs/haze4k_apdr_v0_3_shed_replay_20260603/scout_eval_bucket_analysis_apdr_v0_3_shed_pfd_b1_seed3407_vs_a0.json",
+  "checks": {
+    "mean_psnr_delta": {
+      "observed": 0.0006135339736938476,
+      "required": ">= +0.020",
+      "pass": false
+    },
+    "mean_ssim_delta": {
+      "observed": -2.8575897216796874e-05,
+      "required": ">= 0",
+      "pass": false
+    },
+    "hard_bottom_25pct_delta": {
+      "observed": 0.007085010528564453,
+      "required": ">= +0.080",
+      "pass": false
+    },
+    "easy_top_25pct_delta": {
+      "observed": 1.0589599609375e-05,
+      "required": ">= -0.010",
+      "pass": true
+    },
+    "strong_reference_regressions": {
+      "observed": 0,
+      "required": "<= 30 / 250",
+      "pass": true
+    },
+    "severe_regressions": {
+      "observed": 48,
+      "required": "<= 10 / 1000",
+      "pass": false
+    },
+    "worst10img_mean_delta": {
+      "observed": -0.51064453125,
+      "required": "> -0.300",
+      "pass": false
+    },
+    "median_psnr_delta": {
+      "observed": -1.33514404296875e-05,
+      "required": ">= 0",
+      "pass": false
+    }
+  },
+  "pass": false
+}

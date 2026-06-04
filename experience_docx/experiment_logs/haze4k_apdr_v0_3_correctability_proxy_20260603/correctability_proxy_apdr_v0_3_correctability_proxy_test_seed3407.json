@@ -1,0 +1,190 @@
+{
+  "stage": "APDR-v0.3 CorrectabilityOpen tabular proxy audit",
+  "tag": "apdr_v0_3_correctability_proxy_test_seed3407",
+  "feature_names": [
+    "hazy_c0_mean",
+    "hazy_c0_std",
+    "hazy_c0_p10",
+    "hazy_c0_p90",
+    "hazy_c1_mean",
+    "hazy_c1_std",
+    "hazy_c1_p10",
+    "hazy_c1_p90",
+    "hazy_c2_mean",
+    "hazy_c2_std",
+    "hazy_c2_p10",
+    "hazy_c2_p90",
+    "anchor_c0_mean",
+    "anchor_c0_std",
+    "anchor_c0_p10",
+    "anchor_c0_p90",
+    "anchor_c1_mean",
+    "anchor_c1_std",
+    "anchor_c1_p10",
+    "anchor_c1_p90",
+    "anchor_c2_mean",
+    "anchor_c2_std",
+    "anchor_c2_p10",
+    "anchor_c2_p90",
+    "hazy_minus_anchor_abs_c0_mean",
+    "hazy_minus_anchor_abs_c0_std",
+    "hazy_minus_anchor_abs_c0_p10",
+    "hazy_minus_anchor_abs_c0_p90",
+    "hazy_minus_anchor_abs_c1_mean",
+    "hazy_minus_anchor_abs_c1_std",
+    "hazy_minus_anchor_abs_c1_p10",
+    "hazy_minus_anchor_abs_c1_p90",
+    "hazy_minus_anchor_abs_c2_mean",
+    "hazy_minus_anchor_abs_c2_std",
+    "hazy_minus_anchor_abs_c2_p10",
+    "hazy_minus_anchor_abs_c2_p90",
+    "prior_c0_mean",
+    "prior_c0_std",
+    "prior_c0_p10",
+    "prior_c0_p90",
+    "prior_c1_mean",
+    "prior_c1_std",
+    "prior_c1_p10",
+    "prior_c1_p90",
+    "prior_c2_mean",
+    "prior_c2_std",
+    "prior_c2_p10",
+    "prior_c2_p90",
+    "prior_c3_mean",
+    "prior_c3_std",
+    "prior_c3_p10",
+    "prior_c3_p90",
+    "prior_c4_mean",
+    "prior_c4_std",
+    "prior_c4_p10",
+    "prior_c4_p90",
+    "prior_c5_mean",
+    "prior_c5_std",
+    "prior_c5_p10",
+    "prior_c5_p90",
+    "m_safe_mean",
+    "m_safe_std",
+    "m_safe_p05",
+    "m_safe_p50",
+    "m_safe_p95",
+    "m_safe_max",
+    "spatial_gate_mean",
+    "spatial_gate_std",
+    "spatial_gate_p05",
+    "spatial_gate_p50",
+    "spatial_gate_p95",
+    "spatial_gate_max",
+    "global_budget_mean",
+    "global_score_mean",
+    "hazy_anchor_l1",
+    "hazy_anchor_l2"
+  ],
+  "summary": {
+    "count": 1000,
+    "train_count": 700,
+    "valid_count": 300,
+    "train_labeled_count": 551,
+    "valid_labeled_count": 234,
+    "valid_positive_count": 134,
+    "valid_negative_count": 100,
+    "positive_gain_threshold": 0.1,
+    "negative_gain_threshold": 0.01,
+    "train_auc": 1.0,
+    "valid_auc": 1.0,
+    "valid_spearman_score_low_gain": 0.9691379463242006,
+    "valid_mean_score_easy_top25": 0.11368293201795825,
+    "valid_mean_score_oracle_positive_hard": 0.9855574111440288,
+    "valid_positive_hard_count": 67,
+    "valid_hard_anchor_psnr_cut": 30.014371871948242,
+    "valid_easy_anchor_psnr_cut": 38.7224178314209,
+    "valid_mean_low_oracle_gain": 0.3803334681193034,
+    "valid_mean_score": 0.539556122898269
+  },
+  "checks": {
+    "valid_auc": {
+      "observed": 1.0,
+      "required": ">= 0.80",
+      "pass": true
+    },
+    "valid_spearman_score_low_gain": {
+      "observed": 0.9691379463242006,
+      "required": ">= 0.45",
+      "pass": true
+    },
+    "valid_mean_score_easy_top25": {
+      "observed": 0.11368293201795825,
+      "required": "<= 0.10",
+      "pass": false
+    },
+    "valid_mean_score_oracle_positive_hard": {
+      "observed": 0.9855574111440288,
+      "required": ">= 0.50",
+      "pass": true
+    }
+  },
+  "pass": false,
+  "history": [
+    {
+      "step": 100,
+      "train_loss": 0.056309062987565994,
+      "train_auc": 1.0
+    },
+    {
+      "step": 200,
+      "train_loss": 0.01843172311782837,
+      "train_auc": 1.0
+    },
+    {
+      "step": 300,
+      "train_loss": 0.00838018674403429,
+      "train_auc": 1.0
+    },
+    {
+      "step": 400,
+      "train_loss": 0.004662988241761923,
+      "train_auc": 1.0
+    },
+    {
+      "step": 500,
+      "train_loss": 0.003293287241831422,
+      "train_auc": 1.0
+    },
+    {
+      "step": 600,
+      "train_loss": 0.0024113415274769068,
+      "train_auc": 1.0
+    },
+    {
+      "step": 700,
+      "train_loss": 0.0015921418089419603,
+      "train_auc": 1.0
+    },
+    {
+      "step": 800,
+      "train_loss": 0.0011795413447543979,
+      "train_auc": 1.0
+    }
+  ],
+  "args": {
+    "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+    "selector_checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl",
+    "output_dir": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-3-shed-diagnostics/experience_docx/experiment_logs/haze4k_apdr_v0_3_correctability_proxy_20260603",
+    "tag": "apdr_v0_3_correctability_proxy_test_seed3407",
+    "split": "test",
+    "max_images": 0,
+    "train_fraction": 0.7,
+    "seed": 3407,
+    "num_workers": 0,
+    "device": "cuda",
+    "residual_max": 0.04,
+    "kernel_size": 31,
+    "sigma": 7.0,
+    "positive_gain": 0.1,
+    "negative_gain": 0.01,
+    "hidden_dim": 32,
+    "steps": 800,
+    "learning_rate": 0.001,
+    "weight_decay": 0.001,
+    "progress_freq": 100
+  }
+}

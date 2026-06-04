@@ -1,0 +1,63 @@
+{
+  "stage": "APDR-v0.2RC full-image mask vs crop recompute mismatch audit",
+  "tag": "apdr_v0_3_crop_mask_mismatch_128x4_seed3407",
+  "summary": {
+    "crop_count": 512,
+    "image_count": 128,
+    "mean_mask_corr": 0.44547015574062243,
+    "median_mask_corr": 0.43823352456092834,
+    "p10_mask_corr": 0.2512157827615738,
+    "mean_mask_abs_diff": 0.0673397014996695,
+    "median_mask_abs_diff": 0.04863372631371021,
+    "mean_crop_to_full_mask_mean_ratio": 3.4046615890016065,
+    "median_crop_to_full_mask_mean_ratio": 1.370990328870926,
+    "hard_anchor_psnr_cut": 33.722951889038086,
+    "hard_crop_count": 128,
+    "hard_crop_budget_drop_fraction": 0.015625,
+    "near_zero_crop_mask_fraction": 0.158203125,
+    "mean_full_global_budget": 0.2655418548934563,
+    "mean_crop_global_budget": 0.39784247245699156
+  },
+  "checks": {
+    "mean_mask_corr": {
+      "observed": 0.44547015574062243,
+      "required": ">= 0.80",
+      "pass": false
+    },
+    "p10_mask_corr": {
+      "observed": 0.2512157827615738,
+      "required": ">= 0.60",
+      "pass": false
+    },
+    "mean_mask_abs_diff": {
+      "observed": 0.0673397014996695,
+      "required": "<= 0.020",
+      "pass": false
+    },
+    "hard_crop_budget_drop_fraction": {
+      "observed": 0.015625,
+      "required": "<= 0.10",
+      "pass": true
+    },
+    "near_zero_crop_mask_fraction": {
+      "observed": 0.158203125,
+      "required": "<= 0.10",
+      "pass": false
+    }
+  },
+  "pass": false,
+  "args": {
+    "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+    "selector_checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-2rc-oracle-diagnostic/experience_docx/experiment_logs/haze4k_apdr_v0_2rc_frozen_residual_20260603/selector_checkpoint_apdr_v0_2rc_frozen_selector_seed3407.pkl",
+    "output_dir": "/root/autodl-tmp/workspace/ConvIR-B-apdr-v0-3-shed-diagnostics/experience_docx/experiment_logs/haze4k_apdr_v0_3_crop_mask_mismatch_20260603",
+    "tag": "apdr_v0_3_crop_mask_mismatch_128x4_seed3407",
+    "num_images": 128,
+    "crops_per_image": 4,
+    "crop_size": 256,
+    "seed": 3407,
+    "num_workers": 0,
+    "device": "cuda",
+    "residual_max": 0.04,
+    "progress_freq": 16
+  }
+}
