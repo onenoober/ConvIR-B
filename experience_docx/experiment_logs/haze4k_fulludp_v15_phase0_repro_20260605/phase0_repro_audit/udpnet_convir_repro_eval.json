@@ -1,0 +1,237 @@
+{
+  "a0_checkpoint_path": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+  "a0_checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "baidu_share": {
+    "checkpoint_list_errno": 0,
+    "page": {
+      "has_bdclnd": true,
+      "page_file_list": [
+        {
+          "app_id": "250528",
+          "black_tag": "0",
+          "category": 6,
+          "delete_fs_id": "0",
+          "extent_int3": "4503603720941333",
+          "extent_int8": "0",
+          "extent_tinyint1": "0",
+          "extent_tinyint2": "0",
+          "extent_tinyint3": "0",
+          "extent_tinyint4": "0",
+          "file_key": "",
+          "file_tag": "0",
+          "fs_id": 108627932080524,
+          "is_scene": "1",
+          "isdelete": "0",
+          "isdir": 1,
+          "local_ctime": 1768410091,
+          "local_mtime": 1768410091,
+          "md5": "",
+          "oper_id": "4503603720941333",
+          "owner_id": "0",
+          "owner_type": "0",
+          "parent_path": "",
+          "path": "/UDPNet_checkpoints",
+          "path_md5": "2832161477579421702",
+          "privacy": "1",
+          "real_category": "",
+          "root_ns": 17596393649057,
+          "server_atime": "0",
+          "server_ctime": 1768410091,
+          "server_filename": "UDPNet_checkpoints",
+          "server_mtime": 1768410119,
+          "share": "0",
+          "size": 0,
+          "source": "0",
+          "status": "0",
+          "tkbind_id": "0",
+          "videotag": "0",
+          "wpfile": "0"
+        }
+      ],
+      "share_uk": "4503603720941333",
+      "shareid": "60732444355",
+      "tplconfig_errno": 0,
+      "tplconfig_has_sign": true,
+      "verify": {
+        "err_msg": "",
+        "errno": 0,
+        "randsk": "brzng13ULRk%2FBNdvdCGQ0voiej5OFiKscqJUf5XEpPi5c7V3aqvszw%3D%3D",
+        "request_id": 137631382000514443
+      }
+    },
+    "sharedownload_probe": {
+      "attempted": true,
+      "errno": 0,
+      "has_direct_dlink": false,
+      "list_length": 1932,
+      "list_type": "str",
+      "raw_head": "{\"errno\":0,\"request_id\":137631769832823166,\"server_time\":1780594420,\"list\":\"lcLSYqsqWZI7U5baWnZpVcfhTS5b\\/XydEkS98WLJpQUvRKWu++D3TTtSXiNR81cmihHHLVggaDMlywX6BsLr+Ua+okarF1\\/w5XtMARC2hHhtq6YHpuZrzZCHhvZ+CLqvdizAfO++Ah6o1k+FZbQ3e9IEg1W\\/wRvPppL3dYbc7oz5ut8LI3H0Z76cDmaOBbn+JWq\\/6UCTFjuEqjCeJDZ4Qn3K5ZK5DcAPMnytIlF\\/Ed+Bkc912OOYigI2ewU1I8zjGXnS4fE3IZRekMc8jYUsHTtTltpadmlVJ33hoaijB3CdVLhJNPd+phM8UbjAZucliE\\/Lbl4vGLUPjYrAq8F9+p5CTmNxcizavOVyM05yPnPSTPPLbdw9HTQPYRVlTTpavdCzbggW0CorAk7lWtuRoaMoL3pIDzrKYX",
+      "request_id": 137631769832823166,
+      "returned_client_encrypted_list": true,
+      "server_time": 1780594420
+    }
+  },
+  "baidupcs_probe": {
+    "attempted": true,
+    "log": "/root/autodl-tmp/workspace/ConvIR-B-v1-5-full-udpnet/experience_docx/experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/phase0_repro_audit/baidupcs_transfer_probe.log",
+    "reported_metadata_failure": true,
+    "returncode": 0,
+    "stdout_head": "\u5206\u4eab\u94fe\u63a5\u8f6c\u5b58\u5230\u7f51\u76d8\u5931\u8d25: \u83b7\u53d6\u5206\u4eab\u9879\u5143\u6570\u636e\u9519\u8bef\n"
+  },
+  "blockers": [
+    {
+      "blocker_id": "official_checkpoint_missing",
+      "detail": "/root/autodl-tmp/workspace/UDPNet_checkpoints/ConvIR_UDPNet_haze4k.ckpt is absent, so official ConvIR+UDP eval cannot run.",
+      "evidence": "udpnet_convir_repro_eval.json:official_checkpoint_available=false",
+      "severity": "blocking"
+    },
+    {
+      "blocker_id": "baidu_share_no_plain_dlink",
+      "detail": "Baidu sharedownload returned a client encrypted task list, not a direct HTTP dlink.",
+      "evidence": "udpnet_convir_repro_eval.json:baidu_share.sharedownload_probe",
+      "severity": "blocking"
+    },
+    {
+      "blocker_id": "baidupcs_public_transfer_failed",
+      "detail": "BaiduPCS-Go public share transfer failed to get share item metadata without a logged-in account.",
+      "evidence": "baidupcs_transfer_probe.log",
+      "severity": "blocking"
+    }
+  ],
+  "checkpoint_source": {
+    "candidates": [
+      {
+        "fs_id": 841938078912396,
+        "isdir": 0,
+        "md5": "381301707o56d13c0c5c45e3c6d88c57",
+        "path": "/UDPNet_checkpoints/ConvIR_UDPNet_GTA5.ckpt",
+        "server_filename": "ConvIR_UDPNet_GTA5.ckpt",
+        "size": 216259641
+      },
+      {
+        "fs_id": 1066821529033731,
+        "isdir": 0,
+        "md5": "0b413f5eem9a7db893e2996d54c77e1b",
+        "path": "/UDPNet_checkpoints/PoolNet_UDPNet_GTA5.ckpt",
+        "server_filename": "PoolNet_UDPNet_GTA5.ckpt",
+        "size": 174825071
+      },
+      {
+        "fs_id": 222741874903522,
+        "isdir": 0,
+        "md5": "8fafcbac5m2163bc5f87fb8aee66774f",
+        "path": "/UDPNet_checkpoints/FSNet_UDPNet_NHR.ckpt",
+        "server_filename": "FSNet_UDPNet_NHR.ckpt",
+        "size": 164434831
+      },
+      {
+        "fs_id": 710337178851310,
+        "isdir": 0,
+        "md5": "15b1228celbd580968d75326932164d8",
+        "path": "/UDPNet_checkpoints/FSNet_UDPNet_ITS.ckpt",
+        "server_filename": "FSNet_UDPNet_ITS.ckpt",
+        "size": 164435727
+      },
+      {
+        "fs_id": 93467358858258,
+        "isdir": 0,
+        "md5": "e27a83ef7pa0fc31c7d1ca2ac31f7ff0",
+        "path": "/UDPNet_checkpoints/FSNet_UDPNet_OTS.ckpt",
+        "server_filename": "FSNet_UDPNet_OTS.ckpt",
+        "size": 164446351
+      },
+      {
+        "fs_id": 431678172086651,
+        "isdir": 0,
+        "md5": "2d3afc2fdj9d32958da9f959ddd7527a",
+        "path": "/UDPNet_checkpoints/ConvIR_UDPNet_NHR.ckpt",
+        "server_filename": "ConvIR_UDPNet_NHR.ckpt",
+        "size": 108199589
+      },
+      {
+        "fs_id": 221857665821209,
+        "isdir": 0,
+        "md5": "5cb3e2cb4m6f47648e51d6608636fab6",
+        "path": "/UDPNet_checkpoints/FSNet_UDPNet_haze4k.ckpt",
+        "server_filename": "FSNet_UDPNet_haze4k.ckpt",
+        "size": 164434831
+      },
+      {
+        "fs_id": 223165512223780,
+        "isdir": 0,
+        "md5": "39712ce8fh191ffbe807530ed891f4c0",
+        "path": "/UDPNet_checkpoints/ConvIR_UDPNet_OTS.ckpt",
+        "server_filename": "ConvIR_UDPNet_OTS.ckpt",
+        "size": 108206693
+      },
+      {
+        "fs_id": 833947740786778,
+        "isdir": 0,
+        "md5": "37d4f1947h9f3d3f71cfae6a6bded9f8",
+        "path": "/UDPNet_checkpoints/ConvIR_UDPNet_ITS.ckpt",
+        "server_filename": "ConvIR_UDPNet_ITS.ckpt",
+        "size": 108206565
+      },
+      {
+        "fs_id": 883266741305581,
+        "isdir": 0,
+        "md5": "9f085fcb3g0ddd6bfaf276e9807bbef2",
+        "path": "/UDPNet_checkpoints/ConvIR_UDPNet_haze4k.ckpt",
+        "server_filename": "ConvIR_UDPNet_haze4k.ckpt",
+        "size": 108206629
+      }
+    ],
+    "target": "ConvIR_UDPNet_haze4k.ckpt",
+    "target_item": {
+      "fs_id": 883266741305581,
+      "isdir": 0,
+      "md5": "9f085fcb3g0ddd6bfaf276e9807bbef2",
+      "path": "/UDPNet_checkpoints/ConvIR_UDPNet_haze4k.ckpt",
+      "server_filename": "ConvIR_UDPNet_haze4k.ckpt",
+      "size": 108206629
+    },
+    "url": "https://pan.baidu.com/s/1JqB-YBPzZAiQsdLlNcidLQ?pwd=2026"
+  },
+  "data_counts": {
+    "test_depth2l": null,
+    "test_gt": 1000,
+    "test_haze": 1000,
+    "test_hazy": 1000,
+    "train_gt": 3000,
+    "train_haze": 3001,
+    "train_hazy": 3001
+  },
+  "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+  "depth_cache_counts": {
+    "test": 1000,
+    "train": 3000
+  },
+  "depth_cache_dir": "/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf",
+  "gate": {
+    "reason": "official checkpoint is unavailable; no evaluation was run",
+    "reproduction_gate_pass": false
+  },
+  "locked_test_allowed": false,
+  "metrics": {
+    "easy_top25_delta": null,
+    "hard_bottom25_delta": null,
+    "mean_psnr_delta_vs_a0": null,
+    "mean_ssim_delta_vs_a0": null,
+    "peak_memory_mib": null,
+    "positive_ratio": null,
+    "runtime_seconds_per_image": null,
+    "strong_regression_ratio": null,
+    "worst_le_minus_0_20_count": null
+  },
+  "official_checkpoint_available": false,
+  "official_checkpoint_path": "/root/autodl-tmp/workspace/UDPNet_checkpoints/ConvIR_UDPNet_haze4k.ckpt",
+  "official_checkpoint_sha256": null,
+  "phase": "Phase 0 official UDPNet ConvIR reproduction audit",
+  "route": "ConvIR-Dehaze-v1.5-FullUDP",
+  "state_label": "PREFLIGHT_FAILED_ENGINEERING",
+  "status": "BLOCKED_CHECKPOINT_UNAVAILABLE",
+  "udp_repo": "/root/autodl-tmp/workspace/UDPNet",
+  "udp_repo_head": "f925387e690ae6016ffbd4b1cfd8490d75d7a334",
+  "udp_repo_model_exists": true,
+  "udp_repo_test_imports_fsnet": true
+}

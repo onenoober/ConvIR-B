@@ -140,6 +140,51 @@ Every monitoring or sync command should print a final marker such as:
 - `MONITOR_SCRIPT_OK`
 - `COMMIT_AND_PUSH_OK`
 
+### Non-heredoc SSH commands consuming the WSL wrapper stdin
+
+Avoid running a plain `ssh host "cmd"` inside a PowerShell here-string wrapper
+before later local commands:
+
+```bash
+ssh dehaze1 "mkdir -p '$REMOTE_ROOT'"
+tar -cf - files | ssh dehaze1 "tar -C '$REMOTE_ROOT' -xf -"
+```
+
+Failure mode observed:
+
+- the first `ssh` command consumed the remaining wrapper stdin;
+- later sync/verification commands were never executed;
+- the wrapper ended without the expected success marker, making the operation
+  look like a silent success.
+
+The same applies to remote-to-local tar streams in wrapper scripts:
+
+```bash
+ssh dehaze1 "tar -C '$REMOTE_ROOT' -cf - evidence/path" | tar -xf -
+python3 parse_evidence.py
+```
+
+If `ssh` is not run with `-n`, it can consume the remaining wrapper stdin before
+the local parse step runs.
+
+Preferred forms:
+
+```bash
+ssh -n dehaze1 "mkdir -p '$REMOTE_ROOT'"
+tar -cf - files | ssh dehaze1 "tar -C '$REMOTE_ROOT' -xf -"
+ssh -n dehaze1 "tar -C '$REMOTE_ROOT' -cf - evidence/path" | tar -xf -
+```
+
+or use a quoted heredoc for all remote setup/verification:
+
+```bash
+ssh dehaze1 'bash -s' <<'REMOTE'
+set -euo pipefail
+mkdir -p "$REMOTE_ROOT"
+printf 'REMOTE_SETUP_OK\n'
+REMOTE
+```
+
 ### Syncing CR-suffixed filenames from broken wrappers
 
 Avoid blindly staging files after a failed CRLF heredoc wrapper. Failure mode

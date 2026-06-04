@@ -1,8 +1,9 @@
 # DPGA Family Summary
 
-Date: 2026-06-04
+Date: 2026-06-05
 
-Status: active diagnostic family, not promotion-ready.
+Status: UDP-Lite/frozen small-adapter family is sufficiently diagnosed and low
+success; full UDPNet remains blocked on official checkpoint acquisition.
 
 ## Sources
 
@@ -13,12 +14,14 @@ Status: active diagnostic family, not promotion-ready.
   - `../experiment_cards/2026-06-04-haze4k-convir-v1-3-hsdf.md`
   - `../experiment_cards/2026-06-04-haze4k-convir-v1-4-udp-lite.md`
   - `../experiment_cards/2026-06-04-haze4k-convir-v1-4b-bidpfm1.md`
+  - `../experiment_cards/2026-06-05-haze4k-convir-v1-5-full-udpnet.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_dpga_lite_20260604/`
   - `../experiment_logs/haze4k_dpga_tail_control_20260604/`
   - `../experiment_logs/haze4k_dpga_v13_hsdf_20260604/`
   - `../experiment_logs/haze4k_udp_lite_v14_20260604/`
   - `../experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/`
+  - `../experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/`
 
 ## Established Facts
 
@@ -31,11 +34,14 @@ Status: active diagnostic family, not promotion-ready.
 | DPGA-v1.3B HSDF | Best `val_regular` mean `+0.025839 dB`; Best `val_hard` hard bottom-25 `+0.023642 dB`; positive ratio `0.586667`; strong regression ratio `0.200000`; corrected bottleneck-only runtime ablation mean about `+0.000824 dB`. | `FAIL_STOP_V13B_HARD_GATED_BOTTLENECK`; locked test blocked. |
 | ConvIR-Dehaze-v1.4-UDP-Lite | v1.4A adapter-only completed and failed gate: Best `val_regular` mean `+0.028294 dB`, Best `val_hard` mean `+0.020340 dB`, hard bottom-25 `+0.022275 dB`, positive ratio `0.586667`, worst count `19`. Ablation shows `DPFM1-only` is safer/stronger (`val_hard` mean `+0.026774 dB`, worst `0`) while `DPFM2-only` is negative. | `FAIL_V14A_ADAPTER_ONLY_FULL_DPFM123`; locked test blocked. Do not micro-tune full DPFM123 scale/gate; only DPFM1-focused diagnostic or v1.4B fusion-neighbor partial unfreeze is evidence-supported. |
 | ConvIR-Dehaze-v1.4B-BiDPFM1 | `udp_bi`, `active_adapters=dpfm1`, `active_adapter_only` completed. Best `val_regular` mean `+0.028624 dB`, positive ratio `0.536667`, worst count `17`, strong ratio `0.28`; Best `val_hard` mean `+0.023429 dB`, hard bottom-25 `+0.020760 dB`, worst count `8`. | `FAIL_STOP_V14B_BIDPFM1_ADAPTER_ONLY`; locked test blocked; do not rerun BiDPFM1-only scale/gate tuning. |
+| ConvIR-Dehaze-v1.5-FullUDP Phase 0 | Official UDPNet Baidu share listed `ConvIR_UDPNet_haze4k.ckpt` (`fs_id=883266741305581`, size `108206629`), but no local checkpoint existed, sharedownload returned a client-encrypted task list instead of a plain `dlink`, and BaiduPCS-Go public transfer failed to retrieve metadata without an account. | `PHASE0_BLOCKED_OFFICIAL_UDPNET_CHECKPOINT_UNAVAILABLE`; no PSNR/SSIM eval was run; do not start transplant/distillation from README-level claims alone. |
 
 ## Family Verdict
 
-DPGA is the most active current family because it moved away from unsafe output
-RGB residuals and places depth/prior information inside ConvIR feature paths.
+DPGA moved away from unsafe output RGB residuals and places depth/prior
+information inside ConvIR feature paths. The frozen ConvIR-B plus
+A0-equivalent small-adapter branch is now sufficiently diagnosed as low
+success rather than promotion-ready.
 DPGA-Lite v1.0 gave the first recent small positive full-test directional
 signal without APDR output residuals, full-backbone training, FFT boost,
 teacher distillation, or token-wise routing. That signal is still below the
@@ -46,10 +52,6 @@ v1.1/v1.2 showed that shallow scale control can keep mean movement positive but
 is hard-gain limited. v1.3 showed that hard-selective masking and hard-gated
 bottleneck capacity did not deliver the needed hard-bottom gain, and corrected
 runtime ablation found almost no useful bottleneck-only contribution.
-
-The family remains open only for a new DPGA mechanism that directly addresses
-hard-gain limitation without simply increasing scale or selecting on the locked
-test.
 
 v1.4-UDP-Lite tested the currently preferred reopen mechanism: zero-init
 multi-scale depth/prior fusion (`DPGA_prior_encoder`, `DPGA_dpfm1/2/4`) with
@@ -67,6 +69,14 @@ tail profile for the first route, while DPFM2 remains blocked. The completed
 BiDPFM1-only route is stopped; this is not permission to run locked Haze4K test,
 revive DPFM2, or perform full multi-scale scale search.
 
+v1.5-FullUDP Phase 0 tested whether the official full UDPNet checkpoint could
+be reproduced before any transplant. The official checkpoint list was visible
+in Baidu, but the Haze4K ConvIR+UDP checkpoint was not obtainable as a durable
+file in this environment: the web/API path exposed only a BaiduNetdisk-client
+encrypted task and BaiduPCS-Go could not transfer the public share without
+account metadata. This blocks reproduction and teacher distillation for now;
+it is not evidence that full UDPNet is weak.
+
 ## Do Not Repeat Without New Evidence
 
 - Do not promote v1.0 from `Best.pkl` alone; exact stop20/final was borderline
@@ -82,11 +92,19 @@ revive DPFM2, or perform full multi-scale scale search.
   `DPFM2-only` is negative and full DPFM123 increases tail risk.
 - Do not run locked Haze4K test for v1.4B before the written internal
   regular+hard gate passes.
+- Do not continue v1.4C small adapter, BiDPFM1 scale/gate/loss search,
+  DPFM1+4 training, or UDP-Lite DPFM2 revival without a materially new
+  mechanism.
+- Do not start FullUDP transplant or teacher distillation until the official
+  ConvIR+UDP checkpoint is available with sha256 or a separate controlled
+  teacher is established.
 
 ## Reopen Condition
 
 A DPGA follow-up must introduce a new hard-gain mechanism or diagnostic, not a
-plain scale increase. It should select checkpoints/configuration on internal
-validation or OOF-style protocols, then pass hard bottom-25%, regular/easy
-safety, strong-reference regression, and worst-tail gates before any locked
-Haze4K test.
+plain scale increase. The highest-value reopen is a completed full UDPNet
+checkpoint reproduction or a separately controlled stronger-backbone audit.
+Any transplant must select checkpoints/configuration on internal validation or
+OOF-style protocols, then pass hard bottom-25%, regular/easy safety,
+strong-reference regression, and worst-tail gates before any locked Haze4K
+test.
