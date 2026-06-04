@@ -1,0 +1,21 @@
+start 2026-06-04T00:45:07+08:00
+source_root /root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle
+pfd_root /root/autodl-tmp/workspace/ConvIR-B-pfd-mainline
+pretrain /root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+compare_start a1_stop5 /root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/Dehazing/ITS/results/ConvIR-Haze4K-A1-init-official-stop20-seed3407-20260602/Training-Results/model_5.pkl 2026-06-04T00:45:07+08:00
+compare_done a1_stop5 rc=1 2026-06-04T00:45:19+08:00
+compare_start a1_best /root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/Dehazing/ITS/results/ConvIR-Haze4K-A1-init-official-stop20-seed3407-20260602/Training-Results/Best.pkl 2026-06-04T00:45:19+08:00
+compare_done a1_best rc=1 2026-06-04T00:45:30+08:00
+compare_start a1_final /root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/Dehazing/ITS/results/ConvIR-Haze4K-A1-init-official-stop20-seed3407-20260602/Training-Results/Final.pkl 2026-06-04T00:45:30+08:00
+compare_done a1_final rc=1 2026-06-04T00:45:40+08:00
+a1_vs_a0_compare_start 2026-06-04T00:48:30+08:00
+root /root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle
+pretrain /root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+a1dir /root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/Dehazing/ITS/results/ConvIR-Haze4K-A1-init-official-stop20-seed3407-20260602/Training-Results
+fixed_compare_start a1_stop5 /root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/Dehazing/ITS/results/ConvIR-Haze4K-A1-init-official-stop20-seed3407-20260602/Training-Results/model_5.pkl 2026-06-04T00:48:30+08:00
+fixed_compare_done a1_stop5 2026-06-04T01:08:45+08:00
+fixed_compare_start a1_best /root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/Dehazing/ITS/results/ConvIR-Haze4K-A1-init-official-stop20-seed3407-20260602/Training-Results/Best.pkl 2026-06-04T01:08:45+08:00
+fixed_compare_done a1_best 2026-06-04T02:25:30+08:00
+fixed_compare_start a1_final /root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/Dehazing/ITS/results/ConvIR-Haze4K-A1-init-official-stop20-seed3407-20260602/Training-Results/Final.pkl 2026-06-04T02:25:30+08:00
+fixed_compare_done a1_final 2026-06-04T03:41:35+08:00
+a1_vs_a0_compare_complete 2026-06-04T03:41:35+08:00

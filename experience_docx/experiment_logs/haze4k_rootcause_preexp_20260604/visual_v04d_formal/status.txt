@@ -1,0 +1,3 @@
+visual_v04d_formal_start 2026-06-04T01:22:01+08:00
+root /root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle
+out /root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/experiment_logs/haze4k_rootcause_preexp_20260604/visual_v04d_formal
