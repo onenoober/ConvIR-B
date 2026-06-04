@@ -18,6 +18,14 @@
 - Do not commit checkpoints, model weights, datasets, images, arrays, archives, or raw inference outputs by default; sync only text evidence and small structured artifacts allowed by `experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.
 - If GitHub push is unavailable, report the failure and the exact local evidence paths instead of treating the cloud-only copy as synced.
 
+## Command Reliability
+
+- For multi-hop commands involving PowerShell, WSL, and `ssh dehaze1`, read and follow `experience_docx/COMMAND_RELIABILITY_PROTOCOL.md` before running the command.
+- Avoid complex inline PowerShell-to-WSL-to-SSH one-liners with nested quotes, regex pipes, or heredocs; write a small Bash script body and pipe it through `wsl ... bash -lc "tr -d '\r' | bash"` instead.
+- Every monitoring, sync, or audit command should print an explicit `*_OK` success marker or write a status file so a successful no-output command is not mistaken for a hang.
+- Use explicit runtime paths for cloud Python, especially `/root/miniconda3/envs/convir-cu128/bin/python`, instead of assuming `python` is on PATH.
+- If a command fails from quoting, CRLF, PATH, or shell-boundary issues, record the invalid form and the corrected form in the command reliability protocol before continuing.
+
 ## Project Memory And Evidence Authority
 
 - Treat `experience_docx/` as the repository's authoritative project memory for experiment state, governance, route decisions, and evidence locations.
