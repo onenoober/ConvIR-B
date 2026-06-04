@@ -147,7 +147,14 @@ Closed or deprioritized routes can reopen only when something material changes:
 - an earlier failure is traced to an invalid setup;
 - a changed project objective makes the original stop reason irrelevant.
 
-Document the reopen reason before running.
+Document the reopen reason before running. For mature projects, also update the
+family-level verdict or route index so reviewers can see why the reopening is
+not just a repeat of a stopped route.
+
+If the route needs an exception budget after a failed gate, keep it narrow: one
+predeclared extra diagnostic with a maximum budget, a mechanism-specific reason,
+and a hard stop line. Do not use exception budget for repeated scale increases
+or post-hoc threshold searching.
 
 ## Decision Trace
 

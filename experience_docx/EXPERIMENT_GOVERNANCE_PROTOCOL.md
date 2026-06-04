@@ -167,6 +167,23 @@ If a run changes budget, split, metric, data, or resume policy after launch, it
 must be relabeled. Do not compare it as a fair candidate unless the experiment
 card already allowed that change.
 
+## Locked Evaluation Rule
+
+Use locked evaluation sets only after the candidate, checkpoint-selection rule,
+thresholds, scales, and inference policy are fixed by training, internal
+validation, OOF, or another predeclared non-locked protocol.
+
+Do not repeatedly use a locked test set to choose:
+
+- checkpoints or early-stop epochs;
+- thresholds, masks, gates, or selector policies;
+- adapter scales, active modules, or route variants;
+- post-hoc exclusions or subgroup definitions.
+
+If a locked set is accidentally used for selection, relabel the result as
+diagnostic and require a clean fixed-selection rerun before claiming candidate
+or promotion evidence.
+
 ## Sample-Size Rule
 
 Predeclare the sample size behind each claim:
@@ -232,6 +249,31 @@ gain, strong-case regression count <= `2%`, and cost limits still passing. The
 final replacement gate requires at least `+0.10 dB` PSNR, SSIM delta >=
 `-0.001`, FLOPs <= `+5%`, latency <= `+10%`, and final strong-case regression
 count <= `1%`.
+
+## Effect-Size And Exception-Budget Rule
+
+Interpret quality deltas against the measured route noise floor. A positive
+single-seed or small-split delta below the relevant noise floor is a directional
+signal, not a promotion claim, unless it is supported by multi-seed,
+matched-budget, OOF, or locked held-out evidence.
+
+For ConvIR-B Haze4K stop20 evidence, the current index records mean PSNR seed
+std `0.2206 dB` and hard-bucket std `0.4551 dB`. Treat single-seed deltas below
+`+0.10 dB` as directional/mechanism evidence by default, not as final model
+improvement.
+
+A route may receive one limited exception budget after a failed gate only when
+the experiment card or route summary states all of the following before the
+extra run:
+
+- which mechanism evidence still makes the next run informative;
+- why the failed metric is not decisive for the next narrow question;
+- the maximum additional budget allowed;
+- the exact stop line for the exception run;
+- what future route family will be ruled in or out by either outcome.
+
+Do not grant exception budget for "try harder" scale increases, repeated
+threshold sweeps, or locked-test selection.
 
 ## Mechanism Metric Rule
 
@@ -343,6 +385,7 @@ Use precise labels:
 | --- | --- |
 | positive candidate | beats the main reference under the fair contract and satisfies mechanism checks |
 | positive ablation | improves a mechanism or secondary objective but is not the main replacement |
+| directional signal | small or noisy positive movement that can guide the next diagnostic but is not an improvement claim |
 | negative fair ablation | fair run failed a written gate |
 | diagnostic only | smoke, preflight, subset-only, changed-budget, or invalid comparison |
 | inconclusive | evidence is insufficient; state what is missing |

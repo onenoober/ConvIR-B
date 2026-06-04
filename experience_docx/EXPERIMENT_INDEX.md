@@ -43,16 +43,53 @@ Retained remote refs:
   evidence, a GitHub-readable text package, and prior route history.
 - `github/codex/haze4k-pfd-mainline`: diagnostic PFD mainline branch where B1
   failed preservation and B2/B3 were not launched.
-- `github/codex/haze4k-b1r-decoder-rhfd-preserve`: active rescue branch fo
+- `github/codex/haze4k-b1r-decoder-rhfd-preserve`: active rescue branch for
   decoder-side RHFD-Lite plus adapter-only preservation training.
 
-## Reading Orde
+## Reading Order
 
 1. Read the summary table below.
 2. Open the route card for the route you care about.
 3. Open the evidence root for JSON/CSV/log detail.
-4. Use the retained source branch only when you need runnable code; do not infe
+4. Use the retained source branch only when you need runnable code; do not infer
    that diagnostic or failed route code belongs in `main`.
+
+## Evidence Strength And Locked-Test Policy
+
+Use the stop20 noise-floor audit when interpreting small gains. The single-seed
+stop20 noise floor is mean PSNR std `0.2206 dB` and hard-bucket std
+`0.4551 dB`; therefore a single-seed delta below `+0.10 dB` is directional or
+mechanism evidence, not promotion evidence, unless it is backed by a stronger
+matched-budget, multi-seed, OOF, or locked held-out protocol.
+
+Recommended labels:
+
+| Evidence level | Typical evidence | Allowed claim |
+| --- | --- | --- |
+| Directional signal | Small positive mean or subgroup movement, especially below `+0.10 dB` or below the route-specific noise floor | Useful mechanism or routing clue only. |
+| Mechanism-positive diagnostic | Mechanism metric moves as predicted and preservation/cost are acceptable on the declared diagnostic split | Authorize a narrower next diagnostic, not promotion. |
+| Candidate-positive | Matched-budget quality, mechanism, preservation, and cost gates pass on the predeclared validation protocol | Eligible for a locked confirmation or larger budget. |
+| Promotion-ready | Final/locked evaluation passes the written gates without test-set checkpoint or threshold selection | Eligible for code integration or model-line promotion. |
+
+Locked Haze4K test results must not be used to repeatedly choose checkpoints,
+scales, thresholds, or route variants. Select those choices on train-derived
+splits, internal validation, or OOF protocols first; then use the locked test
+only as confirmation. Any accidental test-selected result remains diagnostic
+until a clean fixed-selection rerun is completed.
+
+## Route Family Verdicts
+
+This table is the current family-level reading shortcut. It does not replace
+the route cards or evidence logs; use it to avoid reopening a stopped family
+without a material new reason.
+
+| Family | Current verdict | Reopen condition |
+| --- | --- | --- |
+| [FAM/FAM2 feature modulation](family_summaries/fam_family_summary.md) | Closed for unchanged deployable FAM routing: hard samples can improve, but easy/strong-reference preservation and selector quality failed. | A new deployable selector or preservation guard passes a predeclared held-out diagnostic. |
+| [Hard-frequency and haze-prior loss routes](family_summaries/frequency_prior_family_summary.md) | Closed for the tested weighting/SCM forms: hard movement came with global/easy damage. | A loss route shows target-group gain with explicit strong/easy protection before stop20. |
+| [PFD/RHFD preservation routes](family_summaries/pfd_rhfd_family_summary.md) | Diagnostic only: preservation improved in B1r, but hard-gain and strong-case gates failed. | A new mechanism explains how hard gain is recovered without losing the preservation benefit. |
+| [APDR output residual/action-bank routes](family_summaries/apdr_family_summary.md) | Current broad output-residual and coefficient-mapping forms are stopped; v0.4E OOF did not pass, and exact v0.4E numbers require fixed-code rerun before sealing. | A separately pre-registered safe-subset route passes fixed-code OOF/held-out gates without severe regressions. |
+| [DPGA in-network prior adapters](family_summaries/dpga_family_summary.md) | Active diagnostic family but not promotion-ready: v1.0 was minimum positive directional evidence; v1.1/v1.2/v1.3 failed hard-gain gates. | A new DPGA mechanism, not just scale increase, improves hard bottom-25% gain while preserving regular/easy/strong cases on internal validation. |
 
 ## Route Summary
 
@@ -80,6 +117,7 @@ Retained remote refs:
 | APDR-v0.4D Spatial Coefficient Probe | Completed AutoDL frozen-spatial diagnostic | Frozen ConvIR spatial features improved some K16 mini-val mean/hard rows, but best nonzero rows still had strong/severe regressions such as `4/6` or `7/11`. Same-split confidence fallback found diagnostic positives, including `global_plus_spatial_kenel_knn_9` K16 with keep `23/128`, mean `+0.1541 dB`, hard `+0.4242 dB`, strong/severe `0/0`. | `SPATIAL_PROBE_FAIL_CONFIDENCE_DIAGNOSTIC_ONLY`; authorize only fixed-threshold confirmation, not full router/local correction/stop20. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4d-spatial-coeff-probe.md) | [logs](experiment_logs/haze4k_apdr_v0_4d_spatial_coeff_probe_20260603/) | `codex/haze4k-apdr-v0-4b-mapping-triage` |
 | APDR-v0.4E Risk-Calibrated Selective Action Bank | E0 passed; fixed-code rerun pending | Confirm slice indices `256..383`: Rule A keep `29/128`, mean `+0.1546 dB`, hard `+0.3251 dB`, easy `+0.0562 dB`, strong/severe `0/0`; Rule B keep `45/128`, mean `+0.2141 dB`, hard `+0.4528 dB`, easy `+0.0625 dB`, strong/severe `1/0`. Post-sync audit found `align_coners` and `kenel_size/kenel_size` implementation mismatch, so exact numbers are not sealed until clean fixed-code rerun. | `FIXED_CODE_RERUN_REQUIRED_BEFORE_NUMERIC_SEAL`; no E2/full router/local correction/stop20. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4e-risk-calibrated-action-bank.md) | [logs](experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/), [repro](experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603/) | `codex/haze4k-apdr-v0-4b-mapping-triage` |
 | APDR-v0.4E 5-fold OOF Calibration | E1 failed; fixed-code rerun pending | OOF locked Rule A: keep `239/3000`, mean `+0.0749 dB`, hard `+0.2596 dB`, strong/severe `0/5`, coverage `0.0797`; Rule B: keep `150/3000`, mean `+0.0378 dB`, hard `+0.1352 dB`, strong/severe `0/1`, coverage `0.0500`. Post-hoc low-capacity policy search found `0` gate-passing policies; exact numbers are not sealed until clean fixed-code rerun. | `FIXED_CODE_RERUN_REQUIRED_BEFORE_NUMERIC_SEAL`; do not run E2, full router, local correction, dense residual, or stop20 from current v0.4E. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4e-oof-calibration.md) | [logs](experiment_logs/haze4k_apdr_v0_4e_oof_calibration_20260603/), [repro](experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603/) | `codex/haze4k-apdr-v0-4b-mapping-triage` |
+| DPGA-Lite v1.0 adapter-only | Completed diagnostic; minimum positive direction only | `Best.pkl` mean `+0.0312 dB`, SSIM positive, hard `+0.0146 dB`, easy `+0.0209 dB`, strong-reference regressions `105/250`; exact stop20/final mean `+0.0193 dB` and hard `+0.0037 dB`. | `DPGA_LITE_ADAPTER_ONLY_MIN_POSITIVE_BEST_BORDERLINE_FINAL`; not promotion-ready because effect is small and exact final is borderline. | [card](experiment_cards/2026-06-04-haze4k-convir-v1-0-dpga-lite.md) | [logs](experiment_logs/haze4k_dpga_lite_20260604/) | `codex/haze4k-convir-v1-0-dpga-lite` |
 | DPGA Tail-Control v1.1/v1.2 | Completed diagnostic; locked test blocked | v1.1 Best mean `+0.0370 dB` but hard bottom-25% `+0.0234 dB`; v1.2 Best mean `+0.0427 dB` but hard bottom-25% `+0.0262 dB` and worst `<= -0.20 dB` regressions rose to `16/300`. | `STOP_DPGA_SCALE_ONLY_TAIL_CONTROL`; do not run locked test, and do not launch a higher-scale follow-up without a new diagnostic. | [card](experiment_cards/2026-06-04-haze4k-convir-v1-1-dpga-tail-control.md) | [logs](experiment_logs/haze4k_dpga_tail_control_20260604/) | `codex/haze4k-convir-v1-1-dpga-tail-control` |
 | DPGA-v1.3-HSDF | Completed diagnostic; no locked test | v1.3A fixed the mask mechanism but missed the hard gate. v1.3B hard-gated bottleneck also failed: Best `val_regular` mean `+0.0258 dB`, Best `val_hard` hard bottom-25 `+0.0236 dB`, positive ratio `0.5867`, strong regression ratio `0.2000`. Corrected runtime ablation shows bottleneck-only adds only about `+0.0008 dB` mean. | `FAIL_STOP_V13B_HARD_GATED_BOTTLENECK`; do not run locked Haze4K test or continue HSDF bottleneck as-is. Use only the diagnostics for a separately justified route. | [card](experiment_cards/2026-06-04-haze4k-convir-v1-3-hsdf.md) | [logs](experiment_logs/haze4k_dpga_v13_hsdf_20260604/) | `codex/haze4k-convir-v1-3-hard-selective-depth-fusion` |
 
@@ -119,6 +157,7 @@ Retained remote refs:
 | `experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/` | 13 | APDR-v0.4E locked-threshold E0 action-bank audit, candidate-action table, per-image action table, risk-feature AUC, calibration curve, accepted/rejected groups, failure signatures, logs, and launch scripts. |
 | `experiment_logs/haze4k_apdr_v0_4e_oof_calibration_20260603/` | 18 | APDR-v0.4E 5-fold OOF calibration, fold assignments, OOF candidate-action table, locked-rule fold summaries, risk AUC, post-hoc low-capacity policy search, failure signatures, logs, and launch scripts. |
 | `experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603/` | 1 | APDR-v0.4E post-sync reproducibility audit documenting `ed38afb` implementation mismatch, local static fix, tool hashes, and required clean AutoDL rerun commands. |
+| `experiment_logs/haze4k_dpga_lite_20260604/` | 17 | DPGA-Lite v1.0 depth-cache command/status, adapter-only stop20 launch script/status, full-test A0 comparison JSON, bucket analyses, and per-image CSV tables. |
 | `experiment_logs/haze4k_dpga_tail_control_20260604/` | 60 | DPGA runtime diagnostics, v1.1/v1.2 launch decisions, train logs, `val_inner` gates, per-image tables, failure analyses, and watcher transcripts. |
 | `experiment_logs/haze4k_dpga_v13_hsdf_20260604/` | 65+ | DPGA v1.3A/v1.3B split generator, intermediate audits, train logs, regular+hard gates, corrected route-scale runtime ablations, and archived bugged intermediate logs. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
@@ -153,14 +192,14 @@ The active conclusion is conservative:
   budget remains too open on easy images, so residual training is still blocked.
 - APDR-v0.2RC showed that a train-only conservative budget can close
   easy/strong-reference images, but the single-head budget fails held-out
-  calibration BCE; do not launch residual until hard-open and easy-veto behavio
+  calibration BCE; do not launch residual until hard-open and easy-veto behavior
   are decoupled.
 - APDR-v0.4 diagnostics changed the next actionable route: `M_safe`,
   low-frequency target/application, and train-calibrated correctability are
   useful assets; color, crop recompute, toy residual heads, direct SHED, and
   hard-frequency/detail routes stay blocked.
 - APDR-v0.4A low-field-only is not stop20-authorized. Sigma `3.0` has enough
-  alignment evidence, but LowFieldNet-v1 failed overfit32 leanability for both
+  alignment evidence, but LowFieldNet-v1 failed overfit32 learnability for both
   sigma `3.0` and sigma `7.0`. Failure-branch diagnostics show ID embedding
   passes but deployable basis, basis+local, and veil forms do not pass Gate B;
   do not proceed to Gate C/stop20 without deriving better bases or mappings
@@ -179,16 +218,19 @@ The active conclusion is conservative:
   train confirm slice. This authorizes OOF calibration only; full spatial
   router training, local correction, dense residual heads, and stop20 remain
   blocked unless OOF calibration and a locked held-out policy gate pass.
-- APDR-v0.4E E1 OOF calibration failed. The fixed E0 thresholds do not clea
+- APDR-v0.4E E1 OOF calibration failed. The fixed E0 thresholds do not clear
   OOF severe/coverage gates, and a post-hoc low-capacity OOF threshold search
   found no policy passing the written E1 line. The current v0.4E locked
   thresholds are stopped; only a separately pre-registered safe-subset route
   could be considered later.
+- DPGA-Lite v1.0 gives a minimum positive in-network prior-adapter direction,
+  but its effect is small relative to the noise-aware policy and exact
+  stop20/final is borderline; treat it as directional evidence, not promotion.
 - DPGA tail-control v1.1/v1.2 is stopped as a scale-only route. Both runs
   moved mean PSNR positively on `val_inner`, but both missed hard bottom-25%
   gain; v1.2 also increased worst-tail regressions, so locked test remains
   blocked.
-- DPGA-v1.3-HSDF completed v1.3A and v1.3B intenal diagnostics. v1.3B
+- DPGA-v1.3-HSDF completed v1.3A and v1.3B internal diagnostics. v1.3B
   hard-gated bottleneck stayed safe-ish but failed the regular+hard pass line,
   and corrected runtime ablation shows the bottleneck contributed almost no
   useful gain at route scale. Locked Haze4K test remains blocked; stop this

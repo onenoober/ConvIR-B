@@ -157,6 +157,9 @@ Route-specific additions:
 - Allowed resume behavior:
 - Sample-size policy:
 - Dependency/version assumptions:
+- Noise floor or minimum effect size for this route:
+- Locked evaluation policy:
+- Exception budget, if any:
 
 ConvIR-B default budget ladder:
 
@@ -198,4 +201,6 @@ ConvIR-B default budget ladder:
 - Mechanism reason:
 - Preservation or regression reason:
 - Cost/deployability reason:
+- Evidence strength label:
+- Reopen condition, if any:
 - What this decides next:

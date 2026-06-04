@@ -2,7 +2,7 @@
 
 Date: 2026-06-04
 
-Status: v1.3A and v1.3B intenal diagnostics completed; v1.3B failed the regular+hard gate. Training/testing execute only on AutoDL `autodl-dehaze4`.
+Status: v1.3A and v1.3B internal diagnostics completed; v1.3B failed the regular+hard gate. Training/testing execute only on AutoDL `autodl-dehaze4`.
 
 ## Purpose
 
@@ -38,7 +38,7 @@ v1.3B was authorized only because v1.3A missed the hard gate while preserving sa
 
 Passing v1.3A does not unlock Haze4K test. It decides whether loss-mask correction is enough, or whether v1.3B should add the hard-gated bottleneck expert.
 
-v1.3A did not pass: Best `val_regular` mean was `+0.026333 dB` and Best `val_hard` hard bottom-25 was `+0.022099 dB`. Safety remained acceptable, so v1.3B was run as the next intenal diagnostic.
+v1.3A did not pass: Best `val_regular` mean was `+0.026333 dB` and Best `val_hard` hard bottom-25 was `+0.022099 dB`. Safety remained acceptable, so v1.3B was run as the next internal diagnostic.
 
 v1.3B also did not pass: Best `val_regular` mean was `+0.025839 dB`, Best `val_hard` hard bottom-25 was `+0.023642 dB`, positive ratio was `0.586667`, and strong regression ratio was `0.200000`. Corrected route-scale runtime ablation shows bottleneck-only mean delta was only about `+0.000824 dB`, so the hard-gated bottleneck did not add useful capacity.
 

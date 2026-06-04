@@ -2,13 +2,13 @@
 
 Date: 2026-06-04
 
-Status: v1.3A and v1.3B intenal diagnostics completed; v1.3B failed the regular+hard gate; locked Haze4K test blocked.
+Status: v1.3A and v1.3B internal diagnostics completed; v1.3B failed the regular+hard gate; locked Haze4K test blocked.
 
 ## Scope
 
 - Project: ConvIR-B Haze4K dehazing.
 - Model family: DPGA in-network depth/prior-guided adapter.
-- Dataset or task: Haze4K train-derived intenal splits.
+- Dataset or task: Haze4K train-derived internal splits.
 - Primary objective: recover hard-bottom samples without reviving easy/tail regressions.
 - Execution environment: AutoDL `autodl-dehaze4`; local work is compile-only.
 - Artifact root: `experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/`.
@@ -21,7 +21,7 @@ Status: v1.3A and v1.3B intenal diagnostics completed; v1.3B failed the regular+
 - Training entrypoint: `Dehazing/ITS/main.py --arch dpga --mode train`.
 - Evaluation entrypoint: `experience_docx/tools/eval_haze4k_checkpoint_compare.py`.
 - Split policy: generate `train_inner`, `val_regular`, and `val_hard` before training; no locked Haze4K test in v1.3A.
-- Checkpoint contract: select only on intenal regular+hard gate; Best/Final must both be reported.
+- Checkpoint contract: select only on internal regular+hard gate; Best/Final must both be reported.
 
 ## Most Valuable Attempt
 
@@ -68,7 +68,7 @@ If `high_anchor` is allowed only on easy/strong-reference images while hard imag
 | split generation | `train_inner`, `val_regular`, `val_hard`, A0 buckets written | pass; `intenal_val/haze4k_dpga_v13_regular_hard_seed3407.json` |
 | tail mask audit | hard bucket no longer has legacy near-global protection under hard-selective mask | pass; `intermediates/dpga_v13_tail_mask_audit_by_bucket.csv` |
 | hard proxy audit | deployable proxy AUC table written | pass; `intermediates/dpga_v13_hard_proxy_auc.csv` |
-| no locked test | all commands use train-derived intenal splits | pass; locked Haze4K test not run |
+| no locked test | all commands use train-derived internal splits | pass; locked Haze4K test not run |
 
 ## v1.3A Result
 
@@ -106,7 +106,7 @@ The first v1.3B launch at `2026-06-04T16:35:27+08:00` was stopped because the an
 | Final `val_regular` mean delta | `+0.025573 dB` | `>= 0` | pass |
 | Final `val_hard` mean delta | `+0.024423 dB` | `>= 0` | pass |
 
-Decision: v1.3B remains safe-ish on intenal splits but does not improve hard recovery beyond v1.3A and fails the written pass line. It does not authorize locked Haze4K test. Treat current HSDF hard-gated bottleneck as a completed diagnostic, not a promotion route.
+Decision: v1.3B remains safe-ish on internal splits but does not improve hard recovery beyond v1.3A and fails the written pass line. It does not authorize locked Haze4K test. Treat current HSDF hard-gated bottleneck as a completed diagnostic, not a promotion route.
 
 Corrected runtime ablation at the route scale `0.25` shows the bottleneck path added very little: Best `all_adapters` mean/hard/easy deltas were `+0.025839 / +0.020272 / +0.022205 dB`, while `no_bottleneck` was `+0.025112 / +0.018995 / +0.022434 dB` and `bottleneck_only` was only `+0.000824 / +0.001295 / -0.000103 dB`. The earlier runtime-ablation outputs that accidentally used module scale `1.0` are archived under `.scale1_bug_20260604T1725`.
 

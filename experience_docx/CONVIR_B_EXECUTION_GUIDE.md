@@ -14,6 +14,12 @@ The current phase is baseline establishment. Do not modify the model until the
 official or repository-provided pretrained checkpoint has been evaluated in the
 local environment and any reproduction gap has a written explanation.
 
+Current runtime overlay for this checkout: the WSL copy is for editing and
+compile/static checks only. Run smoke tests, training, evaluation, inference,
+and other runtime validation on the configured cloud server. In older notes,
+"local baseline" means the baseline measured in the active runtime environment,
+not necessarily the WSL machine.
+
 ## Required Order
 
 1. Download the official pretrained model for each target task from the root
@@ -164,6 +170,13 @@ Default training-budget ladder:
 Use the same budget ladder for the baseline learning curve when training is part
 of the comparison. A candidate cannot be called faster unless it is compared
 with the matched baseline point at the same epoch, step, or wall-clock budget.
+
+Interpret small deltas against the route-specific noise floor. For current
+Haze4K stop20 work, `EXPERIMENT_INDEX.md` records seed mean PSNR std
+`0.2206 dB` and hard-bucket std `0.4551 dB`; single-seed deltas below
+`+0.10 dB` are directional or mechanism evidence by default, not promotion
+evidence. Use internal validation, OOF, multi-seed, or locked confirmation
+before treating such gains as candidate-positive.
 
 ## Default Gates For CSD Desnowing
 

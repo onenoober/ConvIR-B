@@ -43,6 +43,8 @@ Sync these paths from the route branch to `main`:
 - `experience_docx/experiment_logs/<route_id>/*.txt`
 - `experience_docx/experiment_logs/<route_id>/*.out`
 - `experience_docx/experiment_logs/<route_id>/*.sh`
+- `experience_docx/family_summaries/*.md` when the route changes a family
+  verdict, do-not-repeat rule, or reopen condition.
 - `docs/ai_text_packages/<route_id>/` when a compact public text package is
   useful.
 
@@ -79,6 +81,8 @@ git restore --source=github/codex/<route> -- \
 Then update:
 
 - `experience_docx/EXPERIMENT_INDEX.md`
+- `experience_docx/family_summaries/<family>_summary.md` when the route changes
+  a family-level verdict or reopening condition;
 - `docs/ai_text_packages/<summary_or_route>/` if the route should be compactly
   readable by AI from a public link.
 
