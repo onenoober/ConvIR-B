@@ -1,0 +1,47 @@
+watch_and_launch_start 2026-06-04T12:52:26+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control
+module_csv=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/runtime_diagnostics/dpga_module_ablation_best_final.csv
+scale_csv=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/runtime_diagnostics/dpga_scale_sweep_best_final.csv
+waiting_for_diagnostics elapsed=0s pid=7811 2026-06-04T12:52:26+08:00
+waiting_for_diagnostics elapsed=60s pid=7811 2026-06-04T12:53:26+08:00
+waiting_for_diagnostics elapsed=120s pid=7811 2026-06-04T12:54:26+08:00
+waiting_for_diagnostics elapsed=180s pid=7811 2026-06-04T12:55:26+08:00
+waiting_for_diagnostics elapsed=240s pid=7811 2026-06-04T12:56:26+08:00
+waiting_for_diagnostics elapsed=300s pid=7811 2026-06-04T12:57:26+08:00
+waiting_for_diagnostics elapsed=360s pid=7811 2026-06-04T12:58:26+08:00
+waiting_for_diagnostics elapsed=420s pid=7811 2026-06-04T12:59:26+08:00
+waiting_for_diagnostics elapsed=480s pid=7811 2026-06-04T13:00:26+08:00
+waiting_for_diagnostics elapsed=540s pid=7811 2026-06-04T13:01:26+08:00
+waiting_for_diagnostics elapsed=600s pid=7811 2026-06-04T13:02:26+08:00
+waiting_for_diagnostics elapsed=660s pid=7811 2026-06-04T13:03:26+08:00
+waiting_for_diagnostics elapsed=720s pid=7811 2026-06-04T13:04:26+08:00
+waiting_for_diagnostics elapsed=780s pid=7811 2026-06-04T13:05:26+08:00
+waiting_for_diagnostics elapsed=840s pid=7811 2026-06-04T13:06:27+08:00
+diagnostics_csv_ready elapsed=901s 2026-06-04T13:07:27+08:00
+decide_dpga_v1_1_training_start 2026-06-04T13:07:27+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control
+diagnostics=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/runtime_diagnostics
+{
+  "launch_allowed": true,
+  "launch_blockers": [],
+  "model_name": "ConvIR-Haze4K-DPGA-v1.1-tail-control-shallow-scale0p25-seed3407-20260604",
+  "active_adapters": "shallow",
+  "scale_multiplier": 0.25,
+  "decision_json": "/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_1_decision/dpga_v1_1_training_decision.json",
+  "decision_md": "/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_1_decision/dpga_v1_1_training_decision.md"
+}
+decide_dpga_v1_1_training_done 2026-06-04T13:07:27+08:00
+v1_1_decision_json=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_1_decision/dpga_v1_1_training_decision.json
+v1_1_decision_md=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_1_decision/dpga_v1_1_training_decision.md
+v1_1_train_start ConvIR-Haze4K-DPGA-v1.1-tail-control-shallow-scale0p25-seed3407-20260604 2026-06-04T13:07:27+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+split_json=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/internal_val/haze4k_train_inner_val_inner_seed3407.json
+decision_json=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_1_decision/dpga_v1_1_training_decision.json
+active_adapters=shallow
+scale_multiplier=0.25
+tail_control=rec:charbonnier fft:0.05 anchor:0.08 chroma:0.03 delta:0.0002 tv:5e-05
+v1_1_train_done ConvIR-Haze4K-DPGA-v1.1-tail-control-shallow-scale0p25-seed3407-20260604 rc=0 2026-06-04T13:36:31+08:00
+watch_and_launch_done 2026-06-04T13:36:31+08:00

@@ -1,0 +1,11 @@
+v1_2_train_start ConvIR-Haze4K-DPGA-v1.2-hard-gain-shallow-scale0p5-anchor0p04-seed3407-20260604 2026-06-04T13:54:07+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+split_json=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/internal_val/haze4k_train_inner_val_inner_seed3407.json
+decision_json=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_2_decision/dpga_v1_2_training_decision.json
+active_adapters=shallow
+scale_multiplier=0.5
+tail_control=rec:charbonnier fft:0.05 anchor:0.04 chroma:0.03 delta:0.00025 tv:5e-05
+v1_2_train_done ConvIR-Haze4K-DPGA-v1.2-hard-gain-shallow-scale0p5-anchor0p04-seed3407-20260604 rc=0 2026-06-04T14:23:05+08:00

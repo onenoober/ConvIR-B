@@ -24,13 +24,20 @@ def _forward(model, input_img, depth, args):
 
 def _valid(model, args, ep):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    split_json = getattr(args, "dpga_valid_split_json", "")
+    split_name = getattr(args, "dpga_valid_split_name", "")
+    depth_split = getattr(args, "dpga_eval_depth_split", "test")
+    if getattr(args, "arch", "convir") == "dpga" and split_json and split_name and depth_split == "test":
+        depth_split = "train"
     dataset = valid_dataloader(
         args.data_dir,
         args.data,
         batch_size=1,
         num_workers=0,
         depth_cache_dir=_dpga_depth_cache_dir(args),
-        depth_split=getattr(args, "dpga_eval_depth_split", "test"),
+        depth_split=depth_split,
+        split_json=split_json,
+        split_name=split_name,
     )
     model.eval()
     psnr_adder = Adder()

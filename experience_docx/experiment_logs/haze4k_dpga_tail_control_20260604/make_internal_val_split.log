@@ -1,0 +1,24 @@
+make_internal_val_split_start 2026-06-04T12:06:28+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+output=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/internal_val/haze4k_train_inner_val_inner_seed3407.json
+/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/tools/make_haze4k_internal_val_split.py:33: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  pixels = list(image.getdata())
+{
+  "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+  "source_split": "train",
+  "seed": 3407,
+  "total_count": 3000,
+  "train_inner_count": 2700,
+  "val_inner_count": 300,
+  "val_count_requested": 300,
+  "stratification": [
+    "input brightness quantile",
+    "input gradient quantile",
+    "bright-low-gradient proxy",
+    "low-saturation-bright proxy"
+  ],
+  "note": "Use train_inner for training and val_inner for checkpoint/scale selection. Do not select Best on Haze4K test."
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/internal_val/haze4k_train_inner_val_inner_seed3407.json
+make_internal_val_split_done 2026-06-04T12:07:24+08:00

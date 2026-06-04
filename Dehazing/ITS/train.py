@@ -16,7 +16,14 @@ def _log_modulation_stats(model, args, epoch_idx, device):
     if not hasattr(model, 'collect_modulation_stats'):
         return
 
-    dataloader = valid_dataloader(args.data_dir, args.data, batch_size=1, num_workers=0)
+    dataloader = valid_dataloader(
+        args.data_dir,
+        args.data,
+        batch_size=1,
+        num_workers=0,
+        split_json=getattr(args, "dpga_valid_split_json", ""),
+        split_name=getattr(args, "dpga_valid_split_name", ""),
+    )
     sums = {}
     count = 0
     model.eval()
@@ -84,13 +91,132 @@ def _pad_to_factor(input_img, factor=32):
     return input_img
 
 
+def _charbonnier_loss(pred, target, mask=None, eps=1e-3):
+    loss = torch.sqrt((pred - target) * (pred - target) + eps * eps)
+    if mask is None:
+        return loss.mean()
+    if mask.shape[1] == 1 and pred.shape[1] != 1:
+        mask = mask.expand(-1, pred.shape[1], -1, -1)
+    denom = mask.sum().clamp_min(1.0)
+    return (loss * mask).sum() / denom
+
+
+def _gradient_magnitude_1ch(x):
+    grad_x = F.pad((x[:, :, :, 1:] - x[:, :, :, :-1]).abs(), (0, 1, 0, 0))
+    grad_y = F.pad((x[:, :, 1:, :] - x[:, :, :-1, :]).abs(), (0, 0, 0, 1))
+    return torch.sqrt(grad_x * grad_x + grad_y * grad_y + 1e-12)
+
+
+def _luma(x):
+    return 0.299 * x[:, 0:1] + 0.587 * x[:, 1:2] + 0.114 * x[:, 2:3]
+
+
+def _chroma(x):
+    return x - _luma(x)
+
+
+def _tail_anchor_mask(input_img, anchor_img, label_img, args):
+    gray = _luma(input_img.detach())
+    grad = _gradient_magnitude_1ch(gray)
+    max_rgb = input_img.detach().max(dim=1, keepdim=True).values
+    min_rgb = input_img.detach().min(dim=1, keepdim=True).values
+    saturation = max_rgb - min_rgb
+    anchor_error = (anchor_img.detach() - label_img.detach()).abs().mean(dim=1, keepdim=True)
+
+    high_anchor = anchor_error <= float(args.dpga_tc_anchor_error_threshold)
+    bright_low_gradient = (gray >= 0.62) & (grad <= 0.035)
+    low_saturation_bright = (gray >= 0.58) & (saturation <= 0.12)
+    sky_bright_proxy = (gray >= 0.66) & (grad <= 0.05) & (saturation <= 0.20)
+    mask = high_anchor | bright_low_gradient | low_saturation_bright | sky_bright_proxy
+    mask = mask.to(dtype=input_img.dtype)
+    stats = {
+        "mask_ratio": mask.mean().detach(),
+        "high_anchor_ratio": high_anchor.to(dtype=input_img.dtype).mean().detach(),
+        "sky_ratio": sky_bright_proxy.to(dtype=input_img.dtype).mean().detach(),
+    }
+    return mask, stats
+
+
+def _total_variation_loss(delta):
+    grad_x = (delta[:, :, :, 1:] - delta[:, :, :, :-1]).abs().mean()
+    grad_y = (delta[:, :, 1:, :] - delta[:, :, :-1, :]).abs().mean()
+    return grad_x + grad_y
+
+
+def _reconstruction_loss(pred, target, args):
+    if getattr(args, "arch", "convir") == "dpga" and args.dpga_tc_rec_loss == "charbonnier":
+        return _charbonnier_loss(pred, target)
+    return F.l1_loss(pred, target)
+
+
+def _dpga_tail_control_enabled(args):
+    return (
+        getattr(args, "arch", "convir") == "dpga"
+        and (
+            args.dpga_tc_anchor_lambda > 0
+            or args.dpga_tc_chroma_lambda > 0
+            or args.dpga_tc_delta_lambda > 0
+            or args.dpga_tc_delta_tv_lambda > 0
+        )
+    )
+
+
+def _dpga_anchor_forward(model, input_img, depth):
+    if not hasattr(model, "set_dpga_runtime_config"):
+        raise RuntimeError("DPGA tail-control anchor requires set_dpga_runtime_config().")
+    active_adapters = set(getattr(model, "dpga_active_adapters", set()))
+    scale_multiplier = float(getattr(model, "dpga_scale_multiplier", 1.0))
+    last_stats = {}
+    for name, module in model.named_modules():
+        if hasattr(module, "_last_stats"):
+            last_stats[name] = dict(getattr(module, "_last_stats", {}))
+    try:
+        model.set_dpga_runtime_config(active_adapters="none", scale_multiplier=0.0)
+        with torch.no_grad():
+            anchor = model(input_img, depth)[2].detach()
+    finally:
+        model.set_dpga_runtime_config(
+            active_adapters=active_adapters,
+            scale_multiplier=scale_multiplier,
+        )
+        for name, module in model.named_modules():
+            if name in last_stats:
+                module._last_stats = last_stats[name]
+    return anchor
+
+
+def _dpga_tail_control_regularization(model, input_img, label_img, depth, pred_full, args):
+    if not _dpga_tail_control_enabled(args):
+        return {}, None
+
+    anchor = _dpga_anchor_forward(model, input_img, depth)
+    mask, mask_stats = _tail_anchor_mask(input_img, anchor, label_img, args)
+    delta = pred_full - anchor
+    zero_delta = torch.zeros_like(delta)
+    reg = {
+        "dpga_tc_anchor": _charbonnier_loss(pred_full, anchor, mask=mask),
+        "dpga_tc_chroma": _charbonnier_loss(_chroma(pred_full), _chroma(anchor), mask=mask),
+        "dpga_tc_delta": _charbonnier_loss(delta, zero_delta),
+        "dpga_tc_delta_tv": _total_variation_loss(delta),
+    }
+    reg.update(mask_stats)
+    return reg, anchor
+
+
 def _log_apdr_stats(model, args, epoch_idx, device):
     if args.mod_stats_freq <= 0 or epoch_idx % args.mod_stats_freq != 0:
         return
     if not hasattr(model, 'collect_apdr_stats'):
         return
 
-    dataloader = valid_dataloader(args.data_dir, args.data, batch_size=1, num_workers=0)
+    dataloader = valid_dataloader(
+        args.data_dir,
+        args.data,
+        batch_size=1,
+        num_workers=0,
+        split_json=getattr(args, "dpga_valid_split_json", ""),
+        split_name=getattr(args, "dpga_valid_split_name", ""),
+    )
     sums = {}
     count = 0
     was_training = model.training
@@ -255,7 +381,13 @@ def _train(model, args):
 
     trainable_params = _configure_train_scope(model, args)
     _set_training_mode(model, args)
-    optimizer = torch.optim.Adam(trainable_params, lr=args.learning_rate, betas=(0.9, 0.999), eps=1e-8)
+    optimizer = torch.optim.Adam(
+        trainable_params,
+        lr=args.learning_rate,
+        betas=(0.9, 0.999),
+        eps=1e-8,
+        weight_decay=args.weight_decay,
+    )
     dataloader = train_dataloader(
         args.data_dir,
         args.batch_size,
@@ -263,6 +395,8 @@ def _train(model, args):
         args.data,
         depth_cache_dir=_dpga_depth_cache_dir(args),
         depth_split=getattr(args, "dpga_train_depth_split", "train"),
+        split_json=getattr(args, "dpga_train_split_json", ""),
+        split_name=getattr(args, "dpga_train_split_name", ""),
     )
     max_iter = len(dataloader)
     warmup_epochs=3
@@ -318,7 +452,7 @@ def _train(model, args):
                 ]
                 apdr_targets = [label_img4, label_img2, label_img]
 
-            loss_content = sum(criterion(pred, target) for pred, target in scale_pairs)
+            loss_content = sum(_reconstruction_loss(pred, target, args) for pred, target in scale_pairs)
             loss_fft_terms = []
             for pred, target in scale_pairs:
                 label_fft = torch.fft.fft2(target, dim=(-2,-1))
@@ -328,11 +462,30 @@ def _train(model, args):
                 loss_fft_terms.append(criterion(pred_fft, label_fft))
             loss_fft = sum(loss_fft_terms)
 
-            loss = loss_content + 0.1 * loss_fft
+            fft_weight = args.dpga_tc_fft_lambda if getattr(args, "arch", "convir") == "dpga" else 0.1
+            loss = loss_content + fft_weight * loss_fft
             apdr_reg = {}
             if hasattr(model, 'apdr_regularization'):
                 apdr_reg = model.apdr_regularization()
             apdr_train_reg = {}
+            dpga_tc_reg = {}
+            if getattr(args, "arch", "convir") == "dpga":
+                dpga_tc_reg, _anchor = _dpga_tail_control_regularization(
+                    model,
+                    input_img,
+                    label_img,
+                    depth,
+                    pred_img[2],
+                    args,
+                )
+                if dpga_tc_reg:
+                    loss = (
+                        loss
+                        + args.dpga_tc_anchor_lambda * dpga_tc_reg["dpga_tc_anchor"]
+                        + args.dpga_tc_chroma_lambda * dpga_tc_reg["dpga_tc_chroma"]
+                        + args.dpga_tc_delta_lambda * dpga_tc_reg["dpga_tc_delta"]
+                        + args.dpga_tc_delta_tv_lambda * dpga_tc_reg["dpga_tc_delta_tv"]
+                    )
             if hasattr(model, 'apdr_training_regularization') and getattr(args, "arch", "convir") == "apdr":
                 apdr_train_reg = model.apdr_training_regularization(
                     apdr_targets,
@@ -372,11 +525,25 @@ def _train(model, args):
                         apdr_train_reg.get("apdr_gate", 0.0).detach().item(),
                         apdr_train_reg.get("apdr_residual", 0.0).detach().item(),
                     )
+                dpga_tc_detail = ""
+                if dpga_tc_reg:
+                    dpga_tc_detail = (
+                        " DPGA_TC anchor: %.8f chroma: %.8f delta: %.8f "
+                        "delta_tv: %.8f mask: %.8f high_anchor: %.8f sky: %.8f"
+                    ) % (
+                        dpga_tc_reg["dpga_tc_anchor"].detach().item(),
+                        dpga_tc_reg["dpga_tc_chroma"].detach().item(),
+                        dpga_tc_reg["dpga_tc_delta"].detach().item(),
+                        dpga_tc_reg["dpga_tc_delta_tv"].detach().item(),
+                        dpga_tc_reg["mask_ratio"].detach().item(),
+                        dpga_tc_reg["high_anchor_ratio"].detach().item(),
+                        dpga_tc_reg["sky_ratio"].detach().item(),
+                    )
                 print(("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f "
-                       "Loss content: %7.4f Loss fft: %7.4f%s") % (
+                       "Loss content: %7.4f Loss fft: %7.4f%s%s") % (
                     iter_timer.toc(), epoch_idx, iter_idx + 1, max_iter,
                     scheduler.get_lr()[0], iter_pixel_adder.average(),
-                    iter_fft_adder.average(), apdr_detail))
+                    iter_fft_adder.average(), apdr_detail, dpga_tc_detail))
                 writer.add_scalar('Pixel Loss', iter_pixel_adder.average(), iter_idx + (epoch_idx-1)* max_iter)
                 writer.add_scalar('FFT Loss', iter_fft_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 

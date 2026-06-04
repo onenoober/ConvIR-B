@@ -27,6 +27,8 @@ def build_model(args):
             adapter_bootstrap_scale=args.dpga_adapter_bootstrap_scale,
             dark_patch=args.dpga_dark_patch,
             local_patch=args.dpga_local_patch,
+            active_adapters=args.dpga_active_adapters,
+            scale_multiplier=args.dpga_scale_multiplier,
         )
     if args.fam_mode != 'original':
         raise ValueError('--fam_mode must stay original when --arch apdr is used.')
@@ -188,6 +190,10 @@ if __name__ == '__main__':
     parser.add_argument('--dpga_depth_cache_dir', default='', type=str)
     parser.add_argument('--dpga_train_depth_split', default='train', type=str)
     parser.add_argument('--dpga_eval_depth_split', default='test', type=str)
+    parser.add_argument('--dpga_train_split_json', default='', type=str)
+    parser.add_argument('--dpga_train_split_name', default='', type=str)
+    parser.add_argument('--dpga_valid_split_json', default='', type=str)
+    parser.add_argument('--dpga_valid_split_name', default='', type=str)
     parser.add_argument(
         '--dpga_train_scope',
         default='adapter_only',
@@ -201,6 +207,20 @@ if __name__ == '__main__':
     parser.add_argument('--dpga_adapter_bootstrap_scale', default=0.01, type=float)
     parser.add_argument('--dpga_dark_patch', default=15, type=int)
     parser.add_argument('--dpga_local_patch', default=31, type=int)
+    parser.add_argument('--dpga_active_adapters', default='all', type=str)
+    parser.add_argument('--dpga_scale_multiplier', default=1.0, type=float)
+    parser.add_argument(
+        '--dpga_tc_rec_loss',
+        default='l1',
+        choices=['l1', 'charbonnier'],
+        type=str,
+    )
+    parser.add_argument('--dpga_tc_fft_lambda', default=0.1, type=float)
+    parser.add_argument('--dpga_tc_anchor_lambda', default=0.0, type=float)
+    parser.add_argument('--dpga_tc_chroma_lambda', default=0.0, type=float)
+    parser.add_argument('--dpga_tc_delta_lambda', default=0.0, type=float)
+    parser.add_argument('--dpga_tc_delta_tv_lambda', default=0.0, type=float)
+    parser.add_argument('--dpga_tc_anchor_error_threshold', default=0.035, type=float)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
     parser.add_argument('--data_dir', type=str, default='')

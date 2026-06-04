@@ -47,6 +47,8 @@ def build_model(arch, mode, args, prefix):
             adapter_bootstrap_scale=getattr(args, f"{prefix}_dpga_adapter_bootstrap_scale"),
             dark_patch=getattr(args, f"{prefix}_dpga_dark_patch"),
             local_patch=getattr(args, f"{prefix}_dpga_local_patch"),
+            active_adapters=getattr(args, f"{prefix}_dpga_active_adapters"),
+            scale_multiplier=getattr(args, f"{prefix}_dpga_scale_multiplier"),
         )
     if arch == "apdr":
         return build_apdr_net(
@@ -96,13 +98,18 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
     model.load_state_dict(load_model_state(checkpoint, device))
     model.eval()
 
+    depth_split = args.dpga_eval_depth_split
+    if arch == "dpga" and args.split_json and args.split_name and depth_split == "test":
+        depth_split = "train"
     dataloader = test_dataloader(
         data_dir,
         "Haze4K",
         batch_size=1,
         num_workers=0,
         depth_cache_dir=dpga_depth_cache_dir(args, prefix, arch),
-        depth_split=args.dpga_eval_depth_split,
+        depth_split=depth_split,
+        split_json=args.split_json,
+        split_name=args.split_name,
     )
     factor = 32
     rows = []
@@ -210,6 +217,8 @@ def main():
     parser.add_argument("--candidate_apdr_residual_capacity", default="linear", choices=["linear", "shallow_mlp"])
     parser.add_argument("--dpga_depth_cache_dir", default="")
     parser.add_argument("--dpga_eval_depth_split", default="test")
+    parser.add_argument("--split_json", default="")
+    parser.add_argument("--split_name", default="")
     parser.add_argument("--original_dpga_depth_cache_dir", default="")
     parser.add_argument("--candidate_dpga_depth_cache_dir", default="")
     parser.add_argument("--original_dpga_prior_embed_channels", type=int, default=16)
@@ -226,6 +235,10 @@ def main():
     parser.add_argument("--candidate_dpga_dark_patch", type=int, default=15)
     parser.add_argument("--original_dpga_local_patch", type=int, default=31)
     parser.add_argument("--candidate_dpga_local_patch", type=int, default=31)
+    parser.add_argument("--original_dpga_active_adapters", default="all")
+    parser.add_argument("--candidate_dpga_active_adapters", default="all")
+    parser.add_argument("--original_dpga_scale_multiplier", type=float, default=1.0)
+    parser.add_argument("--candidate_dpga_scale_multiplier", type=float, default=1.0)
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
     args = parser.parse_args()
@@ -253,6 +266,10 @@ def main():
     deltas = [candidate[name]["psnr"] - original[name]["psnr"] for name in common]
     ssim_deltas = [candidate[name]["ssim"] - original[name]["ssim"] for name in common]
 
+    sorted_by_original = sorted(common, key=lambda name: original[name]["psnr"])
+    bucket_count = max(1, len(common) // 4)
+    hard = sorted_by_original[:bucket_count]
+    easy = sorted_by_original[-bucket_count:]
     strong_cut = percentile([original[name]["psnr"] for name in common], 75)
     strong = [name for name in common if original[name]["psnr"] >= strong_cut]
     strong_regressions = [
@@ -272,6 +289,12 @@ def main():
             "median_psnr_delta": statistics.median(deltas),
             "p5_psnr_delta": percentile(deltas, 5),
             "p95_psnr_delta": percentile(deltas, 95),
+            "hard_bottom25_psnr_delta": statistics.mean(
+                candidate[name]["psnr"] - original[name]["psnr"] for name in hard
+            ),
+            "easy_top25_psnr_delta": statistics.mean(
+                candidate[name]["psnr"] - original[name]["psnr"] for name in easy
+            ),
             "worst10pct_mean_psnr_delta": statistics.mean(sorted_deltas[:tail_count]),
             "best10pct_mean_psnr_delta": statistics.mean(sorted_deltas[-tail_count:]),
             "worst10img_mean_psnr_delta": statistics.mean(sorted_deltas[:10]),
@@ -279,6 +302,7 @@ def main():
             "worst10_mean_psnr_delta": statistics.mean(sorted_deltas[:tail_count]),
             "best10_mean_psnr_delta": statistics.mean(sorted_deltas[-tail_count:]),
             "mean_ssim_delta": statistics.mean(ssim_deltas),
+            "positive_ratio": sum(delta > 0 for delta in deltas) / len(deltas),
             "strong_reference_cut_psnr": strong_cut,
             "strong_reference_count": len(strong),
             "strong_regression_count_delta_le_-0.05": len(strong_regressions),

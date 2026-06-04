@@ -56,6 +56,27 @@ def build_dpga_prior_maps(x, depth, dark_patch=15, local_patch=31):
     )
 
 
+DPGA_ADAPTER_NAMES = ("shallow", "bottleneck", "skip")
+
+
+def parse_dpga_active_adapters(active_adapters):
+    if active_adapters is None:
+        active_adapters = "all"
+    if isinstance(active_adapters, str):
+        value = active_adapters.strip().lower()
+        if value in ("", "all"):
+            return set(DPGA_ADAPTER_NAMES)
+        if value in ("none", "off", "zero"):
+            return set()
+        names = {item.strip().lower() for item in value.split(",") if item.strip()}
+    else:
+        names = {str(item).strip().lower() for item in active_adapters if str(item).strip()}
+    unknown = sorted(names.difference(DPGA_ADAPTER_NAMES))
+    if unknown:
+        raise ValueError(f"Unknown DPGA adapters: {unknown}; expected any of {DPGA_ADAPTER_NAMES}")
+    return names
+
+
 class DPGALiteAdapter(nn.Module):
     def __init__(
         self,
@@ -90,8 +111,9 @@ class DPGALiteAdapter(nn.Module):
         self.bootstrap_scale = float(bootstrap_scale)
         nn.init.zeros_(self.project.weight)
         nn.init.zeros_(self.project.bias)
+        self._last_stats = {}
 
-    def forward(self, feature, prior):
+    def forward(self, feature, prior, scale_multiplier=1.0):
         if tuple(prior.shape[-2:]) != tuple(feature.shape[-2:]):
             prior = F.interpolate(prior, size=feature.shape[-2:], mode="bilinear", align_corners=False)
         prior = self.prior_encoder(prior)
@@ -100,8 +122,26 @@ class DPGALiteAdapter(nn.Module):
         delta = self.depthwise(delta)
         delta = self.act(delta)
         delta = self.project(delta)
-        scale = (torch.tanh(self.scale) + self.bootstrap_scale) * self.residual_scale
-        return feature + scale * delta
+        scale = (
+            (torch.tanh(self.scale) + self.bootstrap_scale)
+            * self.residual_scale
+            * float(scale_multiplier)
+        )
+        scaled_delta = scale * delta
+        with torch.no_grad():
+            self._last_stats = {
+                "scale": float(self.scale.detach().item()),
+                "effective_scale": float(scale.detach().item()),
+                "scale_multiplier": float(scale_multiplier),
+                "delta_l1": float(delta.detach().abs().mean().item()),
+                "delta_l2": float(torch.sqrt(torch.mean(delta.detach() * delta.detach()) + 1e-12).item()),
+                "scaled_delta_l1": float(scaled_delta.detach().abs().mean().item()),
+                "scaled_delta_l2": float(
+                    torch.sqrt(torch.mean(scaled_delta.detach() * scaled_delta.detach()) + 1e-12).item()
+                ),
+                "feature_l1": float(feature.detach().abs().mean().item()),
+            }
+        return feature + scaled_delta
 
 
 class DPGAConvIR(nn.Module):
@@ -182,6 +222,27 @@ class DPGAConvIR(nn.Module):
         self.DPGA_shallow = DPGALiteAdapter(base_channel, **adapter_kwargs)
         self.DPGA_bottleneck = DPGALiteAdapter(base_channel * 4, **adapter_kwargs)
         self.DPGA_skip = DPGALiteAdapter(base_channel * 4, **adapter_kwargs)
+        self.set_dpga_runtime_config()
+
+    def set_dpga_runtime_config(self, active_adapters="all", scale_multiplier=1.0):
+        self.dpga_active_adapters = parse_dpga_active_adapters(active_adapters)
+        self.dpga_scale_multiplier = float(scale_multiplier)
+
+    def _apply_dpga_adapter(self, name, adapter, feature, prior):
+        if name not in self.dpga_active_adapters or self.dpga_scale_multiplier == 0.0:
+            adapter._last_stats = {
+                "scale": float(adapter.scale.detach().item()),
+                "effective_scale": 0.0,
+                "scale_multiplier": float(self.dpga_scale_multiplier),
+                "delta_l1": 0.0,
+                "delta_l2": 0.0,
+                "scaled_delta_l1": 0.0,
+                "scaled_delta_l2": 0.0,
+                "feature_l1": float(feature.detach().abs().mean().item()),
+                "inactive": 1.0,
+            }
+            return feature
+        return adapter(feature, prior, scale_multiplier=self.dpga_scale_multiplier)
 
     def forward(self, x, depth=None):
         prior = build_dpga_prior_maps(
@@ -198,7 +259,7 @@ class DPGAConvIR(nn.Module):
         outputs = list()
         x_ = self.feat_extract[0](x)
         res1 = self.Encoder[0](x_)
-        res1 = self.DPGA_shallow(res1, prior)
+        res1 = self._apply_dpga_adapter("shallow", self.DPGA_shallow, res1, prior)
 
         z = self.feat_extract[1](res1)
         z = self.FAM2(z, z2)
@@ -207,7 +268,7 @@ class DPGAConvIR(nn.Module):
         z = self.feat_extract[2](res2)
         z = self.FAM1(z, z4)
         z = self.Encoder[2](z)
-        z = self.DPGA_bottleneck(z, prior)
+        z = self._apply_dpga_adapter("bottleneck", self.DPGA_bottleneck, z, prior)
 
         z = self.Decoder[0](z)
         z_ = self.ConvsOut[0](z)
@@ -215,7 +276,7 @@ class DPGAConvIR(nn.Module):
         outputs.append(z_ + x_4)
 
         z = torch.cat([z, res2], dim=1)
-        z = self.DPGA_skip(z, prior)
+        z = self._apply_dpga_adapter("skip", self.DPGA_skip, z, prior)
         z = self.Convs[0](z)
         z = self.Decoder[1](z)
         z_ = self.ConvsOut[1](z)
@@ -234,17 +295,25 @@ class DPGAConvIR(nn.Module):
         return ("DPGA_shallow", "DPGA_bottleneck", "DPGA_skip")
 
     def collect_dpga_stats(self):
-        return {
-            name: {
+        stats = {}
+        for name, module in self.named_modules():
+            if not isinstance(module, DPGALiteAdapter):
+                continue
+            adapter_name = name.replace("DPGA_", "")
+            effective_scale = (
+                (torch.tanh(module.scale.detach()) + module.bootstrap_scale)
+                * module.residual_scale
+                * self.dpga_scale_multiplier
+            ).item()
+            module_stats = {
                 "scale": module.scale.detach().item(),
-                "effective_scale": (
-                    (torch.tanh(module.scale.detach()) + module.bootstrap_scale)
-                    * module.residual_scale
-                ).item(),
+                "effective_scale": effective_scale if adapter_name in self.dpga_active_adapters else 0.0,
+                "scale_multiplier": self.dpga_scale_multiplier,
+                "active": float(adapter_name in self.dpga_active_adapters),
             }
-            for name, module in self.named_modules()
-            if isinstance(module, DPGALiteAdapter)
-        }
+            module_stats.update(getattr(module, "_last_stats", {}))
+            stats[name] = module_stats
+        return stats
 
 
 def build_dpga_net(
@@ -257,8 +326,10 @@ def build_dpga_net(
     adapter_bootstrap_scale=0.01,
     dark_patch=15,
     local_patch=31,
+    active_adapters="all",
+    scale_multiplier=1.0,
 ):
-    return DPGAConvIR(
+    model = DPGAConvIR(
         version,
         data,
         prior_embed_channels=prior_embed_channels,
@@ -269,3 +340,5 @@ def build_dpga_net(
         dark_patch=dark_patch,
         local_patch=local_patch,
     )
+    model.set_dpga_runtime_config(active_adapters=active_adapters, scale_multiplier=scale_multiplier)
+    return model

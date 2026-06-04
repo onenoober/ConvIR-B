@@ -1,4 +1,5 @@
 import os
+import json
 import numpy as np
 import torch
 import torch.nn.functional as torch_F
@@ -27,6 +28,23 @@ def _list_images(image_dir):
         if name.lower().endswith(IMG_EXTENSIONS)
         and os.path.isfile(os.path.join(image_dir, name))
     )
+
+
+def _load_split_names(split_json, split_name):
+    if not split_json or not split_name:
+        return None
+    with open(split_json, 'r', encoding='utf-8') as handle:
+        payload = json.load(handle)
+    if 'splits' in payload:
+        splits = payload['splits']
+    else:
+        splits = payload
+    if split_name not in splits:
+        raise KeyError(f'Split {split_name!r} not found in {split_json}')
+    names = splits[split_name]
+    if not isinstance(names, list):
+        raise TypeError(f'Split {split_name!r} must be a list of image names')
+    return set(names)
 
 
 def _first_existing_dir(root, names):
@@ -83,6 +101,8 @@ def train_dataloader(
     return_name=False,
     depth_cache_dir='',
     depth_split='train',
+    split_json='',
+    split_name='',
 ):
     image_dir = os.path.join(path, 'train')
 
@@ -117,9 +137,16 @@ def train_dataloader(
             depth_split,
             transform=transform,
             return_name=return_name,
+            include_names=_load_split_names(split_json, split_name),
         )
     else:
-        dataset = DeblurDataset(image_dir, data, transform=transform, return_name=return_name)
+        dataset = DeblurDataset(
+            image_dir,
+            data,
+            transform=transform,
+            return_name=return_name,
+            include_names=_load_split_names(split_json, split_name),
+        )
     dataloader = DataLoader(
         dataset,
         batch_size=batch_size,
@@ -130,8 +157,19 @@ def train_dataloader(
     return dataloader
 
 
-def test_dataloader(path, data, batch_size=1, num_workers=0, depth_cache_dir='', depth_split='test'):
+def test_dataloader(
+    path,
+    data,
+    batch_size=1,
+    num_workers=0,
+    depth_cache_dir='',
+    depth_split='test',
+    split_json='',
+    split_name='',
+):
     image_dir = os.path.join(path, 'test')
+    if split_json and split_name:
+        image_dir = os.path.join(path, 'train')
     if depth_cache_dir:
         dataset = DepthPriorDeblurDataset(
             image_dir,
@@ -140,9 +178,15 @@ def test_dataloader(path, data, batch_size=1, num_workers=0, depth_cache_dir='',
             depth_split,
             is_test=True,
             return_name=True,
+            include_names=_load_split_names(split_json, split_name),
         )
     else:
-        dataset = DeblurDataset(image_dir, data, is_test=True)
+        dataset = DeblurDataset(
+            image_dir,
+            data,
+            is_test=True,
+            include_names=_load_split_names(split_json, split_name),
+        )
     dataloader = DataLoader(
         dataset,
         batch_size=batch_size,
@@ -154,8 +198,19 @@ def test_dataloader(path, data, batch_size=1, num_workers=0, depth_cache_dir='',
     return dataloader
 
 
-def valid_dataloader(path, data, batch_size=1, num_workers=0, depth_cache_dir='', depth_split='test'):
+def valid_dataloader(
+    path,
+    data,
+    batch_size=1,
+    num_workers=0,
+    depth_cache_dir='',
+    depth_split='test',
+    split_json='',
+    split_name='',
+):
     image_dir = os.path.join(path, 'test')
+    if split_json and split_name:
+        image_dir = os.path.join(path, 'train')
     if depth_cache_dir:
         dataset = DepthPriorDeblurDataset(
             image_dir,
@@ -163,9 +218,14 @@ def valid_dataloader(path, data, batch_size=1, num_workers=0, depth_cache_dir=''
             depth_cache_dir,
             depth_split,
             return_name=True,
+            include_names=_load_split_names(split_json, split_name),
         )
     else:
-        dataset = DeblurDataset(image_dir, data)
+        dataset = DeblurDataset(
+            image_dir,
+            data,
+            include_names=_load_split_names(split_json, split_name),
+        )
     dataloader = DataLoader(
         dataset,
         batch_size=batch_size,
@@ -177,7 +237,15 @@ def valid_dataloader(path, data, batch_size=1, num_workers=0, depth_cache_dir=''
 
 
 class DeblurDataset(Dataset):
-    def __init__(self, image_dir, data, transform=None, is_test=False, return_name=False):
+    def __init__(
+        self,
+        image_dir,
+        data,
+        transform=None,
+        is_test=False,
+        return_name=False,
+        include_names=None,
+    ):
         self.image_dir = image_dir
         self.transform = transform
         self.is_test = is_test
@@ -196,6 +264,16 @@ class DeblurDataset(Dataset):
             self.label_dir = _first_existing_dir(image_dir, ('gt',))
 
         self.image_list = _list_images(self.input_dir)
+        if include_names is not None:
+            missing = sorted(set(include_names).difference(self.image_list))
+            if missing:
+                raise FileNotFoundError(
+                    f'{len(missing)} split images were not found in {self.input_dir}; '
+                    f'first missing: {missing[:5]}'
+                )
+            self.image_list = [name for name in self.image_list if name in include_names]
+        if not self.image_list:
+            raise ValueError(f'No images selected from {self.input_dir}')
 
     def _label_path(self, image_name):
         candidates = []
@@ -250,8 +328,16 @@ class DepthPriorDeblurDataset(DeblurDataset):
         transform=None,
         is_test=False,
         return_name=False,
+        include_names=None,
     ):
-        super().__init__(image_dir, data, transform=transform, is_test=is_test, return_name=return_name)
+        super().__init__(
+            image_dir,
+            data,
+            transform=transform,
+            is_test=is_test,
+            return_name=return_name,
+            include_names=include_names,
+        )
         self.depth_cache_dir = depth_cache_dir
         self.depth_split = depth_split
 

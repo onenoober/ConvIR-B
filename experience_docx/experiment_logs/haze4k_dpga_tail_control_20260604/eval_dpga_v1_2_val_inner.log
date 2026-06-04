@@ -1,0 +1,175 @@
+eval_dpga_v1_2_val_inner_start 2026-06-04T14:24:22+08:00
+model_name=ConvIR-Haze4K-DPGA-v1.2-hard-gain-shallow-scale0p5-anchor0p04-seed3407-20260604
+A0 100/300 psnr=38.9294
+A0 200/300 psnr=40.5490
+A0 300/300 psnr=39.3853
+dpga_v1_2_best 100/300 psnr=38.9665
+dpga_v1_2_best 200/300 psnr=40.6037
+dpga_v1_2_best 300/300 psnr=39.4280
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.38530815124512,
+      "mean_ssim": 0.9956096619367599,
+      "avg_time_sec_sync": 0.05273250500361125,
+      "median_time_sec_sync": 0.043541789054870605,
+      "peak_cuda_mem_mib": 535.56884765625
+    },
+    "dpga_v1_2_best": {
+      "label": "dpga_v1_2_best",
+      "arch": "dpga",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/Dehazing/ITS/results/ConvIR-Haze4K-DPGA-v1.2-hard-gain-shallow-scale0p5-anchor0p04-seed3407-20260604/Training-Results/Best.pkl",
+      "count": 300,
+      "mean_psnr": 39.4279638671875,
+      "mean_ssim": 0.9956134484211604,
+      "avg_time_sec_sync": 0.05231205860773722,
+      "median_time_sec_sync": 0.04587066173553467,
+      "peak_cuda_mem_mib": 546.4482421875
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": 0.042655715942382814,
+    "median_psnr_delta": 0.026620864868164062,
+    "p5_psnr_delta": -0.20350494384765624,
+    "p95_psnr_delta": 0.3096542358398438,
+    "hard_bottom25_psnr_delta": 0.02622472127278646,
+    "easy_top25_psnr_delta": 0.06800872802734376,
+    "worst10pct_mean_psnr_delta": -0.22280680338541667,
+    "best10pct_mean_psnr_delta": 0.3262266794840495,
+    "worst10img_mean_psnr_delta": -0.2976200103759766,
+    "best10img_mean_psnr_delta": 0.3904510498046875,
+    "worst10_mean_psnr_delta": -0.22280680338541667,
+    "best10_mean_psnr_delta": 0.3262266794840495,
+    "mean_ssim_delta": 3.786484400431315e-06,
+    "positive_ratio": 0.62,
+    "strong_reference_cut_psnr": 42.75029373168945,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 14,
+    "worst_regression_count_delta_le_-0.20": 16
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_2_val_inner_eval/scout_eval_compare_v1_2_val_inner_best_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_2_val_inner_eval/scout_eval_per_image_v1_2_val_inner_best_vs_a0.csv
+A0 100/300 psnr=38.9294
+A0 200/300 psnr=40.5490
+A0 300/300 psnr=39.3853
+dpga_v1_2_final 100/300 psnr=38.9624
+dpga_v1_2_final 200/300 psnr=40.5995
+dpga_v1_2_final 300/300 psnr=39.4244
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.38530818939209,
+      "mean_ssim": 0.9956096589565278,
+      "avg_time_sec_sync": 0.05305248181025187,
+      "median_time_sec_sync": 0.04448056221008301,
+      "peak_cuda_mem_mib": 535.56884765625
+    },
+    "dpga_v1_2_final": {
+      "label": "dpga_v1_2_final",
+      "arch": "dpga",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/Dehazing/ITS/results/ConvIR-Haze4K-DPGA-v1.2-hard-gain-shallow-scale0p5-anchor0p04-seed3407-20260604/Training-Results/Final.pkl",
+      "count": 300,
+      "mean_psnr": 39.4244014676412,
+      "mean_ssim": 0.9956083784500758,
+      "avg_time_sec_sync": 0.05250402530034383,
+      "median_time_sec_sync": 0.045410752296447754,
+      "peak_cuda_mem_mib": 546.4482421875
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": 0.039093278249104815,
+    "median_psnr_delta": 0.026903152465820312,
+    "p5_psnr_delta": -0.1938556671142578,
+    "p95_psnr_delta": 0.29743518829345705,
+    "hard_bottom25_psnr_delta": 0.02317303975423177,
+    "easy_top25_psnr_delta": 0.06460474650065104,
+    "worst10pct_mean_psnr_delta": -0.2150854746500651,
+    "best10pct_mean_psnr_delta": 0.3097190856933594,
+    "worst10img_mean_psnr_delta": -0.2881340026855469,
+    "best10img_mean_psnr_delta": 0.37088737487792967,
+    "worst10_mean_psnr_delta": -0.2150854746500651,
+    "best10_mean_psnr_delta": 0.3097190856933594,
+    "mean_ssim_delta": -1.280506451924642e-06,
+    "positive_ratio": 0.6133333333333333,
+    "strong_reference_cut_psnr": 42.75029373168945,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 14,
+    "worst_regression_count_delta_le_-0.20": 14
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_2_val_inner_eval/scout_eval_compare_v1_2_val_inner_final_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_2_val_inner_eval/scout_eval_per_image_v1_2_val_inner_final_vs_a0.csv
+{
+  "stage": "DPGA-v1.2 val_inner scout",
+  "best_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_2_val_inner_eval/scout_eval_compare_v1_2_val_inner_best_vs_a0.json",
+  "final_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_2_val_inner_eval/scout_eval_compare_v1_2_val_inner_final_vs_a0.json",
+  "selection_split": "val_inner",
+  "diagnostic_only": true,
+  "locked_test_allowed": false,
+  "checks": {
+    "best_mean_psnr_delta": {
+      "observed": 0.042655715942382814,
+      "required": ">= +0.030 dB",
+      "pass": true
+    },
+    "best_mean_ssim_delta": {
+      "observed": 3.786484400431315e-06,
+      "required": ">= 0",
+      "pass": true
+    },
+    "best_hard_bottom25_delta": {
+      "observed": 0.02622472127278646,
+      "required": ">= +0.030 dB",
+      "pass": false
+    },
+    "best_easy_top25_delta": {
+      "observed": 0.06800872802734376,
+      "required": ">= 0",
+      "pass": true
+    },
+    "best_positive_ratio": {
+      "observed": 0.62,
+      "required": ">= 0.55",
+      "pass": true
+    },
+    "best_strong_regression_ratio": {
+      "observed": 0.18666666666666668,
+      "required": "<= 0.42",
+      "pass": true
+    },
+    "best_worst_regressions": {
+      "observed": 16,
+      "required": "<= 36 / 300",
+      "pass": true
+    },
+    "final_mean_psnr_delta": {
+      "observed": 0.039093278249104815,
+      "required": ">= 0",
+      "pass": true
+    },
+    "final_worst_regressions": {
+      "observed": 14,
+      "required": "<= 60 / 300",
+      "pass": true
+    }
+  },
+  "pass": false,
+  "next_step": "Do not run locked test yet; inspect val_inner failure modes and training dynamics."
+}
+gate_dpga_v1_2_val_inner_fail
+eval_dpga_v1_2_val_inner_done 2026-06-04T14:26:16+08:00

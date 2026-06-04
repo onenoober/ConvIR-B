@@ -1,0 +1,13 @@
+decide_dpga_v1_1_training_start 2026-06-04T13:07:27+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control
+diagnostics=/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/runtime_diagnostics
+{
+  "launch_allowed": true,
+  "launch_blockers": [],
+  "model_name": "ConvIR-Haze4K-DPGA-v1.1-tail-control-shallow-scale0p25-seed3407-20260604",
+  "active_adapters": "shallow",
+  "scale_multiplier": 0.25,
+  "decision_json": "/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_1_decision/dpga_v1_1_training_decision.json",
+  "decision_md": "/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_1_decision/dpga_v1_1_training_decision.md"
+}
+decide_dpga_v1_1_training_done 2026-06-04T13:07:27+08:00
