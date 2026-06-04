@@ -371,15 +371,31 @@ def _configure_train_scope(model, args):
         if scope == "all":
             print("DPGA_TRAIN_SCOPE all: all parameters trainable")
             return list(model.parameters())
-        if scope not in ("adapter_only", "fusion_neighbor"):
+        if scope not in ("adapter_only", "active_adapter_only", "fusion_neighbor"):
             raise ValueError(f"Unsupported dpga_train_scope: {scope}")
         neighbor_prefixes = ("FAM1", "FAM2", "SCM1", "SCM2", "Convs.0", "Convs.1")
+        active_prefixes = None
+        if scope == "active_adapter_only":
+            active = set(getattr(model, "dpga_active_adapters", set()))
+            active_prefixes = {f"DPGA_{name}" for name in active}
+            if str(getattr(model, "dpga_fusion_mode", "")).strip().lower() in ("udp_lite", "udp_bi"):
+                if active.intersection({"dpfm1", "dpfm2", "dpfm4", "agf1", "agf2"}):
+                    active_prefixes.add("DPGA_prior_encoder.stem")
+                if active.intersection({"dpfm2", "dpfm4", "agf2"}):
+                    active_prefixes.add("DPGA_prior_encoder.down2")
+                if "dpfm4" in active:
+                    active_prefixes.add("DPGA_prior_encoder.down4")
+            elif getattr(model, "dpga_hard_gate_mode", "off") == "bottleneck":
+                active_prefixes.add("DPGA_hard_gate")
         dpga_params = []
         neighbor_params = []
         trainable = 0
         frozen = 0
         for name, param in model.named_parameters():
-            is_dpga = name.startswith("DPGA_")
+            if active_prefixes is None:
+                is_dpga = name.startswith("DPGA_")
+            else:
+                is_dpga = any(name.startswith(prefix) for prefix in active_prefixes)
             is_neighbor = scope == "fusion_neighbor" and any(name.startswith(prefix) for prefix in neighbor_prefixes)
             param.requires_grad = is_dpga or is_neighbor
             if param.requires_grad:
@@ -394,6 +410,8 @@ def _configure_train_scope(model, args):
         if not trainable_params:
             raise RuntimeError("No trainable parameters. Check --dpga_train_scope.")
         print(f"DPGA_TRAIN_SCOPE {scope}: trainable={trainable} frozen={frozen}")
+        if active_prefixes is not None:
+            print("DPGA_TRAIN_SCOPE active prefixes: " + ",".join(sorted(active_prefixes)))
         if scope == "fusion_neighbor":
             print(
                 "DPGA_TRAIN_SCOPE fusion_neighbor groups: "

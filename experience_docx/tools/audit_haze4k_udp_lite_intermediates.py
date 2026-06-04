@@ -140,7 +140,7 @@ def build_models(args, device):
             adapter_bootstrap_scale=args.dpga_adapter_bootstrap_scale,
             active_adapters=active_adapters,
             scale_multiplier=args.dpga_scale_multiplier,
-            fusion_mode="udp_lite",
+            fusion_mode=args.dpga_fusion_mode,
             udp_components=udp_components,
             udp_window_size=args.dpga_udp_window_size,
             udp_num_heads=args.dpga_udp_num_heads,
@@ -411,6 +411,43 @@ def parse_checkpoints(values):
     return checkpoints
 
 
+def variant_rows(preset):
+    if preset == "v14b_runtime_component_matrix":
+        return [
+            ("dpfm1_channel_only", "dpfm1", "channel"),
+            ("dpfm1_cross_only", "dpfm1", "cross"),
+            ("dpfm1_all", "dpfm1", "all"),
+            ("dpfm4_only", "dpfm4", "all"),
+            ("dpfm1_plus_dpfm4", "dpfm1,dpfm4", "all"),
+            ("dpfm1_plus_dpfm2", "dpfm1,dpfm2", "all"),
+            ("dpfm1_plus_dpfm2_plus_dpfm4", "dpfm1,dpfm2,dpfm4", "all"),
+        ]
+    return [
+        ("dgca_only", "dpfm", "channel"),
+        ("dpfm1_only", "dpfm1", "all"),
+        ("dpfm2_only", "dpfm2", "all"),
+        ("dpfm4_only", "dpfm4", "all"),
+        ("dpfm1_2_4", "dpfm", "all"),
+        ("dpfm1_2_4_agf_lite", "dpfm,agf", "all"),
+    ]
+
+
+def output_names(preset):
+    if preset == "v14b_runtime_component_matrix":
+        return {
+            "summary_csv": "v14b_runtime_component_matrix.csv",
+            "per_image_csv": "v14b_runtime_component_matrix_per_image.csv",
+            "failure_csv": "v14b_runtime_component_matrix_failure_audit.csv",
+            "summary_json": "v14b_runtime_component_matrix_summary.json",
+        }
+    return {
+        "summary_csv": "v14_depth_fusion_module_ablation_val.csv",
+        "per_image_csv": "v14_depth_fusion_module_ablation_per_image.csv",
+        "failure_csv": "v14_depth_quality_failure_audit.csv",
+        "summary_json": "v14_udp_lite_intermediate_summary.json",
+    }
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--its_dir", default="Dehazing/ITS")
@@ -429,10 +466,16 @@ def main():
     parser.add_argument("--dpga_adapter_scale_init", type=float, default=0.0)
     parser.add_argument("--dpga_adapter_bootstrap_scale", type=float, default=0.01)
     parser.add_argument("--dpga_scale_multiplier", type=float, default=1.0)
+    parser.add_argument("--dpga_fusion_mode", default="udp_lite", choices=["udp_lite", "udp_bi"])
     parser.add_argument("--dpga_udp_window_size", type=int, default=8)
     parser.add_argument("--dpga_udp_num_heads", type=int, default=4)
     parser.add_argument("--dpga_agf_gate_limit", type=float, default=0.25)
     parser.add_argument("--allow_partial_dpga_load", action="store_true")
+    parser.add_argument(
+        "--variant_preset",
+        default="v14_default",
+        choices=["v14_default", "v14b_runtime_component_matrix"],
+    )
     args = parser.parse_args()
 
     output_dir = Path(args.output_dir)
@@ -451,14 +494,8 @@ def main():
         max_images=args.max_images,
     )
 
-    variants = [
-        ("dgca_only", "dpfm", "channel"),
-        ("dpfm1_only", "dpfm1", "all"),
-        ("dpfm2_only", "dpfm2", "all"),
-        ("dpfm4_only", "dpfm4", "all"),
-        ("dpfm1_2_4", "dpfm", "all"),
-        ("dpfm1_2_4_agf_lite", "dpfm,agf", "all"),
-    ]
+    variants = variant_rows(args.variant_preset)
+    names = output_names(args.variant_preset)
     summary_rows = []
     per_image_rows = []
     summaries = {"original": original_summary, "variants": {}}
@@ -505,20 +542,20 @@ def main():
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
 
-    write_summary_csv(output_dir / "v14_depth_fusion_module_ablation_val.csv", summary_rows)
-    write_per_image_csv(output_dir / "v14_depth_fusion_module_ablation_per_image.csv", original_rows, per_image_rows)
-    write_failure_audit(output_dir / "v14_depth_quality_failure_audit.csv", original_rows, per_image_rows)
+    write_summary_csv(output_dir / names["summary_csv"], summary_rows)
+    write_per_image_csv(output_dir / names["per_image_csv"], original_rows, per_image_rows)
+    write_failure_audit(output_dir / names["failure_csv"], original_rows, per_image_rows)
     manifest = {
         "args": vars(args),
         "outputs": [
-            "v14_depth_fusion_module_ablation_val.csv",
-            "v14_depth_fusion_module_ablation_per_image.csv",
-            "v14_depth_quality_failure_audit.csv",
-            "v14_udp_lite_intermediate_summary.json",
+            names["summary_csv"],
+            names["per_image_csv"],
+            names["failure_csv"],
+            names["summary_json"],
         ],
         "summaries": summaries,
     }
-    (output_dir / "v14_udp_lite_intermediate_summary.json").write_text(
+    (output_dir / names["summary_json"]).write_text(
         json.dumps(manifest, indent=2),
         encoding="utf-8",
     )

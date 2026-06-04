@@ -1,0 +1,33 @@
+eval original A0
+a0 100/300 mean_psnr=38.7369
+a0 200/300 mean_psnr=40.5068
+a0 300/300 mean_psnr=39.4692
+eval best_dpfm1_channel_only
+best_dpfm1_channel_only 100/300 mean_psnr=38.7452
+best_dpfm1_channel_only 200/300 mean_psnr=40.5169
+best_dpfm1_channel_only 300/300 mean_psnr=39.4775
+eval best_dpfm1_cross_only
+best_dpfm1_cross_only 100/300 mean_psnr=38.7561
+best_dpfm1_cross_only 200/300 mean_psnr=40.5325
+best_dpfm1_cross_only 300/300 mean_psnr=39.4930
+eval best_dpfm1_all
+best_dpfm1_all 100/300 mean_psnr=38.7630
+best_dpfm1_all 200/300 mean_psnr=40.5406
+best_dpfm1_all 300/300 mean_psnr=39.4997
+eval best_dpfm4_only
+best_dpfm4_only 100/300 mean_psnr=38.7442
+best_dpfm4_only 200/300 mean_psnr=40.5134
+best_dpfm4_only 300/300 mean_psnr=39.4750
+eval best_dpfm1_plus_dpfm4
+best_dpfm1_plus_dpfm4 100/300 mean_psnr=38.7694
+best_dpfm1_plus_dpfm4 200/300 mean_psnr=40.5457
+best_dpfm1_plus_dpfm4 300/300 mean_psnr=39.5044
+eval best_dpfm1_plus_dpfm2
+best_dpfm1_plus_dpfm2 100/300 mean_psnr=38.7544
+best_dpfm1_plus_dpfm2 200/300 mean_psnr=40.5375
+best_dpfm1_plus_dpfm2 300/300 mean_psnr=39.4931
+eval best_dpfm1_plus_dpfm2_plus_dpfm4
+best_dpfm1_plus_dpfm2_plus_dpfm4 100/300 mean_psnr=38.7605
+best_dpfm1_plus_dpfm2_plus_dpfm4 200/300 mean_psnr=40.5423
+best_dpfm1_plus_dpfm2_plus_dpfm4 300/300 mean_psnr=39.4975
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1/experience_docx/experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/v14b_runtime_component_matrix/val_regular

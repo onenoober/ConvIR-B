@@ -12,11 +12,13 @@ Status: active diagnostic family, not promotion-ready.
   - `../experiment_cards/2026-06-04-haze4k-convir-v1-1-dpga-tail-control.md`
   - `../experiment_cards/2026-06-04-haze4k-convir-v1-3-hsdf.md`
   - `../experiment_cards/2026-06-04-haze4k-convir-v1-4-udp-lite.md`
+  - `../experiment_cards/2026-06-04-haze4k-convir-v1-4b-bidpfm1.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_dpga_lite_20260604/`
   - `../experiment_logs/haze4k_dpga_tail_control_20260604/`
   - `../experiment_logs/haze4k_dpga_v13_hsdf_20260604/`
   - `../experiment_logs/haze4k_udp_lite_v14_20260604/`
+  - `../experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/`
 
 ## Established Facts
 
@@ -28,6 +30,7 @@ Status: active diagnostic family, not promotion-ready.
 | DPGA-v1.3A HSDF | Best `val_regular` mean `+0.026333 dB`; Best `val_hard` hard bottom-25 `+0.022099 dB`. | Loss-mask mechanism improved safety but missed hard gate; authorized only v1.3B diagnostic, not locked test. |
 | DPGA-v1.3B HSDF | Best `val_regular` mean `+0.025839 dB`; Best `val_hard` hard bottom-25 `+0.023642 dB`; positive ratio `0.586667`; strong regression ratio `0.200000`; corrected bottleneck-only runtime ablation mean about `+0.000824 dB`. | `FAIL_STOP_V13B_HARD_GATED_BOTTLENECK`; locked test blocked. |
 | ConvIR-Dehaze-v1.4-UDP-Lite | v1.4A adapter-only completed and failed gate: Best `val_regular` mean `+0.028294 dB`, Best `val_hard` mean `+0.020340 dB`, hard bottom-25 `+0.022275 dB`, positive ratio `0.586667`, worst count `19`. Ablation shows `DPFM1-only` is safer/stronger (`val_hard` mean `+0.026774 dB`, worst `0`) while `DPFM2-only` is negative. | `FAIL_V14A_ADAPTER_ONLY_FULL_DPFM123`; locked test blocked. Do not micro-tune full DPFM123 scale/gate; only DPFM1-focused diagnostic or v1.4B fusion-neighbor partial unfreeze is evidence-supported. |
+| ConvIR-Dehaze-v1.4B-BiDPFM1 | `udp_bi`, `active_adapters=dpfm1`, `active_adapter_only` completed. Best `val_regular` mean `+0.028624 dB`, positive ratio `0.536667`, worst count `17`, strong ratio `0.28`; Best `val_hard` mean `+0.023429 dB`, hard bottom-25 `+0.020760 dB`, worst count `8`. | `FAIL_STOP_V14B_BIDPFM1_ADAPTER_ONLY`; locked test blocked; do not rerun BiDPFM1-only scale/gate tuning. |
 
 ## Family Verdict
 
@@ -56,6 +59,14 @@ internal regular+hard gate. The most useful evidence is scale attribution:
 `DPFM1-only` is the only strong/safe contributor, full `DPFM1+2+4` raises tail
 risk, and `DPFM2-only` is a negative contributor.
 
+v1.4B-BiDPFM1 was the authorized DPFM1-focused follow-up. Its `udp_bi`
+A0-equivalence and projection-gradient liveness preflight passed, but
+adapter-only training did not clear the internal continue line. The no-training
+matrix found `DPFM1+4` has better mean than DPFM1-only but not a clean enough
+tail profile for the first route, while DPFM2 remains blocked. The completed
+BiDPFM1-only route is stopped; this is not permission to run locked Haze4K test,
+revive DPFM2, or perform full multi-scale scale search.
+
 ## Do Not Repeat Without New Evidence
 
 - Do not promote v1.0 from `Best.pkl` alone; exact stop20/final was borderline
@@ -69,6 +80,8 @@ risk, and `DPFM2-only` is a negative contributor.
   internal `val_regular`/`val_hard` gates.
 - Do not micro-tune full `DPFM1+2+4` scale/gate after v1.4A; ablation shows
   `DPFM2-only` is negative and full DPFM123 increases tail risk.
+- Do not run locked Haze4K test for v1.4B before the written internal
+  regular+hard gate passes.
 
 ## Reopen Condition
 

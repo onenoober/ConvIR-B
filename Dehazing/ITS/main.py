@@ -207,7 +207,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--dpga_train_scope',
         default='adapter_only',
-        choices=['all', 'adapter_only', 'fusion_neighbor'],
+        choices=['all', 'adapter_only', 'active_adapter_only', 'fusion_neighbor'],
         type=str,
     )
     parser.add_argument('--dpga_prior_embed_channels', default=16, type=int)
@@ -224,7 +224,7 @@ if __name__ == '__main__':
     parser.add_argument('--dpga_shallow_scale_multiplier', default=1.0, type=float)
     parser.add_argument('--dpga_bottleneck_scale_multiplier', default=1.0, type=float)
     parser.add_argument('--dpga_skip_scale_multiplier', default=1.0, type=float)
-    parser.add_argument('--dpga_fusion_mode', default='legacy', choices=['legacy', 'udp_lite'], type=str)
+    parser.add_argument('--dpga_fusion_mode', default='legacy', choices=['legacy', 'udp_lite', 'udp_bi'], type=str)
     parser.add_argument('--dpga_udp_components', default='all', type=str)
     parser.add_argument('--dpga_udp_window_size', default=8, type=int)
     parser.add_argument('--dpga_udp_num_heads', default=4, type=int)

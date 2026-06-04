@@ -91,7 +91,7 @@ def grad_probe(udp_lite, input_img, label_img, depth):
     rows = []
     interesting_suffixes = (
         "channel.mlp.2.weight",
-        "cross.project.weight",
+        "project.weight",
         "spatial_gate.2.weight",
         "channel_gate.2.weight",
     )
@@ -127,6 +127,7 @@ def main():
     parser.add_argument("--dpga_adapter_residual_scale", type=float, default=0.1)
     parser.add_argument("--dpga_adapter_scale_init", type=float, default=0.0)
     parser.add_argument("--dpga_adapter_bootstrap_scale", type=float, default=0.01)
+    parser.add_argument("--dpga_fusion_mode", default="udp_lite", choices=["udp_lite", "udp_bi"])
     parser.add_argument("--dpga_udp_components", default="all")
     parser.add_argument("--dpga_udp_window_size", type=int, default=8)
     parser.add_argument("--dpga_udp_num_heads", type=int, default=4)
@@ -157,7 +158,7 @@ def main():
         adapter_scale_init=args.dpga_adapter_scale_init,
         adapter_bootstrap_scale=args.dpga_adapter_bootstrap_scale,
         active_adapters=args.dpga_active_adapters,
-        fusion_mode="udp_lite",
+        fusion_mode=args.dpga_fusion_mode,
         udp_components=args.dpga_udp_components,
         udp_window_size=args.dpga_udp_window_size,
         udp_num_heads=args.dpga_udp_num_heads,
@@ -175,7 +176,7 @@ def main():
     payload = {
         "sample": sample,
         "checkpoint": args.checkpoint,
-        "fusion_mode": "udp_lite",
+        "fusion_mode": args.dpga_fusion_mode,
         "active_adapters": args.dpga_active_adapters,
         "udp_components": args.dpga_udp_components,
         "missing_dpga_key_count": len(missing),

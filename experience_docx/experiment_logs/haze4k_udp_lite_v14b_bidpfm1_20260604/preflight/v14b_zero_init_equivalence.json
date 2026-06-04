@@ -1,0 +1,113 @@
+{
+  "sample": "1000_0.73_1.8.png",
+  "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+  "fusion_mode": "udp_bi",
+  "active_adapters": "dpfm1",
+  "udp_components": "all",
+  "missing_dpga_key_count": 118,
+  "missing_dpga_key_prefix_ok": true,
+  "output_diffs": [
+    {
+      "scale_index": 0,
+      "max_abs": 0.0,
+      "mean_abs": 0.0
+    },
+    {
+      "scale_index": 1,
+      "max_abs": 0.0,
+      "mean_abs": 0.0
+    },
+    {
+      "scale_index": 2,
+      "max_abs": 0.0,
+      "mean_abs": 0.0
+    }
+  ],
+  "max_abs_diff": 0.0,
+  "tolerance": 1e-06,
+  "equivalence_pass": true,
+  "grad_probe_loss": 0.03014085255563259,
+  "grad_rows": [
+    {
+      "name": "DPGA_shallow.project.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_bottleneck.project.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_skip.project.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_dpfm1.channel.mlp.2.weight",
+      "grad_abs_sum": 1.8567265215096995e-05,
+      "grad_abs_max": 1.2390827350827749e-06
+    },
+    {
+      "name": "DPGA_dpfm1.cross_rgb_from_depth.project.weight",
+      "grad_abs_sum": 0.000769656035117805,
+      "grad_abs_max": 1.3591994502348825e-05
+    },
+    {
+      "name": "DPGA_dpfm1.cross_depth_from_rgb.project.weight",
+      "grad_abs_sum": 0.000855925667565316,
+      "grad_abs_max": 9.829042937781196e-06
+    },
+    {
+      "name": "DPGA_dpfm2.channel.mlp.2.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_dpfm2.cross_rgb_from_depth.project.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_dpfm2.cross_depth_from_rgb.project.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_dpfm4.channel.mlp.2.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_dpfm4.cross_rgb_from_depth.project.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_dpfm4.cross_depth_from_rgb.project.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_agf2.spatial_gate.2.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_agf2.channel_gate.2.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_agf1.spatial_gate.2.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    },
+    {
+      "name": "DPGA_agf1.channel_gate.2.weight",
+      "grad_abs_sum": 0.0,
+      "grad_abs_max": 0.0
+    }
+  ],
+  "grad_probe_pass": true
+}

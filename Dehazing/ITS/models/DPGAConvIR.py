@@ -60,6 +60,11 @@ DPGA_LEGACY_ADAPTER_NAMES = ("shallow", "bottleneck", "skip")
 DPGA_UDP_FUSION_NAMES = ("dpfm1", "dpfm2", "dpfm4")
 DPGA_UDP_AGF_NAMES = ("agf1", "agf2")
 DPGA_UDP_COMPONENT_NAMES = ("channel", "cross")
+DPGA_UDP_FUSION_MODES = ("udp_lite", "udp_bi")
+
+
+def is_udp_fusion_mode(fusion_mode):
+    return str(fusion_mode or "").strip().lower() in DPGA_UDP_FUSION_MODES
 
 
 def parse_dpga_active_adapters(active_adapters, fusion_mode="legacy"):
@@ -68,7 +73,7 @@ def parse_dpga_active_adapters(active_adapters, fusion_mode="legacy"):
     if isinstance(active_adapters, str):
         value = active_adapters.strip().lower()
         if value in ("", "all"):
-            if fusion_mode == "udp_lite":
+            if is_udp_fusion_mode(fusion_mode):
                 return set(DPGA_UDP_FUSION_NAMES)
             return set(DPGA_LEGACY_ADAPTER_NAMES)
         if value in ("none", "off", "zero"):
@@ -78,7 +83,7 @@ def parse_dpga_active_adapters(active_adapters, fusion_mode="legacy"):
             item = item.strip().lower()
             if not item:
                 continue
-            if item in ("dpfm", "udp", "udp_lite"):
+            if item in ("dpfm", "udp", "udp_lite", "udp_bi"):
                 names.update(DPGA_UDP_FUSION_NAMES)
             elif item == "agf":
                 names.update(DPGA_UDP_AGF_NAMES)
@@ -295,15 +300,27 @@ class DepthGuidedChannelAttention(nn.Module):
 
 
 class LocalWindowCrossAttention(nn.Module):
-    def __init__(self, feature_channels, depth_channels, window_size=8, num_heads=4):
+    def __init__(
+        self,
+        feature_channels,
+        depth_channels,
+        window_size=8,
+        num_heads=4,
+        query_source="depth",
+    ):
         super().__init__()
         self.feature_channels = int(feature_channels)
         self.window_size = max(1, int(window_size))
         self.num_heads = _choose_heads(self.feature_channels, num_heads)
         self.head_dim = self.feature_channels // self.num_heads
         self.scale = self.head_dim ** -0.5
-        self.q = nn.Conv2d(depth_channels, self.feature_channels, kernel_size=1)
-        self.kv = nn.Conv2d(feature_channels, self.feature_channels * 2, kernel_size=1)
+        self.query_source = str(query_source).strip().lower()
+        if self.query_source not in ("depth", "feature"):
+            raise ValueError("query_source must be 'depth' or 'feature'")
+        q_channels = depth_channels if self.query_source == "depth" else feature_channels
+        kv_channels = feature_channels if self.query_source == "depth" else depth_channels
+        self.q = nn.Conv2d(q_channels, self.feature_channels, kernel_size=1)
+        self.kv = nn.Conv2d(kv_channels, self.feature_channels * 2, kernel_size=1)
         self.project = nn.Conv2d(self.feature_channels, self.feature_channels, kernel_size=1)
         nn.init.zeros_(self.project.weight)
         nn.init.zeros_(self.project.bias)
@@ -311,8 +328,10 @@ class LocalWindowCrossAttention(nn.Module):
     def forward(self, feature, depth_feature):
         if tuple(depth_feature.shape[-2:]) != tuple(feature.shape[-2:]):
             depth_feature = F.interpolate(depth_feature, size=feature.shape[-2:], mode="bilinear", align_corners=False)
-        q = self.q(depth_feature)
-        k, v = self.kv(feature).chunk(2, dim=1)
+        query = depth_feature if self.query_source == "depth" else feature
+        key_value = feature if self.query_source == "depth" else depth_feature
+        q = self.q(query)
+        k, v = self.kv(key_value).chunk(2, dim=1)
         batch, channels, height, width = feature.shape
         pad_h = (self.window_size - height % self.window_size) % self.window_size
         pad_w = (self.window_size - width % self.window_size) % self.window_size
@@ -348,15 +367,33 @@ class DPFMLiteFusion(nn.Module):
         bootstrap_scale=0.01,
         window_size=8,
         num_heads=4,
+        bidirectional=False,
     ):
         super().__init__()
+        self.bidirectional = bool(bidirectional)
         self.channel = DepthGuidedChannelAttention(feature_channels, depth_channels)
-        self.cross = LocalWindowCrossAttention(
-            feature_channels,
-            depth_channels,
-            window_size=window_size,
-            num_heads=num_heads,
-        )
+        if self.bidirectional:
+            self.cross_rgb_from_depth = LocalWindowCrossAttention(
+                feature_channels,
+                depth_channels,
+                window_size=window_size,
+                num_heads=num_heads,
+                query_source="feature",
+            )
+            self.cross_depth_from_rgb = LocalWindowCrossAttention(
+                feature_channels,
+                depth_channels,
+                window_size=window_size,
+                num_heads=num_heads,
+                query_source="depth",
+            )
+        else:
+            self.cross = LocalWindowCrossAttention(
+                feature_channels,
+                depth_channels,
+                window_size=window_size,
+                num_heads=num_heads,
+            )
         self.scale = nn.Parameter(torch.tensor(float(scale_init)))
         self.residual_scale = float(residual_scale)
         self.bootstrap_scale = float(bootstrap_scale)
@@ -381,14 +418,27 @@ class DPFMLiteFusion(nn.Module):
                     "scale_multiplier": float(scale_multiplier),
                     "channel_delta_l1": 0.0,
                     "cross_delta_l1": 0.0,
+                    "cross_rgb_from_depth_delta_l1": 0.0,
+                    "cross_depth_from_rgb_delta_l1": 0.0,
                     "scaled_delta_l1": 0.0,
                     "scaled_delta_l2": 0.0,
                     "feature_l1": float(feature.detach().abs().mean().item()),
                     "inactive": 1.0,
+                    "bidirectional": float(self.bidirectional),
                 }
             return feature
         channel_delta = self.channel(feature, depth_feature) if "channel" in components else torch.zeros_like(feature)
-        cross_delta = self.cross(feature, depth_feature) if "cross" in components else torch.zeros_like(feature)
+        cross_rgb_delta = torch.zeros_like(feature)
+        cross_depth_delta = torch.zeros_like(feature)
+        if "cross" in components:
+            if self.bidirectional:
+                cross_rgb_delta = self.cross_rgb_from_depth(feature, depth_feature)
+                cross_depth_delta = self.cross_depth_from_rgb(feature, depth_feature)
+                cross_delta = cross_rgb_delta + cross_depth_delta
+            else:
+                cross_delta = self.cross(feature, depth_feature)
+        else:
+            cross_delta = torch.zeros_like(feature)
         delta = channel_delta + cross_delta
         effective_scale = self._effective_scale(scale_multiplier)
         scaled_delta = effective_scale * delta
@@ -400,11 +450,14 @@ class DPFMLiteFusion(nn.Module):
                 "scale_multiplier": float(scale_multiplier),
                 "channel_delta_l1": float(channel_delta.detach().abs().mean().item()),
                 "cross_delta_l1": float(cross_delta.detach().abs().mean().item()),
+                "cross_rgb_from_depth_delta_l1": float(cross_rgb_delta.detach().abs().mean().item()),
+                "cross_depth_from_rgb_delta_l1": float(cross_depth_delta.detach().abs().mean().item()),
                 "scaled_delta_l1": float(scaled_delta.detach().abs().mean().item()),
                 "scaled_delta_l2": float(torch.sqrt(torch.mean(scaled_delta.detach() * scaled_delta.detach()) + 1e-12).item()),
                 "feature_l1": float(feature.detach().abs().mean().item()),
                 "channel_active": float("channel" in components),
                 "cross_active": float("cross" in components),
+                "bidirectional": float(self.bidirectional),
             }
         return feature + scaled_delta
 
@@ -564,6 +617,7 @@ class DPGAConvIR(nn.Module):
             prior_embed_channels * 2,
             prior_embed_channels * 4,
         )
+        self.dpga_dpfm_bidirectional = str(fusion_mode or "").strip().lower() == "udp_bi"
         self.DPGA_prior_encoder = DepthPriorPyramid(prior_channels, depth_channels)
         self.DPGA_dpfm1 = DPFMLiteFusion(
             base_channel,
@@ -573,6 +627,7 @@ class DPGAConvIR(nn.Module):
             bootstrap_scale=adapter_bootstrap_scale,
             window_size=udp_window_size,
             num_heads=udp_num_heads,
+            bidirectional=self.dpga_dpfm_bidirectional,
         )
         self.DPGA_dpfm2 = DPFMLiteFusion(
             base_channel * 2,
@@ -582,6 +637,7 @@ class DPGAConvIR(nn.Module):
             bootstrap_scale=adapter_bootstrap_scale,
             window_size=udp_window_size,
             num_heads=udp_num_heads,
+            bidirectional=self.dpga_dpfm_bidirectional,
         )
         self.DPGA_dpfm4 = DPFMLiteFusion(
             base_channel * 4,
@@ -591,6 +647,7 @@ class DPGAConvIR(nn.Module):
             bootstrap_scale=adapter_bootstrap_scale,
             window_size=udp_window_size,
             num_heads=udp_num_heads,
+            bidirectional=self.dpga_dpfm_bidirectional,
         )
         self.DPGA_agf2 = AGFLiteSkipGate(
             base_channel * 2,
@@ -629,8 +686,12 @@ class DPGAConvIR(nn.Module):
         if fusion_mode is None:
             fusion_mode = getattr(self, "dpga_fusion_mode", "legacy")
         fusion_mode = str(fusion_mode or "legacy").strip().lower()
-        if fusion_mode not in ("legacy", "udp_lite"):
-            raise ValueError("DPGA fusion_mode must be 'legacy' or 'udp_lite'")
+        if fusion_mode not in ("legacy", "udp_lite", "udp_bi"):
+            raise ValueError("DPGA fusion_mode must be 'legacy', 'udp_lite', or 'udp_bi'")
+        if fusion_mode == "udp_bi" and not getattr(self, "dpga_dpfm_bidirectional", False):
+            raise ValueError("DPGA model must be constructed with fusion_mode='udp_bi' before enabling udp_bi.")
+        if fusion_mode == "udp_lite" and getattr(self, "dpga_dpfm_bidirectional", False):
+            raise ValueError("DPGA model constructed with bidirectional DPFM cannot switch back to udp_lite.")
         self.dpga_fusion_mode = fusion_mode
         self.dpga_active_adapters = parse_dpga_active_adapters(active_adapters, fusion_mode=fusion_mode)
         if udp_components is None:
@@ -711,7 +772,7 @@ class DPGAConvIR(nn.Module):
             hard_gate_logits, hard_gate = self.DPGA_hard_gate(prior)
             self._last_hard_gate = hard_gate
             self._last_hard_gate_logits = hard_gate_logits
-        if self.dpga_fusion_mode == "udp_lite":
+        if is_udp_fusion_mode(self.dpga_fusion_mode):
             depth1, depth2, depth4 = self.DPGA_prior_encoder(prior)
         else:
             depth1 = depth2 = depth4 = None
@@ -723,7 +784,7 @@ class DPGAConvIR(nn.Module):
         outputs = list()
         x_ = self.feat_extract[0](x)
         res1 = self.Encoder[0](x_)
-        if self.dpga_fusion_mode == "udp_lite":
+        if is_udp_fusion_mode(self.dpga_fusion_mode):
             res1 = self._apply_dpfm("dpfm1", self.DPGA_dpfm1, res1, depth1)
         else:
             res1 = self._apply_dpga_adapter("shallow", self.DPGA_shallow, res1, prior)
@@ -731,13 +792,13 @@ class DPGAConvIR(nn.Module):
         z = self.feat_extract[1](res1)
         z = self.FAM2(z, z2)
         res2 = self.Encoder[1](z)
-        if self.dpga_fusion_mode == "udp_lite":
+        if is_udp_fusion_mode(self.dpga_fusion_mode):
             res2 = self._apply_dpfm("dpfm2", self.DPGA_dpfm2, res2, depth2)
 
         z = self.feat_extract[2](res2)
         z = self.FAM1(z, z4)
         z = self.Encoder[2](z)
-        if self.dpga_fusion_mode == "udp_lite":
+        if is_udp_fusion_mode(self.dpga_fusion_mode):
             z = self._apply_dpfm("dpfm4", self.DPGA_dpfm4, z, depth4)
         else:
             z = self._apply_dpga_adapter("bottleneck", self.DPGA_bottleneck, z, prior, gate=hard_gate)
@@ -747,7 +808,7 @@ class DPGAConvIR(nn.Module):
         z = self.feat_extract[3](z)
         outputs.append(z_ + x_4)
 
-        if self.dpga_fusion_mode == "udp_lite":
+        if is_udp_fusion_mode(self.dpga_fusion_mode):
             res2_skip = self._apply_agf("agf2", self.DPGA_agf2, res2, z, depth2)
             z = torch.cat([z, res2_skip], dim=1)
         else:
@@ -759,7 +820,7 @@ class DPGAConvIR(nn.Module):
         z = self.feat_extract[4](z)
         outputs.append(z_ + x_2)
 
-        if self.dpga_fusion_mode == "udp_lite":
+        if is_udp_fusion_mode(self.dpga_fusion_mode):
             res1_skip = self._apply_agf("agf1", self.DPGA_agf1, res1, z, depth1)
             z = torch.cat([z, res1_skip], dim=1)
         else:
@@ -834,7 +895,7 @@ class DPGAConvIR(nn.Module):
             stats[name] = module_stats
         if hasattr(self.DPGA_prior_encoder, "_last_stats"):
             stats["DPGA_prior_encoder"] = {
-                "active": float(self.dpga_fusion_mode == "udp_lite"),
+                "active": float(is_udp_fusion_mode(self.dpga_fusion_mode)),
                 **self.DPGA_prior_encoder._last_stats,
             }
         if self._last_hard_gate is not None:

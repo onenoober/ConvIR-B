@@ -1,0 +1,126 @@
+{
+  "stage": "ConvIR-Dehaze-v1.4B-BiDPFM1 regular+hard gate",
+  "diagnostic_only": true,
+  "continue_allowed": false,
+  "locked_test_allowed": false,
+  "continue_checks": {
+    "regular_mean_delta": {
+      "observed": 0.02862353006998698,
+      "required": ">= +0.035 dB",
+      "pass": false
+    },
+    "regular_positive_ratio": {
+      "observed": 0.5366666666666666,
+      "required": ">= 0.620",
+      "pass": false
+    },
+    "regular_worst_count": {
+      "observed": 17,
+      "required": "<= 8",
+      "pass": false
+    },
+    "regular_strong_regression_ratio": {
+      "observed": 0.28,
+      "required": "<= 0.180",
+      "pass": false
+    },
+    "regular_ssim_delta": {
+      "observed": -7.777810096740723e-06,
+      "required": ">= 0",
+      "pass": false
+    },
+    "hard_mean_delta": {
+      "observed": 0.023429476420084635,
+      "required": ">= +0.030 dB",
+      "pass": false
+    },
+    "hard_bottom25_delta": {
+      "observed": 0.020760294596354166,
+      "required": ">= +0.035 dB",
+      "pass": false
+    },
+    "hard_worst_count": {
+      "observed": 8,
+      "required": "<= 4",
+      "pass": false
+    },
+    "hard_ssim_delta": {
+      "observed": -1.2042522430419921e-05,
+      "required": ">= 0",
+      "pass": false
+    }
+  },
+  "locked_test_checks": {
+    "regular_mean_delta": {
+      "observed": 0.02862353006998698,
+      "required": ">= +0.040 dB",
+      "pass": false
+    },
+    "regular_positive_ratio": {
+      "observed": 0.5366666666666666,
+      "required": ">= 0.620",
+      "pass": false
+    },
+    "regular_strong_regression_ratio": {
+      "observed": 0.28,
+      "required": "<= 0.160",
+      "pass": false
+    },
+    "regular_worst_count": {
+      "observed": 17,
+      "required": "<= 12",
+      "pass": false
+    },
+    "regular_ssim_delta": {
+      "observed": -7.777810096740723e-06,
+      "required": ">= 0",
+      "pass": false
+    },
+    "hard_mean_delta": {
+      "observed": 0.023429476420084635,
+      "required": ">= +0.030 dB",
+      "pass": false
+    },
+    "hard_bottom25_delta": {
+      "observed": 0.020760294596354166,
+      "required": ">= +0.050 dB",
+      "pass": false
+    },
+    "hard_ssim_delta": {
+      "observed": -1.2042522430419921e-05,
+      "required": ">= 0",
+      "pass": false
+    }
+  },
+  "final_sanity_checks": {
+    "final_regular_mean_nonnegative": {
+      "observed": 0.02862359364827474,
+      "required": ">= 0 dB",
+      "pass": true
+    },
+    "final_hard_mean_nonnegative": {
+      "observed": 0.023429438273111978,
+      "required": ">= 0 dB",
+      "pass": true
+    },
+    "final_regular_worst_count": {
+      "observed": 17,
+      "required": "<= 20",
+      "pass": true
+    },
+    "final_hard_worst_count": {
+      "observed": 8,
+      "required": "<= 20",
+      "pass": true
+    }
+  },
+  "pass": false,
+  "next_step": "Do not run locked Haze4K test. If continue_allowed is true, proceed to v1.4C full-res fusion-neighbor adapter; otherwise stop this adapter-only form.",
+  "inputs": {
+    "best_regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1/experience_docx/experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/v14b_eval_regular_hard/scout_eval_compare_v14b_best_val_regular_vs_a0.json",
+    "best_hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1/experience_docx/experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/v14b_eval_regular_hard/scout_eval_compare_v14b_best_val_hard_vs_a0.json",
+    "final_regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1/experience_docx/experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/v14b_eval_regular_hard/scout_eval_compare_v14b_final_val_regular_vs_a0.json",
+    "final_hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1/experience_docx/experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/v14b_eval_regular_hard/scout_eval_compare_v14b_final_val_hard_vs_a0.json",
+    "output": "/root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1/experience_docx/experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/v14b_eval_regular_hard/v14b_gate_eval_regular_and_hard.json"
+  }
+}

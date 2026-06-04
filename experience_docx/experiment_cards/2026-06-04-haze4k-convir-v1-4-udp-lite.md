@@ -109,7 +109,7 @@ If cached depth/prior features are encoded into a pyramid and fused into ConvIR 
 - Evaluation cadence: Best/Final evaluated on `val_regular` and `val_hard`.
 - Hardware/runtime assumptions: cloud `dehaze1`; local WSL compile/static checks only.
 - Locked evaluation policy: locked Haze4K test only once after v1.4 internal regular+hard gates pass.
-- Exception budget: if v1.4A is mean-positive/tail-safe but hard `< +0.04 dB`, do not scale-search; move to v1.4B partial unfreeze.
+- Exception budget: if v1.4A is mean-positive/tail-safe but hard `< +0.04 dB`, do not scale-search; move first to v1.4B DPFM1-focused bidirectional adapter-only diagnostic.
 
 
 ## v1.4A Results
@@ -134,8 +134,9 @@ v1.4A confirms that UDP-Lite depth fusion has a real but weak positive signal,
 with the useful action concentrated at the 1x DPFM1 scale. The full multi-scale
 adapter-only composition is not promotion-ready because it misses hard-gain
 thresholds and introduces unacceptable tail risk. This rules out full DPFM123
-scale/gate micro-tuning, but it leaves a DPFM1-focused diagnostic or v1.4B
-fusion-neighbor partial unfreeze as evidence-supported follow-ups.
+scale/gate micro-tuning. The next evidence-supported route is the separate
+v1.4B DPFM1-focused bidirectional adapter-only diagnostic before any
+fusion-neighbor adaptation or partial unfreeze.
 
 ## Gates
 
@@ -154,7 +155,7 @@ fusion-neighbor partial unfreeze as evidence-supported follow-ups.
 
 - If zero-init equivalence fails: stop and fix engineering before training.
 - If v1.4A mean `<= +0.02 dB` and hard `<= +0.02 dB`: adapter-only UDP-Lite is insufficient; do not micro-tune v1.4A.
-- If v1.4A is mean-positive and tail-safe but hard remains below gate: proceed only to v1.4B fusion-neighbor partial unfreeze.
+- If v1.4A is mean-positive and tail-safe but hard remains below gate: proceed first to v1.4B DPFM1-focused bidirectional adapter-only diagnostic, then consider fusion-neighbor adaptation only if v1.4B is mean/tail safe but hard-limited.
 - If v1.4A/B mean and hard pass but tail is high: add v1.4C AGF-lite skip gating as a separate predeclared variable.
 - Only after internal gates pass: allow one locked Haze4K test.
 
@@ -175,5 +176,5 @@ fusion-neighbor partial unfreeze as evidence-supported follow-ups.
 - Preservation or regression reason: Best full DPFM123 has `val_regular` worst count `19` and strong regression ratio `0.253333`, so locked test remains blocked.
 - Cost/deployability reason: adapter-only UDP-Lite adds runtime complexity without passing internal gates.
 - Evidence strength label: completed internal diagnostic with regular/hard eval, module ablation, and depth-quality audit.
-- Reopen condition, if stopped: a DPFM1-focused diagnostic, v1.4B fusion-neighbor partial unfreeze, or external UDPNet reproduction result must explain how it avoids DPFM2/tail failure.
-- What this decides next: do not run locked Haze4K test or full DPFM123 scale/gate micro-tuning; consider only evidence-supported DPFM1-focused or fusion-neighbor follow-up.
+- Reopen condition, if stopped: a DPFM1-focused bidirectional diagnostic, later fusion-neighbor adapter, or external UDPNet reproduction result must explain how it avoids DPFM2/tail failure.
+- What this decides next: do not run locked Haze4K test or full DPFM123 scale/gate micro-tuning; consider only evidence-supported DPFM1-focused BiDPFM1 first, then fusion-neighbor follow-up only if needed.

@@ -1,0 +1,28 @@
+v14b_route_opened 2026-06-04T00:00:00+08:00 status=engineering_preflight_pending locked_test_blocked
+v14b_zero_init_start 2026-06-04T23:36:33+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+fusion_mode=udp_bi active_adapters=dpfm1 components=all
+v14b_zero_init_done rc=0 output=/root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1/experience_docx/experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/preflight/v14b_zero_init_equivalence.json 2026-06-04T23:36:39+08:00
+v14b_runtime_component_matrix_start 2026-06-04T23:38:34+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1
+v14a_model_dir=/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+split_json=/root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/internal_val/haze4k_dpga_v13_regular_hard_seed3407.json
+v14b_runtime_component_matrix_done output=/root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1/experience_docx/experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/v14b_runtime_component_matrix 2026-06-04T23:45:21+08:00
+v14b_matrix_exit=
+v14b_train_start ConvIR-Haze4K-v1.4B-BiDPFM1-adapter-only-seed3407-20260604 2026-06-04T23:47:48+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+split_json=/root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/internal_val/haze4k_dpga_v13_regular_hard_seed3407.json
+fusion_mode=udp_bi active_adapters=dpfm1 components=all scale=1.0 train_scope=active_adapter_only
+v14b_train_done rc=0 ConvIR-Haze4K-v1.4B-BiDPFM1-adapter-only-seed3407-20260604 2026-06-05T00:18:16+08:00
+v14b_train_tmux_finished
+v14b_eval_regular_hard_start model=ConvIR-Haze4K-v1.4B-BiDPFM1-adapter-only-seed3407-20260604 output=/root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1/experience_docx/experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/v14b_eval_regular_hard 2026-06-05T00:21:51+08:00
+v14b_eval_regular_hard_done output=/root/autodl-tmp/workspace/ConvIR-B-v1-4b-bidpfm1/experience_docx/experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/v14b_eval_regular_hard 2026-06-05T00:25:33+08:00
+v14b_eval_tmux_finished
