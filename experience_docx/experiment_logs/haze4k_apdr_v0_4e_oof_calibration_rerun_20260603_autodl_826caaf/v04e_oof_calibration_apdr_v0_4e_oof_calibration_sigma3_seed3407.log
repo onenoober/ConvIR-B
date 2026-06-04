@@ -1,0 +1,107 @@
+collected=100
+collected=200
+collected=300
+collected=400
+collected=500
+collected=600
+collected=700
+collected=800
+collected=900
+collected=1000
+collected=1100
+collected=1200
+collected=1300
+collected=1400
+collected=1500
+collected=1600
+collected=1700
+collected=1800
+collected=1900
+collected=2000
+collected=2100
+collected=2200
+collected=2300
+collected=2400
+collected=2500
+collected=2600
+collected=2700
+collected=2800
+collected=2900
+collected=3000
+spatial_collected=100
+spatial_collected=200
+spatial_collected=300
+spatial_collected=400
+spatial_collected=500
+spatial_collected=600
+spatial_collected=700
+spatial_collected=800
+spatial_collected=900
+spatial_collected=1000
+spatial_collected=1100
+spatial_collected=1200
+spatial_collected=1300
+spatial_collected=1400
+spatial_collected=1500
+spatial_collected=1600
+spatial_collected=1700
+spatial_collected=1800
+spatial_collected=1900
+spatial_collected=2000
+spatial_collected=2100
+spatial_collected=2200
+spatial_collected=2300
+spatial_collected=2400
+spatial_collected=2500
+spatial_collected=2600
+spatial_collected=2700
+spatial_collected=2800
+spatial_collected=2900
+spatial_collected=3000
+fold_prepared=0 train_open=1032 eval=665 eval_open=292
+fold_prepared=1 train_open=1045 eval=632 eval_open=279
+fold_prepared=2 train_open=1061 eval=592 eval_open=263
+fold_prepared=3 train_open=1075 eval=563 eval_open=249
+fold_prepared=4 train_open=1083 eval=548 eval_open=241
+oof_evaluated=100
+oof_evaluated=200
+oof_evaluated=300
+oof_evaluated=400
+oof_evaluated=500
+oof_evaluated=600
+oof_evaluated=700
+oof_evaluated=800
+oof_evaluated=900
+oof_evaluated=1000
+oof_evaluated=1100
+oof_evaluated=1200
+oof_evaluated=1300
+oof_evaluated=1400
+oof_evaluated=1500
+oof_evaluated=1600
+oof_evaluated=1700
+oof_evaluated=1800
+oof_evaluated=1900
+oof_evaluated=2000
+oof_evaluated=2100
+oof_evaluated=2200
+oof_evaluated=2300
+oof_evaluated=2400
+oof_evaluated=2500
+oof_evaluated=2600
+oof_evaluated=2700
+oof_evaluated=2800
+oof_evaluated=2900
+oof_evaluated=3000
+Traceback (most recent call last):
+  File "/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/tools/audit_haze4k_apdr_v0_4e_oof_calibration.py", line 537, in <module>
+    main()
+  File "/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/tools/audit_haze4k_apdr_v0_4e_oof_calibration.py", line 478, in main
+    write_csv(output_dir / "v04e_oof_locked_threshold_by_fold.csv", fold_locked_rows)
+  File "/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/tools/audit_haze4k_apdr_v0_4b_derived_basis.py", line 58, in write_csv
+    writer.writerows(rows)
+  File "/root/miniconda3/envs/convir-cu128/lib/python3.10/csv.py", line 157, in writerows
+    return self.writer.writerows(map(self._dict_to_list, rowdicts))
+  File "/root/miniconda3/envs/convir-cu128/lib/python3.10/csv.py", line 149, in _dict_to_list
+    raise ValueError("dict contains fields not in fieldnames: "
+ValueError: dict contains fields not in fieldnames: 'split', 'mean_oracle_gain', 'count', 'coverage', 'mean_gain', 'severe_regressions', 'open_keep_count', 'projection_weighted_delta_l1', 'oracle_recovery', 'open_count', 'hard_bottom25_oracle_gain', 'easy_top25_gain', 'strong_rate', 'strong_reference_cut_psnr', 'keep_count', 'weighted_delta_l1_drop', 'strong_regressions', 'initial_weighted_delta_l1', 'hard_bottom25_gain', 'gate'

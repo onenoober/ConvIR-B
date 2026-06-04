@@ -35,6 +35,8 @@ from audit_haze4k_apdr_v0_4e_risk_action_bank import (  # noqa: E402
     calibration_curve,
     candidate_table_rows,
     failure_signature_rows,
+    mapper_name_for_output,
+    normalize_extra_aliases,
     parse_mapper_list,
     parse_rules,
     risk_feature_auc_rows,
@@ -179,7 +181,8 @@ def evaluate_oof_action_bank(apdr_model, loader, device, args, tau, scores, fold
         pred_pos = pos_maps[fold_id][index]
         for (key, mapper_name), item in predictions.items():
             low_size, k_dim = key
-            if mapper_name not in wanted_mappers or k_dim not in wanted_k:
+            output_mapper_name = mapper_name_for_output(mapper_name, wanted_mappers)
+            if output_mapper_name is None or k_dim not in wanted_k:
                 continue
             projection = projections[key]
             pred_coeff = item["pred_coeffs"][pred_pos : pred_pos + 1]
@@ -196,7 +199,7 @@ def evaluate_oof_action_bank(apdr_model, loader, device, args, tau, scores, fold
             pred_flat = pred.flatten()
             pred_coeff_norm = pred_coeff.norm(dim=1).item()
             pred_coeff_l1 = pred_coeff.abs().mean().item()
-            extra = item.get("extras", {}).get(index, {})
+            extra = normalize_extra_aliases(item.get("extras", {}).get(index, {}))
             for scale in args.scales:
                 scaled_pred = float(scale) * pred
                 output = (anchor + weight * scaled_pred).clamp(0, 1)
@@ -207,7 +210,7 @@ def evaluate_oof_action_bank(apdr_model, loader, device, args, tau, scores, fold
                         "fold": fold_id,
                         "low_size": low_size,
                         "K": k_dim,
-                        "mapper": mapper_name,
+                        "mapper": output_mapper_name,
                         "family": item.get("family"),
                         "candidate_scale": float(scale),
                         "split": "oof",
@@ -474,12 +477,12 @@ def main():
 
     action_path = output_dir / f"v04e_oof_candidate_action_per_image_{label}.csv"
     write_csv_union(action_path, action_rows)
-    write_csv(output_dir / "v04e_oof_candidate_action_table.csv", candidate_rows)
-    write_csv(output_dir / "v04e_oof_locked_threshold_by_fold.csv", fold_locked_rows)
-    write_csv(output_dir / "v04e_oof_risk_feature_auc.csv", auc_rows)
-    write_csv(output_dir / "v04e_oof_calibration_curve.csv", curve_rows)
-    write_csv(output_dir / "v04e_oof_accepted_vs_rejected_groups.csv", group_rows)
-    write_csv(output_dir / "v04e_oof_strong_failure_signature.csv", failure_rows)
+    write_csv_union(output_dir / "v04e_oof_candidate_action_table.csv", candidate_rows)
+    write_csv_union(output_dir / "v04e_oof_locked_threshold_by_fold.csv", fold_locked_rows)
+    write_csv_union(output_dir / "v04e_oof_risk_feature_auc.csv", auc_rows)
+    write_csv_union(output_dir / "v04e_oof_calibration_curve.csv", curve_rows)
+    write_csv_union(output_dir / "v04e_oof_accepted_vs_rejected_groups.csv", group_rows)
+    write_csv_union(output_dir / "v04e_oof_strong_failure_signature.csv", failure_rows)
 
     bad_count = sum(bad_labels(action_rows))
     summary = {

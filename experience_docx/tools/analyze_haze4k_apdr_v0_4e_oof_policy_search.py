@@ -154,11 +154,11 @@ def main():
     parser.add_argument("--tag", default="sigma3")
     parser.add_argument(
         "--primary_features",
-        default="pred_abs_mean,pred_low_energy,weighted_residual_norm,kenel_confidence,nn_distance",
+        default="pred_abs_mean,pred_low_energy,weighted_residual_norm,kenel_confidence,kernel_confidence,nn_distance",
     )
     parser.add_argument(
         "--secondary_features",
-        default="M_safe_mean,proxy_score,M_safe_nonzero_frac,nn_distance,kenel_confidence,confidence_proxy,pred_abs_mean,pred_low_energy,weighted_residual_norm",
+        default="M_safe_mean,proxy_score,M_safe_nonzero_frac,nn_distance,kenel_confidence,kernel_confidence,confidence_proxy,pred_abs_mean,pred_low_energy,weighted_residual_norm",
     )
     parser.add_argument("--percentiles", default="1,2,5,10,15,20,30,40,50,60,70,80,90,95,98,99")
     parser.add_argument("--top_k", type=int, default=200)

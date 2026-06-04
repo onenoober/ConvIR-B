@@ -1,0 +1,118 @@
+{
+  "stage": "APDR-v0.4E 5-fold OOF candidate-action risk calibration",
+  "tag": "apdr_v0_4e_oof_calibration_sigma3_seed3407",
+  "status": "OOF calibration finalized from per-image intermediate table; no training",
+  "source_per_image_csv": "/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/v04e_oof_candidate_action_per_image_sigma3.csv",
+  "sigma": 3.0,
+  "data_count": 3000,
+  "active_open_count": 1324,
+  "fold_count": 5,
+  "folds": [
+    {
+      "fold": 0,
+      "eval_count": 665,
+      "eval_open_count": 292
+    },
+    {
+      "fold": 1,
+      "eval_count": 632,
+      "eval_open_count": 279
+    },
+    {
+      "fold": 2,
+      "eval_count": 592,
+      "eval_open_count": 263
+    },
+    {
+      "fold": 3,
+      "eval_count": 563,
+      "eval_open_count": 249
+    },
+    {
+      "fold": 4,
+      "eval_count": 548,
+      "eval_open_count": 241
+    }
+  ],
+  "locked_rules": [
+    {
+      "name": "RuleA_global_plus_spatial_kenel_knn_9_K16_pred_abs_mean_high",
+      "mapper": "global_plus_spatial_kenel_knn_9",
+      "K": 16,
+      "scale": 1.0,
+      "confidence_key": "pred_abs_mean",
+      "direction": "high",
+      "threshold": 0.010107760690152645,
+      "status": "missing_candidate",
+      "gate_pass": false,
+      "gate_pass_recomputed": false
+    },
+    {
+      "name": "RuleB_spatial_priors_ridge_10_K16_pred_abs_mean_high",
+      "mapper": "spatial_priors_ridge_10",
+      "K": 16,
+      "scale": 1.0,
+      "confidence_key": "pred_abs_mean",
+      "direction": "high",
+      "threshold": 0.01394791239872575,
+      "split": "oof",
+      "gate_pass": false,
+      "gate": "severe=0,strong_rate<=1%,easy>=-0.02,hard>=0.25,mean>0,coverage>=10%,oracle_recovery>=0.15",
+      "count": 3000,
+      "open_count": 1324,
+      "keep_count": 150,
+      "open_keep_count": 85,
+      "initial_weighted_delta_l1": 0.01268015515423027,
+      "projection_weighted_delta_l1": 0.011752352229025287,
+      "weighted_delta_l1_drop": 0.07316968238322026,
+      "mean_gain": 0.037793947219848634,
+      "mean_oracle_gain": 0.45287682723999023,
+      "oracle_recovery": 0.08345303832430516,
+      "hard_bottom25_gain": 0.13524342091878255,
+      "hard_bottom25_oracle_gain": 1.1043257853190105,
+      "easy_top25_gain": 0.0,
+      "strong_reference_cut_psnr": 42.756771087646484,
+      "strong_regressions": 0,
+      "severe_regressions": 1,
+      "coverage": 0.05,
+      "strong_rate": 0.0,
+      "gate_pass_recomputed": false
+    }
+  ],
+  "all_locked_rules_pass": false,
+  "action_row_count": 24000,
+  "bad_label_count": 740,
+  "candidate_mappers": [
+    "global_mean_coeff",
+    "spatial_priors_ridge_10"
+  ],
+  "candidate_k_values": [
+    16
+  ],
+  "candidate_scales": [
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "gate_definition": "severe=0,strong_rate<=1%,easy>=-0.02,hard>=0.25,mean>0,coverage>=10%,oracle_recovery>=0.15",
+  "outputs": {
+    "candidate_action_per_image": "/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/v04e_oof_candidate_action_per_image_sigma3.csv",
+    "candidate_action_table": "/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/v04e_oof_candidate_action_table.csv",
+    "locked_threshold_by_fold": "/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/v04e_oof_locked_threshold_by_fold.csv",
+    "risk_feature_auc": "/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/v04e_oof_risk_feature_auc.csv",
+    "oof_calibration_curve": "/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/v04e_oof_calibration_curve.csv",
+    "accepted_vs_rejected_groups": "/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/v04e_oof_accepted_vs_rejected_groups.csv",
+    "strong_failure_signature": "/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/v04e_oof_strong_failure_signature.csv"
+  },
+  "args": {
+    "per_image_csv": "/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/v04e_oof_candidate_action_per_image_sigma3.csv",
+    "output_dir": "/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf",
+    "tag": "apdr_v0_4e_oof_calibration_sigma3_seed3407",
+    "sigma": 3.0,
+    "locked_rules": "",
+    "risk_feature_keys": "pred_abs_mean,pred_abs_max,pred_coeff_norm,pred_low_energy,weighted_residual_norm,nn_distance,confidence_proxy,kenel_confidence,proxy_score,M_safe_mean,M_safe_nonzero_frac",
+    "calibration_score_key": "pred_abs_mean",
+    "calibration_bins": 10
+  }
+}

@@ -98,3 +98,24 @@ Decision rule:
 - If fixed-code E1 still fails, formally close current v0.4E thresholds.
 - If fixed-code numbers change materially, mark `ed38afb` v0.4E evidence as
   `implementation-mismatch invalidated`.
+
+## AutoDL Follow-Up
+
+An AutoDL rerun from clean `826caaf` was completed under:
+
+- `haze4k_apdr_v0_4e_repro_audit_20260603_autodl/`
+- `haze4k_apdr_v0_4e_risk_action_bank_rerun_20260603_autodl_826caaf/`
+- `haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/`
+
+The rerun confirmed the stop direction but exposed two more implementation
+issues:
+
+- Variable-schema summary rows in E1 required union-field CSV writing.
+- Historical `*_kenel_knn_9` mapper names did not match generated
+  `*_kernel_knn_9` mapper names, filtering out KNN candidates in clean
+  `826caaf`.
+
+Current code now patches both issues and adds a finalize tool that can recover
+E1 summary tables from the per-image intermediate CSV. Exact full v0.4E numeric
+sealing still requires an alias-corrected OOF rerun; no E2 or training route is
+authorized before that.

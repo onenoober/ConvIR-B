@@ -2,9 +2,9 @@
 
 Date: 2026-06-03
 
-Status: E0 locked-threshold intermediate audit passed on `autodl-dehaze4`, but
-a post-sync implementation audit found a clean-reproducibility mismatch in
-commit `ed38afb`. Authorize fixed-code rerun and OOF calibration review only.
+Status: E0 locked-threshold intermediate audit passed originally, but clean
+AutoDL rerun exposed mapper-name compatibility drift for Rule A. The stop
+direction is unchanged; exact E0 numeric sealing needs an alias-corrected rerun.
 No stop20, local correction, full spatial router, or trainable residual head.
 
 ## Scope
@@ -128,13 +128,16 @@ E0_PASS_AUTHORIZE_OOF_CALIBRATION_ONLY
 Reproducibility status:
 
 ```text
-FIXED_CODE_RERUN_REQUIRED_BEFORE_NUMERIC_SEAL
+STOP_DIRECTION_CONFIRMED_NUMERIC_SEAL_BLOCKED_BY_MAPPER_ALIAS
 ```
 
-Post-sync implementation audit found `align_coners` and
-`kenel_size/kernel_size` mismatches in the submitted v0.4E tools. The E0 pass
-remains a useful diagnostic direction, but exact numeric evidence must be
-reproduced from a clean fixed-code checkout before archival sealing.
+Post-sync implementation audit first found `align_coners` and
+`kenel_size/kernel_size` mismatches in the submitted v0.4E tools. The clean
+AutoDL rerun from `826caaf` then exposed an additional historical naming issue:
+the probe generated `*_kernel_knn_9` mapper names while v0.4E defaults and
+Rule A used `*_kenel_knn_9`. Current code now accepts both aliases and writes
+`kernel_confidence/kenel_confidence` aliases, but the E0 Rule A number is not
+sealed until an alias-corrected rerun.
 
 E0 completed on `autodl-dehaze4` with `exit_code=0`
 (`2026-06-03T21:20:40+08:00` to `2026-06-03T21:28:42+08:00`).
@@ -145,6 +148,11 @@ Locked confirmation result on train indices `256..383`:
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Rule A: `global_plus_spatial_kenel_knn_9`, K16 | `29/128` | `+0.1546 dB` | `+0.3251 dB` | `+0.0562 dB` | `0/0` | `0.1282` | `0.1706` |
 | Rule B: `spatial_priors_ridge_10`, K16 | `45/128` | `+0.2141 dB` | `+0.4528 dB` | `+0.0625 dB` | `1/0` | `0.1029` | `0.2363` |
+
+Clean `826caaf` rerun reproduced Rule B to numerical precision but marked Rule
+A as `missing_candidate` because of the mapper alias mismatch. This means the
+original E0 pass direction remains useful, but Rule A is not a clean-reproducible
+numeric seal from `826caaf`.
 
 This authorizes only a separate 5-fold OOF calibration audit. Do not launch full
 spatial router, local correction, dense residual training, or stop20 from this

@@ -95,6 +95,29 @@ def parse_rules(value):
     return json.loads(value)
 
 
+def mapper_name_for_output(mapper_name, wanted_mappers):
+    if mapper_name in wanted_mappers:
+        return mapper_name
+    aliases = []
+    if "_kernel_" in mapper_name:
+        aliases.append(mapper_name.replace("_kernel_", "_kenel_"))
+    if "_kenel_" in mapper_name:
+        aliases.append(mapper_name.replace("_kenel_", "_kernel_"))
+    for alias in aliases:
+        if alias in wanted_mappers:
+            return alias
+    return None
+
+
+def normalize_extra_aliases(extra):
+    out = dict(extra)
+    if "kernel_confidence" in out and "kenel_confidence" not in out:
+        out["kenel_confidence"] = out["kernel_confidence"]
+    if "kenel_confidence" in out and "kernel_confidence" not in out:
+        out["kernel_confidence"] = out["kenel_confidence"]
+    return out
+
+
 def write_json(path, payload):
     Path(path).write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
@@ -395,7 +418,8 @@ def evaluate_action_bank(apdr_model, loader, device, args, tau, scores, projecti
             split = "other"
         for (key, mapper_name), item in predictions.items():
             low_size, k_dim = key
-            if mapper_name not in wanted_mappers or k_dim not in wanted_k:
+            output_mapper_name = mapper_name_for_output(mapper_name, wanted_mappers)
+            if output_mapper_name is None or k_dim not in wanted_k:
                 continue
             projection = projections[key]
             pred_pos = pos_by_index[index]
@@ -415,7 +439,7 @@ def evaluate_action_bank(apdr_model, loader, device, args, tau, scores, projecti
             negative_frac = (pred_flat < 0).float().mean().item()
             pred_coeff_norm = pred_coeff.norm(dim=1).item()
             pred_coeff_l1 = pred_coeff.abs().mean().item()
-            extra = item.get("extras", {}).get(index, {})
+            extra = normalize_extra_aliases(item.get("extras", {}).get(index, {}))
             for scale in args.scales:
                 scaled_pred = float(scale) * pred
                 output = (anchor + weight * scaled_pred).clamp(0, 1)
@@ -425,7 +449,7 @@ def evaluate_action_bank(apdr_model, loader, device, args, tau, scores, projecti
                     {
                         "low_size": low_size,
                         "K": k_dim,
-                        "mapper": mapper_name,
+                        "mapper": output_mapper_name,
                         "family": item.get("family"),
                         "candidate_scale": float(scale),
                         "split": split,
@@ -677,11 +701,11 @@ def main():
 
     action_path = output_dir / f"v04e_candidate_action_per_image_{label}.csv"
     write_csv_union(action_path, action_rows)
-    write_csv(output_dir / "v04e_candidate_action_table.csv", candidate_rows)
-    write_csv(output_dir / "v04e_risk_feature_auc.csv", auc_rows)
-    write_csv(output_dir / "v04e_oof_calibration_curve.csv", curve_rows)
-    write_csv(output_dir / "v04e_accepted_vs_rejected_groups.csv", group_rows)
-    write_csv(output_dir / "v04e_strong_failure_signature.csv", failure_rows)
+    write_csv_union(output_dir / "v04e_candidate_action_table.csv", candidate_rows)
+    write_csv_union(output_dir / "v04e_risk_feature_auc.csv", auc_rows)
+    write_csv_union(output_dir / "v04e_oof_calibration_curve.csv", curve_rows)
+    write_csv_union(output_dir / "v04e_accepted_vs_rejected_groups.csv", group_rows)
+    write_csv_union(output_dir / "v04e_strong_failure_signature.csv", failure_rows)
 
     summary = {
         "stage": "APDR-v0.4E Risk-Calibrated Selective Action Bank intermediate audit",

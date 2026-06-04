@@ -1,0 +1,13 @@
+[start] 2026-06-03T23:59:35+08:00
+[root] /root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle
+[head] 826caaf0031cb46cb925b00341eba0504b397c1b
+[diff]
+[gpu]
+NVIDIA GeForce RTX 4090, 0 MiB, 0 %
+[E0] start 2026-06-03T23:59:35+08:00
+start_v0_4e_risk_action_bank root=/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle tag=apdr_v0_4e_risk_action_bank_sigma3_seed3407 train=0:128 eval=256:128 low_size=32 k_values=16 scales=0.25,0.50,0.75,1.00 2026-06-03T23:59:35+08:00
+complete_v0_4e_risk_action_bank apdr_v0_4e_risk_action_bank_sigma3_seed3407 2026-06-04T00:07:25+08:00
+[E0] done 2026-06-04T00:07:25+08:00
+[E1] start 2026-06-04T00:07:25+08:00
+start_v0_4e_oof_calibration root=/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle tag=apdr_v0_4e_oof_calibration_sigma3_seed3407 folds=5 low_size=32 k_values=16 scales=0.25,0.50,0.75,1.00 2026-06-04T00:07:25+08:00
+error_v0_4e_oof_calibration apdr_v0_4e_oof_calibration_sigma3_seed3407 2026-06-04T02:17:43+08:00

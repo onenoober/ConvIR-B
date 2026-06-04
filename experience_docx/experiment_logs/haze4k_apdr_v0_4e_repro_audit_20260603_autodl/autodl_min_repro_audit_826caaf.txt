@@ -1,0 +1,147 @@
+[git rev-parse HEAD]
+826caaf0031cb46cb925b00341eba0504b397c1b
+[git diff --stat]
+[python -V]
+Python 3.10.13
+[torch interpolate signature]
+2.11.0+cu128
+(input: torch.Tensor, size: Optional[int] = None, scale_factor: Optional[list[float]] = None, mode: str = 'nearest', align_corners: Optional[bool] = None, recompute_scale_factor: Optional[bool] = None, antialias: bool = False) -> torch.Tensor
+[grep]
+experience_docx/tools/audit_haze4k_apdr_correctability_proxy.py:59:def gaussian_kernel1d(kernel_size, sigma, device, dtype):
+experience_docx/tools/audit_haze4k_apdr_correctability_proxy.py:60:    radius = kernel_size // 2
+experience_docx/tools/audit_haze4k_apdr_correctability_proxy.py:66:def gaussian_lowpass(x, kernel_size=31, sigma=7.0):
+experience_docx/tools/audit_haze4k_apdr_correctability_proxy.py:67:    if kernel_size <= 1:
+experience_docx/tools/audit_haze4k_apdr_correctability_proxy.py:69:    kernel = gaussian_kernel1d(kernel_size, sigma, x.device, x.dtype)
+experience_docx/tools/audit_haze4k_apdr_correctability_proxy.py:71:    kx = kernel.view(1, 1, 1, kernel_size).repeat(channels, 1, 1, 1)
+experience_docx/tools/audit_haze4k_apdr_correctability_proxy.py:72:    ky = kernel.view(1, 1, kernel_size, 1).repeat(channels, 1, 1, 1)
+experience_docx/tools/audit_haze4k_apdr_correctability_proxy.py:73:    pad = kernel_size // 2
+experience_docx/tools/audit_haze4k_apdr_correctability_proxy.py:205:            low_delta = gaussian_lowpass(delta_star, args.kernel_size, args.sigma)
+experience_docx/tools/audit_haze4k_apdr_correctability_proxy.py:385:    parser.add_argument("--kernel_size", type=int, default=31)
+experience_docx/tools/audit_haze4k_apdr_v0_4_cache_and_scale.py:40:def gaussian_kernel1d(kernel_size, sigma, device, dtype):
+experience_docx/tools/audit_haze4k_apdr_v0_4_cache_and_scale.py:41:    radius = kernel_size // 2
+experience_docx/tools/audit_haze4k_apdr_v0_4_cache_and_scale.py:47:def gaussian_lowpass(x, kernel_size, sigma):
+experience_docx/tools/audit_haze4k_apdr_v0_4_cache_and_scale.py:48:    if kernel_size <= 1:
+experience_docx/tools/audit_haze4k_apdr_v0_4_cache_and_scale.py:50:    kernel = gaussian_kernel1d(kernel_size, sigma, x.device, x.dtype)
+experience_docx/tools/audit_haze4k_apdr_v0_4_cache_and_scale.py:52:    kx = kernel.view(1, 1, 1, kernel_size).repeat(channels, 1, 1, 1)
+experience_docx/tools/audit_haze4k_apdr_v0_4_cache_and_scale.py:53:    ky = kernel.view(1, 1, kernel_size, 1).repeat(channels, 1, 1, 1)
+experience_docx/tools/audit_haze4k_apdr_v0_4_cache_and_scale.py:54:    pad = kernel_size // 2
+experience_docx/tools/audit_haze4k_apdr_v0_4_cache_and_scale.py:275:    parser.add_argument("--kernel_size_factor", type=float, default=4.0)
+experience_docx/tools/audit_haze4k_apdr_v0_4_cache_and_scale.py:330:                kernel_size = int(math.ceil(args.kernel_size_factor * sigma) * 2 + 1)
+experience_docx/tools/audit_haze4k_apdr_v0_4_cache_and_scale.py:331:                low_delta = gaussian_lowpass(delta_star, kernel_size, sigma)
+experience_docx/tools/audit_haze4k_apdr_v0_4_correctability_traincalib.py:230:    parser.add_argument("--kernel_size", type=int, default=31)
+experience_docx/tools/audit_haze4k_apdr_v0_4b_derived_basis.py:159:                    align_corners=False,
+experience_docx/tools/audit_haze4k_apdr_v0_4b_derived_basis.py:171:                    align_corners=False,
+experience_docx/tools/audit_haze4k_apdr_v0_4b_derived_basis.py:515:                align_corners=False,
+experience_docx/tools/audit_haze4k_apdr_v0_4b_derived_basis.py:517:            pred = gaussian_lowpass(pred, args.kernel_size, args.sigma)
+experience_docx/tools/audit_haze4k_apdr_v0_4b_derived_basis.py:556:                    align_corners=False,
+experience_docx/tools/audit_haze4k_apdr_v0_4b_derived_basis.py:558:                router_pred = gaussian_lowpass(router_pred, args.kernel_size, args.sigma)
+experience_docx/tools/audit_haze4k_apdr_v0_4b_derived_basis.py:615:    parser.add_argument("--kernel_size", type=int, default=31)
+experience_docx/tools/audit_haze4k_apdr_v0_4b_mapping_triage.py:565:                align_corners=False,
+experience_docx/tools/audit_haze4k_apdr_v0_4b_mapping_triage.py:567:            pred = gaussian_lowpass(pred, args.kernel_size, args.sigma)
+experience_docx/tools/audit_haze4k_apdr_v0_4b_mapping_triage.py:740:    parser.add_argument("--kernel_size", type=int, default=31)
+experience_docx/tools/audit_haze4k_apdr_v0_4d_spatial_coeff_probe.py:284:    parser.add_argument("--kernel_size", type=int, default=31)
+experience_docx/tools/audit_haze4k_apdr_v0_4e_oof_calibration.py:190:            pred = F.interpolate(pred_low.to(device), size=anchor.shape[-2:], mode="bilinear", align_corners=False)
+experience_docx/tools/audit_haze4k_apdr_v0_4e_oof_calibration.py:191:            pred = gaussian_lowpass(pred, args.kernel_size, args.sigma)
+experience_docx/tools/audit_haze4k_apdr_v0_4e_oof_calibration.py:325:    parser.add_argument("--kernel_size", "--kenel_size", dest="kernel_size", type=int, default=31)
+experience_docx/tools/audit_haze4k_apdr_v0_4e_risk_action_bank.py:407:            pred = F.interpolate(pred_low.to(device), size=anchor.shape[-2:], mode="bilinear", align_corners=False)
+experience_docx/tools/audit_haze4k_apdr_v0_4e_risk_action_bank.py:408:            pred = gaussian_lowpass(pred, args.kernel_size, args.sigma)
+experience_docx/tools/audit_haze4k_apdr_v0_4e_risk_action_bank.py:500:    parser.add_argument("--kernel_size", "--kenel_size", dest="kernel_size", type=int, default=31)
+experience_docx/tools/oracle_haze4k_apdr_residual_source_ablation.py:69:def gaussian_kernel1d(kernel_size, sigma, device, dtype):
+experience_docx/tools/oracle_haze4k_apdr_residual_source_ablation.py:70:    radius = kernel_size // 2
+experience_docx/tools/oracle_haze4k_apdr_residual_source_ablation.py:77:def gaussian_lowpass(x, kernel_size=31, sigma=7.0):
+experience_docx/tools/oracle_haze4k_apdr_residual_source_ablation.py:78:    if kernel_size <= 1:
+experience_docx/tools/oracle_haze4k_apdr_residual_source_ablation.py:80:    kernel = gaussian_kernel1d(kernel_size, sigma, x.device, x.dtype)
+experience_docx/tools/oracle_haze4k_apdr_residual_source_ablation.py:82:    kx = kernel.view(1, 1, 1, kernel_size).repeat(channels, 1, 1, 1)
+experience_docx/tools/oracle_haze4k_apdr_residual_source_ablation.py:83:    ky = kernel.view(1, 1, kernel_size, 1).repeat(channels, 1, 1, 1)
+experience_docx/tools/oracle_haze4k_apdr_residual_source_ablation.py:84:    pad = kernel_size // 2
+experience_docx/tools/oracle_haze4k_apdr_residual_source_ablation.py:174:    parser.add_argument("--kernel_size", type=int, default=31)
+experience_docx/tools/oracle_haze4k_apdr_residual_source_ablation.py:228:            low_delta = gaussian_lowpass(delta_star, args.kernel_size, args.sigma)
+experience_docx/tools/oracle_haze4k_apdr_residual_source_ablation.py:233:                color_delta + gaussian_lowpass(color_residual, args.kernel_size, args.sigma)
+experience_docx/tools/overfit_haze4k_apdr_low_color_learnability.py:109:            nn.Conv2d(in_channels, hidden, kernel_size=3, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_low_color_learnability.py:111:            nn.Conv2d(hidden, hidden, kernel_size=3, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_low_color_learnability.py:113:            nn.Conv2d(hidden, 3, kernel_size=3, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_low_color_learnability.py:117:            nn.Conv2d(in_channels, hidden, kernel_size=1),
+experience_docx/tools/overfit_haze4k_apdr_low_color_learnability.py:119:            nn.Conv2d(hidden, 6, kernel_size=1),
+experience_docx/tools/overfit_haze4k_apdr_low_color_learnability.py:130:        low_delta = f.interpolate(low_raw, size=anchor.shape[2:], mode="bilinear", align_corners=False)
+experience_docx/tools/overfit_haze4k_apdr_v0_4_freeparam_lowcolor.py:70:def gaussian_kernel1d(kernel_size, sigma, device, dtype):
+experience_docx/tools/overfit_haze4k_apdr_v0_4_freeparam_lowcolor.py:71:    radius = kernel_size // 2
+experience_docx/tools/overfit_haze4k_apdr_v0_4_freeparam_lowcolor.py:77:def gaussian_lowpass(x, kernel_size, sigma):
+experience_docx/tools/overfit_haze4k_apdr_v0_4_freeparam_lowcolor.py:78:    if kernel_size <= 1:
+experience_docx/tools/overfit_haze4k_apdr_v0_4_freeparam_lowcolor.py:80:    kernel = gaussian_kernel1d(kernel_size, sigma, x.device, x.dtype)
+experience_docx/tools/overfit_haze4k_apdr_v0_4_freeparam_lowcolor.py:82:    kx = kernel.view(1, 1, 1, kernel_size).repeat(channels, 1, 1, 1)
+experience_docx/tools/overfit_haze4k_apdr_v0_4_freeparam_lowcolor.py:83:    ky = kernel.view(1, 1, kernel_size, 1).repeat(channels, 1, 1, 1)
+experience_docx/tools/overfit_haze4k_apdr_v0_4_freeparam_lowcolor.py:84:    pad = kernel_size // 2
+experience_docx/tools/overfit_haze4k_apdr_v0_4_freeparam_lowcolor.py:164:        low_delta = gaussian_lowpass(delta_star, args.kernel_size, args.sigma)
+experience_docx/tools/overfit_haze4k_apdr_v0_4_freeparam_lowcolor.py:181:        low_delta = F.interpolate(low_delta, size=anchor.shape[2:], mode="bilinear", align_corners=False)
+experience_docx/tools/overfit_haze4k_apdr_v0_4_freeparam_lowcolor.py:331:    parser.add_argument("--kernel_size", type=int, default=31)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:70:    def __init__(self, channels, kernel_size=7, dilation=1):
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:72:        padding = (kernel_size // 2) * dilation
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:77:                kernel_size=kernel_size,
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:82:            nn.Conv2d(channels, channels, kernel_size=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:84:            nn.Conv2d(channels, channels, kernel_size=3, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:97:            nn.Conv2d(in_channels, h, kernel_size=3, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:99:            DepthwiseResidualBlock(h, kernel_size=7, dilation=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:102:            nn.Conv2d(h, h * 2, kernel_size=3, stride=2, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:104:            DepthwiseResidualBlock(h * 2, kernel_size=7, dilation=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:105:            DepthwiseResidualBlock(h * 2, kernel_size=7, dilation=2),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:108:            nn.Conv2d(h * 2, h * 4, kernel_size=3, stride=2, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:110:            DepthwiseResidualBlock(h * 4, kernel_size=11, dilation=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:111:            DepthwiseResidualBlock(h * 4, kernel_size=7, dilation=4),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:115:            nn.Conv2d(h * 4, h * 4, kernel_size=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:117:            nn.Conv2d(h * 4, h * 4, kernel_size=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:121:            nn.Conv2d(h * 4 + h * 2, h * 2, kernel_size=3, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:123:            DepthwiseResidualBlock(h * 2, kernel_size=7, dilation=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:126:            nn.Conv2d(h * 2 + h, h, kernel_size=3, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:128:            DepthwiseResidualBlock(h, kernel_size=7, dilation=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:130:        self.head = nn.Conv2d(h, 3, kernel_size=3, padding=1)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:134:    def forward(self, features, kernel_size, sigma):
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:139:        up = F.interpolate(bottleneck, size=s1.shape[-2:], mode="bilinear", align_corners=False)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:141:        up = F.interpolate(up, size=s0.shape[-2:], mode="bilinear", align_corners=False)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:144:        return gaussian_lowpass(bounded, kernel_size, sigma)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:154:    def forward_for_index(self, index, size, kernel_size, sigma):
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:157:        delta = F.interpolate(delta, size=size, mode="bilinear", align_corners=False)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:158:        return gaussian_lowpass(delta, kernel_size, sigma)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:176:            nn.Conv2d(in_channels, h, kernel_size=3, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:178:            nn.Conv2d(h, h, kernel_size=3, stride=2, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:180:            DepthwiseResidualBlock(h, kernel_size=7, dilation=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:181:            nn.Conv2d(h, h, kernel_size=3, stride=2, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:183:            DepthwiseResidualBlock(h, kernel_size=7, dilation=2),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:186:        self.weight_head = nn.Conv2d(h, int(num_bases), kernel_size=1)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:194:        return F.interpolate(delta, size=features.shape[-2:], mode="bilinear", align_corners=False)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:196:    def forward(self, features, kernel_size, sigma):
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:197:        return gaussian_lowpass(self.basis_delta(features), kernel_size, sigma)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:218:            nn.Conv2d(in_channels, h, kernel_size=3, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:220:            DepthwiseResidualBlock(h, kernel_size=7, dilation=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:221:            nn.Conv2d(h, h, kernel_size=3, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:223:            DepthwiseResidualBlock(h, kernel_size=7, dilation=2),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:225:        self.local_head = nn.Conv2d(h, 3, kernel_size=3, padding=1)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:229:    def forward(self, features, kernel_size, sigma):
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:233:        return gaussian_lowpass(delta, kernel_size, sigma)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:242:            nn.Conv2d(in_channels, h, kernel_size=3, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:244:            DepthwiseResidualBlock(h, kernel_size=7, dilation=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:247:            nn.Conv2d(h, h * 2, kernel_size=3, stride=2, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:249:            DepthwiseResidualBlock(h * 2, kernel_size=7, dilation=2),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:250:            nn.Conv2d(h * 2, h * 2, kernel_size=3, stride=2, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:252:            DepthwiseResidualBlock(h * 2, kernel_size=11, dilation=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:255:            nn.Conv2d(h * 2 + h, h, kernel_size=3, padding=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:257:            DepthwiseResidualBlock(h, kernel_size=7, dilation=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:259:        self.veil_head = nn.Conv2d(h, 1, kernel_size=3, padding=1)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:260:        self.epsilon_head = nn.Conv2d(h, 3, kernel_size=3, padding=1)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:263:            nn.Conv2d(h * 2, h, kernel_size=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:265:            nn.Conv2d(h, 3, kernel_size=1),
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:274:    def forward(self, features, kernel_size, sigma):
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:277:        up = F.interpolate(deep, size=shallow.shape[-2:], mode="bilinear", align_corners=False)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:283:        return gaussian_lowpass(delta, kernel_size, sigma)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:312:        return model.forward_for_index(record_index, features.shape[-2:], args.kernel_size, args.sigma)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:313:    return model(features, args.kernel_size, args.sigma)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:440:    lowpass = gaussian_lowpass(pred, args.kernel_size, args.sigma)
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:486:            lowpass_consistency.append((pred - gaussian_lowpass(pred, args.kernel_size, args.sigma)).abs().mean().item())
+experience_docx/tools/overfit_haze4k_apdr_v0_4a_lowfield.py:668:    parser.add_argument("--kernel_size", type=int, default=31)
+experience_docx/tools/overfit_haze4k_apdr_v0_4b_basis_router.py:307:                pred = F.interpolate(pred, size=anchor.shape[-2:], mode="bilinear", align_corners=False)
+experience_docx/tools/overfit_haze4k_apdr_v0_4b_basis_router.py:308:                pred = gaussian_lowpass(pred, args.kernel_size, args.sigma)
+experience_docx/tools/overfit_haze4k_apdr_v0_4b_basis_router.py:409:    parser.add_argument("--kernel_size", type=int, default=31)
+[sha256sum]
+37e709e2d7c8dd2c59f857a84cc79843042b6481c9529269c180a8be4e697a6e  experience_docx/tools/audit_haze4k_apdr_v0_4e_oof_calibration.py
+2d9a2211108a31355c0793e660c56f1db7d46c1bab54a00ef534c9b560c6d147  experience_docx/tools/audit_haze4k_apdr_v0_4e_risk_action_bank.py
+[gpu]
+NVIDIA GeForce RTX 4090, 0 MiB, 0 %

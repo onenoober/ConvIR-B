@@ -2,11 +2,11 @@
 
 Date: 2026-06-03
 
-Status: E1 OOF audit completed on `autodl-dehaze4`, but a post-sync
-implementation audit found a clean-reproducibility mismatch in commit
-`ed38afb`. Current locked thresholds remain blocked; exact v0.4E numbers are
-fixed-code rerun pending. No stop20, local correction, full spatial router, or
-trainable residual head.
+Status: E1 OOF audit failed, and clean AutoDL rerun confirmed the stop
+direction. Exact full numeric sealing remains blocked by mapper-name
+compatibility drift in `826caaf`; current code repairs that drift and adds
+postprocess recovery, but no E2, stop20, local correction, full spatial router,
+or trainable residual head is authorized.
 
 ## Scope
 
@@ -74,13 +74,16 @@ E1_FAIL_STOP_CURRENT_LOCKED_THRESHOLDS
 Reproducibility status:
 
 ```text
-FIXED_CODE_RERUN_REQUIRED_BEFORE_NUMERIC_SEAL
+STOP_DIRECTION_CONFIRMED_NUMERIC_SEAL_BLOCKED_BY_MAPPER_ALIAS
 ```
 
 Post-sync implementation audit found `align_coners` and
-`kenel_size/kernel_size` mismatches in the submitted v0.4E tools. The failure
-direction remains a useful stop signal, but the exact E1 numeric evidence must
-be reproduced from a clean fixed-code checkout before archival sealing.
+`kenel_size/kernel_size` mismatches in the submitted v0.4E tools. Clean AutoDL
+rerun from `826caaf` completed the expensive 3000-image OOF evaluation but
+exposed two additional implementation issues: variable-schema CSV summary
+writing and historical `*_kenel_knn_9` mapper names not matching generated
+`*_kernel_knn_9` names. Current code patches both issues and can recover summary
+tables from the per-image intermediate CSV.
 
 E1 completed on `autodl-dehaze4` with `exit_code=0`
 (`2026-06-03T21:50:26+08:00` to `2026-06-03T22:39:02+08:00`).
@@ -99,6 +102,17 @@ and found `0` gate-passing policies. The best retained policy
 `nn_distance <= 11.120915794372559`) removed severe regressions and reached hard
 `+0.2527 dB`, but coverage was only `0.0877`, below the pre-registered
 `0.10` line.
+
+Clean `826caaf` rerun generated `24000` action rows rather than the original
+`60000` because KNN mapper families were filtered out by the `kernel/kenel`
+name mismatch. The reproduced Rule B and policy-search results match the old
+failure direction:
+
+| Rerun item | Result |
+| --- | --- |
+| Rule A | `missing_candidate` under `826caaf`; alias fix now added |
+| Rule B | keep `150/3000`, coverage `0.0500`, mean `+0.0378 dB`, hard `+0.1352 dB`, severe `1`, oracle recovery `0.0835` |
+| Policy search | `1600` retained policies, `0` gate-passing; best coverage `0.0877` |
 
 Do not launch E2, full spatial router, local correction, dense residual
 training, or stop20 from the current locked-threshold v0.4E route. A future
