@@ -1,0 +1,4 @@
+blocker_id,severity,detail,evidence
+official_checkpoint_missing,blocking,"/root/autodl-tmp/workspace/UDPNet_checkpoints/ConvIR_UDPNet_haze4k.ckpt is absent, so official ConvIR+UDP eval cannot run.",udpnet_convir_repro_eval.json:official_checkpoint_available=false
+baidu_share_no_plain_dlink,blocking,"Baidu sharedownload returned a client encrypted task list, not a direct HTTP dlink.",udpnet_convir_repro_eval.json:baidu_share.sharedownload_probe
+baidupcs_public_transfer_failed,blocking,BaiduPCS-Go public share transfer failed to get share item metadata without a logged-in account.,baidupcs_transfer_probe.log

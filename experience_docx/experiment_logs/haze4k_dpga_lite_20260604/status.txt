@@ -1,0 +1,6 @@
+train_start ConvIR-Haze4K-DPGA-Lite-v1.0-adapter-only-stop20-seed3407-20260604 2026-06-04T09:48:05+08:00
+root /root/autodl-tmp/workspace/ConvIR-B-dpga-lite-826caaf
+data /root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth /root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+a0 /root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+train_done ConvIR-Haze4K-DPGA-Lite-v1.0-adapter-only-stop20-seed3407-20260604 rc=0 2026-06-04T10:28:52+08:00

@@ -1,0 +1,76 @@
+{
+  "stage": "ConvIR-Dehaze-v1.4A UDP-Lite regular+hard gate",
+  "selection_score": -0.06661553192138672,
+  "diagnostic_only": true,
+  "locked_test_allowed": false,
+  "checks": {
+    "best_regular_mean_delta": {
+      "observed": 0.028294156392415365,
+      "required": ">= +0.040 dB",
+      "pass": false
+    },
+    "best_regular_easy_delta": {
+      "observed": 0.01968577067057292,
+      "required": ">= 0 dB",
+      "pass": true
+    },
+    "best_regular_worst_count": {
+      "observed": 19,
+      "required": "<= 12",
+      "pass": false
+    },
+    "best_regular_ssim_delta": {
+      "observed": 1.2324253718058268e-06,
+      "required": ">= 0",
+      "pass": true
+    },
+    "best_hard_bottom25_delta": {
+      "observed": 0.0222747802734375,
+      "required": ">= +0.050 dB",
+      "pass": false
+    },
+    "best_hard_mean_delta": {
+      "observed": 0.020340398152669272,
+      "required": ">= +0.030 dB",
+      "pass": false
+    },
+    "best_hard_ssim_delta": {
+      "observed": -5.054473876953125e-07,
+      "required": ">= 0",
+      "pass": false
+    },
+    "best_regular_positive_ratio": {
+      "observed": 0.5866666666666667,
+      "required": ">= 0.620",
+      "pass": false
+    },
+    "best_regular_strong_regression_ratio": {
+      "observed": 0.25333333333333335,
+      "required": "<= 0.160",
+      "pass": false
+    },
+    "final_regular_mean_delta": {
+      "observed": 0.026026268005371094,
+      "required": ">= 0 dB",
+      "pass": true
+    },
+    "final_regular_worst_count": {
+      "observed": 22,
+      "required": "<= 20",
+      "pass": false
+    },
+    "final_hard_mean_delta": {
+      "observed": 0.01645405451456706,
+      "required": ">= 0 dB",
+      "pass": true
+    }
+  },
+  "pass": false,
+  "next_step": "Do not run locked Haze4K test. If mean/tail are positive but hard is low, proceed only to v1.4B fusion-neighbor partial unfreeze; otherwise stop adapter-only UDP-Lite.",
+  "inputs": {
+    "best_regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/experience_docx/experiment_logs/haze4k_udp_lite_v14_20260604/v14a_eval_regular_hard/scout_eval_compare_v14a_best_val_regular_vs_a0.json",
+    "best_hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/experience_docx/experiment_logs/haze4k_udp_lite_v14_20260604/v14a_eval_regular_hard/scout_eval_compare_v14a_best_val_hard_vs_a0.json",
+    "final_regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/experience_docx/experiment_logs/haze4k_udp_lite_v14_20260604/v14a_eval_regular_hard/scout_eval_compare_v14a_final_val_regular_vs_a0.json",
+    "final_hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/experience_docx/experiment_logs/haze4k_udp_lite_v14_20260604/v14a_eval_regular_hard/scout_eval_compare_v14a_final_val_hard_vs_a0.json"
+  }
+}

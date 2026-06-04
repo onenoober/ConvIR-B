@@ -1,0 +1,76 @@
+{
+  "stage": "DPGA-v1.3B hard-gated bottleneck regular+hard gate",
+  "selection_score": 0.04919430414835613,
+  "diagnostic_only": true,
+  "locked_test_allowed": false,
+  "checks": {
+    "best_regular_mean_delta": {
+      "observed": 0.025839455922444663,
+      "required": ">= +0.040 dB",
+      "pass": false
+    },
+    "best_regular_easy_delta": {
+      "observed": 0.02220494588216146,
+      "required": ">= 0 dB",
+      "pass": true
+    },
+    "best_regular_worst_count": {
+      "observed": 3,
+      "required": "<= 12",
+      "pass": true
+    },
+    "best_regular_ssim_delta": {
+      "observed": 1.456936200459798e-06,
+      "required": ">= 0",
+      "pass": true
+    },
+    "best_hard_bottom25_delta": {
+      "observed": 0.02364232381184896,
+      "required": ">= +0.050 dB",
+      "pass": false
+    },
+    "best_hard_mean_delta": {
+      "observed": 0.024686304728190105,
+      "required": ">= 0 dB",
+      "pass": true
+    },
+    "best_hard_ssim_delta": {
+      "observed": 5.0606330235799155e-06,
+      "required": ">= 0",
+      "pass": true
+    },
+    "best_regular_positive_ratio": {
+      "observed": 0.5866666666666667,
+      "required": ">= 0.620",
+      "pass": false
+    },
+    "best_regular_strong_regression_ratio": {
+      "observed": 0.2,
+      "required": "<= 0.160",
+      "pass": false
+    },
+    "final_regular_mean_delta": {
+      "observed": 0.02557292938232422,
+      "required": ">= 0 dB",
+      "pass": true
+    },
+    "final_regular_worst_count": {
+      "observed": 6,
+      "required": "<= 20",
+      "pass": true
+    },
+    "final_hard_mean_delta": {
+      "observed": 0.024423224131266276,
+      "required": ">= 0 dB",
+      "pass": true
+    }
+  },
+  "pass": false,
+  "next_step": "Do not run locked Haze4K test; inspect mask/sampler/runtime audits before any separately justified follow-up route.",
+  "inputs": {
+    "best_regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/v13b_eval_regular_hard/scout_eval_compare_v13b_best_val_regular_vs_a0.json",
+    "best_hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/v13b_eval_regular_hard/scout_eval_compare_v13b_best_val_hard_vs_a0.json",
+    "final_regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/v13b_eval_regular_hard/scout_eval_compare_v13b_final_val_regular_vs_a0.json",
+    "final_hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/v13b_eval_regular_hard/scout_eval_compare_v13b_final_val_hard_vs_a0.json"
+  }
+}

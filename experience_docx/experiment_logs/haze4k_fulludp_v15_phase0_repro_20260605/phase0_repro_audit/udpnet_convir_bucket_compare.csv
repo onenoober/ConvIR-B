@@ -1,0 +1,2 @@
+sample_id,split,a0_psnr,udpnet_psnr,delta_psnr,a0_ssim,udpnet_ssim,delta_ssim,bucket,audit_status,note
+__PHASE0_NOT_EVALUATED__,,,,,,,,,BLOCKED_CHECKPOINT_UNAVAILABLE,official checkpoint unavailable; no per-image bucket compare

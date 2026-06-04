@@ -1,0 +1,8 @@
+v15_phase0_repro_audit_start 2026-06-05T01:33:38+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-v1-5-full-udpnet
+udp_repo=/root/autodl-tmp/workspace/UDPNet
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+official_ckpt=/root/autodl-tmp/workspace/UDPNet_checkpoints/ConvIR_UDPNet_haze4k.ckpt
+v15_phase0_repro_audit_done rc=0 output=/root/autodl-tmp/workspace/ConvIR-B-v1-5-full-udpnet/experience_docx/experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/phase0_repro_audit 2026-06-05T01:33:42+08:00

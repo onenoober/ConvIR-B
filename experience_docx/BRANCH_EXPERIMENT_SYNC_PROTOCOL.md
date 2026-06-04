@@ -2,7 +2,18 @@
 
 Date: 2026-06-01
 
-Status: required workflow for future GitHub experiment branches.
+Status: required workflow for future GitHub experiment branches; GitHub is the first-priority archive for completed cloud experiment text evidence.
+
+
+## Priority Rule
+
+For cloud experiments on `dehaze1`, GitHub sync is the first-priority archival
+step after training, evaluation, post-run watchers, or audits finish. A cloud
+run is not considered closed until its text evidence is copied into
+`experience_docx/`, the route/index/family documentation is updated, and those
+text artifacts are pushed to GitHub, unless the user explicitly pauses or
+forbids the push. The cloud copy is the runtime source; GitHub is the durable
+read/share source.
 
 ## Purpose
 
@@ -43,6 +54,8 @@ Sync these paths from the route branch to `main`:
 - `experience_docx/experiment_logs/<route_id>/*.txt`
 - `experience_docx/experiment_logs/<route_id>/*.out`
 - `experience_docx/experiment_logs/<route_id>/*.sh`
+- `experience_docx/family_summaries/*.md` when the route changes a family
+  verdict, do-not-repeat rule, or reopen condition.
 - `docs/ai_text_packages/<route_id>/` when a compact public text package is
   useful.
 
@@ -79,8 +92,8 @@ git restore --source=github/codex/<route> -- \
 Then update:
 
 - `experience_docx/EXPERIMENT_INDEX.md`
-- `experience_docx/BRANCH_ROUTE_INDEX.md` when the branch status, retained
-  leaf, or cleanup posture changes.
+- `experience_docx/family_summaries/<family>_summary.md` when the route changes
+  a family-level verdict or reopening condition;
 - `docs/ai_text_packages/<summary_or_route>/` if the route should be compactly
   readable by AI from a public link.
 
@@ -126,10 +139,7 @@ If the route has an AI text package, verify at least one raw package file too.
 After evidence is readable from `main`:
 
 - delete temporary evidence-sync branches;
-- consult `BRANCH_ROUTE_INDEX.md` before pruning public route branches;
-- delete route branches only when they are strict ancestors of retained leaf
-  branches and their evidence is readable from `main` or another retained
-  branch;
+- delete route branches that are strict ancestors of retained leaf branches;
 - keep at most the runnable leaf branches needed to reproduce still-relevant
   code snapshots.
 

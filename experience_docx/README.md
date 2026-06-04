@@ -35,9 +35,6 @@ promotion gates.
 For consolidated Haze4K route outcomes and GitHub-readable evidence locations,
 start with `EXPERIMENT_INDEX.md`.
 
-For the GitHub branch list, retained runnable snapshots, and conservative
-cleanup candidates, start with `BRANCH_ROUTE_INDEX.md`.
-
 For future `codex/*` experiment branches, follow
 `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` so evidence returns to `main` without
 merging diagnostic experiment code.
@@ -51,14 +48,16 @@ merging diagnostic experiment code.
 | `EXPERIMENT_CARD_TEMPLATE.md` | Blank route/experiment card for a new candidate. |
 | `MODEL_EXPERIMENT_START_CHECKLIST.md` | Checklist for starting and governing a model experiment. |
 | `CONVIR_B_EXECUTION_GUIDE.md` | Project-specific baseline-first and fixed-budget guide for ConvIR-B. |
-| `EXPERIMENT_INDEX.md` | Consolidated Haze4K route outcomes, retained branches, and text evidence roots. |
-| `BRANCH_ROUTE_INDEX.md` | GitHub branch reading map, retained leaf branches, and guarded cleanup candidates. |
+| `EXPERIMENT_INDEX.md` | Consolidated Haze4K route outcomes, family verdicts, evidence-strength labels, retained branches, and text evidence roots. |
+| `family_summaries/` | Family-level verdicts, evidence summaries, do-not-repeat notes, and reopen conditions. |
 | `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` | Required evidence-only sync workflow for future GitHub experiment branches. |
 
 ## Use Sequence
 
-1. read `EXPERIMENT_INDEX.md` if you need the current Haze4K route state;
-2. read `BRANCH_ROUTE_INDEX.md` before interpreting or pruning GitHub branches;
+1. read `EXPERIMENT_INDEX.md` if you need the current Haze4K route state,
+   family verdict, evidence-strength level, or route reopening condition;
+2. read the corresponding `family_summaries/` file before reopening a stopped
+   route family or proposing a follow-up within an active family;
 3. read `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` before syncing any route branch
    back to GitHub `main`;
 4. read `CONVIR_B_EXECUTION_GUIDE.md` for the current repository;

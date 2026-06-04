@@ -1,0 +1,57 @@
+{
+  "stage": "DPGA-v1.2 val_inner scout",
+  "best_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_2_val_inner_eval/scout_eval_compare_v1_2_val_inner_best_vs_a0.json",
+  "final_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-dpga-tail-control/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/v1_2_val_inner_eval/scout_eval_compare_v1_2_val_inner_final_vs_a0.json",
+  "selection_split": "val_inner",
+  "diagnostic_only": true,
+  "locked_test_allowed": false,
+  "checks": {
+    "best_mean_psnr_delta": {
+      "observed": 0.042655715942382814,
+      "required": ">= +0.030 dB",
+      "pass": true
+    },
+    "best_mean_ssim_delta": {
+      "observed": 3.786484400431315e-06,
+      "required": ">= 0",
+      "pass": true
+    },
+    "best_hard_bottom25_delta": {
+      "observed": 0.02622472127278646,
+      "required": ">= +0.030 dB",
+      "pass": false
+    },
+    "best_easy_top25_delta": {
+      "observed": 0.06800872802734376,
+      "required": ">= 0",
+      "pass": true
+    },
+    "best_positive_ratio": {
+      "observed": 0.62,
+      "required": ">= 0.55",
+      "pass": true
+    },
+    "best_strong_regression_ratio": {
+      "observed": 0.18666666666666668,
+      "required": "<= 0.42",
+      "pass": true
+    },
+    "best_worst_regressions": {
+      "observed": 16,
+      "required": "<= 36 / 300",
+      "pass": true
+    },
+    "final_mean_psnr_delta": {
+      "observed": 0.039093278249104815,
+      "required": ">= 0",
+      "pass": true
+    },
+    "final_worst_regressions": {
+      "observed": 14,
+      "required": "<= 60 / 300",
+      "pass": true
+    }
+  },
+  "pass": false,
+  "next_step": "Do not run locked test yet; inspect val_inner failure modes and training dynamics."
+}

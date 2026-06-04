@@ -1,0 +1,442 @@
+{
+  "args": {
+    "its_dir": "Dehazing/ITS",
+    "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+    "original_checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+    "candidate_checkpoint": [
+      "best=/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results/Best.pkl",
+      "final=/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results/Final.pkl"
+    ],
+    "dpga_depth_cache_dir": "/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf",
+    "dpga_eval_depth_split": "train",
+    "split_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/internal_val/haze4k_dpga_v13_regular_hard_seed3407.json",
+    "split_name": "val_hard",
+    "output_dir": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/experience_docx/experiment_logs/haze4k_udp_lite_v14_20260604/v14a_intermediates/val_hard",
+    "max_images": 0,
+    "dpga_prior_embed_channels": 16,
+    "dpga_adapter_reduction": 2,
+    "dpga_adapter_residual_scale": 0.1,
+    "dpga_adapter_scale_init": 0.0,
+    "dpga_adapter_bootstrap_scale": 0.01,
+    "dpga_scale_multiplier": 1.0,
+    "dpga_udp_window_size": 8,
+    "dpga_udp_num_heads": 4,
+    "dpga_agf_gate_limit": 0.25,
+    "allow_partial_dpga_load": false
+  },
+  "outputs": [
+    "v14_depth_fusion_module_ablation_val.csv",
+    "v14_depth_fusion_module_ablation_per_image.csv",
+    "v14_depth_quality_failure_audit.csv",
+    "v14_udp_lite_intermediate_summary.json"
+  ],
+  "summaries": {
+    "original": {
+      "label": "a0",
+      "count": 300,
+      "mean_psnr": 34.24652521133423,
+      "mean_ssim": 0.9936463165283204,
+      "avg_time_sec_sync": 0.05235774199167887,
+      "median_time_sec_sync": 0.04209399223327637,
+      "peak_cuda_mem_mib": 534.41845703125
+    },
+    "variants": {
+      "best_dgca_only": {
+        "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results/Best.pkl",
+        "active_adapters": "dpfm",
+        "udp_components": "channel",
+        "eval": {
+          "label": "best_dgca_only",
+          "count": 300,
+          "mean_psnr": 34.24394968032837,
+          "mean_ssim": 0.9936402287085851,
+          "avg_time_sec_sync": 0.054753109614054364,
+          "median_time_sec_sync": 0.046118736267089844,
+          "peak_cuda_mem_mib": 644.4306640625
+        },
+        "comparison": {
+          "checkpoint": "best",
+          "variant": "dgca_only",
+          "active_adapters": "dpfm",
+          "udp_components": "channel",
+          "common_count": 300,
+          "mean_delta": -0.002575531005859375,
+          "median_delta": -0.0025844573974609375,
+          "hard_bottom25_delta": -0.0024188232421875,
+          "easy_top25_delta": 0.0017840067545572917,
+          "mean_ssim_delta": -6.087819735209147e-06,
+          "positive_ratio": 0.45666666666666667,
+          "strong_reference_cut_psnr": 36.437724113464355,
+          "strong_ref_regressions": 2,
+          "strong_regression_ratio": 0.02666666666666667,
+          "worst_0p20_count": 0,
+          "p5_delta": -0.04807195663452148,
+          "p95_delta": 0.046008682250976575
+        }
+      },
+      "best_dpfm1_only": {
+        "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results/Best.pkl",
+        "active_adapters": "dpfm1",
+        "udp_components": "all",
+        "eval": {
+          "label": "best_dpfm1_only",
+          "count": 300,
+          "mean_psnr": 34.273299077351886,
+          "mean_ssim": 0.9936705323060354,
+          "avg_time_sec_sync": 0.05611241420110067,
+          "median_time_sec_sync": 0.049283623695373535,
+          "peak_cuda_mem_mib": 1135.17138671875
+        },
+        "comparison": {
+          "checkpoint": "best",
+          "variant": "dpfm1_only",
+          "active_adapters": "dpfm1",
+          "udp_components": "all",
+          "common_count": 300,
+          "mean_delta": 0.026773866017659506,
+          "median_delta": 0.02274608612060547,
+          "hard_bottom25_delta": 0.02459693908691406,
+          "easy_top25_delta": 0.0387310791015625,
+          "mean_ssim_delta": 2.42157777150472e-05,
+          "positive_ratio": 0.6766666666666666,
+          "strong_reference_cut_psnr": 36.437724113464355,
+          "strong_ref_regressions": 7,
+          "strong_regression_ratio": 0.09333333333333334,
+          "worst_0p20_count": 0,
+          "p5_delta": -0.08824863433837891,
+          "p95_delta": 0.1346061706542969
+        }
+      },
+      "best_dpfm2_only": {
+        "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results/Best.pkl",
+        "active_adapters": "dpfm2",
+        "udp_components": "all",
+        "eval": {
+          "label": "best_dpfm2_only",
+          "count": 300,
+          "mean_psnr": 34.235177485148114,
+          "mean_ssim": 0.9936231497923533,
+          "avg_time_sec_sync": 0.05454881032307943,
+          "median_time_sec_sync": 0.04585671424865723,
+          "peak_cuda_mem_mib": 652.833984375
+        },
+        "comparison": {
+          "checkpoint": "best",
+          "variant": "dpfm2_only",
+          "active_adapters": "dpfm2",
+          "udp_components": "all",
+          "common_count": 300,
+          "mean_delta": -0.011347726186116536,
+          "median_delta": -0.00739288330078125,
+          "hard_bottom25_delta": -0.007964909871419271,
+          "easy_top25_delta": -0.009333597819010416,
+          "mean_ssim_delta": -2.3166735967000326e-05,
+          "positive_ratio": 0.38333333333333336,
+          "strong_reference_cut_psnr": 36.437724113464355,
+          "strong_ref_regressions": 9,
+          "strong_regression_ratio": 0.12,
+          "worst_0p20_count": 0,
+          "p5_delta": -0.09017887115478515,
+          "p95_delta": 0.06163368225097658
+        }
+      },
+      "best_dpfm4_only": {
+        "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results/Best.pkl",
+        "active_adapters": "dpfm4",
+        "udp_components": "all",
+        "eval": {
+          "label": "best_dpfm4_only",
+          "count": 300,
+          "mean_psnr": 34.251766192118325,
+          "mean_ssim": 0.9936446058750152,
+          "avg_time_sec_sync": 0.054551037152608235,
+          "median_time_sec_sync": 0.04634594917297363,
+          "peak_cuda_mem_mib": 653.091796875
+        },
+        "comparison": {
+          "checkpoint": "best",
+          "variant": "dpfm4_only",
+          "active_adapters": "dpfm4",
+          "udp_components": "all",
+          "common_count": 300,
+          "mean_delta": 0.005240980784098307,
+          "median_delta": 0.0067291259765625,
+          "hard_bottom25_delta": 0.005788752237955729,
+          "easy_top25_delta": 0.007771402994791667,
+          "mean_ssim_delta": -1.710653305053711e-06,
+          "positive_ratio": 0.6133333333333333,
+          "strong_reference_cut_psnr": 36.437724113464355,
+          "strong_ref_regressions": 0,
+          "strong_regression_ratio": 0.0,
+          "worst_0p20_count": 0,
+          "p5_delta": -0.024374771118164062,
+          "p95_delta": 0.031948280334472674
+        }
+      },
+      "best_dpfm1_2_4": {
+        "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results/Best.pkl",
+        "active_adapters": "dpfm",
+        "udp_components": "all",
+        "eval": {
+          "label": "best_dpfm1_2_4",
+          "count": 300,
+          "mean_psnr": 34.26686568578084,
+          "mean_ssim": 0.9936458096901576,
+          "avg_time_sec_sync": 0.05693575620651245,
+          "median_time_sec_sync": 0.05088388919830322,
+          "peak_cuda_mem_mib": 1135.24755859375
+        },
+        "comparison": {
+          "checkpoint": "best",
+          "variant": "dpfm1_2_4",
+          "active_adapters": "dpfm",
+          "udp_components": "all",
+          "common_count": 300,
+          "mean_delta": 0.020340474446614583,
+          "median_delta": 0.014948844909667969,
+          "hard_bottom25_delta": 0.0222747802734375,
+          "easy_top25_delta": 0.03656723022460937,
+          "mean_ssim_delta": -5.068381627400716e-07,
+          "positive_ratio": 0.5833333333333334,
+          "strong_reference_cut_psnr": 36.437724113464355,
+          "strong_ref_regressions": 12,
+          "strong_regression_ratio": 0.16,
+          "worst_0p20_count": 14,
+          "p5_delta": -0.18888416290283203,
+          "p95_delta": 0.206609344482422
+        }
+      },
+      "best_dpfm1_2_4_agf_lite": {
+        "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results/Best.pkl",
+        "active_adapters": "dpfm,agf",
+        "udp_components": "all",
+        "eval": {
+          "label": "best_dpfm1_2_4_agf_lite",
+          "count": 300,
+          "mean_psnr": 34.26686566034953,
+          "mean_ssim": 0.9936458090941112,
+          "avg_time_sec_sync": 0.057734272480010985,
+          "median_time_sec_sync": 0.05287504196166992,
+          "peak_cuda_mem_mib": 1135.24853515625
+        },
+        "comparison": {
+          "checkpoint": "best",
+          "variant": "dpfm1_2_4_agf_lite",
+          "active_adapters": "dpfm,agf",
+          "udp_components": "all",
+          "common_count": 300,
+          "mean_delta": 0.02034044901529948,
+          "median_delta": 0.014948844909667969,
+          "hard_bottom25_delta": 0.0222747802734375,
+          "easy_top25_delta": 0.036567128499348955,
+          "mean_ssim_delta": -5.074342091878255e-07,
+          "positive_ratio": 0.5833333333333334,
+          "strong_reference_cut_psnr": 36.437724113464355,
+          "strong_ref_regressions": 12,
+          "strong_regression_ratio": 0.16,
+          "worst_0p20_count": 14,
+          "p5_delta": -0.18888416290283203,
+          "p95_delta": 0.206609344482422
+        }
+      },
+      "final_dgca_only": {
+        "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results/Final.pkl",
+        "active_adapters": "dpfm",
+        "udp_components": "channel",
+        "eval": {
+          "label": "final_dgca_only",
+          "count": 300,
+          "mean_psnr": 34.24185147603353,
+          "mean_ssim": 0.9936372464895249,
+          "avg_time_sec_sync": 0.05583469788233439,
+          "median_time_sec_sync": 0.04709768295288086,
+          "peak_cuda_mem_mib": 652.5126953125
+        },
+        "comparison": {
+          "checkpoint": "final",
+          "variant": "dgca_only",
+          "active_adapters": "dpfm",
+          "udp_components": "channel",
+          "common_count": 300,
+          "mean_delta": -0.0046737353006998696,
+          "median_delta": -0.0041103363037109375,
+          "hard_bottom25_delta": -0.004340540568033854,
+          "easy_top25_delta": -0.000166168212890625,
+          "mean_ssim_delta": -9.07003879547119e-06,
+          "positive_ratio": 0.45,
+          "strong_reference_cut_psnr": 36.437724113464355,
+          "strong_ref_regressions": 3,
+          "strong_regression_ratio": 0.04,
+          "worst_0p20_count": 0,
+          "p5_delta": -0.05791759490966797,
+          "p95_delta": 0.05097141265869142
+        }
+      },
+      "final_dpfm1_only": {
+        "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results/Final.pkl",
+        "active_adapters": "dpfm1",
+        "udp_components": "all",
+        "eval": {
+          "label": "final_dpfm1_only",
+          "count": 300,
+          "mean_psnr": 34.27669573465983,
+          "mean_ssim": 0.9936728209257126,
+          "avg_time_sec_sync": 0.057089255650838215,
+          "median_time_sec_sync": 0.050110578536987305,
+          "peak_cuda_mem_mib": 1135.02880859375
+        },
+        "comparison": {
+          "checkpoint": "final",
+          "variant": "dpfm1_only",
+          "active_adapters": "dpfm1",
+          "udp_components": "all",
+          "common_count": 300,
+          "mean_delta": 0.030170523325602213,
+          "median_delta": 0.0238800048828125,
+          "hard_bottom25_delta": 0.027272415161132813,
+          "easy_top25_delta": 0.04433176676432292,
+          "mean_ssim_delta": 2.650439739227295e-05,
+          "positive_ratio": 0.67,
+          "strong_reference_cut_psnr": 36.437724113464355,
+          "strong_ref_regressions": 7,
+          "strong_regression_ratio": 0.09333333333333334,
+          "worst_0p20_count": 0,
+          "p5_delta": -0.10177497863769532,
+          "p95_delta": 0.1589776992797852
+        }
+      },
+      "final_dpfm2_only": {
+        "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results/Final.pkl",
+        "active_adapters": "dpfm2",
+        "udp_components": "all",
+        "eval": {
+          "label": "final_dpfm2_only",
+          "count": 300,
+          "mean_psnr": 34.22710784276327,
+          "mean_ssim": 0.9936123611529668,
+          "avg_time_sec_sync": 0.057441724141438805,
+          "median_time_sec_sync": 0.05375957489013672,
+          "peak_cuda_mem_mib": 652.51171875
+        },
+        "comparison": {
+          "checkpoint": "final",
+          "variant": "dpfm2_only",
+          "active_adapters": "dpfm2",
+          "udp_components": "all",
+          "common_count": 300,
+          "mean_delta": -0.01941736857096354,
+          "median_delta": -0.017490386962890625,
+          "hard_bottom25_delta": -0.016154276529947918,
+          "easy_top25_delta": -0.019073079427083334,
+          "mean_ssim_delta": -3.395537535349528e-05,
+          "positive_ratio": 0.34,
+          "strong_reference_cut_psnr": 36.437724113464355,
+          "strong_ref_regressions": 14,
+          "strong_regression_ratio": 0.18666666666666668,
+          "worst_0p20_count": 0,
+          "p5_delta": -0.08995666503906251,
+          "p95_delta": 0.046796798706054694
+        }
+      },
+      "final_dpfm4_only": {
+        "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results/Final.pkl",
+        "active_adapters": "dpfm4",
+        "udp_components": "all",
+        "eval": {
+          "label": "final_dpfm4_only",
+          "count": 300,
+          "mean_psnr": 34.25251756032308,
+          "mean_ssim": 0.9936433684825897,
+          "avg_time_sec_sync": 0.05630182504653931,
+          "median_time_sec_sync": 0.05130171775817871,
+          "peak_cuda_mem_mib": 653.1318359375
+        },
+        "comparison": {
+          "checkpoint": "final",
+          "variant": "dpfm4_only",
+          "active_adapters": "dpfm4",
+          "udp_components": "all",
+          "common_count": 300,
+          "mean_delta": 0.0059923489888509115,
+          "median_delta": 0.0074520111083984375,
+          "hard_bottom25_delta": 0.006822992960611979,
+          "easy_top25_delta": 0.009324951171875,
+          "mean_ssim_delta": -2.9480457305908204e-06,
+          "positive_ratio": 0.6033333333333334,
+          "strong_reference_cut_psnr": 36.437724113464355,
+          "strong_ref_regressions": 0,
+          "strong_regression_ratio": 0.0,
+          "worst_0p20_count": 0,
+          "p5_delta": -0.031724166870117185,
+          "p95_delta": 0.0415639877319336
+        }
+      },
+      "final_dpfm1_2_4": {
+        "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results/Final.pkl",
+        "active_adapters": "dpfm",
+        "udp_components": "all",
+        "eval": {
+          "label": "final_dpfm1_2_4",
+          "count": 300,
+          "mean_psnr": 34.2629792658488,
+          "mean_ssim": 0.9936364603042602,
+          "avg_time_sec_sync": 0.05693212906519572,
+          "median_time_sec_sync": 0.05127894878387451,
+          "peak_cuda_mem_mib": 1135.02978515625
+        },
+        "comparison": {
+          "checkpoint": "final",
+          "variant": "dpfm1_2_4",
+          "active_adapters": "dpfm",
+          "udp_components": "all",
+          "common_count": 300,
+          "mean_delta": 0.01645405451456706,
+          "median_delta": 0.016111373901367188,
+          "hard_bottom25_delta": 0.01789904276529948,
+          "easy_top25_delta": 0.033916117350260414,
+          "mean_ssim_delta": -9.856224060058595e-06,
+          "positive_ratio": 0.56,
+          "strong_reference_cut_psnr": 36.437724113464355,
+          "strong_ref_regressions": 14,
+          "strong_regression_ratio": 0.18666666666666668,
+          "worst_0p20_count": 16,
+          "p5_delta": -0.21576671600341796,
+          "p95_delta": 0.2234724044799806
+        }
+      },
+      "final_dpfm1_2_4_agf_lite": {
+        "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-4-udp-lite/Dehazing/ITS/results/ConvIR-Haze4K-v1.4A-UDP-Lite-DPFM123-adapter-only-seed3407-20260604/Training-Results/Final.pkl",
+        "active_adapters": "dpfm,agf",
+        "udp_components": "all",
+        "eval": {
+          "label": "final_dpfm1_2_4_agf_lite",
+          "count": 300,
+          "mean_psnr": 34.2629792658488,
+          "mean_ssim": 0.9936364587148031,
+          "avg_time_sec_sync": 0.06010355313618978,
+          "median_time_sec_sync": 0.05356335639953613,
+          "peak_cuda_mem_mib": 1135.03076171875
+        },
+        "comparison": {
+          "checkpoint": "final",
+          "variant": "dpfm1_2_4_agf_lite",
+          "active_adapters": "dpfm,agf",
+          "udp_components": "all",
+          "common_count": 300,
+          "mean_delta": 0.01645405451456706,
+          "median_delta": 0.016111373901367188,
+          "hard_bottom25_delta": 0.01789904276529948,
+          "easy_top25_delta": 0.033916117350260414,
+          "mean_ssim_delta": -9.857813517252604e-06,
+          "positive_ratio": 0.56,
+          "strong_reference_cut_psnr": 36.437724113464355,
+          "strong_ref_regressions": 14,
+          "strong_regression_ratio": 0.18666666666666668,
+          "worst_0p20_count": 16,
+          "p5_delta": -0.21576671600341796,
+          "p95_delta": 0.2234724044799806
+        }
+      }
+    }
+  }
+}

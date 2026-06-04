@@ -1,8 +1,8 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-06-04
+Date: 2026-06-05
 
-Status: main evidence index with branch-route map link.
+Status: evidence index for `codex/main-experiment-evidence-sync`.
 
 ## Purpose
 
@@ -14,24 +14,84 @@ Use this index first when asking what happened, which route is still relevant,
 and where the evidence lives. Use the listed source branch or commit only when
 you need the exact runnable code snapshot.
 
-For the current GitHub branch list, retained runnable snapshots, covered
-historical heads, and guarded cleanup candidates, read
-`BRANCH_ROUTE_INDEX.md`.
-
 For future route branches, follow `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`: sync
 cards, text logs, result tables, and AI-readable packages back to `main`, but
 keep diagnostic experiment code on its route branch unless a separate promotion
 decision says otherwise.
 
+## Branch Cleanup
+
+Remote branch cleanup was done before this evidence sync. The deleted refs were
+not unique heads: each was already an ancestor of one or both retained leaf
+branches, so their commits remain reachable through the retained branches.
+
+| Deleted remote ref | Reason |
+| --- | --- |
+| `codex/haze4k-repro` | Contained by all later Haze4K route branches. |
+| `codex/haze4k-fam2-only` | Contained by later FAM2, hardfreq, and haze-prior branches. |
+| `codex/haze4k-fam2-bounded` | Contained by later confidence-gate, hardfreq, and haze-prior branches. |
+| `codex/haze4k-fam2-confidence-gate` | Contained by later selectivity, hardfreq, and haze-prior branches. |
+| `codex/haze4k-stop20-noise-floor` | Contained by later selectivity, hardfreq, and haze-prior branches. |
+| `codex/haze4k-fam2-selectivity-or-kill` | Contained by both retained leaf branches. |
+
+Retained remote refs:
+
+- `github/main`: stable entry point plus consolidated text evidence.
+- `github/codex/haze4k-hardfreq-loss`: leaf route containing hard frequency
+  loss evidence and prior route history.
+- `github/codex/haze4k-haze-prior-scm`: leaf route containing haze-prior SCM
+  evidence, a GitHub-readable text package, and prior route history.
+- `github/codex/haze4k-pfd-mainline`: diagnostic PFD mainline branch where B1
+  failed preservation and B2/B3 were not launched.
+- `github/codex/haze4k-b1r-decoder-rhfd-preserve`: active rescue branch for
+  decoder-side RHFD-Lite plus adapter-only preservation training.
+- `github/codex/haze4k-convir-v1-5-full-udpnet-transplant`: active/full UDPNet
+  checkpoint-acquisition and future transplant workspace.
+
 ## Reading Order
 
 1. Read the summary table below.
-2. Read `BRANCH_ROUTE_INDEX.md` if you need to understand GitHub branches or
-   cleanup candidates.
-3. Open the route card for the route you care about.
-4. Open the evidence root for JSON/CSV/log detail.
-5. Use the retained source branch only when you need runnable code; do not infer
+2. Open the route card for the route you care about.
+3. Open the evidence root for JSON/CSV/log detail.
+4. Use the retained source branch only when you need runnable code; do not infer
    that diagnostic or failed route code belongs in `main`.
+
+## Evidence Strength And Locked-Test Policy
+
+Use the stop20 noise-floor audit when interpreting small gains. The single-seed
+stop20 noise floor is mean PSNR std `0.2206 dB` and hard-bucket std
+`0.4551 dB`; therefore a single-seed delta below `+0.10 dB` is directional or
+mechanism evidence, not promotion evidence, unless it is backed by a stronger
+matched-budget, multi-seed, OOF, or locked held-out protocol.
+
+Recommended labels:
+
+| Evidence level | Typical evidence | Allowed claim |
+| --- | --- | --- |
+| Directional signal | Small positive mean or subgroup movement, especially below `+0.10 dB` or below the route-specific noise floor | Useful mechanism or routing clue only. |
+| Mechanism-positive diagnostic | Mechanism metric moves as predicted and preservation/cost are acceptable on the declared diagnostic split | Authorize a narrower next diagnostic, not promotion. |
+| Candidate-positive | Matched-budget quality, mechanism, preservation, and cost gates pass on the predeclared validation protocol | Eligible for a locked confirmation or larger budget. |
+| Promotion-ready | Final/locked evaluation passes the written gates without test-set checkpoint or threshold selection | Eligible for code integration or model-line promotion. |
+
+Locked Haze4K test results must not be used to repeatedly choose checkpoints,
+scales, thresholds, or route variants. Select those choices on train-derived
+splits, internal validation, or OOF protocols first; then use the locked test
+only as confirmation. Any accidental test-selected result remains diagnostic
+until a clean fixed-selection rerun is completed.
+
+## Route Family Verdicts
+
+This table is the current family-level reading shortcut. It does not replace
+the route cards or evidence logs; use it to avoid reopening a stopped family
+without a material new reason.
+
+| Family | Current verdict | Reopen condition |
+| --- | --- | --- |
+| [FAM/FAM2 feature modulation](family_summaries/fam_family_summary.md) | Closed for unchanged deployable FAM routing: hard samples can improve, but easy/strong-reference preservation and selector quality failed. | A new deployable selector or preservation guard passes a predeclared held-out diagnostic. |
+| [Hard-frequency and haze-prior loss routes](family_summaries/frequency_prior_family_summary.md) | Closed for the tested weighting/SCM forms: hard movement came with global/easy damage. | A loss route shows target-group gain with explicit strong/easy protection before stop20. |
+| [PFD/RHFD preservation routes](family_summaries/pfd_rhfd_family_summary.md) | Diagnostic only: preservation improved in B1r, but hard-gain and strong-case gates failed. | A new mechanism explains how hard gain is recovered without losing the preservation benefit. |
+| [APDR output residual/action-bank routes](family_summaries/apdr_family_summary.md) | Current broad output-residual and coefficient-mapping forms are stopped; v0.4E OOF did not pass, and exact v0.4E numbers require fixed-code rerun before sealing. | A separately pre-registered safe-subset route passes fixed-code OOF/held-out gates without severe regressions. |
+| [DPGA in-network prior adapters](family_summaries/dpga_family_summary.md) | Frozen ConvIR-B + A0-equivalent small-adapter routes are sufficiently diagnosed and low success: v1.0-v1.4B stayed in weak `+0.02~0.04 dB` movement and failed hard/tail gates. v1.5 full UDPNet Phase 0 is blocked by official checkpoint acquisition, not a scientific result. | Reopen with a full UDPNet checkpoint reproduction, controlled stronger-backbone audit, or a materially new hard-gain mechanism that passes internal hard/easy/strong/tail gates before locked test. |
 
 ## Route Summary
 
@@ -57,8 +117,14 @@ decision says otherwise.
 | APDR-v0.4B Derived Low-Field Basis | Gate C failed; route stopped | Gate 0 passed for K `16/32/48`, and basis-only router Gate B passed for K16/K32. Gate C K32 train split passed, but mini-val failed with L1 drop `-0.3435`, corr `0.2154`, recovery `0.0428`, easy gain `-0.3551 dB`, strong/severe `11/25`. | `GATEC_FAIL_STOP_BASIS_ROUTER_MAPPING_NO_LOCAL`; current basis-only coefficient router does not generalize, so do not add local correction or run stop20. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4b-derived-lowfield-basis.md) | [gate0](experiment_logs/haze4k_apdr_v0_4b_derived_basis_20260603/), [gateb](experiment_logs/haze4k_apdr_v0_4b_basis_router_gateb_20260603/), [gatec](experiment_logs/haze4k_apdr_v0_4b_basis_router_gatec_train128_minival_20260603/) | `codex/haze4k-apdr-v0-4b-derived-lowfield-basis` |
 | APDR-v0.4B-MT Mapping Triage | Completed AutoDL mapper-family diagnostic | Global-stat mappers did not rescue mini-val safety. Nonzero rows produced local hard movement but strong/severe regressions stayed unsafe; best split-level coefficient corr was only about `0.281`, and no-op was the only safe mini-val family. | `MT_FAIL_GLOBAL_STATS_AUTHORIZE_V04D_SPATIAL_PROBE`; do not add local correction or stop20 from global-stat coefficient mapping. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4b-mapping-triage.md) | [logs](experiment_logs/haze4k_apdr_v0_4b_mapping_triage_20260603/) | `codex/haze4k-apdr-v0-4b-mapping-triage` |
 | APDR-v0.4D Spatial Coefficient Probe | Completed AutoDL frozen-spatial diagnostic | Frozen ConvIR spatial features improved some K16 mini-val mean/hard rows, but best nonzero rows still had strong/severe regressions such as `4/6` or `7/11`. Same-split confidence fallback found diagnostic positives, including `global_plus_spatial_kenel_knn_9` K16 with keep `23/128`, mean `+0.1541 dB`, hard `+0.4242 dB`, strong/severe `0/0`. | `SPATIAL_PROBE_FAIL_CONFIDENCE_DIAGNOSTIC_ONLY`; authorize only fixed-threshold confirmation, not full router/local correction/stop20. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4d-spatial-coeff-probe.md) | [logs](experiment_logs/haze4k_apdr_v0_4d_spatial_coeff_probe_20260603/) | `codex/haze4k-apdr-v0-4b-mapping-triage` |
-| APDR-v0.4E Risk-Calibrated Selective Action Bank | Original evidence superseded; E0 stop direction confirmed | Original E0 directory is retained only as implementation-mismatch provenance. Clean `826caaf` rerun reproduced Rule B (`45/128`, mean `+0.2141 dB`, hard `+0.4528 dB`) but Rule A became `missing_candidate` because `*_kenel_knn_9` historical names did not match generated `*_kernel_knn_9` mapper names. Current code repairs mapper/confidence aliases and variable-schema CSV writing. | `STOP_DIRECTION_CONFIRMED_NUMERIC_SEAL_BLOCKED_BY_MAPPER_ALIAS`; no E2/full router/local correction/stop20. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4e-risk-calibrated-action-bank.md) | [superseded-original](experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/), [official-rerun](experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_rerun_20260603_autodl_826caaf/), [repro](experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603/), [autodl-repro](experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603_autodl/) | `codex/haze4k-apdr-v0-4b-mapping-triage` |
-| APDR-v0.4E 5-fold OOF Calibration | Original evidence superseded; E1 failed; stop direction confirmed | Original OOF directory is retained only as implementation-mismatch provenance. Clean `826caaf` rerun completed 3000-image OOF and, after finalize-from-intermediate, reproduced Rule B failure (`150/3000`, coverage `0.0500`, mean `+0.0378 dB`, hard `+0.1352 dB`, severe `1`, recovery `0.0835`) and policy search failure (`0/1600` retained passing). Rule A remains unsealed until alias-corrected full rerun. | `STOP_DIRECTION_CONFIRMED_NUMERIC_SEAL_BLOCKED_BY_MAPPER_ALIAS`; do not run E2, full router, local correction, dense residual, or stop20 from current v0.4E. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4e-oof-calibration.md) | [superseded-original](experiment_logs/haze4k_apdr_v0_4e_oof_calibration_20260603/), [official-rerun](experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/), [repro](experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603/), [autodl-repro](experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603_autodl/) | `codex/haze4k-apdr-v0-4b-mapping-triage` |
+| APDR-v0.4E Risk-Calibrated Selective Action Bank | E0 passed; fixed-code rerun pending | Confirm slice indices `256..383`: Rule A keep `29/128`, mean `+0.1546 dB`, hard `+0.3251 dB`, easy `+0.0562 dB`, strong/severe `0/0`; Rule B keep `45/128`, mean `+0.2141 dB`, hard `+0.4528 dB`, easy `+0.0625 dB`, strong/severe `1/0`. Post-sync audit found `align_coners` and `kenel_size/kenel_size` implementation mismatch, so exact numbers are not sealed until clean fixed-code rerun. | `FIXED_CODE_RERUN_REQUIRED_BEFORE_NUMERIC_SEAL`; no E2/full router/local correction/stop20. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4e-risk-calibrated-action-bank.md) | [logs](experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/), [repro](experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603/) | `codex/haze4k-apdr-v0-4b-mapping-triage` |
+| APDR-v0.4E 5-fold OOF Calibration | E1 failed; fixed-code rerun pending | OOF locked Rule A: keep `239/3000`, mean `+0.0749 dB`, hard `+0.2596 dB`, strong/severe `0/5`, coverage `0.0797`; Rule B: keep `150/3000`, mean `+0.0378 dB`, hard `+0.1352 dB`, strong/severe `0/1`, coverage `0.0500`. Post-hoc low-capacity policy search found `0` gate-passing policies; exact numbers are not sealed until clean fixed-code rerun. | `FIXED_CODE_RERUN_REQUIRED_BEFORE_NUMERIC_SEAL`; do not run E2, full router, local correction, dense residual, or stop20 from current v0.4E. | [card](experiment_cards/2026-06-03-haze4k-apdr-v0-4e-oof-calibration.md) | [logs](experiment_logs/haze4k_apdr_v0_4e_oof_calibration_20260603/), [repro](experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603/) | `codex/haze4k-apdr-v0-4b-mapping-triage` |
+| DPGA-Lite v1.0 adapter-only | Completed diagnostic; minimum positive direction only | `Best.pkl` mean `+0.0312 dB`, SSIM positive, hard `+0.0146 dB`, easy `+0.0209 dB`, strong-reference regressions `105/250`; exact stop20/final mean `+0.0193 dB` and hard `+0.0037 dB`. | `DPGA_LITE_ADAPTER_ONLY_MIN_POSITIVE_BEST_BORDERLINE_FINAL`; not promotion-ready because effect is small and exact final is borderline. | [card](experiment_cards/2026-06-04-haze4k-convir-v1-0-dpga-lite.md) | [logs](experiment_logs/haze4k_dpga_lite_20260604/) | `codex/haze4k-convir-v1-0-dpga-lite` |
+| DPGA Tail-Control v1.1/v1.2 | Completed diagnostic; locked test blocked | v1.1 Best mean `+0.0370 dB` but hard bottom-25% `+0.0234 dB`; v1.2 Best mean `+0.0427 dB` but hard bottom-25% `+0.0262 dB` and worst `<= -0.20 dB` regressions rose to `16/300`. | `STOP_DPGA_SCALE_ONLY_TAIL_CONTROL`; do not run locked test, and do not launch a higher-scale follow-up without a new diagnostic. | [card](experiment_cards/2026-06-04-haze4k-convir-v1-1-dpga-tail-control.md) | [logs](experiment_logs/haze4k_dpga_tail_control_20260604/) | `codex/haze4k-convir-v1-1-dpga-tail-control` |
+| DPGA-v1.3-HSDF | Completed diagnostic; no locked test | v1.3A fixed the mask mechanism but missed the hard gate. v1.3B hard-gated bottleneck also failed: Best `val_regular` mean `+0.0258 dB`, Best `val_hard` hard bottom-25 `+0.0236 dB`, positive ratio `0.5867`, strong regression ratio `0.2000`. Corrected runtime ablation shows bottleneck-only adds only about `+0.0008 dB` mean. | `FAIL_STOP_V13B_HARD_GATED_BOTTLENECK`; do not run locked Haze4K test or continue HSDF bottleneck as-is. Use only the diagnostics for a separately justified route. | [card](experiment_cards/2026-06-04-haze4k-convir-v1-3-hsdf.md) | [logs](experiment_logs/haze4k_dpga_v13_hsdf_20260604/) | `codex/haze4k-convir-v1-3-hard-selective-depth-fusion` |
+| ConvIR-Dehaze-v1.4-UDP-Lite | v1.4A adapter-only completed; gate failed; locked test blocked | Zero-init passed (`max_abs_diff=0.0`). v1.4A Best: `val_regular` mean `+0.028294 dB`, positive ratio `0.586667`, worst `<= -0.20 dB` count `19`; `val_hard` mean `+0.020340 dB`, hard bottom-25 `+0.022275 dB`. Module audit shows `DPFM1-only` is safer/stronger than full `DPFM1+2+4`, while `DPFM2-only` is negative. | `FAIL_V14A_ADAPTER_ONLY_FULL_DPFM123`; do not run locked Haze4K test; do not micro-tune full DPFM123 scale/gate. Next evidence-supported route is DPFM1-focused diagnostic or v1.4B fusion-neighbor partial unfreeze. | [card](experiment_cards/2026-06-04-haze4k-convir-v1-4-udp-lite.md) | [logs](experiment_logs/haze4k_udp_lite_v14_20260604/) | `codex/haze4k-convir-v1-4-udp-lite-depth-fusion` |
+| ConvIR-Dehaze-v1.4B-BiDPFM1 | Completed diagnostic; gate failed; locked test blocked | `udp_bi` zero-init passed (`max_abs_diff=0.0`) and component matrix confirmed DPFM2 remains blocked. Adapter-only Best: `val_regular` mean `+0.028624 dB`, positive ratio `0.536667`, worst count `17`, strong ratio `0.28`; `val_hard` mean `+0.023429 dB`, hard bottom-25 `+0.020760 dB`, worst count `8`. | `FAIL_STOP_V14B_BIDPFM1_ADAPTER_ONLY`; do not run locked Haze4K test or rerun BiDPFM1-only scale/gate tuning. | [card](experiment_cards/2026-06-04-haze4k-convir-v1-4b-bidpfm1.md) | [logs](experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/) | `codex/haze4k-convir-v1-4b-bidirectional-dpfm1` |
+| ConvIR-Dehaze-v1.5-FullUDP Phase 0 | Completed checkpoint-acquisition/protocol audit; official eval blocked | UDPNet Baidu share listed `ConvIR_UDPNet_haze4k.ckpt` (`fs_id=883266741305581`, size `108206629`), but the local checkpoint was absent; Baidu sharedownload returned a client-encrypted task list rather than a plain `dlink`; BaiduPCS-Go transfer failed metadata retrieval without an account. No PSNR/SSIM eval was run. | `PHASE0_BLOCKED_OFFICIAL_UDPNET_CHECKPOINT_UNAVAILABLE`; do not start FullUDP transplant or teacher distillation from README-level claims alone. Resume only with a checkpoint file and sha256, or open a separate stronger-backbone audit. | [card](experiment_cards/2026-06-05-haze4k-convir-v1-5-full-udpnet.md) | [logs](experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/) | `codex/haze4k-convir-v1-5-full-udpnet-transplant` |
 
 ## Evidence Inventory
 
@@ -93,14 +159,18 @@ decision says otherwise.
 | `experiment_logs/haze4k_apdr_v0_4b_basis_router_gatec_train128_minival_20260603/` | 10+ | APDR-v0.4B K32 basis-only coefficient router train128/mini-val Gate C split summary, history, per-image table, groups, logs, status, and tmux exit record. |
 | `experiment_logs/haze4k_apdr_v0_4b_mapping_triage_20260603/` | 12+ | APDR-v0.4B-MT global-stat mapper-family triage, coefficient error tables, feature-shift diagnostics, per-image mapping table, and route decision log. |
 | `experiment_logs/haze4k_apdr_v0_4d_spatial_coeff_probe_20260603/` | 12+ | APDR-v0.4D frozen ConvIR spatial coefficient probe plus same-split confidence/no-op fallback sweep. |
-| `experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/` | 13 | Superseded original APDR-v0.4E E0 evidence. Retained for provenance only; do not cite its exact CSV/JSON/log numeric rows as clean-reproducible evidence. Use the `826caaf` official rerun instead. |
-| `experiment_logs/haze4k_apdr_v0_4e_oof_calibration_20260603/` | 18 | Superseded original APDR-v0.4E E1 OOF evidence. Retained for provenance only; do not cite its exact CSV/JSON/log numeric rows as clean-reproducible evidence. Use the `826caaf` official rerun instead. |
+| `experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/` | 13 | APDR-v0.4E locked-threshold E0 action-bank audit, candidate-action table, per-image action table, risk-feature AUC, calibration curve, accepted/rejected groups, failure signatures, logs, and launch scripts. |
+| `experiment_logs/haze4k_apdr_v0_4e_oof_calibration_20260603/` | 18 | APDR-v0.4E 5-fold OOF calibration, fold assignments, OOF candidate-action table, locked-rule fold summaries, risk AUC, post-hoc low-capacity policy search, failure signatures, logs, and launch scripts. |
 | `experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603/` | 1 | APDR-v0.4E post-sync reproducibility audit documenting `ed38afb` implementation mismatch, local static fix, tool hashes, and required clean AutoDL rerun commands. |
-| `experiment_logs/haze4k_apdr_v0_4e_repro_audit_20260603_autodl/` | 3 | AutoDL `826caaf` environment audit, rerun master log, and reproducibility README documenting mapper alias and CSV writer findings. |
-| `experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_rerun_20260603_autodl_826caaf/` | 10 | Clean `826caaf` E0 rerun text evidence, including RuleB reproduction and RuleA missing-candidate mapper-alias finding. |
-| `experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/` | 17 | Clean `826caaf` E1 OOF rerun text evidence, per-image intermediate table, finalize-from-intermediate summary, policy search, and stop-decision tables. |
+| `experiment_logs/haze4k_dpga_lite_20260604/` | 17 | DPGA-Lite v1.0 depth-cache command/status, adapter-only stop20 launch script/status, full-test A0 comparison JSON, bucket analyses, and per-image CSV tables. |
+| `experiment_logs/haze4k_dpga_tail_control_20260604/` | 60 | DPGA runtime diagnostics, v1.1/v1.2 launch decisions, train logs, `val_inner` gates, per-image tables, failure analyses, and watcher transcripts. |
+| `experiment_logs/haze4k_dpga_v13_hsdf_20260604/` | 65+ | DPGA v1.3A/v1.3B split generator, intermediate audits, train logs, regular+hard gates, corrected route-scale runtime ablations, and archived bugged intermediate logs. |
+| `experiment_logs/haze4k_udp_lite_v14_20260604/` | 30+ | v1.4 UDP-Lite route README, locked-selection protocol, run scripts, UDPNet audit, zero-init equivalence, v1.4A train log, Best/Final regular+hard gate, per-image compare CSVs, DPFM module ablations, and depth-quality failure audits. |
+| `experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/` | 30+ | v1.4B BiDPFM1 route README, zero-init preflight JSON/log, no-training runtime component matrix CSV/JSON/logs, adapter-only train log/launchers, Best/Final regular+hard eval JSON/CSV/logs, gate JSON, and status file. |
+| `experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/` | 8+ | v1.5 FullUDP Phase 0 route README, cloud audit launcher/status, checkpoint-acquisition JSON, placeholder bucket CSV, blocker audit CSV, protocol diff, and BaiduPCS-Go transfer probe log. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
+| `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
 
 ## Current Route Verdict
 
@@ -131,13 +201,13 @@ The active conclusion is conservative:
 - APDR-v0.2RC showed that a train-only conservative budget can close
   easy/strong-reference images, but the single-head budget fails held-out
   calibration BCE; do not launch residual until hard-open and easy-veto behavior
-  is decoupled.
+  are decoupled.
 - APDR-v0.4 diagnostics changed the next actionable route: `M_safe`,
   low-frequency target/application, and train-calibrated correctability are
   useful assets; color, crop recompute, toy residual heads, direct SHED, and
   hard-frequency/detail routes stay blocked.
 - APDR-v0.4A low-field-only is not stop20-authorized. Sigma `3.0` has enough
-  alignment evidence, but LowFieldNet-v1 failed overfit32 leanability for both
+  alignment evidence, but LowFieldNet-v1 failed overfit32 learnability for both
   sigma `3.0` and sigma `7.0`. Failure-branch diagnostics show ID embedding
   passes but deployable basis, basis+local, and veil forms do not pass Gate B;
   do not proceed to Gate C/stop20 without deriving better bases or mappings
@@ -156,11 +226,40 @@ The active conclusion is conservative:
   train confirm slice. This authorizes OOF calibration only; full spatial
   router training, local correction, dense residual heads, and stop20 remain
   blocked unless OOF calibration and a locked held-out policy gate pass.
-- APDR-v0.4E E1 OOF calibration failed. Clean `826caaf` rerun confirmed the
-  stop direction for Rule B and policy search, while also exposing mapper alias
-  drift that blocks exact Rule A numeric sealing. The current v0.4E locked
+- APDR-v0.4E E1 OOF calibration failed. The fixed E0 thresholds do not clear
+  OOF severe/coverage gates, and a post-hoc low-capacity OOF threshold search
+  found no policy passing the written E1 line. The current v0.4E locked
   thresholds are stopped; only a separately pre-registered safe-subset route
   could be considered later.
+- DPGA-Lite v1.0 gives a minimum positive in-network prior-adapter direction,
+  but its effect is small relative to the noise-aware policy and exact
+  stop20/final is borderline; treat it as directional evidence, not promotion.
+- DPGA tail-control v1.1/v1.2 is stopped as a scale-only route. Both runs
+  moved mean PSNR positively on `val_inner`, but both missed hard bottom-25%
+  gain; v1.2 also increased worst-tail regressions, so locked test remains
+  blocked.
+- DPGA-v1.3-HSDF completed v1.3A and v1.3B internal diagnostics. v1.3B
+  hard-gated bottleneck stayed safe-ish but failed the regular+hard pass line,
+  and corrected runtime ablation shows the bottleneck contributed almost no
+  useful gain at route scale. Locked Haze4K test remains blocked; stop this
+  exact HSDF bottleneck route.
+- ConvIR-Dehaze-v1.4-UDP-Lite v1.4A is completed and failed its internal gate; use its module audits to justify only a DPFM1-focused diagnostic or v1.4B fusion-neighbor partial unfreeze, not locked-test evaluation.
+- ConvIR-Dehaze-v1.4B-BiDPFM1 completed as the DPFM1-focused diagnostic and
+  failed the internal continue line. Its `udp_bi` zero-init/grad preflight
+  passed, but adapter-only Best stayed around `+0.0286 dB` regular and
+  `+0.0234 dB` hard while failing positive-ratio, SSIM, strong-regression, and
+  worst-tail checks. Locked Haze4K test remains blocked; stop this exact
+  BiDPFM1-only route.
+- The frozen ConvIR-B plus A0-equivalent small-adapter depth-fusion family is
+  now sufficiently diagnosed as a low-success route. Do not proceed to direct
+  v1.4C small adapter, DPFM1+4 training, DPFM2 revival under UDP-Lite, or
+  BiDPFM1 scale/gate/loss search without a materially new mechanism.
+- ConvIR-Dehaze-v1.5-FullUDP Phase 0 attempted the highest-value official
+  UDPNet reproduction prerequisite. The official share exposes
+  `ConvIR_UDPNet_haze4k.ckpt`, but the checkpoint could not be acquired as a
+  durable file in this environment, so no PSNR/SSIM reproduction was run.
+  FullUDP transplant and teacher distillation are blocked until that checkpoint
+  is available with sha256 or a separate controlled teacher is established.
 
 ## Artifact Boundary
 

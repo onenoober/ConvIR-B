@@ -1,0 +1,11 @@
+feature,auc,direction,count,hard_positive_count
+input_anchor_residual_proxy,1.0,higher_is_hard,3000,750
+brightness,0.7810263703703704,higher_is_hard,3000,750
+inverse_brightness,0.7810263703703704,lower_is_hard,3000,750
+saturation,0.6665481481481481,lower_is_hard,3000,750
+dark_channel,0.7881768888888889,higher_is_hard,3000,750
+gradient,0.8027638518518518,lower_is_hard,3000,750
+depth,0.5867899259259259,lower_is_hard,3000,750
+depth_gradient,0.5578251851851852,lower_is_hard,3000,750
+sky_proxy,0.652,higher_is_hard,3000,750
+combined_hard_proxy,0.999997037037037,higher_is_hard,3000,750
