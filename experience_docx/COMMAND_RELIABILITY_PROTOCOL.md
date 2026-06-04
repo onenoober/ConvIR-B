@@ -251,3 +251,50 @@ git push github HEAD:$(git branch --show-current)
 
 If unrelated worktree changes exist, stage only the intended files and verify
 with `git diff --cached --name-only` before committing.
+
+## 2026-06-05 Local WSL wrapper quoting failure
+
+Observed while inspecting the v1.5 evidence sync worktree from PowerShell: an
+inline `wsl ... bash -lc '...'` command containing regex alternation pipes was
+misparsed, so Bash received unquoted fragments such as `FullUDP` and
+`haze4k_fulludp` as shell commands.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'rg -n "v1\.5|FullUDP|UDPNet|haze4k_fulludp" experience_docx/EXPERIMENT_INDEX.md'
+```
+
+Corrected form:
+
+```powershell
+@'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B
+rg -n "v1\.5|FullUDP|UDPNet|haze4k_fulludp" experience_docx/EXPERIMENT_INDEX.md || true
+'@ | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For PowerShell-to-WSL commands with regex pipes, nested quotes, or multiple
+commands, prefer the here-string wrapper even when no SSH hop is involved.
+
+## 2026-06-05 WSL PATH leaking Codex Windows `rg`
+
+Observed while reading v1.5 sync evidence from WSL: `command -v rg` resolved to
+the Codex Windows app resource path under `/mnt/c/Program Files/.../rg`, and
+Bash failed with `Permission denied`.
+
+Invalid form:
+
+```bash
+rg -n "GitHub|text evidence|checkpoint|weights|BRANCH|sync|push" experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md
+```
+
+Corrected form:
+
+```bash
+grep -En "GitHub|text evidence|checkpoint|weights|BRANCH|sync|push" experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md
+```
+
+When `rg` resolves to a Windows app resource from inside WSL, fall back to
+`grep -En` or install/use a native WSL ripgrep binary before continuing.
