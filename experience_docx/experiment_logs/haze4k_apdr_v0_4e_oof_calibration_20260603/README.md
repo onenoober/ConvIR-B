@@ -2,11 +2,30 @@
 
 Date: 2026-06-03
 
-Status: completed on `autodl-dehaze4`; E1 OOF gate failed.
+Status: superseded original run; retained for provenance only. Do not use this
+directory's CSV/JSON/log numeric rows as clean-reproducible sealed evidence.
+
+## Superseded Evidence Boundary
+
+This original `20260603` E1 OOF directory is retained to document the
+historical audit path and the direction of the v0.4E failure investigation. It
+is not the official numeric evidence source for v0.4E.
+
+Post-sync reproducibility review found implementation-mismatch risk in the
+submitted v0.4E tooling, including `align_coners`/`align_corners` drift,
+`kenel_size`/`kernel_size` compatibility risk, mapper-name alias drift, and a
+variable-schema CSV writer failure mode. Therefore the exact numeric rows in
+this directory are superseded and must not be cited as clean-run evidence.
+
+Use these fixed-code evidence roots instead:
+
+- `haze4k_apdr_v0_4e_repro_audit_20260603_autodl/`
+- `haze4k_apdr_v0_4e_risk_action_bank_rerun_20260603_autodl_826caaf/`
+- `haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/`
 
 ## Purpose
 
-This is the E1 audit after v0.4E E0 passed. It creates 5 stratified folds ove
+This is the E1 audit after v0.4E E0 passed. It creates 5 stratified folds over
 the Haze4K train split. For each fold, the script derives the K16 low-field
 basis and fits the candidate mappers on the other four folds, then evaluates
 only the held-out fold.
