@@ -116,8 +116,30 @@ def _log_apdr_stats(model, args, epoch_idx, device):
 
 
 def _configure_train_scope(model, args):
-    if getattr(args, "arch", "convir") != "apdr":
+    arch = getattr(args, "arch", "convir")
+    if arch not in ("apdr", "dpga"):
         return list(model.parameters())
+
+    if arch == "dpga":
+        scope = getattr(args, "dpga_train_scope", "adapter_only")
+        if scope == "all":
+            print("DPGA_TRAIN_SCOPE all: all parameters trainable")
+            return list(model.parameters())
+        if scope != "adapter_only":
+            raise ValueError(f"Unsupported dpga_train_scope: {scope}")
+        trainable = 0
+        frozen = 0
+        for name, param in model.named_parameters():
+            param.requires_grad = name.startswith("DPGA_")
+            if param.requires_grad:
+                trainable += param.numel()
+            else:
+                frozen += param.numel()
+        trainable_params = [param for param in model.parameters() if param.requires_grad]
+        if not trainable_params:
+            raise RuntimeError("No trainable parameters. Check --dpga_train_scope.")
+        print(f"DPGA_TRAIN_SCOPE {scope}: trainable={trainable} frozen={frozen}")
+        return trainable_params
 
     scope = getattr(args, "apdr_train_scope", "all")
     if scope == "all":
@@ -158,6 +180,15 @@ def _configure_train_scope(model, args):
 
 def _set_training_mode(model, args):
     if (
+        getattr(args, "arch", "convir") == "dpga"
+        and getattr(args, "dpga_train_scope", "adapter_only") != "all"
+    ):
+        model.eval()
+        for name, module in model.named_modules():
+            if name.startswith("DPGA_"):
+                module.train()
+        return
+    if (
         getattr(args, "arch", "convir") == "apdr"
         and getattr(args, "apdr_train_scope", "all") != "all"
     ):
@@ -167,6 +198,48 @@ def _set_training_mode(model, args):
                 module.train()
         return
     model.train()
+
+
+def _dpga_depth_cache_dir(args):
+    if getattr(args, "arch", "convir") != "dpga":
+        return ""
+    depth_cache_dir = getattr(args, "dpga_depth_cache_dir", "")
+    if not depth_cache_dir:
+        raise ValueError("--dpga_depth_cache_dir is required when --arch dpga")
+    return depth_cache_dir
+
+
+def _split_batch(batch_data, device, args):
+    if getattr(args, "arch", "convir") == "dpga":
+        if len(batch_data) < 3:
+            raise ValueError("DPGA dataloader must return input, label, depth prior.")
+        input_img = batch_data[0].to(device)
+        label_img = batch_data[1].to(device)
+        depth = batch_data[2].to(device)
+        return input_img, label_img, depth
+    input_img, label_img = batch_data[:2]
+    return input_img.to(device), label_img.to(device), None
+
+
+def _model_forward(model, input_img, depth, args):
+    if getattr(args, "arch", "convir") == "dpga":
+        return model(input_img, depth)
+    return model(input_img)
+
+
+def _log_dpga_stats(model, args, epoch_idx):
+    if args.mod_stats_freq <= 0 or epoch_idx % args.mod_stats_freq != 0:
+        return
+    if getattr(args, "arch", "convir") != "dpga" or not hasattr(model, "collect_dpga_stats"):
+        return
+    stats = model.collect_dpga_stats()
+    detail = []
+    for name in sorted(stats):
+        detail.append(
+            "%s_scale=%.8f %s_eff=%.8f"
+            % (name, stats[name]["scale"], name, stats[name]["effective_scale"])
+        )
+    print(f"DPGA_STATS Epoch: {epoch_idx:03d} " + " ".join(detail))
 
 
 def _train(model, args):
@@ -183,7 +256,14 @@ def _train(model, args):
     trainable_params = _configure_train_scope(model, args)
     _set_training_mode(model, args)
     optimizer = torch.optim.Adam(trainable_params, lr=args.learning_rate, betas=(0.9, 0.999), eps=1e-8)
-    dataloader = train_dataloader(args.data_dir, args.batch_size, args.num_worker, args.data)
+    dataloader = train_dataloader(
+        args.data_dir,
+        args.batch_size,
+        args.num_worker,
+        args.data,
+        depth_cache_dir=_dpga_depth_cache_dir(args),
+        depth_split=getattr(args, "dpga_train_depth_split", "train"),
+    )
     max_iter = len(dataloader)
     warmup_epochs=3
     scheduler_cosine = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.num_epoch-warmup_epochs, eta_min=1e-6)
@@ -218,12 +298,10 @@ def _train(model, args):
         iter_timer.tic()
         for iter_idx, batch_data in enumerate(dataloader):
 
-            input_img, label_img = batch_data
-            input_img = input_img.to(device)
-            label_img = label_img.to(device)
+            input_img, label_img, depth = _split_batch(batch_data, device, args)
 
             optimizer.zero_grad()
-            pred_img = model(input_img)
+            pred_img = _model_forward(model, input_img, depth, args)
             if (
                 getattr(args, "arch", "convir") == "apdr"
                 and getattr(args, "apdr_loss_scales", "all") == "full_only"
@@ -322,6 +400,7 @@ def _train(model, args):
             val = _valid(model, args, epoch_idx)
             _log_modulation_stats(model, args, epoch_idx, device)
             _log_apdr_stats(model, args, epoch_idx, device)
+            _log_dpga_stats(model, args, epoch_idx)
             _set_training_mode(model, args)
             print('%03d epoch \n Average PSNR %.2f dB' % (epoch_idx, val))
             writer.add_scalar('PSNR', val, epoch_idx)

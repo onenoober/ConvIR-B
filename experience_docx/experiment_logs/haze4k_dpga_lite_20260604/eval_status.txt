@@ -1,0 +1,22 @@
+eval_start 2026-06-04T10:37:51+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-dpga-lite-826caaf
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+eval_dpga_lite_stop5_start 2026-06-04T10:37:51+08:00
+eval_dpga_lite_stop5_done 2026-06-04T10:40:54+08:00
+eval_dpga_lite_stop20_start 2026-06-04T10:40:54+08:00
+eval_dpga_lite_stop20_done 2026-06-04T10:44:01+08:00
+eval_dpga_lite_best_start 2026-06-04T10:44:01+08:00
+eval_dpga_lite_best_done 2026-06-04T10:47:05+08:00
+eval_dpga_lite_final_start 2026-06-04T10:47:05+08:00
+eval_dpga_lite_final_done 2026-06-04T10:50:04+08:00
+eval_done 2026-06-04T10:50:04+08:00
+bucket_dpga_lite_stop5_start 2026-06-04T10:51:50+08:00
+bucket_dpga_lite_stop5_done 2026-06-04T10:51:51+08:00
+bucket_dpga_lite_stop20_start 2026-06-04T10:51:51+08:00
+bucket_dpga_lite_stop20_done 2026-06-04T10:51:51+08:00
+bucket_dpga_lite_best_start 2026-06-04T10:51:51+08:00
+bucket_dpga_lite_best_done 2026-06-04T10:51:51+08:00
+bucket_dpga_lite_final_start 2026-06-04T10:51:51+08:00
+bucket_dpga_lite_final_done 2026-06-04T10:51:51+08:00

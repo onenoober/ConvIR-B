@@ -1,6 +1,18 @@
 import os
+import numpy as np
+import torch
+import torch.nn.functional as torch_F
 from PIL import Image as Image
-from data import PairCompose, PairRandomCrop, PairRandomHorizontalFilp, PairToTensor
+from data import (
+    PairCompose,
+    PairRandomCrop,
+    PairRandomHorizontalFilp,
+    PairToTensor,
+    TripleCompose,
+    TripleRandomCrop,
+    TripleRandomHorizontalFilp,
+    TripleToTensor,
+)
 from torchvision.transforms import functional as F
 from torch.utils.data import Dataset, DataLoader
 
@@ -27,7 +39,51 @@ def _first_existing_dir(root, names):
     )
 
 
-def train_dataloader(path, batch_size=64, num_workers=0, data='ITS', use_transform=True):
+def _robust_normalize_np(values):
+    finite = np.isfinite(values)
+    if not finite.any():
+        return np.zeros_like(values, dtype=np.float32)
+    sample = values[finite]
+    lo = float(np.min(sample))
+    hi = float(np.max(sample))
+    if hi - lo <= 1e-12:
+        out = np.zeros_like(values, dtype=np.float32)
+    else:
+        out = np.clip((values - lo) / (hi - lo), 0.0, 1.0).astype(np.float32)
+    out[~finite] = 0.0
+    return out
+
+
+def depth_cache_path(cache_dir, split, image_name):
+    return os.path.join(cache_dir, split, image_name.replace('/', '__') + '.npy')
+
+
+def load_depth_prior(cache_dir, split, image_name, size):
+    path = depth_cache_path(cache_dir, split, image_name)
+    if not os.path.isfile(path):
+        raise FileNotFoundError(f'Missing DPGA depth cache for {image_name}: {path}')
+    depth = _robust_normalize_np(np.load(path).astype(np.float32))
+    depth = torch.from_numpy(depth).view(1, depth.shape[0], depth.shape[1]).float()
+    if tuple(depth.shape[-2:]) != tuple(size):
+        depth = torch_F.interpolate(
+            depth.unsqueeze(0),
+            size=size,
+            mode='bilinear',
+            align_corners=False,
+        ).squeeze(0)
+    return depth
+
+
+def train_dataloader(
+    path,
+    batch_size=64,
+    num_workers=0,
+    data='ITS',
+    use_transform=True,
+    return_name=False,
+    depth_cache_dir='',
+    depth_split='train',
+):
     image_dir = os.path.join(path, 'train')
 
     if data.lower() == 'real_haze':
@@ -37,15 +93,35 @@ def train_dataloader(path, batch_size=64, num_workers=0, data='ITS', use_transfo
 
     transform = None
     if use_transform:
-        transform = PairCompose(
-            [
-                PairRandomCrop(crop_size),
-                PairRandomHorizontalFilp(),
-                PairToTensor()
-            ]
+        if depth_cache_dir:
+            transform = TripleCompose(
+                [
+                    TripleRandomCrop(crop_size),
+                    TripleRandomHorizontalFilp(),
+                    TripleToTensor()
+                ]
+            )
+        else:
+            transform = PairCompose(
+                [
+                    PairRandomCrop(crop_size),
+                    PairRandomHorizontalFilp(),
+                    PairToTensor()
+                ]
+            )
+    if depth_cache_dir:
+        dataset = DepthPriorDeblurDataset(
+            image_dir,
+            data,
+            depth_cache_dir,
+            depth_split,
+            transform=transform,
+            return_name=return_name,
         )
+    else:
+        dataset = DeblurDataset(image_dir, data, transform=transform, return_name=return_name)
     dataloader = DataLoader(
-        DeblurDataset(image_dir, data, transform=transform),
+        dataset,
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
@@ -54,10 +130,21 @@ def train_dataloader(path, batch_size=64, num_workers=0, data='ITS', use_transfo
     return dataloader
 
 
-def test_dataloader(path, data, batch_size=1, num_workers=0):
+def test_dataloader(path, data, batch_size=1, num_workers=0, depth_cache_dir='', depth_split='test'):
     image_dir = os.path.join(path, 'test')
+    if depth_cache_dir:
+        dataset = DepthPriorDeblurDataset(
+            image_dir,
+            data,
+            depth_cache_dir,
+            depth_split,
+            is_test=True,
+            return_name=True,
+        )
+    else:
+        dataset = DeblurDataset(image_dir, data, is_test=True)
     dataloader = DataLoader(
-        DeblurDataset(image_dir, data, is_test=True),
+        dataset,
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
@@ -67,9 +154,20 @@ def test_dataloader(path, data, batch_size=1, num_workers=0):
     return dataloader
 
 
-def valid_dataloader(path, data, batch_size=1, num_workers=0):
+def valid_dataloader(path, data, batch_size=1, num_workers=0, depth_cache_dir='', depth_split='test'):
+    image_dir = os.path.join(path, 'test')
+    if depth_cache_dir:
+        dataset = DepthPriorDeblurDataset(
+            image_dir,
+            data,
+            depth_cache_dir,
+            depth_split,
+            return_name=True,
+        )
+    else:
+        dataset = DeblurDataset(image_dir, data)
     dataloader = DataLoader(
-        DeblurDataset(os.path.join(path, 'test'), data),
+        dataset,
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers
@@ -79,10 +177,11 @@ def valid_dataloader(path, data, batch_size=1, num_workers=0):
 
 
 class DeblurDataset(Dataset):
-    def __init__(self, image_dir, data, transform=None, is_test=False):
+    def __init__(self, image_dir, data, transform=None, is_test=False, return_name=False):
         self.image_dir = image_dir
         self.transform = transform
         self.is_test = is_test
+        self.return_name = return_name
         self.data = data
         self.data_key = data.lower()
 
@@ -135,7 +234,45 @@ class DeblurDataset(Dataset):
         else:
             image = F.to_tensor(image)
             label = F.to_tensor(label)
-        if self.is_test:
+        if self.is_test or self.return_name:
             name = self.image_list[idx]
             return image, label, name
         return image, label
+
+
+class DepthPriorDeblurDataset(DeblurDataset):
+    def __init__(
+        self,
+        image_dir,
+        data,
+        depth_cache_dir,
+        depth_split,
+        transform=None,
+        is_test=False,
+        return_name=False,
+    ):
+        super().__init__(image_dir, data, transform=transform, is_test=is_test, return_name=return_name)
+        self.depth_cache_dir = depth_cache_dir
+        self.depth_split = depth_split
+
+    def __getitem__(self, idx):
+        image_name = self.image_list[idx]
+        image = Image.open(os.path.join(self.input_dir, image_name)).convert('RGB')
+        label = Image.open(self._label_path(image_name)).convert('RGB')
+        depth = load_depth_prior(
+            self.depth_cache_dir,
+            self.depth_split,
+            image_name,
+            size=(image.size[1], image.size[0]),
+        )
+
+        if self.transform:
+            image, label, depth = self.transform(image, label, depth)
+        else:
+            image = F.to_tensor(image)
+            label = F.to_tensor(label)
+            depth = depth.float()
+
+        if self.is_test or self.return_name:
+            return image, label, depth, image_name
+        return image, label, depth

@@ -1,0 +1,46 @@
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 1000,
+      "mean_psnr": 34.14658181762695,
+      "mean_ssim": 0.9897282404303551,
+      "avg_time_sec_sync": 0.05419741368293762,
+      "median_time_sec_sync": 0.043335795402526855,
+      "peak_cuda_mem_mib": 537.94482421875
+    },
+    "dpga_lite_stop5": {
+      "label": "dpga_lite_stop5",
+      "arch": "dpga",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-dpga-lite-826caaf/Dehazing/ITS/results/ConvIR-Haze4K-DPGA-Lite-v1.0-adapter-only-stop20-seed3407-20260604/Training-Results/model_5.pkl",
+      "count": 1000,
+      "mean_psnr": 34.12371923828125,
+      "mean_ssim": 0.9897316660284996,
+      "avg_time_sec_sync": 0.05342185401916504,
+      "median_time_sec_sync": 0.044750213623046875,
+      "peak_cuda_mem_mib": 548.21484375
+    }
+  },
+  "comparison": {
+    "common_count": 1000,
+    "mean_psnr_delta": -0.022862579345703123,
+    "median_psnr_delta": -0.011639595031738281,
+    "p5_psnr_delta": -0.4949611663818359,
+    "p95_psnr_delta": 0.4216161727905269,
+    "worst10pct_mean_psnr_delta": -0.5457931327819824,
+    "best10pct_mean_psnr_delta": 0.4732937240600586,
+    "worst10img_mean_psnr_delta": -0.9423629760742187,
+    "best10img_mean_psnr_delta": 0.8094474792480468,
+    "worst10_mean_psnr_delta": -0.5457931327819824,
+    "best10_mean_psnr_delta": 0.4732937240600586,
+    "mean_ssim_delta": 3.42559814453125e-06,
+    "strong_reference_cut_psnr": 39.07855987548828,
+    "strong_reference_count": 250,
+    "strong_regression_count_delta_le_-0.05": 121,
+    "worst_regression_count_delta_le_-0.20": 194
+  }
+}

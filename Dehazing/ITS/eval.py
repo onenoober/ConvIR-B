@@ -12,11 +12,34 @@ import torch.nn.functional as f
 from skimage import img_as_ubyte
 import cv2
 
+
+def _dpga_depth_cache_dir(args):
+    if getattr(args, "arch", "convir") != "dpga":
+        return ""
+    depth_cache_dir = getattr(args, "dpga_depth_cache_dir", "")
+    if not depth_cache_dir:
+        raise ValueError("--dpga_depth_cache_dir is required when --arch dpga")
+    return depth_cache_dir
+
+
+def _forward(model, input_img, depth, args):
+    if getattr(args, "arch", "convir") == "dpga":
+        return model(input_img, depth)
+    return model(input_img)
+
+
 def _eval(model, args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     state_dict = torch.load(args.test_model, map_location=device)
     model.load_state_dict(state_dict['model'])
-    dataloader = test_dataloader(args.data_dir, args.data, batch_size=1, num_workers=0)
+    dataloader = test_dataloader(
+        args.data_dir,
+        args.data,
+        batch_size=1,
+        num_workers=0,
+        depth_cache_dir=_dpga_depth_cache_dir(args),
+        depth_split=getattr(args, "dpga_eval_depth_split", "test"),
+    )
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
     adder = Adder()
@@ -27,7 +50,12 @@ def _eval(model, args):
         ssim_adder = Adder()
 
         for iter_idx, data in enumerate(dataloader):
-            input_img, label_img, name = data
+            if getattr(args, "arch", "convir") == "dpga":
+                input_img, label_img, depth, name = data
+                depth = depth.to(device)
+            else:
+                input_img, label_img, name = data
+                depth = None
 
             input_img = input_img.to(device)
 
@@ -36,10 +64,12 @@ def _eval(model, args):
             padh = H-h if h%factor!=0 else 0
             padw = W-w if w%factor!=0 else 0
             input_img = f.pad(input_img, (0, padw, 0, padh), 'reflect')
+            if depth is not None:
+                depth = f.pad(depth, (0, padw, 0, padh), 'reflect')
 
             tm = time.time()
 
-            pred = model(input_img)[2]
+            pred = _forward(model, input_img, depth, args)[2]
             pred = pred[:,:,:h,:w]
 
             elapsed = time.time() - tm

@@ -16,6 +16,7 @@ sys.path.insert(0, os.getcwd())
 from data import test_dataloader
 from models.APDRConvIR import build_apdr_net
 from models.ConvIR import build_net as build_convir_net
+from models.DPGAConvIR import build_dpga_net
 
 
 def percentile(values, pct):
@@ -35,6 +36,18 @@ def percentile(values, pct):
 def build_model(arch, mode, args, prefix):
     if arch == "convir":
         return build_convir_net("base", "Haze4K", mode)
+    if arch == "dpga":
+        return build_dpga_net(
+            "base",
+            "Haze4K",
+            prior_embed_channels=getattr(args, f"{prefix}_dpga_prior_embed_channels"),
+            adapter_reduction=getattr(args, f"{prefix}_dpga_adapter_reduction"),
+            adapter_residual_scale=getattr(args, f"{prefix}_dpga_adapter_residual_scale"),
+            adapter_scale_init=getattr(args, f"{prefix}_dpga_adapter_scale_init"),
+            adapter_bootstrap_scale=getattr(args, f"{prefix}_dpga_adapter_bootstrap_scale"),
+            dark_patch=getattr(args, f"{prefix}_dpga_dark_patch"),
+            local_patch=getattr(args, f"{prefix}_dpga_local_patch"),
+        )
     if arch == "apdr":
         return build_apdr_net(
             "base",
@@ -58,6 +71,21 @@ def load_model_state(path, device):
     return state
 
 
+def dpga_depth_cache_dir(args, prefix, arch):
+    if arch != "dpga":
+        return ""
+    depth_cache_dir = getattr(args, f"{prefix}_dpga_depth_cache_dir") or args.dpga_depth_cache_dir
+    if not depth_cache_dir:
+        raise ValueError(f"--{prefix}_dpga_depth_cache_dir or --dpga_depth_cache_dir is required for DPGA eval")
+    return depth_cache_dir
+
+
+def forward_model(model, arch, input_img, depth):
+    if arch == "dpga":
+        return model(input_img, depth)
+    return model(input_img)
+
+
 def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if torch.cuda.is_available():
@@ -68,14 +96,26 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
     model.load_state_dict(load_model_state(checkpoint, device))
     model.eval()
 
-    dataloader = test_dataloader(data_dir, "Haze4K", batch_size=1, num_workers=0)
+    dataloader = test_dataloader(
+        data_dir,
+        "Haze4K",
+        batch_size=1,
+        num_workers=0,
+        depth_cache_dir=dpga_depth_cache_dir(args, prefix, arch),
+        depth_split=args.dpga_eval_depth_split,
+    )
     factor = 32
     rows = []
     times = []
 
     with torch.no_grad():
         for idx, data in enumerate(dataloader):
-            input_img, label_img, name = data
+            if arch == "dpga":
+                input_img, label_img, depth, name = data
+                depth = depth.to(device)
+            else:
+                input_img, label_img, name = data
+                depth = None
             input_img = input_img.to(device)
             label_img = label_img.to(device)
 
@@ -85,11 +125,13 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
             padh = H - h if h % factor != 0 else 0
             padw = W - w if w % factor != 0 else 0
             padded = f.pad(input_img, (0, padw, 0, padh), "reflect")
+            if depth is not None:
+                depth = f.pad(depth, (0, padw, 0, padh), "reflect")
 
             if torch.cuda.is_available():
                 torch.cuda.synchronize()
             start = time.time()
-            pred = model(padded)[2][:, :, :h, :w]
+            pred = forward_model(model, arch, padded, depth)[2][:, :, :h, :w]
             if torch.cuda.is_available():
                 torch.cuda.synchronize()
             elapsed = time.time() - start
@@ -142,12 +184,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", required=True)
     parser.add_argument("--original_checkpoint", required=True)
-    parser.add_argument("--original_arch", default="convir", choices=["convir", "apdr"])
+    parser.add_argument("--original_arch", default="convir", choices=["convir", "apdr", "dpga"])
     parser.add_argument("--original_mode", default="original")
     parser.add_argument("--original_name", default="original")
     parser.add_argument("--modres_checkpoint")
     parser.add_argument("--candidate_checkpoint")
-    parser.add_argument("--candidate_arch", default="convir", choices=["convir", "apdr"])
+    parser.add_argument("--candidate_arch", default="convir", choices=["convir", "apdr", "dpga"])
     parser.add_argument("--candidate_mode", default="modres")
     parser.add_argument("--candidate_name")
     parser.add_argument("--original_apdr_prior_mode", default="rgb_haze", choices=["rgb_haze"])
@@ -166,6 +208,24 @@ def main():
     parser.add_argument("--candidate_apdr_active_scales", default="all", choices=["all", "full"])
     parser.add_argument("--candidate_apdr_selector_mode", default="v0", choices=["v0", "v0_2", "v0_2r"])
     parser.add_argument("--candidate_apdr_residual_capacity", default="linear", choices=["linear", "shallow_mlp"])
+    parser.add_argument("--dpga_depth_cache_dir", default="")
+    parser.add_argument("--dpga_eval_depth_split", default="test")
+    parser.add_argument("--original_dpga_depth_cache_dir", default="")
+    parser.add_argument("--candidate_dpga_depth_cache_dir", default="")
+    parser.add_argument("--original_dpga_prior_embed_channels", type=int, default=16)
+    parser.add_argument("--candidate_dpga_prior_embed_channels", type=int, default=16)
+    parser.add_argument("--original_dpga_adapter_reduction", type=int, default=2)
+    parser.add_argument("--candidate_dpga_adapter_reduction", type=int, default=2)
+    parser.add_argument("--original_dpga_adapter_residual_scale", type=float, default=0.1)
+    parser.add_argument("--candidate_dpga_adapter_residual_scale", type=float, default=0.1)
+    parser.add_argument("--original_dpga_adapter_scale_init", type=float, default=0.0)
+    parser.add_argument("--candidate_dpga_adapter_scale_init", type=float, default=0.0)
+    parser.add_argument("--original_dpga_adapter_bootstrap_scale", type=float, default=0.01)
+    parser.add_argument("--candidate_dpga_adapter_bootstrap_scale", type=float, default=0.01)
+    parser.add_argument("--original_dpga_dark_patch", type=int, default=15)
+    parser.add_argument("--candidate_dpga_dark_patch", type=int, default=15)
+    parser.add_argument("--original_dpga_local_patch", type=int, default=31)
+    parser.add_argument("--candidate_dpga_local_patch", type=int, default=31)
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
     args = parser.parse_args()

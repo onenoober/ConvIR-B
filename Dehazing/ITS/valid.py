@@ -7,9 +7,31 @@ from skimage.metrics import peak_signal_noise_ratio
 import torch.nn.functional as f
 
 
+def _dpga_depth_cache_dir(args):
+    if getattr(args, "arch", "convir") != "dpga":
+        return ""
+    depth_cache_dir = getattr(args, "dpga_depth_cache_dir", "")
+    if not depth_cache_dir:
+        raise ValueError("--dpga_depth_cache_dir is required when --arch dpga")
+    return depth_cache_dir
+
+
+def _forward(model, input_img, depth, args):
+    if getattr(args, "arch", "convir") == "dpga":
+        return model(input_img, depth)
+    return model(input_img)
+
+
 def _valid(model, args, ep):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    dataset = valid_dataloader(args.data_dir, args.data, batch_size=1, num_workers=0)
+    dataset = valid_dataloader(
+        args.data_dir,
+        args.data,
+        batch_size=1,
+        num_workers=0,
+        depth_cache_dir=_dpga_depth_cache_dir(args),
+        depth_split=getattr(args, "dpga_eval_depth_split", "test"),
+    )
     model.eval()
     psnr_adder = Adder()
 
@@ -17,7 +39,12 @@ def _valid(model, args, ep):
         print('Start Evaluation')
         factor = 32
         for idx, data in enumerate(dataset):
-            input_img, label_img = data
+            if getattr(args, "arch", "convir") == "dpga":
+                input_img, label_img, depth, _name = data
+                depth = depth.to(device)
+            else:
+                input_img, label_img = data
+                depth = None
             input_img = input_img.to(device)
 
             h, w = input_img.shape[2], input_img.shape[3]
@@ -25,11 +52,13 @@ def _valid(model, args, ep):
             padh = H-h if h%factor!=0 else 0
             padw = W-w if w%factor!=0 else 0
             input_img = f.pad(input_img, (0, padw, 0, padh), 'reflect')
+            if depth is not None:
+                depth = f.pad(depth, (0, padw, 0, padh), 'reflect')
 
             if not os.path.exists(os.path.join(args.result_dir, '%d' % (ep))):
                 os.mkdir(os.path.join(args.result_dir, '%d' % (ep)))
 
-            pred = model(input_img)[2]
+            pred = _forward(model, input_img, depth, args)[2]
             pred = pred[:,:,:h,:w]
 
             pred_clip = torch.clamp(pred, 0, 1)

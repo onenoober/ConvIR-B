@@ -6,6 +6,7 @@ import shutil
 from torch.backends import cudnn
 from models.APDRConvIR import build_apdr_net
 from models.ConvIR import build_net as build_convir_net
+from models.DPGAConvIR import build_dpga_net
 from train import _train
 from eval import _eval
 
@@ -13,6 +14,20 @@ from eval import _eval
 def build_model(args):
     if args.arch == 'convir':
         return build_convir_net(args.version, args.data, args.fam_mode)
+    if args.arch == 'dpga':
+        if args.fam_mode != 'original':
+            raise ValueError('--fam_mode must stay original when --arch dpga is used.')
+        return build_dpga_net(
+            args.version,
+            args.data,
+            prior_embed_channels=args.dpga_prior_embed_channels,
+            adapter_reduction=args.dpga_adapter_reduction,
+            adapter_residual_scale=args.dpga_adapter_residual_scale,
+            adapter_scale_init=args.dpga_adapter_scale_init,
+            adapter_bootstrap_scale=args.dpga_adapter_bootstrap_scale,
+            dark_patch=args.dpga_dark_patch,
+            local_patch=args.dpga_local_patch,
+        )
     if args.fam_mode != 'original':
         raise ValueError('--fam_mode must stay original when --arch apdr is used.')
     return build_apdr_net(
@@ -49,7 +64,13 @@ def load_init_model(model, args):
     result = model.load_state_dict(state, strict=False)
     missing = list(result.missing_keys)
     unexpected = list(result.unexpected_keys)
-    bad_missing = [key for key in missing if not key.startswith('APDR_')]
+    if args.arch == 'apdr':
+        allowed_prefixes = ('APDR_',)
+    elif args.arch == 'dpga':
+        allowed_prefixes = ('DPGA_',)
+    else:
+        allowed_prefixes = ()
+    bad_missing = [key for key in missing if not key.startswith(allowed_prefixes)]
     if unexpected or bad_missing:
         raise RuntimeError(
             'Unexpected --init_model load result: '
@@ -128,7 +149,7 @@ if __name__ == '__main__':
     parser.add_argument('--data', type=str, default='ITS', choices=['ITS', 'Haze4K', 'NHR', 'GTA5', 'real_haze'])
     parser.add_argument('--version', default='small', choices=['small', 'base', 'large'], type=str)
     parser.add_argument('--fam_mode', default='original', choices=['original', 'modres', 'fam2_modres'], type=str)
-    parser.add_argument('--arch', default='convir', choices=['convir', 'apdr'], type=str)
+    parser.add_argument('--arch', default='convir', choices=['convir', 'apdr', 'dpga'], type=str)
     parser.add_argument('--apdr_prior_mode', default='rgb_haze', choices=['rgb_haze'], type=str)
     parser.add_argument('--apdr_residual_max', default=0.04, type=float)
     parser.add_argument('--apdr_gate_max', default=0.5, type=float)
@@ -164,6 +185,22 @@ if __name__ == '__main__':
         type=str,
     )
     parser.add_argument('--seed', default=-1, type=int)
+    parser.add_argument('--dpga_depth_cache_dir', default='', type=str)
+    parser.add_argument('--dpga_train_depth_split', default='train', type=str)
+    parser.add_argument('--dpga_eval_depth_split', default='test', type=str)
+    parser.add_argument(
+        '--dpga_train_scope',
+        default='adapter_only',
+        choices=['all', 'adapter_only'],
+        type=str,
+    )
+    parser.add_argument('--dpga_prior_embed_channels', default=16, type=int)
+    parser.add_argument('--dpga_adapter_reduction', default=2, type=int)
+    parser.add_argument('--dpga_adapter_residual_scale', default=0.1, type=float)
+    parser.add_argument('--dpga_adapter_scale_init', default=0.0, type=float)
+    parser.add_argument('--dpga_adapter_bootstrap_scale', default=0.01, type=float)
+    parser.add_argument('--dpga_dark_patch', default=15, type=int)
+    parser.add_argument('--dpga_local_patch', default=31, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
     parser.add_argument('--data_dir', type=str, default='')
@@ -221,7 +258,12 @@ if __name__ == '__main__':
         'models/ConvIR.py',
         'models/APDRConvIR.py',
         'models/apdr_modules.py',
+        'models/DPGAConvIR.py',
+        'data/data_load.py',
+        'data/data_augment.py',
         'train.py',
+        'valid.py',
+        'eval.py',
         'main.py',
     ):
         if os.path.exists(source):
