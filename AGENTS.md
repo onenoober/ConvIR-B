@@ -26,6 +26,14 @@
 - Use explicit runtime paths for cloud Python, especially `/root/miniconda3/envs/convir-cu128/bin/python`, instead of assuming `python` is on PATH.
 - If a command fails from quoting, CRLF, PATH, or shell-boundary issues, record the invalid form and the corrected form in the command reliability protocol before continuing.
 
+## Model Run Operations
+
+- For any model training, smoke test, evaluation, inference, post-run audit, or runtime validation, read and follow `experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md` before launching or monitoring the run.
+- Before launching a cloud run, verify branch/commit, remote workspace path, data path, checkpoint path, split file, output root, tmux session name, status file, command script, and locked-test policy.
+- Do not relaunch or overwrite an active run with the same session, output directory, or model name; inspect tmux/status/checkpoints first and either resume explicitly or create a new route/run id.
+- Every cloud run must have a durable command script, a `status.txt` or equivalent heartbeat log, stdout/stderr log capture, and post-run evidence sync back to `experience_docx/`.
+- Treat smoke/preflight failures, training failures, eval failures, and scientific gate failures as different states; record the state explicitly instead of retrying with changed scope silently.
+
 ## Project Memory And Evidence Authority
 
 - Treat `experience_docx/` as the repository's authoritative project memory for experiment state, governance, route decisions, and evidence locations.
