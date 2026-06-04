@@ -1,0 +1,8 @@
+{
+  "split_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/intenal_val/haze4k_dpga_v13_regular_hard_seed3407.json",
+  "outputs": [
+    "dpga_v13_val_split_audit.csv",
+    "dpga_v13_hard_proxy_auc.csv",
+    "dpga_v13_tail_mask_audit_by_bucket.csv"
+  ]
+}

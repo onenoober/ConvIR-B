@@ -1,0 +1,35 @@
+2026-06-04 v1.3A package created. Local compile only; cloud execution target is AutoDL autodl-dehaze4.
+2026-06-04 first cloud launch stopped after early logs showed hard_region_weight near 1.0000 with threshold 0.035; restart uses hard_region_error_threshold 0.010 and a new model name.
+2026-06-04 second cloud launch stopped after hard_region_weight averaged only about 1.003; restart adds hard_sample_lambda 0.20 so hard samples get the intended 1.2x reconstruction weight.
+2026-06-04 v1.3A completed fail-safe: Best val_regular mean +0.026333 dB, Best val_hard hard_bottom25 +0.022099 dB, worst 4/300, SSIM positive. v1.3B hard-gated bottleneck is authorized; locked Haze4K test remains blocked.
+v13b_master_start 2026-06-04T16:35:27+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf
+v13b_train_start ConvIR-Haze4K-DPGA-v1.3B-HSDF-hardgated-bottleneck-shallow-scale0p25-bneckmax0p05-gatelambda0p01-seed3407-20260604 2026-06-04T16:35:27+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+split_json=/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/intenal_val/haze4k_dpga_v13_regular_hard_seed3407.json
+active_adapters=shallow,bottleneck scale=0.25 bottleneck_scale_multiplier=2.0 hard_gate=bottleneck hard_gate_lambda=0.01
+mask=hard_selective hard_sample_lambda=0.20 hard_region_lambda=0.35 hard_region_error_threshold=0.010
+v13b_stopped_for_gate_restore_bug
+v13b_gate_restore_fix_verified_and_bugged_partial_archived_20260604T1645
+v13b_master_start 2026-06-04T16:48:16+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf
+v13b_train_start ConvIR-Haze4K-DPGA-v1.3B-HSDF-hardgated-bottleneck-shallow-scale0p25-bneckmax0p05-gatelambda0p01-seed3407-20260604 2026-06-04T16:48:16+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+split_json=/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/intenal_val/haze4k_dpga_v13_regular_hard_seed3407.json
+active_adapters=shallow,bottleneck scale=0.25 bottleneck_scale_multiplier=2.0 hard_gate=bottleneck hard_gate_lambda=0.01
+mask=hard_selective hard_sample_lambda=0.20 hard_region_lambda=0.35 hard_region_error_threshold=0.010
+v13b_train_done rc=0 ConvIR-Haze4K-DPGA-v1.3B-HSDF-hardgated-bottleneck-shallow-scale0p25-bneckmax0p05-gatelambda0p01-seed3407-20260604 2026-06-04T17:15:24+08:00
+v13b_eval_regular_hard_done output=/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/v13b_eval_regular_hard 2026-06-04T17:18:59+08:00
+v13b_runtime_ablation_done output=/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/runtime_diagnostics_v13b_val_regular 2026-06-04T17:25:32+08:00
+v13b_master_done split=0 train=0 eval=0 runtime=0 2026-06-04T17:25:32+08:00
+v13_runtime_ablation_scale_fix_started_20260604T1725
+v13_runtime_ablation_done output=/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/runtime_diagnostics_val_regular 2026-06-04T17:35:35+08:00
+v13b_runtime_ablation_done output=/root/autodl-tmp/workspace/ConvIR-B-v1-3-hsdf/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/runtime_diagnostics_v13b_val_regular 2026-06-04T17:42:08+08:00
+2026-06-04 v1.3B completed diagnostic and failed gate: Best val_regular mean +0.025839 dB, Best val_hard hard_bottom25 +0.023642 dB, positive ratio 0.586667, strong regression ratio 0.200000. Locked Haze4K test remains blocked; stop this exact HSDF hard-gated bottleneck route.
+2026-06-04 corrected runtime ablation uses module scale 0.25; prior scale 1.0 intermediate outputs are archived under *.scale1_bug_20260604T1725.

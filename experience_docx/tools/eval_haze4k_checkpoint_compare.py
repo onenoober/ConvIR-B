@@ -45,10 +45,15 @@ def build_model(arch, mode, args, prefix):
             adapter_residual_scale=getattr(args, f"{prefix}_dpga_adapter_residual_scale"),
             adapter_scale_init=getattr(args, f"{prefix}_dpga_adapter_scale_init"),
             adapter_bootstrap_scale=getattr(args, f"{prefix}_dpga_adapter_bootstrap_scale"),
+            hard_gate_init_bias=getattr(args, f"{prefix}_dpga_hard_gate_init_bias"),
             dark_patch=getattr(args, f"{prefix}_dpga_dark_patch"),
             local_patch=getattr(args, f"{prefix}_dpga_local_patch"),
             active_adapters=getattr(args, f"{prefix}_dpga_active_adapters"),
             scale_multiplier=getattr(args, f"{prefix}_dpga_scale_multiplier"),
+            hard_gate_mode=getattr(args, f"{prefix}_dpga_hard_gate_mode"),
+            shallow_scale_multiplier=getattr(args, f"{prefix}_dpga_shallow_scale_multiplier"),
+            bottleneck_scale_multiplier=getattr(args, f"{prefix}_dpga_bottleneck_scale_multiplier"),
+            skip_scale_multiplier=getattr(args, f"{prefix}_dpga_skip_scale_multiplier"),
         )
     if arch == "apdr":
         return build_apdr_net(
@@ -73,6 +78,21 @@ def load_model_state(path, device):
     return state
 
 
+def load_candidate_state(model, checkpoint, device, arch):
+    state = load_model_state(checkpoint, device)
+    if arch != "dpga":
+        model.load_state_dict(state)
+        return
+    result = model.load_state_dict(state, strict=False)
+    missing = [key for key in result.missing_keys if not key.startswith("DPGA_hard_gate.")]
+    unexpected = list(result.unexpected_keys)
+    if missing or unexpected:
+        raise RuntimeError(
+            f"Unexpected DPGA checkpoint load result: missing={result.missing_keys}, "
+            f"unexpected={result.unexpected_keys}"
+        )
+
+
 def dpga_depth_cache_dir(args, prefix, arch):
     if arch != "dpga":
         return ""
@@ -95,7 +115,7 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
         torch.cuda.reset_peak_memory_stats()
 
     model = build_model(arch, mode, args, prefix).to(device)
-    model.load_state_dict(load_model_state(checkpoint, device))
+    load_candidate_state(model, checkpoint, device, arch)
     model.eval()
 
     depth_split = args.dpga_eval_depth_split
@@ -231,6 +251,8 @@ def main():
     parser.add_argument("--candidate_dpga_adapter_scale_init", type=float, default=0.0)
     parser.add_argument("--original_dpga_adapter_bootstrap_scale", type=float, default=0.01)
     parser.add_argument("--candidate_dpga_adapter_bootstrap_scale", type=float, default=0.01)
+    parser.add_argument("--original_dpga_hard_gate_init_bias", type=float, default=-3.0)
+    parser.add_argument("--candidate_dpga_hard_gate_init_bias", type=float, default=-3.0)
     parser.add_argument("--original_dpga_dark_patch", type=int, default=15)
     parser.add_argument("--candidate_dpga_dark_patch", type=int, default=15)
     parser.add_argument("--original_dpga_local_patch", type=int, default=31)
@@ -239,6 +261,14 @@ def main():
     parser.add_argument("--candidate_dpga_active_adapters", default="all")
     parser.add_argument("--original_dpga_scale_multiplier", type=float, default=1.0)
     parser.add_argument("--candidate_dpga_scale_multiplier", type=float, default=1.0)
+    parser.add_argument("--original_dpga_hard_gate_mode", default="off", choices=["off", "bottleneck"])
+    parser.add_argument("--candidate_dpga_hard_gate_mode", default="off", choices=["off", "bottleneck"])
+    parser.add_argument("--original_dpga_shallow_scale_multiplier", type=float, default=1.0)
+    parser.add_argument("--candidate_dpga_shallow_scale_multiplier", type=float, default=1.0)
+    parser.add_argument("--original_dpga_bottleneck_scale_multiplier", type=float, default=1.0)
+    parser.add_argument("--candidate_dpga_bottleneck_scale_multiplier", type=float, default=1.0)
+    parser.add_argument("--original_dpga_skip_scale_multiplier", type=float, default=1.0)
+    parser.add_argument("--candidate_dpga_skip_scale_multiplier", type=float, default=1.0)
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
     args = parser.parse_args()

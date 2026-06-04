@@ -25,10 +25,15 @@ def build_model(args):
             adapter_residual_scale=args.dpga_adapter_residual_scale,
             adapter_scale_init=args.dpga_adapter_scale_init,
             adapter_bootstrap_scale=args.dpga_adapter_bootstrap_scale,
+            hard_gate_init_bias=args.dpga_hard_gate_init_bias,
             dark_patch=args.dpga_dark_patch,
             local_patch=args.dpga_local_patch,
             active_adapters=args.dpga_active_adapters,
             scale_multiplier=args.dpga_scale_multiplier,
+            hard_gate_mode=args.dpga_hard_gate_mode,
+            shallow_scale_multiplier=args.dpga_shallow_scale_multiplier,
+            bottleneck_scale_multiplier=args.dpga_bottleneck_scale_multiplier,
+            skip_scale_multiplier=args.dpga_skip_scale_multiplier,
         )
     if args.fam_mode != 'original':
         raise ValueError('--fam_mode must stay original when --arch apdr is used.')
@@ -205,10 +210,15 @@ if __name__ == '__main__':
     parser.add_argument('--dpga_adapter_residual_scale', default=0.1, type=float)
     parser.add_argument('--dpga_adapter_scale_init', default=0.0, type=float)
     parser.add_argument('--dpga_adapter_bootstrap_scale', default=0.01, type=float)
+    parser.add_argument('--dpga_hard_gate_init_bias', default=-3.0, type=float)
     parser.add_argument('--dpga_dark_patch', default=15, type=int)
     parser.add_argument('--dpga_local_patch', default=31, type=int)
     parser.add_argument('--dpga_active_adapters', default='all', type=str)
     parser.add_argument('--dpga_scale_multiplier', default=1.0, type=float)
+    parser.add_argument('--dpga_hard_gate_mode', default='off', choices=['off', 'bottleneck'], type=str)
+    parser.add_argument('--dpga_shallow_scale_multiplier', default=1.0, type=float)
+    parser.add_argument('--dpga_bottleneck_scale_multiplier', default=1.0, type=float)
+    parser.add_argument('--dpga_skip_scale_multiplier', default=1.0, type=float)
     parser.add_argument(
         '--dpga_tc_rec_loss',
         default='l1',
@@ -221,13 +231,33 @@ if __name__ == '__main__':
     parser.add_argument('--dpga_tc_delta_lambda', default=0.0, type=float)
     parser.add_argument('--dpga_tc_delta_tv_lambda', default=0.0, type=float)
     parser.add_argument('--dpga_tc_anchor_error_threshold', default=0.035, type=float)
+    parser.add_argument(
+        '--dpga_tc_mask_mode',
+        default='legacy',
+        choices=['legacy', 'hard_selective'],
+        type=str,
+    )
+    parser.add_argument('--dpga_hard_region_lambda', default=0.0, type=float)
+    parser.add_argument('--dpga_hard_sample_lambda', default=0.0, type=float)
+    parser.add_argument('--dpga_hard_region_error_threshold', default=0.035, type=float)
+    parser.add_argument('--dpga_require_hard_labels', default=0, choices=[0, 1], type=int)
+    parser.add_argument('--dpga_hard_gate_lambda', default=0.0, type=float)
+    parser.add_argument('--dpga_hard_gate_hard_target', default=1.0, type=float)
+    parser.add_argument('--dpga_hard_gate_medium_target', default=0.35, type=float)
+    parser.add_argument('--dpga_hard_gate_easy_target', default=0.0, type=float)
+    parser.add_argument('--dpga_hard_sampler_json', default='', type=str)
+    parser.add_argument('--dpga_hard_sampler_split_name', default='', type=str)
+    parser.add_argument('--dpga_hard_sampler_seed', default=3407, type=int)
+    parser.add_argument('--dpga_hard_sampler_hard_ratio', default=1.0 / 3.0, type=float)
+    parser.add_argument('--dpga_hard_sampler_medium_ratio', default=1.0 / 3.0, type=float)
+    parser.add_argument('--dpga_hard_sampler_batches_per_epoch', default=0, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
     parser.add_argument('--data_dir', type=str, default='')
 
     # Train for its
     parser.add_argument('--batch_size', type=int, default=4)
-    parser.add_argument('--learning_rate', type=float, default=1e-4)
+    parser.add_argument('--leaning_rate', type=float, default=1e-4)
     parser.add_argument('--weight_decay', type=float, default=0)
     parser.add_argument('--grad_clip_norm', type=float, default=0.001)
     parser.add_argument('--num_epoch', type=int, default=300)
@@ -246,7 +276,7 @@ if __name__ == '__main__':
 
     # Train for real-haze
     # parser.add_argument('--batch_size', type=int, default=2)
-    # parser.add_argument('--learning_rate', type=float, default=2e-4)
+    # parser.add_argument('--leaning_rate', type=float, default=2e-4)
     # parser.add_argument('--weight_decay', type=float, default=0)
     # parser.add_argument('--num_epoch', type=int, default=5000)
     # parser.add_argument('--print_freq', type=int, default=20)
@@ -256,7 +286,7 @@ if __name__ == '__main__':
 
     # Train for Haze4k
     # parser.add_argument('--batch_size', type=int, default=8)
-    # parser.add_argument('--learning_rate', type=float, default=4e-4)
+    # parser.add_argument('--leaning_rate', type=float, default=4e-4)
     # parser.add_argument('--weight_decay', type=float, default=0)
     # parser.add_argument('--num_epoch', type=int, default=1000)
     # parser.add_argument('--print_freq', type=int, default=100)

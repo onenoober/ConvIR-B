@@ -115,7 +115,29 @@ def _chroma(x):
     return x - _luma(x)
 
 
-def _tail_anchor_mask(input_img, anchor_img, label_img, args):
+def _weighted_l1_loss(pred, target, weight=None):
+    loss = (pred - target).abs()
+    if weight is None:
+        return loss.mean()
+    if weight.shape[1] == 1 and pred.shape[1] != 1:
+        weight = weight.expand(-1, pred.shape[1], -1, -1)
+    denom = weight.sum().clamp_min(1.0)
+    return (loss * weight).sum() / denom
+
+
+def _image_bucket_masks(bucket_label, like_tensor):
+    if bucket_label is None:
+        shape = (like_tensor.shape[0], 1, 1, 1)
+        zeros = torch.zeros(shape, device=like_tensor.device, dtype=torch.bool)
+        return zeros, zeros, zeros
+    bucket = bucket_label.to(device=like_tensor.device).view(-1, 1, 1, 1)
+    hard = bucket <= 0
+    medium = bucket == 1
+    easy = bucket >= 2
+    return hard, medium, easy
+
+
+def _tail_anchor_mask(input_img, anchor_img, label_img, args, bucket_label=None):
     gray = _luma(input_img.detach())
     grad = _gradient_magnitude_1ch(gray)
     max_rgb = input_img.detach().max(dim=1, keepdim=True).values
@@ -127,12 +149,29 @@ def _tail_anchor_mask(input_img, anchor_img, label_img, args):
     bright_low_gradient = (gray >= 0.62) & (grad <= 0.035)
     low_saturation_bright = (gray >= 0.58) & (saturation <= 0.12)
     sky_bright_proxy = (gray >= 0.66) & (grad <= 0.05) & (saturation <= 0.20)
-    mask = high_anchor | bright_low_gradient | low_saturation_bright | sky_bright_proxy
+    if getattr(args, "dpga_tc_mask_mode", "legacy") == "legacy":
+        mask = high_anchor | bright_low_gradient | low_saturation_bright | sky_bright_proxy
+    else:
+        hard_image, medium_image, easy_image = _image_bucket_masks(bucket_label, input_img)
+        if bucket_label is None and getattr(args, "dpga_require_hard_labels", 0):
+            raise ValueError("--dpga_tc_mask_mode hard_selective requires hard bucket labels")
+        mask = (
+            bright_low_gradient
+            | low_saturation_bright
+            | sky_bright_proxy
+            | (easy_image & high_anchor)
+        )
     mask = mask.to(dtype=input_img.dtype)
+    hard_image, medium_image, easy_image = _image_bucket_masks(bucket_label, input_img)
     stats = {
         "mask_ratio": mask.mean().detach(),
         "high_anchor_ratio": high_anchor.to(dtype=input_img.dtype).mean().detach(),
+        "bright_low_gradient_ratio": bright_low_gradient.to(dtype=input_img.dtype).mean().detach(),
+        "low_saturation_bright_ratio": low_saturation_bright.to(dtype=input_img.dtype).mean().detach(),
         "sky_ratio": sky_bright_proxy.to(dtype=input_img.dtype).mean().detach(),
+        "hard_image_ratio": hard_image.to(dtype=input_img.dtype).mean().detach(),
+        "medium_image_ratio": medium_image.to(dtype=input_img.dtype).mean().detach(),
+        "easy_image_ratio": easy_image.to(dtype=input_img.dtype).mean().detach(),
     }
     return mask, stats
 
@@ -143,10 +182,10 @@ def _total_variation_loss(delta):
     return grad_x + grad_y
 
 
-def _reconstruction_loss(pred, target, args):
+def _reconstruction_loss(pred, target, args, weight=None):
     if getattr(args, "arch", "convir") == "dpga" and args.dpga_tc_rec_loss == "charbonnier":
-        return _charbonnier_loss(pred, target)
-    return F.l1_loss(pred, target)
+        return _charbonnier_loss(pred, target, mask=weight)
+    return _weighted_l1_loss(pred, target, weight=weight)
 
 
 def _dpga_tail_control_enabled(args):
@@ -161,11 +200,25 @@ def _dpga_tail_control_enabled(args):
     )
 
 
+def _dpga_needs_anchor(args):
+    return (
+        getattr(args, "arch", "convir") == "dpga"
+        and (
+            _dpga_tail_control_enabled(args)
+            or getattr(args, "dpga_hard_region_lambda", 0.0) > 0
+        )
+    )
+
+
 def _dpga_anchor_forward(model, input_img, depth):
     if not hasattr(model, "set_dpga_runtime_config"):
         raise RuntimeError("DPGA tail-control anchor requires set_dpga_runtime_config().")
     active_adapters = set(getattr(model, "dpga_active_adapters", set()))
     scale_multiplier = float(getattr(model, "dpga_scale_multiplier", 1.0))
+    hard_gate_mode = getattr(model, "dpga_hard_gate_mode", "off")
+    adapter_scale_multipliers = dict(getattr(model, "dpga_adapter_scale_multipliers", {}))
+    last_hard_gate = getattr(model, "_last_hard_gate", None)
+    last_hard_gate_logits = getattr(model, "_last_hard_gate_logits", None)
     last_stats = {}
     for name, module in model.named_modules():
         if hasattr(module, "_last_stats"):
@@ -178,19 +231,85 @@ def _dpga_anchor_forward(model, input_img, depth):
         model.set_dpga_runtime_config(
             active_adapters=active_adapters,
             scale_multiplier=scale_multiplier,
+            hard_gate_mode=hard_gate_mode,
+            shallow_scale_multiplier=adapter_scale_multipliers.get("shallow", 1.0),
+            bottleneck_scale_multiplier=adapter_scale_multipliers.get("bottleneck", 1.0),
+            skip_scale_multiplier=adapter_scale_multipliers.get("skip", 1.0),
         )
+        model._last_hard_gate = last_hard_gate
+        model._last_hard_gate_logits = last_hard_gate_logits
         for name, module in model.named_modules():
             if name in last_stats:
                 module._last_stats = last_stats[name]
     return anchor
 
 
-def _dpga_tail_control_regularization(model, input_img, label_img, depth, pred_full, args):
-    if not _dpga_tail_control_enabled(args):
-        return {}, None
+def _dpga_hard_region_weight(anchor, label_img, bucket_label, args):
+    hard_sample_lambda = float(getattr(args, "dpga_hard_sample_lambda", 0.0))
+    hard_region_lambda = float(getattr(args, "dpga_hard_region_lambda", 0.0))
+    if hard_sample_lambda <= 0 and hard_region_lambda <= 0:
+        return None, {}
+    hard_image, _medium_image, _easy_image = _image_bucket_masks(bucket_label, label_img)
+    if bucket_label is None and getattr(args, "dpga_require_hard_labels", 0):
+        raise ValueError("DPGA hard reconstruction weighting requires hard bucket labels")
+    anchor_error = (anchor.detach() - label_img.detach()).abs().mean(dim=1, keepdim=True)
+    move = torch.relu(anchor_error - float(args.dpga_hard_region_error_threshold))
+    norm = move.amax(dim=(2, 3), keepdim=True).clamp_min(1e-6)
+    move = (move / norm).clamp(0, 1)
+    hard_image = hard_image.to(dtype=label_img.dtype)
+    weight = 1.0 + hard_sample_lambda * hard_image + hard_region_lambda * hard_image * move
+    stats = {
+        "hard_region_weight_mean": weight.mean().detach(),
+        "hard_region_weight_max": weight.max().detach(),
+        "hard_sample_weight_mean": (1.0 + hard_sample_lambda * hard_image).mean().detach(),
+        "hard_region_move_ratio": (move > 0).to(dtype=label_img.dtype).mean().detach(),
+    }
+    return weight, stats
+
+
+def _dpga_hard_gate_supervision(model, bucket_label, like_tensor, args):
+    gate_lambda = float(getattr(args, "dpga_hard_gate_lambda", 0.0))
+    if gate_lambda <= 0:
+        return {}
+    logits = getattr(model, "_last_hard_gate_logits", None)
+    gate = getattr(model, "_last_hard_gate", None)
+    if logits is None or gate is None:
+        return {}
+    if bucket_label is None:
+        if getattr(args, "dpga_require_hard_labels", 0):
+            raise ValueError("DPGA hard gate supervision requires hard bucket labels")
+        return {}
+    hard_image, medium_image, easy_image = _image_bucket_masks(bucket_label, like_tensor)
+    target = (
+        hard_image.to(dtype=logits.dtype) * float(args.dpga_hard_gate_hard_target)
+        + medium_image.to(dtype=logits.dtype) * float(args.dpga_hard_gate_medium_target)
+        + easy_image.to(dtype=logits.dtype) * float(args.dpga_hard_gate_easy_target)
+    )
+    if tuple(target.shape[-2:]) != tuple(logits.shape[-2:]):
+        target = F.interpolate(target, size=logits.shape[-2:], mode="nearest")
+    loss = F.binary_cross_entropy_with_logits(logits, target.expand_as(logits))
+    stats = {
+        "dpga_hard_gate_bce": loss,
+        "dpga_hard_gate_mean": gate.detach().mean(),
+        "dpga_hard_gate_target": target.detach().mean(),
+        "dpga_hard_gate_hard_ratio": hard_image.to(dtype=like_tensor.dtype).mean().detach(),
+        "dpga_hard_gate_easy_ratio": easy_image.to(dtype=like_tensor.dtype).mean().detach(),
+    }
+    return stats
+
+
+def _dpga_tail_control_regularization(model, input_img, label_img, depth, pred_full, args, bucket_label=None):
+    if not _dpga_needs_anchor(args):
+        return {}, None, None
 
     anchor = _dpga_anchor_forward(model, input_img, depth)
-    mask, mask_stats = _tail_anchor_mask(input_img, anchor, label_img, args)
+    mask, mask_stats = _tail_anchor_mask(input_img, anchor, label_img, args, bucket_label=bucket_label)
+    rec_weight, weight_stats = _dpga_hard_region_weight(anchor, label_img, bucket_label, args)
+    if not _dpga_tail_control_enabled(args):
+        reg = {}
+        reg.update(mask_stats)
+        reg.update(weight_stats)
+        return reg, anchor, rec_weight
     delta = pred_full - anchor
     zero_delta = torch.zeros_like(delta)
     reg = {
@@ -200,7 +319,8 @@ def _dpga_tail_control_regularization(model, input_img, label_img, depth, pred_f
         "dpga_tc_delta_tv": _total_variation_loss(delta),
     }
     reg.update(mask_stats)
-    return reg, anchor
+    reg.update(weight_stats)
+    return reg, anchor, rec_weight
 
 
 def _log_apdr_stats(model, args, epoch_idx, device):
@@ -342,9 +462,12 @@ def _split_batch(batch_data, device, args):
         input_img = batch_data[0].to(device)
         label_img = batch_data[1].to(device)
         depth = batch_data[2].to(device)
-        return input_img, label_img, depth
+        bucket_label = None
+        if len(batch_data) >= 4 and torch.is_tensor(batch_data[3]):
+            bucket_label = batch_data[3].to(device)
+        return input_img, label_img, depth, bucket_label
     input_img, label_img = batch_data[:2]
-    return input_img.to(device), label_img.to(device), None
+    return input_img.to(device), label_img.to(device), None, None
 
 
 def _model_forward(model, input_img, depth, args):
@@ -361,10 +484,24 @@ def _log_dpga_stats(model, args, epoch_idx):
     stats = model.collect_dpga_stats()
     detail = []
     for name in sorted(stats):
-        detail.append(
-            "%s_scale=%.8f %s_eff=%.8f"
-            % (name, stats[name]["scale"], name, stats[name]["effective_scale"])
-        )
+        item = stats[name]
+        if "scale" in item and "effective_scale" in item:
+            detail.append(
+                "%s_scale=%.8f %s_eff=%.8f"
+                % (name, item["scale"], name, item["effective_scale"])
+            )
+        elif name == "DPGA_hard_gate":
+            detail.append(
+                "%s_mean=%.8f %s_min=%.8f %s_max=%.8f"
+                % (
+                    name,
+                    item.get("gate_mean", 0.0),
+                    name,
+                    item.get("gate_min", 0.0),
+                    name,
+                    item.get("gate_max", 0.0),
+                )
+            )
     print(f"DPGA_STATS Epoch: {epoch_idx:03d} " + " ".join(detail))
 
 
@@ -383,7 +520,7 @@ def _train(model, args):
     _set_training_mode(model, args)
     optimizer = torch.optim.Adam(
         trainable_params,
-        lr=args.learning_rate,
+        lr=args.leaning_rate,
         betas=(0.9, 0.999),
         eps=1e-8,
         weight_decay=args.weight_decay,
@@ -397,6 +534,12 @@ def _train(model, args):
         depth_split=getattr(args, "dpga_train_depth_split", "train"),
         split_json=getattr(args, "dpga_train_split_json", ""),
         split_name=getattr(args, "dpga_train_split_name", ""),
+        hard_sampler_json=getattr(args, "dpga_hard_sampler_json", ""),
+        hard_sampler_split_name=getattr(args, "dpga_hard_sampler_split_name", ""),
+        hard_sampler_seed=getattr(args, "dpga_hard_sampler_seed", 3407),
+        hard_sampler_hard_ratio=getattr(args, "dpga_hard_sampler_hard_ratio", 1.0 / 3.0),
+        hard_sampler_medium_ratio=getattr(args, "dpga_hard_sampler_medium_ratio", 1.0 / 3.0),
+        hard_sampler_batches_per_epoch=getattr(args, "dpga_hard_sampler_batches_per_epoch", 0),
     )
     max_iter = len(dataloader)
     warmup_epochs=3
@@ -432,7 +575,7 @@ def _train(model, args):
         iter_timer.tic()
         for iter_idx, batch_data in enumerate(dataloader):
 
-            input_img, label_img, depth = _split_batch(batch_data, device, args)
+            input_img, label_img, depth, bucket_label = _split_batch(batch_data, device, args)
 
             optimizer.zero_grad()
             pred_img = _model_forward(model, input_img, depth, args)
@@ -452,7 +595,41 @@ def _train(model, args):
                 ]
                 apdr_targets = [label_img4, label_img2, label_img]
 
-            loss_content = sum(_reconstruction_loss(pred, target, args) for pred, target in scale_pairs)
+            dpga_tc_reg = {}
+            dpga_rec_weight = None
+            if getattr(args, "arch", "convir") == "dpga":
+                dpga_tc_reg, _anchor, dpga_rec_weight = _dpga_tail_control_regularization(
+                    model,
+                    input_img,
+                    label_img,
+                    depth,
+                    pred_img[2],
+                    args,
+                    bucket_label=bucket_label,
+                )
+                dpga_gate_reg = _dpga_hard_gate_supervision(
+                    model,
+                    bucket_label,
+                    label_img,
+                    args,
+                )
+                dpga_tc_reg.update(dpga_gate_reg)
+
+            weighted_scale_pairs = []
+            for pred, target in scale_pairs:
+                weight = None
+                if dpga_rec_weight is not None:
+                    weight = F.interpolate(
+                        dpga_rec_weight,
+                        size=target.shape[-2:],
+                        mode="bilinear",
+                        align_corners=False,
+                    )
+                weighted_scale_pairs.append((pred, target, weight))
+            loss_content = sum(
+                _reconstruction_loss(pred, target, args, weight=weight)
+                for pred, target, weight in weighted_scale_pairs
+            )
             loss_fft_terms = []
             for pred, target in scale_pairs:
                 label_fft = torch.fft.fft2(target, dim=(-2,-1))
@@ -468,17 +645,8 @@ def _train(model, args):
             if hasattr(model, 'apdr_regularization'):
                 apdr_reg = model.apdr_regularization()
             apdr_train_reg = {}
-            dpga_tc_reg = {}
             if getattr(args, "arch", "convir") == "dpga":
-                dpga_tc_reg, _anchor = _dpga_tail_control_regularization(
-                    model,
-                    input_img,
-                    label_img,
-                    depth,
-                    pred_img[2],
-                    args,
-                )
-                if dpga_tc_reg:
+                if _dpga_tail_control_enabled(args) and dpga_tc_reg:
                     loss = (
                         loss
                         + args.dpga_tc_anchor_lambda * dpga_tc_reg["dpga_tc_anchor"]
@@ -486,6 +654,8 @@ def _train(model, args):
                         + args.dpga_tc_delta_lambda * dpga_tc_reg["dpga_tc_delta"]
                         + args.dpga_tc_delta_tv_lambda * dpga_tc_reg["dpga_tc_delta_tv"]
                     )
+                if "dpga_hard_gate_bce" in dpga_tc_reg:
+                    loss = loss + args.dpga_hard_gate_lambda * dpga_tc_reg["dpga_hard_gate_bce"]
             if hasattr(model, 'apdr_training_regularization') and getattr(args, "arch", "convir") == "apdr":
                 apdr_train_reg = model.apdr_training_regularization(
                     apdr_targets,
@@ -527,17 +697,26 @@ def _train(model, args):
                     )
                 dpga_tc_detail = ""
                 if dpga_tc_reg:
+                    zero = torch.zeros((), device=device)
                     dpga_tc_detail = (
                         " DPGA_TC anchor: %.8f chroma: %.8f delta: %.8f "
-                        "delta_tv: %.8f mask: %.8f high_anchor: %.8f sky: %.8f"
+                        "delta_tv: %.8f mask: %.8f high_anchor: %.8f sky: %.8f "
+                        "hard_img: %.8f easy_img: %.8f hard_weight: %.8f hard_weight_max: %.8f "
+                        "hard_gate: %.8f hard_gate_bce: %.8f"
                     ) % (
-                        dpga_tc_reg["dpga_tc_anchor"].detach().item(),
-                        dpga_tc_reg["dpga_tc_chroma"].detach().item(),
-                        dpga_tc_reg["dpga_tc_delta"].detach().item(),
-                        dpga_tc_reg["dpga_tc_delta_tv"].detach().item(),
+                        dpga_tc_reg.get("dpga_tc_anchor", zero).detach().item(),
+                        dpga_tc_reg.get("dpga_tc_chroma", zero).detach().item(),
+                        dpga_tc_reg.get("dpga_tc_delta", zero).detach().item(),
+                        dpga_tc_reg.get("dpga_tc_delta_tv", zero).detach().item(),
                         dpga_tc_reg["mask_ratio"].detach().item(),
                         dpga_tc_reg["high_anchor_ratio"].detach().item(),
                         dpga_tc_reg["sky_ratio"].detach().item(),
+                        dpga_tc_reg["hard_image_ratio"].detach().item(),
+                        dpga_tc_reg["easy_image_ratio"].detach().item(),
+                        dpga_tc_reg.get("hard_region_weight_mean", zero).detach().item(),
+                        dpga_tc_reg.get("hard_region_weight_max", zero).detach().item(),
+                        dpga_tc_reg.get("dpga_hard_gate_mean", zero).detach().item(),
+                        dpga_tc_reg.get("dpga_hard_gate_bce", zero).detach().item(),
                     )
                 print(("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f "
                        "Loss content: %7.4f Loss fft: %7.4f%s%s") % (

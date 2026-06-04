@@ -41,6 +41,17 @@ def load_model_state(path, device):
     return state
 
 
+def load_dpga_state(model, state):
+    result = model.load_state_dict(state, strict=False)
+    missing = [key for key in result.missing_keys if not key.startswith("DPGA_hard_gate.")]
+    unexpected = list(result.unexpected_keys)
+    if missing or unexpected:
+        raise RuntimeError(
+            f"Unexpected DPGA checkpoint load result: missing={result.missing_keys}, "
+            f"unexpected={result.unexpected_keys}"
+        )
+
+
 def psnr_from_mse(mse):
     return 10.0 * torch.log10(torch.tensor(1.0, device=mse.device, dtype=mse.dtype) / mse)
 
@@ -111,10 +122,15 @@ def build_models(args, device):
             adapter_residual_scale=args.dpga_adapter_residual_scale,
             adapter_scale_init=args.dpga_adapter_scale_init,
             adapter_bootstrap_scale=args.dpga_adapter_bootstrap_scale,
+            hard_gate_init_bias=args.dpga_hard_gate_init_bias,
             dark_patch=args.dpga_dark_patch,
             local_patch=args.dpga_local_patch,
             active_adapters=active_adapters,
             scale_multiplier=scale_multiplier,
+            hard_gate_mode=args.dpga_hard_gate_mode,
+            shallow_scale_multiplier=args.dpga_shallow_scale_multiplier,
+            bottleneck_scale_multiplier=args.dpga_bottleneck_scale_multiplier,
+            skip_scale_multiplier=args.dpga_skip_scale_multiplier,
         ).to(device)
         model.eval()
         return model
@@ -368,8 +384,19 @@ def main():
     parser.add_argument("--dpga_adapter_residual_scale", type=float, default=0.1)
     parser.add_argument("--dpga_adapter_scale_init", type=float, default=0.0)
     parser.add_argument("--dpga_adapter_bootstrap_scale", type=float, default=0.01)
+    parser.add_argument("--dpga_hard_gate_init_bias", type=float, default=-3.0)
     parser.add_argument("--dpga_dark_patch", type=int, default=15)
     parser.add_argument("--dpga_local_patch", type=int, default=31)
+    parser.add_argument("--dpga_hard_gate_mode", default="off", choices=["off", "bottleneck"])
+    parser.add_argument("--dpga_shallow_scale_multiplier", type=float, default=1.0)
+    parser.add_argument("--dpga_bottleneck_scale_multiplier", type=float, default=1.0)
+    parser.add_argument("--dpga_skip_scale_multiplier", type=float, default=1.0)
+    parser.add_argument(
+        "--dpga_module_scale_multiplier",
+        type=float,
+        default=1.0,
+        help="Runtime scale used by module-ablation rows. Keep scale-sweep values independent.",
+    )
     parser.add_argument("--run_module_ablation", action="store_true")
     parser.add_argument("--run_scale_sweep", action="store_true")
     args = parser.parse_args()
@@ -395,13 +422,13 @@ def main():
     )
 
     module_specs = [
-        ("all_adapters", "all", 1.0),
-        ("no_shallow", "bottleneck,skip", 1.0),
-        ("no_bottleneck", "shallow,skip", 1.0),
-        ("no_skip", "shallow,bottleneck", 1.0),
-        ("shallow_only", "shallow", 1.0),
-        ("bottleneck_only", "bottleneck", 1.0),
-        ("skip_only", "skip", 1.0),
+        ("all_adapters", "all", args.dpga_module_scale_multiplier),
+        ("no_shallow", "bottleneck,skip", args.dpga_module_scale_multiplier),
+        ("no_bottleneck", "shallow,skip", args.dpga_module_scale_multiplier),
+        ("no_skip", "shallow,bottleneck", args.dpga_module_scale_multiplier),
+        ("shallow_only", "shallow", args.dpga_module_scale_multiplier),
+        ("bottleneck_only", "bottleneck", args.dpga_module_scale_multiplier),
+        ("skip_only", "skip", args.dpga_module_scale_multiplier),
     ]
     scale_specs = [(f"scale_{value:g}", "all", value) for value in (0.0, 0.25, 0.5, 0.75, 1.0)]
 
@@ -421,7 +448,7 @@ def main():
                 label = f"{checkpoint_label}_{variant}"
                 print(f"eval {group} {label}", flush=True)
                 candidate = make_candidate(active_adapters, scale_multiplier)
-                candidate.load_state_dict(state)
+                load_dpga_state(candidate, state)
                 candidate.eval()
                 candidate_rows, candidate_summary = eval_model(
                     label,
