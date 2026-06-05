@@ -1,0 +1,66 @@
+{
+  "a0_checkpoint_path": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+  "a0_checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+  "decision": "LOCKED_TEST_FAIL_NO_FURTHER_SELECTION",
+  "depth_cache_dir": "/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf",
+  "depth_split": "test",
+  "fixed_policy": {
+    "direction": "low",
+    "expert_bank": "A0 fallback + official UDPNet ConvIR",
+    "fallback": "A0",
+    "feature": "udp_a0_luma_shift_mean",
+    "threshold": -0.003969017509371043
+  },
+  "gate": {
+    "checks": {
+      "easy_top25_ge_neg_0_03": false,
+      "hard_bottom25_ge_0_30": false,
+      "mean_delta_ge_0_15": false,
+      "ssim_nonnegative": true,
+      "strong_ratio_le_0_16": true,
+      "worst_ratio_le_0_05": false
+    },
+    "promotion_gate_pass": false,
+    "thresholds": {
+      "easy_top25_min": -0.03,
+      "hard_bottom25_min": 0.3,
+      "mean_delta_min": 0.15,
+      "mean_ssim_delta_min": 0.0,
+      "strong_regression_ratio_max": 0.16,
+      "worst_regression_ratio_max": 0.05
+    }
+  },
+  "locked_test_touched": true,
+  "official_checkpoint_meta": {
+    "epoch": 1265,
+    "global_step": 272190,
+    "pytorch_lightning_version": "2.3.1",
+    "state_dict_key_count": 689
+  },
+  "official_checkpoint_path": "/root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt",
+  "official_checkpoint_sha256": "6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291",
+  "route": "ConvIR-Dehaze-v1.6-RCExpertSwitch",
+  "stage": "fixed one-shot locked Haze4K test confirmation",
+  "status": "LOCKED_TEST_COMPLETE",
+  "summary": {
+    "best10pct_delta": 2.136568241119385,
+    "count": 1000,
+    "coverage": 0.164,
+    "easy_top25_delta": -0.07118843078613281,
+    "hard_bottom25_delta": 0.15521824264526368,
+    "mean_delta": 0.09461247348785401,
+    "mean_ssim_delta": 0.00036072242259979246,
+    "median_delta": 0.0,
+    "p5_delta": -0.7584704399108886,
+    "p95_delta": 1.6197538375854468,
+    "positive_ratio": 0.095,
+    "strong_reference_cut_psnr": 39.07855987548828,
+    "strong_regression_count": 8,
+    "strong_regression_ratio": 0.032,
+    "udp_accept_count": 164,
+    "worst10pct_delta": -1.1904435062408447,
+    "worst_regression_count": 66,
+    "worst_regression_ratio": 0.066
+  }
+}

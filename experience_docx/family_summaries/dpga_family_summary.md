@@ -3,8 +3,8 @@
 Date: 2026-06-05
 
 Status: UDP-Lite/frozen small-adapter family is sufficiently diagnosed and low
-success; official FullUDP checkpoint eval gives hard gain but fails regular,
-easy, SSIM, and tail-safety gates.
+success. Official FullUDP remains useful as a hard-expert signal, but the first
+fixed v1.6 A0+UDP expert-switch policy failed locked-test promotion.
 
 ## Sources
 
@@ -23,6 +23,7 @@ easy, SSIM, and tail-safety gates.
   - `../experiment_logs/haze4k_udp_lite_v14_20260604/`
   - `../experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/`
   - `../experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/`
+  - `../experiment_logs/haze4k_rc_expert_switch_v16_20260605/`
 
 ## Established Facts
 
@@ -36,6 +37,7 @@ easy, SSIM, and tail-safety gates.
 | ConvIR-Dehaze-v1.4-UDP-Lite | v1.4A adapter-only completed and failed gate: Best `val_regular` mean `+0.028294 dB`, Best `val_hard` mean `+0.020340 dB`, hard bottom-25 `+0.022275 dB`, positive ratio `0.586667`, worst count `19`. Ablation shows `DPFM1-only` is safer/stronger (`val_hard` mean `+0.026774 dB`, worst `0`) while `DPFM2-only` is negative. | `FAIL_V14A_ADAPTER_ONLY_FULL_DPFM123`; locked test blocked. Do not micro-tune full DPFM123 scale/gate; only DPFM1-focused diagnostic or v1.4B fusion-neighbor partial unfreeze is evidence-supported. |
 | ConvIR-Dehaze-v1.4B-BiDPFM1 | `udp_bi`, `active_adapters=dpfm1`, `active_adapter_only` completed. Best `val_regular` mean `+0.028624 dB`, positive ratio `0.536667`, worst count `17`, strong ratio `0.28`; Best `val_hard` mean `+0.023429 dB`, hard bottom-25 `+0.020760 dB`, worst count `8`. | `FAIL_STOP_V14B_BIDPFM1_ADAPTER_ONLY`; locked test blocked; do not rerun BiDPFM1-only scale/gate tuning. |
 | ConvIR-Dehaze-v1.5-FullUDP Phase 0 | Official checkpoint sha256 `6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291` evaluated on `val_regular` and `val_hard`. `val_hard` is strong (`+0.4260 dB` mean, `+0.6212 dB` hard bottom-25), but `val_regular` fails (`-0.3020 dB` mean, easy top-25 `-0.7969 dB`), SSIM deltas are negative, strong regression ratios are `0.6133` regular and `0.44` hard, and worst counts are `148/300` regular plus `104/300` hard. | `PHASE0_REPRODUCTION_GATE_FAIL`; do not start transplant/distillation/locked test from this checkpoint protocol; keep only as hard-gain diagnostic evidence. |
+| ConvIR-Dehaze-v1.6-RCExpertSwitch | A0+UDP oracle passes strongly: mean `+0.7417 dB`, hard bottom-25 `+1.0038 dB`, easy top-25 `+0.5958 dB`, no strong/worst regressions. True 5-fold OOF threshold switch over `udp_switch_feature_table` passes internal gates: mean `+0.2353 dB`, hard bottom-25 `+0.5127 dB`, easy top-25 `+0.0557 dB`, SSIM `+0.000095`, coverage `0.195`, strong ratio `0.0667`, worst ratio `0.0467`. Fixed median policy `udp_a0_luma_shift_mean <= -0.003969017509371043` also passes internal gates. One-shot locked test is positive but fails promotion: mean `+0.0946 dB`, hard bottom-25 `+0.1552 dB`, easy top-25 `-0.0712 dB`, SSIM `+0.000361`, coverage `0.164`, worst ratio `0.066`. | `LOCKED_TEST_FAIL_NO_FURTHER_SELECTION`; UDPNet remains a hard expert, not a global replacement. Do not tune threshold/feature/expert set from locked-test results. |
 
 ## Family Verdict
 
@@ -80,6 +82,17 @@ ratios `0.6133`/`0.44`, and worst counts `148/300`/`104/300`. This is a
 scientific gate failure for using the official checkpoint as an immediate
 teacher or transplant authorization, not evidence that depth priors are useless.
 
+v1.6 changes the family conclusion from "FullUDP global replacement failed" to
+"official UDPNet is a hard expert candidate." The A0+UDP oracle proves the
+expert bank has a large upper bound, and the first true 5-fold OOF
+risk-calibrated switch clears the internal Utility and Promotion-style gates
+without using PSNR/SSIM delta columns as router features. The fixed policy was
+a safe post-router internally: run A0 and UDPNet, compute
+`udp_a0_luma_shift_mean`, choose UDPNet only when it is
+`<= -0.003969017509371043`, otherwise use A0. However, the one-shot locked
+Haze4K confirmation failed the written promotion gate, so the route remains
+diagnostic rather than deployable.
+
 ## Do Not Repeat Without New Evidence
 
 - Do not promote v1.0 from `Best.pkl` alone; exact stop20/final was borderline
@@ -101,14 +114,17 @@ teacher or transplant authorization, not evidence that depth priors are useless.
 - Do not start FullUDP transplant, teacher distillation, or locked Haze4K test
   from the current official ConvIR+UDP checkpoint/protocol; Phase 0 failed
   regular/easy/SSIM/tail safety despite hard gains.
+- Do not treat UDPNet-only as a global model after v1.6. The positive result is
+  the A0-fallback expert switch, not a full UDPNet replacement.
+- Do not change the v1.6 fixed switch threshold, feature, checkpoint, or expert
+  bank after seeing locked-test results; the locked confirmation failed and the
+  route is closed under this exact policy.
 
 ## Reopen Condition
 
-A DPGA follow-up must introduce a preservation-controlled hard-gain mechanism
-or diagnostic, not a plain scale increase. The highest-value reopen is a
-separate stronger-backbone audit or a full-UDP transplant design with explicit
-easy/strong/tail safeguards.
-Any transplant must select checkpoints/configuration on internal validation or
-OOF-style protocols, then pass hard bottom-25%, regular/easy safety,
-strong-reference regression, and worst-tail gates before any locked Haze4K
-test.
+A DPGA follow-up must preserve the v1.6 expert-switch reading: UDPNet is a hard
+expert behind an A0 fallback, not a replacement checkpoint. Because the fixed
+v1.6 threshold failed locked confirmation, any later route must introduce a new
+predeclared calibration source or stronger deployable router before touching
+locked test again. Any later transplant/distillation must be conditional on the
+router or teacher, not UDPNet-only.

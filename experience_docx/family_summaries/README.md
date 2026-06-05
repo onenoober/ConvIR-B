@@ -24,7 +24,7 @@ or logs; they summarize family-level conclusions and reopening conditions.
 | Hard-frequency and haze-prior losses | [summary](frequency_prior_family_summary.md) | Closed for the tested weighting/SCM forms. |
 | PFD/RHFD preservation | [summary](pfd_rhfd_family_summary.md) | Diagnostic only; preservation improved but hard-gain gates failed. |
 | APDR output residual/action-bank | [summary](apdr_family_summary.md) | Broad output-residual/coefficient-mapping forms stopped; safe-subset ideas require fixed-code OOF/held-out evidence. |
-| DPGA in-network prior adapters | [summary](dpga_family_summary.md) | Active diagnostic family, not promotion-ready. |
+| DPGA in-network prior adapters / UDP expert switch | [summary](dpga_family_summary.md) | UDPNet-only is not promotion-ready; v1.6 A0+UDP switch passed internal gates but failed one-shot locked-test promotion. |
 
 ## Evidence Strength Reminder
 

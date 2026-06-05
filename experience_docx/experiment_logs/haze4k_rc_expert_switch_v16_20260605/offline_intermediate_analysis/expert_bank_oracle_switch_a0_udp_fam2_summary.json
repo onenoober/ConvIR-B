@@ -1,0 +1,8 @@
+{
+  "fam2_overlap_count": 0,
+  "route_id": "haze4k_rc_expert_switch_v16_20260605",
+  "row_count": 600,
+  "stage": "optional A0 + UDPNet + FAM2-confidence oracle alignment",
+  "status": "completed_optional_overlap_oracle",
+  "warning": "FAM2-confidence evidence is from an older stop20 split/protocol. This CSV is an overlap diagnostic only, not a promotion gate."
+}

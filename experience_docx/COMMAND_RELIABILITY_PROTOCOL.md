@@ -185,6 +185,35 @@ printf 'REMOTE_SETUP_OK\n'
 REMOTE
 ```
 
+Do not combine `ssh -n` with a heredoc:
+
+```bash
+ssh -n dehaze1 'bash -s' <<'REMOTE'
+set -euo pipefail
+mkdir -p "$REMOTE_ROOT"
+REMOTE
+```
+
+Failure mode observed:
+
+- `-n` redirected SSH stdin from `/dev/null`;
+- the heredoc body was not delivered to remote `bash -s`;
+- the wrapper continued to later local commands, and a following tar stream
+  failed because the intended remote directory had never been created.
+
+Preferred form:
+
+```bash
+ssh dehaze1 'bash -s' <<'REMOTE'
+set -euo pipefail
+mkdir -p "$REMOTE_ROOT"
+printf 'REMOTE_SETUP_OK\n'
+REMOTE
+```
+
+Use `ssh -n` only for simple non-heredoc commands that must not read the
+wrapper stdin.
+
 ### Syncing CR-suffixed filenames from broken wrappers
 
 Avoid blindly staging files after a failed CRLF heredoc wrapper. Failure mode
