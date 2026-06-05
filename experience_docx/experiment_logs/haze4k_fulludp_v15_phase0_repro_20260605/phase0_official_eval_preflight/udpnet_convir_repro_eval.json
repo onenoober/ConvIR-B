@@ -1,0 +1,89 @@
+{
+  "a0_checkpoint_path": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+  "a0_checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+  "depth_cache_dir": "/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf",
+  "depth_split": "train",
+  "gate": {
+    "decision": "PHASE0_FAIL_DO_NOT_START_TRANSPLANT",
+    "reproduction_gate_pass": false,
+    "split_checks": {
+      "val_regular": {
+        "easy_top25_pass": false,
+        "easy_top25_psnr_delta": -2.1316452026367188,
+        "hard_bottom25_pass": true,
+        "hard_bottom25_psnr_delta": 1.1451644897460938,
+        "mean_psnr_delta": -0.4932403564453125,
+        "mean_psnr_delta_pass": false,
+        "mean_ssim_delta": 0.006555438041687012,
+        "mean_ssim_pass": true,
+        "split_pass": false,
+        "strong_regression_pass": false,
+        "strong_regression_ratio": 1.0,
+        "worst_regression_count": 1,
+        "worst_regression_pass": false
+      }
+    },
+    "thresholds": {
+      "easy_top25_psnr_delta_min": -0.03,
+      "hard_bottom25_psnr_delta_min": 0.2,
+      "mean_psnr_delta_min": 0.3,
+      "mean_ssim_delta_min": 0.0,
+      "strong_regression_ratio_max": 0.16,
+      "worst_regression_count_max_per_300": 12
+    }
+  },
+  "locked_test_allowed": false,
+  "locked_test_touched": false,
+  "metric": {
+    "psnr": "10*log10(1/MSE) on RGB tensors in [0,1]",
+    "ssim": "pytorch_msssim with adaptive average pooling matching existing ConvIR eval"
+  },
+  "next_step": "PHASE0_FAIL_DO_NOT_START_TRANSPLANT",
+  "official_checkpoint_meta": {
+    "epoch": 1265,
+    "global_step": 272190,
+    "pytorch_lightning_version": "2.3.1",
+    "state_dict_key_count": 689
+  },
+  "official_checkpoint_path": "/root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt",
+  "official_checkpoint_sha256": "6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291",
+  "pad_factor": 32,
+  "phase": "Phase 0 official UDPNet ConvIR reproduction eval",
+  "route": "ConvIR-Dehaze-v1.5-FullUDP",
+  "split_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-5-fulludp-runtime/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/internal_val/haze4k_dpga_v13_regular_hard_seed3407.json",
+  "splits": [
+    "val_regular"
+  ],
+  "state_label": "COMPLETED_GATE_FAIL",
+  "status": "PHASE0_REPRODUCTION_GATE_FAIL",
+  "summaries": {
+    "val_regular": {
+      "a0_avg_time_sec_sync": 0.2312469482421875,
+      "a0_mean_psnr": 39.036800384521484,
+      "a0_peak_cuda_mem_mib": 366.5556640625,
+      "best10pct_mean_psnr_delta": 1.1451644897460938,
+      "count": 2,
+      "easy_top25_psnr_delta": -2.1316452026367188,
+      "hard_bottom25_psnr_delta": 1.1451644897460938,
+      "mean_psnr_delta": -0.4932403564453125,
+      "mean_ssim_delta": 0.006555438041687012,
+      "median_psnr_delta": -0.4932403564453125,
+      "p5_psnr_delta": -1.9678047180175782,
+      "p95_psnr_delta": 0.981324005126953,
+      "positive_ratio": 0.5,
+      "strong_reference_count": 1,
+      "strong_reference_cut_psnr": 39.34170722961426,
+      "strong_regression_count_delta_le_-0.05": 1,
+      "strong_regression_ratio": 1.0,
+      "udpnet_avg_time_sec_sync": 0.10235142707824707,
+      "udpnet_mean_psnr": 38.54356002807617,
+      "udpnet_peak_cuda_mem_mib": 2030.2587890625,
+      "worst10pct_mean_psnr_delta": -2.1316452026367188,
+      "worst_regression_count_delta_le_-0.20": 1,
+      "worst_regression_ratio": 0.5
+    }
+  },
+  "udp_repo": "/root/autodl-tmp/workspace/UDPNet",
+  "udp_repo_head": "f925387e690ae6016ffbd4b1cfd8490d75d7a334"
+}

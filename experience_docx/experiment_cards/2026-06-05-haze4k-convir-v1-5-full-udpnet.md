@@ -2,8 +2,9 @@
 
 Date: 2026-06-05
 
-Status: Phase 0 official UDPNet ConvIR reproduction audit completed;
-checkpoint acquisition blocked; transplant/distillation not authorized.
+Status: Phase 0 official UDPNet ConvIR reproduction eval completed;
+reproduction gate failed; transplant, teacher distillation, and locked test are
+not authorized for this checkpoint/protocol.
 
 ## Scope
 
@@ -29,7 +30,7 @@ checkpoint acquisition blocked; transplant/distillation not authorized.
   `/root/autodl-tmp/workspace/UDPNet`, model file
   `Dehazing/ITS/models/ConvIR_UDPNet.py`.
 - Official candidate checkpoint target:
-  `/root/autodl-tmp/workspace/UDPNet_checkpoints/ConvIR_UDPNet_haze4k.ckpt`.
+  `/root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt`.
 - Required checkpoint source evidence: share URL, file name, size, sha256, and
   download/provenance status.
 - Evaluation output if checkpoint is available:
@@ -153,3 +154,49 @@ teacher residuals.
   official checkpoint is supplied or becomes downloadable with sha256; otherwise
   evaluate available stronger-backbone candidates under a separate controlled
   route.
+
+## Phase 0 Reopen
+
+- Reopen time: 2026-06-05.
+- Replacement `dehaze1` endpoint: `root@connect.bjb1.seetacloud.com:42371`
+  through the existing `~/.ssh/id_ed25519_seetacloud` key.
+- Official checkpoint path now available:
+  `/root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt`.
+- Official checkpoint sha256:
+  `6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291`.
+- Resume action: run the controlled `val_regular` and `val_hard` official
+  ConvIR+UDP reproduction eval before any transplant training or locked test.
+
+
+## Phase 0 Official Eval Result
+
+- Eval completed on replacement `dehaze1` at `2026-06-05T12:10:13+08:00`.
+- Runtime workspace:
+  `/root/autodl-tmp/workspace/ConvIR-B-v1-5-fulludp-runtime`.
+- Evidence directory:
+  `experience_docx/experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/phase0_official_eval/`.
+- Official checkpoint sha256:
+  `6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291`.
+- Locked Haze4K test touched: no.
+- Evaluated splits: train-derived `val_regular` and `val_hard`.
+
+Metrics versus A0:
+
+| Split | Mean delta | Hard bottom-25 | Easy top-25 | SSIM delta | Positive ratio | Strong regression ratio | Worst `<= -0.20 dB` |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `val_regular` | `-0.302019 dB` | `+0.535580 dB` | `-0.796853 dB` | `-0.000345` | `0.450000` | `0.613333` | `148/300` |
+| `val_hard` | `+0.426029 dB` | `+0.621163 dB` | `+0.267492 dB` | `-0.000276` | `0.610000` | `0.440000` | `104/300` |
+
+Decision label: `PHASE0_REPRODUCTION_GATE_FAIL`.
+
+Interpretation:
+
+- Official full UDPNet shows a much larger hard-sample movement than UDP-Lite.
+- It is not preservation-safe under this repository's internal protocol: regular
+  mean, easy top-25, SSIM, strong-reference regressions, and worst-tail counts
+  all fail.
+- Do not launch FullUDP controlled transplant, UDP-teacher distillation, or
+  locked Haze4K test from this checkpoint/protocol.
+- Use the result as diagnostic evidence that depth-guided full integration can
+  improve hard samples, but needs explicit preservation/tail controls before any
+  new training route.

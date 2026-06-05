@@ -1,0 +1,130 @@
+{
+  "a0_checkpoint_path": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+  "a0_checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+  "depth_cache_dir": "/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf",
+  "depth_split": "train",
+  "gate": {
+    "decision": "PHASE0_FAIL_DO_NOT_START_TRANSPLANT",
+    "reproduction_gate_pass": false,
+    "split_checks": {
+      "val_hard": {
+        "easy_top25_pass": true,
+        "easy_top25_psnr_delta": 0.2674918619791667,
+        "hard_bottom25_pass": true,
+        "hard_bottom25_psnr_delta": 0.6211632537841797,
+        "mean_psnr_delta": 0.42602890650431313,
+        "mean_psnr_delta_pass": true,
+        "mean_ssim_delta": -0.00027603129545847576,
+        "mean_ssim_pass": false,
+        "split_pass": false,
+        "strong_regression_pass": false,
+        "strong_regression_ratio": 0.44,
+        "worst_regression_count": 104,
+        "worst_regression_pass": false
+      },
+      "val_regular": {
+        "easy_top25_pass": false,
+        "easy_top25_psnr_delta": -0.7968525695800781,
+        "hard_bottom25_pass": true,
+        "hard_bottom25_psnr_delta": 0.5355801900227865,
+        "mean_psnr_delta": -0.30201897939046224,
+        "mean_psnr_delta_pass": false,
+        "mean_ssim_delta": -0.00034475664297739663,
+        "mean_ssim_pass": false,
+        "split_pass": false,
+        "strong_regression_pass": false,
+        "strong_regression_ratio": 0.6133333333333333,
+        "worst_regression_count": 148,
+        "worst_regression_pass": false
+      }
+    },
+    "thresholds": {
+      "easy_top25_psnr_delta_min": -0.03,
+      "hard_bottom25_psnr_delta_min": 0.2,
+      "mean_psnr_delta_min": 0.3,
+      "mean_ssim_delta_min": 0.0,
+      "strong_regression_ratio_max": 0.16,
+      "worst_regression_count_max_per_300": 12
+    }
+  },
+  "locked_test_allowed": false,
+  "locked_test_touched": false,
+  "metric": {
+    "psnr": "10*log10(1/MSE) on RGB tensors in [0,1]",
+    "ssim": "pytorch_msssim with adaptive average pooling matching existing ConvIR eval"
+  },
+  "next_step": "PHASE0_FAIL_DO_NOT_START_TRANSPLANT",
+  "official_checkpoint_meta": {
+    "epoch": 1265,
+    "global_step": 272190,
+    "pytorch_lightning_version": "2.3.1",
+    "state_dict_key_count": 689
+  },
+  "official_checkpoint_path": "/root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt",
+  "official_checkpoint_sha256": "6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291",
+  "pad_factor": 32,
+  "phase": "Phase 0 official UDPNet ConvIR reproduction eval",
+  "route": "ConvIR-Dehaze-v1.5-FullUDP",
+  "split_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-5-fulludp-runtime/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/internal_val/haze4k_dpga_v13_regular_hard_seed3407.json",
+  "splits": [
+    "val_regular",
+    "val_hard"
+  ],
+  "state_label": "COMPLETED_GATE_FAIL",
+  "status": "PHASE0_REPRODUCTION_GATE_FAIL",
+  "summaries": {
+    "val_hard": {
+      "a0_avg_time_sec_sync": 0.025255435307820637,
+      "a0_mean_psnr": 34.24652521133423,
+      "a0_peak_cuda_mem_mib": 586.8720703125,
+      "best10pct_mean_psnr_delta": 3.988550821940104,
+      "count": 300,
+      "easy_top25_psnr_delta": 0.2674918619791667,
+      "hard_bottom25_psnr_delta": 0.6211632537841797,
+      "mean_psnr_delta": 0.42602890650431313,
+      "mean_ssim_delta": -0.00027603129545847576,
+      "median_psnr_delta": 0.48072338104248047,
+      "p5_psnr_delta": -2.343693065643311,
+      "p95_psnr_delta": 3.5131200790405277,
+      "positive_ratio": 0.61,
+      "strong_reference_count": 75,
+      "strong_reference_cut_psnr": 36.437724113464355,
+      "strong_regression_count_delta_le_-0.05": 33,
+      "strong_regression_ratio": 0.44,
+      "udpnet_avg_time_sec_sync": 0.05430915911992391,
+      "udpnet_mean_psnr": 34.672554117838544,
+      "udpnet_peak_cuda_mem_mib": 3534.98291015625,
+      "worst10pct_mean_psnr_delta": -2.729880714416504,
+      "worst_regression_count_delta_le_-0.20": 104,
+      "worst_regression_ratio": 0.3466666666666667
+    },
+    "val_regular": {
+      "a0_avg_time_sec_sync": 0.029928762118021646,
+      "a0_mean_psnr": 39.46919339497884,
+      "a0_peak_cuda_mem_mib": 586.712890625,
+      "best10pct_mean_psnr_delta": 2.962070655822754,
+      "count": 300,
+      "easy_top25_psnr_delta": -0.7968525695800781,
+      "hard_bottom25_psnr_delta": 0.5355801900227865,
+      "mean_psnr_delta": -0.30201897939046224,
+      "mean_ssim_delta": -0.00034475664297739663,
+      "median_psnr_delta": -0.1464061737060547,
+      "p5_psnr_delta": -3.535603141784668,
+      "p95_psnr_delta": 2.7860078811645517,
+      "positive_ratio": 0.45,
+      "strong_reference_count": 75,
+      "strong_reference_cut_psnr": 42.45430278778076,
+      "strong_regression_count_delta_le_-0.05": 46,
+      "strong_regression_ratio": 0.6133333333333333,
+      "udpnet_avg_time_sec_sync": 0.06815290609995524,
+      "udpnet_mean_psnr": 39.16717441558838,
+      "udpnet_peak_cuda_mem_mib": 3534.34228515625,
+      "worst10pct_mean_psnr_delta": -4.006308746337891,
+      "worst_regression_count_delta_le_-0.20": 148,
+      "worst_regression_ratio": 0.49333333333333335
+    }
+  },
+  "udp_repo": "/root/autodl-tmp/workspace/UDPNet",
+  "udp_repo_head": "f925387e690ae6016ffbd4b1cfd8490d75d7a334"
+}

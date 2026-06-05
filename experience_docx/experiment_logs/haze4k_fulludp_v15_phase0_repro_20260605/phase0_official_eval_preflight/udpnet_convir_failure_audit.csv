@@ -1,0 +1,2 @@
+split,name,bucket,severity,delta_psnr,delta_ssim,reason
+val_regular,1016_0.8_1.72.png,easy_top25_by_a0,worst_regression_delta_le_-0.20,-2.1316452026367188,-0.0013556480407714844,official UDPNet vs A0 per-image tail audit

@@ -298,3 +298,55 @@ grep -En "GitHub|text evidence|checkpoint|weights|BRANCH|sync|push" experience_d
 
 When `rg` resolves to a Windows app resource from inside WSL, fall back to
 `grep -En` or install/use a native WSL ripgrep binary before continuing.
+
+## 2026-06-05 `dehaze1` endpoint update
+
+The `dehaze1` SSH alias was updated after the cloud server was replaced:
+
+```sshconfig
+Host dehaze1 seetacloud
+  HostName connect.bjb1.seetacloud.com
+  Port 42371
+  User root
+  IdentityFile ~/.ssh/id_ed25519_seetacloud
+  IdentitiesOnly yes
+```
+
+Validation marker from the new server:
+
+```text
+DEHAZE1_ALIAS_CONNECT_OK
+```
+
+The previous port `49601` is obsolete for current v1.5 work. The official
+ConvIR+UDP Haze4K checkpoint is now expected at:
+
+```text
+/root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt
+```
+
+## 2026-06-05 Nested single-quote SSH monitor failure
+
+Observed while monitoring the v1.5 official eval: a compact `ssh ... 'bash -lc
+'\''...'\'''` command mixed nested single quotes with PowerShell here-string
+transport and failed before running the remote monitor.
+
+Invalid form:
+
+```bash
+ssh dehaze1 'bash -lc '\''set -euo pipefail; E=/path; tail -n 40 "$E/status.txt"; echo OK'\'''
+```
+
+Corrected form:
+
+```bash
+ssh dehaze1 'bash -s' <<'REMOTE'
+set -euo pipefail
+E=/path
+tail -n 40 "$E/status.txt"
+printf 'REMOTE_MONITOR_OK\n'
+REMOTE
+```
+
+For monitor commands with variables and quoted paths, use the quoted heredoc
+form instead of nested single-quote `bash -lc` one-liners.
