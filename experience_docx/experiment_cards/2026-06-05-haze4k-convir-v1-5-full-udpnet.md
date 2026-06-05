@@ -3,7 +3,8 @@
 Date: 2026-06-05
 
 Status: Phase 0 official UDPNet ConvIR reproduction audit completed;
-checkpoint acquisition blocked; transplant/distillation not authorized.
+checkpoint acquisition blocker reopened after the official checkpoint was
+provided on the replacement `dehaze1`; official eval pending.
 
 ## Scope
 
@@ -29,7 +30,7 @@ checkpoint acquisition blocked; transplant/distillation not authorized.
   `/root/autodl-tmp/workspace/UDPNet`, model file
   `Dehazing/ITS/models/ConvIR_UDPNet.py`.
 - Official candidate checkpoint target:
-  `/root/autodl-tmp/workspace/UDPNet_checkpoints/ConvIR_UDPNet_haze4k.ckpt`.
+  `/root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt`.
 - Required checkpoint source evidence: share URL, file name, size, sha256, and
   download/provenance status.
 - Evaluation output if checkpoint is available:
@@ -153,3 +154,15 @@ teacher residuals.
   official checkpoint is supplied or becomes downloadable with sha256; otherwise
   evaluate available stronger-backbone candidates under a separate controlled
   route.
+
+## Phase 0 Reopen
+
+- Reopen time: 2026-06-05.
+- Replacement `dehaze1` endpoint: `root@connect.bjb1.seetacloud.com:42371`
+  through the existing `~/.ssh/id_ed25519_seetacloud` key.
+- Official checkpoint path now available:
+  `/root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt`.
+- Official checkpoint sha256:
+  `6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291`.
+- Resume action: run the controlled `val_regular` and `val_hard` official
+  ConvIR+UDP reproduction eval before any transplant training or locked test.

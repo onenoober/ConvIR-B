@@ -298,3 +298,29 @@ grep -En "GitHub|text evidence|checkpoint|weights|BRANCH|sync|push" experience_d
 
 When `rg` resolves to a Windows app resource from inside WSL, fall back to
 `grep -En` or install/use a native WSL ripgrep binary before continuing.
+
+## 2026-06-05 `dehaze1` endpoint update
+
+The `dehaze1` SSH alias was updated after the cloud server was replaced:
+
+```sshconfig
+Host dehaze1 seetacloud
+  HostName connect.bjb1.seetacloud.com
+  Port 42371
+  User root
+  IdentityFile ~/.ssh/id_ed25519_seetacloud
+  IdentitiesOnly yes
+```
+
+Validation marker from the new server:
+
+```text
+DEHAZE1_ALIAS_CONNECT_OK
+```
+
+The previous port `49601` is obsolete for current v1.5 work. The official
+ConvIR+UDP Haze4K checkpoint is now expected at:
+
+```text
+/root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt
+```
