@@ -568,6 +568,11 @@ def search_policy(rows: list[dict[str, Any]], pred_rows: list[dict[str, Any]], l
     return policy_rows, selected, decisions
 
 
+def rows_in_prediction_order(rows: list[dict[str, Any]], pred_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    row_by_name = {str(row["name"]): row for row in rows}
+    return [row_by_name[str(pred["name"])] for pred in pred_rows]
+
+
 def stability_by_fold(rows: list[dict[str, Any]], pred_rows: list[dict[str, Any]], selected: dict[str, Any], folds: int) -> list[dict[str, Any]]:
     by_name = {str(row["name"]): row for row in rows}
     out = []
@@ -721,6 +726,7 @@ def main() -> None:
     predictability = metric_auc_rows(pred_rows)
     calibration = calibration_rows(pred_rows)
     policy_rows, selected, decisions = search_policy(rows, pred_rows, "fulltrain_oof_policy")
+    fulltrain_ordered_rows = rows_in_prediction_order(rows, pred_rows)
     stability = stability_by_fold(rows, pred_rows, selected, args.folds)
 
     write_csv(output_dir / "v17_oof_gain_risk_predictability.csv", predictability)
@@ -765,13 +771,13 @@ def main() -> None:
         "oracle": oracle_payload,
         "selected_fulltrain_oof_policy": selected,
         "fulltrain_oof_summary": add_gate_flags(
-            summary_for_decisions(rows, decisions, "selected_fulltrain_oof_policy"),
+            summary_for_decisions(fulltrain_ordered_rows, decisions, "selected_fulltrain_oof_policy"),
             "oof",
         ),
         "fold_utility_pass_count": sum(bool(row.get("utility_gate_pass")) for row in stability),
         "trainheldout": heldout_payload,
         "locked_test_allowed_by_v17_internal_contract": bool(
-            add_gate_flags(summary_for_decisions(rows, decisions, "selected_fulltrain_oof_policy"), "oof")["oof_gate_pass"]
+            add_gate_flags(summary_for_decisions(fulltrain_ordered_rows, decisions, "selected_fulltrain_oof_policy"), "oof")["oof_gate_pass"]
             and heldout_payload["holdout_summary"]["heldout_gate_pass"]
         ),
     }
