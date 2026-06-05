@@ -162,7 +162,7 @@ def labels_for_alpha(row: dict[str, Any], alpha: float) -> tuple[int, int]:
     risk = int(
         delta <= -0.20
         or ssim_delta <= -0.001
-        or (row.get("v17_bucket") == "easy_top25_by_a0_fulltrain" and delta < -0.03)
+        or (row.get("v17_bucket") == "easy_top25_by_a0_fulltrain" and delta < 0)
     )
     return gain, risk
 
