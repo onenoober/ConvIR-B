@@ -324,3 +324,29 @@ ConvIR+UDP Haze4K checkpoint is now expected at:
 ```text
 /root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt
 ```
+
+## 2026-06-05 Nested single-quote SSH monitor failure
+
+Observed while monitoring the v1.5 official eval: a compact `ssh ... 'bash -lc
+'\''...'\'''` command mixed nested single quotes with PowerShell here-string
+transport and failed before running the remote monitor.
+
+Invalid form:
+
+```bash
+ssh dehaze1 'bash -lc '\''set -euo pipefail; E=/path; tail -n 40 "$E/status.txt"; echo OK'\'''
+```
+
+Corrected form:
+
+```bash
+ssh dehaze1 'bash -s' <<'REMOTE'
+set -euo pipefail
+E=/path
+tail -n 40 "$E/status.txt"
+printf 'REMOTE_MONITOR_OK\n'
+REMOTE
+```
+
+For monitor commands with variables and quoted paths, use the quoted heredoc
+form instead of nested single-quote `bash -lc` one-liners.

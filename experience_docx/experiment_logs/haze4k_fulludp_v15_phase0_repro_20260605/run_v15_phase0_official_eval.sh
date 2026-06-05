@@ -29,8 +29,14 @@ mkdir -p "$OUT"
   echo "splits=val_regular,val_hard"
   echo "locked_test_touched=NO"
   echo "python=$PY"
-  git -C "$WORK" branch --show-current 2>/dev/null | sed 's/^/branch=/'
-  git -C "$WORK" rev-parse --short HEAD 2>/dev/null | sed 's/^/commit=/'
+  if [ -d "$WORK/.git" ]; then
+    git -C "$WORK" branch --show-current 2>/dev/null | sed 's/^/branch=/'
+    git -C "$WORK" rev-parse --short HEAD 2>/dev/null | sed 's/^/commit=/'
+  elif [ -f "$WORK/RUN_ARCHIVE_COMMIT.txt" ]; then
+    sed 's/^/archive_commit=/' "$WORK/RUN_ARCHIVE_COMMIT.txt"
+  else
+    echo "archive_commit=UNKNOWN_NON_GIT_WORKSPACE"
+  fi
   sha256sum "$OFFICIAL_CKPT" | sed 's/^/official_ckpt_sha256=/'
 } | tee -a "$STATUS"
 
