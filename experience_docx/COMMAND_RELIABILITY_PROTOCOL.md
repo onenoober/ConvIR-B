@@ -53,6 +53,31 @@ or, when `rg` is required, resolve it inside WSL:
 command -v rg >/dev/null && rg -n 'v1\.4|UDP-Lite' experience_docx/EXPERIMENT_INDEX.md || grep -En 'v1\.4|UDP-Lite' experience_docx/EXPERIMENT_INDEX.md
 ```
 
+2026-06-06 recurrence:
+
+Avoid this form:
+
+```powershell
+wsl -d Ubuntu-22.04 bash -lc "cd /home/ubuntu/workspace/ConvIR-B && grep -n \"ConvIR-Dehaze-v1.6\|Evidence Inventory\" experience_docx/EXPERIMENT_INDEX.md"
+```
+
+Failure mode observed:
+
+- PowerShell treated the `|Evidence` fragment as a pipeline boundary before
+  WSL Bash received the intended command.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B
+grep -nE 'ConvIR-Dehaze-v1\.6|Evidence Inventory' experience_docx/EXPERIMENT_INDEX.md || true
+printf 'CORRECTED_GREP_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
 ### PowerShell here-string to WSL heredoc without CR stripping
 
 Avoid sending a PowerShell here-string directly to a WSL script that contains a

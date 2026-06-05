@@ -2,9 +2,10 @@
 
 Date: 2026-06-05
 
-Status: planned train-derived intermediate-analysis route. Locked Haze4K test
-is blocked until full-train OOF and train-derived heldout confirmation both
-pass the written internal gates.
+Status: completed cloud intermediate-analysis route. The A0+UDP alpha-mixture
+oracle passed the mechanism gate, but the deployable full-train OOF policy and
+train-derived heldout confirmation failed the written gates. Locked Haze4K
+test remains blocked.
 
 ## Scope
 
@@ -48,7 +49,7 @@ single threshold -> gain/risk heads + OOD veto
 OOF only -> OOF plus train-derived heldout confirmation
 ```
 
-## Planned Intermediate Outputs
+## Intermediate Outputs
 
 The route must produce these before any locked-test discussion:
 
@@ -170,6 +171,64 @@ command be written. This route card alone does not authorize locked test.
 - Do not tune any v1.7 feature, threshold, policy, or alpha from v1.6 locked
   per-image results.
 
+## Cloud Result
+
+Cloud run source snapshot: `8f3d631` copied to
+`/root/autodl-tmp/workspace/ConvIR-B-v1-7-rcmix-runtime`.
+
+Feature extraction completed on `dehaze1` with `3000` train-derived rows:
+`train_inner=2400`, `val_regular=300`, `val_hard=300`. The full feature table
+is:
+
+```text
+experience_docx/experiment_logs/haze4k_v17_rc_expert_mix_20260605/v17_fulltrain_features/v17_fulltrain_a0_udp_feature_table.csv
+```
+
+The order-fixed table-only analysis was rerun on cloud and wrote:
+
+```text
+experience_docx/experiment_logs/haze4k_v17_rc_expert_mix_20260605/v17_mix_analysis/v17_analysis_status.json
+experience_docx/experiment_logs/haze4k_v17_rc_expert_mix_20260605/v17_mix_analysis_orderfix_rerun.log
+```
+
+Locked Haze4K test touched: `false`.
+
+Gate 1 oracle/mechanism passed. The GT oracle alpha mix reached mean
+`+0.8689 dB`, hard bottom-25 `+0.9623 dB`, easy top-25 `+0.8245 dB`,
+SSIM `+0.000283`, worst ratio `0`, and strong ratio `0`. This confirms that
+the frozen A0+UDP expert bank still has a large upper bound.
+
+Fixed global shrinkage was informative but not safe enough for promotion:
+`alpha=0.25` reached mean `+0.3723 dB` and easy top-25 `+0.5182 dB` but had
+worst ratio `0.109`; `alpha=0.50` reached mean `+0.4581 dB` and hard bottom-25
+`+0.3905 dB` but had worst ratio `0.215`; `alpha=1.00` remained unsafe as a
+global replacement with mean `-0.2430 dB`, easy top-25 `-0.7218 dB`, and worst
+ratio `0.4907`.
+
+Gate 2 full-train OOF failed. The selected low-capacity gain/risk/OOD policy
+used `tau_gain=0.45`, `tau_risk=0.20`, and `tau_ood_quantile=1.0`, with
+coverage `0.1557`. Its combined OOF result was mean `+0.1079 dB`, hard
+bottom-25 `+0.1417 dB`, easy top-25 `+0.1020 dB`, SSIM `+0.000054`, worst
+ratio `0.0067`, and strong ratio `0.0107`. It failed the preregistered OOF
+mean and hard-gain margins (`+0.25` and `+0.55` respectively), and fold utility
+pass count was `0/5`.
+
+Gate 3 train-derived heldout confirmation failed. Fitting/selecting on
+`train_inner` and confirming on `val_regular + val_hard` produced coverage
+`0.1117`, mean `+0.0945 dB`, hard bottom-25 `+0.1297 dB`, easy top-25
+`+0.0597 dB`, SSIM `+0.000041`, worst ratio `0.0033`, and strong ratio
+`0.0282`. It missed the heldout mean and hard-gain lines (`+0.18` and `+0.35`).
+
+The current v1.7A conclusion is that shrink/mix improves the expert-bank
+mechanism and reduces tail risk versus hard UDP replacement, but the tested
+low-capacity deployable router is not strong enough to authorize locked-test
+confirmation.
+
 ## Current Decision State
 
-Decision label: `PLANNED_FULLTRAIN_INTERMEDIATE_ANALYSIS`.
+Decision label: `COMPLETED_GATE_FAIL_LOCKED_TEST_BLOCKED`.
+
+Do not tune the current v1.7A thresholds, OOD cutoff, feature set, alpha set, or
+low-capacity heads from these results and call it the same route. Any follow-up
+must be a new predeclared router/calibration route and must pass OOF plus
+train-derived heldout before locked Haze4K test is considered.

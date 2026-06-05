@@ -1,0 +1,72 @@
+{
+  "holdout_count": 600,
+  "holdout_splits": [
+    "val_hard",
+    "val_regular"
+  ],
+  "holdout_summary": {
+    "alpha_0p00_count": 533,
+    "alpha_0p25_count": 40,
+    "alpha_0p50_count": 9,
+    "alpha_0p75_count": 5,
+    "alpha_1p00_count": 13,
+    "best10pct_delta": 0.9799880027770996,
+    "count": 600,
+    "coverage": 0.11166666666666666,
+    "easy_top25_delta": 0.05974385436152069,
+    "hard_bottom25_delta": 0.1296999644243181,
+    "heldout_gate_checks": {
+      "easy_top25_delta_ge_neg0p02": true,
+      "hard_bottom25_delta_ge_0p35": false,
+      "mean_delta_ge_0p18": false,
+      "strong_ratio_le_0p10": true,
+      "worst_ratio_le_0p04": true
+    },
+    "heldout_gate_pass": false,
+    "label": "trainheldout_confirm",
+    "mean_delta": 0.0944767157236735,
+    "mean_ssim_delta": 4.145165284474691e-05,
+    "median_delta": 0.0,
+    "p5_delta": 0.0,
+    "p95_delta": 0.6491388320922834,
+    "positive_ratio": 0.09333333333333334,
+    "strong_regression_ratio": 0.028169014084507043,
+    "worst10pct_delta": -0.03522084554036458,
+    "worst_regression_ratio": 0.0033333333333333335
+  },
+  "locked_test_allowed": false,
+  "locked_test_touched": false,
+  "selected_policy_from_train_oof": {
+    "alpha_0p00_count": 2016,
+    "alpha_0p25_count": 265,
+    "alpha_0p50_count": 78,
+    "alpha_0p75_count": 7,
+    "alpha_1p00_count": 34,
+    "best10pct_delta": 0.9355801343917847,
+    "count": 2400,
+    "coverage": 0.16,
+    "easy_top25_delta": 0.10884201544198442,
+    "hard_bottom25_delta": 0.07856848958774658,
+    "label": "train_inner_oof_policy",
+    "mean_delta": 0.09033860842386882,
+    "mean_ssim_delta": 4.551281531651815e-05,
+    "median_delta": 0.0,
+    "oof_gate_pass": false,
+    "p5_delta": 0.0,
+    "p95_delta": 0.7108158111572273,
+    "positive_ratio": 0.14125,
+    "strong_regression_ratio": 0.014727540500736377,
+    "tau_gain": 0.45,
+    "tau_ood": 271.89984073596213,
+    "tau_ood_quantile": 1.0,
+    "tau_risk": 0.2,
+    "worst10pct_delta": -0.13263506889343263,
+    "worst_regression_ratio": 0.01
+  },
+  "status": "TRAIN_HELDOUT_CONFIRM_COMPLETE",
+  "train_count": 2400,
+  "train_splits": [
+    "train_inner"
+  ],
+  "warning": "Locked test still requires route-card approval and immutable one-shot command even if this flag is true."
+}

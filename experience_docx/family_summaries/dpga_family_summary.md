@@ -3,8 +3,9 @@
 Date: 2026-06-05
 
 Status: UDP-Lite/frozen small-adapter family is sufficiently diagnosed and low
-success. Official FullUDP remains useful as a hard-expert signal, but the first
-fixed v1.6 A0+UDP expert-switch policy failed locked-test promotion.
+success. Official FullUDP remains useful as a hard-expert signal. The fixed
+v1.6 A0+UDP expert switch failed locked-test promotion, and the v1.7 full-train
+risk-controlled shrink/mix router failed OOF plus train-heldout gates.
 
 ## Sources
 
@@ -16,6 +17,7 @@ fixed v1.6 A0+UDP expert-switch policy failed locked-test promotion.
   - `../experiment_cards/2026-06-04-haze4k-convir-v1-4-udp-lite.md`
   - `../experiment_cards/2026-06-04-haze4k-convir-v1-4b-bidpfm1.md`
   - `../experiment_cards/2026-06-05-haze4k-convir-v1-5-full-udpnet.md`
+  - `../experiment_cards/2026-06-05-haze4k-convir-v1-7-rc-expert-mix.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_dpga_lite_20260604/`
   - `../experiment_logs/haze4k_dpga_tail_control_20260604/`
@@ -24,6 +26,7 @@ fixed v1.6 A0+UDP expert-switch policy failed locked-test promotion.
   - `../experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/`
   - `../experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/`
   - `../experiment_logs/haze4k_rc_expert_switch_v16_20260605/`
+  - `../experiment_logs/haze4k_v17_rc_expert_mix_20260605/`
 
 ## Established Facts
 
@@ -38,6 +41,7 @@ fixed v1.6 A0+UDP expert-switch policy failed locked-test promotion.
 | ConvIR-Dehaze-v1.4B-BiDPFM1 | `udp_bi`, `active_adapters=dpfm1`, `active_adapter_only` completed. Best `val_regular` mean `+0.028624 dB`, positive ratio `0.536667`, worst count `17`, strong ratio `0.28`; Best `val_hard` mean `+0.023429 dB`, hard bottom-25 `+0.020760 dB`, worst count `8`. | `FAIL_STOP_V14B_BIDPFM1_ADAPTER_ONLY`; locked test blocked; do not rerun BiDPFM1-only scale/gate tuning. |
 | ConvIR-Dehaze-v1.5-FullUDP Phase 0 | Official checkpoint sha256 `6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291` evaluated on `val_regular` and `val_hard`. `val_hard` is strong (`+0.4260 dB` mean, `+0.6212 dB` hard bottom-25), but `val_regular` fails (`-0.3020 dB` mean, easy top-25 `-0.7969 dB`), SSIM deltas are negative, strong regression ratios are `0.6133` regular and `0.44` hard, and worst counts are `148/300` regular plus `104/300` hard. | `PHASE0_REPRODUCTION_GATE_FAIL`; do not start transplant/distillation/locked test from this checkpoint protocol; keep only as hard-gain diagnostic evidence. |
 | ConvIR-Dehaze-v1.6-RCExpertSwitch | A0+UDP oracle passes strongly: mean `+0.7417 dB`, hard bottom-25 `+1.0038 dB`, easy top-25 `+0.5958 dB`, no strong/worst regressions. True 5-fold OOF threshold switch over `udp_switch_feature_table` passes internal gates: mean `+0.2353 dB`, hard bottom-25 `+0.5127 dB`, easy top-25 `+0.0557 dB`, SSIM `+0.000095`, coverage `0.195`, strong ratio `0.0667`, worst ratio `0.0467`. Fixed median policy `udp_a0_luma_shift_mean <= -0.003969017509371043` also passes internal gates. One-shot locked test is positive but fails promotion: mean `+0.0946 dB`, hard bottom-25 `+0.1552 dB`, easy top-25 `-0.0712 dB`, SSIM `+0.000361`, coverage `0.164`, worst ratio `0.066`. | `LOCKED_TEST_FAIL_NO_FURTHER_SELECTION`; UDPNet remains a hard expert, not a global replacement. Do not tune threshold/feature/expert set from locked-test results. |
+| ConvIR-Dehaze-v1.7-RCExpertMix | Full-train feature extraction produced `3000` train-derived A0/UDP rows. GT oracle alpha mix is strong: mean `+0.8689 dB`, hard bottom-25 `+0.9623 dB`, easy top-25 `+0.8245 dB`, worst/strong ratios `0`. The selected low-capacity OOF policy had coverage `0.1557`, mean `+0.1079 dB`, hard bottom-25 `+0.1417 dB`, easy top-25 `+0.1020 dB`, worst ratio `0.0067`, strong ratio `0.0107`, and fold utility pass count `0/5`. Train-heldout confirmation was mean `+0.0945 dB`, hard bottom-25 `+0.1297 dB`, easy top-25 `+0.0597 dB`, worst ratio `0.0033`, strong ratio `0.0282`. | `COMPLETED_GATE_FAIL_LOCKED_TEST_BLOCKED`; the expert-bank oracle remains useful, but the tested full-train low-capacity risk-control router is not deployable. |
 
 ## Family Verdict
 
@@ -93,6 +97,17 @@ a safe post-router internally: run A0 and UDPNet, compute
 Haze4K confirmation failed the written promotion gate, so the route remains
 diagnostic rather than deployable.
 
+v1.7 tested the user's proposed next calibration step without changing the
+expert bank: full 3000-image train-derived A0/UDP feature extraction, alpha
+shrink/mix, low-capacity gain/risk heads, and train-derived heldout
+confirmation. The result strengthens the mechanism reading because the oracle
+alpha mix is even stronger than v1.6's fixed-output oracle, and fixed shrinkage
+shows why partial UDP residuals are attractive. But the deployable router still
+misses the required margins: OOF mean and hard gains are only `+0.1079 dB` and
+`+0.1417 dB`, and heldout mean and hard gains are only `+0.0945 dB` and
+`+0.1297 dB`. This is a scientific gate failure for the tested low-capacity
+risk-control policy, not authorization to touch locked test.
+
 ## Do Not Repeat Without New Evidence
 
 - Do not promote v1.0 from `Best.pkl` alone; exact stop20/final was borderline
@@ -119,6 +134,11 @@ diagnostic rather than deployable.
 - Do not change the v1.6 fixed switch threshold, feature, checkpoint, or expert
   bank after seeing locked-test results; the locked confirmation failed and the
   route is closed under this exact policy.
+- Do not run locked Haze4K test from the current v1.7A risk-controlled
+  shrink/mix policy; both OOF and train-heldout gates failed.
+- Do not micro-tune v1.7A `tau_gain`, `tau_risk`, OOD cutoff, feature set,
+  alpha set, or low-capacity heads from the completed v1.7 results and call it
+  the same route.
 
 ## Reopen Condition
 
@@ -126,5 +146,8 @@ A DPGA follow-up must preserve the v1.6 expert-switch reading: UDPNet is a hard
 expert behind an A0 fallback, not a replacement checkpoint. Because the fixed
 v1.6 threshold failed locked confirmation, any later route must introduce a new
 predeclared calibration source or stronger deployable router before touching
-locked test again. Any later transplant/distillation must be conditional on the
-router or teacher, not UDPNet-only.
+locked test again. Because v1.7A already tested full-train low-capacity
+gain/risk/OOD shrink-mix and failed OOF plus heldout gates, the next credible
+reopen requires a materially stronger deployable router or calibration
+objective, not threshold polishing. Any later transplant/distillation must be
+conditional on the router or teacher, not UDPNet-only.
