@@ -422,7 +422,7 @@ def write_outputs(output_dir: Path, payload: dict[str, Any], rows: list[dict[str
         "udpnet_peak_cuda_mem_mib",
     ]
     with csv_path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         for row in rows:
             writer.writerow({key: row.get(key, "") for key in fieldnames})
@@ -440,6 +440,7 @@ def write_outputs(output_dir: Path, payload: dict[str, Any], rows: list[dict[str
                 "delta_ssim",
                 "reason",
             ],
+            lineterminator="\n",
         )
         writer.writeheader()
         for row in rows:

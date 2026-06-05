@@ -91,7 +91,7 @@ without a material new reason.
 | [Hard-frequency and haze-prior loss routes](family_summaries/frequency_prior_family_summary.md) | Closed for the tested weighting/SCM forms: hard movement came with global/easy damage. | A loss route shows target-group gain with explicit strong/easy protection before stop20. |
 | [PFD/RHFD preservation routes](family_summaries/pfd_rhfd_family_summary.md) | Diagnostic only: preservation improved in B1r, but hard-gain and strong-case gates failed. | A new mechanism explains how hard gain is recovered without losing the preservation benefit. |
 | [APDR output residual/action-bank routes](family_summaries/apdr_family_summary.md) | Current broad output-residual and coefficient-mapping forms are stopped; v0.4E OOF did not pass, and exact v0.4E numbers require fixed-code rerun before sealing. | A separately pre-registered safe-subset route passes fixed-code OOF/held-out gates without severe regressions. |
-| [DPGA in-network prior adapters](family_summaries/dpga_family_summary.md) | Frozen ConvIR-B + A0-equivalent small-adapter routes are sufficiently diagnosed and low success: v1.0-v1.4B stayed in weak `+0.02~0.04 dB` movement and failed hard/tail gates. v1.5 full UDPNet Phase 0 is blocked by official checkpoint acquisition, not a scientific result. | Reopen with a full UDPNet checkpoint reproduction, controlled stronger-backbone audit, or a materially new hard-gain mechanism that passes internal hard/easy/strong/tail gates before locked test. |
+| [DPGA in-network prior adapters](family_summaries/dpga_family_summary.md) | Frozen ConvIR-B + A0-equivalent small-adapter routes are sufficiently diagnosed and low success: v1.0-v1.4B stayed in weak `+0.02~0.04 dB` movement and failed hard/tail gates. v1.5 official UDPNet checkpoint eval gives hard gain but fails regular/easy/SSIM/tail safety. | Reopen only with a preservation-controlled full-UDP transplant design, a controlled stronger-backbone audit, or a materially new hard-gain mechanism that passes internal hard/easy/strong/tail gates before locked test. |
 
 ## Route Summary
 
@@ -124,7 +124,7 @@ without a material new reason.
 | DPGA-v1.3-HSDF | Completed diagnostic; no locked test | v1.3A fixed the mask mechanism but missed the hard gate. v1.3B hard-gated bottleneck also failed: Best `val_regular` mean `+0.0258 dB`, Best `val_hard` hard bottom-25 `+0.0236 dB`, positive ratio `0.5867`, strong regression ratio `0.2000`. Corrected runtime ablation shows bottleneck-only adds only about `+0.0008 dB` mean. | `FAIL_STOP_V13B_HARD_GATED_BOTTLENECK`; do not run locked Haze4K test or continue HSDF bottleneck as-is. Use only the diagnostics for a separately justified route. | [card](experiment_cards/2026-06-04-haze4k-convir-v1-3-hsdf.md) | [logs](experiment_logs/haze4k_dpga_v13_hsdf_20260604/) | `codex/haze4k-convir-v1-3-hard-selective-depth-fusion` |
 | ConvIR-Dehaze-v1.4-UDP-Lite | v1.4A adapter-only completed; gate failed; locked test blocked | Zero-init passed (`max_abs_diff=0.0`). v1.4A Best: `val_regular` mean `+0.028294 dB`, positive ratio `0.586667`, worst `<= -0.20 dB` count `19`; `val_hard` mean `+0.020340 dB`, hard bottom-25 `+0.022275 dB`. Module audit shows `DPFM1-only` is safer/stronger than full `DPFM1+2+4`, while `DPFM2-only` is negative. | `FAIL_V14A_ADAPTER_ONLY_FULL_DPFM123`; do not run locked Haze4K test; do not micro-tune full DPFM123 scale/gate. Next evidence-supported route is DPFM1-focused diagnostic or v1.4B fusion-neighbor partial unfreeze. | [card](experiment_cards/2026-06-04-haze4k-convir-v1-4-udp-lite.md) | [logs](experiment_logs/haze4k_udp_lite_v14_20260604/) | `codex/haze4k-convir-v1-4-udp-lite-depth-fusion` |
 | ConvIR-Dehaze-v1.4B-BiDPFM1 | Completed diagnostic; gate failed; locked test blocked | `udp_bi` zero-init passed (`max_abs_diff=0.0`) and component matrix confirmed DPFM2 remains blocked. Adapter-only Best: `val_regular` mean `+0.028624 dB`, positive ratio `0.536667`, worst count `17`, strong ratio `0.28`; `val_hard` mean `+0.023429 dB`, hard bottom-25 `+0.020760 dB`, worst count `8`. | `FAIL_STOP_V14B_BIDPFM1_ADAPTER_ONLY`; do not run locked Haze4K test or rerun BiDPFM1-only scale/gate tuning. | [card](experiment_cards/2026-06-04-haze4k-convir-v1-4b-bidpfm1.md) | [logs](experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/) | `codex/haze4k-convir-v1-4b-bidirectional-dpfm1` |
-| ConvIR-Dehaze-v1.5-FullUDP Phase 0 | Completed checkpoint-acquisition/protocol audit; official eval blocked | UDPNet Baidu share listed `ConvIR_UDPNet_haze4k.ckpt` (`fs_id=883266741305581`, size `108206629`), but the local checkpoint was absent; Baidu sharedownload returned a client-encrypted task list rather than a plain `dlink`; BaiduPCS-Go transfer failed metadata retrieval without an account. No PSNR/SSIM eval was run. | `PHASE0_BLOCKED_OFFICIAL_UDPNET_CHECKPOINT_UNAVAILABLE`; do not start FullUDP transplant or teacher distillation from README-level claims alone. Resume only with a checkpoint file and sha256, or open a separate stronger-backbone audit. | [card](experiment_cards/2026-06-05-haze4k-convir-v1-5-full-udpnet.md) | [logs](experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/) | `codex/haze4k-convir-v1-5-full-udpnet-transplant` |
+| ConvIR-Dehaze-v1.5-FullUDP Phase 0 | Official checkpoint eval completed; reproduction gate failed | Official `ConvIR_UDPNet_haze4k.ckpt` sha256 `6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291` was evaluated on train-derived `val_regular` and `val_hard` without touching locked test. `val_hard` mean `+0.4260 dB` and hard bottom-25 `+0.6212 dB`, but `val_regular` mean `-0.3020 dB`, easy top-25 `-0.7969 dB`, SSIM deltas were negative, strong regression ratios were `0.6133` regular and `0.44` hard, and worst `<= -0.20 dB` counts were `148/300` regular and `104/300` hard. | `PHASE0_REPRODUCTION_GATE_FAIL`; do not start FullUDP transplant, teacher distillation, or locked Haze4K test from this checkpoint/protocol. Use the hard-gain signal only as diagnostic evidence for a future preservation-controlled design or stronger-backbone audit. | [card](experiment_cards/2026-06-05-haze4k-convir-v1-5-full-udpnet.md) | [logs](experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/) | `codex/haze4k-convir-v1-5-full-udpnet-transplant` |
 
 ## Evidence Inventory
 
@@ -167,7 +167,7 @@ without a material new reason.
 | `experiment_logs/haze4k_dpga_v13_hsdf_20260604/` | 65+ | DPGA v1.3A/v1.3B split generator, intermediate audits, train logs, regular+hard gates, corrected route-scale runtime ablations, and archived bugged intermediate logs. |
 | `experiment_logs/haze4k_udp_lite_v14_20260604/` | 30+ | v1.4 UDP-Lite route README, locked-selection protocol, run scripts, UDPNet audit, zero-init equivalence, v1.4A train log, Best/Final regular+hard gate, per-image compare CSVs, DPFM module ablations, and depth-quality failure audits. |
 | `experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/` | 30+ | v1.4B BiDPFM1 route README, zero-init preflight JSON/log, no-training runtime component matrix CSV/JSON/logs, adapter-only train log/launchers, Best/Final regular+hard eval JSON/CSV/logs, gate JSON, and status file. |
-| `experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/` | 8+ | v1.5 FullUDP Phase 0 route README, cloud audit launcher/status, checkpoint-acquisition JSON, placeholder bucket CSV, blocker audit CSV, protocol diff, and BaiduPCS-Go transfer probe log. |
+| `experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/` | 16+ | v1.5 FullUDP Phase 0 route README, cloud audit/eval launchers/status, initial checkpoint-acquisition blocker audit, official checkpoint eval JSON, per-image bucket CSV, strong/worst regression audit CSV, protocol diffs, preflight log, and eval log. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
@@ -254,12 +254,14 @@ The active conclusion is conservative:
   now sufficiently diagnosed as a low-success route. Do not proceed to direct
   v1.4C small adapter, DPFM1+4 training, DPFM2 revival under UDP-Lite, or
   BiDPFM1 scale/gate/loss search without a materially new mechanism.
-- ConvIR-Dehaze-v1.5-FullUDP Phase 0 attempted the highest-value official
-  UDPNet reproduction prerequisite. The official share exposes
-  `ConvIR_UDPNet_haze4k.ckpt`, but the checkpoint could not be acquired as a
-  durable file in this environment, so no PSNR/SSIM reproduction was run.
-  FullUDP transplant and teacher distillation are blocked until that checkpoint
-  is available with sha256 or a separate controlled teacher is established.
+- ConvIR-Dehaze-v1.5-FullUDP Phase 0 reopened after the official checkpoint
+  became available on the replacement `dehaze1`. The controlled internal eval
+  found a real hard-split signal (`val_hard` mean `+0.4260 dB`, hard bottom-25
+  `+0.6212 dB`) but failed reproduction gate because regular/easy preservation
+  and tails were unsafe (`val_regular` mean `-0.3020 dB`, easy top-25
+  `-0.7969 dB`, negative SSIM deltas, worst counts `148/300` regular and
+  `104/300` hard). FullUDP transplant, teacher distillation, and locked Haze4K
+  test remain blocked for this checkpoint/protocol.
 
 ## Artifact Boundary
 

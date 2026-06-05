@@ -1,8 +1,8 @@
 # Haze4K v1.5 Full UDPNet Phase 0 Evidence
 
-Status: Phase 0 checkpoint-acquisition blocker reopened after the official
-checkpoint became available on the replacement `dehaze1`; controlled official
-eval is pending.
+Status: `PHASE0_REPRODUCTION_GATE_FAIL`; official checkpoint eval completed on
+replacement `dehaze1`; transplant, teacher distillation, and locked test are not
+authorized for this checkpoint/protocol.
 
 This evidence root is for `ConvIR-Dehaze-v1.5-FullUDP`, Phase 0 official
 UDPNet ConvIR reproduction audit.
@@ -57,11 +57,18 @@ Reopen evidence:
   `/root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt`.
 - sha256:
   `6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291`.
-- Next action: run `run_v15_phase0_official_eval.sh` before any FullUDP
-  transplant or teacher distillation.
+- Controlled official eval completed in `phase0_official_eval/`.
+- Result: `PHASE0_REPRODUCTION_GATE_FAIL`.
+
+## Official Eval Result
+
+| Split | Mean delta | Hard bottom-25 | Easy top-25 | SSIM delta | Positive ratio | Strong regression ratio | Worst `<= -0.20 dB` |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `val_regular` | `-0.302019 dB` | `+0.535580 dB` | `-0.796853 dB` | `-0.000345` | `0.450000` | `0.613333` | `148/300` |
+| `val_hard` | `+0.426029 dB` | `+0.621163 dB` | `+0.267492 dB` | `-0.000276` | `0.610000` | `0.440000` | `104/300` |
 
 ## Decision
 
-Treat official UDPNet as an architecture reference until the checkpoint is
-available with sha256 and a controlled ConvIR_UDPNet eval wrapper. Do not start
-FullUDP transplant or teacher distillation from README-level claims alone.
+Do not start FullUDP transplant, teacher distillation, or locked Haze4K test
+from this checkpoint/protocol. The official checkpoint provides hard-gain
+diagnostic evidence, but preservation and tail safety fail the Phase 0 gate.

@@ -3,7 +3,8 @@
 Date: 2026-06-05
 
 Status: UDP-Lite/frozen small-adapter family is sufficiently diagnosed and low
-success; full UDPNet remains blocked on official checkpoint acquisition.
+success; official FullUDP checkpoint eval gives hard gain but fails regular,
+easy, SSIM, and tail-safety gates.
 
 ## Sources
 
@@ -34,7 +35,7 @@ success; full UDPNet remains blocked on official checkpoint acquisition.
 | DPGA-v1.3B HSDF | Best `val_regular` mean `+0.025839 dB`; Best `val_hard` hard bottom-25 `+0.023642 dB`; positive ratio `0.586667`; strong regression ratio `0.200000`; corrected bottleneck-only runtime ablation mean about `+0.000824 dB`. | `FAIL_STOP_V13B_HARD_GATED_BOTTLENECK`; locked test blocked. |
 | ConvIR-Dehaze-v1.4-UDP-Lite | v1.4A adapter-only completed and failed gate: Best `val_regular` mean `+0.028294 dB`, Best `val_hard` mean `+0.020340 dB`, hard bottom-25 `+0.022275 dB`, positive ratio `0.586667`, worst count `19`. Ablation shows `DPFM1-only` is safer/stronger (`val_hard` mean `+0.026774 dB`, worst `0`) while `DPFM2-only` is negative. | `FAIL_V14A_ADAPTER_ONLY_FULL_DPFM123`; locked test blocked. Do not micro-tune full DPFM123 scale/gate; only DPFM1-focused diagnostic or v1.4B fusion-neighbor partial unfreeze is evidence-supported. |
 | ConvIR-Dehaze-v1.4B-BiDPFM1 | `udp_bi`, `active_adapters=dpfm1`, `active_adapter_only` completed. Best `val_regular` mean `+0.028624 dB`, positive ratio `0.536667`, worst count `17`, strong ratio `0.28`; Best `val_hard` mean `+0.023429 dB`, hard bottom-25 `+0.020760 dB`, worst count `8`. | `FAIL_STOP_V14B_BIDPFM1_ADAPTER_ONLY`; locked test blocked; do not rerun BiDPFM1-only scale/gate tuning. |
-| ConvIR-Dehaze-v1.5-FullUDP Phase 0 | Official UDPNet Baidu share listed `ConvIR_UDPNet_haze4k.ckpt` (`fs_id=883266741305581`, size `108206629`), but no local checkpoint existed, sharedownload returned a client-encrypted task list instead of a plain `dlink`, and BaiduPCS-Go public transfer failed to retrieve metadata without an account. | `PHASE0_BLOCKED_OFFICIAL_UDPNET_CHECKPOINT_UNAVAILABLE`; no PSNR/SSIM eval was run; do not start transplant/distillation from README-level claims alone. |
+| ConvIR-Dehaze-v1.5-FullUDP Phase 0 | Official checkpoint sha256 `6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291` evaluated on `val_regular` and `val_hard`. `val_hard` is strong (`+0.4260 dB` mean, `+0.6212 dB` hard bottom-25), but `val_regular` fails (`-0.3020 dB` mean, easy top-25 `-0.7969 dB`), SSIM deltas are negative, strong regression ratios are `0.6133` regular and `0.44` hard, and worst counts are `148/300` regular plus `104/300` hard. | `PHASE0_REPRODUCTION_GATE_FAIL`; do not start transplant/distillation/locked test from this checkpoint protocol; keep only as hard-gain diagnostic evidence. |
 
 ## Family Verdict
 
@@ -69,13 +70,15 @@ tail profile for the first route, while DPFM2 remains blocked. The completed
 BiDPFM1-only route is stopped; this is not permission to run locked Haze4K test,
 revive DPFM2, or perform full multi-scale scale search.
 
-v1.5-FullUDP Phase 0 tested whether the official full UDPNet checkpoint could
-be reproduced before any transplant. The official checkpoint list was visible
-in Baidu, but the Haze4K ConvIR+UDP checkpoint was not obtainable as a durable
-file in this environment: the web/API path exposed only a BaiduNetdisk-client
-encrypted task and BaiduPCS-Go could not transfer the public share without
-account metadata. This blocks reproduction and teacher distillation for now;
-it is not evidence that full UDPNet is weak.
+v1.5-FullUDP Phase 0 first hit a checkpoint-acquisition blocker, then reopened
+after the official checkpoint was provided on the replacement `dehaze1`. The
+controlled internal eval confirms that full UDPNet can move hard samples much
+more than UDP-Lite (`val_hard` mean `+0.4260 dB`, hard bottom-25 `+0.6212 dB`),
+but the same checkpoint/protocol is not preservation-safe: `val_regular` mean
+`-0.3020 dB`, easy top-25 `-0.7969 dB`, negative SSIM deltas, strong regression
+ratios `0.6133`/`0.44`, and worst counts `148/300`/`104/300`. This is a
+scientific gate failure for using the official checkpoint as an immediate
+teacher or transplant authorization, not evidence that depth priors are useless.
 
 ## Do Not Repeat Without New Evidence
 
@@ -95,15 +98,16 @@ it is not evidence that full UDPNet is weak.
 - Do not continue v1.4C small adapter, BiDPFM1 scale/gate/loss search,
   DPFM1+4 training, or UDP-Lite DPFM2 revival without a materially new
   mechanism.
-- Do not start FullUDP transplant or teacher distillation until the official
-  ConvIR+UDP checkpoint is available with sha256 or a separate controlled
-  teacher is established.
+- Do not start FullUDP transplant, teacher distillation, or locked Haze4K test
+  from the current official ConvIR+UDP checkpoint/protocol; Phase 0 failed
+  regular/easy/SSIM/tail safety despite hard gains.
 
 ## Reopen Condition
 
-A DPGA follow-up must introduce a new hard-gain mechanism or diagnostic, not a
-plain scale increase. The highest-value reopen is a completed full UDPNet
-checkpoint reproduction or a separately controlled stronger-backbone audit.
+A DPGA follow-up must introduce a preservation-controlled hard-gain mechanism
+or diagnostic, not a plain scale increase. The highest-value reopen is a
+separate stronger-backbone audit or a full-UDP transplant design with explicit
+easy/strong/tail safeguards.
 Any transplant must select checkpoints/configuration on internal validation or
 OOF-style protocols, then pass hard bottom-25%, regular/easy safety,
 strong-reference regression, and worst-tail gates before any locked Haze4K

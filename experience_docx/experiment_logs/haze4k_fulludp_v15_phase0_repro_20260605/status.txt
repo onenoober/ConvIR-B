@@ -6,3 +6,43 @@ depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_
 a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
 official_ckpt=/root/autodl-tmp/workspace/UDPNet_checkpoints/ConvIR_UDPNet_haze4k.ckpt
 v15_phase0_repro_audit_done rc=0 output=/root/autodl-tmp/workspace/ConvIR-B-v1-5-full-udpnet/experience_docx/experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/phase0_repro_audit 2026-06-05T01:33:42+08:00
+v15_phase0_official_eval_preflight_start 2026-06-05T11:58:02+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-v1-5-fulludp-runtime
+archive_commit=e92c088c932ae8dcea9996afd82fd1954bf1d08e
+locked_test_touched=NO
+v15_phase0_official_eval_preflight_done rc=0 output=/root/autodl-tmp/workspace/ConvIR-B-v1-5-fulludp-runtime/experience_docx/experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/phase0_official_eval_preflight 2026-06-05T11:58:09+08:00
+v15_phase0_official_eval_tmux_launch 2026-06-05T11:59:09+08:00
+session=v15_phase0_official_eval
+archive_commit=e92c088c932ae8dcea9996afd82fd1954bf1d08e
+locked_test_touched=NO
+v15_phase0_official_eval_start 2026-06-05T11:59:09+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-v1-5-fulludp-runtime
+convir_its=/root/autodl-tmp/workspace/ConvIR-B-v1-5-fulludp-runtime/Dehazing/ITS
+udp_repo=/root/autodl-tmp/workspace/UDPNet
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+official_ckpt=/root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt
+split_json=/root/autodl-tmp/workspace/ConvIR-B-v1-5-fulludp-runtime/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/internal_val/haze4k_dpga_v13_regular_hard_seed3407.json
+splits=val_regular,val_hard
+locked_test_touched=NO
+python=/root/miniconda3/envs/convir-cu128/bin/python
+v15_phase0_official_eval_tmux_relaunch 2026-06-05T12:08:58+08:00
+session=v15_phase0_official_eval
+archive_commit=f762d019665b476fbe2fadc2b348cf2da661381e
+locked_test_touched=NO
+v15_phase0_official_eval_start 2026-06-05T12:08:58+08:00
+work=/root/autodl-tmp/workspace/ConvIR-B-v1-5-fulludp-runtime
+convir_its=/root/autodl-tmp/workspace/ConvIR-B-v1-5-fulludp-runtime/Dehazing/ITS
+udp_repo=/root/autodl-tmp/workspace/UDPNet
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+official_ckpt=/root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt
+split_json=/root/autodl-tmp/workspace/ConvIR-B-v1-5-fulludp-runtime/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/internal_val/haze4k_dpga_v13_regular_hard_seed3407.json
+splits=val_regular,val_hard
+locked_test_touched=NO
+python=/root/miniconda3/envs/convir-cu128/bin/python
+archive_commit=f762d019665b476fbe2fadc2b348cf2da661381e
+official_ckpt_sha256=6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291  /root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt
+v15_phase0_official_eval_done rc=0 output=/root/autodl-tmp/workspace/ConvIR-B-v1-5-fulludp-runtime/experience_docx/experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/phase0_official_eval 2026-06-05T12:10:13+08:00
