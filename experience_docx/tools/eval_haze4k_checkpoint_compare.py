@@ -6,12 +6,18 @@ import os
 import statistics
 import sys
 import time
+from pathlib import Path
 
 import torch
 import torch.nn.functional as f
 from pytorch_msssim import ssim
 
-sys.path.insert(0, os.getcwd())
+TOOL_PATH = Path(__file__).resolve()
+REPO_ROOT = TOOL_PATH.parents[2]
+ITS_ROOT = REPO_ROOT / "Dehazing" / "ITS"
+for path in (str(ITS_ROOT), str(REPO_ROOT), os.getcwd()):
+    if path not in sys.path:
+        sys.path.insert(0, path)
 
 from data import test_dataloader
 from models.APDRConvIR import build_apdr_net

@@ -3,8 +3,12 @@
 Date: 2026-06-05
 
 Status: UDP-Lite/frozen small-adapter family is sufficiently diagnosed and low
-success; official FullUDP checkpoint eval gives hard gain but fails regular,
-easy, SSIM, and tail-safety gates.
+success. Official FullUDP remains useful as a hard-expert signal. The fixed
+v1.6 A0+UDP expert switch failed locked-test promotion, and the v1.7 full-train
+risk-controlled shrink/mix router failed OOF plus train-heldout gates. v1.8 is
+the planned post-diagnosis execution queue for stronger table-only router
+analysis, data/domain preflight, and BiDPFM1 fusion-neighbor multi-seed
+training/eval.
 
 ## Sources
 
@@ -16,6 +20,8 @@ easy, SSIM, and tail-safety gates.
   - `../experiment_cards/2026-06-04-haze4k-convir-v1-4-udp-lite.md`
   - `../experiment_cards/2026-06-04-haze4k-convir-v1-4b-bidpfm1.md`
   - `../experiment_cards/2026-06-05-haze4k-convir-v1-5-full-udpnet.md`
+  - `../experiment_cards/2026-06-05-haze4k-convir-v1-7-rc-expert-mix.md`
+  - `../experiment_cards/2026-06-06-haze4k-convir-v1-8-execution-queue.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_dpga_lite_20260604/`
   - `../experiment_logs/haze4k_dpga_tail_control_20260604/`
@@ -23,6 +29,9 @@ easy, SSIM, and tail-safety gates.
   - `../experiment_logs/haze4k_udp_lite_v14_20260604/`
   - `../experiment_logs/haze4k_udp_lite_v14b_bidpfm1_20260604/`
   - `../experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/`
+  - `../experiment_logs/haze4k_rc_expert_switch_v16_20260605/`
+  - `../experiment_logs/haze4k_v17_rc_expert_mix_20260605/`
+  - `../experiment_logs/haze4k_v18_execution_queue_20260606/`
 
 ## Established Facts
 
@@ -36,6 +45,9 @@ easy, SSIM, and tail-safety gates.
 | ConvIR-Dehaze-v1.4-UDP-Lite | v1.4A adapter-only completed and failed gate: Best `val_regular` mean `+0.028294 dB`, Best `val_hard` mean `+0.020340 dB`, hard bottom-25 `+0.022275 dB`, positive ratio `0.586667`, worst count `19`. Ablation shows `DPFM1-only` is safer/stronger (`val_hard` mean `+0.026774 dB`, worst `0`) while `DPFM2-only` is negative. | `FAIL_V14A_ADAPTER_ONLY_FULL_DPFM123`; locked test blocked. Do not micro-tune full DPFM123 scale/gate; only DPFM1-focused diagnostic or v1.4B fusion-neighbor partial unfreeze is evidence-supported. |
 | ConvIR-Dehaze-v1.4B-BiDPFM1 | `udp_bi`, `active_adapters=dpfm1`, `active_adapter_only` completed. Best `val_regular` mean `+0.028624 dB`, positive ratio `0.536667`, worst count `17`, strong ratio `0.28`; Best `val_hard` mean `+0.023429 dB`, hard bottom-25 `+0.020760 dB`, worst count `8`. | `FAIL_STOP_V14B_BIDPFM1_ADAPTER_ONLY`; locked test blocked; do not rerun BiDPFM1-only scale/gate tuning. |
 | ConvIR-Dehaze-v1.5-FullUDP Phase 0 | Official checkpoint sha256 `6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291` evaluated on `val_regular` and `val_hard`. `val_hard` is strong (`+0.4260 dB` mean, `+0.6212 dB` hard bottom-25), but `val_regular` fails (`-0.3020 dB` mean, easy top-25 `-0.7969 dB`), SSIM deltas are negative, strong regression ratios are `0.6133` regular and `0.44` hard, and worst counts are `148/300` regular plus `104/300` hard. | `PHASE0_REPRODUCTION_GATE_FAIL`; do not start transplant/distillation/locked test from this checkpoint protocol; keep only as hard-gain diagnostic evidence. |
+| ConvIR-Dehaze-v1.6-RCExpertSwitch | A0+UDP oracle passes strongly: mean `+0.7417 dB`, hard bottom-25 `+1.0038 dB`, easy top-25 `+0.5958 dB`, no strong/worst regressions. True 5-fold OOF threshold switch over `udp_switch_feature_table` passes internal gates: mean `+0.2353 dB`, hard bottom-25 `+0.5127 dB`, easy top-25 `+0.0557 dB`, SSIM `+0.000095`, coverage `0.195`, strong ratio `0.0667`, worst ratio `0.0467`. Fixed median policy `udp_a0_luma_shift_mean <= -0.003969017509371043` also passes internal gates. One-shot locked test is positive but fails promotion: mean `+0.0946 dB`, hard bottom-25 `+0.1552 dB`, easy top-25 `-0.0712 dB`, SSIM `+0.000361`, coverage `0.164`, worst ratio `0.066`. | `LOCKED_TEST_FAIL_NO_FURTHER_SELECTION`; UDPNet remains a hard expert, not a global replacement. Do not tune threshold/feature/expert set from locked-test results. |
+| ConvIR-Dehaze-v1.7-RCExpertMix | Full-train feature extraction produced `3000` train-derived A0/UDP rows. GT oracle alpha mix is strong: mean `+0.8689 dB`, hard bottom-25 `+0.9623 dB`, easy top-25 `+0.8245 dB`, worst/strong ratios `0`. The selected low-capacity OOF policy had coverage `0.1557`, mean `+0.1079 dB`, hard bottom-25 `+0.1417 dB`, easy top-25 `+0.1020 dB`, worst ratio `0.0067`, strong ratio `0.0107`, and fold utility pass count `0/5`. Train-heldout confirmation was mean `+0.0945 dB`, hard bottom-25 `+0.1297 dB`, easy top-25 `+0.0597 dB`, worst ratio `0.0033`, strong ratio `0.0282`. | `COMPLETED_GATE_FAIL_LOCKED_TEST_BLOCKED`; the expert-bank oracle remains useful, but the tested full-train low-capacity risk-control router is not deployable. |
+| ConvIR-Dehaze-v1.8-ExecutionQueue | Completed queue from the latest diagnosis: table-only stronger A0/UDP router policy grid from the v1.7 feature table, Haze4K train-derived data/domain preflight, BiDPFM1 `fusion_neighbor` partial-unfreeze stop20 across 10 seeds, multi-metric checkpoint selection, multi-seed aggregation, and Q5 data/domain-adaptation coverage. Q1 corrected router gate failed, Q2 completed, Q5 completed as domain evidence but failed gates while recording no visible real-haze target-domain data, and Q3/Q4 finished negative after repaired `3407/2026` eval evidence. | `MULTISEED_SCREEN_FAIL_CONTINUE_OTHER_EXPERIMENTS`; all declared items ran to completion on `dehaze1`, locked test stayed blocked, and the final 10-seed aggregate closes this exact BiDPFM1 partial-unfreeze route as negative. |
 
 ## Family Verdict
 
@@ -80,6 +92,83 @@ ratios `0.6133`/`0.44`, and worst counts `148/300`/`104/300`. This is a
 scientific gate failure for using the official checkpoint as an immediate
 teacher or transplant authorization, not evidence that depth priors are useless.
 
+v1.6 changes the family conclusion from "FullUDP global replacement failed" to
+"official UDPNet is a hard expert candidate." The A0+UDP oracle proves the
+expert bank has a large upper bound, and the first true 5-fold OOF
+risk-calibrated switch clears the internal Utility and Promotion-style gates
+without using PSNR/SSIM delta columns as router features. The fixed policy was
+a safe post-router internally: run A0 and UDPNet, compute
+`udp_a0_luma_shift_mean`, choose UDPNet only when it is
+`<= -0.003969017509371043`, otherwise use A0. However, the one-shot locked
+Haze4K confirmation failed the written promotion gate, so the route remains
+diagnostic rather than deployable.
+
+v1.7 tested the user's proposed next calibration step without changing the
+expert bank: full 3000-image train-derived A0/UDP feature extraction, alpha
+shrink/mix, low-capacity gain/risk heads, and train-derived heldout
+confirmation. The result strengthens the mechanism reading because the oracle
+alpha mix is even stronger than v1.6's fixed-output oracle, and fixed shrinkage
+shows why partial UDP residuals are attractive. But the deployable router still
+misses the required margins: OOF mean and hard gains are only `+0.1079 dB` and
+`+0.1417 dB`, and heldout mean and hard gains are only `+0.0945 dB` and
+`+0.1297 dB`. This is a scientific gate failure for the tested low-capacity
+risk-control policy, not authorization to touch locked test.
+
+v1.8 was the planned execution response to the latest root-cause diagnosis. It
+does not reopen FAM, HardFreq, HazePrior, APDR, DPFM2, or UDPNet-only global
+replacement. Instead it uses existing v1.7 intermediate evidence for a stronger
+table-only router audit, adds a data/domain preflight, and tests the materially
+new capacity mechanism that v1.4A/v1.4B left open: BiDPFM1 with
+`fusion_neighbor` partial unfreeze. It also fixes the evidence weakness called
+out in the diagnosis by evaluating multiple checkpoints with a regular+hard
+multi-metric selector and aggregating across 10 seeds. The queue is explicitly
+not allowed to stop after one independent failure; failures become evidence and
+the next planned item continues.
+
+The `2026-06-06 05:09 +08:00` v1.8 remote-access blocker was an infrastructure
+event, not a scientific gate or training failure. After the user confirmed the
+replacement `dehaze1` endpoint `connect.bjb1.seetacloud.com:16124`, local
+`~/.ssh/config` and `AGENTS.md` were updated, strict-host-key access was
+restored, and the queue resumed at `2026-06-06T10:28:51+08:00` without
+rerunning completed seeds. `seed_1701` resumed from `model.pkl` at epoch `6`,
+`v18_eval_repair` resumed its wait loop, and refreshed progress artifacts now
+label the early `3407/2026` eval import/path failures as engineering states
+`EVAL_FAILED_ENGINEERING_REPAIR_PENDING`. The blocker history remains recorded
+in
+`../experiment_logs/haze4k_v18_execution_queue_20260606/remote_access_blocker_20260606_0509.md`.
+Do not run local model runtime as a fallback. Follow-up monitoring at
+`2026-06-06T10:56:46+08:00` confirmed that `seed_1701` finished the full
+resume train/eval/selection chain and still landed at
+`NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS` with `Best` as the diagnostic
+label, after which the queue advanced directly into fresh `seed_2222`
+training.
+
+Final closeout changed the route from "running queue" to "completed negative
+screen." Main queue training/eval reached `seed_5151` completion at
+`2026-06-06T13:20:01+08:00`, post-queue repair regenerated missing `3407/2026`
+regular+hard compare JSON plus selection JSON and rebuilt the aggregate by
+`2026-06-06T13:38:33+08:00`, and final remote verification at
+`2026-06-06T14:28:47+08:00` confirmed no active tmux sessions, no related
+processes, and idle GPU.
+
+The final 10-seed aggregate is unambiguously negative:
+
+- regular mean PSNR delta mean `-0.05399 dB`, CI95 half-width `0.00794 dB`;
+- regular easy-top25 mean `-0.04441 dB`;
+- regular mean SSIM delta `-0.0000961`;
+- regular strong-regression ratio mean `0.508`;
+- hard mean PSNR delta mean `-0.09085 dB`, CI95 half-width `0.01434 dB`;
+- hard hard-bottom25 mean `-0.12387 dB`;
+- hard mean SSIM delta `-0.0001369`;
+- hard strong-regression ratio mean `0.532`;
+- all `10/10` selected checkpoint labels are `Best`;
+- all `10/10` seed decisions are `NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS`.
+
+Only `n_ge_5` passes in the written multi-seed gate set; every quality and tail
+safety gate is `false`. The repaired `3407/2026` runs remain negative after
+engineering recovery, so the import-path bug was only an evidence-generation
+failure, not the scientific reason for route failure.
+
 ## Do Not Repeat Without New Evidence
 
 - Do not promote v1.0 from `Best.pkl` alone; exact stop20/final was borderline
@@ -101,14 +190,38 @@ teacher or transplant authorization, not evidence that depth priors are useless.
 - Do not start FullUDP transplant, teacher distillation, or locked Haze4K test
   from the current official ConvIR+UDP checkpoint/protocol; Phase 0 failed
   regular/easy/SSIM/tail safety despite hard gains.
+- Do not treat UDPNet-only as a global model after v1.6. The positive result is
+  the A0-fallback expert switch, not a full UDPNet replacement.
+- Do not change the v1.6 fixed switch threshold, feature, checkpoint, or expert
+  bank after seeing locked-test results; the locked confirmation failed and the
+  route is closed under this exact policy.
+- Do not run locked Haze4K test from the current v1.7A risk-controlled
+  shrink/mix policy; both OOF and train-heldout gates failed.
+- Do not micro-tune v1.7A `tau_gain`, `tau_risk`, OOD cutoff, feature set,
+  alpha set, or low-capacity heads from the completed v1.7 results and call it
+  the same route.
+- Do not reinterpret v1.8 as permission to touch locked Haze4K test. The queue
+  is train-derived and diagnostic/candidate-screening only until its written
+  gates pass and a separate locked-test card is written.
+- Do not continue this exact v1.8 BiDPFM1 `fusion_neighbor` route by adding more
+  seeds, more epochs, or checkpoint-choice tweaks under the same evidence
+  contract; the full repaired 10-seed screen is already negative.
 
 ## Reopen Condition
 
-A DPGA follow-up must introduce a preservation-controlled hard-gain mechanism
-or diagnostic, not a plain scale increase. The highest-value reopen is a
-separate stronger-backbone audit or a full-UDP transplant design with explicit
-easy/strong/tail safeguards.
-Any transplant must select checkpoints/configuration on internal validation or
-OOF-style protocols, then pass hard bottom-25%, regular/easy safety,
-strong-reference regression, and worst-tail gates before any locked Haze4K
-test.
+A DPGA follow-up must preserve the v1.6 expert-switch reading: UDPNet is a hard
+expert behind an A0 fallback, not a replacement checkpoint. Because the fixed
+v1.6 threshold failed locked confirmation, any later route must introduce a new
+predeclared calibration source or stronger deployable router before touching
+locked test again. Because v1.7A already tested full-train low-capacity
+gain/risk/OOD shrink-mix and failed OOF plus heldout gates, the next credible
+reopen requires a materially stronger deployable router or calibration
+objective, not threshold polishing. Any later transplant/distillation must be
+conditional on the router or teacher, not UDPNet-only.
+v1.8 satisfied the "materially new" requirement for its predeclared
+partial-unfreeze capacity route, stronger table-only router audit, and the
+newly added data/domain-adaptation evidence path. Because no real-haze target
+domain data was visible on `dehaze1`, the domain path is split into an explicit
+data blocker plus a Haze4K internal domain-conditioned policy diagnostic. Since
+v1.8 failed after full queue completion and repaired closeout, do not continue
+by simply adding more BiDPFM1 scale/gate tuning under the same route id.

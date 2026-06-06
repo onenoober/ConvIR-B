@@ -1,0 +1,2527 @@
+repair_wait_start 2026-06-06T10:28:51+08:00
+main_queue_still_active 2026-06-06T10:28:51+08:00
+main_queue_still_active 2026-06-06T10:33:51+08:00
+main_queue_still_active 2026-06-06T10:38:51+08:00
+main_queue_still_active 2026-06-06T10:43:51+08:00
+main_queue_still_active 2026-06-06T10:48:51+08:00
+main_queue_still_active 2026-06-06T10:53:51+08:00
+main_queue_still_active 2026-06-06T10:58:51+08:00
+main_queue_still_active 2026-06-06T11:03:51+08:00
+main_queue_still_active 2026-06-06T11:08:51+08:00
+main_queue_still_active 2026-06-06T11:13:51+08:00
+main_queue_still_active 2026-06-06T11:18:51+08:00
+main_queue_still_active 2026-06-06T11:23:51+08:00
+main_queue_still_active 2026-06-06T11:28:51+08:00
+main_queue_still_active 2026-06-06T11:33:51+08:00
+main_queue_still_active 2026-06-06T11:38:51+08:00
+main_queue_still_active 2026-06-06T11:43:52+08:00
+main_queue_still_active 2026-06-06T11:48:52+08:00
+main_queue_still_active 2026-06-06T11:53:52+08:00
+main_queue_still_active 2026-06-06T11:58:52+08:00
+main_queue_still_active 2026-06-06T12:03:52+08:00
+main_queue_still_active 2026-06-06T12:08:52+08:00
+main_queue_still_active 2026-06-06T12:13:52+08:00
+main_queue_still_active 2026-06-06T12:18:52+08:00
+main_queue_still_active 2026-06-06T12:23:52+08:00
+main_queue_still_active 2026-06-06T12:28:52+08:00
+main_queue_still_active 2026-06-06T12:33:52+08:00
+main_queue_still_active 2026-06-06T12:38:52+08:00
+main_queue_still_active 2026-06-06T12:43:52+08:00
+main_queue_still_active 2026-06-06T12:48:52+08:00
+main_queue_still_active 2026-06-06T12:53:52+08:00
+main_queue_still_active 2026-06-06T12:58:52+08:00
+main_queue_still_active 2026-06-06T13:03:52+08:00
+main_queue_still_active 2026-06-06T13:08:52+08:00
+main_queue_still_active 2026-06-06T13:13:52+08:00
+main_queue_still_active 2026-06-06T13:18:52+08:00
+main_queue_inactive_start_repair 2026-06-06T13:23:52+08:00
+repair_start name=v18_missing_eval_and_aggregate 2026-06-06T13:23:52+08:00
+repair_seed_start seed=3407 reason=missing_or_empty_compare_json 2026-06-06T13:23:52+08:00
+repair_step_start name=repair_seed_3407_model_5_val_regular_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_5_val_regular.log 2026-06-06T13:23:52+08:00
+a0 100/300 psnr=38.7369
+a0 200/300 psnr=40.5068
+a0 300/300 psnr=39.4692
+v18_seed3407_model_5_val_regular 100/300 psnr=37.5554
+v18_seed3407_model_5_val_regular 200/300 psnr=39.2754
+v18_seed3407_model_5_val_regular 300/300 psnr=38.2844
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.469193369547526,
+      "mean_ssim": 0.9956027623017629,
+      "avg_time_sec_sync": 0.028650056521097818,
+      "median_time_sec_sync": 0.029842019081115723,
+      "peak_cuda_mem_mib": 535.27294921875
+    },
+    "v18_seed3407_model_5_val_regular": {
+      "label": "v18_seed3407_model_5_val_regular",
+      "arch": "dpga",
+      "mode": "model_5",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed3407-20260606/Training-Results/model_5.pkl",
+      "count": 300,
+      "mean_psnr": 38.284380238850915,
+      "mean_ssim": 0.9944656246900558,
+      "avg_time_sec_sync": 0.03615710735321045,
+      "median_time_sec_sync": 0.041499972343444824,
+      "peak_cuda_mem_mib": 1147.56005859375
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -1.1848131306966145,
+    "median_psnr_delta": -1.1001815795898438,
+    "p5_psnr_delta": -3.461948776245117,
+    "p95_psnr_delta": 0.7395383834838868,
+    "hard_bottom25_psnr_delta": -0.7274375406901041,
+    "easy_top25_psnr_delta": -1.7620241292317709,
+    "worst10pct_mean_psnr_delta": -3.780811309814453,
+    "best10pct_mean_psnr_delta": 0.9010829289754232,
+    "worst10img_mean_psnr_delta": -4.739674758911133,
+    "best10img_mean_psnr_delta": 1.656529998779297,
+    "worst10_mean_psnr_delta": -3.780811309814453,
+    "best10_mean_psnr_delta": 0.9010829289754232,
+    "mean_ssim_delta": -0.0011371376117070516,
+    "positive_ratio": 0.15333333333333332,
+    "strong_reference_cut_psnr": 42.45430278778076,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 70,
+    "worst_regression_count_delta_le_-0.20": 243
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_5_val_regular_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_per_image_v18_seed3407_model_5_val_regular_vs_a0.csv
+repair_step_done name=repair_seed_3407_model_5_val_regular_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_5_val_regular.log 2026-06-06T13:24:31+08:00
+repair_step_start name=repair_seed_3407_model_5_val_hard_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_5_val_hard.log 2026-06-06T13:24:31+08:00
+a0 100/300 psnr=33.9850
+a0 200/300 psnr=34.3937
+a0 300/300 psnr=34.2465
+v18_seed3407_model_5_val_hard 100/300 psnr=33.4847
+v18_seed3407_model_5_val_hard 200/300 psnr=33.8592
+v18_seed3407_model_5_val_hard 300/300 psnr=33.6541
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 34.24652519861857,
+      "mean_ssim": 0.9936463151375453,
+      "avg_time_sec_sync": 0.026720776557922363,
+      "median_time_sec_sync": 0.022818565368652344,
+      "peak_cuda_mem_mib": 536.22607421875
+    },
+    "v18_seed3407_model_5_val_hard": {
+      "label": "v18_seed3407_model_5_val_hard",
+      "arch": "dpga",
+      "mode": "model_5",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed3407-20260606/Training-Results/model_5.pkl",
+      "count": 300,
+      "mean_psnr": 33.65405637105306,
+      "mean_ssim": 0.9923799937963486,
+      "avg_time_sec_sync": 0.03332808256149292,
+      "median_time_sec_sync": 0.030083775520324707,
+      "peak_cuda_mem_mib": 1147.46435546875
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -0.5924688275655111,
+    "median_psnr_delta": -0.6747703552246094,
+    "p5_psnr_delta": -2.0846893310546877,
+    "p95_psnr_delta": 1.3587076187133804,
+    "hard_bottom25_psnr_delta": -0.6568804677327474,
+    "easy_top25_psnr_delta": -0.564342041015625,
+    "worst10pct_mean_psnr_delta": -2.4006972630818684,
+    "best10pct_mean_psnr_delta": 1.5082969029744466,
+    "worst10img_mean_psnr_delta": -3.130187225341797,
+    "best10img_mean_psnr_delta": 2.19628791809082,
+    "worst10_mean_psnr_delta": -2.4006972630818684,
+    "best10_mean_psnr_delta": 1.5082969029744466,
+    "mean_ssim_delta": -0.001266321341196696,
+    "positive_ratio": 0.23666666666666666,
+    "strong_reference_cut_psnr": 36.437724113464355,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 52,
+    "worst_regression_count_delta_le_-0.20": 206
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_5_val_hard_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_per_image_v18_seed3407_model_5_val_hard_vs_a0.csv
+repair_step_done name=repair_seed_3407_model_5_val_hard_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_5_val_hard.log 2026-06-06T13:25:05+08:00
+repair_step_start name=repair_seed_3407_model_10_val_regular_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_10_val_regular.log 2026-06-06T13:25:05+08:00
+a0 100/300 psnr=38.7369
+a0 200/300 psnr=40.5068
+a0 300/300 psnr=39.4692
+v18_seed3407_model_10_val_regular 100/300 psnr=35.6166
+v18_seed3407_model_10_val_regular 200/300 psnr=36.9594
+v18_seed3407_model_10_val_regular 300/300 psnr=36.1298
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.4691934076945,
+      "mean_ssim": 0.9956027640899022,
+      "avg_time_sec_sync": 0.029007563591003416,
+      "median_time_sec_sync": 0.029926776885986328,
+      "peak_cuda_mem_mib": 535.27294921875
+    },
+    "v18_seed3407_model_10_val_regular": {
+      "label": "v18_seed3407_model_10_val_regular",
+      "arch": "dpga",
+      "mode": "model_10",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed3407-20260606/Training-Results/model_10.pkl",
+      "count": 300,
+      "mean_psnr": 36.12981753667196,
+      "mean_ssim": 0.9921177107095719,
+      "avg_time_sec_sync": 0.03736695925394694,
+      "median_time_sec_sync": 0.04173266887664795,
+      "peak_cuda_mem_mib": 1147.56005859375
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -3.3393758710225425,
+    "median_psnr_delta": -3.2349929809570312,
+    "p5_psnr_delta": -7.11635913848877,
+    "p95_psnr_delta": 0.09977006912231551,
+    "hard_bottom25_psnr_delta": -1.895099894205729,
+    "easy_top25_psnr_delta": -4.892178039550782,
+    "worst10pct_mean_psnr_delta": -7.412380154927572,
+    "best10pct_mean_psnr_delta": 0.36070410410563153,
+    "worst10img_mean_psnr_delta": -8.61700668334961,
+    "best10img_mean_psnr_delta": 1.5563648223876954,
+    "worst10_mean_psnr_delta": -7.412380154927572,
+    "best10_mean_psnr_delta": 0.36070410410563153,
+    "mean_ssim_delta": -0.0034850533803304036,
+    "positive_ratio": 0.056666666666666664,
+    "strong_reference_cut_psnr": 42.45430278778076,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 75,
+    "worst_regression_count_delta_le_-0.20": 281
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_10_val_regular_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_per_image_v18_seed3407_model_10_val_regular_vs_a0.csv
+repair_step_done name=repair_seed_3407_model_10_val_regular_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_10_val_regular.log 2026-06-06T13:25:45+08:00
+repair_step_start name=repair_seed_3407_model_10_val_hard_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_10_val_hard.log 2026-06-06T13:25:45+08:00
+a0 100/300 psnr=33.9850
+a0 200/300 psnr=34.3937
+a0 300/300 psnr=34.2465
+v18_seed3407_model_10_val_hard 100/300 psnr=32.3687
+v18_seed3407_model_10_val_hard 200/300 psnr=32.6576
+v18_seed3407_model_10_val_hard 300/300 psnr=32.4204
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 34.24652523676554,
+      "mean_ssim": 0.9936463169256846,
+      "avg_time_sec_sync": 0.026867034435272216,
+      "median_time_sec_sync": 0.022903084754943848,
+      "peak_cuda_mem_mib": 536.22607421875
+    },
+    "v18_seed3407_model_10_val_hard": {
+      "label": "v18_seed3407_model_10_val_hard",
+      "arch": "dpga",
+      "mode": "model_10",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed3407-20260606/Training-Results/model_10.pkl",
+      "count": 300,
+      "mean_psnr": 32.420389804840084,
+      "mean_ssim": 0.9899766310056051,
+      "avg_time_sec_sync": 0.03155955870946248,
+      "median_time_sec_sync": 0.029358267784118652,
+      "peak_cuda_mem_mib": 1147.46435546875
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -1.8261354319254557,
+    "median_psnr_delta": -1.9469451904296875,
+    "p5_psnr_delta": -4.4120080947875975,
+    "p95_psnr_delta": 1.4201106071472192,
+    "hard_bottom25_psnr_delta": -1.6902711486816406,
+    "easy_top25_psnr_delta": -2.152926483154297,
+    "worst10pct_mean_psnr_delta": -4.743741416931153,
+    "best10pct_mean_psnr_delta": 1.5833491643269857,
+    "worst10img_mean_psnr_delta": -5.783796691894532,
+    "best10img_mean_psnr_delta": 3.016365814208984,
+    "worst10_mean_psnr_delta": -4.743741416931153,
+    "best10_mean_psnr_delta": 1.5833491643269857,
+    "mean_ssim_delta": -0.0036696859200795492,
+    "positive_ratio": 0.12,
+    "strong_reference_cut_psnr": 36.437724113464355,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 66,
+    "worst_regression_count_delta_le_-0.20": 261
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_10_val_hard_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_per_image_v18_seed3407_model_10_val_hard_vs_a0.csv
+repair_step_done name=repair_seed_3407_model_10_val_hard_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_10_val_hard.log 2026-06-06T13:26:19+08:00
+repair_step_start name=repair_seed_3407_model_15_val_regular_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_15_val_regular.log 2026-06-06T13:26:19+08:00
+a0 100/300 psnr=38.7369
+a0 200/300 psnr=40.5068
+a0 300/300 psnr=39.4692
+v18_seed3407_model_15_val_regular 100/300 psnr=33.7935
+v18_seed3407_model_15_val_regular 200/300 psnr=34.8837
+v18_seed3407_model_15_val_regular 300/300 psnr=34.1175
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.46919344584147,
+      "mean_ssim": 0.9956027644872666,
+      "avg_time_sec_sync": 0.02946735223134359,
+      "median_time_sec_sync": 0.030005455017089844,
+      "peak_cuda_mem_mib": 535.27294921875
+    },
+    "v18_seed3407_model_15_val_regular": {
+      "label": "v18_seed3407_model_15_val_regular",
+      "arch": "dpga",
+      "mode": "model_15",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed3407-20260606/Training-Results/model_15.pkl",
+      "count": 300,
+      "mean_psnr": 34.11751623153687,
+      "mean_ssim": 0.9882716216643651,
+      "avg_time_sec_sync": 0.03664523442586263,
+      "median_time_sec_sync": 0.04191792011260986,
+      "peak_cuda_mem_mib": 1147.56005859375
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -5.3516772143046065,
+    "median_psnr_delta": -5.320871353149414,
+    "p5_psnr_delta": -9.696612739562989,
+    "p95_psnr_delta": -1.2695856094360343,
+    "hard_bottom25_psnr_delta": -3.2054671986897785,
+    "easy_top25_psnr_delta": -7.238287200927735,
+    "worst10pct_mean_psnr_delta": -9.959759203592936,
+    "best10pct_mean_psnr_delta": -0.8773831685384115,
+    "worst10img_mean_psnr_delta": -11.083860397338867,
+    "best10img_mean_psnr_delta": 0.09486198425292969,
+    "worst10_mean_psnr_delta": -9.959759203592936,
+    "best10_mean_psnr_delta": -0.8773831685384115,
+    "mean_ssim_delta": -0.007331142822901408,
+    "positive_ratio": 0.013333333333333334,
+    "strong_reference_cut_psnr": 42.45430278778076,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 75,
+    "worst_regression_count_delta_le_-0.20": 295
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_15_val_regular_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_per_image_v18_seed3407_model_15_val_regular_vs_a0.csv
+repair_step_done name=repair_seed_3407_model_15_val_regular_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_15_val_regular.log 2026-06-06T13:26:58+08:00
+repair_step_start name=repair_seed_3407_model_15_val_hard_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_15_val_hard.log 2026-06-06T13:26:58+08:00
+a0 100/300 psnr=33.9850
+a0 200/300 psnr=34.3937
+a0 300/300 psnr=34.2465
+v18_seed3407_model_15_val_hard 100/300 psnr=30.9544
+v18_seed3407_model_15_val_hard 200/300 psnr=31.1879
+v18_seed3407_model_15_val_hard 300/300 psnr=30.9539
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 34.24652523676554,
+      "mean_ssim": 0.9936463145414988,
+      "avg_time_sec_sync": 0.027010117371877033,
+      "median_time_sec_sync": 0.022602319717407227,
+      "peak_cuda_mem_mib": 536.22607421875
+    },
+    "v18_seed3407_model_15_val_hard": {
+      "label": "v18_seed3407_model_15_val_hard",
+      "arch": "dpga",
+      "mode": "model_15",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed3407-20260606/Training-Results/model_15.pkl",
+      "count": 300,
+      "mean_psnr": 30.953909708658855,
+      "mean_ssim": 0.9861514834562938,
+      "avg_time_sec_sync": 0.032342661221822104,
+      "median_time_sec_sync": 0.02989494800567627,
+      "peak_cuda_mem_mib": 1147.46435546875
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -3.2926155281066896,
+    "median_psnr_delta": -3.429928779602051,
+    "p5_psnr_delta": -6.502185916900634,
+    "p95_psnr_delta": 0.29714698791503985,
+    "hard_bottom25_psnr_delta": -2.8692469533284504,
+    "easy_top25_psnr_delta": -3.960422134399414,
+    "worst10pct_mean_psnr_delta": -6.903197542826335,
+    "best10pct_mean_psnr_delta": 0.7497718175252278,
+    "worst10img_mean_psnr_delta": -8.207430839538574,
+    "best10img_mean_psnr_delta": 2.793033981323242,
+    "worst10_mean_psnr_delta": -6.903197542826335,
+    "best10_mean_psnr_delta": 0.7497718175252278,
+    "mean_ssim_delta": -0.007494831085205078,
+    "positive_ratio": 0.06,
+    "strong_reference_cut_psnr": 36.437724113464355,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 71,
+    "worst_regression_count_delta_le_-0.20": 282
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_15_val_hard_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_per_image_v18_seed3407_model_15_val_hard_vs_a0.csv
+repair_step_done name=repair_seed_3407_model_15_val_hard_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_15_val_hard.log 2026-06-06T13:27:32+08:00
+repair_step_start name=repair_seed_3407_model_20_val_regular_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_20_val_regular.log 2026-06-06T13:27:32+08:00
+a0 100/300 psnr=38.7369
+a0 200/300 psnr=40.5068
+a0 300/300 psnr=39.4692
+v18_seed3407_model_20_val_regular 100/300 psnr=32.0646
+v18_seed3407_model_20_val_regular 200/300 psnr=32.9036
+v18_seed3407_model_20_val_regular 300/300 psnr=32.1774
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.46919339497884,
+      "mean_ssim": 0.9956027623017629,
+      "avg_time_sec_sync": 0.029317170778910318,
+      "median_time_sec_sync": 0.02997434139251709,
+      "peak_cuda_mem_mib": 535.27294921875
+    },
+    "v18_seed3407_model_20_val_regular": {
+      "label": "v18_seed3407_model_20_val_regular",
+      "arch": "dpga",
+      "mode": "model_20",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed3407-20260606/Training-Results/model_20.pkl",
+      "count": 300,
+      "mean_psnr": 32.17738089243571,
+      "mean_ssim": 0.9837802529335022,
+      "avg_time_sec_sync": 0.03716184854507446,
+      "median_time_sec_sync": 0.041491150856018066,
+      "peak_cuda_mem_mib": 1147.56005859375
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -7.291812502543132,
+    "median_psnr_delta": -7.2292633056640625,
+    "p5_psnr_delta": -11.977168941497803,
+    "p95_psnr_delta": -1.8241520881652815,
+    "hard_bottom25_psnr_delta": -4.354923248291016,
+    "easy_top25_psnr_delta": -9.654663263956706,
+    "worst10pct_mean_psnr_delta": -12.501323064168295,
+    "best10pct_mean_psnr_delta": -1.712002436319987,
+    "worst10img_mean_psnr_delta": -13.794361877441407,
+    "best10img_mean_psnr_delta": -0.7162616729736329,
+    "worst10_mean_psnr_delta": -12.501323064168295,
+    "best10_mean_psnr_delta": -1.712002436319987,
+    "mean_ssim_delta": -0.011822509368260702,
+    "positive_ratio": 0.0033333333333333335,
+    "strong_reference_cut_psnr": 42.45430278778076,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 75,
+    "worst_regression_count_delta_le_-0.20": 298
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_20_val_regular_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_per_image_v18_seed3407_model_20_val_regular_vs_a0.csv
+repair_step_done name=repair_seed_3407_model_20_val_regular_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_20_val_regular.log 2026-06-06T13:28:12+08:00
+repair_step_start name=repair_seed_3407_model_20_val_hard_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_20_val_hard.log 2026-06-06T13:28:12+08:00
+a0 100/300 psnr=33.9850
+a0 200/300 psnr=34.3937
+a0 300/300 psnr=34.2465
+v18_seed3407_model_20_val_hard 100/300 psnr=29.7671
+v18_seed3407_model_20_val_hard 200/300 psnr=29.8843
+v18_seed3407_model_20_val_hard 300/300 psnr=29.6431
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 34.24652522404988,
+      "mean_ssim": 0.9936463157335917,
+      "avg_time_sec_sync": 0.026832953294118247,
+      "median_time_sec_sync": 0.022227883338928223,
+      "peak_cuda_mem_mib": 536.22607421875
+    },
+    "v18_seed3407_model_20_val_hard": {
+      "label": "v18_seed3407_model_20_val_hard",
+      "arch": "dpga",
+      "mode": "model_20",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed3407-20260606/Training-Results/model_20.pkl",
+      "count": 300,
+      "mean_psnr": 29.643076934814452,
+      "mean_ssim": 0.982014277378718,
+      "avg_time_sec_sync": 0.031466750303904216,
+      "median_time_sec_sync": 0.0293196439743042,
+      "peak_cuda_mem_mib": 1147.46435546875
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -4.603448289235433,
+    "median_psnr_delta": -4.740331649780273,
+    "p5_psnr_delta": -8.212168979644776,
+    "p95_psnr_delta": -0.5852707862853997,
+    "hard_bottom25_psnr_delta": -3.843598149617513,
+    "easy_top25_psnr_delta": -5.621120402018229,
+    "worst10pct_mean_psnr_delta": -8.609852027893066,
+    "best10pct_mean_psnr_delta": -0.44667040506998695,
+    "worst10img_mean_psnr_delta": -9.98643226623535,
+    "best10img_mean_psnr_delta": 0.9044960021972657,
+    "worst10_mean_psnr_delta": -8.609852027893066,
+    "best10_mean_psnr_delta": -0.44667040506998695,
+    "mean_ssim_delta": -0.011632038354873657,
+    "positive_ratio": 0.02666666666666667,
+    "strong_reference_cut_psnr": 36.437724113464355,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 73,
+    "worst_regression_count_delta_le_-0.20": 289
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_20_val_hard_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_per_image_v18_seed3407_model_20_val_hard_vs_a0.csv
+repair_step_done name=repair_seed_3407_model_20_val_hard_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_model_20_val_hard.log 2026-06-06T13:28:45+08:00
+repair_step_start name=repair_seed_3407_Best_val_regular_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_best_val_regular.log 2026-06-06T13:28:45+08:00
+a0 100/300 psnr=38.7369
+a0 200/300 psnr=40.5068
+a0 300/300 psnr=39.4692
+v18_seed3407_best_val_regular 100/300 psnr=38.6458
+v18_seed3407_best_val_regular 200/300 psnr=40.4726
+v18_seed3407_best_val_regular 300/300 psnr=39.4096
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.469193382263185,
+      "mean_ssim": 0.9956027632951736,
+      "avg_time_sec_sync": 0.028763176600138347,
+      "median_time_sec_sync": 0.030028462409973145,
+      "peak_cuda_mem_mib": 535.27294921875
+    },
+    "v18_seed3407_best_val_regular": {
+      "label": "v18_seed3407_best_val_regular",
+      "arch": "dpga",
+      "mode": "Best",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed3407-20260606/Training-Results/Best.pkl",
+      "count": 300,
+      "mean_psnr": 39.40958810806274,
+      "mean_ssim": 0.9954976824919383,
+      "avg_time_sec_sync": 0.036390785376230875,
+      "median_time_sec_sync": 0.04169583320617676,
+      "peak_cuda_mem_mib": 1147.56005859375
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -0.059605274200439456,
+    "median_psnr_delta": -0.07429885864257812,
+    "p5_psnr_delta": -0.5769266128540039,
+    "p95_psnr_delta": 0.4611251831054691,
+    "hard_bottom25_psnr_delta": -0.1543084462483724,
+    "easy_top25_psnr_delta": -0.02036259969075521,
+    "worst10pct_mean_psnr_delta": -0.6142597198486328,
+    "best10pct_mean_psnr_delta": 0.5503312428792317,
+    "worst10img_mean_psnr_delta": -0.8056644439697266,
+    "best10img_mean_psnr_delta": 0.8307395935058594,
+    "worst10_mean_psnr_delta": -0.6142597198486328,
+    "best10_mean_psnr_delta": 0.5503312428792317,
+    "mean_ssim_delta": -0.00010508080323537191,
+    "positive_ratio": 0.39,
+    "strong_reference_cut_psnr": 42.45430278778076,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 33,
+    "worst_regression_count_delta_le_-0.20": 86
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_best_val_regular_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_per_image_v18_seed3407_best_val_regular_vs_a0.csv
+repair_step_done name=repair_seed_3407_Best_val_regular_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_best_val_regular.log 2026-06-06T13:29:24+08:00
+repair_step_start name=repair_seed_3407_Best_val_hard_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_best_val_hard.log 2026-06-06T13:29:24+08:00
+a0 100/300 psnr=33.9850
+a0 200/300 psnr=34.3937
+a0 300/300 psnr=34.2465
+v18_seed3407_best_val_hard 100/300 psnr=33.8798
+v18_seed3407_best_val_hard 200/300 psnr=34.3060
+v18_seed3407_best_val_hard 300/300 psnr=34.1361
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 34.24652523676554,
+      "mean_ssim": 0.9936463153362274,
+      "avg_time_sec_sync": 0.026911461353302003,
+      "median_time_sec_sync": 0.023215889930725098,
+      "peak_cuda_mem_mib": 536.22607421875
+    },
+    "v18_seed3407_best_val_hard": {
+      "label": "v18_seed3407_best_val_hard",
+      "arch": "dpga",
+      "mode": "Best",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed3407-20260606/Training-Results/Best.pkl",
+      "count": 300,
+      "mean_psnr": 34.13610660552978,
+      "mean_ssim": 0.993487610022227,
+      "avg_time_sec_sync": 0.03278599580128987,
+      "median_time_sec_sync": 0.030483603477478027,
+      "peak_cuda_mem_mib": 1147.46435546875
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -0.11041863123575846,
+    "median_psnr_delta": -0.13123512268066406,
+    "p5_psnr_delta": -0.3948415756225586,
+    "p95_psnr_delta": 0.2345136642456055,
+    "hard_bottom25_psnr_delta": -0.145697504679362,
+    "easy_top25_psnr_delta": -0.044719390869140625,
+    "worst10pct_mean_psnr_delta": -0.44243412017822265,
+    "best10pct_mean_psnr_delta": 0.2689311981201172,
+    "worst10img_mean_psnr_delta": -0.585102653503418,
+    "best10img_mean_psnr_delta": 0.40850296020507815,
+    "worst10_mean_psnr_delta": -0.44243412017822265,
+    "best10_mean_psnr_delta": 0.2689311981201172,
+    "mean_ssim_delta": -0.00015870531400044758,
+    "positive_ratio": 0.21666666666666667,
+    "strong_reference_cut_psnr": 36.437724113464355,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 42,
+    "worst_regression_count_delta_le_-0.20": 85
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_best_val_hard_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_per_image_v18_seed3407_best_val_hard_vs_a0.csv
+repair_step_done name=repair_seed_3407_Best_val_hard_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_best_val_hard.log 2026-06-06T13:29:58+08:00
+repair_step_start name=repair_seed_3407_Final_val_regular_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_final_val_regular.log 2026-06-06T13:29:58+08:00
+a0 100/300 psnr=38.7369
+a0 200/300 psnr=40.5068
+a0 300/300 psnr=39.4692
+v18_seed3407_final_val_regular 100/300 psnr=32.0646
+v18_seed3407_final_val_regular 200/300 psnr=32.9036
+v18_seed3407_final_val_regular 300/300 psnr=32.1774
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.4691934076945,
+      "mean_ssim": 0.9956027644872666,
+      "avg_time_sec_sync": 0.030070171356201172,
+      "median_time_sec_sync": 0.03013443946838379,
+      "peak_cuda_mem_mib": 535.27294921875
+    },
+    "v18_seed3407_final_val_regular": {
+      "label": "v18_seed3407_final_val_regular",
+      "arch": "dpga",
+      "mode": "Final",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed3407-20260606/Training-Results/Final.pkl",
+      "count": 300,
+      "mean_psnr": 32.177380911509196,
+      "mean_ssim": 0.9837802582979203,
+      "avg_time_sec_sync": 0.0380908195177714,
+      "median_time_sec_sync": 0.04194772243499756,
+      "peak_cuda_mem_mib": 1147.56005859375
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -7.291812496185303,
+    "median_psnr_delta": -7.2292633056640625,
+    "p5_psnr_delta": -11.977168941497803,
+    "p95_psnr_delta": -1.8241520881652815,
+    "hard_bottom25_psnr_delta": -4.354923248291016,
+    "easy_top25_psnr_delta": -9.65466313680013,
+    "worst10pct_mean_psnr_delta": -12.50132261912028,
+    "best10pct_mean_psnr_delta": -1.712002436319987,
+    "worst10img_mean_psnr_delta": -13.79436149597168,
+    "best10img_mean_psnr_delta": -0.7162616729736329,
+    "worst10_mean_psnr_delta": -12.50132261912028,
+    "best10_mean_psnr_delta": -1.712002436319987,
+    "mean_ssim_delta": -0.011822506189346313,
+    "positive_ratio": 0.0033333333333333335,
+    "strong_reference_cut_psnr": 42.45430278778076,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 75,
+    "worst_regression_count_delta_le_-0.20": 298
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_final_val_regular_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_per_image_v18_seed3407_final_val_regular_vs_a0.csv
+repair_step_done name=repair_seed_3407_Final_val_regular_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_final_val_regular.log 2026-06-06T13:30:38+08:00
+repair_step_start name=repair_seed_3407_Final_val_hard_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_final_val_hard.log 2026-06-06T13:30:38+08:00
+a0 100/300 psnr=33.9850
+a0 200/300 psnr=34.3937
+a0 300/300 psnr=34.2465
+v18_seed3407_final_val_hard 100/300 psnr=29.7671
+v18_seed3407_final_val_hard 200/300 psnr=29.8843
+v18_seed3407_final_val_hard 300/300 psnr=29.6431
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 34.24652523676554,
+      "mean_ssim": 0.9936463151375453,
+      "avg_time_sec_sync": 0.026845552126566568,
+      "median_time_sec_sync": 0.02277696132659912,
+      "peak_cuda_mem_mib": 536.22607421875
+    },
+    "v18_seed3407_final_val_hard": {
+      "label": "v18_seed3407_final_val_hard",
+      "arch": "dpga",
+      "mode": "Final",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed3407-20260606/Training-Results/Final.pkl",
+      "count": 300,
+      "mean_psnr": 29.643076934814452,
+      "mean_ssim": 0.9820142789681753,
+      "avg_time_sec_sync": 0.032083678245544436,
+      "median_time_sec_sync": 0.029921293258666992,
+      "peak_cuda_mem_mib": 1147.46435546875
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -4.60344830195109,
+    "median_psnr_delta": -4.740331649780273,
+    "p5_psnr_delta": -8.212168979644776,
+    "p95_psnr_delta": -0.5852707862853997,
+    "hard_bottom25_psnr_delta": -3.843598149617513,
+    "easy_top25_psnr_delta": -5.6211204274495445,
+    "worst10pct_mean_psnr_delta": -8.609852027893066,
+    "best10pct_mean_psnr_delta": -0.44667040506998695,
+    "worst10img_mean_psnr_delta": -9.98643226623535,
+    "best10img_mean_psnr_delta": 0.9044960021972657,
+    "worst10_mean_psnr_delta": -8.609852027893066,
+    "best10_mean_psnr_delta": -0.44667040506998695,
+    "mean_ssim_delta": -0.011632036169370015,
+    "positive_ratio": 0.02666666666666667,
+    "strong_reference_cut_psnr": 36.437724113464355,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 73,
+    "worst_regression_count_delta_le_-0.20": 289
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_final_val_hard_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_per_image_v18_seed3407_final_val_hard_vs_a0.csv
+repair_step_done name=repair_seed_3407_Final_val_hard_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/repair_eval_v18_seed3407_final_val_hard.log 2026-06-06T13:31:12+08:00
+repair_step_start name=repair_seed_3407_multimetric_checkpoint_selection log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/repair_v18_seed3407_checkpoint_selection.log 2026-06-06T13:31:12+08:00
+{
+  "candidate_prefix": "v18_seed3407",
+  "checkpoint_labels": [
+    "model_5",
+    "model_10",
+    "model_15",
+    "model_20",
+    "Best",
+    "Final"
+  ],
+  "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+  "details": {
+    "Best": {
+      "checks": {
+        "hard_bottom25_ge_0p03": false,
+        "hard_mean_nonnegative": false,
+        "hard_ssim_nonnegative": false,
+        "hard_worst_count_le_12": false,
+        "regular_easy_not_below_neg0p05": true,
+        "regular_mean_nonnegative": false,
+        "regular_ssim_nonnegative": false,
+        "regular_strong_ratio_le_0p25": false,
+        "regular_worst_count_le_20": false
+      },
+      "hard": {
+        "easy_top25_psnr_delta": -0.044719390869140625,
+        "hard_bottom25_psnr_delta": -0.145697504679362,
+        "mean_psnr_delta": -0.11041863123575846,
+        "mean_ssim_delta": -0.00015870531400044758,
+        "positive_ratio": 0.21666666666666667,
+        "strong_regression_ratio": 0.56,
+        "worst_count_delta_le_-0p20": 85.0
+      },
+      "hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_best_val_hard_vs_a0.json",
+      "regular": {
+        "easy_top25_psnr_delta": -0.02036259969075521,
+        "hard_bottom25_psnr_delta": -0.1543084462483724,
+        "mean_psnr_delta": -0.059605274200439456,
+        "mean_ssim_delta": -0.00010508080323537191,
+        "positive_ratio": 0.39,
+        "strong_regression_ratio": 0.44,
+        "worst_count_delta_le_-0p20": 86.0
+      },
+      "regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_best_val_regular_vs_a0.json",
+      "score": -6.040108617623647
+    },
+    "Final": {
+      "checks": {
+        "hard_bottom25_ge_0p03": false,
+        "hard_mean_nonnegative": false,
+        "hard_ssim_nonnegative": false,
+        "hard_worst_count_le_12": false,
+        "regular_easy_not_below_neg0p05": false,
+        "regular_mean_nonnegative": false,
+        "regular_ssim_nonnegative": false,
+        "regular_strong_ratio_le_0p25": false,
+        "regular_worst_count_le_20": false
+      },
+      "hard": {
+        "easy_top25_psnr_delta": -5.6211204274495445,
+        "hard_bottom25_psnr_delta": -3.843598149617513,
+        "mean_psnr_delta": -4.60344830195109,
+        "mean_ssim_delta": -0.011632036169370015,
+        "positive_ratio": 0.02666666666666667,
+        "strong_regression_ratio": 0.9733333333333334,
+        "worst_count_delta_le_-0p20": 289.0
+      },
+      "hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_final_val_hard_vs_a0.json",
+      "regular": {
+        "easy_top25_psnr_delta": -9.65466313680013,
+        "hard_bottom25_psnr_delta": -4.354923248291016,
+        "mean_psnr_delta": -7.291812496185303,
+        "mean_ssim_delta": -0.011822506189346313,
+        "positive_ratio": 0.0033333333333333335,
+        "strong_regression_ratio": 1.0,
+        "worst_count_delta_le_-0p20": 298.0
+      },
+      "regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_final_val_regular_vs_a0.json",
+      "score": -38.30394350894292
+    },
+    "model_10": {
+      "checks": {
+        "hard_bottom25_ge_0p03": false,
+        "hard_mean_nonnegative": false,
+        "hard_ssim_nonnegative": false,
+        "hard_worst_count_le_12": false,
+        "regular_easy_not_below_neg0p05": false,
+        "regular_mean_nonnegative": false,
+        "regular_ssim_nonnegative": false,
+        "regular_strong_ratio_le_0p25": false,
+        "regular_worst_count_le_20": false
+      },
+      "hard": {
+        "easy_top25_psnr_delta": -2.152926483154297,
+        "hard_bottom25_psnr_delta": -1.6902711486816406,
+        "mean_psnr_delta": -1.8261354319254557,
+        "mean_ssim_delta": -0.0036696859200795492,
+        "positive_ratio": 0.12,
+        "strong_regression_ratio": 0.88,
+        "worst_count_delta_le_-0p20": 261.0
+      },
+      "hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_10_val_hard_vs_a0.json",
+      "regular": {
+        "easy_top25_psnr_delta": -4.892178039550782,
+        "hard_bottom25_psnr_delta": -1.895099894205729,
+        "mean_psnr_delta": -3.3393758710225425,
+        "mean_ssim_delta": -0.0034850533803304036,
+        "positive_ratio": 0.056666666666666664,
+        "strong_regression_ratio": 1.0,
+        "worst_count_delta_le_-0p20": 281.0
+      },
+      "regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_10_val_regular_vs_a0.json",
+      "score": -26.219952771186833
+    },
+    "model_15": {
+      "checks": {
+        "hard_bottom25_ge_0p03": false,
+        "hard_mean_nonnegative": false,
+        "hard_ssim_nonnegative": false,
+        "hard_worst_count_le_12": false,
+        "regular_easy_not_below_neg0p05": false,
+        "regular_mean_nonnegative": false,
+        "regular_ssim_nonnegative": false,
+        "regular_strong_ratio_le_0p25": false,
+        "regular_worst_count_le_20": false
+      },
+      "hard": {
+        "easy_top25_psnr_delta": -3.960422134399414,
+        "hard_bottom25_psnr_delta": -2.8692469533284504,
+        "mean_psnr_delta": -3.2926155281066896,
+        "mean_ssim_delta": -0.007494831085205078,
+        "positive_ratio": 0.06,
+        "strong_regression_ratio": 0.9466666666666667,
+        "worst_count_delta_le_-0p20": 282.0
+      },
+      "hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_15_val_hard_vs_a0.json",
+      "regular": {
+        "easy_top25_psnr_delta": -7.238287200927735,
+        "hard_bottom25_psnr_delta": -3.2054671986897785,
+        "mean_psnr_delta": -5.3516772143046065,
+        "mean_ssim_delta": -0.007331142822901408,
+        "positive_ratio": 0.013333333333333334,
+        "strong_regression_ratio": 1.0,
+        "worst_count_delta_le_-0p20": 295.0
+      },
+      "regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_15_val_regular_vs_a0.json",
+      "score": -32.82507773431143
+    },
+    "model_20": {
+      "checks": {
+        "hard_bottom25_ge_0p03": false,
+        "hard_mean_nonnegative": false,
+        "hard_ssim_nonnegative": false,
+        "hard_worst_count_le_12": false,
+        "regular_easy_not_below_neg0p05": false,
+        "regular_mean_nonnegative": false,
+        "regular_ssim_nonnegative": false,
+        "regular_strong_ratio_le_0p25": false,
+        "regular_worst_count_le_20": false
+      },
+      "hard": {
+        "easy_top25_psnr_delta": -5.621120402018229,
+        "hard_bottom25_psnr_delta": -3.843598149617513,
+        "mean_psnr_delta": -4.603448289235433,
+        "mean_ssim_delta": -0.011632038354873657,
+        "positive_ratio": 0.02666666666666667,
+        "strong_regression_ratio": 0.9733333333333334,
+        "worst_count_delta_le_-0p20": 289.0
+      },
+      "hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_20_val_hard_vs_a0.json",
+      "regular": {
+        "easy_top25_psnr_delta": -9.654663263956706,
+        "hard_bottom25_psnr_delta": -4.354923248291016,
+        "mean_psnr_delta": -7.291812502543132,
+        "mean_ssim_delta": -0.011822509368260702,
+        "positive_ratio": 0.0033333333333333335,
+        "strong_regression_ratio": 1.0,
+        "worst_count_delta_le_-0p20": 298.0
+      },
+      "regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_20_val_regular_vs_a0.json",
+      "score": -38.303943679809564
+    },
+    "model_5": {
+      "checks": {
+        "hard_bottom25_ge_0p03": false,
+        "hard_mean_nonnegative": false,
+        "hard_ssim_nonnegative": false,
+        "hard_worst_count_le_12": false,
+        "regular_easy_not_below_neg0p05": false,
+        "regular_mean_nonnegative": false,
+        "regular_ssim_nonnegative": false,
+        "regular_strong_ratio_le_0p25": false,
+        "regular_worst_count_le_20": false
+      },
+      "hard": {
+        "easy_top25_psnr_delta": -0.564342041015625,
+        "hard_bottom25_psnr_delta": -0.6568804677327474,
+        "mean_psnr_delta": -0.5924688275655111,
+        "mean_ssim_delta": -0.001266321341196696,
+        "positive_ratio": 0.23666666666666666,
+        "strong_regression_ratio": 0.6933333333333334,
+        "worst_count_delta_le_-0p20": 206.0
+      },
+      "hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_5_val_hard_vs_a0.json",
+      "regular": {
+        "easy_top25_psnr_delta": -1.7620241292317709,
+        "hard_bottom25_psnr_delta": -0.7274375406901041,
+        "mean_psnr_delta": -1.1848131306966145,
+        "mean_ssim_delta": -0.0011371376117070516,
+        "positive_ratio": 0.15333333333333332,
+        "strong_regression_ratio": 0.9333333333333333,
+        "worst_count_delta_le_-0p20": 243.0
+      },
+      "regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard/scout_eval_compare_v18_seed3407_model_5_val_regular_vs_a0.json",
+      "score": -17.530052016099297
+    }
+  },
+  "eval_dir": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/eval_regular_hard",
+  "locked_test_touched": false,
+  "rows": [
+    {
+      "all_checks_pass": false,
+      "check_count": 9,
+      "checkpoint_label": "model_5",
+      "decision": "DIAGNOSTIC_ONLY",
+      "hard_easy_top25_psnr_delta": -0.564342041015625,
+      "hard_hard_bottom25_psnr_delta": -0.6568804677327474,
+      "hard_mean_psnr_delta": -0.5924688275655111,
+      "hard_mean_ssim_delta": -0.001266321341196696,
+      "hard_positive_ratio": 0.23666666666666666,
+      "hard_strong_regression_ratio": 0.6933333333333334,
+      "hard_worst_count_delta_le_-0p20": 206.0,
+      "pass_count": 0,
+      "present": true,
+      "regular_easy_top25_psnr_delta": -1.7620241292317709,
+      "regular_hard_bottom25_psnr_delta": -0.7274375406901041,
+      "regular_mean_psnr_delta": -1.1848131306966145,
+      "regular_mean_ssim_delta": -0.0011371376117070516,
+      "regular_positive_ratio": 0.15333333333333332,
+      "regular_strong_regression_ratio": 0.9333333333333333,
+      "regular_worst_count_delta_le_-0p20": 243.0,
+      "score": -17.530052016099297
+    },
+    {
+      "all_checks_pass": false,
+      "check_count": 9,
+      "checkpoint_label": "model_10",
+      "decision": "DIAGNOSTIC_ONLY",
+      "hard_easy_top25_psnr_delta": -2.152926483154297,
+      "hard_hard_bottom25_psnr_delta": -1.6902711486816406,
+      "hard_mean_psnr_delta": -1.8261354319254557,
+      "hard_mean_ssim_delta": -0.0036696859200795492,
+      "hard_positive_ratio": 0.12,
+      "hard_strong_regression_ratio": 0.88,
+      "hard_worst_count_delta_le_-0p20": 261.0,
+      "pass_count": 0,
+      "present": true,
+      "regular_easy_top25_psnr_delta": -4.892178039550782,
+      "regular_hard_bottom25_psnr_delta": -1.895099894205729,
+      "regular_mean_psnr_delta": -3.3393758710225425,
+      "regular_mean_ssim_delta": -0.0034850533803304036,
+      "regular_positive_ratio": 0.056666666666666664,
+      "regular_strong_regression_ratio": 1.0,
+      "regular_worst_count_delta_le_-0p20": 281.0,
+      "score": -26.219952771186833
+    },
+    {
+      "all_checks_pass": false,
+      "check_count": 9,
+      "checkpoint_label": "model_15",
+      "decision": "DIAGNOSTIC_ONLY",
+      "hard_easy_top25_psnr_delta": -3.960422134399414,
+      "hard_hard_bottom25_psnr_delta": -2.8692469533284504,
+      "hard_mean_psnr_delta": -3.2926155281066896,
+      "hard_mean_ssim_delta": -0.007494831085205078,
+      "hard_positive_ratio": 0.06,
+      "hard_strong_regression_ratio": 0.9466666666666667,
+      "hard_worst_count_delta_le_-0p20": 282.0,
+      "pass_count": 0,
+      "present": true,
+      "regular_easy_top25_psnr_delta": -7.238287200927735,
+      "regular_hard_bottom25_psnr_delta": -3.2054671986897785,
+      "regular_mean_psnr_delta": -5.3516772143046065,
+      "regular_mean_ssim_delta": -0.007331142822901408,
+      "regular_positive_ratio": 0.013333333333333334,
+      "regular_strong_regression_ratio": 1.0,
+      "regular_worst_count_delta_le_-0p20": 295.0,
+      "score": -32.82507773431143
+    },
+    {
+      "all_checks_pass": false,
+      "check_count": 9,
+      "checkpoint_label": "model_20",
+      "decision": "DIAGNOSTIC_ONLY",
+      "hard_easy_top25_psnr_delta": -5.621120402018229,
+      "hard_hard_bottom25_psnr_delta": -3.843598149617513,
+      "hard_mean_psnr_delta": -4.603448289235433,
+      "hard_mean_ssim_delta": -0.011632038354873657,
+      "hard_positive_ratio": 0.02666666666666667,
+      "hard_strong_regression_ratio": 0.9733333333333334,
+      "hard_worst_count_delta_le_-0p20": 289.0,
+      "pass_count": 0,
+      "present": true,
+      "regular_easy_top25_psnr_delta": -9.654663263956706,
+      "regular_hard_bottom25_psnr_delta": -4.354923248291016,
+      "regular_mean_psnr_delta": -7.291812502543132,
+      "regular_mean_ssim_delta": -0.011822509368260702,
+      "regular_positive_ratio": 0.0033333333333333335,
+      "regular_strong_regression_ratio": 1.0,
+      "regular_worst_count_delta_le_-0p20": 298.0,
+      "score": -38.303943679809564
+    },
+    {
+      "all_checks_pass": false,
+      "check_count": 9,
+      "checkpoint_label": "Best",
+      "decision": "DIAGNOSTIC_ONLY",
+      "hard_easy_top25_psnr_delta": -0.044719390869140625,
+      "hard_hard_bottom25_psnr_delta": -0.145697504679362,
+      "hard_mean_psnr_delta": -0.11041863123575846,
+      "hard_mean_ssim_delta": -0.00015870531400044758,
+      "hard_positive_ratio": 0.21666666666666667,
+      "hard_strong_regression_ratio": 0.56,
+      "hard_worst_count_delta_le_-0p20": 85.0,
+      "pass_count": 1,
+      "present": true,
+      "regular_easy_top25_psnr_delta": -0.02036259969075521,
+      "regular_hard_bottom25_psnr_delta": -0.1543084462483724,
+      "regular_mean_psnr_delta": -0.059605274200439456,
+      "regular_mean_ssim_delta": -0.00010508080323537191,
+      "regular_positive_ratio": 0.39,
+      "regular_strong_regression_ratio": 0.44,
+      "regular_worst_count_delta_le_-0p20": 86.0,
+      "score": -6.040108617623647
+    },
+    {
+      "all_checks_pass": false,
+      "check_count": 9,
+      "checkpoint_label": "Final",
+      "decision": "DIAGNOSTIC_ONLY",
+      "hard_easy_top25_psnr_delta": -5.6211204274495445,
+      "hard_hard_bottom25_psnr_delta": -3.843598149617513,
+      "hard_mean_psnr_delta": -4.60344830195109,
+      "hard_mean_ssim_delta": -0.011632036169370015,
+      "hard_positive_ratio": 0.02666666666666667,
+      "hard_strong_regression_ratio": 0.9733333333333334,
+      "hard_worst_count_delta_le_-0p20": 289.0,
+      "pass_count": 0,
+      "present": true,
+      "regular_easy_top25_psnr_delta": -9.65466313680013,
+      "regular_hard_bottom25_psnr_delta": -4.354923248291016,
+      "regular_mean_psnr_delta": -7.291812496185303,
+      "regular_mean_ssim_delta": -0.011822506189346313,
+      "regular_positive_ratio": 0.0033333333333333335,
+      "regular_strong_regression_ratio": 1.0,
+      "regular_worst_count_delta_le_-0p20": 298.0,
+      "score": -38.30394350894292
+    }
+  ],
+  "selected_all_checks_pass": false,
+  "selected_checkpoint_label": "Best",
+  "selected_score": -6.040108617623647,
+  "stage": "multi-metric checkpoint selection"
+}
+repair_step_done name=repair_seed_3407_multimetric_checkpoint_selection rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/repair_v18_seed3407_checkpoint_selection.log 2026-06-06T13:31:12+08:00
+repair_seed_done seed=3407 2026-06-06T13:31:12+08:00
+repair_seed_start seed=2026 reason=missing_or_empty_compare_json 2026-06-06T13:31:12+08:00
+repair_step_start name=repair_seed_2026_model_5_val_regular_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_5_val_regular.log 2026-06-06T13:31:12+08:00
+a0 100/300 psnr=38.7369
+a0 200/300 psnr=40.5068
+a0 300/300 psnr=39.4692
+v18_seed2026_model_5_val_regular 100/300 psnr=37.5514
+v18_seed2026_model_5_val_regular 200/300 psnr=39.3140
+v18_seed2026_model_5_val_regular 300/300 psnr=38.3095
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.46919342041016,
+      "mean_ssim": 0.9956027634938558,
+      "avg_time_sec_sync": 0.029643793900807697,
+      "median_time_sec_sync": 0.030060410499572754,
+      "peak_cuda_mem_mib": 535.27294921875
+    },
+    "v18_seed2026_model_5_val_regular": {
+      "label": "v18_seed2026_model_5_val_regular",
+      "arch": "dpga",
+      "mode": "model_5",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed2026-20260606/Training-Results/model_5.pkl",
+      "count": 300,
+      "mean_psnr": 38.30951369603475,
+      "mean_ssim": 0.994494736790657,
+      "avg_time_sec_sync": 0.037310117880503334,
+      "median_time_sec_sync": 0.042101383209228516,
+      "peak_cuda_mem_mib": 1147.56005859375
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -1.159679724375407,
+    "median_psnr_delta": -1.0744590759277344,
+    "p5_psnr_delta": -3.297847557067871,
+    "p95_psnr_delta": 0.5047081947326669,
+    "hard_bottom25_psnr_delta": -0.8098464711507162,
+    "easy_top25_psnr_delta": -1.6323697916666666,
+    "worst10pct_mean_psnr_delta": -3.5579126358032225,
+    "best10pct_mean_psnr_delta": 0.815806516011556,
+    "worst10img_mean_psnr_delta": -4.437481307983399,
+    "best10img_mean_psnr_delta": 1.5679523468017578,
+    "worst10_mean_psnr_delta": -3.5579126358032225,
+    "best10_mean_psnr_delta": 0.815806516011556,
+    "mean_ssim_delta": -0.0011080267031987508,
+    "positive_ratio": 0.14,
+    "strong_reference_cut_psnr": 42.45430278778076,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 70,
+    "worst_regression_count_delta_le_-0.20": 245
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_5_val_regular_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_per_image_v18_seed2026_model_5_val_regular_vs_a0.csv
+repair_step_done name=repair_seed_2026_model_5_val_regular_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_5_val_regular.log 2026-06-06T13:31:52+08:00
+repair_step_start name=repair_seed_2026_model_5_val_hard_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_5_val_hard.log 2026-06-06T13:31:52+08:00
+a0 100/300 psnr=33.9850
+a0 200/300 psnr=34.3937
+a0 300/300 psnr=34.2465
+v18_seed2026_model_5_val_hard 100/300 psnr=33.3980
+v18_seed2026_model_5_val_hard 200/300 psnr=33.7950
+v18_seed2026_model_5_val_hard 300/300 psnr=33.5833
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 34.24652523676554,
+      "mean_ssim": 0.993646314740181,
+      "avg_time_sec_sync": 0.02726315180460612,
+      "median_time_sec_sync": 0.024641871452331543,
+      "peak_cuda_mem_mib": 536.22607421875
+    },
+    "v18_seed2026_model_5_val_hard": {
+      "label": "v18_seed2026_model_5_val_hard",
+      "arch": "dpga",
+      "mode": "model_5",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed2026-20260606/Training-Results/model_5.pkl",
+      "count": 300,
+      "mean_psnr": 33.583344567616784,
+      "mean_ssim": 0.9923997600873311,
+      "avg_time_sec_sync": 0.03272046407063802,
+      "median_time_sec_sync": 0.029553651809692383,
+      "peak_cuda_mem_mib": 1147.46435546875
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -0.6631806691487631,
+    "median_psnr_delta": -0.7725610733032227,
+    "p5_psnr_delta": -2.219722366333008,
+    "p95_psnr_delta": 1.3259096145629896,
+    "hard_bottom25_psnr_delta": -0.7692931365966796,
+    "easy_top25_psnr_delta": -0.6132962036132813,
+    "worst10pct_mean_psnr_delta": -2.4071502685546875,
+    "best10pct_mean_psnr_delta": 1.3933465957641602,
+    "worst10img_mean_psnr_delta": -3.0493131637573243,
+    "best10img_mean_psnr_delta": 2.021891212463379,
+    "worst10_mean_psnr_delta": -2.4071502685546875,
+    "best10_mean_psnr_delta": 1.3933465957641602,
+    "mean_ssim_delta": -0.0012465546528498332,
+    "positive_ratio": 0.23,
+    "strong_reference_cut_psnr": 36.437724113464355,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 54,
+    "worst_regression_count_delta_le_-0.20": 214
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_5_val_hard_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_per_image_v18_seed2026_model_5_val_hard_vs_a0.csv
+repair_step_done name=repair_seed_2026_model_5_val_hard_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_5_val_hard.log 2026-06-06T13:32:27+08:00
+repair_step_start name=repair_seed_2026_model_10_val_regular_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_10_val_regular.log 2026-06-06T13:32:27+08:00
+a0 100/300 psnr=38.7369
+a0 200/300 psnr=40.5068
+a0 300/300 psnr=39.4692
+v18_seed2026_model_10_val_regular 100/300 psnr=35.6554
+v18_seed2026_model_10_val_regular 200/300 psnr=37.0228
+v18_seed2026_model_10_val_regular 300/300 psnr=36.1880
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.469193331400554,
+      "mean_ssim": 0.9956027615070343,
+      "avg_time_sec_sync": 0.02938025951385498,
+      "median_time_sec_sync": 0.030025839805603027,
+      "peak_cuda_mem_mib": 535.27294921875
+    },
+    "v18_seed2026_model_10_val_regular": {
+      "label": "v18_seed2026_model_10_val_regular",
+      "arch": "dpga",
+      "mode": "model_10",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed2026-20260606/Training-Results/model_10.pkl",
+      "count": 300,
+      "mean_psnr": 36.187986348470055,
+      "mean_ssim": 0.9920633594195049,
+      "avg_time_sec_sync": 0.036485692660013835,
+      "median_time_sec_sync": 0.041567087173461914,
+      "peak_cuda_mem_mib": 1147.56005859375
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -3.2812069829305015,
+    "median_psnr_delta": -3.1967315673828125,
+    "p5_psnr_delta": -6.935526657104492,
+    "p95_psnr_delta": -0.01022529602050648,
+    "hard_bottom25_psnr_delta": -1.9174033864339193,
+    "easy_top25_psnr_delta": -4.712870890299479,
+    "worst10pct_mean_psnr_delta": -7.229764684041341,
+    "best10pct_mean_psnr_delta": 0.3859551747639974,
+    "worst10img_mean_psnr_delta": -8.397706604003906,
+    "best10img_mean_psnr_delta": 1.6110872268676757,
+    "worst10_mean_psnr_delta": -7.229764684041341,
+    "best10_mean_psnr_delta": 0.3859551747639974,
+    "mean_ssim_delta": -0.0035394020875295002,
+    "positive_ratio": 0.05,
+    "strong_reference_cut_psnr": 42.45430278778076,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 75,
+    "worst_regression_count_delta_le_-0.20": 278
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_10_val_regular_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_per_image_v18_seed2026_model_10_val_regular_vs_a0.csv
+repair_step_done name=repair_seed_2026_model_10_val_regular_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_10_val_regular.log 2026-06-06T13:33:06+08:00
+repair_step_start name=repair_seed_2026_model_10_val_hard_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_10_val_hard.log 2026-06-06T13:33:06+08:00
+a0 100/300 psnr=33.9850
+a0 200/300 psnr=34.3937
+a0 300/300 psnr=34.2465
+v18_seed2026_model_10_val_hard 100/300 psnr=32.3588
+v18_seed2026_model_10_val_hard 200/300 psnr=32.6601
+v18_seed2026_model_10_val_hard 300/300 psnr=32.4132
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 34.24652523676554,
+      "mean_ssim": 0.9936463159322738,
+      "avg_time_sec_sync": 0.026601988474527993,
+      "median_time_sec_sync": 0.02245461940765381,
+      "peak_cuda_mem_mib": 536.22607421875
+    },
+    "v18_seed2026_model_10_val_hard": {
+      "label": "v18_seed2026_model_10_val_hard",
+      "arch": "dpga",
+      "mode": "model_10",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed2026-20260606/Training-Results/model_10.pkl",
+      "count": 300,
+      "mean_psnr": 32.41323394775391,
+      "mean_ssim": 0.9899735275904338,
+      "avg_time_sec_sync": 0.031739174524943035,
+      "median_time_sec_sync": 0.029677510261535645,
+      "peak_cuda_mem_mib": 1147.46435546875
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -1.8332912890116373,
+    "median_psnr_delta": -1.9423036575317383,
+    "p5_psnr_delta": -4.444147777557373,
+    "p95_psnr_delta": 1.3594130516052265,
+    "hard_bottom25_psnr_delta": -1.7380157216389973,
+    "easy_top25_psnr_delta": -2.092751922607422,
+    "worst10pct_mean_psnr_delta": -4.775738271077474,
+    "best10pct_mean_psnr_delta": 1.618247922261556,
+    "worst10img_mean_psnr_delta": -5.757537841796875,
+    "best10img_mean_psnr_delta": 3.105867385864258,
+    "worst10_mean_psnr_delta": -4.775738271077474,
+    "best10_mean_psnr_delta": 1.618247922261556,
+    "mean_ssim_delta": -0.003672788341840108,
+    "positive_ratio": 0.1,
+    "strong_reference_cut_psnr": 36.437724113464355,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 66,
+    "worst_regression_count_delta_le_-0.20": 262
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_10_val_hard_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_per_image_v18_seed2026_model_10_val_hard_vs_a0.csv
+repair_step_done name=repair_seed_2026_model_10_val_hard_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_10_val_hard.log 2026-06-06T13:33:40+08:00
+repair_step_start name=repair_seed_2026_model_15_val_regular_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_15_val_regular.log 2026-06-06T13:33:40+08:00
+a0 100/300 psnr=38.7369
+a0 200/300 psnr=40.5068
+a0 300/300 psnr=39.4692
+v18_seed2026_model_15_val_regular 100/300 psnr=33.7730
+v18_seed2026_model_15_val_regular 200/300 psnr=34.8167
+v18_seed2026_model_15_val_regular 300/300 psnr=34.0624
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.46919344584147,
+      "mean_ssim": 0.9956027670701345,
+      "avg_time_sec_sync": 0.029225006103515624,
+      "median_time_sec_sync": 0.030029296875,
+      "peak_cuda_mem_mib": 535.27294921875
+    },
+    "v18_seed2026_model_15_val_regular": {
+      "label": "v18_seed2026_model_15_val_regular",
+      "arch": "dpga",
+      "mode": "model_15",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed2026-20260606/Training-Results/model_15.pkl",
+      "count": 300,
+      "mean_psnr": 34.06239372253418,
+      "mean_ssim": 0.9884102390209833,
+      "avg_time_sec_sync": 0.03714880545934041,
+      "median_time_sec_sync": 0.04229271411895752,
+      "peak_cuda_mem_mib": 1147.56005859375
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -5.406799723307292,
+    "median_psnr_delta": -5.259990692138672,
+    "p5_psnr_delta": -9.84296817779541,
+    "p95_psnr_delta": -1.0534059524536128,
+    "hard_bottom25_psnr_delta": -3.175649871826172,
+    "easy_top25_psnr_delta": -7.430390523274739,
+    "worst10pct_mean_psnr_delta": -10.17440497080485,
+    "best10pct_mean_psnr_delta": -0.8678495407104492,
+    "worst10img_mean_psnr_delta": -11.283313369750976,
+    "best10img_mean_psnr_delta": 0.036073493957519534,
+    "worst10_mean_psnr_delta": -10.17440497080485,
+    "best10_mean_psnr_delta": -0.8678495407104492,
+    "mean_ssim_delta": -0.007192528049151103,
+    "positive_ratio": 0.013333333333333334,
+    "strong_reference_cut_psnr": 42.45430278778076,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 75,
+    "worst_regression_count_delta_le_-0.20": 295
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_15_val_regular_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_per_image_v18_seed2026_model_15_val_regular_vs_a0.csv
+repair_step_done name=repair_seed_2026_model_15_val_regular_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_15_val_regular.log 2026-06-06T13:34:19+08:00
+repair_step_start name=repair_seed_2026_model_15_val_hard_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_15_val_hard.log 2026-06-06T13:34:19+08:00
+a0 100/300 psnr=33.9850
+a0 200/300 psnr=34.3937
+a0 300/300 psnr=34.2465
+v18_seed2026_model_15_val_hard 100/300 psnr=31.0138
+v18_seed2026_model_15_val_hard 200/300 psnr=31.2495
+v18_seed2026_model_15_val_hard 300/300 psnr=31.0005
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 34.24652523676554,
+      "mean_ssim": 0.9936463159322738,
+      "avg_time_sec_sync": 0.02862643559773763,
+      "median_time_sec_sync": 0.026924610137939453,
+      "peak_cuda_mem_mib": 536.22607421875
+    },
+    "v18_seed2026_model_15_val_hard": {
+      "label": "v18_seed2026_model_15_val_hard",
+      "arch": "dpga",
+      "mode": "model_15",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed2026-20260606/Training-Results/model_15.pkl",
+      "count": 300,
+      "mean_psnr": 31.00047016143799,
+      "mean_ssim": 0.9863134209314982,
+      "avg_time_sec_sync": 0.03265881935755412,
+      "median_time_sec_sync": 0.029589414596557617,
+      "peak_cuda_mem_mib": 1147.46435546875
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -3.2460550753275554,
+    "median_psnr_delta": -3.430145263671875,
+    "p5_psnr_delta": -6.307155990600586,
+    "p95_psnr_delta": 0.2959633827209478,
+    "hard_bottom25_psnr_delta": -2.822796147664388,
+    "easy_top25_psnr_delta": -3.8973351287841798,
+    "worst10pct_mean_psnr_delta": -6.752007357279459,
+    "best10pct_mean_psnr_delta": 0.8390056610107421,
+    "worst10img_mean_psnr_delta": -8.015408325195313,
+    "best10img_mean_psnr_delta": 2.9055370330810546,
+    "worst10_mean_psnr_delta": -6.752007357279459,
+    "best10_mean_psnr_delta": 0.8390056610107421,
+    "mean_ssim_delta": -0.0073328950007756554,
+    "positive_ratio": 0.056666666666666664,
+    "strong_reference_cut_psnr": 36.437724113464355,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 71,
+    "worst_regression_count_delta_le_-0.20": 283
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_15_val_hard_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_per_image_v18_seed2026_model_15_val_hard_vs_a0.csv
+repair_step_done name=repair_seed_2026_model_15_val_hard_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_15_val_hard.log 2026-06-06T13:34:54+08:00
+repair_step_start name=repair_seed_2026_model_20_val_regular_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_20_val_regular.log 2026-06-06T13:34:54+08:00
+a0 100/300 psnr=38.7369
+a0 200/300 psnr=40.5068
+a0 300/300 psnr=39.4692
+v18_seed2026_model_20_val_regular 100/300 psnr=31.9590
+v18_seed2026_model_20_val_regular 200/300 psnr=32.8571
+v18_seed2026_model_20_val_regular 300/300 psnr=32.1456
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.469193382263185,
+      "mean_ssim": 0.9956027656793595,
+      "avg_time_sec_sync": 0.02898972431818644,
+      "median_time_sec_sync": 0.03003215789794922,
+      "peak_cuda_mem_mib": 535.27294921875
+    },
+    "v18_seed2026_model_20_val_regular": {
+      "label": "v18_seed2026_model_20_val_regular",
+      "arch": "dpga",
+      "mode": "model_20",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed2026-20260606/Training-Results/model_20.pkl",
+      "count": 300,
+      "mean_psnr": 32.145630785624185,
+      "mean_ssim": 0.9837208757797877,
+      "avg_time_sec_sync": 0.03615057150522868,
+      "median_time_sec_sync": 0.04157125949859619,
+      "peak_cuda_mem_mib": 1147.56005859375
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -7.323562596638998,
+    "median_psnr_delta": -7.340520858764648,
+    "p5_psnr_delta": -12.347820281982422,
+    "p95_psnr_delta": -2.112287521362304,
+    "hard_bottom25_psnr_delta": -4.573643493652344,
+    "easy_top25_psnr_delta": -9.601756795247395,
+    "worst10pct_mean_psnr_delta": -12.443268203735352,
+    "best10pct_mean_psnr_delta": -1.9385287602742514,
+    "worst10img_mean_psnr_delta": -13.730101013183594,
+    "best10img_mean_psnr_delta": -0.8273303985595704,
+    "worst10_mean_psnr_delta": -12.443268203735352,
+    "best10_mean_psnr_delta": -1.9385287602742514,
+    "mean_ssim_delta": -0.011881889899571736,
+    "positive_ratio": 0.01,
+    "strong_reference_cut_psnr": 42.45430278778076,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 75,
+    "worst_regression_count_delta_le_-0.20": 297
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_20_val_regular_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_per_image_v18_seed2026_model_20_val_regular_vs_a0.csv
+repair_step_done name=repair_seed_2026_model_20_val_regular_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_20_val_regular.log 2026-06-06T13:35:32+08:00
+repair_step_start name=repair_seed_2026_model_20_val_hard_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_20_val_hard.log 2026-06-06T13:35:32+08:00
+a0 100/300 psnr=33.9850
+a0 200/300 psnr=34.3937
+a0 300/300 psnr=34.2465
+v18_seed2026_model_20_val_hard 100/300 psnr=29.5361
+v18_seed2026_model_20_val_hard 200/300 psnr=29.7008
+v18_seed2026_model_20_val_hard 300/300 psnr=29.4935
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 34.24652522404988,
+      "mean_ssim": 0.993646316130956,
+      "avg_time_sec_sync": 0.027434763113657633,
+      "median_time_sec_sync": 0.023431897163391113,
+      "peak_cuda_mem_mib": 536.22607421875
+    },
+    "v18_seed2026_model_20_val_hard": {
+      "label": "v18_seed2026_model_20_val_hard",
+      "arch": "dpga",
+      "mode": "model_20",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed2026-20260606/Training-Results/model_20.pkl",
+      "count": 300,
+      "mean_psnr": 29.493521455128988,
+      "mean_ssim": 0.9817106578747431,
+      "avg_time_sec_sync": 0.032102500597635905,
+      "median_time_sec_sync": 0.029695630073547363,
+      "peak_cuda_mem_mib": 1147.46435546875
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -4.753003768920898,
+    "median_psnr_delta": -4.823704719543457,
+    "p5_psnr_delta": -8.291306495666504,
+    "p95_psnr_delta": -0.9302690505981436,
+    "hard_bottom25_psnr_delta": -4.033749974568685,
+    "easy_top25_psnr_delta": -5.676606343587239,
+    "worst10pct_mean_psnr_delta": -8.67289301554362,
+    "best10pct_mean_psnr_delta": -0.5775012969970703,
+    "worst10img_mean_psnr_delta": -10.002331924438476,
+    "best10img_mean_psnr_delta": 1.1176197052001953,
+    "worst10_mean_psnr_delta": -8.67289301554362,
+    "best10_mean_psnr_delta": -0.5775012969970703,
+    "mean_ssim_delta": -0.01193565825621287,
+    "positive_ratio": 0.03333333333333333,
+    "strong_reference_cut_psnr": 36.437724113464355,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 72,
+    "worst_regression_count_delta_le_-0.20": 290
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_20_val_hard_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_per_image_v18_seed2026_model_20_val_hard_vs_a0.csv
+repair_step_done name=repair_seed_2026_model_20_val_hard_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_model_20_val_hard.log 2026-06-06T13:36:06+08:00
+repair_step_start name=repair_seed_2026_Best_val_regular_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_best_val_regular.log 2026-06-06T13:36:06+08:00
+a0 100/300 psnr=38.7369
+a0 200/300 psnr=40.5068
+a0 300/300 psnr=39.4692
+v18_seed2026_best_val_regular 100/300 psnr=38.6566
+v18_seed2026_best_val_regular 200/300 psnr=40.4768
+v18_seed2026_best_val_regular 300/300 psnr=39.4213
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.46919348398844,
+      "mean_ssim": 0.9956027644872666,
+      "avg_time_sec_sync": 0.028882402578989663,
+      "median_time_sec_sync": 0.03000175952911377,
+      "peak_cuda_mem_mib": 535.27294921875
+    },
+    "v18_seed2026_best_val_regular": {
+      "label": "v18_seed2026_best_val_regular",
+      "arch": "dpga",
+      "mode": "Best",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed2026-20260606/Training-Results/Best.pkl",
+      "count": 300,
+      "mean_psnr": 39.421327355702715,
+      "mean_ssim": 0.9955154550075531,
+      "avg_time_sec_sync": 0.03606652498245239,
+      "median_time_sec_sync": 0.041555166244506836,
+      "peak_cuda_mem_mib": 1147.56005859375
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -0.04786612828572591,
+    "median_psnr_delta": -0.06877517700195312,
+    "p5_psnr_delta": -0.6647207260131835,
+    "p95_psnr_delta": 0.6123535156250002,
+    "hard_bottom25_psnr_delta": -0.11403465270996094,
+    "easy_top25_psnr_delta": -0.05246902465820313,
+    "worst10pct_mean_psnr_delta": -0.7452809651692708,
+    "best10pct_mean_psnr_delta": 0.6885238647460937,
+    "worst10img_mean_psnr_delta": -0.9903373718261719,
+    "best10img_mean_psnr_delta": 1.0055400848388671,
+    "worst10_mean_psnr_delta": -0.7452809651692708,
+    "best10_mean_psnr_delta": 0.6885238647460937,
+    "mean_ssim_delta": -8.730947971343994e-05,
+    "positive_ratio": 0.4166666666666667,
+    "strong_reference_cut_psnr": 42.45430278778076,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 37,
+    "worst_regression_count_delta_le_-0.20": 84
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_best_val_regular_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_per_image_v18_seed2026_best_val_regular_vs_a0.csv
+repair_step_done name=repair_seed_2026_Best_val_regular_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_best_val_regular.log 2026-06-06T13:36:45+08:00
+repair_step_start name=repair_seed_2026_Best_val_hard_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_best_val_hard.log 2026-06-06T13:36:45+08:00
+a0 100/300 psnr=33.9850
+a0 200/300 psnr=34.3937
+a0 300/300 psnr=34.2465
+v18_seed2026_best_val_hard 100/300 psnr=33.9147
+v18_seed2026_best_val_hard 200/300 psnr=34.3412
+v18_seed2026_best_val_hard 300/300 psnr=34.1675
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 34.24652522404988,
+      "mean_ssim": 0.993646317521731,
+      "avg_time_sec_sync": 0.028651840686798095,
+      "median_time_sec_sync": 0.026813507080078125,
+      "peak_cuda_mem_mib": 536.22607421875
+    },
+    "v18_seed2026_best_val_hard": {
+      "label": "v18_seed2026_best_val_hard",
+      "arch": "dpga",
+      "mode": "Best",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed2026-20260606/Training-Results/Best.pkl",
+      "count": 300,
+      "mean_psnr": 34.16754175186157,
+      "mean_ssim": 0.9935272771120072,
+      "avg_time_sec_sync": 0.032723614374796546,
+      "median_time_sec_sync": 0.02954232692718506,
+      "peak_cuda_mem_mib": 1147.46435546875
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -0.07898347218831381,
+    "median_psnr_delta": -0.104034423828125,
+    "p5_psnr_delta": -0.4029699325561523,
+    "p95_psnr_delta": 0.33477230072021497,
+    "hard_bottom25_psnr_delta": -0.11298731486002604,
+    "easy_top25_psnr_delta": -8.967081705729167e-05,
+    "worst10pct_mean_psnr_delta": -0.4706568400065104,
+    "best10pct_mean_psnr_delta": 0.37652409871419273,
+    "worst10img_mean_psnr_delta": -0.6606224060058594,
+    "best10img_mean_psnr_delta": 0.5215003967285157,
+    "worst10_mean_psnr_delta": -0.4706568400065104,
+    "best10_mean_psnr_delta": 0.37652409871419273,
+    "mean_ssim_delta": -0.00011904040972391765,
+    "positive_ratio": 0.31,
+    "strong_reference_cut_psnr": 36.437724113464355,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 38,
+    "worst_regression_count_delta_le_-0.20": 85
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_best_val_hard_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_per_image_v18_seed2026_best_val_hard_vs_a0.csv
+repair_step_done name=repair_seed_2026_Best_val_hard_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_best_val_hard.log 2026-06-06T13:37:20+08:00
+repair_step_start name=repair_seed_2026_Final_val_regular_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_final_val_regular.log 2026-06-06T13:37:20+08:00
+a0 100/300 psnr=38.7369
+a0 200/300 psnr=40.5068
+a0 300/300 psnr=39.4692
+v18_seed2026_final_val_regular 100/300 psnr=31.9590
+v18_seed2026_final_val_regular 200/300 psnr=32.8571
+v18_seed2026_final_val_regular 300/300 psnr=32.1456
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.46919339497884,
+      "mean_ssim": 0.9956027632951736,
+      "avg_time_sec_sync": 0.029297761917114258,
+      "median_time_sec_sync": 0.030010461807250977,
+      "peak_cuda_mem_mib": 535.27294921875
+    },
+    "v18_seed2026_final_val_regular": {
+      "label": "v18_seed2026_final_val_regular",
+      "arch": "dpga",
+      "mode": "Final",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed2026-20260606/Training-Results/Final.pkl",
+      "count": 300,
+      "mean_psnr": 32.145630785624185,
+      "mean_ssim": 0.9837208791573843,
+      "avg_time_sec_sync": 0.03637986660003662,
+      "median_time_sec_sync": 0.041748046875,
+      "peak_cuda_mem_mib": 1147.56005859375
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -7.323562609354655,
+    "median_psnr_delta": -7.340520858764648,
+    "p5_psnr_delta": -12.347827529907226,
+    "p95_psnr_delta": -2.112287521362304,
+    "hard_bottom25_psnr_delta": -4.573643519083659,
+    "easy_top25_psnr_delta": -9.601756896972656,
+    "worst10pct_mean_psnr_delta": -12.44326852162679,
+    "best10pct_mean_psnr_delta": -1.9385287602742514,
+    "worst10img_mean_psnr_delta": -13.730101394653321,
+    "best10img_mean_psnr_delta": -0.8273303985595704,
+    "worst10_mean_psnr_delta": -12.44326852162679,
+    "best10_mean_psnr_delta": -1.9385287602742514,
+    "mean_ssim_delta": -0.011881884137789409,
+    "positive_ratio": 0.01,
+    "strong_reference_cut_psnr": 42.45430278778076,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 75,
+    "worst_regression_count_delta_le_-0.20": 297
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_final_val_regular_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_per_image_v18_seed2026_final_val_regular_vs_a0.csv
+repair_step_done name=repair_seed_2026_Final_val_regular_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_final_val_regular.log 2026-06-06T13:37:59+08:00
+repair_step_start name=repair_seed_2026_Final_val_hard_eval log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_final_val_hard.log 2026-06-06T13:37:59+08:00
+a0 100/300 psnr=33.9850
+a0 200/300 psnr=34.3937
+a0 300/300 psnr=34.2465
+v18_seed2026_final_val_hard 100/300 psnr=29.5361
+v18_seed2026_final_val_hard 200/300 psnr=29.7008
+v18_seed2026_final_val_hard 300/300 psnr=29.4935
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 34.24652519861857,
+      "mean_ssim": 0.9936463157335917,
+      "avg_time_sec_sync": 0.027055083910624188,
+      "median_time_sec_sync": 0.022813796997070312,
+      "peak_cuda_mem_mib": 536.22607421875
+    },
+    "v18_seed2026_final_val_hard": {
+      "label": "v18_seed2026_final_val_hard",
+      "arch": "dpga",
+      "mode": "Final",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/Dehazing/ITS/results/ConvIR-Haze4K-v1.8-BiDPFM1-fusion-neighbor-seed2026-20260606/Training-Results/Final.pkl",
+      "count": 300,
+      "mean_psnr": 29.493521436055502,
+      "mean_ssim": 0.9817106596628825,
+      "avg_time_sec_sync": 0.03204844156901042,
+      "median_time_sec_sync": 0.03002309799194336,
+      "peak_cuda_mem_mib": 1147.46435546875
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -4.753003762563069,
+    "median_psnr_delta": -4.823704719543457,
+    "p5_psnr_delta": -8.291306495666504,
+    "p95_psnr_delta": -0.9302690505981436,
+    "hard_bottom25_psnr_delta": -4.033749974568685,
+    "easy_top25_psnr_delta": -5.6766062927246095,
+    "worst10pct_mean_psnr_delta": -8.672892761230468,
+    "best10pct_mean_psnr_delta": -0.5775012969970703,
+    "worst10img_mean_psnr_delta": -10.002331924438476,
+    "best10img_mean_psnr_delta": 1.1176197052001953,
+    "worst10_mean_psnr_delta": -8.672892761230468,
+    "best10_mean_psnr_delta": -0.5775012969970703,
+    "mean_ssim_delta": -0.011935656070709228,
+    "positive_ratio": 0.03333333333333333,
+    "strong_reference_cut_psnr": 36.437724113464355,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 72,
+    "worst_regression_count_delta_le_-0.20": 290
+  }
+}
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_final_val_hard_vs_a0.json
+wrote /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_per_image_v18_seed2026_final_val_hard_vs_a0.csv
+repair_step_done name=repair_seed_2026_Final_val_hard_eval rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/repair_eval_v18_seed2026_final_val_hard.log 2026-06-06T13:38:33+08:00
+repair_step_start name=repair_seed_2026_multimetric_checkpoint_selection log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/repair_v18_seed2026_checkpoint_selection.log 2026-06-06T13:38:33+08:00
+{
+  "candidate_prefix": "v18_seed2026",
+  "checkpoint_labels": [
+    "model_5",
+    "model_10",
+    "model_15",
+    "model_20",
+    "Best",
+    "Final"
+  ],
+  "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+  "details": {
+    "Best": {
+      "checks": {
+        "hard_bottom25_ge_0p03": false,
+        "hard_mean_nonnegative": false,
+        "hard_ssim_nonnegative": false,
+        "hard_worst_count_le_12": false,
+        "regular_easy_not_below_neg0p05": false,
+        "regular_mean_nonnegative": false,
+        "regular_ssim_nonnegative": false,
+        "regular_strong_ratio_le_0p25": false,
+        "regular_worst_count_le_20": false
+      },
+      "hard": {
+        "easy_top25_psnr_delta": -8.967081705729167e-05,
+        "hard_bottom25_psnr_delta": -0.11298731486002604,
+        "mean_psnr_delta": -0.07898347218831381,
+        "mean_ssim_delta": -0.00011904040972391765,
+        "positive_ratio": 0.31,
+        "strong_regression_ratio": 0.5066666666666667,
+        "worst_count_delta_le_-0p20": 85.0
+      },
+      "hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_best_val_hard_vs_a0.json",
+      "regular": {
+        "easy_top25_psnr_delta": -0.05246902465820313,
+        "hard_bottom25_psnr_delta": -0.11403465270996094,
+        "mean_psnr_delta": -0.04786612828572591,
+        "mean_ssim_delta": -8.730947971343994e-05,
+        "positive_ratio": 0.4166666666666667,
+        "strong_regression_ratio": 0.49333333333333335,
+        "worst_count_delta_le_-0p20": 84.0
+      },
+      "regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_best_val_regular_vs_a0.json",
+      "score": -5.951637485663095
+    },
+    "Final": {
+      "checks": {
+        "hard_bottom25_ge_0p03": false,
+        "hard_mean_nonnegative": false,
+        "hard_ssim_nonnegative": false,
+        "hard_worst_count_le_12": false,
+        "regular_easy_not_below_neg0p05": false,
+        "regular_mean_nonnegative": false,
+        "regular_ssim_nonnegative": false,
+        "regular_strong_ratio_le_0p25": false,
+        "regular_worst_count_le_20": false
+      },
+      "hard": {
+        "easy_top25_psnr_delta": -5.6766062927246095,
+        "hard_bottom25_psnr_delta": -4.033749974568685,
+        "mean_psnr_delta": -4.753003762563069,
+        "mean_ssim_delta": -0.011935656070709228,
+        "positive_ratio": 0.03333333333333333,
+        "strong_regression_ratio": 0.96,
+        "worst_count_delta_le_-0p20": 290.0
+      },
+      "hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_final_val_hard_vs_a0.json",
+      "regular": {
+        "easy_top25_psnr_delta": -9.601756896972656,
+        "hard_bottom25_psnr_delta": -4.573643519083659,
+        "mean_psnr_delta": -7.323562609354655,
+        "mean_ssim_delta": -0.011881884137789409,
+        "positive_ratio": 0.01,
+        "strong_regression_ratio": 1.0,
+        "worst_count_delta_le_-0p20": 297.0
+      },
+      "regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_final_val_regular_vs_a0.json",
+      "score": -38.622793712774914
+    },
+    "model_10": {
+      "checks": {
+        "hard_bottom25_ge_0p03": false,
+        "hard_mean_nonnegative": false,
+        "hard_ssim_nonnegative": false,
+        "hard_worst_count_le_12": false,
+        "regular_easy_not_below_neg0p05": false,
+        "regular_mean_nonnegative": false,
+        "regular_ssim_nonnegative": false,
+        "regular_strong_ratio_le_0p25": false,
+        "regular_worst_count_le_20": false
+      },
+      "hard": {
+        "easy_top25_psnr_delta": -2.092751922607422,
+        "hard_bottom25_psnr_delta": -1.7380157216389973,
+        "mean_psnr_delta": -1.8332912890116373,
+        "mean_ssim_delta": -0.003672788341840108,
+        "positive_ratio": 0.1,
+        "strong_regression_ratio": 0.88,
+        "worst_count_delta_le_-0p20": 262.0
+      },
+      "hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_10_val_hard_vs_a0.json",
+      "regular": {
+        "easy_top25_psnr_delta": -4.712870890299479,
+        "hard_bottom25_psnr_delta": -1.9174033864339193,
+        "mean_psnr_delta": -3.2812069829305015,
+        "mean_ssim_delta": -0.0035394020875295002,
+        "positive_ratio": 0.05,
+        "strong_regression_ratio": 1.0,
+        "worst_count_delta_le_-0p20": 278.0
+      },
+      "regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_10_val_regular_vs_a0.json",
+      "score": -26.09415074714025
+    },
+    "model_15": {
+      "checks": {
+        "hard_bottom25_ge_0p03": false,
+        "hard_mean_nonnegative": false,
+        "hard_ssim_nonnegative": false,
+        "hard_worst_count_le_12": false,
+        "regular_easy_not_below_neg0p05": false,
+        "regular_mean_nonnegative": false,
+        "regular_ssim_nonnegative": false,
+        "regular_strong_ratio_le_0p25": false,
+        "regular_worst_count_le_20": false
+      },
+      "hard": {
+        "easy_top25_psnr_delta": -3.8973351287841798,
+        "hard_bottom25_psnr_delta": -2.822796147664388,
+        "mean_psnr_delta": -3.2460550753275554,
+        "mean_ssim_delta": -0.0073328950007756554,
+        "positive_ratio": 0.056666666666666664,
+        "strong_regression_ratio": 0.9466666666666667,
+        "worst_count_delta_le_-0p20": 283.0
+      },
+      "hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_15_val_hard_vs_a0.json",
+      "regular": {
+        "easy_top25_psnr_delta": -7.430390523274739,
+        "hard_bottom25_psnr_delta": -3.175649871826172,
+        "mean_psnr_delta": -5.406799723307292,
+        "mean_ssim_delta": -0.007192528049151103,
+        "positive_ratio": 0.013333333333333334,
+        "strong_regression_ratio": 1.0,
+        "worst_count_delta_le_-0p20": 295.0
+      },
+      "regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_15_val_regular_vs_a0.json",
+      "score": -32.92621969413758
+    },
+    "model_20": {
+      "checks": {
+        "hard_bottom25_ge_0p03": false,
+        "hard_mean_nonnegative": false,
+        "hard_ssim_nonnegative": false,
+        "hard_worst_count_le_12": false,
+        "regular_easy_not_below_neg0p05": false,
+        "regular_mean_nonnegative": false,
+        "regular_ssim_nonnegative": false,
+        "regular_strong_ratio_le_0p25": false,
+        "regular_worst_count_le_20": false
+      },
+      "hard": {
+        "easy_top25_psnr_delta": -5.676606343587239,
+        "hard_bottom25_psnr_delta": -4.033749974568685,
+        "mean_psnr_delta": -4.753003768920898,
+        "mean_ssim_delta": -0.01193565825621287,
+        "positive_ratio": 0.03333333333333333,
+        "strong_regression_ratio": 0.96,
+        "worst_count_delta_le_-0p20": 290.0
+      },
+      "hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_20_val_hard_vs_a0.json",
+      "regular": {
+        "easy_top25_psnr_delta": -9.601756795247395,
+        "hard_bottom25_psnr_delta": -4.573643493652344,
+        "mean_psnr_delta": -7.323562596638998,
+        "mean_ssim_delta": -0.011881889899571736,
+        "positive_ratio": 0.01,
+        "strong_regression_ratio": 1.0,
+        "worst_count_delta_le_-0p20": 297.0
+      },
+      "regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_20_val_regular_vs_a0.json",
+      "score": -38.62279381132126
+    },
+    "model_5": {
+      "checks": {
+        "hard_bottom25_ge_0p03": false,
+        "hard_mean_nonnegative": false,
+        "hard_ssim_nonnegative": false,
+        "hard_worst_count_le_12": false,
+        "regular_easy_not_below_neg0p05": false,
+        "regular_mean_nonnegative": false,
+        "regular_ssim_nonnegative": false,
+        "regular_strong_ratio_le_0p25": false,
+        "regular_worst_count_le_20": false
+      },
+      "hard": {
+        "easy_top25_psnr_delta": -0.6132962036132813,
+        "hard_bottom25_psnr_delta": -0.7692931365966796,
+        "mean_psnr_delta": -0.6631806691487631,
+        "mean_ssim_delta": -0.0012465546528498332,
+        "positive_ratio": 0.23,
+        "strong_regression_ratio": 0.72,
+        "worst_count_delta_le_-0p20": 214.0
+      },
+      "hard_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_5_val_hard_vs_a0.json",
+      "regular": {
+        "easy_top25_psnr_delta": -1.6323697916666666,
+        "hard_bottom25_psnr_delta": -0.8098464711507162,
+        "mean_psnr_delta": -1.159679724375407,
+        "mean_ssim_delta": -0.0011080267031987508,
+        "positive_ratio": 0.14,
+        "strong_regression_ratio": 0.9333333333333333,
+        "worst_count_delta_le_-0p20": 245.0
+      },
+      "regular_compare_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard/scout_eval_compare_v18_seed2026_model_5_val_regular_vs_a0.json",
+      "score": -17.95269834582011
+    }
+  },
+  "eval_dir": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/eval_regular_hard",
+  "locked_test_touched": false,
+  "rows": [
+    {
+      "all_checks_pass": false,
+      "check_count": 9,
+      "checkpoint_label": "model_5",
+      "decision": "DIAGNOSTIC_ONLY",
+      "hard_easy_top25_psnr_delta": -0.6132962036132813,
+      "hard_hard_bottom25_psnr_delta": -0.7692931365966796,
+      "hard_mean_psnr_delta": -0.6631806691487631,
+      "hard_mean_ssim_delta": -0.0012465546528498332,
+      "hard_positive_ratio": 0.23,
+      "hard_strong_regression_ratio": 0.72,
+      "hard_worst_count_delta_le_-0p20": 214.0,
+      "pass_count": 0,
+      "present": true,
+      "regular_easy_top25_psnr_delta": -1.6323697916666666,
+      "regular_hard_bottom25_psnr_delta": -0.8098464711507162,
+      "regular_mean_psnr_delta": -1.159679724375407,
+      "regular_mean_ssim_delta": -0.0011080267031987508,
+      "regular_positive_ratio": 0.14,
+      "regular_strong_regression_ratio": 0.9333333333333333,
+      "regular_worst_count_delta_le_-0p20": 245.0,
+      "score": -17.95269834582011
+    },
+    {
+      "all_checks_pass": false,
+      "check_count": 9,
+      "checkpoint_label": "model_10",
+      "decision": "DIAGNOSTIC_ONLY",
+      "hard_easy_top25_psnr_delta": -2.092751922607422,
+      "hard_hard_bottom25_psnr_delta": -1.7380157216389973,
+      "hard_mean_psnr_delta": -1.8332912890116373,
+      "hard_mean_ssim_delta": -0.003672788341840108,
+      "hard_positive_ratio": 0.1,
+      "hard_strong_regression_ratio": 0.88,
+      "hard_worst_count_delta_le_-0p20": 262.0,
+      "pass_count": 0,
+      "present": true,
+      "regular_easy_top25_psnr_delta": -4.712870890299479,
+      "regular_hard_bottom25_psnr_delta": -1.9174033864339193,
+      "regular_mean_psnr_delta": -3.2812069829305015,
+      "regular_mean_ssim_delta": -0.0035394020875295002,
+      "regular_positive_ratio": 0.05,
+      "regular_strong_regression_ratio": 1.0,
+      "regular_worst_count_delta_le_-0p20": 278.0,
+      "score": -26.09415074714025
+    },
+    {
+      "all_checks_pass": false,
+      "check_count": 9,
+      "checkpoint_label": "model_15",
+      "decision": "DIAGNOSTIC_ONLY",
+      "hard_easy_top25_psnr_delta": -3.8973351287841798,
+      "hard_hard_bottom25_psnr_delta": -2.822796147664388,
+      "hard_mean_psnr_delta": -3.2460550753275554,
+      "hard_mean_ssim_delta": -0.0073328950007756554,
+      "hard_positive_ratio": 0.056666666666666664,
+      "hard_strong_regression_ratio": 0.9466666666666667,
+      "hard_worst_count_delta_le_-0p20": 283.0,
+      "pass_count": 0,
+      "present": true,
+      "regular_easy_top25_psnr_delta": -7.430390523274739,
+      "regular_hard_bottom25_psnr_delta": -3.175649871826172,
+      "regular_mean_psnr_delta": -5.406799723307292,
+      "regular_mean_ssim_delta": -0.007192528049151103,
+      "regular_positive_ratio": 0.013333333333333334,
+      "regular_strong_regression_ratio": 1.0,
+      "regular_worst_count_delta_le_-0p20": 295.0,
+      "score": -32.92621969413758
+    },
+    {
+      "all_checks_pass": false,
+      "check_count": 9,
+      "checkpoint_label": "model_20",
+      "decision": "DIAGNOSTIC_ONLY",
+      "hard_easy_top25_psnr_delta": -5.676606343587239,
+      "hard_hard_bottom25_psnr_delta": -4.033749974568685,
+      "hard_mean_psnr_delta": -4.753003768920898,
+      "hard_mean_ssim_delta": -0.01193565825621287,
+      "hard_positive_ratio": 0.03333333333333333,
+      "hard_strong_regression_ratio": 0.96,
+      "hard_worst_count_delta_le_-0p20": 290.0,
+      "pass_count": 0,
+      "present": true,
+      "regular_easy_top25_psnr_delta": -9.601756795247395,
+      "regular_hard_bottom25_psnr_delta": -4.573643493652344,
+      "regular_mean_psnr_delta": -7.323562596638998,
+      "regular_mean_ssim_delta": -0.011881889899571736,
+      "regular_positive_ratio": 0.01,
+      "regular_strong_regression_ratio": 1.0,
+      "regular_worst_count_delta_le_-0p20": 297.0,
+      "score": -38.62279381132126
+    },
+    {
+      "all_checks_pass": false,
+      "check_count": 9,
+      "checkpoint_label": "Best",
+      "decision": "DIAGNOSTIC_ONLY",
+      "hard_easy_top25_psnr_delta": -8.967081705729167e-05,
+      "hard_hard_bottom25_psnr_delta": -0.11298731486002604,
+      "hard_mean_psnr_delta": -0.07898347218831381,
+      "hard_mean_ssim_delta": -0.00011904040972391765,
+      "hard_positive_ratio": 0.31,
+      "hard_strong_regression_ratio": 0.5066666666666667,
+      "hard_worst_count_delta_le_-0p20": 85.0,
+      "pass_count": 0,
+      "present": true,
+      "regular_easy_top25_psnr_delta": -0.05246902465820313,
+      "regular_hard_bottom25_psnr_delta": -0.11403465270996094,
+      "regular_mean_psnr_delta": -0.04786612828572591,
+      "regular_mean_ssim_delta": -8.730947971343994e-05,
+      "regular_positive_ratio": 0.4166666666666667,
+      "regular_strong_regression_ratio": 0.49333333333333335,
+      "regular_worst_count_delta_le_-0p20": 84.0,
+      "score": -5.951637485663095
+    },
+    {
+      "all_checks_pass": false,
+      "check_count": 9,
+      "checkpoint_label": "Final",
+      "decision": "DIAGNOSTIC_ONLY",
+      "hard_easy_top25_psnr_delta": -5.6766062927246095,
+      "hard_hard_bottom25_psnr_delta": -4.033749974568685,
+      "hard_mean_psnr_delta": -4.753003762563069,
+      "hard_mean_ssim_delta": -0.011935656070709228,
+      "hard_positive_ratio": 0.03333333333333333,
+      "hard_strong_regression_ratio": 0.96,
+      "hard_worst_count_delta_le_-0p20": 290.0,
+      "pass_count": 0,
+      "present": true,
+      "regular_easy_top25_psnr_delta": -9.601756896972656,
+      "regular_hard_bottom25_psnr_delta": -4.573643519083659,
+      "regular_mean_psnr_delta": -7.323562609354655,
+      "regular_mean_ssim_delta": -0.011881884137789409,
+      "regular_positive_ratio": 0.01,
+      "regular_strong_regression_ratio": 1.0,
+      "regular_worst_count_delta_le_-0p20": 297.0,
+      "score": -38.622793712774914
+    }
+  ],
+  "selected_all_checks_pass": false,
+  "selected_checkpoint_label": "Best",
+  "selected_score": -5.951637485663095,
+  "stage": "multi-metric checkpoint selection"
+}
+repair_step_done name=repair_seed_2026_multimetric_checkpoint_selection rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/repair_v18_seed2026_checkpoint_selection.log 2026-06-06T13:38:33+08:00
+repair_seed_done seed=2026 2026-06-06T13:38:33+08:00
+repair_step_start name=repair_v18_multiseed_aggregate log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/v18_multiseed_aggregate/repair_v18_multiseed_aggregate.log 2026-06-06T13:38:33+08:00
+{
+  "aggregate_rows": [
+    {
+      "ci95_half_width": 0.007935557609756701,
+      "count": 10,
+      "max": -0.02925928751627604,
+      "mean": -0.053994585037231445,
+      "metric": "regular_mean_psnr_delta",
+      "min": -0.07625626881917318,
+      "stdev": 0.012803283954241223
+    },
+    {
+      "ci95_half_width": 0.009114099346322766,
+      "count": 10,
+      "max": -0.02036259969075521,
+      "mean": -0.044413101196289065,
+      "metric": "regular_easy_top25_psnr_delta",
+      "min": -0.07175582885742188,
+      "stdev": 0.014704751405832509
+    },
+    {
+      "ci95_half_width": 8.111496282883953e-06,
+      "count": 10,
+      "max": -6.654977798461914e-05,
+      "mean": -9.612741072972616e-05,
+      "metric": "regular_mean_ssim_delta",
+      "min": -0.00010910292466481527,
+      "stdev": 1.3087144635664682e-05
+    },
+    {
+      "ci95_half_width": 2.352,
+      "count": 10,
+      "max": 92.0,
+      "mean": 85.2,
+      "metric": "regular_worst_count_delta_le_-0p20",
+      "min": 79.0,
+      "stdev": 3.794733192202055
+    },
+    {
+      "ci95_half_width": 0.01673349800715784,
+      "count": 10,
+      "max": 0.5333333333333333,
+      "mean": 0.508,
+      "metric": "regular_strong_regression_ratio",
+      "min": 0.44,
+      "stdev": 0.026997942308422115
+    },
+    {
+      "ci95_half_width": 0.014343596928296575,
+      "count": 10,
+      "max": -0.04635128657023112,
+      "mean": -0.09085075950622559,
+      "metric": "hard_mean_psnr_delta",
+      "min": -0.12915109634399413,
+      "stdev": 0.02314205925143472
+    },
+    {
+      "ci95_half_width": 0.014359215369435073,
+      "count": 10,
+      "max": -0.08009468078613281,
+      "mean": -0.12387020619710286,
+      "metric": "hard_hard_bottom25_psnr_delta",
+      "min": -0.1565856679280599,
+      "stdev": 0.023167258153219888
+    },
+    {
+      "ci95_half_width": 1.5770374147178384e-05,
+      "count": 10,
+      "max": -8.234858512878418e-05,
+      "mean": -0.0001368999679883321,
+      "metric": "hard_mean_ssim_delta",
+      "min": -0.00016187469164530437,
+      "stdev": 2.5444031560264885e-05
+    },
+    {
+      "ci95_half_width": 6.354821231859231,
+      "count": 10,
+      "max": 107.0,
+      "mean": 85.7,
+      "metric": "hard_worst_count_delta_le_-0p20",
+      "min": 69.0,
+      "stdev": 10.252912865240893
+    },
+    {
+      "ci95_half_width": 0.02319512251836527,
+      "count": 10,
+      "max": 0.5866666666666667,
+      "mean": 0.532,
+      "metric": "hard_strong_regression_ratio",
+      "min": 0.48,
+      "stdev": 0.03742317232892603
+    }
+  ],
+  "decision": "MULTISEED_SCREEN_FAIL_CONTINUE_OTHER_EXPERIMENTS",
+  "gate_checks": {
+    "hard_bottom25_ci_lower_ge_0p10": false,
+    "hard_ssim_mean_ge_0": false,
+    "hard_worst_count_mean_le_8": false,
+    "n_ge_5": true,
+    "regular_easy_mean_ge_neg0p02": false,
+    "regular_mean_ci_lower_ge_0p05": false,
+    "regular_ssim_mean_ge_0": false,
+    "regular_strong_ratio_mean_le_0p16": false
+  },
+  "gate_pass": false,
+  "locked_test_touched": false,
+  "seed_count": 10,
+  "seed_rows": [
+    {
+      "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+      "hard_easy_top25_psnr_delta": -0.044719390869140625,
+      "hard_hard_bottom25_psnr_delta": -0.145697504679362,
+      "hard_mean_psnr_delta": -0.11041863123575846,
+      "hard_mean_ssim_delta": -0.00015870531400044758,
+      "hard_positive_ratio": 0.21666666666666667,
+      "hard_strong_regression_ratio": 0.56,
+      "hard_worst_count_delta_le_-0p20": 85.0,
+      "regular_easy_top25_psnr_delta": -0.02036259969075521,
+      "regular_hard_bottom25_psnr_delta": -0.1543084462483724,
+      "regular_mean_psnr_delta": -0.059605274200439456,
+      "regular_mean_ssim_delta": -0.00010508080323537191,
+      "regular_positive_ratio": 0.39,
+      "regular_strong_regression_ratio": 0.44,
+      "regular_worst_count_delta_le_-0p20": 86.0,
+      "selected_all_checks_pass": false,
+      "selected_checkpoint_label": "Best",
+      "selected_score": -6.040108617623647,
+      "selection_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/v18_seed3407_multimetric_checkpoint_selection.json"
+    },
+    {
+      "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+      "hard_easy_top25_psnr_delta": -8.967081705729167e-05,
+      "hard_hard_bottom25_psnr_delta": -0.11298731486002604,
+      "hard_mean_psnr_delta": -0.07898347218831381,
+      "hard_mean_ssim_delta": -0.00011904040972391765,
+      "hard_positive_ratio": 0.31,
+      "hard_strong_regression_ratio": 0.5066666666666667,
+      "hard_worst_count_delta_le_-0p20": 85.0,
+      "regular_easy_top25_psnr_delta": -0.05246902465820313,
+      "regular_hard_bottom25_psnr_delta": -0.11403465270996094,
+      "regular_mean_psnr_delta": -0.04786612828572591,
+      "regular_mean_ssim_delta": -8.730947971343994e-05,
+      "regular_positive_ratio": 0.4166666666666667,
+      "regular_strong_regression_ratio": 0.49333333333333335,
+      "regular_worst_count_delta_le_-0p20": 84.0,
+      "selected_all_checks_pass": false,
+      "selected_checkpoint_label": "Best",
+      "selected_score": -5.951637485663095,
+      "selection_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/v18_seed2026_multimetric_checkpoint_selection.json"
+    },
+    {
+      "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+      "hard_easy_top25_psnr_delta": -0.06943695068359375,
+      "hard_hard_bottom25_psnr_delta": -0.1565856679280599,
+      "hard_mean_psnr_delta": -0.12915109634399413,
+      "hard_mean_ssim_delta": -0.00016187469164530437,
+      "hard_positive_ratio": 0.21333333333333335,
+      "hard_strong_regression_ratio": 0.5866666666666667,
+      "hard_worst_count_delta_le_-0p20": 107.0,
+      "regular_easy_top25_psnr_delta": -0.029335378011067708,
+      "regular_hard_bottom25_psnr_delta": -0.16042724609375,
+      "regular_mean_psnr_delta": -0.07625626881917318,
+      "regular_mean_ssim_delta": -0.00010910292466481527,
+      "regular_positive_ratio": 0.36666666666666664,
+      "regular_strong_regression_ratio": 0.5066666666666667,
+      "regular_worst_count_delta_le_-0p20": 92.0,
+      "selected_all_checks_pass": false,
+      "selected_checkpoint_label": "Best",
+      "selected_score": -7.067155193169913,
+      "selection_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_929/v18_seed929_multimetric_checkpoint_selection.json"
+    },
+    {
+      "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+      "hard_easy_top25_psnr_delta": 0.0010350545247395833,
+      "hard_hard_bottom25_psnr_delta": -0.1141875457763672,
+      "hard_mean_psnr_delta": -0.07608336766560872,
+      "hard_mean_ssim_delta": -0.00012278477350870768,
+      "hard_positive_ratio": 0.31,
+      "hard_strong_regression_ratio": 0.48,
+      "hard_worst_count_delta_le_-0p20": 81.0,
+      "regular_easy_top25_psnr_delta": -0.0551885986328125,
+      "regular_hard_bottom25_psnr_delta": -0.1230486551920573,
+      "regular_mean_psnr_delta": -0.04756870269775391,
+      "regular_mean_ssim_delta": -9.080946445465088e-05,
+      "regular_positive_ratio": 0.4066666666666667,
+      "regular_strong_regression_ratio": 0.5066666666666667,
+      "regular_worst_count_delta_le_-0p20": 88.0,
+      "selected_all_checks_pass": false,
+      "selected_checkpoint_label": "Best",
+      "selected_score": -5.909501625537874,
+      "selection_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_123/v18_seed123_multimetric_checkpoint_selection.json"
+    },
+    {
+      "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+      "hard_easy_top25_psnr_delta": -0.013686625162760417,
+      "hard_hard_bottom25_psnr_delta": -0.11995145161946615,
+      "hard_mean_psnr_delta": -0.08367972691853841,
+      "hard_mean_ssim_delta": -0.0001243521769841512,
+      "hard_positive_ratio": 0.30333333333333334,
+      "hard_strong_regression_ratio": 0.52,
+      "hard_worst_count_delta_le_-0p20": 76.0,
+      "regular_easy_top25_psnr_delta": -0.05531509399414063,
+      "regular_hard_bottom25_psnr_delta": -0.11694526672363281,
+      "regular_mean_psnr_delta": -0.043906752268473306,
+      "regular_mean_ssim_delta": -8.83646806081136e-05,
+      "regular_positive_ratio": 0.4166666666666667,
+      "regular_strong_regression_ratio": 0.52,
+      "regular_worst_count_delta_le_-0p20": 81.0,
+      "selected_all_checks_pass": false,
+      "selected_checkpoint_label": "Best",
+      "selected_score": -5.596600241820017,
+      "selection_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_777/v18_seed777_multimetric_checkpoint_selection.json"
+    },
+    {
+      "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+      "hard_easy_top25_psnr_delta": -0.029158172607421876,
+      "hard_hard_bottom25_psnr_delta": -0.13653068542480468,
+      "hard_mean_psnr_delta": -0.09965698877970378,
+      "hard_mean_ssim_delta": -0.0001544042428334554,
+      "hard_positive_ratio": 0.24666666666666667,
+      "hard_strong_regression_ratio": 0.5733333333333334,
+      "hard_worst_count_delta_le_-0p20": 84.0,
+      "regular_easy_top25_psnr_delta": -0.038901112874348956,
+      "regular_hard_bottom25_psnr_delta": -0.1439764404296875,
+      "regular_mean_psnr_delta": -0.059875869750976564,
+      "regular_mean_ssim_delta": -0.0001035088300704956,
+      "regular_positive_ratio": 0.38666666666666666,
+      "regular_strong_regression_ratio": 0.52,
+      "regular_worst_count_delta_le_-0p20": 83.0,
+      "selected_all_checks_pass": false,
+      "selected_checkpoint_label": "Best",
+      "selected_score": -5.989816671212515,
+      "selection_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_1701/v18_seed1701_multimetric_checkpoint_selection.json"
+    },
+    {
+      "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+      "hard_easy_top25_psnr_delta": -0.03342132568359375,
+      "hard_hard_bottom25_psnr_delta": -0.1466851806640625,
+      "hard_mean_psnr_delta": -0.10582286834716798,
+      "hard_mean_ssim_delta": -0.00015735467274983724,
+      "hard_positive_ratio": 0.25,
+      "hard_strong_regression_ratio": 0.5333333333333333,
+      "hard_worst_count_delta_le_-0p20": 95.0,
+      "regular_easy_top25_psnr_delta": -0.04294754028320313,
+      "regular_hard_bottom25_psnr_delta": -0.1522528076171875,
+      "regular_mean_psnr_delta": -0.06448768615722657,
+      "regular_mean_ssim_delta": -0.00010274608929951985,
+      "regular_positive_ratio": 0.37333333333333335,
+      "regular_strong_regression_ratio": 0.5333333333333333,
+      "regular_worst_count_delta_le_-0p20": 87.0,
+      "selected_all_checks_pass": false,
+      "selected_checkpoint_label": "Best",
+      "selected_score": -6.486763789176941,
+      "selection_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2222/v18_seed2222_multimetric_checkpoint_selection.json"
+    },
+    {
+      "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+      "hard_easy_top25_psnr_delta": -0.011371968587239583,
+      "hard_hard_bottom25_psnr_delta": -0.10244598388671874,
+      "hard_mean_psnr_delta": -0.07751077016194662,
+      "hard_mean_ssim_delta": -0.00013292431831359863,
+      "hard_positive_ratio": 0.30666666666666664,
+      "hard_strong_regression_ratio": 0.52,
+      "hard_worst_count_delta_le_-0p20": 87.0,
+      "regular_easy_top25_psnr_delta": -0.03916376749674479,
+      "regular_hard_bottom25_psnr_delta": -0.11259061177571615,
+      "regular_mean_psnr_delta": -0.05379788080851237,
+      "regular_mean_ssim_delta": -9.98606284459432e-05,
+      "regular_positive_ratio": 0.4,
+      "regular_strong_regression_ratio": 0.5333333333333333,
+      "regular_worst_count_delta_le_-0p20": 84.0,
+      "selected_all_checks_pass": false,
+      "selected_checkpoint_label": "Best",
+      "selected_score": -6.044726029237112,
+      "selection_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3141/v18_seed3141_multimetric_checkpoint_selection.json"
+    },
+    {
+      "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+      "hard_easy_top25_psnr_delta": -0.032416127522786456,
+      "hard_hard_bottom25_psnr_delta": -0.12353604634602865,
+      "hard_mean_psnr_delta": -0.10084938685099284,
+      "hard_mean_ssim_delta": -0.0001552104949951172,
+      "hard_positive_ratio": 0.26,
+      "hard_strong_regression_ratio": 0.56,
+      "hard_worst_count_delta_le_-0p20": 88.0,
+      "regular_easy_top25_psnr_delta": -0.03869206746419271,
+      "regular_hard_bottom25_psnr_delta": -0.1381214141845703,
+      "regular_mean_psnr_delta": -0.05732199986775716,
+      "regular_mean_ssim_delta": -0.00010794142882029216,
+      "regular_positive_ratio": 0.4,
+      "regular_strong_regression_ratio": 0.52,
+      "regular_worst_count_delta_le_-0p20": 88.0,
+      "selected_all_checks_pass": false,
+      "selected_checkpoint_label": "Best",
+      "selected_score": -6.230599021116893,
+      "selection_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_4242/v18_seed4242_multimetric_checkpoint_selection.json"
+    },
+    {
+      "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+      "hard_easy_top25_psnr_delta": 0.032139129638671875,
+      "hard_hard_bottom25_psnr_delta": -0.08009468078613281,
+      "hard_mean_psnr_delta": -0.04635128657023112,
+      "hard_mean_ssim_delta": -8.234858512878418e-05,
+      "hard_positive_ratio": 0.36666666666666664,
+      "hard_strong_regression_ratio": 0.48,
+      "hard_worst_count_delta_le_-0p20": 69.0,
+      "regular_easy_top25_psnr_delta": -0.07175582885742188,
+      "regular_hard_bottom25_psnr_delta": -0.08199534098307291,
+      "regular_mean_psnr_delta": -0.02925928751627604,
+      "regular_mean_ssim_delta": -6.654977798461914e-05,
+      "regular_positive_ratio": 0.4533333333333333,
+      "regular_strong_regression_ratio": 0.5066666666666667,
+      "regular_worst_count_delta_le_-0p20": 79.0,
+      "selected_all_checks_pass": false,
+      "selected_checkpoint_label": "Best",
+      "selected_score": -5.19740442943573,
+      "selection_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_5151/v18_seed5151_multimetric_checkpoint_selection.json"
+    }
+  ],
+  "selection_jsons": [
+    "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3407/v18_seed3407_multimetric_checkpoint_selection.json",
+    "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2026/v18_seed2026_multimetric_checkpoint_selection.json",
+    "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_929/v18_seed929_multimetric_checkpoint_selection.json",
+    "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_123/v18_seed123_multimetric_checkpoint_selection.json",
+    "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_777/v18_seed777_multimetric_checkpoint_selection.json",
+    "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_1701/v18_seed1701_multimetric_checkpoint_selection.json",
+    "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_2222/v18_seed2222_multimetric_checkpoint_selection.json",
+    "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_3141/v18_seed3141_multimetric_checkpoint_selection.json",
+    "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_4242/v18_seed4242_multimetric_checkpoint_selection.json",
+    "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/seed_5151/v18_seed5151_multimetric_checkpoint_selection.json"
+  ],
+  "stage": "multi-seed checkpoint evidence aggregation"
+}
+repair_step_done name=repair_v18_multiseed_aggregate rc=0 log=/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v18_execution_queue_20260606/v18_multiseed_aggregate/repair_v18_multiseed_aggregate.log 2026-06-06T13:38:33+08:00
+repair_done name=v18_missing_eval_and_aggregate repaired_seed_count=2 2026-06-06T13:38:33+08:00
+V18_EVAL_REPAIR_OK

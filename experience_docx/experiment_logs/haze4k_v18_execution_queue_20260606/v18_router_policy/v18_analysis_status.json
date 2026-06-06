@@ -1,0 +1,252 @@
+{
+  "best_policy": {
+    "alpha": 1.0,
+    "coverage_target": 0.05,
+    "cutoff": 1.5929401612905307,
+    "feature_group": "all",
+    "feature_stats": {
+      "v18_alpha_0p75_gain": [
+        0.54875,
+        0.49761776244422784
+      ],
+      "v18_alpha_1p00_gain": [
+        0.41875,
+        0.49335427179664715
+      ],
+      "v18_alpha_1p00_risk": [
+        0.5479166666666667,
+        0.4976986970603354
+      ]
+    },
+    "gain_features": [
+      "v18_alpha_1p00_gain",
+      "v18_alpha_1p00_risk",
+      "v18_alpha_0p75_gain"
+    ],
+    "risk_features": [
+      "v18_alpha_1p00_risk",
+      "v18_alpha_1p00_gain",
+      "v18_alpha_0p75_gain"
+    ],
+    "risk_weight": 0.5
+  },
+  "best_policy_grid_row": {
+    "alpha": 1.0,
+    "coverage_target": 0.05,
+    "feature_group": "all",
+    "gain_features": "v18_alpha_1p00_gain,v18_alpha_1p00_risk,v18_alpha_0p75_gain",
+    "heldout_easy_top25_delta": 0.34011008034289725,
+    "heldout_gate_pass": false,
+    "heldout_hard_bottom25_delta": 0.9276389349703146,
+    "heldout_mean_delta": 0.7230701605478923,
+    "heldout_strong_ratio": 0.0,
+    "heldout_worst_ratio": 0.0,
+    "oof_easy_top25_delta": 0.3015749261375731,
+    "oof_gate_pass": false,
+    "oof_hard_bottom25_delta": 0.8726506098749323,
+    "oof_mean_delta": 0.5371552642186482,
+    "oof_strong_ratio": 0.0,
+    "oof_worst_ratio": 0.0,
+    "risk_features": "v18_alpha_1p00_risk,v18_alpha_1p00_gain,v18_alpha_0p75_gain",
+    "risk_weight": 0.5,
+    "score": 2.235160421852684
+  },
+  "decision": "ROUTER_GATE_FAIL_CONTINUE_OTHER_V18_EXPERIMENTS",
+  "feature_csv": "/root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue/experience_docx/experiment_logs/haze4k_v17_rc_expert_mix_20260605/v17_fulltrain_features/v17_fulltrain_a0_udp_feature_table.csv",
+  "grid_count": 192,
+  "heldout_summary": {
+    "best10pct_delta": 3.505932903289795,
+    "count": 600,
+    "coverage": 0.48,
+    "easy_top25_delta": 0.34011008034289725,
+    "gate_checks": {
+      "easy_top25_delta_ge_neg0p02": true,
+      "hard_bottom25_delta_ge_0p25": true,
+      "mean_delta_ge_0p15": true,
+      "strong_ratio_le_0p10": false,
+      "worst_ratio_le_0p05": false
+    },
+    "gate_pass": false,
+    "hard_bottom25_delta": 0.9276389349703146,
+    "label": "train_inner_fit_heldout_confirm",
+    "mean_delta": 0.7230701605478923,
+    "mean_ssim_delta": 0.0002979374925295512,
+    "median_delta": 0.0,
+    "p5_delta": 0.0,
+    "p95_delta": 3.014433288574216,
+    "positive_ratio": 0.48,
+    "strong_regression_ratio": 0.0,
+    "worst10pct_delta": 0.0,
+    "worst_regression_ratio": 0.0
+  },
+  "locked_test_touched": false,
+  "oof_summary": {
+    "best10pct_delta": 2.9279949108759564,
+    "count": 2400,
+    "coverage": 0.4,
+    "easy_top25_delta": 0.3015749261375731,
+    "fold_gate_pass_count": 0,
+    "fold_summaries": [
+      {
+        "best10pct_delta": 2.6321460957429847,
+        "count": 492,
+        "coverage": 0.3780487804878049,
+        "easy_top25_delta": 0.24994169360529767,
+        "fold": 0,
+        "gate_checks": {
+          "easy_top25_delta_ge_neg0p02": true,
+          "hard_bottom25_delta_ge_0p25": true,
+          "mean_delta_ge_0p15": true,
+          "strong_ratio_le_0p10": false,
+          "worst_ratio_le_0p05": false
+        },
+        "gate_pass": false,
+        "hard_bottom25_delta": 0.7349826721918016,
+        "label": "fold_0",
+        "mean_delta": 0.4835563597640371,
+        "mean_ssim_delta": 0.00012890243433355317,
+        "median_delta": 0.0,
+        "p5_delta": 0.0,
+        "p95_delta": 2.2627685546875,
+        "positive_ratio": 0.3780487804878049,
+        "strong_regression_ratio": 0.0,
+        "worst10pct_delta": 0.0,
+        "worst_regression_ratio": 0.0
+      },
+      {
+        "best10pct_delta": 3.0270547452180283,
+        "count": 468,
+        "coverage": 0.3974358974358974,
+        "easy_top25_delta": 0.275628056086547,
+        "fold": 1,
+        "gate_checks": {
+          "easy_top25_delta_ge_neg0p02": true,
+          "hard_bottom25_delta_ge_0p25": true,
+          "mean_delta_ge_0p15": true,
+          "strong_ratio_le_0p10": false,
+          "worst_ratio_le_0p05": false
+        },
+        "gate_pass": false,
+        "hard_bottom25_delta": 1.0012782578615798,
+        "label": "fold_1",
+        "mean_delta": 0.5613344021332569,
+        "mean_ssim_delta": 0.0001342955053362072,
+        "median_delta": 0.0,
+        "p5_delta": 0.0,
+        "p95_delta": 2.777527046203613,
+        "positive_ratio": 0.3974358974358974,
+        "strong_regression_ratio": 0.0,
+        "worst10pct_delta": 0.0,
+        "worst_regression_ratio": 0.0
+      },
+      {
+        "best10pct_delta": 3.167687436367603,
+        "count": 478,
+        "coverage": 0.44142259414225943,
+        "easy_top25_delta": 0.38689298215119733,
+        "fold": 2,
+        "gate_checks": {
+          "easy_top25_delta_ge_neg0p02": true,
+          "hard_bottom25_delta_ge_0p25": true,
+          "mean_delta_ge_0p15": true,
+          "strong_ratio_le_0p10": false,
+          "worst_ratio_le_0p05": false
+        },
+        "gate_pass": false,
+        "hard_bottom25_delta": 1.0026282338262762,
+        "label": "fold_2",
+        "mean_delta": 0.5962845670628248,
+        "mean_ssim_delta": 0.0001314413348002414,
+        "median_delta": 0.0,
+        "p5_delta": 0.0,
+        "p95_delta": 2.841446304321289,
+        "positive_ratio": 0.44142259414225943,
+        "strong_regression_ratio": 0.0,
+        "worst10pct_delta": 0.0,
+        "worst_regression_ratio": 0.0
+      },
+      {
+        "best10pct_delta": 3.1098649812781294,
+        "count": 467,
+        "coverage": 0.3897216274089936,
+        "easy_top25_delta": 0.33480506310096153,
+        "fold": 3,
+        "gate_checks": {
+          "easy_top25_delta_ge_neg0p02": true,
+          "hard_bottom25_delta_ge_0p25": true,
+          "mean_delta_ge_0p15": true,
+          "strong_ratio_le_0p10": false,
+          "worst_ratio_le_0p05": false
+        },
+        "gate_pass": false,
+        "hard_bottom25_delta": 0.6973946245410775,
+        "label": "fold_3",
+        "mean_delta": 0.5446927358557887,
+        "mean_ssim_delta": 0.00012040304167622927,
+        "median_delta": 0.0,
+        "p5_delta": 0.0,
+        "p95_delta": 2.570586395263671,
+        "positive_ratio": 0.3897216274089936,
+        "strong_regression_ratio": 0.0,
+        "worst10pct_delta": 0.0,
+        "worst_regression_ratio": 0.0
+      },
+      {
+        "best10pct_delta": 2.7515619628283443,
+        "count": 495,
+        "coverage": 0.3939393939393939,
+        "easy_top25_delta": 0.2612625351525787,
+        "fold": 4,
+        "gate_checks": {
+          "easy_top25_delta_ge_neg0p02": true,
+          "hard_bottom25_delta_ge_0p25": true,
+          "mean_delta_ge_0p15": true,
+          "strong_ratio_le_0p10": false,
+          "worst_ratio_le_0p05": false
+        },
+        "gate_pass": false,
+        "hard_bottom25_delta": 0.8680052270694655,
+        "label": "fold_4",
+        "mean_delta": 0.5033593418622258,
+        "mean_ssim_delta": 0.00011636066918421273,
+        "median_delta": 0.0,
+        "p5_delta": 0.0,
+        "p95_delta": 2.4429771423339854,
+        "positive_ratio": 0.3939393939393939,
+        "strong_regression_ratio": 0.0,
+        "worst10pct_delta": 0.0,
+        "worst_regression_ratio": 0.0
+      }
+    ],
+    "gate_checks": {
+      "easy_top25_delta_ge_0": true,
+      "hard_bottom25_delta_ge_0p35": true,
+      "mean_delta_ge_0p20": true,
+      "mean_ssim_delta_ge_0": true,
+      "strong_ratio_le_0p08": false,
+      "worst_ratio_le_0p04": false
+    },
+    "gate_pass": false,
+    "hard_bottom25_delta": 0.8726506098749323,
+    "label": "train_inner_5fold_oof",
+    "mean_delta": 0.5371552642186482,
+    "mean_ssim_delta": 0.00012621916830539702,
+    "median_delta": 0.0,
+    "p5_delta": 0.0,
+    "p95_delta": 2.5854837417602545,
+    "positive_ratio": 0.4,
+    "strong_regression_ratio": 0.0,
+    "worst10pct_delta": 0.0,
+    "worst_regression_ratio": 0.0
+  },
+  "outputs": {
+    "feature_auc": "v18_router_feature_auc.csv",
+    "heldout_per_image": "v18_router_heldout_policy_per_image.csv",
+    "oof_per_image": "v18_router_oof_policy_per_image.csv",
+    "policy_grid": "v18_router_policy_grid.csv"
+  },
+  "route": "ConvIR-Dehaze-v1.8-ExecutionQueue",
+  "row_count": 3000,
+  "stage": "table-only A0/UDP router policy analysis",
+  "status": "COMPLETED_TABLE_ANALYSIS"
+}
