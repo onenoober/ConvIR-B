@@ -1,0 +1,8 @@
+status=complete
+timestamp=2026-06-02T15:20:16+08:00
+root=/root/autodl-tmp/workspace/ConvIR-B-saferhfd-v2-stage-scale
+pfd_root=/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline
+a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+b1=/root/autodl-tmp/workspace/ConvIR-B-pfd-mainline/Dehazing/ITS/results/ConvIR-Haze4K-PFD-B1-rhfd-stop20-seed3407-20260602/Training-Results/Best.pkl
+data_dir=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+pairs=0.70 0.70 0.70 0.00 0.00 0.70 0.70 0.50 0.50 0.70 1.00 0.70 0.70 1.00 1.00 0.50 0.50 1.00 0.80 0.60 0.60 0.80

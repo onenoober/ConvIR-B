@@ -765,3 +765,38 @@ PY
 Inside cloud monitor/audit helpers, use the already-declared explicit runtime
 such as `/root/miniconda3/envs/convir-cu128/bin/python` or `"$PY"` for all
 inline Python snippets as well; do not assume `python3` exists on PATH.
+
+## 2026-06-07 PowerShell to WSL grep regex quoting
+
+Observed while auditing newly synced text evidence for forbidden binary/image
+extensions: an extension regex with parentheses was passed through
+PowerShell -> WSL without a stable script wrapper, and Bash parsed the command
+incorrectly.
+
+Invalid form:
+
+```powershell
+wsl -e bash -lc 'cd /home/ubuntu/workspace/ConvIR-B && find experience_docx/experiment_logs/... -type f | grep -Ei \.(pkl|pth|pt|ckpt|png|jpg)$ || true'
+```
+
+Failure mode observed:
+
+- Bash received the regex without reliable quoting;
+- `(` started an unexpected shell token;
+- the audit command failed before checking the file list.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B
+find experience_docx/experiment_logs/<root> -type f |
+  grep -Ei '\.(pkl|pth|pt|ckpt|onnx|png|jpg|jpeg|bmp|gif|webp|npy|npz|mat|zip|tar|gz|7z|rar)$' || true
+printf 'DISALLOWED_EXT_AUDIT_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For extension audits, use a CR-stripped script body and keep the grep pattern
+single-quoted inside the Bash script.

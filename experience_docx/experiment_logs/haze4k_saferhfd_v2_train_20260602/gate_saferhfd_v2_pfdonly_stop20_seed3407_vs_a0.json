@@ -1,0 +1,68 @@
+{
+  "route": "B1-v2 SafeRHFD pfd-only",
+  "comparison_target": "A0 official ConvIR-B checkpoint",
+  "compare_json": "/root/autodl-tmp/workspace/ConvIR-B-saferhfd-v2-train/experience_docx/experiment_logs/haze4k_saferhfd_v2_train_20260602/scout_eval_compare_saferhfd_v2_pfdonly_stop20_seed3407_vs_a0.json",
+  "bucket_json": "/root/autodl-tmp/workspace/ConvIR-B-saferhfd-v2-train/experience_docx/experiment_logs/haze4k_saferhfd_v2_train_20260602/scout_eval_bucket_analysis_saferhfd_v2_pfdonly_stop20_seed3407_vs_a0.json",
+  "metrics": {
+    "global_mean_delta_psnr": 0.005676408767700195,
+    "mean_delta_ssim": 2.3991703987121583e-05,
+    "hard_bottom25_mean_delta_psnr": 0.048901718139648435,
+    "easy_top25_mean_delta_psnr": -0.009200347900390624,
+    "strong_reference_regressions_delta_le_-0.05": 70,
+    "severe_all_image_regressions_delta_le_-0.20": 18,
+    "worst10_mean_delta_psnr": -0.16355371475219727
+  },
+  "checks": [
+    {
+      "name": "global_mean_delta_psnr_vs_a0",
+      "value": 0.005676408767700195,
+      "op": ">=",
+      "threshold": 0.02,
+      "pass": false
+    },
+    {
+      "name": "mean_delta_ssim_vs_a0",
+      "value": 2.3991703987121583e-05,
+      "op": ">=",
+      "threshold": 0.0,
+      "pass": true
+    },
+    {
+      "name": "hard_bottom25_mean_delta_psnr_vs_a0",
+      "value": 0.048901718139648435,
+      "op": ">=",
+      "threshold": 0.08,
+      "pass": false
+    },
+    {
+      "name": "easy_top25_mean_delta_psnr_vs_a0",
+      "value": -0.009200347900390624,
+      "op": ">=",
+      "threshold": -0.02,
+      "pass": true
+    },
+    {
+      "name": "strong_reference_regressions",
+      "value": 70,
+      "op": "<=",
+      "threshold": 30,
+      "pass": false
+    },
+    {
+      "name": "severe_all_image_regressions",
+      "value": 18,
+      "op": "<=",
+      "threshold": 20,
+      "pass": true
+    },
+    {
+      "name": "worst10_mean_delta_psnr",
+      "value": -0.16355371475219727,
+      "op": ">",
+      "threshold": -0.5,
+      "pass": true
+    }
+  ],
+  "automatic_pass": false,
+  "manual_visual_artifact_check": "required before promotion"
+}

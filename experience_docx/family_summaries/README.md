@@ -1,6 +1,6 @@
 # Haze4K Route Family Summaries
 
-Date: 2026-06-04
+Date: 2026-06-07
 
 Status: reading aids derived from `experience_docx/EXPERIMENT_INDEX.md`, route
 cards, and text evidence roots. These files do not replace the per-route cards
@@ -22,8 +22,8 @@ or logs; they summarize family-level conclusions and reopening conditions.
 | --- | --- | --- |
 | FAM/FAM2 feature modulation | [summary](fam_family_summary.md) | Closed for unchanged deployable FAM routing. |
 | Hard-frequency and haze-prior losses | [summary](frequency_prior_family_summary.md) | Closed for the tested weighting/SCM forms. |
-| PFD/RHFD preservation | [summary](pfd_rhfd_family_summary.md) | Diagnostic only; preservation improved but hard-gain gates failed. |
-| APDR output residual/action-bank | [summary](apdr_family_summary.md) | Broad output-residual/coefficient-mapping forms stopped; safe-subset ideas require fixed-code OOF/held-out evidence. |
+| PFD/RHFD preservation | [summary](pfd_rhfd_family_summary.md) | Diagnostic only; B1-Surgery/SafeRHFD evidence is archived, but robust hard-gain and strong-reference gates failed. |
+| APDR output residual/action-bank | [summary](apdr_family_summary.md) | Broad output-residual/coefficient-mapping forms stopped; v0.4E fixed-code rerun is archived and still fails OOF/policy gates. |
 | DPGA in-network prior adapters / UDP expert switch | [summary](dpga_family_summary.md) | UDPNet-only is not promotion-ready; v1.6 A0+UDP switch passed internal gates but failed one-shot locked-test promotion. |
 
 ## Evidence Strength Reminder

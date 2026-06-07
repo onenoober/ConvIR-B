@@ -1,0 +1,7 @@
+rule,mapper,K,scale,status,rank_group,count,open_count,mean_gain,mean_candidate_gain,mean_oracle_gain,mean_pred_abs_mean,mean_nn_distance
+RuleB_spatial_priors_ridge_10_K16_pred_abs_mean_high,spatial_priors_ridge_10,16,1.0,accepted,hard_bottom25,19,18,0.7625778599789268,0.7625778599789268,1.476152921977796,0.01750600725216301,210539.35807323456
+RuleB_spatial_priors_ridge_10_K16_pred_abs_mean_high,spatial_priors_ridge_10,16,1.0,accepted,middle50,20,15,0.5460113525390625,0.5460113525390625,1.1088829040527344,0.01715516494587064,1000009.1447484016
+RuleB_spatial_priors_ridge_10_K16_pred_abs_mean_high,spatial_priors_ridge_10,16,1.0,accepted,easy_top25,6,6,0.33350372314453125,0.33350372314453125,1.1732190450032551,0.015052883885800838,14.316341082255045
+RuleB_spatial_priors_ridge_10_K16_pred_abs_mean_high,spatial_priors_ridge_10,16,1.0,rejected,hard_bottom25,13,11,0.0,0.16022051297701323,0.9931496840256911,0.00939032961972631,615394.1990914711
+RuleB_spatial_priors_ridge_10_K16_pred_abs_mean_high,spatial_priors_ridge_10,16,1.0,rejected,middle50,44,27,0.0,0.20329302007501776,0.7915377183393999,0.009866504739461974,1545461.492832314
+RuleB_spatial_priors_ridge_10_K16_pred_abs_mean_high,spatial_priors_ridge_10,16,1.0,rejected,easy_top25,26,11,0.0,-0.1195521721473107,0.4233279595008263,0.01092305501851325,2307697.846963149

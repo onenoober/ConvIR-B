@@ -1,0 +1,11 @@
+{
+  "safe_zero_init_max_abs_diff": 0.0,
+  "safe_zero_init_pass": true,
+  "trainable_param_count": 48914,
+  "total_param_count": 8745699,
+  "stat_keys": [
+    "SafeRHFD1",
+    "SafeRHFD2",
+    "flags"
+  ]
+}

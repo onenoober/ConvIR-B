@@ -94,10 +94,10 @@ The following root-cause experiments must be read before launching DPGA training
 
 ## Root-Cause Readout
 
-Evidence directory on `autodl-dehaze4`:
+Evidence directory:
 
 ```text
-/root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/experiment_logs/haze4k_rootcause_preexp_20260604
+experience_docx/experiment_logs/haze4k_rootcause_preexp_20260604/
 ```
 
 Exp2 fixed A1-vs-A0 comparisons:

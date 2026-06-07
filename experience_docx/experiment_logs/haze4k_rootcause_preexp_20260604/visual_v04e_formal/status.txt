@@ -1,0 +1,4 @@
+visual_v04e_formal_start 2026-06-04T02:22:16+08:00
+root /root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle
+out /root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/experiment_logs/haze4k_rootcause_preexp_20260604/visual_v04e_formal
+candidate_mappers corrected_kernel_names

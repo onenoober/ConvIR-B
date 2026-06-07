@@ -1,10 +1,10 @@
 # APDR Family Summary
 
-Date: 2026-06-04
+Date: 2026-06-07
 
-Status: broad output-residual and coefficient-mapping forms are stopped; safe
-subset/action-bank ideas require fixed-code OOF or held-out evidence before any
-long run.
+Status: broad output-residual and coefficient-mapping forms are stopped. The
+v0.4E fixed-code rerun is now archived and still blocks E2, full router, local
+correction, dense residual, and stop20.
 
 ## Sources
 
@@ -34,7 +34,7 @@ long run.
 | v0.2RC conservative budget | Train-selected budget closed held-out easy/strong-reference mean budget to `0.002531`, retained hard mean `0.378346`, but held-out calibration BCE failed at `1.6191`. | Residual/oracle run blocked; hard-open and easy-veto need decoupling. |
 | v0.4 diagnostics | Cache exactness passed; sigma `3` lowpass oracle strongest on train128; sigma `7` free-parameter low recovery `1.0938`, corr `0.9322`; train-calibrated correctability test AUC `1.0`; color branch failed. | Low-field-only candidate supported; full low+color route blocked. |
 | v0.4A/v0.4B/v0.4B-MT | LowFieldNet-v1 and deployable basis/local/veil forms failed Gate B or Gate C; K32 Gate C mini-val failed with L1 drop `-0.3435`, corr `0.2154`, recovery `0.0428`, easy `-0.3551 dB`, strong/severe `11/25`; global-stat mapper rescue failed. | Local correction and stop20 blocked for these forms. |
-| v0.4D/v0.4E | v0.4D same-split confidence fallback found diagnostic positives, but broad nonzero rows had strong/severe regressions; v0.4E E0 passed on confirm slice; v0.4E E1 OOF failed: Rule A keep `239/3000`, mean `+0.0749 dB`, hard `+0.2596 dB`, strong/severe `0/5`, coverage `0.0797`; Rule B keep `150/3000`, mean `+0.0378 dB`, hard `+0.1352 dB`, strong/severe `0/1`, coverage `0.0500`; policy search found `0` gate-passing policies. | No E2, full router, local correction, dense residual, or stop20 from current v0.4E. Fixed-code rerun required before numeric sealing. |
+| v0.4D/v0.4E | v0.4D same-split confidence fallback found diagnostic positives, but broad nonzero rows had strong/severe regressions. The fixed-code v0.4E E0 rerun marked Rule A as `missing_candidate`; Rule B passed confirm with keep `45/128`, mean `+0.2141 dB`, hard `+0.4528 dB`, easy `+0.0625 dB`, strong/severe `1/0`. Fixed-code E1 OOF then failed: Rule B keep `150/3000`, coverage `0.0500`, mean `+0.0378 dB`, hard `+0.1352 dB`, strong/severe `0/1`, oracle recovery `0.0835`. Post-hoc OOF policy search retained `1600` low-capacity rows and found `0` gate-passing policies. | No E2, full router, local correction, dense residual, or stop20 from current v0.4E. The fixed-code rerun seals this v0.4E form as stopped, not promotion-ready. |
 
 ## Family Verdict
 
@@ -46,8 +46,8 @@ calibration, held-out safety, basis generalization, or OOF coverage/severe gates
 
 The current broad APDR output-residual and coefficient-mapping forms are stopped.
 The only APDR-like future path supported by the evidence is a separately
-pre-registered safe-subset route that passes fixed-code OOF or held-out gates
-without severe regressions.
+pre-registered safe-subset route that passes fresh OOF or held-out gates without
+severe regressions.
 
 ## Do Not Repeat Without New Evidence
 
@@ -58,12 +58,12 @@ without severe regressions.
   diagnostic only.
 - Do not run E2, full spatial router, local correction, dense residual, or
   stop20 from current v0.4E thresholds.
-- Do not seal v0.4E numeric claims until the fixed-code rerun resolves the
-  documented implementation mismatch.
+- Do not reuse the old v0.4E pre-rerun Rule A numbers as sealed evidence; the
+  fixed-code rerun marks that candidate missing.
 
 ## Reopen Condition
 
 A future APDR route must be pre-registered as a safe-subset or redesigned
-selector route, run with fixed code, and pass OOF or fresh held-out gates for
-severe regressions, strong-reference safety, coverage, hard gain, and oracle
-recovery before any long training or locked test.
+selector route and pass OOF or fresh held-out gates for severe regressions,
+strong-reference safety, coverage, hard gain, and oracle recovery before any
+long training or locked test.

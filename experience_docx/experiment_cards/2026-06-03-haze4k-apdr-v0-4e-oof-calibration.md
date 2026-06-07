@@ -2,10 +2,8 @@
 
 Date: 2026-06-03
 
-Status: E1 OOF audit completed on `autodl-dehaze4`, but a post-sync
-implementation audit found a clean-reproducibility mismatch in commit
-`ed38afb`. Current locked thresholds remain blocked; exact v0.4E numbers are
-fixed-code rerun pending. No stop20, local correction, full spatial router, or
+Status: fixed-code OOF rerun archived and failed. Current locked thresholds
+remain blocked; no E2, stop20, local correction, full spatial router, or
 trainable residual head.
 
 ## Scope
@@ -22,6 +20,8 @@ trainable residual head.
   `/root/miniconda3/envs/convir-cu128/bin/python`.
 - Artifact root:
   `experience_docx/experiment_logs/haze4k_apdr_v0_4e_oof_calibration_20260603/`.
+- Fixed-code rerun root:
+  `experience_docx/experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/`.
 - Branch or isolated workspace:
   `codex/haze4k-apdr-v0-4b-mapping-triage`.
 
@@ -68,19 +68,19 @@ trainable residual head.
 Decision label:
 
 ```text
-E1_FAIL_STOP_CURRENT_LOCKED_THRESHOLDS
+FIXED_CODE_E1_FAIL_STOP_CURRENT_V04E_THRESHOLDS
 ```
 
 Reproducibility status:
 
 ```text
-FIXED_CODE_RERUN_REQUIRED_BEFORE_NUMERIC_SEAL
+FIXED_CODE_RERUN_ARCHIVED
 ```
 
 Post-sync implementation audit found `align_coners` and
-`kenel_size/kernel_size` mismatches in the submitted v0.4E tools. The failure
-direction remains a useful stop signal, but the exact E1 numeric evidence must
-be reproduced from a clean fixed-code checkout before archival sealing.
+`kenel_size/kernel_size` mismatches in the submitted v0.4E tools. The original
+failure direction remains a useful stop signal, and the sealed interpretation
+now comes from the fixed-code rerun readout below.
 
 E1 completed on `autodl-dehaze4` with `exit_code=0`
 (`2026-06-03T21:50:26+08:00` to `2026-06-03T22:39:02+08:00`).
@@ -104,3 +104,26 @@ Do not launch E2, full spatial router, local correction, dense residual
 training, or stop20 from the current locked-threshold v0.4E route. A future
 route may be justified only if it pre-registers a safe-subset policy and tests
 it on a fresh held-out split.
+
+## Fixed-Code Rerun Readout
+
+Fixed-code AutoDL rerun evidence is archived under:
+
+```text
+experience_docx/experiment_logs/haze4k_apdr_v0_4e_oof_calibration_rerun_20260603_autodl_826caaf/
+```
+
+Clean rerun status:
+
+- Rule A, `global_plus_spatial_kenel_knn_9`, K16, scale `1.0`, was marked
+  `missing_candidate`.
+- Rule B, `spatial_priors_ridge_10`, K16, scale `1.0`, kept `150/3000`,
+  coverage `0.0500`, mean `+0.03779 dB`, hard bottom-25% `+0.13524 dB`,
+  easy top-25% `+0.00000 dB`, strong/severe `0/1`, and oracle recovery
+  `0.08345`.
+- Post-hoc OOF policy search retained `1600` low-capacity rows and found
+  `0` gate-passing policies. The best retained policy had coverage `0.08767`,
+  mean `+0.07916 dB`, hard `+0.25271 dB`, and strong/severe `0/0`, but missed
+  the predeclared `0.10` coverage line.
+
+This fixed-code rerun seals the current v0.4E OOF route as stopped.

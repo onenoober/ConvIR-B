@@ -2,10 +2,10 @@
 
 Date: 2026-06-03
 
-Status: E0 locked-threshold intermediate audit passed on `autodl-dehaze4`, but
-a post-sync implementation audit found a clean-reproducibility mismatch in
-commit `ed38afb`. Authorize fixed-code rerun and OOF calibration review only.
-No stop20, local correction, full spatial router, or trainable residual head.
+Status: fixed-code rerun archived. The original E0 pass remains historical
+diagnostic evidence, but the clean rerun marks Rule A as `missing_candidate`,
+keeps only a Rule B confirm pass, and the paired OOF rerun blocks E2, stop20,
+local correction, full spatial router, and trainable residual heads.
 
 ## Scope
 
@@ -21,6 +21,8 @@ No stop20, local correction, full spatial router, or trainable residual head.
   `/root/miniconda3/envs/convir-cu128/bin/python`.
 - Artifact root:
   `experience_docx/experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_20260603/`.
+- Fixed-code rerun root:
+  `experience_docx/experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_rerun_20260603_autodl_826caaf/`.
 - Branch or isolated workspace:
   `codex/haze4k-apdr-v0-4b-mapping-triage`.
 
@@ -122,19 +124,19 @@ locked target-free confidence rule, candidate mapper, and shrink scale.
 Decision label:
 
 ```text
-E0_PASS_AUTHORIZE_OOF_CALIBRATION_ONLY
+FIXED_CODE_E0_PARTIAL_RULEB_PASS_OOF_REQUIRED
 ```
 
 Reproducibility status:
 
 ```text
-FIXED_CODE_RERUN_REQUIRED_BEFORE_NUMERIC_SEAL
+FIXED_CODE_RERUN_ARCHIVED
 ```
 
 Post-sync implementation audit found `align_coners` and
-`kenel_size/kernel_size` mismatches in the submitted v0.4E tools. The E0 pass
-remains a useful diagnostic direction, but exact numeric evidence must be
-reproduced from a clean fixed-code checkout before archival sealing.
+`kenel_size/kernel_size` mismatches in the submitted v0.4E tools. The original
+E0 pass remains a useful historical diagnostic direction, but the sealed
+interpretation now comes from the fixed-code rerun readout below.
 
 E0 completed on `autodl-dehaze4` with `exit_code=0`
 (`2026-06-03T21:20:40+08:00` to `2026-06-03T21:28:42+08:00`).
@@ -149,3 +151,23 @@ Locked confirmation result on train indices `256..383`:
 This authorizes only a separate 5-fold OOF calibration audit. Do not launch full
 spatial router, local correction, dense residual training, or stop20 from this
 route unless OOF calibration and a locked held-out policy gate pass.
+
+## Fixed-Code Rerun Readout
+
+Fixed-code AutoDL rerun evidence is archived under:
+
+```text
+experience_docx/experiment_logs/haze4k_apdr_v0_4e_risk_action_bank_rerun_20260603_autodl_826caaf/
+```
+
+Clean rerun status:
+
+- Rule A, `global_plus_spatial_kenel_knn_9`, K16, scale `1.0`, was marked
+  `missing_candidate`, so the old Rule A confirm-slice numbers are not sealed.
+- Rule B, `spatial_priors_ridge_10`, K16, scale `1.0`, kept `45/128` images
+  and passed E0 confirm: mean `+0.21414 dB`, hard bottom-25% `+0.45278 dB`,
+  easy top-25% `+0.06253 dB`, strong/severe `1/0`, oracle recovery `0.23628`.
+
+This does not authorize E2 or training by itself. The paired fixed-code OOF
+rerun fails the route-level gate, so the deployable v0.4E threshold/action-bank
+route is stopped.

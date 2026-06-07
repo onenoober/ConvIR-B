@@ -1,0 +1,5 @@
+prior_predictability_full_start 2026-06-04T01:04:59+08:00
+root /root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle
+out /root/autodl-tmp/workspace/ConvIR-B-v04e-repro-826caaf-bundle/experience_docx/experiment_logs/haze4k_rootcause_preexp_20260604/prior_predictability_full
+data /root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth /root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf

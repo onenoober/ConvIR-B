@@ -1,0 +1,7 @@
+start root=/root/autodl-tmp/workspace/ConvIR-B-saferhfd-v2-train data_dir=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K 2026-06-02T15:18:00+08:00
+preflight_pass 2026-06-02T15:18:19+08:00
+train_start ConvIR-Haze4K-B1v2-SafeRHFD-pfdonly-stop20-seed3407-20260602 2026-06-02T15:18:19+08:00
+train_done ConvIR-Haze4K-B1v2-SafeRHFD-pfdonly-stop20-seed3407-20260602 rc=0 2026-06-02T15:47:28+08:00
+eval_start saferhfd_v2_pfdonly_stop20_seed3407_vs_a0 2026-06-02T15:47:28+08:00
+gate_fail saferhfd_v2_pfdonly_stop20_seed3407_vs_a0 2026-06-02T15:49:59+08:00
+complete 2026-06-02T15:49:59+08:00
