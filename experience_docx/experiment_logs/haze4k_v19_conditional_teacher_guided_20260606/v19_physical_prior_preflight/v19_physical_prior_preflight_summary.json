@@ -1,0 +1,57 @@
+{
+  "airlight_candidate_count": 158,
+  "best_airlight_candidate": {
+    "file_count": 0,
+    "path": "/root/autodl-tmp/workspace/Dehaze-Net/docs/ai_text_packages/20260529-ai-text/experiment/HAZE4K/lfcr_v1_diagnostics/DEA-Net-LFCR-v1-w005-100k-20260528-084016/pair_cr_vs_lfcr",
+    "sample_files": "",
+    "score": 1,
+    "search_root": "/root/autodl-tmp/workspace/Dehaze-Net"
+  },
+  "best_transmission_candidate": {
+    "file_count": 3000,
+    "path": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/train/trans",
+    "sample_files": "1053.png;1.png;1054.png;10.png;1055.png",
+    "score": 2,
+    "search_root": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K"
+  },
+  "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+  "decision": "PHYSICAL_PRIORS_AVAILABLE",
+  "extra_roots": [
+    "/root/autodl-tmp/workspace/Dehaze-Net",
+    "/root/autodl-tmp/workspace"
+  ],
+  "locked_test_touched": false,
+  "route": "ConvIR-Dehaze-v1.9-ConditionalTeacherGuided",
+  "split_image_dirs": {
+    "test": {
+      "gt": {
+        "file_count": 1000,
+        "path": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/test/gt",
+        "sample_files": "153.png;1.png;154.png;10.png;155.png",
+        "score": 2
+      },
+      "hazy": {
+        "file_count": 3000,
+        "path": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/test",
+        "sample_files": "gt/153.png;gt/1.png;gt/154.png;gt/10.png;gt/155.png",
+        "score": 1
+      }
+    },
+    "train": {
+      "gt": {
+        "file_count": 3000,
+        "path": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/train/gt",
+        "sample_files": "1053.png;1.png;1054.png;10.png;1055.png",
+        "score": 2
+      },
+      "hazy": {
+        "file_count": 9000,
+        "path": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K/train",
+        "sample_files": "gt/1053.png;gt/1.png;gt/1054.png;gt/10.png;gt/1055.png",
+        "score": 2
+      }
+    }
+  },
+  "stage": "physical prior preflight",
+  "transmission_candidate_count": 6266
+}

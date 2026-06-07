@@ -3,7 +3,7 @@
 ## Cloud And Local Execution
 
 - Default cloud server for this repository: `dehaze1` (`ssh dehaze1`).
-- `dehaze1` resolves to `root@connect.bjb1.seetacloud.com` on port `49601` via the SSH key configured in `~/.ssh/config`.
+- `dehaze1` resolves to `root@connect.bjb1.seetacloud.com` on port `16124` via the SSH key configured in `~/.ssh/config`.
 - Highest-priority project rule: the local WSL checkout is for editing and compile/syntax-only checks.
 - Do not run tests, smoke tests, training, evaluation, inference, demos, or project runtime commands locally.
 - Run all tests, including smoke tests, training, evaluation, and any execution/runtime validation, on `dehaze1` unless the user explicitly overrides this rule for a specific command.

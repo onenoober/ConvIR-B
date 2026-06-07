@@ -1,0 +1,82 @@
+{
+  "checkpoint_dir": "/root/autodl-tmp/workspace/ConvIR-B-v1-9-conditional-teacher/experience_docx/experiment_logs/haze4k_v19_conditional_teacher_guided_20260606/hygiene_clip0p01_noema/checkpoints",
+  "decision": "TRAIN_COMPLETE_PENDING_INTERNAL_EVAL",
+  "epochs": 8,
+  "locked_test_touched": false,
+  "model_name": "ConvIR-Haze4K-v1.9-Hygiene-clip0p01_noema-20260606",
+  "route": "ConvIR-Dehaze-v1.9-ConditionalTeacherGuided",
+  "rows": [
+    {
+      "epoch": 1,
+      "gt_loss": 0.005285547067566464,
+      "loss": 0.007073473782123377,
+      "mask_mean": 0.21803701476504406,
+      "preserve_loss": 0.0008378921930246482,
+      "teacher_loss": 0.006481393111559252
+    },
+    {
+      "epoch": 2,
+      "gt_loss": 0.005466479687408233,
+      "loss": 0.007403829609199116,
+      "mask_mean": 0.2189984529092908,
+      "preserve_loss": 0.0016909630384179765,
+      "teacher_loss": 0.006396629240674277
+    },
+    {
+      "epoch": 3,
+      "gt_loss": 0.005812875104602426,
+      "loss": 0.007962276413260649,
+      "mask_mean": 0.22080786467840274,
+      "preserve_loss": 0.0024116929606922593,
+      "teacher_loss": 0.006668250795919448
+    },
+    {
+      "epoch": 4,
+      "gt_loss": 0.006120430818215634,
+      "loss": 0.008457207288593054,
+      "mask_mean": 0.2248067499573032,
+      "preserve_loss": 0.00304655717802234,
+      "teacher_loss": 0.00690986018278636
+    },
+    {
+      "epoch": 5,
+      "gt_loss": 0.006518032439441109,
+      "loss": 0.009043790975119918,
+      "mask_mean": 0.21923958597083887,
+      "preserve_loss": 0.003674928496281306,
+      "teacher_loss": 0.007163091281351323
+    },
+    {
+      "epoch": 6,
+      "gt_loss": 0.006919586597165714,
+      "loss": 0.009673130942198137,
+      "mask_mean": 0.2192708682268858,
+      "preserve_loss": 0.0043262305267853665,
+      "teacher_loss": 0.0075531928574976825
+    },
+    {
+      "epoch": 7,
+      "gt_loss": 0.007406914342039575,
+      "loss": 0.010433070575042317,
+      "mask_mean": 0.22219811817010243,
+      "preserve_loss": 0.004942696493817494,
+      "teacher_loss": 0.008150467722055812
+    },
+    {
+      "epoch": 8,
+      "gt_loss": 0.0077754438870276015,
+      "loss": 0.010986368986777961,
+      "mask_mean": 0.21690697472542525,
+      "preserve_loss": 0.005497033311597382,
+      "teacher_loss": 0.008446073865052313
+    }
+  ],
+  "seed": 3407,
+  "stage": "conditional teacher-guided student train",
+  "udp_checkpoint_meta": {
+    "epoch": 1265,
+    "global_step": 272190,
+    "pytorch_lightning_version": "2.3.1",
+    "state_dict_key_count": 689
+  }
+}

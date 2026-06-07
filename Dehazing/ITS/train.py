@@ -1,7 +1,7 @@
 import os
 import torch
 from data import train_dataloader, valid_dataloader
-from utils import Adder, Timer, check_lr
+from utils import Adder, Timer
 from torch.utils.tensorboard import SummaryWriter
 from valid import _valid
 import torch.nn.functional as F
@@ -488,6 +488,44 @@ def _set_training_mode(model, args):
     model.train()
 
 
+def _load_resume_best_psnr(model, args, resume_epoch):
+    best_path = os.path.join(args.model_save_dir, 'Best.pkl')
+    if not os.path.isfile(best_path):
+        print('RESUME_BEST_PSNR_INFER skipped: Best.pkl missing')
+        return -1
+
+    current_state = {
+        key: value.detach().cpu().clone()
+        for key, value in model.state_dict().items()
+    }
+    best_state = torch.load(best_path, map_location='cpu')
+    if isinstance(best_state, dict) and 'model' in best_state:
+        best_state = best_state['model']
+    load_result = model.load_state_dict(best_state, strict=False)
+    unexpected = list(load_result.unexpected_keys)
+    missing = [
+        key for key in load_result.missing_keys
+        if not key.startswith('DPGA_hard_gate.')
+    ]
+    if unexpected or missing:
+        raise RuntimeError(
+            'Unexpected Best.pkl load result while inferring resume best_psnr: '
+            f'missing={load_result.missing_keys}, unexpected={load_result.unexpected_keys}'
+        )
+    best_psnr = _valid(model, args, resume_epoch)
+    model.load_state_dict(current_state)
+    print(f'RESUME_BEST_PSNR_INFER path={best_path} value={best_psnr:.6f}')
+    return best_psnr
+
+
+def _format_optimizer_lrs(optimizer):
+    parts = []
+    for idx, group in enumerate(optimizer.param_groups):
+        label = "main" if idx == 0 else f"group{idx}"
+        parts.append(f"{label}={group['lr']:.10f}")
+    return ",".join(parts)
+
+
 def _dpga_depth_cache_dir(args):
     if getattr(args, "arch", "convir") != "dpga":
         return ""
@@ -588,15 +626,26 @@ def _train(model, args):
     warmup_epochs=3
     scheduler_cosine = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.num_epoch-warmup_epochs, eta_min=1e-6)
     scheduler = GradualWarmupScheduler(optimizer, multiplier=1, total_epoch=warmup_epochs, after_scheduler=scheduler_cosine)
-    scheduler.step()
     epoch = 1
+    best_psnr=-1
     if args.resume:
-        state = torch.load(args.resume)
-        epoch = state['epoch']
+        state = torch.load(args.resume, map_location='cpu')
+        saved_epoch = state['epoch']
         optimizer.load_state_dict(state['optimizer'])
         model.load_state_dict(state['model'])
-        print('Resume from %d'%epoch)
-        epoch += 1
+        if 'scheduler' in state:
+            scheduler.load_state_dict(state['scheduler'])
+        else:
+            scheduler.step()
+            for _ in range(saved_epoch):
+                scheduler.step()
+        best_psnr = state.get('best_psnr')
+        if best_psnr is None:
+            best_psnr = _load_resume_best_psnr(model, args, saved_epoch)
+        epoch = saved_epoch + 1
+        print('Resume from %d'%saved_epoch)
+    else:
+        scheduler.step()
 
     writer = SummaryWriter()
     epoch_pixel_adder = Adder()
@@ -605,8 +654,6 @@ def _train(model, args):
     iter_fft_adder = Adder()
     epoch_timer = Timer('m')
     iter_timer = Timer('m')
-    best_psnr=-1
-
     end_epoch = args.stop_epoch if args.stop_epoch > 0 else args.num_epoch
     if end_epoch < epoch:
         raise ValueError(f'stop_epoch {end_epoch} is earlier than resume epoch {epoch}')
@@ -768,10 +815,11 @@ def _train(model, args):
                         dpga_tc_reg.get("dpga_hard_gate_bce", zero).detach().item(),
                         dpga_tc_reg.get("dpga_fusion_delta_norm", zero).detach().item(),
                     )
-                print(("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f "
+                lr_display = _format_optimizer_lrs(optimizer)
+                print(("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %s "
                        "Loss content: %7.4f Loss fft: %7.4f%s%s") % (
                     iter_timer.toc(), epoch_idx, iter_idx + 1, max_iter,
-                    scheduler.get_lr()[0], iter_pixel_adder.average(),
+                    lr_display, iter_pixel_adder.average(),
                     iter_fft_adder.average(), apdr_detail, dpga_tc_detail))
                 writer.add_scalar('Pixel Loss', iter_pixel_adder.average(), iter_idx + (epoch_idx-1)* max_iter)
                 writer.add_scalar('FFT Loss', iter_fft_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
@@ -779,19 +827,10 @@ def _train(model, args):
                 iter_timer.tic()
                 iter_pixel_adder.reset()
                 iter_fft_adder.reset()
-        overwrite_name = os.path.join(args.model_save_dir, 'model.pkl')
-        torch.save({'model': model.state_dict(),
-                    'optimizer': optimizer.state_dict(),
-                    'epoch': epoch_idx}, overwrite_name)
-
-        if epoch_idx % args.save_freq == 0:
-            save_name = os.path.join(args.model_save_dir, 'model_%d.pkl' % epoch_idx)
-            torch.save({'model': model.state_dict()}, save_name)
         print("EPOCH: %02d\nElapsed time: %4.2f Epoch Pixel Loss: %7.4f Epoch FFT Loss: %7.4f" % (
             epoch_idx, epoch_timer.toc(), epoch_pixel_adder.average(), epoch_fft_adder.average()))
         epoch_fft_adder.reset()
         epoch_pixel_adder.reset()
-        scheduler.step()
         if epoch_idx % args.valid_freq == 0:
             val = _valid(model, args, epoch_idx)
             _log_modulation_stats(model, args, epoch_idx, device)
@@ -803,5 +842,17 @@ def _train(model, args):
             if val >= best_psnr:
                 best_psnr = val
                 torch.save({'model': model.state_dict()}, os.path.join(args.model_save_dir, 'Best.pkl'))
+        if epoch_idx % args.save_freq == 0:
+            save_name = os.path.join(args.model_save_dir, 'model_%d.pkl' % epoch_idx)
+            torch.save({'model': model.state_dict()}, save_name)
+        scheduler.step()
+        overwrite_name = os.path.join(args.model_save_dir, 'model.pkl')
+        torch.save({
+            'model': model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+            'scheduler': scheduler.state_dict(),
+            'epoch': epoch_idx,
+            'best_psnr': best_psnr,
+        }, overwrite_name)
     save_name = os.path.join(args.model_save_dir, 'Final.pkl')
     torch.save({'model': model.state_dict()}, save_name)

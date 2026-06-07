@@ -1,0 +1,49 @@
+{
+  "runs": {
+    "a0": {
+      "label": "a0",
+      "arch": "convir",
+      "mode": "original",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl",
+      "count": 300,
+      "mean_psnr": 39.46919343312582,
+      "mean_ssim": 0.99560276389122,
+      "avg_time_sec_sync": 0.028795857429504395,
+      "median_time_sec_sync": 0.029960989952087402,
+      "peak_cuda_mem_mib": 535.27294921875
+    },
+    "v19_seed929_model_20_val_regular": {
+      "label": "v19_seed929_model_20_val_regular",
+      "arch": "dpga",
+      "mode": "model_20",
+      "checkpoint": "/root/autodl-tmp/workspace/ConvIR-B-v1-9-conditional-teacher/experience_docx/experiment_logs/haze4k_v19_conditional_teacher_guided_20260606/seed_929/checkpoints/model_20.pkl",
+      "count": 300,
+      "mean_psnr": 34.7730659421285,
+      "mean_ssim": 0.9890628967682521,
+      "avg_time_sec_sync": 0.0383594020207723,
+      "median_time_sec_sync": 0.043834805488586426,
+      "peak_cuda_mem_mib": 1163.6376953125
+    }
+  },
+  "comparison": {
+    "common_count": 300,
+    "mean_psnr_delta": -4.6961274909973145,
+    "median_psnr_delta": -4.65473747253418,
+    "p5_psnr_delta": -8.83911952972412,
+    "p95_psnr_delta": -1.007688045501706,
+    "hard_bottom25_psnr_delta": -3.0705005900065103,
+    "easy_top25_psnr_delta": -5.9567332967122395,
+    "worst10pct_mean_psnr_delta": -9.453613154093425,
+    "best10pct_mean_psnr_delta": -0.39248835245768227,
+    "worst10img_mean_psnr_delta": -11.015543937683105,
+    "best10img_mean_psnr_delta": 1.1000545501708985,
+    "worst10_mean_psnr_delta": -9.453613154093425,
+    "best10_mean_psnr_delta": -0.39248835245768227,
+    "mean_ssim_delta": -0.006539867122968038,
+    "positive_ratio": 0.023333333333333334,
+    "strong_reference_cut_psnr": 42.45430278778076,
+    "strong_reference_count": 75,
+    "strong_regression_count_delta_le_-0.05": 75,
+    "worst_regression_count_delta_le_-0.20": 291
+  }
+}

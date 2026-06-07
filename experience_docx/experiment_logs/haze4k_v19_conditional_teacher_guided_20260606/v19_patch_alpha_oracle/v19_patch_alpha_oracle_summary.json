@@ -1,0 +1,82 @@
+{
+  "a0_checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "alphas": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "combined_summary": {
+    "count": 3000,
+    "easy_top25_delta": 1.624860127766927,
+    "hard_bottom25_delta": 1.4499579696655274,
+    "mean_delta": 1.6085973517100016,
+    "mean_ssim_delta": 0.0005477217634518941,
+    "median_delta": 1.352447509765625,
+    "positive_ratio": 0.9996666666666667,
+    "strong_regression_ratio": 0.0,
+    "worst10pct_delta": 0.24769004185994467,
+    "worst_regression_ratio": 0.0
+  },
+  "count_images": 3000,
+  "count_tiles": 193500,
+  "data_dir": "/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K",
+  "depth_cache_dir": "/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf",
+  "locked_test_touched": false,
+  "official_checkpoint_meta": {
+    "epoch": 1265,
+    "global_step": 272190,
+    "pytorch_lightning_version": "2.3.1",
+    "state_dict_key_count": 689
+  },
+  "official_checkpoint_sha256": "6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291",
+  "route": "ConvIR-Dehaze-v1.9-ConditionalTeacherGuided",
+  "split_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-9-conditional-teacher/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/internal_val/haze4k_dpga_v13_regular_hard_seed3407.json",
+  "split_summaries": {
+    "train_inner": {
+      "count": 2400,
+      "easy_top25_delta": 1.6063144556681315,
+      "hard_bottom25_delta": 1.4672281964619955,
+      "mean_delta": 1.6219306389490764,
+      "mean_ssim_delta": 0.0005184179544448853,
+      "median_delta": 1.3708381652832031,
+      "positive_ratio": 0.9995833333333334,
+      "strong_regression_ratio": 0.0,
+      "worst10pct_delta": 0.26974109808603924,
+      "worst_regression_ratio": 0.0
+    },
+    "val_hard": {
+      "count": 300,
+      "easy_top25_delta": 1.7728500366210938,
+      "hard_bottom25_delta": 1.4648000590006511,
+      "mean_delta": 1.5439575068155924,
+      "mean_ssim_delta": 0.0007631544272104899,
+      "median_delta": 1.2248363494873047,
+      "positive_ratio": 1.0,
+      "strong_regression_ratio": 0.0,
+      "worst10pct_delta": 0.15561230977376303,
+      "worst_regression_ratio": 0.0
+    },
+    "val_regular": {
+      "count": 300,
+      "easy_top25_delta": 1.5930703735351563,
+      "hard_bottom25_delta": 1.509630864461263,
+      "mean_delta": 1.5665708986918132,
+      "mean_ssim_delta": 0.0005667195717493693,
+      "median_delta": 1.3293418884277344,
+      "positive_ratio": 1.0,
+      "strong_regression_ratio": 0.0,
+      "worst10pct_delta": 0.22966861724853516,
+      "worst_regression_ratio": 0.0
+    }
+  },
+  "splits": [
+    "train_inner",
+    "val_regular",
+    "val_hard"
+  ],
+  "stage": "patch alpha oracle extraction",
+  "status": "PATCH_ALPHA_ORACLE_COMPLETE",
+  "tile_size": 64
+}

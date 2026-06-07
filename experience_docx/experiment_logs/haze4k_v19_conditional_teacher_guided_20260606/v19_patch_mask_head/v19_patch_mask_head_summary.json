@@ -1,0 +1,179 @@
+{
+  "decision": "MASK_HEAD_GATE_FAIL_CONTINUE_STUDENT_EXPERIMENTS",
+  "heldout_summary": {
+    "alpha": 0.25,
+    "easy_top25_delta": 0.47175945297033045,
+    "features": [
+      "tile_bright_channel_range",
+      "tile_saturation_range",
+      "tile_luma_range",
+      "tile_luma_min",
+      "tile_bright_channel_min",
+      "tile_saturation_max",
+      "tile_saturation_std",
+      "tile_dark_channel_range",
+      "tile_bright_channel_std",
+      "tile_dark_channel_min",
+      "tile_luma_std",
+      "tile_dark_channel_std",
+      "tile_luma_mean",
+      "tile_dark_channel_mean",
+      "tile_depth_near_ratio_gt_0_66",
+      "tile_bright_channel_mean"
+    ],
+    "hard_bottom25_delta": 0.2557096059739466,
+    "heldout_gate_checks": {
+      "heldout_easy_top25_ge_neg0p02": true,
+      "heldout_hard_bottom25_ge_0p20": true,
+      "heldout_mean_delta_ge_0p12": true,
+      "heldout_strong_ratio_le_0p12": false,
+      "heldout_worst_ratio_le_0p06": false
+    },
+    "heldout_gate_pass": false,
+    "image_count": 600,
+    "label": "heldout_mask_head",
+    "mean_delta": 0.31761473922528366,
+    "mean_selected_tile_ratio": 1.0,
+    "median_delta": 0.3065375929236289,
+    "model": {
+      "epochs": 500,
+      "features": [
+        "tile_bright_channel_range",
+        "tile_saturation_range",
+        "tile_luma_range",
+        "tile_luma_min",
+        "tile_bright_channel_min",
+        "tile_saturation_max",
+        "tile_saturation_std",
+        "tile_dark_channel_range",
+        "tile_bright_channel_std",
+        "tile_dark_channel_min",
+        "tile_luma_std",
+        "tile_dark_channel_std",
+        "tile_luma_mean",
+        "tile_dark_channel_mean",
+        "tile_depth_near_ratio_gt_0_66",
+        "tile_bright_channel_mean"
+      ],
+      "l2": 0.001,
+      "lr": 0.05,
+      "stats": {
+        "tile_bright_channel_mean": [
+          0.5765773342751626,
+          0.19411406358412975
+        ],
+        "tile_bright_channel_min": [
+          0.3524574574634056,
+          0.22669554864692487
+        ],
+        "tile_bright_channel_range": [
+          0.48742251046144575,
+          0.2528539425538768
+        ],
+        "tile_bright_channel_std": [
+          0.10974568120874541,
+          0.07337619589483575
+        ],
+        "tile_dark_channel_mean": [
+          0.49458027319723574,
+          0.2024371580384365
+        ],
+        "tile_dark_channel_min": [
+          0.2851577260965852,
+          0.2205855408099503
+        ],
+        "tile_dark_channel_range": [
+          0.5012974137204238,
+          0.2625330656502326
+        ],
+        "tile_dark_channel_std": [
+          0.11407067943348093,
+          0.07879646439779081
+        ],
+        "tile_depth_near_ratio_gt_0_66": [
+          0.11239878957547236,
+          0.2607985546750806
+        ],
+        "tile_luma_mean": [
+          0.5357063898551174,
+          0.1950850758068954
+        ],
+        "tile_luma_min": [
+          0.32234903894352607,
+          0.22116666126802048
+        ],
+        "tile_luma_range": [
+          0.48827715541822625,
+          0.2555265180906927
+        ],
+        "tile_luma_std": [
+          0.11105686416911512,
+          0.07517754436112373
+        ],
+        "tile_saturation_max": [
+          0.21183347446987516,
+          0.1443339141762049
+        ],
+        "tile_saturation_range": [
+          0.1987678635776233,
+          0.14441180920039765
+        ],
+        "tile_saturation_std": [
+          0.037990942202893334,
+          0.0328083943552065
+        ]
+      },
+      "weights": [
+        0.013548891523673251,
+        0.041148480999202756,
+        0.05586684268921672,
+        0.0228503703880958,
+        -0.0405188613267646,
+        -0.05369547290376644,
+        0.03280115026592313,
+        0.041981988387962896,
+        -0.001965510942539106,
+        0.02855802716424647,
+        0.023670785462447663,
+        0.00546155106904736,
+        -0.008541351312328301,
+        -0.03232313464461906,
+        0.03874188045888181,
+        -0.1588432874853632,
+        -0.041319330453811434
+      ]
+    },
+    "positive_ratio": 0.7633333333333333,
+    "score": 0.5301012486999511,
+    "strong_regression_ratio": 0.14,
+    "threshold": 0.25,
+    "worst10pct_delta": -0.595403625051017,
+    "worst_regression_ratio": 0.12666666666666668
+  },
+  "locked_test_touched": false,
+  "oof_summary": {
+    "easy_top25_delta": 0.5234750482804361,
+    "hard_bottom25_delta": 0.22286939858611857,
+    "image_count": 3000,
+    "label": "oof_mask_head",
+    "mean_delta": 0.37135505871749575,
+    "mean_selected_tile_ratio": 1.0,
+    "median_delta": 0.37902835634819354,
+    "oof_gate_checks": {
+      "oof_easy_top25_ge_neg0p02": true,
+      "oof_hard_bottom25_ge_0p20": true,
+      "oof_mean_delta_ge_0p12": true,
+      "oof_strong_ratio_le_0p12": true,
+      "oof_worst_ratio_le_0p06": false
+    },
+    "oof_gate_pass": false,
+    "positive_ratio": 0.801,
+    "strong_regression_ratio": 0.10133333333333333,
+    "worst10pct_delta": -0.6809737738924292,
+    "worst_regression_ratio": 0.10833333333333334
+  },
+  "route": "ConvIR-Dehaze-v1.9-ConditionalTeacherGuided",
+  "stage": "patch mask head table training",
+  "tile_count": 193500,
+  "tile_csv": "/root/autodl-tmp/workspace/ConvIR-B-v1-9-conditional-teacher/experience_docx/experiment_logs/haze4k_v19_conditional_teacher_guided_20260606/v19_patch_alpha_oracle/v19_patch_alpha_oracle_tiles.csv"
+}

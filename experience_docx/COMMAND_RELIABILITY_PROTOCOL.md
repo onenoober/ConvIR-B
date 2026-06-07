@@ -78,6 +78,101 @@ printf 'CORRECTED_GREP_OK\n'
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
 
+2026-06-06 recurrence:
+
+Avoid compact PowerShell-to-WSL SSH probes that try to embed Bash `$?` and
+quoted remote commands inside one `bash -lc` string:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc "set +e; timeout 10 ssh dehaze1 'printf DEHAZE1_SSH_OK\n'; printf 'alias_rc=%s\n' \"$?\""
+```
+
+Failure mode observed:
+
+- nested quotes were closed at the wrong layer;
+- WSL Bash received an unterminated command and returned
+  `unexpected EOF while looking for matching '"'`.
+
+Corrected form:
+
+```powershell
+$script = @'
+set +e
+timeout 10 ssh -o BatchMode=yes -o ConnectTimeout=8 dehaze1 'printf "%s\n" DEHAZE1_SSH_OK'
+printf 'alias_rc=%s\n' "$?"
+printf 'SSH_PROBE_DONE\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+Related recurrence:
+
+Avoid embedding Bash command substitutions such as `$(basename "$f")` inside a
+double-quoted PowerShell string passed to `wsl ... bash -lc`:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc "for f in ~/.ssh/*.pub; do printf '%s ' "$(basename "$f")"; ssh-keygen -lf "$f"; done"
+```
+
+Failure mode observed:
+
+- PowerShell attempted to run `basename` locally before WSL Bash received the
+  script;
+- Bash then received a malformed loop and returned a syntax error near `done`.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+for f in ~/.ssh/*.pub; do
+  [ -f "$f" ] || continue
+  printf '%s ' "$(basename "$f")"
+  ssh-keygen -lf "$f"
+done
+printf 'PUBKEY_FINGERPRINTS_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+2026-06-06 recurrence:
+
+Avoid invoking `ssh` from a WSL script without detaching stdin when the script itself is being piped into Bash:
+
+```powershell
+$script = @'
+set -euo pipefail
+ssh dehaze1 'printf "%s\n" OK'
+printf 'LOCAL_DONE\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+Scope note:
+
+- use `ssh -n ... 'remote command'` when the remote side is a single quoted
+  command string and the wrapper stdin should stay local;
+- do not add `-n` when the remote script is intentionally provided through
+  stdin, for example `ssh host 'bash -s' < /tmp/remote_script.sh`, because
+  `-n` will replace that stdin with `/dev/null` and the remote script will not
+  run.
+
+Failure mode observed:
+
+- `ssh` inherited the wrapper stdin and consumed the remaining script body;
+- lines after the `ssh` command never executed, so success markers and rc prints were missing.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+ssh -n dehaze1 'printf "%s\n" OK'
+printf 'LOCAL_DONE\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
 ### PowerShell here-string to WSL heredoc without CR stripping
 
 Avoid sending a PowerShell here-string directly to a WSL script that contains a
@@ -98,6 +193,33 @@ Preferred form:
 
 ```powershell
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+2026-06-06 recurrence:
+
+Avoid this form even for simple local WSL checks:
+
+```powershell
+@'
+set -euo pipefail
+curl --version | head -n 1
+'@ | wsl -d Ubuntu-22.04 -- bash
+```
+
+Failure mode observed:
+
+- PowerShell inserted CRLF line endings;
+- the script reached WSL Bash, but `head -n 1` received `1\r` and failed with
+  `head: invalid number of lines: '1\r'`.
+
+Corrected form:
+
+```powershell
+@'
+set -euo pipefail
+curl --version | head -n 1
+printf 'LOCAL_WSL_CHECK_OK\n'
+'@ | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
 
 For nested SSH scripts, use a quoted heredoc after CR stripping:
@@ -135,9 +257,73 @@ ssh dehaze1 '/root/miniconda3/envs/convir-cu128/bin/python script.py'
 
 or inside a remote script:
 
+2026-06-06 recurrence:
+
+Avoid using a cloud-only interpreter path during local WSL static checks:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B
+/root/miniconda3/envs/convir-cu128/bin/python -m py_compile some_file.py
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+Failure mode observed:
+
+- the command ran inside local WSL, not on `dehaze1`;
+- `/root/miniconda3/envs/convir-cu128/bin/python` is a cloud path and returned
+  `Permission denied` locally.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B
+python3 -m py_compile some_file.py
+printf 'LOCAL_PY_COMPILE_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
 ```bash
 PY=/root/miniconda3/envs/convir-cu128/bin/python
 "$PY" script.py
+```
+
+2026-06-06 recurrence:
+
+Avoid using `python3` inside remote SSH monitor or post-processing blocks even
+when the main command already defines an explicit cloud interpreter path:
+
+```bash
+PY=/root/miniconda3/envs/convir-cu128/bin/python
+"$PY" summarize_queue.py > /tmp/summary.json
+python3 - <<'PY'
+import json
+print(json.load(open('/tmp/summary.json'))['queue_progress_state'])
+PY
+```
+
+Failure mode observed:
+
+- the cloud image did not expose `python3` on PATH in that SSH session;
+- the monitor exited after producing partial output and before the final
+  success marker.
+
+Corrected form:
+
+```bash
+PY=/root/miniconda3/envs/convir-cu128/bin/python
+"$PY" summarize_queue.py > /tmp/summary.json
+"$PY" - <<'PY'
+import json
+from pathlib import Path
+print(json.loads(Path('/tmp/summary.json').read_text(encoding='utf-8'))['queue_progress_state'])
+PY
+printf 'REMOTE_MONITOR_OK\n'
 ```
 
 ### Silent monitoring commands
@@ -164,6 +350,94 @@ Every monitoring or sync command should print a final marker such as:
 - `EVIDENCE_SYNC_OK`
 - `MONITOR_SCRIPT_OK`
 - `COMMIT_AND_PUSH_OK`
+
+### PowerShell DOCX extraction with `Expand-Archive`
+
+Avoid passing a `.docx` path directly to `Expand-Archive`:
+
+```powershell
+Expand-Archive -LiteralPath $docxPath -DestinationPath $dest
+```
+
+Failure mode observed:
+
+- PowerShell rejected `.docx` as an unsupported archive extension even though
+  DOCX is a ZIP container.
+
+Corrected form:
+
+```powershell
+$zipPath = Join-Path $env:TEMP 'convir_report.zip'
+Copy-Item -LiteralPath $docxPath -Destination $zipPath -Force
+Expand-Archive -LiteralPath $zipPath -DestinationPath $dest -Force
+```
+
+### Avoid assigning to PowerShell `$HOME`
+
+Avoid using `$home` or `$HOME` as a scratch variable in PowerShell:
+
+```powershell
+$home = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { 'C:\Users\Administrator\.codex' }
+```
+
+Failure mode observed:
+
+- PowerShell treats `$HOME` case-insensitively as a read-only variable, so the
+  assignment fails with `Cannot overwrite variable HOME`.
+
+Corrected form:
+
+```powershell
+$codexHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { 'C:\Users\Administrator\.codex' }
+```
+
+### Git `safe.directory` in copied cloud workspaces
+
+Avoid assuming Git metadata is readable from a copied or root-owned cloud
+workspace:
+
+```bash
+git -C /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue status --short
+```
+
+Failure mode observed:
+
+- Git reported `detected dubious ownership`, so launcher status could not
+  record branch, commit, or working-tree state.
+
+Corrected form for read-only evidence checks:
+
+```bash
+git config --global --add safe.directory /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue
+git -C /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue branch --show-current
+git -C /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue rev-parse --short HEAD
+```
+
+### Running repo-root tools that import `Dehazing/ITS`
+
+Avoid helper scripts that assume `os.getcwd()` is the import root:
+
+```python
+sys.path.insert(0, os.getcwd())
+from data import test_dataloader
+```
+
+Failure mode observed:
+
+- `eval_haze4k_checkpoint_compare.py` was launched from the repository root by
+  the v1.8 queue, so `from data import test_dataloader` failed with
+  `ModuleNotFoundError: No module named 'data'`.
+
+Corrected form:
+
+```python
+TOOL_PATH = Path(__file__).resolve()
+REPO_ROOT = TOOL_PATH.parents[2]
+ITS_ROOT = REPO_ROOT / "Dehazing" / "ITS"
+for path in (str(ITS_ROOT), str(REPO_ROOT), os.getcwd()):
+    if path not in sys.path:
+        sys.path.insert(0, path)
+```
 
 ### Non-heredoc SSH commands consuming the WSL wrapper stdin
 
@@ -404,3 +678,90 @@ REMOTE
 
 For monitor commands with variables and quoted paths, use the quoted heredoc
 form instead of nested single-quote `bash -lc` one-liners.
+
+## 2026-06-06 WSL inline alternation and Windows `rg` recurrence
+
+Observed while preparing the v1.8 execution queue: an inline WSL search with
+regex alternation was split by the wrong shell layer, so fragments such as
+`val_regular`, `val_hard`, `active_adapters`, and `partial` were executed as
+commands. A follow-up `command -v rg` check also resolved to the Codex Windows
+app resource under `/mnt/c/Program Files/.../rg`, which failed with
+`Permission denied`.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 bash -lc 'cd /home/ubuntu/workspace/ConvIR-B && grep -RIl "split_json|val_regular|val_hard|active_adapters|partial" Dehazing/ITS experience_docx/tools'
+```
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B
+grep -RInE 'split_json|val_regular|val_hard|active_adapters|partial' Dehazing/ITS experience_docx/tools || true
+printf 'LOCAL_SEARCH_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+Inside WSL wrappers, prefer native `grep -RInE` unless a native WSL `rg` binary
+is already verified. Do not rely on `command -v rg` alone when Windows PATH
+entries are visible inside WSL.
+
+## 2026-06-06 Bash `printf` with format starting in dashes
+
+Observed while monitoring the v1.8 execution queue from a PowerShell -> WSL ->
+SSH heredoc wrapper: a remote Bash marker used the marker text itself as the
+`printf` format and the format began with dashes.
+
+Invalid form:
+
+```bash
+printf '--- status_tail ---\n'
+```
+
+Failure mode observed:
+
+- Bash treated the dash-prefixed format as an option in this shell context;
+- the monitor exited before printing status tails or the final success marker.
+
+Corrected form:
+
+```bash
+printf '%s\n' '--- status_tail ---'
+```
+
+For all marker lines that start with `-`, use an explicit string format such as
+`printf '%s\n' "$marker"` rather than making the marker the format string.
+
+## 2026-06-06 Remote monitor helper must use explicit cloud Python
+
+Observed while checking the v1.8 execution queue: the main monitor and progress
+refresh succeeded because they used the explicit cloud interpreter, but an
+additional convenience snippet inside the same remote heredoc used bare
+`python3` for lightweight JSON printing and failed with `python3: command not
+found`.
+
+Invalid form:
+
+```bash
+python3 - <<'PY'
+import json
+...
+PY
+```
+
+Corrected form:
+
+```bash
+"$PY" - <<'PY'
+import json
+...
+PY
+```
+
+Inside cloud monitor/audit helpers, use the already-declared explicit runtime
+such as `/root/miniconda3/envs/convir-cu128/bin/python` or `"$PY"` for all
+inline Python snippets as well; do not assume `python3` exists on PATH.

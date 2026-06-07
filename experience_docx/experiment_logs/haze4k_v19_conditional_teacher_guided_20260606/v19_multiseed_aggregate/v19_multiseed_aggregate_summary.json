@@ -1,0 +1,179 @@
+{
+  "aggregate_rows": [
+    {
+      "ci95_half_width": 0.00930099672430776,
+      "count": 3,
+      "max": -1.0513568305969239,
+      "mean": -1.0590898174709744,
+      "metric": "regular_mean_psnr_delta",
+      "min": -1.0677215321858724,
+      "stdev": 0.008219285146700376
+    },
+    {
+      "ci95_half_width": 0.08861728282169971,
+      "count": 3,
+      "max": -1.0709845987955728,
+      "mean": -1.1412541707356771,
+      "metric": "regular_easy_top25_psnr_delta",
+      "min": -1.2256764729817708,
+      "stdev": 0.07831103891626764
+    },
+    {
+      "ci95_half_width": 7.132728406929228e-05,
+      "count": 3,
+      "max": -0.0011803090572357177,
+      "mean": -0.0012505776352352567,
+      "metric": "regular_mean_ssim_delta",
+      "min": -0.0013021363814671833,
+      "stdev": 6.303187753771041e-05
+    },
+    {
+      "ci95_half_width": 3.457115046457732,
+      "count": 3,
+      "max": 243.0,
+      "mean": 240.33333333333334,
+      "metric": "regular_worst_count_delta_le_-0p20",
+      "min": 237.0,
+      "stdev": 3.0550504633038935
+    },
+    {
+      "ci95_half_width": 0.015088087034822192,
+      "count": 3,
+      "max": 0.9066666666666666,
+      "mean": 0.8933333333333333,
+      "metric": "regular_strong_regression_ratio",
+      "min": 0.88,
+      "stdev": 0.013333333333333308
+    },
+    {
+      "ci95_half_width": 0.03860656124454629,
+      "count": 3,
+      "max": -0.6088607406616211,
+      "mean": -0.6417508082919651,
+      "metric": "hard_mean_psnr_delta",
+      "min": -0.6769741439819336,
+      "stdev": 0.034116594684221284
+    },
+    {
+      "ci95_half_width": 0.06463743842213653,
+      "count": 3,
+      "max": -0.6399859873453776,
+      "mean": -0.6730784691704644,
+      "metric": "hard_hard_bottom25_psnr_delta",
+      "min": -0.739034907023112,
+      "stdev": 0.057120065009308746
+    },
+    {
+      "ci95_half_width": 8.786645744051142e-05,
+      "count": 3,
+      "max": -0.0012870476643244426,
+      "mean": -0.0013738319608900282,
+      "metric": "hard_mean_ssim_delta",
+      "min": -0.0014367306232452393,
+      "stdev": 7.764753498370112e-05
+    },
+    {
+      "ci95_half_width": 5.102696454925681,
+      "count": 3,
+      "max": 212.0,
+      "mean": 207.66666666666666,
+      "metric": "hard_worst_count_delta_le_-0p20",
+      "min": 203.0,
+      "stdev": 4.509249752822894
+    },
+    {
+      "ci95_half_width": 0.030176174069644447,
+      "count": 3,
+      "max": 0.72,
+      "mean": 0.6933333333333334,
+      "metric": "hard_strong_regression_ratio",
+      "min": 0.6666666666666666,
+      "stdev": 0.026666666666666672
+    }
+  ],
+  "decision": "MULTISEED_SCREEN_FAIL_CONTINUE_OTHER_EXPERIMENTS",
+  "gate_checks": {
+    "hard_bottom25_ci_lower_ge_0p10": false,
+    "hard_ssim_mean_ge_0": false,
+    "hard_worst_count_mean_le_8": false,
+    "n_ge_5": false,
+    "regular_easy_mean_ge_neg0p02": false,
+    "regular_mean_ci_lower_ge_0p05": false,
+    "regular_ssim_mean_ge_0": false,
+    "regular_strong_ratio_mean_le_0p16": false
+  },
+  "gate_pass": false,
+  "locked_test_touched": false,
+  "seed_count": 3,
+  "seed_rows": [
+    {
+      "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+      "hard_easy_top25_psnr_delta": -0.6569853210449219,
+      "hard_hard_bottom25_psnr_delta": -0.6399859873453776,
+      "hard_mean_psnr_delta": -0.6394175402323405,
+      "hard_mean_ssim_delta": -0.0014367306232452393,
+      "hard_positive_ratio": 0.24,
+      "hard_strong_regression_ratio": 0.6933333333333334,
+      "hard_worst_count_delta_le_-0p20": 208.0,
+      "regular_easy_top25_psnr_delta": -1.1271014404296875,
+      "regular_hard_bottom25_psnr_delta": -0.7980958302815755,
+      "regular_mean_psnr_delta": -1.058191089630127,
+      "regular_mean_ssim_delta": -0.0013021363814671833,
+      "regular_positive_ratio": 0.11666666666666667,
+      "regular_strong_regression_ratio": 0.88,
+      "regular_worst_count_delta_le_-0p20": 241.0,
+      "selected_all_checks_pass": false,
+      "selected_checkpoint_label": "model_5",
+      "selected_score": -17.07587777153651,
+      "selection_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-9-conditional-teacher/experience_docx/experiment_logs/haze4k_v19_conditional_teacher_guided_20260606/seed_3407/v19_seed3407_multimetric_checkpoint_selection.json"
+    },
+    {
+      "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+      "hard_easy_top25_psnr_delta": -0.582104237874349,
+      "hard_hard_bottom25_psnr_delta": -0.6402145131429037,
+      "hard_mean_psnr_delta": -0.6088607406616211,
+      "hard_mean_ssim_delta": -0.0012870476643244426,
+      "hard_positive_ratio": 0.24,
+      "hard_strong_regression_ratio": 0.6666666666666666,
+      "hard_worst_count_delta_le_-0p20": 203.0,
+      "regular_easy_top25_psnr_delta": -1.2256764729817708,
+      "regular_hard_bottom25_psnr_delta": -0.7519962056477865,
+      "regular_mean_psnr_delta": -1.0677215321858724,
+      "regular_mean_ssim_delta": -0.0011803090572357177,
+      "regular_positive_ratio": 0.14333333333333334,
+      "regular_strong_regression_ratio": 0.9066666666666666,
+      "regular_worst_count_delta_le_-0p20": 237.0,
+      "selected_all_checks_pass": false,
+      "selected_checkpoint_label": "model_5",
+      "selected_score": -16.84592802254359,
+      "selection_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-9-conditional-teacher/experience_docx/experiment_logs/haze4k_v19_conditional_teacher_guided_20260606/seed_2026/v19_seed2026_multimetric_checkpoint_selection.json"
+    },
+    {
+      "decision": "NO_CHECKPOINT_PASSES_ALL_MULTIMETRIC_CHECKS",
+      "hard_easy_top25_psnr_delta": -0.6437634785970052,
+      "hard_hard_bottom25_psnr_delta": -0.739034907023112,
+      "hard_mean_psnr_delta": -0.6769741439819336,
+      "hard_mean_ssim_delta": -0.001397717595100403,
+      "hard_positive_ratio": 0.23,
+      "hard_strong_regression_ratio": 0.72,
+      "hard_worst_count_delta_le_-0p20": 212.0,
+      "regular_easy_top25_psnr_delta": -1.0709845987955728,
+      "regular_hard_bottom25_psnr_delta": -0.8465845998128255,
+      "regular_mean_psnr_delta": -1.0513568305969239,
+      "regular_mean_ssim_delta": -0.0012692874670028687,
+      "regular_positive_ratio": 0.12333333333333334,
+      "regular_strong_regression_ratio": 0.8933333333333333,
+      "regular_worst_count_delta_le_-0p20": 243.0,
+      "selected_all_checks_pass": false,
+      "selected_checkpoint_label": "model_5",
+      "selected_score": -17.39051819165548,
+      "selection_json": "/root/autodl-tmp/workspace/ConvIR-B-v1-9-conditional-teacher/experience_docx/experiment_logs/haze4k_v19_conditional_teacher_guided_20260606/seed_929/v19_seed929_multimetric_checkpoint_selection.json"
+    }
+  ],
+  "selection_jsons": [
+    "/root/autodl-tmp/workspace/ConvIR-B-v1-9-conditional-teacher/experience_docx/experiment_logs/haze4k_v19_conditional_teacher_guided_20260606/seed_3407/v19_seed3407_multimetric_checkpoint_selection.json",
+    "/root/autodl-tmp/workspace/ConvIR-B-v1-9-conditional-teacher/experience_docx/experiment_logs/haze4k_v19_conditional_teacher_guided_20260606/seed_2026/v19_seed2026_multimetric_checkpoint_selection.json",
+    "/root/autodl-tmp/workspace/ConvIR-B-v1-9-conditional-teacher/experience_docx/experiment_logs/haze4k_v19_conditional_teacher_guided_20260606/seed_929/v19_seed929_multimetric_checkpoint_selection.json"
+  ],
+  "stage": "multi-seed checkpoint evidence aggregation"
+}
