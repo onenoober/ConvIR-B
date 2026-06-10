@@ -63,7 +63,8 @@ def _train(model, args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     criterion = torch.nn.L1Loss()
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate, betas=(0.9, 0.999), eps=1e-8)
+    learning_rate = getattr(args, 'learning_rate', getattr(args, 'leaning_rate', 1e-4))
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.9, 0.999), eps=1e-8)
     dataloader = train_dataloader(args.data_dir, args.batch_size, args.num_worker, args.data)
     max_iter = len(dataloader)
     warmup_epochs=3
@@ -72,7 +73,7 @@ def _train(model, args):
     scheduler.step()
     epoch = 1
     if args.resume:
-        state = torch.load(args.resume)
+        state = torch.load(args.resume, map_location='cpu')
         epoch = state['epoch']
         optimizer.load_state_dict(state['optimizer'])
         model.load_state_dict(state['model'])
@@ -136,7 +137,9 @@ def _train(model, args):
 
             loss = loss_content + 0.1 * loss_fft
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 0.001)
+            grad_clip_norm = getattr(args, 'grad_clip_norm', 0.001)
+            if grad_clip_norm > 0:
+                torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip_norm)
             optimizer.step()
 
             iter_pixel_adder(loss_content.item())

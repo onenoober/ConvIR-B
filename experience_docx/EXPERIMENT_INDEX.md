@@ -1,8 +1,8 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-06-05
+Date: 2026-06-10
 
-Status: evidence index for `codex/main-experiment-evidence-sync`.
+Status: evidence index plus official architecture anchor registry.
 
 ## Purpose
 
@@ -18,6 +18,21 @@ For future route branches, follow `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`: sync
 cards, text logs, result tables, and AI-readable packages back to `main`, but
 keep diagnostic experiment code on its route branch unless a separate promotion
 decision says otherwise.
+
+## Official Architecture Anchor
+
+The immutable clean ConvIR-B architecture anchor is:
+
+- branch: `github/codex/haze4k-official-arch-anchor`
+- policy: `OFFICIAL_ARCH_ANCHOR_POLICY.md`
+- route card: `experiment_cards/2026-06-10-haze4k-official-arch-anchor.md`
+- evidence root: `experiment_logs/haze4k_official_arch_anchor_20260610/`
+
+This anchor preserves the official `Dehazing/ITS` ConvIR-B architecture while
+keeping the already validated Haze4K data, pretrained checkpoint, and evidence
+tooling contracts. Do not modify model architecture directly on this branch.
+Future model changes must start from a new `codex/<route>` branch or isolated
+worktree.
 
 ## Branch Cleanup
 
@@ -37,6 +52,8 @@ branches, so their commits remain reachable through the retained branches.
 Retained remote refs:
 
 - `github/main`: stable entry point plus consolidated text evidence.
+- `github/codex/haze4k-official-arch-anchor`: immutable official ConvIR-B
+  architecture anchor for future Haze4K architecture branches.
 - `github/codex/haze4k-hardfreq-loss`: leaf route containing hard frequency
   loss evidence and prior route history.
 - `github/codex/haze4k-haze-prior-scm`: leaf route containing haze-prior SCM
@@ -97,6 +114,7 @@ without a material new reason.
 
 | Route | Status | Main result | Decision | Card | Evidence root | Source after cleanup |
 | --- | --- | --- | --- | --- | --- | --- |
+| Official ConvIR-B architecture anchor | Completed cloud preflight | Strict `haze4k-base.pkl` load passed, checkpoint sha256 `6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088`, parameter count `8,630,665`, synthetic and Haze4K train-crop forwards finite, source audit passed, `--learning_rate`/`--leaning_rate` compatible, locked test untouched. | `OFFICIAL_ANCHOR_PREFLIGHT_OK`; keep branch immutable and require future architecture changes to branch from it. | [card](experiment_cards/2026-06-10-haze4k-official-arch-anchor.md) | [logs](experiment_logs/haze4k_official_arch_anchor_20260610/) | `github/codex/haze4k-official-arch-anchor` |
 | FAM `modres` 5-epoch scout | Completed diagnostic | Mean PSNR `+0.0953 dB`, but median delta negative and strong-reference regressions `142/250`. | Do not promote unchanged `modres`; mechanism is active but preservation fails. | [card](experiment_cards/2026-05-31-haze4k-fam-feature-modulation.md) | [logs](experiment_logs/haze4k_fam_modres_scout_stop5_20260531/) | `github/main` |
 | FAM2-only 20-epoch scout | Completed diagnostic | Mean PSNR `+0.1739 dB`; hard bottom 25% `+0.8159 dB`; easy top 25% `-0.2860 dB`; strong-reference regressions `138/250`. | Keep as diagnostic; preservation gate fails. | [card](experiment_cards/2026-05-31-haze4k-fam2-only-modulation.md) | [logs](experiment_logs/haze4k_fam2_modres_stop20_20260531/) | retained leaf branches |
 | FAM2 bounded gamma | Completed diagnostic | Mean PSNR `-0.0271 dB`; hard `+0.8054 dB`; easy `-1.2740 dB`; strong-reference regressions `181/250`. | Bounded gamma does not solve preservation; do not promote. | [card](experiment_cards/2026-06-01-haze4k-fam2-bounded-modulation.md) | [logs](experiment_logs/haze4k_fam2_bounded_gamma_stop20_20260601/) | retained leaf branches |
@@ -147,6 +165,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 
 | Evidence root | Files | Main contents |
 | --- | ---: | --- |
+| `experiment_logs/haze4k_official_arch_anchor_20260610/` | 6 | Official architecture anchor cloud preflight script, log, structured JSON, status, README, and source audit. |
 | `experiment_logs/haze4k_fam_modres_preflight_20260531/` | 3 | FAM preflight and one-batch train probe logs. |
 | `experiment_logs/haze4k_fam_modres_scout_stop5_20260531/` | 8 | Stop5 train logs, compare JSON, per-image CSV, run script, README. |
 | `experiment_logs/haze4k_fam2_modres_preflight_20260531/` | 3 | FAM2 equivalence and real-batch preflight JSON. |
