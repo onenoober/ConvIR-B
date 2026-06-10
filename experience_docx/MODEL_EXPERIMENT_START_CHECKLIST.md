@@ -34,6 +34,9 @@ Write where each fact belongs before facts start accumulating.
 - Identify unrelated local changes and leave them untouched.
 - Decide what can be committed and what must remain external.
 - Keep reference entrypoints stable until an experiment card says otherwise.
+- For Haze4K architecture routes, branch from
+  `github/codex/haze4k-official-arch-anchor` as `codex/<new-route>` and keep
+  that anchor immutable.
 
 ## 4. Verify Data And Metrics
 
@@ -143,6 +146,12 @@ For ConvIR-B, use successive halving by default: smoke, 5 epochs, 20 epochs,
 80 epochs, then full budget. A candidate reaches the next stage only when the
 written quality, mechanism, preservation, and cost gates all pass or when the
 card says why the next stage is still informative.
+
+For Haze4K model-structure routes that reuse the official pretrained
+checkpoint, follow `Haze4K_ARCH_FINETUNE_WORKFLOW.md`: declare partial-load
+allowed prefixes, initialize new modules conservatively or as no-op, freeze the
+trusted backbone first, then unfreeze only the route's predeclared neighboring
+modules at later gates.
 
 ## 10. After The Run
 

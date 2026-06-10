@@ -2,12 +2,21 @@
 
 ## Cloud And Local Execution
 
-- Default cloud server for this repository: `dehaze1` (`ssh dehaze1`).
-- `dehaze1` resolves to `root@connect.bjb1.seetacloud.com` on port `16124` via the SSH key configured in `~/.ssh/config`.
+- Default cloud server for this repository: `convir-5090` (`ssh convir-5090`).
+- `convir-5090` is the only default runtime host; use the SSH key and endpoint configured in `~/.ssh/config`.
 - Highest-priority project rule: the local WSL checkout is for editing and compile/syntax-only checks.
 - Do not run tests, smoke tests, training, evaluation, inference, demos, or project runtime commands locally.
-- Run all tests, including smoke tests, training, evaluation, and any execution/runtime validation, on `dehaze1` unless the user explicitly overrides this rule for a specific command.
-- If runtime validation is needed, sync the code to `dehaze1` and run it there; if the cloud server is unavailable, report that instead of falling back to local execution.
+- Run all tests, including smoke tests, training, evaluation, and any execution/runtime validation, on `convir-5090` unless the user explicitly overrides this rule for a specific command.
+- If runtime validation is needed, sync the code to `convir-5090` and run it there; if the cloud server is unavailable, report that instead of falling back to local execution.
+
+## Official Architecture Anchor
+
+- Treat `github/codex/haze4k-official-arch-anchor` as the immutable official ConvIR-B Haze4K architecture anchor.
+- Do not modify or force-push the anchor branch for experiments.
+- Any new model-structure route must start from the anchor by creating `codex/<new-route>`.
+- If a new branch fine-tunes from the Haze4K pretrained checkpoint, explicitly document partial-load rules and initialization rules for all newly added modules before runtime validation.
+- Follow `experience_docx/Haze4K_ARCH_FINETUNE_WORKFLOW.md` for architecture modification, partial loading, freezing, progressive fine-tuning, gating, and evidence closeout.
+- Current `convir-5090` anchor runtime paths are `/home/caozhiyang/ConvIR-B/repos/ConvIR-B-official-arch-anchor`, `/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python`, `/home/caozhiyang/ConvIR-B/datasets/Haze4K/Haze4K`, and `/home/caozhiyang/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`.
 
 
 ## GitHub Evidence Sync
@@ -20,10 +29,10 @@
 
 ## Command Reliability
 
-- For multi-hop commands involving PowerShell, WSL, and `ssh dehaze1`, read and follow `experience_docx/COMMAND_RELIABILITY_PROTOCOL.md` before running the command.
+- For multi-hop commands involving PowerShell, WSL, and `ssh convir-5090`, read and follow `experience_docx/COMMAND_RELIABILITY_PROTOCOL.md` before running the command.
 - Avoid complex inline PowerShell-to-WSL-to-SSH one-liners with nested quotes, regex pipes, or heredocs; write a small Bash script body and pipe it through `wsl ... bash -lc "tr -d '\r' | bash"` instead.
 - Every monitoring, sync, or audit command should print an explicit `*_OK` success marker or write a status file so a successful no-output command is not mistaken for a hang.
-- Use explicit runtime paths for cloud Python, especially `/root/miniconda3/envs/convir-cu128/bin/python`, instead of assuming `python` is on PATH.
+- Use explicit runtime paths for cloud Python, especially `/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python`, instead of assuming `python` is on PATH.
 - If a command fails from quoting, CRLF, PATH, or shell-boundary issues, record the invalid form and the corrected form in the command reliability protocol before continuing.
 
 ## Model Run Operations

@@ -13,7 +13,7 @@ training run, evaluation run, inference run, post-run audit, and cloud evidence
 sync.
 
 The local WSL checkout remains editing and compile/static-check only. Runtime
-work happens on `dehaze1` unless the user explicitly overrides that rule.
+work happens on `convir-5090` unless the user explicitly overrides that rule.
 
 ## Run State Labels
 
@@ -41,8 +41,8 @@ Before launching any cloud runtime command, record or verify:
 
 - branch name and local git commit;
 - whether the working tree has unrelated changes;
-- remote workspace path on `dehaze1`;
-- exact remote Python path, normally `/root/miniconda3/envs/convir-cu128/bin/python`;
+- remote workspace path on `convir-5090`;
+- exact remote Python path, normally `/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python`;
 - data root, depth/prior cache root when applicable, and checkpoint path;
 - split JSON or dataset split name;
 - run id, output root, model name, and evidence root;
@@ -64,19 +64,24 @@ runtime checkout.
 Recommended pattern:
 
 ```bash
-REMOTE_ROOT=/root/autodl-tmp/workspace/<repo-route-workspace>
+REMOTE_ROOT=/home/caozhiyang/ConvIR-B/repos/<repo-route-workspace>
 EVID=$REMOTE_ROOT/experience_docx/experiment_logs/<route_id>
-PY=/root/miniconda3/envs/convir-cu128/bin/python
+PY=/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python
 ```
 
 Before runtime validation, verify the remote checkout has the intended code:
 
 ```bash
-ssh dehaze1 'cd /root/autodl-tmp/workspace/<repo-route-workspace> && git branch --show-current && git rev-parse --short HEAD && git status --short'
+ssh convir-5090 'cd /home/caozhiyang/ConvIR-B/repos/<repo-route-workspace> && git branch --show-current && git rev-parse --short HEAD && git status --short'
 ```
 
 If remote code was copied outside Git, record the source local commit and copy
 time in `status.txt` or the route README.
+
+For Haze4K architecture routes, the remote workspace should be created from
+`github/codex/haze4k-official-arch-anchor` and then switched to
+`codex/<new-route>`. Record the anchor commit, route commit, partial-load
+allowlist, and new-module initialization policy before Stage 0 preflight.
 
 ## Session And Output Naming
 
@@ -206,7 +211,7 @@ diagnostic and needs a new run id or card update.
 
 After a cloud run completes:
 
-1. sync text evidence from `dehaze1` to local `experience_docx/`;
+1. sync text evidence from `convir-5090` to local `experience_docx/`;
 2. normalize CRLF and remove accidental CR-suffixed paths;
 3. parse JSON/CSV evidence when practical;
 4. update route card, `EXPERIMENT_INDEX.md`, family summary, and evidence

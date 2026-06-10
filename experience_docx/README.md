@@ -48,6 +48,7 @@ merging diagnostic experiment code.
 | `EXPERIMENT_CARD_TEMPLATE.md` | Blank route/experiment card for a new candidate. |
 | `MODEL_EXPERIMENT_START_CHECKLIST.md` | Checklist for starting and governing a model experiment. |
 | `CONVIR_B_EXECUTION_GUIDE.md` | Project-specific baseline-first and fixed-budget guide for ConvIR-B. |
+| `Haze4K_ARCH_FINETUNE_WORKFLOW.md` | Required workflow for new Haze4K architecture branches from the official anchor, including partial-load, freezing, staged fine-tuning, gates, and evidence closeout. |
 | `EXPERIMENT_INDEX.md` | Consolidated Haze4K route outcomes, family verdicts, evidence-strength labels, retained branches, and text evidence roots. |
 | `family_summaries/` | Family-level verdicts, evidence summaries, do-not-repeat notes, and reopen conditions. |
 | `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` | Required evidence-only sync workflow for future GitHub experiment branches. |
@@ -61,12 +62,15 @@ merging diagnostic experiment code.
 3. read `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` before syncing any route branch
    back to GitHub `main`;
 4. read `CONVIR_B_EXECUTION_GUIDE.md` for the current repository;
-5. download the official pretrained checkpoint for each target task;
-6. run evaluation first and record the local ConvIR-B baseline;
-7. explain any reproduction gap against the root `README.md` result table;
-8. copy `EXPERIMENT_CARD_TEMPLATE.md` only after the baseline is trustworthy;
-9. fill the card with fixed-budget gates, mechanism metrics, and stop rules;
-10. treat every route as unproven until it passes its own written gates.
+5. for any new Haze4K model-structure route, read
+   `Haze4K_ARCH_FINETUNE_WORKFLOW.md` and branch from
+   `github/codex/haze4k-official-arch-anchor`;
+6. download the official pretrained checkpoint for each target task;
+7. run evaluation first and record the local ConvIR-B baseline;
+8. explain any reproduction gap against the root `README.md` result table;
+9. copy `EXPERIMENT_CARD_TEMPLATE.md` only after the baseline is trustworthy;
+10. fill the card with fixed-budget gates, mechanism metrics, and stop rules;
+11. treat every route as unproven until it passes its own written gates.
 
 ## Current ConvIR-B Priority
 

@@ -48,6 +48,11 @@ strong-case regressions stay within the written limits?
 | deployment policy | Can inference behavior be changed safely and usefully? | latency, memory, calibration, fallback, failure cases |
 | reproducibility or infrastructure route | Is the setup itself blocking trustworthy experiments? | dependency pinning, data paths, checkpoint contracts, smoke tests, runbook updates |
 
+For Haze4K architecture changes, this route family has an additional fixed
+starting point: branch from `github/codex/haze4k-official-arch-anchor` as
+`codex/<new-route>` and follow `Haze4K_ARCH_FINETUNE_WORKFLOW.md` for
+partial-load, initialization, freezing, and staged fine-tuning.
+
 ## Failure Modes To Look For
 
 Use these as prompts, not assumptions:

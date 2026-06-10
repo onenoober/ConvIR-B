@@ -66,6 +66,12 @@ Preserve trusted entrypoints until the experiment explicitly changes them:
 An experiment that changes the entrypoint or checkpoint contract must be judged
 against a newly written fair contract.
 
+For Haze4K architecture routes in this repository, the trusted entrypoint
+baseline is the immutable `github/codex/haze4k-official-arch-anchor` branch.
+New model-structure work starts from that branch as `codex/<new-route>` and
+must follow `Haze4K_ARCH_FINETUNE_WORKFLOW.md` before any runtime validation or
+fine-tuning.
+
 ## Verified Baseline Rule
 
 Before changing the model, establish the baseline:

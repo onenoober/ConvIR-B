@@ -16,9 +16,16 @@ local environment and any reproduction gap has a written explanation.
 
 Current runtime overlay for this checkout: the WSL copy is for editing and
 compile/static checks only. Run smoke tests, training, evaluation, inference,
-and other runtime validation on the configured cloud server. In older notes,
-"local baseline" means the baseline measured in the active runtime environment,
-not necessarily the WSL machine.
+and other runtime validation on `convir-5090` (`ssh convir-5090`) with explicit
+cloud paths, especially `/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python`.
+In older notes, "local baseline" means the baseline measured in the active
+runtime environment, not necessarily the WSL machine.
+
+For Haze4K model-structure changes, first read
+`Haze4K_ARCH_FINETUNE_WORKFLOW.md`. New architecture routes must branch from
+`github/codex/haze4k-official-arch-anchor` as `codex/<new-route>`, keep that
+anchor immutable, and document partial-load plus new-module initialization
+rules before any fine-tuning run.
 
 ## Required Order
 

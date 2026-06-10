@@ -9,7 +9,12 @@ Status: required workflow for avoiding repeated invalid commands in this reposit
 This protocol records command forms that have already failed in this workspace
 and the preferred forms that should be used instead. It is especially important
 for monitoring cloud experiments from Windows PowerShell through WSL and then
-over SSH to `dehaze1`.
+over SSH to `convir-5090`.
+
+Current host note: `convir-5090` is the default cloud runtime server. Older
+examples that mention `dehaze1` are historical command-reliability records; for
+new commands, replace the host with `convir-5090` and use the current cloud
+Python path `/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python`.
 
 ## High-Priority Rule
 
@@ -544,10 +549,10 @@ Use this template for future training and post-eval checks:
 $script = @'
 set -euo pipefail
 cd /home/ubuntu/workspace/ConvIR-B
-ssh dehaze1 'bash -s' <<'REMOTE'
+ssh convir-5090 'bash -s' <<'REMOTE'
 set -euo pipefail
-EVID=/root/autodl-tmp/workspace/<remote-workspace>/experience_docx/experiment_logs/<route_id>
-PY=/root/miniconda3/envs/convir-cu128/bin/python
+EVID=/home/caozhiyang/ConvIR-B/repos/<remote-workspace>/experience_docx/experiment_logs/<route_id>
+PY=/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python
 printf 'remote_time=%s\n' "$(date -Is)"
 for s in <train_tmux> <post_tmux>; do
   if tmux has-session -t "$s" 2>/dev/null; then
@@ -559,7 +564,7 @@ done
 [ -f "$EVID/status.txt" ] && tail -n 80 "$EVID/status.txt" || printf 'status=MISSING\n'
 printf 'REMOTE_MONITOR_OK\n'
 REMOTE
-rsync -a dehaze1:/root/autodl-tmp/workspace/<remote-workspace>/experience_docx/experiment_logs/<route_id>/ experience_docx/experiment_logs/<route_id>/
+rsync -a convir-5090:/home/caozhiyang/ConvIR-B/repos/<remote-workspace>/experience_docx/experiment_logs/<route_id>/ experience_docx/experiment_logs/<route_id>/
 printf 'EVIDENCE_SYNC_OK\n'
 '@
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
@@ -800,3 +805,147 @@ $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 
 For extension audits, use a CR-stripped script body and keep the grep pattern
 single-quoted inside the Bash script.
+
+## 2026-06-07 PowerShell to WSL inline Python quote nesting
+
+Observed while probing whether WSL had `pexpect` available for password-based
+SSH login: an inline Python heredoc was embedded inside a single
+PowerShell-to-WSL command, and the diagnostic `print()` arguments lost their
+intended string quoting.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'python3 - <<"PY"
+try:
+ import pexpect
+ print("PEXPECT_OK")
+except Exception as e:
+ print("PEXPECT_MISSING", repr(e))
+PY'
+```
+
+Failure mode observed:
+
+- Python received `print(PEXPECT_MISSING, repr(e))` instead of the intended
+  string literal;
+- the helper raised `NameError: name 'PEXPECT_MISSING' is not defined` after
+  the original `ModuleNotFoundError`.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+python3 - <<'PY'
+try:
+    import pexpect
+    print("PEXPECT_OK")
+except Exception as e:
+    print("PEXPECT_MISSING", repr(e))
+PY
+printf 'PYTHON_PROBE_DONE\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For inline Python probes, send a CR-stripped script body through WSL Bash and
+keep the Python heredoc inside that body.
+
+## 2026-06-10 PowerShell to WSL grep alternation quoting
+
+Observed while auditing model-file parity against the official `origin/main`
+baseline: an inline `grep -E` pattern with parentheses was embedded in a
+PowerShell-launched `wsl ... bash -lc` command, so the outer shell stripped the
+intended pattern quotes before Bash parsed it.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B bash -lc 'set -euo pipefail; git ls-tree -r --name-only origin/main | grep -E "(^|/)models/.*\.py$" | sort'
+```
+
+Failure mode observed:
+
+- Bash received `grep -E (^|/)models/.*\.py$` without protected quotes;
+- `(` started an unexpected shell token;
+- the model-file audit stopped before producing a file list.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B
+git ls-tree -r --name-only origin/main | grep -E '(^|/)models/.*\.py$' | sort
+printf 'MODEL_FILE_AUDIT_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For model-file audits with regex alternation, send a CR-stripped Bash script
+body through WSL instead of nesting the regex directly in `bash -lc`.
+
+## 2026-06-10 PowerShell here-string terminator collision
+
+Observed while attempting to append the preceding reliability note: the
+PowerShell here-string body itself included another literal `$script = @'`
+example, which prematurely terminated the outer here-string.
+
+Invalid form:
+
+```powershell
+$script = @'
+cat >> experience_docx/COMMAND_RELIABILITY_PROTOCOL.md <<'MD'
+```powershell
+$script = @'
+...
+'@
+```
+MD
+'@
+```
+
+Failure mode observed:
+
+- PowerShell closed the outer here-string at the embedded `@'` example;
+- prose following that point was parsed as PowerShell code;
+- the command failed with `Missing opening '(' after keyword 'for'`.
+
+Corrected form:
+
+```text
+Use `apply_patch` for protocol edits that must include literal PowerShell
+here-string examples, or change one layer of delimiters so the example cannot
+close the outer string.
+```
+
+Do not nest an unescaped `@'` here-string example inside an outer single-quoted
+PowerShell here-string.
+
+## 2026-06-10 WSL `rg` resolves to WindowsApps path
+
+Observed while auditing model builder usage from a PowerShell-launched WSL
+shell: `rg` resolved to the Codex WindowsApps resource path instead of a usable
+WSL binary.
+
+Invalid form:
+
+```bash
+rg -n "build_net|build_apdr_net|build_dpga_net" Dehazing/ITS -g '*.py'
+```
+
+Failure mode observed:
+
+- WSL tried to execute `/mnt/c/Program Files/WindowsApps/OpenAI.Codex_.../app/resources/rg`;
+- the Windows path was not executable from WSL and returned `Permission denied`;
+- the audit command did not inspect the model usage sites.
+
+Corrected form:
+
+```bash
+git grep -n -E "build_net|build_apdr_net|build_dpga_net" -- 'Dehazing/ITS/*.py' 'Dehazing/ITS/**/*.py'
+```
+
+When WSL `rg` resolves to a WindowsApps path, prefer `git grep` for repository
+searches instead of relying on the inherited PATH.

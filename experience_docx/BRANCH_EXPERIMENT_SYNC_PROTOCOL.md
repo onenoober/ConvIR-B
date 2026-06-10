@@ -7,7 +7,7 @@ Status: required workflow for future GitHub experiment branches; GitHub is the f
 
 ## Priority Rule
 
-For cloud experiments on `dehaze1`, GitHub sync is the first-priority archival
+For cloud experiments on `convir-5090`, GitHub sync is the first-priority archival
 step after training, evaluation, post-run watchers, or audits finish. A cloud
 run is not considered closed until its text evidence is copied into
 `experience_docx/`, the route/index/family documentation is updated, and those
@@ -40,6 +40,19 @@ code branches.
 3. Do not treat a route branch as the final reader-facing archive.
 4. When the experiment is complete, sync its evidence back to `main` using the
    evidence-only process below.
+
+For Haze4K architecture changes, the source branch is fixed:
+
+```bash
+git fetch github '+refs/heads/*:refs/remotes/github/*'
+git switch --detach github/codex/haze4k-official-arch-anchor
+git switch -c codex/<new-route>
+```
+
+Do not modify `github/codex/haze4k-official-arch-anchor` for experiments. If
+the route fine-tunes from the official Haze4K pretrained checkpoint, the route
+card and evidence README must include the partial-load allowlist, missing-key
+policy, unexpected-key policy, and initialization rules for all new modules.
 
 ## Evidence-Only Sync Rule
 

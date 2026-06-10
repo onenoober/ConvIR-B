@@ -1,6 +1,6 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-06-07
+Date: 2026-06-10
 
 Status: evidence index for `codex/main-experiment-evidence-sync`.
 
@@ -37,6 +37,9 @@ branches, so their commits remain reachable through the retained branches.
 Retained remote refs:
 
 - `github/main`: stable entry point plus consolidated text evidence.
+- `github/codex/haze4k-official-arch-anchor`: immutable official ConvIR-B
+  Haze4K architecture anchor. New model-structure routes must branch from this
+  ref as `codex/<new-route>`; do not modify the anchor itself.
 - `github/codex/haze4k-hardfreq-loss`: leaf route containing hard frequency
   loss evidence and prior route history.
 - `github/codex/haze4k-haze-prior-scm`: leaf route containing haze-prior SCM
@@ -47,6 +50,25 @@ Retained remote refs:
   decoder-side RHFD-Lite plus adapter-only preservation training.
 - `github/codex/haze4k-convir-v1-5-full-udpnet-transplant`: active/full UDPNet
   checkpoint-acquisition and future transplant workspace.
+
+## Official Architecture Anchor Policy
+
+The current Haze4K architecture baseline is anchored at
+`github/codex/haze4k-official-arch-anchor`. Treat it as immutable evidence of
+the official ConvIR-B Haze4K architecture and checkpoint-loading contract.
+
+For any future model-structure change:
+
+1. create `codex/<new-route>` from `github/codex/haze4k-official-arch-anchor`;
+2. document the partial-load allowlist for the official Haze4K pretrained
+   checkpoint;
+3. document initialization rules for every newly added module;
+4. freeze the trusted ConvIR-B modules first and unfreeze only through the
+   staged fine-tune gates in `Haze4K_ARCH_FINETUNE_WORKFLOW.md`;
+5. run runtime validation on `convir-5090`, not local WSL.
+
+Anchor preflight evidence on `convir-5090` is available at
+`experiment_logs/haze4k_official_arch_anchor_convir5090_preflight_20260610/`.
 
 ## Reading Order
 
@@ -151,6 +173,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 
 | Evidence root | Files | Main contents |
 | --- | ---: | --- |
+| `experiment_logs/haze4k_official_arch_anchor_convir5090_preflight_20260610/` | 5 | Official architecture anchor preflight on `convir-5090`: strict Haze4K checkpoint load, synthetic forward, one train batch, checkpoint hash, runtime paths, and OK marker. |
 | `experiment_logs/haze4k_fam_modres_preflight_20260531/` | 3 | FAM preflight and one-batch train probe logs. |
 | `experiment_logs/haze4k_fam_modres_scout_stop5_20260531/` | 8 | Stop5 train logs, compare JSON, per-image CSV, run script, README. |
 | `experiment_logs/haze4k_fam2_modres_preflight_20260531/` | 3 | FAM2 equivalence and real-batch preflight JSON. |

@@ -1,0 +1,9 @@
+preflight_start haze4k_official_arch_anchor_convir5090 2026-06-10T20:53:31+08:00
+remote_root=/home/caozhiyang/ConvIR-B/repos/ConvIR-B-official-arch-anchor
+data=/home/caozhiyang/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/home/caozhiyang/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+python=/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python
+cuda_visible_devices=0
+torch_force_no_weights_only_load=1
+preflight_done rc=0 haze4k_official_arch_anchor_convir5090 2026-06-10T20:53:40+08:00
+OFFICIAL_ANCHOR_CONVIR5090_PREFLIGHT_OK
