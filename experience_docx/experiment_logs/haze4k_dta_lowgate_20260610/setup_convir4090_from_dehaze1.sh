@@ -85,23 +85,23 @@ ssh "$TARGET" "bash -s" <<REMOTE
 set -euo pipefail
 CONDA_EXE=""
 if command -v conda >/dev/null 2>&1; then
-  CONDA_EXE=$(command -v conda)
+  CONDA_EXE=\$(command -v conda)
 elif [ -x "$BASE/miniforge3/bin/conda" ]; then
   CONDA_EXE="$BASE/miniforge3/bin/conda"
 elif [ -x "\$HOME/miniconda3/bin/conda" ]; then
   CONDA_EXE="\$HOME/miniconda3/bin/conda"
 fi
-if [ -z "$CONDA_EXE" ]; then
+if [ -z "\$CONDA_EXE" ]; then
   INSTALLER="$BASE/tmp/Miniforge3-Linux-x86_64.sh"
   mkdir -p "$BASE/tmp"
-  if [ ! -f "$INSTALLER" ]; then
-    curl -L --retry 3 -o "$INSTALLER" "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh"
+  if [ ! -f "\$INSTALLER" ]; then
+    curl -L --retry 3 -o "\$INSTALLER" "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh"
   fi
-  bash "$INSTALLER" -b -p "$BASE/miniforge3"
+  bash "\$INSTALLER" -b -p "$BASE/miniforge3"
   CONDA_EXE="$BASE/miniforge3/bin/conda"
 fi
 if [ ! -x "$ENV_ROOT/bin/python" ]; then
-  "$CONDA_EXE" create -y -p "$ENV_ROOT" python=3.10 pip
+  "\$CONDA_EXE" create -y -p "$ENV_ROOT" python=3.10 pip
 fi
 "$ENV_ROOT/bin/python" -m pip install --upgrade pip setuptools wheel
 "$ENV_ROOT/bin/python" -m pip install \
