@@ -12,11 +12,38 @@ import torch.nn.functional as f
 from skimage import img_as_ubyte
 import cv2
 
+
+def _unpack_test_batch(data):
+    if len(data) == 4:
+        input_img, label_img, depth, name = data
+        return input_img, label_img, depth, name
+    input_img, label_img, name = data
+    return input_img, label_img, None, name
+
+
+def _forward_model(model, input_img, depth, args):
+    if getattr(args, 'arch', '') == 'dta':
+        if depth is None and getattr(args, 'dta_require_depth', False):
+            raise ValueError('DTA test requires depth but no depth tensor was returned.')
+        return model(input_img, depth)
+    return model(input_img)
+
+
 def _eval(model, args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     state_dict = torch.load(args.test_model, map_location=device)
     model.load_state_dict(state_dict['model'])
-    dataloader = test_dataloader(args.data_dir, args.data, batch_size=1, num_workers=0)
+    depth_cache_dir = args.dta_depth_cache_dir if getattr(args, 'arch', '') == 'dta' else ''
+    dataloader = test_dataloader(
+        args.data_dir,
+        args.data,
+        batch_size=1,
+        num_workers=0,
+        depth_cache_dir=depth_cache_dir,
+        depth_split=args.dta_eval_depth_split,
+        split_json=args.split_json,
+        split_name=args.split_name,
+    )
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
     adder = Adder()
@@ -27,19 +54,22 @@ def _eval(model, args):
         ssim_adder = Adder()
 
         for iter_idx, data in enumerate(dataloader):
-            input_img, label_img, name = data
+            input_img, label_img, depth, name = _unpack_test_batch(data)
 
             input_img = input_img.to(device)
+            depth = depth.to(device) if depth is not None else None
 
             h, w = input_img.shape[2], input_img.shape[3]
             H, W = ((h+factor)//factor)*factor, ((w+factor)//factor*factor)
             padh = H-h if h%factor!=0 else 0
             padw = W-w if w%factor!=0 else 0
             input_img = f.pad(input_img, (0, padw, 0, padh), 'reflect')
+            if depth is not None:
+                depth = f.pad(depth, (0, padw, 0, padh), 'reflect')
 
             tm = time.time()
 
-            pred = model(input_img)[2]
+            pred = _forward_model(model, input_img, depth, args)[2]
             pred = pred[:,:,:h,:w]
 
             elapsed = time.time() - tm

@@ -812,3 +812,40 @@ PY
 Inside cloud monitor/audit helpers, use the already-declared explicit runtime
 such as `/root/miniconda3/envs/convir-cu128/bin/python` or `"$PY"` for all
 inline Python snippets as well; do not assume `python3` exists on PATH.
+
+## 2026-06-10 PowerShell-to-WSL inline regex quoting and bare marker failure
+
+Observed while inspecting the DTA route files from PowerShell through WSL: a
+compact `wsl ... bash -lc 'git grep -E "a|b|c" ... | head'` command was split
+by the PowerShell/WSL quoting boundary, and a bare success marker was treated
+as a command rather than printed text.
+
+Invalid forms:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'cd /home/ubuntu/workspace/ConvIR-B-dta-lowgate && git grep -n -E "arch|fam_mode|init_model|load_state_dict|freeze|requires_grad|model\(" -- Dehazing/ITS experience_docx/tools | head -n 200'
+```
+
+```bash
+READ_DOC_HEADINGS_OK
+```
+
+Failure mode observed:
+
+- the inner regex and pipe were not preserved as one WSL Bash command;
+- Bash attempted to execute regex fragments such as `init_model` and `freeze`;
+- the success marker failed with `command not found`.
+
+Corrected form:
+
+```powershell
+$script = @'
+cd /home/ubuntu/workspace/ConvIR-B-dta-lowgate
+git grep -n -E 'arch|fam_mode|init_model|load_state_dict|freeze|requires_grad|model\(' -- Dehazing/ITS experience_docx/tools | head -n 200 || true
+printf 'DTA_ROUTE_AUDIT_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For WSL repository audits from PowerShell, put regexes and pipes inside a
+piped Bash script and print success markers with `echo` or `printf`.

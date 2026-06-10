@@ -39,7 +39,20 @@ def percentile(values, pct):
 
 def build_model(arch, mode, args, prefix):
     if arch in ("convir", "official_convir"):
-        return build_convir_net("base", "Haze4K", mode)
+        return build_convir_net("base", "Haze4K", mode, arch=arch)
+    if arch == "dta":
+        return build_convir_net(
+            "base",
+            "Haze4K",
+            "original",
+            arch="dta",
+            dta_prior_channels=getattr(args, f"{prefix}_dta_prior_channels"),
+            dta_gate_bias=getattr(args, f"{prefix}_dta_gate_bias"),
+            dta_gate_limit=getattr(args, f"{prefix}_dta_gate_limit"),
+            dta_gamma_limit=getattr(args, f"{prefix}_dta_gamma_limit"),
+            dta_beta_limit=getattr(args, f"{prefix}_dta_beta_limit"),
+            dta_alpha_init=getattr(args, f"{prefix}_dta_alpha_init"),
+        )
     if arch == "dpga":
         try:
             from models.DPGAConvIR import build_dpga_net
@@ -110,17 +123,20 @@ def load_candidate_state(model, checkpoint, device, arch):
         )
 
 
-def dpga_depth_cache_dir(args, prefix, arch):
-    if arch != "dpga":
+def prior_depth_cache_dir(args, prefix, arch):
+    if arch not in ("dpga", "dta"):
         return ""
-    depth_cache_dir = getattr(args, f"{prefix}_dpga_depth_cache_dir") or args.dpga_depth_cache_dir
+    if arch == "dpga":
+        depth_cache_dir = getattr(args, f"{prefix}_dpga_depth_cache_dir") or args.dpga_depth_cache_dir
+    else:
+        depth_cache_dir = getattr(args, f"{prefix}_dta_depth_cache_dir") or args.dta_depth_cache_dir
     if not depth_cache_dir:
-        raise ValueError(f"--{prefix}_dpga_depth_cache_dir or --dpga_depth_cache_dir is required for DPGA eval")
+        raise ValueError(f"Depth cache is required for {arch} eval")
     return depth_cache_dir
 
 
 def forward_model(model, arch, input_img, depth):
-    if arch == "dpga":
+    if arch in ("dpga", "dta"):
         return model(input_img, depth)
     return model(input_img)
 
@@ -135,15 +151,15 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
     load_candidate_state(model, checkpoint, device, arch)
     model.eval()
 
-    depth_split = args.dpga_eval_depth_split
-    if arch == "dpga" and args.split_json and args.split_name and depth_split == "test":
+    depth_split = args.dpga_eval_depth_split if arch == "dpga" else args.dta_eval_depth_split
+    if arch in ("dpga", "dta") and args.split_json and args.split_name and depth_split == "test":
         depth_split = "train"
     dataloader = test_dataloader(
         data_dir,
         "Haze4K",
         batch_size=1,
         num_workers=0,
-        depth_cache_dir=dpga_depth_cache_dir(args, prefix, arch),
+        depth_cache_dir=prior_depth_cache_dir(args, prefix, arch),
         depth_split=depth_split,
         split_json=args.split_json,
         split_name=args.split_name,
@@ -154,7 +170,7 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
 
     with torch.no_grad():
         for idx, data in enumerate(dataloader):
-            if arch == "dpga":
+            if arch in ("dpga", "dta"):
                 input_img, label_img, depth, name = data
                 depth = depth.to(device)
             else:
@@ -228,7 +244,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", required=True)
     parser.add_argument("--original_checkpoint", required=True)
-    arch_choices = ["official_convir", "convir", "apdr", "dpga"]
+    arch_choices = ["official_convir", "convir", "apdr", "dpga", "dta"]
     parser.add_argument("--original_arch", default="official_convir", choices=arch_choices)
     parser.add_argument("--original_mode", default="original")
     parser.add_argument("--original_name", default="original")
@@ -255,10 +271,26 @@ def main():
     parser.add_argument("--candidate_apdr_residual_capacity", default="linear", choices=["linear", "shallow_mlp"])
     parser.add_argument("--dpga_depth_cache_dir", default="")
     parser.add_argument("--dpga_eval_depth_split", default="test")
+    parser.add_argument("--dta_depth_cache_dir", default="")
+    parser.add_argument("--dta_eval_depth_split", default="test")
     parser.add_argument("--split_json", default="")
     parser.add_argument("--split_name", default="")
     parser.add_argument("--original_dpga_depth_cache_dir", default="")
     parser.add_argument("--candidate_dpga_depth_cache_dir", default="")
+    parser.add_argument("--original_dta_depth_cache_dir", default="")
+    parser.add_argument("--candidate_dta_depth_cache_dir", default="")
+    parser.add_argument("--original_dta_prior_channels", type=int, default=16)
+    parser.add_argument("--candidate_dta_prior_channels", type=int, default=16)
+    parser.add_argument("--original_dta_gate_bias", type=float, default=-6.0)
+    parser.add_argument("--candidate_dta_gate_bias", type=float, default=-6.0)
+    parser.add_argument("--original_dta_gate_limit", type=float, default=0.05)
+    parser.add_argument("--candidate_dta_gate_limit", type=float, default=0.05)
+    parser.add_argument("--original_dta_gamma_limit", type=float, default=0.10)
+    parser.add_argument("--candidate_dta_gamma_limit", type=float, default=0.10)
+    parser.add_argument("--original_dta_beta_limit", type=float, default=0.05)
+    parser.add_argument("--candidate_dta_beta_limit", type=float, default=0.05)
+    parser.add_argument("--original_dta_alpha_init", type=float, default=1.0)
+    parser.add_argument("--candidate_dta_alpha_init", type=float, default=1.0)
     parser.add_argument("--original_dpga_prior_embed_channels", type=int, default=16)
     parser.add_argument("--candidate_dpga_prior_embed_channels", type=int, default=16)
     parser.add_argument("--original_dpga_adapter_reduction", type=int, default=2)

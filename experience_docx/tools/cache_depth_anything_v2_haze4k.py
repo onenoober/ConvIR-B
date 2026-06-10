@@ -13,9 +13,15 @@ IMG_EXTENSIONS = (".bmp", ".jpg", ".jpeg", ".png", ".tif", ".tiff")
 
 
 def list_haze_images(data_dir, split):
-    haze_dir = Path(data_dir) / split / "haze"
-    if not haze_dir.is_dir():
-        raise FileNotFoundError(f"Missing Haze4K haze directory: {haze_dir}")
+    split_dir = Path(data_dir) / split
+    haze_dir = None
+    for name in ("IN", "haze", "hazy"):
+        candidate = split_dir / name
+        if candidate.is_dir():
+            haze_dir = candidate
+            break
+    if haze_dir is None:
+        raise FileNotFoundError(f"Missing Haze4K input directory under: {split_dir}")
     return sorted(
         path for path in haze_dir.iterdir()
         if path.is_file() and path.suffix.lower() in IMG_EXTENSIONS
