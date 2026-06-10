@@ -1,0 +1,74 @@
+setup_remote_dirs_ok 2026-06-11T00:19:57+08:00
+base=/sda/home/wangyuxin/ConvIR-B
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-lowgate
+env_root=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu128
+checkpoint_dir=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K
+depth_dir=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+data_dir=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+branch=codex/haze4k-dta-lowgate
+commit=0bddad9
+6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088  /sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+setup_remote_dirs_ok 2026-06-11T00:20:37+08:00
+base=/sda/home/wangyuxin/ConvIR-B
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-lowgate
+env_root=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu128
+checkpoint_dir=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K
+depth_dir=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+data_dir=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+branch=codex/haze4k-dta-lowgate
+commit=0bddad9
+6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088  /sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth_npy_count=4000
+3.5G	/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+setup_remote_dirs_ok 2026-06-11T00:35:39+08:00
+base=/sda/home/wangyuxin/ConvIR-B
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-lowgate
+env_root=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121
+checkpoint_dir=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K
+depth_dir=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+data_dir=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+branch=codex/haze4k-dta-lowgate
+commit=6444612
+6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088  /sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth_npy_count=4000
+3.5G	/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+setup_remote_dirs_ok 2026-06-11T00:36:50+08:00
+base=/sda/home/wangyuxin/ConvIR-B
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-lowgate
+env_root=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121
+checkpoint_dir=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K
+depth_dir=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+data_dir=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+branch=codex/haze4k-dta-lowgate
+commit=ac0a281
+6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088  /sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth_npy_count=4000
+3.5G	/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+CONVIR4090_ENV_CONFIG_OK
+verify_start 2026-06-11T02:00:18+08:00
+branch=codex/haze4k-dta-lowgate
+commit=ac0a281
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088  /sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth_npy_count=4000
+python_exe /sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+pkg_torch True
+pkg_torchvision True
+pkg_numpy True
+pkg_PIL True
+pkg_cv2 True
+pkg_skimage True
+pkg_pytorch_msssim True
+pkg_transformers True
+pkg_tensorboard True
+pkg_warmup_scheduler True
+torch_version 2.5.1+cu121
+torch_cuda 12.1
+cuda_available True
+cuda_device0 NVIDIA GeForce RTX 4090
+dataset_split train images 3000 missing_examples []
+dataset_split test images 1000 missing_examples []
+CONVIR4090_ENV_CONFIG_OK 2026-06-11T02:00:23+08:00

@@ -7,3 +7,96 @@ convir4090_migration_start 2026-06-11T00:00:00+08:00 target=/sda/home/wangyuxin/
 dehaze1_inventory_ok 2026-06-11T00:04:21+08:00 a0_sha256=6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088 depth_npy_count=4000 depth_size=3.4G
 convir4090_ssh_auth_failed 2026-06-11T00:05:00+08:00 rc=255 error="Permission denied (publickey,password)"
 FAILED_INFRA_CONVIR4090_SSH_AUTH
+preflight_start haze4k_dta_lowgate 2026-06-11T02:00:42+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-lowgate
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+cuda_visible_devices=1
+depth_cache=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+codex/haze4k-dta-lowgate
+ac0a281
+ M experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/convir4090_setup_status.txt
+preflight_done rc=1 haze4k_dta_lowgate 2026-06-11T02:00:46+08:00
+DTA_LOWGATE_PREFLIGHT_FAILED
+preflight_start haze4k_dta_lowgate 2026-06-11T02:04:42+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-lowgate
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+cuda_visible_devices=1
+depth_cache=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+codex/haze4k-dta-lowgate
+1dbc0ca
+ M experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/convir4090_setup_status.txt
+preflight_done rc=1 haze4k_dta_lowgate 2026-06-11T02:04:47+08:00
+DTA_LOWGATE_PREFLIGHT_FAILED
+preflight_start haze4k_dta_lowgate 2026-06-11T02:05:43+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-lowgate
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+cuda_visible_devices=1
+depth_cache=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+codex/haze4k-dta-lowgate
+e6def03
+ M experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/convir4090_setup_status.txt
+preflight_done rc=0 haze4k_dta_lowgate 2026-06-11T02:05:49+08:00
+DTA_LOWGATE_PREFLIGHT_OK
+smoke_start haze4k_dta_lowgate 2026-06-11T02:05:59+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-lowgate
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+model_name=ConvIR-Haze4K-DTA-lowgate-adapteronly-seed3407-20260610-smoke
+cuda_visible_devices=1
+depth_cache=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+codex/haze4k-dta-lowgate
+e6def03
+ M experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/convir4090_setup_status.txt
+?? experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/dta_lowgate_preflight.json
+smoke_train_done rc=1 haze4k_dta_lowgate 2026-06-11T02:08:04+08:00
+DTA_LOWGATE_SMOKE_TRAIN_FAILED
+smoke_start haze4k_dta_lowgate 2026-06-11T02:09:29+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-lowgate
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+model_name=ConvIR-Haze4K-DTA-lowgate-adapteronly-seed3407-20260610-smoke
+cuda_visible_devices=1
+depth_cache=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+codex/haze4k-dta-lowgate
+b45203f
+ M experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/status.txt
+?? Dehazing/ITS/results/
+?? Dehazing/ITS/runs/
+?? experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/convir4090_setup_status.txt
+?? experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/dta_lowgate_preflight.json
+smoke_train_done rc=0 haze4k_dta_lowgate 2026-06-11T02:11:31+08:00
+smoke_eval_done rc=0 haze4k_dta_lowgate 2026-06-11T02:11:37+08:00
+DTA_LOWGATE_SMOKE_TRAIN_EVAL_OK
+scout5_start haze4k_dta_lowgate 2026-06-11T02:14:30+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-lowgate
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+model_name=ConvIR-Haze4K-DTA-lowgate-adapteronly-seed3407-20260611-scout5
+num_epoch=5
+stop_epoch=5
+cuda_visible_devices=1
+depth_cache=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+codex/haze4k-dta-lowgate
+053ec10
+ M experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/status.txt
+?? Dehazing/ITS/results/
+?? Dehazing/ITS/runs/
+?? experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/convir4090_setup_status.txt
+?? experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/dta_lowgate_preflight.json
+?? experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/dta_lowgate_smoke_compare/
+scout5_train_done rc=0 haze4k_dta_lowgate 2026-06-11T02:24:05+08:00
+scout5_eval_done rc=0 haze4k_dta_lowgate 2026-06-11T02:24:18+08:00
+DTA_LOWGATE_SCOUT5_TRAIN_EVAL_OK

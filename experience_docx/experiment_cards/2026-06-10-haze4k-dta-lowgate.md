@@ -2,7 +2,7 @@
 
 Date: 2026-06-10
 
-Status: preflight blocked by `convir-4090` SSH authorization
+Status: `COMPLETED_GATE_PASS_SCOUT5`; `gate20` full diagnostic run pending
 
 ## Scope
 
@@ -111,10 +111,10 @@ transmission prior rather than inferring transmission only from RGB.
 
 | Check | Pass line | Result |
 | --- | --- | --- |
-| branch/anchor | branch starts at anchor commit `2d529d4` | pending |
-| partial load | missing keys all start with `DTA.`, unexpected keys empty | blocked: cloud not reached |
-| no-op equivalence | synthetic max abs diff vs A0 <= `1e-7` | blocked: cloud not reached |
-| real batch | one train batch with depth cache has finite loss and DTA gradients | blocked: cloud not reached |
+| branch/anchor | branch starts at anchor commit `2d529d4` | passed on `codex/haze4k-dta-lowgate` |
+| partial load | missing keys all start with `DTA.`, unexpected keys empty | passed: `602` loaded, `18` `DTA.` missing, unexpected `[]` |
+| no-op equivalence | synthetic max abs diff vs A0 <= `1e-7` | passed: max abs diff `0.0` |
+| real batch | one train batch with depth cache has finite loss and DTA gradients | passed: DTA grad sum `0.02175214` |
 | compile/static | local py_compile succeeds only; no local runtime | passed |
 
 ## Mechanism Metrics
@@ -184,17 +184,23 @@ gates and lenient continuation gates:
 
 ## Decision
 
-- Decision label: `FAILED_INFRA_CLOUD_SSH_TIMEOUT` for the first validation
-  attempt; implementation remains ready for cloud preflight.
-- Image/global metric reason: no cloud runtime command reached the server, so
-  no image metric was produced.
-- Mechanism reason: local syntax/static checks passed, but partial-load/no-op
-  and real-batch DTA activity remain pending.
-- Preservation or regression reason: not evaluated.
-- Cost/deployability reason: not evaluated.
-- Evidence strength label: implementation-ready, runtime-unvalidated.
-- Reopen condition, if any: authorize `ssh convir-4090` for the local public key,
-  run `setup_convir4090_from_dehaze1.sh`, then run the predeclared
-  `convir-4090` preflight and smoke scripts without changing scope.
-- What this decides next: `convir-4090` access must be fixed before DTA
-  low-gate adapter-only fine-tuning can be validated.
+- Decision label: `COMPLETED_GATE_PASS_SCOUT5_CONTINUE_GATE20`.
+- Image/global metric reason: smoke 32-image diagnostic was neutral
+  (`+0.002904 dB` mean PSNR delta); scout5 128-image diagnostic was mildly
+  negative (`-0.036217 dB`) but comfortably above the lenient `-1.0 dB`
+  continuation stop line with zero `<= -0.20 dB` worst regressions.
+- Mechanism reason: DTA rank loss decreased from `0.6472` to `0.5469` across
+  the 5-epoch scout, while low gates stayed bounded at about `2.8e-5`.
+- Preservation or regression reason: scout5 has strong-reference regressions
+  (`15/32` strong samples on the 128-image diagnostic), so this is not a
+  promotion result; it is only enough to continue to the predeclared gate20 run.
+- Cost/deployability reason: adapter-only trainable parameters are `17,765` of
+  `8,648,430`; peak memory in the smoke/scout comparisons increased only from
+  about `529.6 MiB` to `531.9 MiB`.
+- Evidence strength label: convir-4090 preflight, smoke, and 5-epoch scout
+  complete; full diagnostic gate20 pending.
+- Reopen condition, if any: if gate20 fails scientifically, keep this route as
+  diagnostic evidence for depth/transmission priors and do not tune on the
+  locked Haze4K test.
+- What this decides next: run the predeclared `gate20` adapter-only training and
+  full diagnostic A0 comparison without changing DTA scope or low-gate settings.
