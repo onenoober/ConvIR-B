@@ -143,7 +143,7 @@ transmission prior rather than inferring transmission only from RGB.
 - Evaluation cadence: smoke can validate every epoch; later stop20 uses written
   cadence and checkpoint comparison.
 - Hardware/runtime assumptions: `convir-4090`, GPU 0, explicit Python
-  `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu128/bin/python`.
+  `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 - Allowed resume behavior: none for first preflight/smoke.
 - Noise floor or minimum effect size for this route: smoke gates are deliberately
   lenient; no promotion claim below the documented Haze4K noise floor.

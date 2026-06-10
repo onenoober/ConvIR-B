@@ -32,7 +32,7 @@
 - For multi-hop commands involving PowerShell, WSL, and `ssh convir-4090`, read and follow `experience_docx/COMMAND_RELIABILITY_PROTOCOL.md` before running the command.
 - Avoid complex inline PowerShell-to-WSL-to-SSH one-liners with nested quotes, regex pipes, or heredocs; write a small Bash script body and pipe it through `wsl ... bash -lc "tr -d '\r' | bash"` instead.
 - Every monitoring, sync, or audit command should print an explicit `*_OK` success marker or write a status file so a successful no-output command is not mistaken for a hang.
-- Use explicit runtime paths for cloud Python, especially `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu128/bin/python`, instead of assuming `python` is on PATH.
+- Use explicit runtime paths for cloud Python, especially `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`, instead of assuming `python` is on PATH.
 - If a command fails from quoting, CRLF, PATH, or shell-boundary issues, record the invalid form and the corrected form in the command reliability protocol before continuing.
 
 ## Model Run Operations

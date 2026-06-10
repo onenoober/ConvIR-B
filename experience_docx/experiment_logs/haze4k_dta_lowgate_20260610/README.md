@@ -18,7 +18,7 @@ features.
 
 - Cloud host: `convir-4090`.
 - Cloud workspace: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-lowgate`.
-- Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu128/bin/python`.
+- Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 - Data: `/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K` after the user
   uploads Haze4K.
 - Official checkpoint:
@@ -82,7 +82,7 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKKusNueVWLOB206PoIUrOTmyNwinFH6ZRqML042cezv
 - Depth cache:
   `/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf`,
   `4000` `.npy` files, `3.4G`.
-- Source Python env facts: `/root/miniconda3/envs/convir-cu128/bin/python`,
+- Source Python env facts: `/root/miniconda3/envs/convir-cu121/bin/python`,
   Python `3.10.13`, Torch `2.11.0+cu128`, and required packages present.
 
 Next action after SSH authorization:

@@ -12,7 +12,7 @@ BASE=${BASE:-/sda/home/wangyuxin/ConvIR-B}
 REPO_URL=${REPO_URL:-https://github.com/onenoober/ConvIR-B.git}
 BRANCH=${BRANCH:-codex/haze4k-dta-lowgate}
 REMOTE_ROOT=$BASE/repos/ConvIR-B-dta-lowgate
-ENV_ROOT=$BASE/envs/convir-cu128
+ENV_ROOT=${ENV_ROOT:-$BASE/envs/convir-cu121}
 CKPT_DIR=$BASE/checkpoints/official/Haze4K
 DEPTH_DIR=$BASE/depth_cache/depth_anything_v2_small_hf
 DATA_DIR=$BASE/datasets/Haze4K/Haze4K
@@ -31,9 +31,9 @@ set -euo pipefail
 mkdir -p "$BASE"/{repos,envs,checkpoints/official/Haze4K,depth_cache,datasets/Haze4K,logs,tmp}
 if [ -d "$REMOTE_ROOT/.git" ]; then
   cd "$REMOTE_ROOT"
-  if [ -n "\$(git status --short)" ]; then
+  if [ -n "\$(git status --short -- . ':!experience_docx/experiment_logs/haze4k_dta_lowgate_20260610')" ]; then
     echo "REMOTE_REPO_DIRTY $REMOTE_ROOT" >&2
-    git status --short >&2
+    git status --short -- . ':!experience_docx/experiment_logs/haze4k_dta_lowgate_20260610' >&2
     exit 3
   fi
   git fetch origin "$BRANCH"
@@ -58,37 +58,55 @@ mkdir -p "$EVID"
 REMOTE
 
 echo "sync_a0_start $(date --iso-8601=seconds)"
-ssh "$SOURCE" "tar -C \"$(dirname "$SRC_A0")\" -cf - \"$(basename "$SRC_A0")\"" \
-  | ssh "$TARGET" "tar -C \"$CKPT_DIR\" -xf -"
-ssh "$TARGET" "sha256sum '$CKPT_DIR/$(basename "$SRC_A0")' | tee -a '$STATUS'"
-ssh "$TARGET" "cp -f '$CKPT_DIR/$(basename "$SRC_A0")' '$CKPT_DIR/haze4k-base.pkl'"
+if ssh "$TARGET" "test -f '$CKPT_DIR/haze4k-base.pkl'"; then
+  echo "sync_a0_skip_existing $(date --iso-8601=seconds)"
+else
+  ssh "$SOURCE" "tar -C \"$(dirname "$SRC_A0")\" -cf - \"$(basename "$SRC_A0")\"" \
+    | ssh "$TARGET" "tar -C \"$CKPT_DIR\" -xf -"
+  if [ "$(basename "$SRC_A0")" != "haze4k-base.pkl" ]; then
+    ssh "$TARGET" "cp -f '$CKPT_DIR/$(basename "$SRC_A0")' '$CKPT_DIR/haze4k-base.pkl'"
+  fi
+fi
+ssh "$TARGET" "sha256sum '$CKPT_DIR/haze4k-base.pkl' | tee -a '$STATUS'"
 echo "sync_a0_done $(date --iso-8601=seconds)"
 
 echo "sync_depth_start $(date --iso-8601=seconds)"
-ssh "$TARGET" "mkdir -p '$DEPTH_DIR'"
-ssh "$SOURCE" "tar -C \"$(dirname "$SRC_DEPTH")\" -cf - \"$(basename "$SRC_DEPTH")\"" \
-  | ssh "$TARGET" "tar -C \"$(dirname "$DEPTH_DIR")\" -xf -"
+if ssh "$TARGET" "test -d '$DEPTH_DIR' && [ \$(find '$DEPTH_DIR' -type f -name '*.npy' | wc -l) -ge 4000 ]"; then
+  echo "sync_depth_skip_existing $(date --iso-8601=seconds)"
+else
+  ssh "$TARGET" "mkdir -p '$DEPTH_DIR'"
+  ssh "$SOURCE" "tar -C \"$(dirname "$SRC_DEPTH")\" -cf - \"$(basename "$SRC_DEPTH")\"" \
+    | ssh "$TARGET" "tar -C \"$(dirname "$DEPTH_DIR")\" -xf -"
+fi
 ssh "$TARGET" "find '$DEPTH_DIR' -type f -name '*.npy' | wc -l | awk '{print \"depth_npy_count=\" \$1}' | tee -a '$STATUS'; du -sh '$DEPTH_DIR' | tee -a '$STATUS'"
 echo "sync_depth_done $(date --iso-8601=seconds)"
 
 ssh "$TARGET" "bash -s" <<REMOTE
 set -euo pipefail
-if [ ! -x "$ENV_ROOT/bin/python" ]; then
-  if command -v conda >/dev/null 2>&1; then
-    conda create -y -p "$ENV_ROOT" python=3.10
-  elif [ -x "\$HOME/miniconda3/bin/conda" ]; then
-    "\$HOME/miniconda3/bin/conda" create -y -p "$ENV_ROOT" python=3.10
-  elif command -v python3 >/dev/null 2>&1; then
-    python3 -m venv "$ENV_ROOT"
-  else
-    echo "FAILED_INFRA_NO_PYTHON_OR_CONDA" | tee -a "$STATUS"
-    exit 4
+CONDA_EXE=""
+if command -v conda >/dev/null 2>&1; then
+  CONDA_EXE=$(command -v conda)
+elif [ -x "$BASE/miniforge3/bin/conda" ]; then
+  CONDA_EXE="$BASE/miniforge3/bin/conda"
+elif [ -x "\$HOME/miniconda3/bin/conda" ]; then
+  CONDA_EXE="\$HOME/miniconda3/bin/conda"
+fi
+if [ -z "$CONDA_EXE" ]; then
+  INSTALLER="$BASE/tmp/Miniforge3-Linux-x86_64.sh"
+  mkdir -p "$BASE/tmp"
+  if [ ! -f "$INSTALLER" ]; then
+    curl -L --retry 3 -o "$INSTALLER" "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh"
   fi
+  bash "$INSTALLER" -b -p "$BASE/miniforge3"
+  CONDA_EXE="$BASE/miniforge3/bin/conda"
+fi
+if [ ! -x "$ENV_ROOT/bin/python" ]; then
+  "$CONDA_EXE" create -y -p "$ENV_ROOT" python=3.10 pip
 fi
 "$ENV_ROOT/bin/python" -m pip install --upgrade pip setuptools wheel
 "$ENV_ROOT/bin/python" -m pip install \
   numpy pillow opencv-python-headless scikit-image pytorch-msssim tensorboard transformers
-"$ENV_ROOT/bin/python" -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128 || \
+"$ENV_ROOT/bin/python" -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121 || \
   "$ENV_ROOT/bin/python" -m pip install torch torchvision
 "$ENV_ROOT/bin/python" -m pip install -e "$REMOTE_ROOT/pytorch-gradual-warmup-lr"
 cd "$REMOTE_ROOT"
