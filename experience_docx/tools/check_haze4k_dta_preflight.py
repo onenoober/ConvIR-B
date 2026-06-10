@@ -99,7 +99,9 @@ def real_batch_backward_check(model, args, device):
     model.train()
     loader = train_dataloader(
         args.data_dir,
-        batch_size=1,
+        # BatchNorm layers can see 1x1 pooled tensors in train mode; two samples
+        # keep the real-batch gradient probe aligned with actual smoke training.
+        batch_size=2,
         num_workers=0,
         data="Haze4K",
         depth_cache_dir=args.depth_cache_dir,
