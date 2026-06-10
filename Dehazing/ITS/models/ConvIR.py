@@ -401,6 +401,16 @@ class ConvIRDTA(ConvIR):
     def collect_dta_stats(self, x, depth=None):
         self.eval()
         with torch.no_grad():
+            h, w = x.shape[2], x.shape[3]
+            factor = 32
+            padded_h = ((h + factor) // factor) * factor
+            padded_w = ((w + factor) // factor) * factor
+            padh = padded_h - h if h % factor != 0 else 0
+            padw = padded_w - w if w % factor != 0 else 0
+            if padh or padw:
+                x = F.pad(x, (0, padw, 0, padh), 'reflect')
+                if depth is not None:
+                    depth = F.pad(depth, (0, padw, 0, padh), 'reflect')
             self.forward(x, depth)
         return self.DTA.stats()
 
