@@ -2,7 +2,7 @@
 
 Date: 2026-06-10
 
-Status: preflight blocked by cloud SSH timeout
+Status: preflight blocked by `convir-4090` SSH authorization
 
 ## Scope
 
@@ -15,10 +15,10 @@ Status: preflight blocked by cloud SSH timeout
 - Secondary metrics: SSIM, per-image PSNR delta, hard/easy bucket deltas,
   strong-reference regressions, DTA gate activity, transmission-rank loss,
   latency and peak memory when available.
-- Execution environment: `convir-5090` only.
+- Execution environment: `convir-4090` only.
 - Artifact root: `experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/`.
 - Branch or isolated workspace: local branch `codex/haze4k-dta-lowgate`;
-  cloud workspace `/home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-lowgate`.
+  cloud workspace `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-lowgate`.
 - Review package location: this route card plus the evidence root above.
 
 ## Baseline Contract
@@ -27,7 +27,8 @@ Status: preflight blocked by cloud SSH timeout
   `github/codex/haze4k-official-arch-anchor`.
 - Anchor commit: `2d529d4`.
 - Baseline checkpoint path:
-  `/home/caozhiyang/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`.
+  `/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`
+  after `dehaze1` sync.
 - Baseline checkpoint sha256:
   `6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088`.
 - Evaluation entrypoint: `Dehazing/ITS/main.py --mode test --version base
@@ -35,15 +36,15 @@ Status: preflight blocked by cloud SSH timeout
 - Training entrypoint: `Dehazing/ITS/main.py --mode train --version base
   --arch dta --init_model <A0> --init_model_partial --train_scope adapter_only`.
 - Dataset and split:
-  `/home/caozhiyang/ConvIR-B/datasets/Haze4K/Haze4K`, train/test directories
-  using the repository Haze4K loader.
+  `/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K`, train/test directories
+  using the repository Haze4K loader. The user will upload the dataset.
 - Depth prior: offline `.npy` relative-depth cache from Depth Anything V2 when
   available; DTA runtime requires this cache for formal runs.
 - Metric implementation: repository PSNR/SSIM plus
   `experience_docx/tools/eval_haze4k_checkpoint_compare.py`.
-- Reproduced baseline result: anchor preflight verified strict checkpoint load,
-  synthetic forward, and one train batch on `convir-5090`; full A0 test metrics
-  are reused only as the fixed reference checkpoint, not for threshold tuning.
+- Reproduced baseline result: anchor preflight previously verified strict
+  checkpoint load, synthetic forward, and one train batch on `convir-5090`.
+  `convir-4090` setup/preflight remains pending until SSH is authorized.
 - Known reproduction gap: none for checkpoint load/preflight; full metric gap is
   recorded by the comparison tool for each DTA run.
 - Reference entrypoints that must remain stable: official `--arch
@@ -141,8 +142,8 @@ transmission prior rather than inferring transmission only from RGB.
 - Random seed policy: first smoke seed `3407`.
 - Evaluation cadence: smoke can validate every epoch; later stop20 uses written
   cadence and checkpoint comparison.
-- Hardware/runtime assumptions: `convir-5090`, GPU 0, explicit Python
-  `/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python`.
+- Hardware/runtime assumptions: `convir-4090`, GPU 0, explicit Python
+  `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu128/bin/python`.
 - Allowed resume behavior: none for first preflight/smoke.
 - Noise floor or minimum effect size for this route: smoke gates are deliberately
   lenient; no promotion claim below the documented Haze4K noise floor.
@@ -192,7 +193,8 @@ gates and lenient continuation gates:
 - Preservation or regression reason: not evaluated.
 - Cost/deployability reason: not evaluated.
 - Evidence strength label: implementation-ready, runtime-unvalidated.
-- Reopen condition, if any: restore `ssh convir-5090` access, then run the
-  predeclared preflight and smoke scripts without changing scope.
-- What this decides next: cloud access must be fixed before DTA low-gate
-  adapter-only fine-tuning can be validated.
+- Reopen condition, if any: authorize `ssh convir-4090` for the local public key,
+  run `setup_convir4090_from_dehaze1.sh`, then run the predeclared
+  `convir-4090` preflight and smoke scripts without changing scope.
+- What this decides next: `convir-4090` access must be fixed before DTA
+  low-gate adapter-only fine-tuning can be validated.

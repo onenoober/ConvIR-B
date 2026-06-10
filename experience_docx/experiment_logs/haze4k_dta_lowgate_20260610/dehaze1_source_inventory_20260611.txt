@@ -1,0 +1,63 @@
+host=autodl-container-a7214dae83-7d00fcaa user=root date=2026-06-11T00:04:21+08:00
+===== python/env =====
+python_exe= /root/miniconda3/envs/convir-cu128/bin/python
+python_version= 3.10.13 (main, Sep 11 2023, 13:44:35) [GCC 11.2.0]
+pkg_torch= True
+pkg_torchvision= True
+pkg_numpy= True
+pkg_PIL= True
+pkg_cv2= True
+pkg_skimage= True
+pkg_pytorch_msssim= True
+pkg_transformers= True
+pkg_tensorboard= True
+pkg_warmup_scheduler= True
+torch_version= 2.11.0+cu128
+torch_cuda= 12.8
+cuda_available= False
+python_exe= /root/miniconda3/envs/py310/bin/python
+python_version= 3.10.13 (main, Sep 11 2023, 13:44:35) [GCC 11.2.0]
+pkg_torch= True
+pkg_torchvision= True
+pkg_numpy= True
+pkg_PIL= True
+pkg_cv2= True
+pkg_skimage= True
+pkg_pytorch_msssim= True
+pkg_transformers= True
+pkg_tensorboard= True
+pkg_warmup_scheduler= True
+torch_version= 2.11.0+cu128
+torch_cuda= 12.8
+cuda_available= False
+===== conda env names =====
+# conda environments:
+#
+base                     /root/miniconda3
+convir-cu128             /root/miniconda3/envs/convir-cu128
+py310                    /root/miniconda3/envs/py310
+
+===== key file candidates =====
+FILE /root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl size=34797069 sha256=6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088
+MISSING /root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor/Dehazing/pretrained_models/haze4k-base.pkl
+MISSING /root/autodl-tmp/workspace/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+MISSING /root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/ConvIR_UDPNet_haze4k.ckpt
+MISSING /root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/ConvIR_UDPNet_haze4k.pth
+===== depth/cache candidates =====
+DIR /root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+npy_count=4000
+du=3.4G
+/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf/test/139_0.85_0.96.png.npy
+/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf/test/1000_0.73_1.8.png.npy
+/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf/test/171_0.81_0.74.png.npy
+/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf/test/100_0.5_1.76.png.npy
+/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf/test/13_0.52_1.9.png.npy
+/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf/test/101_0.83_1.44.png.npy
+/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf/test/141_0.79_1.1.png.npy
+/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf/test/102_0.67_1.36.png.npy
+DIR /root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache
+npy_count=18000
+du=16G
+
+MISSING_DIR /root/autodl-tmp/workspace/ConvIR-B/depth_cache
+DEHAZE1_INVENTORY_OK

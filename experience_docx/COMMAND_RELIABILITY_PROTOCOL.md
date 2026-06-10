@@ -849,3 +849,38 @@ $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 
 For WSL repository audits from PowerShell, put regexes and pipes inside a
 piped Bash script and print success markers with `echo` or `printf`.
+
+## 2026-06-11 `pipefail` with `find | head` exits early
+
+Observed while inventorying `dehaze1` source files for the `convir-4090`
+migration: a remote script used `set -euo pipefail` and then piped a long
+`find` result into `head`. After `head` exited, `find` received SIGPIPE and the
+pipeline returned nonzero, so the inventory stopped before printing the final
+success marker.
+
+Invalid form:
+
+```bash
+set -euo pipefail
+find "$d" -maxdepth 2 -type f | head -n 8
+printf 'DEHAZE1_INVENTORY_OK\n'
+```
+
+Failure mode observed:
+
+- the script printed the first directory inventory;
+- the pipeline exited nonzero under `pipefail`;
+- later candidate directories and the final marker were skipped.
+
+Corrected form:
+
+```bash
+set -euo pipefail
+mapfile -t samples < <(find "$d" -maxdepth 2 -type f | sed -n '1,8p')
+printf '%s\n' "${samples[@]}"
+printf 'DEHAZE1_INVENTORY_OK\n'
+```
+
+When `pipefail` is enabled in monitor or inventory scripts, avoid `producer |
+head`; use `sed -n`, `mapfile`, or temporarily disable `pipefail` around the
+sampling pipeline.

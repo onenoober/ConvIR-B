@@ -3,3 +3,7 @@ local_diff_check_ok 2026-06-10T23:28:00+08:00
 cloud_access_check_start 2026-06-10T23:31:00+08:00 host=convir-5090
 cloud_access_check_failed 2026-06-10T23:32:00+08:00 rc=255 error="Connection timed out during banner exchange; Connection to 202.207.1.21 port 22 timed out"
 FAILED_INFRA_CLOUD_SSH_TIMEOUT
+convir4090_migration_start 2026-06-11T00:00:00+08:00 target=/sda/home/wangyuxin/ConvIR-B
+dehaze1_inventory_ok 2026-06-11T00:04:21+08:00 a0_sha256=6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088 depth_npy_count=4000 depth_size=3.4G
+convir4090_ssh_auth_failed 2026-06-11T00:05:00+08:00 rc=255 error="Permission denied (publickey,password)"
+FAILED_INFRA_CONVIR4090_SSH_AUTH

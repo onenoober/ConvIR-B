@@ -2,12 +2,12 @@
 
 ## Cloud And Local Execution
 
-- Default cloud server for this repository: `convir-5090` (`ssh convir-5090`).
-- `convir-5090` is the only default runtime host; use the SSH key and endpoint configured in `~/.ssh/config`.
+- Default cloud server for this repository: `convir-4090` (`ssh convir-4090`).
+- `convir-4090` is the only default runtime host; use the SSH key and endpoint configured in `~/.ssh/config`.
 - Highest-priority project rule: the local WSL checkout is for editing and compile/syntax-only checks.
 - Do not run tests, smoke tests, training, evaluation, inference, demos, or project runtime commands locally.
-- Run all tests, including smoke tests, training, evaluation, and any execution/runtime validation, on `convir-5090` unless the user explicitly overrides this rule for a specific command.
-- If runtime validation is needed, sync the code to `convir-5090` and run it there; if the cloud server is unavailable, report that instead of falling back to local execution.
+- Run all tests, including smoke tests, training, evaluation, and any execution/runtime validation, on `convir-4090` unless the user explicitly overrides this rule for a specific command.
+- If runtime validation is needed, sync the code to `convir-4090` and run it there; if the cloud server is unavailable, report that instead of falling back to local execution.
 
 
 ## GitHub Evidence Sync
@@ -29,10 +29,10 @@
 
 ## Command Reliability
 
-- For multi-hop commands involving PowerShell, WSL, and `ssh convir-5090`, read and follow `experience_docx/COMMAND_RELIABILITY_PROTOCOL.md` before running the command.
+- For multi-hop commands involving PowerShell, WSL, and `ssh convir-4090`, read and follow `experience_docx/COMMAND_RELIABILITY_PROTOCOL.md` before running the command.
 - Avoid complex inline PowerShell-to-WSL-to-SSH one-liners with nested quotes, regex pipes, or heredocs; write a small Bash script body and pipe it through `wsl ... bash -lc "tr -d '\r' | bash"` instead.
 - Every monitoring, sync, or audit command should print an explicit `*_OK` success marker or write a status file so a successful no-output command is not mistaken for a hang.
-- Use explicit runtime paths for cloud Python, especially `/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python`, instead of assuming `python` is on PATH.
+- Use explicit runtime paths for cloud Python, especially `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu128/bin/python`, instead of assuming `python` is on PATH.
 - If a command fails from quoting, CRLF, PATH, or shell-boundary issues, record the invalid form and the corrected form in the command reliability protocol before continuing.
 
 ## Model Run Operations
