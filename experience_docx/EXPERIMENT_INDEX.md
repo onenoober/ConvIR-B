@@ -313,3 +313,13 @@ This sync intentionally includes text evidence only:
 
 It intentionally excludes checkpoints, model weights, image outputs, datasets,
 NumPy arrays, and raw inference artifacts.
+
+### 2026-06-10 convir-5090 Official Anchor Preflight
+
+The `codex/haze4k-official-arch-anchor` branch was smoke-tested on the backup
+server `convir-5090` after directory, environment, dataset, and checkpoint
+setup. Evidence is archived at
+`experience_docx/experiment_logs/haze4k_official_arch_anchor_convir5090_preflight_20260610/`.
+The run passed strict checkpoint load, official-state cleanliness, synthetic
+forward, one Haze4K train-batch forward, and CLI alias checks using commit
+`2d529d4`; locked-test data remained untouched.
