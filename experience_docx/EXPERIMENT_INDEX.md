@@ -32,7 +32,9 @@ This anchor preserves the official `Dehazing/ITS` ConvIR-B architecture while
 keeping the already validated Haze4K data, pretrained checkpoint, and evidence
 tooling contracts. Do not modify model architecture directly on this branch.
 Future model changes must start from a new `codex/<route>` branch or isolated
-worktree.
+worktree. This is now a mandatory gate in `AGENTS.md`,
+`OFFICIAL_ARCH_ANCHOR_POLICY.md`, `EXPERIMENT_GOVERNANCE_PROTOCOL.md`,
+`MODEL_EXPERIMENT_START_CHECKLIST.md`, and `ROUTE_DESIGN_FRAMEWORK.md`.
 
 ## Branch Cleanup
 

@@ -1,6 +1,6 @@
 # Route Design Framework
 
-Date: 2026-05-31
+Date: 2026-06-10
 
 Status: framework for designing candidate model experiments.
 
@@ -29,6 +29,20 @@ Does changing <one variable> improve <target ConvIR-B failure group> under the
 same data and evaluation contract, while FLOPs, latency, memory, and
 strong-case regressions stay within the written limits?
 ```
+
+## Official Anchor Start Rule
+
+A ConvIR-B/Haze4K route is clean only if it starts from
+`github/codex/haze4k-official-arch-anchor` in a new `codex/<route>` branch or
+isolated worktree. The route card must record the anchor commit, checkpoint
+path/hash, load contract, new-module initialization rule, locked-test policy,
+cloud workspace, output root, command script, and evidence root before the first
+run.
+
+Do not modify the anchor branch to try a candidate. Do not reuse code from a
+dirty worktree or failed route unless the route is explicitly declared as a
+continuation. If the route cannot satisfy this start rule, it is setup work, not
+a comparable candidate.
 
 ## Generic Route Families
 

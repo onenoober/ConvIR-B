@@ -1,6 +1,6 @@
 # Generic Experiment Protocol
 
-Date: 2026-05-31
+Date: 2026-06-10
 
 Status: model experiment governance package.
 
@@ -25,7 +25,8 @@ It defines the reusable logic and constraints for model experimentation:
 - deployability and leakage controls;
 - text-only evidence package policy;
 - artifact retention and cleanup boundaries;
-- explicit decision labels.
+- explicit decision labels;
+- mandatory clean-route starts from the official architecture anchor.
 
 For this repository, start with `CONVIR_B_EXECUTION_GUIDE.md`. The generic
 files define the rules; the ConvIR-B guide binds those rules to the official
@@ -33,7 +34,9 @@ pretrained checkpoints, repository commands, baseline metrics, and fixed-budget
 promotion gates.
 
 For consolidated Haze4K route outcomes and GitHub-readable evidence locations,
-start with `EXPERIMENT_INDEX.md`.
+start with `EXPERIMENT_INDEX.md`. For future ConvIR-B/Haze4K model changes, the
+mandatory start point is `github/codex/haze4k-official-arch-anchor`; do not
+modify that anchor directly.
 
 For future `codex/*` experiment branches, follow
 `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` so evidence returns to `main` without
@@ -51,22 +54,28 @@ merging diagnostic experiment code.
 | `EXPERIMENT_INDEX.md` | Consolidated Haze4K route outcomes, family verdicts, evidence-strength labels, retained branches, and text evidence roots. |
 | `family_summaries/` | Family-level verdicts, evidence summaries, do-not-repeat notes, and reopen conditions. |
 | `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` | Required evidence-only sync workflow for future GitHub experiment branches. |
+| `OFFICIAL_ARCH_ANCHOR_POLICY.md` | Mandatory clean-route and immutability rules for the official ConvIR-B/Haze4K anchor. |
 
 ## Use Sequence
 
-1. read `EXPERIMENT_INDEX.md` if you need the current Haze4K route state,
+1. for any new ConvIR-B/Haze4K model route, start from
+   `github/codex/haze4k-official-arch-anchor` in a new `codex/<route>` branch or
+   isolated worktree;
+2. read `OFFICIAL_ARCH_ANCHOR_POLICY.md` and satisfy its mandatory clean-route
+   procedure before editing code;
+3. read `EXPERIMENT_INDEX.md` if you need the current Haze4K route state,
    family verdict, evidence-strength level, or route reopening condition;
-2. read the corresponding `family_summaries/` file before reopening a stopped
+4. read the corresponding `family_summaries/` file before reopening a stopped
    route family or proposing a follow-up within an active family;
-3. read `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` before syncing any route branch
+5. read `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` before syncing any route branch
    back to GitHub `main`;
-4. read `CONVIR_B_EXECUTION_GUIDE.md` for the current repository;
-5. download the official pretrained checkpoint for each target task;
-6. run evaluation first and record the local ConvIR-B baseline;
-7. explain any reproduction gap against the root `README.md` result table;
-8. copy `EXPERIMENT_CARD_TEMPLATE.md` only after the baseline is trustworthy;
-9. fill the card with fixed-budget gates, mechanism metrics, and stop rules;
-10. treat every route as unproven until it passes its own written gates.
+6. read `CONVIR_B_EXECUTION_GUIDE.md` for the current repository;
+7. download the official pretrained checkpoint for each target task;
+8. run evaluation first and record the local ConvIR-B baseline;
+9. explain any reproduction gap against the root `README.md` result table;
+10. copy `EXPERIMENT_CARD_TEMPLATE.md` only after the baseline is trustworthy;
+11. fill the card with fixed-budget gates, mechanism metrics, and stop rules;
+12. treat every route as unproven until it passes its own written gates.
 
 ## Current ConvIR-B Priority
 

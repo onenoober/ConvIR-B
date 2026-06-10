@@ -1,8 +1,24 @@
 # Model Experiment Start Checklist
 
-Date: 2026-05-31
+Date: 2026-06-10
 
 Status: checklist for starting and governing a model experiment.
+
+## 0. Official Anchor Compliance Gate
+
+For any ConvIR-B/Haze4K architecture, loss, selector, gate, adapter, data-policy,
+or fine-tuning route, this gate is mandatory before code edits or cloud runs:
+
+- start from `github/codex/haze4k-official-arch-anchor`, not from a dirty
+  worktree or an unrelated experimental branch;
+- create a new `codex/<route>` branch or isolated worktree and record the branch
+  plus starting anchor commit;
+- keep `codex/haze4k-official-arch-anchor` unchanged except for documentation,
+  command reliability, or text-evidence maintenance;
+- create or update the route card with the checkpoint path/hash, strict or
+  partial load contract, new-module initialization rule, locked-test policy,
+  cloud workspace, output root, command script, status file, and evidence root;
+- mark the route invalid for anchor comparison if this gate was skipped.
 
 ## 1. Define Objective And Assumptions
 
@@ -29,7 +45,8 @@ Write where each fact belongs before facts start accumulating.
 
 ## 3. Set Repository Boundaries
 
-- Create a branch or isolated workspace for the task.
+- Create a branch or isolated workspace for the task; ConvIR-B/Haze4K model
+  routes must branch from `codex/haze4k-official-arch-anchor`.
 - Check version-control status before edits.
 - Identify unrelated local changes and leave them untouched.
 - Decide what can be committed and what must remain external.

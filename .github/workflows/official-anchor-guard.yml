@@ -1,0 +1,63 @@
+name: Official Anchor Guard
+
+on:
+  push:
+    branches:
+      - codex/haze4k-official-arch-anchor
+  pull_request:
+    branches:
+      - codex/haze4k-official-arch-anchor
+
+jobs:
+  guard:
+    name: block runtime edits on official anchor
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reject protected-path edits
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          BASE_REF: ${{ github.base_ref }}
+          REF_NAME: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          anchor="codex/haze4k-official-arch-anchor"
+          if [[ "${BASE_REF:-}" != "$anchor" && "${REF_NAME:-}" != "$anchor" ]]; then
+            echo "OFFICIAL_ANCHOR_GUARD_SKIPPED"
+            exit 0
+          fi
+
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            git fetch origin "$BASE_REF" --depth=1
+            range="origin/$BASE_REF...HEAD"
+          else
+            if [[ -z "${BEFORE_SHA:-}" || "$BEFORE_SHA" =~ ^0+$ ]]; then
+              range="HEAD~1..HEAD"
+            else
+              git fetch origin "$BEFORE_SHA" --depth=1 || true
+              range="$BEFORE_SHA..HEAD"
+            fi
+          fi
+
+          changed=$(git diff --name-only "$range" || true)
+          if [[ -z "$changed" ]]; then
+            echo "OFFICIAL_ANCHOR_GUARD_OK no_changed_files"
+            exit 0
+          fi
+
+          forbidden=$(printf '%s\n' "$changed" | grep -E '^(Dehazing/ITS/models/.*\.py|Dehazing/ITS/(main|train|valid|eval)\.py|Dehazing/ITS/data/.*\.py|Dehazing/ITS/loss.*\.py|experience_docx/tools/.*\.py)$' || true)
+          if [[ -n "$forbidden" ]]; then
+            echo "OFFICIAL_ANCHOR_GUARD_FAILED"
+            echo "The official anchor branch is immutable for model/runtime/tooling edits."
+            echo "Create a new codex/<route> branch from codex/haze4k-official-arch-anchor for experiments."
+            printf '%s\n' "$forbidden"
+            exit 1
+          fi
+
+          echo "OFFICIAL_ANCHOR_GUARD_OK"

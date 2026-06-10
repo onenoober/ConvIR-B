@@ -18,6 +18,15 @@
 - Do not commit checkpoints, model weights, datasets, images, arrays, archives, or raw inference outputs by default; sync only text evidence and small structured artifacts allowed by `experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.
 - If GitHub push is unavailable, report the failure and the exact local evidence paths instead of treating the cloud-only copy as synced.
 
+## Official Architecture Anchor And Clean Route Gate
+
+- Mandatory anchor branch for future Haze4K ConvIR-B architecture work: `github/codex/haze4k-official-arch-anchor`. Treat it as protected even if GitHub UI branch protection is not configured.
+- On the anchor branch, do not edit model architecture, runtime entrypoints, data loaders, losses, evaluation tooling, checkpoint-selection logic, gates, selectors, adapters, or experiment variants. Documentation, command-reliability fixes, and text evidence sync are the only normal allowed changes.
+- Any architecture, loss, training-policy, data-policy, selector/gate, adapter, or fine-tuning experiment MUST start from a new `codex/<route>` branch or isolated worktree created from `codex/haze4k-official-arch-anchor`. Do not start from a dirty worktree or a previous failed route unless the route card explicitly labels it as a continuation.
+- Before the first code edit or cloud run on a new route, create or update the route card with the anchor commit, branch name, remote workspace, checkpoint path/hash, strict or partial checkpoint-load rule, locked-test policy, output root, command script path, gates, and evidence sync plan.
+- A route that modifies the official architecture must prove checkpoint initialization behavior before fine-tuning: either strict `haze4k-base.pkl` load for unchanged modules or an explicit partial-load/new-module initialization contract recorded in the route card.
+- If a request would modify the anchor branch in a blocked way, stop before editing or running, state the blocker, and create or switch to a route branch first.
+
 ## Command Reliability
 
 - For multi-hop commands involving PowerShell, WSL, and `ssh dehaze1`, read and follow `experience_docx/COMMAND_RELIABILITY_PROTOCOL.md` before running the command.
@@ -42,5 +51,5 @@
 - After the index, read the relevant `experience_docx/family_summaries/` file when reopening or extending a route family.
 - Then open the corresponding route card under `experience_docx/experiment_cards/`, and inspect the matching evidence directory under `experience_docx/experiment_logs/` before making claims or planning follow-up work.
 - For branch evidence syncs, read and follow `experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.
-- For new or reorganized experiments, read the relevant `experience_docx/` governance docs first, especially `README.md`, `CONVIR_B_EXECUTION_GUIDE.md`, `EXPERIMENT_GOVERNANCE_PROTOCOL.md`, `MODEL_EXPERIMENT_START_CHECKLIST.md`, `ROUTE_DESIGN_FRAMEWORK.md`, and `EXPERIMENT_CARD_TEMPLATE.md`.
+- For new or reorganized experiments, read the relevant `experience_docx/` governance docs first, especially `README.md`, `OFFICIAL_ARCH_ANCHOR_POLICY.md`, `CONVIR_B_EXECUTION_GUIDE.md`, `EXPERIMENT_GOVERNANCE_PROTOCOL.md`, `MODEL_EXPERIMENT_START_CHECKLIST.md`, `ROUTE_DESIGN_FRAMEWORK.md`, and `EXPERIMENT_CARD_TEMPLATE.md`.
 - When documentation and conversation conflict, prefer `experience_docx/` and current git state; state any uncertainty and cite the file path used.

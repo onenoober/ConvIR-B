@@ -1,6 +1,6 @@
 # Experiment Governance Protocol
 
-Date: 2026-05-31
+Date: 2026-06-10
 
 Status: generic protocol for model experiments.
 
@@ -52,6 +52,25 @@ Keep experimental work reviewable:
 
 If the working tree already contains unrelated changes, isolate the new work in
 a separate branch, worktree, or patch before staging.
+
+## Official Anchor Clean Route Rule
+
+For ConvIR-B/Haze4K, the clean official architecture anchor is
+`github/codex/haze4k-official-arch-anchor`. This rule is mandatory and takes
+priority over convenience:
+
+- do not implement architecture, loss, data-policy, selector, gate, adapter, or
+  training-policy experiments on the anchor branch;
+- create a new `codex/<route>` branch or isolated worktree from the anchor before
+  the first experimental code edit;
+- record the anchor commit, route branch, checkpoint path/hash, load contract,
+  locked-test policy, cloud workspace, output root, command script, status file,
+  and evidence root in the route card before launch;
+- do not inherit code from a dirty worktree or a failed route unless the route
+  card explicitly labels the run as a continuation and states why the inheritance
+  is scientifically valid;
+- if this rule is skipped, the run is not comparable to the official anchor and
+  must be relabeled or rerun.
 
 ## Entrypoint Stability Rule
 
