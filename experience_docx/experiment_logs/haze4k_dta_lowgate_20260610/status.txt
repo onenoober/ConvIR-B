@@ -100,3 +100,37 @@ codex/haze4k-dta-lowgate
 scout5_train_done rc=0 haze4k_dta_lowgate 2026-06-11T02:24:05+08:00
 scout5_eval_done rc=0 haze4k_dta_lowgate 2026-06-11T02:24:18+08:00
 DTA_LOWGATE_SCOUT5_TRAIN_EVAL_OK
+gate20_start haze4k_dta_lowgate 2026-06-11T02:26:59+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-lowgate
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+model_name=ConvIR-Haze4K-DTA-lowgate-adapteronly-seed3407-20260611-gate20
+num_epoch=20
+stop_epoch=20
+cuda_visible_devices=1
+depth_cache=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+codex/haze4k-dta-lowgate
+053ec10
+ M experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/status.txt
+?? Dehazing/ITS/results/
+?? Dehazing/ITS/runs/
+?? experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/convir4090_setup_status.txt
+?? experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/dta_lowgate_preflight.json
+?? experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/dta_lowgate_scout5_compare/
+?? experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/dta_lowgate_smoke_compare/
+gate20_train_done rc=0 haze4k_dta_lowgate 2026-06-11T02:52:35+08:00
+gate20_eval_done rc=0 haze4k_dta_lowgate 2026-06-11T02:54:07+08:00
+DTA_LOWGATE_GATE20_TRAIN_EVAL_OK
+post_run_verify haze4k_dta_lowgate 2026-06-11T02:58:08+08:00
+tmux_sessions=
+related_processes=396264 tee -a experience_docx/experiment_logs/haze4k_dta_lowgate_20260610/status.txt
+0, 1908, 24564, 0
+1, 16, 24564, 0
+2, 16, 24564, 0
+3, 16, 24564, 0
+4, 16, 24564, 0
+5, 16, 24564, 0
+6, 16, 24564, 0
+7, 16, 24564, 0
+DTA_LOWGATE_POST_RUN_VERIFY_OK

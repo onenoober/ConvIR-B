@@ -2,9 +2,10 @@
 
 Date: 2026-06-10
 
-Status: `COMPLETED_GATE_PASS_SCOUT5`; `gate20` full diagnostic run is the next
-stage. `convir-4090` SSH, folders, Git checkout, Python environment, official
-checkpoint, depth cache, and Haze4K dataset path are now validated.
+Status: `COMPLETED_GATE_PASS_DIAGNOSTIC_NO_PROMOTION`. `convir-4090` SSH,
+folders, Git checkout, Python environment, official checkpoint, depth cache,
+Haze4K dataset path, DTA preflight, smoke, scout5, and gate20 full diagnostic
+evaluation are complete.
 
 ## Scope
 
@@ -28,7 +29,7 @@ features.
 - Depth cache: `/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf`
   after syncing from `dehaze1`.
 
-## Planned Text Artifacts
+## Text Artifacts
 
 - `setup_convir4090_from_dehaze1.sh`
 - `run_dta_lowgate_preflight_convir4090.sh`
@@ -42,18 +43,22 @@ features.
 - `dta_lowgate_scout5_train.log`
 - `dta_lowgate_scout5_eval.log`
 - `dta_lowgate_scout5_compare/scout_eval_compare_scout5_seed3407_max128.json`
+- `dta_lowgate_gate20_train.log`
+- `dta_lowgate_gate20_eval.log`
+- `dta_lowgate_gate20_compare/scout_eval_compare_gate20_seed3407_full.json`
 - `status.txt`
 - `dehaze1_source_inventory_20260611.txt`
 
 Checkpoints, images, datasets, `.npy` depth caches, and raw inference outputs are
 excluded from Git evidence by default.
 
-## 2026-06-11 convir-4090 Runtime Progress
+## 2026-06-11 convir-4090 Runtime Closeout
 
 Environment and data migration are complete on `convir-4090`:
 
 - repo: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-lowgate`;
-- branch/commit for the staged run: `codex/haze4k-dta-lowgate` at `053ec10`;
+- runnable code commit for cloud training: `053ec10` on
+  `codex/haze4k-dta-lowgate`;
 - Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`;
 - checkpoint: sha256
   `6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088`;
@@ -93,13 +98,36 @@ Scout5 result:
   `-0.040101 dB`, hard bottom-25 delta `-0.039902 dB`, positive ratio
   `0.296875`, strong-reference regressions `15/32`, worst regressions `0`.
 
-Scout5 passes the route's lenient continuation gate: the mean delta is far above
-the catastrophic `-1.0 dB` stop line, there are no `<= -0.20 dB` worst
-regressions in the 128-image diagnostic, and the DTA mechanism is active but
-bounded. The next stage is the predeclared `gate20` adapter-only run plus full
-diagnostic A0 comparison.
+Scout5 passed the route's lenient continuation gate: the mean delta was far
+above the catastrophic `-1.0 dB` stop line, there were no `<= -0.20 dB` worst
+regressions in the 128-image diagnostic, and the DTA mechanism was active but
+bounded.
 
-## 2026-06-11 convir-4090 Migration Blocker
+Gate20 result:
+
+- twenty-epoch adapter-only run finished from A0 partial init with the same
+  low-gate DTA settings;
+- train validation PSNR at epoch 20: `34.14 dB`;
+- DTA rank loss decreased from `0.6472` at epoch 1 to `0.5304` at epoch 20;
+- DTA gates remained bounded by `gate_limit=0.03`; epoch-20 stage2 mean
+  `0.00008233`, stage3 mean `0.02577529`, stage3 max `0.02855540`;
+- full 1000-image diagnostic comparison: A0 mean PSNR `34.145502 dB`, DTA
+  mean PSNR `34.136562 dB`, mean delta `-0.008940 dB`, median delta
+  `-0.012081 dB`, hard bottom-25 delta `-0.019101 dB`, easy top-25 delta
+  `-0.021037 dB`, positive ratio `0.446`;
+- full diagnostic SSIM: A0 `0.98972568`, DTA `0.98970595`, delta
+  `-0.00001973`;
+- risk profile: strong-reference regressions `80/250`, worst regressions
+  `48/1000` at the `<= -0.20 dB` threshold.
+
+The route satisfies the lenient 20-epoch diagnostic gate because the full-test
+mean delta stays within `0.50 dB` of A0 and training/evaluation completed
+normally. It does not support a promotion claim: no hard/far-scene gain emerged,
+SSIM is slightly negative, and the full diagnostic has meaningful strong and
+tail regressions. Keep the DTA low-gate implementation and evidence as a
+completed diagnostic route, not a new best model.
+
+## 2026-06-11 convir-4090 Migration Blocker (Resolved)
 
 The local SSH alias is configured as:
 
@@ -112,8 +140,9 @@ Host convir-4090 gpu4090 wang4090
   IdentitiesOnly yes
 ```
 
-Connection currently fails before any folder creation, GitHub clone, environment
-configuration, or file sync can start:
+Before the user authorized the local public key, connection failed before any
+folder creation, GitHub clone, environment configuration, or file sync could
+start:
 
 ```text
 wangyuxin@183.175.12.124: Permission denied (publickey,password).
@@ -139,7 +168,8 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKKusNueVWLOB206PoIUrOTmyNwinFH6ZRqML042cezv
 - Source Python env facts: `/root/miniconda3/envs/convir-cu121/bin/python`,
   Python `3.10.13`, Torch `2.11.0+cu128`, and required packages present.
 
-Next action after SSH authorization:
+This blocker is resolved. The setup script below was used after SSH
+authorization and is retained for reproducibility:
 
 ```bash
 cd /home/ubuntu/workspace/ConvIR-B-dta-lowgate

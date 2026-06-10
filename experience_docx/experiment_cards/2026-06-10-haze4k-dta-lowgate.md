@@ -2,7 +2,7 @@
 
 Date: 2026-06-10
 
-Status: `COMPLETED_GATE_PASS_SCOUT5`; `gate20` full diagnostic run pending
+Status: `COMPLETED_GATE_PASS_DIAGNOSTIC_NO_PROMOTION`
 
 ## Scope
 
@@ -142,7 +142,7 @@ transmission prior rather than inferring transmission only from RGB.
 - Random seed policy: first smoke seed `3407`.
 - Evaluation cadence: smoke can validate every epoch; later stop20 uses written
   cadence and checkpoint comparison.
-- Hardware/runtime assumptions: `convir-4090`, GPU 0, explicit Python
+- Hardware/runtime assumptions: `convir-4090`, GPU 1 for completed runs, explicit Python
   `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 - Allowed resume behavior: none for first preflight/smoke.
 - Noise floor or minimum effect size for this route: smoke gates are deliberately
@@ -184,23 +184,29 @@ gates and lenient continuation gates:
 
 ## Decision
 
-- Decision label: `COMPLETED_GATE_PASS_SCOUT5_CONTINUE_GATE20`.
+- Decision label: `COMPLETED_GATE_PASS_DIAGNOSTIC_NO_PROMOTION_DTA_LOWGATE`.
 - Image/global metric reason: smoke 32-image diagnostic was neutral
-  (`+0.002904 dB` mean PSNR delta); scout5 128-image diagnostic was mildly
-  negative (`-0.036217 dB`) but comfortably above the lenient `-1.0 dB`
-  continuation stop line with zero `<= -0.20 dB` worst regressions.
-- Mechanism reason: DTA rank loss decreased from `0.6472` to `0.5469` across
-  the 5-epoch scout, while low gates stayed bounded at about `2.8e-5`.
-- Preservation or regression reason: scout5 has strong-reference regressions
-  (`15/32` strong samples on the 128-image diagnostic), so this is not a
-  promotion result; it is only enough to continue to the predeclared gate20 run.
+  (`+0.002904 dB` mean PSNR delta), scout5 128-image diagnostic was mildly
+  negative (`-0.036217 dB`), and the gate20 full 1000-image diagnostic stayed
+  A0-level but negative: A0 `34.145502 dB`, DTA `34.136562 dB`, mean delta
+  `-0.008940 dB`, median delta `-0.012081 dB`.
+- Mechanism reason: DTA rank loss decreased from `0.6472` at epoch 1 to
+  `0.5304` at epoch 20. Low gates stayed bounded by `gate_limit=0.03`, with
+  epoch-20 stage2 mean `0.00008233`, stage3 mean `0.02577529`, and stage3 max
+  `0.02855540`.
+- Preservation or regression reason: gate20 full diagnostic did not produce a
+  hard/far-scene gain (`hard_bottom25_psnr_delta=-0.019101 dB`,
+  `easy_top25_psnr_delta=-0.021037 dB`), SSIM delta was slightly negative
+  (`-0.00001973`), strong-reference regressions were `80/250`, and worst
+  regressions at `<= -0.20 dB` were `48/1000`.
 - Cost/deployability reason: adapter-only trainable parameters are `17,765` of
-  `8,648,430`; peak memory in the smoke/scout comparisons increased only from
-  about `529.6 MiB` to `531.9 MiB`.
-- Evidence strength label: convir-4090 preflight, smoke, and 5-epoch scout
-  complete; full diagnostic gate20 pending.
-- Reopen condition, if any: if gate20 fails scientifically, keep this route as
-  diagnostic evidence for depth/transmission priors and do not tune on the
-  locked Haze4K test.
-- What this decides next: run the predeclared `gate20` adapter-only training and
-  full diagnostic A0 comparison without changing DTA scope or low-gate settings.
+  `8,648,430`; peak memory in the full comparison increased only from about
+  `537.6 MiB` to `539.8 MiB`.
+- Evidence strength label: convir-4090 preflight, smoke, 5-epoch scout, and
+  20-epoch full diagnostic comparison are complete and synced as text evidence.
+- Reopen condition, if any: reopen only with a new mechanism or a revised DTA
+  design that addresses missing hard-case gain and tail regressions without
+  tuning on the full diagnostic Haze4K test result.
+- What this decides next: do not promote this exact low-gate DTA adapter as a
+  new best model. Keep implementation/evidence as a complete diagnostic for
+  depth-guided transmission priors.

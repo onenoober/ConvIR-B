@@ -1,6 +1,6 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-06-10
+Date: 2026-06-11
 
 Status: evidence index plus official architecture anchor registry.
 
@@ -74,6 +74,8 @@ Retained remote refs:
   decoder-side RHFD-Lite plus adapter-only preservation training.
 - `github/codex/haze4k-convir-v1-5-full-udpnet-transplant`: active/full UDPNet
   checkpoint-acquisition and future transplant workspace.
+- `github/codex/haze4k-dta-lowgate`: completed diagnostic branch for
+  Innovation 1 depth-guided transmission adapter (DTA) on `convir-4090`.
 
 ## Reading Order
 
@@ -119,6 +121,7 @@ without a material new reason.
 | [PFD/RHFD preservation routes](family_summaries/pfd_rhfd_family_summary.md) | Diagnostic only: preservation improved in B1r, but hard-gain and strong-case gates failed. | A new mechanism explains how hard gain is recovered without losing the preservation benefit. |
 | [APDR output residual/action-bank routes](family_summaries/apdr_family_summary.md) | Current broad output-residual and coefficient-mapping forms are stopped; v0.4E OOF did not pass, and exact v0.4E numbers require fixed-code rerun before sealing. | A separately pre-registered safe-subset route passes fixed-code OOF/held-out gates without severe regressions. |
 | [DPGA in-network prior adapters / UDP expert switch](family_summaries/dpga_family_summary.md) | Frozen ConvIR-B + A0-equivalent small-adapter routes are sufficiently diagnosed and low success. v1.5 official UDPNet gives hard gain but fails as a global model. v1.6 A0+UDP expert switch passed internal OOF gates but failed one-shot locked-test promotion. v1.7 full-train risk-controlled shrink/mix kept the oracle strong but the tested deployable router failed OOF and heldout gates. v1.8 completed the post-diagnosis execution queue: stronger table-only router audit, data/domain preflight, Q5 domain/data coverage audit, and BiDPFM1 fusion-neighbor 10-seed training/eval all ended negative. | Reopen only with a materially stronger predeclared calibration/router route or a materially new capacity mechanism beyond the completed v1.8 queue; do not tune thresholds/features/expert set from v1.6 locked-test results, micro-tune the current v1.7 policy, or keep searching BiDPFM1 scale/gate variants under the failed v1.8 route. |
+| [DTA depth-guided transmission adapter](family_summaries/dta_family_summary.md) | First low-gate DTA route is engineering-valid and complete, but full gate20 is slightly negative with no hard gain and visible strong/tail regressions. | Reopen only with a new mechanism or revised DTA design; do not retune the same low-gate adapter from the full diagnostic result. |
 
 ## Route Summary
 
@@ -126,6 +129,7 @@ without a material new reason.
 | --- | --- | --- | --- | --- | --- | --- |
 | Cloud py310/cu128 environment and code-consistency audit | Completed cloud audit | Protected code files in `Dehazing/ITS`, `pytorch-gradual-warmup-lr`, and `experience_docx/tools` match GitHub anchor (`41/41`, zero diffs); current `py310`/`convir-cu128` stack is Python `3.10.13`, torch `2.11.0+cu128`, torchvision `0.26.0+cu128`; old `/root/autodl-tmp/workspace/ConvIR-B` is dirty historical workspace. | Use GitHub anchor as migration authority; recreate env from `CLOUD_PY310_ENVIRONMENT.md`; do not copy old dirty cloud workspace. | [env](CLOUD_PY310_ENVIRONMENT.md) | [logs](experiment_logs/cloud_py310_environment_20260610/) | `github/codex/haze4k-official-arch-anchor` |
 | Official ConvIR-B architecture anchor | Completed cloud preflight | Strict `haze4k-base.pkl` load passed, checkpoint sha256 `6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088`, parameter count `8,630,665`, synthetic and Haze4K train-crop forwards finite, source audit passed, `--learning_rate`/`--leaning_rate` compatible, locked test untouched. | `OFFICIAL_ANCHOR_PREFLIGHT_OK`; keep branch immutable and require future architecture changes to branch from it. | [card](experiment_cards/2026-06-10-haze4k-official-arch-anchor.md) | [logs](experiment_logs/haze4k_official_arch_anchor_20260610/) | `github/codex/haze4k-official-arch-anchor` |
+| DTA low-gate adapter | Completed convir-4090 diagnostic | Preflight passed (`0.0` no-op diff, DTA grad sum `0.02175214`), smoke was neutral (`+0.002904 dB` on 32 images), scout5 stayed within lenient continuation (`-0.036217 dB` on 128 images), and gate20 full diagnostic was A0-level but negative: mean `-0.008940 dB`, hard bottom-25 `-0.019101 dB`, easy top-25 `-0.021037 dB`, SSIM `-0.00001973`, strong regressions `80/250`, worst regressions `48/1000`. | `COMPLETED_GATE_PASS_DIAGNOSTIC_NO_PROMOTION_DTA_LOWGATE`; keep as Innovation 1 diagnostic evidence, not a new best model. | [card](experiment_cards/2026-06-10-haze4k-dta-lowgate.md) | [logs](experiment_logs/haze4k_dta_lowgate_20260610/) | `github/codex/haze4k-dta-lowgate` |
 | FAM `modres` 5-epoch scout | Completed diagnostic | Mean PSNR `+0.0953 dB`, but median delta negative and strong-reference regressions `142/250`. | Do not promote unchanged `modres`; mechanism is active but preservation fails. | [card](experiment_cards/2026-05-31-haze4k-fam-feature-modulation.md) | [logs](experiment_logs/haze4k_fam_modres_scout_stop5_20260531/) | `github/main` |
 | FAM2-only 20-epoch scout | Completed diagnostic | Mean PSNR `+0.1739 dB`; hard bottom 25% `+0.8159 dB`; easy top 25% `-0.2860 dB`; strong-reference regressions `138/250`. | Keep as diagnostic; preservation gate fails. | [card](experiment_cards/2026-05-31-haze4k-fam2-only-modulation.md) | [logs](experiment_logs/haze4k_fam2_modres_stop20_20260531/) | retained leaf branches |
 | FAM2 bounded gamma | Completed diagnostic | Mean PSNR `-0.0271 dB`; hard `+0.8054 dB`; easy `-1.2740 dB`; strong-reference regressions `181/250`. | Bounded gamma does not solve preservation; do not promote. | [card](experiment_cards/2026-06-01-haze4k-fam2-bounded-modulation.md) | [logs](experiment_logs/haze4k_fam2_bounded_gamma_stop20_20260601/) | retained leaf branches |
@@ -178,6 +182,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | --- | ---: | --- |
 | `experiment_logs/cloud_py310_environment_20260610/` | 19 | Cloud/GitHub protected-code consistency manifests, py310/convir-cu128 package probes, conda exports, pip freezes, and workspace warning. |
 | `experiment_logs/haze4k_official_arch_anchor_20260610/` | 6 | Official architecture anchor cloud preflight script, log, structured JSON, status, README, and source audit. |
+| `experiment_logs/haze4k_dta_lowgate_20260610/` | 20+ | DTA low-gate convir-4090 setup status, source inventory, preflight JSON/log, smoke/scout5/gate20 train and eval logs, comparison JSON/CSV files, run scripts, route README, and status. |
 | `experiment_logs/haze4k_fam_modres_preflight_20260531/` | 3 | FAM preflight and one-batch train probe logs. |
 | `experiment_logs/haze4k_fam_modres_scout_stop5_20260531/` | 8 | Stop5 train logs, compare JSON, per-image CSV, run script, README. |
 | `experiment_logs/haze4k_fam2_modres_preflight_20260531/` | 3 | FAM2 equivalence and real-batch preflight JSON. |
@@ -232,6 +237,10 @@ The active conclusion is conservative:
 - Hard-frequency weighting and haze-prior SCM also moved hard cases but harmed
   global/easy preservation too much.
 - No current route is promotion-ready.
+- DTA low-gate completed Innovation 1 preflight, smoke, scout5, and gate20 on
+  `convir-4090`; it validates the depth/transmission adapter engineering path
+  but remains diagnostic-only because full gate20 is slightly negative and has
+  strong/tail regressions.
 - B1r decoder RHFD made RHFD more preservation-stable than B1 feature delta, but
   still failed the hard-gain and strong-reference gates.
 - APDR ConvIR v0 validated the anchor-preserved residual idea and the cloud
