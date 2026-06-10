@@ -78,6 +78,36 @@ printf 'CORRECTED_GREP_OK\n'
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
 
+2026-06-11 recurrence:
+
+Avoid embedding Bash loop variables inside a PowerShell double-quoted WSL
+command, for example:
+
+```powershell
+wsl -d Ubuntu-22.04 bash -lc "for f in experience_docx/*.md; do if [ -e \"$f\" ]; then sed -n '1,20p' \"$f\"; fi; done"
+```
+
+Failure mode observed:
+
+- PowerShell expanded or stripped the Bash `$f` variable before WSL Bash
+  received the intended command, producing a malformed `if [ -e ... ]` test.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B-dta-lowgate
+for f in experience_docx/*.md; do
+  if [ -e "$f" ]; then
+    sed -n '1,20p' "$f"
+  fi
+done
+printf 'DOC_SCAN_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 bash -lc "tr -d '\r' | bash"
+```
+
 2026-06-06 recurrence:
 
 Avoid compact PowerShell-to-WSL SSH probes that try to embed Bash `$?` and

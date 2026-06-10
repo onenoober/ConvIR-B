@@ -69,8 +69,10 @@ def build_dta(args):
 
 def synthetic_noop_check(original, dta, device):
     torch.manual_seed(3407)
-    x = torch.rand(1, 3, 64, 64, device=device)
-    depth = torch.rand(1, 1, 64, 64, device=device)
+    # ConvIR's deep pooling path uses reflection padding, so keep the synthetic
+    # preflight image large enough to exercise the official runtime shape safely.
+    x = torch.rand(1, 3, 256, 256, device=device)
+    depth = torch.rand(1, 1, 256, 256, device=device)
     original.eval()
     dta.eval()
     with torch.no_grad():
