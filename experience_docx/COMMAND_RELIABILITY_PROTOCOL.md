@@ -949,3 +949,65 @@ git grep -n -E "build_net|build_apdr_net|build_dpga_net" -- 'Dehazing/ITS/*.py' 
 
 When WSL `rg` resolves to a WindowsApps path, prefer `git grep` for repository
 searches instead of relying on the inherited PATH.
+
+## 2026-06-10 PowerShell parses Git `@{u}` as hashtable
+
+Observed while checking whether the current branch was ahead/behind its GitHub
+upstream from PowerShell: Git's upstream shorthand `@{u}` was passed unquoted,
+so PowerShell parsed it as an incomplete hashtable literal before Git ran.
+
+Invalid form:
+
+```powershell
+git rev-parse --short @{u}
+git rev-list --left-right --count HEAD...@{u}
+```
+
+Failure mode observed:
+
+- PowerShell raised `Missing '=' operator after key in hash literal`;
+- the sync check stopped before comparing local and upstream commits.
+
+Corrected form:
+
+```powershell
+git rev-parse --short '@{u}'
+git rev-list --left-right --count 'HEAD...@{u}'
+```
+
+When invoking Git upstream shorthand from PowerShell, quote `@{u}` or the whole
+revision range containing it.
+
+## 2026-06-10 Windows Git on WSL UNC reports false mode changes
+
+Observed while checking a WSL-hosted repository from PowerShell with Windows
+Git against a `\\wsl.localhost\...` working directory: dozens of executable
+scripts were reported as `old mode 100755 new mode 100644` even though WSL Git
+showed different, content-level changes.
+
+Invalid form:
+
+```powershell
+git -C \\wsl.localhost\Ubuntu-22.04\home\ubuntu\workspace\ConvIR-B status --short
+git -C \\wsl.localhost\Ubuntu-22.04\home\ubuntu\workspace\ConvIR-B diff --summary
+```
+
+Failure mode observed:
+
+- Windows Git reported many mode-only changes in tracked shell scripts;
+- the report hid the true WSL working-tree state.
+
+Corrected form:
+
+```powershell
+@'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B
+git status --short --branch
+git diff --stat
+printf 'WSL_GIT_STATUS_OK\n'
+'@ | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For repositories stored under WSL, use WSL Git as the authority for status,
+diff, staging, commit, and push.
