@@ -36,6 +36,14 @@ worktree. This is now a mandatory gate in `AGENTS.md`,
 `OFFICIAL_ARCH_ANCHOR_POLICY.md`, `EXPERIMENT_GOVERNANCE_PROTOCOL.md`,
 `MODEL_EXPERIMENT_START_CHECKLIST.md`, and `ROUTE_DESIGN_FRAMEWORK.md`.
 
+Environment and migration reference:
+
+- environment guide: `CLOUD_PY310_ENVIRONMENT.md`
+- environment evidence: `experiment_logs/cloud_py310_environment_20260610/`
+- result: cloud protected code is consistent with the GitHub anchor, but the old
+  `/root/autodl-tmp/workspace/ConvIR-B` cloud workspace is a dirty historical
+  route workspace and must not be used as migration authority.
+
 ## Branch Cleanup
 
 Remote branch cleanup was done before this evidence sync. The deleted refs were
@@ -116,6 +124,7 @@ without a material new reason.
 
 | Route | Status | Main result | Decision | Card | Evidence root | Source after cleanup |
 | --- | --- | --- | --- | --- | --- | --- |
+| Cloud py310/cu128 environment and code-consistency audit | Completed cloud audit | Protected code files in `Dehazing/ITS`, `pytorch-gradual-warmup-lr`, and `experience_docx/tools` match GitHub anchor (`41/41`, zero diffs); current `py310`/`convir-cu128` stack is Python `3.10.13`, torch `2.11.0+cu128`, torchvision `0.26.0+cu128`; old `/root/autodl-tmp/workspace/ConvIR-B` is dirty historical workspace. | Use GitHub anchor as migration authority; recreate env from `CLOUD_PY310_ENVIRONMENT.md`; do not copy old dirty cloud workspace. | [env](CLOUD_PY310_ENVIRONMENT.md) | [logs](experiment_logs/cloud_py310_environment_20260610/) | `github/codex/haze4k-official-arch-anchor` |
 | Official ConvIR-B architecture anchor | Completed cloud preflight | Strict `haze4k-base.pkl` load passed, checkpoint sha256 `6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088`, parameter count `8,630,665`, synthetic and Haze4K train-crop forwards finite, source audit passed, `--learning_rate`/`--leaning_rate` compatible, locked test untouched. | `OFFICIAL_ANCHOR_PREFLIGHT_OK`; keep branch immutable and require future architecture changes to branch from it. | [card](experiment_cards/2026-06-10-haze4k-official-arch-anchor.md) | [logs](experiment_logs/haze4k_official_arch_anchor_20260610/) | `github/codex/haze4k-official-arch-anchor` |
 | FAM `modres` 5-epoch scout | Completed diagnostic | Mean PSNR `+0.0953 dB`, but median delta negative and strong-reference regressions `142/250`. | Do not promote unchanged `modres`; mechanism is active but preservation fails. | [card](experiment_cards/2026-05-31-haze4k-fam-feature-modulation.md) | [logs](experiment_logs/haze4k_fam_modres_scout_stop5_20260531/) | `github/main` |
 | FAM2-only 20-epoch scout | Completed diagnostic | Mean PSNR `+0.1739 dB`; hard bottom 25% `+0.8159 dB`; easy top 25% `-0.2860 dB`; strong-reference regressions `138/250`. | Keep as diagnostic; preservation gate fails. | [card](experiment_cards/2026-05-31-haze4k-fam2-only-modulation.md) | [logs](experiment_logs/haze4k_fam2_modres_stop20_20260531/) | retained leaf branches |
@@ -167,6 +176,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 
 | Evidence root | Files | Main contents |
 | --- | ---: | --- |
+| `experiment_logs/cloud_py310_environment_20260610/` | 19 | Cloud/GitHub protected-code consistency manifests, py310/convir-cu128 package probes, conda exports, pip freezes, and workspace warning. |
 | `experiment_logs/haze4k_official_arch_anchor_20260610/` | 6 | Official architecture anchor cloud preflight script, log, structured JSON, status, README, and source audit. |
 | `experiment_logs/haze4k_fam_modres_preflight_20260531/` | 3 | FAM preflight and one-batch train probe logs. |
 | `experiment_logs/haze4k_fam_modres_scout_stop5_20260531/` | 8 | Stop5 train logs, compare JSON, per-image CSV, run script, README. |

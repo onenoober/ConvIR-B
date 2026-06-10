@@ -1,0 +1,20 @@
+cloud_host=autodl-container-a7214dae83-7d00fcaa
+audit_time=2026-06-10T18:47:44+08:00
+anchor_path=/root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor
+original_path=/root/autodl-tmp/workspace/ConvIR-B
+anchor_git_dir=no
+original_branch=codex/haze4k-fam2-confidence-gate
+original_head=9a4c6a305877
+original_status_begin
+ M Dehazing/ITS/main.py
+ M Dehazing/ITS/models/ConvIR.py
+ M Dehazing/ITS/train.py
+?? " 2"
+?? "ConvIR\345\216\273\351\233\276\346\250\241\345\235\227\345\214\226\346\224\271\350\277\233\345\217\257\350\241\214\346\200\247\346\267\261\345\272\246\347\240\224\347\251\266.docx"
+?? Dehazing/ITS/results/
+?? Dehazing/ITS/runs/
+?? Dehazing/pretrained_models/
+?? experience_docx/experiment_cards/
+?? experience_docx/experiment_logs/
+?? experience_docx/tools/
+original_status_end

@@ -64,3 +64,12 @@ data was touched.
 `OFFICIAL_ANCHOR_PREFLIGHT_OK`. Use `codex/haze4k-official-arch-anchor` as the
 immutable official ConvIR-B architecture anchor. Future architecture edits must
 start from a new `codex/<route>` branch or isolated worktree.
+
+## Post-Anchor Migration Audit
+
+On 2026-06-10, `dehaze1` was audited for future cloud migration. Protected code
+files in the cloud anchor mirror matched the GitHub anchor (`41/41`, zero hash
+differences). The old `/root/autodl-tmp/workspace/ConvIR-B` cloud workspace is a
+dirty historical route checkout and must not be used as migration authority.
+Use `github/codex/haze4k-official-arch-anchor` plus
+`experience_docx/CLOUD_PY310_ENVIRONMENT.md` for future server setup.

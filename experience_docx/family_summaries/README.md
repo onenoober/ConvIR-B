@@ -23,7 +23,10 @@ Non-family anchor:
 - Official architecture anchor: `../OFFICIAL_ARCH_ANCHOR_POLICY.md` and
   `../experiment_cards/2026-06-10-haze4k-official-arch-anchor.md`. This is not
   a performance route and does not change family verdicts; future architecture
-  experiments must branch from it rather than modify it directly.
+  experiments must branch from it rather than modify it directly. The migration
+  environment/code-consistency audit is recorded in
+  `../CLOUD_PY310_ENVIRONMENT.md` and
+  `../experiment_logs/cloud_py310_environment_20260610/`.
 
 | Family | Summary | Current state |
 | --- | --- | --- |

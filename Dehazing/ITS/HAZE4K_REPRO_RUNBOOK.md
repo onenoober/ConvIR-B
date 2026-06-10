@@ -1,6 +1,6 @@
 # Haze4K Reproduction Runbook
 
-Date: 2026-05-31
+Date: 2026-06-10
 
 Status: baseline bring-up notes for ConvIR dehazing on Haze4K.
 
@@ -16,18 +16,23 @@ Status: baseline bring-up notes for ConvIR dehazing on Haze4K.
 Current server alias:
 
 ```bash
-ssh autodl-dehaze3
+ssh dehaze1
 ```
 
 Observed paths:
 
 ```bash
-CODE_ROOT=/root/autodl-tmp/workspace/ConvIR-B
-ITS_ROOT=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/ITS
+CODE_ROOT=/root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor
+ITS_ROOT=/root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor/Dehazing/ITS
 DATA_ROOT=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
-PRETRAINED_BASE=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+PRETRAINED_BASE=/root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor/Dehazing/pretrained_models/haze4k-base.pkl
 PYTHON=/root/miniconda3/envs/convir-cu128/bin/python
 ```
+
+On the current `dehaze1` server, the existing checkpoint copy is still at the
+legacy path `/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl`.
+For a new server, place or download `haze4k-base.pkl` under the anchor checkout
+path above, or pass its explicit path with `--test_model` / `--init_model`.
 
 The Haze4K copy in `Dehaze-Net` uses this layout:
 
@@ -47,49 +52,49 @@ This differs from the ConvIR README `IN/GT` layout. The loader now accepts both
 ## Environment
 
 The official ConvIR README lists PyTorch 1.8.1 and torchvision 0.9.1, but that
-stack is not compatible with the required CUDA 12.8 / RTX 5090 runtime. Use the
-dedicated `convir-cu128` environment: it keeps the ConvIR dependencies and uses
-the official PyTorch cu128 wheel stack available on the server.
+legacy stack is not the current cloud runtime. Use the dedicated `convir-cu128`
+environment or recreate it from `py310` on the new server.
 
-Environment creation on `autodl-dehaze3`:
+Current environment authority:
+
+- full guide: `../../experience_docx/CLOUD_PY310_ENVIRONMENT.md`;
+- evidence root: `../../experience_docx/experiment_logs/cloud_py310_environment_20260610/`;
+- current verified stack: Python `3.10.13`, PyTorch `2.11.0+cu128`, torchvision
+  `0.26.0+cu128`, torch CUDA `12.8`, cuDNN `91900`;
+- current GPU/driver: NVIDIA GeForce RTX 4090, driver `595.58.03`, host CUDA
+  `13.2`.
+
+Environment creation on a future AutoDL server when `py310` already contains the
+cu128 stack:
 
 ```bash
 /root/miniconda3/bin/conda create -y -n convir-cu128 --clone py310
-$PYTHON -m pip install tensorboard einops scikit-image pytorch-msssim opencv-python -i https://pypi.tuna.tsinghua.edu.cn/simple
-$PYTHON -m pip install -e /root/autodl-tmp/workspace/ConvIR-B/pytorch-gradual-warmup-lr
+PYTHON=/root/miniconda3/envs/convir-cu128/bin/python
+$PYTHON -m pip install tensorboard==2.20.0 einops==0.8.2 scikit-image==0.25.2 pytorch-msssim==1.0.0 opencv-python==4.6.0.66 -i https://pypi.tuna.tsinghua.edu.cn/simple
+$PYTHON -m pip install -e /root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor/pytorch-gradual-warmup-lr
 ```
 
-Verified package/runtime facts on 2026-05-31:
-
-```bash
-$PYTHON - <<'PY'
-import torch
-import torchvision
-print(torch.__version__)       # 2.11.0+cu128
-print(torchvision.__version__) # 0.26.0+cu128
-print(torch.version.cuda)      # 12.8
-print(torch.cuda.is_available()) # True
-print(torch.cuda.get_device_name(0)) # NVIDIA GeForce RTX 5090
-PY
-```
+Do not preserve the old editable `warmup_scheduler` path from
+`/root/autodl-tmp/workspace/ConvIR-B`; reinstall it from the current GitHub
+checkout or route branch.
 
 ## Pretrained Evaluation
 
 Run from the cloud server:
 
 ```bash
-cd /root/autodl-tmp/workspace/ConvIR-B/Dehazing/ITS
+cd /root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor/Dehazing/ITS
 $PYTHON main.py \
   --mode test \
   --version base \
   --data Haze4K \
   --data_dir /root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K \
-  --test_model /root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+  --test_model "$PRETRAINED_BASE"
 ```
 
 Use this as the first baseline check before changing the model.
 
-Result on `autodl-dehaze3`, log
+Historical result on `autodl-dehaze3`, log
 `results/ConvIR/logs/haze4k_base_eval_20260531-194703.log`:
 
 ```text
@@ -106,7 +111,7 @@ against the reported 34.15 / 0.99.
 Use after pretrained evaluation and GPU visibility are confirmed:
 
 ```bash
-cd /root/autodl-tmp/workspace/ConvIR-B/Dehazing/ITS
+cd /root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor/Dehazing/ITS
 $PYTHON main.py \
   --mode train \
   --version base \
@@ -130,7 +135,7 @@ For a baseline bring-up smoke, keep artifacts isolated from the official
 pretrained evaluation by using a separate model name:
 
 ```bash
-cd /root/autodl-tmp/workspace/ConvIR-B/Dehazing/ITS
+cd /root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor/Dehazing/ITS
 $PYTHON main.py \
   --model_name ConvIR-Haze4K-smoke \
   --mode train \
@@ -146,7 +151,7 @@ $PYTHON main.py \
   --valid_freq 1
 ```
 
-Smoke result on `autodl-dehaze3`, log
+Historical smoke result on `autodl-dehaze3`, log
 `results/ConvIR-Haze4K-smoke/logs/train_smoke_20260531-201109.log`:
 
 ```text
@@ -168,7 +173,7 @@ results/ConvIR-Haze4K-smoke/Training-Results/model_2.pkl
 `Best.pkl` was then evaluated with:
 
 ```bash
-cd /root/autodl-tmp/workspace/ConvIR-B/Dehazing/ITS
+cd /root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor/Dehazing/ITS
 $PYTHON main.py \
   --model_name ConvIR-Haze4K-smoke \
   --mode test \

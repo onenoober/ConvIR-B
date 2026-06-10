@@ -173,6 +173,53 @@ printf 'LOCAL_DONE\n'
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
 
+
+### Cloud Python and evidence copy assumptions
+
+2026-06-10 recurrence:
+
+Avoid assuming `python3` exists on `dehaze1` outside an activated environment:
+
+```bash
+ssh dehaze1 'cd /root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor && python3 - <<"PY"\nprint("probe")\nPY'
+```
+
+Failure mode observed:
+
+- `/tmp/cloud_py310_audit.sh: line 25: python3: command not found`;
+- the cloud audit stopped before writing the code manifest.
+
+Corrected form:
+
+```bash
+PY=/root/miniconda3/envs/py310/bin/python
+ssh dehaze1 "cd /root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor && $PY - <<'PY'
+print('probe')
+PY"
+```
+
+For project runtime commands, continue to prefer
+`/root/miniconda3/envs/convir-cu128/bin/python`.
+
+2026-06-10 recurrence:
+
+Avoid this scp form for copying the contents of a remote directory back into an
+existing local evidence directory:
+
+```bash
+scp -r dehaze1:/tmp/cloud_py310_environment_20260610/. experience_docx/experiment_logs/cloud_py310_environment_20260610/
+```
+
+Failure mode observed:
+
+- `error: unexpected filename: .`.
+
+Corrected form:
+
+```bash
+rsync -a dehaze1:/tmp/cloud_py310_environment_20260610/ experience_docx/experiment_logs/cloud_py310_environment_20260610/
+```
+
 ### PowerShell here-string to WSL heredoc without CR stripping
 
 Avoid sending a PowerShell here-string directly to a WSL script that contains a

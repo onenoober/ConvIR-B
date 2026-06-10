@@ -55,6 +55,7 @@ merging diagnostic experiment code.
 | `family_summaries/` | Family-level verdicts, evidence summaries, do-not-repeat notes, and reopen conditions. |
 | `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` | Required evidence-only sync workflow for future GitHub experiment branches. |
 | `OFFICIAL_ARCH_ANCHOR_POLICY.md` | Mandatory clean-route and immutability rules for the official ConvIR-B/Haze4K anchor. |
+| `CLOUD_PY310_ENVIRONMENT.md` | Current `dehaze1` py310/cu128 environment audit and future-server install guide. |
 
 ## Use Sequence
 
