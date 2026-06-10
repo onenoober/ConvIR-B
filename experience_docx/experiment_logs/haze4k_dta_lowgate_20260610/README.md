@@ -2,7 +2,9 @@
 
 Date: 2026-06-10
 
-Status: `PREFLIGHT_PENDING`.
+Status: `FAILED_INFRA_CLOUD_SSH_TIMEOUT` for the first cloud validation
+attempt. Implementation and local syntax/static checks are complete; runtime
+validation has not started.
 
 ## Scope
 
@@ -36,3 +38,18 @@ features.
 
 Checkpoints, images, datasets, `.npy` depth caches, and raw inference outputs are
 excluded from Git evidence by default.
+
+## 2026-06-10 Cloud Access Blocker
+
+Two SSH checks from local WSL to `convir-5090` failed before any remote
+workspace sync, preflight, smoke test, training, evaluation, or inference
+command was launched:
+
+```text
+Connection timed out during banner exchange
+Connection to 202.207.1.21 port 22 timed out
+CONVIR_5090_SSH_RC=255
+```
+
+Per `AGENTS.md`, no runtime fallback was run locally. The next action is to
+rerun the cloud preflight on `convir-5090` after SSH access is restored.

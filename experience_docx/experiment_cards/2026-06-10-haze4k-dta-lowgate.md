@@ -2,7 +2,7 @@
 
 Date: 2026-06-10
 
-Status: preflight
+Status: preflight blocked by cloud SSH timeout
 
 ## Scope
 
@@ -111,10 +111,10 @@ transmission prior rather than inferring transmission only from RGB.
 | Check | Pass line | Result |
 | --- | --- | --- |
 | branch/anchor | branch starts at anchor commit `2d529d4` | pending |
-| partial load | missing keys all start with `DTA.`, unexpected keys empty | pending |
-| no-op equivalence | synthetic max abs diff vs A0 <= `1e-7` | pending |
-| real batch | one train batch with depth cache has finite loss and DTA gradients | pending |
-| compile/static | local py_compile succeeds only; no local runtime | pending |
+| partial load | missing keys all start with `DTA.`, unexpected keys empty | blocked: cloud not reached |
+| no-op equivalence | synthetic max abs diff vs A0 <= `1e-7` | blocked: cloud not reached |
+| real batch | one train batch with depth cache has finite loss and DTA gradients | blocked: cloud not reached |
+| compile/static | local py_compile succeeds only; no local runtime | passed |
 
 ## Mechanism Metrics
 
@@ -183,12 +183,16 @@ gates and lenient continuation gates:
 
 ## Decision
 
-- Decision label: pending.
-- Image/global metric reason: pending.
-- Mechanism reason: pending.
-- Preservation or regression reason: pending.
-- Cost/deployability reason: pending.
-- Evidence strength label: pending.
-- Reopen condition, if any: pending.
-- What this decides next: whether DTA low-gate adapter-only fine-tuning is
-  healthy enough for a normal 5/20 epoch diagnostic.
+- Decision label: `FAILED_INFRA_CLOUD_SSH_TIMEOUT` for the first validation
+  attempt; implementation remains ready for cloud preflight.
+- Image/global metric reason: no cloud runtime command reached the server, so
+  no image metric was produced.
+- Mechanism reason: local syntax/static checks passed, but partial-load/no-op
+  and real-batch DTA activity remain pending.
+- Preservation or regression reason: not evaluated.
+- Cost/deployability reason: not evaluated.
+- Evidence strength label: implementation-ready, runtime-unvalidated.
+- Reopen condition, if any: restore `ssh convir-5090` access, then run the
+  predeclared preflight and smoke scripts without changing scope.
+- What this decides next: cloud access must be fixed before DTA low-gate
+  adapter-only fine-tuning can be validated.

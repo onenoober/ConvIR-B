@@ -170,6 +170,8 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
 
     with torch.no_grad():
         for idx, data in enumerate(dataloader):
+            if args.max_images > 0 and idx >= args.max_images:
+                break
             if arch in ("dpga", "dta"):
                 input_img, label_img, depth, name = data
                 depth = depth.to(device)
@@ -331,6 +333,7 @@ def main():
     parser.add_argument("--candidate_dpga_agf_gate_limit", type=float, default=0.25)
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
+    parser.add_argument("--max_images", type=int, default=0)
     args = parser.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)
