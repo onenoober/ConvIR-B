@@ -14,7 +14,7 @@ Status: completed
 - Main metric: checkpoint load integrity and runtime preflight pass.
 - Secondary metrics: parameter count, output shapes, finite train-batch loss,
   CLI compatibility, locked-test untouched.
-- Execution environment: `dehaze1` cloud runtime.
+- Execution environment: `dehaze1` for the original anchor preflight; `convir-5090` migration validations are recorded below.
 - Artifact root: `experience_docx/experiment_logs/haze4k_official_arch_anchor_20260610/`.
 - Branch or isolated workspace: `codex/haze4k-official-arch-anchor`.
 - Review package location: same evidence root.
@@ -85,3 +85,25 @@ strict checkpoint load, clean official state keys, synthetic three-scale output,
 learning-rate alias compatibility, and one Haze4K train-batch forward pass. The
 locked test split was not used for model selection. Evidence root:
 `experience_docx/experiment_logs/haze4k_official_arch_anchor_convir5090_preflight_20260610/`.
+
+## convir-5090 Train/Test Flow
+
+On 2026-06-10, the same anchor branch was validated on `convir-5090` with a
+full official Haze4K pretrained checkpoint test plus a minimal one-epoch
+train-then-test workflow. Runtime used commit `2d529d4`, Python
+`/data/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python`, dataset
+`/data/caozhiyang/ConvIR-B/datasets/Haze4K/Haze4K`, and official checkpoint
+`/data/caozhiyang/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`
+with sha256 `6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088`.
+The official pretrained test produced PSNR `34.14`, SSIM `0.98972`, and
+average time `0.069983`. The one-epoch train smoke initialized strictly from
+the official checkpoint, wrote a smoke `Best.pkl`, and validated at PSNR
+`33.29`; testing that smoke checkpoint produced PSNR `33.29`, SSIM `0.98639`,
+and average time `0.084696`. The smoke checkpoint hash was recorded as
+`43b96d7c997f5ac59d127d6994aeebe9e523f911dd6f15ca1ebbf6570ff2c703`, but the
+checkpoint bytes were excluded from Git. Evidence root:
+`experience_docx/experiment_logs/haze4k_official_arch_anchor_convir5090_train_test_flow_20260610/`.
+
+Decision: `OFFICIAL_ANCHOR_CONVIR5090_TRAIN_TEST_FLOW_OK`; `convir-5090` is
+validated as a backup runtime for the official Haze4K anchor workflow, without
+using this smoke run for model selection.

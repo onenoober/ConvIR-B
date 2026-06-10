@@ -765,3 +765,52 @@ PY
 Inside cloud monitor/audit helpers, use the already-declared explicit runtime
 such as `/root/miniconda3/envs/convir-cu128/bin/python` or `"$PY"` for all
 inline Python snippets as well; do not assume `python3` exists on PATH.
+
+## 2026-06-10 Dash-prefixed printf recurrence
+
+Avoid using Bash `printf` with a format string that begins with dashes when
+printing section separators from PowerShell-to-WSL or SSH wrappers:
+
+```bash
+printf '--- status ---\n'
+```
+
+Failure mode observed:
+
+- Bash treated the leading `---` format as an invalid option in the wrapped
+  command and returned `printf: --: invalid option`;
+- the remote audit stopped before printing the intended status/summary block.
+
+Corrected forms:
+
+```bash
+printf '%s\n' '--- status ---'
+# or
+printf -- '--- status ---\n'
+```
+
+## 2026-06-10 SSH tar stream must detach stdin
+
+Avoid streaming remote tar output through `ssh` from a WSL script that is itself
+being piped into Bash without detaching SSH stdin:
+
+```bash
+ssh convir-5090 "cd '$REMOTE_EVID' && tar -cf - ." | tar -C "$DEST" -xf -
+find "$DEST" -type f
+printf 'EVIDENCE_TAR_SYNC_OK\n'
+```
+
+Failure mode observed:
+
+- the tar payload copied successfully, but `ssh` consumed the remaining wrapper
+  script body from stdin;
+- the post-copy `find` and success marker did not execute, making the command
+  look like a silent or incomplete sync.
+
+Corrected form for remote commands that do not intentionally receive stdin:
+
+```bash
+ssh -n convir-5090 "cd '$REMOTE_EVID' && tar -cf - ." | tar -C "$DEST" -xf -
+find "$DEST" -type f
+printf 'EVIDENCE_TAR_SYNC_OK\n'
+```

@@ -1,6 +1,6 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-06-05
+Date: 2026-06-10
 
 Status: evidence index for `codex/main-experiment-evidence-sync`.
 
@@ -97,6 +97,7 @@ without a material new reason.
 
 | Route | Status | Main result | Decision | Card | Evidence root | Source after cleanup |
 | --- | --- | --- | --- | --- | --- | --- |
+| Haze4K Official ConvIR-B architecture anchor | Completed convir-5090 runtime flow | Official pretrained Haze4K test on `convir-5090` reproduced PSNR `34.14`, SSIM `0.98972`, avg time `0.069983`; the one-epoch train smoke from the official checkpoint reached valid PSNR `33.29`, and the smoke `Best.pkl` test produced PSNR `33.29`, SSIM `0.98639`. | `OFFICIAL_ANCHOR_CONVIR5090_TRAIN_TEST_FLOW_OK`; use `github/codex/haze4k-official-arch-anchor` as the clean anchor and keep future route edits on separate branches. | [card](experiment_cards/2026-06-10-haze4k-official-arch-anchor.md) | [preflight](experiment_logs/haze4k_official_arch_anchor_convir5090_preflight_20260610/), [flow](experiment_logs/haze4k_official_arch_anchor_convir5090_train_test_flow_20260610/) | `github/codex/haze4k-official-arch-anchor` |
 | FAM `modres` 5-epoch scout | Completed diagnostic | Mean PSNR `+0.0953 dB`, but median delta negative and strong-reference regressions `142/250`. | Do not promote unchanged `modres`; mechanism is active but preservation fails. | [card](experiment_cards/2026-05-31-haze4k-fam-feature-modulation.md) | [logs](experiment_logs/haze4k_fam_modres_scout_stop5_20260531/) | `github/main` |
 | FAM2-only 20-epoch scout | Completed diagnostic | Mean PSNR `+0.1739 dB`; hard bottom 25% `+0.8159 dB`; easy top 25% `-0.2860 dB`; strong-reference regressions `138/250`. | Keep as diagnostic; preservation gate fails. | [card](experiment_cards/2026-05-31-haze4k-fam2-only-modulation.md) | [logs](experiment_logs/haze4k_fam2_modres_stop20_20260531/) | retained leaf branches |
 | FAM2 bounded gamma | Completed diagnostic | Mean PSNR `-0.0271 dB`; hard `+0.8054 dB`; easy `-1.2740 dB`; strong-reference regressions `181/250`. | Bounded gamma does not solve preservation; do not promote. | [card](experiment_cards/2026-06-01-haze4k-fam2-bounded-modulation.md) | [logs](experiment_logs/haze4k_fam2_bounded_gamma_stop20_20260601/) | retained leaf branches |
@@ -323,3 +324,15 @@ setup. Evidence is archived at
 The run passed strict checkpoint load, official-state cleanliness, synthetic
 forward, one Haze4K train-batch forward, and CLI alias checks using commit
 `2d529d4`; locked-test data remained untouched.
+### 2026-06-10 convir-5090 Official Anchor Train/Test Flow
+
+The `codex/haze4k-official-arch-anchor` branch was then run through the
+official Haze4K pretrained checkpoint test and a minimal train/test flow on
+`convir-5090`. Evidence is archived at
+`experience_docx/experiment_logs/haze4k_official_arch_anchor_convir5090_train_test_flow_20260610/`.
+The official checkpoint test produced PSNR `34.14`, SSIM `0.98972`, and average
+time `0.069983`. A one-epoch smoke train initialized from the official
+checkpoint completed with finite loss lines and valid PSNR `33.29`; testing the
+smoke `Best.pkl` produced PSNR `33.29`, SSIM `0.98639`, and average time
+`0.084696`. The smoke checkpoint hash is recorded, but the checkpoint bytes are
+not synced to Git. Final marker: `OFFICIAL_ANCHOR_CONVIR5090_TRAIN_TEST_FLOW_OK`.

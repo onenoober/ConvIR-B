@@ -1,0 +1,36 @@
+{
+  "branch": "codex/haze4k-official-arch-anchor",
+  "checkpoint": "/data/caozhiyang/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "commit": "2d529d4",
+  "data": "/data/caozhiyang/ConvIR-B/datasets/Haze4K/Haze4K",
+  "locked_test_policy": "official pretrained evaluation and smoke test-entry verification only; no model selection",
+  "official_pretrained_test": {
+    "avg_time": 0.069983,
+    "log": "/data/caozhiyang/ConvIR-B/repos/ConvIR-B-official-arch-anchor/experience_docx/experiment_logs/haze4k_official_arch_anchor_convir5090_train_test_flow_20260610/official_pretrained_test.log",
+    "psnr": 34.14,
+    "ssim": 0.98972
+  },
+  "python": "/data/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python",
+  "smoke_best_checkpoint": "/data/caozhiyang/ConvIR-B/repos/ConvIR-B-official-arch-anchor/Dehazing/ITS/results/ConvIR-Haze4K-official-anchor-convir5090-flow-20260610/Training-Results/Best.pkl",
+  "smoke_best_checkpoint_sha256": "43b96d7c997f5ac59d127d6994aeebe9e523f911dd6f15ca1ebbf6570ff2c703",
+  "smoke_best_checkpoint_size": 34764011,
+  "smoke_best_test": {
+    "avg_time": 0.084696,
+    "log": "/data/caozhiyang/ConvIR-B/repos/ConvIR-B-official-arch-anchor/experience_docx/experiment_logs/haze4k_official_arch_anchor_convir5090_train_test_flow_20260610/smoke_best_test.log",
+    "psnr": 33.29,
+    "ssim": 0.98639
+  },
+  "status": "OFFICIAL_ANCHOR_CONVIR5090_TRAIN_TEST_FLOW_OK",
+  "train_smoke": {
+    "finite_loss_lines": 3,
+    "log": "/data/caozhiyang/ConvIR-B/repos/ConvIR-B-official-arch-anchor/experience_docx/experiment_logs/haze4k_official_arch_anchor_convir5090_train_test_flow_20260610/train_smoke_from_pretrained_1epoch.log",
+    "valid_epochs": [
+      {
+        "epoch": 1,
+        "psnr": 33.29
+      }
+    ]
+  },
+  "worktree": "/data/caozhiyang/ConvIR-B/repos/ConvIR-B-official-arch-anchor"
+}
