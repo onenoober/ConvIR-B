@@ -13,7 +13,7 @@ is proposed after the official architecture anchor was established.
 
 Highest-priority rules:
 
-- Default runtime server is `convir-5090`; invoke it as `ssh convir-5090`.
+- Default runtime server is `convir-4090`; invoke it as `ssh convir-4090`.
 - Local WSL checkout is for editing and compile/static checks only. Do not run
   training, smoke tests, evaluation, inference, or demos locally.
 - Treat `github/codex/haze4k-official-arch-anchor` as an immutable official
@@ -25,17 +25,28 @@ Highest-priority rules:
   write explicit partial-load and new-module initialization rules before any
   cloud run.
 
-Current `convir-5090` anchor preflight evidence:
+Current `convir-4090` anchor runtime defaults:
+
+- Runtime workspace:
+  `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor`
+- Python:
+  `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`
+- Haze4K data:
+  `/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K`
+- Official Haze4K checkpoint:
+  `/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`
+
+Historical `convir-5090` anchor preflight evidence, retained for provenance:
 
 - Evidence root:
   `experience_docx/experiment_logs/haze4k_official_arch_anchor_convir5090_preflight_20260610/`
-- Runtime workspace:
+- Historical runtime workspace:
   `/home/caozhiyang/ConvIR-B/repos/ConvIR-B-official-arch-anchor`
-- Python:
+- Historical Python:
   `/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python`
-- Haze4K data:
+- Historical Haze4K data:
   `/home/caozhiyang/ConvIR-B/datasets/Haze4K/Haze4K`
-- Official Haze4K checkpoint:
+- Historical official Haze4K checkpoint:
   `/home/caozhiyang/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`
 - Anchor commit recorded by the preflight: `2d529d4`
 - Checkpoint sha256:
@@ -62,7 +73,7 @@ Required route naming:
 
 - branch: `codex/<new-route>`;
 - cloud workspace:
-  `/home/caozhiyang/ConvIR-B/repos/ConvIR-B-<new-route>`;
+  `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-<new-route>`;
 - evidence root:
   `experience_docx/experiment_logs/<route_id>/`;
 - route card:
@@ -82,7 +93,7 @@ Before writing model code, create or update the route card with:
 - text evidence paths.
 
 If the current working tree has unrelated changes, do not clean or revert them.
-Create the route branch/workspace from a clean anchor checkout on `convir-5090`
+Create the route branch/workspace from a clean anchor checkout on `convir-4090`
 or use a separate worktree.
 
 ## 2. Architecture Change Contract
@@ -248,18 +259,18 @@ Every train log should print:
 ## 5. Minimum Cloud Preflight Script
 
 Create a durable script under the route evidence root before running it on
-`convir-5090`. The script must use the new server paths and explicit Python.
+`convir-4090`. The script must use the new server paths and explicit Python.
 
 Template:
 
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-BASE=/home/caozhiyang/ConvIR-B
+BASE=/sda/home/wangyuxin/ConvIR-B
 WORK=$BASE/repos/ConvIR-B-<new-route>
 ITS=$WORK/Dehazing/ITS
 EVID=$WORK/experience_docx/experiment_logs/<route_id>
-PY=$BASE/envs/convir-cu128/bin/python
+PY=$BASE/envs/convir-cu121/bin/python
 DATA=$BASE/datasets/Haze4K/Haze4K
 A0=$BASE/checkpoints/official/Haze4K/haze4k-base.pkl
 STATUS=$EVID/status.txt
@@ -310,7 +321,7 @@ Minimum JSON fields:
 
 ## 6. Stage 1/2 Training Command Pattern
 
-Training must run on `convir-5090` and should follow the existing Haze4K
+Training must run on `convir-4090` and should follow the existing Haze4K
 workflow: durable script, status markers, stdout/stderr log, unique model name,
 and no overwrite of existing outputs.
 

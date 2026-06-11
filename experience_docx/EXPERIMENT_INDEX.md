@@ -65,9 +65,9 @@ For any future model-structure change:
 3. document initialization rules for every newly added module;
 4. freeze the trusted ConvIR-B modules first and unfreeze only through the
    staged fine-tune gates in `Haze4K_ARCH_FINETUNE_WORKFLOW.md`;
-5. run runtime validation on `convir-5090`, not local WSL.
+5. run runtime validation on `convir-4090`, not local WSL.
 
-Anchor preflight evidence on `convir-5090` is available at
+Historical anchor preflight evidence on `convir-5090` remains available at
 `experiment_logs/haze4k_official_arch_anchor_convir5090_preflight_20260610/`.
 
 ## Reading Order

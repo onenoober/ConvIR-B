@@ -9,12 +9,12 @@ Status: required workflow for avoiding repeated invalid commands in this reposit
 This protocol records command forms that have already failed in this workspace
 and the preferred forms that should be used instead. It is especially important
 for monitoring cloud experiments from Windows PowerShell through WSL and then
-over SSH to `convir-5090`.
+over SSH to `convir-4090`.
 
-Current host note: `convir-5090` is the default cloud runtime server. Older
-examples that mention `dehaze1` are historical command-reliability records; for
-new commands, replace the host with `convir-5090` and use the current cloud
-Python path `/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python`.
+Current host note: `convir-4090` is the default cloud runtime server. Older
+examples that mention `dehaze1` or `convir-5090` are historical command-reliability records; for
+new commands, use `convir-4090` and the current cloud
+Python path `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 
 ## High-Priority Rule
 
@@ -549,10 +549,10 @@ Use this template for future training and post-eval checks:
 $script = @'
 set -euo pipefail
 cd /home/ubuntu/workspace/ConvIR-B
-ssh convir-5090 'bash -s' <<'REMOTE'
+ssh convir-4090 'bash -s' <<'REMOTE'
 set -euo pipefail
-EVID=/home/caozhiyang/ConvIR-B/repos/<remote-workspace>/experience_docx/experiment_logs/<route_id>
-PY=/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python
+EVID=/sda/home/wangyuxin/ConvIR-B/repos/<remote-workspace>/experience_docx/experiment_logs/<route_id>
+PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
 printf 'remote_time=%s\n' "$(date -Is)"
 for s in <train_tmux> <post_tmux>; do
   if tmux has-session -t "$s" 2>/dev/null; then
@@ -564,7 +564,7 @@ done
 [ -f "$EVID/status.txt" ] && tail -n 80 "$EVID/status.txt" || printf 'status=MISSING\n'
 printf 'REMOTE_MONITOR_OK\n'
 REMOTE
-rsync -a convir-5090:/home/caozhiyang/ConvIR-B/repos/<remote-workspace>/experience_docx/experiment_logs/<route_id>/ experience_docx/experiment_logs/<route_id>/
+rsync -a convir-4090:/sda/home/wangyuxin/ConvIR-B/repos/<remote-workspace>/experience_docx/experiment_logs/<route_id>/ experience_docx/experiment_logs/<route_id>/
 printf 'EVIDENCE_SYNC_OK\n'
 '@
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"

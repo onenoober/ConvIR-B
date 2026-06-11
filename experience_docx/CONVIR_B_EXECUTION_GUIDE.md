@@ -16,8 +16,8 @@ local environment and any reproduction gap has a written explanation.
 
 Current runtime overlay for this checkout: the WSL copy is for editing and
 compile/static checks only. Run smoke tests, training, evaluation, inference,
-and other runtime validation on `convir-5090` (`ssh convir-5090`) with explicit
-cloud paths, especially `/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python`.
+and other runtime validation on `convir-4090` (`ssh convir-4090`) with explicit
+cloud paths, especially `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 In older notes, "local baseline" means the baseline measured in the active
 runtime environment, not necessarily the WSL machine.
 
