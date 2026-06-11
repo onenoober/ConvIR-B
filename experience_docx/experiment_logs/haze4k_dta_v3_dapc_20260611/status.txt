@@ -61,3 +61,135 @@ phase_a_tpred_done rc=1 run_id=oof20_phaseA_r0_seed3407_f0 2026-06-11T21:14:21+0
 phase_a_tpred_failure_triage previous_rc=1 run_id=oof20_phaseA_r0_seed3407_f0 reason=r0_only_has_no_t_pred audit_not_applicable 2026-06-11T21:20:00+08:00
 phase_a_gate_fail run_id=oof20_phaseA_r0_seed3407_f0 mean_dpsnr=-0.012119 hard_bottom25=-0.069025 easy_top25=0.044643 dssim=-0.00001218 positive_ratio=0.45 strong_regressions=48/150 worst_regressions=70/600 2026-06-11T21:20:00+08:00
 DTA_V3_PHASE_A_R0_GATE_FAIL_NO_PHASE_B
+variant_workspace_setup_from_bundle 2026-06-11T21:58:00+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants
+branch=codex/haze4k-dta-v3-dapc-finetune
+commit=88ca17c
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+python_exists=1
+data_exists=1
+a0_exists=1
+variant_workspace_py_compile_done rc=0 2026-06-11T21:58:00+08:00
+DTA_V3_R0VARIANT_WORKSPACE_READY
+0, NVIDIA GeForce RTX 4090, 1908 MiB, 24564 MiB, 0 %
+1, NVIDIA GeForce RTX 4090, 18660 MiB, 24564 MiB, 25 %
+2, NVIDIA GeForce RTX 4090, 16 MiB, 24564 MiB, 0 %
+3, NVIDIA GeForce RTX 4090, 16 MiB, 24564 MiB, 0 %
+4, NVIDIA GeForce RTX 4090, 16 MiB, 24564 MiB, 0 %
+5, NVIDIA GeForce RTX 4090, 16 MiB, 24564 MiB, 0 %
+6, NVIDIA GeForce RTX 4090, 16 MiB, 24564 MiB, 0 %
+7, NVIDIA GeForce RTX 4090, 16 MiB, 24564 MiB, 0 %
+phase_a_variant_scout_launch_start stage=scout5full seed=3407 fold=0 work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants 2026-06-11T21:58:16+08:00
+variants=r0s005_lr3e5_ref005 r0s010_lr3e5_ref005 r0s020_lr3e5_ref005 r0s010_lr1e5_ref010
+gpus=2 3 4 5
+phase_a_variant_scout_launched session=dta_v3_scout5full_r0s005_lr3e5_ref005_f0 gpu=2 run_id=scout5full_phaseA_r0s005_lr3e5_ref005_seed3407_f0 cmd=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s005_lr3e5_ref005_seed3407_f0.cmd.sh tmux_log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s005_lr3e5_ref005_f0.out 2026-06-11T21:58:16+08:00
+phase_a_variant_start run_id=scout5full_phaseA_r0s005_lr3e5_ref005_seed3407_f0 variant=r0s005_lr3e5_ref005 stage=scout5full 2026-06-11T21:58:16+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=2
+lr=0.00003 r0_scale=0.005 preserve=0.05 ref=0.05 tail=0.05 grad_clip=0.0005 dta_grad_clip=0.02
+codex/haze4k-dta-v3-dapc-finetune
+phase_a_variant_scout_launched session=dta_v3_scout5full_r0s010_lr3e5_ref005_f0 gpu=3 run_id=scout5full_phaseA_r0s010_lr3e5_ref005_seed3407_f0 cmd=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s010_lr3e5_ref005_seed3407_f0.cmd.sh tmux_log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s010_lr3e5_ref005_f0.out 2026-06-11T21:58:16+08:00
+88ca17c
+phase_a_variant_start run_id=scout5full_phaseA_r0s010_lr3e5_ref005_seed3407_f0 variant=r0s010_lr3e5_ref005 stage=scout5full 2026-06-11T21:58:16+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=3
+lr=0.00003 r0_scale=0.010 preserve=0.05 ref=0.05 tail=0.05 grad_clip=0.0005 dta_grad_clip=0.02
+codex/haze4k-dta-v3-dapc-finetune
+88ca17c
+phase_a_variant_scout_launched session=dta_v3_scout5full_r0s020_lr3e5_ref005_f0 gpu=4 run_id=scout5full_phaseA_r0s020_lr3e5_ref005_seed3407_f0 cmd=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s020_lr3e5_ref005_seed3407_f0.cmd.sh tmux_log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s020_lr3e5_ref005_f0.out 2026-06-11T21:58:16+08:00
+phase_a_variant_start run_id=scout5full_phaseA_r0s020_lr3e5_ref005_seed3407_f0 variant=r0s020_lr3e5_ref005 stage=scout5full 2026-06-11T21:58:16+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=4
+lr=0.00003 r0_scale=0.020 preserve=0.05 ref=0.05 tail=0.05 grad_clip=0.0005 dta_grad_clip=0.02
+codex/haze4k-dta-v3-dapc-finetune
+88ca17c
+phase_a_variant_scout_launched session=dta_v3_scout5full_r0s010_lr1e5_ref010_f0 gpu=5 run_id=scout5full_phaseA_r0s010_lr1e5_ref010_seed3407_f0 cmd=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s010_lr1e5_ref010_seed3407_f0.cmd.sh tmux_log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s010_lr1e5_ref010_f0.out 2026-06-11T21:58:16+08:00
+DTA_V3_PHASE_A_VARIANT_SCOUTS_LAUNCHED stage=scout5full
+phase_a_variant_start run_id=scout5full_phaseA_r0s010_lr1e5_ref010_seed3407_f0 variant=r0s010_lr1e5_ref010 stage=scout5full 2026-06-11T21:58:16+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=5
+lr=0.00001 r0_scale=0.010 preserve=0.10 ref=0.10 tail=0.10 grad_clip=0.00025 dta_grad_clip=0.01
+codex/haze4k-dta-v3-dapc-finetune
+88ca17c
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s005_lr3e5_ref005_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s010_lr1e5_ref010_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s010_lr3e5_ref005_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s020_lr3e5_ref005_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s005_lr3e5_ref005_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s010_lr1e5_ref010_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s010_lr3e5_ref005_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s020_lr3e5_ref005_f0.out
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s005_lr3e5_ref005_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s010_lr1e5_ref010_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s010_lr3e5_ref005_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s020_lr3e5_ref005_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s005_lr3e5_ref005_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s010_lr1e5_ref010_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s010_lr3e5_ref005_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s020_lr3e5_ref005_f0.out
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s005_lr3e5_ref005_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s010_lr1e5_ref010_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s010_lr3e5_ref005_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s020_lr3e5_ref005_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s005_lr3e5_ref005_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s010_lr1e5_ref010_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s010_lr3e5_ref005_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s020_lr3e5_ref005_f0.out
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s005_lr3e5_ref005_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s010_lr1e5_ref010_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s010_lr3e5_ref005_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_phaseA_r0s020_lr3e5_ref005_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s005_lr3e5_ref005_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s010_lr1e5_ref010_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s010_lr3e5_ref005_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_r0s020_lr3e5_ref005_f0.out
+phase_a_variant_train_done rc=0 run_id=scout5full_phaseA_r0s010_lr1e5_ref010_seed3407_f0 2026-06-11T22:01:28+08:00
+phase_a_variant_train_done rc=0 run_id=scout5full_phaseA_r0s010_lr3e5_ref005_seed3407_f0 2026-06-11T22:01:28+08:00
+phase_a_variant_train_done rc=0 run_id=scout5full_phaseA_r0s005_lr3e5_ref005_seed3407_f0 2026-06-11T22:01:30+08:00
+phase_a_variant_train_done rc=0 run_id=scout5full_phaseA_r0s020_lr3e5_ref005_seed3407_f0 2026-06-11T22:01:35+08:00
+phase_a_variant_eval_done rc=0 run_id=scout5full_phaseA_r0s010_lr3e5_ref005_seed3407_f0 2026-06-11T22:03:01+08:00
+phase_a_variant_eval_done rc=0 run_id=scout5full_phaseA_r0s010_lr1e5_ref010_seed3407_f0 2026-06-11T22:03:02+08:00
+phase_a_variant_eval_done rc=0 run_id=scout5full_phaseA_r0s005_lr3e5_ref005_seed3407_f0 2026-06-11T22:03:06+08:00
+phase_a_variant_eval_done rc=0 run_id=scout5full_phaseA_r0s020_lr3e5_ref005_seed3407_f0 2026-06-11T22:03:10+08:00
+phase_a_variant_contact_sheet_done rc=0 run_id=scout5full_phaseA_r0s010_lr3e5_ref005_seed3407_f0 output=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_phaseA_r0s010_lr3e5_ref005_seed3407_f0 2026-06-11T22:03:11+08:00
+DTA_V3_PHASE_A_R0_VARIANT_EVAL_COMPLETE run_id=scout5full_phaseA_r0s010_lr3e5_ref005_seed3407_f0 checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-PhaseA-r0s010_lr3e5_ref005-seed3407-f0-scout5full/Training-Results/Final.pkl compare=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_phaseA_r0s010_lr3e5_ref005_seed3407_f0_compare contact_sheet=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_phaseA_r0s010_lr3e5_ref005_seed3407_f0
+phase_a_variant_contact_sheet_done rc=0 run_id=scout5full_phaseA_r0s010_lr1e5_ref010_seed3407_f0 output=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_phaseA_r0s010_lr1e5_ref010_seed3407_f0 2026-06-11T22:03:13+08:00
+DTA_V3_PHASE_A_R0_VARIANT_EVAL_COMPLETE run_id=scout5full_phaseA_r0s010_lr1e5_ref010_seed3407_f0 checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-PhaseA-r0s010_lr1e5_ref010-seed3407-f0-scout5full/Training-Results/Final.pkl compare=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_phaseA_r0s010_lr1e5_ref010_seed3407_f0_compare contact_sheet=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_phaseA_r0s010_lr1e5_ref010_seed3407_f0
+phase_a_variant_contact_sheet_done rc=0 run_id=scout5full_phaseA_r0s005_lr3e5_ref005_seed3407_f0 output=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_phaseA_r0s005_lr3e5_ref005_seed3407_f0 2026-06-11T22:03:16+08:00
+DTA_V3_PHASE_A_R0_VARIANT_EVAL_COMPLETE run_id=scout5full_phaseA_r0s005_lr3e5_ref005_seed3407_f0 checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-PhaseA-r0s005_lr3e5_ref005-seed3407-f0-scout5full/Training-Results/Final.pkl compare=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_phaseA_r0s005_lr3e5_ref005_seed3407_f0_compare contact_sheet=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_phaseA_r0s005_lr3e5_ref005_seed3407_f0
+phase_a_variant_contact_sheet_done rc=0 run_id=scout5full_phaseA_r0s020_lr3e5_ref005_seed3407_f0 output=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_phaseA_r0s020_lr3e5_ref005_seed3407_f0 2026-06-11T22:03:20+08:00
+DTA_V3_PHASE_A_R0_VARIANT_EVAL_COMPLETE run_id=scout5full_phaseA_r0s020_lr3e5_ref005_seed3407_f0 checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-PhaseA-r0s020_lr3e5_ref005-seed3407-f0-scout5full/Training-Results/Final.pkl compare=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_phaseA_r0s020_lr3e5_ref005_seed3407_f0_compare contact_sheet=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_phaseA_r0s020_lr3e5_ref005_seed3407_f0

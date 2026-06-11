@@ -115,3 +115,25 @@ Scout variants:
 Initial stage is `scout5full`: 5 training epochs with full 600-image fold0 eval
 and contact sheets. Only a variant with positive mean/hard movement, near-zero
 or positive SSIM, and reduced tail risk should be promoted to OOF20.
+
+
+## 2026-06-11 Conservative R0 Scout Results
+
+`scout5full` completed on `convir-4090` using four GPUs in workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-r0variants`.
+Each run trained 5 epochs on fold0 train and evaluated all `600` fold0 validation
+images. Contact sheets were generated on cloud under `tail_regression_contact_sheet/`
+and are not committed as Git evidence.
+
+| Variant | mean dPSNR | hard bottom-25 | easy top-25 | dSSIM | pos ratio | strong | worst |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `r0s020_lr3e5_ref005` | `-0.021837` | `-0.056151` | `+0.030270` | `-0.00002035` | `0.4550` | `38` | `57` |
+| `r0s010_lr3e5_ref005` | `-0.025856` | `-0.056900` | `+0.024449` | `-0.00002182` | `0.4417` | `35` | `56` |
+| `r0s005_lr3e5_ref005` | `-0.031866` | `-0.057293` | `+0.014219` | `-0.00002624` | `0.4267` | `38` | `49` |
+| `r0s010_lr1e5_ref010` | `-0.042601` | `-0.051842` | `-0.012940` | `-0.00003352` | `0.3567` | `43` | `43` |
+
+Decision: all conservative R0 variants are still mean/hard/SSIM negative. The
+least bad mean result is `r0s020_lr3e5_ref005` at `-0.021837 dB`, still worse
+than A0 and hard-negative. No variant is promoted to OOF20, and Phase B remains
+blocked under the original frozen-R0 plan. The next useful diagnostic is to test
+a zero-R0 depth-direct branch from A0 as a separate no-promotion mechanism probe.

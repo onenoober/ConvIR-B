@@ -25,7 +25,7 @@ failed the R0 safety baseline: mean dPSNR `-0.012119`, hard bottom-25
 `-0.069025`, easy top-25 `+0.044643`, dSSIM `-0.00001218`, positive ratio
 `0.45`, strong regressions `48/150`, and worst regressions `70/600`.
 
-Decision: `COMPLETED_GATE_FAIL_PHASE_A_R0_NO_PHASE_B`. Do not launch Phase B
+Decision: `COMPLETED_GATE_FAIL_PHASE_A_R0_NO_PHASE_B`. Conservative R0 scout variants also failed; do not launch Phase B
 from the current R0 checkpoint.
 
 ## Route Table
