@@ -28,3 +28,5 @@ DTA_V2_OOF_SPLITS_OK
 ?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/status.txt
 preflight_done rc=0 dta_v2 2026-06-11T10:32:24+08:00
 DTA_V2_PREFLIGHT_OK
+audit_done rc=0 dta_v2 2026-06-11T10:43:28+08:00
+DTA_V2_DEPTH_TRANSMISSION_AUDIT_OK

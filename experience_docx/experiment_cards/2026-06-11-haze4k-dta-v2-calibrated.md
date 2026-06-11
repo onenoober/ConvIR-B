@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `IN_PROGRESS_FIRST_STAGE_PREFLIGHT_PASS_AUDIT_RUNNING`
+Status: `IN_PROGRESS_AUDIT_PREFLIGHT_PASS_TRAIN_QUEUE`
 
 ## Scope
 
@@ -74,4 +74,6 @@ that has already passed internal mechanism and preservation gates.
 - convir-4090 setup/static py_compile passed at commit `2460b21`.
 - OOF split generation passed with five `600`-image validation folds.
 - DTA-v2 preflight passed: partial load `602` loaded / `25` missing all under `DTA.`, no-op max diff `0.0`, and real-batch DTA grad sum `0.66677364` with finite trans/physics losses.
-- Depth-transmission audit is running; no DTA-v2 training/evaluation has started yet.
+- Depth-transmission audit passed with `4000` rows and `0` errors; it found the cached depth direction is reversed (`depth` vs `-log(t_gt)` median Spearman about `-0.93`, `1-depth` about `+0.93`).
+- Primary calibrated-depth training must use `--dta_depth_mode invert`; `normal` becomes the wrong-orientation control, alongside `zero` and `shuffle` controls.
+- No DTA-v2 training/evaluation has started yet.
