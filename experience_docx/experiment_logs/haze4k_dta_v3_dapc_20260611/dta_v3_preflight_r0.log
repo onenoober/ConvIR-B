@@ -1,0 +1,133 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune/experience_docx/tools/check_haze4k_dta_preflight.py:39: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+{
+  "ok": true,
+  "device": "cuda",
+  "cuda_device_name": "NVIDIA GeForce RTX 4090",
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "checkpoint_size": 34797069,
+  "partial_load": {
+    "loaded_count": 602,
+    "missing_count": 29,
+    "missing_new_prefix_ok": true,
+    "missing_examples": [
+      "DTA.log_alpha2",
+      "DTA.log_alpha3",
+      "DTA.log_alpha_full",
+      "DTA.stage2.prior.0.weight",
+      "DTA.stage2.prior.0.bias",
+      "DTA.stage2.prior.2.weight",
+      "DTA.stage2.prior.2.bias",
+      "DTA.stage2.head.weight",
+      "DTA.stage2.head.bias",
+      "DTA.stage3.prior.0.weight"
+    ],
+    "unexpected": []
+  },
+  "synthetic_noop": {
+    "output_shapes": [
+      [
+        1,
+        3,
+        64,
+        64
+      ],
+      [
+        1,
+        3,
+        128,
+        128
+      ],
+      [
+        1,
+        3,
+        256,
+        256
+      ]
+    ],
+    "max_abs_diffs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "max_abs_diff": 0.0,
+    "dta_stats": {
+      "stage2_gate_mean": 0.0,
+      "stage2_gate_max": 0.0,
+      "stage2_conf_mean": 0.0,
+      "stage2_conf_min": 0.0,
+      "stage2_gamma_abs_mean": 0.0,
+      "stage2_beta_abs_mean": 0.0,
+      "stage2_delta_abs_mean": 0.0,
+      "stage3_gate_mean": 0.0,
+      "stage3_gate_max": 0.0,
+      "stage3_conf_mean": 0.0,
+      "stage3_conf_min": 0.0,
+      "stage3_gamma_abs_mean": 0.0,
+      "stage3_beta_abs_mean": 0.0,
+      "stage3_delta_abs_mean": 0.0,
+      "r0_delta_abs_mean": 0.0,
+      "depth_mask_mean": 0.0,
+      "depth_delta_abs_mean": 0.0
+    }
+  },
+  "real_batch_backward": {
+    "skipped": false,
+    "loss_content": 0.013447651639580727,
+    "loss_rank": 0.0,
+    "loss_tv": 0.0,
+    "loss_trans": 0.0,
+    "loss_phys": 0.0,
+    "loss_total": 0.013447651639580727,
+    "grad_abs_sum": 0.06329656206071377,
+    "grad_nonzero_tensors": 2,
+    "input_shape": [
+      2,
+      3,
+      256,
+      256
+    ],
+    "depth_shape": [
+      2,
+      1,
+      256,
+      256
+    ],
+    "trans_shape": [
+      2,
+      1,
+      256,
+      256
+    ]
+  },
+  "dta_config": {
+    "arch": "dta_v3",
+    "dta_variant": "v3",
+    "dta_depth_mode": "zero",
+    "dta_prior_channels": 32,
+    "dta_gate_bias": -5.0,
+    "dta_gate_limit": 0.1,
+    "dta_gamma_limit": 0.16,
+    "dta_beta_limit": 0.08,
+    "dta_alpha_init": 1.0,
+    "dta_confidence_floor": 0.3,
+    "dta_confidence_local_scale": 6.0,
+    "dta_output_residual_scale": 0.03,
+    "dta_r0_residual_scale": 0.04,
+    "dta_depth_residual_scale": 0.08,
+    "dta_depth_mask_easy_budget": 0.04,
+    "dta_depth_mask_dense_budget": 0.12,
+    "dta_depth_mask_density_thresh": 0.35,
+    "dta_depth_mask_bias": -4.0,
+    "dta_phys_t_min": 0.1,
+    "dta_phase": "r0",
+    "dta_ablation": "r0_only",
+    "use_trans_gt": true,
+    "rank_weight": 0.003,
+    "tv_weight": 0.0003,
+    "trans_weight": 0.02,
+    "phys_weight": 0.005
+  }
+}
+DTA_PREFLIGHT_OK

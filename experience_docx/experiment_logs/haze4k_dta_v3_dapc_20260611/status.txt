@@ -35,3 +35,29 @@ preflight_depth_done rc=0 dta_v3 2026-06-11T20:58:21+08:00
 pairing_audit_done rc=0 dta_v3 2026-06-11T20:58:26+08:00
 preflight_done rc=0 dta_v3 2026-06-11T20:58:26+08:00
 DTA_V3_PREFLIGHT_OK
+phase_a_tmux_started session=dta_v3_phaseA_r0_f0 2026-06-11T21:00:21+08:00
+phase_a_start run_id=oof20_phaseA_r0_seed3407_f0 2026-06-11T21:00:21+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=0
+codex/haze4k-dta-v3-dapc-finetune
+b3a72a2
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/depth_eval_pairing_audit.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/depth_eval_pairing_audit.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_preflight_depth_bounded.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_preflight_r0.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_phaseA_r0_f0.out
+phase_a_train_done rc=0 run_id=oof20_phaseA_r0_seed3407_f0 2026-06-11T21:13:18+08:00
+phase_a_eval_done rc=0 run_id=oof20_phaseA_r0_seed3407_f0 2026-06-11T21:14:17+08:00
+phase_a_tpred_done rc=1 run_id=oof20_phaseA_r0_seed3407_f0 2026-06-11T21:14:21+08:00
+phase_a_tpred_failure_triage previous_rc=1 run_id=oof20_phaseA_r0_seed3407_f0 reason=r0_only_has_no_t_pred audit_not_applicable 2026-06-11T21:20:00+08:00
+phase_a_gate_fail run_id=oof20_phaseA_r0_seed3407_f0 mean_dpsnr=-0.012119 hard_bottom25=-0.069025 easy_top25=0.044643 dssim=-0.00001218 positive_ratio=0.45 strong_regressions=48/150 worst_regressions=70/600 2026-06-11T21:20:00+08:00
+DTA_V3_PHASE_A_R0_GATE_FAIL_NO_PHASE_B

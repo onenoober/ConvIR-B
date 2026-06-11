@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `PREFLIGHT_COMPLETE_READY_PHASE_A_R0`
+Status: `COMPLETED_GATE_FAIL_PHASE_A_R0_NO_PHASE_B`
 
 ## Scope
 
@@ -114,6 +114,37 @@ positive_ratio >= 0.65
 If the route only beats A0 but does not beat zero/shuffle/wrong-orientation, it
 is a generic adapter and must not be called depth-guided.
 
+
+## 2026-06-11 Phase A R0 OOF20 Fold0
+
+Cloud run `oof20_phaseA_r0_seed3407_f0` used the fine-tune route from official
+A0 with `train_scope=dta_r0_only`, `dta_phase=r0`, `dta_ablation=r0_only`,
+`dta_depth_mode=zero`, and the wider-but-bounded DTA-v3 defaults. Training and
+evaluation completed on `convir-4090`; locked Haze4K test remained untouched.
+
+Evaluation against A0 on train-derived fold0 validation (`600` images):
+
+| Metric | Value | Gate implication |
+| --- | ---: | --- |
+| mean dPSNR | `-0.012119` | fails positive R0 requirement |
+| hard bottom-25 dPSNR | `-0.069025` | fails hard preservation/gain |
+| easy top-25 dPSNR | `+0.044643` | easy improves, but not enough to offset hard/global loss |
+| mean dSSIM | `-0.00001218` | slightly preservation-negative |
+| positive ratio | `0.4500` | below continuation target |
+| strong regressions (`<= -0.05 dB`) | `48/150` | too high for a safety baseline |
+| worst regressions (`<= -0.20 dB`) | `70/600` | tail remains unsafe |
+
+The post-eval `t_pred` audit failed with `KeyError: t_pred` because R0-only
+intentionally has no active transmission/depth output. This is classified as a
+script/audit applicability issue; the Phase A launcher now skips `t_pred` audit
+for R0-only and reserves transmission coupling audits for Phase B/depth-active
+runs.
+
+Decision: `COMPLETED_GATE_FAIL_PHASE_A_R0_NO_PHASE_B`. Do not launch Phase B
+from this R0 checkpoint. The next experiment should redesign Phase A as a
+smaller or more conservative R0 diagnostic before any depth-attributed frozen-R0
+training.
+
 ## Locked-Test Policy
 
 Locked Haze4K test must not be used to select checkpoint, depth mode, gate,
@@ -144,4 +175,4 @@ Stage 0 preflight completed on `convir-4090` with `DTA_V3_PREFLIGHT_OK`.
 - Depth-bounded preflight: partial load `602` official keys, `29` missing keys all under `DTA.`, unexpected `[]`, synthetic max diff `0.00024414` under the written bounded tolerance, real-batch DTA grad sum `0.19976439`.
 - OOF split generation: five train-derived folds, `600` validation images per fold.
 - Deterministic eval shuffle audit: `600` fold0 validation rows, `same_image_count=0`, `same_image_ratio=0.0`, density-bin match ratio `0.275`.
-- Locked Haze4K test remains blocked. Next authorized step is Phase A `dta_r0_only` fine-tuning from official A0 on `convir-4090`.
+- Locked Haze4K test remains blocked. Phase A `dta_r0_only` completed and failed the R0 gate; Phase B is blocked until a safe R0 baseline is produced or the stop rule is explicitly overridden.

@@ -1,0 +1,17 @@
+{
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "source_split": "train",
+  "seed": 3407,
+  "folds": 5,
+  "total_count": 3000,
+  "fold_val_counts": [
+    600,
+    600,
+    600,
+    600,
+    600
+  ],
+  "note": "Use foldN_train for training and foldN_val for internal validation. Locked Haze4K test remains reserved for final fixed-config confirmation."
+}
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+DTA_OOF_SPLITS_OK

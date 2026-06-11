@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `PREFLIGHT_COMPLETE_READY_PHASE_A_R0`
+Status: `COMPLETED_GATE_FAIL_PHASE_A_R0_NO_PHASE_B`
 
 This directory stores text evidence for `codex/haze4k-dta-v3-dapc-finetune`.
 Checkpoints, model weights, datasets, images, arrays, archives, and raw inference
@@ -46,8 +46,10 @@ requested otherwise.
 
 ## Current Decision
 
-`PLANNED_FINE_TUNE_PREFLIGHT`: code and scripts are being prepared. No cloud
-runtime validation has been interpreted yet, and locked Haze4K test is blocked.
+`COMPLETED_GATE_FAIL_PHASE_A_R0_NO_PHASE_B`: convir-4090 Stage 0 preflight
+passed, but Phase A `dta_r0_only` OOF20 fold0 failed the R0 safety/quality gate.
+Phase B frozen-R0 depth training is blocked until R0 is redesigned or the user
+explicitly overrides the stop rule. Locked Haze4K test remains blocked.
 
 ## 2026-06-11 Default Host Correction
 
@@ -65,4 +67,31 @@ Stage 0 preflight completed on `convir-4090` with `DTA_V3_PREFLIGHT_OK`.
 - Depth-bounded preflight: partial load `602` official keys, `29` missing keys all under `DTA.`, unexpected `[]`, synthetic max diff `0.00024414` under the written bounded tolerance, real-batch DTA grad sum `0.19976439`.
 - OOF split generation: five train-derived folds, `600` validation images per fold.
 - Deterministic eval shuffle audit: `600` fold0 validation rows, `same_image_count=0`, `same_image_ratio=0.0`, density-bin match ratio `0.275`.
-- Locked Haze4K test remains blocked. Next authorized step is Phase A `dta_r0_only` fine-tuning from official A0 on `convir-4090`.
+- Locked Haze4K test remains blocked.
+
+## 2026-06-11 Phase A R0 OOF20 Fold0
+
+Cloud run `oof20_phaseA_r0_seed3407_f0` completed training and evaluation on
+`convir-4090`; the follow-up `t_pred` audit returned `KeyError: t_pred` because
+`dta_phase=r0` / `dta_ablation=r0_only` intentionally disables the
+transmission/depth branch. The Phase A launcher now records that audit as
+not-applicable for R0 instead of treating it as model evidence.
+
+Phase A metrics from `dta_v3_oof20_phaseA_r0_seed3407_f0_compare/`:
+
+| Metric | Value |
+| --- | ---: |
+| common images | `600` |
+| mean dPSNR vs A0 | `-0.012119` |
+| hard bottom-25 dPSNR | `-0.069025` |
+| easy top-25 dPSNR | `+0.044643` |
+| mean dSSIM | `-0.00001218` |
+| positive ratio | `0.4500` |
+| strong regressions among top-25 A0 images (`<= -0.05 dB`) | `48/150` |
+| worst regressions (`<= -0.20 dB`) | `70/600` |
+
+Decision: Phase A R0 is not a safe generic zero-depth residual baseline. It is
+negative on mean and hard samples, SSIM is slightly negative, and the positive
+ratio is below the written continuation threshold. Do not launch Phase B from
+this checkpoint. Recommended next route is a smaller/shorter R0 diagnostic or a
+more conservative loss/scale variant declared as a new Phase A attempt.

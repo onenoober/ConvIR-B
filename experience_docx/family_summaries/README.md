@@ -35,6 +35,7 @@ Non-family anchor:
 | PFD/RHFD preservation | [summary](pfd_rhfd_family_summary.md) | Diagnostic only; preservation improved but hard-gain gates failed. |
 | APDR output residual/action-bank | [summary](apdr_family_summary.md) | Broad output-residual/coefficient-mapping forms stopped; safe-subset ideas require fixed-code OOF/held-out evidence. |
 | DPGA in-network prior adapters | [summary](dpga_family_summary.md) | Active diagnostic family, not promotion-ready. |
+| Depth-transmission adapters | [summary](dta_family_summary.md) | Positive diagnostics, but current DTA-v3 Phase A R0 failed; no locked test. |
 
 ## Evidence Strength Reminder
 

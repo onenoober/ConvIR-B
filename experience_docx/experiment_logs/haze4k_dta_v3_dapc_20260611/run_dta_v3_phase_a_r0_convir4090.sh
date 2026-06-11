@@ -143,31 +143,5 @@ eval_rc=${PIPESTATUS[0]}
 set -e
 echo "phase_a_eval_done rc=$eval_rc run_id=$RUN_ID $(date --iso-8601=seconds)" | tee -a "$STATUS"
 if [[ "$eval_rc" -ne 0 ]]; then exit "$eval_rc"; fi
-set +e
-PYTHONUNBUFFERED=1 "$PY" experience_docx/tools/audit_haze4k_dta_v2_checkpoint.py \
-  --arch dta_v3 \
-  --dta_variant v3 \
-  --checkpoint "$CANDIDATE" \
-  --data_dir "$DATA" \
-  --depth_cache_dir "$DEPTH" \
-  --depth_split train \
-  --eval_root_split train \
-  --split_json "$SPLIT_JSON" \
-  --split_name "$EVAL_SPLIT" \
-  --output_dir "$TPRED_DIR" \
-  --tag "$RUN_ID" \
-  --dta_depth_mode zero \
-  --dta_phase r0 \
-  --dta_ablation r0_only \
-  --dta_prior_channels 32 \
-  --dta_gate_bias -5.0 \
-  --dta_gate_limit 0.10 \
-  --dta_gamma_limit 0.16 \
-  --dta_beta_limit 0.08 \
-  --dta_confidence_floor 0.30 \
-  2>&1 | tee "$TPRED_LOG"
-tpred_rc=${PIPESTATUS[0]}
-set -e
-echo "phase_a_tpred_done rc=$tpred_rc run_id=$RUN_ID $(date --iso-8601=seconds)" | tee -a "$STATUS"
-if [[ "$tpred_rc" -ne 0 ]]; then exit "$tpred_rc"; fi
-echo "DTA_V3_PHASE_A_R0_OK run_id=$RUN_ID checkpoint=$CANDIDATE" | tee -a "$STATUS"
+echo "phase_a_tpred_skipped_not_applicable rc=0 run_id=$RUN_ID reason=r0_only_has_no_t_pred $(date --iso-8601=seconds)" | tee -a "$STATUS"
+echo "DTA_V3_PHASE_A_R0_EVAL_COMPLETE run_id=$RUN_ID checkpoint=$CANDIDATE" | tee -a "$STATUS"

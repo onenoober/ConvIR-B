@@ -812,3 +812,32 @@ PY
 Inside cloud monitor/audit helpers, use the already-declared explicit runtime
 such as `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python` or `"$PY"` for all
 inline Python snippets as well; do not assume `python3` exists on PATH.
+
+## 2026-06-11 convir-4090 DTA-v3 monitoring notes
+
+Observed while monitoring the DTA-v3 Phase A run on `convir-4090`: the cloud
+environment does not guarantee a bare `python` executable on PATH, and compact
+PowerShell -> WSL -> SSH heredocs with nested quotes are fragile.
+
+Invalid forms:
+
+```bash
+python - <<'PY'
+...
+PY
+```
+
+```powershell
+wsl ... bash -lc "ssh convir-4090 'bash -lc "python - <<'PY' ..."'"
+```
+
+Corrected form:
+
+```bash
+PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+ssh convir-4090 'bash -s' < local_monitor_script.sh
+```
+
+Use `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python` or `"$PY"` for
+all cloud Python snippets, and prefer a small local script piped to remote
+`bash -s` over deeply nested inline heredocs.
