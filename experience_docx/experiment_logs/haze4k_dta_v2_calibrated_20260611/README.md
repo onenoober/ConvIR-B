@@ -43,22 +43,20 @@ committed.
 6. Sync text evidence back to GitHub after every completed cloud stage.
 
 
-## 2026-06-11 Adapter-Only Fold0 Scout5 Controls
+## 2026-06-11 Adapter-Only Fold0 OOF20 Controls
 
-Four adapter-only scout5 jobs ran concurrently on convir-4090 GPUs 1-4 using
-OOF `fold0_train` for training and the first `128` images from `fold0_val` for
-comparison. All jobs completed train, A0 comparison, and post-run `t_pred`
-quality audit.
+Four adapter-only OOF20 jobs ran concurrently on fold0 train/val. Evaluation used
+all `600` images from `fold0_val`, followed by full-fold `t_pred` quality audits.
 
-| Depth mode | Role | Mean dPSNR | Hard bottom-25 | Easy top-25 | dSSIM | Strong regressions | Worst regressions | t_l1 | Spearman(t_pred,t_gt) | Spearman(depth,-log(t)) |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| `invert` | calibrated true-depth from audit | `+0.058864` | `+0.035617` | `+0.083542` | `-0.0000009` | `10` | `20` | `0.076015` | `0.922318` | `+0.898767` |
-| `normal` | wrong raw orientation control | `+0.064201` | `+0.041953` | `+0.083473` | `-0.0000019` | `10` | `20` | `0.090006` | `0.918616` | `-0.898766` |
-| `shuffle` | mismatched-depth control | `+0.035514` | `-0.013165` | `+0.099094` | `+0.0000336` | `10` | `18` | `0.084645` | `0.919693` | `-0.415015` |
-| `zero` | no-depth control | `+0.024335` | `-0.028063` | `+0.080075` | `+0.0000468` | `12` | `17` | `0.079062` | `0.921572` | n/a |
+| Depth mode | Mean dPSNR | Hard bottom-25 | Easy top-25 | dSSIM | Strong regressions | Worst regressions | t_l1 | Spearman(t_pred,t_gt) | Stage2 gate mean | Stage3 gate mean |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `invert` | `+0.106894` | `+0.099160` | `+0.091081` | `-0.0000075` | `56` | `102` | `0.077984` | `0.921685` | `0.013002` | `0.050007` |
+| `normal` | `+0.106010` | `+0.104724` | `+0.087849` | `-0.0000045` | `56` | `98` | `0.088812` | `0.920188` | `0.005675` | `0.052407` |
+| `shuffle` | `+0.098391` | `+0.095590` | `+0.084815` | `+0.0000089` | `55` | `90` | `0.084428` | `0.921052` | `0.011980` | `0.053491` |
+| `zero` | `+0.095529` | `+0.091814` | `+0.085666` | `+0.0000107` | `52` | `88` | `0.079434` | `0.922128` | `0.013502` | `0.055354` |
 
-Interpretation: the route is trainable and positive on this small internal
-diagnostic, but mechanism attribution is not clean yet because the wrong raw
-orientation is slightly higher than calibrated `invert` on 128 images. Zero and
-shuffle controls improve mostly easy samples while hurting hard bottom-25,
-which keeps depth-mechanism evidence open for the 20-epoch/full-fold run.
+Interpretation: adapter-only DTA-v2 is positive on fold0 OOF20 for all four
+modes, with calibrated `invert` barely best on mean dPSNR and `normal` best on
+hard bottom-25. The small spread versus zero/shuffle means image-quality gains
+cannot yet be attributed solely to correct depth; however, the full-fold result
+is strong enough to continue the predeclared adapter-neighbors experiment.

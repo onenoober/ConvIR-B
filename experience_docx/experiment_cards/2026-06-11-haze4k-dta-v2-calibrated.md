@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `IN_PROGRESS_SCOUT5_CONTROLS_DONE_OOF20_RUNNING_NEXT`
+Status: `IN_PROGRESS_ADAPTER_ONLY_OOF20_DONE_NEIGHBORS_NEXT`
 
 ## Scope
 
@@ -76,7 +76,7 @@ that has already passed internal mechanism and preservation gates.
 - DTA-v2 preflight passed: partial load `602` loaded / `25` missing all under `DTA.`, no-op max diff `0.0`, and real-batch DTA grad sum `0.66677364` with finite trans/physics losses.
 - Depth-transmission audit passed with `4000` rows and `0` errors; it found the cached depth direction is reversed (`depth` vs `-log(t_gt)` median Spearman about `-0.93`, `1-depth` about `+0.93`).
 - Primary calibrated-depth training must use `--dta_depth_mode invert`; `normal` becomes the wrong-orientation control, alongside `zero` and `shuffle` controls.
-- Adapter-only fold0 scout5 controls have completed; next queue is adapter-only 20-epoch/full-fold controls.
+- Adapter-only fold0 scout5 and OOF20 controls have completed; next queue is adapter-neighbors fold0 OOF20.
 
 
 ## 2026-06-11 Adapter-Only Fold0 Scout5 Controls
@@ -98,3 +98,22 @@ diagnostic, but mechanism attribution is not clean yet because the wrong raw
 orientation is slightly higher than calibrated `invert` on 128 images. Zero and
 shuffle controls improve mostly easy samples while hurting hard bottom-25,
 which keeps depth-mechanism evidence open for the 20-epoch/full-fold run.
+
+
+## 2026-06-11 Adapter-Only Fold0 OOF20 Controls
+
+Four adapter-only OOF20 jobs ran concurrently on fold0 train/val. Evaluation used
+all `600` images from `fold0_val`, followed by full-fold `t_pred` quality audits.
+
+| Depth mode | Mean dPSNR | Hard bottom-25 | Easy top-25 | dSSIM | Strong regressions | Worst regressions | t_l1 | Spearman(t_pred,t_gt) | Stage2 gate mean | Stage3 gate mean |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `invert` | `+0.106894` | `+0.099160` | `+0.091081` | `-0.0000075` | `56` | `102` | `0.077984` | `0.921685` | `0.013002` | `0.050007` |
+| `normal` | `+0.106010` | `+0.104724` | `+0.087849` | `-0.0000045` | `56` | `98` | `0.088812` | `0.920188` | `0.005675` | `0.052407` |
+| `shuffle` | `+0.098391` | `+0.095590` | `+0.084815` | `+0.0000089` | `55` | `90` | `0.084428` | `0.921052` | `0.011980` | `0.053491` |
+| `zero` | `+0.095529` | `+0.091814` | `+0.085666` | `+0.0000107` | `52` | `88` | `0.079434` | `0.922128` | `0.013502` | `0.055354` |
+
+Interpretation: adapter-only DTA-v2 is positive on fold0 OOF20 for all four
+modes, with calibrated `invert` barely best on mean dPSNR and `normal` best on
+hard bottom-25. The small spread versus zero/shuffle means image-quality gains
+cannot yet be attributed solely to correct depth; however, the full-fold result
+is strong enough to continue the predeclared adapter-neighbors experiment.

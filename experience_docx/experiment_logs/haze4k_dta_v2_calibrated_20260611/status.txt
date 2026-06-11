@@ -138,3 +138,159 @@ tpred_done rc=0 dta_v2 run_id=scout5_adapter_only_normal_seed3407_f0 2026-06-11T
 DTA_V2_TPRED_AUDIT_OK run_id=scout5_adapter_only_normal_seed3407_f0
 tpred_done rc=0 dta_v2 run_id=scout5_adapter_only_shuffle_seed3407_f0 2026-06-11T10:55:35+08:00
 DTA_V2_TPRED_AUDIT_OK run_id=scout5_adapter_only_shuffle_seed3407_f0
+train_eval_start dta_v2 run_id=oof20_adapter_only_normal_seed3407_f0 2026-06-11T10:59:00+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+model_name=ConvIR-Haze4K-DTA-v2-adapter_only-normal-seed3407-f0-oof20
+stage=oof20
+scope=adapter_only
+depth_mode=normal
+seed=3407
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=2
+train_eval_start dta_v2 run_id=oof20_adapter_only_invert_seed3407_f0 2026-06-11T10:59:00+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+model_name=ConvIR-Haze4K-DTA-v2-adapter_only-invert-seed3407-f0-oof20
+stage=oof20
+scope=adapter_only
+depth_mode=invert
+seed=3407
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=1
+train_eval_start dta_v2 run_id=oof20_adapter_only_shuffle_seed3407_f0 2026-06-11T10:59:00+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+model_name=ConvIR-Haze4K-DTA-v2-adapter_only-shuffle-seed3407-f0-oof20
+stage=oof20
+scope=adapter_only
+depth_mode=shuffle
+seed=3407
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=3
+train_eval_start dta_v2 run_id=oof20_adapter_only_zero_seed3407_f0 2026-06-11T10:59:00+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+model_name=ConvIR-Haze4K-DTA-v2-adapter_only-zero-seed3407-f0-oof20
+stage=oof20
+scope=adapter_only
+depth_mode=zero
+seed=3407
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=4
+codex/haze4k-dta-v2-calibrated
+codex/haze4k-dta-v2-calibrated
+codex/haze4k-dta-v2-calibrated
+codex/haze4k-dta-v2-calibrated
+2460b21
+2460b21
+2460b21
+2460b21
+ M experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/run_dta_v2_train_eval_convir4090.sh
+?? Dehazing/ITS/results/
+?? Dehazing/ITS/runs/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/convir4090_setup_status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_depth_transmission_audit/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_haze4k_oof_splits_seed3407.json
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_preflight.json
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_invert_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_invert_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_normal_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_normal_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_shuffle_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_shuffle_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_zero_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_zero_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/status.txt
+?? experience_docx/tools/audit_haze4k_dta_v2_checkpoint.py
+ M experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/run_dta_v2_train_eval_convir4090.sh
+?? Dehazing/ITS/results/
+?? Dehazing/ITS/runs/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/convir4090_setup_status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_depth_transmission_audit/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_haze4k_oof_splits_seed3407.json
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_preflight.json
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_invert_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_invert_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_normal_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_normal_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_shuffle_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_shuffle_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_zero_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_zero_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/status.txt
+?? experience_docx/tools/audit_haze4k_dta_v2_checkpoint.py
+ M experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/run_dta_v2_train_eval_convir4090.sh
+?? Dehazing/ITS/results/
+?? Dehazing/ITS/runs/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/convir4090_setup_status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_depth_transmission_audit/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_haze4k_oof_splits_seed3407.json
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_preflight.json
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_invert_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_invert_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_normal_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_normal_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_shuffle_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_shuffle_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_zero_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_zero_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/status.txt
+?? experience_docx/tools/audit_haze4k_dta_v2_checkpoint.py
+ M experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/run_dta_v2_train_eval_convir4090.sh
+?? Dehazing/ITS/results/
+?? Dehazing/ITS/runs/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/convir4090_setup_status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_depth_transmission_audit/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_haze4k_oof_splits_seed3407.json
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_preflight.json
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_invert_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_invert_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_normal_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_normal_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_shuffle_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_shuffle_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_zero_seed3407_f0_compare/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_zero_seed3407_f0_tpred/
+?? experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/status.txt
+?? experience_docx/tools/audit_haze4k_dta_v2_checkpoint.py
+train_done rc=0 dta_v2 run_id=oof20_adapter_only_zero_seed3407_f0 2026-06-11T11:16:54+08:00
+train_done rc=0 dta_v2 run_id=oof20_adapter_only_normal_seed3407_f0 2026-06-11T11:16:57+08:00
+train_done rc=0 dta_v2 run_id=oof20_adapter_only_invert_seed3407_f0 2026-06-11T11:17:34+08:00
+train_done rc=0 dta_v2 run_id=oof20_adapter_only_shuffle_seed3407_f0 2026-06-11T11:17:35+08:00
+eval_done rc=0 dta_v2 run_id=oof20_adapter_only_zero_seed3407_f0 2026-06-11T11:18:27+08:00
+DTA_V2_TRAIN_EVAL_OK run_id=oof20_adapter_only_zero_seed3407_f0
+eval_done rc=0 dta_v2 run_id=oof20_adapter_only_normal_seed3407_f0 2026-06-11T11:18:29+08:00
+DTA_V2_TRAIN_EVAL_OK run_id=oof20_adapter_only_normal_seed3407_f0
+eval_done rc=0 dta_v2 run_id=oof20_adapter_only_invert_seed3407_f0 2026-06-11T11:19:14+08:00
+DTA_V2_TRAIN_EVAL_OK run_id=oof20_adapter_only_invert_seed3407_f0
+eval_done rc=0 dta_v2 run_id=oof20_adapter_only_shuffle_seed3407_f0 2026-06-11T11:19:34+08:00
+DTA_V2_TRAIN_EVAL_OK run_id=oof20_adapter_only_shuffle_seed3407_f0
+tpred_done rc=0 dta_v2 run_id=oof20_adapter_only_zero_seed3407_f0 2026-06-11T11:20:31+08:00
+DTA_V2_TPRED_AUDIT_OK run_id=oof20_adapter_only_zero_seed3407_f0
+tpred_done rc=0 dta_v2 run_id=oof20_adapter_only_normal_seed3407_f0 2026-06-11T11:20:47+08:00
+DTA_V2_TPRED_AUDIT_OK run_id=oof20_adapter_only_normal_seed3407_f0
+tpred_done rc=0 dta_v2 run_id=oof20_adapter_only_invert_seed3407_f0 2026-06-11T11:21:21+08:00
+DTA_V2_TPRED_AUDIT_OK run_id=oof20_adapter_only_invert_seed3407_f0
+tpred_done rc=0 dta_v2 run_id=oof20_adapter_only_shuffle_seed3407_f0 2026-06-11T11:21:47+08:00
+DTA_V2_TPRED_AUDIT_OK run_id=oof20_adapter_only_shuffle_seed3407_f0
