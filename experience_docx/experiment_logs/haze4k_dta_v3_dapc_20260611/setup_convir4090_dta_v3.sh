@@ -3,6 +3,7 @@ set -euo pipefail
 BASE=${BASE:-/sda/home/wangyuxin/ConvIR-B}
 WORK=${WORK:-$BASE/repos/ConvIR-B-dta-v3-dapc-finetune}
 BRANCH=${BRANCH:-codex/haze4k-dta-v3-dapc-finetune}
+GIT_URL=${GIT_URL:-https://github.com/onenoober/ConvIR-B.git}
 PY=${PY:-$BASE/envs/convir-cu121/bin/python}
 DATA=${DATA:-$BASE/datasets/Haze4K/Haze4K}
 A0=${A0:-$BASE/checkpoints/official/Haze4K/haze4k-base.pkl}
@@ -10,11 +11,11 @@ EVID=$WORK/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611
 STATUS=$EVID/status.txt
 mkdir -p "$BASE/repos"
 if [[ ! -d "$WORK/.git" ]]; then
-  git clone git@github.com:onenoober/ConvIR-B.git "$WORK"
+  git clone "$GIT_URL" "$WORK"
 fi
 cd "$WORK"
 if ! git remote get-url github >/dev/null 2>&1; then
-  git remote add github git@github.com:onenoober/ConvIR-B.git
+  git remote add github "$GIT_URL"
 fi
 git fetch github '+refs/heads/*:refs/remotes/github/*'
 git switch "$BRANCH" 2>/dev/null || git switch -c "$BRANCH" "github/$BRANCH"
