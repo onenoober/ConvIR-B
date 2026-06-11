@@ -85,7 +85,9 @@ RUN_ID=${STAGE}_${SCOPE}_${DEPTH_MODE}_seed${SEED}_${FOLD_TAG}
 TRAIN_LOG=$EVID/dta_v2_${RUN_ID}_train.log
 EVAL_LOG=$EVID/dta_v2_${RUN_ID}_eval.log
 COMPARE_DIR=$EVID/dta_v2_${RUN_ID}_compare
-mkdir -p "$EVID" "$COMPARE_DIR"
+TPRED_LOG=$EVID/dta_v2_${RUN_ID}_tpred.log
+TPRED_DIR=$EVID/dta_v2_${RUN_ID}_tpred
+mkdir -p "$EVID" "$COMPARE_DIR" "$TPRED_DIR"
 
 {
   echo "train_eval_start dta_v2 run_id=$RUN_ID $(date --iso-8601=seconds)"
@@ -236,4 +238,37 @@ if [[ "$eval_rc" -eq 0 ]]; then
 else
   echo "DTA_V2_EVAL_FAILED run_id=$RUN_ID" | tee -a "$STATUS"
 fi
-exit "$eval_rc"
+if [[ "$eval_rc" -ne 0 ]]; then
+  exit "$eval_rc"
+fi
+
+set +e
+PYTHONUNBUFFERED=1 "$PY" experience_docx/tools/audit_haze4k_dta_v2_checkpoint.py \
+  --checkpoint "$CANDIDATE" \
+  --data_dir "$DATA" \
+  --depth_cache_dir "$DEPTH" \
+  --depth_split "$EVAL_DEPTH_SPLIT" \
+  --dta_depth_mode "$DEPTH_MODE" \
+  --dta_prior_channels 32 \
+  --dta_gate_bias -6.0 \
+  --dta_gate_limit 0.06 \
+  --dta_gamma_limit 0.12 \
+  --dta_beta_limit 0.06 \
+  --dta_alpha_init 1.0 \
+  --dta_confidence_floor 0.25 \
+  --dta_confidence_local_scale 6.0 \
+  --dta_output_residual_scale 0.03 \
+  --output_dir "$TPRED_DIR" \
+  --tag "$RUN_ID" \
+  --max_images "$MAX_IMAGES" \
+  "${COMPARE_SPLIT_ARGS[@]}" \
+  2>&1 | tee "$TPRED_LOG"
+tpred_rc=${PIPESTATUS[0]}
+set -e
+echo "tpred_done rc=$tpred_rc dta_v2 run_id=$RUN_ID $(date --iso-8601=seconds)" | tee -a "$STATUS"
+if [[ "$tpred_rc" -eq 0 ]]; then
+  echo "DTA_V2_TPRED_AUDIT_OK run_id=$RUN_ID" | tee -a "$STATUS"
+else
+  echo "DTA_V2_TPRED_AUDIT_FAILED run_id=$RUN_ID" | tee -a "$STATUS"
+fi
+exit "$tpred_rc"
