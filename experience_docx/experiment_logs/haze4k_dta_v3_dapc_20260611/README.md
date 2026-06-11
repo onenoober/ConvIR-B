@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `COMPLETED_GATE_FAIL_TAILGUARD_WIDE_GATE_SCOUT`
+Status: `COMPLETED_MECHANISM_POSITIVE_TAIL_FAIL_TAILLITE_WIDE_GATE`
 
 This directory stores text evidence for `codex/haze4k-dta-v3-dapc-finetune`.
 Checkpoints, model weights, datasets, images, arrays, archives, and raw inference
@@ -266,3 +266,31 @@ while still using wider encoder gates.
 Continue only if a variant keeps mean true-vs-zero surplus near `+0.03 dB` while
 reducing baseline depthDirect worst regressions materially below `75/600` and
 not worsening SSIM.
+
+## 2026-06-11 Depth-Direct Tail-Lite Wide-Gate Scout Results
+
+The tail-lite queue completed on `convir-4090` in workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite`
+from commit `023f226`. It kept train=`invert`, `R0=0`, wider gates, full
+`invert/normal/zero/shuffle` eval matrices, and locked-test block.
+
+| Variant | true mean | true hard | dSSIM | pos ratio | true-vs-zero | true-vs-shuffle | true-vs-normal | worst true | Decision |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `wg18_base_s008_b14` | `+0.024404` | `+0.006360` | `-0.00002331` | `0.6050` | `+0.036631` | `+0.032141` | `+0.033084` | `76` | best mechanism row; tail/SSIM fail |
+| `wg16_base_s008_b14` | `+0.020820` | `+0.002206` | `-0.00002448` | `0.6033` | `+0.035294` | `+0.031014` | `+0.031936` | `76` | mechanism-positive; tail fail |
+| `wg16_lite_s006_b12` | `+0.019351` | `+0.001300` | `-0.00002463` | `0.5933` | `+0.035475` | `+0.031205` | `+0.032141` | `75` | mechanism-positive; tail fail |
+| `wg16_tail04_s008_b12` | `+0.005806` | `-0.011557` | `-0.00002898` | `0.5633` | `+0.026700` | `+0.023430` | `+0.024054` | `70` | mild tail gain, surplus below gate |
+
+This queue restores the depth mechanism after the over-constrained tailguard
+run. `wg18_base_s008_b14` improves on the baseline depthDirect `invert` row in
+mean (`+0.024404` vs `+0.013905`), hard (`+0.006360` vs `-0.005602`), and
+true-vs-zero surplus (`+0.036631` vs `+0.032286`), and now clears the mean
+true-vs-shuffle (`+0.032141`) and true-vs-normal (`+0.033084`) mechanism
+thresholds. It still fails promotion because dSSIM is negative, positive ratio
+is only `0.6050`, strong regressions are `39`, and worst regressions remain
+`76/600` versus eval-zero `38/600`.
+
+Decision: `COMPLETED_MECHANISM_POSITIVE_TAIL_FAIL_TAILLITE_WIDE_GATE`. No locked
+test. The next evidence-supported step is a tail-aware variant centered on
+`wg18_base_s008_b14`, adding only very mild tail pressure or post-hoc risk
+selection; do not return to the strong guard settings that collapsed surplus.

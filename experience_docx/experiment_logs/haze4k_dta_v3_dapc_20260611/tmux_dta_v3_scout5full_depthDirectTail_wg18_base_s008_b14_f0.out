@@ -1,0 +1,398 @@
+depth_direct_tailguard_start run_id=scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0 train_depth_mode=invert stage=scout5full variant=wg18_base_s008_b14 2026-06-11T23:08:30+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=3
+init=A0_partial train_scope=dta_depth_only r0_scale=0 train_depth=invert
+params lr=0.00005 gate=0.18 gamma=0.28 beta=0.14 conf=0.30 depth_scale=0.08 easy_budget=0.040 dense_budget=0.14 mask_bias=-4.0 preserve=0.03 ref=0.03 tail=0.03 mask_weight=0.001 dta_clip=0.030
+codex/haze4k-dta-v3-dapc-finetune
+023f226
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg16_base_s008_b14_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg16_lite_s006_b12_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg16_base_s008_b14_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg16_lite_s006_b12_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg18_base_s008_b14_f0.out
+Namespace(model_name='ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_base_s008_b14-seed3407-f0-scout5full', data='Haze4K', version='base', fam_mode='original', arch='dta_v3', seed=3407, mode='train', data_dir='/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K', batch_size=4, learning_rate=5e-05, weight_decay=0.0001, num_epoch=5, stop_epoch=5, print_freq=50, num_worker=4, save_freq=1, valid_freq=9999, mod_stats_freq=1, mod_stats_batches=16, grad_clip_norm=0.0005, dta_grad_clip_norm=0.03, dta_neighbor_grad_clip_norm=-1.0, init_model='/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl', init_model_partial=True, init_model_allow_full_route=False, partial_new_prefixes='DTA.', resume='', train_scope='dta_depth_only', dta_depth_cache_dir='/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf', dta_train_depth_split='train', dta_eval_depth_split='train', valid_root_split='train', eval_root_split='test', dta_require_depth=True, dta_variant='v3', dta_depth_mode='invert', dta_depth_shuffle_offset=137, dta_prior_channels=32, dta_gate_bias=-5.0, dta_gate_limit=0.18, dta_gamma_limit=0.28, dta_beta_limit=0.14, dta_alpha_init=1.0, dta_confidence_floor=0.3, dta_confidence_local_scale=6.0, dta_output_residual_scale=0.03, dta_r0_residual_scale=0.0, dta_depth_residual_scale=0.08, dta_depth_mask_easy_budget=0.04, dta_depth_mask_dense_budget=0.14, dta_depth_mask_density_thresh=0.35, dta_depth_mask_bias=-4.0, dta_phys_t_min=0.1, dta_phase='depth', dta_ablation='full', dta_use_trans_gt=True, dta_trans_weight=0.02, dta_phys_weight=0.005, dta_preserve_weight=0.03, dta_preserve_trans_thresh=0.8, dta_reference_checkpoint='/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl', dta_ref_preserve_weight=0.03, dta_tail_guard_weight=0.03, dta_tail_guard_margin=0.0, dta_mask_budget_weight=0.001, dta_gate_ramp_start=0.12, dta_gate_ramp_mid=0.18, dta_gate_ramp_end=0.18, dta_gate_ramp_warmup_epochs=1, dta_gate_ramp_mid_epochs=3, dta_rank_weight=0.001, dta_tv_weight=0.0001, dta_proxy_weight=0.0, dta_rank_pairs=512, dta_rank_min_depth_gap=0.03, split_json='/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json', split_name='fold0_train', test_model='', save_image=False, leaning_rate=5e-05, model_save_dir='results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_base_s008_b14-seed3407-f0-scout5full/Training-Results/', result_dir='results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_base_s008_b14-seed3407-f0-scout5full/images/Haze4K', init_model_sha256='6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088')
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/Dehazing/ITS/main.py:14: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=map_location)
+INIT_MODEL_PARTIAL_LOAD path=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl loaded=602 missing_allowed=29 unexpected=[] allowed_new_prefixes=('DTA.',)
+TRAIN_SCOPE scope=dta_depth_only arch=dta_v3 trainable=75273 total=8716053
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/Dehazing/ITS/train.py:277: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(checkpoint, map_location=device)
+DTA_REFERENCE_MODEL checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:224: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn(
+DTA_GATE_RAMP epoch=1 gate_limit=0.120000
+Time:  0.1243 Epoch: 001 Iter:   50/ 600 LR: 0.0000166667 Loss content:  0.0171 Loss fft:  0.8347 Loss dta_rank:  0.6932 Loss dta_tv:  0.0012 Loss dta_proxy:  0.1219 Loss dta_trans:  0.0407 Loss dta_phys:  0.0078 Loss dta_preserve:  0.0057 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0016
+Time:  0.1075 Epoch: 001 Iter:  100/ 600 LR: 0.0000166667 Loss content:  0.0164 Loss fft:  0.7832 Loss dta_rank:  0.6930 Loss dta_tv:  0.0034 Loss dta_proxy:  0.1227 Loss dta_trans:  0.0400 Loss dta_phys:  0.0074 Loss dta_preserve:  0.0043 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0016
+Time:  0.1046 Epoch: 001 Iter:  150/ 600 LR: 0.0000166667 Loss content:  0.0173 Loss fft:  0.8206 Loss dta_rank:  0.6921 Loss dta_tv:  0.0063 Loss dta_proxy:  0.1237 Loss dta_trans:  0.0381 Loss dta_phys:  0.0078 Loss dta_preserve:  0.0048 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0016
+Time:  0.1041 Epoch: 001 Iter:  200/ 600 LR: 0.0000166667 Loss content:  0.0166 Loss fft:  0.8124 Loss dta_rank:  0.6917 Loss dta_tv:  0.0093 Loss dta_proxy:  0.1203 Loss dta_trans:  0.0352 Loss dta_phys:  0.0072 Loss dta_preserve:  0.0048 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0016
+Time:  0.1045 Epoch: 001 Iter:  250/ 600 LR: 0.0000166667 Loss content:  0.0186 Loss fft:  0.8612 Loss dta_rank:  0.6875 Loss dta_tv:  0.0125 Loss dta_proxy:  0.1412 Loss dta_trans:  0.0319 Loss dta_phys:  0.0095 Loss dta_preserve:  0.0066 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0007 Loss dta_mask_budget:  0.0016
+Time:  0.1047 Epoch: 001 Iter:  300/ 600 LR: 0.0000166667 Loss content:  0.0168 Loss fft:  0.8104 Loss dta_rank:  0.6853 Loss dta_tv:  0.0151 Loss dta_proxy:  0.1459 Loss dta_trans:  0.0277 Loss dta_phys:  0.0080 Loss dta_preserve:  0.0051 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0016
+Time:  0.1044 Epoch: 001 Iter:  350/ 600 LR: 0.0000166667 Loss content:  0.0168 Loss fft:  0.7995 Loss dta_rank:  0.6809 Loss dta_tv:  0.0179 Loss dta_proxy:  0.1470 Loss dta_trans:  0.0251 Loss dta_phys:  0.0091 Loss dta_preserve:  0.0060 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0016
+Time:  0.1040 Epoch: 001 Iter:  400/ 600 LR: 0.0000166667 Loss content:  0.0167 Loss fft:  0.7982 Loss dta_rank:  0.6737 Loss dta_tv:  0.0198 Loss dta_proxy:  0.1471 Loss dta_trans:  0.0248 Loss dta_phys:  0.0094 Loss dta_preserve:  0.0047 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0015
+Time:  0.1038 Epoch: 001 Iter:  450/ 600 LR: 0.0000166667 Loss content:  0.0176 Loss fft:  0.8242 Loss dta_rank:  0.6691 Loss dta_tv:  0.0223 Loss dta_proxy:  0.1491 Loss dta_trans:  0.0200 Loss dta_phys:  0.0079 Loss dta_preserve:  0.0040 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0015
+Time:  0.1039 Epoch: 001 Iter:  500/ 600 LR: 0.0000166667 Loss content:  0.0176 Loss fft:  0.8261 Loss dta_rank:  0.6625 Loss dta_tv:  0.0244 Loss dta_proxy:  0.1640 Loss dta_trans:  0.0182 Loss dta_phys:  0.0074 Loss dta_preserve:  0.0060 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0015
+Time:  0.0961 Epoch: 001 Iter:  550/ 600 LR: 0.0000166667 Loss content:  0.0178 Loss fft:  0.8347 Loss dta_rank:  0.6593 Loss dta_tv:  0.0261 Loss dta_proxy:  0.1794 Loss dta_trans:  0.0158 Loss dta_phys:  0.0077 Loss dta_preserve:  0.0037 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0015
+Time:  0.0998 Epoch: 001 Iter:  600/ 600 LR: 0.0000166667 Loss content:  0.0177 Loss fft:  0.8374 Loss dta_rank:  0.6515 Loss dta_tv:  0.0279 Loss dta_proxy:  0.1712 Loss dta_trans:  0.0149 Loss dta_phys:  0.0073 Loss dta_preserve:  0.0048 Loss dta_ref_preserve:  0.0006 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0014
+EPOCH: 01
+Elapsed time: 1.26 Epoch Pixel Loss:  0.0172 Epoch FFT Loss:  0.8202 Epoch DTA Rank:  0.6783 Epoch DTA TV:  0.0155 Epoch DTA Proxy:  0.1445 Epoch DTA Trans:  0.0277 Epoch DTA Phys:  0.0080 Epoch DTA Preserve:  0.0050 Epoch DTA Ref Preserve:  0.0005 Epoch DTA Tail Guard:  0.0006 Epoch DTA Mask Budget:  0.0016
+DTA_GATE_RAMP epoch=2 gate_limit=0.180000
+Time:  0.1124 Epoch: 002 Iter:   50/ 600 LR: 0.0000333333 Loss content:  0.0166 Loss fft:  0.8159 Loss dta_rank:  0.6474 Loss dta_tv:  0.0293 Loss dta_proxy:  0.1811 Loss dta_trans:  0.0129 Loss dta_phys:  0.0067 Loss dta_preserve:  0.0042 Loss dta_ref_preserve:  0.0003 Loss dta_tail_guard:  0.0005 Loss dta_mask_budget:  0.0014
+Time:  0.1038 Epoch: 002 Iter:  100/ 600 LR: 0.0000333333 Loss content:  0.0174 Loss fft:  0.8390 Loss dta_rank:  0.6392 Loss dta_tv:  0.0313 Loss dta_proxy:  0.1940 Loss dta_trans:  0.0130 Loss dta_phys:  0.0071 Loss dta_preserve:  0.0049 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0007 Loss dta_mask_budget:  0.0014
+Time:  0.1050 Epoch: 002 Iter:  150/ 600 LR: 0.0000333333 Loss content:  0.0173 Loss fft:  0.8030 Loss dta_rank:  0.6369 Loss dta_tv:  0.0323 Loss dta_proxy:  0.1923 Loss dta_trans:  0.0137 Loss dta_phys:  0.0065 Loss dta_preserve:  0.0058 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0014
+Time:  0.1046 Epoch: 002 Iter:  200/ 600 LR: 0.0000333333 Loss content:  0.0172 Loss fft:  0.8084 Loss dta_rank:  0.6360 Loss dta_tv:  0.0323 Loss dta_proxy:  0.2092 Loss dta_trans:  0.0123 Loss dta_phys:  0.0076 Loss dta_preserve:  0.0050 Loss dta_ref_preserve:  0.0006 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0014
+Time:  0.1045 Epoch: 002 Iter:  250/ 600 LR: 0.0000333333 Loss content:  0.0176 Loss fft:  0.8132 Loss dta_rank:  0.6313 Loss dta_tv:  0.0327 Loss dta_proxy:  0.1999 Loss dta_trans:  0.0102 Loss dta_phys:  0.0077 Loss dta_preserve:  0.0047 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0013
+Time:  0.1045 Epoch: 002 Iter:  300/ 600 LR: 0.0000333333 Loss content:  0.0173 Loss fft:  0.8220 Loss dta_rank:  0.6296 Loss dta_tv:  0.0336 Loss dta_proxy:  0.1986 Loss dta_trans:  0.0104 Loss dta_phys:  0.0069 Loss dta_preserve:  0.0054 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0005 Loss dta_mask_budget:  0.0013
+Time:  0.1039 Epoch: 002 Iter:  350/ 600 LR: 0.0000333333 Loss content:  0.0164 Loss fft:  0.8269 Loss dta_rank:  0.6308 Loss dta_tv:  0.0347 Loss dta_proxy:  0.2029 Loss dta_trans:  0.0106 Loss dta_phys:  0.0069 Loss dta_preserve:  0.0046 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0012
+Time:  0.1041 Epoch: 002 Iter:  400/ 600 LR: 0.0000333333 Loss content:  0.0182 Loss fft:  0.8820 Loss dta_rank:  0.6245 Loss dta_tv:  0.0338 Loss dta_proxy:  0.2038 Loss dta_trans:  0.0111 Loss dta_phys:  0.0074 Loss dta_preserve:  0.0060 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0007 Loss dta_mask_budget:  0.0012
+Time:  0.1048 Epoch: 002 Iter:  450/ 600 LR: 0.0000333333 Loss content:  0.0166 Loss fft:  0.8136 Loss dta_rank:  0.6223 Loss dta_tv:  0.0330 Loss dta_proxy:  0.2053 Loss dta_trans:  0.0088 Loss dta_phys:  0.0065 Loss dta_preserve:  0.0043 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0012
+Time:  0.1056 Epoch: 002 Iter:  500/ 600 LR: 0.0000333333 Loss content:  0.0169 Loss fft:  0.7954 Loss dta_rank:  0.6221 Loss dta_tv:  0.0333 Loss dta_proxy:  0.2055 Loss dta_trans:  0.0103 Loss dta_phys:  0.0067 Loss dta_preserve:  0.0057 Loss dta_ref_preserve:  0.0006 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0012
+Time:  0.1046 Epoch: 002 Iter:  550/ 600 LR: 0.0000333333 Loss content:  0.0175 Loss fft:  0.8238 Loss dta_rank:  0.6268 Loss dta_tv:  0.0329 Loss dta_proxy:  0.2221 Loss dta_trans:  0.0091 Loss dta_phys:  0.0067 Loss dta_preserve:  0.0051 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0011
+Time:  0.1053 Epoch: 002 Iter:  600/ 600 LR: 0.0000333333 Loss content:  0.0169 Loss fft:  0.7933 Loss dta_rank:  0.6217 Loss dta_tv:  0.0342 Loss dta_proxy:  0.1982 Loss dta_trans:  0.0100 Loss dta_phys:  0.0067 Loss dta_preserve:  0.0061 Loss dta_ref_preserve:  0.0007 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0011
+EPOCH: 02
+Elapsed time: 1.27 Epoch Pixel Loss:  0.0171 Epoch FFT Loss:  0.8197 Epoch DTA Rank:  0.6307 Epoch DTA TV:  0.0328 Epoch DTA Proxy:  0.2011 Epoch DTA Trans:  0.0110 Epoch DTA Phys:  0.0069 Epoch DTA Preserve:  0.0052 Epoch DTA Ref Preserve:  0.0005 Epoch DTA Tail Guard:  0.0006 Epoch DTA Mask Budget:  0.0013
+DTA_GATE_RAMP epoch=3 gate_limit=0.180000
+Time:  0.1122 Epoch: 003 Iter:   50/ 600 LR: 0.0000500000 Loss content:  0.0171 Loss fft:  0.7951 Loss dta_rank:  0.6228 Loss dta_tv:  0.0338 Loss dta_proxy:  0.1978 Loss dta_trans:  0.0103 Loss dta_phys:  0.0066 Loss dta_preserve:  0.0056 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0005 Loss dta_mask_budget:  0.0010
+Time:  0.0991 Epoch: 003 Iter:  100/ 600 LR: 0.0000500000 Loss content:  0.0178 Loss fft:  0.8242 Loss dta_rank:  0.6193 Loss dta_tv:  0.0334 Loss dta_proxy:  0.2086 Loss dta_trans:  0.0073 Loss dta_phys:  0.0060 Loss dta_preserve:  0.0048 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0010
+Time:  0.1067 Epoch: 003 Iter:  150/ 600 LR: 0.0000500000 Loss content:  0.0168 Loss fft:  0.8377 Loss dta_rank:  0.6209 Loss dta_tv:  0.0351 Loss dta_proxy:  0.2050 Loss dta_trans:  0.0092 Loss dta_phys:  0.0072 Loss dta_preserve:  0.0052 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0010
+Time:  0.1050 Epoch: 003 Iter:  200/ 600 LR: 0.0000500000 Loss content:  0.0170 Loss fft:  0.8144 Loss dta_rank:  0.6177 Loss dta_tv:  0.0347 Loss dta_proxy:  0.2029 Loss dta_trans:  0.0081 Loss dta_phys:  0.0063 Loss dta_preserve:  0.0058 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0010
+Time:  0.1046 Epoch: 003 Iter:  250/ 600 LR: 0.0000500000 Loss content:  0.0171 Loss fft:  0.8026 Loss dta_rank:  0.6175 Loss dta_tv:  0.0351 Loss dta_proxy:  0.1966 Loss dta_trans:  0.0096 Loss dta_phys:  0.0066 Loss dta_preserve:  0.0057 Loss dta_ref_preserve:  0.0003 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0010
+Time:  0.0941 Epoch: 003 Iter:  300/ 600 LR: 0.0000500000 Loss content:  0.0165 Loss fft:  0.7969 Loss dta_rank:  0.6273 Loss dta_tv:  0.0352 Loss dta_proxy:  0.2075 Loss dta_trans:  0.0083 Loss dta_phys:  0.0073 Loss dta_preserve:  0.0051 Loss dta_ref_preserve:  0.0006 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0010
+Time:  0.1039 Epoch: 003 Iter:  350/ 600 LR: 0.0000500000 Loss content:  0.0171 Loss fft:  0.8495 Loss dta_rank:  0.6169 Loss dta_tv:  0.0334 Loss dta_proxy:  0.2083 Loss dta_trans:  0.0070 Loss dta_phys:  0.0068 Loss dta_preserve:  0.0052 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0010
+Time:  0.1048 Epoch: 003 Iter:  400/ 600 LR: 0.0000500000 Loss content:  0.0169 Loss fft:  0.8360 Loss dta_rank:  0.6161 Loss dta_tv:  0.0343 Loss dta_proxy:  0.2071 Loss dta_trans:  0.0070 Loss dta_phys:  0.0062 Loss dta_preserve:  0.0053 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0010
+Time:  0.0994 Epoch: 003 Iter:  450/ 600 LR: 0.0000500000 Loss content:  0.0168 Loss fft:  0.8119 Loss dta_rank:  0.6168 Loss dta_tv:  0.0345 Loss dta_proxy:  0.2081 Loss dta_trans:  0.0089 Loss dta_phys:  0.0068 Loss dta_preserve:  0.0061 Loss dta_ref_preserve:  0.0006 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0010
+Time:  0.0875 Epoch: 003 Iter:  500/ 600 LR: 0.0000500000 Loss content:  0.0177 Loss fft:  0.8095 Loss dta_rank:  0.6115 Loss dta_tv:  0.0345 Loss dta_proxy:  0.2012 Loss dta_trans:  0.0088 Loss dta_phys:  0.0059 Loss dta_preserve:  0.0055 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0009
+Time:  0.0878 Epoch: 003 Iter:  550/ 600 LR: 0.0000500000 Loss content:  0.0172 Loss fft:  0.8408 Loss dta_rank:  0.6210 Loss dta_tv:  0.0353 Loss dta_proxy:  0.2101 Loss dta_trans:  0.0083 Loss dta_phys:  0.0066 Loss dta_preserve:  0.0050 Loss dta_ref_preserve:  0.0006 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0010
+Time:  0.1035 Epoch: 003 Iter:  600/ 600 LR: 0.0000500000 Loss content:  0.0179 Loss fft:  0.8224 Loss dta_rank:  0.6132 Loss dta_tv:  0.0344 Loss dta_proxy:  0.1960 Loss dta_trans:  0.0085 Loss dta_phys:  0.0073 Loss dta_preserve:  0.0050 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0009
+EPOCH: 03
+Elapsed time: 1.21 Epoch Pixel Loss:  0.0171 Epoch FFT Loss:  0.8201 Epoch DTA Rank:  0.6184 Epoch DTA TV:  0.0345 Epoch DTA Proxy:  0.2041 Epoch DTA Trans:  0.0084 Epoch DTA Phys:  0.0066 Epoch DTA Preserve:  0.0054 Epoch DTA Ref Preserve:  0.0005 Epoch DTA Tail Guard:  0.0006 Epoch DTA Mask Budget:  0.0010
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:1087: UserWarning: To get the last learning rate computed by the scheduler, please use `get_last_lr()`.
+  _warn_get_lr_called_within_step(self)
+DTA_GATE_RAMP epoch=4 gate_limit=0.180000
+Time:  0.1123 Epoch: 004 Iter:   50/ 600 LR: 0.0000500000 Loss content:  0.0172 Loss fft:  0.8287 Loss dta_rank:  0.6185 Loss dta_tv:  0.0349 Loss dta_proxy:  0.1975 Loss dta_trans:  0.0065 Loss dta_phys:  0.0065 Loss dta_preserve:  0.0047 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0008
+Time:  0.1055 Epoch: 004 Iter:  100/ 600 LR: 0.0000500000 Loss content:  0.0169 Loss fft:  0.8191 Loss dta_rank:  0.6132 Loss dta_tv:  0.0346 Loss dta_proxy:  0.2113 Loss dta_trans:  0.0083 Loss dta_phys:  0.0072 Loss dta_preserve:  0.0060 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0007 Loss dta_mask_budget:  0.0008
+Time:  0.1038 Epoch: 004 Iter:  150/ 600 LR: 0.0000500000 Loss content:  0.0167 Loss fft:  0.7957 Loss dta_rank:  0.6128 Loss dta_tv:  0.0353 Loss dta_proxy:  0.1976 Loss dta_trans:  0.0076 Loss dta_phys:  0.0057 Loss dta_preserve:  0.0067 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0008
+Time:  0.1042 Epoch: 004 Iter:  200/ 600 LR: 0.0000500000 Loss content:  0.0167 Loss fft:  0.8002 Loss dta_rank:  0.6141 Loss dta_tv:  0.0338 Loss dta_proxy:  0.2101 Loss dta_trans:  0.0084 Loss dta_phys:  0.0074 Loss dta_preserve:  0.0055 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0008
+Time:  0.1043 Epoch: 004 Iter:  250/ 600 LR: 0.0000500000 Loss content:  0.0181 Loss fft:  0.8423 Loss dta_rank:  0.6125 Loss dta_tv:  0.0346 Loss dta_proxy:  0.1995 Loss dta_trans:  0.0074 Loss dta_phys:  0.0063 Loss dta_preserve:  0.0044 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0008
+Time:  0.1038 Epoch: 004 Iter:  300/ 600 LR: 0.0000500000 Loss content:  0.0181 Loss fft:  0.8103 Loss dta_rank:  0.6116 Loss dta_tv:  0.0351 Loss dta_proxy:  0.2077 Loss dta_trans:  0.0078 Loss dta_phys:  0.0072 Loss dta_preserve:  0.0053 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0008
+Time:  0.1042 Epoch: 004 Iter:  350/ 600 LR: 0.0000500000 Loss content:  0.0173 Loss fft:  0.8155 Loss dta_rank:  0.6155 Loss dta_tv:  0.0330 Loss dta_proxy:  0.2118 Loss dta_trans:  0.0078 Loss dta_phys:  0.0060 Loss dta_preserve:  0.0064 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0007 Loss dta_mask_budget:  0.0007
+Time:  0.1048 Epoch: 004 Iter:  400/ 600 LR: 0.0000500000 Loss content:  0.0170 Loss fft:  0.8212 Loss dta_rank:  0.6136 Loss dta_tv:  0.0339 Loss dta_proxy:  0.2047 Loss dta_trans:  0.0065 Loss dta_phys:  0.0067 Loss dta_preserve:  0.0047 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0007
+Time:  0.1047 Epoch: 004 Iter:  450/ 600 LR: 0.0000500000 Loss content:  0.0168 Loss fft:  0.8231 Loss dta_rank:  0.6106 Loss dta_tv:  0.0342 Loss dta_proxy:  0.2148 Loss dta_trans:  0.0072 Loss dta_phys:  0.0063 Loss dta_preserve:  0.0057 Loss dta_ref_preserve:  0.0007 Loss dta_tail_guard:  0.0007 Loss dta_mask_budget:  0.0008
+Time:  0.1043 Epoch: 004 Iter:  500/ 600 LR: 0.0000500000 Loss content:  0.0170 Loss fft:  0.8274 Loss dta_rank:  0.6108 Loss dta_tv:  0.0352 Loss dta_proxy:  0.1993 Loss dta_trans:  0.0079 Loss dta_phys:  0.0071 Loss dta_preserve:  0.0052 Loss dta_ref_preserve:  0.0003 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0008
+Time:  0.1050 Epoch: 004 Iter:  550/ 600 LR: 0.0000500000 Loss content:  0.0164 Loss fft:  0.8183 Loss dta_rank:  0.6096 Loss dta_tv:  0.0351 Loss dta_proxy:  0.2014 Loss dta_trans:  0.0068 Loss dta_phys:  0.0071 Loss dta_preserve:  0.0050 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0005 Loss dta_mask_budget:  0.0008
+Time:  0.1039 Epoch: 004 Iter:  600/ 600 LR: 0.0000500000 Loss content:  0.0169 Loss fft:  0.8054 Loss dta_rank:  0.6122 Loss dta_tv:  0.0334 Loss dta_proxy:  0.2162 Loss dta_trans:  0.0085 Loss dta_phys:  0.0072 Loss dta_preserve:  0.0050 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0007 Loss dta_mask_budget:  0.0008
+EPOCH: 04
+Elapsed time: 1.27 Epoch Pixel Loss:  0.0171 Epoch FFT Loss:  0.8173 Epoch DTA Rank:  0.6129 Epoch DTA TV:  0.0344 Epoch DTA Proxy:  0.2060 Epoch DTA Trans:  0.0075 Epoch DTA Phys:  0.0067 Epoch DTA Preserve:  0.0054 Epoch DTA Ref Preserve:  0.0004 Epoch DTA Tail Guard:  0.0006 Epoch DTA Mask Budget:  0.0008
+DTA_GATE_RAMP epoch=5 gate_limit=0.180000
+Time:  0.1101 Epoch: 005 Iter:   50/ 600 LR: 0.0000132500 Loss content:  0.0161 Loss fft:  0.7723 Loss dta_rank:  0.6118 Loss dta_tv:  0.0342 Loss dta_proxy:  0.1932 Loss dta_trans:  0.0075 Loss dta_phys:  0.0055 Loss dta_preserve:  0.0051 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0005 Loss dta_mask_budget:  0.0008
+Time:  0.1000 Epoch: 005 Iter:  100/ 600 LR: 0.0000132500 Loss content:  0.0169 Loss fft:  0.8132 Loss dta_rank:  0.6100 Loss dta_tv:  0.0335 Loss dta_proxy:  0.2050 Loss dta_trans:  0.0065 Loss dta_phys:  0.0061 Loss dta_preserve:  0.0053 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0008
+Time:  0.1071 Epoch: 005 Iter:  150/ 600 LR: 0.0000132500 Loss content:  0.0173 Loss fft:  0.8231 Loss dta_rank:  0.6088 Loss dta_tv:  0.0339 Loss dta_proxy:  0.2016 Loss dta_trans:  0.0075 Loss dta_phys:  0.0077 Loss dta_preserve:  0.0051 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0007 Loss dta_mask_budget:  0.0009
+Time:  0.1070 Epoch: 005 Iter:  200/ 600 LR: 0.0000132500 Loss content:  0.0173 Loss fft:  0.8280 Loss dta_rank:  0.6099 Loss dta_tv:  0.0340 Loss dta_proxy:  0.2102 Loss dta_trans:  0.0068 Loss dta_phys:  0.0068 Loss dta_preserve:  0.0046 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0005 Loss dta_mask_budget:  0.0009
+Time:  0.1104 Epoch: 005 Iter:  250/ 600 LR: 0.0000132500 Loss content:  0.0169 Loss fft:  0.8243 Loss dta_rank:  0.6106 Loss dta_tv:  0.0351 Loss dta_proxy:  0.2025 Loss dta_trans:  0.0074 Loss dta_phys:  0.0072 Loss dta_preserve:  0.0042 Loss dta_ref_preserve:  0.0003 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0009
+Time:  0.1015 Epoch: 005 Iter:  300/ 600 LR: 0.0000132500 Loss content:  0.0179 Loss fft:  0.8473 Loss dta_rank:  0.6108 Loss dta_tv:  0.0341 Loss dta_proxy:  0.2060 Loss dta_trans:  0.0068 Loss dta_phys:  0.0066 Loss dta_preserve:  0.0055 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0008
+Time:  0.1042 Epoch: 005 Iter:  350/ 600 LR: 0.0000132500 Loss content:  0.0172 Loss fft:  0.8045 Loss dta_rank:  0.6105 Loss dta_tv:  0.0335 Loss dta_proxy:  0.2113 Loss dta_trans:  0.0068 Loss dta_phys:  0.0066 Loss dta_preserve:  0.0037 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0009
+Time:  0.1044 Epoch: 005 Iter:  400/ 600 LR: 0.0000132500 Loss content:  0.0167 Loss fft:  0.8012 Loss dta_rank:  0.6107 Loss dta_tv:  0.0339 Loss dta_proxy:  0.2029 Loss dta_trans:  0.0074 Loss dta_phys:  0.0065 Loss dta_preserve:  0.0047 Loss dta_ref_preserve:  0.0005 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0009
+Time:  0.0960 Epoch: 005 Iter:  450/ 600 LR: 0.0000132500 Loss content:  0.0173 Loss fft:  0.8171 Loss dta_rank:  0.6103 Loss dta_tv:  0.0339 Loss dta_proxy:  0.2036 Loss dta_trans:  0.0079 Loss dta_phys:  0.0071 Loss dta_preserve:  0.0043 Loss dta_ref_preserve:  0.0003 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0009
+Time:  0.0976 Epoch: 005 Iter:  500/ 600 LR: 0.0000132500 Loss content:  0.0168 Loss fft:  0.8356 Loss dta_rank:  0.6048 Loss dta_tv:  0.0338 Loss dta_proxy:  0.2016 Loss dta_trans:  0.0068 Loss dta_phys:  0.0063 Loss dta_preserve:  0.0048 Loss dta_ref_preserve:  0.0004 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0009
+Time:  0.0988 Epoch: 005 Iter:  550/ 600 LR: 0.0000132500 Loss content:  0.0176 Loss fft:  0.8205 Loss dta_rank:  0.6093 Loss dta_tv:  0.0340 Loss dta_proxy:  0.2154 Loss dta_trans:  0.0077 Loss dta_phys:  0.0073 Loss dta_preserve:  0.0050 Loss dta_ref_preserve:  0.0003 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0010
+Time:  0.1298 Epoch: 005 Iter:  600/ 600 LR: 0.0000132500 Loss content:  0.0169 Loss fft:  0.7994 Loss dta_rank:  0.6159 Loss dta_tv:  0.0334 Loss dta_proxy:  0.2143 Loss dta_trans:  0.0066 Loss dta_phys:  0.0063 Loss dta_preserve:  0.0058 Loss dta_ref_preserve:  0.0006 Loss dta_tail_guard:  0.0006 Loss dta_mask_budget:  0.0010
+EPOCH: 05
+Elapsed time: 1.27 Epoch Pixel Loss:  0.0171 Epoch FFT Loss:  0.8155 Epoch DTA Rank:  0.6103 Epoch DTA TV:  0.0340 Epoch DTA Proxy:  0.2056 Epoch DTA Trans:  0.0071 Epoch DTA Phys:  0.0067 Epoch DTA Preserve:  0.0048 Epoch DTA Ref Preserve:  0.0004 Epoch DTA Tail Guard:  0.0006 Epoch DTA Mask Budget:  0.0009
+depth_direct_tailguard_train_done rc=0 run_id=scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0 2026-06-11T23:14:54+08:00
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/tools/eval_haze4k_checkpoint_compare.py:132: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+A0 100/600 psnr=35.9338
+A0 200/600 psnr=38.6572
+A0 300/600 psnr=39.6753
+A0 400/600 psnr=40.1677
+A0 500/600 psnr=39.7737
+A0 600/600 psnr=39.3503
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalinvert 100/600 psnr=35.9371
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalinvert 200/600 psnr=38.6812
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalinvert 300/600 psnr=39.7118
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalinvert 400/600 psnr=40.2084
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalinvert 500/600 psnr=39.8065
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalinvert 600/600 psnr=39.3748
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "official_convir",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "depth_mode": "none",
+      "count": 600,
+      "mean_psnr": 39.35034857114156,
+      "mean_ssim": 0.9957262628277143,
+      "avg_time_sec_sync": 0.041635231971740724,
+      "median_time_sec_sync": 0.04051673412322998,
+      "peak_cuda_mem_mib": 535.95654296875
+    },
+    "DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalinvert": {
+      "label": "DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalinvert",
+      "arch": "dta_v3",
+      "mode": "modres",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_base_s008_b14-seed3407-f0-scout5full/Training-Results/Final.pkl",
+      "depth_mode": "invert",
+      "count": 600,
+      "mean_psnr": 39.37475250562032,
+      "mean_ssim": 0.9957029566168785,
+      "avg_time_sec_sync": 0.05003928184509277,
+      "median_time_sec_sync": 0.05124187469482422,
+      "peak_cuda_mem_mib": 540.5224609375
+    }
+  },
+  "comparison": {
+    "common_count": 600,
+    "mean_psnr_delta": 0.024403934478759767,
+    "median_psnr_delta": 0.036080360412597656,
+    "p5_psnr_delta": -0.3540168762207031,
+    "p95_psnr_delta": 0.39090576171874963,
+    "hard_bottom25_psnr_delta": 0.006359659830729167,
+    "easy_top25_psnr_delta": 0.0432043202718099,
+    "worst10pct_mean_psnr_delta": -0.4099683125813802,
+    "best10pct_mean_psnr_delta": 0.4150339444478353,
+    "worst10img_mean_psnr_delta": -0.6759475708007813,
+    "best10img_mean_psnr_delta": 0.592694091796875,
+    "worst10_mean_psnr_delta": -0.4099683125813802,
+    "best10_mean_psnr_delta": 0.4150339444478353,
+    "mean_ssim_delta": -2.330621083577474e-05,
+    "positive_ratio": 0.605,
+    "strong_reference_cut_psnr": 42.755948066711426,
+    "strong_reference_count": 150,
+    "strong_regression_count_delta_le_-0.05": 39,
+    "worst_regression_count_delta_le_-0.20": 76
+  }
+}
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalinvert_compare/scout_eval_compare_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalinvert.json
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalinvert_compare/scout_eval_per_image_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalinvert.csv
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalinvert 2026-06-11T23:16:47+08:00
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/tools/eval_haze4k_checkpoint_compare.py:132: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+A0 100/600 psnr=35.9338
+A0 200/600 psnr=38.6572
+A0 300/600 psnr=39.6753
+A0 400/600 psnr=40.1677
+A0 500/600 psnr=39.7737
+A0 600/600 psnr=39.3503
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalnormal 100/600 psnr=35.9063
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalnormal 200/600 psnr=38.6435
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalnormal 300/600 psnr=39.6678
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalnormal 400/600 psnr=40.1650
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalnormal 500/600 psnr=39.7688
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalnormal 600/600 psnr=39.3417
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "official_convir",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "depth_mode": "none",
+      "count": 600,
+      "mean_psnr": 39.35034857114156,
+      "mean_ssim": 0.9957262628277143,
+      "avg_time_sec_sync": 0.04073589007059733,
+      "median_time_sec_sync": 0.039726972579956055,
+      "peak_cuda_mem_mib": 535.95654296875
+    },
+    "DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalnormal": {
+      "label": "DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalnormal",
+      "arch": "dta_v3",
+      "mode": "modres",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_base_s008_b14-seed3407-f0-scout5full/Training-Results/Final.pkl",
+      "depth_mode": "normal",
+      "count": 600,
+      "mean_psnr": 39.341668945948285,
+      "mean_ssim": 0.9957030368844668,
+      "avg_time_sec_sync": 0.05116741140683492,
+      "median_time_sec_sync": 0.050972819328308105,
+      "peak_cuda_mem_mib": 540.7724609375
+    }
+  },
+  "comparison": {
+    "common_count": 600,
+    "mean_psnr_delta": -0.008679625193277994,
+    "median_psnr_delta": 0.004268646240234375,
+    "p5_psnr_delta": -0.2412569046020508,
+    "p95_psnr_delta": 0.17907581329345687,
+    "hard_bottom25_psnr_delta": -0.01708989461263021,
+    "easy_top25_psnr_delta": 0.011493631998697917,
+    "worst10pct_mean_psnr_delta": -0.2791741689046224,
+    "best10pct_mean_psnr_delta": 0.19845046997070312,
+    "worst10img_mean_psnr_delta": -0.4991191864013672,
+    "best10img_mean_psnr_delta": 0.32043304443359377,
+    "worst10_mean_psnr_delta": -0.2791741689046224,
+    "best10_mean_psnr_delta": 0.19845046997070312,
+    "mean_ssim_delta": -2.3225943247477215e-05,
+    "positive_ratio": 0.5283333333333333,
+    "strong_reference_cut_psnr": 42.755948066711426,
+    "strong_reference_count": 150,
+    "strong_regression_count_delta_le_-0.05": 31,
+    "worst_regression_count_delta_le_-0.20": 41
+  }
+}
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalnormal_compare/scout_eval_compare_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalnormal.json
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalnormal_compare/scout_eval_per_image_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalnormal.csv
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalnormal 2026-06-11T23:18:32+08:00
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/tools/eval_haze4k_checkpoint_compare.py:132: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+A0 100/600 psnr=35.9338
+A0 200/600 psnr=38.6572
+A0 300/600 psnr=39.6753
+A0 400/600 psnr=40.1677
+A0 500/600 psnr=39.7737
+A0 600/600 psnr=39.3503
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalzero 100/600 psnr=35.9046
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalzero 200/600 psnr=38.6393
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalzero 300/600 psnr=39.6638
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalzero 400/600 psnr=40.1609
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalzero 500/600 psnr=39.7652
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalzero 600/600 psnr=39.3381
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "official_convir",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "depth_mode": "none",
+      "count": 600,
+      "mean_psnr": 39.35034857114156,
+      "mean_ssim": 0.9957262628277143,
+      "avg_time_sec_sync": 0.040309472878774004,
+      "median_time_sec_sync": 0.03899073600769043,
+      "peak_cuda_mem_mib": 535.95654296875
+    },
+    "DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalzero": {
+      "label": "DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalzero",
+      "arch": "dta_v3",
+      "mode": "modres",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_base_s008_b14-seed3407-f0-scout5full/Training-Results/Final.pkl",
+      "depth_mode": "zero",
+      "count": 600,
+      "mean_psnr": 39.338121836980186,
+      "mean_ssim": 0.995701550145944,
+      "avg_time_sec_sync": 0.046856873830159504,
+      "median_time_sec_sync": 0.046544790267944336,
+      "peak_cuda_mem_mib": 540.5224609375
+    }
+  },
+  "comparison": {
+    "common_count": 600,
+    "mean_psnr_delta": -0.012226734161376953,
+    "median_psnr_delta": 0.0019245147705078125,
+    "p5_psnr_delta": -0.2261749267578125,
+    "p95_psnr_delta": 0.16415691375732422,
+    "hard_bottom25_psnr_delta": -0.017291666666666667,
+    "easy_top25_psnr_delta": 0.004519577026367187,
+    "worst10pct_mean_psnr_delta": -0.2646790504455566,
+    "best10pct_mean_psnr_delta": 0.18226858774820964,
+    "worst10img_mean_psnr_delta": -0.4742912292480469,
+    "best10img_mean_psnr_delta": 0.30038986206054685,
+    "worst10_mean_psnr_delta": -0.2646790504455566,
+    "best10_mean_psnr_delta": 0.18226858774820964,
+    "mean_ssim_delta": -2.4712681770324708e-05,
+    "positive_ratio": 0.5166666666666667,
+    "strong_reference_cut_psnr": 42.755948066711426,
+    "strong_reference_count": 150,
+    "strong_regression_count_delta_le_-0.05": 33,
+    "worst_regression_count_delta_le_-0.20": 38
+  }
+}
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalzero_compare/scout_eval_compare_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalzero.json
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalzero_compare/scout_eval_per_image_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalzero.csv
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalzero 2026-06-11T23:20:14+08:00
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/tools/eval_haze4k_checkpoint_compare.py:132: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+A0 100/600 psnr=35.9338
+A0 200/600 psnr=38.6572
+A0 300/600 psnr=39.6753
+A0 400/600 psnr=40.1677
+A0 500/600 psnr=39.7737
+A0 600/600 psnr=39.3503
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalshuffle 100/600 psnr=35.9091
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalshuffle 200/600 psnr=38.6443
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalshuffle 300/600 psnr=39.6701
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalshuffle 400/600 psnr=40.1669
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalshuffle 500/600 psnr=39.7703
+DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalshuffle 600/600 psnr=39.3426
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "official_convir",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "depth_mode": "none",
+      "count": 600,
+      "mean_psnr": 39.35034857114156,
+      "mean_ssim": 0.9957262628277143,
+      "avg_time_sec_sync": 0.04138215144475301,
+      "median_time_sec_sync": 0.04043710231781006,
+      "peak_cuda_mem_mib": 535.95654296875
+    },
+    "DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalshuffle": {
+      "label": "DTA_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalshuffle",
+      "arch": "dta_v3",
+      "mode": "modres",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_base_s008_b14-seed3407-f0-scout5full/Training-Results/Final.pkl",
+      "depth_mode": "shuffle",
+      "count": 600,
+      "mean_psnr": 39.342611735661826,
+      "mean_ssim": 0.9957022674878439,
+      "avg_time_sec_sync": 0.05117144068082174,
+      "median_time_sec_sync": 0.05146944522857666,
+      "peak_cuda_mem_mib": 541.3740234375
+    }
+  },
+  "comparison": {
+    "common_count": 600,
+    "mean_psnr_delta": -0.007736835479736328,
+    "median_psnr_delta": 0.005535125732421875,
+    "p5_psnr_delta": -0.2597625732421875,
+    "p95_psnr_delta": 0.19624881744384756,
+    "hard_bottom25_psnr_delta": -0.016456222534179686,
+    "easy_top25_psnr_delta": 0.011972630818684896,
+    "worst10pct_mean_psnr_delta": -0.2862290382385254,
+    "best10pct_mean_psnr_delta": 0.20664660135904947,
+    "worst10img_mean_psnr_delta": -0.5040016174316406,
+    "best10img_mean_psnr_delta": 0.3328369140625,
+    "worst10_mean_psnr_delta": -0.2862290382385254,
+    "best10_mean_psnr_delta": 0.20664660135904947,
+    "mean_ssim_delta": -2.399533987045288e-05,
+    "positive_ratio": 0.5333333333333333,
+    "strong_reference_cut_psnr": 42.755948066711426,
+    "strong_reference_count": 150,
+    "strong_regression_count_delta_le_-0.05": 30,
+    "worst_regression_count_delta_le_-0.20": 45
+  }
+}
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalshuffle_compare/scout_eval_compare_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalshuffle.json
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalshuffle_compare/scout_eval_per_image_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalshuffle.csv
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_evalshuffle 2026-06-11T23:22:40+08:00
+{
+  "true_label": "true",
+  "baseline_label": "zero",
+  "common_count": 600,
+  "mean_depth_surplus_psnr": 0.03663066864013672,
+  "median_depth_surplus_psnr": 0.02567291259765625,
+  "positive_surplus_ratio": 0.6333333333333333
+}
+DTA_V3_CONTROL_AGGREGATE_OK
+depth_direct_tailguard_aggregate_done rc=0 run_id=scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0 2026-06-11T23:22:40+08:00
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/tools/make_haze4k_dta_contact_sheet.py:34: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0/scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_worst_regressions_contact_sheet.png
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0/scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0_best_wins_contact_sheet.png
+DTA_CONTACT_SHEETS_OK
+depth_direct_tailguard_contact_sheet_done rc=0 run_id=scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0 output=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0 2026-06-11T23:22:48+08:00
+DTA_V3_DEPTH_DIRECT_TAILGUARD_SCOUT_OK run_id=scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0 checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_base_s008_b14-seed3407-f0-scout5full/Training-Results/Final.pkl matrix=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/train_eval_depth_matrix_scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0.json contact_sheet=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirectTail_wg18_base_s008_b14_seed3407_f0
