@@ -95,3 +95,23 @@ negative on mean and hard samples, SSIM is slightly negative, and the positive
 ratio is below the written continuation threshold. Do not launch Phase B from
 this checkpoint. Recommended next route is a smaller/shorter R0 diagnostic or a
 more conservative loss/scale variant declared as a new Phase A attempt.
+
+## 2026-06-11 Phase A R0 Conservative Scout Queue
+
+Next action follows the Phase A gate-fail recommendation: do not start Phase B;
+instead run conservative R0-only fine-tune scouts in parallel on `convir-4090`.
+The queue uses train-derived fold0 only, keeps locked Haze4K test blocked, and
+generates cloud-only contact-sheet PNGs for visual judgment.
+
+Scout variants:
+
+| Variant | LR | R0 scale | preserve/ref/tail weights | Intent |
+| --- | ---: | ---: | ---: | --- |
+| `r0s005_lr3e5_ref005` | `3e-5` | `0.005` | `0.05/0.05/0.05` | near-no-op safety floor |
+| `r0s010_lr3e5_ref005` | `3e-5` | `0.010` | `0.05/0.05/0.05` | conservative midpoint |
+| `r0s020_lr3e5_ref005` | `3e-5` | `0.020` | `0.05/0.05/0.05` | reduced-capacity recovery vs failed `0.04` |
+| `r0s010_lr1e5_ref010` | `1e-5` | `0.010` | `0.10/0.10/0.10` | strongest preservation pressure |
+
+Initial stage is `scout5full`: 5 training epochs with full 600-image fold0 eval
+and contact sheets. Only a variant with positive mean/hard movement, near-zero
+or positive SSIM, and reduced tail risk should be promoted to OOF20.

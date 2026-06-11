@@ -145,6 +145,25 @@ from this R0 checkpoint. The next experiment should redesign Phase A as a
 smaller or more conservative R0 diagnostic before any depth-attributed frozen-R0
 training.
 
+
+## 2026-06-11 Phase A Conservative R0 Scout Plan
+
+After the original R0 OOF20 gate failure, the authorized next step is a parallel
+R0-only scout queue, not Phase B. The queue keeps the architecture/fine-tune
+route unchanged but reduces residual scale, LR, and/or increases A0 preserve and
+tail-guard pressure:
+
+| Variant | LR | R0 scale | preserve/ref/tail | Continue condition |
+| --- | ---: | ---: | ---: | --- |
+| `r0s005_lr3e5_ref005` | `3e-5` | `0.005` | `0.05/0.05/0.05` | no-op-safe, tail below failed R0 |
+| `r0s010_lr3e5_ref005` | `3e-5` | `0.010` | `0.05/0.05/0.05` | positive mean without hard/tail loss |
+| `r0s020_lr3e5_ref005` | `3e-5` | `0.020` | `0.05/0.05/0.05` | recover capacity while safer than scale `0.04` |
+| `r0s010_lr1e5_ref010` | `1e-5` | `0.010` | `0.10/0.10/0.10` | strongest preservation baseline |
+
+Run `scout5full` first on `convir-4090` using separate GPUs. Generate cloud-only
+contact sheets for best wins and worst regressions. Promote only the best safe
+variant to OOF20; do not launch Phase B until a safe R0 OOF20 baseline exists.
+
 ## Locked-Test Policy
 
 Locked Haze4K test must not be used to select checkpoint, depth mode, gate,
