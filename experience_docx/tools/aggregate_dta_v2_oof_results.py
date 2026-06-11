@@ -211,9 +211,10 @@ def aggregate(args: argparse.Namespace) -> dict[str, Any]:
         runs.append(run)
 
     per_run_rows = []
-    groups: dict[tuple[str, str, str, int], list[dict[str, Any]]] = {}
+    groups: dict[tuple[str, str, str, int | str], list[dict[str, Any]]] = {}
     for run in runs:
-        key = (run["stage"], run["scope"], run["mode"], run["seed"])
+        seed_key: int | str = "combined" if args.combine_seeds else run["seed"]
+        key = (run["stage"], run["scope"], run["mode"], seed_key)
         groups.setdefault(key, []).append(run)
         row = {
             "stage": run["stage"],
@@ -239,17 +240,21 @@ def aggregate(args: argparse.Namespace) -> dict[str, Any]:
     group_rows = []
     bootstrap_report = {}
     for key, group_runs in sorted(groups.items()):
-        stage, scope, mode, seed = key
+        stage, scope, mode, seed_key = key
+        seeds = sorted({int(run["seed"]) for run in group_runs})
         combined_rows: list[dict[str, Any]] = []
         folds = []
-        for run in sorted(group_runs, key=lambda item: item["fold"]):
+        for run in sorted(group_runs, key=lambda item: (item["seed"], item["fold"])):
             folds.append(run["fold"])
             combined_rows.extend(run["rows"])
         summary = summarize_rows(combined_rows)
         deltas = [finite_float(row.get("delta_psnr")) for row in combined_rows]
-        bootstrap = bootstrap_ci(deltas, iterations=args.bootstrap_iterations, seed=args.bootstrap_seed + seed)
+        stable_mode_seed = sum(ord(ch) for ch in mode) + sum(seeds)
+        bootstrap = bootstrap_ci(deltas, iterations=args.bootstrap_iterations, seed=args.bootstrap_seed + stable_mode_seed)
         wilcoxon = wilcoxon_signed_rank_approx(deltas)
-        bootstrap_report[f"{stage}_{scope}_{mode}_seed{seed}"] = {
+        seed_label = "combined_" + "_".join(str(seed) for seed in seeds) if args.combine_seeds else f"seed{seeds[0]}"
+        bootstrap_report[f"{stage}_{scope}_{mode}_{seed_label}"] = {
+            "seeds": seeds,
             "folds": folds,
             "bootstrap_mean_psnr_delta": bootstrap,
             "wilcoxon_signed_rank_psnr_delta": wilcoxon,
@@ -258,9 +263,11 @@ def aggregate(args: argparse.Namespace) -> dict[str, Any]:
             "stage": stage,
             "scope": scope,
             "mode": mode,
-            "seed": seed,
+            "seed": "combined" if args.combine_seeds else seeds[0],
+            "seeds": ",".join(str(seed) for seed in seeds),
             "folds": ",".join(str(fold) for fold in folds),
             "fold_count": len(folds),
+            "seed_count": len(seeds),
         }
         row.update(summary)
         for metric in (
@@ -287,7 +294,7 @@ def aggregate(args: argparse.Namespace) -> dict[str, Any]:
     report = {
         "evidence_root": str(evidence_root),
         "run_count": len(runs),
-        "filters": {"stage": args.stage, "scope": args.scope, "seed": args.seed},
+        "filters": {"stage": args.stage, "scope": args.scope, "seed": args.seed, "combine_seeds": args.combine_seeds},
         "per_run": per_run_rows,
         "by_mode": group_rows,
         "bootstrap_wilcoxon": bootstrap_report,
@@ -307,6 +314,7 @@ def main() -> None:
     parser.add_argument("--stage", default="")
     parser.add_argument("--scope", default="")
     parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--combine_seeds", action="store_true")
     parser.add_argument("--bootstrap_iterations", type=int, default=2000)
     parser.add_argument("--bootstrap_seed", type=int, default=9409)
     args = parser.parse_args()

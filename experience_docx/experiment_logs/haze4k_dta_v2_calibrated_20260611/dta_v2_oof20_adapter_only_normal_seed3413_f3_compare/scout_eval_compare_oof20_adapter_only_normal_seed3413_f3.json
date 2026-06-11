@@ -1,0 +1,51 @@
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "official_convir",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "depth_mode": "none",
+      "count": 600,
+      "mean_psnr": 39.32277844429016,
+      "mean_ssim": 0.9955213409662247,
+      "avg_time_sec_sync": 0.04209524949391683,
+      "median_time_sec_sync": 0.04155278205871582,
+      "peak_cuda_mem_mib": 535.56884765625
+    },
+    "DTA_v2_oof20_adapter_only_normal_seed3413_f3_final": {
+      "label": "DTA_v2_oof20_adapter_only_normal_seed3413_f3_final",
+      "arch": "dta_v2",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v2-adapter_only-normal-seed3413-f3-oof20/Training-Results/Final.pkl",
+      "depth_mode": "normal",
+      "count": 600,
+      "mean_psnr": 39.414143873850506,
+      "mean_ssim": 0.995521270930767,
+      "avg_time_sec_sync": 0.047040990988413495,
+      "median_time_sec_sync": 0.04780423641204834,
+      "peak_cuda_mem_mib": 540.76171875
+    }
+  },
+  "comparison": {
+    "common_count": 600,
+    "mean_psnr_delta": 0.09136542956034342,
+    "median_psnr_delta": 0.10002899169921875,
+    "p5_psnr_delta": -0.46579704284667967,
+    "p95_psnr_delta": 0.5993501663208006,
+    "hard_bottom25_psnr_delta": 0.08258246103922526,
+    "easy_top25_psnr_delta": 0.04912811279296875,
+    "worst10pct_mean_psnr_delta": -0.4977395057678223,
+    "best10pct_mean_psnr_delta": 0.6521526336669922,
+    "worst10img_mean_psnr_delta": -0.8357654571533203,
+    "best10img_mean_psnr_delta": 0.9332122802734375,
+    "worst10_mean_psnr_delta": -0.4977395057678223,
+    "best10_mean_psnr_delta": 0.6521526336669922,
+    "mean_ssim_delta": -7.003545761108399e-08,
+    "positive_ratio": 0.65,
+    "strong_reference_cut_psnr": 42.88805866241455,
+    "strong_reference_count": 150,
+    "strong_regression_count_delta_le_-0.05": 55,
+    "worst_regression_count_delta_le_-0.20": 86
+  }
+}

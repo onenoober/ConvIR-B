@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `RUNNING_ADAPTER_ONLY_MULTI_SEED_3411_3413`
+Status: `COMPLETED_ADAPTER_ONLY_MULTI_SEED_OOF_NO_LOCKED_TEST`
 
 ## Scope
 
@@ -89,9 +89,12 @@ that has already passed internal mechanism and preservation gates.
   and Wilcoxon report. Locked Haze4K test remains blocked because depth
   attribution is positive but still not clean, and SSIM/tail regressions do not
   satisfy the promotion gate.
-- Multi-seed adapter-only controls for seeds `3411` and `3413` are running on
-  convir-4090 using seven tmux workers over GPUs `1-7`. GPU0 is skipped because
-  non-DTA user processes occupy it.
+- Multi-seed adapter-only controls for seeds `3411` and `3413` completed on
+  convir-4090 with `40/40` train/eval/tpred jobs `rc=0`, no failure markers,
+  and aggregate reports across seeds `3407/3411/3413`.
+- The aggregate is positive but not locked-test-ready: `normal` slightly beats
+  calibrated `invert` on combined mean and hard bottom-25, zero/shuffle retain
+  most gains, SSIM is slightly negative, and tail regressions remain high.
 
 
 ## 2026-06-11 Adapter-Only Fold0 Scout5 Controls
@@ -203,12 +206,38 @@ all modes, and tail regressions remain high. Proceed to multi-seed adapter-only
 controls; locked Haze4K test remains blocked.
 
 
+## 2026-06-11 Adapter-Only Multi-Seed OOF20 Aggregate
+
+Seeds `3411` and `3413` finished after the seed `3407` five-fold baseline. The
+aggregate report combines `60` OOF20 runs and `9000` train-derived validation
+predictions per depth/control mode. All rows below have positive bootstrap lower
+bounds, but they do not pass the mechanism/preservation gate for locked-test
+confirmation.
+
+| Depth mode | Mean dPSNR | 95% bootstrap CI | Hard bottom-25 | Easy top-25 | dSSIM | Positive ratio | Strong regressions | Worst regressions | t_l1 | Spearman(t_pred,t_gt) | Stage2 gate | Stage3 gate |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `invert` | `+0.088732` | `[+0.082082, +0.095285]` | `+0.066526` | `+0.073563` | `-0.0000197` | `0.6203` | `824/2250` | `1357/9000` | `0.077180` | `0.926439` | `0.015046` | `0.049854` |
+| `normal` | `+0.088822` | `[+0.082165, +0.095231]` | `+0.070546` | `+0.071927` | `-0.0000182` | `0.6252` | `816/2250` | `1300/9000` | `0.088347` | `0.924806` | `0.010249` | `0.052137` |
+| `shuffle` | `+0.077471` | `[+0.071609, +0.083200]` | `+0.058264` | `+0.066866` | `-0.0000054` | `0.6184` | `791/2250` | `1194/9000` | `0.083816` | `0.925632` | `0.014105` | `0.053240` |
+| `zero` | `+0.074015` | `[+0.068322, +0.079865]` | `+0.057084` | `+0.063822` | `-0.0000036` | `0.6143` | `776/2250` | `1169/9000` | `0.078806` | `0.926663` | `0.012224` | `0.057165` |
+
+Per-seed five-fold means confirm stability rather than promotion readiness:
+`invert` was `+0.088230/+0.084036/+0.093929`, `normal` was
+`+0.087934/+0.083996/+0.094535`, `shuffle` was
+`+0.076486/+0.072591/+0.083336`, and `zero` was
+`+0.072830/+0.068557/+0.080659` for seeds `3407/3411/3413`.
+
+Interpretation: this is a reproducible small positive internal OOF result, but
+not a clean depth-guided mechanism win. `normal` slightly beats calibrated
+`invert` in the combined table, zero and shuffle controls keep most gains, all
+combined SSIM deltas are slightly negative, and the tail-regression counts are
+higher than the written promotion gate tolerates. Locked Haze4K test remains
+blocked; this route is recorded as `COMPLETED_ADAPTER_ONLY_MULTI_SEED_OOF_NO_LOCKED_TEST`.
+
 ## Next Internal Queue
 
-- Monitor and complete the running multi-seed adapter-only controls for seeds
-  `3411` and `3413`.
-- Aggregate across seeds `3407`, `3411`, and `3413` after all multi-seed jobs
-  finish.
-- Only consider locked Haze4K test if multi-seed OOF preserves mean/hard gains,
-  reduces ambiguity against zero/shuffle controls, and resolves the SSIM/tail
-  risk gates.
+- Do not run locked Haze4K test for this DTA-v2 CalGate configuration.
+- Close this exact CalGate route as positive internal diagnostic/no-promotion
+  unless a new mechanism is introduced.
+- If DTA work continues, open a new branch/card focused on stronger depth
+  attribution and local tail-preservation rather than retuning this OOF result.

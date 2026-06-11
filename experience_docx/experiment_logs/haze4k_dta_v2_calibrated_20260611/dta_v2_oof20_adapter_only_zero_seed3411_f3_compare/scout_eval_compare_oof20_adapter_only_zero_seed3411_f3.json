@@ -1,0 +1,51 @@
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "official_convir",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "depth_mode": "none",
+      "count": 600,
+      "mean_psnr": 39.32277844429016,
+      "mean_ssim": 0.9955213409662247,
+      "avg_time_sec_sync": 0.03796872099240621,
+      "median_time_sec_sync": 0.03467059135437012,
+      "peak_cuda_mem_mib": 535.56884765625
+    },
+    "DTA_v2_oof20_adapter_only_zero_seed3411_f3_final": {
+      "label": "DTA_v2_oof20_adapter_only_zero_seed3411_f3_final",
+      "arch": "dta_v2",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v2-adapter_only-zero-seed3411-f3-oof20/Training-Results/Final.pkl",
+      "depth_mode": "zero",
+      "count": 600,
+      "mean_psnr": 39.3943461672465,
+      "mean_ssim": 0.9955217437942823,
+      "avg_time_sec_sync": 0.049983047644297285,
+      "median_time_sec_sync": 0.04811525344848633,
+      "peak_cuda_mem_mib": 540.90234375
+    }
+  },
+  "comparison": {
+    "common_count": 600,
+    "mean_psnr_delta": 0.07156772295633952,
+    "median_psnr_delta": 0.06433486938476562,
+    "p5_psnr_delta": -0.4598989486694336,
+    "p95_psnr_delta": 0.5826707839965819,
+    "hard_bottom25_psnr_delta": 0.049318453470865886,
+    "easy_top25_psnr_delta": 0.035499165852864584,
+    "worst10pct_mean_psnr_delta": -0.48880430857340496,
+    "best10pct_mean_psnr_delta": 0.6204277674357096,
+    "worst10img_mean_psnr_delta": -0.7619377136230469,
+    "best10img_mean_psnr_delta": 0.8515884399414062,
+    "worst10_mean_psnr_delta": -0.48880430857340496,
+    "best10_mean_psnr_delta": 0.6204277674357096,
+    "mean_ssim_delta": 4.02828057607015e-07,
+    "positive_ratio": 0.61,
+    "strong_reference_cut_psnr": 42.88805866241455,
+    "strong_reference_count": 150,
+    "strong_regression_count_delta_le_-0.05": 55,
+    "worst_regression_count_delta_le_-0.20": 100
+  }
+}

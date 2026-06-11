@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `RUNNING_ADAPTER_ONLY_MULTI_SEED_3411_3413`
+Status: `COMPLETED_ADAPTER_ONLY_MULTI_SEED_OOF_NO_LOCKED_TEST`
 
 This directory stores text-only evidence for `codex/haze4k-dta-v2-calibrated`,
 the calibrated confidence-gated DTA route for Innovation 1. Checkpoints, model
@@ -62,9 +62,13 @@ committed.
 - Adapter-only folds `1-4` OOF20 controls completed on convir-4090 GPUs 0-7.
 - Five-fold adapter-only aggregate, bootstrap CI, and Wilcoxon report completed
   on convir-4090.
-- Multi-seed adapter-only OOF20 controls for seeds `3411` and `3413` are
-  running through a seven-worker scheduler on GPUs `1-7`; GPU0 is intentionally
-  skipped because it is occupied by non-DTA user processes.
+- Multi-seed adapter-only OOF20 controls for seeds `3411` and `3413`
+  completed with `40/40` train/eval/tpred jobs `rc=0`; no failure markers were
+  found, and the aggregate across seeds `3407/3411/3413` completed on
+  convir-4090.
+- Locked Haze4K test remains blocked because the positive OOF signal still has
+  weak depth attribution, slightly negative SSIM, and high tail-regression
+  counts.
 
 ## Adapter-Neighbors Fold0 OOF20 Result
 
@@ -123,14 +127,39 @@ zero/shuffle controls are still positive, SSIM is slightly negative for all
 modes, and worst regressions remain high. Continue multi-seed adapter-only
 controls before any locked-test confirmation.
 
-## Multi-Seed Adapter-Only Controls
+## Multi-Seed Adapter-Only OOF20 Aggregate
 
-- Seeds: `3411`, `3413`.
-- Schedule: five folds x four depth/control modes x two seeds = `40` jobs.
-- Parallelism: seven tmux workers, one per GPU `1-7`, each consuming an assigned
-  subset from `dta_v2_oof20_adapter_only_multiseed_3411_3413_jobs.tsv`.
-- Locked-test policy: still blocked; this stage uses only train-derived OOF
-  splits.
-- Evidence contract: each job writes train/eval/tpred logs plus compare and
-  `t_pred` audit JSON/CSV; after completion, run a multi-seed aggregate before
-  any locked-test decision.
+Seeds `3411` and `3413` completed as `40/40` train/eval/tpred jobs with
+`rc=0`, no failure markers, and `40` compare plus `40` t_pred artifacts per
+seed. The aggregate combines seeds `3407`, `3411`, and `3413`, covering `60`
+runs and `9000` train-derived OOF predictions per depth/control mode.
+
+| Depth mode | Mean dPSNR | 95% bootstrap CI | Hard bottom-25 | Easy top-25 | dSSIM | Positive ratio | Strong regressions | Worst regressions | t_l1 | Spearman(t_pred,t_gt) | Stage2 gate | Stage3 gate |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `invert` | `+0.088732` | `[+0.082082, +0.095285]` | `+0.066526` | `+0.073563` | `-0.0000197` | `0.6203` | `824/2250` | `1357/9000` | `0.077180` | `0.926439` | `0.015046` | `0.049854` |
+| `normal` | `+0.088822` | `[+0.082165, +0.095231]` | `+0.070546` | `+0.071927` | `-0.0000182` | `0.6252` | `816/2250` | `1300/9000` | `0.088347` | `0.924806` | `0.010249` | `0.052137` |
+| `shuffle` | `+0.077471` | `[+0.071609, +0.083200]` | `+0.058264` | `+0.066866` | `-0.0000054` | `0.6184` | `791/2250` | `1194/9000` | `0.083816` | `0.925632` | `0.014105` | `0.053240` |
+| `zero` | `+0.074015` | `[+0.068322, +0.079865]` | `+0.057084` | `+0.063822` | `-0.0000036` | `0.6143` | `776/2250` | `1169/9000` | `0.078806` | `0.926663` | `0.012224` | `0.057165` |
+
+Per-seed means were stable and positive, but not depth-selective enough:
+`invert` seeds `3407/3411/3413` were `+0.088230/+0.084036/+0.093929`, while
+`normal` was `+0.087934/+0.083996/+0.094535`, `shuffle` was
+`+0.076486/+0.072591/+0.083336`, and `zero` was
+`+0.072830/+0.068557/+0.080659`.
+
+Interpretation: DTA-v2 CalGate changes the low-gate route from a negative full
+metric into a reproducible small positive internal OOF result. It still does not
+pass the written promotion/locked-test gate: `normal` slightly beats `invert` on
+combined mean and hard bottom-25, zero/shuffle controls retain most of the gain,
+all combined SSIM deltas are slightly negative, and worst regressions remain
+high. Locked Haze4K test remains blocked.
+
+## Closeout / Next Internal Queue
+
+- Do not run locked Haze4K test for this DTA-v2 CalGate configuration.
+- Treat adapter-only CalGate as positive internal diagnostic evidence, not a new
+  model promotion.
+- Treat adapter-neighbors as stopped for this mechanism because fold0 was
+  preservation-negative.
+- A future DTA route should be a new mechanism focused on depth attribution and
+  tail protection, not another gate/loss retune selected from these OOF results.

@@ -914,3 +914,49 @@ printf 'DEHAZE1_INVENTORY_OK\n'
 When `pipefail` is enabled in monitor or inventory scripts, avoid `producer |
 head`; use `sed -n`, `mapfile`, or temporarily disable `pipefail` around the
 sampling pipeline.
+
+## 2026-06-11 Nested SSH quote failure during DTA-v2 heartbeat monitor
+
+Observed while monitoring the DTA-v2 multi-seed aggregate from PowerShell via
+WSL: a nested `ssh convir-4090 'bash -lc ...'` command mixed single quotes,
+embedded command substitutions, and local rsync commands. The quote boundary was
+not preserved and Bash stopped with `unexpected EOF while looking for matching
+quote` before running the monitor.
+
+Invalid form:
+
+```bash
+ssh convir-4090 'bash -lc '''set -euo pipefail
+ROOT=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611
+printf "HOST=%s\n" "$(hostname)"
+# monitor body...
+'''
+```
+
+Failure mode observed:
+
+- the nested single quotes were consumed at the PowerShell/WSL/SSH boundary;
+- Bash reached end-of-file while still inside a quote;
+- no success marker or rsync evidence sync ran.
+
+Corrected form:
+
+```bash
+ssh convir-4090 'bash -s' <<'REMOTE_MONITOR'
+set -euo pipefail
+ROOT=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611
+printf 'HOST=%s
+' "$(hostname)"
+# monitor body...
+printf 'MONITOR_OK
+'
+REMOTE_MONITOR
+# local rsync body after the heredoc closes
+printf 'RSYNC_OK
+'
+```
+
+For multi-hop monitoring, prefer `ssh host 'bash -s'` with a remote heredoc,
+then run local `rsync` after the heredoc closes. Avoid nested `bash -lc`
+single-quote escapes for scripts with command substitutions or several
+pipelines.

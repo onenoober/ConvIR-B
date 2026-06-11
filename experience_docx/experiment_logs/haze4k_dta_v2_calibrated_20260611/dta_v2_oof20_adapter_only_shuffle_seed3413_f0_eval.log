@@ -1,0 +1,67 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/experience_docx/tools/eval_haze4k_checkpoint_compare.py:123: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+A0 100/600 psnr=35.9338
+A0 200/600 psnr=38.6572
+A0 300/600 psnr=39.6753
+A0 400/600 psnr=40.1677
+A0 500/600 psnr=39.7737
+A0 600/600 psnr=39.3503
+DTA_v2_oof20_adapter_only_shuffle_seed3413_f0_final 100/600 psnr=36.0149
+DTA_v2_oof20_adapter_only_shuffle_seed3413_f0_final 200/600 psnr=38.7640
+DTA_v2_oof20_adapter_only_shuffle_seed3413_f0_final 300/600 psnr=39.7937
+DTA_v2_oof20_adapter_only_shuffle_seed3413_f0_final 400/600 psnr=40.2807
+DTA_v2_oof20_adapter_only_shuffle_seed3413_f0_final 500/600 psnr=39.8752
+DTA_v2_oof20_adapter_only_shuffle_seed3413_f0_final 600/600 psnr=39.4450
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "official_convir",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "depth_mode": "none",
+      "count": 600,
+      "mean_psnr": 39.35034857114156,
+      "mean_ssim": 0.9957262628277143,
+      "avg_time_sec_sync": 0.03417808532714844,
+      "median_time_sec_sync": 0.03379678726196289,
+      "peak_cuda_mem_mib": 535.95654296875
+    },
+    "DTA_v2_oof20_adapter_only_shuffle_seed3413_f0_final": {
+      "label": "DTA_v2_oof20_adapter_only_shuffle_seed3413_f0_final",
+      "arch": "dta_v2",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v2-adapter_only-shuffle-seed3413-f0-oof20/Training-Results/Final.pkl",
+      "depth_mode": "shuffle",
+      "count": 600,
+      "mean_psnr": 39.44503928184509,
+      "mean_ssim": 0.9957358687122663,
+      "avg_time_sec_sync": 0.04088978370030721,
+      "median_time_sec_sync": 0.03930366039276123,
+      "peak_cuda_mem_mib": 541.46484375
+    }
+  },
+  "comparison": {
+    "common_count": 600,
+    "mean_psnr_delta": 0.0946907107035319,
+    "median_psnr_delta": 0.0884246826171875,
+    "p5_psnr_delta": -0.3836811065673828,
+    "p95_psnr_delta": 0.6208776473999019,
+    "hard_bottom25_psnr_delta": 0.09066139221191406,
+    "easy_top25_psnr_delta": 0.07358594258626303,
+    "worst10pct_mean_psnr_delta": -0.4275461832682292,
+    "best10pct_mean_psnr_delta": 0.6498870849609375,
+    "worst10img_mean_psnr_delta": -0.7444377899169922,
+    "best10img_mean_psnr_delta": 0.9228290557861328,
+    "worst10_mean_psnr_delta": -0.4275461832682292,
+    "best10_mean_psnr_delta": 0.6498870849609375,
+    "mean_ssim_delta": 9.605884552001953e-06,
+    "positive_ratio": 0.665,
+    "strong_reference_cut_psnr": 42.755948066711426,
+    "strong_reference_count": 150,
+    "strong_regression_count_delta_le_-0.05": 55,
+    "worst_regression_count_delta_le_-0.20": 75
+  }
+}
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_oof20_adapter_only_shuffle_seed3413_f0_compare/scout_eval_compare_oof20_adapter_only_shuffle_seed3413_f0.json
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_oof20_adapter_only_shuffle_seed3413_f0_compare/scout_eval_per_image_oof20_adapter_only_shuffle_seed3413_f0.csv

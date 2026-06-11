@@ -1,0 +1,314 @@
+{
+  "oof20_adapter_only_invert_seed3407": {
+    "seeds": [
+      3407
+    ],
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.08822981834411621,
+      "ci95_low": 0.07666321040789287,
+      "ci95_high": 0.0996316776752472,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 2950223.0,
+      "w_minus": 1551277.0,
+      "z": 14.742500038106627,
+      "p_two_sided": 0.0
+    }
+  },
+  "oof20_adapter_only_invert_seed3411": {
+    "seeds": [
+      3411
+    ],
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.08403566042582195,
+      "ci95_low": 0.07232122178077698,
+      "ci95_high": 0.09588570439020792,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 2893237.5,
+      "w_minus": 1608262.5,
+      "z": 13.541440474804647,
+      "p_two_sided": 0.0
+    }
+  },
+  "oof20_adapter_only_invert_seed3413": {
+    "seeds": [
+      3413
+    ],
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.09392914454142252,
+      "ci95_low": 0.08301502086321513,
+      "ci95_high": 0.10500595415433248,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 3077485.0,
+      "w_minus": 1424015.0,
+      "z": 17.42474801601217,
+      "p_two_sided": 0.0
+    }
+  },
+  "oof20_adapter_only_normal_seed3407": {
+    "seeds": [
+      3407
+    ],
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.08793409856160482,
+      "ci95_low": 0.07683935839335124,
+      "ci95_high": 0.0996073668162028,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 2975769.0,
+      "w_minus": 1525731.0,
+      "z": 15.28092240176251,
+      "p_two_sided": 0.0
+    }
+  },
+  "oof20_adapter_only_normal_seed3411": {
+    "seeds": [
+      3411
+    ],
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.08399599647521973,
+      "ci95_low": 0.072444384765625,
+      "ci95_high": 0.09546669840812681,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 2921847.5,
+      "w_minus": 1579652.5,
+      "z": 14.144441485694603,
+      "p_two_sided": 0.0
+    }
+  },
+  "oof20_adapter_only_normal_seed3413": {
+    "seeds": [
+      3413
+    ],
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.0945353126525879,
+      "ci95_low": 0.08392209736506144,
+      "ci95_high": 0.10530831235249836,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 3102785.0,
+      "w_minus": 1398715.0,
+      "z": 17.957985540497173,
+      "p_two_sided": 0.0
+    }
+  },
+  "oof20_adapter_only_shuffle_seed3407": {
+    "seeds": [
+      3407
+    ],
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.07648635228474934,
+      "ci95_low": 0.06645095802942912,
+      "ci95_high": 0.08653363259633381,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 2945884.0,
+      "w_minus": 1555616.0,
+      "z": 14.651048748828348,
+      "p_two_sided": 0.0
+    }
+  },
+  "oof20_adapter_only_shuffle_seed3411": {
+    "seeds": [
+      3411
+    ],
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.07259116299947103,
+      "ci95_low": 0.06265081311861674,
+      "ci95_high": 0.0829972883383433,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 2883811.0,
+      "w_minus": 1617689.0,
+      "z": 13.342762074624494,
+      "p_two_sided": 0.0
+    }
+  },
+  "oof20_adapter_only_shuffle_seed3413": {
+    "seeds": [
+      3413
+    ],
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.08333552932739258,
+      "ci95_low": 0.07373625036875407,
+      "ci95_high": 0.0929046310742696,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 3071055.5,
+      "w_minus": 1430444.5,
+      "z": 17.289236132072396,
+      "p_two_sided": 0.0
+    }
+  },
+  "oof20_adapter_only_zero_seed3407": {
+    "seeds": [
+      3407
+    ],
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.07282976913452148,
+      "ci95_low": 0.06284553893407185,
+      "ci95_high": 0.08299383398691813,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 2925569.0,
+      "w_minus": 1575931.0,
+      "z": 14.222877985590689,
+      "p_two_sided": 0.0
+    }
+  },
+  "oof20_adapter_only_zero_seed3411": {
+    "seeds": [
+      3411
+    ],
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.0685565497080485,
+      "ci95_low": 0.05866205217043559,
+      "ci95_high": 0.0782526799360911,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 2869815.5,
+      "w_minus": 1631684.5,
+      "z": 13.047784771307109,
+      "p_two_sided": 0.0
+    }
+  },
+  "oof20_adapter_only_zero_seed3413": {
+    "seeds": [
+      3413
+    ],
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.08065873591105144,
+      "ci95_low": 0.07111808706919351,
+      "ci95_high": 0.09021207499504087,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 3058035.5,
+      "w_minus": 1443464.5,
+      "z": 17.014819034491577,
+      "p_two_sided": 0.0
+    }
+  }
+}

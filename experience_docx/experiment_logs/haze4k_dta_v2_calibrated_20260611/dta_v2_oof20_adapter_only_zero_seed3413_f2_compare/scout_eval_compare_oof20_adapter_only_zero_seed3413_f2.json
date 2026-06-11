@@ -1,0 +1,51 @@
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "official_convir",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "depth_mode": "none",
+      "count": 600,
+      "mean_psnr": 39.024180043538415,
+      "mean_ssim": 0.9954205108682315,
+      "avg_time_sec_sync": 0.036630455255508426,
+      "median_time_sec_sync": 0.032526254653930664,
+      "peak_cuda_mem_mib": 535.56884765625
+    },
+    "DTA_v2_oof20_adapter_only_zero_seed3413_f2_final": {
+      "label": "DTA_v2_oof20_adapter_only_zero_seed3413_f2_final",
+      "arch": "dta_v2",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v2-adapter_only-zero-seed3413-f2-oof20/Training-Results/Final.pkl",
+      "depth_mode": "zero",
+      "count": 600,
+      "mean_psnr": 39.10769008954366,
+      "mean_ssim": 0.9954293508330981,
+      "avg_time_sec_sync": 0.04178571343421936,
+      "median_time_sec_sync": 0.04080069065093994,
+      "peak_cuda_mem_mib": 541.2802734375
+    }
+  },
+  "comparison": {
+    "common_count": 600,
+    "mean_psnr_delta": 0.08351004600524903,
+    "median_psnr_delta": 0.07602310180664062,
+    "p5_psnr_delta": -0.3234455108642578,
+    "p95_psnr_delta": 0.5381891250610349,
+    "hard_bottom25_psnr_delta": 0.049751141866048176,
+    "easy_top25_psnr_delta": 0.08667925516764323,
+    "worst10pct_mean_psnr_delta": -0.36525967915852864,
+    "best10pct_mean_psnr_delta": 0.5796787897745769,
+    "worst10img_mean_psnr_delta": -0.6206901550292969,
+    "best10img_mean_psnr_delta": 0.8302864074707031,
+    "worst10_mean_psnr_delta": -0.36525967915852864,
+    "best10_mean_psnr_delta": 0.5796787897745769,
+    "mean_ssim_delta": 8.839964866638184e-06,
+    "positive_ratio": 0.6316666666666667,
+    "strong_reference_cut_psnr": 42.41839599609375,
+    "strong_reference_count": 150,
+    "strong_regression_count_delta_le_-0.05": 45,
+    "worst_regression_count_delta_le_-0.20": 64
+  }
+}
