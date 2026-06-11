@@ -1,0 +1,57 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/experience_docx/tools/eval_haze4k_checkpoint_compare.py:123: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+A0 100/600 psnr=35.9338
+DTA_v2_scout5_adapter_only_zero_seed3407_f0_final 100/600 psnr=35.9492
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "official_convir",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "depth_mode": "none",
+      "count": 128,
+      "mean_psnr": 36.822853818535805,
+      "mean_ssim": 0.9946820214390755,
+      "avg_time_sec_sync": 0.04612451232969761,
+      "median_time_sec_sync": 0.04033052921295166,
+      "peak_cuda_mem_mib": 535.27294921875
+    },
+    "DTA_v2_scout5_adapter_only_zero_seed3407_f0_final": {
+      "label": "DTA_v2_scout5_adapter_only_zero_seed3407_f0_final",
+      "arch": "dta_v2",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v2-adapter_only-zero-seed3407-f0-scout5/Training-Results/Final.pkl",
+      "depth_mode": "zero",
+      "count": 128,
+      "mean_psnr": 36.847188740968704,
+      "mean_ssim": 0.9947287966497242,
+      "avg_time_sec_sync": 0.04640507325530052,
+      "median_time_sec_sync": 0.04482877254486084,
+      "peak_cuda_mem_mib": 541.2802734375
+    }
+  },
+  "comparison": {
+    "common_count": 128,
+    "mean_psnr_delta": 0.024334922432899475,
+    "median_psnr_delta": -0.002254486083984375,
+    "p5_psnr_delta": -0.34975452423095704,
+    "p95_psnr_delta": 0.5172706604003906,
+    "hard_bottom25_psnr_delta": -0.028062760829925537,
+    "easy_top25_psnr_delta": 0.08007490634918213,
+    "worst10pct_mean_psnr_delta": -0.41240278879801434,
+    "best10pct_mean_psnr_delta": 0.5321598052978516,
+    "worst10img_mean_psnr_delta": -0.4423976898193359,
+    "best10img_mean_psnr_delta": 0.5662185668945312,
+    "worst10_mean_psnr_delta": -0.41240278879801434,
+    "best10_mean_psnr_delta": 0.5321598052978516,
+    "mean_ssim_delta": 4.67752106487751e-05,
+    "positive_ratio": 0.5,
+    "strong_reference_cut_psnr": 39.468915939331055,
+    "strong_reference_count": 32,
+    "strong_regression_count_delta_le_-0.05": 12,
+    "worst_regression_count_delta_le_-0.20": 17
+  }
+}
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_zero_seed3407_f0_compare/scout_eval_compare_scout5_adapter_only_zero_seed3407_f0.json
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated/experience_docx/experiment_logs/haze4k_dta_v2_calibrated_20260611/dta_v2_scout5_adapter_only_zero_seed3407_f0_compare/scout_eval_per_image_scout5_adapter_only_zero_seed3407_f0.csv
