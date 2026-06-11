@@ -2,3 +2,7 @@ setup_blocked_failed_infra_ssh convir-5090 2026-06-11T19:39:43+08:00
 wsl_ssh_error=Permission denied (publickey,password)
 windows_ssh_error=Permission denied (publickey,password) after host key accept-new
 action=cloud runtime not launched; local runtime fallback forbidden by AGENTS.md
+default_host_updated convir-4090 2026-06-11T20:55:06+08:00
+convir4090_ssh_probe=ok
+runtime_base=/sda/home/wangyuxin/ConvIR-B
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python

@@ -9,7 +9,7 @@ Status: required workflow for avoiding repeated invalid commands in this reposit
 This protocol records command forms that have already failed in this workspace
 and the preferred forms that should be used instead. It is especially important
 for monitoring cloud experiments from Windows PowerShell through WSL and then
-over SSH to `dehaze1`.
+over SSH to `convir-4090`.
 
 ## High-Priority Rule
 
@@ -199,7 +199,7 @@ PY"
 ```
 
 For project runtime commands, continue to prefer
-`/root/miniconda3/envs/convir-cu128/bin/python`.
+`/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 
 2026-06-10 recurrence:
 
@@ -299,7 +299,7 @@ Failure mode observed:
 Preferred form:
 
 ```bash
-ssh dehaze1 '/root/miniconda3/envs/convir-cu128/bin/python script.py'
+ssh dehaze1 '/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python script.py'
 ```
 
 or inside a remote script:
@@ -312,7 +312,7 @@ Avoid using a cloud-only interpreter path during local WSL static checks:
 $script = @'
 set -euo pipefail
 cd /home/ubuntu/workspace/ConvIR-B
-/root/miniconda3/envs/convir-cu128/bin/python -m py_compile some_file.py
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python -m py_compile some_file.py
 '@
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
@@ -320,7 +320,7 @@ $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 Failure mode observed:
 
 - the command ran inside local WSL, not on `dehaze1`;
-- `/root/miniconda3/envs/convir-cu128/bin/python` is a cloud path and returned
+- `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python` is a cloud path and returned
   `Permission denied` locally.
 
 Corrected form:
@@ -336,7 +336,7 @@ $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
 
 ```bash
-PY=/root/miniconda3/envs/convir-cu128/bin/python
+PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
 "$PY" script.py
 ```
 
@@ -346,7 +346,7 @@ Avoid using `python3` inside remote SSH monitor or post-processing blocks even
 when the main command already defines an explicit cloud interpreter path:
 
 ```bash
-PY=/root/miniconda3/envs/convir-cu128/bin/python
+PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
 "$PY" summarize_queue.py > /tmp/summary.json
 python3 - <<'PY'
 import json
@@ -363,7 +363,7 @@ Failure mode observed:
 Corrected form:
 
 ```bash
-PY=/root/miniconda3/envs/convir-cu128/bin/python
+PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
 "$PY" summarize_queue.py > /tmp/summary.json
 "$PY" - <<'PY'
 import json
@@ -594,7 +594,7 @@ cd /home/ubuntu/workspace/ConvIR-B
 ssh dehaze1 'bash -s' <<'REMOTE'
 set -euo pipefail
 EVID=/root/autodl-tmp/workspace/<remote-workspace>/experience_docx/experiment_logs/<route_id>
-PY=/root/miniconda3/envs/convir-cu128/bin/python
+PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
 printf 'remote_time=%s\n' "$(date -Is)"
 for s in <train_tmux> <post_tmux>; do
   if tmux has-session -t "$s" 2>/dev/null; then
@@ -810,5 +810,5 @@ PY
 ```
 
 Inside cloud monitor/audit helpers, use the already-declared explicit runtime
-such as `/root/miniconda3/envs/convir-cu128/bin/python` or `"$PY"` for all
+such as `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python` or `"$PY"` for all
 inline Python snippets as well; do not assume `python3` exists on PATH.

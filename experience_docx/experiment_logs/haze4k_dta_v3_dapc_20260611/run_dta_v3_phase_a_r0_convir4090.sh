@@ -3,10 +3,10 @@ set -euo pipefail
 STAGE=${1:-oof20}
 SEED=${2:-3407}
 FOLD=${3:-0}
-BASE=${BASE:-/home/caozhiyang/ConvIR-B}
+BASE=${BASE:-/sda/home/wangyuxin/ConvIR-B}
 WORK=${WORK:-$BASE/repos/ConvIR-B-dta-v3-dapc-finetune}
 ITS=$WORK/Dehazing/ITS
-PY=${PY:-$BASE/envs/convir-cu128/bin/python}
+PY=${PY:-$BASE/envs/convir-cu121/bin/python}
 DATA=${DATA:-$BASE/datasets/Haze4K/Haze4K}
 A0=${A0:-$BASE/checkpoints/official/Haze4K/haze4k-base.pkl}
 DEPTH=${DEPTH:-$BASE/depth_cache/depth_anything_v2_small_hf}

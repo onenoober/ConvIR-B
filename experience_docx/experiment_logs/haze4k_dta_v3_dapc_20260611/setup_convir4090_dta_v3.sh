@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
-BASE=${BASE:-/home/caozhiyang/ConvIR-B}
+BASE=${BASE:-/sda/home/wangyuxin/ConvIR-B}
 WORK=${WORK:-$BASE/repos/ConvIR-B-dta-v3-dapc-finetune}
 BRANCH=${BRANCH:-codex/haze4k-dta-v3-dapc-finetune}
-PY=${PY:-$BASE/envs/convir-cu128/bin/python}
+PY=${PY:-$BASE/envs/convir-cu121/bin/python}
 DATA=${DATA:-$BASE/datasets/Haze4K/Haze4K}
 A0=${A0:-$BASE/checkpoints/official/Haze4K/haze4k-base.pkl}
 EVID=$WORK/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611

@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `FAILED_INFRA_SSH_BLOCKED_BEFORE_PREFLIGHT`
+Status: `PLANNED_FINE_TUNE_PREFLIGHT_CONVIR4090`
 
 ## Scope
 
@@ -12,12 +12,12 @@ Status: `FAILED_INFRA_SSH_BLOCKED_BEFORE_PREFLIGHT`
 - Branch: `codex/haze4k-dta-v3-dapc-finetune`.
 - Anchor: `github/codex/haze4k-official-arch-anchor` at `2d529d4`; this route imports DTA data/prior plumbing needed by the mechanism but does not fine-tune from a DTA-v2 checkpoint.
 - Diagnostic predecessor: `github/codex/haze4k-dta-v2-calibrated` at `9e95408`, used only for mechanism diagnosis and evidence targets.
-- Runtime host: `convir-5090`.
-- Cloud workspace: `/home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune`.
-- Python: `/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python`.
-- Data: `/home/caozhiyang/ConvIR-B/datasets/Haze4K/Haze4K`.
-- Official checkpoint: `/home/caozhiyang/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`.
-- Expected depth cache: `/home/caozhiyang/ConvIR-B/depth_cache/depth_anything_v2_small_hf` unless setup audit finds a different existing cache.
+- Runtime host: `convir-4090`.
+- Cloud workspace: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune`.
+- Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
+- Data: `/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K`.
+- Official checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`.
+- Expected depth cache: `/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf` unless setup audit finds a different existing cache.
 - Evidence root: `experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/`.
 - Local policy: local WSL is for editing and compile/static checks only; no local tests, smoke tests, training, eval, inference, demos, or image generation.
 
@@ -128,10 +128,10 @@ gate. Current status: locked test blocked.
 - Stop ablations that are preservation-negative before OOF expansion.
 - Do not continue `adapter_neighbors` from DTA-v2 unless a new Phase B gate passes first.
 
-## 2026-06-11 Cloud Setup Blocker
+## 2026-06-11 Default Host Correction
 
-Cloud setup on `convir-5090` is blocked before runtime validation because SSH
-authentication fails from both WSL and Windows-visible keys with
-`Permission denied (publickey,password)`. Per repository rules, no local runtime
-fallback or alternate host fallback was used. Once SSH access is restored, run
-`setup_convir5090_dta_v3.sh` and then `run_dta_v3_preflight_convir5090.sh`.
+The route default cloud host has been changed to `convir-4090` by user instruction.
+The earlier `convir-5090` SSH blocker is superseded and is retained only in
+`status.txt` as historical setup evidence. Runtime validation, training, eval,
+and contact-sheet generation should now use `ssh convir-4090` and the
+`/sda/home/wangyuxin/ConvIR-B/...` runtime paths.
