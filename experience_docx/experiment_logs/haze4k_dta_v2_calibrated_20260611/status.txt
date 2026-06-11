@@ -1516,3 +1516,46 @@ codex/haze4k-dta-v2-calibrated
 ?? experience_docx/tools/audit_haze4k_dta_v2_checkpoint.py
 launch_ok run_id=oof20_adapter_only_zero_seed3407_f4 session=dta_v2_oof20_adapter_only_zero_f4 gpu=7 2026-06-11T12:29:35+08:00
 DTA_V2_OOF20_ADAPTER_ONLY_F3_F4_LAUNCH_OK 2026-06-11T12:29:35+08:00
+train_done rc=0 dta_v2 run_id=oof20_adapter_only_normal_seed3407_f4 2026-06-11T12:46:53+08:00
+train_done rc=0 dta_v2 run_id=oof20_adapter_only_zero_seed3407_f3 2026-06-11T12:47:03+08:00
+train_done rc=0 dta_v2 run_id=oof20_adapter_only_zero_seed3407_f4 2026-06-11T12:47:03+08:00
+train_done rc=0 dta_v2 run_id=oof20_adapter_only_shuffle_seed3407_f3 2026-06-11T12:47:19+08:00
+train_done rc=0 dta_v2 run_id=oof20_adapter_only_invert_seed3407_f4 2026-06-11T12:47:32+08:00
+train_done rc=0 dta_v2 run_id=oof20_adapter_only_normal_seed3407_f3 2026-06-11T12:47:42+08:00
+train_done rc=0 dta_v2 run_id=oof20_adapter_only_shuffle_seed3407_f4 2026-06-11T12:47:47+08:00
+train_done rc=0 dta_v2 run_id=oof20_adapter_only_invert_seed3407_f3 2026-06-11T12:47:59+08:00
+eval_done rc=0 dta_v2 run_id=oof20_adapter_only_normal_seed3407_f4 2026-06-11T12:51:47+08:00
+DTA_V2_TRAIN_EVAL_OK run_id=oof20_adapter_only_normal_seed3407_f4
+eval_done rc=0 dta_v2 run_id=oof20_adapter_only_zero_seed3407_f3 2026-06-11T12:52:40+08:00
+DTA_V2_TRAIN_EVAL_OK run_id=oof20_adapter_only_zero_seed3407_f3
+eval_done rc=0 dta_v2 run_id=oof20_adapter_only_zero_seed3407_f4 2026-06-11T12:52:51+08:00
+DTA_V2_TRAIN_EVAL_OK run_id=oof20_adapter_only_zero_seed3407_f4
+eval_done rc=0 dta_v2 run_id=oof20_adapter_only_invert_seed3407_f4 2026-06-11T12:54:50+08:00
+DTA_V2_TRAIN_EVAL_OK run_id=oof20_adapter_only_invert_seed3407_f4
+eval_done rc=0 dta_v2 run_id=oof20_adapter_only_normal_seed3407_f3 2026-06-11T12:55:04+08:00
+DTA_V2_TRAIN_EVAL_OK run_id=oof20_adapter_only_normal_seed3407_f3
+eval_done rc=0 dta_v2 run_id=oof20_adapter_only_shuffle_seed3407_f3 2026-06-11T12:55:15+08:00
+DTA_V2_TRAIN_EVAL_OK run_id=oof20_adapter_only_shuffle_seed3407_f3
+eval_done rc=0 dta_v2 run_id=oof20_adapter_only_invert_seed3407_f3 2026-06-11T12:55:18+08:00
+DTA_V2_TRAIN_EVAL_OK run_id=oof20_adapter_only_invert_seed3407_f3
+eval_done rc=0 dta_v2 run_id=oof20_adapter_only_shuffle_seed3407_f4 2026-06-11T12:56:02+08:00
+DTA_V2_TRAIN_EVAL_OK run_id=oof20_adapter_only_shuffle_seed3407_f4
+tpred_done rc=0 dta_v2 run_id=oof20_adapter_only_zero_seed3407_f3 2026-06-11T12:57:25+08:00
+DTA_V2_TPRED_AUDIT_OK run_id=oof20_adapter_only_zero_seed3407_f3
+tpred_done rc=0 dta_v2 run_id=oof20_adapter_only_normal_seed3407_f4 2026-06-11T12:57:28+08:00
+DTA_V2_TPRED_AUDIT_OK run_id=oof20_adapter_only_normal_seed3407_f4
+tpred_done rc=0 dta_v2 run_id=oof20_adapter_only_zero_seed3407_f4 2026-06-11T12:57:29+08:00
+DTA_V2_TPRED_AUDIT_OK run_id=oof20_adapter_only_zero_seed3407_f4
+tpred_done rc=0 dta_v2 run_id=oof20_adapter_only_invert_seed3407_f4 2026-06-11T12:58:25+08:00
+DTA_V2_TPRED_AUDIT_OK run_id=oof20_adapter_only_invert_seed3407_f4
+tpred_done rc=0 dta_v2 run_id=oof20_adapter_only_normal_seed3407_f3 2026-06-11T12:58:29+08:00
+DTA_V2_TPRED_AUDIT_OK run_id=oof20_adapter_only_normal_seed3407_f3
+tpred_done rc=0 dta_v2 run_id=oof20_adapter_only_invert_seed3407_f3 2026-06-11T12:58:37+08:00
+DTA_V2_TPRED_AUDIT_OK run_id=oof20_adapter_only_invert_seed3407_f3
+tpred_done rc=0 dta_v2 run_id=oof20_adapter_only_shuffle_seed3407_f3 2026-06-11T12:58:50+08:00
+DTA_V2_TPRED_AUDIT_OK run_id=oof20_adapter_only_shuffle_seed3407_f3
+tpred_done rc=0 dta_v2 run_id=oof20_adapter_only_shuffle_seed3407_f4 2026-06-11T12:59:06+08:00
+DTA_V2_TPRED_AUDIT_OK run_id=oof20_adapter_only_shuffle_seed3407_f4
+aggregate_start dta_v2 adapter_only fivefold 2026-06-11T13:03:20+08:00
+aggregate_done rc=0 dta_v2 adapter_only fivefold 2026-06-11T13:03:42+08:00
+DTA_V2_OOF20_ADAPTER_ONLY_FIVEFOLD_AGGREGATE_OK

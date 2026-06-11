@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `IN_PROGRESS_ADAPTER_ONLY_F3_F4_RUNNING`
+Status: `IN_PROGRESS_ADAPTER_ONLY_FIVEFOLD_DONE_MULTI_SEED_NEXT`
 
 ## Scope
 
@@ -83,8 +83,12 @@ that has already passed internal mechanism and preservation gates.
 - Current internal candidate remains `adapter_only`, not `adapter_neighbors`.
   Locked Haze4K test remains blocked; next queue is OOF expansion across
   additional train-derived folds and controls.
-- Adapter-only folds `1-2` OOF20 controls completed with all train/eval/tpred
-  jobs `rc=0`; folds `3-4` are running in parallel on convir-4090.
+- Adapter-only folds `1-4` OOF20 controls completed with all train/eval/tpred
+  jobs `rc=0`.
+- Five-fold adapter-only aggregate completed on convir-4090 with bootstrap CI
+  and Wilcoxon report. Locked Haze4K test remains blocked because depth
+  attribution is positive but still not clean, and SSIM/tail regressions do not
+  satisfy the promotion gate.
 
 
 ## 2026-06-11 Adapter-Only Fold0 Scout5 Controls
@@ -150,17 +154,6 @@ depth/transmission prior. Continue with adapter-only OOF expansion and controls;
 do not use locked test for this decision.
 
 
-## Next Internal Queue
-
-- Finish adapter-only OOF20 folds `3-4` for `invert`, `normal`, `shuffle`, and
-  `zero` under the same command script and seed `3407`.
-- Aggregate five-fold OOF deltas, hard/easy buckets, strong/worst regressions,
-  `t_pred` quality, and gate statistics.
-- If mechanism attribution remains ambiguous after five folds, run the
-  predeclared multi-seed adapter-only controls before any locked-test
-  confirmation.
-
-
 ## 2026-06-11 Adapter-Only Fold1-2 OOF20 Controls
 
 Folds `1-2` completed after the adapter-neighbors diagnostic. These results
@@ -183,3 +176,36 @@ Fold0-2 average: `invert` has the highest mean dPSNR (`+0.089317`), `normal`
 has the highest hard bottom-25 average (`+0.078323`), and zero/shuffle controls
 are still close (`+0.073559/+0.077395` mean dPSNR). Continue to five-fold OOF
 before any locked-test or promotion decision.
+
+
+## 2026-06-11 Adapter-Only Five-Fold OOF20 Aggregate
+
+Folds `3-4` completed after folds `1-2`, then the aggregate audit ran on
+convir-4090. The aggregate covers all `3000` train-derived validation images
+from folds `0-4`; all rows below have Wilcoxon signed-rank `p_two_sided=0.0`
+under the repository's normal-approximation report.
+
+| Depth mode | Mean dPSNR | 95% bootstrap CI | Hard bottom-25 | Easy top-25 | dSSIM | Strong regressions | Worst regressions | t_l1 | Spearman(t_pred,t_gt) | Stage2 gate | Stage3 gate |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `invert` | `+0.088230` | `[+0.076466, +0.099691]` | `+0.070046` | `+0.071636` | `-0.0000253` | `275/750` | `479/3000` | `0.077442` | `0.925764` | `0.013341` | `0.050323` |
+| `normal` | `+0.087934` | `[+0.076519, +0.099003]` | `+0.076317` | `+0.069672` | `-0.0000240` | `271/750` | `463/3000` | `0.088295` | `0.924241` | `0.008749` | `0.052278` |
+| `shuffle` | `+0.076486` | `[+0.066115, +0.086681]` | `+0.063289` | `+0.064852` | `-0.0000106` | `270/750` | `425/3000` | `0.083860` | `0.925129` | `0.013612` | `0.053514` |
+| `zero` | `+0.072830` | `[+0.062554, +0.082707]` | `+0.059540` | `+0.063010` | `-0.0000097` | `261/750` | `421/3000` | `0.078924` | `0.926136` | `0.015538` | `0.054852` |
+
+Interpretation: DTA-v2 adapter-only is a real positive internal OOF signal, but
+it is not yet a clean depth-mechanism or promotion result. `invert` and `normal`
+are essentially tied in mean PSNR, `normal` is higher on hard bottom-25,
+zero/shuffle controls retain most of the gain, SSIM is slightly negative for
+all modes, and tail regressions remain high. Proceed to multi-seed adapter-only
+controls; locked Haze4K test remains blocked.
+
+
+## Next Internal Queue
+
+- Run the predeclared multi-seed adapter-only controls for `invert`, `normal`,
+  `shuffle`, and `zero` before any locked-test confirmation.
+- Prefer train-derived OOF folds; if runtime pressure requires staging, run two
+  additional seeds in the same five-fold schedule and aggregate across seeds.
+- Only consider locked Haze4K test if multi-seed OOF preserves mean/hard gains,
+  reduces ambiguity against zero/shuffle controls, and resolves the SSIM/tail
+  risk gates.

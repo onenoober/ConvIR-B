@@ -1,0 +1,94 @@
+{
+  "oof20_adapter_only_invert_seed3407": {
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.08822981834411621,
+      "ci95_low": 0.07646598191261293,
+      "ci95_high": 0.09969120197296141,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 2950223.0,
+      "w_minus": 1551277.0,
+      "z": 14.742500038106627,
+      "p_two_sided": 0.0
+    }
+  },
+  "oof20_adapter_only_normal_seed3407": {
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.08793409856160482,
+      "ci95_low": 0.07651890950202941,
+      "ci95_high": 0.0990032953739166,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 2975769.0,
+      "w_minus": 1525731.0,
+      "z": 15.28092240176251,
+      "p_two_sided": 0.0
+    }
+  },
+  "oof20_adapter_only_shuffle_seed3407": {
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.07648635228474934,
+      "ci95_low": 0.06611495707829793,
+      "ci95_high": 0.08668084648450217,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 2945884.0,
+      "w_minus": 1555616.0,
+      "z": 14.651048748828348,
+      "p_two_sided": 0.0
+    }
+  },
+  "oof20_adapter_only_zero_seed3407": {
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "bootstrap_mean_psnr_delta": {
+      "count": 3000,
+      "mean": 0.07282976913452148,
+      "ci95_low": 0.06255399543444316,
+      "ci95_high": 0.08270656622250874,
+      "iterations": 5000
+    },
+    "wilcoxon_signed_rank_psnr_delta": {
+      "n": 3000,
+      "w_plus": 2925569.0,
+      "w_minus": 1575931.0,
+      "z": 14.222877985590689,
+      "p_two_sided": 0.0
+    }
+  }
+}
