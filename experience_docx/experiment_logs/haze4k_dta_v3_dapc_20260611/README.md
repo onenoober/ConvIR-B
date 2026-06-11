@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `COMPLETED_GATE_FAIL_PHASE_A_R0_NO_PHASE_B`
+Status: `COMPLETED_MECHANISM_POSITIVE_NO_PROMOTION_DEPTHDIRECT_INVERT_ONLY`
 
 This directory stores text evidence for `codex/haze4k-dta-v3-dapc-finetune`.
 Checkpoints, model weights, datasets, images, arrays, archives, and raw inference
@@ -156,3 +156,63 @@ aggregated into `train_eval_depth_matrix_*`, and gets cloud-only contact sheets.
 Gate defaults are intentionally a bit wider for this diagnostic:
 `gate_limit=0.12`, `gamma_limit=0.20`, `beta_limit=0.10`, dense mask budget
 `0.14`, and depth residual scale `0.08`.
+
+## 2026-06-11 Depth-Direct Scout Results
+
+`scout5full` depthDirect completed on `convir-4090` in workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-depthdirect`
+from commit `12408fb`. This was a no-promotion mechanism probe: A0 stayed
+frozen, `R0=0`, training scope was `dta_depth_only`, and each train-depth model
+was evaluated under `invert/normal/zero/shuffle` using deterministic eval
+shuffle. Locked Haze4K test remained blocked.
+
+True-eval rows by train depth:
+
+| train depth | true eval | mean dPSNR | hard bottom-25 | easy top-25 | dSSIM | pos ratio | strong | worst | true-vs-zero mean surplus |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `invert` | `invert` | `+0.013905` | `-0.005602` | `+0.036873` | `-0.00002676` | `0.5883` | `38` | `75` | `+0.032286` |
+| `normal` | `normal` | `+0.008538` | `-0.008319` | `+0.030762` | `-0.00003284` | `0.5767` | `37` | `72` | `-0.009680` |
+| `shuffle` | `shuffle` | `-0.004687` | `-0.020714` | `+0.018559` | `-0.00003603` | `0.5350` | `39` | `69` | `-0.002455` |
+| `zero` | `zero` | `-0.004807` | `-0.020599` | `+0.018560` | `-0.00003586` | `0.5367` | `39` | `71` | n/a |
+
+The important positive is attribution, not promotion: train=`invert` /
+eval=`invert` beats eval=`zero` by `+0.032286 dB` mean with positive surplus
+ratio `0.625`, which is the first DTA-v3 signal that satisfies the mean
+true-vs-zero mechanism threshold. It still fails candidate gates: absolute mean
+is only `+0.013905 dB`, hard is slightly negative, SSIM is negative, positive
+ratio is below `0.65`, worst regressions rise to `75/600` versus eval-zero
+`35/600`, and mean true-vs-shuffle is only `+0.028454 dB` (just under the
+`+0.03 dB` gate).
+
+Supporting text artifacts:
+
+- `depth_direct_scout_summary.json` and `depth_direct_scout_summary.csv`.
+- `train_eval_depth_matrix_scout5full_depthDirect_*_seed3407_f0.json/csv`.
+- `r0_vs_rdepth_attribution_scout5full_depthDirect_*_seed3407_f0.csv`.
+- deterministic shuffle audits `depth_eval_pairing_audit_scout5full_depthDirect_*_evalshuffle.json/csv`.
+- cloud-only contact sheets under `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-depthdirect/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirect_*`.
+
+Decision: `COMPLETED_MECHANISM_POSITIVE_NO_PROMOTION_DEPTHDIRECT_INVERT_ONLY`.
+Keep locked test blocked. Do not revive learned R0 Phase B from the failed R0
+checkpoints. Continue only with train=`invert` depth-direct variants that keep
+the wider encoder gate but add stronger tail/SSIM and mask-budget protection.
+
+## 2026-06-11 Depth-Direct Tail/SSIM Wide-Gate Scout Plan
+
+Next cloud queue keeps the mechanism-positive setup (`R0=0`,
+`train_scope=dta_depth_only`, train depth `invert`) and makes the DTA encoder
+gates wider while varying the safety pressure. Each variant runs `scout5full` on
+fold0, evaluates the full `invert/normal/zero/shuffle` matrix, and generates
+cloud-only contact sheets.
+
+| Variant | Gate/Gamma/Beta | depth scale | dense budget | preserve/ref/tail | intent |
+| --- | ---: | ---: | ---: | ---: | --- |
+| `wg16_tail08_s005_b10` | `0.16/0.24/0.12` | `0.05` | `0.10` | `0.08/0.08/0.08` | wider gate with lower depth action and moderate tail guard |
+| `wg18_tail10_s006_b12` | `0.18/0.28/0.14` | `0.06` | `0.12` | `0.08/0.10/0.10` | recover surplus with stronger tail pressure |
+| `wg20_tail12_s006_b10` | `0.20/0.30/0.15` | `0.06` | `0.10` | `0.10/0.12/0.12` | widest gate, lower LR, strongest guard |
+| `wg16_tail06_s008_b08` | `0.16/0.24/0.12` | `0.08` | `0.08` | `0.06/0.06/0.06` | test whether smaller mask budget can keep surplus with less tail |
+
+Continue condition: improve over the baseline depthDirect `invert` row by
+reducing worst/strong regressions and SSIM loss while preserving at least
+`+0.03 dB` mean true-vs-zero surplus. No locked test is allowed from these
+scouts.
