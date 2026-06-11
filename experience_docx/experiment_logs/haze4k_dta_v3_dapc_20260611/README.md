@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `PLANNED_FINE_TUNE_PREFLIGHT_CONVIR4090`
+Status: `PREFLIGHT_COMPLETE_READY_PHASE_A_R0`
 
 This directory stores text evidence for `codex/haze4k-dta-v3-dapc-finetune`.
 Checkpoints, model weights, datasets, images, arrays, archives, and raw inference
@@ -56,3 +56,13 @@ The earlier `convir-5090` SSH blocker is superseded and is retained only in
 `status.txt` as historical setup evidence. Runtime validation, training, eval,
 and contact-sheet generation should now use `ssh convir-4090` and the
 `/sda/home/wangyuxin/ConvIR-B/...` runtime paths.
+
+## 2026-06-11 Convir-4090 Preflight
+
+Stage 0 preflight completed on `convir-4090` with `DTA_V3_PREFLIGHT_OK`.
+
+- R0 preflight: partial load `602` official keys, `29` missing keys all under `DTA.`, unexpected `[]`, synthetic no-op max diff `0.0`, real-batch DTA grad sum `0.06329656`.
+- Depth-bounded preflight: partial load `602` official keys, `29` missing keys all under `DTA.`, unexpected `[]`, synthetic max diff `0.00024414` under the written bounded tolerance, real-batch DTA grad sum `0.19976439`.
+- OOF split generation: five train-derived folds, `600` validation images per fold.
+- Deterministic eval shuffle audit: `600` fold0 validation rows, `same_image_count=0`, `same_image_ratio=0.0`, density-bin match ratio `0.275`.
+- Locked Haze4K test remains blocked. Next authorized step is Phase A `dta_r0_only` fine-tuning from official A0 on `convir-4090`.

@@ -6,3 +6,32 @@ default_host_updated convir-4090 2026-06-11T20:55:06+08:00
 convir4090_ssh_probe=ok
 runtime_base=/sda/home/wangyuxin/ConvIR-B
 python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+setup_start dta_v3 2026-06-11T20:57:54+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune
+branch=codex/haze4k-dta-v3-dapc-finetune
+commit=b3a72a2
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+python_exists=1
+data_exists=1
+a0_exists=1
+setup_done rc=0 dta_v3 2026-06-11T20:57:54+08:00
+DTA_V3_SETUP_OK depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+preflight_start dta_v3 2026-06-11T20:58:09+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+cuda_visible_devices=0
+codex/haze4k-dta-v3-dapc-finetune
+b3a72a2
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+oof_splits_done rc=0 dta_v3 2026-06-11T20:58:10+08:00
+preflight_r0_done rc=0 dta_v3 2026-06-11T20:58:16+08:00
+preflight_depth_done rc=0 dta_v3 2026-06-11T20:58:21+08:00
+pairing_audit_done rc=0 dta_v3 2026-06-11T20:58:26+08:00
+preflight_done rc=0 dta_v3 2026-06-11T20:58:26+08:00
+DTA_V3_PREFLIGHT_OK
