@@ -3,8 +3,8 @@
 Date: 2026-06-11
 
 Status: first low-gate route completed diagnostic/no-promotion on
-`convir-4090`; DTA-v2 calibrated confidence-gated route is active and pending
-cloud audit/preflight/training evidence.
+`convir-4090`; DTA-v2 calibrated confidence-gated route is active with fold0
+adapter-only and adapter-neighbors evidence synced, and OOF expansion next.
 
 ## Sources
 
@@ -22,7 +22,8 @@ cloud audit/preflight/training evidence.
 | DTA smoke | One-epoch adapter-only smoke completed; 32-image diagnostic mean PSNR delta `+0.002904 dB`, strong regressions `0`, worst regressions `0`. | Continue to scout because runtime, depth cache, and low-gate path are healthy. |
 | DTA scout5 | Five-epoch adapter-only run completed; 128-image diagnostic mean PSNR delta `-0.036217 dB`, hard bottom-25 `-0.039902 dB`, strong regressions `15/32`, worst regressions `0`. | Passed the lenient continuation gate, but did not show a positive mechanism result. |
 | DTA gate20 | Twenty-epoch adapter-only run completed; full 1000-image diagnostic mean PSNR delta `-0.008940 dB`, hard bottom-25 `-0.019101 dB`, easy top-25 `-0.021037 dB`, SSIM delta `-0.00001973`, strong regressions `80/250`, worst regressions `48/1000`. | `COMPLETED_GATE_PASS_DIAGNOSTIC_NO_PROMOTION_DTA_LOWGATE`; do not promote this exact route. |
-| DTA-v2 calibrated confidence-gated | Adapter-only fold0 OOF20 controls completed: invert/normal/shuffle/zero mean dPSNR `+0.1069/+0.1060/+0.0984/+0.0955`, hard `+0.0992/+0.1047/+0.0956/+0.0918`. Positive but weak depth attribution; continue adapter-neighbors. | `IN_PROGRESS_ADAPTER_ONLY_OOF20_DONE_NEIGHBORS_NEXT`; execute on `convir-4090` and keep locked Haze4K test blocked until one fixed internal-selected configuration. |
+| DTA-v2 calibrated confidence-gated adapter-only | Fold0 OOF20 controls completed: invert/normal/shuffle/zero mean dPSNR `+0.1069/+0.1060/+0.0984/+0.0955`, hard `+0.0992/+0.1047/+0.0956/+0.0918`. Positive but weak depth attribution. | Keep as current internal candidate; expand OOF folds before locked-test consideration. |
+| DTA-v2 calibrated confidence-gated adapter-neighbors | Fold0 OOF20 controls completed: invert/normal/shuffle/zero mean dPSNR `+0.0151/+0.0151/+0.0097/+0.0072`, easy top-25 `-0.0639/-0.0624/-0.0728/-0.0746`, negative SSIM, and worst regressions `142-146`. | Not a promotion candidate; do not continue adapter-neighbors unless a new mechanism changes preservation/gate behavior. |
 
 ## Family Verdict
 
@@ -57,4 +58,6 @@ than retuning the completed low-gate adapter. Required sequence:
 4. Run zero-depth, shuffle-depth, and invert-depth controls under the same
    protocol.
 5. Run adapter-neighbors only after the adapter-only/control evidence is synced.
+   Fold0 adapter-neighbors is now complete and negative for preservation, so the
+   active path returns to adapter-only OOF expansion.
 6. Use locked Haze4K test only once for a fixed internally selected config.

@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `IN_PROGRESS_ADAPTER_ONLY_OOF20_DONE_NEIGHBORS_NEXT`
+Status: `IN_PROGRESS_ADAPTER_NEIGHBORS_F0_DONE_OOF_EXPANSION_NEXT`
 
 ## Scope
 
@@ -76,7 +76,13 @@ that has already passed internal mechanism and preservation gates.
 - DTA-v2 preflight passed: partial load `602` loaded / `25` missing all under `DTA.`, no-op max diff `0.0`, and real-batch DTA grad sum `0.66677364` with finite trans/physics losses.
 - Depth-transmission audit passed with `4000` rows and `0` errors; it found the cached depth direction is reversed (`depth` vs `-log(t_gt)` median Spearman about `-0.93`, `1-depth` about `+0.93`).
 - Primary calibrated-depth training must use `--dta_depth_mode invert`; `normal` becomes the wrong-orientation control, alongside `zero` and `shuffle` controls.
-- Adapter-only fold0 scout5 and OOF20 controls have completed; next queue is adapter-neighbors fold0 OOF20.
+- Adapter-only fold0 scout5 and OOF20 controls have completed.
+- Adapter-neighbors fold0 OOF20 controls have completed. They stayed slightly
+  positive in mean dPSNR but lost easy/top preservation and SSIM, increased worst
+  regressions versus adapter-only, and showed near-zero audited gate means.
+- Current internal candidate remains `adapter_only`, not `adapter_neighbors`.
+  Locked Haze4K test remains blocked; next queue is OOF expansion across
+  additional train-derived folds and controls.
 
 
 ## 2026-06-11 Adapter-Only Fold0 Scout5 Controls
@@ -117,3 +123,37 @@ modes, with calibrated `invert` barely best on mean dPSNR and `normal` best on
 hard bottom-25. The small spread versus zero/shuffle means image-quality gains
 cannot yet be attributed solely to correct depth; however, the full-fold result
 is strong enough to continue the predeclared adapter-neighbors experiment.
+
+
+## 2026-06-11 Adapter-Neighbors Fold0 OOF20 Controls
+
+Four adapter-neighbors OOF20 jobs ran concurrently on fold0 train/val. The
+scope released `DTA.*` plus neighboring FAM/Conv parameters using the
+predeclared DTA and neighbor clip settings. All jobs completed training,
+full-fold comparison, and `t_pred` quality audit on convir-4090.
+
+| Depth mode | Mean dPSNR | Hard bottom-25 | Easy top-25 | dSSIM | Strong regressions | Worst regressions | t_l1 | Spearman(t_pred,t_gt) | Stage2 gate mean | Stage3 gate mean |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `invert` | `+0.015092` | `+0.009731` | `-0.063870` | `-0.0001458` | `54` | `144` | `0.077901` | `0.921738` | `0.000074` | `0.000072` |
+| `normal` | `+0.015129` | `+0.008829` | `-0.062361` | `-0.0001398` | `56` | `142` | `0.088921` | `0.920107` | `0.000074` | `0.000072` |
+| `shuffle` | `+0.009656` | `+0.003892` | `-0.072763` | `-0.0001245` | `53` | `145` | `0.084493` | `0.921071` | `0.000072` | `0.000070` |
+| `zero` | `+0.007218` | `+0.001740` | `-0.074593` | `-0.0001274` | `53` | `146` | `0.079408` | `0.922233` | `0.000074` | `0.000074` |
+
+Interpretation: adapter-neighbors is not a promotion candidate in this route.
+It gives only `+0.0072` to `+0.0151 dB` mean gain, makes easy/top samples
+negative by roughly `-0.06` to `-0.075 dB`, has negative SSIM, and raises worst
+regressions to `142-146` versus `88-102` for adapter-only. The near-zero audited
+gates also show that unfreezing neighbors did not improve consumption of the
+depth/transmission prior. Continue with adapter-only OOF expansion and controls;
+do not use locked test for this decision.
+
+
+## Next Internal Queue
+
+- Run adapter-only OOF20 folds `1-4` for `invert`, `normal`, `shuffle`, and
+  `zero` under the same command script and seed `3407`.
+- Aggregate five-fold OOF deltas, hard/easy buckets, strong/worst regressions,
+  `t_pred` quality, and gate statistics.
+- If mechanism attribution remains ambiguous after five folds, run the
+  predeclared multi-seed adapter-only controls before any locked-test
+  confirmation.

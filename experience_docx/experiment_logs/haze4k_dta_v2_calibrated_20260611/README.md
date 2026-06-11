@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `IN_PROGRESS_CLOUD_QUEUE_PENDING`
+Status: `IN_PROGRESS_ADAPTER_NEIGHBORS_F0_SYNCED_OOF_NEXT`
 
 This directory stores text-only evidence for `codex/haze4k-dta-v2-calibrated`,
 the calibrated confidence-gated DTA route for Innovation 1. Checkpoints, model
@@ -18,7 +18,7 @@ committed.
 - Official checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`.
 - Depth cache: `/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf`.
 
-## Planned Text Artifacts
+## Text Artifacts
 
 - `setup_convir4090_dta_v2.sh`
 - `run_dta_v2_depth_transmission_audit_convir4090.sh`
@@ -31,7 +31,9 @@ committed.
 - `dta_v2_haze4k_oof_splits_seed3407.json`
 - `dta_v2_preflight.log`
 - `dta_v2_preflight.json`
-- train/eval logs and `scout_eval_compare_*.json/csv` for normal, zero, shuffle, invert, and adapter-neighbors runs.
+- train/eval logs, `scout_eval_compare_*.json/csv`, and
+  `dta_v2_tpred_quality_*.json/csv` for normal, zero, shuffle, invert, and
+  adapter-neighbors runs.
 
 ## Execution Order
 
@@ -42,21 +44,37 @@ committed.
 5. Run adapter-neighbors only after the adapter-only/control evidence is available.
 6. Sync text evidence back to GitHub after every completed cloud stage.
 
+## Completed Cloud Evidence
 
-## 2026-06-11 Adapter-Only Fold0 OOF20 Controls
+- convir-4090 setup/static checks passed.
+- OOF split generation passed with five train-derived folds of `600` validation
+  images each.
+- DTA-v2 preflight passed: partial A0 load `602` loaded keys, `25` missing keys
+  all under `DTA.`, no-op max abs diff `0.0`, finite supervised
+  transmission/physics losses, and DTA grad sum `0.66677364`.
+- Depth-transmission audit produced `4000` rows with `0` errors and found the
+  cached depth direction is reversed; primary calibrated runs therefore use
+  `--dta_depth_mode invert`.
+- Adapter-only fold0 scout5 and OOF20 controls completed and were synced in the
+  previous evidence commit.
+- Adapter-neighbors fold0 OOF20 controls completed on convir-4090 GPUs 1-4 and
+  are synced here.
 
-Four adapter-only OOF20 jobs ran concurrently on fold0 train/val. Evaluation used
-all `600` images from `fold0_val`, followed by full-fold `t_pred` quality audits.
+## Adapter-Neighbors Fold0 OOF20 Result
+
+Evaluation used all `600` fold0 validation images. Compared with the
+adapter-only result, releasing neighboring FAM/Conv layers reduced mean gain,
+made easy/top samples negative, increased worst regressions, and collapsed the
+recorded DTA gate means to near zero in the `t_pred` audit. This scope is not
+the current promotion candidate; continue OOF expansion with `adapter_only`.
 
 | Depth mode | Mean dPSNR | Hard bottom-25 | Easy top-25 | dSSIM | Strong regressions | Worst regressions | t_l1 | Spearman(t_pred,t_gt) | Stage2 gate mean | Stage3 gate mean |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| `invert` | `+0.106894` | `+0.099160` | `+0.091081` | `-0.0000075` | `56` | `102` | `0.077984` | `0.921685` | `0.013002` | `0.050007` |
-| `normal` | `+0.106010` | `+0.104724` | `+0.087849` | `-0.0000045` | `56` | `98` | `0.088812` | `0.920188` | `0.005675` | `0.052407` |
-| `shuffle` | `+0.098391` | `+0.095590` | `+0.084815` | `+0.0000089` | `55` | `90` | `0.084428` | `0.921052` | `0.011980` | `0.053491` |
-| `zero` | `+0.095529` | `+0.091814` | `+0.085666` | `+0.0000107` | `52` | `88` | `0.079434` | `0.922128` | `0.013502` | `0.055354` |
+| `invert` | `+0.015092` | `+0.009731` | `-0.063870` | `-0.0001458` | `54` | `144` | `0.077901` | `0.921738` | `0.000074` | `0.000072` |
+| `normal` | `+0.015129` | `+0.008829` | `-0.062361` | `-0.0001398` | `56` | `142` | `0.088921` | `0.920107` | `0.000074` | `0.000072` |
+| `shuffle` | `+0.009656` | `+0.003892` | `-0.072763` | `-0.0001245` | `53` | `145` | `0.084493` | `0.921071` | `0.000072` | `0.000070` |
+| `zero` | `+0.007218` | `+0.001740` | `-0.074593` | `-0.0001274` | `53` | `146` | `0.079408` | `0.922233` | `0.000074` | `0.000074` |
 
-Interpretation: adapter-only DTA-v2 is positive on fold0 OOF20 for all four
-modes, with calibrated `invert` barely best on mean dPSNR and `normal` best on
-hard bottom-25. The small spread versus zero/shuffle means image-quality gains
-cannot yet be attributed solely to correct depth; however, the full-fold result
-is strong enough to continue the predeclared adapter-neighbors experiment.
+Next internal queue: keep locked Haze4K test blocked and run the predeclared
+multi-fold/multi-control OOF expansion, starting with adapter-only folds `1-4`
+for `invert`, `normal`, `shuffle`, and `zero`.
