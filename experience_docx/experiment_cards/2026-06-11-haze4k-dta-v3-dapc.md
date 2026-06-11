@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `COMPLETED_MECHANISM_POSITIVE_NO_PROMOTION_DEPTHDIRECT_INVERT_ONLY`
+Status: `COMPLETED_GATE_FAIL_TAILGUARD_WIDE_GATE_SCOUT`
 
 ## Scope
 
@@ -296,3 +296,53 @@ Continue condition: improve over the baseline depthDirect `invert` row by
 reducing worst/strong regressions and SSIM loss while preserving at least
 `+0.03 dB` mean true-vs-zero surplus. No locked test is allowed from these
 scouts.
+
+## 2026-06-11 Depth-Direct Tail/SSIM Wide-Gate Scout Results
+
+The first wide-gate tail/SSIM queue completed on `convir-4090` in workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard`
+from commit `debafdd`. All four variants used train=`invert`, `R0=0`,
+`dta_depth_only`, wider encoder gates than the baseline depthDirect run, the
+full eval matrix, and cloud-only contact sheets. Locked Haze4K test remained
+blocked.
+
+| Variant | true mean | true hard | dSSIM | pos ratio | true-vs-zero | worst true | worst zero | Decision |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `wg16_tail06_s008_b08` | `-0.022292` | `-0.027152` | `-0.00002930` | `0.4450` | `+0.011628` | `37` | `34` | tail improved, quality/surplus failed |
+| `wg16_tail08_s005_b10` | `-0.022990` | `-0.027368` | `-0.00002939` | `0.4317` | `+0.011423` | `37` | `34` | tail improved, quality/surplus failed |
+| `wg18_tail10_s006_b12` | `-0.014497` | `-0.022719` | `-0.00002993` | `0.4917` | `+0.016380` | `46` | `35` | least negative mean, still failed |
+| `wg20_tail12_s006_b10` | `-0.040233` | `-0.036566` | `-0.00002972` | `0.3533` | `+0.000958` | `39` | `37` | over-constrained |
+
+Compared with the baseline depthDirect train=`invert` row (`+0.013905 dB` mean,
+`+0.032286 dB` true-vs-zero surplus, `75/600` worst regressions), the wide-gate
+tailguard queue reduced worst regressions to `37..46/600` but collapsed global
+quality and mechanism surplus. The result is a useful negative: the current
+strong guard/mask-budget setting protects the tail mostly by suppressing useful
+depth action.
+
+Supporting artifacts: `depth_direct_tailguard_scout_summary.json/csv`,
+`train_eval_depth_matrix_scout5full_depthDirectTail_*`,
+`r0_vs_rdepth_attribution_scout5full_depthDirectTail_*`, and cloud-only contact
+sheets under `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirectTail_*`.
+
+Decision: `COMPLETED_GATE_FAIL_TAILGUARD_WIDE_GATE_SCOUT`. Do not promote. The
+next quick scout should keep the wider gate but reduce guard pressure toward the
+mechanism-positive baseline to find an intermediate point between `+0.032 dB`
+surplus/unsafe tail and safe-tail/negative mean.
+
+## 2026-06-11 Depth-Direct Tail-Lite Wide-Gate Scout Plan
+
+Next queue keeps train=`invert`, `R0=0`, full eval matrix, and locked-test block.
+It tests lighter guard settings that are closer to the baseline depthDirect loss
+while still using wider encoder gates.
+
+| Variant | Gate/Gamma/Beta | depth scale | dense budget | preserve/ref/tail | intent |
+| --- | ---: | ---: | ---: | ---: | --- |
+| `wg16_base_s008_b14` | `0.16/0.24/0.12` | `0.08` | `0.14` | `0.03/0.03/0.03` | isolate wider gate with baseline action budget |
+| `wg18_base_s008_b14` | `0.18/0.28/0.14` | `0.08` | `0.14` | `0.03/0.03/0.03` | test a wider gate without added guard pressure |
+| `wg16_lite_s006_b12` | `0.16/0.24/0.12` | `0.06` | `0.12` | `0.03/0.03/0.03` | lower action budget with baseline guard |
+| `wg16_tail04_s008_b12` | `0.16/0.24/0.12` | `0.08` | `0.12` | `0.04/0.04/0.04` | mild guard between baseline and failed tailguard |
+
+Continue only if a variant keeps mean true-vs-zero surplus near `+0.03 dB` while
+reducing baseline depthDirect worst regressions materially below `75/600` and
+not worsening SSIM.

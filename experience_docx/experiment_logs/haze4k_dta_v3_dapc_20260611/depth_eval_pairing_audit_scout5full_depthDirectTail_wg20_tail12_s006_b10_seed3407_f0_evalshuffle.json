@@ -1,0 +1,16 @@
+{
+  "mode": "shuffle_eval_fixed_perm",
+  "count": 600,
+  "same_image_count": 0,
+  "same_image_ratio": 0.0,
+  "density_bin_match_count": 165,
+  "density_bin_match_ratio": 0.275,
+  "offset": 137,
+  "bins": 4,
+  "split_json": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json",
+  "split_name": "fold0_val",
+  "outputs": {
+    "csv": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/depth_eval_pairing_audit_scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0_evalshuffle.csv",
+    "json": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/depth_eval_pairing_audit_scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0_evalshuffle.json"
+  }
+}

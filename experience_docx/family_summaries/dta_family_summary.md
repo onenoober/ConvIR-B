@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: positive diagnostic family, not promotion-ready; DTA-v3 depthDirect invert is mechanism-positive but tail/SSIM fail.
+Status: positive diagnostic family, not promotion-ready; DTA-v3 depthDirect invert is mechanism-positive; first wide-gate tailguard scout failed quality/surplus.
 
 ## Scope
 
@@ -25,19 +25,22 @@ failed the R0 safety baseline: mean dPSNR `-0.012119`, hard bottom-25
 `-0.069025`, easy top-25 `+0.044643`, dSSIM `-0.00001218`, positive ratio
 `0.45`, strong regressions `48/150`, and worst regressions `70/600`.
 
-Decision: `COMPLETED_MECHANISM_POSITIVE_NO_PROMOTION_DEPTHDIRECT_INVERT_ONLY`. Conservative R0 scout variants failed, so do not launch Phase B
-from the current R0 checkpoint. The zero-R0 depthDirect scout shows the first
-clean mean true-vs-zero surplus for train=`invert` (`+0.032286 dB`), but it is
-not promotion-ready because mean vs A0 is only `+0.013905 dB`, hard is
-`-0.005602 dB`, dSSIM is `-0.00002676`, positive ratio is `0.5883`, and worst
-regressions are `75/600` versus eval-zero `35/600`.
+Decision: `COMPLETED_GATE_FAIL_TAILGUARD_WIDE_GATE_SCOUT`. Conservative R0
+scout variants failed, so do not launch Phase B from the current R0 checkpoint.
+The zero-R0 depthDirect scout shows the first clean mean true-vs-zero surplus for
+train=`invert` (`+0.032286 dB`), but it is not promotion-ready because mean vs
+A0 is only `+0.013905 dB`, hard is `-0.005602 dB`, dSSIM is `-0.00002676`,
+positive ratio is `0.5883`, and worst regressions are `75/600` versus eval-zero
+`35/600`. The first wide-gate tailguard queue reduced worst regressions to
+`37..46/600`, but all true means were negative and surplus fell below the
+mechanism gate.
 
 ## Route Table
 
 | Route | Evidence | Decision |
 | --- | --- | --- |
 | DTA-v2 CalGate | Multi-seed OOF showed `invert` about `+0.0887 dB`, but zero/shuffle retained most of the improvement and tail/SSIM did not pass. | Positive diagnostic only; no locked test; use as motivation for attribution controls. |
-| DTA-v3 DAPC fine-tune | `convir-4090` preflight passed; deterministic eval shuffle audit passed; Phase A R0 and conservative R0 scouts failed. Zero-R0 depthDirect train=`invert` produced mean true-vs-zero surplus `+0.032286 dB`, but hard/SSIM/tail failed. | Mechanism-positive diagnostic only; continue with wide-gate tail/SSIM-guard scouts, no locked test. |
+| DTA-v3 DAPC fine-tune | `convir-4090` preflight passed; R0 scouts failed. Zero-R0 depthDirect train=`invert` produced mean true-vs-zero surplus `+0.032286 dB`, but hard/SSIM/tail failed. First wide-gate tailguard queue reduced worst regressions but made all true means negative and surplus too small. | Mechanism-positive diagnostic only; continue with lighter wide-gate guard scouts, no locked test. |
 
 ## Reopen Conditions
 
@@ -57,4 +60,4 @@ The next allowed queue is not a promotion run: keep `R0=0`, train only
 `dta_depth_only` with train depth `invert`, make encoder gates wider, and add
 stronger tail/SSIM/mask-budget protection. Continue only if true-vs-zero surplus
 stays at least `+0.03 dB` while worst/strong regressions and SSIM improve over
-the depthDirect baseline. Locked Haze4K test remains blocked.
+the depthDirect baseline. Locked Haze4K test remains blocked. The first wide-gate tailguard queue reduced worst regressions (`37..46/600`) but collapsed true-eval mean to `-0.0145..-0.0402 dB` and true-vs-zero surplus to `+0.0010..+0.0164 dB`; continue only with lighter guard variants.

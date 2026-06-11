@@ -341,3 +341,130 @@ depth_direct_contact_sheet_done rc=0 run_id=scout5full_depthDirect_normal_seed34
 DTA_V3_DEPTH_DIRECT_SCOUT_OK run_id=scout5full_depthDirect_normal_seed3407_f0 checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-depthdirect/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirect-normal-seed3407-f0-scout5full/Training-Results/Final.pkl matrix=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-depthdirect/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/train_eval_depth_matrix_scout5full_depthDirect_normal_seed3407_f0.json contact_sheet=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-depthdirect/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirect_normal_seed3407_f0
 depth_direct_contact_sheet_done rc=0 run_id=scout5full_depthDirect_shuffle_seed3407_f0 output=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-depthdirect/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirect_shuffle_seed3407_f0 2026-06-11T22:25:37+08:00
 DTA_V3_DEPTH_DIRECT_SCOUT_OK run_id=scout5full_depthDirect_shuffle_seed3407_f0 checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-depthdirect/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirect-shuffle-seed3407-f0-scout5full/Training-Results/Final.pkl matrix=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-depthdirect/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/train_eval_depth_matrix_scout5full_depthDirect_shuffle_seed3407_f0.json contact_sheet=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-depthdirect/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirect_shuffle_seed3407_f0
+depth_direct_tailguard_scout_launch_start stage=scout5full seed=3407 fold=0 work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard 2026-06-11T22:43:02+08:00
+variants=wg16_tail08_s005_b10 wg18_tail10_s006_b12 wg20_tail12_s006_b10 wg16_tail06_s008_b08
+gpus=2 3 4 5
+depth_direct_tailguard_scout_launched session=dta_v3_scout5full_depthDirectTail_wg16_tail08_s005_b10_f0 gpu=2 run_id=scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0 cmd=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0.cmd.sh tmux_log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg16_tail08_s005_b10_f0.out 2026-06-11T22:43:02+08:00
+depth_direct_tailguard_start run_id=scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0 train_depth_mode=invert stage=scout5full variant=wg16_tail08_s005_b10 2026-06-11T22:43:02+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=2
+init=A0_partial train_scope=dta_depth_only r0_scale=0 train_depth=invert
+params lr=0.00003 gate=0.16 gamma=0.24 beta=0.12 conf=0.30 depth_scale=0.05 easy_budget=0.030 dense_budget=0.10 mask_bias=-4.2 preserve=0.08 ref=0.08 tail=0.08 mask_weight=0.003 dta_clip=0.025
+codex/haze4k-dta-v3-dapc-finetune
+depth_direct_tailguard_scout_launched session=dta_v3_scout5full_depthDirectTail_wg18_tail10_s006_b12_f0 gpu=3 run_id=scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0 cmd=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0.cmd.sh tmux_log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg18_tail10_s006_b12_f0.out 2026-06-11T22:43:02+08:00
+debafdd
+depth_direct_tailguard_start run_id=scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0 train_depth_mode=invert stage=scout5full variant=wg18_tail10_s006_b12 2026-06-11T22:43:02+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=3
+init=A0_partial train_scope=dta_depth_only r0_scale=0 train_depth=invert
+params lr=0.00003 gate=0.18 gamma=0.28 beta=0.14 conf=0.30 depth_scale=0.06 easy_budget=0.035 dense_budget=0.12 mask_bias=-4.1 preserve=0.08 ref=0.10 tail=0.10 mask_weight=0.005 dta_clip=0.025
+codex/haze4k-dta-v3-dapc-finetune
+debafdd
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg16_tail08_s005_b10_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg18_tail10_s006_b12_f0.out
+depth_direct_tailguard_scout_launched session=dta_v3_scout5full_depthDirectTail_wg20_tail12_s006_b10_f0 gpu=4 run_id=scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0 cmd=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0.cmd.sh tmux_log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg20_tail12_s006_b10_f0.out 2026-06-11T22:43:02+08:00
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg16_tail08_s005_b10_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg18_tail10_s006_b12_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg20_tail12_s006_b10_f0.out
+depth_direct_tailguard_start run_id=scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0 train_depth_mode=invert stage=scout5full variant=wg20_tail12_s006_b10 2026-06-11T22:43:02+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=4
+init=A0_partial train_scope=dta_depth_only r0_scale=0 train_depth=invert
+params lr=0.00002 gate=0.20 gamma=0.30 beta=0.15 conf=0.32 depth_scale=0.06 easy_budget=0.030 dense_budget=0.10 mask_bias=-4.3 preserve=0.10 ref=0.12 tail=0.12 mask_weight=0.006 dta_clip=0.020
+codex/haze4k-dta-v3-dapc-finetune
+debafdd
+depth_direct_tailguard_scout_launched session=dta_v3_scout5full_depthDirectTail_wg16_tail06_s008_b08_f0 gpu=5 run_id=scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0 cmd=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0.cmd.sh tmux_log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg16_tail06_s008_b08_f0.out 2026-06-11T22:43:02+08:00
+DTA_V3_DEPTH_DIRECT_TAILGUARD_SCOUTS_LAUNCHED stage=scout5full
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg16_tail06_s008_b08_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg16_tail08_s005_b10_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg18_tail10_s006_b12_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg20_tail12_s006_b10_f0.out
+depth_direct_tailguard_start run_id=scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0 train_depth_mode=invert stage=scout5full variant=wg16_tail06_s008_b08 2026-06-11T22:43:02+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=5
+init=A0_partial train_scope=dta_depth_only r0_scale=0 train_depth=invert
+params lr=0.00003 gate=0.16 gamma=0.24 beta=0.12 conf=0.30 depth_scale=0.08 easy_budget=0.025 dense_budget=0.08 mask_bias=-4.3 preserve=0.06 ref=0.06 tail=0.06 mask_weight=0.004 dta_clip=0.025
+codex/haze4k-dta-v3-dapc-finetune
+debafdd
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg16_tail06_s008_b08_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg16_tail08_s005_b10_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg18_tail10_s006_b12_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v3_scout5full_depthDirectTail_wg20_tail12_s006_b10_f0.out
+depth_direct_tailguard_train_done rc=0 run_id=scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0 2026-06-11T22:48:55+08:00
+depth_direct_tailguard_train_done rc=0 run_id=scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0 2026-06-11T22:48:55+08:00
+depth_direct_tailguard_train_done rc=0 run_id=scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0 2026-06-11T22:48:56+08:00
+depth_direct_tailguard_train_done rc=0 run_id=scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0 2026-06-11T22:49:19+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0_evalinvert 2026-06-11T22:50:40+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0_evalinvert 2026-06-11T22:50:41+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0_evalinvert 2026-06-11T22:50:43+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0_evalinvert 2026-06-11T22:51:10+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0_evalnormal 2026-06-11T22:52:24+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0_evalnormal 2026-06-11T22:52:26+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0_evalnormal 2026-06-11T22:52:28+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0_evalnormal 2026-06-11T22:53:00+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0_evalzero 2026-06-11T22:54:10+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0_evalzero 2026-06-11T22:54:12+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0_evalzero 2026-06-11T22:54:16+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0_evalzero 2026-06-11T22:54:46+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0_evalshuffle 2026-06-11T22:56:32+08:00
+depth_direct_tailguard_aggregate_done rc=0 run_id=scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0 2026-06-11T22:56:32+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0_evalshuffle 2026-06-11T22:56:34+08:00
+depth_direct_tailguard_aggregate_done rc=0 run_id=scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0 2026-06-11T22:56:34+08:00
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0_evalshuffle 2026-06-11T22:56:38+08:00
+depth_direct_tailguard_aggregate_done rc=0 run_id=scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0 2026-06-11T22:56:38+08:00
+depth_direct_tailguard_contact_sheet_done rc=0 run_id=scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0 output=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0 2026-06-11T22:56:44+08:00
+DTA_V3_DEPTH_DIRECT_TAILGUARD_SCOUT_OK run_id=scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0 checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg20_tail12_s006_b10-seed3407-f0-scout5full/Training-Results/Final.pkl matrix=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/train_eval_depth_matrix_scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0.json contact_sheet=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirectTail_wg20_tail12_s006_b10_seed3407_f0
+depth_direct_tailguard_contact_sheet_done rc=0 run_id=scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0 output=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0 2026-06-11T22:56:46+08:00
+DTA_V3_DEPTH_DIRECT_TAILGUARD_SCOUT_OK run_id=scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0 checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg16_tail08_s005_b10-seed3407-f0-scout5full/Training-Results/Final.pkl matrix=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/train_eval_depth_matrix_scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0.json contact_sheet=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0
+depth_direct_tailguard_contact_sheet_done rc=0 run_id=scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0 output=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0 2026-06-11T22:56:50+08:00
+DTA_V3_DEPTH_DIRECT_TAILGUARD_SCOUT_OK run_id=scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0 checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg16_tail06_s008_b08-seed3407-f0-scout5full/Training-Results/Final.pkl matrix=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/train_eval_depth_matrix_scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0.json contact_sheet=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirectTail_wg16_tail06_s008_b08_seed3407_f0
+depth_direct_tailguard_eval_done rc=0 run_id=scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0_evalshuffle 2026-06-11T22:57:05+08:00
+depth_direct_tailguard_aggregate_done rc=0 run_id=scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0 2026-06-11T22:57:05+08:00
+depth_direct_tailguard_contact_sheet_done rc=0 run_id=scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0 output=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0 2026-06-11T22:57:14+08:00
+DTA_V3_DEPTH_DIRECT_TAILGUARD_SCOUT_OK run_id=scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0 checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_tail10_s006_b12-seed3407-f0-scout5full/Training-Results/Final.pkl matrix=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/train_eval_depth_matrix_scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0.json contact_sheet=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/scout5full_depthDirectTail_wg18_tail10_s006_b12_seed3407_f0

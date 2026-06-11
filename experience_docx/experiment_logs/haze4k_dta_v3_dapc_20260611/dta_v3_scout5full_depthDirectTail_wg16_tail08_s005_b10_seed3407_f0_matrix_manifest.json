@@ -1,0 +1,6 @@
+{"runs":[
+  {"label":"true","train_depth":"invert","eval_depth":"invert","compare_dir":"/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0_evalinvert_compare"},
+  {"label":"normal","train_depth":"invert","eval_depth":"normal","compare_dir":"/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0_evalnormal_compare"},
+  {"label":"zero","train_depth":"invert","eval_depth":"zero","compare_dir":"/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0_evalzero_compare"},
+  {"label":"shuffle","train_depth":"invert","eval_depth":"shuffle","compare_dir":"/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-tailguard/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_scout5full_depthDirectTail_wg16_tail08_s005_b10_seed3407_f0_evalshuffle_compare"}
+]}
