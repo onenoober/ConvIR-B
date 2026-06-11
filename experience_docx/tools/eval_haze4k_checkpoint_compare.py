@@ -24,16 +24,86 @@ from models.ConvIR import build_net as build_convir_net
 
 
 def _is_name_field(value):
-    return isinstance(value, (list, tuple)) and len(value) > 0 and isinstance(value[0], str)
+    return isinstance(value, str) or (
+        isinstance(value, (list, tuple)) and len(value) > 0 and isinstance(value[0], str)
+    )
 
 
 def _unpack_test_batch(data):
     name = data[-1] if _is_name_field(data[-1]) else None
     if name is not None:
         data = data[:-1]
+        if isinstance(name, str):
+            name = [name]
     input_img, label_img = data[0], data[1]
     depth = data[2] if len(data) >= 3 else None
-    return input_img, label_img, depth, name
+    trans = None
+    airlight = None
+    if len(data) >= 4:
+        # With return_meta=True and return_trans=False the fourth field is the
+        # scalar airlight, while transmission maps are image-shaped tensors.
+        if torch.is_tensor(data[3]) and data[3].dim() >= 3:
+            trans = data[3]
+        else:
+            airlight = data[3]
+    if len(data) >= 5:
+        airlight = data[4]
+    return input_img, label_img, depth, trans, airlight, name
+
+
+def _tensor_mean(value):
+    if value is None or not torch.is_tensor(value):
+        return None
+    return float(value.detach().float().mean().cpu())
+
+
+def _tensor_std(value):
+    if value is None or not torch.is_tensor(value):
+        return None
+    return float(value.detach().float().std(unbiased=False).cpu())
+
+
+def _image_texture_mean(image):
+    brightness = image.detach().float().mean(dim=1, keepdim=True)
+    dx = torch.abs(brightness[:, :, :, 1:] - brightness[:, :, :, :-1])
+    dy = torch.abs(brightness[:, :, 1:, :] - brightness[:, :, :-1, :])
+    return float(0.5 * (dx.mean() + dy.mean()).cpu())
+
+
+def _airlight_for_forward(airlight, mode, device):
+    if mode == "gt" and airlight is not None:
+        return airlight.to(device) if hasattr(airlight, "to") else torch.as_tensor(airlight, device=device)
+    return None
+
+
+def _row_diagnostics(model, arch, input_img, depth, airlight, airlight_mode, depth_source_name, same_image_depth):
+    row = {
+        "airlight_mode": airlight_mode,
+        "depth_source_name": depth_source_name,
+        "same_image_depth": same_image_depth,
+        "input_brightness_mean": _tensor_mean(input_img),
+        "input_texture_mean": _image_texture_mean(input_img),
+        "depth_mean": _tensor_mean(depth),
+        "depth_std": _tensor_std(depth),
+    }
+    if airlight is not None:
+        row["airlight_gt_mean"] = _tensor_mean(airlight)
+    fallback = torch.nn.functional.adaptive_max_pool2d(input_img.detach().float().clamp(0.0, 1.0), 1)
+    row["airlight_fallback_mean"] = _tensor_mean(fallback)
+    if airlight is not None and torch.is_tensor(airlight):
+        gt = airlight.detach().float().to(input_img.device)
+        if gt.dim() == 1:
+            gt = gt.view(-1, 1, 1, 1)
+        elif gt.dim() == 2:
+            gt = gt.view(gt.size(0), gt.size(1), 1, 1)
+        if gt.size(1) == 1:
+            gt = gt.expand(-1, 3, -1, -1)
+        row["airlight_abs_gap_mean"] = _tensor_mean((fallback - gt.clamp(0.0, 1.0)).abs())
+    dta = getattr(model, "DTA", None)
+    if arch == "dta_v3" and dta is not None and hasattr(dta, "stats"):
+        for key, value in dta.stats().items():
+            row[f"dta_{key}"] = value
+    return row
 
 
 def percentile(values, pct):
@@ -162,8 +232,10 @@ def prior_depth_cache_dir(args, prefix, arch):
     return depth_cache_dir
 
 
-def forward_model(model, arch, input_img, depth):
-    if arch in ("dpga", "dta", "dta_v2", "dta_v3"):
+def forward_model(model, arch, input_img, depth, airlight=None):
+    if arch == "dta_v3":
+        return model(input_img, depth, airlight=airlight)
+    if arch in ("dpga", "dta", "dta_v2"):
         return model(input_img, depth)
     return model(input_img)
 
@@ -172,6 +244,12 @@ def dta_depth_mode(args, prefix, arch):
     if arch not in ("dta", "dta_v2", "dta_v3"):
         return "none"
     return getattr(args, f"{prefix}_dta_depth_mode")
+
+
+def dta_airlight_mode(args, prefix, arch):
+    if arch != "dta_v3":
+        return "none"
+    return getattr(args, f"{prefix}_dta_airlight_mode")
 
 
 def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
@@ -187,6 +265,7 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
     depth_split = args.dpga_eval_depth_split if arch == "dpga" else args.dta_eval_depth_split
     if arch in ("dpga", "dta", "dta_v2") and args.split_json and args.split_name and depth_split == "test":
         depth_split = "train"
+    airlight_mode = dta_airlight_mode(args, prefix, arch)
     dataloader = test_dataloader(
         data_dir,
         "Haze4K",
@@ -195,6 +274,7 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
         depth_cache_dir=prior_depth_cache_dir(args, prefix, arch),
         depth_split=depth_split,
         root_split=args.eval_root_split,
+        return_meta=(airlight_mode == "gt"),
         split_json=args.split_json,
         split_name=args.split_name,
     )
@@ -208,17 +288,27 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
             if args.max_images > 0 and idx >= args.max_images:
                 break
             if arch in ("dpga", "dta", "dta_v2", "dta_v3"):
-                input_img, label_img, depth, name = _unpack_test_batch(data)
+                input_img, label_img, depth, _, airlight, name = _unpack_test_batch(data)
+                depth_source_name = name[0] if name else ""
+                same_image_depth = True
                 if depth_mode == "shuffle":
                     shuffle_idx = (idx + args.depth_shuffle_offset) % len(dataloader.dataset)
-                    _, _, shuffled_depth, _ = _unpack_test_batch(dataloader.dataset[shuffle_idx])
+                    _, _, shuffled_depth, _, _, shuffled_name = _unpack_test_batch(dataloader.dataset[shuffle_idx])
                     depth = shuffled_depth.unsqueeze(0)
+                    if shuffled_name:
+                        depth_source_name = shuffled_name[0]
+                    else:
+                        depth_source_name = getattr(dataloader.dataset, "image_list", [""])[shuffle_idx]
+                    same_image_depth = depth_source_name == (name[0] if name else "")
                 depth = depth.to(device)
             else:
-                input_img, label_img, _, name = _unpack_test_batch(data)
+                input_img, label_img, _, _, airlight, name = _unpack_test_batch(data)
                 depth = None
+                depth_source_name = ""
+                same_image_depth = False
             input_img = input_img.to(device)
             label_img = label_img.to(device)
+            airlight_for_forward = _airlight_for_forward(airlight, airlight_mode, device)
 
             h, w = input_img.shape[2], input_img.shape[3]
             H = ((h + factor) // factor) * factor
@@ -232,7 +322,7 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
             if torch.cuda.is_available():
                 torch.cuda.synchronize()
             start = time.time()
-            pred = forward_model(model, arch, padded, depth)[2][:, :, :h, :w]
+            pred = forward_model(model, arch, padded, depth, airlight=airlight_for_forward)[2][:, :, :h, :w]
             if torch.cuda.is_available():
                 torch.cuda.synchronize()
             elapsed = time.time() - start
@@ -250,14 +340,25 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
             ).mean().item()
 
             times.append(elapsed)
-            rows.append(
-                {
-                    "name": name[0],
-                    "psnr": psnr_val,
-                    "ssim": ssim_val,
-                    "time_sec": elapsed,
-                }
+            row = {
+                "name": name[0],
+                "psnr": psnr_val,
+                "ssim": ssim_val,
+                "time_sec": elapsed,
+            }
+            row.update(
+                _row_diagnostics(
+                    model,
+                    arch,
+                    input_img,
+                    depth[:, :, :h, :w] if depth is not None else None,
+                    airlight_for_forward,
+                    airlight_mode,
+                    depth_source_name,
+                    same_image_depth,
+                )
             )
+            rows.append(row)
             if (idx + 1) % 100 == 0:
                 mean_psnr = statistics.mean(row["psnr"] for row in rows)
                 print(f"{label} {idx + 1}/{len(dataloader)} psnr={mean_psnr:.4f}", flush=True)
@@ -272,6 +373,7 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
         "mode": mode,
         "checkpoint": checkpoint,
         "depth_mode": depth_mode,
+        "airlight_mode": airlight_mode,
         "count": len(rows),
         "mean_psnr": statistics.mean(row["psnr"] for row in rows),
         "mean_ssim": statistics.mean(row["ssim"] for row in rows),
@@ -326,6 +428,8 @@ def main():
     parser.add_argument("--candidate_dta_variant", default="v1", choices=["v1", "v2", "v3"])
     parser.add_argument("--original_dta_depth_mode", default="normal", choices=["normal", "invert", "zero", "shuffle"])
     parser.add_argument("--candidate_dta_depth_mode", default="normal", choices=["normal", "invert", "zero", "shuffle"])
+    parser.add_argument("--original_dta_airlight_mode", default="fallback", choices=["fallback", "gt"])
+    parser.add_argument("--candidate_dta_airlight_mode", default="fallback", choices=["fallback", "gt"])
     parser.add_argument("--original_dta_prior_channels", type=int, default=16)
     parser.add_argument("--candidate_dta_prior_channels", type=int, default=16)
     parser.add_argument("--original_dta_gate_bias", type=float, default=-5.0)
@@ -478,35 +582,46 @@ def main():
     with open(json_path, "w", encoding="utf-8") as handle:
         json.dump(summary, handle, indent=2, ensure_ascii=False)
 
+    extra_keys = []
+    for label in (args.original_name, candidate_name):
+        for row in all_rows[label]:
+            for key in row:
+                if key not in ("name", "psnr", "ssim", "time_sec") and key not in extra_keys:
+                    extra_keys.append(key)
+    header = [
+        "name",
+        "original_psnr",
+        f"{candidate_name}_psnr",
+        "delta_psnr",
+        "original_ssim",
+        f"{candidate_name}_ssim",
+        "delta_ssim",
+        "original_time_sec",
+        f"{candidate_name}_time_sec",
+    ]
+    for key in extra_keys:
+        header.append(f"original_{key}")
+    for key in extra_keys:
+        header.append(f"{candidate_name}_{key}")
+
     with open(csv_path, "w", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle)
-        writer.writerow(
-            [
-                "name",
-                "original_psnr",
-                f"{candidate_name}_psnr",
-                "delta_psnr",
-                "original_ssim",
-                f"{candidate_name}_ssim",
-                "delta_ssim",
-                "original_time_sec",
-                f"{candidate_name}_time_sec",
-            ]
-        )
+        writer.writerow(header)
         for name in common:
-            writer.writerow(
-                [
-                    name,
-                    original[name]["psnr"],
-                    candidate[name]["psnr"],
-                    candidate[name]["psnr"] - original[name]["psnr"],
-                    original[name]["ssim"],
-                    candidate[name]["ssim"],
-                    candidate[name]["ssim"] - original[name]["ssim"],
-                    original[name]["time_sec"],
-                    candidate[name]["time_sec"],
-                ]
-            )
+            out_row = [
+                name,
+                original[name]["psnr"],
+                candidate[name]["psnr"],
+                candidate[name]["psnr"] - original[name]["psnr"],
+                original[name]["ssim"],
+                candidate[name]["ssim"],
+                candidate[name]["ssim"] - original[name]["ssim"],
+                original[name]["time_sec"],
+                candidate[name]["time_sec"],
+            ]
+            out_row.extend(original[name].get(key, "") for key in extra_keys)
+            out_row.extend(candidate[name].get(key, "") for key in extra_keys)
+            writer.writerow(out_row)
 
     print(json.dumps(summary, indent=2, ensure_ascii=False))
     print(f"wrote {json_path}")

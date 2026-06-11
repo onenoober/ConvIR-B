@@ -81,7 +81,18 @@ def unpack(data):
         data = data[:-1]
     image, label = data[0], data[1]
     depth = data[2] if len(data) >= 3 else None
-    return image.unsqueeze(0), label.unsqueeze(0), depth.unsqueeze(0) if depth is not None else None, name
+    airlight = None
+    if len(data) >= 4 and torch.is_tensor(data[3]) and data[3].dim() < 3:
+        airlight = data[3]
+    elif len(data) >= 5:
+        airlight = data[4]
+    return (
+        image.unsqueeze(0),
+        label.unsqueeze(0),
+        depth.unsqueeze(0) if depth is not None else None,
+        airlight.unsqueeze(0) if torch.is_tensor(airlight) and airlight.dim() == 0 else airlight,
+        name,
+    )
 
 
 def pad32(x):
@@ -127,16 +138,20 @@ def render_sheet(title: str, names: list[str], dataset, a0, candidate, args, dev
     name_to_idx = {name: idx for idx, name in enumerate(dataset.image_list)}
     with torch.no_grad():
         for row_idx, name in enumerate(names):
-            image, label, depth, _ = unpack(dataset[name_to_idx[name]])
+            image, label, depth, airlight, _ = unpack(dataset[name_to_idx[name]])
             image = image.to(device)
             label = label.to(device)
             depth = depth.to(device) if depth is not None else None
+            airlight = airlight.to(device) if airlight is not None and hasattr(airlight, "to") else airlight
             padded, h, w = pad32(image)
             if depth is not None:
                 depth, _, _ = pad32(depth)
             pred_a0 = a0(padded)[2][:, :, :h, :w].clamp(0, 1)
             if args.candidate_arch in ("dta", "dta_v2", "dta_v3"):
-                pred_candidate = candidate(padded, depth)[2][:, :, :h, :w].clamp(0, 1)
+                if args.candidate_arch == "dta_v3" and args.dta_airlight_mode == "gt":
+                    pred_candidate = candidate(padded, depth, airlight=airlight)[2][:, :, :h, :w].clamp(0, 1)
+                else:
+                    pred_candidate = candidate(padded, depth)[2][:, :, :h, :w].clamp(0, 1)
             else:
                 pred_candidate = candidate(padded)[2][:, :, :h, :w].clamp(0, 1)
             tiles = [
@@ -171,6 +186,7 @@ def main() -> None:
     parser.add_argument("--thumb_size", type=int, default=180)
     parser.add_argument("--dta_variant", default="v3", choices=["v1", "v2", "v3"])
     parser.add_argument("--dta_depth_mode", default="invert", choices=["normal", "invert", "zero", "shuffle"])
+    parser.add_argument("--dta_airlight_mode", default="fallback", choices=["fallback", "gt"])
     parser.add_argument("--dta_prior_channels", type=int, default=32)
     parser.add_argument("--dta_gate_bias", type=float, default=-5.0)
     parser.add_argument("--dta_gate_limit", type=float, default=0.10)
@@ -197,6 +213,7 @@ def main() -> None:
         is_test=True,
         depth_cache_dir=args.depth_cache_dir,
         depth_split=args.depth_split,
+        return_meta=(args.dta_airlight_mode == "gt"),
         split_json=args.split_json,
         split_name=args.split_name,
     )

@@ -374,3 +374,45 @@ Decision: `COMPLETED_MECHANISM_POSITIVE_TAIL_FAIL_TAILLITE_WIDE_GATE`. No locked
 test. The next evidence-supported step is a tail-aware variant centered on
 `wg18_base_s008_b14`, adding only very mild tail pressure or post-hoc risk
 selection; do not return to the strong guard settings that collapsed surplus.
+
+## 2026-06-12 DTA-v3.1 WG18-RiskSelect-AConsistent Plan
+
+User-approved follow-up keeps the fine-tune route and centers all work on
+`wg18_base_s008_b14`. It does not revive R0 and does not touch locked Haze4K
+test.
+
+Implementation additions:
+
+- eval-time DTA-v3 airlight mode: `fallback` (deployment proxy) or `gt`
+  (oracle-A diagnostic) so train/eval airlight mismatch can be measured.
+- `output_semantics_audit.json` to verify no-op DTA equivalence and confirm
+  that DTA-v3 `refine_output()` receives a residual, so `out + hazy` is the
+  correct physical base image.
+- `airlight_train_eval_gap.csv` and `airlight_oracle_vs_pred_summary.json` to
+  compare A0, DTA with fallback A, and DTA with Haze4K filename A.
+- same-fold diagnostic risk selector artifacts:
+  `risk_selector_oof_calibration_<run>.json`,
+  `risk_selector_threshold_trace_<run>.csv`, and
+  `per_image_delta_matrix_<run>_risk_selected.csv`.
+- optional B4 light hinge training flags:
+  `--dta_light_tail_hinge_weight` and `--dta_light_ssim_hinge_weight`, using the
+  frozen A0 reference model with mild top-k MSE tail and SSIM no-worse-than-A0
+  hinges.
+
+Fold0 scout queue:
+
+| ID | Candidate | Evidence |
+| --- | --- | --- |
+| B0 | existing `wg18_base_s008_b14` with fallback A | full depth matrix and contact sheets |
+| B1 | existing `wg18_base_s008_b14` with GT/oracle A | oracle-A vs fallback A audit |
+| B2 | B0 plus post-hoc risk selector | same-fold selector diagnostic only |
+| B3 | B1 plus post-hoc risk selector | same-fold selector diagnostic only |
+| B4 | new `wg18` light tail/SSIM hinge fine-tune | fold0 scout, then the same A/risk/depth matrix |
+
+Scout gates remain unchanged: mean true-A0 at least `+0.020 dB`, hard true-A0 at
+least `+0.010 dB`, true-vs-zero and true-vs-shuffle at least `+0.030 dB`,
+true-vs-normal at least `+0.025 dB`, dSSIM no worse than `-0.000010`, positive
+ratio at least `0.63`, and worst regressions at most `50/600`. If a fixed
+selection passes, the next formal protocol is 5 folds x seeds `3407/3411/3413`
+with eval depth `invert/zero/shuffle/normal`, A mode `fallback/gt`, selector
+off/on, and locked test still blocked.

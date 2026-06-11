@@ -57,10 +57,13 @@ Do not use locked Haze4K test for checkpoint, gate, depth mode, or loss
 selection.
 
 
-## 2026-06-11 DepthDirect Follow-Up
+## 2026-06-12 DepthDirect Follow-Up
 
 The next allowed queue is not a promotion run: keep `R0=0`, train only
-`dta_depth_only` with train depth `invert`, make encoder gates wider, and add
-stronger tail/SSIM/mask-budget protection. Continue only if true-vs-zero surplus
-stays at least `+0.03 dB` while worst/strong regressions and SSIM improve over
-the depthDirect baseline. Locked Haze4K test remains blocked. The first wide-gate tailguard queue reduced worst regressions (`37..46/600`) but collapsed true-eval mean to `-0.0145..-0.0402 dB` and true-vs-zero surplus to `+0.0010..+0.0164 dB`; continue only with lighter guard variants.
+`dta_depth_only` with train depth `invert`, and center all changes on
+`wg18_base_s008_b14`. Because strong tailguard collapsed surplus, the follow-up
+is DTA-v3.1 WG18-RiskSelect-AConsistent: first audit output semantics and
+train/eval airlight mismatch, then run fallback-A vs GT/oracle-A depth matrices,
+same-fold diagnostic risk selection, and a single light tail/SSIM hinge fold0
+scout. Continue to 5-fold x seeds `3407/3411/3413` only if the fixed scout gate
+passes; locked Haze4K test remains blocked.

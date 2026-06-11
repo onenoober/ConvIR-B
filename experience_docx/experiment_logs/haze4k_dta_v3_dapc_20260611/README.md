@@ -294,3 +294,34 @@ Decision: `COMPLETED_MECHANISM_POSITIVE_TAIL_FAIL_TAILLITE_WIDE_GATE`. No locked
 test. The next evidence-supported step is a tail-aware variant centered on
 `wg18_base_s008_b14`, adding only very mild tail pressure or post-hoc risk
 selection; do not return to the strong guard settings that collapsed surplus.
+
+## 2026-06-12 DTA-v3.1 WG18-RiskSelect-AConsistent Queue
+
+Status: `PLANNED_CODE_READY_PENDING_CLOUD_RUN`.
+
+The next queue keeps the fine-tune path and `R0=0` depthDirect design. It adds
+tooling for train/eval airlight consistency, output semantics auditing,
+post-hoc low-capacity risk selection, and an optional light tail/SSIM hinge
+scout. The cloud scripts are:
+
+- `run_dta_v3_1_wg18_riskselect_audit_convir4090.sh`: B0/B1/B2/B3 diagnostic
+  audit around the existing `wg18_base_s008_b14` checkpoint.
+- `run_dta_v3_1_wg18_light_hinge_scout_convir4090.sh`: B4 fold0 light
+  tail/SSIM hinge fine-tune, followed by the same audit/matrix/selector queue.
+- `launch_dta_v3_1_wg18_convir4090.sh`: launches the audit and B4 scout in
+  separate tmux sessions on separate GPUs.
+
+Expected new text artifacts:
+
+- `output_semantics_audit.json`
+- `airlight_train_eval_gap.csv`
+- `airlight_oracle_vs_pred_summary.json`
+- `train_eval_depth_matrix_v31_wg18_base_s008_b14_seed3407_f0_<fallback|gt>.json/csv`
+- `risk_selector_oof_calibration_v31_wg18_base_s008_b14_seed3407_f0_<fallback|gt>.json`
+- `risk_selector_threshold_trace_v31_wg18_base_s008_b14_seed3407_f0_<fallback|gt>.csv`
+- `per_image_delta_matrix_v31_wg18_base_s008_b14_seed3407_f0_<fallback|gt>_risk_selected.csv`
+
+Cloud-only contact sheets are generated under
+`tail_regression_contact_sheet/v31_wg18_base_s008_b14_seed3407_f0_fallback/` and
+are referenced by path rather than committed. Locked Haze4K test remains
+blocked.

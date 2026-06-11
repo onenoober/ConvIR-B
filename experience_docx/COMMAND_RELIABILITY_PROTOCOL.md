@@ -838,6 +838,25 @@ PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
 ssh convir-4090 'bash -s' < local_monitor_script.sh
 ```
 
+## 2026-06-12 local syntax check Python name
+
+Avoid assuming `python` exists in the local WSL editing environment:
+
+```bash
+python -m py_compile experience_docx/tools/eval_haze4k_checkpoint_compare.py
+```
+
+Failure mode observed:
+
+- local WSL returned `python: command not found`;
+- this was a static/syntax-only check, not model runtime.
+
+Corrected form:
+
+```bash
+python3 -m py_compile experience_docx/tools/eval_haze4k_checkpoint_compare.py
+```
+
 Use `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python` or `"$PY"` for
 all cloud Python snippets, and prefer a small local script piped to remote
 `bash -s` over deeply nested inline heredocs.

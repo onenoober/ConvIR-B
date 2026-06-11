@@ -9,6 +9,11 @@ import torch.nn as nn
 
 from warmup_scheduler import GradualWarmupScheduler
 
+try:
+    from pytorch_msssim import ssim as ms_ssim
+except ImportError:  # Keep legacy training usable when the optional package is absent.
+    ms_ssim = None
+
 
 def _is_name_field(value):
     return isinstance(value, (list, tuple)) and len(value) > 0 and isinstance(value[0], str)
@@ -266,6 +271,8 @@ def _build_reference_model(args, device):
     weight = max(
         getattr(args, 'dta_ref_preserve_weight', 0.0),
         getattr(args, 'dta_tail_guard_weight', 0.0),
+        getattr(args, 'dta_light_tail_hinge_weight', 0.0),
+        getattr(args, 'dta_light_ssim_hinge_weight', 0.0),
     )
     if weight <= 0:
         return None
@@ -301,6 +308,49 @@ def _reference_guard_losses(pred, label, ref_pred, trans, args):
     return preserve, tail
 
 
+def _image_texture(brightness):
+    dx = F.pad((brightness[:, :, :, 1:] - brightness[:, :, :, :-1]).abs(), (0, 1, 0, 0))
+    dy = F.pad((brightness[:, :, 1:, :] - brightness[:, :, :-1, :]).abs(), (0, 0, 0, 1))
+    return 0.5 * (dx + dy)
+
+
+def _light_hinge_losses(pred, label, ref_pred, hazy, trans, args):
+    pred_err = (pred - label).pow(2).mean(dim=1, keepdim=True)
+    ref_err = (ref_pred - label).pow(2).mean(dim=1, keepdim=True)
+    margin = getattr(args, 'dta_light_tail_hinge_margin', 0.0)
+    excess = torch.relu(pred_err - ref_err - margin)
+
+    brightness = hazy.detach().mean(dim=1, keepdim=True).clamp(0.0, 1.0)
+    texture = _image_texture(brightness)
+    bright_mask = (brightness >= getattr(args, 'dta_light_hinge_bright_thresh', 0.82)).float()
+    low_texture_mask = (texture <= getattr(args, 'dta_light_hinge_texture_thresh', 0.004)).float()
+    if trans is not None:
+        easy_mask = (trans > args.dta_preserve_trans_thresh).float()
+        easy_mask = F.interpolate(easy_mask, size=pred.shape[-2:], mode='bilinear', align_corners=False)
+    else:
+        easy_mask = (brightness > 0.70).float()
+    risk_mask = torch.maximum(torch.maximum(bright_mask, low_texture_mask), easy_mask)
+    weighted = excess * risk_mask
+    flat = weighted.flatten(1)
+    frac = getattr(args, 'dta_light_tail_hinge_topk', 0.10)
+    if 0.0 < frac < 1.0:
+        k = max(1, int(flat.size(1) * frac))
+        tail = flat.topk(k, dim=1).values.mean()
+    else:
+        denom = risk_mask.sum().clamp_min(1.0)
+        tail = weighted.sum() / denom
+
+    ssim_loss = pred.new_zeros(())
+    if getattr(args, 'dta_light_ssim_hinge_weight', 0.0) > 0:
+        if ms_ssim is None:
+            raise ImportError('pytorch_msssim is required for --dta_light_ssim_hinge_weight > 0')
+        pred_ssim = ms_ssim(pred.clamp(0.0, 1.0), label.clamp(0.0, 1.0), data_range=1, size_average=True)
+        ref_ssim = ms_ssim(ref_pred.clamp(0.0, 1.0), label.clamp(0.0, 1.0), data_range=1, size_average=True)
+        ssim_margin = getattr(args, 'dta_light_ssim_hinge_margin', 0.0)
+        ssim_loss = torch.relu(ref_ssim - pred_ssim - ssim_margin)
+    return tail, ssim_loss
+
+
 def _train(model, args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     criterion = torch.nn.L1Loss()
@@ -318,6 +368,8 @@ def _train(model, args):
         or getattr(args, 'dta_preserve_weight', 0.0) > 0
         or getattr(args, 'dta_ref_preserve_weight', 0.0) > 0
         or getattr(args, 'dta_tail_guard_weight', 0.0) > 0
+        or getattr(args, 'dta_light_tail_hinge_weight', 0.0) > 0
+        or getattr(args, 'dta_light_ssim_hinge_weight', 0.0) > 0
     )
     dataloader = train_dataloader(
         args.data_dir,
@@ -362,6 +414,8 @@ def _train(model, args):
     epoch_dta_ref_preserve_adder = Adder()
     epoch_dta_tail_guard_adder = Adder()
     epoch_dta_mask_budget_adder = Adder()
+    epoch_dta_light_tail_adder = Adder()
+    epoch_dta_light_ssim_adder = Adder()
     iter_dta_rank_adder = Adder()
     iter_dta_tv_adder = Adder()
     iter_dta_proxy_adder = Adder()
@@ -371,6 +425,8 @@ def _train(model, args):
     iter_dta_ref_preserve_adder = Adder()
     iter_dta_tail_guard_adder = Adder()
     iter_dta_mask_budget_adder = Adder()
+    iter_dta_light_tail_adder = Adder()
+    iter_dta_light_ssim_adder = Adder()
 
     end_epoch = args.stop_epoch if args.stop_epoch > 0 else args.num_epoch
     if end_epoch < epoch:
@@ -432,6 +488,8 @@ def _train(model, args):
             loss_dta_ref_preserve = input_img.new_zeros(())
             loss_dta_tail_guard = input_img.new_zeros(())
             loss_dta_mask_budget = input_img.new_zeros(())
+            loss_dta_light_tail = input_img.new_zeros(())
+            loss_dta_light_ssim = input_img.new_zeros(())
             if getattr(args, 'arch', '') in ('dta', 'dta_v2', 'dta_v3') and hasattr(model, 'dta_auxiliary_losses') and depth is not None:
                 dta_losses = model.dta_auxiliary_losses(
                     rank_pairs=args.dta_rank_pairs,
@@ -467,6 +525,18 @@ def _train(model, args):
                         trans,
                         args,
                     )
+                    if (
+                        getattr(args, 'dta_light_tail_hinge_weight', 0.0) > 0
+                        or getattr(args, 'dta_light_ssim_hinge_weight', 0.0) > 0
+                    ):
+                        loss_dta_light_tail, loss_dta_light_ssim = _light_hinge_losses(
+                            pred_img[2],
+                            label_img,
+                            ref_pred,
+                            input_img,
+                            trans,
+                            args,
+                        )
 
             loss = (
                 loss_content
@@ -480,6 +550,8 @@ def _train(model, args):
                 + args.dta_ref_preserve_weight * loss_dta_ref_preserve
                 + args.dta_tail_guard_weight * loss_dta_tail_guard
                 + args.dta_mask_budget_weight * loss_dta_mask_budget
+                + args.dta_light_tail_hinge_weight * loss_dta_light_tail
+                + args.dta_light_ssim_hinge_weight * loss_dta_light_ssim
             )
             loss.backward()
             _clip_trainable_gradients(model, args)
@@ -496,6 +568,8 @@ def _train(model, args):
             iter_dta_ref_preserve_adder(loss_dta_ref_preserve.item())
             iter_dta_tail_guard_adder(loss_dta_tail_guard.item())
             iter_dta_mask_budget_adder(loss_dta_mask_budget.item())
+            iter_dta_light_tail_adder(loss_dta_light_tail.item())
+            iter_dta_light_ssim_adder(loss_dta_light_ssim.item())
 
             epoch_pixel_adder(loss_content.item())
             epoch_fft_adder(loss_fft.item())
@@ -508,13 +582,16 @@ def _train(model, args):
             epoch_dta_ref_preserve_adder(loss_dta_ref_preserve.item())
             epoch_dta_tail_guard_adder(loss_dta_tail_guard.item())
             epoch_dta_mask_budget_adder(loss_dta_mask_budget.item())
+            epoch_dta_light_tail_adder(loss_dta_light_tail.item())
+            epoch_dta_light_ssim_adder(loss_dta_light_ssim.item())
 
             if (iter_idx + 1) % args.print_freq == 0:
-                print("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f Loss content: %7.4f Loss fft: %7.4f Loss dta_rank: %7.4f Loss dta_tv: %7.4f Loss dta_proxy: %7.4f Loss dta_trans: %7.4f Loss dta_phys: %7.4f Loss dta_preserve: %7.4f Loss dta_ref_preserve: %7.4f Loss dta_tail_guard: %7.4f Loss dta_mask_budget: %7.4f" % (
+                print("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f Loss content: %7.4f Loss fft: %7.4f Loss dta_rank: %7.4f Loss dta_tv: %7.4f Loss dta_proxy: %7.4f Loss dta_trans: %7.4f Loss dta_phys: %7.4f Loss dta_preserve: %7.4f Loss dta_ref_preserve: %7.4f Loss dta_tail_guard: %7.4f Loss dta_mask_budget: %7.4f Loss dta_light_tail: %7.4f Loss dta_light_ssim: %7.4f" % (
                     iter_timer.toc(), epoch_idx, iter_idx + 1, max_iter, scheduler.get_lr()[0], iter_pixel_adder.average(),
                     iter_fft_adder.average(), iter_dta_rank_adder.average(), iter_dta_tv_adder.average(), iter_dta_proxy_adder.average(),
                     iter_dta_trans_adder.average(), iter_dta_phys_adder.average(), iter_dta_preserve_adder.average(),
-                    iter_dta_ref_preserve_adder.average(), iter_dta_tail_guard_adder.average(), iter_dta_mask_budget_adder.average()))
+                    iter_dta_ref_preserve_adder.average(), iter_dta_tail_guard_adder.average(), iter_dta_mask_budget_adder.average(),
+                    iter_dta_light_tail_adder.average(), iter_dta_light_ssim_adder.average()))
                 writer.add_scalar('Pixel Loss', iter_pixel_adder.average(), iter_idx + (epoch_idx-1)* max_iter)
                 writer.add_scalar('FFT Loss', iter_fft_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Rank Loss', iter_dta_rank_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
@@ -526,6 +603,8 @@ def _train(model, args):
                 writer.add_scalar('DTA Ref Preserve Loss', iter_dta_ref_preserve_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Tail Guard Loss', iter_dta_tail_guard_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Mask Budget Loss', iter_dta_mask_budget_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                writer.add_scalar('DTA Light Tail Hinge Loss', iter_dta_light_tail_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                writer.add_scalar('DTA Light SSIM Hinge Loss', iter_dta_light_ssim_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 
                 iter_timer.tic()
                 iter_pixel_adder.reset()
@@ -539,6 +618,8 @@ def _train(model, args):
                 iter_dta_ref_preserve_adder.reset()
                 iter_dta_tail_guard_adder.reset()
                 iter_dta_mask_budget_adder.reset()
+                iter_dta_light_tail_adder.reset()
+                iter_dta_light_ssim_adder.reset()
         overwrite_name = os.path.join(args.model_save_dir, 'model.pkl')
         torch.save({'model': model.state_dict(),
                     'optimizer': optimizer.state_dict(),
@@ -547,7 +628,7 @@ def _train(model, args):
         if epoch_idx % args.save_freq == 0:
             save_name = os.path.join(args.model_save_dir, 'model_%d.pkl' % epoch_idx)
             torch.save({'model': model.state_dict()}, save_name)
-        print("EPOCH: %02d\nElapsed time: %4.2f Epoch Pixel Loss: %7.4f Epoch FFT Loss: %7.4f Epoch DTA Rank: %7.4f Epoch DTA TV: %7.4f Epoch DTA Proxy: %7.4f Epoch DTA Trans: %7.4f Epoch DTA Phys: %7.4f Epoch DTA Preserve: %7.4f Epoch DTA Ref Preserve: %7.4f Epoch DTA Tail Guard: %7.4f Epoch DTA Mask Budget: %7.4f" % (
+        print("EPOCH: %02d\nElapsed time: %4.2f Epoch Pixel Loss: %7.4f Epoch FFT Loss: %7.4f Epoch DTA Rank: %7.4f Epoch DTA TV: %7.4f Epoch DTA Proxy: %7.4f Epoch DTA Trans: %7.4f Epoch DTA Phys: %7.4f Epoch DTA Preserve: %7.4f Epoch DTA Ref Preserve: %7.4f Epoch DTA Tail Guard: %7.4f Epoch DTA Mask Budget: %7.4f Epoch DTA Light Tail: %7.4f Epoch DTA Light SSIM: %7.4f" % (
             epoch_idx,
             epoch_timer.toc(),
             epoch_pixel_adder.average(),
@@ -560,7 +641,9 @@ def _train(model, args):
             epoch_dta_preserve_adder.average(),
             epoch_dta_ref_preserve_adder.average(),
             epoch_dta_tail_guard_adder.average(),
-            epoch_dta_mask_budget_adder.average()))
+            epoch_dta_mask_budget_adder.average(),
+            epoch_dta_light_tail_adder.average(),
+            epoch_dta_light_ssim_adder.average()))
         epoch_fft_adder.reset()
         epoch_pixel_adder.reset()
         epoch_dta_rank_adder.reset()
@@ -572,6 +655,8 @@ def _train(model, args):
         epoch_dta_ref_preserve_adder.reset()
         epoch_dta_tail_guard_adder.reset()
         epoch_dta_mask_budget_adder.reset()
+        epoch_dta_light_tail_adder.reset()
+        epoch_dta_light_ssim_adder.reset()
         scheduler.step()
         if epoch_idx % args.valid_freq == 0:
             val = _valid(model, args, epoch_idx)
