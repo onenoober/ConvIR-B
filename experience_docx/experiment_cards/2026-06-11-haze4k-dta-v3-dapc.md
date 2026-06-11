@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `PLANNED_FINE_TUNE_PREFLIGHT`
+Status: `FAILED_INFRA_SSH_BLOCKED_BEFORE_PREFLIGHT`
 
 ## Scope
 
@@ -127,3 +127,11 @@ gate. Current status: locked test blocked.
 - Stop Phase B if `invert` fails to beat zero/shuffle/wrong orientation by the written surplus gates.
 - Stop ablations that are preservation-negative before OOF expansion.
 - Do not continue `adapter_neighbors` from DTA-v2 unless a new Phase B gate passes first.
+
+## 2026-06-11 Cloud Setup Blocker
+
+Cloud setup on `convir-5090` is blocked before runtime validation because SSH
+authentication fails from both WSL and Windows-visible keys with
+`Permission denied (publickey,password)`. Per repository rules, no local runtime
+fallback or alternate host fallback was used. Once SSH access is restored, run
+`setup_convir5090_dta_v3.sh` and then `run_dta_v3_preflight_convir5090.sh`.

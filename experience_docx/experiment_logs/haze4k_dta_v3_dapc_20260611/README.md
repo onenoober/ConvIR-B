@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `PLANNED_FINE_TUNE_PREFLIGHT`
+Status: `FAILED_INFRA_SSH_BLOCKED_BEFORE_PREFLIGHT`
 
 This directory stores text evidence for `codex/haze4k-dta-v3-dapc-finetune`.
 Checkpoints, model weights, datasets, images, arrays, archives, and raw inference
@@ -48,3 +48,15 @@ requested otherwise.
 
 `PLANNED_FINE_TUNE_PREFLIGHT`: code and scripts are being prepared. No cloud
 runtime validation has been interpreted yet, and locked Haze4K test is blocked.
+
+## 2026-06-11 Cloud Setup Blocker
+
+Attempted SSH probes to `convir-5090` failed before setup/preflight:
+
+- WSL `ssh convir-5090`: `Permission denied (publickey,password)`.
+- WSL explicit `id_ed25519` and `id_ed25519_seetacloud`: both rejected.
+- Windows `ssh convir-5090`: host key was accepted, then all visible keys were rejected with `Permission denied (publickey,password)`.
+
+No local runtime validation, training, evaluation, inference, or image generation
+was run. This route is ready to continue once `convir-5090` SSH key access is
+fixed.
