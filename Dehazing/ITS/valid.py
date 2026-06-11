@@ -7,16 +7,28 @@ from skimage.metrics import peak_signal_noise_ratio
 import torch.nn.functional as f
 
 
+def _is_name_field(value):
+    return isinstance(value, (list, tuple)) and len(value) > 0 and isinstance(value[0], str)
+
+
 def _unpack_valid_batch(data):
-    if len(data) == 3:
-        input_img, label_img, depth = data
-        return input_img, label_img, depth
-    input_img, label_img = data
-    return input_img, label_img, None
+    if _is_name_field(data[-1]):
+        data = data[:-1]
+    input_img, label_img = data[0], data[1]
+    depth = data[2] if len(data) >= 3 else None
+    return input_img, label_img, depth
+
+
+def _apply_depth_control(depth, args):
+    if depth is None:
+        return None
+    if getattr(args, 'dta_depth_mode', 'normal') == 'shuffle' and depth.size(0) > 1:
+        return depth[torch.randperm(depth.size(0), device=depth.device)]
+    return depth
 
 
 def _forward_model(model, input_img, depth, args):
-    if getattr(args, 'arch', '') == 'dta':
+    if getattr(args, 'arch', '') in ('dta', 'dta_v2'):
         if depth is None and getattr(args, 'dta_require_depth', False):
             raise ValueError('DTA validation requires depth but no depth tensor was returned.')
         return model(input_img, depth)
@@ -25,7 +37,7 @@ def _forward_model(model, input_img, depth, args):
 
 def _valid(model, args, ep):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    depth_cache_dir = args.dta_depth_cache_dir if getattr(args, 'arch', '') == 'dta' else ''
+    depth_cache_dir = args.dta_depth_cache_dir if getattr(args, 'arch', '') in ('dta', 'dta_v2') else ''
     dataset = valid_dataloader(
         args.data_dir,
         args.data,
@@ -33,6 +45,7 @@ def _valid(model, args, ep):
         num_workers=0,
         depth_cache_dir=depth_cache_dir,
         depth_split=args.dta_eval_depth_split,
+        root_split=getattr(args, 'valid_root_split', 'test'),
         split_json=args.split_json,
         split_name=args.split_name,
     )
@@ -46,6 +59,7 @@ def _valid(model, args, ep):
             input_img, label_img, depth = _unpack_valid_batch(data)
             input_img = input_img.to(device)
             depth = depth.to(device) if depth is not None else None
+            depth = _apply_depth_control(depth, args)
 
             h, w = input_img.shape[2], input_img.shape[3]
             H, W = ((h+factor)//factor)*factor, ((w+factor)//factor*factor)

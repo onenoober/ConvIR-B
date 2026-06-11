@@ -19,6 +19,14 @@ from data import train_dataloader
 from models.ConvIR import build_net
 
 
+def unpack_batch(batch):
+    input_img, label_img = batch[0], batch[1]
+    depth = batch[2] if len(batch) >= 3 else None
+    trans = batch[3] if len(batch) >= 4 else None
+    airlight = batch[4] if len(batch) >= 5 else None
+    return input_img, label_img, depth, trans, airlight
+
+
 def sha256_file(path):
     digest = hashlib.sha256()
     with open(path, "rb") as handle:
@@ -57,13 +65,18 @@ def build_dta(args):
         "base",
         "Haze4K",
         "original",
-        arch="dta",
+        arch=args.arch,
+        dta_variant=args.dta_variant,
         dta_prior_channels=args.dta_prior_channels,
         dta_gate_bias=args.dta_gate_bias,
         dta_gate_limit=args.dta_gate_limit,
         dta_gamma_limit=args.dta_gamma_limit,
         dta_beta_limit=args.dta_beta_limit,
         dta_alpha_init=args.dta_alpha_init,
+        dta_depth_mode=args.dta_depth_mode,
+        dta_confidence_floor=args.dta_confidence_floor,
+        dta_confidence_local_scale=args.dta_confidence_local_scale,
+        dta_output_residual_scale=args.dta_output_residual_scale,
     )
 
 
@@ -106,11 +119,18 @@ def real_batch_backward_check(model, args, device):
         data="Haze4K",
         depth_cache_dir=args.depth_cache_dir,
         depth_split=args.depth_split,
+        return_trans=args.use_trans_gt,
+        return_meta=args.use_trans_gt,
     )
     batch = next(iter(loader))
-    if len(batch) != 3:
+    input_img, label_img, depth, trans, airlight = unpack_batch(batch)
+    if depth is None:
         raise RuntimeError("Expected train batch with image, label, depth")
-    input_img, label_img, depth = [item.to(device) for item in batch]
+    input_img = input_img.to(device)
+    label_img = label_img.to(device)
+    depth = depth.to(device)
+    trans = trans.to(device) if trans is not None else None
+    airlight = airlight.to(device) if airlight is not None and hasattr(airlight, "to") else airlight
     outputs = model(input_img, depth)
     label_img2 = F.interpolate(label_img, scale_factor=0.5, mode="bilinear")
     label_img4 = F.interpolate(label_img, scale_factor=0.25, mode="bilinear")
@@ -120,7 +140,21 @@ def real_batch_backward_check(model, args, device):
         + F.l1_loss(outputs[2], label_img)
     )
     aux = model.dta_auxiliary_losses(rank_pairs=args.rank_pairs, min_depth_gap=0.03)
-    loss = loss_content + args.rank_weight * aux["rank"] + args.tv_weight * aux["tv"]
+    sup = {"trans": input_img.new_zeros(()), "phys": input_img.new_zeros(())}
+    if hasattr(model, "dta_supervised_losses") and trans is not None:
+        sup = model.dta_supervised_losses(
+            trans_gt=trans,
+            hazy=input_img,
+            dehazed=outputs[2],
+            airlight=airlight,
+        )
+    loss = (
+        loss_content
+        + args.rank_weight * aux["rank"]
+        + args.tv_weight * aux["tv"]
+        + args.trans_weight * sup["trans"]
+        + args.phys_weight * sup["phys"]
+    )
     loss.backward()
     grad_abs_sum = 0.0
     grad_nonzero = 0
@@ -135,11 +169,14 @@ def real_batch_backward_check(model, args, device):
         "loss_content": float(loss_content.detach().cpu()),
         "loss_rank": float(aux["rank"].detach().cpu()),
         "loss_tv": float(aux["tv"].detach().cpu()),
+        "loss_trans": float(sup["trans"].detach().cpu()),
+        "loss_phys": float(sup["phys"].detach().cpu()),
         "loss_total": float(loss.detach().cpu()),
         "grad_abs_sum": grad_abs_sum,
         "grad_nonzero_tensors": grad_nonzero,
         "input_shape": list(input_img.shape),
         "depth_shape": list(depth.shape),
+        "trans_shape": list(trans.shape) if trans is not None else None,
     }
 
 
@@ -150,14 +187,23 @@ def main():
     parser.add_argument("--depth_cache_dir", default="")
     parser.add_argument("--depth_split", default="train")
     parser.add_argument("--output_json", required=True)
+    parser.add_argument("--arch", default="dta", choices=["dta", "dta_v2"])
+    parser.add_argument("--dta_variant", default="v1", choices=["v1", "v2"])
+    parser.add_argument("--dta_depth_mode", default="normal", choices=["normal", "invert", "zero", "shuffle"])
     parser.add_argument("--dta_prior_channels", type=int, default=16)
     parser.add_argument("--dta_gate_bias", type=float, default=-7.0)
     parser.add_argument("--dta_gate_limit", type=float, default=0.03)
     parser.add_argument("--dta_gamma_limit", type=float, default=0.10)
     parser.add_argument("--dta_beta_limit", type=float, default=0.05)
     parser.add_argument("--dta_alpha_init", type=float, default=1.0)
+    parser.add_argument("--dta_confidence_floor", type=float, default=0.25)
+    parser.add_argument("--dta_confidence_local_scale", type=float, default=6.0)
+    parser.add_argument("--dta_output_residual_scale", type=float, default=0.03)
+    parser.add_argument("--use_trans_gt", action="store_true")
     parser.add_argument("--rank_weight", type=float, default=0.003)
     parser.add_argument("--tv_weight", type=float, default=0.0003)
+    parser.add_argument("--trans_weight", type=float, default=0.0)
+    parser.add_argument("--phys_weight", type=float, default=0.0)
     parser.add_argument("--rank_pairs", type=int, default=256)
     parser.add_argument("--noop_tolerance", type=float, default=1e-7)
     args = parser.parse_args()
@@ -188,14 +234,23 @@ def main():
         "synthetic_noop": synthetic,
         "real_batch_backward": real_batch,
         "dta_config": {
+            "arch": args.arch,
+            "dta_variant": args.dta_variant,
+            "dta_depth_mode": args.dta_depth_mode,
             "dta_prior_channels": args.dta_prior_channels,
             "dta_gate_bias": args.dta_gate_bias,
             "dta_gate_limit": args.dta_gate_limit,
             "dta_gamma_limit": args.dta_gamma_limit,
             "dta_beta_limit": args.dta_beta_limit,
             "dta_alpha_init": args.dta_alpha_init,
+            "dta_confidence_floor": args.dta_confidence_floor,
+            "dta_confidence_local_scale": args.dta_confidence_local_scale,
+            "dta_output_residual_scale": args.dta_output_residual_scale,
+            "use_trans_gt": args.use_trans_gt,
             "rank_weight": args.rank_weight,
             "tv_weight": args.tv_weight,
+            "trans_weight": args.trans_weight,
+            "phys_weight": args.phys_weight,
         },
     }
     output = Path(args.output_json)

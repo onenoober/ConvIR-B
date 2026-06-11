@@ -37,6 +37,8 @@ def train_dataloader(
     use_transform=True,
     depth_cache_dir='',
     depth_split='train',
+    return_trans=False,
+    return_meta=False,
     split_json='',
     split_name='',
 ):
@@ -63,6 +65,8 @@ def train_dataloader(
             transform=transform,
             depth_cache_dir=depth_cache_dir,
             depth_split=depth_split,
+            return_trans=return_trans,
+            return_meta=return_meta,
             split_json=split_json,
             split_name=split_name,
         ),
@@ -81,10 +85,13 @@ def test_dataloader(
     num_workers=0,
     depth_cache_dir='',
     depth_split='test',
+    root_split='test',
+    return_trans=False,
+    return_meta=False,
     split_json='',
     split_name='',
 ):
-    image_dir = os.path.join(path, 'test')
+    image_dir = os.path.join(path, root_split)
     dataloader = DataLoader(
         DeblurDataset(
             image_dir,
@@ -92,6 +99,8 @@ def test_dataloader(
             is_test=True,
             depth_cache_dir=depth_cache_dir,
             depth_split=depth_split,
+            return_trans=return_trans,
+            return_meta=return_meta,
             split_json=split_json,
             split_name=split_name,
         ),
@@ -111,15 +120,20 @@ def valid_dataloader(
     num_workers=0,
     depth_cache_dir='',
     depth_split='test',
+    root_split='test',
+    return_trans=False,
+    return_meta=False,
     split_json='',
     split_name='',
 ):
     dataloader = DataLoader(
         DeblurDataset(
-            os.path.join(path, 'test'),
+            os.path.join(path, root_split),
             data,
             depth_cache_dir=depth_cache_dir,
             depth_split=depth_split,
+            return_trans=return_trans,
+            return_meta=return_meta,
             split_json=split_json,
             split_name=split_name,
         ),
@@ -140,6 +154,8 @@ class DeblurDataset(Dataset):
         is_test=False,
         depth_cache_dir='',
         depth_split='',
+        return_trans=False,
+        return_meta=False,
         split_json='',
         split_name='',
     ):
@@ -150,16 +166,21 @@ class DeblurDataset(Dataset):
         self.data_key = data.lower()
         self.depth_cache_dir = depth_cache_dir
         self.depth_split = depth_split
+        self.return_trans = return_trans
+        self.return_meta = return_meta
 
         if self.data_key == 'haze4k':
             self.input_dir = _first_existing_dir(image_dir, ('IN', 'haze', 'hazy'))
             self.label_dir = _first_existing_dir(image_dir, ('GT', 'gt'))
+            self.trans_dir = _first_existing_dir(image_dir, ('trans', 'Trans', 'transmission')) if return_trans else ''
         elif self.data_key == 'real_haze':
             self.input_dir = _first_existing_dir(image_dir, ('hazy',))
             self.label_dir = _first_existing_dir(image_dir, ('GT', 'gt'))
+            self.trans_dir = ''
         else:
             self.input_dir = _first_existing_dir(image_dir, ('hazy',))
             self.label_dir = _first_existing_dir(image_dir, ('gt',))
+            self.trans_dir = ''
 
         self.image_list = _list_images(self.input_dir)
         if split_json or split_name:
@@ -206,6 +227,27 @@ class DeblurDataset(Dataset):
             f'tried {candidates}'
         )
 
+    def _trans_path(self, image_name):
+        if not self.trans_dir:
+            return ''
+        candidates = []
+        stem, ext = os.path.splitext(image_name)
+        candidates.append(image_name)
+        if '_' in stem:
+            base = stem.split('_')[0]
+            candidates.append(f'{base}{ext}')
+            candidates.append(f'{base}.png')
+
+        for candidate in candidates:
+            path = os.path.join(self.trans_dir, candidate)
+            if os.path.isfile(path):
+                return path
+
+        raise FileNotFoundError(
+            f'No matching transmission map for {image_name} in {self.trans_dir}; '
+            f'tried {candidates}'
+        )
+
     def _depth_path(self, image_name):
         if not self.depth_cache_dir:
             return ''
@@ -236,6 +278,26 @@ class DeblurDataset(Dataset):
             depth_img = depth_img.resize(size, resample=Image.BICUBIC)
         return depth_img
 
+    def _load_trans(self, image_name, size):
+        trans_path = self._trans_path(image_name)
+        if not trans_path:
+            return None
+        trans = Image.open(trans_path).convert('L')
+        if trans.size != size:
+            trans = trans.resize(size, resample=Image.BICUBIC)
+        return trans
+
+    @staticmethod
+    def _airlight_from_name(image_name):
+        stem = os.path.splitext(os.path.basename(image_name))[0]
+        parts = stem.split('_')
+        if len(parts) >= 2:
+            try:
+                return np.float32(float(parts[1]))
+            except ValueError:
+                pass
+        return np.float32(1.0)
+
     def __len__(self):
         return len(self.image_list)
 
@@ -244,22 +306,30 @@ class DeblurDataset(Dataset):
         image = Image.open(os.path.join(self.input_dir, image_name)).convert('RGB')
         label = Image.open(self._label_path(image_name)).convert('RGB')
         depth = self._load_depth(image_name, image.size)
+        trans = self._load_trans(image_name, image.size) if self.return_trans else None
 
         if self.transform:
-            if depth is None:
+            if depth is None and trans is None:
                 image, label = self.transform(image, label)
-            else:
+            elif trans is None:
                 image, label, depth = self.transform(image, label, depth)
+            else:
+                image, label, depth, trans = self.transform(image, label, depth, trans)
         else:
             image = F.to_tensor(image)
             label = F.to_tensor(label)
             if depth is not None:
                 depth = F.to_tensor(depth).float()
+            if trans is not None:
+                trans = F.to_tensor(trans).float().clamp(0.0, 1.0)
+        payload = [image, label]
+        if depth is not None:
+            payload.append(depth)
+        if trans is not None:
+            payload.append(trans)
+        if self.return_meta:
+            payload.append(self._airlight_from_name(image_name))
         if self.is_test:
             name = self.image_list[idx]
-            if depth is not None:
-                return image, label, depth, name
-            return image, label, name
-        if depth is not None:
-            return image, label, depth
-        return image, label
+            payload.append(name)
+        return tuple(payload)

@@ -256,6 +256,269 @@ class DepthTransmissionAdapter(nn.Module):
         return {key: float(value.cpu()) for key, value in self.last_stats.items()}
 
 
+class CalibratedDepthFiLMBlock(nn.Module):
+    def __init__(
+        self,
+        channels,
+        prior_in_channels=6,
+        prior_channels=32,
+        gate_bias=-6.0,
+        gate_limit=0.06,
+        gamma_limit=0.12,
+        beta_limit=0.06,
+    ):
+        super(CalibratedDepthFiLMBlock, self).__init__()
+        self.channels = channels
+        self.gate_limit = gate_limit
+        self.gamma_limit = gamma_limit
+        self.beta_limit = beta_limit
+        self.prior = nn.Sequential(
+            nn.Conv2d(prior_in_channels, prior_channels, kernel_size=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(prior_channels, prior_channels, kernel_size=3, padding=1, bias=True),
+            nn.GELU(),
+        )
+        self.head = nn.Conv2d(prior_channels, channels * 2 + 2, kernel_size=1, bias=True)
+        self.prior.apply(_init_kaiming)
+        nn.init.zeros_(self.head.weight)
+        nn.init.zeros_(self.head.bias)
+        with torch.no_grad():
+            self.head.bias[channels * 2].fill_(gate_bias)
+
+    def forward(self, feat, prior):
+        prior = F.interpolate(prior, size=feat.shape[-2:], mode='bilinear', align_corners=False)
+        film = self.head(self.prior(prior))
+        gamma, beta, gate, conf_logit = torch.split(
+            film, [self.channels, self.channels, 1, 1], dim=1
+        )
+        gamma = torch.tanh(gamma) * self.gamma_limit
+        beta = torch.tanh(beta) * self.beta_limit
+        prior_conf = prior[:, -1:, :, :].clamp(0.0, 1.0)
+        conf = torch.sigmoid(conf_logit) * prior_conf
+        gate = torch.sigmoid(gate) * self.gate_limit * conf
+        delta = gate * (gamma * feat + beta)
+        stats = {
+            'gate_mean': gate.detach().mean(),
+            'gate_max': gate.detach().max(),
+            'conf_mean': conf.detach().mean(),
+            'conf_min': conf.detach().amin(),
+            'gamma_abs_mean': gamma.detach().abs().mean(),
+            'beta_abs_mean': beta.detach().abs().mean(),
+            'delta_abs_mean': delta.detach().abs().mean(),
+        }
+        return feat + delta, stats
+
+
+class CalibratedDepthTransmissionAdapter(nn.Module):
+    def __init__(
+        self,
+        stage1_channels=32,
+        stage2_channels=64,
+        stage3_channels=128,
+        prior_channels=32,
+        gate_bias=-6.0,
+        gate_limit=0.06,
+        gamma_limit=0.12,
+        beta_limit=0.06,
+        alpha_init=1.0,
+        depth_mode='normal',
+        confidence_floor=0.25,
+        confidence_local_scale=6.0,
+        output_residual_scale=0.03,
+    ):
+        super(CalibratedDepthTransmissionAdapter, self).__init__()
+        self.depth_mode = depth_mode
+        self.confidence_floor = confidence_floor
+        self.confidence_local_scale = confidence_local_scale
+        self.output_residual_scale = output_residual_scale
+        prior_in_channels = 6
+        self.stage2 = CalibratedDepthFiLMBlock(
+            stage2_channels,
+            prior_in_channels=prior_in_channels,
+            prior_channels=prior_channels,
+            gate_bias=gate_bias,
+            gate_limit=gate_limit,
+            gamma_limit=gamma_limit,
+            beta_limit=beta_limit,
+        )
+        self.stage3 = CalibratedDepthFiLMBlock(
+            stage3_channels,
+            prior_in_channels=prior_in_channels,
+            prior_channels=prior_channels,
+            gate_bias=gate_bias,
+            gate_limit=gate_limit,
+            gamma_limit=gamma_limit,
+            beta_limit=beta_limit,
+        )
+        self.log_alpha2 = nn.Parameter(torch.log(torch.tensor(float(alpha_init))))
+        self.log_alpha3 = nn.Parameter(torch.log(torch.tensor(float(alpha_init))))
+        self.log_alpha_full = nn.Parameter(torch.log(torch.tensor(float(alpha_init))))
+        hidden = max(32, stage2_channels)
+        self.transmission_head = nn.Sequential(
+            nn.Conv2d(stage2_channels + stage3_channels, hidden, kernel_size=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(hidden, hidden // 2, kernel_size=3, padding=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(hidden // 2, 1, kernel_size=3, padding=1, bias=True),
+        )
+        self.output_refine = nn.Sequential(
+            nn.Conv2d(stage1_channels + prior_in_channels, stage1_channels, kernel_size=3, padding=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(stage1_channels, 3, kernel_size=3, padding=1, bias=True),
+        )
+        self.transmission_head[0].apply(_init_kaiming)
+        self.transmission_head[2].apply(_init_kaiming)
+        nn.init.zeros_(self.transmission_head[-1].weight)
+        nn.init.zeros_(self.transmission_head[-1].bias)
+        self.output_refine[0].apply(_init_kaiming)
+        nn.init.zeros_(self.output_refine[-1].weight)
+        nn.init.zeros_(self.output_refine[-1].bias)
+        self.last_aux = {}
+        self.last_stats = {}
+
+    def normalize_depth(self, depth):
+        if depth is None:
+            return None
+        if depth.dim() == 3:
+            depth = depth.unsqueeze(1)
+        if depth.size(1) != 1:
+            depth = depth.mean(dim=1, keepdim=True)
+        depth = torch.nan_to_num(depth.float(), nan=0.0, posinf=0.0, neginf=0.0)
+        flat = depth.flatten(2)
+        d_min = flat.amin(dim=2).view(depth.size(0), 1, 1, 1)
+        d_max = flat.amax(dim=2).view(depth.size(0), 1, 1, 1)
+        depth = (depth - d_min) / (d_max - d_min + 1e-6)
+        depth = depth.clamp(0.0, 1.0)
+        if self.depth_mode == 'invert':
+            depth = 1.0 - depth
+        elif self.depth_mode == 'zero':
+            depth = torch.zeros_like(depth)
+        elif self.depth_mode not in ('normal', 'shuffle'):
+            raise ValueError(f'Unsupported DTA depth_mode: {self.depth_mode}')
+        return depth
+
+    def _confidence(self, d):
+        local = F.avg_pool2d(d, kernel_size=5, stride=1, padding=2)
+        inconsistency = (d - local).abs()
+        conf = torch.exp(-self.confidence_local_scale * inconsistency)
+        return self.confidence_floor + (1.0 - self.confidence_floor) * conf
+
+    @staticmethod
+    def _gradients(d):
+        dx = F.pad(d[:, :, :, 1:] - d[:, :, :, :-1], (0, 1, 0, 0))
+        dy = F.pad(d[:, :, 1:, :] - d[:, :, :-1, :], (0, 0, 0, 1))
+        return dx, dy
+
+    def _prior(self, depth, size, log_alpha):
+        d = F.interpolate(depth, size=size, mode='bilinear', align_corners=False)
+        alpha = log_alpha.exp().clamp(0.05, 5.0)
+        t_proxy = torch.exp(-alpha * d).clamp(1e-4, 1.0)
+        neg_log_t = -torch.log(t_proxy)
+        dx, dy = self._gradients(d)
+        conf = self._confidence(d)
+        prior = torch.cat([d, t_proxy, neg_log_t, dx, dy, conf], dim=1)
+        return prior, d, t_proxy, conf
+
+    def forward(self, feat2, feat3, depth):
+        self.last_aux = {}
+        self.last_stats = {}
+        depth = self.normalize_depth(depth)
+        if depth is None:
+            return feat2, feat3
+
+        prior2, d2, t_proxy2, conf2 = self._prior(depth, feat2.shape[-2:], self.log_alpha2)
+        prior3, d3, t_proxy3, conf3 = self._prior(depth, feat3.shape[-2:], self.log_alpha3)
+        feat2, stats2 = self.stage2(feat2, prior2)
+        feat3, stats3 = self.stage3(feat3, prior3)
+        feat3_up = F.interpolate(feat3, size=feat2.shape[-2:], mode='bilinear', align_corners=False)
+        t_pred = torch.sigmoid(self.transmission_head(torch.cat([feat2, feat3_up], dim=1)))
+        self.last_aux = {
+            't_pred': t_pred,
+            'depth': d2,
+            't_proxy': t_proxy2,
+            'depth_stage3': d3,
+            't_proxy_stage3': t_proxy3,
+            'confidence': conf2,
+            'confidence_stage3': conf3,
+            'depth_full': depth,
+        }
+        self.last_stats = {
+            'stage2_gate_mean': stats2['gate_mean'],
+            'stage2_gate_max': stats2['gate_max'],
+            'stage2_conf_mean': stats2['conf_mean'],
+            'stage2_conf_min': stats2['conf_min'],
+            'stage2_gamma_abs_mean': stats2['gamma_abs_mean'],
+            'stage2_beta_abs_mean': stats2['beta_abs_mean'],
+            'stage2_delta_abs_mean': stats2['delta_abs_mean'],
+            'stage3_gate_mean': stats3['gate_mean'],
+            'stage3_gate_max': stats3['gate_max'],
+            'stage3_conf_mean': stats3['conf_mean'],
+            'stage3_conf_min': stats3['conf_min'],
+            'stage3_gamma_abs_mean': stats3['gamma_abs_mean'],
+            'stage3_beta_abs_mean': stats3['beta_abs_mean'],
+            'stage3_delta_abs_mean': stats3['delta_abs_mean'],
+            't_pred_mean': t_pred.detach().mean(),
+            't_pred_std': t_pred.detach().std(unbiased=False),
+        }
+        return feat2, feat3
+
+    def refine_output(self, final_feat, output, depth):
+        depth = self.normalize_depth(depth)
+        if depth is None:
+            return output
+        prior, _, _, _ = self._prior(depth, output.shape[-2:], self.log_alpha_full)
+        delta = torch.tanh(self.output_refine(torch.cat([final_feat, prior], dim=1)))
+        delta = delta * self.output_residual_scale
+        self.last_stats['output_delta_abs_mean'] = delta.detach().abs().mean()
+        return output + delta
+
+    def auxiliary_losses(self, rank_pairs=512, min_depth_gap=0.03):
+        if not self.last_aux:
+            device = next(self.parameters()).device
+            zero = torch.zeros((), device=device)
+            return {'rank': zero, 'tv': zero, 'proxy': zero}
+        t_pred = self.last_aux['t_pred']
+        depth = self.last_aux['depth'].detach()
+        t_proxy = self.last_aux['t_proxy'].detach()
+        rank = DepthTransmissionAdapter._rank_loss(t_pred, depth, rank_pairs, min_depth_gap)
+        tv = DepthTransmissionAdapter._edge_aware_tv(t_pred, depth)
+        proxy = F.l1_loss(t_pred, t_proxy)
+        return {'rank': rank, 'tv': tv, 'proxy': proxy}
+
+    def supervised_losses(self, trans_gt=None, hazy=None, dehazed=None, airlight=None):
+        if not self.last_aux:
+            device = next(self.parameters()).device
+            zero = torch.zeros((), device=device)
+            return {'trans': zero, 'phys': zero, 't_l1': zero, 't_spearman_proxy': zero}
+        t_pred = self.last_aux['t_pred']
+        zero = t_pred.new_zeros(())
+        losses = {'trans': zero, 'phys': zero, 't_l1': zero, 't_spearman_proxy': zero}
+        if trans_gt is None:
+            return losses
+        if trans_gt.dim() == 3:
+            trans_gt = trans_gt.unsqueeze(1)
+        trans_gt = trans_gt.float().clamp(1e-4, 1.0)
+        trans = F.interpolate(trans_gt, size=t_pred.shape[-2:], mode='bilinear', align_corners=False)
+        t_l1 = F.smooth_l1_loss(t_pred, trans)
+        losses['trans'] = t_l1
+        losses['t_l1'] = t_l1.detach()
+        if hazy is not None and dehazed is not None and airlight is not None:
+            if airlight.dim() == 1:
+                airlight = airlight.view(-1, 1, 1, 1)
+            elif airlight.dim() == 2:
+                airlight = airlight.view(airlight.size(0), airlight.size(1), 1, 1)
+            airlight = airlight.to(hazy.device).float().clamp(0.0, 1.0)
+            if airlight.size(1) == 1:
+                airlight = airlight.expand(-1, 3, -1, -1)
+            trans_full = F.interpolate(t_pred, size=hazy.shape[-2:], mode='bilinear', align_corners=False)
+            recon_hazy = dehazed.clamp(0.0, 1.0) * trans_full + airlight * (1.0 - trans_full)
+            losses['phys'] = F.smooth_l1_loss(recon_hazy, hazy)
+        return losses
+
+    def stats(self):
+        return {key: float(value.cpu()) for key, value in self.last_stats.items()}
+
+
 class ConvIR(nn.Module):
     def __init__(self, version, data):
         super(ConvIR, self).__init__()
@@ -350,13 +613,26 @@ class ConvIR(nn.Module):
 
 
 class ConvIRDTA(ConvIR):
-    def __init__(self, version, data, **dta_kwargs):
+    def __init__(self, version, data, dta_variant='v1', **dta_kwargs):
         super(ConvIRDTA, self).__init__(version, data)
-        self.DTA = DepthTransmissionAdapter(
-            stage2_channels=64,
-            stage3_channels=128,
-            **dta_kwargs,
-        )
+        self.dta_variant = dta_variant
+        if dta_variant == 'v2':
+            self.DTA = CalibratedDepthTransmissionAdapter(
+                stage1_channels=32,
+                stage2_channels=64,
+                stage3_channels=128,
+                **dta_kwargs,
+            )
+        else:
+            allowed = {
+                key: value for key, value in dta_kwargs.items()
+                if key in ('prior_channels', 'gate_bias', 'gate_limit', 'gamma_limit', 'beta_limit', 'alpha_init')
+            }
+            self.DTA = DepthTransmissionAdapter(
+                stage2_channels=64,
+                stage3_channels=128,
+                **allowed,
+            )
 
     def forward(self, x, depth=None):
         x_2 = F.interpolate(x, scale_factor=0.5)
@@ -390,13 +666,23 @@ class ConvIRDTA(ConvIR):
         z = torch.cat([z, res1], dim=1)
         z = self.Convs[1](z)
         z = self.Decoder[2](z)
-        z = self.feat_extract[5](z)
+        final_feat = z
+        z = self.feat_extract[5](final_feat)
+        if hasattr(self.DTA, 'refine_output'):
+            z = self.DTA.refine_output(final_feat, z, depth)
         outputs.append(z+x)
 
         return outputs
 
     def dta_auxiliary_losses(self, rank_pairs=512, min_depth_gap=0.03):
         return self.DTA.auxiliary_losses(rank_pairs, min_depth_gap)
+
+    def dta_supervised_losses(self, trans_gt=None, hazy=None, dehazed=None, airlight=None):
+        if hasattr(self.DTA, 'supervised_losses'):
+            return self.DTA.supervised_losses(trans_gt, hazy, dehazed, airlight)
+        device = next(self.parameters()).device
+        zero = torch.zeros((), device=device)
+        return {'trans': zero, 'phys': zero, 't_l1': zero, 't_spearman_proxy': zero}
 
     def collect_dta_stats(self, x, depth=None):
         self.eval()
@@ -420,12 +706,17 @@ def build_net(
     data,
     fam_mode='original',
     arch='official_convir',
+    dta_variant='v1',
     dta_prior_channels=16,
     dta_gate_bias=-6.0,
     dta_gate_limit=0.05,
     dta_gamma_limit=0.10,
     dta_beta_limit=0.05,
     dta_alpha_init=1.0,
+    dta_depth_mode='normal',
+    dta_confidence_floor=0.25,
+    dta_confidence_local_scale=6.0,
+    dta_output_residual_scale=0.03,
 ):
     if fam_mode != 'original':
         raise ValueError(
@@ -434,15 +725,20 @@ def build_net(
         )
     if arch in ('official_convir', 'convir'):
         return ConvIR(version, data)
-    if arch == 'dta':
+    if arch in ('dta', 'dta_v2'):
         return ConvIRDTA(
             version,
             data,
+            dta_variant='v2' if arch == 'dta_v2' else dta_variant,
             prior_channels=dta_prior_channels,
             gate_bias=dta_gate_bias,
             gate_limit=dta_gate_limit,
             gamma_limit=dta_gamma_limit,
             beta_limit=dta_beta_limit,
             alpha_init=dta_alpha_init,
+            depth_mode=dta_depth_mode,
+            confidence_floor=dta_confidence_floor,
+            confidence_local_scale=dta_confidence_local_scale,
+            output_residual_scale=dta_output_residual_scale,
         )
     raise ValueError(f'Unsupported arch: {arch}')

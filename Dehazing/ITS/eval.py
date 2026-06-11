@@ -13,16 +13,29 @@ from skimage import img_as_ubyte
 import cv2
 
 
+def _is_name_field(value):
+    return isinstance(value, (list, tuple)) and len(value) > 0 and isinstance(value[0], str)
+
+
 def _unpack_test_batch(data):
-    if len(data) == 4:
-        input_img, label_img, depth, name = data
-        return input_img, label_img, depth, name
-    input_img, label_img, name = data
-    return input_img, label_img, None, name
+    name = data[-1] if _is_name_field(data[-1]) else None
+    if name is not None:
+        data = data[:-1]
+    input_img, label_img = data[0], data[1]
+    depth = data[2] if len(data) >= 3 else None
+    return input_img, label_img, depth, name
+
+
+def _apply_depth_control(depth, args):
+    if depth is None:
+        return None
+    if getattr(args, 'dta_depth_mode', 'normal') == 'shuffle' and depth.size(0) > 1:
+        return depth[torch.randperm(depth.size(0), device=depth.device)]
+    return depth
 
 
 def _forward_model(model, input_img, depth, args):
-    if getattr(args, 'arch', '') == 'dta':
+    if getattr(args, 'arch', '') in ('dta', 'dta_v2'):
         if depth is None and getattr(args, 'dta_require_depth', False):
             raise ValueError('DTA test requires depth but no depth tensor was returned.')
         return model(input_img, depth)
@@ -33,7 +46,7 @@ def _eval(model, args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     state_dict = torch.load(args.test_model, map_location=device)
     model.load_state_dict(state_dict['model'])
-    depth_cache_dir = args.dta_depth_cache_dir if getattr(args, 'arch', '') == 'dta' else ''
+    depth_cache_dir = args.dta_depth_cache_dir if getattr(args, 'arch', '') in ('dta', 'dta_v2') else ''
     dataloader = test_dataloader(
         args.data_dir,
         args.data,
@@ -41,6 +54,7 @@ def _eval(model, args):
         num_workers=0,
         depth_cache_dir=depth_cache_dir,
         depth_split=args.dta_eval_depth_split,
+        root_split=getattr(args, 'eval_root_split', 'test'),
         split_json=args.split_json,
         split_name=args.split_name,
     )
@@ -58,6 +72,7 @@ def _eval(model, args):
 
             input_img = input_img.to(device)
             depth = depth.to(device) if depth is not None else None
+            depth = _apply_depth_control(depth, args)
 
             h, w = input_img.shape[2], input_img.shape[3]
             H, W = ((h+factor)//factor)*factor, ((w+factor)//factor*factor)
@@ -93,7 +108,7 @@ def _eval(model, args):
             ssim_adder(ssim_val)
 
             if args.save_image:
-                save_name = os.path.join(args.result_dir, name[0])
+                save_name = os.path.join(args.result_dir, name[0] if name else f'{iter_idx:06d}.png')
                 pred_clip += 0.5 / 255
                 pred = F.to_pil_image(pred_clip.squeeze(0).cpu(), 'RGB')
                 pred.save(save_name)
