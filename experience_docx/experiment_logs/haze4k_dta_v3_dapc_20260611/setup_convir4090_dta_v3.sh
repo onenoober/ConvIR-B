@@ -13,6 +13,9 @@ if [[ ! -d "$WORK/.git" ]]; then
   git clone git@github.com:onenoober/ConvIR-B.git "$WORK"
 fi
 cd "$WORK"
+if ! git remote get-url github >/dev/null 2>&1; then
+  git remote add github git@github.com:onenoober/ConvIR-B.git
+fi
 git fetch github '+refs/heads/*:refs/remotes/github/*'
 git switch "$BRANCH" 2>/dev/null || git switch -c "$BRANCH" "github/$BRANCH"
 git pull --ff-only github "$BRANCH"
