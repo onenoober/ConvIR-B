@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `IN_PROGRESS_ADAPTER_ONLY_FIVEFOLD_DONE_MULTI_SEED_NEXT`
+Status: `RUNNING_ADAPTER_ONLY_MULTI_SEED_3411_3413`
 
 ## Scope
 
@@ -89,6 +89,9 @@ that has already passed internal mechanism and preservation gates.
   and Wilcoxon report. Locked Haze4K test remains blocked because depth
   attribution is positive but still not clean, and SSIM/tail regressions do not
   satisfy the promotion gate.
+- Multi-seed adapter-only controls for seeds `3411` and `3413` are running on
+  convir-4090 using seven tmux workers over GPUs `1-7`. GPU0 is skipped because
+  non-DTA user processes occupy it.
 
 
 ## 2026-06-11 Adapter-Only Fold0 Scout5 Controls
@@ -202,10 +205,10 @@ controls; locked Haze4K test remains blocked.
 
 ## Next Internal Queue
 
-- Run the predeclared multi-seed adapter-only controls for `invert`, `normal`,
-  `shuffle`, and `zero` before any locked-test confirmation.
-- Prefer train-derived OOF folds; if runtime pressure requires staging, run two
-  additional seeds in the same five-fold schedule and aggregate across seeds.
+- Monitor and complete the running multi-seed adapter-only controls for seeds
+  `3411` and `3413`.
+- Aggregate across seeds `3407`, `3411`, and `3413` after all multi-seed jobs
+  finish.
 - Only consider locked Haze4K test if multi-seed OOF preserves mean/hard gains,
   reduces ambiguity against zero/shuffle controls, and resolves the SSIM/tail
   risk gates.

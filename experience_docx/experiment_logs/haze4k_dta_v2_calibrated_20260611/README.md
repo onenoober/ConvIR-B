@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `IN_PROGRESS_ADAPTER_ONLY_FIVEFOLD_DONE_MULTI_SEED_NEXT`
+Status: `RUNNING_ADAPTER_ONLY_MULTI_SEED_3411_3413`
 
 This directory stores text-only evidence for `codex/haze4k-dta-v2-calibrated`,
 the calibrated confidence-gated DTA route for Innovation 1. Checkpoints, model
@@ -62,6 +62,9 @@ committed.
 - Adapter-only folds `1-4` OOF20 controls completed on convir-4090 GPUs 0-7.
 - Five-fold adapter-only aggregate, bootstrap CI, and Wilcoxon report completed
   on convir-4090.
+- Multi-seed adapter-only OOF20 controls for seeds `3411` and `3413` are
+  running through a seven-worker scheduler on GPUs `1-7`; GPU0 is intentionally
+  skipped because it is occupied by non-DTA user processes.
 
 ## Adapter-Neighbors Fold0 OOF20 Result
 
@@ -119,3 +122,15 @@ for locked-test promotion: raw `normal` is nearly tied with calibrated `invert`,
 zero/shuffle controls are still positive, SSIM is slightly negative for all
 modes, and worst regressions remain high. Continue multi-seed adapter-only
 controls before any locked-test confirmation.
+
+## Multi-Seed Adapter-Only Controls
+
+- Seeds: `3411`, `3413`.
+- Schedule: five folds x four depth/control modes x two seeds = `40` jobs.
+- Parallelism: seven tmux workers, one per GPU `1-7`, each consuming an assigned
+  subset from `dta_v2_oof20_adapter_only_multiseed_3411_3413_jobs.tsv`.
+- Locked-test policy: still blocked; this stage uses only train-derived OOF
+  splits.
+- Evidence contract: each job writes train/eval/tpred logs plus compare and
+  `t_pred` audit JSON/CSV; after completion, run a multi-seed aggregate before
+  any locked-test decision.

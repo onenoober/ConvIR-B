@@ -4,8 +4,8 @@ Date: 2026-06-11
 
 Status: first low-gate route completed diagnostic/no-promotion on
 `convir-4090`; DTA-v2 calibrated confidence-gated route is active with
-adapter-only five-fold OOF evidence synced; multi-seed controls are next and
-locked test remains blocked.
+adapter-only five-fold OOF evidence synced; multi-seed controls for seeds
+`3411` and `3413` are running, and locked test remains blocked.
 
 ## Sources
 
@@ -25,6 +25,7 @@ locked test remains blocked.
 | DTA gate20 | Twenty-epoch adapter-only run completed; full 1000-image diagnostic mean PSNR delta `-0.008940 dB`, hard bottom-25 `-0.019101 dB`, easy top-25 `-0.021037 dB`, SSIM delta `-0.00001973`, strong regressions `80/250`, worst regressions `48/1000`. | `COMPLETED_GATE_PASS_DIAGNOSTIC_NO_PROMOTION_DTA_LOWGATE`; do not promote this exact route. |
 | DTA-v2 calibrated confidence-gated adapter-only | Fold0 OOF20 controls completed: invert/normal/shuffle/zero mean dPSNR `+0.1069/+0.1060/+0.0984/+0.0955`, hard `+0.0992/+0.1047/+0.0956/+0.0918`. Positive but weak depth attribution. | Keep as current internal candidate; expand OOF folds before locked-test consideration. |
 | DTA-v2 adapter-only five-fold OOF | Five-fold OOF20 completed over `3000` train-derived validation predictions. Invert/normal/shuffle/zero mean dPSNR `+0.0882/+0.0879/+0.0765/+0.0728`; hard `+0.0700/+0.0763/+0.0633/+0.0595`; easy `+0.0716/+0.0697/+0.0649/+0.0630`; bootstrap lower bounds are all positive. | Positive internal signal, but not promotion-ready: zero/shuffle retain most gain, raw `normal` nearly ties calibrated `invert`, SSIM is slightly negative, and worst regressions remain high. Continue multi-seed controls. |
+| DTA-v2 adapter-only multi-seed controls | Seeds `3411` and `3413` launched as five-fold OOF20 adapter-only controls on convir-4090 GPUs `1-7`; GPU0 is intentionally skipped due non-DTA user processes. | Running; aggregate with seed `3407` after completion before any locked-test decision. |
 | DTA-v2 calibrated confidence-gated adapter-neighbors | Fold0 OOF20 controls completed: invert/normal/shuffle/zero mean dPSNR `+0.0151/+0.0151/+0.0097/+0.0072`, easy top-25 `-0.0639/-0.0624/-0.0728/-0.0746`, negative SSIM, and worst regressions `142-146`. | Not a promotion candidate; do not continue adapter-neighbors unless a new mechanism changes preservation/gate behavior. |
 
 ## Family Verdict
