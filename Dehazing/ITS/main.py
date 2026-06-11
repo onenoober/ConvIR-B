@@ -3,6 +3,7 @@ import torch
 import argparse
 import random
 import shutil
+import hashlib
 from torch.backends import cudnn
 from models.ConvIR import build_net
 from train import _train
@@ -22,6 +23,23 @@ def load_init_model(model, args):
     if args.resume:
         raise ValueError('--init_model initializes weights; --resume restores optimizer state. Use only one.')
     state = _load_checkpoint_model(args.init_model, 'cpu')
+    if args.init_model_partial:
+        allowed_prefixes = tuple(prefix for prefix in args.partial_new_prefixes.split(',') if prefix)
+        result = model.load_state_dict(state, strict=False)
+        missing = [key for key in result.missing_keys if not key.startswith(allowed_prefixes)]
+        unexpected = list(result.unexpected_keys)
+        if missing or unexpected:
+            raise RuntimeError(
+                f'partial init failed: missing={missing} unexpected={unexpected} '
+                f'allowed_new_prefixes={allowed_prefixes}'
+            )
+        loaded = [key for key in state if key in model.state_dict()]
+        print(
+            f'INIT_MODEL_PARTIAL_LOAD path={args.init_model} loaded={len(loaded)} '
+            f'missing_allowed={len(result.missing_keys)} unexpected=[] '
+            f'allowed_new_prefixes={allowed_prefixes}'
+        )
+        return
     model.load_state_dict(state)
     print(f'INIT_MODEL_LOAD path={args.init_model} missing=[] unexpected=[]')
 
@@ -44,7 +62,32 @@ def main(args):
         os.makedirs('results/' + args.model_name + '/')
     if not os.path.exists(args.result_dir):
         os.makedirs(args.result_dir)
-    model = build_net(args.version, args.data, args.fam_mode)
+    model = build_net(
+        args.version,
+        args.data,
+        args.fam_mode,
+        arch=args.arch,
+        dta_variant=args.dta_variant,
+        dta_prior_channels=args.dta_prior_channels,
+        dta_gate_bias=args.dta_gate_bias,
+        dta_gate_limit=args.dta_gate_limit,
+        dta_gamma_limit=args.dta_gamma_limit,
+        dta_beta_limit=args.dta_beta_limit,
+        dta_alpha_init=args.dta_alpha_init,
+        dta_depth_mode=args.dta_depth_mode,
+        dta_confidence_floor=args.dta_confidence_floor,
+        dta_confidence_local_scale=args.dta_confidence_local_scale,
+        dta_output_residual_scale=args.dta_output_residual_scale,
+        dta_r0_residual_scale=args.dta_r0_residual_scale,
+        dta_depth_residual_scale=args.dta_depth_residual_scale,
+        dta_depth_mask_easy_budget=args.dta_depth_mask_easy_budget,
+        dta_depth_mask_dense_budget=args.dta_depth_mask_dense_budget,
+        dta_depth_mask_density_thresh=args.dta_depth_mask_density_thresh,
+        dta_depth_mask_bias=args.dta_depth_mask_bias,
+        dta_phys_t_min=args.dta_phys_t_min,
+        dta_phase=args.dta_phase,
+        dta_ablation=args.dta_ablation,
+    )
     # print(model)
 
     if torch.cuda.is_available():
@@ -65,7 +108,7 @@ if __name__ == '__main__':
     parser.add_argument('--data', type=str, default='ITS', choices=['ITS', 'Haze4K', 'NHR', 'GTA5', 'real_haze'])
     parser.add_argument('--version', default='small', choices=['small', 'base', 'large'], type=str)
     parser.add_argument('--fam_mode', default='original', choices=['original'], type=str)
-    parser.add_argument('--arch', default='official_convir', choices=['official_convir', 'convir'], type=str)
+    parser.add_argument('--arch', default='official_convir', choices=['official_convir', 'convir', 'dta', 'dta_v2', 'dta_v3'], type=str)
     parser.add_argument('--seed', default=-1, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
@@ -84,8 +127,63 @@ if __name__ == '__main__':
     parser.add_argument('--mod_stats_freq', type=int, default=0)
     parser.add_argument('--mod_stats_batches', type=int, default=64)
     parser.add_argument('--grad_clip_norm', type=float, default=0.001)
+    parser.add_argument('--dta_grad_clip_norm', type=float, default=-1.0)
+    parser.add_argument('--dta_neighbor_grad_clip_norm', type=float, default=-1.0)
     parser.add_argument('--init_model', type=str, default='')
+    parser.add_argument('--init_model_partial', action='store_true')
+    parser.add_argument('--init_model_allow_full_route', action='store_true')
+    parser.add_argument('--partial_new_prefixes', type=str, default='DTA.')
     parser.add_argument('--resume', type=str, default='')
+    parser.add_argument('--train_scope', default='all', choices=['all', 'adapter_only', 'adapter_neighbors', 'dta_r0_only', 'dta_depth_only'], type=str)
+    parser.add_argument('--dta_depth_cache_dir', type=str, default='')
+    parser.add_argument('--dta_train_depth_split', type=str, default='train')
+    parser.add_argument('--dta_eval_depth_split', type=str, default='test')
+    parser.add_argument('--valid_root_split', type=str, default='test', choices=['train', 'test'])
+    parser.add_argument('--eval_root_split', type=str, default='test', choices=['train', 'test'])
+    parser.add_argument('--dta_require_depth', action='store_true')
+    parser.add_argument('--dta_variant', type=str, default='v1', choices=['v1', 'v2', 'v3'])
+    parser.add_argument('--dta_depth_mode', type=str, default='normal', choices=['normal', 'invert', 'zero', 'shuffle'])
+    parser.add_argument('--dta_depth_shuffle_offset', type=int, default=137)
+    parser.add_argument('--dta_prior_channels', type=int, default=16)
+    parser.add_argument('--dta_gate_bias', type=float, default=-5.0)
+    parser.add_argument('--dta_gate_limit', type=float, default=0.10)
+    parser.add_argument('--dta_gamma_limit', type=float, default=0.16)
+    parser.add_argument('--dta_beta_limit', type=float, default=0.08)
+    parser.add_argument('--dta_alpha_init', type=float, default=1.0)
+    parser.add_argument('--dta_confidence_floor', type=float, default=0.30)
+    parser.add_argument('--dta_confidence_local_scale', type=float, default=6.0)
+    parser.add_argument('--dta_output_residual_scale', type=float, default=0.03)
+    parser.add_argument('--dta_r0_residual_scale', type=float, default=0.04)
+    parser.add_argument('--dta_depth_residual_scale', type=float, default=0.08)
+    parser.add_argument('--dta_depth_mask_easy_budget', type=float, default=0.04)
+    parser.add_argument('--dta_depth_mask_dense_budget', type=float, default=0.12)
+    parser.add_argument('--dta_depth_mask_density_thresh', type=float, default=0.35)
+    parser.add_argument('--dta_depth_mask_bias', type=float, default=-4.0)
+    parser.add_argument('--dta_phys_t_min', type=float, default=0.10)
+    parser.add_argument('--dta_phase', type=str, default='joint', choices=['r0', 'depth', 'joint'])
+    parser.add_argument('--dta_ablation', type=str, default='full', choices=['full', 'r0_only', 'film_only_no_output_refine', 'trans_head_only_no_rgb_residual', 'phys_blend_only'])
+    parser.add_argument('--dta_use_trans_gt', action='store_true')
+    parser.add_argument('--dta_trans_weight', type=float, default=0.0)
+    parser.add_argument('--dta_phys_weight', type=float, default=0.0)
+    parser.add_argument('--dta_preserve_weight', type=float, default=0.0)
+    parser.add_argument('--dta_preserve_trans_thresh', type=float, default=0.80)
+    parser.add_argument('--dta_reference_checkpoint', type=str, default='')
+    parser.add_argument('--dta_ref_preserve_weight', type=float, default=0.0)
+    parser.add_argument('--dta_tail_guard_weight', type=float, default=0.0)
+    parser.add_argument('--dta_tail_guard_margin', type=float, default=0.0)
+    parser.add_argument('--dta_mask_budget_weight', type=float, default=0.0)
+    parser.add_argument('--dta_gate_ramp_start', type=float, default=-1.0)
+    parser.add_argument('--dta_gate_ramp_mid', type=float, default=-1.0)
+    parser.add_argument('--dta_gate_ramp_end', type=float, default=-1.0)
+    parser.add_argument('--dta_gate_ramp_warmup_epochs', type=int, default=2)
+    parser.add_argument('--dta_gate_ramp_mid_epochs', type=int, default=8)
+    parser.add_argument('--dta_rank_weight', type=float, default=0.005)
+    parser.add_argument('--dta_tv_weight', type=float, default=0.0005)
+    parser.add_argument('--dta_proxy_weight', type=float, default=0.0)
+    parser.add_argument('--dta_rank_pairs', type=int, default=512)
+    parser.add_argument('--dta_rank_min_depth_gap', type=float, default=0.03)
+    parser.add_argument('--split_json', type=str, default='')
+    parser.add_argument('--split_name', type=str, default='')
 
 
     # uncomment for different datasets
@@ -115,12 +213,25 @@ if __name__ == '__main__':
     parser.add_argument('--save_image', type=bool, default=False, choices=[True, False])
 
     args = parser.parse_args()
-    if args.arch not in ('official_convir', 'convir'):
-        raise ValueError('Official anchor only supports the official ConvIR-B architecture.')
+    if (
+        args.arch in ('dta', 'dta_v2', 'dta_v3')
+        and args.init_model
+        and not args.init_model_partial
+        and not args.init_model_allow_full_route
+    ):
+        raise ValueError(
+            'DTA fine-tuning from official Haze4K weights requires --init_model_partial. '
+            'Use --init_model_allow_full_route only for a same-arch route checkpoint.'
+        )
     # Backward-compatible alias for route scripts that used the misspelled name.
     args.leaning_rate = args.learning_rate
     args.model_save_dir = os.path.join('results/', args.model_name, 'Training-Results/')
     args.result_dir = os.path.join('results/', args.model_name, 'images', args.data)
+    if args.init_model and os.path.isfile(args.init_model):
+        with open(args.init_model, 'rb') as handle:
+            args.init_model_sha256 = hashlib.sha256(handle.read()).hexdigest()
+    else:
+        args.init_model_sha256 = ''
     if not os.path.exists(args.model_save_dir):
         os.makedirs(args.model_save_dir)
     for source in ('models/layers.py', 'models/ConvIR.py', 'data/data_load.py', 'data/data_augment.py', 'train.py', 'valid.py', 'eval.py', 'main.py'):

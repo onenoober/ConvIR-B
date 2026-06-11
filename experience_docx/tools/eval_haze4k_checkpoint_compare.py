@@ -23,6 +23,19 @@ from data import test_dataloader
 from models.ConvIR import build_net as build_convir_net
 
 
+def _is_name_field(value):
+    return isinstance(value, (list, tuple)) and len(value) > 0 and isinstance(value[0], str)
+
+
+def _unpack_test_batch(data):
+    name = data[-1] if _is_name_field(data[-1]) else None
+    if name is not None:
+        data = data[:-1]
+    input_img, label_img = data[0], data[1]
+    depth = data[2] if len(data) >= 3 else None
+    return input_img, label_img, depth, name
+
+
 def percentile(values, pct):
     if not values:
         return None
@@ -39,7 +52,34 @@ def percentile(values, pct):
 
 def build_model(arch, mode, args, prefix):
     if arch in ("convir", "official_convir"):
-        return build_convir_net("base", "Haze4K", mode)
+        return build_convir_net("base", "Haze4K", mode, arch=arch)
+    if arch in ("dta", "dta_v2", "dta_v3"):
+        return build_convir_net(
+            "base",
+            "Haze4K",
+            "original",
+            arch=arch,
+            dta_variant=getattr(args, f"{prefix}_dta_variant"),
+            dta_prior_channels=getattr(args, f"{prefix}_dta_prior_channels"),
+            dta_gate_bias=getattr(args, f"{prefix}_dta_gate_bias"),
+            dta_gate_limit=getattr(args, f"{prefix}_dta_gate_limit"),
+            dta_gamma_limit=getattr(args, f"{prefix}_dta_gamma_limit"),
+            dta_beta_limit=getattr(args, f"{prefix}_dta_beta_limit"),
+            dta_alpha_init=getattr(args, f"{prefix}_dta_alpha_init"),
+            dta_depth_mode=getattr(args, f"{prefix}_dta_depth_mode"),
+            dta_confidence_floor=getattr(args, f"{prefix}_dta_confidence_floor"),
+            dta_confidence_local_scale=getattr(args, f"{prefix}_dta_confidence_local_scale"),
+            dta_output_residual_scale=getattr(args, f"{prefix}_dta_output_residual_scale"),
+            dta_r0_residual_scale=getattr(args, f"{prefix}_dta_r0_residual_scale"),
+            dta_depth_residual_scale=getattr(args, f"{prefix}_dta_depth_residual_scale"),
+            dta_depth_mask_easy_budget=getattr(args, f"{prefix}_dta_depth_mask_easy_budget"),
+            dta_depth_mask_dense_budget=getattr(args, f"{prefix}_dta_depth_mask_dense_budget"),
+            dta_depth_mask_density_thresh=getattr(args, f"{prefix}_dta_depth_mask_density_thresh"),
+            dta_depth_mask_bias=getattr(args, f"{prefix}_dta_depth_mask_bias"),
+            dta_phys_t_min=getattr(args, f"{prefix}_dta_phys_t_min"),
+            dta_phase=getattr(args, f"{prefix}_dta_phase"),
+            dta_ablation=getattr(args, f"{prefix}_dta_ablation"),
+        )
     if arch == "dpga":
         try:
             from models.DPGAConvIR import build_dpga_net
@@ -110,19 +150,28 @@ def load_candidate_state(model, checkpoint, device, arch):
         )
 
 
-def dpga_depth_cache_dir(args, prefix, arch):
-    if arch != "dpga":
+def prior_depth_cache_dir(args, prefix, arch):
+    if arch not in ("dpga", "dta", "dta_v2", "dta_v3"):
         return ""
-    depth_cache_dir = getattr(args, f"{prefix}_dpga_depth_cache_dir") or args.dpga_depth_cache_dir
+    if arch == "dpga":
+        depth_cache_dir = getattr(args, f"{prefix}_dpga_depth_cache_dir") or args.dpga_depth_cache_dir
+    else:
+        depth_cache_dir = getattr(args, f"{prefix}_dta_depth_cache_dir") or args.dta_depth_cache_dir
     if not depth_cache_dir:
-        raise ValueError(f"--{prefix}_dpga_depth_cache_dir or --dpga_depth_cache_dir is required for DPGA eval")
+        raise ValueError(f"Depth cache is required for {arch} eval")
     return depth_cache_dir
 
 
 def forward_model(model, arch, input_img, depth):
-    if arch == "dpga":
+    if arch in ("dpga", "dta", "dta_v2", "dta_v3"):
         return model(input_img, depth)
     return model(input_img)
+
+
+def dta_depth_mode(args, prefix, arch):
+    if arch not in ("dta", "dta_v2", "dta_v3"):
+        return "none"
+    return getattr(args, f"{prefix}_dta_depth_mode")
 
 
 def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
@@ -135,16 +184,17 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
     load_candidate_state(model, checkpoint, device, arch)
     model.eval()
 
-    depth_split = args.dpga_eval_depth_split
-    if arch == "dpga" and args.split_json and args.split_name and depth_split == "test":
+    depth_split = args.dpga_eval_depth_split if arch == "dpga" else args.dta_eval_depth_split
+    if arch in ("dpga", "dta", "dta_v2") and args.split_json and args.split_name and depth_split == "test":
         depth_split = "train"
     dataloader = test_dataloader(
         data_dir,
         "Haze4K",
         batch_size=1,
         num_workers=0,
-        depth_cache_dir=dpga_depth_cache_dir(args, prefix, arch),
+        depth_cache_dir=prior_depth_cache_dir(args, prefix, arch),
         depth_split=depth_split,
+        root_split=args.eval_root_split,
         split_json=args.split_json,
         split_name=args.split_name,
     )
@@ -152,13 +202,20 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
     rows = []
     times = []
 
+    depth_mode = dta_depth_mode(args, prefix, arch)
     with torch.no_grad():
         for idx, data in enumerate(dataloader):
-            if arch == "dpga":
-                input_img, label_img, depth, name = data
+            if args.max_images > 0 and idx >= args.max_images:
+                break
+            if arch in ("dpga", "dta", "dta_v2", "dta_v3"):
+                input_img, label_img, depth, name = _unpack_test_batch(data)
+                if depth_mode == "shuffle":
+                    shuffle_idx = (idx + args.depth_shuffle_offset) % len(dataloader.dataset)
+                    _, _, shuffled_depth, _ = _unpack_test_batch(dataloader.dataset[shuffle_idx])
+                    depth = shuffled_depth.unsqueeze(0)
                 depth = depth.to(device)
             else:
-                input_img, label_img, name = data
+                input_img, label_img, _, name = _unpack_test_batch(data)
                 depth = None
             input_img = input_img.to(device)
             label_img = label_img.to(device)
@@ -214,6 +271,7 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
         "arch": arch,
         "mode": mode,
         "checkpoint": checkpoint,
+        "depth_mode": depth_mode,
         "count": len(rows),
         "mean_psnr": statistics.mean(row["psnr"] for row in rows),
         "mean_ssim": statistics.mean(row["ssim"] for row in rows),
@@ -228,7 +286,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", required=True)
     parser.add_argument("--original_checkpoint", required=True)
-    arch_choices = ["official_convir", "convir", "apdr", "dpga"]
+    arch_choices = ["official_convir", "convir", "apdr", "dpga", "dta", "dta_v2", "dta_v3"]
     parser.add_argument("--original_arch", default="official_convir", choices=arch_choices)
     parser.add_argument("--original_mode", default="original")
     parser.add_argument("--original_name", default="original")
@@ -255,10 +313,56 @@ def main():
     parser.add_argument("--candidate_apdr_residual_capacity", default="linear", choices=["linear", "shallow_mlp"])
     parser.add_argument("--dpga_depth_cache_dir", default="")
     parser.add_argument("--dpga_eval_depth_split", default="test")
+    parser.add_argument("--dta_depth_cache_dir", default="")
+    parser.add_argument("--dta_eval_depth_split", default="test")
     parser.add_argument("--split_json", default="")
     parser.add_argument("--split_name", default="")
+    parser.add_argument("--eval_root_split", default="test", choices=["train", "test"])
     parser.add_argument("--original_dpga_depth_cache_dir", default="")
     parser.add_argument("--candidate_dpga_depth_cache_dir", default="")
+    parser.add_argument("--original_dta_depth_cache_dir", default="")
+    parser.add_argument("--candidate_dta_depth_cache_dir", default="")
+    parser.add_argument("--original_dta_variant", default="v1", choices=["v1", "v2", "v3"])
+    parser.add_argument("--candidate_dta_variant", default="v1", choices=["v1", "v2", "v3"])
+    parser.add_argument("--original_dta_depth_mode", default="normal", choices=["normal", "invert", "zero", "shuffle"])
+    parser.add_argument("--candidate_dta_depth_mode", default="normal", choices=["normal", "invert", "zero", "shuffle"])
+    parser.add_argument("--original_dta_prior_channels", type=int, default=16)
+    parser.add_argument("--candidate_dta_prior_channels", type=int, default=16)
+    parser.add_argument("--original_dta_gate_bias", type=float, default=-5.0)
+    parser.add_argument("--candidate_dta_gate_bias", type=float, default=-5.0)
+    parser.add_argument("--original_dta_gate_limit", type=float, default=0.10)
+    parser.add_argument("--candidate_dta_gate_limit", type=float, default=0.10)
+    parser.add_argument("--original_dta_gamma_limit", type=float, default=0.16)
+    parser.add_argument("--candidate_dta_gamma_limit", type=float, default=0.16)
+    parser.add_argument("--original_dta_beta_limit", type=float, default=0.08)
+    parser.add_argument("--candidate_dta_beta_limit", type=float, default=0.08)
+    parser.add_argument("--original_dta_alpha_init", type=float, default=1.0)
+    parser.add_argument("--candidate_dta_alpha_init", type=float, default=1.0)
+    parser.add_argument("--original_dta_confidence_floor", type=float, default=0.30)
+    parser.add_argument("--candidate_dta_confidence_floor", type=float, default=0.30)
+    parser.add_argument("--original_dta_confidence_local_scale", type=float, default=6.0)
+    parser.add_argument("--candidate_dta_confidence_local_scale", type=float, default=6.0)
+    parser.add_argument("--original_dta_output_residual_scale", type=float, default=0.03)
+    parser.add_argument("--candidate_dta_output_residual_scale", type=float, default=0.03)
+    parser.add_argument("--original_dta_r0_residual_scale", type=float, default=0.04)
+    parser.add_argument("--candidate_dta_r0_residual_scale", type=float, default=0.04)
+    parser.add_argument("--original_dta_depth_residual_scale", type=float, default=0.08)
+    parser.add_argument("--candidate_dta_depth_residual_scale", type=float, default=0.08)
+    parser.add_argument("--original_dta_depth_mask_easy_budget", type=float, default=0.04)
+    parser.add_argument("--candidate_dta_depth_mask_easy_budget", type=float, default=0.04)
+    parser.add_argument("--original_dta_depth_mask_dense_budget", type=float, default=0.12)
+    parser.add_argument("--candidate_dta_depth_mask_dense_budget", type=float, default=0.12)
+    parser.add_argument("--original_dta_depth_mask_density_thresh", type=float, default=0.35)
+    parser.add_argument("--candidate_dta_depth_mask_density_thresh", type=float, default=0.35)
+    parser.add_argument("--original_dta_depth_mask_bias", type=float, default=-4.0)
+    parser.add_argument("--candidate_dta_depth_mask_bias", type=float, default=-4.0)
+    parser.add_argument("--original_dta_phys_t_min", type=float, default=0.10)
+    parser.add_argument("--candidate_dta_phys_t_min", type=float, default=0.10)
+    parser.add_argument("--original_dta_phase", default="joint", choices=["r0", "depth", "joint"])
+    parser.add_argument("--candidate_dta_phase", default="joint", choices=["r0", "depth", "joint"])
+    parser.add_argument("--original_dta_ablation", default="full", choices=["full", "r0_only", "film_only_no_output_refine", "trans_head_only_no_rgb_residual", "phys_blend_only"])
+    parser.add_argument("--candidate_dta_ablation", default="full", choices=["full", "r0_only", "film_only_no_output_refine", "trans_head_only_no_rgb_residual", "phys_blend_only"])
+    parser.add_argument("--depth_shuffle_offset", type=int, default=137)
     parser.add_argument("--original_dpga_prior_embed_channels", type=int, default=16)
     parser.add_argument("--candidate_dpga_prior_embed_channels", type=int, default=16)
     parser.add_argument("--original_dpga_adapter_reduction", type=int, default=2)
@@ -299,6 +403,7 @@ def main():
     parser.add_argument("--candidate_dpga_agf_gate_limit", type=float, default=0.25)
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
+    parser.add_argument("--max_images", type=int, default=0)
     args = parser.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)
