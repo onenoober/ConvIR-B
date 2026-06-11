@@ -1,0 +1,28 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v31/experience_docx/tools/audit_haze4k_dta_output_semantics.py:27: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+{
+  "official_A0_output_semantics": "final_image",
+  "DTA_refine_input_semantics": "residual",
+  "base_img_formula_checked": true,
+  "recommendation": "use out + hazy for DTA-v3 physical base image",
+  "sample_count": 8,
+  "sample_names": [
+    "1001_0.89_1.66.png",
+    "1003_0.9_1.06.png",
+    "1006_0.89_1.55.png",
+    "1010_0.91_1.13.png",
+    "1012_0.85_1.28.png",
+    "1013_0.63_1.83.png",
+    "1017_0.91_1.44.png",
+    "1019_0.82_1.87.png"
+  ],
+  "max_abs_noop_diff": 0.0,
+  "mean_abs_noop_diff": 0.0,
+  "max_abs_residual_plus_hazy_vs_final": 0.0,
+  "mean_abs_output_alone_vs_final": 0.5917846523225307,
+  "missing_keys_allowed_prefix": "DTA.",
+  "missing_key_count": 29,
+  "unexpected_key_count": 0,
+  "locked_test_touched": false
+}
+DTA_V3_OUTPUT_SEMANTICS_AUDIT_OK

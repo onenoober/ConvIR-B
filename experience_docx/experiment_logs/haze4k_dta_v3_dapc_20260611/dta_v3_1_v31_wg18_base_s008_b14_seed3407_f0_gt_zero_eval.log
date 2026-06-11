@@ -1,0 +1,69 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v31/experience_docx/tools/eval_haze4k_checkpoint_compare.py:202: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+A0 100/600 psnr=35.9338
+A0 200/600 psnr=38.6572
+A0 300/600 psnr=39.6753
+A0 400/600 psnr=40.1677
+A0 500/600 psnr=39.7737
+A0 600/600 psnr=39.3503
+DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_gt_zero 100/600 psnr=35.9003
+DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_gt_zero 200/600 psnr=38.6364
+DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_gt_zero 300/600 psnr=39.6613
+DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_gt_zero 400/600 psnr=40.1586
+DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_gt_zero 500/600 psnr=39.7631
+DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_gt_zero 600/600 psnr=39.3358
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "official_convir",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "depth_mode": "none",
+      "airlight_mode": "none",
+      "count": 600,
+      "mean_psnr": 39.35034857114156,
+      "mean_ssim": 0.9957262628277143,
+      "avg_time_sec_sync": 0.03256619413693746,
+      "median_time_sec_sync": 0.031987905502319336,
+      "peak_cuda_mem_mib": 535.95654296875
+    },
+    "DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_gt_zero": {
+      "label": "DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_gt_zero",
+      "arch": "dta_v3",
+      "mode": "modres",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_base_s008_b14-seed3407-f0-scout5full/Training-Results/Final.pkl",
+      "depth_mode": "zero",
+      "airlight_mode": "gt",
+      "count": 600,
+      "mean_psnr": 39.33580123901367,
+      "mean_ssim": 0.9957006067037583,
+      "avg_time_sec_sync": 0.037661444346110025,
+      "median_time_sec_sync": 0.03614211082458496,
+      "peak_cuda_mem_mib": 540.52294921875
+    }
+  },
+  "comparison": {
+    "common_count": 600,
+    "mean_psnr_delta": -0.014547332127888998,
+    "median_psnr_delta": 0.0013103485107421875,
+    "p5_psnr_delta": -0.22250614166259766,
+    "p95_psnr_delta": 0.15572738647460932,
+    "hard_bottom25_psnr_delta": -0.019823570251464844,
+    "easy_top25_psnr_delta": 0.0021392567952473957,
+    "worst10pct_mean_psnr_delta": -0.2600820541381836,
+    "best10pct_mean_psnr_delta": 0.17265218098958332,
+    "worst10img_mean_psnr_delta": -0.467266845703125,
+    "best10img_mean_psnr_delta": 0.288862419128418,
+    "worst10_mean_psnr_delta": -0.2600820541381836,
+    "best10_mean_psnr_delta": 0.17265218098958332,
+    "mean_ssim_delta": -2.5656123956044515e-05,
+    "positive_ratio": 0.51,
+    "strong_reference_cut_psnr": 42.755948066711426,
+    "strong_reference_count": 150,
+    "strong_regression_count_delta_le_-0.05": 31,
+    "worst_regression_count_delta_le_-0.20": 34
+  }
+}
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v31/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_1_v31_wg18_base_s008_b14_seed3407_f0_gt_zero_compare/scout_eval_compare_v31_wg18_base_s008_b14_seed3407_f0_gt_zero.json
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v31/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_1_v31_wg18_base_s008_b14_seed3407_f0_gt_zero_compare/scout_eval_per_image_v31_wg18_base_s008_b14_seed3407_f0_gt_zero.csv

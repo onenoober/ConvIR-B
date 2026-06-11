@@ -314,8 +314,8 @@ scout. The cloud scripts are:
 Expected new text artifacts:
 
 - `output_semantics_audit.json`
-- `airlight_train_eval_gap.csv`
-- `airlight_oracle_vs_pred_summary.json`
+- `airlight_train_eval_gap_<run_id>.csv`
+- `airlight_oracle_vs_pred_summary_<run_id>.json`
 - `train_eval_depth_matrix_v31_wg18_base_s008_b14_seed3407_f0_<fallback|gt>.json/csv`
 - `risk_selector_oof_calibration_v31_wg18_base_s008_b14_seed3407_f0_<fallback|gt>.json`
 - `risk_selector_threshold_trace_v31_wg18_base_s008_b14_seed3407_f0_<fallback|gt>.csv`
@@ -325,3 +325,42 @@ Cloud-only contact sheets are generated under
 `tail_regression_contact_sheet/v31_wg18_base_s008_b14_seed3407_f0_fallback/` and
 are referenced by path rather than committed. Locked Haze4K test remains
 blocked.
+
+## 2026-06-12 DTA-v3.1 WG18-RiskSelect-AConsistent Results
+
+Status: `COMPLETED_SCOUT_GATE_FAIL_LOCKED_TEST_BLOCKED`.
+
+The fold0 queue completed on `convir-4090` from commit `b101196`. It audited
+output semantics, compared fallback-A vs GT/oracle-A, trained the B4 light
+tail/SSIM hinge scout, evaluated the full `invert/zero/shuffle/normal` matrices
+for fallback and GT A, ran same-fold diagnostic risk selection, and generated
+cloud-only contact sheets. Locked Haze4K test was not touched.
+
+Key artifacts:
+
+- `output_semantics_audit.json`
+- `airlight_oracle_vs_pred_summary_v31_wg18_base_s008_b14_seed3407_f0.json`
+- `airlight_oracle_vs_pred_summary_v31_wg18_light_hinge_seed3407_f0_scout5full_post.json`
+- `dta_v3_1_wg18_scout_summary.json/csv`
+- `train_eval_depth_matrix_v31_wg18_base_s008_b14_seed3407_f0_fallback.json`
+- `train_eval_depth_matrix_v31_wg18_base_s008_b14_seed3407_f0_gt.json`
+- `train_eval_depth_matrix_v31_wg18_light_hinge_seed3407_f0_scout5full_post_fallback.json`
+- `train_eval_depth_matrix_v31_wg18_light_hinge_seed3407_f0_scout5full_post_gt.json`
+- `risk_selector_oof_calibration_v31_wg18_base_s008_b14_seed3407_f0_fallback.json`
+- `risk_selector_oof_calibration_v31_wg18_light_hinge_seed3407_f0_scout5full_post_fallback.json`
+
+Summary:
+
+| Row | mean | hard | dSSIM | pos ratio | true-vs-zero | worst |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| B0 fallback-A `wg18` | `+0.024404` | `+0.006360` | `-0.00002331` | `0.6050` | `+0.036631` | `76` |
+| B1 GT-A `wg18` | `+0.020646` | `+0.001292` | `-0.00002495` | `0.5983` | `+0.035193` | `71` |
+| B2 fallback-A risk select | `+0.021610` | `+0.012073` | `+0.00000300` | `0.1800` | `+0.019600` | `9` |
+| B4 fallback-A light hinge | `+0.025084` | `+0.006701` | `-0.00002320` | `0.6033` | `+0.037015` | `76` |
+| B4 fallback-A risk select | `+0.021976` | `+0.012167` | `+0.00000302` | `0.1800` | `+0.019838` | `9` |
+
+Interpretation: output semantics are clean, and GT/oracle A is not a rescue
+path. Light hinge gives only a tiny mean/surplus gain while leaving tail/SSIM
+unsafe. Same-fold risk selection fixes tail/SSIM only through low coverage and
+fails the true-vs-zero depth-surplus gate. Therefore no B0-B4 row authorizes
+5-fold x 3-seed formal validation or locked-test access.

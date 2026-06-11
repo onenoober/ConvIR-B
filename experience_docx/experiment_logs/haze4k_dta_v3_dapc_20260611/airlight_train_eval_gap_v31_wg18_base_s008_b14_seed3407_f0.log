@@ -1,0 +1,24 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v31/experience_docx/tools/audit_haze4k_dta_airlight_gap.py:32: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+airlight_gap 100/600
+airlight_gap 200/600
+airlight_gap 300/600
+airlight_gap 400/600
+airlight_gap 500/600
+airlight_gap 600/600
+{
+  "count": 600,
+  "elapsed_sec": 71.44810581207275,
+  "mean_A_abs_gap": 0.23638170192639033,
+  "mean_dPSNR_A_fallback_minus_A0": 0.024403934478759767,
+  "mean_dPSNR_A_gt_minus_A0": 0.02064565976460775,
+  "mean_dPSNR_A_gt_minus_fallback": -0.003758274714152018,
+  "mean_dSSIM_A_fallback_minus_A0": -2.3511151472727457e-05,
+  "mean_dSSIM_A_gt_minus_A0": -2.5149683157602946e-05,
+  "worst_regression_fallback_count": 76,
+  "worst_regression_gt_count": 71,
+  "A_gap_vs_fallback_delta_pearson": -0.06014194526255419,
+  "A_gap_vs_gt_minus_fallback_pearson": -0.11830163120014707,
+  "locked_test_touched": false
+}
+DTA_V3_AIRLIGHT_GAP_AUDIT_OK

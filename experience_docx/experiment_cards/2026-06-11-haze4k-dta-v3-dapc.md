@@ -416,3 +416,45 @@ ratio at least `0.63`, and worst regressions at most `50/600`. If a fixed
 selection passes, the next formal protocol is 5 folds x seeds `3407/3411/3413`
 with eval depth `invert/zero/shuffle/normal`, A mode `fallback/gt`, selector
 off/on, and locked test still blocked.
+
+## 2026-06-12 DTA-v3.1 WG18-RiskSelect-AConsistent Results
+
+The DTA-v3.1 fold0 queue completed on `convir-4090` from commit `b101196` in
+workspace `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v31`.
+It ran B0/B1/B2/B3 around the existing `wg18_base_s008_b14` checkpoint, trained
+one B4 light tail/SSIM hinge scout, evaluated fallback-A and GT/oracle-A depth
+matrices, and generated cloud-only contact sheets. Locked Haze4K test remained
+untouched.
+
+Pre-audits:
+
+- `output_semantics_audit.json`: no-op DTA-v3 exactly matched A0
+  (`max_abs_noop_diff=0.0`) and confirmed `DTA_refine_input_semantics=residual`,
+  so the physical branch's `out + hazy` base formula is correct.
+- `airlight_oracle_vs_pred_summary_v31_wg18_base_s008_b14_seed3407_f0.json`:
+  fallback A was better than GT/oracle A on fold0 (`+0.024404 dB` vs
+  `+0.020646 dB`), although GT A reduced worst regressions from `76` to `71`.
+- `airlight_oracle_vs_pred_summary_v31_wg18_light_hinge_seed3407_f0_scout5full_post.json`:
+  the same pattern held after B4 (`+0.025084 dB` fallback vs `+0.021298 dB` GT;
+  worst `76` vs `72`).
+
+| ID | mean | hard | dSSIM | pos ratio | true-vs-zero | worst | Decision |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| B0 fallback-A `wg18` | `+0.024404` | `+0.006360` | `-0.00002331` | `0.6050` | `+0.036631` | `76` | mechanism kept; hard/SSIM/tail fail |
+| B1 GT-A `wg18` | `+0.020646` | `+0.001292` | `-0.00002495` | `0.5983` | `+0.035193` | `71` | tail slightly better, quality worse |
+| B2 fallback-A risk select | `+0.021610` | `+0.012073` | `+0.00000300` | `0.1800` | `+0.019600` | `9` | tail/SSIM fixed by low coverage; depth surplus fails |
+| B3 GT-A risk select | `+0.020147` | `+0.011702` | `+0.00000293` | `0.1800` | `+0.018870` | `9` | tail/SSIM fixed by low coverage; depth surplus fails |
+| B4 fallback-A light hinge | `+0.025084` | `+0.006701` | `-0.00002320` | `0.6033` | `+0.037015` | `76` | tiny mean/surplus gain; tail/SSIM still fail |
+| B4 GT-A light hinge | `+0.021298` | `+0.001579` | `-0.00002485` | `0.5983` | `+0.035568` | `72` | same as B1 with slight gain |
+| B4 fallback-A risk select | `+0.021976` | `+0.012167` | `+0.00000302` | `0.1800` | `+0.019838` | `9` | tail/SSIM fixed by low coverage; depth surplus fails |
+| B4 GT-A risk select | `+0.020497` | `+0.011791` | `+0.00000295` | `0.1800` | `+0.019098` | `9` | tail/SSIM fixed by low coverage; depth surplus fails |
+
+Decision: `COMPLETED_SCOUT_GATE_FAIL_LOCKED_TEST_BLOCKED`. The result is a
+useful diagnostic but not an effective model improvement. Fallback A is not the
+main tail cause; GT/oracle A does not improve mean or SSIM. The light hinge
+slightly improves mean/surplus but does not move worst regressions. The
+same-fold risk selector can make SSIM positive and reduce worst to `9/600`, but
+only by selecting `25%` coverage and dropping true-vs-zero surplus below the
+`+0.03 dB` mechanism gate. Therefore the planned 5-fold x 3-seed formal
+validation is not launched from B0-B4; it remains blocked until a fixed scout
+row passes the written fold0 gate.

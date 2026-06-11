@@ -1,0 +1,69 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v31/experience_docx/tools/eval_haze4k_checkpoint_compare.py:202: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+A0 100/600 psnr=35.9338
+A0 200/600 psnr=38.6572
+A0 300/600 psnr=39.6753
+A0 400/600 psnr=40.1677
+A0 500/600 psnr=39.7737
+A0 600/600 psnr=39.3503
+DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_fallback_invert 100/600 psnr=35.9371
+DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_fallback_invert 200/600 psnr=38.6812
+DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_fallback_invert 300/600 psnr=39.7118
+DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_fallback_invert 400/600 psnr=40.2084
+DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_fallback_invert 500/600 psnr=39.8065
+DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_fallback_invert 600/600 psnr=39.3748
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "official_convir",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "depth_mode": "none",
+      "airlight_mode": "none",
+      "count": 600,
+      "mean_psnr": 39.35034857114156,
+      "mean_ssim": 0.9957262628277143,
+      "avg_time_sec_sync": 0.027567042112350462,
+      "median_time_sec_sync": 0.02816641330718994,
+      "peak_cuda_mem_mib": 535.95654296875
+    },
+    "DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_fallback_invert": {
+      "label": "DTA_v31_v31_wg18_base_s008_b14_seed3407_f0_fallback_invert",
+      "arch": "dta_v3",
+      "mode": "modres",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_base_s008_b14-seed3407-f0-scout5full/Training-Results/Final.pkl",
+      "depth_mode": "invert",
+      "airlight_mode": "fallback",
+      "count": 600,
+      "mean_psnr": 39.37475250562032,
+      "mean_ssim": 0.9957029566168785,
+      "avg_time_sec_sync": 0.03604488571484884,
+      "median_time_sec_sync": 0.03808021545410156,
+      "peak_cuda_mem_mib": 540.5224609375
+    }
+  },
+  "comparison": {
+    "common_count": 600,
+    "mean_psnr_delta": 0.024403934478759767,
+    "median_psnr_delta": 0.036080360412597656,
+    "p5_psnr_delta": -0.3540168762207031,
+    "p95_psnr_delta": 0.39090576171874963,
+    "hard_bottom25_psnr_delta": 0.006359659830729167,
+    "easy_top25_psnr_delta": 0.0432043202718099,
+    "worst10pct_mean_psnr_delta": -0.4099683125813802,
+    "best10pct_mean_psnr_delta": 0.4150339444478353,
+    "worst10img_mean_psnr_delta": -0.6759475708007813,
+    "best10img_mean_psnr_delta": 0.592694091796875,
+    "worst10_mean_psnr_delta": -0.4099683125813802,
+    "best10_mean_psnr_delta": 0.4150339444478353,
+    "mean_ssim_delta": -2.330621083577474e-05,
+    "positive_ratio": 0.605,
+    "strong_reference_cut_psnr": 42.755948066711426,
+    "strong_reference_count": 150,
+    "strong_regression_count_delta_le_-0.05": 39,
+    "worst_regression_count_delta_le_-0.20": 76
+  }
+}
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v31/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_1_v31_wg18_base_s008_b14_seed3407_f0_fallback_invert_compare/scout_eval_compare_v31_wg18_base_s008_b14_seed3407_f0_fallback_invert.json
+wrote /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v31/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_1_v31_wg18_base_s008_b14_seed3407_f0_fallback_invert_compare/scout_eval_per_image_v31_wg18_base_s008_b14_seed3407_f0_fallback_invert.csv

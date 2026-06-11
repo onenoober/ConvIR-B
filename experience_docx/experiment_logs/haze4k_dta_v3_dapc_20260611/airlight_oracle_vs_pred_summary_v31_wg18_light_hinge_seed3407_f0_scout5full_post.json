@@ -1,0 +1,15 @@
+{
+  "count": 600,
+  "elapsed_sec": 71.95685577392578,
+  "mean_A_abs_gap": 0.23638170192639033,
+  "mean_dPSNR_A_fallback_minus_A0": 0.025083996454874673,
+  "mean_dPSNR_A_gt_minus_A0": 0.02129787762959798,
+  "mean_dPSNR_A_gt_minus_fallback": -0.0037861188252766927,
+  "mean_dSSIM_A_fallback_minus_A0": -2.342085043589274e-05,
+  "mean_dSSIM_A_gt_minus_A0": -2.5058090686798094e-05,
+  "worst_regression_fallback_count": 76,
+  "worst_regression_gt_count": 72,
+  "A_gap_vs_fallback_delta_pearson": -0.05915160180061833,
+  "A_gap_vs_gt_minus_fallback_pearson": -0.11739226160943984,
+  "locked_test_touched": false
+}

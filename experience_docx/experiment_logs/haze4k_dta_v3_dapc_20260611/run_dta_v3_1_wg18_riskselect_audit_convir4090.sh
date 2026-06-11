@@ -57,13 +57,15 @@ echo "dta_v3_1_output_semantics_audit_done rc=$sem_rc run_id=$RUN_ID $(date --is
 if [[ "$sem_rc" -ne 0 ]]; then exit "$sem_rc"; fi
 
 set +e
+AIRLIGHT_GAP_CSV=$EVID/airlight_train_eval_gap_${RUN_ID}.csv
+AIRLIGHT_GAP_SUMMARY=$EVID/airlight_oracle_vs_pred_summary_${RUN_ID}.json
 PYTHONUNBUFFERED=1 "$PY" experience_docx/tools/audit_haze4k_dta_airlight_gap.py \
   --data_dir "$DATA" \
   --original_checkpoint "$A0" \
   --candidate_checkpoint "$CANDIDATE" \
   --depth_cache_dir "$DEPTH" \
-  --output_csv "$EVID/airlight_train_eval_gap.csv" \
-  --output_summary_json "$EVID/airlight_oracle_vs_pred_summary.json" \
+  --output_csv "$AIRLIGHT_GAP_CSV" \
+  --output_summary_json "$AIRLIGHT_GAP_SUMMARY" \
   --split_json "$SPLIT_JSON" \
   --split_name "$EVAL_SPLIT" \
   --eval_root_split train \

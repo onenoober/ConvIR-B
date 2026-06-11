@@ -857,6 +857,32 @@ Corrected form:
 python3 -m py_compile experience_docx/tools/eval_haze4k_checkpoint_compare.py
 ```
 
+## 2026-06-12 remote monitor helper unbound variable
+
+Avoid using `"$PY"` inside a remote monitor heredoc unless the monitor script
+defines it first:
+
+```bash
+"$PY" - <<'PY' "$json_path"
+...
+PY
+```
+
+Failure mode observed:
+
+- the remote monitor used `set -u` and exited with `PY: unbound variable`;
+- the training/evaluation jobs were unaffected, but the monitor did not print
+  the intended JSON summaries.
+
+Corrected form:
+
+```bash
+PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+"$PY" - "$json_path" <<'PY'
+...
+PY
+```
+
 Use `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python` or `"$PY"` for
 all cloud Python snippets, and prefer a small local script piped to remote
 `bash -s` over deeply nested inline heredocs.

@@ -1,0 +1,25 @@
+{
+  "official_A0_output_semantics": "final_image",
+  "DTA_refine_input_semantics": "residual",
+  "base_img_formula_checked": true,
+  "recommendation": "use out + hazy for DTA-v3 physical base image",
+  "sample_count": 8,
+  "sample_names": [
+    "1001_0.89_1.66.png",
+    "1003_0.9_1.06.png",
+    "1006_0.89_1.55.png",
+    "1010_0.91_1.13.png",
+    "1012_0.85_1.28.png",
+    "1013_0.63_1.83.png",
+    "1017_0.91_1.44.png",
+    "1019_0.82_1.87.png"
+  ],
+  "max_abs_noop_diff": 0.0,
+  "mean_abs_noop_diff": 0.0,
+  "max_abs_residual_plus_hazy_vs_final": 0.0,
+  "mean_abs_output_alone_vs_final": 0.5917846523225307,
+  "missing_keys_allowed_prefix": "DTA.",
+  "missing_key_count": 29,
+  "unexpected_key_count": 0,
+  "locked_test_touched": false
+}

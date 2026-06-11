@@ -1,0 +1,6 @@
+{"runs":[
+  {"label":"true","train_depth":"invert","eval_depth":"invert","airlight_mode":"fallback","compare_dir":"/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v31/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_1_v31_wg18_light_hinge_seed3407_f0_scout5full_post_fallback_invert_compare"},
+  {"label":"zero","train_depth":"invert","eval_depth":"zero","airlight_mode":"fallback","compare_dir":"/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v31/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_1_v31_wg18_light_hinge_seed3407_f0_scout5full_post_fallback_zero_compare"},
+  {"label":"shuffle","train_depth":"invert","eval_depth":"shuffle","airlight_mode":"fallback","compare_dir":"/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v31/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_1_v31_wg18_light_hinge_seed3407_f0_scout5full_post_fallback_shuffle_compare"},
+  {"label":"normal","train_depth":"invert","eval_depth":"normal","airlight_mode":"fallback","compare_dir":"/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v31/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_1_v31_wg18_light_hinge_seed3407_f0_scout5full_post_fallback_normal_compare"}
+]}
