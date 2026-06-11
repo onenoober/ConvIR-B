@@ -4,7 +4,8 @@ Date: 2026-06-11
 
 Status: first low-gate route completed diagnostic/no-promotion on
 `convir-4090`; DTA-v2 calibrated confidence-gated route is active with fold0
-adapter-only and adapter-neighbors evidence synced, and OOF expansion next.
+adapter-only, fold0 adapter-neighbors, and adapter-only folds `1-2` synced;
+adapter-only folds `3-4` are running.
 
 ## Sources
 
@@ -23,6 +24,7 @@ adapter-only and adapter-neighbors evidence synced, and OOF expansion next.
 | DTA scout5 | Five-epoch adapter-only run completed; 128-image diagnostic mean PSNR delta `-0.036217 dB`, hard bottom-25 `-0.039902 dB`, strong regressions `15/32`, worst regressions `0`. | Passed the lenient continuation gate, but did not show a positive mechanism result. |
 | DTA gate20 | Twenty-epoch adapter-only run completed; full 1000-image diagnostic mean PSNR delta `-0.008940 dB`, hard bottom-25 `-0.019101 dB`, easy top-25 `-0.021037 dB`, SSIM delta `-0.00001973`, strong regressions `80/250`, worst regressions `48/1000`. | `COMPLETED_GATE_PASS_DIAGNOSTIC_NO_PROMOTION_DTA_LOWGATE`; do not promote this exact route. |
 | DTA-v2 calibrated confidence-gated adapter-only | Fold0 OOF20 controls completed: invert/normal/shuffle/zero mean dPSNR `+0.1069/+0.1060/+0.0984/+0.0955`, hard `+0.0992/+0.1047/+0.0956/+0.0918`. Positive but weak depth attribution. | Keep as current internal candidate; expand OOF folds before locked-test consideration. |
+| DTA-v2 adapter-only OOF expansion | Folds `1-2` completed after fold0. Fold0-2 averages: invert mean `+0.0893`, normal `+0.0887`, shuffle `+0.0774`, zero `+0.0736`; hard averages: invert `+0.0724`, normal `+0.0783`, shuffle `+0.0655`, zero `+0.0616`. | Continue folds `3-4`; mechanism attribution remains open because controls are close. |
 | DTA-v2 calibrated confidence-gated adapter-neighbors | Fold0 OOF20 controls completed: invert/normal/shuffle/zero mean dPSNR `+0.0151/+0.0151/+0.0097/+0.0072`, easy top-25 `-0.0639/-0.0624/-0.0728/-0.0746`, negative SSIM, and worst regressions `142-146`. | Not a promotion candidate; do not continue adapter-neighbors unless a new mechanism changes preservation/gate behavior. |
 
 ## Family Verdict

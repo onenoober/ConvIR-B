@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `IN_PROGRESS_ADAPTER_NEIGHBORS_F0_SYNCED_OOF_NEXT`
+Status: `IN_PROGRESS_ADAPTER_ONLY_F1_F2_SYNCING_F3_F4_RUNNING`
 
 This directory stores text-only evidence for `codex/haze4k-dta-v2-calibrated`,
 the calibrated confidence-gated DTA route for Innovation 1. Checkpoints, model
@@ -59,6 +59,8 @@ committed.
   previous evidence commit.
 - Adapter-neighbors fold0 OOF20 controls completed on convir-4090 GPUs 1-4 and
   are synced here.
+- Adapter-only folds `1-2` OOF20 controls completed on convir-4090 GPUs 0-7 and
+  are synced in this stage. Adapter-only folds `3-4` are currently running.
 
 ## Adapter-Neighbors Fold0 OOF20 Result
 
@@ -75,6 +77,27 @@ the current promotion candidate; continue OOF expansion with `adapter_only`.
 | `shuffle` | `+0.009656` | `+0.003892` | `-0.072763` | `-0.0001245` | `53` | `145` | `0.084493` | `0.921071` | `0.000072` | `0.000070` |
 | `zero` | `+0.007218` | `+0.001740` | `-0.074593` | `-0.0001274` | `53` | `146` | `0.079408` | `0.922233` | `0.000074` | `0.000074` |
 
-Next internal queue: keep locked Haze4K test blocked and run the predeclared
-multi-fold/multi-control OOF expansion, starting with adapter-only folds `1-4`
-for `invert`, `normal`, `shuffle`, and `zero`.
+## Adapter-Only Folds 1-2 OOF20 Result
+
+Folds `1-2` used the same adapter-only OOF20 command, `seed=3407`, and the same
+four depth/control modes. All eight train/eval/tpred jobs completed with `rc=0`.
+
+| Fold | Depth mode | Mean dPSNR | Hard bottom-25 | Easy top-25 | dSSIM | Strong regressions | Worst regressions | t_l1 | Spearman(t_pred,t_gt) | Stage2 gate mean | Stage3 gate mean |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `f1` | `invert` | `+0.069177` | `+0.083142` | `+0.032640` | `-0.0000228` | `62` | `110` | `0.075932` | `0.928746` | `0.013875` | `0.050555` |
+| `f1` | `normal` | `+0.069591` | `+0.089662` | `+0.030042` | `-0.0000217` | `61` | `108` | `0.086846` | `0.927034` | `0.008267` | `0.052497` |
+| `f1` | `shuffle` | `+0.057955` | `+0.076627` | `+0.032887` | `-0.0000097` | `58` | `94` | `0.082336` | `0.928117` | `0.014126` | `0.053669` |
+| `f1` | `zero` | `+0.054809` | `+0.073010` | `+0.031669` | `-0.0000093` | `57` | `92` | `0.077457` | `0.929085` | `0.016877` | `0.054727` |
+| `f2` | `invert` | `+0.091881` | `+0.034875` | `+0.097953` | `-0.0000408` | `52` | `96` | `0.077050` | `0.929004` | `0.017288` | `0.049172` |
+| `f2` | `normal` | `+0.090507` | `+0.040584` | `+0.095801` | `-0.0000411` | `48` | `91` | `0.087146` | `0.928178` | `0.016460` | `0.052335` |
+| `f2` | `shuffle` | `+0.075840` | `+0.024227` | `+0.085528` | `-0.0000207` | `51` | `93` | `0.082814` | `0.928715` | `0.018315` | `0.053236` |
+| `f2` | `zero` | `+0.070339` | `+0.020007` | `+0.082121` | `-0.0000189` | `47` | `92` | `0.078161` | `0.929554` | `0.020948` | `0.052771` |
+
+Partial fold0-2 average keeps `invert` narrowly best on mean dPSNR
+(`+0.089317`) and `normal` best on hard bottom-25 (`+0.078323`), while
+zero/shuffle controls remain close enough that depth-specific attribution is
+still not closed. Locked test remains blocked.
+
+Next internal queue: finish adapter-only folds `3-4`, run the aggregate
+bootstrap/Wilcoxon report across folds `0-4`, then decide whether multi-seed
+adapter-only controls are needed before any locked-test confirmation.

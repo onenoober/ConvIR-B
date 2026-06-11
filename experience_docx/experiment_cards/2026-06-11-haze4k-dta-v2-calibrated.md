@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `IN_PROGRESS_ADAPTER_NEIGHBORS_F0_DONE_OOF_EXPANSION_NEXT`
+Status: `IN_PROGRESS_ADAPTER_ONLY_F3_F4_RUNNING`
 
 ## Scope
 
@@ -83,6 +83,8 @@ that has already passed internal mechanism and preservation gates.
 - Current internal candidate remains `adapter_only`, not `adapter_neighbors`.
   Locked Haze4K test remains blocked; next queue is OOF expansion across
   additional train-derived folds and controls.
+- Adapter-only folds `1-2` OOF20 controls completed with all train/eval/tpred
+  jobs `rc=0`; folds `3-4` are running in parallel on convir-4090.
 
 
 ## 2026-06-11 Adapter-Only Fold0 Scout5 Controls
@@ -150,10 +152,34 @@ do not use locked test for this decision.
 
 ## Next Internal Queue
 
-- Run adapter-only OOF20 folds `1-4` for `invert`, `normal`, `shuffle`, and
+- Finish adapter-only OOF20 folds `3-4` for `invert`, `normal`, `shuffle`, and
   `zero` under the same command script and seed `3407`.
 - Aggregate five-fold OOF deltas, hard/easy buckets, strong/worst regressions,
   `t_pred` quality, and gate statistics.
 - If mechanism attribution remains ambiguous after five folds, run the
   predeclared multi-seed adapter-only controls before any locked-test
   confirmation.
+
+
+## 2026-06-11 Adapter-Only Fold1-2 OOF20 Controls
+
+Folds `1-2` completed after the adapter-neighbors diagnostic. These results
+continue to favor adapter-only over adapter-neighbors, but they also keep the
+mechanism attribution question open because the zero/shuffle controls remain
+close to the true-depth modes.
+
+| Fold | Depth mode | Mean dPSNR | Hard bottom-25 | Easy top-25 | dSSIM | Strong regressions | Worst regressions | t_l1 | Spearman(t_pred,t_gt) | Stage2 gate mean | Stage3 gate mean |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `f1` | `invert` | `+0.069177` | `+0.083142` | `+0.032640` | `-0.0000228` | `62` | `110` | `0.075932` | `0.928746` | `0.013875` | `0.050555` |
+| `f1` | `normal` | `+0.069591` | `+0.089662` | `+0.030042` | `-0.0000217` | `61` | `108` | `0.086846` | `0.927034` | `0.008267` | `0.052497` |
+| `f1` | `shuffle` | `+0.057955` | `+0.076627` | `+0.032887` | `-0.0000097` | `58` | `94` | `0.082336` | `0.928117` | `0.014126` | `0.053669` |
+| `f1` | `zero` | `+0.054809` | `+0.073010` | `+0.031669` | `-0.0000093` | `57` | `92` | `0.077457` | `0.929085` | `0.016877` | `0.054727` |
+| `f2` | `invert` | `+0.091881` | `+0.034875` | `+0.097953` | `-0.0000408` | `52` | `96` | `0.077050` | `0.929004` | `0.017288` | `0.049172` |
+| `f2` | `normal` | `+0.090507` | `+0.040584` | `+0.095801` | `-0.0000411` | `48` | `91` | `0.087146` | `0.928178` | `0.016460` | `0.052335` |
+| `f2` | `shuffle` | `+0.075840` | `+0.024227` | `+0.085528` | `-0.0000207` | `51` | `93` | `0.082814` | `0.928715` | `0.018315` | `0.053236` |
+| `f2` | `zero` | `+0.070339` | `+0.020007` | `+0.082121` | `-0.0000189` | `47` | `92` | `0.078161` | `0.929554` | `0.020948` | `0.052771` |
+
+Fold0-2 average: `invert` has the highest mean dPSNR (`+0.089317`), `normal`
+has the highest hard bottom-25 average (`+0.078323`), and zero/shuffle controls
+are still close (`+0.073559/+0.077395` mean dPSNR). Continue to five-fold OOF
+before any locked-test or promotion decision.
