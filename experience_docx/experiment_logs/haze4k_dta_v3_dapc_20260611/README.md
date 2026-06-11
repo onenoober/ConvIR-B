@@ -137,3 +137,22 @@ least bad mean result is `r0s020_lr3e5_ref005` at `-0.021837 dB`, still worse
 than A0 and hard-negative. No variant is promoted to OOF20, and Phase B remains
 blocked under the original frozen-R0 plan. The next useful diagnostic is to test
 a zero-R0 depth-direct branch from A0 as a separate no-promotion mechanism probe.
+
+
+## 2026-06-11 Depth-Direct Scout Plan
+
+Because both the original R0 and conservative R0-only scouts failed, Phase B
+from a frozen learned R0 remains blocked. To avoid spending more cycles on a
+bad generic residual, the next cloud-only diagnostic is `depthDirect`: initialize
+from official A0 with partial DTA load, freeze A0, keep `R0` at zero
+(`dta_r0_residual_scale=0.0`), and train only the depth/transmission branch.
+This is a no-promotion mechanism probe, not a replacement for the blocked Phase
+B gate.
+
+The first `scout5full` queue trains four depth modes in parallel on
+`convir-4090`: `invert`, `normal`, `zero`, and `shuffle`. Each trained model is
+evaluated under `invert/normal/zero/shuffle` with deterministic eval shuffle,
+aggregated into `train_eval_depth_matrix_*`, and gets cloud-only contact sheets.
+Gate defaults are intentionally a bit wider for this diagnostic:
+`gate_limit=0.12`, `gamma_limit=0.20`, `beta_limit=0.10`, dense mask budget
+`0.14`, and depth residual scale `0.08`.
