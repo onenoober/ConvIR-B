@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `IN_PROGRESS_CLOUD_QUEUE_PENDING`
+Status: `IN_PROGRESS_FIRST_STAGE_PREFLIGHT_PASS_AUDIT_RUNNING`
 
 ## Scope
 
@@ -70,7 +70,8 @@ that has already passed internal mechanism and preservation gates.
 
 ## Current State
 
-- Code implementation and scripts are in progress locally.
-- No DTA-v2 cloud training/evaluation result exists yet.
-- First cloud commands after push: convir-4090 setup, depth-transmission audit,
-  OOF split generation, and DTA-v2 preflight.
+- Code implementation, route scripts, card, and index were pushed at commit `2460b21`.
+- convir-4090 setup/static py_compile passed at commit `2460b21`.
+- OOF split generation passed with five `600`-image validation folds.
+- DTA-v2 preflight passed: partial load `602` loaded / `25` missing all under `DTA.`, no-op max diff `0.0`, and real-batch DTA grad sum `0.66677364` with finite trans/physics losses.
+- Depth-transmission audit is running; no DTA-v2 training/evaluation has started yet.

@@ -1,0 +1,15 @@
+setup_remote_repo_ok 2026-06-11T10:31:49+08:00
+base=/sda/home/wangyuxin/ConvIR-B
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v2-calibrated
+env_root=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+branch=codex/haze4k-dta-v2-calibrated
+commit=2460b21
+status=1 dirty_lines
+train_haze_count=3001
+train_gt_count=3000
+train_trans_count=3000
+test_haze_count=1000
+CONVIR4090_DTA_V2_SETUP_OK
