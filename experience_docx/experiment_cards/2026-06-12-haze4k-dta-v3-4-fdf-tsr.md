@@ -2,7 +2,7 @@
 
 Date: 2026-06-12
 
-Status: `PLANNED_USER_EXPLICIT_TEST_OVERRIDE_ONE_SHOT`
+Status: `TRIAGE_GATE_FAIL_LOCKED_TEST_BLOCKED`
 
 ## Scope
 
@@ -63,6 +63,7 @@ late physical RGB delta = disabled or near zero
   - `dta_fdf_feature_only`: feature-fusion modules, `log_alpha`, transmission and uncertainty heads.
   - `dta_fdf_tsr_residual`: feature-fusion modules plus SafeMix learned residual/gate.
   - `dta_fdf_tsr_full`: adds RouterFusion heads for diagnostic use only.
+  - `dta_fdf_tsr_plus_film`: adds stage2/stage3 FiLM-style DTA modules for the high-capacity triage candidate.
 
 ## Quick Candidate
 
@@ -86,6 +87,8 @@ feature_fusion_gate_bias = 3.0
 - `r0_vs_rdepth_attribution_v34_fdf_tsr_*_fallback_test.csv`
 - test contact-sheet manifest and cloud image paths
 - local copied result PNGs for user viewing, not committed
+- train-derived triage summary: `dta_v3_4_fdf_tsr_triage_summary.json/csv`
+- train-derived variant summary: `dta_v3_4_fdf_tsr_triage_variant_summary.csv`
 
 ## Stop Rule
 
@@ -129,3 +132,43 @@ Result images were copied to a local non-repo folder for user inspection:
 ```text
 /home/ubuntu/workspace/dta_v3_4_fdf_tsr_test_visuals_20260612/
 ```
+
+## 2026-06-12 Train-Derived Triage Outcome
+
+Status: `TRIAGE_GATE_FAIL_LOCKED_TEST_BLOCKED`.
+
+After the one-shot test was archived, the route returned to train-derived
+validation. `convir-5090` completed the predeclared low-cost triage:
+
+```text
+variants = e1_feature_only, e2_tiny_residual, e3_tsr_full, e4_plus_film
+folds = fold0, fold1
+seeds = 3407, 3411
+stage = quick5full
+RUN_TEST = 0
+locked_test_touched = false
+```
+
+Aggregate train-derived fallback-A results:
+
+| Variant | mean dPSNR | hard bottom-25 | dSSIM | positive ratio | worst <= -0.20 | true-vs-zero | true-vs-shuffle | true-vs-normal |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `e1_feature_only` | `+0.079169` | `+0.053351` | `+0.00000911` | `0.5796` | `116.25/600` | `+0.249893` | `+0.211476` | `+0.247717` |
+| `e2_tiny_residual` | `+0.080316` | `+0.054531` | `+0.00001041` | `0.5788` | `115.75/600` | `+0.255835` | `+0.213484` | `+0.248146` |
+| `e3_tsr_full` | `+0.075988` | `+0.051520` | `+0.00000419` | `0.5804` | `127.75/600` | `+0.244546` | `+0.204833` | `+0.237288` |
+| `e4_plus_film` | `+0.081446` | `+0.057209` | `+0.00000786` | `0.5896` | `123.00/600` | `+0.216621` | `+0.184871` | `+0.208891` |
+
+The triage confirms that FDF-TSR produces strong train-derived mean, hard, and
+depth-control surplus, but no variant passes the written safety gate because
+positive ratio remains below `0.630` and worst regressions remain far above
+`48/600` (`max_run_worst` is `137-139` depending on variant). Formal
+5-fold x 3-seed validation is therefore blocked, and no additional Haze4K test
+variant is allowed from these results.
+
+Primary triage files:
+
+- `dta_v3_4_fdf_tsr_triage_summary.json`
+- `dta_v3_4_fdf_tsr_triage_summary.csv`
+- `dta_v3_4_fdf_tsr_triage_variant_summary.csv`
+- `train_eval_depth_matrix_v34_fdf_tsr_*_fallback_train.json/csv`
+- `r0_vs_rdepth_attribution_v34_fdf_tsr_*_fallback_train.csv`

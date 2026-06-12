@@ -183,3 +183,17 @@ completed on `convir-5090` after copying the Depth Anything cache from
 quality fails: mean dPSNR is `-0.014802`, positive ratio is `0.489`, and worst
 regressions are `257/1000`. This is diagnostic only and not promotion-ready.
 Do not run another Haze4K test variant from this result.
+
+## 2026-06-12 DTA-v3.4 Train-Derived Triage Outcome
+
+Decision: `TRIAGE_GATE_FAIL_LOCKED_TEST_BLOCKED`.
+
+The follow-up train-derived triage completed on `convir-5090` with
+`RUN_TEST=0`, variants `E1-E4`, folds `0/1`, and seeds `3407/3411`. All variants
+show strong depth attribution and positive internal mean/hard metrics, but all
+fail the written safety gate because positive ratio remains around
+`0.579-0.590` and worst regressions remain around `116-128/600` on average.
+The best mean row is `e4_plus_film` (`+0.081446` mean, `+0.057209` hard), but
+its worst count is still `123.00/600` and `max_run_worst=137`. Do not launch
+formal 5-fold x 3-seed validation from DTA-v3.4, and keep locked Haze4K test
+blocked.

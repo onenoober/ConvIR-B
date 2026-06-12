@@ -621,3 +621,43 @@ Primary files:
 - `dta_v3_4_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_train.log`
 - `dta_v3_4_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_*_eval.log`
 - local result-image folder: `/home/ubuntu/workspace/dta_v3_4_fdf_tsr_test_visuals_20260612/`
+
+## 2026-06-12 DTA-v3.4 FDF-TSR Train-Derived Triage
+
+Decision: `TRIAGE_GATE_FAIL_LOCKED_TEST_BLOCKED`.
+
+After archiving the one-shot test override, the route returned to internal
+train-derived validation. `convir-5090` ran the full triage queue on free GPUs
+5 and 7 with `RUN_TEST=0`, `RUN_TRAIN_CONTROLS=1`, fold-specific OOF splits,
+and no locked-test access:
+
+```text
+variants = e1_feature_only,e2_tiny_residual,e3_tsr_full,e4_plus_film
+folds = 0,1
+seeds = 3407,3411
+stage = quick5full
+total = 16 train/eval runs
+```
+
+Aggregate fallback-A train-derived summary:
+
+| Variant | mean dPSNR | hard bottom-25 | dSSIM | positive ratio | worst <= -0.20 | true-vs-zero | true-vs-shuffle | true-vs-normal |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `e1_feature_only` | `+0.079169` | `+0.053351` | `+0.00000911` | `0.5796` | `116.25/600` | `+0.249893` | `+0.211476` | `+0.247717` |
+| `e2_tiny_residual` | `+0.080316` | `+0.054531` | `+0.00001041` | `0.5788` | `115.75/600` | `+0.255835` | `+0.213484` | `+0.248146` |
+| `e3_tsr_full` | `+0.075988` | `+0.051520` | `+0.00000419` | `0.5804` | `127.75/600` | `+0.244546` | `+0.204833` | `+0.237288` |
+| `e4_plus_film` | `+0.081446` | `+0.057209` | `+0.00000786` | `0.5896` | `123.00/600` | `+0.216621` | `+0.184871` | `+0.208891` |
+
+Interpretation: FDF-TSR is strongly depth-attributed on train-derived folds and
+has positive mean/hard/dSSIM, but it still fails the written triage gate. The
+blocking failures are positive ratio below `0.630` and worst regressions far
+above the `48/600` ceiling (`max_run_worst` is `137-139` by variant). This
+blocks formal 5-fold x 3-seed validation and keeps the locked test blocked.
+
+Primary triage files:
+
+- `dta_v3_4_fdf_tsr_triage_summary.json`
+- `dta_v3_4_fdf_tsr_triage_summary.csv`
+- `dta_v3_4_fdf_tsr_triage_variant_summary.csv`
+- `train_eval_depth_matrix_v34_fdf_tsr_*_fallback_train.json/csv`
+- `r0_vs_rdepth_attribution_v34_fdf_tsr_*_fallback_train.csv`
