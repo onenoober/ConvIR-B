@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `COMPLETED_MECHANISM_POSITIVE_TAIL_FAIL_TAILLITE_WIDE_GATE`
+Status: `PLANNED_CTDG_SAFEMIX_AUDITS_LOCKED_TEST_BLOCKED`
 
 ## Scope
 
@@ -458,3 +458,55 @@ only by selecting `25%` coverage and dropping true-vs-zero surplus below the
 `+0.03 dB` mechanism gate. Therefore the planned 5-fold x 3-seed formal
 validation is not launched from B0-B4; it remains blocked until a fixed scout
 row passes the written fold0 gate.
+
+## 2026-06-12 DTA-v3.2 CTDG-SafeMix No/Low-Training Audit Plan
+
+Status: `PLANNED_CTDG_SAFEMIX_AUDITS_LOCKED_TEST_BLOCKED`.
+
+The next user-approved route is DTA-v3.2 CTDG-SafeMix: Calibrated Transmission
++ Distributionally Safe Gated Mixing. It keeps the current DTA-v3.1 conclusion
+intact: B0-B4 are not candidates, 5-fold x 3-seed validation remains blocked,
+and locked Haze4K test remains blocked. The first step is no/low-training audit
+only, centered on the two useful mechanism sources:
+
+| Source | Checkpoint | Role |
+| --- | --- | --- |
+| `wg18_base_s008_b14` | tail-lite fold0 Final.pkl | best DTA-v3 depthDirect mechanism source |
+| `wg18_light_hinge` | DTA-v3.1 B4 fold0 Final.pkl | mild hinge source; verify whether it changes action upper bound |
+
+Required new artifacts:
+
+- `oracle_action_upper_bound_by_coverage_<run>.json/csv`: image/patch/pixel
+  oracle action upper bound at target coverages `25/40/60/80/100%`.
+- `oracle_best_possible_contact_sheet_manifest_<run>.md`: text-only image list
+  for later cloud PNG review; PNGs are not committed.
+- `alpha_blend_sweep_matrix_<run>.json/csv`: alpha shrink sweep for
+  `alpha=0.10/0.20/0.35/0.50/0.75/1.00` under fallback/GT A and
+  `invert/zero/shuffle/normal` eval depth.
+- `t_pred_vs_trans_gt_correlation_<run>.csv`,
+  `t_error_to_regression_correlation_<run>.json`, and
+  `transmission_bin_failure_report_<run>.json`: Haze4K GT transmission audit.
+- `selector_metric_correction_report_<run>_<airlight>.json`: corrected selector
+  metrics separating global coverage from selected conditional positive ratio.
+- `nested_selector_smoke_f0_<run>_<airlight>.json`,
+  `nested_selector_smoke_f0_thresholds_<run>_<airlight>.csv`, and
+  `risk_coverage_curve_f0_nested_<run>_<airlight>.csv`: five internal fold0
+  calibration splits to test same-fold threshold overfit.
+
+Interpretation gates before any DTA-v3.2 training:
+
+- If 60% coverage oracle cannot reach mean at least `+0.05 dB`, dSSIM at least
+  `0`, worst at most `50/600`, and true-vs-zero at least `+0.03 dB`, then the
+  direct physical delta is not good enough and DTA-v3.2 should pivot toward
+  UDP-style multi-scale depth fusion instead of gate-only training.
+- If alpha `0.35` or `0.50` preserves true-vs-zero at least `+0.03 dB` while
+  cutting worst materially, the primary issue is action amplitude and C0/C1
+  soft-gate experiments are justified.
+- If t-error, low transmission, bright/low-texture bins, or large action stats
+  correlate with regressions, then calibrated transmission + uncertainty gate is
+  the correct C2/C3 path.
+- If nested selector performance collapses relative to same-fold selection,
+  selector-only post-hoc policies remain diagnostic-only.
+
+No C0-C4 training is launched until these audits are parsed and the next row is
+fixed in this card.

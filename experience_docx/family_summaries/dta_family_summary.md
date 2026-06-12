@@ -71,3 +71,12 @@ The DTA-v3.1 follow-up is closed as a scout-gate fail. Reopen only with a new
 mechanism that improves tail/SSIM without sacrificing true-vs-zero/shuffle/normal
 surplus; do not launch 5-fold x seeds `3407/3411/3413` or locked Haze4K test
 from B0-B4.
+
+## 2026-06-12 DTA-v3.2 Reopen Condition
+
+DTA-v3.1 is closed as scout-gate fail, but the family is reopened for a
+no/low-training CTDG-SafeMix audit queue only. The queue must first measure
+oracle depth-action coverage, alpha action amplitude, GT-transmission/t-error
+failure coupling, corrected selector metrics, and fold0 internal nested selector
+overfit. No 5-fold x 3-seed formal validation or locked Haze4K test is allowed
+until a fixed DTA-v3.2 scout row passes the written gate.

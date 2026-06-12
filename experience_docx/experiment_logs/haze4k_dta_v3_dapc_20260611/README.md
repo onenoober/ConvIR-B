@@ -364,3 +364,21 @@ path. Light hinge gives only a tiny mean/surplus gain while leaving tail/SSIM
 unsafe. Same-fold risk selection fixes tail/SSIM only through low coverage and
 fails the true-vs-zero depth-surplus gate. Therefore no B0-B4 row authorizes
 5-fold x 3-seed formal validation or locked-test access.
+
+## 2026-06-12 DTA-v3.2 CTDG-SafeMix Audit Plan
+
+Status: `PLANNED_CTDG_SAFEMIX_AUDITS_LOCKED_TEST_BLOCKED`.
+
+This follow-up adds no/low-training diagnostics before any DTA-v3.2 model
+training. It runs only on fold0 train-derived validation and keeps locked Haze4K
+test blocked. The cloud scripts are:
+
+- `run_dta_v3_2_ctdg_safemix_audits_convir4090.sh`
+- `launch_dta_v3_2_ctdg_safemix_audits_convir4090.sh`
+
+Planned text artifacts include oracle coverage upper bounds, alpha blend sweeps,
+GT-transmission/t-error failure reports, corrected selector metrics, and a
+fold0 internal nested selector smoke test for both the `wg18_base_s008_b14` and
+`wg18_light_hinge` sources. The result will decide whether the next DTA-v3.2
+step is alpha/soft-gate only, calibrated transmission + uncertainty SafeMix, or
+a pivot away from direct physical delta toward multi-scale depth fusion.

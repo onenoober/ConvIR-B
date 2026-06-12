@@ -886,3 +886,27 @@ PY
 Use `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python` or `"$PY"` for
 all cloud Python snippets, and prefer a small local script piped to remote
 `bash -s` over deeply nested inline heredocs.
+
+2026-06-12 recurrence:
+
+A cloud probe again used `ssh convir-4090 '...'` inside a piped WSL Bash script
+without `-n`. The remote command succeeded, but SSH consumed the remaining local
+script body, so `SSH_RC` and the final local success marker did not print.
+
+Invalid form:
+
+```bash
+ssh convir-4090 'printf "HOST_OK\n"'
+printf 'SSH_RC=%s\n' "$?"
+```
+
+Corrected form:
+
+```bash
+ssh -n convir-4090 'printf "HOST_OK\n"'
+printf 'SSH_RC=%s\n' "$?"
+```
+
+Use `ssh -n` for all single-command remote probes launched from a piped local
+script; omit `-n` only when the remote command intentionally reads a script from
+stdin.
