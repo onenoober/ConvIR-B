@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: positive diagnostic family, not promotion-ready; DTA-v3 tail-lite wide-gate is mechanism-positive but tail/SSIM fail.
+Status: positive diagnostic family, not promotion-ready; DTA-v3.3 RouterFusion triage failed and locked Haze4K test remains blocked.
 
 ## Scope
 
@@ -46,12 +46,27 @@ risk selection fixed SSIM/tail only by reducing coverage to `0.25` and dropping
 true-vs-zero surplus to about `+0.0198 dB`. No B0-B4 row passed the scout gate,
 so 5-fold x 3-seed formal validation remains blocked.
 
+DTA-v3.2 SafeMix C3 improved the depth-attributed line but still failed the
+fixed scout gate: fallback-A mean `+0.031636`, hard `+0.009309`,
+true-vs-zero `+0.039813`, true-vs-shuffle `+0.034174`,
+true-vs-normal `+0.035193`, and worst `48/600`, with dSSIM still negative and
+positive ratio `0.6133`.
+
+DTA-v3.3 RouterFusion-SafeMix++ triage completed on `convir-4090` across
+fold0/fold1 x seeds `3407/3411`. D1/D2 improved mean/hard/depth surplus but
+failed the worst-tail gate (`worst` about `80/600`). D3 RouterFusion was too
+suppressive or misrouted: aggregate mean `+0.032786`, hard `+0.035370`, dSSIM
+`-0.00000629`, positive ratio `0.5713`, worst `75.5/600`,
+true-vs-zero `+0.029598`, true-vs-shuffle `+0.026012`, and true-vs-normal
+`+0.026889`. No D-row passed triage, so formal 5-fold x 3-seed and locked test
+remain blocked.
+
 ## Route Table
 
 | Route | Evidence | Decision |
 | --- | --- | --- |
 | DTA-v2 CalGate | Multi-seed OOF showed `invert` about `+0.0887 dB`, but zero/shuffle retained most of the improvement and tail/SSIM did not pass. | Positive diagnostic only; no locked test; use as motivation for attribution controls. |
-| DTA-v3 DAPC fine-tune | `convir-4090` preflight passed; R0 scouts failed. Zero-R0 depthDirect train=`invert` proved surplus. Strong tailguard over-suppressed the branch. Tail-lite `wg18_base_s008_b14` improved mean/hard and passed true-vs-zero/shuffle/normal mechanism thresholds, but SSIM/tail still failed. DTA-v3.1 airlight/risk/light-hinge scout did not pass the fold0 gate. | Mechanism-positive diagnostic only; no 5-fold formal validation from B0-B4; no locked test. |
+| DTA-v3 DAPC fine-tune | `convir-4090` preflight passed; R0 scouts failed. Zero-R0 depthDirect train=`invert` proved surplus. Strong tailguard over-suppressed the branch. Tail-lite `wg18_base_s008_b14` passed mechanism thresholds but failed SSIM/tail. DTA-v3.1 airlight/risk/light-hinge, DTA-v3.2 SafeMix, and DTA-v3.3 RouterFusion all failed their written scout/triage gates. | Mechanism-positive diagnostic only; no 5-fold formal validation from B0-B4/C/D rows; no locked test. |
 
 ## Reopen Conditions
 
@@ -123,3 +138,20 @@ low-phys/high-learned SafeMix, SSIM-CVaR/group-tail losses, and counterfactual
 wrong-depth gate suppression. Continue only if a fixed D-row passes the
 predeclared fold0/fold1 x seeds 3407/3411 triage gate while preserving
 true-vs-zero/shuffle/normal surplus.
+
+## 2026-06-12 DTA-v3.3 RouterFusion Triage Outcome
+
+Decision: `TRIAGE_GATE_FAIL_LOCKED_TEST_BLOCKED`.
+
+DTA-v3.3 completed the low-cost triage on `convir-4090` from commit `bc28db8`.
+No variant passed. D1/D2 show that stronger SSIM-CVaR/group-tail losses and
+low-phys/high-learned action can create strong average and hard gains, but they
+do not control the worst tail. D3 shows that the implemented image/patch/pixel
+RouterFusion is not a reliable selector: it sacrifices positive ratio and
+depth-control surplus while still leaving worst regressions high.
+
+Reopen only with a material mechanism change. The two acceptable directions are
+either a stricter tail-safe selector with explicit worst-regression constraints,
+or a pivot toward UDP/DeHamer-style multi-scale feature-level depth fusion with
+weak bounded late RGB correction. Do not run formal 5-fold x 3-seed or locked
+Haze4K test from D1/D2/D3.

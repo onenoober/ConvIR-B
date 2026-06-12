@@ -19,6 +19,33 @@ success markers over compact one-liners.
 
 ## Invalid Command Patterns To Avoid
 
+### Escaped printf inside nested awk one-liners
+
+Avoid embedding escaped quotes in an `awk` program inside a PowerShell-to-WSL
+script body, especially inside command substitution:
+
+```bash
+numstat="$(git diff --cached --numstat | awk '{add+=$1; del+=$2} END {printf \"+%d -%d\", add, del}')"
+```
+
+Failure mode observed on 2026-06-12:
+
+- the extra backslashes reached `awk`;
+- `awk` reported `backslash not last character on line` and a syntax error;
+- the surrounding audit continued, making the failure easy to miss.
+
+Preferred form:
+
+```bash
+numstat="$(git diff --cached --numstat | python3 -c 'import sys
+add=dele=0
+for line in sys.stdin:
+    parts=line.split()
+    if len(parts)>=2 and parts[0].isdigit() and parts[1].isdigit():
+        add+=int(parts[0]); dele+=int(parts[1])
+print(f"+{add} -{dele}")')"
+```
+
 ### PowerShell to WSL inline regex pipes
 
 Avoid inline commands where PowerShell, WSL Bash, and regex pipes all appear in

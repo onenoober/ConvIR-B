@@ -1,0 +1,83 @@
+{
+  "protocol": "DTA-v3.3 transmission uncertainty calibration",
+  "count": 600,
+  "log_t_l1": 0.31144772153347733,
+  "low_t_log_t_l1": 0.3522500944488189,
+  "t_uncertainty_ECE_proxy": 0.1070408467327555,
+  "corr_t_error_delta_psnr": -0.029475168100247636,
+  "corr_t_uncertainty_delta_psnr": 0.017416893832540286,
+  "corr_t_uncertainty_worst_flag": 0.02889312013248554,
+  "bins": [
+    {
+      "bin": 0,
+      "count": 60,
+      "mean_uncertainty": 0.17215804954369862,
+      "mean_log_t_abs_error": 0.28134922198951245,
+      "mean_delta_psnr": -0.009706420858623173
+    },
+    {
+      "bin": 1,
+      "count": 60,
+      "mean_uncertainty": 0.19278852691253026,
+      "mean_log_t_abs_error": 0.3244396187365055,
+      "mean_delta_psnr": 0.009769073019213792
+    },
+    {
+      "bin": 2,
+      "count": 60,
+      "mean_uncertainty": 0.20485408181945483,
+      "mean_log_t_abs_error": 0.2930213001867135,
+      "mean_delta_psnr": 0.022335869696636774
+    },
+    {
+      "bin": 3,
+      "count": 60,
+      "mean_uncertainty": 0.21268303940693536,
+      "mean_log_t_abs_error": 0.34054929415384927,
+      "mean_delta_psnr": -0.06563731709198516
+    },
+    {
+      "bin": 4,
+      "count": 60,
+      "mean_uncertainty": 0.22087223480145138,
+      "mean_log_t_abs_error": 0.3176564502219359,
+      "mean_delta_psnr": 0.010204438163604064
+    },
+    {
+      "bin": 5,
+      "count": 60,
+      "mean_uncertainty": 0.2277690271536509,
+      "mean_log_t_abs_error": 0.2981989624599616,
+      "mean_delta_psnr": -0.002628462281897607
+    },
+    {
+      "bin": 6,
+      "count": 60,
+      "mean_uncertainty": 0.23491612871487935,
+      "mean_log_t_abs_error": 0.32447140191992124,
+      "mean_delta_psnr": 0.030338721481203024
+    },
+    {
+      "bin": 7,
+      "count": 60,
+      "mean_uncertainty": 0.2447594977915287,
+      "mean_log_t_abs_error": 0.2901989514629046,
+      "mean_delta_psnr": 0.004000771767683217
+    },
+    {
+      "bin": 8,
+      "count": 60,
+      "mean_uncertainty": 0.25724054376284283,
+      "mean_log_t_abs_error": 0.3102219375471274,
+      "mean_delta_psnr": 0.0059790861400203475
+    },
+    {
+      "bin": 9,
+      "count": 60,
+      "mean_uncertainty": 0.2751160686214765,
+      "mean_log_t_abs_error": 0.33437007665634155,
+      "mean_delta_psnr": 0.006289086713356262
+    }
+  ],
+  "locked_test_touched": false
+}

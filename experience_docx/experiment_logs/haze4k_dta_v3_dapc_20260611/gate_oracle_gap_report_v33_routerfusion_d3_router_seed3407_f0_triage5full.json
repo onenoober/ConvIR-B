@@ -1,0 +1,8 @@
+{
+  "run_id": "v33_routerfusion_d3_router_seed3407_f0_triage5full",
+  "candidate": "d3_router",
+  "count": 600,
+  "mean_oracle_patch_ratio": 0.5221441874156395,
+  "mean_model_router_score": 0.7134770328742653,
+  "locked_test_touched": false
+}

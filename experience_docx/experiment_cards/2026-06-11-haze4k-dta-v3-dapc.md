@@ -2,7 +2,7 @@
 
 Date: 2026-06-11
 
-Status: `PLANNED_CTDG_SAFEMIX_AUDITS_LOCKED_TEST_BLOCKED`
+Status: `TRIAGE_GATE_FAIL_LOCKED_TEST_BLOCKED`
 
 ## Scope
 
@@ -655,7 +655,7 @@ and require the same depth-control gates before any formal validation.
 
 ## 2026-06-12 DTA-v3.3 RouterFusion-SafeMix++ Plan
 
-Status: `PLANNED_ROUTERFUSION_TRiAGE_CODE_READY_LOCKED_TEST_BLOCKED`.
+Status: `PLANNED_ROUTERFUSION_TRIAGE_CODE_READY_LOCKED_TEST_BLOCKED`.
 
 DTA-v3.2 C3 is mechanism-positive but fails hard, SSIM, and positive-ratio
 scout gates. The next continuation is DTA-v3.3 RouterFusion-SafeMix++ rather
@@ -741,3 +741,64 @@ Decision rule: if no fixed fallback-A D-row passes triage, record
 or locked test. If one D-row passes, the next step is a fresh formal validation
 plan with fold-specific initialization rules; locked test remains blocked until
 that formal gate passes.
+
+## 2026-06-12 DTA-v3.3 RouterFusion-SafeMix++ Triage Results
+
+Status: `TRIAGE_GATE_FAIL_LOCKED_TEST_BLOCKED`.
+
+The DTA-v3.3 triage queue completed on `convir-4090` from commit `bc28db8` in
+workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v33-routerfusion`.
+All four tmux workers finished with `DTA_V3_3_ROUTERFUSION_WORKER_OK`, the
+primary D3 diagnostic audit finished with `dta_v3_3_routerfusion_diag_done
+rc=0`, and `locked_test_touched=false` in the triage summary. No formal
+5-fold x 3-seed validation was launched.
+
+Fallback-A aggregate over folds `0/1` and seeds `3407/3411`:
+
+| Variant | Runs | mean | hard | dSSIM | pos ratio | worst | true-vs-zero | true-vs-shuffle | true-vs-normal | Triage |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `D1 d1_loss` | 4 | `+0.067711` | `+0.069012` | `-0.00000035` | `0.6283` | `81.5` | `+0.055552` | `+0.050172` | `+0.052613` | fail |
+| `D2 d2_lowphys` | 4 | `+0.065951` | `+0.067494` | `-0.00000196` | `0.6254` | `80.25` | `+0.058310` | `+0.051721` | `+0.054104` | fail |
+| `D3 d3_router` | 4 | `+0.032786` | `+0.035370` | `-0.00000629` | `0.5713` | `75.5` | `+0.029598` | `+0.026012` | `+0.026889` | fail |
+
+Per-run interpretation:
+
+- `D1` and `D2` show that SSIM-CVaR/group-tail loss and lower physical weight
+  can greatly improve mean, hard, and depth-control surplus versus C3, but they
+  do not satisfy the hard worst-tail constraint. Worst regressions rise to
+  about `80/600`, so these rows are not candidate-ready.
+- `D3` does not close the oracle routing gap. The best `D3` fold/seed
+  (`seed3411_f0`) is close on mean/hard/SSIM and worst (`49/600`), but
+  true-vs-zero is only `+0.030165` and the aggregate D3 row loses positive
+  ratio and surplus. The worst D3 fold (`seed3407_f0`) is near no-benefit with
+  mean `+0.001094`, hard `-0.018031`, and worst `105/600`.
+- The primary D3 router diagnostics show almost constant image/patch router
+  scores (`model_r_img` about `0.898`, `model_r_patch_mean` about `0.795`) while
+  the pixel gate is almost closed (`model_pixel_gate_mean` about `3.39e-5`).
+  This is suppressive/misrouted rather than a learned approximation of the
+  oracle image/patch/pixel accept mask.
+- Transmission uncertainty remains a weak failure predictor in this D3 row:
+  `corr_t_error_delta_psnr=-0.0295` and
+  `corr_t_uncertainty_worst_flag=0.0289`. Low-transmission samples are still a
+  risk group, but transmission calibration alone is not the rescue path.
+
+Primary synchronized text evidence:
+
+- `dta_v3_3_routerfusion_triage_summary.json/csv`
+- `dta_v3_3_routerfusion_variant_summary.csv`
+- `train_eval_depth_matrix_v33_routerfusion_*_{fallback,gt}.json/csv`
+- `r0_vs_rdepth_attribution_v33_routerfusion_*_{fallback,gt}.csv`
+- `gate_oracle_gap_report_v33_routerfusion_d3_router_seed3407_f0_triage5full.json/csv`
+- `action_failure_taxonomy_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv`
+- `router_metric_correction_report_v33_routerfusion_d3_router_seed3407_f0_triage5full.json`
+- `risk_coverage_curve_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv`
+- `trans_uncertainty_calibration_v33_routerfusion_d3_router_seed3407_f0_triage5full.json`
+- `counterfactual_gate_matrix_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv`
+
+Decision: DTA-v3.3 RouterFusion-SafeMix++ as implemented is a diagnostic fail.
+Do not launch formal 5-fold x 3-seed validation and do not touch locked Haze4K
+test from D1/D2/D3. The next route should either build a stricter tail-safe
+selector with an explicit worst-regression constraint, or pivot away from late
+direct RGB physical action toward UDP/DeHamer-style multi-scale depth feature
+fusion with only weak bounded output correction.

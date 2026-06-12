@@ -501,3 +501,53 @@ Expected primary text artifacts include `dta_v3_3_routerfusion_triage_summary.*`
 `risk_coverage_curve_*`, `trans_uncertainty_calibration_*`, and
 `counterfactual_gate_matrix_*`. Checkpoints, datasets, arrays, and PNGs remain
 excluded from Git.
+
+## 2026-06-12 DTA-v3.3 RouterFusion-SafeMix++ Triage Results
+
+Status: `TRIAGE_GATE_FAIL_LOCKED_TEST_BLOCKED`.
+
+The DTA-v3.3 triage queue completed on `convir-4090` from commit `bc28db8` in
+cloud workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v33-routerfusion`.
+It ran D1/D2/D3 over fold0/fold1 x seeds `3407/3411`, evaluated fallback-A and
+GT-A under `invert/zero/shuffle/normal`, generated cloud-only contact sheets,
+and did not touch locked Haze4K test.
+
+Primary summary files:
+
+- `dta_v3_3_routerfusion_triage_summary.json`
+- `dta_v3_3_routerfusion_triage_summary.csv`
+- `dta_v3_3_routerfusion_variant_summary.csv`
+- `train_eval_depth_matrix_v33_routerfusion_*_{fallback,gt}.json/csv`
+- `r0_vs_rdepth_attribution_v33_routerfusion_*_{fallback,gt}.csv`
+- `gate_oracle_gap_report_v33_routerfusion_d3_router_seed3407_f0_triage5full.json/csv`
+- `action_failure_taxonomy_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv`
+- `router_metric_correction_report_v33_routerfusion_d3_router_seed3407_f0_triage5full.json`
+- `risk_coverage_curve_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv`
+- `trans_uncertainty_calibration_v33_routerfusion_d3_router_seed3407_f0_triage5full.json`
+- `counterfactual_gate_matrix_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv`
+
+Fallback-A variant aggregates:
+
+| Variant | Runs | mean | hard | dSSIM | pos ratio | worst | true-vs-zero | true-vs-shuffle | true-vs-normal | Gate |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `D1 d1_loss` | 4 | `+0.067711` | `+0.069012` | `-0.00000035` | `0.6283` | `81.5` | `+0.055552` | `+0.050172` | `+0.052613` | fail |
+| `D2 d2_lowphys` | 4 | `+0.065951` | `+0.067494` | `-0.00000196` | `0.6254` | `80.25` | `+0.058310` | `+0.051721` | `+0.054104` | fail |
+| `D3 d3_router` | 4 | `+0.032786` | `+0.035370` | `-0.00000629` | `0.5713` | `75.5` | `+0.029598` | `+0.026012` | `+0.026889` | fail |
+
+Key interpretation:
+
+- D1/D2 provide strong mean, hard, near-zero SSIM, and depth-control surplus, but
+  they fail the tail gate badly (`worst` about `80/600`). Loss-only and
+  low-phys/high-learned SafeMix are not safe enough.
+- D3 RouterFusion is too suppressive or misrouted. It lowers mean, positive
+  ratio, and depth-control surplus while still leaving high worst regressions.
+  The primary D3 diagnostic row has nearly constant image/patch router scores
+  and an almost closed pixel gate, rather than a learned image/patch/pixel
+  accept mask.
+- The triage decision is `TRIAGE_GATE_FAIL_LOCKED_TEST_BLOCKED`; formal
+  5-fold x 3-seed validation remains blocked and locked test remains untouched.
+
+Cloud contact-sheet PNGs were generated for visual review but are not committed
+to Git. Local non-repo visual copies may be kept under
+`/home/ubuntu/workspace/dta_v3_3_routerfusion_visuals_20260612/`.
