@@ -80,6 +80,30 @@ or, when `rg` is required, resolve it inside WSL:
 command -v rg >/dev/null && rg -n 'v1\.4|UDP-Lite' experience_docx/EXPERIMENT_INDEX.md || grep -En 'v1\.4|UDP-Lite' experience_docx/EXPERIMENT_INDEX.md
 ```
 
+2026-06-12 recurrence:
+
+Avoid assuming `rg` inside WSL is a Linux executable when the Windows app shim is
+earlier on PATH:
+
+```bash
+rg -n "def build_net|fam_mode" Dehazing/ITS/models/ConvIR.py
+```
+
+Failure mode observed:
+
+- WSL resolved `rg` to a WindowsApps Codex path;
+- Bash returned `Permission denied` before any file search ran.
+
+Corrected form:
+
+```bash
+if command -v /usr/bin/rg >/dev/null 2>&1; then
+  /usr/bin/rg -n 'def build_net|fam_mode' Dehazing/ITS/models/ConvIR.py
+else
+  grep -nE 'def build_net|fam_mode' Dehazing/ITS/models/ConvIR.py
+fi
+```
+
 2026-06-06 recurrence:
 
 Avoid this form:

@@ -137,7 +137,9 @@ def percentile(values, pct):
 
 def build_model(arch, mode, args, prefix):
     if arch in ("convir", "official_convir"):
-        return build_convir_net("base", "Haze4K", mode, arch=arch)
+        # Current official-anchor build_net accepts only fam_mode="original";
+        # keep --*_mode as a legacy output label for non-DTA comparisons.
+        return build_convir_net("base", "Haze4K", "original", arch=arch)
     if arch in ("dta", "dta_v2", "dta_v3"):
         return build_convir_net(
             "base",
