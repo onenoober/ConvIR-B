@@ -224,6 +224,29 @@ printf 'LOCAL_DONE\n'
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
 
+### Bash printf monitor formatting
+
+2026-06-12 recurrence:
+
+Avoid using a literal format string that starts with dashes in monitoring
+helpers:
+
+```bash
+printf "--- %s ---\n" "$(basename "$f")"
+```
+
+Failure mode observed:
+
+- `printf` treated the leading dashes as an option in the active shell context;
+- the monitor exited early with `printf: --: invalid option`.
+
+Corrected forms:
+
+```bash
+printf -- "--- %s ---\n" "$(basename "$f")"
+printf '%s\n' "--- $(basename "$f") ---"
+```
+
 
 ### Cloud Python and evidence copy assumptions
 

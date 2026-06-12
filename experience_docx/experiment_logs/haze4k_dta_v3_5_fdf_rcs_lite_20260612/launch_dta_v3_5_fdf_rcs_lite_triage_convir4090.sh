@@ -15,6 +15,7 @@ MAX_IMAGES=${MAX_IMAGES:-0}
 FORCE=${FORCE:-0}
 GPU_LIST=${GPU_LIST:-}
 MAX_PARALLEL=${MAX_PARALLEL:-}
+MAX_GPUS=${MAX_GPUS:-5}
 FREE_GPU_MAX_USED_MIB=${FREE_GPU_MAX_USED_MIB:-2500}
 
 mkdir -p "$EVID"
@@ -23,7 +24,7 @@ mkdir -p "$EVID"
   echo "work=$WORK"
   echo "python=$PY"
   echo "variants=$VARIANTS_CSV folds=$FOLDS_CSV seeds=$SEEDS_CSV"
-  echo "max_images=$MAX_IMAGES force=$FORCE"
+  echo "max_images=$MAX_IMAGES force=$FORCE max_gpus=$MAX_GPUS"
   echo "locked_test_touched=false"
 } | tee -a "$STATUS"
 
@@ -54,10 +55,15 @@ if [[ -z "$GPU_LIST" ]]; then
   fi
 fi
 IFS=',' read -r -a GPUS <<< "$GPU_LIST"
+if [[ "$MAX_GPUS" -gt 0 && "${#GPUS[@]}" -gt "$MAX_GPUS" ]]; then
+  GPUS=("${GPUS[@]:0:$MAX_GPUS}")
+  GPU_LIST=$(IFS=,; echo "${GPUS[*]}")
+fi
 if [[ -z "$MAX_PARALLEL" ]]; then
   MAX_PARALLEL=${#GPUS[@]}
 fi
 if [[ "$MAX_PARALLEL" -lt 1 ]]; then MAX_PARALLEL=1; fi
+if [[ "$MAX_PARALLEL" -gt "${#GPUS[@]}" ]]; then MAX_PARALLEL=${#GPUS[@]}; fi
 
 echo "dta_v3_5_triage_parallel gpu_list=$GPU_LIST max_parallel=$MAX_PARALLEL" | tee -a "$STATUS"
 

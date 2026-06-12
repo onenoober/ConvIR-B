@@ -98,6 +98,10 @@ lambda_safe_action   = 0.004 for L5 only
 
 Strict promotion gates remain recorded, but the run queue uses relaxed flow gates so L1-L5 and nested calibration complete even if early strict gates fail. Relaxed flow pass is diagnostic only; it does not authorize locked test or promotion.
 
+## GPU Use Rule
+
+The first already-running queue may continue as launched. Per the 2026-06-12 user update, all subsequent DTA-v3.5 relaunches or follow-up queues on `convir-4090` cap the launcher to at most five RTX 4090 cards by default (`MAX_GPUS=5`, with `MAX_PARALLEL` not exceeding the capped GPU list).
+
 ## Decision Logic
 
 ```text

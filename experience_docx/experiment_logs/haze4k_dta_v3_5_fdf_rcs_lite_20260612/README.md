@@ -32,4 +32,4 @@ Family summary: `experience_docx/family_summaries/dta_family_summary.md`
 
 ## Current State
 
-Implementation and launch scripts are staged for cloud sync. No cloud runtime has been launched from this route yet.
+Implementation and launch scripts were synced to `convir-4090` and the first relaxed triage queue was launched. The first queue may continue as launched; all subsequent relaunches/follow-up queues are capped to at most five RTX 4090 cards by default (`MAX_GPUS=5`, `MAX_PARALLEL<=len(capped GPU list)`). Locked Haze4K test remains blocked.
