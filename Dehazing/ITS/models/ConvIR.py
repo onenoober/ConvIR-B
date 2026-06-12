@@ -489,10 +489,10 @@ class CalibratedDepthTransmissionAdapter(nn.Module):
         if not self.last_aux:
             device = next(self.parameters()).device
             zero = torch.zeros((), device=device)
-            return {'trans': zero, 'phys': zero, 't_l1': zero, 't_spearman_proxy': zero}
+            return {'trans': zero, 'phys': zero, 't_l1': zero, 't_log_l1': zero, 't_nll': zero, 't_spearman_proxy': zero}
         t_pred = self.last_aux['t_pred']
         zero = t_pred.new_zeros(())
-        losses = {'trans': zero, 'phys': zero, 't_l1': zero, 't_spearman_proxy': zero}
+        losses = {'trans': zero, 'phys': zero, 't_l1': zero, 't_log_l1': zero, 't_nll': zero, 't_spearman_proxy': zero}
         if trans_gt is None:
             return losses
         if trans_gt.dim() == 3:
@@ -502,6 +502,12 @@ class CalibratedDepthTransmissionAdapter(nn.Module):
         t_l1 = F.smooth_l1_loss(t_pred, trans)
         losses['trans'] = t_l1
         losses['t_l1'] = t_l1.detach()
+        log_t_error = (torch.log(t_pred.clamp(1e-4, 1.0)) - torch.log(trans.clamp(1e-4, 1.0))).abs()
+        losses['t_log_l1'] = log_t_error.mean()
+        t_log_var = self.last_aux.get('t_log_var')
+        if t_log_var is not None:
+            t_log_var = t_log_var.clamp(-6.0, 6.0)
+            losses['t_nll'] = (torch.exp(-t_log_var) * log_t_error.detach() + t_log_var).mean()
         if hazy is not None and dehazed is not None and airlight is not None:
             if airlight.dim() == 1:
                 airlight = airlight.view(-1, 1, 1, 1)
@@ -543,6 +549,12 @@ class DepthAttributedPreserveAdapter(nn.Module):
         phys_t_min=0.10,
         phase='joint',
         ablation='full',
+        safe_mix_enabled=False,
+        safe_mix_delta_clip=0.08,
+        safe_mix_phys_weight=1.0,
+        safe_mix_learned_weight=0.0,
+        safe_mix_gate_limit=1.0,
+        safe_mix_gate_bias=-3.0,
     ):
         super(DepthAttributedPreserveAdapter, self).__init__()
         self.depth_mode = depth_mode
@@ -556,6 +568,11 @@ class DepthAttributedPreserveAdapter(nn.Module):
         self.phys_t_min = phys_t_min
         self.phase = phase
         self.ablation = ablation
+        self.safe_mix_enabled = safe_mix_enabled
+        self.safe_mix_delta_clip = safe_mix_delta_clip
+        self.safe_mix_phys_weight = safe_mix_phys_weight
+        self.safe_mix_learned_weight = safe_mix_learned_weight
+        self.safe_mix_gate_limit = safe_mix_gate_limit
         prior_in_channels = 6
 
         self.stage2 = CalibratedDepthFiLMBlock(
@@ -587,6 +604,11 @@ class DepthAttributedPreserveAdapter(nn.Module):
             nn.GELU(),
             nn.Conv2d(hidden // 2, 1, kernel_size=3, padding=1, bias=True),
         )
+        self.trans_uncertainty_head = nn.Sequential(
+            nn.Conv2d(stage2_channels + stage3_channels, hidden // 2, kernel_size=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(hidden // 2, 1, kernel_size=3, padding=1, bias=True),
+        )
         self.r0_refine = nn.Sequential(
             nn.Conv2d(stage1_channels, stage1_channels, kernel_size=3, padding=1, bias=True),
             nn.GELU(),
@@ -598,19 +620,40 @@ class DepthAttributedPreserveAdapter(nn.Module):
             nn.GELU(),
             nn.Conv2d(stage1_channels, 1, kernel_size=3, padding=1, bias=True),
         )
+        safe_in_channels = stage1_channels + prior_in_channels + 6
+        self.safe_residual_head = nn.Sequential(
+            nn.Conv2d(safe_in_channels, stage1_channels, kernel_size=3, padding=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(stage1_channels, 3, kernel_size=3, padding=1, bias=True),
+        )
+        self.safe_gate_head = nn.Sequential(
+            nn.Conv2d(safe_in_channels, stage1_channels, kernel_size=3, padding=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(stage1_channels, 1, kernel_size=3, padding=1, bias=True),
+        )
 
         self.transmission_head[0].apply(_init_kaiming)
         self.transmission_head[2].apply(_init_kaiming)
         nn.init.zeros_(self.transmission_head[-1].weight)
         nn.init.zeros_(self.transmission_head[-1].bias)
+        self.trans_uncertainty_head[0].apply(_init_kaiming)
+        nn.init.zeros_(self.trans_uncertainty_head[-1].weight)
+        nn.init.zeros_(self.trans_uncertainty_head[-1].bias)
         self.r0_refine[0].apply(_init_kaiming)
         nn.init.zeros_(self.r0_refine[-1].weight)
         nn.init.zeros_(self.r0_refine[-1].bias)
         self.depth_mask_head[0].apply(_init_kaiming)
         nn.init.zeros_(self.depth_mask_head[-1].weight)
         nn.init.zeros_(self.depth_mask_head[-1].bias)
+        self.safe_residual_head[0].apply(_init_kaiming)
+        nn.init.zeros_(self.safe_residual_head[-1].weight)
+        nn.init.zeros_(self.safe_residual_head[-1].bias)
+        self.safe_gate_head[0].apply(_init_kaiming)
+        nn.init.zeros_(self.safe_gate_head[-1].weight)
+        nn.init.zeros_(self.safe_gate_head[-1].bias)
         with torch.no_grad():
             self.depth_mask_head[-1].bias.fill_(depth_mask_bias)
+            self.safe_gate_head[-1].bias.fill_(safe_mix_gate_bias)
         self.last_aux = {}
         self.last_stats = {}
 
@@ -718,9 +761,12 @@ class DepthAttributedPreserveAdapter(nn.Module):
                 'delta_abs_mean': zero_stats['stage3_delta_abs_mean'],
             }
         feat3_up = F.interpolate(feat3, size=feat2.shape[-2:], mode='bilinear', align_corners=False)
-        t_pred = torch.sigmoid(self.transmission_head(torch.cat([feat2, feat3_up], dim=1)))
+        trans_feat = torch.cat([feat2, feat3_up], dim=1)
+        t_pred = torch.sigmoid(self.transmission_head(trans_feat))
+        t_log_var = self.trans_uncertainty_head(trans_feat).clamp(-6.0, 6.0)
         self.last_aux = {
             't_pred': t_pred,
+            't_log_var': t_log_var,
             'depth': d2,
             't_proxy': t_proxy2,
             'depth_stage3': d3,
@@ -746,6 +792,8 @@ class DepthAttributedPreserveAdapter(nn.Module):
             'stage3_delta_abs_mean': stats3['delta_abs_mean'],
             't_pred_mean': t_pred.detach().mean(),
             't_pred_std': t_pred.detach().std(unbiased=False),
+            't_uncertainty_mean': torch.sigmoid(t_log_var.detach()).mean(),
+            't_uncertainty_std': torch.sigmoid(t_log_var.detach()).std(unbiased=False),
         }
         return feat2, feat3
 
@@ -823,9 +871,20 @@ class DepthAttributedPreserveAdapter(nn.Module):
         air = self._airlight_tensor(hazy, airlight)
         j_phys = ((hazy - air * (1.0 - t_full)) / t_full).clamp(0.0, 1.0)
         base_img = (out + hazy).clamp(0.0, 1.0)
-        phys_delta = (j_phys - base_img).clamp(-self.depth_residual_scale, self.depth_residual_scale)
-        mask = self._depth_mask(final_feat, hazy, t_full, prior_full)
-        depth_delta = mask * phys_delta
+        phys_delta_raw = j_phys - base_img
+        if self.safe_mix_enabled:
+            depth_delta, mask, phys_delta = self._safe_mix_delta(
+                final_feat,
+                hazy,
+                t_full,
+                prior_full,
+                phys_delta_raw,
+                output.shape[-2:],
+            )
+        else:
+            phys_delta = phys_delta_raw.clamp(-self.depth_residual_scale, self.depth_residual_scale)
+            mask = self._depth_mask(final_feat, hazy, t_full, prior_full)
+            depth_delta = mask * phys_delta
         self.last_aux['depth_mask'] = mask
         self.last_aux['j_phys'] = j_phys
         self.last_stats['depth_mask_mean'] = mask.detach().mean()
@@ -833,6 +892,46 @@ class DepthAttributedPreserveAdapter(nn.Module):
         self.last_stats['depth_delta_abs_mean'] = depth_delta.detach().abs().mean()
         self.last_stats['j_phys_delta_abs_mean'] = phys_delta.detach().abs().mean()
         return out + depth_delta
+
+    def _safe_mix_delta(self, final_feat, hazy, t_full, prior_full, phys_delta_raw, output_size):
+        clip = float(self.safe_mix_delta_clip)
+        phys_delta = phys_delta_raw.clamp(-clip, clip)
+        density = (1.0 - t_full).clamp(0.0, 1.0)
+        brightness = hazy.mean(dim=1, keepdim=True).clamp(0.0, 1.0)
+        texture = self._image_texture(brightness).clamp(0.0, 1.0)
+        phys_abs = phys_delta.detach().abs().mean(dim=1, keepdim=True)
+        t_unc = torch.sigmoid(
+            F.interpolate(
+                self.last_aux['t_log_var'],
+                size=output_size,
+                mode='bilinear',
+                align_corners=False,
+            )
+        )
+        safe_input = torch.cat(
+            [final_feat, prior_full, t_full, density, brightness, texture, phys_abs, t_unc],
+            dim=1,
+        )
+        learned_delta = torch.tanh(self.safe_residual_head(safe_input)) * clip
+        raw_gate = torch.sigmoid(self.safe_gate_head(safe_input)) * self.safe_mix_gate_limit
+        prior_conf = prior_full[:, -1:, :, :].clamp(0.0, 1.0)
+        bright_conf = torch.sigmoid((0.94 - brightness) * 10.0)
+        texture_conf = 0.5 + 0.5 * torch.sigmoid((texture - 0.003) * 80.0)
+        uncertainty_conf = 1.0 - 0.5 * t_unc.clamp(0.0, 1.0)
+        gate = (raw_gate * prior_conf * bright_conf * texture_conf * uncertainty_conf).clamp(0.0, self.safe_mix_gate_limit)
+        mixed_delta = (
+            self.safe_mix_phys_weight * phys_delta
+            + self.safe_mix_learned_weight * learned_delta
+        ).clamp(-clip, clip)
+        depth_delta = gate * mixed_delta
+        self.last_aux['safe_gate'] = gate
+        self.last_aux['safe_learned_delta'] = learned_delta
+        self.last_stats['safe_gate_mean'] = gate.detach().mean()
+        self.last_stats['safe_gate_max'] = gate.detach().max()
+        self.last_stats['safe_learned_delta_abs_mean'] = learned_delta.detach().abs().mean()
+        self.last_stats['safe_mixed_delta_abs_mean'] = mixed_delta.detach().abs().mean()
+        self.last_stats['safe_t_uncertainty_mean'] = t_unc.detach().mean()
+        return depth_delta, gate, phys_delta
 
     def auxiliary_losses(self, rank_pairs=512, min_depth_gap=0.03):
         if not self.last_aux:
@@ -853,10 +952,10 @@ class DepthAttributedPreserveAdapter(nn.Module):
         if not self.last_aux:
             device = next(self.parameters()).device
             zero = torch.zeros((), device=device)
-            return {'trans': zero, 'phys': zero, 't_l1': zero, 't_spearman_proxy': zero}
+            return {'trans': zero, 'phys': zero, 't_l1': zero, 't_log_l1': zero, 't_nll': zero, 't_spearman_proxy': zero}
         t_pred = self.last_aux['t_pred']
         zero = t_pred.new_zeros(())
-        losses = {'trans': zero, 'phys': zero, 't_l1': zero, 't_spearman_proxy': zero}
+        losses = {'trans': zero, 'phys': zero, 't_l1': zero, 't_log_l1': zero, 't_nll': zero, 't_spearman_proxy': zero}
         if trans_gt is None:
             return losses
         if trans_gt.dim() == 3:
@@ -866,6 +965,12 @@ class DepthAttributedPreserveAdapter(nn.Module):
         t_l1 = F.smooth_l1_loss(t_pred, trans)
         losses['trans'] = t_l1
         losses['t_l1'] = t_l1.detach()
+        log_t_error = (torch.log(t_pred.clamp(1e-4, 1.0)) - torch.log(trans.clamp(1e-4, 1.0))).abs()
+        losses['t_log_l1'] = log_t_error.mean()
+        t_log_var = self.last_aux.get('t_log_var')
+        if t_log_var is not None:
+            t_log_var = t_log_var.clamp(-6.0, 6.0)
+            losses['t_nll'] = (torch.exp(-t_log_var) * log_t_error.detach() + t_log_var).mean()
         if hazy is not None and dehazed is not None and airlight is not None:
             airlight = self._airlight_tensor(hazy, airlight)
             trans_full = F.interpolate(t_pred, size=hazy.shape[-2:], mode='bilinear', align_corners=False)
@@ -1091,6 +1196,12 @@ def build_net(
     dta_phys_t_min=0.10,
     dta_phase='joint',
     dta_ablation='full',
+    dta_safe_mix_enabled=False,
+    dta_safe_mix_delta_clip=0.08,
+    dta_safe_mix_phys_weight=1.0,
+    dta_safe_mix_learned_weight=0.0,
+    dta_safe_mix_gate_limit=1.0,
+    dta_safe_mix_gate_bias=-3.0,
 ):
     if fam_mode != 'original':
         raise ValueError(
@@ -1124,6 +1235,12 @@ def build_net(
                     'phys_t_min': dta_phys_t_min,
                     'phase': dta_phase,
                     'ablation': dta_ablation,
+                    'safe_mix_enabled': dta_safe_mix_enabled,
+                    'safe_mix_delta_clip': dta_safe_mix_delta_clip,
+                    'safe_mix_phys_weight': dta_safe_mix_phys_weight,
+                    'safe_mix_learned_weight': dta_safe_mix_learned_weight,
+                    'safe_mix_gate_limit': dta_safe_mix_gate_limit,
+                    'safe_mix_gate_bias': dta_safe_mix_gate_bias,
                 }
             )
         else:

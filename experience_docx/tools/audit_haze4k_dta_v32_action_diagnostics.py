@@ -97,8 +97,18 @@ def build_dta(args: argparse.Namespace, device: torch.device) -> torch.nn.Module
         dta_phys_t_min=args.dta_phys_t_min,
         dta_phase=args.dta_phase,
         dta_ablation=args.dta_ablation,
+        dta_safe_mix_enabled=args.dta_safe_mix_enabled,
+        dta_safe_mix_delta_clip=args.dta_safe_mix_delta_clip,
+        dta_safe_mix_phys_weight=args.dta_safe_mix_phys_weight,
+        dta_safe_mix_learned_weight=args.dta_safe_mix_learned_weight,
+        dta_safe_mix_gate_limit=args.dta_safe_mix_gate_limit,
+        dta_safe_mix_gate_bias=args.dta_safe_mix_gate_bias,
     ).to(device)
-    model.load_state_dict(load_model_state(args.candidate_checkpoint, device))
+    result = model.load_state_dict(load_model_state(args.candidate_checkpoint, device), strict=False)
+    allowed_missing = ("DTA.trans_uncertainty_head.", "DTA.safe_residual_head.", "DTA.safe_gate_head.")
+    missing = [key for key in result.missing_keys if not key.startswith(allowed_missing)]
+    if missing or result.unexpected_keys:
+        raise RuntimeError(f"Unexpected DTA-v3 checkpoint load: missing={missing} unexpected={result.unexpected_keys}")
     model.eval()
     return model
 
@@ -717,6 +727,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dta_phys_t_min", type=float, default=0.10)
     parser.add_argument("--dta_phase", default="depth", choices=["r0", "depth", "joint"])
     parser.add_argument("--dta_ablation", default="full", choices=["full", "r0_only", "film_only_no_output_refine", "trans_head_only_no_rgb_residual", "phys_blend_only"])
+    parser.add_argument("--dta_safe_mix_enabled", action="store_true")
+    parser.add_argument("--dta_safe_mix_delta_clip", type=float, default=0.08)
+    parser.add_argument("--dta_safe_mix_phys_weight", type=float, default=1.0)
+    parser.add_argument("--dta_safe_mix_learned_weight", type=float, default=0.0)
+    parser.add_argument("--dta_safe_mix_gate_limit", type=float, default=1.0)
+    parser.add_argument("--dta_safe_mix_gate_bias", type=float, default=-3.0)
     return parser.parse_args()
 
 

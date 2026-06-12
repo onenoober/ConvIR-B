@@ -91,3 +91,14 @@ risk feature rather than a single-cause explanation; low-transmission samples
 carry many worst regressions. Same-fold threshold selection remains diagnostic
 only after internal fold0 nested smoke. Locked test and 5-fold x 3-seed remain
 blocked until a fixed SafeMix scout row passes.
+
+
+## 2026-06-12 DTA-v3.2 SafeMix Scout Plan
+
+SafeMix C1/C3 is the next fixed scout after the CTDG audit. It keeps
+`wg18_base_s008_b14`, disables R0, preserves the train-derived fold0 protocol,
+and adds only the new uncertainty/gate/residual heads as partial-load modules.
+C1 trains a soft gate over clipped physical action; C3 trains the gate, learned
+residual, transmission head, and uncertainty head. Locked Haze4K test and formal
+5-fold x 3-seed validation remain blocked until a fixed fallback-A SafeMix row
+passes the written fold0 scout gate.

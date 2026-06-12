@@ -554,3 +554,64 @@ train a DTA-v3.2 SafeMix gate/residual with physical delta clipped and treated a
 a hint, and use transmission/low-t/brightness/texture/action magnitude as risk
 features. C2 transmission calibration should be included as an auxiliary risk
 signal but not treated as the only rescue path.
+
+## 2026-06-12 DTA-v3.2 SafeMix C1/C3 Scout Plan
+
+Status: `PLANNED_SAFEMIX_SCOUT_CODE_READY_LOCKED_TEST_BLOCKED`.
+
+The fixed scout after the CTDG no/low-training audit is DTA-v3.2 SafeMix. It
+keeps the route as a fine-tune experiment from the existing fold0
+`wg18_base_s008_b14` mechanism checkpoint, keeps A0 frozen, keeps `R0=0`, and
+trains only newly added SafeMix modules unless the variant says otherwise. This
+is still fold0 train-derived validation only; no 5-fold x 3-seed formal run and
+no locked Haze4K test is allowed unless a fixed scout row passes the written
+fold0 gate.
+
+New module contract:
+
+- `DTA.trans_uncertainty_head`: predicts low-resolution log transmission
+  uncertainty for gating and optional NLL calibration.
+- `DTA.safe_gate_head`: predicts a soft pixel gate over clipped depth action.
+- `DTA.safe_residual_head`: predicts a bounded learned residual expert used by
+  the full SafeMix variant.
+- partial initialization from the old WG18 checkpoint allows missing keys only
+  under `DTA.trans_uncertainty_head.`, `DTA.safe_residual_head.`, and
+  `DTA.safe_gate_head.`; all pre-existing A0/DTA modules must load from the
+  checkpoint.
+
+Scout variants:
+
+| ID | train scope | physics weight | learned weight | clip | LR | intent |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| `C1 c1_gate` | `dta_safemix_gate_only` | `1.00` | `0.00` | `0.08` | `8e-5` | test whether a learned soft gate can safely select the existing clipped physical action |
+| `C3 c3_full` | `dta_safemix_full` | `0.25` | `0.75` | `0.06` | `5e-5` | test safe learned residual plus clipped physics hint and transmission uncertainty |
+
+Cloud scripts:
+
+- `run_dta_v3_2_safemix_scout_convir4090.sh`: trains one variant, evaluates
+  fallback/GT airlight under `invert/zero/shuffle/normal`, aggregates the depth
+  matrix, writes a SafeMix scout summary, and generates cloud-only contact
+  sheets.
+- `launch_dta_v3_2_safemix_scouts_convir4090.sh`: launches `c1_gate` and
+  `c3_full` in separate tmux sessions on separate GPUs.
+- `summarize_haze4k_dta_v32_safemix_scouts.py`: summarizes available SafeMix
+  fold0 matrices and applies the written scout gates.
+
+Fold0 scout gate remains:
+
+```text
+mean true-A0 >= +0.020 dB
+hard true-A0 >= +0.010 dB
+true-vs-zero >= +0.030 dB
+true-vs-shuffle >= +0.030 dB
+true-vs-normal >= +0.025 dB
+dSSIM >= -0.000010
+positive_ratio >= 0.630
+worst regressions <= 50/600
+```
+
+If neither C1 nor C3 passes this gate, the route is recorded as
+`SCOUT_GATE_FAIL_LOCKED_TEST_BLOCKED` and no 5-fold x 3-seed validation is
+launched. If one fixed fallback-A row passes, the next step is formal 5-fold x
+3-seed nested validation with locked test still blocked until that formal gate
+passes.

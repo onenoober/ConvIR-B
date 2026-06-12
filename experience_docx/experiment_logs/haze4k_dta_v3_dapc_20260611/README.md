@@ -411,3 +411,39 @@ Decision: `COMPLETED_CTDG_AUDIT_C0_FAIL_C1_C3_JUSTIFIED_LOCKED_TEST_BLOCKED`.
 Do not launch formal 5-fold x 3-seed from existing B0-B4/C0 artifacts. The next
 fixed scout should implement DTA-v3.2 SafeMix gate/residual training; locked test
 remains blocked.
+
+## 2026-06-12 DTA-v3.2 SafeMix C1/C3 Scout Plan
+
+Status: `PLANNED_SAFEMIX_SCOUT_CODE_READY_LOCKED_TEST_BLOCKED`.
+
+The next cloud queue implements the CTDG-SafeMix conclusion rather than another
+B0-B4 micro-tune. It starts from `wg18_base_s008_b14`, disables R0, freezes the
+A0/old DTA body unless a scope explicitly opens it, and adds only the new
+SafeMix heads as partial-load missing modules:
+`DTA.trans_uncertainty_head.`, `DTA.safe_residual_head.`, and
+`DTA.safe_gate_head.`.
+
+Scripts added for this queue:
+
+- `run_dta_v3_2_safemix_scout_convir4090.sh`: durable one-variant cloud script.
+- `launch_dta_v3_2_safemix_scouts_convir4090.sh`: tmux launcher for parallel
+  `c1_gate` and `c3_full` scouts.
+- `summarize_haze4k_dta_v32_safemix_scouts.py`: matrix summarizer and scout
+  gate checker.
+
+Planned variants:
+
+| ID | train scope | action design |
+| --- | --- | --- |
+| `c1_gate` | `dta_safemix_gate_only` | train only the soft gate over clipped physical delta |
+| `c3_full` | `dta_safemix_full` | train soft gate, learned residual, transmission head, and uncertainty head |
+
+Expected text artifacts after cloud completion:
+
+- `train_eval_depth_matrix_v32_safemix_<variant>_seed3407_f0_scout5full_<fallback|gt>.json/csv`
+- `r0_vs_rdepth_attribution_v32_safemix_<variant>_seed3407_f0_scout5full_<fallback|gt>.csv`
+- `dta_v3_2_safemix_scout_summary.json/csv`
+- `dta_v3_2_v32_safemix_<variant>_*_{train,eval,aggregate,summary,contact_sheet}.log`
+
+Cloud-only contact sheet PNGs are still excluded from Git. Locked Haze4K test
+remains blocked.

@@ -61,6 +61,25 @@ def _apply_train_scope(model, args):
                 'DTA.transmission_head.',
                 'DTA.depth_mask_head.',
             )
+        elif train_scope == 'dta_safemix_gate_only':
+            prefixes = ('DTA.safe_gate_head.',)
+        elif train_scope == 'dta_safemix_full':
+            prefixes = (
+                'DTA.safe_gate_head.',
+                'DTA.safe_residual_head.',
+                'DTA.trans_uncertainty_head.',
+                'DTA.transmission_head.',
+            )
+        elif train_scope == 'dta_safemix_plus_film':
+            prefixes = (
+                'DTA.stage2.',
+                'DTA.stage3.',
+                'DTA.log_alpha',
+                'DTA.transmission_head.',
+                'DTA.trans_uncertainty_head.',
+                'DTA.safe_gate_head.',
+                'DTA.safe_residual_head.',
+            )
         else:
             raise ValueError(f'Unsupported train_scope: {train_scope}')
         for name, param in model.named_parameters():
@@ -483,6 +502,8 @@ def _train(model, args):
             loss_dta_tv = input_img.new_zeros(())
             loss_dta_proxy = input_img.new_zeros(())
             loss_dta_trans = input_img.new_zeros(())
+            loss_dta_trans_log = input_img.new_zeros(())
+            loss_dta_trans_nll = input_img.new_zeros(())
             loss_dta_phys = input_img.new_zeros(())
             loss_dta_preserve = input_img.new_zeros(())
             loss_dta_ref_preserve = input_img.new_zeros(())
@@ -507,6 +528,8 @@ def _train(model, args):
                         airlight=airlight,
                     )
                     loss_dta_trans = dta_sup['trans']
+                    loss_dta_trans_log = dta_sup.get('t_log_l1', input_img.new_zeros(()))
+                    loss_dta_trans_nll = dta_sup.get('t_nll', input_img.new_zeros(()))
                     loss_dta_phys = dta_sup['phys']
                     if getattr(args, 'dta_preserve_weight', 0.0) > 0:
                         preserve_mask = (trans > args.dta_preserve_trans_thresh).float()
@@ -545,6 +568,8 @@ def _train(model, args):
                 + args.dta_tv_weight * loss_dta_tv
                 + args.dta_proxy_weight * loss_dta_proxy
                 + args.dta_trans_weight * loss_dta_trans
+                + getattr(args, 'dta_trans_log_weight', 0.0) * loss_dta_trans_log
+                + getattr(args, 'dta_trans_nll_weight', 0.0) * loss_dta_trans_nll
                 + args.dta_phys_weight * loss_dta_phys
                 + args.dta_preserve_weight * loss_dta_preserve
                 + args.dta_ref_preserve_weight * loss_dta_ref_preserve

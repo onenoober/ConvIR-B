@@ -149,6 +149,12 @@ def build_model(arch, mode, args, prefix):
             dta_phys_t_min=getattr(args, f"{prefix}_dta_phys_t_min"),
             dta_phase=getattr(args, f"{prefix}_dta_phase"),
             dta_ablation=getattr(args, f"{prefix}_dta_ablation"),
+            dta_safe_mix_enabled=getattr(args, f"{prefix}_dta_safe_mix_enabled"),
+            dta_safe_mix_delta_clip=getattr(args, f"{prefix}_dta_safe_mix_delta_clip"),
+            dta_safe_mix_phys_weight=getattr(args, f"{prefix}_dta_safe_mix_phys_weight"),
+            dta_safe_mix_learned_weight=getattr(args, f"{prefix}_dta_safe_mix_learned_weight"),
+            dta_safe_mix_gate_limit=getattr(args, f"{prefix}_dta_safe_mix_gate_limit"),
+            dta_safe_mix_gate_bias=getattr(args, f"{prefix}_dta_safe_mix_gate_bias"),
         )
     if arch == "dpga":
         try:
@@ -207,6 +213,17 @@ def load_model_state(path, device):
 
 def load_candidate_state(model, checkpoint, device, arch):
     state = load_model_state(checkpoint, device)
+    if arch == "dta_v3":
+        result = model.load_state_dict(state, strict=False)
+        allowed_missing = ("DTA.trans_uncertainty_head.", "DTA.safe_residual_head.", "DTA.safe_gate_head.")
+        missing = [key for key in result.missing_keys if not key.startswith(allowed_missing)]
+        unexpected = list(result.unexpected_keys)
+        if missing or unexpected:
+            raise RuntimeError(
+                f"Unexpected DTA-v3 checkpoint load result: missing={missing}, "
+                f"unexpected={unexpected}"
+            )
+        return
     if arch != "dpga":
         model.load_state_dict(state)
         return
@@ -466,6 +483,18 @@ def main():
     parser.add_argument("--candidate_dta_phase", default="joint", choices=["r0", "depth", "joint"])
     parser.add_argument("--original_dta_ablation", default="full", choices=["full", "r0_only", "film_only_no_output_refine", "trans_head_only_no_rgb_residual", "phys_blend_only"])
     parser.add_argument("--candidate_dta_ablation", default="full", choices=["full", "r0_only", "film_only_no_output_refine", "trans_head_only_no_rgb_residual", "phys_blend_only"])
+    parser.add_argument("--original_dta_safe_mix_enabled", action="store_true")
+    parser.add_argument("--candidate_dta_safe_mix_enabled", action="store_true")
+    parser.add_argument("--original_dta_safe_mix_delta_clip", type=float, default=0.08)
+    parser.add_argument("--candidate_dta_safe_mix_delta_clip", type=float, default=0.08)
+    parser.add_argument("--original_dta_safe_mix_phys_weight", type=float, default=1.0)
+    parser.add_argument("--candidate_dta_safe_mix_phys_weight", type=float, default=1.0)
+    parser.add_argument("--original_dta_safe_mix_learned_weight", type=float, default=0.0)
+    parser.add_argument("--candidate_dta_safe_mix_learned_weight", type=float, default=0.0)
+    parser.add_argument("--original_dta_safe_mix_gate_limit", type=float, default=1.0)
+    parser.add_argument("--candidate_dta_safe_mix_gate_limit", type=float, default=1.0)
+    parser.add_argument("--original_dta_safe_mix_gate_bias", type=float, default=-3.0)
+    parser.add_argument("--candidate_dta_safe_mix_gate_bias", type=float, default=-3.0)
     parser.add_argument("--depth_shuffle_offset", type=int, default=137)
     parser.add_argument("--original_dpga_prior_embed_channels", type=int, default=16)
     parser.add_argument("--candidate_dpga_prior_embed_channels", type=int, default=16)
