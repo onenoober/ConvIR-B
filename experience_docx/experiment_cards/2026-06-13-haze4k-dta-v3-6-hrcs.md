@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `PLANNED_RELAXED_SELECTOR_FIRST_USER_LOCKED_TEST_OVERRIDE_PENDING`
+Status: `PHASE_A_COMPLETED_RELAXED_PASS_STRICT_FAIL_FORMAL_QUEUE_PENDING`
 
 ## Scope
 
@@ -133,3 +133,15 @@ elif oracle high-coverage fails:
 if user override asks locked test after relaxed Phase C:
     run exactly one fixed-policy locked test and label it exploratory.
 ```
+
+## Phase A Result
+
+Phase A completed on `convir-4090` from commit `754d62a` with marker `DTA_V3_6_HRCS_PHASE_A_OK`.
+
+Key result:
+
+- Deployable high-coverage selectors are not strict-ready yet. Best relaxed rows are L1 logistic `input_only` at coverage `0.9000`, mean `+0.075882`, positive ratio `0.5846`, worst `63.25/600`; L2 logistic `input_only` at coverage `0.9017`, mean `+0.055817`, positive ratio `0.5783`, worst `44.50/600`; and L3 logistic `input_only` at coverage `0.9042`, mean `+0.067108`, positive ratio `0.5862`, worst `52.25/600`.
+- Oracle headroom is strong. L3 oracle at coverage `0.95` reaches mean `+0.088241`, positive ratio `0.6304`, worst `39.50/600`, and strict pass; L1 oracle at coverage `0.93` also strict-passes with mean `+0.106708`, positive ratio `0.6308`, and worst `40.50/600`.
+- The deployable action bank `{A0,L2,L3,L1}` is close on tail but fails positive ratio: mean `+0.063409`, positive ratio `0.5833`, worst `50.25/600`.
+
+Decision: continue the user-requested relaxed formal train-derived queue for L1/L2/L3, but keep the scientific interpretation unchanged: the bottleneck is still deployable risk calibration/features, not candidate capacity. Locked test remains untouched until the fixed train-derived policy is sealed.

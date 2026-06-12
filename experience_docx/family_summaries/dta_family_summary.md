@@ -1,8 +1,8 @@
 # DTA Depth-Transmission Adapter Family Summary
 
-Date: 2026-06-12
+Date: 2026-06-13
 
-Status: positive diagnostic family, not promotion-ready; DTA-v3.5 FDF-RCS-Lite completed relaxed train-derived diagnostics, strict gates still failed, and locked Haze4K test remains blocked.
+Status: positive diagnostic family, not promotion-ready; DTA-v3.6 HRCS Phase A confirms high oracle headroom but deployable high-coverage risk selectors still fail strict gates.
 
 ## Scope
 
@@ -265,3 +265,33 @@ L4 at about `0.21` coverage with selected mean about `+0.0197 dB`, selected
 positive ratio about `0.67`, and worst about `31.5/600`. Continue only with a
 stronger selector/calibration route; do not increase router/FiLM/residual
 capacity or run locked test from DTA-v3.5.
+
+## 2026-06-13 DTA-v3.6 HRCS Phase A
+
+Decision: `PHASE_A_COMPLETED_RELAXED_PASS_STRICT_FAIL_FORMAL_QUEUE_PENDING`.
+
+DTA-v3.6 HRCS reopens the family only for selector/calibration, continuing from
+DTA-v3.5 commit `1e1d87a` on branch `codex/haze4k-dta-v3-6-hrcs`. Phase A ran
+on `convir-4090` from commit `754d62a` using the existing v3.5 OOF action table
+and did not touch locked test.
+
+The high-coverage oracle is strong enough for strict all-image gates: L3 oracle
+at `0.95` coverage has mean `+0.088241`, positive ratio `0.6304`, and worst
+`39.50/600`; L1 oracle at `0.93` coverage has mean `+0.106708`, positive ratio
+`0.6308`, and worst `40.50/600`. This confirms that the conservative FDF action
+family has deployable value if the risk boundary can be learned.
+
+The deployable high-coverage selectors remain strict-fail. Best relaxed
+deployable rows are L1 logistic `input_only` at coverage `0.9000`, mean
+`+0.075882`, positive ratio `0.5846`, worst `63.25/600`; L2 logistic
+`input_only` at coverage `0.9017`, mean `+0.055817`, positive ratio `0.5783`,
+worst `44.50/600`; and L3 logistic `input_only` at coverage `0.9042`, mean
+`+0.067108`, positive ratio `0.5862`, worst `52.25/600`. The selector-action
+bank `{A0,L2,L3,L1}` is close on tail (`50.25/600`) but still loses too many
+positive samples (`0.5833` positive ratio).
+
+Interpretation: v3.6 strengthens the root-cause claim. Candidate capacity is not
+the first bottleneck; deployable risk calibration/features are. Per the
+2026-06-13 user instruction, the route continues into a relaxed 5-fold x 3-seed
+train-derived queue, but this is exploratory and not promotion-grade unless
+strict gates pass without post-test tuning.
