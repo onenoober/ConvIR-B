@@ -93,6 +93,12 @@ def main(args):
         dta_safe_mix_learned_weight=args.dta_safe_mix_learned_weight,
         dta_safe_mix_gate_limit=args.dta_safe_mix_gate_limit,
         dta_safe_mix_gate_bias=args.dta_safe_mix_gate_bias,
+        dta_router_fusion_enabled=args.dta_router_fusion_enabled,
+        dta_router_image_gate_limit=args.dta_router_image_gate_limit,
+        dta_router_patch_gate_limit=args.dta_router_patch_gate_limit,
+        dta_router_patch_size=args.dta_router_patch_size,
+        dta_router_image_bias=args.dta_router_image_bias,
+        dta_router_patch_bias=args.dta_router_patch_bias,
     )
     # print(model)
 
@@ -140,7 +146,7 @@ if __name__ == '__main__':
     parser.add_argument('--init_model_allow_full_route', action='store_true')
     parser.add_argument('--partial_new_prefixes', type=str, default='DTA.')
     parser.add_argument('--resume', type=str, default='')
-    parser.add_argument('--train_scope', default='all', choices=['all', 'adapter_only', 'adapter_neighbors', 'dta_r0_only', 'dta_depth_only', 'dta_safemix_gate_only', 'dta_safemix_full', 'dta_safemix_plus_film'], type=str)
+    parser.add_argument('--train_scope', default='all', choices=['all', 'adapter_only', 'adapter_neighbors', 'dta_r0_only', 'dta_depth_only', 'dta_safemix_gate_only', 'dta_safemix_full', 'dta_safemix_plus_film', 'dta_routerfusion_router_only', 'dta_routerfusion_full', 'dta_routerfusion_plus_film'], type=str)
     parser.add_argument('--dta_depth_cache_dir', type=str, default='')
     parser.add_argument('--dta_train_depth_split', type=str, default='train')
     parser.add_argument('--dta_eval_depth_split', type=str, default='test')
@@ -174,6 +180,12 @@ if __name__ == '__main__':
     parser.add_argument('--dta_safe_mix_learned_weight', type=float, default=0.0)
     parser.add_argument('--dta_safe_mix_gate_limit', type=float, default=1.0)
     parser.add_argument('--dta_safe_mix_gate_bias', type=float, default=-3.0)
+    parser.add_argument('--dta_router_fusion_enabled', action='store_true')
+    parser.add_argument('--dta_router_image_gate_limit', type=float, default=1.0)
+    parser.add_argument('--dta_router_patch_gate_limit', type=float, default=1.0)
+    parser.add_argument('--dta_router_patch_size', type=int, default=32)
+    parser.add_argument('--dta_router_image_bias', type=float, default=2.0)
+    parser.add_argument('--dta_router_patch_bias', type=float, default=2.0)
     parser.add_argument('--dta_use_trans_gt', action='store_true')
     parser.add_argument('--dta_trans_weight', type=float, default=0.0)
     parser.add_argument('--dta_trans_log_weight', type=float, default=0.0)
@@ -193,6 +205,15 @@ if __name__ == '__main__':
     parser.add_argument('--dta_light_hinge_texture_thresh', type=float, default=0.004)
     parser.add_argument('--dta_light_ssim_hinge_weight', type=float, default=0.0)
     parser.add_argument('--dta_light_ssim_hinge_margin', type=float, default=0.0)
+    parser.add_argument('--dta_cvar_tail_weight', type=float, default=0.0)
+    parser.add_argument('--dta_cvar_tail_margin', type=float, default=0.0)
+    parser.add_argument('--dta_cvar_tail_topk', type=float, default=0.10)
+    parser.add_argument('--dta_group_tail_weight', type=float, default=0.0)
+    parser.add_argument('--dta_patch_ssim_cvar_weight', type=float, default=0.0)
+    parser.add_argument('--dta_patch_ssim_cvar_margin', type=float, default=0.0)
+    parser.add_argument('--dta_patch_ssim_cvar_topk', type=float, default=0.10)
+    parser.add_argument('--dta_counterfactual_gate_weight', type=float, default=0.0)
+    parser.add_argument('--dta_counterfactual_modes', type=str, default='zero,normal')
     parser.add_argument('--dta_gate_ramp_start', type=float, default=-1.0)
     parser.add_argument('--dta_gate_ramp_mid', type=float, default=-1.0)
     parser.add_argument('--dta_gate_ramp_end', type=float, default=-1.0)

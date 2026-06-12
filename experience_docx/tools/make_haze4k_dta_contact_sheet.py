@@ -68,9 +68,21 @@ def build_candidate(args, device):
         dta_safe_mix_learned_weight=args.dta_safe_mix_learned_weight,
         dta_safe_mix_gate_limit=args.dta_safe_mix_gate_limit,
         dta_safe_mix_gate_bias=args.dta_safe_mix_gate_bias,
+        dta_router_fusion_enabled=args.dta_router_fusion_enabled,
+        dta_router_image_gate_limit=args.dta_router_image_gate_limit,
+        dta_router_patch_gate_limit=args.dta_router_patch_gate_limit,
+        dta_router_patch_size=args.dta_router_patch_size,
+        dta_router_image_bias=args.dta_router_image_bias,
+        dta_router_patch_bias=args.dta_router_patch_bias,
     ).to(device)
     result = model.load_state_dict(load_state(args.candidate_checkpoint, device), strict=False)
-    allowed_missing = ("DTA.trans_uncertainty_head.", "DTA.safe_residual_head.", "DTA.safe_gate_head.")
+    allowed_missing = (
+        "DTA.trans_uncertainty_head.",
+        "DTA.safe_residual_head.",
+        "DTA.safe_gate_head.",
+        "DTA.router_image_head.",
+        "DTA.router_patch_head.",
+    )
     missing = [key for key in result.missing_keys if not key.startswith(allowed_missing)]
     if missing or result.unexpected_keys:
         raise RuntimeError(f"Unexpected DTA-v3 checkpoint load: missing={missing} unexpected={result.unexpected_keys}")
@@ -220,6 +232,12 @@ def main() -> None:
     parser.add_argument("--dta_safe_mix_learned_weight", type=float, default=0.0)
     parser.add_argument("--dta_safe_mix_gate_limit", type=float, default=1.0)
     parser.add_argument("--dta_safe_mix_gate_bias", type=float, default=-3.0)
+    parser.add_argument("--dta_router_fusion_enabled", action="store_true")
+    parser.add_argument("--dta_router_image_gate_limit", type=float, default=1.0)
+    parser.add_argument("--dta_router_patch_gate_limit", type=float, default=1.0)
+    parser.add_argument("--dta_router_patch_size", type=int, default=32)
+    parser.add_argument("--dta_router_image_bias", type=float, default=2.0)
+    parser.add_argument("--dta_router_patch_bias", type=float, default=2.0)
     args = parser.parse_args()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

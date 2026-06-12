@@ -555,6 +555,12 @@ class DepthAttributedPreserveAdapter(nn.Module):
         safe_mix_learned_weight=0.0,
         safe_mix_gate_limit=1.0,
         safe_mix_gate_bias=-3.0,
+        router_fusion_enabled=False,
+        router_image_gate_limit=1.0,
+        router_patch_gate_limit=1.0,
+        router_patch_size=32,
+        router_image_bias=2.0,
+        router_patch_bias=2.0,
     ):
         super(DepthAttributedPreserveAdapter, self).__init__()
         self.depth_mode = depth_mode
@@ -573,6 +579,10 @@ class DepthAttributedPreserveAdapter(nn.Module):
         self.safe_mix_phys_weight = safe_mix_phys_weight
         self.safe_mix_learned_weight = safe_mix_learned_weight
         self.safe_mix_gate_limit = safe_mix_gate_limit
+        self.router_fusion_enabled = router_fusion_enabled
+        self.router_image_gate_limit = router_image_gate_limit
+        self.router_patch_gate_limit = router_patch_gate_limit
+        self.router_patch_size = router_patch_size
         prior_in_channels = 6
 
         self.stage2 = CalibratedDepthFiLMBlock(
@@ -631,6 +641,16 @@ class DepthAttributedPreserveAdapter(nn.Module):
             nn.GELU(),
             nn.Conv2d(stage1_channels, 1, kernel_size=3, padding=1, bias=True),
         )
+        self.router_image_head = nn.Sequential(
+            nn.Conv2d(safe_in_channels, stage1_channels // 2, kernel_size=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(stage1_channels // 2, 1, kernel_size=1, bias=True),
+        )
+        self.router_patch_head = nn.Sequential(
+            nn.Conv2d(safe_in_channels, stage1_channels // 2, kernel_size=3, padding=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(stage1_channels // 2, 1, kernel_size=3, padding=1, bias=True),
+        )
 
         self.transmission_head[0].apply(_init_kaiming)
         self.transmission_head[2].apply(_init_kaiming)
@@ -651,9 +671,17 @@ class DepthAttributedPreserveAdapter(nn.Module):
         self.safe_gate_head[0].apply(_init_kaiming)
         nn.init.zeros_(self.safe_gate_head[-1].weight)
         nn.init.zeros_(self.safe_gate_head[-1].bias)
+        self.router_image_head[0].apply(_init_kaiming)
+        nn.init.zeros_(self.router_image_head[-1].weight)
+        nn.init.zeros_(self.router_image_head[-1].bias)
+        self.router_patch_head[0].apply(_init_kaiming)
+        nn.init.zeros_(self.router_patch_head[-1].weight)
+        nn.init.zeros_(self.router_patch_head[-1].bias)
         with torch.no_grad():
             self.depth_mask_head[-1].bias.fill_(depth_mask_bias)
             self.safe_gate_head[-1].bias.fill_(safe_mix_gate_bias)
+            self.router_image_head[-1].bias.fill_(router_image_bias)
+            self.router_patch_head[-1].bias.fill_(router_patch_bias)
         self.last_aux = {}
         self.last_stats = {}
 
@@ -914,20 +942,62 @@ class DepthAttributedPreserveAdapter(nn.Module):
         )
         learned_delta = torch.tanh(self.safe_residual_head(safe_input)) * clip
         raw_gate = torch.sigmoid(self.safe_gate_head(safe_input)) * self.safe_mix_gate_limit
+        if self.router_fusion_enabled:
+            image_logits = self.router_image_head(safe_input)
+            image_router = torch.sigmoid(image_logits.mean(dim=(2, 3), keepdim=True))
+            image_router = image_router * self.router_image_gate_limit
+            patch_logits = self.router_patch_head(safe_input)
+            patch_size = max(1, int(self.router_patch_size))
+            if patch_size > 1:
+                pooled_patch = F.avg_pool2d(
+                    patch_logits,
+                    kernel_size=patch_size,
+                    stride=patch_size,
+                    ceil_mode=True,
+                )
+                patch_router = F.interpolate(
+                    torch.sigmoid(pooled_patch) * self.router_patch_gate_limit,
+                    size=output_size,
+                    mode='nearest',
+                )
+            else:
+                patch_router = torch.sigmoid(patch_logits) * self.router_patch_gate_limit
+        else:
+            image_router = torch.ones_like(raw_gate)
+            patch_router = torch.ones_like(raw_gate)
         prior_conf = prior_full[:, -1:, :, :].clamp(0.0, 1.0)
         bright_conf = torch.sigmoid((0.94 - brightness) * 10.0)
         texture_conf = 0.5 + 0.5 * torch.sigmoid((texture - 0.003) * 80.0)
         uncertainty_conf = 1.0 - 0.5 * t_unc.clamp(0.0, 1.0)
-        gate = (raw_gate * prior_conf * bright_conf * texture_conf * uncertainty_conf).clamp(0.0, self.safe_mix_gate_limit)
+        gate = (
+            raw_gate
+            * image_router
+            * patch_router
+            * prior_conf
+            * bright_conf
+            * texture_conf
+            * uncertainty_conf
+        ).clamp(0.0, self.safe_mix_gate_limit)
         mixed_delta = (
             self.safe_mix_phys_weight * phys_delta
             + self.safe_mix_learned_weight * learned_delta
         ).clamp(-clip, clip)
         depth_delta = gate * mixed_delta
         self.last_aux['safe_gate'] = gate
+        self.last_aux['safe_raw_gate'] = raw_gate
+        self.last_aux['safe_image_router'] = image_router
+        self.last_aux['safe_patch_router'] = patch_router
         self.last_aux['safe_learned_delta'] = learned_delta
+        self.last_aux['safe_mixed_delta'] = mixed_delta
+        self.last_aux['safe_depth_delta'] = depth_delta
+        self.last_aux['safe_phys_abs'] = phys_abs
         self.last_stats['safe_gate_mean'] = gate.detach().mean()
         self.last_stats['safe_gate_max'] = gate.detach().max()
+        self.last_stats['safe_gate_coverage_gt_001'] = (gate.detach() > 0.01).float().mean()
+        self.last_stats['safe_raw_gate_mean'] = raw_gate.detach().mean()
+        self.last_stats['safe_image_router_mean'] = image_router.detach().mean()
+        self.last_stats['safe_patch_router_mean'] = patch_router.detach().mean()
+        self.last_stats['safe_patch_router_max'] = patch_router.detach().max()
         self.last_stats['safe_learned_delta_abs_mean'] = learned_delta.detach().abs().mean()
         self.last_stats['safe_mixed_delta_abs_mean'] = mixed_delta.detach().abs().mean()
         self.last_stats['safe_t_uncertainty_mean'] = t_unc.detach().mean()
@@ -1202,6 +1272,12 @@ def build_net(
     dta_safe_mix_learned_weight=0.0,
     dta_safe_mix_gate_limit=1.0,
     dta_safe_mix_gate_bias=-3.0,
+    dta_router_fusion_enabled=False,
+    dta_router_image_gate_limit=1.0,
+    dta_router_patch_gate_limit=1.0,
+    dta_router_patch_size=32,
+    dta_router_image_bias=2.0,
+    dta_router_patch_bias=2.0,
 ):
     if fam_mode != 'original':
         raise ValueError(
@@ -1241,6 +1317,12 @@ def build_net(
                     'safe_mix_learned_weight': dta_safe_mix_learned_weight,
                     'safe_mix_gate_limit': dta_safe_mix_gate_limit,
                     'safe_mix_gate_bias': dta_safe_mix_gate_bias,
+                    'router_fusion_enabled': dta_router_fusion_enabled,
+                    'router_image_gate_limit': dta_router_image_gate_limit,
+                    'router_patch_gate_limit': dta_router_patch_gate_limit,
+                    'router_patch_size': dta_router_patch_size,
+                    'router_image_bias': dta_router_image_bias,
+                    'router_patch_bias': dta_router_patch_bias,
                 }
             )
         else:

@@ -112,3 +112,14 @@ This confirms SafeMix learned residual/gating is a better direction than C1
 physical-action gate-only and better than B4 on tail count, but it still fails
 hard, SSIM, and positive-ratio gates. Do not launch 5-fold x 3-seed or locked
 test from this row.
+
+## 2026-06-12 DTA-v3.3 RouterFusion-SafeMix++ Plan
+
+DTA-v3.2 SafeMix C3 is the best current diagnostic but still fails hard, SSIM,
+and positive-ratio gates, so formal 5-fold x 3-seed and locked test remain
+blocked. The family is reopened only for a DTA-v3.3 RouterFusion-SafeMix++
+triage queue: build on C3, keep R0 disabled, add image/patch/pixel routing,
+low-phys/high-learned SafeMix, SSIM-CVaR/group-tail losses, and counterfactual
+wrong-depth gate suppression. Continue only if a fixed D-row passes the
+predeclared fold0/fold1 x seeds 3407/3411 triage gate while preserving
+true-vs-zero/shuffle/normal surplus.

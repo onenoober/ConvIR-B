@@ -80,6 +80,32 @@ def _apply_train_scope(model, args):
                 'DTA.safe_gate_head.',
                 'DTA.safe_residual_head.',
             )
+        elif train_scope == 'dta_routerfusion_router_only':
+            prefixes = (
+                'DTA.router_image_head.',
+                'DTA.router_patch_head.',
+            )
+        elif train_scope == 'dta_routerfusion_full':
+            prefixes = (
+                'DTA.router_image_head.',
+                'DTA.router_patch_head.',
+                'DTA.safe_gate_head.',
+                'DTA.safe_residual_head.',
+                'DTA.trans_uncertainty_head.',
+                'DTA.transmission_head.',
+            )
+        elif train_scope == 'dta_routerfusion_plus_film':
+            prefixes = (
+                'DTA.stage2.',
+                'DTA.stage3.',
+                'DTA.log_alpha',
+                'DTA.transmission_head.',
+                'DTA.trans_uncertainty_head.',
+                'DTA.safe_gate_head.',
+                'DTA.safe_residual_head.',
+                'DTA.router_image_head.',
+                'DTA.router_patch_head.',
+            )
         else:
             raise ValueError(f'Unsupported train_scope: {train_scope}')
         for name, param in model.named_parameters():
@@ -292,6 +318,9 @@ def _build_reference_model(args, device):
         getattr(args, 'dta_tail_guard_weight', 0.0),
         getattr(args, 'dta_light_tail_hinge_weight', 0.0),
         getattr(args, 'dta_light_ssim_hinge_weight', 0.0),
+        getattr(args, 'dta_cvar_tail_weight', 0.0),
+        getattr(args, 'dta_group_tail_weight', 0.0),
+        getattr(args, 'dta_patch_ssim_cvar_weight', 0.0),
     )
     if weight <= 0:
         return None
@@ -370,6 +399,131 @@ def _light_hinge_losses(pred, label, ref_pred, hazy, trans, args):
     return tail, ssim_loss
 
 
+def _topk_mean(flat, frac):
+    if flat.numel() == 0:
+        return flat.new_zeros(())
+    if flat.dim() == 1:
+        flat = flat.unsqueeze(0)
+    if 0.0 < frac < 1.0:
+        k = max(1, int(flat.size(1) * frac))
+        return flat.topk(k, dim=1).values.mean()
+    return flat.mean()
+
+
+def _local_ssim_map(pred, label, window=11):
+    pred = pred.clamp(0.0, 1.0)
+    label = label.clamp(0.0, 1.0)
+    padding = window // 2
+    mu_x = F.avg_pool2d(pred, window, stride=1, padding=padding)
+    mu_y = F.avg_pool2d(label, window, stride=1, padding=padding)
+    sigma_x = F.avg_pool2d(pred * pred, window, stride=1, padding=padding) - mu_x * mu_x
+    sigma_y = F.avg_pool2d(label * label, window, stride=1, padding=padding) - mu_y * mu_y
+    sigma_xy = F.avg_pool2d(pred * label, window, stride=1, padding=padding) - mu_x * mu_y
+    c1 = 0.01 ** 2
+    c2 = 0.03 ** 2
+    ssim_map = ((2 * mu_x * mu_y + c1) * (2 * sigma_xy + c2)) / (
+        (mu_x * mu_x + mu_y * mu_y + c1) * (sigma_x + sigma_y + c2) + 1e-8
+    )
+    return ssim_map.mean(dim=1, keepdim=True)
+
+
+def _dta_action_abs_map(model, target_size):
+    dta = getattr(model, 'DTA', None)
+    if dta is None or not getattr(dta, 'last_aux', None):
+        return None
+    action = dta.last_aux.get('safe_depth_delta')
+    if action is None:
+        action = dta.last_aux.get('safe_mixed_delta')
+    if action is None:
+        return None
+    action = action.detach().abs().mean(dim=1, keepdim=True)
+    if action.shape[-2:] != target_size:
+        action = F.interpolate(action, size=target_size, mode='bilinear', align_corners=False)
+    return action
+
+
+def _routerfusion_tail_losses(pred, label, ref_pred, hazy, trans, model, args):
+    pred_err = (pred - label).pow(2).mean(dim=1, keepdim=True)
+    ref_err = (ref_pred - label).pow(2).mean(dim=1, keepdim=True)
+    margin = getattr(args, 'dta_cvar_tail_margin', 0.0)
+    excess = torch.relu(pred_err - ref_err - margin)
+    frac = getattr(args, 'dta_cvar_tail_topk', 0.10)
+    cvar_tail = _topk_mean(excess.flatten(1), frac)
+
+    brightness = hazy.detach().mean(dim=1, keepdim=True).clamp(0.0, 1.0)
+    texture = _image_texture(brightness)
+    group_masks = [
+        brightness >= getattr(args, 'dta_light_hinge_bright_thresh', 0.82),
+        texture <= getattr(args, 'dta_light_hinge_texture_thresh', 0.004),
+    ]
+    if trans is not None:
+        low_t = F.interpolate((trans < 0.35).float(), size=pred.shape[-2:], mode='bilinear', align_corners=False)
+        easy_t = F.interpolate(
+            (trans > args.dta_preserve_trans_thresh).float(),
+            size=pred.shape[-2:],
+            mode='bilinear',
+            align_corners=False,
+        )
+        group_masks.extend([low_t > 0.5, easy_t > 0.5])
+    action_abs = _dta_action_abs_map(model, pred.shape[-2:])
+    if action_abs is not None:
+        threshold = torch.quantile(action_abs.flatten(1).detach(), 0.75, dim=1).view(-1, 1, 1, 1)
+        group_masks.append(action_abs >= threshold)
+    group_losses = []
+    for mask in group_masks:
+        mask = mask.float()
+        if mask.sum().item() <= 0:
+            continue
+        group_losses.append(_topk_mean((excess * mask).flatten(1), frac))
+    group_tail = torch.stack(group_losses).mean() if group_losses else pred.new_zeros(())
+
+    patch_ssim = pred.new_zeros(())
+    if getattr(args, 'dta_patch_ssim_cvar_weight', 0.0) > 0:
+        pred_ssim = _local_ssim_map(pred, label)
+        ref_ssim = _local_ssim_map(ref_pred, label)
+        ssim_margin = getattr(args, 'dta_patch_ssim_cvar_margin', 0.0)
+        ssim_excess = torch.relu(ref_ssim - pred_ssim - ssim_margin)
+        patch_ssim = _topk_mean(ssim_excess.flatten(1), getattr(args, 'dta_patch_ssim_cvar_topk', 0.10))
+    return cvar_tail, group_tail, patch_ssim
+
+
+def _counterfactual_gate_suppression_loss(model, input_img, depth, airlight, args):
+    weight = getattr(args, 'dta_counterfactual_gate_weight', 0.0)
+    if weight <= 0 or depth is None:
+        return input_img.new_zeros(())
+    dta = getattr(model, 'DTA', None)
+    if dta is None or not getattr(dta, 'safe_mix_enabled', False):
+        return input_img.new_zeros(())
+    original_mode = dta.depth_mode
+    losses = []
+    modes = [mode.strip() for mode in getattr(args, 'dta_counterfactual_modes', 'zero,normal').split(',') if mode.strip()]
+    try:
+        for mode in modes:
+            if mode not in ('zero', 'normal', 'shuffle'):
+                continue
+            cf_depth = depth
+            if mode == 'shuffle':
+                if depth.size(0) <= 1:
+                    continue
+                cf_depth = depth[torch.randperm(depth.size(0), device=depth.device)]
+                dta.depth_mode = original_mode
+            else:
+                dta.depth_mode = mode
+            _forward_model(model, input_img, cf_depth, args, airlight=airlight)
+            gate = dta.last_aux.get('safe_gate')
+            mixed = dta.last_aux.get('safe_mixed_delta')
+            if gate is None:
+                continue
+            gate_loss = gate.mean()
+            if mixed is not None:
+                clip = max(float(getattr(dta, 'safe_mix_delta_clip', 1.0)), 1e-6)
+                gate_loss = gate_loss + 0.25 * mixed.abs().mean() / clip
+            losses.append(gate_loss)
+    finally:
+        dta.depth_mode = original_mode
+    return torch.stack(losses).mean() if losses else input_img.new_zeros(())
+
+
 def _train(model, args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     criterion = torch.nn.L1Loss()
@@ -389,6 +543,9 @@ def _train(model, args):
         or getattr(args, 'dta_tail_guard_weight', 0.0) > 0
         or getattr(args, 'dta_light_tail_hinge_weight', 0.0) > 0
         or getattr(args, 'dta_light_ssim_hinge_weight', 0.0) > 0
+        or getattr(args, 'dta_cvar_tail_weight', 0.0) > 0
+        or getattr(args, 'dta_group_tail_weight', 0.0) > 0
+        or getattr(args, 'dta_patch_ssim_cvar_weight', 0.0) > 0
     )
     dataloader = train_dataloader(
         args.data_dir,
@@ -435,6 +592,10 @@ def _train(model, args):
     epoch_dta_mask_budget_adder = Adder()
     epoch_dta_light_tail_adder = Adder()
     epoch_dta_light_ssim_adder = Adder()
+    epoch_dta_cvar_tail_adder = Adder()
+    epoch_dta_group_tail_adder = Adder()
+    epoch_dta_patch_ssim_adder = Adder()
+    epoch_dta_counterfactual_adder = Adder()
     iter_dta_rank_adder = Adder()
     iter_dta_tv_adder = Adder()
     iter_dta_proxy_adder = Adder()
@@ -446,6 +607,10 @@ def _train(model, args):
     iter_dta_mask_budget_adder = Adder()
     iter_dta_light_tail_adder = Adder()
     iter_dta_light_ssim_adder = Adder()
+    iter_dta_cvar_tail_adder = Adder()
+    iter_dta_group_tail_adder = Adder()
+    iter_dta_patch_ssim_adder = Adder()
+    iter_dta_counterfactual_adder = Adder()
 
     end_epoch = args.stop_epoch if args.stop_epoch > 0 else args.num_epoch
     if end_epoch < epoch:
@@ -511,6 +676,10 @@ def _train(model, args):
             loss_dta_mask_budget = input_img.new_zeros(())
             loss_dta_light_tail = input_img.new_zeros(())
             loss_dta_light_ssim = input_img.new_zeros(())
+            loss_dta_cvar_tail = input_img.new_zeros(())
+            loss_dta_group_tail = input_img.new_zeros(())
+            loss_dta_patch_ssim = input_img.new_zeros(())
+            loss_dta_counterfactual = input_img.new_zeros(())
             if getattr(args, 'arch', '') in ('dta', 'dta_v2', 'dta_v3') and hasattr(model, 'dta_auxiliary_losses') and depth is not None:
                 dta_losses = model.dta_auxiliary_losses(
                     rank_pairs=args.dta_rank_pairs,
@@ -560,6 +729,27 @@ def _train(model, args):
                             trans,
                             args,
                         )
+                    if (
+                        getattr(args, 'dta_cvar_tail_weight', 0.0) > 0
+                        or getattr(args, 'dta_group_tail_weight', 0.0) > 0
+                        or getattr(args, 'dta_patch_ssim_cvar_weight', 0.0) > 0
+                    ):
+                        loss_dta_cvar_tail, loss_dta_group_tail, loss_dta_patch_ssim = _routerfusion_tail_losses(
+                            pred_img[2],
+                            label_img,
+                            ref_pred,
+                            input_img,
+                            trans,
+                            model,
+                            args,
+                        )
+                loss_dta_counterfactual = _counterfactual_gate_suppression_loss(
+                    model,
+                    input_img,
+                    depth,
+                    airlight,
+                    args,
+                )
 
             loss = (
                 loss_content
@@ -577,6 +767,10 @@ def _train(model, args):
                 + args.dta_mask_budget_weight * loss_dta_mask_budget
                 + args.dta_light_tail_hinge_weight * loss_dta_light_tail
                 + args.dta_light_ssim_hinge_weight * loss_dta_light_ssim
+                + getattr(args, 'dta_cvar_tail_weight', 0.0) * loss_dta_cvar_tail
+                + getattr(args, 'dta_group_tail_weight', 0.0) * loss_dta_group_tail
+                + getattr(args, 'dta_patch_ssim_cvar_weight', 0.0) * loss_dta_patch_ssim
+                + getattr(args, 'dta_counterfactual_gate_weight', 0.0) * loss_dta_counterfactual
             )
             loss.backward()
             _clip_trainable_gradients(model, args)
@@ -595,6 +789,10 @@ def _train(model, args):
             iter_dta_mask_budget_adder(loss_dta_mask_budget.item())
             iter_dta_light_tail_adder(loss_dta_light_tail.item())
             iter_dta_light_ssim_adder(loss_dta_light_ssim.item())
+            iter_dta_cvar_tail_adder(loss_dta_cvar_tail.item())
+            iter_dta_group_tail_adder(loss_dta_group_tail.item())
+            iter_dta_patch_ssim_adder(loss_dta_patch_ssim.item())
+            iter_dta_counterfactual_adder(loss_dta_counterfactual.item())
 
             epoch_pixel_adder(loss_content.item())
             epoch_fft_adder(loss_fft.item())
@@ -609,14 +807,20 @@ def _train(model, args):
             epoch_dta_mask_budget_adder(loss_dta_mask_budget.item())
             epoch_dta_light_tail_adder(loss_dta_light_tail.item())
             epoch_dta_light_ssim_adder(loss_dta_light_ssim.item())
+            epoch_dta_cvar_tail_adder(loss_dta_cvar_tail.item())
+            epoch_dta_group_tail_adder(loss_dta_group_tail.item())
+            epoch_dta_patch_ssim_adder(loss_dta_patch_ssim.item())
+            epoch_dta_counterfactual_adder(loss_dta_counterfactual.item())
 
             if (iter_idx + 1) % args.print_freq == 0:
-                print("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f Loss content: %7.4f Loss fft: %7.4f Loss dta_rank: %7.4f Loss dta_tv: %7.4f Loss dta_proxy: %7.4f Loss dta_trans: %7.4f Loss dta_phys: %7.4f Loss dta_preserve: %7.4f Loss dta_ref_preserve: %7.4f Loss dta_tail_guard: %7.4f Loss dta_mask_budget: %7.4f Loss dta_light_tail: %7.4f Loss dta_light_ssim: %7.4f" % (
+                print("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f Loss content: %7.4f Loss fft: %7.4f Loss dta_rank: %7.4f Loss dta_tv: %7.4f Loss dta_proxy: %7.4f Loss dta_trans: %7.4f Loss dta_phys: %7.4f Loss dta_preserve: %7.4f Loss dta_ref_preserve: %7.4f Loss dta_tail_guard: %7.4f Loss dta_mask_budget: %7.4f Loss dta_light_tail: %7.4f Loss dta_light_ssim: %7.4f Loss dta_cvar_tail: %7.4f Loss dta_group_tail: %7.4f Loss dta_patch_ssim: %7.4f Loss dta_cf_gate: %7.4f" % (
                     iter_timer.toc(), epoch_idx, iter_idx + 1, max_iter, scheduler.get_lr()[0], iter_pixel_adder.average(),
                     iter_fft_adder.average(), iter_dta_rank_adder.average(), iter_dta_tv_adder.average(), iter_dta_proxy_adder.average(),
                     iter_dta_trans_adder.average(), iter_dta_phys_adder.average(), iter_dta_preserve_adder.average(),
                     iter_dta_ref_preserve_adder.average(), iter_dta_tail_guard_adder.average(), iter_dta_mask_budget_adder.average(),
-                    iter_dta_light_tail_adder.average(), iter_dta_light_ssim_adder.average()))
+                    iter_dta_light_tail_adder.average(), iter_dta_light_ssim_adder.average(),
+                    iter_dta_cvar_tail_adder.average(), iter_dta_group_tail_adder.average(),
+                    iter_dta_patch_ssim_adder.average(), iter_dta_counterfactual_adder.average()))
                 writer.add_scalar('Pixel Loss', iter_pixel_adder.average(), iter_idx + (epoch_idx-1)* max_iter)
                 writer.add_scalar('FFT Loss', iter_fft_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Rank Loss', iter_dta_rank_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
@@ -630,6 +834,10 @@ def _train(model, args):
                 writer.add_scalar('DTA Mask Budget Loss', iter_dta_mask_budget_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Light Tail Hinge Loss', iter_dta_light_tail_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Light SSIM Hinge Loss', iter_dta_light_ssim_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                writer.add_scalar('DTA CVaR Tail Loss', iter_dta_cvar_tail_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                writer.add_scalar('DTA Group Tail Loss', iter_dta_group_tail_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                writer.add_scalar('DTA Patch SSIM CVaR Loss', iter_dta_patch_ssim_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                writer.add_scalar('DTA Counterfactual Gate Loss', iter_dta_counterfactual_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 
                 iter_timer.tic()
                 iter_pixel_adder.reset()
@@ -645,6 +853,10 @@ def _train(model, args):
                 iter_dta_mask_budget_adder.reset()
                 iter_dta_light_tail_adder.reset()
                 iter_dta_light_ssim_adder.reset()
+                iter_dta_cvar_tail_adder.reset()
+                iter_dta_group_tail_adder.reset()
+                iter_dta_patch_ssim_adder.reset()
+                iter_dta_counterfactual_adder.reset()
         overwrite_name = os.path.join(args.model_save_dir, 'model.pkl')
         torch.save({'model': model.state_dict(),
                     'optimizer': optimizer.state_dict(),
@@ -653,7 +865,7 @@ def _train(model, args):
         if epoch_idx % args.save_freq == 0:
             save_name = os.path.join(args.model_save_dir, 'model_%d.pkl' % epoch_idx)
             torch.save({'model': model.state_dict()}, save_name)
-        print("EPOCH: %02d\nElapsed time: %4.2f Epoch Pixel Loss: %7.4f Epoch FFT Loss: %7.4f Epoch DTA Rank: %7.4f Epoch DTA TV: %7.4f Epoch DTA Proxy: %7.4f Epoch DTA Trans: %7.4f Epoch DTA Phys: %7.4f Epoch DTA Preserve: %7.4f Epoch DTA Ref Preserve: %7.4f Epoch DTA Tail Guard: %7.4f Epoch DTA Mask Budget: %7.4f Epoch DTA Light Tail: %7.4f Epoch DTA Light SSIM: %7.4f" % (
+        print("EPOCH: %02d\nElapsed time: %4.2f Epoch Pixel Loss: %7.4f Epoch FFT Loss: %7.4f Epoch DTA Rank: %7.4f Epoch DTA TV: %7.4f Epoch DTA Proxy: %7.4f Epoch DTA Trans: %7.4f Epoch DTA Phys: %7.4f Epoch DTA Preserve: %7.4f Epoch DTA Ref Preserve: %7.4f Epoch DTA Tail Guard: %7.4f Epoch DTA Mask Budget: %7.4f Epoch DTA Light Tail: %7.4f Epoch DTA Light SSIM: %7.4f Epoch DTA CVaR Tail: %7.4f Epoch DTA Group Tail: %7.4f Epoch DTA Patch SSIM: %7.4f Epoch DTA CF Gate: %7.4f" % (
             epoch_idx,
             epoch_timer.toc(),
             epoch_pixel_adder.average(),
@@ -668,7 +880,11 @@ def _train(model, args):
             epoch_dta_tail_guard_adder.average(),
             epoch_dta_mask_budget_adder.average(),
             epoch_dta_light_tail_adder.average(),
-            epoch_dta_light_ssim_adder.average()))
+            epoch_dta_light_ssim_adder.average(),
+            epoch_dta_cvar_tail_adder.average(),
+            epoch_dta_group_tail_adder.average(),
+            epoch_dta_patch_ssim_adder.average(),
+            epoch_dta_counterfactual_adder.average()))
         epoch_fft_adder.reset()
         epoch_pixel_adder.reset()
         epoch_dta_rank_adder.reset()
@@ -682,6 +898,10 @@ def _train(model, args):
         epoch_dta_mask_budget_adder.reset()
         epoch_dta_light_tail_adder.reset()
         epoch_dta_light_ssim_adder.reset()
+        epoch_dta_cvar_tail_adder.reset()
+        epoch_dta_group_tail_adder.reset()
+        epoch_dta_patch_ssim_adder.reset()
+        epoch_dta_counterfactual_adder.reset()
         scheduler.step()
         if epoch_idx % args.valid_freq == 0:
             val = _valid(model, args, epoch_idx)

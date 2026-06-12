@@ -473,3 +473,31 @@ surplus while cutting worst regressions from B4's `76/600` to `48/600`. It still
 fails the fixed scout gate on hard bottom-25, SSIM, and positive ratio, so no
 formal 5-fold x 3-seed validation is launched. Contact sheet PNGs were generated
 on cloud and copied locally for visual review, but are not committed.
+
+## 2026-06-12 DTA-v3.3 RouterFusion-SafeMix++ Plan
+
+Status: `PLANNED_ROUTERFUSION_TRIAGE_CODE_READY_LOCKED_TEST_BLOCKED`.
+
+This queue continues from the best DTA-v3.2 C3 SafeMix diagnostic rather than
+launching formal validation. It adds image/patch RouterFusion heads, low-phys /
+high-learned SafeMix settings, SSIM-CVaR and group-tail losses, and optional
+counterfactual gate suppression. Locked Haze4K test remains blocked.
+
+Cloud scripts:
+
+- `run_dta_v3_3_routerfusion_scout_convir4090.sh`: trains one DTA-v3.3 variant,
+  evaluates fallback/GT airlight under `invert/zero/shuffle/normal`, aggregates
+  the depth-control matrix, optionally runs RouterFusion diagnostics, and
+  generates cloud-only contact sheets.
+- `launch_dta_v3_3_routerfusion_triage_convir4090.sh`: launches D1/D2/D3 across
+  folds `0/1` and seeds `3407/3411` using one queued worker per GPU on
+  `convir-4090`.
+- `summarize_haze4k_dta_v33_routerfusion_scouts.py`: applies the written triage
+  gates and writes per-run plus per-variant summaries.
+
+Expected primary text artifacts include `dta_v3_3_routerfusion_triage_summary.*`,
+`train_eval_depth_matrix_v33_routerfusion_*`, `gate_oracle_gap_report_*`,
+`action_failure_taxonomy_*`, `router_metric_correction_report_*`,
+`risk_coverage_curve_*`, `trans_uncertainty_calibration_*`, and
+`counterfactual_gate_matrix_*`. Checkpoints, datasets, arrays, and PNGs remain
+excluded from Git.

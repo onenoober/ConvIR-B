@@ -103,9 +103,21 @@ def build_dta(args: argparse.Namespace, device: torch.device) -> torch.nn.Module
         dta_safe_mix_learned_weight=args.dta_safe_mix_learned_weight,
         dta_safe_mix_gate_limit=args.dta_safe_mix_gate_limit,
         dta_safe_mix_gate_bias=args.dta_safe_mix_gate_bias,
+        dta_router_fusion_enabled=args.dta_router_fusion_enabled,
+        dta_router_image_gate_limit=args.dta_router_image_gate_limit,
+        dta_router_patch_gate_limit=args.dta_router_patch_gate_limit,
+        dta_router_patch_size=args.dta_router_patch_size,
+        dta_router_image_bias=args.dta_router_image_bias,
+        dta_router_patch_bias=args.dta_router_patch_bias,
     ).to(device)
     result = model.load_state_dict(load_model_state(args.candidate_checkpoint, device), strict=False)
-    allowed_missing = ("DTA.trans_uncertainty_head.", "DTA.safe_residual_head.", "DTA.safe_gate_head.")
+    allowed_missing = (
+        "DTA.trans_uncertainty_head.",
+        "DTA.safe_residual_head.",
+        "DTA.safe_gate_head.",
+        "DTA.router_image_head.",
+        "DTA.router_patch_head.",
+    )
     missing = [key for key in result.missing_keys if not key.startswith(allowed_missing)]
     if missing or result.unexpected_keys:
         raise RuntimeError(f"Unexpected DTA-v3 checkpoint load: missing={missing} unexpected={result.unexpected_keys}")
@@ -404,6 +416,13 @@ def run_for_checkpoint(args: argparse.Namespace) -> None:
                             sample_np(depth_norm, args.spearman_sample),
                             sample_np(-torch.log(trans), args.spearman_sample),
                         )
+                        base["oracle_accept_image"] = dta_psnr > a0_psnr
+                        base["oracle_accept_patch_ratio"] = float(
+                            patch_oracle_mask(a0_pred, dta_pred, label_img, 1.0, args.oracle_patch)[:, :1].float().mean().cpu()
+                        )
+                        base["oracle_accept_pixel_ratio"] = float(
+                            pixel_oracle_mask(a0_pred, dta_pred, label_img, 1.0)[:, :1].float().mean().cpu()
+                        )
                     records.append(base)
 
                     for alpha in alpha_values:
@@ -538,6 +557,7 @@ def run_for_checkpoint(args: argparse.Namespace) -> None:
         json.dumps(bin_report, indent=2),
         encoding="utf-8",
     )
+    write_routerfusion_diagnostics(output_root, args, records)
     write_oracle_manifest(output_root / f"oracle_best_possible_contact_sheet_manifest_{args.run_id}.md", args, records)
     print(json.dumps({"run_id": args.run_id, "alpha_rows": len(alpha_rows), "oracle_rows": len(oracle_rows)}, indent=2))
     print("DTA_V32_ACTION_DIAGNOSTICS_OK")
@@ -643,6 +663,334 @@ def transmission_bins(records: list[dict[str, Any]]) -> dict[str, Any]:
     return out
 
 
+def router_score(row: dict[str, Any]) -> float:
+    candidates = [
+        row.get("dta_safe_image_router_mean"),
+        row.get("dta_safe_patch_router_mean"),
+        row.get("dta_safe_gate_mean"),
+        row.get("dta_depth_mask_mean"),
+    ]
+    score = 1.0
+    used = False
+    for value in candidates[:2]:
+        if value is None:
+            continue
+        try:
+            score *= float(value)
+            used = True
+        except (TypeError, ValueError):
+            pass
+    if not used:
+        for value in candidates[2:]:
+            if value is None:
+                continue
+            try:
+                return float(value)
+            except (TypeError, ValueError):
+                pass
+    return score if used else 0.0
+
+
+def routed_summary(rows: list[dict[str, Any]], selected: set[str]) -> dict[str, Any]:
+    routed = []
+    selected_deltas = []
+    selected_ssim = []
+    for row in rows:
+        keep = row["name"] in selected
+        delta = float(row["delta_psnr"]) if keep else 0.0
+        dssim = float(row["delta_ssim"]) if keep else 0.0
+        routed.append(
+            {
+                "name": row["name"],
+                "a0_psnr": row["a0_psnr"],
+                "a0_ssim": row["a0_ssim"],
+                "psnr": row["a0_psnr"] + delta,
+                "ssim": row["a0_ssim"] + dssim,
+            }
+        )
+        if keep:
+            selected_deltas.append(float(row["delta_psnr"]))
+            selected_ssim.append(float(row["delta_ssim"]))
+    summary = summarize(routed)
+    coverage = len(selected) / len(rows) if rows else 0.0
+    summary.update(
+        {
+            "coverage": coverage,
+            "selected_count": len(selected),
+            "selected_mean_delta": statistics.mean(selected_deltas) if selected_deltas else 0.0,
+            "selected_mean_ssim_delta": statistics.mean(selected_ssim) if selected_ssim else 0.0,
+            "selected_conditional_positive_ratio": (
+                sum(delta > 0.0 for delta in selected_deltas) / len(selected_deltas) if selected_deltas else 0.0
+            ),
+            "global_positive_or_zero_ratio": (
+                sum((float(row["delta_psnr"]) if row["name"] in selected else 0.0) >= 0.0 for row in rows) / len(rows)
+                if rows else 0.0
+            ),
+        }
+    )
+    return summary
+
+
+def write_routerfusion_diagnostics(output_root: Path, args: argparse.Namespace, records: list[dict[str, Any]]) -> None:
+    primary = [row for row in records if row["depth_mode"] == "invert" and row["airlight_mode"] == "fallback"]
+    if not primary:
+        return
+    sorted_primary = sorted(primary, key=router_score, reverse=True)
+    gate_rows = []
+    for row in primary:
+        gate_rows.append(
+            {
+                "run_id": args.run_id,
+                "candidate": args.candidate_name,
+                "name": row["name"],
+                "oracle_accept_image": row.get("oracle_accept_image"),
+                "oracle_accept_patch_ratio": row.get("oracle_accept_patch_ratio"),
+                "oracle_accept_pixel_ratio": row.get("oracle_accept_pixel_ratio"),
+                "router_score": router_score(row),
+                "model_r_img": row.get("dta_safe_image_router_mean"),
+                "model_r_patch_mean": row.get("dta_safe_patch_router_mean"),
+                "model_pixel_gate_mean": row.get("dta_safe_gate_mean"),
+                "model_pixel_gate_p95_proxy": row.get("dta_safe_gate_max"),
+                "delta_psnr": row["delta_psnr"],
+                "delta_ssim": row["delta_ssim"],
+                "a0_psnr": row["a0_psnr"],
+                "t_pred_mean": row.get("t_pred_mean"),
+                "t_gt_mean": row.get("t_gt_mean"),
+                "log_t_abs_error_mean": row.get("log_t_abs_error_mean"),
+                "t_uncertainty_mean": row.get("dta_safe_t_uncertainty_mean") or row.get("dta_t_uncertainty_mean"),
+                "phys_abs_mean": row.get("dta_j_phys_delta_abs_mean"),
+                "safe_delta_abs_mean": row.get("dta_depth_delta_abs_mean"),
+                "brightness_mean": row.get("input_brightness_mean"),
+                "texture_mean": row.get("input_texture_mean"),
+                "low_t_flag": float(row.get("t_gt_mean", 1.0)) < 0.35,
+                "worst_flag": float(row["delta_psnr"]) <= -0.20,
+            }
+        )
+    write_csv(output_root / f"gate_oracle_gap_report_{args.run_id}.csv", gate_rows)
+    (output_root / f"gate_oracle_gap_report_{args.run_id}.json").write_text(
+        json.dumps(
+            {
+                "run_id": args.run_id,
+                "candidate": args.candidate_name,
+                "count": len(gate_rows),
+                "mean_oracle_patch_ratio": statistics.mean(float(row.get("oracle_accept_patch_ratio") or 0.0) for row in gate_rows),
+                "mean_model_router_score": statistics.mean(float(row.get("router_score") or 0.0) for row in gate_rows),
+                "locked_test_touched": False,
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+    curve_rows = []
+    for coverage in [0.10, 0.20, 0.25, 0.40, 0.55, 0.60, 0.80, 1.00]:
+        limit = max(1, int(round(len(sorted_primary) * coverage)))
+        selected = {row["name"] for row in sorted_primary[:limit]}
+        curve_rows.append(
+            {
+                "run_id": args.run_id,
+                "candidate": args.candidate_name,
+                "score": "model_router_score",
+                "target_coverage": coverage,
+                **routed_summary(primary, selected),
+            }
+        )
+    write_csv(output_root / f"risk_coverage_curve_{args.run_id}.csv", curve_rows)
+    best = max(curve_rows, key=lambda row: row.get("mean_psnr_delta", -999.0))
+    (output_root / f"router_metric_correction_report_{args.run_id}.json").write_text(
+        json.dumps(
+            {
+                "run_id": args.run_id,
+                "candidate": args.candidate_name,
+                "metric_note": "Rejected images are A0 fallback, so routed rows report coverage and selected conditional positive ratio separately from global mean.",
+                "best_by_mean": best,
+                "rows": curve_rows,
+                "locked_test_touched": False,
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+    taxonomy_rows = action_failure_taxonomy_rows(args, primary)
+    write_csv(output_root / f"action_failure_taxonomy_{args.run_id}.csv", taxonomy_rows)
+    write_taxonomy_manifest(output_root / f"top48_worst_contact_sheet_manifest_{args.run_id}.md", args, taxonomy_rows, overlay=False)
+    write_taxonomy_manifest(output_root / f"top48_worst_gate_overlay_manifest_{args.run_id}.md", args, taxonomy_rows, overlay=True)
+
+    trans_cal = trans_uncertainty_calibration(primary)
+    (output_root / f"trans_uncertainty_calibration_{args.run_id}.json").write_text(
+        json.dumps(trans_cal, indent=2),
+        encoding="utf-8",
+    )
+    write_csv(output_root / f"t_pred_vs_gt_transmission_by_group_{args.run_id}.csv", trans_group_rows(primary))
+    write_csv(output_root / f"counterfactual_gate_matrix_{args.run_id}.csv", counterfactual_gate_rows(records))
+
+
+def action_failure_taxonomy_rows(args: argparse.Namespace, rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    err_p75 = percentile([float(row.get("log_t_abs_error_mean", float("nan"))) for row in rows], 75)
+    bright_p75 = percentile([float(row.get("input_brightness_mean", float("nan"))) for row in rows], 75)
+    texture_p25 = percentile([float(row.get("input_texture_mean", float("nan"))) for row in rows], 25)
+    phys_p75 = percentile([float(row.get("dta_j_phys_delta_abs_mean", float("nan"))) for row in rows], 75)
+    action_p75 = percentile([float(row.get("dta_depth_delta_abs_mean", float("nan"))) for row in rows], 75)
+    out = []
+    for row in sorted(rows, key=lambda item: float(item["delta_psnr"])):
+        labels = []
+        if float(row.get("t_gt_mean", 1.0)) < 0.35:
+            labels.append("low_t_failure")
+        if float(row.get("input_brightness_mean", 0.0)) >= bright_p75 and float(row.get("input_texture_mean", 1.0)) <= texture_p25:
+            labels.append("high_bright_low_texture")
+            labels.append("sky_like")
+        if float(row.get("dta_j_phys_delta_abs_mean", 0.0)) >= phys_p75:
+            labels.append("high_phys_delta")
+        if float(row.get("dta_depth_delta_abs_mean", 0.0)) >= action_p75:
+            labels.append("high_learned_delta")
+        if float(row.get("log_t_abs_error_mean", 0.0)) >= err_p75:
+            labels.append("high_uncertainty")
+            labels.append("depth_mismatch")
+        if float(row.get("a0_psnr", 0.0)) >= percentile([float(r["a0_psnr"]) for r in rows], 75) and float(row["delta_psnr"]) < 0.0:
+            labels.append("easy_A0_but_DTA_hurts")
+        if float(row["delta_psnr"]) > 0.0:
+            labels.append("win")
+        if not labels:
+            labels.append("unknown")
+        out.append(
+            {
+                "run_id": args.run_id,
+                "candidate": args.candidate_name,
+                "name": row["name"],
+                "delta_psnr": row["delta_psnr"],
+                "delta_ssim": row["delta_ssim"],
+                "labels": ";".join(labels),
+                "low_t_failure": "low_t_failure" in labels,
+                "high_bright_low_texture": "high_bright_low_texture" in labels,
+                "sky_like": "sky_like" in labels,
+                "edge_halo": False,
+                "color_shift": False,
+                "over_dehaze": "high_phys_delta" in labels,
+                "under_dehaze": False,
+                "high_phys_delta": "high_phys_delta" in labels,
+                "high_learned_delta": "high_learned_delta" in labels,
+                "high_uncertainty": "high_uncertainty" in labels,
+                "easy_A0_but_DTA_hurts": "easy_A0_but_DTA_hurts" in labels,
+                "depth_mismatch": "depth_mismatch" in labels,
+                "unknown": labels == ["unknown"],
+            }
+        )
+    return out
+
+
+def write_taxonomy_manifest(path: Path, args: argparse.Namespace, rows: list[dict[str, Any]], overlay: bool) -> None:
+    title = "Top48 Worst Gate Overlay Manifest" if overlay else "Top48 Worst Contact-Sheet Manifest"
+    lines = [
+        f"# {title}: {args.run_id}",
+        "",
+        "- locked_test_touched: false",
+        f"- candidate: `{args.candidate_name}`",
+        "- note: PNG/overlay renderings are generated cloud-side and excluded from Git; this manifest fixes the image list and labels.",
+        "",
+        "| rank | image | delta_psnr | delta_ssim | labels |",
+        "| ---: | --- | ---: | ---: | --- |",
+    ]
+    for idx, row in enumerate(rows[:48], 1):
+        lines.append(
+            f"| {idx} | `{row['name']}` | {float(row['delta_psnr']):.6f} | "
+            f"{float(row['delta_ssim']):.8f} | `{row['labels']}` |"
+        )
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def trans_uncertainty_calibration(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    errors = [float(row.get("log_t_abs_error_mean", float("nan"))) for row in rows]
+    uncertainties = [
+        float(row.get("dta_safe_t_uncertainty_mean") or row.get("dta_t_uncertainty_mean") or float("nan"))
+        for row in rows
+    ]
+    deltas = [float(row["delta_psnr"]) for row in rows]
+    worst = [1.0 if delta <= -0.20 else 0.0 for delta in deltas]
+    ordered = sorted(zip(uncertainties, errors, deltas), key=lambda item: item[0])
+    bins = []
+    if ordered:
+        size = max(1, len(ordered) // 10)
+        for start in range(0, len(ordered), size):
+            chunk = ordered[start : start + size]
+            if not chunk:
+                continue
+            bins.append(
+                {
+                    "bin": len(bins),
+                    "count": len(chunk),
+                    "mean_uncertainty": statistics.mean(item[0] for item in chunk if math.isfinite(item[0])),
+                    "mean_log_t_abs_error": statistics.mean(item[1] for item in chunk if math.isfinite(item[1])),
+                    "mean_delta_psnr": statistics.mean(item[2] for item in chunk if math.isfinite(item[2])),
+                }
+            )
+    return {
+        "protocol": "DTA-v3.3 transmission uncertainty calibration",
+        "count": len(rows),
+        "log_t_l1": statistics.mean(v for v in errors if math.isfinite(v)),
+        "low_t_log_t_l1": mean_where(errors, [float(row.get("t_gt_mean", 1.0)) < 0.35 for row in rows]),
+        "t_uncertainty_ECE_proxy": statistics.mean(abs(u - e) for u, e in zip(uncertainties, errors) if math.isfinite(u) and math.isfinite(e)),
+        "corr_t_error_delta_psnr": pearson(errors, deltas),
+        "corr_t_uncertainty_delta_psnr": pearson(uncertainties, deltas),
+        "corr_t_uncertainty_worst_flag": pearson(uncertainties, worst),
+        "bins": bins,
+        "locked_test_touched": False,
+    }
+
+
+def trans_group_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    groups = [
+        ("all", lambda row: True),
+        ("low_t", lambda row: float(row.get("t_gt_mean", 1.0)) < 0.35),
+        ("mid_t", lambda row: 0.35 <= float(row.get("t_gt_mean", 1.0)) < 0.65),
+        ("high_t", lambda row: float(row.get("t_gt_mean", 0.0)) >= 0.65),
+        ("worst", lambda row: float(row["delta_psnr"]) <= -0.20),
+        ("positive", lambda row: float(row["delta_psnr"]) > 0.0),
+    ]
+    out = []
+    for label, fn in groups:
+        picked = [row for row in rows if fn(row)]
+        if not picked:
+            continue
+        out.append(
+            {
+                "group": label,
+                "count": len(picked),
+                "mean_delta_psnr": statistics.mean(float(row["delta_psnr"]) for row in picked),
+                "mean_delta_ssim": statistics.mean(float(row["delta_ssim"]) for row in picked),
+                "log_t_l1": statistics.mean(float(row.get("log_t_abs_error_mean", 0.0)) for row in picked),
+                "t_uncertainty_mean": statistics.mean(
+                    float(row.get("dta_safe_t_uncertainty_mean") or row.get("dta_t_uncertainty_mean") or 0.0)
+                    for row in picked
+                ),
+                "worst_regression_count_delta_le_-0.20": sum(float(row["delta_psnr"]) <= -0.20 for row in picked),
+            }
+        )
+    return out
+
+
+def counterfactual_gate_rows(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    rows = []
+    for d_mode in sorted({row["depth_mode"] for row in records}):
+        picked = [row for row in records if row["depth_mode"] == d_mode and row["airlight_mode"] == "fallback"]
+        if not picked:
+            continue
+        rows.append(
+            {
+                "depth_mode": d_mode,
+                "count": len(picked),
+                "gate_mean": statistics.mean(float(row.get("dta_safe_gate_mean", row.get("dta_depth_mask_mean", 0.0))) for row in picked),
+                "gate_p95_proxy": statistics.mean(float(row.get("dta_safe_gate_max", 0.0)) for row in picked),
+                "safe_delta_abs_mean": statistics.mean(float(row.get("dta_depth_delta_abs_mean", 0.0)) for row in picked),
+                "safe_delta_abs_p95_proxy": statistics.mean(float(row.get("dta_safe_mixed_delta_abs_mean", 0.0)) for row in picked),
+                "mean_dPSNR": statistics.mean(float(row["delta_psnr"]) for row in picked),
+                "dSSIM": statistics.mean(float(row["delta_ssim"]) for row in picked),
+                "worst": sum(float(row["delta_psnr"]) <= -0.20 for row in picked),
+            }
+        )
+    return rows
+
+
 def write_oracle_manifest(path: Path, args: argparse.Namespace, records: list[dict[str, Any]]) -> None:
     primary = [row for row in records if row["depth_mode"] == "invert" and row["airlight_mode"] == "fallback"]
     best = sorted(primary, key=lambda row: row["delta_psnr"], reverse=True)[:20]
@@ -733,6 +1081,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dta_safe_mix_learned_weight", type=float, default=0.0)
     parser.add_argument("--dta_safe_mix_gate_limit", type=float, default=1.0)
     parser.add_argument("--dta_safe_mix_gate_bias", type=float, default=-3.0)
+    parser.add_argument("--dta_router_fusion_enabled", action="store_true")
+    parser.add_argument("--dta_router_image_gate_limit", type=float, default=1.0)
+    parser.add_argument("--dta_router_patch_gate_limit", type=float, default=1.0)
+    parser.add_argument("--dta_router_patch_size", type=int, default=32)
+    parser.add_argument("--dta_router_image_bias", type=float, default=2.0)
+    parser.add_argument("--dta_router_patch_bias", type=float, default=2.0)
     return parser.parse_args()
 
 

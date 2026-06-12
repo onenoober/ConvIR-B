@@ -652,3 +652,92 @@ locked Haze4K test. The route remains mechanism-positive but not candidate-ready
 The next route, if reopened, should build on C3 rather than C1: keep safe learned
 residual, add explicit SSIM/texture-aware preservation or feature-space fusion,
 and require the same depth-control gates before any formal validation.
+
+## 2026-06-12 DTA-v3.3 RouterFusion-SafeMix++ Plan
+
+Status: `PLANNED_ROUTERFUSION_TRiAGE_CODE_READY_LOCKED_TEST_BLOCKED`.
+
+DTA-v3.2 C3 is mechanism-positive but fails hard, SSIM, and positive-ratio
+scout gates. The next continuation is DTA-v3.3 RouterFusion-SafeMix++ rather
+than formal 5-fold validation. It keeps the route as a fine-tune continuation
+from the best C3 diagnostic checkpoint, keeps A0 frozen, keeps R0 disabled, and
+adds only selection/structure-safety mechanisms needed to close the oracle
+routing gap.
+
+New module contract:
+
+- `DTA.router_image_head`: image-level accept router over SafeMix risk/action
+  features.
+- `DTA.router_patch_head`: patch-level accept router, upsampled to the output
+  grid and multiplied with the SafeMix pixel gate.
+- Existing `DTA.safe_gate_head`, `DTA.safe_residual_head`,
+  `DTA.trans_uncertainty_head`, and `DTA.transmission_head` remain the C3
+  SafeMix foundation.
+- Partial initialization from the C3 checkpoint allows missing keys only under
+  `DTA.router_image_head.` and `DTA.router_patch_head.`; all C3 pre-existing
+  modules must load from the checkpoint.
+
+Training additions:
+
+- `dta_routerfusion_router_only`, `dta_routerfusion_full`, and
+  `dta_routerfusion_plus_film` train scopes.
+- Low-phys/high-learned SafeMix variants that reduce direct physical RGB delta
+  dominance while preserving depth-attributed learned residual action.
+- SSIM-CVaR and group-tail losses comparing DTA output against the frozen A0
+  reference only on top-q or high-risk regions, avoiding the previously failed
+  strong global tailguard pattern.
+- Optional counterfactual gate suppression for zero/wrong-orientation depth to
+  discourage the router from re-learning a zero-depth residual path.
+
+Fixed triage queue before any formal validation:
+
+| ID | Variant | Intent |
+| --- | --- | --- |
+| `D1 d1_loss` | C3 + SSIM-CVaR/group tail losses | test whether loss-only structural protection closes the small C3 gate gap |
+| `D2 d2_lowphys` | D1 + lower physical weight / higher learned residual / smaller clip | test whether residual structure and action amplitude are the main SSIM/tail issue |
+| `D3 d3_router` | D2 + image/patch/pixel RouterFusion + counterfactual gate suppression | main candidate; test whether learned routing approaches the oracle coverage gap |
+
+Low-cost triage protocol:
+
+```text
+folds: fold0, fold1
+seeds: 3407, 3411
+candidates: D1, D2, D3
+locked Haze4K test: blocked
+formal 5-fold x 3-seed: blocked until a fixed D-row passes triage
+```
+
+Triage gates:
+
+```text
+mean true-A0 >= +0.030 dB
+hard true-A0 >= +0.010 dB
+dSSIM >= -0.000010
+positive_ratio >= 0.620
+true-vs-zero >= +0.035 dB
+true-vs-shuffle >= +0.030 dB
+true-vs-normal >= +0.025 dB
+worst regressions <= 48/600
+no fold mean < +0.015 dB
+no fold dSSIM < -0.000030
+```
+
+Required new artifacts:
+
+- `dta_v3_3_routerfusion_triage_summary.json/csv` and
+  `dta_v3_3_routerfusion_variant_summary.csv`.
+- `train_eval_depth_matrix_v33_routerfusion_*_{fallback,gt}.json/csv` and
+  `r0_vs_rdepth_attribution_v33_routerfusion_*_{fallback,gt}.csv`.
+- `gate_oracle_gap_report_<run>.json/csv`, `action_failure_taxonomy_<run>.csv`,
+  `router_metric_correction_report_<run>.json`, `risk_coverage_curve_<run>.csv`,
+  `trans_uncertainty_calibration_<run>.json`,
+  `t_pred_vs_gt_transmission_by_group_<run>.csv`, and
+  `counterfactual_gate_matrix_<run>.csv` for the primary D3 diagnostic row.
+- Cloud-only contact-sheet PNGs for worst regressions and best wins; text
+  manifests are synced, images are not committed.
+
+Decision rule: if no fixed fallback-A D-row passes triage, record
+`TRIAGE_GATE_FAIL_LOCKED_TEST_BLOCKED` and do not launch formal 5-fold x 3-seed
+or locked test. If one D-row passes, the next step is a fresh formal validation
+plan with fold-specific initialization rules; locked test remains blocked until
+that formal gate passes.

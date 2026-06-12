@@ -155,6 +155,12 @@ def build_model(arch, mode, args, prefix):
             dta_safe_mix_learned_weight=getattr(args, f"{prefix}_dta_safe_mix_learned_weight"),
             dta_safe_mix_gate_limit=getattr(args, f"{prefix}_dta_safe_mix_gate_limit"),
             dta_safe_mix_gate_bias=getattr(args, f"{prefix}_dta_safe_mix_gate_bias"),
+            dta_router_fusion_enabled=getattr(args, f"{prefix}_dta_router_fusion_enabled"),
+            dta_router_image_gate_limit=getattr(args, f"{prefix}_dta_router_image_gate_limit"),
+            dta_router_patch_gate_limit=getattr(args, f"{prefix}_dta_router_patch_gate_limit"),
+            dta_router_patch_size=getattr(args, f"{prefix}_dta_router_patch_size"),
+            dta_router_image_bias=getattr(args, f"{prefix}_dta_router_image_bias"),
+            dta_router_patch_bias=getattr(args, f"{prefix}_dta_router_patch_bias"),
         )
     if arch == "dpga":
         try:
@@ -215,7 +221,13 @@ def load_candidate_state(model, checkpoint, device, arch):
     state = load_model_state(checkpoint, device)
     if arch == "dta_v3":
         result = model.load_state_dict(state, strict=False)
-        allowed_missing = ("DTA.trans_uncertainty_head.", "DTA.safe_residual_head.", "DTA.safe_gate_head.")
+        allowed_missing = (
+            "DTA.trans_uncertainty_head.",
+            "DTA.safe_residual_head.",
+            "DTA.safe_gate_head.",
+            "DTA.router_image_head.",
+            "DTA.router_patch_head.",
+        )
         missing = [key for key in result.missing_keys if not key.startswith(allowed_missing)]
         unexpected = list(result.unexpected_keys)
         if missing or unexpected:
@@ -495,6 +507,18 @@ def main():
     parser.add_argument("--candidate_dta_safe_mix_gate_limit", type=float, default=1.0)
     parser.add_argument("--original_dta_safe_mix_gate_bias", type=float, default=-3.0)
     parser.add_argument("--candidate_dta_safe_mix_gate_bias", type=float, default=-3.0)
+    parser.add_argument("--original_dta_router_fusion_enabled", action="store_true")
+    parser.add_argument("--candidate_dta_router_fusion_enabled", action="store_true")
+    parser.add_argument("--original_dta_router_image_gate_limit", type=float, default=1.0)
+    parser.add_argument("--candidate_dta_router_image_gate_limit", type=float, default=1.0)
+    parser.add_argument("--original_dta_router_patch_gate_limit", type=float, default=1.0)
+    parser.add_argument("--candidate_dta_router_patch_gate_limit", type=float, default=1.0)
+    parser.add_argument("--original_dta_router_patch_size", type=int, default=32)
+    parser.add_argument("--candidate_dta_router_patch_size", type=int, default=32)
+    parser.add_argument("--original_dta_router_image_bias", type=float, default=2.0)
+    parser.add_argument("--candidate_dta_router_image_bias", type=float, default=2.0)
+    parser.add_argument("--original_dta_router_patch_bias", type=float, default=2.0)
+    parser.add_argument("--candidate_dta_router_patch_bias", type=float, default=2.0)
     parser.add_argument("--depth_shuffle_offset", type=int, default=137)
     parser.add_argument("--original_dpga_prior_embed_channels", type=int, default=16)
     parser.add_argument("--candidate_dpga_prior_embed_channels", type=int, default=16)
