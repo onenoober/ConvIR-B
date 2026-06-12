@@ -15,6 +15,7 @@ MAX_IMAGES=${MAX_IMAGES:-0}
 FORCE=${FORCE:-0}
 GPU_LIST=${GPU_LIST:-}
 MAX_PARALLEL=${MAX_PARALLEL:-}
+FREE_GPU_MAX_USED_MIB=${FREE_GPU_MAX_USED_MIB:-2500}
 
 mkdir -p "$EVID"
 {
@@ -38,12 +39,19 @@ IFS=',' read -r -a FOLDS <<< "$FOLDS_CSV"
 IFS=',' read -r -a SEEDS <<< "$SEEDS_CSV"
 if [[ -z "$GPU_LIST" ]]; then
   if command -v nvidia-smi >/dev/null 2>&1; then
-    gpu_count=$(nvidia-smi -L 2>/dev/null | wc -l | tr -d ' ')
+    GPU_LIST=$(
+      nvidia-smi --query-gpu=index,memory.used --format=csv,noheader,nounits |
+      awk -F, -v max_used="$FREE_GPU_MAX_USED_MIB" '{gsub(/ /, "", $1); gsub(/ /, "", $2); if ($2 <= max_used) print $1}' |
+      paste -sd, -
+    )
+    if [[ -z "$GPU_LIST" ]]; then
+      gpu_count=$(nvidia-smi -L 2>/dev/null | wc -l | tr -d ' ')
+      if [[ "$gpu_count" -le 0 ]]; then gpu_count=1; fi
+      GPU_LIST=$(seq -s, 0 $((gpu_count - 1)))
+    fi
   else
-    gpu_count=1
+    GPU_LIST=0
   fi
-  if [[ "$gpu_count" -le 0 ]]; then gpu_count=1; fi
-  GPU_LIST=$(seq -s, 0 $((gpu_count - 1)))
 fi
 IFS=',' read -r -a GPUS <<< "$GPU_LIST"
 if [[ -z "$MAX_PARALLEL" ]]; then
