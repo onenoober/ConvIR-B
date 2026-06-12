@@ -333,6 +333,8 @@ def _log_dta_stats(model, args, epoch_idx, device):
         "stage2_gate_mean: %.8f stage2_gate_max: %.8f "
         "stage3_gate_mean: %.8f stage3_gate_max: %.8f "
         "stage2_delta_abs_mean: %.8f stage3_delta_abs_mean: %.8f "
+        "stage2_feature_action_abs_mean: %.8f stage3_feature_action_abs_mean: %.8f "
+        "final_feature_action_abs_mean: %.8f "
         "t_pred_mean: %.8f t_pred_std: %.8f "
         "r0_delta_abs_mean: %.8f depth_mask_mean: %.8f depth_delta_abs_mean: %.8f" % (
             epoch_idx,
@@ -343,6 +345,9 @@ def _log_dta_stats(model, args, epoch_idx, device):
             averaged.get('stage3_gate_max', 0.0),
             averaged.get('stage2_delta_abs_mean', 0.0),
             averaged.get('stage3_delta_abs_mean', 0.0),
+            averaged.get('stage2_feature_action_abs_mean', 0.0),
+            averaged.get('stage3_feature_action_abs_mean', 0.0),
+            averaged.get('final_feature_action_abs_mean', 0.0),
             averaged.get('t_pred_mean', 0.0),
             averaged.get('t_pred_std', 0.0),
             averaged.get('r0_delta_abs_mean', 0.0),
@@ -355,6 +360,7 @@ def _log_dta_stats(model, args, epoch_idx, device):
 def _build_reference_model(args, device):
     weight = max(
         getattr(args, 'dta_ref_preserve_weight', 0.0),
+        getattr(args, 'dta_ref_mse_regression_weight', 0.0),
         getattr(args, 'dta_tail_guard_weight', 0.0),
         getattr(args, 'dta_light_tail_hinge_weight', 0.0),
         getattr(args, 'dta_light_ssim_hinge_weight', 0.0),
@@ -394,6 +400,13 @@ def _reference_guard_losses(pred, label, ref_pred, trans, args):
     preserve = (excess * mask).sum() / mask.sum().clamp_min(1.0)
     tail = excess.mean()
     return preserve, tail
+
+
+def _reference_mse_regression_loss(pred, label, ref_pred, args):
+    pred_err = (pred - label).pow(2).flatten(1).mean(dim=1)
+    ref_err = (ref_pred - label).pow(2).flatten(1).mean(dim=1)
+    margin = getattr(args, 'dta_ref_mse_regression_margin', 0.0)
+    return torch.relu(pred_err - ref_err + margin).mean()
 
 
 def _image_texture(brightness):
@@ -628,8 +641,13 @@ def _train(model, args):
     epoch_dta_phys_adder = Adder()
     epoch_dta_preserve_adder = Adder()
     epoch_dta_ref_preserve_adder = Adder()
+    epoch_dta_ref_mse_adder = Adder()
     epoch_dta_tail_guard_adder = Adder()
     epoch_dta_mask_budget_adder = Adder()
+    epoch_dta_feature_gate_budget_adder = Adder()
+    epoch_dta_feature_action_budget_adder = Adder()
+    epoch_dta_safe_gate_budget_adder = Adder()
+    epoch_dta_safe_action_budget_adder = Adder()
     epoch_dta_light_tail_adder = Adder()
     epoch_dta_light_ssim_adder = Adder()
     epoch_dta_cvar_tail_adder = Adder()
@@ -643,8 +661,13 @@ def _train(model, args):
     iter_dta_phys_adder = Adder()
     iter_dta_preserve_adder = Adder()
     iter_dta_ref_preserve_adder = Adder()
+    iter_dta_ref_mse_adder = Adder()
     iter_dta_tail_guard_adder = Adder()
     iter_dta_mask_budget_adder = Adder()
+    iter_dta_feature_gate_budget_adder = Adder()
+    iter_dta_feature_action_budget_adder = Adder()
+    iter_dta_safe_gate_budget_adder = Adder()
+    iter_dta_safe_action_budget_adder = Adder()
     iter_dta_light_tail_adder = Adder()
     iter_dta_light_ssim_adder = Adder()
     iter_dta_cvar_tail_adder = Adder()
@@ -712,8 +735,13 @@ def _train(model, args):
             loss_dta_phys = input_img.new_zeros(())
             loss_dta_preserve = input_img.new_zeros(())
             loss_dta_ref_preserve = input_img.new_zeros(())
+            loss_dta_ref_mse = input_img.new_zeros(())
             loss_dta_tail_guard = input_img.new_zeros(())
             loss_dta_mask_budget = input_img.new_zeros(())
+            loss_dta_feature_gate_budget = input_img.new_zeros(())
+            loss_dta_feature_action_budget = input_img.new_zeros(())
+            loss_dta_safe_gate_budget = input_img.new_zeros(())
+            loss_dta_safe_action_budget = input_img.new_zeros(())
             loss_dta_light_tail = input_img.new_zeros(())
             loss_dta_light_ssim = input_img.new_zeros(())
             loss_dta_cvar_tail = input_img.new_zeros(())
@@ -729,6 +757,10 @@ def _train(model, args):
                 loss_dta_tv = dta_losses['tv']
                 loss_dta_proxy = dta_losses['proxy']
                 loss_dta_mask_budget = dta_losses.get('mask_budget', input_img.new_zeros(()))
+                loss_dta_feature_gate_budget = dta_losses.get('feature_gate_budget', input_img.new_zeros(()))
+                loss_dta_feature_action_budget = dta_losses.get('feature_action_budget', input_img.new_zeros(()))
+                loss_dta_safe_gate_budget = dta_losses.get('safe_gate_budget', input_img.new_zeros(()))
+                loss_dta_safe_action_budget = dta_losses.get('safe_action_budget', input_img.new_zeros(()))
                 if hasattr(model, 'dta_supervised_losses') and trans is not None:
                     dta_sup = model.dta_supervised_losses(
                         trans_gt=trans,
@@ -757,6 +789,13 @@ def _train(model, args):
                         trans,
                         args,
                     )
+                    if getattr(args, 'dta_ref_mse_regression_weight', 0.0) > 0:
+                        loss_dta_ref_mse = _reference_mse_regression_loss(
+                            pred_img[2],
+                            label_img,
+                            ref_pred,
+                            args,
+                        )
                     if (
                         getattr(args, 'dta_light_tail_hinge_weight', 0.0) > 0
                         or getattr(args, 'dta_light_ssim_hinge_weight', 0.0) > 0
@@ -803,8 +842,13 @@ def _train(model, args):
                 + args.dta_phys_weight * loss_dta_phys
                 + args.dta_preserve_weight * loss_dta_preserve
                 + args.dta_ref_preserve_weight * loss_dta_ref_preserve
+                + getattr(args, 'dta_ref_mse_regression_weight', 0.0) * loss_dta_ref_mse
                 + args.dta_tail_guard_weight * loss_dta_tail_guard
                 + args.dta_mask_budget_weight * loss_dta_mask_budget
+                + getattr(args, 'dta_feature_gate_budget_weight', 0.0) * loss_dta_feature_gate_budget
+                + getattr(args, 'dta_feature_action_budget_weight', 0.0) * loss_dta_feature_action_budget
+                + getattr(args, 'dta_safe_gate_budget_weight', 0.0) * loss_dta_safe_gate_budget
+                + getattr(args, 'dta_safe_action_budget_weight', 0.0) * loss_dta_safe_action_budget
                 + args.dta_light_tail_hinge_weight * loss_dta_light_tail
                 + args.dta_light_ssim_hinge_weight * loss_dta_light_ssim
                 + getattr(args, 'dta_cvar_tail_weight', 0.0) * loss_dta_cvar_tail
@@ -825,8 +869,13 @@ def _train(model, args):
             iter_dta_phys_adder(loss_dta_phys.item())
             iter_dta_preserve_adder(loss_dta_preserve.item())
             iter_dta_ref_preserve_adder(loss_dta_ref_preserve.item())
+            iter_dta_ref_mse_adder(loss_dta_ref_mse.item())
             iter_dta_tail_guard_adder(loss_dta_tail_guard.item())
             iter_dta_mask_budget_adder(loss_dta_mask_budget.item())
+            iter_dta_feature_gate_budget_adder(loss_dta_feature_gate_budget.item())
+            iter_dta_feature_action_budget_adder(loss_dta_feature_action_budget.item())
+            iter_dta_safe_gate_budget_adder(loss_dta_safe_gate_budget.item())
+            iter_dta_safe_action_budget_adder(loss_dta_safe_action_budget.item())
             iter_dta_light_tail_adder(loss_dta_light_tail.item())
             iter_dta_light_ssim_adder(loss_dta_light_ssim.item())
             iter_dta_cvar_tail_adder(loss_dta_cvar_tail.item())
@@ -843,8 +892,13 @@ def _train(model, args):
             epoch_dta_phys_adder(loss_dta_phys.item())
             epoch_dta_preserve_adder(loss_dta_preserve.item())
             epoch_dta_ref_preserve_adder(loss_dta_ref_preserve.item())
+            epoch_dta_ref_mse_adder(loss_dta_ref_mse.item())
             epoch_dta_tail_guard_adder(loss_dta_tail_guard.item())
             epoch_dta_mask_budget_adder(loss_dta_mask_budget.item())
+            epoch_dta_feature_gate_budget_adder(loss_dta_feature_gate_budget.item())
+            epoch_dta_feature_action_budget_adder(loss_dta_feature_action_budget.item())
+            epoch_dta_safe_gate_budget_adder(loss_dta_safe_gate_budget.item())
+            epoch_dta_safe_action_budget_adder(loss_dta_safe_action_budget.item())
             epoch_dta_light_tail_adder(loss_dta_light_tail.item())
             epoch_dta_light_ssim_adder(loss_dta_light_ssim.item())
             epoch_dta_cvar_tail_adder(loss_dta_cvar_tail.item())
@@ -861,6 +915,13 @@ def _train(model, args):
                     iter_dta_light_tail_adder.average(), iter_dta_light_ssim_adder.average(),
                     iter_dta_cvar_tail_adder.average(), iter_dta_group_tail_adder.average(),
                     iter_dta_patch_ssim_adder.average(), iter_dta_counterfactual_adder.average()))
+                print("DTA_BUDGET Epoch: %03d Iter: %4d/%4d Loss dta_ref_mse: %7.4f Loss feature_gate_budget: %7.4f Loss feature_action_budget: %7.4f Loss safe_gate_budget: %7.4f Loss safe_action_budget: %7.4f" % (
+                    epoch_idx, iter_idx + 1, max_iter,
+                    iter_dta_ref_mse_adder.average(),
+                    iter_dta_feature_gate_budget_adder.average(),
+                    iter_dta_feature_action_budget_adder.average(),
+                    iter_dta_safe_gate_budget_adder.average(),
+                    iter_dta_safe_action_budget_adder.average()))
                 writer.add_scalar('Pixel Loss', iter_pixel_adder.average(), iter_idx + (epoch_idx-1)* max_iter)
                 writer.add_scalar('FFT Loss', iter_fft_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Rank Loss', iter_dta_rank_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
@@ -870,8 +931,13 @@ def _train(model, args):
                 writer.add_scalar('DTA Phys Loss', iter_dta_phys_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Preserve Loss', iter_dta_preserve_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Ref Preserve Loss', iter_dta_ref_preserve_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                writer.add_scalar('DTA Ref MSE Regression Loss', iter_dta_ref_mse_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Tail Guard Loss', iter_dta_tail_guard_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Mask Budget Loss', iter_dta_mask_budget_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                writer.add_scalar('DTA Feature Gate Budget Loss', iter_dta_feature_gate_budget_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                writer.add_scalar('DTA Feature Action Budget Loss', iter_dta_feature_action_budget_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                writer.add_scalar('DTA Safe Gate Budget Loss', iter_dta_safe_gate_budget_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                writer.add_scalar('DTA Safe Action Budget Loss', iter_dta_safe_action_budget_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Light Tail Hinge Loss', iter_dta_light_tail_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Light SSIM Hinge Loss', iter_dta_light_ssim_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA CVaR Tail Loss', iter_dta_cvar_tail_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
@@ -889,8 +955,13 @@ def _train(model, args):
                 iter_dta_phys_adder.reset()
                 iter_dta_preserve_adder.reset()
                 iter_dta_ref_preserve_adder.reset()
+                iter_dta_ref_mse_adder.reset()
                 iter_dta_tail_guard_adder.reset()
                 iter_dta_mask_budget_adder.reset()
+                iter_dta_feature_gate_budget_adder.reset()
+                iter_dta_feature_action_budget_adder.reset()
+                iter_dta_safe_gate_budget_adder.reset()
+                iter_dta_safe_action_budget_adder.reset()
                 iter_dta_light_tail_adder.reset()
                 iter_dta_light_ssim_adder.reset()
                 iter_dta_cvar_tail_adder.reset()
@@ -925,6 +996,13 @@ def _train(model, args):
             epoch_dta_group_tail_adder.average(),
             epoch_dta_patch_ssim_adder.average(),
             epoch_dta_counterfactual_adder.average()))
+        print("EPOCH_DTA_BUDGET: %02d Ref MSE: %7.4f Feature Gate Budget: %7.4f Feature Action Budget: %7.4f Safe Gate Budget: %7.4f Safe Action Budget: %7.4f" % (
+            epoch_idx,
+            epoch_dta_ref_mse_adder.average(),
+            epoch_dta_feature_gate_budget_adder.average(),
+            epoch_dta_feature_action_budget_adder.average(),
+            epoch_dta_safe_gate_budget_adder.average(),
+            epoch_dta_safe_action_budget_adder.average()))
         epoch_fft_adder.reset()
         epoch_pixel_adder.reset()
         epoch_dta_rank_adder.reset()
@@ -934,8 +1012,13 @@ def _train(model, args):
         epoch_dta_phys_adder.reset()
         epoch_dta_preserve_adder.reset()
         epoch_dta_ref_preserve_adder.reset()
+        epoch_dta_ref_mse_adder.reset()
         epoch_dta_tail_guard_adder.reset()
         epoch_dta_mask_budget_adder.reset()
+        epoch_dta_feature_gate_budget_adder.reset()
+        epoch_dta_feature_action_budget_adder.reset()
+        epoch_dta_safe_gate_budget_adder.reset()
+        epoch_dta_safe_action_budget_adder.reset()
         epoch_dta_light_tail_adder.reset()
         epoch_dta_light_ssim_adder.reset()
         epoch_dta_cvar_tail_adder.reset()

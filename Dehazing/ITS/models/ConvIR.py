@@ -809,12 +809,15 @@ class DepthAttributedPreserveAdapter(nn.Module):
         fusion_input = torch.cat([feat, prior], dim=1)
         gate = torch.sigmoid(gate_head(fusion_input)) * self.feature_fusion_gate_limit
         delta = torch.tanh(delta_head(fusion_input)) * self.feature_fusion_strength
-        fused = feat + gate * delta
+        action = gate * delta
+        fused = feat + action
         self.last_aux[f'{prefix}_feature_gate'] = gate
         self.last_aux[f'{prefix}_feature_delta'] = delta
+        self.last_aux[f'{prefix}_feature_action'] = action
         self.last_stats[f'{prefix}_feature_gate_mean'] = gate.detach().mean()
         self.last_stats[f'{prefix}_feature_gate_max'] = gate.detach().max()
         self.last_stats[f'{prefix}_feature_delta_abs_mean'] = delta.detach().abs().mean()
+        self.last_stats[f'{prefix}_feature_action_abs_mean'] = action.detach().abs().mean()
         return fused
 
     def forward(self, feat2, feat3, depth):
@@ -866,6 +869,7 @@ class DepthAttributedPreserveAdapter(nn.Module):
                 self.feature_fusion3_gate,
                 'stage3',
             )
+        feature_aux = dict(self.last_aux)
         feature_stats = dict(self.last_stats)
         feat3_up = F.interpolate(feat3, size=feat2.shape[-2:], mode='bilinear', align_corners=False)
         trans_feat = torch.cat([feat2, feat3_up], dim=1)
@@ -882,6 +886,7 @@ class DepthAttributedPreserveAdapter(nn.Module):
             'confidence_stage3': conf3,
             'depth_full': depth,
         }
+        self.last_aux.update(feature_aux)
         self.last_stats = {
             'stage2_gate_mean': stats2['gate_mean'],
             'stage2_gate_max': stats2['gate_max'],
@@ -1102,7 +1107,16 @@ class DepthAttributedPreserveAdapter(nn.Module):
         if not self.last_aux:
             device = next(self.parameters()).device
             zero = torch.zeros((), device=device)
-            return {'rank': zero, 'tv': zero, 'proxy': zero, 'mask_budget': zero}
+            return {
+                'rank': zero,
+                'tv': zero,
+                'proxy': zero,
+                'mask_budget': zero,
+                'feature_gate_budget': zero,
+                'feature_action_budget': zero,
+                'safe_gate_budget': zero,
+                'safe_action_budget': zero,
+            }
         t_pred = self.last_aux['t_pred']
         depth = self.last_aux['depth'].detach()
         t_proxy = self.last_aux['t_proxy'].detach()
@@ -1111,7 +1125,35 @@ class DepthAttributedPreserveAdapter(nn.Module):
         proxy = F.l1_loss(t_pred, t_proxy)
         mask = self.last_aux.get('depth_mask')
         mask_budget = mask.mean() if mask is not None else t_pred.new_zeros(())
-        return {'rank': rank, 'tv': tv, 'proxy': proxy, 'mask_budget': mask_budget}
+        feature_gates = []
+        feature_actions = []
+        for prefix in ('stage2', 'stage3', 'final'):
+            gate = self.last_aux.get(f'{prefix}_feature_gate')
+            action = self.last_aux.get(f'{prefix}_feature_action')
+            if gate is not None:
+                feature_gates.append(gate.mean())
+            if action is not None:
+                feature_actions.append(action.abs().mean())
+        feature_gate_budget = (
+            torch.stack(feature_gates).mean() if feature_gates else t_pred.new_zeros(())
+        )
+        feature_action_budget = (
+            torch.stack(feature_actions).mean() if feature_actions else t_pred.new_zeros(())
+        )
+        safe_gate = self.last_aux.get('safe_gate')
+        safe_action = self.last_aux.get('safe_depth_delta')
+        safe_gate_budget = safe_gate.mean() if safe_gate is not None else t_pred.new_zeros(())
+        safe_action_budget = safe_action.abs().mean() if safe_action is not None else t_pred.new_zeros(())
+        return {
+            'rank': rank,
+            'tv': tv,
+            'proxy': proxy,
+            'mask_budget': mask_budget,
+            'feature_gate_budget': feature_gate_budget,
+            'feature_action_budget': feature_action_budget,
+            'safe_gate_budget': safe_gate_budget,
+            'safe_action_budget': safe_action_budget,
+        }
 
     def supervised_losses(self, trans_gt=None, hazy=None, dehazed=None, airlight=None):
         if not self.last_aux:

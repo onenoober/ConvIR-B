@@ -29,25 +29,27 @@ def _is_name_field(value):
     )
 
 
-def _unpack_test_batch(data):
+def _unpack_test_batch(data, has_depth=True):
     name = data[-1] if _is_name_field(data[-1]) else None
     if name is not None:
         data = data[:-1]
         if isinstance(name, str):
             name = [name]
     input_img, label_img = data[0], data[1]
-    depth = data[2] if len(data) >= 3 else None
+    extras = list(data[2:])
+    depth = extras.pop(0) if has_depth and extras else None
     trans = None
     airlight = None
-    if len(data) >= 4:
+    if extras:
         # With return_meta=True and return_trans=False the fourth field is the
         # scalar airlight, while transmission maps are image-shaped tensors.
-        if torch.is_tensor(data[3]) and data[3].dim() >= 3:
-            trans = data[3]
+        value = extras.pop(0)
+        if torch.is_tensor(value) and value.dim() >= 3:
+            trans = value
         else:
-            airlight = data[3]
-    if len(data) >= 5:
-        airlight = data[4]
+            airlight = value
+    if extras:
+        airlight = extras.pop(0)
     return input_img, label_img, depth, trans, airlight, name
 
 
@@ -63,6 +65,15 @@ def _tensor_std(value):
     return float(value.detach().float().std(unbiased=False).cpu())
 
 
+def _tensor_percentile(value, q):
+    if value is None or not torch.is_tensor(value):
+        return None
+    flat = value.detach().float().flatten()
+    if flat.numel() == 0:
+        return None
+    return float(torch.quantile(flat.cpu(), q).item())
+
+
 def _image_texture_mean(image):
     brightness = image.detach().float().mean(dim=1, keepdim=True)
     dx = torch.abs(brightness[:, :, :, 1:] - brightness[:, :, :, :-1])
@@ -76,7 +87,7 @@ def _airlight_for_forward(airlight, mode, device):
     return None
 
 
-def _row_diagnostics(model, arch, input_img, depth, airlight, airlight_mode, depth_source_name, same_image_depth):
+def _row_diagnostics(model, arch, input_img, depth, trans, airlight, airlight_mode, depth_source_name, same_image_depth):
     row = {
         "airlight_mode": airlight_mode,
         "depth_source_name": depth_source_name,
@@ -86,6 +97,10 @@ def _row_diagnostics(model, arch, input_img, depth, airlight, airlight_mode, dep
         "depth_mean": _tensor_mean(depth),
         "depth_std": _tensor_std(depth),
     }
+    if trans is not None:
+        row["trans_gt_mean"] = _tensor_mean(trans)
+        row["trans_gt_p10"] = _tensor_percentile(trans, 0.10)
+        row["trans_gt_p90"] = _tensor_percentile(trans, 0.90)
     if airlight is not None:
         row["airlight_gt_mean"] = _tensor_mean(airlight)
     fallback = torch.nn.functional.adaptive_max_pool2d(input_img.detach().float().clamp(0.0, 1.0), 1)
@@ -308,6 +323,7 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
         depth_cache_dir=prior_depth_cache_dir(args, prefix, arch),
         depth_split=depth_split,
         root_split=args.eval_root_split,
+        return_trans=args.include_trans_stats,
         return_meta=(airlight_mode == "gt"),
         split_json=args.split_json,
         split_name=args.split_name,
@@ -317,17 +333,20 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
     times = []
 
     depth_mode = dta_depth_mode(args, prefix, arch)
+    has_depth = arch in ("dpga", "dta", "dta_v2", "dta_v3")
     with torch.no_grad():
         for idx, data in enumerate(dataloader):
             if args.max_images > 0 and idx >= args.max_images:
                 break
-            if arch in ("dpga", "dta", "dta_v2", "dta_v3"):
-                input_img, label_img, depth, _, airlight, name = _unpack_test_batch(data)
+            if has_depth:
+                input_img, label_img, depth, trans, airlight, name = _unpack_test_batch(data, has_depth=True)
                 depth_source_name = name[0] if name else ""
                 same_image_depth = True
                 if depth_mode == "shuffle":
                     shuffle_idx = (idx + args.depth_shuffle_offset) % len(dataloader.dataset)
-                    _, _, shuffled_depth, _, _, shuffled_name = _unpack_test_batch(dataloader.dataset[shuffle_idx])
+                    _, _, shuffled_depth, _, _, shuffled_name = _unpack_test_batch(
+                        dataloader.dataset[shuffle_idx], has_depth=True
+                    )
                     depth = shuffled_depth.unsqueeze(0)
                     if shuffled_name:
                         depth_source_name = shuffled_name[0]
@@ -336,12 +355,13 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
                     same_image_depth = depth_source_name == (name[0] if name else "")
                 depth = depth.to(device)
             else:
-                input_img, label_img, _, _, airlight, name = _unpack_test_batch(data)
+                input_img, label_img, _, trans, airlight, name = _unpack_test_batch(data, has_depth=False)
                 depth = None
                 depth_source_name = ""
                 same_image_depth = False
             input_img = input_img.to(device)
             label_img = label_img.to(device)
+            trans = trans.to(device) if trans is not None and hasattr(trans, "to") else trans
             airlight_for_forward = _airlight_for_forward(airlight, airlight_mode, device)
 
             h, w = input_img.shape[2], input_img.shape[3]
@@ -386,6 +406,7 @@ def eval_one(label, arch, mode, checkpoint, data_dir, args, prefix):
                     arch,
                     input_img,
                     depth[:, :, :h, :w] if depth is not None else None,
+                    trans[:, :, :h, :w] if trans is not None and torch.is_tensor(trans) else None,
                     airlight_for_forward,
                     airlight_mode,
                     depth_source_name,
@@ -574,6 +595,7 @@ def main():
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--tag", default="seed3407")
     parser.add_argument("--max_images", type=int, default=0)
+    parser.add_argument("--include_trans_stats", action="store_true")
     args = parser.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)

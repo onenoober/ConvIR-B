@@ -197,3 +197,21 @@ The best mean row is `e4_plus_film` (`+0.081446` mean, `+0.057209` hard), but
 its worst count is still `123.00/600` and `max_run_worst=137`. Do not launch
 formal 5-fold x 3-seed validation from DTA-v3.4, and keep locked Haze4K test
 blocked.
+
+## 2026-06-12 DTA-v3.5 FDF-RCS-Lite Plan
+
+DTA-v3.4 is closed as `TRIAGE_GATE_FAIL_LOCKED_TEST_BLOCKED`: FDF produced
+strong depth attribution, but broad feature action and non-nested TSR/router
+training failed positive-ratio and worst-tail gates. The family is reopened for
+DTA-v3.5 FDF-RCS-Lite only.
+
+DTA-v3.5 keeps the v3.4 feature-level depth fusion mechanism but makes action
+conservative: first-grid feature fusion strength is `{0.02,0.04}`, gate limit is
+`{0.15,0.25}`, and gate bias is `-2.0`. It adds explicit A0 MSE regression,
+feature gate/action budget, optional tiny learned residual action budget, and a
+post-run nested fold selector over train-derived OOF evidence.
+
+The user requested relaxed continuation metrics so the full train-derived flow
+can complete. This relaxation is diagnostic only: strict gates remain reported,
+formal claims require the nested reports, and locked Haze4K test remains blocked
+unless a fixed config is explicitly authorized later.

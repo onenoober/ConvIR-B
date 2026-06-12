@@ -1,0 +1,6 @@
+status=PLANNED_RELAXED_TRAIN_DERIVED_FLOW
+created=2026-06-12T19:25:32+08:00
+branch=codex/haze4k-dta-v3-5-fdf-rcs-lite
+anchor_commit=2d529d4
+continuation_base=c742fe4
+locked_test_touched=false

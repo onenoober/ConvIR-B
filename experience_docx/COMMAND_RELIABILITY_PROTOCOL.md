@@ -247,6 +247,35 @@ Corrected form:
 rsync -a dehaze1:/tmp/cloud_py310_environment_20260610/ experience_docx/experiment_logs/cloud_py310_environment_20260610/
 ```
 
+### PowerShell expansion of Bash variables inside WSL inline strings
+
+2026-06-12 recurrence:
+
+Avoid putting Bash variable assignments and expansions inside a PowerShell
+command string passed directly to `wsl ... bash -lc`, for example:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'ANCHOR=$(git rev-parse --short ref); echo "anchor=$ANCHOR"'
+```
+
+Failure mode observed:
+
+- PowerShell expanded `$ANCHOR`/`$V34` before Bash received the script;
+- WSL Bash then saw an incomplete command and returned `syntax error:
+  unexpected end of file`.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+ANCHOR=$(git rev-parse --short ref)
+echo "anchor=$ANCHOR"
+printf 'ANCHOR_PROBE_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
 ### PowerShell here-string to WSL heredoc without CR stripping
 
 Avoid sending a PowerShell here-string directly to a WSL script that contains a
