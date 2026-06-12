@@ -1,0 +1,41 @@
+{
+  "decision": "USER_EXPLICIT_TEST_OVERRIDE_ONE_SHOT_COMPLETED",
+  "gates": {
+    "dssim_min": -5e-05,
+    "hard_true_a0_min": 0.0,
+    "mean_true_a0_min": 0.0,
+    "positive_ratio_min": 0.5,
+    "true_vs_normal_min": 0.0,
+    "true_vs_shuffle_min": 0.0,
+    "true_vs_zero_min": 0.0
+  },
+  "locked_test_policy_note": "User explicitly requested one Haze4K test run and result images; do not use this result for iterative checkpoint/gate selection.",
+  "locked_test_touched": true,
+  "summaries": [
+    {
+      "common_count": 1000,
+      "dssim": 4.6873986721038816e-05,
+      "gate_checks_relaxed": {
+        "dssim": true,
+        "hard_true_a0": true,
+        "mean_true_a0": false,
+        "positive_ratio": false,
+        "true_vs_normal": true,
+        "true_vs_shuffle": true,
+        "true_vs_zero": true
+      },
+      "hard_true_a0": 0.03938142395019531,
+      "matrix_path": "/home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/train_eval_depth_matrix_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test.json",
+      "mean_true_a0": -0.014802112579345703,
+      "positive_ratio": 0.489,
+      "relaxed_gate_pass": false,
+      "run_id": "v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full",
+      "split": "test",
+      "strong": 122,
+      "true_vs_normal": 0.13889102745056153,
+      "true_vs_shuffle": 0.10603481769561768,
+      "true_vs_zero": 0.093062668800354,
+      "worst": 257
+    }
+  ]
+}

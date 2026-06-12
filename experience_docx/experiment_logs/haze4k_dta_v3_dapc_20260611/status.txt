@@ -2145,3 +2145,38 @@ dta_v3_3_routerfusion_contact_sheet_done rc=0 run_id=v33_routerfusion_d3_router_
 DTA_V3_3_ROUTERFUSION_SCOUT_OK run_id=v33_routerfusion_d3_router_seed3407_f0_triage5full checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v33-routerfusion/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-3-RouterFusion-d3_router-seed3407-f0-triage5full/Training-Results/Final.pkl
 worker=0 gpu=0 command_index=8 done 2026-06-12T11:38:06+08:00
 DTA_V3_3_ROUTERFUSION_WORKER_OK worker=0 gpu=0 2026-06-12T11:38:06+08:00
+DEPTH_CACHE_PROCESS_LAUNCHED pid=1834043
+depth_cache_start 2026-06-12T13:36:06+08:00 output=/home/caozhiyang/ConvIR-B/depth_cache/depth_anything_v2_small_hf cuda=0
+depth_cache_done rc=1 2026-06-12T13:38:35+08:00
+depth_cache_copied_from_convir4090 count=4000 2026-06-12T13:55:57+08:00
+prelaunch_branch=codex/haze4k-dta-v3-4-fdf-tsr-finetune
+prelaunch_head=14f36e6
+DTA_V3_4_FDF_TSR_LAUNCHED pid=1864748 variant=e2_tiny_residual stage=quick5full cuda=0 2026-06-12T13:56:44+08:00
+dta_v3_4_fdf_tsr_start run_id=v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full variant=e2_tiny_residual stage=quick5full 2026-06-12T13:56:44+08:00
+state=USER_EXPLICIT_TEST_OVERRIDE_ONE_SHOT
+work=/home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune
+python=/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python
+data=/home/caozhiyang/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/home/caozhiyang/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+depth=/home/caozhiyang/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+cuda_visible_devices=0
+train_scope=dta_fdf_tsr_residual lr=0.000045 feature_strength=0.12 feature_bias=3.0 safe_clip=0.03 safe_phys=0.0 safe_learned=1.0 safe_gate_bias=3.0
+fine_tune_from_official_a0=true
+gate_policy=widest_user_override
+locked_test_touched=1
+locked_test_policy_note=single explicit user override; no checkpoint/gate selection from test
+codex/haze4k-dta-v3-4-fdf-tsr-finetune
+14f36e6
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/cache_depth_anything_v2_haze4k_convir5090.pid
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/cache_depth_anything_v2_haze4k_convir5090.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_4_fdf_tsr_e2_tiny_residual.pid
+dta_v3_4_fdf_tsr_train_done rc=0 run_id=v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full 2026-06-12T14:02:50+08:00
+dta_v3_4_fdf_tsr_eval_done rc=0 run_id=v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_invert 2026-06-12T14:04:36+08:00
+dta_v3_4_fdf_tsr_eval_done rc=0 run_id=v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_zero 2026-06-12T14:06:21+08:00
+dta_v3_4_fdf_tsr_eval_done rc=0 run_id=v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_shuffle 2026-06-12T14:08:26+08:00
+dta_v3_4_fdf_tsr_eval_done rc=0 run_id=v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal 2026-06-12T14:10:08+08:00
+dta_v3_4_fdf_tsr_aggregate_done rc=0 run_id=v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full matrix=fallback_test 2026-06-12T14:10:08+08:00
+dta_v3_4_fdf_tsr_summary_done rc=0 run_id=v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full 2026-06-12T14:10:08+08:00
+dta_v3_4_fdf_tsr_contact_sheet_done rc=0 run_id=v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full output=/home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test 2026-06-12T14:10:17+08:00
+DTA_V3_4_FDF_TSR_OK run_id=v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full checkpoint=/home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-4-FDF-TSR-e2_tiny_residual-seed3407-quick5full/Training-Results/Final.pkl

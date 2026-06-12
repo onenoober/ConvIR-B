@@ -586,3 +586,38 @@ Primary scripts/artifacts:
 - `train_eval_depth_matrix_v34_fdf_tsr_*_fallback_test.json/csv`
 - `r0_vs_rdepth_attribution_v34_fdf_tsr_*_fallback_test.csv`
 - cloud-only contact sheets under `tail_regression_contact_sheet/`
+
+## 2026-06-12 DTA-v3.4 FDF-TSR One-Shot Haze4K Test Result
+
+Decision: `COMPLETED_ONE_SHOT_TEST_FAIL_NO_FURTHER_TEST_SELECTION`.
+
+`convir-5090` completed the user-requested one-shot Haze4K test for
+`v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full`. The run fine-tuned from the
+official Haze4K A0 checkpoint on full Haze4K train for 5 epochs, with feature
+fusion gates set to the widest setting and late physical RGB action disabled.
+
+`convir-5090` could not download Depth Anything from Hugging Face due to network
+reachability, so the already generated 4000-file depth cache was copied from
+`convir-4090` and used on `convir-5090`.
+
+Test fallback-A metrics:
+
+| eval depth | mean dPSNR | hard bottom-25 | dSSIM | positive ratio | worst <= -0.20 | true-vs-zero |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| true/invert | `-0.014802` | `+0.039381` | `+0.00004687` | `0.489` | `257/1000` | `+0.093063` |
+| zero | `-0.107865` | `-0.011653` | `-0.00009474` | `0.358` | `355/1000` | n/a |
+| shuffle | `-0.120837` | `-0.019604` | `-0.00008462` | `0.306` | `343/1000` | n/a |
+| normal | `-0.153693` | `-0.040721` | `-0.00013619` | `0.254` | `395/1000` | n/a |
+
+Interpretation: the true-depth test row is strongly depth-attributed and SSIM is
+positive, but absolute mean is negative and tail regressions are too high. The
+one-shot test is complete and should not be used for iterative test-set tuning.
+
+Primary files:
+
+- `dta_v3_4_fdf_tsr_summary.json/csv`
+- `train_eval_depth_matrix_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test.json/csv`
+- `r0_vs_rdepth_attribution_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test.csv`
+- `dta_v3_4_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_train.log`
+- `dta_v3_4_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_*_eval.log`
+- local result-image folder: `/home/ubuntu/workspace/dta_v3_4_fdf_tsr_test_visuals_20260612/`

@@ -90,3 +90,42 @@ feature_fusion_gate_bias = 3.0
 ## Stop Rule
 
 After the one-shot test and result images, stop and sync text evidence. Do not run additional Haze4K test variants from the test result. If the result suggests follow-up, design that follow-up on train-derived validation first.
+
+## 2026-06-12 One-Shot Haze4K Test Result
+
+Status: `COMPLETED_ONE_SHOT_TEST_FAIL_NO_FURTHER_TEST_SELECTION`.
+
+The user-requested `convir-5090` run completed for `E2=e2_tiny_residual` with widest gates and fallback-A test evaluation. The run first attempted to build the Depth Anything cache on `convir-5090`, but Hugging Face access failed with `Network is unreachable`; the existing 4000-file Depth Anything cache was copied from `convir-4090` and the run continued on `convir-5090`.
+
+Configuration:
+
+```text
+train_scope = dta_fdf_tsr_residual
+train data = Haze4K train, full 3000 images
+stage = quick5full
+checkpoint init = official Haze4K A0
+feature_fusion_strength = 0.12
+feature_fusion_gate_limit = 1.0
+feature_fusion_gate_bias = 3.0
+safe_mix_delta_clip = 0.03
+safe_mix_phys_weight = 0.0
+safe_mix_learned_weight = 1.0
+late physical RGB action = disabled
+```
+
+Haze4K test fallback-A depth-control matrix:
+
+| eval depth | mean dPSNR | hard bottom-25 | dSSIM | positive ratio | worst <= -0.20 | strong <= -0.05 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| true/invert | `-0.014802` | `+0.039381` | `+0.00004687` | `0.489` | `257/1000` | `122/250` |
+| zero | `-0.107865` | `-0.011653` | `-0.00009474` | `0.358` | `355/1000` | `156/250` |
+| shuffle | `-0.120837` | `-0.019604` | `-0.00008462` | `0.306` | `343/1000` | `150/250` |
+| normal | `-0.153693` | `-0.040721` | `-0.00013619` | `0.254` | `395/1000` | `163/250` |
+
+Depth attribution on locked test is positive (`true-vs-zero=+0.093063`, `true-vs-shuffle=+0.106035`, `true-vs-normal=+0.138891`), but the model is not promotion-ready because absolute mean is negative, positive ratio is below 0.50, and worst regressions are very high. The one-shot test result must not be used to select another test-set variant.
+
+Result images were copied to a local non-repo folder for user inspection:
+
+```text
+/home/ubuntu/workspace/dta_v3_4_fdf_tsr_test_visuals_20260612/
+```

@@ -937,3 +937,39 @@ printf 'SSH_RC=%s\n' "$?"
 Use `ssh -n` for all single-command remote probes launched from a piped local
 script; omit `-n` only when the remote command intentionally reads a script from
 stdin.
+
+### `convir-5090` tmux assumption
+
+2026-06-12 DTA-v3.4 launch note: do not assume `tmux` exists on
+`convir-5090`. The first depth-cache launcher used `tmux new-session` and failed
+with `bash: line 45: tmux: command not found`.
+
+Corrected pattern for `convir-5090` background jobs:
+
+```bash
+nohup bash "$SCRIPT" >> "$LOG" 2>&1 &
+echo $! > "$PIDFILE"
+```
+
+Record the PID file and monitor with `kill -0 $(cat "$PIDFILE")` plus status
+markers instead of tmux session checks.
+
+### 2026-06-12 `convir-5090` Depth Cache Recovery
+
+The first DTA-v3.4 depth-cache run on `convir-5090` failed because Hugging Face
+requests returned `[Errno 101] Network is unreachable`. The corrected recovery
+was to copy the already generated Depth Anything cache from `convir-4090`:
+
+```bash
+ssh -n convir-4090 'cd /sda/home/wangyuxin/ConvIR-B/depth_cache && tar -cf - depth_anything_v2_small_hf' \
+  | ssh convir-5090 'cd /home/caozhiyang/ConvIR-B/depth_cache && tar -xf -'
+```
+
+Use `ssh -n` for the source side when streaming tar from a command script; the
+first attempt without `-n` allowed the source SSH command to consume the wrapper
+stdin, so the local trailing success marker did not print even though extraction
+succeeded.
+
+When `set -o pipefail` is active, avoid `find ... | head` as a success-checking
+pipeline because `find` can receive SIGPIPE after `head` exits. Use `python`,
+`sed -n`, or disable pipefail locally for preview-only listings.

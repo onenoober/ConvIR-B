@@ -1,0 +1,2 @@
+run_id,split,common_count,mean_true_a0,hard_true_a0,dssim,positive_ratio,worst,strong,true_vs_zero,true_vs_shuffle,true_vs_normal,relaxed_gate_pass,matrix_path
+v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full,test,1000,-0.014802112579345703,0.03938142395019531,4.6873986721038816e-05,0.489,257,122,0.093062668800354,0.10603481769561768,0.13889102745056153,False,/home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/train_eval_depth_matrix_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test.json

@@ -170,3 +170,16 @@ otherwise.
 The user explicitly requested one Haze4K test experiment and result images with
 wide gates. Record this as `USER_EXPLICIT_TEST_OVERRIDE_ONE_SHOT`; do not use the
 result for repeated test-set selection.
+
+## 2026-06-12 DTA-v3.4 One-Shot Test Outcome
+
+Decision: `COMPLETED_ONE_SHOT_TEST_FAIL_NO_FURTHER_TEST_SELECTION`.
+
+The user-requested DTA-v3.4 FDF-TSR `E2=e2_tiny_residual` one-shot Haze4K test
+completed on `convir-5090` after copying the Depth Anything cache from
+`convir-4090`. True-depth attribution on test is strong
+(`true-vs-zero=+0.093063`, `true-vs-shuffle=+0.106035`,
+`true-vs-normal=+0.138891`) and dSSIM is positive (`+0.00004687`), but absolute
+quality fails: mean dPSNR is `-0.014802`, positive ratio is `0.489`, and worst
+regressions are `257/1000`. This is diagnostic only and not promotion-ready.
+Do not run another Haze4K test variant from this result.

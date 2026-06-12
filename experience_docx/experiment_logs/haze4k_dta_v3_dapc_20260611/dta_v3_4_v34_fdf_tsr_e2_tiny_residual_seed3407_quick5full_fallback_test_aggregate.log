@@ -1,0 +1,9 @@
+{
+  "true_label": "true",
+  "baseline_label": "zero",
+  "common_count": 1000,
+  "mean_depth_surplus_psnr": 0.093062668800354,
+  "median_depth_surplus_psnr": 0.08815574645996094,
+  "positive_surplus_ratio": 0.61
+}
+DTA_V3_CONTROL_AGGREGATE_OK

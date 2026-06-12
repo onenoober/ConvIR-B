@@ -1,0 +1,77 @@
+/home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune/experience_docx/tools/eval_haze4k_checkpoint_compare.py:218: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  state = torch.load(path, map_location=device)
+A0 100/1000 psnr=30.1356
+A0 200/1000 psnr=29.8696
+A0 300/1000 psnr=29.7205
+A0 400/1000 psnr=29.5831
+A0 500/1000 psnr=30.4629
+A0 600/1000 psnr=31.5636
+A0 700/1000 psnr=32.5717
+A0 800/1000 psnr=33.1127
+A0 900/1000 psnr=33.7079
+A0 1000/1000 psnr=34.1406
+DTA_v34_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal 100/1000 psnr=29.9038
+DTA_v34_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal 200/1000 psnr=29.6365
+DTA_v34_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal 300/1000 psnr=29.5148
+DTA_v34_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal 400/1000 psnr=29.3982
+DTA_v34_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal 500/1000 psnr=30.3130
+DTA_v34_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal 600/1000 psnr=31.4065
+DTA_v34_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal 700/1000 psnr=32.4197
+DTA_v34_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal 800/1000 psnr=32.9619
+DTA_v34_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal 900/1000 psnr=33.5597
+DTA_v34_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal 1000/1000 psnr=33.9870
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "official_convir",
+      "mode": "original",
+      "checkpoint": "/home/caozhiyang/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "depth_mode": "none",
+      "airlight_mode": "none",
+      "count": 1000,
+      "mean_psnr": 34.140645500183105,
+      "mean_ssim": 0.9897101619243622,
+      "avg_time_sec_sync": 0.02162071204185486,
+      "median_time_sec_sync": 0.024035215377807617,
+      "peak_cuda_mem_mib": 538.44482421875
+    },
+    "DTA_v34_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal": {
+      "label": "DTA_v34_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal",
+      "arch": "dta_v3",
+      "mode": "modres",
+      "checkpoint": "/home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-4-FDF-TSR-e2_tiny_residual-seed3407-quick5full/Training-Results/Final.pkl",
+      "depth_mode": "normal",
+      "airlight_mode": "fallback",
+      "count": 1000,
+      "mean_psnr": 33.9869523601532,
+      "mean_ssim": 0.9895739727020264,
+      "avg_time_sec_sync": 0.029989251852035523,
+      "median_time_sec_sync": 0.03431546688079834,
+      "peak_cuda_mem_mib": 545.2568359375
+    }
+  },
+  "comparison": {
+    "common_count": 1000,
+    "mean_psnr_delta": -0.15369314002990722,
+    "median_psnr_delta": -0.1441335678100586,
+    "p5_psnr_delta": -0.746064281463623,
+    "p95_psnr_delta": 0.3207576751708982,
+    "hard_bottom25_psnr_delta": -0.04072146606445313,
+    "easy_top25_psnr_delta": -0.18835151672363282,
+    "worst10pct_mean_psnr_delta": -0.8493389892578125,
+    "best10pct_mean_psnr_delta": 0.49871679306030275,
+    "worst10img_mean_psnr_delta": -1.517980194091797,
+    "best10img_mean_psnr_delta": 2.1563085556030273,
+    "worst10_mean_psnr_delta": -0.8493389892578125,
+    "best10_mean_psnr_delta": 0.49871679306030275,
+    "mean_ssim_delta": -0.00013618922233581544,
+    "positive_ratio": 0.254,
+    "strong_reference_cut_psnr": 39.08926200866699,
+    "strong_reference_count": 250,
+    "strong_regression_count_delta_le_-0.05": 163,
+    "worst_regression_count_delta_le_-0.20": 395
+  }
+}
+wrote /home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_4_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal_compare/scout_eval_compare_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal.json
+wrote /home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_4_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal_compare/scout_eval_per_image_v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test_normal.csv

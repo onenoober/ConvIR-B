@@ -1,0 +1,5 @@
+/home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune/experience_docx/tools/make_haze4k_dta_contact_sheet.py:34: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  state = torch.load(path, map_location=device)
+wrote /home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test/v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_worst_regressions_contact_sheet.png
+wrote /home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_fallback_test/v34_fdf_tsr_e2_tiny_residual_seed3407_quick5full_best_wins_contact_sheet.png
+DTA_CONTACT_SHEETS_OK

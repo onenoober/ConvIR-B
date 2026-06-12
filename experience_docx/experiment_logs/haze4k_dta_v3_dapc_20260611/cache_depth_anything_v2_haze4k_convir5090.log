@@ -1,0 +1,74 @@
+'[Errno 101] Network is unreachable' thrown while requesting HEAD https://huggingface.co/depth-anything/Depth-Anything-V2-Small-hf/resolve/main/processor_config.json
+Retrying in 1s [Retry 1/5].
+'[Errno 101] Network is unreachable' thrown while requesting HEAD https://huggingface.co/depth-anything/Depth-Anything-V2-Small-hf/resolve/main/processor_config.json
+Retrying in 1s [Retry 1/5].
+Traceback (most recent call last):
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/transformers/image_processing_base.py", line 282, in get_image_processor_dict
+    resolved_processor_file = cached_file(
+                              ^^^^^^^^^^^^
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/transformers/utils/hub.py", line 293, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/transformers/utils/hub.py", line 527, in cached_files
+    raise e
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/transformers/utils/hub.py", line 437, in cached_files
+    hf_hub_download(
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1019, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1152, in _hf_hub_download_to_cache_dir
+    _get_metadata_or_catch_error(
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1694, in _get_metadata_or_catch_error
+    metadata = get_hf_file_metadata(
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/huggingface_hub/file_download.py", line 1616, in get_hf_file_metadata
+    response = _httpx_follow_relative_redirects_with_backoff(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 685, in _httpx_follow_relative_redirects_with_backoff
+    response = http_backoff(
+               ^^^^^^^^^^^^^
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 559, in http_backoff
+    return next(
+           ^^^^^
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/huggingface_hub/utils/_http.py", line 467, in _http_backoff_base
+    response = client.request(method=method, url=url, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/httpx/_client.py", line 825, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/httpx/_client.py", line 901, in send
+    raise RuntimeError("Cannot send a request, as the client has been closed.")
+RuntimeError: Cannot send a request, as the client has been closed.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/transformers/models/auto/image_processing_auto.py", line 568, in from_pretrained
+    config_dict, _ = ImageProcessingMixin.get_image_processor_dict(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/transformers/image_processing_base.py", line 314, in get_image_processor_dict
+    raise OSError(
+OSError: Can't load image processor for 'depth-anything/Depth-Anything-V2-Small-hf'. If you were trying to load it from 'https://huggingface.co/models', make sure you don't have a local directory with the same name. Otherwise, make sure 'depth-anything/Depth-Anything-V2-Small-hf' is the correct path to a directory containing a config.json file
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune/experience_docx/tools/cache_depth_anything_v2_haze4k.py", line 102, in <module>
+    main()
+  File "/home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune/experience_docx/tools/cache_depth_anything_v2_haze4k.py", line 58, in main
+    processor = AutoImageProcessor.from_pretrained(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/transformers/models/auto/image_processing_auto.py", line 572, in from_pretrained
+    raise initial_exception
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/transformers/models/auto/image_processing_auto.py", line 562, in from_pretrained
+    config_dict, _ = ImageProcessingMixin.get_image_processor_dict(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/caozhiyang/ConvIR-B/envs/convir-cu128/lib/python3.11/site-packages/transformers/image_processing_base.py", line 314, in get_image_processor_dict
+    raise OSError(
+OSError: Can't load image processor for 'depth-anything/Depth-Anything-V2-Small-hf'. If you were trying to load it from 'https://huggingface.co/models', make sure you don't have a local directory with the same name. Otherwise, make sure 'depth-anything/Depth-Anything-V2-Small-hf' is the correct path to a directory containing a preprocessor_config.json file
