@@ -1,0 +1,120 @@
+{
+  "decision": "SCOUT_GATE_FAIL_LOCKED_TEST_BLOCKED",
+  "gates": {
+    "dssim_min": -1e-05,
+    "hard_true_a0_min": 0.01,
+    "mean_true_a0_min": 0.02,
+    "positive_ratio_min": 0.63,
+    "true_vs_normal_min": 0.025,
+    "true_vs_shuffle_min": 0.03,
+    "true_vs_zero_min": 0.03,
+    "worst_max": 50
+  },
+  "locked_test_touched": false,
+  "summaries": [
+    {
+      "airlight_mode": "fallback",
+      "common_count": 600,
+      "dssim": -2.349664767583211e-05,
+      "gate_checks": {
+        "dssim": false,
+        "hard_true_a0": false,
+        "mean_true_a0": true,
+        "positive_ratio": false,
+        "true_vs_normal": true,
+        "true_vs_shuffle": false,
+        "true_vs_zero": true,
+        "worst": true
+      },
+      "gate_pass": false,
+      "hard_true_a0": 0.005498491923014323,
+      "matrix_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/train_eval_depth_matrix_v32_safemix_c1_gate_seed3407_f0_scout5full_fallback.json",
+      "mean_true_a0": 0.028029839197794598,
+      "positive_ratio": 0.5883333333333334,
+      "run_id": "v32_safemix_c1_gate_seed3407_f0_scout5full",
+      "strong": 36,
+      "true_vs_normal": 0.027172810236612957,
+      "true_vs_shuffle": 0.026560710271199547,
+      "true_vs_zero": 0.03008721669514974,
+      "worst": 45
+    },
+    {
+      "airlight_mode": "gt",
+      "common_count": 600,
+      "dssim": -2.4503370126088462e-05,
+      "gate_checks": {
+        "dssim": false,
+        "hard_true_a0": false,
+        "mean_true_a0": true,
+        "positive_ratio": false,
+        "true_vs_normal": true,
+        "true_vs_shuffle": false,
+        "true_vs_zero": true,
+        "worst": true
+      },
+      "gate_pass": false,
+      "hard_true_a0": 0.003590710957845052,
+      "matrix_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/train_eval_depth_matrix_v32_safemix_c1_gate_seed3407_f0_scout5full_gt.json",
+      "mean_true_a0": 0.026009855270385743,
+      "positive_ratio": 0.595,
+      "run_id": "v32_safemix_c1_gate_seed3407_f0_scout5full",
+      "strong": 36,
+      "true_vs_normal": 0.028383703231811525,
+      "true_vs_shuffle": 0.02778422037760417,
+      "true_vs_zero": 0.031785319646199545,
+      "worst": 46
+    },
+    {
+      "airlight_mode": "fallback",
+      "common_count": 600,
+      "dssim": -2.2875765959421795e-05,
+      "gate_checks": {
+        "dssim": false,
+        "hard_true_a0": false,
+        "mean_true_a0": true,
+        "positive_ratio": false,
+        "true_vs_normal": true,
+        "true_vs_shuffle": true,
+        "true_vs_zero": true,
+        "worst": true
+      },
+      "gate_pass": false,
+      "hard_true_a0": 0.00930901845296224,
+      "matrix_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/train_eval_depth_matrix_v32_safemix_c3_full_seed3407_f0_scout5full_fallback.json",
+      "mean_true_a0": 0.03163615226745606,
+      "positive_ratio": 0.6133333333333333,
+      "run_id": "v32_safemix_c3_full_seed3407_f0_scout5full",
+      "strong": 38,
+      "true_vs_normal": 0.035193125406901046,
+      "true_vs_shuffle": 0.03417356808980306,
+      "true_vs_zero": 0.03981318791707357,
+      "worst": 48
+    },
+    {
+      "airlight_mode": "gt",
+      "common_count": 600,
+      "dssim": -2.3573835690816243e-05,
+      "gate_checks": {
+        "dssim": false,
+        "hard_true_a0": false,
+        "mean_true_a0": true,
+        "positive_ratio": false,
+        "true_vs_normal": true,
+        "true_vs_shuffle": true,
+        "true_vs_zero": true,
+        "worst": true
+      },
+      "gate_pass": false,
+      "hard_true_a0": 0.0077713521321614585,
+      "matrix_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/train_eval_depth_matrix_v32_safemix_c3_full_seed3407_f0_scout5full_gt.json",
+      "mean_true_a0": 0.0301351801554362,
+      "positive_ratio": 0.6016666666666667,
+      "run_id": "v32_safemix_c3_full_seed3407_f0_scout5full",
+      "strong": 36,
+      "true_vs_normal": 0.03557391484578451,
+      "true_vs_shuffle": 0.03453092892964681,
+      "true_vs_zero": 0.04019310633341472,
+      "worst": 48
+    }
+  ]
+}

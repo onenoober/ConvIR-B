@@ -447,3 +447,29 @@ Expected text artifacts after cloud completion:
 
 Cloud-only contact sheet PNGs are still excluded from Git. Locked Haze4K test
 remains blocked.
+
+## 2026-06-12 DTA-v3.2 SafeMix C1/C3 Scout Results
+
+Status: `SCOUT_GATE_FAIL_LOCKED_TEST_BLOCKED`.
+
+The SafeMix queue completed from commit `931de83` on `convir-4090` using cloud
+workspace `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix`.
+Locked Haze4K test was not touched. Primary summary files:
+
+- `dta_v3_2_safemix_scout_summary.json/csv`
+- `train_eval_depth_matrix_v32_safemix_c1_gate_seed3407_f0_scout5full_fallback.json/csv`
+- `train_eval_depth_matrix_v32_safemix_c3_full_seed3407_f0_scout5full_fallback.json/csv`
+- `dta_v3_2_v32_safemix_c1_gate_seed3407_f0_scout5full_train.log`
+- `dta_v3_2_v32_safemix_c3_full_seed3407_f0_scout5full_train.log`
+
+| Row | mean | hard | dSSIM | pos ratio | true-vs-zero | true-vs-shuffle | true-vs-normal | worst | Gate |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `c1_gate` fallback-A | `+0.028030` | `+0.005498` | `-0.00002350` | `0.5883` | `+0.030087` | `+0.026561` | `+0.027173` | `45` | fail |
+| `c3_full` fallback-A | `+0.031636` | `+0.009309` | `-0.00002288` | `0.6133` | `+0.039813` | `+0.034174` | `+0.035193` | `48` | fail |
+| `c3_full` GT-A | `+0.030135` | `+0.007771` | `-0.00002357` | `0.6017` | `+0.040193` | `+0.034531` | `+0.035574` | `48` | diagnostic fail |
+
+C3 is the best DTA-v3.2 SafeMix diagnostic: it improves mean and mechanism
+surplus while cutting worst regressions from B4's `76/600` to `48/600`. It still
+fails the fixed scout gate on hard bottom-25, SSIM, and positive ratio, so no
+formal 5-fold x 3-seed validation is launched. Contact sheet PNGs were generated
+on cloud and copied locally for visual review, but are not committed.

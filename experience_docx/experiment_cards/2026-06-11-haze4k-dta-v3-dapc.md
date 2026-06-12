@@ -615,3 +615,40 @@ If neither C1 nor C3 passes this gate, the route is recorded as
 launched. If one fixed fallback-A row passes, the next step is formal 5-fold x
 3-seed nested validation with locked test still blocked until that formal gate
 passes.
+
+## 2026-06-12 DTA-v3.2 SafeMix C1/C3 Scout Results
+
+Status: `SCOUT_GATE_FAIL_LOCKED_TEST_BLOCKED`.
+
+The SafeMix scout queue completed on `convir-4090` from commit `931de83` in
+workspace `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix`.
+It trained `c1_gate` and `c3_full` in parallel on fold0, evaluated fallback/GT
+A under `invert/zero/shuffle/normal`, generated cloud-only contact sheets, and
+kept locked Haze4K test untouched.
+
+| Row | mean | hard | dSSIM | pos ratio | true-vs-zero | true-vs-shuffle | true-vs-normal | worst | Decision |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `c1_gate` fallback-A | `+0.028030` | `+0.005498` | `-0.00002350` | `0.5883` | `+0.030087` | `+0.026561` | `+0.027173` | `45` | fails hard, SSIM, pos, shuffle surplus |
+| `c1_gate` GT-A | `+0.026010` | `+0.003591` | `-0.00002450` | `0.5950` | `+0.031785` | `+0.027784` | `+0.028384` | `46` | diagnostic only; same failure pattern |
+| `c3_full` fallback-A | `+0.031636` | `+0.009309` | `-0.00002288` | `0.6133` | `+0.039813` | `+0.034174` | `+0.035193` | `48` | best SafeMix row; fails hard, SSIM, pos |
+| `c3_full` GT-A | `+0.030135` | `+0.007771` | `-0.00002357` | `0.6017` | `+0.040193` | `+0.034531` | `+0.035574` | `48` | diagnostic only; GT-A still not a rescue |
+
+Interpretation:
+
+- SafeMix C3 is a real improvement over B4 on mean, depth-attributed surplus,
+  and tail count: fallback-A worst drops from `76/600` to `48/600`, and
+  true-vs-zero rises to `+0.039813 dB`.
+- The written scout gate still fails because hard bottom-25 remains below
+  `+0.010 dB`, dSSIM remains around `-2.3e-5`, and positive ratio remains below
+  `0.630`.
+- C1 gate-only proves that clipping/gating physical action can reduce worst
+  count but is not enough; it loses true-vs-shuffle surplus and leaves hard/SSIM
+  unsafe.
+- GT/oracle A again does not rescue the row, so airlight remains a diagnostic
+  feature rather than the main fix.
+
+Decision: do not launch 5-fold x 3-seed formal validation and do not touch
+locked Haze4K test. The route remains mechanism-positive but not candidate-ready.
+The next route, if reopened, should build on C3 rather than C1: keep safe learned
+residual, add explicit SSIM/texture-aware preservation or feature-space fusion,
+and require the same depth-control gates before any formal validation.

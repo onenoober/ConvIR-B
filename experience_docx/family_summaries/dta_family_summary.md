@@ -102,3 +102,13 @@ C1 trains a soft gate over clipped physical action; C3 trains the gate, learned
 residual, transmission head, and uncertainty head. Locked Haze4K test and formal
 5-fold x 3-seed validation remain blocked until a fixed fallback-A SafeMix row
 passes the written fold0 scout gate.
+
+## 2026-06-12 DTA-v3.2 SafeMix Scout Outcome
+
+SafeMix C1/C3 completed and remains diagnostic only. C3 fallback-A is the best
+row: mean `+0.031636`, hard `+0.009309`, true-vs-zero `+0.039813`,
+true-vs-shuffle `+0.034174`, true-vs-normal `+0.035193`, and worst `48/600`.
+This confirms SafeMix learned residual/gating is a better direction than C1
+physical-action gate-only and better than B4 on tail count, but it still fails
+hard, SSIM, and positive-ratio gates. Do not launch 5-fold x 3-seed or locked
+test from this row.

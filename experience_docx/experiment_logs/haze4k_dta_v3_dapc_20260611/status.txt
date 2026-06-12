@@ -841,3 +841,74 @@ dta_v3_2_nested_selector_smoke_done rc=0 run_id=v32_ctdg_diag_wg18_base_s008_b14
 DTA_V3_2_CTDG_SAFEMIX_AUDITS_OK run_id=v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0
 dta_v3_2_nested_selector_smoke_done rc=0 run_id=v32_ctdg_diag_wg18_light_hinge_seed3407_f0 airlight=gt 2026-06-12T08:48:05+08:00
 DTA_V3_2_CTDG_SAFEMIX_AUDITS_OK run_id=v32_ctdg_diag_wg18_light_hinge_seed3407_f0
+dta_v3_2_safemix_launcher_start stage=scout5full seed=3407 fold=0 2026-06-12T09:15:48+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix
+codex/haze4k-dta-v3-dapc-finetune
+931de83
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+locked_test_touched=false
+dta_v3_2_safemix_launch variant=c1_gate gpu=2 session=dta_v32_c1_gate_s3407_f0_scout5full 2026-06-12T09:15:48+08:00
+dta_v3_2_safemix_launch variant=c3_full gpu=3 session=dta_v32_c3_full_s3407_f0_scout5full 2026-06-12T09:15:48+08:00
+dta_v3_2_safemix_train_start run_id=v32_safemix_c1_gate_seed3407_f0_scout5full variant=c1_gate stage=scout5full 2026-06-12T09:15:48+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+init_ckpt=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_base_s008_b14-seed3407-f0-scout5full/Training-Results/Final.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=2
+train_scope=dta_safemix_gate_only safe_phys=1.0 safe_learned=0.0 safe_clip=0.08 safe_gate_bias=-2.5
+locked_test_touched=false
+codex/haze4k-dta-v3-dapc-finetune
+931de83
+dta_v32_c1_gate_s3407_f0_scout5full: 1 windows (created Fri Jun 12 09:15:48 2026)
+dta_v32_c3_full_s3407_f0_scout5full: 1 windows (created Fri Jun 12 09:15:48 2026)
+DTA_V3_2_SAFEMIX_LAUNCHER_OK 2026-06-12T09:15:48+08:00
+dta_v3_2_safemix_train_start run_id=v32_safemix_c3_full_seed3407_f0_scout5full variant=c3_full stage=scout5full 2026-06-12T09:15:48+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+init_ckpt=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_base_s008_b14-seed3407-f0-scout5full/Training-Results/Final.pkl
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+train_split=fold0_train
+eval_split=fold0_val
+cuda_visible_devices=3
+train_scope=dta_safemix_full safe_phys=0.25 safe_learned=0.75 safe_clip=0.06 safe_gate_bias=-2.5
+locked_test_touched=false
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+codex/haze4k-dta-v3-dapc-finetune
+931de83
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+dta_v3_2_safemix_train_done rc=0 run_id=v32_safemix_c1_gate_seed3407_f0_scout5full 2026-06-12T09:19:32+08:00
+dta_v3_2_safemix_train_done rc=0 run_id=v32_safemix_c3_full_seed3407_f0_scout5full 2026-06-12T09:19:59+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c1_gate_seed3407_f0_scout5full_fallback_invert 2026-06-12T09:20:51+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c3_full_seed3407_f0_scout5full_fallback_invert 2026-06-12T09:21:23+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c1_gate_seed3407_f0_scout5full_fallback_zero 2026-06-12T09:22:18+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c3_full_seed3407_f0_scout5full_fallback_zero 2026-06-12T09:22:51+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c1_gate_seed3407_f0_scout5full_fallback_shuffle 2026-06-12T09:23:59+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c3_full_seed3407_f0_scout5full_fallback_shuffle 2026-06-12T09:24:29+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c1_gate_seed3407_f0_scout5full_fallback_normal 2026-06-12T09:25:25+08:00
+dta_v3_2_safemix_aggregate_done rc=0 run_id=v32_safemix_c1_gate_seed3407_f0_scout5full airlight=fallback 2026-06-12T09:25:25+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c3_full_seed3407_f0_scout5full_fallback_normal 2026-06-12T09:25:54+08:00
+dta_v3_2_safemix_aggregate_done rc=0 run_id=v32_safemix_c3_full_seed3407_f0_scout5full airlight=fallback 2026-06-12T09:25:54+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c1_gate_seed3407_f0_scout5full_gt_invert 2026-06-12T09:26:46+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c3_full_seed3407_f0_scout5full_gt_invert 2026-06-12T09:27:19+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c1_gate_seed3407_f0_scout5full_gt_zero 2026-06-12T09:28:15+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c3_full_seed3407_f0_scout5full_gt_zero 2026-06-12T09:28:41+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c1_gate_seed3407_f0_scout5full_gt_shuffle 2026-06-12T09:29:50+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c3_full_seed3407_f0_scout5full_gt_shuffle 2026-06-12T09:30:21+08:00
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c1_gate_seed3407_f0_scout5full_gt_normal 2026-06-12T09:31:12+08:00
+dta_v3_2_safemix_aggregate_done rc=0 run_id=v32_safemix_c1_gate_seed3407_f0_scout5full airlight=gt 2026-06-12T09:31:12+08:00
+dta_v3_2_safemix_summary_done rc=0 run_id=v32_safemix_c1_gate_seed3407_f0_scout5full 2026-06-12T09:31:12+08:00
+dta_v3_2_safemix_contact_sheet_done rc=0 run_id=v32_safemix_c1_gate_seed3407_f0_scout5full output=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/v32_safemix_c1_gate_seed3407_f0_scout5full_fallback 2026-06-12T09:31:21+08:00
+DTA_V3_2_SAFEMIX_SCOUT_OK run_id=v32_safemix_c1_gate_seed3407_f0_scout5full checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-2-SafeMix-c1_gate-seed3407-f0-scout5full/Training-Results/Final.pkl
+dta_v3_2_safemix_eval_done rc=0 run_id=v32_safemix_c3_full_seed3407_f0_scout5full_gt_normal 2026-06-12T09:31:38+08:00
+dta_v3_2_safemix_aggregate_done rc=0 run_id=v32_safemix_c3_full_seed3407_f0_scout5full airlight=gt 2026-06-12T09:31:38+08:00
+dta_v3_2_safemix_summary_done rc=0 run_id=v32_safemix_c3_full_seed3407_f0_scout5full 2026-06-12T09:31:38+08:00
+dta_v3_2_safemix_contact_sheet_done rc=0 run_id=v32_safemix_c3_full_seed3407_f0_scout5full output=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tail_regression_contact_sheet/v32_safemix_c3_full_seed3407_f0_scout5full_fallback 2026-06-12T09:31:46+08:00
+DTA_V3_2_SAFEMIX_SCOUT_OK run_id=v32_safemix_c3_full_seed3407_f0_scout5full checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32-safemix/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-2-SafeMix-c3_full-seed3407-f0-scout5full/Training-Results/Final.pkl
