@@ -551,3 +551,38 @@ Key interpretation:
 Cloud contact-sheet PNGs were generated for visual review but are not committed
 to Git. Local non-repo visual copies may be kept under
 `/home/ubuntu/workspace/dta_v3_3_routerfusion_visuals_20260612/`.
+
+## 2026-06-12 DTA-v3.4 FDF-TSR Fine-Tune Plan And User Test Override
+
+DTA-v3.3 RouterFusion triage failed, so the next route is DTA-v3.4 FDF-TSR:
+Feature-level Depth Fusion + Tail-Safe Residual Selector. The route keeps all
+new trainable parameters under `DTA.*`, starts from the official Haze4K A0
+checkpoint with partial loading, and treats all experiments as fine-tuning by
+default rather than from-scratch training.
+
+User override for this route:
+
+```text
+USER_EXPLICIT_TEST_OVERRIDE_ONE_SHOT
+```
+
+The user explicitly requested one Haze4K test experiment with the widest gate
+setting and result images. This is allowed as a one-shot test override only. The
+result must not be used to iterate on checkpoints, thresholds, gates, or route
+variants from the test set.
+
+Runtime for this route now tries `convir-5090` first:
+
+- workspace: `/home/caozhiyang/ConvIR-B/repos/ConvIR-B-dta-v3-4-fdf-tsr-finetune`
+- Python: `/home/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python`
+- data: `/home/caozhiyang/ConvIR-B/datasets/Haze4K/Haze4K`
+- A0: `/home/caozhiyang/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`
+- depth cache: `/home/caozhiyang/ConvIR-B/depth_cache/depth_anything_v2_small_hf`
+
+Primary scripts/artifacts:
+
+- `run_dta_v3_4_fdf_tsr_convir5090.sh`
+- `dta_v3_4_fdf_tsr_summary.json/csv`
+- `train_eval_depth_matrix_v34_fdf_tsr_*_fallback_test.json/csv`
+- `r0_vs_rdepth_attribution_v34_fdf_tsr_*_fallback_test.csv`
+- cloud-only contact sheets under `tail_regression_contact_sheet/`

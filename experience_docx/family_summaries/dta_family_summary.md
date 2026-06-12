@@ -155,3 +155,18 @@ either a stricter tail-safe selector with explicit worst-regression constraints,
 or a pivot toward UDP/DeHamer-style multi-scale feature-level depth fusion with
 weak bounded late RGB correction. Do not run formal 5-fold x 3-seed or locked
 Haze4K test from D1/D2/D3.
+
+## 2026-06-12 DTA-v3.4 FDF-TSR Plan And Test Override
+
+DTA-v3.3 RouterFusion as implemented is stopped. The next material mechanism
+change is DTA-v3.4 FDF-TSR: move depth usage from late physical RGB correction
+toward feature-level depth fusion, keep late physical action disabled or
+near-zero, and optionally use a tiny bounded learned residual.
+
+Repository rule update: future Haze4K model routes are fine-tuning routes by
+default from the official Haze4K checkpoint unless a route card explicitly says
+otherwise.
+
+The user explicitly requested one Haze4K test experiment and result images with
+wide gates. Record this as `USER_EXPLICIT_TEST_OVERRIDE_ONE_SHOT`; do not use the
+result for repeated test-set selection.

@@ -561,6 +561,10 @@ class DepthAttributedPreserveAdapter(nn.Module):
         router_patch_size=32,
         router_image_bias=2.0,
         router_patch_bias=2.0,
+        feature_fusion_enabled=False,
+        feature_fusion_strength=0.10,
+        feature_fusion_gate_limit=1.0,
+        feature_fusion_gate_bias=2.0,
     ):
         super(DepthAttributedPreserveAdapter, self).__init__()
         self.depth_mode = depth_mode
@@ -583,6 +587,9 @@ class DepthAttributedPreserveAdapter(nn.Module):
         self.router_image_gate_limit = router_image_gate_limit
         self.router_patch_gate_limit = router_patch_gate_limit
         self.router_patch_size = router_patch_size
+        self.feature_fusion_enabled = feature_fusion_enabled
+        self.feature_fusion_strength = feature_fusion_strength
+        self.feature_fusion_gate_limit = feature_fusion_gate_limit
         prior_in_channels = 6
 
         self.stage2 = CalibratedDepthFiLMBlock(
@@ -651,6 +658,36 @@ class DepthAttributedPreserveAdapter(nn.Module):
             nn.GELU(),
             nn.Conv2d(stage1_channels // 2, 1, kernel_size=3, padding=1, bias=True),
         )
+        self.feature_fusion2 = nn.Sequential(
+            nn.Conv2d(stage2_channels + prior_in_channels, stage2_channels, kernel_size=3, padding=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(stage2_channels, stage2_channels, kernel_size=3, padding=1, bias=True),
+        )
+        self.feature_fusion2_gate = nn.Sequential(
+            nn.Conv2d(stage2_channels + prior_in_channels, stage2_channels // 2, kernel_size=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(stage2_channels // 2, 1, kernel_size=1, bias=True),
+        )
+        self.feature_fusion3 = nn.Sequential(
+            nn.Conv2d(stage3_channels + prior_in_channels, stage3_channels, kernel_size=3, padding=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(stage3_channels, stage3_channels, kernel_size=3, padding=1, bias=True),
+        )
+        self.feature_fusion3_gate = nn.Sequential(
+            nn.Conv2d(stage3_channels + prior_in_channels, stage3_channels // 2, kernel_size=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(stage3_channels // 2, 1, kernel_size=1, bias=True),
+        )
+        self.feature_fusion_final = nn.Sequential(
+            nn.Conv2d(stage1_channels + prior_in_channels, stage1_channels, kernel_size=3, padding=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(stage1_channels, stage1_channels, kernel_size=3, padding=1, bias=True),
+        )
+        self.feature_fusion_final_gate = nn.Sequential(
+            nn.Conv2d(stage1_channels + prior_in_channels, stage1_channels // 2, kernel_size=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(stage1_channels // 2, 1, kernel_size=1, bias=True),
+        )
 
         self.transmission_head[0].apply(_init_kaiming)
         self.transmission_head[2].apply(_init_kaiming)
@@ -677,11 +714,22 @@ class DepthAttributedPreserveAdapter(nn.Module):
         self.router_patch_head[0].apply(_init_kaiming)
         nn.init.zeros_(self.router_patch_head[-1].weight)
         nn.init.zeros_(self.router_patch_head[-1].bias)
+        for head in (self.feature_fusion2, self.feature_fusion3, self.feature_fusion_final):
+            head[0].apply(_init_kaiming)
+            nn.init.zeros_(head[-1].weight)
+            nn.init.zeros_(head[-1].bias)
+        for head in (self.feature_fusion2_gate, self.feature_fusion3_gate, self.feature_fusion_final_gate):
+            head[0].apply(_init_kaiming)
+            nn.init.zeros_(head[-1].weight)
+            nn.init.zeros_(head[-1].bias)
         with torch.no_grad():
             self.depth_mask_head[-1].bias.fill_(depth_mask_bias)
             self.safe_gate_head[-1].bias.fill_(safe_mix_gate_bias)
             self.router_image_head[-1].bias.fill_(router_image_bias)
             self.router_patch_head[-1].bias.fill_(router_patch_bias)
+            self.feature_fusion2_gate[-1].bias.fill_(feature_fusion_gate_bias)
+            self.feature_fusion3_gate[-1].bias.fill_(feature_fusion_gate_bias)
+            self.feature_fusion_final_gate[-1].bias.fill_(feature_fusion_gate_bias)
         self.last_aux = {}
         self.last_stats = {}
 
@@ -754,6 +802,21 @@ class DepthAttributedPreserveAdapter(nn.Module):
     def _apply_film(self):
         return self.phase != 'r0' and self.ablation in ('full', 'film_only_no_output_refine')
 
+    def _apply_feature_fusion(self):
+        return self.feature_fusion_enabled and self.phase != 'r0' and self.ablation in ('full',)
+
+    def _feature_fuse(self, feat, prior, delta_head, gate_head, prefix):
+        fusion_input = torch.cat([feat, prior], dim=1)
+        gate = torch.sigmoid(gate_head(fusion_input)) * self.feature_fusion_gate_limit
+        delta = torch.tanh(delta_head(fusion_input)) * self.feature_fusion_strength
+        fused = feat + gate * delta
+        self.last_aux[f'{prefix}_feature_gate'] = gate
+        self.last_aux[f'{prefix}_feature_delta'] = delta
+        self.last_stats[f'{prefix}_feature_gate_mean'] = gate.detach().mean()
+        self.last_stats[f'{prefix}_feature_gate_max'] = gate.detach().max()
+        self.last_stats[f'{prefix}_feature_delta_abs_mean'] = delta.detach().abs().mean()
+        return fused
+
     def forward(self, feat2, feat3, depth):
         self.last_aux = {}
         self.last_stats = {}
@@ -788,6 +851,22 @@ class DepthAttributedPreserveAdapter(nn.Module):
                 'beta_abs_mean': zero_stats['stage3_beta_abs_mean'],
                 'delta_abs_mean': zero_stats['stage3_delta_abs_mean'],
             }
+        if self._apply_feature_fusion():
+            feat2 = self._feature_fuse(
+                feat2,
+                prior2,
+                self.feature_fusion2,
+                self.feature_fusion2_gate,
+                'stage2',
+            )
+            feat3 = self._feature_fuse(
+                feat3,
+                prior3,
+                self.feature_fusion3,
+                self.feature_fusion3_gate,
+                'stage3',
+            )
+        feature_stats = dict(self.last_stats)
         feat3_up = F.interpolate(feat3, size=feat2.shape[-2:], mode='bilinear', align_corners=False)
         trans_feat = torch.cat([feat2, feat3_up], dim=1)
         t_pred = torch.sigmoid(self.transmission_head(trans_feat))
@@ -823,7 +902,23 @@ class DepthAttributedPreserveAdapter(nn.Module):
             't_uncertainty_mean': torch.sigmoid(t_log_var.detach()).mean(),
             't_uncertainty_std': torch.sigmoid(t_log_var.detach()).std(unbiased=False),
         }
+        self.last_stats.update(feature_stats)
         return feat2, feat3
+
+    def fuse_final_feature(self, final_feat, depth):
+        if not self._apply_feature_fusion():
+            return final_feat
+        depth = self.normalize_depth(depth)
+        if depth is None:
+            return final_feat
+        prior_full, _, _, _ = self._prior(depth, final_feat.shape[-2:], self.log_alpha_full)
+        return self._feature_fuse(
+            final_feat,
+            prior_full,
+            self.feature_fusion_final,
+            self.feature_fusion_final_gate,
+            'final',
+        )
 
     @staticmethod
     def _image_texture(brightness):
@@ -1207,6 +1302,8 @@ class ConvIRDTA(ConvIR):
         z = self.Convs[1](z)
         z = self.Decoder[2](z)
         final_feat = z
+        if hasattr(self.DTA, 'fuse_final_feature'):
+            final_feat = self.DTA.fuse_final_feature(final_feat, depth)
         z = self.feat_extract[5](final_feat)
         if hasattr(self.DTA, 'refine_output'):
             z = self.DTA.refine_output(final_feat, z, depth, hazy=x, airlight=airlight)
@@ -1278,6 +1375,10 @@ def build_net(
     dta_router_patch_size=32,
     dta_router_image_bias=2.0,
     dta_router_patch_bias=2.0,
+    dta_feature_fusion_enabled=False,
+    dta_feature_fusion_strength=0.10,
+    dta_feature_fusion_gate_limit=1.0,
+    dta_feature_fusion_gate_bias=2.0,
 ):
     if fam_mode != 'original':
         raise ValueError(
@@ -1323,6 +1424,10 @@ def build_net(
                     'router_patch_size': dta_router_patch_size,
                     'router_image_bias': dta_router_image_bias,
                     'router_patch_bias': dta_router_patch_bias,
+                    'feature_fusion_enabled': dta_feature_fusion_enabled,
+                    'feature_fusion_strength': dta_feature_fusion_strength,
+                    'feature_fusion_gate_limit': dta_feature_fusion_gate_limit,
+                    'feature_fusion_gate_bias': dta_feature_fusion_gate_bias,
                 }
             )
         else:

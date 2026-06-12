@@ -74,6 +74,10 @@ def build_candidate(args, device):
         dta_router_patch_size=args.dta_router_patch_size,
         dta_router_image_bias=args.dta_router_image_bias,
         dta_router_patch_bias=args.dta_router_patch_bias,
+        dta_feature_fusion_enabled=args.dta_feature_fusion_enabled,
+        dta_feature_fusion_strength=args.dta_feature_fusion_strength,
+        dta_feature_fusion_gate_limit=args.dta_feature_fusion_gate_limit,
+        dta_feature_fusion_gate_bias=args.dta_feature_fusion_gate_bias,
     ).to(device)
     result = model.load_state_dict(load_state(args.candidate_checkpoint, device), strict=False)
     allowed_missing = (
@@ -82,6 +86,7 @@ def build_candidate(args, device):
         "DTA.safe_gate_head.",
         "DTA.router_image_head.",
         "DTA.router_patch_head.",
+        "DTA.feature_fusion",
     )
     missing = [key for key in result.missing_keys if not key.startswith(allowed_missing)]
     if missing or result.unexpected_keys:
@@ -151,7 +156,7 @@ def select_names(per_image_csv: Path, count: int) -> tuple[list[str], list[str]]
 
 def render_sheet(title: str, names: list[str], dataset, a0, candidate, args, device) -> Image.Image:
     cell = args.thumb_size
-    labels = ["hazy", "A0", "candidate", "GT", "|candidate-GT|"]
+    labels = ["name", "hazy", "A0", "candidate", "GT", "|candidate-GT|"]
     sheet = Image.new("RGB", (cell * len(labels), cell * (len(names) + 1) + 28), (255, 255, 255))
     draw = ImageDraw.Draw(sheet)
     draw.text((6, 6), title, fill=(0, 0, 0))
@@ -176,7 +181,10 @@ def render_sheet(title: str, names: list[str], dataset, a0, candidate, args, dev
                     pred_candidate = candidate(padded, depth)[2][:, :, :h, :w].clamp(0, 1)
             else:
                 pred_candidate = candidate(padded)[2][:, :, :h, :w].clamp(0, 1)
+            name_tile = Image.new("RGB", (cell, cell), (32, 32, 32))
+            ImageDraw.Draw(name_tile).text((6, 6), name, fill=(255, 255, 255))
             tiles = [
+                name_tile,
                 to_thumb(image, cell),
                 to_thumb(pred_a0, cell),
                 to_thumb(pred_candidate, cell),
@@ -186,7 +194,6 @@ def render_sheet(title: str, names: list[str], dataset, a0, candidate, args, dev
             y = cell * (row_idx + 1) + 28
             for col, tile in enumerate(tiles):
                 sheet.paste(tile, (col * cell, y))
-            draw.text((6, y + 4), name, fill=(255, 255, 255))
     return sheet
 
 
@@ -238,6 +245,10 @@ def main() -> None:
     parser.add_argument("--dta_router_patch_size", type=int, default=32)
     parser.add_argument("--dta_router_image_bias", type=float, default=2.0)
     parser.add_argument("--dta_router_patch_bias", type=float, default=2.0)
+    parser.add_argument("--dta_feature_fusion_enabled", action="store_true")
+    parser.add_argument("--dta_feature_fusion_strength", type=float, default=0.10)
+    parser.add_argument("--dta_feature_fusion_gate_limit", type=float, default=1.0)
+    parser.add_argument("--dta_feature_fusion_gate_bias", type=float, default=2.0)
     args = parser.parse_args()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

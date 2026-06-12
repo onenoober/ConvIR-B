@@ -161,6 +161,10 @@ def build_model(arch, mode, args, prefix):
             dta_router_patch_size=getattr(args, f"{prefix}_dta_router_patch_size"),
             dta_router_image_bias=getattr(args, f"{prefix}_dta_router_image_bias"),
             dta_router_patch_bias=getattr(args, f"{prefix}_dta_router_patch_bias"),
+            dta_feature_fusion_enabled=getattr(args, f"{prefix}_dta_feature_fusion_enabled"),
+            dta_feature_fusion_strength=getattr(args, f"{prefix}_dta_feature_fusion_strength"),
+            dta_feature_fusion_gate_limit=getattr(args, f"{prefix}_dta_feature_fusion_gate_limit"),
+            dta_feature_fusion_gate_bias=getattr(args, f"{prefix}_dta_feature_fusion_gate_bias"),
         )
     if arch == "dpga":
         try:
@@ -227,6 +231,7 @@ def load_candidate_state(model, checkpoint, device, arch):
             "DTA.safe_gate_head.",
             "DTA.router_image_head.",
             "DTA.router_patch_head.",
+            "DTA.feature_fusion",
         )
         missing = [key for key in result.missing_keys if not key.startswith(allowed_missing)]
         unexpected = list(result.unexpected_keys)
@@ -519,6 +524,14 @@ def main():
     parser.add_argument("--candidate_dta_router_image_bias", type=float, default=2.0)
     parser.add_argument("--original_dta_router_patch_bias", type=float, default=2.0)
     parser.add_argument("--candidate_dta_router_patch_bias", type=float, default=2.0)
+    parser.add_argument("--original_dta_feature_fusion_enabled", action="store_true")
+    parser.add_argument("--candidate_dta_feature_fusion_enabled", action="store_true")
+    parser.add_argument("--original_dta_feature_fusion_strength", type=float, default=0.10)
+    parser.add_argument("--candidate_dta_feature_fusion_strength", type=float, default=0.10)
+    parser.add_argument("--original_dta_feature_fusion_gate_limit", type=float, default=1.0)
+    parser.add_argument("--candidate_dta_feature_fusion_gate_limit", type=float, default=1.0)
+    parser.add_argument("--original_dta_feature_fusion_gate_bias", type=float, default=2.0)
+    parser.add_argument("--candidate_dta_feature_fusion_gate_bias", type=float, default=2.0)
     parser.add_argument("--depth_shuffle_offset", type=int, default=137)
     parser.add_argument("--original_dpga_prior_embed_channels", type=int, default=16)
     parser.add_argument("--candidate_dpga_prior_embed_channels", type=int, default=16)
