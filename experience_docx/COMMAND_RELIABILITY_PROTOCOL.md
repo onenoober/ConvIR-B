@@ -1049,3 +1049,59 @@ succeeded.
 When `set -o pipefail` is active, avoid `find ... | head` as a success-checking
 pipeline because `find` can receive SIGPIPE after `head` exits. Use `python`,
 `sed -n`, or disable pipefail locally for preview-only listings.
+
+### 2026-06-12 PowerShell `wsl -- bash -lc` multi-line quote truncation
+
+Avoid passing a multi-line Bash program directly as a single-quoted argument to
+`wsl ... bash -lc` from PowerShell.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'set -euo pipefail
+for d in /home/ubuntu/workspace/ConvIR-B-dta-v3-5-fdf-rcs-lite /home/ubuntu/workspace/ConvIR-B; do
+  if [ -d "$d" ]; then echo "FOUND $d"; fi
+done
+...'
+```
+
+Failure mode observed:
+
+- PowerShell/WSL quote handling stripped or split pieces of the script;
+- Bash received a truncated loop and returned `syntax error: unexpected end of
+  file`.
+
+Corrected form:
+
+```powershell
+$script = @"
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B-dta-v3-5-fdf-rcs-lite
+printf 'LOCAL_READ_OK\n'
+"@
+$script -replace "`r", "" | wsl -d Ubuntu-22.04 -- bash
+```
+
+Use a PowerShell here-string piped to WSL Bash for multi-line local WSL scripts;
+reserve `bash -lc '...'` for short commands without loops, pipes, or nested
+quotes.
+
+Related recurrence:
+
+Do not place an unindented `@'` marker inside a single-quoted PowerShell
+here-string used as the outer wrapper. PowerShell treats that line as the
+terminator and reports `The string is missing the terminator: '`.
+
+Corrected form: use `apply_patch`, a double-quoted outer here-string with
+escaped `$` variables, or avoid embedding the inner here-string syntax in the
+script text.
+
+Related recurrence:
+
+When a Python here-doc is embedded inside a PowerShell-to-WSL script wrapper,
+ensure the closing delimiter is at column 1 and followed by a newline before the
+outer script ends. A malformed wrapper caused Bash to warn that the here-doc was
+delimited by end-of-file and Python then evaluated the literal `PY` token.
+
+Corrected form: prefer short `python3 -c` snippets for inspection commands, or
+write the Python helper to a temporary file before invoking it from WSL Bash.

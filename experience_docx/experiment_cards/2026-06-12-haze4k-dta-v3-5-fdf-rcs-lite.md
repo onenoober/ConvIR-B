@@ -2,7 +2,7 @@
 
 Date: 2026-06-12
 
-Status: `PLANNED_RELAXED_TRAIN_DERIVED_FLOW`
+Status: `COMPLETED_RELAXED_FLOW_PASS_STRICT_FAIL_SELECTOR_DIAGNOSTIC_LOCKED_TEST_BLOCKED`
 
 ## Scope
 
@@ -97,6 +97,66 @@ lambda_safe_action   = 0.004 for L5 only
 ## Relaxed Flow Rule
 
 Strict promotion gates remain recorded, but the run queue uses relaxed flow gates so L1-L5 and nested calibration complete even if early strict gates fail. Relaxed flow pass is diagnostic only; it does not authorize locked test or promotion.
+
+## Outcome
+
+The train-derived triage and nested selector postprocess completed on
+`convir-4090`. The first queue completed all non-L0 variants but reported
+`DTA_V3_5_TRIAGE_QUEUE_FAILED` because the old L0 A0 sanity eval path failed.
+After the eval fix was pushed, L0 repair ran with two GPUs from commit `4c7589b`
+and completed summary/nested postprocess under the five-GPU follow-up cap.
+
+Completion markers:
+
+```text
+train_done_ok=24
+eval_done_ok=104
+aggregate_done_ok=26
+run_ok_markers=26
+DTA_V3_5_L0_REPAIR_POSTPROCESS_OK
+locked_test_touched=false
+```
+
+All L1-L5 variants passed the relaxed diagnostic flow, but none passed the
+strict triage gate. Key aggregate results:
+
+| Variant | mean dPSNR | hard bottom-25 | dSSIM | positive ratio | worst/600 | true-vs-zero | Relaxed | Strict |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |
+| L1 `s004_g025` | `+0.071183` | `+0.081919` | `+0.00001536` | `0.6308` | `82.50` | `+0.069518` | pass | fail |
+| L2 `s002_g025` | `+0.052706` | `+0.064818` | `+0.00001700` | `0.6250` | `60.50` | `+0.045710` | pass | fail |
+| L3 `s004_g015` | `+0.062959` | `+0.075288` | `+0.00001736` | `0.6304` | `69.50` | `+0.056608` | pass | fail |
+| L4 `tail_s004_g025` | `+0.066923` | `+0.078181` | `+0.00001603` | `0.6288` | `78.50` | `+0.061267` | pass | fail |
+| L5a `res010` | `+0.066249` | `+0.078210` | `+0.00001698` | `0.6296` | `76.25` | `+0.055320` | pass | fail |
+| L5b `res015` | `+0.066245` | `+0.078211` | `+0.00001696` | `0.6296` | `76.25` | `+0.055353` | pass | fail |
+
+Interpretation:
+
+- Conservative FDF is the right correction relative to v3.4: positive ratio
+  rises from about `0.58-0.59` to about `0.625-0.631`, worst falls from about
+  `116-128/600` to about `60-83/600`, and depth attribution remains positive.
+- L2 is the safest all-image candidate (`60.5/600` worst) but loses mean and
+  attribution surplus; L1 has the best mean and passes the positive-ratio line
+  but leaves too much tail risk.
+- L4/L5 tail losses and tiny learned residual do not materially improve the
+  all-image tail; residual capacity should remain disabled until selector
+  quality improves.
+- The oracle risk-coverage curve is strong: at `0.50` oracle coverage, non-L0
+  variants keep positive mean/hard and zero worst regressions. This confirms
+  candidate headroom and moves the bottleneck to deployable selector/calibration.
+- The current nested threshold selector is useful but underpowered. Best relaxed
+  selector diagnostic is L4 at about `0.21` coverage, selected mean about
+  `+0.0197 dB`, selected positive ratio about `0.67`, and worst about
+  `31.5/600`; it is not strict-gate or promotion-ready.
+
+Final route decision:
+
+```text
+COMPLETED_RELAXED_FLOW_PASS_STRICT_FAIL_SELECTOR_DIAGNOSTIC_LOCKED_TEST_BLOCKED
+```
+
+Do not run locked Haze4K test from this route. The next route should improve the
+selector/calibration model and risk features rather than increasing router,
+FiLM, or residual capacity.
 
 ## GPU Use Rule
 

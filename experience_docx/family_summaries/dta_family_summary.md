@@ -1,8 +1,8 @@
 # DTA Depth-Transmission Adapter Family Summary
 
-Date: 2026-06-11
+Date: 2026-06-12
 
-Status: positive diagnostic family, not promotion-ready; DTA-v3.3 RouterFusion triage failed and locked Haze4K test remains blocked.
+Status: positive diagnostic family, not promotion-ready; DTA-v3.5 FDF-RCS-Lite completed relaxed train-derived diagnostics, strict gates still failed, and locked Haze4K test remains blocked.
 
 ## Scope
 
@@ -61,20 +61,34 @@ true-vs-zero `+0.029598`, true-vs-shuffle `+0.026012`, and true-vs-normal
 `+0.026889`. No D-row passed triage, so formal 5-fold x 3-seed and locked test
 remain blocked.
 
+DTA-v3.4 FDF-TSR proved that feature-level depth fusion carries real signal but
+also made the over-action failure explicit. The train-derived E1-E4 triage had
+mean/hard gains and strong depth-control surplus, but positive ratio remained
+around `0.579-0.590` and worst regressions stayed around `116-128/600`.
+
+DTA-v3.5 FDF-RCS-Lite completed the relaxed train-derived flow on
+`convir-4090`. Conservative FDF moved the family in the intended direction:
+L1/L3 positive ratio reached about `0.630`, L2 reduced worst to `60.5/600`, and
+all non-L0 variants kept positive dSSIM and true-vs-zero surplus. Strict gates
+still failed because all-image worst remained above `48/600`, and the nested
+threshold selector only reached a low-coverage relaxed diagnostic. The oracle
+risk-coverage curve is strong at `0.50` coverage, so the bottleneck is now
+deployable risk-calibrated selection rather than more residual/router capacity.
+
 ## Route Table
 
 | Route | Evidence | Decision |
 | --- | --- | --- |
 | DTA-v2 CalGate | Multi-seed OOF showed `invert` about `+0.0887 dB`, but zero/shuffle retained most of the improvement and tail/SSIM did not pass. | Positive diagnostic only; no locked test; use as motivation for attribution controls. |
-| DTA-v3 DAPC fine-tune | `convir-4090` preflight passed; R0 scouts failed. Zero-R0 depthDirect train=`invert` proved surplus. Strong tailguard over-suppressed the branch. Tail-lite `wg18_base_s008_b14` passed mechanism thresholds but failed SSIM/tail. DTA-v3.1 airlight/risk/light-hinge, DTA-v3.2 SafeMix, and DTA-v3.3 RouterFusion all failed their written scout/triage gates. | Mechanism-positive diagnostic only; no 5-fold formal validation from B0-B4/C/D rows; no locked test. |
+| DTA-v3 DAPC/FDF fine-tune | `convir-4090` preflight passed; R0 scouts failed. Zero-R0 depthDirect train=`invert` proved surplus. DTA-v3.1 airlight/risk/light-hinge, DTA-v3.2 SafeMix, DTA-v3.3 RouterFusion, and DTA-v3.4 FDF-TSR failed their written gates. DTA-v3.5 FDF-RCS-Lite fixed much of the over-action pattern but still failed strict all-image tail; oracle curves show selector headroom. | Mechanism-positive diagnostic only; no 5-fold formal validation from B0-B4/C/D/E/L rows; no locked test. Reopen with a stronger nested selector/calibration route. |
 
 ## Reopen Conditions
 
-Reopen this family only with a predeclared DTA-v3 Phase A variant that first
-produces a safe generic R0 baseline, or with an alternate depth-active route that
-proves true-depth surplus over zero, deterministic shuffle, and wrong-orientation
-controls while keeping SSIM and tail regressions no worse than the zero/R0
-baseline.
+Reopen this family only with a predeclared selector-first route that uses the
+DTA-v3.5 OOF action table/oracle evidence to improve nested risk calibration, or
+with a materially safer feature-action candidate that keeps true-depth surplus
+over zero, deterministic shuffle, and wrong-orientation controls while bringing
+all-image worst regressions inside the strict gate.
 
 Do not use locked Haze4K test for checkpoint, gate, depth mode, or loss
 selection.
@@ -215,3 +229,39 @@ The user requested relaxed continuation metrics so the full train-derived flow
 can complete. This relaxation is diagnostic only: strict gates remain reported,
 formal claims require the nested reports, and locked Haze4K test remains blocked
 unless a fixed config is explicitly authorized later.
+
+## 2026-06-12 DTA-v3.5 FDF-RCS-Lite Outcome
+
+Decision: `COMPLETED_RELAXED_FLOW_PASS_STRICT_FAIL_SELECTOR_DIAGNOSTIC_LOCKED_TEST_BLOCKED`.
+
+The DTA-v3.5 relaxed train-derived queue completed on `convir-4090`. The first
+queue finished all non-L0 variants and only failed because the old L0 A0 sanity
+eval path had an engineering bug. The L0 repair/postprocess queue ran from
+commit `4c7589b` with two GPUs, within the user-requested five-GPU cap, and
+produced the final summary, OOF action table, oracle risk-coverage curve, and
+nested selector reports. Locked Haze4K test was not touched.
+
+All non-L0 variants passed the relaxed diagnostic flow but failed strict triage:
+
+| Variant | mean dPSNR | hard bottom-25 | dSSIM | positive ratio | worst/600 | true-vs-zero |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| L1 conservative FDF | `+0.071183` | `+0.081919` | `+0.00001536` | `0.6308` | `82.50` | `+0.069518` |
+| L2 smaller action | `+0.052706` | `+0.064818` | `+0.00001700` | `0.6250` | `60.50` | `+0.045710` |
+| L3 lower gate | `+0.062959` | `+0.075288` | `+0.00001736` | `0.6304` | `69.50` | `+0.056608` |
+| L4 tail losses | `+0.066923` | `+0.078181` | `+0.00001603` | `0.6288` | `78.50` | `+0.061267` |
+| L5 residual 0.010 | `+0.066249` | `+0.078210` | `+0.00001698` | `0.6296` | `76.25` | `+0.055320` |
+| L5 residual 0.015 | `+0.066245` | `+0.078211` | `+0.00001696` | `0.6296` | `76.25` | `+0.055353` |
+
+The result validates the conservative-action diagnosis from v3.4: lowering
+feature gate/strength improves positive ratio and tail counts while preserving
+depth attribution. However, L4/L5 show that adding the tested tail losses and
+tiny residual does not solve all-image tail safety.
+
+The oracle risk-coverage curve is the main positive result. It shows that the
+candidate action has safe-subset headroom, including positive oracle mean/hard
+at `0.50` coverage with zero worst regressions for non-L0 variants. The current
+nested threshold selector is not enough: the best relaxed selector diagnostic is
+L4 at about `0.21` coverage with selected mean about `+0.0197 dB`, selected
+positive ratio about `0.67`, and worst about `31.5/600`. Continue only with a
+stronger selector/calibration route; do not increase router/FiLM/residual
+capacity or run locked test from DTA-v3.5.

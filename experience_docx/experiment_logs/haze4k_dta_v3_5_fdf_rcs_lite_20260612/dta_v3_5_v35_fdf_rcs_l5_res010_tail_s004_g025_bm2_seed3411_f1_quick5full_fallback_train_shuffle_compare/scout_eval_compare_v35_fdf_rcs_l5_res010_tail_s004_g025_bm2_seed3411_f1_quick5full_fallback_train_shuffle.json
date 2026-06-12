@@ -1,0 +1,53 @@
+{
+  "runs": {
+    "A0": {
+      "label": "A0",
+      "arch": "official_convir",
+      "mode": "original",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "depth_mode": "none",
+      "airlight_mode": "none",
+      "count": 600,
+      "mean_psnr": 39.75955163955688,
+      "mean_ssim": 0.995632650355498,
+      "avg_time_sec_sync": 0.038935695886611936,
+      "median_time_sec_sync": 0.036301374435424805,
+      "peak_cuda_mem_mib": 536.99169921875
+    },
+    "DTA_v35_v35_fdf_rcs_l5_res010_tail_s004_g025_bm2_seed3411_f1_quick5full_fallback_train_shuffle": {
+      "label": "DTA_v35_v35_fdf_rcs_l5_res010_tail_s004_g025_bm2_seed3411_f1_quick5full_fallback_train_shuffle",
+      "arch": "dta_v3",
+      "mode": "modres",
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-5-fdf-rcs-lite/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-5-FDF-RCS-l5_res010_tail_s004_g025_bm2-seed3411_f1-quick5full/Training-Results/Final.pkl",
+      "depth_mode": "shuffle",
+      "airlight_mode": "fallback",
+      "count": 600,
+      "mean_psnr": 39.77925398826599,
+      "mean_ssim": 0.9956527454654376,
+      "avg_time_sec_sync": 0.053608383337656655,
+      "median_time_sec_sync": 0.04926776885986328,
+      "peak_cuda_mem_mib": 604.26025390625
+    }
+  },
+  "comparison": {
+    "common_count": 600,
+    "mean_psnr_delta": 0.019702348709106445,
+    "median_psnr_delta": 0.017772674560546875,
+    "p5_psnr_delta": -0.25777111053466795,
+    "p95_psnr_delta": 0.28871631622314403,
+    "hard_bottom25_psnr_delta": 0.0455801264444987,
+    "easy_top25_psnr_delta": 0.016012217203776043,
+    "worst10pct_mean_psnr_delta": -0.3101218223571777,
+    "best10pct_mean_psnr_delta": 0.33126777013142905,
+    "worst10img_mean_psnr_delta": -0.5712062835693359,
+    "best10img_mean_psnr_delta": 0.5323188781738282,
+    "worst10_mean_psnr_delta": -0.3101218223571777,
+    "best10_mean_psnr_delta": 0.33126777013142905,
+    "mean_ssim_delta": 2.0095109939575194e-05,
+    "positive_ratio": 0.5633333333333334,
+    "strong_reference_cut_psnr": 42.834919929504395,
+    "strong_reference_count": 150,
+    "strong_regression_count_delta_le_-0.05": 43,
+    "worst_regression_count_delta_le_-0.20": 53
+  }
+}
