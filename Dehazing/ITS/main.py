@@ -150,7 +150,7 @@ if __name__ == '__main__':
     parser.add_argument('--init_model_allow_full_route', action='store_true')
     parser.add_argument('--partial_new_prefixes', type=str, default='DTA.')
     parser.add_argument('--resume', type=str, default='')
-    parser.add_argument('--train_scope', default='all', choices=['all', 'adapter_only', 'adapter_neighbors', 'dta_r0_only', 'dta_depth_only', 'dta_safemix_gate_only', 'dta_safemix_full', 'dta_safemix_plus_film', 'dta_routerfusion_router_only', 'dta_routerfusion_full', 'dta_routerfusion_plus_film', 'dta_fdf_feature_only', 'dta_fdf_tsr_residual', 'dta_fdf_tsr_full'], type=str)
+    parser.add_argument('--train_scope', default='all', choices=['all', 'adapter_only', 'adapter_neighbors', 'dta_r0_only', 'dta_depth_only', 'dta_safemix_gate_only', 'dta_safemix_full', 'dta_safemix_plus_film', 'dta_routerfusion_router_only', 'dta_routerfusion_full', 'dta_routerfusion_plus_film', 'dta_fdf_feature_only', 'dta_fdf_tsr_residual', 'dta_fdf_tsr_full', 'dta_fdf_tsr_plus_film'], type=str)
     parser.add_argument('--dta_depth_cache_dir', type=str, default='')
     parser.add_argument('--dta_train_depth_split', type=str, default='train')
     parser.add_argument('--dta_eval_depth_split', type=str, default='test')

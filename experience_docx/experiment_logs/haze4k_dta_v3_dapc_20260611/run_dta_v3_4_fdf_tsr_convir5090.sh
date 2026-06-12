@@ -15,6 +15,11 @@ STATUS=$EVID/status.txt
 MAX_IMAGES=${MAX_IMAGES:-0}
 RUN_TEST=${RUN_TEST:-1}
 RUN_TRAIN_CONTROLS=${RUN_TRAIN_CONTROLS:-0}
+USE_SPLIT=${USE_SPLIT:-0}
+FOLD=${FOLD:-0}
+SPLIT_JSON=${SPLIT_JSON:-$EVID/dta_v3_haze4k_oof_splits_seed3407.json}
+TRAIN_SPLIT=${TRAIN_SPLIT:-fold${FOLD}_train}
+EVAL_SPLIT=${EVAL_SPLIT:-fold${FOLD}_val}
 export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
 export TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
 
@@ -96,16 +101,48 @@ case "$VARIANT" in
     ROUTER_FLAG=(--dta_router_fusion_enabled --dta_router_image_gate_limit 1.0 --dta_router_patch_gate_limit 1.0 --dta_router_patch_size 32 --dta_router_image_bias 3.0 --dta_router_patch_bias 3.0)
     ROUTER_EVAL_FLAG=(--candidate_dta_router_fusion_enabled --candidate_dta_router_image_gate_limit 1.0 --candidate_dta_router_patch_gate_limit 1.0 --candidate_dta_router_patch_size 32 --candidate_dta_router_image_bias 3.0 --candidate_dta_router_patch_bias 3.0)
     ;;
+  e4_plus_film)
+    TRAIN_SCOPE=dta_fdf_tsr_plus_film
+    LR=0.000025
+    FEATURE_STRENGTH=0.10
+    FEATURE_BIAS=3.0
+    DEPTH_SCALE=0.0
+    MASK_EASY=0.0
+    MASK_DENSE=0.0
+    SAFE_CLIP=0.025
+    SAFE_PHYS=0.0
+    SAFE_LEARNED=1.0
+    SAFE_GATE_BIAS=3.0
+    TRANS_LOG_W=0.010
+    TRANS_NLL_W=0.002
+    REF_W=0.008
+    CVAR_W=0.008
+    GROUP_W=0.006
+    PATCH_SSIM_W=0.006
+    CF_W=0.001
+    SAFE_FLAG=(--dta_safe_mix_enabled)
+    SAFE_EVAL_FLAG=(--candidate_dta_safe_mix_enabled)
+    ROUTER_FLAG=(--dta_router_fusion_enabled --dta_router_image_gate_limit 1.0 --dta_router_patch_gate_limit 1.0 --dta_router_patch_size 32 --dta_router_image_bias 3.0 --dta_router_patch_bias 3.0)
+    ROUTER_EVAL_FLAG=(--candidate_dta_router_fusion_enabled --candidate_dta_router_image_gate_limit 1.0 --candidate_dta_router_patch_gate_limit 1.0 --candidate_dta_router_patch_size 32 --candidate_dta_router_image_bias 3.0 --candidate_dta_router_patch_bias 3.0)
+    ;;
   *) echo "Unsupported VARIANT=$VARIANT" >&2; exit 64 ;;
 esac
 
-RUN_ID=v34_fdf_tsr_${VARIANT}_seed${SEED}_${STAGE}
-MODEL_NAME=ConvIR-Haze4K-DTA-v3-4-FDF-TSR-${VARIANT}-seed${SEED}-${STAGE}
+SPLIT_TAG=""
+if [[ "$USE_SPLIT" == "1" ]]; then
+  SPLIT_TAG="_f${FOLD}"
+fi
+RUN_ID=v34_fdf_tsr_${VARIANT}_seed${SEED}${SPLIT_TAG}_${STAGE}
+MODEL_NAME=ConvIR-Haze4K-DTA-v3-4-FDF-TSR-${VARIANT}-seed${SEED}${SPLIT_TAG}-${STAGE}
 TRAIN_LOG=$EVID/dta_v3_4_${RUN_ID}_train.log
+STATE_LABEL=TRAIN_DERIVED_TRIAGE
+if [[ "$RUN_TEST" == "1" ]]; then
+  STATE_LABEL=USER_EXPLICIT_TEST_OVERRIDE_ONE_SHOT
+fi
 mkdir -p "$EVID"
 {
   echo "dta_v3_4_fdf_tsr_start run_id=$RUN_ID variant=$VARIANT stage=$STAGE $(date --iso-8601=seconds)"
-  echo "state=USER_EXPLICIT_TEST_OVERRIDE_ONE_SHOT"
+  echo "state=$STATE_LABEL"
   echo "work=$WORK"
   echo "python=$PY"
   echo "data=$DATA"
@@ -117,6 +154,7 @@ mkdir -p "$EVID"
   echo "gate_policy=widest_user_override"
   echo "locked_test_touched=$RUN_TEST"
   echo "locked_test_policy_note=single explicit user override; no checkpoint/gate selection from test"
+  echo "use_split=$USE_SPLIT fold=$FOLD split_json=$SPLIT_JSON train_split=$TRAIN_SPLIT eval_split=$EVAL_SPLIT"
 } | tee -a "$STATUS"
 
 for p in "$PY" "$DATA" "$A0" "$DEPTH"; do
@@ -132,6 +170,10 @@ cd "$WORK/Dehazing/ITS"
 if [[ "${FORCE:-0}" != "1" && -f "results/$MODEL_NAME/Training-Results/Final.pkl" ]]; then
   echo "dta_v3_4_fdf_tsr_train_skip_existing model=$MODEL_NAME $(date --iso-8601=seconds)" | tee -a "$STATUS"
 else
+  TRAIN_SPLIT_ARGS=()
+  if [[ "$USE_SPLIT" == "1" ]]; then
+    TRAIN_SPLIT_ARGS=(--split_json "$SPLIT_JSON" --split_name "$TRAIN_SPLIT")
+  fi
   set +e
   PYTHONUNBUFFERED=1 "$PY" main.py \
     --model_name "$MODEL_NAME" \
@@ -217,6 +259,7 @@ else
     --dta_patch_ssim_cvar_topk 0.10 \
     --dta_counterfactual_gate_weight "$CF_W" \
     --dta_counterfactual_modes zero,normal \
+    "${TRAIN_SPLIT_ARGS[@]}" \
     2>&1 | tee "$TRAIN_LOG"
   train_rc=${PIPESTATUS[0]}
   set -e
@@ -235,6 +278,9 @@ run_matrix() {
   local depth_split=$2
   local matrix_suffix=$3
   local split_args=()
+  if [[ "$USE_SPLIT" == "1" ]]; then
+    split_args=(--split_json "$SPLIT_JSON" --split_name "$EVAL_SPLIT")
+  fi
   local manifest=$EVID/dta_v3_4_${RUN_ID}_${matrix_suffix}_matrix_manifest.json
   printf '{"runs":[\n' > "$manifest"
   local first=1

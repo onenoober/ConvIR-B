@@ -133,6 +133,19 @@ def _apply_train_scope(model, args):
                 'DTA.router_image_head.',
                 'DTA.router_patch_head.',
             )
+        elif train_scope == 'dta_fdf_tsr_plus_film':
+            prefixes = (
+                'DTA.stage2.',
+                'DTA.stage3.',
+                'DTA.feature_fusion',
+                'DTA.log_alpha',
+                'DTA.transmission_head.',
+                'DTA.trans_uncertainty_head.',
+                'DTA.safe_gate_head.',
+                'DTA.safe_residual_head.',
+                'DTA.router_image_head.',
+                'DTA.router_patch_head.',
+            )
         else:
             raise ValueError(f'Unsupported train_scope: {train_scope}')
         for name, param in model.named_parameters():
