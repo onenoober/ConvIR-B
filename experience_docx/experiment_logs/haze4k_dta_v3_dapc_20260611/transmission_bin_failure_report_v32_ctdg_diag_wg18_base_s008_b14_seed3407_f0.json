@@ -1,0 +1,73 @@
+{
+  "protocol": "transmission-bin failure report",
+  "count": 600,
+  "bins": [
+    {
+      "bin": "low_t_mean_lt_0.35",
+      "count": 255,
+      "mean_delta_psnr": -0.013272388664186141,
+      "mean_delta_ssim": -4.295718436147653e-05,
+      "worst_regression_count_delta_le_-0.20": 45,
+      "positive_ratio": 0.5254901960784314,
+      "mean_log_t_abs_error": 0.4202906847584481,
+      "mean_mask": 0.0009749965493421199,
+      "mean_action_abs": 7.496528939786823e-05
+    },
+    {
+      "bin": "mid_t_mean_0.35_0.65",
+      "count": 307,
+      "mean_delta_psnr": 0.05342460006570305,
+      "mean_delta_ssim": -1.432705391501759e-05,
+      "worst_regression_count_delta_le_-0.20": 28,
+      "positive_ratio": 0.6775244299674267,
+      "mean_log_t_abs_error": 0.3115428722060076,
+      "mean_mask": 0.0009321502001473759,
+      "mean_action_abs": 6.841253491862926e-05
+    },
+    {
+      "bin": "high_t_mean_ge_0.65",
+      "count": 38,
+      "mean_delta_psnr": 0.04277207475623407,
+      "mean_delta_ssim": 3.2784123169748404e-05,
+      "worst_regression_count_delta_le_-0.20": 3,
+      "positive_ratio": 0.5526315789473685,
+      "mean_log_t_abs_error": 0.1833296673078286,
+      "mean_mask": 0.0007189491313367494,
+      "mean_action_abs": 5.102208438314081e-05
+    },
+    {
+      "bin": "high_log_t_error_top25",
+      "count": 150,
+      "mean_delta_psnr": 0.004809925160763271,
+      "mean_delta_ssim": -3.359317779541016e-05,
+      "worst_regression_count_delta_le_-0.20": 19,
+      "positive_ratio": 0.5533333333333333,
+      "mean_log_t_abs_error": 0.5697396725416184,
+      "mean_mask": 0.0009624163992702961,
+      "mean_action_abs": 7.28777404583525e-05
+    },
+    {
+      "bin": "bright_top25",
+      "count": 150,
+      "mean_delta_psnr": 0.006406355899114023,
+      "mean_delta_ssim": -5.0866206487019856e-05,
+      "worst_regression_count_delta_le_-0.20": 14,
+      "positive_ratio": 0.5666666666666667,
+      "mean_log_t_abs_error": 0.3704690603415171,
+      "mean_mask": 0.0008706324663944543,
+      "mean_action_abs": 6.68825750957088e-05
+    },
+    {
+      "bin": "low_texture_bottom25",
+      "count": 150,
+      "mean_delta_psnr": 0.026273439393702417,
+      "mean_delta_ssim": -6.507635116577148e-05,
+      "worst_regression_count_delta_le_-0.20": 22,
+      "positive_ratio": 0.6333333333333333,
+      "mean_log_t_abs_error": 0.35265914261341097,
+      "mean_mask": 0.0009664606465958059,
+      "mean_action_abs": 7.07725501221527e-05
+    }
+  ],
+  "locked_test_touched": false
+}

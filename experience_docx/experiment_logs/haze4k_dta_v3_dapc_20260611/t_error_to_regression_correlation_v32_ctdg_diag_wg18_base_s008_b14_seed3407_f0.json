@@ -1,0 +1,16 @@
+{
+  "protocol": "DTA-v3.2 t_pred/transmission failure audit",
+  "primary_filter": {
+    "depth_mode": "invert",
+    "airlight_mode": "fallback"
+  },
+  "count": 600,
+  "pearson_log_t_error_vs_delta_psnr": -0.06666327913238958,
+  "pearson_log_t_error_vs_delta_ssim": -0.05227931440626954,
+  "pearson_mask_mean_vs_delta_psnr": 0.05854250004237036,
+  "pearson_depth_action_abs_vs_delta_psnr": 0.07095789219255619,
+  "pearson_jphys_abs_vs_delta_psnr": -0.018513875521101987,
+  "mean_log_t_abs_error_worst_le_-0.20": 0.3611116748499243,
+  "mean_log_t_abs_error_non_worst": 0.34797676803387756,
+  "locked_test_touched": false
+}

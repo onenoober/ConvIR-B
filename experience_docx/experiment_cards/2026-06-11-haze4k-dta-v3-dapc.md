@@ -510,3 +510,47 @@ Interpretation gates before any DTA-v3.2 training:
 
 No C0-C4 training is launched until these audits are parsed and the next row is
 fixed in this card.
+
+## 2026-06-12 DTA-v3.2 CTDG-SafeMix No/Low-Training Audit Results
+
+Status: `COMPLETED_CTDG_AUDIT_C0_FAIL_C1_C3_JUSTIFIED_LOCKED_TEST_BLOCKED`.
+
+The no/low-training queue completed on `convir-4090` in workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32` from
+commit `c0738dc`. It evaluated the two source checkpoints in parallel:
+`wg18_base_s008_b14` and `wg18_light_hinge`. Locked Haze4K test remained
+untouched.
+
+Key result summary:
+
+| Source | Audit | Main finding | Decision |
+| --- | --- | --- | --- |
+| `wg18_base_s008_b14` | alpha sweep | alpha `0.50` reduces worst to `23/600` but true-vs-zero falls to `+0.020439`; alpha `0.75` keeps mean `+0.020914` but true-vs-zero is only `+0.029073`, dSSIM is `-0.00001604`, and worst is `54/600` | C0 alpha-only fails |
+| `wg18_light_hinge` | alpha sweep | alpha `0.50` gives true-vs-zero `+0.020706`, worst `23`; alpha `0.75` gives true-vs-zero `+0.029418`, dSSIM `-0.00001587`, worst `55` | C0 alpha-only fails |
+| `wg18_base_s008_b14` | oracle 60% coverage | image/patch/pixel oracle all pass: image mean `+0.092568`, dSSIM `+0.00000963`, worst `0`, true-vs-zero `+0.056471`; patch/pixel are stronger | soft gate/SafeMix is justified |
+| `wg18_light_hinge` | oracle 60% coverage | image mean `+0.093898`, dSSIM `+0.00000952`, worst `0`, true-vs-zero `+0.057479`; patch/pixel are stronger | soft gate/SafeMix is justified |
+| both | t/transmission audit | log-t error correlation with dPSNR is weak (about `-0.066`), but low-t images are the failure concentration: `255` low-t images have mean about `-0.013 dB` and `45/76` worst regressions | use t/uncertainty as risk feature, not sole root cause |
+| both | selector correction | same-fold selected subset has conditional positive ratio `0.72` and selected true-vs-zero about `+0.078..+0.079`, but global coverage is only `0.25` and global true-vs-zero remains about `+0.0196..+0.0198` | selector is diagnostic only |
+| both | nested selector smoke | internal fold0 nested selection drops to global mean about `+0.0163..+0.0167`, hard near zero/negative, true-vs-zero about `+0.0196..+0.0199`, with one held-out split near zero mean | one-threshold selector is not deployable |
+
+Artifacts:
+
+- `dta_v3_2_ctdg_audit_summary.json/csv`.
+- `alpha_blend_sweep_matrix_v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0.json/csv`.
+- `alpha_blend_sweep_matrix_v32_ctdg_diag_wg18_light_hinge_seed3407_f0.json/csv`.
+- `oracle_action_upper_bound_by_coverage_v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0.json/csv`.
+- `oracle_action_upper_bound_by_coverage_v32_ctdg_diag_wg18_light_hinge_seed3407_f0.json/csv`.
+- `t_pred_vs_trans_gt_correlation_*`, `t_error_to_regression_correlation_*`, and
+  `transmission_bin_failure_report_*` for both source checkpoints.
+- `selector_metric_correction_report_*` and `nested_selector_smoke_f0_*` for
+  fallback/GT airlight.
+
+Decision: do not launch 5-fold x 3-seed and do not touch locked test. C0
+alpha-only is ruled out. The oracle gap shows that the existing depth action has
+useful local direction but needs a learned soft pixel/image gate and safer mixing
+rather than a global shrink or one-threshold selector. The next fixed scout row
+should be C1/C3: start from `wg18_base_s008_b14`, disable R0, keep A0 frozen,
+train a DTA-v3.2 SafeMix gate/residual with physical delta clipped and treated as
+a hint, and use transmission/low-t/brightness/texture/action magnitude as risk
+features. C2 transmission calibration should be included as an auxiliary risk
+signal but not treated as the only rescue path.

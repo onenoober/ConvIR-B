@@ -721,3 +721,123 @@ airlight_gap_unique_start run_id=v31_wg18_base_s008_b14_seed3407_f0 2026-06-12T0
 airlight_gap_unique_done run_id=v31_wg18_base_s008_b14_seed3407_f0 2026-06-12T01:36:12+08:00
 airlight_gap_unique_start run_id=v31_wg18_light_hinge_seed3407_f0_scout5full_post 2026-06-12T01:36:12+08:00
 airlight_gap_unique_done run_id=v31_wg18_light_hinge_seed3407_f0_scout5full_post 2026-06-12T01:37:27+08:00
+cloud_setup_v32_bundle_ok 2026-06-12T08:38:43+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32
+branch=codex/haze4k-dta-v3-dapc-finetune
+head=c0738dc
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+PY_OK
+DATA_OK
+A0_OK
+DEPTH_OK
+B4_CKPT_OK
+B0_CKPT_OK
+dta_v3_2_ctdg_safemix_audit_start run_id=v32_ctdg_diag_smoke2 source_run_id=v31_wg18_base_s008_b14_seed3407_f0 2026-06-12T08:39:10+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+candidate=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_base_s008_b14-seed3407-f0-scout5full/Training-Results/Final.pkl
+candidate_name=wg18_base_s008_b14
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+eval_split=fold0_val
+cuda_visible_devices=3
+locked_test_touched=false
+codex/haze4k-dta-v3-dapc-finetune
+c0738dc
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+dta_v3_2_action_diagnostics_done rc=0 run_id=v32_ctdg_diag_smoke2 2026-06-12T08:39:16+08:00
+dta_v3_2_selector_metric_correction_done rc=0 run_id=v32_ctdg_diag_smoke2 airlight=fallback 2026-06-12T08:39:16+08:00
+dta_v3_2_nested_selector_smoke_done rc=0 run_id=v32_ctdg_diag_smoke2 airlight=fallback 2026-06-12T08:40:08+08:00
+dta_v3_2_selector_metric_correction_done rc=0 run_id=v32_ctdg_diag_smoke2 airlight=gt 2026-06-12T08:40:08+08:00
+dta_v3_2_nested_selector_smoke_done rc=0 run_id=v32_ctdg_diag_smoke2 airlight=gt 2026-06-12T08:41:04+08:00
+DTA_V3_2_CTDG_SAFEMIX_AUDITS_OK run_id=v32_ctdg_diag_smoke2
+dta_v3_2_launch_start work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32 2026-06-12T08:41:23+08:00
+base_gpu=3 hinge_gpu=4
+locked_test_touched=false
+dta_v3_2_launch_base session=dta_v32_ctdg_audit_wg18_base_f0 cmd=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_v32_ctdg_audit_wg18_base_f0.cmd.sh 2026-06-12T08:41:23+08:00
+dta_v3_2_ctdg_safemix_audit_start run_id=v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0 source_run_id=v31_wg18_base_s008_b14_seed3407_f0 2026-06-12T08:41:23+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+candidate=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-taillite/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-DAPC-DepthDirectTail-wg18_base_s008_b14-seed3407-f0-scout5full/Training-Results/Final.pkl
+candidate_name=wg18_base_s008_b14
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+eval_split=fold0_val
+cuda_visible_devices=3
+locked_test_touched=false
+codex/haze4k-dta-v3-dapc-finetune
+dta_v3_2_launch_hinge session=dta_v32_ctdg_audit_wg18_hinge_f0 cmd=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_v32_ctdg_audit_wg18_hinge_f0.cmd.sh 2026-06-12T08:41:23+08:00
+c0738dc
+DTA_V3_2_CTDG_SAFEMIX_AUDIT_LAUNCH_OK
+dta_v3_2_ctdg_safemix_audit_start run_id=v32_ctdg_diag_wg18_light_hinge_seed3407_f0 source_run_id=v31_wg18_light_hinge_seed3407_f0_scout5full_post 2026-06-12T08:41:23+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+candidate=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v31/Dehazing/ITS/results/ConvIR-Haze4K-DTA-v3-1-WG18LightHinge-seed3407-f0-scout5full/Training-Results/Final.pkl
+candidate_name=wg18_light_hinge
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/dta_v3_haze4k_oof_splits_seed3407.json
+eval_split=fold0_val
+cuda_visible_devices=4
+locked_test_touched=false
+codex/haze4k-dta-v3-dapc-finetune
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/alpha_blend_sweep_matrix_v32_ctdg_diag_smoke2.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/alpha_blend_sweep_matrix_v32_ctdg_diag_smoke2.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_v32_ctdg_audit_wg18_base_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_v32_ctdg_audit_wg18_hinge_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/nested_selector_smoke_f0_thresholds_v32_ctdg_diag_smoke2_fallback.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/nested_selector_smoke_f0_thresholds_v32_ctdg_diag_smoke2_gt.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/nested_selector_smoke_f0_v32_ctdg_diag_smoke2_fallback.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/nested_selector_smoke_f0_v32_ctdg_diag_smoke2_gt.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/oracle_action_upper_bound_by_coverage_v32_ctdg_diag_smoke2.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/oracle_action_upper_bound_by_coverage_v32_ctdg_diag_smoke2.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/oracle_best_possible_contact_sheet_manifest_v32_ctdg_diag_smoke2.md
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/risk_coverage_curve_f0_nested_v32_ctdg_diag_smoke2_fallback.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/risk_coverage_curve_f0_nested_v32_ctdg_diag_smoke2_gt.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/selector_metric_correction_report_v32_ctdg_diag_smoke2_fallback.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/selector_metric_correction_report_v32_ctdg_diag_smoke2_gt.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_error_to_regression_correlation_v32_ctdg_diag_smoke2.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_smoke2.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v32_ctdg_audit_wg18_base_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v32_ctdg_audit_wg18_hinge_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/transmission_bin_failure_report_v32_ctdg_diag_smoke2.json
+c0738dc
+ M experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/status.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/alpha_blend_sweep_matrix_v32_ctdg_diag_smoke2.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/alpha_blend_sweep_matrix_v32_ctdg_diag_smoke2.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_v32_ctdg_audit_wg18_base_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/launch_v32_ctdg_audit_wg18_hinge_f0.cmd.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/nested_selector_smoke_f0_thresholds_v32_ctdg_diag_smoke2_fallback.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/nested_selector_smoke_f0_thresholds_v32_ctdg_diag_smoke2_gt.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/nested_selector_smoke_f0_v32_ctdg_diag_smoke2_fallback.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/nested_selector_smoke_f0_v32_ctdg_diag_smoke2_gt.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/oracle_action_upper_bound_by_coverage_v32_ctdg_diag_smoke2.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/oracle_action_upper_bound_by_coverage_v32_ctdg_diag_smoke2.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/oracle_best_possible_contact_sheet_manifest_v32_ctdg_diag_smoke2.md
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/risk_coverage_curve_f0_nested_v32_ctdg_diag_smoke2_fallback.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/risk_coverage_curve_f0_nested_v32_ctdg_diag_smoke2_gt.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/selector_metric_correction_report_v32_ctdg_diag_smoke2_fallback.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/selector_metric_correction_report_v32_ctdg_diag_smoke2_gt.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_error_to_regression_correlation_v32_ctdg_diag_smoke2.json
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_smoke2.csv
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v32_ctdg_audit_wg18_base_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/tmux_dta_v32_ctdg_audit_wg18_hinge_f0.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/transmission_bin_failure_report_v32_ctdg_diag_smoke2.json
+dta_v3_2_action_diagnostics_done rc=0 run_id=v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0 2026-06-12T08:46:07+08:00
+dta_v3_2_selector_metric_correction_done rc=0 run_id=v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0 airlight=fallback 2026-06-12T08:46:07+08:00
+dta_v3_2_action_diagnostics_done rc=0 run_id=v32_ctdg_diag_wg18_light_hinge_seed3407_f0 2026-06-12T08:46:17+08:00
+dta_v3_2_selector_metric_correction_done rc=0 run_id=v32_ctdg_diag_wg18_light_hinge_seed3407_f0 airlight=fallback 2026-06-12T08:46:17+08:00
+dta_v3_2_nested_selector_smoke_done rc=0 run_id=v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0 airlight=fallback 2026-06-12T08:47:00+08:00
+dta_v3_2_selector_metric_correction_done rc=0 run_id=v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0 airlight=gt 2026-06-12T08:47:00+08:00
+dta_v3_2_nested_selector_smoke_done rc=0 run_id=v32_ctdg_diag_wg18_light_hinge_seed3407_f0 airlight=fallback 2026-06-12T08:47:09+08:00
+dta_v3_2_selector_metric_correction_done rc=0 run_id=v32_ctdg_diag_wg18_light_hinge_seed3407_f0 airlight=gt 2026-06-12T08:47:09+08:00
+dta_v3_2_nested_selector_smoke_done rc=0 run_id=v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0 airlight=gt 2026-06-12T08:47:56+08:00
+DTA_V3_2_CTDG_SAFEMIX_AUDITS_OK run_id=v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0
+dta_v3_2_nested_selector_smoke_done rc=0 run_id=v32_ctdg_diag_wg18_light_hinge_seed3407_f0 airlight=gt 2026-06-12T08:48:05+08:00
+DTA_V3_2_CTDG_SAFEMIX_AUDITS_OK run_id=v32_ctdg_diag_wg18_light_hinge_seed3407_f0

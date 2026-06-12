@@ -1,0 +1,6 @@
+fold,feature,direction,threshold,calibration_objective,calibration_coverage,heldout_coverage,heldout_global_mean_delta,heldout_true_vs_zero_all_images,heldout_worst_regression_count_delta_le_-0.20
+0,DTA_v31_v31_wg18_light_hinge_seed3407_f0_scout5full_post_gt_invert_dta_stage3_conf_mean,>=,0.8677443116903305,0.028246719042460122,0.25,0.275,0.02554607391357422,0.020319430033365886,2
+1,DTA_v31_v31_wg18_light_hinge_seed3407_f0_scout5full_post_gt_invert_dta_stage3_conf_mean,>=,0.8679898679256439,0.02939536825815837,0.25,0.21666666666666667,0.016027800242106118,0.014496707916259765,3
+2,DTA_v31_v31_wg18_light_hinge_seed3407_f0_scout5full_post_gt_invert_dta_stage2_gate_mean,>=,0.012886378169059753,0.03354470143715541,0.4,0.5333333333333333,0.00945587158203125,0.02982335090637207,13
+3,DTA_v31_v31_wg18_light_hinge_seed3407_f0_scout5full_post_gt_invert_dta_stage3_conf_mean,>=,0.8679800927639008,0.029315176010131838,0.25,0.225,0.009325615564982096,0.009018675486246745,1
+4,DTA_v31_v31_wg18_light_hinge_seed3407_f0_scout5full_post_gt_invert_dta_stage3_conf_mean,>=,0.8676444292068481,0.025519179185231524,0.25,0.2833333333333333,0.025320021311442058,0.028172016143798828,2

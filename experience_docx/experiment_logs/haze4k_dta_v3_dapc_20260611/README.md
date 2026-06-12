@@ -382,3 +382,32 @@ fold0 internal nested selector smoke test for both the `wg18_base_s008_b14` and
 `wg18_light_hinge` sources. The result will decide whether the next DTA-v3.2
 step is alpha/soft-gate only, calibrated transmission + uncertainty SafeMix, or
 a pivot away from direct physical delta toward multi-scale depth fusion.
+
+## 2026-06-12 DTA-v3.2 CTDG-SafeMix Audit Results
+
+Status: `COMPLETED_CTDG_AUDIT_C0_FAIL_C1_C3_JUSTIFIED_LOCKED_TEST_BLOCKED`.
+
+The cloud audit completed from commit `c0738dc` in workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32`. The
+summary files are `dta_v3_2_ctdg_audit_summary.json` and
+`dta_v3_2_ctdg_audit_summary.csv`.
+
+Main conclusions:
+
+- C0 alpha-only fails: alpha `0.50` makes tail safer but loses true-vs-zero
+  surplus; alpha `0.75` is close on surplus but still fails dSSIM and worst.
+- Oracle action upper bound is strong: at 60% coverage, image-level oracle gives
+  about `+0.093 dB`, positive dSSIM, zero worst regressions, and true-vs-zero
+  above `+0.056 dB`; patch/pixel oracle is stronger.
+- Transmission error alone is not the root cause: log-t-error vs delta Pearson
+  is only about `-0.066`, but low-transmission images concentrate failures.
+- Corrected selector metrics show the same-fold selector's selected subset is
+  high quality (`0.72` conditional positive ratio), but global coverage is only
+  `0.25` and all-image true-vs-zero remains below the mechanism gate.
+- Nested fold0 selector smoke confirms the one-threshold selector is unstable
+  and diagnostic-only.
+
+Decision: `COMPLETED_CTDG_AUDIT_C0_FAIL_C1_C3_JUSTIFIED_LOCKED_TEST_BLOCKED`.
+Do not launch formal 5-fold x 3-seed from existing B0-B4/C0 artifacts. The next
+fixed scout should implement DTA-v3.2 SafeMix gate/residual training; locked test
+remains blocked.

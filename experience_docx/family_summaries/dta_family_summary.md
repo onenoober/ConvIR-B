@@ -80,3 +80,14 @@ oracle depth-action coverage, alpha action amplitude, GT-transmission/t-error
 failure coupling, corrected selector metrics, and fold0 internal nested selector
 overfit. No 5-fold x 3-seed formal validation or locked Haze4K test is allowed
 until a fixed DTA-v3.2 scout row passes the written gate.
+
+## 2026-06-12 DTA-v3.2 Audit Outcome
+
+The CTDG-SafeMix no/low-training audit completed. Alpha-only shrink is ruled out:
+it cannot keep true-vs-zero surplus while meeting SSIM/tail gates. The local
+action oracle is strong at image/patch/pixel granularity, so the family remains
+worth reopening for a learned SafeMix gate/residual. GT transmission error is a
+risk feature rather than a single-cause explanation; low-transmission samples
+carry many worst regressions. Same-fold threshold selection remains diagnostic
+only after internal fold0 nested smoke. Locked test and 5-fold x 3-seed remain
+blocked until a fixed SafeMix scout row passes.

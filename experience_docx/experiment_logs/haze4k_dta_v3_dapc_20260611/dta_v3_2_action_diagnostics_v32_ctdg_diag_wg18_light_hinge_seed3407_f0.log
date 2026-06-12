@@ -1,0 +1,20 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32/experience_docx/tools/audit_haze4k_dta_v32_action_diagnostics.py:62: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+v32_action_diag 50/600
+v32_action_diag 100/600
+v32_action_diag 150/600
+v32_action_diag 200/600
+v32_action_diag 250/600
+v32_action_diag 300/600
+v32_action_diag 350/600
+v32_action_diag 400/600
+v32_action_diag 450/600
+v32_action_diag 500/600
+v32_action_diag 550/600
+v32_action_diag 600/600
+{
+  "run_id": "v32_ctdg_diag_wg18_light_hinge_seed3407_f0",
+  "alpha_rows": 48,
+  "oracle_rows": 120
+}
+DTA_V32_ACTION_DIAGNOSTICS_OK
