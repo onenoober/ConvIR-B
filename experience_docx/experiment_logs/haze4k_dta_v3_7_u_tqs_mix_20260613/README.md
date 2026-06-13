@@ -68,3 +68,22 @@ Budget and preflight findings:
 - Current deployable severe-risk AUC remains weak at about `0.608`, so Phase B must add T/A/Q/U feature separability.
 
 Decision: `PHASE_A_PASS_SOFT_ORACLE_HEADROOM`; proceed to Phase B.
+
+
+## Phase B TQS Plan
+
+Run script: `run_dta_v3_7_phase_b_tqs_convir4090.sh`.
+
+Outputs:
+
+- `status_phase_b_tqs.txt`
+- `v37_phase_b_tqs.log`
+- `v37_tqs_policy_nested_report.csv`
+- `v37_tqs_policy_aggregate.csv`
+- `v37_tqs_policy_action_table.csv`
+- `v37_tqs_feature_group_ablation.csv`
+- `v37_tqs_summary.json`
+
+This is a train-derived table-only policy diagnostic. Deployable feature groups
+must not use `trans_gt`; diagnostic `trans_gt` rows are reported only to measure
+how much separability physical supervision could add.

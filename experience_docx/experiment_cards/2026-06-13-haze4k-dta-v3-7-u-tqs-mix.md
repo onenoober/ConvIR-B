@@ -302,3 +302,27 @@ Decision: `PHASE_A_PASS_SOFT_ORACLE_HEADROOM`. Proceed immediately to Phase B
 TQS deployable gain-risk predictor and real soft-blend verification on
 train-derived folds. The Phase A soft-alpha values are linear table proxies, not
 final blended-image proof.
+
+
+### Phase B table-only TQS implementation
+
+Added script:
+
+```text
+experience_docx/tools/train_haze4k_dta_v37_tqs_policy.py
+```
+
+This trains nested ridge TQS gain-risk policies over the soft action bank using
+only train-derived OOF rows. It reports deployable feature groups separately
+from diagnostic `trans_gt` features. Required outputs:
+
+```text
+v37_tqs_policy_nested_report.csv
+v37_tqs_policy_aggregate.csv
+v37_tqs_policy_action_table.csv
+v37_tqs_feature_group_ablation.csv
+v37_tqs_summary.json
+```
+
+Phase B is allowed because Phase A passed soft-oracle headroom. It remains
+train-derived and table-only; it does not touch locked Haze4K test.
