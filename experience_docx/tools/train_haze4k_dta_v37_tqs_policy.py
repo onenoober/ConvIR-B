@@ -37,13 +37,14 @@ ALPHAS = {
 
 FEATURE_GROUPS = {
     "Q_input_proxy": ("input_",),
+    "Q_enriched_quality": ("q_", "dark_", "edge_", "texture_", "sky_", "highlight_", "color_"),
     "D_depth": ("depth_",),
     "T_pred": ("dta_t_pred_",),
     "A_airlight_proxy": ("airlight_fallback", "airlight_proxy"),
     "U_uncertainty_conf": ("dta_t_uncertainty", "dta_stage2_conf", "dta_stage3_conf"),
     "FDF_action_stats": ("dta_stage", "dta_final", "dta_depth_mask", "dta_depth_delta", "dta_j_phys"),
-    "deployable_TQAU_action_all": ("input_", "depth_", "airlight_fallback", "airlight_proxy", "dta_"),
-    "diagnostic_with_trans_gt": ("input_", "depth_", "airlight_fallback", "airlight_proxy", "dta_", "trans_gt_"),
+    "deployable_TQAU_action_all": ("input_", "q_", "dark_", "edge_", "texture_", "sky_", "highlight_", "color_", "depth_", "airlight_fallback", "airlight_proxy", "dta_"),
+    "diagnostic_with_trans_gt": ("input_", "q_", "dark_", "edge_", "texture_", "sky_", "highlight_", "color_", "depth_", "airlight_fallback", "airlight_proxy", "dta_", "trans_gt_", "trans_file_"),
 }
 
 NON_FEATURE_PREFIXES = ("trans_gt_",)
@@ -407,30 +408,39 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input_action_table", required=True, type=Path)
     parser.add_argument("--output_dir", required=True, type=Path)
-    parser.add_argument("--feature_groups", default="Q_input_proxy,T_pred,U_uncertainty_conf,FDF_action_stats,deployable_TQAU_action_all,diagnostic_with_trans_gt")
+    parser.add_argument("--feature_groups", default="Q_input_proxy,Q_enriched_quality,T_pred,U_uncertainty_conf,FDF_action_stats,deployable_TQAU_action_all,diagnostic_with_trans_gt")
+    parser.add_argument("--image_feature_table", type=Path, default=None)
+    parser.add_argument("--output_prefix", default="v37_tqs")
     args = parser.parse_args()
 
     rows = read_csv_rows(args.input_action_table)
+    if args.image_feature_table:
+        feature_rows = {str(row["image_id"]): row for row in read_csv_rows(args.image_feature_table)}
+        for row in rows:
+            row.update({k: v for k, v in feature_rows.get(str(row.get("image_id")), {}).items() if k != "image_id"})
     groups = [item.strip() for item in args.feature_groups.split(",") if item.strip()]
     result = nested_train_eval(rows, groups)
     out = args.output_dir
     out.mkdir(parents=True, exist_ok=True)
-    write_csv(out / "v37_tqs_policy_nested_report.csv", result["outer_reports"])
-    write_csv(out / "v37_tqs_policy_aggregate.csv", result["aggregate"])
-    write_csv(out / "v37_tqs_policy_action_table.csv", result["actions"])
-    write_csv(out / "v37_tqs_feature_group_ablation.csv", result["aggregate"])
+    prefix = args.output_prefix
+    write_csv(out / f"{prefix}_policy_nested_report.csv", result["outer_reports"])
+    write_csv(out / f"{prefix}_policy_aggregate.csv", result["aggregate"])
+    write_csv(out / f"{prefix}_policy_action_table.csv", result["actions"])
+    write_csv(out / f"{prefix}_feature_group_ablation.csv", result["aggregate"])
     summary = {
         "route": "DTA-v3.7 U-TQS-Mix",
         "phase": "B_table_only_tqs_gain_risk_predictor",
         "rows": len(rows),
         "feature_groups": groups,
+        "image_feature_table": str(args.image_feature_table) if args.image_feature_table else None,
+        "output_prefix": args.output_prefix,
         "strict_gates": STRICT_GATES,
         "best_aggregate": result["aggregate"][0] if result["aggregate"] else None,
         "strict_pass_count": sum(1 for row in result["aggregate"] if row.get("strict_gate_pass")),
         "decision": "PHASE_B_TABLE_POLICY_STRICT_PASS" if any(row.get("strict_gate_pass") for row in result["aggregate"]) else "PHASE_B_TABLE_POLICY_STRICT_FAIL_NEEDS_FEATURE_ENRICHMENT_OR_REAL_BLEND",
         "leakage_note": "diagnostic_with_trans_gt is not deployable; deployable groups exclude trans_gt by construction.",
     }
-    (out / "v37_tqs_summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (out / f"{args.output_prefix}_summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(
         "DTA_V3_7_TQS_PHASE_B_OK "
         f"rows={len(rows)} groups={len(groups)} strict_pass={summary['strict_pass_count']} decision={summary['decision']}"

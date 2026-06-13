@@ -118,3 +118,18 @@ Interpretation:
 Decision: `PHASE_B_TABLE_POLICY_STRICT_FAIL_NEEDS_FEATURE_ENRICHMENT_OR_REAL_BLEND`.
 Proceed to feature enrichment / real soft-blend verification before formal
 policy claims. Do not return to v3.6 hard-reject threshold search.
+
+
+## Phase B2 Enriched TQS Plan
+
+Added scripts:
+
+```text
+experience_docx/tools/extract_haze4k_v37_quality_features.py
+experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/run_dta_v3_7_phase_b2_enriched_tqs_convir4090.sh
+```
+
+This phase extracts deployable image quality, contrast, dark-channel, edge,
+texture, sky/highlight, and color-cast features from Haze4K train-derived hazy
+images, joins them to the OOF action table, and reruns nested TQS with
+`v37_tqs_enriched_*` outputs. It does not use locked test feedback.
