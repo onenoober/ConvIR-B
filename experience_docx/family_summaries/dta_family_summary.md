@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: DTA-v3.7 D2 TAU soft-shrink policy completed; D1/D2 oracle headroom is strong, but deployable policy still collapses gain, so continue with rendered soft-blend verification and stronger high-positive utility modeling rather than raw full formal or hard-reject tuning.
+Status: DTA-v3.7 D3 TAU real soft-blend oracle completed; D1/D2/D3 oracle headroom is strong and actual rendered D1 micro-shrink strict-passes, but deployable policy is still the blocker, so continue with high-positive utility modeling rather than raw full formal or hard-reject tuning.
 
 ## Scope
 
@@ -87,8 +87,10 @@ Therefore no raw D1 candidate is promoted to full `5x3` or locked test. D2 then
 used this material for a TAU soft-shrink table policy: the D1 action oracle
 strict-passed (`10/12` oracle rows; best mean `+0.136286`, hard `+0.120366`,
 worst `0/600`), but deployable nested policy strict-failed (`T_pred` best mean
-only `+0.006518`). The next step is rendered D1 soft-blend verification and a
-stronger high-positive utility target, not raw D1 formal.
+only `+0.006518`). D3 rendered actual D1 quick5full tensor blends and strict-passed the oracle
+(`22/24` rows; best mean `+0.136562`, hard `+0.120391`, positive `0.7071`,
+worst `0/600`). The next step is a deployable high-positive utility target, not
+raw D1 formal.
 
 DTA-v3.5 FDF-RCS-Lite completed the relaxed train-derived flow on
 `convir-4090`. Conservative FDF moved the family in the intended direction:
@@ -107,7 +109,7 @@ selection rather than more residual/router capacity.
 | --- | --- | --- |
 | DTA-v2 CalGate | Multi-seed OOF showed `invert` about `+0.0887 dB`, but zero/shuffle retained most of the improvement and tail/SSIM did not pass. | Positive diagnostic only; no locked test; use as motivation for attribution controls. |
 | DTA-v3 DAPC/FDF fine-tune | `convir-4090` preflight passed; R0 scouts failed. Zero-R0 depthDirect train=`invert` proved surplus. DTA-v3.1 airlight/risk/light-hinge, DTA-v3.2 SafeMix, DTA-v3.3 RouterFusion, and DTA-v3.4 FDF-TSR failed their written gates. DTA-v3.5 FDF-RCS-Lite fixed much of the over-action pattern but still failed strict all-image tail; DTA-v3.6 HRCS formal validation confirms strong oracle selector/action-bank headroom but deployable selectors still strict-fail. | Mechanism-positive diagnostic only; no promotion. A relaxed one-shot locked test may only use the fixed L3 logistic `deployable_all` target `0.93` policy under the 2026-06-13 user override, with no post-test tuning. |
-| DTA-v3.7 U-TQS-Mix | Phase A soft-oracle and Phase C1 actual real-blend oracle both pass; Phase B/B2 deployable table policy fails; D1 integrated T/A/U candidates are mechanism-positive; D2 TAU soft-shrink oracle passes but deployable policy strict-fails. | Mainline route. Do not resume hard-reject threshold search; do not run raw D1 full `5x3`; proceed to rendered D1 soft-blend verification plus stronger utility-aware high-positive policy modeling. |
+| DTA-v3.7 U-TQS-Mix | Phase A soft-oracle and Phase C1 actual real-blend oracle both pass; Phase B/B2 deployable table policy fails; D1 integrated T/A/U candidates are mechanism-positive; D2 TAU soft-shrink oracle passes but deployable policy strict-fails; D3 actual D1 real-blend oracle strict-passes. | Mainline route. Do not resume hard-reject threshold search; do not run raw D1 full `5x3`; proceed to deployable utility-aware high-positive policy modeling over the D1/D3 action bank. |
 
 ## Reopen Conditions
 
@@ -474,7 +476,7 @@ soft-mix/shrink policy.
 
 ## 2026-06-13 DTA-v3.7 D2 TAU Soft-Shrink Policy Outcome
 
-Decision: `D2_TAU_SHRINK_POLICY_STRICT_FAIL_ORACLE_PASS_LOCKED_TEST_UNTOUCHED`.
+Decision: `PHASE_D3_TAU_REAL_BLEND_ORACLE_PASS_LOCKED_TEST_UNTOUCHED`.
 
 D2 completed on `convir-4090` from commit `c823848`, filtered to intended D1
 `quick5full` rows only (`7200` rows from `7802` raw D1 table rows), and did not

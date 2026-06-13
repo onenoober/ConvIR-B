@@ -450,3 +450,35 @@ with a stronger high-positive deployable utility policy over the same D1 action
 bank. If D3 actual rendered oracle fails, the D2 table oracle was too optimistic
 and the next step must redesign candidate/blend representation rather than run
 formal `5x3` or locked test.
+
+
+## Phase D3 TAU Real Soft-Blend Verification Result
+
+D3 completed on `convir-4090` from runtime workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d3-realblend-40b4db8`
+with locked test untouched:
+
+```text
+DTA_V3_7_D3_TAU_REAL_BLEND_AGGREGATE_OK rows=57600 grid=24 strict_pass=22 decision=PHASE_D3_TAU_REAL_BLEND_ORACLE_PASS
+DTA_V3_7_PHASE_D3_TAU_REAL_BLEND_OK
+```
+
+Top actual rendered D1 soft-blend oracle row:
+
+| bank | utility | mean | hard | dSSIM | positive | worst/600 | max outer worst/600 | true-vs-zero | true-vs-shuffle | true-vs-normal |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `A0_U3_U2_U1_micro_shrink` | `max_dpsnr` | `+0.136562` | `+0.120391` | `+0.00002539` | `0.7071` | `0.00` | `0.00` | `+0.116236` | `+0.087609` | `+0.095873` |
+
+Interpretation:
+
+- D3 confirms the D2 D1-action oracle was not just a table-scaling artifact:
+  actual rendered tensor blending strict-passes with `22/24` strict rows.
+- Micro-shrink over `A0+u3/u2/u1` raises positive ratio to `0.7071` while
+  keeping severe tail at `0/600`, so the route should keep pursuing soft-mix
+  utility rather than raw D1 full `5x3` or hard reject.
+- The remaining blocker is still deployable high-positive gain-risk prediction,
+  not action-family headroom or severe-tail control.
+
+Decision: `PHASE_D3_TAU_REAL_BLEND_ORACLE_PASS_LOCKED_TEST_UNTOUCHED`. Continue
+immediately to a deployable high-positive utility policy over the D1/D3 action
+bank; do not run raw D1 full `5x3` and do not touch locked test.
