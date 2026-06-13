@@ -564,3 +564,36 @@ v37_d5_targeted_summary.json
 ```
 
 Locked Haze4K test remains untouched, and raw D1 full `5x3` remains blocked.
+
+
+## Phase D5 Targeted-Intervention Policy Result
+
+D5 completed on `convir-4090` from runtime workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d5-targeted-b2a074e`
+with locked test untouched:
+
+```text
+DTA_V3_7_D5_TARGETED_INTERVENTION_POLICY_OK rows=38400 aggregate=360 strict_pass=0 decision=D5_TARGETED_INTERVENTION_POLICY_STRICT_FAIL
+```
+
+Best targeted row:
+
+| feature group | bank | score mode | target intervention | mean | hard | dSSIM | positive | worst/600 | true-vs-zero | true-vs-shuffle | true-vs-normal | strict |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `diagnostic_with_trans_gt` | `shrink` | `pred_positive_forced` | `1.00` | `+0.019050` | `+0.016915` | `+0.00000532` | `0.6654` | `0.50` | `+0.020827` | `+0.015984` | `+0.016952` | fail gain/control |
+
+Interpretation:
+
+- Forcing intervention recovers positive ratio and keeps severe tail safe, but
+  mean/hard/control surplus remain far below strict lines.
+- Even the diagnostic feature group with transmission GT does not recover enough
+  deployable ordering signal from the current D1 table features.
+- The next route step should stop spending cycles on table-only threshold/forcing
+  policies and add deployable actual candidate-vs-A0 output-difference / NR-IQA
+  features, or train an integrated soft-mix head that sees candidate residual
+  evidence directly.
+
+Decision: `D5_TARGETED_INTERVENTION_POLICY_STRICT_FAIL_LOCKED_TEST_UNTOUCHED`.
+Raw D1 full `5x3` and locked test remain blocked; continue with D6 output-diff /
+quality feature extraction or an integrated soft-mix head rather than more hard
+reject/table-only tuning.

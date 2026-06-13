@@ -1,0 +1,14 @@
+dta_v3_7_phase_d5_targeted_policy_start 2026-06-13T19:37:00+08:00
+state=RUNNING_AUDIT_D5_TARGETED_INTERVENTION_POLICY
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d5-targeted-b2a074e
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+single_actions=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d5-targeted-b2a074e/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_tau_real_blend_single_actions_all.csv
+feature_table=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d5-targeted-b2a074e/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_tau_oof_per_image_action_table.csv
+output_prefix=v37_d5_targeted
+locked_test_touched=false
+scope=D1/D3 quick5full train-derived folds 0,1 seeds 3407,3411 only
+codex/haze4k-dta-v3-7-u-tqs-mix
+b2a074e
+?? experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/status_phase_d5_targeted_policy.txt
+dta_v3_7_phase_d5_targeted_policy_done rc=0 2026-06-13T19:49:05+08:00
+DTA_V3_7_PHASE_D5_TARGETED_POLICY_OK 2026-06-13T19:49:05+08:00

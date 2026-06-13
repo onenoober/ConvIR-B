@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: DTA-v3.7 D4 high-positive policy completed; D1/D2/D3 oracle headroom is strong and actual rendered D1 micro-shrink strict-passes, but naive deployable high-positive policy still collapses gain, so continue with targeted-intervention ranking diagnostics rather than raw full formal or hard-reject tuning.
+Status: DTA-v3.7 D5 targeted-intervention policy completed; D1/D2/D3 oracle headroom is strong and actual rendered D1 micro-shrink strict-passes, but D4/D5 deployable table policies still fail, so continue with output-difference / quality feature extraction or integrated soft-mix heads rather than raw full formal or hard-reject tuning.
 
 ## Scope
 
@@ -89,10 +89,11 @@ strict-passed (`10/12` oracle rows; best mean `+0.136286`, hard `+0.120366`,
 worst `0/600`), but deployable nested policy strict-failed (`T_pred` best mean
 only `+0.006518`). D3 rendered actual D1 quick5full tensor blends and strict-passed the oracle
 (`22/24` rows; best mean `+0.136562`, hard `+0.120391`, positive `0.7071`,
-worst `0/600`). D4 high-positive deployable policy then strict-failed (`0/75` rows; best mean
-`+0.003344`, positive `0.1588`, worst `0/600`), so the next step is targeted
-intervention/coverage forcing to audit whether deployable rankings contain any
-recoverable positive-action ordering signal. Raw D1 formal remains blocked.
+worst `0/600`). D4 high-positive deployable policy strict-failed (`0/75` rows; best mean
+`+0.003344`). D5 targeted intervention also strict-failed (`0/360` rows); forcing
+all images recovered positive ratio (`0.6654`) and tail (`0.5/600`) but only
+`+0.019050` mean and `+0.016915` hard. Table-only D1 features are therefore not
+enough; raw D1 formal remains blocked.
 
 DTA-v3.5 FDF-RCS-Lite completed the relaxed train-derived flow on
 `convir-4090`. Conservative FDF moved the family in the intended direction:
