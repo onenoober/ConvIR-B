@@ -60,6 +60,8 @@ def _apply_train_scope(model, args):
                 'DTA.log_alpha',
                 'DTA.transmission_head.',
                 'DTA.depth_mask_head.',
+                'DTA.airlight_head.',
+                'DTA.airlight_uncertainty_head.',
             )
         elif train_scope == 'dta_safemix_gate_only':
             prefixes = ('DTA.safe_gate_head.',)
@@ -69,6 +71,8 @@ def _apply_train_scope(model, args):
                 'DTA.safe_residual_head.',
                 'DTA.trans_uncertainty_head.',
                 'DTA.transmission_head.',
+                'DTA.airlight_head.',
+                'DTA.airlight_uncertainty_head.',
             )
         elif train_scope == 'dta_safemix_plus_film':
             prefixes = (
@@ -77,6 +81,8 @@ def _apply_train_scope(model, args):
                 'DTA.log_alpha',
                 'DTA.transmission_head.',
                 'DTA.trans_uncertainty_head.',
+                'DTA.airlight_head.',
+                'DTA.airlight_uncertainty_head.',
                 'DTA.safe_gate_head.',
                 'DTA.safe_residual_head.',
             )
@@ -93,6 +99,8 @@ def _apply_train_scope(model, args):
                 'DTA.safe_residual_head.',
                 'DTA.trans_uncertainty_head.',
                 'DTA.transmission_head.',
+                'DTA.airlight_head.',
+                'DTA.airlight_uncertainty_head.',
             )
         elif train_scope == 'dta_routerfusion_plus_film':
             prefixes = (
@@ -101,6 +109,8 @@ def _apply_train_scope(model, args):
                 'DTA.log_alpha',
                 'DTA.transmission_head.',
                 'DTA.trans_uncertainty_head.',
+                'DTA.airlight_head.',
+                'DTA.airlight_uncertainty_head.',
                 'DTA.safe_gate_head.',
                 'DTA.safe_residual_head.',
                 'DTA.router_image_head.',
@@ -112,6 +122,8 @@ def _apply_train_scope(model, args):
                 'DTA.log_alpha',
                 'DTA.transmission_head.',
                 'DTA.trans_uncertainty_head.',
+                'DTA.airlight_head.',
+                'DTA.airlight_uncertainty_head.',
             )
         elif train_scope == 'dta_fdf_tsr_residual':
             prefixes = (
@@ -119,6 +131,8 @@ def _apply_train_scope(model, args):
                 'DTA.log_alpha',
                 'DTA.transmission_head.',
                 'DTA.trans_uncertainty_head.',
+                'DTA.airlight_head.',
+                'DTA.airlight_uncertainty_head.',
                 'DTA.safe_gate_head.',
                 'DTA.safe_residual_head.',
             )
@@ -128,6 +142,8 @@ def _apply_train_scope(model, args):
                 'DTA.log_alpha',
                 'DTA.transmission_head.',
                 'DTA.trans_uncertainty_head.',
+                'DTA.airlight_head.',
+                'DTA.airlight_uncertainty_head.',
                 'DTA.safe_gate_head.',
                 'DTA.safe_residual_head.',
                 'DTA.router_image_head.',
@@ -141,6 +157,8 @@ def _apply_train_scope(model, args):
                 'DTA.log_alpha',
                 'DTA.transmission_head.',
                 'DTA.trans_uncertainty_head.',
+                'DTA.airlight_head.',
+                'DTA.airlight_uncertainty_head.',
                 'DTA.safe_gate_head.',
                 'DTA.safe_residual_head.',
                 'DTA.router_image_head.',
@@ -591,6 +609,8 @@ def _train(model, args):
         getattr(args, 'dta_use_trans_gt', False)
         or getattr(args, 'dta_trans_weight', 0.0) > 0
         or getattr(args, 'dta_phys_weight', 0.0) > 0
+        or getattr(args, 'dta_airlight_weight', 0.0) > 0
+        or getattr(args, 'dta_airlight_nll_weight', 0.0) > 0
         or getattr(args, 'dta_preserve_weight', 0.0) > 0
         or getattr(args, 'dta_ref_preserve_weight', 0.0) > 0
         or getattr(args, 'dta_tail_guard_weight', 0.0) > 0
@@ -638,6 +658,8 @@ def _train(model, args):
     epoch_dta_tv_adder = Adder()
     epoch_dta_proxy_adder = Adder()
     epoch_dta_trans_adder = Adder()
+    epoch_dta_airlight_adder = Adder()
+    epoch_dta_airlight_nll_adder = Adder()
     epoch_dta_phys_adder = Adder()
     epoch_dta_preserve_adder = Adder()
     epoch_dta_ref_preserve_adder = Adder()
@@ -658,6 +680,8 @@ def _train(model, args):
     iter_dta_tv_adder = Adder()
     iter_dta_proxy_adder = Adder()
     iter_dta_trans_adder = Adder()
+    iter_dta_airlight_adder = Adder()
+    iter_dta_airlight_nll_adder = Adder()
     iter_dta_phys_adder = Adder()
     iter_dta_preserve_adder = Adder()
     iter_dta_ref_preserve_adder = Adder()
@@ -732,6 +756,8 @@ def _train(model, args):
             loss_dta_trans = input_img.new_zeros(())
             loss_dta_trans_log = input_img.new_zeros(())
             loss_dta_trans_nll = input_img.new_zeros(())
+            loss_dta_airlight = input_img.new_zeros(())
+            loss_dta_airlight_nll = input_img.new_zeros(())
             loss_dta_phys = input_img.new_zeros(())
             loss_dta_preserve = input_img.new_zeros(())
             loss_dta_ref_preserve = input_img.new_zeros(())
@@ -771,6 +797,8 @@ def _train(model, args):
                     loss_dta_trans = dta_sup['trans']
                     loss_dta_trans_log = dta_sup.get('t_log_l1', input_img.new_zeros(()))
                     loss_dta_trans_nll = dta_sup.get('t_nll', input_img.new_zeros(()))
+                    loss_dta_airlight = dta_sup.get('airlight', input_img.new_zeros(()))
+                    loss_dta_airlight_nll = dta_sup.get('airlight_nll', input_img.new_zeros(()))
                     loss_dta_phys = dta_sup['phys']
                     if getattr(args, 'dta_preserve_weight', 0.0) > 0:
                         preserve_mask = (trans > args.dta_preserve_trans_thresh).float()
@@ -839,6 +867,8 @@ def _train(model, args):
                 + args.dta_trans_weight * loss_dta_trans
                 + getattr(args, 'dta_trans_log_weight', 0.0) * loss_dta_trans_log
                 + getattr(args, 'dta_trans_nll_weight', 0.0) * loss_dta_trans_nll
+                + getattr(args, 'dta_airlight_weight', 0.0) * loss_dta_airlight
+                + getattr(args, 'dta_airlight_nll_weight', 0.0) * loss_dta_airlight_nll
                 + args.dta_phys_weight * loss_dta_phys
                 + args.dta_preserve_weight * loss_dta_preserve
                 + args.dta_ref_preserve_weight * loss_dta_ref_preserve
@@ -866,6 +896,8 @@ def _train(model, args):
             iter_dta_tv_adder(loss_dta_tv.item())
             iter_dta_proxy_adder(loss_dta_proxy.item())
             iter_dta_trans_adder(loss_dta_trans.item())
+            iter_dta_airlight_adder(loss_dta_airlight.item())
+            iter_dta_airlight_nll_adder(loss_dta_airlight_nll.item())
             iter_dta_phys_adder(loss_dta_phys.item())
             iter_dta_preserve_adder(loss_dta_preserve.item())
             iter_dta_ref_preserve_adder(loss_dta_ref_preserve.item())
@@ -889,6 +921,8 @@ def _train(model, args):
             epoch_dta_tv_adder(loss_dta_tv.item())
             epoch_dta_proxy_adder(loss_dta_proxy.item())
             epoch_dta_trans_adder(loss_dta_trans.item())
+            epoch_dta_airlight_adder(loss_dta_airlight.item())
+            epoch_dta_airlight_nll_adder(loss_dta_airlight_nll.item())
             epoch_dta_phys_adder(loss_dta_phys.item())
             epoch_dta_preserve_adder(loss_dta_preserve.item())
             epoch_dta_ref_preserve_adder(loss_dta_ref_preserve.item())
@@ -915,9 +949,11 @@ def _train(model, args):
                     iter_dta_light_tail_adder.average(), iter_dta_light_ssim_adder.average(),
                     iter_dta_cvar_tail_adder.average(), iter_dta_group_tail_adder.average(),
                     iter_dta_patch_ssim_adder.average(), iter_dta_counterfactual_adder.average()))
-                print("DTA_BUDGET Epoch: %03d Iter: %4d/%4d Loss dta_ref_mse: %7.4f Loss feature_gate_budget: %7.4f Loss feature_action_budget: %7.4f Loss safe_gate_budget: %7.4f Loss safe_action_budget: %7.4f" % (
+                print("DTA_BUDGET Epoch: %03d Iter: %4d/%4d Loss dta_ref_mse: %7.4f Loss dta_airlight: %7.4f Loss dta_airlight_nll: %7.4f Loss feature_gate_budget: %7.4f Loss feature_action_budget: %7.4f Loss safe_gate_budget: %7.4f Loss safe_action_budget: %7.4f" % (
                     epoch_idx, iter_idx + 1, max_iter,
                     iter_dta_ref_mse_adder.average(),
+                    iter_dta_airlight_adder.average(),
+                    iter_dta_airlight_nll_adder.average(),
                     iter_dta_feature_gate_budget_adder.average(),
                     iter_dta_feature_action_budget_adder.average(),
                     iter_dta_safe_gate_budget_adder.average(),
@@ -928,6 +964,8 @@ def _train(model, args):
                 writer.add_scalar('DTA TV Loss', iter_dta_tv_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Proxy Loss', iter_dta_proxy_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Trans Loss', iter_dta_trans_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                writer.add_scalar('DTA Airlight Loss', iter_dta_airlight_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
+                writer.add_scalar('DTA Airlight NLL Loss', iter_dta_airlight_nll_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Phys Loss', iter_dta_phys_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Preserve Loss', iter_dta_preserve_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 writer.add_scalar('DTA Ref Preserve Loss', iter_dta_ref_preserve_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
@@ -952,6 +990,8 @@ def _train(model, args):
                 iter_dta_tv_adder.reset()
                 iter_dta_proxy_adder.reset()
                 iter_dta_trans_adder.reset()
+                iter_dta_airlight_adder.reset()
+                iter_dta_airlight_nll_adder.reset()
                 iter_dta_phys_adder.reset()
                 iter_dta_preserve_adder.reset()
                 iter_dta_ref_preserve_adder.reset()
@@ -996,9 +1036,11 @@ def _train(model, args):
             epoch_dta_group_tail_adder.average(),
             epoch_dta_patch_ssim_adder.average(),
             epoch_dta_counterfactual_adder.average()))
-        print("EPOCH_DTA_BUDGET: %02d Ref MSE: %7.4f Feature Gate Budget: %7.4f Feature Action Budget: %7.4f Safe Gate Budget: %7.4f Safe Action Budget: %7.4f" % (
+        print("EPOCH_DTA_BUDGET: %02d Ref MSE: %7.4f Airlight: %7.4f Airlight NLL: %7.4f Feature Gate Budget: %7.4f Feature Action Budget: %7.4f Safe Gate Budget: %7.4f Safe Action Budget: %7.4f" % (
             epoch_idx,
             epoch_dta_ref_mse_adder.average(),
+            epoch_dta_airlight_adder.average(),
+            epoch_dta_airlight_nll_adder.average(),
             epoch_dta_feature_gate_budget_adder.average(),
             epoch_dta_feature_action_budget_adder.average(),
             epoch_dta_safe_gate_budget_adder.average(),
@@ -1009,6 +1051,8 @@ def _train(model, args):
         epoch_dta_tv_adder.reset()
         epoch_dta_proxy_adder.reset()
         epoch_dta_trans_adder.reset()
+        epoch_dta_airlight_adder.reset()
+        epoch_dta_airlight_nll_adder.reset()
         epoch_dta_phys_adder.reset()
         epoch_dta_preserve_adder.reset()
         epoch_dta_ref_preserve_adder.reset()

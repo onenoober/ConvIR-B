@@ -198,6 +198,8 @@ if __name__ == '__main__':
     parser.add_argument('--dta_trans_weight', type=float, default=0.0)
     parser.add_argument('--dta_trans_log_weight', type=float, default=0.0)
     parser.add_argument('--dta_trans_nll_weight', type=float, default=0.0)
+    parser.add_argument('--dta_airlight_weight', type=float, default=0.0)
+    parser.add_argument('--dta_airlight_nll_weight', type=float, default=0.0)
     parser.add_argument('--dta_phys_weight', type=float, default=0.0)
     parser.add_argument('--dta_preserve_weight', type=float, default=0.0)
     parser.add_argument('--dta_preserve_trans_thresh', type=float, default=0.80)

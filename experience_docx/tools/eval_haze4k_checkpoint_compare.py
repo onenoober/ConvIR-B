@@ -244,6 +244,8 @@ def load_candidate_state(model, checkpoint, device, arch):
         result = model.load_state_dict(state, strict=False)
         allowed_missing = (
             "DTA.trans_uncertainty_head.",
+            "DTA.airlight_head.",
+            "DTA.airlight_uncertainty_head.",
             "DTA.safe_residual_head.",
             "DTA.safe_gate_head.",
             "DTA.router_image_head.",

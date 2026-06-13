@@ -626,6 +626,18 @@ class DepthAttributedPreserveAdapter(nn.Module):
             nn.GELU(),
             nn.Conv2d(hidden // 2, 1, kernel_size=3, padding=1, bias=True),
         )
+        self.airlight_head = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Conv2d(stage2_channels + stage3_channels, hidden // 2, kernel_size=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(hidden // 2, 1, kernel_size=1, bias=True),
+        )
+        self.airlight_uncertainty_head = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Conv2d(stage2_channels + stage3_channels, hidden // 2, kernel_size=1, bias=True),
+            nn.GELU(),
+            nn.Conv2d(hidden // 2, 1, kernel_size=1, bias=True),
+        )
         self.r0_refine = nn.Sequential(
             nn.Conv2d(stage1_channels, stage1_channels, kernel_size=3, padding=1, bias=True),
             nn.GELU(),
@@ -696,6 +708,12 @@ class DepthAttributedPreserveAdapter(nn.Module):
         self.trans_uncertainty_head[0].apply(_init_kaiming)
         nn.init.zeros_(self.trans_uncertainty_head[-1].weight)
         nn.init.zeros_(self.trans_uncertainty_head[-1].bias)
+        self.airlight_head[1].apply(_init_kaiming)
+        nn.init.zeros_(self.airlight_head[-1].weight)
+        nn.init.zeros_(self.airlight_head[-1].bias)
+        self.airlight_uncertainty_head[1].apply(_init_kaiming)
+        nn.init.zeros_(self.airlight_uncertainty_head[-1].weight)
+        nn.init.zeros_(self.airlight_uncertainty_head[-1].bias)
         self.r0_refine[0].apply(_init_kaiming)
         nn.init.zeros_(self.r0_refine[-1].weight)
         nn.init.zeros_(self.r0_refine[-1].bias)
@@ -875,9 +893,13 @@ class DepthAttributedPreserveAdapter(nn.Module):
         trans_feat = torch.cat([feat2, feat3_up], dim=1)
         t_pred = torch.sigmoid(self.transmission_head(trans_feat))
         t_log_var = self.trans_uncertainty_head(trans_feat).clamp(-6.0, 6.0)
+        airlight_pred = torch.sigmoid(self.airlight_head(trans_feat))
+        airlight_log_var = self.airlight_uncertainty_head(trans_feat).clamp(-6.0, 6.0)
         self.last_aux = {
             't_pred': t_pred,
             't_log_var': t_log_var,
+            'airlight_pred': airlight_pred,
+            'airlight_log_var': airlight_log_var,
             'depth': d2,
             't_proxy': t_proxy2,
             'depth_stage3': d3,
@@ -906,6 +928,8 @@ class DepthAttributedPreserveAdapter(nn.Module):
             't_pred_std': t_pred.detach().std(unbiased=False),
             't_uncertainty_mean': torch.sigmoid(t_log_var.detach()).mean(),
             't_uncertainty_std': torch.sigmoid(t_log_var.detach()).std(unbiased=False),
+            'airlight_pred_mean': airlight_pred.detach().mean(),
+            'airlight_uncertainty_mean': torch.sigmoid(airlight_log_var.detach()).mean(),
         }
         self.last_stats.update(feature_stats)
         return feat2, feat3
@@ -946,6 +970,23 @@ class DepthAttributedPreserveAdapter(nn.Module):
             airlight = airlight.view(airlight.size(0), airlight.size(1), 1, 1)
         if airlight.size(1) == 1:
             airlight = airlight.expand(-1, 3, -1, -1)
+        return airlight.clamp(0.0, 1.0)
+
+    @staticmethod
+    def _airlight_scalar(airlight, batch, device):
+        if airlight is None:
+            return None
+        if not torch.is_tensor(airlight):
+            airlight = torch.tensor(airlight, device=device, dtype=torch.float32)
+        airlight = airlight.to(device).float()
+        if airlight.dim() == 0:
+            airlight = airlight.view(1, 1, 1, 1).expand(batch, -1, -1, -1)
+        elif airlight.dim() == 1:
+            airlight = airlight.view(-1, 1, 1, 1)
+        elif airlight.dim() == 2:
+            airlight = airlight.mean(dim=1, keepdim=True).view(airlight.size(0), 1, 1, 1)
+        elif airlight.dim() == 4 and airlight.size(1) != 1:
+            airlight = airlight.mean(dim=1, keepdim=True)
         return airlight.clamp(0.0, 1.0)
 
     def _depth_mask(self, final_feat, hazy, t_full, prior_full):
@@ -1159,10 +1200,38 @@ class DepthAttributedPreserveAdapter(nn.Module):
         if not self.last_aux:
             device = next(self.parameters()).device
             zero = torch.zeros((), device=device)
-            return {'trans': zero, 'phys': zero, 't_l1': zero, 't_log_l1': zero, 't_nll': zero, 't_spearman_proxy': zero}
+            return {
+                'trans': zero,
+                'phys': zero,
+                't_l1': zero,
+                't_log_l1': zero,
+                't_nll': zero,
+                'airlight': zero,
+                'airlight_nll': zero,
+                't_spearman_proxy': zero,
+            }
         t_pred = self.last_aux['t_pred']
         zero = t_pred.new_zeros(())
-        losses = {'trans': zero, 'phys': zero, 't_l1': zero, 't_log_l1': zero, 't_nll': zero, 't_spearman_proxy': zero}
+        losses = {
+            'trans': zero,
+            'phys': zero,
+            't_l1': zero,
+            't_log_l1': zero,
+            't_nll': zero,
+            'airlight': zero,
+            'airlight_nll': zero,
+            't_spearman_proxy': zero,
+        }
+        airlight_pred = self.last_aux.get('airlight_pred')
+        if airlight_pred is not None and airlight is not None:
+            airlight_gt = self._airlight_scalar(airlight, airlight_pred.size(0), airlight_pred.device)
+            if airlight_gt is not None:
+                a_l1 = F.smooth_l1_loss(airlight_pred, airlight_gt)
+                losses['airlight'] = a_l1
+                a_log_var = self.last_aux.get('airlight_log_var')
+                if a_log_var is not None:
+                    a_abs = (airlight_pred - airlight_gt).abs()
+                    losses['airlight_nll'] = (torch.exp(-a_log_var) * a_abs.detach() + a_log_var).mean()
         if trans_gt is None:
             return losses
         if trans_gt.dim() == 3:

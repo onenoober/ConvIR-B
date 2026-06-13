@@ -249,3 +249,52 @@ Interpretation:
 Decision: `PHASE_C1_REAL_BLEND_ORACLE_PASS`. Proceed aggressively to integrated
 T/A/U supervised candidate training plus deployable U-TQS soft-mix policy; do
 not return to v3.6 hard-reject threshold tuning.
+
+
+## Phase D1 Integrated T/A/U Candidate Training Plan
+
+Added code and scripts:
+
+```text
+Dehazing/ITS/models/ConvIR.py
+Dehazing/ITS/train.py
+Dehazing/ITS/main.py
+experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/run_dta_v3_7_tau_candidate_convir4090.sh
+experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/launch_dta_v3_7_tau_training_convir4090.sh
+```
+
+Model change:
+
+- add `DTA.airlight_head` and `DTA.airlight_uncertainty_head`;
+- supervise atmospheric light from Haze4K filename metadata with
+  `--dta_airlight_weight` and `--dta_airlight_nll_weight`;
+- keep transmission supervision through `--dta_trans_log_weight` and
+  `--dta_trans_nll_weight`;
+- keep quality/risk pressure through light-tail, CVaR, group-tail, and patch-SSIM
+  losses;
+- keep A0 preservation through official A0 partial initialization,
+  reference-preserve, MSE-regression, and bounded FDF action budgets.
+
+Partial-load and initialization rule:
+
+```text
+init_model = official A0 Haze4K checkpoint
+init_model_partial = true
+partial_new_prefixes = DTA.
+new modules = all DTA modules, including airlight/airlight-uncertainty heads
+airlight final layers = zero initialized, sigmoid output starts at 0.5
+output path = unchanged unless trained DTA/FDF action changes it
+```
+
+Queue:
+
+```text
+variants = u1_tau_l1_s004_g025_a006,u2_tau_l3_s004_g015_a006,u3_tau_l2_s002_g025_a006
+folds = 0,1,2,3,4
+seeds = 3407,3411,2026
+stage = quick5full
+locked_test_touched = false
+```
+
+This is deliberately not a conservative detour: it is the direct integrated
+T/A/U candidate retraining authorized by Phase C1.

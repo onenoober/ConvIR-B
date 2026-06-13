@@ -480,3 +480,47 @@ U-TQS policy and integrated T/A/U supervision, not the candidate action family.
 Next work should therefore start integrated T/A/U supervised candidate training
 and a deployable soft-mix head, while preserving A0 and avoiding any hard-reject
 threshold resurrection.
+
+
+## Phase D1 Integrated T/A/U Candidate Training Plan
+
+Phase D1 starts the next authorized path after Phase C1: integrated
+transmission/airlight/uncertainty supervised candidate retraining. It adds
+lightweight atmospheric-light heads to DTA and trains the L1/L2/L3 FDF action
+family with stronger T/A/U and quality-risk losses.
+
+New modules:
+
+```text
+DTA.airlight_head
+DTA.airlight_uncertainty_head
+```
+
+Initialization and partial-load rules:
+
+```text
+fine-tune source: official Haze4K A0 checkpoint
+load mode: --init_model_partial
+allowed new prefixes: DTA.
+new module initialization: Kaiming hidden layers, zero final layers
+airlight starting prediction: sigmoid(0) = 0.5
+A0 preservation: official ConvIR-B weights loaded exactly where names match;
+                 DTA/FDF action remains bounded and budgeted
+```
+
+Execution queue:
+
+```text
+u1_tau_l1_s004_g025_a006
+u2_tau_l3_s004_g015_a006
+u3_tau_l2_s002_g025_a006
+
+folds 0..4
+seeds 3407/3411/2026
+stage quick5full
+locked test untouched
+```
+
+Pass/fail interpretation remains train-derived only. If Phase D1 improves the
+candidate family or T/A/U feature separability, the next step is a deployable
+U-TQS soft-mix policy over the new candidates plus actual real-blend validation.
