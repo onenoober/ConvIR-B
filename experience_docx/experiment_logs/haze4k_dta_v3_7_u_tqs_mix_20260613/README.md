@@ -366,3 +366,55 @@ v37_tau_shrink_summary.json
 This is a required intermediate result, not a conservative detour. A D2 passing
 table policy would still need real rendered soft-blend verification before any
 formal claim, because D2 alpha-shrink uses table-scaled D1 deltas.
+
+## Phase D2 TAU Soft-Shrink Policy Result
+
+Phase D2 completed on `convir-4090` from runtime workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d2-policy-c823848`
+with locked test untouched:
+
+```text
+DTA_V3_7_D2_TAU_SHRINK_POLICY_OK rows=7200 oracle_strict=10 policy_strict=0 decision=D2_TAU_SHRINK_POLICY_STRICT_FAIL
+```
+
+The run explicitly filtered to `quick5full` D1 screen rows:
+
+```text
+raw_rows = 7802
+filtered_rows_before_dedup = 7200
+filtered_rows_after_dedup = 7200
+include_run_substring = quick5full
+```
+
+Top table-oracle row:
+
+| bank | utility | mean | hard | dSSIM | positive | worst/600 | max outer worst/600 | true-vs-zero |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `full` | `max_dpsnr` | `+0.136286` | `+0.120366` | `+0.00002506` | `0.6742` | `0.00` | `0.00` | `+0.115843` |
+
+Best deployable nested policy row:
+
+| feature group | bank | mean | hard | dSSIM | positive | worst/600 | true-vs-zero | strict |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `T_pred` | `micro_shrink` | `+0.006518` | `+0.007339` | `+0.00000089` | `0.6400` | `0.00` | `+0.008293` | fail mean/hard/control surplus |
+
+Useful follow-up deployable rows:
+
+| feature group | mean | hard | positive | worst/600 | true-vs-zero | strict |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| `deployable_TQAU_action_all` | `+0.012957` | `+0.015138` | `0.5408` | `3.25` | `+0.014510` | fail gain/positive/control |
+| `FDF_action_stats` | `+0.010768` | `+0.018220` | `0.5625` | `5.00` | `+0.014457` | fail gain/positive/control |
+
+Interpretation:
+
+- D2 confirms strong D1 action-family headroom under per-image oracle selection:
+  `10/12` oracle rows strict-pass and best oracle has zero severe tail.
+- D2 deployable table policy still strict-fails: severe-tail control is easy,
+  but deployable features collapse mean/hard/control surplus by choosing too many
+  tiny actions.
+- Do not run raw D1 full `5x3`, and do not touch locked test.
+- The next experiment should be a real rendered soft-blend verification for a
+  fixed D1 action bank plus a stronger policy target that preserves high-gain
+  positives instead of minimizing tail at the cost of almost all utility.
+
+Decision: `D2_TAU_SHRINK_POLICY_STRICT_FAIL_ORACLE_PASS_LOCKED_TEST_UNTOUCHED`.

@@ -19,6 +19,30 @@ success markers over compact one-liners.
 
 ## Invalid Command Patterns To Avoid
 
+### Remote GitHub clone from `convir-4090` without host-key preflight
+
+Avoid assuming `convir-4090` can directly clone GitHub over SSH:
+
+```bash
+ssh convir-4090 'git clone -b codex/haze4k-dta-v3-7-u-tqs-mix git@github.com:onenoober/ConvIR-B.git /path/to/workspace'
+```
+
+Failure mode observed on 2026-06-13:
+
+- remote GitHub SSH failed with `Host key verification failed`;
+- the clone did not produce a usable runtime workspace.
+
+Corrected form for urgent runtime snapshots:
+
+```bash
+git bundle create /tmp/convir_route.bundle codex/haze4k-dta-v3-7-u-tqs-mix
+scp /tmp/convir_route.bundle convir-4090:/tmp/convir_route.bundle
+ssh convir-4090 'git clone /tmp/convir_route.bundle /sda/home/wangyuxin/ConvIR-B/repos/<new-workspace> && cd /sda/home/wangyuxin/ConvIR-B/repos/<new-workspace> && git checkout codex/haze4k-dta-v3-7-u-tqs-mix'
+```
+
+Use a new workspace path or verify the existing target is clean before cloning
+or updating. Record the source commit in the run status.
+
 
 ### Bash printf labels beginning with dashes
 

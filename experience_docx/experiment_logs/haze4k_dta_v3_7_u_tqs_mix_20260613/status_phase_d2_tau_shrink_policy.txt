@@ -1,0 +1,16 @@
+RUNNING DTA-v3.7 Phase D2 TAU shrink policy 2026-06-13T17:50:00+08:00
+state=RUNNING_TRAIN_DERIVED_TABLE_POLICY
+host=RTX4090
+repo=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d2-policy-c823848
+branch=codex/haze4k-dta-v3-7-u-tqs-mix
+commit=c823848
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+input=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d2-policy-c823848/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_tau_oof_per_image_action_table.csv
+features=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d2-policy-c823848/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_quality_image_features.csv
+variants=u1_tau_l1_s004_g025_a006,u2_tau_l3_s004_g015_a006,u3_tau_l2_s002_g025_a006 folds=0,1 seeds=3407,3411 action_bank=micro_shrink
+include_run_substring=quick5full
+locked_test_touched=false
+proxy_note=alpha-scaled D1 table deltas; real rendered verification is required before formal claims
+COMPLETED DTA_V3_7_D2_TAU_SHRINK_POLICY_OK 2026-06-13T17:52:37+08:00
+summary=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d2-policy-c823848/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_tau_shrink_summary.json
+locked_test_touched=false

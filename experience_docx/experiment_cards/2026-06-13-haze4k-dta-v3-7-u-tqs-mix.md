@@ -624,3 +624,39 @@ next step is actual rendered soft-blend verification before any formal claim. If
 it fails but the D2 oracle passes, the route stays on gain-risk feature/policy
 separability. If the D2 oracle fails, the D1 candidate family needs redesign
 instead of more policy tuning.
+
+## 2026-06-13 D2 TAU Soft-Shrink Policy Result
+
+D2 completed on `convir-4090` from commit `c823848` with locked test untouched.
+It filtered to the intended D1 quick5full screen rows (`7200` rows after
+filtering from `7802` raw D1 rows) and wrote:
+
+```text
+v37_tau_shrink_oracle_grid.csv
+v37_tau_shrink_policy_nested_report.csv
+v37_tau_shrink_policy_aggregate.csv
+v37_tau_shrink_policy_action_table.csv
+v37_tau_shrink_summary.json
+```
+
+Marker:
+
+```text
+DTA_V3_7_D2_TAU_SHRINK_POLICY_OK rows=7200 oracle_strict=10 policy_strict=0 decision=D2_TAU_SHRINK_POLICY_STRICT_FAIL
+```
+
+Best oracle row is strong: `full/max_dpsnr` reaches mean `+0.136286`, hard
+`+0.120366`, dSSIM `+0.00002506`, positive ratio `0.6742`, worst `0/600`, and
+true-vs-zero `+0.115843`. This confirms the D1 action family still has useful
+headroom when action selection is oracle.
+
+Best deployable nested row is `T_pred` over `micro_shrink`: mean `+0.006518`,
+hard `+0.007339`, positive ratio `0.6400`, worst `0/600`, and true-vs-zero
+`+0.008293`. It strict-fails mean, hard, and control-surplus gates. The larger
+deployable feature group improves mean to `+0.012957` but collapses positive
+ratio to `0.5408`.
+
+Decision:
+`D2_TAU_SHRINK_POLICY_STRICT_FAIL_ORACLE_PASS_LOCKED_TEST_UNTOUCHED`. Continue
+with real rendered D1 soft-blend verification and a stronger high-positive
+utility target; do not run raw D1 full `5x3` or locked test.
