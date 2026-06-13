@@ -166,3 +166,46 @@ Interpretation:
 Decision: `PHASE_B2_ENRICHED_TABLE_POLICY_STRICT_FAIL`. Continue to real
 soft-blend verification and/or integrated T/A/U supervised candidate training;
 do not return to hard-reject threshold search.
+
+
+## Phase C1 Real Soft-Blend Verification Plan
+
+Added scripts:
+
+```text
+experience_docx/tools/eval_haze4k_dta_v37_real_blend_oracle.py
+experience_docx/tools/aggregate_haze4k_dta_v37_real_blend_oracle.py
+experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/run_dta_v3_7_phase_c1_real_blend_convir4090.sh
+```
+
+This phase replaces Phase A's linear metric proxy with actual rendered tensor
+blends:
+
+```text
+blend = clamp(A0 + alpha * (candidate - A0), 0, 1)
+```
+
+Scope:
+
+- train-root Haze4K OOF fold validation images only; locked test remains untouched.
+- variants: L2 tail-safe, L3 balanced, L1 high-gain from the v3.6 formal checkpoint family.
+- groups: folds `0..4` x seeds `3407,3411,2026`.
+- bank specs: A0/L3 full, A0/L3 shrink, A0/L2/L3/L1 full, A0/L2/L3/L1 shrink, micro-shrink, and forced no-A0 shrink.
+- controls: same selected action evaluated against zero, shuffled, and normal depth modes for true-vs-control surplus.
+
+Required outputs:
+
+```text
+status_phase_c1_real_blend.txt
+v37_phase_c1_real_blend_*.log
+phase_c1_real_blend_groups/v37_real_blend_selected_seed*_f*.csv
+phase_c1_real_blend_groups/v37_real_blend_single_actions_seed*_f*.csv
+phase_c1_real_blend_groups/v37_real_blend_summary_seed*_f*.json
+v37_real_blend_oracle_selected_all.csv
+v37_real_blend_oracle_grid.csv
+v37_real_blend_summary.json
+```
+
+Pass line is the same strict oracle line as Phase A, but now with actual
+PSNR/SSIM computed from blended image tensors and with `max_outer_worst`
+measured across fold-seed 600-image groups.

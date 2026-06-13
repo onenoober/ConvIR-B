@@ -104,6 +104,60 @@ else
 fi
 ```
 
+2026-06-13 recurrence:
+
+Avoid assigning `RG=grep` and then invoking ripgrep-only flags through the
+variable:
+
+```bash
+if command -v /usr/bin/rg >/dev/null 2>&1; then RG=/usr/bin/rg; else RG=grep; fi
+$RG --files experience_docx/tools Dehazing/ITS
+```
+
+Failure mode observed:
+
+- WSL did not have `/usr/bin/rg`, so `grep --files` ran;
+- GNU grep treated `--files` as an ambiguous option and no file list was
+  produced.
+
+Corrected form:
+
+```bash
+if command -v /usr/bin/rg >/dev/null 2>&1; then
+  /usr/bin/rg --files experience_docx/tools Dehazing/ITS
+else
+  find experience_docx/tools Dehazing/ITS -type f
+fi
+```
+
+2026-06-13 recurrence:
+
+Avoid compact PowerShell-to-WSL one-liners with nested escaped `printf`
+formats and embedded `\n`, for example:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'cd /repo && printf \"%s\\n\" \"--- INDEX ---\" && sed -n \"1,220p\" file.md'
+```
+
+Failure mode observed:
+
+- quoting/escaping was altered across the PowerShell-to-WSL boundary;
+- output was truncated to a malformed marker (`---n`) instead of the requested
+  document contents.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B
+printf '%s\n' '--- INDEX ---'
+sed -n '1,220p' experience_docx/EXPERIMENT_INDEX.md
+printf 'DOC_READ_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
 2026-06-06 recurrence:
 
 Avoid this form:

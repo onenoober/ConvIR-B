@@ -405,3 +405,39 @@ Interpretation:
 Decision: `PHASE_B2_ENRICHED_TABLE_POLICY_STRICT_FAIL`. Continue to real
 soft-blend verification and/or integrated T/A/U supervised candidate training;
 do not return to hard-reject threshold search.
+
+
+## Phase C1 Real Soft-Blend Verification Plan
+
+Phase C1 is the next decisive intermediate experiment, not a conservative
+detour. It verifies whether the Phase A soft-oracle headroom survives actual
+image-space blending:
+
+```text
+blend = clamp(A0 + alpha * (candidate - A0), 0, 1)
+```
+
+Added scripts:
+
+```text
+experience_docx/tools/eval_haze4k_dta_v37_real_blend_oracle.py
+experience_docx/tools/aggregate_haze4k_dta_v37_real_blend_oracle.py
+experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/run_dta_v3_7_phase_c1_real_blend_convir4090.sh
+```
+
+Execution contract:
+
+- run on `convir-4090` in a fresh `ConvIR-B-dta-v3-7-u-tqs-mix-phasec1` workspace.
+- use train-root OOF fold validation images only; locked test remains untouched.
+- evaluate folds `0..4` x seeds `3407,3411,2026` in parallel across idle 4090 GPUs.
+- load L1/L2/L3 checkpoints from the v3.6 formal run and the official A0 checkpoint.
+- report strict gates on actual blended PSNR/SSIM, true-vs-zero/shuffle/normal surplus, and fold-seed max outer worst.
+
+Decision rule:
+
+```text
+if actual soft-blend oracle strict-passes:
+    proceed aggressively to integrated T/A/U supervised candidate training and deployable U-TQS policy.
+else:
+    record Phase A as an over-optimistic metric proxy and redesign candidate/blend representation before long training.
+```
