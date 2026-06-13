@@ -660,3 +660,25 @@ Decision:
 `D2_TAU_SHRINK_POLICY_STRICT_FAIL_ORACLE_PASS_LOCKED_TEST_UNTOUCHED`. Continue
 with real rendered D1 soft-blend verification and a stronger high-positive
 utility target; do not run raw D1 full `5x3` or locked test.
+
+## 2026-06-13 D3 TAU Real Soft-Blend Verification Plan
+
+D3 is authorized because D2 kept strong D1 oracle headroom but only through a
+table-scaled alpha proxy. The next step is actual rendered tensor blending over
+D1 quick5full candidates only:
+
+```text
+scope = D1 quick5full staged-screen candidates
+variants = u1/u2/u3
+folds = 0,1
+seeds = 3407,3411
+action bank = A0 + alpha * candidate residual
+alpha bank = 0.10,0.25,0.50,0.75,1.00
+utility modes = max_dpsnr, tail_averse, ssim_guarded, high_positive_tail_averse
+locked_test_touched = false
+```
+
+This is an aggressive intermediate route correction, not a conservative detour:
+it verifies whether D1 soft-shrink headroom survives actual rendered blending
+before any stronger deployable high-positive policy is trained. Raw D1 full
+`5x3` and locked Haze4K test remain blocked.

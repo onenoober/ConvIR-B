@@ -1318,3 +1318,11 @@ after the remote body had already run.
 Corrected form: either pipe the remote body directly from PowerShell to
 `wsl ... bash -lc "cat | ssh convir-4090 'bash -s'"`, or pipe the whole WSL
 wrapper through `tr -d '\r' | bash` before execution.
+
+2026-06-13 recurrence: avoid PowerShell JSON command strings that wrap a Bash for-loop with backslash continuations inside wsl bash -lc.
+
+Invalid form: a single PowerShell command string passed `wsl bash -lc 'set -euo pipefail; for f in ...; do ...; done'` with nested quotes and line continuations.
+
+Observed failure mode: PowerShell/WSL quoting stripped the loop variable and file paths, so Bash received an incomplete loop and returned `syntax error: unexpected end of file`.
+
+Corrected form: put the multi-line Bash body in a PowerShell here-string and pipe it through `wsl bash -lc "tr -d '\r' | bash"`; avoid embedding another unindented PowerShell here-string terminator inside that wrapper.

@@ -418,3 +418,35 @@ Interpretation:
   positives instead of minimizing tail at the cost of almost all utility.
 
 Decision: `D2_TAU_SHRINK_POLICY_STRICT_FAIL_ORACLE_PASS_LOCKED_TEST_UNTOUCHED`.
+
+## Phase D3 TAU Real Soft-Blend Verification Plan
+
+D3 is the immediate follow-up to D2. It does not run raw D1 candidates at full
+`5 folds x 3 seeds` and does not touch locked Haze4K test. It renders actual
+image-space blends for the D1 quick5full candidate bank so the D2 table-scaled
+alpha assumption is checked with real tensors.
+
+```text
+scope = D1 quick5full screen only
+variants = u1/u2/u3
+folds = 0,1
+seeds = 3407,3411
+action bank = A0 + alpha * {u1,u2,u3}
+alpha bank = 0.10,0.25,0.50,0.75,1.00
+utility modes = max_dpsnr, tail_averse, ssim_guarded, high_positive_tail_averse
+locked_test_touched = false
+```
+
+Added artifacts:
+
+```text
+experience_docx/tools/eval_haze4k_dta_v37_tau_real_blend_oracle.py
+experience_docx/tools/aggregate_haze4k_dta_v37_tau_real_blend_oracle.py
+run_dta_v3_7_phase_d3_tau_real_blend_convir4090.sh
+```
+
+Pass interpretation: if D3 actual rendered oracle passes strict gates, continue
+with a stronger high-positive deployable utility policy over the same D1 action
+bank. If D3 actual rendered oracle fails, the D2 table oracle was too optimistic
+and the next step must redesign candidate/blend representation rather than run
+formal `5x3` or locked test.
