@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: DTA-v3.7 D6 output-difference / quality deployable policy strict-passed on the D1 quick5full train-derived scope; locked Haze4K test remains untouched, raw D1 full 5x3 remains blocked until fixed-policy confirmation explicitly authorizes it, and the route should continue with fixed D6 confirmation rather than hard-reject tuning or broad router capacity.
+Status: DTA-v3.7 D7 fixed output-difference policy confirmation passed on the D1 quick5full train-derived scope; locked Haze4K test remains untouched, no D6/D7 run is active, and the route should continue only with a broader predeclared train-derived formal confirmation of the sealed D7 policy rather than hard-reject tuning or broad router capacity.
 
 ## Scope
 
@@ -102,6 +102,32 @@ the first deployable v3.7 strict pass and validates the output-difference
 feature direction, but locked test and raw D1 full `5x3` remain blocked until a
 fixed train-derived D6 confirmation passes without policy reselection.
 
+## 2026-06-13 DTA-v3.7 D7 Fixed Output-Difference Confirmation Outcome
+
+Decision: `D7_FIXED_OUTPUTDIFF_CONFIRM_PASS_LOCKED_TEST_UNTOUCHED`.
+
+D7 completed on `convir-4090` from commit `42228b6` and runtime workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d7-fixed-42228b6`.
+It froze two D6 strict rows and reran them as fixed policies, without another
+grid/policy search, without locked-test access, and without raw D1 full `5x3`:
+
+```text
+DTA_V3_7_D7_FIXED_OUTPUTDIFF_CONFIRM_OK policies=2 strict_consistent=2 decision=D7_FIXED_OUTPUTDIFF_CONFIRM_PASS
+```
+
+The sealed primary candidate is
+`primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100`: mean `+0.078596`, hard
+`+0.085328`, dSSIM `+0.00001913`, positive ratio `0.6583`, worst `46/600`, max
+outer worst `52/600`, and D6 consistency pass. The backup
+`backup_outputdiff_only_micro_shrink_pred_gain_t100` also strict-passes with
+mean `+0.078515`, hard `+0.086135`, positive ratio `0.6571`, worst `44/600`,
+and max outer worst `50/600`.
+
+This confirms the D6 deployable pass is stable as a fixed policy at the staged
+quick5full scope. It does not yet authorize locked Haze4K test; the next step,
+if continuing, is a broader predeclared train-derived formal confirmation of the
+sealed D7 primary policy.
+
 DTA-v3.5 FDF-RCS-Lite completed the relaxed train-derived flow on
 `convir-4090`. Conservative FDF moved the family in the intended direction:
 L1/L3 positive ratio reached about `0.630`, L2 reduced worst to `60.5/600`, and
@@ -119,7 +145,7 @@ selection rather than more residual/router capacity.
 | --- | --- | --- |
 | DTA-v2 CalGate | Multi-seed OOF showed `invert` about `+0.0887 dB`, but zero/shuffle retained most of the improvement and tail/SSIM did not pass. | Positive diagnostic only; no locked test; use as motivation for attribution controls. |
 | DTA-v3 DAPC/FDF fine-tune | `convir-4090` preflight passed; R0 scouts failed. Zero-R0 depthDirect train=`invert` proved surplus. DTA-v3.1 airlight/risk/light-hinge, DTA-v3.2 SafeMix, DTA-v3.3 RouterFusion, and DTA-v3.4 FDF-TSR failed their written gates. DTA-v3.5 FDF-RCS-Lite fixed much of the over-action pattern but still failed strict all-image tail; DTA-v3.6 HRCS formal validation confirms strong oracle selector/action-bank headroom but deployable selectors still strict-fail. | Mechanism-positive diagnostic only; no promotion. A relaxed one-shot locked test may only use the fixed L3 logistic `deployable_all` target `0.93` policy under the 2026-06-13 user override, with no post-test tuning. |
-| DTA-v3.7 U-TQS-Mix | Phase A soft-oracle and Phase C1/D3 actual real-blend oracles pass; D1 integrated T/A/U candidates are mechanism-positive; D2/D4/D5 deployable table policies fail; D6 output-difference / quality deployable policy strict-passes on D1 quick5full (`8/522` rows, best mean `+0.078596`, hard `+0.085328`, positive `0.6583`, worst `46/600`). | Mainline route. Freeze a D6 strict row for train-derived confirmation; do not resume hard-reject threshold search, do not touch locked test, and do not run raw D1 full `5x3` unless the fixed D6 confirmation protocol explicitly requires it. |
+| DTA-v3.7 U-TQS-Mix | Phase A soft-oracle and Phase C1/D3 actual real-blend oracles pass; D1 integrated T/A/U candidates are mechanism-positive; D2/D4/D5 deployable table policies fail; D6 output-difference / quality deployable policy strict-passes on D1 quick5full; D7 fixed confirmation passes for both primary and backup D6 rows. | Mainline route. Use `primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100` as the sealed staged policy candidate; do not resume hard-reject threshold search or touch locked test before broader formal train-derived confirmation. |
 
 ## Reopen Conditions
 

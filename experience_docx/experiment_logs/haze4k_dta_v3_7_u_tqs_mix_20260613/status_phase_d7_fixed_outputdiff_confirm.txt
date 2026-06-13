@@ -1,0 +1,14 @@
+dta_v3_7_phase_d7_fixed_outputdiff_start 2026-06-13T21:37:16+08:00
+state=RUNNING_D7_FIXED_OUTPUTDIFF_CONFIRM
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d7-fixed-42228b6
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+locked_test_touched=false
+raw_d1_full_5x3_run=false
+codex/haze4k-dta-v3-7-u-tqs-mix
+42228b6
+ M run_dta_v3_7_phase_d7_fixed_outputdiff_confirm_convir4090.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d7_fixed_outputdiff_launcher.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/status_phase_d7_fixed_outputdiff_confirm.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_d6_outputdiff_features_all.csv
+dta_v3_7_phase_d7_fixed_outputdiff_done rc=0 2026-06-13T21:37:44+08:00
+DTA_V3_7_PHASE_D7_FIXED_OUTPUTDIFF_CONFIRM_OK 2026-06-13T21:37:44+08:00

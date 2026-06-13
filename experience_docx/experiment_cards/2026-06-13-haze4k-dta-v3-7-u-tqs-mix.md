@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `D6_OUTPUTDIFF_POLICY_STRICT_PASS_LOCKED_TEST_UNTOUCHED`
+Status: `D7_FIXED_OUTPUTDIFF_CONFIRM_PASS_LOCKED_TEST_UNTOUCHED`
 
 ## Scope
 
@@ -848,3 +848,37 @@ to a fixed train-derived confirmation stage. Locked Haze4K test remains blocked
 until a fixed policy passes a formal confirmation without post-test selection.
 Raw D1 full `5x3` remains blocked unless that fixed D6 confirmation stage
 requires and authorizes the additional candidate rendering.
+
+## 2026-06-13 D7 Fixed Output-Difference Policy Confirmation Result
+
+D7 completed on `convir-4090` from runtime workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d7-fixed-42228b6`
+with locked test untouched and raw D1 full `5x3` still blocked:
+
+```text
+DTA_V3_7_D7_FIXED_OUTPUTDIFF_CONFIRM_OK policies=2 strict_consistent=2 decision=D7_FIXED_OUTPUTDIFF_CONFIRM_PASS
+```
+
+Fixed rows:
+
+| role | policy id | feature group | bank | score | target | mean | hard | dSSIM | positive | worst/600 | max outer worst/600 | strict | D6 consistency |
+| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |
+| primary | `primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100` | `outputdiff_plus_Q` | `micro_shrink` | `pred_gain` | `1.00` | `+0.078596` | `+0.085328` | `+0.00001913` | `0.6583` | `46.00` | `52.00` | pass | pass |
+| backup | `backup_outputdiff_only_micro_shrink_pred_gain_t100` | `outputdiff_only` | `micro_shrink` | `pred_gain` | `1.00` | `+0.078515` | `+0.086135` | `+0.00001889` | `0.6571` | `44.00` | `50.00` | pass | pass |
+
+Interpretation:
+
+- D7 is a fixed-policy confirmation, not another policy search; it freezes the
+  D6 strict rows and verifies they reproduce exactly on the D1 quick5full
+  train-derived scope.
+- Both the primary and backup fixed rows pass all strict gates and match the D6
+  aggregate, confirming the deployable output-difference policy is stable at the
+  current staged scope.
+- The current experiment queue has no active training/eval left. The route is
+  not promotion-ready yet because the policy still needs a broader
+  train-derived formal confirmation before any locked-test confirmation.
+
+Decision: `D7_FIXED_OUTPUTDIFF_CONFIRM_PASS_LOCKED_TEST_UNTOUCHED`. Use
+`primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100` as the sealed staged
+policy candidate. Do not touch locked Haze4K test until a predeclared broader
+formal confirmation passes; do not return to v3.6 hard-reject tuning.
