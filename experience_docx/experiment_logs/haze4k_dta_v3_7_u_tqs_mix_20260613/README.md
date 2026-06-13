@@ -482,3 +482,34 @@ Interpretation:
 Decision: `PHASE_D3_TAU_REAL_BLEND_ORACLE_PASS_LOCKED_TEST_UNTOUCHED`. Continue
 immediately to a deployable high-positive utility policy over the D1/D3 action
 bank; do not run raw D1 full `5x3` and do not touch locked test.
+
+## Phase D4 High-Positive Deployable Policy Plan
+
+D4 starts immediately after the D3 oracle pass. It is train-derived and table-only:
+it uses actual D3 rendered single-action deltas plus deployable D1 T/A/U/FDF
+features to train nested ridge/logistic high-positive utility policies.
+
+```text
+input actions = v37_tau_real_blend_single_actions_all.csv
+input features = v37_tau_oof_per_image_action_table.csv
+scope = D1/D3 quick5full only, folds 0,1, seeds 3407,3411
+candidate banks = full, shrink, micro_shrink
+feature groups = Q_input_proxy, T_pred, FDF_action_stats, deployable_TQAU_action_all, diagnostic_with_trans_gt
+locked_test_touched = false
+```
+
+Artifacts:
+
+```text
+experience_docx/tools/train_haze4k_dta_v37_d3_high_positive_policy.py
+run_dta_v3_7_phase_d4_highpos_policy_convir4090.sh
+v37_d4_highpos_policy_selected_actions.csv
+v37_d4_highpos_policy_aggregate.csv
+v37_d4_highpos_policy_nested_report.csv
+v37_d4_highpos_summary.json
+```
+
+D4 is not a formal claim. If a deployable row strict-passes, the next step is a
+fixed staged confirmation before any full formal or locked-test discussion. If
+it fails, the route remains blocked on deployable high-positive gain-risk
+separability despite confirmed D3 oracle headroom.

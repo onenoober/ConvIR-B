@@ -714,3 +714,15 @@ Interpretation:
 Decision: `PHASE_D3_TAU_REAL_BLEND_ORACLE_PASS_LOCKED_TEST_UNTOUCHED`. Continue
 immediately to a deployable high-positive utility policy over the D1/D3 action
 bank; do not run raw D1 full `5x3` and do not touch locked test.
+
+## 2026-06-13 D4 High-Positive Deployable Policy Plan
+
+D4 uses the actual D3 rendered single-action table and D1 quick5full deployable
+T/A/U/FDF features to train nested high-positive utility policies. It remains
+train-derived only and does not run raw D1 full `5x3` or locked Haze4K test.
+
+The policy grid deliberately favors preserving high-gain/positive actions while
+still penalizing severe tail and SSIM risk. A D4 deployable strict pass would
+justify a fixed staged confirmation; a D4 fail means the route still needs
+stronger deployable feature separability rather than more oracle or raw-candidate
+work.
