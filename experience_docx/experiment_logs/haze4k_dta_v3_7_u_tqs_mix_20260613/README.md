@@ -513,3 +513,35 @@ D4 is not a formal claim. If a deployable row strict-passes, the next step is a
 fixed staged confirmation before any full formal or locked-test discussion. If
 it fails, the route remains blocked on deployable high-positive gain-risk
 separability despite confirmed D3 oracle headroom.
+
+
+## Phase D4 High-Positive Deployable Policy Result
+
+D4 completed on `convir-4090` from runtime workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9`
+with locked test untouched:
+
+```text
+DTA_V3_7_D4_HIGH_POSITIVE_POLICY_OK rows=38400 aggregate=75 strict_pass=0 decision=D4_HIGH_POSITIVE_POLICY_STRICT_FAIL
+```
+
+Best nested policy row:
+
+| feature group | bank | policy | mean | hard | dSSIM | positive | worst/600 | true-vs-zero | intervention | strict |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `diagnostic_with_trans_gt` | `micro_shrink` | `positive_breakthrough` | `+0.003344` | `+0.001875` | `+0.00000092` | `0.1588` | `0.00` | `+0.003334` | `0.2100` | fail gain/positive/control |
+
+Interpretation:
+
+- D4 confirms the naive deployable high-positive ridge policy is still far below
+  the D3 oracle: it is tail-safe but collapses intervention and positive action
+  rate.
+- The issue is not severe-tail control; the issue is deployable ranking/forcing
+  of high-positive actions.
+- The next fast step should force target intervention/coverage bands on the D3
+  action ranking to test whether the predictor has any useful ordering signal
+  when it is not allowed to retreat to A0/tiny actions.
+
+Decision: `D4_HIGH_POSITIVE_POLICY_STRICT_FAIL_LOCKED_TEST_UNTOUCHED`. Continue
+with targeted-intervention D5 policy over the same D1/D3 action bank. Raw D1
+full `5x3` and locked test remain blocked.
