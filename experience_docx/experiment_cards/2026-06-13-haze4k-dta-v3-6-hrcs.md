@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `PHASE_A_COMPLETED_RELAXED_PASS_STRICT_FAIL_FORMAL_QUEUE_PENDING`
+Status: `FORMAL_COMPLETED_RELAXED_PASS_STRICT_FAIL_FIXED_POLICY_READY_LOCKED_TEST_UNTOUCHED`
 
 ## Scope
 
@@ -77,11 +77,11 @@ Use the same 2 folds x 2 seeds v3.5 evidence for L1/L2/L3 and select one fixed d
 
 ### Phase C: formal train-derived validation
 
-If Phase A/B produces a usable fixed selector, launch 5 folds x 3 seeds for L1/L2/L3 candidate evidence on `convir-4090`, reusing identical v3.5 model configs and running only on train-derived splits. This is still train-derived validation; locked test remains untouched until the fixed policy is sealed.
+Completed. The 5-fold x 3-seed formal queue for L1/L2/L3 ran on `convir-4090`, reused the identical v3.5 model configs, and stayed train-derived only. Locked test was not touched.
 
 ### Phase D: one-shot locked test
 
-Only after Phase C completes and a fixed selector/action policy is written down, run one locked Haze4K test under the user override. Record it as relaxed exploratory confirmation, not as strict promotion evidence, unless it satisfies the strict gates without any post-test tuning.
+Technically ready only under the user explicit relaxed override, using the fixed train-derived policy sealed in the Phase C result section. Record it as relaxed exploratory confirmation, not as strict promotion evidence, unless it satisfies the strict gates without any post-test tuning.
 
 ## Gates
 
@@ -145,3 +145,22 @@ Key result:
 - The deployable action bank `{A0,L2,L3,L1}` is close on tail but fails positive ratio: mean `+0.063409`, positive ratio `0.5833`, worst `50.25/600`.
 
 Decision: continue the user-requested relaxed formal train-derived queue for L1/L2/L3, but keep the scientific interpretation unchanged: the bottleneck is still deployable risk calibration/features, not candidate capacity. Locked test remains untouched until the fixed train-derived policy is sealed.
+
+
+## Phase C Formal Result
+
+Phase C completed on `convir-4090` from commit `6f5965e` with marker `DTA_V3_6_HRCS_FORMAL_QUEUE_OK 2026-06-13T09:13:12+08:00`. The queue produced `45` candidate train runs, `180` train-derived depth-control evals, `45` aggregate jobs, a `27000`-row formal OOF action table, v3.5-style nested-selector diagnostics, and formal HRCS outputs under `formal_hrcs/`.
+
+Best deployable formal rows:
+
+| Candidate | Selector | Feature group | Target coverage | Actual coverage | mean dPSNR | positive ratio | worst/600 | max outer worst/600 | Strict | Relaxed |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |
+| L1 `s004_g025` | logistic | `deployable_all` | `0.92` | `0.8961` | `+0.075380` | `0.5876` | `56.60` | `71.67` | fail | pass |
+| L2 `s002_g025` | logistic | `deployable_all` | `0.92` | `0.8931` | `+0.054269` | `0.5788` | `39.47` | `50.33` | fail | pass |
+| L3 `s004_g015` | logistic | `deployable_all` | `0.93` | `0.8887` | `+0.065404` | `0.5817` | `47.07` | `59.33` | fail | pass |
+
+Oracle high-coverage rows still strict-pass for L1/L3, e.g. L1 oracle at `0.95` coverage has mean `+0.101305`, positive ratio `0.6373`, and worst `43.40/600`; L3 oracle at `0.95` coverage has mean `+0.087922`, positive ratio `0.6362`, and worst `31.87/600`; L3 oracle remains strict-pass through `0.97` coverage with worst `43.87/600`.
+
+Action-bank formal diagnostic confirms the deploy gap: oracle choose `{A0,L2,L3,L1}` reaches mean `+0.143298`, positive ratio `0.6623`, and zero worst regressions, while selector choose `{A0,L2,L3,L1}` reaches mean `+0.065880`, positive ratio `0.5980`, and worst `48.87/600`.
+
+Decision: `FORMAL_COMPLETED_RELAXED_PASS_STRICT_FAIL_FIXED_POLICY_READY_LOCKED_TEST_UNTOUCHED`. The fixed relaxed one-shot policy, if the user continues to locked test, is L3 `l3_fdf_lite_s004_g015_bm2` with logistic `deployable_all` HRCS at coverage target `0.93`, falling back to A0 on reject. This policy is selected only from train-derived evidence and must not be changed after any locked-test result. It is not promotion-ready because strict coverage and positive-ratio gates fail.

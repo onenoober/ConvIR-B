@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: positive diagnostic family, not promotion-ready; DTA-v3.6 HRCS Phase A confirms high oracle headroom but deployable high-coverage risk selectors still fail strict gates.
+Status: positive diagnostic family, not promotion-ready; DTA-v3.6 HRCS formal validation confirms oracle headroom but deployable high-coverage risk selectors still fail strict gates.
 
 ## Scope
 
@@ -71,16 +71,18 @@ DTA-v3.5 FDF-RCS-Lite completed the relaxed train-derived flow on
 L1/L3 positive ratio reached about `0.630`, L2 reduced worst to `60.5/600`, and
 all non-L0 variants kept positive dSSIM and true-vs-zero surplus. Strict gates
 still failed because all-image worst remained above `48/600`, and the nested
-threshold selector only reached a low-coverage relaxed diagnostic. The oracle
-risk-coverage curve is strong at `0.50` coverage, so the bottleneck is now
-deployable risk-calibrated selection rather than more residual/router capacity.
+threshold selector only reached a low-coverage relaxed diagnostic. DTA-v3.6 HRCS
+then confirmed on 5-fold x 3-seed formal train-derived validation that L1/L3
+oracle high-coverage rows can strict-pass, but deployable selectors still lose
+coverage and positive ratio. The bottleneck remains deployable risk-calibrated
+selection rather than more residual/router capacity.
 
 ## Route Table
 
 | Route | Evidence | Decision |
 | --- | --- | --- |
 | DTA-v2 CalGate | Multi-seed OOF showed `invert` about `+0.0887 dB`, but zero/shuffle retained most of the improvement and tail/SSIM did not pass. | Positive diagnostic only; no locked test; use as motivation for attribution controls. |
-| DTA-v3 DAPC/FDF fine-tune | `convir-4090` preflight passed; R0 scouts failed. Zero-R0 depthDirect train=`invert` proved surplus. DTA-v3.1 airlight/risk/light-hinge, DTA-v3.2 SafeMix, DTA-v3.3 RouterFusion, and DTA-v3.4 FDF-TSR failed their written gates. DTA-v3.5 FDF-RCS-Lite fixed much of the over-action pattern but still failed strict all-image tail; oracle curves show selector headroom. | Mechanism-positive diagnostic only; no 5-fold formal validation from B0-B4/C/D/E/L rows; no locked test. Reopen with a stronger nested selector/calibration route. |
+| DTA-v3 DAPC/FDF fine-tune | `convir-4090` preflight passed; R0 scouts failed. Zero-R0 depthDirect train=`invert` proved surplus. DTA-v3.1 airlight/risk/light-hinge, DTA-v3.2 SafeMix, DTA-v3.3 RouterFusion, and DTA-v3.4 FDF-TSR failed their written gates. DTA-v3.5 FDF-RCS-Lite fixed much of the over-action pattern but still failed strict all-image tail; DTA-v3.6 HRCS formal validation confirms strong oracle selector/action-bank headroom but deployable selectors still strict-fail. | Mechanism-positive diagnostic only; no promotion. A relaxed one-shot locked test may only use the fixed L3 logistic `deployable_all` target `0.93` policy under the 2026-06-13 user override, with no post-test tuning. |
 
 ## Reopen Conditions
 
@@ -295,3 +297,35 @@ the first bottleneck; deployable risk calibration/features are. Per the
 2026-06-13 user instruction, the route continues into a relaxed 5-fold x 3-seed
 train-derived queue, but this is exploratory and not promotion-grade unless
 strict gates pass without post-test tuning.
+
+
+## 2026-06-13 DTA-v3.6 HRCS Formal Outcome
+
+Decision: `FORMAL_COMPLETED_RELAXED_PASS_STRICT_FAIL_FIXED_POLICY_READY_LOCKED_TEST_UNTOUCHED`.
+
+The relaxed formal train-derived queue completed on `convir-4090` from commit
+`6f5965e` with marker `DTA_V3_6_HRCS_FORMAL_QUEUE_OK`. It ran L1/L2/L3 across
+folds `0..4` and seeds `3407/3411/2026`, producing `45` candidate train runs,
+`180` depth-control evals, `45` aggregate jobs, and a `27000`-row formal OOF
+action table. Locked Haze4K test was not touched.
+
+Best deployable formal rows all relaxed-pass but strict-fail:
+
+| Candidate | Selector | Feature group | Coverage | mean dPSNR | positive ratio | worst/600 | max outer worst/600 |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
+| L1 `s004_g025` | logistic | `deployable_all` | `0.8961` | `+0.075380` | `0.5876` | `56.60` | `71.67` |
+| L2 `s002_g025` | logistic | `deployable_all` | `0.8931` | `+0.054269` | `0.5788` | `39.47` | `50.33` |
+| L3 `s004_g015` | logistic | `deployable_all` | `0.8887` | `+0.065404` | `0.5817` | `47.07` | `59.33` |
+
+Oracle evidence remains the key positive sign: L1 oracle strict-passes at
+`0.93-0.95` coverage, and L3 oracle strict-passes at `0.93-0.97` coverage. The
+oracle action bank `{A0,L2,L3,L1}` reaches mean `+0.143298`, positive ratio
+`0.6623`, and zero worst regressions, while the deployable selector bank reaches
+mean `+0.065880`, positive ratio `0.5980`, and worst `48.87/600`.
+
+Interpretation: v3.6 formal validation confirms the candidate/action family is
+usable in principle, but the deployable selector still cannot preserve enough
+positive samples at high coverage. The fixed relaxed one-shot policy, if the
+user continues to locked test, is L3 `l3_fdf_lite_s004_g015_bm2` with logistic
+`deployable_all` HRCS at coverage target `0.93`, falling back to A0 on reject.
+This is exploratory only and not promotion-ready.
