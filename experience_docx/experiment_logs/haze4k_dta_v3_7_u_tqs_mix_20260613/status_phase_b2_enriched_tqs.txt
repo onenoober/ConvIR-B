@@ -1,0 +1,10 @@
+RUNNING DTA-v3.7 Phase B2 enriched TQS 2026-06-13T12:03:20+08:00
+host=RTX4090
+repo=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-phaseb2
+branch=codex/haze4k-dta-v3-7-u-tqs-mix
+commit=6f2de80
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+input=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-phaseb2/experience_docx/experiment_logs/haze4k_dta_v3_6_hrcs_20260613/v36_formal_oof_per_image_action_table.csv
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+COMPLETED DTA_V3_7_PHASE_B2_ENRICHED_TQS_OK 2026-06-13T12:11:59+08:00
+summary=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-phaseb2/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_tqs_enriched_summary.json

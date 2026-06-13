@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `PHASE_B_TABLE_POLICY_STRICT_FAIL_NEEDS_FEATURE_ENRICHMENT_OR_REAL_BLEND`
+Status: `PHASE_B2_ENRICHED_TABLE_POLICY_STRICT_FAIL_REAL_BLEND_NEXT`
 
 ## Scope
 
@@ -372,3 +372,36 @@ This phase extracts deployable image quality, contrast, dark-channel, edge,
 texture, sky/highlight, and color-cast features from Haze4K train-derived hazy
 images, joins them to the OOF action table, and reruns nested TQS with
 `v37_tqs_enriched_*` outputs. It does not use locked test feedback.
+
+## Phase B2 Enriched TQS Result
+
+Phase B2 completed on `convir-4090` from runtime workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-phaseb2` with
+marker:
+
+```text
+DTA_V3_7_QUALITY_FEATURES_OK images=3000 missing=0
+DTA_V3_7_TQS_PHASE_B_OK rows=27000 groups=7 strict_pass=0 decision=PHASE_B_TABLE_POLICY_STRICT_FAIL_NEEDS_FEATURE_ENRICHMENT_OR_REAL_BLEND
+```
+
+Key rows:
+
+| Feature group | mean dPSNR | hard bottom-25 | dSSIM | positive ratio | worst/600 | max outer worst/600 | intervention |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `T_pred` | `+0.015792` | `+0.013137` | `-0.00000566` | `0.6360` | `0.80` | `2.33` | `0.9993` |
+| `deployable_TQAU_action_all` | `+0.021754` | `+0.024839` | `+0.00000301` | `0.5128` | `3.07` | `4.33` | `0.7718` |
+| `diagnostic_with_trans_gt` | `+0.022158` | `+0.025835` | `+0.00000264` | `0.5006` | `3.13` | `4.67` | `0.7457` |
+
+Interpretation:
+
+- The new image quality/color/edge/dark-channel features were extracted for all
+  `3000` train hazy images with zero missing files.
+- Enriched deployable features improve the gain/dSSIM tradeoff relative to the
+  first table-only policy, but still fail strict mean, hard, positive-ratio, and
+  true-vs-control gates.
+- The bottleneck is no longer severe-tail control; tail is easy. The bottleneck
+  is preserving enough positive/high-gain action while staying deployable.
+
+Decision: `PHASE_B2_ENRICHED_TABLE_POLICY_STRICT_FAIL`. Continue to real
+soft-blend verification and/or integrated T/A/U supervised candidate training;
+do not return to hard-reject threshold search.

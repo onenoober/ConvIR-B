@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: DTA-v3.7 Phase A passed soft-oracle headroom, but Phase B table-only TQS over current features strict-failed; continue with T/A/Q/U feature enrichment and real soft-blend verification, not hard-reject threshold search.
+Status: DTA-v3.7 Phase A passed soft-oracle headroom, while Phase B/B2 table-only TQS strict-failed even after quality-feature enrichment; continue with real soft-blend verification and integrated T/A/U candidate training, not hard-reject threshold search.
 
 ## Scope
 
@@ -398,3 +398,17 @@ worst `2.33/600`. Tail control is easy, but gain collapses. This preserves the
 main route judgment: the action family has headroom, but deployable T/A/Q/U
 feature separability is still insufficient. The next step is feature enrichment
 and real blended-output verification, not v3.6 hard-reject threshold tuning.
+
+
+## 2026-06-13 DTA-v3.7 Phase B2 Outcome
+
+Decision: `PHASE_B2_ENRICHED_TABLE_POLICY_STRICT_FAIL`.
+
+B2 extracted deployable image quality/color/edge/dark-channel features for all
+`3000` train hazy images and reran nested TQS with `v37_tqs_enriched_*` outputs.
+Strict pass count remained `0`. The enriched all-deployable group improved mean
+and dSSIM relative to the first table policy (`+0.021754` mean, `+0.024839` hard,
+`+0.00000301` dSSIM), but positive ratio fell to `0.5128`. This confirms tail
+control is not the hard part; preserving enough high-gain positive action is.
+Continue to real soft-blend verification and integrated T/A/U supervised
+candidate training. Do not reopen v3.6 hard-reject threshold search.
