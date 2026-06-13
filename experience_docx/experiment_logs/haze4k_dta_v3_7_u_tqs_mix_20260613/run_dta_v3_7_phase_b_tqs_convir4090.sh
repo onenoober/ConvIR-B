@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix
+REPO=${REPO:-/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix}
 PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
 EVID=$REPO/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613
 STATUS=$EVID/status_phase_b_tqs.txt
