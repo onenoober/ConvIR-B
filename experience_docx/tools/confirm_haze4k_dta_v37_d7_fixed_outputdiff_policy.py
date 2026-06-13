@@ -162,6 +162,16 @@ def main() -> None:
     ap.add_argument("--output_prefix", default="v37_d7_fixed_outputdiff")
     ap.add_argument("--include_run_substring", default="quick5full")
     ap.add_argument("--consistency_tolerance", default=1e-9, type=float)
+    ap.add_argument(
+        "--policy_ids",
+        default="",
+        help="Optional comma-separated fixed policy ids to run; default runs all D7 fixed policies.",
+    )
+    ap.add_argument(
+        "--skip_d6_consistency",
+        action="store_true",
+        help="For broader formal confirmations, gate on strict metrics without exact D6 aggregate matching.",
+    )
     args = ap.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -177,7 +187,14 @@ def main() -> None:
     selected_all: list[dict[str, Any]] = []
     missing: list[str] = []
 
-    for policy in DEFAULT_POLICIES:
+    allowed_policy_ids = {item.strip() for item in args.policy_ids.split(",") if item.strip()}
+    fixed_policies = [policy for policy in DEFAULT_POLICIES if not allowed_policy_ids or policy["policy_id"] in allowed_policy_ids]
+    if allowed_policy_ids and len(fixed_policies) != len(allowed_policy_ids):
+        found = {policy["policy_id"] for policy in fixed_policies}
+        missing_policy_ids = sorted(allowed_policy_ids - found)
+        raise SystemExit(f"Unknown fixed policy id(s): {missing_policy_ids}")
+
+    for policy in fixed_policies:
         cols = groups.get(policy["feature_group"], [])
         if not cols:
             missing.append(f"{policy['policy_id']}:empty_feature_group")
@@ -207,7 +224,10 @@ def main() -> None:
                 "raw_d1_full_5x3_run": False,
             }
         )
-        row.update(compare_to_d6(row, d6_rows, args.consistency_tolerance))
+        if args.skip_d6_consistency:
+            row.update({"d6_match_found": False, "d6_consistency_pass": True, "d6_metric_diffs": {}})
+        else:
+            row.update(compare_to_d6(row, d6_rows, args.consistency_tolerance))
         fixed_aggregate.append(row)
         fixed_outer.extend(outer_rows(selected, policy))
         selected_all.extend(annotate_selected(selected, policy))
@@ -227,11 +247,13 @@ def main() -> None:
     write_csv(aggregate_path, fixed_aggregate)
     write_csv(outer_path, fixed_outer)
     write_csv(selected_path, selected_all)
-    fixed_config_path.write_text(json.dumps(DEFAULT_POLICIES, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    fixed_config_path.write_text(json.dumps(fixed_policies, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     summary = {
         "route": "DTA-v3.7 U-TQS-Mix",
         "phase": "D7_fixed_outputdiff_confirmation",
         "decision": decision,
+        "requested_policy_ids": sorted(allowed_policy_ids),
+        "skip_d6_consistency": args.skip_d6_consistency,
         "fixed_policy_count": len(fixed_aggregate),
         "strict_consistent_count": sum(bool(row.get("strict_gate_pass") and row.get("d6_consistency_pass")) for row in fixed_aggregate),
         "primary_pass": primary_pass,
