@@ -1,0 +1,36 @@
+dta_v3_7_phase_d6_outputdiff_start 2026-06-13T20:11:42+08:00
+state=RUNNING_D6_OUTPUTDIFF_FEATURE_POLICY
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+checkpoint_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-phased1bundle
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32/experience_docx/experiment_logs/haze4k_dta_v3_6_hrcs_20260613/dta_v3_6_haze4k_oof_splits_seed3407.json
+feature_max_side=384
+locked_test_touched=false
+codex/haze4k-dta-v3-7-u-tqs-mix
+91bcd32
+ M run_dta_v3_7_phase_d6_outputdiff_policy_convir4090.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d6_outputdiff_launcher.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/status_phase_d6_outputdiff_policy.txt
+d6_group_start fold=0 seed=3407 gpu=5 log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d6_outputdiff_groups/d6_outputdiff_seed3407_f0.log 2026-06-13T20:11:42+08:00
+d6_group_start fold=1 seed=3407 gpu=5 log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d6_outputdiff_groups/d6_outputdiff_seed3407_f1.log 2026-06-13T20:12:07+08:00
+d6_group_start fold=0 seed=3411 gpu=0 log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d6_outputdiff_groups/d6_outputdiff_seed3411_f0.log 2026-06-13T20:12:32+08:00
+d6_wait_no_gpu free_threshold_mib=2500 2026-06-13T20:12:58+08:00
+d6_wait_no_gpu free_threshold_mib=2500 2026-06-13T20:13:58+08:00
+d6_wait_no_gpu free_threshold_mib=2500 2026-06-13T20:14:58+08:00
+d6_wait_no_gpu free_threshold_mib=2500 2026-06-13T20:15:58+08:00
+d6_wait_no_gpu free_threshold_mib=2500 2026-06-13T20:16:58+08:00
+d6_wait_no_gpu free_threshold_mib=2500 2026-06-13T20:17:59+08:00
+d6_wait_no_gpu free_threshold_mib=2500 2026-06-13T20:18:59+08:00
+d6_wait_no_gpu free_threshold_mib=2500 2026-06-13T20:19:59+08:00
+d6_group_done fold=0 seed=3407 rc=0 log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d6_outputdiff_groups/d6_outputdiff_seed3407_f0.log 2026-06-13T20:20:13+08:00
+d6_group_done fold=1 seed=3407 rc=0 log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d6_outputdiff_groups/d6_outputdiff_seed3407_f1.log 2026-06-13T20:20:39+08:00
+d6_group_start fold=1 seed=3411 gpu=5 log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d6_outputdiff_groups/d6_outputdiff_seed3411_f1.log 2026-06-13T20:20:59+08:00
+d6_group_done fold=0 seed=3411 rc=0 log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d6_outputdiff_groups/d6_outputdiff_seed3411_f0.log 2026-06-13T20:21:00+08:00
+d6_group_done fold=1 seed=3411 rc=0 log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d6_outputdiff_groups/d6_outputdiff_seed3411_f1.log 2026-06-13T20:29:07+08:00
+DTA_V3_7_D6_OUTPUTDIFF_COMBINE_OK files=4 rows=36000 output=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_d6_outputdiff_features_all.csv
+DTA_V3_7_D6_OUTPUTDIFF_POLICY_OK rows=38400 outputdiff_rows=36000 aggregate=522 strict_pass=8 decision=D6_OUTPUTDIFF_POLICY_STRICT_PASS
+dta_v3_7_phase_d6_outputdiff_done rc=0 2026-06-13T21:16:10+08:00
+DTA_V3_7_PHASE_D6_OUTPUTDIFF_POLICY_OK 2026-06-13T21:16:10+08:00

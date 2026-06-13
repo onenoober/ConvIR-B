@@ -1326,3 +1326,32 @@ Invalid form: a single PowerShell command string passed `wsl bash -lc 'set -euo 
 Observed failure mode: PowerShell/WSL quoting stripped the loop variable and file paths, so Bash received an incomplete loop and returned `syntax error: unexpected end of file`.
 
 Corrected form: put the multi-line Bash body in a PowerShell here-string and pipe it through `wsl bash -lc "tr -d '\r' | bash"`; avoid embedding another unindented PowerShell here-string terminator inside that wrapper.
+
+### 2026-06-13 WSL `rg` PATH Shadowing By Windows App Resource
+
+When running repository inspection commands from WSL through the Codex desktop
+PowerShell shell, do not assume `rg` resolves to the Linux ripgrep binary. In one
+D6 evidence-sync inspection, WSL resolved `rg` to the Codex Windows app resource
+path and failed with `Permission denied`.
+
+Invalid form:
+
+```bash
+rg -n "D6|outputdiff" experience_docx/EXPERIMENT_INDEX.md
+```
+
+Observed failure mode:
+
+```text
+/mnt/c/Program Files/WindowsApps/OpenAI.Codex_.../app/resources/rg: Permission denied
+```
+
+Corrected forms:
+
+```bash
+/usr/bin/rg -n "D6|outputdiff" experience_docx/EXPERIMENT_INDEX.md
+grep -nE "D6|outputdiff" experience_docx/EXPERIMENT_INDEX.md
+```
+
+For future monitoring or evidence-sync commands, prefer `/usr/bin/rg` explicitly
+when inside WSL, or fall back to `grep` if Linux ripgrep is not installed.

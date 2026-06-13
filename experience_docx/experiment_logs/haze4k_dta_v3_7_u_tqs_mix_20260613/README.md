@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `D1_STAGE_SCREEN_TRIAGE_COMPLETE_NO_FORMAL_PROMOTION_YET`
+Status: `D6_OUTPUTDIFF_POLICY_STRICT_PASS_LOCKED_TEST_UNTOUCHED`
 
 Route card: `experience_docx/experiment_cards/2026-06-13-haze4k-dta-v3-7-u-tqs-mix.md`
 Central index: `experience_docx/EXPERIMENT_INDEX.md`
@@ -597,3 +597,74 @@ Decision: `D5_TARGETED_INTERVENTION_POLICY_STRICT_FAIL_LOCKED_TEST_UNTOUCHED`.
 Raw D1 full `5x3` and locked test remain blocked; continue with D6 output-diff /
 quality feature extraction or an integrated soft-mix head rather than more hard
 reject/table-only tuning.
+
+## Phase D6 Output-Difference / Quality Policy Plan
+
+D6 follows the D5 strict fail without pausing. It adds deployable actual
+candidate-vs-A0 output-difference features from the rendered D1/D3 action bank,
+then reruns nested targeted-intervention policies on the same train-derived
+quick5full scope:
+
+```text
+scope = D1 quick5full candidates only
+folds = 0,1
+seeds = 3407,3411
+locked_test_touched = false
+raw D1 full 5x3 = blocked
+```
+
+Artifacts:
+
+```text
+experience_docx/tools/extract_haze4k_dta_v37_outputdiff_features.py
+experience_docx/tools/train_haze4k_dta_v37_d6_outputdiff_policy.py
+run_dta_v3_7_phase_d6_outputdiff_policy_convir4090.sh
+status_phase_d6_outputdiff_policy.txt
+v37_d6_outputdiff_summary.json
+v37_d6_outputdiff_policy_aggregate.csv
+v37_d6_outputdiff_policy_nested_report.csv
+v37_d6_outputdiff_feature_groups.json
+```
+
+The combined raw feature table `v37_d6_outputdiff_features_all.csv` was generated
+on `convir-4090` for reproducibility but is intentionally not synced as GitHub
+evidence because it is a large raw runtime feature table (`~63.7 MB`).
+
+
+## Phase D6 Output-Difference / Quality Policy Result
+
+D6 completed on `convir-4090` from runtime workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32`
+with locked test untouched:
+
+```text
+DTA_V3_7_D6_OUTPUTDIFF_POLICY_OK rows=38400 outputdiff_rows=36000 aggregate=522 strict_pass=8 decision=D6_OUTPUTDIFF_POLICY_STRICT_PASS
+```
+
+Best strict rows:
+
+| feature group | bank | score mode | target intervention | mean | hard | dSSIM | positive | worst/600 | max outer worst/600 | true-vs-zero | true-vs-shuffle | true-vs-normal | strict |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `outputdiff_plus_Q` | `micro_shrink` | `pred_gain` | `1.00` | `+0.078596` | `+0.085328` | `+0.00001913` | `0.6583` | `46.00` | `52.00` | `+0.083899` | `+0.064545` | `+0.068983` | pass |
+| `outputdiff_only` | `micro_shrink` | `pred_gain` | `1.00` | `+0.078515` | `+0.086135` | `+0.00001889` | `0.6571` | `44.00` | `50.00` | `+0.082522` | `+0.063678` | `+0.068423` | pass |
+| `deployable_TQAU_outputdiff_all` | `micro_shrink` | `pred_gain` | `1.00` | `+0.078253` | `+0.085323` | `+0.00001858` | `0.6558` | `44.25` | `50.00` | `+0.083757` | `+0.064409` | `+0.068986` | pass |
+
+Interpretation:
+
+- D6 is the first deployable v3.7 policy stage to strict-pass: `8/522` nested
+  policy rows pass all strict gates on the D1 quick5full train-derived scope.
+- The pass comes from actual candidate-vs-A0 output-difference features, proving
+  that the D4/D5 failure was feature separability rather than lack of action
+  headroom or a utility objective defect.
+- The highest-mean strict row is `outputdiff_plus_Q / micro_shrink / pred_gain`
+  with full intervention, mean `+0.078596`, hard `+0.085328`, positive ratio
+  `0.6583`, worst `46/600`, and max outer worst `52/600`.
+- `outputdiff_only` is nearly tied and slightly safer on the severe-tail count,
+  so fixed-policy confirmation should compare the top deployable strict rows
+  without reselecting from locked test feedback.
+
+Decision: `D6_OUTPUTDIFF_POLICY_STRICT_PASS_LOCKED_TEST_UNTOUCHED`. Promote D6
+to the next train-derived fixed-policy confirmation stage. Do not run locked
+Haze4K test yet, and do not return to hard-reject threshold search. Raw D1 full
+`5x3` remains blocked until a fixed D6 policy confirmation explicitly authorizes
+the necessary additional candidate rendering.

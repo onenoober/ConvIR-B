@@ -1,0 +1,16 @@
+DTA_V3_7_D6_OUTPUTDIFF_GROUP_START fold=0 seed=3411 device=cuda feature_max_side=384 run_ids={'u1_tau_l1_s004_g025_a006': 'v35_fdf_rcs_u1_tau_l1_s004_g025_a006_seed3411_f0_quick5full', 'u2_tau_l3_s004_g015_a006': 'v35_fdf_rcs_u2_tau_l3_s004_g015_a006_seed3411_f0_quick5full_screen2', 'u3_tau_l2_s002_g025_a006': 'v35_fdf_rcs_u3_tau_l2_s002_g025_a006_seed3411_f0_quick5full_screen2'}
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32/experience_docx/tools/eval_haze4k_dta_v37_tau_real_blend_oracle.py:132: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+DTA_V3_7_D6_OUTPUTDIFF_GROUP_PROGRESS fold=0 seed=3411 images=50/600 rows=750 elapsed_sec=47.8
+DTA_V3_7_D6_OUTPUTDIFF_GROUP_PROGRESS fold=0 seed=3411 images=100/600 rows=1500 elapsed_sec=94.0
+DTA_V3_7_D6_OUTPUTDIFF_GROUP_PROGRESS fold=0 seed=3411 images=150/600 rows=2250 elapsed_sec=132.8
+DTA_V3_7_D6_OUTPUTDIFF_GROUP_PROGRESS fold=0 seed=3411 images=200/600 rows=3000 elapsed_sec=173.1
+DTA_V3_7_D6_OUTPUTDIFF_GROUP_PROGRESS fold=0 seed=3411 images=250/600 rows=3750 elapsed_sec=212.5
+DTA_V3_7_D6_OUTPUTDIFF_GROUP_PROGRESS fold=0 seed=3411 images=300/600 rows=4500 elapsed_sec=250.9
+DTA_V3_7_D6_OUTPUTDIFF_GROUP_PROGRESS fold=0 seed=3411 images=350/600 rows=5250 elapsed_sec=291.4
+DTA_V3_7_D6_OUTPUTDIFF_GROUP_PROGRESS fold=0 seed=3411 images=400/600 rows=6000 elapsed_sec=332.3
+DTA_V3_7_D6_OUTPUTDIFF_GROUP_PROGRESS fold=0 seed=3411 images=450/600 rows=6750 elapsed_sec=370.9
+DTA_V3_7_D6_OUTPUTDIFF_GROUP_PROGRESS fold=0 seed=3411 images=500/600 rows=7500 elapsed_sec=415.4
+DTA_V3_7_D6_OUTPUTDIFF_GROUP_PROGRESS fold=0 seed=3411 images=550/600 rows=8250 elapsed_sec=458.5
+DTA_V3_7_D6_OUTPUTDIFF_GROUP_PROGRESS fold=0 seed=3411 images=600/600 rows=9000 elapsed_sec=503.3
+DTA_V3_7_D6_OUTPUTDIFF_GROUP_OK fold=0 seed=3411 images=600 rows=9000 elapsed_sec=504.2

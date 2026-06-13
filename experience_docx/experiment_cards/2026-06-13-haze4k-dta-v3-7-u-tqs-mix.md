@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `D1_STAGE_SCREEN_TRIAGE_COMPLETE_NO_FORMAL_PROMOTION_YET`
+Status: `D6_OUTPUTDIFF_POLICY_STRICT_PASS_LOCKED_TEST_UNTOUCHED`
 
 ## Scope
 
@@ -798,3 +798,53 @@ Decision: `D5_TARGETED_INTERVENTION_POLICY_STRICT_FAIL_LOCKED_TEST_UNTOUCHED`.
 Raw D1 full `5x3` and locked test remain blocked; continue with D6 output-diff /
 quality feature extraction or an integrated soft-mix head rather than more hard
 reject/table-only tuning.
+
+## 2026-06-13 D6 Output-Difference / Quality Policy Plan
+
+D6 is the aggressive next diagnostic after D5: keep the D1 quick5full candidate
+scope fixed, extract deployable actual candidate-vs-A0 output-difference and
+quality features from rendered actions, then rerun nested targeted-intervention
+policies. It remains train-derived only:
+
+```text
+folds = 0,1
+seeds = 3407,3411
+locked_test_touched = false
+raw D1 full 5x3 = blocked
+```
+
+
+## 2026-06-13 D6 Output-Difference / Quality Policy Result
+
+D6 completed on `convir-4090` from runtime workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32`
+with locked test untouched:
+
+```text
+DTA_V3_7_D6_OUTPUTDIFF_POLICY_OK rows=38400 outputdiff_rows=36000 aggregate=522 strict_pass=8 decision=D6_OUTPUTDIFF_POLICY_STRICT_PASS
+```
+
+Top strict rows:
+
+| feature group | bank | score mode | target intervention | mean | hard | dSSIM | positive | worst/600 | max outer worst/600 | true-vs-zero | true-vs-shuffle | true-vs-normal | strict |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `outputdiff_plus_Q` | `micro_shrink` | `pred_gain` | `1.00` | `+0.078596` | `+0.085328` | `+0.00001913` | `0.6583` | `46.00` | `52.00` | `+0.083899` | `+0.064545` | `+0.068983` | pass |
+| `outputdiff_only` | `micro_shrink` | `pred_gain` | `1.00` | `+0.078515` | `+0.086135` | `+0.00001889` | `0.6571` | `44.00` | `50.00` | `+0.082522` | `+0.063678` | `+0.068423` | pass |
+| `deployable_TQAU_outputdiff_all` | `micro_shrink` | `pred_gain` | `1.00` | `+0.078253` | `+0.085323` | `+0.00001858` | `0.6558` | `44.25` | `50.00` | `+0.083757` | `+0.064409` | `+0.068986` | pass |
+
+Interpretation:
+
+- D6 is the first deployable v3.7 policy stage to strict-pass (`8/522` strict
+  rows), and it does so with full intervention rather than retreating to A0.
+- Actual output-difference features close the D4/D5 separability gap enough to
+  pass mean, hard, dSSIM, positive-ratio, severe-tail, outer-worst, and
+  true-vs-control gates on the D1 quick5full train-derived scope.
+- The result validates the route correction: soft shrink/mix plus deployable
+  output-difference/quality evidence is the mainline; hard reject and broader
+  router-capacity search remain deprioritized.
+
+Decision: `D6_OUTPUTDIFF_POLICY_STRICT_PASS_LOCKED_TEST_UNTOUCHED`. Promote D6
+to a fixed train-derived confirmation stage. Locked Haze4K test remains blocked
+until a fixed policy passes a formal confirmation without post-test selection.
+Raw D1 full `5x3` remains blocked unless that fixed D6 confirmation stage
+requires and authorizes the additional candidate rendering.

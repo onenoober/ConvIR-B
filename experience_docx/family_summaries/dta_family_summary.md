@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: DTA-v3.7 D5 targeted-intervention policy completed; D1/D2/D3 oracle headroom is strong and actual rendered D1 micro-shrink strict-passes, but D4/D5 deployable table policies still fail, so continue with output-difference / quality feature extraction or integrated soft-mix heads rather than raw full formal or hard-reject tuning.
+Status: DTA-v3.7 D6 output-difference / quality deployable policy strict-passed on the D1 quick5full train-derived scope; locked Haze4K test remains untouched, raw D1 full 5x3 remains blocked until fixed-policy confirmation explicitly authorizes it, and the route should continue with fixed D6 confirmation rather than hard-reject tuning or broad router capacity.
 
 ## Scope
 
@@ -87,13 +87,20 @@ Therefore no raw D1 candidate is promoted to full `5x3` or locked test. D2 then
 used this material for a TAU soft-shrink table policy: the D1 action oracle
 strict-passed (`10/12` oracle rows; best mean `+0.136286`, hard `+0.120366`,
 worst `0/600`), but deployable nested policy strict-failed (`T_pred` best mean
-only `+0.006518`). D3 rendered actual D1 quick5full tensor blends and strict-passed the oracle
-(`22/24` rows; best mean `+0.136562`, hard `+0.120391`, positive `0.7071`,
-worst `0/600`). D4 high-positive deployable policy strict-failed (`0/75` rows; best mean
-`+0.003344`). D5 targeted intervention also strict-failed (`0/360` rows); forcing
-all images recovered positive ratio (`0.6654`) and tail (`0.5/600`) but only
-`+0.019050` mean and `+0.016915` hard. Table-only D1 features are therefore not
-enough; raw D1 formal remains blocked.
+only `+0.006518`). D3 rendered actual D1 quick5full tensor blends and
+strict-passed the oracle (`22/24` rows; best mean `+0.136562`, hard
+`+0.120391`, positive `0.7071`, worst `0/600`). D4 high-positive deployable
+policy strict-failed (`0/75` rows; best mean `+0.003344`). D5 targeted
+intervention also strict-failed (`0/360` rows); forcing all images recovered
+positive ratio (`0.6654`) and tail (`0.5/600`) but only `+0.019050` mean and
+`+0.016915` hard. D6 added deployable actual candidate-vs-A0 output-difference
+and quality features; it produced `8/522` strict-passing rows on the D1
+quick5full train-derived scope, led by `outputdiff_plus_Q / micro_shrink /
+pred_gain` with mean `+0.078596`, hard `+0.085328`, dSSIM `+0.00001913`,
+positive ratio `0.6583`, worst `46/600`, and max outer worst `52/600`. This is
+the first deployable v3.7 strict pass and validates the output-difference
+feature direction, but locked test and raw D1 full `5x3` remain blocked until a
+fixed train-derived D6 confirmation passes without policy reselection.
 
 DTA-v3.5 FDF-RCS-Lite completed the relaxed train-derived flow on
 `convir-4090`. Conservative FDF moved the family in the intended direction:
@@ -112,7 +119,7 @@ selection rather than more residual/router capacity.
 | --- | --- | --- |
 | DTA-v2 CalGate | Multi-seed OOF showed `invert` about `+0.0887 dB`, but zero/shuffle retained most of the improvement and tail/SSIM did not pass. | Positive diagnostic only; no locked test; use as motivation for attribution controls. |
 | DTA-v3 DAPC/FDF fine-tune | `convir-4090` preflight passed; R0 scouts failed. Zero-R0 depthDirect train=`invert` proved surplus. DTA-v3.1 airlight/risk/light-hinge, DTA-v3.2 SafeMix, DTA-v3.3 RouterFusion, and DTA-v3.4 FDF-TSR failed their written gates. DTA-v3.5 FDF-RCS-Lite fixed much of the over-action pattern but still failed strict all-image tail; DTA-v3.6 HRCS formal validation confirms strong oracle selector/action-bank headroom but deployable selectors still strict-fail. | Mechanism-positive diagnostic only; no promotion. A relaxed one-shot locked test may only use the fixed L3 logistic `deployable_all` target `0.93` policy under the 2026-06-13 user override, with no post-test tuning. |
-| DTA-v3.7 U-TQS-Mix | Phase A soft-oracle and Phase C1 actual real-blend oracle both pass; Phase B/B2 deployable table policy fails; D1 integrated T/A/U candidates are mechanism-positive; D2 TAU soft-shrink oracle passes but deployable policy strict-fails; D3 actual D1 real-blend oracle strict-passes; D4 high-positive deployable policy strict-fails. | Mainline route. Do not resume hard-reject threshold search; do not run raw D1 full `5x3`; proceed to targeted-intervention ranking diagnostics over the D1/D3 action bank. |
+| DTA-v3.7 U-TQS-Mix | Phase A soft-oracle and Phase C1/D3 actual real-blend oracles pass; D1 integrated T/A/U candidates are mechanism-positive; D2/D4/D5 deployable table policies fail; D6 output-difference / quality deployable policy strict-passes on D1 quick5full (`8/522` rows, best mean `+0.078596`, hard `+0.085328`, positive `0.6583`, worst `46/600`). | Mainline route. Freeze a D6 strict row for train-derived confirmation; do not resume hard-reject threshold search, do not touch locked test, and do not run raw D1 full `5x3` unless the fixed D6 confirmation protocol explicitly requires it. |
 
 ## Reopen Conditions
 
@@ -494,3 +501,32 @@ with `micro_shrink`: mean `+0.006518`, hard `+0.007339`, positive ratio
 control-surplus gates. This confirms the route's current bottleneck is not
 candidate headroom or tail control; it is deployable high-positive/high-gain
 selection.
+
+## 2026-06-13 DTA-v3.7 D6 Output-Difference Policy Outcome
+
+Decision: `D6_OUTPUTDIFF_POLICY_STRICT_PASS_LOCKED_TEST_UNTOUCHED`.
+
+D6 completed on `convir-4090` from commit `91bcd32` and runtime workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d6-outputdiff-91bcd32`.
+It extracted deployable actual candidate-vs-A0 output-difference and quality
+features for the D1 quick5full action bank (`folds 0,1`, seeds `3407/3411`) and
+reran nested targeted-intervention policies without touching locked test:
+
+```text
+DTA_V3_7_D6_OUTPUTDIFF_POLICY_OK rows=38400 outputdiff_rows=36000 aggregate=522 strict_pass=8 decision=D6_OUTPUTDIFF_POLICY_STRICT_PASS
+```
+
+The highest-mean strict row is `outputdiff_plus_Q / micro_shrink / pred_gain`
+with full intervention: mean `+0.078596`, hard `+0.085328`, dSSIM
+`+0.00001913`, positive ratio `0.6583`, worst `46/600`, max outer worst
+`52/600`, true-vs-zero `+0.083899`, true-vs-shuffle `+0.064545`, and
+true-vs-normal `+0.068983`. `outputdiff_only / micro_shrink / pred_gain` is
+nearly tied and slightly safer on tail: mean `+0.078515`, hard `+0.086135`,
+positive ratio `0.6571`, worst `44/600`, and max outer worst `50/600`.
+
+This is the first deployable v3.7 strict pass. It shows the D4/D5 failure was a
+feature-separability problem: table-only D1 T/A/U/FDF features could not rank
+positive high-gain actions, but actual output-difference evidence can. Continue
+with fixed train-derived D6 policy confirmation. Do not touch locked Haze4K test
+and do not run raw D1 full `5x3` unless the fixed D6 confirmation protocol
+explicitly requires that expansion.
