@@ -231,7 +231,28 @@ ConvIR-B A0 anchor
 + utility-constrained soft mixture
 ```
 
-### Phase D: formal validation
+### Phase D: screen before formal validation
+
+Do not start new multi-variant routes at full `5 folds x 3 seeds` scale. First
+run a staged train-derived screen, then promote only the winning fixed
+candidate/policy to formal.
+
+Default D1 screen:
+
+```text
+variants = u1,u2,u3
+folds = 0,1
+seeds = 3407,3411
+stage = quick5full
+locked test untouched
+```
+
+Full formal remains required for promotion, but only after a documented screen
+decision:
+
+```text
+screen result -> select fixed top-1/top-2 route -> full 5 folds x 3 seeds
+```
 
 Formal remains train-derived and nested:
 
@@ -508,19 +529,34 @@ A0 preservation: official ConvIR-B weights loaded exactly where names match;
                  DTA/FDF action remains bounded and budgeted
 ```
 
-Execution queue:
+Default execution queue is now a screen, not full formal:
 
 ```text
 u1_tau_l1_s004_g025_a006
 u2_tau_l3_s004_g015_a006
 u3_tau_l2_s002_g025_a006
 
-folds 0..4
-seeds 3407/3411/2026
+folds 0,1
+seeds 3407/3411
 stage quick5full
 locked test untouched
 ```
 
+Full `folds 0..4 x seeds 3407/3411/2026` is blocked until the screen evidence
+selects a fixed top candidate/policy. Set `DTA_V37_STAGE_SCREEN_ONLY=0` only for
+that documented screen-to-formal promotion.
+
 Pass/fail interpretation remains train-derived only. If Phase D1 improves the
 candidate family or T/A/U feature separability, the next step is a deployable
 U-TQS soft-mix policy over the new candidates plus actual real-blend validation.
+
+## 2026-06-13 D1 Queue Correction
+
+The first D1 launch was too broad for an initial candidate screen
+(`3 variants x 5 folds x 3 seeds`). At `2026-06-13T14:27:30+08:00`, the active
+queue was corrected before any second wave launched:
+
+- already-launched u1 jobs are allowed to finish so their text evidence remains usable;
+- all future candidate invocations outside the staged screen skip immediately;
+- u2/u3 continue only for `folds 0,1 x seeds 3407,3411`;
+- future routes must not launch full `5x3` before a screen-to-formal decision.

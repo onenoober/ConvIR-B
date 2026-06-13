@@ -76,6 +76,9 @@ Retained remote refs:
   checkpoint-acquisition and future transplant workspace.
 - `github/codex/haze4k-dta-v3-7-u-tqs-mix`: active DTA U-TQS-Mix route;
   A0-preserving soft action mixture with transmission/airlight/quality/uncertainty gain-risk modeling.
+  D1 and later multi-variant work must stage-screen first (`folds 0,1 x seeds
+  3407,3411`) and reserve full `5 folds x 3 seeds` for fixed top candidates or
+  policies after a documented screen-to-formal decision.
 
 ## Reading Order
 

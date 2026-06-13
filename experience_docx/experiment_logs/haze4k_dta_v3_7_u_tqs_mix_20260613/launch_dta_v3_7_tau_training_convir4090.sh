@@ -9,8 +9,12 @@ STATUS=$EVID/status_phase_d1_tau_training.txt
 RUN_SCRIPT=$EVID/run_dta_v3_7_tau_candidate_convir4090.sh
 STAGE=${STAGE:-quick5full}
 VARIANTS_CSV=${VARIANTS_CSV:-u1_tau_l1_s004_g025_a006,u2_tau_l3_s004_g015_a006,u3_tau_l2_s002_g025_a006}
-FOLDS_CSV=${FOLDS_CSV:-0,1,2,3,4}
-SEEDS_CSV=${SEEDS_CSV:-3407,3411,2026}
+FOLDS_CSV=${FOLDS_CSV:-0,1}
+SEEDS_CSV=${SEEDS_CSV:-3407,3411}
+DTA_V37_STAGE_SCREEN_ONLY=${DTA_V37_STAGE_SCREEN_ONLY:-1}
+DTA_V37_STAGE_SCREEN_VARIANTS=${DTA_V37_STAGE_SCREEN_VARIANTS:-$VARIANTS_CSV}
+DTA_V37_STAGE_SCREEN_FOLDS=${DTA_V37_STAGE_SCREEN_FOLDS:-$FOLDS_CSV}
+DTA_V37_STAGE_SCREEN_SEEDS=${DTA_V37_STAGE_SCREEN_SEEDS:-$SEEDS_CSV}
 MAX_IMAGES=${MAX_IMAGES:-0}
 FORCE=${FORCE:-0}
 GPU_LIST=${GPU_LIST:-}
@@ -25,6 +29,8 @@ mkdir -p "$EVID"
   echo "work=$WORK"
   echo "python=$PY"
   echo "variants=$VARIANTS_CSV folds=$FOLDS_CSV seeds=$SEEDS_CSV"
+  echo "stage_screen_only=$DTA_V37_STAGE_SCREEN_ONLY screen_variants=$DTA_V37_STAGE_SCREEN_VARIANTS screen_folds=$DTA_V37_STAGE_SCREEN_FOLDS screen_seeds=$DTA_V37_STAGE_SCREEN_SEEDS"
+  echo "formal_full_5x3_requires_explicit_screen_promotion=true"
   echo "max_images=$MAX_IMAGES force=$FORCE max_gpus=$MAX_GPUS"
   echo "locked_test_touched=false"
 } | tee -a "$STATUS"
@@ -83,6 +89,10 @@ launch_one() {
     set -euo pipefail
     VARIANT="$variant" FOLD="$fold" SEED="$seed" STAGE="$STAGE" CUDA_VISIBLE_DEVICES="$gpu" \
       MAX_IMAGES="$MAX_IMAGES" FORCE="$FORCE" RUN_TRAIN_CONTROLS=1 USE_SPLIT=1 \
+      DTA_V37_STAGE_SCREEN_ONLY="$DTA_V37_STAGE_SCREEN_ONLY" \
+      DTA_V37_STAGE_SCREEN_VARIANTS="$DTA_V37_STAGE_SCREEN_VARIANTS" \
+      DTA_V37_STAGE_SCREEN_FOLDS="$DTA_V37_STAGE_SCREEN_FOLDS" \
+      DTA_V37_STAGE_SCREEN_SEEDS="$DTA_V37_STAGE_SCREEN_SEEDS" \
       "$RUN_SCRIPT"
   ) > "$log" 2>&1 &
 }

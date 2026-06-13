@@ -286,15 +286,40 @@ airlight final layers = zero initialized, sigmoid output starts at 0.5
 output path = unchanged unless trained DTA/FDF action changes it
 ```
 
-Queue:
+Default queue is staged screen, not full formal:
 
 ```text
 variants = u1_tau_l1_s004_g025_a006,u2_tau_l3_s004_g015_a006,u3_tau_l2_s002_g025_a006
-folds = 0,1,2,3,4
-seeds = 3407,3411,2026
+folds = 0,1
+seeds = 3407,3411
 stage = quick5full
+DTA_V37_STAGE_SCREEN_ONLY = 1
 locked_test_touched = false
 ```
 
 This is deliberately not a conservative detour: it is the direct integrated
 T/A/U candidate retraining authorized by Phase C1.
+
+Full `5 folds x 3 seeds` is reserved for the fixed top candidate/policy after a
+documented screen-to-formal promotion decision. Do not launch new multi-variant
+routes at full formal scale by default.
+
+## 2026-06-13 D1 Queue Correction
+
+The first D1 cloud queue was launched too broadly as
+`3 variants x 5 folds x 3 seeds`. The user requested faster staged evidence, so
+the active queue was corrected at `2026-06-13T14:27:30+08:00`:
+
+```text
+DTA_V3_7_FULL_QUEUE_PAUSE_REQUEST master_pid=4035891 reason=stage_screen_correction
+```
+
+Correction rule:
+
+- keep already-launched u1 jobs as extra train-derived evidence;
+- skip all future jobs outside `variants=u1,u2,u3`, `folds=0,1`,
+  `seeds=3407,3411`;
+- continue only the missing staged-screen u2/u3 jobs;
+- do not use locked test;
+- promote to full `5x3` only after the staged screen identifies a fixed
+  top candidate or fixed policy.

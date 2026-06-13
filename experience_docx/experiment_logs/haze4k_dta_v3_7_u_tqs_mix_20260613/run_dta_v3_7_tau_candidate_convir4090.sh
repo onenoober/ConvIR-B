@@ -16,11 +16,21 @@ MAX_IMAGES=${MAX_IMAGES:-0}
 RUN_TRAIN_CONTROLS=${RUN_TRAIN_CONTROLS:-1}
 USE_SPLIT=${USE_SPLIT:-1}
 FOLD=${FOLD:-0}
+STAGE_SCREEN_ONLY=${DTA_V37_STAGE_SCREEN_ONLY:-1}
+STAGE_SCREEN_VARIANTS=${DTA_V37_STAGE_SCREEN_VARIANTS:-u1_tau_l1_s004_g025_a006,u2_tau_l3_s004_g015_a006,u3_tau_l2_s002_g025_a006}
+STAGE_SCREEN_FOLDS=${DTA_V37_STAGE_SCREEN_FOLDS:-0,1}
+STAGE_SCREEN_SEEDS=${DTA_V37_STAGE_SCREEN_SEEDS:-3407,3411}
 SPLIT_JSON=${SPLIT_JSON:-$WORK/experience_docx/experiment_logs/haze4k_dta_v3_6_hrcs_20260613/dta_v3_6_haze4k_oof_splits_seed3407.json}
 TRAIN_SPLIT=${TRAIN_SPLIT:-fold${FOLD}_train}
 EVAL_SPLIT=${EVAL_SPLIT:-fold${FOLD}_val}
 export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
 export TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
+
+csv_has_value() {
+  local csv=",$1,"
+  local value="$2"
+  [[ "$csv" == *",$value,"* ]]
+}
 
 case "$STAGE" in
   smoke) NUM_EPOCH=1; STOP_EPOCH=1; SAVE_FREQ=1; VALID_FREQ=${VALID_FREQ:-9999}; MOD_STATS_FREQ=1 ;;
@@ -92,6 +102,20 @@ RUN_ID=v35_fdf_rcs_${VARIANT}_seed${SEED}${SPLIT_TAG}_${STAGE}
 MODEL_NAME=ConvIR-Haze4K-DTA-v3-7-TAU-${VARIANT}-seed${SEED}${SPLIT_TAG}-${STAGE}
 TRAIN_LOG=$EVID/dta_v3_7_${RUN_ID}_train.log
 mkdir -p "$EVID"
+
+if [[ "$STAGE_SCREEN_ONLY" == "1" ]]; then
+  if ! csv_has_value "$STAGE_SCREEN_VARIANTS" "$VARIANT" || \
+     ! csv_has_value "$STAGE_SCREEN_FOLDS" "$FOLD" || \
+     ! csv_has_value "$STAGE_SCREEN_SEEDS" "$SEED"; then
+    {
+      echo "DTA_V3_7_TAU_CANDIDATE_SKIPPED run_id=$RUN_ID reason=stage_screen_only variant=$VARIANT fold=$FOLD seed=$SEED stage=$STAGE $(date --iso-8601=seconds)"
+      echo "stage_screen_policy=variants:$STAGE_SCREEN_VARIANTS folds:$STAGE_SCREEN_FOLDS seeds:$STAGE_SCREEN_SEEDS"
+      echo "set DTA_V37_STAGE_SCREEN_ONLY=0 only after a documented screen-to-formal promotion decision"
+    } | tee -a "$STATUS"
+    exit 0
+  fi
+fi
+
 {
   echo "dta_v3_7_tau_candidate_start run_id=$RUN_ID variant=$VARIANT stage=$STAGE $(date --iso-8601=seconds)"
   echo "state=RUNNING_TRAIN_DERIVED_INTEGRATED_TAU"

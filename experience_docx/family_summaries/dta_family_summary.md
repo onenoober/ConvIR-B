@@ -73,7 +73,11 @@ shrink-mix. It explicitly requires transmission, airlight, quality, and
 uncertainty gain-risk signals before any deployable policy claim. The v3.7
 execution order is Phase A table-only soft-oracle diagnostics, then TQS
 gain-risk predictor and real soft-blend/integrated-head validation in parallel
-if Phase A passes. Do not continue v3.6 threshold tuning as the main path.
+if Phase A passes. D1 and later multi-variant routes must start with a staged
+screen (`folds 0,1 x seeds 3407,3411`) and only promote a fixed top
+candidate/policy to full `5 folds x 3 seeds`. Do not continue v3.6 threshold
+tuning as the main path, and do not start broad full-formal queues before
+screen evidence exists.
 
 DTA-v3.5 FDF-RCS-Lite completed the relaxed train-derived flow on
 `convir-4090`. Conservative FDF moved the family in the intended direction:
