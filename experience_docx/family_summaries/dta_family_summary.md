@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: DTA-v3.7 U-TQS-Mix Phase A passed soft-oracle headroom; proceed to TQS gain-risk prediction and real soft-blend verification, not v3.6 hard-reject threshold search.
+Status: DTA-v3.7 Phase A passed soft-oracle headroom, but Phase B table-only TQS over current features strict-failed; continue with T/A/Q/U feature enrichment and real soft-blend verification, not hard-reject threshold search.
 
 ## Scope
 
@@ -384,3 +384,17 @@ confirms why v3.6 hard reject must not remain the main path: L3 hard reject lose
 deployable severe-risk AUC remains only about `0.608`, so Phase B must improve
 T/A/Q/U separability and then verify real blended outputs on train-derived folds.
 Locked Haze4K test remains blocked.
+
+
+## 2026-06-13 DTA-v3.7 Phase B Outcome
+
+Decision: `PHASE_B_TABLE_POLICY_STRICT_FAIL_NEEDS_FEATURE_ENRICHMENT_OR_REAL_BLEND`.
+
+Nested table-only ridge TQS policies completed on `convir-4090` using current
+v3.6 OOF features and soft action-bank candidates. No feature group strict-passed.
+The best deployable group was `T_pred`: mean `+0.015792`, hard `+0.013137`,
+dSSIM `-0.00000566`, positive ratio `0.6360`, worst `0.80/600`, and max outer
+worst `2.33/600`. Tail control is easy, but gain collapses. This preserves the
+main route judgment: the action family has headroom, but deployable T/A/Q/U
+feature separability is still insufficient. The next step is feature enrichment
+and real blended-output verification, not v3.6 hard-reject threshold tuning.

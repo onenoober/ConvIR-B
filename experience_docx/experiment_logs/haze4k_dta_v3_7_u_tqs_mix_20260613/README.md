@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `PHASE_A_TABLE_ONLY_COMPLETE_PASS_SOFT_ORACLE_HEADROOM`
+Status: `PHASE_B_TABLE_POLICY_STRICT_FAIL_NEEDS_FEATURE_ENRICHMENT_OR_REAL_BLEND`
 
 Route card: `experience_docx/experiment_cards/2026-06-13-haze4k-dta-v3-7-u-tqs-mix.md`
 Central index: `experience_docx/EXPERIMENT_INDEX.md`
@@ -87,3 +87,34 @@ Outputs:
 This is a train-derived table-only policy diagnostic. Deployable feature groups
 must not use `trans_gt`; diagnostic `trans_gt` rows are reported only to measure
 how much separability physical supervision could add.
+
+## Phase B TQS Result
+
+Phase B completed on `convir-4090` from runtime workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-phaseb` with
+marker:
+
+```text
+DTA_V3_7_TQS_PHASE_B_OK rows=27000 groups=6 strict_pass=0 decision=PHASE_B_TABLE_POLICY_STRICT_FAIL_NEEDS_FEATURE_ENRICHMENT_OR_REAL_BLEND
+```
+
+Best aggregate deployable row:
+
+| Feature group | mean dPSNR | hard bottom-25 | dSSIM | positive ratio | worst/600 | max outer worst/600 | intervention |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `T_pred` | `+0.015792` | `+0.013137` | `-0.00000566` | `0.6360` | `0.80` | `2.33` | `0.9993` |
+
+Interpretation:
+
+- The table-only predictor can control severe tail, but it collapses gain: mean,
+  hard, dSSIM, and true-vs-controls fail strict gates.
+- `T_pred` is the best current deployable group, which supports the T/A/Q/U
+  direction, but existing table features are not enough to recover the Phase A
+  oracle headroom.
+- `diagnostic_with_trans_gt` also fails, so direct use of the existing
+  transmission GT columns alone is not sufficient; real feature enrichment and
+  blended-output verification are required.
+
+Decision: `PHASE_B_TABLE_POLICY_STRICT_FAIL_NEEDS_FEATURE_ENRICHMENT_OR_REAL_BLEND`.
+Proceed to feature enrichment / real soft-blend verification before formal
+policy claims. Do not return to v3.6 hard-reject threshold search.
