@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `PHASE_C1_REAL_BLEND_ORACLE_PASS_INTEGRATED_TAU_NEXT`
+Status: `D1_STAGE_SCREEN_TRIAGE_COMPLETE_NO_FORMAL_PROMOTION_YET`
 
 Route card: `experience_docx/experiment_cards/2026-06-13-haze4k-dta-v3-7-u-tqs-mix.md`
 Central index: `experience_docx/EXPERIMENT_INDEX.md`
@@ -286,83 +286,50 @@ airlight final layers = zero initialized, sigmoid output starts at 0.5
 output path = unchanged unless trained DTA/FDF action changes it
 ```
 
-Default queue is staged screen, not full formal:
+Queue:
 
 ```text
 variants = u1_tau_l1_s004_g025_a006,u2_tau_l3_s004_g015_a006,u3_tau_l2_s002_g025_a006
-folds = 0,1
-seeds = 3407,3411
+folds = 0,1,2,3,4
+seeds = 3407,3411,2026
 stage = quick5full
-DTA_V37_STAGE_SCREEN_ONLY = 1
-DTA_V37_DYNAMIC_GPU = 1
 locked_test_touched = false
 ```
 
 This is deliberately not a conservative detour: it is the direct integrated
 T/A/U candidate retraining authorized by Phase C1.
 
-Full `5 folds x 3 seeds` is reserved for the fixed top candidate/policy after a
-documented screen-to-formal promotion decision. Do not launch new multi-variant
-routes at full formal scale by default.
+## Phase D1 Integrated T/A/U Staged Screen Result
 
-## 2026-06-13 D1 Queue Correction
-
-The first D1 cloud queue was launched too broadly as
-`3 variants x 5 folds x 3 seeds`. The user requested faster staged evidence, so
-the active queue was corrected at `2026-06-13T14:27:30+08:00`:
+D1 staged-screen evidence completed on `convir-4090` with locked test untouched.
+The completed screen is `3` variants x folds `0,1` x seeds `3407/3411` = `12`
+train-derived quick5full candidates. The original broad queue was stopped as a
+protocol correction; the missing/incomplete jobs were repaired with `screen3`,
+`screen4`, and a direct u1 fold0 eval repair. The final compact summaries are:
 
 ```text
-DTA_V3_7_FULL_QUEUE_PAUSE_REQUEST master_pid=4035891 reason=stage_screen_correction
+v37_tau_stage_screen_decision.txt
+v37_tau_stage_screen_matrix_summary.csv
+v37_tau_stage_screen_matrix_summary.json
+v37_tau_stage_screen_run_matrix_rows.csv
+v37_tau_oof_per_image_action_table.csv
+v37_tau_oracle_risk_coverage_curve.csv
+v37_tau_selector_nested_calibration_report.csv
 ```
 
-Correction rule:
+Stage-screen aggregate over the intended 12 runs:
 
-- keep already-launched u1 jobs as extra train-derived evidence;
-- skip all future jobs outside `variants=u1,u2,u3`, `folds=0,1`,
-  `seeds=3407,3411`;
-- continue only the missing staged-screen u2/u3 jobs;
-- do not use locked test;
-- promote to full `5x3` only after the staged screen identifies a fixed
-  top candidate or fixed policy.
+| variant | runs | mean | hard | dSSIM | positive | worst/600 | true-vs-zero | screen strict |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `u1_tau_l1_s004_g025_a006` | 4 | `+0.069596` | `+0.076433` | `+0.00000786` | `0.6412` | `68.75` | `+0.089704` | fail tail |
+| `u2_tau_l3_s004_g015_a006` | 4 | `+0.059690` | `+0.067173` | `+0.00000992` | `0.6408` | `57.25` | `+0.073943` | fail tail |
+| `u3_tau_l2_s002_g025_a006` | 4 | `+0.048004` | `+0.054895` | `+0.00000988` | `0.6346` | `49.00` | `+0.059999` | fail mean/tail |
 
-## 2026-06-13 D1 Screen2 Repair Launch
+Interpretation:
 
-The corrected broad queue still collided with other users' GPU-heavy processes
-on `convir-4090`, so several u2/u3 screen jobs failed with CUDA OOM before a
-clean screen table existed. To avoid overwriting failed evidence, the runner now
-accepts `DTA_V37_RUN_BATCH_TAG`; the repair launch uses `screen2` to isolate
-model names, logs, and matrix artifacts.
+- Integrated T/A/U supervision is mechanism-positive: all staged variants keep positive mean, hard, dSSIM, positive ratio, and true-vs-zero surplus.
+- No D1 variant is promotion-ready: `u1/u2` recover gain but fail the severe-tail gate, while `u3` is closest on tail but misses the mean gate and still has `49/600` worst.
+- Do not run full `5 folds x 3 seeds` for these raw D1 candidates yet, and do not touch locked Haze4K test.
+- Next work should use the D1 evidence as candidate/feature material for deployable U-TQS soft-mix/shrink policy and tail-aware action mixing, not resume hard reject or broad router-capacity search.
 
-Repair launch:
-
-```text
-session = dta_v37_d1_screen2
-GPU_LIST = 3,5
-MAX_PARALLEL = 2
-DTA_V37_RUN_BATCH_TAG = screen2
-variants = u2_tau_l3_s004_g015_a006,u3_tau_l2_s002_g025_a006
-folds = 0,1
-seeds = 3407,3411
-locked_test_touched = false
-```
-
-This keeps the staged-screen policy intact while using only GPUs that were
-available after the resource collision.
-
-## Dynamic GPU Policy
-
-After the resource collision, the launch script was changed to avoid fixed
-GPU-count assumptions. Default behavior is now:
-
-```text
-DTA_V37_DYNAMIC_GPU = 1
-FREE_GPU_MAX_USED_MIB = 2500
-GPU_WAIT_SECONDS = 60
-GPU_LAUNCH_STAGGER_SECONDS = 5
-```
-
-For each queued job, the launcher re-probes `nvidia-smi`, launches on every
-currently free candidate GPU up to `MAX_PARALLEL`, and continues when only part
-of the machine is available. It waits only if no candidate GPU is below the
-free-memory threshold. This replaces the earlier pause/fixed-GPU repair behavior
-for future D1 and follow-up queues.
+Decision: `D1_STAGE_SCREEN_TRIAGE_COMPLETE_NO_FORMAL_PROMOTION_YET_LOCKED_TEST_UNTOUCHED`.

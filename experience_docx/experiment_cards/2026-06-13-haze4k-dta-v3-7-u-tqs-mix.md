@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `PHASE_C1_REAL_BLEND_ORACLE_PASS_INTEGRATED_TAU_NEXT`
+Status: `D1_STAGE_SCREEN_TRIAGE_COMPLETE_NO_FORMAL_PROMOTION_YET`
 
 ## Scope
 
@@ -562,6 +562,42 @@ queue was corrected before any second wave launched:
 - future routes must not launch full `5x3` before a screen-to-formal decision.
 
 The GPU policy is dynamic, not paused/fixed: each queue probes current
-`nvidia-smi` memory before launching jobs, uses the maximum currently free GPUs
-up to the route's parallelism cap, and only waits when no candidate GPU is below
-the free-memory threshold.
+`nvidia-smi` memory/utilization before launching jobs, uses the maximum currently
+free GPUs up to the route's parallelism cap, launches one job per fresh probe to
+reduce races, and only waits when no candidate GPU is below the free-resource
+threshold.
+
+## 2026-06-13 D1 Staged Screen Result
+
+D1 staged-screen evidence completed on `convir-4090` with locked test untouched.
+The completed screen is `3` variants x folds `0,1` x seeds `3407/3411` = `12`
+train-derived quick5full candidates. The original broad queue was stopped as a
+protocol correction; the missing/incomplete jobs were repaired with `screen3`,
+`screen4`, and a direct u1 fold0 eval repair. The final compact summaries are:
+
+```text
+v37_tau_stage_screen_decision.txt
+v37_tau_stage_screen_matrix_summary.csv
+v37_tau_stage_screen_matrix_summary.json
+v37_tau_stage_screen_run_matrix_rows.csv
+v37_tau_oof_per_image_action_table.csv
+v37_tau_oracle_risk_coverage_curve.csv
+v37_tau_selector_nested_calibration_report.csv
+```
+
+Stage-screen aggregate over the intended 12 runs:
+
+| variant | runs | mean | hard | dSSIM | positive | worst/600 | true-vs-zero | screen strict |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `u1_tau_l1_s004_g025_a006` | 4 | `+0.069596` | `+0.076433` | `+0.00000786` | `0.6412` | `68.75` | `+0.089704` | fail tail |
+| `u2_tau_l3_s004_g015_a006` | 4 | `+0.059690` | `+0.067173` | `+0.00000992` | `0.6408` | `57.25` | `+0.073943` | fail tail |
+| `u3_tau_l2_s002_g025_a006` | 4 | `+0.048004` | `+0.054895` | `+0.00000988` | `0.6346` | `49.00` | `+0.059999` | fail mean/tail |
+
+Interpretation:
+
+- Integrated T/A/U supervision is mechanism-positive: all staged variants keep positive mean, hard, dSSIM, positive ratio, and true-vs-zero surplus.
+- No D1 variant is promotion-ready: `u1/u2` recover gain but fail the severe-tail gate, while `u3` is closest on tail but misses the mean gate and still has `49/600` worst.
+- Do not run full `5 folds x 3 seeds` for these raw D1 candidates yet, and do not touch locked Haze4K test.
+- Next work should use the D1 evidence as candidate/feature material for deployable U-TQS soft-mix/shrink policy and tail-aware action mixing, not resume hard reject or broad router-capacity search.
+
+Decision: `D1_STAGE_SCREEN_TRIAGE_COMPLETE_NO_FORMAL_PROMOTION_YET_LOCKED_TEST_UNTOUCHED`.

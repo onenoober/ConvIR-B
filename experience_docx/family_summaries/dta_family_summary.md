@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: DTA-v3.7 Phase C1 real soft-blend oracle passed; continue with integrated T/A/U supervised candidate training and deployable U-TQS soft-mix policy, not hard-reject threshold search.
+Status: DTA-v3.7 D1 integrated T/A/U staged screen completed; candidates are mechanism-positive but raw D1 variants fail tail/mean gates, so continue with deployable U-TQS soft-mix/shrink policy rather than full formal or hard-reject tuning.
 
 ## Scope
 
@@ -79,7 +79,12 @@ candidate/policy to full `5 folds x 3 seeds`. Do not continue v3.6 threshold
 tuning as the main path, and do not start broad full-formal queues before
 screen evidence exists. Cloud queues should dynamically use the maximum
 currently free GPUs and continue with partial resources instead of pausing when
-the machine is partially occupied.
+the machine is partially occupied. D1 completed the intended 12-run screen: u1
+mean `+0.069596`/hard `+0.076433`/positive `0.6412` but worst `68.75/600`, u2
+mean `+0.059690`/hard `+0.067173`/positive `0.6408` but worst `57.25/600`, and
+u3 mean `+0.048004`/hard `+0.054895`/positive `0.6346` with worst `49.00/600`.
+Therefore no raw D1 candidate is promoted to full `5x3` or locked test; use this
+as mechanism-positive material for U-TQS soft-mix/shrink selection.
 
 DTA-v3.5 FDF-RCS-Lite completed the relaxed train-derived flow on
 `convir-4090`. Conservative FDF moved the family in the intended direction:
@@ -449,3 +454,16 @@ not a table artifact. The family bottleneck is now deployable gain-risk
 separability and supervised T/A/U policy training. Do not reopen v3.6 hard
 accept/reject threshold tuning, and do not spend the next step on broad router
 capacity before integrated T/A/U supervision.
+
+## 2026-06-13 DTA-v3.7 D1 Staged Screen Outcome
+
+Decision: `D1_STAGE_SCREEN_TRIAGE_COMPLETE_NO_FORMAL_PROMOTION_YET_LOCKED_TEST_UNTOUCHED`.
+
+The integrated transmission/airlight/uncertainty screen completed the intended
+`3 variants x folds 0,1 x seeds 3407/3411` train-derived quick5full matrix. All
+variants were mechanism-positive, but none passed screen strict gates: `u1` had
+best mean (`+0.069596`) and hard (`+0.076433`) but worst `68.75/600`; `u2` had
+mean `+0.059690`, hard `+0.067173`, worst `57.25/600`; `u3` had the best tail
+(`49.00/600`) but mean only `+0.048004`. Locked test remains untouched, and raw
+D1 candidates must not be promoted to full `5x3` without a new fixed U-TQS
+soft-mix/shrink policy.

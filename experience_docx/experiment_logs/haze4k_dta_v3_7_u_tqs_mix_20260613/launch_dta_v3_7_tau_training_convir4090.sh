@@ -22,6 +22,7 @@ GPU_LIST=${GPU_LIST:-}
 MAX_PARALLEL=${MAX_PARALLEL:-}
 MAX_GPUS=${MAX_GPUS:-0}
 FREE_GPU_MAX_USED_MIB=${FREE_GPU_MAX_USED_MIB:-2500}
+FREE_GPU_MAX_UTIL_PCT=${FREE_GPU_MAX_UTIL_PCT:-20}
 DTA_V37_DYNAMIC_GPU=${DTA_V37_DYNAMIC_GPU:-1}
 GPU_WAIT_SECONDS=${GPU_WAIT_SECONDS:-60}
 GPU_LAUNCH_STAGGER_SECONDS=${GPU_LAUNCH_STAGGER_SECONDS:-5}
@@ -37,7 +38,7 @@ mkdir -p "$EVID"
   echo "run_batch_tag=$DTA_V37_RUN_BATCH_TAG"
   echo "formal_full_5x3_requires_explicit_screen_promotion=true"
   echo "max_images=$MAX_IMAGES force=$FORCE max_gpus=$MAX_GPUS"
-  echo "dynamic_gpu=$DTA_V37_DYNAMIC_GPU free_gpu_max_used_mib=$FREE_GPU_MAX_USED_MIB gpu_wait_seconds=$GPU_WAIT_SECONDS gpu_launch_stagger_seconds=$GPU_LAUNCH_STAGGER_SECONDS"
+  echo "dynamic_gpu=$DTA_V37_DYNAMIC_GPU free_gpu_max_used_mib=$FREE_GPU_MAX_USED_MIB free_gpu_max_util_pct=$FREE_GPU_MAX_UTIL_PCT gpu_wait_seconds=$GPU_WAIT_SECONDS gpu_launch_stagger_seconds=$GPU_LAUNCH_STAGGER_SECONDS"
   echo "locked_test_touched=false"
 } | tee -a "$STATUS"
 
@@ -90,12 +91,12 @@ detect_free_gpus() {
     return
   fi
   local candidates=",$GPU_LIST,"
-  nvidia-smi --query-gpu=index,memory.used --format=csv,noheader,nounits |
-    awk -F, -v max_used="$FREE_GPU_MAX_USED_MIB" -v candidates="$candidates" '
+  nvidia-smi --query-gpu=index,memory.used,utilization.gpu --format=csv,noheader,nounits |
+    awk -F, -v max_used="$FREE_GPU_MAX_USED_MIB" -v max_util="$FREE_GPU_MAX_UTIL_PCT" -v candidates="$candidates" '
       {
-        gsub(/ /, "", $1); gsub(/ /, "", $2);
+        gsub(/ /, "", $1); gsub(/ /, "", $2); gsub(/ /, "", $3);
         gpu="," $1 ",";
-        if (index(candidates, gpu) && $2 <= max_used) print $1;
+        if (index(candidates, gpu) && $2 <= max_used && $3 <= max_util) print $1;
       }'
 }
 
@@ -109,8 +110,10 @@ launch_one() {
   local seed=$3
   job_idx=$((job_idx + 1))
   local tag=${variant}_seed${seed}_f${fold}_${STAGE}
-  local log=$EVID/phase_d1_tau_queue_${tag}.log
-  echo "dta_v3_7_tau_launch tag=$tag gpu=$gpu $(date --iso-8601=seconds)" | tee -a "$STATUS"
+  local log_tag=$tag
+  if [[ -n "$DTA_V37_RUN_BATCH_TAG" ]]; then log_tag=${tag}_${DTA_V37_RUN_BATCH_TAG}; fi
+  local log=$EVID/phase_d1_tau_queue_${log_tag}.log
+  echo "dta_v3_7_tau_launch tag=$tag batch_tag=$DTA_V37_RUN_BATCH_TAG gpu=$gpu $(date --iso-8601=seconds)" | tee -a "$STATUS"
   (
     set -euo pipefail
     VARIANT="$variant" FOLD="$fold" SEED="$seed" STAGE="$STAGE" CUDA_VISIBLE_DEVICES="$gpu" \
@@ -145,19 +148,16 @@ while [[ "$task_idx" -lt "${#TASKS[@]}" ]]; do
       if [[ $(jobs -rp | wc -l | tr -d ' ') -gt 0 ]]; then
         if ! wait -n; then fail=1; fi
       else
-        echo "dta_v3_7_tau_wait_free_gpu max_used_mib=$FREE_GPU_MAX_USED_MIB $(date --iso-8601=seconds)" | tee -a "$STATUS"
+        echo "dta_v3_7_tau_wait_free_gpu max_used_mib=$FREE_GPU_MAX_USED_MIB max_util_pct=$FREE_GPU_MAX_UTIL_PCT $(date --iso-8601=seconds)" | tee -a "$STATUS"
         sleep "$GPU_WAIT_SECONDS"
       fi
       continue
     fi
-    for gpu in "${FREE_GPUS[@]}"; do
-      [[ "$task_idx" -lt "${#TASKS[@]}" ]] || break
-      [[ $(jobs -rp | wc -l | tr -d ' ') -lt "$MAX_PARALLEL" ]] || break
-      IFS=',' read -r variant fold seed <<< "${TASKS[$task_idx]}"
-      task_idx=$((task_idx + 1))
-      launch_one "$gpu" "$variant" "$fold" "$seed"
-      sleep "$GPU_LAUNCH_STAGGER_SECONDS"
-    done
+    gpu=${FREE_GPUS[0]}
+    IFS=',' read -r variant fold seed <<< "${TASKS[$task_idx]}"
+    task_idx=$((task_idx + 1))
+    launch_one "$gpu" "$variant" "$fold" "$seed"
+    sleep "$GPU_LAUNCH_STAGGER_SECONDS"
   else
     IFS=',' read -r variant fold seed <<< "${TASKS[$task_idx]}"
     task_idx=$((task_idx + 1))

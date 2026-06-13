@@ -1256,3 +1256,41 @@ delimited by end-of-file and Python then evaluated the literal `PY` token.
 
 Corrected form: prefer short `python3 -c` snippets for inspection commands, or
 write the Python helper to a temporary file before invoking it from WSL Bash.
+
+### 2026-06-13 Windows PowerShell Direct SSH To `convir-4090`
+
+Avoid running `ssh convir-4090` directly from Windows PowerShell for this
+workspace. The SSH key and host alias are configured inside WSL, so the Windows
+OpenSSH client can hang until the command wrapper times out.
+
+Invalid form:
+
+```powershell
+ssh -o ConnectTimeout=10 convir-4090 'echo SSH_OK'
+```
+
+Observed failure mode: the command timed out from the Codex PowerShell shell
+without printing remote output.
+
+Corrected form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc "ssh -o ConnectTimeout=10 convir-4090 'echo SSH_OK'"
+```
+
+For multi-line remote scripts, pipe a PowerShell here-string through WSL and then
+into remote Bash. Keep any nested here-string terminators indented or avoid them
+in the wrapper, because an unindented terminator inside the literal body closes
+the outer PowerShell string.
+
+
+Related recurrence:
+
+Do not nest a Bash here-doc inside a WSL script passed from PowerShell when the
+terminator can retain a carriage return. A failed sync command printed a
+here-document warning and then tried to execute a terminator token with a CR
+after the remote body had already run.
+
+Corrected form: either pipe the remote body directly from PowerShell to
+`wsl ... bash -lc "cat | ssh convir-4090 'bash -s'"`, or pipe the whole WSL
+wrapper through `tr -d '\r' | bash` before execution.
