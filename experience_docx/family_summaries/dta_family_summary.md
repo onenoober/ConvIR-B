@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: positive diagnostic family, not promotion-ready; DTA-v3.6 HRCS formal validation confirms oracle headroom but deployable high-coverage risk selectors still fail strict gates.
+Status: DTA-v3.7 U-TQS-Mix authorized as the next mainline; v3.6 hard reject is stopped as the primary strategy because oracle headroom exists but deployable hard selection loses too many positives.
 
 ## Scope
 
@@ -66,6 +66,15 @@ also made the over-action failure explicit. The train-derived E1-E4 triage had
 mean/hard gains and strong depth-control surplus, but positive ratio remained
 around `0.579-0.590` and worst regressions stayed around `116-128/600`.
 
+DTA-v3.7 U-TQS-Mix is now authorized as the family mainline. The route
+keeps the ConvIR-B A0 anchor and conservative FDF/DTA action family, but changes
+the strategy space from hard accept/reject to utility-aware soft action-bank /
+shrink-mix. It explicitly requires transmission, airlight, quality, and
+uncertainty gain-risk signals before any deployable policy claim. The v3.7
+execution order is Phase A table-only soft-oracle diagnostics, then TQS
+gain-risk predictor and real soft-blend/integrated-head validation in parallel
+if Phase A passes. Do not continue v3.6 threshold tuning as the main path.
+
 DTA-v3.5 FDF-RCS-Lite completed the relaxed train-derived flow on
 `convir-4090`. Conservative FDF moved the family in the intended direction:
 L1/L3 positive ratio reached about `0.630`, L2 reduced worst to `60.5/600`, and
@@ -83,6 +92,7 @@ selection rather than more residual/router capacity.
 | --- | --- | --- |
 | DTA-v2 CalGate | Multi-seed OOF showed `invert` about `+0.0887 dB`, but zero/shuffle retained most of the improvement and tail/SSIM did not pass. | Positive diagnostic only; no locked test; use as motivation for attribution controls. |
 | DTA-v3 DAPC/FDF fine-tune | `convir-4090` preflight passed; R0 scouts failed. Zero-R0 depthDirect train=`invert` proved surplus. DTA-v3.1 airlight/risk/light-hinge, DTA-v3.2 SafeMix, DTA-v3.3 RouterFusion, and DTA-v3.4 FDF-TSR failed their written gates. DTA-v3.5 FDF-RCS-Lite fixed much of the over-action pattern but still failed strict all-image tail; DTA-v3.6 HRCS formal validation confirms strong oracle selector/action-bank headroom but deployable selectors still strict-fail. | Mechanism-positive diagnostic only; no promotion. A relaxed one-shot locked test may only use the fixed L3 logistic `deployable_all` target `0.93` policy under the 2026-06-13 user override, with no post-test tuning. |
+| DTA-v3.7 U-TQS-Mix | Authorized from v3.6 evidence. Phase A must test positive-loss budget, soft action-bank oracle grid, false reject/accept taxonomy, feature AUC ablations, and T/A/Q/U data availability before new training. | Mainline route. Hard reject threshold search is no longer the primary path; proceed to TQS soft action mixture only if Phase A proves soft-oracle headroom. |
 
 ## Reopen Conditions
 
@@ -329,3 +339,30 @@ positive samples at high coverage. The fixed relaxed one-shot policy, if the
 user continues to locked test, is L3 `l3_fdf_lite_s004_g015_bm2` with logistic
 `deployable_all` HRCS at coverage target `0.93`, falling back to A0 on reject.
 This is exploratory only and not promotion-ready.
+
+## 2026-06-13 DTA-v3.7 U-TQS-Mix Plan
+
+Decision: `AUTHORIZED_PHASE_A_TABLE_ONLY_FIRST`.
+
+The final route correction is now written into project memory: preserve ConvIR-B
+A0, keep conservative FDF/DTA actions, abandon hard reject as the main strategy,
+and move to utility-aware soft action-bank / shrink-mix with explicit
+transmission, airlight, quality, and uncertainty supervision/features. Negative
+samples are not banned; severe regressions are the hard constraint.
+
+Phase A is mandatory but intentionally fast and no-training. It consumes the
+v3.6 formal OOF action table and writes:
+
+```text
+v37_positive_loss_budget_report.csv
+v37_soft_action_bank_oracle_grid.csv
+v37_false_reject_false_accept_taxonomy.csv
+v37_feature_ablation_auc_report.csv
+v37_tA_quality_uncertainty_preflight.json
+```
+
+If Phase A soft oracle strict-passes, launch TQS gain-risk prediction and real
+soft-blend/integrated-head validation in parallel on cloud GPUs. If Phase A
+fails, do not train v3.7 policy; redesign the candidate action family first.
+Locked Haze4K test remains blocked until a formal train-derived strict pass
+seals one fixed policy.
