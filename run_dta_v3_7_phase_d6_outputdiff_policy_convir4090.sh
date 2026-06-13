@@ -86,9 +86,9 @@ run_group() {
   return "$rc"
 }
 
-GROUPS=("0 3407" "1 3407" "0 3411" "1 3411")
+RUN_GROUPS=("0 3407" "1 3407" "0 3411" "1 3411")
 pids=()
-for item in "${GROUPS[@]}"; do
+for item in "${RUN_GROUPS[@]}"; do
   fold="${item%% *}"
   seed="${item##* }"
   out="$GROUP_DIR/v37_d6_outputdiff_features_seed${seed}_f${fold}.csv"
