@@ -758,3 +758,10 @@ Interpretation:
 Decision: `D4_HIGH_POSITIVE_POLICY_STRICT_FAIL_LOCKED_TEST_UNTOUCHED`. Continue
 with targeted-intervention D5 policy over the same D1/D3 action bank. Raw D1
 full `5x3` and locked test remain blocked.
+
+## 2026-06-13 D5 Targeted-Intervention Policy Plan
+
+D5 is a fast ranking audit after D4. It forces target intervention rates over the
+D3 actual action bank using deployable predicted rankings, to determine whether
+current features contain recoverable high-positive ordering signal. This remains
+train-derived only; raw D1 full `5x3` and locked Haze4K test remain blocked.

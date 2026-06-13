@@ -545,3 +545,22 @@ Interpretation:
 Decision: `D4_HIGH_POSITIVE_POLICY_STRICT_FAIL_LOCKED_TEST_UNTOUCHED`. Continue
 with targeted-intervention D5 policy over the same D1/D3 action bank. Raw D1
 full `5x3` and locked test remain blocked.
+
+## Phase D5 Targeted-Intervention Policy Plan
+
+D5 follows the D4 strict fail without pausing. It uses the same D1/D3 action bank
+but forces target intervention bands (`0.35` to `1.00`) from deployable predicted
+rankings, testing whether the D4 predictor has any useful ordering signal once it
+is not allowed to retreat to A0/tiny-action behavior.
+
+Artifacts:
+
+```text
+experience_docx/tools/train_haze4k_dta_v37_d5_targeted_intervention_policy.py
+run_dta_v3_7_phase_d5_targeted_policy_convir4090.sh
+v37_d5_targeted_policy_aggregate.csv
+v37_d5_targeted_policy_nested_report.csv
+v37_d5_targeted_summary.json
+```
+
+Locked Haze4K test remains untouched, and raw D1 full `5x3` remains blocked.
