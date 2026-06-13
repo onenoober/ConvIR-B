@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `PHASE_B2_ENRICHED_TABLE_POLICY_STRICT_FAIL_REAL_BLEND_NEXT`
+Status: `PHASE_C1_REAL_BLEND_ORACLE_PASS_INTEGRATED_TAU_NEXT`
 
 ## Scope
 
@@ -441,3 +441,42 @@ if actual soft-blend oracle strict-passes:
 else:
     record Phase A as an over-optimistic metric proxy and redesign candidate/blend representation before long training.
 ```
+
+
+## Phase C1 Real Soft-Blend Verification Result
+
+Phase C1 completed on `convir-4090` in the fresh runtime workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-phasec1`.
+It evaluated folds `0..4` x seeds `3407,3411,2026` with actual rendered tensor
+blends and zero/shuffle/normal depth controls. Locked test remained untouched.
+
+Completion marker:
+
+```text
+DTA_V3_7_REAL_BLEND_AGGREGATE_OK rows=162000 grid=18 strict_pass=14 decision=PHASE_C1_REAL_BLEND_ORACLE_PASS
+```
+
+Best row:
+
+```text
+A0_L2_L3_L1_micro_shrink / max_dpsnr
+mean dPSNR              +0.143568
+hard bottom-25 dPSNR    +0.121118
+dSSIM                   +0.00002579
+positive ratio           0.6977
+worst <= -0.20 / 600     0.00
+max outer worst / 600    0.00
+true-vs-zero             +0.106861
+true-vs-shuffle          +0.080749
+true-vs-normal           +0.088555
+intervention rate         0.6977
+```
+
+Decision: `PHASE_C1_REAL_BLEND_ORACLE_PASS`.
+
+This is the strongest v3.7 evidence so far: the soft action-bank/micro-shrink
+idea survives real image-space blending. The remaining gap is deployable
+U-TQS policy and integrated T/A/U supervision, not the candidate action family.
+Next work should therefore start integrated T/A/U supervised candidate training
+and a deployable soft-mix head, while preserving A0 and avoiding any hard-reject
+threshold resurrection.

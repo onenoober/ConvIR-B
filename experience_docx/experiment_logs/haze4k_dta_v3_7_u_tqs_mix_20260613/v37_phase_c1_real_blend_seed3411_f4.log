@@ -1,0 +1,16 @@
+DTA_V3_7_REAL_BLEND_GROUP_START fold=4 seed=3411 device=cuda max_images=0
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-phasec1/experience_docx/tools/eval_haze4k_dta_v37_real_blend_oracle.py:127: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+DTA_V3_7_REAL_BLEND_GROUP_PROGRESS fold=4 seed=3411 images=50/600 elapsed_sec=32.6
+DTA_V3_7_REAL_BLEND_GROUP_PROGRESS fold=4 seed=3411 images=100/600 elapsed_sec=62.4
+DTA_V3_7_REAL_BLEND_GROUP_PROGRESS fold=4 seed=3411 images=150/600 elapsed_sec=93.0
+DTA_V3_7_REAL_BLEND_GROUP_PROGRESS fold=4 seed=3411 images=200/600 elapsed_sec=123.6
+DTA_V3_7_REAL_BLEND_GROUP_PROGRESS fold=4 seed=3411 images=250/600 elapsed_sec=154.8
+DTA_V3_7_REAL_BLEND_GROUP_PROGRESS fold=4 seed=3411 images=300/600 elapsed_sec=185.3
+DTA_V3_7_REAL_BLEND_GROUP_PROGRESS fold=4 seed=3411 images=350/600 elapsed_sec=215.6
+DTA_V3_7_REAL_BLEND_GROUP_PROGRESS fold=4 seed=3411 images=400/600 elapsed_sec=245.5
+DTA_V3_7_REAL_BLEND_GROUP_PROGRESS fold=4 seed=3411 images=450/600 elapsed_sec=275.7
+DTA_V3_7_REAL_BLEND_GROUP_PROGRESS fold=4 seed=3411 images=500/600 elapsed_sec=303.1
+DTA_V3_7_REAL_BLEND_GROUP_PROGRESS fold=4 seed=3411 images=550/600 elapsed_sec=330.2
+DTA_V3_7_REAL_BLEND_GROUP_PROGRESS fold=4 seed=3411 images=600/600 elapsed_sec=357.7
+DTA_V3_7_REAL_BLEND_GROUP_OK fold=4 seed=3411 images=600 selected_rows=10800 elapsed_sec=358.1

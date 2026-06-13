@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `PHASE_B2_ENRICHED_TABLE_POLICY_STRICT_FAIL_REAL_BLEND_NEXT`
+Status: `PHASE_C1_REAL_BLEND_ORACLE_PASS_INTEGRATED_TAU_NEXT`
 
 Route card: `experience_docx/experiment_cards/2026-06-13-haze4k-dta-v3-7-u-tqs-mix.md`
 Central index: `experience_docx/EXPERIMENT_INDEX.md`
@@ -209,3 +209,43 @@ v37_real_blend_summary.json
 Pass line is the same strict oracle line as Phase A, but now with actual
 PSNR/SSIM computed from blended image tensors and with `max_outer_worst`
 measured across fold-seed 600-image groups.
+
+
+## Phase C1 Real Soft-Blend Verification Result
+
+Phase C1 completed on `convir-4090` from runtime workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-phasec1` with marker:
+
+```text
+DTA_V3_7_PHASE_C1_REAL_BLEND_OK 2026-06-13T12:47:32+08:00
+```
+
+Aggregate result:
+
+```text
+DTA_V3_7_REAL_BLEND_AGGREGATE_OK rows=162000 grid=18 strict_pass=14 decision=PHASE_C1_REAL_BLEND_ORACLE_PASS
+```
+
+Best actual blended-image oracle row:
+
+| Bank | Utility | mean dPSNR | hard bottom-25 | dSSIM | positive ratio | worst/600 | max outer worst/600 | true-vs-zero | true-vs-shuffle | true-vs-normal | intervention |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `A0_L2_L3_L1_micro_shrink` | `max_dpsnr` | `+0.143568` | `+0.121118` | `+0.00002579` | `0.6977` | `0.00` | `0.00` | `+0.106861` | `+0.080749` | `+0.088555` | `0.6977` |
+
+Key follow-up rows:
+
+| Bank | Utility | strict | mean dPSNR | hard bottom-25 | dSSIM | positive ratio | worst/600 | intervention |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `A0_L2_L3_L1_shrink` | `max_dpsnr` | `true` | `+0.143564` | `+0.121118` | `+0.00002579` | `0.6919` | `0.00` | `0.6919` |
+| `A0_L2_L3_L1_full` | `max_dpsnr` | `true` | `+0.143298` | `+0.121101` | `+0.00002551` | `0.6623` | `0.00` | `0.6623` |
+
+Interpretation:
+
+- Phase A was not an over-optimistic metric artifact: actual tensor blending preserves and slightly improves the oracle headroom.
+- Shrink/micro-shrink raises positive ratio from `0.6623` to `0.6977` with zero severe regressions under the oracle, directly validating the strategy-space change away from hard reject.
+- The remaining bottleneck is deployable selection/mixing, not candidate-family headroom or image-space blending.
+- Large raw per-image selected/action CSVs were kept on `convir-4090` under `phase_c1_real_blend_groups/` and `v37_real_blend_oracle_selected_all.csv`; GitHub sync keeps compact aggregate grid, summaries, status, and logs to avoid committing oversized raw metric tables.
+
+Decision: `PHASE_C1_REAL_BLEND_ORACLE_PASS`. Proceed aggressively to integrated
+T/A/U supervised candidate training plus deployable U-TQS soft-mix policy; do
+not return to v3.6 hard-reject threshold tuning.

@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: DTA-v3.7 Phase A passed soft-oracle headroom, while Phase B/B2 table-only TQS strict-failed even after quality-feature enrichment; continue with real soft-blend verification and integrated T/A/U candidate training, not hard-reject threshold search.
+Status: DTA-v3.7 Phase C1 real soft-blend oracle passed; continue with integrated T/A/U supervised candidate training and deployable U-TQS soft-mix policy, not hard-reject threshold search.
 
 ## Scope
 
@@ -92,7 +92,7 @@ selection rather than more residual/router capacity.
 | --- | --- | --- |
 | DTA-v2 CalGate | Multi-seed OOF showed `invert` about `+0.0887 dB`, but zero/shuffle retained most of the improvement and tail/SSIM did not pass. | Positive diagnostic only; no locked test; use as motivation for attribution controls. |
 | DTA-v3 DAPC/FDF fine-tune | `convir-4090` preflight passed; R0 scouts failed. Zero-R0 depthDirect train=`invert` proved surplus. DTA-v3.1 airlight/risk/light-hinge, DTA-v3.2 SafeMix, DTA-v3.3 RouterFusion, and DTA-v3.4 FDF-TSR failed their written gates. DTA-v3.5 FDF-RCS-Lite fixed much of the over-action pattern but still failed strict all-image tail; DTA-v3.6 HRCS formal validation confirms strong oracle selector/action-bank headroom but deployable selectors still strict-fail. | Mechanism-positive diagnostic only; no promotion. A relaxed one-shot locked test may only use the fixed L3 logistic `deployable_all` target `0.93` policy under the 2026-06-13 user override, with no post-test tuning. |
-| DTA-v3.7 U-TQS-Mix | Authorized from v3.6 evidence. Phase A must test positive-loss budget, soft action-bank oracle grid, false reject/accept taxonomy, feature AUC ablations, and T/A/Q/U data availability before new training. | Mainline route. Hard reject threshold search is no longer the primary path; proceed to TQS soft action mixture only if Phase A proves soft-oracle headroom. |
+| DTA-v3.7 U-TQS-Mix | Phase A soft-oracle and Phase C1 actual real-blend oracle both pass; Phase B/B2 deployable table policy still fails. | Mainline route. Do not resume hard-reject threshold search; proceed to integrated T/A/U supervised candidate training and deployable utility-aware soft-mix policy. |
 
 ## Reopen Conditions
 
@@ -412,3 +412,34 @@ and dSSIM relative to the first table policy (`+0.021754` mean, `+0.024839` hard
 control is not the hard part; preserving enough high-gain positive action is.
 Continue to real soft-blend verification and integrated T/A/U supervised
 candidate training. Do not reopen v3.6 hard-reject threshold search.
+
+
+## 2026-06-13 DTA-v3.7 Phase C1 Outcome
+
+Decision: `PHASE_C1_REAL_BLEND_ORACLE_PASS`.
+
+Phase C1 rendered actual image-space blends for the v3.7 action bank on
+train-root OOF fold validation images, across folds `0..4` and seeds
+`3407/3411/2026`. This replaced Phase A's linear metric proxy with real tensor
+outputs:
+
+```text
+blend = clamp(A0 + alpha * (candidate - A0), 0, 1)
+```
+
+Aggregate marker:
+
+```text
+DTA_V3_7_REAL_BLEND_AGGREGATE_OK rows=162000 grid=18 strict_pass=14 decision=PHASE_C1_REAL_BLEND_ORACLE_PASS
+```
+
+Best row: `A0_L2_L3_L1_micro_shrink / max_dpsnr` with mean `+0.143568`, hard
+`+0.121118`, dSSIM `+0.00002579`, positive ratio `0.6977`, worst `0/600`, max
+outer worst `0/600`, true-vs-zero `+0.106861`, true-vs-shuffle `+0.080749`, and
+true-vs-normal `+0.088555`.
+
+Interpretation: the soft action-bank/micro-shrink strategy is image-space valid,
+not a table artifact. The family bottleneck is now deployable gain-risk
+separability and supervised T/A/U policy training. Do not reopen v3.6 hard
+accept/reject threshold tuning, and do not spend the next step on broad router
+capacity before integrated T/A/U supervision.

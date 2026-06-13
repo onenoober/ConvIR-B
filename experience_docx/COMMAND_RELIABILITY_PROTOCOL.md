@@ -158,6 +158,59 @@ printf 'DOC_READ_OK\n'
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
 
+Related recurrence:
+
+Avoid Bash `printf` calls whose format string starts with dashes, for example:
+
+```bash
+printf "--- logs tail ---\n"
+```
+
+Failure mode observed:
+
+- Bash `printf` interpreted the leading `--`-like format as an option;
+- monitoring exited before printing logs and success markers.
+
+Corrected form:
+
+```bash
+printf '%s\n' '--- logs tail ---'
+```
+
+Related recurrence:
+
+Avoid embedding a remote Python heredoc inside a single-quoted SSH command that
+is itself inside a PowerShell-to-WSL script:
+
+```bash
+ssh -n convir-4090 '... "$PY" - <<PY
+import json
+...
+PY'
+```
+
+Failure mode observed:
+
+- shell boundaries and heredoc terminators were parsed at the wrong layer;
+- Bash returned `syntax error near unexpected token '('`.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+ssh convir-4090 'bash -s' <<'REMOTE'
+set -euo pipefail
+"$PY" - "$SUMMARY_JSON" <<'PY'
+import json, sys
+print(json.load(open(sys.argv[1], encoding='utf-8')).get('decision'))
+PY
+printf 'REMOTE_MONITOR_OK\n'
+REMOTE
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
 2026-06-06 recurrence:
 
 Avoid this form:
