@@ -614,6 +614,7 @@ scope = intended D1 screen only
 variants = u1/u2/u3
 folds = 0,1
 seeds = 3407,3411
+run filter = quick5full only
 action bank = A0 + alpha * candidate residual
 alpha bank = 0.10,0.25,0.50,0.75,1.00
 ```

@@ -13,6 +13,7 @@ VARIANTS=${VARIANTS:-u1_tau_l1_s004_g025_a006,u2_tau_l3_s004_g015_a006,u3_tau_l2
 FOLDS=${FOLDS:-0,1}
 SEEDS=${SEEDS:-3407,3411}
 ACTION_BANK=${ACTION_BANK:-micro_shrink}
+INCLUDE_RUN_SUBSTRING=${INCLUDE_RUN_SUBSTRING:-quick5full}
 OUTPUT_PREFIX=${OUTPUT_PREFIX:-v37_tau_shrink}
 
 mkdir -p "$EVID"
@@ -38,6 +39,7 @@ fi
   echo "input=$INPUT"
   echo "features=$FEATURES"
   echo "variants=$VARIANTS folds=$FOLDS seeds=$SEEDS action_bank=$ACTION_BANK"
+  echo "include_run_substring=$INCLUDE_RUN_SUBSTRING"
   echo "locked_test_touched=false"
   echo "proxy_note=alpha-scaled D1 table deltas; real rendered verification is required before formal claims"
 } | tee "$STATUS"
@@ -50,6 +52,7 @@ fi
   --folds "$FOLDS" \
   --seeds "$SEEDS" \
   --action_bank "$ACTION_BANK" \
+  --include_run_substring "$INCLUDE_RUN_SUBSTRING" \
   --output_prefix "$OUTPUT_PREFIX" \
   2>&1 | tee "$LOG"
 

@@ -119,14 +119,41 @@ def filter_rows(
     variants: set[str],
     folds: set[str],
     seeds: set[str],
-) -> list[dict[str, Any]]:
-    return [
+    include_run_substring: str,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    filtered = [
         row
         for row in rows
         if str(row.get("variant")) in variants
         and str(row.get("fold")) in folds
         and str(row.get("seed")) in seeds
+        and (not include_run_substring or include_run_substring in str(row.get("run_id", "")))
     ]
+    deduped: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str, str]] = set()
+    duplicate_rows = []
+    for row in filtered:
+        key = (str(row.get("image_id")), str(row.get("fold")), str(row.get("seed")), str(row.get("variant")))
+        if key in seen:
+            duplicate_rows.append({
+                "image_id": row.get("image_id"),
+                "fold": row.get("fold"),
+                "seed": row.get("seed"),
+                "variant": row.get("variant"),
+                "run_id": row.get("run_id"),
+            })
+            continue
+        seen.add(key)
+        deduped.append(row)
+    info = {
+        "raw_rows": len(rows),
+        "filtered_rows_before_dedup": len(filtered),
+        "filtered_rows_after_dedup": len(deduped),
+        "duplicate_rows_dropped": len(duplicate_rows),
+        "duplicate_row_examples": duplicate_rows[:10],
+        "include_run_substring": include_run_substring,
+    }
+    return deduped, info
 
 
 def utility_target(dpsnr: float, dssim: float) -> float:
@@ -603,12 +630,13 @@ def main() -> None:
     parser.add_argument("--seeds", default="3407,3411")
     parser.add_argument("--feature_groups", default="Q_input_proxy,Q_enriched_quality,T_pred,TAU_core,U_uncertainty_conf,FDF_action_stats,deployable_TQAU_action_all,diagnostic_with_trans_gt")
     parser.add_argument("--action_bank", default="micro_shrink", choices=sorted(ACTION_BANKS))
+    parser.add_argument("--include_run_substring", default="quick5full")
     parser.add_argument("--output_prefix", default="v37_tau_shrink")
     args = parser.parse_args()
 
     variants = parse_csv_set(args.variants)
     rows = load_and_join_features(args.input_action_table, args.image_feature_table)
-    rows = filter_rows(rows, variants, parse_csv_set(args.folds), parse_csv_set(args.seeds))
+    rows, filter_info = filter_rows(rows, variants, parse_csv_set(args.folds), parse_csv_set(args.seeds), args.include_run_substring)
     groups = [item.strip() for item in args.feature_groups.split(",") if item.strip()]
     oracle_grid = run_oracle_grid(rows, variants)
     result = nested_train_eval(rows, groups, variants, args.action_bank)
@@ -624,6 +652,7 @@ def main() -> None:
         "route": "DTA-v3.7 U-TQS-Mix",
         "phase": "D2_tau_shrink_policy_stage",
         "rows": len(rows),
+        "filter_info": filter_info,
         "variants": sorted(variants),
         "folds": sorted(parse_csv_set(args.folds)),
         "seeds": sorted(parse_csv_set(args.seeds)),

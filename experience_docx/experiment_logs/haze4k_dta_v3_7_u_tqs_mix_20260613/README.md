@@ -346,6 +346,7 @@ scope = D1 intended screen only
 variants = u1/u2/u3
 folds = 0,1
 seeds = 3407,3411
+run filter = quick5full only
 action_bank = A0 + alpha * {u1,u2,u3}, alpha in {0.10,0.25,0.50,0.75,1.00}
 locked_test_touched = false
 ```
