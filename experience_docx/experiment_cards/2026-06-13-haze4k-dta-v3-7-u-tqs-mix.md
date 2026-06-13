@@ -601,3 +601,25 @@ Interpretation:
 - Next work should use the D1 evidence as candidate/feature material for deployable U-TQS soft-mix/shrink policy and tail-aware action mixing, not resume hard reject or broad router-capacity search.
 
 Decision: `D1_STAGE_SCREEN_TRIAGE_COMPLETE_NO_FORMAL_PROMOTION_YET_LOCKED_TEST_UNTOUCHED`.
+
+## 2026-06-13 D2 TAU Soft-Shrink Policy Plan
+
+D2 is the immediate staged follow-up. It does not run raw D1 candidates at full
+`5 folds x 3 seeds` and does not touch locked Haze4K test. It trains/evaluates a
+deployable U-TQS soft-shrink policy over the D1 candidate table:
+
+```text
+input = v37_tau_oof_per_image_action_table.csv
+scope = intended D1 screen only
+variants = u1/u2/u3
+folds = 0,1
+seeds = 3407,3411
+action bank = A0 + alpha * candidate residual
+alpha bank = 0.10,0.25,0.50,0.75,1.00
+```
+
+The D2 table policy is a required intermediate diagnostic. If it passes, the
+next step is actual rendered soft-blend verification before any formal claim. If
+it fails but the D2 oracle passes, the route stays on gain-risk feature/policy
+separability. If the D2 oracle fails, the D1 candidate family needs redesign
+instead of more policy tuning.

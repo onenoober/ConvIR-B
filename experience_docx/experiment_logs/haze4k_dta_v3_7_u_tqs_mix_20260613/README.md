@@ -333,3 +333,35 @@ Interpretation:
 - Next work should use the D1 evidence as candidate/feature material for deployable U-TQS soft-mix/shrink policy and tail-aware action mixing, not resume hard reject or broad router-capacity search.
 
 Decision: `D1_STAGE_SCREEN_TRIAGE_COMPLETE_NO_FORMAL_PROMOTION_YET_LOCKED_TEST_UNTOUCHED`.
+
+## Phase D2 TAU Soft-Shrink Policy Plan
+
+D2 is the next staged step after D1. It does not promote any raw D1 candidate to
+full formal. Instead, it uses the completed D1 table as candidate/feature
+material for an A0-preserving U-TQS soft-shrink policy:
+
+```text
+input = v37_tau_oof_per_image_action_table.csv
+scope = D1 intended screen only
+variants = u1/u2/u3
+folds = 0,1
+seeds = 3407,3411
+action_bank = A0 + alpha * {u1,u2,u3}, alpha in {0.10,0.25,0.50,0.75,1.00}
+locked_test_touched = false
+```
+
+Artifacts:
+
+```text
+experience_docx/tools/train_haze4k_dta_v37_tau_shrink_policy.py
+run_dta_v3_7_phase_d2_tau_shrink_policy_convir4090.sh
+v37_tau_shrink_oracle_grid.csv
+v37_tau_shrink_policy_nested_report.csv
+v37_tau_shrink_policy_aggregate.csv
+v37_tau_shrink_policy_action_table.csv
+v37_tau_shrink_summary.json
+```
+
+This is a required intermediate result, not a conservative detour. A D2 passing
+table policy would still need real rendered soft-blend verification before any
+formal claim, because D2 alpha-shrink uses table-scaled D1 deltas.
