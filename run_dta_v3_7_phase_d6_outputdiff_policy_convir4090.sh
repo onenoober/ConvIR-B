@@ -6,6 +6,7 @@ PY=${PY:-/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python}
 DATA=${DATA:-/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K}
 DEPTH=${DEPTH:-/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf}
 A0=${A0:-/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl}
+CHECKPOINT_ROOT=${CHECKPOINT_ROOT:-$WORK}
 SPLIT_JSON=${SPLIT_JSON:-$WORK/experience_docx/experiment_logs/haze4k_dta_v3_6_hrcs_20260613/dta_v3_6_haze4k_oof_splits_seed3407.json}
 EVID=${EVID:-$WORK/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613}
 GROUP_DIR=${GROUP_DIR:-$EVID/phase_d6_outputdiff_groups}
@@ -24,6 +25,7 @@ mkdir -p "$EVID" "$GROUP_DIR"
   echo "data=$DATA"
   echo "depth=$DEPTH"
   echo "a0=$A0"
+  echo "checkpoint_root=$CHECKPOINT_ROOT"
   echo "split_json=$SPLIT_JSON"
   echo "feature_max_side=$FEATURE_MAX_SIDE"
   echo "locked_test_touched=false"
@@ -32,7 +34,7 @@ mkdir -p "$EVID" "$GROUP_DIR"
   git -C "$WORK" status --short
 } | tee "$STATUS"
 
-for required in "$PY" "$A0" "$SPLIT_JSON" "$EVID/v37_tau_oof_per_image_action_table.csv" "$EVID/v37_tau_real_blend_single_actions_all.csv"; do
+for required in "$PY" "$A0" "$CHECKPOINT_ROOT" "$SPLIT_JSON" "$EVID/v37_tau_oof_per_image_action_table.csv" "$EVID/v37_tau_real_blend_single_actions_all.csv"; do
   if [[ ! -e "$required" ]]; then
     echo "DTA_V3_7_D6_OUTPUTDIFF_FAILED missing=$required $(date -Is)" | tee -a "$STATUS"
     exit 1
@@ -69,7 +71,7 @@ run_group() {
     "$PY" experience_docx/tools/extract_haze4k_dta_v37_outputdiff_features.py \
       --data_dir "$DATA" \
       --a0_checkpoint "$A0" \
-      --checkpoint_root "$WORK" \
+      --checkpoint_root "$CHECKPOINT_ROOT" \
       --action_table_csv "$EVID/v37_tau_oof_per_image_action_table.csv" \
       --include_run_substring "$INCLUDE_RUN_SUBSTRING" \
       --depth_cache_dir "$DEPTH" \
