@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `AUTHORIZED_PHASE_A_TABLE_ONLY_FIRST`
+Status: `PHASE_A_TABLE_ONLY_COMPLETE_PASS_SOFT_ORACLE_HEADROOM`
 
 ## Scope
 
@@ -280,3 +280,25 @@ if formal 5x3 strict pass:
 else:
     no locked test and no post-hoc threshold search
 ```
+
+## Phase A Result
+
+Phase A completed on `convir-4090` from commit `71d1f88` with marker:
+
+```text
+DTA_V3_7_U_TQS_MIX_PHASE_A_OK rows=27000 soft_rows=18 strict_soft=13 gate=PASS_SOFT_ORACLE_HEADROOM
+```
+
+Key results:
+
+- Soft action-bank oracle headroom is confirmed: `13/18` table-only soft-oracle rows strict-pass.
+- Best row `A0_L2_L3_L1_full` / `max_dpsnr` has mean `+0.143298`, hard bottom-25 `+0.121101`, dSSIM `+0.00002551`, positive ratio `0.6623`, worst `0/600`, max outer worst `0/600`, and intervention rate `0.6623`.
+- Shrink-enabled banks tie the best full bank because alpha `1.0` remains available; the forced no-A0 shrink bank still strict-passes in the linear proxy with mean `+0.130658`, positive ratio `0.6623`, worst `0.53/600`, and intervention rate `1.0`.
+- The positive-loss budget report confirms v3.6 hard reject is structurally over budget: L3 selector positive loss is `32.73/600`, about `8.77x` the allowed L3 budget; L1 is `29.87/600`, about `6.79x` budget; L2 full action is below the strict positive-ratio line and is tail-safe only, not a standalone main action.
+- T/A/Q/U preflight: transmission GT, predicted transmission, transmission uncertainty, airlight proxy, action stats, and input quality proxies are present; explicit airlight GT and NR-IQA/MANIQA/MUSIQ/CLIP-IQA features are missing and must be added or proxied train-derived before integrated training.
+- Deployable severe-risk separability remains weak in current table features: best deployable severe AUC is only about `0.608` from input brightness/action stats, so Phase B must add T/A/Q/U features rather than reusing v3.6 hard reject.
+
+Decision: `PHASE_A_PASS_SOFT_ORACLE_HEADROOM`. Proceed immediately to Phase B
+TQS deployable gain-risk predictor and real soft-blend verification on
+train-derived folds. The Phase A soft-alpha values are linear table proxies, not
+final blended-image proof.

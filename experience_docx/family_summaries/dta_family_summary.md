@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: DTA-v3.7 U-TQS-Mix authorized as the next mainline; v3.6 hard reject is stopped as the primary strategy because oracle headroom exists but deployable hard selection loses too many positives.
+Status: DTA-v3.7 U-TQS-Mix Phase A passed soft-oracle headroom; proceed to TQS gain-risk prediction and real soft-blend verification, not v3.6 hard-reject threshold search.
 
 ## Scope
 
@@ -366,3 +366,21 @@ soft-blend/integrated-head validation in parallel on cloud GPUs. If Phase A
 fails, do not train v3.7 policy; redesign the candidate action family first.
 Locked Haze4K test remains blocked until a formal train-derived strict pass
 seals one fixed policy.
+
+## 2026-06-13 DTA-v3.7 Phase A Outcome
+
+Decision: `PHASE_A_PASS_SOFT_ORACLE_HEADROOM`.
+
+The Phase A table-only diagnostic completed on `convir-4090` from commit
+`71d1f88` and consumed `27000` formal v3.6 OOF rows. It produced all required
+artifacts and found `13/18` strict-passing soft-oracle rows. The best
+`A0_L2_L3_L1_full` oracle row reaches mean `+0.143298`, hard `+0.121101`, dSSIM
+`+0.00002551`, positive ratio `0.6623`, worst `0/600`, and max outer worst
+`0/600`.
+
+This confirms that the strategy-space change has enough headroom. It also
+confirms why v3.6 hard reject must not remain the main path: L3 hard reject loses
+`32.73/600` positives, about `8.77x` the strict L3 positive-loss budget. Current
+deployable severe-risk AUC remains only about `0.608`, so Phase B must improve
+T/A/Q/U separability and then verify real blended outputs on train-derived folds.
+Locked Haze4K test remains blocked.

@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `AUTHORIZED_PHASE_A_TABLE_ONLY_FIRST`
+Status: `PHASE_A_TABLE_ONLY_COMPLETE_PASS_SOFT_ORACLE_HEADROOM`
 
 Route card: `experience_docx/experiment_cards/2026-06-13-haze4k-dta-v3-7-u-tqs-mix.md`
 Central index: `experience_docx/EXPERIMENT_INDEX.md`
@@ -45,3 +45,26 @@ passes mean, hard, dSSIM, positive-ratio, true-vs-controls, worst, and max outer
 worst strict gates. The Phase A soft-alpha metrics are table-only linear-delta
 proxies; real blended-output verification is required in Phase C before any
 promotion claim.
+
+## Phase A Completion
+
+Phase A completed on `convir-4090` at `2026-06-13T11:44:49+08:00` with marker:
+
+```text
+DTA_V3_7_U_TQS_MIX_PHASE_A_OK rows=27000 soft_rows=18 strict_soft=13 gate=PASS_SOFT_ORACLE_HEADROOM
+```
+
+Primary row:
+
+| Bank | Utility | mean dPSNR | hard bottom-25 | dSSIM | positive ratio | worst/600 | max outer worst/600 | intervention |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `A0_L2_L3_L1_full` | `max_dpsnr` | `+0.143298` | `+0.121101` | `+0.00002551` | `0.6623` | `0.00` | `0.00` | `0.6623` |
+
+Budget and preflight findings:
+
+- L3 hard-reject positive loss is `32.73/600`, about `8.77x` the strict budget.
+- L1 hard-reject positive loss is `29.87/600`, about `6.79x` the strict budget.
+- Transmission GT/pred/uncertainty columns are present; explicit airlight GT and NR-IQA features are not yet present.
+- Current deployable severe-risk AUC remains weak at about `0.608`, so Phase B must add T/A/Q/U feature separability.
+
+Decision: `PHASE_A_PASS_SOFT_ORACLE_HEADROOM`; proceed to Phase B.
