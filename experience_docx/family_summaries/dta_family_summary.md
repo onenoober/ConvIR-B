@@ -77,7 +77,9 @@ if Phase A passes. D1 and later multi-variant routes must start with a staged
 screen (`folds 0,1 x seeds 3407,3411`) and only promote a fixed top
 candidate/policy to full `5 folds x 3 seeds`. Do not continue v3.6 threshold
 tuning as the main path, and do not start broad full-formal queues before
-screen evidence exists.
+screen evidence exists. Cloud queues should dynamically use the maximum
+currently free GPUs and continue with partial resources instead of pausing when
+the machine is partially occupied.
 
 DTA-v3.5 FDF-RCS-Lite completed the relaxed train-derived flow on
 `convir-4090`. Conservative FDF moved the family in the intended direction:

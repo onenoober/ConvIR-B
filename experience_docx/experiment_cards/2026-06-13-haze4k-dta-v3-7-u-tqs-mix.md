@@ -560,3 +560,8 @@ queue was corrected before any second wave launched:
 - all future candidate invocations outside the staged screen skip immediately;
 - u2/u3 continue only for `folds 0,1 x seeds 3407,3411`;
 - future routes must not launch full `5x3` before a screen-to-formal decision.
+
+The GPU policy is dynamic, not paused/fixed: each queue probes current
+`nvidia-smi` memory before launching jobs, uses the maximum currently free GPUs
+up to the route's parallelism cap, and only waits when no candidate GPU is below
+the free-memory threshold.

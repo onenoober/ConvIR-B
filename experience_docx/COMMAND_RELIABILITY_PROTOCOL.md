@@ -19,6 +19,28 @@ success markers over compact one-liners.
 
 ## Invalid Command Patterns To Avoid
 
+
+### Bash printf labels beginning with dashes
+
+Avoid passing a label that starts with `-` directly as the `printf` format:
+
+```bash
+printf '--- route D1 section ---\n'
+```
+
+Failure mode observed on 2026-06-13:
+
+- Bash treated the leading `--` in the format string as an option;
+- the command exited with `printf: --: invalid option` before the monitor could
+  finish.
+
+Corrected forms:
+
+```bash
+printf '%s\n' '--- route D1 section ---'
+printf -- '--- route D1 section ---\n'
+```
+
 ### Pipefail grep counters in monitor scripts
 
 Avoid monitor counters that pipe a possibly empty `grep` directly into `wc`

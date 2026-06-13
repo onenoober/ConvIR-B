@@ -294,6 +294,7 @@ folds = 0,1
 seeds = 3407,3411
 stage = quick5full
 DTA_V37_STAGE_SCREEN_ONLY = 1
+DTA_V37_DYNAMIC_GPU = 1
 locked_test_touched = false
 ```
 
@@ -323,3 +324,45 @@ Correction rule:
 - do not use locked test;
 - promote to full `5x3` only after the staged screen identifies a fixed
   top candidate or fixed policy.
+
+## 2026-06-13 D1 Screen2 Repair Launch
+
+The corrected broad queue still collided with other users' GPU-heavy processes
+on `convir-4090`, so several u2/u3 screen jobs failed with CUDA OOM before a
+clean screen table existed. To avoid overwriting failed evidence, the runner now
+accepts `DTA_V37_RUN_BATCH_TAG`; the repair launch uses `screen2` to isolate
+model names, logs, and matrix artifacts.
+
+Repair launch:
+
+```text
+session = dta_v37_d1_screen2
+GPU_LIST = 3,5
+MAX_PARALLEL = 2
+DTA_V37_RUN_BATCH_TAG = screen2
+variants = u2_tau_l3_s004_g015_a006,u3_tau_l2_s002_g025_a006
+folds = 0,1
+seeds = 3407,3411
+locked_test_touched = false
+```
+
+This keeps the staged-screen policy intact while using only GPUs that were
+available after the resource collision.
+
+## Dynamic GPU Policy
+
+After the resource collision, the launch script was changed to avoid fixed
+GPU-count assumptions. Default behavior is now:
+
+```text
+DTA_V37_DYNAMIC_GPU = 1
+FREE_GPU_MAX_USED_MIB = 2500
+GPU_WAIT_SECONDS = 60
+GPU_LAUNCH_STAGGER_SECONDS = 5
+```
+
+For each queued job, the launcher re-probes `nvidia-smi`, launches on every
+currently free candidate GPU up to `MAX_PARALLEL`, and continues when only part
+of the machine is available. It waits only if no candidate GPU is below the
+free-memory threshold. This replaces the earlier pause/fixed-GPU repair behavior
+for future D1 and follow-up queues.
