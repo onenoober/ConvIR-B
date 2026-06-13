@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: DTA-v3.7 D7 fixed output-difference policy confirmation passed on the D1 quick5full train-derived scope; locked Haze4K test remains untouched, no D6/D7 run is active, and the route should continue only with a broader predeclared train-derived formal confirmation of the sealed D7 policy rather than hard-reject tuning or broad router capacity.
+Status: DTA-v3.7 D8 fixed formal confirmation is running on `convir-4090` for the sealed D7 primary policy; model architecture is unchanged, locked Haze4K test remains untouched, and the run is a broader predeclared train-derived confirmation rather than hard-reject tuning or broad router capacity.
 
 ## Scope
 
@@ -556,3 +556,18 @@ positive high-gain actions, but actual output-difference evidence can. Continue
 with fixed train-derived D6 policy confirmation. Do not touch locked Haze4K test
 and do not run raw D1 full `5x3` unless the fixed D6 confirmation protocol
 explicitly requires that expansion.
+
+## 2026-06-13 DTA-v3.7 D8 Fixed Formal Confirmation Running
+
+D8 is running the sealed D7 primary policy
+`primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100` on a broader
+train-derived scope. This is not a new architecture stage and not a new policy
+search; it is a fixed-policy confirmation that expands to `3 variants x 5 folds
+x 3 seeds` before any locked-test decision. Partial synced evidence at
+2026-06-13 22:37 CST shows `6/45` candidates launched, `22` compare dirs, no
+failure markers, and locked test untouched.
+
+Decision state: `D8_FIXED_FORMAL_RUNNING_LOCKED_TEST_UNTOUCHED`. Continue the
+run and sync only text/summary evidence; keep raw outputs and checkpoints
+cloud-only.
+

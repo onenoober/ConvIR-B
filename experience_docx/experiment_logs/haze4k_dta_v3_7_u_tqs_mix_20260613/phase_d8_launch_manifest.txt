@@ -1,0 +1,15 @@
+phase=D8_FIXED_FORMAL
+commit=5541ca9
+branch=codex/haze4k-dta-v3-7-u-tqs-mix
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9
+session=dta_v37_d8_formal
+run_tag=d8formal
+max_parallel_train=3
+max_parallel_render=3
+max_parallel_features=3
+free_gpu_max_used_mib=2500
+feature_free_gpu_max_used_mib=2500
+locked_test_touched=false
+policy_search=false
+sealed_policy_id=primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100
+launch_time=2026-06-13T21:56:10+08:00

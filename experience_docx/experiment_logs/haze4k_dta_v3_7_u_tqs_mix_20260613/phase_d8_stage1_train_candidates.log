@@ -1,0 +1,30 @@
+dta_v3_7_tau_training_queue_start stage=quick5full 2026-06-13T21:56:10+08:00
+state=RUNNING_TRAIN_DERIVED_INTEGRATED_TAU_FORMAL_QUEUE
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+variants=u1_tau_l1_s004_g025_a006,u2_tau_l3_s004_g015_a006,u3_tau_l2_s002_g025_a006 folds=0,1,2,3,4 seeds=3407,3411,2026
+stage_screen_only=0 screen_variants=u1_tau_l1_s004_g025_a006,u2_tau_l3_s004_g015_a006,u3_tau_l2_s002_g025_a006 screen_folds=0,1,2,3,4 screen_seeds=3407,3411,2026
+run_batch_tag=d8formal
+formal_full_5x3_requires_explicit_screen_promotion=true
+max_images=0 force=0 max_gpus=0
+dynamic_gpu=1 free_gpu_max_used_mib=2500 free_gpu_max_util_pct=20 gpu_wait_seconds=60 gpu_launch_stagger_seconds=5
+locked_test_touched=false
+codex/haze4k-dta-v3-7-u-tqs-mix
+5541ca9
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/status_phase_d1_tau_training.txt
+ M run_dta_v3_7_phase_d8_fixed_formal_convir4090.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d8_fixed_formal_launcher.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d8_launch_manifest.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/status_phase_d8_fixed_formal.txt
+?? launch_phase_d8_fixed_formal_tmux.sh
+dta_v3_7_tau_parallel gpu_candidates=0,1,2,3,4,5,6,7 max_parallel=3 dynamic_gpu=1
+dta_v3_7_tau_launch tag=u1_tau_l1_s004_g025_a006_seed3407_f0_quick5full batch_tag=d8formal gpu=0 2026-06-13T21:56:10+08:00
+dta_v3_7_tau_launch tag=u1_tau_l1_s004_g025_a006_seed3411_f0_quick5full batch_tag=d8formal gpu=0 2026-06-13T21:56:15+08:00
+dta_v3_7_tau_launch tag=u1_tau_l1_s004_g025_a006_seed2026_f0_quick5full batch_tag=d8formal gpu=3 2026-06-13T21:56:20+08:00
+dta_v3_7_tau_launch tag=u1_tau_l1_s004_g025_a006_seed3407_f1_quick5full batch_tag=d8formal gpu=3 2026-06-13T22:15:09+08:00
+dta_v3_7_tau_launch tag=u1_tau_l1_s004_g025_a006_seed3411_f1_quick5full batch_tag=d8formal gpu=5 2026-06-13T22:18:22+08:00
+dta_v3_7_tau_launch tag=u1_tau_l1_s004_g025_a006_seed2026_f1_quick5full batch_tag=d8formal gpu=0 2026-06-13T22:18:27+08:00
+dta_v3_7_tau_launch tag=u1_tau_l1_s004_g025_a006_seed3407_f2_quick5full batch_tag=d8formal gpu=3 2026-06-13T22:33:56+08:00
+dta_v3_7_tau_launch tag=u1_tau_l1_s004_g025_a006_seed3411_f2_quick5full batch_tag=d8formal gpu=1 2026-06-13T22:37:30+08:00
+dta_v3_7_tau_launch tag=u1_tau_l1_s004_g025_a006_seed2026_f2_quick5full batch_tag=d8formal gpu=0 2026-06-13T22:37:38+08:00
+dta_v3_7_tau_launch tag=u1_tau_l1_s004_g025_a006_seed3407_f3_quick5full batch_tag=d8formal gpu=0 2026-06-13T22:37:43+08:00

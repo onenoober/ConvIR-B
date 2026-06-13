@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `D7_FIXED_OUTPUTDIFF_CONFIRM_PASS_LOCKED_TEST_UNTOUCHED`
+Status: `D8_FIXED_FORMAL_RUNNING_LOCKED_TEST_UNTOUCHED`
 
 Route card: `experience_docx/experiment_cards/2026-06-13-haze4k-dta-v3-7-u-tqs-mix.md`
 Central index: `experience_docx/EXPERIMENT_INDEX.md`
@@ -704,3 +704,48 @@ Decision: `D7_FIXED_OUTPUTDIFF_CONFIRM_PASS_LOCKED_TEST_UNTOUCHED`. No active
 D6/D7 training or audit remains. Next route step, if continuing, should be a
 predeclared broader train-derived formal confirmation of the sealed D7 primary
 policy; locked Haze4K test remains blocked until that formal confirmation passes.
+
+## Phase D8 Fixed Formal Confirmation Launch / Partial Sync
+
+D8 is running on `convir-4090` from runtime workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9`
+with locked test untouched. This stage does not introduce a new model
+architecture and does not run policy search; it only expands the sealed D7
+primary policy to a broader predeclared train-derived confirmation scope.
+
+Fixed D8 protocol:
+
+```text
+policy_id = primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100
+policy_search = false
+locked_test_touched = false
+variants = u1_tau_l1_s004_g025_a006,u2_tau_l3_s004_g015_a006,u3_tau_l2_s002_g025_a006
+folds = 0,1,2,3,4
+seeds = 3407,3411,2026
+stage = quick5full
+run_tag = d8formal
+```
+
+Partial progress synced on 2026-06-13 22:37 CST:
+
+```text
+candidate_launches=6/45
+failure_markers=0
+compare_dirs=22
+train_logs=6
+v37_d8_fixed_formal_summary.json_exists=false
+```
+
+Allowed partial text evidence synced here:
+
+- `phase_d8_partial_progress_latest.txt`
+- `phase_d8_partial_progress_20260613_223747.txt`
+- `phase_d8_launch_manifest.txt`
+- `status_phase_d8_fixed_formal.txt`
+- `phase_d8_fixed_formal_launcher.out`
+- `phase_d8_stage1_train_candidates.log`
+
+Raw candidate outputs, checkpoints, rendered images, compare directories, and
+large action/feature tables remain cloud-only until the run completes and only
+allowed summary evidence is copied back.
+

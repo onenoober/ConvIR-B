@@ -1,0 +1,23 @@
+dta_v3_7_phase_d8_fixed_formal_start 2026-06-13T21:56:10+08:00
+state=RUNNING_D8_FIXED_FORMAL_CONFIRMATION
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_6_hrcs_20260613/dta_v3_6_haze4k_oof_splits_seed3407.json
+variants=u1_tau_l1_s004_g025_a006,u2_tau_l3_s004_g015_a006,u3_tau_l2_s002_g025_a006 folds=0,1,2,3,4 seeds=3407,3411,2026 stage=quick5full run_tag=d8formal
+sealed_policy_id=primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100
+policy_search=false
+locked_test_touched=false
+raw_d1_full_5x3_run=true
+raw_d1_full_5x3_reason=D7 fixed policy sealed; D8 broader train-derived confirmation
+dynamic_gpu=true free_gpu_max_used_mib=2500 free_gpu_max_util_pct=20
+codex/haze4k-dta-v3-7-u-tqs-mix
+5541ca9
+ M run_dta_v3_7_phase_d8_fixed_formal_convir4090.sh
+?? experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d8_fixed_formal_launcher.out
+?? experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d8_launch_manifest.txt
+?? experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/status_phase_d8_fixed_formal.txt
+?? launch_phase_d8_fixed_formal_tmux.sh
+dta_v3_7_phase_d8_stage1_train_candidates_start 2026-06-13T21:56:10+08:00

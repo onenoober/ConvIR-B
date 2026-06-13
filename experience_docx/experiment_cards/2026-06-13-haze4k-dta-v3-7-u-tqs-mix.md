@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `D7_FIXED_OUTPUTDIFF_CONFIRM_PASS_LOCKED_TEST_UNTOUCHED`
+Status: `D8_FIXED_FORMAL_RUNNING_LOCKED_TEST_UNTOUCHED`
 
 ## Scope
 
@@ -882,3 +882,28 @@ Decision: `D7_FIXED_OUTPUTDIFF_CONFIRM_PASS_LOCKED_TEST_UNTOUCHED`. Use
 `primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100` as the sealed staged
 policy candidate. Do not touch locked Haze4K test until a predeclared broader
 formal confirmation passes; do not return to v3.6 hard-reject tuning.
+
+## 2026-06-13 D8 Fixed Formal Confirmation Running
+
+D8 is active on `convir-4090` in
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9`.
+It keeps the model architecture unchanged relative to the D7 sealed route: no
+new ConvIR/DTA modules are added, and the only code changes are the D8 runner and
+fixed-policy confirmation tooling. The stage uses the sealed primary policy only:
+
+```text
+primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100
+```
+
+D8 is a broader train-derived formal confirmation, not a new policy search and
+not locked-test evaluation. It predeclares `3` TAU variants, `5` folds, and `3`
+seeds (`45` candidates total), then reruns real-blend/output-difference feature
+extraction and fixed-policy aggregation. Partial text sync at 2026-06-13 22:37
+CST shows `6/45` candidates launched, `22` compare directories, `0` failure
+markers, and locked Haze4K test still untouched.
+
+Decision state: `D8_FIXED_FORMAL_RUNNING_LOCKED_TEST_UNTOUCHED`. Continue D8 to
+completion unless an engineering failure appears. Do not perform post-test
+selection and do not touch locked test unless D8 formal strict pass seals the
+fixed primary policy.
+
