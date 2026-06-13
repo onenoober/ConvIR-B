@@ -19,6 +19,28 @@ success markers over compact one-liners.
 
 ## Invalid Command Patterns To Avoid
 
+### Pipefail grep counters in monitor scripts
+
+Avoid monitor counters that pipe a possibly empty `grep` directly into `wc`
+under `set -euo pipefail`, for example:
+
+```bash
+grep -h 'DTA_V3_7_TAU_QUEUE_OK' "$STATUS" | wc -l
+```
+
+Failure mode observed on 2026-06-13:
+
+- when the marker is legitimately absent during an active run, `grep` exits
+  `1`;
+- `pipefail` makes the whole monitor script exit before the final success
+  marker, even though the run is healthy.
+
+Corrected form:
+
+```bash
+{ grep -h 'DTA_V3_7_TAU_QUEUE_OK' "$STATUS" 2>/dev/null || true; } | wc -l
+```
+
 ### Escaped printf inside nested awk one-liners
 
 Avoid embedding escaped quotes in an `awk` program inside a PowerShell-to-WSL
