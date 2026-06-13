@@ -19,6 +19,34 @@ success markers over compact one-liners.
 
 ## Invalid Command Patterns To Avoid
 
+### Unquoted local heredoc around remote launch scripts
+
+Avoid embedding a remote script in an unquoted local heredoc when the payload
+also contains a nested heredoc or variables such as `$EVID`:
+
+```bash
+ssh convir-4090 'bash -s' <<REMOTE
+cat > "$WORK/launch.sh" <<'LAUNCH'
+echo "$EVID"
+LAUNCH
+REMOTE
+```
+
+Failure mode observed on 2026-06-13: the local WSL shell expanded the nested
+payload before SSH and failed with `EVID: unbound variable`.
+
+Preferred form: quote the outer heredoc delimiter or write the remote script
+with escaped variables from a single quoted payload:
+
+```bash
+ssh convir-4090 'bash -s' <<'REMOTE'
+set -euo pipefail
+cat > "$WORK/launch.sh" <<'LAUNCH'
+echo "$EVID"
+LAUNCH
+REMOTE
+```
+
 ### Remote GitHub clone from `convir-4090` without host-key preflight
 
 Avoid assuming `convir-4090` can directly clone GitHub over SSH:
