@@ -1,0 +1,14 @@
+DTA_V3_7_D8_POSTSTAGE_TMUX_LAUNCH_START 2026-06-14T09:30:46+08:00
+DTA_V3_7_D8_POSTSTAGE_TMUX_LAUNCH_OK 2026-06-14T09:30:46+08:00 session=dta_v37_d8_poststage
+dta_v3_7_phase_d8_poststage_start 2026-06-14T09:30:46+08:00
+state=RUNNING_D8_POSTSTAGE_FROM_COMPLETED_45_AGGREGATES
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+policy_search=false
+locked_test_touched=false
+run_tag=d8formal folds=0,1,2,3,4 seeds=3407,3411,2026
+dta_v3_7_phase_d8_rebuild_action_table_start 2026-06-14T09:30:46+08:00
+DTA_V3_7_D8_POSTSTAGE_SESSION_ACTIVE 2026-06-14T09:30:48+08:00
+dta_v3_7_phase_d8_rebuild_action_table_done 2026-06-14T09:38:23+08:00
+dta_v3_7_phase_d8_stage2_real_blend_start 2026-06-14T09:38:23+08:00
+DTA_V3_7_D8_POSTSTAGE_SELECTOR_STOPPED_FOR_FAST_STAGE2 2026-06-14T09:39:02+08:00

@@ -1,0 +1,9 @@
+dta_v3_7_phase_d8_accelerate_u3_start 2026-06-14T00:13:11+08:00
+state=RUNNING_D8_ACCELERATED_U3_CONTINUATION
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9
+session=dta_v37_d8_accel_u3
+target_gpus=5,6,7 max_parallel=3
+policy_search=false
+locked_test_touched=false
+purpose=use newly idle GPUs for u3 D8 formal candidates while main queue handles u1/u2
+dta_v3_7_phase_d8_accelerate_u3_done rc=2 2026-06-14T04:34:43+08:00

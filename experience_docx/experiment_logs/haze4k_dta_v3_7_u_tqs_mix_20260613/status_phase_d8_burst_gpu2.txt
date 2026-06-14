@@ -1,0 +1,7 @@
+DTA_V3_7_D8_BURST_GPU2_TMUX_LAUNCH_START 2026-06-14T00:26:09+08:00
+DTA_V3_7_D8_BURST_GPU2_TMUX_LAUNCH_OK 2026-06-14T00:26:09+08:00 session=dta_v37_d8_burst_gpu2
+dta_v3_7_phase_d8_burst_gpu2_start 2026-06-14T00:26:09+08:00
+policy_search=false locked_test_touched=false purpose=fill idle gpu2 after D8 train-control aggregation
+dta_v3_7_d8_burst_gpu2_launch run_id=v35_fdf_rcs_u3_tau_l2_s002_g025_a006_seed2026_f1_quick5full_d8formal gpu=2 2026-06-14T00:26:09+08:00
+DTA_V3_7_D8_BURST_GPU2_SESSION_ACTIVE 2026-06-14T00:26:11+08:00
+DTA_V3_7_D8_BURST_GPU2_OK run_id=v35_fdf_rcs_u3_tau_l2_s002_g025_a006_seed2026_f1_quick5full_d8formal 2026-06-14T03:40:52+08:00

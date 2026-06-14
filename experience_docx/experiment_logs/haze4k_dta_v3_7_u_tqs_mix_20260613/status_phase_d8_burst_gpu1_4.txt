@@ -1,0 +1,8 @@
+DTA_V3_7_D8_BURST_GPU1_4_TMUX_LAUNCH_START 2026-06-14T00:24:44+08:00
+DTA_V3_7_D8_BURST_GPU1_4_TMUX_LAUNCH_OK 2026-06-14T00:24:44+08:00 session=dta_v37_d8_burst_gpu1_4
+dta_v3_7_phase_d8_burst_gpu1_4_start 2026-06-14T00:24:44+08:00
+policy_search=false locked_test_touched=false purpose=fill idle gpu1/gpu4 after greedy launch
+dta_v3_7_d8_burst_launch run_id=v35_fdf_rcs_u3_tau_l2_s002_g025_a006_seed3407_f1_quick5full_d8formal gpu=1 2026-06-14T00:24:44+08:00
+DTA_V3_7_D8_BURST_GPU1_4_SESSION_ACTIVE 2026-06-14T00:24:46+08:00
+dta_v3_7_d8_burst_launch run_id=v35_fdf_rcs_u3_tau_l2_s002_g025_a006_seed3411_f1_quick5full_d8formal gpu=4 2026-06-14T00:24:49+08:00
+DTA_V3_7_D8_BURST_GPU1_4_OK 2026-06-14T03:41:01+08:00

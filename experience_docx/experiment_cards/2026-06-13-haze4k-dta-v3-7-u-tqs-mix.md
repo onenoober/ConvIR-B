@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `D8_FIXED_FORMAL_RUNNING_LOCKED_TEST_UNTOUCHED`
+Status: `D8_FIXED_FORMAL_STRICT_PASS_LOCKED_TEST_UNTOUCHED`
 
 ## Scope
 
@@ -883,27 +883,52 @@ Decision: `D7_FIXED_OUTPUTDIFF_CONFIRM_PASS_LOCKED_TEST_UNTOUCHED`. Use
 policy candidate. Do not touch locked Haze4K test until a predeclared broader
 formal confirmation passes; do not return to v3.6 hard-reject tuning.
 
-## 2026-06-13 D8 Fixed Formal Confirmation Running
+## 2026-06-14 D8 Fixed Formal Confirmation Outcome
 
-D8 is active on `convir-4090` in
-`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9`.
-It keeps the model architecture unchanged relative to the D7 sealed route: no
-new ConvIR/DTA modules are added, and the only code changes are the D8 runner and
-fixed-policy confirmation tooling. The stage uses the sealed primary policy only:
+D8 completed on `convir-4090` in
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9`
+with the model architecture unchanged and locked Haze4K test untouched. The
+stage used only the sealed D7 primary policy:
 
 ```text
 primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100
 ```
 
-D8 is a broader train-derived formal confirmation, not a new policy search and
-not locked-test evaluation. It predeclares `3` TAU variants, `5` folds, and `3`
-seeds (`45` candidates total), then reruns real-blend/output-difference feature
-extraction and fixed-policy aggregation. Partial text sync at 2026-06-13 22:37
-CST shows `6/45` candidates launched, `22` compare directories, `0` failure
-markers, and locked Haze4K test still untouched.
+D8 was a broader train-derived formal confirmation, not a new policy search and
+not locked-test evaluation. It predeclared `3` TAU variants, `5` folds, and `3`
+seeds (`45` candidates total), then rebuilt the action table, reran real-blend
+and output-difference feature extraction, and aggregated the fixed policy. The
+final poststage markers were:
 
-Decision state: `D8_FIXED_FORMAL_RUNNING_LOCKED_TEST_UNTOUCHED`. Continue D8 to
-completion unless an engineering failure appears. Do not perform post-test
-selection and do not touch locked test unless D8 formal strict pass seals the
-fixed primary policy.
+```text
+dta_v3_7_phase_d8_stage2_real_blend_done 2026-06-14T09:57:29+08:00
+dta_v3_7_phase_d8_stage3_outputdiff_done 2026-06-14T10:23:58+08:00
+DTA_V3_7_PHASE_D8_STAGE2_FAST_OK 2026-06-14T10:24:18+08:00
+```
 
+Final fixed-policy metrics recorded from the cloud closeout summary:
+
+| policy id | coverage | mean | hard | easy | dSSIM | positive | worst/600 | max outer worst/600 | true vs zero | true vs shuffle | true vs normal | strict |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100` | `1.0000` | `+0.078297` | `+0.085281` | `+0.062693` | `+0.00001904` | `0.65875` | `46.50` | `52.00` | `+0.083620` | `+0.064332` | `+0.068854` | pass |
+
+Closeout interpretation:
+
+- The D8 fixed formal confirmation strict-passes on the broader train-derived
+  scope with `2400` image groups, `38400` fixed-policy rows, and `135000`
+  output-difference feature rows.
+- The fixed policy remains attribution-positive against zero, shuffle, and
+  normal controls; `locked_test_touched=false` throughout D8.
+- The D8 confirmer log reuses the D7 decision string internally, so the D8 file
+  prefix, status markers, workspace, and closeout summary are the authority for
+  this D8 outcome.
+- Exact cloud-generated final JSON/CSV artifacts were produced on
+  `convir-4090`, but a later SSH outage (`connect ... port 22: Connection
+  refused` at 2026-06-14 10:44 CST) prevented copying them into this checkout;
+  the local `*_recovered.*` closeout files record the final observed values and
+  the pending exact-artifact paths.
+
+Decision: `D8_FIXED_FORMAL_STRICT_PASS_LOCKED_TEST_UNTOUCHED`. The sealed policy
+is now eligible for one fixed, one-shot locked Haze4K confirmation when
+`convir-4090` is reachable again. Do not tune thresholds, feature groups,
+action-bank membership, checkpoints, or code from the locked-test result.

@@ -1,0 +1,9 @@
+DTA_V3_7_D8_FINAL_ARTIFACT_SYNC_STATUS
+checked_at=2026-06-14T10:44:48+08:00
+cloud_host=convir-4090
+ssh_status=FAILED_CONNECTION_REFUSED
+ssh_error=ssh: connect to host 183.175.12.124 port 22: Connection refused
+final_decision=D8_FIXED_FORMAL_STRICT_PASS_LOCKED_TEST_UNTOUCHED
+local_recovered_summary=v37_d8_fixed_formal_summary_recovered.json
+local_recovered_aggregate=v37_d8_fixed_formal_policy_aggregate_recovered.csv
+pending_exact_cloud_artifacts=v37_d8_fixed_formal_summary.json,v37_d8_fixed_formal_policy_aggregate.csv,v37_d8_fixed_formal_per_outer_report.csv,v37_d8_fixed_formal_fixed_policy_config.json,v37_d8_fixed_formal_selected_actions.csv
