@@ -2,7 +2,7 @@
 
 Date: 2026-06-14
 
-Status: `C0_PLANNED`
+Status: `C0_CAPACITY_OPEN_POSITIVE_COVERAGE_RISK_MAP_REQUIRED`
 
 ## Scope
 
@@ -81,6 +81,51 @@ worst <= 5/600, or oracle worst is exactly 0
 
 If mean/hard/worst pass but strict positive coverage is low, continue only to
 C1 risk/correctability mapping before any deployable router claim.
+
+## C0 Result
+
+C0a completed on `convir-4090` at `2026-06-15T00:08:18+08:00` from commit
+`885a9c0`. It used existing train-derived/internal validation evidence only;
+locked test stayed untouched.
+
+Decision:
+
+```text
+C0_CAPACITY_OPEN_POSITIVE_COVERAGE_RISK_MAP_REQUIRED
+```
+
+Key FullUDP/A0 endpoint-oracle metrics over the available `val_regular +
+val_hard` 600-image internal-validation evidence:
+
+| Candidate | Scope | mean dPSNR | hard bottom-25 | easy top-25 | dSSIM | positive | nonnegative | worst/600 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| FullUDP endpoint | all | `+0.062005` | `+0.685523` | `-0.686496` | `-0.00031039` | `0.5300` | `0.5300` | `252.0` |
+| A0/FullUDP endpoint oracle | all | `+0.741695` | `+1.110910` | `+0.397112` | `+0.00022958` | `0.5300` | `1.0000` | `0.0` |
+
+Interpretation:
+
+- FullUDP remains unsafe as a global endpoint because it damages easy/regular
+  samples and has `252/600` severe regressions when forced globally.
+- The A0-preserving endpoint oracle is strong-model capacity: mean is above
+  `+0.70 dB`, hard bottom-25 is above `+1.10 dB`, and worst tail is zero.
+- Strict positive coverage is only `0.53`, so the next step is not immediate
+  C2 router training; it is C1 risk/correctability mapping to decide whether
+  the high-gain subset can be predicted without locked-test tuning.
+- ConvIR-L, DehazeFormer, and PromptIR checkpoints/protocols were not available
+  on `convir-4090` during C0a; they remain future candidate slots, not silently
+  skipped evidence.
+
+D8/D9 hygiene completed in parallel:
+
+- D8 status confirms folds `0..4`, seeds `3407,3411,2026`, and `15/15`
+  outputdiff groups completed, but D8 summary/aggregate metadata retained D7
+  labels (`phase`, `outer_groups`, and `raw_d1_full_5x3_run`).
+- D9 forensic recorded the locked failure profile without authorizing any
+  DTA-v3.7 repair or threshold tuning.
+
+Next action: launch C1 Strong Expert Risk/Correctability Map using the
+FullUDP-A0 endpoint evidence and DTA output-difference/quality features as
+train-derived risk signals.
 
 ### D8/D9 Evidence Hygiene In Parallel
 

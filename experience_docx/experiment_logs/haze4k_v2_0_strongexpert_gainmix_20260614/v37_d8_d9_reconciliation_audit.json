@@ -1,0 +1,106 @@
+{
+  "d8_aggregate_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_d8_fixed_formal_policy_aggregate.csv",
+  "d8_summary_metrics": {
+    "hard_bottom25_dPSNR": 0.08528067588806153,
+    "mean_dPSNR": 0.07829696575800578,
+    "positive_ratio": 0.65875,
+    "strict_gate_pass": true,
+    "worst_per_600": 46.5
+  },
+  "d8_summary_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_d8_fixed_formal_summary.json",
+  "d9_aggregate_metrics": {
+    "decision": "D9_LOCKED_FIXED_POLICY_FAIL_NO_TUNING",
+    "hard_bottom25_dPSNR": "0.021358879089355468",
+    "mean_dPSNR": "0.020946037769317628",
+    "positive_ratio": "0.53175",
+    "strict_gate_pass": "False",
+    "worst_per_600": "35.7"
+  },
+  "d9_aggregate_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_d9_locked_fixed_policy_aggregate.csv",
+  "d9_status_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/status_phase_d9_locked_fixed_policy.txt",
+  "decision": "D8_METRICS_USABLE_METADATA_RECONCILIATION_REQUIRED",
+  "inconsistencies": [
+    {
+      "artifact_value": false,
+      "field": "raw_d1_full_5x3_run",
+      "note": "D8 status says raw D1 5x3 was run; summary retained D7 value.",
+      "severity": "metadata",
+      "status_value": true
+    },
+    {
+      "artifact_value": "D7_fixed_outputdiff_confirmation",
+      "field": "summary_phase",
+      "note": "D8 summary phase should not retain the D7 confirmation label.",
+      "severity": "metadata",
+      "status_value": "D8_fixed_formal_confirmation"
+    },
+    {
+      "artifact_value": "D7_fixed_outputdiff_confirmation",
+      "field": "aggregate_phase",
+      "note": "D8 aggregate phase should not retain the D7 confirmation label.",
+      "severity": "metadata",
+      "status_value": "D8_fixed_formal_confirmation"
+    },
+    {
+      "artifact_value": 4,
+      "field": "outer_groups",
+      "note": "Broader D8 scope is 5 folds x 3 seeds; current artifact records D7 outer group count.",
+      "severity": "metadata",
+      "status_value": 15
+    },
+    {
+      "artifact_value": 4,
+      "field": "aggregate_outer_groups",
+      "note": "Broader D8 aggregate should record 15 fold/seed groups.",
+      "severity": "metadata",
+      "status_value": 15
+    }
+  ],
+  "locked_test_touched_by_d8": false,
+  "locked_test_touched_by_d9": true,
+  "phase": "D8/D9 reconciliation audit",
+  "route": "DTA-v3.7 U-TQS-Mix",
+  "status_claims": {
+    "done_fold_seed_pairs": [
+      "0:2026",
+      "0:3407",
+      "0:3411",
+      "1:2026",
+      "1:3407",
+      "1:3411",
+      "2:2026",
+      "2:3407",
+      "2:3411",
+      "3:2026",
+      "3:3407",
+      "3:3411",
+      "4:2026",
+      "4:3407",
+      "4:3411"
+    ],
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "locked_test_touched": false,
+    "outputdiff_group_dones": 15,
+    "outputdiff_group_starts": 15,
+    "policy_search": false,
+    "raw_d1_full_5x3_run": true,
+    "seeds": [
+      3407,
+      3411,
+      2026
+    ],
+    "success_markers": [
+      "DTA_V3_7_D8_LAUNCH_SKIP_EXISTING_PATCH_OK",
+      "DTA_V3_7_D8_RUNNER_LOCK_PATCH_OK",
+      "DTA_V3_7_PHASE_D8_STAGE2_FAST_OK"
+    ],
+    "tasks": 15
+  },
+  "status_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/status_phase_d8_fixed_formal.txt"
+}

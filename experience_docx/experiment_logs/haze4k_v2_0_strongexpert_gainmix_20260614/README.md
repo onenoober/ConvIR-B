@@ -2,7 +2,7 @@
 
 Date: 2026-06-14
 
-Status: `C0_PLANNED`
+Status: `C0_CAPACITY_OPEN_POSITIVE_COVERAGE_RISK_MAP_REQUIRED`
 
 Route card: `experience_docx/experiment_cards/2026-06-14-haze4k-v2-0-strongexpert-gainmix.md`
 
@@ -15,9 +15,43 @@ Route card: `experience_docx/experiment_cards/2026-06-14-haze4k-v2-0-strongexper
 - A0 checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`.
 - Locked test: blocked and untouched for C0.
 
-## C0 Outputs
+## C0 Completion
 
-Planned outputs:
+C0a completed on `convir-4090` at `2026-06-15T00:08:18+08:00` with marker:
+
+```text
+V20_PHASE0_AUDITS_OK
+```
+
+Candidate-zoo decision:
+
+```text
+C0_CAPACITY_OPEN_POSITIVE_COVERAGE_RISK_MAP_REQUIRED
+```
+
+FullUDP global endpoint remains unsafe on the available 600-image internal
+validation evidence:
+
+- all mean dPSNR `+0.062005`;
+- hard bottom-25 `+0.685523`;
+- easy top-25 `-0.686496`;
+- mean dSSIM `-0.00031039`;
+- severe regressions `252/600`.
+
+A0-preserving endpoint oracle opens strong-model capacity:
+
+- mean dPSNR `+0.741695`;
+- hard bottom-25 `+1.110910`;
+- easy top-25 `+0.397112`;
+- mean dSSIM `+0.00022958`;
+- positive/intervention ratio `0.53`;
+- nonnegative ratio `1.0`;
+- worst `0/600`.
+
+Because strict positive coverage is only `0.53`, C0a does not authorize direct
+router promotion. It authorizes C1 risk/correctability mapping first.
+
+Completed outputs:
 
 - `v20_candidate_zoo_manifest.json`
 - `v20_candidate_zoo_per_image_metrics.csv`
@@ -30,7 +64,7 @@ Planned outputs:
 
 ## Parallel Evidence Hygiene Outputs
 
-Planned outputs:
+Completed outputs:
 
 - `v37_d8_d9_reconciliation_audit.json`
 - `v37_d8_d9_reconciliation_audit.md`
@@ -43,3 +77,15 @@ Planned outputs:
 
 These audits are evidence hygiene and failure attribution only. They are not a
 DTA-v3.7 locked-test repair path.
+
+Reconciliation result:
+
+```text
+D8_METRICS_USABLE_METADATA_RECONCILIATION_REQUIRED
+```
+
+D9 forensic result:
+
+```text
+D9_FORENSIC_COMPLETE_NO_TUNING
+```

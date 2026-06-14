@@ -1,0 +1,34 @@
+{
+  "d8_rows": 2400,
+  "d8_summary": {
+    "count": 2400,
+    "dSSIM": 1.9039933880170185e-05,
+    "easy_top25_dPSNR": 0.0626927630106608,
+    "hard_bottom25_dPSNR": 0.08528067588806153,
+    "mean_dPSNR": 0.07829696575800578,
+    "positive_ratio": 0.65875,
+    "strong_count_le_-0.05": 164,
+    "strong_per_600": 41.0,
+    "worst_count_le_-0.20": 186,
+    "worst_per_600": 46.5
+  },
+  "d9_rows": 4000,
+  "d9_summary": {
+    "count": 4000,
+    "dSSIM": 4.350191354751587e-05,
+    "easy_top25_dPSNR": 0.002934497833251953,
+    "hard_bottom25_dPSNR": 0.021358879089355468,
+    "mean_dPSNR": 0.020946037769317628,
+    "positive_ratio": 0.53175,
+    "strong_count_le_-0.05": 254,
+    "strong_per_600": 38.1,
+    "worst_count_le_-0.20": 238,
+    "worst_per_600": 35.699999999999996
+  },
+  "decision": "D9_FORENSIC_COMPLETE_NO_TUNING",
+  "locked_test_touched": true,
+  "phase": "D9 locked failure forensic",
+  "post_test_tuning_allowed": false,
+  "route": "DTA-v3.7 U-TQS-Mix",
+  "top_regression_min_dPSNR": -0.7724494934082031
+}

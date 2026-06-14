@@ -1,6 +1,6 @@
 # Haze4K Route Family Summaries
 
-Date: 2026-06-10
+Date: 2026-06-14
 
 Status: reading aids derived from `experience_docx/EXPERIMENT_INDEX.md`, route
 cards, and text evidence roots. These files do not replace the per-route cards
@@ -35,6 +35,7 @@ Non-family anchor:
 | PFD/RHFD preservation | [summary](pfd_rhfd_family_summary.md) | Diagnostic only; preservation improved but hard-gain gates failed. |
 | APDR output residual/action-bank | [summary](apdr_family_summary.md) | Broad output-residual/coefficient-mapping forms stopped; safe-subset ideas require fixed-code OOF/held-out evidence. |
 | DPGA in-network prior adapters | [summary](dpga_family_summary.md) | Active diagnostic family, not promotion-ready. |
+| StrongExpert-GainMix | [summary](strongexpert_gainmix_family_summary.md) | C0 capacity audit opens A0-preserving FullUDP oracle headroom; C1 risk/correctability mapping is next. |
 
 ## Evidence Strength Reminder
 
