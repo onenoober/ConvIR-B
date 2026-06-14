@@ -201,6 +201,33 @@ PY"
 For project runtime commands, continue to prefer
 `/root/miniconda3/envs/convir-cu128/bin/python`.
 
+2026-06-14 recurrence on `convir-4090`:
+
+Avoid assuming bare `python` exists during remote audit probes:
+
+```bash
+ssh convir-4090 'python - <<PY
+print("probe")
+PY'
+```
+
+Failure mode observed:
+
+- `bash: line 5: python: command not found`;
+- the audit probe failed before row/column counts were printed.
+
+Corrected form:
+
+```bash
+PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+ssh convir-4090 "cd /sda/home/wangyuxin/ConvIR-B/repos/<workspace> && $PY - <<'PY'
+print('probe')
+PY"
+```
+
+For `convir-4090` project runtime and audit commands, prefer
+`/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
+
 2026-06-10 recurrence:
 
 Avoid this scp form for copying the contents of a remote directory back into an
