@@ -51,7 +51,6 @@ from eval_haze4k_dta_v37_tau_real_blend_oracle import (  # noqa: E402
     write_csv,
 )
 from extract_haze4k_dta_v37_outputdiff_features import (  # noqa: E402
-    OUTPUT_PREFIXES,
     outputdiff_features,
     resize_for_features,
     tensor_to_rgb,
@@ -69,6 +68,7 @@ from train_haze4k_dta_v37_d3_high_positive_policy import (  # noqa: E402
 )
 from train_haze4k_dta_v37_d5_targeted_intervention_policy import SCORE_MODES  # noqa: E402
 from train_haze4k_dta_v37_d6_outputdiff_policy import (  # noqa: E402
+    OUTPUT_PREFIXES,
     add_disagreement_features,
     feature_groups,
     join_outputdiff_features,
