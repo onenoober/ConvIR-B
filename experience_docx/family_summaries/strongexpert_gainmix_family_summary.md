@@ -2,7 +2,7 @@
 
 Date: 2026-06-14
 
-Status: C2d alpha-shrink router passed OOF; C3 shifted validation is authorized next.
+Status: C4 formal 5x3 screen pass, strong target fail; locked test remains blocked.
 
 ## Scope
 
@@ -55,6 +55,14 @@ strict OOF screen with a stable `alpha=0.25` family:
 - severe regressions `37/600`;
 - strict gate pass `true`.
 
+C3 shifted validation then passed all 8 train-derived stress dimensions
+(split, airlight, haze/beta, depth, low-texture, dark-channel, residual
+magnitude, and A0-PSNR stress). C4 formal 5x3 replay passed the screen gate for
+all seeds, with mean `+0.330556 +/- 0.002230 dB`, easy `+0.473005 +/- 0.007776
+dB`, dSSIM `+0.00023663`, and severe regressions `37.0 +/- 1.414/600`.
+However, it failed the strong formal target because hard bottom-25 was
+`+0.256389 +/- 0.002715 dB` (< `+0.30`) and positive ratio was `0.68` (< `0.70`).
+
 The DTA-v3.7 cleanup run in parallel confirms the D8 metrics are usable but
 metadata needs reconciliation, and D9 remains a failed locked one-shot
 confirmation with no post-test tuning allowed.
@@ -62,14 +70,17 @@ confirmation with no post-test tuning allowed.
 ## Decision
 
 ```text
-C2D_ALPHA_STRICT_SCREEN_PASS_START_C3_SHIFTED
+C4_FORMAL_5X3_SCREEN_PASS_STRONG_TARGET_FAIL_NO_LOCKED
 ```
 
-Do not launch locked test yet. Proceed to C3 train-only shifted validation of
-the C2d alpha-shrink policy family:
+Do not launch locked test. The current C2d alpha-shrink policy is a useful
+train-derived screen result, but it is not a strong-model locked candidate under
+the written formal target. Next work should improve hard-gain/positive coverage
+with stronger features, patch-level alpha, or additional compatible experts
+before any locked-test contact.
 
 ```text
-alpha=0.25, A0 + alpha * (FullUDP - A0), with train-derived outputdiff thresholding.
+LOCKED_ONE_SHOT_BLOCKED
 ```
 
 ## Stop Conditions
@@ -78,8 +89,8 @@ alpha=0.25, A0 + alpha * (FullUDP - A0), with train-derived outputdiff threshold
 - Do not distill from global FullUDP outputs.
 - Do not tune DTA-v3.7 thresholds, actions, features, or checkpoints from D9
   locked feedback.
-- Do not touch locked Haze4K test before C3 shifted validation and a formal
-  train-derived 5x3 replay pass written gates.
+- Do not touch locked Haze4K test for this C2d policy; formal strong gate did
+  not pass.
 - If C3 shifted validation fails, do not tune on locked data; either improve
   train-derived features or acquire/train stronger compatible experts.
 
@@ -97,3 +108,5 @@ alpha=0.25, A0 + alpha * (FullUDP - A0), with train-derived outputdiff threshold
 - C2b decision: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c2b_decision.md`
 - C2c decision: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c2c_decision.md`
 - C2d decision: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c2d_decision.md`
+- C3 decision: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c3_decision.md`
+- C4 decision: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c4_formal_5x3_decision.md`

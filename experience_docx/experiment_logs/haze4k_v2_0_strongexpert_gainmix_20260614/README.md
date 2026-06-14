@@ -2,7 +2,7 @@
 
 Date: 2026-06-14
 
-Status: `C2D_ALPHA_STRICT_SCREEN_PASS_START_C3_SHIFTED`
+Status: `C4_FORMAL_5X3_SCREEN_PASS_STRONG_TARGET_FAIL_NO_LOCKED`
 
 Route card: `experience_docx/experiment_cards/2026-06-14-haze4k-v2-0-strongexpert-gainmix.md`
 
@@ -14,7 +14,7 @@ Route card: `experience_docx/experiment_cards/2026-06-14-haze4k-v2-0-strongexper
 - Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 - Data: `/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K`.
 - A0 checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`.
-- Locked test: blocked and untouched through C2d; C3 shifted validation is next.
+- Locked test: blocked and untouched. C4 passed the screen gate but failed the strong formal target, so no locked one-shot is authorized.
 
 ## C0 Completion
 
@@ -185,4 +185,60 @@ C2d OOF metrics:
 - severe regressions `37/600`;
 - strict gate pass `true`.
 
-C2d authorizes C3 train-only shifted validation. Locked test remains blocked.
+C2d authorized C3 train-only shifted validation. Locked test remained blocked.
+
+## C3 Shifted Validation
+
+C3 held out train-derived bins and selected only the scalar output-difference
+threshold on the remaining bins for the fixed C2d family
+`alpha=0.25, diff_signed_mean <= threshold`.
+
+```text
+C3_SHIFTED_VALIDATION_PASS_START_FORMAL_5X3
+```
+
+All 8 shifted dimensions passed:
+
+- split;
+- airlight quartile;
+- haze/beta quartile;
+- depth-mean quartile;
+- low-texture/input-gradient quartile;
+- dark-channel/input-dark quartile;
+- residual-magnitude quartile;
+- A0-PSNR stress quartile.
+
+Dimension aggregate means stayed around `+0.323..+0.333 dB`, hard bottom-25
+around `+0.253..+0.260 dB`, easy top-25 around `+0.458..+0.477 dB`, and every
+dimension kept severe regressions at or below `40/600`.
+
+## C4 Formal 5x3 Replay
+
+C4 replayed the same fixed policy family over 5 folds x 3 seeded fold
+assignments (`3407`, `3411`, `2026`).
+
+```text
+C4_FORMAL_5X3_SCREEN_PASS_STRONG_TARGET_FAIL_NO_LOCKED
+```
+
+Aggregate over the three seed-level OOF summaries:
+
+- mean dPSNR `+0.330556 +/- 0.002230`;
+- hard bottom-25 `+0.256389 +/- 0.002715`;
+- easy top-25 `+0.473005 +/- 0.007776`;
+- dSSIM `+0.00023663 +/- 0.00000270`;
+- positive ratio `0.680000 +/- 0.008924`;
+- nonnegative ratio `0.840000 +/- 0.003600`;
+- severe regressions `37.0 +/- 1.414/600`;
+- max seed severe regressions `38/600`;
+- all seeds passed the screen gate.
+
+C4 did not pass the strong formal target because hard bottom-25 stayed below
+`+0.30 dB` and positive ratio stayed below `0.70`. Therefore:
+
+```text
+LOCKED_ONE_SHOT_BLOCKED
+```
+
+The current C2d alpha-shrink policy is a strong train-derived screen result, but
+not yet a locked-test candidate under the strong-model gate.

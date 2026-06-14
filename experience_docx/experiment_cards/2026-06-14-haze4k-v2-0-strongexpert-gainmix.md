@@ -2,7 +2,7 @@
 
 Date: 2026-06-14
 
-Status: `C2D_ALPHA_STRICT_SCREEN_PASS_START_C3_SHIFTED`
+Status: `C4_FORMAL_5X3_SCREEN_PASS_STRONG_TARGET_FAIL_NO_LOCKED`
 
 ## Scope
 
@@ -18,7 +18,7 @@ Status: `C2D_ALPHA_STRICT_SCREEN_PASS_START_C3_SHIFTED`
 - Data: `/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K`.
 - A0 checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`.
 - Evidence root: `experience_docx/experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/`.
-- Locked test policy: blocked. C0/C1/C2/C3 are train-derived or internal-validation only; no locked Haze4K test command is authorized until C3 and formal gates pass.
+- Locked test policy: blocked. C4 passed the screen gate but failed the strong formal target, so no locked Haze4K test command is authorized.
 
 ## Objective
 
@@ -257,14 +257,54 @@ Router screens:
 | C2d alpha-shrink | `C2D_ALPHA_STRICT_SCREEN_PASS_START_C3_SHIFTED` | `+0.332524` | `+0.257771` | `+0.477047` | `+0.000238` | `0.811508` | `0.841667` | `37.0` |
 
 C2d selected a stable `alpha=0.25` FullUDP residual shrink family with high
-coverage (`0.84`) and passed the strict OOF screen. This authorizes C3
-train-only shifted validation only; it does not authorize locked test contact.
+coverage (`0.84`) and passed the strict OOF screen. This authorized C3
+train-only shifted validation only; it did not authorize locked test contact.
 
 ### C3 Train-Only Shifted Validation
 
 Run leave-one-bin validation only after a train-derived router screen passes.
 Bins include A0 quality, haze/transmission/depth, airlight/brightness,
 sky/highlight/low-texture, and residual magnitude.
+
+## C3/C4 Result
+
+C3 shifted validation used the C2d family
+`alpha=0.25, diff_signed_mean <= train-selected threshold` and held out
+train-derived bins across split, airlight, haze/beta, depth, low-texture,
+dark-channel, residual magnitude, and A0-PSNR stress dimensions.
+
+Decision:
+
+```text
+C3_SHIFTED_VALIDATION_PASS_START_FORMAL_5X3
+```
+
+All 8 shifted dimensions passed. Dimension-level mean dPSNR stayed in
+`+0.323..+0.333 dB`, hard bottom-25 in `+0.253..+0.260 dB`, easy top-25 in
+`+0.458..+0.477 dB`, and severe regressions stayed at or below `40/600`.
+
+C4 formal 5x3 replay used seeds `3407`, `3411`, and `2026`, with 5 train-derived
+folds per seed. It passed the screen gate for every seed but failed the strong
+formal target:
+
+```text
+C4_FORMAL_5X3_SCREEN_PASS_STRONG_TARGET_FAIL_NO_LOCKED
+```
+
+Aggregate seed-level metrics:
+
+| mean dPSNR | hard bottom-25 | easy top-25 | dSSIM | positive | nonnegative | severe/600 |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `+0.330556 +/- 0.002230` | `+0.256389 +/- 0.002715` | `+0.473005 +/- 0.007776` | `+0.00023663 +/- 0.00000270` | `0.680000 +/- 0.008924` | `0.840000 +/- 0.003600` | `37.0 +/- 1.414` |
+
+Strong formal target failure reasons:
+
+- hard bottom-25 target was `>= +0.30 dB`, but formal mean was `+0.256389 dB`;
+- positive-ratio target was `>= 0.70`, but formal mean was `0.68`.
+
+Locked one-shot remains blocked. The route has a useful train-derived alpha
+screen result, but not enough strong-model evidence for locked promotion or
+distillation.
 
 ### C4 Distillation
 
