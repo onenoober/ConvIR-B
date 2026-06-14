@@ -64,17 +64,18 @@ export PYTHONPATH="$WORK/Dehazing/ITS:$WORK:${PYTHONPATH:-}"
 "$PY" -m py_compile "$WORK/experience_docx/tools/eval_haze4k_dta_v37_locked_fixed_policy.py"
 echo "DTA_V3_7_D9_PREFLIGHT_PY_COMPILE_OK $(date -Is)" | tee -a "$STATUS"
 
-IFS=',' read -r -a GROUPS <<< "$OUTER_GROUPS"
-IFS=',' read -r -a GPUS <<< "$GPU_LIST"
-if [[ "${#GPUS[@]}" -lt "${#GROUPS[@]}" ]]; then
-  echo "DTA_V3_7_D9_GPU_LIST_TOO_SHORT groups=${#GROUPS[@]} gpus=${#GPUS[@]} $(date -Is)" | tee -a "$STATUS"
+IFS=',' read -r -a OUTER_GROUP_ITEMS <<< "$OUTER_GROUPS"
+IFS=',' read -r -a GPU_ITEMS <<< "$GPU_LIST"
+echo "DTA_V3_7_D9_GROUP_PARSE_OK groups=${#OUTER_GROUP_ITEMS[@]} gpus=${#GPU_ITEMS[@]} $(date -Is)" | tee -a "$STATUS"
+if [[ "${#GPU_ITEMS[@]}" -lt "${#OUTER_GROUP_ITEMS[@]}" ]]; then
+  echo "DTA_V3_7_D9_GPU_LIST_TOO_SHORT groups=${#OUTER_GROUP_ITEMS[@]} gpus=${#GPU_ITEMS[@]} $(date -Is)" | tee -a "$STATUS"
   exit 3
 fi
 
 pids=()
-for idx in "${!GROUPS[@]}"; do
-  group="${GROUPS[$idx]}"
-  gpu="${GPUS[$idx]}"
+for idx in "${!OUTER_GROUP_ITEMS[@]}"; do
+  group="${OUTER_GROUP_ITEMS[$idx]}"
+  gpu="${GPU_ITEMS[$idx]}"
   fold="${group%%:*}"
   seed="${group##*:}"
   prefix="v37_d9_locked_fixed_policy_f${fold}_s${seed}"
@@ -109,7 +110,7 @@ done
 rc=0
 for idx in "${!pids[@]}"; do
   pid="${pids[$idx]}"
-  group="${GROUPS[$idx]}"
+  group="${OUTER_GROUP_ITEMS[$idx]}"
   if wait "$pid"; then
     echo "d9_locked_group_done group=$group rc=0 $(date -Is)" | tee -a "$STATUS"
   else
