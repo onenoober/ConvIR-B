@@ -20,6 +20,7 @@ GPU_LIST=${GPU_LIST:-1,2,3,4}
 FEATURE_MAX_SIDE=${FEATURE_MAX_SIDE:-384}
 MAX_IMAGES=${MAX_IMAGES:-0}
 INCLUDE_RUN_SUBSTRING=${INCLUDE_RUN_SUBSTRING:-d8formal}
+D9_RUNNER_SOURCE_COMMIT=${D9_RUNNER_SOURCE_COMMIT:-unknown}
 
 mkdir -p "$EVID" "$GROUP_DIR"
 {
@@ -36,6 +37,7 @@ mkdir -p "$EVID" "$GROUP_DIR"
   echo "locked_test_touched=true"
   echo "one_shot_locked_confirmation=true"
   echo "post_test_tuning_allowed=false"
+  echo "d9_runner_source_commit=$D9_RUNNER_SOURCE_COMMIT"
   git -C "$WORK" branch --show-current || true
   git -C "$WORK" rev-parse --short HEAD || true
   git -C "$WORK" status --short || true
