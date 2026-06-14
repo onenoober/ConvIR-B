@@ -2,18 +2,19 @@
 
 Date: 2026-06-14
 
-Status: `C1B_DEPLOYABLE_PROXY_FAIL_REACQUIRE_OUTPUTDIFF_FEATURES`
+Status: `C2D_ALPHA_STRICT_SCREEN_PASS_START_C3_SHIFTED`
 
 Route card: `experience_docx/experiment_cards/2026-06-14-haze4k-v2-0-strongexpert-gainmix.md`
 
 ## Runtime Contract
 
 - Host: `convir-4090`.
-- Workspace: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v20-strongexpert-gainmix`.
+- Workspace C0: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v20-strongexpert-gainmix`.
+- Workspace C1-C2d: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v20-strongexpert-gainmix-c1`.
 - Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 - Data: `/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K`.
 - A0 checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`.
-- Locked test: blocked and untouched for C0/C1/C1b.
+- Locked test: blocked and untouched through C2d; C3 shifted validation is next.
 
 ## C0 Completion
 
@@ -62,64 +63,6 @@ Completed outputs:
 - `v20_candidate_zoo_failure_bins.csv`
 - `v20_candidate_zoo_decision.md`
 
-
-## C1/C1b Risk And Deployability Audit
-
-C1 completed on `convir-4090` at `2026-06-15T00:15:00+08:00` using only
-existing 600-image internal-validation FullUDP/A0 metrics. It did not touch
-locked test data.
-
-The best C1 simple policy was:
-
-```text
-val_hard_and_name_param_2_le_1.39
-```
-
-Its headline metrics were mean dPSNR `+0.184478`, hard bottom-25
-`+0.345854`, easy top-25 `0.0`, dSSIM `+0.0000116`, nonnegative ratio
-`0.943333`, and severe regressions `32/600`. However, this row is a risk-map
-signal only: it uses validation split membership and filename-derived haze
-metadata, and its all-sample positive ratio is only `0.15`. It is not a
-deployable router.
-
-C1b corrected that issue by excluding split labels and filename-derived
-parameters, using only deployable A0-PSNR proxy thresholds plus 5-fold held-out
-threshold replay. C1b decision:
-
-```text
-C1B_DEPLOYABLE_PROXY_FAIL_REACQUIRE_OUTPUTDIFF_FEATURES
-```
-
-C1b OOF replay metrics:
-
-- mean dPSNR `+0.170433`;
-- hard bottom-25 `+0.622967`;
-- easy top-25 `0.0`;
-- dSSIM `-0.00004448`;
-- positive ratio `0.17`;
-- selected precision `0.653846`;
-- nonnegative ratio `0.91`;
-- severe regressions `46/600`.
-
-The strict positive-ratio gate fails, and the abstention-aware proxy gate also
-fails because dSSIM is negative and the deployable proxy is too close to the
-severe-tail limit. Therefore C2 router training is not authorized from the
-current metric-only features. The efficient next step is to reacquire/render
-FullUDP outputs on `convir-4090` and compute real FullUDP-A0 output-difference,
-depth, texture, and artifact features before any C2 router claim.
-
-Completed C1/C1b outputs:
-
-- `v20_c1_summary.json`
-- `v20_c1_decision.md`
-- `v20_c1_feature_auc.csv`
-- `v20_c1_simple_policy_grid.csv`
-- `v20_c1_strong_expert_gain_risk_bins.csv`
-- `v20_c1b_summary.json`
-- `v20_c1b_decision.md`
-- `v20_c1b_deployable_policy_grid.csv`
-- `v20_c1b_oof_fold_metrics.csv`
-
 ## Parallel Evidence Hygiene Outputs
 
 Completed outputs:
@@ -147,3 +90,99 @@ D9 forensic result:
 ```text
 D9_FORENSIC_COMPLETE_NO_TUNING
 ```
+
+## C1-C1b Risk/Proxy Audits
+
+C1 found a high-gain risk-map row but it used validation split membership and
+filename-derived haze parameters, so it is not deployable router evidence.
+
+C1b removed split/name leakage and replayed A0-PSNR-only thresholds with 5-fold
+held-out evaluation. Decision:
+
+```text
+C1B_DEPLOYABLE_PROXY_FAIL_REACQUIRE_OUTPUTDIFF_FEATURES
+```
+
+C1b OOF metrics:
+
+- mean dPSNR `+0.170433`;
+- hard bottom-25 `+0.622967`;
+- easy top-25 `0.0`;
+- dSSIM `-0.00004448`;
+- selected precision `0.653846`;
+- nonnegative ratio `0.91`;
+- severe regressions `46/600`.
+
+This blocked C2 until real FullUDP-A0 output-difference features were rendered
+on `convir-4090`.
+
+## C1c Render Availability
+
+C1c confirmed the official FullUDP render stack is available on `convir-4090`.
+
+```text
+C1C_FULLUDP_RENDER_READY
+```
+
+Runtime assets:
+
+- UDPNet repo: `/sda/home/wangyuxin/ConvIR-B/repos/UDPNet`
+- UDPNet commit: `f925387e690ae6016ffbd4b1cfd8490d75d7a334`
+- FullUDP checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/ConvIR_UDPNet_haze4k.ckpt`
+- FullUDP checkpoint sha256: `6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291`
+
+## C2-C2d Router Screens
+
+C2 rendered A0 and FullUDP in memory on the 600-image train-derived
+`val_regular + val_hard` split, using per-image min-max normalized DepthAnything
+depth to match UDPNet's `depth2l` contract. A raw-depth attempt was aborted after
+showing invalid endpoint deltas; the corrected min-max render reproduced the
+source FullUDP endpoint trend.
+
+C2 single-threshold output-difference screen failed OOF:
+
+```text
+C2_OUTPUTDIFF_ROUTER_SCREEN_FAIL_REASSESS_FEATURES_OR_EXPERT
+```
+
+C2 OOF metrics: mean `+0.228543`, hard `+0.532359`, easy `-0.254171`, dSSIM
+`+0.001791`, selected precision `0.698630`, nonnegative `0.926667`, severe
+`40/600`.
+
+C2b multi-rule endpoint router improved in-sample and nearly fixed easy risk,
+but failed OOF:
+
+```text
+C2B_MULTIRULE_IN_SAMPLE_ONLY_FAIL_OOF
+```
+
+C2b OOF metrics: mean `+0.234119`, hard `+0.454685`, easy `-0.033002`, dSSIM
+`+0.000756`, selected precision `0.747475`, nonnegative `0.958333`, severe
+`23/600`.
+
+C2c lightweight MLP router failed safety/tail OOF and is not promoted:
+
+```text
+C2C_MLP_ROUTER_SCREEN_FAIL_REASSESS_FEATURES_OR_EXPERT
+```
+
+C2d added alpha shrink for the FullUDP residual and passed the strict OOF
+screen with a stable `alpha=0.25` threshold family:
+
+```text
+C2D_ALPHA_STRICT_SCREEN_PASS_START_C3_SHIFTED
+```
+
+C2d OOF metrics:
+
+- coverage `0.84`;
+- mean dPSNR `+0.332524`;
+- hard bottom-25 `+0.257771`;
+- easy top-25 `+0.477047`;
+- dSSIM `+0.000238`;
+- selected precision `0.811508`;
+- nonnegative ratio `0.841667`;
+- severe regressions `37/600`;
+- strict gate pass `true`.
+
+C2d authorizes C3 train-only shifted validation. Locked test remains blocked.

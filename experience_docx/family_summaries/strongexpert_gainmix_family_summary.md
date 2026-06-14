@@ -2,7 +2,7 @@
 
 Date: 2026-06-14
 
-Status: C1b deployable-proxy audit completed; C2 blocked until output-difference features are reacquired.
+Status: C2d alpha-shrink router passed OOF; C3 shifted validation is authorized next.
 
 ## Scope
 
@@ -36,8 +36,24 @@ held-out threshold replay. Its OOF policy kept mean `+0.170433 dB`, hard
 `+0.622967 dB`, easy `0.0`, nonnegative ratio `0.91`, selected precision
 `0.653846`, and severe regressions `46/600`, but failed both the strict gate
 (positive ratio `0.17`) and the abstention-aware gate (dSSIM `-0.00004448` and
-tail risk too close to the limit). C2 is blocked until real FullUDP-A0
-output-difference/depth/texture/artifact features are available.
+tail risk too close to the limit). C1c then reacquired the official FullUDP
+checkpoint and render stack on `convir-4090`.
+
+C2 rendered real FullUDP-A0 output-difference features. Endpoint routers were
+not stable enough: C2 single-threshold failed easy preservation, C2b two-rule
+endpoint nearly fixed easy risk but failed OOF (`easy=-0.033002`), and C2c MLP
+over-selected risky endpoint cases. C2d added fixed alpha shrink and passed the
+strict OOF screen with a stable `alpha=0.25` family:
+
+- coverage `0.84`;
+- mean `+0.332524 dB`;
+- hard bottom-25 `+0.257771 dB`;
+- easy top-25 `+0.477047 dB`;
+- dSSIM `+0.000238`;
+- selected precision `0.811508`;
+- nonnegative ratio `0.841667`;
+- severe regressions `37/600`;
+- strict gate pass `true`.
 
 The DTA-v3.7 cleanup run in parallel confirms the D8 metrics are usable but
 metadata needs reconciliation, and D9 remains a failed locked one-shot
@@ -46,15 +62,14 @@ confirmation with no post-test tuning allowed.
 ## Decision
 
 ```text
-C1B_DEPLOYABLE_PROXY_FAIL_REACQUIRE_OUTPUTDIFF_FEATURES
+C2D_ALPHA_STRICT_SCREEN_PASS_START_C3_SHIFTED
 ```
 
-Do not launch C2 from split/name-param or A0-PSNR-only policies. Proceed to a
-minimal C1c acquisition/render audit on `convir-4090`:
+Do not launch locked test yet. Proceed to C3 train-only shifted validation of
+the C2d alpha-shrink policy family:
 
 ```text
-Reacquire or render FullUDP outputs and compute real FullUDP-A0 output-difference,
-depth, texture, and artifact features before C2 router training.
+alpha=0.25, A0 + alpha * (FullUDP - A0), with train-derived outputdiff thresholding.
 ```
 
 ## Stop Conditions
@@ -63,10 +78,10 @@ depth, texture, and artifact features before C2 router training.
 - Do not distill from global FullUDP outputs.
 - Do not tune DTA-v3.7 thresholds, actions, features, or checkpoints from D9
   locked feedback.
-- Do not touch locked Haze4K test before a train-derived C2 router and C3
-  shifted validation pass written gates.
-- If C1b/C1c cannot provide leakage-safe separability features, stop router work and
-  acquire or train stronger/more compatible experts before C2.
+- Do not touch locked Haze4K test before C3 shifted validation and a formal
+  train-derived 5x3 replay pass written gates.
+- If C3 shifted validation fails, do not tune on locked data; either improve
+  train-derived features or acquire/train stronger compatible experts.
 
 ## Evidence
 
@@ -77,3 +92,8 @@ depth, texture, and artifact features before C2 router training.
 - D9 forensic: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v37_d9_forensic_summary.md`
 - C1 decision: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c1_decision.md`
 - C1b decision: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c1b_decision.md`
+- C1c render audit: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c1c_fulludp_render_availability.md`
+- C2 decision: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c2_decision.md`
+- C2b decision: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c2b_decision.md`
+- C2c decision: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c2c_decision.md`
+- C2d decision: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c2d_decision.md`

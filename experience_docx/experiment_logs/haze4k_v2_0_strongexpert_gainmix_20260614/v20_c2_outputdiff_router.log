@@ -1,0 +1,25 @@
+Traceback (most recent call last):
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v20-strongexpert-gainmix-c1/experience_docx/tools/audit_haze4k_v20_c2_outputdiff_router.py", line 573, in <module>
+    raise SystemExit(main())
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v20-strongexpert-gainmix-c1/experience_docx/tools/audit_haze4k_v20_c2_outputdiff_router.py", line 427, in main
+    rows, meta = render_feature_rows(args)
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v20-strongexpert-gainmix-c1/experience_docx/tools/audit_haze4k_v20_c2_outputdiff_router.py", line 345, in render_feature_rows
+    dataloader = test_dataloader(
+TypeError: test_dataloader() got an unexpected keyword argument 'depth_cache_dir'
+===== v20_c2_outputdiff_router_start 2026-06-15T00:55:09+08:00 =====
+val_regular 50/300 rows=50 mean_delta=-17.6514
+val_regular 100/300 rows=100 mean_delta=-23.1538
+===== v20_c2_outputdiff_router_start 2026-06-15T01:01:20+08:00 =====
+val_regular 50/300 rows=50 mean_delta=0.1458
+val_regular 100/300 rows=100 mean_delta=-0.0483
+val_regular 150/300 rows=150 mean_delta=-0.2562
+val_regular 200/300 rows=200 mean_delta=-0.2583
+val_regular 250/300 rows=250 mean_delta=-0.2927
+val_regular 300/300 rows=300 mean_delta=-0.3014
+val_hard 50/300 rows=350 mean_delta=-0.2233
+val_hard 100/300 rows=400 mean_delta=-0.1611
+val_hard 150/300 rows=450 mean_delta=-0.0584
+val_hard 200/300 rows=500 mean_delta=0.0012
+val_hard 250/300 rows=550 mean_delta=0.0362
+val_hard 300/300 rows=600 mean_delta=0.0620
+V20_C2_OUTPUTDIFF_ROUTER_OK decision=C2_OUTPUTDIFF_ROUTER_SCREEN_FAIL_REASSESS_FEATURES_OR_EXPERT rows=600 out=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v20-strongexpert-gainmix-c1/experience_docx/experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614

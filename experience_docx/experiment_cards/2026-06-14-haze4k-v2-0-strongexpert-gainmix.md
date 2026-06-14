@@ -2,7 +2,7 @@
 
 Date: 2026-06-14
 
-Status: `C1B_DEPLOYABLE_PROXY_FAIL_REACQUIRE_OUTPUTDIFF_FEATURES`
+Status: `C2D_ALPHA_STRICT_SCREEN_PASS_START_C3_SHIFTED`
 
 ## Scope
 
@@ -18,7 +18,7 @@ Status: `C1B_DEPLOYABLE_PROXY_FAIL_REACQUIRE_OUTPUTDIFF_FEATURES`
 - Data: `/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K`.
 - A0 checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`.
 - Evidence root: `experience_docx/experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/`.
-- Locked test policy: blocked. C0/C1/C2/C3 are train-derived or internal-validation only; no locked Haze4K test command is authorized.
+- Locked test policy: blocked. C0/C1/C2/C3 are train-derived or internal-validation only; no locked Haze4K test command is authorized until C3 and formal gates pass.
 
 ## Objective
 
@@ -224,6 +224,41 @@ dSSIM >= 0
 worst <= 48/600
 max outer worst <= 60/600
 ```
+
+## C1c/C2-C2d Result
+
+C1c completed the FullUDP render-availability audit on `convir-4090`:
+
+```text
+C1C_FULLUDP_RENDER_READY
+```
+
+Runtime assets:
+
+- UDPNet repo: `/sda/home/wangyuxin/ConvIR-B/repos/UDPNet`
+- UDPNet commit: `f925387e690ae6016ffbd4b1cfd8490d75d7a334`
+- FullUDP checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/ConvIR_UDPNet_haze4k.ckpt`
+- FullUDP checkpoint sha256: `6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291`
+
+C2 rendered A0 and FullUDP in memory on train-derived `val_regular + val_hard`
+only. The DepthAnything cache on `convir-4090` is metric-like float depth, so
+C2 normalizes each map to `[0, 1]` before feeding UDPNet to match the official
+`depth2l` contract. A raw-depth attempt was aborted because it produced invalid
+endpoint deltas. With min-max depth normalization, the 600-image endpoint mean
+returned to the known FullUDP trend (`+0.0620 dB` all-scope).
+
+Router screens:
+
+| Phase | Decision | mean | hard bottom-25 | easy top-25 | dSSIM | selected precision | nonnegative | severe/600 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| C2 single threshold endpoint | `C2_OUTPUTDIFF_ROUTER_SCREEN_FAIL_REASSESS_FEATURES_OR_EXPERT` | `+0.228543` | `+0.532359` | `-0.254171` | `+0.001791` | `0.698630` | `0.926667` | `40.0` |
+| C2b two-rule endpoint | `C2B_MULTIRULE_IN_SAMPLE_ONLY_FAIL_OOF` | `+0.234119` | `+0.454685` | `-0.033002` | `+0.000756` | `0.747475` | `0.958333` | `23.0` |
+| C2c MLP endpoint | `C2C_MLP_ROUTER_SCREEN_FAIL_REASSESS_FEATURES_OR_EXPERT` | `+0.268901` | `+0.723517` | `-0.172306` | `+0.002523` | `0.650000` | `0.848333` | `77.0` |
+| C2d alpha-shrink | `C2D_ALPHA_STRICT_SCREEN_PASS_START_C3_SHIFTED` | `+0.332524` | `+0.257771` | `+0.477047` | `+0.000238` | `0.811508` | `0.841667` | `37.0` |
+
+C2d selected a stable `alpha=0.25` FullUDP residual shrink family with high
+coverage (`0.84`) and passed the strict OOF screen. This authorizes C3
+train-only shifted validation only; it does not authorize locked test contact.
 
 ### C3 Train-Only Shifted Validation
 

@@ -1,0 +1,22 @@
+{
+  "baidupcs_path": "",
+  "checkpoint_exists": true,
+  "checkpoint_sha256": "6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291",
+  "checkpoint_sha_match": true,
+  "checkpoint_size": 108206629,
+  "decision": "C1C_FULLUDP_RENDER_READY",
+  "expected_sha256": "6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291",
+  "locked_test_touched": false,
+  "model_file": "/sda/home/wangyuxin/ConvIR-B/repos/UDPNet/Dehazing/ITS/models/ConvIR_UDPNet.py",
+  "model_file_exists": true,
+  "next_action": "render FullUDP/A0 outputs and compute output-difference features",
+  "official_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/ConvIR_UDPNet_haze4k.ckpt",
+  "phase": "C1c FullUDP render availability audit",
+  "remote_root": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v20-strongexpert-gainmix-c1",
+  "render_ready": true,
+  "route": "Haze4K-v2.0 StrongExpert-GainMix",
+  "udp_commit_actual": "f925387e690ae6016ffbd4b1cfd8490d75d7a334",
+  "udp_commit_expected": "f925387e690ae6016ffbd4b1cfd8490d75d7a334",
+  "udp_repo": "/sda/home/wangyuxin/ConvIR-B/repos/UDPNet",
+  "udp_url": "https://github.com/Harbinzzy/UDPNet.git"
+}

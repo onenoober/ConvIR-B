@@ -862,3 +862,57 @@ $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 
 For multi-command local WSL probes, use the here-string wrapper even when there
 is no SSH hop.
+
+## 2026-06-15 Unquoted Python heredoc with Markdown backticks
+
+Observed while running the C1c FullUDP availability script on `convir-4090`.
+The script used an unquoted Bash heredoc delimiter for an inline Python block
+that generated Markdown lines containing backticks and Python f-string braces.
+Bash performed command substitution before Python received the script and logged
+errors such as `{payload[decision]}: command not found`.
+
+Invalid form:
+
+```bash
+"$PY" - <<PY
+lines = [f"Decision: `{payload['decision']}`"]
+PY
+```
+
+Corrected form:
+
+```bash
+export C1C_DECISION="$decision"
+"$PY" - <<'PY'
+import os
+print(os.environ["C1C_DECISION"])
+PY
+```
+
+For inline Python that contains Markdown backticks, `$` literals, or braces,
+use a quoted heredoc delimiter and pass shell values through environment
+variables.
+
+## 2026-06-15 SSH file-transfer producer consumed wrapper stdin
+
+Observed while streaming the UDPNet checkpoint from `dehaze1` to `convir-4090`
+inside a PowerShell -> WSL here-string script. The first `ssh dehaze1 "cat ..."`
+command was the producer in a pipe and did not need stdin, but without `-n` it
+could consume the remaining wrapper script, so commands after the transfer did
+not print their final markers.
+
+Invalid form:
+
+```bash
+ssh dehaze1 "cat '$SRC'" | ssh convir-4090 "cat > '$DST.tmp' && mv '$DST.tmp' '$DST'"
+```
+
+Corrected form:
+
+```bash
+ssh -n dehaze1 "cat '$SRC'" | ssh convir-4090 "cat > '$DST.tmp' && mv '$DST.tmp' '$DST'"
+ssh -n convir-4090 "sha256sum '$DST' && printf 'TRANSFER_VERIFY_OK\n'"
+```
+
+When a remote command only reads a remote file and writes stdout, add `-n` even
+if that stdout is piped to a second SSH command.
