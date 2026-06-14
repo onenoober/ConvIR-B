@@ -37,10 +37,9 @@ The cloud run generated exact final artifacts at:
 - `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_d8_fixed_formal_fixed_policy_config.json`
 - `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_d8_fixed_formal_selected_actions.csv`
 
-A later SSH probe failed with `connect to host 183.175.12.124 port 22:
-Connection refused` at 2026-06-14T10:44:48+08:00, so the exact generated JSON/CSV
-files are pending copy. The companion `*_recovered.*` files in this directory
-record the final observed closeout values for GitHub sync.
+The exact generated JSON/CSV files have now been copied. The companion
+`*_recovered.*` files remain as an audit trail for the temporary SSH outage before
+exact artifact sync.
 
 ## Next Action
 

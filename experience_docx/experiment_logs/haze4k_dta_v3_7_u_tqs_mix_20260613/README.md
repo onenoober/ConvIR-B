@@ -756,12 +756,12 @@ outputdiff_rows=135000
 ```
 
 Synced allowed text evidence includes the D8 launch manifest, status files,
-launcher and stage logs, the poststage script, and the local recovered closeout
-summary. Large raw output-difference feature tables, raw action tables,
+launcher and stage logs, the poststage script, exact D8 final JSON/CSV artifacts,
+and the local recovered closeout summary. Large raw output-difference feature tables, raw action tables,
 checkpoints, candidate outputs, rendered images, and compare directories remain
 cloud-only by default.
 
-Cloud-generated exact final artifacts pending copy once SSH recovers:
+Cloud-generated exact final artifacts copied from `convir-4090` on 2026-06-14 12:02 CST:
 
 - `v37_d8_fixed_formal_summary.json`
 - `v37_d8_fixed_formal_policy_aggregate.csv`
