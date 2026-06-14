@@ -1,0 +1,78 @@
+{
+  "abstention_gate": {
+    "coverage": 0.1,
+    "dSSIM": 0.0,
+    "easy_top25_dPSNR": -0.02,
+    "hard_bottom25_dPSNR": 0.2,
+    "mean_dPSNR": 0.12,
+    "nonnegative_ratio": 0.9,
+    "selected_precision": 0.65,
+    "severe_loss_per_600": 48.0
+  },
+  "allowed_features": [
+    "A0_PSNR"
+  ],
+  "best_abstention_policy": null,
+  "best_policy": {
+    "abstention_gate_pass": false,
+    "count": 600,
+    "coverage": 0.3,
+    "dSSIM": -4.1805307070414225e-05,
+    "easy_top25_dPSNR": 0.0,
+    "hard_bottom25_dPSNR": 0.6855227915445964,
+    "mean_dPSNR": 0.2034080378214518,
+    "nonnegative_ratio": 0.9,
+    "policy_id": "A0_PSNR_le_34.4278",
+    "positive_ratio": 0.2,
+    "score": 0.30012206904093425,
+    "selected_count": 180,
+    "selected_nonnegative_ratio": 0.6666666666666666,
+    "selected_precision": 0.6666666666666666,
+    "selected_severe_count": 54,
+    "severe_loss_count": 54,
+    "severe_loss_per_600": 54.0,
+    "strict_gate_pass": false,
+    "strong_loss_count": 56,
+    "strong_loss_per_600": 56.0
+  },
+  "best_strict_policy": null,
+  "decision": "C1B_DEPLOYABLE_PROXY_FAIL_REACQUIRE_OUTPUTDIFF_FEATURES",
+  "excluded_features": [
+    "split",
+    "filename/name_param_1",
+    "filename/name_param_2"
+  ],
+  "locked_test_touched": false,
+  "oof_summary": {
+    "abstention_gate_pass": false,
+    "count": 600,
+    "coverage": 0.26,
+    "dSSIM": -4.448026418685913e-05,
+    "easy_top25_dPSNR": 0.0,
+    "hard_bottom25_dPSNR": 0.6229673767089844,
+    "mean_dPSNR": 0.17043327331542968,
+    "nonnegative_ratio": 0.91,
+    "positive_ratio": 0.17,
+    "score": 0.2668674251849835,
+    "selected_count": 156,
+    "selected_nonnegative_ratio": 0.6538461538461539,
+    "selected_precision": 0.6538461538461539,
+    "selected_severe_count": 46,
+    "severe_loss_count": 46,
+    "severe_loss_per_600": 46.0,
+    "strict_gate_pass": false,
+    "strong_loss_count": 50,
+    "strong_loss_per_600": 50.0
+  },
+  "phase": "C1b Deployable-Feature Audit",
+  "route": "Haze4K-v2.0 StrongExpert-GainMix",
+  "rows": 600,
+  "strict_gate": {
+    "dSSIM": 0.0,
+    "easy_top25_dPSNR": -0.02,
+    "hard_bottom25_dPSNR": 0.2,
+    "mean_dPSNR": 0.12,
+    "positive_ratio": 0.65,
+    "severe_loss_per_600": 48.0
+  }
+}

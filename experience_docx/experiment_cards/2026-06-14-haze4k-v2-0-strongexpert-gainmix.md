@@ -2,7 +2,7 @@
 
 Date: 2026-06-14
 
-Status: `C0_CAPACITY_OPEN_POSITIVE_COVERAGE_RISK_MAP_REQUIRED`
+Status: `C1B_DEPLOYABLE_PROXY_FAIL_REACQUIRE_OUTPUTDIFF_FEATURES`
 
 ## Scope
 
@@ -12,7 +12,8 @@ Status: `C0_CAPACITY_OPEN_POSITIVE_COVERAGE_RISK_MAP_REQUIRED`
 - Branch: `codex/haze4k-v2-0-strongexpert-gainmix`.
 - Official anchor commit: `2d529d4` from `github/codex/haze4k-official-arch-anchor`.
 - Runtime host: `convir-4090`.
-- Runtime workspace: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v20-strongexpert-gainmix`.
+- Runtime workspace C0: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v20-strongexpert-gainmix`.
+- Runtime workspace C1/C1b: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v20-strongexpert-gainmix-c1`.
 - Runtime Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 - Data: `/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K`.
 - A0 checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`.
@@ -127,6 +128,42 @@ Next action: launch C1 Strong Expert Risk/Correctability Map using the
 FullUDP-A0 endpoint evidence and DTA output-difference/quality features as
 train-derived risk signals.
 
+
+## C1/C1b Result
+
+C1 risk/correctability mapping completed on `convir-4090` from commit
+`829caf1`. It used existing internal-validation FullUDP/A0 metrics only and did
+not touch locked test data.
+
+C1's best simple policy was `val_hard_and_name_param_2_le_1.39` with mean
+`+0.184478 dB`, hard `+0.345854 dB`, easy `0.0`, dSSIM `+0.0000116`,
+nonnegative ratio `0.943333`, and severe regressions `32/600`. This is not a
+deployable router because it uses validation split membership and filename
+metadata, and its all-sample positive ratio is only `0.15`.
+
+C1b corrected the audit by excluding split/name-param features and using only
+A0-PSNR proxy thresholds with 5-fold held-out replay. C1b decision:
+
+```text
+C1B_DEPLOYABLE_PROXY_FAIL_REACQUIRE_OUTPUTDIFF_FEATURES
+```
+
+C1b OOF replay metrics:
+
+| mean dPSNR | hard bottom-25 | easy top-25 | dSSIM | positive | selected precision | nonnegative | severe/600 |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `+0.170433` | `+0.622967` | `0.0` | `-0.00004448` | `0.17` | `0.653846` | `0.91` | `46.0` |
+
+Interpretation:
+
+- C1 confirms a strong gain/risk structure exists, but the initial pass row is
+  leakage-prone and cannot be used for C2 claims.
+- C1b shows A0-PSNR alone is not enough: strict positive-ratio and
+  abstention-aware dSSIM/tail gates fail.
+- C2 router training is blocked until FullUDP outputs are reacquired/rendered on
+  `convir-4090` and real FullUDP-A0 output-difference, depth, texture, and
+  artifact features are computed.
+
 ### D8/D9 Evidence Hygiene In Parallel
 
 Purpose: clean evidence interpretation, not model optimization.
@@ -154,14 +191,16 @@ Rules:
 
 ### C1 Strong Expert Risk/Correctability Map
 
-Launch only after C0 shows enough capacity. Bucket gains and risks by A0 PSNR,
-haze/depth/airlight proxies, sky/highlight/low-texture proxies, and
-FullUDP-A0/DTA-A0 output-difference features.
+Completed. C1 is risk-map evidence only; C1b is the corrected deployable-proxy
+audit. The corrected result blocks C2 until real FullUDP-A0 output-difference
+features can be computed from rendered outputs.
 
 ### C2 A0-Preserving StrongExpert Router
 
-Train a deployable abstaining router only if C1 shows high-gain and high-risk
-regions are separable on train-derived/internal validation evidence.
+Train a deployable abstaining router only if C1c supplies leakage-safe
+FullUDP-A0 output-difference/depth/texture/artifact features and a train-derived
+screen passes. C2 is not authorized from split/name-param policies or A0-PSNR
+only thresholds.
 
 Screen gate:
 
@@ -204,6 +243,6 @@ FullUDP output. Easy and uncertain samples must preserve A0 or GT clean targets.
 - If C0 oracle mean is `+0.30..+0.50 dB`, proceed to C1 and C2 only if risk
   bins are separable.
 - If C0 oracle mean is `>= +0.70 dB`, prioritize router and selective
-  distillation after C1.
+  distillation only after leakage-safe C1/C1b/C1c features pass.
 - Any locked-test contact before internal gates pass invalidates promotion
   claims for this route.

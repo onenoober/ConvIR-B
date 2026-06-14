@@ -2,7 +2,7 @@
 
 Date: 2026-06-14
 
-Status: `C0_CAPACITY_OPEN_POSITIVE_COVERAGE_RISK_MAP_REQUIRED`
+Status: `C1B_DEPLOYABLE_PROXY_FAIL_REACQUIRE_OUTPUTDIFF_FEATURES`
 
 Route card: `experience_docx/experiment_cards/2026-06-14-haze4k-v2-0-strongexpert-gainmix.md`
 
@@ -13,7 +13,7 @@ Route card: `experience_docx/experiment_cards/2026-06-14-haze4k-v2-0-strongexper
 - Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 - Data: `/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K`.
 - A0 checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`.
-- Locked test: blocked and untouched for C0.
+- Locked test: blocked and untouched for C0/C1/C1b.
 
 ## C0 Completion
 
@@ -61,6 +61,64 @@ Completed outputs:
 - `v20_candidate_zoo_oracle_composition.csv`
 - `v20_candidate_zoo_failure_bins.csv`
 - `v20_candidate_zoo_decision.md`
+
+
+## C1/C1b Risk And Deployability Audit
+
+C1 completed on `convir-4090` at `2026-06-15T00:15:00+08:00` using only
+existing 600-image internal-validation FullUDP/A0 metrics. It did not touch
+locked test data.
+
+The best C1 simple policy was:
+
+```text
+val_hard_and_name_param_2_le_1.39
+```
+
+Its headline metrics were mean dPSNR `+0.184478`, hard bottom-25
+`+0.345854`, easy top-25 `0.0`, dSSIM `+0.0000116`, nonnegative ratio
+`0.943333`, and severe regressions `32/600`. However, this row is a risk-map
+signal only: it uses validation split membership and filename-derived haze
+metadata, and its all-sample positive ratio is only `0.15`. It is not a
+deployable router.
+
+C1b corrected that issue by excluding split labels and filename-derived
+parameters, using only deployable A0-PSNR proxy thresholds plus 5-fold held-out
+threshold replay. C1b decision:
+
+```text
+C1B_DEPLOYABLE_PROXY_FAIL_REACQUIRE_OUTPUTDIFF_FEATURES
+```
+
+C1b OOF replay metrics:
+
+- mean dPSNR `+0.170433`;
+- hard bottom-25 `+0.622967`;
+- easy top-25 `0.0`;
+- dSSIM `-0.00004448`;
+- positive ratio `0.17`;
+- selected precision `0.653846`;
+- nonnegative ratio `0.91`;
+- severe regressions `46/600`.
+
+The strict positive-ratio gate fails, and the abstention-aware proxy gate also
+fails because dSSIM is negative and the deployable proxy is too close to the
+severe-tail limit. Therefore C2 router training is not authorized from the
+current metric-only features. The efficient next step is to reacquire/render
+FullUDP outputs on `convir-4090` and compute real FullUDP-A0 output-difference,
+depth, texture, and artifact features before any C2 router claim.
+
+Completed C1/C1b outputs:
+
+- `v20_c1_summary.json`
+- `v20_c1_decision.md`
+- `v20_c1_feature_auc.csv`
+- `v20_c1_simple_policy_grid.csv`
+- `v20_c1_strong_expert_gain_risk_bins.csv`
+- `v20_c1b_summary.json`
+- `v20_c1b_decision.md`
+- `v20_c1b_deployable_policy_grid.csv`
+- `v20_c1b_oof_fold_metrics.csv`
 
 ## Parallel Evidence Hygiene Outputs
 

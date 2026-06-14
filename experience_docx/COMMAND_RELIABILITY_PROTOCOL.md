@@ -839,3 +839,26 @@ PY
 Inside cloud monitor/audit helpers, use the already-declared explicit runtime
 such as `/root/miniconda3/envs/convir-cu128/bin/python` or `"$PY"` for all
 inline Python snippets as well; do not assume `python3` exists on PATH.
+
+## 2026-06-14 PowerShell-to-WSL inline loop variable loss
+
+Observed while checking local route worktrees from PowerShell through `wsl` with
+a compact single-quoted `bash -lc` loop. The Bash loop variable was not delivered
+as intended and the command ran from `/home/ubuntu` instead of the target repos.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'set -euo pipefail; for d in /home/ubuntu/workspace/ConvIR-B /home/ubuntu/workspace/ConvIR-B-v20-strongexpert; do echo === $d ===; if [ -d "$d" ]; then cd "$d"; pwd; git status --short --branch; git log --oneline -5; else echo MISSING; fi; done'
+```
+
+Corrected form:
+
+```powershell
+# Put the multi-line Bash body in a PowerShell here-string, pipe it through
+# `tr -d "\r" | bash`, and print LOCAL_WORKTREE_STATUS_OK at the end.
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For multi-command local WSL probes, use the here-string wrapper even when there
+is no SSH hop.
