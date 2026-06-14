@@ -38,9 +38,14 @@ mkdir -p "$EVID" "$GROUP_DIR"
   echo "one_shot_locked_confirmation=true"
   echo "post_test_tuning_allowed=false"
   echo "d9_runner_source_commit=$D9_RUNNER_SOURCE_COMMIT"
-  git -C "$WORK" branch --show-current || true
-  git -C "$WORK" rev-parse --short HEAD || true
-  git -C "$WORK" status --short || true
+  branch="$(git -C "$WORK" branch --show-current 2>/dev/null || true)"
+  head_commit="$(git -C "$WORK" rev-parse --short HEAD 2>/dev/null || true)"
+  echo "git_branch=${branch:-unknown}"
+  echo "git_head=${head_commit:-unknown}"
+  echo "git_status_short_untracked_no_first80_begin"
+  git -C "$WORK" status --short --untracked-files=no 2>/dev/null | head -n 80 || true
+  echo "git_status_short_untracked_no_first80_end"
+  echo "D9_STATUS_HEADER_OK $(date -Is)"
 } | tee "$STATUS"
 
 for required in "$PY" "$DATA" "$DEPTH" "$A0" "$ACTION_TABLE" "$TRAIN_ACTIONS" "$TRAIN_OUTPUTDIFF"; do
