@@ -1,0 +1,50 @@
+dta_v3_7_phase_d9_locked_fixed_policy_start 2026-06-14T12:28:05+08:00
+state=RUNNING_LOCKED_ONE_SHOT_CONFIRMATION
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+depth=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+sealed_policy_id=primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100
+outer_groups=0:3407,0:3411,1:3407,1:3411
+gpu_list=1,2,3,4
+locked_test_touched=true
+one_shot_locked_confirmation=true
+post_test_tuning_allowed=false
+d9_runner_source_commit=8bf4030
+git_branch=codex/haze4k-dta-v3-7-u-tqs-mix
+git_head=5541ca9
+git_status_short_untracked_no_first80_begin
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/launch_dta_v3_7_tau_training_convir4090.sh
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/run_dta_v3_7_tau_candidate_convir4090.sh
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/status_phase_d1_tau_training.txt
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/status_phase_d3_tau_real_blend.txt
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_phase_d3_tau_real_blend_aggregate.log
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_phase_d3_tau_real_blend_seed3407_f0.log
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_phase_d3_tau_real_blend_seed3407_f1.log
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_phase_d3_tau_real_blend_seed3411_f0.log
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_phase_d3_tau_real_blend_seed3411_f1.log
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_tau_oof_per_image_action_table.csv
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_tau_oracle_risk_coverage_curve.csv
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_tau_real_blend_oracle_grid.csv
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_tau_real_blend_oracle_selected_all.csv
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_tau_real_blend_summary.json
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_tau_selector_nested_calibration_report.csv
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_tau_selector_nested_calibration_report.json
+ M experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_tau_selector_nested_selected_images.csv
+ M run_dta_v3_7_phase_d8_fixed_formal_convir4090.sh
+git_status_short_untracked_no_first80_end
+D9_STATUS_HEADER_OK 2026-06-14T12:28:05+08:00
+DTA_V3_7_D9_PREFLIGHT_PY_COMPILE_OK 2026-06-14T12:28:06+08:00
+DTA_V3_7_D9_GROUP_PARSE_OK groups=4 gpus=4 2026-06-14T12:28:06+08:00
+d9_locked_group_start group=0:3407 gpu=1 log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d9_locked_groups/v37_d9_locked_fixed_policy_f0_s3407.log 2026-06-14T12:28:06+08:00
+d9_locked_group_start group=0:3411 gpu=2 log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d9_locked_groups/v37_d9_locked_fixed_policy_f0_s3411.log 2026-06-14T12:28:16+08:00
+d9_locked_group_start group=1:3407 gpu=3 log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d9_locked_groups/v37_d9_locked_fixed_policy_f1_s3407.log 2026-06-14T12:28:26+08:00
+d9_locked_group_start group=1:3411 gpu=4 log=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/phase_d9_locked_groups/v37_d9_locked_fixed_policy_f1_s3411.log 2026-06-14T12:28:36+08:00
+d9_locked_group_done group=0:3407 rc=0 2026-06-14T12:48:33+08:00
+d9_locked_group_done group=0:3411 rc=0 2026-06-14T12:48:35+08:00
+d9_locked_group_done group=1:3407 rc=0 2026-06-14T12:48:35+08:00
+d9_locked_group_done group=1:3411 rc=0 2026-06-14T12:48:35+08:00
+DTA_V3_7_D9_LOCKED_FIXED_POLICY_OK decision=D9_LOCKED_FIXED_POLICY_FAIL_NO_TUNING rows=4000 images=1000 mean=0.020946 hard=0.021359 positive=0.531750 worst_per_600=35.70
+dta_v3_7_phase_d9_locked_fixed_policy_done rc=0 2026-06-14T12:48:38+08:00
+DTA_V3_7_PHASE_D9_LOCKED_FIXED_POLICY_OK 2026-06-14T12:48:38+08:00

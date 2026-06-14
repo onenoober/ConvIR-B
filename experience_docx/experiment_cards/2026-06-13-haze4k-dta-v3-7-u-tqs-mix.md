@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `D8_FIXED_FORMAL_STRICT_PASS_LOCKED_TEST_UNTOUCHED`
+Status: `D9_LOCKED_FIXED_POLICY_FAIL_NO_TUNING`
 
 ## Scope
 
@@ -922,13 +922,39 @@ Closeout interpretation:
 - The D8 confirmer log reuses the D7 decision string internally, so the D8 file
   prefix, status markers, workspace, and closeout summary are the authority for
   this D8 outcome.
-- Exact cloud-generated final JSON/CSV artifacts were produced on
-  `convir-4090`, but a later SSH outage (`connect ... port 22: Connection
-  refused` at 2026-06-14 10:44 CST) prevented copying them into this checkout;
-  the local `*_recovered.*` closeout files record the final observed values and
-  the pending exact-artifact paths.
+- Exact cloud-generated final JSON/CSV artifacts were later copied back into
+  this checkout and committed before the locked-test confirmation.
 
 Decision: `D8_FIXED_FORMAL_STRICT_PASS_LOCKED_TEST_UNTOUCHED`. The sealed policy
 is now eligible for one fixed, one-shot locked Haze4K confirmation when
 `convir-4090` is reachable again. Do not tune thresholds, feature groups,
 action-bank membership, checkpoints, or code from the locked-test result.
+
+
+## 2026-06-14 D9 One-Shot Locked Fixed-Policy Confirmation Outcome
+
+D9 ran the sealed D8 policy exactly once on locked Haze4K test from the D8
+formal workspace. The locked protocol used
+`primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100` with
+`outputdiff_plus_Q / micro_shrink / pred_gain / target=1.00` across the four
+predeclared outer groups `0:3407,0:3411,1:3407,1:3411`. The run completed on
+`convir-4090` with all four group jobs at `rc=0` and with
+`locked_test_touched=true`, `one_shot_locked_confirmation=true`, and
+`post_test_tuning_allowed=false`.
+
+Final locked-test metrics:
+
+| policy id | coverage | mean | hard | dSSIM | positive | worst/600 | true vs zero | true vs shuffle | true vs normal | strict |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100` | `1.0000` | `+0.020946` | `+0.021359` | `+0.00004350` | `0.53175` | `35.70` | `+0.009704` | `+0.012502` | `+0.015170` | fail |
+
+The locked tail and dSSIM were safe, but the promotion gates failed on mean,
+hard-bottom gain, positive ratio, and all three true-vs-control surplus checks.
+This confirms a train-derived-to-locked generalization gap for the sealed D8
+policy.
+
+Decision: `D9_LOCKED_FIXED_POLICY_FAIL_NO_TUNING`. DTA-v3.7 is not promoted from
+this sealed policy, and no threshold, feature, action-bank, checkpoint, or code
+change may be tuned from the locked-test feedback. Future DTA work must be a new
+train-derived route and must treat this locked result only as final outcome
+evidence.

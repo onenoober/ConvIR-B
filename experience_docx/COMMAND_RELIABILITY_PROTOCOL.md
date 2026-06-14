@@ -450,6 +450,35 @@ printf -- "--- %s ---\n" "$(basename "$f")"
 printf '%s\n' "--- $(basename "$f") ---"
 ```
 
+### Piping command output into Python heredocs
+
+2026-06-14 recurrence:
+
+Avoid piping command output into a Python process that also uses a heredoc for
+the Python source:
+
+```bash
+git diff --cached --numstat | python3 - <<'PY'
+import sys
+print(sys.stdin.read())
+PY
+```
+
+Failure mode observed:
+
+- the heredoc is used as Python's stdin, so the left-hand pipe is not consumed;
+- under `set -euo pipefail`, the left-hand command can receive `SIGPIPE` and
+  the audit stops before the final success marker.
+
+Corrected forms:
+
+```bash
+git diff --cached --numstat | python3 -c 'import sys; print(sys.stdin.read())'
+```
+
+or write the data to a temporary file first and pass that file path to a
+heredoc-backed Python script.
+
 
 ### Cloud Python and evidence copy assumptions
 

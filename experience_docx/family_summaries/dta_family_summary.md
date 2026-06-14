@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: DTA-v3.7 D8 fixed formal confirmation strict-passed for the sealed D7 primary policy; model architecture is unchanged, locked Haze4K test remains untouched, and the route is eligible for one fixed one-shot locked confirmation when `convir-4090` is reachable again.
+Status: DTA-v3.7 D9 one-shot locked Haze4K confirmation failed for the sealed D8 policy; no post-test tuning is allowed, and future DTA work must be a new train-derived route rather than a locked-test repair.
 
 ## Scope
 
@@ -66,7 +66,7 @@ also made the over-action failure explicit. The train-derived E1-E4 triage had
 mean/hard gains and strong depth-control surplus, but positive ratio remained
 around `0.579-0.590` and worst regressions stayed around `116-128/600`.
 
-DTA-v3.7 U-TQS-Mix is now authorized as the family mainline. The route
+DTA-v3.7 U-TQS-Mix became the family mainline during train-derived validation, but its sealed D8 policy failed the D9 one-shot locked confirmation. The route
 keeps the ConvIR-B A0 anchor and conservative FDF/DTA action family, but changes
 the strategy space from hard accept/reject to utility-aware soft action-bank /
 shrink-mix. It explicitly requires transmission, airlight, quality, and
@@ -101,9 +101,11 @@ positive ratio `0.6583`, worst `46/600`, and max outer worst `52/600`. D7 then
 confirmed the top fixed rows, and D8 strict-passed the sealed primary policy on
 the broader `3 variants x 5 folds x 3 seeds` train-derived scope with mean
 `+0.078297`, hard `+0.085281`, positive ratio `0.65875`, worst `46.5/600`, and
-max outer worst `52/600`. This validates the output-difference feature direction
-as the deployable mainline and authorizes one fixed one-shot locked confirmation
-without post-test tuning.
+max outer worst `52/600`. D9 then ran the exactly-one locked Haze4K confirmation
+and failed promotion: mean `+0.020946`, hard `+0.021359`, positive ratio
+`0.53175`, true-vs-zero `+0.009704`, and worst `35.70/600`. This validates that
+output-difference features helped train-derived separability, but the sealed
+policy did not generalize to locked Haze4K strongly enough for promotion.
 
 ## 2026-06-13 DTA-v3.7 D7 Fixed Output-Difference Confirmation Outcome
 
@@ -148,7 +150,7 @@ selection rather than more residual/router capacity.
 | --- | --- | --- |
 | DTA-v2 CalGate | Multi-seed OOF showed `invert` about `+0.0887 dB`, but zero/shuffle retained most of the improvement and tail/SSIM did not pass. | Positive diagnostic only; no locked test; use as motivation for attribution controls. |
 | DTA-v3 DAPC/FDF fine-tune | `convir-4090` preflight passed; R0 scouts failed. Zero-R0 depthDirect train=`invert` proved surplus. DTA-v3.1 airlight/risk/light-hinge, DTA-v3.2 SafeMix, DTA-v3.3 RouterFusion, and DTA-v3.4 FDF-TSR failed their written gates. DTA-v3.5 FDF-RCS-Lite fixed much of the over-action pattern but still failed strict all-image tail; DTA-v3.6 HRCS formal validation confirms strong oracle selector/action-bank headroom but deployable selectors still strict-fail. | Mechanism-positive diagnostic only; no promotion. A relaxed one-shot locked test may only use the fixed L3 logistic `deployable_all` target `0.93` policy under the 2026-06-13 user override, with no post-test tuning. |
-| DTA-v3.7 U-TQS-Mix | Phase A soft-oracle and Phase C1/D3 actual real-blend oracles pass; D1 integrated T/A/U candidates are mechanism-positive; D2/D4/D5 deployable table policies fail; D6 output-difference / quality deployable policy strict-passes on D1 quick5full; D7 fixed confirmation passes; D8 fixed formal confirmation strict-passes on the broader train-derived scope. | Mainline route. Use `primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100` as the sealed policy for exactly one locked Haze4K confirmation; do not resume hard-reject threshold search and do not tune thresholds/features/actions/checkpoints after locked-test feedback. |
+| DTA-v3.7 U-TQS-Mix | Phase A soft-oracle and Phase C1/D3 actual real-blend oracles pass; D1 integrated T/A/U candidates are mechanism-positive; D6 output-difference / quality deployable policy strict-passes on D1 quick5full; D7 fixed confirmation and D8 formal confirmation pass; D9 one-shot locked confirmation fails promotion. | Not promoted. Do not resume hard-reject threshold search and do not tune thresholds/features/actions/checkpoints/code from D9 locked feedback; any future DTA work must be a new train-derived route. |
 
 ## Reopen Conditions
 
@@ -580,3 +582,24 @@ is eligible for one fixed one-shot locked Haze4K confirmation when
 and do not tune thresholds, feature groups, action-bank membership, checkpoints,
 or code from the locked-test result.
 
+
+
+## 2026-06-14 DTA-v3.7 D9 One-Shot Locked Confirmation Outcome
+
+D9 completed the single authorized locked Haze4K confirmation for the sealed D8
+policy `primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100`. The run used the
+fixed `outputdiff_plus_Q / micro_shrink / pred_gain / target=1.00` policy across
+outer groups `0:3407,0:3411,1:3407,1:3411`, with
+`locked_test_touched=true` and `post_test_tuning_allowed=false`.
+
+Final locked metrics: mean `+0.020946`, hard bottom-25 `+0.021359`, dSSIM
+`+0.00004350`, positive ratio `0.53175`, worst `35.70/600`, true-vs-zero
+`+0.009704`, true-vs-shuffle `+0.012502`, and true-vs-normal `+0.015170`.
+Coverage, dSSIM, and worst-tail gates passed, but mean, hard, positive ratio,
+and true-vs-control gates failed.
+
+Decision: `D9_LOCKED_FIXED_POLICY_FAIL_NO_TUNING`. Do not promote DTA-v3.7 from
+this sealed policy. Do not tune thresholds, features, action-bank membership,
+checkpoints, or code from locked-test feedback. Reopen DTA only as a new
+train-derived route with a new predeclared mechanism and with the D9 locked
+result treated as final outcome evidence rather than a development signal.

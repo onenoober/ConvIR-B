@@ -2,7 +2,7 @@
 
 Date: 2026-06-13
 
-Status: `D8_FIXED_FORMAL_STRICT_PASS_LOCKED_TEST_UNTOUCHED`
+Status: `D9_LOCKED_FIXED_POLICY_FAIL_NO_TUNING`
 
 Route card: `experience_docx/experiment_cards/2026-06-13-haze4k-dta-v3-7-u-tqs-mix.md`
 Central index: `experience_docx/EXPERIMENT_INDEX.md`
@@ -18,7 +18,7 @@ Family summary: `experience_docx/family_summaries/dta_family_summary.md`
 - A0 checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`.
 - Source OOF table: `experience_docx/experiment_logs/haze4k_dta_v3_6_hrcs_20260613/v36_formal_oof_per_image_action_table.csv`.
 - Source selector errors: `experience_docx/experiment_logs/haze4k_dta_v3_6_hrcs_20260613/formal_hrcs/v36_selector_error_table.csv`.
-- Locked test: untouched; exactly one fixed one-shot confirmation is eligible after D8 strict pass, with no post-test tuning.
+- Locked test: touched exactly once in D9 after D8 strict pass; the sealed policy failed promotion and no post-test tuning is allowed.
 
 ## Route Decision
 
@@ -773,3 +773,75 @@ Decision: `D8_FIXED_FORMAL_STRICT_PASS_LOCKED_TEST_UNTOUCHED`. The sealed policy
 is now eligible for one fixed, one-shot locked Haze4K confirmation. The locked
 result must not be used to tune thresholds, features, action membership,
 checkpoints, or code.
+
+
+## Phase D9 One-Shot Locked Fixed-Policy Confirmation Outcome
+
+D9 completed on `convir-4090` from the D8 formal workspace
+`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9`.
+This was the single pre-authorized locked Haze4K confirmation of the sealed D8
+policy. It did not perform policy search and must not be followed by threshold,
+feature, action-bank, checkpoint, or code tuning from the locked-test result.
+
+Fixed locked protocol:
+
+```text
+policy_id = primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100
+feature_group = outputdiff_plus_Q
+action_bank = micro_shrink
+score_mode = pred_gain
+target_intervention = 1.00
+outer_groups = 0:3407,0:3411,1:3407,1:3411
+gpu_list = 1,2,3,4
+locked_test_touched = true
+one_shot_locked_confirmation = true
+post_test_tuning_allowed = false
+runner_source_commit = 8bf4030
+```
+
+Completion markers:
+
+```text
+DTA_V3_7_D9_GROUP_PARSE_OK groups=4 gpus=4 2026-06-14T12:28:06+08:00
+d9_locked_group_done group=0:3407 rc=0 2026-06-14T12:48:33+08:00
+d9_locked_group_done group=0:3411 rc=0 2026-06-14T12:48:35+08:00
+d9_locked_group_done group=1:3407 rc=0 2026-06-14T12:48:35+08:00
+d9_locked_group_done group=1:3411 rc=0 2026-06-14T12:48:35+08:00
+DTA_V3_7_D9_LOCKED_FIXED_POLICY_OK decision=D9_LOCKED_FIXED_POLICY_FAIL_NO_TUNING rows=4000 images=1000 mean=0.020946 hard=0.021359 positive=0.531750 worst_per_600=35.70
+DTA_V3_7_PHASE_D9_LOCKED_FIXED_POLICY_OK 2026-06-14T12:48:38+08:00
+```
+
+Final locked-test metrics:
+
+| policy id | coverage | mean | hard | dSSIM | positive | worst/600 | true vs zero | true vs shuffle | true vs normal | intervention | strict |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100` | `1.0000` | `+0.020946` | `+0.021359` | `+0.00004350` | `0.53175` | `35.70` | `+0.009704` | `+0.012502` | `+0.015170` | `1.0000` | fail |
+
+Per locked outer group:
+
+| fold | seed | mean | hard | dSSIM | positive | worst/600 | true vs zero | strict |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `0` | `3407` | `+0.026727` | `+0.026266` | `+0.00005852` | `0.5260` | `39.60` | `+0.012296` | fail |
+| `0` | `3411` | `+0.025533` | `+0.025768` | `+0.00004718` | `0.5270` | `22.20` | `+0.009913` | fail |
+| `1` | `3407` | `+0.015359` | `+0.011220` | `+0.00002979` | `0.5380` | `39.60` | `+0.007750` | fail |
+| `1` | `3411` | `+0.016165` | `+0.022182` | `+0.00003852` | `0.5360` | `41.40` | `+0.008855` | fail |
+
+Gate interpretation:
+
+- Passing gates: coverage, dSSIM, and worst-regression count.
+- Failing gates: mean gain, hard-bottom gain, positive ratio, true-vs-zero,
+  true-vs-shuffle, true-vs-normal, and max-outer-worst reporting.
+- The locked result is a scientific fail for promotion, not an infra failure:
+  all four group jobs exited `rc=0`, generated summaries, and the tmux session
+  ended normally.
+
+Synced D9 text evidence includes the locked summary JSON, aggregate CSV,
+per-outer CSV, status/log/tmux output, launch script, and compact group-level
+logs/summaries. The raw `v37_d9_locked_fixed_policy_selected_actions.csv` and
+group selected-action CSVs remain cloud-only runtime artifacts by default.
+
+Decision: `D9_LOCKED_FIXED_POLICY_FAIL_NO_TUNING`. Do not promote this sealed
+policy from DTA-v3.7 and do not use the locked result to tune thresholds,
+features, action membership, checkpoints, or code. Any future DTA work must be a
+new train-derived route with locked feedback treated only as final outcome
+evidence, not as a development signal.

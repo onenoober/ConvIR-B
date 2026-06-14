@@ -1,0 +1,14 @@
+DTA_V3_7_D9_LOCKED_FIXED_POLICY_START policy=primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100 outer_groups=[(0, 3407)] device=cuda max_images=0
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/tools/eval_haze4k_dta_v37_tau_real_blend_oracle.py:132: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+DTA_V3_7_D9_LOCKED_GROUP_PROGRESS fold=0 seed=3407 images=100/1000 rows=1600
+DTA_V3_7_D9_LOCKED_GROUP_PROGRESS fold=0 seed=3407 images=200/1000 rows=3200
+DTA_V3_7_D9_LOCKED_GROUP_PROGRESS fold=0 seed=3407 images=300/1000 rows=4800
+DTA_V3_7_D9_LOCKED_GROUP_PROGRESS fold=0 seed=3407 images=400/1000 rows=6400
+DTA_V3_7_D9_LOCKED_GROUP_PROGRESS fold=0 seed=3407 images=500/1000 rows=8000
+DTA_V3_7_D9_LOCKED_GROUP_PROGRESS fold=0 seed=3407 images=600/1000 rows=9600
+DTA_V3_7_D9_LOCKED_GROUP_PROGRESS fold=0 seed=3407 images=700/1000 rows=11200
+DTA_V3_7_D9_LOCKED_GROUP_PROGRESS fold=0 seed=3407 images=800/1000 rows=12800
+DTA_V3_7_D9_LOCKED_GROUP_PROGRESS fold=0 seed=3407 images=900/1000 rows=14400
+DTA_V3_7_D9_LOCKED_GROUP_PROGRESS fold=0 seed=3407 images=1000/1000 rows=16000
+DTA_V3_7_D9_LOCKED_FIXED_POLICY_OK decision=D9_LOCKED_FIXED_POLICY_FAIL_NO_TUNING rows=1000 images=1000 mean=0.026727 hard=0.026266 positive=0.526000 worst_per_600=39.60
