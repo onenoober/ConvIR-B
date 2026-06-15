@@ -1,0 +1,16 @@
+v21_c5_forensic_start 2026-06-15T09:13:54+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+alpha_rows=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local/experience_docx/experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c2d_alpha_feature_rows.csv
+c4_summary=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local/experience_docx/experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c4_formal_5x3_summary.json
+locked_test_touched=false
+source_branch=codex/haze4k-v2-1-segmix-multialpha-local
+source_commit=4d02f66a298b2b5df92926b4b2e9376bb9491707
+source_copy_time=2026-06-15T09:13:03+08:00
+python_exists=true
+alpha_rows_exists=true
+c4_summary_exists=true
+alpha_rows_sha256=b8c26f53181f62646d198c8dcd297ee3d97ba82f19d1fe63118edb352c7f21fc  /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local/experience_docx/experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c2d_alpha_feature_rows.csv
+c4_summary_sha256=624a39879987772ca6f8e2858d3d55d2457deee361ea0e50b748151186f0cd8d  /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local/experience_docx/experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c4_formal_5x3_summary.json
+v21_c5_forensic_done rc=0 2026-06-15T09:13:55+08:00
+V21_C5_FORENSIC_OK 2026-06-15T09:13:55+08:00

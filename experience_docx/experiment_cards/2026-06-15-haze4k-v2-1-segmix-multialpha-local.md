@@ -1,6 +1,6 @@
 # Haze4K v2.1 SEG-Mix Multi-Alpha / Local-Alpha
 
-Status: `PLANNED_C5_C6_C7_NO_LOCKED`
+Status: `C6_SCREEN_PASS_STRONG_TARGET_NOT_YET_C7_PATCH_SIGNAL`
 
 ## Scope
 
@@ -111,3 +111,36 @@ dSSIM >= 0
 - `v21_c7_patch_alpha_oracle.csv`
 - `v21_c7_patch_alpha_mask_stats.csv`
 - `v21_c6_c7_summary.json`
+
+## C5-C7 Result
+
+Decision: `C6_MULTIALPHA_OOF_SCREEN_PASS_STRONG_TARGET_NOT_YET_START_C7_C8__C7_PATCH_ALPHA_ORACLE_STRONG_SIGNAL_START_LOCAL_ALPHA`
+
+C5 confirmed the C4 gap is actionable but cannot be fixed by locked tuning:
+`97/150` hard-bottom25 rows have at least one safe high-alpha candidate in the existing alpha grid, while seeded positive deficits were `[11, 19, 6]` images.
+
+C6 exact multi-alpha OOF improved hard gain substantially but narrowly missed the
+strong-candidate positive target:
+
+| Metric | C6 OOF |
+| --- | ---: |
+| mean dPSNR | `+0.422839` |
+| hard bottom-25 dPSNR | `+0.479300` |
+| easy top-25 dPSNR | `+0.447305` |
+| dSSIM | `+0.00027525` |
+| positive ratio | `0.698333` |
+| severe / 600 | `46.0` |
+| screen gate | `True` |
+| strong-candidate gate | `False` |
+
+The image-level multi-alpha oracle remains strong: mean `+0.828900`, hard `+0.926646`, positive `0.796667`, severe `0.0/600`.
+
+C7 patch-alpha oracle gives a strong local-alpha signal. The risk-capped patch
+oracle reaches mean `+0.876923`, hard `+0.756983`, easy `+1.066506`, positive `0.995000`, dSSIM `+0.00048854`, and severe `0.0/600`.
+
+## Updated Decision
+
+C6 does not authorize C9/C10 because its OOF positive ratio is still below
+`0.70`. C7 does authorize a train-derived local-alpha prototype. Next phase:
+C7b local-alpha deployable proxy/prototype; locked test and distillation remain
+blocked.

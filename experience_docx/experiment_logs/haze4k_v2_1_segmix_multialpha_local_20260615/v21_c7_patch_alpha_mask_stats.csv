@@ -1,0 +1,3 @@
+patch_size,patch_variant,count,selected_count,coverage,mean_dPSNR,hard_bottom25_dPSNR,easy_top25_dPSNR,dSSIM,positive_ratio,nonnegative_ratio,severe_loss_count,severe_loss_per_600,strong_loss_count,strong_loss_per_600,selected_precision,selected_nonnegative_ratio,selected_severe_count,mean_selected_patch_fraction,patch_signal_gate_pass
+128,oracle_max,600,597,0.995,1.1609541734059652,1.1079598617553712,1.27568598429362,0.0005613898237546284,0.995,1.0,0,0.0,0,0.0,1.0,1.0,0,0.7109166666666666,True
+128,oracle_riskcap0p5,600,597,0.995,0.8769231764475505,0.7569832992553711,1.066505864461263,0.0004885443051656088,0.995,1.0,0,0.0,0,0.0,1.0,1.0,0,0.7109166666666666,True

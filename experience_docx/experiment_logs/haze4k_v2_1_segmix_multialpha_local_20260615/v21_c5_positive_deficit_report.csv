@@ -1,0 +1,4 @@
+seed,count,target_positive_count,current_positive_count,positive_deficit_count,selected_count,selected_positive_count,selected_negative_count,selected_severe_count,false_negative_any_alpha_positive_count,false_negative_alpha025_positive_count,mean_dPSNR,hard_bottom25_dPSNR,hard_target_gap,hard_oracle_best_alpha_dPSNR,hard_oracle_gap_after_best_alpha,baseline_alpha_column
+3407,600,420,409,11,506,409,97,38,48,48,0.330518700281779,0.2594064458211263,0.04059355417887367,1.1508888117472331,-0.8508888117472331,dPSNR_a0p25
+3411,600,420,401,19,494,401,93,35,56,56,0.32784297307332355,0.25282432556152346,0.047175674438476534,1.1508888117472331,-0.8508888117472331,dPSNR_a0p25
+2026,600,420,414,6,512,414,98,38,43,43,0.33330516815185546,0.2569350179036458,0.043064982096354176,1.1508888117472331,-0.8508888117472331,dPSNR_a0p25

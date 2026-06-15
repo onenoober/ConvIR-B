@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: v2.1 C5-C7 opened; locked test remains blocked.
+Status: v2.1 C6 screen-pass / C7 patch-oracle signal; locked test remains blocked.
 
 ## Scope
 
@@ -133,3 +133,24 @@ not authorize locked test or distillation.
 - C2d decision: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c2d_decision.md`
 - C3 decision: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c3_decision.md`
 - C4 decision: `../experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/v20_c4_formal_5x3_decision.md`
+
+## v2.1 C5-C7 Result
+
+C5/C6/C7 ran on `convir-4090` from source commit `4d02f66` with locked test
+untouched. C5 decomposed the C4 gap and found safe high-alpha capacity on
+`97/150` hard-bottom25 rows.
+
+C6 exact multi-alpha OOF result: mean `+0.422839`, hard
+`+0.479300`, easy `+0.447305`, dSSIM
+`+0.00027525`, positive `0.698333`, severe
+`46.0/600`. It passes the v2.1 screen gate but fails
+the strong-candidate gate only because positive remains below `0.70`.
+
+C7 patch-level alpha oracle has strong signal. The risk-capped patch oracle has
+mean `+0.876923`, hard `+0.756983`, easy
+`+1.066506`, dSSIM `+0.00048854`, positive
+`0.995000`, and severe `0.0/600`.
+
+Decision: `C6_MULTIALPHA_OOF_SCREEN_PASS_STRONG_TARGET_NOT_YET_START_C7_C8__C7_PATCH_ALPHA_ORACLE_STRONG_SIGNAL_START_LOCAL_ALPHA`.
+Proceed to a train-derived local-alpha prototype before C9/C10. Locked test and
+distillation remain blocked.
