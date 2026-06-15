@@ -71,6 +71,7 @@ def main() -> None:
             x, h, w, hp, wp = pad_to(hazy, 32)
             a0_pred = a0(x)[2]
             c12_pred = c12_student(x)[2]
+            c13_raw = c13.route_forward(hazy)["outputs"][-1]
             c13_pred = c13(x)[2]
             teacher_row = teacher_metrics.get(name, {})
             a0_psnr, a0_ssim = metric(a0_pred[:, :, :h, :w], label, hp, wp)
@@ -93,7 +94,7 @@ def main() -> None:
                     "C13_SSIM": c13_ssim,
                     "C13_dPSNR": c13_psnr - a0_psnr,
                     "C13_dSSIM": c13_ssim - a0_ssim,
-                    "C13_max_abs_vs_A0": float((c13_pred[:, :, :h, :w] - a0_pred[:, :, :h, :w]).abs().max().item()),
+                    "C13_max_abs_vs_A0": float((c13_raw[:, :, :h, :w] - a0_pred[:, :, :h, :w]).abs().max().item()),
                 }
             )
 
@@ -107,6 +108,7 @@ def main() -> None:
         x, h, w, hp, wp = pad_to(hazy, 32)
         a0_pred = a0(x)[2]
         c12_pred = c12_student(x)[2]
+        c13_raw = c13.route_forward(hazy)["outputs"][-1]
         c13_pred = c13(x)[2]
         a0_psnr, a0_ssim = metric(a0_pred[:, :, :h, :w], label, hp, wp)
         c12_psnr, c12_ssim = metric(c12_pred[:, :, :h, :w], label, hp, wp)
@@ -128,7 +130,7 @@ def main() -> None:
                 "C13_SSIM": c13_ssim,
                 "C13_dPSNR": c13_psnr - a0_psnr,
                 "C13_dSSIM": c13_ssim - a0_ssim,
-                "C13_max_abs_vs_A0": float((c13_pred[:, :, :h, :w] - a0_pred[:, :, :h, :w]).abs().max().item()),
+                "C13_max_abs_vs_A0": float((c13_raw[:, :, :h, :w] - a0_pred[:, :, :h, :w]).abs().max().item()),
             }
         )
 

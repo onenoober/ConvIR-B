@@ -130,7 +130,7 @@ class C13A0FrozenResidualConvIR(nn.Module):
         adapter_width: int = 32,
         adapter_depth: int = 3,
         bootstrap_scale: float = 0.01,
-        clamp_output: bool = True,
+        clamp_output: bool = False,
     ) -> None:
         super().__init__()
         if feature_mode not in FEATURE_MODES:
@@ -230,7 +230,7 @@ def build_net(
     adapter_width: int = 32,
     adapter_depth: int = 3,
     bootstrap_scale: float = 0.01,
-    clamp_output: bool = True,
+    clamp_output: bool = False,
 ) -> C13A0FrozenResidualConvIR:
     return C13A0FrozenResidualConvIR(
         version=version,
