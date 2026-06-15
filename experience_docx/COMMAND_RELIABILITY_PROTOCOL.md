@@ -1031,3 +1031,37 @@ PY'
 
 Use the explicit project Python path for every remote audit, including small
 read-only CSV/JSON parsing helpers.
+
+## 2026-06-15 Inline Python heredoc inside PowerShell-to-WSL loop
+
+Observed while probing C8 per-image CSV headers from PowerShell through WSL. A
+single inline command combined a Bash `for` loop, a Python heredoc, and a
+quoted `"$f"` argument. The heredoc/argument quoting was truncated at the shell
+boundary, so Python reported `unexpected EOF while looking for matching '"'`
+and Bash then failed near `done`.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc "for f in a.csv b.csv; do python3 - <<'PY' \"$f\"
+import sys
+print(sys.argv[1])
+PY
+done"
+```
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+for f in a.csv b.csv; do
+  python3 -c 'import sys; print(sys.argv[1])' "$f"
+done
+printf 'HEADER_PROBE_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For looped Python probes, either use `python3 -c` with a simple quoted body or
+send the whole Bash body through the standard here-string wrapper.

@@ -1,0 +1,6 @@
+state=PLANNED
+locked_test_touched=false
+locked_per_image_read=false
+distillation=false
+runtime_host=convir-4090
+route=Haze4K v2.3 C11 WD0375-FS050 Two-Profile Selector
