@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: `PLANNED`
+Status: `C12_SCREEN_FAIL_KEEP_WD0375_TEACHER`
 
 ## Scope
 
@@ -81,6 +81,66 @@ dSSIM >= 0
 If no screen variant passes, stop C12 and keep WD0375 as the deployment teacher.
 If one variant passes with margin, C12 may run a separate formal multi-seed
 distillation route.
+
+## Closeout 2026-06-15
+
+C12 ran on `convir-4090` from branch
+`codex/haze4k-v2-4-c12-wd0375-distill` at source commit `89c3761`. It used the
+official ConvIR-B architecture anchor, initialized all students from
+`haze4k-base.pkl`, generated WD0375 teacher cache only for Haze4K train-core
+images, and evaluated only on the held-out C8 `val_regular + val_hard` 600
+train-derived images.
+
+Locked Haze4K remained untouched:
+
+```text
+locked_test_touched=false
+locked_per_image_read=false
+locked_informed_tuning=false
+```
+
+C12-0 split:
+
+- train-core: `2400` images;
+- held-out validation: `600` images (`300` val_regular, `300` val_hard);
+- skipped train images without GT: `0`.
+
+C12-A teacher cache:
+
+- `2400/2400` train-core WD0375 teacher PNGs generated;
+- cache path:
+  `/sda/home/wangyuxin/ConvIR-B/runtime_cache/v24_c12_wd0375_teacher/train_core`;
+- cache images and student checkpoints are not committed to GitHub.
+
+C12-B/C screen:
+
+- four predeclared variants trained for `5` epochs each;
+- `20` checkpoints were evaluated (`4` variants x `model_1..model_5`);
+- no checkpoint passed the screen gate.
+
+Best row:
+
+```text
+variant: c12_gt075_teacher025_lr1e-5
+checkpoint: model_1
+mean/hard/easy: -0.244277 / -0.290566 / -0.199782 dB
+dSSIM: -0.00031795
+positive: 0.326667
+severe: 317/600
+```
+
+Decision:
+
+```text
+C12_SCREEN_FAIL_KEEP_WD0375_TEACHER
+```
+
+Interpretation: direct low-LR fine-tuning of the official ConvIR-B student
+toward WD0375 does not preserve A0 quality on held-out train-derived validation.
+Teacher-heavy variants are worse than the GT-heavy variant, and even the best
+GT-heavy checkpoint is strongly negative. Do not continue this direct
+distillation route to formal or locked. The deployment teacher remains fixed
+WD0375.
 
 ## Required Outputs
 

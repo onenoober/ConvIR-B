@@ -1,0 +1,17 @@
+{
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "a0_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "alpha": 0.375,
+  "cache_dir": "/sda/home/wangyuxin/ConvIR-B/runtime_cache/v24_c12_wd0375_teacher/train_core",
+  "count": 343,
+  "locked_per_image_read": false,
+  "locked_test_touched": false,
+  "num_shards": 7,
+  "route": "Haze4K v2.4 C12 WD0375 distillation",
+  "scope": "train_core",
+  "shard_index": 4,
+  "split_manifest": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v24-c12-wd0375-distill/experience_docx/experiment_logs/haze4k_v2_4_c12_wd0375_distill_20260615/v24_c12_split_manifest.json",
+  "split_manifest_sha256": "f80d45f7dd3328a66fa8d974ad9298d640f0653a7fb2195433102a936bb358e2",
+  "wdmamba_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/haze4k_35.88.pth",
+  "wdmamba_sha256": "57ff24c3791e593f0172607fea66252a8ba5475ab0e417f4cf48e72b4c9a36da"
+}

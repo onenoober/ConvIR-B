@@ -1,0 +1,20 @@
+{
+  "checkpoint": "model_3",
+  "count": 600,
+  "dSSIM": -0.0008048967520395914,
+  "easy_top25_dPSNR": -0.29868446350097655,
+  "gate_pass": false,
+  "hard_bottom25_dPSNR": -1.0819512176513673,
+  "locked_per_image_read": false,
+  "locked_test_touched": false,
+  "mean_dPSNR": -0.8020370896657308,
+  "median_dPSNR": -0.7603130340576172,
+  "nonnegative_ratio": 0.11,
+  "p05_dPSNR": -1.9531402587890625,
+  "p95_dPSNR": 0.2583656311035156,
+  "positive_ratio": 0.11,
+  "severe_loss_count": 484,
+  "severe_loss_per_600": 484.0,
+  "student_checkpoint": "/sda/home/wangyuxin/ConvIR-B/runs/v24_c12_wd0375_distill_screen/c12_gt050_teacher050_lr1e-5/checkpoints/model_3.pkl",
+  "variant": "c12_gt050_teacher050_lr1e-5"
+}

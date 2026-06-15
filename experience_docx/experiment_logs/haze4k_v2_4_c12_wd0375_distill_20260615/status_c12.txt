@@ -1,0 +1,11 @@
+state=PREFLIGHT_RUNNING
+run_id=v24_c12_preflight
+start_time=2026-06-15T20:39:58+08:00
+locked_test_touched=false
+locked_per_image_read=false
+source_commit=89c3761e7d02648b08e36bcd1668b648053fc22f
+split_rc=0
+teacher_preflight_rc=0
+finish_time=2026-06-15T20:40:05+08:00
+state=PREFLIGHT_OK
+C12_PREFLIGHT_OK
