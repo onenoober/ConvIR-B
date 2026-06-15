@@ -1,0 +1,2 @@
+phase,expert,decision,reason,status,mean_dPSNR,hard_bottom25_dPSNR,easy_top25_dPSNR,dSSIM,positive_ratio,severe_loss_per_600,unique_win_rate_hard_redflag
+C8-1,WDMamba,WDMAMBA_PREFLIGHT_FAILED_CHECKPOINT_UNAVAILABLE_SKIP_TO_C8_2,Official repo cloned but no reproducible Haze4K checkpoint/result package is present on convir-4090; Baidu probes require authenticated transfer or alternate mirror.,BLOCKED_CHECKPOINT_UNAVAILABLE,,,,,,,

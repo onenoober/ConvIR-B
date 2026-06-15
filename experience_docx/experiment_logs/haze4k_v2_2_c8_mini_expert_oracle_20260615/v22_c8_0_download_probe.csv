@@ -1,0 +1,9 @@
+asset,url,method,status
+WDMamba_models,https://pan.baidu.com/s/1HIs-nHXEaLxwBb1279PVbw,curl,HTML_LANDING_PAGE_BYTES_RECORDED_IN_LOG
+WDMamba_models,https://pan.baidu.com/s/1HIs-nHXEaLxwBb1279PVbw,baidupcs_transfer,AUTH_OR_LINK_TRANSFER_FAILED_RC_0
+WDMamba_results,https://pan.baidu.com/s/1VdqpPY-Y1gMmpK4ej37wmg,curl,HTML_LANDING_PAGE_BYTES_RECORDED_IN_LOG
+WDMamba_results,https://pan.baidu.com/s/1VdqpPY-Y1gMmpK4ej37wmg,baidupcs_transfer,AUTH_OR_LINK_TRANSFER_FAILED_RC_0
+MBTaylor_models,https://pan.baidu.com/s/11V-wD01rPTHMFFJyjB0R0w,curl,HTML_LANDING_PAGE_BYTES_RECORDED_IN_LOG
+MBTaylor_models,https://pan.baidu.com/s/11V-wD01rPTHMFFJyjB0R0w,baidupcs_transfer,AUTH_OR_LINK_TRANSFER_FAILED_RC_0
+UDPNet_models,https://pan.baidu.com/s/1JqB-YBPzZAiQsdLlNcidLQ,curl,HTML_LANDING_PAGE_BYTES_RECORDED_IN_LOG
+UDPNet_models,https://pan.baidu.com/s/1JqB-YBPzZAiQsdLlNcidLQ,baidupcs_transfer,AUTH_OR_LINK_TRANSFER_FAILED_RC_0

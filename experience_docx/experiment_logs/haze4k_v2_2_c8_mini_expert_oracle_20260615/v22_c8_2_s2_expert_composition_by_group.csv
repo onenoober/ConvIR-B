@@ -1,0 +1,2 @@
+phase,expert,decision,status,mean_dPSNR,hard_bottom25_dPSNR,positive_ratio,severe_loss_per_600
+C8-2,FSNet+UDP,FSUDP_CHECKPOINT_UNAVAILABLE_SKIP_TO_C8_3_FALLBACK,BLOCKED_CHECKPOINT_UNAVAILABLE,,,,

@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: v2.1 sealed C10 policy failed its single locked one-shot; no locked-informed tuning or distillation is allowed.
+Status: v2.1 locked one-shot failed; v2.2 C8-Mini stopped at expert-asset preflight; no locked-informed tuning, distillation, or router training is allowed.
 
 ## Scope
 
@@ -255,3 +255,18 @@ profiles, features, action sets, checkpoints, or distillation targets. The v2.1
 sealed policy is not promotion-ready, and distillation remains blocked. Any
 future work must be a separately predeclared train-derived route that does not
 use locked per-image output for selection.
+
+## v2.2 C8-Mini Expert Complementarity Preflight
+
+Decision: `C8_STOP_PREFLIGHT_FAILED_ENGINEERING_ASSET_UNAVAILABLE`
+
+C8-Mini accepted the next-stage plan to prove multi-expert complementarity before any router/MoE training. It created a preregistered route card, fixed the candidate order (`WDMamba -> FSNet+UDP duplicate audit -> MB-TaylorFormerV2-L fallback`), fixed the alpha grid `{0, 0.0625, 0.125, 0.25, 0.375, 0.50}`, and recorded a no-locked contract.
+
+The cloud audit completed on `convir-4090` with locked test untouched, but all new expert rendering was blocked by missing assets:
+
+- WDMamba repo cloned/audited; no Haze4K checkpoint or official result package available on `convir-4090`.
+- FSNet+UDP source exists in the UDPNet repo and is not source-identical to current ConvIR+UDP, but no FSNet+UDP Haze4K checkpoint is available for render-diff duplicate proof.
+- MB-TaylorFormerV2 repo cloned/audited; no Haze4K-L checkpoint available on `convir-4090`.
+- Baidu shared-link probes returned landing/auth pages, so checkpoints could not be acquired non-interactively.
+
+This is an engineering asset blocker, not evidence against complementarity. C9 router/MoE remains unauthorized. Resume at C8-1 only after a reproducible WDMamba Haze4K checkpoint/result package is supplied and its sha256, normalization, padding/crop, and inference command are recorded.

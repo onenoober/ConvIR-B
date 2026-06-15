@@ -1,0 +1,8 @@
+C8_NO_LOCKED_STATUS
+branch=codex/haze4k-v2-2-c8-mini-expert-oracle
+commit=7489d0bfea64f2ecfe1bc95a7eb6585c0073f64e
+locked_test_touched=false
+locked_outputs_read=false
+no_locked_informed_tuning=true
+splits=val_regular,val_hard
+C8_NO_LOCKED_OK

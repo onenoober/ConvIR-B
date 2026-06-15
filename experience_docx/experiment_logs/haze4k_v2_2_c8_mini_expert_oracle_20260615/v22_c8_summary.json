@@ -1,0 +1,8 @@
+{
+  "decision": "C8_STOP_PREFLIGHT_FAILED_ENGINEERING_ASSET_UNAVAILABLE",
+  "fsudp_checkpoint_available": false,
+  "locked_test_touched": false,
+  "mbtaylor_checkpoint_available": false,
+  "router_training_authorized": false,
+  "wdmamba_checkpoint_available": false
+}

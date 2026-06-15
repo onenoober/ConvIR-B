@@ -1,0 +1,101 @@
+{
+  "alpha_grid": [
+    0,
+    0.0625,
+    0.125,
+    0.25,
+    0.375,
+    0.5
+  ],
+  "branch": "codex/haze4k-v2-2-c8-mini-expert-oracle",
+  "commit": "7489d0bfea64f2ecfe1bc95a7eb6585c0073f64e",
+  "data": {
+    "exists": true,
+    "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+    "split": {
+      "exists": true,
+      "splits": {
+        "train_inner": 2400,
+        "val_hard": 300,
+        "val_inner_hard": 300,
+        "val_inner_regular": 300,
+        "val_regular": 300
+      }
+    }
+  },
+  "experts": {
+    "A0": {
+      "checkpoint": {
+        "exists": true,
+        "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+        "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+        "size_bytes": 34797069
+      },
+      "role": "anchor"
+    },
+    "FSNet_UDP": {
+      "architecture_file": "/sda/home/wangyuxin/ConvIR-B/repos/UDPNet/Dehazing/ITS/models/FSNet_UDPNet.py",
+      "asset_status": "BLOCKED_CHECKPOINT_UNAVAILABLE",
+      "checkpoint_available": false,
+      "checkpoint_candidates": [],
+      "paper_repo": "https://github.com/Harbinzzy/UDPNet",
+      "repo": {
+        "commit": "f925387e690ae6016ffbd4b1cfd8490d75d7a334",
+        "exists": true,
+        "path": "/sda/home/wangyuxin/ConvIR-B/repos/UDPNet",
+        "remote": "https://github.com/Harbinzzy/UDPNet.git"
+      }
+    },
+    "FullUDP_current": {
+      "checkpoint": {
+        "exists": true,
+        "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/ConvIR_UDPNet_haze4k.ckpt",
+        "sha256": "6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291",
+        "size_bytes": 108206629
+      },
+      "repo": {
+        "commit": "f925387e690ae6016ffbd4b1cfd8490d75d7a334",
+        "exists": true,
+        "path": "/sda/home/wangyuxin/ConvIR-B/repos/UDPNet",
+        "remote": "https://github.com/Harbinzzy/UDPNet.git"
+      },
+      "role": "S0 current expert"
+    },
+    "MB_TaylorFormerV2_L": {
+      "asset_status": "BLOCKED_CHECKPOINT_UNAVAILABLE",
+      "checkpoint_available": false,
+      "checkpoint_candidates": [],
+      "paper_repo": "https://github.com/FVL2020/MB-TaylorFormerV2",
+      "repo": {
+        "commit": "117906023733f18afaeb1a7ff21d055f806d42c5",
+        "exists": true,
+        "path": "/sda/home/wangyuxin/ConvIR-B/repos/external_experts/MB-TaylorFormerV2",
+        "remote": "https://github.com/FVL2020/MB-TaylorFormerV2.git"
+      }
+    },
+    "WDMamba": {
+      "asset_status": "BLOCKED_CHECKPOINT_UNAVAILABLE",
+      "checkpoint_available": false,
+      "checkpoint_candidates": [],
+      "paper_repo": "https://github.com/SunJ000/WDMamba",
+      "repo": {
+        "commit": "f3b13952f31d30bd945934b845b39cf96152beeb",
+        "exists": true,
+        "path": "/sda/home/wangyuxin/ConvIR-B/repos/external_experts/WDMamba",
+        "remote": "https://github.com/SunJ000/WDMamba.git"
+      }
+    }
+  },
+  "git_status_short": [
+    "?? experience_docx/experiment_cards/2026-06-15-haze4k-v2-2-c8-mini-expert-oracle.md",
+    "?? experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/",
+    "?? experience_docx/tools/audit_haze4k_v22_c8_mini.py"
+  ],
+  "locked_policy": {
+    "locked_outputs_read": false,
+    "locked_test_touched": false,
+    "no_locked_informed_tuning": true
+  },
+  "route": "haze4k_v2_2_c8_mini_expert_oracle_20260615",
+  "time": "2026-06-15T13:09:18+0800"
+}

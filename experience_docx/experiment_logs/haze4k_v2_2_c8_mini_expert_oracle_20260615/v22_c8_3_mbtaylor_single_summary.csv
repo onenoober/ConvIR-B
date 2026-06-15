@@ -1,0 +1,2 @@
+phase,expert,decision,reason,status,mean_dPSNR,hard_bottom25_dPSNR,easy_top25_dPSNR,dSSIM,positive_ratio,severe_loss_per_600,unique_win_rate_hard_redflag
+C8-3,MB-TaylorFormerV2-L,MBTAYLOR_PREFLIGHT_FAILED_CHECKPOINT_UNAVAILABLE_C8_STOP_ASSET_BLOCKED,Official repo cloned but no Haze4K-L checkpoint is present on convir-4090; Baidu probes require authenticated transfer or alternate mirror.,BLOCKED_CHECKPOINT_UNAVAILABLE,,,,,,,
