@@ -72,7 +72,7 @@ MANIFEST
 } >> "$STATUS"
 
 (
-  export CUDA_VISIBLE_DEVICES=0
+  export CUDA_VISIBLE_DEVICES=1
   "$PY" "$ROOT/experience_docx/tools/audit_haze4k_v25_c13_c12_failure.py" \
     --repo-root "$ROOT" \
     --convir-dir "$ROOT/Dehazing/ITS" \
@@ -104,9 +104,9 @@ echo "C13_AUDIT_OK" >> "$STATUS"
 
 pids=()
 specs=(
-  c13a_microfit16:16:0:rgb_wavelet:32:3:8
-  c13a_microfit64:64:1:rgb_wavelet:32:3:8
-  c13a_microfit256:256:2:rgb_wavelet:32:3:8
+  c13a_microfit16:16:1:rgb_wavelet:32:3:8
+  c13a_microfit64:64:2:rgb_wavelet:32:3:8
+  c13a_microfit256:256:3:rgb_wavelet:32:3:8
 )
 for spec in "${specs[@]}"; do
   IFS=: read -r variant max_images gpu feature width depth epochs <<< "$spec"

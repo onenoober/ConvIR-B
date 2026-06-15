@@ -41,9 +41,9 @@ fi
 } >> "$STATUS"
 
 specs=(
-  c13b_rgb_residual:rgb:32:3:0:0.50:1.00:0.50:0.05:0.05:0.01
-  c13b_rgb_wavelet_residual:rgb_wavelet:32:3:1:0.50:1.00:0.50:0.10:0.05:0.01
-  c13b_rgb_wavelet_preserve_strong:rgb_wavelet:48:4:2:0.60:0.80:0.80:0.12:0.08:0.02
+  c13b_rgb_residual:rgb:32:3:1:0.50:1.00:0.50:0.05:0.05:0.01
+  c13b_rgb_wavelet_residual:rgb_wavelet:32:3:2:0.50:1.00:0.50:0.10:0.05:0.01
+  c13b_rgb_wavelet_preserve_strong:rgb_wavelet:48:4:3:0.60:0.80:0.80:0.12:0.08:0.02
 )
 
 pids=()
