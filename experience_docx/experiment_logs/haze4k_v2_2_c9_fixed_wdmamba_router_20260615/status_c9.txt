@@ -1,0 +1,4 @@
+status=PLANNED
+locked_test_touched=false
+router_training_done=false
+distillation_done=false

@@ -967,3 +967,41 @@ $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 
 For any nontrivial Perl/Python/sed expression that contains `$`, backslashes, or
 assignment operators, do not embed it directly in a PowerShell one-liner.
+
+## 2026-06-15 Markdown backticks in nested local here-doc
+
+Observed while creating the C9 evidence skeleton from a PowerShell -> WSL
+one-liner. The command embedded Markdown code spans such as `` `PLANNED` `` in a
+here-doc that was itself inside a quoted shell command. The outer shell executed
+the backticked text as command substitution before the file was written,
+leaving blank fields and truncating the command script.
+
+Invalid form:
+
+```powershell
+wsl bash -lc 'cat > README.md <<"EOF"
+Status: `PLANNED`
+Route card: `experience_docx/...`
+EOF'
+```
+
+Corrected forms:
+
+```powershell
+# Prefer apply_patch for local documentation files containing Markdown backticks.
+```
+
+or:
+
+```powershell
+$script = @'
+cat > README.md <<'EOF'
+Status: `PLANNED`
+Route card: `experience_docx/...`
+EOF
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For local docs or scripts with Markdown backticks, prefer `apply_patch` or a
+single-quoted inner heredoc delivered through the standard wrapper.

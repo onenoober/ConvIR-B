@@ -1,0 +1,160 @@
+# Haze4K v2.2 C9 Fixed-Strong-Expert Baseline + Low-Capacity Group-Min Router
+
+Date: 2026-06-15
+
+Status: `PLANNED`
+
+## Scope
+
+- Objective: turn the C8-Mini train-derived expert-complementarity evidence into a deployable fixed profile or low-capacity router candidate.
+- Runtime host: `convir-4090` only.
+- Runtime workspace: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c9-fixed-wdmamba-router`.
+- Evidence root: `experience_docx/experiment_logs/haze4k_v2_2_c9_fixed_wdmamba_router_20260615/`.
+- Branch: `codex/haze4k-v2-2-c9-fixed-wdmamba-router`.
+- Source C8 evidence: `experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/`.
+- Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
+
+## Locked-Test Contract
+
+C9 is train-derived only. It must not read locked per-image outputs, tune from
+locked evidence, choose thresholds/features/checkpoints/actions from locked
+evidence, distill, train MoE, or run locked Haze4K. The v2.1 locked one-shot is
+already consumed and failed; it is evidence-only.
+
+## Fixed Plan
+
+```text
+C9-0: provenance, no-locked, metric/script parity, C8 table integrity audit.
+C9-A: fixed shrink profile validation.
+C9-B: low-capacity router only if C9-A fixed WD0375 is insufficient.
+C9-C: group-min shifted validation for the selected C9 candidate.
+C10-prep: formal 5x3 plan only if C9-C passes.
+```
+
+## Fixed C9-A Profiles
+
+```text
+WD0375 = A0 + 0.375 * (WDMamba - A0)
+WD050  = A0 + 0.500 * (WDMamba - A0)
+FS050  = A0 + 0.500 * (FSNet+UDP - A0)
+WD0375_or_FS050_oracle = upper bound only
+S3_oracle = upper bound only
+```
+
+Primary first candidate: `WD0375`. If it passes C9-A and C9-C, do not train a
+router.
+
+## Fixed C9-A Strong Gate
+
+Aggregate:
+
+```text
+mean >= +1.50 dB
+hard_bottom25 >= +2.00 dB
+easy_top25 >= +0.25 dB
+positive >= 0.90
+dSSIM >= 0
+severe <= 36/600
+```
+
+Group-min:
+
+```text
+each critical bin mean >= +0.50 dB
+each critical bin hard >= +0.50 dB
+each critical bin positive >= 0.80
+each critical bin severe <= 48/600
+```
+
+## Conditional C9-B Router
+
+Run only if `WD0375` fails C9-A or C9-C. Candidate actions are fixed before any
+router fitting:
+
+```text
+A0
+WDMamba alpha 0.25 / 0.375 / 0.50
+FSNet+UDP alpha 0.25 / 0.50
+MB-Taylor alpha 0.0625 / 0.125 / 0.25
+```
+
+Allowed router forms:
+
+```text
+rule list / monotone thresholds
+L2-regularized logistic or multinomial ridge
+small calibrated GBDT with max_depth <= 3
+```
+
+Forbidden features:
+
+```text
+GT PSNR
+GT clean-derived test-time features
+filename-derived labels
+split membership as a prediction feature
+locked-derived signals
+```
+
+## Required Outputs
+
+C9-0:
+
+- `v22_c9_0_expert_provenance_audit.md`
+- `v22_c9_0_no_locked_status.txt`
+- `v22_c9_0_render_reproducibility.md`
+- `v22_c9_0_metric_parity_report.csv`
+
+C9-A:
+
+- `v22_c9a_fixed_profiles_summary.csv`
+- `v22_c9a_fixed_profiles_by_split.csv`
+- `v22_c9a_fixed_profiles_groupmin_bins.csv`
+- `v22_c9a_fixed_profiles_critical_bin_report.md`
+- `v22_c9a_fixed_profiles_decision.md`
+
+C9-B if needed:
+
+- `v22_c9b_router_oof_summary.csv`
+- `v22_c9b_router_action_distribution.csv`
+- `v22_c9b_router_groupmin_bins.csv`
+- `v22_c9b_router_expert_usage_by_group.csv`
+- `v22_c9b_router_removal_ablation.csv`
+- `v22_c9b_router_feature_ablation.csv`
+- `v22_c9b_router_decision.md`
+
+C9-C:
+
+- `v22_c9c_shifted_dimension_summary.csv`
+- `v22_c9c_shifted_bin_metrics.csv`
+- `v22_c9c_groupmin_decision.md`
+- `v22_c9c_bootstrap_wilson_bounds.csv`
+
+Closeout:
+
+- `v22_c9_decision.md`
+- `v22_c9_summary.json`
+- evidence README update.
+
+## Decision Rules
+
+If `WD0375` passes C9-A and C9-C:
+
+```text
+C9A_FIXED_WD0375_STRONG_PASS_AUTHORIZE_C10_FORMAL
+```
+
+If `WD0375` fails aggregate, easy/severe, or group-min:
+
+```text
+C9A_FIXED_WD0375_FAIL_RUN_C9B_ROUTER
+```
+
+If C9-B passes C9-C:
+
+```text
+C9B_LOW_CAPACITY_ROUTER_PASS_AUTHORIZE_C10_FORMAL
+```
+
+C9 cannot authorize locked test. C10 formal 5x3 must pass first, and even then
+only one fixed locked one-shot may be considered.
