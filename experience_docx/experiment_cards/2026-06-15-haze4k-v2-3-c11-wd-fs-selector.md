@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: `PLANNED`
+Status: `C11E_SEALED_SELECTOR_PASS_READY_FOR_LOCKED_ONE_SHOT_REVIEW`
 
 ## Scope
 
@@ -174,3 +174,68 @@ C11D_FORMAL_5X3_PASS_AUTHORIZE_LOCKED_ONE_SHOT_REVIEW
 
 Otherwise locked remains blocked and the likely next route is C12 `WD0375`
 distillation feasibility.
+
+## Closeout 2026-06-15
+
+C11 ran on `convir-4090` from branch
+`codex/haze4k-v2-3-c11-wd-fs-selector` using only C8/C9 train-derived per-image
+tables. It did not read locked per-image output, did not train MoE, did not add
+experts, and did not distill.
+
+C11-A confirmed two-profile oracle headroom:
+
+- `WD0375_or_FS050_or_A0_oracle` mean/hard/easy:
+  `+2.978130 / +3.639173 / +2.171983 dB`;
+- positive `0.998333`;
+- severe `0/600`;
+- FS050 oracle unique win rate `0.423333`.
+
+C11-B nested OOF selected a low-capacity `nested_oof_selected` policy and passed
+the aggregate gate:
+
+- mean/hard/easy: `+2.812140 / +3.567257 / +1.868307 dB`;
+- positive `0.982222`;
+- severe `8/600`;
+- action usage: WD0375 `0.550556`, FS050 `0.449444`, A0 `0`.
+
+C11-C group-min shifted validation passed all dimensions. The weakest dimension
+summary still cleared the predeclared gate: min mean `+1.868307`, min hard
+`+2.002133`, min positive `0.940000`, and max severe `28/600`.
+
+C11-D formal 5x3 replay passed all seeds and all group-min checks:
+
+- seed `3407`: mean/hard/easy/positive/severe
+  `+2.819195 / +3.556945 / +1.898869 / 0.983333 / 7/600`;
+- seed `3411`: `+2.808784 / +3.566390 / +1.829048 / 0.981667 / 8/600`;
+- seed `2026`: `+2.808439 / +3.578436 / +1.877004 / 0.981667 / 9/600`;
+- overall: `+2.812140 / +3.567257 / +1.868307 / 0.982222 / 8/600`.
+
+C11-E then sealed the train-derived selector for any future locked replay. The
+sealed config is:
+
+```text
+feature_set=residual_consensus
+kind=pairwise
+lambda=0.5
+severe_penalty=0.5
+threshold=-0.15
+```
+
+The sealed full-train selector passed:
+
+- mean/hard/easy: `+2.828078 / +3.548762 / +1.953362 dB`;
+- positive `0.985000`;
+- severe `6/600`;
+- action usage: WD0375 `0.486667`, FS050 `0.513333`, A0 `0`.
+
+Decision:
+
+```text
+C11_PASS_AUTHORIZE_LOCKED_ONE_SHOT_REVIEW
+C11E_SEALED_SELECTOR_PASS_READY_FOR_LOCKED_ONE_SHOT_REVIEW
+```
+
+Locked Haze4K has not been run by C11/C11-E. Any locked replay must use
+`v23_c11e_sealed_selector.json` exactly, generate required WD0375/FS050 locked
+features without selecting from locked results, run once, and record the output
+as evidence only.

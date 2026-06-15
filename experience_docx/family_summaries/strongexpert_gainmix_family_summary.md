@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 C8-Mini proves train-derived multi-expert complementarity and authorizes C9 router design only.
+Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed and is ready for locked one-shot review.
 
 ## Scope
 
@@ -331,3 +331,61 @@ This is the first locked pass for the StrongExpert-GainMix family after v2.1
 failed. The locked result is evidence only and must not tune alpha, features,
 checkpoints, profiles, actions, experts, or distillation targets. Distillation
 is not authorized inside this route; it needs a separate review and route.
+
+## v2.3 C11 WD0375-FS050 Selector Result
+
+Decision:
+
+```text
+C11_PASS_AUTHORIZE_LOCKED_ONE_SHOT_REVIEW
+C11E_SEALED_SELECTOR_PASS_READY_FOR_LOCKED_ONE_SHOT_REVIEW
+```
+
+C11 opened a minimal two-profile route after the `WD0375` locked pass. It did
+not add experts, did not train MoE, did not distill, and did not touch locked
+Haze4K. It used only the C8/C9 train-derived per-image tables.
+
+C11-A confirmed that `FS050` has clean complementary headroom over fixed
+`WD0375`:
+
+- `WD0375_or_FS050_or_A0_oracle` mean/hard/easy
+  `+2.978130 / +3.639173 / +2.171983 dB`;
+- positive ratio `0.998333`;
+- severe `0/600`;
+- FS050 oracle unique win rate `0.423333`.
+
+C11-B/C/D then trained and replayed a nested low-capacity selector using only
+actions `WD0375`, `FS050`, and `A0`. The OOF/formal overall result was:
+
+- mean/hard/easy `+2.812140 / +3.567257 / +1.868307 dB`;
+- dSSIM `+0.00185652`;
+- positive ratio `0.982222`;
+- severe `8/600`;
+- action usage WD0375 `0.550556`, FS050 `0.449444`, A0 `0`.
+
+All C11-C group-min dimensions passed. C11-D formal 5x3 passed all seeds and all
+group-min checks; the weakest formal seed/bin still had min hard `+1.914413`,
+min positive `0.933333`, and max severe `32/600`.
+
+C11-E sealed the final train-derived selector for any future locked replay. The
+sealed config is:
+
+```text
+feature_set=residual_consensus
+kind=pairwise
+lambda=0.5
+severe_penalty=0.5
+threshold=-0.15
+```
+
+The sealed full-train selector reached mean/hard/easy
+`+2.828078 / +3.548762 / +1.953362 dB`, positive `0.985000`, severe `6/600`,
+with action usage WD0375 `0.486667`, FS050 `0.513333`, A0 `0`.
+
+Locked Haze4K remains untouched by C11/C11-E. A future one-shot locked replay,
+if run, must use `v23_c11e_sealed_selector.json` exactly and may only record the
+result as evidence. It must not tune alpha, features, checkpoints, profiles,
+actions, experts, or distillation targets from locked output.
+
+Evidence root: `../experiment_logs/haze4k_v2_3_c11_wd_fs_selector_20260615/`.
+Route card: `../experiment_cards/2026-06-15-haze4k-v2-3-c11-wd-fs-selector.md`.
