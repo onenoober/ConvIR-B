@@ -1,6 +1,6 @@
 # Haze4K v2.1 SEG-Mix Multi-Alpha / Local-Alpha
 
-Status: `C9_SHIFTED_FAIL_START_C9B_FIXED_CONSERVATIVE`
+Status: `C9B_FIXED_PROFILE_PASS_START_C10_FORMAL_5X3`
 
 ## Scope
 
@@ -208,3 +208,9 @@ C9 uses the C7c profile OOF per-image evidence to choose a risk profile on all-b
 Decision: `C9_SHIFTED_STRONG_FAIL_REASSESS_LOCAL_ALPHA_OR_C8`
 
 C9 passed 8/9 shifted dimensions but failed `diff_signed_q4` because severe regressions were `50.0/600` (> `48/600`). This blocks C10. Since C7c already had a predeclared more conservative strong profile (`riskcap36_no075`, severe `37/600`), C9b fixed-conservative stress is authorized before falling back to C8 multi-expert. Locked remains blocked.
+
+## C9b Result
+
+Decision: `C9B_FIXED_PROFILE_SHIFTED_PASS_START_C10_FORMAL_5X3`
+
+The fixed conservative profile `riskcap36_no075` passed all C9b stress dimensions with mean `+0.341530`, hard `+0.310932`, easy `+0.443958`, dSSIM `+0.00024241`, positive `0.786667`, and severe `37.0/600`. This authorizes C10 formal 5x3 only; locked remains blocked until C10 passes.

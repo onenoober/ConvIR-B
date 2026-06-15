@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: v2.1 C9 shifted stress failed one dimension; C9b conservative stress next; locked test remains blocked.
+Status: v2.1 C9b shifted stress pass; C10 formal 5x3 next; locked test remains blocked.
 
 ## Scope
 
@@ -184,3 +184,7 @@ strong validation is authorized. Locked test and distillation remain blocked.
 ## v2.1 C9 Result
 
 C9 profile-level shifted strong validation passed 8/9 dimensions and failed only `diff_signed_q4` with severe `50.0/600`. C10 is not authorized. C9b fixed `riskcap36_no075` conservative profile stress is authorized to test whether the miss is caused by train-bin profile selection instability. Locked remains blocked.
+
+## v2.1 C9b Result
+
+C9b fixed conservative profile `riskcap36_no075` passed all shifted stress dimensions with mean `+0.341530`, hard `+0.310932`, positive `0.786667`, and severe `37.0/600`. C10 formal 5x3 is authorized; locked remains blocked until C10 passes.

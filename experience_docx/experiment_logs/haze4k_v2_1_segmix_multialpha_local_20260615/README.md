@@ -101,3 +101,9 @@ C7c passes the strong train-derived OOF gate and authorizes C9 shifted-strong va
 Decision: `C9_SHIFTED_STRONG_FAIL_REASSESS_LOCAL_ALPHA_OR_C8`
 
 C9 profile-level shifted strong validation passed 8/9 dimensions. The only failing dimension was `diff_signed_q4` with severe `50.0/600`, two above the `48/600` gate. This does not authorize C10. A C9b fixed conservative profile stress using the predeclared C7c `riskcap36_no075` profile is authorized to determine whether the failure is profile-selection instability. Locked remains blocked.
+
+## C9b Result
+
+Decision: `C9B_FIXED_PROFILE_SHIFTED_PASS_START_C10_FORMAL_5X3`
+
+Fixed profile `riskcap36_no075` passed all shifted stress dimensions: mean `+0.341530`, hard `+0.310932`, positive `0.786667`, severe `37.0/600`. C10 formal 5x3 is authorized. Locked remains blocked until C10 passes and the route card is updated.
