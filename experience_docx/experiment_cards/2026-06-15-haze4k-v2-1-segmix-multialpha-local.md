@@ -87,6 +87,14 @@ positive >= 0.72
 dSSIM >= 0
 ```
 
+### C7b Local-Alpha Deployable Prototype
+
+C7b is authorized by the C7 patch-alpha oracle signal. It builds patch-level
+deployable features and alpha SSE targets on train-derived internal validation
+images, chooses transparent patch policies with image-fold OOF, and re-renders
+held-out images to measure true PSNR/SSIM. C7b may authorize C9 shifted-strong
+validation only if the true OOF strong gate passes.
+
 ## Decision Rules
 
 - If C6 OOF passes the strong-candidate gate, start C9 shifted-strong validation.
