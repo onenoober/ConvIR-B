@@ -1,0 +1,10 @@
+selector,action,count,usage
+fixed_fs050,WD0375,0,0.0
+fixed_fs050,FS050,1800,1.0
+fixed_fs050,A0,0,0.0
+fixed_wd0375,WD0375,1800,1.0
+fixed_wd0375,FS050,0,0.0
+fixed_wd0375,A0,0,0.0
+nested_oof_selected,WD0375,991,0.5505555555555556
+nested_oof_selected,FS050,809,0.4494444444444444
+nested_oof_selected,A0,0,0.0

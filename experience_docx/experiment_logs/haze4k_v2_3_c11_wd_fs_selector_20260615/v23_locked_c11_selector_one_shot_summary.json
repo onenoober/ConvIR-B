@@ -1,0 +1,53 @@
+{
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "a0_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "action_distribution": {
+    "A0": 0,
+    "FS050": 614,
+    "WD0375": 386
+  },
+  "decision": "LOCKED_C11_SELECTOR_ONE_SHOT_RECORDED",
+  "fs050_summary": {
+    "count": 1000,
+    "dSSIM": 0.0014480541944503784,
+    "easy_top25_dPSNR": 1.2159753875732422,
+    "hard_bottom25_dPSNR": 0.832627326965332,
+    "mean_dPSNR": 1.0063975105285645,
+    "nonnegative_ratio": 0.814,
+    "positive_ratio": 0.814,
+    "severe_loss_count": 147,
+    "severe_loss_per_600": 88.19999999999999
+  },
+  "fsudp_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/FSNet_UDPNet_haze4k.ckpt",
+  "fsudp_sha256": "25cc334f44c2fac979baad7f158526c9f8d751c21ea282974b0e4d9791fc0a27",
+  "locked_test_touched": true,
+  "no_tuning_from_locked": true,
+  "one_shot": true,
+  "sealed_config": "feature_set=residual_consensus;kind=pairwise;lambda=0.5;severe_penalty=0.5;threshold=-0.15",
+  "sealed_selector": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v23-c11-wd-fs-selector/experience_docx/experiment_logs/haze4k_v2_3_c11_wd_fs_selector_20260615/v23_c11e_sealed_selector.json",
+  "sealed_selector_sha256": "dbf1038400af4fabce34775e8a443a0f1413200271c379079484077abf53c8ff",
+  "summary": {
+    "count": 1000,
+    "dSSIM": 0.0022395952343940736,
+    "easy_top25_dPSNR": 1.2485661926269531,
+    "hard_bottom25_dPSNR": 1.5586832656860352,
+    "mean_dPSNR": 1.449078260421753,
+    "nonnegative_ratio": 0.896,
+    "positive_ratio": 0.896,
+    "severe_loss_count": 81,
+    "severe_loss_per_600": 48.6
+  },
+  "wd0375_summary": {
+    "count": 1000,
+    "dSSIM": 0.002470933675765991,
+    "easy_top25_dPSNR": 1.1825294494628906,
+    "hard_bottom25_dPSNR": 1.5297669982910156,
+    "mean_dPSNR": 1.4420897884368897,
+    "nonnegative_ratio": 0.938,
+    "positive_ratio": 0.938,
+    "severe_loss_count": 43,
+    "severe_loss_per_600": 25.799999999999997
+  },
+  "wdmamba_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/haze4k_35.88.pth",
+  "wdmamba_sha256": "57ff24c3791e593f0172607fea66252a8ba5475ab0e417f4cf48e72b4c9a36da"
+}

@@ -1,0 +1,14 @@
+state=RUNNING_AUDIT
+run_id=v23_c11_table_analysis
+start_time=2026-06-15T19:41:24+08:00
+locked_test_touched=false
+locked_per_image_read=false
+distillation=false
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v23-c11-wd-fs-selector
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+source_branch=codex/haze4k-v2-3-c11-wd-fs-selector
+source_commit=c02c47f82d895e458ba7352730637b7d09c59a87
+finish_time=2026-06-15T19:43:02+08:00
+exit_code=0
+state=COMPLETED_ANALYSIS
+C11_TABLE_ANALYSIS_OK

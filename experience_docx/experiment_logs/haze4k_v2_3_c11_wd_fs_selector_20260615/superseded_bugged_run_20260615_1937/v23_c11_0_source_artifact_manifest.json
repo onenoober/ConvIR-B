@@ -1,0 +1,37 @@
+{
+  "actions": [
+    "WD0375",
+    "FS050",
+    "A0"
+  ],
+  "allowed_sources": {
+    "c8_fsudp_per_image": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v23-c11-wd-fs-selector/experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/v22_c8_2_fsudp_per_image.csv",
+    "c8_mbtaylor_per_image": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v23-c11-wd-fs-selector/experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/v22_c8_3_mbtaylor_per_image.csv",
+    "c8_wdmamba_per_image": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v23-c11-wd-fs-selector/experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/v22_c8_1_wdmamba_per_image.csv",
+    "c9_fixed_summary": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v23-c11-wd-fs-selector/experience_docx/experiment_logs/haze4k_v2_2_c9_fixed_wdmamba_router_20260615/v22_c9a_fixed_profiles_summary.csv"
+  },
+  "forbidden": [
+    "locked per-image output",
+    "locked-informed alpha/profile/action/expert tuning",
+    "new expert acquisition",
+    "distillation",
+    "MB-Taylor action in C11 selector",
+    "WD050 action in C11 selector",
+    "patch-level alpha",
+    "deep MoE or MLP router"
+  ],
+  "locked_policy": "locked evidence is evidence-only and not read by this script",
+  "route": "Haze4K v2.3 C11 WD0375-FS050 Two-Profile Selector",
+  "row_count": 600,
+  "sha256": {
+    "c8_fsudp_per_image": "0f81f0e426e95c28f98a66677c746143ac4b9f80fbda57b48450f1f0dc61afcf",
+    "c8_mbtaylor_per_image": "8051651b6ee6f75eb18717e4d9b36fd0e4403f8e6455a5fbee8cb598af423f77",
+    "c8_wdmamba_per_image": "f3f8e6a3a096cd51dc7ad46177930f82e972ea1b5fe2ac840dcae7d33fdf9eeb",
+    "c9_fixed_summary": "53975551b27dbc09d82c157669e4440a00763f94497eefc102aa940dcf093812",
+    "script": "4f5f3976f6bee337903216799f6da512a161f1e692e036568b70cc7ddb745334"
+  },
+  "splits": [
+    "val_hard",
+    "val_regular"
+  ]
+}

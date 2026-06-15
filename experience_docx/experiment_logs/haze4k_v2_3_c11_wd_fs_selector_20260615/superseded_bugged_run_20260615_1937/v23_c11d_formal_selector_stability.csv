@@ -1,0 +1,4 @@
+selector,seed,outer_fold,count,selected_config,usage_WD0375,usage_FS050,usage_A0
+nested_utility,3407,1,113,feature_set=residual_consensus;kind=utility;lambda=32.0;severe_penalty=0.5,0.5663716814159292,0.4336283185840708,0.0
+nested_utility,3407,2,114,feature_set=residual_consensus;kind=utility;lambda=32.0;severe_penalty=0.5,0.5526315789473685,0.4473684210526316,0.0
+nested_utility,2026,0,111,feature_set=residual_consensus;kind=utility;lambda=32.0;severe_penalty=2.0,0.5675675675675675,0.43243243243243246,0.0

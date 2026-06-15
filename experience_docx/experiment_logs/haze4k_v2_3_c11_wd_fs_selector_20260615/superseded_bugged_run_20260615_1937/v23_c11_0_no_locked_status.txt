@@ -1,0 +1,5 @@
+locked_test_touched=false
+locked_per_image_read=false
+locked_informed_tuning=false
+distillation=false
+allowed_scope=train-derived val_regular + val_hard C8/C9 tables only

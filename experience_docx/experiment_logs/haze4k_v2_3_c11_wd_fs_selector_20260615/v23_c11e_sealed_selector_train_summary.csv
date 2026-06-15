@@ -1,0 +1,2 @@
+selector,count,mean_dPSNR,mean_bootstrap_LCB,hard_bottom25_dPSNR,hard_bootstrap_LCB,easy_top25_dPSNR,dSSIM,positive_ratio,positive_Wilson_LCB,nonnegative_ratio,severe_loss_count,severe_loss_per_600,severe_Wilson_UCB,aggregate_gate_pass,group_gate_pass,selected_config
+sealed_train_full,600,2.8280782095591226,2.753479422728221,3.548762067159017,3.4402881959279377,1.9533617146809896,0.001862812836964925,0.985,0.9717400774599938,0.985,6,6.0,0.021643835138254512,True,True,feature_set=residual_consensus;kind=pairwise;lambda=0.5;severe_penalty=0.5;threshold=-0.15

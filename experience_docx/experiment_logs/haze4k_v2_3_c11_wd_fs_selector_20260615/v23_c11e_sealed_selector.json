@@ -1,0 +1,60 @@
+{
+  "allowed_actions": [
+    "WD0375",
+    "FS050",
+    "A0"
+  ],
+  "config": {
+    "feature_set": "residual_consensus",
+    "kind": "pairwise",
+    "lambda": 0.5,
+    "severe_penalty": 0.5,
+    "threshold": -0.15
+  },
+  "distillation": false,
+  "features": [
+    "wdmamba_residual_signed_mean",
+    "wdmamba_residual_abs_mean",
+    "wdmamba_residual_grad_mean",
+    "wdmamba_fulludp_mae",
+    "wdmamba_residual_cosine",
+    "fsudp_residual_signed_mean",
+    "fsudp_residual_abs_mean",
+    "fsudp_residual_grad_mean",
+    "fsudp_fulludp_mae",
+    "fsudp_residual_cosine",
+    "wd0375_fs050_signed_gap_proxy",
+    "wd0375_fs050_abs_gap_proxy",
+    "wd0375_fs050_disagreement_proxy"
+  ],
+  "locked_per_image_read": false,
+  "locked_test_touched": false,
+  "model_kind": "pairwise",
+  "model_pickle_b64": "gASVJwQAAAAAAAB9lCiMBGtpbmSUjAhwYWlyd2lzZZSMA2NmZ5R9lChoAWgCjAtmZWF0dXJlX3NldJSMEnJlc2lkdWFsX2NvbnNlbnN1c5SMBmxhbWJkYZRHP+AAAAAAAACMDnNldmVyZV9wZW5hbHR5lEc/4AAAAAAAAIwJdGhyZXNob2xklEe/wzMzMzMzM3WMCGZlYXR1cmVzlF2UKIwcd2RtYW1iYV9yZXNpZHVhbF9zaWduZWRfbWVhbpSMGXdkbWFtYmFfcmVzaWR1YWxfYWJzX21lYW6UjBp3ZG1hbWJhX3Jlc2lkdWFsX2dyYWRfbWVhbpSME3dkbWFtYmFfZnVsbHVkcF9tYWWUjBd3ZG1hbWJhX3Jlc2lkdWFsX2Nvc2luZZSMGmZzdWRwX3Jlc2lkdWFsX3NpZ25lZF9tZWFulIwXZnN1ZHBfcmVzaWR1YWxfYWJzX21lYW6UjBhmc3VkcF9yZXNpZHVhbF9ncmFkX21lYW6UjBFmc3VkcF9mdWxsdWRwX21hZZSMFWZzdWRwX3Jlc2lkdWFsX2Nvc2luZZSMHXdkMDM3NV9mczA1MF9zaWduZWRfZ2FwX3Byb3h5lIwad2QwMzc1X2ZzMDUwX2Fic19nYXBfcHJveHmUjB93ZDAzNzVfZnMwNTBfZGlzYWdyZWVtZW50X3Byb3h5lGWMC2RlbHRhX21vZGVslH2UKIwEbWVhbpSMFm51bXB5Ll9jb3JlLm11bHRpYXJyYXmUjAxfcmVjb25zdHJ1Y3SUk5SMBW51bXB5lIwHbmRhcnJheZSTlEsAhZRDAWKUh5RSlChLAUsNhZRoH4wFZHR5cGWUk5SMAmY4lImIh5RSlChLA4wBPJROTk5K/////0r/////SwB0lGKJQ2hVRRsaBA5yv8P1KDS2iIo/zczMbupCWT8pXI/kSNaLP8kvQMU5T8o/1Aa+08gcbr8K16M8X4mCP0t+sUBX60s/gk4bzJnSgz8b6CRYqonTP532qGQVPig/exSup5bSNT8zvwCF4y1sP5R0lGKMA3N0ZJRoHmghSwCFlGgjh5RSlChLAUsNhZRoK4lDaHaZDXLHMIM/2q/BhBKieT/QC9FMEtJBP0vxsqRc63s/1NZkZ/0w1T/LcGWrHc55P2nWuxYeZ3E/q2jcZANPNT+4KeKnIqZzP+QuV2k4atQ/4VH/QLp6Zz80VYfnSsRcPxmhyQOaBGc/lHSUYowEY29lZpRoHmghSwCFlGgjh5RSlChLAUsOhZRoK4lDcKcNdNooxd6/rGjLEF1Exb8TauYokSDRv4dtX14YRcq/xBdjtnmH1b904N/poDWoP0PJrX6+TZU/FNxrcSdeuj/4ivQoiADRP+s4RNOKUtQ/3LI/9r6sxz9FngXFDADNv6En5O0z3t6/rfYhVFIJ37+UdJRidXUu",
+  "policy": "Use this exact fitted model for locked replay; do not select config on locked data.",
+  "route": "Haze4K v2.3 C11 WD0375-FS050 Two-Profile Selector",
+  "selected_config": "feature_set=residual_consensus;kind=pairwise;lambda=0.5;severe_penalty=0.5;threshold=-0.15",
+  "source_tables": [
+    "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v23-c11-wd-fs-selector/experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/v22_c8_1_wdmamba_per_image.csv",
+    "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v23-c11-wd-fs-selector/experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/v22_c8_2_fsudp_per_image.csv",
+    "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v23-c11-wd-fs-selector/experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/v22_c8_3_mbtaylor_per_image.csv"
+  ],
+  "stage": "C11-E sealed train-derived selector",
+  "train_derived_aggregate_pass": true,
+  "train_derived_group_pass": true,
+  "train_derived_summary": {
+    "count": 600,
+    "dSSIM": 0.001862812836964925,
+    "easy_top25_dPSNR": 1.9533617146809896,
+    "hard_bootstrap_LCB": 3.4402881959279377,
+    "hard_bottom25_dPSNR": 3.548762067159017,
+    "mean_bootstrap_LCB": 2.753479422728221,
+    "mean_dPSNR": 2.8280782095591226,
+    "nonnegative_ratio": 0.985,
+    "positive_Wilson_LCB": 0.9717400774599938,
+    "positive_ratio": 0.985,
+    "severe_Wilson_UCB": 0.021643835138254512,
+    "severe_loss_count": 6,
+    "severe_loss_per_600": 6.0
+  }
+}

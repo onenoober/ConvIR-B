@@ -1,0 +1,16 @@
+seed,outer_fold,selector,selected_config,held_count
+3407,0,nested_oof_selected,feature_set=residual_consensus;kind=pairwise;lambda=0.5;severe_penalty=0.5;threshold=-0.15,116
+3407,1,nested_oof_selected,feature_set=residual_consensus;kind=utility;lambda=32.0;severe_penalty=0.5,113
+3407,2,nested_oof_selected,feature_set=residual_consensus;kind=utility;lambda=32.0;severe_penalty=0.5,114
+3407,3,nested_oof_selected,feature_set=residual_consensus;kind=pairwise;lambda=32.0;severe_penalty=0.5;threshold=0.1,128
+3407,4,nested_oof_selected,feature_set=full;kind=pairwise;lambda=32.0;severe_penalty=0.5;threshold=-0.15,129
+3411,0,nested_oof_selected,feature_set=full;kind=pairwise;lambda=32.0;severe_penalty=0.5;threshold=-0.15,108
+3411,1,nested_oof_selected,feature_set=residual_consensus;kind=pairwise;lambda=32.0;severe_penalty=0.5;threshold=-0.15,113
+3411,2,nested_oof_selected,feature_set=full;kind=pairwise;lambda=32.0;severe_penalty=0.5;threshold=-0.15,119
+3411,3,nested_oof_selected,feature_set=full;kind=pairwise;lambda=32.0;severe_penalty=6.0;threshold=-0.15,141
+3411,4,nested_oof_selected,feature_set=full;kind=pairwise;lambda=32.0;severe_penalty=0.5;threshold=-0.15,119
+2026,0,nested_oof_selected,feature_set=residual_consensus;kind=utility;lambda=32.0;severe_penalty=2.0,111
+2026,1,nested_oof_selected,feature_set=residual_consensus;kind=pairwise;lambda=2.0;severe_penalty=0.5;threshold=-0.15,128
+2026,2,nested_oof_selected,feature_set=full;kind=pairwise;lambda=8.0;severe_penalty=0.5;threshold=-0.15,110
+2026,3,nested_oof_selected,feature_set=full;kind=pairwise;lambda=32.0;severe_penalty=0.5;threshold=-0.15,128
+2026,4,nested_oof_selected,feature_set=full;kind=pairwise;lambda=8.0;severe_penalty=2.0;threshold=-0.15,123

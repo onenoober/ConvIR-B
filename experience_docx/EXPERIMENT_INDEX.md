@@ -1,8 +1,8 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-06-10
+Date: 2026-06-15
 
-Status: evidence index for `codex/main-experiment-evidence-sync`.
+Status: evidence index plus official architecture anchor registry.
 
 ## Purpose
 
@@ -18,6 +18,31 @@ For future route branches, follow `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`: sync
 cards, text logs, result tables, and AI-readable packages back to `main`, but
 keep diagnostic experiment code on its route branch unless a separate promotion
 decision says otherwise.
+
+## Official Architecture Anchor
+
+The immutable clean ConvIR-B architecture anchor is:
+
+- branch: `github/codex/haze4k-official-arch-anchor`
+- policy: `OFFICIAL_ARCH_ANCHOR_POLICY.md`
+- route card: `experiment_cards/2026-06-10-haze4k-official-arch-anchor.md`
+- evidence root: `experiment_logs/haze4k_official_arch_anchor_20260610/`
+
+This anchor preserves the official `Dehazing/ITS` ConvIR-B architecture while
+keeping the already validated Haze4K data, pretrained checkpoint, and evidence
+tooling contracts. Do not modify model architecture directly on this branch.
+Future model changes must start from a new `codex/<route>` branch or isolated
+worktree. This is now a mandatory gate in `AGENTS.md`,
+`OFFICIAL_ARCH_ANCHOR_POLICY.md`, `EXPERIMENT_GOVERNANCE_PROTOCOL.md`,
+`MODEL_EXPERIMENT_START_CHECKLIST.md`, and `ROUTE_DESIGN_FRAMEWORK.md`.
+
+Environment and migration reference:
+
+- environment guide: `CLOUD_PY310_ENVIRONMENT.md`
+- environment evidence: `experiment_logs/cloud_py310_environment_20260610/`
+- result: cloud protected code is consistent with the GitHub anchor, but the old
+  `/root/autodl-tmp/workspace/ConvIR-B` cloud workspace is a dirty historical
+  route workspace and must not be used as migration authority.
 
 ## Branch Cleanup
 
@@ -37,6 +62,8 @@ branches, so their commits remain reachable through the retained branches.
 Retained remote refs:
 
 - `github/main`: stable entry point plus consolidated text evidence.
+- `github/codex/haze4k-official-arch-anchor`: immutable official ConvIR-B
+  architecture anchor for future Haze4K architecture branches.
 - `github/codex/haze4k-hardfreq-loss`: leaf route containing hard frequency
   loss evidence and prior route history.
 - `github/codex/haze4k-haze-prior-scm`: leaf route containing haze-prior SCM
@@ -92,12 +119,19 @@ without a material new reason.
 | [PFD/RHFD preservation routes](family_summaries/pfd_rhfd_family_summary.md) | Diagnostic only: preservation improved in B1r, but hard-gain and strong-case gates failed. | A new mechanism explains how hard gain is recovered without losing the preservation benefit. |
 | [APDR output residual/action-bank routes](family_summaries/apdr_family_summary.md) | Current broad output-residual and coefficient-mapping forms are stopped; v0.4E OOF did not pass, and exact v0.4E numbers require fixed-code rerun before sealing. | A separately pre-registered safe-subset route passes fixed-code OOF/held-out gates without severe regressions. |
 | [DPGA in-network prior adapters / UDP expert switch](family_summaries/dpga_family_summary.md) | Frozen ConvIR-B + A0-equivalent small-adapter routes are sufficiently diagnosed and low success. v1.5 official UDPNet gives hard gain but fails as a global model. v1.6 A0+UDP expert switch passed internal OOF gates but failed one-shot locked-test promotion. v1.7 full-train risk-controlled shrink/mix kept the oracle strong but the tested deployable router failed OOF and heldout gates. v1.8 completed the post-diagnosis execution queue: stronger table-only router audit, data/domain preflight, Q5 domain/data coverage audit, and BiDPFM1 fusion-neighbor 10-seed training/eval all ended negative. | Reopen only with a materially stronger predeclared calibration/router route or a materially new capacity mechanism beyond the completed v1.8 queue; do not tune thresholds/features/expert set from v1.6 locked-test results, micro-tune the current v1.7 policy, or keep searching BiDPFM1 scale/gate variants under the failed v1.8 route. |
+| [StrongExpert-GainMix](family_summaries/strongexpert_gainmix_family_summary.md) | v2.1 sealed C10 `riskcap36_no075` passed formal 5x3 but failed its single locked one-shot. v2.2 C8 proved multi-expert complementarity; C9/C10 found fixed `WD0375 = A0 + 0.375*(WDMamba-A0)` was strong without router training; its locked one-shot then passed with mean `+1.442090`, hard `+1.529767`, easy `+1.182529`, positive `0.938000`, dSSIM `+0.00247093`, severe `25.80/600`. v2.3 C11 showed a minimal WD0375/FS050 selector is stronger on train-derived formal replay, and C11-E sealed the selector with mean/hard/easy `+2.828078/+3.548762/+1.953362`, positive `0.985000`, severe `6/600`; however its locked one-shot reached mean/hard/easy `+1.449078/+1.558683/+1.248566` with positive `0.896000` and severe `48.60/600`, so it should not replace WD0375. | v2.1 remains `LOCKED_ONE_SHOT_FAIL_NO_TUNING`; v2.2 WD0375 remains the default strong locked-pass baseline; v2.3 C11 is `LOCKED_C11_SELECTOR_ONE_SHOT_RECORDED_DO_NOT_PROMOTE_OVER_WD0375`. Locked output is evidence only and must not tune alpha, features, checkpoints, profiles, actions, experts, thresholds, or distillation targets; distillation needs a separate review/route. |
 
 ## Route Summary
 
 | Route | Status | Main result | Decision | Card | Evidence root | Source after cleanup |
 | --- | --- | --- | --- | --- | --- | --- |
-| Haze4K Official ConvIR-B architecture anchor | Completed convir-5090 runtime flow | Official pretrained Haze4K test on `convir-5090` reproduced PSNR `34.14`, SSIM `0.98972`, avg time `0.069983`; the one-epoch train smoke from the official checkpoint reached valid PSNR `33.29`, and the smoke `Best.pkl` test produced PSNR `33.29`, SSIM `0.98639`. | `OFFICIAL_ANCHOR_CONVIR5090_TRAIN_TEST_FLOW_OK`; use `github/codex/haze4k-official-arch-anchor` as the clean anchor and keep future route edits on separate branches. | [card](experiment_cards/2026-06-10-haze4k-official-arch-anchor.md) | [preflight](experiment_logs/haze4k_official_arch_anchor_convir5090_preflight_20260610/), [flow](experiment_logs/haze4k_official_arch_anchor_convir5090_train_test_flow_20260610/) | `github/codex/haze4k-official-arch-anchor` |
+| Haze4K v2.3 C11 WD0375-FS050 Two-Profile Selector | Completed train-derived C11-A/B/C/D, C11-E sealed selector, and one locked replay | C11 used only C8/C9 train-derived tables and actions `WD0375`, `FS050`, and `A0`. C11-A oracle showed mean/hard/easy `+2.978130/+3.639173/+2.171983`, positive `0.998333`, severe `0/600`, and FS050 unique win rate `0.423333`. C11-B/C/D nested OOF/formal selector passed with overall mean/hard/easy `+2.812140/+3.567257/+1.868307`, positive `0.982222`, severe `8/600`, and all group-min/seed gates pass. C11-E sealed the final selector config `residual_consensus pairwise ridge lambda=0.5 severe_penalty=0.5 threshold=-0.15`, giving train-derived sealed mean/hard/easy `+2.828078/+3.548762/+1.953362`, positive `0.985000`, severe `6/600`. Locked replay of the sealed selector produced mean/hard/easy `+1.449078/+1.558683/+1.248566`, positive `0.896000`, severe `48.60/600`, action usage WD0375 `0.386`, FS050 `0.614`, A0 `0`. | `LOCKED_C11_SELECTOR_ONE_SHOT_RECORDED_DO_NOT_PROMOTE_OVER_WD0375`; do not replace WD0375 because positive/severe risk regressed. Locked output is evidence only and must not tune alpha, features, checkpoints, profiles, actions, experts, thresholds, or distillation targets. | [card](experiment_cards/2026-06-15-haze4k-v2-3-c11-wd-fs-selector.md) | [logs](experiment_logs/haze4k_v2_3_c11_wd_fs_selector_20260615/) | `codex/haze4k-v2-3-c11-wd-fs-selector` |
+| Haze4K v2.2 C9 Fixed WD0375 + Locked One-Shot | Completed train-derived C9/C10 and one sealed locked replay; locked pass | C9 used C8 train-derived per-image tables only. Fixed `WD0375 = A0 + 0.375*(WDMamba-A0)` passed C9-A with mean `+2.512202 dB`, hard `+3.505615 dB`, easy `+1.189484 dB`, positive `0.973333`, dSSIM `+0.00167334`, and severe `11/600`; C9-B router was intentionally not run. C9-C group-min passed all bins, and C10 formal 5x3 table replay passed. The sealed locked one-shot was consumed once from commit `1f67309`: locked mean `+1.442090 dB`, hard `+1.529767 dB`, easy `+1.182529 dB`, positive `0.938000`, dSSIM `+0.00247093`, severe `25.80/600`. | `LOCKED_WD0375_ONE_SHOT_PASS_REVIEW_DISTILLATION_LATER`; locked output is evidence only and cannot tune alpha/features/checkpoints/profiles/actions/experts or distillation targets. | [card](experiment_cards/2026-06-15-haze4k-v2-2-c9-fixed-wdmamba-router.md) | [logs](experiment_logs/haze4k_v2_2_c9_fixed_wdmamba_router_20260615/) | `codex/haze4k-v2-2-c9-fixed-wdmamba-router` |
+| Haze4K v2.2 C8-Mini Train-Derived Multi-Expert Complementarity Oracle | Completed train-derived complementarity proof; C9 router design authorized only | WDMamba, FSNet+UDP, and MB-TaylorFormerV2-L checkpoints were found under `/sda/home/wangyuxin/ConvIR-B/checkpoints/` and audited on `convir-4090` using only `val_regular` + `val_hard`. FSNet+UDP duplicate audit says `NOT_DUPLICATE_RENDER_AND_ARCH_DIFFER` with FullUDP-vs-FSNet output MAE mean `0.00967903` and near-identical count `0/600`. S1 WDMamba oracle gain over S0: mean `+2.824226 dB`, hard `+4.453624 dB`, hard/red-flag unique wins `0.982143`. S2 WDMamba+FSNet+UDP gain: mean `+3.116570 dB`, hard `+4.473811 dB`, severe `0`. S3 +MB-Taylor gain: mean `+3.158518 dB`, hard `+4.559721 dB`, severe `0`; S3 unique wins vs all others on hard/red-flag: WDMamba `0.806548`, FSNet+UDP `0.113095`, MB-Taylor `0.074405`; group-min mean/hard gain `+1.559336/+1.966238 dB`. | `C8_PASS_COMPLEMENTARITY_PROVEN_AUTHORIZE_C9_ROUTER_DESIGN_ONLY`; no router/MoE training was run. C9 may use train-derived oracle labels/features only; locked Haze4K test remains untouched and cannot be used for tuning. | [card](experiment_cards/2026-06-15-haze4k-v2-2-c8-mini-expert-oracle.md) | [logs](experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/) | `codex/haze4k-v2-2-c8-mini-expert-oracle` |
+| Haze4K v2.1 SEG-Mix Multi-Alpha / Local-Alpha C5-Locked | Locked one-shot failed; no tuning | C5-C10 train-derived evidence completed and authorized one sealed locked run. The locked one-shot used fixed `riskcap36_no075` and failed the strong gate: mean `+0.290049 +/- 0.004481`, hard `+0.121385 +/- 0.003021`, easy `+0.480187 +/- 0.016808`, positive `0.779333 +/- 0.006128`, dSSIM `+0.00046509`, severe `46.6000 +/- 2.5140/600`, max seed severe `49.2/600`; all seed strong gate `False`. | `LOCKED_ONE_SHOT_FAIL_NO_TUNING`; this sealed policy is not promotion-ready. Do not rerun locked, distill, or tune thresholds/profiles/features/actions/checkpoints from locked output. | [card](experiment_cards/2026-06-15-haze4k-v2-1-segmix-multialpha-local.md) | [logs](experiment_logs/haze4k_v2_1_segmix_multialpha_local_20260615/) | `github/codex/haze4k-v2-1-segmix-multialpha-local` |
+| Haze4K v2.0 StrongExpert-GainMix C0-C4 | Formal 5x3 screen pass but strong target fail; locked blocked | C0a ran on `convir-4090` from commit `885a9c0` with locked test untouched. Global FullUDP is unsafe (`252/600` severe regressions), while A0/FullUDP endpoint oracle is strong (mean `+0.741695 dB`, hard `+1.110910 dB`, easy `+0.397112 dB`, worst `0/600`). C1/C1b showed split/name leakage and A0-PSNR-only proxy insufficiency. C1c confirmed FullUDP render readiness. C2/C2b/C2c endpoint routers failed OOF preservation/tail gates. C2d alpha-shrink passed strict OOF; C3 shifted validation passed all 8 dimensions; C4 5x3 passed screen gate for all seeds with mean `+0.330556`, hard `+0.256389`, easy `+0.473005`, positive `0.68`, severe `37/600`. D8/D9 hygiene also completed with no DTA-v3.7 repair authorization. | `C4_FORMAL_5X3_SCREEN_PASS_STRONG_TARGET_FAIL_NO_LOCKED`; do not run locked one-shot. Continue only with stronger hard-gain/positive-coverage train-derived improvements. | [card](experiment_cards/2026-06-14-haze4k-v2-0-strongexpert-gainmix.md) | [logs](experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/) | `github/codex/haze4k-v2-0-strongexpert-gainmix` |
+| Cloud py310/cu128 environment and code-consistency audit | Completed cloud audit | Protected code files in `Dehazing/ITS`, `pytorch-gradual-warmup-lr`, and `experience_docx/tools` match GitHub anchor (`41/41`, zero diffs); current `py310`/`convir-cu128` stack is Python `3.10.13`, torch `2.11.0+cu128`, torchvision `0.26.0+cu128`; old `/root/autodl-tmp/workspace/ConvIR-B` is dirty historical workspace. | Use GitHub anchor as migration authority; recreate env from `CLOUD_PY310_ENVIRONMENT.md`; do not copy old dirty cloud workspace. | [env](CLOUD_PY310_ENVIRONMENT.md) | [logs](experiment_logs/cloud_py310_environment_20260610/) | `github/codex/haze4k-official-arch-anchor` |
+| Official ConvIR-B architecture anchor | Completed cloud preflight | Strict `haze4k-base.pkl` load passed, checkpoint sha256 `6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088`, parameter count `8,630,665`, synthetic and Haze4K train-crop forwards finite, source audit passed, `--learning_rate`/`--leaning_rate` compatible, locked test untouched. | `OFFICIAL_ANCHOR_PREFLIGHT_OK`; keep branch immutable and require future architecture changes to branch from it. | [card](experiment_cards/2026-06-10-haze4k-official-arch-anchor.md) | [logs](experiment_logs/haze4k_official_arch_anchor_20260610/) | `github/codex/haze4k-official-arch-anchor` |
 | FAM `modres` 5-epoch scout | Completed diagnostic | Mean PSNR `+0.0953 dB`, but median delta negative and strong-reference regressions `142/250`. | Do not promote unchanged `modres`; mechanism is active but preservation fails. | [card](experiment_cards/2026-05-31-haze4k-fam-feature-modulation.md) | [logs](experiment_logs/haze4k_fam_modres_scout_stop5_20260531/) | `github/main` |
 | FAM2-only 20-epoch scout | Completed diagnostic | Mean PSNR `+0.1739 dB`; hard bottom 25% `+0.8159 dB`; easy top 25% `-0.2860 dB`; strong-reference regressions `138/250`. | Keep as diagnostic; preservation gate fails. | [card](experiment_cards/2026-05-31-haze4k-fam2-only-modulation.md) | [logs](experiment_logs/haze4k_fam2_modres_stop20_20260531/) | retained leaf branches |
 | FAM2 bounded gamma | Completed diagnostic | Mean PSNR `-0.0271 dB`; hard `+0.8054 dB`; easy `-1.2740 dB`; strong-reference regressions `181/250`. | Bounded gamma does not solve preservation; do not promote. | [card](experiment_cards/2026-06-01-haze4k-fam2-bounded-modulation.md) | [logs](experiment_logs/haze4k_fam2_bounded_gamma_stop20_20260601/) | retained leaf branches |
@@ -148,6 +182,8 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 
 | Evidence root | Files | Main contents |
 | --- | ---: | --- |
+| `experiment_logs/cloud_py310_environment_20260610/` | 19 | Cloud/GitHub protected-code consistency manifests, py310/convir-cu128 package probes, conda exports, pip freezes, and workspace warning. |
+| `experiment_logs/haze4k_official_arch_anchor_20260610/` | 6 | Official architecture anchor cloud preflight script, log, structured JSON, status, README, and source audit. |
 | `experiment_logs/haze4k_fam_modres_preflight_20260531/` | 3 | FAM preflight and one-batch train probe logs. |
 | `experiment_logs/haze4k_fam_modres_scout_stop5_20260531/` | 8 | Stop5 train logs, compare JSON, per-image CSV, run script, README. |
 | `experiment_logs/haze4k_fam2_modres_preflight_20260531/` | 3 | FAM2 equivalence and real-batch preflight JSON. |
@@ -302,6 +338,13 @@ The active conclusion is conservative:
   aggregate was negative on both regular and hard splits, so this exact v1.8
   route is closed as a negative result rather than an incomplete queue.
 
+- Haze4K v2.2 C8-Mini proves train-derived multi-expert complementarity: WDMamba, FSNet+UDP, and MB-TaylorFormerV2-L each have hard/red-flag unique wins, S3 oracle gain over S0 is mean `+3.158518 dB` and hard-bottom25 `+4.559721 dB`, selected severe is `0`, and fixed group-min gain is positive. C9 low-capacity group-min router design is authorized using train-derived labels/features only; no locked tuning, distillation, or router training occurred in C8.
+
+- Haze4K v2.2 C9 shows the simplest fixed strong-expert profile is enough: `WD0375` passed C9-A and C9-C without router training, and C10 formal 5x3 table replay passed with fold-worst mean/hard/easy/positive/severe `+2.311024/+3.347410/+0.857374/0.948276/21.818182 per 600`. The sealed locked one-shot then passed: mean/hard/easy/positive/severe `+1.442090/+1.529767/+1.182529/0.938000/25.80 per 600`. Locked output is evidence only and cannot tune future choices.
+
+| `experiment_logs/haze4k_v2_2_c9_fixed_wdmamba_router_20260615/` | completed | v2.2 C9/C10 route README, fixed WD0375 C9-A summaries, split/group-min shifted C9-C reports, bootstrap/Wilson bounds, C9 decision/summary, sealed WD0375 C10 formal 5x3 fold/group/summary tables, locked WD0375 one-shot summary/decision/per-image table, status files, metric parity/provenance reports, runtime logs, and command scripts. |
+| `experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/` | completed | v2.2 C8-Mini route README, final decision/summary, expert manifest, no-locked status, metric script hashes, WDMamba/FSNet+UDP/MB-Taylor single-expert alpha/oracle/group/unique-win tables, FSNet duplicate audit, S2/S3 forward-selection oracle/composition/removal-ablation/oracle-label tables, group gain-over-S0 summaries, smoke/full command logs, and command reliability notes. |
+
 ## Artifact Boundary
 
 This sync intentionally includes text evidence only:
@@ -314,25 +357,3 @@ This sync intentionally includes text evidence only:
 
 It intentionally excludes checkpoints, model weights, image outputs, datasets,
 NumPy arrays, and raw inference artifacts.
-
-### 2026-06-10 convir-5090 Official Anchor Preflight
-
-The `codex/haze4k-official-arch-anchor` branch was smoke-tested on the backup
-server `convir-5090` after directory, environment, dataset, and checkpoint
-setup. Evidence is archived at
-`experience_docx/experiment_logs/haze4k_official_arch_anchor_convir5090_preflight_20260610/`.
-The run passed strict checkpoint load, official-state cleanliness, synthetic
-forward, one Haze4K train-batch forward, and CLI alias checks using commit
-`2d529d4`; locked-test data remained untouched.
-### 2026-06-10 convir-5090 Official Anchor Train/Test Flow
-
-The `codex/haze4k-official-arch-anchor` branch was then run through the
-official Haze4K pretrained checkpoint test and a minimal train/test flow on
-`convir-5090`. Evidence is archived at
-`experience_docx/experiment_logs/haze4k_official_arch_anchor_convir5090_train_test_flow_20260610/`.
-The official checkpoint test produced PSNR `34.14`, SSIM `0.98972`, and average
-time `0.069983`. A one-epoch smoke train initialized from the official
-checkpoint completed with finite loss lines and valid PSNR `33.29`; testing the
-smoke `Best.pkl` produced PSNR `33.29`, SSIM `0.98639`, and average time
-`0.084696`. The smoke checkpoint hash is recorded, but the checkpoint bytes are
-not synced to Git. Final marker: `OFFICIAL_ANCHOR_CONVIR5090_TRAIN_TEST_FLOW_OK`.

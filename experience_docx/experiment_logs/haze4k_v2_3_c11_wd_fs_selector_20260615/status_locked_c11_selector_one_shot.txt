@@ -1,0 +1,10 @@
+v23_locked_c11_selector_one_shot_start 2026-06-15T20:06:52+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v23-c11-wd-fs-selector
+fixed_selector=v23_c11e_sealed_selector.json
+locked_test_authorized_by=C11E_SEALED_SELECTOR_PASS_READY_FOR_LOCKED_ONE_SHOT_REVIEW
+locked_test_touched=true
+one_shot=true
+no_tuning_from_locked=true
+source_commit=e00f8c78c1d15ce5ed3a9bd4c7db0055c3e07189
+v23_locked_c11_selector_one_shot_done rc=0 2026-06-15T20:11:48+08:00
+V23_LOCKED_C11_SELECTOR_ONE_SHOT_OK 2026-06-15T20:11:48+08:00
