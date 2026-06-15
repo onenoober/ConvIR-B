@@ -169,7 +169,6 @@ class C13A0FrozenResidualConvIR(nn.Module):
         with torch.no_grad():
             a0_outputs = self.a0(hazy)
             a0_pred = a0_outputs[2] if isinstance(a0_outputs, (list, tuple)) else a0_outputs
-            a0_pred = torch.clamp(a0_pred, 0.0, 1.0)
         features = self.build_features(hazy, a0_pred)
         raw = self.C13_adapter(features)
         gate = torch.tanh(self.C13_gate)
