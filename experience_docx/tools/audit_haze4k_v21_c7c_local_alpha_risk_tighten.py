@@ -65,11 +65,10 @@ def profile_score(row: dict[str, Any], profile: dict[str, Any]) -> float:
     return score(row) - penalty
 
 
-def choose_profile_policy(train_table: PatchTable, profile: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
-    grid = policy_grid(train_table, args.top_k, args.low_pool_limit, args.high_pool_limit)
+def choose_profile_from_grid(grid: list[dict[str, Any]], profile: dict[str, Any]) -> dict[str, Any]:
     allowed = [row for row in grid if policy_allows_profile(str(row["policy_id"]), profile)]
     if not allowed:
-        return choose_policy(train_table, args.top_k, args.low_pool_limit, args.high_pool_limit)
+        allowed = grid
     cap = float(profile["proxy_severe_cap"])
     hard_floor = float(profile["hard_floor"])
     positive_floor = float(profile["positive_floor"])
@@ -88,20 +87,29 @@ def choose_profile_policy(train_table: PatchTable, profile: dict[str, Any], args
     return chosen
 
 
+def choose_profile_policy(train_table: PatchTable, profile: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
+    grid = policy_grid(train_table, args.top_k, args.low_pool_limit, args.high_pool_limit)
+    if not grid:
+        return choose_policy(train_table, args.top_k, args.low_pool_limit, args.high_pool_limit)
+    return choose_profile_from_grid(grid, profile)
+
+
 def build_profile_fold_policies(table: PatchTable, image_rows: list[dict[str, Any]], args: argparse.Namespace) -> tuple[dict[str, dict[int, str]], list[dict[str, Any]]]:
     image_folds = np.array([fold_id(str(row["name"])) for row in image_rows], dtype=np.int64)
     profile_policies: dict[str, dict[int, str]] = {str(p["profile"]): {} for p in PROFILES}
     fold_rows: list[dict[str, Any]] = []
-    for profile in PROFILES:
-        pname = str(profile["profile"])
-        for fold in range(5):
-            train_table = table.subset_images(image_folds != fold)
-            heldout_table = table.subset_images(image_folds == fold)
-            chosen = choose_profile_policy(train_table, profile, args)
+    from audit_haze4k_v21_c7b_local_alpha_prototype import summarize_patch_actions
+
+    for fold in range(5):
+        train_table = table.subset_images(image_folds != fold)
+        heldout_table = table.subset_images(image_folds == fold)
+        grid = policy_grid(train_table, args.top_k, args.low_pool_limit, args.high_pool_limit)
+        print(f"c7c_policy_grid fold={fold} candidates={len(grid)}", flush=True)
+        for profile in PROFILES:
+            pname = str(profile["profile"])
+            chosen = choose_profile_from_grid(grid, profile)
             profile_policies[pname][fold] = str(chosen["policy_id"])
             heldout_actions = apply_policy(heldout_table, str(chosen["policy_id"]))
-            from audit_haze4k_v21_c7b_local_alpha_prototype import summarize_patch_actions
-
             rec = {
                 "profile": pname,
                 "fold": fold,
