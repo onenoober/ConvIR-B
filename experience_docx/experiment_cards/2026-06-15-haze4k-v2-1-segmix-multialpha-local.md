@@ -1,6 +1,6 @@
 # Haze4K v2.1 SEG-Mix Multi-Alpha / Local-Alpha
 
-Status: `C9B_FIXED_PROFILE_PASS_START_C10_FORMAL_5X3`
+Status: `C10_FORMAL_5X3_STRONG_PASS_AUTHORIZE_LOCKED_ONE_SHOT`
 
 ## Scope
 
@@ -27,7 +27,7 @@ strong model.
 - FullUDP checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/ConvIR_UDPNet_haze4k.ckpt`.
 - UDPNet repo: `/sda/home/wangyuxin/ConvIR-B/repos/UDPNet`.
 - Evidence root: `experience_docx/experiment_logs/haze4k_v2_1_segmix_multialpha_local_20260615/`.
-- Locked test policy: blocked. No command in this route may touch locked Haze4K test data.
+- Locked test policy: one-shot authorized only for the sealed C10 `riskcap36_no075` policy family after C10 evidence is synced and pushed. Locked results must not tune thresholds, profiles, features, action sets, checkpoints, or distillation targets.
 
 ## Experiments
 
@@ -101,8 +101,7 @@ validation only if the true OOF strong gate passes.
 - If C6 only screen-passes or fails but C7 has strong local-alpha signal, design a
   deployable local-alpha prototype before formal replay.
 - If C6 fails and C7 is weak, prioritize C8 candidate-zoo / multi-expert expansion.
-- Do not run locked test or distillation in v2.1 unless a future C10 formal 5x3
-  strong gate explicitly passes and the route card is updated.
+- C10 formal 5x3 passed the strong gate, so exactly one locked-test run is authorized for the sealed `riskcap36_no075` profile. Distillation remains blocked until locked evidence is synced and reviewed.
 
 ## Planned Outputs
 
@@ -214,3 +213,36 @@ C9 passed 8/9 shifted dimensions but failed `diff_signed_q4` because severe regr
 Decision: `C9B_FIXED_PROFILE_SHIFTED_PASS_START_C10_FORMAL_5X3`
 
 The fixed conservative profile `riskcap36_no075` passed all C9b stress dimensions with mean `+0.341530`, hard `+0.310932`, easy `+0.443958`, dSSIM `+0.00024241`, positive `0.786667`, and severe `37.0/600`. This authorizes C10 formal 5x3 only; locked remains blocked until C10 passes.
+
+## C10 Formal 5x3 Result
+
+Decision: `C10_FORMAL_5X3_STRONG_PASS_AUTHORIZE_LOCKED_ONE_SHOT`
+
+The sealed fixed conservative profile `riskcap36_no075` passed the formal 5x3
+strong gate on `convir-4090` from source commit `b6a439f`. Locked test was not
+touched during C10.
+
+| Metric | C10 aggregate |
+| --- | ---: |
+| mean dPSNR | `+0.336806 +/- 0.003559` |
+| hard bottom-25 dPSNR | `+0.326644 +/- 0.015142` |
+| easy top-25 dPSNR | `+0.406808 +/- 0.018984` |
+| dSSIM | `+0.00023458 +/- 0.00000735` |
+| positive ratio | `0.797778 +/- 0.003928` |
+| nonnegative ratio | `0.800000 +/- 0.003600` |
+| severe / 600 | `39.6667 +/- 2.4944` |
+| max seed severe / 600 | `43.0` |
+| all seed strong gate pass | `True` |
+| strong formal gate pass | `True` |
+
+Seed summaries:
+
+- seed `3407`: mean `+0.332035`, hard `+0.336628`, easy `+0.389177`, positive `0.803333`, severe `43/600`, strong gate `True`.
+- seed `3411`: mean `+0.337805`, hard `+0.305245`, easy `+0.433157`, positive `0.795000`, severe `37/600`, strong gate `True`.
+- seed `2026`: mean `+0.340580`, hard `+0.338058`, easy `+0.398091`, positive `0.795000`, severe `39/600`, strong gate `True`.
+
+C10 authorizes exactly one locked-test run for the sealed `riskcap36_no075` C10
+policy family. Locked output may be recorded as evidence only; it must not be
+used to tune thresholds, profiles, features, action sets, checkpoints, or
+distillation targets. Distillation remains blocked until locked evidence is
+synced and reviewed.

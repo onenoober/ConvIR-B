@@ -1,6 +1,6 @@
 # Haze4K v2.1 SEG-Mix Multi-Alpha / Local-Alpha Evidence
 
-Status: `C6_SCREEN_PASS_STRONG_TARGET_NOT_YET_C7_PATCH_SIGNAL`
+Status: `C10_FORMAL_5X3_STRONG_PASS_AUTHORIZE_LOCKED_ONE_SHOT`
 
 Route card: `experience_docx/experiment_cards/2026-06-15-haze4k-v2-1-segmix-multialpha-local.md`
 
@@ -10,7 +10,7 @@ Route card: `experience_docx/experiment_cards/2026-06-15-haze4k-v2-1-segmix-mult
 - Runtime workspace: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local`.
 - Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 - Remote copy fallback: if GitHub clone/fetch is unavailable on `convir-4090`, sync this committed branch by `git archive` and write `.codex_source_branch`, `.codex_source_commit`, and `.codex_source_copy_time` in the runtime workspace.
-- Locked test: blocked and untouched.
+- Locked test: untouched through C10; exactly one locked run is now authorized for the sealed C10 `riskcap36_no075` policy family after this evidence is committed and pushed.
 
 ## Planned Phases
 
@@ -32,8 +32,6 @@ Route card: `experience_docx/experiment_cards/2026-06-15-haze4k-v2-1-segmix-mult
 - `status_c9.txt`
 - `status_c9b.txt`
 - `status_c10.txt`
-
-This README will be updated after cloud evidence is synced back from `convir-4090`.
 
 ## Results
 
@@ -109,3 +107,36 @@ C9 profile-level shifted strong validation passed 8/9 dimensions. The only faili
 Decision: `C9B_FIXED_PROFILE_SHIFTED_PASS_START_C10_FORMAL_5X3`
 
 Fixed profile `riskcap36_no075` passed all shifted stress dimensions: mean `+0.341530`, hard `+0.310932`, positive `0.786667`, severe `37.0/600`. C10 formal 5x3 is authorized. Locked remains blocked until C10 passes and the route card is updated.
+
+## C10 Formal 5x3 Result
+
+Decision: `C10_FORMAL_5X3_STRONG_PASS_AUTHORIZE_LOCKED_ONE_SHOT`
+
+The sealed fixed conservative profile `riskcap36_no075` passed the formal 5x3
+strong gate on `convir-4090` from source commit `b6a439f`. Locked test was not
+touched during C10.
+
+| Metric | C10 aggregate |
+| --- | ---: |
+| mean dPSNR | `+0.336806 +/- 0.003559` |
+| hard bottom-25 dPSNR | `+0.326644 +/- 0.015142` |
+| easy top-25 dPSNR | `+0.406808 +/- 0.018984` |
+| dSSIM | `+0.00023458 +/- 0.00000735` |
+| positive ratio | `0.797778 +/- 0.003928` |
+| nonnegative ratio | `0.800000 +/- 0.003600` |
+| severe / 600 | `39.6667 +/- 2.4944` |
+| max seed severe / 600 | `43.0` |
+| all seed strong gate pass | `True` |
+| strong formal gate pass | `True` |
+
+Seed summaries:
+
+- seed `3407`: mean `+0.332035`, hard `+0.336628`, easy `+0.389177`, positive `0.803333`, severe `43/600`, strong gate `True`.
+- seed `3411`: mean `+0.337805`, hard `+0.305245`, easy `+0.433157`, positive `0.795000`, severe `37/600`, strong gate `True`.
+- seed `2026`: mean `+0.340580`, hard `+0.338058`, easy `+0.398091`, positive `0.795000`, severe `39/600`, strong gate `True`.
+
+C10 authorizes exactly one locked-test run for the sealed `riskcap36_no075` C10
+policy family. Locked output may be recorded as evidence only; it must not be
+used to tune thresholds, profiles, features, action sets, checkpoints, or
+distillation targets. Distillation remains blocked until locked evidence is
+synced and reviewed.
