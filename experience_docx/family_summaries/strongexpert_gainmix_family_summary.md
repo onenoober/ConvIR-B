@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed and is ready for locked one-shot review.
+Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed.
 
 ## Scope
 
@@ -382,10 +382,23 @@ The sealed full-train selector reached mean/hard/easy
 `+2.828078 / +3.548762 / +1.953362 dB`, positive `0.985000`, severe `6/600`,
 with action usage WD0375 `0.486667`, FS050 `0.513333`, A0 `0`.
 
-Locked Haze4K remains untouched by C11/C11-E. A future one-shot locked replay,
-if run, must use `v23_c11e_sealed_selector.json` exactly and may only record the
-result as evidence. It must not tune alpha, features, checkpoints, profiles,
-actions, experts, or distillation targets from locked output.
+The sealed C11 selector then consumed one authorized locked replay using
+`v23_c11e_sealed_selector.json` exactly. Locked result:
+
+- mean/hard/easy `+1.449078 / +1.558683 / +1.248566 dB`;
+- dSSIM `+0.00223960`;
+- positive ratio `0.896000`;
+- severe `48.60/600`;
+- action usage WD0375 `0.386`, FS050 `0.614`, A0 `0`.
+
+This is not a promotion over fixed `WD0375`. Compared with the v2.2 WD0375
+locked one-shot (`+1.442090 / +1.529767 / +1.182529 dB`, positive `0.938000`,
+severe `25.80/600`), C11 only slightly improved mean/hard/easy while degrading
+positive ratio by `0.042000` and increasing severe risk by `22.80/600`. The
+family default strong baseline remains locked-pass fixed `WD0375`. C11 should be
+treated as evidence that train-derived selector headroom does not yet translate
+to a safer locked selector, and locked output must not tune alpha, features,
+checkpoints, profiles, actions, experts, thresholds, or distillation targets.
 
 Evidence root: `../experiment_logs/haze4k_v2_3_c11_wd_fs_selector_20260615/`.
 Route card: `../experiment_cards/2026-06-15-haze4k-v2-3-c11-wd-fs-selector.md`.

@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: `C11E_SEALED_SELECTOR_PASS_READY_FOR_LOCKED_ONE_SHOT_REVIEW`
+Status: `LOCKED_C11_SELECTOR_ONE_SHOT_RECORDED_DO_NOT_PROMOTE_OVER_WD0375`
 
 ## Scope
 
@@ -235,7 +235,39 @@ C11_PASS_AUTHORIZE_LOCKED_ONE_SHOT_REVIEW
 C11E_SEALED_SELECTOR_PASS_READY_FOR_LOCKED_ONE_SHOT_REVIEW
 ```
 
-Locked Haze4K has not been run by C11/C11-E. Any locked replay must use
-`v23_c11e_sealed_selector.json` exactly, generate required WD0375/FS050 locked
-features without selecting from locked results, run once, and record the output
-as evidence only.
+## Locked One-Shot Closeout 2026-06-15
+
+After C11-E sealed the selector, the route consumed one authorized locked
+Haze4K replay using `v23_c11e_sealed_selector.json` exactly. The replay did not
+tune alpha, features, checkpoints, profiles, actions, experts, or distillation
+targets from locked output.
+
+Locked C11 selector result:
+
+- mean/hard/easy: `+1.449078 / +1.558683 / +1.248566 dB`;
+- dSSIM `+0.00223960`;
+- positive `0.896000`;
+- severe `48.60/600`;
+- action usage WD0375 `0.386`, FS050 `0.614`, A0 `0`.
+
+Reference locked fixed WD0375 result:
+
+- mean/hard/easy: `+1.442090 / +1.529767 / +1.182529 dB`;
+- dSSIM `+0.00247093`;
+- positive `0.938000`;
+- severe `25.80/600`.
+
+Decision:
+
+```text
+LOCKED_C11_SELECTOR_ONE_SHOT_RECORDED_DO_NOT_PROMOTE_OVER_WD0375
+```
+
+Interpretation: C11 train-derived selector feasibility was real, but the locked
+replay exposed an oracle-to-deployable risk gap. The selector gained only
+`+0.006989 dB` mean, `+0.028916 dB` hard, and `+0.066037 dB` easy over WD0375
+while reducing positive ratio by `0.042000` and increasing severe risk by
+`22.80/600`. The route should not replace WD0375 as the default locked-pass
+strong baseline. Locked output remains evidence only and must not be used to
+repair thresholds, features, actions, profiles, expert choices, checkpoints, or
+distillation targets.
