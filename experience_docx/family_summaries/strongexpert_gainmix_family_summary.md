@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal.
+Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal; v2.5 C13 A0-frozen residual distillation intermediate gate failed before B-screen.
 
 ## Scope
 
@@ -442,3 +442,31 @@ family default remains fixed `WD0375` as the strong locked-pass teacher/profile.
 
 Evidence root: `../experiment_logs/haze4k_v2_4_c12_wd0375_distill_20260615/`.
 Route card: `../experiment_cards/2026-06-15-haze4k-v2-4-c12-wd0375-distillation.md`.
+
+## v2.5 C13 A0-Frozen Residual Distillation
+
+Decision: `C13_INTERMEDIATE_GATE_FAIL_NO_B_SCREEN_LOCKED_UNTOUCHED`
+
+C13 reframed WD0375 compression as A0-frozen residual learning and validated
+the line at a narrow train-derived scale, but no intermediate variant passed
+the written quick gate. The A2-A5 chain found:
+
+- direct-zero microfit can learn and gives positive movement;
+- fixed high scale gives strong mean/hard but tail regressions are too large;
+- adaptive scalar is too conservative and loses hard gain;
+- post-hoc residual-scale sweep on the best fixed-scale checkpoint still leaves
+  a mean/hard vs tail/positive tradeoff that misses the quick gate.
+
+Best observed rows:
+
+- A5 scale `0.25`: mean `+0.221040`, hard `+0.307825`, easy `+0.163525`,
+  positive `0.796875`, severe `51.5625/600`;
+- A4 scale `0.50`: mean `+0.317922`, hard `+0.604817`, easy `+0.088566`,
+  positive `0.718750`, severe `131.25/600`;
+- A3 adaptive `0.50`: mean `+0.064695`, hard `+0.025806`, easy `+0.119304`,
+  positive `0.843750`, severe `0/600`.
+
+This means the current residual adapter is learnable but not screen-ready.
+Do not continue to C13-B from the current adapter/loss family, and do not touch
+locked Haze4K. A future reopen would need explicit risk/utility conditioning or
+a stronger no-op gate.

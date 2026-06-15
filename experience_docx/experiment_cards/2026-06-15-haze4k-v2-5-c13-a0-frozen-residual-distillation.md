@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: `PLANNED_LOCKED_TEST_UNTOUCHED`
+Status: `C13_INTERMEDIATE_GATE_FAIL_NO_B_SCREEN_LOCKED_UNTOUCHED`
 
 ## Scope
 
@@ -101,6 +101,85 @@ train_history.csv per microfit run
 
 Continue only if microfit losses are finite and train-core sampled dPSNR
 improves without breaking A0 parity at initialization.
+
+### C13-A3: adaptive scalar microfit
+
+Run two adaptive-scalar microfits on `256` train-core images with
+`scale_init=0.25` and `scale_init=0.50`.
+
+Required outputs:
+
+```text
+v25_c13_eval_c13a3_adaptive025_Best_summary.json
+v25_c13_eval_c13a3_adaptive050_Best_summary.json
+v25_c13_a3_adaptive_scalar_microfit_leaderboard.csv
+v25_c13_a3_adaptive_scalar_microfit_decision.json
+```
+
+Continue only if the adaptive-scalar variants improve the tail behavior versus
+the direct-zero microfit without breaking A0 parity at initialization.
+
+### C13-A4: fixed-scale direct microfit
+
+Run two direct residual microfits on `256` train-core images with
+`residual_scale=0.50` and `residual_scale=0.55`, keeping the A2 loss recipe.
+
+Required outputs:
+
+```text
+v25_c13_eval_c13a4_scale050_Best_summary.json
+v25_c13_eval_c13a4_scale055_Best_summary.json
+v25_c13_a4_fixed_scale_microfit_leaderboard.csv
+v25_c13_a4_fixed_scale_microfit_decision.json
+```
+
+Continue only if one fixed-scale variant improves mean/hard while keeping
+positive ratio and severe tail within the quick gate.
+
+### C13-A5: post-hoc scale sweep on A4 checkpoint
+
+Sweep `residual_scale=0.25/0.30/0.35/0.40/0.45` on the best A4 checkpoint
+without retraining, using the same 256-train / 128-val quick gate.
+
+Required outputs:
+
+```text
+v25_c13_a5_a4_scale_sweep_leaderboard.csv
+v25_c13_a5_a4_scale_sweep_decision.json
+v25_c13_eval_a5_a4sweep_<tag>_summary.json
+v25_c13_eval_a5_a4sweep_<tag>_per_image.csv
+```
+
+Only a scale passing the quick gate may get a full 600-image train-derived
+validation replay.
+
+## C13 Closeout
+
+The intermediate C13 sequence completed and did not justify C13-B.
+
+Summary:
+
+- C13-0 audit passed and confirmed model_0 parity with A0.
+- C13-A3 adaptive scalar microfit failed the quick gate.
+- C13-A4 fixed-scale microfit failed the quick gate.
+- C13-A5 post-hoc scale sweep failed the quick gate for all tested scales.
+
+Best observed tradeoffs:
+
+- safest row: A5 scale `0.25`, but mean/hard remained below the quick gate;
+- strongest mean/hard rows: A4 scales `0.50/0.55`, but severe tail and
+  positive ratio failed;
+- adaptive scalar rows were too conservative and lost hard gain.
+
+Decision:
+
+```text
+C13_INTERMEDIATE_GATE_FAIL_NO_B_SCREEN_LOCKED_UNTOUCHED
+```
+
+Do not continue to C13-B on the current adapter/loss family. If C13 is reopened
+later, it should introduce explicit risk/utility conditioning or a stronger
+no-op gate before any larger screen.
 
 ### C13-B: adapter screen
 

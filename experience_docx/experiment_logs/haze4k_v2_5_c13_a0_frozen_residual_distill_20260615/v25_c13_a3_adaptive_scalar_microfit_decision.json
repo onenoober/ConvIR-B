@@ -1,0 +1,32 @@
+{
+  "decision": "C13_A3_QUICK_FAIL_STOP_OR_REDESIGN",
+  "locked_per_image_read": false,
+  "locked_test_touched": false,
+  "quick_gate_pass_count": 0,
+  "quick_gate_pass_variants": [],
+  "route": "Haze4K v2.5 C13 A3 adaptive scalar microfit",
+  "rows": [
+    {
+      "dSSIM": 5.316454917192459e-05,
+      "easy_top25_dPSNR": 0.11070382595062256,
+      "eval_scope": "quick_val128",
+      "hard_bottom25_dPSNR": 0.017318367958068848,
+      "mean_dPSNR": 0.05646362900733948,
+      "positive_ratio": 0.890625,
+      "quick_gate_pass": false,
+      "severe_loss_per_600": 0.0,
+      "variant": "c13a3_adaptive025"
+    },
+    {
+      "dSSIM": 5.7489145547151566e-05,
+      "easy_top25_dPSNR": 0.11930382251739502,
+      "eval_scope": "quick_val128",
+      "hard_bottom25_dPSNR": 0.025805771350860596,
+      "mean_dPSNR": 0.06469468772411346,
+      "positive_ratio": 0.84375,
+      "quick_gate_pass": false,
+      "severe_loss_per_600": 0.0,
+      "variant": "c13a3_adaptive050"
+    }
+  ]
+}

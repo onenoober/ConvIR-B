@@ -964,3 +964,34 @@ printf 'AUDIT_OK\n'
 '@
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
+
+## 2026-06-16 `ssh -n` With Remote Heredoc Recurrence
+
+Avoid combining `ssh -n` with a remote heredoc:
+
+```bash
+ssh -n convir-4090 'bash -s' <<'REMOTE'
+set -euo pipefail
+printf 'REMOTE_PROBE_OK\n'
+REMOTE
+```
+
+Failure mode observed:
+
+- `-n` redirected SSH stdin from `/dev/null`;
+- the remote script body was not delivered to `bash -s`;
+- the local wrapper printed only its final marker, making the probe look
+  successful while no remote status was collected.
+
+Corrected form:
+
+```bash
+ssh convir-4090 'bash -s' <<'REMOTE'
+set -euo pipefail
+printf 'REMOTE_PROBE_OK\n'
+REMOTE
+```
+
+Use `ssh -n` only for single-command probes that must not consume wrapper
+stdin. Omit `-n` whenever the remote command intentionally receives a heredoc
+or streamed script body.

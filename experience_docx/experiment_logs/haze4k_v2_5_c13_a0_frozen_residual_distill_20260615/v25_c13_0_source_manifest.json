@@ -1,0 +1,17 @@
+{
+  "route": "Haze4K v2.5 C13 A0-frozen residual distillation",
+  "branch": "codex/haze4k-v2-5-c13-a0-frozen-residual-distill",
+  "source_commit": "9471bdeb9bcf1a4b029d409c0aec6f13f707a8f1",
+  "architecture_anchor": "github/codex/haze4k-official-arch-anchor",
+  "anchor_commit": "2d529d4",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "c12_student_checkpoint": "/sda/home/wangyuxin/ConvIR-B/runs/v24_c12_wd0375_distill_screen/c12_gt075_teacher025_lr1e-5/checkpoints/model_1.pkl",
+  "teacher_cache": "/sda/home/wangyuxin/ConvIR-B/runtime_cache/v24_c12_wd0375_teacher/train_core",
+  "locked_test_touched": false,
+  "locked_per_image_read": false,
+  "trainable_prefix": "C13_",
+  "a0_frozen": true,
+  "initial_output_equals_a0": true
+}

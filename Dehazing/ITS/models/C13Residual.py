@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from pathlib import Path
 from typing import Any
 
@@ -106,18 +107,29 @@ def _build_features(hazy: torch.Tensor, a0: torch.Tensor, feature_mode: str) -> 
 
 
 class C13ResidualAdapter(nn.Module):
-    def __init__(self, in_channels: int, width: int = 32, depth: int = 3) -> None:
+    def __init__(self, in_channels: int, width: int = 32, depth: int = 3, head_init: str = "kaiming") -> None:
         super().__init__()
+        if head_init not in {"kaiming", "zero"}:
+            raise ValueError(f"unsupported head_init={head_init!r}")
         blocks: list[nn.Module] = [BasicConv(in_channels, width, kernel_size=3, stride=1, relu=True)]
         for _ in range(max(0, depth - 1)):
             blocks.append(BasicConv(width, width, kernel_size=3, stride=1, relu=True))
         self.C13_body = nn.Sequential(*blocks)
         self.C13_head = nn.Conv2d(width, 3, kernel_size=3, stride=1, padding=1, bias=True)
-        nn.init.kaiming_normal_(self.C13_head.weight, mode="fan_out", nonlinearity="linear")
+        if head_init == "kaiming":
+            nn.init.kaiming_normal_(self.C13_head.weight, mode="fan_out", nonlinearity="linear")
+        else:
+            nn.init.zeros_(self.C13_head.weight)
         nn.init.zeros_(self.C13_head.bias)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.C13_head(self.C13_body(x))
+
+    def body_forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.C13_body(x)
+
+    def head_forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.C13_head(x)
 
 
 class C13A0FrozenResidualConvIR(nn.Module):
@@ -130,21 +142,37 @@ class C13A0FrozenResidualConvIR(nn.Module):
         adapter_width: int = 32,
         adapter_depth: int = 3,
         bootstrap_scale: float = 0.01,
+        residual_mode: str = "gated_bootstrap",
+        residual_scale: float = 1.0,
+        scale_init: float = 0.25,
+        head_init: str = "kaiming",
         clamp_output: bool = False,
     ) -> None:
         super().__init__()
         if feature_mode not in FEATURE_MODES:
             raise ValueError(f"unsupported feature_mode={feature_mode!r}")
+        if residual_mode not in {"gated_bootstrap", "direct", "adaptive_scalar"}:
+            raise ValueError(f"unsupported residual_mode={residual_mode!r}")
         self.feature_mode = feature_mode
         self.clamp_output = clamp_output
+        self.residual_mode = residual_mode
         self.a0 = ConvIR(version, data)
         self.C13_adapter = C13ResidualAdapter(
             FEATURE_MODES[feature_mode],
             width=adapter_width,
             depth=adapter_depth,
+            head_init=head_init,
         )
         self.C13_gate = nn.Parameter(torch.zeros(3, 1, 1))
         self.register_buffer("C13_bootstrap_scale", torch.tensor(float(bootstrap_scale)))
+        self.register_buffer("C13_residual_scale", torch.tensor(float(residual_scale)))
+        self.register_buffer("C13_scale_init", torch.tensor(float(scale_init)))
+        if residual_mode == "adaptive_scalar":
+            self.C13_scale_head = nn.Conv2d(adapter_width, 1, kernel_size=1, stride=1, padding=0, bias=True)
+            nn.init.zeros_(self.C13_scale_head.weight)
+            clipped_scale = max(1e-4, min(1 - 1e-4, float(scale_init)))
+            init_bias = math.log(clipped_scale / (1.0 - clipped_scale))
+            nn.init.constant_(self.C13_scale_head.bias, init_bias)
         self.load_a0_checkpoint(a0_checkpoint)
         self.freeze_a0()
 
@@ -170,9 +198,19 @@ class C13A0FrozenResidualConvIR(nn.Module):
             a0_outputs = self.a0(hazy)
             a0_pred = a0_outputs[2] if isinstance(a0_outputs, (list, tuple)) else a0_outputs
         features = self.build_features(hazy, a0_pred)
-        raw = self.C13_adapter(features)
+        body = self.C13_adapter.body_forward(features)
+        raw = self.C13_adapter.head_forward(body)
         gate = torch.tanh(self.C13_gate)
-        residual = gate * raw + self.C13_bootstrap_scale * (raw - raw.detach())
+        if self.residual_mode == "gated_bootstrap":
+            residual = gate * raw + self.C13_bootstrap_scale * (raw - raw.detach())
+            scale = gate
+        elif self.residual_mode == "adaptive_scalar":
+            scale_logits = self.C13_scale_head(F.adaptive_avg_pool2d(body, 1))
+            scale = torch.sigmoid(scale_logits)
+            residual = self.C13_residual_scale * scale * raw
+        else:
+            scale = self.C13_residual_scale.view(1, 1, 1, 1).expand(raw.shape[0], 1, 1, 1)
+            residual = self.C13_residual_scale * raw
         pred = a0_pred + residual
         if self.clamp_output:
             pred = torch.clamp(pred, 0.0, 1.0)
@@ -192,8 +230,10 @@ class C13A0FrozenResidualConvIR(nn.Module):
             "outputs": [pred_4, pred_2, pred],
             "a0": a0_pred,
             "features": features,
+            "body": body,
             "raw_residual": raw,
             "residual": residual,
+            "scale": scale,
             "gate": gate,
         }
 
@@ -207,14 +247,19 @@ class C13A0FrozenResidualConvIR(nn.Module):
         residual = aux["residual"]
         raw = aux["raw_residual"]
         gate = aux["gate"]
+        scale = aux["scale"]
         assert isinstance(a0, torch.Tensor)
         assert isinstance(pred, torch.Tensor)
         assert isinstance(residual, torch.Tensor)
         assert isinstance(raw, torch.Tensor)
         assert isinstance(gate, torch.Tensor)
+        assert isinstance(scale, torch.Tensor)
         return {
             "gate_mean": float(gate.mean().item()),
             "gate_abs_max": float(gate.abs().max().item()),
+            "residual_scale": float(self.C13_residual_scale.item()),
+            "scale_mean": float(scale.mean().item()),
+            "scale_abs_max": float(scale.abs().max().item()),
             "raw_residual_mean_abs": float(raw.abs().mean().item()),
             "residual_mean_abs": float(residual.abs().mean().item()),
             "student_a0_mean_abs": float((pred - a0).abs().mean().item()),
@@ -229,6 +274,10 @@ def build_net(
     adapter_width: int = 32,
     adapter_depth: int = 3,
     bootstrap_scale: float = 0.01,
+    residual_mode: str = "gated_bootstrap",
+    residual_scale: float = 1.0,
+    scale_init: float = 0.25,
+    head_init: str = "kaiming",
     clamp_output: bool = False,
 ) -> C13A0FrozenResidualConvIR:
     return C13A0FrozenResidualConvIR(
@@ -239,5 +288,9 @@ def build_net(
         adapter_width=adapter_width,
         adapter_depth=adapter_depth,
         bootstrap_scale=bootstrap_scale,
+        residual_mode=residual_mode,
+        residual_scale=residual_scale,
+        scale_init=scale_init,
+        head_init=head_init,
         clamp_output=clamp_output,
     )

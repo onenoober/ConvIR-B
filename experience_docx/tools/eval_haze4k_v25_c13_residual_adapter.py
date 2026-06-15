@@ -74,6 +74,11 @@ def main() -> None:
     ap.add_argument("--adapter-width", type=int, default=32)
     ap.add_argument("--adapter-depth", type=int, default=3)
     ap.add_argument("--bootstrap-scale", type=float, default=0.01)
+    ap.add_argument("--residual-mode", default="gated_bootstrap", choices=["gated_bootstrap", "direct", "adaptive_scalar"])
+    ap.add_argument("--residual-scale", type=float, default=1.0)
+    ap.add_argument("--scale-init", type=float, default=0.25)
+    ap.add_argument("--head-init", default="kaiming", choices=["kaiming", "zero"])
+    ap.add_argument("--clamp-output", action="store_true")
     ap.add_argument("--max-train", type=int, default=0)
     ap.add_argument("--max-val", type=int, default=0)
     args = ap.parse_args()
@@ -96,6 +101,11 @@ def main() -> None:
         args.adapter_width,
         args.adapter_depth,
         args.bootstrap_scale,
+        residual_mode=args.residual_mode,
+        residual_scale=args.residual_scale,
+        scale_init=args.scale_init,
+        head_init=args.head_init,
+        clamp_output=args.clamp_output,
     )
     train_eval_rows = eval_rows(student, a0_model, args.data_dir, [{"name": name} for name in train_rows], device, "train_core")
     val_eval_rows = eval_rows(student, a0_model, args.data_dir, val_rows, device, "val")

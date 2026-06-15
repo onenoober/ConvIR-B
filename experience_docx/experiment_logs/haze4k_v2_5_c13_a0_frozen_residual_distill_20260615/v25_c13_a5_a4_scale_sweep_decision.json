@@ -1,0 +1,65 @@
+{
+  "decision": "C13_A5_SCALE_SWEEP_FAIL_STOP_OR_REDESIGN",
+  "locked_per_image_read": false,
+  "locked_test_touched": false,
+  "quick_gate_pass_count": 0,
+  "quick_gate_pass_tags": [],
+  "route": "Haze4K v2.5 C13 A5 A4 scale sweep",
+  "rows": [
+    {
+      "dSSIM": 0.00012394040822982788,
+      "easy_top25_dPSNR": 0.16352534294128418,
+      "hard_bottom25_dPSNR": 0.3078254461288452,
+      "mean_dPSNR": 0.22104009985923767,
+      "positive_ratio": 0.796875,
+      "quick_gate_pass": false,
+      "severe_loss_per_600": 51.5625,
+      "tag": "s025",
+      "variant": "a5_a4sweep_s025"
+    },
+    {
+      "dSSIM": 0.00013577379286289215,
+      "easy_top25_dPSNR": 0.15960288047790527,
+      "hard_bottom25_dPSNR": 0.36820727586746216,
+      "mean_dPSNR": 0.24716190993785858,
+      "positive_ratio": 0.78125,
+      "quick_gate_pass": false,
+      "severe_loss_per_600": 75.0,
+      "tag": "s030",
+      "variant": "a5_a4sweep_s030"
+    },
+    {
+      "dSSIM": 0.00014606770128011703,
+      "easy_top25_dPSNR": 0.1500798463821411,
+      "hard_bottom25_dPSNR": 0.4281584620475769,
+      "mean_dPSNR": 0.2699349671602249,
+      "positive_ratio": 0.78125,
+      "quick_gate_pass": false,
+      "severe_loss_per_600": 84.375,
+      "tag": "s035",
+      "variant": "a5_a4sweep_s035"
+    },
+    {
+      "dSSIM": 0.0001548142172396183,
+      "easy_top25_dPSNR": 0.1350080966949463,
+      "hard_bottom25_dPSNR": 0.48761963844299316,
+      "mean_dPSNR": 0.28932881355285645,
+      "positive_ratio": 0.7578125,
+      "quick_gate_pass": false,
+      "severe_loss_per_600": 98.4375,
+      "tag": "s040",
+      "variant": "a5_a4sweep_s040"
+    },
+    {
+      "dSSIM": 0.00016198260709643364,
+      "easy_top25_dPSNR": 0.11446726322174072,
+      "hard_bottom25_dPSNR": 0.5465289950370789,
+      "mean_dPSNR": 0.3053256720304489,
+      "positive_ratio": 0.734375,
+      "quick_gate_pass": false,
+      "severe_loss_per_600": 121.875,
+      "tag": "s045",
+      "variant": "a5_a4sweep_s045"
+    }
+  ]
+}

@@ -144,6 +144,11 @@ def load_c13_model(
     adapter_width: int,
     adapter_depth: int,
     bootstrap_scale: float,
+    residual_mode: str = "gated_bootstrap",
+    residual_scale: float = 1.0,
+    scale_init: float = 0.25,
+    head_init: str = "kaiming",
+    clamp_output: bool = False,
 ):
     build_net = load_c13(convir_dir)
     model = build_net(
@@ -154,9 +159,17 @@ def load_c13_model(
         adapter_width=adapter_width,
         adapter_depth=adapter_depth,
         bootstrap_scale=bootstrap_scale,
+        residual_mode=residual_mode,
+        residual_scale=residual_scale,
+        scale_init=scale_init,
+        head_init=head_init,
+        clamp_output=clamp_output,
     ).to(device)
     if checkpoint is not None:
         model.load_state_dict(load_model_state(checkpoint, device), strict=True)
+    model.C13_residual_scale.fill_(float(residual_scale))
+    if clamp_output:
+        model.clamp_output = True
     model.eval()
     return model
 

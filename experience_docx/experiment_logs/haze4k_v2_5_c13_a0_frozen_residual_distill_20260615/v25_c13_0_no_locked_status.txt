@@ -1,0 +1,4 @@
+locked_test_touched=false
+locked_per_image_read=false
+locked_informed_tuning=false
+teacher_source=C12_train_core_WD0375_cache_only

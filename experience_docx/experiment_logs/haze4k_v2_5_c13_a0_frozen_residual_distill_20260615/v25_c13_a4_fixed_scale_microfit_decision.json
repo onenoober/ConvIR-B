@@ -1,0 +1,32 @@
+{
+  "decision": "C13_A4_QUICK_FAIL_STOP_OR_REDESIGN",
+  "locked_per_image_read": false,
+  "locked_test_touched": false,
+  "quick_gate_pass_count": 0,
+  "quick_gate_pass_variants": [],
+  "route": "Haze4K v2.5 C13 A4 fixed-scale direct microfit",
+  "rows": [
+    {
+      "dSSIM": 0.0001675584353506565,
+      "easy_top25_dPSNR": 0.08856630325317383,
+      "eval_scope": "quick_val128",
+      "hard_bottom25_dPSNR": 0.6048173308372498,
+      "mean_dPSNR": 0.3179215341806412,
+      "positive_ratio": 0.71875,
+      "quick_gate_pass": false,
+      "severe_loss_per_600": 131.25,
+      "variant": "c13a4_scale050"
+    },
+    {
+      "dSSIM": 0.0001667155884206295,
+      "easy_top25_dPSNR": 0.08684730529785156,
+      "eval_scope": "quick_val128",
+      "hard_bottom25_dPSNR": 0.6063382625579834,
+      "mean_dPSNR": 0.31798338890075684,
+      "positive_ratio": 0.71875,
+      "quick_gate_pass": false,
+      "severe_loss_per_600": 131.25,
+      "variant": "c13a4_scale055"
+    }
+  ]
+}

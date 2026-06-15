@@ -36,6 +36,11 @@ def main() -> None:
     ap.add_argument("--adapter-width", type=int, default=32)
     ap.add_argument("--adapter-depth", type=int, default=3)
     ap.add_argument("--bootstrap-scale", type=float, default=0.01)
+    ap.add_argument("--residual-mode", default="gated_bootstrap", choices=["gated_bootstrap", "direct", "adaptive_scalar"])
+    ap.add_argument("--residual-scale", type=float, default=1.0)
+    ap.add_argument("--scale-init", type=float, default=0.25)
+    ap.add_argument("--head-init", default="kaiming", choices=["kaiming", "zero"])
+    ap.add_argument("--clamp-output", action="store_true")
     ap.add_argument("--max-train", type=int, default=32)
     ap.add_argument("--max-val", type=int, default=64)
     args = ap.parse_args()
@@ -59,6 +64,11 @@ def main() -> None:
         args.adapter_width,
         args.adapter_depth,
         args.bootstrap_scale,
+        residual_mode=args.residual_mode,
+        residual_scale=args.residual_scale,
+        scale_init=args.scale_init,
+        head_init=args.head_init,
+        clamp_output=args.clamp_output,
     )
 
     train_input_dir = first_dir(args.data_dir / "train", ("IN", "haze", "hazy"))
@@ -146,6 +156,11 @@ def main() -> None:
         "adapter_width": args.adapter_width,
         "adapter_depth": args.adapter_depth,
         "bootstrap_scale": args.bootstrap_scale,
+        "residual_mode": args.residual_mode,
+        "residual_scale": args.residual_scale,
+        "scale_init": args.scale_init,
+        "head_init": args.head_init,
+        "clamp_output": args.clamp_output,
         "train_core_count": len(train_rows),
         "val_count": len(val_rows_all),
         "train_core_mean_teacher_dPSNR": sum(r["teacher_dPSNR"] for r in train_rows) / max(1, len(train_rows)),
@@ -169,6 +184,11 @@ def main() -> None:
                 f"Feature mode: `{args.feature_mode}`",
                 f"Adapter width/depth: `{args.adapter_width}` / `{args.adapter_depth}`",
                 f"Bootstrap scale: `{args.bootstrap_scale}`",
+                f"Residual mode: `{args.residual_mode}`",
+                f"Residual scale: `{args.residual_scale}`",
+                f"Scale init: `{args.scale_init}`",
+                f"Head init: `{args.head_init}`",
+                f"Clamp output: `{args.clamp_output}`",
                 f"Train-core count: `{len(train_rows)}`",
                 f"Val count: `{len(val_rows_all)}`",
                 f"Train-core mean teacher dPSNR: `{payload['train_core_mean_teacher_dPSNR']:.6f}`",

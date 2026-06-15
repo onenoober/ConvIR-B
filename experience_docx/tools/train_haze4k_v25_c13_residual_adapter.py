@@ -116,6 +116,13 @@ def tv_loss(x: torch.Tensor) -> torch.Tensor:
     return (x[..., 1:, :] - x[..., :-1, :]).abs().mean() + (x[..., :, 1:] - x[..., :, :-1]).abs().mean()
 
 
+def pad_to_factor(x: torch.Tensor, factor: int = 32) -> tuple[torch.Tensor, int, int]:
+    _, _, h, w = x.shape
+    ph = (factor - h % factor) % factor
+    pw = (factor - w % factor) % factor
+    return F.pad(x, (0, pw, 0, ph), "reflect"), h, w
+
+
 def masked_l1(a: torch.Tensor, b: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
     while mask.ndim < a.ndim:
         mask = mask.unsqueeze(-1)
@@ -136,6 +143,11 @@ def train_one(args: argparse.Namespace) -> None:
         adapter_width=args.adapter_width,
         adapter_depth=args.adapter_depth,
         bootstrap_scale=args.bootstrap_scale,
+        residual_mode=args.residual_mode,
+        residual_scale=args.residual_scale,
+        scale_init=args.scale_init,
+        head_init=args.head_init,
+        clamp_output=args.clamp_output,
     ).to(device)
     for name, param in model.named_parameters():
         param.requires_grad_(name.startswith("C13_"))
@@ -169,6 +181,11 @@ def train_one(args: argparse.Namespace) -> None:
             "frozen_param_count": sum(p.numel() for name, p in model.named_parameters() if not p.requires_grad),
             "trainable_prefixes": sorted({name.split(".")[0] for name, _ in trainable}),
             "train_image_count": len(dataset),
+            "residual_mode": args.residual_mode,
+            "residual_scale": args.residual_scale,
+            "scale_init": args.scale_init,
+            "head_init": args.head_init,
+            "clamp_output": args.clamp_output,
         }
     )
     write_json(args.out_dir / "train_config.json", cfg)
@@ -183,15 +200,21 @@ def train_one(args: argparse.Namespace) -> None:
             gt = gt.to(device, non_blocking=True)
             teacher = teacher.to(device, non_blocking=True)
             teacher_positive = teacher_positive.to(device, non_blocking=True)
+            if args.crop_size <= 0:
+                hazy, _, _ = pad_to_factor(hazy, 32)
+                gt, _, _ = pad_to_factor(gt, 32)
+                teacher, _, _ = pad_to_factor(teacher, 32)
             aux = model.route_forward(hazy)
             pred = aux["outputs"][-1]
             a0 = aux["a0"]
             residual = aux["residual"]
             raw = aux["raw_residual"]
+            scale = aux["scale"]
             assert isinstance(pred, torch.Tensor)
             assert isinstance(a0, torch.Tensor)
             assert isinstance(residual, torch.Tensor)
             assert isinstance(raw, torch.Tensor)
+            assert isinstance(scale, torch.Tensor)
             target_residual = teacher - a0.detach()
             loss_gt = F.l1_loss(pred, gt)
             loss_teacher = masked_l1(residual, target_residual.detach(), teacher_positive)
@@ -226,6 +249,8 @@ def train_one(args: argparse.Namespace) -> None:
                 "loss_raw": float(loss_raw.item()),
                 "teacher_positive_batch": float(teacher_positive.mean().item()),
                 "gate_abs_max": float(torch.tanh(model.C13_gate).abs().max().item()),
+                "scale_mean": float(scale.mean().item()),
+                "scale_abs_max": float(scale.abs().max().item()),
                 "residual_mean_abs": float(residual.abs().mean().item()),
                 "raw_residual_mean_abs": float(raw.abs().mean().item()),
             }
@@ -236,7 +261,8 @@ def train_one(args: argparse.Namespace) -> None:
                     f"variant={args.variant} epoch={epoch}/{args.epochs} step={global_step} "
                     f"loss={step_row['loss']:.6f} gt={step_row['loss_gt']:.6f} "
                     f"teacher={step_row['loss_teacher']:.6f} preserve={step_row['loss_preserve']:.6f} "
-                    f"residual={step_row['residual_mean_abs']:.8f} gate={step_row['gate_abs_max']:.8f}",
+                    f"residual={step_row['residual_mean_abs']:.8f} gate={step_row['gate_abs_max']:.8f} "
+                    f"scale={step_row['scale_mean']:.6f}",
                     flush=True,
                 )
         avg = {
@@ -299,6 +325,11 @@ def main() -> None:
     ap.add_argument("--adapter-width", type=int, default=32)
     ap.add_argument("--adapter-depth", type=int, default=3)
     ap.add_argument("--bootstrap-scale", type=float, default=0.01)
+    ap.add_argument("--residual-mode", default="gated_bootstrap", choices=["gated_bootstrap", "direct", "adaptive_scalar"])
+    ap.add_argument("--residual-scale", type=float, default=1.0)
+    ap.add_argument("--scale-init", type=float, default=0.25)
+    ap.add_argument("--head-init", default="kaiming", choices=["kaiming", "zero"])
+    ap.add_argument("--clamp-output", action="store_true")
     ap.add_argument("--seed", type=int, default=3407)
     ap.add_argument("--epochs", type=int, default=5)
     ap.add_argument("--batch-size", type=int, default=8)
