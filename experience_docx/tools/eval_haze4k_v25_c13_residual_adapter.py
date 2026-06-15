@@ -100,6 +100,8 @@ def main() -> None:
     train_eval_rows = eval_rows(student, a0_model, args.data_dir, [{"name": name} for name in train_rows], device, "train_core")
     val_eval_rows = eval_rows(student, a0_model, args.data_dir, val_rows, device, "val")
     all_rows = train_eval_rows + val_eval_rows
+    train_summary = summarize_rows(train_eval_rows)
+    val_summary = summarize_rows(val_eval_rows)
     summary = summarize_rows(all_rows)
     summary.update(
         {
@@ -112,6 +114,8 @@ def main() -> None:
             "train_core_count": len(train_eval_rows),
             "val_count": len(val_eval_rows),
             "model0_a0_parity_pass": max((float(row["max_abs_vs_A0"]) for row in all_rows), default=0.0) <= 1e-7,
+            "train_core_summary": train_summary,
+            "val_summary": val_summary,
         }
     )
     args.out_dir.mkdir(parents=True, exist_ok=True)
