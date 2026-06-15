@@ -1,0 +1,2 @@
+scope,count,unique_win_count,unique_win_rate,mean_oracle_gain_unique,residual_cosine_mean_unique
+hard_or_val_hard,2,2,1.0,5.2583112716674805,-0.28242650628089905

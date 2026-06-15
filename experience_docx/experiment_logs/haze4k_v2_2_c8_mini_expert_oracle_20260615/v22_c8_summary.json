@@ -1,8 +1,121 @@
 {
-  "decision": "C8_STOP_PREFLIGHT_FAILED_ENGINEERING_ASSET_UNAVAILABLE",
-  "fsudp_checkpoint_available": false,
+  "S2": {
+    "hard_bottom25_gain_over_S0": 4.4738112131754555,
+    "mean_gain_over_S0": 3.1165698623657225,
+    "selected_oracle_hard": 4.929342486063639,
+    "selected_oracle_mean": 3.6624197928110758,
+    "severe_count": 0,
+    "unique_wins_by_expert": [
+      {
+        "count": "336",
+        "expert": "wdmamba",
+        "mean_margin_unique": "2.521369862475086",
+        "scope": "hard_or_val_hard",
+        "unique_win_count_vs_all_others": "293",
+        "unique_win_rate_vs_all_others": "0.8720238095238095"
+      },
+      {
+        "count": "336",
+        "expert": "fsudp",
+        "mean_margin_unique": "0.7621396064758301",
+        "scope": "hard_or_val_hard",
+        "unique_win_count_vs_all_others": "40",
+        "unique_win_rate_vs_all_others": "0.11904761904761904"
+      }
+    ]
+  },
+  "S3": {
+    "hard_bottom25_gain_over_S0": 4.559721043904623,
+    "mean_gain_over_S0": 3.158518358866374,
+    "selected_oracle_hard": 5.015252316792806,
+    "selected_oracle_mean": 3.7043682893117267,
+    "severe_count": 0,
+    "unique_wins_by_expert": [
+      {
+        "count": "336",
+        "expert": "wdmamba",
+        "mean_margin_unique": "2.075686789086824",
+        "scope": "hard_or_val_hard",
+        "unique_win_count_vs_all_others": "271",
+        "unique_win_rate_vs_all_others": "0.8065476190476191"
+      },
+      {
+        "count": "336",
+        "expert": "fsudp",
+        "mean_margin_unique": "0.7227354551616468",
+        "scope": "hard_or_val_hard",
+        "unique_win_count_vs_all_others": "38",
+        "unique_win_rate_vs_all_others": "0.1130952380952381"
+      },
+      {
+        "count": "336",
+        "expert": "mbtaylor",
+        "mean_margin_unique": "0.7331759643554687",
+        "scope": "hard_or_val_hard",
+        "unique_win_count_vs_all_others": "25",
+        "unique_win_rate_vs_all_others": "0.0744047619047619"
+      }
+    ]
+  },
+  "decision": "C8_PASS_COMPLEMENTARITY_PROVEN_AUTHORIZE_C9_ROUTER_DESIGN_ONLY",
+  "duplicate_audit": {
+    "architecture_file_identical": false,
+    "convir_udp_arch_sha256": "038c349e191972c65fd95ff4b61ca7b97a9c075f1b1eda220ae6ed704faab543",
+    "current_fulludp_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/ConvIR_UDPNet_haze4k.ckpt",
+    "current_fulludp_sha256": "6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291",
+    "decision": "NOT_DUPLICATE_RENDER_AND_ARCH_DIFFER",
+    "fsnet_udp_arch_sha256": "c0f0769d8b850f98fed8df6adbaef258cd67a48d24d187f8216560d027a84c3a",
+    "fsudp_builder_patch_for_checkpoint": "import-time FSNet_UDPNet fusion OCAB num_heads=1->2 because checkpoint bias tables are shape [1521,2]",
+    "fsudp_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/FSNet_UDPNet_haze4k.ckpt",
+    "fsudp_sha256": "25cc334f44c2fac979baad7f158526c9f8d751c21ea282974b0e4d9791fc0a27",
+    "fulludp_vs_fsudp_mae_mean": 0.009679032842007777,
+    "fulludp_vs_fsudp_mae_median": 0.008762589190155268,
+    "fulludp_vs_fsudp_psnr_mean": 38.910001010894774,
+    "fulludp_vs_fsudp_psnr_min": 27.43566131591797,
+    "locked_test_touched": false,
+    "near_identical_count_mae_le_1e_6_or_psnr_ge_80": 0,
+    "rendered_output_count": 600,
+    "residual_cosine_mean": 0.3052774296553495
+  },
+  "experts_completed": [
+    "WDMamba",
+    "FSNet+UDP",
+    "MB-TaylorFormerV2-L"
+  ],
+  "group_min_gain_over_S0": {
+    "S2": {
+      "min_hard_gain": 1.966238176500475,
+      "min_mean_gain": 1.5467684936523438,
+      "min_positive_ratio": 0.9733333333333334,
+      "rows": 46,
+      "skipped_empty_groups": []
+    },
+    "S3": {
+      "min_hard_gain": 1.966238176500475,
+      "min_mean_gain": 1.5593358866373699,
+      "min_positive_ratio": 0.9733333333333334,
+      "rows": 46,
+      "skipped_empty_groups": []
+    }
+  },
   "locked_test_touched": false,
-  "mbtaylor_checkpoint_available": false,
-  "router_training_authorized": false,
-  "wdmamba_checkpoint_available": false
+  "router_training_authorized_next": true,
+  "router_training_done": false,
+  "single_expert": {
+    "FSNet+UDP": {
+      "hard_bottom25_gain_over_S0": 1.7967398198445639,
+      "hard_unique_win_rate": 0.8958333333333334,
+      "mean_oracle_gain_over_S0": 1.5701781940460204
+    },
+    "MB-TaylorFormerV2-L": {
+      "hard_bottom25_gain_over_S0": 2.082183888753255,
+      "hard_unique_win_rate": 0.8571428571428571,
+      "mean_oracle_gain_over_S0": 1.20453982035319
+    },
+    "WDMamba": {
+      "hard_bottom25_gain_over_S0": 4.453624165852864,
+      "hard_unique_win_rate": 0.9821428571428571,
+      "mean_oracle_gain_over_S0": 2.8242255147298176
+    }
+  }
 }

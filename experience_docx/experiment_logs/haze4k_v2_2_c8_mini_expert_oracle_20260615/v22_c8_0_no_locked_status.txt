@@ -5,4 +5,5 @@ locked_test_touched=false
 locked_outputs_read=false
 no_locked_informed_tuning=true
 splits=val_regular,val_hard
+locked_dataset_path_not_used=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test
 C8_NO_LOCKED_OK

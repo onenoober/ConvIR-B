@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: v2.1 locked one-shot failed; v2.2 C8-Mini stopped at expert-asset preflight; no locked-informed tuning, distillation, or router training is allowed.
+Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 C8-Mini proves train-derived multi-expert complementarity and authorizes C9 router design only.
 
 ## Scope
 
@@ -256,17 +256,22 @@ sealed policy is not promotion-ready, and distillation remains blocked. Any
 future work must be a separately predeclared train-derived route that does not
 use locked per-image output for selection.
 
-## v2.2 C8-Mini Expert Complementarity Preflight
 
-Decision: `C8_STOP_PREFLIGHT_FAILED_ENGINEERING_ASSET_UNAVAILABLE`
+## v2.2 C8-Mini Multi-Expert Complementarity Result
 
-C8-Mini accepted the next-stage plan to prove multi-expert complementarity before any router/MoE training. It created a preregistered route card, fixed the candidate order (`WDMamba -> FSNet+UDP duplicate audit -> MB-TaylorFormerV2-L fallback`), fixed the alpha grid `{0, 0.0625, 0.125, 0.25, 0.375, 0.50}`, and recorded a no-locked contract.
+Decision: `C8_PASS_COMPLEMENTARITY_PROVEN_AUTHORIZE_C9_ROUTER_DESIGN_ONLY`
 
-The cloud audit completed on `convir-4090` with locked test untouched, but all new expert rendering was blocked by missing assets:
+C8-Mini was opened after the v2.1 locked one-shot showed that a single FullUDP/local-alpha family did not cover locked hard-bottom25. C8 deliberately did not train a router/MoE and did not touch locked test. It used train-derived `val_regular` + `val_hard` only.
 
-- WDMamba repo cloned/audited; no Haze4K checkpoint or official result package available on `convir-4090`.
-- FSNet+UDP source exists in the UDPNet repo and is not source-identical to current ConvIR+UDP, but no FSNet+UDP Haze4K checkpoint is available for render-diff duplicate proof.
-- MB-TaylorFormerV2 repo cloned/audited; no Haze4K-L checkpoint available on `convir-4090`.
-- Baidu shared-link probes returned landing/auth pages, so checkpoints could not be acquired non-interactively.
+Completed expert audits:
 
-This is an engineering asset blocker, not evidence against complementarity. C9 router/MoE remains unauthorized. Resume at C8-1 only after a reproducible WDMamba Haze4K checkpoint/result package is supplied and its sha256, normalization, padding/crop, and inference command are recorded.
+- WDMamba checkpoint sha256 `57ff24c3791e593f0172607fea66252a8ba5475ab0e417f4cf48e72b4c9a36da`; S1 oracle gain over S0 mean `+2.824226 dB`, hard-bottom25 `+4.453624 dB`, hard/red-flag unique wins `0.982143`.
+- FSNet+UDP checkpoint sha256 `25cc334f44c2fac979baad7f158526c9f8d751c21ea282974b0e4d9791fc0a27`; duplicate audit decision `NOT_DUPLICATE_RENDER_AND_ARCH_DIFFER`, FullUDP-vs-FSNet output MAE mean `0.00967903`, near-identical count `0/600`; S2 with WDMamba+FSNet+UDP gained mean `+3.116570 dB`, hard-bottom25 `+4.473811 dB`, selected severe `0`.
+- MB-TaylorFormerV2-L checkpoint sha256 `954229a6862cd7058c8769a9362a88f9ef2ef132664a1b05e7f7f204b617f2f9`; S3 with all three experts gained mean `+3.158518 dB`, hard-bottom25 `+4.559721 dB`, selected severe `0`.
+
+S3 hard/red-flag unique wins vs all other experts are WDMamba `0.806548`, FSNet+UDP `0.113095`, and MB-Taylor `0.074405`. Removal ablation shows WDMamba is dominant but not the only contributor: removing WDMamba drops mean/hard by `1.181882/1.966369 dB`, removing FSNet+UDP drops `0.275996/0.014031 dB`, and removing MB-Taylor drops `0.041948/0.085910 dB`. Fixed group-min gain-over-S0 remains positive: S3 minimum group mean/hard gain `+1.559336/+1.966238 dB`.
+
+C8 authorizes only C9 train-derived low-capacity group-min router design using the saved oracle labels/features. It does not authorize locked-test tuning, locked rerun, distillation, or any claim about locked performance.
+
+Evidence root: `../experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/`.
+Route card: `../experiment_cards/2026-06-15-haze4k-v2-2-c8-mini-expert-oracle.md`.

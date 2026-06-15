@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: `C8_STOP_PREFLIGHT_FAILED_ENGINEERING_ASSET_UNAVAILABLE`
+Status: `C8_PASS_COMPLEMENTARITY_PROVEN`
 
 ## Scope
 
@@ -96,8 +96,19 @@ oracle severe:                 near 0
 
 If assets are unavailable, close the phase as `PREFLIGHT_FAILED_ENGINEERING_ASSET_UNAVAILABLE`, not as a scientific negative result.
 
-## C8 Result
 
-Decision: `C8_STOP_PREFLIGHT_FAILED_ENGINEERING_ASSET_UNAVAILABLE`
+## Closeout 2026-06-15
 
-C8-0 through C8-3 completed as text-only cloud asset/preflight audits. WDMamba, FSNet+UDP, and MB-TaylorFormerV2-L could not be rendered because the required Haze4K checkpoints/result packages were unavailable on `convir-4090`; Baidu shared-link probes did not yield files without authenticated transfer. Locked test remained untouched. No C9 router/MoE is authorized.
+C8-Mini completed on `convir-4090` with actual checkpoints found under `/sda/home/wangyuxin/ConvIR-B/checkpoints/`. Earlier asset-blocked preflight notes are superseded by the final manifest and decision files in the evidence directory.
+
+Final decision: `C8_PASS_COMPLEMENTARITY_PROVEN_AUTHORIZE_C9_ROUTER_DESIGN_ONLY`.
+
+Headline train-derived oracle evidence:
+
+- S1 WDMamba mean/hard gain over S0: `+2.824226 / +4.453624 dB`.
+- S2 WDMamba+FSNet+UDP mean/hard gain over S0: `+3.116570 / +4.473811 dB`.
+- S3 +MB-TaylorFormerV2-L mean/hard gain over S0: `+3.158518 / +4.559721 dB`.
+- S3 selected oracle severe count: `0`.
+- Hard/red-flag unique wins vs all others in S3: WDMamba `0.806548`, FSNet+UDP `0.113095`, MB-Taylor `0.074405`.
+
+C8 did not train a router/MoE and did not touch locked Haze4K test. C9 may now design a low-capacity group-min router using train-derived oracle labels/features only.

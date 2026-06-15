@@ -919,3 +919,51 @@ ssh -n convir-4090 "sha256sum '$DST' && printf 'TRANSFER_VERIFY_OK\n'"
 
 When a remote command only reads a remote file and writes stdout, add `-n` even
 if that stdout is piped to a second SSH command.
+
+## 2026-06-15 PowerShell-to-WSL grep regex quote break
+
+Observed while auditing staged C8-Mini evidence from PowerShell through WSL.
+An inline `grep -Ei` pattern used double quotes inside a double-quoted
+PowerShell command, so Bash received a truncated regex and failed before the
+forbidden-file check could run.
+
+Invalid form:
+
+```powershell
+wsl bash -lc 'cd /home/ubuntu/workspace/ConvIR-B-c8-evidence-sync && git diff --cached --name-only | grep -Ei "(\.(whl|pth|ckpt|pkl|png|jpg|jpeg|npy|npz|tar|zip|7z|pt)$|_body\.html$)" || true'
+```
+
+Corrected form:
+
+```powershell
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For staged-file audits that need regex pipes, put the Bash body in a here-string
+wrapper or avoid nested quotes entirely.
+
+## 2026-06-15 PowerShell parser consumed inline Perl normalization
+
+Observed while normalizing synced C8-Mini text evidence from PowerShell through
+`wsl bash -lc`. The command embedded a Perl expression containing `$_ .= "\n"`
+inside a heavily quoted one-liner. PowerShell parsed `.= ` before the command
+reached WSL and failed with `Unexpected token '.='`.
+
+Invalid form:
+
+```powershell
+wsl bash -lc 'find ... -print0 | xargs -0 perl -0pi -e '\''s/\r\n/\n/g; s/\r/\n/g; s/[ \t]+(?=\n)//g; s/[ \t]+\z//; $_ .= "\n" unless /\n\z/'\'''
+```
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+find ... -print0 | xargs -0 perl -0pi -e 's/\r\n/\n/g; s/\r/\n/g; s/[ \t]+(?=\n)//g; s/[ \t]+\z//; $_ .= "\n" unless /\n\z/'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For any nontrivial Perl/Python/sed expression that contains `$`, backslashes, or
+assignment operators, do not embed it directly in a PowerShell one-liner.

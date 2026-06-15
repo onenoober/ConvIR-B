@@ -1,15 +1,19 @@
 {
   "architecture_file_identical": false,
-  "conv_ir_udp_arch_sha256": "038c349e191972c65fd95ff4b61ca7b97a9c075f1b1eda220ae6ed704faab543",
-  "current_fulludp_checkpoint": {
-    "exists": true,
-    "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/ConvIR_UDPNet_haze4k.ckpt",
-    "sha256": "6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291",
-    "size_bytes": 108206629
-  },
-  "decision": "FSUDP_CHECKPOINT_UNAVAILABLE_SKIP_TO_C8_3_FALLBACK",
+  "convir_udp_arch_sha256": "038c349e191972c65fd95ff4b61ca7b97a9c075f1b1eda220ae6ed704faab543",
+  "current_fulludp_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/ConvIR_UDPNet_haze4k.ckpt",
+  "current_fulludp_sha256": "6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291",
+  "decision": "NOT_DUPLICATE_RENDER_AND_ARCH_DIFFER",
   "fsnet_udp_arch_sha256": "c0f0769d8b850f98fed8df6adbaef258cd67a48d24d187f8216560d027a84c3a",
-  "fsudp_checkpoint_available": false,
-  "fsudp_checkpoint_candidates": [],
-  "locked_test_touched": false
+  "fsudp_builder_patch_for_checkpoint": "import-time FSNet_UDPNet fusion OCAB num_heads=1->2 because checkpoint bias tables are shape [1521,2]",
+  "fsudp_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/FSNet_UDPNet_haze4k.ckpt",
+  "fsudp_sha256": "25cc334f44c2fac979baad7f158526c9f8d751c21ea282974b0e4d9791fc0a27",
+  "fulludp_vs_fsudp_mae_mean": 0.009679032842007777,
+  "fulludp_vs_fsudp_mae_median": 0.008762589190155268,
+  "fulludp_vs_fsudp_psnr_mean": 38.910001010894774,
+  "fulludp_vs_fsudp_psnr_min": 27.43566131591797,
+  "locked_test_touched": false,
+  "near_identical_count_mae_le_1e_6_or_psnr_ge_80": 0,
+  "rendered_output_count": 600,
+  "residual_cosine_mean": 0.3052774296553495
 }

@@ -1,0 +1,46 @@
+HTTP/1.1 302 Found
+Connection: keep-alive
+Content-Type: text/html; charset=utf-8
+Date: Mon, 15 Jun 2026 05:09:16 GMT
+Flow-Level: 3
+Location: /share/init?surl=1V-wD01rPTHMFFJyjB0R0w
+Logid: 380763402944963312
+P3p: CP=" OTI DSP COR IVA OUR IND COM "
+Server: nginx
+Set-Cookie: PANPSC=; expires=Fri, 01-Apr-1900 00:00:00 GMT; path=/; domain=pan.baidu.com; HttpOnly;
+Set-Cookie: csrfToken=Ohw5LM2pow-VNq_fR7DFfq6_; path=/; secure
+Set-Cookie: BAIDUID=B07791AE50CC3B40880D0C4C3E88187A:FG=1; expires=Tue, 15-Jun-27 05:09:16 GMT; max-age=31536000; path=/; domain=.baidu.com; version=1
+X-Conteneur-Nom: wrBHGgAfwpIFFhXCusOVwp7Dtw4qwo5aR3rDuMO4w6XDjihKw6jCsMO3wrDCu3zDhznDhBI5G8O3NFXCtVpjaMKEM8Oww74R
+X-Download-Options: noopen
+X-Flow-Level: 3
+X-Powered-By: BaiduCloud
+X-Readtime: 401
+X-Request-Id: 380763402944963312
+X-Xss-Protection: 1; mode=block
+Yld: 380763402944963312
+Content-Length: 109
+
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: text/html; charset=utf-8
+Date: Mon, 15 Jun 2026 05:09:17 GMT
+Flow-Level: 3
+Logid: 380763547981673947
+P3p: CP=" OTI DSP COR IVA OUR IND COM "
+Server: nginx
+Set-Cookie: PANPSC=; expires=Fri, 01-Apr-1900 00:00:00 GMT; path=/; domain=pan.baidu.com; HttpOnly;
+Set-Cookie: csrfToken=bGSpfXLZM3KtdiuAunVnno0A; path=/; secure
+Set-Cookie: BAIDUID=B07791AE50CC3B40CF9025C77A788F51:FG=1; expires=Tue, 15-Jun-27 05:09:17 GMT; max-age=31536000; path=/; domain=.baidu.com; version=1
+Vary: Accept-Encoding
+Vary: Accept-Encoding
+X-Conteneur-Nom: wrBGGgAfwpIFFhXCusOVwp7Dtw4qwo5aR3rDuMO4w6XDjihKw6jCsMO3wrDCu3zDhznDhgh2QsOhO1zCoktsKMOINcO+w6EC
+X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Flow-Level: 3
+X-Powered-By: BaiduCloud
+X-Readtime: 725
+X-Request-Id: 380763547981673947
+X-Xss-Protection: 1; mode=block
+Yld: 380763547981673947
+Yme: ZIGW+ioxQE0RYisGTHb+qnFLvvIASAL0tARKySOGm+w=
+Transfer-Encoding: chunked
