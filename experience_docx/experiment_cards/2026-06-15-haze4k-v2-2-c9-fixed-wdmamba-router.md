@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: `PLANNED`
+Status: `C10_FORMAL_5X3_WD0375_PASS_AUTHORIZE_LOCKED_ONE_SHOT_REVIEW`
 
 ## Scope
 
@@ -158,3 +158,47 @@ C9B_LOW_CAPACITY_ROUTER_PASS_AUTHORIZE_C10_FORMAL
 
 C9 cannot authorize locked test. C10 formal 5x3 must pass first, and even then
 only one fixed locked one-shot may be considered.
+
+## Closeout 2026-06-15
+
+C9 ran on `convir-4090` from branch
+`codex/haze4k-v2-2-c9-fixed-wdmamba-router` using only the C8 train-derived
+per-image tables. It did not rerender locked data, train MoE/router, or run
+distillation.
+
+C9-A fixed `WD0375` passed the strong gate:
+
+| Metric | WD0375 |
+| --- | ---: |
+| mean dPSNR | `+2.512202` |
+| hard bottom-25 dPSNR | `+3.505615` |
+| easy top-25 dPSNR | `+1.189484` |
+| dSSIM | `+0.00167334` |
+| positive ratio | `0.973333` |
+| severe / 600 | `11.0` |
+
+C9-B was intentionally not run because the fixed `WD0375` profile passed C9-A.
+C9-C group-min shifted validation also passed. Worst fixed bins were still above
+the predeclared gate: min mean `+1.124603`, min hard `+1.552796`, min positive
+`0.900000`, and max severe `40/600`.
+
+C10 formal 5x3 table replay for sealed `WD0375` passed:
+
+- full 600 mean/hard/easy/positive/severe:
+  `+2.512202 / +3.505615 / +1.189484 / 0.973333 / 11.0/600`;
+- fold-mean mean/hard/easy/positive/severe:
+  `+2.516942 / +3.523592 / +1.213647 / 0.973556 / 10.942143/600`;
+- fold-worst mean/hard/easy/positive/severe:
+  `+2.311024 / +3.347410 / +0.857374 / 0.948276 / 21.818182/600`.
+
+Decision:
+
+```text
+C9A_FIXED_WD0375_STRONG_PASS_AUTHORIZE_C10_FORMAL
+C10_FORMAL_5X3_WD0375_PASS_AUTHORIZE_LOCKED_ONE_SHOT_REVIEW
+```
+
+This does not itself run locked Haze4K. It authorizes a separate fixed
+one-shot locked replay review for sealed `WD0375` only. Locked output, if run,
+must be recorded as evidence and must not tune thresholds, features,
+checkpoints, profiles, actions, or distillation targets.

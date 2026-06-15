@@ -1005,3 +1005,29 @@ $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 
 For local docs or scripts with Markdown backticks, prefer `apply_patch` or a
 single-quoted inner heredoc delivered through the standard wrapper.
+
+## 2026-06-15 Bare python on convir-4090
+
+Observed while reading C9 worst-bin evidence on `convir-4090`. The SSH command
+used `python - <<PY`, but the configured environment exposes the route runtime
+as `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`; bare `python`
+was not on PATH and the read-only audit failed with `python: command not found`.
+
+Invalid form:
+
+```bash
+ssh convir-4090 'python - <<PY
+...
+PY'
+```
+
+Corrected form:
+
+```bash
+ssh convir-4090 'PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python; "$PY" - <<PY
+...
+PY'
+```
+
+Use the explicit project Python path for every remote audit, including small
+read-only CSV/JSON parsing helpers.

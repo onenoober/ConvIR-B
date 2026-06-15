@@ -275,3 +275,35 @@ C8 authorizes only C9 train-derived low-capacity group-min router design using t
 
 Evidence root: `../experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/`.
 Route card: `../experiment_cards/2026-06-15-haze4k-v2-2-c8-mini-expert-oracle.md`.
+
+## v2.2 C9 Fixed WD0375 / C10 Formal Result
+
+Decision: `C10_FORMAL_5X3_WD0375_PASS_AUTHORIZE_LOCKED_ONE_SHOT_REVIEW`
+
+C9 used only C8 train-derived per-image tables. The first fixed candidate,
+`WD0375 = A0 + 0.375 * (WDMamba - A0)`, passed the strong gate without any
+router/MoE training:
+
+- mean dPSNR `+2.512202`;
+- hard bottom-25 dPSNR `+3.505615`;
+- easy top-25 dPSNR `+1.189484`;
+- dSSIM `+0.00167334`;
+- positive ratio `0.973333`;
+- severe `11.0/600`.
+
+C9-B router was not run because fixed `WD0375` passed. C9-C group-min shifted
+validation passed all fixed dimensions; the worst bins were min mean
+`+1.124603`, min hard `+1.552796`, min positive `0.900000`, and max severe
+`40/600`.
+
+C10 formal 5x3 table replay for the sealed `WD0375` profile passed with fold
+worst mean/hard/easy/positive/severe of
+`+2.311024 / +3.347410 / +0.857374 / 0.948276 / 21.818182/600`.
+
+Locked Haze4K test remains untouched in C9/C10. The result authorizes only a
+separate one-shot locked replay review for the sealed `WD0375` profile. Locked
+output must not be used to tune thresholds, features, checkpoints, profiles,
+actions, or distillation targets.
+
+Evidence root: `../experiment_logs/haze4k_v2_2_c9_fixed_wdmamba_router_20260615/`.
+Route card: `../experiment_cards/2026-06-15-haze4k-v2-2-c9-fixed-wdmamba-router.md`.
