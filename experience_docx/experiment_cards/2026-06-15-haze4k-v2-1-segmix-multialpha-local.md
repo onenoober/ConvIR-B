@@ -1,6 +1,6 @@
 # Haze4K v2.1 SEG-Mix Multi-Alpha / Local-Alpha
 
-Status: `C7C_STRONG_PASS_START_C9_SHIFTED_STRONG`
+Status: `C9_SHIFTED_FAIL_START_C9B_FIXED_CONSERVATIVE`
 
 ## Scope
 
@@ -202,3 +202,9 @@ locked test, or distillation.
 ### C9 Profile-Level Shifted Strong Validation
 
 C9 uses the C7c profile OOF per-image evidence to choose a risk profile on all-but-one stress bin and evaluate it on the held-out bin. This is a fast shifted stress validation for risk-profile stability; C10 remains the formal seeded replay. Locked remains blocked.
+
+## C9 Result
+
+Decision: `C9_SHIFTED_STRONG_FAIL_REASSESS_LOCAL_ALPHA_OR_C8`
+
+C9 passed 8/9 shifted dimensions but failed `diff_signed_q4` because severe regressions were `50.0/600` (> `48/600`). This blocks C10. Since C7c already had a predeclared more conservative strong profile (`riskcap36_no075`, severe `37/600`), C9b fixed-conservative stress is authorized before falling back to C8 multi-expert. Locked remains blocked.

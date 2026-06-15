@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: v2.1 C7c local-alpha strong OOF pass; C9 shifted validation next; locked test remains blocked.
+Status: v2.1 C9 shifted stress failed one dimension; C9b conservative stress next; locked test remains blocked.
 
 ## Scope
 
@@ -180,3 +180,7 @@ risk profiles with true held-out re-rendering. The best strong profile
 
 Decision: `C7C_RISK_TIGHTEN_STRONG_PASS_START_C9_SHIFTED_STRONG`. C9 shifted
 strong validation is authorized. Locked test and distillation remain blocked.
+
+## v2.1 C9 Result
+
+C9 profile-level shifted strong validation passed 8/9 dimensions and failed only `diff_signed_q4` with severe `50.0/600`. C10 is not authorized. C9b fixed `riskcap36_no075` conservative profile stress is authorized to test whether the miss is caused by train-bin profile selection instability. Locked remains blocked.

@@ -93,3 +93,9 @@ Best strong profile: `riskcap42_no075`.
 - severe regressions `43.0/600`.
 
 C7c passes the strong train-derived OOF gate and authorizes C9 shifted-strong validation only. Locked test and distillation remain blocked.
+
+## C9 Result
+
+Decision: `C9_SHIFTED_STRONG_FAIL_REASSESS_LOCAL_ALPHA_OR_C8`
+
+C9 profile-level shifted strong validation passed 8/9 dimensions. The only failing dimension was `diff_signed_q4` with severe `50.0/600`, two above the `48/600` gate. This does not authorize C10. A C9b fixed conservative profile stress using the predeclared C7c `riskcap36_no075` profile is authorized to determine whether the failure is profile-selection instability. Locked remains blocked.
