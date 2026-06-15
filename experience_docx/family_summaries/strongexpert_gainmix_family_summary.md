@@ -1,8 +1,8 @@
 # StrongExpert-GainMix Family Summary
 
-Date: 2026-06-14
+Date: 2026-06-15
 
-Status: C4 formal 5x3 screen pass, strong target fail; locked test remains blocked.
+Status: v2.1 C5-C7 opened; locked test remains blocked.
 
 ## Scope
 
@@ -82,6 +82,29 @@ before any locked-test contact.
 ```text
 LOCKED_ONE_SHOT_BLOCKED
 ```
+
+## v2.1 Reopen Plan
+
+v2.1 is opened on branch `codex/haze4k-v2-1-segmix-multialpha-local` because
+v2.0 C4 identified a narrow but decisive strong-target gap: hard bottom-25 needs
+about `+0.0436 dB`, and positive coverage needs about 12 additional positive
+images on the 600-image internal validation scope. The route does not change the
+locked-test policy.
+
+Planned train-derived phases:
+
+- C5: replay the sealed C2d/C4 family and decompose selected negatives, false
+  negatives, hard-bottom25 alpha capacity, and stress-bin severe risk. This is
+  forensic only and cannot tune a policy.
+- C6: render exact A0-preserving FullUDP residual alphas
+  `0.125/0.25/0.375/0.50/0.75`, then search a risk-bounded multi-alpha OOF
+  router. The strong-candidate gate requires mean `>= +0.20`, hard `>= +0.30`,
+  easy `>= 0`, positive `>= 0.70`, dSSIM `>= 0`, and severe `<= 48/600`.
+- C7: compute patch-level alpha oracle capacity from the same render pass to
+  decide whether a local-alpha prototype is justified.
+
+C6 strong-candidate pass authorizes C9 shifted-strong validation only. It does
+not authorize locked test or distillation.
 
 ## Stop Conditions
 
