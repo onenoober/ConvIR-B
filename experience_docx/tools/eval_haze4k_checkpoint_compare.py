@@ -20,7 +20,9 @@ for path in (str(ITS_ROOT), str(REPO_ROOT), os.getcwd()):
         sys.path.insert(0, path)
 
 from data import test_dataloader
+from models.APDRConvIR import build_apdr_net
 from models.ConvIR import build_net as build_convir_net
+from models.DPGAConvIR import build_dpga_net
 
 
 def percentile(values, pct):
@@ -38,13 +40,9 @@ def percentile(values, pct):
 
 
 def build_model(arch, mode, args, prefix):
-    if arch in ("convir", "official_convir"):
+    if arch == "convir":
         return build_convir_net("base", "Haze4K", mode)
     if arch == "dpga":
-        try:
-            from models.DPGAConvIR import build_dpga_net
-        except ImportError as exc:
-            raise RuntimeError("DPGA is not available on the official anchor branch.") from exc
         return build_dpga_net(
             "base",
             "Haze4K",
@@ -69,10 +67,6 @@ def build_model(arch, mode, args, prefix):
             agf_gate_limit=getattr(args, f"{prefix}_dpga_agf_gate_limit"),
         )
     if arch == "apdr":
-        try:
-            from models.APDRConvIR import build_apdr_net
-        except ImportError as exc:
-            raise RuntimeError("APDR is not available on the official anchor branch.") from exc
         return build_apdr_net(
             "base",
             "Haze4K",
@@ -228,13 +222,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", required=True)
     parser.add_argument("--original_checkpoint", required=True)
-    arch_choices = ["official_convir", "convir", "apdr", "dpga"]
-    parser.add_argument("--original_arch", default="official_convir", choices=arch_choices)
+    parser.add_argument("--original_arch", default="convir", choices=["convir", "apdr", "dpga"])
     parser.add_argument("--original_mode", default="original")
     parser.add_argument("--original_name", default="original")
     parser.add_argument("--modres_checkpoint")
     parser.add_argument("--candidate_checkpoint")
-    parser.add_argument("--candidate_arch", default="official_convir", choices=arch_choices)
+    parser.add_argument("--candidate_arch", default="convir", choices=["convir", "apdr", "dpga"])
     parser.add_argument("--candidate_mode", default="modres")
     parser.add_argument("--candidate_name")
     parser.add_argument("--original_apdr_prior_mode", default="rgb_haze", choices=["rgb_haze"])

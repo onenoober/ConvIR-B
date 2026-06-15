@@ -1,0 +1,37 @@
+state=RUNNING_TRAIN
+run_id=v24_c12_screen_train_eval
+start_time=2026-06-15T20:44:53+08:00
+locked_test_touched=false
+locked_per_image_read=false
+source_commit=89c3761e7d02648b08e36bcd1668b648053fc22f
+teacher_cache_count=2400
+launched_train variant=c12_gt075_teacher025_lr1e-5 gpu=0 pid=1056386
+launched_train variant=c12_gt050_teacher050_lr1e-5 gpu=1 pid=1056390
+launched_train variant=c12_gt025_teacher075_lr1e-5 gpu=2 pid=1056394
+launched_train variant=c12_teacher100_lr1e-5 gpu=3 pid=1056398
+state=RUNNING_EVAL
+train_finish_time=2026-06-15T20:49:35+08:00
+C12_SCREEN_TRAIN_OK
+eval_done variant=c12_gt075_teacher025_lr1e-5 epoch=1 rc=0
+eval_done variant=c12_gt075_teacher025_lr1e-5 epoch=2 rc=0
+eval_done variant=c12_gt075_teacher025_lr1e-5 epoch=3 rc=0
+eval_done variant=c12_gt075_teacher025_lr1e-5 epoch=4 rc=0
+eval_done variant=c12_gt075_teacher025_lr1e-5 epoch=5 rc=0
+eval_done variant=c12_gt050_teacher050_lr1e-5 epoch=1 rc=0
+eval_done variant=c12_gt050_teacher050_lr1e-5 epoch=2 rc=0
+eval_done variant=c12_gt050_teacher050_lr1e-5 epoch=3 rc=0
+eval_done variant=c12_gt050_teacher050_lr1e-5 epoch=4 rc=0
+eval_done variant=c12_gt050_teacher050_lr1e-5 epoch=5 rc=0
+eval_done variant=c12_gt025_teacher075_lr1e-5 epoch=1 rc=0
+eval_done variant=c12_gt025_teacher075_lr1e-5 epoch=2 rc=0
+eval_done variant=c12_gt025_teacher075_lr1e-5 epoch=3 rc=0
+eval_done variant=c12_gt025_teacher075_lr1e-5 epoch=4 rc=0
+eval_done variant=c12_gt025_teacher075_lr1e-5 epoch=5 rc=0
+eval_done variant=c12_teacher100_lr1e-5 epoch=1 rc=0
+eval_done variant=c12_teacher100_lr1e-5 epoch=2 rc=0
+eval_done variant=c12_teacher100_lr1e-5 epoch=3 rc=0
+eval_done variant=c12_teacher100_lr1e-5 epoch=4 rc=0
+eval_done variant=c12_teacher100_lr1e-5 epoch=5 rc=0
+finish_time=2026-06-15T21:05:24+08:00
+state=COMPLETED_SCREEN
+C12_SCREEN_TRAIN_EVAL_OK

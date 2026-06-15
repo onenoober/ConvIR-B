@@ -1,6 +1,6 @@
 # Haze4K Route Family Summaries
 
-Date: 2026-06-10
+Date: 2026-06-04
 
 Status: reading aids derived from `experience_docx/EXPERIMENT_INDEX.md`, route
 cards, and text evidence roots. These files do not replace the per-route cards
@@ -17,16 +17,6 @@ or logs; they summarize family-level conclusions and reopening conditions.
 4. Prefer the cited text artifacts over chat history.
 
 ## Families
-
-Non-family anchor:
-
-- Official architecture anchor: `../OFFICIAL_ARCH_ANCHOR_POLICY.md` and
-  `../experiment_cards/2026-06-10-haze4k-official-arch-anchor.md`. This is not
-  a performance route and does not change family verdicts; future architecture
-  experiments must branch from it rather than modify it directly. The migration
-  environment/code-consistency audit is recorded in
-  `../CLOUD_PY310_ENVIRONMENT.md` and
-  `../experiment_logs/cloud_py310_environment_20260610/`.
 
 | Family | Summary | Current state |
 | --- | --- | --- |

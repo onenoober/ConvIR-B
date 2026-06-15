@@ -1,0 +1,24 @@
+{
+  "aggregate_metrics_sha256": "e17fdb21c13bdeb6a0da82f93e78510b528ea4fcfde68b8b697ea2f48b92adf6",
+  "cache_png_count": 2400,
+  "decision": "C12_SCREEN_FAIL_KEEP_WD0375_TEACHER",
+  "locked_per_image_read": false,
+  "locked_test_touched": false,
+  "mean_train_core_teacher_dPSNR": 1.908519468307495,
+  "mean_train_core_teacher_dSSIM": 0.0011309918016195297,
+  "metrics_row_count": 2400,
+  "positive_train_core_teacher_ratio": 0.9729166666666667,
+  "route": "Haze4K v2.4 C12 WD0375 distillation",
+  "scope": "train_core only",
+  "severe_train_core_teacher_count": 36,
+  "shard_metric_files": [
+    "v24_c12_teacher_cache_train_core_shard00_of07_metrics.csv",
+    "v24_c12_teacher_cache_train_core_shard01_of07_metrics.csv",
+    "v24_c12_teacher_cache_train_core_shard02_of07_metrics.csv",
+    "v24_c12_teacher_cache_train_core_shard03_of07_metrics.csv",
+    "v24_c12_teacher_cache_train_core_shard04_of07_metrics.csv",
+    "v24_c12_teacher_cache_train_core_shard05_of07_metrics.csv",
+    "v24_c12_teacher_cache_train_core_shard06_of07_metrics.csv"
+  ],
+  "teacher": "WD0375 = A0 + 0.375*(WDMamba-A0)"
+}

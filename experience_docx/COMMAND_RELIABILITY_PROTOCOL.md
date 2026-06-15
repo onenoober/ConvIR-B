@@ -78,6 +78,36 @@ printf 'CORRECTED_GREP_OK\n'
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
 
+2026-06-15 recurrence:
+
+Avoid compact extension audits that embed regex grouping across the
+PowerShell-to-WSL boundary:
+
+```powershell
+wsl -d Ubuntu-22.04 bash -lc 'cd /repo && git diff --name-only | grep -Ei "\.(pkl|pth|pt)$" || true'
+```
+
+Failure mode observed:
+
+- regex quoting was altered before WSL Bash received the command;
+- Bash saw `(` outside quotes and failed before the audit ran.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B-c13
+python3 - <<'PY'
+from pathlib import Path
+bad_ext={'.pkl','.pth','.pt'}
+...
+PY
+printf 'LARGE_ARTIFACT_SUFFIX_AUDIT_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
 2026-06-06 recurrence:
 
 Avoid compact PowerShell-to-WSL SSH probes that try to embed Bash `$?` and
@@ -171,53 +201,6 @@ ssh -n dehaze1 'printf "%s\n" OK'
 printf 'LOCAL_DONE\n'
 '@
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
-```
-
-
-### Cloud Python and evidence copy assumptions
-
-2026-06-10 recurrence:
-
-Avoid assuming `python3` exists on `dehaze1` outside an activated environment:
-
-```bash
-ssh dehaze1 'cd /root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor && python3 - <<"PY"\nprint("probe")\nPY'
-```
-
-Failure mode observed:
-
-- `/tmp/cloud_py310_audit.sh: line 25: python3: command not found`;
-- the cloud audit stopped before writing the code manifest.
-
-Corrected form:
-
-```bash
-PY=/root/miniconda3/envs/py310/bin/python
-ssh dehaze1 "cd /root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor && $PY - <<'PY'
-print('probe')
-PY"
-```
-
-For project runtime commands, continue to prefer
-`/root/miniconda3/envs/convir-cu128/bin/python`.
-
-2026-06-10 recurrence:
-
-Avoid this scp form for copying the contents of a remote directory back into an
-existing local evidence directory:
-
-```bash
-scp -r dehaze1:/tmp/cloud_py310_environment_20260610/. experience_docx/experiment_logs/cloud_py310_environment_20260610/
-```
-
-Failure mode observed:
-
-- `error: unexpected filename: .`.
-
-Corrected form:
-
-```bash
-rsync -a dehaze1:/tmp/cloud_py310_environment_20260610/ experience_docx/experiment_logs/cloud_py310_environment_20260610/
 ```
 
 ### PowerShell here-string to WSL heredoc without CR stripping
@@ -812,3 +795,172 @@ PY
 Inside cloud monitor/audit helpers, use the already-declared explicit runtime
 such as `/root/miniconda3/envs/convir-cu128/bin/python` or `"$PY"` for all
 inline Python snippets as well; do not assume `python3` exists on PATH.
+
+## 2026-06-10 Dash-prefixed printf recurrence
+
+Avoid using Bash `printf` with a format string that begins with dashes when
+printing section separators from PowerShell-to-WSL or SSH wrappers:
+
+```bash
+printf '--- status ---\n'
+```
+
+Failure mode observed:
+
+- Bash treated the leading `---` format as an invalid option in the wrapped
+  command and returned `printf: --: invalid option`;
+- the remote audit stopped before printing the intended status/summary block.
+
+Corrected forms:
+
+```bash
+printf '%s\n' '--- status ---'
+# or
+printf -- '--- status ---\n'
+```
+
+## 2026-06-10 SSH tar stream must detach stdin
+
+Avoid streaming remote tar output through `ssh` from a WSL script that is itself
+being piped into Bash without detaching SSH stdin:
+
+```bash
+ssh convir-5090 "cd '$REMOTE_EVID' && tar -cf - ." | tar -C "$DEST" -xf -
+find "$DEST" -type f
+printf 'EVIDENCE_TAR_SYNC_OK\n'
+```
+
+Failure mode observed:
+
+- the tar payload copied successfully, but `ssh` consumed the remaining wrapper
+  script body from stdin;
+- the post-copy `find` and success marker did not execute, making the command
+  look like a silent or incomplete sync.
+
+Corrected form for remote commands that do not intentionally receive stdin:
+
+```bash
+ssh -n convir-5090 "cd '$REMOTE_EVID' && tar -cf - ." | tar -C "$DEST" -xf -
+find "$DEST" -type f
+printf 'EVIDENCE_TAR_SYNC_OK\n'
+```
+
+## 2026-06-15 PowerShell-to-WSL variable expansion recurrence
+
+Avoid passing Bash variables such as `$d` through a PowerShell double-quoted
+`wsl ... bash -lc` command:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'for d in /path/a /path/b; do echo "## $d"; git -C "$d" status; done'
+```
+
+Failure mode observed:
+
+- PowerShell expanded `$d` before WSL Bash received the command;
+- Bash received `git -C  ...` and the loop ended with a syntax error near
+  `done`.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+for d in /path/a /path/b; do
+  echo "## $d"
+  git -C "$d" status --short --branch
+done
+printf 'WORKTREE_STATUS_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+## 2026-06-15 WSL rg resolution and regex pipe recurrence
+
+Avoid relying on `rg` from a compact PowerShell-to-WSL one-liner when WSL may
+resolve the Windows App path first and the search pattern contains `|`:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'rg -n "C11|C12|WD0375" experience_docx/EXPERIMENT_INDEX.md'
+```
+
+Failure mode observed:
+
+- WSL resolved `rg` to the Windows packaged Codex app path and failed with a
+  permission error;
+- the regex pipe fragments were then interpreted as shell commands.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B-c11-main-sync
+grep -En 'C11|C12|WD0375' experience_docx/EXPERIMENT_INDEX.md || true
+printf 'DOC_SEARCH_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+## 2026-06-15 Nested PowerShell here-string delimiter recurrence
+
+Avoid placing a literal nested PowerShell here-string delimiter such as `@'`
+inside a surrounding PowerShell `@' ... '@` script body:
+
+```powershell
+$script = @'
+cat >> file.md <<'EOF'
+Corrected form:
+$script = @'
+...
+'@
+EOF
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+Failure mode observed:
+
+- PowerShell closed the outer here-string at the nested `@'`;
+- the remaining Markdown text was parsed as PowerShell and failed before WSL
+  received the intended script.
+
+Corrected forms:
+
+```text
+Use apply_patch for local documentation edits.
+```
+
+or choose an outer here-string style that cannot be closed by the literal
+content being written, then still pipe through `tr -d '\r' | bash`.
+
+## 2026-06-15 Regex audit one-liners across shell layers
+
+Avoid compact audit commands that embed parenthesized extended regexes inside a
+PowerShell-to-WSL one-liner:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'if git diff --cached --name-only | grep -E "^(Dehazing/|models/)"; then exit 1; fi'
+```
+
+Failure mode observed:
+
+- nested quoting was transformed before WSL Bash saw the intended command;
+- Bash reported a syntax error near `(`.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B-c11-main-sync
+names=$(mktemp)
+git diff --cached --name-only > "$names"
+if grep -E '^(Dehazing/|models/)' "$names"; then
+  echo FORBIDDEN_CODE_PATH
+  exit 1
+fi
+rm -f "$names"
+printf 'AUDIT_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```

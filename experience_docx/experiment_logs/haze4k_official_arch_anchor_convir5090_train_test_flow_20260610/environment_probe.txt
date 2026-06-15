@@ -1,0 +1,15 @@
+{
+  "checkpoint": "/data/caozhiyang/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "cuda_available": true,
+  "cuda_device0": "NVIDIA GeForce RTX 5090",
+  "cuda_device_count": 1,
+  "data": "/data/caozhiyang/ConvIR-B/datasets/Haze4K/Haze4K",
+  "host": "P6X8G",
+  "python": "/data/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python",
+  "test_gt_count": 1000,
+  "test_haze_count": 1000,
+  "torch": "2.11.0+cu128",
+  "torch_cuda": "12.8",
+  "train_gt_count": 3000,
+  "train_haze_count": 3001
+}

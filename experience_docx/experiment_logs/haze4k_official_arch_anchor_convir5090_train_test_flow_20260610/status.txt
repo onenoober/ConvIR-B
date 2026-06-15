@@ -1,0 +1,17 @@
+flow_start haze4k_official_anchor_convir5090_train_test 2026-06-10T21:15:00+08:00
+worktree=/data/caozhiyang/ConvIR-B/repos/ConvIR-B-official-arch-anchor
+python=/data/caozhiyang/ConvIR-B/envs/convir-cu128/bin/python
+data=/data/caozhiyang/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/data/caozhiyang/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+model=ConvIR-Haze4K-official-anchor-convir5090-flow-20260610
+cuda_visible_devices=0
+torch_force_no_weights_only_load=1
+locked_test_policy=official_pretrained_and_flow_test_only_no_model_selection
+official_pretrained_test_start 2026-06-10T21:15:02+08:00
+official_pretrained_test_done rc=0 2026-06-10T21:23:12+08:00
+train_smoke_start 2026-06-10T21:23:12+08:00
+train_smoke_done rc=0 2026-06-10T21:32:17+08:00
+smoke_best_test_start 2026-06-10T21:32:17+08:00
+smoke_best_test_done rc=0 2026-06-10T21:40:54+08:00
+flow_done rc=0 haze4k_official_anchor_convir5090_train_test 2026-06-10T21:40:54+08:00
+OFFICIAL_ANCHOR_CONVIR5090_TRAIN_TEST_FLOW_OK
