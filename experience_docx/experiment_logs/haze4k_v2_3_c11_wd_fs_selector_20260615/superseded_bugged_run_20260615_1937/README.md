@@ -1,14 +1,14 @@
 # Haze4K v2.3 C11 WD0375-FS050 Selector Evidence
 
-Decision: `C11_PASS_AUTHORIZE_LOCKED_ONE_SHOT_REVIEW`
+Decision: `C11_FAIL_SELECTOR_NOT_READY_LOCKED_BLOCKED`
 
 This route uses only train-derived C8/C9 per-image tables. Locked Haze4K output is not read, and no distillation or new expert acquisition is performed.
 
 ## Key Metrics
 
-- Best deployable selector: `nested_oof_selected`
-- OOF mean/hard/easy: `2.812140` / `3.567257` / `1.868307`
-- OOF positive/severe: `0.982222` / `8.00/600`
+- Best deployable selector: `nested_utility`
+- OOF mean/hard/easy: `2.833738` / `3.666722` / `1.956188`
+- OOF positive/severe: `0.985207` / `8.88/600`
 
 ## Output Map
 

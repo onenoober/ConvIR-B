@@ -1086,3 +1086,84 @@ git bundle create /tmp/convir_route.bundle codex/route
 ```
 
 Remove the temporary bundle explicitly before recreating it.
+
+## 2026-06-15 Nested SSH heredoc with synthetic quote delimiters
+
+Observed while probing remote C11 group-min CSVs from PowerShell through WSL and
+then SSH. A command attempted to embed a remote Python heredoc using generated
+quote fragments such as `'"'"'PY'"'"'` inside another quoted `ssh` command. Bash
+reported an unmatched quote and did not run the read-only probe.
+
+Invalid form:
+
+```bash
+ssh convir-4090 'PY=/path/python; "$PY" - <<'"'"'PY'"'"'
+print("probe")
+PY'
+```
+
+Corrected form:
+
+```bash
+ssh convir-4090 'PY=/path/python; cd /repo; "$PY" -c "print(\"probe\")"'
+```
+
+For remote read-only probes, prefer a compact `python -c` body or copy a small
+temporary script rather than nesting heredocs across PowerShell, WSL, SSH, and
+Bash.
+
+## 2026-06-15 Complex quoted `ssh` commands with `find` predicates
+
+Observed while probing C11 locked feasibility. Inline SSH commands containing
+quoted `find` expressions with escaped parentheses and nested `sed` quotes were
+truncated before reaching the remote shell, resulting in `unexpected EOF while
+looking for matching '\''`.
+
+Invalid form:
+
+```bash
+ssh convir-4090 'find /root -type f \( -iname "*locked*.csv" \) | sed -n "1,120p"'
+```
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+ssh convir-4090 'bash -s' <<'REMOTE'
+set -euo pipefail
+find /root -type f \( -iname '*locked*.csv' \) | sed -n '1,120p'
+printf 'REMOTE_FIND_OK\n'
+REMOTE
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+Use a quoted remote heredoc or a temporary remote script for any `find` command
+with predicates, glob patterns, or pipes.
+
+## 2026-06-15 PowerShell consumed grep alternation despite WSL wrapper
+
+Observed while grepping helper function names. A PowerShell command passed a
+double-quoted WSL command containing grep alternation such as
+`"def feature_dict\|def load_sample"`. PowerShell interpreted the pipe segment
+and attempted to run `def` as a PowerShell command.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc "grep -n \"def a\|def b\" file.py"
+```
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+grep -nE 'def a|def b' file.py
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For grep/ripgrep alternation from PowerShell, use the standard script wrapper
+even for short read-only probes.

@@ -1,0 +1,13 @@
+selector,action,count,usage
+fixed_fs050,WD0375,0,0.0
+fixed_fs050,FS050,1800,1.0
+fixed_fs050,A0,0,0.0
+fixed_wd0375,WD0375,1800,1.0
+fixed_wd0375,FS050,0,0.0
+fixed_wd0375,A0,0,0.0
+nested_pairwise,WD0375,801,0.5478796169630643
+nested_pairwise,FS050,661,0.4521203830369357
+nested_pairwise,A0,0,0.0
+nested_utility,WD0375,190,0.5621301775147929
+nested_utility,FS050,148,0.4378698224852071
+nested_utility,A0,0,0.0
