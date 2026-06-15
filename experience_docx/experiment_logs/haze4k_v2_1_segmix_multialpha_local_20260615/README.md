@@ -76,3 +76,18 @@ C7b train-derived local-alpha deployable prototype re-rendered held-out images f
 - severe regressions `50.0/600`.
 
 C7b fails only the severe gate (`50/600` > `48/600`). This authorizes one train-derived C7c severe-risk tightening pass; it does not authorize C9/C10, locked test, or distillation.
+
+## C7c Result
+
+Decision: `C7C_RISK_TIGHTEN_STRONG_PASS_START_C9_SHIFTED_STRONG`
+
+Best strong profile: `riskcap42_no075`.
+
+- mean `+0.354799 dB`.
+- hard bottom-25 `+0.322247 dB`.
+- easy top-25 `+0.451988 dB`.
+- dSSIM `+0.00024897`.
+- positive ratio `0.790000`.
+- severe regressions `43.0/600`.
+
+C7c passes the strong train-derived OOF gate and authorizes C9 shifted-strong validation only. Locked test and distillation remain blocked.

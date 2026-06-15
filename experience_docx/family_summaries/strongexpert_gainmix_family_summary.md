@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: v2.1 C7b local-alpha near-miss; locked test remains blocked.
+Status: v2.1 C7c local-alpha strong OOF pass; C9 shifted validation next; locked test remains blocked.
 
 ## Scope
 
@@ -168,3 +168,15 @@ Decision: `C7B_LOCAL_ALPHA_FAIL_START_C8_MULTIEXPERT_OR_RICHER_LOCAL_FEATURES`.
 Because the failure is a narrow train-derived tail-risk miss with strong mean,
 hard, and positive coverage, one C7c severe-risk tightening pass is authorized
 before falling back to C8 multi-expert expansion. Locked test remains blocked.
+
+## v2.1 C7c Result
+
+C7c reused C7b patch feature/SSE rows and evaluated stricter train-fold severe
+risk profiles with true held-out re-rendering. The best strong profile
+`riskcap42_no075` reached mean `+0.354799`, hard
+`+0.322247`, easy `+0.451988`, dSSIM
+`+0.00024897`, positive `0.790000`, and severe
+`43.0/600`.
+
+Decision: `C7C_RISK_TIGHTEN_STRONG_PASS_START_C9_SHIFTED_STRONG`. C9 shifted
+strong validation is authorized. Locked test and distillation remain blocked.

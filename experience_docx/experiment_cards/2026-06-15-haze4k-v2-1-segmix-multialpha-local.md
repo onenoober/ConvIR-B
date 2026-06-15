@@ -1,6 +1,6 @@
 # Haze4K v2.1 SEG-Mix Multi-Alpha / Local-Alpha
 
-Status: `C6_SCREEN_PASS_STRONG_TARGET_NOT_YET_C7_PATCH_SIGNAL`
+Status: `C7C_STRONG_PASS_START_C9_SHIFTED_STRONG`
 
 ## Scope
 
@@ -178,3 +178,23 @@ Locked test and distillation remain blocked.
 ### C7c Severe-Risk Tightening
 
 C7c is authorized because C7b missed only the severe gate by 2 images. It reuses C7b patch feature/SSE rows, selects stricter train-fold risk profiles, and re-renders held-out images once for all profiles. It may authorize C9 only if a true OOF profile passes the strong gate. Locked remains blocked.
+
+## C7c Result
+
+Decision: `C7C_RISK_TIGHTEN_STRONG_PASS_START_C9_SHIFTED_STRONG`
+
+C7c severe-risk tightening found two strong profiles. The selected best profile
+is `riskcap42_no075`:
+
+| Metric | C7c `riskcap42_no075` |
+| --- | ---: |
+| mean dPSNR | `+0.354799` |
+| hard bottom-25 dPSNR | `+0.322247` |
+| easy top-25 dPSNR | `+0.451988` |
+| dSSIM | `+0.00024897` |
+| positive ratio | `0.790000` |
+| severe / 600 | `43.0` |
+| strong gate | `True` |
+
+C7c authorizes C9 shifted-strong validation only. It does not authorize C10,
+locked test, or distillation.
