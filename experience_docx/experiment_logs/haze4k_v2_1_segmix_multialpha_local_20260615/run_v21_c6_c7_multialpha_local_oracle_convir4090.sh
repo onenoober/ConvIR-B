@@ -27,6 +27,9 @@ echo "===== v21_c6_c7_start $(date --iso-8601=seconds) =====" >> "$LOG"
   echo "udpnet_ckpt=$UDPNET_CKPT"
   echo "patch_sizes=128"
   echo "locked_test_touched=false"
+  if [ -f "$REMOTE_ROOT/.codex_source_branch" ]; then sed 's/^/source_branch=/' "$REMOTE_ROOT/.codex_source_branch"; fi
+  if [ -f "$REMOTE_ROOT/.codex_source_commit" ]; then sed 's/^/source_commit=/' "$REMOTE_ROOT/.codex_source_commit"; fi
+  if [ -f "$REMOTE_ROOT/.codex_source_copy_time" ]; then sed 's/^/source_copy_time=/' "$REMOTE_ROOT/.codex_source_copy_time"; fi
   if [ -d "$REMOTE_ROOT/.git" ]; then
     git -C "$REMOTE_ROOT" branch --show-current | sed 's/^/branch=/'
     git -C "$REMOTE_ROOT" rev-parse --short HEAD | sed 's/^/commit=/'

@@ -9,6 +9,7 @@ Route card: `experience_docx/experiment_cards/2026-06-15-haze4k-v2-1-segmix-mult
 - Host: `convir-4090` only.
 - Runtime workspace: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local`.
 - Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
+- Remote copy fallback: if GitHub clone/fetch is unavailable on `convir-4090`, sync this committed branch by `git archive` and write `.codex_source_branch`, `.codex_source_commit`, and `.codex_source_copy_time` in the runtime workspace.
 - Locked test: blocked and untouched.
 
 ## Planned Phases

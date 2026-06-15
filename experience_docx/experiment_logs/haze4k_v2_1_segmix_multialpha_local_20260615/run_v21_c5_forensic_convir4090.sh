@@ -19,6 +19,9 @@ echo "===== v21_c5_forensic_start $(date --iso-8601=seconds) =====" >> "$LOG"
   echo "alpha_rows=$ALPHA_ROWS"
   echo "c4_summary=$C4_SUMMARY"
   echo "locked_test_touched=false"
+  if [ -f "$REMOTE_ROOT/.codex_source_branch" ]; then sed 's/^/source_branch=/' "$REMOTE_ROOT/.codex_source_branch"; fi
+  if [ -f "$REMOTE_ROOT/.codex_source_commit" ]; then sed 's/^/source_commit=/' "$REMOTE_ROOT/.codex_source_commit"; fi
+  if [ -f "$REMOTE_ROOT/.codex_source_copy_time" ]; then sed 's/^/source_copy_time=/' "$REMOTE_ROOT/.codex_source_copy_time"; fi
   if [ -d "$REMOTE_ROOT/.git" ]; then
     git -C "$REMOTE_ROOT" branch --show-current | sed 's/^/branch=/'
     git -C "$REMOTE_ROOT" rev-parse --short HEAD | sed 's/^/commit=/'
