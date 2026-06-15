@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed.
+Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal.
 
 ## Scope
 
@@ -402,3 +402,43 @@ checkpoints, profiles, actions, experts, thresholds, or distillation targets.
 
 Evidence root: `../experiment_logs/haze4k_v2_3_c11_wd_fs_selector_20260615/`.
 Route card: `../experiment_cards/2026-06-15-haze4k-v2-3-c11-wd-fs-selector.md`.
+
+## v2.4 C12 WD0375 Distillation Screen
+
+Decision: `C12_SCREEN_FAIL_KEEP_WD0375_TEACHER`
+
+C12 tested whether locked-pass fixed `WD0375` could be compressed into a single
+official ConvIR-B student. The route started from the official architecture
+anchor, initialized students from `haze4k-base.pkl`, generated WD0375 teacher
+cache only on Haze4K train-core images, and evaluated on the held-out C8
+`val_regular + val_hard` 600 train-derived images. Locked Haze4K was not read
+or run.
+
+Screen setup:
+
+- train-core `2400` images;
+- held-out validation `600` images;
+- teacher cache `2400/2400` WD0375 PNGs generated;
+- four predeclared variants: GT/teacher weights `0.75/0.25`, `0.50/0.50`,
+  `0.25/0.75`, and `0.00/1.00`;
+- `5` epochs per variant, `20` checkpoints evaluated.
+
+No checkpoint passed the screen gate. Best row:
+
+```text
+variant: c12_gt075_teacher025_lr1e-5
+checkpoint: model_1
+mean/hard/easy: -0.244277 / -0.290566 / -0.199782 dB
+dSSIM: -0.00031795
+positive: 0.326667
+severe: 317/600
+```
+
+Teacher-heavy variants were worse than the GT-heavy variant, and every
+checkpoint had negative mean, hard, and easy deltas. This rules out the tested
+direct low-LR fine-tuning distillation form. Do not promote C12 to formal, do
+not run locked, and do not use locked outputs as distillation targets. The
+family default remains fixed `WD0375` as the strong locked-pass teacher/profile.
+
+Evidence root: `../experiment_logs/haze4k_v2_4_c12_wd0375_distill_20260615/`.
+Route card: `../experiment_cards/2026-06-15-haze4k-v2-4-c12-wd0375-distillation.md`.

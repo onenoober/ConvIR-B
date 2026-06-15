@@ -1,0 +1,18 @@
+state=RUNNING_AUDIT
+run_id=v24_c12_teacher_cache_shards
+start_time=2026-06-15T20:40:42+08:00
+locked_test_touched=false
+locked_per_image_read=false
+source_commit=89c3761e7d02648b08e36bcd1668b648053fc22f
+num_shards=7
+launched_shard=0 gpu=0 pid=1034190
+launched_shard=1 gpu=1 pid=1034194
+launched_shard=2 gpu=2 pid=1034198
+launched_shard=3 gpu=3 pid=1034202
+launched_shard=4 gpu=4 pid=1034206
+launched_shard=5 gpu=5 pid=1034210
+launched_shard=6 gpu=6 pid=1034214
+cache_png_count=2400
+finish_time=2026-06-15T20:43:02+08:00
+state=COMPLETED_TEACHER_CACHE
+C12_TEACHER_CACHE_SHARDS_OK
