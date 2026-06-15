@@ -156,6 +156,9 @@ Scope note:
   stdin, for example `ssh host 'bash -s' < /tmp/remote_script.sh`, because
   `-n` will replace that stdin with `/dev/null` and the remote script will not
   run.
+- do not add `-n` when streaming an archive into a remote command, for example
+  `ssh host "tar -C /repo -xf -" < archive.tar`; `-n` closes the archive stream
+  and the remote `tar` reads `/dev/null`.
 
 Failure mode observed:
 

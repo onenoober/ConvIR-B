@@ -1,6 +1,6 @@
 # Haze4K v2.1 SEG-Mix Multi-Alpha / Local-Alpha Evidence
 
-Status: `C10_FORMAL_5X3_STRONG_PASS_AUTHORIZE_LOCKED_ONE_SHOT`
+Status: `LOCKED_ONE_SHOT_FAIL_NO_TUNING`
 
 Route card: `experience_docx/experiment_cards/2026-06-15-haze4k-v2-1-segmix-multialpha-local.md`
 
@@ -10,7 +10,7 @@ Route card: `experience_docx/experiment_cards/2026-06-15-haze4k-v2-1-segmix-mult
 - Runtime workspace: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local`.
 - Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 - Remote copy fallback: if GitHub clone/fetch is unavailable on `convir-4090`, sync this committed branch by `git archive` and write `.codex_source_branch`, `.codex_source_commit`, and `.codex_source_copy_time` in the runtime workspace.
-- Locked test: untouched through C10; exactly one locked run is now authorized for the sealed C10 `riskcap36_no075` policy family after this evidence is committed and pushed.
+- Locked test: one authorized sealed C10 `riskcap36_no075` run was consumed once and failed. No further locked run or locked-informed tuning is allowed.
 
 ## Planned Phases
 
@@ -140,3 +140,36 @@ policy family. Locked output may be recorded as evidence only; it must not be
 used to tune thresholds, profiles, features, action sets, checkpoints, or
 distillation targets. Distillation remains blocked until locked evidence is
 synced and reviewed.
+
+## Locked One-Shot Result
+
+Decision: `LOCKED_ONE_SHOT_FAIL_NO_TUNING`
+
+The authorized one-shot locked replay was consumed once on `convir-4090` from
+source commit `2f91e96`, using only the sealed C10 `riskcap36_no075` policy
+family. The command recorded `one_shot=true` and `no_tuning_from_locked=true`.
+
+| Metric | Locked aggregate |
+| --- | ---: |
+| mean dPSNR | `+0.290049 +/- 0.004481` |
+| hard bottom-25 dPSNR | `+0.121385 +/- 0.003021` |
+| easy top-25 dPSNR | `+0.480187 +/- 0.016808` |
+| dSSIM | `+0.00046509 +/- 0.00000501` |
+| positive ratio | `0.779333 +/- 0.006128` |
+| nonnegative ratio | `0.784000 +/- 0.004899` |
+| severe / 600 | `46.6000 +/- 2.5140` |
+| max seed severe / 600 | `49.2` |
+| all seed strong gate pass | `False` |
+| locked strong gate pass | `False` |
+
+Seed summaries:
+
+- seed `3407`: mean `+0.285054`, hard `+0.120206`, easy `+0.471043`, positive `0.779000`, severe `47.4/600`, strong gate `False`.
+- seed `3411`: mean `+0.295925`, hard `+0.118419`, easy `+0.503760`, positive `0.787000`, severe `43.2/600`, strong gate `False`.
+- seed `2026`: mean `+0.289169`, hard `+0.125532`, easy `+0.465758`, positive `0.772000`, severe `49.2/600`, strong gate `False`.
+
+The locked result is evidence only. It must not be used to tune thresholds,
+profiles, features, action sets, checkpoints, or distillation targets. The v2.1
+sealed policy is not promotion-ready, and distillation remains blocked. Any
+future work must be a separately predeclared train-derived route that does not
+use locked per-image output for selection.

@@ -1,0 +1,37 @@
+===== v21_locked_one_shot_start 2026-06-15T10:51:01+08:00 =====
+c10_policy seed=3407 fold=0 candidates=900
+c10_policy seed=3407 fold=1 candidates=900
+c10_policy seed=3407 fold=2 candidates=900
+c10_policy seed=3407 fold=3 candidates=900
+c10_policy seed=3407 fold=4 candidates=900
+c10_policy seed=3411 fold=0 candidates=900
+c10_policy seed=3411 fold=1 candidates=900
+c10_policy seed=3411 fold=2 candidates=900
+c10_policy seed=3411 fold=3 candidates=900
+c10_policy seed=3411 fold=4 candidates=900
+c10_policy seed=2026 fold=0 candidates=900
+c10_policy seed=2026 fold=1 candidates=900
+c10_policy seed=2026 fold=2 candidates=900
+c10_policy seed=2026 fold=3 candidates=900
+c10_policy seed=2026 fold=4 candidates=900
+locked_actual 50/1000 rows=150
+locked_actual 100/1000 rows=300
+locked_actual 150/1000 rows=450
+locked_actual 200/1000 rows=600
+locked_actual 250/1000 rows=750
+locked_actual 300/1000 rows=900
+locked_actual 350/1000 rows=1050
+locked_actual 400/1000 rows=1200
+locked_actual 450/1000 rows=1350
+locked_actual 500/1000 rows=1500
+locked_actual 550/1000 rows=1650
+locked_actual 600/1000 rows=1800
+locked_actual 650/1000 rows=1950
+locked_actual 700/1000 rows=2100
+locked_actual 750/1000 rows=2250
+locked_actual 800/1000 rows=2400
+locked_actual 850/1000 rows=2550
+locked_actual 900/1000 rows=2700
+locked_actual 950/1000 rows=2850
+locked_actual 1000/1000 rows=3000
+V21_LOCKED_ONE_SHOT_OK decision=LOCKED_ONE_SHOT_FAIL_NO_TUNING out=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local/experience_docx/experiment_logs/haze4k_v2_1_segmix_multialpha_local_20260615

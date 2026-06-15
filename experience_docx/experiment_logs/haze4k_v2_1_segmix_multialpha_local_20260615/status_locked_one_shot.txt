@@ -1,0 +1,24 @@
+v21_locked_one_shot_start 2026-06-15T10:51:01+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+patch_rows=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local/experience_docx/experiment_logs/haze4k_v2_1_segmix_multialpha_local_20260615/v21_c7b_patch_feature_rows.csv
+image_rows=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local/experience_docx/experiment_logs/haze4k_v2_1_segmix_multialpha_local_20260615/v21_c7b_image_rows.csv
+c10_summary=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local/experience_docx/experiment_logs/haze4k_v2_1_segmix_multialpha_local_20260615/v21_c10_formal_summary.json
+fixed_profile=riskcap36_no075
+locked_test_authorized_by=C10_FORMAL_5X3_STRONG_PASS_AUTHORIZE_LOCKED_ONE_SHOT
+locked_test_touched=true
+one_shot=true
+no_tuning_from_locked=true
+source_branch=codex/haze4k-v2-1-segmix-multialpha-local
+source_commit=2f91e9635a3671bba5c6159668aaee5caf800631
+source_copy_time=2026-06-15T10:50:45+08:00
+python_exists=true
+patch_rows_exists=true
+image_rows_exists=true
+c10_summary_exists=true
+locked_data_exists=true
+locked_depth_cache_exists=true
+a0_sha256=6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088  /sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+udpnet_sha256=6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291  /sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/ConvIR_UDPNet_haze4k.ckpt
+v21_locked_one_shot_done rc=0 2026-06-15T11:14:10+08:00
+V21_LOCKED_ONE_SHOT_OK 2026-06-15T11:14:10+08:00
