@@ -307,3 +307,27 @@ actions, or distillation targets.
 
 Evidence root: `../experiment_logs/haze4k_v2_2_c9_fixed_wdmamba_router_20260615/`.
 Route card: `../experiment_cards/2026-06-15-haze4k-v2-2-c9-fixed-wdmamba-router.md`.
+
+## v2.2 WD0375 Locked One-Shot Result
+
+Decision: `LOCKED_WD0375_ONE_SHOT_PASS_REVIEW_DISTILLATION_LATER`
+
+The sealed fixed `WD0375` profile consumed its one authorized locked replay on
+`convir-4090` from source commit `1f67309f164733e817bbdc436908e5950fc78ffd`.
+The command recorded `one_shot=true` and `no_tuning_from_locked=true`.
+
+Locked aggregate:
+
+- count `1000`;
+- mean dPSNR `+1.442090`;
+- hard bottom-25 dPSNR `+1.529767`;
+- easy top-25 dPSNR `+1.182529`;
+- dSSIM `+0.00247093`;
+- positive ratio `0.938000`;
+- nonnegative ratio `0.938000`;
+- severe `25.80/600`.
+
+This is the first locked pass for the StrongExpert-GainMix family after v2.1
+failed. The locked result is evidence only and must not tune alpha, features,
+checkpoints, profiles, actions, experts, or distillation targets. Distillation
+is not authorized inside this route; it needs a separate review and route.

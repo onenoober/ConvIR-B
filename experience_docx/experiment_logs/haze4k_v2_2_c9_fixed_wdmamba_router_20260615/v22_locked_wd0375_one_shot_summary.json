@@ -1,0 +1,24 @@
+{
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "a0_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "alpha": 0.375,
+  "data_split": "test",
+  "decision": "LOCKED_WD0375_ONE_SHOT_RECORDED",
+  "fixed_profile": "WD0375",
+  "locked_test_touched": true,
+  "no_tuning_from_locked": true,
+  "one_shot": true,
+  "summary": {
+    "count": 1000,
+    "dSSIM": 0.002470933675765991,
+    "easy_top25_dPSNR": 1.1825294494628906,
+    "hard_bottom25_dPSNR": 1.5297669982910156,
+    "mean_dPSNR": 1.4420897884368897,
+    "nonnegative_ratio": 0.938,
+    "positive_ratio": 0.938,
+    "severe_loss_count": 43,
+    "severe_loss_per_600": 25.799999999999997
+  },
+  "wdmamba_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/haze4k_35.88.pth",
+  "wdmamba_sha256": "57ff24c3791e593f0172607fea66252a8ba5475ab0e417f4cf48e72b4c9a36da"
+}

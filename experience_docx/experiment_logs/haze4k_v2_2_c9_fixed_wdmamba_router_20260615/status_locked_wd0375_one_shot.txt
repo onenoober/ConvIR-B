@@ -1,0 +1,11 @@
+v22_locked_wd0375_one_shot_start 2026-06-15T19:03:51+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c9-fixed-wdmamba-router-locked
+fixed_profile=WD0375
+alpha=0.375
+locked_test_authorized_by=C10_FORMAL_5X3_WD0375_PASS_AUTHORIZE_LOCKED_ONE_SHOT_REVIEW
+locked_test_touched=true
+one_shot=true
+no_tuning_from_locked=true
+source_commit=1f67309f164733e817bbdc436908e5950fc78ffd
+v22_locked_wd0375_one_shot_done rc=0 2026-06-15T19:05:41+08:00
+V22_LOCKED_WD0375_ONE_SHOT_OK 2026-06-15T19:05:41+08:00

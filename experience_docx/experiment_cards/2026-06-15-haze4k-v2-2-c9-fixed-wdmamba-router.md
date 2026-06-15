@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: `C10_FORMAL_5X3_WD0375_PASS_AUTHORIZE_LOCKED_ONE_SHOT_REVIEW`
+Status: `LOCKED_WD0375_ONE_SHOT_PASS_REVIEW_DISTILLATION_LATER`
 
 ## Scope
 
@@ -202,3 +202,32 @@ This does not itself run locked Haze4K. It authorizes a separate fixed
 one-shot locked replay review for sealed `WD0375` only. Locked output, if run,
 must be recorded as evidence and must not tune thresholds, features,
 checkpoints, profiles, actions, or distillation targets.
+
+## Locked One-Shot Closeout 2026-06-15
+
+The sealed `WD0375` locked one-shot was consumed once on `convir-4090` from
+source commit `1f67309f164733e817bbdc436908e5950fc78ffd`. The command recorded
+`one_shot=true` and `no_tuning_from_locked=true`, used alpha `0.375`, and wrote
+only text evidence.
+
+Decision:
+
+```text
+LOCKED_WD0375_ONE_SHOT_PASS_REVIEW_DISTILLATION_LATER
+```
+
+| Metric | Locked WD0375 |
+| --- | ---: |
+| count | `1000` |
+| mean dPSNR | `+1.442090` |
+| hard bottom-25 dPSNR | `+1.529767` |
+| easy top-25 dPSNR | `+1.182529` |
+| dSSIM | `+0.00247093` |
+| positive ratio | `0.938000` |
+| nonnegative ratio | `0.938000` |
+| severe / 600 | `25.80` |
+
+This locked result is evidence only. It must not be used to tune alpha,
+features, checkpoints, profiles, actions, experts, or distillation targets.
+Distillation is not performed in this route; any distillation work needs a
+separate review and route.
