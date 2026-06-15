@@ -20,6 +20,7 @@ Route card: `experience_docx/experiment_cards/2026-06-15-haze4k-v2-1-segmix-mult
 - C7b: train-derived local-alpha deployable prototype using image-fold OOF and true held-out PSNR/SSIM re-render.
 - C7c: severe-risk tightening profiles using C7b patch feature/SSE rows and one true held-out re-render pass.
 - C9: profile-level shifted strong validation over train-derived stress bins.
+- C9b: fixed conservative profile stress for `riskcap36_no075`.
 
 ## Status Files
 
@@ -28,6 +29,7 @@ Route card: `experience_docx/experiment_cards/2026-06-15-haze4k-v2-1-segmix-mult
 - `status_c7b.txt`
 - `status_c7c.txt`
 - `status_c9.txt`
+- `status_c9b.txt`
 
 This README will be updated after cloud evidence is synced back from `convir-4090`.
 
