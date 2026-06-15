@@ -1065,3 +1065,24 @@ $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 
 For looped Python probes, either use `python3 -c` with a simple quoted body or
 send the whole Bash body through the standard here-string wrapper.
+
+## 2026-06-15 `git bundle create --force`
+
+Observed while refreshing the C11 route bundle for `convir-4090`. The local Git
+version does not support `git bundle create --force`, so the command failed with
+`error: unrecognized argument: --force`.
+
+Invalid form:
+
+```bash
+git bundle create /tmp/convir_route.bundle codex/route --force
+```
+
+Corrected form:
+
+```bash
+rm -f /tmp/convir_route.bundle
+git bundle create /tmp/convir_route.bundle codex/route
+```
+
+Remove the temporary bundle explicitly before recreating it.
