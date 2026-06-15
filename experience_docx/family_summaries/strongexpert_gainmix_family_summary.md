@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: v2.1 C6 screen-pass / C7 patch-oracle signal; locked test remains blocked.
+Status: v2.1 C7b local-alpha near-miss; locked test remains blocked.
 
 ## Scope
 
@@ -154,3 +154,17 @@ mean `+0.876923`, hard `+0.756983`, easy
 Decision: `C6_MULTIALPHA_OOF_SCREEN_PASS_STRONG_TARGET_NOT_YET_START_C7_C8__C7_PATCH_ALPHA_ORACLE_STRONG_SIGNAL_START_LOCAL_ALPHA`.
 Proceed to a train-derived local-alpha prototype before C9/C10. Locked test and
 distillation remain blocked.
+
+## v2.1 C7b Result
+
+C7b local-alpha deployable prototype used image-fold OOF patch policies and true
+held-out PSNR/SSIM re-rendering. It produced mean `+0.376111`, hard
+`+0.360949`, easy `+0.443171`, dSSIM
+`+0.00025762`, positive `0.793333`, and severe
+`50.0/600`. It fails only the severe gate by 2 images
+(`50/600` vs `48/600`).
+
+Decision: `C7B_LOCAL_ALPHA_FAIL_START_C8_MULTIEXPERT_OR_RICHER_LOCAL_FEATURES`.
+Because the failure is a narrow train-derived tail-risk miss with strong mean,
+hard, and positive coverage, one C7c severe-risk tightening pass is authorized
+before falling back to C8 multi-expert expansion. Locked test remains blocked.

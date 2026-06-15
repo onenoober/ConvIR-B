@@ -59,3 +59,18 @@ C7 patch-alpha oracle has strong local-alpha signal:
 ## Decision
 
 C6 does not authorize C9/C10 or locked because positive ratio remains below `0.70`. C7 authorizes a train-derived local-alpha prototype. Locked test and distillation remain blocked.
+
+## C7b Result
+
+Decision: `C7B_LOCAL_ALPHA_FAIL_START_C8_MULTIEXPERT_OR_RICHER_LOCAL_FEATURES`
+
+C7b train-derived local-alpha deployable prototype re-rendered held-out images for true PSNR/SSIM:
+
+- mean `+0.376111 dB`.
+- hard bottom-25 `+0.360949 dB`.
+- easy top-25 `+0.443171 dB`.
+- dSSIM `+0.00025762`.
+- positive ratio `0.793333`.
+- severe regressions `50.0/600`.
+
+C7b fails only the severe gate (`50/600` > `48/600`). This authorizes one train-derived C7c severe-risk tightening pass; it does not authorize C9/C10, locked test, or distillation.

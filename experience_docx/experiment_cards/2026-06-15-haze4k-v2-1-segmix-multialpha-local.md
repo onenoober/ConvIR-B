@@ -152,3 +152,25 @@ C6 does not authorize C9/C10 because its OOF positive ratio is still below
 `0.70`. C7 does authorize a train-derived local-alpha prototype. Next phase:
 C7b local-alpha deployable proxy/prototype; locked test and distillation remain
 blocked.
+
+## C7b Result
+
+Decision: `C7B_LOCAL_ALPHA_FAIL_START_C8_MULTIEXPERT_OR_RICHER_LOCAL_FEATURES`
+
+C7b reached strong-level mean/hard/positive but missed tail safety by a very
+small margin:
+
+| Metric | C7b actual OOF |
+| --- | ---: |
+| mean dPSNR | `+0.376111` |
+| hard bottom-25 dPSNR | `+0.360949` |
+| easy top-25 dPSNR | `+0.443171` |
+| dSSIM | `+0.00025762` |
+| positive ratio | `0.793333` |
+| severe / 600 | `50.0` |
+| screen gate | `False` |
+| strong gate | `False` |
+
+C7b fails only because severe regressions are `50/600`, two above the `48/600`
+limit. Next phase is a single train-derived C7c severe-risk tightening pass.
+Locked test and distillation remain blocked.

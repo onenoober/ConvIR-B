@@ -1,0 +1,22 @@
+v21_c7b_local_alpha_start 2026-06-15T09:25:03+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+depth_cache=/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v21-segmix-multialpha-local/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/internal_val/haze4k_dpga_v13_regular_hard_seed3407.json
+a0_ckpt=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+udpnet_repo=/sda/home/wangyuxin/ConvIR-B/repos/UDPNet
+udpnet_ckpt=/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/ConvIR_UDPNet_haze4k.ckpt
+patch_size=128
+locked_test_touched=false
+source_branch=codex/haze4k-v2-1-segmix-multialpha-local
+source_commit=a2b001d0f3b02054dc065d9cf8d727bf4a5acb82
+source_copy_time=2026-06-15T09:24:31+08:00
+python_exists=true
+data_exists=true
+depth_cache_exists=true
+split_json_exists=true
+a0_sha256=6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088  /sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+udpnet_sha256=6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291  /sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/ConvIR_UDPNet_haze4k.ckpt
+v21_c7b_local_alpha_done rc=0 2026-06-15T09:36:24+08:00
+V21_C7B_LOCAL_ALPHA_OK 2026-06-15T09:36:24+08:00
