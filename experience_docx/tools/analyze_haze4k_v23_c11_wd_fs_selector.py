@@ -817,7 +817,7 @@ def c11_b(rows: list[dict[str, Any]], out_dir: Path, wd_baseline: dict[str, Any]
             cfg = select_config(train, seed)
             model = train_model(train, cfg)
             actions = predict_model(model, held)
-            selector = f"nested_{cfg['kind']}"
+            selector = "nested_oof_selected"
             cfg_name = config_name(cfg)
             selected_configs.append({"seed": seed, "outer_fold": fold, "selector": selector, "selected_config": cfg_name, "held_count": len(held)})
             nested_rows.extend(make_action_rows(held, selector, actions, seed=seed, fold=fold, config=cfg_name))
