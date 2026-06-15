@@ -198,3 +198,7 @@ is `riskcap42_no075`:
 
 C7c authorizes C9 shifted-strong validation only. It does not authorize C10,
 locked test, or distillation.
+
+### C9 Profile-Level Shifted Strong Validation
+
+C9 uses the C7c profile OOF per-image evidence to choose a risk profile on all-but-one stress bin and evaluate it on the held-out bin. This is a fast shifted stress validation for risk-profile stability; C10 remains the formal seeded replay. Locked remains blocked.
