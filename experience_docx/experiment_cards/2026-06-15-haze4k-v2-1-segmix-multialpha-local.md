@@ -174,3 +174,7 @@ small margin:
 C7b fails only because severe regressions are `50/600`, two above the `48/600`
 limit. Next phase is a single train-derived C7c severe-risk tightening pass.
 Locked test and distillation remain blocked.
+
+### C7c Severe-Risk Tightening
+
+C7c is authorized because C7b missed only the severe gate by 2 images. It reuses C7b patch feature/SSE rows, selects stricter train-fold risk profiles, and re-renders held-out images once for all profiles. It may authorize C9 only if a true OOF profile passes the strong gate. Locked remains blocked.

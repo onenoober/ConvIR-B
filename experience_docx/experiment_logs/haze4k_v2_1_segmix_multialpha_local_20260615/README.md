@@ -18,12 +18,14 @@ Route card: `experience_docx/experiment_cards/2026-06-15-haze4k-v2-1-segmix-mult
 - C6: exact multi-alpha OOF router using a single A0/FullUDP render pass.
 - C7: patch-level alpha oracle from the same render pass.
 - C7b: train-derived local-alpha deployable prototype using image-fold OOF and true held-out PSNR/SSIM re-render.
+- C7c: severe-risk tightening profiles using C7b patch feature/SSE rows and one true held-out re-render pass.
 
 ## Status Files
 
 - `status_c5.txt`
 - `status_c6_c7.txt`
 - `status_c7b.txt`
+- `status_c7c.txt`
 
 This README will be updated after cloud evidence is synced back from `convir-4090`.
 
