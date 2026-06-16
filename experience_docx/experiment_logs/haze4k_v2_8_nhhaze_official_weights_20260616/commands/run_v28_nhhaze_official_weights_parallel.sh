@@ -87,6 +87,7 @@ run_shard() {
     --a0-checkpoint "$A0" \
     --wdmamba-checkpoint "$WDMAMBA" \
     --wdmamba-repo "/sda/home/wangyuxin/ConvIR-B/repos/external_experts/WDMamba" \
+    --wdmamba-de-blocks 4 \
     --alphas 0 0.125 0.25 0.375 0.50 0.75 1.0 \
     --shard-index "$shard" \
     --shard-count "$SHARDS" \
@@ -127,6 +128,7 @@ fi
   --a0-data NHR \
   --a0-checkpoint "$A0" \
   --wdmamba-checkpoint "$WDMAMBA" \
+  --wdmamba-de-blocks 4 \
   --alphas 0 0.125 0.25 0.375 0.50 0.75 1.0 \
   --input-csvs "${CSVS[@]}" 2>&1 | tee "$LOG_DIR/v28_nhhaze_official_aggregate.log"
 

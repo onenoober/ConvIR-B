@@ -9,6 +9,7 @@ Status: `PLANNED`
 - A0 checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/official/nhhaze-base.pkl`
 - WDMamba checkpoint: `/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/NH_20.83.pth`
 - Weight protocol: NH-HAZE-specific ConvIR-B and WDMamba checkpoints
+- WDMamba DENet blocks: `4`
 - Haze4K locked test touched: `false`
 - NH-HAZE alpha tuning: `false`
 

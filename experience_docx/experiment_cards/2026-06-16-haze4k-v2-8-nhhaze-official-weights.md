@@ -37,6 +37,17 @@ ConvIR-B construction:
 build_net("base", "NHR", "original")
 ```
 
+WDMamba construction:
+
+```text
+WaveMamba(in_chn=3, wf=16, n_l_blocks=[1, 2, 2, 4], ffn_scale=2.0)
+with restoration_network.DE = DENet(3, 4)
+```
+
+The `DENet(3, 4)` detail-enhancement head is required for the NH-HAZE
+checkpoint. The WDMamba NH config notes the real-haze/NH-style setting, and
+strict checkpoint loading fails under the Haze4K default `DENet(3, 6)`.
+
 Diagnostic grid:
 
 ```text
@@ -58,6 +69,7 @@ Roles:
 - Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`
 - NH-HAZE root: `/sda/home/wangyuxin/ConvIR-B/datasets/NH-HAZE/`
 - WDMamba repo: `/sda/home/wangyuxin/ConvIR-B/repos/external_experts/WDMamba`
+- WDMamba DENet blocks: `4`
 - Evidence root: `experience_docx/experiment_logs/haze4k_v2_8_nhhaze_official_weights_20260616/`
 
 Dataset preflight must confirm `55` paired full-resolution PNG images named

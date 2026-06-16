@@ -257,11 +257,13 @@ def load_wdmamba(args: argparse.Namespace, device: torch.device):
     pkg("basicsr.utils", repo / "basicsr/utils")
     load_mod("basicsr.utils.registry", repo / "basicsr/utils/registry.py")
     load_mod("basicsr.archs.Ublock", repo / "basicsr/archs/Ublock.py")
-    load_mod("basicsr.archs.detail_enhance_net", repo / "basicsr/archs/detail_enhance_net.py")
+    detail_enhance_net = load_mod("basicsr.archs.detail_enhance_net", repo / "basicsr/archs/detail_enhance_net.py")
     load_mod("basicsr.archs.wavelet", repo / "basicsr/archs/wavelet.py")
     wavemamba = load_mod("basicsr.archs.wavemamba_arch", repo / "basicsr/archs/wavemamba_arch.py")
     with redirect_stdout(io.StringIO()):
         model = wavemamba.WaveMamba(in_chn=3, wf=16, n_l_blocks=[1, 2, 2, 4], ffn_scale=2.0).to(device)
+    if args.wdmamba_de_blocks != 6:
+        model.restoration_network.DE = detail_enhance_net.DENet(3, args.wdmamba_de_blocks).to(device)
     ckpt = torch.load(args.wdmamba_checkpoint, map_location="cpu", weights_only=False)
     model.load_state_dict(ckpt["params"], strict=True)
     model.eval()
@@ -440,6 +442,7 @@ def evaluate(args: argparse.Namespace) -> list[dict[str, Any]]:
         "wdmamba_checkpoint": str(args.wdmamba_checkpoint),
         "wdmamba_sha256": sha256_file(Path(args.wdmamba_checkpoint)),
         "wdmamba_repo": str(args.wdmamba_repo),
+        "wdmamba_de_blocks": args.wdmamba_de_blocks,
         "locked_haze4k_touched": False,
         "nhhaze_weight_protocol": "official_nhhaze_checkpoints",
         "nhhaze_alpha_tuning": False,
@@ -603,6 +606,7 @@ def aggregate(args: argparse.Namespace) -> None:
         "a0_sha256": sha256_file(Path(args.a0_checkpoint)) if args.a0_checkpoint else None,
         "wdmamba_checkpoint": str(args.wdmamba_checkpoint) if args.wdmamba_checkpoint else None,
         "wdmamba_sha256": sha256_file(Path(args.wdmamba_checkpoint)) if args.wdmamba_checkpoint else None,
+        "wdmamba_de_blocks": args.wdmamba_de_blocks,
         "count": len(rows),
         "alpha_grid": alphas,
         "primary_inherited_fixed_alpha": PRIMARY_ALPHA,
@@ -659,7 +663,7 @@ def aggregate(args: argparse.Namespace) -> None:
         "## Protocol Notes\n\n"
         "- Haze4K locked test touched: `false`.\n"
         "- NH-HAZE alpha tuning: `false`; alpha rows other than `1.0` are diagnostic.\n"
-        f"- A0 and WDMamba both use NH-HAZE-specific checkpoints; A0 data argument is `{args.a0_data}`.\n"
+        f"- A0 and WDMamba both use NH-HAZE-specific checkpoints; A0 data argument is `{args.a0_data}` and WDMamba DENet blocks is `{args.wdmamba_de_blocks}`.\n"
         "- NH-HAZE has 55 paired full-resolution PNG images, each 1600x1200.\n"
         "- Metrics are PSNR/SSIM against NH-HAZE GT; hard/easy buckets are bottom/top quartiles by A0 PSNR.\n"
     )
@@ -676,6 +680,7 @@ def aggregate(args: argparse.Namespace) -> None:
         f"- A0 checkpoint: `{args.a0_checkpoint}`\n"
         f"- WDMamba checkpoint: `{args.wdmamba_checkpoint}`\n"
         f"- A0 data argument: `{args.a0_data}`\n"
+        f"- WDMamba DENet blocks: `{args.wdmamba_de_blocks}`\n"
         "- Primary endpoint: `alpha=1.0` WDMamba_NH relative to A0_NH\n"
         "- Diagnostic inherited alpha: `A0_NH + 0.375 * (WDMamba_NH - A0_NH)`\n"
         "- Haze4K locked test touched: `false`\n"
@@ -704,6 +709,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--a0-checkpoint", type=Path, required=False)
     parser.add_argument("--wdmamba-checkpoint", type=Path, required=False)
     parser.add_argument("--wdmamba-repo", type=Path, default=Path("/sda/home/wangyuxin/ConvIR-B/repos/external_experts/WDMamba"))
+    parser.add_argument("--wdmamba-de-blocks", type=int, default=4)
     parser.add_argument("--alphas", nargs="+", type=float, default=DEFAULT_ALPHAS)
     parser.add_argument("--max-images", type=int, default=0)
     parser.add_argument("--shard-index", type=int, default=0)
