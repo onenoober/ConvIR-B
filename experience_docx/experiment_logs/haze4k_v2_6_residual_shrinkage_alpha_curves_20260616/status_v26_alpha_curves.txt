@@ -1,0 +1,11 @@
+v26_alpha_curves_start 2026-06-16T14:32:35+08:00 locked=untouched
+branch=codex/haze4k-v2-6-residual-shrinkage-alpha-curves
+commit=ee059bcb5278a878e8e3b1bf153dbd8bfd01eaaf
+status_short_begin
+ M experience_docx/experiment_logs/haze4k_v2_6_residual_shrinkage_alpha_curves_20260616/commands/monitor_v26_alpha_curves.sh
+ M experience_docx/experiment_logs/haze4k_v2_6_residual_shrinkage_alpha_curves_20260616/commands/run_v26_alpha_curves_parallel.sh
+?? experience_docx/experiment_logs/haze4k_v2_6_residual_shrinkage_alpha_curves_20260616/status_v26_alpha_curves.txt
+status_short_end
+cloud_py_compile_ok 2026-06-16T14:32:36+08:00
+selected_gpus=2 3 4
+V26_ALPHA_CURVES_OK 2026-06-16T14:41:23+08:00
