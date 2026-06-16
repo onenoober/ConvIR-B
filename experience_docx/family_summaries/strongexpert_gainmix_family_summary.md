@@ -2,7 +2,7 @@
 
 Date: 2026-06-16
 
-Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal; v2.5 C13 A0-frozen residual distillation intermediate gate failed before B-screen; v2.6 train-derived alpha curves show residual shrinkage is not a single WDMamba lucky point and extends cleanly to FSNet+UDP, while MB-Taylor supports only small-alpha safety; v2.7 shows Haze4K-weight WD0375 does not zero-shot transfer to NH-HAZE, but it is not an official NH-HAZE benchmark.
+Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal; v2.5 C13 A0-frozen residual distillation intermediate gate failed before B-screen; v2.6 train-derived alpha curves show residual shrinkage is not a single WDMamba lucky point and extends cleanly to FSNet+UDP, while MB-Taylor supports only small-alpha safety; v2.7 shows Haze4K-weight WD0375 does not zero-shot transfer to NH-HAZE; v2.8 shows the available NH-specific WDMamba endpoint is weaker than NH-specific ConvIR-B A0 on the local NH-HAZE protocol, and inherited alpha `0.375` is not supported.
 
 ## Scope
 
@@ -571,3 +571,44 @@ Evidence root:
 `../experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/`.
 Route card:
 `../experiment_cards/2026-06-16-haze4k-v2-7-nhhaze-transfer.md`.
+
+
+## v2.8 NH-HAZE Official-Weight Evaluation
+
+Decision: `V28_NHHAZE_OFFICIAL_WEIGHT_INHERITED_ALPHA_NOT_SUPPORTED`
+
+v2.8 reran NH-HAZE with dataset-specific checkpoints instead of the v2.7
+Haze4K-weight zero-shot setup. Runtime used `convir-4090` from source snapshot
+`6c5d71e`, `55` paired NH-HAZE PNGs, ConvIR-B A0 checkpoint
+`nhhaze-base.pkl` sha256
+`aab6a72613781900a23c3922ad2dd60f6b0d563018e33ae75162bcf3338f5bac`, and
+WDMamba checkpoint `NH_20.83.pth` sha256
+`e097524f466b24f32843867911f9cbd47be8d51e61e5e345f8a27c22c73d5c5a`.
+ConvIR-B used `build_net("base", "NHR", "original")`; WDMamba required
+`DENet(3, 4)` for strict NH checkpoint loading.
+
+Final audit passed with `55` unique image ids, complete seven-row alpha grid,
+three shard manifests (`19/18/18`), Haze4K locked untouched, and NH-HAZE alpha
+tuning disabled.
+
+Endpoint result: WDMamba_NH alpha `1.0` was substantially worse than A0_NH:
+mean/hard/easy dPSNR `-2.197751/-1.093919/-2.327606`, dSSIM `-0.06118223`,
+positive `0.054545`, severe `52/55`, worst `-4.730593`. The inherited Haze4K
+alpha `0.375` also failed: mean/hard/easy
+`-0.133584/+0.122348/-0.155758`, dSSIM `-0.00598572`, positive `0.309091`,
+severe `26/55`, worst `-0.956678`.
+
+Alpha `0.125` is a positive diagnostic row (`+0.086285/+0.124708/+0.082227`,
+dSSIM `+0.00025417`, positive `0.781818`, severe `0/55`), but it is observed on
+the same 55-image test protocol and must not be promoted as a tuned NH-HAZE
+alpha without separate validation or OOF calibration.
+
+Interpretation: NH-HAZE currently does not support reusing Haze4K
+`alpha=0.375`, and the available WDMamba_NH checkpoint is not a stronger global
+expert than A0_NH under this protocol. Future NH-HAZE shrinkage/adaptive-alpha
+work needs a validation/OOF split before selecting alpha or training a gate.
+
+Evidence root:
+`../experiment_logs/haze4k_v2_8_nhhaze_official_weights_20260616/`.
+Route card:
+`../experiment_cards/2026-06-16-haze4k-v2-8-nhhaze-official-weights.md`.

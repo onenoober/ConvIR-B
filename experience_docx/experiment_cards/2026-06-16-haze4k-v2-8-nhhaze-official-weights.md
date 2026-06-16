@@ -2,7 +2,7 @@
 
 Date: 2026-06-16
 
-Status: `PLANNED`
+Status: `COMPLETED_GATE_FAIL`
 
 ## Purpose
 
@@ -117,3 +117,53 @@ After cloud completion, sync text evidence to GitHub, update this route card,
 `EXPERIMENT_INDEX.md`, `family_summaries/strongexpert_gainmix_family_summary.md`,
 and the evidence README. Do not commit checkpoints, datasets, images, arrays,
 or raw inference outputs.
+
+## Result
+
+Decision: `V28_NHHAZE_OFFICIAL_WEIGHT_INHERITED_ALPHA_NOT_SUPPORTED`
+
+The route completed on `convir-4090` from source snapshot `6c5d71e`. Final
+audit passed with `55` unique NH-HAZE pairs, three shard manifests (`19/18/18`
+rows), no duplicate image ids, complete seven-row alpha grid, Haze4K locked
+untouched, and NH-HAZE alpha tuning disabled.
+
+Weights and construction:
+
+- A0 checkpoint sha256:
+  `aab6a72613781900a23c3922ad2dd60f6b0d563018e33ae75162bcf3338f5bac`;
+- WDMamba checkpoint sha256:
+  `e097524f466b24f32843867911f9cbd47be8d51e61e5e345f8a27c22c73d5c5a`;
+- ConvIR-B A0 construction: `build_net("base", "NHR", "original")`;
+- WDMamba construction: `WaveMamba(...)` with `DENet(3, 4)`.
+
+The official-weight WDMamba endpoint was substantially worse than A0_NH on this
+local NH-HAZE protocol:
+
+- alpha `1.0` mean/hard/easy dPSNR:
+  `-2.197751/-1.093919/-2.327606`;
+- dSSIM `-0.06118223`;
+- positive ratio `0.054545`;
+- severe `52/55` (`567.27/600`);
+- worst dPSNR `-4.730593`.
+
+The inherited Haze4K fixed alpha `0.375` also failed:
+
+- mean/hard/easy dPSNR `-0.133584/+0.122348/-0.155758`;
+- dSSIM `-0.00598572`;
+- positive ratio `0.309091`;
+- severe `26/55` (`283.64/600`);
+- worst dPSNR `-0.956678`.
+
+The alpha grid contains one positive diagnostic row at `0.125`
+(`+0.086285/+0.124708/+0.082227`, dSSIM `+0.00025417`, positive `0.781818`,
+severe `0/55`), but this is a test-set diagnostic observation only. It must not
+be promoted as an NH-HAZE-selected alpha without a separate validation or OOF
+protocol.
+
+Interpretation: NH-HAZE does not currently support reusing the Haze4K
+`alpha=0.375` shrinkage profile. It also shows that the expert relationship on
+NH-HAZE is different from Haze4K: under the available NH-specific checkpoints
+and this paired-test protocol, ConvIR-B A0_NH is the stronger endpoint than
+WDMamba_NH. Future NH-HAZE residual shrinkage work should first create a
+validation/OOF calibration protocol before selecting alpha or training an
+adaptive gate.

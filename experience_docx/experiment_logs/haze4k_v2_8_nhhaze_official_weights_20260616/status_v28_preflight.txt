@@ -1,0 +1,11 @@
+preflight_start 2026-06-16T17:01:16+08:00
+source_branch=codex/haze4k-v2-8-nhhaze-official-weights
+source_commit=6c5d71eb83c57fba2ce44ff6d1ea3c38baeea521
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/nhhaze-base.pkl
+wdmamba=/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/NH_20.83.pth
+wdmamba_de_blocks=4
+aab6a72613781900a23c3922ad2dd60f6b0d563018e33ae75162bcf3338f5bac  /sda/home/wangyuxin/ConvIR-B/checkpoints/official/nhhaze-base.pkl
+e097524f466b24f32843867911f9cbd47be8d51e61e5e345f8a27c22c73d5c5a  /sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/NH_20.83.pth
+py_compile_ok 2026-06-16T17:01:17+08:00
+pair_count=55 gt_count=55
+preflight_done rc=0 2026-06-16T17:01:22+08:00

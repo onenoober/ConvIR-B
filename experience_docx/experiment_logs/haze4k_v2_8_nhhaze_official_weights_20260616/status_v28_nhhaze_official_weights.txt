@@ -1,0 +1,15 @@
+v28_nhhaze_official_weights_start 2026-06-16T17:01:41+08:00 locked_haze4k=untouched nhhaze_alpha_tuning=false
+branch=RSYNC_SNAPSHOT_NO_REMOTE_GIT
+commit=6c5d71eb83c57fba2ce44ff6d1ea3c38baeea521
+status_short_begin
+remote_git_metadata=unavailable_snapshot_rsync
+status_short_end
+dataset=/sda/home/wangyuxin/ConvIR-B/datasets/NH-HAZE
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/nhhaze-base.pkl
+wdmamba=/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/NH_20.83.pth
+a0_sha256=aab6a72613781900a23c3922ad2dd60f6b0d563018e33ae75162bcf3338f5bac
+wdmamba_sha256=e097524f466b24f32843867911f9cbd47be8d51e61e5e345f8a27c22c73d5c5a
+cloud_py_compile_ok 2026-06-16T17:01:42+08:00
+nhhaze_pair_count=55 nhhaze_gt_count=55
+selected_gpus=1 2 3 shard_count=3
+V28_NHHAZE_OFFICIAL_WEIGHTS_OK 2026-06-16T17:02:16+08:00
