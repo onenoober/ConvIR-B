@@ -165,6 +165,56 @@ printf 'PUBKEY_FINGERPRINTS_OK\n'
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
 
+2026-06-16 recurrence:
+
+Avoid direct PowerShell-to-WSL `bash -lc` strings that combine escaped grep
+alternation, pipes, and long path arguments:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc "grep -n \"C13-F\|C13_INTERMEDIATE\" file.md | sed -n '1,80p'"
+```
+
+Failure mode observed:
+
+- PowerShell interpreted the `|` fragments before the WSL Bash script received
+  them;
+- pieces such as `C13_INTERMEDIATE...` were treated as local command/module
+  names;
+- the command failed before the intended read-only grep ran.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B-c13
+grep -nE 'C13-F|C13_INTERMEDIATE' experience_docx/EXPERIMENT_INDEX.md || true
+printf 'C13_GREP_CHECK_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+Related 2026-06-16 recurrence:
+
+Avoid passing a multi-line Bash body as a single double-quoted `bash -lc`
+argument when that body itself contains double-quoted variables:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc "SRC=/path; rsync -av "$SRC/file" "$DST/file""
+```
+
+Failure mode observed:
+
+- PowerShell and Bash closed different quote pairs;
+- WSL Bash received a truncated script and reported `unexpected EOF while
+  looking for matching '"'`.
+
+Corrected forms:
+
+- use a PowerShell here-string piped to WSL Bash with `tr -d '\r'`; or
+- for a single file, use a simple `scp`/`cp` command inside that here-string and
+  print an explicit `*_OK` marker.
+
 2026-06-06 recurrence:
 
 Avoid invoking `ssh` from a WSL script without detaching stdin when the script itself is being piped into Bash:

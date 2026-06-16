@@ -2,7 +2,7 @@
 
 Date: 2026-06-15
 
-Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal; v2.5 C13 A0-frozen residual distillation intermediate gate failed before B-screen.
+Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal; v2.5 C13 A0-frozen residual distillation intermediate gate failed before B-screen, and C13-F later showed the bottleneck is global conditioning rather than a dead residual direction.
 
 ## Scope
 
@@ -449,7 +449,9 @@ Decision: `C13_INTERMEDIATE_GATE_FAIL_NO_B_SCREEN_LOCKED_UNTOUCHED`
 
 C13 reframed WD0375 compression as A0-frozen residual learning and validated
 the line at a narrow train-derived scale, but no intermediate variant passed
-the written quick gate. The A2-A5 chain found:
+the written quick gate. The later C13-F replay then showed the residual family
+is still useful when selected per image, per patch, or in the LL band. The
+A2-A5 chain found:
 
 - direct-zero microfit can learn and gives positive movement;
 - fixed high scale gives strong mean/hard but tail regressions are too large;
@@ -469,4 +471,4 @@ Best observed rows:
 This means the current residual adapter is learnable but not screen-ready.
 Do not continue to C13-B from the current adapter/loss family, and do not touch
 locked Haze4K. A future reopen would need explicit risk/utility conditioning or
-a stronger no-op gate.
+a stronger no-op gate with image/patch/band gating.

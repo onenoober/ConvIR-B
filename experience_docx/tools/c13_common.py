@@ -166,7 +166,10 @@ def load_c13_model(
         clamp_output=clamp_output,
     ).to(device)
     if checkpoint is not None:
-        model.load_state_dict(load_model_state(checkpoint, device), strict=True)
+        state = load_model_state(checkpoint, device)
+        if "C13_scale_init" not in state:
+            state["C13_scale_init"] = torch.tensor(float(scale_init), device=device)
+        model.load_state_dict(state, strict=True)
     model.C13_residual_scale.fill_(float(residual_scale))
     if clamp_output:
         model.clamp_output = True

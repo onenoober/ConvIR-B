@@ -45,3 +45,40 @@ C13 does not authorize locked test.
 Stop the current C13 residual-adapter line before C13-B. A future route should
 use explicit risk/utility conditioning or a stronger no-op gate rather than
 more global residual-scale tuning.
+
+## C13-F Diagnostic Addendum
+
+C13-F completed a full-600 replay and oracle diagnostic after the A2 old-checkpoint
+compatibility rerun. Locked Haze4K remained untouched.
+
+Full-600 replay confirmed the A2-A5 quick-slice closeout:
+
+- `c13a4_scale050`: mean `+0.361713`, hard `+0.564971`, easy `+0.119759`,
+  positive `0.696667`, severe `115/600`
+- `c13a2_directzero256`: mean `+0.356382`, hard `+0.557847`,
+  easy `+0.108048`, positive `0.685000`, severe `124/600`
+- `a5_a4sweep_s030`: mean `+0.253058`, hard `+0.343011`,
+  easy `+0.155960`, positive `0.743333`, severe `57/600`
+- `a5_a4sweep_s025`: mean `+0.220108`, hard `+0.286678`,
+  easy `+0.153672`, positive `0.758333`, severe `42/600`
+
+Oracle diagnostics changed the bottleneck diagnosis:
+
+- per-image scale oracle passed with mean `+0.554817`, hard `+0.730784`,
+  easy `+0.338369`, positive `0.961667`, severe `0/600`
+- patch scale oracle passed with mean `+0.750215`, hard `+0.818064`,
+  easy `+0.624435`, positive `1.000000`, severe `0/600`
+- LL-only oracle passed with mean `+0.554681`, hard `+0.730671`,
+  easy `+0.338372`, positive `0.961667`, severe `0/600`
+
+Interpretation:
+
+```text
+C13 residual direction has usable capacity, especially in LL/low-frequency
+components, but the deployed global/adaptive scalar cannot learn when and where
+to apply it safely.
+```
+
+The C13 route remains closed before C13-B. The recommended next route is C14
+risk/utility-conditioned frequency residual distillation, with image/patch/band
+gating and an A0 safety hinge.

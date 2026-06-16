@@ -181,6 +181,57 @@ Do not continue to C13-B on the current adapter/loss family. If C13 is reopened
 later, it should introduce explicit risk/utility conditioning or a stronger
 no-op gate before any larger screen.
 
+## C13-F Diagnostic Replay
+
+A later full-600 diagnostic replay confirmed the same closeout while pinning
+down the bottleneck more sharply.
+
+Key full-600 rows:
+
+- `wd0375_teacher`: mean `+2.512202`, hard `+3.505615`, easy `+1.189484`,
+  positive `0.973333`, severe `11/600`
+- `c13a4_scale050`: mean `+0.361713`, hard `+0.564971`, easy `+0.119759`,
+  positive `0.696667`, severe `115/600`
+- `c13a2_directzero256`: mean `+0.356382`, hard `+0.557847`, easy `+0.108048`,
+  positive `0.685000`, severe `124/600`
+- `a5_a4sweep_s030`: mean `+0.253058`, hard `+0.343011`, easy `+0.155960`,
+  positive `0.743333`, severe `57/600`
+- `a5_a4sweep_s025`: mean `+0.220108`, hard `+0.286678`, easy `+0.153672`,
+  positive `0.758333`, severe `42/600`
+- `c13a3_adaptive050`: mean `+0.044723`, hard `+0.025461`, easy `+0.091248`,
+  positive `0.800000`, severe `0/600`
+
+Oracle diagnostics:
+
+- per-image scale oracle: mean `+0.554817`, hard `+0.730784`,
+  easy `+0.338369`, positive `0.961667`, severe `0/600`
+- patch scale oracle: mean `+0.750215`, hard `+0.818064`,
+  easy `+0.624435`, positive `1.000000`, severe `0/600`
+- band-independent oracle: mean `+0.554932`, hard `+0.730825`,
+  easy `+0.338570`, positive `0.983333`, severe `0/600`
+- LL-only oracle: mean `+0.554681`, hard `+0.730671`, easy `+0.338372`,
+  positive `0.961667`, severe `0/600`
+
+Interpretation:
+
+```text
+The current residual family is still learnable, but the bottleneck is not a
+single global residual scale. Per-image, patch, and LL-band oracles all pass,
+which points to gate / band conditioning rather than a dead residual direction.
+```
+
+The route stays closed:
+
+```text
+C13_INTERMEDIATE_GATE_FAIL_NO_B_SCREEN_LOCKED_UNTOUCHED
+```
+
+Evidence sync status:
+
+```text
+SYNCED_TO_GITHUB
+```
+
 ### C13-B: adapter screen
 
 Run three adapter-only variants in parallel:

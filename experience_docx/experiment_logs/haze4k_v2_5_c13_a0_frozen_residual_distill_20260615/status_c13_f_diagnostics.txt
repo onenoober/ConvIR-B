@@ -1,0 +1,19 @@
+state=PREFLIGHT_RUNNING
+run_id=v25_c13_f_diagnostics
+start_time=2026-06-16T09:43:56+08:00
+locked_test_touched=false
+locked_per_image_read=false
+source_commit=9471bdeb9bcf1a4b029d409c0aec6f13f707a8f1
+source_branch=codex/haze4k-v2-5-c13-a0-frozen-residual-distill
+diagnostic_scope=C13-F0 full600 replay plus F1/F2/F3 oracle taxonomy
+state=RUNNING_AUDIT
+f_diagnostics_start=2026-06-16T09:43:56+08:00
+f0_teacher_done
+launched_f0 tag=c13a2_directzero256 gpu=2 pid=3246038
+launched_f0 tag=c13a3_adaptive050 gpu=3 pid=3246042
+launched_f0 tag=c13a4_scale050 gpu=4 pid=3246046
+launched_f0 tag=a5_a4sweep_s025 gpu=5 pid=3246050
+launched_f0 tag=a5_a4sweep_s030 gpu=6 pid=3246054
+launched_f1_f2_f3_oracle gpu=7 pid=3246058
+C13_F_DIAGNOSTICS_FAILED
+state=FAILED_COMMAND
