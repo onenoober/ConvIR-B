@@ -17,11 +17,19 @@ export PYTHONPATH="$ROOT/experience_docx/tools:${PYTHONPATH:-}"
 echo "v27_nhhaze_transfer_start $(date -Is) locked_haze4k=untouched nhhaze_tuning=false" | tee "$STATUS"
 cd "$ROOT"
 {
-  printf 'branch=%s\n' "$(git branch --show-current)"
-  printf 'commit=%s\n' "$(git rev-parse HEAD)"
-  printf 'status_short_begin\n'
-  git status --short
-  printf 'status_short_end\n'
+  if git -C "$ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    printf 'branch=%s\n' "$(git -C "$ROOT" branch --show-current || true)"
+    printf 'commit=%s\n' "$(git -C "$ROOT" rev-parse HEAD || true)"
+    printf 'status_short_begin\n'
+    git -C "$ROOT" status --short || true
+    printf 'status_short_end\n'
+  else
+    printf 'branch=RSYNC_SNAPSHOT_NO_REMOTE_GIT\n'
+    printf 'commit=4145eed\n'
+    printf 'status_short_begin\n'
+    printf 'remote_git_metadata=unavailable_snapshot_rsync\n'
+    printf 'status_short_end\n'
+  fi
   printf 'dataset=%s\n' "$DATA"
   printf 'a0=%s\n' "$A0"
   printf 'wdmamba=%s\n' "$WDMAMBA"
