@@ -2,7 +2,7 @@
 
 Date: 2026-06-16
 
-Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal; v2.5 C13 A0-frozen residual distillation intermediate gate failed before B-screen; v2.6 train-derived alpha curves show residual shrinkage is not a single WDMamba lucky point and extends cleanly to FSNet+UDP, while MB-Taylor supports only small-alpha safety; v2.7 shows Haze4K-weight WD0375 does not zero-shot transfer to NH-HAZE; v2.8/v2.8b NH-HAZE records were deleted because the all-55 aggregate mixed train/val/test; v2.9 cleanly reruns NH-specific ConvIR-B/WDMamba weights on official test `51-55`, aligns with expected baselines, and leaves NH alpha claims diagnostic only; v2.10 reports the Haze4K locked alpha grid as diagnostic-only evidence and keeps WD0375 as the safer locked-pass default.
+Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal; v2.5 C13 A0-frozen residual distillation intermediate gate failed before B-screen; v2.6 train-derived alpha curves show residual shrinkage is not a single WDMamba lucky point and extends cleanly to FSNet+UDP, while MB-Taylor supports only small-alpha safety; v2.7 shows Haze4K-weight WD0375 does not zero-shot transfer to NH-HAZE; v2.8/v2.8b NH-HAZE records were deleted because the all-55 aggregate mixed train/val/test; v2.9 cleanly reruns NH-specific ConvIR-B/WDMamba weights on official test `51-55`, aligns with expected baselines, and leaves NH alpha claims diagnostic only; v2.10 reports the Haze4K locked WDMamba alpha grid as diagnostic-only evidence and keeps WD0375 as the safer locked-pass default; v2.11 completes locked cross-expert alpha grids for FSNet+UDP and MB-TaylorFormerV2-L under official-standard loaders, strengthening locked diagnostic evidence for residual shrinkage without authorizing alpha selection.
 
 ## Scope
 
@@ -617,6 +617,61 @@ Evidence root:
 `../experiment_logs/haze4k_v2_10_locked_test_wdmamba_alpha_grid_20260616/`.
 Route card:
 `../experiment_cards/2026-06-16-haze4k-v2-10-locked-wdmamba-alpha-grid.md`.
+
+## v2.11 Haze4K Locked Cross-Expert Alpha Grid
+
+Decision: `V211_HAZE4K_LOCKED_CROSS_EXPERT_ALPHA_GRID_COMPLETED_DIAGNOSTIC_ONLY`
+
+v2.11 evaluated the remaining strong experts on the Haze4K locked test split
+under official-standard loaders and the same v2.2 locked-compatible alpha
+metric used by v2.10. This is a diagnostic audit only:
+
+```text
+candidate(alpha) = A0 + alpha * (Expert - A0)
+alpha in {0, 0.125, 0.25, 0.375, 0.50, 0.75, 1.0}
+Expert in {FSNet+UDP, MB-TaylorFormerV2-L}
+```
+
+FSNet+UDP required a repair. The first attempt used raw `.npy` DepthAnything V2
+values and factor-32 padding, which did not match the official UDPNet dataloader
+or test script. Those preliminary rows were deleted. The final repaired run
+uses official-style `depth2l` PNG input, factor-8 inference padding, and strict
+checkpoint load after the documented `num_heads=1 -> 2` builder patch. Its
+endpoint reproduces the UDPNet README Haze4K reference within rounding:
+`35.274720/0.990780` versus `35.31/0.99`.
+
+FSNet+UDP locked alpha rows:
+
+- alpha `0.125`: PSNR/SSIM `34.489578/0.990209`, mean/hard/easy
+  `+0.344076/+0.267909/+0.420864`, positive `0.892`, severe `25.80/600`;
+- alpha `0.375`: PSNR/SSIM `35.055160/0.991052`, mean/hard/easy
+  `+0.909658/+0.774331/+1.047503`, positive `0.858`, severe `63.00/600`;
+- alpha `0.750`: PSNR/SSIM `35.430463/0.991415`, mean/hard/easy
+  `+1.284961/+1.364635/+1.193786`, positive `0.777`, severe `117.60/600`;
+- alpha `1.000`: PSNR/SSIM `35.274720/0.990983`, mean/hard/easy
+  `+1.129218/+1.569141/+0.694019`, positive `0.692`, severe `165.00/600`.
+
+MB-TaylorFormerV2-L locked alpha rows:
+
+- alpha `0.125`: PSNR/SSIM `34.550039/0.990348`, mean/hard/easy
+  `+0.404537/+0.443969/+0.335874`, positive `0.904`, severe `24.60/600`;
+- alpha `0.375`: PSNR/SSIM `35.133079/0.991304`, mean/hard/easy
+  `+0.987577/+1.345382/+0.465108`, positive `0.827`, severe `80.40/600`;
+- alpha `1.000`: PSNR/SSIM `34.932525/0.990901`, mean/hard/easy
+  `+0.787023/+3.049596/-1.778787`, positive `0.580`, severe `238.80/600`.
+
+Interpretation: locked diagnostic evidence now shows the same broad pattern
+across WDMamba, FSNet+UDP, and MB-TaylorFormerV2-L. Full replacement can raise
+hard-sample gain, but intermediate anchor-preserving residual shrinkage improves
+the gain-risk balance. This does not authorize selecting a new alpha from
+locked data; WD0375 remains the safest locked-pass default unless a future
+train-derived protocol preselects a different policy before locked
+confirmation.
+
+Evidence root:
+`../experiment_logs/haze4k_v2_11_locked_test_cross_expert_alpha_grid_20260616/`.
+Route card:
+`../experiment_cards/2026-06-16-haze4k-v2-11-locked-cross-expert-alpha-grid.md`.
 
 
 ## v2.9 NH-HAZE Official-Test Alpha Grid

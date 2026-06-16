@@ -1,0 +1,28 @@
+run_start v211_repair_fsudp_official_depth2l official_depth2l_pad8_20260616_204627 2026-06-16T20:46:27+08:00
+state=RUNNING_EVAL
+reason=invalidates previous FSNet+UDP preliminary run that used raw npy depth cache and fsudp pad factor 32
+locked_policy=diagnostic_grid_only_no_alpha_selection
+root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c9-fixed-wdmamba-router-locked
+branch=codex/haze4k-v2-2-c9-fixed-wdmamba-router
+commit=1f67309
+status_count=6
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+tool_sha256=773b2d15be1243564f09eaaf61bd883bb37b3d9d1c02604fcf0921d5b25bd638
+depth_tool_sha256=48b25019b4ce833a10ed0bf4494f667ae54e03040a896a4c6f34771cacd5f8ba
+depth_raw_count=1000
+depth2l_count=1000
+preflight_depth2l_done 2026-06-16T20:46:43+08:00
+invalidated_old_fsudp_dir=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c9-fixed-wdmamba-router-locked/experience_docx/experiment_logs/haze4k_v2_11_locked_test_cross_expert_alpha_grid_20260616/invalidated_fsudp_raw_npy_pad32_official_depth2l_pad8_20260616_204627
+selected_gpus=0 1 2 3
+fsudp_repair_shards=4
+launch_repair_shard expert=fsudp shard=0 shard_count=4 gpu=0 2026-06-16T20:46:43+08:00
+launch_repair_shard expert=fsudp shard=1 shard_count=4 gpu=1 2026-06-16T20:46:43+08:00
+launch_repair_shard expert=fsudp shard=2 shard_count=4 gpu=2 2026-06-16T20:46:43+08:00
+launch_repair_shard expert=fsudp shard=3 shard_count=4 gpu=3 2026-06-16T20:46:43+08:00
+repair_shard_done shard=0 rc=0 2026-06-16T20:47:28+08:00
+repair_shard_done shard=1 rc=0 2026-06-16T20:47:28+08:00
+repair_shard_done shard=2 rc=0 2026-06-16T20:47:28+08:00
+repair_shard_done shard=3 rc=0 2026-06-16T20:47:28+08:00
+repair_postprocess_done 2026-06-16T20:47:31+08:00
+V211_REPAIR_FSUDP_OFFICIAL_DEPTH2L_OK
+state=COMPLETED_GATE_PASS

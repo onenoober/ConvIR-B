@@ -173,6 +173,51 @@ printf 'LOCAL_DONE\n'
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
 
+2026-06-16 recurrence on `convir-4090`:
+
+Avoid `printf` format strings that begin with dashes in monitor loops:
+
+```bash
+printf '--- %s ---\n' "$(basename "$f")"
+printf '---MID---\n'
+```
+
+Failure mode:
+
+- Bash treated the leading `---` in the format string as an option;
+- the read-only monitor exited before printing its success marker.
+
+Corrected forms:
+
+```bash
+printf '%s\n' "--- $(basename "$f") ---"
+printf '%s\n' 'MID_BEGIN'
+```
+
+2026-06-16 recurrence on `convir-4090`:
+
+Avoid assuming `python` exists on the remote PATH during audits:
+
+```bash
+python - <<'PY'
+...
+PY
+```
+
+Failure mode:
+
+- `python: command not found` on the remote shell, even though the project
+  runtime Python exists.
+
+Corrected form:
+
+```bash
+PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+"$PY" - <<'PY'
+...
+PY
+```
+
 2026-06-16 recurrence:
 
 Avoid putting a long `bash -lc '...'` body inside another single-quoted SSH

@@ -1,0 +1,54 @@
+run_start v211_locked_cross_expert_alpha_grid 2026-06-16T20:35:32+08:00
+state=RUNNING_EVAL
+locked_test_touched=true
+locked_policy=diagnostic_grid_only_no_alpha_selection
+metric_protocol=v2.2_locked_one_shot_compatible_alpha_candidates_plus_endpoint_repro
+root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c9-fixed-wdmamba-router-locked
+root_is_git=1
+branch=codex/haze4k-v2-2-c9-fixed-wdmamba-router
+commit=1f67309
+status_count=6
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+python_version=3.10.20
+torch_version=2.5.1+cu121
+cuda_available=True
+cuda_device_count=8
+tool=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c9-fixed-wdmamba-router-locked/experience_docx/experiment_logs/haze4k_v2_11_locked_test_cross_expert_alpha_grid_20260616/commands/eval_v211_locked_cross_expert_alpha_grid.py
+tool_sha256=297d52aa071e446117d3bb75332b2ecb8d607007fc7e0b759dc73d41c2f189a2
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+test_haze_count=1000
+test_gt_count=1000
+depth_count=1000
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+a0_sha256=6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088
+fsudp=/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/FSNet_UDPNet_haze4k.ckpt
+fsudp_sha256=25cc334f44c2fac979baad7f158526c9f8d751c21ea282974b0e4d9791fc0a27
+mbtaylor=/sda/home/wangyuxin/ConvIR-B/checkpoints/mb-taylorformerv2/HAZE4K-L.pth
+mbtaylor_sha256=954229a6862cd7058c8769a9362a88f9ef2ef132664a1b05e7f7f204b617f2f9
+udp_repo=/sda/home/wangyuxin/ConvIR-B/repos/UDPNet
+udp_repo_head=f925387
+mbtaylor_repo=/sda/home/wangyuxin/ConvIR-B/repos/external_experts/MB-TaylorFormerV2
+mbtaylor_repo_head=1179060
+preflight_done 2026-06-16T20:35:38+08:00
+selected_gpus=0 1 2 3 4 5 6 7
+fsudp_shards=4
+mbtaylor_shards=4
+launch_shard expert=fsudp shard=0 shard_count=4 gpu=0 2026-06-16T20:35:38+08:00
+launch_shard expert=fsudp shard=1 shard_count=4 gpu=1 2026-06-16T20:35:38+08:00
+launch_shard expert=fsudp shard=2 shard_count=4 gpu=2 2026-06-16T20:35:38+08:00
+launch_shard expert=fsudp shard=3 shard_count=4 gpu=3 2026-06-16T20:35:38+08:00
+launch_shard expert=mbtaylor shard=0 shard_count=4 gpu=4 2026-06-16T20:35:38+08:00
+launch_shard expert=mbtaylor shard=1 shard_count=4 gpu=5 2026-06-16T20:35:38+08:00
+launch_shard expert=mbtaylor shard=2 shard_count=4 gpu=6 2026-06-16T20:35:38+08:00
+launch_shard expert=mbtaylor shard=3 shard_count=4 gpu=7 2026-06-16T20:35:38+08:00
+shard_done label=fsudp:0 rc=0 2026-06-16T20:36:32+08:00
+shard_done label=fsudp:1 rc=0 2026-06-16T20:36:32+08:00
+shard_done label=fsudp:2 rc=0 2026-06-16T20:36:32+08:00
+shard_done label=fsudp:3 rc=0 2026-06-16T20:36:32+08:00
+shard_done label=mbtaylor:0 rc=0 2026-06-16T20:39:18+08:00
+shard_done label=mbtaylor:1 rc=0 2026-06-16T20:39:18+08:00
+shard_done label=mbtaylor:2 rc=0 2026-06-16T20:39:19+08:00
+shard_done label=mbtaylor:3 rc=0 2026-06-16T20:39:19+08:00
+postprocess_done 2026-06-16T20:39:23+08:00
+V211_LOCKED_CROSS_EXPERT_ALPHA_GRID_OK
+state=COMPLETED_GATE_PASS

@@ -1,0 +1,143 @@
+{
+  "depth_cache_dir": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf/test",
+  "haze_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test/haze",
+  "input_count": 1000,
+  "method": "per-image min-max normalization of raw DepthAnything V2 cache to uint8 PNG, then official UDPNet dataloader reads PIL L image and ToTensor scales to 0..1",
+  "missing_count": 0,
+  "missing_examples": [],
+  "out_dir": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf_depth2l/test",
+  "sample_rows": [
+    {
+      "name": "1000_0.73_1.8.png",
+      "output": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf_depth2l/test/1000_0.73_1.8.png",
+      "shape": [
+        480,
+        640
+      ],
+      "source": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf/test/1000_0.73_1.8.png.npy",
+      "src_max": 10.229935646057129,
+      "src_mean": 2.1822211742401123,
+      "src_min": 0.18138673901557922,
+      "src_std": 1.7015776634216309
+    },
+    {
+      "name": "100_0.5_1.76.png",
+      "output": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf_depth2l/test/100_0.5_1.76.png",
+      "shape": [
+        400,
+        400
+      ],
+      "source": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf/test/100_0.5_1.76.png.npy",
+      "src_max": 7.68521785736084,
+      "src_mean": 1.216417908668518,
+      "src_min": -0.23842215538024902,
+      "src_std": 1.3435125350952148
+    },
+    {
+      "name": "101_0.83_1.44.png",
+      "output": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf_depth2l/test/101_0.83_1.44.png",
+      "shape": [
+        400,
+        400
+      ],
+      "source": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf/test/101_0.83_1.44.png.npy",
+      "src_max": 12.759561538696289,
+      "src_mean": 1.3538615703582764,
+      "src_min": -0.5051918029785156,
+      "src_std": 2.027048349380493
+    },
+    {
+      "name": "102_0.67_1.36.png",
+      "output": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf_depth2l/test/102_0.67_1.36.png",
+      "shape": [
+        400,
+        400
+      ],
+      "source": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf/test/102_0.67_1.36.png.npy",
+      "src_max": 12.860200881958008,
+      "src_mean": 1.3548468351364136,
+      "src_min": -0.46573618054389954,
+      "src_std": 2.025289297103882
+    },
+    {
+      "name": "103_0.94_0.98.png",
+      "output": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf_depth2l/test/103_0.94_0.98.png",
+      "shape": [
+        400,
+        400
+      ],
+      "source": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf/test/103_0.94_0.98.png.npy",
+      "src_max": 12.721179962158203,
+      "src_mean": 1.3662647008895874,
+      "src_min": -0.4914090931415558,
+      "src_std": 2.0361523628234863
+    },
+    {
+      "name": "104_0.91_1.41.png",
+      "output": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf_depth2l/test/104_0.91_1.41.png",
+      "shape": [
+        400,
+        400
+      ],
+      "source": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf/test/104_0.91_1.41.png.npy",
+      "src_max": 12.732698440551758,
+      "src_mean": 1.3548181056976318,
+      "src_min": -0.5004746317863464,
+      "src_std": 2.0306615829467773
+    },
+    {
+      "name": "105_0.84_0.8.png",
+      "output": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf_depth2l/test/105_0.84_0.8.png",
+      "shape": [
+        400,
+        400
+      ],
+      "source": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf/test/105_0.84_0.8.png.npy",
+      "src_max": 8.75475788116455,
+      "src_mean": 1.6231701374053955,
+      "src_min": -0.1684495359659195,
+      "src_std": 2.455949306488037
+    },
+    {
+      "name": "106_0.59_1.07.png",
+      "output": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf_depth2l/test/106_0.59_1.07.png",
+      "shape": [
+        400,
+        400
+      ],
+      "source": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf/test/106_0.59_1.07.png.npy",
+      "src_max": 8.763862609863281,
+      "src_mean": 1.6127846240997314,
+      "src_min": -0.1486586183309555,
+      "src_std": 2.4520351886749268
+    },
+    {
+      "name": "107_0.89_1.5.png",
+      "output": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf_depth2l/test/107_0.89_1.5.png",
+      "shape": [
+        400,
+        400
+      ],
+      "source": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf/test/107_0.89_1.5.png.npy",
+      "src_max": 8.636039733886719,
+      "src_mean": 1.6043000221252441,
+      "src_min": -0.2099767029285431,
+      "src_std": 2.4249942302703857
+    },
+    {
+      "name": "108_0.73_1.27.png",
+      "output": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf_depth2l/test/108_0.73_1.27.png",
+      "shape": [
+        400,
+        400
+      ],
+      "source": "/sda/home/wangyuxin/ConvIR-B/depth_cache/depth_anything_v2_small_hf/test/108_0.73_1.27.png.npy",
+      "src_max": 8.68414306640625,
+      "src_mean": 1.6063579320907593,
+      "src_min": -0.16716916859149933,
+      "src_std": 2.435960054397583
+    }
+  ],
+  "skipped": 0,
+  "written": 1000
+}
