@@ -1,8 +1,8 @@
 # StrongExpert-GainMix Family Summary
 
-Date: 2026-06-15
+Date: 2026-06-16
 
-Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal.
+Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal; v2.5 C13 A0-frozen residual distillation intermediate gate failed before B-screen; v2.6 train-derived alpha curves show residual shrinkage is not a single WDMamba lucky point and extends cleanly to FSNet+UDP, while MB-Taylor supports only small-alpha safety.
 
 ## Scope
 
@@ -442,3 +442,84 @@ family default remains fixed `WD0375` as the strong locked-pass teacher/profile.
 
 Evidence root: `../experiment_logs/haze4k_v2_4_c12_wd0375_distill_20260615/`.
 Route card: `../experiment_cards/2026-06-15-haze4k-v2-4-c12-wd0375-distillation.md`.
+
+## v2.5 C13 A0-Frozen Residual Distillation
+
+Decision: `C13_INTERMEDIATE_GATE_FAIL_NO_B_SCREEN_LOCKED_UNTOUCHED`
+
+C13 reframed WD0375 compression as A0-frozen residual learning and validated
+the line at a narrow train-derived scale, but no intermediate variant passed
+the written quick gate. The A2-A5 chain found:
+
+- direct-zero microfit can learn and gives positive movement;
+- fixed high scale gives strong mean/hard but tail regressions are too large;
+- adaptive scalar is too conservative and loses hard gain;
+- post-hoc residual-scale sweep on the best fixed-scale checkpoint still leaves
+  a mean/hard vs tail/positive tradeoff that misses the quick gate.
+
+Best observed rows:
+
+- A5 scale `0.25`: mean `+0.221040`, hard `+0.307825`, easy `+0.163525`,
+  positive `0.796875`, severe `51.5625/600`;
+- A4 scale `0.50`: mean `+0.317922`, hard `+0.604817`, easy `+0.088566`,
+  positive `0.718750`, severe `131.25/600`;
+- A3 adaptive `0.50`: mean `+0.064695`, hard `+0.025806`, easy `+0.119304`,
+  positive `0.843750`, severe `0/600`.
+
+This means the current residual adapter is learnable but not screen-ready.
+Do not continue to C13-B from the current adapter/loss family, and do not touch
+locked Haze4K. A future reopen would need explicit risk/utility conditioning or
+a stronger no-op gate.
+
+## v2.6 Residual Shrinkage Alpha Curves
+
+Decision: `V26_ALPHA_CURVES_COMPLETED_LOCKED_UNTOUCHED`
+
+v2.6 was opened only to supplement the first two requested evidence layers:
+WDMamba cross-alpha residual shrinkage and cross-expert residual shrinkage on
+the C8 train-derived `val_regular + val_hard` scope. It did not read locked
+Haze4K and did not tune from the prior locked WD0375/C11 results.
+
+The fixed grid was:
+
+```text
+candidate(E, alpha) = A0 + alpha * (E - A0)
+E in {WDMamba, FSNet+UDP, MB-TaylorFormerV2-L}
+alpha in {0, 0.125, 0.25, 0.375, 0.50, 0.75, 1.0}
+```
+
+Key train-derived rows:
+
+- WDMamba alpha `0.125/0.25/0.375/0.50` form a safe positive/tail interval.
+  `WD0375` has mean/hard/easy `+2.512202/+3.505615/+1.189484`, positive
+  `0.973333`, severe `11/600`; full alpha `1.0` has higher mean/hard
+  `+3.578052/+8.276923` but easy `-1.048537`, positive `0.768333`, severe
+  `124/600`.
+- FSNet+UDP alpha `0.125/0.25/0.375/0.50/0.75` also forms a safe interval.
+  Alpha `0.375` has mean/hard/easy `+1.602301/+1.623987/+1.581052`, positive
+  `0.970000`, severe `14/600`; alpha `0.75` remains safe with mean/hard/easy
+  `+2.605198/+3.325834/+1.884767`, positive `0.916667`, severe `40/600`;
+  full alpha `1.0` raises severe risk to `71/600`.
+- MB-TaylorFormerV2-L supports only a narrow small-alpha safety claim. Alpha
+  `0.125` has mean/hard/easy `+0.485463/+0.653630/+0.259786`, positive
+  `0.905000`, severe `21/600`, but alpha `0.375` already reaches severe
+  `99/600`, and full alpha has easy `-3.255472`, positive `0.486667`, severe
+  `294/600`.
+
+Group-min evidence is aligned with the aggregate conclusion: WDMamba `0.375`
+keeps min group mean/hard/easy positive (`+1.124603/+1.552796/+0.512985`) with
+max group severe `40/600`; FSNet+UDP `0.375` keeps min group mean/hard/easy
+positive (`+1.300154/+0.561362/+1.308911`) with max group severe `25.35/600`;
+MB-Taylor `0.375` has min group easy `-0.786805` and max group severe
+`260/600`.
+
+This strengthens the claim from a single fixed WDMamba point to a Haze4K
+train-derived residual-shrinkage phenomenon for at least WDMamba and FSNet+UDP.
+It still should be framed as a safety-calibrated strong-expert strategy, not a
+complete new architecture: v2.6 does not prove cross-dataset transfer,
+sample-adaptive alpha, or a deployable learned gate.
+
+Evidence root:
+`../experiment_logs/haze4k_v2_6_residual_shrinkage_alpha_curves_20260616/`.
+Route card:
+`../experiment_cards/2026-06-16-haze4k-v2-6-residual-shrinkage-alpha-curves.md`.

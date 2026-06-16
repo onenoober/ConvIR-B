@@ -1,0 +1,4 @@
+oracle,scope,count,mean_dPSNR,hard_bottom25_dPSNR,easy_top25_dPSNR,dSSIM,positive_ratio,nonnegative_ratio,severe_loss_count,severe_loss_per_600
+S0_fulludp_alpha,all,4,0.2984747886657715,0.027212142944335938,0.079437255859375,0.0,0.75,1.0,0,0.0
+S1_plus_expert_alpha,all,4,1.7965517044067383,1.2742195129394531,1.3836822509765625,0.0,1.0,1.0,0,0.0
+gain_over_S0,all,4,1.4980769157409668,1.2470073699951172,1.3042449951171875,0.0,0.75,1.0,0,0.0

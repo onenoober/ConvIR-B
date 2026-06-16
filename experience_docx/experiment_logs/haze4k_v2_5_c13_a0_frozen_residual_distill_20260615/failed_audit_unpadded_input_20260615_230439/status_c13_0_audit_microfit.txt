@@ -1,0 +1,10 @@
+state=PREFLIGHT_RUNNING
+run_id=v25_c13_0_audit_microfit
+start_time=2026-06-15T23:03:03+08:00
+locked_test_touched=false
+locked_per_image_read=false
+source_commit=7188da722ee39430a159847a3baf6f4fcc8283a9
+source_branch=codex/haze4k-v2-5-c13-a0-frozen-residual-distill
+teacher_cache_count=2400
+state=RUNNING_AUDIT
+audit_start_time=2026-06-15T23:03:05+08:00

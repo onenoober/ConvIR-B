@@ -1,0 +1,11 @@
+state=RUNNING_EVAL
+start_time=2026-06-16T00:12:26+08:00
+locked_test_touched=false
+locked_per_image_read=false
+scale_eval_done scale=0.25
+scale_eval_done scale=0.50
+scale_eval_done scale=0.75
+scale_eval_done scale=1.00
+finish_time=2026-06-16T00:14:24+08:00
+state=C13_A2_SCALE_SCAN_DONE
+C13_A2_SCALE_SCAN_OK

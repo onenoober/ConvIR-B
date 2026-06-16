@@ -1,0 +1,2 @@
+v26_mbtaylor_alpha_curve_start 2026-06-16T14:32:36+08:00 gpu=4 locked=untouched
+v26_mbtaylor_alpha_curve_done rc=0 2026-06-16T14:41:23+08:00

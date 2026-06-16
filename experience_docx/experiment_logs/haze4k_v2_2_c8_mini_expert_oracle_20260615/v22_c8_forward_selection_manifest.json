@@ -1,0 +1,15 @@
+{
+  "inputs": {
+    "fsudp": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c8-mini-expert-oracle/experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/v22_c8_2_fsudp_full_per_image.csv",
+    "mbtaylor": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c8-mini-expert-oracle/experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/v22_c8_3_mbtaylor_full_per_image.csv",
+    "wdmamba": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c8-mini-expert-oracle/experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/v22_c8_1_wdmamba_full_per_image.csv"
+  },
+  "locked_test_touched": false,
+  "rows": 600,
+  "stages": {
+    "S0": "FullUDP alpha oracle",
+    "S1": "S0 + WDMamba",
+    "S2": "S1 + FSNet+UDP",
+    "S3": "S2 + MB-TaylorFormerV2-L"
+  }
+}

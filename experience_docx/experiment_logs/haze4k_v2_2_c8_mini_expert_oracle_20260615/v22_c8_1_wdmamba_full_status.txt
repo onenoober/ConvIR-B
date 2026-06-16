@@ -1,0 +1,2 @@
+v22_c8_1_wdmamba_full_start 2026-06-15T16:23:07+08:00 gpu=7 locked=untouched
+v22_c8_1_wdmamba_full_done 2026-06-15T16:25:04+08:00

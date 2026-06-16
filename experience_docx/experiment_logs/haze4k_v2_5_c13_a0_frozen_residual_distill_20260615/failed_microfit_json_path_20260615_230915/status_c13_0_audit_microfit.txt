@@ -1,0 +1,18 @@
+state=PREFLIGHT_RUNNING
+run_id=v25_c13_0_audit_microfit
+start_time=2026-06-15T23:07:05+08:00
+locked_test_touched=false
+locked_per_image_read=false
+source_commit=d5c88f58335358e25df32fe2e88aa4d0a9cd4604
+source_branch=codex/haze4k-v2-5-c13-a0-frozen-residual-distill
+teacher_cache_count=2400
+state=RUNNING_AUDIT
+audit_start_time=2026-06-15T23:07:07+08:00
+C13_AUDIT_OK
+state=C13_MICROFIT_RUNNING
+microfit_start_time=2026-06-15T23:07:28+08:00
+launched_microfit variant=c13a_microfit16 gpu=1 pid=1624532
+launched_microfit variant=c13a_microfit64 gpu=2 pid=1624536
+launched_microfit variant=c13a_microfit256 gpu=3 pid=1624540
+C13_MICROFIT_FAILED
+state=FAILED_COMMAND

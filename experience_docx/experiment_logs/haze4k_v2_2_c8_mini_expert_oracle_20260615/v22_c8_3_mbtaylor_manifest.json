@@ -1,0 +1,19 @@
+{
+  "a0_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "alpha_grid": [
+    0.0,
+    0.0625,
+    0.125,
+    0.25,
+    0.375,
+    0.5
+  ],
+  "decision": "PASS_COMPLEMENTARITY_SIGNAL",
+  "expert": "mbtaylor",
+  "expert_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/mb-taylorformerv2/HAZE4K-L.pth",
+  "expert_sha256": "954229a6862cd7058c8769a9362a88f9ef2ef132664a1b05e7f7f204b617f2f9",
+  "fsudp_builder_patch": null,
+  "fulludp_sha256": "6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291",
+  "image_count": 600,
+  "locked_test_touched": false
+}

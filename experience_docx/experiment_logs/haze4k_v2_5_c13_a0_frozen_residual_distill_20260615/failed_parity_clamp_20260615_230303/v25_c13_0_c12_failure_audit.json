@@ -1,0 +1,27 @@
+{
+  "adapter_depth": 3,
+  "adapter_width": 32,
+  "bootstrap_scale": 0.01,
+  "c13_max_abs_vs_A0": 0.06532049179077148,
+  "c13_model0_a0_parity_pass": false,
+  "feature_mode": "rgb_wavelet",
+  "locked_per_image_read": false,
+  "locked_test_touched": false,
+  "route": "Haze4K v2.5 C13 A0-frozen residual distillation",
+  "route_stats": {
+    "gate_abs_max": 0.0,
+    "gate_mean": 0.0,
+    "raw_residual_mean_abs": 0.05477669835090637,
+    "residual_mean_abs": 0.0,
+    "student_a0_mean_abs": 0.0
+  },
+  "source": "C12 failure audit",
+  "train_core_count": 64,
+  "train_core_mean_C12_dPSNR": -0.2993231415748596,
+  "train_core_mean_C13_dPSNR": 0.009122192859649658,
+  "train_core_mean_teacher_dPSNR": 2.6033250093460083,
+  "train_core_positive_ratio": 1.0,
+  "val_count": 64,
+  "val_mean_C12_dPSNR": -0.3284529447555542,
+  "val_mean_C13_dPSNR": 0.017585963010787964
+}

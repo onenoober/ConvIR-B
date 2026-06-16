@@ -1,0 +1,6 @@
+status=PLANNED
+locked_test_touched=false
+router_training_done=false
+distillation_done=false
+v22_c9_table_analysis_start 2026-06-15T18:48:31+08:00 locked=untouched source=c8_train_derived_tables
+v22_c9_table_analysis_done rc=0 2026-06-15T18:48:32+08:00

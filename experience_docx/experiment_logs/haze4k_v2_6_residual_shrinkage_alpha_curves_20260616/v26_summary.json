@@ -1,0 +1,17 @@
+{
+  "alpha_count": 7,
+  "experts": [
+    "FSNet+UDP",
+    "MB-TaylorFormerV2-L",
+    "WDMamba"
+  ],
+  "locked_test_touched": false,
+  "route": "haze4k_v2_6_residual_shrinkage_alpha_curves_20260616",
+  "row_count": 42,
+  "splits": [
+    "val_regular",
+    "val_hard"
+  ],
+  "wdmamba_best_mean_alpha": "0.75",
+  "wdmamba_best_positive_tail_alpha": "0.125"
+}

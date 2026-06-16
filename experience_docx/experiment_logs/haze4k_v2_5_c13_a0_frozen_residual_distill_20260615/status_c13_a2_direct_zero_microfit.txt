@@ -1,0 +1,19 @@
+state=PREFLIGHT_RUNNING
+run_id=v25_c13_a2_direct_zero_microfit
+start_time=2026-06-15T23:52:07+08:00
+locked_test_touched=false
+locked_per_image_read=false
+source_commit=9471bdeb9bcf1a4b029d409c0aec6f13f707a8f1
+source_branch=codex/haze4k-v2-5-c13-a0-frozen-residual-distill
+design=direct residual with zero head, no gate bootstrap, clamped output
+state=C13_A2_MICROFIT_RUNNING
+microfit_start_time=2026-06-15T23:52:07+08:00
+launched_a2_microfit variant=c13a2_directzero16 gpu=1 pid=1684760
+launched_a2_microfit variant=c13a2_directzero64 gpu=2 pid=1684764
+launched_a2_microfit variant=c13a2_directzero256 gpu=3 pid=1684768
+eval_a2_microfit_done variant=c13a2_directzero16
+eval_a2_microfit_done variant=c13a2_directzero64
+eval_a2_microfit_done variant=c13a2_directzero256
+finish_time=2026-06-15T23:54:45+08:00
+state=C13_A2_MICROFIT_DONE_REVIEW_BEFORE_B_SCREEN
+C13_A2_DIRECT_ZERO_MICROFIT_OK
