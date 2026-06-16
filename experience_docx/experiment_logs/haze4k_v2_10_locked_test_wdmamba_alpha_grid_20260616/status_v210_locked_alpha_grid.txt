@@ -1,0 +1,41 @@
+run_start v210_locked_alpha_grid_corrected 2026-06-16T19:36:24+08:00
+state=RUNNING_EVAL
+locked_test_touched=true
+locked_policy=diagnostic_grid_only_no_alpha_selection
+metric_protocol=v2.2_locked_one_shot_compatible
+root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c9-fixed-wdmamba-router-locked
+root_is_git=1
+branch=codex/haze4k-v2-2-c9-fixed-wdmamba-router
+commit=1f67309
+status_count=5
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+tool=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c9-fixed-wdmamba-router-locked/experience_docx/experiment_logs/haze4k_v2_10_locked_test_wdmamba_alpha_grid_20260616/commands/eval_v210_locked_alpha_grid.py
+tool_sha256=b702c49d1e94e20b872979cbac7afce309d0fa87323045658ed51d2bc9fbcef5
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+test_haze_count=1000
+test_gt_count=1000
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+a0_sha256=6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088
+wdmamba=/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/haze4k_35.88.pth
+wdmamba_sha256=57ff24c3791e593f0172607fea66252a8ba5475ab0e417f4cf48e72b4c9a36da
+selected_gpus=0 1 2 3 4 5 6 7
+shard_count=8
+launch_shard shard=0 gpu=0 2026-06-16T19:36:25+08:00
+launch_shard shard=1 gpu=1 2026-06-16T19:36:25+08:00
+launch_shard shard=2 gpu=2 2026-06-16T19:36:25+08:00
+launch_shard shard=3 gpu=3 2026-06-16T19:36:25+08:00
+launch_shard shard=4 gpu=4 2026-06-16T19:36:25+08:00
+launch_shard shard=5 gpu=5 2026-06-16T19:36:25+08:00
+launch_shard shard=6 gpu=6 2026-06-16T19:36:25+08:00
+launch_shard shard=7 gpu=7 2026-06-16T19:36:25+08:00
+shard_done shard=0 rc=0 2026-06-16T19:37:07+08:00
+shard_done shard=1 rc=0 2026-06-16T19:37:08+08:00
+shard_done shard=2 rc=0 2026-06-16T19:37:08+08:00
+shard_done shard=3 rc=0 2026-06-16T19:37:08+08:00
+shard_done shard=4 rc=0 2026-06-16T19:37:08+08:00
+shard_done shard=5 rc=0 2026-06-16T19:37:08+08:00
+shard_done shard=6 rc=0 2026-06-16T19:37:08+08:00
+shard_done shard=7 rc=0 2026-06-16T19:37:08+08:00
+postprocess_done 2026-06-16T19:37:10+08:00
+V210_LOCKED_ALPHA_GRID_OK
+state=COMPLETED_GATE_PASS

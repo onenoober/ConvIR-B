@@ -2,7 +2,7 @@
 
 Date: 2026-06-16
 
-Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal; v2.5 C13 A0-frozen residual distillation intermediate gate failed before B-screen; v2.6 train-derived alpha curves show residual shrinkage is not a single WDMamba lucky point and extends cleanly to FSNet+UDP, while MB-Taylor supports only small-alpha safety; v2.7 shows Haze4K-weight WD0375 does not zero-shot transfer to NH-HAZE; v2.8/v2.8b NH-HAZE records were deleted because the all-55 aggregate mixed train/val/test; v2.9 cleanly reruns NH-specific ConvIR-B/WDMamba weights on official test `51-55`, aligns with expected baselines, and leaves NH alpha claims diagnostic only.
+Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal; v2.5 C13 A0-frozen residual distillation intermediate gate failed before B-screen; v2.6 train-derived alpha curves show residual shrinkage is not a single WDMamba lucky point and extends cleanly to FSNet+UDP, while MB-Taylor supports only small-alpha safety; v2.7 shows Haze4K-weight WD0375 does not zero-shot transfer to NH-HAZE; v2.8/v2.8b NH-HAZE records were deleted because the all-55 aggregate mixed train/val/test; v2.9 cleanly reruns NH-specific ConvIR-B/WDMamba weights on official test `51-55`, aligns with expected baselines, and leaves NH alpha claims diagnostic only; v2.10 reports the Haze4K locked alpha grid as diagnostic-only evidence and keeps WD0375 as the safer locked-pass default.
 
 ## Scope
 
@@ -571,6 +571,52 @@ Evidence root:
 `../experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/`.
 Route card:
 `../experiment_cards/2026-06-16-haze4k-v2-7-nhhaze-transfer.md`.
+
+## v2.10 Haze4K Locked WDMamba Alpha Grid
+
+Decision: `V210_HAZE4K_LOCKED_WDMAMBA_ALPHA_GRID_COMPLETED_DIAGNOSTIC_ONLY`
+
+v2.10 evaluated the predeclared WDMamba residual-shrinkage alpha grid on the
+Haze4K locked test split (`1000` images), using the same A0 and WDMamba
+checkpoints as the v2.2 WD0375 locked one-shot:
+
+```text
+candidate(alpha) = A0 + alpha * (WDMamba - A0)
+alpha in {0, 0.125, 0.25, 0.375, 0.50, 0.75, 1.0}
+```
+
+The corrected run uses the v2.2 locked one-shot metric convention and
+parity-matches v2.2 for A0, WD0375, and WDMamba with max absolute difference
+`0.0` over all `1000` images. A preliminary NH-HAZE evaluator reuse was
+discarded before sync because A0/WD0375 SSIM did not match v2.2.
+
+Absolute locked-test rows:
+
+| alpha | PSNR | SSIM grid32 | mean dPSNR | hard dPSNR | easy dPSNR | positive | severe/600 |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 0.000 | 34.145502 | 0.989619 | +0.000000 | +0.000000 | +0.000000 | 0.000000 | 0.00 |
+| 0.125 | 34.675277 | 0.990609 | +0.529775 | +0.505304 | +0.507815 | 0.957000 | 6.60 |
+| 0.250 | 35.163759 | 0.991433 | +1.018257 | +1.017456 | +0.915022 | 0.949000 | 15.00 |
+| 0.375 | 35.587591 | 0.992090 | +1.442090 | +1.529767 | +1.182529 | 0.938000 | 25.80 |
+| 0.500 | 35.920460 | 0.992578 | +1.774958 | +2.030727 | +1.279034 | 0.913000 | 35.40 |
+| 0.750 | 36.203139 | 0.993026 | +2.057637 | +2.888437 | +0.939985 | 0.838000 | 76.20 |
+| 1.000 | 35.917147 | 0.992711 | +1.771646 | +3.314757 | +0.052429 | 0.729000 | 144.00 |
+
+For alpha `1.0`, the standalone WDMamba endpoint SSIM under the original v2.2
+endpoint convention is `0.992468`; the `0.992711` value above is the alpha-grid
+32-pad SSIM used to keep the grid internally comparable.
+
+Interpretation: the locked grid confirms the risk-shrinkage curve shape but is
+not an alpha-selection experiment. Higher alpha improves mean/hard through
+`0.75`, but positive ratio and severe-tail risk deteriorate sharply. WD0375
+remains the safer locked-pass default, and locked output cannot tune alpha,
+features, checkpoints, profiles, actions, experts, thresholds, or distillation
+targets.
+
+Evidence root:
+`../experiment_logs/haze4k_v2_10_locked_test_wdmamba_alpha_grid_20260616/`.
+Route card:
+`../experiment_cards/2026-06-16-haze4k-v2-10-locked-wdmamba-alpha-grid.md`.
 
 
 ## v2.9 NH-HAZE Official-Test Alpha Grid

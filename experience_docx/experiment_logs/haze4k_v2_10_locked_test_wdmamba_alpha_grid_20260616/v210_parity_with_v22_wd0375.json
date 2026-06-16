@@ -1,0 +1,19 @@
+{
+  "available": true,
+  "matched_count": 1000,
+  "max_abs_A0_PSNR": 0.0,
+  "max_abs_A0_SSIM": 0.0,
+  "max_abs_WD0375_PSNR": 0.0,
+  "max_abs_WD0375_SSIM": 0.0,
+  "max_abs_WDMamba_PSNR": 0.0,
+  "max_abs_WDMamba_SSIM": 0.0,
+  "mean_abs_A0_PSNR": 0.0,
+  "mean_abs_A0_SSIM": 0.0,
+  "mean_abs_WD0375_PSNR": 0.0,
+  "mean_abs_WD0375_SSIM": 0.0,
+  "mean_abs_WDMamba_PSNR": 0.0,
+  "mean_abs_WDMamba_SSIM": 0.0,
+  "parity_pass": true,
+  "v22_count": 1000,
+  "v22_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c9-fixed-wdmamba-router-locked/experience_docx/experiment_logs/haze4k_v2_2_c9_fixed_wdmamba_router_20260615/v22_locked_wd0375_one_shot_per_image.csv"
+}

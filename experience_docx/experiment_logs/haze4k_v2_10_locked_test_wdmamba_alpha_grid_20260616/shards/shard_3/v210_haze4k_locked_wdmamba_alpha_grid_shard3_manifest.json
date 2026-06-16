@@ -1,0 +1,16 @@
+{
+  "alpha_grid": [
+    0.0,
+    0.125,
+    0.25,
+    0.375,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "count": 125,
+  "metric_protocol": "v2.2 locked one-shot compatible: alpha candidates use A0 32-pad SSIM; WDMamba standalone also records 4-pad endpoint SSIM",
+  "mode": "evaluate",
+  "shard_count": 8,
+  "shard_index": 3
+}
