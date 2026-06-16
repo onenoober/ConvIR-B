@@ -2,7 +2,7 @@
 
 Date: 2026-06-16
 
-Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal; v2.5 C13 A0-frozen residual distillation intermediate gate failed before B-screen; v2.6 train-derived alpha curves show residual shrinkage is not a single WDMamba lucky point and extends cleanly to FSNet+UDP, while MB-Taylor supports only small-alpha safety; v2.7 shows Haze4K-weight WD0375 does not zero-shot transfer to NH-HAZE; v2.8 all-55 NH-HAZE was audited as a mixed train/val/test aggregate invalid for official benchmark reproduction; v2.8b official-test `51-55` aligns with expected ConvIR-B/WDMamba baselines and leaves NH alpha claims diagnostic only.
+Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal; v2.5 C13 A0-frozen residual distillation intermediate gate failed before B-screen; v2.6 train-derived alpha curves show residual shrinkage is not a single WDMamba lucky point and extends cleanly to FSNet+UDP, while MB-Taylor supports only small-alpha safety; v2.7 shows Haze4K-weight WD0375 does not zero-shot transfer to NH-HAZE; v2.8/v2.8b NH-HAZE records were deleted because the all-55 aggregate mixed train/val/test; v2.9 cleanly reruns NH-specific ConvIR-B/WDMamba weights on official test `51-55`, aligns with expected baselines, and leaves NH alpha claims diagnostic only.
 
 ## Scope
 
@@ -573,52 +573,58 @@ Route card:
 `../experiment_cards/2026-06-16-haze4k-v2-7-nhhaze-transfer.md`.
 
 
-## v2.8 / v2.8b NH-HAZE Official-Weight Split Audit
+## v2.9 NH-HAZE Official-Test Alpha Grid
 
-v2.8 all-55 decision: `V28_ALL55_MIXED_SPLIT_REPRO_INVALID_FOR_OFFICIAL_BENCHMARK`
+Decision: `V29_NHHAZE_OFFICIAL_TEST_ALPHA_GRID_COMPLETED_DIAGNOSTIC_ONLY`
 
-v2.8b official-test decision: `V28B_NHHAZE_OFFICIAL_TEST51_55_REPRO_ALIGNED_WITH_EXPECTED_BASELINES`
+v2.9 deletes and replaces the incorrect v2.8/v2.8b NH-HAZE records. The v2.8
+all-55 aggregate mixed official-style train `01-45`, validation `46-50`, and
+test `51-55` images from the flat local NH-HAZE directory, so it must not be
+cited as active evidence. v2.9 reran the experiment from a staging directory
+containing exactly the official-style test ids `51 52 53 54 55`.
 
-v2.8 reran NH-HAZE with dataset-specific checkpoints instead of the v2.7
-Haze4K-weight zero-shot setup. Runtime used `convir-4090` from source snapshot
-`6c5d71e`, `55` paired NH-HAZE PNGs, ConvIR-B A0 checkpoint
-`nhhaze-base.pkl` sha256
-`aab6a72613781900a23c3922ad2dd60f6b0d563018e33ae75162bcf3338f5bac`, and
-WDMamba checkpoint `NH_20.83.pth` sha256
-`e097524f466b24f32843867911f9cbd47be8d51e61e5e345f8a27c22c73d5c5a`.
-ConvIR-B used `build_net("base", "NHR", "original")`; WDMamba required
-`DENet(3, 4)` for strict NH checkpoint loading.
+The rerun used dataset-specific checkpoints instead of the v2.7 Haze4K-weight
+zero-shot setup:
 
-Final audit passed with `55` unique image ids, complete seven-row alpha grid,
-three shard manifests (`19/18/18`), Haze4K locked untouched, and NH-HAZE alpha
-tuning disabled. The later v2.8b audit found that this all-55 aggregation was
-scientifically invalid for official NH-HAZE reproduction because the local data
-root was flat and v2.8 mixed official-style train `01-45`, validation `46-50`,
-and test `51-55` images.
+- ConvIR-B A0 checkpoint `nhhaze-base.pkl`, sha256
+  `aab6a72613781900a23c3922ad2dd60f6b0d563018e33ae75162bcf3338f5bac`;
+- A0 construction `build_net("base", "NHR", "original")`;
+- WDMamba checkpoint `NH_20.83.pth`, sha256
+  `e097524f466b24f32843867911f9cbd47be8d51e61e5e345f8a27c22c73d5c5a`;
+- WDMamba `WaveMamba` with `DENet(3, 4)` for strict NH checkpoint loading.
 
-Split audit:
+Absolute official-test reproduction:
 
 ```text
-01-45 train:  A0 26.7379/0.9444, WDMamba 24.3867/0.8781
-46-50 val:    A0 25.8473/0.9292, WDMamba 22.6659/0.8314
-51-55 test:   A0 20.6636/0.7968, WDMamba 20.8307/0.8182
-01-55 mixed:  A0 26.1047/0.9296, WDMamba 23.9070/0.8684
+A0_NH / ConvIR-B: 20.663593 PSNR, 0.796806 SSIM
+WDMamba_NH:       20.830742 PSNR, 0.818217 SSIM
 ```
 
-The official-test `51-55` A0 result aligns with the ConvIR-B README NH-HAZE base
-result `20.66/0.802`, and WDMamba aligns with the checkpoint name
-`NH_20.83.pth`. Therefore the all-55 `26.1047/0.9296` A0 number was a split
-contamination artifact rather than a valid official NH-HAZE test result.
+The A0 result aligns with the ConvIR-B README NH-HAZE base result
+`20.66/0.802`, and the WDMamba result aligns with the checkpoint name
+`NH_20.83.pth`. Therefore the previous all-55 `26.1047/0.9296` A0 number is
+confirmed as split contamination rather than a valid official NH-HAZE benchmark
+result.
 
-On official test `51-55`, inherited `alpha=0.375` gives mean dPSNR
-`+0.515796`, dSSIM `+0.02203439`, positive `1.0`, severe `0/5`, and worst
-`+0.078772`. This is only a five-image post-run diagnostic from the existing
-alpha grid and must not be promoted as an NH-HAZE-selected alpha without a
-separate validation/OOF protocol.
+Alpha-grid result relative to A0_NH:
+
+```text
+alpha=0.125: mean +0.224743, hard +0.100395, easy +0.277756, dSSIM +0.00889715, positive 1.0, severe 0/5, worst +0.100395
+alpha=0.250: mean +0.398761, hard +0.127104, easy +0.524015, dSSIM +0.01628561, positive 1.0, severe 0/5, worst +0.127104
+alpha=0.375: mean +0.515796, hard +0.078772, easy +0.732107, dSSIM +0.02203434, positive 1.0, severe 0/5, worst +0.078772
+alpha=0.500: mean +0.571267, hard -0.042160, easy +0.895655, dSSIM +0.02600487, positive 0.8, severe 0/5, worst -0.042160
+alpha=0.750: mean +0.490403, hard -0.475842, easy +1.068354, dSSIM +0.02805873, positive 0.6, severe 1/5, worst -0.475842
+alpha=1.000: mean +0.167149, hard -1.103455, easy +1.017271, dSSIM +0.02141021, positive 0.6, severe 2/5, worst -1.103455
+```
+
+Interpretation: inherited `alpha=0.375` remains positive and tail-safer than
+full WDMamba on the five official-test images. This is useful cross-dataset
+diagnostic evidence for residual shrinkage under NH-specific weights, but it is
+not an NH-HAZE-selected alpha and not a full method-promotion result. Any
+NH-HAZE alpha claim still requires a separate validation or OOF protocol before
+test reporting.
 
 Evidence root:
-`../experiment_logs/haze4k_v2_8_nhhaze_official_weights_20260616/`.
-Split audit:
-`../experiment_logs/haze4k_v2_8b_nhhaze_official_test_split_audit_20260616/`.
+`../experiment_logs/haze4k_v2_9_nhhaze_official_test_alpha_grid_20260616/`.
 Route card:
-`../experiment_cards/2026-06-16-haze4k-v2-8-nhhaze-official-weights.md`.
+`../experiment_cards/2026-06-16-haze4k-v2-9-nhhaze-official-test-alpha-grid.md`.

@@ -1,0 +1,18 @@
+v29_start 2026-06-16T18:36:58+08:00
+host=RTX4090
+root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v28-nhhaze-official-weights
+data=/sda/home/wangyuxin/ConvIR-B/datasets/NH-HAZE-official-test-51-55
+official_split=test_51_55_only
+stage_pair_count=5 stage_gt_count=5 stage_ids=51 52 53 54 55
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/nhhaze-base.pkl
+wdmamba=/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/NH_20.83.pth
+a0_sha256=
+wdmamba_sha256=
+branch=RSYNC_SNAPSHOT_NO_REMOTE_GIT
+commit=UNKNOWN
+status_short_begin
+remote_git_metadata=unavailable_snapshot_rsync
+status_short_end
+py_compile_ok 2026-06-16T18:36:58+08:00
+v29_done rc=0 2026-06-16T18:37:09+08:00
+V29_NHHAZE_OFFICIAL_TEST_ALPHA_GRID_OK

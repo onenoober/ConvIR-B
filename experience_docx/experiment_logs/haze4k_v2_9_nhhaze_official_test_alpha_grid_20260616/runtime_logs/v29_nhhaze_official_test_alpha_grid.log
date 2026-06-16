@@ -1,0 +1,11 @@
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/pytorch_wavelets/dtcwt/coeffs.py:7: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_stream
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+progress shard=0/1 1/5 mean_wd0375=0.078772 elapsed=2.0s
+progress shard=0/1 2/5 mean_wd0375=0.405439 elapsed=3.2s
+progress shard=0/1 3/5 mean_wd0375=0.347290 elapsed=4.3s
+progress shard=0/1 4/5 mean_wd0375=0.533672 elapsed=5.5s
+progress shard=0/1 5/5 mean_wd0375=0.515796 elapsed=6.7s
+V28_NHHAZE_OFFICIAL_EVAL_SHARD_OK shard=0 rows=5
+V28_NHHAZE_OFFICIAL_AGGREGATE_OK decision=V28_NHHAZE_OFFICIAL_WEIGHT_INHERITED_ALPHA_SUPPORTS_SHRINKAGE_DIAGNOSTIC rows=5

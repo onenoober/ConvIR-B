@@ -259,6 +259,36 @@ printf 'LOCAL_WSL_CHECK_OK\n'
 
 For nested SSH scripts, use a quoted heredoc after CR stripping:
 
+2026-06-16 recurrence:
+
+Avoid generating evidence docs through an unquoted or quote-stripped heredoc
+when the Markdown body contains literal shell variables such as `$root`:
+
+```bash
+cat > file.md <<MD
+... `$root` ...
+MD
+```
+
+Failure mode observed:
+
+- the heredoc delimiter was not preserved as a quoted delimiter at the effective
+  shell layer;
+- Bash expanded `$root` while `set -u` was active;
+- the command failed with `root: unbound variable` before the evidence docs were
+  rewritten.
+
+Corrected forms:
+
+```bash
+cat > file.md <<'MD'
+... `$root` ...
+MD
+```
+
+or prefer `apply_patch` for evidence-doc rewrites that contain literal shell
+syntax.
+
 ```powershell
 $script = @'
 set -euo pipefail

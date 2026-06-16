@@ -1,0 +1,8 @@
+alpha,group_count,min_group_mean_dPSNR,min_group_mean_group,min_group_mean_bin,min_group_hard_bottom25_dPSNR,min_group_hard_group,min_group_hard_bin,min_group_easy_top25_dPSNR,min_group_easy_group,min_group_easy_bin,min_group_positive_ratio,min_group_positive_group,min_group_positive_bin,max_group_severe_per_600,max_group_severe_group,max_group_severe_bin
+0.0,40,0.0,A0-PSNR_q4,q1,0.0,A0-PSNR_q4,q1,0.0,A0-PSNR_q4,q1,0.0,A0-PSNR_q4,q1,0.0,A0-PSNR_q4,q1
+0.125,40,0.10039520263671875,WDMamba-residual-abs_q4,q4,0.10039520263671875,A0-PSNR_q4,q1,0.10039520263671875,WDMamba-residual-abs_q4,q4,1.0,A0-PSNR_q4,q1,0.0,A0-PSNR_q4,q1
+0.25,40,0.1271038055419922,WDMamba-residual-abs_q4,q4,0.1271038055419922,A0-PSNR_q4,q1,0.1271038055419922,WDMamba-residual-abs_q4,q4,1.0,A0-PSNR_q4,q1,0.0,A0-PSNR_q4,q1
+0.375,40,0.07877159118652344,WDMamba-residual-abs_q4,q4,0.07877159118652344,A0-PSNR_q4,q1,0.07877159118652344,WDMamba-residual-abs_q4,q4,1.0,A0-PSNR_q4,q1,0.0,A0-PSNR_q4,q1
+0.5,40,-0.0421600341796875,WDMamba-residual-abs_q4,q4,-0.0421600341796875,A0-PSNR_q4,q1,-0.0421600341796875,WDMamba-residual-abs_q4,q4,0.0,WDMamba-residual-abs_q4,q4,0.0,A0-PSNR_q4,q1
+0.75,40,-0.4758415222167969,WDMamba-residual-abs_q4,q4,-0.4758415222167969,A0-PSNR_q4,q1,-0.4758415222167969,WDMamba-residual-abs_q4,q4,0.0,A0-PSNR_q4,q3,600.0,WDMamba-residual-abs_q4,q4
+1.0,40,-1.10345458984375,WDMamba-residual-abs_q4,q4,-1.10345458984375,A0-PSNR_q4,q1,-1.10345458984375,WDMamba-residual-abs_q4,q4,0.0,A0-PSNR_q4,q3,600.0,A0-PSNR_q4,q3
