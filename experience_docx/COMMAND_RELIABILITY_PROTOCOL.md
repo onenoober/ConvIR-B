@@ -413,6 +413,41 @@ git -C /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue branch --show-cu
 git -C /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue rev-parse --short HEAD
 ```
 
+### Rsyncing a local Git worktree snapshot to the cloud
+
+Avoid copying the `.git` file from a local Git worktree into a cloud runtime
+snapshot with `rsync`. A worktree `.git` file points to the local checkout's
+gitdir, which is not valid on `convir-4090`:
+
+```bash
+rsync -a --delete --exclude='.git/' ./ convir-4090:/sda/home/.../ConvIR-B-v27-nhhaze-transfer/
+```
+
+Failure mode observed on 2026-06-16:
+
+- the remote snapshot contained a `.git` pointer to
+  `/home/ubuntu/workspace/ConvIR-B/.git/worktrees/...`;
+- `git branch`, `git rev-parse`, and `git status` failed on the cloud before
+  the run could launch.
+
+Corrected forms:
+
+```bash
+rsync -a --delete --exclude='.git' --exclude='.git/' ./ convir-4090:/sda/home/.../ConvIR-B-v27-nhhaze-transfer/
+ssh convir-4090 'rm -f /sda/home/.../ConvIR-B-v27-nhhaze-transfer/.git'
+```
+
+Runtime scripts that can run from rsync snapshots should record an explicit
+source commit string and tolerate missing Git metadata:
+
+```bash
+if git -C "$ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  git -C "$ROOT" rev-parse HEAD
+else
+  printf 'commit=<source_commit_from_local_snapshot>\n'
+fi
+```
+
 ### Running repo-root tools that import `Dehazing/ITS`
 
 Avoid helper scripts that assume `os.getcwd()` is the import root:

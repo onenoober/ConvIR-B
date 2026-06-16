@@ -1,0 +1,17 @@
+{
+  "dataset_root": "/sda/home/wangyuxin/ConvIR-B/datasets/NH-HAZE",
+  "layout": "flat paired PNG files named <id>_hazy.png and <id>_GT.png",
+  "max_pixels": 1920000,
+  "min_pixels": 1920000,
+  "missing_gt": [],
+  "pair_count": 55,
+  "size_mismatches": [],
+  "sizes": [
+    [
+      1600,
+      1200
+    ]
+  ],
+  "status": "OK",
+  "unique_image_ids": 55
+}

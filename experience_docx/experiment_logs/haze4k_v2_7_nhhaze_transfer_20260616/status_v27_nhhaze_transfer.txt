@@ -1,0 +1,13 @@
+v27_nhhaze_transfer_start 2026-06-16T16:08:46+08:00 locked_haze4k=untouched nhhaze_tuning=false
+branch=RSYNC_SNAPSHOT_NO_REMOTE_GIT
+commit=1adb61a
+status_short_begin
+remote_git_metadata=unavailable_snapshot_rsync
+status_short_end
+dataset=/sda/home/wangyuxin/ConvIR-B/datasets/NH-HAZE
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+wdmamba=/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/haze4k_35.88.pth
+cloud_py_compile_ok 2026-06-16T16:08:46+08:00
+nhhaze_pair_count=55
+selected_gpus=1 2 3 shard_count=3
+V27_NHHAZE_TRANSFER_OK 2026-06-16T16:09:22+08:00

@@ -1,0 +1,2 @@
+v27_nhhaze_wdmamba_transfer_shard1_start 2026-06-16T16:08:46+08:00 gpu=2
+v27_nhhaze_wdmamba_transfer_shard1_done rc=0 2026-06-16T16:09:15+08:00

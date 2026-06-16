@@ -1,0 +1,4 @@
+v27_nhhaze_transfer_start 2026-06-16T16:04:12+08:00 locked_haze4k=untouched nhhaze_tuning=false
+branch=
+commit=
+status_short_begin
