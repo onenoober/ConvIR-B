@@ -2,7 +2,7 @@
 
 Date: 2026-06-16
 
-Status: `PLANNED`
+Status: `COMPLETED_GATE_FAIL`
 
 ## Purpose
 
@@ -77,3 +77,33 @@ alpha, threshold, checkpoint, feature, or profile is selected from NH-HAZE.
   `experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/`
 - Primary tool:
   `experience_docx/tools/eval_nhhaze_v27_wdmamba_transfer.py`
+
+
+## Result
+
+Decision: `V27_NHHAZE_FIXED_WD0375_TRANSFER_NOT_SUPPORTED`
+
+The fixed Haze4K-selected `WD0375` profile did not transfer to NH-HAZE under the
+predeclared protocol. On `55` paired NH-HAZE images, `alpha=0.375` produced
+mean/hard/easy dPSNR `-0.018157` / `-0.003815` /
+`-0.042949`, dSSIM `+0.00887693`, positive ratio
+`0.472727`, and severe `13/55`
+(`141.82/600`). Full WDMamba alpha `1.0` was still worse
+(mean `-0.187173`, severe `26/55`, worst
+`-2.029044`), so shrinkage reduces endpoint damage but is not
+sufficient for a positive cross-dataset claim.
+
+The diagnostic alpha grid should not be used to tune NH-HAZE. Its shape is
+negative overall: `0.125` is near-zero but not robust, while larger alphas become
+progressively worse. This route therefore blocks any claim that fixed WD0375 is
+already a cross-dataset general residual-shrinkage solution.
+
+## Closeout
+
+State: `COMPLETED_GATE_FAIL`
+
+- Source snapshot commit: `1adb61a`.
+- Runtime command: `commands/run_v27_nhhaze_transfer_parallel.sh`.
+- Final audit: `v27_final_audit.json` reports `OK` with `55` unique per-image
+  rows and no NH-HAZE tuning.
+- Haze4K locked test remained untouched.

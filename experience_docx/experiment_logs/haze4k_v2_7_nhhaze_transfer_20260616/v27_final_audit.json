@@ -1,0 +1,13 @@
+{
+  "audit_status": "OK",
+  "dataset_pair_count": 55,
+  "duplicate_ids": [],
+  "haze4k_locked_touched": false,
+  "nhhaze_tuning": false,
+  "per_image_count": 55,
+  "primary_alpha": 0.375,
+  "source_commit_recorded_in_status": "1adb61a",
+  "summary_count": 55,
+  "summary_decision": "V27_NHHAZE_FIXED_WD0375_TRANSFER_NOT_SUPPORTED",
+  "unique_per_image_ids": 55
+}

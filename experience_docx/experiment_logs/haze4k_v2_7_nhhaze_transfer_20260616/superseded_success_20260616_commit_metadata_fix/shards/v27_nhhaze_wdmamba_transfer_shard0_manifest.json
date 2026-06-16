@@ -1,0 +1,28 @@
+{
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "a0_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "alpha_grid": [
+    0.0,
+    0.125,
+    0.25,
+    0.375,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/NH-HAZE",
+  "elapsed_sec": 25.540228366851807,
+  "locked_haze4k_touched": false,
+  "mode": "evaluate_shard",
+  "nhhaze_tuning": false,
+  "pair_count_shard": 19,
+  "pair_count_total": 55,
+  "prefix": "v27_nhhaze_wdmamba_transfer_shard0",
+  "primary_alpha": 0.375,
+  "route": "haze4k_v2_7_nhhaze_transfer_20260616",
+  "shard_count": 3,
+  "shard_index": 0,
+  "wdmamba_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/haze4k_35.88.pth",
+  "wdmamba_repo": "/sda/home/wangyuxin/ConvIR-B/repos/external_experts/WDMamba",
+  "wdmamba_sha256": "57ff24c3791e593f0172607fea66252a8ba5475ab0e417f4cf48e72b4c9a36da"
+}
