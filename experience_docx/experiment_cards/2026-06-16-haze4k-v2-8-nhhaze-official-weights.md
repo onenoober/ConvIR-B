@@ -2,13 +2,19 @@
 
 Date: 2026-06-16
 
-Status: `COMPLETED_GATE_FAIL`
+Status: `COMPLETED_AUDIT_RELABELED_MIXED_SPLIT_INVALID_FOR_OFFICIAL_BENCHMARK`
 
 ## Purpose
 
 Evaluate NH-HAZE with dataset-specific ConvIR-B and WDMamba checkpoints, after
 v2.7 showed that Haze4K-weight WD0375 is only a zero-shot diagnostic and not a
 fair NH-HAZE benchmark.
+
+Audit erratum: the original v2.8 run evaluated the flat local NH-HAZE directory
+as all `55` paired images. That all-55 aggregate mixes official-style train,
+validation, and test images, so it is invalid for official NH-HAZE benchmark
+reproduction. The corrected split audit is v2.8b:
+`experience_docx/experiment_logs/haze4k_v2_8b_nhhaze_official_test_split_audit_20260616/`.
 
 This route separates two questions:
 
@@ -72,9 +78,11 @@ Roles:
 - WDMamba DENet blocks: `4`
 - Evidence root: `experience_docx/experiment_logs/haze4k_v2_8_nhhaze_official_weights_20260616/`
 
-Dataset preflight must confirm `55` paired full-resolution PNG images named
+Dataset preflight confirmed `55` paired full-resolution PNG images named
 `*_hazy.png` and `*_GT.png`, all `1600x1200`, with no missing GT files and no
-size mismatches.
+size mismatches. This was not sufficient for official reproduction because the
+local directory was flat. Official-test aggregation must use `51-55`, not all
+`55` images.
 
 ## Metrics
 
@@ -120,12 +128,16 @@ or raw inference outputs.
 
 ## Result
 
-Decision: `V28_NHHAZE_OFFICIAL_WEIGHT_INHERITED_ALPHA_NOT_SUPPORTED`
+Original all-55 decision: `V28_NHHAZE_OFFICIAL_WEIGHT_INHERITED_ALPHA_NOT_SUPPORTED`
+
+Audit decision: `V28_ALL55_MIXED_SPLIT_REPRO_INVALID_FOR_OFFICIAL_BENCHMARK`
 
 The route completed on `convir-4090` from source snapshot `6c5d71e`. Final
 audit passed with `55` unique NH-HAZE pairs, three shard manifests (`19/18/18`
 rows), no duplicate image ids, complete seven-row alpha grid, Haze4K locked
-untouched, and NH-HAZE alpha tuning disabled.
+untouched, and NH-HAZE alpha tuning disabled. A later split audit found the
+all-55 aggregate invalid for official benchmark reproduction because it mixed
+official-style `01-45` train, `46-50` validation, and `51-55` test images.
 
 Weights and construction:
 
@@ -136,8 +148,8 @@ Weights and construction:
 - ConvIR-B A0 construction: `build_net("base", "NHR", "original")`;
 - WDMamba construction: `WaveMamba(...)` with `DENet(3, 4)`.
 
-The official-weight WDMamba endpoint was substantially worse than A0_NH on this
-local NH-HAZE protocol:
+The mixed all-55 WDMamba endpoint was substantially worse than A0_NH on this
+invalid official-benchmark aggregate:
 
 - alpha `1.0` mean/hard/easy dPSNR:
   `-2.197751/-1.093919/-2.327606`;
@@ -146,7 +158,8 @@ local NH-HAZE protocol:
 - severe `52/55` (`567.27/600`);
 - worst dPSNR `-4.730593`.
 
-The inherited Haze4K fixed alpha `0.375` also failed:
+The inherited Haze4K fixed alpha `0.375` also failed on the mixed all-55
+aggregate:
 
 - mean/hard/easy dPSNR `-0.133584/+0.122348/-0.155758`;
 - dSSIM `-0.00598572`;
@@ -160,10 +173,19 @@ severe `0/55`), but this is a test-set diagnostic observation only. It must not
 be promoted as an NH-HAZE-selected alpha without a separate validation or OOF
 protocol.
 
-Interpretation: NH-HAZE does not currently support reusing the Haze4K
-`alpha=0.375` shrinkage profile. It also shows that the expert relationship on
-NH-HAZE is different from Haze4K: under the available NH-specific checkpoints
-and this paired-test protocol, ConvIR-B A0_NH is the stronger endpoint than
-WDMamba_NH. Future NH-HAZE residual shrinkage work should first create a
-validation/OOF calibration protocol before selecting alpha or training an
-adaptive gate.
+Corrected official-test split audit:
+
+- `01-45` train: A0 `26.7379/0.9444`, WDMamba `24.3867/0.8781`;
+- `46-50` validation: A0 `25.8473/0.9292`, WDMamba `22.6659/0.8314`;
+- `51-55` official test: A0 `20.6636/0.7968`, WDMamba `20.8307/0.8182`.
+
+The `51-55` A0 result aligns with the ConvIR-B README NH-HAZE base result
+`20.66/0.802`, and the WDMamba result aligns with the checkpoint name
+`NH_20.83.pth`. Therefore the high `26.1047/0.9296` A0 number was a split
+contamination artifact, not a valid official NH-HAZE test result.
+
+On `51-55`, inherited `alpha=0.375` gives mean dPSNR `+0.515796`, dSSIM
+`+0.02203439`, positive `1.0`, severe `0/5`, and worst `+0.078772`. This is
+only a five-image post-run diagnostic from the existing alpha grid and must not
+be promoted as an NH-HAZE-selected alpha without a separate validation/OOF
+protocol.

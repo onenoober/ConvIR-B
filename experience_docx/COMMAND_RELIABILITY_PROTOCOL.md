@@ -173,6 +173,41 @@ printf 'LOCAL_DONE\n'
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
 
+2026-06-16 recurrence:
+
+Avoid putting a long `bash -lc '...'` body inside another single-quoted SSH
+command when the body itself contains command substitutions, quotes, and
+multi-line shell code:
+
+```powershell
+$script = @'
+set -euo pipefail
+ssh -n convir-4090 'bash -lc '\''... "$(date)" ...'\'''
+'@
+```
+
+Failure mode observed:
+
+- the nested single-quote boundary closed at the wrong layer;
+- WSL Bash received an unterminated command and returned
+  `unexpected EOF while looking for matching \`''`;
+- the remote audit never executed.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+ssh convir-4090 'bash -s' <<'REMOTE'
+set -euo pipefail
+printf 'REMOTE_TIME=%s\n' "$(date --iso-8601=seconds)"
+printf 'REMOTE_AUDIT_OK\n'
+REMOTE
+printf 'LOCAL_REMOTE_AUDIT_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
 ### PowerShell here-string to WSL heredoc without CR stripping
 
 Avoid sending a PowerShell here-string directly to a WSL script that contains a
