@@ -2,7 +2,7 @@
 
 Date: 2026-06-16
 
-Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal; v2.5 C13 A0-frozen residual distillation intermediate gate failed before B-screen; v2.6 train-derived alpha curves show residual shrinkage is not a single WDMamba lucky point and extends cleanly to FSNet+UDP, while MB-Taylor supports only small-alpha safety; v2.7 NH-HAZE fixed-transfer fails, so fixed WD0375 is not yet a cross-dataset solution.
+Status: v2.1 locked one-shot failed with no locked-informed tuning allowed; v2.2 WD0375 locked one-shot passed; v2.3 C11 train-derived WD0375/FS050 sealed selector passed but its locked one-shot should not replace WD0375 because positive/severe risk regressed; v2.4 C12 direct WD0375 distillation screen failed and should not continue to formal; v2.5 C13 A0-frozen residual distillation intermediate gate failed before B-screen; v2.6 train-derived alpha curves show residual shrinkage is not a single WDMamba lucky point and extends cleanly to FSNet+UDP, while MB-Taylor supports only small-alpha safety; v2.7 shows Haze4K-weight WD0375 does not zero-shot transfer to NH-HAZE, but it is not an official NH-HAZE benchmark.
 
 ## Scope
 
@@ -525,16 +525,23 @@ Route card:
 `../experiment_cards/2026-06-16-haze4k-v2-6-residual-shrinkage-alpha-curves.md`.
 
 
-## v2.7 NH-HAZE Fixed WDMamba Transfer
+## v2.7 NH-HAZE Haze4K-Weight Zero-Shot Transfer
 
-Decision: `V27_NHHAZE_FIXED_WD0375_TRANSFER_NOT_SUPPORTED`
+Decision: `V27_NHHAZE_HAZE4K_WEIGHT_ZERO_SHOT_TRANSFER_NOT_SUPPORTED`
 
 v2.7 evaluated the Haze4K-selected fixed profile
 `WD0375 = A0 + 0.375 * (WDMamba - A0)` on the newly added paired NH-HAZE
-dataset without NH-HAZE alpha tuning. The dataset preflight found `55` flat
-paired PNG images named `<id>_hazy.png` and `<id>_GT.png`, all `1600x1200`, with
-no missing GT files and no size mismatches. Runtime used `convir-4090` from
-source snapshot `1adb61a`; Haze4K locked test was not touched.
+dataset without NH-HAZE alpha tuning. This was a Haze4K-weight zero-shot
+diagnostic, not an official NH-HAZE benchmark: A0 used
+`/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl`, and
+WDMamba used
+`/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/haze4k_35.88.pth`.
+The local checkpoint inventory did not contain NH-HAZE-specific ConvIR-B or
+WDMamba weights at launch time, while WDMamba has NH-HAZE-specific config and
+pretrained-model references. The dataset preflight found `55` flat paired PNG
+images named `<id>_hazy.png` and `<id>_GT.png`, all `1600x1200`, with no missing
+GT files and no size mismatches. Runtime used `convir-4090` from source
+snapshot `1adb61a`; Haze4K locked test was not touched.
 
 Primary fixed row on NH-HAZE:
 
@@ -547,16 +554,18 @@ Primary fixed row on NH-HAZE:
 Full WDMamba alpha `1.0` was worse (mean/hard/easy
 `-0.187173/-0.095121/-0.364553`, positive `0.363636`, severe `26/55`, worst
 `-2.029044`), so shrinkage still reduces endpoint damage. However, the fixed
-Haze4K `WD0375` profile does not provide a positive cross-dataset result on
+Haze4K-weight `WD0375` profile does not provide a positive zero-shot result on
 NH-HAZE. The diagnostic grid shows only a near-zero alpha `0.125` row
 (`+0.000960` mean, easy `-0.001208`, positive `0.472727`) and increasingly
 negative results as alpha grows; this grid must not be used as NH-HAZE tuning.
 
 Interpretation: v2.6 remains strong evidence for a Haze4K train-derived
 residual-shrinkage phenomenon, but v2.7 blocks any claim that fixed `WD0375` is
-already cross-dataset general. Future cross-dataset work needs predeclared
-calibration, cross-dataset validation, or sample-adaptive risk/utility
-conditioning rather than a single Haze4K alpha.
+already cross-dataset general under Haze4K weights. It does not evaluate
+official NH-HAZE-trained ConvIR-B or WDMamba performance. Future cross-dataset
+work needs NH-HAZE-trained checkpoints for formal benchmarking, plus
+predeclared calibration, cross-dataset validation, or sample-adaptive
+risk/utility conditioning rather than a single Haze4K alpha.
 
 Evidence root:
 `../experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/`.

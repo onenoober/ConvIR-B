@@ -1,4 +1,4 @@
-# Haze4K v2.7 NH-HAZE Fixed WDMamba Transfer
+# Haze4K v2.7 NH-HAZE Haze4K-Weight Zero-Shot Transfer
 
 Date: 2026-06-16
 
@@ -7,11 +7,20 @@ Status: `COMPLETED_GATE_FAIL`
 ## Purpose
 
 Evaluate whether the Haze4K-selected fixed WDMamba residual shrinkage profile
-transfers to the newly added NH-HAZE paired dataset without tuning on NH-HAZE.
+transfers zero-shot to the newly added NH-HAZE paired dataset without tuning on
+NH-HAZE.
 
 This route follows v2.6 residual-shrinkage evidence and tests only the
 cross-dataset layer requested after the Haze4K alpha-curve and cross-expert
 experiments.
+
+Important scope caveat: this is not an official NH-HAZE benchmark and not a
+fair NH-HAZE comparison between ConvIR-B and WDMamba. Both A0 and WDMamba use
+Haze4K checkpoints in this route. The local checkpoint inventory did not contain
+NH-HAZE-specific ConvIR-B or WDMamba weights at launch time, while the WDMamba
+repository has an NH-HAZE training config and pretrained-model entry. Any formal
+NH-HAZE claim must use NH-HAZE-trained checkpoints or a separately documented
+training protocol.
 
 ## Fixed Protocol
 
@@ -61,10 +70,11 @@ Report full-dataset and group metrics:
 
 ## Gates
 
-This is a cross-dataset diagnostic, not a model-promotion route. The fixed
-transfer is considered supportive if the primary `alpha=0.375` row has positive
-mean, hard, easy, nonnegative dSSIM, positive ratio at least `0.70`, and no
-worse severe count/worst-case than full WDMamba alpha `1.0`.
+This is a Haze4K-weight zero-shot diagnostic, not a model-promotion route and
+not an official NH-HAZE benchmark. The fixed transfer is considered supportive
+only if the primary `alpha=0.375` row has positive mean, hard, easy,
+nonnegative dSSIM, positive ratio at least `0.70`, and no worse severe
+count/worst-case than full WDMamba alpha `1.0`.
 
 ## Locked-Test Policy
 
@@ -81,10 +91,11 @@ alpha, threshold, checkpoint, feature, or profile is selected from NH-HAZE.
 
 ## Result
 
-Decision: `V27_NHHAZE_FIXED_WD0375_TRANSFER_NOT_SUPPORTED`
+Decision: `V27_NHHAZE_HAZE4K_WEIGHT_ZERO_SHOT_TRANSFER_NOT_SUPPORTED`
 
 The fixed Haze4K-selected `WD0375` profile did not transfer to NH-HAZE under the
-predeclared protocol. On `55` paired NH-HAZE images, `alpha=0.375` produced
+predeclared Haze4K-weight zero-shot protocol. On `55` paired NH-HAZE images,
+`alpha=0.375` produced
 mean/hard/easy dPSNR `-0.018157` / `-0.003815` /
 `-0.042949`, dSSIM `+0.00887693`, positive ratio
 `0.472727`, and severe `13/55`
@@ -95,8 +106,10 @@ sufficient for a positive cross-dataset claim.
 
 The diagnostic alpha grid should not be used to tune NH-HAZE. Its shape is
 negative overall: `0.125` is near-zero but not robust, while larger alphas become
-progressively worse. This route therefore blocks any claim that fixed WD0375 is
-already a cross-dataset general residual-shrinkage solution.
+progressively worse. This route therefore blocks any claim that Haze4K-weight
+fixed WD0375 is already a cross-dataset general residual-shrinkage solution. It
+does not evaluate the official NH-HAZE performance of either ConvIR-B or
+WDMamba, and it does not prove either model is weak on NH-HAZE.
 
 ## Closeout
 

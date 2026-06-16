@@ -1,8 +1,18 @@
-# Haze4K v2.7 NH-HAZE Fixed WDMamba Transfer Decision
+# Haze4K v2.7 NH-HAZE Haze4K-Weight Zero-Shot Transfer Decision
 
-Decision: `V27_NHHAZE_FIXED_WD0375_TRANSFER_NOT_SUPPORTED`
+Superseded note: this archived file belongs to an intermediate run with stale
+metadata wording. Use the parent evidence README and final `v27_decision.md` for
+the corrected interpretation:
+`V27_NHHAZE_HAZE4K_WEIGHT_ZERO_SHOT_TRANSFER_NOT_SUPPORTED`. Both A0 and
+WDMamba used Haze4K checkpoints, so the run is a Haze4K-weight zero-shot
+diagnostic, not an official NH-HAZE benchmark.
 
-This route evaluates NH-HAZE as a cross-dataset fixed-transfer diagnostic. The primary row is the Haze4K-selected fixed `WD0375 = A0 + 0.375 * (WDMamba - A0)` profile. Other alpha rows are reported only as a predeclared diagnostic curve and are not used to tune NH-HAZE.
+Decision: `V27_NHHAZE_HAZE4K_WEIGHT_ZERO_SHOT_TRANSFER_NOT_SUPPORTED`
+
+This route evaluates NH-HAZE as a Haze4K-weight zero-shot fixed-transfer
+diagnostic. The primary row is the Haze4K-selected fixed
+`WD0375 = A0 + 0.375 * (WDMamba - A0)` profile. Other alpha rows are reported
+only as a predeclared diagnostic curve and are not used to tune NH-HAZE.
 
 ## Primary Fixed Row
 

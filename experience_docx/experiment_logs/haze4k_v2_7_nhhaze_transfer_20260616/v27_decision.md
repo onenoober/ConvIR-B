@@ -1,8 +1,17 @@
-# Haze4K v2.7 NH-HAZE Fixed WDMamba Transfer Decision
+# Haze4K v2.7 NH-HAZE Haze4K-Weight Zero-Shot Transfer Decision
 
-Decision: `V27_NHHAZE_FIXED_WD0375_TRANSFER_NOT_SUPPORTED`
+Decision: `V27_NHHAZE_HAZE4K_WEIGHT_ZERO_SHOT_TRANSFER_NOT_SUPPORTED`
 
-This route evaluates NH-HAZE as a cross-dataset fixed-transfer diagnostic. The primary row is the Haze4K-selected fixed `WD0375 = A0 + 0.375 * (WDMamba - A0)` profile. Other alpha rows are reported only as a predeclared diagnostic curve and are not used to tune NH-HAZE.
+This route evaluates NH-HAZE as a Haze4K-weight zero-shot fixed-transfer
+diagnostic. The primary row is the Haze4K-selected fixed
+`WD0375 = A0 + 0.375 * (WDMamba - A0)` profile. Other alpha rows are reported
+only as a predeclared diagnostic curve and are not used to tune NH-HAZE.
+
+Scope caveat: this is not an official NH-HAZE benchmark and not a fair NH-HAZE
+comparison between ConvIR-B and WDMamba. Both endpoints use Haze4K checkpoints:
+`haze4k-base.pkl` for A0 and `haze4k_35.88.pth` for WDMamba. The result does
+not prove either model is weak on NH-HAZE when evaluated with NH-HAZE-specific
+weights.
 
 ## Primary Fixed Row
 
@@ -25,3 +34,5 @@ This route evaluates NH-HAZE as a cross-dataset fixed-transfer diagnostic. The p
 - NH-HAZE alpha tuning: `false`.
 - NH-HAZE has 55 paired full-resolution PNG images, each 1600x1200.
 - Metrics are PSNR/SSIM against NH-HAZE GT; hard/easy buckets are bottom/top quartiles by A0 PSNR.
+- This route used Haze4K weights only; official NH-HAZE-trained ConvIR-B and
+  WDMamba weights must be acquired or trained before any formal NH-HAZE claim.
