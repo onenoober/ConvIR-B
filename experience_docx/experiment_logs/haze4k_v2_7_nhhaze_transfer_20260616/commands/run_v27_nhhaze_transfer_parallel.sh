@@ -10,6 +10,7 @@ LOG_DIR="$EVID/runtime_logs"
 DATA="/sda/home/wangyuxin/ConvIR-B/datasets/NH-HAZE"
 A0="/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl"
 WDMAMBA="/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/haze4k_35.88.pth"
+SOURCE_COMMIT_FILE="$ROOT/.source_commit"
 
 mkdir -p "$EVID/commands" "$LOG_DIR" "$EVID/shards"
 export PYTHONPATH="$ROOT/experience_docx/tools:${PYTHONPATH:-}"
@@ -24,8 +25,12 @@ cd "$ROOT"
     git -C "$ROOT" status --short || true
     printf 'status_short_end\n'
   else
+    SOURCE_COMMIT="UNKNOWN_RSYNC_SNAPSHOT_COMMIT"
+    if [ -f "$SOURCE_COMMIT_FILE" ]; then
+      SOURCE_COMMIT="$(cat "$SOURCE_COMMIT_FILE")"
+    fi
     printf 'branch=RSYNC_SNAPSHOT_NO_REMOTE_GIT\n'
-    printf 'commit=4145eed\n'
+    printf 'commit=%s\n' "$SOURCE_COMMIT"
     printf 'status_short_begin\n'
     printf 'remote_git_metadata=unavailable_snapshot_rsync\n'
     printf 'status_short_end\n'
