@@ -812,3 +812,95 @@ PY
 Inside cloud monitor/audit helpers, use the already-declared explicit runtime
 such as `/root/miniconda3/envs/convir-cu128/bin/python` or `"$PY"` for all
 inline Python snippets as well; do not assume `python3` exists on PATH.
+
+## 2026-06-18 PowerShell -> WSL nested archive-check quoting
+
+Observed while checking that `ap_ria_v212_code_bundle.zip` and
+`ap_ria_v212_code_bundle.tar.gz` contained matching AP-RIA v2.12 files. A
+single PowerShell command wrapped a multi-line Bash script inside
+`wsl ... bash -lc '...'`; the embedded loop and quoted paths were truncated at
+the shell boundary, producing `syntax error: unexpected end of file`.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-ap-ria-v212 bash -lc '
+set -euo pipefail
+rm -rf /tmp/ap_ria_v212_zip /tmp/ap_ria_v212_tar
+mkdir -p /tmp/ap_ria_v212_zip /tmp/ap_ria_v212_tar
+unzip -q /mnt/c/Users/Administrator/Downloads/ap_ria_v212_code_bundle.zip -d /tmp/ap_ria_v212_zip
+tar -xzf /mnt/c/Users/Administrator/Downloads/ap_ria_v212_code_bundle.tar.gz -C /tmp/ap_ria_v212_tar
+for f in ...; do
+  cmp -s "/tmp/ap_ria_v212_zip/$f" "/tmp/ap_ria_v212_tar/$f" || { echo "ZIP_TAR_DIFF $f"; exit 1; }
+done
+echo ZIP_TAR_CONTENTS_MATCH
+'
+```
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B-ap-ria-v212
+rm -rf /tmp/ap_ria_v212_zip /tmp/ap_ria_v212_tar
+mkdir -p /tmp/ap_ria_v212_zip /tmp/ap_ria_v212_tar
+unzip -q /mnt/c/Users/Administrator/Downloads/ap_ria_v212_code_bundle.zip -d /tmp/ap_ria_v212_zip
+tar -xzf /mnt/c/Users/Administrator/Downloads/ap_ria_v212_code_bundle.tar.gz -C /tmp/ap_ria_v212_tar
+for f in \
+  Dehazing/ITS/models/AP_RIAConvIR.py \
+  experience_docx/tools/ap_ria_loss_utils.py \
+  experience_docx/tools/smoke_ap_ria_model.py; do
+  cmp -s "/tmp/ap_ria_v212_zip/$f" "/tmp/ap_ria_v212_tar/$f" || { echo "ZIP_TAR_DIFF $f"; exit 1; }
+done
+echo ZIP_TAR_CONTENTS_MATCH
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For multi-line archive, sync, audit, or monitor helpers, avoid nesting the full
+Bash body in `bash -lc '...'`. Pipe a CRLF-stripped script body through WSL
+instead.
+
+## 2026-06-18 PowerShell-side pipe after WSL command
+
+Observed while inspecting command-reliability history. A pipeline was appended
+after a `wsl ... grep` invocation, so PowerShell tried to execute `tail`
+locally and failed with `tail : The term 'tail' is not recognized`.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-ap-ria-v212 /usr/bin/grep -n "Invalid" experience_docx/COMMAND_RELIABILITY_PROTOCOL.md | tail -n 40
+```
+
+Corrected form:
+
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-ap-ria-v212 bash -lc "/usr/bin/grep -n 'Invalid' experience_docx/COMMAND_RELIABILITY_PROTOCOL.md | /usr/bin/tail -n 40"
+```
+
+When a pipe is meant to run inside WSL, put the whole pipeline inside the WSL
+shell command or use the stdin-script pattern above.
+
+## 2026-06-18 PowerShell `&&` separator after WSL command
+
+Observed while checking the AP-RIA v2.12 branch and head commit. A command used
+`&&` between two `wsl ... git rev-parse` invocations from PowerShell, and this
+PowerShell version rejected `&&` with `The token '&&' is not a valid statement
+separator`.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-ap-ria-v212 git rev-parse --abbrev-ref HEAD && wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-ap-ria-v212 git rev-parse HEAD
+```
+
+Corrected form:
+
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-ap-ria-v212 bash -lc "git rev-parse --abbrev-ref HEAD && git rev-parse HEAD"
+```
+
+For chained commands that should run in order, put the chain inside one WSL
+shell command or call separate PowerShell commands without relying on `&&`.
