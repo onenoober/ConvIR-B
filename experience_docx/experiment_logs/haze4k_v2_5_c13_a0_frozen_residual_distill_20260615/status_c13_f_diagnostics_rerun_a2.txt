@@ -1,0 +1,12 @@
+state=RERUN_A2_PREFLIGHT
+run_id=v25_c13_f_diagnostics_rerun_a2
+start_time=2026-06-16T09:53:31+08:00
+locked_test_touched=false
+locked_per_image_read=false
+source_commit=9471bdeb9bcf1a4b029d409c0aec6f13f707a8f1
+remote_py_compile_ok
+f0_a2_rerun_done
+aggregate_rerun_done
+finish_time=2026-06-16T09:54:19+08:00
+state=C13_F_DIAGNOSTIC_COMPLETE_GATE_VS_RESIDUAL_DIRECTION_REVIEW
+C13_F_A2_RERUN_OK

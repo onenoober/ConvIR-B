@@ -1,0 +1,10 @@
+{
+  "mean_actual_dPSNR": -0.4728757277778957,
+  "mean_clip_ratio": 0.012319697345328283,
+  "mean_color_shift": 0.0020186977300276658,
+  "mean_ll_residual_mean_abs": 0.008160904844534462,
+  "mean_raw_residual_mean_abs": 0.004081101156771183,
+  "mean_teacher_margin": 2.2061143460481065,
+  "severe_count": 115,
+  "severe_per_600": 115.00000000000001
+}
