@@ -883,6 +883,21 @@ wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-ap-ria-v212 bash -lc "/
 When a pipe is meant to run inside WSL, put the whole pipeline inside the WSL
 shell command or use the stdin-script pattern above.
 
+The same failure mode also occurs with other Unix pipeline commands such as
+`head`.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B git status --short --branch | head -n 5
+```
+
+Corrected form:
+
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B bash -lc "git status --short --branch | /usr/bin/head -n 5"
+```
+
 ## 2026-06-18 PowerShell `&&` separator after WSL command
 
 Observed while checking the AP-RIA v2.12 branch and head commit. A command used
@@ -904,3 +919,17 @@ wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-ap-ria-v212 bash -lc "g
 
 For chained commands that should run in order, put the chain inside one WSL
 shell command or call separate PowerShell commands without relying on `&&`.
+
+The same applies to git command chains launched from PowerShell.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-ap-ria-v212 git add experience_docx/COMMAND_RELIABILITY_PROTOCOL.md && git commit -m "Document WSL pipeline boundary issue" && git push github codex/haze4k-v2-12-ap-ria-in-anchor-adapter
+```
+
+Corrected form:
+
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-ap-ria-v212 bash -lc "git add experience_docx/COMMAND_RELIABILITY_PROTOCOL.md && git commit -m 'Document WSL pipeline boundary issue' && git push github codex/haze4k-v2-12-ap-ria-in-anchor-adapter"
+```
