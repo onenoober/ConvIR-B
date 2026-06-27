@@ -1,0 +1,66 @@
+{
+  "candidate_availability": {
+    "A0_anchor": {
+      "available": true,
+      "role": "fallback anchor"
+    },
+    "ConvIR_L_or_larger": {
+      "available": false,
+      "role": "future candidate if checkpoint/protocol becomes available"
+    },
+    "DTA_v37_FDF_oracle": {
+      "available": true,
+      "role": "safe-small train-derived oracle evidence"
+    },
+    "DTA_v37_TAU_oracle": {
+      "available": true,
+      "role": "safe-small train-derived oracle evidence"
+    },
+    "DehazeFormer": {
+      "available": false,
+      "role": "future candidate if checkpoint/protocol becomes available"
+    },
+    "FullUDP_official": {
+      "available": true,
+      "note": "Current convir-4090 checkpoint/repo was not present during this audit; C0a uses existing exact per-image evidence.",
+      "role": "strong-risk expert endpoint evidence"
+    },
+    "PromptIR": {
+      "available": false,
+      "role": "future candidate if checkpoint/protocol becomes available"
+    }
+  },
+  "decision": "C0_CAPACITY_OPEN_POSITIVE_COVERAGE_RISK_MAP_REQUIRED",
+  "fulludp_oracle_all": {
+    "candidate": "oracle_a0_fulludp_endpoint",
+    "count": 600,
+    "dSSIM": 0.00022958377997080485,
+    "easy_top25_dPSNR": 0.39711181640625,
+    "hard_bottom25_dPSNR": 1.1109101994832358,
+    "intervention_rate": 0.53,
+    "mean_dPSNR": 0.7416947523752848,
+    "nonnegative_ratio": 1.0,
+    "positive_ratio": 0.53,
+    "scope": "all",
+    "strong_per_600": 0.0,
+    "strong_reference_cut_psnr": 40.0092191696167,
+    "strong_reference_regression_count": 0,
+    "worst_count_le_-0.20": 0,
+    "worst_per_600": 0.0
+  },
+  "gate": {
+    "dssim_ge_0": true,
+    "easy_ge_neg_0_02": true,
+    "hard_ge_0_30": true,
+    "mean_ge_0_30": true,
+    "positive_ge_0_75": false,
+    "worst_per_600_le_5": true
+  },
+  "inputs": {
+    "dta_evidence_dir": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613",
+    "fulludp_eval_dir": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/phase0_official_eval"
+  },
+  "locked_test_touched": false,
+  "phase": "C0 Strong Candidate Zoo Oracle",
+  "route": "Haze4K-v2.0 StrongExpert-GainMix"
+}

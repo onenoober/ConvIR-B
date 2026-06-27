@@ -1,0 +1,16 @@
+v20_phase0_audits_start 2026-06-15T00:08:16+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v20-strongexpert-gainmix
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+dta_evidence=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613
+fulludp_eval=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/phase0_official_eval
+locked_test_touched=false
+branch=codex/haze4k-v2-0-strongexpert-gainmix
+commit=885a9c0
+git_status=?? experience_docx/experiment_logs/haze4k_v2_0_strongexpert_gainmix_20260614/status.txt
+v37_d9_forensic_start 2026-06-15T00:08:17+08:00
+v37_d8_d9_reconciliation_start 2026-06-15T00:08:17+08:00
+v20_candidate_zoo_oracle_start 2026-06-15T00:08:17+08:00
+v37_d8_d9_reconciliation_done rc=0 2026-06-15T00:08:17+08:00
+v20_candidate_zoo_oracle_done rc=0 2026-06-15T00:08:17+08:00
+v37_d9_forensic_done rc=0 2026-06-15T00:08:18+08:00
+V20_PHASE0_AUDITS_OK 2026-06-15T00:08:18+08:00

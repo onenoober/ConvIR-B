@@ -1,0 +1,23 @@
+Haze4K Official ConvIR-B Architecture Anchor Source Audit
+Date: 2026-06-10
+
+Reference refs:
+- Official upstream: origin/main@05dcbffa2047
+- Project base before anchor: github/main@62019ac5124f
+- Anchor branch: codex/haze4k-official-arch-anchor
+
+Model-code comparison:
+- Dehazing/ITS/models/ConvIR.py matches official upstream architecture classes and forward path.
+- The only intentional ConvIR.py delta from upstream is build_net(version, data, fam_mode='original'), which preserves compatibility with existing Haze4K scripts and rejects any non-original fam_mode.
+- Dehazing/ITS/models/layers.py keeps the existing project dataset-dispatch cleanup: data.lower() == 'gta5' selects GTA5 dilation; all other datasets, including Haze4K, use [7, 9, 11]. This is Haze4K-equivalent to the upstream expression, which always selected [7, 9, 11] for Haze4K.
+- The Haze4K checkpoint state dict has no APDR, DPGA, PFD, or FAM modulator keys in the cloud preflight.
+
+Runtime evidence:
+- Cloud preflight on dehaze1 loaded haze4k-base.pkl strictly with missing=[] unexpected=[].
+- Parameter count is 8,630,665.
+- Synthetic and one Haze4K train-crop forwards are finite.
+- locked_test_touched=false.
+
+Decision:
+- Treat this branch as the immutable official Haze4K architecture anchor.
+- Do not apply architecture experiments on this branch; create a new codex/<route> branch or isolated worktree from it.

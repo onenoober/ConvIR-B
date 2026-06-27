@@ -1,0 +1,6 @@
+preflight_start haze4k_official_arch_anchor 2026-06-10T18:15:20+08:00
+remote_root=/root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+checkpoint=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+preflight_done rc=0 haze4k_official_arch_anchor 2026-06-10T18:15:30+08:00
+OFFICIAL_ANCHOR_PREFLIGHT_OK

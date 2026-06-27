@@ -1,0 +1,21 @@
+v17_full_launched 2026-06-05T23:50:19+08:00 session=v17_rcmix_full
+v17_rcmix_start 2026-06-05T23:50:19+08:00
+state=RUNNING_AUDIT
+work=/root/autodl-tmp/workspace/ConvIR-B-v1-7-rcmix-runtime
+python=/root/miniconda3/envs/convir-cu128/bin/python
+convir_its=/root/autodl-tmp/workspace/ConvIR-B-v1-7-rcmix-runtime/Dehazing/ITS
+udp_repo=/root/autodl-tmp/workspace/UDPNet
+data=/root/autodl-tmp/workspace/Dehaze-Net/dataset/HAZE4K
+depth=/root/autodl-tmp/workspace/Dehaze-Net/experiment/HAZE4K/depth_cache/depth_anything_v2_small_hf
+a0=/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl
+official_ckpt=/root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt
+split_json=/root/autodl-tmp/workspace/ConvIR-B-v1-7-rcmix-runtime/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/internal_val/haze4k_dpga_v13_regular_hard_seed3407.json
+splits=train_inner,val_regular,val_hard
+max_images=0
+locked_test_touched=NO
+official_ckpt_sha256=6d02d2a42e97cc411a36d95cfaf8421eb25a5622f0cac8c150c0e790b7149291  /root/autodl-tmp/workspace/UDPNet_official_download/ConvIR_UDPNet_haze4k.ckpt
+v17_fulltrain_feature_extraction_done rc=0 output=/root/autodl-tmp/workspace/ConvIR-B-v1-7-rcmix-runtime/experience_docx/experiment_logs/haze4k_v17_rc_expert_mix_20260605/v17_fulltrain_features 2026-06-05T23:56:48+08:00
+v17_mix_analysis_done rc=0 output=/root/autodl-tmp/workspace/ConvIR-B-v1-7-rcmix-runtime/experience_docx/experiment_logs/haze4k_v17_rc_expert_mix_20260605/v17_mix_analysis 2026-06-05T23:57:17+08:00
+state=COMPLETED_GATE_PENDING_DOC_SYNC 2026-06-05T23:57:17+08:00
+v17_mix_analysis_orderfix_rerun rc=0 2026-06-06T00:06:10+08:00
+state=COMPLETED_GATE_FAIL_LOCKED_TEST_BLOCKED docs_closeout_local=2026-06-06
