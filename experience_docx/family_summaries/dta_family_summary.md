@@ -335,8 +335,8 @@ capacity or run locked test from DTA-v3.5.
 
 Decision: `PHASE_A_COMPLETED_RELAXED_PASS_STRICT_FAIL_FORMAL_QUEUE_PENDING`.
 
-DTA-v3.6 HRCS reopens the family only for selector/calibration, continuing from
-DTA-v3.5 commit `1e1d87a` on branch `codex/haze4k-dta-v3-6-hrcs`. Phase A ran
+DTA-v3.6 HRCS, later archived as contained intermediate head `4f74f08`, reopens the family only for selector/calibration, continuing from
+DTA-v3.5 commit `1e1d87a`, reachable through retained DTA-v3.7 lineage `github/codex/haze4k-dta-v3-7-u-tqs-mix`. Phase A ran
 on `convir-4090` from commit `754d62a` using the existing v3.5 OOF action table
 and did not touch locked test.
 

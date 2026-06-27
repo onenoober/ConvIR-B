@@ -1079,3 +1079,42 @@ printf 'AUDIT_OK\n'
 '@
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
+
+## 2026-06-27 Backtick patterns in nested shell grep
+
+Avoid passing grep patterns containing literal Markdown backticks through a
+PowerShell here-string into WSL Bash when the command itself also uses shell
+quotes:
+
+```powershell
+$script = @'
+grep -n "commit \`e2c8526\|commit \`a9def38" experience_docx/EXPERIMENT_INDEX.md
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+Failure mode observed during branch cleanup:
+
+- the quote/backtick combination reached Bash in an unterminated form;
+- Bash exited with `unexpected EOF while looking for matching \`\`` before the
+  document audit ran.
+
+Corrected form: avoid shell regex for these patterns and use a short Python
+literal-string scan instead:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B-branch-cleanup-20260627
+python3 - <<'PY'
+from pathlib import Path
+text = Path("experience_docx/EXPERIMENT_INDEX.md").read_text()
+for needle in ["commit `e2c8526`", "commit `a9def38`"]:
+    for i, line in enumerate(text.splitlines(), 1):
+        if needle in line:
+            print(f"{i}:{line}")
+PY
+printf 'DOC_LITERAL_SCAN_OK\n'
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```

@@ -1,113 +1,89 @@
 # ConvIR-B Branch Route Index
 
-Date: 2026-06-04
+Date: 2026-06-27
 
-Status: conservative GitHub branch reading and cleanup map.
+Status: current GitHub branch reading and cleanup map after the 2026-06-27
+evidence-first branch consolidation.
 
 ## Purpose
 
 Use this file when reading the GitHub branch list for `onenoober/ConvIR-B`.
-It separates stable evidence, runnable experiment snapshots, covered historical
-heads, and cleanup candidates.
+It separates durable evidence, immutable architecture anchors, retained
+runnable scientific snapshots, and deleted redundant route heads.
 
-This file is not a deletion authorization. Before deleting or force-updating any
-remote branch, re-run the ancestor and evidence checks in the checklist below.
+The cleanup principle is deliberately conservative:
 
-## Reading Rules
+- `github/main` is the stable reader-facing branch for evidence, route cards,
+  family summaries, protocols, and branch cleanup records.
+- `github/codex/haze4k-official-arch-anchor` is the immutable architecture
+  anchor and must not be deleted or repurposed.
+- Failed or diagnostic route code should not be merged into `main`.
+- A branch can be deleted only when its head is reachable from a retained branch
+  and its text evidence is already readable from `github/main`.
+- If a branch is a named scientific anchor, a unique diagnostic head, or the
+  only obvious runnable snapshot for a still-useful route, keep it even if some
+  commits are reachable elsewhere.
 
-- `github/main` is the stable reader-facing entry point for synced text
-  evidence, route cards, and governance docs.
-- `github/codex/*` branches are runnable experiment snapshots. They may contain
-  diagnostic code that is intentionally absent from `main`.
-- A route branch can be an archive candidate only when its head is reachable
-  from a retained leaf branch and the text evidence needed for reading the
-  route is already present on `main` or in a retained branch.
-- Failed or diagnostic code should not be merged into `main`; sync only route
-  cards, text logs, JSON, CSV, command transcripts, and compact text packages.
-- If a branch is the only runnable snapshot for an unresolved or reproducibility
-  sensitive route, keep it even if its evidence is summarized elsewhere.
+## Retained Remote Branches
 
-## Current Branch Families
+| Branch | Role | Keep reason |
+| --- | --- | --- |
+| `main` | Stable evidence entry point. | Canonical reader-facing archive. |
+| `codex/haze4k-official-arch-anchor` | Official ConvIR-B Haze4K architecture anchor. | Immutable starting point for new architecture routes. |
+| `codex/haze4k-hardfreq-loss` | Hard-frequency diagnostic leaf. | Unique closed-route runnable snapshot. |
+| `codex/haze4k-haze-prior-scm` | Haze-prior SCM diagnostic leaf. | Unique closed-route runnable snapshot plus compact package. |
+| `codex/haze4k-b1r-decoder-rhfd-preserve` | B1r decoder RHFD rescue leaf. | Separate rescue snapshot, not covered by SafeRHFD-v2 train. |
+| `codex/haze4k-saferhfd-v2-stage-scale` | SafeRHFD stage-scale leaf. | Retains PFD/RHFD follow-up lineage. |
+| `codex/haze4k-saferhfd-v2-train` | SafeRHFD training leaf. | Retains PFD/RHFD follow-up lineage. |
+| `codex/haze4k-apdr-v0-4b-mapping-triage` | APDR retained diagnostic leaf. | Covers v0.4B-v0.4E APDR code lineage. |
+| `codex/haze4k-rootcause-preexp` | Root-cause diagnostic leaf. | Separate root-cause branch, not contained by APDR retained leaf. |
+| `codex/haze4k-dta-v2-calibrated` | DTA-v2 diagnostic leaf. | Retains CalGate/lowgate lineage. |
+| `codex/haze4k-dta-v3-7-u-tqs-mix` | DTA-v3 mainline leaf. | Retains DTA-v3.3-v3.7 lineage and D9 evidence. |
+| `codex/haze4k-v1-7-risk-controlled-expert-mix` | DPGA/UDP expert-bank leaf. | Retains DPGA v1.0-v1.8 lineage and reusable expert table code. |
+| `codex/haze4k-v2-2-c9-fixed-wdmamba-router` | WD0375 locked-pass anchor. | Named scientific anchor for the strongest Haze4K locked-pass baseline and v2.10/v2.11 locked-grid diagnostics. |
+| `codex/haze4k-v2-3-c11-wd-fs-selector` | StrongExpert selector leaf. | Retains v2.0-v2.3 selector lineage. |
+| `codex/haze4k-v2-4-c12-wd0375-distill` | C12 distillation diagnostic head. | Unique failed distillation snapshot. |
+| `codex/haze4k-v2-5-c13-a0-frozen-residual-distill` | C13 residual distillation diagnostic head. | Unique failed/intermediate distillation snapshot. |
+| `codex/haze4k-v2-7-nhhaze-transfer` | NH-HAZE zero-shot transfer leaf. | Contains v2.6 alpha-curve history and v2.7 transfer evidence. |
+| `codex/haze4k-v2-8-nhhaze-official-weights` | NH-HAZE official-weight diagnostic head. | Retained as a unique diagnostic head, but use v2.9 correction context from `main` before citing NH-HAZE results. |
+| `codex/haze4k-v2-12-ap-ria-in-anchor-adapter` | AP-RIA/anchor-adapter diagnostic head. | Unique current diagnostic head. |
 
-| Family | Branches | Reading status | Cleanup posture |
-| --- | --- | --- | --- |
-| Stable entry | `main` | Main reader-facing branch. Current public `main` carries consolidated evidence through APDR v0.2RC; this cleanup branch prepares APDR text evidence through v0.4E for sync. | Keep. Sync later route evidence here with evidence-only commits. |
-| FAM / hard-frequency / haze-prior | Historical FAM refs already pruned remotely; retained leaves include `codex/haze4k-hardfreq-loss` and `codex/haze4k-haze-prior-scm`. | Diagnostic and closed routes. Read from `EXPERIMENT_INDEX.md` plus compact packages where present. | Keep the two leaves until their unique code snapshots are no longer needed. |
-| PFD / RHFD / SafeRHFD | `codex/haze4k-pfd-mainline`, `codex/haze4k-b1r-decoder-rhfd-preserve`, `codex/haze4k-saferhfd-v2-stage-scale`, `codex/haze4k-saferhfd-v2-train`. | Related but not one identical line: `pfd-mainline` is contained by SafeRHFD leaves, while B1r is a separate rescue snapshot. | Keep B1r and SafeRHFD leaves. Consider pruning only strict ancestors after verifying evidence on `main`. |
-| APDR v0 to v0.2RC | `codex/haze4k-apdr-convir-v0`, `v0-1`, `v0-2`, `v0-2r-fullimage-router`, `v0-2rc-conservative-budget`. | Early APDR selector and budget line. Their cards and text logs are present in this cleanup branch and indexed by `EXPERIMENT_INDEX.md`. | Archive candidates after this branch is merged/pushed and ancestor checks are re-run. |
-| APDR v0.2RC diagnostics to v0.4B | `codex/haze4k-apdr-v0-2rc-oracle-diagnostic`, `v0-3-shed-diagnostics`, `v0-4-cclf-diagnostics`, `v0-4a-low-field-only`, `v0-4b-derived-lowfield-basis`, `v0-4b-mapping-triage`. | Later APDR diagnostic chain. This cleanup branch adds APDR v0.3 through v0.4E cards, logs, and the v0.2RC diagnostic text package for main-branch reading. | Keep the APDR leaf until this evidence is public on `main`; prune intermediate APDR heads only after a fresh ancestor and readability audit. |
-| DPGA / root-cause follow-up | `codex/haze4k-convir-v1-0-dpga-lite`, `codex/haze4k-rootcause-preexp`. | Separate follow-up branches that fork after the APDR chain and are not ancestors of `v0-4b-mapping-triage`. | Keep until route evidence is reviewed and either synced or closed. |
+## Deleted Remote Branches
 
-## Remote Branch Classification
+These refs were deleted because each head is either identical to `main` or is
+reachable from a retained branch. Their text evidence is in `github/main`, and
+their exact heads remain named below by short commit where useful.
 
-| Remote branch | Role | Evidence state | Recommended action |
-| --- | --- | --- | --- |
-| `github/main` | Stable reader-facing branch. | Public remote is synced through APDR v0.2RC budget evidence; this cleanup branch prepares APDR v0.3-v0.4E text evidence for later main sync. | Keep as default entry point. |
-| `github/codex/haze4k-hardfreq-loss` | Closed hard-frequency route leaf. | Text evidence and decision are indexed on `main`. | Keep for now as runnable closed-route snapshot. |
-| `github/codex/haze4k-haze-prior-scm` | Closed haze-prior SCM route leaf. | Text evidence and compact AI package are indexed on `main`. | Keep for now as runnable closed-route snapshot. |
-| `github/codex/haze4k-pfd-mainline` | PFD diagnostic ancestor. | Text evidence is indexed on `main`. | Archive candidate only after confirming SafeRHFD leaves cover all needed code and no exact PFD rerun is pending. |
-| `github/codex/haze4k-b1r-decoder-rhfd-preserve` | B1r rescue route leaf. | Text evidence is indexed on `main`. | Keep; not contained by SafeRHFD-v2 train. |
-| `github/codex/haze4k-saferhfd-v2-stage-scale` | SafeRHFD stage-scale leaf. | Evidence is branch-local unless separately synced. | Keep pending evidence review. |
-| `github/codex/haze4k-saferhfd-v2-train` | SafeRHFD training leaf. | Evidence is branch-local unless separately synced. | Keep pending evidence review. |
-| `github/codex/haze4k-apdr-convir-v0` | APDR early scout ancestor. | Card and text logs are present in this cleanup branch. | Archive candidate after merge/push, ancestor check, and readability audit. |
-| `github/codex/haze4k-apdr-convir-v0-1` | APDR early scout ancestor. | Card and text logs are present in this cleanup branch. | Archive candidate after merge/push, ancestor check, and readability audit. |
-| `github/codex/haze4k-apdr-convir-v0-2` | APDR selector-only ancestor. | Card and text logs are present in this cleanup branch. | Archive candidate after merge/push, ancestor check, and readability audit. |
-| `github/codex/haze4k-apdr-convir-v0-2r-fullimage-router` | APDR full-image router ancestor. | Card and text logs are present in this cleanup branch. | Archive candidate after merge/push, ancestor check, and readability audit. |
-| `github/codex/haze4k-apdr-convir-v0-2rc-conservative-budget` | APDR v0.2RC budget branch. | Card and text logs are present on `main`; this branch keeps the indexed budget evidence intact. | Archive candidate after ancestor check and public readability audit. |
-| `github/codex/haze4k-apdr-v0-2rc-oracle-diagnostic` | APDR diagnostic ancestor. | Diagnostic text package and supporting logs are present in this cleanup branch. | Archive candidate only after merge/push, ancestor check, and readability audit. |
-| `github/codex/haze4k-apdr-v0-3-shed-diagnostics` | APDR diagnostic ancestor. | Cards and text logs are present in this cleanup branch. | Archive candidate only after merge/push, ancestor check, and readability audit. |
-| `github/codex/haze4k-apdr-v0-4-cclf-diagnostics` | APDR v0.4 diagnostic ancestor. | Cards and text logs are present in this cleanup branch. | Archive candidate only after merge/push, ancestor check, and readability audit. |
-| `github/codex/haze4k-apdr-v0-4a-low-field-only` | APDR v0.4A diagnostic ancestor. | Cards and text logs are present in this cleanup branch. | Archive candidate only after merge/push, ancestor check, and readability audit. |
-| `github/codex/haze4k-apdr-v0-4b-derived-lowfield-basis` | APDR v0.4B diagnostic ancestor. | Cards and text logs are present in this cleanup branch. | Archive candidate only after merge/push, ancestor check, and readability audit. |
-| `github/codex/haze4k-apdr-v0-4b-mapping-triage` | APDR retained diagnostic leaf. | Text evidence through APDR v0.4E has been copied into this cleanup branch for main-branch reading. | Keep as APDR leaf until the sync is public and intermediate APDR heads pass pruning checks. |
-| `github/codex/haze4k-convir-v1-0-dpga-lite` | DPGA follow-up leaf. | Branch-local unless separately synced. | Keep pending review. |
-| `github/codex/haze4k-rootcause-preexp` | Root-cause follow-up leaf. | Branch-local unless separately synced. | Keep pending review. |
-
-## Verified Ancestor Findings
-
-These findings were checked against remote refs on 2026-06-04:
-
-- APDR v0 through v0.4B derived-basis heads are ancestors of
-  `github/codex/haze4k-apdr-v0-4b-mapping-triage`.
-- APDR v0 through v0.4B derived-basis heads are also ancestors of the DPGA and
-  root-cause follow-up branches.
-- `github/codex/haze4k-apdr-v0-4b-mapping-triage` is not an ancestor of the
-  DPGA or root-cause follow-up heads; those branches are separate leaves.
-- `github/codex/haze4k-pfd-mainline` is an ancestor of both SafeRHFD-v2 leaves.
-- `github/codex/haze4k-b1r-decoder-rhfd-preserve` is not an ancestor of
-  `github/codex/haze4k-saferhfd-v2-train`; keep it as a separate rescue leaf.
-- `github/codex/haze4k-hardfreq-loss` and
-  `github/codex/haze4k-haze-prior-scm` do not contain each other; keep both if
-  exact runnable closed-route snapshots still matter.
-
-## Guarded Archive Candidate Batches
-
-Do not prune any batch until this cleanup branch has been merged or pushed to
-the public `main` branch and the readability audit passes.
-
-| Batch | Candidate refs | Required retained ref | Current action |
-| --- | --- | --- | --- |
-| APDR covered ancestors | `codex/haze4k-apdr-convir-v0`, `codex/haze4k-apdr-convir-v0-1`, `codex/haze4k-apdr-convir-v0-2`, `codex/haze4k-apdr-convir-v0-2r-fullimage-router`, `codex/haze4k-apdr-convir-v0-2rc-conservative-budget`, `codex/haze4k-apdr-v0-2rc-oracle-diagnostic`, `codex/haze4k-apdr-v0-3-shed-diagnostics`, `codex/haze4k-apdr-v0-4-cclf-diagnostics`, `codex/haze4k-apdr-v0-4a-low-field-only`, `codex/haze4k-apdr-v0-4b-derived-lowfield-basis` | `codex/haze4k-apdr-v0-4b-mapping-triage` | Candidate only. Re-check ancestry and public evidence readability immediately before pruning. |
-| Separate leaves | `codex/haze4k-convir-v1-0-dpga-lite`, `codex/haze4k-rootcause-preexp`, `codex/haze4k-saferhfd-v2-stage-scale`, `codex/haze4k-saferhfd-v2-train`, `codex/haze4k-b1r-decoder-rhfd-preserve`, `codex/haze4k-hardfreq-loss`, `codex/haze4k-haze-prior-scm` | None in this cleanup pass | Keep. These are not covered by the APDR retained leaf and need separate evidence review. |
-
-## Prior Remote Cleanup Record
-
-These remote refs had already been removed before the APDR v0.2RC evidence sync.
-They were not unique heads at the time of cleanup, and their commits remained
-reachable through retained later branches:
-
-| Deleted remote ref | Reason recorded at cleanup time |
+| Deleted branch | Retained reachability / reason |
 | --- | --- |
 | `codex/haze4k-repro` | Contained by later Haze4K route branches. |
 | `codex/haze4k-fam2-only` | Contained by later FAM2, hardfreq, and haze-prior branches. |
 | `codex/haze4k-fam2-bounded` | Contained by later confidence-gate, hardfreq, and haze-prior branches. |
 | `codex/haze4k-fam2-confidence-gate` | Contained by later selectivity, hardfreq, and haze-prior branches. |
 | `codex/haze4k-stop20-noise-floor` | Contained by later selectivity, hardfreq, and haze-prior branches. |
-| `codex/haze4k-fam2-selectivity-or-kill` | Contained by both retained leaf branches. |
+| `codex/haze4k-fam2-selectivity-or-kill` | Contained by both retained frequency/prior leaves. |
+| `codex/highvalue-evidence-sync-20260618` | Temporary branch identical to `main` at `5abc969`. |
+| `codex/haze4k-dta-v3-dapc-finetune` | DTA-v3.3 intermediate head, retained through `codex/haze4k-dta-v3-7-u-tqs-mix`. |
+| `codex/haze4k-dta-v3-4-fdf-tsr-finetune` | DTA-v3.4 intermediate head, retained through `codex/haze4k-dta-v3-7-u-tqs-mix`. |
+| `codex/haze4k-dta-v3-5-fdf-rcs-lite` | DTA-v3.5 intermediate head, retained through `codex/haze4k-dta-v3-7-u-tqs-mix`. |
+| `codex/haze4k-dta-lowgate` | DTA lowgate head `04c356c`, retained through `codex/haze4k-dta-v2-calibrated`. |
+| `codex/haze4k-dta-v3-6-hrcs` | DTA-v3.6 head `4f74f08`, retained through `codex/haze4k-dta-v3-7-u-tqs-mix`. |
+| `codex/haze4k-pfd-mainline` | PFD diagnostic head `8928eaf`, retained through both SafeRHFD-v2 leaves. |
+| `codex/haze4k-convir-v1-0-dpga-lite` | DPGA diagnostic head `e2c8526`, retained through `codex/haze4k-v1-7-risk-controlled-expert-mix`. |
+| `codex/haze4k-convir-v1-1-dpga-tail-control` | DPGA diagnostic head `a9def38`, retained through `codex/haze4k-v1-7-risk-controlled-expert-mix`. |
+| `codex/haze4k-convir-v1-3-hard-selective-depth-fusion` | DPGA diagnostic head `238e694`, retained through `codex/haze4k-v1-7-risk-controlled-expert-mix`. |
+| `codex/haze4k-convir-v1-4-udp-lite-depth-fusion` | DPGA diagnostic head `8e4162d`, retained through `codex/haze4k-v1-7-risk-controlled-expert-mix`. |
+| `codex/haze4k-convir-v1-4b-bidirectional-dpfm1` | DPGA diagnostic head `5b335a2`, retained through `codex/haze4k-v1-7-risk-controlled-expert-mix`. |
+| `codex/haze4k-convir-v1-5-full-udpnet-transplant` | UDP/DPGA diagnostic head `15aa04a`, retained through `codex/haze4k-v1-7-risk-controlled-expert-mix`. |
+| `codex/haze4k-v1-6-risk-calibrated-expert-switch` | Expert-switch head `e7b68fe`, retained through `codex/haze4k-v1-7-risk-controlled-expert-mix`. |
+| `codex/haze4k-v2-0-strongexpert-gainmix` | StrongExpert intermediate head `e03d034`, retained through `codex/haze4k-v2-3-c11-wd-fs-selector`. |
+| `codex/haze4k-v2-1-segmix-multialpha-local` | StrongExpert intermediate head `7489d0b`, retained through `codex/haze4k-v2-3-c11-wd-fs-selector`. |
+| `codex/haze4k-v2-2-c8-mini-expert-oracle` | Complementarity head `a825963`, retained through `codex/haze4k-v2-2-c9-fixed-wdmamba-router` and `codex/haze4k-v2-3-c11-wd-fs-selector`. |
+| `codex/haze4k-v2-6-residual-shrinkage-alpha-curves` | Alpha-curve head `ca6bf92`, retained through `codex/haze4k-v2-7-nhhaze-transfer`. |
 
 ## Cleanup Checklist
 
-Before pruning any remote branch:
+Before pruning any future branch:
 
 1. Fetch current remote refs:
 
@@ -121,10 +97,10 @@ Before pruning any remote branch:
    git merge-base --is-ancestor github/codex/<candidate> github/codex/<retained-leaf>
    ```
 
-3. Confirm route cards, log READMEs, JSON, CSV, logs, transcripts, scripts, and
-   compact text packages are readable from `github/main` or another retained
-   branch.
-4. Confirm no unique experiment code snapshot is still needed for exact rerun,
-   audit, or unresolved route analysis.
-5. Delete only one small batch at a time, then re-run `git ls-remote --heads`
-   and a public raw-file readability audit for the evidence index.
+3. Confirm route cards, evidence READMEs, JSON, CSV, logs, transcripts, scripts,
+   and compact text packages are readable from `github/main` or another
+   retained branch.
+4. Confirm the branch is not a named scientific anchor, current active route, or
+   only clear runnable snapshot for a still-useful diagnostic.
+5. Delete only a small batch at a time, then verify with `git ls-remote --heads`
+   and refresh this file plus `EXPERIMENT_INDEX.md`.
