@@ -4,7 +4,6 @@ import argparse
 import random
 import shutil
 from torch.backends import cudnn
-from models.ConvIR import build_net
 from train import _train
 from eval import _eval
 
@@ -22,8 +21,53 @@ def load_init_model(model, args):
     if args.resume:
         raise ValueError('--init_model initializes weights; --resume restores optimizer state. Use only one.')
     state = _load_checkpoint_model(args.init_model, 'cpu')
+    if args.arch == 'nopost_fga':
+        model_state = model.state_dict()
+        loaded = {}
+        unexpected = []
+        shape_mismatch = []
+        for key, value in state.items():
+            if key not in model_state:
+                unexpected.append(key)
+            elif tuple(model_state[key].shape) != tuple(value.shape):
+                shape_mismatch.append((key, tuple(value.shape), tuple(model_state[key].shape)))
+            else:
+                loaded[key] = value
+        missing = [key for key in model_state if key not in loaded]
+        bad_missing = [key for key in missing if not key.startswith('nopost_adapter.')]
+        if unexpected or shape_mismatch or bad_missing:
+            raise RuntimeError(
+                'NOPOST_PARTIAL_LOAD_FAILED '
+                f'unexpected={unexpected} shape_mismatch={shape_mismatch} bad_missing={bad_missing[:50]}'
+            )
+        model_state.update(loaded)
+        model.load_state_dict(model_state, strict=True)
+        print(
+            f'NOPOST_INIT_PARTIAL_LOAD path={args.init_model} '
+            f'loaded={len(loaded)} missing_new={len(missing)} unexpected=[] shape_mismatch=[]'
+        )
+        return
     model.load_state_dict(state)
     print(f'INIT_MODEL_LOAD path={args.init_model} missing=[] unexpected=[]')
+
+
+def build_model(args):
+    if args.arch in ('official_convir', 'convir'):
+        from models.ConvIR import build_net
+        return build_net(args.version, args.data, args.fam_mode)
+    if args.arch == 'nopost_fga':
+        from models.NoPostFGAConvIR import build_net
+        return build_net(
+            args.version,
+            args.data,
+            args.fam_mode,
+            nopost_use_low=args.nopost_use_low,
+            nopost_use_detail=args.nopost_use_detail,
+            nopost_gate_bias=args.nopost_gate_bias,
+            nopost_context_channels=args.nopost_context_channels,
+            nopost_hidden_channels=args.nopost_hidden_channels,
+        )
+    raise ValueError(f'Unsupported architecture: {args.arch}')
 
 
 def main(args):
@@ -44,7 +88,7 @@ def main(args):
         os.makedirs('results/' + args.model_name + '/')
     if not os.path.exists(args.result_dir):
         os.makedirs(args.result_dir)
-    model = build_net(args.version, args.data, args.fam_mode)
+    model = build_model(args)
     # print(model)
 
     if torch.cuda.is_available():
@@ -65,7 +109,7 @@ if __name__ == '__main__':
     parser.add_argument('--data', type=str, default='ITS', choices=['ITS', 'Haze4K', 'NHR', 'GTA5', 'real_haze'])
     parser.add_argument('--version', default='small', choices=['small', 'base', 'large'], type=str)
     parser.add_argument('--fam_mode', default='original', choices=['original'], type=str)
-    parser.add_argument('--arch', default='official_convir', choices=['official_convir', 'convir'], type=str)
+    parser.add_argument('--arch', default='official_convir', choices=['official_convir', 'convir', 'nopost_fga'], type=str)
     parser.add_argument('--seed', default=-1, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
@@ -86,6 +130,19 @@ if __name__ == '__main__':
     parser.add_argument('--grad_clip_norm', type=float, default=0.001)
     parser.add_argument('--init_model', type=str, default='')
     parser.add_argument('--resume', type=str, default='')
+    parser.add_argument('--nopost_use_low', type=lambda x: str(x).lower() in ('1', 'true', 'yes'), default=True)
+    parser.add_argument('--nopost_use_detail', type=lambda x: str(x).lower() in ('1', 'true', 'yes'), default=False)
+    parser.add_argument('--nopost_use_mid', type=lambda x: str(x).lower() in ('1', 'true', 'yes'), default=False)
+    parser.add_argument('--nopost_gate_bias', type=float, default=-3.0)
+    parser.add_argument('--nopost_context_channels', type=int, default=32)
+    parser.add_argument('--nopost_hidden_channels', type=int, default=32)
+    parser.add_argument('--nopost_train_scope', default='adapter_only', choices=['adapter_only', 'all'])
+    parser.add_argument('--nopost_freeze_anchor', type=lambda x: str(x).lower() in ('1', 'true', 'yes'), default=True)
+    parser.add_argument('--nopost_action_budget', type=float, default=0.0)
+    parser.add_argument('--nopost_gate_budget', type=float, default=0.0)
+    parser.add_argument('--nopost_preserve_weight', type=float, default=0.0)
+    parser.add_argument('--nopost_preserve_checkpoint', type=str, default='')
+    parser.add_argument('--nopost_preserve_psnr_threshold', type=float, default=0.0)
 
 
     # uncomment for different datasets
@@ -115,15 +172,24 @@ if __name__ == '__main__':
     parser.add_argument('--save_image', type=bool, default=False, choices=[True, False])
 
     args = parser.parse_args()
-    if args.arch not in ('official_convir', 'convir'):
-        raise ValueError('Official anchor only supports the official ConvIR-B architecture.')
     # Backward-compatible alias for route scripts that used the misspelled name.
     args.leaning_rate = args.learning_rate
     args.model_save_dir = os.path.join('results/', args.model_name, 'Training-Results/')
     args.result_dir = os.path.join('results/', args.model_name, 'images', args.data)
     if not os.path.exists(args.model_save_dir):
         os.makedirs(args.model_save_dir)
-    for source in ('models/layers.py', 'models/ConvIR.py', 'data/data_load.py', 'data/data_augment.py', 'train.py', 'valid.py', 'eval.py', 'main.py'):
+    for source in (
+        'models/layers.py',
+        'models/ConvIR.py',
+        'models/NoPostFGAConvIR.py',
+        'models/nopost_fga.py',
+        'data/data_load.py',
+        'data/data_augment.py',
+        'train.py',
+        'valid.py',
+        'eval.py',
+        'main.py',
+    ):
         if os.path.exists(source):
             shutil.copy2(source, args.model_save_dir)
     print(args)

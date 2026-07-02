@@ -6,8 +6,72 @@ from torch.utils.tensorboard import SummaryWriter
 from valid import _valid
 import torch.nn.functional as F
 import torch.nn as nn
+from models.ConvIR import build_net as build_official_convir
 
 from warmup_scheduler import GradualWarmupScheduler
+
+
+def _count_parameters(parameters):
+    return sum(p.numel() for p in parameters)
+
+
+def _configure_nopost_train_scope(model, args):
+    if getattr(args, 'arch', '') != 'nopost_fga':
+        return list(model.parameters())
+    if args.nopost_train_scope == 'all' or not args.nopost_freeze_anchor:
+        trainable = list(model.parameters())
+        print(f'NOPOST_TRAIN_SCOPE all trainable={_count_parameters(trainable)}')
+        return trainable
+
+    trainable = []
+    frozen = []
+    for name, param in model.named_parameters():
+        if name.startswith('nopost_adapter.'):
+            param.requires_grad = True
+            trainable.append(param)
+        else:
+            param.requires_grad = False
+            frozen.append(param)
+    print(
+        'NOPOST_TRAIN_SCOPE adapter_only '
+        f'trainable={_count_parameters(trainable)} frozen={_count_parameters(frozen)}'
+    )
+    return trainable
+
+
+def _set_nopost_train_mode(model, args):
+    if getattr(args, 'arch', '') != 'nopost_fga':
+        return
+    if args.nopost_train_scope == 'adapter_only' and args.nopost_freeze_anchor:
+        for name, module in model.named_children():
+            if name == 'nopost_adapter':
+                module.train()
+            else:
+                module.eval()
+
+
+def _load_preserve_model(args, device):
+    if getattr(args, 'arch', '') != 'nopost_fga':
+        return None
+    if args.nopost_preserve_weight <= 0:
+        return None
+    if not args.nopost_preserve_checkpoint:
+        raise ValueError('--nopost_preserve_checkpoint is required when preserve weight is positive')
+    model = build_official_convir(args.version, args.data, args.fam_mode).to(device)
+    state = torch.load(args.nopost_preserve_checkpoint, map_location=device)
+    if isinstance(state, dict) and 'model' in state:
+        state = state['model']
+    model.load_state_dict(state)
+    model.eval()
+    for param in model.parameters():
+        param.requires_grad = False
+    print(f'NOPOST_PRESERVE_MODEL_LOAD path={args.nopost_preserve_checkpoint}')
+    return model
+
+
+def _psnr_per_sample(pred, label):
+    mse = torch.mean((pred - label) ** 2, dim=(1, 2, 3)).clamp_min(1e-12)
+    return 10 * torch.log10(1 / mse)
 
 
 def _log_modulation_stats(model, args, epoch_idx, device):
@@ -62,9 +126,11 @@ def _log_modulation_stats(model, args, epoch_idx, device):
 def _train(model, args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     criterion = torch.nn.L1Loss()
+    preserve_model = _load_preserve_model(args, device)
+    trainable_params = _configure_nopost_train_scope(model, args)
 
     learning_rate = getattr(args, 'learning_rate', getattr(args, 'leaning_rate', 1e-4))
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.9, 0.999), eps=1e-8)
+    optimizer = torch.optim.Adam(trainable_params, lr=learning_rate, betas=(0.9, 0.999), eps=1e-8)
     dataloader = train_dataloader(args.data_dir, args.batch_size, args.num_worker, args.data)
     max_iter = len(dataloader)
     warmup_epochs=3
@@ -94,6 +160,8 @@ def _train(model, args):
         raise ValueError(f'stop_epoch {end_epoch} is earlier than resume epoch {epoch}')
 
     for epoch_idx in range(epoch, end_epoch + 1):
+        model.train()
+        _set_nopost_train_mode(model, args)
 
         epoch_timer.tic()
         iter_timer.tic()
@@ -136,6 +204,22 @@ def _train(model, args):
             loss_fft = f1+f2+f3
 
             loss = loss_content + 0.1 * loss_fft
+            if getattr(args, 'arch', '') == 'nopost_fga':
+                reg = model.nopost_regularization()
+                if args.nopost_action_budget > 0:
+                    loss = loss + args.nopost_action_budget * reg['raw_action_abs_mean']
+                if args.nopost_gate_budget > 0:
+                    loss = loss + args.nopost_gate_budget * reg['gate_mean']
+                if preserve_model is not None:
+                    with torch.no_grad():
+                        a0_pred = preserve_model(input_img)[2]
+                        if args.nopost_preserve_psnr_threshold > 0:
+                            keep = (_psnr_per_sample(a0_pred.clamp(0, 1), label_img) >= args.nopost_preserve_psnr_threshold)
+                        else:
+                            keep = torch.ones(input_img.shape[0], dtype=torch.bool, device=device)
+                    if keep.any():
+                        preserve_loss = torch.mean(torch.abs(pred_img[2][keep] - a0_pred[keep]))
+                        loss = loss + args.nopost_preserve_weight * preserve_loss
             loss.backward()
             grad_clip_norm = getattr(args, 'grad_clip_norm', 0.001)
             if grad_clip_norm > 0:
@@ -152,6 +236,22 @@ def _train(model, args):
                 print("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f Loss content: %7.4f Loss fft: %7.4f" % (
                     iter_timer.toc(), epoch_idx, iter_idx + 1, max_iter, scheduler.get_lr()[0], iter_pixel_adder.average(),
                     iter_fft_adder.average()))
+                if getattr(args, 'arch', '') == 'nopost_fga':
+                    stats = model.nopost_stats()
+                    print(
+                        'NOPOST_STATS Epoch: %03d Iter: %4d/%4d '
+                        'g_low_mean: %.8f g_low_max: %.8f g_detail_mean: %.8f '
+                        'raw_action_abs_mean: %.8f delta_feature_abs_mean: %.8f' % (
+                            epoch_idx,
+                            iter_idx + 1,
+                            max_iter,
+                            stats.get('g_low_mean', 0.0),
+                            stats.get('g_low_max', 0.0),
+                            stats.get('g_detail_mean', 0.0),
+                            stats.get('raw_action_abs_mean', 0.0),
+                            stats.get('delta_feature_abs_mean', 0.0),
+                        )
+                    )
                 writer.add_scalar('Pixel Loss', iter_pixel_adder.average(), iter_idx + (epoch_idx-1)* max_iter)
                 writer.add_scalar('FFT Loss', iter_fft_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 
@@ -174,6 +274,7 @@ def _train(model, args):
         if epoch_idx % args.valid_freq == 0:
             val = _valid(model, args, epoch_idx)
             _log_modulation_stats(model, args, epoch_idx, device)
+            _set_nopost_train_mode(model, args)
             print('%03d epoch \n Average PSNR %.2f dB' % (epoch_idx, val))
             writer.add_scalar('PSNR', val, epoch_idx)
             if val >= best_psnr:
