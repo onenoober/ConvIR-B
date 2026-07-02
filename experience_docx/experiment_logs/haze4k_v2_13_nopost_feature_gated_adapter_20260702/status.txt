@@ -1,0 +1,38 @@
+v213_n012_start 2026-07-02T23:57:41+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-13-nopost-feature-gated-adapter
+branch=codex/haze4k-v2-13-nopost-feature-gated-adapter
+commit=fa6b6a8
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v24-c12-wd0375-distill/experience_docx/experiment_logs/haze4k_v2_4_c12_wd0375_distill_20260615/v24_c12_split_manifest.json
+teacher=/sda/home/wangyuxin/ConvIR-B/runtime_cache/v24_c12_wd0375_teacher
+gpu=2
+locked_test_touched=false
+v213_n0_contract_start 2026-07-02T23:57:41+08:00
+v213_n0_contract_done rc=1 2026-07-02T23:58:02+08:00
+v213_n0_contract_FAILED
+v213_n0_retry_after_synthetic_size_fix commit=cd3442f 2026-07-03T00:00:18+08:00
+v213_n012_start 2026-07-03T00:00:19+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-13-nopost-feature-gated-adapter
+branch=codex/haze4k-v2-13-nopost-feature-gated-adapter
+commit=cd3442f
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v24-c12-wd0375-distill/experience_docx/experiment_logs/haze4k_v2_4_c12_wd0375_distill_20260615/v24_c12_split_manifest.json
+teacher=/sda/home/wangyuxin/ConvIR-B/runtime_cache/v24_c12_wd0375_teacher
+gpu=0
+locked_test_touched=false
+v213_n0_contract_start 2026-07-03T00:00:19+08:00
+v213_n0_contract_done rc=0 2026-07-03T00:00:26+08:00
+v213_n0_contract_OK
+v213_n1_feature_table_start 2026-07-03T00:00:26+08:00
+v213_n1_feature_table_done rc=0 2026-07-03T00:07:48+08:00
+v213_n1_feature_table_OK
+v213_n1_probe_start 2026-07-03T00:07:48+08:00
+v213_n1_probe_done rc=1 2026-07-03T00:07:52+08:00
+v213_n1_probe_FAILED
+v213_n2_identity_after_n1_fail_start gpu=5 2026-07-03T00:09:23+08:00
+v213_n2_identity_after_n1_fail_done rc=0 2026-07-03T00:09:32+08:00
+v213_n2_identity_OK

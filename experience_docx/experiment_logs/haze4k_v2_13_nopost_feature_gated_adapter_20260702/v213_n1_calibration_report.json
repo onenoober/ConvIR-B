@@ -1,0 +1,302 @@
+{
+  "decision": "N1_MECHANISM_FAIL_STOP_BEFORE_TRAINING",
+  "gates": {
+    "benefit_auc_gate": 0.7,
+    "internal_margin": 0.0,
+    "risk_auc_gate": 0.7
+  },
+  "key_metrics": {
+    "benefit_all_auc": 0.811809223959637,
+    "benefit_hazy_auc": 0.7991825954077801,
+    "benefit_internal_auc": 0.8022388059701493,
+    "risk_all_auc": 0.8248939613974704,
+    "risk_hazy_auc": 0.8332682920587803,
+    "risk_internal_auc": 0.8196160219050482
+  },
+  "locked_test_touched": false,
+  "pass": false,
+  "reports": [
+    {
+      "auc": 0.7991825954077801,
+      "count": 2400,
+      "ece": 0.3147098190697366,
+      "feature_count": 8,
+      "folds": [
+        {
+          "auc": 0.8392917655032193,
+          "fold": 0,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 454
+        },
+        {
+          "auc": 0.7932904100304982,
+          "fold": 1,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 454
+        },
+        {
+          "auc": 0.8010429835651075,
+          "fold": 2,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 452
+        },
+        {
+          "auc": 0.8093163191202407,
+          "fold": 3,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 459
+        },
+        {
+          "auc": 0.7727611687343231,
+          "fold": 4,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 447
+        }
+      ],
+      "group": "hazy_only",
+      "positive": 2266,
+      "positive_rate": 0.9441666666666667,
+      "target": "benefit_label"
+    },
+    {
+      "auc": 0.8022388059701493,
+      "count": 2400,
+      "ece": 0.3111114235736163,
+      "feature_count": 35,
+      "folds": [
+        {
+          "auc": 0.8495425279566249,
+          "fold": 0,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 454
+        },
+        {
+          "auc": 0.8242968485259234,
+          "fold": 1,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 454
+        },
+        {
+          "auc": 0.7638274336283186,
+          "fold": 2,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 452
+        },
+        {
+          "auc": 0.7876335719472974,
+          "fold": 3,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 459
+        },
+        {
+          "auc": 0.7950647413734662,
+          "fold": 4,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 447
+        }
+      ],
+      "group": "internal_only",
+      "positive": 2266,
+      "positive_rate": 0.9441666666666667,
+      "target": "benefit_label"
+    },
+    {
+      "auc": 0.811809223959637,
+      "count": 2400,
+      "ece": 0.29818079538674713,
+      "feature_count": 43,
+      "folds": [
+        {
+          "auc": 0.8501355472721112,
+          "fold": 0,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 454
+        },
+        {
+          "auc": 0.8220942053541173,
+          "fold": 1,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 454
+        },
+        {
+          "auc": 0.7936156763590392,
+          "fold": 2,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 452
+        },
+        {
+          "auc": 0.8067226890756303,
+          "fold": 3,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 459
+        },
+        {
+          "auc": 0.796420581655481,
+          "fold": 4,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 447
+        }
+      ],
+      "group": "all",
+      "positive": 2266,
+      "positive_rate": 0.9441666666666667,
+      "target": "benefit_label"
+    },
+    {
+      "auc": 0.8332682920587803,
+      "count": 2400,
+      "ece": 0.3089276586999409,
+      "feature_count": 8,
+      "folds": [
+        {
+          "auc": 0.8476394849785408,
+          "fold": 0,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 14
+        },
+        {
+          "auc": 0.8349172286940527,
+          "fold": 1,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 14
+        },
+        {
+          "auc": 0.8221276595744681,
+          "fold": 2,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 10
+        },
+        {
+          "auc": 0.8203347578347578,
+          "fold": 3,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 12
+        },
+        {
+          "auc": 0.8405539321560157,
+          "fold": 4,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 17
+        }
+      ],
+      "group": "hazy_only",
+      "positive": 67,
+      "positive_rate": 0.027916666666666666,
+      "target": "severe_risk_label"
+    },
+    {
+      "auc": 0.8196160219050482,
+      "count": 2400,
+      "ece": 0.29621141796806244,
+      "feature_count": 35,
+      "folds": [
+        {
+          "auc": 0.8553034947884733,
+          "fold": 0,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 14
+        },
+        {
+          "auc": 0.8370631514408339,
+          "fold": 1,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 14
+        },
+        {
+          "auc": 0.7785106382978724,
+          "fold": 2,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 10
+        },
+        {
+          "auc": 0.8125,
+          "fold": 3,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 12
+        },
+        {
+          "auc": 0.809681107864312,
+          "fold": 4,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 17
+        }
+      ],
+      "group": "internal_only",
+      "positive": 67,
+      "positive_rate": 0.027916666666666666,
+      "target": "severe_risk_label"
+    },
+    {
+      "auc": 0.8248939613974704,
+      "count": 2400,
+      "ece": 0.28510401027620474,
+      "feature_count": 43,
+      "folds": [
+        {
+          "auc": 0.8594420600858369,
+          "fold": 0,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 14
+        },
+        {
+          "auc": 0.8545370938074801,
+          "fold": 1,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 14
+        },
+        {
+          "auc": 0.8104255319148936,
+          "fold": 2,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 10
+        },
+        {
+          "auc": 0.8249643874643875,
+          "fold": 3,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 12
+        },
+        {
+          "auc": 0.7865582518104434,
+          "fold": 4,
+          "status": "ok",
+          "val_count": 480,
+          "val_positive": 17
+        }
+      ],
+      "group": "all",
+      "positive": 67,
+      "positive_rate": 0.027916666666666666,
+      "target": "severe_risk_label"
+    }
+  ]
+}
