@@ -1,0 +1,140 @@
+{
+  "action_bank": "micro_shrink",
+  "best_aggregate": {
+    "action_bank": "micro_shrink",
+    "coverage": 1.0,
+    "dSSIM": 8.875007430712382e-07,
+    "easy_top25_dPSNR": 0.00477624257405599,
+    "feature_group": "T_pred",
+    "hard_bottom25_dPSNR": 0.007338712374369304,
+    "intervention_rate": 1.0,
+    "max_outer_worst_per_600": 0.0,
+    "mean_dPSNR": 0.006518078724543254,
+    "model_type": "ridge_tqs_tau_shrink",
+    "outer_folds": 2,
+    "positive_ratio": 0.64,
+    "score": 0.13258210416634877,
+    "strict_gate_checks": {
+      "coverage": true,
+      "dssim": true,
+      "hard": false,
+      "max_outer_worst": true,
+      "mean": false,
+      "positive_ratio": true,
+      "true_vs_normal": false,
+      "true_vs_shuffle": false,
+      "true_vs_zero": false,
+      "worst": true
+    },
+    "strict_gate_pass": false,
+    "strong_per_600": 11.5,
+    "true_vs_normal": 0.0066854205131530765,
+    "true_vs_shuffle": 0.006316208918889364,
+    "true_vs_zero": 0.008293473482131958,
+    "worst_per_600": 0.0
+  },
+  "best_oracle": {
+    "bank_name": "full",
+    "chosen_action_counts": {
+      "A0@0": 782,
+      "U1_TAU_high_gain@1": 1305,
+      "U2_TAU_balanced@1": 85,
+      "U3_TAU_tail_safe@1": 228
+    },
+    "chosen_variant_counts": {
+      "A0": 782,
+      "u1_tau_l1_s004_g025_a006": 1305,
+      "u2_tau_l3_s004_g015_a006": 85,
+      "u3_tau_l2_s002_g025_a006": 228
+    },
+    "count": 2400,
+    "coverage": 1.0,
+    "dSSIM": 2.5059903661410012e-05,
+    "easy_top25_dPSNR": 0.15132525126139323,
+    "fold_seed_groups": 4,
+    "hard_bottom25_dPSNR": 0.12036648114522298,
+    "intervention_rate": 0.6741666666666667,
+    "max_outer_worst_per_600": 0.0,
+    "mean_chosen_alpha": 0.6741666666666667,
+    "mean_dPSNR": 0.13628565549850463,
+    "positive_ratio": 0.6741666666666667,
+    "score": 0.3127949542999267,
+    "strict_gate_checks": {
+      "coverage": true,
+      "dssim": true,
+      "hard": true,
+      "max_outer_worst": true,
+      "mean": true,
+      "positive_ratio": true,
+      "true_vs_normal": true,
+      "true_vs_shuffle": true,
+      "true_vs_zero": true,
+      "worst": true
+    },
+    "strict_gate_pass": true,
+    "strong_count_le_-0.05": 0,
+    "strong_per_600": 0.0,
+    "strong_reference_cut_psnr": 42.80718994140625,
+    "strong_reference_regression_count": 0,
+    "true_vs_normal": 0.09574434598286946,
+    "true_vs_shuffle": 0.08743993679682414,
+    "true_vs_zero": 0.1158434518178304,
+    "utility_mode": "max_dpsnr",
+    "worst_count_le_-0.20": 0,
+    "worst_per_600": 0.0
+  },
+  "decision": "D2_TAU_SHRINK_POLICY_STRICT_FAIL",
+  "feature_groups": [
+    "Q_input_proxy",
+    "Q_enriched_quality",
+    "T_pred",
+    "TAU_core",
+    "U_uncertainty_conf",
+    "FDF_action_stats",
+    "deployable_TQAU_action_all",
+    "diagnostic_with_trans_gt"
+  ],
+  "filter_info": {
+    "duplicate_row_examples": [],
+    "duplicate_rows_dropped": 0,
+    "filtered_rows_after_dedup": 7200,
+    "filtered_rows_before_dedup": 7200,
+    "include_run_substring": "quick5full",
+    "raw_rows": 7802
+  },
+  "folds": [
+    "0",
+    "1"
+  ],
+  "image_feature_table": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d2-policy-c823848/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_quality_image_features.csv",
+  "leakage_note": "diagnostic_with_trans_gt is not deployable; deployable groups exclude trans_gt by construction.",
+  "locked_test_touched": false,
+  "oracle_strict_pass_count": 10,
+  "output_prefix": "v37_tau_shrink",
+  "phase": "D2_tau_shrink_policy_stage",
+  "policy_strict_pass_count": 0,
+  "proxy_note": "D2 table shrink uses alpha-scaled D1 deltas; a passing row still needs real rendered blend verification before formal claims.",
+  "route": "DTA-v3.7 U-TQS-Mix",
+  "rows": 7200,
+  "seeds": [
+    "3407",
+    "3411"
+  ],
+  "strict_gates": {
+    "coverage_min": 0.95,
+    "dssim_min": -5e-06,
+    "hard_bottom25_min": 0.04,
+    "max_outer_worst_per_600_max": 60.0,
+    "mean_dpsnr_min": 0.055,
+    "positive_ratio_min": 0.63,
+    "true_vs_normal_min": 0.03,
+    "true_vs_shuffle_min": 0.035,
+    "true_vs_zero_min": 0.04,
+    "worst_per_600_max": 48.0
+  },
+  "variants": [
+    "u1_tau_l1_s004_g025_a006",
+    "u2_tau_l3_s004_g015_a006",
+    "u3_tau_l2_s002_g025_a006"
+  ]
+}

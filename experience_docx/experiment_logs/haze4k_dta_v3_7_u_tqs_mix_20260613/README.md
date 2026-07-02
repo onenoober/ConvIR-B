@@ -20,6 +20,14 @@ Family summary: `experience_docx/family_summaries/dta_family_summary.md`
 - Source selector errors: `experience_docx/experiment_logs/haze4k_dta_v3_6_hrcs_20260613/formal_hrcs/v36_selector_error_table.csv`.
 - Locked test: touched exactly once in D9 after D8 strict pass; the sealed policy failed promotion and no post-test tuning is allowed.
 
+## Archive Scope
+
+GitHub `main` keeps compact evidence for this route: phase status files,
+summary JSON, aggregate/report CSVs, command scripts, and reproducibility tools.
+Large per-image/action tables, selected-action tables, raw feature tables,
+images, checkpoints, and raw runtime outputs remain cloud-only under
+`/sda/home/wangyuxin/ConvIR-B/`.
+
 ## Route Decision
 
 DTA-v3.7 is the new DTA mainline. The route abandons hard reject as the main

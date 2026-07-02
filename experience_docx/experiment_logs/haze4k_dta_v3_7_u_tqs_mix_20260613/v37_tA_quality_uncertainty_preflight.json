@@ -1,0 +1,116 @@
+{
+  "availability": {
+    "airlight_gt_table": false,
+    "airlight_proxy_table": true,
+    "candidate_action_table": true,
+    "nr_iqa_table": false,
+    "quality_proxy_table": true,
+    "transmission_gt_table": true,
+    "transmission_pred_table": true,
+    "transmission_uncertainty_table": true
+  },
+  "columns": 56,
+  "data_dir_scan": {
+    "exists": true,
+    "likely_dirs": {
+      "clean": [
+        "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test/gt",
+        "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train/gt"
+      ],
+      "transmission": [
+        "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test/trans",
+        "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train/trans"
+      ]
+    },
+    "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+    "scanned_dir_count": 9,
+    "scanned_file_cap": 20000,
+    "scanned_file_count": 12004,
+    "token_file_counts": {
+      "clean": 4000,
+      "transmission": 4000
+    }
+  },
+  "feature_groups": {
+    "airlight_gt_table": [],
+    "airlight_proxy_table": [
+      "airlight_fallback_mean"
+    ],
+    "candidate_action_table": [
+      "dta_depth_delta_abs_mean",
+      "dta_depth_mask_max",
+      "dta_depth_mask_mean",
+      "dta_final_feature_action_abs_mean",
+      "dta_final_feature_delta_abs_mean",
+      "dta_final_feature_gate_max",
+      "dta_final_feature_gate_mean",
+      "dta_j_phys_delta_abs_mean",
+      "dta_r0_delta_abs_mean",
+      "dta_stage2_beta_abs_mean",
+      "dta_stage2_conf_mean",
+      "dta_stage2_conf_min",
+      "dta_stage2_delta_abs_mean",
+      "dta_stage2_feature_action_abs_mean",
+      "dta_stage2_feature_delta_abs_mean",
+      "dta_stage2_feature_gate_max",
+      "dta_stage2_feature_gate_mean",
+      "dta_stage2_gamma_abs_mean",
+      "dta_stage2_gate_max",
+      "dta_stage2_gate_mean",
+      "dta_stage3_beta_abs_mean",
+      "dta_stage3_conf_mean",
+      "dta_stage3_conf_min",
+      "dta_stage3_delta_abs_mean",
+      "dta_stage3_feature_action_abs_mean",
+      "dta_stage3_feature_delta_abs_mean",
+      "dta_stage3_feature_gate_max",
+      "dta_stage3_feature_gate_mean",
+      "dta_stage3_gamma_abs_mean",
+      "dta_stage3_gate_max",
+      "dta_stage3_gate_mean",
+      "dta_t_pred_mean",
+      "dta_t_pred_std",
+      "dta_t_uncertainty_mean",
+      "dta_t_uncertainty_std"
+    ],
+    "nr_iqa_table": [],
+    "quality_proxy_table": [
+      "input_brightness_mean",
+      "input_texture_mean"
+    ],
+    "transmission_gt_table": [
+      "trans_gt_mean",
+      "trans_gt_p10",
+      "trans_gt_p90"
+    ],
+    "transmission_pred_table": [
+      "dta_t_pred_mean",
+      "dta_t_pred_std"
+    ],
+    "transmission_uncertainty_table": [
+      "dta_t_uncertainty_mean",
+      "dta_t_uncertainty_std"
+    ]
+  },
+  "leakage_policy": "trans_gt and PSNR/SSIM delta columns are diagnostic/oracle only; deployable policy features must exclude them.",
+  "phase": "A_table_only_no_new_training",
+  "recommendations": [
+    "No explicit airlight GT columns in the action table; use Haze4K dataset preflight or construct train-derived A proxy before supervised A_head training.",
+    "No NR-IQA/MANIQA/MUSIQ/CLIP-IQA columns yet; Phase B should add cached deployable quality features, not locked-test feedback.",
+    "Transmission GT and t_pred table signals are present enough for table-only T consistency diagnostics."
+  ],
+  "route": "DTA-v3.7 U-TQS-Mix",
+  "rows": 27000,
+  "strict_gates": {
+    "coverage_min": 0.95,
+    "dssim_min": -5e-06,
+    "hard_bottom25_min": 0.04,
+    "max_outer_worst_per_600_max": 60.0,
+    "mean_dpsnr_min": 0.055,
+    "positive_ratio_min": 0.63,
+    "true_vs_normal_min": 0.03,
+    "true_vs_shuffle_min": 0.035,
+    "true_vs_zero_min": 0.04,
+    "worst_per_600_max": 48.0
+  }
+}

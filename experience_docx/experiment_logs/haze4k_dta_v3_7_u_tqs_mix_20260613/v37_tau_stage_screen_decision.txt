@@ -1,0 +1,8 @@
+status=D1_STAGE_SCREEN_COMPLETE
+variant=u1_tau_l1_s004_g025_a006 runs=4 mean=+0.069596 hard=+0.076433 dssim=+0.00000786 positive=0.6412 worst_per600=68.75 true_vs_zero=+0.089704 strict_screen_pass=False
+variant=u2_tau_l3_s004_g015_a006 runs=4 mean=+0.059690 hard=+0.067173 dssim=+0.00000992 positive=0.6408 worst_per600=57.25 true_vs_zero=+0.073943 strict_screen_pass=False
+variant=u3_tau_l2_s002_g025_a006 runs=4 mean=+0.048004 hard=+0.054895 dssim=+0.00000988 positive=0.6346 worst_per600=49.00 true_vs_zero=+0.059999 strict_screen_pass=False
+missing=[]
+best_mean_variant=u1_tau_l1_s004_g025_a006 mean=+0.069596 hard=+0.076433 positive=0.6412 worst_per600=68.75
+decision=D1_STAGE_SCREEN_TRIAGE_COMPLETE_NO_FORMAL_PROMOTION_YET
+locked_test_touched=false

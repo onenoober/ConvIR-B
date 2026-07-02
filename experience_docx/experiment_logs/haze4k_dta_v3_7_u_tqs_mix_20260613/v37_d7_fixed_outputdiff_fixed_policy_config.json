@@ -1,0 +1,18 @@
+[
+  {
+    "action_bank": "micro_shrink",
+    "feature_group": "outputdiff_plus_Q",
+    "policy_id": "primary_outputdiff_plus_Q_micro_shrink_pred_gain_t100",
+    "role": "primary",
+    "score_mode": "pred_gain",
+    "target_intervention": 1.0
+  },
+  {
+    "action_bank": "micro_shrink",
+    "feature_group": "outputdiff_only",
+    "policy_id": "backup_outputdiff_only_micro_shrink_pred_gain_t100",
+    "role": "tail_safety_backup",
+    "score_mode": "pred_gain",
+    "target_intervention": 1.0
+  }
+]

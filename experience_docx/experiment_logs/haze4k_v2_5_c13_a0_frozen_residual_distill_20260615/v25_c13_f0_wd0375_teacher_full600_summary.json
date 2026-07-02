@@ -1,0 +1,21 @@
+{
+  "checkpoint": "c8_per_image_expert_a0p375",
+  "count": 600,
+  "dSSIM": 0.0016733370224634807,
+  "easy_top25_dPSNR": 1.1894835408528646,
+  "hard_bottom25_dPSNR": 3.5056149673461916,
+  "locked_per_image_read": false,
+  "locked_test_touched": false,
+  "mean_dPSNR": 2.512202049891154,
+  "median_dPSNR": 2.7029647827148438,
+  "nonnegative_ratio": 0.9733333333333334,
+  "p05_dPSNR": 0.36998748779296875,
+  "p95_dPSNR": 4.241601943969727,
+  "positive_ratio": 0.9733333333333334,
+  "quick_gate_pass": true,
+  "severe_loss_count": 11,
+  "severe_loss_per_600": 11.0,
+  "source_c8_per_image": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c8-mini-expert-oracle/experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/v22_c8_1_wdmamba_per_image.csv",
+  "val_count": 600,
+  "variant": "wd0375_teacher"
+}

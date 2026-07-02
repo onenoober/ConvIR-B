@@ -1,0 +1,10 @@
+RUNNING DTA-v3.7 Phase A 2026-06-13T11:44:29+08:00
+host=RTX4090
+repo=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix
+branch=codex/haze4k-dta-v3-7-u-tqs-mix
+commit=71d1f88
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+input=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix/experience_docx/experiment_logs/haze4k_dta_v3_6_hrcs_20260613/v36_formal_oof_per_image_action_table.csv
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+COMPLETED DTA_V3_7_U_TQS_MIX_PHASE_A_OK 2026-06-13T11:44:49+08:00
+summary=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_phase_a_summary.json

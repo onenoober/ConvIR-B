@@ -1,0 +1,63 @@
+{
+  "best_aggregate": {
+    "coverage": 1.0,
+    "dSSIM": -5.663765801323785e-06,
+    "easy_top25_dPSNR": 0.014040183597140841,
+    "feature_group": "T_pred",
+    "hard_bottom25_dPSNR": 0.013137183401319716,
+    "intervention_rate": 0.9993333333333333,
+    "max_outer_worst_per_600": 2.3333333333333335,
+    "mean_dPSNR": 0.01579174648390876,
+    "model_type": "ridge_tqs",
+    "outer_folds": 5,
+    "positive_ratio": 0.636,
+    "score": 0.12206110325124528,
+    "strict_gate_checks": {
+      "coverage": true,
+      "dssim": false,
+      "hard": false,
+      "max_outer_worst": true,
+      "mean": false,
+      "positive_ratio": true,
+      "true_vs_normal": false,
+      "true_vs_shuffle": false,
+      "true_vs_zero": false,
+      "worst": true
+    },
+    "strict_gate_pass": false,
+    "strong_per_600": 61.666666666666664,
+    "true_vs_normal": 0.013933143271340265,
+    "true_vs_shuffle": 0.012810744524002075,
+    "true_vs_zero": 0.016517275836732653,
+    "worst_per_600": 0.8
+  },
+  "decision": "PHASE_B_TABLE_POLICY_STRICT_FAIL_NEEDS_FEATURE_ENRICHMENT_OR_REAL_BLEND",
+  "feature_groups": [
+    "Q_input_proxy",
+    "Q_enriched_quality",
+    "T_pred",
+    "U_uncertainty_conf",
+    "FDF_action_stats",
+    "deployable_TQAU_action_all",
+    "diagnostic_with_trans_gt"
+  ],
+  "image_feature_table": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-phaseb2/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_quality_image_features.csv",
+  "leakage_note": "diagnostic_with_trans_gt is not deployable; deployable groups exclude trans_gt by construction.",
+  "output_prefix": "v37_tqs_enriched",
+  "phase": "B_table_only_tqs_gain_risk_predictor",
+  "route": "DTA-v3.7 U-TQS-Mix",
+  "rows": 27000,
+  "strict_gates": {
+    "coverage_min": 0.95,
+    "dssim_min": -5e-06,
+    "hard_bottom25_min": 0.04,
+    "max_outer_worst_per_600_max": 60.0,
+    "mean_dpsnr_min": 0.055,
+    "positive_ratio_min": 0.63,
+    "true_vs_normal_min": 0.03,
+    "true_vs_shuffle_min": 0.035,
+    "true_vs_zero_min": 0.04,
+    "worst_per_600_max": 48.0
+  },
+  "strict_pass_count": 0
+}
