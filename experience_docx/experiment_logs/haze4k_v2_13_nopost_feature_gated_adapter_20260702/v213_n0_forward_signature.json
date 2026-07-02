@@ -1,0 +1,6 @@
+{
+  "NoPostFGAConvIR.forward": "(self, x, return_aux=False)",
+  "NoPostPBCFGA.forward": "(self, hazy, final_feature, res1, res2, scm2, scm4)",
+  "adapter_forward_forbidden_args_present": false,
+  "final_rgb_plus_x_count": 1
+}

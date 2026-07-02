@@ -2,7 +2,7 @@
 
 Date: 2026-07-02
 
-Status: `PLANNED_N0_N1_N2_FIRST_LOCKED_TEST_UNTOUCHED`
+Status: `N1_MECHANISM_FAIL_STOP_BEFORE_TRAINING_LOCKED_TEST_UNTOUCHED`
 
 Branch: `codex/haze4k-v2-13-nopost-feature-gated-adapter`
 
@@ -128,3 +128,51 @@ select checkpoint, threshold, active branch, gate, loss, or features.
 - N2 fail: identity insertion bug; do not train.
 - N3 train loss not decreasing: optimization/capacity/gradient failure.
 - N4 gate fail: stop route or declare a new route before changing structure.
+
+## Result
+
+Cloud run: `convir-4090`, `2026-07-02T23:57:41+08:00` to
+`2026-07-03T00:09:32+08:00`.
+
+Source commit: `cd3442f`.
+
+Decision: `N1_MECHANISM_FAIL_STOP_BEFORE_TRAINING`.
+
+N0 contract passed after correcting the synthetic parity input size from `64`
+to `256`; the first N0 failure was an engineering preflight input-size issue,
+not a scientific result.
+
+N0 key checks:
+
+- forbidden symbol hits: `0`;
+- adapter forbidden args present: `false`;
+- final `rgb_residual + x` count: `1`;
+- synthetic max_abs_vs_A0: `0`;
+- real-sample max_abs_vs_A0: `0`.
+
+N1 feature table:
+
+- rows: `2400`;
+- WD0375 benefit positives: `2266`;
+- severe-risk positives: `67`;
+- all-feature benefit AUC: `0.811809`;
+- all-feature severe-risk AUC: `0.824894`;
+- benefit internal/hazy AUC: `0.802239` / `0.799183`;
+- risk internal/hazy AUC: `0.819616` / `0.833268`.
+
+The route stops because severe-risk prediction is stronger with hazy-only
+features than with internal ConvIR features. This matches the predeclared
+failure mode where the evidence may be mostly input-rule driven rather than an
+internal ConvIR mechanism.
+
+N2 identity was run as implementation closeout after the N1 stop:
+
+- max_abs_vs_A0: `0`;
+- trainable prefix: `nopost_adapter.`;
+- trainable parameters: `74162`;
+- frozen parameters: `8630665`;
+- partial-load official keys loaded: `602`;
+- missing new-module keys: `18`;
+- unexpected/shape mismatch: `0`.
+
+N3/N4/N5/N6/N7 were not launched. Locked Haze4K test remains untouched.

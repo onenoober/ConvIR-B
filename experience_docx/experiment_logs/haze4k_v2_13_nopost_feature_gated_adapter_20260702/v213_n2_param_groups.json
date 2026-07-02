@@ -1,0 +1,99 @@
+{
+  "frozen_param_count": 8630665,
+  "trainable": [
+    {
+      "name": "nopost_adapter.context.encoder.0.weight",
+      "numel": 3744,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.context.encoder.0.bias",
+      "numel": 32,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.context.encoder.2.weight",
+      "numel": 9216,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.context.encoder.2.bias",
+      "numel": 32,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.gate.net.0.weight",
+      "numel": 4608,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.gate.net.0.bias",
+      "numel": 16,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.gate.net.2.weight",
+      "numel": 32,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.gate.net.2.bias",
+      "numel": 2,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.action.low_head.0.weight",
+      "numel": 18432,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.action.low_head.0.bias",
+      "numel": 32,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.action.low_head.2.weight",
+      "numel": 9216,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.action.low_head.2.bias",
+      "numel": 32,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.action.detail_head.0.weight",
+      "numel": 18432,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.action.detail_head.0.bias",
+      "numel": 32,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.action.detail_head.2.weight",
+      "numel": 9216,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.action.detail_head.2.bias",
+      "numel": 32,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.zero_proj.weight",
+      "numel": 1024,
+      "requires_grad": true
+    },
+    {
+      "name": "nopost_adapter.zero_proj.bias",
+      "numel": 32,
+      "requires_grad": true
+    }
+  ],
+  "trainable_param_count": 74162,
+  "trainable_prefixes": [
+    "nopost_adapter."
+  ]
+}

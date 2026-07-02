@@ -1,6 +1,6 @@
 # Haze4K v2.13 NoPost Feature-Gated Adapter Evidence
 
-Status: `PLANNED_N0_N1_N2_FIRST_LOCKED_TEST_UNTOUCHED`
+Status: `N1_MECHANISM_FAIL_STOP_BEFORE_TRAINING_LOCKED_TEST_UNTOUCHED`
 
 Runtime server: `convir-4090`
 
@@ -66,3 +66,41 @@ N4 staged screen:
 
 Raw feature tables, checkpoints, images, and large runtime outputs remain
 cloud-only by default.
+
+## Closeout
+
+Cloud run: `convir-4090`, source commit `cd3442f`.
+
+Decision: `N1_MECHANISM_FAIL_STOP_BEFORE_TRAINING`.
+
+N0 contract passed:
+
+- forbidden symbol hits: `0`;
+- adapter forbidden args present: `false`;
+- final `rgb_residual + x` count: `1`;
+- synthetic max_abs_vs_A0: `0`;
+- real-sample max_abs_vs_A0: `0`.
+
+N1 failed the predeclared mechanism gate:
+
+- rows: `2400`;
+- benefit all-feature AUC: `0.811809`;
+- severe-risk all-feature AUC: `0.824894`;
+- benefit internal/hazy AUC: `0.802239` / `0.799183`;
+- severe-risk internal/hazy AUC: `0.819616` / `0.833268`.
+
+The AUC levels are usable, but severe-risk prediction is stronger from hazy-only
+features than from internal ConvIR features. Training is therefore paused before
+N3 to avoid building a route that behaves like input-rule post-processing.
+
+N2 identity closeout passed:
+
+- max_abs_vs_A0: `0`;
+- trainable prefix: `nopost_adapter.`;
+- trainable parameters: `74162`;
+- frozen parameters: `8630665`;
+- partial-load official keys loaded: `602`;
+- missing new-module keys: `18`;
+- unexpected/shape mismatch: `0`.
+
+N3/N4/N5/N6/N7 were not launched. Locked Haze4K test remains untouched.
