@@ -135,7 +135,7 @@ def main() -> None:
     ap.add_argument("--scope", default="fold_val")
     ap.add_argument("--fold", type=int, default=0)
     ap.add_argument("--max-images", type=int, default=8)
-    ap.add_argument("--synthetic-size", type=int, default=64)
+    ap.add_argument("--synthetic-size", type=int, default=256)
     ap.add_argument("--gate-bias", type=float, default=-3.0)
     ap.add_argument("--use-detail", action="store_true")
     args = ap.parse_args()
