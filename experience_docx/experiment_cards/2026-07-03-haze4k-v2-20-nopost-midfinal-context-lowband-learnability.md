@@ -2,7 +2,7 @@
 
 Date: 2026-07-03
 
-Status: planned
+Status: completed gate-fail pause
 
 ## Scope
 
@@ -95,3 +95,37 @@ strong/easy p05 >= -0.15
 - If P1-B fails, do not train; finish P2/P3/P4 diagnostics and pause normally.
 - P4 guard pass does not authorize training without P1-B.
 - Locked Haze4K test remains untouched throughout this route.
+
+## Closeout
+
+Decision:
+
+```text
+V220_P1A_PASS_P1B_FAIL_NORMAL_GATE_PAUSE_NO_TRAINING
+```
+
+Runtime source:
+
+- cloud workspace: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-20-nopost-midfinal-context-lowband-learnability`
+- branch: `codex/haze4k-v2-20-nopost-midfinal-context-lowband-learnability`
+- run commit: `7dfa495`
+- evidence root: `experiment_logs/haze4k_v2_20_nopost_midfinal_context_lowband_learnability_20260703/`
+
+Results:
+
+- P0 passed. Zero-init max abs versus A0 was `0.0`; official params loaded and only `nopost_midfinal_context_policy.*` keys were missing.
+- P1-A passed for `P1_final_mid_global_context_predictor`: mean `+2.0684`, hard `+4.1450`, easy `+0.5199`, positive ratio `0.8508`, wrong-direction `0.00417`, and real-vs-shuffled gap `+3.1959`.
+- P1-B failed safety: p05 `-0.7255`, CVaR5 `-1.6967`, severe rate `11.125%`, strong-reference regression rate `26.67%`, and fold tail pass `0/5`.
+- P2 was diagnostic-positive for unsafe-action/no-op classification: easy/strong unsafe recall `0.90625`, predicted no-op mean dPSNR `-0.0300`.
+- P3 diagnosed that remaining tail damage is not mainly explained by wrong direction or peakiness alone.
+- P4 passed objective replay as guard evidence only; it does not authorize training.
+
+Training and locked-test policy:
+
+- training launched: `false`
+- training authorized: `false`
+- locked Haze4K touched: `false`
+
+Next decision:
+
+Do not train this v2.20 O3 context predictor. If the NoPost lowband direction is reopened, the next route should target the remaining safety/no-op calibration and tail preservation gap before any N3 microfit.

@@ -812,3 +812,37 @@ PY
 Inside cloud monitor/audit helpers, use the already-declared explicit runtime
 such as `/root/miniconda3/envs/convir-cu128/bin/python` or `"$PY"` for all
 inline Python snippets as well; do not assume `python3` exists on PATH.
+
+## 2026-07-04 PowerShell/WSL/SSH route-sync quoting recurrences
+
+Observed during v2.20 route setup and evidence sync: PowerShell here-strings
+sent to WSL sometimes carried a UTF-8 BOM into Bash, so the first command was
+received as `ï»¿set` instead of `set`.
+
+Corrected wrapper:
+
+```powershell
+$script | wsl -d Ubuntu-22.04 -- bash -lc "sed '1s/^\xEF\xBB\xBF//' | tr -d '\r' | bash"
+```
+
+Also avoid compact PowerShell-quoted SSH commands that contain remote Bash
+`if ... then` blocks or shell command substitutions. PowerShell can parse the
+remote block locally before SSH runs. Prefer a WSL script body plus a quoted
+remote heredoc:
+
+```bash
+ssh convir-4090 'bash -s' <<'REMOTE'
+set -euo pipefail
+if [ -e "$REMOTE_ROOT" ]; then
+  echo REMOTE_TARGET_EXISTS
+  exit 7
+fi
+REMOTE
+```
+
+For `git bundle` creation from slash-containing branch names, use a full ref
+and direct argv-style execution instead of a nested shell string:
+
+```bash
+git bundle create /tmp/route.bundle refs/heads/codex/haze4k-v2-20-nopost-midfinal-context-lowband-learnability
+```
