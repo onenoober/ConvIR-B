@@ -1,0 +1,2 @@
+scope,count,LL_oracle_dPSNR_mean,LL_oracle_dPSNR_median,LL_oracle_dPSNR_p05,LL_oracle_dPSNR_p95,LL_oracle_dPSNR_positive_ratio,LL_oracle_dPSNR_severe_loss_count
+all_train_core,2400,14.998694143295289,14.477876663208008,10.268070220947266,21.226276397705078,1.0,0

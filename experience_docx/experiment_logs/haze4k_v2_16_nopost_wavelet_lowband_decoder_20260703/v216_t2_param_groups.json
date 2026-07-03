@@ -1,0 +1,67 @@
+{
+  "frozen_anchor_param_count": 8630665,
+  "frozen_prefixes": [
+    "Encoder",
+    "Decoder",
+    "feat_extract",
+    "Convs",
+    "ConvsOut",
+    "FAM",
+    "SCM"
+  ],
+  "intended_trainable_prefix": "nopost_wldb.",
+  "trainable": [
+    {
+      "name": "nopost_wldb.lowband_context.1.weight",
+      "numel": 512,
+      "shape": [
+        16,
+        32,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "nopost_wldb.lowband_context.1.bias",
+      "numel": 16,
+      "shape": [
+        16
+      ]
+    },
+    {
+      "name": "nopost_wldb.lowband_context.3.weight",
+      "numel": 512,
+      "shape": [
+        32,
+        16,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "nopost_wldb.lowband_context.3.bias",
+      "numel": 32,
+      "shape": [
+        32
+      ]
+    },
+    {
+      "name": "nopost_wldb.lowband_project.weight",
+      "numel": 1024,
+      "shape": [
+        32,
+        32,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "nopost_wldb.lowband_project.bias",
+      "numel": 32,
+      "shape": [
+        32
+      ]
+    }
+  ],
+  "trainable_param_count": 2128
+}

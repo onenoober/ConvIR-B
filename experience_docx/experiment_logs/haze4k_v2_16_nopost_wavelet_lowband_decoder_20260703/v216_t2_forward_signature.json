@@ -1,0 +1,40 @@
+{
+  "forbidden_scan": {
+    "forbidden_tokens": [
+      "A0_output",
+      "WD0375_output",
+      "WDMamba_output",
+      "expert_output",
+      "teacher_output",
+      "teacher_output - A0_output",
+      "A0_output - hazy",
+      "output_1 - output_2",
+      "learned_rgb"
+    ],
+    "hits": [],
+    "model_file": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-16-nopost-wavelet-lowband-decoder/Dehazing/ITS/models/NoPostWLDBConvIR.py"
+  },
+  "forward_inputs": [
+    "hazy"
+  ],
+  "internal_insertion": "after Decoder[2], before feat_extract[5]",
+  "locked_test_touched": false,
+  "lowband_branch": "Haar DWT on final decoder feature LL band only",
+  "partial_load": {
+    "loaded_count": 602,
+    "missing_new_module_count": 6,
+    "missing_new_modules": [
+      "nopost_wldb.lowband_context.1.bias",
+      "nopost_wldb.lowband_context.1.weight",
+      "nopost_wldb.lowband_context.3.bias",
+      "nopost_wldb.lowband_context.3.weight",
+      "nopost_wldb.lowband_project.bias",
+      "nopost_wldb.lowband_project.weight"
+    ],
+    "shape_mismatch": [],
+    "unexpected": []
+  },
+  "rgb_head": "original feat_extract[5], then rgb_residual + hazy",
+  "route": "haze4k-v2-16-nopost-wavelet-lowband-decoder",
+  "training_launched": false
+}

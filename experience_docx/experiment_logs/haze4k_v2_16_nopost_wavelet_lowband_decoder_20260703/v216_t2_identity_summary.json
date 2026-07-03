@@ -1,0 +1,10 @@
+{
+  "count": 32,
+  "forbidden_symbol_hits": [],
+  "identity_pass": true,
+  "identity_threshold": 1e-05,
+  "locked_test_touched": false,
+  "max_abs_diff": 1.7881393432617188e-07,
+  "mean_abs_diff_mean": 4.564588110267387e-09,
+  "training_launched": false
+}
