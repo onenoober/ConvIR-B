@@ -1,0 +1,32 @@
+{
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "device": "cuda",
+  "fold": 0,
+  "load_report": {
+    "loaded_count": 602,
+    "missing_new_modules": [
+      "nopost_wldb.lowband_context.1.bias",
+      "nopost_wldb.lowband_context.1.weight",
+      "nopost_wldb.lowband_context.3.bias",
+      "nopost_wldb.lowband_context.3.weight",
+      "nopost_wldb.lowband_project.bias",
+      "nopost_wldb.lowband_project.weight"
+    ]
+  },
+  "locked_test_touched": false,
+  "loss": {
+    "a0_preserve_l1": 0.02,
+    "action_budget": 0.025,
+    "action_budget_hinge": 0.05,
+    "final_l1": 1.0,
+    "lowband_l1": 0.25
+  },
+  "params": {
+    "frozen_params": 8630665,
+    "trainable_params": 2128
+  },
+  "route": "haze4k-v2-16-wldb-a-train",
+  "seed": 3407,
+  "train_count": 1920,
+  "val_count": 480
+}

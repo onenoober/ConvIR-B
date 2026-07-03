@@ -1,0 +1,28 @@
+{
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-16-nopost-wavelet-lowband-decoder/experience_docx/experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/wldb_a_seed3407/checkpoints/model_20.pkl",
+  "gate": {
+    "checks": {
+      "easy_top25_dPSNR_ge_neg0p05": true,
+      "hard_bottom25_dPSNR_ge_0p10": false,
+      "mean_dPSNR_ge_0p05": false,
+      "positive_ratio_ge_0p55": true,
+      "severe_loss_count_le_12": false,
+      "strong_regression_count_le_48": true
+    },
+    "pass": false
+  },
+  "summary": {
+    "count": 480,
+    "easy_top25_dPSNR": 0.05574855804443359,
+    "hard_bottom25_dPSNR": -0.0055638313293457035,
+    "mean_dPSNR": 0.03074689706166585,
+    "mean_dSSIM": -1.8833825985590617e-06,
+    "median_dPSNR": 0.027776718139648438,
+    "p05_dPSNR": -0.26192169189453124,
+    "p95_dPSNR": 0.3274400711059571,
+    "positive_ratio": 0.5895833333333333,
+    "severe_loss_count": 39,
+    "strong_reference_cut_psnr": 43.16444396972656,
+    "strong_regression_count_delta_le_-0.05": 42
+  }
+}

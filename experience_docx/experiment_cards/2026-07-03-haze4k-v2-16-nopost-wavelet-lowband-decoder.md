@@ -2,7 +2,7 @@
 
 Date: 2026-07-03
 
-Status: `COMPLETED_T2_PASS_TRAINING_BLOCKED_PENDING_REVIEW`
+Status: `WLDB_A_SCREEN_FAIL_STOP_NO_MORE_TRAINING`
 
 Branch: `codex/haze4k-v2-16-nopost-wavelet-lowband-decoder`
 
@@ -167,3 +167,33 @@ good proxy for the new lowband objective, and the train-derived LL oracle
 headroom is strong. The zero-init WLDB contract is A0-equivalent and source
 clean. The next action is review before any WLDB-A training launch; T2 does not
 authorize training or locked-test use by itself.
+
+## WLDB-A Screen Result
+
+Cloud run: `convir-4090`, `2026-07-03T16:22:46+08:00` to
+`2026-07-03T16:34:35+08:00`.
+
+Source commit: `0198474`.
+
+WLDB-A trained seed `3407` for `20` epochs with official ConvIR-B frozen and
+only `nopost_wldb.*` trainable:
+
+- trainable params: `2128`;
+- frozen official params: `8630665`;
+- train/validation counts: `1920/480`;
+- locked Haze4K test: untouched.
+
+Decision: `WLDB_A_SCREEN_FAIL_STOP_NO_MORE_TRAINING`.
+
+Best checkpoint by mean dPSNR was `model_5`:
+
+- mean dPSNR: `+0.081889`;
+- hard bottom25 dPSNR: `+0.105887`;
+- easy top25 dPSNR: `+0.020994`;
+- positive ratio: `0.662500`;
+- severe loss count: `67/480`;
+- strong-reference regressions: `48/120`.
+
+No checkpoint passed the predeclared gate. The current WLDB-A form moves mean
+and hard samples but fails tail safety, so do not expand to multi-seed, longer
+budget, locked test, or promotion from this screen.

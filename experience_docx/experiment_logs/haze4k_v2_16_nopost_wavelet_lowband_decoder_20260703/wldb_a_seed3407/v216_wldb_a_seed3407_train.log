@@ -1,0 +1,106 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-16-nopost-wavelet-lowband-decoder/experience_docx/tools/train_nopost_wldb_a.py:231: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=torch.cuda.is_available())
+WLDB_A_TRAIN_MANIFEST {"checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl", "device": "cuda", "fold": 0, "load_report": {"loaded_count": 602, "missing_new_modules": ["nopost_wldb.lowband_context.1.bias", "nopost_wldb.lowband_context.1.weight", "nopost_wldb.lowband_context.3.bias", "nopost_wldb.lowband_context.3.weight", "nopost_wldb.lowband_project.bias", "nopost_wldb.lowband_project.weight"]}, "locked_test_touched": false, "loss": {"a0_preserve_l1": 0.02, "action_budget": 0.025, "action_budget_hinge": 0.05, "final_l1": 1.0, "lowband_l1": 0.25}, "params": {"frozen_params": 8630665, "trainable_params": 2128}, "route": "haze4k-v2-16-wldb-a-train", "seed": 3407, "train_count": 1920, "val_count": 480}
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-16-nopost-wavelet-lowband-decoder/experience_docx/tools/train_nopost_wldb_a.py:268: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=torch.cuda.is_available()):
+WLDB_A_TRAIN epoch=001 step=0050/0240 lr=0.00020000 loss=0.007829 final=0.005268 low=0.010146 preserve=0.001202 budget=0.000000
+WLDB_A_TRAIN epoch=001 step=0100/0240 lr=0.00020000 loss=0.007933 final=0.005338 low=0.010279 preserve=0.001229 budget=0.000000
+WLDB_A_TRAIN epoch=001 step=0150/0240 lr=0.00020000 loss=0.007948 final=0.005348 low=0.010299 preserve=0.001224 budget=0.000000
+WLDB_A_TRAIN epoch=001 step=0200/0240 lr=0.00020000 loss=0.007988 final=0.005376 low=0.010352 preserve=0.001208 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 1, "final_l1": 0.00539059021199743, "loss": 0.008010026665093999, "lowband_l1": 0.010382655014594396, "lr": 0.0001988303923565381, "preserve_l1": 0.0011886346352791104, "seconds": 24.521740436553955}
+WLDB_A_TRAIN epoch=002 step=0050/0240 lr=0.00019883 loss=0.007726 final=0.005201 low=0.010000 preserve=0.001211 budget=0.000000
+WLDB_A_TRAIN epoch=002 step=0100/0240 lr=0.00019883 loss=0.008089 final=0.005443 low=0.010491 preserve=0.001167 budget=0.000000
+WLDB_A_TRAIN epoch=002 step=0150/0240 lr=0.00019883 loss=0.008076 final=0.005434 low=0.010475 preserve=0.001181 budget=0.000000
+WLDB_A_TRAIN epoch=002 step=0200/0240 lr=0.00019883 loss=0.008037 final=0.005407 low=0.010425 preserve=0.001177 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 2, "final_l1": 0.005412588204490021, "loss": 0.00804370454279706, "lowband_l1": 0.010430968880730992, "lr": 0.0001953503690480396, "preserve_l1": 0.0011687033775767, "seconds": 20.89857292175293}
+WLDB_A_TRAIN epoch=003 step=0050/0240 lr=0.00019535 loss=0.008130 final=0.005473 low=0.010534 preserve=0.001175 budget=0.000000
+WLDB_A_TRAIN epoch=003 step=0100/0240 lr=0.00019535 loss=0.008064 final=0.005427 low=0.010452 preserve=0.001200 budget=0.000000
+WLDB_A_TRAIN epoch=003 step=0150/0240 lr=0.00019535 loss=0.008034 final=0.005407 low=0.010414 preserve=0.001177 budget=0.000000
+WLDB_A_TRAIN epoch=003 step=0200/0240 lr=0.00019535 loss=0.008030 final=0.005403 low=0.010410 preserve=0.001194 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 3, "final_l1": 0.005377074917002271, "loss": 0.00798963094324184, "lowband_l1": 0.010354538488900288, "lr": 0.00018964561979789495, "preserve_l1": 0.0011960685473847358, "seconds": 23.627284049987793}
+WLDB_A_TRAIN epoch=004 step=0050/0240 lr=0.00018965 loss=0.007889 final=0.005310 low=0.010222 preserve=0.001184 budget=0.000000
+WLDB_A_TRAIN epoch=004 step=0100/0240 lr=0.00018965 loss=0.008078 final=0.005435 low=0.010480 preserve=0.001182 budget=0.000000
+WLDB_A_TRAIN epoch=004 step=0150/0240 lr=0.00018965 loss=0.008076 final=0.005435 low=0.010472 preserve=0.001157 budget=0.000000
+WLDB_A_TRAIN epoch=004 step=0200/0240 lr=0.00018965 loss=0.008064 final=0.005427 low=0.010456 preserve=0.001148 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 4, "final_l1": 0.005392175355033639, "loss": 0.008012851574070131, "lowband_l1": 0.01038766845789117, "lr": 0.00018185661446562003, "preserve_l1": 0.0011879548745734306, "seconds": 22.267792224884033}
+WLDB_A_TRAIN epoch=005 step=0050/0240 lr=0.00018186 loss=0.007840 final=0.005278 low=0.010153 preserve=0.001165 budget=0.000000
+WLDB_A_TRAIN epoch=005 step=0100/0240 lr=0.00018186 loss=0.007902 final=0.005319 low=0.010235 preserve=0.001199 budget=0.000000
+WLDB_A_TRAIN epoch=005 step=0150/0240 lr=0.00018186 loss=0.007923 final=0.005334 low=0.010263 preserve=0.001181 budget=0.000000
+WLDB_A_TRAIN epoch=005 step=0200/0240 lr=0.00018186 loss=0.007925 final=0.005334 low=0.010268 preserve=0.001194 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 5, "final_l1": 0.005356897225525851, "loss": 0.00795949530050469, "lowband_l1": 0.010314549272879957, "lr": 0.00017217514421272203, "preserve_l1": 0.0011980370235202523, "seconds": 23.10641074180603}
+WLDB_A_TRAIN epoch=006 step=0050/0240 lr=0.00017218 loss=0.007926 final=0.005334 low=0.010276 preserve=0.001165 budget=0.000000
+WLDB_A_TRAIN epoch=006 step=0100/0240 lr=0.00017218 loss=0.007971 final=0.005364 low=0.010334 preserve=0.001168 budget=0.000000
+WLDB_A_TRAIN epoch=006 step=0150/0240 lr=0.00017218 loss=0.008091 final=0.005444 low=0.010493 preserve=0.001179 budget=0.000000
+WLDB_A_TRAIN epoch=006 step=0200/0240 lr=0.00017218 loss=0.008068 final=0.005429 low=0.010462 preserve=0.001180 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 6, "final_l1": 0.005432085348487211, "loss": 0.008072577222871283, "lowband_l1": 0.010469145545115074, "lr": 0.00016083959896778498, "preserve_l1": 0.0011602730407806424, "seconds": 22.804713010787964}
+WLDB_A_TRAIN epoch=007 step=0050/0240 lr=0.00016084 loss=0.007855 final=0.005284 low=0.010185 preserve=0.001231 budget=0.000000
+WLDB_A_TRAIN epoch=007 step=0100/0240 lr=0.00016084 loss=0.008026 final=0.005400 low=0.010406 preserve=0.001190 budget=0.000000
+WLDB_A_TRAIN epoch=007 step=0150/0240 lr=0.00016084 loss=0.007989 final=0.005376 low=0.010356 preserve=0.001180 budget=0.000000
+WLDB_A_TRAIN epoch=007 step=0200/0240 lr=0.00016084 loss=0.007953 final=0.005352 low=0.010310 preserve=0.001179 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 7, "final_l1": 0.005381358184968122, "loss": 0.00799677386142624, "lowband_l1": 0.010365764835538964, "lr": 0.00014812909747525697, "preserve_l1": 0.0011987243032005304, "seconds": 22.098546981811523}
+WLDB_A_TRAIN epoch=008 step=0050/0240 lr=0.00014813 loss=0.008118 final=0.005463 low=0.010529 preserve=0.001144 budget=0.000000
+WLDB_A_TRAIN epoch=008 step=0100/0240 lr=0.00014813 loss=0.008005 final=0.005388 low=0.010378 preserve=0.001128 budget=0.000000
+WLDB_A_TRAIN epoch=008 step=0150/0240 lr=0.00014813 loss=0.007946 final=0.005349 low=0.010296 preserve=0.001154 budget=0.000000
+WLDB_A_TRAIN epoch=008 step=0200/0240 lr=0.00014813 loss=0.007931 final=0.005339 low=0.010276 preserve=0.001158 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 8, "final_l1": 0.005364168913608107, "loss": 0.007968939256776745, "lowband_l1": 0.010326682364878555, "lr": 0.00013435661446562004, "preserve_l1": 0.0011549844830976022, "seconds": 22.391814708709717}
+WLDB_A_TRAIN epoch=009 step=0050/0240 lr=0.00013436 loss=0.007799 final=0.005253 low=0.010095 preserve=0.001150 budget=0.000000
+WLDB_A_TRAIN epoch=009 step=0100/0240 lr=0.00013436 loss=0.008036 final=0.005410 low=0.010410 preserve=0.001154 budget=0.000000
+WLDB_A_TRAIN epoch=009 step=0150/0240 lr=0.00013436 loss=0.007988 final=0.005378 low=0.010351 preserve=0.001132 budget=0.000000
+WLDB_A_TRAIN epoch=009 step=0200/0240 lr=0.00013436 loss=0.007962 final=0.005360 low=0.010318 preserve=0.001150 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 9, "final_l1": 0.005338817076214279, "loss": 0.00793118419048066, "lowband_l1": 0.01027829399293599, "lr": 0.00011986127417882196, "preserve_l1": 0.0011396807623289837, "seconds": 21.346100091934204}
+WLDB_A_TRAIN epoch=010 step=0050/0240 lr=0.00011986 loss=0.007860 final=0.005289 low=0.010195 preserve=0.001119 budget=0.000000
+WLDB_A_TRAIN epoch=010 step=0100/0240 lr=0.00011986 loss=0.007980 final=0.005368 low=0.010349 preserve=0.001202 budget=0.000000
+WLDB_A_TRAIN epoch=010 step=0150/0240 lr=0.00011986 loss=0.007988 final=0.005374 low=0.010358 preserve=0.001191 budget=0.000000
+WLDB_A_TRAIN epoch=010 step=0200/0240 lr=0.00011986 loss=0.008036 final=0.005407 low=0.010421 preserve=0.001190 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 10, "final_l1": 0.005397314064127082, "loss": 0.00802135254877309, "lowband_l1": 0.010400756153588493, "lr": 0.00010500000000000002, "preserve_l1": 0.0011924695381215619, "seconds": 21.332559823989868}
+WLDB_A_TRAIN epoch=011 step=0050/0240 lr=0.00010500 loss=0.007735 final=0.005209 low=0.010016 preserve=0.001107 budget=0.000000
+WLDB_A_TRAIN epoch=011 step=0100/0240 lr=0.00010500 loss=0.007958 final=0.005356 low=0.010313 preserve=0.001150 budget=0.000000
+WLDB_A_TRAIN epoch=011 step=0150/0240 lr=0.00010500 loss=0.007951 final=0.005351 low=0.010304 preserve=0.001172 budget=0.000000
+WLDB_A_TRAIN epoch=011 step=0200/0240 lr=0.00010500 loss=0.007942 final=0.005345 low=0.010295 preserve=0.001150 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 11, "final_l1": 0.005363911189488135, "loss": 0.007969549333211035, "lowband_l1": 0.010329730558441951, "lr": 9.01387258211781e-05, "preserve_l1": 0.0011602738445314269, "seconds": 22.614348888397217}
+WLDB_A_TRAIN epoch=012 step=0050/0240 lr=0.00009014 loss=0.007990 final=0.005375 low=0.010353 preserve=0.001340 budget=0.000000
+WLDB_A_TRAIN epoch=012 step=0100/0240 lr=0.00009014 loss=0.007958 final=0.005356 low=0.010310 preserve=0.001241 budget=0.000000
+WLDB_A_TRAIN epoch=012 step=0150/0240 lr=0.00009014 loss=0.008058 final=0.005423 low=0.010445 preserve=0.001198 budget=0.000000
+WLDB_A_TRAIN epoch=012 step=0200/0240 lr=0.00009014 loss=0.008007 final=0.005389 low=0.010381 preserve=0.001165 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 12, "final_l1": 0.005388710254919715, "loss": 0.008006753557128831, "lowband_l1": 0.010379556058129917, "lr": 7.564338553438001e-05, "preserve_l1": 0.001157713132124627, "seconds": 21.830650568008423}
+WLDB_A_TRAIN epoch=013 step=0050/0240 lr=0.00007564 loss=0.008147 final=0.005483 low=0.010559 preserve=0.001198 budget=0.000000
+WLDB_A_TRAIN epoch=013 step=0100/0240 lr=0.00007564 loss=0.007961 final=0.005358 low=0.010323 preserve=0.001132 budget=0.000000
+WLDB_A_TRAIN epoch=013 step=0150/0240 lr=0.00007564 loss=0.007989 final=0.005377 low=0.010358 preserve=0.001129 budget=0.000000
+WLDB_A_TRAIN epoch=013 step=0200/0240 lr=0.00007564 loss=0.007984 final=0.005373 low=0.010352 preserve=0.001126 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 13, "final_l1": 0.00536078995016093, "loss": 0.007963798668545982, "lowband_l1": 0.010322491225088016, "lr": 6.187090252474307e-05, "preserve_l1": 0.0011192946752998979, "seconds": 22.329323768615723}
+WLDB_A_TRAIN epoch=014 step=0050/0240 lr=0.00006187 loss=0.007960 final=0.005358 low=0.010314 preserve=0.001134 budget=0.000000
+WLDB_A_TRAIN epoch=014 step=0100/0240 lr=0.00006187 loss=0.007979 final=0.005371 low=0.010341 preserve=0.001149 budget=0.000000
+WLDB_A_TRAIN epoch=014 step=0150/0240 lr=0.00006187 loss=0.008005 final=0.005388 low=0.010375 preserve=0.001158 budget=0.000000
+WLDB_A_TRAIN epoch=014 step=0200/0240 lr=0.00006187 loss=0.008044 final=0.005413 low=0.010431 preserve=0.001184 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 14, "final_l1": 0.005405048433264407, "loss": 0.008031764938884104, "lowband_l1": 0.010413065674947574, "lr": 4.916040103221507e-05, "preserve_l1": 0.0011725005378442196, "seconds": 21.838084936141968}
+WLDB_A_TRAIN epoch=015 step=0050/0240 lr=0.00004916 loss=0.007829 final=0.005268 low=0.010151 preserve=0.001128 budget=0.000000
+WLDB_A_TRAIN epoch=015 step=0100/0240 lr=0.00004916 loss=0.008039 final=0.005406 low=0.010431 preserve=0.001227 budget=0.000000
+WLDB_A_TRAIN epoch=015 step=0150/0240 lr=0.00004916 loss=0.007997 final=0.005380 low=0.010372 preserve=0.001224 budget=0.000000
+WLDB_A_TRAIN epoch=015 step=0200/0240 lr=0.00004916 loss=0.007955 final=0.005353 low=0.010313 preserve=0.001197 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 15, "final_l1": 0.005355301809807618, "loss": 0.007958154942995559, "lowband_l1": 0.010317629108127828, "lr": 3.782485578727799e-05, "preserve_l1": 0.0011722915519688589, "seconds": 21.640148878097534}
+WLDB_A_TRAIN epoch=016 step=0050/0240 lr=0.00003782 loss=0.008002 final=0.005386 low=0.010372 preserve=0.001146 budget=0.000000
+WLDB_A_TRAIN epoch=016 step=0100/0240 lr=0.00003782 loss=0.008071 final=0.005431 low=0.010471 preserve=0.001133 budget=0.000000
+WLDB_A_TRAIN epoch=016 step=0150/0240 lr=0.00003782 loss=0.008044 final=0.005413 low=0.010435 preserve=0.001108 budget=0.000000
+WLDB_A_TRAIN epoch=016 step=0200/0240 lr=0.00003782 loss=0.008044 final=0.005413 low=0.010433 preserve=0.001109 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 16, "final_l1": 0.005410384481850391, "loss": 0.008039122589010125, "lowband_l1": 0.010426308375705655, "lr": 2.8143385534380006e-05, "preserve_l1": 0.0011080491480242927, "seconds": 21.374013662338257}
+WLDB_A_TRAIN epoch=017 step=0050/0240 lr=0.00002814 loss=0.007733 final=0.005206 low=0.010017 preserve=0.001124 budget=0.000000
+WLDB_A_TRAIN epoch=017 step=0100/0240 lr=0.00002814 loss=0.007775 final=0.005234 low=0.010076 preserve=0.001115 budget=0.000000
+WLDB_A_TRAIN epoch=017 step=0150/0240 lr=0.00002814 loss=0.007785 final=0.005241 low=0.010086 preserve=0.001133 budget=0.000000
+WLDB_A_TRAIN epoch=017 step=0200/0240 lr=0.00002814 loss=0.007773 final=0.005233 low=0.010072 preserve=0.001112 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 17, "final_l1": 0.005301388259977102, "loss": 0.007875039523545032, "lowband_l1": 0.010206540869936968, "lr": 2.0354380202105065e-05, "preserve_l1": 0.0011008012486854568, "seconds": 22.049060344696045}
+WLDB_A_TRAIN epoch=018 step=0050/0240 lr=0.00002035 loss=0.007944 final=0.005348 low=0.010299 preserve=0.001061 budget=0.000000
+WLDB_A_TRAIN epoch=018 step=0100/0240 lr=0.00002035 loss=0.007956 final=0.005356 low=0.010309 preserve=0.001103 budget=0.000000
+WLDB_A_TRAIN epoch=018 step=0150/0240 lr=0.00002035 loss=0.007944 final=0.005347 low=0.010297 preserve=0.001126 budget=0.000000
+WLDB_A_TRAIN epoch=018 step=0200/0240 lr=0.00002035 loss=0.007922 final=0.005333 low=0.010269 preserve=0.001124 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 18, "final_l1": 0.00533860861711825, "loss": 0.007930413911041493, "lowband_l1": 0.010278616302336256, "lr": 1.4649630951960417e-05, "preserve_l1": 0.0011075584574427922, "seconds": 21.531954288482666}
+WLDB_A_TRAIN epoch=019 step=0050/0240 lr=0.00001465 loss=0.007942 final=0.005347 low=0.010294 preserve=0.001080 budget=0.000000
+WLDB_A_TRAIN epoch=019 step=0100/0240 lr=0.00001465 loss=0.008066 final=0.005429 low=0.010456 preserve=0.001119 budget=0.000000
+WLDB_A_TRAIN epoch=019 step=0150/0240 lr=0.00001465 loss=0.007996 final=0.005383 low=0.010365 preserve=0.001087 budget=0.000000
+WLDB_A_TRAIN epoch=019 step=0200/0240 lr=0.00001465 loss=0.008023 final=0.005400 low=0.010404 preserve=0.001098 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 19, "final_l1": 0.00538489171594847, "loss": 0.007999623502837495, "lowband_l1": 0.01037204652869453, "lr": 1.1169607643461924e-05, "preserve_l1": 0.0010860073288010122, "seconds": 21.677497625350952}
+WLDB_A_TRAIN epoch=020 step=0050/0240 lr=0.00001117 loss=0.008155 final=0.005485 low=0.010588 preserve=0.001176 budget=0.000000
+WLDB_A_TRAIN epoch=020 step=0100/0240 lr=0.00001117 loss=0.008019 final=0.005397 low=0.010396 preserve=0.001189 budget=0.000000
+WLDB_A_TRAIN epoch=020 step=0150/0240 lr=0.00001117 loss=0.007955 final=0.005354 low=0.010310 preserve=0.001169 budget=0.000000
+WLDB_A_TRAIN epoch=020 step=0200/0240 lr=0.00001117 loss=0.008044 final=0.005413 low=0.010428 preserve=0.001185 budget=0.000000
+WLDB_A_EPOCH {"budget": 0.0, "epoch": 20, "final_l1": 0.005376025147658462, "loss": 0.007988346166287859, "lowband_l1": 0.010355242244744052, "lr": 1e-05, "preserve_l1": 0.001175522541840716, "seconds": 22.024863481521606}
+WLDB_A_TRAIN_OK {"best_loss": 0.007875039523545032, "epochs": 20}
