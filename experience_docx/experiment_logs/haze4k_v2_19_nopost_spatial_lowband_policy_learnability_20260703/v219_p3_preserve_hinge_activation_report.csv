@@ -1,0 +1,2 @@
+primary_variant,strong_or_easy_count,strong_or_easy_regression_count,preserve_hinge_active_count,preserve_hinge_coverage_on_regressions,positive_preserve_hinge_activation_rate,mean_preserve_hinge
+P1_small_cnn_spatial,600,302,302,1.0,0.0,0.08054105854034424

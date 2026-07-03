@@ -1,0 +1,10 @@
+{
+  "decision": "V219_LEARNABILITY_FAIL_OR_GUARD_FAIL_PAUSE_BEFORE_TRAINING",
+  "locked_test_touched": false,
+  "p1_decision": "P1_FAIL_O2_SPATIAL_ACTION_NOT_SAFELY_LEARNED",
+  "p1_gate_pass": false,
+  "p2_decision": "P2_DIAG_TAIL_NOT_EXPLAINED_BY_CURRENT_SPATIAL_ACTION_CONSIDER_O3_CONTEXT",
+  "p3_decision": "P3_PASS_SPATIAL_OBJECTIVE_REPLAY_COVERS_FAILURES",
+  "p3_pass": true,
+  "training_launched": false
+}

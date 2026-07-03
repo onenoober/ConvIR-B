@@ -1,0 +1,26 @@
+v219_p0_state=PREFLIGHT_RUNNING
+v219_p0_start 2026-07-03T23:02:22+08:00
+branch=codex/haze4k-v2-19-nopost-spatial-lowband-policy-learnability
+commit=7a496f8
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-19-nopost-spatial-lowband-policy-learnability
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+locked_test_touched=false
+v219_p0_done rc=0 2026-07-03T23:02:30+08:00
+v219_p0_state=COMPLETED_GATE_PASS
+V219_P0_OK
+v219_p1_p2_p3_state=RUNNING_AUDIT
+v219_p1_p2_p3_start 2026-07-03T23:03:24+08:00
+branch=codex/haze4k-v2-19-nopost-spatial-lowband-policy-learnability
+commit=7a496f8
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-19-nopost-spatial-lowband-policy-learnability
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split_csv=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-17-nopost-lowband-alignment-tail-audit/experience_docx/experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/v216_t1_per_image_band_deltas.csv
+locked_test_touched=false
+training_launched=false
+v219_p1_p2_p3_done rc=0 2026-07-03T23:17:59+08:00
+v219_p1_p2_p3_state=COMPLETED_GATE_FAIL
+V219_P1_P2_P3_GATE_FAIL_PAUSE_BEFORE_TRAINING

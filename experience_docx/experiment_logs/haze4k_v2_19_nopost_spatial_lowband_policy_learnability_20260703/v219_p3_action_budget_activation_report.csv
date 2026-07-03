@@ -1,0 +1,4 @@
+threshold_name,threshold,budget_activation_rate,budget_activation_count,safe_oracle_over_penalized_rate
+oracle_p75,0.013726395787671208,0.0975,234,0.25
+oracle_p90,0.018990193307399747,0.03125,75,0.1
+predicted_p75,0.009165849536657333,0.25,600,0.5383333333333333

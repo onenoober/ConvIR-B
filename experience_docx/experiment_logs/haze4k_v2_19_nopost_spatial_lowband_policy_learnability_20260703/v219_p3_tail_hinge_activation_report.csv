@@ -1,0 +1,2 @@
+primary_variant,count,severe_count,tail_hinge_active_count,tail_hinge_coverage_on_severe,positive_tail_hinge_activation_rate,mean_tail_hinge,mean_severe_hinge
+P1_small_cnn_spatial,2400,486,535,1.0,0.0,0.15942476987838744,0.14880082082748414
