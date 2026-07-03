@@ -1,0 +1,79 @@
+{
+  "benefit_label:all_runtime-minus-hazy_runtime": {
+    "mean": 0.041367097449348834,
+    "n": 1000,
+    "p05": 0.02232440888900481,
+    "p50": 0.04114614252609683,
+    "p95": 0.061509642293448026,
+    "prob_delta_lt_0": 0.0,
+    "prob_delta_lt_minus_margin": 0.0
+  },
+  "benefit_label:all_with_leak-minus-all_runtime": {
+    "mean": -8.030474766797413e-05,
+    "n": 1000,
+    "p05": -0.0004948844406985175,
+    "p50": -7.737636687604743e-05,
+    "p95": 0.00030757589628164177,
+    "prob_delta_lt_0": 0.615,
+    "prob_delta_lt_minus_margin": 0.0
+  },
+  "benefit_label:all_with_leak-minus-hazy_runtime": {
+    "mean": 0.04088950945663253,
+    "n": 1000,
+    "p05": 0.020369557148890032,
+    "p50": 0.04096474284308921,
+    "p95": 0.06139282656264862,
+    "prob_delta_lt_0": 0.0,
+    "prob_delta_lt_minus_margin": 0.0
+  },
+  "benefit_label:internal_only-minus-hazy_runtime": {
+    "mean": 0.031104488242457404,
+    "n": 1000,
+    "p05": 0.007932908111208609,
+    "p50": 0.031080790997888352,
+    "p95": 0.05509448354615647,
+    "prob_delta_lt_0": 0.018,
+    "prob_delta_lt_minus_margin": 0.003
+  },
+  "settings": {
+    "iterations": 1000,
+    "margin": 0.01,
+    "seed": 3407
+  },
+  "severe_risk_label:all_runtime-minus-hazy_runtime": {
+    "mean": 0.027932550676219466,
+    "n": 1000,
+    "p05": -0.003752256916128648,
+    "p50": 0.028288151070125556,
+    "p95": 0.05682303461503818,
+    "prob_delta_lt_0": 0.071,
+    "prob_delta_lt_minus_margin": 0.027
+  },
+  "severe_risk_label:all_with_leak-minus-all_runtime": {
+    "mean": -0.0013150353943183735,
+    "n": 1000,
+    "p05": -0.002573651090972778,
+    "p50": -0.001276458293268723,
+    "p95": -0.00021139130414634159,
+    "prob_delta_lt_0": 0.979,
+    "prob_delta_lt_minus_margin": 0.0
+  },
+  "severe_risk_label:all_with_leak-minus-hazy_runtime": {
+    "mean": 0.027364759852347174,
+    "n": 1000,
+    "p05": -0.004760148828802218,
+    "p50": 0.027603374181110307,
+    "p95": 0.05790530311819325,
+    "prob_delta_lt_0": 0.085,
+    "prob_delta_lt_minus_margin": 0.037
+  },
+  "severe_risk_label:internal_only-minus-hazy_runtime": {
+    "mean": 0.019997002559746242,
+    "n": 1000,
+    "p05": -0.01801327250855208,
+    "p50": 0.02012374595000943,
+    "p95": 0.05675063781778273,
+    "prob_delta_lt_0": 0.161,
+    "prob_delta_lt_minus_margin": 0.083
+  }
+}

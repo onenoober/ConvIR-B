@@ -1,0 +1,19 @@
+planned N1R_ONLY_LOCKED_TEST_UNTOUCHED 2026-07-03
+run_start v214_n1r 2026-07-03T10:43:16+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-14-nopost-runtime-evidence-audit
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+locked_test_touched=false
+branch=codex/haze4k-v2-14-nopost-runtime-evidence-audit
+head=0704c89
+status_short_begin
+ M experience_docx/experiment_logs/haze4k_v2_14_nopost_runtime_evidence_audit_20260703/run_v214_n1r.sh
+ M experience_docx/experiment_logs/haze4k_v2_14_nopost_runtime_evidence_audit_20260703/status.txt
+status_short_end
+Python 3.10.20
+feature_table=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-13-nopost-feature-gated-adapter/experience_docx/experiment_logs/haze4k_v2_13_nopost_feature_gated_adapter_20260702/v213_n1_feature_rows_cloud_only.csv
+run_done rc=0 v214_n1r 2026-07-03T10:44:02+08:00
+V214_N1R_SCRIPT_OK
+completed COMPLETED_GATE_FAIL_LOCKED_TEST_UNTOUCHED 2026-07-03T10:44:02+08:00
+decision=N1R_RUNTIME_EVIDENCE_FAIL_INSUFFICIENT_NO_TRAINING
+no_training_launched=true
+locked_test_touched=false

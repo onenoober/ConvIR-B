@@ -1,0 +1,14 @@
+V214_N1R_GATE_FAIL
+{
+  "decision": "N1R_RUNTIME_EVIDENCE_FAIL_INSUFFICIENT_NO_TRAINING",
+  "locked_test_touched": false,
+  "pass": false,
+  "primary_metrics": {
+    "benefit_all_runtime_auc": 0.8118981438790163,
+    "benefit_hazy_runtime_auc": 0.7709093543755187,
+    "benefit_internal_auc": 0.8022388059701493,
+    "risk_all_runtime_auc": 0.8262374369046325,
+    "risk_hazy_runtime_auc": 0.798088426278381,
+    "risk_internal_auc": 0.8196160219050482
+  }
+}
