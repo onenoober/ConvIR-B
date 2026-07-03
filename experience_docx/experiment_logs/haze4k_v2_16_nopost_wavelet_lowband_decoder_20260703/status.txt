@@ -1,0 +1,4 @@
+route=haze4k-v2-16-nopost-wavelet-lowband-decoder
+state=PLANNED_T0_T1_ONLY
+locked_test_touched=false
+training_launched=false
