@@ -1,6 +1,6 @@
 # Haze4K v2.16 NoPost Wavelet Lowband Decoder
 
-Status: `COMPLETED_T2_PASS_TRAINING_BLOCKED_PENDING_REVIEW`
+Status: `WLDB_A_SCREEN_FAIL_STOP_NO_MORE_TRAINING`
 
 Runtime server: `convir-4090`
 
@@ -74,3 +74,39 @@ T2 decision:
 Conclusion: v2.16 passes the no-training feasibility diagnostics and contract
 identity gate. The next action is review before any WLDB-A training launch; T2
 does not by itself authorize training or locked-test use.
+
+## WLDB-A Screen
+
+Cloud run: `convir-4090`, `2026-07-03T16:22:46+08:00` to
+`2026-07-03T16:34:35+08:00`.
+
+Source commit: `0198474`.
+
+WLDB-A trained seed `3407` for `20` epochs on train-derived fold split:
+
+- train fold count: `1920`;
+- validation fold0 count: `480`;
+- trainable params: `2128`;
+- frozen official params: `8630665`;
+- locked Haze4K test: untouched.
+
+Decision: `WLDB_A_SCREEN_FAIL_STOP_NO_MORE_TRAINING`.
+
+No evaluated checkpoint passed the screen gate. Best by mean dPSNR was
+`model_5`, with:
+
+- mean dPSNR: `+0.081889`;
+- hard bottom25 dPSNR: `+0.105887`;
+- easy top25 dPSNR: `+0.020994`;
+- positive ratio: `0.662500`;
+- severe loss count: `67/480`;
+- strong-reference regressions: `48/120`.
+
+`model_5` passed mean/hard/easy/positive/strong-reference checks but failed the
+tail-safety gate (`severe_loss_count <= 12`). Later checkpoints reduced severe
+loss but also lost mean and hard gains, and still failed severe-loss limits.
+
+Conclusion: the lowband objective has real movement, but the current WLDB-A
+training form is not tail-safe. Per protocol, stop this screen without
+multi-seed expansion, longer training, locked-test use, or checkpoint
+promotion.
