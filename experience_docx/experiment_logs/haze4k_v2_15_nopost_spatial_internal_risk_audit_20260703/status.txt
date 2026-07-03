@@ -1,0 +1,25 @@
+planned N1S_ONLY_LOCKED_TEST_UNTOUCHED 2026-07-03
+run_start v215_n1s 2026-07-03T11:48:33+08:00
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-15-nopost-spatial-internal-risk-audit
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+locked_test_touched=false
+training_launched=false
+branch=codex/haze4k-v2-15-nopost-spatial-internal-risk-audit
+head=c11087f
+status_short_begin
+ M experience_docx/experiment_logs/haze4k_v2_15_nopost_spatial_internal_risk_audit_20260703/run_v215_n1s.sh
+ M experience_docx/experiment_logs/haze4k_v2_15_nopost_spatial_internal_risk_audit_20260703/status.txt
+status_short_end
+Python 3.10.20
+v213_feature_table=FOUND
+v214_predictions=FOUND
+s2_s3_feature_build_start 2026-07-03T11:48:33+08:00
+s2_s3_feature_build_done rc=0 2026-07-03T11:57:52+08:00
+s1_s4_oof_probe_start 2026-07-03T11:57:52+08:00
+s1_s4_oof_probe_done rc=0 2026-07-03T11:59:01+08:00
+V215_N1S_SCRIPT_OK
+run_done rc=0 v215_n1s 2026-07-03T11:59:01+08:00
+completed COMPLETED_GATE_FAIL_LOCKED_TEST_UNTOUCHED 2026-07-03T11:59:01+08:00
+decision=N1S_PARTIAL_INTERNAL_SIGNAL_NO_TRAINING
+no_training_launched=true
+locked_test_touched=false

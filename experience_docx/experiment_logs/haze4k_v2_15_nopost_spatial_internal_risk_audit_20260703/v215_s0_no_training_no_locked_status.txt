@@ -1,0 +1,2 @@
+locked_touched=false
+training_launched=false
