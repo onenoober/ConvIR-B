@@ -1,0 +1,27 @@
+{
+  "baseline": "B0_hazy_runtime_v214",
+  "best_group": "B5_internal_sensitivity",
+  "bootstrap_pr_p05": -0.08079005388712786,
+  "decision": "N1S_PARTIAL_INTERNAL_SIGNAL_NO_TRAINING",
+  "internal_sensitivity_gain_vs_scalar_pr": 7.287189951232786e-05,
+  "internal_spatial_gain_vs_scalar_pr": -0.0051872696645030025,
+  "locked_test_touched": false,
+  "pass": false,
+  "pr_delta": -0.017086434830573788,
+  "s1_summary": {
+    "all_runtime_top100_severe": 15,
+    "gained_false_positive_count": 49,
+    "gained_into_all_top100": 53,
+    "hazy_top100_severe": 19,
+    "lost_from_hazy_top100": 53,
+    "lost_severe_count": 8,
+    "top100_overlap": 47
+  },
+  "stable_units": 0,
+  "thresholds_better": 1,
+  "top100_count_delta": -6.0,
+  "top100_enrichment_delta": -2.1492537313432836,
+  "top50_enrichment_delta": -4.298507462686566,
+  "total_units": 15,
+  "training_launched": false
+}

@@ -1,0 +1,50 @@
+{
+  "B0_hazy_runtime_v214": {
+    "ece": 0.32951341770813214,
+    "mean_score": 0.3574300843747988,
+    "negative_mean_score": 0.3491267017110336,
+    "positive_mean_score": 0.6465613045921743
+  },
+  "B1_internal_scalar_v214": {
+    "ece": 0.29621141796806244,
+    "mean_score": 0.32412808463472903,
+    "negative_mean_score": 0.3149318846469838,
+    "positive_mean_score": 0.6443480036109919
+  },
+  "B2_all_scalar_v214": {
+    "ece": 0.2852954917097021,
+    "mean_score": 0.31321215837636873,
+    "negative_mean_score": 0.3035356222862504,
+    "positive_mean_score": 0.6501578105889988
+  },
+  "B3_internal_spatial": {
+    "ece": 0.18769981314331102,
+    "mean_score": 0.21561647980997767,
+    "negative_mean_score": 0.20713007986960696,
+    "positive_mean_score": 0.511120525494827
+  },
+  "B4_hazy_plus_internal_spatial": {
+    "ece": 0.1409970675489996,
+    "mean_score": 0.16891373421566627,
+    "negative_mean_score": 0.16097394812460364,
+    "positive_mean_score": 0.4453841961626684
+  },
+  "B5_internal_sensitivity": {
+    "ece": 0.21683151173413967,
+    "mean_score": 0.24474817840080632,
+    "negative_mean_score": 0.23650860316736116,
+    "positive_mean_score": 0.5316575667534574
+  },
+  "B6_spatial_plus_sensitivity": {
+    "ece": 0.15762991822378927,
+    "mean_score": 0.18554658489045592,
+    "negative_mean_score": 0.1782565840627471,
+    "positive_mean_score": 0.4393909420702262
+  },
+  "B7_all_runtime_spatial_sensitivity": {
+    "ece": 0.12213481794087189,
+    "mean_score": 0.15005148460753853,
+    "negative_mean_score": 0.1431960755699291,
+    "positive_mean_score": 0.3887629664693715
+  }
+}

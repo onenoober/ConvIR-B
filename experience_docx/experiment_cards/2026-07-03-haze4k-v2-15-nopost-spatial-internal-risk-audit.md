@@ -2,7 +2,7 @@
 
 Date: 2026-07-03
 
-Status: `PLANNED_N1S_ONLY_LOCKED_TEST_UNTOUCHED`
+Status: `COMPLETED_GATE_FAIL_LOCKED_TEST_UNTOUCHED`
 
 Branch: `codex/haze4k-v2-15-nopost-spatial-internal-risk-audit`
 
@@ -119,3 +119,65 @@ Durable script:
 Tmux session: `v215_n1s`
 
 Locked Haze4K test remains untouched.
+
+## Result
+
+Cloud run: `convir-4090`, `2026-07-03T11:48:33+08:00` to
+`2026-07-03T11:59:01+08:00`.
+
+Source commit: `c11087f`.
+
+Decision: `N1S_PARTIAL_INTERNAL_SIGNAL_NO_TRAINING`.
+
+S2/S3 feature build:
+
+- rows: `2400`;
+- spatial maps: `13`;
+- spatial feature columns: `1092`;
+- NaN values: `0`;
+- Inf values: `0`;
+- locked test touched: `false`;
+- training launched: `false`.
+
+S1 top-100 decomposition:
+
+- hazy-runtime top100 severe count: `19`;
+- all-runtime top100 severe count: `15`;
+- top100 overlap: `47`;
+- lost severe cases: `8`;
+- gained false-positive cases: `49`.
+
+S4 primary severe-risk metrics at `WD0375_dPSNR <= -0.2`:
+
+- baseline `B0_hazy_runtime_v214`: PR-AUC `0.149621`, ROC-AUC `0.798088`,
+  top50 enrichment `10.746269`, top100 enrichment `6.805970`, top100 severe
+  count `19`;
+- `B3_internal_spatial`: PR-AUC `0.127275`, ROC-AUC `0.783860`,
+  top100 enrichment `4.298507`, top100 severe count `12`;
+- `B5_internal_sensitivity`: PR-AUC `0.132535`, ROC-AUC `0.778525`,
+  top100 enrichment `4.656716`, top100 severe count `13`;
+- `B7_all_runtime_spatial_sensitivity`: PR-AUC `0.093532`, ROC-AUC
+  `0.728138`, top100 enrichment `4.298507`, top100 severe count `12`.
+
+Best candidate: `B5_internal_sensitivity`.
+
+Gate diagnostics:
+
+- primary PR-AUC delta vs hazy-runtime: `-0.017086`;
+- top100 enrichment delta vs hazy-runtime: `-2.149254`;
+- top100 severe-count delta vs hazy-runtime: `-6`;
+- top50 enrichment delta vs hazy-runtime: `-4.298507`;
+- bootstrap PR-AUC p05: `-0.080790`;
+- thresholds better: `1/3`;
+- stable fold-seed units: `0/15`;
+- internal spatial gain vs scalar PR-AUC: `-0.005187`;
+- internal sensitivity gain vs scalar PR-AUC: `0.000073`.
+
+Interpretation: v2.15 found a tiny sensitivity-vs-scalar signal, but not enough
+to improve rare severe-risk top-tail ranking over hazy-runtime. Spatial dense
+maps and feature-space sensitivity do not authorize NoPost training in this
+form. N3/N4 remain blocked.
+
+Raw S2/S3 feature tables are cloud-only because they are large intermediate
+feature artifacts. Synced GitHub evidence keeps manifests, quality reports,
+S1/S4 aggregates, predictions, curves, bootstrap, and closeout decisions.

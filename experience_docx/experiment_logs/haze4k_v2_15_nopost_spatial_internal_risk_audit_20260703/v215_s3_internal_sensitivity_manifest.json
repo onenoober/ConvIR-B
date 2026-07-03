@@ -1,0 +1,61 @@
+{
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "contracts": {
+    "locked_test_touched": false,
+    "training_launched": false,
+    "uses_a0_output_diff": false,
+    "uses_rgb_output_diff": false,
+    "uses_teacher_output_diff": false
+  },
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "feature_table": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-13-nopost-feature-gated-adapter/experience_docx/experiment_logs/haze4k_v2_13_nopost_feature_gated_adapter_20260702/v213_n1_feature_rows_cloud_only.csv",
+  "feature_table_sha256": "466703ab6a9c907fd3fd4128fde138f120331832d459c2738b1955636e9b28fa",
+  "outputs": {
+    "fam_response": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-15-nopost-spatial-internal-risk-audit/experience_docx/experiment_logs/haze4k_v2_15_nopost_spatial_internal_risk_audit_20260703/v215_s3_fam_response_features.csv",
+    "jitter_consistency": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-15-nopost-spatial-internal-risk-audit/experience_docx/experiment_logs/haze4k_v2_15_nopost_spatial_internal_risk_audit_20260703/v215_s3_feature_jitter_consistency.csv",
+    "skip_disagreement": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-15-nopost-spatial-internal-risk-audit/experience_docx/experiment_logs/haze4k_v2_15_nopost_spatial_internal_risk_audit_20260703/v215_s3_skip_merge_disagreement.csv",
+    "spatial": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-15-nopost-spatial-internal-risk-audit/experience_docx/experiment_logs/haze4k_v2_15_nopost_spatial_internal_risk_audit_20260703/v215_s2_spatial_feature_rows.csv"
+  },
+  "partial_load": {
+    "loaded_count": 602,
+    "missing_new_modules": [
+      "nopost_adapter.action.detail_head.0.bias",
+      "nopost_adapter.action.detail_head.0.weight",
+      "nopost_adapter.action.detail_head.2.bias",
+      "nopost_adapter.action.detail_head.2.weight",
+      "nopost_adapter.action.low_head.0.bias",
+      "nopost_adapter.action.low_head.0.weight",
+      "nopost_adapter.action.low_head.2.bias",
+      "nopost_adapter.action.low_head.2.weight",
+      "nopost_adapter.context.encoder.0.bias",
+      "nopost_adapter.context.encoder.0.weight",
+      "nopost_adapter.context.encoder.2.bias",
+      "nopost_adapter.context.encoder.2.weight",
+      "nopost_adapter.gate.net.0.bias",
+      "nopost_adapter.gate.net.0.weight",
+      "nopost_adapter.gate.net.2.bias",
+      "nopost_adapter.gate.net.2.weight",
+      "nopost_adapter.zero_proj.bias",
+      "nopost_adapter.zero_proj.weight"
+    ],
+    "shape_mismatch": [],
+    "unexpected": []
+  },
+  "route": "haze4k-v2-15-nopost-spatial-internal-risk-audit",
+  "spatial_maps": [
+    "hazy_brightness",
+    "hazy_dark",
+    "hazy_saturation",
+    "hazy_gradient",
+    "hazy_local_variance",
+    "hazy_low_haze_proxy",
+    "final_norm",
+    "final_local_variance",
+    "final_detail_energy",
+    "res1_norm",
+    "res2_norm",
+    "scm2_norm",
+    "scm4_norm"
+  ]
+}
