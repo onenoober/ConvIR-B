@@ -843,3 +843,37 @@ PY
 Inside cloud monitor/audit helpers, use the already-declared explicit runtime
 such as `/root/miniconda3/envs/convir-cu128/bin/python` or `"$PY"` for all
 inline Python snippets as well; do not assume `python3` exists on PATH.
+
+## 2026-07-03 `convir-4090` GitHub host-key clone failure
+
+Observed while launching the v2.18 NoPost tail-aware lowband policy route on
+`convir-4090`: direct cloud `git clone` from GitHub failed before checkout with
+host-key verification. This was an infrastructure/preflight transport failure,
+not a route, code, training, eval, or scientific gate failure.
+
+Invalid form:
+
+```bash
+git clone git@github.com:onenoober/ConvIR-B.git \
+  /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-18-nopost-tailaware-lowband-policy
+```
+
+Failure class:
+
+```text
+Host key verification failed
+```
+
+Corrected form:
+
+```bash
+git bundle create /tmp/v218.bundle github/codex/haze4k-v2-18-nopost-tailaware-lowband-policy
+scp /tmp/v218.bundle convir-4090:/sda/home/wangyuxin/ConvIR-B/repos/
+ssh convir-4090 'git clone /sda/home/wangyuxin/ConvIR-B/repos/v218.bundle /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-18-nopost-tailaware-lowband-policy'
+```
+
+When a cloud GitHub clone fails only because the host key is unavailable, use a
+local Git bundle or repair known_hosts explicitly. Record the failure as
+`INFRA_PREFLIGHT_TRANSPORT`, verify the cloned commit on cloud, and continue
+only after the branch/commit, workspace, durable scripts, status files, and
+explicit cloud Python path are checked.

@@ -1,0 +1,7 @@
+checkpoint,strong_or_easy_count,strong_or_easy_regression_count,preserve_hinge_active_count,preserve_hinge_coverage_on_regressions,positive_preserve_hinge_activation_rate,mean_preserve_hinge
+Best,120,33,33,1.0,0.0,0.007048522631327311
+Final,120,42,42,1.0,0.0,0.013509484926859537
+model_10,120,40,40,1.0,0.0,0.013811683654785157
+model_15,120,32,32,1.0,0.0,0.007250035603841146
+model_20,120,42,42,1.0,0.0,0.013509484926859537
+model_5,120,48,48,1.0,0.0,0.03282336711883545

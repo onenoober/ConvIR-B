@@ -1,0 +1,19 @@
+{
+  "identity_rows": [
+    {
+      "identity_pass_1e-6": true,
+      "image_count": 8,
+      "max_abs_vs_A0": 0.0,
+      "mean_abs_vs_A0": 0.0,
+      "policy_mode": "global"
+    },
+    {
+      "identity_pass_1e-6": true,
+      "image_count": 8,
+      "max_abs_vs_A0": 0.0,
+      "mean_abs_vs_A0": 0.0,
+      "policy_mode": "spatial"
+    }
+  ],
+  "locked_test_touched": false
+}

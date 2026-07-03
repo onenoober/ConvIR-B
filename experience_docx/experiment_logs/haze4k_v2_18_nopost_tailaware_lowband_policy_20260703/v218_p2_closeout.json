@@ -1,0 +1,124 @@
+{
+  "decision": "P2_PASS_TAIL_PRESERVE_REPLAY_COVERS_WLDB_A_FAILURE",
+  "locked_test_touched": false,
+  "p2_pass": true,
+  "preserve_report": [
+    {
+      "checkpoint": "Best",
+      "mean_preserve_hinge": 0.007048522631327311,
+      "positive_preserve_hinge_activation_rate": 0.0,
+      "preserve_hinge_active_count": 33,
+      "preserve_hinge_coverage_on_regressions": 1.0,
+      "strong_or_easy_count": 120,
+      "strong_or_easy_regression_count": 33
+    },
+    {
+      "checkpoint": "Final",
+      "mean_preserve_hinge": 0.013509484926859537,
+      "positive_preserve_hinge_activation_rate": 0.0,
+      "preserve_hinge_active_count": 42,
+      "preserve_hinge_coverage_on_regressions": 1.0,
+      "strong_or_easy_count": 120,
+      "strong_or_easy_regression_count": 42
+    },
+    {
+      "checkpoint": "model_10",
+      "mean_preserve_hinge": 0.013811683654785157,
+      "positive_preserve_hinge_activation_rate": 0.0,
+      "preserve_hinge_active_count": 40,
+      "preserve_hinge_coverage_on_regressions": 1.0,
+      "strong_or_easy_count": 120,
+      "strong_or_easy_regression_count": 40
+    },
+    {
+      "checkpoint": "model_15",
+      "mean_preserve_hinge": 0.007250035603841146,
+      "positive_preserve_hinge_activation_rate": 0.0,
+      "preserve_hinge_active_count": 32,
+      "preserve_hinge_coverage_on_regressions": 1.0,
+      "strong_or_easy_count": 120,
+      "strong_or_easy_regression_count": 32
+    },
+    {
+      "checkpoint": "model_20",
+      "mean_preserve_hinge": 0.013509484926859537,
+      "positive_preserve_hinge_activation_rate": 0.0,
+      "preserve_hinge_active_count": 42,
+      "preserve_hinge_coverage_on_regressions": 1.0,
+      "strong_or_easy_count": 120,
+      "strong_or_easy_regression_count": 42
+    },
+    {
+      "checkpoint": "model_5",
+      "mean_preserve_hinge": 0.03282336711883545,
+      "positive_preserve_hinge_activation_rate": 0.0,
+      "preserve_hinge_active_count": 48,
+      "preserve_hinge_coverage_on_regressions": 1.0,
+      "strong_or_easy_count": 120,
+      "strong_or_easy_regression_count": 48
+    }
+  ],
+  "tail_report": [
+    {
+      "checkpoint": "Best",
+      "count": 480,
+      "mean_severe_hinge": 0.0034008010228474927,
+      "mean_tail_hinge": 0.006681186358133953,
+      "positive_tail_hinge_activation_rate": 0.0,
+      "severe_count": 24,
+      "tail_hinge_active_count": 42,
+      "tail_hinge_coverage_on_severe": 1.0
+    },
+    {
+      "checkpoint": "Final",
+      "count": 480,
+      "mean_severe_hinge": 0.0096312149365743,
+      "mean_tail_hinge": 0.014709936777750652,
+      "positive_tail_hinge_activation_rate": 0.0,
+      "severe_count": 39,
+      "tail_hinge_active_count": 56,
+      "tail_hinge_coverage_on_severe": 1.0
+    },
+    {
+      "checkpoint": "model_10",
+      "count": 480,
+      "mean_severe_hinge": 0.008859364986419677,
+      "mean_tail_hinge": 0.013873679637908936,
+      "positive_tail_hinge_activation_rate": 0.0,
+      "severe_count": 38,
+      "tail_hinge_active_count": 61,
+      "tail_hinge_coverage_on_severe": 1.0
+    },
+    {
+      "checkpoint": "model_15",
+      "count": 480,
+      "mean_severe_hinge": 0.003668289979298909,
+      "mean_tail_hinge": 0.007306238015492758,
+      "positive_tail_hinge_activation_rate": 0.0,
+      "severe_count": 26,
+      "tail_hinge_active_count": 45,
+      "tail_hinge_coverage_on_severe": 1.0
+    },
+    {
+      "checkpoint": "model_20",
+      "count": 480,
+      "mean_severe_hinge": 0.0096312149365743,
+      "mean_tail_hinge": 0.014709936777750652,
+      "positive_tail_hinge_activation_rate": 0.0,
+      "severe_count": 39,
+      "tail_hinge_active_count": 56,
+      "tail_hinge_coverage_on_severe": 1.0
+    },
+    {
+      "checkpoint": "model_5",
+      "count": 480,
+      "mean_severe_hinge": 0.030996294021606443,
+      "mean_tail_hinge": 0.03921642939249675,
+      "positive_tail_hinge_activation_rate": 0.0,
+      "severe_count": 67,
+      "tail_hinge_active_count": 92,
+      "tail_hinge_coverage_on_severe": 1.0
+    }
+  ],
+  "training_launched": false
+}

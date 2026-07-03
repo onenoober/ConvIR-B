@@ -1,0 +1,12 @@
+v2.18 forbidden symbol scan
+source=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-18-nopost-tailaware-lowband-policy/Dehazing/ITS/models/NoPostLowbandPolicyConvIR.py
+forbidden_hit_count=0
+{
+  "A0_symbol": [],
+  "WD0375_symbol": [],
+  "WDMamba_symbol": [],
+  "expert_symbol": [],
+  "output_subtraction_hint": [],
+  "rgb_post_correction_hint": [],
+  "teacher_symbol": []
+}

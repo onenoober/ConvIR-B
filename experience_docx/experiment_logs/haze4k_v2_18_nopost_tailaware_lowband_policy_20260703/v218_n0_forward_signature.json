@@ -1,0 +1,6 @@
+{
+  "accepts_only_self_and_x": true,
+  "class": "NoPostLowbandPolicyConvIR",
+  "forward_signature": "(self, x)",
+  "locked_test_touched": false
+}

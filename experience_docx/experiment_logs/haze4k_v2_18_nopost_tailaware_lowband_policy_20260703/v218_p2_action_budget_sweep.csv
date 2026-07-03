@@ -1,0 +1,9 @@
+threshold_label,threshold_value,identity_penalized,model5_activation_rate,model5_severe_coverage,safe_oracle_overactivation_rate,predicted_mlp_overactivation_rate,passes_p3_threshold_gate
+oracle_p25,0.0009711986931506544,False,1.0,1.0,0.75,0.6066666666666667,False
+oracle_p50,0.0015440693823620677,False,1.0,1.0,0.5,0.36,True
+oracle_p75,0.002648102235980332,False,1.0,1.0,0.25,0.16291666666666665,True
+oracle_p90,0.004460004204884171,False,0.0,0.0,0.1,0.06583333333333333,False
+predicted_mlp_p25,0.0007614336209371686,False,1.0,1.0,0.8579166666666667,0.75,False
+predicted_mlp_p50,0.0011646693455986679,False,1.0,1.0,0.6583333333333333,0.5,False
+predicted_mlp_p75,0.0020032426109537482,False,1.0,1.0,0.37333333333333335,0.25,True
+predicted_mlp_p90,0.0035532922949641937,False,0.0,0.0,0.15041666666666667,0.1,False

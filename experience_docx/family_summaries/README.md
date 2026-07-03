@@ -25,6 +25,7 @@ or logs; they summarize family-level conclusions and reopening conditions.
 | PFD/RHFD preservation | [summary](pfd_rhfd_family_summary.md) | Diagnostic only; preservation improved but hard-gain gates failed. |
 | APDR output residual/action-bank | [summary](apdr_family_summary.md) | Broad output-residual/coefficient-mapping forms stopped; safe-subset ideas require fixed-code OOF/held-out evidence. |
 | DPGA in-network prior adapters | [summary](dpga_family_summary.md) | Active diagnostic family, not promotion-ready. |
+| NoPost feature lowband routes | [summary](nopost_lowband_family_summary.md) | WLDB-A and v2.18 global pooled policy are closed; spatial NoPost lowband remains open. |
 
 ## Evidence Strength Reminder
 
