@@ -173,84 +173,51 @@ printf 'LOCAL_DONE\n'
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
 
-2026-06-16 recurrence on `convir-4090`:
 
-Avoid `printf` format strings that begin with dashes in monitor loops:
+### Cloud Python and evidence copy assumptions
 
-```bash
-printf '--- %s ---\n' "$(basename "$f")"
-printf '---MID---\n'
-```
+2026-06-10 recurrence:
 
-Failure mode:
-
-- Bash treated the leading `---` in the format string as an option;
-- the read-only monitor exited before printing its success marker.
-
-Corrected forms:
+Avoid assuming `python3` exists on `dehaze1` outside an activated environment:
 
 ```bash
-printf '%s\n' "--- $(basename "$f") ---"
-printf '%s\n' 'MID_BEGIN'
-```
-
-2026-06-16 recurrence on `convir-4090`:
-
-Avoid assuming `python` exists on the remote PATH during audits:
-
-```bash
-python - <<'PY'
-...
-PY
-```
-
-Failure mode:
-
-- `python: command not found` on the remote shell, even though the project
-  runtime Python exists.
-
-Corrected form:
-
-```bash
-PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
-"$PY" - <<'PY'
-...
-PY
-```
-
-2026-06-16 recurrence:
-
-Avoid putting a long `bash -lc '...'` body inside another single-quoted SSH
-command when the body itself contains command substitutions, quotes, and
-multi-line shell code:
-
-```powershell
-$script = @'
-set -euo pipefail
-ssh -n convir-4090 'bash -lc '\''... "$(date)" ...'\'''
-'@
+ssh dehaze1 'cd /root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor && python3 - <<"PY"\nprint("probe")\nPY'
 ```
 
 Failure mode observed:
 
-- the nested single-quote boundary closed at the wrong layer;
-- WSL Bash received an unterminated command and returned
-  `unexpected EOF while looking for matching \`''`;
-- the remote audit never executed.
+- `/tmp/cloud_py310_audit.sh: line 25: python3: command not found`;
+- the cloud audit stopped before writing the code manifest.
 
 Corrected form:
 
-```powershell
-$script = @'
-set -euo pipefail
-ssh convir-4090 'bash -s' <<'REMOTE'
-set -euo pipefail
-printf 'REMOTE_TIME=%s\n' "$(date --iso-8601=seconds)"
-printf 'REMOTE_AUDIT_OK\n'
-REMOTE
-printf 'LOCAL_REMOTE_AUDIT_OK\n'
-'@
-$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```bash
+PY=/root/miniconda3/envs/py310/bin/python
+ssh dehaze1 "cd /root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor && $PY - <<'PY'
+print('probe')
+PY"
+```
+
+For project runtime commands, continue to prefer
+`/root/miniconda3/envs/convir-cu128/bin/python`.
+
+2026-06-10 recurrence:
+
+Avoid this scp form for copying the contents of a remote directory back into an
+existing local evidence directory:
+
+```bash
+scp -r dehaze1:/tmp/cloud_py310_environment_20260610/. experience_docx/experiment_logs/cloud_py310_environment_20260610/
+```
+
+Failure mode observed:
+
+- `error: unexpected filename: .`.
+
+Corrected form:
+
+```bash
+rsync -a dehaze1:/tmp/cloud_py310_environment_20260610/ experience_docx/experiment_logs/cloud_py310_environment_20260610/
 ```
 
 ### PowerShell here-string to WSL heredoc without CR stripping
@@ -304,36 +271,6 @@ printf 'LOCAL_WSL_CHECK_OK\n'
 
 For nested SSH scripts, use a quoted heredoc after CR stripping:
 
-2026-06-16 recurrence:
-
-Avoid generating evidence docs through an unquoted or quote-stripped heredoc
-when the Markdown body contains literal shell variables such as `$root`:
-
-```bash
-cat > file.md <<MD
-... `$root` ...
-MD
-```
-
-Failure mode observed:
-
-- the heredoc delimiter was not preserved as a quoted delimiter at the effective
-  shell layer;
-- Bash expanded `$root` while `set -u` was active;
-- the command failed with `root: unbound variable` before the evidence docs were
-  rewritten.
-
-Corrected forms:
-
-```bash
-cat > file.md <<'MD'
-... `$root` ...
-MD
-```
-
-or prefer `apply_patch` for evidence-doc rewrites that contain literal shell
-syntax.
-
 ```powershell
 $script = @'
 set -euo pipefail
@@ -366,6 +303,37 @@ ssh dehaze1 '/root/miniconda3/envs/convir-cu128/bin/python script.py'
 ```
 
 or inside a remote script:
+
+2026-07-03 recurrence on `convir-4090`:
+
+Avoid read-only monitor snippets that call bare `python` for inline evidence
+parsing:
+
+```bash
+ssh convir-4090 'python - <<PY
+print("read evidence")
+PY'
+```
+
+Failure mode observed:
+
+- `python: command not found` on `convir-4090`;
+- the monitor command failed before its final success marker;
+- the cloud experiment was unaffected because durable scripts used the explicit
+  environment path.
+
+Corrected form:
+
+```bash
+PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+ssh convir-4090 "$PY - <<'PY'
+print('read evidence')
+PY"
+```
+
+Use `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python` for
+`convir-4090` runtime scripts and inline evidence parsing unless the route card
+records a different cloud environment.
 
 2026-06-06 recurrence:
 
@@ -521,41 +489,6 @@ Corrected form for read-only evidence checks:
 git config --global --add safe.directory /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue
 git -C /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue branch --show-current
 git -C /root/autodl-tmp/workspace/ConvIR-B-v1-8-execution-queue rev-parse --short HEAD
-```
-
-### Rsyncing a local Git worktree snapshot to the cloud
-
-Avoid copying the `.git` file from a local Git worktree into a cloud runtime
-snapshot with `rsync`. A worktree `.git` file points to the local checkout's
-gitdir, which is not valid on `convir-4090`:
-
-```bash
-rsync -a --delete --exclude='.git/' ./ convir-4090:/sda/home/.../ConvIR-B-v27-nhhaze-transfer/
-```
-
-Failure mode observed on 2026-06-16:
-
-- the remote snapshot contained a `.git` pointer to
-  `/home/ubuntu/workspace/ConvIR-B/.git/worktrees/...`;
-- `git branch`, `git rev-parse`, and `git status` failed on the cloud before
-  the run could launch.
-
-Corrected forms:
-
-```bash
-rsync -a --delete --exclude='.git' --exclude='.git/' ./ convir-4090:/sda/home/.../ConvIR-B-v27-nhhaze-transfer/
-ssh convir-4090 'rm -f /sda/home/.../ConvIR-B-v27-nhhaze-transfer/.git'
-```
-
-Runtime scripts that can run from rsync snapshots should record an explicit
-source commit string and tolerate missing Git metadata:
-
-```bash
-if git -C "$ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  git -C "$ROOT" rev-parse HEAD
-else
-  printf 'commit=<source_commit_from_local_snapshot>\n'
-fi
 ```
 
 ### Running repo-root tools that import `Dehazing/ITS`
@@ -910,211 +843,3 @@ PY
 Inside cloud monitor/audit helpers, use the already-declared explicit runtime
 such as `/root/miniconda3/envs/convir-cu128/bin/python` or `"$PY"` for all
 inline Python snippets as well; do not assume `python3` exists on PATH.
-
-## 2026-06-10 Dash-prefixed printf recurrence
-
-Avoid using Bash `printf` with a format string that begins with dashes when
-printing section separators from PowerShell-to-WSL or SSH wrappers:
-
-```bash
-printf '--- status ---\n'
-```
-
-Failure mode observed:
-
-- Bash treated the leading `---` format as an invalid option in the wrapped
-  command and returned `printf: --: invalid option`;
-- the remote audit stopped before printing the intended status/summary block.
-
-Corrected forms:
-
-```bash
-printf '%s\n' '--- status ---'
-# or
-printf -- '--- status ---\n'
-```
-
-## 2026-06-10 SSH tar stream must detach stdin
-
-Avoid streaming remote tar output through `ssh` from a WSL script that is itself
-being piped into Bash without detaching SSH stdin:
-
-```bash
-ssh convir-5090 "cd '$REMOTE_EVID' && tar -cf - ." | tar -C "$DEST" -xf -
-find "$DEST" -type f
-printf 'EVIDENCE_TAR_SYNC_OK\n'
-```
-
-Failure mode observed:
-
-- the tar payload copied successfully, but `ssh` consumed the remaining wrapper
-  script body from stdin;
-- the post-copy `find` and success marker did not execute, making the command
-  look like a silent or incomplete sync.
-
-Corrected form for remote commands that do not intentionally receive stdin:
-
-```bash
-ssh -n convir-5090 "cd '$REMOTE_EVID' && tar -cf - ." | tar -C "$DEST" -xf -
-find "$DEST" -type f
-printf 'EVIDENCE_TAR_SYNC_OK\n'
-```
-
-## 2026-06-15 PowerShell-to-WSL variable expansion recurrence
-
-Avoid passing Bash variables such as `$d` through a PowerShell double-quoted
-`wsl ... bash -lc` command:
-
-```powershell
-wsl -d Ubuntu-22.04 -- bash -lc 'for d in /path/a /path/b; do echo "## $d"; git -C "$d" status; done'
-```
-
-Failure mode observed:
-
-- PowerShell expanded `$d` before WSL Bash received the command;
-- Bash received `git -C  ...` and the loop ended with a syntax error near
-  `done`.
-
-Corrected form:
-
-```powershell
-$script = @'
-set -euo pipefail
-for d in /path/a /path/b; do
-  echo "## $d"
-  git -C "$d" status --short --branch
-done
-printf 'WORKTREE_STATUS_OK\n'
-'@
-$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
-```
-
-## 2026-06-15 WSL rg resolution and regex pipe recurrence
-
-Avoid relying on `rg` from a compact PowerShell-to-WSL one-liner when WSL may
-resolve the Windows App path first and the search pattern contains `|`:
-
-```powershell
-wsl -d Ubuntu-22.04 -- bash -lc 'rg -n "C11|C12|WD0375" experience_docx/EXPERIMENT_INDEX.md'
-```
-
-Failure mode observed:
-
-- WSL resolved `rg` to the Windows packaged Codex app path and failed with a
-  permission error;
-- the regex pipe fragments were then interpreted as shell commands.
-
-Corrected form:
-
-```powershell
-$script = @'
-set -euo pipefail
-cd /home/ubuntu/workspace/ConvIR-B-c11-main-sync
-grep -En 'C11|C12|WD0375' experience_docx/EXPERIMENT_INDEX.md || true
-printf 'DOC_SEARCH_OK\n'
-'@
-$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
-```
-
-## 2026-06-15 Nested PowerShell here-string delimiter recurrence
-
-Avoid placing a literal nested PowerShell here-string delimiter such as `@'`
-inside a surrounding PowerShell `@' ... '@` script body:
-
-```powershell
-$script = @'
-cat >> file.md <<'EOF'
-Corrected form:
-$script = @'
-...
-'@
-EOF
-'@
-$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
-```
-
-Failure mode observed:
-
-- PowerShell closed the outer here-string at the nested `@'`;
-- the remaining Markdown text was parsed as PowerShell and failed before WSL
-  received the intended script.
-
-Corrected forms:
-
-```text
-Use apply_patch for local documentation edits.
-```
-
-or choose an outer here-string style that cannot be closed by the literal
-content being written, then still pipe through `tr -d '\r' | bash`.
-
-## 2026-06-15 Regex audit one-liners across shell layers
-
-Avoid compact audit commands that embed parenthesized extended regexes inside a
-PowerShell-to-WSL one-liner:
-
-```powershell
-wsl -d Ubuntu-22.04 -- bash -lc 'if git diff --cached --name-only | grep -E "^(Dehazing/|models/)"; then exit 1; fi'
-```
-
-Failure mode observed:
-
-- nested quoting was transformed before WSL Bash saw the intended command;
-- Bash reported a syntax error near `(`.
-
-Corrected form:
-
-```powershell
-$script = @'
-set -euo pipefail
-cd /home/ubuntu/workspace/ConvIR-B-c11-main-sync
-names=$(mktemp)
-git diff --cached --name-only > "$names"
-if grep -E '^(Dehazing/|models/)' "$names"; then
-  echo FORBIDDEN_CODE_PATH
-  exit 1
-fi
-rm -f "$names"
-printf 'AUDIT_OK\n'
-'@
-$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
-```
-
-## 2026-06-27 Backtick patterns in nested shell grep
-
-Avoid passing grep patterns containing literal Markdown backticks through a
-PowerShell here-string into WSL Bash when the command itself also uses shell
-quotes:
-
-```powershell
-$script = @'
-grep -n "commit \`e2c8526\|commit \`a9def38" experience_docx/EXPERIMENT_INDEX.md
-'@
-$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
-```
-
-Failure mode observed during branch cleanup:
-
-- the quote/backtick combination reached Bash in an unterminated form;
-- Bash exited with `unexpected EOF while looking for matching \`\`` before the
-  document audit ran.
-
-Corrected form: avoid shell regex for these patterns and use a short Python
-literal-string scan instead:
-
-```powershell
-$script = @'
-set -euo pipefail
-cd /home/ubuntu/workspace/ConvIR-B-branch-cleanup-20260627
-python3 - <<'PY'
-from pathlib import Path
-text = Path("experience_docx/EXPERIMENT_INDEX.md").read_text()
-for needle in ["commit `e2c8526`", "commit `a9def38`"]:
-    for i, line in enumerate(text.splitlines(), 1):
-        if needle in line:
-            print(f"{i}:{line}")
-PY
-printf 'DOC_LITERAL_SCAN_OK\n'
-'@
-$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
-```

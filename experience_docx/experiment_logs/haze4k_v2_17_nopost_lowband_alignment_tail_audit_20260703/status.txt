@@ -1,0 +1,23 @@
+v217_r1_state=RUNNING_AUDIT
+v217_r1_start 2026-07-03T17:21:53+08:00
+locked_test_touched=false
+v217_r1_prelaunch_fix copied_v216_cloud_checkpoints 2026-07-03T17:23:10+08:00
+v217_r1_previous_launch_failed_preflight_missing_checkpoint
+v217_r1_state=RUNNING_AUDIT
+v217_r1_start 2026-07-03T17:23:23+08:00
+locked_test_touched=false
+v217_r1_done rc=0 2026-07-03T17:30:49+08:00
+v217_r1_state=COMPLETED_AUDIT
+V217_R1_OK
+v217_r2_state=RUNNING_AUDIT
+v217_r2_start 2026-07-03T17:32:27+08:00
+locked_test_touched=false
+v217_r2_done rc=0 2026-07-03T18:27:51+08:00
+v217_r2_state=COMPLETED_AUDIT
+V217_R2_OK
+v217_r3_state=RUNNING_AUDIT
+v217_r3_start 2026-07-03T18:29:09+08:00
+locked_test_touched=false
+v217_r3_done rc=0 2026-07-03T18:29:09+08:00
+v217_r3_state=COMPLETED_AUDIT
+V217_R3_OK
