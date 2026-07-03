@@ -1,0 +1,43 @@
+{
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "locked_test_touched": false,
+  "partial_load_rule": "official keys load; only nopost_lowband_policy.* may be missing",
+  "policy_param_groups": [
+    {
+      "missing_key_count": 6,
+      "missing_keys": [
+        "nopost_lowband_policy.policy.context.1.weight",
+        "nopost_lowband_policy.policy.context.1.bias",
+        "nopost_lowband_policy.policy.context.3.weight",
+        "nopost_lowband_policy.policy.context.3.bias",
+        "nopost_lowband_policy.policy.project.weight",
+        "nopost_lowband_policy.policy.project.bias"
+      ],
+      "missing_keys_all_new_prefix": true,
+      "new_nopost_lowband_policy_params": 3168,
+      "official_params_loaded_or_reused": 8630665,
+      "policy_mode": "global",
+      "total_params": 8633833,
+      "unexpected_key_count": 0,
+      "unexpected_keys": []
+    },
+    {
+      "missing_key_count": 6,
+      "missing_keys": [
+        "nopost_lowband_policy.policy.context.0.weight",
+        "nopost_lowband_policy.policy.context.0.bias",
+        "nopost_lowband_policy.policy.context.2.weight",
+        "nopost_lowband_policy.policy.context.2.bias",
+        "nopost_lowband_policy.policy.project.weight",
+        "nopost_lowband_policy.policy.project.bias"
+      ],
+      "missing_keys_all_new_prefix": true,
+      "new_nopost_lowband_policy_params": 19552,
+      "official_params_loaded_or_reused": 8630665,
+      "policy_mode": "spatial",
+      "total_params": 8650217,
+      "unexpected_key_count": 0,
+      "unexpected_keys": []
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "decision": "V218_PAUSE_P1_GLOBAL_POLICY_LEARNABILITY_FAIL",
+  "locked_test_touched": false,
+  "p1_decision": "P1_FAIL_O1_GLOBAL_ACTION_NOT_SAFELY_LEARNED_BY_POOLED_LL_POLICY",
+  "p2_decision": "P2_PASS_TAIL_PRESERVE_REPLAY_COVERS_WLDB_A_FAILURE",
+  "p3_decision": "P3_PASS_NONZERO_ACTION_BUDGET_CALIBRATION_FOUND",
+  "training_launched": false
+}

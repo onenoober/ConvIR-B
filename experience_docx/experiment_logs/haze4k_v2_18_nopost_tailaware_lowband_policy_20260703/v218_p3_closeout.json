@@ -1,0 +1,38 @@
+{
+  "decision": "P3_PASS_NONZERO_ACTION_BUDGET_CALIBRATION_FOUND",
+  "locked_test_touched": false,
+  "p3_pass": true,
+  "passing_thresholds": [
+    {
+      "identity_penalized": false,
+      "model5_activation_rate": 1.0,
+      "model5_severe_coverage": 1.0,
+      "passes_p3_threshold_gate": true,
+      "predicted_mlp_overactivation_rate": 0.36,
+      "safe_oracle_overactivation_rate": 0.5,
+      "threshold_label": "oracle_p50",
+      "threshold_value": 0.0015440693823620677
+    },
+    {
+      "identity_penalized": false,
+      "model5_activation_rate": 1.0,
+      "model5_severe_coverage": 1.0,
+      "passes_p3_threshold_gate": true,
+      "predicted_mlp_overactivation_rate": 0.16291666666666665,
+      "safe_oracle_overactivation_rate": 0.25,
+      "threshold_label": "oracle_p75",
+      "threshold_value": 0.002648102235980332
+    },
+    {
+      "identity_penalized": false,
+      "model5_activation_rate": 1.0,
+      "model5_severe_coverage": 1.0,
+      "passes_p3_threshold_gate": true,
+      "predicted_mlp_overactivation_rate": 0.25,
+      "safe_oracle_overactivation_rate": 0.37333333333333335,
+      "threshold_label": "predicted_mlp_p75",
+      "threshold_value": 0.0020032426109537482
+    }
+  ],
+  "training_launched": false
+}

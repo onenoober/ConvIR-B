@@ -2,7 +2,7 @@
 
 Date: 2026-07-03
 
-Status: `PLANNED`
+Status: `COMPLETED_GATE_FAIL_TRAINING_PAUSED_P1_GLOBAL_POLICY_LEARNABILITY_FAIL`
 
 Branch: `codex/haze4k-v2-18-nopost-tailaware-lowband-policy`
 
@@ -148,3 +148,64 @@ fold-level reports, top-tail manifests, compact per-image replay/loss rows, and
 decision closeouts may be committed if they remain text-only and modest. Raw
 feature tensors, target-vector caches, checkpoints, images, arrays, datasets,
 and archives remain cloud/local artifacts and are not committed by default.
+
+## Result
+
+Cloud run: `convir-4090`, `2026-07-03T21:42:04+08:00` to
+`2026-07-03T21:55:06+08:00`.
+
+Source commits:
+
+- `c675742`: initial v2.18 route, model, and audit scripts.
+- `8b55585`: global LL delta broadcast fix after P4 engineering preflight
+  failure.
+
+P4 contract/identity passed after the fix:
+
+- decision: `P4_PASS_CONTRACT_IDENTITY_SOURCE_CLEAN`;
+- forbidden symbol hits: `0`;
+- forward signature: `(self, x)`;
+- zero-init max_abs_vs_A0: `0.0` for global and spatial policy modes;
+- new params: global `3168`, spatial `19552`;
+- partial-load missing keys are only `nopost_lowband_policy.*`;
+- locked Haze4K untouched.
+
+P1 O1 action learnability failed:
+
+- decision:
+  `P1_FAIL_O1_GLOBAL_ACTION_NOT_SAFELY_LEARNED_BY_POOLED_LL_POLICY`;
+- mean/hard/easy dPSNR:
+  `+0.263178/+0.859418/-0.183929`;
+- p05/CVaR5:
+  `-1.164642/-2.050251`;
+- severe:
+  `568/2400` (`0.236667`);
+- strong-reference regressions:
+  `303/600`;
+- positive ratio:
+  `0.592083`;
+- control gap vs shuffled:
+  `+0.308958`.
+
+P2/P3 passed:
+
+- P2 decision:
+  `P2_PASS_TAIL_PRESERVE_REPLAY_COVERS_WLDB_A_FAILURE`;
+- v2.16 `model_5` severe coverage by tail hinge:
+  `1.0`;
+- v2.16 `model_5` strong/easy regression coverage by preserve hinge:
+  `1.0`;
+- P3 decision:
+  `P3_PASS_NONZERO_ACTION_BUDGET_CALIBRATION_FOUND`;
+- passing action-budget thresholds:
+  `3`.
+
+Final decision:
+`V218_PAUSE_P1_GLOBAL_POLICY_LEARNABILITY_FAIL`.
+
+Do not train WLDB-A2 global pooled final-feature LL policy. P2/P3/P4 provide
+useful positive evidence for future lowband work, but P1 shows this deployable
+global policy is not tail-safe despite average/hard movement and improvement
+over shuffled control. The next route should design spatial WLDB-B policy
+learnability using v2.17 O2/O3 headroom, with explicit p05/CVaR/severe and
+strong/easy preservation gates. Locked Haze4K remains untouched.
