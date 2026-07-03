@@ -1,0 +1,3 @@
+v220_state=PLANNED
+locked_test_touched=false
+training_launched=false
