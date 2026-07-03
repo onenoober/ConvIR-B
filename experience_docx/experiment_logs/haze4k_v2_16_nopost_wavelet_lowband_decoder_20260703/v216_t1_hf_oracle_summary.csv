@@ -1,0 +1,2 @@
+scope,count,HF_oracle_dPSNR_mean,HF_oracle_dPSNR_median,HF_oracle_dPSNR_p05,HF_oracle_dPSNR_p95,HF_oracle_dPSNR_positive_ratio,HF_oracle_dPSNR_severe_loss_count
+all_train_core,2400,0.19020867745081585,0.16308975219726562,0.033031463623046875,0.445953369140625,1.0,0

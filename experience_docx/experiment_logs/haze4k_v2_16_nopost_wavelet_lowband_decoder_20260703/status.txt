@@ -1,4 +1,20 @@
 route=haze4k-v2-16-nopost-wavelet-lowband-decoder
-state=PLANNED_T0_T1_ONLY
+state=RUNNING_AUDIT
 locked_test_touched=false
 training_launched=false
+branch=codex/haze4k-v2-16-nopost-wavelet-lowband-decoder
+commit=
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+run_start 2026-07-03T15:18:01+08:00
+run_done rc=0 2026-07-03T15:21:22+08:00
+state=COMPLETED_T0_T1_AUDIT
+V216_T0_T1_RUN_OK
+t2_state=RUNNING_AUDIT
+locked_test_touched=false
+training_launched=false
+t2_run_start 2026-07-03T15:25:23+08:00
+t2_run_done rc=0 2026-07-03T15:25:30+08:00
+t2_state=COMPLETED_T2_AUDIT
+V216_T2_RUN_OK

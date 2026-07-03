@@ -1,0 +1,20 @@
+{
+  "locked_test_touched": false,
+  "next_action": "IMPLEMENT_T2_CONTRACT_IDENTITY_ONLY",
+  "route": "haze4k-v2-16-nopost-wavelet-lowband-decoder",
+  "rows": 2400,
+  "t0": {
+    "decision": "T0_TARGET_DECOUPLED",
+    "wd_severe_a0_hard_jaccard": 0.0,
+    "wd_severe_lowband_jaccard": 0.027916666666666666
+  },
+  "t1": {
+    "decision": "T1_LOWBAND_HEADROOM_PASS_ALLOW_T2",
+    "easy_ll_mean_dpsnr": 11.853744614919027,
+    "hard_ll_mean_dpsnr": 18.939359436035158,
+    "ll_mean_dpsnr": 14.998694143295289,
+    "ll_severe_loss_count": 0,
+    "lowband_need_rate": 1.0
+  },
+  "training_launched": false
+}

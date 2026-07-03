@@ -1,0 +1,15 @@
+{
+  "hf_oracle": "keep A0 LL band, replace high-frequency bands with GT bands",
+  "ll_hf_oracle": "replace all bands with GT bands; used only as a ceiling sanity check",
+  "ll_oracle": "replace A0 LL band with GT LL band, keep A0 high-frequency bands",
+  "locked_test_touched": false,
+  "lowband_need_label": "LL_oracle_dPSNR >= 0.2",
+  "shrink_alphas": [
+    0.125,
+    0.25,
+    0.375,
+    0.5
+  ],
+  "training_launched": false,
+  "transform": "one-level Haar DWT on RGB A0 prediction and GT, train-derived images only"
+}
