@@ -90,6 +90,8 @@ class LowbandPolicyInsertion(nn.Module):
     def forward(self, z):
         ll, lh, hl, hh, h, w = self.dwt(z)
         ll_delta = self.policy(ll)
+        if ll_delta.shape[-2:] != ll.shape[-2:]:
+            ll_delta = ll_delta.expand_as(ll)
         zero_lh = torch.zeros_like(lh)
         zero_hl = torch.zeros_like(hl)
         zero_hh = torch.zeros_like(hh)
