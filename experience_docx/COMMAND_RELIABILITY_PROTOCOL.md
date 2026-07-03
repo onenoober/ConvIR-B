@@ -304,6 +304,37 @@ ssh dehaze1 '/root/miniconda3/envs/convir-cu128/bin/python script.py'
 
 or inside a remote script:
 
+2026-07-03 recurrence on `convir-4090`:
+
+Avoid read-only monitor snippets that call bare `python` for inline evidence
+parsing:
+
+```bash
+ssh convir-4090 'python - <<PY
+print("read evidence")
+PY'
+```
+
+Failure mode observed:
+
+- `python: command not found` on `convir-4090`;
+- the monitor command failed before its final success marker;
+- the cloud experiment was unaffected because durable scripts used the explicit
+  environment path.
+
+Corrected form:
+
+```bash
+PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+ssh convir-4090 "$PY - <<'PY'
+print('read evidence')
+PY"
+```
+
+Use `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python` for
+`convir-4090` runtime scripts and inline evidence parsing unless the route card
+records a different cloud environment.
+
 2026-06-06 recurrence:
 
 Avoid using a cloud-only interpreter path during local WSL static checks:

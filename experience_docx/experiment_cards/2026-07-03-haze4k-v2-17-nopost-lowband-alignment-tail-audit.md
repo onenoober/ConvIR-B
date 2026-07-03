@@ -2,7 +2,7 @@
 
 Date: 2026-07-03
 
-Status: `PLANNED`
+Status: `COMPLETED_GATE_FAIL_TRAINING_PAUSED_PENDING_TAIL_AWARE_OBJECTIVE`
 
 Branch: `codex/haze4k-v2-17-nopost-lowband-alignment-tail-audit`
 
@@ -129,3 +129,61 @@ Tmux sessions:
 - `v217_r3`
 
 Locked Haze4K test remains untouched.
+
+## Result
+
+Cloud run: `convir-4090`, `2026-07-03T17:21:53+08:00` to
+`2026-07-03T18:29:09+08:00`.
+
+Source commit: `dc25459`.
+
+R1/R2/R3 completed successfully. Locked Haze4K test remained untouched and no
+training was launched.
+
+R1 decision: `R1_CLOSE_WLDB_A_KEEP_NOPOST_LOWBAND_OPEN`.
+
+- WLDB-A `model_5` mean/hard/easy dPSNR:
+  `+0.081889/+0.105887/+0.020994`;
+- `model_5` positive ratio: `0.662500`;
+- `model_5` severe count: `67/480`;
+- `model_5` p05 dPSNR: `-0.438669`;
+- action-budget term in v2.16 train history: all zero.
+
+Interpretation: the concrete WLDB-A form remains closed. Do not expand seeds,
+epochs, hidden width, or locked-test use from WLDB-A.
+
+R2 decision: `R2_O1_GLOBAL_FEATURE_LL_PASS_REVIEW_WLDB_A2_OBJECTIVE`.
+
+- O1 final-feature global LL oracle: mean `+0.842954`, hard `+1.591207`,
+  easy `+0.359026`, p05 `+0.001803`, severe rate `0`;
+- O2 final-feature spatial LL oracle: mean `+6.160490`, hard `+9.054141`,
+  easy `+3.683569`, p05 `+2.150435`, severe rate `0`;
+- O3 mid+final LL oracle: mean `+6.832469`, hard `+10.088952`,
+  easy `+4.078034`, p05 `+2.346216`, severe rate `0`;
+- O4 RGB LL reference: mean `+14.998694`, hard `+18.939359`,
+  easy `+11.853745`, p05 `+10.267890`, severe rate `0`.
+
+Interpretation: internal feature-lowband representational headroom is strong,
+including the O1 global-final class. WLDB-A did not fail because the direction
+has no capacity; it failed because the learned objective and constraints did
+not protect tail risk.
+
+R3 decision:
+`R3_AVERAGE_OBJECTIVE_IMPROVES_BUT_TAIL_FAILS_REQUIRE_TAIL_AWARE_OBJECTIVE`.
+
+- WLDB-A `model_5` mean delta final L1 vs A0: `-0.000110`;
+- WLDB-A `model_5` mean delta lowband L1 vs A0: `-0.000227`;
+- WLDB-A `model_5` CVaR5 dPSNR: `-0.646619`;
+- WLDB-A `model_5` severe count: `67/480`;
+- WLDB-A `model_5` strong-reference regressions: `48/120`;
+- validation action-budget activation rate: `0.0`.
+
+Final decision:
+`NO_TRAINING_PAUSE_DESIGN_TAIL_AWARE_WLDB_A2_OR_WLDB_B_OBJECTIVE`.
+
+The NoPost lowband direction remains open, but the next trainable route must be
+materially changed before launch. It should use the R2 headroom evidence and
+write a new objective/contract with explicit p05/CVaR/severe preservation,
+strong/easy protection, and an action budget that actually activates. Do not
+train WLDB-A longer, do not expand WLDB-A seeds, and do not touch locked
+Haze4K from this route.
