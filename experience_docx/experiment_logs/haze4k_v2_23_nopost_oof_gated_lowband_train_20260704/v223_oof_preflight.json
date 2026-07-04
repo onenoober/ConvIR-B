@@ -1,0 +1,57 @@
+{
+  "branch": "codex/haze4k-v2-23-nopost-oof-gated-lowband-train",
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "commit": "246bdce",
+  "cuda_available": true,
+  "cuda_device_name": "NVIDIA GeForce RTX 4090",
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "folds": [
+    0,
+    1,
+    2
+  ],
+  "forward_finite": true,
+  "locked_test_touched": false,
+  "partial_load": {
+    "allowed_new_prefixes": [
+      "nopost_gated_lowband_policy."
+    ],
+    "loaded_count": 602,
+    "missing_new_module_count": 24,
+    "missing_new_modules": [
+      "nopost_gated_lowband_policy.final_policy.action.bias",
+      "nopost_gated_lowband_policy.final_policy.action.weight",
+      "nopost_gated_lowband_policy.final_policy.context.0.bias",
+      "nopost_gated_lowband_policy.final_policy.context.0.weight",
+      "nopost_gated_lowband_policy.final_policy.context.2.bias",
+      "nopost_gated_lowband_policy.final_policy.context.2.weight",
+      "nopost_gated_lowband_policy.final_policy.global_project.1.bias",
+      "nopost_gated_lowband_policy.final_policy.global_project.1.weight",
+      "nopost_gated_lowband_policy.final_policy.mid_project.bias",
+      "nopost_gated_lowband_policy.final_policy.mid_project.weight",
+      "nopost_gated_lowband_policy.final_policy.risk.1.bias",
+      "nopost_gated_lowband_policy.final_policy.risk.1.weight",
+      "nopost_gated_lowband_policy.final_policy.risk.3.bias",
+      "nopost_gated_lowband_policy.final_policy.risk.3.weight",
+      "nopost_gated_lowband_policy.mid_policy.action.bias",
+      "nopost_gated_lowband_policy.mid_policy.action.weight",
+      "nopost_gated_lowband_policy.mid_policy.context.0.bias",
+      "nopost_gated_lowband_policy.mid_policy.context.0.weight",
+      "nopost_gated_lowband_policy.mid_policy.context.2.bias",
+      "nopost_gated_lowband_policy.mid_policy.context.2.weight",
+      "nopost_gated_lowband_policy.mid_policy.risk.1.bias",
+      "nopost_gated_lowband_policy.mid_policy.risk.1.weight",
+      "nopost_gated_lowband_policy.mid_policy.risk.3.bias",
+      "nopost_gated_lowband_policy.mid_policy.risk.3.weight"
+    ],
+    "shape_mismatch": [],
+    "unexpected": []
+  },
+  "pass": true,
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "sample_count": 2400,
+  "split_csv": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-17-nopost-lowband-alignment-tail-audit/experience_docx/experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/v216_t1_per_image_band_deltas.csv",
+  "torch_version": "2.5.1+cu121",
+  "zero_init_max_abs_vs_A0": 0.0
+}

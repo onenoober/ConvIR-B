@@ -2,7 +2,7 @@
 
 Date: 2026-07-04
 
-Status: planned
+Status: completed normal gate pause
 
 ## Scope
 
@@ -110,3 +110,45 @@ Expected compact outputs:
 
 Do not commit checkpoints, raw images, arrays, archives, or large per-image
 output tables by default.
+
+## Closeout
+
+Decision:
+
+```text
+V223_OOF_SCREEN_GATE_FAIL_NORMAL_PAUSE_NO_LOCKED_TEST
+```
+
+Runtime source:
+
+- cloud workspace: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-23-nopost-oof-gated-lowband-train`
+- branch: `codex/haze4k-v2-23-nopost-oof-gated-lowband-train`
+- git checkout before rsync: `246bdce`
+- runtime source patch: local commit `73bab6e` rsynced after GitHub HTTPS fetch on cloud timed out
+- evidence root: `experience_docx/experiment_logs/haze4k_v2_23_nopost_oof_gated_lowband_train_20260704/`
+
+Results:
+
+- Initial launch failed preflight as an engineering issue because the route model
+  remained in train mode during identity preflight; BatchNorm saw batch `1` and
+  spatial `1x1`.
+- The preflight was fixed by setting the route model to eval mode for P0 only.
+- P0 then passed with official checkpoint partial load and zero-init identity.
+- OOF screen completed folds `0,1,2` with `384` train samples and `160`
+  heldout eval samples per fold.
+- Aggregate OOF mean was `+0.0367 dB`, hard bottom25 `+0.0227 dB`, easy top25
+  `+0.0165 dB`, p05 `-0.3528 dB`, CVaR5 `-0.4782 dB`, positive ratio `0.5625`,
+  severe rate `14.79%`, strong-reference regression rate `32.08%`, and fold tail
+  pass `1/3`.
+- Gate passed only CVaR, easy preservation, p05, positive ratio, non-near-identity,
+  nondegenerate gate, and locked-test untouched checks.
+- Gate failed mean, hard, severe, strong-reference, and fold-tail checks.
+
+Interpretation:
+
+v2.23 is a useful negative screen. The v2.22 trainable gated-lowband module can
+move nontrivially and keep gate probabilities nondegenerate, but the first
+train-derived OOF screen does not preserve tail/strong-reference safety and does
+not deliver enough mean or hard gain. Pause normally. Do not expand epochs,
+samples, loss weights, or folds under this run id. Locked Haze4K test remains
+blocked.

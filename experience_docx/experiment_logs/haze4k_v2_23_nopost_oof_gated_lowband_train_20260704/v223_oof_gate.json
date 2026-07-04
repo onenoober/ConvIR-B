@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "cvar_safe": true,
+    "easy_preserved": true,
+    "fold_tail_pass": false,
+    "gate_not_degenerate": true,
+    "hard_positive": false,
+    "locked_test_untouched": true,
+    "mean_positive": false,
+    "not_near_identity": true,
+    "p05_safe": true,
+    "positive_ratio": true,
+    "severe_safe": false,
+    "strong_safe": false
+  },
+  "locked_test_allowed": false,
+  "pass": false
+}
