@@ -384,6 +384,7 @@ def preflight(args: argparse.Namespace, out_dir: Path, device: torch.device, sam
     state = v222.load_state(args.checkpoint, "cpu")
     model = v222.make_model(base_args, device)
     partial = load_haze4k_partial(model, state)
+    model.eval()
     a0 = v222.build_a0_net("base", "Haze4K", "original").to(device)
     a0.load_state_dict(state)
     a0.eval()
