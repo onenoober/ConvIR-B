@@ -1,0 +1,27 @@
+v221_p0_state=PREFLIGHT_RUNNING
+v221_p0_start 2026-07-04T11:39:07+08:00
+branch=codex/haze4k-v2-21-nopost-safety-calibrated-lowband-replay
+commit=c652e86
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-21-nopost-safety-calibrated-lowband-replay
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+locked_test_touched=false
+training_launched=false
+v221_p0_done rc=0 2026-07-04T11:39:35+08:00
+v221_p0_state=COMPLETED_GATE_PASS
+V221_P0_OK
+v221_p1_p2_p3_p4_state=RUNNING_AUDIT
+v221_p1_p2_p3_p4_start 2026-07-04T11:39:55+08:00
+branch=codex/haze4k-v2-21-nopost-safety-calibrated-lowband-replay
+commit=c652e86
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-21-nopost-safety-calibrated-lowband-replay
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split_csv=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-17-nopost-lowband-alignment-tail-audit/experience_docx/experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/v216_t1_per_image_band_deltas.csv
+locked_test_touched=false
+training_launched=false
+v221_p1_p2_p3_p4_done rc=0 2026-07-04T12:40:20+08:00
+v221_p1_p2_p3_p4_state=COMPLETED_GATE_PASS
+V221_REPLAY_GATE_PASS_REVIEW_ONLY

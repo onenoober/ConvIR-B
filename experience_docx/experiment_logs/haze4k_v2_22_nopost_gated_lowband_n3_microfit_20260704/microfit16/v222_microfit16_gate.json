@@ -1,0 +1,13 @@
+{
+  "checks": {
+    "action_nonzero": true,
+    "finite_mean": true,
+    "gate_not_degenerate": true,
+    "no_severe_explosion": true,
+    "p05_not_catastrophic": true
+  },
+  "continue_allowed": true,
+  "locked_test_allowed": false,
+  "pass": true,
+  "stage": "microfit16"
+}

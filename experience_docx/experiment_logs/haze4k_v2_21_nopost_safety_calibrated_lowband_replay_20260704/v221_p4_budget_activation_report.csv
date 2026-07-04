@@ -1,0 +1,4 @@
+selected_variant,threshold_label,threshold,budget_activation_rate,severe_budget_activation_rate
+V221_risk_temperature_gamma0p50,oracle_p75,0.024451179258301238,0.050833333333333335,0.0
+V221_risk_temperature_gamma0p50,oracle_p90,0.03024704085400748,0.012083333333333333,0.0
+V221_risk_temperature_gamma0p50,post_gate_predicted_p75,0.015540060151797408,0.25,0.06976744186046512

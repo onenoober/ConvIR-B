@@ -1,0 +1,15 @@
+planned 2026-07-04 route=v222_n3_nopost_gated_lowband_microfit locked_test_touched=false
+n3_run_start 2026-07-04T13:41:03+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-22-nopost-gated-lowband-n3-microfit
+branch=codex/haze4k-v2-22-nopost-gated-lowband-n3-microfit
+commit=9e2f548
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split_csv=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-17-nopost-lowband-alignment-tail-audit/experience_docx/experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/v216_t1_per_image_band_deltas.csv
+v221_metrics_csv=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-21-nopost-safety-calibrated-lowband-replay/experience_docx/experiment_logs/haze4k_v2_21_nopost_safety_calibrated_lowband_replay_20260704/v221_p1_safety_gated_replay_metrics.csv
+locked_test_touched=false
+v222_n3_start 2026-07-04T13:41:06+0800
+v222_n3_done V222_N3_MICROFIT_PASS_REVIEW_ONLY_NO_LOCKED_TEST 2026-07-04T13:45:10+0800
+n3_run_done rc=0 2026-07-04T13:45:11+08:00
+V222_N3_MICROFIT_OK

@@ -1,0 +1,4 @@
+selected_variant,threshold_label,threshold,safe_oracle_overpenalty_rate
+V221_risk_temperature_gamma0p50,oracle_p75,0.024451179258301238,0.25
+V221_risk_temperature_gamma0p50,oracle_p90,0.03024704085400748,0.1
+V221_risk_temperature_gamma0p50,post_gate_predicted_p75,0.015540060151797408,0.8058333333333333

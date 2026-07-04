@@ -1,0 +1,35 @@
+{
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "locked_test_touched": false,
+  "partial_load_rule": "official keys load; only nopost_midfinal_context_policy.* may be missing",
+  "policy_param_groups": [
+    {
+      "missing_key_count": 16,
+      "missing_keys": [
+        "nopost_midfinal_context_policy.mid_policy.context.0.weight",
+        "nopost_midfinal_context_policy.mid_policy.context.0.bias",
+        "nopost_midfinal_context_policy.mid_policy.context.2.weight",
+        "nopost_midfinal_context_policy.mid_policy.context.2.bias",
+        "nopost_midfinal_context_policy.mid_policy.project.weight",
+        "nopost_midfinal_context_policy.mid_policy.project.bias",
+        "nopost_midfinal_context_policy.final_policy.mid_project.weight",
+        "nopost_midfinal_context_policy.final_policy.mid_project.bias",
+        "nopost_midfinal_context_policy.final_policy.global_project.1.weight",
+        "nopost_midfinal_context_policy.final_policy.global_project.1.bias",
+        "nopost_midfinal_context_policy.final_policy.context.0.weight",
+        "nopost_midfinal_context_policy.final_policy.context.0.bias",
+        "nopost_midfinal_context_policy.final_policy.context.2.weight",
+        "nopost_midfinal_context_policy.final_policy.context.2.bias",
+        "nopost_midfinal_context_policy.final_policy.project.weight",
+        "nopost_midfinal_context_policy.final_policy.project.bias"
+      ],
+      "missing_keys_all_new_prefix": true,
+      "new_nopost_midfinal_context_policy_params": 72992,
+      "official_params_loaded_or_reused": 8630665,
+      "policy_mode": "mid_final_context",
+      "total_params": 8703657,
+      "unexpected_key_count": 0,
+      "unexpected_keys": []
+    }
+  ]
+}
