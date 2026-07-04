@@ -2,11 +2,11 @@
 set -euo pipefail
 
 BASE=/sda/home/wangyuxin/ConvIR-B
-WORK=$BASE/repos/ConvIR-B-v2-22-nopost-gated-lowband-n3-microfit
-EVID=$WORK/experience_docx/experiment_logs/haze4k_v2_22_nopost_gated_lowband_n3_microfit_20260704
+WORK=$BASE/repos/ConvIR-B-v2-23-nopost-oof-gated-lowband-train
+EVID=$WORK/experience_docx/experiment_logs/haze4k_v2_23_nopost_oof_gated_lowband_train_20260704
 STATUS=$EVID/status.txt
-LOG=$EVID/v222_n3_microfit.log
-SESSION=v222_n3_microfit
+LOG=$EVID/v223_oof_screen.log
+SESSION=v223_oof_screen
 
 date --iso-8601=seconds
 cd "$WORK"
