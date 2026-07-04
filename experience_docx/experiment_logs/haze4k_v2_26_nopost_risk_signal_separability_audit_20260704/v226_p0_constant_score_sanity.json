@@ -1,0 +1,9 @@
+{
+  "average_precision_buggy": 1.0,
+  "average_precision_tie_aware": 0.09375,
+  "base_rate": 0.09375,
+  "constant_score": 0.2,
+  "count": 160,
+  "expected_tie_aware_ap": 0.09375,
+  "positive_count": 15
+}

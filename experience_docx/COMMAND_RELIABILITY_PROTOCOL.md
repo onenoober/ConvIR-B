@@ -877,3 +877,66 @@ local Git bundle or repair known_hosts explicitly. Record the failure as
 `INFRA_PREFLIGHT_TRANSPORT`, verify the cloned commit on cloud, and continue
 only after the branch/commit, workspace, durable scripts, status files, and
 explicit cloud Python path are checked.
+
+## 2026-07-04 PowerShell to WSL audit scripts need CRLF stripping
+
+Observed while auditing v2.26 evidence before syncing compact artifacts to
+`main`: a direct `wsl -- bash -lc '...'` command with a grep regex containing
+parentheses crossed the PowerShell/WSL quote boundary incorrectly, and a
+follow-up here-string piped directly into `wsl -- bash` kept CRLF line endings
+so Bash read `true\r` as a command.
+
+Invalid forms:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'cd /home/ubuntu/workspace/ConvIR-B-v2-26-main-evidence-sync && find ... -type f | grep -Ei "\.(pt|pth|pkl|ckpt|safetensors|npy|npz|png|jpg|jpeg|bmp|webp|zip|tar|gz|7z|rar)$" || true'
+
+@'
+cd /home/ubuntu/workspace/ConvIR-B-v2-26-main-evidence-sync
+find ... -type f | grep -Ei '\.pt$|\.pth$|...' || true
+'@ | wsl -d Ubuntu-22.04 -- bash
+```
+
+Failure classes:
+
+```text
+syntax error near unexpected token `('
+bash: line 2: $'true\r': command not found
+```
+
+Corrected form:
+
+```powershell
+@'
+cd /home/ubuntu/workspace/ConvIR-B-v2-26-main-evidence-sync
+find ... -type f | grep -Ei '\.pt$|\.pth$|\.pkl$|\.ckpt$|\.safetensors$|\.npy$|\.npz$|\.png$|\.jpg$|\.jpeg$|\.bmp$|\.webp$|\.zip$|\.tar$|\.gz$|\.7z$|\.rar$' || true
+'@ | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For PowerShell here-strings that feed WSL audit or sync scripts, pipe through
+`tr -d '\r' | bash`. Prefer regexes that avoid nested shell quotes when a direct
+`bash -lc` command is still necessary.
+
+The same boundary can silently truncate a commit subject when escaped quotes are
+embedded inside a direct `bash -lc` command.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'cd /home/ubuntu/workspace/ConvIR-B-v2-26-main-evidence-sync && git commit -m \"Sync v2.26 NoPost diagnostic evidence\"'
+```
+
+Failure class:
+
+```text
+[codex/haze4k-v2-26-main-evidence-sync 60878a3] Sync
+```
+
+Corrected form:
+
+```powershell
+@'
+cd /home/ubuntu/workspace/ConvIR-B-v2-26-main-evidence-sync
+git commit --amend -m 'Sync v2.26 NoPost diagnostic evidence'
+'@ | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
