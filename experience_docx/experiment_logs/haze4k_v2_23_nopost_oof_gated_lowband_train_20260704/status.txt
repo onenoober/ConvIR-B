@@ -1,0 +1,17 @@
+PLANNED 2026-07-04 v2.23 OOF gated lowband train screen; locked_test_touched=false
+runtime_source_synced_from_local_commit=73bab6e
+preflight_failure_fixed=eval_mode_for_route_model
+oof_screen_start 2026-07-04T14:41:56+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-23-nopost-oof-gated-lowband-train
+branch=codex/haze4k-v2-23-nopost-oof-gated-lowband-train
+commit=246bdce
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split_csv=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-17-nopost-lowband-alignment-tail-audit/experience_docx/experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/v216_t1_per_image_band_deltas.csv
+v221_metrics_csv=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-21-nopost-safety-calibrated-lowband-replay/experience_docx/experiment_logs/haze4k_v2_21_nopost_safety_calibrated_lowband_replay_20260704/v221_p1_safety_gated_replay_metrics.csv
+locked_test_touched=false
+v223_oof_start 2026-07-04T14:41:59+0800
+v223_oof_done V223_OOF_SCREEN_GATE_FAIL_NORMAL_PAUSE_NO_LOCKED_TEST 2026-07-04T14:47:20+0800
+oof_screen_done rc=0 2026-07-04T14:47:20+08:00
+V223_OOF_SCREEN_DONE

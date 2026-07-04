@@ -1,0 +1,19 @@
+{
+  "CVaR5_dPSNR": -0.46330067236500216,
+  "easy_top25_dPSNR": -0.011903515336434722,
+  "eval_count": 160,
+  "fold": 1,
+  "hard_bottom25_dPSNR": -0.0009406983419067317,
+  "locked_test_touched": false,
+  "mean_dPSNR": 0.017620208891814128,
+  "mean_final_delta_rms": 0.0002914020893513225,
+  "mean_final_unsafe_prob": 0.18137636892497538,
+  "mean_mid_delta_rms": 0.0009318761116446694,
+  "mean_mid_unsafe_prob": 0.18154508201405406,
+  "p05_dPSNR": -0.3487616085824797,
+  "partial_load_loaded_count": 602,
+  "positive_ratio": 0.525,
+  "severe_rate": 0.1625,
+  "strong_reference_count": 160,
+  "strong_reference_regression_rate": 0.3875
+}

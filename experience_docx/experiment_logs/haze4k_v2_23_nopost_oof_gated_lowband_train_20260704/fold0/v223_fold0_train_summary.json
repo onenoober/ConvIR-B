@@ -1,0 +1,88 @@
+{
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-23-nopost-oof-gated-lowband-train/experience_docx/experiment_logs/haze4k_v2_23_nopost_oof_gated_lowband_train_20260704/fold0/v223_fold0_adapter_only_Final.pkl",
+  "epochs": 2,
+  "fold": 0,
+  "history_last": {
+    "epoch": 2,
+    "fold": 0,
+    "loss": 0.058119020133744925,
+    "mean_action_rms_proxy": 0.04743118170881644,
+    "mean_unsafe_probability": 0.18234052027886113,
+    "train_CVaR5_dPSNR_vs_A0": -0.4390308868358986,
+    "train_count": 384,
+    "train_mean_dPSNR_vs_A0": 0.03356154747359328,
+    "train_p05_dPSNR_vs_A0": -0.32890297533138374,
+    "train_severe_rate": 0.13802083333333334
+  },
+  "partial_load": {
+    "allowed_new_prefixes": [
+      "nopost_gated_lowband_policy."
+    ],
+    "loaded_count": 602,
+    "missing_new_module_count": 24,
+    "missing_new_modules": [
+      "nopost_gated_lowband_policy.final_policy.action.bias",
+      "nopost_gated_lowband_policy.final_policy.action.weight",
+      "nopost_gated_lowband_policy.final_policy.context.0.bias",
+      "nopost_gated_lowband_policy.final_policy.context.0.weight",
+      "nopost_gated_lowband_policy.final_policy.context.2.bias",
+      "nopost_gated_lowband_policy.final_policy.context.2.weight",
+      "nopost_gated_lowband_policy.final_policy.global_project.1.bias",
+      "nopost_gated_lowband_policy.final_policy.global_project.1.weight",
+      "nopost_gated_lowband_policy.final_policy.mid_project.bias",
+      "nopost_gated_lowband_policy.final_policy.mid_project.weight",
+      "nopost_gated_lowband_policy.final_policy.risk.1.bias",
+      "nopost_gated_lowband_policy.final_policy.risk.1.weight",
+      "nopost_gated_lowband_policy.final_policy.risk.3.bias",
+      "nopost_gated_lowband_policy.final_policy.risk.3.weight",
+      "nopost_gated_lowband_policy.mid_policy.action.bias",
+      "nopost_gated_lowband_policy.mid_policy.action.weight",
+      "nopost_gated_lowband_policy.mid_policy.context.0.bias",
+      "nopost_gated_lowband_policy.mid_policy.context.0.weight",
+      "nopost_gated_lowband_policy.mid_policy.context.2.bias",
+      "nopost_gated_lowband_policy.mid_policy.context.2.weight",
+      "nopost_gated_lowband_policy.mid_policy.risk.1.bias",
+      "nopost_gated_lowband_policy.mid_policy.risk.1.weight",
+      "nopost_gated_lowband_policy.mid_policy.risk.3.bias",
+      "nopost_gated_lowband_policy.mid_policy.risk.3.weight"
+    ],
+    "shape_mismatch": [],
+    "unexpected": []
+  },
+  "scope": {
+    "frozen_param_count": 8630665,
+    "scope": "adapter_only",
+    "trainable_names": [
+      "nopost_gated_lowband_policy.mid_policy.context.0.weight",
+      "nopost_gated_lowband_policy.mid_policy.context.0.bias",
+      "nopost_gated_lowband_policy.mid_policy.context.2.weight",
+      "nopost_gated_lowband_policy.mid_policy.context.2.bias",
+      "nopost_gated_lowband_policy.mid_policy.action.weight",
+      "nopost_gated_lowband_policy.mid_policy.action.bias",
+      "nopost_gated_lowband_policy.mid_policy.risk.1.weight",
+      "nopost_gated_lowband_policy.mid_policy.risk.1.bias",
+      "nopost_gated_lowband_policy.mid_policy.risk.3.weight",
+      "nopost_gated_lowband_policy.mid_policy.risk.3.bias",
+      "nopost_gated_lowband_policy.final_policy.mid_project.weight",
+      "nopost_gated_lowband_policy.final_policy.mid_project.bias",
+      "nopost_gated_lowband_policy.final_policy.global_project.1.weight",
+      "nopost_gated_lowband_policy.final_policy.global_project.1.bias",
+      "nopost_gated_lowband_policy.final_policy.context.0.weight",
+      "nopost_gated_lowband_policy.final_policy.context.0.bias",
+      "nopost_gated_lowband_policy.final_policy.context.2.weight",
+      "nopost_gated_lowband_policy.final_policy.context.2.bias",
+      "nopost_gated_lowband_policy.final_policy.action.weight",
+      "nopost_gated_lowband_policy.final_policy.action.bias",
+      "nopost_gated_lowband_policy.final_policy.risk.1.weight",
+      "nopost_gated_lowband_policy.final_policy.risk.1.bias",
+      "nopost_gated_lowband_policy.final_policy.risk.3.weight",
+      "nopost_gated_lowband_policy.final_policy.risk.3.bias"
+    ],
+    "trainable_param_count": 75170,
+    "trainable_prefixes": [
+      "nopost_gated_lowband_policy."
+    ]
+  },
+  "train_count": 384,
+  "train_seconds": 94.15147423744202
+}

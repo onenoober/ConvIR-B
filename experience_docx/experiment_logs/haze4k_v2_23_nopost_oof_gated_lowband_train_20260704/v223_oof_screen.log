@@ -1,0 +1,9 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-23-nopost-oof-gated-lowband-train/experience_docx/tools/nopost_lowband_v222_n3_microfit.py:166: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+V223_FOLD_TRAIN fold=0 epoch=1/2 loss=0.058172 dPSNR=0.0136 p05=-0.1828 unsafe=0.1818
+V223_FOLD_TRAIN fold=0 epoch=2/2 loss=0.058119 dPSNR=0.0336 p05=-0.3289 unsafe=0.1823
+V223_FOLD_TRAIN fold=1 epoch=1/2 loss=0.055035 dPSNR=0.0235 p05=-0.2732 unsafe=0.1814
+V223_FOLD_TRAIN fold=1 epoch=2/2 loss=0.054882 dPSNR=0.0332 p05=-0.4337 unsafe=0.1811
+V223_FOLD_TRAIN fold=2 epoch=1/2 loss=0.058187 dPSNR=0.0330 p05=-0.3276 unsafe=0.1823
+V223_FOLD_TRAIN fold=2 epoch=2/2 loss=0.058418 dPSNR=0.0621 p05=-0.5296 unsafe=0.1821
+V223_OOF_SCREEN_OK V223_OOF_SCREEN_GATE_FAIL_NORMAL_PAUSE_NO_LOCKED_TEST
