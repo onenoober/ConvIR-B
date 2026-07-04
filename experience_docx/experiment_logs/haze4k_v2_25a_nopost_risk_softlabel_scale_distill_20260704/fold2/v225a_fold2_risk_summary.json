@@ -1,0 +1,15 @@
+{
+  "average_precision": 1.0,
+  "count": 160,
+  "ece10": 0.03822338283061982,
+  "fold": 2,
+  "label_base_rate": 0.14375,
+  "mce10": 0.03822338283061982,
+  "partial_load_loaded_count": 602,
+  "roc_auc": 0.5,
+  "target_prob_mae": 0.2666770085837925,
+  "trained_prob_max": 0.1819733828306198,
+  "trained_prob_mean": 0.1819733828306198,
+  "trained_prob_min": 0.1819733828306198,
+  "trained_prob_std": 0.0
+}

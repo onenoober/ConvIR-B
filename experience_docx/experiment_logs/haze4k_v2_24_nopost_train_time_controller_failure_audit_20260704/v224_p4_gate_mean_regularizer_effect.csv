@@ -1,0 +1,2 @@
+risk_bias,initial_sigmoid_bias,trained_mid_prob_mean_in_audit,trained_final_prob_mean_in_audit,gate_mean_weight,optimizer_effect
+-1.5,0.18242552380635635,0.18270439820157158,0.18256352386540836,0.0005,positive gate_mean_weight minimizes unsafe probability and opens scale=(1-p)^gamma

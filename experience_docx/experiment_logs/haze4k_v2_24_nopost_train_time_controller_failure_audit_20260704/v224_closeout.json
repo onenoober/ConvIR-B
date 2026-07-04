@@ -1,0 +1,24 @@
+{
+  "completed_at": "2026-07-04T16:22:32+0800",
+  "decision": "V224_DIAGNOSTIC_COMPLETE_CASE_A_RISK_HEAD_COLLAPSE_LOCKED_TEST_BLOCKED",
+  "locked_test_touched": false,
+  "next_action": "Authorize v2.25A risk soft-label / scale distillation; do not expand v2.23.",
+  "p0": {
+    "decision": "P0_PASS"
+  },
+  "p1": {
+    "decision": "P1_CROP_STRONG_MASK_OVERBROAD_STRONG_GATE_SHOULD_USE_FULL_IMAGE_OR_PRECOMPUTED_MASK"
+  },
+  "p2": {
+    "decision": "P2_RISK_HEAD_COLLAPSE_OR_BASE_RATE_LEARNING_CONFIRMED"
+  },
+  "p3": {
+    "decision": "P3_TRAINED_ACTION_CAN_BE_RESCUED_BY_BETTER_GATE"
+  },
+  "p4": {
+    "decision": "P4_SUPERVISION_GRADIENT_IMBALANCE_RISK_CONFIRMED"
+  },
+  "p5": {
+    "decision": "P5_EPOCH2_MEAN_CAN_RISE_WHILE_TAIL_WORSENS_EXPANDING_EPOCHS_FORBIDDEN"
+  }
+}

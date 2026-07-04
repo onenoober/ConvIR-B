@@ -1,0 +1,15 @@
+source,variant,count,mean_dPSNR,median_dPSNR,p05_dPSNR,CVaR5_dPSNR,hard_bottom25_dPSNR,easy_top25_dPSNR,positive_ratio,severe_count,severe_rate,strong_reference_count,strong_reference_regressions,strong_reference_regression_rate,fold_count,fold_tail_pass,loose_v223_gate_pass,protocol_note
+direct,H_noop_control,480,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,480,0,0.0,3,3,False,
+direct,A_trained_action_trained_gate,480,0.036710139247624,0.025472567551314995,-0.3528144471974365,-0.47818896108687997,0.022662353529030514,0.01648346556890233,0.5625,71,0.14791666666666667,480,154,0.32083333333333336,3,1,False,
+direct,trained_action_all_open_gate,480,0.037119903086262146,0.025025976067297506,-0.3970197361487692,-0.5324662434338606,0.023980794972293336,0.011563628724103008,0.5583333333333333,79,0.16458333333333333,480,167,0.34791666666666665,3,1,False,
+direct,B_trained_action_v221_replay_gate,480,0.03194993833852363,0.01927483968667687,-0.3480444286914469,-0.46827472227525124,0.026788218518294472,0.005364327591563681,0.5729166666666666,62,0.12916666666666668,480,138,0.2875,3,1,False,
+direct,trained_action_v221_label_hard_gate,480,0.03807725526553754,0.0,-0.37411208006849783,-0.5024759545971763,0.027237573762215264,0.014022803120451439,0.4791666666666667,64,0.13333333333333333,480,138,0.2875,3,1,False,
+diagnostic_gt_oracle,C_trained_action_oracle_unsafe_gate,480,0.11771768453276209,0.025025976067297506,-0.021329732252416987,-0.033301560684594854,0.09050154281743072,0.12026093420107535,0.5583333333333333,0,0.0,480,0,0.0,3,3,True,
+v221_replay_reference_full_image,V221_factor_A_pred_action_pred_gate,2400,2.2270253642400104,,-0.0025074005126953123,-0.20886227289835613,4.303077551523844,,,,0.017916666666666668,,,0.04833333333333333,,,,full-image v2.21 replay reference
+v221_replay_reference_full_image,V221_factor_B_pred_action_oracle_gate,2400,2.191464299360911,,0.0,-0.006638272603352865,4.286090911229452,,,,0.0,,,0.0,,,,full-image v2.21 replay reference
+v221_replay_reference_full_image,V221_factor_C_oracle_action_pred_gate,2400,6.387218384742737,,1.1332359313964844,0.6658938884735107,10.156394392649332,,,,0.0,,,0.0,,,,full-image v2.21 replay reference
+v221_replay_reference_full_image,V221_factor_D_oracle_action_oracle_gate,2400,7.110747826894125,,2.4659072875976564,1.9291780789693196,10.609973258972168,,,,0.0,,,0.0,,,,full-image v2.21 replay reference
+v221_replay_reference_full_image,V221_factor_A_pred_action_pred_gate,,,,,,,,,,,,,,,,,full-image v2.21 replay reference
+v221_replay_reference_full_image,V221_factor_B_pred_action_oracle_gate,,,,,,,,,,,,,,,,,full-image v2.21 replay reference
+v221_replay_reference_full_image,V221_factor_C_oracle_action_pred_gate,,,,,,,,,,,,,,,,,full-image v2.21 replay reference
+v221_replay_reference_full_image,V221_factor_D_oracle_action_oracle_gate,,,,,,,,,,,,,,,,,full-image v2.21 replay reference

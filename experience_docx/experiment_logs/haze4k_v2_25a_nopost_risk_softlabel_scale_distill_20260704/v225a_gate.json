@@ -1,0 +1,12 @@
+{
+  "checks": {
+    "average_precision": true,
+    "ece10": true,
+    "locked_test_untouched": true,
+    "prob_std": false,
+    "roc_auc": false,
+    "target_prob_mae": false
+  },
+  "locked_test_allowed": false,
+  "pass": false
+}
