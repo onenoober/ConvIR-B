@@ -1,0 +1,92 @@
+{
+  "folds": [
+    {
+      "exists": true,
+      "fold": 0,
+      "load_state_missing": [],
+      "load_state_unexpected": [],
+      "loaded_from_checkpoint": true,
+      "path_tail": "experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold0/v225a_fold0_risk_context_Final.pkl",
+      "risk_final_bias_after_load": {
+        "final_policy_risk_3_bias": [
+          -1.5146052837371826
+        ],
+        "mid_policy_risk_3_bias": [
+          -1.514520525932312
+        ]
+      },
+      "risk_final_bias_before": {
+        "final_policy_risk_3_bias": [
+          -1.5
+        ],
+        "mid_policy_risk_3_bias": [
+          -1.5
+        ]
+      },
+      "sha256": "9867a9dad7d0610f8ef37061ba23327068e2191007fc0e660aab2a78e57874ab",
+      "shape_mismatch": [],
+      "size_bytes": 35127400,
+      "strict_load_error": "",
+      "v225a_checkpoint_expected": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-25a-nopost-risk-softlabel-scale-distill/experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold0/v225a_fold0_risk_context_Final.pkl"
+    },
+    {
+      "exists": true,
+      "fold": 1,
+      "load_state_missing": [],
+      "load_state_unexpected": [],
+      "loaded_from_checkpoint": true,
+      "path_tail": "experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold1/v225a_fold1_risk_context_Final.pkl",
+      "risk_final_bias_after_load": {
+        "final_policy_risk_3_bias": [
+          -1.5134375095367432
+        ],
+        "mid_policy_risk_3_bias": [
+          -1.5136017799377441
+        ]
+      },
+      "risk_final_bias_before": {
+        "final_policy_risk_3_bias": [
+          -1.5
+        ],
+        "mid_policy_risk_3_bias": [
+          -1.5
+        ]
+      },
+      "sha256": "a57a052a6f9b0b594566ce6d4174db394c435e4b78643bb54bab62d3347e0174",
+      "shape_mismatch": [],
+      "size_bytes": 35127400,
+      "strict_load_error": "",
+      "v225a_checkpoint_expected": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-25a-nopost-risk-softlabel-scale-distill/experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold1/v225a_fold1_risk_context_Final.pkl"
+    },
+    {
+      "exists": true,
+      "fold": 2,
+      "load_state_missing": [],
+      "load_state_unexpected": [],
+      "loaded_from_checkpoint": true,
+      "path_tail": "experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold2/v225a_fold2_risk_context_Final.pkl",
+      "risk_final_bias_after_load": {
+        "final_policy_risk_3_bias": [
+          -1.5018564462661743
+        ],
+        "mid_policy_risk_3_bias": [
+          -1.5018994808197021
+        ]
+      },
+      "risk_final_bias_before": {
+        "final_policy_risk_3_bias": [
+          -1.5
+        ],
+        "mid_policy_risk_3_bias": [
+          -1.5
+        ]
+      },
+      "sha256": "35291b9d8071f6a69ae2006628192ca4b1f1bdcc1f9c50c2a300473d9283501f",
+      "shape_mismatch": [],
+      "size_bytes": 35127400,
+      "strict_load_error": "",
+      "v225a_checkpoint_expected": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-25a-nopost-risk-softlabel-scale-distill/experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold2/v225a_fold2_risk_context_Final.pkl"
+    }
+  ],
+  "locked_test_touched": false
+}

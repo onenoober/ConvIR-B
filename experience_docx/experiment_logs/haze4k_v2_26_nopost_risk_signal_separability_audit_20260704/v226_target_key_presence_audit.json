@@ -1,0 +1,39 @@
+{
+  "inf_count": 0,
+  "locked_test_touched": false,
+  "nan_count": 0,
+  "raw_action_dPSNR_missing": 0,
+  "risk_scale_missing": 0,
+  "sample_count": 2400,
+  "scale_fallback_used_count_p3": 0,
+  "scale_fallback_used_count_p4": 0,
+  "target_prob_histogram": [
+    {
+      "bin": "[0.0,0.1)",
+      "count": 1037
+    },
+    {
+      "bin": "[0.1,0.25)",
+      "count": 388
+    },
+    {
+      "bin": "[0.25,0.5)",
+      "count": 357
+    },
+    {
+      "bin": "[0.5,0.75)",
+      "count": 262
+    },
+    {
+      "bin": "[0.75,0.9)",
+      "count": 170
+    },
+    {
+      "bin": "[0.9,1.0000001)",
+      "count": 186
+    }
+  ],
+  "unsafe_action_label_missing": 0,
+  "unsafe_action_probability_missing": 0,
+  "v221_risk_scale_missing": 0
+}

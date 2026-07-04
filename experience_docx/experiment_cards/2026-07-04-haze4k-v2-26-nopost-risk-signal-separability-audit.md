@@ -72,6 +72,21 @@ the diagnostic pass line (`AUC >= 0.75` and prob std `>= 0.05`). Higher LR
 collapsed to AUC `0.5`; tiny nonzero init, logit-target MSE, class-balanced BCE,
 and focal BCE did not pass.
 
+Supplemental correctness evidence was added after implementation review. The
+per-fold checkpoint manifest confirms all three v2.25A fold checkpoints existed
+and strictly loaded with `0` missing keys, `0` unexpected keys, and `0` shape
+mismatches. The target-key audit found `0` missing `unsafe_action_label`,
+`unsafe_action_probability`, `risk_scale`, `raw_action_dPSNR`, or v2.21 risk
+scale entries, with `0` P3/P4 scale fallbacks and `0` NaN/Inf values. The P4
+all-variant replay keeps the same decision: best replay row `weight_decay_0`
+has val AUC `0.7381864623243933` and probability std
+`0.021454215015396252`, still below the diagnostic pass line. Supplemental
+tables also add P2 fold-level probe details, P2 feature variance, P3 canary
+sample/final-prediction/gradient-flow evidence, epsilon-tie metric sanity,
+cross-route gate matrix, v2.21 positive-control feature importance, compact
+probe predictions, crop-seed manifest evidence, cloud closeout, and source-diff
+stat files.
+
 ## Decision
 
 `V226_DIAGNOSTIC_COMPLETE_CURRENT_RISK_INPUT_WEAK_TRAINABILITY_FAIL_LOCKED_TEST_BLOCKED`.

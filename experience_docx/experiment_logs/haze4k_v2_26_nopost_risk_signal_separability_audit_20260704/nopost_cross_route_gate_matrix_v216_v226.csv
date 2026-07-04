@@ -1,0 +1,11 @@
+route,mechanism,trained_or_oracle,mean_dpsnr,hard_dpsnr,easy_dpsnr,p05,cvar5,severe_count,strong_reference_regressions,positive_ratio,wrong_direction_rate,risk_auc,risk_ap,risk_prob_std,canary_pass,optimizer_rescue_pass,locked_test_touched,decision
+v2.16,WLDB-A trained lowband decoder,trained,0.081889,0.105887,0.020994,,,67,48,0.6625,,,,,,,False,WLDB_A_SCREEN_FAIL_STOP_NO_MORE_TRAINING
+v2.17-O1,global final-feature LL oracle,oracle,0.842954,1.591207,0.359026,0.001803,,0,0,,,,,,,,False,oracle_headroom_positive_not_train_authorized
+v2.17-O2,spatial final-feature LL oracle,oracle,6.16049,,,,,,,,,,,,,,False,oracle_headroom_positive_not_train_authorized
+v2.17-O3,mid+final feature LL oracle,oracle,6.832469,,,,,,,,,,,,,,False,oracle_headroom_positive_not_train_authorized
+v2.18,O1 deployable pooled-LL MLP,learnability,0.263178,0.859418,-0.183929,-1.164642,-2.050251,568,303,0.592083,0.19375,,,,,,False,V218_PAUSE_P1_GLOBAL_POLICY_LEARNABILITY_FAIL
+v2.19,O2 final-only spatial predictor,learnability,0.9921,2.6504,-0.1346,-1.1486,-2.1058,0.2025_rate,302,0.7192,,,,,,,False,V219_LEARNABILITY_FAIL_OR_GUARD_FAIL_PAUSE_BEFORE_TRAINING
+v2.20,O3 mid+final/global-context predictor,learnability,2.0684,4.145,0.5199,-0.7255,-1.6967,0.11125_rate,0.2667_rate,0.8508,0.00417,,,,,,False,V220_P1A_PASS_P1B_FAIL_NORMAL_GATE_PAUSE_NO_TRAINING
+v2.24,trained risk-head collapse audit,diagnostic,,,,,,,,,,0.5175,,0.0005259,,,False,V224_DIAGNOSTIC_COMPLETE_CASE_A_RISK_HEAD_COLLAPSE_LOCKED_TEST_BLOCKED
+v2.25A,direct risk soft-label / scale distillation,trained,,,,,,,,,,0.5501,0.1397,0.001669,,,False,V225A_RISK_CALIBRATION_GATE_FAIL_NORMAL_PAUSE
+v2.26,risk signal separability / trainability audit,diagnostic,,,,,,,,,,0.6436,0.2061,0.0224,False,False,False,V226_DIAGNOSTIC_COMPLETE_CURRENT_RISK_INPUT_WEAK_TRAINABILITY_FAIL_LOCKED_TEST_BLOCKED

@@ -1,0 +1,85 @@
+git branch --show-current
+codex/haze4k-v2-26-nopost-risk-signal-separability-audit
+
+git rev-parse HEAD
+30ca5aa17946ac5a4b0bac3fab556793ba52015e
+
+git status --porcelain
+ M experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/README.md
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/crop_target_noise_repeated_seed_audit.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/full_image_vs_crop_risk_consistency_compact.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/nopost_cross_route_gate_matrix_v216_v226.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/oracle_capacity_by_insertion_stage_compact.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/status.txt
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v221_positive_control_feature_importance.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_canary_overfit_curve.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_closeout.json
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_cloud_closeout_manifest.txt
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_fold_checkpoint_load_manifest.json
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_metric_epsilon_tie_sanity.json
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_optimizer_ablation_summary.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p0_constant_score_sanity.json
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p0_metric_fix_report.md
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p0_v225a_recomputed_metrics.json
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p1_join_mismatches.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p1_join_replay_audit.json
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p1_target_probability_histogram_per_fold.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p2_feature_variance_summary.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p2_probe_oof_detail.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p2_probe_summary.json
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p3_canary_final_predictions.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p3_canary_sample_manifest.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p3_canary_summary.json
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p3_gradient_flow_summary.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p3_param_update_norm.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p4_ablation_summary.json
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p4_all_variants_summary.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p4_optimizer_ablation_curve.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p4_param_update_norm_by_variant.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_phase_decisions.json
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_probe_feature_auc_table.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_probe_sample_predictions_compact.csv
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_run_manifest.json
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_source_diff_stat.txt
+?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_target_key_presence_audit.json
+
+git diff --check
+
+forbidden artifact scan
+FORBIDDEN_ARTIFACT_SCAN_OK
+
+tmux ls
+NO_TMUX_SESSIONS_REPORTED
+
+pgrep/python process scan
+NO_ACTIVE_V226_PROCESS_REPORTED
+
+locked Haze4K command/path grep result
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:303:    write_json(evid / "v226_fold_checkpoint_load_manifest.json", {"folds": rows, "locked_test_touched": False})
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:871:        "locked_test_touched": False,
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:999:        {"route": "v2.16", "mechanism": "WLDB-A trained lowband decoder", "trained_or_oracle": "trained", "mean_dpsnr": 0.081889, "hard_dpsnr": 0.105887, "easy_dpsnr": 0.020994, "p05": "", "cvar5": "", "severe_count": 67, "strong_reference_regressions": 48, "positive_ratio": 0.6625, "wrong_direction_rate": "", "risk_auc": "", "risk_ap": "", "risk_prob_std": "", "canary_pass": "", "optimizer_rescue_pass": "", "locked_test_touched": False, "decision": "WLDB_A_SCREEN_FAIL_STOP_NO_MORE_TRAINING"},
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:1000:        {"route": "v2.17-O1", "mechanism": "global final-feature LL oracle", "trained_or_oracle": "oracle", "mean_dpsnr": 0.842954, "hard_dpsnr": 1.591207, "easy_dpsnr": 0.359026, "p05": 0.001803, "cvar5": "", "severe_count": 0, "strong_reference_regressions": 0, "positive_ratio": "", "wrong_direction_rate": "", "risk_auc": "", "risk_ap": "", "risk_prob_std": "", "canary_pass": "", "optimizer_rescue_pass": "", "locked_test_touched": False, "decision": "oracle_headroom_positive_not_train_authorized"},
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:1001:        {"route": "v2.17-O2", "mechanism": "spatial final-feature LL oracle", "trained_or_oracle": "oracle", "mean_dpsnr": 6.16049, "hard_dpsnr": "", "easy_dpsnr": "", "p05": "", "cvar5": "", "severe_count": "", "strong_reference_regressions": "", "positive_ratio": "", "wrong_direction_rate": "", "risk_auc": "", "risk_ap": "", "risk_prob_std": "", "canary_pass": "", "optimizer_rescue_pass": "", "locked_test_touched": False, "decision": "oracle_headroom_positive_not_train_authorized"},
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:1002:        {"route": "v2.17-O3", "mechanism": "mid+final feature LL oracle", "trained_or_oracle": "oracle", "mean_dpsnr": 6.832469, "hard_dpsnr": "", "easy_dpsnr": "", "p05": "", "cvar5": "", "severe_count": "", "strong_reference_regressions": "", "positive_ratio": "", "wrong_direction_rate": "", "risk_auc": "", "risk_ap": "", "risk_prob_std": "", "canary_pass": "", "optimizer_rescue_pass": "", "locked_test_touched": False, "decision": "oracle_headroom_positive_not_train_authorized"},
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:1003:        {"route": "v2.18", "mechanism": "O1 deployable pooled-LL MLP", "trained_or_oracle": "learnability", "mean_dpsnr": 0.263178, "hard_dpsnr": 0.859418, "easy_dpsnr": -0.183929, "p05": -1.164642, "cvar5": -2.050251, "severe_count": 568, "strong_reference_regressions": 303, "positive_ratio": 0.592083, "wrong_direction_rate": 0.19375, "risk_auc": "", "risk_ap": "", "risk_prob_std": "", "canary_pass": "", "optimizer_rescue_pass": "", "locked_test_touched": False, "decision": "V218_PAUSE_P1_GLOBAL_POLICY_LEARNABILITY_FAIL"},
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:1004:        {"route": "v2.19", "mechanism": "O2 final-only spatial predictor", "trained_or_oracle": "learnability", "mean_dpsnr": 0.9921, "hard_dpsnr": 2.6504, "easy_dpsnr": -0.1346, "p05": -1.1486, "cvar5": -2.1058, "severe_count": "0.2025_rate", "strong_reference_regressions": 302, "positive_ratio": 0.7192, "wrong_direction_rate": "", "risk_auc": "", "risk_ap": "", "risk_prob_std": "", "canary_pass": "", "optimizer_rescue_pass": "", "locked_test_touched": False, "decision": "V219_LEARNABILITY_FAIL_OR_GUARD_FAIL_PAUSE_BEFORE_TRAINING"},
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:1005:        {"route": "v2.20", "mechanism": "O3 mid+final/global-context predictor", "trained_or_oracle": "learnability", "mean_dpsnr": 2.0684, "hard_dpsnr": 4.1450, "easy_dpsnr": 0.5199, "p05": -0.7255, "cvar5": -1.6967, "severe_count": "0.11125_rate", "strong_reference_regressions": "0.2667_rate", "positive_ratio": 0.8508, "wrong_direction_rate": 0.00417, "risk_auc": "", "risk_ap": "", "risk_prob_std": "", "canary_pass": "", "optimizer_rescue_pass": "", "locked_test_touched": False, "decision": "V220_P1A_PASS_P1B_FAIL_NORMAL_GATE_PAUSE_NO_TRAINING"},
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:1006:        {"route": "v2.24", "mechanism": "trained risk-head collapse audit", "trained_or_oracle": "diagnostic", "mean_dpsnr": "", "hard_dpsnr": "", "easy_dpsnr": "", "p05": "", "cvar5": "", "severe_count": "", "strong_reference_regressions": "", "positive_ratio": "", "wrong_direction_rate": "", "risk_auc": 0.5175, "risk_ap": "", "risk_prob_std": 0.0005259, "canary_pass": "", "optimizer_rescue_pass": "", "locked_test_touched": False, "decision": "V224_DIAGNOSTIC_COMPLETE_CASE_A_RISK_HEAD_COLLAPSE_LOCKED_TEST_BLOCKED"},
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:1007:        {"route": "v2.25A", "mechanism": "direct risk soft-label / scale distillation", "trained_or_oracle": "trained", "mean_dpsnr": "", "hard_dpsnr": "", "easy_dpsnr": "", "p05": "", "cvar5": "", "severe_count": "", "strong_reference_regressions": "", "positive_ratio": "", "wrong_direction_rate": "", "risk_auc": 0.5501, "risk_ap": 0.1397, "risk_prob_std": 0.001669, "canary_pass": "", "optimizer_rescue_pass": "", "locked_test_touched": False, "decision": "V225A_RISK_CALIBRATION_GATE_FAIL_NORMAL_PAUSE"},
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:1008:        {"route": "v2.26", "mechanism": "risk signal separability / trainability audit", "trained_or_oracle": "diagnostic", "mean_dpsnr": "", "hard_dpsnr": "", "easy_dpsnr": "", "p05": "", "cvar5": "", "severe_count": "", "strong_reference_regressions": "", "positive_ratio": "", "wrong_direction_rate": "", "risk_auc": 0.6436, "risk_ap": 0.2061, "risk_prob_std": 0.0224, "canary_pass": False, "optimizer_rescue_pass": False, "locked_test_touched": False, "decision": "V226_DIAGNOSTIC_COMPLETE_CURRENT_RISK_INPUT_WEAK_TRAINABILITY_FAIL_LOCKED_TEST_BLOCKED"},
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:1068:        "locked_test_touched": False,
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:1075:    locked_grep = run(["bash", "-lc", "grep -RInE 'locked|test' experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/*.sh experience_docx/tools/nopost_lowband_v226_risk_signal_audit.py | sed -n '1,80p'"])
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:1099:            "locked Haze4K command/path grep result",
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:1100:            locked_grep,
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh:1136:            "locked_test_touched": False,
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/tools/nopost_lowband_v226_risk_signal_audit.py:325:        "locked_test_touched": False,
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/tools/nopost_lowband_v226_risk_signal_audit.py:407:        "locked_test_touched": False,
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/tools/nopost_lowband_v226_risk_signal_audit.py:645:        "locked_test_touched": False,
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/tools/nopost_lowband_v226_risk_signal_audit.py:846:    payload = {"phase": "P3_tiny_canary_overfit", "summaries": summaries, "decision": decision, "locked_test_touched": False}
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/tools/nopost_lowband_v226_risk_signal_audit.py:890:        "locked_test_touched": False,
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/tools/nopost_lowband_v226_risk_signal_audit.py:902:        "Diagnostic route only. No action joint training, post-train rescue, or locked Haze4K test command is authorized here.",
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/tools/nopost_lowband_v226_risk_signal_audit.py:977:        "locked_test_touched": False,
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/tools/nopost_lowband_v226_risk_signal_audit.py:999:    decisions["locked_test_touched"] = False
+
+V226_CLOUD_CLOSEOUT_MANIFEST_OK_POSTRUN

@@ -1,0 +1,67 @@
+{
+  "args": {
+    "canary_epochs": 40,
+    "crop_size": 256,
+    "folds": "0,1,2",
+    "p4_epochs": 3,
+    "p4_eval_samples": 96,
+    "p4_train_samples": 192,
+    "probe_epochs": 160,
+    "seed": 226
+  },
+  "branch": "codex/haze4k-v2-26-nopost-risk-signal-separability-audit",
+  "cuda": "12.1",
+  "exact_commands": {
+    "p0_p2": "bash experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_p0_p2_audit.sh",
+    "p3": "bash experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_p3_canary.sh",
+    "p4": "bash experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_p4_ablation.sh",
+    "supplement": "bash experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh"
+  },
+  "forbidden_artifact_scan": "pass",
+  "git_diff_check": "pass",
+  "git_status_porcelain": "M experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/README.md\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_correctness_supplement.sh\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/status.txt\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_canary_overfit_curve.csv\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_closeout.json\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_optimizer_ablation_summary.csv\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p0_constant_score_sanity.json\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p0_metric_fix_report.md\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p0_v225a_recomputed_metrics.json\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p1_join_mismatches.csv\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p1_join_replay_audit.json\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p1_target_probability_histogram_per_fold.csv\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p2_probe_summary.json\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p3_canary_summary.json\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p3_param_update_norm.csv\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p4_ablation_summary.json\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p4_optimizer_ablation_curve.csv\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p4_param_update_norm_by_variant.csv\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_phase_decisions.json\n?? experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_probe_feature_auc_table.csv",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "input_files": [
+    {
+      "exists": true,
+      "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "path_tail": "wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "role": "official_checkpoint",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "size_bytes": 34797069
+    },
+    {
+      "exists": true,
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-17-nopost-lowband-alignment-tail-audit/experience_docx/experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/v216_t1_per_image_band_deltas.csv",
+      "path_tail": "repos/ConvIR-B-v2-17-nopost-lowband-alignment-tail-audit/experience_docx/experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/v216_t1_per_image_band_deltas.csv",
+      "role": "split_csv",
+      "row_count": 2400,
+      "sha256": "a99df796ada723827c7673bf2cec1c62e295969141ae22aa9d16f9da327bd9f0",
+      "size_bytes": 822869
+    },
+    {
+      "exists": true,
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-21-nopost-safety-calibrated-lowband-replay/experience_docx/experiment_logs/haze4k_v2_21_nopost_safety_calibrated_lowband_replay_20260704/v221_p1_safety_gated_replay_metrics.csv",
+      "path_tail": "repos/ConvIR-B-v2-21-nopost-safety-calibrated-lowband-replay/experience_docx/experiment_logs/haze4k_v2_21_nopost_safety_calibrated_lowband_replay_20260704/v221_p1_safety_gated_replay_metrics.csv",
+      "role": "v221_metrics_csv",
+      "row_count": 55200,
+      "sha256": "456d784cc772103c25a9c8355a7ffc50f9f5e2aad8aa38261f4265e5851a6871",
+      "size_bytes": 29446134
+    },
+    {
+      "exists": true,
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-25a-nopost-risk-softlabel-scale-distill/experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/v225a_oof_risk_eval.csv",
+      "path_tail": "repos/ConvIR-B-v2-25a-nopost-risk-softlabel-scale-distill/experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/v225a_oof_risk_eval.csv",
+      "role": "v225a_oof_risk_eval_csv",
+      "row_count": 480,
+      "sha256": "496a34020d218ed67bec49099f2c561d97623235080163f716ab4ad68d16c586",
+      "size_bytes": 76477
+    }
+  ],
+  "locked_test_touched": false,
+  "main_sync_commit": "fc5b68b",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "python_version": "3.10.20",
+  "route_commit": "30ca5aa",
+  "torch": "2.5.1+cu121"
+}

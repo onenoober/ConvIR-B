@@ -1,0 +1,5 @@
+oracle_or_policy,insertion_stage,uses_mid_context,uses_final_context,uses_global_context,mean_dpsnr,hard_dpsnr,easy_dpsnr,p05,cvar5,severe_count,strong_reference_regressions,wrong_direction_rate,notes
+v2.17 O1,global final-feature LL,False,True,True,0.842954,1.591207,0.359026,0.001803,,0,0,,oracle; headroom exists but not deployable policy
+v2.17 O2,spatial final-feature LL,False,True,False,6.16049,,,,,,,,oracle; strong capacity
+v2.17 O3,mid+final feature LL,True,True,False,6.832469,,,,,,,,oracle; strongest v2.17 feature-lowband headroom
+v2.20 P1_final_mid_global_context_predictor,mid+final/global-context predictor,True,True,True,2.0684,4.145,0.5199,-0.7255,-1.6967,0.11125_rate,0.2667_rate,0.00417,"mechanism pass, safety fail; not training authorized"

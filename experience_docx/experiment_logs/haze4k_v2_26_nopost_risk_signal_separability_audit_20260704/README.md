@@ -41,6 +41,46 @@ separability, fails fixed-sample trainability, and is not rescued by minimal
 loss/optimizer/init changes. Keep v2.25A stopped; do not run post-train
 factorial rescue, action joint training, or locked Haze4K from this route.
 
+## Supplemental Correctness Evidence
+
+Supplemental text evidence was generated on `convir-4090` with
+`run_v226_correctness_supplement.sh` and logged in
+`v226_correctness_supplement.log`. It adds implementation-correctness manifests
+and per-fold/per-sample/per-variant tables without syncing checkpoints, images,
+arrays, archives, or raw inference outputs.
+
+Key supplemental checks:
+
+- `v226_fold_checkpoint_load_manifest.json`: folds `0/1/2` all found and
+  strictly loaded the v2.25A risk-context checkpoints; missing/unexpected/shape
+  mismatch counts are all `0`.
+- `v226_target_key_presence_audit.json`: target-key missing counts, scale
+  fallback counts, NaN count, and Inf count are all `0`.
+- `v226_p2_probe_oof_detail.csv` and
+  `v226_p2_feature_variance_summary.csv`: fold-level probe and feature-variance
+  evidence for all A/B/C/D/E/F feature sets.
+- `v226_p3_canary_sample_manifest.csv`,
+  `v226_p3_canary_final_predictions.csv`, and
+  `v226_p3_gradient_flow_summary.csv`: canary sample selection, final/best
+  prediction snapshots, and epoch-by-param-group gradient/update summaries.
+- `v226_p4_all_variants_summary.csv` and refreshed
+  `v226_p4_optimizer_ablation_curve.csv`: all-variant P4 table with the
+  baseline label corrected to `baseline_soft_bce_scale_clip_wd1e-4`; replay
+  still fails the diagnostic pass line.
+- `v226_metric_epsilon_tie_sanity.json`: exact/epsilon-tie metric sanity for
+  v2.25A OOF, P3 canary32, and the P4 best-final replay.
+- `nopost_cross_route_gate_matrix_v216_v226.csv`,
+  `v221_positive_control_feature_importance.csv`,
+  `v226_probe_sample_predictions_compact.csv`,
+  `full_image_vs_crop_risk_consistency_compact.csv`,
+  `oracle_capacity_by_insertion_stage_compact.csv`, and
+  `crop_target_noise_repeated_seed_audit.csv`: compact cross-route and
+  next-direction evidence. The crop consistency files are manifest-level audits
+  of cached v2.21 image-level target rows and crop seed/box mapping; they do not
+  claim newly recomputed per-crop image metrics.
+- `v226_cloud_closeout_manifest.txt` and `v226_source_diff_stat.txt`: cloud
+  hygiene/source-diff closeout.
+
 ## Primary Artifacts
 
 - `v226_p0_metric_fix_report.md`
@@ -52,6 +92,12 @@ factorial rescue, action joint training, or locked Haze4K from this route.
 - `v226_p4_ablation_summary.json`
 - `v226_canary_overfit_curve.csv`
 - `v226_optimizer_ablation_summary.csv`
+- `v226_run_manifest.json`
+- `v226_fold_checkpoint_load_manifest.json`
+- `v226_p2_probe_oof_detail.csv`
+- `v226_p3_canary_final_predictions.csv`
+- `v226_p4_all_variants_summary.csv`
+- `v226_metric_epsilon_tie_sanity.json`
 - `v226_closeout.json`
 
 Large raw feature tensors, checkpoints, datasets, and images are not synced to GitHub by default.

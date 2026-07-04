@@ -1,0 +1,60 @@
+git show --stat 30ca5aa
+30ca5aa Add v2.26 NoPost risk signal audit
+ ...-v2-26-nopost-risk-signal-separability-audit.md |   40 +
+ .../README.md                                      |   19 +
+ .../monitor_v226.sh                                |   34 +
+ .../run_v226_p0_p2_audit.sh                        |   38 +
+ .../run_v226_p3_canary.sh                          |   39 +
+ .../run_v226_p4_ablation.sh                        |   40 +
+ .../tools/nopost_lowband_v226_risk_signal_audit.py | 1008 ++++++++++++++++++++
+ 7 files changed, 1218 insertions(+)
+
+git diff --name-only github/codex/haze4k-official-arch-anchor...github/codex/haze4k-v2-26-nopost-risk-signal-separability-audit
+Dehazing/ITS/models/NoPostGatedLowbandConvIR.py
+experience_docx/experiment_cards/2026-07-04-haze4k-v2-25a-nopost-risk-softlabel-scale-distill.md
+experience_docx/experiment_cards/2026-07-04-haze4k-v2-26-nopost-risk-signal-separability-audit.md
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/README.md
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold0/v225a_fold0_risk_summary.json
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold0/v225a_fold0_train_history.csv
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold1/v225a_fold1_risk_summary.json
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold1/v225a_fold1_train_history.csv
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold2/v225a_fold2_risk_summary.json
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold2/v225a_fold2_train_history.csv
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/monitor_v225a.sh
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/run_v225a_risk_distill.sh
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/status.txt
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/v225a_closeout.json
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/v225a_fold_summary.csv
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/v225a_gate.json
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/v225a_oof_summary.json
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/v225a_preflight.json
+experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/v225a_risk_distill.log
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/README.md
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/monitor_v226.sh
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_p0_p2_audit.sh
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_p3_canary.sh
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/run_v226_p4_ablation.sh
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/status.txt
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_canary_overfit_curve.csv
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_closeout.json
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_optimizer_ablation_summary.csv
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p0_constant_score_sanity.json
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p0_metric_fix_report.md
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p0_v225a_recomputed_metrics.json
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p1_join_mismatches.csv
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p1_join_replay_audit.json
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p1_target_probability_histogram_per_fold.csv
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p2_probe_summary.json
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p3_canary_summary.json
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p3_param_update_norm.csv
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p4_ablation_summary.json
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p4_optimizer_ablation_curve.csv
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_p4_param_update_norm_by_variant.csv
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_phase_decisions.json
+experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/v226_probe_feature_auc_table.csv
+experience_docx/tools/nopost_lowband_v222_n3_microfit.py
+experience_docx/tools/nopost_lowband_v223_oof_train.py
+experience_docx/tools/nopost_lowband_v225a_risk_softlabel_distill.py
+experience_docx/tools/nopost_lowband_v226_risk_signal_audit.py
+
+V226_SOURCE_DIFF_STAT_OK_LOCAL_REFS

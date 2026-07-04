@@ -940,3 +940,61 @@ cd /home/ubuntu/workspace/ConvIR-B-v2-26-main-evidence-sync
 git commit --amend -m 'Sync v2.26 NoPost diagnostic evidence'
 '@ | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
+
+Related recurrence during the v2.26 supplemental correctness sync: avoid
+wrapping a single-quoted SSH command inside a compact PowerShell `wsl ...
+bash -lc "..."` string. The remote command itself was simple, but the quote
+boundary reached WSL malformed and Bash exited before SSH ran.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc "ssh -n -o BatchMode=yes -o ConnectTimeout=10 convir-4090 'printf \"%s\n\" CONVIR4090_SSH_OK'"
+```
+
+Failure class:
+
+```text
+/bin/bash: -c: line 1: unexpected EOF while looking for matching `''
+```
+
+Corrected form:
+
+```powershell
+@'
+set -euo pipefail
+ssh -n -o BatchMode=yes -o ConnectTimeout=10 convir-4090 'printf "%s\n" CONVIR4090_SSH_OK'
+printf 'LOCAL_SSH_PROBE_OK\n'
+'@ | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+Related recurrence: avoid placing a Unix pipeline after `wsl ... -- <command>`
+in a PowerShell command unless the entire pipeline is inside a WSL Bash script.
+PowerShell may run the trailing command locally, where tools such as `sed` or
+`wc` are not available.
+
+Invalid forms:
+
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-v226-evidence-sync -- grep -nE 'v2\.26|NoPost' experience_docx/EXPERIMENT_INDEX.md | sed -n '1,120p'
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-v226-evidence-sync -- find experience_docx/experiment_logs/... -maxdepth 1 -type f | wc -l
+```
+
+Failure class:
+
+```text
+sed : The term 'sed' is not recognized
+wc : The term 'wc' is not recognized
+```
+
+Corrected form:
+
+```powershell
+@'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B-v226-evidence-sync
+grep -nE 'v2\.26|NoPost' experience_docx/EXPERIMENT_INDEX.md | sed -n '1,120p'
+find experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704 -maxdepth 1 -type f | wc -l
+printf 'LOCAL_WSL_PIPELINE_OK\n'
+'@ | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```

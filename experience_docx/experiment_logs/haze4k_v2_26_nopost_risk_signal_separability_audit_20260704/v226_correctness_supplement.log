@@ -1,0 +1,150 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-26-nopost-risk-signal-separability-audit/experience_docx/tools/nopost_lowband_v222_n3_microfit.py:166: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+V226_P2_EXTRACT progress=100/1440
+V226_P2_EXTRACT progress=200/1440
+V226_P2_EXTRACT progress=300/1440
+V226_P2_EXTRACT progress=400/1440
+V226_P2_EXTRACT progress=500/1440
+V226_P2_EXTRACT progress=600/1440
+V226_P2_EXTRACT progress=700/1440
+V226_P2_EXTRACT progress=800/1440
+V226_P2_EXTRACT progress=900/1440
+V226_P2_EXTRACT progress=1000/1440
+V226_P2_EXTRACT progress=1100/1440
+V226_P2_EXTRACT progress=1200/1440
+V226_P2_EXTRACT progress=1300/1440
+V226_P2_EXTRACT progress=1400/1440
+SUPPLEMENT_P2_DETAIL feature=A_mid_ll_pooled kind=linear
+SUPPLEMENT_P2_DETAIL feature=A_mid_ll_pooled kind=mlp
+SUPPLEMENT_P2_DETAIL feature=B_final_ll_pooled kind=linear
+SUPPLEMENT_P2_DETAIL feature=B_final_ll_pooled kind=mlp
+SUPPLEMENT_P2_DETAIL feature=C_final_ll_mid_global_context kind=linear
+SUPPLEMENT_P2_DETAIL feature=C_final_ll_mid_global_context kind=mlp
+SUPPLEMENT_P2_DETAIL feature=D_risk_hidden_before_final_1x1 kind=linear
+SUPPLEMENT_P2_DETAIL feature=D_risk_hidden_before_final_1x1 kind=mlp
+SUPPLEMENT_P2_DETAIL feature=E_v221_cached_scalar_positive_control kind=linear
+SUPPLEMENT_P2_DETAIL feature=E_v221_cached_scalar_positive_control kind=mlp
+SUPPLEMENT_P2_DETAIL feature=F_current_features_plus_v221_scalar kind=linear
+SUPPLEMENT_P2_DETAIL feature=F_current_features_plus_v221_scalar kind=mlp
+SUPPLEMENT_P3 canary32 epoch=1/40
+SUPPLEMENT_P3 canary32 epoch=2/40
+SUPPLEMENT_P3 canary32 epoch=3/40
+SUPPLEMENT_P3 canary32 epoch=4/40
+SUPPLEMENT_P3 canary32 epoch=5/40
+SUPPLEMENT_P3 canary32 epoch=6/40
+SUPPLEMENT_P3 canary32 epoch=7/40
+SUPPLEMENT_P3 canary32 epoch=8/40
+SUPPLEMENT_P3 canary32 epoch=9/40
+SUPPLEMENT_P3 canary32 epoch=10/40
+SUPPLEMENT_P3 canary32 epoch=11/40
+SUPPLEMENT_P3 canary32 epoch=12/40
+SUPPLEMENT_P3 canary32 epoch=13/40
+SUPPLEMENT_P3 canary32 epoch=14/40
+SUPPLEMENT_P3 canary32 epoch=15/40
+SUPPLEMENT_P3 canary32 epoch=16/40
+SUPPLEMENT_P3 canary32 epoch=17/40
+SUPPLEMENT_P3 canary32 epoch=18/40
+SUPPLEMENT_P3 canary32 epoch=19/40
+SUPPLEMENT_P3 canary32 epoch=20/40
+SUPPLEMENT_P3 canary32 epoch=21/40
+SUPPLEMENT_P3 canary32 epoch=22/40
+SUPPLEMENT_P3 canary32 epoch=23/40
+SUPPLEMENT_P3 canary32 epoch=24/40
+SUPPLEMENT_P3 canary32 epoch=25/40
+SUPPLEMENT_P3 canary32 epoch=26/40
+SUPPLEMENT_P3 canary32 epoch=27/40
+SUPPLEMENT_P3 canary32 epoch=28/40
+SUPPLEMENT_P3 canary32 epoch=29/40
+SUPPLEMENT_P3 canary32 epoch=30/40
+SUPPLEMENT_P3 canary32 epoch=31/40
+SUPPLEMENT_P3 canary32 epoch=32/40
+SUPPLEMENT_P3 canary32 epoch=33/40
+SUPPLEMENT_P3 canary32 epoch=34/40
+SUPPLEMENT_P3 canary32 epoch=35/40
+SUPPLEMENT_P3 canary32 epoch=36/40
+SUPPLEMENT_P3 canary32 epoch=37/40
+SUPPLEMENT_P3 canary32 epoch=38/40
+SUPPLEMENT_P3 canary32 epoch=39/40
+SUPPLEMENT_P3 canary32 epoch=40/40
+SUPPLEMENT_P3 canary64 epoch=1/40
+SUPPLEMENT_P3 canary64 epoch=2/40
+SUPPLEMENT_P3 canary64 epoch=3/40
+SUPPLEMENT_P3 canary64 epoch=4/40
+SUPPLEMENT_P3 canary64 epoch=5/40
+SUPPLEMENT_P3 canary64 epoch=6/40
+SUPPLEMENT_P3 canary64 epoch=7/40
+SUPPLEMENT_P3 canary64 epoch=8/40
+SUPPLEMENT_P3 canary64 epoch=9/40
+SUPPLEMENT_P3 canary64 epoch=10/40
+SUPPLEMENT_P3 canary64 epoch=11/40
+SUPPLEMENT_P3 canary64 epoch=12/40
+SUPPLEMENT_P3 canary64 epoch=13/40
+SUPPLEMENT_P3 canary64 epoch=14/40
+SUPPLEMENT_P3 canary64 epoch=15/40
+SUPPLEMENT_P3 canary64 epoch=16/40
+SUPPLEMENT_P3 canary64 epoch=17/40
+SUPPLEMENT_P3 canary64 epoch=18/40
+SUPPLEMENT_P3 canary64 epoch=19/40
+SUPPLEMENT_P3 canary64 epoch=20/40
+SUPPLEMENT_P3 canary64 epoch=21/40
+SUPPLEMENT_P3 canary64 epoch=22/40
+SUPPLEMENT_P3 canary64 epoch=23/40
+SUPPLEMENT_P3 canary64 epoch=24/40
+SUPPLEMENT_P3 canary64 epoch=25/40
+SUPPLEMENT_P3 canary64 epoch=26/40
+SUPPLEMENT_P3 canary64 epoch=27/40
+SUPPLEMENT_P3 canary64 epoch=28/40
+SUPPLEMENT_P3 canary64 epoch=29/40
+SUPPLEMENT_P3 canary64 epoch=30/40
+SUPPLEMENT_P3 canary64 epoch=31/40
+SUPPLEMENT_P3 canary64 epoch=32/40
+SUPPLEMENT_P3 canary64 epoch=33/40
+SUPPLEMENT_P3 canary64 epoch=34/40
+SUPPLEMENT_P3 canary64 epoch=35/40
+SUPPLEMENT_P3 canary64 epoch=36/40
+SUPPLEMENT_P3 canary64 epoch=37/40
+SUPPLEMENT_P3 canary64 epoch=38/40
+SUPPLEMENT_P3 canary64 epoch=39/40
+SUPPLEMENT_P3 canary64 epoch=40/40
+SUPPLEMENT_P4 variant=baseline_soft_bce_scale_clip_wd1e-4
+SUPPLEMENT_P4 variant=bce_only
+SUPPLEMENT_P4 variant=no_grad_clip
+SUPPLEMENT_P4 variant=lr_3e_4
+SUPPLEMENT_P4 variant=lr_1e_3
+SUPPLEMENT_P4 variant=weight_decay_0
+SUPPLEMENT_P4 variant=tiny_nonzero_init
+SUPPLEMENT_P4 variant=logit_target_mse
+SUPPLEMENT_P4 variant=class_balanced_bce
+SUPPLEMENT_P4 variant=focal_bce
+SUPPLEMENT_B2 feature=oof_fold
+SUPPLEMENT_B2 feature=A0_PSNR
+SUPPLEMENT_B2 feature=candidate_PSNR
+SUPPLEMENT_B2 feature=dPSNR
+SUPPLEMENT_B2 feature=o2_oracle_dPSNR
+SUPPLEMENT_B2 feature=o3_oracle_dPSNR
+SUPPLEMENT_B2 feature=o3_minus_o2_dPSNR
+SUPPLEMENT_B2 feature=mid_pred_delta_abs_mean
+SUPPLEMENT_B2 feature=mid_pred_delta_rms
+SUPPLEMENT_B2 feature=mid_pred_delta_abs_max
+SUPPLEMENT_B2 feature=mid_pred_spatial_entropy
+SUPPLEMENT_B2 feature=mid_pred_local_peak_ratio
+SUPPLEMENT_B2 feature=final_pred_delta_abs_mean
+SUPPLEMENT_B2 feature=final_pred_delta_rms
+SUPPLEMENT_B2 feature=final_pred_delta_abs_max
+SUPPLEMENT_B2 feature=final_pred_spatial_entropy
+SUPPLEMENT_B2 feature=final_pred_local_peak_ratio
+SUPPLEMENT_B2 feature=mid_target_delta_abs_mean
+SUPPLEMENT_B2 feature=mid_target_delta_rms
+SUPPLEMENT_B2 feature=final_target_delta_abs_mean
+SUPPLEMENT_B2 feature=final_target_delta_rms
+SUPPLEMENT_B2 feature=cosine_to_o3_delta
+SUPPLEMENT_B2 feature=dot_to_o3_delta
+SUPPLEMENT_B2 feature=wrong_direction
+SUPPLEMENT_B2 feature=hard_bottom25
+SUPPLEMENT_B2 feature=easy_top25
+SUPPLEMENT_B2 feature=strong_reference
+SUPPLEMENT_B2 feature=middle50
+SUPPLEMENT_B2 feature=unsafe_action_probability
+SUPPLEMENT_B2 feature=risk_scale
+SUPPLEMENT_B2 feature=raw_action_dPSNR
+V226_CORRECTNESS_SUPPLEMENT_OK

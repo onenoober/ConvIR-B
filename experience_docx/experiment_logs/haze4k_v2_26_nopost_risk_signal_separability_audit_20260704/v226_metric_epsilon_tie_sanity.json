@@ -1,0 +1,176 @@
+{
+  "constant_score_control": {
+    "ap": 0.12708333333333333,
+    "auc": 0.5,
+    "base_rate": 0.12708333333333333
+  },
+  "datasets": [
+    "v225a_oof",
+    "p3_canary32_epoch1",
+    "p3_canary32_final",
+    "p4_best_final"
+  ],
+  "locked_test_touched": false,
+  "metrics": [
+    {
+      "ap": 0.13965163934426228,
+      "auc": 0.5500802065808521,
+      "dataset": "v225a_oof",
+      "prob_std": 0.0016692509020246116,
+      "round_digits": null,
+      "unique_scores": 3
+    },
+    {
+      "ap": 0.13965163934426228,
+      "auc": 0.5500802065808521,
+      "dataset": "v225a_oof",
+      "prob_std": 0.0016692509020246116,
+      "round_digits": 6,
+      "unique_scores": 3
+    },
+    {
+      "ap": 0.13965163934426228,
+      "auc": 0.5500802065808521,
+      "dataset": "v225a_oof",
+      "prob_std": 0.0016692509020246116,
+      "round_digits": 5,
+      "unique_scores": 3
+    },
+    {
+      "ap": 0.13965163934426228,
+      "auc": 0.5500802065808521,
+      "dataset": "v225a_oof",
+      "prob_std": 0.0016692509020246116,
+      "round_digits": 4,
+      "unique_scores": 3
+    },
+    {
+      "ap": 0.13965163934426228,
+      "auc": 0.5500802065808521,
+      "dataset": "v225a_oof",
+      "prob_std": 0.0016692509020246116,
+      "round_digits": 3,
+      "unique_scores": 3
+    },
+    {
+      "ap": 0.5619732217629815,
+      "auc": 0.51953125,
+      "dataset": "p3_canary32_epoch1",
+      "prob_std": 2.4070233285224956e-06,
+      "round_digits": null,
+      "unique_scores": 32
+    },
+    {
+      "ap": 0.5717174369747899,
+      "auc": 0.515625,
+      "dataset": "p3_canary32_epoch1",
+      "prob_std": 2.4070233285224956e-06,
+      "round_digits": 6,
+      "unique_scores": 11
+    },
+    {
+      "ap": 0.4625,
+      "auc": 0.375,
+      "dataset": "p3_canary32_epoch1",
+      "prob_std": 2.4070233285224956e-06,
+      "round_digits": 5,
+      "unique_scores": 2
+    },
+    {
+      "ap": 0.5,
+      "auc": 0.5,
+      "dataset": "p3_canary32_epoch1",
+      "prob_std": 2.4070233285224956e-06,
+      "round_digits": 4,
+      "unique_scores": 1
+    },
+    {
+      "ap": 0.5,
+      "auc": 0.5,
+      "dataset": "p3_canary32_epoch1",
+      "prob_std": 2.4070233285224956e-06,
+      "round_digits": 3,
+      "unique_scores": 1
+    },
+    {
+      "ap": 0.5,
+      "auc": 0.5,
+      "dataset": "p3_canary32_final",
+      "prob_std": 0.0,
+      "round_digits": null,
+      "unique_scores": 1
+    },
+    {
+      "ap": 0.5,
+      "auc": 0.5,
+      "dataset": "p3_canary32_final",
+      "prob_std": 0.0,
+      "round_digits": 6,
+      "unique_scores": 1
+    },
+    {
+      "ap": 0.5,
+      "auc": 0.5,
+      "dataset": "p3_canary32_final",
+      "prob_std": 0.0,
+      "round_digits": 5,
+      "unique_scores": 1
+    },
+    {
+      "ap": 0.5,
+      "auc": 0.5,
+      "dataset": "p3_canary32_final",
+      "prob_std": 0.0,
+      "round_digits": 4,
+      "unique_scores": 1
+    },
+    {
+      "ap": 0.5,
+      "auc": 0.5,
+      "dataset": "p3_canary32_final",
+      "prob_std": 0.0,
+      "round_digits": 3,
+      "unique_scores": 1
+    },
+    {
+      "ap": 0.4353782615514275,
+      "auc": 0.7381864623243933,
+      "dataset": "p4_best_final",
+      "prob_std": 0.021454215015396252,
+      "round_digits": null,
+      "unique_scores": 96
+    },
+    {
+      "ap": 0.4353782615514275,
+      "auc": 0.7381864623243933,
+      "dataset": "p4_best_final",
+      "prob_std": 0.021454215015396252,
+      "round_digits": 6,
+      "unique_scores": 96
+    },
+    {
+      "ap": 0.4353782615514275,
+      "auc": 0.7381864623243933,
+      "dataset": "p4_best_final",
+      "prob_std": 0.021454215015396252,
+      "round_digits": 5,
+      "unique_scores": 96
+    },
+    {
+      "ap": 0.4353782615514275,
+      "auc": 0.7388250319284803,
+      "dataset": "p4_best_final",
+      "prob_std": 0.021454215015396252,
+      "round_digits": 4,
+      "unique_scores": 85
+    },
+    {
+      "ap": 0.4072080713372206,
+      "auc": 0.7381864623243933,
+      "dataset": "p4_best_final",
+      "prob_std": 0.021454215015396252,
+      "round_digits": 3,
+      "unique_scores": 50
+    }
+  ]
+}
