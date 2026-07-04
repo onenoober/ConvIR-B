@@ -1,0 +1,7 @@
+{
+  "conservative_noop_preference_count": 0,
+  "conservative_noop_preference_rate": 0.0,
+  "hard_medium_strong_preference_rate": 1.0,
+  "sample_count": 80,
+  "strong_unsafe_rate": 0.0
+}

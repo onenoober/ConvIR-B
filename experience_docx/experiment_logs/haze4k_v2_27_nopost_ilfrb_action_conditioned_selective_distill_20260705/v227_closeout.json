@@ -1,0 +1,158 @@
+{
+  "decision": "P2_FAIL_ACTION_BANK_STRATIFICATION_PAUSE",
+  "locked_test_touched": false,
+  "p1": {
+    "decision": "P1_PASS_INTERNAL_ORACLE_CAPACITY",
+    "pass": true,
+    "primary_variant": "S6_early_mid_final",
+    "summary": [
+      {
+        "CVaR5_dPSNR": 3.654852867126465,
+        "action_coverage": 1.0,
+        "count": 80,
+        "delta_abs_mean": 0.04555713296867907,
+        "easy_top25_dPSNR": 5.65316219329834,
+        "hard_bottom25_dPSNR": 6.64469690322876,
+        "mean_dPSNR": 6.322491717338562,
+        "p05_dPSNR": 3.998569297790527,
+        "scope": "all",
+        "severe_count": 0,
+        "severe_rate": 0.0,
+        "strong_reference_regression_rate": 0.0,
+        "strong_reference_regressions": 0,
+        "variant": "S1_bottleneck",
+        "wrong_direction_rate": 0.0
+      },
+      {
+        "CVaR5_dPSNR": 1.7682924270629883,
+        "action_coverage": 1.0,
+        "count": 80,
+        "delta_abs_mean": 0.038027140172198416,
+        "easy_top25_dPSNR": 4.281468772888184,
+        "hard_bottom25_dPSNR": 4.610479068756104,
+        "mean_dPSNR": 4.761386179924012,
+        "p05_dPSNR": 2.329216957092285,
+        "scope": "all",
+        "severe_count": 0,
+        "severe_rate": 0.0,
+        "strong_reference_regression_rate": 0.0,
+        "strong_reference_regressions": 0,
+        "variant": "S2_early_decoder",
+        "wrong_direction_rate": 0.0
+      },
+      {
+        "CVaR5_dPSNR": 2.1586437225341797,
+        "action_coverage": 1.0,
+        "count": 80,
+        "delta_abs_mean": 0.012960848497459664,
+        "easy_top25_dPSNR": 5.047655487060547,
+        "hard_bottom25_dPSNR": 6.627962970733643,
+        "mean_dPSNR": 6.1205219507217405,
+        "p05_dPSNR": 3.318324661254883,
+        "scope": "all",
+        "severe_count": 0,
+        "severe_rate": 0.0,
+        "strong_reference_regression_rate": 0.0,
+        "strong_reference_regressions": 0,
+        "variant": "S3_mid_decoder",
+        "wrong_direction_rate": 0.0
+      },
+      {
+        "CVaR5_dPSNR": 3.381901264190674,
+        "action_coverage": 1.0,
+        "count": 80,
+        "delta_abs_mean": 0.004971284567727707,
+        "easy_top25_dPSNR": 5.743356513977051,
+        "hard_bottom25_dPSNR": 6.748129367828369,
+        "mean_dPSNR": 6.6115111112594604,
+        "p05_dPSNR": 3.7139812469482423,
+        "scope": "all",
+        "severe_count": 0,
+        "severe_rate": 0.0,
+        "strong_reference_regression_rate": 0.0,
+        "strong_reference_regressions": 0,
+        "variant": "S4_final_decoder",
+        "wrong_direction_rate": 0.0
+      },
+      {
+        "CVaR5_dPSNR": 4.026424407958984,
+        "action_coverage": 1.0,
+        "count": 80,
+        "delta_abs_mean": 0.01684938815305941,
+        "easy_top25_dPSNR": 6.207111740112305,
+        "hard_bottom25_dPSNR": 8.82476739883423,
+        "mean_dPSNR": 7.578598999977112,
+        "p05_dPSNR": 4.480344200134278,
+        "scope": "all",
+        "severe_count": 0,
+        "severe_rate": 0.0,
+        "strong_reference_regression_rate": 0.0,
+        "strong_reference_regressions": 0,
+        "variant": "S5_bottleneck_mid",
+        "wrong_direction_rate": 0.0
+      },
+      {
+        "CVaR5_dPSNR": 3.8851137161254883,
+        "action_coverage": 1.0,
+        "count": 80,
+        "delta_abs_mean": 0.0071801332892694825,
+        "easy_top25_dPSNR": 6.182864189147949,
+        "hard_bottom25_dPSNR": 9.42444200515747,
+        "mean_dPSNR": 7.850901341438293,
+        "p05_dPSNR": 4.516989135742188,
+        "scope": "all",
+        "severe_count": 0,
+        "severe_rate": 0.0,
+        "strong_reference_regression_rate": 0.0,
+        "strong_reference_regressions": 0,
+        "variant": "S6_early_mid_final",
+        "wrong_direction_rate": 0.0
+      }
+    ]
+  },
+  "p2": {
+    "curve": [
+      {
+        "action": "noop",
+        "mean_dPSNR": -3.6954879760742188e-06,
+        "p05_dPSNR": -0.000194549560546875,
+        "severe_rate": 0.0,
+        "strength": 0.0,
+        "unsafe_rate": 0.0
+      },
+      {
+        "action": "mild",
+        "mean_dPSNR": 2.944932198524475,
+        "p05_dPSNR": 2.292669486999512,
+        "severe_rate": 0.0,
+        "strength": 0.33,
+        "unsafe_rate": 0.0
+      },
+      {
+        "action": "medium",
+        "mean_dPSNR": 6.50876476764679,
+        "p05_dPSNR": 4.327285385131836,
+        "severe_rate": 0.0,
+        "strength": 0.67,
+        "unsafe_rate": 0.0
+      },
+      {
+        "action": "strong",
+        "mean_dPSNR": 5.808358597755432,
+        "p05_dPSNR": 2.7555233001708985,
+        "severe_rate": 0.0,
+        "strength": 1.25,
+        "unsafe_rate": 0.0
+      }
+    ],
+    "decision": "P2_FAIL_ACTION_BANK_STRATIFICATION_PAUSE",
+    "noop_report": {
+      "conservative_noop_preference_count": 0,
+      "conservative_noop_preference_rate": 0.0,
+      "hard_medium_strong_preference_rate": 1.0,
+      "sample_count": 80,
+      "strong_unsafe_rate": 0.0
+    },
+    "pass": false
+  }
+}
