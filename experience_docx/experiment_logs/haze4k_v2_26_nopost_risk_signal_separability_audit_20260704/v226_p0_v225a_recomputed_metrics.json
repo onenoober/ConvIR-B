@@ -1,0 +1,51 @@
+{
+  "branch": "codex/haze4k-v2-26-nopost-risk-signal-separability-audit",
+  "commit": "30ca5aa",
+  "decision": "V226_P0_V225A_AP_PASS_INVALID_DIAGNOSTIC_ARTIFACT",
+  "folds": [
+    {
+      "average_precision_buggy": 1.0,
+      "average_precision_tie_aware": 0.09375,
+      "count": 160,
+      "fold": 0,
+      "label_base_rate": 0.09375,
+      "roc_auc": 0.5,
+      "trained_prob_std": 0.0
+    },
+    {
+      "average_precision_buggy": 1.0,
+      "average_precision_tie_aware": 0.14375,
+      "count": 160,
+      "fold": 1,
+      "label_base_rate": 0.14375,
+      "roc_auc": 0.5,
+      "trained_prob_std": 0.0
+    },
+    {
+      "average_precision_buggy": 1.0,
+      "average_precision_tie_aware": 0.14375,
+      "count": 160,
+      "fold": 2,
+      "label_base_rate": 0.14375,
+      "roc_auc": 0.5,
+      "trained_prob_std": 0.0
+    }
+  ],
+  "locked_test_touched": false,
+  "phase": "P0_metric_fix",
+  "summary": {
+    "average_precision_buggy": 0.4937745923792122,
+    "average_precision_tie_aware": 0.13965163934426228,
+    "count": 480,
+    "ece10": 0.05257191310326259,
+    "label_base_rate": 0.12708333333333333,
+    "mce10": 0.05257191310326259,
+    "roc_auc": 0.5500802065808521,
+    "target_prob_mae": 0.24880989863237726,
+    "trained_prob_max": 0.1819733828306198,
+    "trained_prob_mean": 0.17965524643659592,
+    "trained_prob_min": 0.178109809756279,
+    "trained_prob_std": 0.0016692509020246116
+  },
+  "v225a_evid": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-25a-nopost-risk-softlabel-scale-distill/experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704"
+}
