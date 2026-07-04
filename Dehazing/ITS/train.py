@@ -10,6 +10,35 @@ import torch.nn as nn
 from warmup_scheduler import GradualWarmupScheduler
 
 
+def _configure_train_scope(model, args):
+    scope = getattr(args, 'nopost_train_scope', 'all')
+    if scope == 'all':
+        params = list(model.parameters())
+        print('TRAIN_SCOPE all trainable_params=%d' % sum(p.numel() for p in params if p.requires_grad))
+        return params
+    if scope != 'adapter_only':
+        raise ValueError(f'Unsupported nopost_train_scope: {scope}')
+    trainable_prefixes = ('nopost_gated_lowband_policy.',)
+    trainable = []
+    frozen_count = 0
+    for name, param in model.named_parameters():
+        is_trainable = name.startswith(trainable_prefixes)
+        param.requires_grad_(is_trainable)
+        if is_trainable:
+            trainable.append(param)
+        else:
+            frozen_count += param.numel()
+    for name, module in model.named_modules():
+        if not name.startswith('nopost_gated_lowband_policy'):
+            module.eval()
+    trainable_count = sum(p.numel() for p in trainable)
+    print(
+        'TRAIN_SCOPE adapter_only trainable_prefixes=%s trainable_params=%d frozen_params=%d'
+        % (','.join(trainable_prefixes), trainable_count, frozen_count)
+    )
+    return trainable
+
+
 def _log_modulation_stats(model, args, epoch_idx, device):
     if args.mod_stats_freq <= 0 or epoch_idx % args.mod_stats_freq != 0:
         return
@@ -64,7 +93,8 @@ def _train(model, args):
     criterion = torch.nn.L1Loss()
 
     learning_rate = getattr(args, 'learning_rate', getattr(args, 'leaning_rate', 1e-4))
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.9, 0.999), eps=1e-8)
+    trainable_params = _configure_train_scope(model, args)
+    optimizer = torch.optim.Adam(trainable_params, lr=learning_rate, betas=(0.9, 0.999), eps=1e-8)
     dataloader = train_dataloader(args.data_dir, args.batch_size, args.num_worker, args.data)
     max_iter = len(dataloader)
     warmup_epochs=3
