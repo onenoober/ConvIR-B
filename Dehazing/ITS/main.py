@@ -22,6 +22,16 @@ def load_init_model(model, args):
     if args.resume:
         raise ValueError('--init_model initializes weights; --resume restores optimizer state. Use only one.')
     state = _load_checkpoint_model(args.init_model, 'cpu')
+    if args.arch == 'nopost_gated_lowband':
+        from models.NoPostGatedLowbandConvIR import load_haze4k_partial
+        result = load_haze4k_partial(model, state)
+        print(
+            f"INIT_MODEL_PARTIAL_LOAD path={args.init_model} "
+            f"loaded={result['loaded_count']} "
+            f"missing_new={result['missing_new_module_count']} "
+            f"unexpected={result['unexpected']} shape_mismatch={result['shape_mismatch']}"
+        )
+        return
     model.load_state_dict(state)
     print(f'INIT_MODEL_LOAD path={args.init_model} missing=[] unexpected=[]')
 
@@ -44,7 +54,20 @@ def main(args):
         os.makedirs('results/' + args.model_name + '/')
     if not os.path.exists(args.result_dir):
         os.makedirs(args.result_dir)
-    model = build_net(args.version, args.data, args.fam_mode)
+    if args.arch == 'nopost_gated_lowband':
+        from models.NoPostGatedLowbandConvIR import build_net as build_route_net
+        model = build_route_net(
+            args.version,
+            args.data,
+            args.fam_mode,
+            hidden_channels=args.nopost_hidden_channels,
+            mid_grid=args.nopost_mid_grid,
+            final_grid=args.nopost_final_grid,
+            risk_gamma=args.nopost_risk_gamma,
+            risk_bias=args.nopost_risk_bias,
+        )
+    else:
+        model = build_net(args.version, args.data, args.fam_mode)
     # print(model)
 
     if torch.cuda.is_available():
@@ -65,7 +88,7 @@ if __name__ == '__main__':
     parser.add_argument('--data', type=str, default='ITS', choices=['ITS', 'Haze4K', 'NHR', 'GTA5', 'real_haze'])
     parser.add_argument('--version', default='small', choices=['small', 'base', 'large'], type=str)
     parser.add_argument('--fam_mode', default='original', choices=['original'], type=str)
-    parser.add_argument('--arch', default='official_convir', choices=['official_convir', 'convir'], type=str)
+    parser.add_argument('--arch', default='official_convir', choices=['official_convir', 'convir', 'nopost_gated_lowband'], type=str)
     parser.add_argument('--seed', default=-1, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
@@ -86,6 +109,12 @@ if __name__ == '__main__':
     parser.add_argument('--grad_clip_norm', type=float, default=0.001)
     parser.add_argument('--init_model', type=str, default='')
     parser.add_argument('--resume', type=str, default='')
+    parser.add_argument('--nopost_hidden_channels', type=int, default=32)
+    parser.add_argument('--nopost_mid_grid', type=int, default=8)
+    parser.add_argument('--nopost_final_grid', type=int, default=16)
+    parser.add_argument('--nopost_risk_gamma', type=float, default=0.5)
+    parser.add_argument('--nopost_risk_bias', type=float, default=-1.5)
+    parser.add_argument('--nopost_train_scope', default='all', choices=['all', 'adapter_only'], type=str)
 
 
     # uncomment for different datasets
@@ -115,8 +144,8 @@ if __name__ == '__main__':
     parser.add_argument('--save_image', type=bool, default=False, choices=[True, False])
 
     args = parser.parse_args()
-    if args.arch not in ('official_convir', 'convir'):
-        raise ValueError('Official anchor only supports the official ConvIR-B architecture.')
+    if args.arch not in ('official_convir', 'convir', 'nopost_gated_lowband'):
+        raise ValueError('Unsupported architecture.')
     # Backward-compatible alias for route scripts that used the misspelled name.
     args.leaning_rate = args.learning_rate
     args.model_save_dir = os.path.join('results/', args.model_name, 'Training-Results/')
