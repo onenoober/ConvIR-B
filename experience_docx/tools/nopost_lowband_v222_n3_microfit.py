@@ -35,6 +35,7 @@ from models.NoPostGatedLowbandConvIR import load_haze4k_partial  # noqa: E402
 
 SEVERE = -0.20
 STRONG_REG = -0.05
+IMG_EXTENSIONS = (".bmp", ".jpg", ".jpeg", ".png", ".tif", ".tiff")
 
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -281,7 +282,11 @@ def sample_rows(args: argparse.Namespace) -> list[str]:
         names = [row["name"] for row in rows]
     else:
         input_dir, _ = train_dirs(args.data_dir)
-        names = sorted(path.name for path in input_dir.iterdir() if path.is_file())
+        names = sorted(
+            path.name
+            for path in input_dir.iterdir()
+            if path.is_file() and path.suffix.lower() in IMG_EXTENSIONS
+        )
     if args.max_images > 0:
         names = names[: args.max_images]
     return names
@@ -507,7 +512,11 @@ def preflight(args: argparse.Namespace, out_dir: Path, device: torch.device) -> 
     a0, model, partial = load_a0_and_route(args, device)
     scope = set_train_scope(model, args.train_scope)
     input_dir, gt_dir = train_dirs(args.data_dir)
-    names = sorted(path.name for path in input_dir.iterdir() if path.is_file())
+    names = sorted(
+        path.name
+        for path in input_dir.iterdir()
+        if path.is_file() and path.suffix.lower() in IMG_EXTENSIONS
+    )
     sample_name = names[0]
     x = image_tensor(input_dir / sample_name, device)
     y = image_tensor(label_path(gt_dir, sample_name), device)
