@@ -4,7 +4,9 @@ import argparse
 import random
 import shutil
 from torch.backends import cudnn
-from models.ConvIR import build_net
+from models.ConvIR import build_net as build_official_net
+from models.ILFRBACSConvIR import build_net as build_ilfrb_acs_net
+from models.ILFRBACSConvIR import load_haze4k_partial as load_ilfrb_acs_partial
 from train import _train
 from eval import _eval
 
@@ -16,12 +18,38 @@ def _load_checkpoint_model(path, map_location):
     return state
 
 
+def build_model(args):
+    if args.arch in ('official_convir', 'convir'):
+        return build_official_net(args.version, args.data, args.fam_mode)
+    if args.arch == 'v227_ilfrb_acs':
+        return build_ilfrb_acs_net(
+            args.version,
+            args.data,
+            args.fam_mode,
+            hidden_channels=args.ilfrb_hidden_channels,
+            delta_scale=args.ilfrb_delta_scale,
+            coverage_budget=args.ilfrb_coverage_budget,
+        )
+    raise ValueError(f'Unsupported architecture: {args.arch}')
+
+
 def load_init_model(model, args):
     if not args.init_model:
         return
     if args.resume:
         raise ValueError('--init_model initializes weights; --resume restores optimizer state. Use only one.')
     state = _load_checkpoint_model(args.init_model, 'cpu')
+    if args.arch == 'v227_ilfrb_acs':
+        partial = load_ilfrb_acs_partial(model, state)
+        print(
+            'INIT_MODEL_PARTIAL_LOAD '
+            f'path={args.init_model} '
+            f'loaded_count={partial["loaded_count"]} '
+            f'missing_new_module_count={partial["missing_new_module_count"]} '
+            f'unexpected={partial["unexpected"]} '
+            f'shape_mismatch={partial["shape_mismatch"]}'
+        )
+        return
     model.load_state_dict(state)
     print(f'INIT_MODEL_LOAD path={args.init_model} missing=[] unexpected=[]')
 
@@ -44,7 +72,7 @@ def main(args):
         os.makedirs('results/' + args.model_name + '/')
     if not os.path.exists(args.result_dir):
         os.makedirs(args.result_dir)
-    model = build_net(args.version, args.data, args.fam_mode)
+    model = build_model(args)
     # print(model)
 
     if torch.cuda.is_available():
@@ -65,7 +93,10 @@ if __name__ == '__main__':
     parser.add_argument('--data', type=str, default='ITS', choices=['ITS', 'Haze4K', 'NHR', 'GTA5', 'real_haze'])
     parser.add_argument('--version', default='small', choices=['small', 'base', 'large'], type=str)
     parser.add_argument('--fam_mode', default='original', choices=['original'], type=str)
-    parser.add_argument('--arch', default='official_convir', choices=['official_convir', 'convir'], type=str)
+    parser.add_argument('--arch', default='official_convir', choices=['official_convir', 'convir', 'v227_ilfrb_acs'], type=str)
+    parser.add_argument('--ilfrb_hidden_channels', default=32, type=int)
+    parser.add_argument('--ilfrb_delta_scale', default=0.25, type=float)
+    parser.add_argument('--ilfrb_coverage_budget', default=0.35, type=float)
     parser.add_argument('--seed', default=-1, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
@@ -115,15 +146,23 @@ if __name__ == '__main__':
     parser.add_argument('--save_image', type=bool, default=False, choices=[True, False])
 
     args = parser.parse_args()
-    if args.arch not in ('official_convir', 'convir'):
-        raise ValueError('Official anchor only supports the official ConvIR-B architecture.')
     # Backward-compatible alias for route scripts that used the misspelled name.
     args.leaning_rate = args.learning_rate
     args.model_save_dir = os.path.join('results/', args.model_name, 'Training-Results/')
     args.result_dir = os.path.join('results/', args.model_name, 'images', args.data)
     if not os.path.exists(args.model_save_dir):
         os.makedirs(args.model_save_dir)
-    for source in ('models/layers.py', 'models/ConvIR.py', 'data/data_load.py', 'data/data_augment.py', 'train.py', 'valid.py', 'eval.py', 'main.py'):
+    for source in (
+        'models/layers.py',
+        'models/ConvIR.py',
+        'models/ILFRBACSConvIR.py',
+        'data/data_load.py',
+        'data/data_augment.py',
+        'train.py',
+        'valid.py',
+        'eval.py',
+        'main.py',
+    ):
         if os.path.exists(source):
             shutil.copy2(source, args.model_save_dir)
     print(args)
