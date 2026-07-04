@@ -1,0 +1,6 @@
+{
+  "decision": "P0_PASS_V221_SAFETY_CALIBRATED_REPLAY_CONTRACT_IDENTITY_SOURCE_CLEAN",
+  "locked_test_touched": false,
+  "replay_only": true,
+  "training_launched": false
+}

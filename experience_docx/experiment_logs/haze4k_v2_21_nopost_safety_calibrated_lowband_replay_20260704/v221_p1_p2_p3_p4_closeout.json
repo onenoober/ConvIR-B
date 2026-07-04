@@ -1,0 +1,16 @@
+{
+  "decision": "V221_P1_REPLAY_GATE_PASS_REVIEW_N3_MICROFIT_ROUTE_CARD_NO_TRAINING_LAUNCHED",
+  "locked_test_touched": false,
+  "p1_decision": "V221_P1_REPLAY_GATE_PASS_REVIEW_N3_MICROFIT_ROUTE_CARD_NO_TRAINING_LAUNCHED",
+  "p2_decision": "P2_SAFETY_SCORE_STRUCTURED_BUT_REPLAY_GATE_DECIDES",
+  "p3_decision": "P3_POST_GATE_TAIL_SHAPE_RESIDUAL_REMAINS",
+  "p4_decision": "P4_POST_GATE_OBJECTIVE_REPLAY_PASS_AS_GUARD_ONLY",
+  "selected_spec": {
+    "gamma": 0.5,
+    "kind": "predicted_risk_temperature",
+    "variant": "V221_risk_temperature_gamma0p50"
+  },
+  "selected_variant": "V221_risk_temperature_gamma0p50",
+  "training_authorized": true,
+  "training_launched": false
+}
