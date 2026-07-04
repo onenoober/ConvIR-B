@@ -2,7 +2,7 @@
 
 Date: 2026-07-04
 
-Status: planned
+Status: completed gate-pass review-only
 
 ## Scope
 
@@ -97,3 +97,44 @@ Interpretation:
 - P2/P3/P4 cannot authorize training by themselves.
 - Fold-specific thresholds are diagnostic only; final candidate must be fixed OOF.
 - Locked Haze4K test remains untouched throughout this route.
+
+## Closeout
+
+Decision:
+
+```text
+V221_P1_REPLAY_GATE_PASS_REVIEW_N3_MICROFIT_ROUTE_CARD_NO_TRAINING_LAUNCHED
+```
+
+Runtime source:
+
+- cloud workspace: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-21-nopost-safety-calibrated-lowband-replay`
+- branch: `codex/haze4k-v2-21-nopost-safety-calibrated-lowband-replay`
+- run commit: `c652e86`
+- evidence root: `experiment_logs/haze4k_v2_21_nopost_safety_calibrated_lowband_replay_20260704/`
+
+Results:
+
+- P0 passed. v2.21 remains source-clean, zero-init identity preserved, and the route is replay-only.
+- Raw v2.20 O3 action remained unsafe: mean `+2.0911 dB`, hard `+4.2277 dB`, easy `+0.5341 dB`, p05 `-0.7040 dB`, CVaR5 `-1.4501 dB`, severe rate `11.00%`, strong-reference regression rate `25.17%`.
+- Selected fixed OOF gate was `V221_risk_temperature_gamma0p50`.
+- Selected replay passed all P1 safety gates: mean `+2.2270 dB`, hard `+4.3031 dB`, easy `+0.7403 dB`, positive ratio `0.9479`, p05 `-0.0025 dB`, CVaR5 `-0.2089 dB`, severe rate `1.79%`, strong-reference regression rate `4.83%`, fold tail pass `5/5`.
+- Shuffled-risk control failed, so the risk signal is not interchangeable noise: mean `+1.5726 dB`, p05 `-0.4712 dB`, CVaR5 `-1.2710 dB`, severe rate `7.83%`.
+- Factorial audit passed:
+  - A predicted action + predicted gate: mean `+2.2270 dB`, severe `1.79%`;
+  - B predicted action + oracle gate: mean `+2.1915 dB`, severe `0`;
+  - C oracle action + predicted gate: mean `+6.3872 dB`, severe `0`;
+  - D oracle action + oracle upper bound: mean `+7.1107 dB`, severe `0`.
+- P2 calibration was structured but not the sole authorization source: ROC AUC `0.9239`, PR AUC/AP `0.6976`, Brier `0.1143`, ECE10 `0.1591`.
+- P3 still reports post-gate residual tail damage (`43/2400` severe cases), so N3 must carry this tail audit forward.
+- P4 passed objective replay as guard evidence only.
+
+Training and locked-test policy:
+
+- training authorized for N3 route-card review: `true`
+- training launched: `false`
+- locked Haze4K touched: `false`
+
+Next decision:
+
+Write a separate N3 microfit route card for `V221_risk_temperature_gamma0p50`. This v2.21 replay does not itself launch training and does not authorize locked-test use.
