@@ -1,0 +1,22 @@
+{
+  "CVaR5_dPSNR": -0.16563910009914906,
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-22-nopost-gated-lowband-n3-microfit/experience_docx/experiment_logs/haze4k_v2_22_nopost_gated_lowband_n3_microfit_20260704/microfit64/v222_microfit64_adapter_only_Final.pkl",
+  "count": 64,
+  "easy_top25_dPSNR": -0.019017256606309818,
+  "epochs": 5,
+  "hard_bottom25_dPSNR": 0.00172227399930458,
+  "locked_test_touched": false,
+  "mean_dPSNR": -0.0023181556235576384,
+  "mean_final_delta_rms": 0.000249117419571121,
+  "mean_final_unsafe_prob": 0.18049771012738347,
+  "mean_mid_delta_rms": 0.000887058294210874,
+  "mean_mid_unsafe_prob": 0.17964996374212205,
+  "p05_dPSNR": -0.11836013134912556,
+  "partial_load_loaded_count": 602,
+  "positive_ratio": 0.53125,
+  "sample_count": 64,
+  "severe_rate": 0.0,
+  "stage": "microfit64",
+  "strong_reference_count": 64,
+  "strong_reference_regression_rate": 0.265625
+}

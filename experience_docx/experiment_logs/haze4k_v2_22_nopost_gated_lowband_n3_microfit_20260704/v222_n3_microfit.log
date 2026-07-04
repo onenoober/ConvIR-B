@@ -1,0 +1,18 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-22-nopost-gated-lowband-n3-microfit/experience_docx/tools/nopost_lowband_v222_n3_microfit.py:166: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+N3_STAGE microfit16 epoch=1/4 loss=0.046298 dPSNR=-0.0091 p05=-0.0637 unsafe=0.1823
+N3_STAGE microfit16 epoch=2/4 loss=0.047660 dPSNR=0.0345 p05=-0.0836 unsafe=0.1820
+N3_STAGE microfit16 epoch=3/4 loss=0.046566 dPSNR=0.0365 p05=-0.1745 unsafe=0.1818
+N3_STAGE microfit16 epoch=4/4 loss=0.047148 dPSNR=-0.0127 p05=-0.2539 unsafe=0.1815
+N3_STAGE microfit64 epoch=1/5 loss=0.048895 dPSNR=-0.0001 p05=-0.1292 unsafe=0.1820
+N3_STAGE microfit64 epoch=2/5 loss=0.049201 dPSNR=0.0185 p05=-0.1725 unsafe=0.1813
+N3_STAGE microfit64 epoch=3/5 loss=0.048522 dPSNR=0.0238 p05=-0.2463 unsafe=0.1808
+N3_STAGE microfit64 epoch=4/5 loss=0.048474 dPSNR=-0.0031 p05=-0.2294 unsafe=0.1806
+N3_STAGE microfit64 epoch=5/5 loss=0.048704 dPSNR=-0.0142 p05=-0.2173 unsafe=0.1802
+N3_STAGE microfit256 epoch=1/6 loss=0.046913 dPSNR=0.0075 p05=-0.1999 unsafe=0.1812
+N3_STAGE microfit256 epoch=2/6 loss=0.047123 dPSNR=0.0124 p05=-0.3506 unsafe=0.1803
+N3_STAGE microfit256 epoch=3/6 loss=0.046679 dPSNR=0.0086 p05=-0.2681 unsafe=0.1802
+N3_STAGE microfit256 epoch=4/6 loss=0.047227 dPSNR=0.0035 p05=-0.2587 unsafe=0.1804
+N3_STAGE microfit256 epoch=5/6 loss=0.047164 dPSNR=0.0049 p05=-0.1626 unsafe=0.1810
+N3_STAGE microfit256 epoch=6/6 loss=0.047003 dPSNR=0.0044 p05=-0.2205 unsafe=0.1815
+V222_N3_MICROFIT_OK V222_N3_MICROFIT_PASS_REVIEW_ONLY_NO_LOCKED_TEST

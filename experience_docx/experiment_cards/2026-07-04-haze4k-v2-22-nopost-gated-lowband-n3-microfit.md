@@ -2,7 +2,7 @@
 
 Date: 2026-07-04
 
-Status: planned
+Status: completed review-only
 
 ## Scope
 
@@ -113,3 +113,32 @@ Expected compact outputs:
 - `status.txt`
 
 Do not commit checkpoints, raw images, arrays, or large per-image output tables by default.
+
+## Closeout
+
+Decision:
+
+```text
+V222_N3_MICROFIT_PASS_REVIEW_ONLY_NO_LOCKED_TEST
+```
+
+Runtime source:
+
+- cloud workspace: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-22-nopost-gated-lowband-n3-microfit`
+- branch: `codex/haze4k-v2-22-nopost-gated-lowband-n3-microfit`
+- run commit: `9e2f548`
+- evidence root: `experience_docx/experiment_logs/haze4k_v2_22_nopost_gated_lowband_n3_microfit_20260704/`
+
+Results:
+
+- P0 passed after filtering non-image files from Haze4K train directories.
+- Strict partial load reused `602` official ConvIR-B state keys.
+- Zero-init identity remained within the route tolerance.
+- All microfit stages completed with adapter-only training and nonzero but bounded mid/final lowband actions.
+- `microfit16`: mean `+0.0275 dB`, hard bottom25 `-0.0002 dB`, p05 `-0.1414 dB`, severe `0`, mean mid/final unsafe probability `0.1814/0.1815`.
+- `microfit64`: mean `-0.0023 dB`, hard bottom25 `+0.0017 dB`, p05 `-0.1184 dB`, severe `0`, mean mid/final unsafe probability `0.1796/0.1805`.
+- `microfit256`: mean `-0.0029 dB`, hard bottom25 `+0.0107 dB`, p05 `-0.2146 dB`, severe `5.47%`, mean mid/final unsafe probability `0.1817/0.1817`.
+
+Interpretation:
+
+v2.22 is a successful N3 stability check, not a model-quality win. The internal gated lowband route can train without immediate collapse, but the output remains near A0 and strong-reference regressions remain high (`26.56%` to `32.81%` across stages). Passing v2.22 authorizes only a separate OOF train-derived route review. Locked Haze4K test remains blocked.
