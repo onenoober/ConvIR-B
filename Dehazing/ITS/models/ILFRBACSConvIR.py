@@ -155,8 +155,11 @@ class ActionConditionedLowFrequencyBank(nn.Module):
         for idx in range(1, 4):
             mixture = mixture + gate[:, idx].view(-1, 1, 1, 1) * deltas[idx]
         mixture = mixture * self.coverage_budget
-        mixture_ll = F.interpolate(mixture, size=ll.shape[-2:], mode="bilinear", align_corners=False)
-        out = self.iwt(ll + mixture_ll, lh, hl, hh, h, w)
+        if not self.training and torch.count_nonzero(mixture).item() == 0:
+            out = z
+        else:
+            mixture_ll = F.interpolate(mixture, size=ll.shape[-2:], mode="bilinear", align_corners=False)
+            out = self.iwt(ll + mixture_ll, lh, hl, hh, h, w)
         with torch.no_grad():
             action_mass = gate[:, 1:].sum(dim=1)
             self.last_stats = {
