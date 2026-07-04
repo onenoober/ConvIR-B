@@ -1,0 +1,11 @@
+{
+  "decision": "V220_P1A_PASS_P1B_FAIL_NORMAL_GATE_PAUSE_NO_TRAINING",
+  "locked_test_touched": false,
+  "p1_decision": "P1A_PASS_MECHANISM_P1B_FAIL_CONTINUE_DIAGNOSTICS_NO_TRAINING",
+  "p2_decision": "P2_NOOP_CLASSIFIER_DIAGNOSTIC_POSITIVE_CONTEXT_CAN_FLAG_UNSAFE_ACTIONS",
+  "p3_decision": "P3_SHAPE_DIAG_TAIL_DAMAGE_NOT_EXPLAINED_BY_DIRECTION_OR_PEAK_ONLY",
+  "p4_decision": "P4_OBJECTIVE_REPLAY_PASS_AS_GUARD_ONLY",
+  "primary_variant": "P1_final_mid_global_context_predictor",
+  "training_authorized": false,
+  "training_launched": false
+}

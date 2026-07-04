@@ -1,0 +1,4 @@
+primary_variant,threshold_label,threshold,safe_oracle_overpenalty_rate
+P1_final_mid_global_context_predictor,oracle_p75,0.024451042435041776,0.25
+P1_final_mid_global_context_predictor,oracle_p90,0.030246976355465992,0.1
+P1_final_mid_global_context_predictor,predicted_p75,0.01734634204397786,0.6704166666666667

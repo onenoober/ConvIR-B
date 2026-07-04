@@ -1,0 +1,4 @@
+primary_variant,threshold_label,threshold,budget_activation_rate,positive_budget_activation_rate,severe_budget_activation_rate
+P1_final_mid_global_context_predictor,oracle_p75,0.024451042435041776,0.07125,0.07737512242899118,0.033707865168539325
+P1_final_mid_global_context_predictor,oracle_p90,0.030246976355465992,0.021666666666666667,0.023506366307541625,0.011235955056179775
+P1_final_mid_global_context_predictor,predicted_p75,0.01734634204397786,0.25,0.267384916748286,0.16853932584269662
