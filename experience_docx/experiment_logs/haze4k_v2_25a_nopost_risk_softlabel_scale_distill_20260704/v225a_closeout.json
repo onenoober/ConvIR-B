@@ -1,0 +1,325 @@
+{
+  "decision": "V225A_RISK_CALIBRATION_GATE_FAIL_NORMAL_PAUSE",
+  "gate": {
+    "checks": {
+      "average_precision": true,
+      "ece10": true,
+      "locked_test_untouched": true,
+      "prob_std": false,
+      "roc_auc": false,
+      "target_prob_mae": false
+    },
+    "locked_test_allowed": false,
+    "pass": false
+  },
+  "locked_test_touched": false,
+  "next_action": "If pass, run post-train factorial rescue before any action joint train; if fail, stop v2.25A and redesign calibration.",
+  "preflight_pass": true,
+  "summary": {
+    "average_precision": 0.4937745923792122,
+    "count": 480,
+    "ece10": 0.05257191310326259,
+    "fold_count": 3,
+    "fold_summaries": [
+      {
+        "average_precision": 1.0,
+        "count": 160,
+        "ece10": 0.08435980975627899,
+        "fold": 0,
+        "label_base_rate": 0.09375,
+        "mce10": 0.08435980975627899,
+        "partial_load_loaded_count": 602,
+        "roc_auc": 0.5,
+        "target_prob_mae": 0.2386436096032412,
+        "trained_prob_max": 0.178109809756279,
+        "trained_prob_mean": 0.178109809756279,
+        "trained_prob_min": 0.178109809756279,
+        "trained_prob_std": 0.0
+      },
+      {
+        "average_precision": 1.0,
+        "count": 160,
+        "ece10": 0.03513254672288896,
+        "fold": 1,
+        "label_base_rate": 0.14375,
+        "mce10": 0.03513254672288896,
+        "partial_load_loaded_count": 602,
+        "roc_auc": 0.5,
+        "target_prob_mae": 0.24110907771009807,
+        "trained_prob_max": 0.17888254672288895,
+        "trained_prob_mean": 0.17888254672288895,
+        "trained_prob_min": 0.17888254672288895,
+        "trained_prob_std": 0.0
+      },
+      {
+        "average_precision": 1.0,
+        "count": 160,
+        "ece10": 0.03822338283061982,
+        "fold": 2,
+        "label_base_rate": 0.14375,
+        "mce10": 0.03822338283061982,
+        "partial_load_loaded_count": 602,
+        "roc_auc": 0.5,
+        "target_prob_mae": 0.2666770085837925,
+        "trained_prob_max": 0.1819733828306198,
+        "trained_prob_mean": 0.1819733828306198,
+        "trained_prob_min": 0.1819733828306198,
+        "trained_prob_std": 0.0
+      }
+    ],
+    "label_base_rate": 0.12708333333333333,
+    "locked_test_touched": false,
+    "mce10": 0.05257191310326259,
+    "roc_auc": 0.5500802065808521,
+    "target_prob_mae": 0.24880989863237726,
+    "trained_prob_max": 0.1819733828306198,
+    "trained_prob_mean": 0.17965524643659592,
+    "trained_prob_min": 0.178109809756279,
+    "trained_prob_std": 0.0016692509020246116
+  },
+  "train_results": [
+    {
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-25a-nopost-risk-softlabel-scale-distill/experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold0/v225a_fold0_risk_context_Final.pkl",
+      "fold": 0,
+      "history_last": {
+        "epoch": 4,
+        "fold": 0,
+        "loss": 1.5791774316846083,
+        "mean_trained_probability": 0.17900974850635976,
+        "scale_mse": 0.15195099044404436,
+        "soft_bce": 1.275275451131165,
+        "train_count": 384
+      },
+      "partial_load": {
+        "allowed_new_prefixes": [
+          "nopost_gated_lowband_policy."
+        ],
+        "loaded_count": 602,
+        "missing_new_module_count": 24,
+        "missing_new_modules": [
+          "nopost_gated_lowband_policy.final_policy.action.bias",
+          "nopost_gated_lowband_policy.final_policy.action.weight",
+          "nopost_gated_lowband_policy.final_policy.context.0.bias",
+          "nopost_gated_lowband_policy.final_policy.context.0.weight",
+          "nopost_gated_lowband_policy.final_policy.context.2.bias",
+          "nopost_gated_lowband_policy.final_policy.context.2.weight",
+          "nopost_gated_lowband_policy.final_policy.global_project.1.bias",
+          "nopost_gated_lowband_policy.final_policy.global_project.1.weight",
+          "nopost_gated_lowband_policy.final_policy.mid_project.bias",
+          "nopost_gated_lowband_policy.final_policy.mid_project.weight",
+          "nopost_gated_lowband_policy.final_policy.risk.1.bias",
+          "nopost_gated_lowband_policy.final_policy.risk.1.weight",
+          "nopost_gated_lowband_policy.final_policy.risk.3.bias",
+          "nopost_gated_lowband_policy.final_policy.risk.3.weight",
+          "nopost_gated_lowband_policy.mid_policy.action.bias",
+          "nopost_gated_lowband_policy.mid_policy.action.weight",
+          "nopost_gated_lowband_policy.mid_policy.context.0.bias",
+          "nopost_gated_lowband_policy.mid_policy.context.0.weight",
+          "nopost_gated_lowband_policy.mid_policy.context.2.bias",
+          "nopost_gated_lowband_policy.mid_policy.context.2.weight",
+          "nopost_gated_lowband_policy.mid_policy.risk.1.bias",
+          "nopost_gated_lowband_policy.mid_policy.risk.1.weight",
+          "nopost_gated_lowband_policy.mid_policy.risk.3.bias",
+          "nopost_gated_lowband_policy.mid_policy.risk.3.weight"
+        ],
+        "shape_mismatch": [],
+        "unexpected": []
+      },
+      "scope": {
+        "frozen_action_names": [
+          "nopost_gated_lowband_policy.mid_policy.action.weight",
+          "nopost_gated_lowband_policy.mid_policy.action.bias",
+          "nopost_gated_lowband_policy.final_policy.action.weight",
+          "nopost_gated_lowband_policy.final_policy.action.bias"
+        ],
+        "scope": "risk_context_only_no_action",
+        "trainable_names": [
+          "nopost_gated_lowband_policy.mid_policy.context.0.weight",
+          "nopost_gated_lowband_policy.mid_policy.context.0.bias",
+          "nopost_gated_lowband_policy.mid_policy.context.2.weight",
+          "nopost_gated_lowband_policy.mid_policy.context.2.bias",
+          "nopost_gated_lowband_policy.mid_policy.risk.1.weight",
+          "nopost_gated_lowband_policy.mid_policy.risk.1.bias",
+          "nopost_gated_lowband_policy.mid_policy.risk.3.weight",
+          "nopost_gated_lowband_policy.mid_policy.risk.3.bias",
+          "nopost_gated_lowband_policy.final_policy.mid_project.weight",
+          "nopost_gated_lowband_policy.final_policy.mid_project.bias",
+          "nopost_gated_lowband_policy.final_policy.global_project.1.weight",
+          "nopost_gated_lowband_policy.final_policy.global_project.1.bias",
+          "nopost_gated_lowband_policy.final_policy.context.0.weight",
+          "nopost_gated_lowband_policy.final_policy.context.0.bias",
+          "nopost_gated_lowband_policy.final_policy.context.2.weight",
+          "nopost_gated_lowband_policy.final_policy.context.2.bias",
+          "nopost_gated_lowband_policy.final_policy.risk.1.weight",
+          "nopost_gated_lowband_policy.final_policy.risk.1.bias",
+          "nopost_gated_lowband_policy.final_policy.risk.3.weight",
+          "nopost_gated_lowband_policy.final_policy.risk.3.bias"
+        ],
+        "trainable_param_count": 72002
+      },
+      "train_seconds": 119.24023604393005
+    },
+    {
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-25a-nopost-risk-softlabel-scale-distill/experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold1/v225a_fold1_risk_context_Final.pkl",
+      "fold": 1,
+      "history_last": {
+        "epoch": 4,
+        "fold": 1,
+        "loss": 1.6425648303702474,
+        "mean_trained_probability": 0.17930798733141273,
+        "scale_mse": 0.15974448053312074,
+        "soft_bce": 1.3230758638431628,
+        "train_count": 384
+      },
+      "partial_load": {
+        "allowed_new_prefixes": [
+          "nopost_gated_lowband_policy."
+        ],
+        "loaded_count": 602,
+        "missing_new_module_count": 24,
+        "missing_new_modules": [
+          "nopost_gated_lowband_policy.final_policy.action.bias",
+          "nopost_gated_lowband_policy.final_policy.action.weight",
+          "nopost_gated_lowband_policy.final_policy.context.0.bias",
+          "nopost_gated_lowband_policy.final_policy.context.0.weight",
+          "nopost_gated_lowband_policy.final_policy.context.2.bias",
+          "nopost_gated_lowband_policy.final_policy.context.2.weight",
+          "nopost_gated_lowband_policy.final_policy.global_project.1.bias",
+          "nopost_gated_lowband_policy.final_policy.global_project.1.weight",
+          "nopost_gated_lowband_policy.final_policy.mid_project.bias",
+          "nopost_gated_lowband_policy.final_policy.mid_project.weight",
+          "nopost_gated_lowband_policy.final_policy.risk.1.bias",
+          "nopost_gated_lowband_policy.final_policy.risk.1.weight",
+          "nopost_gated_lowband_policy.final_policy.risk.3.bias",
+          "nopost_gated_lowband_policy.final_policy.risk.3.weight",
+          "nopost_gated_lowband_policy.mid_policy.action.bias",
+          "nopost_gated_lowband_policy.mid_policy.action.weight",
+          "nopost_gated_lowband_policy.mid_policy.context.0.bias",
+          "nopost_gated_lowband_policy.mid_policy.context.0.weight",
+          "nopost_gated_lowband_policy.mid_policy.context.2.bias",
+          "nopost_gated_lowband_policy.mid_policy.context.2.weight",
+          "nopost_gated_lowband_policy.mid_policy.risk.1.bias",
+          "nopost_gated_lowband_policy.mid_policy.risk.1.weight",
+          "nopost_gated_lowband_policy.mid_policy.risk.3.bias",
+          "nopost_gated_lowband_policy.mid_policy.risk.3.weight"
+        ],
+        "shape_mismatch": [],
+        "unexpected": []
+      },
+      "scope": {
+        "frozen_action_names": [
+          "nopost_gated_lowband_policy.mid_policy.action.weight",
+          "nopost_gated_lowband_policy.mid_policy.action.bias",
+          "nopost_gated_lowband_policy.final_policy.action.weight",
+          "nopost_gated_lowband_policy.final_policy.action.bias"
+        ],
+        "scope": "risk_context_only_no_action",
+        "trainable_names": [
+          "nopost_gated_lowband_policy.mid_policy.context.0.weight",
+          "nopost_gated_lowband_policy.mid_policy.context.0.bias",
+          "nopost_gated_lowband_policy.mid_policy.context.2.weight",
+          "nopost_gated_lowband_policy.mid_policy.context.2.bias",
+          "nopost_gated_lowband_policy.mid_policy.risk.1.weight",
+          "nopost_gated_lowband_policy.mid_policy.risk.1.bias",
+          "nopost_gated_lowband_policy.mid_policy.risk.3.weight",
+          "nopost_gated_lowband_policy.mid_policy.risk.3.bias",
+          "nopost_gated_lowband_policy.final_policy.mid_project.weight",
+          "nopost_gated_lowband_policy.final_policy.mid_project.bias",
+          "nopost_gated_lowband_policy.final_policy.global_project.1.weight",
+          "nopost_gated_lowband_policy.final_policy.global_project.1.bias",
+          "nopost_gated_lowband_policy.final_policy.context.0.weight",
+          "nopost_gated_lowband_policy.final_policy.context.0.bias",
+          "nopost_gated_lowband_policy.final_policy.context.2.weight",
+          "nopost_gated_lowband_policy.final_policy.context.2.bias",
+          "nopost_gated_lowband_policy.final_policy.risk.1.weight",
+          "nopost_gated_lowband_policy.final_policy.risk.1.bias",
+          "nopost_gated_lowband_policy.final_policy.risk.3.weight",
+          "nopost_gated_lowband_policy.final_policy.risk.3.bias"
+        ],
+        "trainable_param_count": 72002
+      },
+      "train_seconds": 111.55981302261353
+    },
+    {
+      "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-25a-nopost-risk-softlabel-scale-distill/experience_docx/experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/fold2/v225a_fold2_risk_context_Final.pkl",
+      "fold": 2,
+      "history_last": {
+        "epoch": 4,
+        "fold": 2,
+        "loss": 1.5851736194454134,
+        "mean_trained_probability": 0.1820242992059017,
+        "scale_mse": 0.14378749658058845,
+        "soft_bce": 1.2975986267750461,
+        "train_count": 384
+      },
+      "partial_load": {
+        "allowed_new_prefixes": [
+          "nopost_gated_lowband_policy."
+        ],
+        "loaded_count": 602,
+        "missing_new_module_count": 24,
+        "missing_new_modules": [
+          "nopost_gated_lowband_policy.final_policy.action.bias",
+          "nopost_gated_lowband_policy.final_policy.action.weight",
+          "nopost_gated_lowband_policy.final_policy.context.0.bias",
+          "nopost_gated_lowband_policy.final_policy.context.0.weight",
+          "nopost_gated_lowband_policy.final_policy.context.2.bias",
+          "nopost_gated_lowband_policy.final_policy.context.2.weight",
+          "nopost_gated_lowband_policy.final_policy.global_project.1.bias",
+          "nopost_gated_lowband_policy.final_policy.global_project.1.weight",
+          "nopost_gated_lowband_policy.final_policy.mid_project.bias",
+          "nopost_gated_lowband_policy.final_policy.mid_project.weight",
+          "nopost_gated_lowband_policy.final_policy.risk.1.bias",
+          "nopost_gated_lowband_policy.final_policy.risk.1.weight",
+          "nopost_gated_lowband_policy.final_policy.risk.3.bias",
+          "nopost_gated_lowband_policy.final_policy.risk.3.weight",
+          "nopost_gated_lowband_policy.mid_policy.action.bias",
+          "nopost_gated_lowband_policy.mid_policy.action.weight",
+          "nopost_gated_lowband_policy.mid_policy.context.0.bias",
+          "nopost_gated_lowband_policy.mid_policy.context.0.weight",
+          "nopost_gated_lowband_policy.mid_policy.context.2.bias",
+          "nopost_gated_lowband_policy.mid_policy.context.2.weight",
+          "nopost_gated_lowband_policy.mid_policy.risk.1.bias",
+          "nopost_gated_lowband_policy.mid_policy.risk.1.weight",
+          "nopost_gated_lowband_policy.mid_policy.risk.3.bias",
+          "nopost_gated_lowband_policy.mid_policy.risk.3.weight"
+        ],
+        "shape_mismatch": [],
+        "unexpected": []
+      },
+      "scope": {
+        "frozen_action_names": [
+          "nopost_gated_lowband_policy.mid_policy.action.weight",
+          "nopost_gated_lowband_policy.mid_policy.action.bias",
+          "nopost_gated_lowband_policy.final_policy.action.weight",
+          "nopost_gated_lowband_policy.final_policy.action.bias"
+        ],
+        "scope": "risk_context_only_no_action",
+        "trainable_names": [
+          "nopost_gated_lowband_policy.mid_policy.context.0.weight",
+          "nopost_gated_lowband_policy.mid_policy.context.0.bias",
+          "nopost_gated_lowband_policy.mid_policy.context.2.weight",
+          "nopost_gated_lowband_policy.mid_policy.context.2.bias",
+          "nopost_gated_lowband_policy.mid_policy.risk.1.weight",
+          "nopost_gated_lowband_policy.mid_policy.risk.1.bias",
+          "nopost_gated_lowband_policy.mid_policy.risk.3.weight",
+          "nopost_gated_lowband_policy.mid_policy.risk.3.bias",
+          "nopost_gated_lowband_policy.final_policy.mid_project.weight",
+          "nopost_gated_lowband_policy.final_policy.mid_project.bias",
+          "nopost_gated_lowband_policy.final_policy.global_project.1.weight",
+          "nopost_gated_lowband_policy.final_policy.global_project.1.bias",
+          "nopost_gated_lowband_policy.final_policy.context.0.weight",
+          "nopost_gated_lowband_policy.final_policy.context.0.bias",
+          "nopost_gated_lowband_policy.final_policy.context.2.weight",
+          "nopost_gated_lowband_policy.final_policy.context.2.bias",
+          "nopost_gated_lowband_policy.final_policy.risk.1.weight",
+          "nopost_gated_lowband_policy.final_policy.risk.1.bias",
+          "nopost_gated_lowband_policy.final_policy.risk.3.weight",
+          "nopost_gated_lowband_policy.final_policy.risk.3.bias"
+        ],
+        "trainable_param_count": 72002
+      },
+      "train_seconds": 115.48368954658508
+    }
+  ]
+}
