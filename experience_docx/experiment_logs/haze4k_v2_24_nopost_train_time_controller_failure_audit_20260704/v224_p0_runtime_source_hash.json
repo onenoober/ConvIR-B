@@ -1,0 +1,19 @@
+{
+  "anchor_commit": "2d529d4",
+  "branch": "codex/haze4k-v2-24-nopost-train-time-controller-failure-audit",
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "commit": "2d529d4",
+  "key_file_sha256": {
+    "Dehazing/ITS/models/NoPostGatedLowbandConvIR.py": "513e7ef0ce79bbb13c26cc4c95aadd0466807730c7c5e0e45944a28a15969816",
+    "experience_docx/tools/nopost_lowband_v222_n3_microfit.py": "658b6f4365ac7a7e9955f3e0a286f79866d9294cc8e6981dad2acf074063b46e",
+    "experience_docx/tools/nopost_lowband_v223_oof_train.py": "ee483f73f077d8791af33c3170cd9cc966a3630ee574189f78a013e148beb158",
+    "experience_docx/tools/nopost_lowband_v224_controller_failure_audit.py": "ddd66404528e9db7b4c70857c6c0f07333e952b15e3ce659fb687baf60662e61"
+  },
+  "locked_test_touched": false,
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "torch_version": "2.5.1+cu121",
+  "v223_runtime_commit": "246bdce",
+  "v223_runtime_repo": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-23-nopost-oof-gated-lowband-train",
+  "v223_runtime_status_short": "M experience_docx/experiment_logs/haze4k_v2_23_nopost_oof_gated_lowband_train_20260704/README.md\n M experience_docx/experiment_logs/haze4k_v2_23_nopost_oof_gated_lowband_train_20260704/status.txt\n M experience_docx/tools/nopost_lowband_v223_oof_train.py\n?? experience_docx/experiment_logs/haze4k_v2_23_nopost_oof_gated_lowband_train_20260704/fold0/\n?? experience_docx/experiment_logs/haze4k_v2_23_nopost_oof_gated_lowband_train_20260704/fold1/\n?? experience_docx/experiment_logs/haze4k_v2_23_nopost_oof_gated_lowband_train_20260704/fold2/\n?? experience_docx/experiment_logs/haze4k_v2_23_nopost_oof_gated_lowband_train_20260704/status_prefail_20260704_1434.txt\n?? experience_docx/experiment_logs/haze4k_v2_23_nopost_oof_gated_lowband_train_20260704/v223_oof_closeout.json\n?? experience_docx/experiment_logs/haze4k_v2_23_nopost_oof_gated_lowband_train_20260704/v223_oof_fold_summary.csv\n?? experience_docx/experiment_logs/haze4k_v2_23_nopost_oof_gated_lowband_train_20260704/v223_oof_gate.json\n?? experience_docx/experiment_logs/haze4k_v2_23_nopost_oof_gated_lowband_train_20260704/v223_oof_preflight.json\n?? experience_docx/experiment_logs/haze4k_v2_23_nopost_oof_gated_lowband_train_20260704/v223_oof_summary.json"
+}

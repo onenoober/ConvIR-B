@@ -1,0 +1,77 @@
+{
+  "forward_finite": true,
+  "locked_test_touched": false,
+  "official_checkpoint_hash_matches": true,
+  "only_nopost_policy_trainable": true,
+  "partial_load": {
+    "allowed_new_prefixes": [
+      "nopost_gated_lowband_policy."
+    ],
+    "loaded_count": 602,
+    "missing_new_module_count": 24,
+    "missing_new_modules": [
+      "nopost_gated_lowband_policy.final_policy.action.bias",
+      "nopost_gated_lowband_policy.final_policy.action.weight",
+      "nopost_gated_lowband_policy.final_policy.context.0.bias",
+      "nopost_gated_lowband_policy.final_policy.context.0.weight",
+      "nopost_gated_lowband_policy.final_policy.context.2.bias",
+      "nopost_gated_lowband_policy.final_policy.context.2.weight",
+      "nopost_gated_lowband_policy.final_policy.global_project.1.bias",
+      "nopost_gated_lowband_policy.final_policy.global_project.1.weight",
+      "nopost_gated_lowband_policy.final_policy.mid_project.bias",
+      "nopost_gated_lowband_policy.final_policy.mid_project.weight",
+      "nopost_gated_lowband_policy.final_policy.risk.1.bias",
+      "nopost_gated_lowband_policy.final_policy.risk.1.weight",
+      "nopost_gated_lowband_policy.final_policy.risk.3.bias",
+      "nopost_gated_lowband_policy.final_policy.risk.3.weight",
+      "nopost_gated_lowband_policy.mid_policy.action.bias",
+      "nopost_gated_lowband_policy.mid_policy.action.weight",
+      "nopost_gated_lowband_policy.mid_policy.context.0.bias",
+      "nopost_gated_lowband_policy.mid_policy.context.0.weight",
+      "nopost_gated_lowband_policy.mid_policy.context.2.bias",
+      "nopost_gated_lowband_policy.mid_policy.context.2.weight",
+      "nopost_gated_lowband_policy.mid_policy.risk.1.bias",
+      "nopost_gated_lowband_policy.mid_policy.risk.1.weight",
+      "nopost_gated_lowband_policy.mid_policy.risk.3.bias",
+      "nopost_gated_lowband_policy.mid_policy.risk.3.weight"
+    ],
+    "shape_mismatch": [],
+    "unexpected": []
+  },
+  "pass": true,
+  "scope": {
+    "frozen_param_count": 8630665,
+    "scope": "adapter_only",
+    "trainable_names": [
+      "nopost_gated_lowband_policy.mid_policy.context.0.weight",
+      "nopost_gated_lowband_policy.mid_policy.context.0.bias",
+      "nopost_gated_lowband_policy.mid_policy.context.2.weight",
+      "nopost_gated_lowband_policy.mid_policy.context.2.bias",
+      "nopost_gated_lowband_policy.mid_policy.action.weight",
+      "nopost_gated_lowband_policy.mid_policy.action.bias",
+      "nopost_gated_lowband_policy.mid_policy.risk.1.weight",
+      "nopost_gated_lowband_policy.mid_policy.risk.1.bias",
+      "nopost_gated_lowband_policy.mid_policy.risk.3.weight",
+      "nopost_gated_lowband_policy.mid_policy.risk.3.bias",
+      "nopost_gated_lowband_policy.final_policy.mid_project.weight",
+      "nopost_gated_lowband_policy.final_policy.mid_project.bias",
+      "nopost_gated_lowband_policy.final_policy.global_project.1.weight",
+      "nopost_gated_lowband_policy.final_policy.global_project.1.bias",
+      "nopost_gated_lowband_policy.final_policy.context.0.weight",
+      "nopost_gated_lowband_policy.final_policy.context.0.bias",
+      "nopost_gated_lowband_policy.final_policy.context.2.weight",
+      "nopost_gated_lowband_policy.final_policy.context.2.bias",
+      "nopost_gated_lowband_policy.final_policy.action.weight",
+      "nopost_gated_lowband_policy.final_policy.action.bias",
+      "nopost_gated_lowband_policy.final_policy.risk.1.weight",
+      "nopost_gated_lowband_policy.final_policy.risk.1.bias",
+      "nopost_gated_lowband_policy.final_policy.risk.3.weight",
+      "nopost_gated_lowband_policy.final_policy.risk.3.bias"
+    ],
+    "trainable_param_count": 75170,
+    "trainable_prefixes": [
+      "nopost_gated_lowband_policy."
+    ]
+  },
+  "zero_init_max_abs_vs_A0": 0.0
+}

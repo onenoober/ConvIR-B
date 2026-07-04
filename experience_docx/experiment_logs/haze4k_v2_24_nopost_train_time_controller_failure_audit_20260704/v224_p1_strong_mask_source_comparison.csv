@@ -1,0 +1,6 @@
+mask_source,count,coverage,regression_rate,mean_dPSNR
+crop,480,1.0,0.32083333333333336,0.036710139247624
+full,478,0.9958333333333333,0.32217573221757323,0.036424178820839814
+overlap_crop_and_full,478,,,
+crop_only,2,,,
+full_only,0,,,
