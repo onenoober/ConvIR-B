@@ -16,3 +16,74 @@ hard_blocks:
   do_not_launch_training: true
   do_not_run_p2b_selector_probe: true
   do_not_touch_locked_test: true
+v230_p2a_start 2026-07-05T15:16:38+08:00
+branch=codex/haze4k-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-policy
+commit=912fefa
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-policy
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split_csv=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-17-nopost-lowband-alignment-tail-audit/experience_docx/experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/v216_t1_per_image_band_deltas.csv
+gpu=2
+max_images=80
+oracle_steps=10
+locked_test_touched=false
+training_launched=false
+p2b_selector_probe_launched=false
+v230_start route_id=haze4k_v2_30_nopost_ilfrb_acs_compatibility_gated_oof_table_policy_20260705
+training_launched=false
+p2b_selector_probe_launched=false
+locked_test_touched=false
+v230_p2a_done rc=1 decision=UNKNOWN 2026-07-05T15:16:48+08:00
+V230_P2A_COMMAND_FAILED
+v230_retry_after_engineering_fix 2026-07-05T15:20:06+08:00 from=912fefa to=c35cf34 reason=missing_argparse_defaults
+locked_test_touched=false
+training_launched=false
+p2b_selector_probe_launched=false
+v230_p2a_start 2026-07-05T15:20:06+08:00
+branch=codex/haze4k-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-policy
+commit=c35cf34
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-policy
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split_csv=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-17-nopost-lowband-alignment-tail-audit/experience_docx/experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/v216_t1_per_image_band_deltas.csv
+gpu=2
+max_images=80
+oracle_steps=10
+locked_test_touched=false
+training_launched=false
+p2b_selector_probe_launched=false
+v230_start route_id=haze4k_v2_30_nopost_ilfrb_acs_compatibility_gated_oof_table_policy_20260705
+training_launched=false
+p2b_selector_probe_launched=false
+locked_test_touched=false
+v230_engineering_pause 2026-07-05T15:43:28+08:00 commit=c35cf34 reason=feature_separability_quadratic_threshold_auc_scan
+locked_test_touched=false
+training_launched=false
+p2b_selector_probe_launched=false
+v230_retry_after_engineering_fix 2026-07-05T15:46:03+08:00 from=c35cf34 to=c794602 reason=optimized_feature_separability_metrics
+locked_test_touched=false
+training_launched=false
+p2b_selector_probe_launched=false
+v230_p2a_start 2026-07-05T15:46:03+08:00
+branch=codex/haze4k-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-policy
+commit=c794602
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-policy
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split_csv=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-17-nopost-lowband-alignment-tail-audit/experience_docx/experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/v216_t1_per_image_band_deltas.csv
+gpu=2
+max_images=80
+oracle_steps=10
+locked_test_touched=false
+training_launched=false
+p2b_selector_probe_launched=false
+v230_start route_id=haze4k_v2_30_nopost_ilfrb_acs_compatibility_gated_oof_table_policy_20260705
+training_launched=false
+p2b_selector_probe_launched=false
+locked_test_touched=false
+v230_done decision=P2A_FAIL_COMPATIBILITY_GATED_TABLE_POLICY_PAUSE
+v230_p2a_done rc=0 decision=P2A_FAIL_COMPATIBILITY_GATED_TABLE_POLICY_PAUSE 2026-07-05T16:01:27+08:00
+V230_P2A_COMMAND_OK

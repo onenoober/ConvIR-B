@@ -6,7 +6,7 @@ Branch: `codex/haze4k-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-polic
 
 Route id: `haze4k_v2_30_nopost_ilfrb_acs_compatibility_gated_oof_table_policy_20260705`
 
-Status: `PLANNED_CLOUD_AUDIT_LOCKED_TEST_BLOCKED`
+Status: `P2A_FAIL_COMPATIBILITY_GATED_TABLE_POLICY_PAUSE`
 
 ## Hypothesis
 
@@ -67,6 +67,45 @@ If the safe-set restricted oracle remains high but the table policy is low,
 the bottleneck is GT-free policy/features, not the bank. If both are low, the
 compatibility gate or bank action space is too restrictive. If hard-to-easy
 severe remains high, the source-target compatibility mechanism is not solved.
+
+## Final P2A Result
+
+Runtime server: `convir-4090`
+
+Final audited commit: `c794602`
+
+Completion time: `2026-07-05T16:01:27+08:00`
+
+Decision: `P2A_FAIL_COMPATIBILITY_GATED_TABLE_POLICY_PAUSE`
+
+Key metrics:
+
+- safe-set restricted oracle mean/hard/easy: `0.674883 / 1.237103 / 0.155230`
+- GT-free table policy mean/hard/easy: `0.014119 / 0.056478 / 0.000000`
+- table policy p05/CVaR5/severe/fold-tail: `-0.050298 / -0.305568 / 0.037500 / 4/5`
+- hard-to-easy cross severe: `0.000000`
+- cross-bucket unsafe: `0.000000`
+- overstrong 1.5 unsafe: `0.286713`
+- safe-set restricted oracle to table mean gap: `0.660764`
+
+Interpretation:
+
+The compatibility firewall removed the hard-to-easy and cross-bucket accepted
+risk in the strict diagnostic set, and the safe-set restricted oracle still has
+meaningful OOF gain, especially on hard samples. The fold-out GT-free LCB table
+does not capture that signal: mean and hard gain are far below gate, and severe
+rate is slightly above the `0.035` cap. This is a normal P2A scientific pause:
+the remaining bottleneck is GT-free compatibility features/ranking/no-op
+thresholding, not a reason to launch P2B, selector training, model training, or
+locked-test evaluation.
+
+Engineering notes:
+
+- `912fefa` stopped before P2A due to missing argparse defaults inherited from
+  the v2.27/v2.29 helpers.
+- `c35cf34` was paused during feature separability because the first
+  AUROC/threshold implementation was quadratic on the replay table.
+- `c794602` optimized those read-only metrics and completed the P2A audit.
 
 ## Evidence
 

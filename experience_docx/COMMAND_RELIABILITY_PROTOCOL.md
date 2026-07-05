@@ -245,6 +245,31 @@ echo REMOTE_CHECK_OK
 '@ | wsl -d Ubuntu-22.04 -- bash -lc "sed '1s/^\xEF\xBB\xBF//' | tr -d '\r' | ssh convir-4090 'bash -s'"
 ```
 
+Related 2026-07-05 local recurrence:
+
+Avoid complex `find` predicate escaping for CRLF cleanup in a single
+PowerShell-to-WSL command:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'find evidence -type f \( -name "*.csv" -o -name "*.json" \) -print0 | xargs -0 perl -pi -e "s/\r$//"'
+```
+
+Failure mode observed:
+
+- the `find` predicate was split at the shell boundary and produced
+  `paths must precede expression`.
+
+Corrected form:
+
+```powershell
+@'
+set -euo pipefail
+while IFS= read -r -d '' file_path; do
+  perl -pi -e 's/\r$//' "$file_path"
+done < <(find "$EVID" -maxdepth 1 -type f \( -name '*.csv' -o -name '*.json' \) -print0)
+'@ | wsl -d Ubuntu-22.04 -- bash -lc "sed '1s/^\xEF\xBB\xBF//' | tr -d '\r' | bash"
+```
+
 
 ### Cloud Python and evidence copy assumptions
 
