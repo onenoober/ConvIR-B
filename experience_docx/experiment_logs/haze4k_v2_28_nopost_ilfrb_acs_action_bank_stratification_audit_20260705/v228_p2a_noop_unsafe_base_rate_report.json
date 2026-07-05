@@ -1,0 +1,21 @@
+{
+  "decision": "P2A_FAIL_OOF_ACTION_BANK_STRATIFICATION_PAUSE",
+  "deployable_selected": {
+    "count": 80,
+    "cvar5_dpsnr": 0.0,
+    "easy_top25_dpsnr": 0.7035179138183594,
+    "hard_bottom25_dpsnr": 1.376887893676758,
+    "mean_dpsnr": 1.1376563549041747,
+    "p05_dpsnr": 0.0,
+    "severe_rate": 0.0,
+    "strong_reference_regression_rate": 0.0,
+    "wrong_direction_rate": 0.0
+  },
+  "diagnostic_negative_control_unsafe_rate": 0.5503846153846154,
+  "easy_top25_noop_or_mild_preference_rate": 0.4,
+  "fold_tail_pass": 5,
+  "hard_bottom25_medium_or_strong_preference_rate": 0.75,
+  "overall_noop_conservative_preference_rate": 0.225,
+  "pass": false,
+  "sample_count": 80
+}

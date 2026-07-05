@@ -1,25 +1,26 @@
 # Haze4K v2.28 NoPost ILFRB-ACS Action-Bank Stratification Audit Evidence
 
-Route card:
-`experience_docx/experiment_cards/2026-07-05-haze4k-v2-28-nopost-ilfrb-acs-action-bank-stratification-audit.md`
+Route card: `experience_docx/experiment_cards/2026-07-05-haze4k-v2-28-nopost-ilfrb-acs-action-bank-stratification-audit.md`
 
-Status: `PLANNED_CLOUD_AUDIT_LOCKED_TEST_BLOCKED`
+Status: `P2A_FAIL_OOF_ACTION_BANK_STRATIFICATION_PAUSE`
 
 Runtime server: `convir-4090`
 
-Runtime workspace:
-`/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-28-nopost-ilfrb-acs-action-bank-stratification-audit`
+Runtime workspace: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-28-nopost-ilfrb-acs-action-bank-stratification-audit`
 
 Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`
 
 Locked-test policy: blocked. This audit uses train-derived samples only.
 
-## Purpose
+## Key Results
 
-v2.27 proved strong same-sample ILFRB-ACS oracle capacity, but failed P2 because
-the action bank did not create real no-op or unsafe strata. v2.28 replaces the
-same-sample action replay with out-of-fold prototype replay, cross-bucket swap
-diagnostics, and explicit negative controls.
+- P2A decision: `P2A_FAIL_OOF_ACTION_BANK_STRATIFICATION_PAUSE`
+- Overall conservative no-op preference rate: `0.225`
+- Easy top25 no-op/mild preference rate: `0.4`
+- Hard bottom25 medium/strong preference rate: `0.75`
+- Diagnostic unsafe rate: `0.5503846153846154`
+- Training launched: `False`
+- Locked test touched: `False`
 
 ## Primary Files
 
@@ -37,5 +38,4 @@ diagnostics, and explicit negative controls.
 - `monitor_v228.sh`
 - `status.txt`
 
-This directory is intended for compact text evidence only. Do not sync
-checkpoints, weights, image outputs, arrays, archives, or raw feature dumps.
+This directory is compact text evidence only. It intentionally excludes checkpoints, weights, images, arrays, archives, and raw feature dumps.

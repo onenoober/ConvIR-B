@@ -13,3 +13,23 @@ hypothesis:
 hard_blocks:
   do_not_launch_training_until_p2_passes: true
   do_not_touch_locked_test_until_oof_selector_gate_passes: true
+v228_p2a_start 2026-07-05T10:25:26+08:00
+branch=codex/haze4k-v2-28-nopost-ilfrb-acs-action-bank-stratification-audit
+commit=aa9676e
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-28-nopost-ilfrb-acs-action-bank-stratification-audit
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split_csv=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-17-nopost-lowband-alignment-tail-audit/experience_docx/experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/v216_t1_per_image_band_deltas.csv
+gpu=5
+max_images=80
+oracle_steps=10
+stage_sets=S6_early_mid_final,S5_bottleneck_mid,S4_final_decoder
+locked_test_touched=false
+training_launched=false
+v228_start device=cuda route_id=haze4k_v2_28_nopost_ilfrb_acs_action_bank_stratification_audit_20260705
+locked_test_touched=false
+training_launched=false
+v228_done decision=P2A_FAIL_OOF_ACTION_BANK_STRATIFICATION_PAUSE
+v228_p2a_done rc=0 decision=P2A_FAIL_OOF_ACTION_BANK_STRATIFICATION_PAUSE 2026-07-05T10:28:34+08:00
+V228_P2A_COMMAND_OK

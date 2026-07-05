@@ -6,7 +6,7 @@ Branch: `codex/haze4k-v2-28-nopost-ilfrb-acs-action-bank-stratification-audit`
 
 Route id: `haze4k_v2_28_nopost_ilfrb_acs_action_bank_stratification_audit_20260705`
 
-Status: `PLANNED_CLOUD_AUDIT_LOCKED_TEST_BLOCKED`
+Status: `COMPLETED_GATE_FAIL_LOCKED_TEST_BLOCKED`
 
 ## Hypothesis
 
@@ -98,6 +98,35 @@ Feature ablations:
 - `state_plus_action`;
 - `state_plus_action_plus_bucket`.
 
+## Result
+
+`convir-4090` completed the v2.28 train-derived audit from commit `aa9676e`
+with `MAX_IMAGES=80`, `ORACLE_STEPS=10`, median OOF prototypes, and stage sets
+`S6_early_mid_final`, `S5_bottleneck_mid`, and `S4_final_decoder`.
+
+P0 passed the architecture delta audit: v2.28 introduced no new model structure
+relative to v2.27, kept the `forward(self, x)` runtime contract, had forbidden
+symbol hits `0`, did not launch training, and did not touch the locked test.
+
+P2A produced the missing stratification signal that v2.27 lacked, but failed the
+predeclared safety bound and therefore paused normally. The selected deployable
+OOF prototype policy had mean dPSNR `+1.1377`, hard bottom25 `+1.3769`, easy
+top25 `+0.7035`, p05 `0.0`, CVaR5 `0.0`, severe rate `0.0`, and strong-reference
+regression rate `0.0`. Conservative no-op preference was `0.225`, easy top25
+no-op/mild preference was `0.40`, hard bottom25 medium/strong preference was
+`0.75`, and fold-tail pass was `5/5`.
+
+The failing gate was diagnostic negative-control unsafe rate: `0.5504`, above
+the allowed upper bound `0.40`. This means OOF prototypes are no longer
+same-sample oracle inflated and do create useful/no-op/unsafe strata, but the
+current bank is still too unsafe under negative controls to authorize selector
+training or locked-test evaluation.
+
+P2B was not launched and is recorded as `P2B_SKIPPED_P2A_GATE_FAIL`. Training was
+not launched. Locked Haze4K test remained untouched.
+
+Decision: `P2A_FAIL_OOF_ACTION_BANK_STRATIFICATION_PAUSE`.
+
 ## Evidence
 
 Evidence root:
@@ -113,6 +142,7 @@ Expected compact text artifacts:
 - `v228_p2a_cross_sample_swap_matrix.csv`
 - `v228_p2a_oracle_vs_oof_gap.md`
 - `v228_p2a_fold_tail_report.csv`
+- `v228_p2a_same_sample_oracle_delta_summary.csv`
 - `v228_p2b_probe_feature_ablation.csv`
 - `v228_closeout.json`
 - `status.txt`
