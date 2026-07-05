@@ -1,0 +1,11 @@
+policy,target_fold,sample_count,mean_dpsnr,p05_dpsnr,cvar5_dpsnr,unsafe_rate,severe_rate,tail_gate_pass
+safe_set_restricted_oracle,0,16,0.6615439653396606,0.0,0.0,0.0,0.0,1
+safe_set_restricted_oracle,1,16,0.5098686218261719,0.0,0.0,0.0,0.0,1
+safe_set_restricted_oracle,2,16,0.8671208620071411,0.0,0.0,0.0,0.0,1
+safe_set_restricted_oracle,3,16,0.5817575454711914,0.0,0.0,0.0,0.0,1
+safe_set_restricted_oracle,4,16,0.7541244029998779,0.0,0.0,0.0,0.0,1
+lcb_table_policy,0,16,0.0,0.0,0.0,0.0,0.0,1
+lcb_table_policy,1,16,0.0,0.0,0.0,0.0,0.0,1
+lcb_table_policy,2,16,0.0,0.0,0.0,0.0,0.0,1
+lcb_table_policy,3,16,0.038430213928222656,-0.45093822479248047,-0.4753570556640625,0.1875,0.1875,0
+lcb_table_policy,4,16,0.03216671943664551,-0.05079984664916992,-0.05268096923828125,0.125,0.0,1

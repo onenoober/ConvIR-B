@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-policy/experience_docx/tools/nopost_v230_compatibility_gated_oof_table_policy.py", line 987, in <module>
+    main()
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-policy/experience_docx/tools/nopost_v230_compatibility_gated_oof_table_policy.py", line 919, in main
+    sample_rows, p1_rows, delta_bank = build_oracle_delta_bank(args, device)
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-policy/experience_docx/tools/nopost_v229_safe_oof_action_bank_calibration.py", line 135, in build_oracle_delta_bank
+    a0, _route, _partial = build_models(args, device)
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-policy/experience_docx/tools/nopost_v227_ilfrb_acs_diagnostics.py", line 306, in build_models
+    hidden_channels=args.hidden_channels,
+AttributeError: 'Namespace' object has no attribute 'hidden_channels'
