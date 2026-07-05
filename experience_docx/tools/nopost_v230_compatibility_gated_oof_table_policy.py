@@ -18,7 +18,6 @@ from nopost_v227_ilfrb_acs_diagnostics import (  # noqa: E402
     git,
     mean,
     percentile,
-    roc_auc,
     sha256_file,
     source_scan,
     std,
@@ -552,27 +551,67 @@ def write_safe_set_restricted_oracle_gap(
     return summary
 
 
+def fast_roc_auc(scores: list[float], labels: list[int]) -> float:
+    pairs = sorted((float(s), int(y)) for s, y in zip(scores, labels) if math.isfinite(float(s)))
+    pos = sum(y for _s, y in pairs)
+    neg = len(pairs) - pos
+    if pos <= 0 or neg <= 0:
+        return float("nan")
+    rank_sum_pos = 0.0
+    rank = 1
+    i = 0
+    while i < len(pairs):
+        j = i + 1
+        while j < len(pairs) and pairs[j][0] == pairs[i][0]:
+            j += 1
+        avg_rank = (rank + rank + (j - i) - 1) / 2.0
+        rank_sum_pos += avg_rank * sum(y for _s, y in pairs[i:j])
+        rank += j - i
+        i = j
+    return (rank_sum_pos - pos * (pos + 1) / 2.0) / (pos * neg)
+
+
+def best_balanced_threshold(pairs: list[tuple[float, int]]) -> tuple[float, float]:
+    work = sorted([(float(s), int(y)) for s, y in pairs if math.isfinite(float(s))], reverse=True)
+    if not work:
+        return (float("nan"), float("nan"))
+    pos = sum(y for _s, y in work)
+    neg = len(work) - pos
+    best_thr = work[0][0]
+    best_bal = -1.0
+    tp = 0
+    fp = 0
+    i = 0
+    while i < len(work):
+        score = work[i][0]
+        group_pos = 0
+        group_total = 0
+        while i < len(work) and work[i][0] == score:
+            group_pos += work[i][1]
+            group_total += 1
+            i += 1
+        tp += group_pos
+        fp += group_total - group_pos
+        tn = neg - fp
+        sensitivity = tp / pos if pos else 0.0
+        specificity = tn / neg if neg else 0.0
+        bal = 0.5 * (sensitivity + specificity)
+        if bal > best_bal:
+            best_bal = bal
+            best_thr = score
+    return best_thr, best_bal
+
+
 def threshold_metrics(scores: list[float], labels: list[int], folds: list[int]) -> tuple[float, float, float, float]:
     preds: list[tuple[int, int]] = []
+    train_bals: list[float] = []
     for fold in sorted(set(folds)):
         train = [(s, y) for s, y, f in zip(scores, labels, folds) if f != fold]
         valid = [(s, y) for s, y, f in zip(scores, labels, folds) if f == fold]
         if not train or not valid:
             continue
-        candidates = sorted({s for s, _y in train})
-        best_thr = candidates[0]
-        best_bal = -1.0
-        for thr in candidates:
-            pred = [int(s >= thr) for s, _y in train]
-            ys = [y for _s, y in train]
-            tp = sum(p == 1 and y == 1 for p, y in zip(pred, ys))
-            tn = sum(p == 0 and y == 0 for p, y in zip(pred, ys))
-            pos = sum(ys)
-            neg = len(ys) - pos
-            bal = 0.5 * ((tp / pos if pos else 0.0) + (tn / neg if neg else 0.0))
-            if bal > best_bal:
-                best_bal = bal
-                best_thr = thr
+        best_thr, best_bal = best_balanced_threshold(train)
+        train_bals.append(best_bal)
         preds.extend((int(s >= best_thr), y) for s, y in valid)
     if not preds:
         return (float("nan"), float("nan"), float("nan"), float("nan"))
@@ -585,7 +624,7 @@ def threshold_metrics(scores: list[float], labels: list[int], folds: list[int]) 
     bal = 0.5 * ((tp / pos if pos else 0.0) + (tn / neg if neg else 0.0))
     false_safe = fn / pos if pos else float("nan")
     false_block = fp / neg if neg else float("nan")
-    return bal, false_safe, false_block, best_bal
+    return bal, false_safe, false_block, mean(train_bals)
 
 
 def write_feature_separability(rows: list[dict[str, Any]], args: argparse.Namespace) -> list[dict[str, Any]]:
@@ -616,7 +655,7 @@ def write_feature_separability(rows: list[dict[str, Any]], args: argparse.Namesp
                 sc = [s for s, _y, _f in subset]
                 ys = [y for _s, y, _f in subset]
                 fs = [f for _s, _y, f in subset]
-                fold_aucs = [roc_auc([s for s, y, f in subset if f == fold], [y for s, y, f in subset if f == fold]) for fold in sorted(set(fs))]
+                fold_aucs = [fast_roc_auc([s for s, y, f in subset if f == fold], [y for s, y, f in subset if f == fold]) for fold in sorted(set(fs))]
                 bal, false_safe, false_block, _train_bal = threshold_metrics(sc, ys, fs)
                 out.append(
                     {
@@ -625,7 +664,7 @@ def write_feature_separability(rows: list[dict[str, Any]], args: argparse.Namesp
                         "target_bucket": bucket,
                         "stage_set": "mixed",
                         "sample_count": len(subset),
-                        "auroc": roc_auc(sc, ys),
+                        "auroc": fast_roc_auc(sc, ys),
                         "auprc": average_precision(sc, ys),
                         "balanced_accuracy_at_lcb_threshold": bal,
                         "false_safe_rate": false_safe,
