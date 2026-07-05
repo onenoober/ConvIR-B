@@ -1,0 +1,15 @@
+status: P2_ACTION_BANK_STRATIFICATION_AUDIT
+locked_test_touched: false
+training_launched: false
+source_branch: codex/haze4k-v2-28-nopost-ilfrb-acs-action-bank-stratification-audit
+parent_branch: codex/haze4k-v2-27-nopost-ilfrb-action-conditioned-selective-distill
+parent_commit: de5a68b
+main_evidence_parent: b2fc78d
+
+hypothesis:
+  v2.27 proved strong ILFRB-ACS oracle capacity but failed deployable action-bank stratification.
+  v2.28 tests whether out-of-fold/prototype/cross-sample action banks produce no-op, useful-action, and unsafe strata without touching locked test.
+
+hard_blocks:
+  do_not_launch_training_until_p2_passes: true
+  do_not_touch_locked_test_until_oof_selector_gate_passes: true
