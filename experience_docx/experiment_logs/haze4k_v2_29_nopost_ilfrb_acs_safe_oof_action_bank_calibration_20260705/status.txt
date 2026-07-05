@@ -1,0 +1,19 @@
+status: P2A_SAFE_OOF_ACTION_BANK_CALIBRATION_AUDIT
+locked_test_touched: false
+training_launched: false
+source_branch: codex/haze4k-v2-29-nopost-ilfrb-acs-safe-oof-action-bank-calibration
+parent_branch: codex/haze4k-v2-28-nopost-ilfrb-acs-action-bank-stratification-audit
+parent_commit: 82f4752
+main_evidence_parent: 270c2fb
+
+hypothesis:
+  v2.28 created OOF no-op/useful/unsafe action strata but failed because
+  negative-control and raw-candidate tail risk are too high.
+  v2.29 tests whether safety-envelope calibration, bucket-aware strength,
+  stage/action pruning, and GT-free table policy can preserve OOF gains
+  while reducing plausible negative-control unsafe exposure.
+
+hard_blocks:
+  do_not_launch_training_until_safe_table_policy_passes: true
+  do_not_run_p2b_selector_probe_until_p2a_safe_envelope_passes: true
+  do_not_touch_locked_test_until_oof_selector_gate_passes: true
