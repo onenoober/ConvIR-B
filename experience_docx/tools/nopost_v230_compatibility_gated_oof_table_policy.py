@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import math
+import random
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Callable
@@ -872,13 +873,18 @@ def write_readme(args: argparse.Namespace, closeout: dict[str, Any]) -> None:
 
 def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--data-root", type=Path, required=True)
+    ap.add_argument("--data-root", "--data-dir", dest="data_dir", type=Path, required=True)
     ap.add_argument("--checkpoint", type=Path, required=True)
     ap.add_argument("--split-csv", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, required=True)
     ap.add_argument("--max-images", type=int, default=80)
+    ap.add_argument("--hidden-channels", type=int, default=32)
+    ap.add_argument("--delta-scale", type=float, default=0.25)
+    ap.add_argument("--coverage-budget", type=float, default=0.35)
     ap.add_argument("--oracle-steps", type=int, default=10)
     ap.add_argument("--oracle-lr", type=float, default=0.06)
+    ap.add_argument("--oracle-delta-scale", type=float, default=0.50)
+    ap.add_argument("--oracle-reg", type=float, default=1e-4)
     ap.add_argument("--prototype-aggregate", default="median")
     ap.add_argument("--stage-sets", default="S6_early_mid_final,S5_bottleneck_mid,S4_final_decoder")
     ap.add_argument("--print-freq", type=int, default=10)
@@ -886,11 +892,14 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--conservative-penalty", type=float, default=0.20)
     ap.add_argument("--prototype-complexity-penalty", type=float, default=0.03)
     ap.add_argument("--bucket-distance-penalty", type=float, default=0.20)
+    ap.add_argument("--seed", type=int, default=230)
     return ap.parse_args()
 
 
 def main() -> None:
     args = parse_args()
+    random.seed(args.seed)
+    torch.manual_seed(args.seed)
     args.out_dir.mkdir(parents=True, exist_ok=True)
     append_status(args, f"v230_start route_id={ROUTE_ID}")
     append_status(args, "training_launched=false")

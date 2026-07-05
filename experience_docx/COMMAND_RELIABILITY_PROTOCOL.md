@@ -219,6 +219,32 @@ Corrected form:
 wsl -d Ubuntu-22.04 -- bash -lc 'cd /home/ubuntu/workspace/ConvIR-B-v230 && du -h -- experience_docx/COMMAND_RELIABILITY_PROTOCOL.md experience_docx/tools/nopost_v230_compatibility_gated_oof_table_policy.py'
 ```
 
+Related 2026-07-05 cloud recurrence:
+
+Avoid embedding remote Bash variables such as `$ROOT` and `$PY` inside a compact
+PowerShell -> WSL -> SSH command string, even when some backslashes are added:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc "ssh -n convir-4090 'set -euo pipefail; ROOT=/path; test -d \"$ROOT/.git\"'"
+```
+
+Failure mode observed:
+
+- the local WSL shell expanded remote variables before SSH ran, turning remote
+  path checks into empty-string checks;
+- `set -euo pipefail` degraded into a plain `set` environment dump.
+
+Corrected form for multi-line cloud commands:
+
+```powershell
+@'
+set -euo pipefail
+ROOT=/sda/home/wangyuxin/ConvIR-B/repos/<route>
+test -d "$ROOT/.git"
+echo REMOTE_CHECK_OK
+'@ | wsl -d Ubuntu-22.04 -- bash -lc "sed '1s/^\xEF\xBB\xBF//' | tr -d '\r' | ssh convir-4090 'bash -s'"
+```
+
 
 ### Cloud Python and evidence copy assumptions
 
