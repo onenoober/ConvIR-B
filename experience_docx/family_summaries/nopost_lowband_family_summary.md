@@ -6,11 +6,13 @@ Status: WLDB-A, the tested v2.18/v2.19/v2.20 deployable lowband predictor
 forms, the v2.23 small-adapter train form, the v2.25A direct risk soft-label /
 scale-distillation form, the v2.26 current-risk-input trainability route, the
 v2.27 same-sample ILFRB-ACS action-bank construction, the first v2.28 OOF
-prototype bank, the v2.29 safe-envelope / GT-free table-policy bank, and the
-v2.30 compatibility-gated LCB table-policy bank are not training-authorized.
-NoPost lowband remains directionally open only for a safer OOF/prototype
-action-bank route that preserves no-op/useful-action separation while solving
-deployable GT-free compatibility selection before selector probes or training.
+prototype bank, the v2.29 safe-envelope / GT-free table-policy bank, the v2.30
+compatibility-gated LCB table-policy bank, and the v2.31 target-only
+action-value identifiability route are not training-authorized. NoPost lowband
+remains directionally open, but the current discrete action-bank selector line
+is closed unless a materially new target-only action-value signal appears.
+The next plausible route is a separate NoPost bounded internal low-frequency
+correction-field design, not more table/firewall micro-tuning.
 
 ## Sources
 
@@ -27,6 +29,7 @@ deployable GT-free compatibility selection before selector probes or training.
   - `../experiment_cards/2026-07-05-haze4k-v2-28-nopost-ilfrb-acs-action-bank-stratification-audit.md`
   - `../experiment_cards/2026-07-05-haze4k-v2-29-nopost-ilfrb-acs-safe-oof-action-bank-calibration.md`
   - `../experiment_cards/2026-07-05-haze4k-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-policy.md`
+  - `../experiment_cards/2026-07-05-haze4k-v2-31-nopost-action-value-identifiability-audit.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/`
   - `../experiment_logs/haze4k_v2_17_nopost_lowband_alignment_tail_audit_20260703/`
@@ -40,6 +43,7 @@ deployable GT-free compatibility selection before selector probes or training.
   - `../experiment_logs/haze4k_v2_28_nopost_ilfrb_acs_action_bank_stratification_audit_20260705/`
   - `../experiment_logs/haze4k_v2_29_nopost_ilfrb_acs_safe_oof_action_bank_calibration_20260705/`
   - `../experiment_logs/haze4k_v2_30_nopost_ilfrb_acs_compatibility_gated_oof_table_policy_20260705/`
+  - `../experiment_logs/haze4k_v2_31_nopost_action_value_identifiability_audit_20260705/`
 
 ## Established Facts
 
@@ -57,6 +61,7 @@ deployable GT-free compatibility selection before selector probes or training.
 | Haze4K v2.28 NoPost ILFRB-ACS Action-Bank Stratification Audit | P0 passed architecture-delta audit with no model-structure change from v2.27. P2A OOF prototype replay produced the missing stratification signal: conservative no-op preference `0.225`, easy top25 no-op/mild `0.40`, hard bottom25 medium/strong `0.75`, and fold-tail pass `5/5`. Selected deployable OOF prototypes had mean/hard/easy `+1.1377/+1.3769/+0.7035`, p05 `0.0`, CVaR5 `0.0`, severe `0`, and strong-reference regression rate `0.0`. The route still failed because diagnostic negative-control unsafe rate was `0.5504`, above the allowed `0.40` upper bound. P2B was skipped, training was not launched, and locked test was untouched. | `P2A_FAIL_OOF_ACTION_BANK_STRATIFICATION_PAUSE`; do not train selector or touch locked test. Follow-up must reduce unsafe negative-control exposure while preserving OOF no-op/useful-action separation. |
 | Haze4K v2.29 NoPost ILFRB-ACS Safe OOF Action-Bank Calibration | P0 passed architecture-delta audit with no model-structure change from v2.28. P2A safe-envelope calibration found `bucket_strength_grid` as the best selected policy: mean/hard/easy `+0.8332/+1.3753/+0.3342`, p05 `0.0`, CVaR5 `0.0`, severe `0`, no-op rate `0.2375`, easy no-op/mild `1.0`, hard medium/strong `0.7`, fold-tail pass `5/5`. It still failed plausible safety controls: deployable mild unsafe `0.215625`, cross-bucket unsafe `0.4556`, hard-to-easy cross severe `0.7167`, and overstrong 1.5 unsafe `0.4417`. The best GT-free table policy `energy_norm_plus_bucket_strength` was too weak: mean/hard/easy `+0.0775/+0.2403/+0.0372`, p05 `-0.2199`, CVaR5 `-0.4333`, severe `0.0625`, fold-tail pass `3/5`, table pass `0`. P2B was skipped, training was not launched, and locked test was untouched. | `P2A_FAIL_SAFE_OOF_ACTION_BANK_CALIBRATION_PAUSE`; do not probe selector, train, or touch locked test. Follow-up must solve hard-to-easy cross-bucket leakage and GT-free table selection first. |
 | Haze4K v2.30 NoPost ILFRB-ACS Compatibility-Gated OOF Table Policy | P0 passed architecture-delta audit with no model-structure change from v2.29. P2A removed accepted hard-to-easy and cross-bucket risk in the strict diagnostic set (`0.0/0.0`) and kept a useful safe-set restricted oracle: mean/hard/easy `+0.6749/+1.2371/+0.1552`, p05 `0.0`, CVaR5 `0.0`, severe `0`. The fold-out GT-free LCB table policy was not deployable: mean/hard/easy `+0.0141/+0.0565/+0.0000`, p05 `-0.0503`, CVaR5 `-0.3056`, severe `0.0375`, fold-tail pass `4/5`, table pass `0`, safe-set-to-table mean gap `+0.6608`. P2B was skipped, training was not launched, and locked test was untouched. | `P2A_FAIL_COMPATIBILITY_GATED_TABLE_POLICY_PAUSE`; do not probe selector, train, or touch locked test. Follow-up must improve GT-free compatibility features/ranking/no-op thresholding before selector work. |
+| Haze4K v2.31 NoPost Target-Only Action-Value Identifiability Audit | P0 passed architecture-delta audit with no model-structure change from v2.30. P2A added target-only physics/frequency/internal/A0-diagnostic features, nested fold-out ranking, physics-cluster bank diagnostics, no-op risk-coverage, leakage controls, and action-confusion evidence. The feature gate failed: combined useful_gt_0p30 all/hard AUROC `0.6854/0.5444`, easy should-noop AUROC `0.5934`, and fold std `0.1059`. The best nested ranker improved over the v2.30 table with mean/hard/easy `+0.4234/+0.8152/+0.0995`, but p05/CVaR5/severe `-0.4421/-1.2582/0.1375` failed tail safety. Safe-set oracle remained higher at `+0.6749/+1.2371/+0.1553`, so action value exists but is not deployably identifiable enough. P2B was skipped, training was not launched, and locked test was untouched. | `P2A_FAIL_ACTION_VALUE_IDENTIFIABILITY_CLOSE_CURRENT_BANK`; close the current discrete action-bank selector route and pivot to a separate bounded internal low-frequency correction-field design or materially new action-value signal. |
 
 ## Family Verdict
 
@@ -65,11 +70,13 @@ v2.19 O2 final-only spatial predictor, v2.20 O3 mid+final/global-context
 predictor, v2.23 small-adapter train form, v2.25A direct risk soft-label /
 scale-distillation, v2.26 current-risk-input calibration/trainability, and the
 current v2.27 oracle-derived action-bank construction, the first v2.28 OOF
-prototype bank, the v2.29 safe-envelope / GT-free table-policy bank, and the
-v2.30 compatibility-gated LCB table-policy bank as training candidates. Do not
-close the underlying lowband-capacity direction, but treat it as requiring a
-safer OOF/prototype bank with deployable GT-free compatibility selection before
-any selector or trainability probe.
+prototype bank, the v2.29 safe-envelope / GT-free table-policy bank, the v2.30
+compatibility-gated LCB table-policy bank, and the v2.31 target-only
+action-value identifiability route as training candidates. Do not close the
+underlying lowband-capacity direction, but close the current discrete
+action-bank selector line unless a materially new target-only action-value
+signal appears. The next plausible route is a separate bounded internal
+low-frequency correction-field design.
 
 v2.16 established that lowband correction is a real source of headroom inside
 ConvIR-B. The RGB LL oracle and the proposed zero-init WLDB insertion were both
@@ -156,6 +163,14 @@ severe rate slightly exceeded the cap, and the safe-set-to-table mean gap was
 `+0.6608`. That keeps the bank scientifically interesting but blocks P2B,
 selector training, model training, and locked-test use.
 
+v2.31 directly tested whether richer target-only physics/frequency/internal
+features could rescue that action-value ranking bottleneck. They improved the
+best nested ranker over the v2.30 table and recovered some hard gain, but failed
+the written useful-action, easy-noop, fold-stability, and tail-safety gates.
+The evidence therefore changes the family verdict from "improve GT-free table
+selection before selector work" to "close the current discrete action-bank
+selector route unless a materially new action-value signal is introduced."
+
 ## Do Not Repeat Without New Evidence
 
 - Do not expand WLDB-A with more seeds, epochs, hidden width, checkpoint
@@ -178,6 +193,10 @@ selector training, model training, and locked-test use.
 - Do not continue the current v2.30 bank by probing a selector, training, or
   relaxing gates; the compatibility gate helped safety diagnostics, but the
   deployable GT-free LCB table policy still fails utility/severe gates.
+- Do not continue the current v2.31 bank by adding more handcrafted features,
+  ranker variants, table thresholds, selector probes, training, or locked-test
+  checks; the target-only action-value identifiability and tail-safety gates
+  failed.
 - Do not treat the v2.21 replay pass, v2.25A AP/ECE partial passes, or the
   invalid tuple-sort AP as train-time success.
 - Do not treat mean or hard-bucket improvement as sufficient if p05, CVaR,
@@ -189,16 +208,17 @@ selector training, model training, and locked-test use.
 
 ## Reopen Condition
 
-A credible follow-up must be a new safety-first NoPost lowband action-bank
-route, not a WLDB-A rerun, a direct v2.19/v2.20 training launch, a v2.23
+A credible follow-up must either introduce a materially new target-only
+action-value signal before reopening a discrete action-bank selector, or move
+to a separate NoPost bounded internal low-frequency correction-field route. It
+must not be a WLDB-A rerun, a direct v2.19/v2.20 training launch, a v2.23
 expansion, a v2.25A hyperparameter extension, a v2.26 rescue/action-joint
-continuation, a v2.27 selector launch from the same-sample bank, or a v2.28
-selector launch from the current unsafe OOF prototype bank, or a v2.29 selector
-launch from the failed safe-envelope/table-policy bank, or a v2.30 selector
-launch from the failed compatibility-gated LCB table policy. It should use the
-v2.17 O2/O3, v2.20, v2.27 P1, v2.28 OOF stratification, v2.29 bucket-aware
-strength, and v2.30 restricted-oracle/compatibility evidence, keep the
-source-clean and identity contract requirements, preserve no-op/useful-action
-strata, and make deployable GT-free compatibility selection the first hard gate
-before trained-gate, canary, risk-coverage, selector, training, or locked-test
-work.
+continuation, a v2.27 selector launch from the same-sample bank, a v2.28
+selector launch from the current unsafe OOF prototype bank, a v2.29 selector
+launch from the failed safe-envelope/table-policy bank, a v2.30 selector launch
+from the failed compatibility-gated LCB table policy, or v2.31 table/ranker
+micro-tuning. It should keep the source-clean and identity contract
+requirements, avoid locked-test feedback for design selection, and make
+train-derived tail safety plus deployable target-only identifiability the first
+hard gate before trained-gate, canary, risk-coverage, selector, training, or
+locked-test work.
