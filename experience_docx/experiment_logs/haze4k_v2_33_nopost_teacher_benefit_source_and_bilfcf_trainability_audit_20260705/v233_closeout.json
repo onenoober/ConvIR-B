@@ -1,0 +1,16 @@
+{
+  "canary80_oof_launched": false,
+  "closed_reference": "v2.32 P2_FAIL_BOUNDED_FIELD_TRAINABILITY_PAUSE",
+  "decision": "P4_FAIL_MASKED_CANARY32_NO_CANARY80",
+  "locked_test_touched": false,
+  "not_a_continuation_of_failed_v232_training": true,
+  "p1_gate_pass": true,
+  "p2_gate_pass": true,
+  "p2b_selector_probe_launched": false,
+  "p3_gate_pass": true,
+  "p4_canary32_authorized": true,
+  "p4_canary32_launched": true,
+  "p4_canary80_authorized": false,
+  "p4_gate_pass": false,
+  "primary_question": "Does a teacher/expert provide stable, maskable hard-haze and low-frequency benefit over ConvIR-B, and can BILFCF safely compress that benefit?"
+}

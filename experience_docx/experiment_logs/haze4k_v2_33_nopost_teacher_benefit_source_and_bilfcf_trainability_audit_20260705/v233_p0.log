@@ -1,0 +1,15 @@
+{
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "closed_reference": "v2.32 P2_FAIL_BOUNDED_FIELD_TRAINABILITY_PAUSE",
+  "forward_contract": "forward(self, x)",
+  "identity_max_abs_vs_A0": 0.0,
+  "identity_mean_abs_vs_A0": 0.0,
+  "learned_rgb_post_output_correction": false,
+  "locked_test_touched": false,
+  "not_a_continuation_of_failed_v232_training": true,
+  "pass": true,
+  "rgb_output_output_residual": false,
+  "route_id": "haze4k_v2_33_nopost_teacher_benefit_source_and_bilfcf_trainability_audit_20260705",
+  "teacher_or_expert_forward_input": false,
+  "trainable_param_count": 50657
+}

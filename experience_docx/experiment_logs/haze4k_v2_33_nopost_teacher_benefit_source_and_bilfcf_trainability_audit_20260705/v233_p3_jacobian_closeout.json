@@ -1,0 +1,72 @@
+{
+  "epsilon": 0.02,
+  "locked_test_touched": false,
+  "lowest_amplification_point": "S6_decoder_early",
+  "phase": "P3 Jacobian sensitivity by insertion",
+  "route_id": "haze4k_v2_33_nopost_teacher_benefit_source_and_bilfcf_trainability_audit_20260705",
+  "s5_is_lowest_amplification": false,
+  "s5_jacobian_amplification": 0.07501750645684595,
+  "sample_count": 16,
+  "summary": [
+    {
+      "count": 16,
+      "easy_regression_rate": 0.5,
+      "feature_delta_energy": 0.01685122324852273,
+      "hard_response_gain_proxy": -0.12636375427246094,
+      "highfreq_output_leakage": 0.061163634061813354,
+      "insertion_point": "S4_encoder_late",
+      "jacobian_amplification": 0.06604787150525941,
+      "lowfreq_output_ratio": 0.9388363659381866,
+      "output_rgb_delta_energy": 0.0010559979618847137,
+      "psnr_drop_per_unit_feature_delta": 5.665456808495082
+    },
+    {
+      "count": 16,
+      "easy_regression_rate": 0.0,
+      "feature_delta_energy": 0.006106924818595871,
+      "hard_response_gain_proxy": -0.05610084533691406,
+      "highfreq_output_leakage": 0.0654764212667942,
+      "insertion_point": "S5_bottleneck_mid",
+      "jacobian_amplification": 0.07501750645684595,
+      "lowfreq_output_ratio": 0.9345235787332058,
+      "output_rgb_delta_energy": 0.00045808502909494564,
+      "psnr_drop_per_unit_feature_delta": 3.5964641696903814
+    },
+    {
+      "count": 16,
+      "easy_regression_rate": 0.25,
+      "feature_delta_energy": 0.0035676844127010554,
+      "hard_response_gain_proxy": 0.010565757751464844,
+      "highfreq_output_leakage": 0.060363613069057465,
+      "insertion_point": "S6_decoder_early",
+      "jacobian_amplification": 0.0617292629579871,
+      "lowfreq_output_ratio": 0.9396363869309425,
+      "output_rgb_delta_energy": 0.0002269161827825883,
+      "psnr_drop_per_unit_feature_delta": 1.7764987087769528
+    },
+    {
+      "count": 16,
+      "easy_regression_rate": 0.75,
+      "feature_delta_energy": 0.003080446578678675,
+      "hard_response_gain_proxy": -0.030530929565429688,
+      "highfreq_output_leakage": 0.11833443865180016,
+      "insertion_point": "decoder_mid",
+      "jacobian_amplification": 0.16849724808164265,
+      "lowfreq_output_ratio": 0.8816655613481998,
+      "output_rgb_delta_energy": 0.0005403321692938334,
+      "psnr_drop_per_unit_feature_delta": 12.512698763818504
+    },
+    {
+      "count": 16,
+      "easy_regression_rate": 1.0,
+      "feature_delta_energy": 0.0017335658303636592,
+      "hard_response_gain_proxy": -0.08628177642822266,
+      "highfreq_output_leakage": 0.30104515701532364,
+      "insertion_point": "decoder_pre_output_feature",
+      "jacobian_amplification": 0.5148461993590986,
+      "lowfreq_output_ratio": 0.6989548429846764,
+      "output_rgb_delta_energy": 0.0008909131574910134,
+      "psnr_drop_per_unit_feature_delta": 50.190538060628526
+    }
+  ]
+}
