@@ -1,0 +1,39 @@
+status: P2A_SAFE_OOF_ACTION_BANK_CALIBRATION_AUDIT
+locked_test_touched: false
+training_launched: false
+source_branch: codex/haze4k-v2-29-nopost-ilfrb-acs-safe-oof-action-bank-calibration
+parent_branch: codex/haze4k-v2-28-nopost-ilfrb-acs-action-bank-stratification-audit
+parent_commit: 82f4752
+main_evidence_parent: 270c2fb
+
+hypothesis:
+  v2.28 created OOF no-op/useful/unsafe action strata but failed because
+  negative-control and raw-candidate tail risk are too high.
+  v2.29 tests whether safety-envelope calibration, bucket-aware strength,
+  stage/action pruning, and GT-free table policy can preserve OOF gains
+  while reducing plausible negative-control unsafe exposure.
+
+hard_blocks:
+  do_not_launch_training_until_safe_table_policy_passes: true
+  do_not_run_p2b_selector_probe_until_p2a_safe_envelope_passes: true
+  do_not_touch_locked_test_until_oof_selector_gate_passes: true
+v229_p2a_start 2026-07-05T11:34:23+08:00
+branch=codex/haze4k-v2-29-nopost-ilfrb-acs-safe-oof-action-bank-calibration
+commit=aa1bd1b
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-29-nopost-ilfrb-acs-safe-oof-action-bank-calibration
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split_csv=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-17-nopost-lowband-alignment-tail-audit/experience_docx/experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/v216_t1_per_image_band_deltas.csv
+gpu=0
+max_images=80
+oracle_steps=10
+stage_sets=S6_early_mid_final,S5_bottleneck_mid,S4_final_decode
+locked_test_touched=false
+training_launched=false
+v229_start route_id=haze4k_v2_29_nopost_ilfrb_acs_safe_oof_action_bank_calibration_20260705
+locked_test_touched=false
+training_launched=false
+v229_done decision=P2A_FAIL_SAFE_OOF_ACTION_BANK_CALIBRATION_PAUSE
+v229_p2a_done rc=0 decision=P2A_FAIL_SAFE_OOF_ACTION_BANK_CALIBRATION_PAUSE 2026-07-05T11:53:51+08:00
+V229_P2A_COMMAND_OK
