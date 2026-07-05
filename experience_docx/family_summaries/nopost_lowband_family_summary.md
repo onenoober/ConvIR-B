@@ -7,12 +7,13 @@ forms, the v2.23 small-adapter train form, the v2.25A direct risk soft-label /
 scale-distillation form, the v2.26 current-risk-input trainability route, the
 v2.27 same-sample ILFRB-ACS action-bank construction, the first v2.28 OOF
 prototype bank, the v2.29 safe-envelope / GT-free table-policy bank, the v2.30
-compatibility-gated LCB table-policy bank, and the v2.31 target-only
-action-value identifiability route are not training-authorized. NoPost lowband
-remains directionally open, but the current discrete action-bank selector line
-is closed unless a materially new target-only action-value signal appears.
-The next plausible route is a separate NoPost bounded internal low-frequency
-correction-field design, not more table/firewall micro-tuning.
+compatibility-gated LCB table-policy bank, the v2.31 target-only action-value
+identifiability route, and the v2.32 S5-only bounded internal low-frequency
+correction-field canary are not training-authorized. NoPost lowband remains
+directionally open, but the current discrete action-bank selector line is closed
+unless a materially new target-only action-value signal appears, and the current
+S5-only alpha=0.02 loss_C adapter-only BILFCF canary should not be expanded by
+more epochs/folds/simple loss-weight tuning.
 
 ## Sources
 
@@ -30,6 +31,7 @@ correction-field design, not more table/firewall micro-tuning.
   - `../experiment_cards/2026-07-05-haze4k-v2-29-nopost-ilfrb-acs-safe-oof-action-bank-calibration.md`
   - `../experiment_cards/2026-07-05-haze4k-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-policy.md`
   - `../experiment_cards/2026-07-05-haze4k-v2-31-nopost-action-value-identifiability-audit.md`
+  - `../experiment_cards/2026-07-05-haze4k-v2-32-nopost-bounded-internal-lowfreq-correction-field.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/`
   - `../experiment_logs/haze4k_v2_17_nopost_lowband_alignment_tail_audit_20260703/`
@@ -44,6 +46,7 @@ correction-field design, not more table/firewall micro-tuning.
   - `../experiment_logs/haze4k_v2_29_nopost_ilfrb_acs_safe_oof_action_bank_calibration_20260705/`
   - `../experiment_logs/haze4k_v2_30_nopost_ilfrb_acs_compatibility_gated_oof_table_policy_20260705/`
   - `../experiment_logs/haze4k_v2_31_nopost_action_value_identifiability_audit_20260705/`
+  - `../experiment_logs/haze4k_v2_32_nopost_bounded_internal_lowfreq_correction_field_20260705/`
 
 ## Established Facts
 
@@ -62,6 +65,7 @@ correction-field design, not more table/firewall micro-tuning.
 | Haze4K v2.29 NoPost ILFRB-ACS Safe OOF Action-Bank Calibration | P0 passed architecture-delta audit with no model-structure change from v2.28. P2A safe-envelope calibration found `bucket_strength_grid` as the best selected policy: mean/hard/easy `+0.8332/+1.3753/+0.3342`, p05 `0.0`, CVaR5 `0.0`, severe `0`, no-op rate `0.2375`, easy no-op/mild `1.0`, hard medium/strong `0.7`, fold-tail pass `5/5`. It still failed plausible safety controls: deployable mild unsafe `0.215625`, cross-bucket unsafe `0.4556`, hard-to-easy cross severe `0.7167`, and overstrong 1.5 unsafe `0.4417`. The best GT-free table policy `energy_norm_plus_bucket_strength` was too weak: mean/hard/easy `+0.0775/+0.2403/+0.0372`, p05 `-0.2199`, CVaR5 `-0.4333`, severe `0.0625`, fold-tail pass `3/5`, table pass `0`. P2B was skipped, training was not launched, and locked test was untouched. | `P2A_FAIL_SAFE_OOF_ACTION_BANK_CALIBRATION_PAUSE`; do not probe selector, train, or touch locked test. Follow-up must solve hard-to-easy cross-bucket leakage and GT-free table selection first. |
 | Haze4K v2.30 NoPost ILFRB-ACS Compatibility-Gated OOF Table Policy | P0 passed architecture-delta audit with no model-structure change from v2.29. P2A removed accepted hard-to-easy and cross-bucket risk in the strict diagnostic set (`0.0/0.0`) and kept a useful safe-set restricted oracle: mean/hard/easy `+0.6749/+1.2371/+0.1552`, p05 `0.0`, CVaR5 `0.0`, severe `0`. The fold-out GT-free LCB table policy was not deployable: mean/hard/easy `+0.0141/+0.0565/+0.0000`, p05 `-0.0503`, CVaR5 `-0.3056`, severe `0.0375`, fold-tail pass `4/5`, table pass `0`, safe-set-to-table mean gap `+0.6608`. P2B was skipped, training was not launched, and locked test was untouched. | `P2A_FAIL_COMPATIBILITY_GATED_TABLE_POLICY_PAUSE`; do not probe selector, train, or touch locked test. Follow-up must improve GT-free compatibility features/ranking/no-op thresholding before selector work. |
 | Haze4K v2.31 NoPost Target-Only Action-Value Identifiability Audit | P0 passed architecture-delta audit with no model-structure change from v2.30. P2A added target-only physics/frequency/internal/A0-diagnostic features, nested fold-out ranking, physics-cluster bank diagnostics, no-op risk-coverage, leakage controls, and action-confusion evidence. The feature gate failed: combined useful_gt_0p30 all/hard AUROC `0.6854/0.5444`, easy should-noop AUROC `0.5934`, and fold std `0.1059`. The best nested ranker improved over the v2.30 table with mean/hard/easy `+0.4234/+0.8152/+0.0995`, but p05/CVaR5/severe `-0.4421/-1.2582/0.1375` failed tail safety. Safe-set oracle remained higher at `+0.6749/+1.2371/+0.1553`, so action value exists but is not deployably identifiable enough. P2B was skipped, training was not launched, and locked test was untouched. | `P2A_FAIL_ACTION_VALUE_IDENTIFIABILITY_CLOSE_CURRENT_BANK`; close the current discrete action-bank selector route and pivot to a separate bounded internal low-frequency correction-field design or materially new action-value signal. |
+| Haze4K v2.32 NoPost Bounded Internal Low-Frequency Correction Field | P0 passed the new architecture contract from official anchor: strict partial-load loaded `602` official keys, only `8` `BILFCF_` keys were newly initialized, identity max/mean diff were `0.0`, forbidden symbol hits were `0`, and runtime remained `forward(self, x)`. P1 passed bounded-field sanity with tiny low-frequency activity: field mean/p95 `5.6611e-06/1.1682e-05`, high-frequency leakage `0.02363`, and gate mean `0.01822`. P2 canary32 then failed after `40` train-derived adapter-only steps: mean/hard/easy deltas `-0.4146/-0.3287/-0.4371`, p05/CVaR5/severe `-1.7719/-2.0842/0.5000`. P2 canary80 OOF and P3 objective ablation were not launched. | `P2_FAIL_BOUNDED_FIELD_TRAINABILITY_PAUSE`; do not expand this S5-only alpha=0.02 loss_C adapter-only BILFCF route by more epochs/folds/simple tuning. A follow-up must materially change the bounded-field training design before reopening. |
 
 ## Family Verdict
 
@@ -72,11 +76,13 @@ scale-distillation, v2.26 current-risk-input calibration/trainability, and the
 current v2.27 oracle-derived action-bank construction, the first v2.28 OOF
 prototype bank, the v2.29 safe-envelope / GT-free table-policy bank, the v2.30
 compatibility-gated LCB table-policy bank, and the v2.31 target-only
-action-value identifiability route as training candidates. Do not close the
-underlying lowband-capacity direction, but close the current discrete
-action-bank selector line unless a materially new target-only action-value
-signal appears. The next plausible route is a separate bounded internal
-low-frequency correction-field design.
+action-value identifiability route, and the current v2.32 S5-only BILFCF canary
+as training candidates. Do not close the underlying lowband-capacity direction,
+but close the current discrete action-bank selector line unless a materially new
+target-only action-value signal appears. The first bounded internal
+low-frequency correction-field screen escaped the selector bottleneck
+mechanically, but failed trainability/tail gates in canary32, so a follow-up
+must materially change the bounded-field design rather than extending this one.
 
 v2.16 established that lowband correction is a real source of headroom inside
 ConvIR-B. The RGB LL oracle and the proposed zero-init WLDB insertion were both
@@ -171,6 +177,15 @@ The evidence therefore changes the family verdict from "improve GT-free table
 selection before selector work" to "close the current discrete action-bank
 selector route unless a materially new action-value signal is introduced."
 
+v2.32 tested the correct post-v2.31 pivot: a zero-init, bounded-amplitude,
+spatial internal low-frequency correction field inside ConvIR-B, with no action
+bank, no ranker, no selector, and no locked-test feedback. P0/P1 were clean:
+official weights partial-loaded exactly except for `BILFCF_`, identity was
+exact, and the field stayed tiny and low-frequency after warmup. The first
+adapter-only canary32 still failed because utility and tail moved the wrong
+way. This is a different failure from v2.31: not action-value identifiability,
+but trainability/safety failure for the current S5-only bounded-field design.
+
 ## Do Not Repeat Without New Evidence
 
 - Do not expand WLDB-A with more seeds, epochs, hidden width, checkpoint
@@ -197,6 +212,9 @@ selector route unless a materially new action-value signal is introduced."
   ranker variants, table thresholds, selector probes, training, or locked-test
   checks; the target-only action-value identifiability and tail-safety gates
   failed.
+- Do not continue the current v2.32 S5-only alpha=0.02 loss_C adapter-only
+  BILFCF canary by launching canary80/P3 anyway, adding epochs/folds, relaxing
+  tail gates, or using locked-test feedback; canary32 failed normally.
 - Do not treat the v2.21 replay pass, v2.25A AP/ECE partial passes, or the
   invalid tuple-sort AP as train-time success.
 - Do not treat mean or hard-bucket improvement as sufficient if p05, CVaR,
@@ -209,16 +227,17 @@ selector route unless a materially new action-value signal is introduced."
 ## Reopen Condition
 
 A credible follow-up must either introduce a materially new target-only
-action-value signal before reopening a discrete action-bank selector, or move
-to a separate NoPost bounded internal low-frequency correction-field route. It
-must not be a WLDB-A rerun, a direct v2.19/v2.20 training launch, a v2.23
-expansion, a v2.25A hyperparameter extension, a v2.26 rescue/action-joint
-continuation, a v2.27 selector launch from the same-sample bank, a v2.28
-selector launch from the current unsafe OOF prototype bank, a v2.29 selector
-launch from the failed safe-envelope/table-policy bank, a v2.30 selector launch
-from the failed compatibility-gated LCB table policy, or v2.31 table/ranker
-micro-tuning. It should keep the source-clean and identity contract
-requirements, avoid locked-test feedback for design selection, and make
-train-derived tail safety plus deployable target-only identifiability the first
-hard gate before trained-gate, canary, risk-coverage, selector, training, or
-locked-test work.
+action-value signal before reopening a discrete action-bank selector, or
+materially change the bounded-field training design beyond the current v2.32
+S5-only alpha=0.02 loss_C adapter-only canary. It must not be a WLDB-A rerun, a
+direct v2.19/v2.20 training launch, a v2.23 expansion, a v2.25A hyperparameter
+extension, a v2.26 rescue/action-joint continuation, a v2.27 selector launch
+from the same-sample bank, a v2.28 selector launch from the current unsafe OOF
+prototype bank, a v2.29 selector launch from the failed
+safe-envelope/table-policy bank, a v2.30 selector launch from the failed
+compatibility-gated LCB table policy, v2.31 table/ranker micro-tuning, or a
+simple v2.32 rerun with more epochs/folds/loss-weight tuning. It should keep
+the source-clean and identity contract requirements, avoid locked-test feedback
+for design selection, and make train-derived tail safety plus the route-specific
+mechanism gate the first hard gate before selector, training, or locked-test
+work.

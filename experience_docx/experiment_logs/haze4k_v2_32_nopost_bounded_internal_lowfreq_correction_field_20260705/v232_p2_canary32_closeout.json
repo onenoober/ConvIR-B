@@ -1,0 +1,11 @@
+{
+  "phase": "canary32",
+  "loss_variant": "C",
+  "sample_count": 32,
+  "locked_test_touched": false,
+  "p2b_selector_probe_launched": false,
+  "rgb_output_output_residual": false,
+  "learned_rgb_post_output_correction": false,
+  "gate_pass": false,
+  "decision": "CANARY32_FAIL_NORMAL_PAUSE"
+}

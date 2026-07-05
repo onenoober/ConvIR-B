@@ -1,0 +1,104 @@
+{
+  "route_id": "haze4k_v2_32_nopost_bounded_internal_lowfreq_correction_field_20260705",
+  "branch": "codex/haze4k-v2-32-nopost-bounded-internal-lowfreq-correction-field",
+  "commit": "4fb5ef6",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "torch_version": "2.5.1+cu121",
+  "cuda_device_name": "NVIDIA GeForce RTX 4090",
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "train_counts": {
+    "haze": 3000,
+    "gt": 3000
+  },
+  "test_counts": {
+    "haze": 1000,
+    "gt": 1000
+  },
+  "partial_load": {
+    "loaded_count": 602,
+    "missing_new_modules": [
+      "BILFCF_s5.body.0.bias",
+      "BILFCF_s5.body.0.weight",
+      "BILFCF_s5.body.2.bias",
+      "BILFCF_s5.body.2.weight",
+      "BILFCF_s5.delta_head.bias",
+      "BILFCF_s5.delta_head.weight",
+      "BILFCF_s5.gate_head.bias",
+      "BILFCF_s5.gate_head.weight"
+    ],
+    "unexpected": [],
+    "shape_mismatch": [],
+    "bad_missing": []
+  },
+  "parameter_count_total": 8681322,
+  "parameter_count_trainable_by_scope": {
+    "adapter_only": 50657,
+    "all": 8681322
+  },
+  "synthetic_output_shapes": [
+    [
+      1,
+      3,
+      64,
+      64
+    ],
+    [
+      1,
+      3,
+      128,
+      128
+    ],
+    [
+      1,
+      3,
+      256,
+      256
+    ]
+  ],
+  "synthetic_forward_finite": true,
+  "synthetic_output_diffs": [
+    {
+      "output_index": 0,
+      "max_abs": 0.0,
+      "mean_abs": 0.0
+    },
+    {
+      "output_index": 1,
+      "max_abs": 0.0,
+      "mean_abs": 0.0
+    },
+    {
+      "output_index": 2,
+      "max_abs": 0.0,
+      "mean_abs": 0.0
+    }
+  ],
+  "noop_or_bounded_diff_vs_a0": 0.0,
+  "identity_max_abs_vs_A0": 0.0,
+  "identity_mean_abs_vs_A0": 0.0,
+  "one_batch_forward_finite": true,
+  "one_batch_loss": 0.004931917879730463,
+  "initial_bilfcf_stats": {
+    "BILFCF_s5": {
+      "field_energy_mean": 0.0,
+      "field_energy_rms": 0.0,
+      "field_energy_p95": 0.0,
+      "field_abs_max": 0.0,
+      "gate_mean": 0.01798621006309986,
+      "gate_std": 0.0,
+      "gate_min": 0.01798621006309986,
+      "gate_max": 0.01798621006309986,
+      "highfreq_leakage": 0.0,
+      "lowfreq_ratio": 1.0
+    }
+  },
+  "forward_contract": "forward(self, x)",
+  "teacher_or_expert_forward_input": false,
+  "rgb_output_output_residual": false,
+  "learned_rgb_post_output_correction": false,
+  "forbidden_symbol_hits": [],
+  "locked_test_touched": false,
+  "pass": true
+}
