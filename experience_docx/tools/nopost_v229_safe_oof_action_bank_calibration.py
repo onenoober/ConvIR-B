@@ -1053,6 +1053,16 @@ def write_readme(args: argparse.Namespace, closeout: dict[str, Any]) -> None:
     write_text(args.out_dir / "README.md", "\n".join(lines))
 
 
+def json_clean(value: Any) -> Any:
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    if isinstance(value, dict):
+        return {key: json_clean(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [json_clean(item) for item in value]
+    return value
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data-dir", type=Path, required=True)
@@ -1098,7 +1108,7 @@ def main() -> None:
     closeout["p0"] = p0
     if not p0["pass"]:
         closeout["decision"] = p0["decision"]
-        write_json(args.out_dir / "v229_p2a_closeout.json", closeout)
+        write_json(args.out_dir / "v229_p2a_closeout.json", json_clean(closeout))
         write_readme(args, closeout)
         append_status(args, f"v229_done decision={closeout['decision']}")
         return
@@ -1132,8 +1142,8 @@ def main() -> None:
     }
     closeout["p2a"] = p2a
     closeout["decision"] = p2a["decision"]
-    write_json(args.out_dir / "v229_p2a_noop_useful_unsafe_base_rate_report.json", p2a)
-    write_json(args.out_dir / "v229_p2a_closeout.json", closeout)
+    write_json(args.out_dir / "v229_p2a_noop_useful_unsafe_base_rate_report.json", json_clean(p2a))
+    write_json(args.out_dir / "v229_p2a_closeout.json", json_clean(closeout))
     write_readme(args, closeout)
     append_status(args, f"v229_done decision={closeout['decision']}")
     print("V229_SAFE_OOF_ACTION_BANK_AUDIT_OK " + closeout["decision"], flush=True)
