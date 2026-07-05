@@ -2,7 +2,7 @@
 
 Route card: `experience_docx/experiment_cards/2026-07-05-haze4k-v2-32-nopost-bounded-internal-lowfreq-correction-field.md`
 
-Status: `PLANNED`
+Status: `P2_FAIL_BOUNDED_FIELD_TRAINABILITY_PAUSE`
 
 Runtime server: `convir-4090`
 Runtime workspace: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-32-nopost-bounded-internal-lowfreq-correction-field`
@@ -15,12 +15,18 @@ Hard blocks:
 - `rgb_output_output_residual: false`
 - `learned_rgb_post_output_correction: false`
 
-## Current Plan
+## Key Results
 
-P0 validates the BILFCF architecture contract and zero-init identity. P1 and P2
-then use train-derived canary screens only. If a gate fails, the route pauses as
-a normal scientific/engineering screen result and does not continue to later
-stages.
+- P0 architecture/identity passed: `identity_max_abs_vs_A0=0.0`,
+  strict partial-load loaded `602` official keys, and only `8` `BILFCF_` keys
+  were newly initialized.
+- P1 bounded-field sanity passed: all-bucket field energy mean `5.6611e-06`,
+  p95 `1.1682e-05`, high-frequency leakage `0.02363`, gate mean `0.01822`.
+- P2 canary32 failed normally: mean/hard/easy delta
+  `-0.4146/-0.3287/-0.4371 dB`, p05/CVaR5/severe
+  `-1.7719/-2.0842/0.5000`.
+- P2 canary80 OOF and P3 objective ablation were not launched because canary32
+  did not meet the continuation gate.
 
 This directory is intended for compact text evidence only. It excludes
 checkpoints, weights, datasets, images, arrays, archives, and raw feature tables

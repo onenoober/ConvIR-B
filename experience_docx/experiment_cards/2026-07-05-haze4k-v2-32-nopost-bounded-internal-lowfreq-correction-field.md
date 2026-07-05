@@ -6,7 +6,7 @@ Branch: `codex/haze4k-v2-32-nopost-bounded-internal-lowfreq-correction-field`
 
 Route id: `haze4k_v2_32_nopost_bounded_internal_lowfreq_correction_field_20260705`
 
-Status: `PLANNED`
+Status: `P2_FAIL_BOUNDED_FIELD_TRAINABILITY_PAUSE`
 
 ## Hypothesis
 
@@ -117,3 +117,40 @@ Planned compact text artifacts:
 - `v232_local_optimum_escape_audit.md`
 - `v232_closeout.json`
 - durable run and monitor scripts
+
+## Final Result
+
+Runtime server: `convir-4090`
+
+Final audited commit: `4fb5ef6`
+
+Completion time: `2026-07-05T22:15:10+08:00`
+
+Decision: `P2_FAIL_BOUNDED_FIELD_TRAINABILITY_PAUSE`
+
+P0 passed:
+
+- `identity_max_abs_vs_A0 = 0.0`
+- `identity_mean_abs_vs_A0 = 0.0`
+- strict partial-load loaded `602` official keys
+- missing new-module keys `8`, all under `BILFCF_`
+- forbidden symbol hits `0`
+- forward contract `forward(self, x)`
+
+P1 passed bounded-field sanity:
+
+- all-bucket field energy mean `5.6611e-06`
+- all-bucket field p95 `1.1682e-05`
+- all-bucket high-frequency leakage `0.02363`
+- all-bucket gate mean `0.01822`
+
+P2 canary32 failed the trainability gate and stopped the route normally:
+
+- mean/hard/easy delta `-0.4146 / -0.3287 / -0.4371 dB`
+- p05/CVaR5/severe `-1.7719 / -2.0842 / 0.5000`
+- identity start passed
+- train steps `40`
+- field energy remained nonzero and low-frequency, but utility and tail gates failed
+
+P2 canary80 OOF and P3 objective ablation were not launched because canary32
+failed the predeclared continuation gate. Locked test remained untouched.

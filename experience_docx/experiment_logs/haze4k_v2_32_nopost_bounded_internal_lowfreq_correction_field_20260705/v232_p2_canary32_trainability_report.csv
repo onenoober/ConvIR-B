@@ -1,0 +1,2 @@
+base_mean_delta_before_train,cvar5,easy_gain,fold,hard_gain,identity_max_abs_vs_A0_start,identity_start_pass,loss_variant,mean_delta,p05,phase,severe_rate,strong_reference_regression_rate,train_steps
+0.0,-2.084196090698242,-0.43712663650512695,all,-0.3286762237548828,0.0,True,C,-0.4145773649215698,-1.771880531311035,canary32,0.5,0.75,40

@@ -1,1 +1,15 @@
 planned haze4k_v2_32_nopost_bounded_internal_lowfreq_correction_field_20260705 2026-07-05
+p0_preflight_start haze4k_v2_32_nopost_bounded_internal_lowfreq_correction_field_20260705 2026-07-05T22:13:26+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-32-nopost-bounded-internal-lowfreq-correction-field
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+p0_preflight_done rc=0 haze4k_v2_32_nopost_bounded_internal_lowfreq_correction_field_20260705 2026-07-05T22:13:36+08:00
+V232_P0_PREFLIGHT_OK
+p1_sanity_start 2026-07-05T22:14:08+08:00
+p1_sanity_done rc=0 2026-07-05T22:14:21+08:00
+V232_P1_SANITY_OK
+p2_canary32_start 2026-07-05T22:14:51+08:00
+p2_canary32_done rc=2 2026-07-05T22:15:10+08:00
+V232_P2_CANARY32_GATE_FAIL_NORMAL_PAUSE
+final_decision P2_FAIL_BOUNDED_FIELD_TRAINABILITY_PAUSE 2026-07-05T22:15:10+08:00

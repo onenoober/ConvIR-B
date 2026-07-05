@@ -1,0 +1,47 @@
+{
+  "decision": "P2_FAIL_BOUNDED_FIELD_TRAINABILITY_PAUSE",
+  "training_scope": "canary_or_small_train_derived_only",
+  "primary_question": "Can a zero-init bounded internal low-frequency correction field produce hard gain without easy/tail damage?",
+  "closed_route_reference": "v2.31 P2A_FAIL_ACTION_VALUE_IDENTIFIABILITY_CLOSE_CURRENT_BANK",
+  "runtime_server": "convir-4090",
+  "runtime_workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-32-nopost-bounded-internal-lowfreq-correction-field",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "final_commit": "4fb5ef6",
+  "p0_arch_contract_pass": true,
+  "p1_field_sanity_pass": true,
+  "p2_canary32_gate_pass": false,
+  "p2_canary80_oof_launched": false,
+  "p3_objective_ablation_launched": false,
+  "p2b_selector_probe_launched": false,
+  "locked_test_touched": false,
+  "rgb_output_output_residual": false,
+  "learned_rgb_post_output_correction": false,
+  "p0": {
+    "identity_max_abs_vs_A0": 0.0,
+    "identity_mean_abs_vs_A0": 0.0,
+    "partial_load_loaded_count": 602,
+    "missing_new_module_key_count": 8,
+    "forbidden_symbol_hits": 0,
+    "forward_contract": "forward(self, x)"
+  },
+  "p1": {
+    "field_energy_mean_all": 5.661128440692664e-06,
+    "field_energy_p95_all": 1.1682335298246471e-05,
+    "highfreq_leakage_all": 0.023634617973584682,
+    "gate_mean_all": 0.018224547966383398
+  },
+  "p2_canary32": {
+    "train_steps": 40,
+    "identity_start_pass": true,
+    "mean_delta": -0.4145773649215698,
+    "hard_gain": -0.3286762237548828,
+    "easy_gain": -0.43712663650512695,
+    "p05": -1.771880531311035,
+    "cvar5": -2.084196090698242,
+    "severe_rate": 0.5,
+    "field_energy_mean_all": 1.3506418611086701e-05,
+    "field_energy_p95_all": 3.378954522759159e-05,
+    "gate_std_all": 0.00028677533964582835,
+    "highfreq_leakage_all": 0.026457999309059232
+  }
+}
