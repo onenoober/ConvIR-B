@@ -1,0 +1,23 @@
+{
+  "gate_pass": true,
+  "gate_pass_teachers": [
+    "wdmamba_alpha0p5",
+    "wdmamba_full"
+  ],
+  "locked_test_touched": false,
+  "phase": "P1 teacher-benefit source audit",
+  "route_id": "haze4k_v2_33_nopost_teacher_benefit_source_and_bilfcf_trainability_audit_20260705",
+  "source_notes": [
+    {
+      "source": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-5-fdf-rcs-lite/experience_docx/experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/phase0_official_eval/udpnet_convir_bucket_compare.csv",
+      "status": "loaded",
+      "teacher_id": "udpnet_full"
+    },
+    {
+      "source": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c8-mini-expert-oracle/experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/v22_c8_1_wdmamba_full_per_image.csv",
+      "status": "loaded",
+      "teacher_id": "wdmamba_full/wdmamba_alpha0p5"
+    }
+  ],
+  "teacher_count": 3
+}

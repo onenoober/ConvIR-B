@@ -1,0 +1,28 @@
+PLANNED haze4k_v2_33_nopost_teacher_benefit_source_and_bilfcf_trainability_audit_20260705
+locked_test_touched=false
+canary80_oof_launched=false
+p2b_selector_probe_launched=false
+p0_p1_start haze4k_v2_33_nopost_teacher_benefit_source_and_bilfcf_trainability_audit_20260705 2026-07-05T23:34:22+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-33-nopost-teacher-benefit-source-and-bilfcf-trainability-audit
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+udp_table=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-5-fdf-rcs-lite/experience_docx/experiment_logs/haze4k_fulludp_v15_phase0_repro_20260605/phase0_official_eval/udpnet_convir_bucket_compare.csv
+wdmamba_table=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v22-c8-mini-expert-oracle/experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/v22_c8_1_wdmamba_full_per_image.csv
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+p0_p1_done rc0=0 rc1=0 2026-07-05T23:34:39+08:00
+V233_P0_P1_OK
+p2_p3_start 2026-07-05T23:35:10+08:00
+p2_p3_done rc2=1 rc3=0 2026-07-05T23:35:28+08:00
+V233_P2_P3_FAILED
+p2_rerun_evalmode_fix_start 2026-07-05T23:37:07+08:00
+p2_rerun_evalmode_fix_done rc=0 2026-07-05T23:37:21+08:00
+V233_P2_RERUN_EVALMODE_OK
+p2_rerun_crop_aligned_metric_start 2026-07-05T23:42:09+08:00
+p2_rerun_crop_aligned_metric_done rc=0 2026-07-05T23:42:24+08:00
+V233_P2_RERUN_CROP_ALIGNED_OK
+p4_teacher_benefit_masked_canary32_start 2026-07-05T23:50:32+08:00
+p4_teacher_benefit_masked_canary32_done rc=0 2026-07-05T23:51:07+08:00
+V233_P4_TEACHER_BENEFIT_MASKED_CANARY32_OK
+closeout_start 2026-07-05T23:51:53+08:00
+closeout_done rc=0 2026-07-05T23:51:55+08:00
+V233_CLOSEOUT_OK
