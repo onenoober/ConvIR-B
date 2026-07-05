@@ -6,7 +6,7 @@ Branch: `codex/haze4k-v2-29-nopost-ilfrb-acs-safe-oof-action-bank-calibration`
 
 Route id: `haze4k_v2_29_nopost_ilfrb_acs_safe_oof_action_bank_calibration_20260705`
 
-Status: `PLANNED_CLOUD_AUDIT_LOCKED_TEST_BLOCKED`
+Status: `COMPLETED_GATE_FAIL_LOCKED_TEST_BLOCKED`
 
 ## Hypothesis
 
@@ -97,12 +97,49 @@ GT-free table policy must pass:
 Failure at these gates is a normal pause and does not authorize P2B, training,
 or locked-test evaluation.
 
+## Result Summary
+
+The P2A audit completed on `convir-4090` at source commit `aa1bd1b` with
+decision `P2A_FAIL_SAFE_OOF_ACTION_BANK_CALIBRATION_PAUSE`. This is a normal
+gate pause. P2B selector probing, training, and locked Haze4K test evaluation
+were not launched.
+
+Best safety-envelope variant: `bucket_strength_grid`.
+
+- selected mean/hard/easy: `+0.833159 / +1.375280 / +0.334240`
+- p05/CVaR5/severe rate: `0.0 / 0.0 / 0.0`
+- no-op rate: `0.2375`
+- easy no-op or mild rate: `1.0`
+- hard medium or strong rate: `0.7`
+- fold-tail pass: `5/5`
+
+The variant preserved useful OOF stratification but did not pass safety:
+
+- deployable mild unsafe rate: `0.215625` above the `<=0.20` gate
+- cross-bucket mismatch unsafe rate: `0.455556` above the `<=0.35` gate
+- hard-to-easy cross-bucket severe rate: `0.716667` above the `<=0.35` gate
+- overstrong 1.5 unsafe rate: `0.441667` above the `<=0.35` gate
+
+Best GT-free table-policy variant: `energy_norm_plus_bucket_strength`.
+
+- table-policy mean/hard/easy: `+0.077516 / +0.240312 / +0.037175`
+- table-policy p05/CVaR5/severe rate: `-0.219939 / -0.433256 / 0.0625`
+- table-policy fold-tail pass: `3/5`
+- table pass: `0`
+
+Conclusion: bucket-aware strength improves selected policy safety and
+stratification relative to the raw v2.28 bank, but the current safety envelope
+still fails on plausible cross-bucket, hard-to-easy, and overstrong risks. The
+GT-free table policy is too weak to authorize selector probing. The next route,
+if any, must first solve hard-to-easy cross-bucket leakage and GT-free table
+selection before P2B, training, or locked-test use.
+
 ## Evidence
 
 Evidence root:
 `experience_docx/experiment_logs/haze4k_v2_29_nopost_ilfrb_acs_safe_oof_action_bank_calibration_20260705/`
 
-Expected compact text artifacts:
+Compact text artifacts:
 
 - `README.md`
 - `status.txt`
