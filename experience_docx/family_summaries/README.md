@@ -25,7 +25,7 @@ or logs; they summarize family-level conclusions and reopening conditions.
 | PFD/RHFD preservation | [summary](pfd_rhfd_family_summary.md) | Diagnostic only; preservation improved but hard-gain gates failed. |
 | APDR output residual/action-bank | [summary](apdr_family_summary.md) | Broad output-residual/coefficient-mapping forms stopped; safe-subset ideas require fixed-code OOF/held-out evidence. |
 | DPGA in-network prior adapters | [summary](dpga_family_summary.md) | Active diagnostic family, not promotion-ready. |
-| NoPost feature lowband routes | [summary](nopost_lowband_family_summary.md) | WLDB-A through v2.26 are not training-authorized; v2.27 ILFRB-ACS confirms strong internal capacity but fails action-bank no-op/unsafe stratification before selector work. |
+| NoPost feature lowband routes | [summary](nopost_lowband_family_summary.md) | WLDB-A through v2.26 are not training-authorized; v2.27 ILFRB-ACS confirms strong internal capacity; v2.28 OOF prototypes create no-op/useful/unsafe strata but fail the negative-control unsafe-rate bound before selector work. |
 
 ## Evidence Strength Reminder
 

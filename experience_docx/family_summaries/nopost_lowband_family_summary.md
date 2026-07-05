@@ -4,11 +4,12 @@ Date: 2026-07-05
 
 Status: WLDB-A, the tested v2.18/v2.19/v2.20 deployable lowband predictor
 forms, the v2.23 small-adapter train form, the v2.25A direct risk soft-label /
-scale-distillation form, the v2.26 current-risk-input trainability route, and
-the first v2.27 ILFRB-ACS action-bank construction are not training-authorized.
-NoPost lowband remains directionally open only for a materially new route that
-first fixes no-op/unsafe action stratification before selector probes or
-training.
+scale-distillation form, the v2.26 current-risk-input trainability route, the
+v2.27 same-sample ILFRB-ACS action-bank construction, and the first v2.28 OOF
+prototype bank are not training-authorized. NoPost lowband remains
+directionally open only for a safer OOF/prototype action-bank route that
+preserves no-op/useful-action separation while reducing unsafe negative-control
+exposure before selector probes or training.
 
 ## Sources
 
@@ -22,6 +23,7 @@ training.
   - `../experiment_cards/2026-07-04-haze4k-v2-25a-nopost-risk-softlabel-scale-distill.md`
   - `../experiment_cards/2026-07-04-haze4k-v2-26-nopost-risk-signal-separability-audit.md`
   - `../experiment_cards/2026-07-05-haze4k-v2-27-nopost-ilfrb-action-conditioned-selective-distill.md`
+  - `../experiment_cards/2026-07-05-haze4k-v2-28-nopost-ilfrb-acs-action-bank-stratification-audit.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/`
   - `../experiment_logs/haze4k_v2_17_nopost_lowband_alignment_tail_audit_20260703/`
@@ -32,6 +34,7 @@ training.
   - `../experiment_logs/haze4k_v2_25a_nopost_risk_softlabel_scale_distill_20260704/`
   - `../experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704/`
   - `../experiment_logs/haze4k_v2_27_nopost_ilfrb_action_conditioned_selective_distill_20260705/`
+  - `../experiment_logs/haze4k_v2_28_nopost_ilfrb_acs_action_bank_stratification_audit_20260705/`
 
 ## Established Facts
 
@@ -46,6 +49,7 @@ training.
 | Haze4K v2.25A NoPost Risk Soft-Label / Scale Distillation | Risk/context-only calibration screen completed with action heads frozen and locked test untouched. Direct distillation from v2.21 `unsafe_action_probability` and `risk_scale` failed the predeclared gate: probability std `0.001669`, ROC-AUC `0.5501`, AP `0.4938`, ECE10 `0.0526`, target probability MAE `0.2488`. Each fold produced constant validation probability (`trained_prob_std=0.0`). | `V225A_RISK_CALIBRATION_GATE_FAIL_NORMAL_PAUSE`; stop v2.25A. Do not launch post-train factorial rescue, action joint training, or locked-test evaluation from this result. |
 | Haze4K v2.26 NoPost Risk Signal Separability Audit | P0 showed the v2.25A tuple-sort AP was an invalid diagnostic artifact: old AP `0.4938`, tie-aware AP `0.1397` near base rate `0.1271`; the v2.25A fail remains by probability std `0.001669`, ROC-AUC `0.5501`, and target MAE `0.2488`. P1 replay passed with `0` missing joins and v2.21 scalar MLP replay AUC `0.9286`, AP `0.6995`. P2 found current risk features weak/inconclusive: positive-control v2.21 cached scalar MLP AUC `0.9603`, AP `0.7788`, while best current feature `B_final_ll_pooled` had AUC `0.6436`, AP `0.2061`. P3 canary32/canary64 both failed at train AUC `0.5`, prob std `0.0`, and P4 did not minimally rescue trainability (`best val_auc=0.7407`, prob std `0.0224`). Supplemental correctness evidence confirmed all v2.25A fold checkpoints strictly loaded and target-key/fallback audits were clean, while P4 replay still failed. | `V226_DIAGNOSTIC_COMPLETE_CURRENT_RISK_INPUT_WEAK_TRAINABILITY_FAIL_LOCKED_TEST_BLOCKED`; do not continue rescue, action joint training, or locked Haze4K from this route. |
 | Haze4K v2.27 NoPost ILFRB-ACS | P0 passed source/contract/identity after eval zero-mixture bypass: strict partial load clean, forbidden hits `0`, identity max abs `0.0`. P1 showed very strong integrated multi-stage feature-lowband capacity on the train-derived screen: `S6_early_mid_final` mean/hard/easy `+7.8509/+9.4244/+6.1829`, p05 `+4.5170`, CVaR5 `+3.8851`, severe `0`, strong-reference regressions `0`; `S5_bottleneck_mid` also passed. P2 failed action-bank stratification: no-op conservative preference `0/80`, hard medium/strong preference `1.0`, and strong unsafe rate `0.0`, leaving no deployable no-op/unsafe separation for P3. P3/P4/P5/P6 were not launched, training was not launched, and locked test was untouched. | `P2_FAIL_ACTION_BANK_STRATIFICATION_PAUSE`; do not train or probe selectors from this bank. Redesign P2 action construction/no-op pressure before any selector or microfit. |
+| Haze4K v2.28 NoPost ILFRB-ACS Action-Bank Stratification Audit | P0 passed architecture-delta audit with no model-structure change from v2.27. P2A OOF prototype replay produced the missing stratification signal: conservative no-op preference `0.225`, easy top25 no-op/mild `0.40`, hard bottom25 medium/strong `0.75`, and fold-tail pass `5/5`. Selected deployable OOF prototypes had mean/hard/easy `+1.1377/+1.3769/+0.7035`, p05 `0.0`, CVaR5 `0.0`, severe `0`, and strong-reference regression rate `0.0`. The route still failed because diagnostic negative-control unsafe rate was `0.5504`, above the allowed `0.40` upper bound. P2B was skipped, training was not launched, and locked test was untouched. | `P2A_FAIL_OOF_ACTION_BANK_STRATIFICATION_PAUSE`; do not train selector or touch locked test. Follow-up must reduce unsafe negative-control exposure while preserving OOF no-op/useful-action separation. |
 
 ## Family Verdict
 
@@ -53,10 +57,10 @@ The precise conclusion is: close WLDB-A, v2.18 WLDB-A2 global pooled policy,
 v2.19 O2 final-only spatial predictor, v2.20 O3 mid+final/global-context
 predictor, v2.23 small-adapter train form, v2.25A direct risk soft-label /
 scale-distillation, v2.26 current-risk-input calibration/trainability, and the
-current v2.27 oracle-derived action-bank construction as training candidates.
-Do not close the underlying lowband-capacity direction, but treat it as
-requiring a materially new no-op/unsafe action-bank design before any selector
-or trainability probe.
+current v2.27 oracle-derived action-bank construction, and the first v2.28 OOF
+prototype bank as training candidates. Do not close the underlying
+lowband-capacity direction, but treat it as requiring a safer OOF/prototype
+bank before any selector or trainability probe.
 
 v2.16 established that lowband correction is a real source of headroom inside
 ConvIR-B. The RGB LL oracle and the proposed zero-init WLDB insertion were both
@@ -114,6 +118,15 @@ action bank is not stratified: no-op is never preferred and strong action is
 never unsafe on the screen. That is a different and useful failure from v2.26,
 but it still blocks P3/P4/P5 and any training.
 
+v2.28 tested the correct next question: whether v2.27's same-sample oracle
+deltas can become deployable out-of-fold prototypes. This was a useful partial
+positive: no-op preference became nonzero, hard samples still preferred stronger
+actions, easy samples reached the no-op/mild floor, and selected OOF prototypes
+had positive mean/hard/easy with clean p05/CVaR/severe metrics. The route still
+paused because diagnostic negative controls were too unsafe overall. That means
+the next design should narrow or regularize prototype exposure, not train a
+selector on the current unsafe bank.
+
 ## Do Not Repeat Without New Evidence
 
 - Do not expand WLDB-A with more seeds, epochs, hidden width, checkpoint
@@ -127,6 +140,9 @@ but it still blocks P3/P4/P5 and any training.
   sweeps, or relaxed OOF gates.
 - Do not continue the current v2.27 bank by training a selector anyway; P2 must
   first show no-op/unsafe action stratification.
+- Do not continue the current v2.28 bank by training a selector anyway; P2A
+  failed because diagnostic negative-control unsafe rate exceeded the safety
+  bound.
 - Do not treat the v2.21 replay pass, v2.25A AP/ECE partial passes, or the
   invalid tuple-sort AP as train-time success.
 - Do not treat mean or hard-bucket improvement as sufficient if p05, CVaR,
@@ -141,7 +157,9 @@ but it still blocks P3/P4/P5 and any training.
 A credible follow-up must be a new safety-first NoPost lowband action-bank
 route, not a WLDB-A rerun, a direct v2.19/v2.20 training launch, a v2.23
 expansion, a v2.25A hyperparameter extension, a v2.26 rescue/action-joint
-continuation, or a v2.27 selector launch from the current bank. It should use
-the v2.17 O2/O3, v2.20, and v2.27 P1 capacity evidence, keep the source-clean
-and identity contract requirements, and make no-op/unsafe action stratification
-the first hard gate before trained-gate/canary or risk-coverage work.
+continuation, a v2.27 selector launch from the same-sample bank, or a v2.28
+selector launch from the current unsafe OOF prototype bank. It should use the
+v2.17 O2/O3, v2.20, v2.27 P1, and v2.28 OOF stratification evidence, keep the
+source-clean and identity contract requirements, preserve no-op/useful-action
+strata, and make negative-control unsafe-rate reduction the first hard gate
+before trained-gate/canary or risk-coverage work.
