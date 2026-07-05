@@ -10,6 +10,65 @@ import torch.nn as nn
 from warmup_scheduler import GradualWarmupScheduler
 
 
+def _set_route_train_scope(model, args):
+    arch = getattr(args, 'arch', 'official_convir')
+    if arch != 'bilfcf_convir':
+        for param in model.parameters():
+            param.requires_grad = True
+        return list(model.parameters())
+
+    scope = getattr(args, 'bilfcf_train_scope', 'adapter_only')
+    if scope == 'adapter_only':
+        trainable_prefixes = ('BILFCF_',)
+        for name, param in model.named_parameters():
+            param.requires_grad = name.startswith(trainable_prefixes)
+    elif scope == 'all':
+        trainable_prefixes = ('<all>',)
+        for param in model.parameters():
+            param.requires_grad = True
+    else:
+        raise ValueError(f'Unsupported bilfcf_train_scope: {scope}')
+
+    trainable = [param for param in model.parameters() if param.requires_grad]
+    if not trainable:
+        raise RuntimeError('No trainable parameters selected for BILFCF route')
+    trainable_count = sum(param.numel() for param in trainable)
+    frozen_count = sum(param.numel() for param in model.parameters() if not param.requires_grad)
+    print(
+        'BILFCF_TRAIN_SCOPE '
+        f'scope={scope} trainable_prefixes={trainable_prefixes} '
+        f'trainable_params={trainable_count} frozen_params={frozen_count}'
+    )
+    return trainable
+
+
+def _route_regularization(model, args):
+    weight = getattr(args, 'bilfcf_amplitude_loss_weight', 0.0)
+    if weight <= 0 or not hasattr(model, 'bilfcf_regularization'):
+        return None
+    reg = model.bilfcf_regularization()
+    if reg is None:
+        return None
+    return weight * reg
+
+
+def _format_bilfcf_stats(model):
+    if not hasattr(model, 'get_bilfcf_stats'):
+        return ''
+    stats = model.get_bilfcf_stats().get('BILFCF_s5', {})
+    if not stats:
+        return ''
+    return (
+        ' BILFCF field_mean: %.8f field_p95: %.8f gate_mean: %.8f '
+        'highfreq_leakage: %.8f' % (
+            stats.get('field_energy_mean', 0.0),
+            stats.get('field_energy_p95', 0.0),
+            stats.get('gate_mean', 0.0),
+            stats.get('highfreq_leakage', 0.0),
+        )
+    )
+
+
 def _log_modulation_stats(model, args, epoch_idx, device):
     if args.mod_stats_freq <= 0 or epoch_idx % args.mod_stats_freq != 0:
         return
@@ -64,7 +123,8 @@ def _train(model, args):
     criterion = torch.nn.L1Loss()
 
     learning_rate = getattr(args, 'learning_rate', getattr(args, 'leaning_rate', 1e-4))
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.9, 0.999), eps=1e-8)
+    trainable_params = _set_route_train_scope(model, args)
+    optimizer = torch.optim.Adam(trainable_params, lr=learning_rate, betas=(0.9, 0.999), eps=1e-8)
     dataloader = train_dataloader(args.data_dir, args.batch_size, args.num_worker, args.data)
     max_iter = len(dataloader)
     warmup_epochs=3
@@ -136,10 +196,13 @@ def _train(model, args):
             loss_fft = f1+f2+f3
 
             loss = loss_content + 0.1 * loss_fft
+            route_reg = _route_regularization(model, args)
+            if route_reg is not None:
+                loss = loss + route_reg
             loss.backward()
             grad_clip_norm = getattr(args, 'grad_clip_norm', 0.001)
             if grad_clip_norm > 0:
-                torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip_norm)
+                torch.nn.utils.clip_grad_norm_(trainable_params, grad_clip_norm)
             optimizer.step()
 
             iter_pixel_adder(loss_content.item())
@@ -149,9 +212,10 @@ def _train(model, args):
             epoch_fft_adder(loss_fft.item())
 
             if (iter_idx + 1) % args.print_freq == 0:
-                print("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f Loss content: %7.4f Loss fft: %7.4f" % (
+                print(("Time: %7.4f Epoch: %03d Iter: %4d/%4d LR: %.10f "
+                       "Loss content: %7.4f Loss fft: %7.4f%s") % (
                     iter_timer.toc(), epoch_idx, iter_idx + 1, max_iter, scheduler.get_lr()[0], iter_pixel_adder.average(),
-                    iter_fft_adder.average()))
+                    iter_fft_adder.average(), _format_bilfcf_stats(model)))
                 writer.add_scalar('Pixel Loss', iter_pixel_adder.average(), iter_idx + (epoch_idx-1)* max_iter)
                 writer.add_scalar('FFT Loss', iter_fft_adder.average(), iter_idx + (epoch_idx - 1) * max_iter)
                 

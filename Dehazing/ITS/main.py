@@ -4,9 +4,12 @@ import argparse
 import random
 import shutil
 from torch.backends import cudnn
-from models.ConvIR import build_net
+from models.ConvIR import build_bilfcf_net, build_net
 from train import _train
 from eval import _eval
+
+
+BILFCF_ALLOWED_NEW_PREFIXES = ("BILFCF_",)
 
 
 def _load_checkpoint_model(path, map_location):
@@ -16,11 +19,50 @@ def _load_checkpoint_model(path, map_location):
     return state
 
 
+def load_haze4k_partial(model, checkpoint_path, allowed_new_prefixes):
+    state = _load_checkpoint_model(checkpoint_path, 'cpu')
+    model_state = model.state_dict()
+    loaded = {}
+    shape_mismatch = []
+    unexpected = []
+
+    for key, value in state.items():
+        if key not in model_state:
+            unexpected.append(key)
+        elif model_state[key].shape != value.shape:
+            shape_mismatch.append((key, tuple(value.shape), tuple(model_state[key].shape)))
+        else:
+            loaded[key] = value
+
+    missing = [key for key in model_state if key not in loaded]
+    bad_missing = [
+        key for key in missing
+        if not any(key.startswith(prefix) for prefix in allowed_new_prefixes)
+    ]
+    if unexpected or shape_mismatch or bad_missing:
+        raise RuntimeError(
+            "partial-load failed: "
+            f"unexpected={unexpected[:20]} shape_mismatch={shape_mismatch[:20]} "
+            f"bad_missing={bad_missing[:20]}"
+        )
+    model_state.update(loaded)
+    model.load_state_dict(model_state, strict=True)
+    print(
+        "INIT_MODEL_PARTIAL_LOAD "
+        f"path={checkpoint_path} loaded={len(loaded)} "
+        f"missing_new={len(missing)} unexpected=0 shape_mismatch=0 "
+        f"allowed_new_prefixes={allowed_new_prefixes}"
+    )
+
+
 def load_init_model(model, args):
     if not args.init_model:
         return
     if args.resume:
         raise ValueError('--init_model initializes weights; --resume restores optimizer state. Use only one.')
+    if args.arch == 'bilfcf_convir':
+        load_haze4k_partial(model, args.init_model, BILFCF_ALLOWED_NEW_PREFIXES)
+        return
     state = _load_checkpoint_model(args.init_model, 'cpu')
     model.load_state_dict(state)
     print(f'INIT_MODEL_LOAD path={args.init_model} missing=[] unexpected=[]')
@@ -44,7 +86,19 @@ def main(args):
         os.makedirs('results/' + args.model_name + '/')
     if not os.path.exists(args.result_dir):
         os.makedirs(args.result_dir)
-    model = build_net(args.version, args.data, args.fam_mode)
+    if args.arch == 'bilfcf_convir':
+        model = build_bilfcf_net(
+            args.version,
+            args.data,
+            args.fam_mode,
+            insertion=args.bilfcf_insertion,
+            alpha_max=args.bilfcf_alpha_max,
+            gate_bias=args.bilfcf_gate_bias,
+            hidden_channels=args.bilfcf_hidden_channels,
+            lowpass_kernel=args.bilfcf_lowpass_kernel,
+        )
+    else:
+        model = build_net(args.version, args.data, args.fam_mode)
     # print(model)
 
     if torch.cuda.is_available():
@@ -65,7 +119,7 @@ if __name__ == '__main__':
     parser.add_argument('--data', type=str, default='ITS', choices=['ITS', 'Haze4K', 'NHR', 'GTA5', 'real_haze'])
     parser.add_argument('--version', default='small', choices=['small', 'base', 'large'], type=str)
     parser.add_argument('--fam_mode', default='original', choices=['original'], type=str)
-    parser.add_argument('--arch', default='official_convir', choices=['official_convir', 'convir'], type=str)
+    parser.add_argument('--arch', default='official_convir', choices=['official_convir', 'convir', 'bilfcf_convir'], type=str)
     parser.add_argument('--seed', default=-1, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
@@ -86,6 +140,13 @@ if __name__ == '__main__':
     parser.add_argument('--grad_clip_norm', type=float, default=0.001)
     parser.add_argument('--init_model', type=str, default='')
     parser.add_argument('--resume', type=str, default='')
+    parser.add_argument('--bilfcf_insertion', default='s5', choices=['s5'], type=str)
+    parser.add_argument('--bilfcf_alpha_max', type=float, default=0.02)
+    parser.add_argument('--bilfcf_gate_bias', type=float, default=-4.0)
+    parser.add_argument('--bilfcf_hidden_channels', type=int, default=32)
+    parser.add_argument('--bilfcf_lowpass_kernel', type=int, default=5)
+    parser.add_argument('--bilfcf_train_scope', default='adapter_only', choices=['adapter_only', 'all'], type=str)
+    parser.add_argument('--bilfcf_amplitude_loss_weight', type=float, default=0.01)
 
 
     # uncomment for different datasets
@@ -115,8 +176,6 @@ if __name__ == '__main__':
     parser.add_argument('--save_image', type=bool, default=False, choices=[True, False])
 
     args = parser.parse_args()
-    if args.arch not in ('official_convir', 'convir'):
-        raise ValueError('Official anchor only supports the official ConvIR-B architecture.')
     # Backward-compatible alias for route scripts that used the misspelled name.
     args.leaning_rate = args.learning_rate
     args.model_save_dir = os.path.join('results/', args.model_name, 'Training-Results/')
