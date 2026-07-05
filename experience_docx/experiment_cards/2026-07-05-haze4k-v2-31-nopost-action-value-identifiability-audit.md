@@ -6,7 +6,7 @@ Branch: `codex/haze4k-v2-31-nopost-action-value-identifiability-audit`
 
 Route id: `haze4k_v2_31_nopost_action_value_identifiability_audit_20260705`
 
-Status: `PLANNED`
+Status: `P2A_FAIL_ACTION_VALUE_IDENTIFIABILITY_CLOSE_CURRENT_BANK`
 
 ## Hypothesis
 
@@ -82,6 +82,40 @@ than continuing table/firewall micro-tuning.
 
 Evidence root:
 `experience_docx/experiment_logs/haze4k_v2_31_nopost_action_value_identifiability_audit_20260705/`
+
+## Final P2A Result
+
+Runtime server: `convir-4090`
+
+Final audited commit: `46122af`
+
+Completion time: `2026-07-05T17:40:56+08:00`
+
+Decision: `P2A_FAIL_ACTION_VALUE_IDENTIFIABILITY_CLOSE_CURRENT_BANK`
+
+Key metrics:
+
+- combined physics/frequency `is_useful_gt_0p30` AUROC all/hard:
+  `0.6854 / 0.5444`
+- easy `should_noop` AUROC: `0.5934`
+- useful AUROC fold std: `0.1059`
+- best nested ranker: `kNN_nonparametric`
+- best ranker mean/hard/easy: `+0.4234 / +0.8152 / +0.0995`
+- best ranker p05/CVaR5/severe: `-0.4421 / -1.2582 / 0.1375`
+- safe-set oracle mean/hard/easy: `+0.6749 / +1.2371 / +0.1553`
+- best ranker safe-set-to-policy gap: `+0.2515`
+- best physics-cluster ranker: `adjacent_cluster_only`, mean/hard
+  `+0.3712 / +0.5635`
+
+Interpretation:
+
+The added target-only physics/frequency/internal/A0-diagnostic features improve
+mean and hard ranking versus the v2.30 table, but they do not meet the
+identifiability gates. The useful-action feature gate fails, hard useful AUROC
+is weak, easy no-op recognition is weak, and the best nested ranker is not
+tail-safe. The route therefore closes the current discrete action-bank selector
+candidate as a training/P2B route. No P2B selector probe, model training, or
+locked-test command was launched.
 
 Expected compact text artifacts:
 

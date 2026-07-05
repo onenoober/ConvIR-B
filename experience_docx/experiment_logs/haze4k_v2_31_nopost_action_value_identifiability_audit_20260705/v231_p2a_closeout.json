@@ -1,0 +1,78 @@
+{
+  "branch": "codex/haze4k-v2-31-nopost-action-value-identifiability-audit",
+  "commit": "46122af",
+  "decision": "P2A_FAIL_ACTION_VALUE_IDENTIFIABILITY_CLOSE_CURRENT_BANK",
+  "locked_test_touched": false,
+  "p0": {
+    "architecture_delta": "none_from_v2_30_ilfrb_acs",
+    "branch": "codex/haze4k-v2-31-nopost-action-value-identifiability-audit",
+    "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+    "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "commit": "46122af",
+    "decision": "P0_PASS_ARCH_CONTRACT_DELTA_AUDIT",
+    "forbidden_symbol_hits": 0,
+    "locked_test_touched": false,
+    "p2b_selector_probe_launched": false,
+    "parent_commit": "8971902",
+    "parent_route": "v2.30",
+    "pass": true,
+    "phase": "p0_arch_contract_delta",
+    "route": "v2.31",
+    "runtime_contract": "forward(self, x)",
+    "training_launched": false
+  },
+  "p2a": {
+    "artifact_counts": {
+      "cluster_summary_rows": 5,
+      "confusion_rows": 54,
+      "control_rows": 7,
+      "coverage_rows": 8,
+      "feature_separability_rows": 128,
+      "ranking_rows": 5,
+      "safe_candidate_rows": 3162
+    },
+    "cluster_gate": {
+      "best_cluster_policy": "adjacent_cluster_only",
+      "best_cluster_ranker_hard": 0.5635025978088379,
+      "best_cluster_ranker_mean": 0.3712233304977417
+    },
+    "decision": "P2A_FAIL_ACTION_VALUE_IDENTIFIABILITY_CLOSE_CURRENT_BANK",
+    "feature_gate": {
+      "combined_should_noop_easy_auroc": 0.5934065934065934,
+      "combined_useful_gt_0p30_all_auroc": 0.68543219219598,
+      "combined_useful_gt_0p30_all_fold_std": 0.10589589848313032,
+      "combined_useful_gt_0p30_hard_auroc": 0.5443559731106373,
+      "pass": false
+    },
+    "locked_test_touched": false,
+    "p2b_selector_probe_launched": false,
+    "pass": false,
+    "primary_diagnosis": {
+      "best_cluster_policy": "adjacent_cluster_only",
+      "best_cluster_ranker_mean": 0.3712233304977417,
+      "best_ranker": "kNN_nonparametric",
+      "best_ranker_gap": 0.25149495601654054,
+      "best_ranker_hard": 0.8152445793151856,
+      "best_ranker_mean": 0.42338697910308837,
+      "best_ranker_severe": 0.1375,
+      "feature_gate_pass": false,
+      "ranking_gate_pass": false
+    },
+    "primary_question": "Can target-only / physics-frequency features identify useful safe-set actions?",
+    "ranking_gate": {
+      "best_easy": 0.09947719573974609,
+      "best_gap": 0.25149495601654054,
+      "best_hard": 0.8152445793151856,
+      "best_mean": 0.42338697910308837,
+      "best_model": "kNN_nonparametric",
+      "best_severe": 0.1375,
+      "pass": false
+    },
+    "training_launched": false
+  },
+  "p2b_selector_probe_launched": false,
+  "parent_branch": "codex/haze4k-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-policy",
+  "parent_commit": "8971902",
+  "route_id": "haze4k_v2_31_nopost_action_value_identifiability_audit_20260705",
+  "training_launched": false
+}

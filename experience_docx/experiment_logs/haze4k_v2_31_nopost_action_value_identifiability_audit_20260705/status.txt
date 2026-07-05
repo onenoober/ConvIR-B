@@ -1,0 +1,22 @@
+RUNNING_AUDIT gpu=5 2026-07-05T17:22:01+08:00
+v231_p2a_start 2026-07-05T17:22:01+08:00
+branch=codex/haze4k-v2-31-nopost-action-value-identifiability-audit
+commit=46122af
+remote_root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-31-nopost-action-value-identifiability-audit
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split_csv=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-17-nopost-lowband-alignment-tail-audit/experience_docx/experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/v216_t1_per_image_band_deltas.csv
+gpu=5
+max_images=80
+oracle_steps=10
+locked_test_touched=false
+training_launched=false
+p2b_selector_probe_launched=false
+v231_start route_id=haze4k_v2_31_nopost_action_value_identifiability_audit_20260705
+training_launched=false
+p2b_selector_probe_launched=false
+locked_test_touched=false
+v231_done decision=P2A_FAIL_ACTION_VALUE_IDENTIFIABILITY_CLOSE_CURRENT_BANK
+v231_p2a_done rc=0 decision=P2A_FAIL_ACTION_VALUE_IDENTIFIABILITY_CLOSE_CURRENT_BANK 2026-07-05T17:40:56+08:00
+V231_P2A_COMMAND_OK
