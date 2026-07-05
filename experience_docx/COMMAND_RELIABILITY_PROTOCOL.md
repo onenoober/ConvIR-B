@@ -173,6 +173,52 @@ printf 'LOCAL_DONE\n'
 $script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
 
+2026-07-05 recurrence:
+
+Avoid piping a PowerShell here-string into WSL when the receiving Bash may see a
+UTF-8 BOM on the first line, and avoid relying on a regex pipe plus `rg` in the
+same boundary-crossing command:
+
+```powershell
+$script = @'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B-v230
+rg -n 'safe_rate\(|hard_to_easy_cross_severe|cross_bucket_unsafe' experience_docx/tools/nopost_v230_compatibility_gated_oof_table_policy.py
+'@
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+Failure mode observed:
+
+- WSL Bash received `ï»¿set` and failed before `set -euo pipefail`;
+- `rg` resolved to a Windows app path or was absent from the WSL path;
+- regex `|` fragments were interpreted as shell pipelines.
+
+Corrected form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc "cd /home/ubuntu/workspace/ConvIR-B-v230 && grep -n -e accepted_risk_rate -e hard_to_easy_cross_severe -e cross_bucket_unsafe experience_docx/tools/nopost_v230_compatibility_gated_oof_table_policy.py"
+```
+
+Related 2026-07-05 recurrence:
+
+Avoid `xargs -d "\n"` inside a PowerShell-to-WSL one-liner for path lists:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'git diff --cached --name-only | xargs -r -d "\n" ls -lh --'
+```
+
+Failure mode observed:
+
+- the delimiter reached `xargs` as `n`, so paths such as `experience_docx/...`
+  were split at every `n`.
+
+Corrected form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'cd /home/ubuntu/workspace/ConvIR-B-v230 && du -h -- experience_docx/COMMAND_RELIABILITY_PROTOCOL.md experience_docx/tools/nopost_v230_compatibility_gated_oof_table_policy.py'
+```
+
 
 ### Cloud Python and evidence copy assumptions
 

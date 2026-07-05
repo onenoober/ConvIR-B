@@ -1,0 +1,18 @@
+status: PLANNED_CLOUD_AUDIT_LOCKED_TEST_BLOCKED
+locked_test_touched: false
+training_launched: false
+p2b_selector_probe_launched: false
+source_branch: codex/haze4k-v2-30-nopost-ilfrb-acs-compatibility-gated-oof-table-policy
+parent_branch: codex/haze4k-v2-29-nopost-ilfrb-acs-safe-oof-action-bank-calibration
+parent_commit: 936e3e0
+
+hypothesis:
+  v2.29 localized the bottleneck to source-target compatibility and GT-free
+  table-policy selection. v2.30 tests compatibility gates, hard-to-easy
+  firewalls, local strength dose-response, and LCB-risk constrained OOF table
+  selection without selector probing, training, or locked-test use.
+
+hard_blocks:
+  do_not_launch_training: true
+  do_not_run_p2b_selector_probe: true
+  do_not_touch_locked_test: true
