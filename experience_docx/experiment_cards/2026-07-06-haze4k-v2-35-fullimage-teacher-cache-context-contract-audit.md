@@ -1,6 +1,6 @@
 # Haze4K v2.35 Full-Image Teacher Cache and Context-Contract Audit
 
-Status: `PLANNED`
+Status: `COMPLETED_DIAGNOSTIC`
 
 Branch: `codex/haze4k-v2-35-fullimage-teacher-cache-context-contract-audit`
 
@@ -37,13 +37,20 @@ Closed:
 - Contract A: direct WDMamba-on-256-crop teacher for 256 crop-input student.
   v2.34 P0/P0B/P0C closed this as a failed contract.
 
-Open:
+Open at route start:
 
 - Contract B: full-image WDMamba teacher for full-image or large-context
   student/baseline.
 - Contract C: full-image WDMamba output slice used as target for a 256
   crop-input student. This is unresolved until P0D rebases the teacher slice
   against crop-direct A0.
+
+Final decision: `P4_PASS_SAME_CONTRACT_FREE_TENSOR_PROJECTION`.
+
+The route closed Contract C for 256 crop-input students: P0D failed after
+rebasing full-image-slice targets against crop-direct A0. The valid contract is
+full-image/full-image-slice context, with 384-context alpha0.5 also passing the
+P2 audit on the 32-sample screen.
 
 ## Not Allowed
 
@@ -140,3 +147,35 @@ passes. Initial insertion points are `S6_decoder_early`, `S4_encoder_late`,
 ## Evidence Root
 
 `experience_docx/experiment_logs/haze4k_v2_35_fullimage_teacher_cache_context_contract_audit_20260706/`
+
+## Results
+
+P0D failed the 256 crop-input/full-image-slice target contract. For alpha0.5,
+rebased mean/p05/CVaR5 were `-1.7067/-6.7084/-7.4537 dB` with severe_rate
+`0.625`; alpha0.375 was also negative. Therefore 256 crop-input student
+training on full-image-slice target remains blocked.
+
+P1 passed the full-image teacher cache audit for all `600` WD0375/WDMamba table
+rows. The manifest has `1200` alpha rows, cache coverage `1.0`, missing sha
+count `0`, and table-vs-recompute mean/max abs diff `0.0/0.0`.
+
+P2 passed at least one matched context. `384` context with alpha0.5 passed
+mean/p05/CVaR5 `+3.5217/+0.5167/+0.4038 dB`. The best contract was
+`full_image_slice` alpha0.5 with mean/p05/CVaR5 `+5.2963/+2.0773/+1.0368 dB`.
+The sampled images did not provide a valid `512` or `768` context window, so
+those rows have zero sample count rather than a failure result.
+
+P3 passed same-contract substrate construction for `full_image_slice` alpha0.5:
+positive_teacher_count `32/32`, mean `+5.2963 dB`, p05 `+2.0773 dB`, severe
+rate `0`, and strong-reference regression rate `0`.
+
+P4 passed same-contract free-tensor projection after an engineering rerun fixed
+zero-RMS numerical instability. All tested insertion groups passed. The best
+was `S4_plus_S6` with projection_ratio_vs_teacher `1.0090`, free-tensor mean
+delta `+5.3438 dB`, p05 `+2.1914 dB`, severe `0`, and strong-reference
+regression `0`.
+
+Consequence: WDMamba/WD0375 full-image evidence is a valid same-context teacher
+substrate. A future generator/bridge route may be proposed from this same
+full-image/full-image-slice contract, but no bridge training, canary80, or
+locked test was launched in v2.35.

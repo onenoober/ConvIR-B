@@ -1,0 +1,6 @@
+insertion_point,count,same_contract_teacher_mean_delta,free_tensor_mean_delta,free_tensor_hard_delta,free_tensor_easy_delta,p05,cvar5,severe,strong_reference_regression_rate,projection_ratio_vs_teacher,feature_delta_energy,output_delta_energy,lowfreq_output_ratio,highfreq_leakage,steps,loss_start,loss_end,gate_pass
+S6_decoder_early,32,5.296330511569977,nan,nan,nan,nan,nan,0.0,0.0,nan,nan,nan,nan,0.0,32,0.010037177089543547,nan,False
+S4_encoder_late,32,5.296330511569977,nan,nan,nan,nan,nan,0.0,0.0,nan,nan,nan,nan,0.0,32,0.010037177089543547,nan,False
+S4_plus_S6,32,5.296330511569977,nan,nan,nan,nan,nan,0.0,0.0,nan,nan,nan,nan,0.0,32,0.010037177089543547,nan,False
+S5_plus_S6,32,5.296330511569977,nan,nan,nan,nan,nan,0.0,0.0,nan,nan,nan,nan,0.0,32,0.010037177089543547,nan,False
+S4_plus_S5_plus_S6,32,5.296330511569977,nan,nan,nan,nan,nan,0.0,0.0,nan,nan,nan,nan,0.0,32,0.010037177089543547,nan,False

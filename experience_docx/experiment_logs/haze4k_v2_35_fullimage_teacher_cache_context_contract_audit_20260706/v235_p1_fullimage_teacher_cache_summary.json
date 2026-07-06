@@ -1,0 +1,17 @@
+{
+  "cache_coverage": 1.0,
+  "cache_fp16": true,
+  "cache_root": "/sda/home/wangyuxin/ConvIR-B/runtime_outputs/haze4k_v2_35_fullimage_teacher_cache_context_contract_audit_20260706/fullimage_teacher_cache",
+  "cache_written": true,
+  "decision": "P1_PASS_FULLIMAGE_CACHE_CONTRACT",
+  "gate_pass": true,
+  "image_count": 600,
+  "locked_test_touched": false,
+  "manifest_rows": 1200,
+  "missing_sha_count": 0,
+  "phase": "P1 full-image teacher cache manifest",
+  "route_id": "haze4k_v2_35_fullimage_teacher_cache_context_contract_audit_20260706",
+  "table_epsilon": 0.0001,
+  "table_vs_recompute_max_abs_diff": 0.0,
+  "table_vs_recompute_mean_abs_diff": 0.0
+}
