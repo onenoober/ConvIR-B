@@ -1,0 +1,20 @@
+{
+  "canary80_authorized": false,
+  "crop256_fullslice_target_authorized": false,
+  "decision": "P0_FAIL_STOP_BEFORE_BRIDGE_TRAINING",
+  "direct_crop_contract_authorized": false,
+  "inherited_reference": "v2.35 P4_PASS_SAME_CONTRACT_FREE_TENSOR_PROJECTION",
+  "locked_test_touched": false,
+  "p0_full600_contract_pass": false,
+  "p0b_context384_projection_pass": null,
+  "p1_arch_identity_pass": null,
+  "p2_generator_fit_pass": null,
+  "p3_oof_canary32_pass": null,
+  "p4_canary80_oof_pass": null,
+  "phase": "v2.36 closeout",
+  "primary_contract": "full_image_slice_a0p5",
+  "rgb_postprocessing_used": false,
+  "route_id": "haze4k_v2_36_same_contract_wlfbridge_s4s6_generator_trainability_20260706",
+  "runtime_teacher_used": false,
+  "secondary_contract": "context384_a0p5_optional_after_projection"
+}
