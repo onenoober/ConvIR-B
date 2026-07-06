@@ -63,4 +63,45 @@ P0 passes only if:
 
 ## Result
 
-Status: `PLANNED`.
+Status: `P0_STAGE0_PREFLIGHT_PASS_CANARY32_WRITTEN`.
+
+P0 Stage-0 preflight passed on `convir-4090` at route commit `7c27b93`.
+The official checkpoint sha256 matched
+`6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088`,
+strict partial load accepted only `A0PROX_*` missing keys, finite synthetic
+forwards passed for `64/128/256`, forbidden postprocess symbol hits were `0`,
+locked test was untouched, and max absolute difference vs official ConvIR-B
+was exactly `0.0`.
+
+Two earlier cloud preflight attempts were engineering-invalid, not scientific
+failures: synthetic size `128` was invalid for the route's reflect-padding
+preflight, and the first beta gate compared the float buffer without tolerance.
+Both were archived on cloud before the final P0 rerun.
+
+## Canary32 OOF Gate
+
+P0 closeout authorizes only canary32. Canary80 and locked test remain blocked
+unless the canary32 closeout explicitly passes and writes the next gate.
+
+Canary32 uses only train-derived Haze4K images from
+`/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train`, with five
+deterministic folds. Each fold trains on `32` train-derived images and
+evaluates on a disjoint `32` train-derived held-out images. It freezes all
+official ConvIR-B parameters and trains only `A0PROX_*`; no teacher target,
+selector, canary80, or locked test is used.
+
+The canary32 gate passes only if:
+
+- global mean delta is at least `+0.15 dB`;
+- global hard bottom-25% delta is at least `+0.30 dB`;
+- global easy top-25% delta is at least `+0.00 dB`;
+- global p05 delta is at least `-0.01 dB`;
+- global CVaR5 delta is at least `-0.02 dB`;
+- severe regressions (`delta <= -0.20 dB`) are `0`;
+- strong-reference regressions (`easy/top-25% delta < -0.01 dB`) are `0`;
+- at least `4/5` folds pass the same quality/tail gate;
+- easy residual energy is at most `0.50` of hard residual energy;
+- hinge violation rate does not worsen from epoch `1` to final epoch.
+
+If the canary32 gate fails, v2.41 remains diagnostic and canary80/locked test
+stay blocked.
