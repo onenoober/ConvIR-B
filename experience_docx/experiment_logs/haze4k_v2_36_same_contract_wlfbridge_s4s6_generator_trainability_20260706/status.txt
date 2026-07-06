@@ -1,0 +1,2 @@
+PLANNED v236 same-contract WLFBridge-S4S6 generator trainability route 2026-07-06
+locked_test_touched=false
