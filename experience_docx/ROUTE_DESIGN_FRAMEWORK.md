@@ -32,17 +32,10 @@ strong-case regressions stay within the written limits?
 
 ## Official Anchor Start Rule
 
-A ConvIR-B/Haze4K route is clean only if it starts from
-`github/codex/haze4k-official-arch-anchor` in a new `codex/<route>` branch or
-isolated worktree. The route card must record the anchor commit, checkpoint
-path/hash, load contract, new-module initialization rule, locked-test policy,
-cloud workspace, output root, command script, and evidence root before the first
-run.
-
-Do not modify the anchor branch to try a candidate. Do not reuse code from a
-dirty worktree or failed route unless the route is explicitly declared as a
-continuation. If the route cannot satisfy this start rule, it is setup work, not
-a comparable candidate.
+This framework does not restate the clean-route rule. For ConvIR-B/Haze4K
+model-structure routes, use `OFFICIAL_ARCH_ANCHOR_POLICY.md` as the canonical
+source policy and `MODEL_EXPERIMENT_START_CHECKLIST.md` sections `0` and `0B`
+as the start gate.
 
 ## Generic Route Families
 

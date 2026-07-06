@@ -7,13 +7,20 @@ Status: required workflow for future GitHub experiment branches; GitHub is the f
 
 ## Priority Rule
 
-For cloud experiments on `dehaze1`, GitHub sync is the first-priority archival
-step after training, evaluation, post-run watchers, or audits finish. A cloud
-run is not considered closed until its text evidence is copied into
+For cloud experiments on the current authorized runtime host, normally
+`convir-4090`, GitHub sync is the first-priority archival step after training,
+evaluation, post-run watchers, or audits finish. A cloud run is not considered
+closed until its text evidence is copied into
 `experience_docx/`, the route/index/family documentation is updated, and those
 text artifacts are pushed to GitHub, unless the user explicitly pauses or
 forbids the push. The cloud copy is the runtime source; GitHub is the durable
 read/share source.
+
+For experiment status, result, decision, and route-memory reads, use the GitHub
+`main` copy or the explicitly named GitHub route branch copy. Do not infer the
+current research state from a local checkout, local `experience_docx/`, or local
+git status; those are only editing/sync staging surfaces and may be dirty,
+stale, or on the wrong branch.
 
 ## Purpose
 

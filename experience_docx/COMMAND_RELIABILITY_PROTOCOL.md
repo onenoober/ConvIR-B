@@ -2,20 +2,37 @@
 
 Date: 2026-06-04
 
-Status: required workflow for avoiding repeated invalid commands in this repository.
+Status: detailed archive for avoiding repeated invalid commands in this
+repository. For new work, read `COMMAND_RELIABILITY_QUICKSTART.md` first.
 
 ## Purpose
 
 This protocol records command forms that have already failed in this workspace
 and the preferred forms that should be used instead. It is especially important
 for monitoring cloud experiments from Windows PowerShell through WSL and then
-over SSH to `dehaze1`.
+over SSH to `convir-4090`.
+
+Current host note: new commands default to `convir-4090` and the explicit cloud
+Python path `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
+Historical examples may mention `dehaze1` or `convir-5090`; keep those as
+provenance for old failure modes, not as defaults for new work.
+
+Read boundary: this file is intentionally long. During normal route planning or
+monitoring, stop after `COMMAND_RELIABILITY_QUICKSTART.md` unless a command has
+failed or a specific historical pattern is needed.
 
 ## High-Priority Rule
 
 Do not repeat a command form that failed because of quoting, CRLF, PATH, shell
 boundary, or silent-output issues. Prefer stable script bodies with explicit
 success markers over compact one-liners.
+
+## Quickstart Boundary
+
+Current default transport rules live in `COMMAND_RELIABILITY_QUICKSTART.md`.
+This longer file is an archive of known bad command forms and corrected
+patterns. Add to this file only when a command failure teaches a reusable
+boundary, quoting, CRLF, PATH, stdin, or silent-output lesson.
 
 ## Invalid Command Patterns To Avoid
 
@@ -304,6 +321,37 @@ ssh dehaze1 '/root/miniconda3/envs/convir-cu128/bin/python script.py'
 
 or inside a remote script:
 
+2026-07-03 recurrence on `convir-4090`:
+
+Avoid read-only monitor snippets that call bare `python` for inline evidence
+parsing:
+
+```bash
+ssh convir-4090 'python - <<PY
+print("read evidence")
+PY'
+```
+
+Failure mode observed:
+
+- `python: command not found` on `convir-4090`;
+- the monitor command failed before its final success marker;
+- the cloud experiment was unaffected because durable scripts used the explicit
+  environment path.
+
+Corrected form:
+
+```bash
+PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+ssh convir-4090 "$PY - <<'PY'
+print('read evidence')
+PY"
+```
+
+Use `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python` for
+`convir-4090` runtime scripts and inline evidence parsing unless the route card
+records a different cloud environment.
+
 2026-06-06 recurrence:
 
 Avoid using a cloud-only interpreter path during local WSL static checks:
@@ -583,49 +631,12 @@ print('CR_PATH_CLEAN_OK')
 PY
 ```
 
-## Standard Cloud Monitor Template
+## Current Template Boundary
 
-Use this template for future training and post-eval checks:
-
-```powershell
-$script = @'
-set -euo pipefail
-cd /home/ubuntu/workspace/ConvIR-B
-ssh dehaze1 'bash -s' <<'REMOTE'
-set -euo pipefail
-EVID=/root/autodl-tmp/workspace/<remote-workspace>/experience_docx/experiment_logs/<route_id>
-PY=/root/miniconda3/envs/convir-cu128/bin/python
-printf 'remote_time=%s\n' "$(date -Is)"
-for s in <train_tmux> <post_tmux>; do
-  if tmux has-session -t "$s" 2>/dev/null; then
-    printf '%s=ACTIVE\n' "$s"
-  else
-    printf '%s=NOT_ACTIVE\n' "$s"
-  fi
-done
-[ -f "$EVID/status.txt" ] && tail -n 80 "$EVID/status.txt" || printf 'status=MISSING\n'
-printf 'REMOTE_MONITOR_OK\n'
-REMOTE
-rsync -a dehaze1:/root/autodl-tmp/workspace/<remote-workspace>/experience_docx/experiment_logs/<route_id>/ experience_docx/experiment_logs/<route_id>/
-printf 'EVIDENCE_SYNC_OK\n'
-'@
-$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
-```
-
-## Standard GitHub Evidence Commit Template
-
-Use this template when cloud evidence is complete:
-
-```bash
-git add AGENTS.md experience_docx/COMMAND_RELIABILITY_PROTOCOL.md experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md experience_docx/EXPERIMENT_INDEX.md experience_docx/family_summaries/<family>_summary.md experience_docx/experiment_cards/<card>.md experience_docx/experiment_logs/<route_id>
-git diff --cached --check
-git diff --cached --name-only | grep -Ei '\.(pkl|pth|pt|ckpt|onnx|png|jpg|jpeg|bmp|gif|webp|npy|npz|mat|zip|tar|gz|7z|rar)$' && exit 1 || true
-git commit -m "Sync <route> evidence"
-git push github HEAD:$(git branch --show-current)
-```
-
-If unrelated worktree changes exist, stage only the intended files and verify
-with `git diff --cached --name-only` before committing.
+Current command transport defaults live in `COMMAND_RELIABILITY_QUICKSTART.md`.
+Current evidence-only GitHub archival steps live in
+`BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`. This file keeps historical failure
+patterns only.
 
 ## 2026-06-05 Local WSL wrapper quoting failure
 
@@ -812,3 +823,158 @@ PY
 Inside cloud monitor/audit helpers, use the already-declared explicit runtime
 such as `/root/miniconda3/envs/convir-cu128/bin/python` or `"$PY"` for all
 inline Python snippets as well; do not assume `python3` exists on PATH.
+
+## 2026-07-03 `convir-4090` GitHub host-key clone failure
+
+Observed while launching the v2.18 NoPost tail-aware lowband policy route on
+`convir-4090`: direct cloud `git clone` from GitHub failed before checkout with
+host-key verification. This was an infrastructure/preflight transport failure,
+not a route, code, training, eval, or scientific gate failure.
+
+Invalid form:
+
+```bash
+git clone git@github.com:onenoober/ConvIR-B.git \
+  /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-18-nopost-tailaware-lowband-policy
+```
+
+Failure class:
+
+```text
+Host key verification failed
+```
+
+Corrected form:
+
+```bash
+git bundle create /tmp/v218.bundle github/codex/haze4k-v2-18-nopost-tailaware-lowband-policy
+scp /tmp/v218.bundle convir-4090:/sda/home/wangyuxin/ConvIR-B/repos/
+ssh convir-4090 'git clone /sda/home/wangyuxin/ConvIR-B/repos/v218.bundle /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v2-18-nopost-tailaware-lowband-policy'
+```
+
+When a cloud GitHub clone fails only because the host key is unavailable, use a
+local Git bundle or repair known_hosts explicitly. Record the failure as
+`INFRA_PREFLIGHT_TRANSPORT`, verify the cloned commit on cloud, and continue
+only after the branch/commit, workspace, durable scripts, status files, and
+explicit cloud Python path are checked.
+
+## 2026-07-04 PowerShell to WSL audit scripts need CRLF stripping
+
+Observed while auditing v2.26 evidence before syncing compact artifacts to
+`main`: a direct `wsl -- bash -lc '...'` command with a grep regex containing
+parentheses crossed the PowerShell/WSL quote boundary incorrectly, and a
+follow-up here-string piped directly into `wsl -- bash` kept CRLF line endings
+so Bash read `true\r` as a command.
+
+Invalid forms:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'cd /home/ubuntu/workspace/ConvIR-B-v2-26-main-evidence-sync && find ... -type f | grep -Ei "\.(pt|pth|pkl|ckpt|safetensors|npy|npz|png|jpg|jpeg|bmp|webp|zip|tar|gz|7z|rar)$" || true'
+
+@'
+cd /home/ubuntu/workspace/ConvIR-B-v2-26-main-evidence-sync
+find ... -type f | grep -Ei '\.pt$|\.pth$|...' || true
+'@ | wsl -d Ubuntu-22.04 -- bash
+```
+
+Failure classes:
+
+```text
+syntax error near unexpected token `('
+bash: line 2: $'true\r': command not found
+```
+
+Corrected form:
+
+```powershell
+@'
+cd /home/ubuntu/workspace/ConvIR-B-v2-26-main-evidence-sync
+find ... -type f | grep -Ei '\.pt$|\.pth$|\.pkl$|\.ckpt$|\.safetensors$|\.npy$|\.npz$|\.png$|\.jpg$|\.jpeg$|\.bmp$|\.webp$|\.zip$|\.tar$|\.gz$|\.7z$|\.rar$' || true
+'@ | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+For PowerShell here-strings that feed WSL audit or sync scripts, pipe through
+`tr -d '\r' | bash`. Prefer regexes that avoid nested shell quotes when a direct
+`bash -lc` command is still necessary.
+
+The same boundary can silently truncate a commit subject when escaped quotes are
+embedded inside a direct `bash -lc` command.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc 'cd /home/ubuntu/workspace/ConvIR-B-v2-26-main-evidence-sync && git commit -m \"Sync v2.26 NoPost diagnostic evidence\"'
+```
+
+Failure class:
+
+```text
+[codex/haze4k-v2-26-main-evidence-sync 60878a3] Sync
+```
+
+Corrected form:
+
+```powershell
+@'
+cd /home/ubuntu/workspace/ConvIR-B-v2-26-main-evidence-sync
+git commit --amend -m 'Sync v2.26 NoPost diagnostic evidence'
+'@ | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+Related recurrence during the v2.26 supplemental correctness sync: avoid
+wrapping a single-quoted SSH command inside a compact PowerShell `wsl ...
+bash -lc "..."` string. The remote command itself was simple, but the quote
+boundary reached WSL malformed and Bash exited before SSH ran.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- bash -lc "ssh -n -o BatchMode=yes -o ConnectTimeout=10 convir-4090 'printf \"%s\n\" CONVIR4090_SSH_OK'"
+```
+
+Failure class:
+
+```text
+/bin/bash: -c: line 1: unexpected EOF while looking for matching `''
+```
+
+Corrected form:
+
+```powershell
+@'
+set -euo pipefail
+ssh -n -o BatchMode=yes -o ConnectTimeout=10 convir-4090 'printf "%s\n" CONVIR4090_SSH_OK'
+printf 'LOCAL_SSH_PROBE_OK\n'
+'@ | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+Related recurrence: avoid placing a Unix pipeline after `wsl ... -- <command>`
+in a PowerShell command unless the entire pipeline is inside a WSL Bash script.
+PowerShell may run the trailing command locally, where tools such as `sed` or
+`wc` are not available.
+
+Invalid forms:
+
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-v226-evidence-sync -- grep -nE 'v2\.26|NoPost' experience_docx/EXPERIMENT_INDEX.md | sed -n '1,120p'
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-v226-evidence-sync -- find experience_docx/experiment_logs/... -maxdepth 1 -type f | wc -l
+```
+
+Failure class:
+
+```text
+sed : The term 'sed' is not recognized
+wc : The term 'wc' is not recognized
+```
+
+Corrected form:
+
+```powershell
+@'
+set -euo pipefail
+cd /home/ubuntu/workspace/ConvIR-B-v226-evidence-sync
+grep -nE 'v2\.26|NoPost' experience_docx/EXPERIMENT_INDEX.md | sed -n '1,120p'
+find experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separability_audit_20260704 -maxdepth 1 -type f | wc -l
+printf 'LOCAL_WSL_PIPELINE_OK\n'
+'@ | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```

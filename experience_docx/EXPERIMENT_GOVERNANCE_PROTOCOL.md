@@ -55,22 +55,12 @@ a separate branch, worktree, or patch before staging.
 
 ## Official Anchor Clean Route Rule
 
-For ConvIR-B/Haze4K, the clean official architecture anchor is
-`github/codex/haze4k-official-arch-anchor`. This rule is mandatory and takes
-priority over convenience:
-
-- do not implement architecture, loss, data-policy, selector, gate, adapter, or
-  training-policy experiments on the anchor branch;
-- create a new `codex/<route>` branch or isolated worktree from the anchor before
-  the first experimental code edit;
-- record the anchor commit, route branch, checkpoint path/hash, load contract,
-  locked-test policy, cloud workspace, output root, command script, status file,
-  and evidence root in the route card before launch;
-- do not inherit code from a dirty worktree or a failed route unless the route
-  card explicitly labels the run as a continuation and states why the inheritance
-  is scientifically valid;
-- if this rule is skipped, the run is not comparable to the official anchor and
-  must be relabeled or rerun.
+For ConvIR-B/Haze4K, the canonical clean-route and immutable-anchor rule lives
+in `OFFICIAL_ARCH_ANCHOR_POLICY.md`. This governance file does not duplicate the
+full rule. Before a model-structure route, read that policy and record the
+source branch, source commit, load contract, locked-test policy, cloud
+workspace, output root, command script, status file, and evidence root in the
+route card.
 
 ## Entrypoint Stability Rule
 
@@ -99,11 +89,11 @@ Before changing the model, establish the baseline:
 If the baseline is not verified, no improvement claim is valid yet.
 
 For ConvIR-B, "verified baseline" means evaluating the official pretrained
-checkpoint in the local environment before any from-scratch or modified-model
-training. Record the checkpoint path and hash, official reference PSNR/SSIM,
-local PSNR/SSIM, latency, peak GPU memory, output image path, and a short
-quality note. A reproduction gap is acceptable only after the likely cause is
-written down.
+checkpoint on the authorized runtime host before any from-scratch or
+modified-model training. Record the checkpoint path and hash, official
+reference PSNR/SSIM, runtime PSNR/SSIM, latency, peak GPU memory, output image
+path, and a short quality note. A reproduction gap is acceptable only after the
+likely cause is written down.
 
 ## Most Valuable Attempt Standard
 
