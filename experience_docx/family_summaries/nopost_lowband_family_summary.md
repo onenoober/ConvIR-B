@@ -1,6 +1,6 @@
 # NoPost Feature Lowband Family Summary
 
-Date: 2026-07-05
+Date: 2026-07-06
 
 Status: WLDB-A, the tested v2.18/v2.19/v2.20 deployable lowband predictor
 forms, the v2.23 small-adapter train form, the v2.25A direct risk soft-label /
@@ -9,12 +9,13 @@ v2.27 same-sample ILFRB-ACS action-bank construction, the first v2.28 OOF
 prototype bank, the v2.29 safe-envelope / GT-free table-policy bank, the v2.30
 compatibility-gated LCB table-policy bank, the v2.31 target-only action-value
 identifiability route, the v2.32 S5-only bounded internal low-frequency
-correction-field canary, and the v2.33 masked WDMamba-alpha0.5 S5-BILFCF
-compression canary are not training-authorized. NoPost lowband remains
+correction-field canary, the v2.33 masked WDMamba-alpha0.5 S5-BILFCF
+compression canary, and the v2.34 table-selected/crop-aligned teacher-delta
+projection canaries are not training-authorized. NoPost lowband remains
 directionally open, but the current discrete action-bank selector line is closed
 unless a materially new target-only action-value signal appears, and the current
-S5-only BILFCF compression line should not be expanded by more
-epochs/folds/simple loss-weight tuning.
+S5-only BILFCF / WDMamba-alpha0.5 crop-aligned canary line should not be
+expanded by more epochs/folds/simple loss-weight tuning.
 
 ## Sources
 
@@ -34,6 +35,7 @@ epochs/folds/simple loss-weight tuning.
   - `../experiment_cards/2026-07-05-haze4k-v2-31-nopost-action-value-identifiability-audit.md`
   - `../experiment_cards/2026-07-05-haze4k-v2-32-nopost-bounded-internal-lowfreq-correction-field.md`
   - `../experiment_cards/2026-07-05-haze4k-v2-33-nopost-teacher-benefit-source-and-bilfcf-trainability-audit.md`
+  - `../experiment_cards/2026-07-06-haze4k-v2-34-nopost-teacher-delta-projection-and-multistage-bridge-audit.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/`
   - `../experiment_logs/haze4k_v2_17_nopost_lowband_alignment_tail_audit_20260703/`
@@ -50,6 +52,7 @@ epochs/folds/simple loss-weight tuning.
   - `../experiment_logs/haze4k_v2_31_nopost_action_value_identifiability_audit_20260705/`
   - `../experiment_logs/haze4k_v2_32_nopost_bounded_internal_lowfreq_correction_field_20260705/`
   - `../experiment_logs/haze4k_v2_33_nopost_teacher_benefit_source_and_bilfcf_trainability_audit_20260705/`
+  - `../experiment_logs/haze4k_v2_34_nopost_teacher_delta_projection_and_multistage_bridge_audit_20260706/`
 
 ## Established Facts
 
@@ -70,6 +73,7 @@ epochs/folds/simple loss-weight tuning.
 | Haze4K v2.31 NoPost Target-Only Action-Value Identifiability Audit | P0 passed architecture-delta audit with no model-structure change from v2.30. P2A added target-only physics/frequency/internal/A0-diagnostic features, nested fold-out ranking, physics-cluster bank diagnostics, no-op risk-coverage, leakage controls, and action-confusion evidence. The feature gate failed: combined useful_gt_0p30 all/hard AUROC `0.6854/0.5444`, easy should-noop AUROC `0.5934`, and fold std `0.1059`. The best nested ranker improved over the v2.30 table with mean/hard/easy `+0.4234/+0.8152/+0.0995`, but p05/CVaR5/severe `-0.4421/-1.2582/0.1375` failed tail safety. Safe-set oracle remained higher at `+0.6749/+1.2371/+0.1553`, so action value exists but is not deployably identifiable enough. P2B was skipped, training was not launched, and locked test was untouched. | `P2A_FAIL_ACTION_VALUE_IDENTIFIABILITY_CLOSE_CURRENT_BANK`; close the current discrete action-bank selector route and pivot to a separate bounded internal low-frequency correction-field design or materially new action-value signal. |
 | Haze4K v2.32 NoPost Bounded Internal Low-Frequency Correction Field | P0 passed the new architecture contract from official anchor: strict partial-load loaded `602` official keys, only `8` `BILFCF_` keys were newly initialized, identity max/mean diff were `0.0`, forbidden symbol hits were `0`, and runtime remained `forward(self, x)`. P1 passed bounded-field sanity with tiny low-frequency activity: field mean/p95 `5.6611e-06/1.1682e-05`, high-frequency leakage `0.02363`, and gate mean `0.01822`. P2 canary32 then failed after `40` train-derived adapter-only steps: mean/hard/easy deltas `-0.4146/-0.3287/-0.4371`, p05/CVaR5/severe `-1.7719/-2.0842/0.5000`. P2 canary80 OOF and P3 objective ablation were not launched. | `P2_FAIL_BOUNDED_FIELD_TRAINABILITY_PAUSE`; do not expand this S5-only alpha=0.02 loss_C adapter-only BILFCF route by more epochs/folds/simple tuning. A follow-up must materially change the bounded-field training design before reopening. |
 | Haze4K v2.33 NoPost Teacher-Benefit Source and BILFCF Trainability Audit | P1 found table-supported teacher-source benefit for `wdmamba_alpha0p5` and `wdmamba_full`. P2 crop-aligned sanity passed but showed only tiny local movement: GT one-image `+0.0124`, positive low-frequency delta `+0.0061`, sign-flip `-0.0119`. P3 showed S5 was not the largest amplification point, with `S6_decoder_early=0.0617`, `S5=0.0750`, and unsafe-high `decoder_pre_output_feature=0.5148`. P4 then tested WDMamba-alpha0.5 masked+preservation canary32 and failed the gate: mean/hard/easy `+0.0007/+0.0013/+0.0003`, p05/CVaR5 `-0.0025/-0.0029`, severe `0`, strong-reference regression `0`, eligible coverage `5/32`, and mask effect vs unmasked was negative. | `P4_FAIL_MASKED_CANARY32_NO_CANARY80`; teacher-source evidence remains useful, but this S5-BILFCF compression setup did not convert it into measurable micro-canary utility. Do not launch canary80 or locked test. |
+| Haze4K v2.34 NoPost Teacher-Delta Projection and Multi-Stage Bridge Audit | P0 confirmed the v2.33 first32 canary was not a valid teacher-compression diagnostic: direct WDMamba-alpha0.5 mean/hard/easy deltas were `-2.3193/-1.5978/-2.1668`, P1 table join was missing for `25/32`, P4 eligible coverage was `5/32`, and recomputation matched v2.33 teacher-blend deltas exactly. P0B rebuilt a table-positive balanced diagnostic canary; hard direct benefit became positive (`+0.6788`) and eligible coverage was `7/32`, but mean/easy remained strongly negative (`-2.4753/-4.0017`) with p05/CVaR5 `-8.7433/-11.4269`. | `P0B_FAIL_BALANCED_CANARY_DIRECT_TEACHER_GATE`; do not run free-tensor projection, generator gap, gradient conflict, bridge micro-canary, canary80, or locked test from these crop-misaligned teacher canaries. |
 
 ## Family Verdict
 
@@ -79,14 +83,17 @@ predictor, v2.23 small-adapter train form, v2.25A direct risk soft-label /
 scale-distillation, v2.26 current-risk-input calibration/trainability, and the
 current v2.27 oracle-derived action-bank construction, the first v2.28 OOF
 prototype bank, the v2.29 safe-envelope / GT-free table-policy bank, the v2.30
-compatibility-gated LCB table-policy bank, and the v2.31 target-only
-action-value identifiability route, and the current v2.32 S5-only BILFCF canary
-as training candidates. Do not close the underlying lowband-capacity direction,
-but close the current discrete action-bank selector line unless a materially new
+compatibility-gated LCB table-policy bank, the v2.31 target-only action-value
+identifiability route, the current v2.32 S5-only BILFCF canary, and the v2.33
+/ v2.34 WDMamba-alpha0.5 crop-aligned teacher canary line as training
+candidates. Do not close the underlying lowband-capacity direction, but close
+the current discrete action-bank selector line unless a materially new
 target-only action-value signal appears. The first bounded internal
 low-frequency correction-field screen escaped the selector bottleneck
-mechanically, but failed trainability/tail gates in canary32, so a follow-up
-must materially change the bounded-field design rather than extending this one.
+mechanically, but failed trainability/tail gates in canary32. The WDMamba
+teacher-source table remains useful as route context, but v2.34 showed that the
+current first32 and table-selected balanced crop canaries do not provide a valid
+direct teacher-benefit substrate for projection diagnostics.
 
 v2.16 established that lowband correction is a real source of headroom inside
 ConvIR-B. The RGB LL oracle and the proposed zero-init WLDB insertion were both
@@ -197,6 +204,14 @@ masked teacher-benefit distillation into the current S5-BILFCF carrier produced
 near-zero utility and no positive mask effect. This blocks canary80 and keeps
 locked test untouched.
 
+v2.34 tested the required P4 canary coverage/open-question before launching a
+free-tensor upper bound. The answer was negative: the exact v2.33 first32
+canary had direct WDMamba-alpha0.5 crop benefit below zero, and a rebuilt
+table-positive balanced canary still had strongly negative mean/easy direct
+benefit. This means the next valid projection route must first define a
+crop-aligned teacher-positive diagnostic canary, not reuse the current first32
+or table-selected balanced canary or skip ahead to P1/P2/P3/P4.
+
 ## Do Not Repeat Without New Evidence
 
 - Do not expand WLDB-A with more seeds, epochs, hidden width, checkpoint
@@ -229,6 +244,10 @@ locked test untouched.
 - Do not continue the v2.33 masked WDMamba-alpha0.5 S5-BILFCF compression
   route by launching canary80, increasing micro-canary steps/samples, or
   simple loss/mask tuning; P4 converted teacher benefit into near-zero utility.
+- Do not continue v2.34 by launching free-tensor projection, generator gap,
+  gradient conflict, bridge micro-canary, canary80, or locked test from the
+  current first32 or table-selected balanced canaries; both failed the
+  crop-aligned direct teacher-benefit gate.
 - Do not treat the v2.21 replay pass, v2.25A AP/ECE partial passes, or the
   invalid tuple-sort AP as train-time success.
 - Do not treat mean or hard-bucket improvement as sufficient if p05, CVaR,
@@ -243,17 +262,18 @@ locked test untouched.
 A credible follow-up must either introduce a materially new target-only
 action-value signal before reopening a discrete action-bank selector, or
 materially change the bounded-field training design beyond the current v2.32
-S5-only alpha=0.02 loss_C adapter-only canary and the v2.33 masked
-WDMamba-alpha0.5 S5-BILFCF compression failure. It must not be a WLDB-A rerun, a
-direct v2.19/v2.20 training launch, a v2.23 expansion, a v2.25A hyperparameter
-extension, a v2.26 rescue/action-joint continuation, a v2.27 selector launch
-from the same-sample bank, a v2.28 selector launch from the current unsafe OOF
-prototype bank, a v2.29 selector launch from the failed
+S5-only alpha=0.02 loss_C adapter-only canary and the v2.33/v2.34
+WDMamba-alpha0.5 crop-aligned teacher-canary failures. It must not be a WLDB-A
+rerun, a direct v2.19/v2.20 training launch, a v2.23 expansion, a v2.25A
+hyperparameter extension, a v2.26 rescue/action-joint continuation, a v2.27
+selector launch from the same-sample bank, a v2.28 selector launch from the
+current unsafe OOF prototype bank, a v2.29 selector launch from the failed
 safe-envelope/table-policy bank, a v2.30 selector launch from the failed
-compatibility-gated LCB table policy, v2.31 table/ranker micro-tuning, a
-simple v2.32 rerun with more epochs/folds/loss-weight tuning, or a v2.33
-masked teacher-compression rerun with more steps/samples/simple mask tuning. It should keep
-the source-clean and identity contract requirements, avoid locked-test feedback
-for design selection, and make train-derived tail safety plus the route-specific
-mechanism gate the first hard gate before selector, training, or locked-test
-work.
+compatibility-gated LCB table policy, v2.31 table/ranker micro-tuning, a simple
+v2.32 rerun with more epochs/folds/loss-weight tuning, a v2.33 masked
+teacher-compression rerun with more steps/samples/simple mask tuning, or a
+v2.34 projection launch from a canary whose direct teacher benefit gate failed.
+It should keep the source-clean and identity contract requirements, avoid
+locked-test feedback for design selection, and make train-derived tail safety
+plus the route-specific mechanism gate the first hard gate before selector,
+training, or locked-test work.

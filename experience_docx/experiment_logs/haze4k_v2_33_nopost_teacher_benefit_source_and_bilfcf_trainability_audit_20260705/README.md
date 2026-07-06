@@ -20,6 +20,9 @@ Primary evidence:
 - `v233_p3_jacobian_sensitivity_by_insertion.csv`
 - `v233_p4_teacher_benefit_masked_canary32_report.csv`
 - `v233_p4_teacher_benefit_masked_canary32_closeout.json`
+- `v233_failure_root_cause_analysis.md`
+- `v233_cross_validation_matrix.md`
+- `v233_p4_exact_canary_open_questions.md`
 - `v233_decision_tree.md`
 - `v233_closeout.json`
 

@@ -1,0 +1,20 @@
+{
+  "balanced_min_table_gain": 0.5,
+  "blocked_reason": "P0B balanced canary direct teacher benefit gate failed",
+  "direct_teacher_cvar5": -11.426883697509766,
+  "direct_teacher_easy_delta": -4.0016679763793945,
+  "direct_teacher_hard_delta": 0.6788206100463867,
+  "direct_teacher_mean_delta": -2.475331425666809,
+  "direct_teacher_p05": -8.743328094482422,
+  "eligible_count": 7,
+  "eligible_coverage": 0.21875,
+  "gate_pass": false,
+  "locked_test_touched": false,
+  "p1_free_tensor_authorized": false,
+  "phase": "P0B balanced diagnostic canary direct teacher benefit",
+  "route_id": "haze4k_v2_34_nopost_teacher_delta_projection_and_multistage_bridge_audit_20260706",
+  "sample_count": 32,
+  "sample_manifest": "v234_p0b_balanced_canary_manifest.csv",
+  "teacher_alpha": 0.5,
+  "teacher_id": "wdmamba_alpha0p5"
+}

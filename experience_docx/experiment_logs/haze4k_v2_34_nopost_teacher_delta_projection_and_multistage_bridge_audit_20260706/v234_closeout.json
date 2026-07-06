@@ -1,0 +1,14 @@
+{
+  "canary80_authorized": false,
+  "closed_reference": "v2.33 P4_FAIL_MASKED_CANARY32_NO_CANARY80",
+  "decision": "P0B_FAIL_BALANCED_CANARY_DIRECT_TEACHER_GATE",
+  "locked_test_touched": false,
+  "not_a_continuation_of_v233_s5_bilfcf": true,
+  "p0_mask_join_audit_pass": false,
+  "p0b_balanced_canary_pass": false,
+  "p1_free_tensor_projection_pass": null,
+  "p2_generator_gap_pass": null,
+  "p3_gradient_conflict_pass": null,
+  "p4_microcanary32_launched": false,
+  "primary_question": "Is WDMamba teacher benefit representable inside ConvIR-B with a NoPost in-network carrier, or is the current route blocked by S5-BILFCF compression capacity?"
+}
