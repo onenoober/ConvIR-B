@@ -61,6 +61,27 @@ v2.41 requires manual review of the atlas.
 
 ## Result
 
-Status: `PLANNED`.
+Status: `COMPLETED_DIAGNOSTIC`.
 
-Decision pending P0 completion.
+Decision:
+`V240_COMPLETE_SELECTOR_ALPHA_BLOCKED_V241_STAGE0_DESIGN_OPEN`.
+
+P0 completed on `600/600` train-derived full-image same-context images. WDMamba
+teacher residuals were mostly GT-aligned (`anti_aligned_rate_all=0.0033`) with
+positive alpha-safe margin in most images (`alpha_safe_upper p05=0.5031`), but
+rare easy/strong-reference tail cases remain enough to keep no-selector alpha
+continuation blocked. ConvIR-L showed much higher teacher-specific
+anti-alignment (`0.1033` all, `0.1867` hard) and unsafe rate at useful alpha
+(`0.1267`). WDMamba/ConvIR-L unsafe overlap was low (`Jaccard=0.0385` at the
+useful alpha pair), arguing against a single shared teacher-independent unsafe
+mode.
+
+Runtime-visible feature predictability did not authorize selector work:
+WDMamba anti-alignment/alpha-safe-tail labels were too rare and had recall
+`0.0` at FPR0.05, while ConvIR-L anti-alignment reached AUROC/AUPRC
+`0.7123/0.2176` but recall at FPR0.05 was only `0.1129`.
+
+Manual review keeps all selector/alpha/bridge/generator/P5/canary80/locked-test
+continuations blocked. It opens only a separate v2.41 Stage-0 design/preflight
+route from `github/codex/haze4k-official-arch-anchor` for an A0-proximal,
+GT-risk-controlled supervised residual architecture.

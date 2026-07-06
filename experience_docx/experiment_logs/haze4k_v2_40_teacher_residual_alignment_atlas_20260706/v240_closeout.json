@@ -1,0 +1,15 @@
+{
+  "bridge_generator_authorized": false,
+  "canary80_authorized": false,
+  "cloud_only_raw_outputs": [
+    "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-40-teacher-residual-alignment-atlas/experience_docx/experiment_logs/haze4k_v2_40_teacher_residual_alignment_atlas_20260706/v240_teacher_residual_alignment_atlas_per_image.csv",
+    "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-40-teacher-residual-alignment-atlas/experience_docx/experiment_logs/haze4k_v2_40_teacher_residual_alignment_atlas_20260706/v240_alignment_predictability_per_fold.csv"
+  ],
+  "decision": "V240_TEACHER_RESIDUAL_ALIGNMENT_ATLAS_COMPLETE",
+  "gate_pass": true,
+  "locked_test_touched": false,
+  "manual_review_required_for_v241": true,
+  "status": "COMPLETED_DIAGNOSTIC",
+  "summary_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-40-teacher-residual-alignment-atlas/experience_docx/experiment_logs/haze4k_v2_40_teacher_residual_alignment_atlas_20260706/v240_teacher_residual_alignment_atlas_summary.json",
+  "v241_authorized": false
+}
