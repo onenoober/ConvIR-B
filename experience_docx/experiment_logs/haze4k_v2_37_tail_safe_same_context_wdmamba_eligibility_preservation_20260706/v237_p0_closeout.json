@@ -1,0 +1,13 @@
+{
+  "bridge_training_authorized": false,
+  "canary80_authorized": false,
+  "decision": "P0_FAIL_ALL_UNMASKED_ALPHA_SUBSTRATES",
+  "gate_pass": false,
+  "generator_training_authorized": false,
+  "locked_test_touched": false,
+  "p1_tail_atlas_authorized": true,
+  "p2_mask_preservation_authorized": true,
+  "passing_alphas": [],
+  "phase": "P0",
+  "route_id": "haze4k_v2_37_tail_safe_same_context_wdmamba_eligibility_preservation_20260706"
+}

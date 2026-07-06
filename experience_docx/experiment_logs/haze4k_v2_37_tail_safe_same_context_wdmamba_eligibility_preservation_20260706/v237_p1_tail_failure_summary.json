@@ -1,0 +1,62 @@
+{
+  "atlas_rows": 2400,
+  "decision": "P1_DONE_TAIL_FAILURE_ATLAS",
+  "locked_test_touched": false,
+  "phase": "P1 tail failure atlas",
+  "route_id": "haze4k_v2_37_tail_safe_same_context_wdmamba_eligibility_preservation_20260706",
+  "source_p0_csv": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-37-tail-safe-same-context-wdmamba-eligibility-preservation/experience_docx/experiment_logs/haze4k_v2_37_tail_safe_same_context_wdmamba_eligibility_preservation_20260706/v237_p0_alpha_safety_sweep_per_image.csv",
+  "summary_by_alpha": [
+    {
+      "alpha": 0.125,
+      "alpha_label": "a0p125",
+      "mean_delta": 0.8605063597361247,
+      "negative_A0_top25_count": 4,
+      "negative_count": 5,
+      "negative_easy_or_strong_reference_count": 4,
+      "row_count": 600,
+      "severe_count": 0,
+      "severe_easy_or_strong_reference_count": 0,
+      "strong_reference_regression_count": 3,
+      "worst_delta": -0.25374889373779297
+    },
+    {
+      "alpha": 0.25,
+      "alpha_label": "a0p25",
+      "mean_delta": 1.708755624294281,
+      "negative_A0_top25_count": 6,
+      "negative_count": 7,
+      "negative_easy_or_strong_reference_count": 6,
+      "row_count": 600,
+      "severe_count": 4,
+      "severe_easy_or_strong_reference_count": 3,
+      "strong_reference_regression_count": 5,
+      "worst_delta": -0.7767343521118164
+    },
+    {
+      "alpha": 0.375,
+      "alpha_label": "a0p375",
+      "mean_delta": 2.512276570002238,
+      "negative_A0_top25_count": 14,
+      "negative_count": 16,
+      "negative_easy_or_strong_reference_count": 14,
+      "row_count": 600,
+      "severe_count": 11,
+      "severe_easy_or_strong_reference_count": 10,
+      "strong_reference_regression_count": 12,
+      "worst_delta": -1.508955955505371
+    },
+    {
+      "alpha": 0.5,
+      "alpha_label": "a0p5",
+      "mean_delta": 3.229920717080434,
+      "negative_A0_top25_count": 28,
+      "negative_count": 30,
+      "negative_easy_or_strong_reference_count": 28,
+      "row_count": 600,
+      "severe_count": 21,
+      "severe_easy_or_strong_reference_count": 19,
+      "strong_reference_regression_count": 26,
+      "worst_delta": -2.3456597328186035
+    }
+  ]
+}

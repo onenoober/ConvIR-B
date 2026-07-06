@@ -1,0 +1,90 @@
+{
+  "decision": "P4_FAIL_TARGET_ONLY_SEPARABILITY",
+  "easy_noop_precision": 0.2857142857142857,
+  "feature_columns": [
+    "input_luma_mean",
+    "input_luma_std",
+    "input_saturation_mean",
+    "input_dark_channel_mean",
+    "input_edge_energy",
+    "input_lowfreq_energy",
+    "A0_luma_mean",
+    "A0_luma_std",
+    "A0_saturation_mean",
+    "A0_dark_channel_mean",
+    "A0_edge_energy",
+    "A0_lowfreq_energy",
+    "input_A0_abs_mean",
+    "input_A0_lowfreq_abs_mean",
+    "input_A0_hf_abs_mean"
+  ],
+  "fold_pass": "0/5",
+  "fold_pass_count": 0,
+  "fold_summary": [
+    {
+      "fold_id": 0,
+      "fold_pass": false,
+      "sample_count": 120,
+      "unsafe_AUPRC": 0.42516534391534394,
+      "unsafe_AUROC": 0.9152046783625731,
+      "unsafe_count": 6
+    },
+    {
+      "fold_id": 1,
+      "fold_pass": false,
+      "sample_count": 120,
+      "unsafe_AUPRC": 0.3979347041847041,
+      "unsafe_AUROC": 0.922514619883041,
+      "unsafe_count": 6
+    },
+    {
+      "fold_id": 2,
+      "fold_pass": false,
+      "sample_count": 120,
+      "unsafe_AUPRC": 0.20423010932348792,
+      "unsafe_AUROC": 0.8571428571428571,
+      "unsafe_count": 7
+    },
+    {
+      "fold_id": 3,
+      "fold_pass": false,
+      "sample_count": 120,
+      "unsafe_AUPRC": 0.12923122983864674,
+      "unsafe_AUROC": 0.77046783625731,
+      "unsafe_count": 6
+    },
+    {
+      "fold_id": 4,
+      "fold_pass": false,
+      "sample_count": 120,
+      "unsafe_AUPRC": 0.4176040322084947,
+      "unsafe_AUROC": 0.871304347826087,
+      "unsafe_count": 5
+    }
+  ],
+  "forbidden_runtime_features_used": false,
+  "gate": {
+    "easy_noop_precision_min": 0.9,
+    "fold_pass_min": "4/5",
+    "severe_recall_at_FPR_0p10_min": 0.8,
+    "strong_reference_unsafe_recall_at_FPR_0p10_min": 0.8,
+    "unsafe_AUPRC_min": 0.5,
+    "unsafe_detection_AUROC_min": 0.85
+  },
+  "gate_pass": false,
+  "locked_test_touched": false,
+  "p5_masked_free_tensor_projection_authorized": false,
+  "phase": "P4 target-only no-op / unsafe separability audit",
+  "route_id": "haze4k_v2_37_tail_safe_same_context_wdmamba_eligibility_preservation_20260706",
+  "severe_recall_at_FPR_0p10": 0.5714285714285714,
+  "source_p1_atlas_csv": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-37-tail-safe-same-context-wdmamba-eligibility-preservation/experience_docx/experiment_logs/haze4k_v2_37_tail_safe_same_context_wdmamba_eligibility_preservation_20260706/v237_p1_tail_failure_atlas.csv",
+  "source_p3_csv": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-37-tail-safe-same-context-wdmamba-eligibility-preservation/experience_docx/experiment_logs/haze4k_v2_37_tail_safe_same_context_wdmamba_eligibility_preservation_20260706/v237_p3_oof_mask_selection_per_image.csv",
+  "strong_reference_unsafe_recall_at_FPR_0p10": 0.5769230769230769,
+  "threshold_at_FPR_0p10": 0.7637802958488464,
+  "unsafe_AUPRC": 0.2179421524907183,
+  "unsafe_FPR_at_threshold": 0.1,
+  "unsafe_base_rate": 0.05,
+  "unsafe_count": 30,
+  "unsafe_detection_AUROC": 0.8683040935672515,
+  "unsafe_recall_at_FPR_0p10": 0.5333333333333333
+}
