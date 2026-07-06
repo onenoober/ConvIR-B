@@ -287,16 +287,136 @@ def bucket_samples(rows: list[dict[str, Any]]) -> None:
         row["easy_guard"] = row["strong_reference_bucket"] == "strong_top25_by_A0_canary"
 
 
-def prepare_samples(args: argparse.Namespace, device: torch.device) -> list[dict[str, Any]]:
+def dataset_index_by_name(dataset: DeblurDataset) -> dict[str, int]:
+    return {name: index for index, name in enumerate(dataset.image_list)}
+
+
+def read_sample_manifest(path: str | Path) -> list[dict[str, Any]]:
+    if not path:
+        return []
+    manifest_path = Path(path)
+    if not manifest_path.exists():
+        return []
+    rows = []
+    for row in read_csv(manifest_path):
+        rows.append({
+            "dataset_index": int(row.get("sample_index") or row.get("dataset_index") or 0),
+            "sample_name": row.get("sample_name", ""),
+            "crop_seed": int(row.get("crop_seed") or 0) if row.get("crop_seed") else None,
+            "selection_source_bucket": row.get("selection_source_bucket", ""),
+            "table_delta_vs_A0": to_float(row.get("table_delta_vs_A0")),
+            "table_base_psnr_A0": to_float(row.get("table_base_psnr_A0")),
+        })
+    return rows
+
+
+def select_balanced_manifest(args: argparse.Namespace, dataset: DeblurDataset) -> list[dict[str, Any]]:
+    table = read_csv(args.wdmamba_table)
+    name_to_index = dataset_index_by_name(dataset)
+    matched = []
+    for row in table:
+        name = row.get("name", "")
+        if name not in name_to_index:
+            continue
+        delta = to_float(row.get("expert_a0p5_dPSNR"))
+        dssim = to_float(row.get("expert_a0p5_dSSIM"))
+        a0 = to_float(row.get("A0_PSNR"))
+        if delta is None or dssim is None or a0 is None:
+            continue
+        record = {
+            "sample_name": name,
+            "sample_index": name_to_index[name],
+            "table_base_psnr_A0": a0,
+            "table_delta_vs_A0": delta,
+            "table_dssim_vs_A0": dssim,
+        }
+        matched.append(record)
+    if not matched:
+        raise RuntimeError("No WDMamba table rows matched Haze4K train dataset names")
+    hard_cut = percentile([float(row["table_base_psnr_A0"]) for row in matched], 25) or 0.0
+    easy_cut = percentile([float(row["table_base_psnr_A0"]) for row in matched], 75) or 0.0
+    candidates = []
+    for row in matched:
+        if float(row["table_delta_vs_A0"]) < args.balanced_min_table_gain:
+            continue
+        if float(row["table_dssim_vs_A0"]) < -0.001:
+            continue
+        a0 = float(row["table_base_psnr_A0"])
+        if a0 <= hard_cut:
+            bucket = "hard_bottom25_by_p1_table_A0"
+        elif a0 >= easy_cut:
+            bucket = "easy_top25_by_p1_table_A0"
+        else:
+            bucket = "mid_by_p1_table_A0"
+        row = dict(row)
+        row["selection_source_bucket"] = bucket
+        row["crop_seed"] = args.seed + int(row["sample_index"])
+        candidates.append(row)
+    if len(candidates) < args.sample_count:
+        raise RuntimeError(
+            f"Only {len(candidates)} balanced teacher-positive candidates for sample_count={args.sample_count}"
+        )
+    quotas = {
+        "hard_bottom25_by_p1_table_A0": max(1, round(args.sample_count * 0.375)),
+        "mid_by_p1_table_A0": max(1, round(args.sample_count * 0.3125)),
+        "easy_top25_by_p1_table_A0": max(1, round(args.sample_count * 0.3125)),
+    }
+    while sum(quotas.values()) > args.sample_count:
+        quotas["mid_by_p1_table_A0"] -= 1
+    while sum(quotas.values()) < args.sample_count:
+        quotas["hard_bottom25_by_p1_table_A0"] += 1
+    selected: list[dict[str, Any]] = []
+    used: set[str] = set()
+    for bucket, quota in quotas.items():
+        pool = [row for row in candidates if row["selection_source_bucket"] == bucket]
+        pool.sort(key=lambda row: float(row["table_delta_vs_A0"]), reverse=True)
+        for row in pool[:quota]:
+            selected.append(row)
+            used.add(str(row["sample_name"]))
+    if len(selected) < args.sample_count:
+        rest = [row for row in candidates if str(row["sample_name"]) not in used]
+        rest.sort(key=lambda row: float(row["table_delta_vs_A0"]), reverse=True)
+        for row in rest:
+            selected.append(row)
+            used.add(str(row["sample_name"]))
+            if len(selected) >= args.sample_count:
+                break
+    selected = selected[:args.sample_count]
+    selected.sort(key=lambda row: (str(row["selection_source_bucket"]), -float(row["table_delta_vs_A0"])))
+    return selected
+
+
+def prepare_samples(
+    args: argparse.Namespace,
+    device: torch.device,
+    sample_manifest: list[dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
     official = build_official(args.checkpoint, device)
     wdmamba = load_wdmamba(args.wdmamba_repo, args.wdmamba_checkpoint, device)
     dataset = make_dataset(args.data_dir, "train")
     samples: list[dict[str, Any]] = []
-    count = min(args.sample_count, len(dataset))
+    if sample_manifest is None:
+        sample_manifest = read_sample_manifest(args.sample_manifest)
+    if sample_manifest:
+        specs = sample_manifest[:args.sample_count]
+    else:
+        specs = [
+            {
+                "dataset_index": index,
+                "sample_name": dataset.image_list[index],
+                "crop_seed": args.seed + index,
+                "selection_source_bucket": "first32_dataset_order",
+                "table_delta_vs_A0": None,
+                "table_base_psnr_A0": None,
+            }
+            for index in range(min(args.sample_count, len(dataset)))
+        ]
     with torch.no_grad():
-        for index in range(count):
+        for canary_index, spec in enumerate(specs):
+            index = int(spec["dataset_index"])
             inp, label = dataset[index]
-            inp, label = crop_pair(inp, label, args.crop_size, seed=args.seed + index)
+            crop_seed = int(spec["crop_seed"]) if spec.get("crop_seed") is not None else args.seed + index
+            inp, label = crop_pair(inp, label, args.crop_size, seed=crop_seed)
             x = inp.unsqueeze(0).to(device)
             y = label.unsqueeze(0).to(device)
             a0 = torch.clamp(official(x)[2], 0, 1)
@@ -307,9 +427,13 @@ def prepare_samples(args: argparse.Namespace, device: torch.device) -> list[dict
             teacher_blend_psnr = psnr_per_sample(teacher_blend, y).item()
             teacher_lowfreq_delta = (lowfreq_psnr(teacher_blend, y) - lowfreq_psnr(a0, y)).item()
             samples.append({
+                "canary_index": canary_index,
                 "sample_index": index,
                 "sample_name": dataset.image_list[index],
-                "split_source": "Haze4K/train_canary_first32_seeded_crop",
+                "split_source": str(spec.get("selection_source_bucket") or "Haze4K/train_canary_seeded_crop"),
+                "crop_seed": crop_seed,
+                "table_delta_vs_A0": spec.get("table_delta_vs_A0"),
+                "table_base_psnr_A0": spec.get("table_base_psnr_A0"),
                 "x": x.detach().cpu(),
                 "y": y.detach().cpu(),
                 "a0": a0.detach().cpu(),
@@ -432,6 +556,80 @@ def run_p0(args: argparse.Namespace) -> dict[str, Any]:
         "wdmamba_sha256": file_sha256(args.wdmamba_checkpoint),
     }
     write_json(out_dir / "v234_p0_closeout.json", payload)
+    return payload
+
+
+def run_p0b(args: argparse.Namespace) -> dict[str, Any]:
+    out_dir = Path(args.output_dir)
+    device = torch.device(args.device if torch.cuda.is_available() and args.device == "cuda" else "cpu")
+    dataset = make_dataset(args.data_dir, "train")
+    manifest = select_balanced_manifest(args, dataset)
+    manifest_fields = [
+        "sample_name", "sample_index", "crop_seed", "selection_source_bucket",
+        "table_base_psnr_A0", "table_delta_vs_A0", "table_dssim_vs_A0",
+    ]
+    write_csv(out_dir / "v234_p0b_balanced_canary_manifest.csv", manifest, manifest_fields)
+    samples = prepare_samples(args, device, sample_manifest=[
+        {
+            "dataset_index": row["sample_index"],
+            "sample_name": row["sample_name"],
+            "crop_seed": row["crop_seed"],
+            "selection_source_bucket": row["selection_source_bucket"],
+            "table_delta_vs_A0": row["table_delta_vs_A0"],
+            "table_base_psnr_A0": row["table_base_psnr_A0"],
+        }
+        for row in manifest
+    ])
+    rows = []
+    for sample in samples:
+        rows.append({
+            "canary_index": sample["canary_index"],
+            "sample_name": sample["sample_name"],
+            "sample_index": sample["sample_index"],
+            "crop_seed": sample["crop_seed"],
+            "split_source": sample["split_source"],
+            "base_psnr_A0": sample["base_psnr_A0"],
+            "table_base_psnr_A0": sample.get("table_base_psnr_A0"),
+            "table_delta_vs_A0": sample.get("table_delta_vs_A0"),
+            "teacher_id": "wdmamba_alpha0p5",
+            "teacher_psnr": sample["teacher_psnr"],
+            "teacher_full_psnr": sample["teacher_full_psnr"],
+            "teacher_delta_vs_A0": sample["teacher_delta_vs_A0"],
+            "teacher_lowfreq_LL_delta": sample["teacher_lowfreq_LL_delta"],
+            "p4_eligible_mask": sample["p4_eligible_mask"],
+            "hardness_bucket": sample["hardness_bucket"],
+            "strong_reference_bucket": sample["strong_reference_bucket"],
+            "easy_guard": sample["easy_guard"],
+        })
+    deltas = [float(row["teacher_delta_vs_A0"]) for row in rows]
+    hard = [float(row["teacher_delta_vs_A0"]) for row in rows if str(row["hardness_bucket"]).startswith("hard")]
+    easy = [float(row["teacher_delta_vs_A0"]) for row in rows if str(row["hardness_bucket"]).startswith("easy")]
+    eligible_count = sum(1 for row in rows if row["p4_eligible_mask"])
+    direct_mean = mean(deltas) or 0.0
+    hard_mean = mean(hard) or 0.0
+    gate_pass = direct_mean >= 0.30 and hard_mean >= 0.50 and eligible_count / len(rows) >= 0.15
+    write_csv(out_dir / "v234_p0b_balanced_canary_teacher_direct_benefit.csv", rows)
+    payload = {
+        "route_id": ROUTE_ID,
+        "phase": "P0B balanced diagnostic canary direct teacher benefit",
+        "locked_test_touched": False,
+        "sample_count": len(rows),
+        "teacher_id": "wdmamba_alpha0p5",
+        "teacher_alpha": args.teacher_alpha,
+        "balanced_min_table_gain": args.balanced_min_table_gain,
+        "direct_teacher_mean_delta": direct_mean,
+        "direct_teacher_hard_delta": hard_mean,
+        "direct_teacher_easy_delta": mean(easy),
+        "direct_teacher_p05": percentile(deltas, 5),
+        "direct_teacher_cvar5": cvar_low(deltas),
+        "eligible_count": eligible_count,
+        "eligible_coverage": eligible_count / len(rows) if rows else None,
+        "gate_pass": gate_pass,
+        "p1_free_tensor_authorized": gate_pass,
+        "sample_manifest": "v234_p0b_balanced_canary_manifest.csv",
+        "blocked_reason": "" if gate_pass else "P0B balanced canary direct teacher benefit gate failed",
+    }
+    write_json(out_dir / "v234_p0b_closeout.json", payload)
     return payload
 
 
@@ -667,14 +865,21 @@ def run_p1(args: argparse.Namespace) -> dict[str, Any]:
 def run_closeout(args: argparse.Namespace) -> dict[str, Any]:
     out_dir = Path(args.output_dir)
     p0_path = out_dir / "v234_p0_closeout.json"
+    p0b_path = out_dir / "v234_p0b_closeout.json"
     p1_path = out_dir / "v234_p1_closeout.json"
     p0 = json.loads(p0_path.read_text(encoding="utf-8")) if p0_path.exists() else {}
+    p0b = json.loads(p0b_path.read_text(encoding="utf-8")) if p0b_path.exists() else {}
     p1 = json.loads(p1_path.read_text(encoding="utf-8")) if p1_path.exists() else {}
     p0_pass = bool(p0.get("gate_pass"))
+    p0b_pass = bool(p0b.get("gate_pass"))
     p1_pass = bool(p1.get("gate_pass"))
     if not p0:
         decision = "P0_NOT_RUN"
-    elif not p0_pass:
+    elif not p0_pass and not p0b:
+        decision = "P0_FAIL_FIRST32_REBUILD_BALANCED_CANARY_REQUIRED"
+    elif p0b and not p0b_pass:
+        decision = "P0B_FAIL_BALANCED_CANARY_DIRECT_TEACHER_GATE"
+    elif not (p0_pass or p0b_pass):
         decision = "P0_FAIL_MASK_JOIN_OR_DIRECT_TEACHER_CANARY"
     elif not p1:
         decision = "P1_AUTHORIZED_NOT_RUN"
@@ -689,6 +894,7 @@ def run_closeout(args: argparse.Namespace) -> dict[str, Any]:
         "locked_test_touched": False,
         "canary80_authorized": False,
         "p0_mask_join_audit_pass": p0_pass if p0 else None,
+        "p0b_balanced_canary_pass": p0b_pass if p0b else None,
         "p1_free_tensor_projection_pass": p1_pass if p1 else None,
         "p2_generator_gap_pass": None,
         "p3_gradient_conflict_pass": None,
@@ -703,6 +909,7 @@ def run_closeout(args: argparse.Namespace) -> dict[str, Any]:
             f"Decision: `{decision}`",
             "",
             f"- P0 gate pass: `{p0_pass if p0 else None}`",
+            f"- P0B balanced canary gate pass: `{p0b_pass if p0b else None}`",
             f"- P1 gate pass: `{p1_pass if p1 else None}`",
             "- P2 launched: `False`",
             "- P3 launched: `False`",
@@ -727,6 +934,9 @@ def run_closeout(args: argparse.Namespace) -> dict[str, Any]:
             "- `v234_p0_mask_join_audit.csv`",
             "- `v234_p0_exact_canary_teacher_direct_benefit.csv`",
             "- `v234_p0_closeout.json`",
+            "- `v234_p0b_balanced_canary_manifest.csv`",
+            "- `v234_p0b_balanced_canary_teacher_direct_benefit.csv`",
+            "- `v234_p0b_closeout.json`",
             "- `v234_p1_free_tensor_projection_by_insertion.csv`",
             "- `v234_p1_free_tensor_projection_per_image.csv`",
             "- `v234_p1_closeout.json`",
@@ -742,7 +952,7 @@ def run_closeout(args: argparse.Namespace) -> dict[str, Any]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--phase", required=True, choices=["p0", "p1", "closeout"])
+    parser.add_argument("--phase", required=True, choices=["p0", "p0b", "p1", "closeout"])
     parser.add_argument("--data_dir", default="/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K")
     parser.add_argument("--checkpoint", default="/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl")
     parser.add_argument("--output_dir", required=True)
@@ -750,12 +960,14 @@ def main() -> None:
     parser.add_argument("--wdmamba_checkpoint", default="/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/haze4k_35.88.pth")
     parser.add_argument("--wdmamba_table", default="")
     parser.add_argument("--v233_p4_per_image", default="")
+    parser.add_argument("--sample_manifest", default="")
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--seed", type=int, default=3407)
     parser.add_argument("--crop_size", type=int, default=256)
     parser.add_argument("--sample_count", type=int, default=32)
     parser.add_argument("--teacher_alpha", type=float, default=0.5)
     parser.add_argument("--p4_mask_min_gain", type=float, default=0.05)
+    parser.add_argument("--balanced_min_table_gain", type=float, default=0.50)
     parser.add_argument("--projection_steps", type=int, default=32)
     parser.add_argument("--learning_rate", type=float, default=0.03)
     parser.add_argument("--energy_weight", type=float, default=0.0001)
@@ -766,6 +978,8 @@ def main() -> None:
     torch.manual_seed(args.seed)
     if args.phase == "p0":
         payload = run_p0(args)
+    elif args.phase == "p0b":
+        payload = run_p0b(args)
     elif args.phase == "p1":
         payload = run_p1(args)
     else:
@@ -775,4 +989,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

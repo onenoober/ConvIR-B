@@ -65,6 +65,12 @@ Primary gates:
 
 P0: P4 canary mask/join audit and exact canary direct teacher benefit.
 
+P0B: if P0 shows the v2.33 first32 canary lacks direct teacher benefit or has a
+mask/table join mismatch, rebuild a balanced diagnostic canary32 from
+WDMamba-alpha0.5 table-positive train-derived samples and rerun exact
+crop-aligned direct teacher benefit. P1 is authorized only from a passing P0 or
+P0B canary manifest.
+
 P1: free-tensor teacher-delta projection by insertion point.
 
 P2: generator-capacity gap, blocked until P1 shows representable headroom.
@@ -79,4 +85,3 @@ authorized.
 ## Evidence Root
 
 `experience_docx/experiment_logs/haze4k_v2_34_nopost_teacher_delta_projection_and_multistage_bridge_audit_20260706/`
-

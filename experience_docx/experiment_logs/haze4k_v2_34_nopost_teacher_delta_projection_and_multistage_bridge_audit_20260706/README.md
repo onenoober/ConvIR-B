@@ -11,6 +11,9 @@ Primary planned evidence:
 - `v234_p0_mask_join_audit.csv`
 - `v234_p0_exact_canary_teacher_direct_benefit.csv`
 - `v234_p0_closeout.json`
+- `v234_p0b_balanced_canary_manifest.csv`
+- `v234_p0b_balanced_canary_teacher_direct_benefit.csv`
+- `v234_p0b_closeout.json`
 - `v234_p1_free_tensor_projection_by_insertion.csv`
 - `v234_p1_free_tensor_projection_per_image.csv`
 - `v234_p1_closeout.json`
@@ -20,4 +23,3 @@ Primary planned evidence:
 Locked test touched: `false`.
 
 Canary80 authorized: `false`.
-
