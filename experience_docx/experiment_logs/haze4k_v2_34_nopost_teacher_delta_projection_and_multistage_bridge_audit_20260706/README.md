@@ -15,10 +15,16 @@ Primary evidence:
 - `v234_p0b_closeout.json`
 - `v234_p0c_metric_contract_diagnostic.csv`
 - `v234_p0c_metric_contract_diagnostic_summary.json`
+- `v234_closeout.json`
+- `v234_post_closeout_p0c_addendum.json`
+- `v234_p0c_metric_contract_interpretation.md`
+
+Planned but intentionally not generated because P0/P0B direct-crop gates
+failed:
+
 - `v234_p1_free_tensor_projection_by_insertion.csv`
 - `v234_p1_free_tensor_projection_per_image.csv`
 - `v234_p1_closeout.json`
-- `v234_closeout.json`
 
 P0C metric-contract diagnostic: on the P0B 32 samples, the C8 table and
 full-image recompute matched exactly and remained strongly positive

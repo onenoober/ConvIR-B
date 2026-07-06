@@ -9,3 +9,5 @@ V234_P0B_BALANCED_CANARY_OK
 v234_closeout_start 2026-07-06T12:09:14+08:00
 v234_closeout_done rc=0 2026-07-06T12:09:17+08:00
 V234_CLOSEOUT_OK
+v234_p0c_metric_contract_diagnostic_done rc=0 post_closeout_audit_only
+V234_P0C_METRIC_CONTRACT_DIAGNOSTIC_OK_AUDIT_ONLY_NO_P1_AUTH

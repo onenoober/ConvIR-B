@@ -36,6 +36,46 @@ boundary, quoting, CRLF, PATH, stdin, or silent-output lesson.
 
 ## Invalid Command Patterns To Avoid
 
+### PowerShell here-string piped directly to WSL SSH script
+
+2026-07-06 recurrence on `convir-4090`:
+
+Avoid piping a PowerShell here-string directly into WSL when the payload is
+intended to become an SSH `bash -s` script:
+
+```powershell
+$script = @'
+set -euo pipefail
+printf 'REMOTE_PREFLIGHT_OK\n'
+'@
+$script | wsl.exe -d Ubuntu-22.04 -- bash -lc "ssh convir-4090 'bash -s'"
+```
+
+Failure mode observed:
+
+- PowerShell inserted a BOM at the start of stdin, so remote Bash saw
+  `ï»¿set` instead of `set`;
+- a multi-line `$cmd` passed to `bash -lc` without preserving it as one exact
+  argument caused part of the intended remote script to run in local WSL;
+- nesting another heredoc inside the WSL heredoc made the boundary brittle and
+  produced local syntax errors.
+
+Corrected form:
+
+```powershell
+$script = @'
+set -euo pipefail
+printf 'REMOTE_PREFLIGHT_OK\n'
+'@
+$tmp = '\\wsl.localhost\Ubuntu-22.04\tmp\codex_remote_script.sh'
+[System.IO.File]::WriteAllText($tmp, $script, [System.Text.UTF8Encoding]::new($false))
+wsl.exe -d Ubuntu-22.04 -- bash -lc "ssh convir-4090 'bash -s' < /tmp/codex_remote_script.sh"
+```
+
+Use explicit cloud Python paths inside the remote script. Avoid nested heredocs
+inside this transport unless the script has first been written to a no-BOM temp
+file and the outer command has a visible `*_OK` marker.
+
 ### PowerShell to WSL inline regex pipes
 
 Avoid inline commands where PowerShell, WSL Bash, and regex pipes all appear in

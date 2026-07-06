@@ -1,0 +1,13 @@
+{
+  "bridge_authorized": false,
+  "canary80_authorized": false,
+  "direct_crop_contract_authorized": false,
+  "fullimage_teacher_cache_contract_authorized_for_audit": true,
+  "generator_authorized": false,
+  "locked_test_touched": false,
+  "original_decision": "P0B_FAIL_BALANCED_CANARY_DIRECT_TEACHER_GATE",
+  "phase": "P0C metric-contract diagnostic",
+  "projection_authorized": false,
+  "required_next_metric": "fullimage_teacher_slice_vs_crop_direct_A0_rebased_delta",
+  "revised_interpretation": "direct-crop teacher contract failed; full-image WDMamba/WD0375 contract remains valid"
+}
