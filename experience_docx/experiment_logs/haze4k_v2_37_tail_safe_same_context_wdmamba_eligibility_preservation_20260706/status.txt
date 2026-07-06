@@ -1,0 +1,2 @@
+PLANNED v237 tail-safe same-context WDMamba eligibility/preservation audit 2026-07-06
+locked_test_touched=false

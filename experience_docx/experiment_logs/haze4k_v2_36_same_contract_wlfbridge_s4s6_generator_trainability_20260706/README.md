@@ -29,9 +29,12 @@ Locked-test policy: blocked for all phases in this route.
 - `v236_p0_fold_split_manifest.csv`
 - `v236_p0_closeout.json`
 - `v236_p0_postrun_audit.json`
-- `v236_p0b_context384_free_tensor_projection_by_insertion.csv`
-- `v236_p0b_context384_free_tensor_projection_per_image.csv`
-- `v236_p0b_closeout.json`
+- `v236_root_cause_tail_safety_addendum.md`
+- `v236_cross_validation_matrix.md`
+- `v236_planned_not_generated_artifacts.md`
+- `v236_p0b_context384_free_tensor_projection_by_insertion.csv` (`planned_not_generated`)
+- `v236_p0b_context384_free_tensor_projection_per_image.csv` (`planned_not_generated`)
+- `v236_p0b_closeout.json` (`planned_not_generated`)
 - `v236_decision_tree.md`
 - `v236_closeout.json`
 
