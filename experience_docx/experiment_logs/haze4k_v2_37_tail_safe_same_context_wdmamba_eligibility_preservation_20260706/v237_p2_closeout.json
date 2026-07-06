@@ -1,0 +1,9 @@
+{
+  "decision": "P2_PASS_MASK_PRESERVATION_SUBSTRATE",
+  "gate_pass": true,
+  "locked_test_touched": false,
+  "p3_oof_mask_selection_authorized": true,
+  "phase": "P2",
+  "route_id": "haze4k_v2_37_tail_safe_same_context_wdmamba_eligibility_preservation_20260706",
+  "selected_rule": "M0_oracle_positive"
+}
