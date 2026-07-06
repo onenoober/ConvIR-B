@@ -63,7 +63,7 @@ P0 passes only if:
 
 ## Result
 
-Status: `P0_STAGE0_PREFLIGHT_PASS_CANARY32_WRITTEN`.
+Status: `COMPLETED_GATE_FAIL`.
 
 P0 Stage-0 preflight passed on `convir-4090` at route commit `7c27b93`.
 The official checkpoint sha256 matched
@@ -103,5 +103,31 @@ The canary32 gate passes only if:
 - easy residual energy is at most `0.50` of hard residual energy;
 - hinge violation rate does not worsen from epoch `1` to final epoch.
 
-If the canary32 gate fails, v2.41 remains diagnostic and canary80/locked test
-stay blocked.
+Canary32 OOF completed on `convir-4090` at route commit `32e7791`. It was a
+cloud-only train-derived run: `5` folds, `32` training images per fold,
+disjoint `32` held-out train-derived images per fold, frozen official ConvIR-B
+parameters, and `11843` trainable `A0PROX_*` parameters. Locked test remained
+untouched.
+
+Decision:
+`CANARY32_OOF_GATE_FAIL_LOCK_CANARY80_LOCKED_TEST`.
+
+Global canary32 metrics over `160` held-out train-derived images:
+
+| Metric | Value | Gate |
+| --- | ---: | ---: |
+| mean delta | `-0.0277 dB` | `>= +0.15 dB` |
+| hard bottom-25% delta | `+0.0742 dB` | `>= +0.30 dB` |
+| easy top-25% delta | `-0.0724 dB` | `>= +0.00 dB` |
+| p05 delta | `-0.3981 dB` | `>= -0.01 dB` |
+| CVaR5 delta | `-0.5972 dB` | `>= -0.02 dB` |
+| severe regressions | `27` | `0` |
+| strong-reference regressions | `25` | `0` |
+| fold pass count | `0/5` | `>= 4/5` |
+
+Mechanism diagnostics were not the blocker: easy residual energy ratio was
+`0.2871` against the `<=0.50` gate, and hinge violation rate decreased from
+`0.6625` to `0.58125`. The route failed because the residual head did not
+produce tail-safe quality improvement under the written OOF contract.
+
+Canary80 and locked test remain blocked.

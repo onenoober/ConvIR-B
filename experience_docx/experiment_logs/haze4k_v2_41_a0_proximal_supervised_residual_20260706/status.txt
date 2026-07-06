@@ -6,3 +6,6 @@ v241_p0_preflight_done rc=0 2026-07-06T23:43:21+08:00
 v241_engineering_invalid_archive beta_tolerance /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-41-a0-proximal-supervised-residual/experience_docx/experiment_logs/haze4k_v2_41_a0_proximal_supervised_residual_20260706/engineering_invalid_beta_tolerance_20260706_2343 2026-07-06T23:45:32+08:00
 v241_p0_preflight_start 2026-07-06T23:47:10+08:00 branch=codex/haze4k-v2-41-a0-proximal-supervised-residual head=7c27b93 locked=untouched canary=blocked
 v241_p0_preflight_done rc=0 2026-07-06T23:47:12+08:00
+v241_canary32_oof_start 2026-07-07T00:06:58+08:00 branch=codex/haze4k-v2-41-a0-proximal-supervised-residual head=32e7791 locked=blocked canary80=blocked
+v241_canary32_oof_done rc=0 2026-07-07T00:08:24+08:00
+v241_canary32_oof_OK

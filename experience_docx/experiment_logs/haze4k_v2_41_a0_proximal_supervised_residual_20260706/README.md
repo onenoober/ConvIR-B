@@ -1,6 +1,6 @@
 # Haze4K v2.41 A0-Proximal Supervised Residual Evidence
 
-Status: `P0_STAGE0_PREFLIGHT_PASS_CANARY32_WRITTEN`
+Status: `COMPLETED_GATE_FAIL`
 
 Route card:
 `experience_docx/experiment_cards/2026-07-06-haze4k-v2-41-a0-proximal-supervised-residual.md`
@@ -63,4 +63,34 @@ Key P0 facts:
 - forbidden postprocess symbol hits were `0`;
 - locked test was untouched.
 
-Canary32 OOF status: written, not yet launched in this evidence snapshot.
+Canary32 OOF completed on `convir-4090` at route commit `32e7791`.
+
+Decision:
+`CANARY32_OOF_GATE_FAIL_LOCK_CANARY80_LOCKED_TEST`.
+
+The run used only train-derived Haze4K images: `5` folds, `32` training images
+per fold, and disjoint `32` held-out train-derived images per fold. It froze all
+official ConvIR-B parameters and trained only `11843` `A0PROX_*` parameters.
+No teacher target, selector, canary80, or locked test was used.
+
+Global OOF metrics over `160` held-out train-derived images:
+
+| Metric | Value | Gate |
+| --- | ---: | ---: |
+| mean delta | `-0.0277 dB` | `>= +0.15 dB` |
+| hard bottom-25% delta | `+0.0742 dB` | `>= +0.30 dB` |
+| easy top-25% delta | `-0.0724 dB` | `>= +0.00 dB` |
+| p05 delta | `-0.3981 dB` | `>= -0.01 dB` |
+| CVaR5 delta | `-0.5972 dB` | `>= -0.02 dB` |
+| severe regressions | `27` | `0` |
+| strong-reference regressions | `25` | `0` |
+| fold pass count | `0/5` | `>= 4/5` |
+
+Mechanism diagnostics passed but did not rescue the route:
+
+- easy/hard residual-energy ratio: `0.2871` against gate `<=0.50`;
+- hinge violation rate: `0.6625 -> 0.58125`.
+
+Interpretation: the frozen-backbone A0-proximal residual head can concentrate
+more residual energy on hard than easy images, but it does not deliver
+tail-safe OOF quality improvement. Canary80 and locked test remain blocked.
