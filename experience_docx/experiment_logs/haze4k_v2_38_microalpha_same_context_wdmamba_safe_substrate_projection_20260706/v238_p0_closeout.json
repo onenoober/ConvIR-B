@@ -1,0 +1,12 @@
+{
+  "bridge_training_authorized": false,
+  "canary80_authorized": false,
+  "decision": "P0_FAIL_NO_MICROALPHA_SAFE_SUBSTRATE",
+  "gate_pass": false,
+  "generator_training_authorized": false,
+  "locked_test_touched": false,
+  "p1_oof_selection_authorized": false,
+  "passing_alphas": [],
+  "phase": "P0",
+  "route_id": "haze4k_v2_38_microalpha_same_context_wdmamba_safe_substrate_projection_20260706"
+}

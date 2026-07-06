@@ -1,0 +1,9 @@
+v238b_planned 2026-07-06T21:05:47+08:00 locked=untouched bridge=blocked generator=blocked canary80=blocked
+v238b_preflight 2026-07-06T21:06:33+08:00 branch=codex/haze4k-v2-38b-rich-target-only-noop-unsafe-separability-audit head=80ebd9e locked=untouched bridge=blocked generator=blocked
+v238b_start 2026-07-06T21:06:33+08:00 cuda_visible_devices=1
+v238b_done rc=1 2026-07-06T21:34:44+08:00
+v238b_preflight 2026-07-06T21:36:21+08:00 branch=codex/haze4k-v2-38b-rich-target-only-noop-unsafe-separability-audit head=80ebd9e locked=untouched bridge=blocked generator=blocked
+v238b_start 2026-07-06T21:36:21+08:00 cuda_visible_devices=1
+v238b_reuse_feature_manifest 2026-07-06T21:36:21+08:00
+v238b_done rc=0 2026-07-06T21:37:42+08:00
+v238b_stop_after_p0_fail 2026-07-06T22:07:08+08:00

@@ -1,0 +1,10 @@
+{
+  "bridge_training_authorized": false,
+  "canary80_authorized": false,
+  "decision": "P0_FAIL_RICH_TARGET_ONLY_SEPARABILITY_DIAGNOSTIC",
+  "generator_training_authorized": false,
+  "inherited_reference": "v2.37 P4_FAIL_STOP_TARGET_ONLY_NOOP_UNSAFE_NOT_SEPARABLE and v2.38 P0_FAIL_NO_MICROALPHA_SAFE_SUBSTRATE",
+  "locked_test_touched": false,
+  "rich_target_only_separability_pass": false,
+  "route_id": "haze4k_v2_38b_rich_target_only_noop_unsafe_separability_audit_20260706"
+}

@@ -12,11 +12,13 @@ identifiability route, the v2.32 S5-only bounded internal low-frequency
 correction-field canary, the v2.33 masked WDMamba-alpha0.5 S5-BILFCF
 compression canary, the v2.34 direct WDMamba-on-crop teacher-delta projection
 canaries, the v2.35 256 crop-input/full-image-slice target contract, and the
-v2.36 alpha0.5 full600 same-context WDMamba substrate, and the v2.37 oracle
-mask substrate as a bridge-training authorization are not training-authorized.
-NoPost lowband remains directionally open, but v2.37 shows that even after a
-tail-safe oracle mask exists, target-only no-op/unsafe separability is not
-strong enough to launch P5, bridge training, canary80, or locked test.
+v2.36 alpha0.5 full600 same-context WDMamba substrate, the v2.37 oracle mask substrate as a bridge-training authorization, the
+v2.38 no-selector WDMamba micro-alpha substrate, the v2.38B rich target-only
+separability rescue, and the v2.39 ConvIR-L same-family teacher contract are
+not training-authorized. NoPost lowband remains directionally open, but the
+post-v2.37 follow-ups show that neither smaller WDMamba alpha, richer current
+target-only features, nor ConvIR-L same-family alpha currently authorizes P5,
+bridge training, canary80, or locked test.
 
 ## Sources
 
@@ -40,6 +42,9 @@ strong enough to launch P5, bridge training, canary80, or locked test.
   - `../experiment_cards/2026-07-06-haze4k-v2-35-fullimage-teacher-cache-context-contract-audit.md`
   - `../experiment_cards/2026-07-06-haze4k-v2-36-same-contract-wlfbridge-s4s6-generator-trainability.md`
   - `../experiment_cards/2026-07-06-haze4k-v2-37-tail-safe-same-context-wdmamba-eligibility-preservation.md`
+  - `../experiment_cards/2026-07-06-haze4k-v2-38-microalpha-same-context-wdmamba-safe-substrate-projection.md`
+  - `../experiment_cards/2026-07-06-haze4k-v2-38b-rich-target-only-noop-unsafe-separability-audit.md`
+  - `../experiment_cards/2026-07-06-haze4k-v2-39-convirl-same-family-teacher-contract-audit.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/`
   - `../experiment_logs/haze4k_v2_17_nopost_lowband_alignment_tail_audit_20260703/`
@@ -60,6 +65,9 @@ strong enough to launch P5, bridge training, canary80, or locked test.
   - `../experiment_logs/haze4k_v2_35_fullimage_teacher_cache_context_contract_audit_20260706/`
   - `../experiment_logs/haze4k_v2_36_same_contract_wlfbridge_s4s6_generator_trainability_20260706/`
   - `../experiment_logs/haze4k_v2_37_tail_safe_same_context_wdmamba_eligibility_preservation_20260706/`
+  - `../experiment_logs/haze4k_v2_38_microalpha_same_context_wdmamba_safe_substrate_projection_20260706/`
+  - `../experiment_logs/haze4k_v2_38b_rich_target_only_noop_unsafe_separability_audit_20260706/`
+  - `../experiment_logs/haze4k_v2_39_convirl_same_family_teacher_contract_audit_20260706/`
 
 ## Established Facts
 
@@ -84,8 +92,20 @@ strong enough to launch P5, bridge training, canary80, or locked test.
 | Haze4K v2.35 Full-Image Teacher Cache and Context-Contract Audit | P0D closed the 256 crop-input/full-image-slice target contract after rebasing against crop-direct A0: alpha0.5 mean/p05/CVaR5/severe_rate `-1.7067/-6.7084/-7.4537/0.625`. P1 passed the 600-image full-image cache/hash audit with `1200` alpha rows and table-vs-recompute mean/max abs diff `0.0/0.0`. P2 found valid same-context contracts: 384 alpha0.5 mean/p05/CVaR5 `+3.5217/+0.5167/+0.4038`, and best full-image-slice alpha0.5 `+5.2963/+2.0773/+1.0368`. P3 passed same-contract substrate construction with `32/32` positive samples. P4 passed all tested same-contract free-tensor projection insertion groups after archiving two engineering-invalid NaN attempts; best `S4_plus_S6` projection_ratio_vs_teacher `1.0090`, free mean `+5.3438`, p05 `+2.1914`, severe `0`. | `P4_PASS_SAME_CONTRACT_FREE_TENSOR_PROJECTION`; full-image/full-image-slice WDMamba is a valid same-context teacher substrate for a future written generator/bridge route. Do not train a 256 crop-input student on full-image-slice targets, and do not launch bridge training, canary80, or locked test from v2.35 without a new same-context route. |
 | Haze4K v2.36 Same-Contract WLFBridge-S4S6 Generator Trainability Audit | P0 expanded the v2.35 alpha0.5 full-image same-context teacher distribution to `600` train-derived images. Mean/hard/easy remained strongly positive (`+3.2299/+4.9092/+1.1266 dB`) and cache sha coverage was `1.0`, but tail safety failed: p05/CVaR5 `+0.0084/-0.7438 dB`, severe_rate `0.035`, strong_reference_regression_rate `0.1733`, fold_pass `0/5`. Post-run audit recomputed `30` negative deltas, `21` severe regressions, and `26/150` strong-reference regressions. | `P0_FAIL_STOP_BEFORE_BRIDGE_TRAINING`; do not launch P0B context384 projection, P1 architecture identity, P2 generator fit, P3 OOF, canary80, or locked test from the current alpha0.5 full600 substrate. |
 | Haze4K v2.37 Tail-Safe Same-Context WDMamba Eligibility and Preservation Audit | P0 found no unmasked alpha passed full600 safety. Alpha0.125 removed severe regressions but still had `3` strong-reference regressions and fold pass `2/5`; alpha0.5 reproduced the v2.36 tail failure. P1 confirmed `28/30` alpha0.5 negatives were easy or strong-reference. P2 passed an oracle teacher-positive + A0-preservation mask (`M0_oracle_positive`) with mean/hard/easy `+3.2671/+4.9091/+1.2569`, p05/CVaR5 `+0.0106/0.0`, eligible `570/600`, negative/severe preservation `1.0`, fold pass `5/5`. P3 OOF mask selection passed `5/5`, selecting M0 on every fold. P4 target-only no-op/unsafe separability failed: AUROC `0.8683`, AUPRC `0.2179`, severe recall at FPR0.10 `0.5714`, strong-reference unsafe recall `0.5769`, easy no-op precision `0.2857`, fold pass `0/5`. | `P4_FAIL_STOP_TARGET_ONLY_NOOP_UNSAFE_NOT_SEPARABLE`; the oracle mask substrate is tail-safe, but not deployably identifiable. Do not launch P5 masked free-tensor projection, bridge/generator training, canary80, or locked test. |
+| Haze4K v2.38 Micro-Alpha Same-Context WDMamba Safe Substrate and Projection Audit | P0 swept alphas `0.015625` through `0.125` on the 600-image full-image same-context cache. No alpha passed: the safest low alpha was too weak, while larger alpha values reintroduced worst-delta, strong-reference, and fold failures. | `P0_FAIL_STOP_NO_MICROALPHA_SAFE_SUBSTRATE`; do not launch P1/P2/P3, bridge/generator, canary80, or locked test. |
+| Haze4K v2.38B Rich Target-Only NoOp/Unsafe Separability Audit | Rich target-only ConvIR/A0/internal features improved AUROC but failed deployability. `all_rich_target_only` reached AUROC/AUPRC `0.8946/0.2961`, severe recall `0.4762`, strong-reference recall `0.4231`, easy no-op precision `0.3429`, and fold pass `0/5`; controls behaved as expected. | `P0_FAIL_RICH_TARGET_ONLY_SEPARABILITY_DIAGNOSTIC`; no current target-only signal authorizes selective M0 bridge/generator work. |
+| Haze4K v2.39 ConvIR-L Same-Family Teacher Contract Audit | P0 swept ConvIR-L same-context alpha on 600 images. Low alphas were too weak and all folds failed; high alphas gained mean/hard but caused severe p05/CVaR5/worst regressions, with alpha1.0 severe `132` and strong-reference regressions `38`. | `P0_FAIL_CONVIRL_NO_SAFE_TEACHER_ALPHA`; do not launch P1 projection, bridge/generator, canary80, or locked test. |
 
 ## Family Verdict
+
+Latest addendum (2026-07-06): post-v2.37 follow-ups closed the two
+suggested rescue directions that were still authorized. v2.38 found no strict
+no-selector WDMamba micro-alpha substrate; v2.38B showed richer target-only
+features still do not separate unsafe/no-op cases well enough; v2.39 showed
+ConvIR-L same-family teacher alphas have the same low-alpha-too-weak /
+high-alpha-tail-regression tradeoff. Therefore the current NoPost lowband /
+same-context teacher route remains research-open but not training- or
+bridge-authorized.
 
 The precise conclusion is: close WLDB-A, v2.18 WLDB-A2 global pooled policy,
 v2.19 O2 final-only spatial predictor, v2.20 O3 mid+final/global-context
