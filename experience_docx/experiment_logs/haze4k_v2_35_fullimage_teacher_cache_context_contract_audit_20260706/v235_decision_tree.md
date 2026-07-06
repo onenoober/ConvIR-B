@@ -33,9 +33,22 @@ P3 asks whether the passing context has enough tail-safe positive samples.
 
 If P3 passes:
 
-- P4 same-contract free-tensor projection can be proposed in a separate written
-  gate/command.
+- P4 same-contract free-tensor projection may run as an audit-only upper bound.
+- bridge/generator training, canary80, and locked test remain blocked.
 
 If P3 fails:
 
 - stop before P4, bridge training, canary80, and locked test.
+
+P4 asks whether ConvIR-B internal free tensors can represent the selected
+same-contract teacher slice.
+
+If P4 passes:
+
+- a later generator/bridge design route may be proposed with a new written
+  card and gate.
+
+If P4 fails:
+
+- treat the blocker as architecture/context representability, not a training
+  hyperparameter issue.

@@ -109,8 +109,9 @@ P3 passes only after a P2 context passes and the same-contract substrate has:
 - severe_rate `== 0`;
 - strong_reference_regression_rate `== 0`.
 
-P4 free-tensor projection is not authorized by this card until P3 passes and a
-separate written command/gate is added.
+P4 free-tensor projection is authorized only after P3 passes and only under the
+same context contract selected by P3. It remains an audit-only upper bound:
+bridge/generator training, canary80, and locked test remain blocked.
 
 ## Phases
 
@@ -132,8 +133,9 @@ All variants use the same 256 loss crop from the v2.34 P0B/P0C sample contract.
 P3: if P2 finds a passing context/alpha, generate a same-contract positive
 substrate manifest.
 
-P4: blocked until P3 passes and a separate free-tensor projection command is
-written.
+P4: same-contract free-tensor projection upper bound, authorized only after P3
+passes. Initial insertion points are `S6_decoder_early`, `S4_encoder_late`,
+`S4_plus_S6`, `S5_plus_S6`, and `S4_plus_S5_plus_S6`.
 
 ## Evidence Root
 

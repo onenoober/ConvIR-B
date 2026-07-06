@@ -32,6 +32,13 @@ ROUTE_ID = "haze4k_v2_35_fullimage_teacher_cache_context_contract_audit_20260706
 ALPHAS = (("a0p375", 0.375), ("a0p5", 0.5))
 SEVERE_THRESHOLD = -0.30
 STRONG_REFERENCE_REGRESSION_THRESHOLD = -0.05
+INSERTION_GROUPS: dict[str, list[str]] = {
+    "S6_decoder_early": ["S6_decoder_early"],
+    "S4_encoder_late": ["S4_encoder_late"],
+    "S4_plus_S6": ["S4_encoder_late", "S6_decoder_early"],
+    "S5_plus_S6": ["S5_bottleneck_mid", "S6_decoder_early"],
+    "S4_plus_S5_plus_S6": ["S4_encoder_late", "S5_bottleneck_mid", "S6_decoder_early"],
+}
 
 
 def fnum(value: Any, default: float | None = None) -> float | None:
@@ -215,6 +222,18 @@ def infer_wdmamba(model: torch.nn.Module, x: torch.Tensor) -> torch.Tensor:
 def psnr_per_sample(pred: torch.Tensor, label: torch.Tensor) -> torch.Tensor:
     mse = (pred - label).pow(2).flatten(1).mean(dim=1).clamp_min(1e-12)
     return 10.0 * torch.log10(1.0 / mse)
+
+
+def charbonnier_loss(pred: torch.Tensor, label: torch.Tensor, eps: float = 1e-3) -> torch.Tensor:
+    return torch.sqrt((pred - label).pow(2) + eps * eps).mean()
+
+
+def lowpass(tensor: torch.Tensor, kernel: int = 9) -> torch.Tensor:
+    return F.avg_pool2d(tensor, kernel_size=kernel, stride=1, padding=kernel // 2, count_include_pad=False)
+
+
+def tensor_rms(tensor: torch.Tensor) -> torch.Tensor:
+    return tensor.pow(2).mean().sqrt()
 
 
 def psnr(pred: torch.Tensor, label: torch.Tensor) -> float:
@@ -823,6 +842,289 @@ def run_p3_substrate(args: argparse.Namespace) -> None:
     print("V235_P3_SAME_CONTRACT_SUBSTRATE_OK")
 
 
+def forward_with_deltas(
+    model: torch.nn.Module,
+    x: torch.Tensor,
+    deltas: dict[str, torch.Tensor] | None = None,
+    capture_shapes: dict[str, tuple[int, ...]] | None = None,
+) -> tuple[list[torch.Tensor], dict[str, torch.Tensor]]:
+    deltas = deltas or {}
+    used: dict[str, torch.Tensor] = {}
+
+    def apply_delta(name: str, feature: torch.Tensor) -> torch.Tensor:
+        if capture_shapes is not None:
+            capture_shapes[name] = tuple(feature.shape)
+        if name in deltas:
+            used[name] = deltas[name]
+            return feature + deltas[name]
+        return feature
+
+    x_2 = F.interpolate(x, scale_factor=0.5)
+    x_4 = F.interpolate(x_2, scale_factor=0.5)
+    z2 = model.SCM2(x_2)
+    z4 = model.SCM1(x_4)
+    outputs: list[torch.Tensor] = []
+    x_ = model.feat_extract[0](x)
+    res1 = model.Encoder[0](x_)
+    z = model.feat_extract[1](res1)
+    z = model.FAM2(z, z2)
+    res2 = model.Encoder[1](z)
+    res2 = apply_delta("S4_encoder_late", res2)
+    z = model.feat_extract[2](res2)
+    z = model.FAM1(z, z4)
+    z = model.Encoder[2](z)
+    z = apply_delta("S5_bottleneck_mid", z)
+    z = model.Decoder[0](z)
+    z = apply_delta("S6_decoder_early", z)
+    z_ = model.ConvsOut[0](z)
+    z = model.feat_extract[3](z)
+    outputs.append(z_ + x_4)
+    z = torch.cat([z, res2], dim=1)
+    z = model.Convs[0](z)
+    z = model.Decoder[1](z)
+    z_ = model.ConvsOut[1](z)
+    z = model.feat_extract[4](z)
+    outputs.append(z_ + x_2)
+    z = torch.cat([z, res1], dim=1)
+    z = model.Convs[1](z)
+    z = model.Decoder[2](z)
+    z = model.feat_extract[5](z)
+    outputs.append(z + x)
+    return outputs, used
+
+
+def projection_loss(pred: torch.Tensor, target: torch.Tensor, deltas: dict[str, torch.Tensor], energy_weight: float) -> torch.Tensor:
+    loss = charbonnier_loss(lowpass(pred), lowpass(target)) + 0.25 * charbonnier_loss(pred, target)
+    if energy_weight > 0:
+        energy = sum(tensor_rms(delta) for delta in deltas.values())
+        loss = loss + energy_weight * energy
+    return loss
+
+
+def prepare_p4_samples(args: argparse.Namespace) -> list[dict[str, Any]]:
+    p3 = json.loads(args.p3_summary.read_text(encoding="utf-8"))
+    context_size = str(p3.get("context_size", ""))
+    if context_size != "full_image_slice":
+        raise RuntimeError(f"P4 currently supports full_image_slice same-contract only, got {context_size}")
+    alpha = float(p3["alpha"])
+    p0c_rows = read_csv(args.p0c_csv)
+    dataset = make_dataset(args.data_dir, "train")
+    device = torch.device(args.device if args.device.startswith("cuda") and torch.cuda.is_available() else "cpu")
+    official = build_official(args.checkpoint, device)
+    wdmamba = load_wdmamba(args.wdmamba_repo, args.wdmamba_checkpoint, device)
+    samples: list[dict[str, Any]] = []
+    with torch.no_grad():
+        for rec in p0c_rows:
+            index = int(rec["sample_index"])
+            name = rec["sample_name"]
+            crop_top = int(rec["crop_top"])
+            crop_left = int(rec["crop_left"])
+            inp, label = dataset[index]
+            x_full = inp.unsqueeze(0).to(device)
+            y_full = label.unsqueeze(0).to(device)
+            y_crop = y_full[:, :, crop_top:crop_top + args.loss_crop_size, crop_left:crop_left + args.loss_crop_size]
+            a0_full = infer_official(official, x_full)
+            wd_full = infer_wdmamba(wdmamba, x_full)
+            teacher_full = blend(a0_full, wd_full, alpha)
+            a0_slice = a0_full[:, :, crop_top:crop_top + args.loss_crop_size, crop_left:crop_left + args.loss_crop_size]
+            teacher_slice = teacher_full[:, :, crop_top:crop_top + args.loss_crop_size, crop_left:crop_left + args.loss_crop_size]
+            x_padded, _, _ = pad_to_factor(x_full, 32)
+            base_psnr = psnr(a0_slice, y_crop)
+            teacher_psnr = psnr(teacher_slice, y_crop)
+            bucket = hardness_bucket(rec)
+            samples.append({
+                "sample_name": name,
+                "sample_index": index,
+                "crop_top": crop_top,
+                "crop_left": crop_left,
+                "x": x_padded.detach().cpu(),
+                "y_crop": y_crop.detach().cpu(),
+                "a0_slice": a0_slice.detach().cpu(),
+                "teacher_slice": teacher_slice.detach().cpu(),
+                "base_psnr_A0": base_psnr,
+                "teacher_psnr": teacher_psnr,
+                "teacher_delta_vs_A0": teacher_psnr - base_psnr,
+                "hardness_bucket": bucket,
+                "strong_reference_bucket": "strong_reference" if bucket == "easy" else "not_strong",
+            })
+            print(f"p4_prepare_sample {len(samples)}/{len(p0c_rows)} {name}", flush=True)
+    del official
+    del wdmamba
+    if device.type == "cuda":
+        torch.cuda.empty_cache()
+    return samples
+
+
+def optimize_projection_sample(
+    model: torch.nn.Module,
+    sample: dict[str, Any],
+    insertion_point: str,
+    args: argparse.Namespace,
+    device: torch.device,
+) -> dict[str, Any]:
+    x = sample["x"].to(device)
+    y_crop = sample["y_crop"].to(device)
+    a0_slice = sample["a0_slice"].to(device)
+    teacher_slice = sample["teacher_slice"].to(device)
+    crop_top = int(sample["crop_top"])
+    crop_left = int(sample["crop_left"])
+    active_points = INSERTION_GROUPS[insertion_point]
+    shapes: dict[str, tuple[int, ...]] = {}
+    with torch.no_grad():
+        forward_with_deltas(model, x, capture_shapes=shapes)
+    deltas = {point: torch.zeros(shapes[point], device=device, requires_grad=True) for point in active_points}
+    optimizer = torch.optim.AdamW(list(deltas.values()), lr=args.learning_rate, weight_decay=0.0)
+    losses: list[float] = []
+    finite_grad = True
+    max_grad_norm = 0.0
+    for _step in range(args.projection_steps):
+        optimizer.zero_grad(set_to_none=True)
+        outputs, _used = forward_with_deltas(model, x, deltas=deltas)
+        pred_full = torch.clamp(outputs[2], 0, 1)
+        pred = pred_full[:, :, crop_top:crop_top + args.loss_crop_size, crop_left:crop_left + args.loss_crop_size]
+        loss = projection_loss(pred, teacher_slice, deltas, args.energy_weight)
+        loss.backward()
+        total_norm = torch.nn.utils.clip_grad_norm_(list(deltas.values()), args.grad_clip_norm)
+        norm_value = float(total_norm.detach().cpu()) if torch.is_tensor(total_norm) else float(total_norm)
+        max_grad_norm = max(max_grad_norm, norm_value)
+        finite_grad = finite_grad and math.isfinite(norm_value)
+        optimizer.step()
+        losses.append(float(loss.detach().cpu()))
+    with torch.no_grad():
+        outputs, _used = forward_with_deltas(model, x, deltas=deltas)
+        pred_full = torch.clamp(outputs[2], 0, 1)
+        pred = pred_full[:, :, crop_top:crop_top + args.loss_crop_size, crop_left:crop_left + args.loss_crop_size]
+        out_delta = pred - a0_slice
+        feature_energy = sum(tensor_rms(delta.detach()).item() for delta in deltas.values())
+        output_energy = tensor_rms(out_delta).item()
+        low_ratio = (tensor_rms(lowpass(out_delta)) / tensor_rms(out_delta).clamp_min(1e-12)).item()
+        base_psnr = float(sample["base_psnr_A0"])
+        free_psnr = psnr(pred, y_crop)
+        teacher_delta = float(sample["teacher_delta_vs_A0"])
+        free_delta = free_psnr - base_psnr
+    return {
+        "insertion_point": insertion_point,
+        "sample_name": sample["sample_name"],
+        "sample_index": sample["sample_index"],
+        "crop_top": crop_top,
+        "crop_left": crop_left,
+        "student_context": "full_image_slice",
+        "baseline_context": "full_image_slice",
+        "hardness_bucket": sample["hardness_bucket"],
+        "strong_reference_bucket": sample["strong_reference_bucket"],
+        "base_psnr_A0": sample["base_psnr_A0"],
+        "teacher_psnr": sample["teacher_psnr"],
+        "same_contract_teacher_delta": teacher_delta,
+        "free_tensor_psnr": free_psnr,
+        "free_tensor_delta": free_delta,
+        "projection_ratio_vs_teacher": (free_delta / teacher_delta) if teacher_delta > 1e-9 else None,
+        "feature_delta_energy": feature_energy,
+        "output_delta_energy": output_energy,
+        "lowfreq_output_ratio": low_ratio,
+        "highfreq_leakage": max(0.0, 1.0 - low_ratio),
+        "steps": args.projection_steps,
+        "loss_start": losses[0] if losses else None,
+        "loss_end": losses[-1] if losses else None,
+        "loss_drop": (losses[0] - losses[-1]) if losses else 0.0,
+        "max_grad_norm_before_clip": max_grad_norm,
+        "gradient_finite": finite_grad,
+    }
+
+
+def summarize_p4_projection(point: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
+    deltas = [float(row["free_tensor_delta"]) for row in rows]
+    teacher = [float(row["same_contract_teacher_delta"]) for row in rows]
+    hard = [float(row["free_tensor_delta"]) for row in rows if row["hardness_bucket"] == "hard"]
+    easy = [float(row["free_tensor_delta"]) for row in rows if row["hardness_bucket"] == "easy"]
+    strong = [float(row["free_tensor_delta"]) for row in rows if row["strong_reference_bucket"] == "strong_reference"]
+    teacher_mean = mean(teacher) or 0.0
+    free_mean = mean(deltas) or 0.0
+    p05 = percentile(deltas, 5)
+    cvar = cvar_low(deltas)
+    severe = sum(1 for value in deltas if value <= -0.20) / len(deltas) if deltas else None
+    strong_reg = sum(1 for value in strong if value <= -0.05) / len(strong) if strong else None
+    projection_ratio = free_mean / teacher_mean if teacher_mean > 1e-9 else None
+    gate_pass = bool(
+        projection_ratio is not None and projection_ratio >= 0.10
+        and free_mean >= 0.05
+        and (p05 is not None and p05 >= -0.03)
+        and (severe is not None and severe <= 0.05)
+        and (strong_reg is not None and strong_reg <= 0.05)
+    )
+    return {
+        "insertion_point": point,
+        "count": len(rows),
+        "same_contract_teacher_mean_delta": teacher_mean,
+        "free_tensor_mean_delta": free_mean,
+        "free_tensor_hard_delta": mean(hard),
+        "free_tensor_easy_delta": mean(easy),
+        "p05": p05,
+        "cvar5": cvar,
+        "severe": severe,
+        "strong_reference_regression_rate": strong_reg,
+        "projection_ratio_vs_teacher": projection_ratio,
+        "feature_delta_energy": mean([float(row["feature_delta_energy"]) for row in rows]),
+        "output_delta_energy": mean([float(row["output_delta_energy"]) for row in rows]),
+        "lowfreq_output_ratio": mean([float(row["lowfreq_output_ratio"]) for row in rows]),
+        "highfreq_leakage": mean([float(row["highfreq_leakage"]) for row in rows]),
+        "steps": rows[0]["steps"] if rows else None,
+        "loss_start": mean([float(row["loss_start"]) for row in rows if row["loss_start"] is not None]),
+        "loss_end": mean([float(row["loss_end"]) for row in rows if row["loss_end"] is not None]),
+        "gate_pass": gate_pass,
+    }
+
+
+def run_p4_projection(args: argparse.Namespace) -> None:
+    args.out_dir.mkdir(parents=True, exist_ok=True)
+    device = torch.device(args.device if args.device.startswith("cuda") and torch.cuda.is_available() else "cpu")
+    samples = prepare_p4_samples(args)
+    model = build_official(args.checkpoint, device)
+    per_image_rows: list[dict[str, Any]] = []
+    summary_rows: list[dict[str, Any]] = []
+    for point in INSERTION_GROUPS:
+        point_rows = []
+        for index, sample in enumerate(samples, start=1):
+            row = optimize_projection_sample(model, sample, point, args, device)
+            point_rows.append(row)
+            per_image_rows.append(row)
+            print(f"p4_projection_progress {point} {index}/{len(samples)} {sample['sample_name']}", flush=True)
+        summary_rows.append(summarize_p4_projection(point, point_rows))
+        if device.type == "cuda":
+            torch.cuda.empty_cache()
+    write_csv(args.out_dir / "v235_p4_same_contract_free_tensor_projection_per_image.csv", per_image_rows)
+    write_csv(args.out_dir / "v235_p4_same_contract_free_tensor_projection_by_insertion.csv", summary_rows)
+    passing = [row for row in summary_rows if row["gate_pass"]]
+    best = max(
+        summary_rows,
+        key=lambda row: float(row["projection_ratio_vs_teacher"] if row["projection_ratio_vs_teacher"] is not None else -999.0),
+    )
+    payload = {
+        "route_id": ROUTE_ID,
+        "phase": "P4 same-contract free-tensor projection",
+        "locked_test_touched": False,
+        "student_context": "full_image_slice",
+        "baseline_context": "full_image_slice",
+        "teacher_mode": "full_image_output_slice",
+        "projection_steps": args.projection_steps,
+        "gate_pass": bool(passing),
+        "passing_insertion_points": [row["insertion_point"] for row in passing],
+        "best_insertion_point": best["insertion_point"],
+        "best_projection_ratio_vs_teacher": best["projection_ratio_vs_teacher"],
+        "next_generator_or_bridge_design_authorized": bool(passing),
+        "canary80_authorized": False,
+        "locked_test_authorized": False,
+        "summary": summary_rows,
+    }
+    payload["decision"] = (
+        "P4_PASS_SAME_CONTRACT_FREE_TENSOR_PROJECTION"
+        if passing
+        else "P4_FAIL_SAME_CONTRACT_FREE_TENSOR_PROJECTION"
+    )
+    write_json(args.out_dir / "v235_p4_closeout.json", payload)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    print("V235_P4_SAME_CONTRACT_FREE_TENSOR_PROJECTION_OK")
+
+
 def add_common(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--out-dir", type=Path, required=True)
 
@@ -865,6 +1167,21 @@ def build_parser() -> argparse.ArgumentParser:
     p3.add_argument("--context-size", default="")
     p3.add_argument("--alpha-label", default="")
     p3.add_argument("--alpha", type=float, default=None)
+
+    p4 = sub.add_parser("p4-projection")
+    add_common(p4)
+    p4.add_argument("--p0c-csv", type=Path, required=True)
+    p4.add_argument("--p3-summary", type=Path, required=True)
+    p4.add_argument("--data-dir", type=Path, default=Path("/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K"))
+    p4.add_argument("--checkpoint", type=Path, default=Path("/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl"))
+    p4.add_argument("--wdmamba-repo", type=Path, default=Path("/sda/home/wangyuxin/ConvIR-B/repos/external_experts/WDMamba"))
+    p4.add_argument("--wdmamba-checkpoint", type=Path, default=Path("/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/haze4k_35.88.pth"))
+    p4.add_argument("--device", default="cuda")
+    p4.add_argument("--loss-crop-size", type=int, default=256)
+    p4.add_argument("--projection-steps", type=int, default=32)
+    p4.add_argument("--learning-rate", type=float, default=0.03)
+    p4.add_argument("--energy-weight", type=float, default=0.0001)
+    p4.add_argument("--grad-clip-norm", type=float, default=1.0)
     return parser
 
 
@@ -879,6 +1196,8 @@ def main() -> None:
         run_p2_context(args)
     elif args.phase == "p3-substrate":
         run_p3_substrate(args)
+    elif args.phase == "p4-projection":
+        run_p4_projection(args)
     else:
         raise SystemExit(f"unknown phase {args.phase}")
 

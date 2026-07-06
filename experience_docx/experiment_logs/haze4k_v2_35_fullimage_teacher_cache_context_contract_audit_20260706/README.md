@@ -26,6 +26,9 @@ Primary evidence files:
 - `v235_p3_same_contract_positive_substrate_manifest.csv`
 - `v235_p3_same_contract_positive_substrate_summary.json`
 - `v235_p3_closeout.json`
+- `v235_p4_same_contract_free_tensor_projection_per_image.csv`
+- `v235_p4_same_contract_free_tensor_projection_by_insertion.csv`
+- `v235_p4_closeout.json`
 - `v235_decision_tree.md`
 - `v235_closeout.json`
 
