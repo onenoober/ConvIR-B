@@ -1,0 +1,12 @@
+{
+  "bridge_training_authorized": false,
+  "canary80_authorized": false,
+  "decision": "P0_FAIL_CONVIRL_NO_SAFE_TEACHER_ALPHA",
+  "generator_training_authorized": false,
+  "inherited_reference": "v2.38 P0_FAIL_NO_MICROALPHA_SAFE_SUBSTRATE and v2.38B P0_FAIL_RICH_TARGET_ONLY_SEPARABILITY_DIAGNOSTIC",
+  "locked_test_touched": false,
+  "p0_convirl_teacher_sweep_pass": false,
+  "p1_free_tensor_projection_pass": null,
+  "route_id": "haze4k_v2_39_convirl_same_family_teacher_contract_audit_20260706",
+  "selected_alpha": null
+}
