@@ -1,6 +1,6 @@
 # Experiment Governance Protocol
 
-Date: 2026-05-31
+Date: 2026-06-10
 
 Status: generic protocol for model experiments.
 
@@ -53,6 +53,15 @@ Keep experimental work reviewable:
 If the working tree already contains unrelated changes, isolate the new work in
 a separate branch, worktree, or patch before staging.
 
+## Official Anchor Clean Route Rule
+
+For ConvIR-B/Haze4K, the canonical clean-route and immutable-anchor rule lives
+in `OFFICIAL_ARCH_ANCHOR_POLICY.md`. This governance file does not duplicate the
+full rule. Before a model-structure route, read that policy and record the
+source branch, source commit, load contract, locked-test policy, cloud
+workspace, output root, command script, status file, and evidence root in the
+route card.
+
 ## Entrypoint Stability Rule
 
 Preserve trusted entrypoints until the experiment explicitly changes them:
@@ -80,11 +89,11 @@ Before changing the model, establish the baseline:
 If the baseline is not verified, no improvement claim is valid yet.
 
 For ConvIR-B, "verified baseline" means evaluating the official pretrained
-checkpoint in the local environment before any from-scratch or modified-model
-training. Record the checkpoint path and hash, official reference PSNR/SSIM,
-local PSNR/SSIM, latency, peak GPU memory, output image path, and a short
-quality note. A reproduction gap is acceptable only after the likely cause is
-written down.
+checkpoint on the authorized runtime host before any from-scratch or
+modified-model training. Record the checkpoint path and hash, official
+reference PSNR/SSIM, runtime PSNR/SSIM, latency, peak GPU memory, output image
+path, and a short quality note. A reproduction gap is acceptable only after the
+likely cause is written down.
 
 ## Most Valuable Attempt Standard
 

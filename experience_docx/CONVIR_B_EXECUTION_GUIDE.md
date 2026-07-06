@@ -10,17 +10,20 @@ Use this guide when the generic `experience_docx` package is applied to this
 repository. It connects the experiment process to the official ConvIR-B
 checkpoints, task entrypoints, metrics, and fixed-budget decision gates.
 
-The current phase is baseline establishment. Do not modify the model until the
-official or repository-provided pretrained checkpoint has been evaluated in the
-local environment and any reproduction gap has a written explanation.
+This guide defines the baseline and fixed-budget contracts for ConvIR-B work.
+Do not modify the model until the official or repository-provided pretrained
+checkpoint has been evaluated on the authorized runtime host and any
+reproduction gap has a written explanation. Local WSL remains editing and
+syntax/static-check only.
 
 ## Required Order
 
 1. Download the official pretrained model for each target task from the root
    `README.md` model links.
-2. Record the checkpoint source, local path, file size, and sha256 hash.
-3. Run the repository evaluation command for the target task and dataset.
-4. Record local baseline PSNR, SSIM when available, per-image PSNR, average
+2. Record the checkpoint source, runtime path, file size, and sha256 hash.
+3. Run the repository evaluation command for the target task and dataset on the
+   authorized runtime host.
+4. Record baseline PSNR, SSIM when available, per-image PSNR, average
    latency, peak GPU memory, output path, and qualitative artifact notes.
 5. Compare local results with the official table in the root `README.md`.
 6. Explain any reproduction gap before starting a model-change route.
@@ -136,7 +139,7 @@ Every baseline reproduction note must include:
 The default route question is:
 
 ```text
-Can the candidate beat the local ConvIR-B baseline under the same data,
+Can the candidate beat the matched ConvIR-B runtime baseline under the same data,
 evaluation, and hardware contract while staying within the cost limits?
 ```
 
@@ -146,8 +149,8 @@ Default cost limits for a ConvIR-B replacement route:
 | --- | --- |
 | FLOPs | <= ConvIR-B FLOPs + 5% |
 | Parameters | record always; no increase accepted unless the card explains why |
-| Peak GPU memory | <= local baseline peak memory + 10% and must fit the current GPU |
-| Average latency | <= local baseline average latency + 10% |
+| Peak GPU memory | <= matched runtime baseline peak memory + 10% and must fit the current GPU |
+| Average latency | <= matched runtime baseline average latency + 10% |
 | Inference output size | same as baseline |
 | Checkpoint/export/resume | same contract unless explicitly tested |
 
@@ -227,7 +230,7 @@ Failure must still teach the next action.
 
 ## What Not To Fix Yet
 
-Until the local baseline package exists, do not freeze:
+Until the matched runtime baseline package exists, do not freeze:
 
 - final checkpoint filenames beyond the recorded downloaded file;
 - exact artifact root outside the current machine policy;

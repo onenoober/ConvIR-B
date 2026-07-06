@@ -1,20 +1,23 @@
-# Cloud py310 / cu128 Environment
+# Historical Cloud py310 / cu128 Environment
 
 Date: 2026-06-10
 
-Status: current `dehaze1` environment audit and future-server install guide.
+Status: historical `dehaze1` environment audit and future-server install guide.
+Do not use this file as the current runtime default; new work follows
+`AGENTS.md`, `MODEL_RUN_OPERATIONS_PROTOCOL.md`, and
+`COMMAND_RELIABILITY_QUICKSTART.md`.
 
 ## Authority
 
 - Evidence root: `experiment_logs/cloud_py310_environment_20260610/`.
 - Code anchor: `github/codex/haze4k-official-arch-anchor`.
-- Current cloud mirror checked: `/root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor`.
+- Historical cloud mirror checked: `/root/autodl-tmp/workspace/ConvIR-B-official-arch-anchor`.
 - Future server source of truth: GitHub, not the old cloud workspace.
 
 ## Code Consistency Result
 
-Protected source files are consistent between GitHub anchor commit `205f2fd99223`
-and the current cloud mirror:
+Protected source files were consistent between GitHub anchor commit
+`205f2fd99223` and the historical cloud mirror:
 
 - compared paths: `Dehazing/ITS/`, `pytorch-gradual-warmup-lr/`, and
   `experience_docx/tools/` source files;
@@ -27,9 +30,9 @@ historical dirty route workspace (`codex/haze4k-fam2-confidence-gate` with local
 modifications and outputs). Do not use that directory as migration authority.
 Use GitHub and the official anchor branch instead.
 
-## Current Cloud Runtime Facts
+## Historical Cloud Runtime Facts
 
-Current `dehaze1` audit (`2026-06-10T18:47:44+08:00`):
+Historical `dehaze1` audit (`2026-06-10T18:47:44+08:00`):
 
 | Item | Value |
 | --- | --- |
@@ -53,8 +56,8 @@ Current `dehaze1` audit (`2026-06-10T18:47:44+08:00`):
 | einops | `0.8.2` |
 | warmup_scheduler | editable install, version `0.3` |
 
-`py310` and `convir-cu128` currently report the same important ConvIR runtime
-stack. Existing run scripts should keep using the explicit project runtime path:
+`py310` and `convir-cu128` reported the same important ConvIR runtime stack on
+that historical server. These paths are provenance for migration only:
 
 ```bash
 PYTHON=/root/miniconda3/envs/convir-cu128/bin/python
@@ -124,7 +127,7 @@ sha256sum "$PRETRAINED_BASE"
 # expected: 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088
 ```
 
-On the current `dehaze1` server, the audited checkpoint copy lives at the legacy
+On the historical `dehaze1` server, the audited checkpoint copy lived at the legacy
 path `/root/autodl-tmp/workspace/ConvIR-B/Dehazing/pretrained_models/haze4k-base.pkl`.
 Copy or download it into the new anchor checkout on a replacement server rather
 than relying on the old dirty workspace.

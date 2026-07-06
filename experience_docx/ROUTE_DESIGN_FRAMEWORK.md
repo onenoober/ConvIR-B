@@ -1,6 +1,6 @@
 # Route Design Framework
 
-Date: 2026-05-31
+Date: 2026-06-10
 
 Status: framework for designing candidate model experiments.
 
@@ -29,6 +29,13 @@ Does changing <one variable> improve <target ConvIR-B failure group> under the
 same data and evaluation contract, while FLOPs, latency, memory, and
 strong-case regressions stay within the written limits?
 ```
+
+## Official Anchor Start Rule
+
+This framework does not restate the clean-route rule. For ConvIR-B/Haze4K
+model-structure routes, use `OFFICIAL_ARCH_ANCHOR_POLICY.md` as the canonical
+source policy and `MODEL_EXPERIMENT_START_CHECKLIST.md` sections `0` and `0B`
+as the start gate.
 
 ## Generic Route Families
 

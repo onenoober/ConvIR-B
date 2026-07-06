@@ -51,8 +51,9 @@ requirements before the first code edit or cloud run:
    loading is needed, record the missing/new keys and initialization rule.
 5. Declare the Haze4K data path, checkpoint path/hash, locked-test policy, cloud
    workspace, output root, command script, status file, and evidence root.
-6. Run preflight and training/evaluation only on `dehaze1`; local WSL remains
-   edit and syntax/static-check only.
+6. Run preflight and training/evaluation only on the current authorized runtime
+   host, normally `convir-4090`; local WSL remains edit and syntax/static-check
+   only.
 7. Sync text evidence back into `experience_docx/` and GitHub before closing the
    run.
 
@@ -61,12 +62,12 @@ anchor and must be relabeled as setup work or rerun from a compliant branch.
 
 ## Enforcement References
 
-- Agent-level rule: `AGENTS.md`, section `Official Architecture Anchor And
-  Clean Route Gate`.
+- Agent-level rule: `AGENTS.md`, sections `Hard Rules` and
+  `Universal Route Workflow`.
 - Governance rule: `EXPERIMENT_GOVERNANCE_PROTOCOL.md`, section `Official
   Anchor Clean Route Rule`.
-- Start gate: `MODEL_EXPERIMENT_START_CHECKLIST.md`, section `0. Official
-  Anchor Compliance Gate`.
+- Start gate: `MODEL_EXPERIMENT_START_CHECKLIST.md`, section
+  `0B. Route Source And Anchor Compliance Gate`.
 - GitHub Actions guard: `.github/workflows/official-anchor-guard.yml` blocks
   protected runtime/model path edits that target this branch. Configure GitHub
   branch protection to require this check for hard server-side enforcement.

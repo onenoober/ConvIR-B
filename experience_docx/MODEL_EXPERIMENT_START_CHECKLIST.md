@@ -1,8 +1,72 @@
 # Model Experiment Start Checklist
 
-Date: 2026-05-31
+Date: 2026-06-10
 
 Status: checklist for starting and governing a model experiment.
+
+## 0. Universal Route Framing Gate
+
+Before starting any new route, method, architecture change, teacher/distillation
+plan, selector, loss, or runtime experiment, complete this route framing gate:
+
+- Fact-source decision: name the authoritative evidence sources that will ground
+  the task. Use GitHub `main` or the named GitHub branch for route memory and
+  current decisions; use cloud runtime state for active/raw outputs; use local
+  files only for editing, syntax checks, sync staging, or local-safety checks.
+- Route-identity decision: label the work as a new route, continuation, rescue,
+  ablation, reproducibility audit, or evidence sync. Write the consequences of
+  that label before launch.
+- Forbidden-flow list: record which tempting actions are not allowed for this
+  route, such as expanding a failed canary, launching selector probes, increasing
+  epochs/folds/samples, changing loss weights, touching locked test, or treating
+  a diagnostic phase as a promotion gate.
+- Resource-preflight list: identify required cloud branch/commit, workspace,
+  explicit Python path, dataset/split, checkpoint, teacher/expert asset, output
+  root, command script, status/log file, and tmux/session name before launch.
+- Metric-contract list: define baseline, exact sample/crop/split pairing,
+  metric direction, pass/fail thresholds, and what later phase each gate
+  authorizes. Do not interpret a result if base/before/after metrics were
+  computed on different data views.
+- Transport plan: choose the stable command/sync pattern up front from
+  `COMMAND_RELIABILITY_QUICKSTART.md`. Prefer `tar`/`scp`/`rsync` or stable
+  script bodies through WSL/SSH with explicit success markers; avoid ad hoc
+  nested PowerShell/WSL/SSH quoting. Use `COMMAND_RELIABILITY_PROTOCOL.md` only
+  for failed or unfamiliar command-boundary cases.
+- Archive plan: decide which files belong on the route branch and which compact
+  evidence belongs on GitHub `main`. Use a clean `github/main` worktree for
+  evidence sync and stage explicit paths only.
+
+If any item is unknown, do not launch a cloud runtime command yet. Fill the
+route card or evidence README first, or classify the missing item as an
+engineering blocker.
+
+## 0B. Route Source And Anchor Compliance Gate
+
+After the route identity is known, choose the correct starting source before
+code edits or cloud runs:
+
+- New model-structure or architecture routes in this repository must start from
+  `github/codex/haze4k-official-arch-anchor`, not from a dirty worktree or an
+  unrelated experimental branch.
+- Continuations, rescues, ablations, audits, selectors, losses, adapters,
+  data-policy changes, and fine-tuning routes start from the named parent
+  GitHub branch/commit authorized by the current index, route card, or family
+  summary. Do not reset them to the official anchor unless the framing gate says
+  the work is a new model-structure route.
+- Evidence sync and archival tasks start from a clean `github/main` worktree and
+  restore only the explicitly allowed compact evidence paths from the route
+  branch.
+- Record the starting branch, starting commit, parent/source rationale, locked
+  test policy, and any forbidden continuations in the route card or evidence
+  README before launch.
+- Keep `github/codex/haze4k-official-arch-anchor` unchanged except for
+  documentation, command reliability, or text-evidence maintenance.
+- Create or update the route card with the checkpoint path/hash, strict or
+  partial load contract, new-module initialization rule when applicable,
+  locked-test policy, cloud workspace, output root, command script, status file,
+  and evidence root.
+- Mark the route invalid for anchor or parent-route comparison if the required
+  source gate was skipped or the starting source cannot be reconstructed.
 
 ## 1. Define Objective And Assumptions
 
@@ -29,7 +93,10 @@ Write where each fact belongs before facts start accumulating.
 
 ## 3. Set Repository Boundaries
 
-- Create a branch or isolated workspace for the task.
+- Create a branch or isolated workspace from the source chosen in the Route
+  Source And Anchor Compliance Gate. New model-structure routes use the official
+  anchor; continuations, rescues, audits, and evidence syncs use their named
+  parent or clean `github/main` source.
 - Check version-control status before edits.
 - Identify unrelated local changes and leave them untouched.
 - Decide what can be committed and what must remain external.
@@ -118,8 +185,9 @@ Use this filter:
 If not, rewrite the route.
 
 Write the first route as "fixed budget under ConvIR-B constraints": FLOPs <=
-ConvIR-B +5%, latency <= local baseline +10%, peak memory <= local baseline
-+10% and fitting the current GPU, with matched 5/20/80/full epoch gates.
+ConvIR-B +5%, latency <= matched runtime baseline +10%, peak memory <= matched
+runtime baseline +10% and fitting the current GPU, with matched 5/20/80/full
+epoch gates.
 
 ## 9. Launch Discipline
 

@@ -2,20 +2,37 @@
 
 Date: 2026-06-04
 
-Status: required workflow for avoiding repeated invalid commands in this repository.
+Status: detailed archive for avoiding repeated invalid commands in this
+repository. For new work, read `COMMAND_RELIABILITY_QUICKSTART.md` first.
 
 ## Purpose
 
 This protocol records command forms that have already failed in this workspace
 and the preferred forms that should be used instead. It is especially important
 for monitoring cloud experiments from Windows PowerShell through WSL and then
-over SSH to `dehaze1`.
+over SSH to `convir-4090`.
+
+Current host note: new commands default to `convir-4090` and the explicit cloud
+Python path `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
+Historical examples may mention `dehaze1` or `convir-5090`; keep those as
+provenance for old failure modes, not as defaults for new work.
+
+Read boundary: this file is intentionally long. During normal route planning or
+monitoring, stop after `COMMAND_RELIABILITY_QUICKSTART.md` unless a command has
+failed or a specific historical pattern is needed.
 
 ## High-Priority Rule
 
 Do not repeat a command form that failed because of quoting, CRLF, PATH, shell
 boundary, or silent-output issues. Prefer stable script bodies with explicit
 success markers over compact one-liners.
+
+## Quickstart Boundary
+
+Current default transport rules live in `COMMAND_RELIABILITY_QUICKSTART.md`.
+This longer file is an archive of known bad command forms and corrected
+patterns. Add to this file only when a command failure teaches a reusable
+boundary, quoting, CRLF, PATH, stdin, or silent-output lesson.
 
 ## Invalid Command Patterns To Avoid
 
@@ -614,49 +631,12 @@ print('CR_PATH_CLEAN_OK')
 PY
 ```
 
-## Standard Cloud Monitor Template
+## Current Template Boundary
 
-Use this template for future training and post-eval checks:
-
-```powershell
-$script = @'
-set -euo pipefail
-cd /home/ubuntu/workspace/ConvIR-B
-ssh dehaze1 'bash -s' <<'REMOTE'
-set -euo pipefail
-EVID=/root/autodl-tmp/workspace/<remote-workspace>/experience_docx/experiment_logs/<route_id>
-PY=/root/miniconda3/envs/convir-cu128/bin/python
-printf 'remote_time=%s\n' "$(date -Is)"
-for s in <train_tmux> <post_tmux>; do
-  if tmux has-session -t "$s" 2>/dev/null; then
-    printf '%s=ACTIVE\n' "$s"
-  else
-    printf '%s=NOT_ACTIVE\n' "$s"
-  fi
-done
-[ -f "$EVID/status.txt" ] && tail -n 80 "$EVID/status.txt" || printf 'status=MISSING\n'
-printf 'REMOTE_MONITOR_OK\n'
-REMOTE
-rsync -a dehaze1:/root/autodl-tmp/workspace/<remote-workspace>/experience_docx/experiment_logs/<route_id>/ experience_docx/experiment_logs/<route_id>/
-printf 'EVIDENCE_SYNC_OK\n'
-'@
-$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
-```
-
-## Standard GitHub Evidence Commit Template
-
-Use this template when cloud evidence is complete:
-
-```bash
-git add AGENTS.md experience_docx/COMMAND_RELIABILITY_PROTOCOL.md experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md experience_docx/EXPERIMENT_INDEX.md experience_docx/family_summaries/<family>_summary.md experience_docx/experiment_cards/<card>.md experience_docx/experiment_logs/<route_id>
-git diff --cached --check
-git diff --cached --name-only | grep -Ei '\.(pkl|pth|pt|ckpt|onnx|png|jpg|jpeg|bmp|gif|webp|npy|npz|mat|zip|tar|gz|7z|rar)$' && exit 1 || true
-git commit -m "Sync <route> evidence"
-git push github HEAD:$(git branch --show-current)
-```
-
-If unrelated worktree changes exist, stage only the intended files and verify
-with `git diff --cached --name-only` before committing.
+Current command transport defaults live in `COMMAND_RELIABILITY_QUICKSTART.md`.
+Current evidence-only GitHub archival steps live in
+`BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`. This file keeps historical failure
+patterns only.
 
 ## 2026-06-05 Local WSL wrapper quoting failure
 
