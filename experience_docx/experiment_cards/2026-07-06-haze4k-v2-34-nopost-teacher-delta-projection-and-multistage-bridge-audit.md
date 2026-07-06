@@ -18,6 +18,12 @@ The route stopped before free-tensor projection because both the v2.33 first32
 canary and a rebuilt balanced table-positive canary failed the crop-aligned
 direct teacher-benefit gate.
 
+Follow-up P0C metric-contract diagnostic showed this is a direct-crop inference
+contract failure, not evidence that the old full-image WDMamba/WD0375 teacher
+table is invalid. On the P0B 32 samples, the C8 table and full-image recompute
+matched exactly, full-image outputs sliced to the same crops stayed strongly
+positive, but rerunning WDMamba directly on 256 crops flipped the canary negative.
+
 ## Route Identity Gate
 
 This route is a new diagnostic route, not a continuation of v2.33 S5-BILFCF.
@@ -77,6 +83,10 @@ WDMamba-alpha0.5 table-positive train-derived samples and rerun exact
 crop-aligned direct teacher benefit. P1 is authorized only from a passing P0 or
 P0B canary manifest.
 
+P0C: post-closeout metric-contract diagnostic comparing C8 full-image table,
+full-image recompute, full-image-output crop slices, and direct WDMamba-on-crop
+inference for the P0B canary. This phase is audit-only and cannot authorize P1.
+
 P1: free-tensor teacher-delta projection by insertion point.
 
 P2: generator-capacity gap, blocked until P1 shows representable headroom.
@@ -100,8 +110,26 @@ hard direct benefit (`+0.6788 dB`) and eligible coverage `7/32`, but mean/easy
 remained strongly negative (`-2.4753/-4.0017 dB`) with p05/CVaR5
 `-8.7433/-11.4269 dB`.
 
+P0C resolved the apparent contradiction with older WDMamba-alpha evidence. For
+the same P0B samples, table and full-image recompute were identical:
+WDMamba-alpha0.375 mean/p05/CVaR5 `+4.1392/+2.7682/+2.6124 dB`, and
+WDMamba-alpha0.5 `+5.7567/+3.3058/+3.2206 dB`. Cropping the full-image outputs
+to the same 256 windows also stayed positive: alpha0.375 mean/p05/CVaR5
+`+3.9106/+1.9291/+1.2017 dB`, and alpha0.5
+`+5.2963/+2.0773/+1.0368 dB`. Only direct WDMamba-on-crop inference failed:
+alpha0.375 mean/p05/CVaR5 `-1.4741/-6.9508/-9.4098 dB`, and alpha0.5
+`-2.4753/-8.7433/-11.4269 dB`. The direct-crop context gap versus full-image
+crop slices was negative for all `32/32` samples (`-5.3847 dB` mean for
+alpha0.375 and `-7.7717 dB` mean for alpha0.5). The v2.34 P0B crop-direct
+recompute matched the recorded P0B values exactly (`mean_abs_diff=0.0`).
+
 Consequence: P1 free-tensor projection, P2 generator gap, P3 gradient conflict,
-P4 bridge micro-canary, canary80, and locked test were not launched.
+P4 bridge micro-canary, canary80, and locked test were not launched from the
+direct-crop canaries. Do not use the full-image WDMamba table as an expert
+selection standard for random direct-crop WDMamba inference. Future teacher
+canaries must either use full-image expert outputs sliced to the training crop
+or compute eligibility using the exact same crop/inference context used for the
+teacher target.
 
 ## Evidence Root
 
