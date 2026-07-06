@@ -1,0 +1,18 @@
+{
+  "bridge_training_authorized": false,
+  "canary80_authorized": false,
+  "crop256_fullslice_target_authorized": false,
+  "decision": "P0_FAIL_STOP_NO_MICROALPHA_SAFE_SUBSTRATE",
+  "direct_crop_contract_authorized": false,
+  "generator_training_authorized": false,
+  "inherited_reference": "v2.37 P4_FAIL_STOP_TARGET_ONLY_NOOP_UNSAFE_NOT_SEPARABLE",
+  "locked_test_touched": false,
+  "oracle_mask_runtime_authorized": false,
+  "p0_microalpha_sweep_pass": false,
+  "p1_oof_alpha_selection_pass": null,
+  "p2_safety_margin_pass": null,
+  "p3_microalpha_projection_pass": null,
+  "primary_question": "Can a smaller global same-context WDMamba alpha produce a fold-stable tail-safe unmasked teacher substrate that does not require runtime no-op selection?",
+  "route_id": "haze4k_v2_38_microalpha_same_context_wdmamba_safe_substrate_projection_20260706",
+  "selected_alpha": null
+}

@@ -1,0 +1,5 @@
+v238_planned 2026-07-06T20:56:07+08:00 locked=untouched bridge=blocked generator=blocked canary80=blocked
+v238_p0_p2_preflight 2026-07-06T20:56:53+08:00 branch=codex/haze4k-v2-38-microalpha-same-context-wdmamba-safe-substrate-projection head=80ebd9e locked=untouched bridge=blocked generator=blocked
+v238_p0_start 2026-07-06T20:56:53+08:00
+v238_p0_done rc=0 2026-07-06T20:57:09+08:00
+v238_stop_after_p0_fail 2026-07-06T20:57:11+08:00
