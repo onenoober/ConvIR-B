@@ -13,7 +13,7 @@ WD_TABLE=$BASE/repos/ConvIR-B-v22-c8-mini-expert-oracle/experience_docx/experime
 V233_P4=$BASE/repos/ConvIR-B-haze4k-v2-33-nopost-teacher-benefit-source-and-bilfcf-trainability-audit/experience_docx/experiment_logs/haze4k_v2_33_nopost_teacher_benefit_source_and_bilfcf_trainability_audit_20260705/v233_p4_teacher_benefit_masked_canary32_per_image.csv
 STATUS=$EVID/status.txt
 
-export CUDA_VISIBLE_DEVICES=0 TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
+export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-1} TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
 
 mkdir -p "$EVID"
 echo "v234_p0_start $(date --iso-8601=seconds)" | tee -a "$STATUS"
@@ -41,4 +41,3 @@ else
   echo "V234_P0_MASK_JOIN_AUDIT_FAILED" | tee -a "$STATUS"
 fi
 exit "$rc"
-

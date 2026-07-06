@@ -11,7 +11,7 @@ WDMAMBA_REPO=$BASE/repos/external_experts/WDMamba
 WDMAMBA_CKPT=$BASE/checkpoints/WDMamba_ckpts/haze4k_35.88.pth
 STATUS=$EVID/status.txt
 
-export CUDA_VISIBLE_DEVICES=0 TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
+export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-1} TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
 
 mkdir -p "$EVID"
 echo "v234_p1_start $(date --iso-8601=seconds)" | tee -a "$STATUS"
@@ -40,4 +40,3 @@ else
   echo "V234_P1_FREE_TENSOR_PROJECTION_FAILED" | tee -a "$STATUS"
 fi
 exit "$rc"
-
