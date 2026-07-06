@@ -1,6 +1,6 @@
 # Haze4K v2.34 NoPost Teacher-Delta Projection and Multi-Stage Bridge Audit
 
-Status: `PLANNED_DIAGNOSTIC`
+Status: `COMPLETED_DIAGNOSTIC`
 
 Branch: `codex/haze4k-v2-34-nopost-teacher-delta-projection-and-multistage-bridge-audit`
 
@@ -11,6 +11,12 @@ Closed reference: `v2.33 P4_FAIL_MASKED_CANARY32_NO_CANARY80`.
 Decision question: is WDMamba-alpha0.5 teacher benefit representable inside
 ConvIR-B with a NoPost in-network carrier, or is the current route blocked by
 S5-BILFCF compression capacity?
+
+Final decision: `P0B_FAIL_BALANCED_CANARY_DIRECT_TEACHER_GATE`.
+
+The route stopped before free-tensor projection because both the v2.33 first32
+canary and a rebuilt balanced table-positive canary failed the crop-aligned
+direct teacher-benefit gate.
 
 ## Route Identity Gate
 
@@ -81,6 +87,21 @@ give a reason to inspect objective conflict.
 P4: materially changed NoPost bridge micro-canary, blocked until P0-P3 authorize
 it. Candidate forms are WLFBridge-S6 or WLFBridge-S4S6; S5-only BILFCF is not
 authorized.
+
+## Results
+
+P0 first32 canary failed: direct WDMamba-alpha0.5 mean/hard/easy deltas were
+`-2.3193/-1.5978/-2.1668 dB`, P1 table join was missing for `25/32` samples,
+P4 eligible coverage was `5/32`, and the recomputation matched the v2.33 P4
+teacher-blend delta exactly (`mean_abs_delta_diff=0.0`).
+
+P0B balanced canary also failed: table-positive balanced selection recovered
+hard direct benefit (`+0.6788 dB`) and eligible coverage `7/32`, but mean/easy
+remained strongly negative (`-2.4753/-4.0017 dB`) with p05/CVaR5
+`-8.7433/-11.4269 dB`.
+
+Consequence: P1 free-tensor projection, P2 generator gap, P3 gradient conflict,
+P4 bridge micro-canary, canary80, and locked test were not launched.
 
 ## Evidence Root
 

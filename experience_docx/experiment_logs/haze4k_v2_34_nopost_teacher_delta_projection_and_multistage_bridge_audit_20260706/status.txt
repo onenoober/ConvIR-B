@@ -1,2 +1,11 @@
 planned haze4k_v2_34_nopost_teacher_delta_projection_and_multistage_bridge_audit_20260706
 
+v234_p0_start 2026-07-06T12:01:19+08:00
+v234_p0_done rc=0 2026-07-06T12:01:58+08:00
+V234_P0_MASK_JOIN_AUDIT_OK
+v234_p0b_start 2026-07-06T12:07:36+08:00
+v234_p0b_done rc=0 2026-07-06T12:07:48+08:00
+V234_P0B_BALANCED_CANARY_OK
+v234_closeout_start 2026-07-06T12:09:14+08:00
+v234_closeout_done rc=0 2026-07-06T12:09:17+08:00
+V234_CLOSEOUT_OK
