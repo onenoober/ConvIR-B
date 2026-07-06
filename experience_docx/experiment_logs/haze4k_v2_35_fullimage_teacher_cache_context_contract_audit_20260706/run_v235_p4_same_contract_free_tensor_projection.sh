@@ -15,7 +15,9 @@ set +e
   --out-dir "$EVID" \
   --p0c-csv "$P0C" \
   --p3-summary "$EVID/v235_p3_same_contract_positive_substrate_summary.json" \
-  --device cuda 2>&1 | tee "$LOG"
+  --device cuda \
+  --learning-rate 0.003 \
+  --grad-clip-norm 0.5 2>&1 | tee "$LOG"
 rc=${PIPESTATUS[0]}
 set -e
 echo "v235_p4_done rc=$rc $(date --iso-8601=seconds)" | tee -a "$STATUS"

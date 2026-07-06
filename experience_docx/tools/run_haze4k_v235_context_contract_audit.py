@@ -107,7 +107,7 @@ def write_csv(path: str | Path, rows: list[dict[str, Any]], fields: list[str] | 
 def write_json(path: str | Path, payload: Any) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8")
 
 
 def file_sha256(path: str | Path) -> str:
