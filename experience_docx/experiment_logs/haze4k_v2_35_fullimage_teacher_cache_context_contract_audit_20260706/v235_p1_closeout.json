@@ -1,0 +1,9 @@
+{
+  "decision": "P1_PASS_FULLIMAGE_CACHE_CONTRACT",
+  "locked_test_touched": false,
+  "p2_context_size_sweep_authorized": true,
+  "p3_authorized": false,
+  "p4_free_tensor_projection_authorized": false,
+  "phase": "P1",
+  "route_id": "haze4k_v2_35_fullimage_teacher_cache_context_contract_audit_20260706"
+}

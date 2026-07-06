@@ -1,0 +1,11 @@
+{
+  "crop_input_student_fullslice_target_authorized": false,
+  "decision": "P0D_FAIL_BLOCK_256_CROP_INPUT_FULLSLICE_TARGET",
+  "locked_test_touched": false,
+  "p1_fullimage_cache_audit_authorized": true,
+  "p2_context_size_sweep_authorized": true,
+  "p3_authorized": false,
+  "p4_free_tensor_projection_authorized": false,
+  "phase": "P0D",
+  "route_id": "haze4k_v2_35_fullimage_teacher_cache_context_contract_audit_20260706"
+}

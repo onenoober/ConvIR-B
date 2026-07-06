@@ -1,0 +1,3 @@
+alpha,alpha_label,metric_key,gate_pass,mean,hard,easy,mid,p05,CVaR5,negative_count,severe_count,severe_rate,strong_reference_count,strong_reference_regression_count,strong_reference_regression_rate,sample_count,severe_threshold_dB,strong_reference_regression_threshold_dB
+0.375,a0p375,rebased_fullslice_a0p375_dPSNR_vs_crop_direct_A0,False,-3.092439115047455,-6.2723822593688965,0.329833984375,-2.6987804412841796,-8.828614234924316,-9.6356201171875,25,24,0.75,10,5,0.5,32,-0.3,-0.05
+0.5,a0p5,rebased_fullslice_a0p5_dPSNR_vs_crop_direct_A0,False,-1.7066933512687683,-4.460478623708089,0.8974601745605468,-1.0063045501708985,-6.708418464660644,-7.453708648681641,23,20,0.625,10,4,0.4,32,-0.3,-0.05

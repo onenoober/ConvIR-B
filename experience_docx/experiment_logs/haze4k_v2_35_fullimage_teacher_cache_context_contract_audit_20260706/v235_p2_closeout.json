@@ -1,0 +1,8 @@
+{
+  "decision": "P2_PASS_AT_LEAST_ONE_CONTEXT_CONTRACT",
+  "locked_test_touched": false,
+  "p3_authorized": true,
+  "p4_free_tensor_projection_authorized": false,
+  "phase": "P2",
+  "route_id": "haze4k_v2_35_fullimage_teacher_cache_context_contract_audit_20260706"
+}
