@@ -233,7 +233,7 @@ def lowpass(tensor: torch.Tensor, kernel: int = 9) -> torch.Tensor:
 
 
 def tensor_rms(tensor: torch.Tensor) -> torch.Tensor:
-    return tensor.pow(2).mean().sqrt()
+    return tensor.pow(2).mean().clamp_min(1e-12).sqrt()
 
 
 def psnr(pred: torch.Tensor, label: torch.Tensor) -> float:
