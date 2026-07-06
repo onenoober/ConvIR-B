@@ -525,11 +525,79 @@ def recall_at_fpr(scores: np.ndarray, labels: np.ndarray, max_fpr: float = 0.05)
     return best
 
 
+def auc_score(labels: np.ndarray, scores: np.ndarray) -> float | None:
+    labels = labels.astype(np.int64)
+    pos = labels == 1
+    neg = labels == 0
+    n_pos = int(pos.sum())
+    n_neg = int(neg.sum())
+    if n_pos == 0 or n_neg == 0:
+        return None
+    order = np.argsort(scores)
+    ranks = np.empty_like(scores, dtype=np.float64)
+    i = 0
+    while i < len(scores):
+        j = i
+        while j + 1 < len(scores) and scores[order[j + 1]] == scores[order[i]]:
+            j += 1
+        avg_rank = (i + j + 2) / 2.0
+        ranks[order[i : j + 1]] = avg_rank
+        i = j + 1
+    rank_sum = float(ranks[pos].sum())
+    return float((rank_sum - n_pos * (n_pos + 1) / 2.0) / (n_pos * n_neg))
+
+
+def average_precision(labels: np.ndarray, scores: np.ndarray) -> float | None:
+    labels = labels.astype(np.int64)
+    n_pos = int((labels == 1).sum())
+    if n_pos == 0:
+        return None
+    order = np.argsort(-scores)
+    y = labels[order]
+    tp = np.cumsum(y == 1)
+    ranks = np.arange(1, len(y) + 1, dtype=np.float64)
+    precision = tp / ranks
+    return float(precision[y == 1].sum() / n_pos)
+
+
+def impute_and_standardize(
+    x_train: np.ndarray, x_test: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    med = np.nanmedian(x_train, axis=0)
+    med = np.where(np.isfinite(med), med, 0.0)
+    train = np.where(np.isfinite(x_train), x_train, med)
+    test = np.where(np.isfinite(x_test), x_test, med)
+    mu = train.mean(axis=0)
+    sigma = train.std(axis=0)
+    sigma = np.where(sigma > 1.0e-8, sigma, 1.0)
+    return (train - mu) / sigma, (test - mu) / sigma
+
+
+def fallback_linear_scores(x_train: np.ndarray, y_train: np.ndarray, x_test: np.ndarray) -> np.ndarray:
+    train, test = impute_and_standardize(x_train, x_test)
+    train = np.concatenate([np.ones((train.shape[0], 1)), train], axis=1)
+    test = np.concatenate([np.ones((test.shape[0], 1)), test], axis=1)
+    y = y_train.astype(np.float64)
+    n_pos = max(float((y == 1).sum()), 1.0)
+    n_neg = max(float((y == 0).sum()), 1.0)
+    weights = np.where(y == 1, 0.5 / n_pos, 0.5 / n_neg) * len(y)
+    sw = np.sqrt(weights)[:, None]
+    xw = train * sw
+    yw = y * sw[:, 0]
+    reg = np.eye(train.shape[1], dtype=np.float64)
+    reg[0, 0] = 0.0
+    beta = np.linalg.pinv(xw.T @ xw + reg) @ (xw.T @ yw)
+    raw = np.clip(test @ beta, -50.0, 50.0)
+    return 1.0 / (1.0 + np.exp(-raw))
+
+
 def oof_predictability(
     atlas: list[dict[str, Any]], feature_manifest: str | None, out_dir: Path
 ) -> dict[str, Any] | None:
     if not feature_manifest:
         return None
+    sklearn_available = True
+    sklearn_error = ""
     try:
         from sklearn.impute import SimpleImputer
         from sklearn.linear_model import LogisticRegression
@@ -537,7 +605,8 @@ def oof_predictability(
         from sklearn.pipeline import make_pipeline
         from sklearn.preprocessing import StandardScaler
     except Exception as exc:  # pragma: no cover - cloud env dependent
-        return {"skipped": True, "reason": f"sklearn_import_failed:{exc}"}
+        sklearn_available = False
+        sklearn_error = str(exc)
 
     feature_rows = read_rows(feature_manifest)
     by_id = {r["image_id"]: r for r in feature_rows}
@@ -569,11 +638,14 @@ def oof_predictability(
     per_fold_rows: list[dict[str, Any]] = []
     summary: dict[str, Any] = {
         "skipped": False,
+        "backend": "sklearn_logistic_regression" if sklearn_available else "numpy_weighted_ridge_fallback",
         "image_count": len(ids),
         "feature_count": len(cols),
         "feature_manifest": feature_manifest,
         "labels": {},
     }
+    if not sklearn_available:
+        summary["sklearn_unavailable_reason"] = sklearn_error
     for name, y in labels.items():
         scores = np.full(len(ids), np.nan, dtype=np.float64)
         for fold in sorted(set(folds.tolist())):
@@ -581,18 +653,21 @@ def oof_predictability(
             test = folds == fold
             if len(np.unique(y[train])) < 2 or test.sum() == 0:
                 continue
-            clf = make_pipeline(
-                SimpleImputer(strategy="median"),
-                StandardScaler(),
-                LogisticRegression(
-                    max_iter=1000,
-                    class_weight="balanced",
-                    solver="liblinear",
-                    random_state=240,
-                ),
-            )
-            clf.fit(x[train], y[train])
-            fold_scores = clf.predict_proba(x[test])[:, 1]
+            if sklearn_available:
+                clf = make_pipeline(
+                    SimpleImputer(strategy="median"),
+                    StandardScaler(),
+                    LogisticRegression(
+                        max_iter=1000,
+                        class_weight="balanced",
+                        solver="liblinear",
+                        random_state=240,
+                    ),
+                )
+                clf.fit(x[train], y[train])
+                fold_scores = clf.predict_proba(x[test])[:, 1]
+            else:
+                fold_scores = fallback_linear_scores(x[train], y[train], x[test])
             scores[test] = fold_scores
             fold_row = {
                 "label": name,
@@ -601,8 +676,12 @@ def oof_predictability(
                 "test_positive_rate": float(y[test].mean()),
             }
             if len(np.unique(y[test])) == 2:
-                fold_row["auroc"] = float(roc_auc_score(y[test], fold_scores))
-                fold_row["auprc"] = float(average_precision_score(y[test], fold_scores))
+                if sklearn_available:
+                    fold_row["auroc"] = float(roc_auc_score(y[test], fold_scores))
+                    fold_row["auprc"] = float(average_precision_score(y[test], fold_scores))
+                else:
+                    fold_row["auroc"] = auc_score(y[test], fold_scores)
+                    fold_row["auprc"] = average_precision(y[test], fold_scores)
             else:
                 fold_row["auroc"] = math.nan
                 fold_row["auprc"] = math.nan
@@ -614,13 +693,22 @@ def oof_predictability(
             "valid_oof_count": int(valid.sum()),
         }
         if valid.sum() and len(np.unique(y[valid])) == 2:
-            label_summary["auroc"] = float(roc_auc_score(y[valid], scores[valid]))
-            label_summary["auprc"] = float(average_precision_score(y[valid], scores[valid]))
+            if sklearn_available:
+                label_summary["auroc"] = float(roc_auc_score(y[valid], scores[valid]))
+                label_summary["auprc"] = float(
+                    average_precision_score(y[valid], scores[valid])
+                )
+            else:
+                label_summary["auroc"] = auc_score(y[valid], scores[valid])
+                label_summary["auprc"] = average_precision(y[valid], scores[valid])
             label_summary["recall_at_fpr0p05"] = recall_at_fpr(scores[valid], y[valid], 0.05)
             shuffled_ap = []
             for _ in range(20):
                 shuffled = rng.permutation(y[valid])
-                shuffled_ap.append(float(average_precision_score(shuffled, scores[valid])))
+                if sklearn_available:
+                    shuffled_ap.append(float(average_precision_score(shuffled, scores[valid])))
+                else:
+                    shuffled_ap.append(float(average_precision(shuffled, scores[valid])))
             label_summary["shuffle_auprc_mean"] = float(np.mean(shuffled_ap))
             label_summary["shuffle_auprc_p95"] = float(np.quantile(shuffled_ap, 0.95))
         summary["labels"][name] = label_summary
