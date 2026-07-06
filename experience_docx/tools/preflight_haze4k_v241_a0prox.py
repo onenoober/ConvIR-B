@@ -194,7 +194,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--checkpoint", required=True)
-    parser.add_argument("--synthetic-size", type=int, default=128)
+    parser.add_argument("--synthetic-size", type=int, default=256)
     parser.add_argument("--beta", type=float, default=0.05)
     run(parser.parse_args())
 

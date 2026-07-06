@@ -22,7 +22,7 @@ set +e
 "$PY" -u experience_docx/tools/preflight_haze4k_v241_a0prox.py \
   --out-dir "$EVID" \
   --checkpoint "$CKPT" \
-  --synthetic-size 128 \
+  --synthetic-size 256 \
   --beta 0.05 \
   2>&1 | tee "$LOG"
 rc=${PIPESTATUS[0]}
