@@ -1,0 +1,10 @@
+{
+  "canary80_authorized": false,
+  "decision": "P0_FAIL_FULL600_SAME_CONTRACT_TEACHER",
+  "gate_pass": false,
+  "locked_test_touched": false,
+  "p0b_context384_projection_authorized": false,
+  "p1_arch_identity_authorized": false,
+  "phase": "P0",
+  "route_id": "haze4k_v2_36_same_contract_wlfbridge_s4s6_generator_trainability_20260706"
+}

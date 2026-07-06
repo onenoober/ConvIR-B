@@ -1,6 +1,6 @@
 # Haze4K v2.36 Same-Contract WLFBridge-S4S6 Generator Trainability Audit
 
-Status: `PLANNED`
+Status: `COMPLETED_GATE_FAIL`
 
 Branch: `codex/haze4k-v2-36-same-contract-wlfbridge-s4s6-generator-trainability`
 
@@ -150,6 +150,36 @@ P5: full-600 train-derived diagnostic. Authorized only after P4 passes.
 
 `experience_docx/experiment_logs/haze4k_v2_36_same_contract_wlfbridge_s4s6_generator_trainability_20260706/`
 
+## Results
+
+P0 completed on `convir-4090` at cloud commit
+`1485db17887d45b8ded8cfd6554ff6d12770104c` and failed the predeclared
+full-600 same-contract teacher gate. The alpha0.5 full-image same-context
+teacher remained strongly positive on average but was not tail-safe:
+
+```text
+image_count: 600
+cache_sha_coverage: 1.0
+mean_delta: +3.2299 dB
+hard_delta: +4.9092 dB
+easy_delta: +1.1266 dB
+p05: +0.0084 dB
+CVaR5: -0.7438 dB
+severe_rate: 0.035
+strong_reference_regression_rate: 0.1733
+fold_pass: 0/5
+```
+
+The post-run audit independently recomputed the critical counts from the
+per-image CSV: `600` rows, `30` negative deltas, `21` severe regressions, and
+`26/150` strong-reference regressions. Worst regressions were concentrated in
+high-A0/easy strong-reference images.
+
 ## Current Decision
 
-`OPEN_PLANNED`; no runtime phase has completed yet. Locked test remains blocked.
+`P0_FAIL_STOP_BEFORE_BRIDGE_TRAINING`.
+
+P0B context384 projection, P1 architecture identity, P2 generator fit, P3 OOF,
+P4 canary80, and locked test are all blocked by the P0 gate failure. This route
+should not train a bridge or expand canaries from the current alpha0.5 full600
+substrate.

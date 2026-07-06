@@ -1,2 +1,5 @@
 PLANNED v236 same-contract WLFBridge-S4S6 generator trainability route 2026-07-06
 locked_test_touched=false
+v236_p0_start 2026-07-06T17:24:36+08:00 locked=untouched
+v236_p0_done rc=0 2026-07-06T17:24:45+08:00
+COMPLETED_GATE_FAIL v236 P0 full600 same-contract teacher failed; P0B/P1/P2/P3/P4 blocked 2026-07-06T17:26:37+08:00
