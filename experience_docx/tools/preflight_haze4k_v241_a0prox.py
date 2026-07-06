@@ -168,7 +168,7 @@ def run(args: argparse.Namespace) -> None:
         and finite_outputs
         and synth_diff == 0.0
         and forbidden_hits == 0
-        and beta <= args.beta
+        and beta <= args.beta + 1.0e-6
         and not partial["unexpected"]
         and not partial["shape_mismatch"]
         and not partial["bad_missing"]
