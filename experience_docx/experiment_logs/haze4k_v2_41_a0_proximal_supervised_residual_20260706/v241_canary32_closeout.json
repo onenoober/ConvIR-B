@@ -1,0 +1,9 @@
+{
+  "canary80_authorized": false,
+  "decision": "CANARY32_OOF_GATE_FAIL_LOCK_CANARY80_LOCKED_TEST",
+  "gate_pass": false,
+  "locked_test_authorized": false,
+  "locked_test_touched": false,
+  "status": "COMPLETED_GATE_FAIL",
+  "summary_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-41-a0-proximal-supervised-residual/experience_docx/experiment_logs/haze4k_v2_41_a0_proximal_supervised_residual_20260706/v241_canary32_oof_summary.json"
+}

@@ -1,0 +1,63 @@
+{
+  "allowed_new_prefixes": [
+    "A0PROX_"
+  ],
+  "anchor_source": "github/codex/haze4k-official-arch-anchor",
+  "checkpoint": {
+    "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+    "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "size": 34797069
+  },
+  "decision": "P0_STAGE0_PREFLIGHT_PASS",
+  "finite_outputs": true,
+  "forbidden_symbol_hits": 0,
+  "forbidden_symbol_report": {
+    "Dehazing/ITS/main.py": [],
+    "Dehazing/ITS/models/A0ProxResidualConvIR.py": []
+  },
+  "gate_pass": true,
+  "identity_max_abs_vs_official_synthetic": 0.0,
+  "locked_test_touched": false,
+  "new_module_init": {
+    "A0PROX_beta": 0.05000000074505806,
+    "A0PROX_head_last_bias_abs_max": 0.0,
+    "A0PROX_head_last_weight_abs_max": 0.0
+  },
+  "new_param_count": 11843,
+  "output_shapes": [
+    [
+      1,
+      3,
+      64,
+      64
+    ],
+    [
+      1,
+      3,
+      128,
+      128
+    ],
+    [
+      1,
+      3,
+      256,
+      256
+    ]
+  ],
+  "partial_load": {
+    "bad_missing": [],
+    "loaded_count": 602,
+    "missing_new_modules": [
+      "A0PROX_beta",
+      "A0PROX_head.0.bias",
+      "A0PROX_head.0.weight",
+      "A0PROX_head.2.bias",
+      "A0PROX_head.2.weight"
+    ],
+    "shape_mismatch": [],
+    "unexpected": []
+  },
+  "route": "haze4k_v2_41_a0_proximal_supervised_residual",
+  "stage": "P0_STAGE0_PREFLIGHT",
+  "total_param_count": 8642508
+}

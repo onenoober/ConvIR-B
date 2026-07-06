@@ -15,13 +15,13 @@ canaries, the v2.35 256 crop-input/full-image-slice target contract, and the
 v2.36 alpha0.5 full600 same-context WDMamba substrate, the v2.37 oracle mask substrate as a bridge-training authorization, the
 v2.38 no-selector WDMamba micro-alpha substrate, the v2.38B rich target-only
 separability rescue, the v2.39 ConvIR-L same-family teacher contract, and
-v2.40 selector/alpha continuations from the root-cause atlas are not
-training-authorized. NoPost lowband remains directionally open, but the
-post-v2.37 follow-ups show that neither smaller WDMamba alpha, richer current
-target-only features, ConvIR-L same-family alpha, nor v2.40 runtime alignment
-predictability currently authorizes P5, bridge training, canary80, or locked
-test. v2.40 opens only a separate v2.41 Stage-0 design/preflight route from the
-official architecture anchor.
+v2.40 selector/alpha continuations from the root-cause atlas, and the v2.41
+frozen-backbone A0-proximal residual canary32 are not training-authorized for
+expansion. NoPost lowband remains directionally open, but the post-v2.37
+follow-ups show that neither smaller WDMamba alpha, richer current target-only
+features, ConvIR-L same-family alpha, v2.40 runtime alignment predictability,
+nor the v2.41 frozen-backbone residual head authorizes P5, bridge training,
+canary80, or locked test.
 
 ## Sources
 
@@ -49,6 +49,7 @@ official architecture anchor.
   - `../experiment_cards/2026-07-06-haze4k-v2-38b-rich-target-only-noop-unsafe-separability-audit.md`
   - `../experiment_cards/2026-07-06-haze4k-v2-39-convirl-same-family-teacher-contract-audit.md`
   - `../experiment_cards/2026-07-06-haze4k-v2-40-teacher-residual-alignment-atlas.md`
+  - `../experiment_cards/2026-07-06-haze4k-v2-41-a0-proximal-supervised-residual.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/`
   - `../experiment_logs/haze4k_v2_17_nopost_lowband_alignment_tail_audit_20260703/`
@@ -73,6 +74,7 @@ official architecture anchor.
   - `../experiment_logs/haze4k_v2_38b_rich_target_only_noop_unsafe_separability_audit_20260706/`
   - `../experiment_logs/haze4k_v2_39_convirl_same_family_teacher_contract_audit_20260706/`
   - `../experiment_logs/haze4k_v2_40_teacher_residual_alignment_atlas_20260706/`
+  - `../experiment_logs/haze4k_v2_41_a0_proximal_supervised_residual_20260706/`
 
 ## Established Facts
 
@@ -101,10 +103,11 @@ official architecture anchor.
 | Haze4K v2.38B Rich Target-Only NoOp/Unsafe Separability Audit | Rich target-only ConvIR/A0/internal features improved AUROC but failed deployability. `all_rich_target_only` reached AUROC/AUPRC `0.8946/0.2961`, severe recall `0.4762`, strong-reference recall `0.4231`, easy no-op precision `0.3429`, and fold pass `0/5`; controls behaved as expected. | `P0_FAIL_RICH_TARGET_ONLY_SEPARABILITY_DIAGNOSTIC`; no current target-only signal authorizes selective M0 bridge/generator work. |
 | Haze4K v2.39 ConvIR-L Same-Family Teacher Contract Audit | P0 swept ConvIR-L same-context alpha on 600 images. Low alphas were too weak and all folds failed; high alphas gained mean/hard but caused severe p05/CVaR5/worst regressions, with alpha1.0 severe `132` and strong-reference regressions `38`. | `P0_FAIL_CONVIRL_NO_SAFE_TEACHER_ALPHA`; do not launch P1 projection, bridge/generator, canary80, or locked test. |
 | Haze4K v2.40 Teacher Residual Alignment Atlas | P0 computed WDMamba and ConvIR-L residual geometry on the same 600 train-derived full-image samples. WDMamba was rarely anti-aligned (`0.0033` all, `0.0` hard) with alpha-safe-upper p05 `0.5031`, but rare easy/strong-reference tail fragility remains. ConvIR-L was more anti-aligned (`0.1033` all, `0.1867` hard) and teacher-specific unsafe. WDMamba/ConvIR-L useful-alpha unsafe overlap was low (`Jaccard=0.0385`). Runtime-visible alignment predictability did not authorize selector work: WDMamba recall at FPR0.05 was `0.0`; ConvIR-L anti-alignment AUROC/AUPRC `0.7123/0.2176` had recall at FPR0.05 only `0.1129`. | `V240_COMPLETE_SELECTOR_ALPHA_BLOCKED_V241_STAGE0_DESIGN_OPEN`; keep selector/alpha/bridge/P5/canary80/locked test blocked. Only a separate v2.41 A0-proximal GT-risk-controlled supervised residual Stage-0 route from the official anchor is open. |
+| Haze4K v2.41 A0-Proximal Supervised Residual | P0 passed from the official anchor: strict partial load accepted only `A0PROX_*` missing keys, finite synthetic forwards passed, identity max abs vs official ConvIR-B was `0.0`, forbidden symbols were `0`, and locked test was untouched. Canary32 OOF then froze official ConvIR-B and trained only `11843` `A0PROX_*` parameters on five train-derived folds. It failed the written gate: global mean/hard/easy `-0.0277/+0.0742/-0.0724 dB`, p05/CVaR5 `-0.3981/-0.5972 dB`, severe `27`, strong-reference regressions `25`, fold pass `0/5`. Mechanism diagnostics passed (`easy/hard residual-energy ratio 0.2871`, hinge violation `0.6625 -> 0.58125`), so the blocker is tail-safe OOF quality. | `CANARY32_OOF_GATE_FAIL_LOCK_CANARY80_LOCKED_TEST`; do not launch canary80 or locked test, and do not rescue by simple epoch/fold/sample/loss-weight expansion. |
 
 ## Family Verdict
 
-Latest addendum (2026-07-06): post-v2.37 follow-ups closed the two
+Latest addendum (2026-07-07): post-v2.37 follow-ups closed the two
 suggested rescue directions that were still authorized, and v2.40 refined the
 root-cause reading. v2.38 found no strict no-selector WDMamba micro-alpha
 substrate; v2.38B showed richer target-only features still do not separate
@@ -112,11 +115,13 @@ unsafe/no-op cases well enough; v2.39 showed ConvIR-L same-family teacher
 alphas have the same low-alpha-too-weak / high-alpha-tail-regression tradeoff;
 v2.40 showed WDMamba residuals are mostly GT-aligned with rare fragile tail
 cases, ConvIR-L failures are more teacher-specific, unsafe overlap is low, and
-runtime-visible alignment predictability is still not deployable. Therefore the
-current NoPost lowband / same-context teacher selector-alpha route remains
-closed for training, bridge, P5, canary80, and locked test. Only a separate
-v2.41 Stage-0 design/preflight route from the official architecture anchor is
-open for an A0-proximal, GT-risk-controlled supervised residual architecture.
+runtime-visible alignment predictability is still not deployable. v2.41 then
+showed that the cleanest frozen-backbone A0-proximal residual-head canary can
+concentrate residual energy more on hard than easy images, but still fails
+tail-safe OOF quality. Therefore the current NoPost lowband / same-context
+teacher selector-alpha route and the tested v2.41 frozen-backbone residual-head
+route remain closed for training expansion, bridge, P5, canary80, and locked
+test.
 
 The precise conclusion is: close WLDB-A, v2.18 WLDB-A2 global pooled policy,
 v2.19 O2 final-only spatial predictor, v2.20 O3 mid+final/global-context
@@ -144,9 +149,11 @@ fold-stable substrate gates. v2.38-v2.40 then closed the deployable selector and
 no-selector continuations: target-only no-op/unsafe separability, richer
 runtime-visible features, ConvIR-L same-family alpha, and runtime alignment
 predictability all failed to authorize P5, bridge/generator, canary80, or
-locked-test work. The remaining open path is not another selector/alpha rescue;
-it is a separate v2.41 A0-proximal, GT-risk-controlled supervised residual
-architecture route from the official anchor, starting with Stage-0 preflight.
+locked-test work. v2.41 then tested the most conservative A0-proximal
+GT-risk-controlled residual route from the official anchor: Stage-0 was clean,
+but canary32 OOF failed quality and tail gates. The remaining open path is not
+another selector/alpha rescue or a simple v2.41 expansion; it would need a
+materially changed GT-risk-controlled architecture or training plan.
 
 v2.16 established that lowband correction is a real source of headroom inside
 ConvIR-B. The RGB LL oracle and the proposed zero-init WLDB insertion were both
@@ -334,12 +341,9 @@ the failed direct-crop or 256 crop-input contracts.
 ## Reopen Condition
 
 A credible follow-up must be a materially different route, not a continuation
-of the selector/alpha/bridge line. After v2.40, the currently open follow-up is
-v2.41: an A0-proximal, GT-risk-controlled supervised residual architecture from
-`github/codex/haze4k-official-arch-anchor`, with strict partial-load,
-zero-init/no-op, forbidden-symbol, and locked-test-blocked Stage-0 evidence
-before any canary. It must not be a WLDB-A rerun, a direct v2.19/v2.20 training
-launch, a v2.23 expansion, a v2.25A hyperparameter extension, a v2.26
+of the selector/alpha/bridge line or the failed v2.41 frozen-backbone canary32.
+It must not be a WLDB-A rerun, a direct v2.19/v2.20 training launch, a v2.23
+expansion, a v2.25A hyperparameter extension, a v2.26
 rescue/action-joint continuation, a v2.27 selector launch from the same-sample
 bank, a v2.28 selector launch from the current unsafe OOF prototype bank, a
 v2.29 selector launch from the failed safe-envelope/table-policy bank, a v2.30
@@ -351,6 +355,8 @@ direct-crop WDMamba canary whose direct teacher benefit gate failed, a v2.35
 256 crop-input/full-image-slice target training launch whose rebased contract
 failed, a v2.36 bridge/generator launch from the alpha0.5 full600 substrate
 whose CVaR/severe/strong-reference P0 gate failed, or a v2.40 selector/alpha
-continuation. A WDMamba teacher follow-up may use v2.35-v2.40 evidence only as
-offline training/regularizer context inside a new GT-risk-controlled route, not
-as a deployable selector target.
+continuation, or a v2.41 canary32 expansion by more epochs, folds, samples,
+simple loss-weight tuning, canary80, or locked-test use. A WDMamba teacher
+follow-up may use v2.35-v2.40 evidence only as offline training/regularizer
+context inside a new GT-risk-controlled route, not as a deployable selector
+target.
