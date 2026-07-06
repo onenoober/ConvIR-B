@@ -5,6 +5,7 @@ import random
 import shutil
 from torch.backends import cudnn
 from models.ConvIR import build_net
+from models.A0ProxResidualConvIR import build_a0prox_residual_net
 from train import _train
 from eval import _eval
 
@@ -22,8 +23,58 @@ def load_init_model(model, args):
     if args.resume:
         raise ValueError('--init_model initializes weights; --resume restores optimizer state. Use only one.')
     state = _load_checkpoint_model(args.init_model, 'cpu')
-    model.load_state_dict(state)
-    print(f'INIT_MODEL_LOAD path={args.init_model} missing=[] unexpected=[]')
+    if args.arch == 'a0prox_residual':
+        report = load_haze4k_partial(model, state, ('A0PROX_',))
+        print(
+            f"INIT_MODEL_PARTIAL_LOAD path={args.init_model} "
+            f"loaded={len(report['loaded'])} missing_new={len(report['missing_new_modules'])} "
+            f"unexpected={report['unexpected']} shape_mismatch={report['shape_mismatch']}"
+        )
+    else:
+        model.load_state_dict(state)
+        print(f'INIT_MODEL_LOAD path={args.init_model} missing=[] unexpected=[]')
+
+
+def load_haze4k_partial(model, state, allowed_new_prefixes):
+    model_state = model.state_dict()
+    loaded = {}
+    shape_mismatch = []
+    unexpected = []
+    for key, value in state.items():
+        if key not in model_state:
+            unexpected.append(key)
+        elif model_state[key].shape != value.shape:
+            shape_mismatch.append((key, tuple(value.shape), tuple(model_state[key].shape)))
+        else:
+            loaded[key] = value
+    missing = [key for key in model_state if key not in loaded]
+    bad_missing = [
+        key for key in missing
+        if not any(key.startswith(prefix) for prefix in allowed_new_prefixes)
+    ]
+    if unexpected or shape_mismatch or bad_missing:
+        raise RuntimeError(
+            f"partial-load failed: unexpected={unexpected}, "
+            f"shape_mismatch={shape_mismatch}, bad_missing={bad_missing}"
+        )
+    model_state.update(loaded)
+    model.load_state_dict(model_state, strict=True)
+    return {
+        'loaded': sorted(loaded),
+        'missing_new_modules': sorted(missing),
+        'unexpected': unexpected,
+        'shape_mismatch': shape_mismatch,
+    }
+
+
+def build_model(args):
+    if args.arch in ('official_convir', 'convir'):
+        return build_net(args.version, args.data, args.fam_mode)
+    if args.arch == 'a0prox_residual':
+        if args.fam_mode != 'original':
+            raise ValueError("a0prox_residual requires fam_mode='original'")
+        return build_a0prox_residual_net(args.version, args.data, args.a0prox_beta)
+    raise ValueError(f'unsupported architecture: {args.arch}')
 
 
 def main(args):
@@ -44,7 +95,7 @@ def main(args):
         os.makedirs('results/' + args.model_name + '/')
     if not os.path.exists(args.result_dir):
         os.makedirs(args.result_dir)
-    model = build_net(args.version, args.data, args.fam_mode)
+    model = build_model(args)
     # print(model)
 
     if torch.cuda.is_available():
@@ -65,7 +116,8 @@ if __name__ == '__main__':
     parser.add_argument('--data', type=str, default='ITS', choices=['ITS', 'Haze4K', 'NHR', 'GTA5', 'real_haze'])
     parser.add_argument('--version', default='small', choices=['small', 'base', 'large'], type=str)
     parser.add_argument('--fam_mode', default='original', choices=['original'], type=str)
-    parser.add_argument('--arch', default='official_convir', choices=['official_convir', 'convir'], type=str)
+    parser.add_argument('--arch', default='official_convir', choices=['official_convir', 'convir', 'a0prox_residual'], type=str)
+    parser.add_argument('--a0prox_beta', default=0.05, type=float)
     parser.add_argument('--seed', default=-1, type=int)
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
@@ -115,15 +167,15 @@ if __name__ == '__main__':
     parser.add_argument('--save_image', type=bool, default=False, choices=[True, False])
 
     args = parser.parse_args()
-    if args.arch not in ('official_convir', 'convir'):
-        raise ValueError('Official anchor only supports the official ConvIR-B architecture.')
+    if args.arch not in ('official_convir', 'convir', 'a0prox_residual'):
+        raise ValueError('Unsupported ConvIR-B architecture.')
     # Backward-compatible alias for route scripts that used the misspelled name.
     args.leaning_rate = args.learning_rate
     args.model_save_dir = os.path.join('results/', args.model_name, 'Training-Results/')
     args.result_dir = os.path.join('results/', args.model_name, 'images', args.data)
     if not os.path.exists(args.model_save_dir):
         os.makedirs(args.model_save_dir)
-    for source in ('models/layers.py', 'models/ConvIR.py', 'data/data_load.py', 'data/data_augment.py', 'train.py', 'valid.py', 'eval.py', 'main.py'):
+    for source in ('models/layers.py', 'models/ConvIR.py', 'models/A0ProxResidualConvIR.py', 'data/data_load.py', 'data/data_augment.py', 'train.py', 'valid.py', 'eval.py', 'main.py'):
         if os.path.exists(source):
             shutil.copy2(source, args.model_save_dir)
     print(args)
