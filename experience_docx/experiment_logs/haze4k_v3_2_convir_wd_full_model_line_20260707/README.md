@@ -24,6 +24,8 @@ Authorized stages:
   corrected aggregate P1 sufficiency check.
 - P2 train-derived validation: design open only; do not launch until the split,
   budget, checkpoint policy, and gate are written.
+- P2 fixed train-derived validation design: written; launch only via
+  `run_p2_train_derived_validation.sh` after resource preflight.
 
 Locked test policy: locked Haze4K test is blocked.
 
@@ -35,6 +37,8 @@ Primary outputs:
 - `v32_p1b_mini_overfit_aggregate.json`;
 - `p1b_mini_overfit_aggregate_v32.log`;
 - `run_p1b_mini_overfit_aggregate.sh`;
+- `v32_p2_train_derived_validation_design.md`;
+- `run_p2_train_derived_validation.sh`;
 - `status.txt`.
 - `v32_closeout.json`.
 
@@ -106,3 +110,20 @@ model-line superiority.
 
 Next allowed action: write a P2 train-derived validation design before any
 larger training. Locked test remains blocked.
+
+## P2 Design Status
+
+P2 is defined as a fixed train-derived validation screen using the v3.1
+600-image raw table for split identity:
+
+- validation: `fold_id=0`, 120 train-derived images;
+- training: `fold_id=1..4`, 480 train-derived images;
+- scope: `wd_decoder`;
+- seed: `3407`;
+- budget: 20 epochs, batch size `4`, save/validate every 5 epochs;
+- primary checkpoint: `Best.pkl`, selected by validation PSNR only;
+- baseline: official A0 on the same 120 validation images;
+- locked test: blocked.
+
+The P2 gate and stop/continue rules are written in
+`v32_p2_train_derived_validation_design.md`.
