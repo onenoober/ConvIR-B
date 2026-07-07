@@ -30,8 +30,8 @@ class WDFeatureMod(nn.Module):
         super(WDFeatureMod, self).__init__()
         hidden = max(32, feature_channels // 2)
         self.main = nn.Sequential(
-            BasicConv(state_channels, hidden, kernel_size=3, relu=True),
-            BasicConv(hidden, hidden, kernel_size=5, relu=True),
+            BasicConv(state_channels, hidden, kernel_size=3, stride=1, relu=True),
+            BasicConv(hidden, hidden, kernel_size=5, stride=1, relu=True),
             nn.Conv2d(hidden, feature_channels * 2, kernel_size=1),
         )
         nn.init.zeros_(self.main[-1].weight)
@@ -65,9 +65,9 @@ class ConvIRWDLite(ConvIR):
         super(ConvIRWDLite, self).__init__(version, data)
         base_channel = 32
         self.WD_state_encoder = nn.Sequential(
-            BasicConv(12, base_channel, kernel_size=3, relu=True),
-            BasicConv(base_channel, base_channel * 2, kernel_size=3, relu=True),
-            BasicConv(base_channel * 2, state_channels, kernel_size=3, relu=True),
+            BasicConv(12, base_channel, kernel_size=3, stride=1, relu=True),
+            BasicConv(base_channel, base_channel * 2, kernel_size=3, stride=1, relu=True),
+            BasicConv(base_channel * 2, state_channels, kernel_size=3, stride=1, relu=True),
         )
         self.WD_bottleneck_mod = WDFeatureMod(state_channels, base_channel * 4)
         self.WD_decoder2_mod = WDFeatureMod(state_channels, base_channel * 2)
