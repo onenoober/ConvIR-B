@@ -215,7 +215,7 @@ def main():
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--samples", type=int, default=8)
-    parser.add_argument("--crop_size", type=int, default=128)
+    parser.add_argument("--crop_size", type=int, default=256)
     parser.add_argument("--steps", type=int, default=120)
     parser.add_argument("--batch_size", type=int, default=2)
     parser.add_argument("--scope", default="wd_decoder", choices=["wd_only", "wd_decoder", "all"])

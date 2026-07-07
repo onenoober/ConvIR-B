@@ -33,7 +33,7 @@ PYTHONUNBUFFERED=1 "$PY" experience_docx/tools/haze4k_v32_convir_wd_mini_overfit
   --checkpoint "$A0" \
   --output "$JSON_OUT" \
   --samples 8 \
-  --crop_size 128 \
+  --crop_size 256 \
   --steps 120 \
   --batch_size 2 \
   --scope wd_decoder \
