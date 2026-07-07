@@ -1,0 +1,87 @@
+{
+  "branch": "codex/haze4k-v4-0-baseline-lock",
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "checkpoint_size": 34797069,
+  "commit": "243e3ea1b043daf3d4101c000bc4a33f98f2c1d7",
+  "cuda_available": true,
+  "cuda_device_count_visible": 1,
+  "cuda_device_name": "NVIDIA GeForce RTX 4090",
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "forbidden_state_key_hits": [],
+  "locked_test_touched": false,
+  "one_batch_forward_finite": true,
+  "one_batch_input_shape": [
+    1,
+    3,
+    256,
+    256
+  ],
+  "one_batch_label_shape": [
+    1,
+    3,
+    256,
+    256
+  ],
+  "one_batch_loss": 0.009162645787000656,
+  "one_batch_output_shapes": [
+    [
+      1,
+      3,
+      64,
+      64
+    ],
+    [
+      1,
+      3,
+      128,
+      128
+    ],
+    [
+      1,
+      3,
+      256,
+      256
+    ]
+  ],
+  "parameter_count_total": 8630665,
+  "parameter_count_trainable": 8630665,
+  "pass": true,
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "python_version": "3.10.20 | packaged by conda-forge | (main, Mar  5 2026, 16:42:22) [GCC 14.3.0]",
+  "route_id": "haze4k_v4_0_baseline_lock_20260707",
+  "status_short": [
+    "M experience_docx/experiment_logs/haze4k_v4_0_baseline_lock_20260707/status.txt",
+    "?? experience_docx/experiment_logs/haze4k_v4_0_baseline_lock_20260707/run_v4_a0_preflight.sh"
+  ],
+  "strict_load": {
+    "loaded_key_count": 602,
+    "missing": [],
+    "unexpected": []
+  },
+  "synthetic_forward_finite": true,
+  "synthetic_output_shapes": [
+    [
+      1,
+      3,
+      64,
+      64
+    ],
+    [
+      1,
+      3,
+      128,
+      128
+    ],
+    [
+      1,
+      3,
+      256,
+      256
+    ]
+  ],
+  "test_split_enumerated": false,
+  "torch_version": "2.5.1+cu121",
+  "train_gt_count": 3000,
+  "train_haze_count": 3000
+}

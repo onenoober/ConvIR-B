@@ -1,0 +1,19 @@
+{
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "audit": "train_sorted_first128_final_vs_a0",
+  "best_delta_psnr": 0.5196685791015625,
+  "candidate_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-1-sdfm-only/Dehazing/ITS/results/ConvIR-Haze4K-v4A1-SDFM-adapter-notest-seed3407-20260707/Training-Results/Final.pkl",
+  "count": 128,
+  "locked_test_touched": false,
+  "mean_delta_psnr": 0.018444612622261047,
+  "mean_delta_ssim": -3.6797020584344864e-05,
+  "median_delta_psnr": 0.033005714416503906,
+  "p5_delta_psnr": -0.2576873779296875,
+  "p95_delta_psnr": 0.2790382385253908,
+  "positive_ratio": 0.5703125,
+  "route_id": "haze4k_v4_1_sdfm_only_20260707",
+  "runtime_sec": 10.439213991165161,
+  "sample_policy": "sorted first 128 files from Haze4K train/haze; this is train-fit/mechanism sanity, not generalization evidence",
+  "test_split_enumerated": false,
+  "worst_delta_psnr": -0.3699951171875
+}

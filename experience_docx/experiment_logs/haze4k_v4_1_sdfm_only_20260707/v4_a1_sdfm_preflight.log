@@ -1,0 +1,166 @@
+<stdin>:69: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-1-sdfm-only/Dehazing/ITS/models/SFADConvIR.py:144: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(checkpoint_path, map_location='cpu')
+{
+  "adapter_scope": {
+    "frozen_param_count": 8630665,
+    "frozen_prefix_count": 9,
+    "scope": "adapter_only",
+    "trainable_param_count": 200964,
+    "trainable_prefixes": [
+      "SFAD_SDFM1",
+      "SFAD_SDFM2"
+    ]
+  },
+  "branch": "codex/haze4k-v4-1-sdfm-only",
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "checkpoint_size": 34797069,
+  "commit": "73643c4a965e6399ebfb5362c8fff668c4d8e518",
+  "cuda_available": true,
+  "cuda_device_count_visible": 1,
+  "cuda_device_name": "NVIDIA GeForce RTX 4090",
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "forbidden_state_key_hits": [],
+  "locked_test_touched": false,
+  "noop_max_abs_synthetic_vs_a0": 0.0,
+  "noop_max_abs_train_crop_vs_a0": 0.0,
+  "official_parameter_count_total": 8630665,
+  "official_strict_load": {
+    "loaded_key_count": 602,
+    "missing": [],
+    "unexpected": []
+  },
+  "one_batch_forward_finite": true,
+  "one_batch_input_shape": [
+    1,
+    3,
+    256,
+    256
+  ],
+  "one_batch_loss": 0.01309124380350113,
+  "one_batch_output_shapes": [
+    [
+      1,
+      3,
+      64,
+      64
+    ],
+    [
+      1,
+      3,
+      128,
+      128
+    ],
+    [
+      1,
+      3,
+      256,
+      256
+    ]
+  ],
+  "parameter_count_added": 200964,
+  "parameter_count_total": 8831629,
+  "partial_load": {
+    "allowed_new_prefixes": [
+      "SFAD_"
+    ],
+    "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+    "loaded_count": 602,
+    "missing_new_modules": [
+      "SFAD_SDFM1.affine.bias",
+      "SFAD_SDFM1.affine.weight",
+      "SFAD_SDFM1.alpha",
+      "SFAD_SDFM1.field.0.bias",
+      "SFAD_SDFM1.field.0.weight",
+      "SFAD_SDFM1.field.2.bias",
+      "SFAD_SDFM1.field.2.weight",
+      "SFAD_SDFM1.field.4.bias",
+      "SFAD_SDFM1.field.4.weight",
+      "SFAD_SDFM1.image_proj.0.bias",
+      "SFAD_SDFM1.image_proj.0.weight",
+      "SFAD_SDFM2.affine.bias",
+      "SFAD_SDFM2.affine.weight",
+      "SFAD_SDFM2.alpha",
+      "SFAD_SDFM2.field.0.bias",
+      "SFAD_SDFM2.field.0.weight",
+      "SFAD_SDFM2.field.2.bias",
+      "SFAD_SDFM2.field.2.weight",
+      "SFAD_SDFM2.field.4.bias",
+      "SFAD_SDFM2.field.4.weight",
+      "SFAD_SDFM2.image_proj.0.bias",
+      "SFAD_SDFM2.image_proj.0.weight"
+    ],
+    "shape_mismatch": [],
+    "unexpected": []
+  },
+  "pass": true,
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "python_version": "3.10.20 | packaged by conda-forge | (main, Mar  5 2026, 16:42:22) [GCC 14.3.0]",
+  "route_id": "haze4k_v4_1_sdfm_only_20260707",
+  "sdfm_stats": {
+    "SDFM_1_2": {
+      "R_gt_095": 0.0,
+      "R_lt_005": 0.0,
+      "R_max": 0.5622712969779968,
+      "R_mean": 0.524580717086792,
+      "R_min": 0.4805435240268707,
+      "R_std": 0.007173686753958464,
+      "alpha": 0.0,
+      "beta_max": 1.354740023612976,
+      "beta_mean": -0.06588142365217209,
+      "beta_min": -1.2766594886779785,
+      "beta_std": 0.6163285970687866,
+      "gamma_max": 1.2946196794509888,
+      "gamma_mean": 0.08132472634315491,
+      "gamma_min": -1.4212779998779297,
+      "gamma_std": 0.613953173160553
+    },
+    "SDFM_1_4": {
+      "R_gt_095": 0.0,
+      "R_lt_005": 0.0,
+      "R_max": 0.5384336113929749,
+      "R_mean": 0.5315088033676147,
+      "R_min": 0.5227933526039124,
+      "R_std": 0.0017463054973632097,
+      "alpha": 0.0,
+      "beta_max": 1.3798099756240845,
+      "beta_mean": -0.06539592146873474,
+      "beta_min": -1.370069980621338,
+      "beta_std": 0.6769911646842957,
+      "gamma_max": 1.4584250450134277,
+      "gamma_mean": 0.05413626879453659,
+      "gamma_min": -1.1193195581436157,
+      "gamma_std": 0.6201589107513428
+    }
+  },
+  "status_short": [
+    "M experience_docx/experiment_logs/haze4k_v4_1_sdfm_only_20260707/status.txt",
+    "?? experience_docx/experiment_logs/haze4k_v4_1_sdfm_only_20260707/run_v4_a1_sdfm_preflight.sh"
+  ],
+  "synthetic_forward_finite": true,
+  "synthetic_output_shapes": [
+    [
+      1,
+      3,
+      64,
+      64
+    ],
+    [
+      1,
+      3,
+      128,
+      128
+    ],
+    [
+      1,
+      3,
+      256,
+      256
+    ]
+  ],
+  "test_split_enumerated": false,
+  "torch_version": "2.5.1+cu121",
+  "train_gt_count": 3000,
+  "train_haze_count": 3000
+}

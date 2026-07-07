@@ -1,0 +1,24 @@
+<stdin>:28: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+audit 32/128 mean_delta=-0.075006
+audit 64/128 mean_delta=-0.061766
+audit 96/128 mean_delta=0.000167
+audit 128/128 mean_delta=0.018445
+{
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "audit": "train_sorted_first128_final_vs_a0",
+  "best_delta_psnr": 0.5196685791015625,
+  "candidate_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-1-sdfm-only/Dehazing/ITS/results/ConvIR-Haze4K-v4A1-SDFM-adapter-notest-seed3407-20260707/Training-Results/Final.pkl",
+  "count": 128,
+  "locked_test_touched": false,
+  "mean_delta_psnr": 0.018444612622261047,
+  "mean_delta_ssim": -3.6797020584344864e-05,
+  "median_delta_psnr": 0.033005714416503906,
+  "p5_delta_psnr": -0.2576873779296875,
+  "p95_delta_psnr": 0.2790382385253908,
+  "positive_ratio": 0.5703125,
+  "route_id": "haze4k_v4_1_sdfm_only_20260707",
+  "runtime_sec": 10.439213991165161,
+  "sample_policy": "sorted first 128 files from Haze4K train/haze; this is train-fit/mechanism sanity, not generalization evidence",
+  "test_split_enumerated": false,
+  "worst_delta_psnr": -0.3699951171875
+}
