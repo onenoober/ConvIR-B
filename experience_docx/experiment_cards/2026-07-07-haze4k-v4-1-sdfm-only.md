@@ -95,3 +95,28 @@ Decision: A1 Stage 0 passes. Stage 1 adapter-only training up to 5 epochs is aut
 ## Invalid Launch Note
 
 The first adapter5 launch used the repository default validation path, where `_valid()` calls `valid_dataloader()` and `valid_dataloader()` reads the Haze4K `test` directory. This touched locked test during epoch-1 validation, so that run was stopped immediately and is invalid for scientific comparison or checkpoint selection. The corrected Stage 1 script disables default validation by setting `--valid_freq 999`, uses a fresh output model name, and reserves quality checks for a separate train-derived/internal audit.
+
+## Stage 1 Adapter-Only No-Test Result
+
+Status: `COMPLETED_TRAIN_FIT_MECHANISM_SIGNAL`, not a quality gate pass.
+
+The corrected no-test 5-epoch adapter-only run completed with `V4_A1_SDFM_ADAPTER5_NOTEST_TRAIN_OK`. The log contains no `Start Evaluation`, so the corrected run did not enter the repository default Haze4K test validation path.
+
+Train-only audit: `train_sorted_first128_final_vs_a0`, using sorted first 128 files from `Haze4K/train/haze`. This is train-fit/mechanism sanity only because the model trained on the Haze4K train split.
+
+Key audit metrics:
+
+- Count: `128` train images.
+- Mean / median PSNR delta vs A0: `+0.0184446 / +0.0330057 dB`.
+- p5 / p95 PSNR delta: `-0.2576874 / +0.2790382 dB`.
+- Positive ratio: `0.5703125`.
+- Mean SSIM delta: `-0.0000368`.
+- Worst / best PSNR delta: `-0.3699951 / +0.5196686 dB`.
+- Locked test touched: `false`; test split enumerated: `false`.
+
+Module stats:
+
+- `SDFM_1_2`: `R_mean=0.4936137`, `R_std=0.3013143`, `R_min/R_max=0.0201111/0.9857115`, `R_lt_005=0.0054433`, `R_gt_095=0.0638628`, `alpha=-0.0071882`.
+- `SDFM_1_4`: `R_mean=0.5859682`, `R_std=0.0093770`, `R_min/R_max=0.5590772/0.6106155`, `alpha=-0.0013517`.
+
+Decision: A1 shows the SDFM branch can train and the 1/2-scale field becomes active, but the evidence is only train-fit/mechanism signal and has tail regressions. Do not claim A1 quality improvement or promote scope from this result alone. Continue Phase A by testing A2 GST-only from the official anchor, and later A3 SDFM+GST should use a fixed train-derived/internal validation contract before any broader claim.

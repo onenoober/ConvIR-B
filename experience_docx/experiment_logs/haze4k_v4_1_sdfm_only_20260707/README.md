@@ -55,3 +55,40 @@ Decision: `A1_PREFLIGHT_PASS`. Adapter-only 5-epoch Stage 1 is authorized; locke
 The first `adapter5` launch entered the repository default validation path, which reads Haze4K `test`. It was stopped immediately and is invalid for scientific comparison or checkpoint selection.
 
 Corrected action: use `run_v4_a1_sdfm_adapter5_notest.sh`, with `--valid_freq 999`, a fresh output model name, and separate train-derived/internal post-training audit.
+
+## Stage 1 Adapter-Only No-Test Result
+
+Status: `COMPLETED_TRAIN_FIT_MECHANISM_SIGNAL`; not a quality gate pass.
+
+Corrected no-test training completed with `V4_A1_SDFM_ADAPTER5_NOTEST_TRAIN_OK`. The training log contains no `Start Evaluation`, so the corrected run did not use the repository default Haze4K test validation path.
+
+Compact evidence:
+
+| File | Use |
+| --- | --- |
+| `train_ConvIR-Haze4K-v4A1-SDFM-adapter-notest-seed3407-20260707.log` | Corrected no-test training log. |
+| `a1_train128_compare_final_vs_a0.json` | Train128 summary vs A0. |
+| `a1_train128_per_image_final_vs_a0.csv` | Per-image train128 deltas. |
+| `a1_train128_module_stats_final.jsonl` | SDFM field/alpha averages. |
+| `audit_v4_a1_train128_final_vs_a0.log` | Audit stdout/stderr. |
+
+Key audit metrics:
+
+| Metric | Value |
+| --- | ---: |
+| Count | `128` |
+| Mean PSNR delta | `+0.0184446 dB` |
+| Median PSNR delta | `+0.0330057 dB` |
+| p5 / p95 delta | `-0.2576874 / +0.2790382 dB` |
+| Positive ratio | `0.5703125` |
+| Mean SSIM delta | `-0.0000368` |
+| Worst / best delta | `-0.3699951 / +0.5196686 dB` |
+
+Module stats:
+
+| Module | R_mean | R_std | R_min | R_max | alpha |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `SDFM_1_2` | `0.4936137` | `0.3013143` | `0.0201111` | `0.9857115` | `-0.0071882` |
+| `SDFM_1_4` | `0.5859682` | `0.0093770` | `0.5590772` | `0.6106155` | `-0.0013517` |
+
+Decision: A1 is useful as a mechanism/trainability signal, especially at 1/2 scale, but it is not a quality pass. Continue to A2 GST-only and require a fixed train-derived/internal validation contract before A3/A4 decisions.
