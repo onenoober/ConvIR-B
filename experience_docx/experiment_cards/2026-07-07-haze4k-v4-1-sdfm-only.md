@@ -91,3 +91,7 @@ Key checks:
 - Locked test touched: `false`; test split enumerated: `false`.
 
 Decision: A1 Stage 0 passes. Stage 1 adapter-only training up to 5 epochs is authorized with the same data/checkpoint contract and locked test blocked.
+
+## Invalid Launch Note
+
+The first adapter5 launch used the repository default validation path, where `_valid()` calls `valid_dataloader()` and `valid_dataloader()` reads the Haze4K `test` directory. This touched locked test during epoch-1 validation, so that run was stopped immediately and is invalid for scientific comparison or checkpoint selection. The corrected Stage 1 script disables default validation by setting `--valid_freq 999`, uses a fresh output model name, and reserves quality checks for a separate train-derived/internal audit.

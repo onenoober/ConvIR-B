@@ -49,3 +49,9 @@ Status: `COMPLETED_PREFLIGHT_PASS`.
 | Test split enumerated | `false` |
 
 Decision: `A1_PREFLIGHT_PASS`. Adapter-only 5-epoch Stage 1 is authorized; locked test remains blocked.
+
+## Invalid Launch Note
+
+The first `adapter5` launch entered the repository default validation path, which reads Haze4K `test`. It was stopped immediately and is invalid for scientific comparison or checkpoint selection.
+
+Corrected action: use `run_v4_a1_sdfm_adapter5_notest.sh`, with `--valid_freq 999`, a fresh output model name, and separate train-derived/internal post-training audit.
