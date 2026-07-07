@@ -1,0 +1,141 @@
+{
+  "a0_raw_oob_fraction_max": 0.08928059786558151,
+  "alignment_cos_mean": 0.00466044928246132,
+  "alignment_dot_mean": -4.777136554732012e-07,
+  "alignment_dot_p05": -1.2328079174039886e-05,
+  "alignment_dot_p50": 1.2287074468986248e-07,
+  "alpha_safe_upper_p05": -20.258852830639956,
+  "alpha_safe_upper_p50": -0.9490310417202654,
+  "count": 160,
+  "direction_bad_count": 86,
+  "global_summary": {
+    "count": 160,
+    "cvar5_delta": -0.5971845562324951,
+    "easy_delta": -0.0723866515875045,
+    "hard_delta": 0.07424563552679278,
+    "mean_delta": -0.027738129437332493,
+    "p05_delta": -0.3980779228820797,
+    "residual_energy_easy_mean": 3.136274171922082e-07,
+    "residual_energy_easy_to_hard_ratio": 0.28710741997766026,
+    "residual_energy_hard_mean": 1.0923695988651615e-06,
+    "severe_count": 27,
+    "strong_reference_regression_count": 25,
+    "worst_delta": -1.2664571422798758
+  },
+  "mse_identity_abs_error_max": 9.595169103704393e-11,
+  "negative_count": 92,
+  "overshoot_bad_count": 6,
+  "positive_count": 68,
+  "pred_raw_oob_fraction_max": 0.10929688066244125,
+  "residual_energy_mean": 7.004956027678588e-07,
+  "severe_alpha_safe_upper_p50": -6.837216608119048,
+  "severe_count": 27,
+  "severe_direction_bad_count": 27,
+  "severe_direction_bad_rate": 1.0,
+  "severe_overshoot_bad_count": 0,
+  "severe_overshoot_bad_rate": 0.0,
+  "severe_pred_raw_oob_fraction_mean": 0.018679146250978766,
+  "severe_residual_energy_mean": 1.0180575871374828e-06,
+  "worst_images": [
+    {
+      "alignment_dot": 1.3711186511500273e-05,
+      "alpha_safe_upper": -6.638970835948079,
+      "delta_psnr": -1.2664571422798758,
+      "direction_bad": true,
+      "fold": 4,
+      "image": "1336_0.6_0.63.png",
+      "overshoot_bad": false,
+      "residual_energy": 4.130515662836842e-06
+    },
+    {
+      "alignment_dot": 1.9531260022631614e-06,
+      "alpha_safe_upper": -6.833896646523832,
+      "delta_psnr": -0.5773526630219408,
+      "direction_bad": true,
+      "fold": 4,
+      "image": "1640_0.53_0.59.png",
+      "overshoot_bad": false,
+      "residual_energy": 5.715995143873442e-07
+    },
+    {
+      "alignment_dot": 1.9024556650037994e-06,
+      "alpha_safe_upper": -13.093311646999164,
+      "delta_psnr": -0.5612966802599928,
+      "direction_bad": true,
+      "fold": 2,
+      "image": "1921_0.76_0.62.png",
+      "overshoot_bad": false,
+      "residual_energy": 2.9059961548227875e-07
+    },
+    {
+      "alignment_dot": 1.4056696272746194e-05,
+      "alpha_safe_upper": -17.526395832810636,
+      "delta_psnr": -0.5002835572648863,
+      "direction_bad": true,
+      "fold": 2,
+      "image": "560_0.75_1.98.png",
+      "overshoot_bad": false,
+      "residual_energy": 1.604060116733308e-06
+    },
+    {
+      "alignment_dot": 4.3881645979126915e-06,
+      "alpha_safe_upper": -7.243602848820745,
+      "delta_psnr": -0.4810531042346682,
+      "direction_bad": true,
+      "fold": 0,
+      "image": "1272_0.62_0.57.png",
+      "overshoot_bad": false,
+      "residual_energy": 1.2115972367610084e-06
+    },
+    {
+      "alignment_dot": 5.327579401637195e-06,
+      "alpha_safe_upper": -17.53593004470528,
+      "delta_psnr": -0.47694635303919597,
+      "direction_bad": true,
+      "fold": 1,
+      "image": "381_0.57_0.52.png",
+      "overshoot_bad": false,
+      "residual_energy": 6.076186878090084e-07
+    },
+    {
+      "alignment_dot": 2.4983858111227164e-06,
+      "alpha_safe_upper": -5.152561757786128,
+      "delta_psnr": -0.4697413753402273,
+      "direction_bad": true,
+      "fold": 4,
+      "image": "190_0.87_0.62.png",
+      "overshoot_bad": false,
+      "residual_energy": 9.69764528235828e-07
+    },
+    {
+      "alignment_dot": 3.123383521597134e-06,
+      "alpha_safe_upper": -12.453220146300646,
+      "delta_psnr": -0.44434557441917377,
+      "direction_bad": true,
+      "fold": 3,
+      "image": "1502_0.65_1.08.png",
+      "overshoot_bad": false,
+      "residual_energy": 5.016186150896829e-07
+    },
+    {
+      "alignment_dot": 9.155784937320277e-06,
+      "alpha_safe_upper": -26.723123310157682,
+      "delta_psnr": -0.3956427833274958,
+      "direction_bad": true,
+      "fold": 0,
+      "image": "348_0.85_0.6.png",
+      "overshoot_bad": false,
+      "residual_energy": 6.852331466689066e-07
+    },
+    {
+      "alignment_dot": 1.6862322809174657e-06,
+      "alpha_safe_upper": -4.627140116755904,
+      "delta_psnr": -0.3796321828093099,
+      "direction_bad": true,
+      "fold": 0,
+      "image": "2354_0.59_1.78.png",
+      "overshoot_bad": false,
+      "residual_energy": 7.288442702702014e-07
+    }
+  ]
+}

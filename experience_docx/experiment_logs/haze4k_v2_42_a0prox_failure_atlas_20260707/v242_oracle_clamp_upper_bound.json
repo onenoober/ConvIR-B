@@ -1,0 +1,22 @@
+{
+  "count": 160,
+  "cvar5_delta": 0.0,
+  "easy_delta": 0.0572743860169318,
+  "hard_delta": 0.12932482528120204,
+  "mean_delta": 0.07049676891693823,
+  "oracle_cvar5_delta": 0.0,
+  "oracle_easy_delta": 0.0572743860169318,
+  "oracle_hard_delta": 0.12932482528120204,
+  "oracle_mean_delta": 0.07049676891693823,
+  "oracle_p05_delta": 0.0,
+  "oracle_positive_count": 68,
+  "oracle_positive_rate": 0.425,
+  "oracle_severe": 0,
+  "p05_delta": 0.0,
+  "residual_energy_easy_mean": 1.1239501294113551e-07,
+  "residual_energy_easy_to_hard_ratio": 0.1760726574522722,
+  "residual_energy_hard_mean": 6.383445025903711e-07,
+  "severe_count": 0,
+  "strong_reference_regression_count": 0,
+  "worst_delta": 0.0
+}
