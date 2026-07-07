@@ -33,4 +33,15 @@ Key output: `joint_delta_matrix.csv` with A1/A2/A3 deltas and A3 interaction del
 
 ## Current Status
 
-`PLANNED`: audit script pending.
+`COMPLETED_NEGATIVE_INTERACTION_CONFIRMED`: v4.4 audit completed. Internal256 prevents an over-negative first128-only reading, but confirms strong non-additive interaction.
+
+Primary internal256 summary:
+
+- A1 mean delta PSNR: `0.060228`
+- A2 mean delta PSNR: `0.066864`
+- A3 mean delta PSNR: `0.028960`
+- expected additive mean: `0.127093`
+- A3 interaction mean: `-0.098133`
+- A3 positive ratio: `0.484375`
+
+Decision: do not extend A3. Authorize independent v4.5 SDC-Lite and v4.6 DCFSB-bottleneck from the official anchor, with locked test blocked.

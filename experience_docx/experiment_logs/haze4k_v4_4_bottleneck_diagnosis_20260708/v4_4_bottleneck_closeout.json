@@ -1,0 +1,41 @@
+{
+  "decision": "authorize_v45_sdc_lite_and_v46_dcfsb_independent_from_official_anchor; do_not_extend_a3",
+  "internal256": {
+    "a1_mean_delta_psnr": 0.060228437185287476,
+    "a2_mean_delta_psnr": 0.06686409562826157,
+    "a3_mean_delta_on_both_positive": 0.16024448307415912,
+    "a3_mean_delta_psnr": 0.0289599671959877,
+    "a3_negative_given_both_positive_ratio": 0.21374045801526717,
+    "a3_positive_ratio": 0.484375,
+    "both_a1_a2_positive_count": 131,
+    "count": 256,
+    "expected_additive_mean_delta_psnr": 0.12709253281354904,
+    "interaction_mean_delta_psnr": -0.09813256561756134,
+    "interaction_mean_on_both_positive": -0.2915721631232109,
+    "interaction_median_delta_psnr": -0.11053276062011719,
+    "interaction_p5_delta_psnr": -0.5110540390014648,
+    "interaction_p95_delta_psnr": 0.38033580780029297
+  },
+  "locked_test_touched": false,
+  "primary_split": "internal_holdout256 train-derived; A1/A2/A3 historical checkpoints were trained before this split existed, so use as diagnosis not generalization proof",
+  "reason": "Internal256 shows A3 is not absolutely negative, avoiding a first128-only false pessimism, but it is weaker than A1/A2 and has about -0.098 dB interaction versus additive expectation. This supports scale-collision/non-additivity, blocks A3 continuation, and authorizes independent spatial/frequency routes from the official anchor.",
+  "route_id": "haze4k_v4_4_bottleneck_diagnosis_20260708",
+  "status": "COMPLETED_NEGATIVE_INTERACTION_CONFIRMED_A3_NOT_PROMOTION_AUTHORIZE_INDEPENDENT_V45_V46",
+  "test_split_enumerated": false,
+  "trainfit128": {
+    "a1_mean_delta_psnr": 0.018444612622261047,
+    "a2_mean_delta_psnr": 0.030317559838294983,
+    "a3_mean_delta_on_both_positive": 0.04491125368604473,
+    "a3_mean_delta_psnr": -0.045743584632873535,
+    "a3_negative_given_both_positive_ratio": 0.35294117647058826,
+    "a3_positive_ratio": 0.3984375,
+    "both_a1_a2_positive_count": 51,
+    "count": 128,
+    "expected_additive_mean_delta_psnr": 0.04876217246055603,
+    "interaction_mean_delta_psnr": -0.09450575709342957,
+    "interaction_mean_on_both_positive": -0.29009213167078357,
+    "interaction_median_delta_psnr": -0.09696578979492188,
+    "interaction_p5_delta_psnr": -0.4762603759765625,
+    "interaction_p95_delta_psnr": 0.3434343338012696
+  }
+}
