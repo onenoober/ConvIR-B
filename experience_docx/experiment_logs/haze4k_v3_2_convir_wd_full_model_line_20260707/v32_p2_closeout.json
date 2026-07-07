@@ -1,0 +1,65 @@
+{
+  "route_id": "haze4k_v3_2_convir_wd_full_model_line_20260707",
+  "decision": "V32_P2_TRAIN_DERIVED_VALIDATION_FAIL_OR_NOT_COMPETITIVE_LOCKED_TEST_BLOCKED",
+  "final_status": "COMPLETED_P0_P1B_AGGREGATE_PASS_P2_GATE_FAIL_LOCKED_TEST_BLOCKED",
+  "runtime_host": "convir-4090",
+  "runtime_workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd",
+  "route_branch": "codex/haze4k-v3-2-convir-wd-full-model-line",
+  "commit": "30077ee",
+  "run_id": "ConvIR-Haze4K-v32-p2r1-wddecoder-seed3407-20260707",
+  "p2_contract": {
+    "split_source": "v3.1 600-image train-derived table",
+    "validation": "fold_id=0, 120 images",
+    "training": "fold_id=1..4, 480 images",
+    "scope": "wd_decoder",
+    "seed": 3407,
+    "epochs": 20,
+    "batch_size": 4,
+    "wd_lr": 0.0002,
+    "decoder_lr": 1e-05,
+    "grad_clip": 0.01,
+    "primary_checkpoint_policy": "Best.pkl selected only by P2 validation PSNR",
+    "baseline": "official ConvIR-B A0 on the same 120 validation images"
+  },
+  "best_vs_a0": {
+    "a0_mean_psnr": 36.89136336644491,
+    "candidate_mean_psnr": 37.03010759353638,
+    "mean_psnr_delta": 0.13874422709147136,
+    "hard_bottom25_psnr_delta": 0.19586575826009114,
+    "easy_top25_psnr_delta": 0.047612508138020836,
+    "p05_psnr_delta": -0.5714302062988281,
+    "cvar5_psnr_delta": -0.7218182881673177,
+    "mean_ssim_delta": 4.2928755283355714e-05,
+    "catastrophic_proxy_count": 0,
+    "p2_quality_pass": false,
+    "continue_allowed_to_p3_design": false
+  },
+  "final_vs_a0": {
+    "mean_psnr_delta": 0.09675443967183431,
+    "hard_bottom25_psnr_delta": 0.08151111602783204,
+    "easy_top25_psnr_delta": 0.05684814453125,
+    "p05_psnr_delta": -0.47830810546875,
+    "cvar5_psnr_delta": -0.5908279418945312,
+    "p2_quality_pass": false,
+    "continue_allowed_to_p3_design": false
+  },
+  "gate": {
+    "mean_psnr_delta_ge_0p30": false,
+    "hard_bottom25_psnr_delta_ge_0p50": false,
+    "easy_top25_psnr_delta_ge_neg0p05": true,
+    "p05_psnr_delta_ge_neg0p30": false,
+    "cvar5_psnr_delta_ge_neg0p50": false,
+    "mean_ssim_delta_ge_neg0p001": true,
+    "catastrophic_proxy_count_eq_0": true,
+    "p2_quality_pass": false,
+    "continue_allowed_to_p3_design": false,
+    "locked_test_allowed": false
+  },
+  "locked_test_touched": false,
+  "not_synced_by_default": [
+    "checkpoints/weights",
+    "raw inference outputs",
+    "per-image CSVs marked cloud_only"
+  ],
+  "next_allowed_action": "Evidence sync and route closeout only; no P3 or locked test from this route."
+}

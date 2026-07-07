@@ -1,6 +1,6 @@
 {
   "route_id": "haze4k_v3_2_convir_wd_full_model_line_20260707",
-  "decision": "COMPLETED_P0_P1B_AGGREGATE_GATE_PASS_P2_DESIGN_OPEN_LOCKED_TEST_BLOCKED",
+  "decision": "COMPLETED_P0_P1B_AGGREGATE_PASS_P2_GATE_FAIL_LOCKED_TEST_BLOCKED",
   "runtime_host": "convir-4090",
   "runtime_workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd",
   "route_branch": "codex/haze4k-v3-2-convir-wd-full-model-line",
@@ -38,7 +38,24 @@
     "commit": "31fbb01",
     "sample_contract": "8 train-derived center crops, crop_size=256",
     "aggregate_metric_contract": "initial/final loss, output finite check, and WD activity are measured over every loaded train-derived crop in eval mode, chunked by batch_size",
-    "aggregate_batch_spans": [[0, 2], [2, 4], [4, 6], [6, 8]],
+    "aggregate_batch_spans": [
+      [
+        0,
+        2
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        4,
+        6
+      ],
+      [
+        6,
+        8
+      ]
+    ],
     "scope": "wd_decoder",
     "trainable_params": 4453433,
     "initial_loss": 0.01766193099319935,
@@ -50,12 +67,12 @@
     "quality_claim": "none; aggregate mini-overfit numerical/trainability sanity only"
   },
   "blocked_or_deferred": [
-    "P2 train-derived validation run until the written fixed split, budget, checkpoint policy, and gate are executed",
-    "P3 fixed internal confirmation",
-    "P4 locked test"
+    "P3 fixed internal confirmation is not authorized from this route",
+    "P4 locked test is not authorized from this route",
+    "Further v3.2 continuation requires a new written route/design with materially changed mechanism or training contract"
   ],
   "p2_design": {
-    "status": "written",
+    "status": "completed_gate_failed",
     "design_file": "v32_p2_train_derived_validation_design.md",
     "split": "v3.1 600 train-derived table, fold_id=0 validation, fold_id=1..4 train",
     "train_count": 480,
@@ -67,7 +84,52 @@
     "seed": 3407,
     "epochs": 20,
     "primary_checkpoint_policy": "Best.pkl selected by P2 validation PSNR only",
-    "locked_test_touched": false
+    "locked_test_touched": false,
+    "corrected_run_status": "completed",
+    "corrected_run_commit": "30077ee"
   },
-  "next_allowed_action": "Run the fixed P2 train-derived validation screen; locked test remains blocked."
+  "next_allowed_action": "Sync compact text evidence to GitHub main and close the route; no P3 or locked test is authorized.",
+  "p2_result": {
+    "status": "gate_failed",
+    "decision": "V32_P2_TRAIN_DERIVED_VALIDATION_FAIL_OR_NOT_COMPETITIVE_LOCKED_TEST_BLOCKED",
+    "commit": "30077ee",
+    "run_id": "ConvIR-Haze4K-v32-p2r1-wddecoder-seed3407-20260707",
+    "split_contract": "v3.1 600 train-derived table, fold_id=0 validation (120), fold_id=1..4 training (480)",
+    "scope": "wd_decoder",
+    "seed": 3407,
+    "epochs": 20,
+    "primary_checkpoint": "Best.pkl selected by P2 validation PSNR only",
+    "best_vs_a0": {
+      "a0_mean_psnr": 36.89136336644491,
+      "candidate_mean_psnr": 37.03010759353638,
+      "mean_psnr_delta": 0.13874422709147136,
+      "hard_bottom25_psnr_delta": 0.19586575826009114,
+      "easy_top25_psnr_delta": 0.047612508138020836,
+      "p05_psnr_delta": -0.5714302062988281,
+      "cvar5_psnr_delta": -0.7218182881673177,
+      "mean_ssim_delta": 4.2928755283355714e-05,
+      "catastrophic_proxy_count": 0,
+      "p2_quality_pass": false,
+      "continue_allowed_to_p3_design": false
+    },
+    "final_vs_a0": {
+      "mean_psnr_delta": 0.09675443967183431,
+      "hard_bottom25_psnr_delta": 0.08151111602783204,
+      "easy_top25_psnr_delta": 0.05684814453125,
+      "p05_psnr_delta": -0.47830810546875,
+      "cvar5_psnr_delta": -0.5908279418945312,
+      "p2_quality_pass": false,
+      "continue_allowed_to_p3_design": false
+    },
+    "gate_fail_reasons": [
+      "Best mean PSNR delta below +0.30 dB gate",
+      "Best hard-bottom25 PSNR delta below +0.50 dB gate",
+      "Best p05 PSNR delta below -0.30 dB gate",
+      "Best CVaR5 PSNR delta below -0.50 dB gate",
+      "Final also failed the fixed P2 gate"
+    ],
+    "locked_test_touched": false,
+    "locked_test_allowed": false,
+    "quality_claim": "P2 train-derived validation only; no locked-test or deployment claim."
+  }
 }

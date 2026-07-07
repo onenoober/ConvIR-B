@@ -118,10 +118,11 @@ P0/P1/P1b result:
   `0.007103331430698745`, finite outputs, and locked test untouched.
 
 Current status:
-`COMPLETED_P0_P1B_AGGREGATE_GATE_PASS_P2_DESIGN_OPEN_LOCKED_TEST_BLOCKED`.
+`COMPLETED_P0_P1B_AGGREGATE_PASS_P2_GATE_FAIL_LOCKED_TEST_BLOCKED`.
 
-Next action: write the P2 train-derived validation design before any larger
-training. P1b is not quality evidence, and locked test remains blocked.
+Next action: close and archive the v3.2 evidence. P3 and locked test are not
+authorized from this route. Any further full-model work needs a new written
+route/design with a materially changed mechanism or training contract.
 
 P2 design:
 - design file:
@@ -137,3 +138,23 @@ P2 design:
 - continue to P3 only if `Best.pkl` passes the fixed P2 gate and is not
   Pareto-dominated by the v3.1 standalone candidates on the same 120-image
   validation names.
+
+P2 result:
+- corrected P2R1 ran to completion from route commit `30077ee`;
+- primary checkpoint: `Best.pkl`, selected only by P2 validation PSNR;
+- split contract: `fold_id=0` validation (`120` images), `fold_id=1..4`
+  training (`480` images), from the v3.1 600-image train-derived table;
+- Best vs official A0 on the same 120 validation images:
+  mean PSNR delta `+0.13874422709147136`, hard-bottom25
+  `+0.19586575826009114`, easy-top25 `+0.047612508138020836`, p05
+  `-0.5714302062988281`, CVaR5 `-0.7218182881673177`, mean SSIM delta
+  `+0.000042928755283355714`, catastrophic proxy count `0`;
+- Final vs official A0: mean/hard/easy `+0.09675443967183431 /
+  +0.08151111602783204 / +0.05684814453125`, p05/CVaR5
+  `-0.47830810546875 / -0.5908279418945312`;
+- Best and Final both failed the fixed P2 quality gate because mean, hard,
+  p05, and CVaR5 thresholds were not met. The route therefore cannot continue
+  to P3 and locked test remains blocked.
+
+Decision:
+`V32_P2_TRAIN_DERIVED_VALIDATION_FAIL_OR_NOT_COMPETITIVE_LOCKED_TEST_BLOCKED`.

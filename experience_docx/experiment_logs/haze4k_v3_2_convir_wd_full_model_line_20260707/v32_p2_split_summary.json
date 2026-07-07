@@ -1,7 +1,7 @@
 {
   "route_id": "haze4k_v3_2_convir_wd_full_model_line_20260707",
   "phase": "P2 train-derived split",
-  "created_at_utc": "2026-07-07T10:42:22.431010+00:00",
+  "created_at_utc": "2026-07-07T10:49:13.655761+00:00",
   "v31_csv": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-github-main/experience_docx/experiment_logs/haze4k_v3_1_full_model_candidate_bakeoff_20260707/v31_candidate_per_image_cloud_only.csv",
   "source_data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
   "output_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K_v32_p2_fold0_train480_val120",
