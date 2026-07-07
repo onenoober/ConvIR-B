@@ -1,6 +1,6 @@
 # NoPost Feature Lowband Family Summary
 
-Date: 2026-07-06
+Date: 2026-07-07
 
 Status: WLDB-A, the tested v2.18/v2.19/v2.20 deployable lowband predictor
 forms, the v2.23 small-adapter train form, the v2.25A direct risk soft-label /
@@ -11,17 +11,18 @@ compatibility-gated LCB table-policy bank, the v2.31 target-only action-value
 identifiability route, the v2.32 S5-only bounded internal low-frequency
 correction-field canary, the v2.33 masked WDMamba-alpha0.5 S5-BILFCF
 compression canary, the v2.34 direct WDMamba-on-crop teacher-delta projection
-canaries, the v2.35 256 crop-input/full-image-slice target contract, and the
-v2.36 alpha0.5 full600 same-context WDMamba substrate, the v2.37 oracle mask substrate as a bridge-training authorization, the
-v2.38 no-selector WDMamba micro-alpha substrate, the v2.38B rich target-only
-separability rescue, the v2.39 ConvIR-L same-family teacher contract, and
-v2.40 selector/alpha continuations from the root-cause atlas, and the v2.41
-frozen-backbone A0-proximal residual canary32 are not training-authorized for
-expansion. NoPost lowband remains directionally open, but the post-v2.37
-follow-ups show that neither smaller WDMamba alpha, richer current target-only
-features, ConvIR-L same-family alpha, v2.40 runtime alignment predictability,
-nor the v2.41 frozen-backbone residual head authorizes P5, bridge training,
-canary80, or locked test.
+canaries, the v2.35 256 crop-input/full-image-slice target contract, the v2.36
+alpha0.5 full600 same-context WDMamba substrate, the v2.37 oracle mask
+substrate as a bridge-training authorization, the v2.38 no-selector WDMamba
+micro-alpha substrate, the v2.38B rich target-only separability rescue, the
+v2.39 ConvIR-L same-family teacher contract, v2.40 selector/alpha continuations
+from the root-cause atlas, the v2.41/v2.42 frozen-backbone A0PROX route, and
+the v3.0 A0-anchored partial-unfreeze canary32 scopes are not
+authorized for expansion. NoPost lowband remains directionally open, but the
+post-v2.37 follow-ups show that neither smaller WDMamba alpha, richer current
+target-only features, ConvIR-L same-family alpha, v2.40 runtime alignment
+predictability, v2.41/v2.42 frozen-backbone A0PROX, nor v3.0 partial unfreezing
+authorizes P5, bridge training, canary80, or locked test.
 
 ## Sources
 
@@ -50,6 +51,8 @@ canary80, or locked test.
   - `../experiment_cards/2026-07-06-haze4k-v2-39-convirl-same-family-teacher-contract-audit.md`
   - `../experiment_cards/2026-07-06-haze4k-v2-40-teacher-residual-alignment-atlas.md`
   - `../experiment_cards/2026-07-06-haze4k-v2-41-a0-proximal-supervised-residual.md`
+  - `../experiment_cards/2026-07-07-haze4k-v2-42-a0prox-failure-atlas.md`
+  - `../experiment_cards/2026-07-07-haze4k-v3-0-a0-anchored-partial-unfreeze.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_v2_16_nopost_wavelet_lowband_decoder_20260703/`
   - `../experiment_logs/haze4k_v2_17_nopost_lowband_alignment_tail_audit_20260703/`
@@ -75,6 +78,8 @@ canary80, or locked test.
   - `../experiment_logs/haze4k_v2_39_convirl_same_family_teacher_contract_audit_20260706/`
   - `../experiment_logs/haze4k_v2_40_teacher_residual_alignment_atlas_20260706/`
   - `../experiment_logs/haze4k_v2_41_a0_proximal_supervised_residual_20260706/`
+  - `../experiment_logs/haze4k_v2_42_a0prox_failure_atlas_20260707/`
+  - `../experiment_logs/haze4k_v3_0_a0_anchored_partial_unfreeze_20260707/`
 
 ## Established Facts
 
@@ -105,11 +110,12 @@ canary80, or locked test.
 | Haze4K v2.40 Teacher Residual Alignment Atlas | P0 computed WDMamba and ConvIR-L residual geometry on the same 600 train-derived full-image samples. WDMamba was rarely anti-aligned (`0.0033` all, `0.0` hard) with alpha-safe-upper p05 `0.5031`, but rare easy/strong-reference tail fragility remains. ConvIR-L was more anti-aligned (`0.1033` all, `0.1867` hard) and teacher-specific unsafe. WDMamba/ConvIR-L useful-alpha unsafe overlap was low (`Jaccard=0.0385`). Runtime-visible alignment predictability did not authorize selector work: WDMamba recall at FPR0.05 was `0.0`; ConvIR-L anti-alignment AUROC/AUPRC `0.7123/0.2176` had recall at FPR0.05 only `0.1129`. | `V240_COMPLETE_SELECTOR_ALPHA_BLOCKED_V241_STAGE0_DESIGN_OPEN`; keep selector/alpha/bridge/P5/canary80/locked test blocked. Only a separate v2.41 A0-proximal GT-risk-controlled supervised residual Stage-0 route from the official anchor is open. |
 | Haze4K v2.41 A0-Proximal Supervised Residual | P0 passed from the official anchor: strict partial load accepted only `A0PROX_*` missing keys, finite synthetic forwards passed, identity max abs vs official ConvIR-B was `0.0`, forbidden symbols were `0`, and locked test was untouched. Canary32 OOF then froze official ConvIR-B and trained only `11843` `A0PROX_*` parameters on five train-derived folds. It failed the written gate: global mean/hard/easy `-0.0277/+0.0742/-0.0724 dB`, p05/CVaR5 `-0.3981/-0.5972 dB`, severe `27`, strong-reference regressions `25`, fold pass `0/5`. Mechanism diagnostics passed (`easy/hard residual-energy ratio 0.2871`, hinge violation `0.6625 -> 0.58125`), so the blocker is tail-safe OOF quality. | `CANARY32_OOF_GATE_FAIL_LOCK_CANARY80_LOCKED_TEST`; do not launch canary80 or locked test, and do not rescue by simple epoch/fold/sample/loss-weight expansion. |
 | Haze4K v2.42 A0PROX Failure Atlas | Diagnostic-only route recomputed the v2.41 OOF table exactly (`mismatch_count=0`) and decomposed the residual failure. All severe rows were direction failures (`27/27 direction_bad`, `0/27 overshoot_bad`), no global shrink gamma passed, oracle clamp was weak (mean/hard/easy `+0.0705/+0.1293/+0.0573 dB`), and train32 full-image evaluation also failed (`-0.0239/-0.0722/-0.0206 dB`, severe `26`). v2.40 cross-over covered only `36/160` OOF images and is supporting context only. | `A0PROX_DIRECTION_FAIL`; close the current frozen-backbone small A0-proximal residual family. Do not rescue v2.41 by epochs/folds/samples/loss weights/beta-only shrink, canary80, locked test, selector/alpha reopening, bridge/generator, or P5. |
+| Haze4K v3.0 A0-Anchored Partial-Unfreeze Risk-Controlled ConvIR | Stage-0 passed from the official anchor with identity max abs vs A0 `0.0`, finite outputs, forbidden symbols `0`, locked test untouched, and trainable params `11875/212662/1148742` for frozen_probe/tier_a/tier_b. Canary32 OOF then failed all authorized scopes on the v2.41 split: frozen_probe was too weak (mean/hard/easy `-0.0008/+0.0146/+0.0089`, severe `3`), tier_a_partial stayed direction-bad (`+0.0072/+0.0718/+0.0197`, severe `22`, severe direction_bad `22/22`), and tier_b_partial increased hard movement but damaged easy/tail cases (`+0.0050/+0.2226/-0.0889`, p05/CVaR5 `-0.6924/-1.0190`, severe `42`, severe direction_bad `40/42`). All folds failed. | `V300_CANARY32_FAIL_TAIL_DIRECTION_RISK_LOCK_CANARY80_LOCKED_TEST`; do not launch canary80, locked test, simple wider decoder tuning, selector/alpha reopening, or bridge/generator work from this route. |
 
 ## Family Verdict
 
 Latest addendum (2026-07-07): post-v2.37 follow-ups closed the two
-suggested rescue directions that were still authorized, and v2.40-v2.42 refined
+suggested rescue directions that were still authorized, and v2.40-v3.0 refined
 the root-cause reading. v2.38 found no strict no-selector WDMamba micro-alpha
 substrate; v2.38B showed richer target-only features still do not separate
 unsafe/no-op cases well enough; v2.39 showed ConvIR-L same-family teacher
@@ -122,10 +128,15 @@ concentrate residual energy more on hard than easy images, but still fails
 tail-safe OOF quality. v2.42 recomputed that table exactly and showed the
 failure is direction-dominant rather than a simple scale/overfit issue: severe
 rows were `27/27` direction_bad, no shrink gamma passed, oracle upper bound was
-weak, and train32 also failed. Therefore the current NoPost lowband /
-same-context teacher selector-alpha route and the tested v2.41/v2.42
-frozen-backbone A0PROX residual-head family remain closed for training
-expansion, bridge, P5, canary80, and locked test.
+weak, and train32 also failed. v3.0 then tested the next authorized materially
+changed route: A0-anchored partial unfreezing from the official anchor. Stage-0
+was clean, but frozen_probe, Tier-A, and Tier-B all failed canary32; Tier-B
+increased hard movement while making easy/tail risk worse, with severe failures
+still mostly direction_bad (`40/42`). Therefore the current NoPost lowband /
+same-context teacher selector-alpha line, the tested v2.41/v2.42
+frozen-backbone A0PROX residual-head family, and the v3.0 A0-anchored
+partial-unfreeze route remain closed for training expansion, bridge, P5,
+canary80, and locked test.
 
 The precise conclusion is: close WLDB-A, v2.18 WLDB-A2 global pooled policy,
 v2.19 O2 final-only spatial predictor, v2.20 O3 mid+final/global-context
@@ -137,30 +148,32 @@ compatibility-gated LCB table-policy bank, the v2.31 target-only action-value
 identifiability route, the current v2.32 S5-only BILFCF canary, the v2.33 /
 v2.34 direct-crop WDMamba-alpha teacher canary line, the v2.35 256
 crop-input/full-image-slice target contract, the v2.36 alpha0.5 full600
-same-context WDMamba substrate, and the v2.37 oracle mask substrate as bridge
-training candidates. Do not close
-the underlying lowband-capacity direction, but close the current discrete
-action-bank selector line unless a materially new target-only action-value
-signal appears. The first bounded internal low-frequency correction-field
-screen escaped the selector bottleneck mechanically, but failed
-trainability/tail gates in canary32. The WDMamba teacher-source table remains
-useful as route context, P0C showed the full-image table/recompute view remains
-positive, and v2.35 showed full-image/full-image-slice WDMamba is representable
-by same-context free tensors. v2.36 then showed the current alpha0.5 full600
-substrate is not tail-safe enough for bridge training. v2.37 fixed that part at
-the oracle mask level: M0 teacher-positive + A0-preservation passed P2 and P3
-fold-stable substrate gates. v2.38-v2.40 then closed the deployable selector and
-no-selector continuations: target-only no-op/unsafe separability, richer
-runtime-visible features, ConvIR-L same-family alpha, and runtime alignment
-predictability all failed to authorize P5, bridge/generator, canary80, or
-locked-test work. v2.41 then tested the most conservative A0-proximal
-GT-risk-controlled residual route from the official anchor: Stage-0 was clean,
-but canary32 OOF failed quality and tail gates. v2.42 diagnosed that failure as
-A0PROX direction failure rather than simple scale or overfit rescue. The
-remaining open path is not another selector/alpha rescue or a simple v2.41/v2.42
-A0PROX expansion; it would need a materially changed GT-risk-controlled
+same-context WDMamba substrate, the v2.37 oracle mask substrate as bridge
+training candidates, the v2.41/v2.42 frozen-backbone A0PROX family, and the
+v3.0 A0-anchored partial-unfreeze route. Do not close the underlying
+lowband-capacity direction, but close the current discrete action-bank selector
+line unless a materially new target-only action-value signal appears. The first
+bounded internal low-frequency correction-field screen escaped the selector
+bottleneck mechanically, but failed trainability/tail gates in canary32. The
+WDMamba teacher-source table remains useful as route context, P0C showed the
+full-image table/recompute view remains positive, and v2.35 showed
+full-image/full-image-slice WDMamba is representable by same-context free
+tensors. v2.36 then showed the current alpha0.5 full600 substrate is not
+tail-safe enough for bridge training. v2.37 fixed that part at the oracle mask
+level: M0 teacher-positive + A0-preservation passed P2 and P3 fold-stable
+substrate gates. v2.38-v2.40 then closed the deployable selector and no-selector
+continuations: target-only no-op/unsafe separability, richer runtime-visible
+features, ConvIR-L same-family alpha, and runtime alignment predictability all
+failed to authorize P5, bridge/generator, canary80, or locked-test work. v2.41
+then tested the most conservative A0-proximal GT-risk-controlled residual route
+from the official anchor: Stage-0 was clean, but canary32 OOF failed quality and
+tail gates. v2.42 diagnosed that failure as A0PROX direction failure rather
+than simple scale or overfit rescue. v3.0 moved past the frozen-backbone small
+head into partial unfreezing, but all authorized scopes still failed the same
+canary32 tail/direction contract. The remaining open path is not another
+selector/alpha rescue, a simple v2.41/v2.42 A0PROX expansion, or a wider v3.0
+decoder unfreeze; it would need a materially changed GT-risk-controlled
 architecture or training plan.
-
 v2.16 established that lowband correction is a real source of headroom inside
 ConvIR-B. The RGB LL oracle and the proposed zero-init WLDB insertion were both
 source-clean enough to justify a first trainable screen. That screen is now

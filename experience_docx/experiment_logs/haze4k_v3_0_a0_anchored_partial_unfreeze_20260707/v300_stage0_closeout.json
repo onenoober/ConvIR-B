@@ -1,0 +1,9 @@
+{
+  "canary32_authorized": true,
+  "canary80_authorized": false,
+  "decision": "STAGE0_PASS_AUTHORIZE_CANARY32",
+  "gate_pass": true,
+  "locked_test_authorized": false,
+  "locked_test_touched": false,
+  "status": "COMPLETED_GATE_PASS"
+}
