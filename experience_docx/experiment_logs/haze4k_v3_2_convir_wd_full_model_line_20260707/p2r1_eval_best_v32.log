@@ -1,0 +1,114 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd/experience_docx/tools/haze4k_v32_p2_eval_compare.py:58: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+official_A0 40/120 mean_psnr=34.8119
+official_A0 80/120 mean_psnr=38.1235
+official_A0 120/120 mean_psnr=36.8914
+v32_p2r1_best 40/120 mean_psnr=35.0104
+v32_p2r1_best 80/120 mean_psnr=38.2760
+v32_p2r1_best 120/120 mean_psnr=37.0301
+{
+  "route_id": "haze4k_v3_2_convir_wd_full_model_line_20260707",
+  "phase": "P2 train-derived validation eval",
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K_v32_p2_fold0_train480_val120",
+  "original": {
+    "label": "official_A0",
+    "arch": "official_convir",
+    "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+    "count": 120,
+    "mean_psnr": 36.89136336644491,
+    "mean_ssim": 0.9947939152518909,
+    "avg_time_sec_sync": 0.033647517363230385,
+    "median_time_sec_sync": 0.03046894073486328,
+    "peak_cuda_mem_mib": 535.27294921875
+  },
+  "candidate": {
+    "label": "v32_p2r1_best",
+    "arch": "convir_wd_lite",
+    "checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd/Dehazing/ITS/results/ConvIR-Haze4K-v32-p2r1-wddecoder-seed3407-20260707/Training-Results/Best.pkl",
+    "count": 120,
+    "mean_psnr": 37.03010759353638,
+    "mean_ssim": 0.9948368440071742,
+    "avg_time_sec_sync": 0.031185839573542276,
+    "median_time_sec_sync": 0.032256245613098145,
+    "peak_cuda_mem_mib": 541.29052734375
+  },
+  "comparison": {
+    "common_count": 120,
+    "mean_psnr_delta": 0.13874422709147136,
+    "median_psnr_delta": 0.13822364807128906,
+    "p05_psnr_delta": -0.5714302062988281,
+    "cvar5_psnr_delta": -0.7218182881673177,
+    "hard_bottom25_psnr_delta": 0.19586575826009114,
+    "easy_top25_psnr_delta": 0.047612508138020836,
+    "mean_ssim_delta": 4.2928755283355714e-05,
+    "median_ssim_delta": 3.2007694244384766e-05,
+    "positive_ratio": 0.6833333333333333,
+    "catastrophic_proxy_count": 0,
+    "strong_reference_cut_psnr": 40.01143455505371,
+    "strong_reference_count": 30,
+    "strong_regression_count_delta_le_neg_0p05": 12,
+    "original_name": "official_A0",
+    "candidate_name": "v32_p2r1_best"
+  },
+  "v31_same_names": {
+    "available": true,
+    "common_count": 120,
+    "candidates": {
+      "WDMamba_standalone_fullimage": {
+        "mean_psnr_delta": 3.4885067343711853,
+        "median_psnr_delta": 3.70574951171875,
+        "p05_psnr_delta": -3.2296955585479736,
+        "cvar5_psnr_delta": -4.406384229660034,
+        "hard_bottom25_psnr_delta": 8.220918893814087,
+        "easy_top25_psnr_delta": -1.5730149745941162
+      },
+      "ConvIR-L_standalone_fullimage": {
+        "mean_psnr_delta": 1.3782770832379658,
+        "median_psnr_delta": 1.1430633068084717,
+        "p05_psnr_delta": -1.7585725784301758,
+        "cvar5_psnr_delta": -2.5975215435028076,
+        "hard_bottom25_psnr_delta": 1.5550769170125325,
+        "easy_top25_psnr_delta": 0.5004429817199707
+      },
+      "FullUDP_standalone_fullimage": {
+        "mean_psnr_delta": -0.34678086439768474,
+        "median_psnr_delta": -0.40099525451660156,
+        "p05_psnr_delta": -3.169225478172302,
+        "cvar5_psnr_delta": -4.35641622543335,
+        "hard_bottom25_psnr_delta": 0.17483139038085938,
+        "easy_top25_psnr_delta": -0.9747533480326335
+      }
+    }
+  },
+  "gate": {
+    "checks": {
+      "mean_psnr_delta_ge_0p30": false,
+      "hard_bottom25_psnr_delta_ge_0p50": false,
+      "easy_top25_psnr_delta_ge_neg0p05": true,
+      "p05_psnr_delta_ge_neg0p30": false,
+      "cvar5_psnr_delta_ge_neg0p50": false,
+      "mean_ssim_delta_ge_neg0p001": true,
+      "catastrophic_proxy_count_eq_0": true
+    },
+    "p2_quality_pass": false,
+    "pareto_competitive_vs_v31": {
+      "available": true,
+      "competitive": true,
+      "dominated_by": [],
+      "metrics_checked": [
+        "mean_psnr_delta",
+        "hard_bottom25_psnr_delta",
+        "easy_top25_psnr_delta",
+        "p05_psnr_delta",
+        "cvar5_psnr_delta"
+      ],
+      "epsilon_db": 0.02
+    },
+    "continue_allowed_to_p3_design": false,
+    "locked_test_allowed": false,
+    "decision": "V32_P2_TRAIN_DERIVED_VALIDATION_FAIL_OR_NOT_COMPETITIVE_LOCKED_TEST_BLOCKED"
+  },
+  "per_image_csv_cloud_only": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd/experience_docx/experiment_logs/haze4k_v3_2_convir_wd_full_model_line_20260707/v32_p2r1_eval_best_per_image_cloud_only.csv",
+  "locked_test_touched": false,
+  "quality_claim": "P2 train-derived validation only; no locked-test or deployment claim."
+}

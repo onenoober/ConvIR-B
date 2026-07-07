@@ -66,9 +66,11 @@ Stage ladder:
   claim. The corrected pass criterion is P1b aggregate: initial/final loss,
   output finite check, and WD activity must be measured over all loaded crops,
   not just the first mini-batch.
-- P2 train-derived validation: only after P1b aggregate pass and written
-  authorization; use a real train-derived split such as 480/120 or 5x larger
-  train folds; checkpoint selection only on this split.
+- P2 train-derived validation: authorized only after P1b aggregate pass and a
+  written design. The fixed P2 screen uses the v3.1 600-image train-derived
+  table: `fold_id=0` as the 120-image validation split and `fold_id=1..4` as
+  the 480-image training split. Checkpoint selection is only by this
+  train-derived validation split.
 - P3 fixed internal confirmation: only after P2 pass with fixed candidate.
 - P4 locked test: one-shot confirmation only after fixed candidate selection.
 
@@ -82,6 +84,10 @@ Metric contract:
   `>= +0.50 dB`, easy delta `>= -0.05 dB`, p05 `>= -0.30 dB`, CVaR5
   `>= -0.50 dB`, no catastrophic visual failures, and Pareto-competitive
   absolute PSNR/SSIM versus v3.1 standalone candidates.
+- P2 fixed screen hyperparameters: `wd_decoder`, seed `3407`, 20 epochs,
+  batch size `4`, WD LR `2e-4`, decoder LR `1e-5`, grad clip `0.01`,
+  validation/save every 5 epochs. Primary checkpoint is `Best.pkl` selected by
+  P2 validation PSNR; `Final.pkl` is supportive only.
 
 Forbidden:
 - no locked test in P0/P1/P1b/P2;
@@ -112,7 +118,43 @@ P0/P1/P1b result:
   `0.007103331430698745`, finite outputs, and locked test untouched.
 
 Current status:
-`COMPLETED_P0_P1B_AGGREGATE_GATE_PASS_P2_DESIGN_OPEN_LOCKED_TEST_BLOCKED`.
+`COMPLETED_P0_P1B_AGGREGATE_PASS_P2_GATE_FAIL_LOCKED_TEST_BLOCKED`.
 
-Next action: write the P2 train-derived validation design before any larger
-training. P1b is not quality evidence, and locked test remains blocked.
+Next action: close and archive the v3.2 evidence. P3 and locked test are not
+authorized from this route. Any further full-model work needs a new written
+route/design with a materially changed mechanism or training contract.
+
+P2 design:
+- design file:
+  `experience_docx/experiment_logs/haze4k_v3_2_convir_wd_full_model_line_20260707/v32_p2_train_derived_validation_design.md`;
+- split source: cloud-only v3.1 per-image table
+  `experience_docx/experiment_logs/haze4k_v3_1_full_model_candidate_bakeoff_20260707/v31_candidate_per_image_cloud_only.csv`;
+- locked Haze4K test remains blocked throughout P2;
+- initial P2 launch at `8d7a9f4` failed in the auxiliary modulation-stat logging
+  path due missing full-image padding and is engineering-invalid, not a quality
+  result;
+- corrected P2R1 run id:
+  `ConvIR-Haze4K-v32-p2r1-wddecoder-seed3407-20260707`;
+- continue to P3 only if `Best.pkl` passes the fixed P2 gate and is not
+  Pareto-dominated by the v3.1 standalone candidates on the same 120-image
+  validation names.
+
+P2 result:
+- corrected P2R1 ran to completion from route commit `30077ee`;
+- primary checkpoint: `Best.pkl`, selected only by P2 validation PSNR;
+- split contract: `fold_id=0` validation (`120` images), `fold_id=1..4`
+  training (`480` images), from the v3.1 600-image train-derived table;
+- Best vs official A0 on the same 120 validation images:
+  mean PSNR delta `+0.13874422709147136`, hard-bottom25
+  `+0.19586575826009114`, easy-top25 `+0.047612508138020836`, p05
+  `-0.5714302062988281`, CVaR5 `-0.7218182881673177`, mean SSIM delta
+  `+0.000042928755283355714`, catastrophic proxy count `0`;
+- Final vs official A0: mean/hard/easy `+0.09675443967183431 /
+  +0.08151111602783204 / +0.05684814453125`, p05/CVaR5
+  `-0.47830810546875 / -0.5908279418945312`;
+- Best and Final both failed the fixed P2 quality gate because mean, hard,
+  p05, and CVaR5 thresholds were not met. The route therefore cannot continue
+  to P3 and locked test remains blocked.
+
+Decision:
+`V32_P2_TRAIN_DERIVED_VALIDATION_FAIL_OR_NOT_COMPETITIVE_LOCKED_TEST_BLOCKED`.

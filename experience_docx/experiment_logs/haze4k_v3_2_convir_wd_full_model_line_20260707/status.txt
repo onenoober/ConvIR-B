@@ -70,3 +70,35 @@ branch=codex/haze4k-v3-2-convir-wd-full-model-line
 commit=31fbb01
 p1b_aggregate_mini_overfit_done rc=0 haze4k_v3_2_convir_wd_full_model_line_20260707 2026-07-07T18:11:39+08:00
 V32_P1B_AGGREGATE_MINI_OVERFIT_OK
+p2_train_derived_validation_start haze4k_v3_2_convir_wd_full_model_line_20260707 2026-07-07T18:42:22+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+split_root=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K_v32_p2_fold0_train480_val120
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+v31_csv=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-github-main/experience_docx/experiment_logs/haze4k_v3_1_full_model_candidate_bakeoff_20260707/v31_candidate_per_image_cloud_only.csv
+branch=codex/haze4k-v3-2-convir-wd-full-model-line
+commit=8d7a9f4
+p2_train_done rc=1 haze4k_v3_2_convir_wd_full_model_line_20260707 2026-07-07T18:43:36+08:00
+V32_P2_TRAIN_FAILED
+p2r1_train_derived_validation_start haze4k_v3_2_convir_wd_full_model_line_20260707 2026-07-07T18:49:13+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+split_root=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K_v32_p2_fold0_train480_val120
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+v31_csv=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-github-main/experience_docx/experiment_logs/haze4k_v3_1_full_model_candidate_bakeoff_20260707/v31_candidate_per_image_cloud_only.csv
+branch=codex/haze4k-v3-2-convir-wd-full-model-line
+commit=30077ee
+p2r1_train_done rc=0 haze4k_v3_2_convir_wd_full_model_line_20260707 2026-07-07T18:53:47+08:00
+p2r1_eval_best_done haze4k_v3_2_convir_wd_full_model_line_20260707 2026-07-07T18:54:04+08:00
+p2r1_eval_final_done haze4k_v3_2_convir_wd_full_model_line_20260707 2026-07-07T18:54:20+08:00
+V32_P2_BEST_DECISION V32_P2_TRAIN_DERIVED_VALIDATION_FAIL_OR_NOT_COMPETITIVE_LOCKED_TEST_BLOCKED
+V32_P2_BEST_CONTINUE_ALLOWED_TO_P3 False
+V32_P2_BEST_MEAN_DELTA 0.13874422709147136
+V32_P2_BEST_HARD_DELTA 0.19586575826009114
+V32_P2_BEST_EASY_DELTA 0.047612508138020836
+V32_P2_BEST_P05_DELTA -0.5714302062988281
+V32_P2_BEST_CVAR5_DELTA -0.7218182881673177
+V32_P2_TRAIN_DERIVED_VALIDATION_FAIL_OR_NOT_COMPETITIVE_LOCKED_TEST_BLOCKED
+p2r1_train_derived_validation_done haze4k_v3_2_convir_wd_full_model_line_20260707 2026-07-07T18:54:20+08:00

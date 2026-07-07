@@ -1,0 +1,14 @@
+{
+  "route_id": "haze4k_v3_2_convir_wd_full_model_line_20260707",
+  "phase": "P2 initial launch",
+  "status": "PREFLIGHT_FAILED_ENGINEERING",
+  "failed_run_commit": "8d7a9f4",
+  "failed_model_name": "ConvIR-Haze4K-v32-p2-wddecoder-seed3407-20260707",
+  "failure_time": "2026-07-07T18:43:36+08:00",
+  "failure_point": "epoch 5 modulation-stat logging after validation forward completed",
+  "root_cause": "train.py _log_modulation_stats sent full validation images to collect_wd_stats without the factor-32 padding used by valid/eval paths, causing a width mismatch inside the model.",
+  "scientific_interpretation": "invalid; this is an engineering logging-path failure, not a P2 quality result",
+  "correction": "Pad validation images to factor 32 inside _log_modulation_stats and rerun the same P2 contract under a preserved rerun id.",
+  "corrected_run_id": "ConvIR-Haze4K-v32-p2r1-wddecoder-seed3407-20260707",
+  "locked_test_touched": false
+}
