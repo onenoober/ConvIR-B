@@ -1,0 +1,54 @@
+Namespace(model_name='ConvIR-Haze4K-v4A2-GST-adapter-notest-seed3407-20260707', data='Haze4K', version='base', fam_mode='original', arch='sfad_gst', sfad_train_scope='adapter_only', seed=3407, mode='train', data_dir='/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K', batch_size=8, learning_rate=0.0001, weight_decay=0.0001, num_epoch=1000, stop_epoch=5, print_freq=50, num_worker=8, save_freq=5, valid_freq=999, mod_stats_freq=0, mod_stats_batches=0, grad_clip_norm=0.001, init_model='/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl', resume='', test_model='', save_image=False, leaning_rate=0.0001, model_save_dir='results/ConvIR-Haze4K-v4A2-GST-adapter-notest-seed3407-20260707/Training-Results/', result_dir='results/ConvIR-Haze4K-v4A2-GST-adapter-notest-seed3407-20260707/images/Haze4K')
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-2-gst-only/Dehazing/ITS/models/SFADGSTConvIR.py:156: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(checkpoint_path, map_location='cpu')
+INIT_MODEL_PARTIAL_LOAD {"allowed_new_prefixes": ["SFAD_GST"], "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl", "loaded_count": 602, "missing_new_modules": ["SFAD_GST1.alpha", "SFAD_GST1.clean_delta.0.bias", "SFAD_GST1.clean_delta.0.weight", "SFAD_GST1.clean_delta.2.bias", "SFAD_GST1.clean_delta.2.weight", "SFAD_GST1.gate.0.bias", "SFAD_GST1.gate.0.weight", "SFAD_GST1.gate.2.bias", "SFAD_GST1.gate.2.weight", "SFAD_GST1.gate.4.bias", "SFAD_GST1.gate.4.weight", "SFAD_GST1.image_proj.0.bias", "SFAD_GST1.image_proj.0.weight", "SFAD_GST2.alpha", "SFAD_GST2.clean_delta.0.bias", "SFAD_GST2.clean_delta.0.weight", "SFAD_GST2.clean_delta.2.bias", "SFAD_GST2.clean_delta.2.weight", "SFAD_GST2.gate.0.bias", "SFAD_GST2.gate.0.weight", "SFAD_GST2.gate.2.bias", "SFAD_GST2.gate.2.weight", "SFAD_GST2.gate.4.bias", "SFAD_GST2.gate.4.weight", "SFAD_GST2.image_proj.0.bias", "SFAD_GST2.image_proj.0.weight"], "shape_mismatch": [], "unexpected": []}
+SFAD_TRAIN_SCOPE {"frozen_param_count": 8630665, "frozen_prefix_count": 9, "scope": "adapter_only", "trainable_param_count": 247618, "trainable_prefixes": ["SFAD_GST1", "SFAD_GST2"]}
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:224: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn(
+Time:  0.1102 Epoch: 001 Iter:   50/ 375 LR: 0.0000333333 Loss content:  0.0171 Loss fft:  0.8092
+Time:  0.0905 Epoch: 001 Iter:  100/ 375 LR: 0.0000333333 Loss content:  0.0177 Loss fft:  0.8189
+Time:  0.0894 Epoch: 001 Iter:  150/ 375 LR: 0.0000333333 Loss content:  0.0174 Loss fft:  0.8247
+Time:  0.0897 Epoch: 001 Iter:  200/ 375 LR: 0.0000333333 Loss content:  0.0173 Loss fft:  0.8299
+Time:  0.0898 Epoch: 001 Iter:  250/ 375 LR: 0.0000333333 Loss content:  0.0171 Loss fft:  0.8117
+Time:  0.0906 Epoch: 001 Iter:  300/ 375 LR: 0.0000333333 Loss content:  0.0167 Loss fft:  0.8063
+Time:  0.0897 Epoch: 001 Iter:  350/ 375 LR: 0.0000333333 Loss content:  0.0170 Loss fft:  0.8210
+EPOCH: 01
+Elapsed time: 0.70 Epoch Pixel Loss:  0.0172 Epoch FFT Loss:  0.8185
+Time:  0.0998 Epoch: 002 Iter:   50/ 375 LR: 0.0000666667 Loss content:  0.0172 Loss fft:  0.8085
+Time:  0.0897 Epoch: 002 Iter:  100/ 375 LR: 0.0000666667 Loss content:  0.0168 Loss fft:  0.8120
+Time:  0.0898 Epoch: 002 Iter:  150/ 375 LR: 0.0000666667 Loss content:  0.0167 Loss fft:  0.8230
+Time:  0.0900 Epoch: 002 Iter:  200/ 375 LR: 0.0000666667 Loss content:  0.0169 Loss fft:  0.8273
+Time:  0.0899 Epoch: 002 Iter:  250/ 375 LR: 0.0000666667 Loss content:  0.0170 Loss fft:  0.8041
+Time:  0.0900 Epoch: 002 Iter:  300/ 375 LR: 0.0000666667 Loss content:  0.0167 Loss fft:  0.7952
+Time:  0.0911 Epoch: 002 Iter:  350/ 375 LR: 0.0000666667 Loss content:  0.0175 Loss fft:  0.8401
+EPOCH: 02
+Elapsed time: 0.69 Epoch Pixel Loss:  0.0170 Epoch FFT Loss:  0.8133
+Time:  0.0967 Epoch: 003 Iter:   50/ 375 LR: 0.0001000000 Loss content:  0.0170 Loss fft:  0.8097
+Time:  0.0902 Epoch: 003 Iter:  100/ 375 LR: 0.0001000000 Loss content:  0.0173 Loss fft:  0.8298
+Time:  0.0901 Epoch: 003 Iter:  150/ 375 LR: 0.0001000000 Loss content:  0.0167 Loss fft:  0.8272
+Time:  0.0901 Epoch: 003 Iter:  200/ 375 LR: 0.0001000000 Loss content:  0.0167 Loss fft:  0.8244
+Time:  0.0900 Epoch: 003 Iter:  250/ 375 LR: 0.0001000000 Loss content:  0.0167 Loss fft:  0.8110
+Time:  0.0927 Epoch: 003 Iter:  300/ 375 LR: 0.0001000000 Loss content:  0.0170 Loss fft:  0.8127
+Time:  0.0903 Epoch: 003 Iter:  350/ 375 LR: 0.0001000000 Loss content:  0.0168 Loss fft:  0.8206
+EPOCH: 03
+Elapsed time: 0.69 Epoch Pixel Loss:  0.0168 Epoch FFT Loss:  0.8195
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:1087: UserWarning: To get the last learning rate computed by the scheduler, please use `get_last_lr()`.
+  _warn_get_lr_called_within_step(self)
+Time:  0.0974 Epoch: 004 Iter:   50/ 375 LR: 0.0001000000 Loss content:  0.0166 Loss fft:  0.8215
+Time:  0.0901 Epoch: 004 Iter:  100/ 375 LR: 0.0001000000 Loss content:  0.0170 Loss fft:  0.8067
+Time:  0.0900 Epoch: 004 Iter:  150/ 375 LR: 0.0001000000 Loss content:  0.0169 Loss fft:  0.8424
+Time:  0.0925 Epoch: 004 Iter:  200/ 375 LR: 0.0001000000 Loss content:  0.0169 Loss fft:  0.8219
+Time:  0.0901 Epoch: 004 Iter:  250/ 375 LR: 0.0001000000 Loss content:  0.0172 Loss fft:  0.8184
+Time:  0.0900 Epoch: 004 Iter:  300/ 375 LR: 0.0001000000 Loss content:  0.0164 Loss fft:  0.8014
+Time:  0.0900 Epoch: 004 Iter:  350/ 375 LR: 0.0001000000 Loss content:  0.0165 Loss fft:  0.7899
+EPOCH: 04
+Elapsed time: 0.69 Epoch Pixel Loss:  0.0168 Epoch FFT Loss:  0.8163
+Time:  0.0982 Epoch: 005 Iter:   50/ 375 LR: 0.0000999995 Loss content:  0.0169 Loss fft:  0.8205
+Time:  0.0901 Epoch: 005 Iter:  100/ 375 LR: 0.0000999995 Loss content:  0.0170 Loss fft:  0.8093
+Time:  0.0917 Epoch: 005 Iter:  150/ 375 LR: 0.0000999995 Loss content:  0.0166 Loss fft:  0.8219
+Time:  0.0899 Epoch: 005 Iter:  200/ 375 LR: 0.0000999995 Loss content:  0.0167 Loss fft:  0.8249
+Time:  0.0902 Epoch: 005 Iter:  250/ 375 LR: 0.0000999995 Loss content:  0.0164 Loss fft:  0.8155
+Time:  0.0900 Epoch: 005 Iter:  300/ 375 LR: 0.0000999995 Loss content:  0.0171 Loss fft:  0.8249
+Time:  0.0900 Epoch: 005 Iter:  350/ 375 LR: 0.0000999995 Loss content:  0.0166 Loss fft:  0.8006
+EPOCH: 05
+Elapsed time: 0.69 Epoch Pixel Loss:  0.0168 Epoch FFT Loss:  0.8150

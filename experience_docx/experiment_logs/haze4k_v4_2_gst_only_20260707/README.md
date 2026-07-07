@@ -42,3 +42,22 @@ Locked-test evaluation remains blocked unless a later route card update explicit
 `V4_A2_GST_PREFLIGHT_OK` at 2026-07-07T23:02:55+08:00.
 
 Summary: official checkpoint hash matched, official strict load passed, A2 partial-load accepted only `SFAD_GST*` missing keys, adapter-only scope exposed only GST modules, synthetic and train-crop no-op deltas were both `0.0`, and locked test remained untouched.
+
+## Stage 1 Result
+
+`V4_A2_GST_ADAPTER5_NOTEST_TRAIN_OK` at 2026-07-07T23:08:54+08:00. Training used seed `3407`, adapter-only scope, `--valid_freq 999`, and produced cloud-only `Final.pkl`. No validation PSNR was emitted.
+
+## Stage 2 Result
+
+`V4_A2_TRAIN128_AUDIT_OK` at 2026-07-07T23:10:20+08:00.
+
+Train-only audit summary:
+
+- mean delta PSNR: `0.0303175598`
+- median delta PSNR: `0.0237083435`
+- p5/p95 delta PSNR: `-0.2722772598` / `0.3557992935`
+- positive ratio: `0.5546875000`
+- mean delta SSIM: `0.0000538551`
+- locked test touched: `false`
+
+Decision: continue to A3 SDFM+GST from the official architecture anchor.

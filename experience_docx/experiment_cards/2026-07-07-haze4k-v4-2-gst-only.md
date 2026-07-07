@@ -68,7 +68,7 @@ Stage 2 train-side audit:
 
 ## Current Status
 
-`PREFLIGHT_PASSED`: Stage 0 passed on `convir-4090` at 2026-07-07T23:02:55+08:00.
+`COMPLETED_TRAIN_SIDE_SIGNAL`: A2 GST-only completed preflight, five-epoch no-test adapter training, and train-only 128-image audit.
 
 Preflight summary:
 
@@ -81,3 +81,23 @@ Preflight summary:
 - no-op max abs train crop vs A0: `0.0`
 - locked test touched: `false`
 - test split enumerated: `false`
+
+Training screen:
+
+- seed: `3407`
+- epochs: `5`
+- scope: `adapter_only`
+- validation: disabled with `--valid_freq 999`; no locked-test PSNR was produced
+- final checkpoint: cloud-only `Final.pkl`
+
+Train-only audit summary:
+
+- sample policy: sorted first 128 files from Haze4K `train/haze`; train-fit/mechanism sanity only
+- mean delta PSNR: `0.0303175598`
+- median delta PSNR: `0.0237083435`
+- p5/p95 delta PSNR: `-0.2722772598` / `0.3557992935`
+- positive ratio: `0.5546875000`
+- mean delta SSIM: `0.0000538551`
+- worst/best delta PSNR: `-0.5011405945` / `0.7117614746`
+
+Decision: continue to A3 SDFM+GST from the immutable official architecture anchor. A2 is a mechanism/trainability signal, not a quality gate pass or generalization claim.
