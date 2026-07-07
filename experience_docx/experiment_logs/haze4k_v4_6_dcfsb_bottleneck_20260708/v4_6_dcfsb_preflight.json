@@ -1,0 +1,85 @@
+{
+  "adapter_scope": {
+    "frozen_param_count": 8630665,
+    "frozen_prefix_count": 9,
+    "scope": "adapter_only",
+    "trainable_param_count": 29732,
+    "trainable_prefixes": [
+      "DCFSB_Bottleneck"
+    ]
+  },
+  "branch": "codex/haze4k-v4-6-dcfsb-bottleneck-independent",
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+  "cuda_available": true,
+  "cuda_device_count_visible": 1,
+  "cuda_device_name": "NVIDIA GeForce RTX 4090",
+  "dcfsb_stats": {
+    "DCFSB_Bottleneck": {
+      "alpha_abs_mean": 0.0,
+      "alpha_high": 0.0,
+      "alpha_low": 0.0,
+      "high_energy": 0.05611873045563698,
+      "high_gate_mean": 0.5390530824661255,
+      "high_gate_std": 0.0032744179479777813,
+      "high_low_energy_ratio": 0.4308876693248749,
+      "high_update_abs_mean": 0.055639032274484634,
+      "low_energy": 0.1302398145198822,
+      "low_gate_mean": 0.5384794473648071,
+      "low_gate_std": 0.002210258739069104,
+      "low_update_abs_mean": 0.05330882966518402
+    }
+  },
+  "holdout_split_count": 256,
+  "locked_test_touched": false,
+  "noop_max_abs_synthetic_vs_a0": 0.0,
+  "noop_max_abs_train_crop_vs_a0": 0.0,
+  "official_parameter_count_total": 8630665,
+  "official_strict_load": {
+    "loaded_key_count": 602,
+    "missing": [],
+    "unexpected": []
+  },
+  "one_batch_loss": 0.00715274503454566,
+  "parameter_count_added": 29732,
+  "parameter_count_total": 8660397,
+  "partial_load": {
+    "allowed_new_prefixes": [
+      "DCFSB_Bottleneck"
+    ],
+    "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+    "loaded_count": 602,
+    "missing_new_modules": [
+      "DCFSB_Bottleneck.alpha_high",
+      "DCFSB_Bottleneck.alpha_low",
+      "DCFSB_Bottleneck.gate.0.bias",
+      "DCFSB_Bottleneck.gate.0.weight",
+      "DCFSB_Bottleneck.gate.2.bias",
+      "DCFSB_Bottleneck.gate.2.weight",
+      "DCFSB_Bottleneck.high_adapter.0.bias",
+      "DCFSB_Bottleneck.high_adapter.0.weight",
+      "DCFSB_Bottleneck.high_adapter.2.bias",
+      "DCFSB_Bottleneck.high_adapter.2.weight",
+      "DCFSB_Bottleneck.high_adapter.4.bias",
+      "DCFSB_Bottleneck.high_adapter.4.weight",
+      "DCFSB_Bottleneck.low_adapter.0.bias",
+      "DCFSB_Bottleneck.low_adapter.0.weight",
+      "DCFSB_Bottleneck.low_adapter.2.bias",
+      "DCFSB_Bottleneck.low_adapter.2.weight",
+      "DCFSB_Bottleneck.low_adapter.4.bias",
+      "DCFSB_Bottleneck.low_adapter.4.weight"
+    ],
+    "shape_mismatch": [],
+    "unexpected": []
+  },
+  "pass": true,
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "route_id": "haze4k_v4_6_dcfsb_bottleneck_20260708",
+  "split_overlap_count": 0,
+  "synthetic_forward_finite": true,
+  "test_split_enumerated": false,
+  "torch_version": "2.5.1+cu121",
+  "train_loader_len": 2744,
+  "train_split_count": 2744
+}

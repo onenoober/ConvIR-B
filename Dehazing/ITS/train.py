@@ -65,7 +65,13 @@ def _train(model, args):
 
     learning_rate = getattr(args, 'learning_rate', getattr(args, 'leaning_rate', 1e-4))
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.9, 0.999), eps=1e-8)
-    dataloader = train_dataloader(args.data_dir, args.batch_size, args.num_worker, args.data)
+    dataloader = train_dataloader(
+        args.data_dir,
+        args.batch_size,
+        args.num_worker,
+        args.data,
+        split_file=getattr(args, 'train_split_file', ''),
+    )
     max_iter = len(dataloader)
     warmup_epochs=3
     scheduler_cosine = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.num_epoch-warmup_epochs, eta_min=1e-6)

@@ -1,0 +1,11 @@
+preflight_start v4_6_dcfsb 2026-07-08T01:04:50+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+train_split=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/docs/ai_text_packages/haze4k_v4_sfad/splits/haze4k_train_adapter_train.txt
+holdout_split=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/docs/ai_text_packages/haze4k_v4_sfad/splits/haze4k_train_internal_holdout256.txt
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=2
+locked_test_policy=train split only; test split not enumerated
+preflight_done rc=0 v4_6_dcfsb 2026-07-08T01:04:54+08:00
+V4_6_DCFSB_PREFLIGHT_OK
