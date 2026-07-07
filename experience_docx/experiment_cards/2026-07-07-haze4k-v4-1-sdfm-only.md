@@ -2,7 +2,7 @@
 
 Date: 2026-07-07
 
-Status: PLANNED
+Status: COMPLETED_PREFLIGHT_PASS
 
 ## Scope
 
@@ -69,3 +69,25 @@ Locked Haze4K test is blocked. Do not use locked test to choose checkpoint, scal
 - Stop if no-op max absolute difference versus A0 is not near zero at initialization.
 - Stop if `R_s` collapses to all 0 or all 1 in the preflight/audit.
 - Do not continue to GST/DCFSB if A1 cannot pass preflight.
+
+## Stage 0 Preflight Result
+
+Status: `COMPLETED_PREFLIGHT_PASS`.
+
+Primary evidence file: `experience_docx/experiment_logs/haze4k_v4_1_sdfm_only_20260707/v4_a1_sdfm_preflight.json`.
+
+Key checks:
+
+- Code commit: `73643c4a965e6399ebfb5362c8fff668c4d8e518`.
+- Total params: `8,831,629`; added params: `200,964`.
+- Adapter-only trainable params: `200,964`; frozen official params: `8,630,665`.
+- Trainable prefixes: `SFAD_SDFM1`, `SFAD_SDFM2`.
+- Partial load: `602` official keys loaded; `22` missing new-module keys; unexpected `[]`; shape mismatch `[]`.
+- No-op max abs vs A0: synthetic `0.0`, train crop `0.0`.
+- One train-crop multiscale L1: `0.01309124380350113` on the sampled crop.
+- `R_s` preflight stats:
+  - `SDFM_1_2`: mean `0.5245807`, std `0.0071737`, min/max `0.4805435/0.5622713`, alpha `0.0`.
+  - `SDFM_1_4`: mean `0.5315088`, std `0.0017463`, min/max `0.5227934/0.5384336`, alpha `0.0`.
+- Locked test touched: `false`; test split enumerated: `false`.
+
+Decision: A1 Stage 0 passes. Stage 1 adapter-only training up to 5 epochs is authorized with the same data/checkpoint contract and locked test blocked.

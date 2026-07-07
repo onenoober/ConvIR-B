@@ -2,7 +2,7 @@
 
 Date: 2026-07-07
 
-Status: PLANNED
+Status: COMPLETED_PREFLIGHT_PASS
 
 ## Read First
 
@@ -26,3 +26,26 @@ Test only SDFM at ConvIR-B 1/2 and 1/4 multi-scale fusion points. GST, DCFSB, de
 ## Current Decision
 
 Pending Stage 0 preflight.
+
+## Stage 0 Preflight Result
+
+Status: `COMPLETED_PREFLIGHT_PASS`.
+
+| Check | Result |
+| --- | --- |
+| Code commit | `73643c4a965e6399ebfb5362c8fff668c4d8e518` |
+| Total params | `8,831,629` |
+| Added params | `200,964` |
+| Adapter-only trainable params | `200,964` |
+| Frozen official params | `8,630,665` |
+| Trainable prefixes | `SFAD_SDFM1`, `SFAD_SDFM2` |
+| Partial load | `602` official keys loaded; `22` new `SFAD_` keys missing |
+| Unexpected / shape mismatch | `[]` / `[]` |
+| No-op max abs vs A0 | synthetic `0.0`, train crop `0.0` |
+| One train-crop multiscale L1 | `0.01309124380350113` |
+| SDFM 1/2 `R_s` | mean `0.5245807`, std `0.0071737`, min/max `0.4805435/0.5622713`, alpha `0.0` |
+| SDFM 1/4 `R_s` | mean `0.5315088`, std `0.0017463`, min/max `0.5227934/0.5384336`, alpha `0.0` |
+| Locked test touched | `false` |
+| Test split enumerated | `false` |
+
+Decision: `A1_PREFLIGHT_PASS`. Adapter-only 5-epoch Stage 1 is authorized; locked test remains blocked.

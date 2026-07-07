@@ -11,7 +11,7 @@
 ```text
 Status: A0 preflight passed
 Current best model: ConvIR-B A0 anchor
-Current final candidate: TBD after A1/A2/A3
+Current final candidate: TBD after A1/A2/A3 after A1/A2/A3
 Main risk: A1/A2/A3 mechanism and preservation still untested
 Next required experiment: A1 SDFM-only preflight/training setup
 ```
