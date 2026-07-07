@@ -1,0 +1,41 @@
+{
+  "route_id": "haze4k_v3_2_convir_wd_full_model_line_20260707",
+  "decision": "COMPLETED_P0_P1_GATE_PASS_P2_DESIGN_OPEN_LOCKED_TEST_BLOCKED",
+  "runtime_host": "convir-4090",
+  "runtime_workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd",
+  "route_branch": "codex/haze4k-v3-2-convir-wd-full-model-line",
+  "locked_test_touched": false,
+  "p0": {
+    "status": "pass",
+    "commit": "478ac83",
+    "partial_load_loaded_count": 602,
+    "missing_new_wd_key_count": 24,
+    "noop_max_abs_vs_a0": 0.0,
+    "one_batch_loss": 0.02780638262629509,
+    "trainable_params_by_scope": {
+      "wd_only": 309472,
+      "wd_decoder": 4453433,
+      "all": 8940137
+    }
+  },
+  "p1": {
+    "status": "pass",
+    "commit": "35758db",
+    "sample_contract": "8 train-derived center crops, crop_size=256",
+    "scope": "wd_decoder",
+    "trainable_params": 4453433,
+    "initial_loss": 0.01778930053114891,
+    "final_loss": 0.012172756716609001,
+    "loss_ratio": 0.6842740497466221,
+    "gate_loss_ratio": 0.95,
+    "wd_activity_delta": 0.007103331430698745,
+    "outputs_finite": true,
+    "quality_claim": "none; mini-overfit numerical/trainability sanity only"
+  },
+  "blocked_or_deferred": [
+    "P2 train-derived validation until split, budget, checkpoint policy, and gate are written",
+    "P3 fixed internal confirmation",
+    "P4 locked test"
+  ],
+  "next_allowed_action": "Write P2 train-derived validation design; locked test remains blocked."
+}
