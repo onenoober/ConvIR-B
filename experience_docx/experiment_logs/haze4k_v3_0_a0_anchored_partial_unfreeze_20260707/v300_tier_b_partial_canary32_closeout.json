@@ -1,0 +1,8 @@
+{
+  "canary80_authorized": false,
+  "decision": "TIER_B_PARTIAL_CANARY32_GATE_FAIL_LOCK_CANARY80_LOCKED_TEST",
+  "gate_pass": false,
+  "locked_test_authorized": false,
+  "locked_test_touched": false,
+  "status": "COMPLETED_GATE_FAIL"
+}
