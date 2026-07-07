@@ -1,6 +1,6 @@
 {
   "route_id": "haze4k_v3_2_convir_wd_full_model_line_20260707",
-  "decision": "COMPLETED_P0_P1_GATE_PASS_P2_DESIGN_OPEN_LOCKED_TEST_BLOCKED",
+  "decision": "COMPLETED_P0_P1B_AGGREGATE_GATE_PASS_P2_DESIGN_OPEN_LOCKED_TEST_BLOCKED",
   "runtime_host": "convir-4090",
   "runtime_workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd",
   "route_branch": "codex/haze4k-v3-2-convir-wd-full-model-line",
@@ -19,9 +19,10 @@
     }
   },
   "p1": {
-    "status": "pass",
+    "status": "historical_first_batch_gate_pass",
     "commit": "35758db",
     "sample_contract": "8 train-derived center crops, crop_size=256",
+    "audit_note": "Training used 8 loaded crops, but initial/final loss and WD activity gate were measured only on inputs[:batch_size], the first 2 crops.",
     "scope": "wd_decoder",
     "trainable_params": 4453433,
     "initial_loss": 0.01778930053114891,
@@ -31,6 +32,22 @@
     "wd_activity_delta": 0.007103331430698745,
     "outputs_finite": true,
     "quality_claim": "none; mini-overfit numerical/trainability sanity only"
+  },
+  "p1b": {
+    "status": "pass",
+    "commit": "31fbb01",
+    "sample_contract": "8 train-derived center crops, crop_size=256",
+    "aggregate_metric_contract": "initial/final loss, output finite check, and WD activity are measured over every loaded train-derived crop in eval mode, chunked by batch_size",
+    "aggregate_batch_spans": [[0, 2], [2, 4], [4, 6], [6, 8]],
+    "scope": "wd_decoder",
+    "trainable_params": 4453433,
+    "initial_loss": 0.01766193099319935,
+    "final_loss": 0.013848769944161177,
+    "loss_ratio": 0.7841028225902132,
+    "gate_loss_ratio": 0.95,
+    "wd_activity_delta": 0.005941152640540774,
+    "outputs_finite": true,
+    "quality_claim": "none; aggregate mini-overfit numerical/trainability sanity only"
   },
   "blocked_or_deferred": [
     "P2 train-derived validation until split, budget, checkpoint policy, and gate are written",

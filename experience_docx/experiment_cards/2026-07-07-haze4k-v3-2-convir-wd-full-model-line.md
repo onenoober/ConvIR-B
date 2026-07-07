@@ -63,24 +63,28 @@ Stage ladder:
   train-batch forward, no-op vs A0, trainable manifest, no locked test.
 - P1 mini-overfit sanity: 8 train-derived center crops, `wd_decoder`, fixed
   seed, finite outputs, loss ratio `<= 0.95`, WD activity increases; no quality
-  claim.
-- P2 train-derived validation: only after P1 pass and written authorization;
-  use a real train-derived split such as 480/120 or 5x larger train folds;
-  checkpoint selection only on this split.
+  claim. The corrected pass criterion is P1b aggregate: initial/final loss,
+  output finite check, and WD activity must be measured over all loaded crops,
+  not just the first mini-batch.
+- P2 train-derived validation: only after P1b aggregate pass and written
+  authorization; use a real train-derived split such as 480/120 or 5x larger
+  train folds; checkpoint selection only on this split.
 - P3 fixed internal confirmation: only after P2 pass with fixed candidate.
 - P4 locked test: one-shot confirmation only after fixed candidate selection.
 
 Metric contract:
 - Baseline for future quality claims: official ConvIR-B A0 same split/context.
 - P0 metric: max absolute no-op difference vs A0 must be `0.0`.
-- P1 metric: numerical/trainability only; no PSNR/SSIM promotion claim.
+- P1/P1b metric: numerical/trainability only; no PSNR/SSIM promotion claim.
+  P1b aggregate over all loaded train-derived crops supersedes the original
+  first-mini-batch P1 gate for deciding whether P1 is sufficient.
 - P2 model-line gate target: mean delta `>= +0.30 dB`, hard delta
   `>= +0.50 dB`, easy delta `>= -0.05 dB`, p05 `>= -0.30 dB`, CVaR5
   `>= -0.50 dB`, no catastrophic visual failures, and Pareto-competitive
   absolute PSNR/SSIM versus v3.1 standalone candidates.
 
 Forbidden:
-- no locked test in P0/P1/P2;
+- no locked test in P0/P1/P1b/P2;
 - no canary80 as a shortcut;
 - no threshold/checkpoint selection from locked test;
 - no A0 residual, selector, alpha, bridge, or generator;
@@ -89,17 +93,26 @@ Forbidden:
 Evidence root:
 `experience_docx/experiment_logs/haze4k_v3_2_convir_wd_full_model_line_20260707/`.
 
-P0/P1 result:
+P0/P1/P1b result:
 - P0 passed from route commit `478ac83`: partial-load loaded `602` official
   keys, allowed `24` WD new keys, no-op max abs vs A0 was `0.0`, one train
   batch was finite, and locked test was untouched.
-- P1 passed from route commit `35758db`: `8` train-derived center crops at
+- Original P1 from route commit `35758db` trained over `8` train-derived center
+  crops at crop size `256`, but its initial/final gate and WD activity were
+  measured only on `inputs[:batch_size]`. It is retained as a historical
+  trainability sanity, not the final aggregate gate.
+- P1b aggregate passed from route commit `31fbb01`: `8` train-derived center
+  crops at crop size `256`, `wd_decoder` scope, all-sample aggregate loss
+  `0.01766193099319935 -> 0.013848769944161177`, loss ratio
+  `0.7841028225902132`, WD activity delta `0.005941152640540774`, finite
+  outputs, and locked test untouched.
+- Historical P1 measured on the first mini-batch reported:
   crop size `256`, `wd_decoder` scope, loss `0.01778930053114891 ->
   0.012172756716609001`, loss ratio `0.6842740497466221`, WD activity delta
   `0.007103331430698745`, finite outputs, and locked test untouched.
 
 Current status:
-`COMPLETED_P0_P1_GATE_PASS_P2_DESIGN_OPEN_LOCKED_TEST_BLOCKED`.
+`COMPLETED_P0_P1B_AGGREGATE_GATE_PASS_P2_DESIGN_OPEN_LOCKED_TEST_BLOCKED`.
 
 Next action: write the P2 train-derived validation design before any larger
-training. P1 is not quality evidence, and locked test remains blocked.
+training. P1b is not quality evidence, and locked test remains blocked.
