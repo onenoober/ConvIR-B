@@ -4,6 +4,7 @@ BASE=/sda/home/wangyuxin/ConvIR-B
 WORK=$BASE/repos/ConvIR-B-haze4k-v4-1-sdfm-only
 ITS=$WORK/Dehazing/ITS
 EVID=$WORK/experience_docx/experiment_logs/haze4k_v4_1_sdfm_only_20260707
+SCRIPT=$EVID/run_v4_a1_sdfm_adapter5.sh
 PY=$BASE/envs/convir-cu121/bin/python
 DATA=$BASE/datasets/Haze4K/Haze4K
 A0=$BASE/checkpoints/official/Haze4K/haze4k-base.pkl

@@ -7,3 +7,5 @@ python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
 cuda_visible_devices=2
 preflight_done rc=0 v4_a1_sdfm 2026-07-07T22:16:02+08:00
 V4_A1_SDFM_PREFLIGHT_OK
+train_launch v4_a1_sdfm_adapter5 2026-07-07T22:23:02+08:00 session=v4a1_sdfm_train gpu=2
+launch_failed_command missing_SCRIPT_var corrected 2026-07-07T22:23:26+08:00
