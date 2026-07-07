@@ -1,0 +1,26 @@
+# fixed_eval_samples.txt
+
+# 每行一个 image_id 或相对路径。
+# A0 完成后必须补齐本文件。
+# 分组建议如下：
+
+[sky_heavy_haze]
+TODO
+
+[distant_building]
+TODO
+
+[tree_branch_texture]
+TODO
+
+[road_scene]
+TODO
+
+[low_contrast_scene]
+TODO
+
+[failure_cases_from_A0]
+TODO
+
+[random_normal_cases]
+TODO

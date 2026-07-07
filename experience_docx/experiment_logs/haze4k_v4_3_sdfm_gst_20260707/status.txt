@@ -1,0 +1,9 @@
+preflight_start v4_a3_sdfm_gst 2026-07-07T23:22:50+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-3-sdfm-gst
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=2
+locked_test_policy=train split count and one train crop only; test split not enumerated
+preflight_done rc=0 v4_a3_sdfm_gst 2026-07-07T23:22:55+08:00
+V4_A3_SDFM_GST_PREFLIGHT_OK
