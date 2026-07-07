@@ -9,3 +9,28 @@ cuda_visible_devices=2
 locked_test_policy=train split only; test split not enumerated
 preflight_done rc=0 v4_5_sdc_lite 2026-07-08T00:47:33+08:00
 V4_5_SDC_LITE_PREFLIGHT_OK
+train_launch v4_5_sdc_lite_adapter5_notest 2026-07-08T00:51:22+08:00 session=v45_sdc_train_notest gpu=2
+V4_5_SDC_LITE_ADAPTER5_NOTEST_LAUNCHED session=v45_sdc_train_notest
+train_start v4_5_sdc_lite_adapter5_notest 2026-07-08T00:51:22+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-5-sdc-lite
+model_name=ConvIR-Haze4K-v4A5-SDC-Lite-adapter-notest-seed3407-20260708
+out_dir=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-5-sdc-lite/Dehazing/ITS/results/ConvIR-Haze4K-v4A5-SDC-Lite-adapter-notest-seed3407-20260708
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+train_split=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-5-sdc-lite/docs/ai_text_packages/haze4k_v4_sfad/splits/haze4k_train_adapter_train.txt
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=2
+locked_test_policy=no default validation; valid_freq=999 > stop_epoch=5
+train_done rc=0 v4_5_sdc_lite_adapter5_notest 2026-07-08T00:54:27+08:00
+V4_5_SDC_LITE_ADAPTER5_NOTEST_TRAIN_OK
+audit_start v4_5_sdc_lite_internal256 2026-07-08T00:55:06+08:00
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+candidate=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-5-sdc-lite/Dehazing/ITS/results/ConvIR-Haze4K-v4A5-SDC-Lite-adapter-notest-seed3407-20260708/Training-Results/Final.pkl
+trainfit=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-5-sdc-lite/docs/ai_text_packages/haze4k_v4_sfad/splits/haze4k_train_diagnosis_trainfit128.txt
+holdout=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-5-sdc-lite/docs/ai_text_packages/haze4k_v4_sfad/splits/haze4k_train_internal_holdout256.txt
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=2
+locked_test_policy=train-derived trainfit/internal only
+audit_done rc=0 v4_5_sdc_lite_internal256 2026-07-08T00:55:40+08:00
+V4_5_SDC_LITE_INTERNAL256_AUDIT_OK

@@ -1,0 +1,34 @@
+{
+  "internal256": {
+    "R_1_2_corr_a0_gt_l1": -0.40986398895818404,
+    "R_1_2_corr_input_gt_l1": -0.4675703306623867,
+    "R_1_2_mean": 0.49227113148663193,
+    "R_1_2_std_mean": 0.08235210657585412,
+    "R_1_2_std_median": 0.08135310932993889,
+    "count": 256,
+    "mean_delta_psnr": -0.009710662066936493,
+    "mean_delta_ssim": -2.281484194099903e-05,
+    "median_delta_psnr": -0.013090133666992188,
+    "p5_delta_psnr": -0.18075084686279297,
+    "p95_delta_psnr": 0.16260528564453125,
+    "positive_ratio": 0.4375
+  },
+  "locked_test_touched": false,
+  "route_id": "haze4k_v4_5_sdc_lite_20260708",
+  "runtime_sec": 30.714528799057007,
+  "test_split_enumerated": false,
+  "trainfit128": {
+    "R_1_2_corr_a0_gt_l1": -0.505587485390654,
+    "R_1_2_corr_input_gt_l1": -0.5329292876038785,
+    "R_1_2_mean": 0.4895000059623271,
+    "R_1_2_std_mean": 0.07815759076038375,
+    "R_1_2_std_median": 0.07710839807987213,
+    "count": 128,
+    "mean_delta_psnr": -0.014244332909584045,
+    "mean_delta_ssim": -0.00010642176494002342,
+    "median_delta_psnr": -0.0133209228515625,
+    "p5_delta_psnr": -0.19504032135009766,
+    "p95_delta_psnr": 0.16395931243896505,
+    "positive_ratio": 0.484375
+  }
+}

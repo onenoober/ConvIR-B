@@ -25,3 +25,16 @@ Status: passed; adapter-5 training authorized.
 - Locked test touched/enumerated: `False` / `False`
 
 Next authorized phase: run `run_v4_5_sdc_lite_adapter5_notest.sh` with `--valid_freq 999`, then audit trainfit128 and internal_holdout256.
+
+## Audit Closeout
+
+Status: stage gate failed; route not promoted.
+
+- trainfit128 mean dPSNR `-0.014244`, positive ratio `0.484375`
+- internal256 mean dPSNR `-0.009711`, positive ratio `0.437500`
+- internal256 p5 dPSNR `-0.180751`, R std mean `0.082352`
+- R correlations are negative: input L1 `-0.467570`, A0 L1 `-0.409864`
+- Locked test touched/enumerated: `False` / `False`
+- Raw per-image/module tables and checkpoints remain cloud-only.
+
+Decision: do not extend v4.5 immediately; proceed to v4.6 DCFSB-bottleneck independent route from the official anchor.
