@@ -52,3 +52,21 @@ branch=codex/haze4k-v3-2-convir-wd-full-model-line
 commit=35758db
 p1_mini_overfit_done rc=0 haze4k_v3_2_convir_wd_full_model_line_20260707 2026-07-07T17:32:20+08:00
 V32_P1_MINI_OVERFIT_OK
+p1b_aggregate_mini_overfit_start haze4k_v3_2_convir_wd_full_model_line_20260707 2026-07-07T18:09:52+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+branch=codex/haze4k-v3-2-convir-wd-full-model-line
+commit=872b479
+p1b_aggregate_mini_overfit_done rc=0 haze4k_v3_2_convir_wd_full_model_line_20260707 2026-07-07T18:10:12+08:00
+V32_P1B_AGGREGATE_MINI_OVERFIT_OK
+p1b_aggregate_mini_overfit_start haze4k_v3_2_convir_wd_full_model_line_20260707 2026-07-07T18:11:25+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+branch=codex/haze4k-v3-2-convir-wd-full-model-line
+commit=31fbb01
+p1b_aggregate_mini_overfit_done rc=0 haze4k_v3_2_convir_wd_full_model_line_20260707 2026-07-07T18:11:39+08:00
+V32_P1B_AGGREGATE_MINI_OVERFIT_OK

@@ -1,0 +1,244 @@
+{
+  "route_id": "haze4k_v3_2_convir_wd_full_model_line_20260707",
+  "phase": "P1b aggregate mini-overfit sanity",
+  "branch": "codex/haze4k-v3-2-convir-wd-full-model-line",
+  "commit": "31fbb01",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "torch_version": "2.5.1+cu121",
+  "cuda_device_name": "NVIDIA GeForce RTX 4090",
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "sample_names": [
+    "1000_0.74_1.6.png",
+    "1001_0.89_1.66.png",
+    "1002_0.73_1.47.png",
+    "1003_0.9_1.06.png",
+    "1004_0.91_1.17.png",
+    "1005_0.74_1.81.png",
+    "1006_0.89_1.55.png",
+    "1007_0.68_1.25.png"
+  ],
+  "sample_contract": "8 train-derived center crops, crop_size=256",
+  "aggregate_metric_contract": "initial/final loss, output finite check, and WD activity are measured over every loaded train-derived crop in eval mode, chunked by batch_size",
+  "corrects_prior_p1_gate_scope": "v32_p1_mini_overfit.json measured the final gate on inputs[:batch_size]; this P1b result measures the gate on all loaded samples",
+  "aggregate_sample_count": 8,
+  "aggregate_batch_size": 2,
+  "scope": "wd_decoder",
+  "trainable_params": 4453433,
+  "frozen_params": 4486704,
+  "lr_groups": [
+    {
+      "name": "WD",
+      "lr": 0.0002
+    },
+    {
+      "name": "decoder",
+      "lr": 1e-05
+    }
+  ],
+  "partial_load": {
+    "loaded_count": 602,
+    "missing_new_count": 24,
+    "unexpected": [],
+    "shape_mismatch": []
+  },
+  "initial_loss": 0.01766193099319935,
+  "initial_parts": {
+    "content": 0.01684804679825902,
+    "dwt_high": 0.0019195798668079078,
+    "dwt_low": 0.01055389828979969,
+    "y": 0.005339866387657821
+  },
+  "initial_batches": [
+    {
+      "start": 0,
+      "end": 2,
+      "count": 2,
+      "loss": 0.016343358904123306,
+      "outputs_finite": true,
+      "content": 0.015589741058647633,
+      "dwt_low": 0.009865209460258484,
+      "dwt_high": 0.001497103599831462,
+      "y": 0.004907716065645218
+    },
+    {
+      "start": 2,
+      "end": 4,
+      "count": 2,
+      "loss": 0.014132499694824219,
+      "outputs_finite": true,
+      "content": 0.013463427312672138,
+      "dwt_low": 0.008734745904803276,
+      "dwt_high": 0.0013492107391357422,
+      "y": 0.004376857541501522
+    },
+    {
+      "start": 4,
+      "end": 6,
+      "count": 2,
+      "loss": 0.018035588786005974,
+      "outputs_finite": true,
+      "content": 0.017220906913280487,
+      "dwt_low": 0.010477869771420956,
+      "dwt_high": 0.002246337942779064,
+      "y": 0.005366490222513676
+    },
+    {
+      "start": 6,
+      "end": 8,
+      "count": 2,
+      "loss": 0.022136276587843895,
+      "outputs_finite": true,
+      "content": 0.02111811190843582,
+      "dwt_low": 0.013137768022716045,
+      "dwt_high": 0.002585667185485363,
+      "y": 0.006708401720970869
+    }
+  ],
+  "final_loss": 0.013848769944161177,
+  "final_parts": {
+    "content": 0.013246457790955901,
+    "dwt_high": 0.0018870139901991934,
+    "dwt_low": 0.0077017039293423295,
+    "y": 0.00396712776273489
+  },
+  "final_batches": [
+    {
+      "start": 0,
+      "end": 2,
+      "count": 2,
+      "loss": 0.01215758454054594,
+      "outputs_finite": true,
+      "content": 0.011640617623925209,
+      "dwt_low": 0.006657002493739128,
+      "dwt_high": 0.0014859418151900172,
+      "y": 0.003385148011147976
+    },
+    {
+      "start": 2,
+      "end": 4,
+      "count": 2,
+      "loss": 0.009187157265841961,
+      "outputs_finite": true,
+      "content": 0.008799547329545021,
+      "dwt_low": 0.004953447263687849,
+      "dwt_high": 0.0013346485793590546,
+      "y": 0.002531812060624361
+    },
+    {
+      "start": 4,
+      "end": 6,
+      "count": 2,
+      "loss": 0.0154949352145195,
+      "outputs_finite": true,
+      "content": 0.014806616120040417,
+      "dwt_low": 0.008754068985581398,
+      "dwt_high": 0.002201705938205123,
+      "y": 0.004571946803480387
+    },
+    {
+      "start": 6,
+      "end": 8,
+      "count": 2,
+      "loss": 0.018555402755737305,
+      "outputs_finite": true,
+      "content": 0.017739050090312958,
+      "dwt_low": 0.010442296974360943,
+      "dwt_high": 0.0025257596280425787,
+      "y": 0.005379604175686836
+    }
+  ],
+  "loss_ratio": 0.7841028225902132,
+  "gate_loss_ratio": 0.95,
+  "history": [
+    {
+      "step": 1,
+      "loss": 0.01778930053114891,
+      "content": 0.016975831240415573,
+      "dwt_low": 0.010690851137042046,
+      "dwt_high": 0.0014913047198206186,
+      "y": 0.005280297715216875
+    },
+    {
+      "step": 20,
+      "loss": 0.021284889429807663,
+      "content": 0.02035655826330185,
+      "dwt_low": 0.011930936947464943,
+      "dwt_high": 0.0026062976103276014,
+      "y": 0.006114426534622908
+    },
+    {
+      "step": 40,
+      "loss": 0.01948220655322075,
+      "content": 0.01864570379257202,
+      "dwt_low": 0.010688486509025097,
+      "dwt_high": 0.0025761141441762447,
+      "y": 0.005526340566575527
+    },
+    {
+      "step": 60,
+      "loss": 0.01773027703166008,
+      "content": 0.01697695627808571,
+      "dwt_low": 0.009557818993926048,
+      "dwt_high": 0.0025518855545669794,
+      "y": 0.00499820476397872
+    },
+    {
+      "step": 80,
+      "loss": 0.016298744827508926,
+      "content": 0.015612511895596981,
+      "dwt_low": 0.008644303306937218,
+      "dwt_high": 0.002522057620808482,
+      "y": 0.004575978498905897
+    },
+    {
+      "step": 100,
+      "loss": 0.015466944314539433,
+      "content": 0.01482307817786932,
+      "dwt_low": 0.00806891918182373,
+      "dwt_high": 0.002501695416867733,
+      "y": 0.00430805329233408
+    },
+    {
+      "step": 120,
+      "loss": 0.014787784777581692,
+      "content": 0.01417762041091919,
+      "dwt_low": 0.007610767148435116,
+      "dwt_high": 0.0024842293933033943,
+      "y": 0.004095681011676788
+    }
+  ],
+  "initial_wd_stats": {
+    "bottleneck": {
+      "beta_abs_mean": 0.0,
+      "gamma_abs_mean": 0.0
+    },
+    "decoder1": {
+      "beta_abs_mean": 0.0,
+      "gamma_abs_mean": 0.0
+    },
+    "decoder2": {
+      "beta_abs_mean": 0.0,
+      "gamma_abs_mean": 0.0
+    }
+  },
+  "final_wd_stats": {
+    "bottleneck": {
+      "beta_abs_mean": 0.011949092848226428,
+      "gamma_abs_mean": 0.02266969345510006
+    },
+    "decoder1": {
+      "beta_abs_mean": 0.00017823127200244926,
+      "gamma_abs_mean": 0.00015118889496079646
+    },
+    "decoder2": {
+      "beta_abs_mean": 0.0003053629698115401,
+      "gamma_abs_mean": 0.00039334640314336866
+    }
+  },
+  "wd_activity_delta": 0.005941152640540774,
+  "outputs_finite": true,
+  "locked_test_touched": false,
+  "quality_claim": "none; aggregate mini-overfit numerical/trainability sanity only",
+  "pass": true
+}
