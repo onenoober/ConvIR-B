@@ -1,0 +1,19 @@
+{
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "audit": "train_sorted_first128_final_vs_a0",
+  "best_delta_psnr": 0.470062255859375,
+  "candidate_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-3-sdfm-gst/Dehazing/ITS/results/ConvIR-Haze4K-v4A3-SDFM-GST-adapter-notest-seed3407-20260707/Training-Results/Final.pkl",
+  "count": 128,
+  "locked_test_touched": false,
+  "mean_delta_psnr": -0.045743584632873535,
+  "mean_delta_ssim": -0.00013662688434123993,
+  "median_delta_psnr": -0.045989990234375,
+  "p5_delta_psnr": -0.34816913604736327,
+  "p95_delta_psnr": 0.22013778686523455,
+  "positive_ratio": 0.3984375,
+  "route_id": "haze4k_v4_3_sdfm_gst_20260707",
+  "runtime_sec": 11.179378509521484,
+  "sample_policy": "sorted first 128 files from Haze4K train/haze; this is train-fit/mechanism sanity, not generalization evidence",
+  "test_split_enumerated": false,
+  "worst_delta_psnr": -0.6070098876953125
+}

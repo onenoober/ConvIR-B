@@ -128,7 +128,12 @@ with torch.no_grad():
             data_range=1,
             size_average=False,
         ).mean().detach().cpu())
-        stats = route.collect_modulation_stats(hazy)
+        stats = {
+            'SDFM_1_4': route.SFAD_SDFM1.collect_stats(),
+            'SDFM_1_2': route.SFAD_SDFM2.collect_stats(),
+            'GST_1_2': route.SFAD_GST1.collect_stats(),
+            'GST_1_1': route.SFAD_GST2.collect_stats(),
+        }
         for module, values in stats.items():
             module_sums.setdefault(module, {})
             for key, value in values.items():

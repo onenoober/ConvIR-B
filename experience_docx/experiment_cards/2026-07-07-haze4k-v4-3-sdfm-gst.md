@@ -39,7 +39,7 @@ Stage 2 train-only audit compares A3 Final against A0 on sorted first 128 images
 
 ## Current Status
 
-`PREFLIGHT_PASSED`: Stage 0 passed on `convir-4090` at 2026-07-07T23:22:55+08:00.
+`COMPLETED_TRAIN_SIDE_FAIL`: A3 SDFM+GST completed preflight, five-epoch no-test adapter training, and train-only 128-image audit, but failed the train-side mechanism screen.
 
 Preflight summary:
 
@@ -52,3 +52,25 @@ Preflight summary:
 - no-op max abs train crop vs A0: `0.0`
 - locked test touched: `false`
 - test split enumerated: `false`
+
+Training screen:
+
+- seed: `3407`
+- epochs: `5`
+- scope: `adapter_only`
+- validation: disabled with `--valid_freq 999`; no locked-test PSNR was produced
+- final checkpoint: cloud-only `Final.pkl`
+
+Audit note: first audit attempt failed due an engineering bug in module-stat collection on unpadded original-size images. The script was fixed to read stats from the padded candidate forward, then the same train-only first128 audit was rerun successfully.
+
+Train-only audit summary:
+
+- sample policy: sorted first 128 files from Haze4K `train/haze`; train-fit/mechanism sanity only
+- mean delta PSNR: `-0.0457435846`
+- median delta PSNR: `-0.0459899902`
+- p5/p95 delta PSNR: `-0.3481691360` / `0.2201377869`
+- positive ratio: `0.3984375000`
+- mean delta SSIM: `-0.0001366269`
+- worst/best delta PSNR: `-0.6070098877` / `0.4700622559`
+
+Decision: stop the current A3 combined route. Do not launch density auxiliary or DCFSB phases from this failed combined base. Locked test remains blocked.
