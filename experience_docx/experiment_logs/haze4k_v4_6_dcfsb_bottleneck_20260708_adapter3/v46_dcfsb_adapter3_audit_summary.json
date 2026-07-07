@@ -1,0 +1,38 @@
+{
+  "internal256": {
+    "alpha_abs_mean": 0.01552705280482769,
+    "count": 256,
+    "high_gate_std_mean": 0.031826994389120955,
+    "high_l1_improve_ratio": 0.58203125,
+    "high_low_energy_ratio_mean": 0.5615042770514265,
+    "low_gate_std_mean": 0.021733260316977976,
+    "mean_delta_high_l1": -1.0920655313384486e-06,
+    "mean_delta_low_l1": -2.9299594189069467e-05,
+    "mean_delta_psnr": 0.027318157255649567,
+    "mean_delta_ssim": -6.548594683408737e-06,
+    "median_delta_psnr": 0.022617340087890625,
+    "p5_delta_psnr": -0.14940929412841797,
+    "p95_delta_psnr": 0.2113780975341797,
+    "positive_ratio": 0.58984375
+  },
+  "locked_test_touched": false,
+  "route_id": "haze4k_v4_6_dcfsb_bottleneck_20260708_adapter3",
+  "runtime_sec": 37.124409675598145,
+  "test_split_enumerated": false,
+  "trainfit128": {
+    "alpha_abs_mean": 0.01552705280482769,
+    "count": 128,
+    "high_gate_std_mean": 0.0301288383489009,
+    "high_l1_improve_ratio": 0.6875,
+    "high_low_energy_ratio_mean": 0.5285294186323881,
+    "low_gate_std_mean": 0.020536378586257342,
+    "mean_delta_high_l1": -3.3948808777495287e-06,
+    "mean_delta_low_l1": -7.060871212161146e-06,
+    "mean_delta_psnr": 0.002362951636314392,
+    "mean_delta_ssim": -4.522502422332764e-05,
+    "median_delta_psnr": -0.0032634735107421875,
+    "p5_delta_psnr": -0.14544277191162108,
+    "p95_delta_psnr": 0.18825645446777345,
+    "positive_ratio": 0.4765625
+  }
+}

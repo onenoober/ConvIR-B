@@ -34,3 +34,45 @@ cuda_visible_devices=2
 locked_test_policy=train-derived trainfit/internal only
 audit_done rc=0 v4_6_dcfsb_internal256 2026-07-08T01:10:35+08:00
 V4_6_DCFSB_INTERNAL256_AUDIT_OK
+train_launch v4_6_dcfsb_adapter3_notest 2026-07-08T01:14:28+08:00 session=v46_dcfsb_train_adapter3 gpu=1
+train_launch v4_6_dcfsb_adapter5_lr5e5_notest 2026-07-08T01:14:29+08:00 session=v46_dcfsb_train_adapter5_lr5e5 gpu=2
+V4_6_DCFSB_ADAPTER3_NOTEST_LAUNCHED session=v46_dcfsb_train_adapter3
+V4_6_DCFSB_ADAPTER5_LR5E5_NOTEST_LAUNCHED session=v46_dcfsb_train_adapter5_lr5e5
+train_start v4_6_dcfsb_adapter3_notest 2026-07-08T01:14:29+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent
+model_name=ConvIR-Haze4K-v4A6-DCFSB-Bottleneck-adapter3-notest-seed3407-20260708
+out_dir=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/Dehazing/ITS/results/ConvIR-Haze4K-v4A6-DCFSB-Bottleneck-adapter3-notest-seed3407-20260708
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+train_split=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/docs/ai_text_packages/haze4k_v4_sfad/splits/haze4k_train_adapter_train.txt
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=1
+locked_test_policy=no default validation; valid_freq=999 > stop_epoch=3
+train_start v4_6_dcfsb_adapter5_lr5e5_notest 2026-07-08T01:14:29+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent
+model_name=ConvIR-Haze4K-v4A6-DCFSB-Bottleneck-adapter5-lr5e5-notest-seed3407-20260708
+out_dir=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/Dehazing/ITS/results/ConvIR-Haze4K-v4A6-DCFSB-Bottleneck-adapter5-lr5e5-notest-seed3407-20260708
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+train_split=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/docs/ai_text_packages/haze4k_v4_sfad/splits/haze4k_train_adapter_train.txt
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=2
+locked_test_policy=no default validation; valid_freq=999 > stop_epoch=5
+train_done rc=0 v4_6_dcfsb_adapter3_notest 2026-07-08T01:16:06+08:00
+V4_6_DCFSB_ADAPTER3_NOTEST_TRAIN_OK
+train_done rc=0 v4_6_dcfsb_adapter5_lr5e5_notest 2026-07-08T01:17:08+08:00
+V4_6_DCFSB_ADAPTER5_LR5E5_NOTEST_TRAIN_OK
+train_launch v4_6_dcfsb_adapter4_notest 2026-07-08T01:21:06+08:00 session=v46_dcfsb_train_adapter4 gpu=2
+V4_6_DCFSB_ADAPTER4_NOTEST_LAUNCHED session=v46_dcfsb_train_adapter4
+train_start v4_6_dcfsb_adapter4_notest 2026-07-08T01:21:06+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent
+model_name=ConvIR-Haze4K-v4A6-DCFSB-Bottleneck-adapter4-notest-seed3407-20260708
+out_dir=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/Dehazing/ITS/results/ConvIR-Haze4K-v4A6-DCFSB-Bottleneck-adapter4-notest-seed3407-20260708
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+train_split=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/docs/ai_text_packages/haze4k_v4_sfad/splits/haze4k_train_adapter_train.txt
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=2
+locked_test_policy=no default validation; valid_freq=999 > stop_epoch=4
+train_done rc=0 v4_6_dcfsb_adapter4_notest 2026-07-08T01:23:14+08:00
+V4_6_DCFSB_ADAPTER4_NOTEST_TRAIN_OK

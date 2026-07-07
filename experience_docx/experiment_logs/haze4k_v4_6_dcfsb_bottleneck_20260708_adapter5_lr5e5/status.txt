@@ -1,0 +1,11 @@
+audit_start v4_6_dcfsb_adapter5_lr5e5_internal256 2026-07-08T01:17:45+08:00
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+candidate=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/Dehazing/ITS/results/ConvIR-Haze4K-v4A6-DCFSB-Bottleneck-adapter5-lr5e5-notest-seed3407-20260708/Training-Results/Final.pkl
+trainfit=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/docs/ai_text_packages/haze4k_v4_sfad/splits/haze4k_train_diagnosis_trainfit128.txt
+holdout=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/docs/ai_text_packages/haze4k_v4_sfad/splits/haze4k_train_internal_holdout256.txt
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=2
+locked_test_policy=train-derived trainfit/internal only
+audit_done rc=0 v4_6_dcfsb_adapter5_lr5e5_internal256 2026-07-08T01:18:24+08:00
+V4_6_DCFSB_ADAPTER5_LR5E5_INTERNAL256_AUDIT_OK

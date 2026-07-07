@@ -34,3 +34,21 @@ The adapter5 audit is scientifically promising but fails the stage gate only on 
 - `adapter5_lr5e5`: 5 epochs at half LR, testing whether slower adaptation reduces tail harm.
 
 Both probes keep `--valid_freq 999`, train only on `adapter_train`, audit only trainfit128/internal_holdout256, and keep locked test blocked.
+
+## Adapter4 Bracket Probe Authorization
+
+The first rescue probes bracket the trade-off: adapter5 passes mean dPSNR but fails p5, while adapter3 passes p5 but narrowly misses mean dPSNR. A final adapter4 probe is authorized to test the midpoint. It keeps the same locked-test policy, training split, seed, and metric contract.
+
+## Audit Closeout
+
+Status: internal stage gate passed.
+
+Selected candidate: `adapter4`.
+
+- adapter4 internal256 mean dPSNR `0.044404`, positive ratio `0.625000`, p5 dPSNR `-0.216141`
+- adapter4 high-frequency L1 delta `-0.00000057`, high-gate std `0.038074`
+- adapter5 was mean-positive but tail-risky; adapter3 was tail-safe but just under mean threshold; low-LR was too weak.
+- Locked test touched/enumerated: `False` / `False`
+- Raw per-image/module tables, checkpoints, and TensorBoard runs remain cloud-only.
+
+Decision: keep v4.6 DCFSB-bottleneck adapter4 as the current candidate. Any locked-test or broader validation needs a separate written gate.
