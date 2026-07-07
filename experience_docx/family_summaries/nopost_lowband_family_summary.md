@@ -307,6 +307,16 @@ full-image/full-image-slice context contract. Future bridge/generator work must
 be written as a new same-contract route and cannot inherit authorization from
 the failed direct-crop or 256 crop-input contracts.
 
+
+
+Post-v3.0 addendum (2026-07-07): classify the A0-anchored rescue family as
+`A0_DOMINANCE_ROUTE_FAIL` / `A0_NEIGHBORHOOD_NON_DOMINABILITY`. v3.1 moved the
+next question out of the A0 neighborhood and into a full-model candidate bakeoff:
+WDMamba and ConvIR-L standalone have large/full-model headroom, but still do not
+satisfy strict per-image A0 dominance. This reinforces that NoPost/A0-neighborhood
+selector, alpha, bridge, generator, A0PROX, and v3.0 partial-unfreeze rescues
+remain closed; follow-up should be a separate full-model line route.
+
 ## Do Not Repeat Without New Evidence
 
 - Do not expand WLDB-A with more seeds, epochs, hidden width, checkpoint

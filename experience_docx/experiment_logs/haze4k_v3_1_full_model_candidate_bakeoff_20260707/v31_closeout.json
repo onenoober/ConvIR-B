@@ -1,0 +1,67 @@
+{
+  "route": "haze4k_v3_1_full_model_candidate_bakeoff_20260707",
+  "route_type": "diagnostic_only_full_model_bakeoff",
+  "locked_test_policy": "locked test forbidden; all joined sources report train-derived/full-image evidence only",
+  "source_files": {
+    "v237_wdmamba_fullimage": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-37-tail-safe-same-context-wdmamba-eligibility-preservation/experience_docx/experiment_logs/haze4k_v2_37_tail_safe_same_context_wdmamba_eligibility_preservation_20260706/v237_p0_alpha_safety_sweep_per_image.csv",
+    "v239_convirl_fullimage": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-39-convirl-same-family-teacher-contract-audit/experience_docx/experiment_logs/haze4k_v2_39_convirl_same_family_teacher_contract_audit_20260706/v239_p0_convirl_fullimage_teacher_sweep_per_image.csv",
+    "v22_fsudp_fullimage": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-github-main/experience_docx/experiment_logs/haze4k_v2_2_c8_mini_expert_oracle_20260615/v22_c8_2_fsudp_full_per_image.csv"
+  },
+  "common_count": 600,
+  "forbidden_continuations": [
+    "A0 residual rescue",
+    "selector",
+    "alpha deployment",
+    "bridge",
+    "generator",
+    "canary80",
+    "locked test"
+  ],
+  "metric_contract": {
+    "baseline": "official ConvIR-B A0 same-context PSNR from v2.37/v2.39 full-image cache",
+    "split": "600 train-derived Haze4K full-image samples; 300 val_regular + 300 val_hard labels where available",
+    "hard_easy": "hardness_bucket/easy_bucket from A0 same-context full-image PSNR buckets in v2.37/v2.39",
+    "severe_definition": "delta_vs_A0 <= -0.20 dB",
+    "strong_reference_regression_definition": "strong_reference_bucket and delta_vs_A0 <= -0.05 dB"
+  },
+  "ssim_audit": {
+    "computed": {
+      "A0_official_ConvIR-B": 600,
+      "WDMamba_standalone_fullimage": 600,
+      "ConvIR-L_standalone_fullimage": 600,
+      "FullUDP_standalone_fullimage": 0
+    },
+    "failures": [],
+    "FullUDP_source_ssim_valid_0_to_1": false,
+    "FullUDP_ssim_note": "Historical FullUDP_SSIM source values fall outside [0,1]; SSIM is omitted for FullUDP in v3.1 compact matrix."
+  },
+  "decision": "COMPLETED_GATE_PASS_WDMAMBA_FULL_MODEL_BASELINE_HEADROOM",
+  "primary_result": {
+    "best_mean_candidate": "WDMamba_standalone_fullimage",
+    "best_mean_delta_vs_A0": 3.5778374473253884,
+    "wdmamba_mean_delta_vs_A0": 3.5778374473253884,
+    "wdmamba_hard_delta_vs_A0": 8.27647393544515,
+    "wdmamba_easy_delta_vs_A0": -1.0483469168345134,
+    "convirl_mean_delta_vs_A0": 1.094505747159322,
+    "fulludp_mean_delta_vs_A0": -0.43133525451024374
+  },
+  "next_authorized": [
+    "draft v3.2 ConvIR-WD/WDMamba-informed full model line P0/P1 protocol"
+  ],
+  "still_forbidden": [
+    "locked test",
+    "canary80",
+    "A0 residual rescue",
+    "selector/alpha deployment",
+    "bridge/generator from v3.0"
+  ],
+  "cloud_only_raw_table": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-github-main/experience_docx/experiment_logs/haze4k_v3_1_full_model_candidate_bakeoff_20260707/v31_candidate_per_image_cloud_only.csv",
+  "compact_outputs": [
+    "v31_candidate_metric_matrix.csv",
+    "v31_candidate_tail_matrix.csv",
+    "v31_candidate_oracle_upper_bound.json",
+    "v31_candidate_overlap_matrix.csv",
+    "v31_candidate_cost_manifest.json",
+    "v31_closeout.json"
+  ]
+}

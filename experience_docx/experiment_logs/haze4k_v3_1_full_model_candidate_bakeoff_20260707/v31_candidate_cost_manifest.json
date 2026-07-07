@@ -1,0 +1,26 @@
+{
+  "A0_official_ConvIR-B": {
+    "params_m": 8.63,
+    "flops_g": 71.22,
+    "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+    "source": "official ConvIR Haze4K B"
+  },
+  "ConvIR-L_standalone_fullimage": {
+    "params_m": 14.83,
+    "flops_g": 129.34,
+    "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-large.pkl",
+    "source": "official ConvIR Haze4K L"
+  },
+  "WDMamba_standalone_fullimage": {
+    "params_m": null,
+    "flops_g": null,
+    "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/haze4k_35.88.pth",
+    "source": "external WDMamba Haze4K checkpoint; cost not measured in this diagnostic"
+  },
+  "FullUDP_standalone_fullimage": {
+    "params_m": null,
+    "flops_g": null,
+    "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/ConvIR_UDPNet_haze4k.ckpt",
+    "source": "UDPNet official Haze4K ConvIR_UDPNet; cost not measured in this diagnostic"
+  }
+}

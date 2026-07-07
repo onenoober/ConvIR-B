@@ -1,0 +1,14 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-github-main/experience_docx/experiment_logs/haze4k_v3_1_full_model_candidate_bakeoff_20260707/v31_aggregate_full_model_bakeoff.py:79: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  obj = torch.load(path, map_location='cpu')
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-github-main/experience_docx/experiment_logs/haze4k_v3_1_full_model_candidate_bakeoff_20260707/v31_aggregate_full_model_bakeoff.py:73: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  data = torch.ByteTensor(torch.ByteStorage.from_buffer(img.tobytes()))
+{
+  "best_mean_candidate": "WDMamba_standalone_fullimage",
+  "best_mean_delta_vs_A0": 3.5778374473253884,
+  "wdmamba_mean_delta_vs_A0": 3.5778374473253884,
+  "wdmamba_hard_delta_vs_A0": 8.27647393544515,
+  "wdmamba_easy_delta_vs_A0": -1.0483469168345134,
+  "convirl_mean_delta_vs_A0": 1.094505747159322,
+  "fulludp_mean_delta_vs_A0": -0.43133525451024374
+}
+V31_AGGREGATE_OK

@@ -1,0 +1,22 @@
+{
+  "candidate_set": [
+    "A0_official_ConvIR-B",
+    "WDMamba_standalone_fullimage",
+    "ConvIR-L_standalone_fullimage",
+    "FullUDP_standalone_fullimage"
+  ],
+  "count": 600,
+  "winner_histogram": {
+    "WDMamba_standalone_fullimage": 382,
+    "ConvIR-L_standalone_fullimage": 164,
+    "A0_official_ConvIR-B": 28,
+    "FullUDP_standalone_fullimage": 26
+  },
+  "oracle_mean_psnr": 41.29544576009115,
+  "oracle_delta_vs_A0_mean": 4.43530083100001,
+  "oracle_delta_vs_A0_hard": 8.335039536158243,
+  "oracle_delta_vs_A0_easy": 1.2607767232259115,
+  "oracle_delta_vs_A0_p05": 0.08828701972961422,
+  "oracle_delta_vs_A0_cvar5": 0.003112125396728516,
+  "oracle_severe_count": 0
+}

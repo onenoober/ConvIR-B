@@ -1,0 +1,17 @@
+candidate_a,candidate_b,positive_jaccard,useful_ge_0p20_jaccard,severe_le_-0p20_jaccard,both_positive_count,both_useful_count,both_severe_count,a_positive_count,b_positive_count
+A0_official_ConvIR-B,A0_official_ConvIR-B,1.0,1.0,1.0,0,0,0,0,0
+A0_official_ConvIR-B,WDMamba_standalone_fullimage,0.0,0.0,0.0,0,0,0,0,461
+A0_official_ConvIR-B,ConvIR-L_standalone_fullimage,0.0,0.0,0.0,0,0,0,0,431
+A0_official_ConvIR-B,FullUDP_standalone_fullimage,0.0,0.0,0.0,0,0,0,0,243
+WDMamba_standalone_fullimage,A0_official_ConvIR-B,0.0,0.0,0.0,0,0,0,461,0
+WDMamba_standalone_fullimage,WDMamba_standalone_fullimage,1.0,1.0,1.0,461,455,124,461,461
+WDMamba_standalone_fullimage,ConvIR-L_standalone_fullimage,0.5759717314487632,0.5601436265709157,0.12448132780082988,326,312,30,461,431
+WDMamba_standalone_fullimage,FullUDP_standalone_fullimage,0.3831041257367387,0.3515151515151515,0.1889763779527559,195,174,72,461,243
+ConvIR-L_standalone_fullimage,A0_official_ConvIR-B,0.0,0.0,0.0,0,0,0,431,0
+ConvIR-L_standalone_fullimage,WDMamba_standalone_fullimage,0.5759717314487632,0.5601436265709157,0.12448132780082988,326,312,30,431,461
+ConvIR-L_standalone_fullimage,ConvIR-L_standalone_fullimage,1.0,1.0,1.0,431,414,147,431,431
+ConvIR-L_standalone_fullimage,FullUDP_standalone_fullimage,0.4129979035639413,0.3741794310722101,0.27956989247311825,197,171,104,431,243
+FullUDP_standalone_fullimage,A0_official_ConvIR-B,0.0,0.0,0.0,0,0,0,243,0
+FullUDP_standalone_fullimage,WDMamba_standalone_fullimage,0.3831041257367387,0.3515151515151515,0.1889763779527559,195,174,72,243,461
+FullUDP_standalone_fullimage,ConvIR-L_standalone_fullimage,0.4129979035639413,0.3741794310722101,0.27956989247311825,197,171,104,243,431
+FullUDP_standalone_fullimage,FullUDP_standalone_fullimage,1.0,1.0,1.0,243,214,329,243,243
