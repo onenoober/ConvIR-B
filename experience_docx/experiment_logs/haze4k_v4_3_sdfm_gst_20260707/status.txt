@@ -1,0 +1,40 @@
+preflight_start v4_a3_sdfm_gst 2026-07-07T23:22:50+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-3-sdfm-gst
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=2
+locked_test_policy=train split count and one train crop only; test split not enumerated
+preflight_done rc=0 v4_a3_sdfm_gst 2026-07-07T23:22:55+08:00
+V4_A3_SDFM_GST_PREFLIGHT_OK
+train_launch v4_a3_sdfm_gst_adapter5_notest 2026-07-07T23:25:20+08:00 session=v4a3_sdfm_gst_train_notest gpu=2
+train_start v4_a3_sdfm_gst_adapter5_notest 2026-07-07T23:25:20+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-3-sdfm-gst
+model_name=ConvIR-Haze4K-v4A3-SDFM-GST-adapter-notest-seed3407-20260707
+out_dir=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-3-sdfm-gst/Dehazing/ITS/results/ConvIR-Haze4K-v4A3-SDFM-GST-adapter-notest-seed3407-20260707
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=2
+locked_test_policy=no default validation; valid_freq=999 > stop_epoch=5
+V4_A3_SDFM_GST_ADAPTER5_NOTEST_LAUNCHED session=v4a3_sdfm_gst_train_notest
+train_done rc=0 v4_a3_sdfm_gst_adapter5_notest 2026-07-07T23:29:51+08:00
+V4_A3_SDFM_GST_ADAPTER5_NOTEST_TRAIN_OK
+audit_start v4_a3_train128_final_vs_a0 2026-07-07T23:37:57+08:00
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+candidate=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-3-sdfm-gst/Dehazing/ITS/results/ConvIR-Haze4K-v4A3-SDFM-GST-adapter-notest-seed3407-20260707/Training-Results/Final.pkl
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=2
+locked_test_policy=train/haze sorted first128 only
+audit_done rc=1 v4_a3_train128_final_vs_a0 2026-07-07T23:38:02+08:00
+V4_A3_TRAIN128_AUDIT_FAILED
+audit_start v4_a3_train128_final_vs_a0 2026-07-07T23:39:06+08:00
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+candidate=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-3-sdfm-gst/Dehazing/ITS/results/ConvIR-Haze4K-v4A3-SDFM-GST-adapter-notest-seed3407-20260707/Training-Results/Final.pkl
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=2
+locked_test_policy=train/haze sorted first128 only
+audit_done rc=0 v4_a3_train128_final_vs_a0 2026-07-07T23:39:21+08:00
+V4_A3_TRAIN128_AUDIT_OK
