@@ -1,0 +1,9 @@
+audit_start v4_4_bottleneck_diagnosis 2026-07-08T00:34:12+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis
+a3_code=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-3-sdfm-gst/Dehazing/ITS
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=2
+locked_test_policy=train-derived splits only; test split not enumerated
+audit_done rc=0 v4_4_bottleneck_diagnosis 2026-07-08T00:35:20+08:00
+V4_4_BOTTLENECK_DIAGNOSIS_OK

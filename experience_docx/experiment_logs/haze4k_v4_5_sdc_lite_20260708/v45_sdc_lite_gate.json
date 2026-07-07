@@ -1,0 +1,26 @@
+{
+  "gate": "sdc_lite_internal256_stage_gate",
+  "metrics": {
+    "R_1_2_corr_a0_gt_l1": -0.40986398895818404,
+    "R_1_2_corr_input_gt_l1": -0.4675703306623867,
+    "R_1_2_mean": 0.49227113148663193,
+    "R_1_2_std_mean": 0.08235210657585412,
+    "R_1_2_std_median": 0.08135310932993889,
+    "count": 256,
+    "mean_delta_psnr": -0.009710662066936493,
+    "mean_delta_ssim": -2.281484194099903e-05,
+    "median_delta_psnr": -0.013090133666992188,
+    "p5_delta_psnr": -0.18075084686279297,
+    "p95_delta_psnr": 0.16260528564453125,
+    "positive_ratio": 0.4375
+  },
+  "pass": false,
+  "route_id": "haze4k_v4_5_sdc_lite_20260708",
+  "thresholds": {
+    "R_1_2_corr_input_or_a0_positive": true,
+    "R_1_2_std_mean_min": 0.1,
+    "mean_delta_psnr_min": 0.03,
+    "p5_delta_psnr_min": -0.25,
+    "positive_ratio_min": 0.53
+  }
+}

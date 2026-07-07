@@ -1,8 +1,8 @@
-# Haze4K v4 SFAD Family Summary
+# Haze4K v4 SFAD/DCFSB Family Summary
 
-Date: 2026-07-07
+Date: 2026-07-08
 
-Status: current v4 SFAD route stopped after A3 train-side failure; locked test remains blocked.
+Status: after-A3 restart completed; v4.6 DCFSB-bottleneck adapter4 is the current internal-positive candidate; locked test remains blocked.
 
 ## Fixed Pain Points
 
@@ -13,19 +13,19 @@ These two pain points are fixed for v4 and should not be replaced by later route
 
 ## Current Read
 
-- A0 baseline lock passed official checkpoint/resource preflight from the immutable official architecture anchor. It established the Haze4K train data count, strict official checkpoint load, parameter count `8,630,665`, one train-crop loss, and locked-test block.
-- A1 SDFM-only passed neutral partial-load/no-op preflight with `200,964` added parameters and produced a train-only first128 mechanism signal: mean delta PSNR `+0.0184446`, median `+0.0330057`, positive ratio `0.5703125`, mean delta SSIM `-0.0000368`.
-- A2 GST-only passed neutral partial-load/no-op preflight with `247,618` added parameters and produced a train-only first128 mechanism signal: mean delta PSNR `+0.0303176`, median `+0.0237083`, positive ratio `0.5546875`, mean delta SSIM `+0.0000539`.
-- A3 SDFM+GST passed neutral partial-load/no-op preflight with `448,582` added parameters and exact A0 output equality, but the train-only first128 audit failed: mean delta PSNR `-0.0457436`, median `-0.0459900`, positive ratio `0.3984375`, mean delta SSIM `-0.0001366`.
-
-A1 and A2 remain mechanism/trainability signals only. A3 shows that the naive combination is not additive and should not be used as a base for larger phases. None of these results authorize locked-test use.
+- A0 baseline lock passed official checkpoint/resource preflight from the immutable official architecture anchor.
+- A1 SDFM-only and A2 GST-only were train-side mechanism-positive, but A3 SDFM+GST showed a strong negative non-additive interaction and remains stopped.
+- v4.4 bottleneck diagnosis rechecked A1/A2/A3 on trainfit128 and internal_holdout256. It found first128 was too pessimistic for A3, but A3 still underperformed A1/A2 and had strong negative interaction, so A3 expansion stayed blocked.
+- v4.5 SDC-Lite from the official anchor failed internal256: mean delta PSNR `-0.009711`, positive ratio `0.437500`, R-response correlations negative, locked test untouched.
+- v4.6 DCFSB-bottleneck from the official anchor passed the internal stage gate after bracket probes. The selected `adapter4` candidate reached internal256 mean delta PSNR `+0.044404`, positive ratio `0.625000`, p5 delta PSNR `-0.216141`, mean high-frequency L1 delta `-0.00000057`, and high-gate std `0.038074`. Locked test was not touched or enumerated.
 
 ## Decision
 
-Stop the current v4 SFAD route after A3. Do not launch density auxiliary or DCFSB phases from the failed A3 combined base. Any future v4 continuation needs a new written route identity and metric contract from the official anchor, not a simple A3 expansion.
+Keep v4.6 DCFSB-bottleneck `adapter4` as the current v4 candidate. This is an internal train-derived candidate-positive result, not a promotion-ready result. Any locked-test, broader validation, or code integration requires a separate written gate.
 
 ## Stop/Reopen Rules
 
-- Do not continue A1 or A2 by simply adding epochs, seeds, canary expansion, selector probes, or locked-test access.
-- Do not introduce density auxiliary or DCFSB from the failed A3 combined base.
+- Do not continue A1/A2/A3 by simply adding epochs, seeds, canary expansion, selector probes, density auxiliary, or locked-test access.
+- Do not introduce DCFSB from the failed A3 combined base; v4.6 succeeded only as an independent route from the official anchor.
 - Do not use any route that touched default Haze4K test validation as scientific evidence.
+- Do not tune from the v4.6 result on locked test. Choose any further checkpoint/epoch/variant on train-derived/internal validation first.

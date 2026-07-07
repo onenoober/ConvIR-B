@@ -1,0 +1,28 @@
+{
+  "gate": "dcfsb_bottleneck_internal256_stage_gate",
+  "metrics": {
+    "alpha_abs_mean": 0.020398881286382675,
+    "count": 256,
+    "high_gate_std_mean": 0.03807362168299733,
+    "high_l1_improve_ratio": 0.52734375,
+    "high_low_energy_ratio_mean": 0.5613929223036394,
+    "low_gate_std_mean": 0.02672718494432047,
+    "mean_delta_high_l1": -5.701613190467469e-07,
+    "mean_delta_low_l1": -5.50106014998164e-05,
+    "mean_delta_psnr": 0.044404372572898865,
+    "mean_delta_ssim": 3.1832605600357056e-06,
+    "median_delta_psnr": 0.04095649719238281,
+    "p5_delta_psnr": -0.2161407470703125,
+    "p95_delta_psnr": 0.2967414855957031,
+    "positive_ratio": 0.625
+  },
+  "pass": true,
+  "route_id": "haze4k_v4_6_dcfsb_bottleneck_20260708_adapter4",
+  "thresholds": {
+    "high_gate_std_mean_min": 0.01,
+    "mean_delta_high_l1_max": 0.0005,
+    "mean_delta_psnr_min": 0.03,
+    "p5_delta_psnr_min": -0.25,
+    "positive_ratio_min": 0.53
+  }
+}

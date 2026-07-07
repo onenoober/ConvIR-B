@@ -27,23 +27,23 @@ GPU:
 
 ```text
 本实验验证：
-- 
+-
 ```
 
 ## 3. 相比 A0 的改动
 
 ```text
 Architecture changes:
-- 
+-
 
 Loss changes:
-- 
+-
 
 Training changes:
-- 
+-
 
 Logging changes:
-- 
+-
 ```
 
 ## 4. 主结果
