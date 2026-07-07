@@ -3,24 +3,40 @@
     "params_m": 8.63,
     "flops_g": 71.22,
     "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
-    "source": "official ConvIR Haze4K B"
+    "source": "official ConvIR Haze4K B",
+    "checkpoint_param_count_from_state_dict": 8633275,
+    "checkpoint_param_m_from_state_dict": 8.633275,
+    "checkpoint_tensor_key_count": 602,
+    "param_count_note": "Counted directly from checkpoint tensor state dict; may include buffers depending on checkpoint format."
   },
   "ConvIR-L_standalone_fullimage": {
     "params_m": 14.83,
     "flops_g": 129.34,
     "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-large.pkl",
-    "source": "official ConvIR Haze4K L"
+    "source": "official ConvIR Haze4K L",
+    "checkpoint_param_count_from_state_dict": 14833595,
+    "checkpoint_param_m_from_state_dict": 14.833595,
+    "checkpoint_tensor_key_count": 794,
+    "param_count_note": "Counted directly from checkpoint tensor state dict; may include buffers depending on checkpoint format."
   },
   "WDMamba_standalone_fullimage": {
     "params_m": null,
     "flops_g": null,
     "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/haze4k_35.88.pth",
-    "source": "external WDMamba Haze4K checkpoint; cost not measured in this diagnostic"
+    "source": "external WDMamba Haze4K checkpoint; cost not measured in this diagnostic",
+    "checkpoint_param_count_from_state_dict": 11255411,
+    "checkpoint_param_m_from_state_dict": 11.255411,
+    "checkpoint_tensor_key_count": 977,
+    "param_count_note": "Counted directly from checkpoint tensor state dict; may include buffers depending on checkpoint format."
   },
   "FullUDP_standalone_fullimage": {
     "params_m": null,
     "flops_g": null,
     "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/udpnet/ConvIR_UDPNet_haze4k.ckpt",
-    "source": "UDPNet official Haze4K ConvIR_UDPNet; cost not measured in this diagnostic"
+    "source": "UDPNet official Haze4K ConvIR_UDPNet; cost not measured in this diagnostic",
+    "checkpoint_param_count_from_state_dict": 8947558,
+    "checkpoint_param_m_from_state_dict": 8.947558,
+    "checkpoint_tensor_key_count": 689,
+    "param_count_note": "Counted directly from checkpoint tensor state dict; may include buffers depending on checkpoint format."
   }
 }

@@ -63,5 +63,6 @@
     "v31_candidate_overlap_matrix.csv",
     "v31_candidate_cost_manifest.json",
     "v31_closeout.json"
-  ]
+  ],
+  "cost_manifest_note": "Checkpoint tensor parameter counts were added after the initial v3.1 sync; FLOPs remain unknown for WDMamba/FullUDP unless a dedicated profiler route is authorized."
 }
