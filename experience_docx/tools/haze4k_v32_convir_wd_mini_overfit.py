@@ -70,6 +70,8 @@ def _image_dirs(data_dir):
     input_dir = Path(data_dir) / "train" / "IN"
     label_dir = Path(data_dir) / "train" / "GT"
     if not input_dir.is_dir():
+        input_dir = Path(data_dir) / "train" / "haze"
+    if not input_dir.is_dir():
         input_dir = Path(data_dir) / "train" / "hazy"
     if not label_dir.is_dir():
         label_dir = Path(data_dir) / "train" / "gt"

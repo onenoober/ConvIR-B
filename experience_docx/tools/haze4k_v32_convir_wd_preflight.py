@@ -77,6 +77,8 @@ def _partial_load(model, state, allowed_new_prefixes):
 def _count_train_files(data_dir):
     train_in = Path(data_dir) / "train" / "IN"
     if not train_in.is_dir():
+        train_in = Path(data_dir) / "train" / "haze"
+    if not train_in.is_dir():
         train_in = Path(data_dir) / "train" / "hazy"
     return len([p for p in train_in.iterdir() if p.suffix.lower() in {".png", ".jpg", ".jpeg", ".bmp"}])
 
@@ -84,6 +86,8 @@ def _count_train_files(data_dir):
 def _first_train_pair(data_dir):
     input_dir = Path(data_dir) / "train" / "IN"
     label_dir = Path(data_dir) / "train" / "GT"
+    if not input_dir.is_dir():
+        input_dir = Path(data_dir) / "train" / "haze"
     if not input_dir.is_dir():
         input_dir = Path(data_dir) / "train" / "hazy"
     if not label_dir.is_dir():
