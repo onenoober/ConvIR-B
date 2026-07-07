@@ -10,8 +10,142 @@ import torch.nn as nn
 from warmup_scheduler import GradualWarmupScheduler
 
 
+def _is_convir_wd(args):
+    return getattr(args, 'arch', '') == 'convir_wd_lite'
+
+
+def _is_wd_param(name):
+    return name.startswith('WD_')
+
+
+def _is_decoder_param(name):
+    return (
+        name.startswith('Decoder.')
+        or name.startswith('Convs.')
+        or name.startswith('ConvsOut.')
+        or name.startswith('feat_extract.3.')
+        or name.startswith('feat_extract.4.')
+        or name.startswith('feat_extract.5.')
+    )
+
+
+def _configure_trainable_parameters(model, args, learning_rate):
+    if not _is_convir_wd(args):
+        total = sum(p.numel() for p in model.parameters())
+        print(f'TRAINABLE_SCOPE official_all trainable={total} frozen=0')
+        return [{'params': model.parameters(), 'lr': learning_rate, 'name': 'all'}]
+
+    scope = getattr(args, 'convir_wd_train_scope', 'all')
+    for _, param in model.named_parameters():
+        param.requires_grad = False
+
+    groups = []
+    wd_params = []
+    decoder_params = []
+    other_params = []
+    for name, param in model.named_parameters():
+        if scope == 'all':
+            param.requires_grad = True
+            other_params.append(param)
+        elif _is_wd_param(name):
+            param.requires_grad = True
+            wd_params.append(param)
+        elif scope == 'wd_decoder' and _is_decoder_param(name):
+            param.requires_grad = True
+            decoder_params.append(param)
+
+    if wd_params:
+        groups.append({'params': wd_params, 'lr': learning_rate, 'name': 'WD'})
+    if decoder_params:
+        groups.append({
+            'params': decoder_params,
+            'lr': getattr(args, 'convir_wd_decoder_learning_rate', 1e-5),
+            'name': 'decoder',
+        })
+    if other_params:
+        groups.append({'params': other_params, 'lr': learning_rate, 'name': 'all'})
+
+    trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    frozen = sum(p.numel() for p in model.parameters() if not p.requires_grad)
+    group_desc = ','.join(f"{group['name']}@{group['lr']}" for group in groups)
+    print(f'TRAINABLE_SCOPE convir_wd scope={scope} trainable={trainable} frozen={frozen} groups={group_desc}')
+    if trainable == 0:
+        raise ValueError(f'No trainable parameters for convir_wd_train_scope={scope}')
+    return groups
+
+
+def _haar_dwt2(x):
+    pad_h = x.shape[-2] % 2
+    pad_w = x.shape[-1] % 2
+    if pad_h or pad_w:
+        x = F.pad(x, (0, pad_w, 0, pad_h), mode='reflect')
+    x00 = x[:, :, 0::2, 0::2]
+    x01 = x[:, :, 0::2, 1::2]
+    x10 = x[:, :, 1::2, 0::2]
+    x11 = x[:, :, 1::2, 1::2]
+    ll = 0.5 * (x00 + x01 + x10 + x11)
+    lh = 0.5 * (x00 - x01 + x10 - x11)
+    hl = 0.5 * (x00 + x01 - x10 - x11)
+    hh = 0.5 * (x00 - x01 - x10 + x11)
+    return ll, lh, hl, hh
+
+
+def _rgb_to_y(x):
+    r, g, b = x[:, 0:1], x[:, 1:2], x[:, 2:3]
+    return 0.299 * r + 0.587 * g + 0.114 * b
+
+
+def _convir_wd_aux_loss(pred, label, criterion, args):
+    pred_ll, pred_lh, pred_hl, pred_hh = _haar_dwt2(pred)
+    label_ll, label_lh, label_hl, label_hh = _haar_dwt2(label)
+    low = criterion(pred_ll, label_ll)
+    high = (
+        criterion(pred_lh, label_lh)
+        + criterion(pred_hl, label_hl)
+        + criterion(pred_hh, label_hh)
+    ) / 3.0
+    y_loss = criterion(_rgb_to_y(pred), _rgb_to_y(label))
+    return (
+        getattr(args, 'convir_wd_dwt_low_weight', 0.05) * low
+        + getattr(args, 'convir_wd_dwt_high_weight', 0.01) * high
+        + getattr(args, 'convir_wd_y_weight', 0.05) * y_loss
+    )
+
+
 def _log_modulation_stats(model, args, epoch_idx, device):
     if args.mod_stats_freq <= 0 or epoch_idx % args.mod_stats_freq != 0:
+        return
+    if hasattr(model, 'collect_wd_stats'):
+        dataloader = valid_dataloader(args.data_dir, args.data, batch_size=1, num_workers=0)
+        sums = {}
+        count = 0
+        model.eval()
+        with torch.no_grad():
+            for batch_idx, batch_data in enumerate(dataloader):
+                if args.mod_stats_batches > 0 and batch_idx >= args.mod_stats_batches:
+                    break
+                input_img = batch_data[0].to(device)
+                batch_stats = model.collect_wd_stats(input_img)
+                for block_name, block_stats in batch_stats.items():
+                    sums.setdefault(block_name, {})
+                    for key, value in block_stats.items():
+                        sums[block_name][key] = sums[block_name].get(key, 0.0) + value
+                count += 1
+        model.train()
+        if count == 0:
+            return
+        for block_name in sorted(sums):
+            averaged = {key: value / count for key, value in sorted(sums[block_name].items())}
+            print(
+                "WD_STATS Epoch: %03d Block: %s Samples: %d "
+                "gamma_abs_mean: %.8f beta_abs_mean: %.8f" % (
+                    epoch_idx,
+                    block_name,
+                    count,
+                    averaged.get('gamma_abs_mean', 0.0),
+                    averaged.get('beta_abs_mean', 0.0),
+                )
+            )
         return
     if not hasattr(model, 'collect_modulation_stats'):
         return
@@ -64,7 +198,11 @@ def _train(model, args):
     criterion = torch.nn.L1Loss()
 
     learning_rate = getattr(args, 'learning_rate', getattr(args, 'leaning_rate', 1e-4))
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.9, 0.999), eps=1e-8)
+    optimizer = torch.optim.Adam(
+        _configure_trainable_parameters(model, args, learning_rate),
+        betas=(0.9, 0.999),
+        eps=1e-8,
+    )
     dataloader = train_dataloader(args.data_dir, args.batch_size, args.num_worker, args.data)
     max_iter = len(dataloader)
     warmup_epochs=3
@@ -136,10 +274,15 @@ def _train(model, args):
             loss_fft = f1+f2+f3
 
             loss = loss_content + 0.1 * loss_fft
+            if _is_convir_wd(args):
+                loss = loss + _convir_wd_aux_loss(pred_img[2], label_img, criterion, args)
             loss.backward()
             grad_clip_norm = getattr(args, 'grad_clip_norm', 0.001)
             if grad_clip_norm > 0:
-                torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip_norm)
+                torch.nn.utils.clip_grad_norm_(
+                    [p for p in model.parameters() if p.requires_grad],
+                    grad_clip_norm,
+                )
             optimizer.step()
 
             iter_pixel_adder(loss_content.item())
