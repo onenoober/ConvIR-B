@@ -112,6 +112,17 @@ def _convir_wd_aux_loss(pred, label, criterion, args):
     )
 
 
+def _pad_to_factor(input_img, factor=32):
+    h, w = input_img.shape[2], input_img.shape[3]
+    h_pad = ((h + factor) // factor) * factor
+    w_pad = ((w + factor) // factor) * factor
+    pad_h = h_pad - h if h % factor != 0 else 0
+    pad_w = w_pad - w if w % factor != 0 else 0
+    if pad_h or pad_w:
+        input_img = F.pad(input_img, (0, pad_w, 0, pad_h), 'reflect')
+    return input_img
+
+
 def _log_modulation_stats(model, args, epoch_idx, device):
     if args.mod_stats_freq <= 0 or epoch_idx % args.mod_stats_freq != 0:
         return
@@ -124,7 +135,7 @@ def _log_modulation_stats(model, args, epoch_idx, device):
             for batch_idx, batch_data in enumerate(dataloader):
                 if args.mod_stats_batches > 0 and batch_idx >= args.mod_stats_batches:
                     break
-                input_img = batch_data[0].to(device)
+                input_img = _pad_to_factor(batch_data[0].to(device))
                 batch_stats = model.collect_wd_stats(input_img)
                 for block_name, block_stats in batch_stats.items():
                     sums.setdefault(block_name, {})
@@ -158,7 +169,7 @@ def _log_modulation_stats(model, args, epoch_idx, device):
         for batch_idx, batch_data in enumerate(dataloader):
             if args.mod_stats_batches > 0 and batch_idx >= args.mod_stats_batches:
                 break
-            input_img = batch_data[0].to(device)
+            input_img = _pad_to_factor(batch_data[0].to(device))
             batch_stats = model.collect_modulation_stats(input_img)
             for fam_name, fam_stats in batch_stats.items():
                 sums.setdefault(fam_name, {})

@@ -1,0 +1,77 @@
+{
+  "route_id": "haze4k_v3_2_convir_wd_full_model_line_20260707",
+  "phase": "P2 train-derived split",
+  "created_at_utc": "2026-07-07T10:42:22.431010+00:00",
+  "v31_csv": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-github-main/experience_docx/experiment_logs/haze4k_v3_1_full_model_candidate_bakeoff_20260707/v31_candidate_per_image_cloud_only.csv",
+  "source_data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "output_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K_v32_p2_fold0_train480_val120",
+  "val_fold": "0",
+  "train": {
+    "count": 480,
+    "names_sha256": "7d6cf3063cd7d16b72a9c374584012b6c867a75e704981157dfdce6ed6cf451a",
+    "first10": [
+      "1012_0.85_1.28.png",
+      "1016_0.8_1.72.png",
+      "101_0.78_1.87.png",
+      "1023_0.5_1.87.png",
+      "1028_0.97_1.41.png",
+      "102_0.94_1.18.png",
+      "1031_0.76_0.7.png",
+      "1033_0.52_1.2.png",
+      "1036_0.69_1.69.png",
+      "1037_0.89_0.54.png"
+    ],
+    "last10": [
+      "950_0.79_1.26.png",
+      "952_0.74_0.72.png",
+      "955_0.94_0.9.png",
+      "972_0.52_0.9.png",
+      "978_0.96_1.69.png",
+      "983_0.51_0.73.png",
+      "987_0.56_1.81.png",
+      "98_0.97_1.56.png",
+      "996_0.93_0.78.png",
+      "99_0.79_1.39.png"
+    ]
+  },
+  "validation": {
+    "count": 120,
+    "names_sha256": "4bc87122dc818f8cea74770284cd87498b66632ce05dce1676a737b6fdca1023",
+    "first10": [
+      "1002_0.73_1.47.png",
+      "1024_0.69_1.66.png",
+      "1035_0.76_1.14.png",
+      "1045_0.58_1.58.png",
+      "106_0.91_1.85.png",
+      "1083_0.67_0.81.png",
+      "1094_0.77_1.07.png",
+      "1102_0.65_0.94.png",
+      "1117_0.61_0.56.png",
+      "1137_0.87_0.85.png"
+    ],
+    "last10": [
+      "812_0.59_0.82.png",
+      "822_0.75_1.92.png",
+      "845_0.6_1.37.png",
+      "860_0.73_1.11.png",
+      "86_0.74_0.98.png",
+      "88_0.98_1.99.png",
+      "905_0.65_1.3.png",
+      "934_0.9_1.4.png",
+      "953_0.95_0.84.png",
+      "984_0.67_1.7.png"
+    ]
+  },
+  "materialized": {
+    "train": {
+      "haze_files": 480,
+      "gt_files": 480
+    },
+    "test": {
+      "haze_files": 120,
+      "gt_files": 120
+    }
+  },
+  "locked_test_touched": false,
+  "note": "Split uses original Haze4K train only; output_dir/test is a train-derived validation directory."
+}

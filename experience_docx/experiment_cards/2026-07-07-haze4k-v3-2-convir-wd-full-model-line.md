@@ -129,6 +129,11 @@ P2 design:
 - split source: cloud-only v3.1 per-image table
   `experience_docx/experiment_logs/haze4k_v3_1_full_model_candidate_bakeoff_20260707/v31_candidate_per_image_cloud_only.csv`;
 - locked Haze4K test remains blocked throughout P2;
+- initial P2 launch at `8d7a9f4` failed in the auxiliary modulation-stat logging
+  path due missing full-image padding and is engineering-invalid, not a quality
+  result;
+- corrected P2R1 run id:
+  `ConvIR-Haze4K-v32-p2r1-wddecoder-seed3407-20260707`;
 - continue to P3 only if `Best.pkl` passes the fixed P2 gate and is not
   Pareto-dominated by the v3.1 standalone candidates on the same 120-image
   validation names.

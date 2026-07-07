@@ -38,6 +38,7 @@ Primary outputs:
 - `p1b_mini_overfit_aggregate_v32.log`;
 - `run_p1b_mini_overfit_aggregate.sh`;
 - `v32_p2_train_derived_validation_design.md`;
+- `v32_p2_initial_engineering_failure.json`;
 - `run_p2_train_derived_validation.sh`;
 - `status.txt`.
 - `v32_closeout.json`.
@@ -127,3 +128,10 @@ P2 is defined as a fixed train-derived validation screen using the v3.1
 
 The P2 gate and stop/continue rules are written in
 `v32_p2_train_derived_validation_design.md`.
+
+Initial P2 launch note: commit `8d7a9f4` failed at epoch 5 in the auxiliary
+modulation-stat logging path because full validation images were not padded
+before `collect_wd_stats`. This is recorded as
+`PREFLIGHT_FAILED_ENGINEERING`, not a scientific quality result. The corrected
+P2R1 rerun pads that stats path and preserves the same split, hyperparameters,
+checkpoint policy, and gate.

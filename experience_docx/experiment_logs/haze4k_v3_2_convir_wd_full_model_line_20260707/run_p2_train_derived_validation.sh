@@ -10,21 +10,21 @@ SPLIT_ROOT=$BASE/datasets/Haze4K/Haze4K_v32_p2_fold0_train480_val120
 A0=$BASE/checkpoints/official/Haze4K/haze4k-base.pkl
 V31_CSV=$BASE/repos/ConvIR-B-github-main/experience_docx/experiment_logs/haze4k_v3_1_full_model_candidate_bakeoff_20260707/v31_candidate_per_image_cloud_only.csv
 STATUS=$EVID/status.txt
-MODEL_NAME=ConvIR-Haze4K-v32-p2-wddecoder-seed3407-20260707
+MODEL_NAME=ConvIR-Haze4K-v32-p2r1-wddecoder-seed3407-20260707
 MODEL_DIR=$WORK/Dehazing/ITS/results/$MODEL_NAME
-TRAIN_LOG=$EVID/p2_train_v32_wddecoder_seed3407.log
+TRAIN_LOG=$EVID/p2r1_train_v32_wddecoder_seed3407.log
 SPLIT_JSON=$EVID/v32_p2_split_summary.json
-BEST_JSON=$EVID/v32_p2_eval_best_summary.json
-FINAL_JSON=$EVID/v32_p2_eval_final_summary.json
-BEST_CSV=$EVID/v32_p2_eval_best_per_image_cloud_only.csv
-FINAL_CSV=$EVID/v32_p2_eval_final_per_image_cloud_only.csv
+BEST_JSON=$EVID/v32_p2r1_eval_best_summary.json
+FINAL_JSON=$EVID/v32_p2r1_eval_final_summary.json
+BEST_CSV=$EVID/v32_p2r1_eval_best_per_image_cloud_only.csv
+FINAL_CSV=$EVID/v32_p2r1_eval_final_per_image_cloud_only.csv
 
 export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-1}
 export TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
 
 mkdir -p "$EVID"
 {
-  echo "p2_train_derived_validation_start haze4k_v3_2_convir_wd_full_model_line_20260707 $(date --iso-8601=seconds)"
+  echo "p2r1_train_derived_validation_start haze4k_v3_2_convir_wd_full_model_line_20260707 $(date --iso-8601=seconds)"
   echo "work=$WORK"
   echo "python=$PY"
   echo "data=$DATA"
@@ -85,9 +85,9 @@ PYTHONUNBUFFERED=1 "$PY" main.py \
   > "$TRAIN_LOG" 2>&1
 train_rc=$?
 set -e
-echo "p2_train_done rc=$train_rc haze4k_v3_2_convir_wd_full_model_line_20260707 $(date --iso-8601=seconds)" | tee -a "$STATUS"
+echo "p2r1_train_done rc=$train_rc haze4k_v3_2_convir_wd_full_model_line_20260707 $(date --iso-8601=seconds)" | tee -a "$STATUS"
 if [[ "$train_rc" -ne 0 ]]; then
-  echo "V32_P2_TRAIN_FAILED" | tee -a "$STATUS"
+  echo "V32_P2R1_TRAIN_FAILED" | tee -a "$STATUS"
   exit "$train_rc"
 fi
 
@@ -102,24 +102,24 @@ PYTHONUNBUFFERED=1 "$PY" experience_docx/tools/haze4k_v32_p2_eval_compare.py \
   --original_checkpoint "$A0" \
   --candidate_checkpoint "$BEST_CKPT" \
   --candidate_arch convir_wd_lite \
-  --candidate_name v32_p2_best \
+  --candidate_name v32_p2r1_best \
   --output_summary "$BEST_JSON" \
   --output_per_image "$BEST_CSV" \
   --v31_per_image_csv "$V31_CSV" \
-  > "$EVID/p2_eval_best_v32.log" 2>&1
-echo "p2_eval_best_done haze4k_v3_2_convir_wd_full_model_line_20260707 $(date --iso-8601=seconds)" | tee -a "$STATUS"
+  > "$EVID/p2r1_eval_best_v32.log" 2>&1
+echo "p2r1_eval_best_done haze4k_v3_2_convir_wd_full_model_line_20260707 $(date --iso-8601=seconds)" | tee -a "$STATUS"
 
 PYTHONUNBUFFERED=1 "$PY" experience_docx/tools/haze4k_v32_p2_eval_compare.py \
   --data_dir "$SPLIT_ROOT" \
   --original_checkpoint "$A0" \
   --candidate_checkpoint "$FINAL_CKPT" \
   --candidate_arch convir_wd_lite \
-  --candidate_name v32_p2_final \
+  --candidate_name v32_p2r1_final \
   --output_summary "$FINAL_JSON" \
   --output_per_image "$FINAL_CSV" \
   --v31_per_image_csv "$V31_CSV" \
-  > "$EVID/p2_eval_final_v32.log" 2>&1
-echo "p2_eval_final_done haze4k_v3_2_convir_wd_full_model_line_20260707 $(date --iso-8601=seconds)" | tee -a "$STATUS"
+  > "$EVID/p2r1_eval_final_v32.log" 2>&1
+echo "p2r1_eval_final_done haze4k_v3_2_convir_wd_full_model_line_20260707 $(date --iso-8601=seconds)" | tee -a "$STATUS"
 
 "$PY" - <<PY | tee -a "$STATUS"
 import json
@@ -145,4 +145,4 @@ else
   echo "V32_P2_TRAIN_DERIVED_VALIDATION_FAIL_OR_NOT_COMPETITIVE_LOCKED_TEST_BLOCKED" | tee -a "$STATUS"
 fi
 
-echo "p2_train_derived_validation_done haze4k_v3_2_convir_wd_full_model_line_20260707 $(date --iso-8601=seconds)" | tee -a "$STATUS"
+echo "p2r1_train_derived_validation_done haze4k_v3_2_convir_wd_full_model_line_20260707 $(date --iso-8601=seconds)" | tee -a "$STATUS"

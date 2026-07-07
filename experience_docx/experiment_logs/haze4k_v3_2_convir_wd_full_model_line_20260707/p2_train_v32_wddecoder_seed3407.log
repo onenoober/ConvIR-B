@@ -1,0 +1,90 @@
+Namespace(model_name='ConvIR-Haze4K-v32-p2-wddecoder-seed3407-20260707', data='Haze4K', version='base', fam_mode='original', arch='convir_wd_lite', convir_wd_train_scope='wd_decoder', convir_wd_decoder_learning_rate=1e-05, convir_wd_dwt_low_weight=0.05, convir_wd_dwt_high_weight=0.01, convir_wd_y_weight=0.05, seed=3407, mode='train', data_dir='/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K_v32_p2_fold0_train480_val120', batch_size=4, learning_rate=0.0002, weight_decay=0.0, num_epoch=20, stop_epoch=20, print_freq=30, num_worker=4, save_freq=5, valid_freq=5, mod_stats_freq=5, mod_stats_batches=32, grad_clip_norm=0.01, init_model='/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl', resume='', test_model='', save_image=False, leaning_rate=0.0002, model_save_dir='results/ConvIR-Haze4K-v32-p2-wddecoder-seed3407-20260707/Training-Results/', result_dir='results/ConvIR-Haze4K-v32-p2-wddecoder-seed3407-20260707/images/Haze4K')
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd/Dehazing/ITS/main.py:14: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=map_location)
+INIT_MODEL_PARTIAL_LOAD path=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl loaded=602 missing_new=24 unexpected=[] shape_mismatch=[]
+TRAINABLE_SCOPE convir_wd scope=wd_decoder trainable=4453433 frozen=4486704 groups=WD@0.0002,decoder@1e-05
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:224: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn(
+Time:  0.0758 Epoch: 001 Iter:   30/ 120 LR: 0.0000666667 Loss content:  0.0183 Loss fft:  0.8461
+Time:  0.0490 Epoch: 001 Iter:   60/ 120 LR: 0.0000666667 Loss content:  0.0191 Loss fft:  0.8926
+Time:  0.0484 Epoch: 001 Iter:   90/ 120 LR: 0.0000666667 Loss content:  0.0188 Loss fft:  0.8355
+Time:  0.0456 Epoch: 001 Iter:  120/ 120 LR: 0.0000666667 Loss content:  0.0179 Loss fft:  0.8409
+EPOCH: 01
+Elapsed time: 0.22 Epoch Pixel Loss:  0.0185 Epoch FFT Loss:  0.8538
+Time:  0.0533 Epoch: 002 Iter:   30/ 120 LR: 0.0001333333 Loss content:  0.0182 Loss fft:  0.8614
+Time:  0.0491 Epoch: 002 Iter:   60/ 120 LR: 0.0001333333 Loss content:  0.0181 Loss fft:  0.8647
+Time:  0.0467 Epoch: 002 Iter:   90/ 120 LR: 0.0001333333 Loss content:  0.0180 Loss fft:  0.8273
+Time:  0.0441 Epoch: 002 Iter:  120/ 120 LR: 0.0001333333 Loss content:  0.0189 Loss fft:  0.8548
+EPOCH: 02
+Elapsed time: 0.20 Epoch Pixel Loss:  0.0183 Epoch FFT Loss:  0.8521
+Time:  0.0526 Epoch: 003 Iter:   30/ 120 LR: 0.0002000000 Loss content:  0.0178 Loss fft:  0.8199
+Time:  0.0474 Epoch: 003 Iter:   60/ 120 LR: 0.0002000000 Loss content:  0.0184 Loss fft:  0.8558
+Time:  0.0465 Epoch: 003 Iter:   90/ 120 LR: 0.0002000000 Loss content:  0.0190 Loss fft:  0.8706
+Time:  0.0454 Epoch: 003 Iter:  120/ 120 LR: 0.0002000000 Loss content:  0.0185 Loss fft:  0.8517
+EPOCH: 03
+Elapsed time: 0.20 Epoch Pixel Loss:  0.0185 Epoch FFT Loss:  0.8495
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:1087: UserWarning: To get the last learning rate computed by the scheduler, please use `get_last_lr()`.
+  _warn_get_lr_called_within_step(self)
+Time:  0.0509 Epoch: 004 Iter:   30/ 120 LR: 0.0002000000 Loss content:  0.0179 Loss fft:  0.8683
+Time:  0.0469 Epoch: 004 Iter:   60/ 120 LR: 0.0002000000 Loss content:  0.0190 Loss fft:  0.8585
+Time:  0.0455 Epoch: 004 Iter:   90/ 120 LR: 0.0002000000 Loss content:  0.0175 Loss fft:  0.8198
+Time:  0.0462 Epoch: 004 Iter:  120/ 120 LR: 0.0002000000 Loss content:  0.0191 Loss fft:  0.8814
+EPOCH: 04
+Elapsed time: 0.20 Epoch Pixel Loss:  0.0184 Epoch FFT Loss:  0.8570
+Time:  0.0489 Epoch: 005 Iter:   30/ 120 LR: 0.0001966261 Loss content:  0.0180 Loss fft:  0.8694
+Time:  0.0478 Epoch: 005 Iter:   60/ 120 LR: 0.0001966261 Loss content:  0.0184 Loss fft:  0.8337
+Time:  0.0467 Epoch: 005 Iter:   90/ 120 LR: 0.0001966261 Loss content:  0.0188 Loss fft:  0.8572
+Time:  0.0442 Epoch: 005 Iter:  120/ 120 LR: 0.0001966261 Loss content:  0.0189 Loss fft:  0.8454
+EPOCH: 05
+Elapsed time: 0.19 Epoch Pixel Loss:  0.0185 Epoch FFT Loss:  0.8514
+Start Evaluation
+000 001 002 003 004 005 006 007 008 009 010 011 012 013 014 015 016 017 018 019 020 021 022 023 024 025 026 027 028 029 030 031 032 033 034 035 036 037 038 039 040 041 042 043 044 045 046 047 048 049 050 051 052 053 054 055 056 057 058 059 060 061 062 063 064 065 066 067 068 069 070 071 072 073 074 075 076 077 078 079 080 081 082 083 084 085 086 087 088 089 090 091 092 093 094 095 096 097 098 099 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 
+
+Traceback (most recent call last):
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd/Dehazing/ITS/main.py", line 186, in <module>
+    main(args)
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd/Dehazing/ITS/main.py", line 105, in main
+    _train(model, args)
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd/Dehazing/ITS/train.py", line 319, in _train
+    _log_modulation_stats(model, args, epoch_idx, device)
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd/Dehazing/ITS/train.py", line 128, in _log_modulation_stats
+    batch_stats = model.collect_wd_stats(input_img)
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd/Dehazing/ITS/models/ConvIRWD.py", line 130, in collect_wd_stats
+    _ = self(x)
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd/Dehazing/ITS/models/ConvIRWD.py", line 101, in forward
+    z = self.Encoder[2](z)
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd/Dehazing/ITS/models/ConvIR.py", line 18, in forward
+    return self.layers(x)
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/modules/container.py", line 250, in forward
+    input = module(input)
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd/Dehazing/ITS/models/layers.py", line 39, in forward
+    return self.main(x) + x
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/modules/container.py", line 250, in forward
+    input = module(input)
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3-2-convir-wd/Dehazing/ITS/models/layers.py", line 70, in forward
+    y = self.dynas[i](self.convs[i](self.pools[i](x)+y_up))
+RuntimeError: The size of tensor a (25) must match the size of tensor b (24) at non-singleton dimension 3

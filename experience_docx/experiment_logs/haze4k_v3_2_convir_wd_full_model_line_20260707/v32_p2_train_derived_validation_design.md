@@ -54,7 +54,7 @@ hashes, not a full per-image table.
 Fixed run:
 
 - model name:
-  `ConvIR-Haze4K-v32-p2-wddecoder-seed3407-20260707`;
+  `ConvIR-Haze4K-v32-p2r1-wddecoder-seed3407-20260707`;
 - architecture: `convir_wd_lite`;
 - init: strict partial-load from official A0 checkpoint;
 - scope: `wd_decoder`;
@@ -112,3 +112,16 @@ Commit compact text evidence only:
 
 Do not commit checkpoints, model weights, image outputs, datasets, symlinked
 data roots, raw inference outputs, or full per-image P2 tables by default.
+
+## Engineering Correction
+
+The initial P2 launch at route commit `8d7a9f4` reached epoch 5 but failed in
+the auxiliary modulation-stat logging path: `_log_modulation_stats` did not pad
+full validation images before calling `collect_wd_stats`, while the validation
+metric path itself does pad inputs. This is classified as
+`PREFLIGHT_FAILED_ENGINEERING`, not a quality result.
+
+Correction: pad modulation-stat inputs to factor 32 and rerun the same fixed P2
+contract under run id
+`ConvIR-Haze4K-v32-p2r1-wddecoder-seed3407-20260707`. The original failed log
+and compact failure JSON are retained.
