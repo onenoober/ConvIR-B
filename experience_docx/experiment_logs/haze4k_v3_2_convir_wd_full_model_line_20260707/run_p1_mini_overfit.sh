@@ -11,7 +11,7 @@ STATUS=$EVID/status.txt
 LOG=$EVID/p1_mini_overfit_v32.log
 JSON_OUT=$EVID/v32_p1_mini_overfit.json
 
-export CUDA_VISIBLE_DEVICES=0
+export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-1}
 export TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
 
 mkdir -p "$EVID"
