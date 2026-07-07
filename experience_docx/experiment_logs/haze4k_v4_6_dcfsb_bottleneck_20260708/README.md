@@ -25,3 +25,12 @@ Status: passed; adapter-5 training authorized.
 - Locked test touched/enumerated: `False` / `False`
 
 Next authorized phase: run `run_v4_6_dcfsb_adapter5_notest.sh` with `--valid_freq 999`, then audit trainfit128 and internal_holdout256 with high-frequency L1 tracking.
+
+## Rescue Probe Authorization
+
+The adapter5 audit is scientifically promising but fails the stage gate only on p5 tail risk. To avoid prematurely rejecting a potentially useful route, two train-derived rescue probes are authorized before closeout:
+
+- `adapter3`: same LR, 3 epochs, testing whether lower adapter strength preserves the mean while reducing p5 harm.
+- `adapter5_lr5e5`: 5 epochs at half LR, testing whether slower adaptation reduces tail harm.
+
+Both probes keep `--valid_freq 999`, train only on `adapter_train`, audit only trainfit128/internal_holdout256, and keep locked test blocked.
