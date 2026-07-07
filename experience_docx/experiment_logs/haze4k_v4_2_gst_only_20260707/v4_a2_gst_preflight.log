@@ -1,0 +1,176 @@
+<stdin>:68: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-2-gst-only/Dehazing/ITS/models/SFADGSTConvIR.py:156: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(checkpoint_path, map_location='cpu')
+{
+  "adapter_scope": {
+    "frozen_param_count": 8630665,
+    "frozen_prefix_count": 9,
+    "scope": "adapter_only",
+    "trainable_param_count": 247618,
+    "trainable_prefixes": [
+      "SFAD_GST1",
+      "SFAD_GST2"
+    ]
+  },
+  "branch": "codex/haze4k-v4-2-gst-only",
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "checkpoint_size": 34797069,
+  "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+  "cuda_available": true,
+  "cuda_device_count_visible": 1,
+  "cuda_device_name": "NVIDIA GeForce RTX 4090",
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "forbidden_state_key_hits": [],
+  "gst_stats": {
+    "GST_1_1": {
+      "alpha": 0.0,
+      "decoder_high_abs_mean": 0.012341208755970001,
+      "delta_abs_max": 0.36679500341415405,
+      "delta_abs_mean": 0.08440013229846954,
+      "delta_mean": 0.0010788990184664726,
+      "delta_std": 0.1001025065779686,
+      "gate_gt_095": 0.0,
+      "gate_lt_005": 0.0,
+      "gate_max": 0.5592539310455322,
+      "gate_mean": 0.4998301565647125,
+      "gate_min": 0.42068904638290405,
+      "gate_std": 0.03083595260977745,
+      "skip_high_abs_mean": 0.09045636653900146
+    },
+    "GST_1_2": {
+      "alpha": 0.0,
+      "decoder_high_abs_mean": 0.05971602350473404,
+      "delta_abs_max": 0.7992252707481384,
+      "delta_abs_mean": 0.11092638969421387,
+      "delta_mean": -0.0055023180320858955,
+      "delta_std": 0.13675472140312195,
+      "gate_gt_095": 0.0,
+      "gate_lt_005": 0.0,
+      "gate_max": 0.6307708024978638,
+      "gate_mean": 0.49821367859840393,
+      "gate_min": 0.3850020468235016,
+      "gate_std": 0.03014889545738697,
+      "skip_high_abs_mean": 0.5321170687675476
+    }
+  },
+  "locked_test_touched": false,
+  "noop_max_abs_synthetic_vs_a0": 0.0,
+  "noop_max_abs_train_crop_vs_a0": 0.0,
+  "official_parameter_count_total": 8630665,
+  "official_strict_load": {
+    "loaded_key_count": 602,
+    "missing": [],
+    "unexpected": []
+  },
+  "one_batch_forward_finite": true,
+  "one_batch_input_shape": [
+    1,
+    3,
+    256,
+    256
+  ],
+  "one_batch_loss": 0.008718420751392841,
+  "one_batch_output_shapes": [
+    [
+      1,
+      3,
+      64,
+      64
+    ],
+    [
+      1,
+      3,
+      128,
+      128
+    ],
+    [
+      1,
+      3,
+      256,
+      256
+    ]
+  ],
+  "parameter_count_added": 247618,
+  "parameter_count_total": 8878283,
+  "partial_load": {
+    "allowed_new_prefixes": [
+      "SFAD_GST"
+    ],
+    "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+    "loaded_count": 602,
+    "missing_new_modules": [
+      "SFAD_GST1.alpha",
+      "SFAD_GST1.clean_delta.0.bias",
+      "SFAD_GST1.clean_delta.0.weight",
+      "SFAD_GST1.clean_delta.2.bias",
+      "SFAD_GST1.clean_delta.2.weight",
+      "SFAD_GST1.gate.0.bias",
+      "SFAD_GST1.gate.0.weight",
+      "SFAD_GST1.gate.2.bias",
+      "SFAD_GST1.gate.2.weight",
+      "SFAD_GST1.gate.4.bias",
+      "SFAD_GST1.gate.4.weight",
+      "SFAD_GST1.image_proj.0.bias",
+      "SFAD_GST1.image_proj.0.weight",
+      "SFAD_GST2.alpha",
+      "SFAD_GST2.clean_delta.0.bias",
+      "SFAD_GST2.clean_delta.0.weight",
+      "SFAD_GST2.clean_delta.2.bias",
+      "SFAD_GST2.clean_delta.2.weight",
+      "SFAD_GST2.gate.0.bias",
+      "SFAD_GST2.gate.0.weight",
+      "SFAD_GST2.gate.2.bias",
+      "SFAD_GST2.gate.2.weight",
+      "SFAD_GST2.gate.4.bias",
+      "SFAD_GST2.gate.4.weight",
+      "SFAD_GST2.image_proj.0.bias",
+      "SFAD_GST2.image_proj.0.weight"
+    ],
+    "shape_mismatch": [],
+    "unexpected": []
+  },
+  "pass": true,
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "python_version": "3.10.20 | packaged by conda-forge | (main, Mar  5 2026, 16:42:22) [GCC 14.3.0]",
+  "route_id": "haze4k_v4_2_gst_only_20260707",
+  "status_short": [
+    "M Dehazing/ITS/main.py",
+    "A  docs/ai_text_packages/haze4k_v4_sfad/DECISION_RULES.md",
+    "A  docs/ai_text_packages/haze4k_v4_sfad/EXPERIMENT_PROTOCOL.md",
+    "A  docs/ai_text_packages/haze4k_v4_sfad/GIT_SYNC_COMMANDS.md",
+    "A  docs/ai_text_packages/haze4k_v4_sfad/MIDDLE_OUTPUT_SPEC.md",
+    "A  docs/ai_text_packages/haze4k_v4_sfad/README.md",
+    "A  docs/ai_text_packages/haze4k_v4_sfad/RESULT_REPORT_TEMPLATE.md",
+    "A  docs/ai_text_packages/haze4k_v4_sfad/RUN_INDEX.md",
+    "A  docs/ai_text_packages/haze4k_v4_sfad/fixed_eval_samples.txt",
+    "?? Dehazing/ITS/models/SFADGSTConvIR.py",
+    "?? experience_docx/experiment_cards/2026-07-07-haze4k-v4-2-gst-only.md",
+    "?? experience_docx/experiment_logs/haze4k_v4_2_gst_only_20260707/"
+  ],
+  "synthetic_forward_finite": true,
+  "synthetic_output_shapes": [
+    [
+      1,
+      3,
+      64,
+      64
+    ],
+    [
+      1,
+      3,
+      128,
+      128
+    ],
+    [
+      1,
+      3,
+      256,
+      256
+    ]
+  ],
+  "test_split_enumerated": false,
+  "torch_version": "2.5.1+cu121",
+  "train_gt_count": 3000,
+  "train_haze_count": 3000
+}
