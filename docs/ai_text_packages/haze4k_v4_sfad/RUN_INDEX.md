@@ -9,9 +9,9 @@
 ## 当前推荐路线状态
 
 ```text
-Status: protocol initialized
-Current best model: TBD
-Current final candidate: TBD
-Main risk: TBD after A1/A2/A3
-Next required experiment: A0 baseline lock
+Status: A0 preflight passed
+Current best model: ConvIR-B A0 anchor
+Current final candidate: TBD after A1/A2/A3
+Main risk: A1/A2/A3 mechanism and preservation still untested
+Next required experiment: A1 SDFM-only preflight/training setup
 ```

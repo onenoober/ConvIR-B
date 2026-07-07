@@ -2,7 +2,7 @@
 
 Date: 2026-07-07
 
-Status: PLANNED
+Status: COMPLETED_PREFLIGHT_PASS
 
 ## Scope
 
@@ -63,3 +63,28 @@ A0 is the fixed ConvIR-B official-anchor baseline. Later v4 deltas must use the 
 - If A3 is not better than A0 and R/G maps are not interpretable, do not continue to DCFSB.
 - If DCFSB introduces high-frequency artifacts or sky noise, prefer bottleneck-only or drop it.
 - Do not treat mean PSNR alone as sufficient evidence.
+
+## A0 Preflight Result
+
+Status: `COMPLETED_PREFLIGHT_PASS`.
+
+Primary evidence file: `experience_docx/experiment_logs/haze4k_v4_0_baseline_lock_20260707/v4_a0_preflight.json`.
+
+Key checks:
+
+- Branch: `codex/haze4k-v4-0-baseline-lock`.
+- Commit: `243e3ea1b043daf3d4101c000bc4a33f98f2c1d7`.
+- Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
+- Torch: `2.5.1+cu121`.
+- GPU: NVIDIA GeForce RTX 4090.
+- Haze4K train count: `3000` hazy / `3000` gt.
+- Checkpoint sha256: `6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088`.
+- Strict load: pass, missing `[]`, unexpected `[]`.
+- Parameter count: `8,630,665`.
+- Synthetic output shapes: `[[1,3,64,64], [1,3,128,128], [1,3,256,256]]`.
+- One train-crop output shapes: `[[1,3,64,64], [1,3,128,128], [1,3,256,256]]`.
+- One train-crop multiscale L1: `0.009162645787000656`.
+- Forbidden experimental state keys: `[]`.
+- Locked test touched: `false`; test split enumerated: `false`.
+
+Decision: A0 preflight is valid. The next v4 action can prepare A1 SDFM-only from the same official anchor, but any quality claim must compare A0 and candidate on the same internal split/crop/sample contract.

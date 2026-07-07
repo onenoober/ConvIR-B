@@ -1,1 +1,9 @@
 status_initialized 2026-07-07T21:58:55+08:00
+preflight_start v4_a0 2026-07-07T22:01:36+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-0-baseline-lock
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=1
+preflight_done rc=0 v4_a0 2026-07-07T22:01:43+08:00
+V4_A0_PREFLIGHT_OK
