@@ -27,7 +27,7 @@ def _first_existing_dir(root, names):
     )
 
 
-def train_dataloader(path, batch_size=64, num_workers=0, data='ITS', use_transform=True):
+def train_dataloader(path, batch_size=64, num_workers=0, data='ITS', use_transform=True, split_file=''):
     image_dir = os.path.join(path, 'train')
 
     if data.lower() == 'real_haze':
@@ -44,8 +44,12 @@ def train_dataloader(path, batch_size=64, num_workers=0, data='ITS', use_transfo
                 PairToTensor()
             ]
         )
+    image_list = None
+    if split_file:
+        with open(split_file, 'r', encoding='utf-8') as f:
+            image_list = [line.strip() for line in f if line.strip()]
     dataloader = DataLoader(
-        DeblurDataset(image_dir, data, transform=transform),
+        DeblurDataset(image_dir, data, transform=transform, image_list=image_list),
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
@@ -79,7 +83,7 @@ def valid_dataloader(path, data, batch_size=1, num_workers=0):
 
 
 class DeblurDataset(Dataset):
-    def __init__(self, image_dir, data, transform=None, is_test=False):
+    def __init__(self, image_dir, data, transform=None, is_test=False, image_list=None):
         self.image_dir = image_dir
         self.transform = transform
         self.is_test = is_test
@@ -96,7 +100,15 @@ class DeblurDataset(Dataset):
             self.input_dir = _first_existing_dir(image_dir, ('hazy',))
             self.label_dir = _first_existing_dir(image_dir, ('gt',))
 
-        self.image_list = _list_images(self.input_dir)
+        listed_images = _list_images(self.input_dir)
+        if image_list is None:
+            self.image_list = listed_images
+        else:
+            listed_set = set(listed_images)
+            missing = [name for name in image_list if name not in listed_set]
+            if missing:
+                raise FileNotFoundError(f'Split file includes images missing from {self.input_dir}: {missing[:10]}')
+            self.image_list = list(image_list)
 
     def _label_path(self, image_name):
         candidates = []

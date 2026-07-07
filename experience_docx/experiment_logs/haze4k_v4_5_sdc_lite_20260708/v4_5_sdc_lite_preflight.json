@@ -1,0 +1,78 @@
+{
+  "adapter_scope": {
+    "frozen_param_count": 8630665,
+    "frozen_prefix_count": 9,
+    "scope": "adapter_only",
+    "trainable_param_count": 42562,
+    "trainable_prefixes": [
+      "SFAD_SDC"
+    ]
+  },
+  "branch": "codex/haze4k-v4-5-sdc-lite",
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+  "cuda_available": true,
+  "cuda_device_count_visible": 1,
+  "cuda_device_name": "NVIDIA GeForce RTX 4090",
+  "holdout_split_count": 256,
+  "locked_test_touched": false,
+  "noop_max_abs_synthetic_vs_a0": 0.0,
+  "noop_max_abs_train_crop_vs_a0": 0.0,
+  "official_parameter_count_total": 8630665,
+  "official_strict_load": {
+    "loaded_key_count": 602,
+    "missing": [],
+    "unexpected": []
+  },
+  "one_batch_loss": 0.013023335486650467,
+  "parameter_count_added": 42562,
+  "parameter_count_total": 8673227,
+  "partial_load": {
+    "allowed_new_prefixes": [
+      "SFAD_SDC"
+    ],
+    "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+    "loaded_count": 602,
+    "missing_new_modules": [
+      "SFAD_SDC.affine.bias",
+      "SFAD_SDC.affine.weight",
+      "SFAD_SDC.alpha",
+      "SFAD_SDC.field.0.bias",
+      "SFAD_SDC.field.0.weight",
+      "SFAD_SDC.field.2.bias",
+      "SFAD_SDC.field.2.weight",
+      "SFAD_SDC.field.4.bias",
+      "SFAD_SDC.field.4.weight",
+      "SFAD_SDC.image_proj.0.bias",
+      "SFAD_SDC.image_proj.0.weight"
+    ],
+    "shape_mismatch": [],
+    "unexpected": []
+  },
+  "pass": true,
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "route_id": "haze4k_v4_5_sdc_lite_20260708",
+  "sdc_stats": {
+    "SDC_1_2": {
+      "R_entropy": 0.00023563615104649216,
+      "R_gt_095": 0.0,
+      "R_lt_005": 0.0,
+      "R_max": 0.501968264579773,
+      "R_mean": 0.48188725113868713,
+      "R_min": 0.4647640883922577,
+      "R_std": 0.00284649059176445,
+      "alpha": 0.0,
+      "beta_mean": -0.17169855535030365,
+      "beta_std": 0.6457801461219788,
+      "gamma_mean": -0.0407339483499527,
+      "gamma_std": 0.5786661505699158
+    }
+  },
+  "split_overlap_count": 0,
+  "synthetic_forward_finite": true,
+  "test_split_enumerated": false,
+  "torch_version": "2.5.1+cu121",
+  "train_loader_len": 2744,
+  "train_split_count": 2744
+}
