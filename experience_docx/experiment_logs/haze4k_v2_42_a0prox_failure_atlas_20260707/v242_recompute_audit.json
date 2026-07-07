@@ -1,0 +1,22 @@
+{
+  "canary80_touched": false,
+  "gate_pass": true,
+  "locked_test_touched": false,
+  "max_abs_diff": {
+    "a0_mse": 0.0,
+    "a0_psnr": 0.0,
+    "delta_psnr": 0.0,
+    "pred_mse": 0.0,
+    "pred_psnr": 0.0,
+    "residual_energy": 0.0
+  },
+  "mismatch_count": 0,
+  "missing": [],
+  "missing_count": 0,
+  "original_count": 160,
+  "recomputed_count": 160,
+  "route": "haze4k_v2_42_a0prox_failure_atlas",
+  "stage": "DIAGNOSTIC_ONLY_RECOMPUTE",
+  "v241_per_image_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-41-a0-proximal-supervised-residual/experience_docx/experiment_logs/haze4k_v2_41_a0_proximal_supervised_residual_20260706/v241_canary32_oof_per_image.csv",
+  "v241_summary_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-41-a0-proximal-supervised-residual/experience_docx/experiment_logs/haze4k_v2_41_a0_proximal_supervised_residual_20260706/v241_canary32_oof_summary.json"
+}

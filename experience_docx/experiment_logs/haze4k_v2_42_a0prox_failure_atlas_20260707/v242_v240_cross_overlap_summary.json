@@ -1,0 +1,101 @@
+{
+  "all_filename_param_1": {
+    "max": 0.99,
+    "mean": 0.804722222222222,
+    "min": 0.53
+  },
+  "all_filename_param_2": {
+    "max": 2.0,
+    "mean": 1.5011111111111108,
+    "min": 0.6
+  },
+  "all_v240_wdmamba_alpha_safe_upper": {
+    "max": 1.9124747992605597,
+    "mean": 1.3035859594293515,
+    "min": 0.47100093671354193
+  },
+  "all_v240_wdmamba_headroom_mse": {
+    "max": 0.0009586375381331891,
+    "mean": 0.00019510139281919692,
+    "min": -0.0003485895722405985
+  },
+  "coverage_fraction": 0.225,
+  "coverage_limited": true,
+  "coverage_note": "v2.40 atlas covers only the joined subset; cross-over findings are supporting diagnostics, not a full v2.41 OOF explanation.",
+  "joined_count": 36,
+  "missing_count": 124,
+  "missing_examples": [
+    "1943_0.86_0.57.png",
+    "2009_0.82_1.34.png",
+    "2354_0.59_1.78.png",
+    "2753_0.9_1.03.png",
+    "2091_0.7_0.84.png",
+    "2779_0.73_0.56.png",
+    "118_0.72_0.71.png",
+    "271_0.75_1.92.png",
+    "688_0.72_0.52.png",
+    "2695_0.53_1.16.png",
+    "198_0.7_0.56.png",
+    "2715_0.89_1.78.png",
+    "2993_0.97_1.09.png",
+    "1272_0.62_0.57.png",
+    "70_0.78_1.4.png",
+    "388_0.82_1.27.png",
+    "386_0.91_1.27.png",
+    "760_0.93_0.78.png",
+    "2859_0.64_1.61.png",
+    "483_0.88_1.16.png"
+  ],
+  "positive_intersections": {
+    "convirl_unsafe": 1,
+    "wdmamba_aligned_positive": 10,
+    "wdmamba_unsafe": 0
+  },
+  "severe_by_v240_easy_bucket": {
+    "easy_top25": 2,
+    "not_easy_top25": 3
+  },
+  "severe_by_v240_hardness_bucket": {
+    "easy": 2,
+    "hard": 1,
+    "mid": 2
+  },
+  "severe_by_v240_strong_reference_bucket": {
+    "not_strong_reference": 3,
+    "strong_reference": 2
+  },
+  "severe_by_v241_fold": {
+    "0": 2,
+    "3": 1,
+    "4": 2
+  },
+  "severe_filename_param_1": {
+    "max": 0.93,
+    "mean": 0.828,
+    "min": 0.65
+  },
+  "severe_filename_param_2": {
+    "max": 1.96,
+    "mean": 1.44,
+    "min": 0.6
+  },
+  "severe_intersections": {
+    "convirl_unsafe": 2,
+    "shared_useful_alpha_unsafe": 0,
+    "union_useful_alpha_unsafe": 2,
+    "wdmamba_anti_aligned": 0,
+    "wdmamba_unsafe": 0
+  },
+  "severe_v240_wdmamba_alpha_safe_upper": {
+    "max": 1.6971919998247833,
+    "mean": 1.2959600759366796,
+    "min": 0.9456903685338724
+  },
+  "severe_v240_wdmamba_headroom_mse": {
+    "max": 0.0009586375381331891,
+    "mean": 0.00023191595610114746,
+    "min": -5.98449696553871e-06
+  },
+  "v241_positive_count": 15,
+  "v241_severe_count": 5
+}

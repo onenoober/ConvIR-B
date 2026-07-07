@@ -1,0 +1,75 @@
+{
+  "canary80_touched": false,
+  "checkpoint_manifest": [
+    {
+      "best_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-41-a0-proximal-supervised-residual/Dehazing/ITS/results/ConvIR-Haze4K-v2.41-a0prox-canary32-oof-20260706/fold_0/Best.pkl",
+      "best_checkpoint_sha256": "68cd4af393ea7a1e73ed6361da1f8121f87c4a8aadbb001644481b8ae0d2ff8d",
+      "fold": 0,
+      "train_count": 32,
+      "val_count": 32
+    },
+    {
+      "best_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-41-a0-proximal-supervised-residual/Dehazing/ITS/results/ConvIR-Haze4K-v2.41-a0prox-canary32-oof-20260706/fold_1/Best.pkl",
+      "best_checkpoint_sha256": "ee4476a8af6bf2e32cb0beb26e31f961c19eaf9b096daa63db740811f673a75b",
+      "fold": 1,
+      "train_count": 32,
+      "val_count": 32
+    },
+    {
+      "best_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-41-a0-proximal-supervised-residual/Dehazing/ITS/results/ConvIR-Haze4K-v2.41-a0prox-canary32-oof-20260706/fold_2/Best.pkl",
+      "best_checkpoint_sha256": "0323f86452093c1a263f3473ef6d2313befb6a7cb506b3ab6c214b60a08b66e4",
+      "fold": 2,
+      "train_count": 32,
+      "val_count": 32
+    },
+    {
+      "best_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-41-a0-proximal-supervised-residual/Dehazing/ITS/results/ConvIR-Haze4K-v2.41-a0prox-canary32-oof-20260706/fold_3/Best.pkl",
+      "best_checkpoint_sha256": "f0da1f47ee1fa69f65202633ac6e160c83fcdc2a026f67f77bb72344d58de021",
+      "fold": 3,
+      "train_count": 32,
+      "val_count": 32
+    },
+    {
+      "best_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-41-a0-proximal-supervised-residual/Dehazing/ITS/results/ConvIR-Haze4K-v2.41-a0prox-canary32-oof-20260706/fold_4/Best.pkl",
+      "best_checkpoint_sha256": "08ed3cc7a999ac406e9c8ff1364bc2909021a22529c6496dd4ce690b2883be6c",
+      "fold": 4,
+      "train_count": 32,
+      "val_count": 32
+    }
+  ],
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "decision": "A0PROX_DIRECTION_FAIL",
+  "decision_details": {
+    "best_shrink_hard_delta": 0.07424560991061382,
+    "decision_label": "A0PROX_DIRECTION_FAIL",
+    "oof_global_gate_pass": false,
+    "oracle_strong": false,
+    "reason": "severe regressions are mostly direction_bad and no gamma/oracle rescue is strong",
+    "severe_count": 27,
+    "severe_direction_bad_rate": 1.0,
+    "severe_overshoot_bad_rate": 0.0,
+    "shrink_gate_exists": false,
+    "train_global_gate_pass": false
+  },
+  "device": "cuda",
+  "diagnostic_only": true,
+  "finished": "2026-07-07T11:45:20+0800",
+  "geometry_summary_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-42-a0prox-failure-atlas/experience_docx/experiment_logs/haze4k_v2_42_a0prox_failure_atlas_20260707/v242_a0prox_residual_geometry_summary.json",
+  "locked_test_touched": false,
+  "new_model_claim": false,
+  "official_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "official_checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "oracle_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-42-a0prox-failure-atlas/experience_docx/experiment_logs/haze4k_v2_42_a0prox_failure_atlas_20260707/v242_oracle_clamp_upper_bound.json",
+  "parameter_updates": false,
+  "recompute_gate_pass": true,
+  "recompute_mismatch_count": 0,
+  "route": "haze4k_v2_42_a0prox_failure_atlas",
+  "shrink_curve_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-42-a0prox-failure-atlas/experience_docx/experiment_logs/haze4k_v2_42_a0prox_failure_atlas_20260707/v242_global_shrink_curve.csv",
+  "skipped_unmatched_train_images": [],
+  "status": "COMPLETED_DIAGNOSTIC",
+  "threshold_selected_for_deployment": false,
+  "train_vs_oof_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-42-a0prox-failure-atlas/experience_docx/experiment_logs/haze4k_v2_42_a0prox_failure_atlas_20260707/v242_train_vs_oof_gap.csv",
+  "training_touched": false,
+  "v240_cross_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-42-a0prox-failure-atlas/experience_docx/experiment_logs/haze4k_v2_42_a0prox_failure_atlas_20260707/v242_v240_cross_overlap_summary.json",
+  "v241_decision": "CANARY32_OOF_GATE_FAIL_LOCK_CANARY80_LOCKED_TEST"
+}
