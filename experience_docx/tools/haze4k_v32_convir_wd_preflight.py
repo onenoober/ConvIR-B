@@ -170,7 +170,7 @@ def main():
     report = _partial_load(model, state, ("WD_",))
     model.eval()
 
-    synthetic = torch.rand(1, 3, 64, 64, device=device)
+    synthetic = torch.rand(1, 3, 256, 256, device=device)
     with torch.no_grad():
         official_outputs = official(synthetic)
         wd_outputs = model(synthetic)
