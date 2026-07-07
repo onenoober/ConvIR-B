@@ -89,4 +89,17 @@ Forbidden:
 Evidence root:
 `experience_docx/experiment_logs/haze4k_v3_2_convir_wd_full_model_line_20260707/`.
 
-Current status: `PLANNED_P0_P1_ONLY`.
+P0/P1 result:
+- P0 passed from route commit `478ac83`: partial-load loaded `602` official
+  keys, allowed `24` WD new keys, no-op max abs vs A0 was `0.0`, one train
+  batch was finite, and locked test was untouched.
+- P1 passed from route commit `35758db`: `8` train-derived center crops at
+  crop size `256`, `wd_decoder` scope, loss `0.01778930053114891 ->
+  0.012172756716609001`, loss ratio `0.6842740497466221`, WD activity delta
+  `0.007103331430698745`, finite outputs, and locked test untouched.
+
+Current status:
+`COMPLETED_P0_P1_GATE_PASS_P2_DESIGN_OPEN_LOCKED_TEST_BLOCKED`.
+
+Next action: write the P2 train-derived validation design before any larger
+training. P1 is not quality evidence, and locked test remains blocked.

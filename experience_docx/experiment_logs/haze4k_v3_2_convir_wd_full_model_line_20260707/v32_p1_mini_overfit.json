@@ -1,0 +1,147 @@
+{
+  "route_id": "haze4k_v3_2_convir_wd_full_model_line_20260707",
+  "branch": "codex/haze4k-v3-2-convir-wd-full-model-line",
+  "commit": "35758db",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "torch_version": "2.5.1+cu121",
+  "cuda_device_name": "NVIDIA GeForce RTX 4090",
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "sample_names": [
+    "1000_0.74_1.6.png",
+    "1001_0.89_1.66.png",
+    "1002_0.73_1.47.png",
+    "1003_0.9_1.06.png",
+    "1004_0.91_1.17.png",
+    "1005_0.74_1.81.png",
+    "1006_0.89_1.55.png",
+    "1007_0.68_1.25.png"
+  ],
+  "sample_contract": "8 train-derived center crops, crop_size=256",
+  "scope": "wd_decoder",
+  "trainable_params": 4453433,
+  "frozen_params": 4486704,
+  "lr_groups": [
+    {
+      "name": "WD",
+      "lr": 0.0002
+    },
+    {
+      "name": "decoder",
+      "lr": 1e-05
+    }
+  ],
+  "partial_load": {
+    "loaded_count": 602,
+    "missing_new_count": 24,
+    "unexpected": [],
+    "shape_mismatch": []
+  },
+  "initial_loss": 0.01778930053114891,
+  "initial_parts": {
+    "content": 0.016975831240415573,
+    "dwt_low": 0.010690851137042046,
+    "dwt_high": 0.0014913047198206186,
+    "y": 0.005280297715216875
+  },
+  "final_loss": 0.012172756716609001,
+  "final_parts": {
+    "content": 0.011654750443994999,
+    "dwt_low": 0.006660431157797575,
+    "dwt_high": 0.001487113768234849,
+    "y": 0.0034022736363112926
+  },
+  "loss_ratio": 0.6842740497466221,
+  "gate_loss_ratio": 0.95,
+  "history": [
+    {
+      "step": 1,
+      "loss": 0.01778930053114891,
+      "content": 0.016975831240415573,
+      "dwt_low": 0.010690851137042046,
+      "dwt_high": 0.0014913047198206186,
+      "y": 0.005280297715216875
+    },
+    {
+      "step": 20,
+      "loss": 0.021274931728839874,
+      "content": 0.020347055047750473,
+      "dwt_low": 0.011924613267183304,
+      "dwt_high": 0.0026043839752674103,
+      "y": 0.006112058646976948
+    },
+    {
+      "step": 40,
+      "loss": 0.019580110907554626,
+      "content": 0.018737975507974625,
+      "dwt_low": 0.010764451697468758,
+      "dwt_high": 0.0025778100825846195,
+      "y": 0.005562694743275642
+    },
+    {
+      "step": 60,
+      "loss": 0.01783212646842003,
+      "content": 0.01707325503230095,
+      "dwt_low": 0.009633433073759079,
+      "dwt_high": 0.002553731668740511,
+      "y": 0.005033251363784075
+    },
+    {
+      "step": 80,
+      "loss": 0.01634105294942856,
+      "content": 0.01565396413207054,
+      "dwt_low": 0.008655672892928123,
+      "dwt_high": 0.0025230420287698507,
+      "y": 0.004581506364047527
+    },
+    {
+      "step": 100,
+      "loss": 0.015484991483390331,
+      "content": 0.014838563278317451,
+      "dwt_low": 0.008103516884148121,
+      "dwt_high": 0.0025028325617313385,
+      "y": 0.004324485547840595
+    },
+    {
+      "step": 120,
+      "loss": 0.014822522178292274,
+      "content": 0.014207671396434307,
+      "dwt_low": 0.007674067746847868,
+      "dwt_high": 0.002485110657289624,
+      "y": 0.0041259294375777245
+    }
+  ],
+  "initial_wd_stats": {
+    "bottleneck": {
+      "gamma_abs_mean": 0.0,
+      "beta_abs_mean": 0.0
+    },
+    "decoder2": {
+      "gamma_abs_mean": 0.0,
+      "beta_abs_mean": 0.0
+    },
+    "decoder1": {
+      "gamma_abs_mean": 0.0,
+      "beta_abs_mean": 0.0
+    }
+  },
+  "final_wd_stats": {
+    "bottleneck": {
+      "gamma_abs_mean": 0.027205731719732285,
+      "beta_abs_mean": 0.014268972910940647
+    },
+    "decoder2": {
+      "gamma_abs_mean": 0.0004527392447926104,
+      "beta_abs_mean": 0.0003392177168279886
+    },
+    "decoder1": {
+      "gamma_abs_mean": 0.00016386245260946453,
+      "beta_abs_mean": 0.0001894645392894745
+    }
+  },
+  "wd_activity_delta": 0.007103331430698745,
+  "outputs_finite": true,
+  "locked_test_touched": false,
+  "quality_claim": "none; mini-overfit numerical/trainability sanity only",
+  "pass": true
+}

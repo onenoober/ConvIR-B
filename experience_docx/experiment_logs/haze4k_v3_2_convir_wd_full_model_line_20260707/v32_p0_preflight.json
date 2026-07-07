@@ -1,0 +1,87 @@
+{
+  "route_id": "haze4k_v3_2_convir_wd_full_model_line_20260707",
+  "branch": "codex/haze4k-v3-2-convir-wd-full-model-line",
+  "commit": "478ac83",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "torch_version": "2.5.1+cu121",
+  "cuda_available": true,
+  "cuda_device_name": "NVIDIA GeForce RTX 4090",
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "train_sample_count": 3000,
+  "validation_sample_count": null,
+  "validation_sample_count_note": "P0 does not read locked/test validation data.",
+  "partial_load": {
+    "loaded_count": 602,
+    "missing_new_modules": [
+      "WD_bottleneck_mod.main.0.main.0.bias",
+      "WD_bottleneck_mod.main.0.main.0.weight",
+      "WD_bottleneck_mod.main.1.main.0.bias",
+      "WD_bottleneck_mod.main.1.main.0.weight",
+      "WD_bottleneck_mod.main.2.bias",
+      "WD_bottleneck_mod.main.2.weight",
+      "WD_decoder1_mod.main.0.main.0.bias",
+      "WD_decoder1_mod.main.0.main.0.weight",
+      "WD_decoder1_mod.main.1.main.0.bias",
+      "WD_decoder1_mod.main.1.main.0.weight",
+      "WD_decoder1_mod.main.2.bias",
+      "WD_decoder1_mod.main.2.weight",
+      "WD_decoder2_mod.main.0.main.0.bias",
+      "WD_decoder2_mod.main.0.main.0.weight",
+      "WD_decoder2_mod.main.1.main.0.bias",
+      "WD_decoder2_mod.main.1.main.0.weight",
+      "WD_decoder2_mod.main.2.bias",
+      "WD_decoder2_mod.main.2.weight",
+      "WD_state_encoder.0.main.0.bias",
+      "WD_state_encoder.0.main.0.weight",
+      "WD_state_encoder.1.main.0.bias",
+      "WD_state_encoder.1.main.0.weight",
+      "WD_state_encoder.2.main.0.bias",
+      "WD_state_encoder.2.main.0.weight"
+    ],
+    "unexpected": [],
+    "shape_mismatch": []
+  },
+  "parameter_count_total": 8940137,
+  "parameter_count_trainable_by_scope": {
+    "wd_only": 309472,
+    "wd_decoder": 4453433,
+    "all": 8940137
+  },
+  "synthetic_output_shapes": [
+    [
+      1,
+      3,
+      64,
+      64
+    ],
+    [
+      1,
+      3,
+      128,
+      128
+    ],
+    [
+      1,
+      3,
+      256,
+      256
+    ]
+  ],
+  "synthetic_forward_finite": true,
+  "noop_or_bounded_diff_vs_a0": {
+    "max_abs_by_output": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "max_abs": 0.0,
+    "contract": "exact no-op expected from zero-init WD projections"
+  },
+  "one_batch_sample": "1000_0.74_1.6.png",
+  "one_batch_forward_finite": true,
+  "one_batch_loss": 0.02780638262629509,
+  "locked_test_touched": false,
+  "pass": true
+}
