@@ -1,8 +1,8 @@
 # CHD-RM Haze4K Experiment Index
 
-Date: 2026-07-08
+Date: 2026-07-09
 
-Status: v2b need calibration repair prepared; cloud execution pending.
+Status: v2c scale calibration audited; pause before D2/RARM.
 
 ## Research Direction
 
@@ -41,7 +41,8 @@ Status: v2b need calibration repair prepared; cloud execution pending.
 | v0 route lock | `codex/haze4k-v5-v0-chd-rm-route-lock` | completed | route scope, locked-test policy, stages, and archive paths fixed | proceed to v1 preflight only | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v0_route_lock_20260708/` |
 | v1 data baseline lock | `codex/haze4k-v5-v1-chd-rm-data-baseline-lock` | completed | train/test manifest, 2400/600 split, OOF folds, A0 val600, metric reproducibility, and efficiency locked | `COMPLETED_V1_GATE_PASS` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/` |
 | v2 density-need calibration | `codex/haze4k-v5-v2-chd-rm-density-need-calibration` | paused | density passes strongly; need remains below gate; shuffled control fails | `PAUSE_V2_DUAL_HEAD_NOT_PASSED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2_density_need_calibration_20260708/` |
-| v2b need calibration repair | `codex/haze4k-v5-v2b-chd-rm-need-calibration-repair` | prepared | R0 target audit plus D6a/D6b/D6c/D6s need repair authorized | cloud run pending | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2b_need_calibration_repair_20260708/` |
+| v2b need calibration repair | `codex/haze4k-v5-v2b-chd-rm-need-calibration-repair` | paused | D6c improves need ranking (Pearson 0.3632, Spearman 0.3298, AUROC 0.7133) and shuffled control fails, but strong-response coverage remains 0 | `PAUSE_V2B_NEED_REPAIR_NOT_PASSED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2b_need_calibration_repair_20260708/` |
+| v2c need coverage calibration | `codex/haze4k-v5-v2c-chd-rm-need-coverage-calibration` | paused | Train-inner monotone/affine calibration restores coverage but creates unsafe false-strong responses; best d6c coverage-safe candidate still exceeds false-strong gate (0.1153 > 0.10) | `PAUSE_V2C_SCALE_CALIBRATION_NOT_ENOUGH` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2c_need_coverage_calibration_20260709/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | planned | TBD | TBD | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | planned | TBD | TBD | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | planned | TBD | TBD | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |

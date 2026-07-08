@@ -1,0 +1,4 @@
+canary/
+need_coverage_calibration_per_image_metrics.csv
+need_coverage_calibrators.json
+*.log
