@@ -2,7 +2,7 @@
 
 Date: 2026-07-08
 
-Status: v0 route locked; later stages pending.
+Status: v2 density-need calibration prepared; cloud execution pending.
 
 ## Research Direction
 
@@ -39,8 +39,8 @@ Status: v0 route locked; later stages pending.
 | Stage | Branch | Status | Main Result | Decision | Evidence Root |
 | --- | --- | --- | --- | --- | --- |
 | v0 route lock | `codex/haze4k-v5-v0-chd-rm-route-lock` | completed | route scope, locked-test policy, stages, and archive paths fixed | proceed to v1 preflight only | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v0_route_lock_20260708/` |
-| v1 data baseline lock | `codex/haze4k-v5-v1-chd-rm-data-baseline-lock` | planned | TBD | TBD | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/` |
-| v2 density-need calibration | `codex/haze4k-v5-v2-chd-rm-density-need-calibration` | planned | TBD | TBD | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2_density_need_calibration_20260708/` |
+| v1 data baseline lock | `codex/haze4k-v5-v1-chd-rm-data-baseline-lock` | completed | train/test manifest, 2400/600 split, OOF folds, A0 val600, metric reproducibility, and efficiency locked | `COMPLETED_V1_GATE_PASS` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/` |
+| v2 density-need calibration | `codex/haze4k-v5-v2-chd-rm-density-need-calibration` | prepared | D0/D1/D3/D4/D5 authorized on train_inner/val_inner only | cloud run pending | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2_density_need_calibration_20260708/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | planned | TBD | TBD | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | planned | TBD | TBD | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | planned | TBD | TBD | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
