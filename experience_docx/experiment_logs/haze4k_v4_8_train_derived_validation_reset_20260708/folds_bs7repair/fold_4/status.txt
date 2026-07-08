@@ -1,0 +1,20 @@
+train_start v48_fold4_bs7repair 2026-07-08T10:27:12+08:00
+state=RUNNING_TRAIN
+repair=batch_size_7_all_folds_for_consistent_oof
+fold=4
+gpu=5
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt
+branch=codex/haze4k-v4-8-train-derived-validation-reset
+commit=1e0ccb97682a2cbd9deda2c10da5e1843f5ccca1
+model_name=ConvIR-Haze4K-v48-DCFSB-adapter4-fold4-seed3407-bs7repair-20260708
+out_dir=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold4-seed3407-bs7repair-20260708
+train_split=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/experience_docx/experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/splits/fold_4_train.txt
+val_split=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/experience_docx/experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/splits/fold_4_val.txt
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+batch_size=7
+locked_test_policy=train-derived folds only; valid_freq=999 > stop_epoch=4
+state=TRAIN_DONE
+train_done rc=0 v48_fold4_bs7repair 2026-07-08T10:29:12+08:00
+V48_FOLD4_BS7REPAIR_TRAIN_OK

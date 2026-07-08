@@ -1,0 +1,13 @@
+{
+  "bootstrap_samples": 12000,
+  "ci95_high": 0.09904935175926768,
+  "ci95_low": 0.05623821803267988,
+  "count": 583,
+  "fold": 4,
+  "locked_test_touched": false,
+  "mean_delta_psnr": 0.07780085215233203,
+  "prob_mean_gt_0": 1.0,
+  "route_id": "haze4k_v4_8_train_derived_validation_reset_20260708",
+  "seed": 3411,
+  "test_split_enumerated": false
+}

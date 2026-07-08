@@ -1,0 +1,64 @@
+{
+  "base_group_count": 3000,
+  "folds": [
+    {
+      "fold": 0,
+      "split_train": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/experience_docx/experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/splits/fold_0_train.txt",
+      "split_val": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/experience_docx/experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/splits/fold_0_val.txt",
+      "train_count": 2399,
+      "val_count": 601
+    },
+    {
+      "fold": 1,
+      "split_train": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/experience_docx/experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/splits/fold_1_train.txt",
+      "split_val": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/experience_docx/experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/splits/fold_1_val.txt",
+      "train_count": 2410,
+      "val_count": 590
+    },
+    {
+      "fold": 2,
+      "split_train": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/experience_docx/experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/splits/fold_2_train.txt",
+      "split_val": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/experience_docx/experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/splits/fold_2_val.txt",
+      "train_count": 2385,
+      "val_count": 615
+    },
+    {
+      "fold": 3,
+      "split_train": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/experience_docx/experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/splits/fold_3_train.txt",
+      "split_val": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/experience_docx/experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/splits/fold_3_val.txt",
+      "train_count": 2389,
+      "val_count": 611
+    },
+    {
+      "fold": 4,
+      "split_train": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/experience_docx/experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/splits/fold_4_train.txt",
+      "split_val": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/experience_docx/experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/splits/fold_4_val.txt",
+      "train_count": 2417,
+      "val_count": 583
+    }
+  ],
+  "k": 5,
+  "locked_test_touched": false,
+  "missing_label_count": 0,
+  "missing_label_examples": [],
+  "paired_train_count": 3000,
+  "proxy_keys": [
+    "haze_param_1",
+    "haze_param_2",
+    "input_gt_l1",
+    "input_dark_channel_mean",
+    "input_brightness_mean",
+    "input_saturation_proxy",
+    "gt_texture_proxy",
+    "hazy_texture_proxy"
+  ],
+  "route_id": "haze4k_v4_8_train_derived_validation_reset_20260708",
+  "runtime_sec": 133.21275758743286,
+  "seed": 3407,
+  "shape_mismatch_count": 0,
+  "shape_mismatch_examples": [],
+  "source": "Haze4K train/haze and train/gt only",
+  "stratum_count": 1160,
+  "test_split_enumerated": false,
+  "train_haze_image_count_seen": 3000
+}

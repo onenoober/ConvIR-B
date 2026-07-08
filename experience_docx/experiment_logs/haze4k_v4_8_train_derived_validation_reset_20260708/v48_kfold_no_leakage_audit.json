@@ -1,0 +1,25 @@
+{
+  "base_group_leaks": [],
+  "duplicate_val_assignments": [],
+  "fold_train_counts": [
+    2399,
+    2410,
+    2385,
+    2389,
+    2417
+  ],
+  "fold_val_counts": [
+    601,
+    590,
+    615,
+    611,
+    583
+  ],
+  "locked_test_touched": false,
+  "paired_train_count": 3000,
+  "pass": true,
+  "route_id": "haze4k_v4_8_train_derived_validation_reset_20260708",
+  "test_split_enumerated": false,
+  "total_val_assignments": 3000,
+  "unique_val_assignments": 3000
+}

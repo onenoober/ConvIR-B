@@ -1,0 +1,80 @@
+{
+  "correlations": {
+    "corr_R_mean_a0_error_proxy_low_plus_high_l1": -0.4217142607610924,
+    "corr_R_mean_a0_psnr": 0.5043802534593277,
+    "corr_R_mean_gt_texture_proxy": 0.03024681046453937,
+    "corr_R_mean_hazy_texture_proxy": 0.2616520669340519,
+    "corr_R_mean_input_brightness_mean": -0.8770464730057483,
+    "corr_R_mean_input_dark_channel_mean": -0.884114406314342,
+    "corr_R_mean_input_gt_l1": -0.43898349767249467,
+    "corr_R_mean_input_saturation_proxy": 0.35644472364912544,
+    "corr_R_std_a0_error_proxy_low_plus_high_l1": -0.41565321646582676,
+    "corr_R_std_a0_psnr": 0.45469453195970233,
+    "corr_R_std_gt_texture_proxy": -0.053663991002333086,
+    "corr_R_std_hazy_texture_proxy": 0.19043318590665284,
+    "corr_R_std_input_brightness_mean": -0.33118831172664703,
+    "corr_R_std_input_dark_channel_mean": -0.365477207744011,
+    "corr_R_std_input_gt_l1": -0.38789062531941926,
+    "corr_R_std_input_saturation_proxy": 0.3081075300658491
+  },
+  "count": 3000,
+  "decision": "R field fails calibration gate; block SDC-Lite v2 and any skip/FAM/restoration modulation using this R.",
+  "failed_gates": [
+    "R_1_2_std_mean",
+    "corr_R_input_gt_l1",
+    "corr_R_a0_error_proxy",
+    "corr_R_dark_channel_direction",
+    "heavy_haze_q4_gt_q1_by_10pct",
+    "a0_error_q4_gt_q1_by_10pct",
+    "low_saturation_no_reverse"
+  ],
+  "gates": {
+    "R_1_2_std_mean": false,
+    "a0_error_q4_gt_q1_by_10pct": false,
+    "corr_R_a0_error_proxy": false,
+    "corr_R_dark_channel_direction": false,
+    "corr_R_input_gt_l1": false,
+    "heavy_haze_q4_gt_q1_by_10pct": false,
+    "locked_test_not_touched": true,
+    "low_saturation_no_reverse": false,
+    "test_split_not_enumerated": true
+  },
+  "locked_test_touched": false,
+  "probe": "v48_r_only_calibration_sdc_lite_oof3000",
+  "response": {
+    "a0_error_q1_R_mean": 0.5113784699837367,
+    "a0_error_q4_R_mean": 0.4774677104552587,
+    "a0_error_q4_vs_q1_rel": -0.06631245059956563,
+    "heavy_haze_input_gt_l1_q1_R_mean": 0.5043770438035329,
+    "heavy_haze_input_gt_l1_q4_R_mean": 0.47433281377951303,
+    "heavy_haze_q4_vs_q1_rel": -0.05956700526545535,
+    "high_saturation_q4_R_mean": 0.504198573231697,
+    "low_saturation_q1_R_mean": 0.48125496912002563,
+    "low_saturation_q1_minus_q4": -0.0229436041116714
+  },
+  "route_id": "haze4k_v4_8_train_derived_validation_reset_20260708",
+  "runtime_sec": 131.07476615905762,
+  "scope": "R-only audit on v4.8 train-derived OOF union; restoration outputs ignored; no training; no locked test.",
+  "sdc_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-5-sdc-lite/Dehazing/ITS/results/ConvIR-Haze4K-v4A5-SDC-Lite-adapter-notest-seed3407-20260708/Training-Results/Final.pkl",
+  "sdc_checkpoint_sha256": "96c74ea9ce18daafeffbe7044fd697e55d495c90ced51b91ab23e8e250b2e39f",
+  "status": "COMPLETED_GATE_FAIL",
+  "summary": {
+    "R_1_2_entropy_mean": 0.5614581984082858,
+    "R_1_2_mean": 0.4913352628747622,
+    "R_1_2_mean_p5": 0.4534843161702156,
+    "R_1_2_mean_p95": 0.538026824593544,
+    "R_1_2_std_mean": 0.08105815019706886,
+    "R_1_2_std_median": 0.08040950074791908,
+    "count": 3000
+  },
+  "test_split_enumerated": false,
+  "thresholds": {
+    "R_1_2_std_mean_min": 0.1,
+    "a0_error_q4_vs_q1_rel_min": 0.1,
+    "corr_R_a0_error_proxy_min": 0.1,
+    "corr_R_dark_channel_mean_min": 0.0,
+    "corr_R_input_gt_l1_min": 0.1,
+    "heavy_haze_q4_vs_q1_rel_min": 0.1,
+    "low_saturation_no_reverse_min_diff": 0.0
+  }
+}
