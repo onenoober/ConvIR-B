@@ -8,3 +8,5 @@ data_train_gt=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train/gt
 locked_test_policy=no test directory access
 state=PREFLIGHT_SPLITS_OK
 split_done rc=0 v48_kfold 2026-07-08T10:20:16+08:00
+
+state=COMPLETED_GATE_FAIL closeout=v48_closeout.json phase1=COMPLETED_GATE_FAIL phase2=COMPLETED_GATE_FAIL locked_test_touched=false final_marker_ts=2026-07-08T11:16:27+08:00
