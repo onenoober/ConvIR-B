@@ -2,7 +2,7 @@
 
 Date: 2026-07-08
 
-Status: data manifest and leakage audit running; A0 val600 not yet launched.
+Status: completed; decision `COMPLETED_V1_GATE_PASS`.
 
 ## Scope
 
@@ -26,5 +26,4 @@ Status: data manifest and leakage audit running; A0 val600 not yet launched.
 
 ## Current Decision
 
-Data manifest and split generation are authorized. A0 val600 evaluation remains
-pending until the command contract is written and reviewed in this evidence root.
+Data manifest, leakage audit, A0 val600, metric reproducibility, and efficiency evidence completed. Decision: `COMPLETED_V1_GATE_PASS`.

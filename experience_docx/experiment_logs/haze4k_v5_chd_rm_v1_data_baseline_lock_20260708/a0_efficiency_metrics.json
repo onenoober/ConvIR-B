@@ -1,0 +1,14 @@
+{
+  "cuda_available": true,
+  "device": "NVIDIA GeForce RTX 4090",
+  "avg_time_sec_pass1": 0.03234792947769165,
+  "median_time_sec_pass1": 0.03110218048095703,
+  "avg_time_sec_pass2": 0.030484594106674194,
+  "median_time_sec_pass2": 0.030095458030700684,
+  "peak_cuda_mem_mib": 532.70263671875,
+  "params": 8630665,
+  "official_reference_flops_g": 71.22,
+  "official_reference_flops_source": "ConvIR-B official/reference result recorded in repository baseline contract",
+  "fps_pass1": 30.913879687095204,
+  "flops_probe_note": "thop and ptflops are not installed in the cloud env; FLOPs kept as official reference for v1 baseline lock."
+}

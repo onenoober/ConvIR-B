@@ -29,3 +29,13 @@ and hashes only for leakage accounting and final split integrity.
 | `split_policy.md` | split policy and locked-test policy |
 | `data_manifest_summary.md` | compact result summary |
 | `decision_record.md` | stage decision so far |
+
+## Closeout Summary
+
+- Decision: `COMPLETED_V1_GATE_PASS`
+- A0 val_inner mean PSNR: `39.253655`
+- A0 val_inner mean SSIM: `0.995124812`
+- Metric reproducibility pass: `True`
+- Params: `8630665`
+- FPS pass1: `30.914`
+- Locked test: not used for tuning or scoring.

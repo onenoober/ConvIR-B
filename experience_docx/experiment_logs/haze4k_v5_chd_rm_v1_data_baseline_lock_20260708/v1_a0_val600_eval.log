@@ -1,0 +1,53 @@
+v1_a0_val600_eval_start 2026-07-08T21:58:40+08:00
+workspace=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v1-chd-rm-data-baseline-lock
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split_json=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v1-chd-rm-data-baseline-lock/experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/haze4k_internal_split_2400_600.json
+cuda_visible_devices=1
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v1-chd-rm-data-baseline-lock/experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/eval_v1_a0_val600.py:61: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+a0 100/600 psnr=36.6487
+a0 200/600 psnr=38.7034
+a0 300/600 psnr=39.6787
+a0 400/600 psnr=40.2355
+a0 500/600 psnr=39.6895
+a0 600/600 psnr=39.2537
+a0_repeat 100/600 psnr=36.6487
+a0_repeat 200/600 psnr=38.7034
+a0_repeat 300/600 psnr=39.6787
+a0_repeat 400/600 psnr=40.2355
+a0_repeat 500/600 psnr=39.6895
+a0_repeat 600/600 psnr=39.2537
+{
+  "global": {
+    "split": "val_inner",
+    "count": 600,
+    "mean_psnr": 39.253654648462934,
+    "median_psnr": 39.58403396606445,
+    "p5_psnr": 31.588253784179688,
+    "mean_ssim": 0.9951248123248418,
+    "repeat_mean_delta_psnr": 0.0,
+    "repeat_max_abs_delta_psnr": 0.0,
+    "repeat_mean_delta_ssim": 0.0,
+    "repeat_max_abs_delta_ssim": 0.0
+  },
+  "metric_repro_audit": {
+    "count": 600,
+    "repeat_mean_delta_psnr": 0.0,
+    "repeat_max_abs_delta_psnr": 0.0,
+    "repeat_mean_delta_ssim": 0.0,
+    "repeat_max_abs_delta_ssim": 0.0,
+    "pass": true
+  },
+  "efficiency": {
+    "cuda_available": true,
+    "device": "NVIDIA GeForce RTX 4090",
+    "avg_time_sec_pass1": 0.03234792947769165,
+    "median_time_sec_pass1": 0.03110218048095703,
+    "avg_time_sec_pass2": 0.030484594106674194,
+    "median_time_sec_pass2": 0.030095458030700684,
+    "peak_cuda_mem_mib": 532.70263671875
+  }
+}
+v1_a0_val600_eval_done 2026-07-08T21:59:49+08:00
+CHDRM_V1_A0_VAL600_OK

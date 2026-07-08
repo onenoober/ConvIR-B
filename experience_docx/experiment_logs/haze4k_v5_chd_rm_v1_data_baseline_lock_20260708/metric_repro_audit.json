@@ -1,0 +1,8 @@
+{
+  "count": 600,
+  "repeat_mean_delta_psnr": 0.0,
+  "repeat_max_abs_delta_psnr": 0.0,
+  "repeat_mean_delta_ssim": 0.0,
+  "repeat_max_abs_delta_ssim": 0.0,
+  "pass": true
+}

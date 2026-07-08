@@ -1,0 +1,2 @@
+split,count,mean_psnr,median_psnr,p5_psnr,mean_ssim,repeat_mean_delta_psnr,repeat_max_abs_delta_psnr,repeat_mean_delta_ssim,repeat_max_abs_delta_ssim
+val_inner,600,39.253654648462934,39.58403396606445,31.588253784179688,0.9951248123248418,0.0,0.0,0.0,0.0
