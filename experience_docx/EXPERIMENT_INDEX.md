@@ -1,8 +1,8 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-07-08
+Date: 2026-07-09
 
-Status: evidence index plus official architecture anchor registry.
+Status: evidence index plus official architecture anchor registry; current CHD-RM v5 state is paused at v2c before D2/RARM.
 
 ## Purpose
 
@@ -130,6 +130,8 @@ without a material new reason.
 
 | Route | Status | Main result | Decision | Card | Evidence root | Source after cleanup |
 | --- | --- | --- | --- | --- | --- | --- |
+| Haze4K v5 CHD-RM v2c Need Coverage Calibration | Completed diagnostic; D2/RARM blocked | Frozen v2b heads plus train-inner monotone/affine calibration. D6c retains real ranking (identity Pearson/Spearman/AUROC `0.3632/0.3298/0.7133`) but coverage is `0.0`; calibration restores coverage but raises low-density/low-need false-strong above the `0.10` gate, best d6c `mean_std` false-strong `0.1153`. Shuffled control remains invalid. | `PAUSE_V2C_SCALE_CALIBRATION_NOT_ENOUGH`; do not run D2/RARM/v3; next route must repair spatial ranking or head capacity before modulation. | [card](experiment_cards/haze4k-chd-rm-v2c-need-coverage-calibration.md) | [logs](experiment_logs/haze4k_v5_chd_rm_v2c_need_coverage_calibration_20260709/) | `github/codex/haze4k-v5-v2c-chd-rm-need-coverage-calibration` |
+| Haze4K v5 CHD-RM v2b Need Calibration Repair | Completed diagnostic; D2/RARM blocked | D6c ordinal quantile improves `R_need` ranking to Pearson/Spearman/AUROC `0.3632/0.3298/0.7133`, monotonic `4/4`, and shuffled control fails, but all positive variants have strong-response coverage `0.0`. | `PAUSE_V2B_NEED_REPAIR_NOT_PASSED`; run scale/coverage audit before any D2/RARM/v3 expansion. | [card](experiment_cards/haze4k-chd-rm-v2b-need-calibration-repair.md) | [logs](experiment_logs/haze4k_v5_chd_rm_v2b_need_calibration_repair_20260708/) | `github/codex/haze4k-v5-v2b-chd-rm-need-calibration-repair` |
 | Haze4K v4.8 Train-Derived Validation Reset | Completed gate fail; locked test blocked | Five-fold train-derived OOF after batch-size engineering repair. Aggregate OOF was positive (mean dPSNR `0.051192`, positive ratio `0.624667`, median `0.050976`, bootstrap CI low `0.041783`, sign-test p `3.32e-43`), but failed tail-safe gates: p5 `-0.266470` and low-saturation q1 positive ratio `0.488000`. R-only audit of v4.5 SDC-Lite also failed: R std mean `0.081058`, corr(R,input-GT L1) `-0.438983`, corr(R,A0-error proxy) `-0.421714`. | Do not promote DCFSB adapter recipe; keep locked test closed; block SDC-Lite v2/skip/FAM/restoration use of this R. | [card](experiment_cards/2026-07-08-haze4k-v4-8-train-derived-validation-reset.md) | [logs](experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/) | `github/codex/haze4k-v4-8-train-derived-validation-reset` |
 | Haze4K v4.7 DCFSB Adapter4 Candidate-Lock Validation | Completed locked-test confirmation fail; no promotion | Fixed v4.6 adapter4 candidate. Internal256 candidate-lock passed: mean dPSNR `+0.044404`, positive ratio `0.625000`, p5 `-0.216141`, bootstrap CI low `+0.024481`, sign-test p `3.80e-05`, no systematic worst32 proxy-bin flags. One fixed locked-test paired compare then failed confirmation: A0 PSNR `34.145502`, candidate PSNR `34.149328`, mean dPSNR `+0.003826`, positive ratio `0.484000`, p5 `-0.210819`, mean dSSIM `+0.00002084`. | Do not promote adapter4; do not run additional locked-test commands or tune from locked-test results. Future work must use train-derived K-fold/tail-safe validation or R-only calibration. | [card](experiment_cards/2026-07-08-haze4k-v4-7-dcfsb-candidate-validation.md) | [logs](experiment_logs/haze4k_v4_7_dcfsb_candidate_validation_20260708/) | `github/codex/haze4k-v4-7-dcfsb-candidate-validation` |
 | Haze4K v4.6 DCFSB-Bottleneck Independent | Completed internal stage gate pass; locked test blocked | Independent official-anchor DCFSB bottleneck route. Initial adapter5 passed mean/positive/high-frequency gates but missed p5 (`+0.0320` mean, p5 `-0.2971`), so bracket probes were run. Selected adapter4 passed internal256: mean delta PSNR `+0.044404`, positive ratio `0.625000`, p5 `-0.216141`, mean high-frequency L1 delta `-0.00000057`, high-gate std `0.038074`; locked test untouched. | Keep adapter4 as current internal-positive v4 candidate; locked test/broader validation requires separate written gate. | [card](experiment_cards/2026-07-08-haze4k-v4-6-dcfsb-bottleneck-independent.md) | [logs](experiment_logs/haze4k_v4_6_dcfsb_bottleneck_20260708/) | `github/codex/haze4k-v4-6-dcfsb-bottleneck-independent` |
@@ -221,6 +223,8 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 
 | Evidence root | Files | Main contents |
 | --- | ---: | --- |
+| `experiment_logs/haze4k_v5_chd_rm_v2c_need_coverage_calibration_20260709/` | compact | CHD-RM v2c need coverage calibration README, route scripts/status, summary JSON, compact calibration summary/bins/params, and decision record. Per-image table, logs, canary, full calibrator JSON, checkpoints, and raw maps remain cloud-only. |
+| `experiment_logs/haze4k_v5_chd_rm_v2b_need_calibration_repair_20260708/` | compact | CHD-RM v2b need calibration repair README, route scripts/status, v2b summary JSON, compact calibration summary/bins, target audit summaries, and decision record. Per-image table, false-strong per-image audit, head weights, canary, and logs remain cloud-only. |
 | `experiment_logs/cloud_py310_environment_20260610/` | 19 | Cloud/GitHub protected-code consistency manifests, py310/convir-cu128 package probes, conda exports, pip freezes, and workspace warning. |
 | `experiment_logs/haze4k_official_arch_anchor_20260610/` | 6 | Official architecture anchor cloud preflight script, log, structured JSON, status, README, and source audit. |
 | `experiment_logs/haze4k_v2_19_nopost_spatial_lowband_policy_learnability_20260703/` | compact | v2.19 NoPost spatial lowband P0 contract/identity pass, P1 O2 spatial action learnability summary, P2 risk decomposition decision, P3 objective replay guard summary, run scripts, status, and README. Raw per-image tables remain on cloud. |
@@ -296,6 +300,12 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 
 The active conclusion is conservative:
 
+- Haze4K v5 CHD-RM is paused before D2/RARM/v3. v2 density is reliable, but
+  `R_need` remains unsafe: v2b D6c found real ranking signal
+  (`0.3632/0.3298/0.7133` Pearson/Spearman/AUROC) with coverage `0.0`, and v2c
+  showed train-inner scale calibration restores coverage only by exceeding the
+  low-density/low-need false-strong gate. The next CHD-RM step must repair
+  spatial high-need localization or head capacity before any modulation.
 - Haze4K v4 after-A3 restart through v4.8 completed on `convir-4090`: v4.8 five-fold train-derived OOF found real DCFSB mean signal (`+0.051192` dPSNR, positive ratio `0.624667`) but failed tail/subgroup gates (p5 `-0.266470`, low-saturation q1 positive ratio `0.488000`). R-only SDC-Lite calibration also failed with reversed haze/error correlations. Do not promote adapter4/DCFSB, do not run more locked-test commands, and do not expand v4.5/SDC-Lite R.
 - FAM2 found a real hard-sample improvement direction, but the deployable
   selector route failed.

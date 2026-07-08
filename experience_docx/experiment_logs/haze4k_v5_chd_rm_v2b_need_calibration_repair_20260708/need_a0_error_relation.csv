@@ -1,0 +1,2 @@
+split,count,pearson_need_mean_vs_a0_psnr,spearman_need_mean_vs_a0_psnr,pearson_need_mean_vs_a0_ssim,spearman_need_mean_vs_a0_ssim
+val_inner,600,-0.9188469360496301,-0.9846607907244186,-0.3860815408752233,-0.46812869574816457

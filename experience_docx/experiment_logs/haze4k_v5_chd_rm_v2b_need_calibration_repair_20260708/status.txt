@@ -1,0 +1,16 @@
+canary_start chdrm_v2b_need_repair 2026-07-08T23:46:39+08:00
+branch=codex/haze4k-v5-v2b-chd-rm-need-calibration-repair
+commit=e8112c508cae3033728969315f9f1a813af46bdd
+locked_test=not_used
+canary_done rc=0 chdrm_v2b_need_repair 2026-07-08T23:46:52+08:00
+run_start chdrm_v2b_need_repair 2026-07-08T23:48:34+08:00
+repo=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2b-chd-rm-need-calibration-repair
+branch=codex/haze4k-v5-v2b-chd-rm-need-calibration-repair
+commit=794467bc84211b4762b6c39f326408beb5e6d829
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2b-chd-rm-need-calibration-repair/experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/haze4k_internal_split_2400_600.json
+locked_test=not_used
+cuda_visible_devices=1
+run_done rc=0 chdrm_v2b_need_repair 2026-07-09T00:00:05+08:00

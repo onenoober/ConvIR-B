@@ -1,0 +1,7 @@
+{
+  "raw_need_p99": 0.04963347692042589,
+  "raw_need_median": 0.005648799939081073,
+  "log_q66": 0.3657055103778839,
+  "quantile_strong_threshold": 0.66,
+  "audit_interpretation": "raw need has low absolute dynamic range; quantile/log transforms are tested before any D2 or RARM connection."
+}

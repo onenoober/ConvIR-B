@@ -1,0 +1,3 @@
+split,image_count,pearson_need_density,spearman_need_density
+train_inner,2400,0.44977235738598703,0.5088758181680569
+val_inner,600,0.3799536202396984,0.443148286523018

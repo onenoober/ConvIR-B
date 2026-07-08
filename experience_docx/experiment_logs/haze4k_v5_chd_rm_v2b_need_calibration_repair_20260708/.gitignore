@@ -1,0 +1,5 @@
+canary/
+artifacts/
+need_repair_per_image_metrics.csv
+need_repair_false_strong_audit.csv
+*.log

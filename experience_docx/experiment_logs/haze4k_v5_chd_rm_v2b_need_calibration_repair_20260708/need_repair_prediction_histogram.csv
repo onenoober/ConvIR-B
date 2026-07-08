@@ -1,0 +1,5 @@
+variant,target_mode,need_pred_high_coverage,need_target_high_coverage
+d6a_quantile,quantile,0.0,0.337926025390625
+d6b_log,log,0.0,0.3416573079427083
+d6c_ordinal_quantile,quantile,0.0,0.337926025390625
+d6s_shuffled_quantile,quantile,0.0,0.337926025390625

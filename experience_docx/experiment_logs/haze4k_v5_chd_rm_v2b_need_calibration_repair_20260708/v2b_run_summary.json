@@ -1,0 +1,97 @@
+{
+  "decision": {
+    "decision": "PAUSE_V2B_NEED_REPAIR_NOT_PASSED",
+    "passing_variants": [],
+    "control_pass": false,
+    "next_step": "Do not run D2 yet unless a near-pass variant shows non-degenerate coverage and control failure."
+  },
+  "summaries": [
+    {
+      "variant": "d6a_quantile",
+      "target_mode": "quantile",
+      "eval_images": 600,
+      "need_pearson": 0.27097476392472164,
+      "need_spearman": 0.24652502238509832,
+      "need_auroc_high_vs_low": 0.6611238684194524,
+      "need_auprc_high": 0.39649228245580775,
+      "need_pred_high_coverage": 0.0,
+      "need_target_high_coverage": 0.337926025390625,
+      "need_monotonic_pairs": 3,
+      "need_monotonic_valid_pairs": 4,
+      "low_context_false_strong_rate": 0.0
+    },
+    {
+      "variant": "d6b_log",
+      "target_mode": "log",
+      "eval_images": 600,
+      "need_pearson": 0.27115348554490853,
+      "need_spearman": 0.2913587819832091,
+      "need_auroc_high_vs_low": 0.6883467777060968,
+      "need_auprc_high": 0.42065381889964787,
+      "need_pred_high_coverage": 0.0,
+      "need_target_high_coverage": 0.3416573079427083,
+      "need_monotonic_pairs": 4,
+      "need_monotonic_valid_pairs": 4,
+      "low_context_false_strong_rate": 0.0
+    },
+    {
+      "variant": "d6c_ordinal_quantile",
+      "target_mode": "quantile",
+      "eval_images": 600,
+      "need_pearson": 0.36323970098212727,
+      "need_spearman": 0.3297659988770789,
+      "need_auroc_high_vs_low": 0.713320424884963,
+      "need_auprc_high": 0.43534801529842426,
+      "need_pred_high_coverage": 0.0,
+      "need_target_high_coverage": 0.337926025390625,
+      "need_monotonic_pairs": 4,
+      "need_monotonic_valid_pairs": 4,
+      "low_context_false_strong_rate": 0.0
+    },
+    {
+      "variant": "d6s_shuffled_quantile",
+      "target_mode": "quantile",
+      "eval_images": 600,
+      "need_pearson": -0.2487440955844555,
+      "need_spearman": -0.25296594789787913,
+      "need_auroc_high_vs_low": 0.3368847309797995,
+      "need_auprc_high": 0.28056900328871426,
+      "need_pred_high_coverage": 0.0,
+      "need_target_high_coverage": 0.337926025390625,
+      "need_monotonic_pairs": 0,
+      "need_monotonic_valid_pairs": 4,
+      "low_context_false_strong_rate": 0.0
+    }
+  ],
+  "args": {
+    "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+    "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+    "split_json": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2b-chd-rm-need-calibration-repair/experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/haze4k_internal_split_2400_600.json",
+    "v2_thresholds": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2b-chd-rm-need-calibration-repair/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2_density_need_calibration_20260708/density_need_thresholds.json",
+    "v1_a0_per_image_csv": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2b-chd-rm-need-calibration-repair/experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/a0_val600_per_image_metrics.csv",
+    "output_dir": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2b-chd-rm-need-calibration-repair/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2b_need_calibration_repair_20260708",
+    "seed": 3407,
+    "epochs": 5,
+    "batch_size": 8,
+    "crop_size": 256,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "bce_weight": 0.2,
+    "ordinal_weight": 0.25,
+    "tv_weight": 0.02,
+    "grad_clip": 1.0,
+    "blur_kernel": 9,
+    "metric_sample_size": 64,
+    "audit_limit": 0,
+    "train_limit": 0,
+    "val_limit": 0,
+    "num_workers": 4,
+    "progress_every": 50,
+    "variants": [
+      "d6a_quantile",
+      "d6b_log",
+      "d6c_ordinal_quantile",
+      "d6s_shuffled_quantile"
+    ]
+  }
+}
