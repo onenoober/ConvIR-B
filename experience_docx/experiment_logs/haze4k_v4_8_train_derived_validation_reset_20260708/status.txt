@@ -1,0 +1,10 @@
+state=PLANNED
+route_id=haze4k_v4_8_train_derived_validation_reset_20260708
+locked_test_policy=blocked_no_touch_no_enumeration
+split_start v48_kfold 2026-07-08T10:18:03+08:00
+state=PREFLIGHT_RUNNING
+data_train_haze=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train/haze
+data_train_gt=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train/gt
+locked_test_policy=no test directory access
+state=PREFLIGHT_SPLITS_OK
+split_done rc=0 v48_kfold 2026-07-08T10:20:16+08:00

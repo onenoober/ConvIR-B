@@ -1,0 +1,16 @@
+r_only_start v48_sdc_lite_oof3000 2026-07-08T10:56:47+08:00
+state=RUNNING_R_ONLY_AUDIT
+gpu=1
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt
+v45_work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-5-sdc-lite
+v45_branch=codex/haze4k-v4-5-sdc-lite
+v45_commit=08f2ae05c7a0b9b6447c1b1d67b4dc720510ebe9
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+sdc_checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-5-sdc-lite/Dehazing/ITS/results/ConvIR-Haze4K-v4A5-SDC-Lite-adapter-notest-seed3407-20260708/Training-Results/Final.pkl
+oof_table=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/experience_docx/experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/v48_oof_per_image_compact.csv
+out=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/experience_docx/experiment_logs/haze4k_v4_8_train_derived_validation_reset_20260708/r_only_calibration_sdc_lite_oof3000
+locked_test_policy=train-derived OOF image ids only; no test enumeration; restoration outputs ignored
+state=R_ONLY_DONE
+r_only_done rc=0 v48_sdc_lite_oof3000 2026-07-08T10:59:01+08:00
+V48_R_ONLY_OK

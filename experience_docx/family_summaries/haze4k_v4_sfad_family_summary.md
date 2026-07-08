@@ -2,7 +2,7 @@
 
 Date: 2026-07-08
 
-Status: after-A3 restart completed; v4.6 DCFSB-bottleneck adapter4 is the current internal-positive candidate; locked test remains blocked.
+Status: after-v4.8 validation reset completed; DCFSB has real train-derived OOF mean signal but fails tail-safe/subgroup gates, and the existing SDC-Lite R field fails calibration. Locked test remains blocked.
 
 ## Fixed Pain Points
 
@@ -21,7 +21,7 @@ These two pain points are fixed for v4 and should not be replaced by later route
 
 ## Decision
 
-Keep v4.6 DCFSB-bottleneck `adapter4` as the current v4 candidate. This is an internal train-derived candidate-positive result, not a promotion-ready result. Any locked-test, broader validation, or code integration requires a separate written gate.
+Do not promote `adapter4` or the DCFSB-bottleneck adapter recipe. v4.8 shows a real train-derived OOF mean signal, but the full tail-safe contract fails on p5 and low-saturation subgroup coverage. Do not expand v4.5/SDC-Lite or connect the existing R field to skip/FAM/restoration outputs; the v4.8 R-only audit shows low variance and reversed haze/error response.
 
 ## Stop/Reopen Rules
 
@@ -37,3 +37,12 @@ v4.7 performed the required candidate-lock validation for the fixed v4.6 `adapte
 A separate written gate then authorized one fixed locked-test confirmation command. The confirmation did not pass promotion criteria: A0 mean PSNR `34.145502`, candidate mean PSNR `34.149328`, mean dPSNR `0.003826`, median dPSNR `-0.003686`, positive ratio `0.484000`, p5 `-0.210819`, mean dSSIM `0.00002084`. The positive-ratio gate failed, so adapter4 is not promotion-ready.
 
 Decision: do not promote adapter4 and do not run additional locked-test commands for this candidate. Future work must not tune from locked-test results; use train-derived K-fold/tail-safe validation or a separately justified R-only calibration probe if the family continues.
+
+
+## v4.8 Closeout (2026-07-08)
+
+v4.8 reset validation to train-derived five-fold OOF. The DCFSB adapter recipe produced a strong positive aggregate signal: mean dPSNR `0.051192`, positive ratio `0.624667`, median `0.050976`, bootstrap CI low `0.041783`, and sign-test p `3.3161829e-43` across `3000` held-out train-derived images. However, the route failed the stricter tail-safe gate because p5 was `-0.266470` versus the `-0.25` floor, and low-saturation q1 retained weak coverage: mean `0.010802`, positive ratio `0.488000`.
+
+A separate R-only calibration audit on the existing v4.5 SDC-Lite R field also failed on the same `3000` train-derived union: R std mean `0.081058`, corr(R,input-GT L1) `-0.438983`, corr(R,A0 error proxy) `-0.421714`, heavy-haze q4 vs q1 relative response `-0.059567`, and low-saturation q1 minus high-saturation q4 R mean `-0.022944`.
+
+Decision: keep locked test closed; stop adapter4 promotion and v4.5/SDC-Lite expansion. The next valid route, if any, must create a new calibrated conditional routing signal and prove subgroup/tail safety on train-derived validation before any locked-test discussion.

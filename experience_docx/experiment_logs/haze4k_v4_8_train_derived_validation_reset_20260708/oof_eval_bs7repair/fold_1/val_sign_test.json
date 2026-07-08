@@ -1,0 +1,12 @@
+{
+  "fold": 1,
+  "locked_test_touched": false,
+  "losses": 214,
+  "n_effective": 590,
+  "one_sided_p_win_rate_gt_0_5": 1.2826660979958991e-11,
+  "positive_ratio_all": 0.6372881355932203,
+  "route_id": "haze4k_v4_8_train_derived_validation_reset_20260708",
+  "test_split_enumerated": false,
+  "ties": 0,
+  "wins": 376
+}
