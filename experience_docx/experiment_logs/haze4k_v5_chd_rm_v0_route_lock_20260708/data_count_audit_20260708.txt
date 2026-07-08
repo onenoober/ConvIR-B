@@ -1,0 +1,12 @@
+DATA_COUNT_AUDIT_BEGIN
+remote_time=2026-07-08T21:47:00+08:00
+train/haze png=3000 non_png=1
+train/gt png=3000 non_png=0
+train/trans png=3000 non_png=0
+test/haze png=1000 non_png=0
+test/gt png=1000 non_png=0
+test/trans png=1000 non_png=0
+NON_PNG_TRAIN_HAZE_LIST
+.DS_Store
+DATA_COUNT_DECISION=FILTER_IMAGE_EXTENSIONS_FOR_V1_MANIFEST
+DATA_COUNT_AUDIT_OK

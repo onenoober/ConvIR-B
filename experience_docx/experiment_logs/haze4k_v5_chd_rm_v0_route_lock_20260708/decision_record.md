@@ -33,3 +33,9 @@ Then run only v1 data/baseline-lock preflight on `convir-4090`.
 
 Pause before any v2 model training unless v1 writes complete manifest, leakage,
 metric reproducibility, A0 baseline, and efficiency evidence.
+
+## Data Count Preflight Note
+
+Cloud preflight found `train/haze` has `3000` PNG files plus one non-image
+`.DS_Store` file. This is not a dataset blocker, but v1 manifest generation
+must filter by image extension and must not count non-image files.
