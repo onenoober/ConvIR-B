@@ -1,0 +1,12 @@
+{
+  "route": "CHD-RM",
+  "stage": "v0-route-lock",
+  "branch": "codex/haze4k-v5-v0-chd-rm-route-lock",
+  "workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v0-chd-rm-route-lock",
+  "cloud_python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "dataset_root": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "baseline_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "locked_test_touched": false,
+  "preflight_marker": "CHDRM_V0_PREFLIGHT_OK",
+  "next_allowed_stage": "v1-data-baseline-lock"
+}

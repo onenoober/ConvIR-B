@@ -1,0 +1,45 @@
+CHDRM_V0_PREFLIGHT_BEGIN
+remote_host=RTX4090
+remote_time=2026-07-08T21:45:06+08:00
+workspace=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v0-chd-rm-route-lock
+git_branch=codex/haze4k-v5-v0-chd-rm-route-lock
+git_head=ce65b01e0293ca913cc7806d83d506a07519554e
+git_status_lines=1
+python_path=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+python_executable=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+python_version=3.10.20 | packaged by conda-forge | (main, Mar  5 2026, 16:42:22) [GCC 14.3.0]
+torch_version=2.5.1+cu121
+cuda_available=True
+cuda_device_count=8
+cuda_runtime=12.1
+DATA_COUNTS_BEGIN
+/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train/haze=3001
+/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train/gt=3000
+/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train/trans=3000
+/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test/haze=1000
+/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test/gt=1000
+/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test/trans=1000
+LOCKED_SYMLINKS=2000
+CHECKPOINT_BEGIN
+-rw-r--r-- 1 wangyuxin wangyuxin 34M  5月 31 18:51 /sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088  /sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+GPU_BEGIN
+0, NVIDIA GeForce RTX 4090, 24564, 7149, 17067, 0
+1, NVIDIA GeForce RTX 4090, 24564, 16, 24200, 0
+2, NVIDIA GeForce RTX 4090, 24564, 16, 24200, 0
+3, NVIDIA GeForce RTX 4090, 24564, 16, 24200, 0
+4, NVIDIA GeForce RTX 4090, 24564, 16, 24200, 0
+5, NVIDIA GeForce RTX 4090, 24564, 16, 24200, 0
+6, NVIDIA GeForce RTX 4090, 24564, 22672, 1545, 96
+7, NVIDIA GeForce RTX 4090, 24564, 16, 24200, 0
+GPU_PROCESSES_BEGIN
+GPU-cb07d6fb-1ba6-17d5-ccb1-c12b69e552ff, 3171882, python, 3232
+GPU-cb07d6fb-1ba6-17d5-ccb1-c12b69e552ff, 2353345, /sda/home/shihaoyu/condaa/envs/MoPa/bin/python, 3894
+GPU-109fe0af-448e-ee65-44db-4f9b1cee5005, 3004683, python, 22652
+DISK_BEGIN
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda         73T   44T   26T  64% /sda
+/dev/sda         73T   44T   26T  64% /sda
+TMUX_BEGIN
+TMUX_NO_SESSIONS
+CHDRM_V0_PREFLIGHT_OK
