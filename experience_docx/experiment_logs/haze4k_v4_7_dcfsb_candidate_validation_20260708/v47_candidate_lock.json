@@ -1,0 +1,81 @@
+{
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "a0_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "bootstrap": {
+    "bootstrap_samples": 20000,
+    "ci95_high": 0.06507933232933284,
+    "ci95_low": 0.02448074147105217,
+    "locked_test_touched": false,
+    "mean_delta_psnr": 0.044404372572898865,
+    "prob_mean_gt_0": 1.0,
+    "route_id": "haze4k_v4_7_dcfsb_candidate_validation_20260708",
+    "seed": 3407,
+    "split": "internal256",
+    "test_split_enumerated": false
+  },
+  "candidate_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/Dehazing/ITS/results/ConvIR-Haze4K-v4A6-DCFSB-Bottleneck-adapter4-notest-seed3407-20260708/Training-Results/Final.pkl",
+  "candidate_sha256": "42944a07983cd546c2fe9bbdd28331f93ebeebc6c078760590ce0d804af575ad",
+  "cloud_commit_at_run": "1277b61788fd2969e2bfdac9455a1a317db61f48",
+  "count": 256,
+  "data_root": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "gates": {
+    "bootstrap_ci95_low": true,
+    "locked_test_not_touched": true,
+    "mean_delta_high_l1": true,
+    "mean_delta_psnr": true,
+    "no_systematic_failure_bin": true,
+    "p5_delta_psnr": true,
+    "positive_ratio": true,
+    "sign_test": true,
+    "test_split_not_enumerated": true
+  },
+  "locked_test_touched": false,
+  "metrics": {
+    "count": 256,
+    "high_l1_improve_ratio": 0.52734375,
+    "mean_delta_high_l1": -5.701613190467469e-07,
+    "mean_delta_psnr": 0.044404372572898865,
+    "median_delta_psnr": 0.04095649719238281,
+    "p5_delta_psnr": -0.2161407470703125,
+    "p95_delta_psnr": 0.2967414855957031,
+    "positive_ratio": 0.625
+  },
+  "pass": true,
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "route_id": "haze4k_v4_7_dcfsb_candidate_validation_20260708",
+  "route_identity": "v4.6 adapter4 candidate-lock validation, train-derived audit only",
+  "runtime_sec": 17.1641948223114,
+  "severity_counts": {
+    "delta_lt_minus_0_10": 44,
+    "delta_lt_minus_0_25": 10,
+    "delta_lt_minus_0_50": 0
+  },
+  "sign_test": {
+    "locked_test_touched": false,
+    "losses": 96,
+    "n_effective": 256,
+    "one_sided_p_win_rate_gt_0_5": 3.802648956855043e-05,
+    "positive_ratio_all": 0.625,
+    "route_id": "haze4k_v4_7_dcfsb_candidate_validation_20260708",
+    "split": "internal256",
+    "test_split_enumerated": false,
+    "ties": 0,
+    "wins": 160
+  },
+  "source_branch": "codex/haze4k-v4-6-dcfsb-bottleneck-independent",
+  "source_closeout_commit": "1277b61788fd2969e2bfdac9455a1a317db61f48",
+  "split": "haze4k_train_internal_holdout256.txt",
+  "status": "COMPLETED_GATE_PASS",
+  "systematic_failure_flags": [],
+  "test_split_enumerated": false,
+  "thresholds": {
+    "bootstrap_ci95_low_min_exclusive": 0.0,
+    "mean_delta_high_l1_max": 5e-06,
+    "mean_delta_psnr_min": 0.035,
+    "p5_delta_psnr_min": -0.25,
+    "positive_ratio_min": 0.58,
+    "sign_test_one_sided_p_max": 0.01,
+    "worst32_max_proxy_quartile_ratio_soft_limit": 0.6
+  },
+  "validation_branch": "codex/haze4k-v4-7-dcfsb-candidate-validation"
+}

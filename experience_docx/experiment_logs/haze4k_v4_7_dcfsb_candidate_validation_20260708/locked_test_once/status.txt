@@ -1,0 +1,14 @@
+locked_test_run_start v47_adapter4_once 2026-07-08T09:22:47+08:00
+state=RUNNING_EVAL
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent
+branch=codex/haze4k-v4-7-dcfsb-candidate-validation
+commit=1277b61788fd2969e2bfdac9455a1a317db61f48
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+candidate=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/Dehazing/ITS/results/ConvIR-Haze4K-v4A6-DCFSB-Bottleneck-adapter4-notest-seed3407-20260708/Training-Results/Final.pkl
+cuda_visible_devices=1
+save_prediction_images=false
+locked_test_command_count=1
+state=LOCKED_TEST_COMMAND_DONE
+locked_test_run_done rc=0 v47_adapter4_once 2026-07-08T09:24:35+08:00

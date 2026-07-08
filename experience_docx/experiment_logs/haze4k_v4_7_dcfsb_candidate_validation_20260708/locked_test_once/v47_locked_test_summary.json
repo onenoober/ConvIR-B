@@ -1,0 +1,48 @@
+{
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "a0_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "branch": "codex/haze4k-v4-7-dcfsb-candidate-validation",
+  "candidate_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/Dehazing/ITS/results/ConvIR-Haze4K-v4A6-DCFSB-Bottleneck-adapter4-notest-seed3407-20260708/Training-Results/Final.pkl",
+  "candidate_sha256": "42944a07983cd546c2fe9bbdd28331f93ebeebc6c078760590ce0d804af575ad",
+  "cloud_commit_at_run": "1277b61788fd2969e2bfdac9455a1a317db61f48",
+  "data_root": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "gates": {
+    "mean_delta_psnr": true,
+    "mean_delta_ssim": true,
+    "metric_command_count_one": true,
+    "p5_delta_psnr": true,
+    "positive_ratio": false,
+    "save_prediction_images_false": true
+  },
+  "metric_producing_locked_test_command_count": 1,
+  "metrics": {
+    "a0_mean_psnr": 34.14550157737732,
+    "a0_mean_ssim": 0.9897256826758385,
+    "a0_mean_time_sec": 0.03059123682975769,
+    "candidate_mean_psnr": 34.149327938079836,
+    "candidate_mean_ssim": 0.9897465192079544,
+    "candidate_mean_time_sec": 0.030195769786834716,
+    "count": 1000,
+    "mean_delta_psnr": 0.0038263607025146485,
+    "mean_delta_ssim": 2.083653211593628e-05,
+    "median_delta_psnr": -0.0036859512329101562,
+    "median_delta_ssim": 5.662441253662109e-07,
+    "p5_delta_psnr": -0.21081914901733398,
+    "p95_delta_psnr": 0.18235378265380855,
+    "positive_ratio": 0.484
+  },
+  "pass": false,
+  "policy_note": "A prior post-v47 directory-count preflight enumerated the locked test split but produced no metrics; this script is the sole metric-producing locked-test command for the fixed adapter4 checkpoint.",
+  "route_id": "haze4k_v4_7_dcfsb_candidate_validation_20260708",
+  "runtime_sec": 100.57445645332336,
+  "save_prediction_images": false,
+  "status": "LOCKED_TEST_CONFIRM_FAIL",
+  "thresholds": {
+    "mean_delta_psnr_min_exclusive": 0.0,
+    "mean_delta_ssim_min": -0.0001,
+    "metric_command_count": 1,
+    "p5_delta_psnr_min": -0.5,
+    "positive_ratio_min": 0.5,
+    "save_prediction_images": false
+  }
+}

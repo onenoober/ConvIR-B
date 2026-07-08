@@ -1,0 +1,19 @@
+state=PLANNED
+route_id=haze4k_v4_7_dcfsb_candidate_validation_20260708
+locked_test_policy=blocked_internal_train_derived_only
+run_start v47_adapter4_candidate_lock 2026-07-08T09:17:47+08:00
+state=RUNNING_AUDIT
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent
+branch=codex/haze4k-v4-7-dcfsb-candidate-validation
+commit=1277b61788fd2969e2bfdac9455a1a317db61f48
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+a0=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+candidate=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/Dehazing/ITS/results/ConvIR-Haze4K-v4A6-DCFSB-Bottleneck-adapter4-notest-seed3407-20260708/Training-Results/Final.pkl
+source_per_image=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/experience_docx/experiment_logs/haze4k_v4_6_dcfsb_bottleneck_20260708_adapter4/v46_dcfsb_adapter4_per_image.csv
+source_module_stats=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/experience_docx/experiment_logs/haze4k_v4_6_dcfsb_bottleneck_20260708_adapter4/v46_dcfsb_adapter4_module_stats.jsonl
+holdout=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/docs/ai_text_packages/haze4k_v4_sfad/splits/haze4k_train_internal_holdout256.txt
+locked_test_policy=blocked; train-derived internal_holdout256 only
+state=COMPLETED_GATE_WRITTEN
+run_done rc=0 v47_adapter4_candidate_lock 2026-07-08T09:18:05+08:00
+post_v47_operational_note 2026-07-08T09:20:00+08:00 locked_test_directory_count_was_enumerated_during_eval_entry_preflight; no images read, no eval/inference run, no metric produced; do not report locked_test_touched/enumerated false/false for subsequent post-v47 thread state.
