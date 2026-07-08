@@ -1,0 +1,21 @@
+{
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "seed": 3407,
+  "train_count": 3000,
+  "test_count": 1000,
+  "train_errors": [],
+  "test_errors": [],
+  "internal_split_counts": {
+    "train_inner": 2400,
+    "val_inner": 600
+  },
+  "fold_val_counts": {
+    "(0, 'val')": 600,
+    "(1, 'val')": 600,
+    "(2, 'val')": 600,
+    "(3, 'val')": 600,
+    "(4, 'val')": 600
+  },
+  "leakage_pass": true,
+  "non_image_note": "Image-extension filtering is required; train/haze contains .DS_Store in the cloud dataset."
+}
