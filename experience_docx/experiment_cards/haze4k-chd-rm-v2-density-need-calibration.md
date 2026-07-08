@@ -2,7 +2,7 @@
 
 Date: 2026-07-08
 
-Status: prepared; cloud execution pending.
+Status: paused; decision `PAUSE_V2_DUAL_HEAD_NOT_PASSED`.
 
 ## Scope
 
@@ -72,6 +72,19 @@ Gate thresholds:
 Pause after D0/D1/D3/D4/D5 evidence is written. Continue to v3 only if D1 passes
 and D5 fails. Consider D2 only if D3/D4 show clear single-signal learnability but
 D1 is narrowly below gate.
+
+## Current Decision
+
+Full train_inner/val_inner evidence has been collected on `convir-4090`.
+
+- V2-D0 handcrafted density proxy failed: density Pearson `0.0249`, Spearman `-0.0103`, AUROC `0.4848`.
+- V2-D1 dual head passed density but failed need: density Pearson `0.6715`, Spearman `0.6437`, AUROC `0.8925`; need Pearson `0.1365`, Spearman `0.2198`, AUROC `0.6466`, strong-response coverage `0.0`.
+- V2-D3 density-only passed strongly: Pearson `0.6873`, Spearman `0.6628`, AUROC `0.9043`, monotonic pairs `4/4`.
+- V2-D4 need-only is close but not passed: Pearson `0.1721`, Spearman `0.2508`, AUROC `0.6648`, strong-response coverage `0.0`.
+- V2-D5 shuffled-target control failed clearly: density Pearson `-0.1336`, need Pearson `-0.2081`.
+
+Decision: do not proceed to v3 RARM. Pause v2 and revise/extend the
+`R_need` calibration path before any residual modulation connection.
 
 ## Evidence Root
 

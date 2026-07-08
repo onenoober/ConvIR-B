@@ -1,0 +1,35 @@
+canary_start chdrm_v2_density_need 2026-07-08T22:36:28+08:00
+branch=codex/haze4k-v5-v2-chd-rm-density-need-calibration
+commit=793d8a3510733debeb7538ff14d70313445fe010
+locked_test=not_used
+canary_cuda_visible_devices=1
+canary_done rc=0 chdrm_v2_density_need 2026-07-08T22:36:44+08:00
+canary_start chdrm_v2_density_need 2026-07-08T22:38:17+08:00
+branch=codex/haze4k-v5-v2-chd-rm-density-need-calibration
+commit=793d8a3510733debeb7538ff14d70313445fe010
+locked_test=not_used
+canary_cuda_visible_devices=1
+canary_done rc=0 chdrm_v2_density_need 2026-07-08T22:38:31+08:00
+canary_start chdrm_v2_density_need 2026-07-08T22:39:59+08:00
+branch=codex/haze4k-v5-v2-chd-rm-density-need-calibration
+commit=793d8a3510733debeb7538ff14d70313445fe010
+locked_test=not_used
+canary_cuda_visible_devices=1
+canary_done rc=0 chdrm_v2_density_need 2026-07-08T22:40:13+08:00
+canary_start chdrm_v2_density_need 2026-07-08T22:41:23+08:00
+branch=codex/haze4k-v5-v2-chd-rm-density-need-calibration
+commit=793d8a3510733debeb7538ff14d70313445fe010
+locked_test=not_used
+canary_cuda_visible_devices=1
+canary_done rc=0 chdrm_v2_density_need 2026-07-08T22:41:38+08:00
+run_start chdrm_v2_density_need_calibration 2026-07-08T22:43:22+08:00
+repo=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2-chd-rm-density-need-calibration
+branch=codex/haze4k-v5-v2-chd-rm-density-need-calibration
+commit=fffa0a4d08c8a7d1b2d07ad1da94c938da111973
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+split=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2-chd-rm-density-need-calibration/experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/haze4k_internal_split_2400_600.json
+locked_test=not_used
+cuda_visible_devices=1
+run_done rc=0 chdrm_v2_density_need_calibration 2026-07-08T22:56:02+08:00
