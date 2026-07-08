@@ -29,3 +29,11 @@ Keep v4.6 DCFSB-bottleneck `adapter4` as the current v4 candidate. This is an in
 - Do not introduce DCFSB from the failed A3 combined base; v4.6 succeeded only as an independent route from the official anchor.
 - Do not use any route that touched default Haze4K test validation as scientific evidence.
 - Do not tune from the v4.6 result on locked test. Choose any further checkpoint/epoch/variant on train-derived/internal validation first.
+
+## v4.7 Closeout (2026-07-08)
+
+v4.7 performed the required candidate-lock validation for the fixed v4.6 `adapter4` checkpoint. The train-derived internal_holdout256 audit passed with mean dPSNR `0.044404`, positive ratio `0.625000`, p5 `-0.216141`, bootstrap CI low `0.024481`, sign-test p `3.802649e-05`, and no systematic worst32 proxy-bin flags.
+
+A separate written gate then authorized one fixed locked-test confirmation command. The confirmation did not pass promotion criteria: A0 mean PSNR `34.145502`, candidate mean PSNR `34.149328`, mean dPSNR `0.003826`, median dPSNR `-0.003686`, positive ratio `0.484000`, p5 `-0.210819`, mean dSSIM `0.00002084`. The positive-ratio gate failed, so adapter4 is not promotion-ready.
+
+Decision: do not promote adapter4 and do not run additional locked-test commands for this candidate. Future work must not tune from locked-test results; use train-derived K-fold/tail-safe validation or a separately justified R-only calibration probe if the family continues.

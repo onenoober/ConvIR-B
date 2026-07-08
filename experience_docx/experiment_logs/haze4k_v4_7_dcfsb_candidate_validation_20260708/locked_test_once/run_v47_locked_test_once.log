@@ -1,0 +1,69 @@
+<stdin>:45: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+locked_test_progress count=50 mean_delta_psnr=-0.007866
+locked_test_progress count=100 mean_delta_psnr=-0.014764
+locked_test_progress count=150 mean_delta_psnr=-0.015018
+locked_test_progress count=200 mean_delta_psnr=-0.014053
+locked_test_progress count=250 mean_delta_psnr=-0.018530
+locked_test_progress count=300 mean_delta_psnr=-0.013439
+locked_test_progress count=350 mean_delta_psnr=-0.012505
+locked_test_progress count=400 mean_delta_psnr=-0.011145
+locked_test_progress count=450 mean_delta_psnr=-0.015209
+locked_test_progress count=500 mean_delta_psnr=0.002135
+locked_test_progress count=550 mean_delta_psnr=-0.001595
+locked_test_progress count=600 mean_delta_psnr=-0.004374
+locked_test_progress count=650 mean_delta_psnr=-0.001596
+locked_test_progress count=700 mean_delta_psnr=0.002095
+locked_test_progress count=750 mean_delta_psnr=0.003824
+locked_test_progress count=800 mean_delta_psnr=0.002161
+locked_test_progress count=850 mean_delta_psnr=0.005490
+locked_test_progress count=900 mean_delta_psnr=0.004063
+locked_test_progress count=950 mean_delta_psnr=0.003764
+locked_test_progress count=1000 mean_delta_psnr=0.003826
+{
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "a0_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "branch": "codex/haze4k-v4-7-dcfsb-candidate-validation",
+  "candidate_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-6-dcfsb-bottleneck-independent/Dehazing/ITS/results/ConvIR-Haze4K-v4A6-DCFSB-Bottleneck-adapter4-notest-seed3407-20260708/Training-Results/Final.pkl",
+  "candidate_sha256": "42944a07983cd546c2fe9bbdd28331f93ebeebc6c078760590ce0d804af575ad",
+  "cloud_commit_at_run": "1277b61788fd2969e2bfdac9455a1a317db61f48",
+  "data_root": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "gates": {
+    "mean_delta_psnr": true,
+    "mean_delta_ssim": true,
+    "metric_command_count_one": true,
+    "p5_delta_psnr": true,
+    "positive_ratio": false,
+    "save_prediction_images_false": true
+  },
+  "metric_producing_locked_test_command_count": 1,
+  "metrics": {
+    "a0_mean_psnr": 34.14550157737732,
+    "a0_mean_ssim": 0.9897256826758385,
+    "a0_mean_time_sec": 0.03059123682975769,
+    "candidate_mean_psnr": 34.149327938079836,
+    "candidate_mean_ssim": 0.9897465192079544,
+    "candidate_mean_time_sec": 0.030195769786834716,
+    "count": 1000,
+    "mean_delta_psnr": 0.0038263607025146485,
+    "mean_delta_ssim": 2.083653211593628e-05,
+    "median_delta_psnr": -0.0036859512329101562,
+    "median_delta_ssim": 5.662441253662109e-07,
+    "p5_delta_psnr": -0.21081914901733398,
+    "p95_delta_psnr": 0.18235378265380855,
+    "positive_ratio": 0.484
+  },
+  "pass": false,
+  "policy_note": "A prior post-v47 directory-count preflight enumerated the locked test split but produced no metrics; this script is the sole metric-producing locked-test command for the fixed adapter4 checkpoint.",
+  "route_id": "haze4k_v4_7_dcfsb_candidate_validation_20260708",
+  "runtime_sec": 100.57445645332336,
+  "save_prediction_images": false,
+  "status": "LOCKED_TEST_CONFIRM_FAIL",
+  "thresholds": {
+    "mean_delta_psnr_min_exclusive": 0.0,
+    "mean_delta_ssim_min": -0.0001,
+    "metric_command_count": 1,
+    "p5_delta_psnr_min": -0.5,
+    "positive_ratio_min": 0.5,
+    "save_prediction_images": false
+  }
+}

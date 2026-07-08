@@ -1,0 +1,38 @@
+{
+  "decision": "Do not promote adapter4. Do not run additional locked-test commands for this candidate. Future work must not tune from locked-test results; if continuing, use train-derived K-fold/tail-safe validation or a separately justified R-only calibration probe.",
+  "internal_candidate_lock": {
+    "bootstrap_ci95_low": 0.02448074147105217,
+    "mean_delta_high_l1": -5.701613190467469e-07,
+    "mean_delta_psnr": 0.044404372572898865,
+    "p5_delta_psnr": -0.2161407470703125,
+    "pass": true,
+    "positive_ratio": 0.625,
+    "sign_test_p": 3.802648956855043e-05,
+    "systematic_failure_flags": 0
+  },
+  "locked_test_confirmation": {
+    "a0_mean_psnr": 34.14550157737732,
+    "candidate_mean_psnr": 34.149327938079836,
+    "gates": {
+      "mean_delta_psnr": true,
+      "mean_delta_ssim": true,
+      "metric_command_count_one": true,
+      "p5_delta_psnr": true,
+      "positive_ratio": false,
+      "save_prediction_images_false": true
+    },
+    "mean_delta_psnr": 0.0038263607025146485,
+    "mean_delta_ssim": 2.083653211593628e-05,
+    "median_delta_psnr": -0.0036859512329101562,
+    "metric_producing_locked_test_command_count": 1,
+    "p5_delta_psnr": -0.21081914901733398,
+    "pass": false,
+    "policy_note": "A prior post-v47 directory-count preflight enumerated the locked test split but produced no metrics; this script is the sole metric-producing locked-test command for the fixed adapter4 checkpoint.",
+    "positive_ratio": 0.484,
+    "save_prediction_images": false,
+    "status": "LOCKED_TEST_CONFIRM_FAIL"
+  },
+  "route_id": "haze4k_v4_7_dcfsb_candidate_validation_20260708",
+  "route_identity": "v4.6 adapter4 candidate-lock validation and one fixed locked-test confirmation",
+  "status": "COMPLETED_LOCKED_TEST_CONFIRM_FAIL_NO_PROMOTION"
+}

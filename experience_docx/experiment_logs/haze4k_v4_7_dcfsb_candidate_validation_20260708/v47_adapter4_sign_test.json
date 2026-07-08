@@ -1,0 +1,12 @@
+{
+  "locked_test_touched": false,
+  "losses": 96,
+  "n_effective": 256,
+  "one_sided_p_win_rate_gt_0_5": 3.802648956855043e-05,
+  "positive_ratio_all": 0.625,
+  "route_id": "haze4k_v4_7_dcfsb_candidate_validation_20260708",
+  "split": "internal256",
+  "test_split_enumerated": false,
+  "ties": 0,
+  "wins": 160
+}

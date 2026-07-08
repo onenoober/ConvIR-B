@@ -1,0 +1,12 @@
+{
+  "bootstrap_samples": 20000,
+  "ci95_high": 0.06507933232933284,
+  "ci95_low": 0.02448074147105217,
+  "locked_test_touched": false,
+  "mean_delta_psnr": 0.044404372572898865,
+  "prob_mean_gt_0": 1.0,
+  "route_id": "haze4k_v4_7_dcfsb_candidate_validation_20260708",
+  "seed": 3407,
+  "split": "internal256",
+  "test_split_enumerated": false
+}
