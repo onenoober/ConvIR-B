@@ -1,0 +1,84 @@
+{
+  "decision": "PAUSE_V2D_D7C_TOPK_PROMISING_BUT_CONTROLS_WEAK_NO_V3",
+  "runtime": {
+    "host": "convir-4090",
+    "branch": "codex/haze4k-v5-v2d-chd-rm-need-spatial-hard-negative",
+    "base_commit": "1f088dc2d0a15659afce86820dfe8fa2ee7c0aa3",
+    "split": "Haze4K train_inner 2400 / val_inner 600",
+    "locked_haze4k_test_usage": "none",
+    "D2": "not_run",
+    "RARM": "not_connected_or_trained",
+    "v3": "not_run"
+  },
+  "best_candidate": {
+    "variant": "d7c_mc_topk_hn_ordinal",
+    "need_spearman": 0.517479385753199,
+    "need_auroc_high_vs_low": 0.8455740268877702,
+    "need_auprc_high": 0.6442368793472579,
+    "monotonic": "4/4",
+    "selected_threshold": 0.5773006677627563,
+    "selected_coverage": 0.3026953125,
+    "selected_recall": 0.44929659126135196,
+    "selected_precision": 0.631268281928851,
+    "selected_false_global": 0.0029743024097268933,
+    "selected_false_p90": 0.02459016393442623,
+    "selected_false_p95": 0.047619047619047616,
+    "selected_low_density_high_recall": 0.03696025132065564
+  },
+  "candidate_comparison": [
+    {
+      "variant": "d7c_mc_hn_ordinal",
+      "need_spearman": 0.531993302095937,
+      "need_auroc_high_vs_low": 0.8527028588938265,
+      "selected_coverage": 0.3027197265625,
+      "selected_false_global": 0.013934272061003485,
+      "selected_false_p90": 0.08653846153846154,
+      "selected_false_p95": 0.2222222222222222,
+      "selected_low_density_high_recall": 0.11603662980449317
+    },
+    {
+      "variant": "d7c_mc_topk_hn_ordinal",
+      "need_spearman": 0.517479385753199,
+      "need_auroc_high_vs_low": 0.8455740268877702,
+      "selected_coverage": 0.3026953125,
+      "selected_false_global": 0.0029743024097268933,
+      "selected_false_p90": 0.02459016393442623,
+      "selected_false_p95": 0.047619047619047616,
+      "selected_low_density_high_recall": 0.03696025132065564
+    }
+  ],
+  "controls": [
+    {
+      "variant": "d7c_shuffled_mc_topk",
+      "need_spearman": 0.23968679564870915,
+      "need_auroc_high_vs_low": 0.6593125551953632,
+      "need_auprc_high": 0.5029201612286642,
+      "interpretation": "fails full R_need ranking gate but not a near-zero shuffle failure"
+    },
+    {
+      "variant": "d7c_random_mc_topk",
+      "need_spearman": 0.23561493168098668,
+      "need_auroc_high_vs_low": 0.6529132072672377,
+      "need_auprc_high": 0.5115595337474456,
+      "interpretation": "weak density/context proxy remains; use stricter controls before v3"
+    },
+    {
+      "variant": "d7s2_density_only_control",
+      "need_spearman": 0.29581415078356976,
+      "need_auroc_high_vs_low": 0.6890040440236169,
+      "need_pred_high_coverage": 0.10445475260416667,
+      "interpretation": "fails full gate via coverage/recall/ranking"
+    }
+  ],
+  "next_allowed_work": [
+    "D7c strict fixed-permutation control",
+    "density-only matched-threshold control",
+    "low-density high-need recall protection audit"
+  ],
+  "forbidden_next_work": [
+    "D2",
+    "RARM connection or training",
+    "v3 expansion/no-op audit before controls are clean",
+    "locked Haze4K test"
+  ]
+}

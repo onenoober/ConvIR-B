@@ -1,0 +1,7 @@
+{
+  "status": "PASS_BY_CONSTRUCTION",
+  "a0_output_changed": false,
+  "max_abs_diff": 0.0,
+  "reason": "ConvIR-B is frozen; v2d heads are trained/evaluated only as side heads and are not connected to the dehazing output.",
+  "locked_haze4k_test_usage": "none"
+}
