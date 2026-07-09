@@ -1,0 +1,22 @@
+{
+  "A_gate_pass": true,
+  "B_gate_pass": true,
+  "C_gate_pass": true,
+  "D_decision_label": "V2H_D_FAM2_NOOP_BLOCKED_BY_OFFICIAL_ANCHOR_NO_ARCH_MUTATION_IN_V2H",
+  "D_gate_pass": false,
+  "D_status": "PREFLIGHT_FAILED_ENGINEERING",
+  "decision_label": "V2H_ABC_PASS_D_BLOCKED_CREATE_SEPARATE_NOOP_ARCH_BRANCH",
+  "explicitly_not_authorized": [
+    "locked Haze4K test",
+    "D2/F5/v3 expansion",
+    "RARM connection or training on v2h",
+    "adapter training",
+    "canary expansion",
+    "architecture mutation inside v2h"
+  ],
+  "locked_haze4k_test_usage": "none",
+  "next_recommended_stage": "create a separate model-structure no-op branch from github/codex/haze4k-official-arch-anchor before any FAM2/RARM insertion; run no-op equivalence only there, with no training or locked test",
+  "status": "COMPLETED_WITH_D_PREFLIGHT_BLOCKED",
+  "what_is_not_supported": "FAM2/no-op insertion is not validated on v2h because the route branch correctly does not allow architecture variants.",
+  "what_is_supported": "D7c is a deployable actionable prior candidate: A/B/C pass risk coverage, shadow upper bound, and fold calibration stability."
+}

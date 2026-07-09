@@ -1,0 +1,16 @@
+{
+  "D2": "not_run",
+  "F5": "not_run",
+  "RARM": "not_connected_or_trained",
+  "candidate_mode_attempted": "fam2_modres",
+  "decision_label": "V2H_D_FAM2_NOOP_BLOCKED_BY_OFFICIAL_ANCHOR_NO_ARCH_MUTATION_IN_V2H",
+  "failure_class": "route_identity_and_architecture_preflight_blocker",
+  "gate_pass": false,
+  "interpretation": "v2h is a diagnostic actionable-prior route and still preserves the official architecture anchor. The existing model factory intentionally rejects FAM2 architecture variants on this branch. This is not a negative no-op numerical equivalence result; it is a correct architecture-boundary blocker.",
+  "locked_haze4k_test_usage": "none",
+  "next_recommended_stage": "create a separate model-structure no-op branch from github/codex/haze4k-official-arch-anchor before any FAM2/RARM insertion; run no-op equivalence only there, with no training or locked test",
+  "observed_error": "Official ConvIR-B anchor only supports fam_mode='original'. Create a route branch for architecture variants.",
+  "status": "PREFLIGHT_FAILED_ENGINEERING",
+  "training": "none",
+  "v3": "not_run"
+}

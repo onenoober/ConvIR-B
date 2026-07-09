@@ -5,3 +5,9 @@ V2H_A_RISK_COVERAGE_OK
 v2h_b_start 2026-07-10T00:07:11+08:00 cuda_visible_devices=0
 v2h_b_done rc=0 2026-07-10T00:08:13+08:00
 V2H_B_SHADOW_MODULATION_OK
+v2h_c_start 2026-07-10T00:28:27+08:00 cuda_visible_devices=0
+v2h_c_done rc=0 2026-07-10T00:31:08+08:00
+V2H_C_OOF_STABILITY_OK
+v2h_d_start 2026-07-10T00:32:45+08:00 cuda_visible_devices=0
+v2h_d_done rc=1 2026-07-10T00:32:50+08:00
+V2H_D_FAM2_NOOP_EQUIVALENCE_FAILED

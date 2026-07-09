@@ -112,6 +112,26 @@ v2h-D FAM2 no-op equivalence review only. The remaining bottleneck is connection
 risk, not deployable-prior existence. RARM/training/locked-test access remain
 blocked.
 
+## v2h C/D Closeout
+
+v2h-C ran the authorized no-training fold calibration stability audit over the
+v1 fixed five-fold train OOF table. D7c stayed stable and safer than density
+matching:
+
+- D7c action recall mean/min `0.576335` / `0.556955`;
+- D7c low-adjacent recall mean `0.170063`;
+- D7c negative false mean/max `0.003403` / `0.003996`;
+- D7c selected coverage std `0.010785`;
+- density-matched negative false mean/max `0.049636` / `0.063885`.
+
+v2h-D attempted the authorized FAM2/no-op equivalence review but stopped at the
+correct preflight boundary: the v2h branch preserves the official architecture
+anchor and rejects `fam2_modres`. This means no-op insertion must be designed on
+a separate model-structure branch from `github/codex/haze4k-official-arch-anchor`.
+It does not authorize RARM/training/locked-test access.
+
+Decision: `V2H_ABC_PASS_D_BLOCKED_CREATE_SEPARATE_NOOP_ARCH_BRANCH`.
+
 ## Gate Summary
 
 | Stage | Must Pass Before |
