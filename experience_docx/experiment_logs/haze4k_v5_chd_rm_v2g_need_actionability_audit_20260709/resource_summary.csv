@@ -1,0 +1,6 @@
+item,value
+host,RTX4090
+branch,codex/haze4k-v5-v2g-chd-rm-need-actionability-audit
+head,044b779
+cloud_python,/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+generated_files,22

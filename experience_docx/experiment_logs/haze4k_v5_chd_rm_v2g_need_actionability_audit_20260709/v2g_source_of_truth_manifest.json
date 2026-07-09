@@ -1,0 +1,24 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709",
+  "created_at": "2026-07-09T20:25:19+0800",
+  "host": "RTX4090",
+  "root": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798",
+  "branch": "codex/haze4k-v5-v2g-chd-rm-need-actionability-audit",
+  "head": "044b779",
+  "cloud_python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "locked_haze4k_test_usage": "none",
+  "forbidden_not_used": [
+    "D2",
+    "RARM connection",
+    "RARM training",
+    "v3",
+    "F5",
+    "locked Haze4K test"
+  ],
+  "sources": {
+    "v2d": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709",
+    "v2e": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2e_d7c_control_recall_audit_20260709",
+    "v2f": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_20260709",
+    "f4b": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_f4b_tail_rescue_20260709"
+  }
+}

@@ -21,7 +21,7 @@ decision says otherwise.
 
 ## Current CHD-RM v5 Route State
 
-As of 2026-07-09, CHD-RM is paused at v2e: D7c top-k is a real `R_need` candidate after fixed-permutation and density-matched controls, but frozen D7c LDHN recall is too low and D7c-RP has no safe recall-protected operating point. Decision: `PAUSE_V2E_D7C_RP_NO_SAFE_RECALL_PROTECTED_POINT_NO_V3`. Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md` and `experience_docx/experiment_cards/haze4k-chd-rm-v2e-d7c-control-recall-audit.md` for the current CHD-RM status. v3/RARM/D2/locked-test use remains blocked.
+As of 2026-07-09, CHD-RM is paused after v2g/G4a. v2f/F4b found no safe global-LDHN operating point; v2g then confirmed that the main bottleneck is `R_need` target actionability rather than density, scale, or control leakage. Global LDHN is over-broad as a hard RARM-positive signal; a three-state actionable/negative/ignore target is better supported, and D7c beats deployable density-only controls under that target. Decision: `PAUSE_V2G_ACTIONABLE_TARGET_DEFINED_D7C_BEATS_DENSITY_CONTROLS_NO_F5_NO_V3_YET`. Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md` and `experience_docx/experiment_cards/haze4k-chd-rm-v2g-need-actionability-audit.md` for the current CHD-RM status. F5/v3/RARM/D2/locked-test use remains blocked.
 
 ## Official Architecture Anchor
 

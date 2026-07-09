@@ -1,0 +1,975 @@
+{
+  "policy": "diagnostic only; locked/test-named paths excluded from usability",
+  "search_roots": [
+    "/sda/home/wangyuxin/ConvIR-B",
+    "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798"
+  ],
+  "physics_candidate_count": 261,
+  "residual_candidate_count": 316,
+  "physics_candidates_preview": [
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v27-nhhaze-transfer",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/transmission_bin_failure_report_v33_routerfusion_d3_router_seed3407_f0_triage5full.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/transmission_bin_failure_report_v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/trans_uncertainty_calibration_v33_routerfusion_d3_router_seed3407_f0_triage5full.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_light_hinge_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_gt_transmission_by_group_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/transmission_bin_failure_report_v32_ctdg_diag_wg18_light_hinge_seed3407_f0.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/v27_nhhaze_wdmamba_transfer_compact_alpha_comparison.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/v27_nhhaze_wdmamba_transfer_per_image.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/v27_nhhaze_wdmamba_transfer_group_metrics.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/v27_nhhaze_wdmamba_transfer_alpha_grid.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/v27_nhhaze_wdmamba_transfer_summary.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/v27_nhhaze_wdmamba_transfer_group_min.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/status_v27_nhhaze_transfer.txt",
+      "is_dir": false,
+      "suffix": ".txt",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/v27_nhhaze_wdmamba_transfer_compact_alpha_comparison.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/v27_nhhaze_wdmamba_transfer_per_image.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/v27_nhhaze_wdmamba_transfer_group_metrics.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/v27_nhhaze_wdmamba_transfer_alpha_grid.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/v27_nhhaze_wdmamba_transfer_summary.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/v27_nhhaze_wdmamba_transfer_group_min.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/status_v27_nhhaze_transfer.txt",
+      "is_dir": false,
+      "suffix": ".txt",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/shards/v27_nhhaze_wdmamba_transfer_shard2_per_image.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/shards/v27_nhhaze_wdmamba_transfer_shard2_manifest.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/shards/v27_nhhaze_wdmamba_transfer_shard0_manifest.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/shards/v27_nhhaze_wdmamba_transfer_shard1_per_image.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/shards/v27_nhhaze_wdmamba_transfer_shard1_manifest.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/shards/v27_nhhaze_wdmamba_transfer_shard0_per_image.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/shards/status_v27_nhhaze_wdmamba_transfer_shard2.txt",
+      "is_dir": false,
+      "suffix": ".txt",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/shards/status_v27_nhhaze_wdmamba_transfer_shard1.txt",
+      "is_dir": false,
+      "suffix": ".txt",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/superseded_success_20260616_commit_metadata_fix/shards/status_v27_nhhaze_wdmamba_transfer_shard0.txt",
+      "is_dir": false,
+      "suffix": ".txt",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/failed_launch_20260616_git_pointer/status_v27_nhhaze_transfer_failed_git_pointer.txt",
+      "is_dir": false,
+      "suffix": ".txt",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/shards/v27_nhhaze_wdmamba_transfer_shard2_per_image.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/shards/v27_nhhaze_wdmamba_transfer_shard2_manifest.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/shards/v27_nhhaze_wdmamba_transfer_shard0_manifest.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/shards/v27_nhhaze_wdmamba_transfer_shard1_per_image.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/shards/v27_nhhaze_wdmamba_transfer_shard1_manifest.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/shards/v27_nhhaze_wdmamba_transfer_shard0_per_image.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/shards/status_v27_nhhaze_wdmamba_transfer_shard2.txt",
+      "is_dir": false,
+      "suffix": ".txt",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/shards/status_v27_nhhaze_wdmamba_transfer_shard1.txt",
+      "is_dir": false,
+      "suffix": ".txt",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_7_nhhaze_transfer_20260616/shards/status_v27_nhhaze_wdmamba_transfer_shard0.txt",
+      "is_dir": false,
+      "suffix": ".txt",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_33_nopost_teacher_benefit_source_and_bilfcf_trainability_audit_20260705/v233_p1_teacher_negative_transfer_audit.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/transmission_bin_failure_report_v33_routerfusion_d3_router_seed3407_f0_triage5full.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/transmission_bin_failure_report_v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/trans_uncertainty_calibration_v33_routerfusion_d3_router_seed3407_f0_triage5full.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_light_hinge_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_gt_transmission_by_group_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/transmission_bin_failure_report_v32_ctdg_diag_wg18_light_hinge_seed3407_f0.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_02_80_0.99_1.95/30_U1_high_gain_T_head_transmission.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_02_80_0.99_1.95/30_U2_balanced_T_head_transmission.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_02_80_0.99_1.95/30_U3_tail_safe_T_head_transmission.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_02_80_0.99_1.95/12_transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_02_80_0.99_1.95/13_transmission_proxy_from_depth_U2.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_01_523_0.92_1.59/30_U1_high_gain_T_head_transmission.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_01_523_0.92_1.59/30_U2_balanced_T_head_transmission.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_01_523_0.92_1.59/30_U3_tail_safe_T_head_transmission.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_01_523_0.92_1.59/12_transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_01_523_0.92_1.59/13_transmission_proxy_from_depth_U2.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_03_85_1.0_1.41/30_U1_high_gain_T_head_transmission.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_03_85_1.0_1.41/30_U2_balanced_T_head_transmission.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_03_85_1.0_1.41/30_U3_tail_safe_T_head_transmission.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_03_85_1.0_1.41/12_transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_03_85_1.0_1.41/13_transmission_proxy_from_depth_U2.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1267_0.75_1.55/03_TAU_heads/U2_T_head_transmission.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1267_0.75_1.55/03_TAU_heads/U3_T_head_transmission.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1267_0.75_1.55/03_TAU_heads/U3_U_head_trans_uncertainty.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1267_0.75_1.55/03_TAU_heads/U1_U_head_trans_uncertainty.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1267_0.75_1.55/03_TAU_heads/U2_U_head_trans_uncertainty.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1267_0.75_1.55/03_TAU_heads/U1_T_head_transmission.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1267_0.75_1.55/01_dataset/transmission_proxy_from_depth_U2.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1267_0.75_1.55/01_dataset/transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1157_0.56_1.98/03_TAU_heads/U2_T_head_transmission.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1157_0.56_1.98/03_TAU_heads/U3_T_head_transmission.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1157_0.56_1.98/03_TAU_heads/U3_U_head_trans_uncertainty.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1157_0.56_1.98/03_TAU_heads/U1_U_head_trans_uncertainty.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1157_0.56_1.98/03_TAU_heads/U2_U_head_trans_uncertainty.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    }
+  ],
+  "residual_candidates_preview": [
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold0-seed3407-20260708",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold3-seed3407-20260708",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold1-seed3407-20260708",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold2-seed3407-bs7repair-20260708",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold1-seed3407-bs7repair-20260708",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold0-seed3407-bs7repair-20260708",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold4-seed3407-bs7repair-20260708",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold3-seed3407-bs7repair-20260708",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold2-seed3407-20260708",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold4-seed3407-20260708",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold0-seed3407-20260708/images/Haze4K",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold3-seed3407-20260708/images/Haze4K",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold1-seed3407-20260708/images/Haze4K",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold2-seed3407-bs7repair-20260708/images/Haze4K",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold1-seed3407-bs7repair-20260708/images/Haze4K",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold0-seed3407-bs7repair-20260708/images/Haze4K",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold4-seed3407-bs7repair-20260708/images/Haze4K",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold3-seed3407-bs7repair-20260708/images/Haze4K",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold2-seed3407-20260708/images/Haze4K",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt/Dehazing/ITS/results/ConvIR-Haze4K-v48-DCFSB-adapter4-fold4-seed3407-20260708/images/Haze4K",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-8-train-derived-validation-reset-wt",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-33-nopost-teacher-benefit-source-and-bilfcf-trainability-audit",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v2-36-same-contract-wlfbridge-s4s6-generator-trainability",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/baseline_logs/haze4k_pretrained_20260531",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/baseline_logs/haze4k_pretrained_20260531/haze4k_base_pretrained_eval_20260531-205801_nvidia_smi.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/baseline_logs/haze4k_pretrained_20260531/haze4k_base_pretrained_eval_20260531-205801_meta.txt",
+      "is_dir": false,
+      "suffix": ".txt",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_apdr_v0_4_correctability_traincalib_20260603",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_apdr_v0_4b_basis_router_gatec_train128_minival_20260603",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_dpga_tail_control_20260604/internal_val/haze4k_train_inner_val_inner_seed3407.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_dpga_v13_hsdf_20260604/internal_val/haze4k_dpga_v13_regular_hard_seed3407.json",
+      "is_dir": false,
+      "suffix": ".json",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/docs/ai_text_packages/haze4k_v4_sfad/splits/haze4k_train_adapter_train.txt",
+      "is_dir": false,
+      "suffix": ".txt",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/docs/ai_text_packages/haze4k_v4_sfad/splits/haze4k_train_internal_holdout256.txt",
+      "is_dir": false,
+      "suffix": ".txt",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/docs/ai_text_packages/haze4k_v4_sfad/splits/haze4k_train_diagnosis_trainfit128.txt",
+      "is_dir": false,
+      "suffix": ".txt",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/baseline_logs/haze4k_pretrained_20260531",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/baseline_logs/haze4k_pretrained_20260531/haze4k_base_pretrained_eval_20260531-205801_nvidia_smi.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/baseline_logs/haze4k_pretrained_20260531/haze4k_base_pretrained_eval_20260531-205801_meta.txt",
+      "is_dir": false,
+      "suffix": ".txt",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_24_nopost_train_time_controller_failure_audit_20260704",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_31_nopost_action_value_identifiability_audit_20260705",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_apdr_v0_4_correctability_traincalib_20260603",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_apdr_v0_4b_basis_router_gatec_train128_minival_20260603",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_36_same_contract_wlfbridge_s4s6_generator_trainability_20260706",
+      "is_dir": true,
+      "suffix": "",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_light_hinge_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d4-highpos-b7ab7c9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_gt_transmission_by_group_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v4-4-bottleneck-diagnosis/experience_docx/experiment_logs/haze4k_v2_33_nopost_teacher_benefit_source_and_bilfcf_trainability_audit_20260705/v233_p1_teacher_negative_transfer_audit.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_light_hinge_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_gt_transmission_by_group_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_02_80_0.99_1.95/12_transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_01_523_0.92_1.59/12_transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/framework_visual_assets/sample_03_85_1.0_1.41/12_transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1267_0.75_1.55/01_dataset/transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/haze4k_single_assets_1157_1267_d8_20260614/1157_0.56_1.98/01_dataset/transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/policy_comparison_top_gain_assets/sample_07_80_0.99_1.95/12_transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/policy_comparison_top_gain_assets/sample_06_698_0.55_1.7/12_transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/policy_comparison_top_gain_assets/sample_05_523_0.92_1.59/12_transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/policy_comparison_top_gain_assets/sample_02_1267_0.75_1.55/12_transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/policy_comparison_top_gain_assets/sample_03_2137_0.57_1.38/12_transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/policy_comparison_top_gain_assets/sample_04_2339_0.59_1.55/12_transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/policy_comparison_top_gain_assets/sample_08_998_0.74_1.7/12_transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/policy_comparison_top_gain_assets/sample_01_1157_0.56_1.98/12_transmission_gt.png",
+      "is_dir": false,
+      "suffix": ".png",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_smoke2.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-dapc-finetune-v32/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_light_hinge_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d2-policy-29bb026/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d2-policy-29bb026/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d2-policy-29bb026/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_light_hinge_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d2-policy-29bb026/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_gt_transmission_by_group_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-github-main/experience_docx/experiment_logs/haze4k_v2_33_nopost_teacher_benefit_source_and_bilfcf_trainability_audit_20260705/v233_p1_teacher_negative_transfer_audit.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d3-realblend-40b4db8/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d3-realblend-40b4db8/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d3-realblend-40b4db8/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_light_hinge_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d3-realblend-40b4db8/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_gt_transmission_by_group_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-phased1bundle/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-phased1bundle/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_base_s008_b14_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-phased1bundle/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v32_ctdg_diag_wg18_light_hinge_seed3407_f0.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-phased1bundle/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_gt_transmission_by_group_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    },
+    {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix/experience_docx/experiment_logs/haze4k_dta_v3_dapc_20260611/t_pred_vs_trans_gt_correlation_v33_routerfusion_d3_router_seed3407_f0_triage5full.csv",
+      "is_dir": false,
+      "suffix": ".csv",
+      "locked_or_test_name_hint": false
+    }
+  ],
+  "usable_for_g2_physics_oracle": "unknown_requires_manual_path_contract",
+  "usable_for_g2_residual_oracle": "unknown_requires_manual_path_contract"
+}

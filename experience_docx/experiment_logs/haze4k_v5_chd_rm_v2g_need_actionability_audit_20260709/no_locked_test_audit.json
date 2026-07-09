@@ -1,0 +1,15 @@
+{
+  "locked_haze4k_test_usage": "none",
+  "sources": {
+    "v2d": "none",
+    "v2e": "none",
+    "v2f_first_stage": "none",
+    "v2f_f4": "none",
+    "v2f_f4b": "none"
+  },
+  "D2": "not_run",
+  "RARM": "not_connected_or_trained",
+  "v3": "not_run",
+  "F5": "blocked_not_run",
+  "pass": true
+}

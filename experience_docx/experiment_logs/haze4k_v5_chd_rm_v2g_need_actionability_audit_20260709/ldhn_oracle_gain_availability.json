@@ -1,0 +1,7 @@
+{
+  "locked_haze4k_test_usage": "none",
+  "oracle_gain_computed": true,
+  "path_contract": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709/g2b_oracle_path_contract.json",
+  "per_image_csv": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709/ldhn_oracle_gain_per_image_by_region.csv",
+  "summary_csv": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709/ldhn_oracle_gain_by_region.csv"
+}

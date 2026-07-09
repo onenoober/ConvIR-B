@@ -1,0 +1,6 @@
+category,pixels,fraction_of_ldhn,weighted_d7c_recall,per_image_recall_p50,per_image_recall_p90,meaning,v2g_default_action
+ldhn_adjacent_to_haze,24143.0,0.1092873665198517,0.15590440293252703,0.07692307692307693,0.47058823529411764,LDHN close to haze boundary/medium-high haze support; most plausible actionable subset.,candidate_actionable_audit_positive
+ldhn_isolated,196770.0,0.8907126334801483,0.022366214361945417,0.009389671361502348,0.11267605633802817,"LDHN away from haze support; likely mixture of post-A0 residual, texture/boundary/GT noise, and possible hidden haze.",ignore_or_abstain_until_oracle_gain
+ldhn_boundary,95037.0,0.43020102936450094,0.0304197312625609,0.014705882352941176,0.1388888888888889,LDHN near target mask boundary; may be unstable or morphology-sensitive.,ambiguous_ignore_band
+ldhn_core,125876.0,0.569798970635499,0.04189837617973244,0.020689655172413793,0.23076923076923078,"Stable high-need core by current morphology, but not necessarily haze-actionable.",requires_physics_or_oracle_gain
+ldhn_unstable,10386.0,0.04701398288013833,0.0544001540535336,0.0,0.2,Sensitive support region under blur/morphology.,ignore_or_uncertain

@@ -1,0 +1,28 @@
+route_id=haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709
+state=PAUSED_AFTER_G4A
+host=RTX4090
+branch=codex/haze4k-v5-v2g-chd-rm-need-actionability-audit
+head=044b779
+cloud_python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+locked_haze4k_test_usage=none
+D2=not_run
+RARM=not_connected_or_trained
+v3=not_run
+F5=blocked
+created_at=2026-07-09T20:21:26+08:00
+setup_done 2026-07-09T20:21:26+08:00
+fix_docs_done 2026-07-09T20:22:00+08:00
+script_archived /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709/run_v2g_need_actionability_audit.sh 2026-07-09T20:24:57+08:00
+audit_start 2026-07-09T20:25:18+08:00
+audit_done rc=0 2026-07-09T20:25:31+08:00
+g2b_script_archived /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709/run_v2g_g2b_oracle_gain.sh 2026-07-09T20:35:23+08:00
+g2b_oracle_start 2026-07-09T20:35:43+08:00 cuda_visible_devices=0
+g2b_oracle_done rc=0 2026-07-09T20:36:37+08:00
+g3_script_archived /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709/run_v2g_g3_actionable_target_definition.sh 2026-07-09T20:40:40+08:00
+g3_actionable_target_start 2026-07-09T20:40:59+08:00 cuda_visible_devices=0
+g3_actionable_target_done rc=0 2026-07-09T20:44:03+08:00
+g4a_script_archived /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709/run_v2g_g4a_actionability_control_audit.sh 2026-07-09T20:47:29+08:00
+g4a_control_audit_start 2026-07-09T20:47:53+08:00 cuda_visible_devices=0
+g4a_control_audit_done rc=0 2026-07-09T20:51:24+08:00
+final_decision=PAUSE_V2G_ACTIONABLE_TARGET_DEFINED_D7C_BEATS_DENSITY_CONTROLS_NO_F5_NO_V3_YET
+final_closeout_written 2026-07-09T21:09:34+08:00

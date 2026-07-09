@@ -1,0 +1,24 @@
+{
+  "sources": {
+    "v2d": {
+      "status": "PASS_BY_CONSTRUCTION",
+      "a0_output_changed": false,
+      "max_abs_diff": 0.0,
+      "reason": "ConvIR-B is frozen; v2d heads are trained/evaluated only as side heads and are not connected to the dehazing output.",
+      "locked_haze4k_test_usage": "none"
+    },
+    "v2e": {
+      "status": "PASS_BY_CONSTRUCTION",
+      "a0_output_changed": false,
+      "reason": "v2e trains/evaluates side heads only; ConvIR-B dehazing output is frozen and RARM is disconnected.",
+      "locked_haze4k_test_usage": "none"
+    },
+    "v2f": {
+      "a0_output_changed": false,
+      "locked_haze4k_test_usage": "none",
+      "reason": "v2f first-stage diagnostics use frozen A0, frozen D3, and frozen/side probe heads only.",
+      "status": "PASS_BY_CONSTRUCTION"
+    }
+  },
+  "interpretation": "A0 equivalence is inherited from prior v2d/v2e/v2f evidence; v2g does not connect RARM or alter A0 outputs."
+}
