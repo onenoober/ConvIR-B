@@ -2,3 +2,6 @@ planned v2h_actionable_prior_sufficiency 2026-07-09
 v2h_a_start 2026-07-09T23:56:24+08:00 cuda_visible_devices=0
 v2h_a_done rc=0 2026-07-09T23:58:31+08:00
 V2H_A_RISK_COVERAGE_OK
+v2h_b_start 2026-07-10T00:07:11+08:00 cuda_visible_devices=0
+v2h_b_done rc=0 2026-07-10T00:08:13+08:00
+V2H_B_SHADOW_MODULATION_OK
