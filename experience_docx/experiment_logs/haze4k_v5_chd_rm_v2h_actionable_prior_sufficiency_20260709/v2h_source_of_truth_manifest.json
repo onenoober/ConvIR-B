@@ -1,0 +1,15 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v2h_actionable_prior_sufficiency_20260709",
+  "status": "PLANNED",
+  "parent_route": "haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709",
+  "parent_commit": "044b779",
+  "branch": "codex/haze4k-v5-v2h-actionable-prior-sufficiency",
+  "cloud_host": "convir-4090",
+  "cloud_python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "cloud_workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2h-actionable-prior-sufficiency",
+  "dataset": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "split": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/haze4k_internal_split_2400_600.json",
+  "baseline_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "locked_haze4k_test_usage": "none_authorized",
+  "forbidden": ["locked_test", "D2", "F5", "v3", "RARM", "adapter_training", "new_probe_training"]
+}

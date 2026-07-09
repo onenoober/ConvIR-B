@@ -1,0 +1,9 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v2h_actionable_prior_sufficiency_20260709",
+  "locked_haze4k_test_usage": "none",
+  "policy": "v2h uses Haze4K train split internal train-calib/val-inner only; locked test remains blocked",
+  "D2": "not_authorized",
+  "F5": "not_authorized",
+  "v3": "not_authorized",
+  "RARM": "not_authorized"
+}
