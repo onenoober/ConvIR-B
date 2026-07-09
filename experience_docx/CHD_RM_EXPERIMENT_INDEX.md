@@ -78,6 +78,40 @@ Authorized next action: F4 density-stratified frozen-side `R_need` head canary
 on `train_inner`/`val_inner`. F4 does not authorize v3/RARM. If F4 passes, the
 next required phase is F5 stricter controls before any v3 no-op audit.
 
+## v2h A/B Closeout
+
+v2h tested whether D7c is sufficient as a deployable actionable prior before any
+future no-op/RARM/adapter work. It ran only risk-coverage and diagnostic
+shadow-modulation audits on the internal Haze4K split. No locked test, D2, F5,
+v3, RARM connection, RARM training, adapter training, new head family, or canary
+expansion was run.
+
+v2h-A fixed D7c operating point:
+
+- coverage `0.302695`;
+- action recall `0.548312`;
+- low-adjacent recall `0.155904`;
+- negative false rate `0.002974`;
+- isolated-LDHN hit rate `0.022366`;
+- per-image negative false p95 `0.047619`.
+
+The density-matched control at comparable coverage was worse: action recall
+`0.448391` and negative false rate `0.047786`.
+
+v2h-B alpha `0.3` shadow-modulation diagnostic:
+
+- D7c global PSNR gain `1.374164`;
+- density-matched global PSNR gain `0.977430`;
+- action-oracle global PSNR gain `2.220821`;
+- D7c action-region gain `1.695614`;
+- D7c negative touch `0.002698`;
+- D7c isolated touch `0.023606`.
+
+Decision: `V2H_AB_PASS_PRIOR_SUFFICIENT_AUTHORIZE_OOF_AND_NOOP_ONLY`. D7c is sufficient to justify v2h-C OOF stability and
+v2h-D FAM2 no-op equivalence review only. The remaining bottleneck is connection
+risk, not deployable-prior existence. RARM/training/locked-test access remain
+blocked.
+
 ## Gate Summary
 
 | Stage | Must Pass Before |

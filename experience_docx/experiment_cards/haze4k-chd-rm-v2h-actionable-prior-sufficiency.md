@@ -1,8 +1,8 @@
 # Haze4K CHD-RM v2h Actionable Prior Sufficiency
 
-Status: `PLANNED`
+Status: `COMPLETED_GATE_PASS`
 
-Decision label: `PLANNED_V2H_ACTIONABLE_PRIOR_SUFFICIENCY_AUDIT`
+Decision label: `V2H_AB_PASS_PRIOR_SUFFICIENT_AUTHORIZE_OOF_AND_NOOP_ONLY`
 
 Evidence root: `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2h_actionable_prior_sufficiency_20260709/`.
 
@@ -53,3 +53,26 @@ Shadow results are diagnostic upper bounds, not deployable model metrics.
 ## Gate
 
 Continue to v2h-B only if v2h-A finds a stable D7c operating point and density-only controls remain weaker. Continue to v2h-C/D only if A/B jointly justify it.
+
+## A/B Closeout
+
+v2h-A and v2h-B both passed under the internal train/val contract. No training,
+locked Haze4K test, D2, F5, v3, RARM connection, RARM training, adapter training,
+or canary expansion was run.
+
+- v2h-A D7c fixed operating point: coverage `0.302695`, action recall
+  `0.548312`, low-adjacent recall `0.155904`, negative false rate `0.002974`,
+  isolated-LDHN hit rate `0.022366`, and per-image negative false p95
+  `0.047619`.
+- Density-matched control at comparable coverage: action recall `0.448391` and
+  negative false rate `0.047786`.
+- v2h-B alpha `0.3` D7c shadow-modulation upper bound: global PSNR gain
+  `1.374164`, action-region PSNR gain `1.695614`, negative touch rate
+  `0.002698`, isolated touch rate `0.023606`.
+- Density-matched alpha `0.3` global PSNR gain: `0.977430`.
+- Action-oracle alpha `0.3` global PSNR gain: `2.220821`.
+
+Conclusion: the immediate bottleneck is no longer whether a deployable
+actionable prior exists. D7c is sufficient to justify only v2h-C OOF stability
+and v2h-D FAM2 no-op equivalence review. RARM/training/locked-test access remain
+blocked.
