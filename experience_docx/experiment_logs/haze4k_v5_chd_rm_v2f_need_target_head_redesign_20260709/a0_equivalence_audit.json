@@ -1,0 +1,6 @@
+{
+  "a0_output_changed": false,
+  "locked_haze4k_test_usage": "none",
+  "reason": "v2f first-stage diagnostics use frozen A0, frozen D3, and frozen/side probe heads only.",
+  "status": "PASS_BY_CONSTRUCTION"
+}

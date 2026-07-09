@@ -2,7 +2,7 @@
 
 Date: 2026-07-09
 
-Status: v2e completed; D7c signal is real but no safe LDHN recall point was found. v3/RARM remains blocked.
+Status: v2e completed; v2f first-stage supports a frozen-side density-stratified head canary. v3/RARM remains blocked.
 
 ## Research Direction
 
@@ -41,6 +41,7 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v2c need coverage calibration | `codex/haze4k-v5-v2c-chd-rm-need-coverage-calibration` | paused | Train-inner calibration restores coverage but creates unsafe false-strong responses | `PAUSE_V2C_SCALE_CALIBRATION_NOT_ENOUGH` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2c_need_coverage_calibration_20260709/` |
 | v2d need spatial hard-negative | `codex/haze4k-v5-v2d-chd-rm-need-spatial-hard-negative` | paused | D7c frozen multi-context top-k HN is promising, but controls remained weak | `PAUSE_V2D_D7C_TOPK_PROMISING_BUT_CONTROLS_WEAK_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/` |
 | v2e D7c control recall audit | `codex/haze4k-v5-v2e-chd-rm-d7c-control-recall-audit` | paused | Fixed permutation and density matched controls are clean, but D7c top-k LDHN recall is low and D7c-RP has no safe recall-protected point | `PAUSE_V2E_D7C_RP_NO_SAFE_RECALL_PROTECTED_POINT_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2e_d7c_control_recall_audit_20260709/` |
+| v2f need target/head redesign | `codex/haze4k-v5-v2f-chd-rm-need-target-head-redesign` | F4 authorized | F0-F3/F2 first-stage shows LDHN core support, frozen feature separability, and density-conditioned target de-proxying; run frozen-side density-stratified head canary only | `F4_AUTHORIZED_PENDING_CLOUD_NO_V3_RARM` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_20260709/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | blocked | blocked by v2e RP failure | `BLOCKED_BY_V2E_D7C_RP_NO_SAFE_POINT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
@@ -57,6 +58,24 @@ D7c top-k should be retained as evidence of real `R_need` ranking signal, not pr
 - strongest RP point LDHN recall `0.1822` but false-p95 `0.5348`.
 
 Current next action is not v3/RARM. Any continuation must diagnose or redesign the frozen-side-head `R_need` target/head so LDHN recall and false-tail safety pass together.
+
+## v2f First-Stage Decision
+
+v2f F0-F3/F2 completed on `convir-4090` without D2, v3, RARM, ConvIR-B
+unfreeze, or locked Haze4K test. First-stage evidence supports a bounded F4
+canary:
+
+- LDHN pixel coverage `0.08988972981770833`.
+- LDHN core fraction of LDHN `0.569798970635499`.
+- LDHN unstable fraction of LDHN `0.04701398288013833`.
+- Best frozen feature probe `feature_set_2` + `mlp`: AUROC
+  `0.8107264347671554`, AUPRC `0.807792756659645`.
+- Density-conditioned target density Spearman `0.007215705298292346`, compared
+  with global target density Spearman `0.31464418569286756`.
+
+Authorized next action: F4 density-stratified frozen-side `R_need` head canary
+on `train_inner`/`val_inner`. F4 does not authorize v3/RARM. If F4 passes, the
+next required phase is F5 stricter controls before any v3 no-op audit.
 
 ## Gate Summary
 

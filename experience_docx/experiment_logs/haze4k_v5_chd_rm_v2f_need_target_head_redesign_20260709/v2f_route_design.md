@@ -16,3 +16,8 @@ The first stage is diagnostic:
 
 F4 density-stratified head training is held until F1/F2/F3 justify it.
 
+F1/F2/F3 now justify a small F4 canary because LDHN is not dominated by
+unstable pixels, frozen features separate LDHN from low-density low-need
+negatives, and density-conditioned targets remove the global density proxy
+signal. F4 remains a frozen-side head canary only; it does not authorize D2,
+v3, RARM, or locked Haze4K test.

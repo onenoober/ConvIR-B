@@ -1,0 +1,21 @@
+{
+  "f1_ldhn_boundary_fraction_of_ldhn": 0.43020102936450094,
+  "f1_ldhn_core_fraction_of_ldhn": 0.569798970635499,
+  "f2_best": {
+    "auprc": 0.807792756659645,
+    "auroc": 0.8107264347671554,
+    "coverage": 0.5,
+    "false_positive_rate": 0.2729117709891049,
+    "feature_set": "feature_set_2",
+    "positive_prevalence": 0.5,
+    "precision": 0.7270882290108951,
+    "probe": "mlp",
+    "recall": 0.7270882290108951,
+    "threshold": 0.4924335181713104,
+    "train_rows": 74996,
+    "val_rows": 18724
+  },
+  "locked_haze4k_test_usage": "none",
+  "next_gate": "F4 density-stratified frozen-side head canary is authorized. If F4 fails, do not run v3/RARM. If F4 passes, run F5 stricter controls before any v3 no-op audit.",
+  "status": "F4_AUTHORIZED_PENDING_CLOUD"
+}

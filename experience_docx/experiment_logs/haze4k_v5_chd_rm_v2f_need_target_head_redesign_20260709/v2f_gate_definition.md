@@ -32,3 +32,16 @@ Control gate:
 First-stage v2f only decides whether F4 is worth launching. It cannot authorize
 v3/RARM.
 
+F4 canary gate:
+
+- use `train_inner` for target-transform fitting and threshold selection;
+- use `val_inner` for evaluation;
+- keep the original v2e global target as the primary gate;
+- report density-conditioned target metrics only as diagnostic support;
+- require at least one safe LDHN operating point before any F5 controls;
+- do not treat an F4 pass as v3/RARM authorization.
+
+F4 failure rule:
+
+- if no F4 variant passes the original v2e global safety/LDHN gate, route status
+  remains paused and v3/RARM stay blocked.

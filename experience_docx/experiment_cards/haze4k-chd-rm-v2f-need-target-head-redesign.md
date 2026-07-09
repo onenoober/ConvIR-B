@@ -1,6 +1,6 @@
 # Haze4K CHD-RM v2f Need Target/Head Redesign
 
-Status: `PLANNED`
+Status: `F4_AUTHORIZED_PENDING_CLOUD`
 
 Evidence root:
 
@@ -57,6 +57,21 @@ The first authorized stage is diagnostic only:
 F4 density-stratified head canary is not authorized until F1/F2/F3 evidence is
 written and supports it.
 
+## First-Stage Decision
+
+F0-F3/F2 completed on `convir-4090` with locked Haze4K test usage `none`.
+Observed LDHN core support, frozen feature separability, and density-conditioned
+target behavior support a small F4 density-stratified frozen-side head canary.
+
+F4 remains bounded:
+
+- ConvIR-B A0 frozen.
+- D3 density frozen.
+- `train_inner` target-transform fitting and threshold selection.
+- `val_inner` evaluation.
+- Original v2e global LDHN/false-tail gate remains primary.
+- D2, v3, RARM, and locked Haze4K test remain forbidden.
+
 ## Metric Contract
 
 All target transforms are fitted on `train_inner` and evaluated on `val_inner`.
@@ -84,4 +99,3 @@ The baseline v2e gate remains:
   `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2d-chd-rm-need-spatial-hard-negative/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/d7c_full/artifacts/d7c_mc_topk_hn_ordinal_head.pt`.
 - D7c HN artifact:
   `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2d-chd-rm-need-spatial-hard-negative/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/d7c_full/artifacts/d7c_mc_hn_ordinal_head.pt`.
-
