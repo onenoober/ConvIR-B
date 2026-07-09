@@ -1,0 +1,6 @@
+{
+  "status": "PASS_BY_CONSTRUCTION",
+  "a0_output_changed": false,
+  "reason": "v2e trains/evaluates side heads only; ConvIR-B dehazing output is frozen and RARM is disconnected.",
+  "locked_haze4k_test_usage": "none"
+}

@@ -1,0 +1,12 @@
+{
+  "train_images": 2400,
+  "oversample_quantile": 0.75,
+  "oversample_cutoff": 0.12297526001930237,
+  "oversample_weight": 3.0,
+  "images_ge_cutoff": 601,
+  "ldhn_p50": 0.06251953542232513,
+  "ldhn_p75": 0.12297526001930237,
+  "ldhn_p90": 0.22641249001026154,
+  "ldhn_p95": 0.29806873202323914,
+  "ldhn_max": 0.8432437181472778
+}

@@ -1,0 +1,13 @@
+{
+  "ldhn_pixel_coverage": 0.08988972981770833,
+  "ldhn_image_coverage": 0.9983333333333333,
+  "images": 600,
+  "images_ldhn_ge_1pct": 539,
+  "images_ldhn_ge_3pct": 416,
+  "images_ldhn_ge_5pct": 318,
+  "per_image_ldhn_p50": 0.054931640625,
+  "per_image_ldhn_p75": 0.118896484375,
+  "per_image_ldhn_p90": 0.21435546875,
+  "per_image_ldhn_p95": 0.300537109375,
+  "per_image_ldhn_max": 0.672119140625
+}

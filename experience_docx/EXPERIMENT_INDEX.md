@@ -19,6 +19,10 @@ cards, text logs, result tables, and AI-readable packages back to `main`, but
 keep diagnostic experiment code on its route branch unless a separate promotion
 decision says otherwise.
 
+## Current CHD-RM v5 Route State
+
+As of 2026-07-09, CHD-RM is paused at v2e: D7c top-k is a real `R_need` candidate after fixed-permutation and density-matched controls, but frozen D7c LDHN recall is too low and D7c-RP has no safe recall-protected operating point. Decision: `PAUSE_V2E_D7C_RP_NO_SAFE_RECALL_PROTECTED_POINT_NO_V3`. Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md` and `experience_docx/experiment_cards/haze4k-chd-rm-v2e-d7c-control-recall-audit.md` for the current CHD-RM status. v3/RARM/D2/locked-test use remains blocked.
+
 ## Official Architecture Anchor
 
 The immutable clean ConvIR-B architecture anchor is:

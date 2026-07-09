@@ -1,0 +1,338 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2e-chd-rm-d7c-control-recall-audit/experience_docx/tools/run_chd_rm_v2_density_need_calibration.py:102: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2e-chd-rm-d7c-control-recall-audit/experience_docx/tools/run_chd_rm_v2d_need_spatial_hard_negative.py:85: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ckpt = torch.load(ckpt_path, map_location=device)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2e-chd-rm-d7c-control-recall-audit/experience_docx/tools/run_chd_rm_v2e_d7c_control_recall_audit.py:177: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ckpt = torch.load(path, map_location=device)
+support_train 50/2400
+support_train 100/2400
+support_train 150/2400
+support_train 200/2400
+support_train 250/2400
+support_train 300/2400
+support_train 350/2400
+support_train 400/2400
+support_train 450/2400
+support_train 500/2400
+support_train 550/2400
+support_train 600/2400
+support_train 650/2400
+support_train 700/2400
+support_train 750/2400
+support_train 800/2400
+support_train 850/2400
+support_train 900/2400
+support_train 950/2400
+support_train 1000/2400
+support_train 1050/2400
+support_train 1100/2400
+support_train 1150/2400
+support_train 1200/2400
+support_train 1250/2400
+support_train 1300/2400
+support_train 1350/2400
+support_train 1400/2400
+support_train 1450/2400
+support_train 1500/2400
+support_train 1550/2400
+support_train 1600/2400
+support_train 1650/2400
+support_train 1700/2400
+support_train 1750/2400
+support_train 1800/2400
+support_train 1850/2400
+support_train 1900/2400
+support_train 1950/2400
+support_train 2000/2400
+support_train 2050/2400
+support_train 2100/2400
+support_train 2150/2400
+support_train 2200/2400
+support_train 2250/2400
+support_train 2300/2400
+support_train 2350/2400
+support_train 2400/2400
+TRAIN_RP_d7c_rp_lam05_r3_lr2e4_BEGIN
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2e-chd-rm-d7c-control-recall-audit/experience_docx/tools/run_chd_rm_v2e_d7c_rp_micro_variant.py:53: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ckpt = torch.load(path, map_location=device)
+train_d7c_rp_lam05_r3_lr2e4 epoch=1 step=50/300 loss=0.514007
+train_d7c_rp_lam05_r3_lr2e4 epoch=1 step=100/300 loss=0.519191
+train_d7c_rp_lam05_r3_lr2e4 epoch=1 step=150/300 loss=0.512062
+train_d7c_rp_lam05_r3_lr2e4 epoch=1 step=200/300 loss=0.504824
+train_d7c_rp_lam05_r3_lr2e4 epoch=1 step=250/300 loss=0.513239
+train_d7c_rp_lam05_r3_lr2e4 epoch=1 step=300/300 loss=0.516715
+{"variant": "d7c_rp_lam05_r3_lr2e4", "epoch": 1, "steps": 300, "loss_mean": 0.5133396217226982, "smooth_l1_mean": 0.026014758603026468, "ordinal_bce_sum_mean": 1.8279169595241547, "hard_negative_loss_mean": 0.00023124238685644135, "ldhn_positive_loss_mean": 0.03499118816107512, "pairwise_loss_mean": 0.04770158287137747, "topk_loss_mean": 0.0027689534694945906, "tv_loss_mean": 0.015475928463662664, "elapsed_sec": 23.450669050216675, "spec_ldhn_weight": 0.5, "spec_protect_radius": 3, "spec_lr": 0.0002, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam05_r3_lr2e4 epoch=2 step=50/300 loss=0.512383
+train_d7c_rp_lam05_r3_lr2e4 epoch=2 step=100/300 loss=0.511772
+train_d7c_rp_lam05_r3_lr2e4 epoch=2 step=150/300 loss=0.508864
+train_d7c_rp_lam05_r3_lr2e4 epoch=2 step=200/300 loss=0.509193
+train_d7c_rp_lam05_r3_lr2e4 epoch=2 step=250/300 loss=0.502894
+train_d7c_rp_lam05_r3_lr2e4 epoch=2 step=300/300 loss=0.501898
+{"variant": "d7c_rp_lam05_r3_lr2e4", "epoch": 2, "steps": 300, "loss_mean": 0.5078339568773905, "smooth_l1_mean": 0.0257561660806338, "ordinal_bce_sum_mean": 1.8098574101924896, "hard_negative_loss_mean": 0.0002821862670536272, "ldhn_positive_loss_mean": 0.03234243351966143, "pairwise_loss_mean": 0.048581728202601274, "topk_loss_mean": 0.0031264639734581577, "tv_loss_mean": 0.0158612442171822, "elapsed_sec": 22.519636869430542, "spec_ldhn_weight": 0.5, "spec_protect_radius": 3, "spec_lr": 0.0002, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam05_r3_lr2e4 epoch=3 step=50/300 loss=0.507744
+train_d7c_rp_lam05_r3_lr2e4 epoch=3 step=100/300 loss=0.516551
+train_d7c_rp_lam05_r3_lr2e4 epoch=3 step=150/300 loss=0.516683
+train_d7c_rp_lam05_r3_lr2e4 epoch=3 step=200/300 loss=0.502281
+train_d7c_rp_lam05_r3_lr2e4 epoch=3 step=250/300 loss=0.505952
+train_d7c_rp_lam05_r3_lr2e4 epoch=3 step=300/300 loss=0.510845
+{"variant": "d7c_rp_lam05_r3_lr2e4", "epoch": 3, "steps": 300, "loss_mean": 0.5100093604127566, "smooth_l1_mean": 0.025951397096117337, "ordinal_bce_sum_mean": 1.815904333194097, "hard_negative_loss_mean": 0.000272489239408363, "ldhn_positive_loss_mean": 0.032961204750463366, "pairwise_loss_mean": 0.05069403282056252, "topk_loss_mean": 0.0028761038018274123, "tv_loss_mean": 0.015693964858849843, "elapsed_sec": 22.26794147491455, "spec_ldhn_weight": 0.5, "spec_protect_radius": 3, "spec_lr": 0.0002, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam05_r3_lr2e4 epoch=4 step=50/300 loss=0.518236
+train_d7c_rp_lam05_r3_lr2e4 epoch=4 step=100/300 loss=0.511059
+train_d7c_rp_lam05_r3_lr2e4 epoch=4 step=150/300 loss=0.515975
+train_d7c_rp_lam05_r3_lr2e4 epoch=4 step=200/300 loss=0.514850
+train_d7c_rp_lam05_r3_lr2e4 epoch=4 step=250/300 loss=0.500983
+train_d7c_rp_lam05_r3_lr2e4 epoch=4 step=300/300 loss=0.511246
+{"variant": "d7c_rp_lam05_r3_lr2e4", "epoch": 4, "steps": 300, "loss_mean": 0.5120581040779749, "smooth_l1_mean": 0.026079494034250576, "ordinal_bce_sum_mean": 1.824065132935842, "hard_negative_loss_mean": 0.00025564185336255225, "ldhn_positive_loss_mean": 0.03262372857891023, "pairwise_loss_mean": 0.05132313963957131, "topk_loss_mean": 0.0028154694210388697, "tv_loss_mean": 0.01573625304425756, "elapsed_sec": 22.55270504951477, "spec_ldhn_weight": 0.5, "spec_protect_radius": 3, "spec_lr": 0.0002, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam05_r3_lr2e4 epoch=5 step=50/300 loss=0.509763
+train_d7c_rp_lam05_r3_lr2e4 epoch=5 step=100/300 loss=0.505342
+train_d7c_rp_lam05_r3_lr2e4 epoch=5 step=150/300 loss=0.508683
+train_d7c_rp_lam05_r3_lr2e4 epoch=5 step=200/300 loss=0.508661
+train_d7c_rp_lam05_r3_lr2e4 epoch=5 step=250/300 loss=0.506779
+train_d7c_rp_lam05_r3_lr2e4 epoch=5 step=300/300 loss=0.511040
+{"variant": "d7c_rp_lam05_r3_lr2e4", "epoch": 5, "steps": 300, "loss_mean": 0.50837789863348, "smooth_l1_mean": 0.025814902080843846, "ordinal_bce_sum_mean": 1.8095247173309326, "hard_negative_loss_mean": 0.0002813585334479285, "ldhn_positive_loss_mean": 0.0326574983044217, "pairwise_loss_mean": 0.05170509154908359, "topk_loss_mean": 0.002910647802442933, "tv_loss_mean": 0.01600219855395456, "elapsed_sec": 22.43282699584961, "spec_ldhn_weight": 0.5, "spec_protect_radius": 3, "spec_lr": 0.0002, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam05_r3_lr2e4 epoch=6 step=50/300 loss=0.501624
+train_d7c_rp_lam05_r3_lr2e4 epoch=6 step=100/300 loss=0.505765
+train_d7c_rp_lam05_r3_lr2e4 epoch=6 step=150/300 loss=0.505042
+train_d7c_rp_lam05_r3_lr2e4 epoch=6 step=200/300 loss=0.507526
+train_d7c_rp_lam05_r3_lr2e4 epoch=6 step=250/300 loss=0.501055
+train_d7c_rp_lam05_r3_lr2e4 epoch=6 step=300/300 loss=0.514539
+{"variant": "d7c_rp_lam05_r3_lr2e4", "epoch": 6, "steps": 300, "loss_mean": 0.5059252169728279, "smooth_l1_mean": 0.02569920542339484, "ordinal_bce_sum_mean": 1.8072455215454102, "hard_negative_loss_mean": 0.0002651235592050701, "ldhn_positive_loss_mean": 0.030973633769899606, "pairwise_loss_mean": 0.047129224414626754, "topk_loss_mean": 0.002912292660136397, "tv_loss_mean": 0.01622771043330431, "elapsed_sec": 22.406938791275024, "spec_ldhn_weight": 0.5, "spec_protect_radius": 3, "spec_lr": 0.0002, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+TRAIN_RP_d7c_rp_lam10_r3_lr2e4_BEGIN
+train_d7c_rp_lam10_r3_lr2e4 epoch=1 step=50/300 loss=0.526386
+train_d7c_rp_lam10_r3_lr2e4 epoch=1 step=100/300 loss=0.535662
+train_d7c_rp_lam10_r3_lr2e4 epoch=1 step=150/300 loss=0.525380
+train_d7c_rp_lam10_r3_lr2e4 epoch=1 step=200/300 loss=0.525166
+train_d7c_rp_lam10_r3_lr2e4 epoch=1 step=250/300 loss=0.514222
+train_d7c_rp_lam10_r3_lr2e4 epoch=1 step=300/300 loss=0.531831
+{"variant": "d7c_rp_lam10_r3_lr2e4", "epoch": 1, "steps": 300, "loss_mean": 0.5264410195748012, "smooth_l1_mean": 0.02627426745990912, "ordinal_bce_sum_mean": 1.8340280910332998, "hard_negative_loss_mean": 0.00046737165487381084, "ldhn_positive_loss_mean": 0.02667480439879, "pairwise_loss_mean": 0.049394268977145356, "topk_loss_mean": 0.0043311182358108154, "tv_loss_mean": 0.01537904141160349, "elapsed_sec": 22.49376630783081, "spec_ldhn_weight": 1.0, "spec_protect_radius": 3, "spec_lr": 0.0002, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam10_r3_lr2e4 epoch=2 step=50/300 loss=0.523725
+train_d7c_rp_lam10_r3_lr2e4 epoch=2 step=100/300 loss=0.523715
+train_d7c_rp_lam10_r3_lr2e4 epoch=2 step=150/300 loss=0.525312
+train_d7c_rp_lam10_r3_lr2e4 epoch=2 step=200/300 loss=0.523506
+train_d7c_rp_lam10_r3_lr2e4 epoch=2 step=250/300 loss=0.524874
+train_d7c_rp_lam10_r3_lr2e4 epoch=2 step=300/300 loss=0.510527
+{"variant": "d7c_rp_lam10_r3_lr2e4", "epoch": 2, "steps": 300, "loss_mean": 0.5219431019822757, "smooth_l1_mean": 0.025969663945337135, "ordinal_bce_sum_mean": 1.818784239689509, "hard_negative_loss_mean": 0.0005733001210410293, "ldhn_positive_loss_mean": 0.02471344224487742, "pairwise_loss_mean": 0.0553369126887992, "topk_loss_mean": 0.004619842532653517, "tv_loss_mean": 0.015170651671166222, "elapsed_sec": 22.319461822509766, "spec_ldhn_weight": 1.0, "spec_protect_radius": 3, "spec_lr": 0.0002, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam10_r3_lr2e4 epoch=3 step=50/300 loss=0.517092
+train_d7c_rp_lam10_r3_lr2e4 epoch=3 step=100/300 loss=0.516689
+train_d7c_rp_lam10_r3_lr2e4 epoch=3 step=150/300 loss=0.522137
+train_d7c_rp_lam10_r3_lr2e4 epoch=3 step=200/300 loss=0.525296
+train_d7c_rp_lam10_r3_lr2e4 epoch=3 step=250/300 loss=0.522269
+train_d7c_rp_lam10_r3_lr2e4 epoch=3 step=300/300 loss=0.516760
+{"variant": "d7c_rp_lam10_r3_lr2e4", "epoch": 3, "steps": 300, "loss_mean": 0.5200404244661331, "smooth_l1_mean": 0.025903628133237364, "ordinal_bce_sum_mean": 1.812453778187434, "hard_negative_loss_mean": 0.0005602300197278964, "ldhn_positive_loss_mean": 0.024998370309670767, "pairwise_loss_mean": 0.05351967655743162, "topk_loss_mean": 0.004449041218419249, "tv_loss_mean": 0.01558876114586989, "elapsed_sec": 22.520159244537354, "spec_ldhn_weight": 1.0, "spec_protect_radius": 3, "spec_lr": 0.0002, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam10_r3_lr2e4 epoch=4 step=50/300 loss=0.519960
+train_d7c_rp_lam10_r3_lr2e4 epoch=4 step=100/300 loss=0.515475
+train_d7c_rp_lam10_r3_lr2e4 epoch=4 step=150/300 loss=0.515776
+train_d7c_rp_lam10_r3_lr2e4 epoch=4 step=200/300 loss=0.527025
+train_d7c_rp_lam10_r3_lr2e4 epoch=4 step=250/300 loss=0.522042
+train_d7c_rp_lam10_r3_lr2e4 epoch=4 step=300/300 loss=0.520875
+{"variant": "d7c_rp_lam10_r3_lr2e4", "epoch": 4, "steps": 300, "loss_mean": 0.5201922024289767, "smooth_l1_mean": 0.02571595349038641, "ordinal_bce_sum_mean": 1.806960240205129, "hard_negative_loss_mean": 0.00044145257180086144, "ldhn_positive_loss_mean": 0.027082988866604863, "pairwise_loss_mean": 0.05564473846927285, "topk_loss_mean": 0.003771145059436094, "tv_loss_mean": 0.015582672174399098, "elapsed_sec": 22.490376234054565, "spec_ldhn_weight": 1.0, "spec_protect_radius": 3, "spec_lr": 0.0002, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam10_r3_lr2e4 epoch=5 step=50/300 loss=0.513195
+train_d7c_rp_lam10_r3_lr2e4 epoch=5 step=100/300 loss=0.512480
+train_d7c_rp_lam10_r3_lr2e4 epoch=5 step=150/300 loss=0.520138
+train_d7c_rp_lam10_r3_lr2e4 epoch=5 step=200/300 loss=0.522008
+train_d7c_rp_lam10_r3_lr2e4 epoch=5 step=250/300 loss=0.518934
+train_d7c_rp_lam10_r3_lr2e4 epoch=5 step=300/300 loss=0.516345
+{"variant": "d7c_rp_lam10_r3_lr2e4", "epoch": 5, "steps": 300, "loss_mean": 0.5171834270159403, "smooth_l1_mean": 0.02568379125247399, "ordinal_bce_sum_mean": 1.8065383875370025, "hard_negative_loss_mean": 0.0005503678047049713, "ldhn_positive_loss_mean": 0.023779005659744144, "pairwise_loss_mean": 0.05346268517275651, "topk_loss_mean": 0.00452997181583972, "tv_loss_mean": 0.01565783845881621, "elapsed_sec": 22.045605659484863, "spec_ldhn_weight": 1.0, "spec_protect_radius": 3, "spec_lr": 0.0002, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam10_r3_lr2e4 epoch=6 step=50/300 loss=0.522207
+train_d7c_rp_lam10_r3_lr2e4 epoch=6 step=100/300 loss=0.519008
+train_d7c_rp_lam10_r3_lr2e4 epoch=6 step=150/300 loss=0.511638
+train_d7c_rp_lam10_r3_lr2e4 epoch=6 step=200/300 loss=0.512850
+train_d7c_rp_lam10_r3_lr2e4 epoch=6 step=250/300 loss=0.529422
+train_d7c_rp_lam10_r3_lr2e4 epoch=6 step=300/300 loss=0.518822
+{"variant": "d7c_rp_lam10_r3_lr2e4", "epoch": 6, "steps": 300, "loss_mean": 0.518991306523482, "smooth_l1_mean": 0.025702668353915215, "ordinal_bce_sum_mean": 1.806884458065033, "hard_negative_loss_mean": 0.00048177392962315933, "ldhn_positive_loss_mean": 0.0255782832360516, "pairwise_loss_mean": 0.056559248842919865, "topk_loss_mean": 0.003873890391550958, "tv_loss_mean": 0.016086162148664394, "elapsed_sec": 22.00212001800537, "spec_ldhn_weight": 1.0, "spec_protect_radius": 3, "spec_lr": 0.0002, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+TRAIN_RP_d7c_rp_lam15_r3_lr15e4_BEGIN
+train_d7c_rp_lam15_r3_lr15e4 epoch=1 step=50/300 loss=0.539742
+train_d7c_rp_lam15_r3_lr15e4 epoch=1 step=100/300 loss=0.528419
+train_d7c_rp_lam15_r3_lr15e4 epoch=1 step=150/300 loss=0.544070
+train_d7c_rp_lam15_r3_lr15e4 epoch=1 step=200/300 loss=0.543610
+train_d7c_rp_lam15_r3_lr15e4 epoch=1 step=250/300 loss=0.541710
+train_d7c_rp_lam15_r3_lr15e4 epoch=1 step=300/300 loss=0.541505
+{"variant": "d7c_rp_lam15_r3_lr15e4", "epoch": 1, "steps": 300, "loss_mean": 0.5398426338036855, "smooth_l1_mean": 0.026806471397479374, "ordinal_bce_sum_mean": 1.8472302333513895, "hard_negative_loss_mean": 0.000785983293390018, "ldhn_positive_loss_mean": 0.022136694577833016, "pairwise_loss_mean": 0.05603433854877949, "topk_loss_mean": 0.005745478808239568, "tv_loss_mean": 0.01426152638780574, "elapsed_sec": 22.348248958587646, "spec_ldhn_weight": 1.5, "spec_protect_radius": 3, "spec_lr": 0.00015, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam15_r3_lr15e4 epoch=2 step=50/300 loss=0.542846
+train_d7c_rp_lam15_r3_lr15e4 epoch=2 step=100/300 loss=0.548603
+train_d7c_rp_lam15_r3_lr15e4 epoch=2 step=150/300 loss=0.538897
+train_d7c_rp_lam15_r3_lr15e4 epoch=2 step=200/300 loss=0.528733
+train_d7c_rp_lam15_r3_lr15e4 epoch=2 step=250/300 loss=0.537185
+train_d7c_rp_lam15_r3_lr15e4 epoch=2 step=300/300 loss=0.527607
+{"variant": "d7c_rp_lam15_r3_lr15e4", "epoch": 2, "steps": 300, "loss_mean": 0.5373117714126905, "smooth_l1_mean": 0.026796182431280614, "ordinal_bce_sum_mean": 1.8489155840873719, "hard_negative_loss_mean": 0.0008539686053942811, "ldhn_positive_loss_mean": 0.01983238776369641, "pairwise_loss_mean": 0.05898128727761408, "topk_loss_mean": 0.005594735536530304, "tv_loss_mean": 0.014657389465719461, "elapsed_sec": 22.423529386520386, "spec_ldhn_weight": 1.5, "spec_protect_radius": 3, "spec_lr": 0.00015, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam15_r3_lr15e4 epoch=3 step=50/300 loss=0.537722
+train_d7c_rp_lam15_r3_lr15e4 epoch=3 step=100/300 loss=0.538046
+train_d7c_rp_lam15_r3_lr15e4 epoch=3 step=150/300 loss=0.530276
+train_d7c_rp_lam15_r3_lr15e4 epoch=3 step=200/300 loss=0.526354
+train_d7c_rp_lam15_r3_lr15e4 epoch=3 step=250/300 loss=0.535225
+train_d7c_rp_lam15_r3_lr15e4 epoch=3 step=300/300 loss=0.533826
+{"variant": "d7c_rp_lam15_r3_lr15e4", "epoch": 3, "steps": 300, "loss_mean": 0.5335748286048572, "smooth_l1_mean": 0.02651884687443574, "ordinal_bce_sum_mean": 1.832777158021927, "hard_negative_loss_mean": 0.0007468914629741145, "ldhn_positive_loss_mean": 0.020818538217184445, "pairwise_loss_mean": 0.057592803329850235, "topk_loss_mean": 0.005073289392554822, "tv_loss_mean": 0.01475700410703818, "elapsed_sec": 22.531002044677734, "spec_ldhn_weight": 1.5, "spec_protect_radius": 3, "spec_lr": 0.00015, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam15_r3_lr15e4 epoch=4 step=50/300 loss=0.536124
+train_d7c_rp_lam15_r3_lr15e4 epoch=4 step=100/300 loss=0.519708
+train_d7c_rp_lam15_r3_lr15e4 epoch=4 step=150/300 loss=0.529791
+train_d7c_rp_lam15_r3_lr15e4 epoch=4 step=200/300 loss=0.535758
+train_d7c_rp_lam15_r3_lr15e4 epoch=4 step=250/300 loss=0.538273
+train_d7c_rp_lam15_r3_lr15e4 epoch=4 step=300/300 loss=0.532043
+{"variant": "d7c_rp_lam15_r3_lr15e4", "epoch": 4, "steps": 300, "loss_mean": 0.5319495754440625, "smooth_l1_mean": 0.02632411471257607, "ordinal_bce_sum_mean": 1.8253758688767752, "hard_negative_loss_mean": 0.0007201173680732608, "ldhn_positive_loss_mean": 0.021012932521601517, "pairwise_loss_mean": 0.0587256618651251, "topk_loss_mean": 0.004993404910783284, "tv_loss_mean": 0.01517189987624685, "elapsed_sec": 22.56627869606018, "spec_ldhn_weight": 1.5, "spec_protect_radius": 3, "spec_lr": 0.00015, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam15_r3_lr15e4 epoch=5 step=50/300 loss=0.537353
+train_d7c_rp_lam15_r3_lr15e4 epoch=5 step=100/300 loss=0.540406
+train_d7c_rp_lam15_r3_lr15e4 epoch=5 step=150/300 loss=0.533511
+train_d7c_rp_lam15_r3_lr15e4 epoch=5 step=200/300 loss=0.526951
+train_d7c_rp_lam15_r3_lr15e4 epoch=5 step=250/300 loss=0.533158
+train_d7c_rp_lam15_r3_lr15e4 epoch=5 step=300/300 loss=0.534089
+{"variant": "d7c_rp_lam15_r3_lr15e4", "epoch": 5, "steps": 300, "loss_mean": 0.5342446108659108, "smooth_l1_mean": 0.026525817643851042, "ordinal_bce_sum_mean": 1.8309681204954784, "hard_negative_loss_mean": 0.0007646559105584553, "ldhn_positive_loss_mean": 0.02145132404131194, "pairwise_loss_mean": 0.05814824021110932, "topk_loss_mean": 0.005097519829093168, "tv_loss_mean": 0.015397717763359348, "elapsed_sec": 22.257572174072266, "spec_ldhn_weight": 1.5, "spec_protect_radius": 3, "spec_lr": 0.00015, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam15_r3_lr15e4 epoch=6 step=50/300 loss=0.534176
+train_d7c_rp_lam15_r3_lr15e4 epoch=6 step=100/300 loss=0.529696
+train_d7c_rp_lam15_r3_lr15e4 epoch=6 step=150/300 loss=0.531892
+train_d7c_rp_lam15_r3_lr15e4 epoch=6 step=200/300 loss=0.529199
+train_d7c_rp_lam15_r3_lr15e4 epoch=6 step=250/300 loss=0.540593
+train_d7c_rp_lam15_r3_lr15e4 epoch=6 step=300/300 loss=0.533442
+{"variant": "d7c_rp_lam15_r3_lr15e4", "epoch": 6, "steps": 300, "loss_mean": 0.5331663718819618, "smooth_l1_mean": 0.026506705091645322, "ordinal_bce_sum_mean": 1.830371683438619, "hard_negative_loss_mean": 0.0007483902784103217, "ldhn_positive_loss_mean": 0.02077007571235299, "pairwise_loss_mean": 0.05866224997676909, "topk_loss_mean": 0.005119977088373465, "tv_loss_mean": 0.01554084690908591, "elapsed_sec": 22.640563249588013, "spec_ldhn_weight": 1.5, "spec_protect_radius": 3, "spec_lr": 0.00015, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+TRAIN_RP_d7c_rp_lam20_r5_lr15e4_BEGIN
+train_d7c_rp_lam20_r5_lr15e4 epoch=1 step=50/300 loss=0.556645
+train_d7c_rp_lam20_r5_lr15e4 epoch=1 step=100/300 loss=0.551464
+train_d7c_rp_lam20_r5_lr15e4 epoch=1 step=150/300 loss=0.542128
+train_d7c_rp_lam20_r5_lr15e4 epoch=1 step=200/300 loss=0.546991
+train_d7c_rp_lam20_r5_lr15e4 epoch=1 step=250/300 loss=0.544732
+train_d7c_rp_lam20_r5_lr15e4 epoch=1 step=300/300 loss=0.544737
+{"variant": "d7c_rp_lam20_r5_lr15e4", "epoch": 1, "steps": 300, "loss_mean": 0.5477826683719953, "smooth_l1_mean": 0.027184880369653306, "ordinal_bce_sum_mean": 1.8537694354852041, "hard_negative_loss_mean": 0.0009786056929018134, "ldhn_positive_loss_mean": 0.019032700206153094, "pairwise_loss_mean": 0.05712372682988644, "topk_loss_mean": 0.00640078983133814, "tv_loss_mean": 0.014294523711626728, "elapsed_sec": 22.529284954071045, "spec_ldhn_weight": 2.0, "spec_protect_radius": 5, "spec_lr": 0.00015, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam20_r5_lr15e4 epoch=2 step=50/300 loss=0.543761
+train_d7c_rp_lam20_r5_lr15e4 epoch=2 step=100/300 loss=0.550998
+train_d7c_rp_lam20_r5_lr15e4 epoch=2 step=150/300 loss=0.549017
+train_d7c_rp_lam20_r5_lr15e4 epoch=2 step=200/300 loss=0.541596
+train_d7c_rp_lam20_r5_lr15e4 epoch=2 step=250/300 loss=0.542464
+train_d7c_rp_lam20_r5_lr15e4 epoch=2 step=300/300 loss=0.546486
+{"variant": "d7c_rp_lam20_r5_lr15e4", "epoch": 2, "steps": 300, "loss_mean": 0.5457202565670013, "smooth_l1_mean": 0.027123746946454048, "ordinal_bce_sum_mean": 1.8512220482031505, "hard_negative_loss_mean": 0.001136783813223398, "ldhn_positive_loss_mean": 0.017732497354348502, "pairwise_loss_mean": 0.061347153168171645, "topk_loss_mean": 0.006629573391595234, "tv_loss_mean": 0.014510510234783093, "elapsed_sec": 22.43874216079712, "spec_ldhn_weight": 2.0, "spec_protect_radius": 5, "spec_lr": 0.00015, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam20_r5_lr15e4 epoch=3 step=50/300 loss=0.540851
+train_d7c_rp_lam20_r5_lr15e4 epoch=3 step=100/300 loss=0.538055
+train_d7c_rp_lam20_r5_lr15e4 epoch=3 step=150/300 loss=0.534333
+train_d7c_rp_lam20_r5_lr15e4 epoch=3 step=200/300 loss=0.552673
+train_d7c_rp_lam20_r5_lr15e4 epoch=3 step=250/300 loss=0.540700
+train_d7c_rp_lam20_r5_lr15e4 epoch=3 step=300/300 loss=0.546110
+{"variant": "d7c_rp_lam20_r5_lr15e4", "epoch": 3, "steps": 300, "loss_mean": 0.5421202712257703, "smooth_l1_mean": 0.026812920812517405, "ordinal_bce_sum_mean": 1.8426160597801209, "hard_negative_loss_mean": 0.0011238494226320957, "ldhn_positive_loss_mean": 0.016942153742226462, "pairwise_loss_mean": 0.06352876592427492, "topk_loss_mean": 0.006644973725390931, "tv_loss_mean": 0.014722347976639866, "elapsed_sec": 22.461905241012573, "spec_ldhn_weight": 2.0, "spec_protect_radius": 5, "spec_lr": 0.00015, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam20_r5_lr15e4 epoch=4 step=50/300 loss=0.542652
+train_d7c_rp_lam20_r5_lr15e4 epoch=4 step=100/300 loss=0.546084
+train_d7c_rp_lam20_r5_lr15e4 epoch=4 step=150/300 loss=0.543846
+train_d7c_rp_lam20_r5_lr15e4 epoch=4 step=200/300 loss=0.537949
+train_d7c_rp_lam20_r5_lr15e4 epoch=4 step=250/300 loss=0.530427
+train_d7c_rp_lam20_r5_lr15e4 epoch=4 step=300/300 loss=0.547289
+{"variant": "d7c_rp_lam20_r5_lr15e4", "epoch": 4, "steps": 300, "loss_mean": 0.5413743752241135, "smooth_l1_mean": 0.026816487206767003, "ordinal_bce_sum_mean": 1.8394207576910655, "hard_negative_loss_mean": 0.0012671931528651233, "ldhn_positive_loss_mean": 0.01683795077726245, "pairwise_loss_mean": 0.06391950881729523, "topk_loss_mean": 0.0066754031092083705, "tv_loss_mean": 0.0150149504483367, "elapsed_sec": 22.599912643432617, "spec_ldhn_weight": 2.0, "spec_protect_radius": 5, "spec_lr": 0.00015, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam20_r5_lr15e4 epoch=5 step=50/300 loss=0.540565
+train_d7c_rp_lam20_r5_lr15e4 epoch=5 step=100/300 loss=0.538479
+train_d7c_rp_lam20_r5_lr15e4 epoch=5 step=150/300 loss=0.549902
+train_d7c_rp_lam20_r5_lr15e4 epoch=5 step=200/300 loss=0.541232
+train_d7c_rp_lam20_r5_lr15e4 epoch=5 step=250/300 loss=0.541802
+train_d7c_rp_lam20_r5_lr15e4 epoch=5 step=300/300 loss=0.543277
+{"variant": "d7c_rp_lam20_r5_lr15e4", "epoch": 5, "steps": 300, "loss_mean": 0.5425429125626882, "smooth_l1_mean": 0.026888165896137555, "ordinal_bce_sum_mean": 1.8442709183692931, "hard_negative_loss_mean": 0.0011697193434398892, "ldhn_positive_loss_mean": 0.017121931090950965, "pairwise_loss_mean": 0.06180382169472674, "topk_loss_mean": 0.006518856076872907, "tv_loss_mean": 0.014690816296885411, "elapsed_sec": 22.32940101623535, "spec_ldhn_weight": 2.0, "spec_protect_radius": 5, "spec_lr": 0.00015, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam20_r5_lr15e4 epoch=6 step=50/300 loss=0.542756
+train_d7c_rp_lam20_r5_lr15e4 epoch=6 step=100/300 loss=0.541596
+train_d7c_rp_lam20_r5_lr15e4 epoch=6 step=150/300 loss=0.534295
+train_d7c_rp_lam20_r5_lr15e4 epoch=6 step=200/300 loss=0.536901
+train_d7c_rp_lam20_r5_lr15e4 epoch=6 step=250/300 loss=0.537355
+train_d7c_rp_lam20_r5_lr15e4 epoch=6 step=300/300 loss=0.544376
+{"variant": "d7c_rp_lam20_r5_lr15e4", "epoch": 6, "steps": 300, "loss_mean": 0.5395466490586599, "smooth_l1_mean": 0.026578112083176772, "ordinal_bce_sum_mean": 1.830595897436142, "hard_negative_loss_mean": 0.001259703301329864, "ldhn_positive_loss_mean": 0.017169081120130915, "pairwise_loss_mean": 0.06493928340884546, "topk_loss_mean": 0.006432846095801021, "tv_loss_mean": 0.015049727807442348, "elapsed_sec": 22.50491952896118, "spec_ldhn_weight": 2.0, "spec_protect_radius": 5, "spec_lr": 0.00015, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+TRAIN_RP_d7c_rp_lam30_r5_lr1e4_BEGIN
+train_d7c_rp_lam30_r5_lr1e4 epoch=1 step=50/300 loss=0.578698
+train_d7c_rp_lam30_r5_lr1e4 epoch=1 step=100/300 loss=0.559461
+train_d7c_rp_lam30_r5_lr1e4 epoch=1 step=150/300 loss=0.552946
+train_d7c_rp_lam30_r5_lr1e4 epoch=1 step=200/300 loss=0.552649
+train_d7c_rp_lam30_r5_lr1e4 epoch=1 step=250/300 loss=0.562539
+train_d7c_rp_lam30_r5_lr1e4 epoch=1 step=300/300 loss=0.548453
+{"variant": "d7c_rp_lam30_r5_lr1e4", "epoch": 1, "steps": 300, "loss_mean": 0.5591243366400401, "smooth_l1_mean": 0.027587165714552005, "ordinal_bce_sum_mean": 1.8643135273456573, "hard_negative_loss_mean": 0.0016193025290461567, "ldhn_positive_loss_mean": 0.014433738665344814, "pairwise_loss_mean": 0.056686622637013594, "topk_loss_mean": 0.008922934740937005, "tv_loss_mean": 0.013900613735119501, "elapsed_sec": 22.34001326560974, "spec_ldhn_weight": 3.0, "spec_protect_radius": 5, "spec_lr": 0.0001, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam30_r5_lr1e4 epoch=2 step=50/300 loss=0.562388
+train_d7c_rp_lam30_r5_lr1e4 epoch=2 step=100/300 loss=0.564130
+train_d7c_rp_lam30_r5_lr1e4 epoch=2 step=150/300 loss=0.560364
+train_d7c_rp_lam30_r5_lr1e4 epoch=2 step=200/300 loss=0.563086
+train_d7c_rp_lam30_r5_lr1e4 epoch=2 step=250/300 loss=0.554343
+train_d7c_rp_lam30_r5_lr1e4 epoch=2 step=300/300 loss=0.562061
+{"variant": "d7c_rp_lam30_r5_lr1e4", "epoch": 2, "steps": 300, "loss_mean": 0.5610618568460146, "smooth_l1_mean": 0.028111196427295607, "ordinal_bce_sum_mean": 1.878552935520808, "hard_negative_loss_mean": 0.0018276328608529486, "ldhn_positive_loss_mean": 0.013062601967249066, "pairwise_loss_mean": 0.0661840354744345, "topk_loss_mean": 0.00878254832389454, "tv_loss_mean": 0.013881524680182339, "elapsed_sec": 22.624929428100586, "spec_ldhn_weight": 3.0, "spec_protect_radius": 5, "spec_lr": 0.0001, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam30_r5_lr1e4 epoch=3 step=50/300 loss=0.554723
+train_d7c_rp_lam30_r5_lr1e4 epoch=3 step=100/300 loss=0.558870
+train_d7c_rp_lam30_r5_lr1e4 epoch=3 step=150/300 loss=0.560909
+train_d7c_rp_lam30_r5_lr1e4 epoch=3 step=200/300 loss=0.557779
+train_d7c_rp_lam30_r5_lr1e4 epoch=3 step=250/300 loss=0.564062
+train_d7c_rp_lam30_r5_lr1e4 epoch=3 step=300/300 loss=0.561992
+{"variant": "d7c_rp_lam30_r5_lr1e4", "epoch": 3, "steps": 300, "loss_mean": 0.5597225974003474, "smooth_l1_mean": 0.027826953356464703, "ordinal_bce_sum_mean": 1.871438009341558, "hard_negative_loss_mean": 0.0019356816097085053, "ldhn_positive_loss_mean": 0.013140785040644308, "pairwise_loss_mean": 0.06948906109978756, "topk_loss_mean": 0.008499454389481494, "tv_loss_mean": 0.01404190644621849, "elapsed_sec": 22.494888305664062, "spec_ldhn_weight": 3.0, "spec_protect_radius": 5, "spec_lr": 0.0001, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam30_r5_lr1e4 epoch=4 step=50/300 loss=0.563089
+train_d7c_rp_lam30_r5_lr1e4 epoch=4 step=100/300 loss=0.563132
+train_d7c_rp_lam30_r5_lr1e4 epoch=4 step=150/300 loss=0.569061
+train_d7c_rp_lam30_r5_lr1e4 epoch=4 step=200/300 loss=0.568924
+train_d7c_rp_lam30_r5_lr1e4 epoch=4 step=250/300 loss=0.550583
+train_d7c_rp_lam30_r5_lr1e4 epoch=4 step=300/300 loss=0.561249
+{"variant": "d7c_rp_lam30_r5_lr1e4", "epoch": 4, "steps": 300, "loss_mean": 0.5626732262969018, "smooth_l1_mean": 0.028294070828706025, "ordinal_bce_sum_mean": 1.884885794321696, "hard_negative_loss_mean": 0.0021515469954465514, "ldhn_positive_loss_mean": 0.012402887127827854, "pairwise_loss_mean": 0.07420795396280785, "topk_loss_mean": 0.008677752583753317, "tv_loss_mean": 0.013907846867417296, "elapsed_sec": 22.345360040664673, "spec_ldhn_weight": 3.0, "spec_protect_radius": 5, "spec_lr": 0.0001, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam30_r5_lr1e4 epoch=5 step=50/300 loss=0.559629
+train_d7c_rp_lam30_r5_lr1e4 epoch=5 step=100/300 loss=0.552194
+train_d7c_rp_lam30_r5_lr1e4 epoch=5 step=150/300 loss=0.561529
+train_d7c_rp_lam30_r5_lr1e4 epoch=5 step=200/300 loss=0.560910
+train_d7c_rp_lam30_r5_lr1e4 epoch=5 step=250/300 loss=0.553462
+train_d7c_rp_lam30_r5_lr1e4 epoch=5 step=300/300 loss=0.565177
+{"variant": "d7c_rp_lam30_r5_lr1e4", "epoch": 5, "steps": 300, "loss_mean": 0.5588168543577194, "smooth_l1_mean": 0.027931599076837302, "ordinal_bce_sum_mean": 1.869805881579717, "hard_negative_loss_mean": 0.0019633378909202294, "ldhn_positive_loss_mean": 0.012923398717927435, "pairwise_loss_mean": 0.06934584961583216, "topk_loss_mean": 0.008541746179883678, "tv_loss_mean": 0.014466805756092072, "elapsed_sec": 22.610612392425537, "spec_ldhn_weight": 3.0, "spec_protect_radius": 5, "spec_lr": 0.0001, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+train_d7c_rp_lam30_r5_lr1e4 epoch=6 step=50/300 loss=0.552308
+train_d7c_rp_lam30_r5_lr1e4 epoch=6 step=100/300 loss=0.562954
+train_d7c_rp_lam30_r5_lr1e4 epoch=6 step=150/300 loss=0.552183
+train_d7c_rp_lam30_r5_lr1e4 epoch=6 step=200/300 loss=0.543421
+train_d7c_rp_lam30_r5_lr1e4 epoch=6 step=250/300 loss=0.562008
+train_d7c_rp_lam30_r5_lr1e4 epoch=6 step=300/300 loss=0.558426
+{"variant": "d7c_rp_lam30_r5_lr1e4", "epoch": 6, "steps": 300, "loss_mean": 0.5552165621519088, "smooth_l1_mean": 0.02768445144717892, "ordinal_bce_sum_mean": 1.863455709218979, "hard_negative_loss_mean": 0.0020845591412701953, "ldhn_positive_loss_mean": 0.012335112669194738, "pairwise_loss_mean": 0.06745257860980929, "topk_loss_mean": 0.008796468758955598, "tv_loss_mean": 0.014565206312884887, "elapsed_sec": 22.513083696365356, "spec_ldhn_weight": 3.0, "spec_protect_radius": 5, "spec_lr": 0.0001, "spec_ordinal_weight": 0.25, "spec_hn_weight": 1.0, "spec_pair_weight": 0.2, "spec_topk_weight": 1.0, "spec_tv_weight": 0.02, "spec_topk_fraction": 0.05}
+COLLECT_RP_TRAIN_BEGIN
+collect_rp_train_inner 50/2400
+collect_rp_train_inner 100/2400
+collect_rp_train_inner 150/2400
+collect_rp_train_inner 200/2400
+collect_rp_train_inner 250/2400
+collect_rp_train_inner 300/2400
+collect_rp_train_inner 350/2400
+collect_rp_train_inner 400/2400
+collect_rp_train_inner 450/2400
+collect_rp_train_inner 500/2400
+collect_rp_train_inner 550/2400
+collect_rp_train_inner 600/2400
+collect_rp_train_inner 650/2400
+collect_rp_train_inner 700/2400
+collect_rp_train_inner 750/2400
+collect_rp_train_inner 800/2400
+collect_rp_train_inner 850/2400
+collect_rp_train_inner 900/2400
+collect_rp_train_inner 950/2400
+collect_rp_train_inner 1000/2400
+collect_rp_train_inner 1050/2400
+collect_rp_train_inner 1100/2400
+collect_rp_train_inner 1150/2400
+collect_rp_train_inner 1200/2400
+collect_rp_train_inner 1250/2400
+collect_rp_train_inner 1300/2400
+collect_rp_train_inner 1350/2400
+collect_rp_train_inner 1400/2400
+collect_rp_train_inner 1450/2400
+collect_rp_train_inner 1500/2400
+collect_rp_train_inner 1550/2400
+collect_rp_train_inner 1600/2400
+collect_rp_train_inner 1650/2400
+collect_rp_train_inner 1700/2400
+collect_rp_train_inner 1750/2400
+collect_rp_train_inner 1800/2400
+collect_rp_train_inner 1850/2400
+collect_rp_train_inner 1900/2400
+collect_rp_train_inner 1950/2400
+collect_rp_train_inner 2000/2400
+collect_rp_train_inner 2050/2400
+collect_rp_train_inner 2100/2400
+collect_rp_train_inner 2150/2400
+collect_rp_train_inner 2200/2400
+collect_rp_train_inner 2250/2400
+collect_rp_train_inner 2300/2400
+collect_rp_train_inner 2350/2400
+collect_rp_train_inner 2400/2400
+COLLECT_RP_VAL_BEGIN
+collect_rp_val_inner 50/600
+collect_rp_val_inner 100/600
+collect_rp_val_inner 150/600
+collect_rp_val_inner 200/600
+collect_rp_val_inner 250/600
+collect_rp_val_inner 300/600
+collect_rp_val_inner 350/600
+collect_rp_val_inner 400/600
+collect_rp_val_inner 450/600
+collect_rp_val_inner 500/600
+collect_rp_val_inner 550/600
+collect_rp_val_inner 600/600
+{
+  "decision": "PAUSE_V2E_D7C_RP_NO_SAFE_RECALL_PROTECTED_POINT_NO_V3",
+  "best_variant": "d7c_rp_lam30_r5_lr1e4",
+  "output_dir": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2e-chd-rm-d7c-control-recall-audit/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2e_d7c_control_recall_audit_20260709/d7c_rp_full"
+}

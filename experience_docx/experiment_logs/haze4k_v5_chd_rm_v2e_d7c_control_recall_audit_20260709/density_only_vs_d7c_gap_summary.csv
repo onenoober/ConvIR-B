@@ -1,0 +1,2 @@
+candidate,control,delta_spearman,delta_auroc,delta_auprc,delta_precision,candidate_false_global,density_false_global,candidate_false_p90,density_false_p90,pass
+d7c_mc_topk_hn_ordinal,density_only_matched_threshold,0.2177747823244252,0.1481384094129503,0.10463549094508051,0.0888086955427545,0.0029743024097268933,0.0473720619598517,0.02459016393442623,0.18115942028985507,True
