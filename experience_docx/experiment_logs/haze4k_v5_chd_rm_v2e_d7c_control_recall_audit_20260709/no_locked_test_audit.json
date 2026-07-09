@@ -1,0 +1,12 @@
+{
+  "locked_haze4k_test_usage": "none",
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "split_json": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2c-chd-rm-need-coverage-calibration/experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/haze4k_internal_split_2400_600.json",
+  "forbidden": [
+    "D2",
+    "RARM connection",
+    "RARM training",
+    "v3",
+    "locked Haze4K test"
+  ]
+}

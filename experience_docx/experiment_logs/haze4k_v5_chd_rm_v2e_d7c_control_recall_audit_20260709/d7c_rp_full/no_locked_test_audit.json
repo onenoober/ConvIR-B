@@ -1,0 +1,13 @@
+{
+  "locked_haze4k_test_usage": "none",
+  "forbidden": [
+    "D2",
+    "RARM connection",
+    "RARM training",
+    "v3 runtime",
+    "locked Haze4K test"
+  ],
+  "convird_frozen": true,
+  "density_head_frozen": true,
+  "init": "d7c top-k head"
+}

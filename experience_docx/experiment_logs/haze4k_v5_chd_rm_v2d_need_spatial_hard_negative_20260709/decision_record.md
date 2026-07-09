@@ -1,8 +1,10 @@
 # CHD-RM v2d Decision Record
 
-Decision: `PAUSE_V2D_D7A_D7B_NOT_ENOUGH_NEXT_D7C_OR_TARGET_AUDIT`
+Decision: `PAUSE_V2D_D7C_TOPK_PROMISING_BUT_CONTROLS_WEAK_NO_V3`
 
-Next step: Do not run D2/RARM; inspect whether feature context or R_need target definition is limiting.
+Final source of truth: `v2d_overall_result_summary.md` and `v2d_overall_run_summary.json`.
+
+D7c top-k is promising but controls remained weak; next authorized route is v2e control and recall audit, not v3.
 
 Forbidden: D2, RARM connection/training, v3 expansion, locked Haze4K test.
 Locked Haze4K test usage: none.
