@@ -2,7 +2,7 @@
 
 Date: 2026-07-09
 
-Status: v2e completed; D7c signal is real but no safe LDHN recall point was found. v3/RARM remains blocked.
+Status: v2f completed through F4/F4b; target/head redesign still found no safe LDHN recall point. F5/v3/RARM/D2/locked test remain blocked.
 
 ## Research Direction
 
@@ -41,6 +41,7 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v2c need coverage calibration | `codex/haze4k-v5-v2c-chd-rm-need-coverage-calibration` | paused | Train-inner calibration restores coverage but creates unsafe false-strong responses | `PAUSE_V2C_SCALE_CALIBRATION_NOT_ENOUGH` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2c_need_coverage_calibration_20260709/` |
 | v2d need spatial hard-negative | `codex/haze4k-v5-v2d-chd-rm-need-spatial-hard-negative` | paused | D7c frozen multi-context top-k HN is promising, but controls remained weak | `PAUSE_V2D_D7C_TOPK_PROMISING_BUT_CONTROLS_WEAK_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/` |
 | v2e D7c control recall audit | `codex/haze4k-v5-v2e-chd-rm-d7c-control-recall-audit` | paused | Fixed permutation and density matched controls are clean, but D7c top-k LDHN recall is low and D7c-RP has no safe recall-protected point | `PAUSE_V2E_D7C_RP_NO_SAFE_RECALL_PROTECTED_POINT_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2e_d7c_control_recall_audit_20260709/` |
+| v2f need target/head redesign | `codex/haze4k-v5-v2f-chd-rm-need-target-head-redesign` | paused | F0-F3 showed real LDHN support and frozen-feature separability, but F4/F4b could not satisfy LDHN recall and false-tail safety together | `PAUSE_V2F_F4B_NO_SAFE_LDHN_POINT_NO_F5_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_20260709/`; `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_f4b_tail_rescue_20260709/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | blocked | blocked by v2e RP failure | `BLOCKED_BY_V2E_D7C_RP_NO_SAFE_POINT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
@@ -56,7 +57,23 @@ D7c top-k should be retained as evidence of real `R_need` ranking signal, not pr
 - first LDHN-passing RP point LDHN recall `0.1096` but false-p90 `0.0599` and false-p95 `0.2069`;
 - strongest RP point LDHN recall `0.1822` but false-p95 `0.5348`.
 
-Current next action is not v3/RARM. Any continuation must diagnose or redesign the frozen-side-head `R_need` target/head so LDHN recall and false-tail safety pass together.
+v2f then diagnosed and attempted that frozen-side target/head redesign. F0-F3
+found enough LDHN support to justify a bounded F4 canary: LDHN pixel coverage
+`0.0899`, LDHN core fraction `0.5698`, and best frozen-feature probe AUROC
+`0.8107` / AUPRC `0.8078`. F4 and the supplemental F4b tail-rescue matrix both
+failed the original v2e safety/LDHN contract:
+
+- F4 selected variants had `safe_and_ldhn_points = 0`.
+- F4b selected variants also had `safe_and_ldhn_points = 0`.
+- Best F4b safe LDHN recall was only `0.0523`.
+- F4b variants that reached high LDHN recall had false-p95 near `0.9895` to
+  `1.0000`; the safest selected global point had false-p95 `0.0246` but LDHN
+  recall only `0.0262`.
+
+Current next action is not F5, v3, RARM, D2, or locked test. Keep v2f paused.
+Any future continuation must be a new written route decision that explains how
+it changes the target semantics or available information, not another strength
+sweep of the same F4/F4b family.
 
 ## Gate Summary
 
@@ -64,7 +81,8 @@ Current next action is not v3/RARM. Any continuation must diagnose or redesign t
 | --- | --- |
 | v1 data/baseline lock | any density/need training |
 | v2 density/need calibration | RARM connection |
-| v2e control and recall audit | v3 no-op RARM audit |
+| v2e control and recall audit | v2f target/head redesign |
+| v2f target/head redesign | F5 controls, v3 no-op RARM audit, RARM training, D2, locked test |
 | v3 no-op RARM audit | RARM training |
 | v4 single-scale matched controls | final candidate consideration |
 | v5 low-haze protection | final candidate consideration |

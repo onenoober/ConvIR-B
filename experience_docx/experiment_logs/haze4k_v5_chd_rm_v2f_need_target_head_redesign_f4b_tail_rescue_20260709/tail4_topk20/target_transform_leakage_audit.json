@@ -1,0 +1,20 @@
+{
+  "interpretation": "Low cond_target_density_spearman and moderate score_target_spearman support density-conditioned residual need rather than pure density proxy.",
+  "locked_haze4k_test_usage": "none",
+  "rows": [
+    {
+      "cond_target_density_spearman": 0.00953939061736107,
+      "score_cond_target_spearman": 0.3305825626784204,
+      "score_density_spearman": 0.6350102735041057,
+      "score_global_target_spearman": 0.517865754298486,
+      "variant": "f4_global_strat_control"
+    },
+    {
+      "cond_target_density_spearman": 0.00953939061736107,
+      "score_cond_target_spearman": 0.42460768437861346,
+      "score_density_spearman": -0.20415886777936132,
+      "score_global_target_spearman": 0.3391766066367176,
+      "variant": "f4_excess_strat_ldhn"
+    }
+  ]
+}

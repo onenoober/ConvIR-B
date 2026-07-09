@@ -1,0 +1,18 @@
+{
+  "ConvIR_B": "frozen",
+  "D2": "not_run",
+  "D3_density": "frozen",
+  "RARM": "not_connected_or_trained",
+  "best_safe_ldhn_recall": 0.05233281880197182,
+  "best_selected_ldhn_recall": 0.6660676374862502,
+  "global_contract_rows": 6,
+  "locked_haze4k_test_usage": "none",
+  "min_first_ldhn_false_p95": 0.2,
+  "next_gate": "Run F5 controls only if a selected pass or safe+LDHN point exists; otherwise keep v2f paused and do not run v3/RARM.",
+  "phase": "F4B_TAIL_RESCUE_MATRIX",
+  "safe_and_ldhn_point_any_variant": false,
+  "selected_gate_pass_any_variant": false,
+  "spec_count": 3,
+  "status": "COMPLETED_GATE_FAIL",
+  "v3": "not_run"
+}

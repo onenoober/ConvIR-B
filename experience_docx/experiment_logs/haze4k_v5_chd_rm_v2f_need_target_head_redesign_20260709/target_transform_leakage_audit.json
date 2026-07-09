@@ -1,0 +1,34 @@
+{
+  "interpretation": "Low cond_target_density_spearman and moderate score_target_spearman support density-conditioned residual need rather than pure density proxy.",
+  "locked_haze4k_test_usage": "none",
+  "rows": [
+    {
+      "cond_target_density_spearman": 0.00953939061736107,
+      "score_cond_target_spearman": 0.4023275424164992,
+      "score_density_spearman": 0.41307807730648366,
+      "score_global_target_spearman": 0.516754228519225,
+      "variant": "f4_global_strat_control"
+    },
+    {
+      "cond_target_density_spearman": 0.00953939061736107,
+      "score_cond_target_spearman": 0.41706898261416864,
+      "score_density_spearman": -0.39606839316963843,
+      "score_global_target_spearman": 0.2724344273600081,
+      "variant": "f4_cond_strat_core"
+    },
+    {
+      "cond_target_density_spearman": 0.00953939061736107,
+      "score_cond_target_spearman": 0.4043827224639696,
+      "score_density_spearman": -0.4216558107775583,
+      "score_global_target_spearman": 0.25262956963300887,
+      "variant": "f4_cond_strat_ldhn"
+    },
+    {
+      "cond_target_density_spearman": 0.00953939061736107,
+      "score_cond_target_spearman": 0.44452259479516293,
+      "score_density_spearman": -0.3183181606572309,
+      "score_global_target_spearman": 0.3236037956357422,
+      "variant": "f4_excess_strat_ldhn"
+    }
+  ]
+}

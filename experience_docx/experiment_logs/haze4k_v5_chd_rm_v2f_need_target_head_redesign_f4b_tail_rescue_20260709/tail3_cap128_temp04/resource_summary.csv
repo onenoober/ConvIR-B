@@ -1,0 +1,2 @@
+route_id,source_commit,device,train_images,val_images,epochs,variants,locked_haze4k_test_usage,D2,RARM,v3
+haze4k_v5_chd_rm_v2f_need_target_head_redesign_20260709,044b77989c3afb03a06774c6e565431a50b242cd,cuda,2400,600,8,f4_global_strat_control f4_excess_strat_ldhn,none,not_run,not_connected_or_trained,not_run

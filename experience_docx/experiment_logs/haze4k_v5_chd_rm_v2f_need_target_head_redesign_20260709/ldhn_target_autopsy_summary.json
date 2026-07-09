@@ -1,0 +1,12 @@
+{
+  "density_gradient_p90": 0.08528054505586624,
+  "images": 600,
+  "interpretation_hint": "High core with low D7c recall supports head/conditioning redesign; high boundary/unstable supports target core/ignore-band.",
+  "ldhn_adjacent_fraction_of_ldhn": 0.1092873665198517,
+  "ldhn_boundary_fraction_of_ldhn": 0.43020102936450094,
+  "ldhn_core_fraction_of_ldhn": 0.569798970635499,
+  "ldhn_isolated_fraction_of_ldhn": 0.8907126334801483,
+  "ldhn_pixel_coverage": 0.08988972981770833,
+  "ldhn_unstable_fraction_of_ldhn": 0.04701398288013833,
+  "pixels": 2457600
+}
