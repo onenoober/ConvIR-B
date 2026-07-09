@@ -1,5 +1,5 @@
 route_id=haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709
-state=PAUSED_AFTER_G4A
+state=PAUSED_AFTER_G4B
 host=RTX4090
 branch=codex/haze4k-v5-v2g-chd-rm-need-actionability-audit
 head=044b779
@@ -24,5 +24,9 @@ g3_actionable_target_done rc=0 2026-07-09T20:44:03+08:00
 g4a_script_archived /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709/run_v2g_g4a_actionability_control_audit.sh 2026-07-09T20:47:29+08:00
 g4a_control_audit_start 2026-07-09T20:47:53+08:00 cuda_visible_devices=0
 g4a_control_audit_done rc=0 2026-07-09T20:51:24+08:00
-final_decision=PAUSE_V2G_ACTIONABLE_TARGET_DEFINED_D7C_BEATS_DENSITY_CONTROLS_NO_F5_NO_V3_YET
+g4a_final_decision=PAUSE_V2G_ACTIONABLE_TARGET_DEFINED_D7C_BEATS_DENSITY_CONTROLS_NO_F5_NO_V3_YET
 final_closeout_written 2026-07-09T21:09:34+08:00
+g4b_selective_probe_screen_start 2026-07-09T21:28:01+08:00 cuda_visible_devices=0
+g4b_policy=no_locked_test_no_D2_no_RARM_no_v3_no_F5_no_weights_saved
+g4b_selective_probe_screen_done rc=0 2026-07-09T21:33:17+08:00
+g4b_final_decision=PAUSE_G4B_SELECTIVE_PROBE_NO_SAFE_IMPROVEMENT_NO_F5_NO_V3

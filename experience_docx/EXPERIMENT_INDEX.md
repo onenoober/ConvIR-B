@@ -21,7 +21,7 @@ decision says otherwise.
 
 ## Current CHD-RM v5 Route State
 
-As of 2026-07-09, CHD-RM is paused after v2g/G4a. v2f/F4b found no safe global-LDHN operating point; v2g then confirmed that the main bottleneck is `R_need` target actionability rather than density, scale, or control leakage. Global LDHN is over-broad as a hard RARM-positive signal; a three-state actionable/negative/ignore target is better supported, and D7c beats deployable density-only controls under that target. Decision: `PAUSE_V2G_ACTIONABLE_TARGET_DEFINED_D7C_BEATS_DENSITY_CONTROLS_NO_F5_NO_V3_YET`. Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md` and `experience_docx/experiment_cards/haze4k-chd-rm-v2g-need-actionability-audit.md` for the current CHD-RM status. F5/v3/RARM/D2/locked-test use remains blocked.
+As of 2026-07-09, CHD-RM is paused after v2g/G4b. v2f/F4b found no safe global-LDHN operating point; v2g then confirmed that the main bottleneck is `R_need` target actionability rather than density, scale, or control leakage. Global LDHN is over-broad as a hard RARM-positive signal; a three-state actionable/negative/ignore target is better supported, and D7c beats deployable density-only controls under that target. The small G4b selective-head/probe screen did not safely improve over D7c, so D7c remains the best deployable prior under the v2g target. Decision: `PAUSE_G4B_SELECTIVE_PROBE_NO_SAFE_IMPROVEMENT_NO_F5_NO_V3`. Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md` and `experience_docx/experiment_cards/haze4k-chd-rm-v2g-need-actionability-audit.md` for the current CHD-RM status. F5/v3/RARM/D2/locked-test use remains blocked.
 
 ## Official Architecture Anchor
 

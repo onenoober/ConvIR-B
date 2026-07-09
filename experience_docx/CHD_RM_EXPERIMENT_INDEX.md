@@ -2,7 +2,7 @@
 
 Date: 2026-07-09
 
-Status: v2g completed through G4a. The most likely blocker is not density, scale, or control leakage, but `R_need` target actionability: global LDHN is over-broad as a hard RARM-positive signal. F5/v3/RARM/D2/locked test remain blocked.
+Status: v2g completed through G4b. The most likely blocker is not density, scale, or control leakage, but `R_need` target actionability: global LDHN is over-broad as a hard RARM-positive signal, and the small G4b selective-probe screen did not safely improve over D7c. F5/v3/RARM/D2/locked test remain blocked.
 
 ## Research Direction
 
@@ -42,7 +42,7 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v2d need spatial hard-negative | `codex/haze4k-v5-v2d-chd-rm-need-spatial-hard-negative` | paused | D7c frozen multi-context top-k HN is promising, but controls remained weak | `PAUSE_V2D_D7C_TOPK_PROMISING_BUT_CONTROLS_WEAK_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/` |
 | v2e D7c control recall audit | `codex/haze4k-v5-v2e-chd-rm-d7c-control-recall-audit` | paused | Fixed permutation and density matched controls are clean, but D7c top-k LDHN recall is low and D7c-RP has no safe recall-protected point | `PAUSE_V2E_D7C_RP_NO_SAFE_RECALL_PROTECTED_POINT_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2e_d7c_control_recall_audit_20260709/` |
 | v2f need target/head redesign | `codex/haze4k-v5-v2f-chd-rm-need-target-head-redesign` | paused | F0-F3 showed real LDHN support and frozen-feature separability, but F4/F4b could not satisfy LDHN recall and false-tail safety together | `PAUSE_V2F_F4B_NO_SAFE_LDHN_POINT_NO_F5_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_20260709/`; `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_f4b_tail_rescue_20260709/` |
-| v2g need actionability audit | `codex/haze4k-v5-v2g-chd-rm-need-actionability-audit` | paused | G1-G4a show global LDHN is over-broad; three-state actionable/negative/ignore target is supported; D7c beats deployable density controls under that target | `PAUSE_V2G_ACTIONABLE_TARGET_DEFINED_D7C_BEATS_DENSITY_CONTROLS_NO_F5_NO_V3_YET` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709/` |
+| v2g need actionability audit | `codex/haze4k-v5-v2g-chd-rm-need-actionability-audit` | paused | G1-G4a show global LDHN is over-broad; three-state actionable/negative/ignore target is supported; G4b small selective probes did not safely improve over D7c | `PAUSE_G4B_SELECTIVE_PROBE_NO_SAFE_IMPROVEMENT_NO_F5_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | blocked | blocked by v2e RP failure | `BLOCKED_BY_V2E_D7C_RP_NO_SAFE_POINT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
@@ -101,9 +101,20 @@ The v2g result supports the revised bottleneck diagnosis:
   `0.113905`, negative false rate `0.002974` vs `0.049584`, and AUROC
   action-vs-negative `0.969589` vs `0.872087`.
 
-Decision: `PAUSE_V2G_ACTIONABLE_TARGET_DEFINED_D7C_BEATS_DENSITY_CONTROLS_NO_F5_NO_V3_YET`.
-The next possible work is only a small G4b selective-head/probe screen under the
-three-state target with controls and anti-ignore-collapse checks. It still does
+G4b then ran only the authorized small selective-head/probe screen under the
+three-state target. Thresholds were selected on train-calib to match D7c fixed
+coverage; no locked test, D2, RARM, v3, F5, or saved probe weights/checkpoints
+were used. The best probe was `context_image_density_linear`, but it did not
+safely improve over D7c:
+
+- action recall `0.488995` vs D7c `0.548312`;
+- low-adjacent recall `0.076751` vs D7c `0.155904`;
+- negative false rate `0.004045` vs D7c `0.002974`;
+- AUROC action-vs-negative `0.937536` vs D7c `0.969589`.
+
+Decision: `PAUSE_G4B_SELECTIVE_PROBE_NO_SAFE_IMPROVEMENT_NO_F5_NO_V3`.
+D7c remains the best deployable prior under the v2g three-state target. Any
+future continuation needs a new written target/features decision; it still does
 not authorize F5, v3, RARM, D2, or locked-test access.
 
 ## Gate Summary
@@ -114,7 +125,7 @@ not authorize F5, v3, RARM, D2, or locked-test access.
 | v2 density/need calibration | RARM connection |
 | v2e control and recall audit | v2f target/head redesign |
 | v2f target/head redesign | F5 controls, v3 no-op RARM audit, RARM training, D2, locked test |
-| v2g target actionability audit | G4b selective-head/probe screen only; still blocks F5, v3, RARM, D2, locked test |
+| v2g target actionability audit | G4b completed without safe improvement; still blocks F5, v3, RARM, D2, locked test |
 | v3 no-op RARM audit | RARM training |
 | v4 single-scale matched controls | final candidate consideration |
 | v5 low-haze protection | final candidate consideration |

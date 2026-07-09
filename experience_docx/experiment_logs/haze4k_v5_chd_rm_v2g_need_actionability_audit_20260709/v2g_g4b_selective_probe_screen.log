@@ -1,0 +1,74 @@
+V2G_G4B_PY_START
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/tools/run_chd_rm_v2_density_need_calibration.py:102: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=device)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/tools/run_chd_rm_v2d_need_spatial_hard_negative.py:85: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ckpt = torch.load(ckpt_path, map_location=device)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/tools/run_chd_rm_v2e_d7c_control_recall_audit.py:177: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ckpt = torch.load(path, map_location=device)
+g4b_collect_train_samples 150/2400 rows=2232 elapsed=8.8s
+g4b_collect_train_samples 300/2400 rows=4710 elapsed=17.0s
+g4b_collect_train_samples 450/2400 rows=7202 elapsed=24.8s
+g4b_collect_train_samples 600/2400 rows=10060 elapsed=35.4s
+g4b_collect_train_samples 750/2400 rows=13028 elapsed=45.8s
+g4b_collect_train_samples 900/2400 rows=15950 elapsed=56.1s
+g4b_collect_train_samples 1050/2400 rows=18912 elapsed=66.4s
+g4b_collect_train_samples 1200/2400 rows=21884 elapsed=77.1s
+g4b_collect_train_samples 1350/2400 rows=24802 elapsed=87.6s
+g4b_collect_train_samples 1500/2400 rows=27802 elapsed=98.0s
+g4b_collect_train_samples 1650/2400 rows=30734 elapsed=108.5s
+g4b_collect_train_samples 1800/2400 rows=33664 elapsed=118.8s
+g4b_collect_train_samples 1950/2400 rows=35968 elapsed=127.1s
+g4b_collect_train_samples 2100/2400 rows=38504 elapsed=135.2s
+g4b_collect_train_samples 2250/2400 rows=40906 elapsed=143.4s
+g4b_collect_train_samples 2400/2400 rows=43420 elapsed=151.6s
+g4b_train_sample_final rows=43420 positives=21710 negatives=21710
+g4b_train kind=linear permuted=False epoch=1 loss=0.686061
+g4b_train kind=linear permuted=False epoch=2 loss=0.565429
+g4b_train kind=linear permuted=False epoch=3 loss=0.496121
+g4b_train kind=linear permuted=False epoch=4 loss=0.453661
+g4b_train kind=linear permuted=False epoch=5 loss=0.425569
+g4b_train kind=linear permuted=False epoch=6 loss=0.407155
+g4b_train kind=mlp permuted=False epoch=1 loss=0.613350
+g4b_train kind=mlp permuted=False epoch=2 loss=0.413903
+g4b_train kind=mlp permuted=False epoch=3 loss=0.308536
+g4b_train kind=mlp permuted=False epoch=4 loss=0.265582
+g4b_train kind=mlp permuted=False epoch=5 loss=0.238891
+g4b_train kind=mlp permuted=False epoch=6 loss=0.222037
+g4b_train kind=linear permuted=False epoch=1 loss=0.614244
+g4b_train kind=linear permuted=False epoch=2 loss=0.491024
+g4b_train kind=linear permuted=False epoch=3 loss=0.428449
+g4b_train kind=linear permuted=False epoch=4 loss=0.392364
+g4b_train kind=linear permuted=False epoch=5 loss=0.370415
+g4b_train kind=linear permuted=False epoch=6 loss=0.356641
+g4b_train kind=mlp permuted=False epoch=1 loss=0.572447
+g4b_train kind=mlp permuted=False epoch=2 loss=0.348890
+g4b_train kind=mlp permuted=False epoch=3 loss=0.267125
+g4b_train kind=mlp permuted=False epoch=4 loss=0.227635
+g4b_train kind=mlp permuted=False epoch=5 loss=0.199437
+g4b_train kind=mlp permuted=False epoch=6 loss=0.179363
+g4b_train kind=linear permuted=False epoch=1 loss=0.688247
+g4b_train kind=linear permuted=False epoch=2 loss=0.536777
+g4b_train kind=linear permuted=False epoch=3 loss=0.458888
+g4b_train kind=linear permuted=False epoch=4 loss=0.415527
+g4b_train kind=linear permuted=False epoch=5 loss=0.388046
+g4b_train kind=linear permuted=False epoch=6 loss=0.370696
+g4b_train kind=mlp permuted=False epoch=1 loss=0.597915
+g4b_train kind=mlp permuted=False epoch=2 loss=0.368644
+g4b_train kind=mlp permuted=False epoch=3 loss=0.276402
+g4b_train kind=mlp permuted=False epoch=4 loss=0.236192
+g4b_train kind=mlp permuted=False epoch=5 loss=0.206706
+g4b_train kind=mlp permuted=False epoch=6 loss=0.185363
+g4b_train kind=mlp permuted=True epoch=1 loss=0.694310
+g4b_train kind=mlp permuted=True epoch=2 loss=0.691674
+g4b_train kind=mlp permuted=True epoch=3 loss=0.690129
+g4b_train kind=mlp permuted=True epoch=4 loss=0.688506
+g4b_score_train_calib 100/360 elapsed=7.2s
+g4b_score_train_calib 200/360 elapsed=15.6s
+g4b_score_train_calib 300/360 elapsed=23.7s
+g4b_score_val_inner 100/600 elapsed=7.3s
+g4b_score_val_inner 200/600 elapsed=16.2s
+g4b_score_val_inner 300/600 elapsed=24.1s
+g4b_score_val_inner 400/600 elapsed=33.2s
+g4b_score_val_inner 500/600 elapsed=41.5s
+g4b_score_val_inner 600/600 elapsed=49.3s
+V2G_G4B_PY_OK

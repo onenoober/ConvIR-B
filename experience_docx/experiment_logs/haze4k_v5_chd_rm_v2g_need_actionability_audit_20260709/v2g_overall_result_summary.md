@@ -1,10 +1,10 @@
 # v2g Result Summary
 
-Status: `PAUSED_AFTER_G4A`
+Status: `PAUSED_AFTER_G4B`
 
-Decision label: `PAUSE_V2G_ACTIONABLE_TARGET_DEFINED_D7C_BEATS_DENSITY_CONTROLS_NO_F5_NO_V3_YET`
+Decision label: `PAUSE_G4B_SELECTIVE_PROBE_NO_SAFE_IMPROVEMENT_NO_F5_NO_V3`
 
-Policy: locked Haze4K test, D2, RARM, v3, and F5 were not run.
+Policy: locked Haze4K test, D2, RARM, v3, and F5 were not run. G4b saved no probe weights/checkpoints.
 
 ## G0
 
@@ -85,6 +85,28 @@ Policy: no locked test, no D2, no RARM, no v3, no F5, no new head training. Thre
 
 Interpretation: compare D7c against deployable D3 density and diagnostic true-density oracle before any new training.
 
+## G4a Decision
+
+v2g supports the current bottleneck diagnosis: the old global LDHN target is over-broad and should not be used as a hard RARM-positive signal. The three-state actionable target is supported as a diagnostic contract, and D7c beats density-only controls under that contract. At G4a this authorized only the now-completed small G4b selective-head/probe screen with controls; it did not authorize F5, v3, RARM, D2, or locked Haze4K test access.
+
+## G4b Selective Probe Screen
+
+Status: `COMPLETED_G4B_SELECTIVE_PROBE_SCREEN`
+
+Decision: `PAUSE_G4B_SELECTIVE_PROBE_NO_SAFE_IMPROVEMENT_NO_F5_NO_V3`
+
+The small selective probe screen did not produce a safe improvement over D7c under the predeclared G4b gate. Keep F5/v3/RARM/D2/locked test blocked.
+
+Best G4b probe: `context_image_density_linear`.
+
+| Row | Action recall | Low-adj recall | Negative false | Ignore hit | Isolated hit | AUROC action-vs-neg |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| D7c | 0.548312 | 0.155904 | 0.002974 | 0.023026 | 0.022366 | 0.969589 |
+| best G4b probe | 0.488995 | 0.076751 | 0.004045 | 0.015271 | 0.016014 | 0.937536 |
+| label permutation control | 0.324078 | 0.288821 | 0.321668 | 0.292781 | 0.285292 | 0.510485 |
+
 ## Final Decision
 
-v2g supports the current bottleneck diagnosis: the old global LDHN target is over-broad and should not be used as a hard RARM-positive signal. The three-state actionable target is supported as a diagnostic contract, and D7c beats density-only controls under that contract. This authorizes at most a small G4b selective-head/probe screen with controls; it does not authorize F5, v3, RARM, D2, or locked Haze4K test access.
+G4b leaves D7c as the best deployable prior under the v2g three-state target.
+Any continuation needs a new written target/features decision. G4b does not
+authorize F5, v3, RARM, D2, or locked Haze4K test access.
