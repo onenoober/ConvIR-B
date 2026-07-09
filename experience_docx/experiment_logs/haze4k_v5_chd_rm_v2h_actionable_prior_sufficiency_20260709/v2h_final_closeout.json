@@ -1,0 +1,53 @@
+{
+  "authorized_next_stage": "v2h-C OOF stability audit and v2h-D FAM2 no-op equivalence review only",
+  "decision_label": "V2H_AB_PASS_PRIOR_SUFFICIENT_AUTHORIZE_OOF_AND_NOOP_ONLY",
+  "evidence_dir": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2h-actionable-prior-sufficiency/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2h_actionable_prior_sufficiency_20260709",
+  "explicitly_not_authorized": [
+    "locked Haze4K test",
+    "D2/F5/v3 expansion",
+    "RARM connection or training",
+    "adapter training",
+    "canary expansion"
+  ],
+  "interpretation": "The most likely immediate bottleneck is no longer whether a deployable actionable prior exists. D7c shows safer risk coverage than density matching and has a strong diagnostic shadow-modulation upper bound. The next uncertainty is whether the prior is stable out-of-fold and whether the intended FAM2/no-op insertion point is behaviorally neutral before any trained modulation.",
+  "locked_haze4k_test_usage": "none",
+  "route_identity": "v2h actionable-prior sufficiency audit after v2g/v2d/v2e/v2f/v2g evidence",
+  "runtime_source": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2h-actionable-prior-sufficiency",
+  "source_branch": "codex/haze4k-v5-v2h-actionable-prior-sufficiency",
+  "source_commit_expected_minimum": "178cb311602a808ae5b5522f40df4f6d4ee29e08",
+  "status": "COMPLETED_GATE_PASS",
+  "v2h_a_risk_coverage": {
+    "action_recall": 0.548312,
+    "decision_label": "V2H_A_D7C_RISK_COVERAGE_PASS_AUTHORIZE_SHADOW",
+    "density_matched_action_recall": 0.448391,
+    "density_matched_negative_false_rate": 0.047786,
+    "isolated_ldhn_hit_rate": 0.022366,
+    "low_adjacent_recall": 0.155904,
+    "negative_false_rate": 0.002974,
+    "negative_false_rate_p95": 0.047619,
+    "selected_coverage": 0.302695,
+    "status": "COMPLETED_GATE_PASS"
+  },
+  "v2h_b_shadow_modulation_alpha_0_3": {
+    "action_oracle_global_psnr_gain": 2.220821,
+    "d7c_action_region_psnr_gain": 1.695614,
+    "d7c_action_touch_rate": 0.571134,
+    "d7c_global_psnr_gain": 1.374164,
+    "d7c_isolated_region_psnr_gain": 0.176447,
+    "d7c_isolated_touch_rate": 0.023606,
+    "d7c_negative_region_psnr_gain": 0.010642,
+    "d7c_negative_touch_rate": 0.002698,
+    "d7c_selected_coverage": 0.289292,
+    "decision_label": "V2H_B_SHADOW_MODULATION_PASS_AUTHORIZE_OOF_NOOP_REVIEW",
+    "density_matched_global_psnr_gain": 0.97743,
+    "status": "COMPLETED_GATE_PASS"
+  },
+  "what_was_not_run": {
+    "D2": "not_run",
+    "F5": "not_run",
+    "RARM": "not_connected_or_trained",
+    "locked_test": "not_used",
+    "training": "none",
+    "v3": "not_run"
+  }
+}

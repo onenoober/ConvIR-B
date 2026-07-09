@@ -83,3 +83,17 @@ Policy: diagnostic oracle shadow only. No training, no locked test, no D2/F5/v3/
 
 v2h-C OOF stability and v2h-D FAM2 no-op equivalence review only
 
+## v2h A/B Final Closeout
+
+Status: `COMPLETED_GATE_PASS`
+
+Decision label: `V2H_AB_PASS_PRIOR_SUFFICIENT_AUTHORIZE_OOF_AND_NOOP_ONLY`
+
+Compact files:
+
+- `v2h_final_closeout.json`
+- `v2h_next_stage_decision.md`
+
+Authorized next stage: v2h-C OOF stability audit and v2h-D FAM2 no-op equivalence review only.
+
+Not authorized: locked test, D2/F5/v3, RARM connection/training, adapter training, canary expansion.
