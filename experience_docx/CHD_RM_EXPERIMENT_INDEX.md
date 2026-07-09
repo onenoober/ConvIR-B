@@ -2,7 +2,7 @@
 
 Date: 2026-07-09
 
-Status: v2c scale calibration audited; pause before D2/RARM.
+Status: v2d D7c top-k is promising, but controls are weak; pause before v3/RARM.
 
 ## Research Direction
 
@@ -43,6 +43,7 @@ Status: v2c scale calibration audited; pause before D2/RARM.
 | v2 density-need calibration | `codex/haze4k-v5-v2-chd-rm-density-need-calibration` | paused | density passes strongly; need remains below gate; shuffled control fails | `PAUSE_V2_DUAL_HEAD_NOT_PASSED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2_density_need_calibration_20260708/` |
 | v2b need calibration repair | `codex/haze4k-v5-v2b-chd-rm-need-calibration-repair` | paused | D6c improves need ranking (Pearson 0.3632, Spearman 0.3298, AUROC 0.7133) and shuffled control fails, but strong-response coverage remains 0 | `PAUSE_V2B_NEED_REPAIR_NOT_PASSED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2b_need_calibration_repair_20260708/` |
 | v2c need coverage calibration | `codex/haze4k-v5-v2c-chd-rm-need-coverage-calibration` | paused | Train-inner monotone/affine calibration restores coverage but creates unsafe false-strong responses; best d6c coverage-safe candidate still exceeds false-strong gate (0.1153 > 0.10) | `PAUSE_V2C_SCALE_CALIBRATION_NOT_ENOUGH` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2c_need_coverage_calibration_20260709/` |
+| v2d need spatial hard-negative | `codex/haze4k-v5-v2d-chd-rm-need-spatial-hard-negative` | paused | D7c frozen multi-context top-k HN passes candidate safety (Spearman 0.5175, AUROC 0.8456, coverage 0.3027, false p90 0.0246), but shuffled/random controls retain weak proxy signal | `PAUSE_V2D_D7C_TOPK_PROMISING_BUT_CONTROLS_WEAK_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | planned | TBD | TBD | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | planned | TBD | TBD | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | planned | TBD | TBD | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |

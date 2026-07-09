@@ -1,0 +1,8 @@
+{
+  "need_q33": 0.33,
+  "need_q66": 0.66,
+  "density_q33": 0.11554951980710029,
+  "tau_neg": 0.5,
+  "strong_pred_threshold": 0.66,
+  "source": "train_inner only"
+}
