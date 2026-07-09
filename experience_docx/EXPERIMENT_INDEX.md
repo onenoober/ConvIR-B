@@ -21,21 +21,25 @@ decision says otherwise.
 
 ## Current CHD-RM v5 Route State
 
-As of the v2h A/B closeout, CHD-RM is no longer blocked at the question
-"does a deployable actionable prior exist?" v2g reframed global LDHN into a
-three-state actionable/negative/ignore target, and v2h confirmed that D7c is a
-usable deployable prior: at the fixed operating point it has coverage
-`0.302695`, action recall `0.548312`, low-adjacent recall `0.155904`, negative
-false rate `0.002974`, and per-image negative false p95 `0.047619`. The v2h-B
-shadow-modulation diagnostic at alpha `0.3` gives D7c global PSNR gain
-`1.374164`, beating density-matched `0.977430`, with action-region gain
-`1.695614`, negative touch `0.002698`, and isolated touch `0.023606`.
+As of the v2h C/D closeout, D7c prior sufficiency is supported by A/B/C:
+v2h-A passed deployable risk coverage, v2h-B showed a strong diagnostic
+shadow-modulation upper bound, and v2h-C passed five-fold train OOF calibration
+stability. Key C metrics: D7c action recall mean/min `0.576335` / `0.556955`,
+low-adjacent recall mean `0.170063`, negative false mean/max `0.003403` /
+`0.003996`, and selected coverage std `0.010785`; density-matched negative
+false mean/max was `0.049636` / `0.063885`.
 
-Decision: `V2H_AB_PASS_PRIOR_SUFFICIENT_AUTHORIZE_OOF_AND_NOOP_ONLY`. Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
+v2h-D did not validate FAM2/no-op numerically because the branch correctly
+blocked architecture variants: `Official ConvIR-B anchor only supports
+fam_mode='original'. Create a route branch for architecture variants.` This is
+an architecture-boundary blocker, not a negative no-op result.
+
+Decision: `V2H_ABC_PASS_D_BLOCKED_CREATE_SEPARATE_NOOP_ARCH_BRANCH`. Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
 `experience_docx/experiment_cards/haze4k-chd-rm-v2h-actionable-prior-sufficiency.md`,
-and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2h_actionable_prior_sufficiency_20260709/` for the current CHD-RM status. Only v2h-C OOF stability and v2h-D
-FAM2 no-op equivalence review are authorized. F5/v3/RARM/D2/adapter training,
-canary expansion, and locked-test use remain blocked.
+and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2h_actionable_prior_sufficiency_20260709/` for the current CHD-RM status. The next supported action is a
+separate model-structure no-op branch from `github/codex/haze4k-official-arch-anchor`.
+F5/v3/RARM/D2/adapter training, canary expansion, architecture mutation inside
+v2h, and locked-test use remain blocked.
 
 ## Official Architecture Anchor
 
