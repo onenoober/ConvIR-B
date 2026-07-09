@@ -21,7 +21,21 @@ decision says otherwise.
 
 ## Current CHD-RM v5 Route State
 
-As of 2026-07-09, CHD-RM is paused after v2g/G4b. v2f/F4b found no safe global-LDHN operating point; v2g then confirmed that the main bottleneck is `R_need` target actionability rather than density, scale, or control leakage. Global LDHN is over-broad as a hard RARM-positive signal; a three-state actionable/negative/ignore target is better supported, and D7c beats deployable density-only controls under that target. The small G4b selective-head/probe screen did not safely improve over D7c, so D7c remains the best deployable prior under the v2g target. Decision: `PAUSE_G4B_SELECTIVE_PROBE_NO_SAFE_IMPROVEMENT_NO_F5_NO_V3`. Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md` and `experience_docx/experiment_cards/haze4k-chd-rm-v2g-need-actionability-audit.md` for the current CHD-RM status. F5/v3/RARM/D2/locked-test use remains blocked.
+As of the v2h A/B closeout, CHD-RM is no longer blocked at the question
+"does a deployable actionable prior exist?" v2g reframed global LDHN into a
+three-state actionable/negative/ignore target, and v2h confirmed that D7c is a
+usable deployable prior: at the fixed operating point it has coverage
+`0.302695`, action recall `0.548312`, low-adjacent recall `0.155904`, negative
+false rate `0.002974`, and per-image negative false p95 `0.047619`. The v2h-B
+shadow-modulation diagnostic at alpha `0.3` gives D7c global PSNR gain
+`1.374164`, beating density-matched `0.977430`, with action-region gain
+`1.695614`, negative touch `0.002698`, and isolated touch `0.023606`.
+
+Decision: `V2H_AB_PASS_PRIOR_SUFFICIENT_AUTHORIZE_OOF_AND_NOOP_ONLY`. Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
+`experience_docx/experiment_cards/haze4k-chd-rm-v2h-actionable-prior-sufficiency.md`,
+and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2h_actionable_prior_sufficiency_20260709/` for the current CHD-RM status. Only v2h-C OOF stability and v2h-D
+FAM2 no-op equivalence review are authorized. F5/v3/RARM/D2/adapter training,
+canary expansion, and locked-test use remain blocked.
 
 ## Official Architecture Anchor
 

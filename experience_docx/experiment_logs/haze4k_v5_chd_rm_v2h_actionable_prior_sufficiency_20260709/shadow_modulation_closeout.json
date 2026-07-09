@@ -1,0 +1,79 @@
+{
+  "D2": "not_run",
+  "F5": "not_run",
+  "RARM": "not_connected_or_trained",
+  "alpha_0_3": {
+    "action_oracle": {
+      "alpha": 0.3,
+      "base_psnr": 36.127843755983704,
+      "psnr_gain": 2.220820779700084,
+      "removed_energy_fraction": 0.4003222684548677,
+      "selected_coverage": 0.30251294948630136,
+      "selector": "action_oracle",
+      "shadow_psnr": 38.34866453568379
+    },
+    "d7c_action_region": {
+      "alpha": 0.3,
+      "base_region_psnr": 31.986887853364216,
+      "mean_abs_delta": 0.003613508673407738,
+      "pixels": 42400215,
+      "region": "action_positive",
+      "region_coverage": 1.078293228149414,
+      "region_psnr_gain": 1.6956139666226235,
+      "removed_energy_fraction": 0.32323388897188743,
+      "selector": "d7c_fixed",
+      "selector_touch_rate": 0.5711339671272894,
+      "shadow_region_psnr": 33.68250181998684
+    },
+    "d7c_fixed": {
+      "alpha": 0.3,
+      "base_psnr": 36.127843755983704,
+      "psnr_gain": 1.3741639414503837,
+      "removed_energy_fraction": 0.2712415459947122,
+      "selected_coverage": 0.2892921375570776,
+      "selector": "d7c_fixed",
+      "shadow_psnr": 37.50200769743409
+    },
+    "d7c_isolated_region": {
+      "alpha": 0.3,
+      "base_region_psnr": 33.29089624589143,
+      "mean_abs_delta": 0.00017178615872382006,
+      "pixels": 9924190,
+      "region": "isolated_ldhn",
+      "region_coverage": 0.2523852030436198,
+      "region_psnr_gain": 0.17644688938850095,
+      "removed_energy_fraction": 0.03981412908139762,
+      "selector": "d7c_fixed",
+      "selector_touch_rate": 0.023606259049856967,
+      "shadow_region_psnr": 33.46734313527993
+    },
+    "d7c_negative_region": {
+      "alpha": 0.3,
+      "base_region_psnr": 50.97890115682769,
+      "mean_abs_delta": 2.2250049273056955e-06,
+      "pixels": 21562895,
+      "region": "negative_low_risk",
+      "region_coverage": 0.5483727773030599,
+      "region_psnr_gain": 0.010641597048646645,
+      "removed_energy_fraction": 0.002447318693642185,
+      "selector": "d7c_fixed",
+      "selector_touch_rate": 0.00269806071958334,
+      "shadow_region_psnr": 50.989542753876336
+    },
+    "density_matched": {
+      "alpha": 0.3,
+      "base_psnr": 36.127843755983704,
+      "psnr_gain": 0.977430445077303,
+      "removed_energy_fraction": 0.20153302998821376,
+      "selected_coverage": 0.27971076626712327,
+      "selector": "density_matched",
+      "shadow_psnr": 37.10527420106101
+    }
+  },
+  "decision_label": "V2H_B_SHADOW_MODULATION_PASS_AUTHORIZE_OOF_NOOP_REVIEW",
+  "gate_pass": true,
+  "locked_haze4k_test_usage": "none",
+  "next_recommended_stage": "v2h-C OOF stability and v2h-D FAM2 no-op equivalence review only",
+  "status": "COMPLETED_GATE_PASS",
+  "v3": "not_run"
+}
