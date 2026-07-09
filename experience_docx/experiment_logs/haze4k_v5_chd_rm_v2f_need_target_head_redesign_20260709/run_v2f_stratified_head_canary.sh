@@ -2,7 +2,7 @@
 set -euo pipefail
 
 BASE=/sda/home/wangyuxin/ConvIR-B
-WORK=$BASE/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign
+WORK=${WORK:-$BASE/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign}
 PY=$BASE/envs/convir-cu121/bin/python
 DATA=$BASE/datasets/Haze4K/Haze4K
 A0=$BASE/checkpoints/official/Haze4K/haze4k-base.pkl
