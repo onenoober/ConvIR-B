@@ -1,0 +1,9 @@
+{
+  "ConvIR_B_unfreeze": "none",
+  "RARM": "not_connected_or_trained",
+  "adapter_training": "none",
+  "canary_expansion": "none",
+  "gate_mode": "d7c_fixed",
+  "locked_haze4k_test_usage": "none",
+  "training": "none"
+}
