@@ -1,0 +1,28 @@
+{
+  "blur_kernel": 9,
+  "candidate_threshold": 0.5773006677627563,
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "d7c_topk_artifact": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2d-chd-rm-need-spatial-hard-negative/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/d7c_full/artifacts/d7c_mc_topk_hn_ordinal_head.pt",
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "density_artifact": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2-chd-rm-density-need-calibration/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2_density_need_calibration_20260708/artifacts/d3_density_only_head.pt",
+  "density_gradient_p90_reused_from_v2f": 0.08528054505586624,
+  "density_q33": 0.11554951980710029,
+  "density_q66": 0.29922645330429076,
+  "locked_haze4k_test_usage": "none",
+  "map_grid": 64,
+  "need_q33": 0.33,
+  "need_q66": 0.66,
+  "need_q80": 0.8,
+  "policy": "val_inner only; train split Haze4K assets only; no locked/test path read",
+  "split_json": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798/experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/haze4k_internal_split_2400_600.json",
+  "stability_blur_radii": [
+    5,
+    9,
+    15
+  ],
+  "status": "resolved",
+  "train_inner_count": 2400,
+  "v2_thresholds": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2-chd-rm-density-need-calibration/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2_density_need_calibration_20260708/density_need_thresholds.json",
+  "v2b_thresholds": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2b-chd-rm-need-calibration-repair/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2b_need_calibration_repair_20260708/need_thresholds_v2b.json",
+  "val_inner_count": 600
+}

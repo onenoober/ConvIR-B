@@ -1,0 +1,3 @@
+variant,score_density_spearman,score_global_target_spearman,score_cond_target_spearman,cond_target_density_spearman
+f4_global_strat_control,0.6350102735041057,0.517865754298486,0.3305825626784204,0.00953939061736107
+f4_excess_strat_ldhn,-0.20415886777936132,0.3391766066367176,0.42460768437861346,0.00953939061736107

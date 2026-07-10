@@ -1,0 +1,36 @@
+{
+  "status": "COMPLETED_G0_G1_G2_ASSET_AUDIT",
+  "decision": "PAUSE_AFTER_V2G_INITIAL_AUDIT_DEFINE_ACTIONABLE_TARGET_BEFORE_TRAINING",
+  "locked_haze4k_test_usage": "none",
+  "D2": "not_run",
+  "RARM": "not_connected_or_trained",
+  "v3": "not_run",
+  "F5": "not_run",
+  "g0_reproduced": true,
+  "g1_primary_findings": {
+    "primary_observation": "Most global LDHN support is isolated from medium/high haze adjacency; D7c recall is substantially higher on haze-adjacent LDHN than isolated LDHN.",
+    "bottleneck": "global LDHN is likely over-broad as an RARM action target; it mixes haze-actionable need with post-A0 isolated residuals.",
+    "confidence": "high"
+  },
+  "ldhn_isolated_fraction_of_ldhn": 0.8907126334801483,
+  "ldhn_adjacent_to_haze_fraction_of_ldhn": 0.1092873665198517,
+  "d7c_weighted_recall_adjacent_to_haze": 0.15590440293252703,
+  "d7c_weighted_recall_isolated": 0.022366214361945417,
+  "best_current_info_probe": {
+    "auprc": 0.807792756659645,
+    "auroc": 0.8107264347671554,
+    "coverage": 0.5,
+    "false_positive_rate": 0.2729117709891049,
+    "feature_set": "feature_set_2",
+    "positive_prevalence": 0.5,
+    "precision": 0.7270882290108951,
+    "probe": "mlp",
+    "recall": 0.7270882290108951,
+    "threshold": 0.4924335181713104,
+    "train_rows": 74996,
+    "val_rows": 18724
+  },
+  "physics_oracle_asset_status": "unknown_requires_manual_path_contract",
+  "residual_oracle_asset_status": "unknown_requires_manual_path_contract",
+  "next_recommended_stage": "G2b explicit oracle path contract and oracle_gain computation, or G3 actionable target definition if oracle paths are accepted."
+}

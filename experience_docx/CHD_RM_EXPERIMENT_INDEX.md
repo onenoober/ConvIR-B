@@ -1,8 +1,12 @@
 # CHD-RM Haze4K Experiment Index
 
-Date: 2026-07-09
+Date: 2026-07-10
 
-Status: v2e completed; v2f first-stage supports a frozen-side density-stratified head canary. v3/RARM remains blocked.
+Status: v3a D7c-gated no-op connection audit passed. RARM/training, adapter
+work, canary expansion, and locked-test access remain blocked until a separate
+preflight/design decision is written. Backfilled v2f/F4b and v2g/G4b evidence
+confirms that the old global-LDHN head route and simple selective probes did
+not safely improve over D7c.
 
 ## Research Direction
 
@@ -41,8 +45,12 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v2c need coverage calibration | `codex/haze4k-v5-v2c-chd-rm-need-coverage-calibration` | paused | Train-inner calibration restores coverage but creates unsafe false-strong responses | `PAUSE_V2C_SCALE_CALIBRATION_NOT_ENOUGH` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2c_need_coverage_calibration_20260709/` |
 | v2d need spatial hard-negative | `codex/haze4k-v5-v2d-chd-rm-need-spatial-hard-negative` | paused | D7c frozen multi-context top-k HN is promising, but controls remained weak | `PAUSE_V2D_D7C_TOPK_PROMISING_BUT_CONTROLS_WEAK_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/` |
 | v2e D7c control recall audit | `codex/haze4k-v5-v2e-chd-rm-d7c-control-recall-audit` | paused | Fixed permutation and density matched controls are clean, but D7c top-k LDHN recall is low and D7c-RP has no safe recall-protected point | `PAUSE_V2E_D7C_RP_NO_SAFE_RECALL_PROTECTED_POINT_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2e_d7c_control_recall_audit_20260709/` |
-| v2f need target/head redesign | `codex/haze4k-v5-v2f-chd-rm-need-target-head-redesign` | F4 authorized | F0-F3/F2 first-stage shows LDHN core support, frozen feature separability, and density-conditioned target de-proxying; run frozen-side density-stratified head canary only | `F4_AUTHORIZED_PENDING_CLOUD_NO_V3_RARM` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_20260709/` |
-| v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | blocked | blocked by v2e RP failure | `BLOCKED_BY_V2E_D7C_RP_NO_SAFE_POINT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
+| v2f need target/head redesign | `codex/haze4k-v5-v2f-chd-rm-need-target-head-redesign` | paused | F0-F3 showed LDHN support and frozen-feature separability, but F4/F4b could not satisfy LDHN recall and false-tail safety together | `PAUSE_V2F_F4B_NO_SAFE_LDHN_POINT_NO_F5_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_20260709/`; `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_f4b_tail_rescue_20260709/` |
+| v2g need actionability audit | `codex/haze4k-v5-v2g-chd-rm-need-actionability-audit` | paused | G1-G4a show global LDHN is over-broad and D7c beats deployable density controls under the three-state target; G4b selective probes did not safely improve over D7c | `PAUSE_G4B_SELECTIVE_PROBE_NO_SAFE_IMPROVEMENT_NO_F5_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709/` |
+| v2h actionable prior sufficiency | `codex/haze4k-v5-v2h-actionable-prior-sufficiency` | completed with D preflight blocked | D7c A/B/C passed prior sufficiency; FAM2 no-op must move to a separate architecture branch | `V2H_ABC_PASS_D_BLOCKED_CREATE_SEPARATE_NOOP_ARCH_BRANCH` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2h_actionable_prior_sufficiency_20260709/` |
+| v2i FAM2 no-op arch equivalence | `codex/haze4k-v5-v2i-fam2-noop-arch-equivalence` | completed | FAM2-only zero-init architecture insertion from official anchor is exact A0-equivalent on random input, real train-derived batch, and internal val-inner 600 | `V2I_FAM2_NOOP_ARCH_EQUIVALENCE_PASS_AUTHORIZE_D7C_GATED_NOOP_CONNECTION_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2i_fam2_noop_arch_equivalence_20260710/` |
+| v3a D7c-gated no-op connection audit | `codex/haze4k-v5-v3a-d7c-gated-noop-connection-audit` | completed no-training audit | D7c gate tensors are connected into FAM2 as an external gate tensor; final zero-init modulation remains exact A0-equivalent on random, real-batch, and internal val-inner 600 checks | `V3A_D7C_GATED_NOOP_CONNECTION_PASS_AUTHORIZE_NO_TRAINING_RARM_PREFLIGHT_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3a_d7c_gated_noop_connection_audit_20260710/` |
+| v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
 | v6 multiscale haze modulation | `codex/haze4k-v5-v6-chd-rm-multiscale-haze-modulation` | blocked | blocked until earlier gates pass | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v6_multiscale_haze_modulation_20260708/` |
@@ -73,9 +81,172 @@ canary:
 - Density-conditioned target density Spearman `0.007215705298292346`, compared
   with global target density Spearman `0.31464418569286756`.
 
-Authorized next action: F4 density-stratified frozen-side `R_need` head canary
-on `train_inner`/`val_inner`. F4 does not authorize v3/RARM. If F4 passes, the
-next required phase is F5 stricter controls before any v3 no-op audit.
+F4 density-stratified frozen-side `R_need` head canary then ran on
+`train_inner`/`val_inner` and failed the original v2e global LDHN/false-tail
+gate. The supplemental F4b tail-rescue matrix also failed:
+
+- F4 selected variants had `safe_and_ldhn_points = 0`.
+- F4b selected variants also had `safe_and_ldhn_points = 0`.
+- Best F4b safe LDHN recall was only `0.0523`.
+- F4b variants that reached high LDHN recall had false-p95 near `0.9895` to
+  `1.0000`.
+
+Decision: `PAUSE_V2F_F4B_NO_SAFE_LDHN_POINT_NO_F5_NO_V3`. Do not run F5,
+v3, RARM, D2, ConvIR-B unfreeze, or locked Haze4K test from v2f. Do not repeat
+F4/F4b strength sweeps without changing target semantics or available
+information.
+
+## v2g Actionability Audit Closeout
+
+v2g tested whether the v2f failure was caused by the old global-LDHN target
+being over-broad as a hard RARM-positive signal. It completed G0 source
+reproduction, G1 semantic audit, G2/G2b available-information and oracle-gain
+diagnostics, G3 three-state actionable target definition, G4a actionability
+controls, and G4b selective-probe screening. No locked Haze4K test, D2, RARM,
+v3, F5, or saved probe weights/checkpoints were used.
+
+Key results:
+
+- LDHN coverage is `0.089890`, but isolated LDHN fraction is `0.890713` and
+  adjacent-to-haze fraction is only `0.109287`.
+- Under the three-state target, D7c has action recall `0.548312`,
+  low-adjacent recall `0.155904`, negative false rate `0.002974`, and isolated
+  LDHN hit rate `0.022366`.
+- D7c beats deployable D3 density control under that target: action recall
+  `0.548312` vs `0.454247`, low-adjacent recall `0.155904` vs `0.113905`,
+  negative false rate `0.002974` vs `0.049584`, and AUROC action-vs-negative
+  `0.969589` vs `0.872087`.
+- G4b selective probes did not beat D7c safely. The best probe,
+  `context_image_density_linear`, had action recall `0.488995`, low-adjacent
+  recall `0.076751`, negative false rate `0.004045`, and AUROC
+  action-vs-negative `0.937536`. Versus D7c this is action recall `-0.059317`,
+  low-adjacent recall `-0.079153`, negative false `+0.001071`, and AUROC
+  `-0.032053`.
+
+Decision: `PAUSE_G4B_SELECTIVE_PROBE_NO_SAFE_IMPROVEMENT_NO_F5_NO_V3`. This
+does not authorize F5, v3, RARM, D2, adapter training, canary expansion, or
+locked-test access. Do not repeat F4/F4b strength sweeps or a simple G4b
+selective-probe rerun without a new written route decision.
+
+## v2h A/B Closeout
+
+v2h tested whether D7c is sufficient as a deployable actionable prior before any
+future no-op/RARM/adapter work. It ran only risk-coverage and diagnostic
+shadow-modulation audits on the internal Haze4K split. No locked test, D2, F5,
+v3, RARM connection, RARM training, adapter training, new head family, or canary
+expansion was run.
+
+v2h-A fixed D7c operating point:
+
+- coverage `0.302695`;
+- action recall `0.548312`;
+- low-adjacent recall `0.155904`;
+- negative false rate `0.002974`;
+- isolated-LDHN hit rate `0.022366`;
+- per-image negative false p95 `0.047619`.
+
+The density-matched control at comparable coverage was worse: action recall
+`0.448391` and negative false rate `0.047786`.
+
+v2h-B alpha `0.3` shadow-modulation diagnostic:
+
+- D7c global PSNR gain `1.374164`;
+- density-matched global PSNR gain `0.977430`;
+- action-oracle global PSNR gain `2.220821`;
+- D7c action-region gain `1.695614`;
+- D7c negative touch `0.002698`;
+- D7c isolated touch `0.023606`.
+
+Decision: `V2H_AB_PASS_PRIOR_SUFFICIENT_AUTHORIZE_OOF_AND_NOOP_ONLY`. D7c is sufficient to justify v2h-C OOF stability and
+v2h-D FAM2 no-op equivalence review only. The remaining bottleneck is connection
+risk, not deployable-prior existence. RARM/training/locked-test access remain
+blocked.
+
+## v2h C/D Closeout
+
+v2h-C ran the authorized no-training fold calibration stability audit over the
+v1 fixed five-fold train OOF table. D7c stayed stable and safer than density
+matching:
+
+- D7c action recall mean/min `0.576335` / `0.556955`;
+- D7c low-adjacent recall mean `0.170063`;
+- D7c negative false mean/max `0.003403` / `0.003996`;
+- D7c selected coverage std `0.010785`;
+- density-matched negative false mean/max `0.049636` / `0.063885`.
+
+v2h-D attempted the authorized FAM2/no-op equivalence review but stopped at the
+correct preflight boundary: the v2h branch preserves the official architecture
+anchor and rejects `fam2_modres`. This means no-op insertion must be designed on
+a separate model-structure branch from `github/codex/haze4k-official-arch-anchor`.
+It does not authorize RARM/training/locked-test access.
+
+Decision: `V2H_ABC_PASS_D_BLOCKED_CREATE_SEPARATE_NOOP_ARCH_BRANCH`.
+
+## v2i Route Start
+
+v2i is the separate model-structure no-op audit required by v2h-D. It starts
+from `github/codex/haze4k-official-arch-anchor` and inserts only a FAM2
+zero-init modulation shell:
+
+- FAM1 remains original.
+- Candidate mode is only `fam2_modres`.
+- Expected new keys are exactly `FAM2.modulator.weight` and
+  `FAM2.modulator.bias`.
+- Expected parameter delta is `8320`.
+- Random input, real Haze4K train-derived batch, and internal val-inner 600 final
+  outputs must be no-op equivalent to A0 with max absolute difference `<= 1e-7`.
+- PSNR/SSIM deltas must be numerically equivalent.
+- No training, RARM connection, D7c forward injection, adapter training, or
+  locked Haze4K test is authorized.
+
+v2i passed on `convir-4090`:
+
+- candidate missing keys exactly `FAM2.modulator.weight` and
+  `FAM2.modulator.bias`;
+- unexpected keys and shape mismatches empty;
+- parameter delta exactly `8320`;
+- FAM2 modulator weight/bias stats all zero;
+- random tensor max/mean abs diff `0.0` / `0.0`;
+- real train-derived batch max/mean abs diff `0.0` / `0.0`;
+- internal val-inner 600 max abs diff `0.0`;
+- internal val-inner 600 PSNR/SSIM max absolute deltas `0.0` / `0.0`;
+- no training, RARM, D7c forward connection, adapter training, or locked test.
+
+Decision: `V2I_FAM2_NOOP_ARCH_EQUIVALENCE_PASS_AUTHORIZE_D7C_GATED_NOOP_CONNECTION_ONLY`.
+
+This authorizes only a separate D7c-gated no-op connection audit, not training.
+
+## v3a Closeout
+
+v3a ran the authorized D7c-gated FAM2 no-op connection audit on `convir-4090`.
+The route starts from `github/codex/haze4k-official-arch-anchor`, connects D7c
+gate tensors into FAM2 as an external gate tensor, and keeps final gamma/beta
+modulation zero-initialized.
+
+v3a passed:
+
+- candidate missing keys exactly `FAM2.modulator.weight` and
+  `FAM2.modulator.bias`;
+- unexpected keys and shape mismatches empty;
+- parameter delta exactly `8320`;
+- random and real-batch no-op equivalence passed;
+- internal val-inner 600 output max absolute diff `0.0`;
+- internal val-inner 600 PSNR/SSIM max absolute deltas `0.0` / `0.0`;
+- nontrivial D7c gate coverage `599/600`;
+- no locked Haze4K test, no training, no RARM, no adapter training, and no
+  ConvIR-B unfreeze.
+
+Attempts 1-4 were engineering/audit closeout issues, not scientific failures:
+CUDA no-op expression perturbation, deterministic audit setup, obsolete
+modulator shape expectation, and a missing-key order comparison bug. Attempt 5
+is the final valid pass.
+
+Decision:
+`V3A_D7C_GATED_NOOP_CONNECTION_PASS_AUTHORIZE_NO_TRAINING_RARM_PREFLIGHT_ONLY`.
+
+This pass authorizes only a separate preflight/design decision for any next
+route. It does not authorize RARM, training, adapter work, canary expansion, or
+locked-test access.
 
 ## Gate Summary
 
@@ -83,7 +254,12 @@ next required phase is F5 stricter controls before any v3 no-op audit.
 | --- | --- |
 | v1 data/baseline lock | any density/need training |
 | v2 density/need calibration | RARM connection |
-| v2e control and recall audit | v3 no-op RARM audit |
+| v2e control and recall audit | v2f target/head redesign only |
+| v2f target/head redesign | v2g actionability/prior diagnostics only; no F5, v3, RARM, D2, or locked test |
+| v2g target actionability audit | no-training prior-sufficiency/no-op architecture audits only; no F5, v3, RARM, D2, or locked test |
+| v2h actionable prior sufficiency | separate FAM2 no-op architecture branch only |
+| v2i FAM2 no-op arch equivalence | D7c-gated no-op connection audit |
+| v3a D7c-gated no-op connection audit | a separate preflight/design decision only |
 | v3 no-op RARM audit | RARM training |
 | v4 single-scale matched controls | final candidate consideration |
 | v5 low-haze protection | final candidate consideration |

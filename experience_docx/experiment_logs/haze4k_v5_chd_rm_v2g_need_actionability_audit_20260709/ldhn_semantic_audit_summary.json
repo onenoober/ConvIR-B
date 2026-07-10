@@ -1,0 +1,215 @@
+{
+  "source": "ldhn_core_boundary_isolated_support.csv + ldhn_connected_component_stats.csv + ldhn_target_stability_by_blur_radius.csv",
+  "pixels": 2457600.0,
+  "ldhn_pixels": 220913.0,
+  "ldhn_coverage": 0.08988972981770833,
+  "totals": {
+    "ldhn_pixels": 220913.0,
+    "ldhn_core_pixels": 125876.0,
+    "ldhn_boundary_pixels": 95037.0,
+    "ldhn_adjacent_to_haze_pixels": 24143.0,
+    "ldhn_isolated_pixels": 196770.0,
+    "ldhn_unstable_pixels": 10386.0
+  },
+  "fractions_of_ldhn": {
+    "ldhn_core_fraction_of_ldhn": 0.569798970635499,
+    "ldhn_boundary_fraction_of_ldhn": 0.43020102936450094,
+    "ldhn_adjacent_to_haze_fraction_of_ldhn": 0.1092873665198517,
+    "ldhn_isolated_fraction_of_ldhn": 0.8907126334801483,
+    "ldhn_unstable_fraction_of_ldhn": 0.04701398288013833
+  },
+  "weighted_recalls": {
+    "all_ldhn": {
+      "weighted_recall": 0.03696025132065564,
+      "per_image": {
+        "n": 599,
+        "mean": 0.05956585609779809,
+        "p50": 0.023809523809523808,
+        "p75": 0.07446808510638298,
+        "p90": 0.16666666666666666,
+        "p95": 0.23529411764705882,
+        "max": 0.8372093023255814
+      },
+      "pixels": 220913.0
+    },
+    "core": {
+      "weighted_recall": 0.04189837617973244,
+      "per_image": {
+        "n": 587,
+        "mean": 0.07692282396850857,
+        "p50": 0.020689655172413793,
+        "p75": 0.09375,
+        "p90": 0.23076923076923078,
+        "p95": 0.34106728538283065,
+        "max": 0.9428571428571428
+      },
+      "pixels": 125876.0
+    },
+    "boundary": {
+      "weighted_recall": 0.0304197312625609,
+      "per_image": {
+        "n": 592,
+        "mean": 0.05074896160771743,
+        "p50": 0.014705882352941176,
+        "p75": 0.07142857142857142,
+        "p90": 0.1388888888888889,
+        "p95": 0.18620689655172415,
+        "max": 1.0
+      },
+      "pixels": 95037.0
+    },
+    "adjacent_to_haze": {
+      "weighted_recall": 0.15590440293252703,
+      "per_image": {
+        "n": 520,
+        "mean": 0.16419544137036576,
+        "p50": 0.07692307692307693,
+        "p75": 0.25,
+        "p90": 0.47058823529411764,
+        "p95": 0.65,
+        "max": 1.0
+      },
+      "pixels": 24143.0
+    },
+    "isolated": {
+      "weighted_recall": 0.022366214361945417,
+      "per_image": {
+        "n": 594,
+        "mean": 0.0423191120599785,
+        "p50": 0.009389671361502348,
+        "p75": 0.04411764705882353,
+        "p90": 0.11267605633802817,
+        "p95": 0.17647058823529413,
+        "max": 1.0
+      },
+      "pixels": 196770.0
+    },
+    "unstable": {
+      "weighted_recall": 0.0544001540535336,
+      "per_image": {
+        "n": 580,
+        "mean": 0.06398132337009384,
+        "p50": 0.0,
+        "p75": 0.09523809523809523,
+        "p90": 0.2,
+        "p95": 0.3076923076923077,
+        "max": 1.0
+      },
+      "pixels": 10386.0
+    }
+  },
+  "ldhn_miss_rate_per_image": {
+    "n": 600,
+    "mean": 0.938866753662365,
+    "p50": 0.9761904761904762,
+    "p75": 0.9970940791863422,
+    "p90": 1.0,
+    "p95": 1.0,
+    "max": 1.0
+  },
+  "component_stats": {
+    "ldhn_components": {
+      "n": 600,
+      "mean": 11.885,
+      "p50": 11.0,
+      "p75": 17.0,
+      "p90": 22.0,
+      "p95": 26.0,
+      "max": 55.0
+    },
+    "ldhn_largest_component": {
+      "n": 600,
+      "mean": 236.45666666666668,
+      "p50": 108.0,
+      "p75": 281.0,
+      "p90": 650.0,
+      "p95": 961.0,
+      "max": 2347.0
+    },
+    "ldhn_component_p50": {
+      "n": 599,
+      "mean": 15.998330550918197,
+      "p50": 4.0,
+      "p75": 7.0,
+      "p90": 25.0,
+      "p95": 54.0,
+      "max": 961.0
+    },
+    "ldhn_component_p90": {
+      "n": 599,
+      "mean": 99.37729549248748,
+      "p50": 30.0,
+      "p75": 83.0,
+      "p90": 227.0,
+      "p95": 448.0,
+      "max": 1823.0
+    }
+  },
+  "stability_by_blur_radius": {
+    "5": {
+      "ldhn_q66_coverage": {
+        "n": 600,
+        "mean": 0.08867757161458334,
+        "p50": 0.0537109375,
+        "p75": 0.117431640625,
+        "p90": 0.212158203125,
+        "p95": 0.30029296875,
+        "max": 0.671875
+      },
+      "ldhn_q80_coverage": {
+        "n": 600,
+        "mean": 0.050871175130208335,
+        "p50": 0.01953125,
+        "p75": 0.060791015625,
+        "p90": 0.141357421875,
+        "p95": 0.221435546875,
+        "max": 0.62060546875
+      }
+    },
+    "9": {
+      "ldhn_q66_coverage": {
+        "n": 600,
+        "mean": 0.08988972981770833,
+        "p50": 0.054931640625,
+        "p75": 0.118896484375,
+        "p90": 0.21435546875,
+        "p95": 0.300537109375,
+        "max": 0.672119140625
+      },
+      "ldhn_q80_coverage": {
+        "n": 600,
+        "mean": 0.051226806640625,
+        "p50": 0.020263671875,
+        "p75": 0.06201171875,
+        "p90": 0.142578125,
+        "p95": 0.223876953125,
+        "max": 0.62255859375
+      }
+    },
+    "15": {
+      "ldhn_q66_coverage": {
+        "n": 600,
+        "mean": 0.09133097330729166,
+        "p50": 0.0556640625,
+        "p75": 0.119873046875,
+        "p90": 0.222412109375,
+        "p95": 0.303955078125,
+        "max": 0.676025390625
+      },
+      "ldhn_q80_coverage": {
+        "n": 600,
+        "mean": 0.05140543619791667,
+        "p50": 0.020263671875,
+        "p75": 0.062744140625,
+        "p90": 0.142822265625,
+        "p95": 0.226806640625,
+        "max": 0.6240234375
+      }
+    }
+  },
+  "interpretation": {
+    "primary_observation": "Most global LDHN support is isolated from medium/high haze adjacency; D7c recall is substantially higher on haze-adjacent LDHN than isolated LDHN.",
+    "bottleneck": "global LDHN is likely over-broad as an RARM action target; it mixes haze-actionable need with post-A0 isolated residuals.",
+    "confidence": "high"
+  }
+}

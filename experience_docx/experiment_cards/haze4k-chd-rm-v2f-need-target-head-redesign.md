@@ -1,10 +1,12 @@
 # Haze4K CHD-RM v2f Need Target/Head Redesign
 
-Status: `F4_AUTHORIZED_PENDING_CLOUD`
+Status: `PAUSED_AFTER_F4B_GATE_FAIL`
 
 Evidence root:
 
 `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_20260709/`
+
+`experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_f4b_tail_rescue_20260709/`
 
 Runtime source:
 
@@ -43,7 +45,7 @@ within-density need separability, and frozen feature separability.
 - RARM connection/training: not allowed.
 - v3 no-op RARM audit: not allowed from the v2e failed RP state.
 - Haze4K locked test: not allowed.
-- Further D7c-RP strength sweeping as the next step: not allowed.
+- Further D7c-RP, F4, or F4b strength sweeping as the next step: not allowed.
 
 ## First Stage
 
@@ -63,7 +65,7 @@ F0-F3/F2 completed on `convir-4090` with locked Haze4K test usage `none`.
 Observed LDHN core support, frozen feature separability, and density-conditioned
 target behavior support a small F4 density-stratified frozen-side head canary.
 
-F4 remains bounded:
+F4 remained bounded:
 
 - ConvIR-B A0 frozen.
 - D3 density frozen.
@@ -71,6 +73,23 @@ F4 remains bounded:
 - `val_inner` evaluation.
 - Original v2e global LDHN/false-tail gate remains primary.
 - D2, v3, RARM, and locked Haze4K test remain forbidden.
+
+## F4/F4b Closeout
+
+F4 density-stratified frozen-side head canary completed on `convir-4090` with
+`COMPLETED_GATE_FAIL`. All selected F4 variants failed the original v2e
+global LDHN/false-tail gate; selected variants had `safe_and_ldhn_points = 0`.
+
+F4b tail-rescue matrix then tested whether stronger tail pressure could rescue
+the same family. It also completed with `COMPLETED_GATE_FAIL`: selected
+variants again had `safe_and_ldhn_points = 0`, best safe LDHN recall was only
+`0.0523`, and variants with high LDHN recall had false-p95 near `0.9895` to
+`1.0000`.
+
+Decision: `PAUSE_V2F_F4B_NO_SAFE_LDHN_POINT_NO_F5_NO_V3`. Do not proceed to
+F5, v3, RARM, D2, ConvIR-B unfreeze, or locked Haze4K test from v2f. Any
+continuation must change target semantics or available information rather than
+repeat the same F4/F4b strength sweep.
 
 ## Metric Contract
 

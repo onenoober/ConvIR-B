@@ -1,6 +1,6 @@
 # CHD-RM v2f Need Target/Head Redesign Evidence
 
-Status: `F4_AUTHORIZED_PENDING_CLOUD`
+Status: `PAUSED_AFTER_F4B_GATE_FAIL`
 
 Route card: `experience_docx/experiment_cards/haze4k-chd-rm-v2f-need-target-head-redesign.md`
 
@@ -32,9 +32,11 @@ Key first-stage observations:
 
 ## Current Decision
 
-F4 density-stratified frozen-side head canary is authorized. This is not a v3,
-D2, or RARM step. ConvIR-B A0 and D3 density remain frozen, and the original v2e
-global LDHN/false-tail gate remains the primary decision contract.
+F4 density-stratified frozen-side head canary completed with
+`COMPLETED_GATE_FAIL`, and the supplemental F4b tail-rescue matrix also
+completed with `COMPLETED_GATE_FAIL`. This was not a v3, D2, or RARM step.
+ConvIR-B A0 and D3 density stayed frozen, and the original v2e global
+LDHN/false-tail gate remained the primary decision contract.
 
 Primary F4 files:
 
@@ -44,6 +46,20 @@ Primary F4 files:
 - `stratified_head_threshold_curve.csv`
 - `stratified_head_per_image_safety_metrics.csv`
 - `v2f_f4_stratified_head_closeout.json`
+- `v2f_f4_stratified_head_summary.md`
 
-Forbidden until later written authorization: D2, ConvIR-B unfreeze, v3, RARM
-connection/training, and locked Haze4K test.
+Primary F4b files:
+
+- `../haze4k_v5_chd_rm_v2f_need_target_head_redesign_f4b_tail_rescue_20260709/README.md`
+- `../haze4k_v5_chd_rm_v2f_need_target_head_redesign_f4b_tail_rescue_20260709/v2f_f4b_tail_rescue_closeout.json`
+- `../haze4k_v5_chd_rm_v2f_need_target_head_redesign_f4b_tail_rescue_20260709/v2f_f4b_tail_rescue_summary.md`
+- `../haze4k_v5_chd_rm_v2f_need_target_head_redesign_f4b_tail_rescue_20260709/f4b_tail_rescue_matrix_summary.csv`
+
+Key closeout: F4 selected variants had no safe+LDHN point, and F4b selected
+variants also had `safe_and_ldhn_points = 0`. Best F4b safe LDHN recall was
+only `0.0523`, while high-LDHN-recall variants had false-p95 near `0.9895` to
+`1.0000`.
+
+Forbidden until later written authorization: F5 controls, D2, ConvIR-B unfreeze,
+v3, RARM connection/training, and locked Haze4K test. Do not repeat F4/F4b
+strength sweeps without changing target semantics or available information.

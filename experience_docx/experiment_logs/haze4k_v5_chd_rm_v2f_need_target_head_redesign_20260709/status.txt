@@ -2,3 +2,14 @@ COMPLETED_FIRST_STAGE_AUDIT
 v2f_target_audit_done rc=0 2026-07-09T16:52:31+08:00
 V2F_TARGET_AUDIT_ONLY_OK
 F4_AUTHORIZED_PENDING_CLOUD
+v2f_f4_canary_start 2026-07-09T17:34:57+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2f-chd-rm-need-target-head-redesign-f4-044b7798
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+cuda_visible_devices=1
+locked_haze4k_test_usage=none
+D2=not_run RARM=not_connected_or_trained v3=not_run
+F4_CANARY_RUNNING 2026-07-09T17:34:59+0800
+F4_CANARY_DONE status=COMPLETED_GATE_FAIL 2026-07-09T18:04:22+0800
+V2F_F4_STRATIFIED_HEAD_CANARY_OK
+v2f_f4_canary_done rc=0 2026-07-09T18:04:23+08:00
+V2F_F4_STRATIFIED_HEAD_CANARY_OK

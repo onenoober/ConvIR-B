@@ -1,0 +1,96 @@
+{
+  "D2": "not_run",
+  "F5": "not_run",
+  "RARM": "not_connected_or_trained",
+  "decision": "D7C_TOPK_PASSES_PRELIMINARY_ACTIONABLE_LDHN_RECALL_AND_LOW_RISK_FALSE_RATE_UNDER_V2G_TARGET_BUT_NEEDS_G4_SCREEN_OR_CONTROLS_BEFORE_PROMOTION",
+  "locked_haze4k_test_usage": "none",
+  "next_recommended_stage": "G4a small selective-head/probe screen or control audit under the v2g three-state target; do not run F5/v3/RARM yet.",
+  "status": "COMPLETED_G3_ACTIONABLE_TARGET_DEFINITION",
+  "train_inner_gate": {
+    "action_positive_coverage": 0.341663818359375,
+    "action_positive_low_adjacent_coverage": 0.010603230794270833,
+    "action_positive_mid_high_coverage": 0.33106058756510415,
+    "d7c_action_recall": 0.5769427503325699,
+    "d7c_ignore_hit_rate": 0.024125480707450925,
+    "d7c_isolated_ldhn_hit_rate": 0.02439054936659716,
+    "d7c_low_adjacent_recall": 0.16660590594239882,
+    "d7c_negative_false_rate": 0.0032656239696799375,
+    "d7c_pred_high_coverage": 0.30833343505859373,
+    "ignore_abstain_coverage": 0.1947393798828125,
+    "ignore_isolated_ldhn_coverage": 0.08122406005859376,
+    "negative_low_risk_coverage": 0.12958536783854166,
+    "per_image_action_recall": {
+      "max": 0.9870237437879624,
+      "mean": 0.501001908217834,
+      "n": 2400,
+      "p50": 0.5265972417675204,
+      "p75": 0.7419104323064976,
+      "p90": 0.860774818401937,
+      "p95": 0.9196383726770467
+    },
+    "per_image_low_adjacent_recall": {
+      "max": 1.0,
+      "mean": 0.16218963636194994,
+      "n": 2125,
+      "p50": 0.08450704225352113,
+      "p75": 0.24,
+      "p90": 0.4444444444444444,
+      "p95": 0.6
+    },
+    "per_image_negative_false_rate": {
+      "max": 1.0,
+      "mean": 0.012917610222452995,
+      "n": 2254,
+      "p50": 0.0,
+      "p75": 0.00392156862745098,
+      "p90": 0.02127659574468085,
+      "p95": 0.058333333333333334
+    },
+    "pixels": 9830400,
+    "split": "train_inner"
+  },
+  "v3": "not_run",
+  "val_inner_gate": {
+    "action_positive_coverage": 0.3452254231770833,
+    "action_positive_low_adjacent_coverage": 0.009823811848958334,
+    "action_positive_mid_high_coverage": 0.335401611328125,
+    "d7c_action_recall": 0.5483118150551728,
+    "d7c_ignore_hit_rate": 0.02302618092523342,
+    "d7c_isolated_ldhn_hit_rate": 0.022366214361945417,
+    "d7c_low_adjacent_recall": 0.15590440293252703,
+    "d7c_negative_false_rate": 0.0029743024097268933,
+    "d7c_pred_high_coverage": 0.3026953125,
+    "ignore_abstain_coverage": 0.18856974283854167,
+    "ignore_isolated_ldhn_coverage": 0.08006591796875,
+    "negative_low_risk_coverage": 0.12763956705729165,
+    "per_image_action_recall": {
+      "max": 0.9837580509661159,
+      "mean": 0.49690038606240267,
+      "n": 600,
+      "p50": 0.5303643724696356,
+      "p75": 0.7095531587057011,
+      "p90": 0.8715995647442872,
+      "p95": 0.9235772357723577
+    },
+    "per_image_low_adjacent_recall": {
+      "max": 1.0,
+      "mean": 0.16419544137036576,
+      "n": 520,
+      "p50": 0.07692307692307693,
+      "p75": 0.25,
+      "p90": 0.47058823529411764,
+      "p95": 0.65
+    },
+    "per_image_negative_false_rate": {
+      "max": 0.5454545454545454,
+      "mean": 0.01114564079631026,
+      "n": 565,
+      "p50": 0.0,
+      "p75": 0.003861003861003861,
+      "p90": 0.02459016393442623,
+      "p95": 0.047619047619047616
+    },
+    "pixels": 2457600,
+    "split": "val_inner"
+  }
+}

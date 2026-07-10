@@ -1,0 +1,13 @@
+{
+  "ConvIR_B": "frozen",
+  "D2": "not_run",
+  "D3_density": "frozen",
+  "RARM": "not_connected_or_trained",
+  "elapsed_sec": 942.1423878669739,
+  "locked_haze4k_test_usage": "none",
+  "next_gate": "If F4 gate fails, do not run v3/RARM; inspect summary for target/head failure. If it passes, run F5 controls before any v3 no-op audit.",
+  "phase": "F4_STRATIFIED_HEAD_CANARY",
+  "selected_gate_pass_any_variant": false,
+  "status": "COMPLETED_GATE_FAIL",
+  "v3": "not_run"
+}
