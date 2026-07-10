@@ -1,0 +1,15 @@
+{
+  "RARM": "not_connected_or_trained",
+  "adapter_training": "none",
+  "canary_expansion": "none",
+  "cloud_runtime_launch": "none",
+  "decision_label": "V3B_RARM_PREFLIGHT_BLOCKED_GATE_PIPELINE_ABSENT_NO_RARM_TRAINING",
+  "github_main_fact_source": "7c3fbddee080f8c5adf305e433c88b259fcd340e",
+  "locked_haze4k_test_usage": "none",
+  "next_authorized_stage": "a separate gate-producing forward-contract design/preflight only; no RARM training",
+  "pass": false,
+  "preflight_blocker": "Current train/valid/eval and modulation-stat entrypoints do not compute or pass d7c_gate, while fam2_d7c_noop requires it.",
+  "route_id": "haze4k_v5_chd_rm_v3b_rarm_preflight_design_20260710",
+  "source_branch": "github/codex/haze4k-v5-v3a-d7c-gated-noop-connection-audit",
+  "training": "none"
+}

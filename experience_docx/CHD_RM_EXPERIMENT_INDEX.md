@@ -2,11 +2,12 @@
 
 Date: 2026-07-10
 
-Status: v3a D7c-gated no-op connection audit passed. RARM/training, adapter
-work, canary expansion, and locked-test access remain blocked until a separate
-preflight/design decision is written. Backfilled v2f/F4b and v2g/G4b evidence
-confirms that the old global-LDHN head route and simple selective probes did
-not safely improve over D7c.
+Status: v3b RARM preflight/design is blocked because the current train,
+validation, evaluation, and modulation-stat entrypoints do not compute or pass
+the required D7c gate for `fam2_d7c_noop`. RARM/training, adapter work, canary
+expansion, and locked-test access remain blocked. Backfilled v2f/F4b and
+v2g/G4b evidence confirms that the old global-LDHN head route and simple
+selective probes did not safely improve over D7c.
 
 ## Research Direction
 
@@ -50,6 +51,7 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v2h actionable prior sufficiency | `codex/haze4k-v5-v2h-actionable-prior-sufficiency` | completed with D preflight blocked | D7c A/B/C passed prior sufficiency; FAM2 no-op must move to a separate architecture branch | `V2H_ABC_PASS_D_BLOCKED_CREATE_SEPARATE_NOOP_ARCH_BRANCH` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2h_actionable_prior_sufficiency_20260709/` |
 | v2i FAM2 no-op arch equivalence | `codex/haze4k-v5-v2i-fam2-noop-arch-equivalence` | completed | FAM2-only zero-init architecture insertion from official anchor is exact A0-equivalent on random input, real train-derived batch, and internal val-inner 600 | `V2I_FAM2_NOOP_ARCH_EQUIVALENCE_PASS_AUTHORIZE_D7C_GATED_NOOP_CONNECTION_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2i_fam2_noop_arch_equivalence_20260710/` |
 | v3a D7c-gated no-op connection audit | `codex/haze4k-v5-v3a-d7c-gated-noop-connection-audit` | completed no-training audit | D7c gate tensors are connected into FAM2 as an external gate tensor; final zero-init modulation remains exact A0-equivalent on random, real-batch, and internal val-inner 600 checks | `V3A_D7C_GATED_NOOP_CONNECTION_PASS_AUTHORIZE_NO_TRAINING_RARM_PREFLIGHT_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3a_d7c_gated_noop_connection_audit_20260710/` |
+| v3b RARM preflight design | `codex/haze4k-v5-v3b-rarm-preflight-design` | completed preflight blocked | current train/valid/eval and modulation-stat entrypoints do not compute or pass the D7c gate required by `fam2_d7c_noop`; cloud v3a workspace is also dirty and not a clean parent runtime workspace | `V3B_RARM_PREFLIGHT_BLOCKED_GATE_PIPELINE_ABSENT_NO_RARM_TRAINING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3b_rarm_preflight_design_20260710/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
@@ -248,6 +250,34 @@ This pass authorizes only a separate preflight/design decision for any next
 route. It does not authorize RARM, training, adapter work, canary expansion, or
 locked-test access.
 
+## v3b Closeout
+
+v3b completed the separate no-training preflight/design decision authorized by
+v3a and stopped before any RARM or training launch. The preflight question was
+whether current runnable entrypoints can support `fam2_d7c_noop` without a new
+gate-producing runtime design.
+
+The answer is no:
+
+- `fam2_d7c_noop` raises if `d7c_gate` is absent in both forward and modulation
+  stats paths;
+- `train.py` still calls `pred_img = model(input_img)`;
+- `valid.py` and `eval.py` still call `model(input_img)[2]`;
+- train-time modulation stats still call
+  `model.collect_modulation_stats(input_img)`;
+- the existing cloud v3a workspace is dirty and behind the GitHub v3a pass
+  commit, so it is not a clean parent runtime workspace.
+
+Decision:
+`V3B_RARM_PREFLIGHT_BLOCKED_GATE_PIPELINE_ABSENT_NO_RARM_TRAINING`.
+
+This is not a v3a no-op numerical failure. It is an entrypoint/contract
+blocker: v3a proved that an externally supplied D7c gate can be no-op connected,
+but no approved train/valid/eval gate-producing pipeline exists yet. Do not run
+RARM, training, adapter work, canary expansion, or locked-test access from v3b.
+Any future continuation must first write and audit a gate-producing forward
+contract as a no-training preflight.
+
 ## Gate Summary
 
 | Stage | Must Pass Before |
@@ -260,6 +290,7 @@ locked-test access.
 | v2h actionable prior sufficiency | separate FAM2 no-op architecture branch only |
 | v2i FAM2 no-op arch equivalence | D7c-gated no-op connection audit |
 | v3a D7c-gated no-op connection audit | a separate preflight/design decision only |
+| v3b RARM preflight design | gate-producing train/valid/eval forward contract; no RARM training |
 | v3 no-op RARM audit | RARM training |
 | v4 single-scale matched controls | final candidate consideration |
 | v5 low-haze protection | final candidate consideration |
