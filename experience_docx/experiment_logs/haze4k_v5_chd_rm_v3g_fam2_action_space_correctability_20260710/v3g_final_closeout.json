@@ -1,0 +1,82 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3g_fam2_action_space_correctability_20260710",
+  "date": "2026-07-10",
+  "decision": "V3G_ACTION_ORACLE_STRONG_FEATURES_WEAK_REQUIRE_OPERATOR_CONTEXT_NO_TRAINING",
+  "status": "COMPLETED_GATE_PASS_STOP_NO_TRAINING",
+  "training_authorized": false,
+  "locked_test_touched": false,
+  "sample_count": 600,
+  "primary_metric": "image-level MSE/PSNR delta against A0 on internal val_inner",
+  "action_variable": "FAM2-scale alpha in d7c_gate = D7c_hard_gate * alpha, W_U modulator weights frozen",
+  "key_results": {
+    "best_action_policy": {
+      "mean_mse_gain": 2.3234261817985195e-05,
+      "mean_psnr_delta": 0.4126756445332392,
+      "median_psnr_delta": 0.338480543513775,
+      "p10_psnr_delta": 0.06007471847125814,
+      "policy": "ACTION_CLOSE_FILTER_POSITIVE_GRAD",
+      "positive_ratio": 0.9933333333333333,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.00024148151366887305
+    },
+    "hard_d7c_action_policy": {
+      "mean_mse_gain": -7.947499261717894e-07,
+      "mean_psnr_delta": 0.012783813961729357,
+      "median_psnr_delta": -0.0010759805321356453,
+      "p10_psnr_delta": -0.12151199691896011,
+      "policy": "W_U_G_D_ACTION_HARD",
+      "positive_ratio": 0.485,
+      "regression_le_0p2_count": 23,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.40053883645291677
+    },
+    "ungated_action_policy": {
+      "mean_mse_gain": -5.834582119253658e-07,
+      "mean_psnr_delta": 0.03306524052036514,
+      "median_psnr_delta": -0.0013316832596181882,
+      "p10_psnr_delta": -0.28457284311443165,
+      "policy": "W_U_G_1_ACTION_ALL",
+      "positive_ratio": 0.49833333333333335,
+      "regression_le_0p2_count": 91,
+      "regression_le_0p5_count": 19,
+      "worst_psnr_delta": -0.8744957773724522
+    },
+    "output_d7c_oracle_policy": {
+      "mean_mse_gain": 2.372331559854501e-06,
+      "mean_psnr_delta": 0.0782542212862073,
+      "median_psnr_delta": 0.03624842770391723,
+      "p10_psnr_delta": 0.002091605570710442,
+      "policy": "OUTPUT_D7C_GAIN_ORACLE_POS",
+      "positive_ratio": 0.995,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.0015797692883054992
+    },
+    "strong_action_mean_line": 0.04551901762396833,
+    "fd_overall_sign_agreement": 0.9106406378883696,
+    "fd_overall_spearman": 0.9320467922275462,
+    "fd_rows": 3640,
+    "fd_non_near_zero_rows": 3637
+  },
+  "interpretation": [
+    "The FAM2 actuator can realize a strong oracle when alpha is chosen with label-derived gate-site gradients.",
+    "The hard D7c replay and ungated W_U action remain weak and tail-risky, so the bottleneck is not actuator capacity but deployable operator-context control.",
+    "The v3f scalar proxy failure is therefore not evidence that D7c actionable prior failed; it shows that scalar/image-level proxy features are insufficient for action-site routing."
+  ],
+  "next_authorized_work": "Start a separate no-training operator-site context feature audit on internal val_inner only; no router training is authorized yet.",
+  "forbidden_next": [
+    "Do not continue v3d or the same FAM2 adapter.",
+    "Do not train v3f-B or any deployable ranker/router from this evidence alone.",
+    "Do not use locked Haze4K test, canary expansion, 20-epoch continuation, v4/RARM expansion, or backbone/FAM1/neighbor unfreeze."
+  ],
+  "artifacts": {
+    "summary_json": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3g_fam2_action_space_correctability_20260710/v3g_action_space_audit_summary.json",
+    "policy_summary_csv": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3g_fam2_action_space_correctability_20260710/v3g_action_policy_summary.csv",
+    "fd_alignment_csv_cloud_only_raw": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3g_fam2_action_space_correctability_20260710/v3g_gradient_fd_alignment.csv",
+    "per_image_policy_csv_cloud_only_raw": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3g_fam2_action_space_correctability_20260710/v3g_action_policy_per_image.csv",
+    "gradient_stats_csv_cloud_only_raw": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3g_fam2_action_space_correctability_20260710/v3g_gradient_action_stats_by_image.csv",
+    "log": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3g_fam2_action_space_correctability_20260710/v3g_action_space_audit.log",
+    "status": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3g_fam2_action_space_correctability_20260710/status.txt"
+  }
+}

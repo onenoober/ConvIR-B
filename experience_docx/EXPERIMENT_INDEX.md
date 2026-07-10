@@ -21,35 +21,35 @@ decision says otherwise.
 
 ## Current CHD-RM v5 Route State
 
-As of the v3f closeout on 2026-07-10, v3d RARM adapter-only remains paused and
+As of the v3g closeout on 2026-07-10, v3d RARM adapter-only remains paused and
 no v3f-B ranker training, v3d continuation, 20-epoch continuation, v4/RARM
-expansion, neighbor/FAM1/backbone unfreeze, canary expansion, or locked-test
+expansion, neighbor/FAM1 or backbone unfreeze, canary expansion, or locked-test
 access is authorized.
 
-v3f ran the no-training `D7c safety veto + FAM2 operator-correctability ranker`
-audit authorized by v3e. The v3f decision is
-`V3F_A_SCALAR_PROXY_SEPARABILITY_WEAK_NO_RANKER_TRAINING`.
+v3g ran the no-training `FAM2 action-space correctability` audit authorized by
+v3f/v3g routing. The v3g decision is
+`V3G_ACTION_ORACLE_STRONG_FEATURES_WEAK_REQUIRE_OPERATOR_CONTEXT_NO_TRAINING`.
 
-Key v3f facts:
+Key v3g facts:
 
-- best deployable scalar proxy for actual current-FAM2 positive marginal gain
-  was FAM2 correction magnitude with AUROC `0.532034`, below the predeclared
-  `0.56` gate for ranker training;
-- D7c score and D7c hard gate remained near random for current FAM2 positive
-  gain: AUROC `0.492237` and `0.492251`;
-- D7c-vetoed replay reduced `<= -0.2 dB` regressions from `91` to `18` versus
-  ungated control, but reduced mean PSNR delta from `+0.033065` to `+0.012366`;
-- the D7c-vetoed gain oracle has real upper-bound value (`+0.078254` mean PSNR
-  delta, zero `<= -0.2 dB` regressions), but the audited deployable scalar
-  features do not recover it.
+- best action-space oracle `ACTION_CLOSE_FILTER_POSITIVE_GRAD`: mean PSNR
+  delta `+0.412676 dB`, median `+0.338481 dB`, p10
+  `+0.060075 dB`, worst `-0.000241 dB`;
+- gradient/finite-difference validation passed with sign agreement
+  `0.910641` and Spearman `0.932047` over `3640` rows;
+- hard D7c action replay remained weak/tail-risky: mean `+0.012784 dB`,
+  p10 `-0.121512 dB`, `23` regressions <= -0.2 dB;
+- ungated W_U action remained tail-risky: mean `+0.033065 dB`,
+  p10 `-0.284573 dB`, `91` regressions <= -0.2 dB;
+- the current bottleneck is deployable operator-site context/controller quality,
+  not FAM2 actuator realizability and not D7c prior existence.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
-`experience_docx/experiment_cards/haze4k-chd-rm-v3f-operator-correctability-ranker.md`,
-and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3f_operator_correctability_ranker_20260710/`
-for current CHD-RM status. The next supported action is not more training from
-this route; any future route must introduce new operator-context features,
-operator target semantics, or a different correction operator before another
-correctability-ranker screen.
+`experience_docx/experiment_cards/haze4k-chd-rm-v3g-fam2-action-space-correctability.md`,
+and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3g_fam2_action_space_correctability_20260710/`
+for current CHD-RM status. The next supported action is a separate no-training
+operator-site context feature audit on internal `val_inner` only. No
+router/ranker training is authorized yet.
 
 ## Official Architecture Anchor
 
@@ -146,7 +146,7 @@ without a material new reason.
 
 | Family | Current verdict | Reopen condition |
 | --- | --- | --- |
-| [FAM/FAM2 feature modulation](family_summaries/fam_family_summary.md) | Closed for unchanged deployable FAM routing: hard samples can improve, but easy/strong-reference preservation and selector quality failed. | A new deployable selector or preservation guard passes a predeclared held-out diagnostic. |
+| [FAM/FAM2 feature modulation](family_summaries/fam_family_summary.md) | Closed for unchanged deployable FAM routing, but v3g shows the FAM2 actuator has a strong label-oracle action space; current blocker is deployable operator-site context. | A no-training operator-site context feature audit passes a predeclared held-out separability/replay gate before any router training. |
 | [Hard-frequency and haze-prior loss routes](family_summaries/frequency_prior_family_summary.md) | Closed for the tested weighting/SCM forms: hard movement came with global/easy damage. | A loss route shows target-group gain with explicit strong/easy protection before stop20. |
 | [PFD/RHFD preservation routes](family_summaries/pfd_rhfd_family_summary.md) | Diagnostic only: preservation improved in B1r, but hard-gain and strong-case gates failed. | A new mechanism explains how hard gain is recovered without losing the preservation benefit. |
 | [APDR output residual/action-bank routes](family_summaries/apdr_family_summary.md) | Current broad output-residual and coefficient-mapping forms are stopped; v0.4E OOF did not pass, and exact v0.4E numbers require fixed-code rerun before sealing. | A separately pre-registered safe-subset route passes fixed-code OOF/held-out gates without severe regressions. |

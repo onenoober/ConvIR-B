@@ -1,0 +1,14 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3g_fam2_action_space_correctability_20260710",
+  "date": "2026-07-10",
+  "route_branch": "codex/haze4k-v5-v3g-fam2-action-space-correctability",
+  "parent_branch": "origin/codex/haze4k-v5-v3f-operator-correctability-ranker",
+  "parent_commit": "6a153475b558752336a0b2447e9c600ab6a19f7f",
+  "cloud_workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3g-fam2-action-space-correctability",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "dataset_root": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "split_key": "val_inner",
+  "source_split": "train",
+  "locked_test_authorized": false,
+  "training_authorized_initially": false
+}

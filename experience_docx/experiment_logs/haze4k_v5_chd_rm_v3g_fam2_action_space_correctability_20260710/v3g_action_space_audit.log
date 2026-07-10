@@ -1,0 +1,329 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3g-fam2-action-space-correctability/experience_docx/tools/chd_rm_v3g_action_space_audit.py:115: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=map_location)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3g-fam2-action-space-correctability/Dehazing/ITS/d7c_gate.py:45: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=map_location)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3g-fam2-action-space-correctability/Dehazing/ITS/d7c_gate.py:93: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(path, map_location=device)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3g-fam2-action-space-correctability/Dehazing/ITS/d7c_gate.py:103: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(path, map_location=device)
+v3g_action_progress 25/600
+v3g_action_progress 50/600
+v3g_action_progress 75/600
+v3g_action_progress 100/600
+v3g_action_progress 125/600
+v3g_action_progress 150/600
+v3g_action_progress 175/600
+v3g_action_progress 200/600
+v3g_action_progress 225/600
+v3g_action_progress 250/600
+v3g_action_progress 275/600
+v3g_action_progress 300/600
+v3g_action_progress 325/600
+v3g_action_progress 350/600
+v3g_action_progress 375/600
+v3g_action_progress 400/600
+v3g_action_progress 425/600
+v3g_action_progress 450/600
+v3g_action_progress 475/600
+v3g_action_progress 500/600
+v3g_action_progress 525/600
+v3g_action_progress 550/600
+v3g_action_progress 575/600
+v3g_action_progress 600/600
+{
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "a0_checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "action_oracle_strong": true,
+  "best_action_space_policy": {
+    "mean_mse_gain": 2.3234261817985195e-05,
+    "mean_psnr_delta": 0.4126756445332392,
+    "median_psnr_delta": 0.338480543513775,
+    "p10_psnr_delta": 0.06007471847125814,
+    "policy": "ACTION_CLOSE_FILTER_POSITIVE_GRAD",
+    "positive_ratio": 0.9933333333333333,
+    "regression_le_0p2_count": 0,
+    "regression_le_0p5_count": 0,
+    "worst_psnr_delta": -0.00024148151366887305
+  },
+  "control_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-fam2modres-control-e5frome1-seed3407-20260710/Training-Results/Final.pkl",
+  "control_checkpoint_sha256": "08207119a5cf9e5c439dd2cb81b99029ade1861f2739d31e75f2f9f78d57c0f2",
+  "decision": "V3G_ACTION_ORACLE_STRONG_FEATURES_WEAK_REQUIRE_OPERATOR_CONTEXT_NO_TRAINING",
+  "fd_max_images": 120,
+  "fd_pass": true,
+  "fd_summary": {
+    "by_strategy": {
+      "close": {
+        "fd_gain_mse": {
+          "max": 2.138374838978052e-06,
+          "mean": 1.4154209103934748e-07,
+          "median": 4.2189640225842595e-08,
+          "min": -8.505303412675858e-07,
+          "n": 1818,
+          "p05": -5.828915163874626e-08,
+          "p10": -2.959277480840684e-08,
+          "p90": 4.562200047075748e-07,
+          "p95": 7.03091791365296e-07
+        },
+        "fd_gain_psnr": {
+          "max": 0.017346806683733007,
+          "mean": 0.002072398415857823,
+          "median": 0.0013068306037808952,
+          "min": -0.00802705202529097,
+          "n": 1818,
+          "p05": -0.0010207269303702305,
+          "p10": -0.0005377755380763461,
+          "p90": 0.0059141340293443504,
+          "p95": 0.007790668565276349
+        },
+        "non_near_zero_rows": 1816,
+        "rows": 1818,
+        "sign_agreement": 0.9074889867841409,
+        "spearman": 0.9326506058830889
+      },
+      "open": {
+        "fd_gain_mse": {
+          "max": 2.7030473574995995e-06,
+          "mean": 1.2546098241827866e-07,
+          "median": 3.79295670427382e-08,
+          "min": -7.011694833636284e-07,
+          "n": 1822,
+          "p05": -6.249028956517577e-08,
+          "p10": -3.259629011154175e-08,
+          "p90": 4.0822487790137545e-07,
+          "p95": 6.22149673290551e-07
+        },
+        "fd_gain_psnr": {
+          "max": 0.022265724288715205,
+          "mean": 0.0018635067175791842,
+          "median": 0.0012474150130259432,
+          "min": -0.01031337886393402,
+          "n": 1822,
+          "p05": -0.001084362752424184,
+          "p10": -0.000647430725039655,
+          "p90": 0.005567476270735485,
+          "p95": 0.006792272900188579
+        },
+        "non_near_zero_rows": 1821,
+        "rows": 1822,
+        "sign_agreement": 0.9137836353651839,
+        "spearman": 0.9309739772915872
+      }
+    },
+    "non_near_zero_rows": 3637,
+    "overall_sign_agreement": 0.9106406378883696,
+    "overall_spearman": 0.9320467922275462,
+    "rows": 3640
+  },
+  "hard_action_policy": {
+    "mean_mse_gain": -7.947499261717894e-07,
+    "mean_psnr_delta": 0.012783813961729357,
+    "median_psnr_delta": -0.0010759805321356453,
+    "p10_psnr_delta": -0.12151199691896011,
+    "policy": "W_U_G_D_ACTION_HARD",
+    "positive_ratio": 0.485,
+    "regression_le_0p2_count": 23,
+    "regression_le_0p5_count": 0,
+    "worst_psnr_delta": -0.40053883645291677
+  },
+  "locked_test_touched": false,
+  "metric_contract": {
+    "action_variable": "FAM2-scale alpha in d7c_gate = D7c_hard_gate * alpha, W_U modulator weights frozen",
+    "output_oracle": "post-output L1 positive pixel replay upper bound, not deployable FAM2 action",
+    "primary": "image-level MSE/PSNR delta against A0 on internal val_inner"
+  },
+  "next_action": "Authorize a separate operator-site context feature audit; no training yet.",
+  "output_d7c_oracle_policy": {
+    "mean_mse_gain": 2.372331559854501e-06,
+    "mean_psnr_delta": 0.0782542212862073,
+    "median_psnr_delta": 0.03624842770391723,
+    "p10_psnr_delta": 0.002091605570710442,
+    "policy": "OUTPUT_D7C_GAIN_ORACLE_POS",
+    "positive_ratio": 0.995,
+    "regression_le_0p2_count": 0,
+    "regression_le_0p5_count": 0,
+    "worst_psnr_delta": -0.0015797692883054992
+  },
+  "phase": "v3g-A/B/C no-training FAM2 action-space correctability audit",
+  "policy_summary": [
+    {
+      "mean_mse_gain": 0.0,
+      "mean_psnr_delta": 0.0,
+      "median_psnr_delta": 0.0,
+      "p10_psnr_delta": 0.0,
+      "policy": "A0",
+      "positive_ratio": 0.0,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": 0.0
+    },
+    {
+      "mean_mse_gain": -5.834582119253658e-07,
+      "mean_psnr_delta": 0.03306524052036514,
+      "median_psnr_delta": -0.0013316832596181882,
+      "p10_psnr_delta": -0.28457284311443165,
+      "policy": "W_U_G_1_ACTION_ALL",
+      "positive_ratio": 0.49833333333333335,
+      "regression_le_0p2_count": 91,
+      "regression_le_0p5_count": 19,
+      "worst_psnr_delta": -0.8744957773724522
+    },
+    {
+      "mean_mse_gain": -7.947499261717894e-07,
+      "mean_psnr_delta": 0.012783813961729357,
+      "median_psnr_delta": -0.0010759805321356453,
+      "p10_psnr_delta": -0.12151199691896011,
+      "policy": "W_U_G_D_ACTION_HARD",
+      "positive_ratio": 0.485,
+      "regression_le_0p2_count": 23,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.40053883645291677
+    },
+    {
+      "mean_mse_gain": 2.372331559854501e-06,
+      "mean_psnr_delta": 0.0782542212862073,
+      "median_psnr_delta": 0.03624842770391723,
+      "p10_psnr_delta": 0.002091605570710442,
+      "policy": "OUTPUT_D7C_GAIN_ORACLE_POS",
+      "positive_ratio": 0.995,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.0015797692883054992
+    },
+    {
+      "mean_mse_gain": 5.7375583552736015e-06,
+      "mean_psnr_delta": 0.2330726764214531,
+      "median_psnr_delta": 0.16187114358817922,
+      "p10_psnr_delta": 0.020846290059333937,
+      "policy": "OUTPUT_GLOBAL_GAIN_ORACLE_POS",
+      "positive_ratio": 0.9966666666666667,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.005843252252262232
+    },
+    {
+      "mean_mse_gain": 2.3238470162141313e-05,
+      "mean_psnr_delta": 0.4126536107342323,
+      "median_psnr_delta": 0.3394897784462181,
+      "p10_psnr_delta": 0.060538600476758124,
+      "policy": "ACTION_OPEN_POSITIVE_GRAD",
+      "positive_ratio": 0.9933333333333333,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.00024148151366887305
+    },
+    {
+      "mean_mse_gain": 2.3234261817985195e-05,
+      "mean_psnr_delta": 0.4126756445332392,
+      "median_psnr_delta": 0.338480543513775,
+      "p10_psnr_delta": 0.06007471847125814,
+      "policy": "ACTION_CLOSE_FILTER_POSITIVE_GRAD",
+      "positive_ratio": 0.9933333333333333,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.00024148151366887305
+    },
+    {
+      "mean_mse_gain": 2.066957719155956e-05,
+      "mean_psnr_delta": 0.36259478688129687,
+      "median_psnr_delta": 0.29899932042456356,
+      "p10_psnr_delta": 0.052371401962405174,
+      "policy": "ACTION_OPEN_TOP_0.25",
+      "positive_ratio": 0.9966666666666667,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.00024148151366887305
+    },
+    {
+      "mean_mse_gain": 6.461883306959257e-08,
+      "mean_psnr_delta": 0.001388733456526546,
+      "median_psnr_delta": 0.001142245476049908,
+      "p10_psnr_delta": 0.0003624330275506793,
+      "policy": "ACTION_CLOSE_KEEP_0.25",
+      "positive_ratio": 0.9816666666666667,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.00024148151366887305
+    },
+    {
+      "mean_mse_gain": 2.320090635445619e-05,
+      "mean_psnr_delta": 0.4117045463881026,
+      "median_psnr_delta": 0.33818029021220397,
+      "p10_psnr_delta": 0.06077173794563464,
+      "policy": "ACTION_OPEN_TOP_0.5",
+      "positive_ratio": 0.995,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.0005985447974339309
+    },
+    {
+      "mean_mse_gain": 6.461883306959257e-08,
+      "mean_psnr_delta": 0.001388733456526546,
+      "median_psnr_delta": 0.001142245476049908,
+      "p10_psnr_delta": 0.0003624330275506793,
+      "policy": "ACTION_CLOSE_KEEP_0.5",
+      "positive_ratio": 0.9816666666666667,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.00024148151366887305
+    },
+    {
+      "mean_mse_gain": 2.0354959134844344e-05,
+      "mean_psnr_delta": 0.3631122360944429,
+      "median_psnr_delta": 0.28872359112618895,
+      "p10_psnr_delta": 0.049680125230709395,
+      "policy": "ACTION_OPEN_TOP_0.75",
+      "positive_ratio": 0.9916666666666667,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.005186050635856532
+    },
+    {
+      "mean_mse_gain": 6.461883306959257e-08,
+      "mean_psnr_delta": 0.001388733456526546,
+      "median_psnr_delta": 0.001142245476049908,
+      "p10_psnr_delta": 0.0003624330275506793,
+      "policy": "ACTION_CLOSE_KEEP_0.75",
+      "positive_ratio": 0.9816666666666667,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.00024148151366887305
+    },
+    {
+      "mean_mse_gain": -7.947499261717894e-07,
+      "mean_psnr_delta": 0.012783813961729357,
+      "median_psnr_delta": -0.0010759805321356453,
+      "p10_psnr_delta": -0.12151199691896011,
+      "policy": "ACTION_OPEN_TOP_1",
+      "positive_ratio": 0.485,
+      "regression_le_0p2_count": 23,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.40053883645291677
+    },
+    {
+      "mean_mse_gain": -7.947499261717894e-07,
+      "mean_psnr_delta": 0.012783813961729357,
+      "median_psnr_delta": -0.0010759805321356453,
+      "p10_psnr_delta": -0.12151199691896011,
+      "policy": "ACTION_CLOSE_KEEP_1",
+      "positive_ratio": 0.485,
+      "regression_le_0p2_count": 23,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.40053883645291677
+    }
+  ],
+  "route_id": "haze4k_v5_chd_rm_v3g_fam2_action_space_correctability_20260710",
+  "sample_count": 600,
+  "strong_action_mean_line": 0.04551901762396833,
+  "training_authorized": false,
+  "ungated_action_policy": {
+    "mean_mse_gain": -5.834582119253658e-07,
+    "mean_psnr_delta": 0.03306524052036514,
+    "median_psnr_delta": -0.0013316832596181882,
+    "p10_psnr_delta": -0.28457284311443165,
+    "policy": "W_U_G_1_ACTION_ALL",
+    "positive_ratio": 0.49833333333333335,
+    "regression_le_0p2_count": 91,
+    "regression_le_0p5_count": 19,
+    "worst_psnr_delta": -0.8744957773724522
+  }
+}

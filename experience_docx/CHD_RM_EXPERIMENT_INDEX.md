@@ -2,13 +2,13 @@
 
 Date: 2026-07-10
 
-Status: v3f operator-correctability audit completed after v3e. v3d remains
-stopped: no v3f-B ranker training, 20-epoch continuation, v4/RARM expansion,
-neighbor/FAM1 or backbone unfreeze, canary expansion, or locked-test access is
-authorized. v3f found that a D7c-vetoed gain oracle has useful upper-bound
-value, but current deployable scalar proxies are too weak to train a ranker.
-The current bottleneck is missing deployable operator-correctability signal for
-the current FAM2 correction, not D7c prior existence.
+Status: v3g FAM2 action-space correctability audit completed after v3f.
+v3d remains stopped: no v3f-B ranker training, 20-epoch continuation, v4/RARM
+expansion, neighbor/FAM1 or backbone unfreeze, canary expansion, or locked-test
+access is authorized. v3g found a strong label-oracle action space at the true
+FAM2 actuator, while hard D7c and ungated W_U action replay remain weak or
+tail-risky. The latest bottleneck is deployable operator-site context/controller
+quality, not D7c prior existence and not FAM2 actuator realizability.
 
 ## Research Direction
 
@@ -377,6 +377,35 @@ unfreeze, canary expansion, or locked-test access from this evidence. Any future
 route must introduce new operator-context features, operator target semantics,
 or a different correction operator before another correctability-ranker screen.
 
+## v3g Closeout
+
+v3g ran the authorized no-training FAM2 action-space correctability audit on
+`convir-4090`. It used internal train-derived `val_inner` 600 only,
+produced no checkpoints, and did not touch the Haze4K locked test.
+
+Decision:
+`V3G_ACTION_ORACLE_STRONG_FEATURES_WEAK_REQUIRE_OPERATOR_CONTEXT_NO_TRAINING`.
+
+Key evidence:
+
+- best action-space oracle `ACTION_CLOSE_FILTER_POSITIVE_GRAD`: mean PSNR
+  delta `+0.412676 dB`, median `+0.338481 dB`, p10
+  `+0.060075 dB`, worst `-0.000241 dB`;
+- gradient/finite-difference alignment: sign agreement `0.910641`,
+  Spearman `0.932047`, rows `3640`;
+- hard D7c action replay: mean `+0.012784 dB`, p10
+  `-0.121512 dB`, `23` regressions <= -0.2 dB;
+- ungated W_U action replay: mean `+0.033065 dB`, p10
+  `-0.284573 dB`, `91` regressions <= -0.2 dB;
+- output D7c gain oracle reference: mean `+0.078254 dB`.
+
+Interpretation: the FAM2 actuator can realize a strong correction oracle when
+alpha is selected with label-derived gate-site gradients. The remaining blocker
+is a deployable inference-time operator-site context/controller. Therefore do
+not train v3f-B or another router from scalar proxies. The only authorized next
+work is a separate no-training operator-site context feature audit on internal
+`val_inner`.
+
 ## Gate Summary
 
 | Stage | Must Pass Before |
@@ -394,6 +423,7 @@ or a different correction operator before another correctability-ranker screen.
 | v3d matched-control utility gate | v3e mechanism audit only; no 20-epoch, v4, neighbor/FAM1/backbone unfreeze, or locked test |
 | v3e matched utility mechanism audit | separate v3f design/audit for D7c safety veto plus FAM2 operator-correctability ranker only; no direct RARM expansion |
 | v3f operator-correctability ranker audit | no v3f-B scalar-feature ranker training; future work needs new operator context, target semantics, or correction operator |
+| v3g FAM2 action-space correctability | no-training operator-site context feature audit only; no router/ranker training yet |
 | v3 no-op RARM audit | RARM training |
 | v4 single-scale matched controls | final candidate consideration |
 | v5 low-haze protection | final candidate consideration |
