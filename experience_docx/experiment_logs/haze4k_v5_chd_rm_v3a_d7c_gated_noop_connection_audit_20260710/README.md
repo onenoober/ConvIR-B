@@ -1,6 +1,6 @@
 # v3a D7c-Gated No-Op Connection Audit
 
-Status: `PLANNED`
+Status: `COMPLETED_GATE_PASS`
 
 Route card:
 `experience_docx/experiment_cards/haze4k-chd-rm-v3a-d7c-gated-noop-connection-audit.md`
@@ -46,7 +46,28 @@ thresholds.
 
 ## Decision
 
-Pending.
+`V3A_D7C_GATED_NOOP_CONNECTION_PASS_AUTHORIZE_NO_TRAINING_RARM_PREFLIGHT_ONLY`
+
+v3a passes as a no-training/no-RARM connection audit. Real D7c gate tensors are
+connected into the FAM2 no-op shell, the gates are nontrivial on internal
+samples, and the final candidate remains exact A0-equivalent on the declared
+checks.
+
+Key final evidence from attempt 5:
+
+- state compatibility passed with only `FAM2.modulator.weight` and
+  `FAM2.modulator.bias` missing from the A0 checkpoint;
+- parameter delta is exactly `8320`;
+- internal val-inner 600 output max absolute diff is `0.0`;
+- internal val-inner 600 PSNR and SSIM delta max absolute values are `0.0`;
+- nontrivial D7c gate coverage is `599/600`;
+- `d7c_noop_per_image_diff_summary.csv` has `600` rows;
+- `forbidden_flow_audit.json` records no locked test, no training, no RARM, no
+  adapter training, and no ConvIR-B unfreeze.
+
+Next authorized stage remains conservative: RARM/training is still blocked.
+Only a separately written preflight/design decision may be opened after this
+audit.
 
 ## Attempt Notes
 
@@ -63,3 +84,9 @@ Pending.
   `[128,65,1,1]` expected modulator shape from the earlier gate-concat design.
   Correction before attempt 4: expected shape is `[128,64,1,1]` because D7c gate
   externally multiplies gamma/beta and adds no parameters.
+- Attempt 4 passed random, real batch, and val-inner 600 equivalence, but
+  closeout still failed because the audit compared sorted candidate missing keys
+  against an unsorted expected list. This was an audit key-order bug, not a
+  model or metric failure.
+- Attempt 5 reran the same cloud audit after the key-order fix and passed with
+  `V3A_D7C_GATED_NOOP_CONNECTION_OK`.

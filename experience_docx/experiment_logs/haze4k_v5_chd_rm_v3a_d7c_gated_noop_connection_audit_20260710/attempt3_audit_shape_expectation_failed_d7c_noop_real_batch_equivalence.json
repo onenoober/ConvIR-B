@@ -1,0 +1,114 @@
+{
+  "batch_size": 4,
+  "d7c": {
+    "gate": {
+      "max": 1.0,
+      "max_abs": 1.0,
+      "mean": 0.5131344795227051,
+      "min": 0.0,
+      "std": 0.49982744455337524
+    },
+    "gate_shape": [
+      4,
+      1,
+      416,
+      416
+    ],
+    "nontrivial_gate": true,
+    "score": {
+      "max": 0.9379627108573914,
+      "max_abs": 0.9379627108573914,
+      "mean": 0.6070263385772705,
+      "min": 0.11388902366161346,
+      "std": 0.12457464635372162
+    },
+    "score_shape": [
+      4,
+      1,
+      416,
+      416
+    ],
+    "selected_coverage": 0.5131344795227051,
+    "threshold": 0.5773006677627563
+  },
+  "input_shape": [
+    4,
+    3,
+    400,
+    400
+  ],
+  "max_abs_diff": 0.0,
+  "mean_abs_diff": 0.0,
+  "modulation_forward_stats": {
+    "FAM2": {
+      "beta_max": 0.0,
+      "beta_mean": 0.0,
+      "beta_min": 0.0,
+      "beta_std": 0.0,
+      "d7c_gate_max": 1.0,
+      "d7c_gate_mean": 0.5131460428237915,
+      "d7c_gate_min": 0.0,
+      "d7c_gate_shape": [
+        4,
+        1,
+        208,
+        208
+      ],
+      "d7c_gate_std": 0.49982714653015137,
+      "gamma_max": 0.0,
+      "gamma_mean": 0.0,
+      "gamma_min": 0.0,
+      "gamma_std": 0.0
+    }
+  },
+  "names": [
+    "1002_0.73_1.47.png",
+    "1007_0.68_1.25.png",
+    "1012_0.85_1.28.png",
+    "1016_0.8_1.72.png"
+  ],
+  "outputs": [
+    {
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "output_index": 0,
+      "shape": [
+        4,
+        3,
+        100,
+        100
+      ]
+    },
+    {
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "output_index": 1,
+      "shape": [
+        4,
+        3,
+        200,
+        200
+      ]
+    },
+    {
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "output_index": 2,
+      "shape": [
+        4,
+        3,
+        400,
+        400
+      ]
+    }
+  ],
+  "padded_shape": [
+    4,
+    3,
+    416,
+    416
+  ],
+  "pass": true,
+  "source_split": "train",
+  "split_key": "val_inner"
+}

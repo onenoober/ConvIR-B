@@ -1,0 +1,10 @@
+{
+  "ConvIR_B_unfreeze": "none",
+  "D7c_gate_forward_connection": "connected_as_external_gate_tensor",
+  "RARM": "not_connected_or_trained",
+  "adapter_training": "none",
+  "final_modulation": "zero_init_noop",
+  "locked_haze4k_test_usage": "none",
+  "source_split": "train",
+  "training": "none"
+}

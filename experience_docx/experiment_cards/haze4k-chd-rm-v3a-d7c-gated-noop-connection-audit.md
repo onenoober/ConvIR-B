@@ -1,6 +1,6 @@
 # Haze4K CHD-RM v3a D7c-Gated No-Op Connection Audit
 
-Status: `PLANNED`
+Status: `COMPLETED_GATE_PASS`
 
 Evidence root:
 `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3a_d7c_gated_noop_connection_audit_20260710/`
@@ -73,4 +73,25 @@ candidate is not exact no-op equivalent, or any command path touches locked test
 
 ## Decision
 
-Pending cloud audit.
+`V3A_D7C_GATED_NOOP_CONNECTION_PASS_AUTHORIZE_NO_TRAINING_RARM_PREFLIGHT_ONLY`
+
+The cloud attempt 5 audit passed. D7c gate tensors are connected into FAM2 as an
+external gate tensor, while the zero-initialized gamma/beta modulation remains
+exact no-op and A0-equivalent.
+
+Final gate summary:
+
+- expected missing candidate checkpoint keys:
+  `FAM2.modulator.weight`, `FAM2.modulator.bias`;
+- unexpected keys and shape mismatches: none;
+- parameter delta: `8320`;
+- random and real-batch no-op checks: pass;
+- internal val-inner 600 output max absolute diff: `0.0`;
+- internal val-inner 600 PSNR/SSIM delta max absolute values: `0.0`;
+- nontrivial D7c gate images: `599/600`;
+- locked Haze4K test, training, RARM, adapter training, and ConvIR-B unfreeze:
+  not used.
+
+This authorizes only a subsequent written preflight/design decision. It does not
+authorize RARM, training, adapter experiments, canary expansion, or locked-test
+access.

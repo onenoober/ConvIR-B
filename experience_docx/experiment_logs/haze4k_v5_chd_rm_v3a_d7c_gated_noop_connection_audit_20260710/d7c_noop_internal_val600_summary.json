@@ -1,0 +1,14 @@
+{
+  "d7c_selected_coverage_max": 0.9670915603637695,
+  "d7c_selected_coverage_mean": 0.3018014788052339,
+  "d7c_selected_coverage_min": 0.0,
+  "max_abs_diff": 0.0,
+  "max_mean_abs_diff": 0.0,
+  "nontrivial_gate_images": 599,
+  "pass": true,
+  "psnr_delta_max_abs": 0.0,
+  "samples": 600,
+  "source_split": "train",
+  "split_key": "val_inner",
+  "ssim_delta_max_abs": 0.0
+}
