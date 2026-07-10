@@ -1,8 +1,8 @@
 # CHD-RM v2i FAM2 No-Op Architecture Equivalence
 
-Status: `PLANNED`
+Status: `COMPLETED_GATE_PASS`
 
-Decision label: `PLANNED_V2I_FAM2_NOOP_ARCH_EQUIVALENCE_AUDIT`
+Decision label: `V2I_FAM2_NOOP_ARCH_EQUIVALENCE_PASS_AUTHORIZE_D7C_GATED_NOOP_CONNECTION_ONLY`
 
 Route card:
 `experience_docx/experiment_cards/haze4k-chd-rm-v2i-fam2-noop-arch-equivalence.md`
@@ -32,7 +32,7 @@ the official ConvIR-B architecture anchor while preserving exact A0 behavior.
   canary expansion.
 - No weights, checkpoints, images, arrays, archives, or raw inference outputs.
 
-## Planned Primary Files
+## Primary Files
 
 - `v2i_route_decision.md`
 - `v2i_source_of_truth_manifest.json`
@@ -56,7 +56,25 @@ Runtime result files:
 - `fam2_noop_closeout.json`
 - `v2i_next_stage_decision.md`
 
-## Current Gate
+## Result
 
-The route is not closed until the cloud audit writes `fam2_noop_closeout.json`
-and updates this README with pass/fail metrics.
+The cloud audit completed successfully on `convir-4090`.
+
+Key metrics:
+
+- candidate missing keys: exactly `FAM2.modulator.weight`,
+  `FAM2.modulator.bias`;
+- unexpected keys: `[]`;
+- shape mismatches: `[]`;
+- parameter delta: `8320` (`0.09640045118191935%`);
+- random tensor max/mean abs diff: `0.0` / `0.0`;
+- real train-derived batch max/mean abs diff: `0.0` / `0.0`;
+- internal val-inner 600 samples: `600`;
+- internal val-inner 600 max abs diff: `0.0`;
+- PSNR/SSIM max absolute deltas: `0.0` / `0.0`;
+- locked Haze4K test usage: `none`;
+- training/RARM/D7c forward connection: `none`.
+
+Decision: FAM2-only zero-init architecture insertion is A0-equivalent. The only
+authorized next experiment is a separate D7c-gated no-op connection audit; RARM
+training remains blocked.

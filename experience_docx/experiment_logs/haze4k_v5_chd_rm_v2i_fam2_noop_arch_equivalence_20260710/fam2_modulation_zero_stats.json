@@ -1,0 +1,19 @@
+{
+  "FAM2.modulator.bias": {
+    "max": 0.0,
+    "max_abs": 0.0,
+    "mean": 0.0,
+    "min": 0.0,
+    "std": 0.0
+  },
+  "FAM2.modulator.weight": {
+    "max": 0.0,
+    "max_abs": 0.0,
+    "mean": 0.0,
+    "min": 0.0,
+    "std": 0.0
+  },
+  "fam1_has_modulator": false,
+  "fam2_has_modulator": true,
+  "pass": true
+}

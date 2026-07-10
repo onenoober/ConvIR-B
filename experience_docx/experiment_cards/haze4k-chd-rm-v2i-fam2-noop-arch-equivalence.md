@@ -2,9 +2,9 @@
 
 Date: 2026-07-10
 
-Status: `PLANNED`
+Status: `COMPLETED_GATE_PASS`
 
-Decision label: `PLANNED_V2I_FAM2_NOOP_ARCH_EQUIVALENCE_AUDIT`
+Decision label: `V2I_FAM2_NOOP_ARCH_EQUIVALENCE_PASS_AUTHORIZE_D7C_GATED_NOOP_CONNECTION_ONLY`
 
 Evidence root: `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2i_fam2_noop_arch_equivalence_20260710/`.
 
@@ -111,3 +111,25 @@ Fail:
 ```text
 V2I_FAM2_NOOP_ARCH_EQUIVALENCE_FAIL_FIX_ARCH_ONLY_NO_RARM
 ```
+
+## Closeout
+
+v2i completed on `convir-4090` using commit
+`9ee321320250eee3590145de581259dcc9ed1c89`. No training, RARM connection, D7c
+forward injection, adapter training, ConvIR-B unfreeze, or locked Haze4K test
+was run.
+
+Results:
+
+- Candidate missing keys were exactly `FAM2.modulator.weight` and
+  `FAM2.modulator.bias`; unexpected keys and shape mismatches were empty.
+- Parameter delta was exactly `8320` (`0.09640045118191935%`).
+- FAM2 modulator weight and bias stats were all zero; FAM1 had no modulator.
+- Random tensor max/mean abs diff: `0.0` / `0.0`.
+- Real train-derived batch max/mean abs diff: `0.0` / `0.0`.
+- Internal val-inner 600 max abs diff: `0.0`.
+- Internal val-inner 600 PSNR/SSIM max absolute deltas: `0.0` / `0.0`.
+
+Decision: FAM2-only zero-init architecture insertion from the official anchor is
+A0-equivalent. This authorizes only a later D7c-gated no-op connection audit;
+RARM/training remains blocked.

@@ -1,0 +1,8 @@
+{
+  "candidate_params": 8638985,
+  "expected_param_delta": 8320,
+  "original_params": 8630665,
+  "param_delta": 8320,
+  "param_delta_pct": 0.09640045118191935,
+  "pass": true
+}

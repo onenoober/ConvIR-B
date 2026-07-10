@@ -1,0 +1,13 @@
+{
+  "max_abs_diff": 0.0,
+  "mean_abs_diff_mean": 0.0,
+  "pass": true,
+  "psnr_delta_max_abs": 0.0,
+  "psnr_delta_mean": 0.0,
+  "samples": 600,
+  "source_split": "train",
+  "split": "val_inner",
+  "split_json": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2i-fam2-noop-arch-equivalence/experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/haze4k_internal_split_2400_600.json",
+  "ssim_delta_max_abs": 0.0,
+  "ssim_delta_mean": 0.0
+}
