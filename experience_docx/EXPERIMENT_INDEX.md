@@ -60,6 +60,15 @@ Decision:
 This authorizes only a separate preflight/design decision. RARM/training,
 adapter work, canary expansion, and locked-test access remain blocked.
 
+Backfilled evidence from the earlier v2f/v2g diagnostic line is now archived:
+v2f/F4 and F4b found no safe global-LDHN operating point, and v2g/G4b found that
+small selective probes do not safely improve over D7c under the three-state
+actionable target. The current negative labels are
+`PAUSE_V2F_F4B_NO_SAFE_LDHN_POINT_NO_F5_NO_V3` and
+`PAUSE_G4B_SELECTIVE_PROBE_NO_SAFE_IMPROVEMENT_NO_F5_NO_V3`. This backfill does
+not supersede the later v3a no-training pass and does not authorize
+RARM/training, adapter work, canary expansion, or locked-test access.
+
 ## Official Architecture Anchor
 
 The immutable clean ConvIR-B architecture anchor is:

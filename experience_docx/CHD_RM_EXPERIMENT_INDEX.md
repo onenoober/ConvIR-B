@@ -4,7 +4,9 @@ Date: 2026-07-10
 
 Status: v3a D7c-gated no-op connection audit passed. RARM/training, adapter
 work, canary expansion, and locked-test access remain blocked until a separate
-preflight/design decision is written.
+preflight/design decision is written. Backfilled v2f/F4b and v2g/G4b evidence
+confirms that the old global-LDHN head route and simple selective probes did
+not safely improve over D7c.
 
 ## Research Direction
 
@@ -43,7 +45,8 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v2c need coverage calibration | `codex/haze4k-v5-v2c-chd-rm-need-coverage-calibration` | paused | Train-inner calibration restores coverage but creates unsafe false-strong responses | `PAUSE_V2C_SCALE_CALIBRATION_NOT_ENOUGH` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2c_need_coverage_calibration_20260709/` |
 | v2d need spatial hard-negative | `codex/haze4k-v5-v2d-chd-rm-need-spatial-hard-negative` | paused | D7c frozen multi-context top-k HN is promising, but controls remained weak | `PAUSE_V2D_D7C_TOPK_PROMISING_BUT_CONTROLS_WEAK_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/` |
 | v2e D7c control recall audit | `codex/haze4k-v5-v2e-chd-rm-d7c-control-recall-audit` | paused | Fixed permutation and density matched controls are clean, but D7c top-k LDHN recall is low and D7c-RP has no safe recall-protected point | `PAUSE_V2E_D7C_RP_NO_SAFE_RECALL_PROTECTED_POINT_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2e_d7c_control_recall_audit_20260709/` |
-| v2f need target/head redesign | `codex/haze4k-v5-v2f-chd-rm-need-target-head-redesign` | F4 authorized | F0-F3/F2 first-stage shows LDHN core support, frozen feature separability, and density-conditioned target de-proxying; run frozen-side density-stratified head canary only | `F4_AUTHORIZED_PENDING_CLOUD_NO_V3_RARM` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_20260709/` |
+| v2f need target/head redesign | `codex/haze4k-v5-v2f-chd-rm-need-target-head-redesign` | paused | F0-F3 showed LDHN support and frozen-feature separability, but F4/F4b could not satisfy LDHN recall and false-tail safety together | `PAUSE_V2F_F4B_NO_SAFE_LDHN_POINT_NO_F5_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_20260709/`; `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_f4b_tail_rescue_20260709/` |
+| v2g need actionability audit | `codex/haze4k-v5-v2g-chd-rm-need-actionability-audit` | paused | G1-G4a show global LDHN is over-broad and D7c beats deployable density controls under the three-state target; G4b selective probes did not safely improve over D7c | `PAUSE_G4B_SELECTIVE_PROBE_NO_SAFE_IMPROVEMENT_NO_F5_NO_V3` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2g_need_actionability_audit_20260709/` |
 | v2h actionable prior sufficiency | `codex/haze4k-v5-v2h-actionable-prior-sufficiency` | completed with D preflight blocked | D7c A/B/C passed prior sufficiency; FAM2 no-op must move to a separate architecture branch | `V2H_ABC_PASS_D_BLOCKED_CREATE_SEPARATE_NOOP_ARCH_BRANCH` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2h_actionable_prior_sufficiency_20260709/` |
 | v2i FAM2 no-op arch equivalence | `codex/haze4k-v5-v2i-fam2-noop-arch-equivalence` | completed | FAM2-only zero-init architecture insertion from official anchor is exact A0-equivalent on random input, real train-derived batch, and internal val-inner 600 | `V2I_FAM2_NOOP_ARCH_EQUIVALENCE_PASS_AUTHORIZE_D7C_GATED_NOOP_CONNECTION_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2i_fam2_noop_arch_equivalence_20260710/` |
 | v3a D7c-gated no-op connection audit | `codex/haze4k-v5-v3a-d7c-gated-noop-connection-audit` | completed no-training audit | D7c gate tensors are connected into FAM2 as an external gate tensor; final zero-init modulation remains exact A0-equivalent on random, real-batch, and internal val-inner 600 checks | `V3A_D7C_GATED_NOOP_CONNECTION_PASS_AUTHORIZE_NO_TRAINING_RARM_PREFLIGHT_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3a_d7c_gated_noop_connection_audit_20260710/` |
@@ -78,9 +81,52 @@ canary:
 - Density-conditioned target density Spearman `0.007215705298292346`, compared
   with global target density Spearman `0.31464418569286756`.
 
-Authorized next action: F4 density-stratified frozen-side `R_need` head canary
-on `train_inner`/`val_inner`. F4 does not authorize v3/RARM. If F4 passes, the
-next required phase is F5 stricter controls before any v3 no-op audit.
+F4 density-stratified frozen-side `R_need` head canary then ran on
+`train_inner`/`val_inner` and failed the original v2e global LDHN/false-tail
+gate. The supplemental F4b tail-rescue matrix also failed:
+
+- F4 selected variants had `safe_and_ldhn_points = 0`.
+- F4b selected variants also had `safe_and_ldhn_points = 0`.
+- Best F4b safe LDHN recall was only `0.0523`.
+- F4b variants that reached high LDHN recall had false-p95 near `0.9895` to
+  `1.0000`.
+
+Decision: `PAUSE_V2F_F4B_NO_SAFE_LDHN_POINT_NO_F5_NO_V3`. Do not run F5,
+v3, RARM, D2, ConvIR-B unfreeze, or locked Haze4K test from v2f. Do not repeat
+F4/F4b strength sweeps without changing target semantics or available
+information.
+
+## v2g Actionability Audit Closeout
+
+v2g tested whether the v2f failure was caused by the old global-LDHN target
+being over-broad as a hard RARM-positive signal. It completed G0 source
+reproduction, G1 semantic audit, G2/G2b available-information and oracle-gain
+diagnostics, G3 three-state actionable target definition, G4a actionability
+controls, and G4b selective-probe screening. No locked Haze4K test, D2, RARM,
+v3, F5, or saved probe weights/checkpoints were used.
+
+Key results:
+
+- LDHN coverage is `0.089890`, but isolated LDHN fraction is `0.890713` and
+  adjacent-to-haze fraction is only `0.109287`.
+- Under the three-state target, D7c has action recall `0.548312`,
+  low-adjacent recall `0.155904`, negative false rate `0.002974`, and isolated
+  LDHN hit rate `0.022366`.
+- D7c beats deployable D3 density control under that target: action recall
+  `0.548312` vs `0.454247`, low-adjacent recall `0.155904` vs `0.113905`,
+  negative false rate `0.002974` vs `0.049584`, and AUROC action-vs-negative
+  `0.969589` vs `0.872087`.
+- G4b selective probes did not beat D7c safely. The best probe,
+  `context_image_density_linear`, had action recall `0.488995`, low-adjacent
+  recall `0.076751`, negative false rate `0.004045`, and AUROC
+  action-vs-negative `0.937536`. Versus D7c this is action recall `-0.059317`,
+  low-adjacent recall `-0.079153`, negative false `+0.001071`, and AUROC
+  `-0.032053`.
+
+Decision: `PAUSE_G4B_SELECTIVE_PROBE_NO_SAFE_IMPROVEMENT_NO_F5_NO_V3`. This
+does not authorize F5, v3, RARM, D2, adapter training, canary expansion, or
+locked-test access. Do not repeat F4/F4b strength sweeps or a simple G4b
+selective-probe rerun without a new written route decision.
 
 ## v2h A/B Closeout
 
@@ -208,7 +254,10 @@ locked-test access.
 | --- | --- |
 | v1 data/baseline lock | any density/need training |
 | v2 density/need calibration | RARM connection |
-| v2e control and recall audit | v3 no-op RARM audit |
+| v2e control and recall audit | v2f target/head redesign only |
+| v2f target/head redesign | v2g actionability/prior diagnostics only; no F5, v3, RARM, D2, or locked test |
+| v2g target actionability audit | no-training prior-sufficiency/no-op architecture audits only; no F5, v3, RARM, D2, or locked test |
+| v2h actionable prior sufficiency | separate FAM2 no-op architecture branch only |
 | v2i FAM2 no-op arch equivalence | D7c-gated no-op connection audit |
 | v3a D7c-gated no-op connection audit | a separate preflight/design decision only |
 | v3 no-op RARM audit | RARM training |
