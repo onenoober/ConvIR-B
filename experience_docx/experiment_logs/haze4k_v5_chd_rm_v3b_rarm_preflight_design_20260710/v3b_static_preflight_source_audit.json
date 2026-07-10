@@ -1,0 +1,71 @@
+{
+  "cloud_preflight": {
+    "cloud_v3a_status_lines": 41,
+    "cloud_v3a_workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v3a-d7c-gated-noop-connection-audit",
+    "github_v3a_head": "ef3310d8ec47375141d9ab7d62d5d320122e18a1",
+    "observed_cloud_v3a_head": "58a356e",
+    "usable_as_direct_parent_runtime_workspace": false
+  },
+  "decision_label": "V3B_RARM_PREFLIGHT_BLOCKED_GATE_PIPELINE_ABSENT_NO_RARM_TRAINING",
+  "fact_sources": {
+    "github_main": "7c3fbddee080f8c5adf305e433c88b259fcd340e",
+    "github_main_index": "experience_docx/CHD_RM_EXPERIMENT_INDEX.md",
+    "github_v3a_branch": "ef3310d8ec47375141d9ab7d62d5d320122e18a1",
+    "v3a_closeout": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3a_d7c_gated_noop_connection_audit_20260710/d7c_noop_closeout.json",
+    "v3b_source_branch": "codex/haze4k-v5-v3b-rarm-preflight-design"
+  },
+  "forbidden_flow_audit": {
+    "ConvIR_B_unfreeze": "none",
+    "RARM": "not_connected_or_trained",
+    "adapter_training": "none",
+    "canary_expansion": "none",
+    "local_runtime_validation": "none",
+    "locked_haze4k_test_usage": "none",
+    "training": "none"
+  },
+  "metric_contract": {
+    "baseline": "v3a fam2_d7c_noop connection audit pass; no training",
+    "pass_rule": "Current train/valid/eval and modulation-stat entrypoints must already produce and pass a nontrivial d7c_gate without forbidden scope expansion.",
+    "result": "fail",
+    "scope": "static source preflight only"
+  },
+  "route_id": "haze4k_v5_chd_rm_v3b_rarm_preflight_design_20260710",
+  "source_evidence": {
+    "d7c_noop_forward_requires_gate": {
+      "evidence": "raise ValueError('d7c_gate is required for d7c_noop FAM mode')",
+      "line": 68,
+      "path": "Dehazing/ITS/models/ConvIR.py",
+      "pass": true
+    },
+    "d7c_noop_modulation_stats_requires_gate": {
+      "evidence": "raise ValueError('d7c_gate is required for d7c_noop FAM mode')",
+      "line": 86,
+      "path": "Dehazing/ITS/models/ConvIR.py",
+      "pass": true
+    },
+    "eval_forward_call_has_no_gate": {
+      "evidence": "pred = model(input_img)[2]",
+      "line": 42,
+      "path": "Dehazing/ITS/eval.py",
+      "pass": true
+    },
+    "modulation_stats_call_has_no_gate": {
+      "evidence": "batch_stats = model.collect_modulation_stats(input_img)",
+      "line": 28,
+      "path": "Dehazing/ITS/train.py",
+      "pass": true
+    },
+    "train_forward_call_has_no_gate": {
+      "evidence": "pred_img = model(input_img)",
+      "line": 107,
+      "path": "Dehazing/ITS/train.py",
+      "pass": true
+    },
+    "valid_forward_call_has_no_gate": {
+      "evidence": "pred = model(input_img)[2]",
+      "line": 32,
+      "path": "Dehazing/ITS/valid.py",
+      "pass": true
+    }
+  }
+}
