@@ -8,6 +8,7 @@ import torch.nn.functional as F
 import torch.nn as nn
 
 from warmup_scheduler import GradualWarmupScheduler
+from d7c_gate import collect_modulation_stats_with_optional_d7c, forward_with_optional_d7c
 
 
 def _log_modulation_stats(model, args, epoch_idx, device):
@@ -25,7 +26,7 @@ def _log_modulation_stats(model, args, epoch_idx, device):
             if args.mod_stats_batches > 0 and batch_idx >= args.mod_stats_batches:
                 break
             input_img = batch_data[0].to(device)
-            batch_stats = model.collect_modulation_stats(input_img)
+            batch_stats = collect_modulation_stats_with_optional_d7c(model, args, input_img)
             for fam_name, fam_stats in batch_stats.items():
                 sums.setdefault(fam_name, {})
                 for key, value in fam_stats.items():
@@ -104,7 +105,7 @@ def _train(model, args):
             label_img = label_img.to(device)
 
             optimizer.zero_grad()
-            pred_img = model(input_img)
+            pred_img = forward_with_optional_d7c(model, args, input_img)
             label_img2 = F.interpolate(label_img, scale_factor=0.5, mode='bilinear')
             label_img4 = F.interpolate(label_img, scale_factor=0.25, mode='bilinear')
             l1 = criterion(pred_img[0], label_img4)

@@ -6,6 +6,8 @@ import os
 from skimage.metrics import peak_signal_noise_ratio
 import torch.nn.functional as f
 
+from d7c_gate import forward_with_optional_d7c
+
 
 def _valid(model, args, ep):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -29,7 +31,7 @@ def _valid(model, args, ep):
             if not os.path.exists(os.path.join(args.result_dir, '%d' % (ep))):
                 os.mkdir(os.path.join(args.result_dir, '%d' % (ep)))
 
-            pred = model(input_img)[2]
+            pred = forward_with_optional_d7c(model, args, input_img)[2]
             pred = pred[:,:,:h,:w]
 
             pred_clip = torch.clamp(pred, 0, 1)

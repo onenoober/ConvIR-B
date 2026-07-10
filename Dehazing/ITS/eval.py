@@ -12,6 +12,8 @@ import torch.nn.functional as f
 from skimage import img_as_ubyte
 import cv2
 
+from d7c_gate import forward_with_optional_d7c
+
 def _eval(model, args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     state_dict = torch.load(args.test_model, map_location=device)
@@ -39,7 +41,7 @@ def _eval(model, args):
 
             tm = time.time()
 
-            pred = model(input_img)[2]
+            pred = forward_with_optional_d7c(model, args, input_img)[2]
             pred = pred[:,:,:h,:w]
 
             elapsed = time.time() - tm

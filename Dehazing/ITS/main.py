@@ -7,13 +7,11 @@ from torch.backends import cudnn
 from models.ConvIR import build_net
 from train import _train
 from eval import _eval
+from d7c_gate import build_d7c_gate_producer, load_checkpoint_state, partial_load_model_state
 
 
 def _load_checkpoint_model(path, map_location):
-    state = torch.load(path, map_location=map_location)
-    if isinstance(state, dict) and 'model' in state:
-        return state['model']
-    return state
+    return load_checkpoint_state(path, map_location)
 
 
 def load_init_model(model, args):
@@ -22,6 +20,24 @@ def load_init_model(model, args):
     if args.resume:
         raise ValueError('--init_model initializes weights; --resume restores optimizer state. Use only one.')
     state = _load_checkpoint_model(args.init_model, 'cpu')
+    if args.allow_fam2_partial_init:
+        if args.fam_mode not in ('fam2_modres', 'fam2_d7c_noop'):
+            raise ValueError('--allow_fam2_partial_init requires a FAM2 modulation mode.')
+        result = partial_load_model_state(
+            model,
+            state,
+            {'FAM2.modulator.weight', 'FAM2.modulator.bias'},
+        )
+        print(
+            'INIT_MODEL_PARTIAL_LOAD path=%s missing=%s unexpected=%s shape_mismatch=%s'
+            % (
+                args.init_model,
+                result['missing_candidate_keys'],
+                result['unexpected_keys'],
+                result['shape_mismatch'],
+            )
+        )
+        return
     model.load_state_dict(state)
     print(f'INIT_MODEL_LOAD path={args.init_model} missing=[] unexpected=[]')
 
@@ -50,6 +66,8 @@ def main(args):
     if torch.cuda.is_available():
         model.cuda()
     load_init_model(model, args)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    args.d7c_gate_producer = build_d7c_gate_producer(args, device)
     if args.mode == 'train':
         _train(model, args)
 
@@ -67,6 +85,12 @@ if __name__ == '__main__':
     parser.add_argument('--fam_mode', default='original', choices=['original', 'fam2_modres', 'fam2_d7c_noop'], type=str)
     parser.add_argument('--arch', default='official_convir', choices=['official_convir', 'convir'], type=str)
     parser.add_argument('--seed', default=-1, type=int)
+    parser.add_argument('--d7c_gate_mode', default='none', choices=['none', 'd7c_fixed'], type=str)
+    parser.add_argument('--d7c_base_checkpoint', type=str, default='')
+    parser.add_argument('--d7c_density_artifact', type=str, default='')
+    parser.add_argument('--d7c_need_artifact', type=str, default='')
+    parser.add_argument('--d7c_threshold', type=float, default=0.5773006677627563)
+    parser.add_argument('--allow_fam2_partial_init', action='store_true')
 
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
     parser.add_argument('--data_dir', type=str, default='')
