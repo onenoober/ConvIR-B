@@ -10,3 +10,6 @@ V3I_C_COUNTERFACTUAL_RESPONSE_PROBE_FAILED
 v3i_c_start haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711 2026-07-11T01:24:50+08:00
 v3i_c_done rc=0 haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711 2026-07-11T01:31:57+08:00
 V3I_C_COUNTERFACTUAL_RESPONSE_PROBE_OK
+v3i_d_start haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711 2026-07-11T01:37:53+08:00
+v3i_d_done rc=0 haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711 2026-07-11T01:47:01+08:00
+V3I_D_DISAGREEMENT_PROBE_OK
