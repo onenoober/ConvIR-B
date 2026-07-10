@@ -55,3 +55,6 @@ Pending.
   exceeded the stricter `1e-7` output threshold with max diff `3.576e-7`.
   Cause: `fused * (1 + gamma)` can perturb CUDA outputs even when `gamma == 0`.
   Correction: use residual identity form `fused + fused * gamma + beta`.
+- Attempt 2 still showed a batch-mode real-batch diff of `2.384e-7` while
+  val-inner 600 remained exactly `0.0`. Correction before attempt 3: force
+  deterministic cuDNN and disable TF32 for the audit process.
