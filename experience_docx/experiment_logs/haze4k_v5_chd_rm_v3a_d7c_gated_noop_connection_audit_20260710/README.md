@@ -47,3 +47,11 @@ thresholds.
 ## Decision
 
 Pending.
+
+## Attempt Notes
+
+- Attempt 1 was an engineering no-op-expression failure: internal val-inner 600
+  passed with exact `0.0` output and metric deltas, but the real batch gate
+  exceeded the stricter `1e-7` output threshold with max diff `3.576e-7`.
+  Cause: `fused * (1 + gamma)` can perturb CUDA outputs even when `gamma == 0`.
+  Correction: use residual identity form `fused + fused * gamma + beta`.

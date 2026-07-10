@@ -75,7 +75,7 @@ class FAM(nn.Module):
             d7c_gate = d7c_gate.to(dtype=x2.dtype)
             gamma = gamma * d7c_gate
             beta = beta * d7c_gate
-        return fused * (1 + gamma) + beta
+        return fused + fused * gamma + beta
 
     def modulation_stats(self, x2, d7c_gate=None):
         if self.mode == 'original':
