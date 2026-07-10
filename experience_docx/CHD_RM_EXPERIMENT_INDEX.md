@@ -2,14 +2,15 @@
 
 Date: 2026-07-10
 
-Status: v3d RARM adapter-only preflight is paused after matched-control
-comparison. Stage 0, one-epoch, and five-epoch D7c-gated FAM2 adapter-only
-runs passed no-collapse/safety gates, but D7c did not beat the matched-budget
-ungated FAM2 modres control on mean utility. D7c was safer in mild-tail
-regression count, but this is not enough to authorize 20-epoch continuation,
-neighbor unfreeze, v4/RARM expansion, canary expansion, or locked-test access.
-Backfilled v2f/F4b and v2g/G4b evidence confirms that the old global-LDHN head
-route and simple selective probes did not safely improve over D7c.
+Status: v3e matched utility mechanism audit completed after v3d pause. v3d
+remains stopped: no 20-epoch continuation, v4/RARM expansion, neighbor/FAM1 or
+backbone unfreeze, canary expansion, or locked-test access is authorized. v3e
+found that D7c remains useful as a safety/actionability prior, but D7c score is
+near-random for current FAM2 positive operator gain; the current bottleneck is
+operator-specific correctability mismatch plus hard-gate safety/mean tradeoff,
+not D7c prior existence. Next work must start as a separate v3f design/audit for
+D7c safety veto plus FAM2 operator-correctability ranking from internal/OOF
+actual FAM2 marginal gain targets.
 
 ## Research Direction
 
@@ -56,6 +57,7 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v3b RARM preflight design | `codex/haze4k-v5-v3b-rarm-preflight-design` | completed preflight blocked | current train/valid/eval and modulation-stat entrypoints do not compute or pass the D7c gate required by `fam2_d7c_noop`; cloud v3a workspace is also dirty and not a clean parent runtime workspace | `V3B_RARM_PREFLIGHT_BLOCKED_GATE_PIPELINE_ABSENT_NO_RARM_TRAINING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3b_rarm_preflight_design_20260710/` |
 | v3c gate forward contract | `codex/haze4k-v5-v3c-gate-forward-contract` | completed no-training preflight pass | D7c gate producer, partial A0 init, train/valid/eval forward helpers, and modulation-stat gate path passed on 16 internal val-inner samples with exact A0-equivalent outputs | `V3C_GATE_FORWARD_CONTRACT_PASS_AUTHORIZE_NO_TRAINING_ENTRYPOINT_PREFLIGHT_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3c_gate_forward_contract_20260710/` |
 | v3d RARM adapter-only preflight | `codex/haze4k-v5-v3d-rarm-adapter-only-preflight` | paused after matched-control gate | Stage 0 exact no-op/freeze/gradient checks passed; D7c-gated 5-epoch adapter-only was safer than ungated control but did not beat matched-budget mean utility (`+0.02947 dB` vs control `+0.03307 dB`) | `V3D_PAUSE_D7C_SAFER_BUT_NOT_MATCHED_CONTROL_UTILITY_NO_20EPOCH_NO_V4` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710/` |
+| v3e matched utility mechanism audit | `codex/haze4k-v5-v3e-matched-utility-mechanism-audit` | completed mechanism audit | Paired mean remains inconclusive but D7c tail safety is stable; 2x2 replay and gain audit show hard gate is a safety valve and D7c score is near-random for current FAM2 operator gain | `V3E_OPERATOR_CORRECTABILITY_MISMATCH_PRIMARY_HARD_GATE_SAFETY_TRADEOFF_SECONDARY_NO_RARM_EXPANSION` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
@@ -313,6 +315,38 @@ This resolves the v3b entrypoint-contract blocker only. It still does not
 authorize RARM or training. Any next RARM/training step needs its own written
 decision, resource preflight, metric contract, and stage gate.
 
+
+## v3e Closeout
+
+v3e ran only no-training mechanism audits on `convir-4090`; no locked test,
+training continuation, checkpoint-producing run, v4/RARM expansion,
+neighbor/FAM1/backbone unfreeze, or new generic D7c probe was used.
+
+Decision:
+`V3E_OPERATOR_CORRECTABILITY_MISMATCH_PRIMARY_HARD_GATE_SAFETY_TRADEOFF_SECONDARY_NO_RARM_EXPANSION`.
+
+Key evidence:
+
+- v3e-A paired bootstrap: D7c-control mean CI95 `[-0.01676, -0.00365, +0.00930]`,
+  so single-seed mean ordering remains inconclusive; `<= -0.2 dB` tail-regression
+  reduction CI95 `[26, 41, 57]`, so D7c tail safety is stable.
+- v3e-B 2x2 replay: `W_D+G_D` mean `+0.02947` with `50` regressions;
+  `W_D+G_1` mean `+0.03899` with `113` regressions; `W_U+G_D` mean `+0.01278`
+  with `23` regressions; `W_U+G_1` mean `+0.03307` with `91` regressions. The
+  hard gate is a real safety valve but drops ungated mean utility.
+- v3e-C operator-gain audit: D7c score vs ungated FAM2 positive gain AUROC
+  `0.4921`; D7c score vs D7c-gated FAM2 positive gain AUROC `0.4904`. D7c
+  actionability is not a current-FAM2 action-value router.
+- v3e-D training-contract audit: all audited batches were clipped hard; effective
+  Adam weight decay was `0` despite CLI `0.0001`; resume checkpoints contain no
+  scheduler state. Component gradient cosines were positive in this small audit,
+  so loss-gradient conflict is not the primary proven blocker.
+
+Next authorized direction: open a separate v3f design/audit route for `D7c safety
+veto + FAM2 operator-correctability ranker` using internal/OOF actual FAM2
+marginal gain targets only. Do not continue v3d or silently fix optimizer/scheduler
+and compare directly to v3d.
+
 ## Gate Summary
 
 | Stage | Must Pass Before |
@@ -327,6 +361,8 @@ decision, resource preflight, metric contract, and stage gate.
 | v3a D7c-gated no-op connection audit | a separate preflight/design decision only |
 | v3b RARM preflight design | gate-producing train/valid/eval forward contract; no RARM training |
 | v3c gate forward contract | separate written RARM/training decision only |
+| v3d matched-control utility gate | v3e mechanism audit only; no 20-epoch, v4, neighbor/FAM1/backbone unfreeze, or locked test |
+| v3e matched utility mechanism audit | separate v3f design/audit for D7c safety veto plus FAM2 operator-correctability ranker only; no direct RARM expansion |
 | v3 no-op RARM audit | RARM training |
 | v4 single-scale matched controls | final candidate consideration |
 | v5 low-haze protection | final candidate consideration |

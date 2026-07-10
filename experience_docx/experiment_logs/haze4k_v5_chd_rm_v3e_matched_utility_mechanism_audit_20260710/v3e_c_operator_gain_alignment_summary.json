@@ -1,0 +1,93 @@
+{
+  "decision": "V3E_C_OPERATOR_GAIN_ALIGNMENT_DONE_REVIEW_SCORE_AND_BOUNDARY",
+  "hard_gate": {
+    "coverage_sample": 0.3018849690755208,
+    "d7c_positive_gain_precision_in_gate": 0.4709531110474618,
+    "d7c_positive_gain_rate_outside_gate": 0.49680434228261267,
+    "ungated_positive_gain_precision_in_gate": 0.47997506444493115,
+    "ungated_positive_gain_rate_outside_gate": 0.4979132272048377
+  },
+  "locked_test_touched": false,
+  "phase": "v3e-C operator gain alignment and boundary leakage",
+  "pixel_sample_count": 4915200,
+  "pixel_sample_per_image": 8192,
+  "route_id": "haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710",
+  "sample_count": 600,
+  "score_vs_d7c_positive_gain": {
+    "auprc": 0.48165456309819943,
+    "auroc": 0.4903625927777954,
+    "positive_gain_rate": 0.489000244140625,
+    "spearman_gain": -0.03140657254087282
+  },
+  "score_vs_ungated_positive_gain": {
+    "auprc": 0.48641010846847293,
+    "auroc": 0.49211479656993606,
+    "positive_gain_rate": 0.4924979654947917,
+    "spearman_gain": -0.015399947067145354
+  },
+  "zone_summary": [
+    {
+      "control_gain_l1_mean": 1.462953444091336e-05,
+      "control_output_change_mean": 0.0005503110608612398,
+      "d7c_gain_l1_mean": 2.9839666584654193e-06,
+      "d7c_output_change_mean": 0.00030653816864025955,
+      "images": 600,
+      "mean_pixel_count": 119632.33833333333,
+      "zone": "exterior_far_gt8"
+    },
+    {
+      "control_gain_l1_mean": 1.272311166894552e-06,
+      "control_output_change_mean": 0.0006108569650908842,
+      "d7c_gain_l1_mean": 1.9589488358907435e-06,
+      "d7c_output_change_mean": 0.0004189826536301021,
+      "images": 599,
+      "mean_pixel_count": 8289.797996661102,
+      "zone": "exterior_r1"
+    },
+    {
+      "control_gain_l1_mean": 2.7813108826022216e-06,
+      "control_output_change_mean": 0.0005999994724840661,
+      "d7c_gain_l1_mean": 4.934724236410668e-06,
+      "d7c_output_change_mean": 0.00040085025479718987,
+      "images": 599,
+      "mean_pixel_count": 7457.003338898164,
+      "zone": "exterior_r2"
+    },
+    {
+      "control_gain_l1_mean": 8.36799337701206e-06,
+      "control_output_change_mean": 0.0005885292001421895,
+      "d7c_gain_l1_mean": 1.3352298838476502e-05,
+      "d7c_output_change_mean": 0.00037694483266222757,
+      "images": 599,
+      "mean_pixel_count": 12318.255425709516,
+      "zone": "exterior_r4"
+    },
+    {
+      "control_gain_l1_mean": 2.0943233166475408e-05,
+      "control_output_change_mean": 0.0005837870966925496,
+      "d7c_gain_l1_mean": 2.422222762798399e-05,
+      "d7c_output_change_mean": 0.00035451295273314446,
+      "images": 599,
+      "mean_pixel_count": 18329.884808013354,
+      "zone": "exterior_r8"
+    },
+    {
+      "control_gain_l1_mean": -5.776751265058593e-07,
+      "control_output_change_mean": 0.0006152065558415366,
+      "d7c_gain_l1_mean": -5.390026212319636e-07,
+      "d7c_output_change_mean": 0.0004270200462818197,
+      "images": 599,
+      "mean_pixel_count": 16354.923205342237,
+      "zone": "gate_boundary_r1"
+    },
+    {
+      "control_gain_l1_mean": 1.6602996416517382e-06,
+      "control_output_change_mean": 0.0006969202384659201,
+      "d7c_gain_l1_mean": -6.238142129900444e-07,
+      "d7c_output_change_mean": 0.0005732902153962022,
+      "images": 597,
+      "mean_pixel_count": 59897.850921273035,
+      "zone": "gate_interior"
+    }
+  ]
+}

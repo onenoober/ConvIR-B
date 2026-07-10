@@ -1,0 +1,18 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710",
+  "locked_test_authorized": false,
+  "training_authorized": false,
+  "checkpoint_writes_authorized": false,
+  "forbidden": [
+    "20_epoch_continuation",
+    "v4_or_rarm_expansion",
+    "neighbor_unfreeze",
+    "fam1_modification",
+    "backbone_unfreeze",
+    "new_generic_d7c_probe",
+    "locked_haze4k_test",
+    "nh_haze_or_dense_haze_transfer",
+    "silent_optimizer_or_scheduler_change",
+    "loss_change_mixed_with_mechanism_audit"
+  ]
+}

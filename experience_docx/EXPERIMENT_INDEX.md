@@ -21,53 +21,36 @@ decision says otherwise.
 
 ## Current CHD-RM v5 Route State
 
-As of the v2h C/D closeout, D7c prior sufficiency is supported by A/B/C:
-v2h-A passed deployable risk coverage, v2h-B showed a strong diagnostic
-shadow-modulation upper bound, and v2h-C passed five-fold train OOF calibration
-stability. Key C metrics: D7c action recall mean/min `0.576335` / `0.556955`,
-low-adjacent recall mean `0.170063`, negative false mean/max `0.003403` /
-`0.003996`, and selected coverage std `0.010785`; density-matched negative
-false mean/max was `0.049636` / `0.063885`.
+As of the v3e closeout on 2026-07-10, v3d RARM adapter-only remains paused and
+no 20-epoch continuation, v4/RARM expansion, neighbor/FAM1/backbone unfreeze,
+canary expansion, or locked-test access is authorized.
 
-v2h-D did not validate FAM2/no-op numerically because the branch correctly
-blocked architecture variants: `Official ConvIR-B anchor only supports
-fam_mode='original'. Create a route branch for architecture variants.` This is
-an architecture-boundary blocker, not a negative no-op result.
+v3e ran no-training mechanism audits on `convir-4090` after v3d showed D7c was
+tail-safer but did not beat the matched ungated FAM2 control on mean utility.
+The v3e decision is
+`V3E_OPERATOR_CORRECTABILITY_MISMATCH_PRIMARY_HARD_GATE_SAFETY_TRADEOFF_SECONDARY_NO_RARM_EXPANSION`.
 
-Decision: `V2H_ABC_PASS_D_BLOCKED_CREATE_SEPARATE_NOOP_ARCH_BRANCH`. Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
-`experience_docx/experiment_cards/haze4k-chd-rm-v2h-actionable-prior-sufficiency.md`,
-and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2h_actionable_prior_sufficiency_20260709/` for the current CHD-RM status. The next supported action is a
-separate model-structure no-op branch from `github/codex/haze4k-official-arch-anchor`.
-F5/v3/RARM/D2/adapter training, canary expansion, architecture mutation inside
-v2h, and locked-test use remain blocked.
+Key v3e facts:
 
-The follow-up route `codex/haze4k-v5-v2i-fam2-noop-arch-equivalence` passed.
-It starts from the official anchor and tests only FAM2 zero-init no-op
-architecture equivalence against A0. It did not connect D7c, RARM, or any
-training path. Results: exact missing keys `FAM2.modulator.weight` and
-`FAM2.modulator.bias`, parameter delta `8320`, zero modulator stats, random and
-real-batch output diff `0.0`, internal val-inner 600 output diff `0.0`, and
-PSNR/SSIM deltas `0.0`. Decision:
-`V2I_FAM2_NOOP_ARCH_EQUIVALENCE_PASS_AUTHORIZE_D7C_GATED_NOOP_CONNECTION_ONLY`.
+- paired mean CI95 for D7c-control was `[-0.01676, -0.00365, +0.00930]`, so the
+  single-seed mean ordering is inconclusive;
+- `<= -0.2 dB` tail-regression reduction CI95 was `[26, 41, 57]`, so D7c tail
+  safety is stable;
+- 2x2 replay showed D7c hard gate is a safety valve but drops ungated mean
+  utility: `W_U+G_D` mean `+0.01278` with `23` regressions versus `W_U+G_1`
+  mean `+0.03307` with `91` regressions;
+- D7c score is near-random for current FAM2 positive operator gain: AUROC
+  `0.4921` for ungated FAM2 gain and `0.4904` for D7c-gated FAM2 gain;
+- training-contract audit found hard clipping on all audited batches, effective
+  Adam weight decay `0` despite CLI `0.0001`, and no scheduler state in resume
+  checkpoints.
 
-The next route `codex/haze4k-v5-v3a-d7c-gated-noop-connection-audit` also
-passed as a no-training cloud audit. It connects nontrivial D7c gate tensors
-into the FAM2 no-op shell while preserving exact A0 equivalence: parameter
-delta `8320`, expected missing keys only, internal val-inner 600 output diff
-`0.0`, PSNR/SSIM deltas `0.0`, and nontrivial D7c gate coverage `599/600`.
-Decision:
-`V3A_D7C_GATED_NOOP_CONNECTION_PASS_AUTHORIZE_NO_TRAINING_RARM_PREFLIGHT_ONLY`.
-This authorizes only a separate preflight/design decision. RARM/training,
-adapter work, canary expansion, and locked-test access remain blocked.
-
-Backfilled evidence from the earlier v2f/v2g diagnostic line is now archived:
-v2f/F4 and F4b found no safe global-LDHN operating point, and v2g/G4b found that
-small selective probes do not safely improve over D7c under the three-state
-actionable target. The current negative labels are
-`PAUSE_V2F_F4B_NO_SAFE_LDHN_POINT_NO_F5_NO_V3` and
-`PAUSE_G4B_SELECTIVE_PROBE_NO_SAFE_IMPROVEMENT_NO_F5_NO_V3`. This backfill does
-not supersede the later v3a no-training pass and does not authorize
-RARM/training, adapter work, canary expansion, or locked-test access.
+Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
+`experience_docx/experiment_cards/haze4k-chd-rm-v3e-matched-utility-mechanism-audit.md`,
+and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710/`
+for current CHD-RM status. The next supported action is a separate v3f
+design/audit for `D7c safety veto + FAM2 operator-correctability ranker` using
+internal/OOF actual FAM2 marginal gain targets only.
 
 ## Official Architecture Anchor
 

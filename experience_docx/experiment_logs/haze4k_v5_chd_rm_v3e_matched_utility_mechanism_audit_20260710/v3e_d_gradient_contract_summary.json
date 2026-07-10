@@ -1,0 +1,83 @@
+{
+  "batch_count": 4,
+  "batch_size": 8,
+  "checkpoint_key_audit": {
+    "control_final": {
+      "epoch": null,
+      "has_optimizer": false,
+      "has_scheduler": false,
+      "keys": [
+        "model"
+      ],
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-fam2modres-control-e5frome1-seed3407-20260710/Training-Results/Final.pkl"
+    },
+    "control_resume": {
+      "epoch": 1,
+      "has_optimizer": true,
+      "has_scheduler": false,
+      "keys": [
+        "epoch",
+        "model",
+        "optimizer"
+      ],
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-fam2modres-control-e1-seed3407-20260710/Training-Results/model.pkl"
+    },
+    "d7c_final": {
+      "epoch": null,
+      "has_optimizer": false,
+      "has_scheduler": false,
+      "keys": [
+        "model"
+      ],
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-rarm-fam2-adapteronly-e5frome1-seed3407-20260710/Training-Results/Final.pkl"
+    },
+    "d7c_resume": {
+      "epoch": 1,
+      "has_optimizer": true,
+      "has_scheduler": false,
+      "keys": [
+        "epoch",
+        "model",
+        "optimizer"
+      ],
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-rarm-fam2-adapteronly-e1-seed3407-20260710/Training-Results/model.pkl"
+    }
+  },
+  "cli_weight_decay": 0.0001,
+  "decision": "V3E_D_GRADIENT_CONTRACT_AUDIT_DONE_REVIEW_CLIP_AND_COSINES",
+  "effective_optimizer_weight_decay": {
+    "CONTROL_W_U_G_1": 0,
+    "D7C_W_D_G_D": 0
+  },
+  "locked_test_touched": false,
+  "phase": "v3e-D no-step gradient and optimizer contract audit",
+  "route_id": "haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710",
+  "scheduler_contract": {
+    "CONTROL_W_U_G_1": {
+      "after_initial_scheduler_step_get_lr": 3.3333333333333335e-05,
+      "optimizer_lr_after_initial_scheduler_step": 3.3333333333333335e-05,
+      "scheduler_step_called_before_optimizer_step_matches_train_py": true
+    },
+    "D7C_W_D_G_D": {
+      "after_initial_scheduler_step_get_lr": 3.3333333333333335e-05,
+      "optimizer_lr_after_initial_scheduler_step": 3.3333333333333335e-05,
+      "scheduler_step_called_before_optimizer_step_matches_train_py": true
+    }
+  },
+  "variant_summary": {
+    "CONTROL_W_U_G_1": {
+      "clipped_batch_ratio": 1.0,
+      "mean_clip_scale_total": 0.019232364514832997,
+      "mean_cos_action_preserve": 0.3441569581627846,
+      "mean_cos_content_fft": 0.3805211428552866,
+      "mean_pre_clip_norm_total": 0.05549951922148466
+    },
+    "D7C_W_D_G_D": {
+      "clipped_batch_ratio": 1.0,
+      "mean_clip_scale_total": 0.03605430415484002,
+      "mean_cos_action_preserve": 0.2566645108163357,
+      "mean_cos_content_fft": 0.27223400527145714,
+      "mean_pre_clip_norm_total": 0.03056341130286455
+    }
+  }
+}

@@ -1,0 +1,21 @@
+v3e_a_start haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710 2026-07-10T18:21:03+08:00
+v3e_a_done rc=1 haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710 2026-07-10T18:21:16+08:00
+V3E_A_PAIRED_REANALYSIS_FAILED
+v3e_a_start haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710 2026-07-10T18:22:10+08:00
+v3e_a_done rc=0 haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710 2026-07-10T18:22:24+08:00
+V3E_A_PAIRED_REANALYSIS_OK
+v3e_b_start haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710 2026-07-10T18:23:02+08:00
+v3e_b_done rc=0 haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710 2026-07-10T18:25:04+08:00
+V3E_B_WEIGHT_GATE_2X2_OK
+v3e_c_start haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710 2026-07-10T18:26:16+08:00
+v3e_c_done rc=0 haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710 2026-07-10T18:28:20+08:00
+V3E_C_OPERATOR_GAIN_BOUNDARY_OK
+v3e_d_start haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710 2026-07-10T18:29:29+08:00
+v3e_d_done rc=1 haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710 2026-07-10T18:29:34+08:00
+V3E_D_GRADIENT_CONTRACT_FAILED
+v3e_d_start haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710 2026-07-10T18:31:03+08:00
+v3e_d_done rc=1 haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710 2026-07-10T18:31:09+08:00
+V3E_D_GRADIENT_CONTRACT_FAILED
+v3e_d_start haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710 2026-07-10T18:32:14+08:00
+v3e_d_done rc=0 haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710 2026-07-10T18:32:23+08:00
+V3E_D_GRADIENT_CONTRACT_OK
