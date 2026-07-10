@@ -1,0 +1,13 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711",
+  "route_identity": "new no-training diagnostic audit",
+  "not_a_continuation_of": [
+    "v3d",
+    "v3f-B",
+    "v3h scalar route"
+  ],
+  "training_authorized_initially": false,
+  "locked_test_authorized": false,
+  "canary_authorized": false,
+  "next_stage_requires": "v3i-A gate pass before v3i-B tiny full-context OOF probe"
+}

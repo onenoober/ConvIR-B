@@ -1,0 +1,13 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711",
+  "locked_test_touched": false,
+  "locked_test_authorized": false,
+  "authorized_splits": [
+    "internal train-derived val_inner 600 only"
+  ],
+  "forbidden": [
+    "Haze4K locked test",
+    "test-selected thresholds",
+    "locked-test replay"
+  ]
+}
