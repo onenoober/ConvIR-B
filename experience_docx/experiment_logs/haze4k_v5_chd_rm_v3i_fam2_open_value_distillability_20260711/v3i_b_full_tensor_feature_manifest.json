@@ -1,0 +1,9 @@
+{
+  "clean_reference_count": 600,
+  "coord_channels": 3,
+  "feature_channels": 393,
+  "fold_count": 5,
+  "raw_feature_tensors_saved": false,
+  "sample_count": 113952,
+  "sample_per_image": 192
+}

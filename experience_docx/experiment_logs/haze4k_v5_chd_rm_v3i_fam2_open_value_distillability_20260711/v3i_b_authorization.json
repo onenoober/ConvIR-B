@@ -1,0 +1,14 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711",
+  "authorized_stage": "v3i-B tiny full-context group OOF diagnostic probes",
+  "basis": "v3i-A compressed open-value oracle policies exceeded the 25% oracle-gap retention gate with severe regressions not above hard D7c",
+  "training_authorized": "diagnostic tiny heads only",
+  "controller_canary_authorized": false,
+  "locked_test_authorized": false,
+  "forbidden": [
+    "controller canary before v3i-B strong pass",
+    "locked Haze4K test",
+    "backbone/FAM1/FAM2 producer unfreeze",
+    "checkpoint or weight archival in GitHub"
+  ]
+}

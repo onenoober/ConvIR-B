@@ -1,14 +1,15 @@
 # CHD-RM Haze4K Experiment Index
 
-Date: 2026-07-10
+Date: 2026-07-11
 
-Status: v3h operator-site context feature audit completed after v3g.
+Status: v3i FAM2 open-value distillability audit completed after v3g/v3h.
 v3d remains stopped: no v3f-B ranker training, 20-epoch continuation, v4/RARM
-expansion, neighbor/FAM1 or backbone unfreeze, canary expansion, or locked-test
-access is authorized. v3g showed strong FAM2 action-space oracle capacity, but
-v3h found audited deployable operator-site features near random and replay-weak.
-The latest bottleneck is missing deployable action-site signal/controller, not
-D7c prior existence and not FAM2 actuator realizability.
+expansion, neighbor/FAM1 or backbone unfreeze, canary expansion, current-signal
+FAM2 router/distillation, or locked-test access is authorized. v3i confirms the
+privileged open-value oracle is strong and spatially compressible, but all
+audited deployable signal families failed OOF replay. The latest bottleneck is
+missing deployable inference-time controller signal, not D7c prior existence,
+not FAM2 actuator realizability, and not open-value target compressibility.
 
 ## Research Direction
 
@@ -59,6 +60,7 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v3f operator-correctability ranker audit | `codex/haze4k-v5-v3f-operator-correctability-ranker` | completed gate stop | D7c-vetoed gain oracle has useful upper-bound value, but best deployable scalar proxy AUROC is only `0.532034`, below the `0.56` training gate | `V3F_A_SCALAR_PROXY_SEPARABILITY_WEAK_NO_RANKER_TRAINING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3f_operator_correctability_ranker_20260710/` |
 | v3g FAM2 action-space correctability | `codex/haze4k-v5-v3g-fam2-action-space-correctability` | completed gate pass; no training | Label-derived FAM2 alpha oracle is strong and finite-difference validated, but hard D7c and ungated action replay remain weak/tail-risky | `V3G_ACTION_ORACLE_STRONG_FEATURES_WEAK_REQUIRE_OPERATOR_CONTEXT_NO_TRAINING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3g_fam2_action_space_correctability_20260710/` |
 | v3h operator-site context audit | `codex/haze4k-v5-v3h-operator-site-context-audit` | completed gate fail; no training | Audited inference-time operator-site features were near-random for the v3g keep/open action target; best feature replay did not beat hard D7c mean utility on holdout | `V3H_OPERATOR_CONTEXT_FEATURES_WEAK_NO_ROUTER_TRAINING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710/` |
+| v3i FAM2 open-value distillability | `codex/haze4k-v5-v3i-fam2-open-value-distillability` | completed final stop; no training | Privileged open-value oracle is strong and compressible (`ALPHA_SECANT_Q3` mean `+0.412879 dB`, zero severe), but full-context, counterfactual-response, and disagreement OOF probes all failed to stably beat hard D7c | `V3I_ALL_DEPLOYABLE_SIGNALS_FAIL_STOP_FAM2_ROUTER_REDESIGN_CANDIDATE` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
@@ -436,6 +438,41 @@ mean utility and is not a training signal. No current FAM2 scalar/operator-site
 feature training route is authorized. Future work requires materially new
 information, target semantics, or a different controller source.
 
+## v3i Closeout
+
+v3i ran the authorized no-training FAM2 open-value distillability and deployable
+signal audit on `convir-4090`. It used internal train-derived `val_inner` 600
+only, produced no checkpoints, and did not touch the Haze4K locked test.
+
+Decision:
+`V3I_ALL_DEPLOYABLE_SIGNALS_FAIL_STOP_FAM2_ROUTER_REDESIGN_CANDIDATE`.
+
+Key evidence:
+
+- hard D7c replay: mean `+0.012784 dB`, p10 `-0.121512 dB`, `23`
+  regressions <= -0.2 dB;
+- GT open top50 oracle: mean `+0.411695 dB`, p10 `+0.060772 dB`, zero
+  regressions <= -0.2 dB;
+- best compressed policy `ALPHA_SECANT_Q3`: mean `+0.412879 dB`, p10
+  `+0.060226 dB`, zero regressions <= -0.2 dB;
+- v3i-B best full-context OOF replay `OOF_DW3X3_TOP50`: mean
+  `+0.016627 dB`, bootstrap delta vs hard mean `+0.003843`, CI low
+  `-0.000163`; no minimum or strong pass;
+- v3i-C best counterfactual-response OOF replay `OOF_CF_RESPONSE_DW3X3_TOP50`:
+  mean `+0.008543 dB`, bootstrap delta vs hard mean `-0.004241`, CI low
+  `-0.009492`; no minimum or strong pass;
+- v3i-D best disagreement OOF replay `OOF_DISAGREE_LINEAR_TOP50`: mean
+  `+0.010534 dB`, bootstrap delta vs hard mean `-0.002250`, CI low
+  `-0.007422`; no minimum or strong pass.
+
+Interpretation: the privileged FAM2 open-value oracle is real and compactly
+replayable, but it is not currently distillable from the audited deployable
+signals. The bottleneck is the missing inference-time controller signal. Stop
+FAM2 router/distillation from the v3h/v3i signal sets. A future route should
+redesign the correction/controller formulation, such as joint
+correction-confidence or bounded experts with explicit false-action protection,
+and must first pass a no-training held-out separability/replay gate.
+
 ## Gate Summary
 
 | Stage | Must Pass Before |
@@ -454,7 +491,8 @@ information, target semantics, or a different controller source.
 | v3e matched utility mechanism audit | separate v3f design/audit for D7c safety veto plus FAM2 operator-correctability ranker only; no direct RARM expansion |
 | v3f operator-correctability ranker audit | no v3f-B scalar-feature ranker training; future work needs new operator context, target semantics, or correction operator |
 | v3g FAM2 action-space correctability | no-training operator-site context feature audit only; no router/ranker training yet |
-| v3h operator-site context audit | no current FAM2 scalar/operator-site feature router training; new information/target semantics/controller source required |
+| v3h operator-site context audit | no-training v3i open-value distillability/deployable-signal audit only; no router/ranker training |
+| v3i FAM2 open-value distillability | no current FAM2 router/distillation; future route requires new correction-confidence or bounded-expert design plus no-training held-out gate |
 | v3 no-op RARM audit | RARM training |
 | v4 single-scale matched controls | final candidate consideration |
 | v5 low-haze protection | final candidate consideration |

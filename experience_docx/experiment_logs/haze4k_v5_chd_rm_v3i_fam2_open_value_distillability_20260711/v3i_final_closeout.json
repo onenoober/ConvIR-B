@@ -1,0 +1,137 @@
+{
+  "bottleneck_assessment": {
+    "current_bottleneck": "deployable inference-time controller signal for selecting safe/useful FAM2 open actions",
+    "not_bottleneck": [
+      "FAM2 actuator realizability",
+      "label-derived open-value oracle strength",
+      "spatial compressibility of the privileged open-value target"
+    ],
+    "reopen_condition": "A new route must introduce materially new information, target semantics, or bounded expert/correction-confidence design and pass a no-training held-out separability/replay gate before training.",
+    "route_verdict": "Stop FAM2 router/distillation based on the audited deployable signals."
+  },
+  "branch": "codex/haze4k-v5-v3i-fam2-open-value-distillability",
+  "cloud_only_excluded_files": [
+    "v3i_a_policy_per_image.csv",
+    "v3i_a_alpha_spatial_summary.csv",
+    "v3i_a_target_stats_by_image.csv",
+    "v3i_b_policy_replay_per_image.csv",
+    "v3i_c_policy_replay_per_image.csv",
+    "v3i_d_policy_replay_per_image.csv",
+    "*.log"
+  ],
+  "compact_evidence_files": [
+    "README.md",
+    "status.txt",
+    "no_locked_test_audit.json",
+    "v3i_forbidden_flow_audit.json",
+    "v3i_route_decision.md",
+    "v3i_final_closeout.json",
+    "v3i_a_teacher_compressibility_summary.json",
+    "v3i_a_policy_summary.csv",
+    "v3i_b_authorization.json",
+    "v3i_b_full_context_probe_summary.json",
+    "v3i_b_policy_replay_summary.csv",
+    "v3i_b_bootstrap_vs_hard.csv",
+    "v3i_b_full_tensor_feature_manifest.json",
+    "v3i_b_probe_training_history.csv",
+    "v3i_c_authorization.json",
+    "v3i_c_counterfactual_response_summary.json",
+    "v3i_c_policy_replay_summary.csv",
+    "v3i_c_bootstrap_vs_hard.csv",
+    "v3i_c_counterfactual_feature_manifest.json",
+    "v3i_c_probe_training_history.csv",
+    "v3i_d_authorization.json",
+    "v3i_d_disagreement_summary.json",
+    "v3i_d_policy_replay_summary.csv",
+    "v3i_d_bootstrap_vs_hard.csv",
+    "v3i_d_disagreement_feature_manifest.json",
+    "v3i_d_probe_training_history.csv",
+    "run_v3i_a_teacher_compressibility_audit.sh",
+    "run_v3i_b_full_context_probe.sh",
+    "run_v3i_c_counterfactual_response_probe.sh",
+    "run_v3i_d_disagreement_probe.sh"
+  ],
+  "cross_validation_summary": [
+    "v3i-A: target-space oracle and compressed policies preserve roughly +0.412 dB mean utility with zero <= -0.2 dB regressions.",
+    "v3i-B: full-context OOF probes reach only +0.0166 dB mean and their bootstrap delta vs hard has non-positive lower confidence bound.",
+    "v3i-C: counterfactual response OOF probes underperform hard D7c on mean delta.",
+    "v3i-D: disagreement OOF probes underperform hard D7c on mean delta and fail all pass lists."
+  ],
+  "date": "2026-07-11",
+  "final_decision": "V3I_ALL_DEPLOYABLE_SIGNALS_FAIL_STOP_FAM2_ROUTER_REDESIGN_CANDIDATE",
+  "final_next_action": "Stop FAM2 router/distillation; next route should redesign correction as joint correction-confidence or bounded experts.",
+  "forbidden_after_closeout": [
+    "no v3f-B scalar ranker training",
+    "no v3d continuation or 20-epoch continuation",
+    "no current FAM2 router/distillation from v3h/v3i signal sets",
+    "no canary expansion from this evidence",
+    "no locked Haze4K test access from this route"
+  ],
+  "forbidden_flow_audit": {
+    "canary_authorized": false,
+    "locked_test_authorized": false,
+    "next_stage_requires": "v3i-A gate pass before v3i-B tiny full-context OOF probe",
+    "not_a_continuation_of": [
+      "v3d",
+      "v3f-B",
+      "v3h scalar route"
+    ],
+    "route_id": "haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711",
+    "route_identity": "new no-training diagnostic audit",
+    "training_authorized_initially": false
+  },
+  "locked_test_touched": false,
+  "route_id": "haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711",
+  "sample_count": 600,
+  "source_of_truth": {
+    "cloud_workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3i-fam2-open-value-distillability",
+    "evidence_root": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711",
+    "github_main_parent_commit": "b267d9f",
+    "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python"
+  },
+  "stages": {
+    "v3i_a_teacher_compressibility": {
+      "best_compressed_mean_psnr_delta": 0.41287911603436905,
+      "best_compressed_policy": "ALPHA_SECANT_Q3",
+      "best_compressed_regression_le_0p2_count": 0,
+      "decision": "V3I_A_ORACLE_COMPRESSIBLE_AUTHORIZE_FULL_CONTEXT_OOF_PROBE_ONLY",
+      "gate_mean_line_25pct_oracle_gap": 0.11251170518611245,
+      "gt_open_top50_oracle_mean_psnr_delta": 0.4116953788592617,
+      "gt_open_top50_oracle_regression_le_0p2_count": 0,
+      "hard_d7c_mean_psnr_delta": 0.012783813961729357,
+      "hard_d7c_regression_le_0p2_count": 23,
+      "interpretation": "Privileged open-value teacher/oracle is strong and spatially compressible."
+    },
+    "v3i_b_full_context_oof_probe": {
+      "best_oof_delta_vs_hard_ci95_low": -0.00016268348692684775,
+      "best_oof_delta_vs_hard_mean": 0.0038429597816313906,
+      "best_oof_mean_psnr_delta": 0.01662677374336075,
+      "best_oof_policy": "OOF_DW3X3_TOP50",
+      "decision": "V3I_B_SINGLE_FORWARD_OBSERVABILITY_FAIL_AUTHORIZE_COUNTERFACTUAL_FEATURE_AUDIT_ONLY",
+      "interpretation": "Single-forward full-context features do not stably beat hard D7c.",
+      "minimum_pass_policies": [],
+      "strong_pass_policies": []
+    },
+    "v3i_c_counterfactual_response_oof_probe": {
+      "best_oof_delta_vs_hard_ci95_low": -0.009492406729341226,
+      "best_oof_delta_vs_hard_mean": -0.004241078947226544,
+      "best_oof_mean_psnr_delta": 0.008542735014502813,
+      "best_oof_policy": "OOF_CF_RESPONSE_DW3X3_TOP50",
+      "decision": "V3I_C_COUNTERFACTUAL_RESPONSE_FAIL_AUTHORIZE_DISAGREEMENT_AUDIT_ONLY",
+      "interpretation": "Counterfactual RGB response does not recover the open-value oracle.",
+      "minimum_pass_policies": [],
+      "strong_pass_policies": []
+    },
+    "v3i_d_checkpoint_transform_disagreement_oof_probe": {
+      "best_oof_delta_vs_hard_ci95_low": -0.007422340860871748,
+      "best_oof_delta_vs_hard_mean": -0.002250298655561996,
+      "best_oof_mean_psnr_delta": 0.010533515306167363,
+      "best_oof_policy": "OOF_DISAGREE_LINEAR_TOP50",
+      "decision": "V3I_ALL_DEPLOYABLE_SIGNALS_FAIL_STOP_FAM2_ROUTER_REDESIGN_CANDIDATE",
+      "interpretation": "Checkpoint/transform disagreement is also not an adequate deployable controller signal.",
+      "minimum_pass_policies": [],
+      "strong_pass_policies": []
+    }
+  },
+  "training_or_canary_authorized": false
+}
