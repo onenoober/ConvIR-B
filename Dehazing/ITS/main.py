@@ -108,6 +108,7 @@ if __name__ == '__main__':
     parser.add_argument('--mod_stats_freq', type=int, default=0)
     parser.add_argument('--mod_stats_batches', type=int, default=64)
     parser.add_argument('--grad_clip_norm', type=float, default=0.001)
+    parser.add_argument('--rarm_train_scope', default='all', choices=['all', 'fam2_modulator_only'], type=str)
     parser.add_argument('--init_model', type=str, default='')
     parser.add_argument('--resume', type=str, default='')
 
@@ -147,7 +148,7 @@ if __name__ == '__main__':
     args.result_dir = os.path.join('results/', args.model_name, 'images', args.data)
     if not os.path.exists(args.model_save_dir):
         os.makedirs(args.model_save_dir)
-    for source in ('models/layers.py', 'models/ConvIR.py', 'data/data_load.py', 'data/data_augment.py', 'train.py', 'valid.py', 'eval.py', 'main.py'):
+    for source in ('models/layers.py', 'models/ConvIR.py', 'data/data_load.py', 'data/data_augment.py', 'd7c_gate.py', 'train.py', 'valid.py', 'eval.py', 'main.py'):
         if os.path.exists(source):
             shutil.copy2(source, args.model_save_dir)
     print(args)
