@@ -2,15 +2,13 @@
 
 Date: 2026-07-10
 
-Status: v3e matched utility mechanism audit completed after v3d pause. v3d
-remains stopped: no 20-epoch continuation, v4/RARM expansion, neighbor/FAM1 or
-backbone unfreeze, canary expansion, or locked-test access is authorized. v3e
-found that D7c remains useful as a safety/actionability prior, but D7c score is
-near-random for current FAM2 positive operator gain; the current bottleneck is
-operator-specific correctability mismatch plus hard-gate safety/mean tradeoff,
-not D7c prior existence. Next work must start as a separate v3f design/audit for
-D7c safety veto plus FAM2 operator-correctability ranking from internal/OOF
-actual FAM2 marginal gain targets.
+Status: v3f operator-correctability audit completed after v3e. v3d remains
+stopped: no v3f-B ranker training, 20-epoch continuation, v4/RARM expansion,
+neighbor/FAM1 or backbone unfreeze, canary expansion, or locked-test access is
+authorized. v3f found that a D7c-vetoed gain oracle has useful upper-bound
+value, but current deployable scalar proxies are too weak to train a ranker.
+The current bottleneck is missing deployable operator-correctability signal for
+the current FAM2 correction, not D7c prior existence.
 
 ## Research Direction
 
@@ -58,6 +56,7 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v3c gate forward contract | `codex/haze4k-v5-v3c-gate-forward-contract` | completed no-training preflight pass | D7c gate producer, partial A0 init, train/valid/eval forward helpers, and modulation-stat gate path passed on 16 internal val-inner samples with exact A0-equivalent outputs | `V3C_GATE_FORWARD_CONTRACT_PASS_AUTHORIZE_NO_TRAINING_ENTRYPOINT_PREFLIGHT_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3c_gate_forward_contract_20260710/` |
 | v3d RARM adapter-only preflight | `codex/haze4k-v5-v3d-rarm-adapter-only-preflight` | paused after matched-control gate | Stage 0 exact no-op/freeze/gradient checks passed; D7c-gated 5-epoch adapter-only was safer than ungated control but did not beat matched-budget mean utility (`+0.02947 dB` vs control `+0.03307 dB`) | `V3D_PAUSE_D7C_SAFER_BUT_NOT_MATCHED_CONTROL_UTILITY_NO_20EPOCH_NO_V4` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710/` |
 | v3e matched utility mechanism audit | `codex/haze4k-v5-v3e-matched-utility-mechanism-audit` | completed mechanism audit | Paired mean remains inconclusive but D7c tail safety is stable; 2x2 replay and gain audit show hard gate is a safety valve and D7c score is near-random for current FAM2 operator gain | `V3E_OPERATOR_CORRECTABILITY_MISMATCH_PRIMARY_HARD_GATE_SAFETY_TRADEOFF_SECONDARY_NO_RARM_EXPANSION` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710/` |
+| v3f operator-correctability ranker audit | `codex/haze4k-v5-v3f-operator-correctability-ranker` | completed gate stop | D7c-vetoed gain oracle has useful upper-bound value, but best deployable scalar proxy AUROC is only `0.532034`, below the `0.56` training gate | `V3F_A_SCALAR_PROXY_SEPARABILITY_WEAK_NO_RANKER_TRAINING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3f_operator_correctability_ranker_20260710/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
@@ -342,10 +341,41 @@ Key evidence:
   scheduler state. Component gradient cosines were positive in this small audit,
   so loss-gradient conflict is not the primary proven blocker.
 
-Next authorized direction: open a separate v3f design/audit route for `D7c safety
-veto + FAM2 operator-correctability ranker` using internal/OOF actual FAM2
-marginal gain targets only. Do not continue v3d or silently fix optimizer/scheduler
-and compare directly to v3d.
+This authorized the separate v3f design/audit route for `D7c safety veto + FAM2
+operator-correctability ranker` using internal/OOF actual FAM2 marginal gain
+targets only. The v3f closeout below supersedes this as the current status. Do
+not continue v3d or silently fix optimizer/scheduler and compare directly to
+v3d.
+
+## v3f Closeout
+
+v3f ran the authorized no-training correctability target/separability audit on
+`convir-4090`. It used internal train-derived val-inner 600 only, sampled
+`4,915,200` pixels for target/proxy metrics, produced no checkpoints, and did
+not touch the Haze4K locked test.
+
+Decision:
+`V3F_A_SCALAR_PROXY_SEPARABILITY_WEAK_NO_RANKER_TRAINING`.
+
+Key evidence:
+
+- best deployable scalar proxy: FAM2 correction magnitude, positive-gain AUROC
+  `0.532034`, AUPRC `0.519730`, gain Spearman `0.033662`;
+- D7c score and hard gate positive-gain AUROC: `0.492237` and `0.492251`;
+- ungated control `W_U+G_1`: mean PSNR delta `+0.033065`, `91`
+  `<= -0.2 dB` regressions;
+- D7c-vetoed control `W_U+G_D`: mean PSNR delta `+0.012366`, `18`
+  `<= -0.2 dB` regressions;
+- D7c-vetoed gain oracle: mean PSNR delta `+0.078254`, zero `<= -0.2 dB`
+  regressions.
+
+The oracle result confirms correctability exists in principle inside the D7c
+safety region, but the audited deployable scalar features are too weak to
+recover it. Therefore v3f-B ranker training is not authorized. Do not launch
+v3d continuation, 20-epoch runs, v4/RARM expansion, neighbor/FAM1/backbone
+unfreeze, canary expansion, or locked-test access from this evidence. Any future
+route must introduce new operator-context features, operator target semantics,
+or a different correction operator before another correctability-ranker screen.
 
 ## Gate Summary
 
@@ -363,6 +393,7 @@ and compare directly to v3d.
 | v3c gate forward contract | separate written RARM/training decision only |
 | v3d matched-control utility gate | v3e mechanism audit only; no 20-epoch, v4, neighbor/FAM1/backbone unfreeze, or locked test |
 | v3e matched utility mechanism audit | separate v3f design/audit for D7c safety veto plus FAM2 operator-correctability ranker only; no direct RARM expansion |
+| v3f operator-correctability ranker audit | no v3f-B scalar-feature ranker training; future work needs new operator context, target semantics, or correction operator |
 | v3 no-op RARM audit | RARM training |
 | v4 single-scale matched controls | final candidate consideration |
 | v5 low-haze protection | final candidate consideration |

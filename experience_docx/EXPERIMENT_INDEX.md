@@ -21,36 +21,35 @@ decision says otherwise.
 
 ## Current CHD-RM v5 Route State
 
-As of the v3e closeout on 2026-07-10, v3d RARM adapter-only remains paused and
-no 20-epoch continuation, v4/RARM expansion, neighbor/FAM1/backbone unfreeze,
-canary expansion, or locked-test access is authorized.
+As of the v3f closeout on 2026-07-10, v3d RARM adapter-only remains paused and
+no v3f-B ranker training, v3d continuation, 20-epoch continuation, v4/RARM
+expansion, neighbor/FAM1/backbone unfreeze, canary expansion, or locked-test
+access is authorized.
 
-v3e ran no-training mechanism audits on `convir-4090` after v3d showed D7c was
-tail-safer but did not beat the matched ungated FAM2 control on mean utility.
-The v3e decision is
-`V3E_OPERATOR_CORRECTABILITY_MISMATCH_PRIMARY_HARD_GATE_SAFETY_TRADEOFF_SECONDARY_NO_RARM_EXPANSION`.
+v3f ran the no-training `D7c safety veto + FAM2 operator-correctability ranker`
+audit authorized by v3e. The v3f decision is
+`V3F_A_SCALAR_PROXY_SEPARABILITY_WEAK_NO_RANKER_TRAINING`.
 
-Key v3e facts:
+Key v3f facts:
 
-- paired mean CI95 for D7c-control was `[-0.01676, -0.00365, +0.00930]`, so the
-  single-seed mean ordering is inconclusive;
-- `<= -0.2 dB` tail-regression reduction CI95 was `[26, 41, 57]`, so D7c tail
-  safety is stable;
-- 2x2 replay showed D7c hard gate is a safety valve but drops ungated mean
-  utility: `W_U+G_D` mean `+0.01278` with `23` regressions versus `W_U+G_1`
-  mean `+0.03307` with `91` regressions;
-- D7c score is near-random for current FAM2 positive operator gain: AUROC
-  `0.4921` for ungated FAM2 gain and `0.4904` for D7c-gated FAM2 gain;
-- training-contract audit found hard clipping on all audited batches, effective
-  Adam weight decay `0` despite CLI `0.0001`, and no scheduler state in resume
-  checkpoints.
+- best deployable scalar proxy for actual current-FAM2 positive marginal gain
+  was FAM2 correction magnitude with AUROC `0.532034`, below the predeclared
+  `0.56` gate for ranker training;
+- D7c score and D7c hard gate remained near random for current FAM2 positive
+  gain: AUROC `0.492237` and `0.492251`;
+- D7c-vetoed replay reduced `<= -0.2 dB` regressions from `91` to `18` versus
+  ungated control, but reduced mean PSNR delta from `+0.033065` to `+0.012366`;
+- the D7c-vetoed gain oracle has real upper-bound value (`+0.078254` mean PSNR
+  delta, zero `<= -0.2 dB` regressions), but the audited deployable scalar
+  features do not recover it.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
-`experience_docx/experiment_cards/haze4k-chd-rm-v3e-matched-utility-mechanism-audit.md`,
-and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710/`
-for current CHD-RM status. The next supported action is a separate v3f
-design/audit for `D7c safety veto + FAM2 operator-correctability ranker` using
-internal/OOF actual FAM2 marginal gain targets only.
+`experience_docx/experiment_cards/haze4k-chd-rm-v3f-operator-correctability-ranker.md`,
+and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3f_operator_correctability_ranker_20260710/`
+for current CHD-RM status. The next supported action is not more training from
+this route; any future route must introduce new operator-context features,
+operator target semantics, or a different correction operator before another
+correctability-ranker screen.
 
 ## Official Architecture Anchor
 
