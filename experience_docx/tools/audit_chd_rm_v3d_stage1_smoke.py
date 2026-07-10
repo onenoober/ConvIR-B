@@ -31,8 +31,8 @@ from models.ConvIR import build_net  # noqa: E402
 
 
 ROUTE_ID = "haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710"
-DECISION_PASS = "V3D_RARM_STAGE1_1EPOCH_PASS_AUTHORIZE_STAGE1_5EPOCH_ADAPTER_ONLY_DECISION"
-DECISION_FAIL = "V3D_RARM_STAGE1_1EPOCH_FAIL_NO_CONTINUATION"
+DEFAULT_DECISION_PASS = "V3D_RARM_STAGE1_1EPOCH_PASS_AUTHORIZE_STAGE1_5EPOCH_ADAPTER_ONLY_DECISION"
+DEFAULT_DECISION_FAIL = "V3D_RARM_STAGE1_1EPOCH_FAIL_NO_CONTINUATION"
 
 
 def sha256_file(path):
@@ -290,18 +290,19 @@ def audit(args):
     }
     summary["pass_checks"] = pass_checks
     summary["pass"] = all(pass_checks.values())
-    summary["decision"] = DECISION_PASS if summary["pass"] else DECISION_FAIL
+    summary["decision"] = args.decision_pass if summary["pass"] else args.decision_fail
     summary["next_action"] = (
-        "Write a separate Stage 1 5-epoch adapter-only decision before continuation."
+        args.next_action_pass
         if summary["pass"]
-        else "Stop v3d training continuation and inspect Stage 1 failure."
+        else args.next_action_fail
     )
 
-    write_csv(output_dir / "v3d_stage1_1epoch_val_inner_per_image.csv", rows)
-    write_csv(output_dir / "v3d_stage1_1epoch_modulation_stats.csv", mod_stats_rows)
-    write_json(output_dir / "v3d_stage1_1epoch_audit_summary.json", summary)
+    prefix = f"v3d_{args.run_label}"
+    write_csv(output_dir / f"{prefix}_val_inner_per_image.csv", rows)
+    write_csv(output_dir / f"{prefix}_modulation_stats.csv", mod_stats_rows)
+    write_json(output_dir / f"{prefix}_audit_summary.json", summary)
     write_json(
-        output_dir / "v3d_stage1_1epoch_closeout.json",
+        output_dir / f"{prefix}_closeout.json",
         {
             "route_id": ROUTE_ID,
             "decision": summary["decision"],
@@ -332,6 +333,17 @@ def main():
     parser.add_argument("--min_worst_delta", type=float, default=-3.0)
     parser.add_argument("--min_mean_output_diff", type=float, default=1e-8)
     parser.add_argument("--max_output_diff", type=float, default=0.10)
+    parser.add_argument("--run_label", default="stage1_1epoch")
+    parser.add_argument("--decision_pass", default=DEFAULT_DECISION_PASS)
+    parser.add_argument("--decision_fail", default=DEFAULT_DECISION_FAIL)
+    parser.add_argument(
+        "--next_action_pass",
+        default="Write a separate Stage 1 5-epoch adapter-only decision before continuation.",
+    )
+    parser.add_argument(
+        "--next_action_fail",
+        default="Stop v3d training continuation and inspect Stage 1 failure.",
+    )
     args = parser.parse_args()
     raise SystemExit(audit(args))
 

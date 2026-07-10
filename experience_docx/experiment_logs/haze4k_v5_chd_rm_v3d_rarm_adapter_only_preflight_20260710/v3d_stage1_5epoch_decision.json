@@ -1,0 +1,9 @@
+{
+  "authorized": true,
+  "decision": "V3D_RARM_STAGE1_1EPOCH_PASS_AUTHORIZE_STAGE1_5EPOCH_ADAPTER_ONLY",
+  "locked_test_authorized": false,
+  "next_run": "stage1_5epoch_adapter_only_resume",
+  "requires_post_run_audit": true,
+  "resume_from": "Dehazing/ITS/results/ConvIR-Haze4K-v3d-rarm-fam2-adapteronly-e1-seed3407-20260710/Training-Results/model.pkl",
+  "train_scope": "fam2_modulator_only"
+}
