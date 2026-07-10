@@ -1,0 +1,6 @@
+{
+  "decision": "V3D_RARM_STAGE1_5EPOCH_PASS_REQUIRE_POST5_DECISION_NO_DIRECT_V4",
+  "next_action": "Write a separate post-5epoch decision before any 20-epoch, neighbor, v4, or locked-test step.",
+  "pass": true,
+  "route_id": "haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710"
+}

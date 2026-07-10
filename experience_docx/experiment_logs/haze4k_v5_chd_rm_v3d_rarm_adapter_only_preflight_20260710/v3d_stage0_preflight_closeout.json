@@ -1,0 +1,6 @@
+{
+  "decision": "V3D_RARM_STAGE0_PREFLIGHT_PASS_AUTHORIZE_STAGE1_1EPOCH_ADAPTER_ONLY",
+  "next_action": "Stage 1 one-epoch adapter-only cloud smoke is authorized.",
+  "pass": true,
+  "route_id": "haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710"
+}

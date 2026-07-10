@@ -1,0 +1,51 @@
+Namespace(model_name='ConvIR-Haze4K-v3d-rarm-fam2-adapteronly-e5frome1-seed3407-20260710', data='Haze4K', version='base', fam_mode='fam2_d7c_noop', arch='convir', seed=3407, d7c_gate_mode='d7c_fixed', d7c_base_checkpoint='/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl', d7c_density_artifact='/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2-chd-rm-density-need-calibration/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2_density_need_calibration_20260708/artifacts/d3_density_only_head.pt', d7c_need_artifact='/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2d-chd-rm-need-spatial-hard-negative/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/d7c_full/artifacts/d7c_mc_topk_hn_ordinal_head.pt', d7c_threshold=0.5773006677627563, allow_fam2_partial_init=False, mode='train', data_dir='/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K', batch_size=8, learning_rate=0.0001, weight_decay=0.0001, num_epoch=1000, stop_epoch=5, print_freq=50, num_worker=8, save_freq=5, valid_freq=999, mod_stats_freq=0, mod_stats_batches=64, grad_clip_norm=0.001, rarm_train_scope='fam2_modulator_only', init_model='', resume='/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-rarm-fam2-adapteronly-e1-seed3407-20260710/Training-Results/model.pkl', test_model='', save_image=False, leaning_rate=0.0001, model_save_dir='results/ConvIR-Haze4K-v3d-rarm-fam2-adapteronly-e5frome1-seed3407-20260710/Training-Results/', result_dir='results/ConvIR-Haze4K-v3d-rarm-fam2-adapteronly-e5frome1-seed3407-20260710/images/Haze4K')
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/d7c_gate.py:45: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=map_location)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/d7c_gate.py:93: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(path, map_location=device)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/d7c_gate.py:103: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(path, map_location=device)
+TRAIN_SCOPE scope=fam2_modulator_only trainable_count=8320 frozen_count=8630665 total_count=8638985 trainable_names=['FAM2.modulator.weight', 'FAM2.modulator.bias']
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:224: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn(
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/train.py:132: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(args.resume, map_location='cpu')
+Resume from 1
+Time:  0.1497 Epoch: 002 Iter:   50/ 375 LR: 0.0000333333 Loss content:  0.0167 Loss fft:  0.7949
+Time:  0.1282 Epoch: 002 Iter:  100/ 375 LR: 0.0000333333 Loss content:  0.0164 Loss fft:  0.7988
+Time:  0.1270 Epoch: 002 Iter:  150/ 375 LR: 0.0000333333 Loss content:  0.0164 Loss fft:  0.8199
+Time:  0.1273 Epoch: 002 Iter:  200/ 375 LR: 0.0000333333 Loss content:  0.0167 Loss fft:  0.8433
+Time:  0.1291 Epoch: 002 Iter:  250/ 375 LR: 0.0000333333 Loss content:  0.0167 Loss fft:  0.7992
+Time:  0.1288 Epoch: 002 Iter:  300/ 375 LR: 0.0000333333 Loss content:  0.0160 Loss fft:  0.7941
+Time:  0.1273 Epoch: 002 Iter:  350/ 375 LR: 0.0000333333 Loss content:  0.0167 Loss fft:  0.8381
+EPOCH: 02
+Elapsed time: 0.98 Epoch Pixel Loss:  0.0165 Epoch FFT Loss:  0.8122
+Time:  0.1360 Epoch: 003 Iter:   50/ 375 LR: 0.0000666667 Loss content:  0.0165 Loss fft:  0.8088
+Time:  0.1275 Epoch: 003 Iter:  100/ 375 LR: 0.0000666667 Loss content:  0.0173 Loss fft:  0.8386
+Time:  0.1294 Epoch: 003 Iter:  150/ 375 LR: 0.0000666667 Loss content:  0.0162 Loss fft:  0.8077
+Time:  0.1276 Epoch: 003 Iter:  200/ 375 LR: 0.0000666667 Loss content:  0.0168 Loss fft:  0.8185
+Time:  0.1278 Epoch: 003 Iter:  250/ 375 LR: 0.0000666667 Loss content:  0.0166 Loss fft:  0.8319
+Time:  0.1288 Epoch: 003 Iter:  300/ 375 LR: 0.0000666667 Loss content:  0.0165 Loss fft:  0.8115
+Time:  0.1300 Epoch: 003 Iter:  350/ 375 LR: 0.0000666667 Loss content:  0.0166 Loss fft:  0.8127
+EPOCH: 03
+Elapsed time: 0.97 Epoch Pixel Loss:  0.0166 Epoch FFT Loss:  0.8188
+Time:  0.1326 Epoch: 004 Iter:   50/ 375 LR: 0.0001000000 Loss content:  0.0164 Loss fft:  0.8159
+Time:  0.1295 Epoch: 004 Iter:  100/ 375 LR: 0.0001000000 Loss content:  0.0172 Loss fft:  0.8375
+Time:  0.1281 Epoch: 004 Iter:  150/ 375 LR: 0.0001000000 Loss content:  0.0171 Loss fft:  0.8169
+Time:  0.1311 Epoch: 004 Iter:  200/ 375 LR: 0.0001000000 Loss content:  0.0168 Loss fft:  0.8062
+Time:  0.1278 Epoch: 004 Iter:  250/ 375 LR: 0.0001000000 Loss content:  0.0161 Loss fft:  0.8184
+Time:  0.1277 Epoch: 004 Iter:  300/ 375 LR: 0.0001000000 Loss content:  0.0171 Loss fft:  0.8229
+Time:  0.1293 Epoch: 004 Iter:  350/ 375 LR: 0.0001000000 Loss content:  0.0166 Loss fft:  0.8100
+EPOCH: 04
+Elapsed time: 0.97 Epoch Pixel Loss:  0.0167 Epoch FFT Loss:  0.8169
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:1087: UserWarning: To get the last learning rate computed by the scheduler, please use `get_last_lr()`.
+  _warn_get_lr_called_within_step(self)
+Time:  0.1394 Epoch: 005 Iter:   50/ 375 LR: 0.0001000000 Loss content:  0.0164 Loss fft:  0.8045
+Time:  0.1277 Epoch: 005 Iter:  100/ 375 LR: 0.0001000000 Loss content:  0.0168 Loss fft:  0.8359
+Time:  0.1291 Epoch: 005 Iter:  150/ 375 LR: 0.0001000000 Loss content:  0.0159 Loss fft:  0.7834
+Time:  0.1276 Epoch: 005 Iter:  200/ 375 LR: 0.0001000000 Loss content:  0.0167 Loss fft:  0.8193
+Time:  0.1277 Epoch: 005 Iter:  250/ 375 LR: 0.0001000000 Loss content:  0.0163 Loss fft:  0.8140
+Time:  0.1293 Epoch: 005 Iter:  300/ 375 LR: 0.0001000000 Loss content:  0.0166 Loss fft:  0.8259
+Time:  0.1276 Epoch: 005 Iter:  350/ 375 LR: 0.0001000000 Loss content:  0.0165 Loss fft:  0.8055
+EPOCH: 05
+Elapsed time: 0.98 Epoch Pixel Loss:  0.0165 Epoch FFT Loss:  0.8137

@@ -1,0 +1,6 @@
+{
+  "decision": "V3D_RARM_STAGE1_1EPOCH_PASS_AUTHORIZE_STAGE1_5EPOCH_ADAPTER_ONLY_DECISION",
+  "next_action": "Write a separate Stage 1 5-epoch adapter-only decision before continuation.",
+  "pass": true,
+  "route_id": "haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710"
+}

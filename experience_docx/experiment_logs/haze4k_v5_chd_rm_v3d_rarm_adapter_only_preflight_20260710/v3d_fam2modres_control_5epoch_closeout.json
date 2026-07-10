@@ -1,0 +1,6 @@
+{
+  "decision": "V3D_FAM2MODRES_CONTROL_5EPOCH_DONE_REQUIRE_D7C_COMPARISON",
+  "next_action": "Compare matched FAM2 modres control against D7c RARM before any longer run.",
+  "pass": true,
+  "route_id": "haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710"
+}

@@ -1,0 +1,7 @@
+{
+  "authorized": true,
+  "control": "fam2_modres_matched_5epoch",
+  "decision": "V3D_STAGE1_5EPOCH_PASS_AUTHORIZE_FAM2_MODRES_MATCHED_CONTROL_ONLY",
+  "locked_test_authorized": false,
+  "train_scope": "fam2_modulator_only"
+}

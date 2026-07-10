@@ -1,0 +1,40 @@
+PLANNED_V3D_STAGE0_PREFLIGHT_ONLY
+stage0_preflight_start haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710 2026-07-10T14:26:19+08:00
+root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+codex/haze4k-v5-v3d-rarm-adapter-only-preflight
+594ecbe7bbc8da4fc5bbed2dc8d1e2274034aaa0
+ M experience_docx/experiment_logs/haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710/status.txt
+stage0_preflight_done rc=0 haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710 2026-07-10T14:26:27+08:00
+V3D_RARM_STAGE0_PREFLIGHT_OK
+stage1_1epoch_start haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710 2026-07-10T14:32:19+08:00
+root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+gpu_id=1
+model_name=ConvIR-Haze4K-v3d-rarm-fam2-adapteronly-e1-seed3407-20260710
+stage1_train_done rc=0 haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710 2026-07-10T14:33:22+08:00
+stage1_audit_done rc=0 haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710 2026-07-10T14:33:35+08:00
+V3D_RARM_STAGE1_1EPOCH_OK
+stage1_5epoch_start haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710 2026-07-10T14:36:29+08:00
+root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+gpu_id=1
+model_name=ConvIR-Haze4K-v3d-rarm-fam2-adapteronly-e5frome1-seed3407-20260710
+resume_checkpoint=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-rarm-fam2-adapteronly-e1-seed3407-20260710/Training-Results/model.pkl
+stage1_5epoch_train_done rc=0 haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710 2026-07-10T14:40:28+08:00
+stage1_5epoch_audit_done rc=0 haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710 2026-07-10T14:42:13+08:00
+V3D_RARM_STAGE1_5EPOCH_OK
+fam2modres_control_start haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710 2026-07-10T14:45:27+08:00
+root=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+gpu_id=1
+model_e1=ConvIR-Haze4K-v3d-fam2modres-control-e1-seed3407-20260710
+model_e5=ConvIR-Haze4K-v3d-fam2modres-control-e5frome1-seed3407-20260710
+fam2modres_control_e1_done rc=0 haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710 2026-07-10T14:46:10+08:00
+fam2modres_control_e5_done rc=0 haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710 2026-07-10T14:48:46+08:00
+fam2modres_control_audit_done rc=0 haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710 2026-07-10T14:49:39+08:00
+V3D_FAM2MODRES_CONTROL_5EPOCH_OK
+matched_control_compare_start haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710 2026-07-10T14:51:59+08:00
+matched_control_compare_done rc=0 haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710 2026-07-10T14:51:59+08:00
+V3D_MATCHED_CONTROL_COMPARISON_PAUSE_OK

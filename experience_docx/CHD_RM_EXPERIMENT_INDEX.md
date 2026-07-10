@@ -2,13 +2,14 @@
 
 Date: 2026-07-10
 
-Status: v3c gate-producing forward contract passed as a no-training preflight:
-train/valid/eval/modulation-stat entrypoints can now generate and pass D7c
-gates into `fam2_d7c_noop` while preserving exact A0-equivalent output on the
-checked internal samples. RARM/training, adapter work, canary expansion, and
-locked-test access still require a separate written decision. Backfilled
-v2f/F4b and v2g/G4b evidence confirms that the old global-LDHN head route and
-simple selective probes did not safely improve over D7c.
+Status: v3d RARM adapter-only preflight is paused after matched-control
+comparison. Stage 0, one-epoch, and five-epoch D7c-gated FAM2 adapter-only
+runs passed no-collapse/safety gates, but D7c did not beat the matched-budget
+ungated FAM2 modres control on mean utility. D7c was safer in mild-tail
+regression count, but this is not enough to authorize 20-epoch continuation,
+neighbor unfreeze, v4/RARM expansion, canary expansion, or locked-test access.
+Backfilled v2f/F4b and v2g/G4b evidence confirms that the old global-LDHN head
+route and simple selective probes did not safely improve over D7c.
 
 ## Research Direction
 
@@ -54,6 +55,7 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v3a D7c-gated no-op connection audit | `codex/haze4k-v5-v3a-d7c-gated-noop-connection-audit` | completed no-training audit | D7c gate tensors are connected into FAM2 as an external gate tensor; final zero-init modulation remains exact A0-equivalent on random, real-batch, and internal val-inner 600 checks | `V3A_D7C_GATED_NOOP_CONNECTION_PASS_AUTHORIZE_NO_TRAINING_RARM_PREFLIGHT_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3a_d7c_gated_noop_connection_audit_20260710/` |
 | v3b RARM preflight design | `codex/haze4k-v5-v3b-rarm-preflight-design` | completed preflight blocked | current train/valid/eval and modulation-stat entrypoints do not compute or pass the D7c gate required by `fam2_d7c_noop`; cloud v3a workspace is also dirty and not a clean parent runtime workspace | `V3B_RARM_PREFLIGHT_BLOCKED_GATE_PIPELINE_ABSENT_NO_RARM_TRAINING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3b_rarm_preflight_design_20260710/` |
 | v3c gate forward contract | `codex/haze4k-v5-v3c-gate-forward-contract` | completed no-training preflight pass | D7c gate producer, partial A0 init, train/valid/eval forward helpers, and modulation-stat gate path passed on 16 internal val-inner samples with exact A0-equivalent outputs | `V3C_GATE_FORWARD_CONTRACT_PASS_AUTHORIZE_NO_TRAINING_ENTRYPOINT_PREFLIGHT_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3c_gate_forward_contract_20260710/` |
+| v3d RARM adapter-only preflight | `codex/haze4k-v5-v3d-rarm-adapter-only-preflight` | paused after matched-control gate | Stage 0 exact no-op/freeze/gradient checks passed; D7c-gated 5-epoch adapter-only was safer than ungated control but did not beat matched-budget mean utility (`+0.02947 dB` vs control `+0.03307 dB`) | `V3D_PAUSE_D7C_SAFER_BUT_NOT_MATCHED_CONTROL_UTILITY_NO_20EPOCH_NO_V4` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
