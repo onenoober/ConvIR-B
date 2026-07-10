@@ -1,0 +1,71 @@
+{
+  "batch_size": 2,
+  "image_names": [
+    "1002_0.73_1.47.png",
+    "1007_0.68_1.25.png"
+  ],
+  "input_shape": [
+    2,
+    3,
+    400,
+    400
+  ],
+  "max_abs_diff": 0.0,
+  "mean_abs_diff": 0.0,
+  "modulation_forward_stats": {
+    "FAM2": {
+      "beta_max": 0.0,
+      "beta_mean": 0.0,
+      "beta_min": 0.0,
+      "beta_std": 0.0,
+      "gamma_max": 0.0,
+      "gamma_mean": 0.0,
+      "gamma_min": 0.0,
+      "gamma_std": 0.0
+    }
+  },
+  "outputs": [
+    {
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "output_index": 0,
+      "shape": [
+        2,
+        3,
+        100,
+        100
+      ]
+    },
+    {
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "output_index": 1,
+      "shape": [
+        2,
+        3,
+        200,
+        200
+      ]
+    },
+    {
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "output_index": 2,
+      "shape": [
+        2,
+        3,
+        400,
+        400
+      ]
+    }
+  ],
+  "padded_shape": [
+    2,
+    3,
+    416,
+    416
+  ],
+  "pass": true,
+  "split": "val_inner",
+  "split_json": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2i-fam2-noop-arch-equivalence/experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/haze4k_internal_split_2400_600.json"
+}

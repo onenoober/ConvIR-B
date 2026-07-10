@@ -1,0 +1,27 @@
+{
+  "D7c_gate": "not_connected",
+  "RARM": "not_connected_or_trained",
+  "adapter_training": "none",
+  "candidate_mode": "fam2_modres",
+  "decision_label": "V2I_FAM2_NOOP_ARCH_EQUIVALENCE_PASS_AUTHORIZE_D7C_GATED_NOOP_CONNECTION_ONLY",
+  "fam1_original": true,
+  "fam2_zero_init": true,
+  "full_val600_noop_pass": true,
+  "full_val600_semantics": "train-derived internal val_inner 600, not locked Haze4K test",
+  "internal_val600_noop_pass": true,
+  "locked_haze4k_test_usage": "none",
+  "max_abs_diff_gate": 1e-07,
+  "metric_delta_gate": 1e-10,
+  "missing_candidate_keys_exact": [
+    "FAM2.modulator.weight",
+    "FAM2.modulator.bias"
+  ],
+  "param_delta": 8320,
+  "pass": true,
+  "random_noop_pass": true,
+  "real_batch_noop_pass": true,
+  "route_id": "haze4k_v5_chd_rm_v2i_fam2_noop_arch_equivalence_20260710",
+  "source_branch": "github/codex/haze4k-official-arch-anchor",
+  "training": "none",
+  "unexpected_keys": []
+}

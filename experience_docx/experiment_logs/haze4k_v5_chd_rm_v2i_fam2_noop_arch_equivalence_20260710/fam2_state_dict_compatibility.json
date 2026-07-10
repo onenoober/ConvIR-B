@@ -1,0 +1,29 @@
+{
+  "candidate_mode": "fam2_modres",
+  "candidate_params": 8638985,
+  "candidate_partial_load": {
+    "bad_missing": [],
+    "loaded_count": 602,
+    "missing_candidate_keys": [
+      "FAM2.modulator.weight",
+      "FAM2.modulator.bias"
+    ],
+    "shape_mismatch": [],
+    "unexpected_keys": []
+  },
+  "checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "expected_param_delta": 8320,
+  "original_mode": "original",
+  "original_params": 8630665,
+  "original_partial_load": {
+    "bad_missing": [],
+    "loaded_count": 602,
+    "missing_candidate_keys": [],
+    "shape_mismatch": [],
+    "unexpected_keys": []
+  },
+  "param_delta": 8320,
+  "param_delta_pct": 0.09640045118191935,
+  "pass": true
+}

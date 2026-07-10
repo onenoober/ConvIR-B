@@ -1,0 +1,12 @@
+planned v2i_fam2_noop_arch_equivalence 2026-07-10
+v2i_start 2026-07-10T10:38:00+08:00
+work=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2i-fam2-noop-arch-equivalence
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K
+split=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2i-fam2-noop-arch-equivalence/experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/haze4k_internal_split_2400_600.json
+checkpoint=/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl
+cuda_visible_devices=0
+locked_haze4k_test_usage=none
+training=none RARM=not_connected_or_trained D7c_gate=not_connected
+v2i_done rc=0 2026-07-10T10:39:03+08:00
+V2I_FAM2_NOOP_EQUIVALENCE_OK

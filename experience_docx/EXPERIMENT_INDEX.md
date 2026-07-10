@@ -41,6 +41,17 @@ separate model-structure no-op branch from `github/codex/haze4k-official-arch-an
 F5/v3/RARM/D2/adapter training, canary expansion, architecture mutation inside
 v2h, and locked-test use remain blocked.
 
+The follow-up route `codex/haze4k-v5-v2i-fam2-noop-arch-equivalence` has now
+passed. It starts from the official anchor and tests only FAM2 zero-init no-op
+architecture equivalence against A0. It did not connect D7c, RARM, or any
+training path. Results: exact missing keys `FAM2.modulator.weight` and
+`FAM2.modulator.bias`, parameter delta `8320`, zero modulator stats, random and
+real-batch output diff `0.0`, internal val-inner 600 output diff `0.0`, and
+PSNR/SSIM deltas `0.0`. Decision:
+`V2I_FAM2_NOOP_ARCH_EQUIVALENCE_PASS_AUTHORIZE_D7C_GATED_NOOP_CONNECTION_ONLY`.
+This authorizes only a later D7c-gated no-op connection audit; RARM/training
+remains blocked.
+
 ## Official Architecture Anchor
 
 The immutable clean ConvIR-B architecture anchor is:
