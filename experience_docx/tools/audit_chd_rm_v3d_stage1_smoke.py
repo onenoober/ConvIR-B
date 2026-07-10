@@ -160,6 +160,18 @@ def make_gate_build_args(args):
     return build_args
 
 
+def forward_candidate(model, args, gate_args, padded):
+    if args.candidate_fam_mode == "fam2_d7c_noop":
+        return forward_with_optional_d7c(model, gate_args, padded)
+    return model(padded)
+
+
+def collect_candidate_mod_stats(model, args, gate_args, padded):
+    if args.candidate_fam_mode == "fam2_d7c_noop":
+        return collect_modulation_stats_with_optional_d7c(model, gate_args, padded)
+    return model.collect_modulation_stats(padded)
+
+
 def summarize_mod_stats(mod_stats_rows):
     if not mod_stats_rows:
         return {}
@@ -200,10 +212,12 @@ def audit(args):
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     base = build_net("base", "Haze4K", "original").to(device).eval()
-    candidate = build_net("base", "Haze4K", "fam2_d7c_noop").to(device).eval()
+    candidate = build_net("base", "Haze4K", args.candidate_fam_mode).to(device).eval()
     base.load_state_dict(load_checkpoint_state(args.a0_checkpoint, device), strict=True)
     candidate.load_state_dict(load_checkpoint_state(args.candidate_checkpoint, device), strict=True)
-    gate_producer = build_d7c_gate_producer(make_gate_build_args(args), device)
+    gate_producer = None
+    if args.candidate_fam_mode == "fam2_d7c_noop":
+        gate_producer = build_d7c_gate_producer(make_gate_build_args(args), device)
     gate_args = make_gate_args(args, gate_producer)
 
     split = load_split(args.split_json)
@@ -220,11 +234,14 @@ def audit(args):
             label = label.unsqueeze(0).to(device)
             padded, height, width = pad_to_factor(input_img)
             base_pred = base(padded)[2][:, :, :height, :width]
-            cand_pred = forward_with_optional_d7c(candidate, gate_args, padded)[2][:, :, :height, :width]
+            cand_pred = forward_candidate(candidate, args, gate_args, padded)[2][:, :, :height, :width]
             base_psnr, base_ssim = metric_summary(base_pred, label)
             cand_psnr, cand_ssim = metric_summary(cand_pred, label)
             output_diff = (cand_pred - base_pred).abs()
-            gate, _, _ = gate_producer(padded)
+            gate_coverage = None
+            if gate_producer is not None:
+                gate, _, _ = gate_producer(padded)
+                gate_coverage = gate.mean().item()
             rows.append(
                 {
                     "index": index,
@@ -237,10 +254,10 @@ def audit(args):
                     "ssim_delta": cand_ssim - base_ssim,
                     "output_max_abs_diff": output_diff.max().item(),
                     "output_mean_abs_diff": output_diff.mean().item(),
-                    "gate_coverage": gate.mean().item(),
+                    "gate_coverage": gate_coverage,
                 }
             )
-            mod_stats = collect_modulation_stats_with_optional_d7c(candidate, gate_args, padded)
+            mod_stats = collect_candidate_mod_stats(candidate, args, gate_args, padded)
             for fam_name, fam_stats in mod_stats.items():
                 row = {"fam_name": fam_name}
                 row.update(fam_stats)
@@ -261,6 +278,7 @@ def audit(args):
         "a0_checkpoint_sha256": sha256_file(args.a0_checkpoint),
         "candidate_checkpoint": args.candidate_checkpoint,
         "candidate_checkpoint_sha256": sha256_file(args.candidate_checkpoint),
+        "candidate_fam_mode": args.candidate_fam_mode,
         "data_dir": args.data_dir,
         "split_json": args.split_json,
         "split_key": args.split_key,
@@ -318,6 +336,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--a0_checkpoint", required=True)
     parser.add_argument("--candidate_checkpoint", required=True)
+    parser.add_argument(
+        "--candidate_fam_mode",
+        default="fam2_d7c_noop",
+        choices=["fam2_d7c_noop", "fam2_modres"],
+    )
     parser.add_argument("--data_dir", required=True)
     parser.add_argument("--split_json", required=True)
     parser.add_argument("--density_artifact", required=True)
