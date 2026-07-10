@@ -1,0 +1,78 @@
+{
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "a0_checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "best_deployable_proxy_policy": {
+    "mean_mask": 0.3020659195746187,
+    "mean_psnr_delta": 0.0123663330078125,
+    "median_psnr_delta": -3.814697265625e-06,
+    "p10_psnr_delta": -0.0907329559326172,
+    "policy": "D7C_TOP_CHANGE_1",
+    "positive_ratio": 0.49333333333333335,
+    "regression_le_0p2_count": 18,
+    "regression_le_0p5_count": 2,
+    "worst_psnr_delta": -0.5366325378417969
+  },
+  "best_feature": {
+    "feature": "control_change",
+    "gain_spearman": 0.033662286505244325,
+    "harmful_gain_auroc_inverted": 0.5096696901322588,
+    "mean": 0.0006065680645406246,
+    "p90": 0.0012584428768604994,
+    "positive_gain_auprc": 0.5197297646704225,
+    "positive_gain_auroc": 0.5320342057763143
+  },
+  "control_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-fam2modres-control-e5frome1-seed3407-20260710/Training-Results/Final.pkl",
+  "control_checkpoint_sha256": "08207119a5cf9e5c439dd2cb81b99029ade1861f2739d31e75f2f9f78d57c0f2",
+  "d7c_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-rarm-fam2-adapteronly-e5frome1-seed3407-20260710/Training-Results/Final.pkl",
+  "d7c_checkpoint_sha256": "33dce1f55c543b5e5d9deada8fc76d05bb7762b05c5b379f4832a4df0e349bec",
+  "d7c_veto_control_policy": {
+    "mean_mask": 0.3020659195746187,
+    "mean_psnr_delta": 0.0123663330078125,
+    "median_psnr_delta": -3.814697265625e-06,
+    "p10_psnr_delta": -0.0907329559326172,
+    "policy": "W_U_G_D",
+    "positive_ratio": 0.49333333333333335,
+    "regression_le_0p2_count": 18,
+    "regression_le_0p5_count": 2,
+    "worst_psnr_delta": -0.5366325378417969
+  },
+  "decision": "V3F_A_SCALAR_PROXY_SEPARABILITY_WEAK_NO_RANKER_TRAINING",
+  "interpretation": "Review oracle gap and feature AUROC before authorizing any supervised operator-correctability ranker training.",
+  "locked_test_touched": false,
+  "next_action": "Do not train a lightweight ranker from the audited scalar proxies alone; close or redesign features/operator context before ranker training.",
+  "oracle_policy": {
+    "mean_mask": 0.1451147006134238,
+    "mean_psnr_delta": 0.07825429280598958,
+    "median_psnr_delta": 0.036251068115234375,
+    "p10_psnr_delta": 0.0020927429199218747,
+    "policy": "D7C_GAIN_ORACLE_POS",
+    "positive_ratio": 0.99,
+    "regression_le_0p2_count": 0,
+    "regression_le_0p5_count": 0,
+    "worst_psnr_delta": -0.0015811920166015625
+  },
+  "phase": "v3f-A no-training correctability target and separability audit",
+  "pixel_sample_count": 4915200,
+  "route_id": "haze4k_v5_chd_rm_v3f_operator_correctability_ranker_20260710",
+  "sample_count": 600,
+  "target": {
+    "d7c_gate_sample_coverage": 0.30211324055989586,
+    "gain_eps": 0.0,
+    "harmful_rate": 0.495889892578125,
+    "positive_rate": 0.49280029296875,
+    "positive_rate_inside_gate": 0.47997874671621277,
+    "positive_rate_outside_gate": 0.4983507047439358
+  },
+  "training_authorized": false,
+  "ungated_control_policy": {
+    "mean_mask": 1.0,
+    "mean_psnr_delta": 0.033065325419108074,
+    "median_psnr_delta": -0.001331329345703125,
+    "p10_psnr_delta": -0.2845676422119141,
+    "policy": "W_U_G_1",
+    "positive_ratio": 0.49833333333333335,
+    "regression_le_0p2_count": 91,
+    "regression_le_0p5_count": 19,
+    "worst_psnr_delta": -0.8744926452636719
+  }
+}

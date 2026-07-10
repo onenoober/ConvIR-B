@@ -1,0 +1,14 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3f_operator_correctability_ranker_20260710",
+  "date": "2026-07-10",
+  "route_branch": "codex/haze4k-v5-v3f-operator-correctability-ranker",
+  "parent_branch": "origin/codex/haze4k-v5-v3e-matched-utility-mechanism-audit",
+  "parent_commit": "4cc6e39848c7aa89f053ad7f3e2e9cc6b64ae030",
+  "cloud_workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3f-operator-correctability-ranker",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "dataset_root": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "split_key": "val_inner",
+  "source_split": "train",
+  "locked_test_authorized": false,
+  "training_authorized_initially": false
+}

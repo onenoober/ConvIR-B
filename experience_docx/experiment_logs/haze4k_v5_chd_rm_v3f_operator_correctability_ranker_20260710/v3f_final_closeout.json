@@ -1,0 +1,20 @@
+{
+  "date": "2026-07-10",
+  "decision": "V3F_A_SCALAR_PROXY_SEPARABILITY_WEAK_NO_RANKER_TRAINING",
+  "locked_test_touched": false,
+  "next_authorized_experiment": null,
+  "ranker_training_authorized": false,
+  "route_id": "haze4k_v5_chd_rm_v3f_operator_correctability_ranker_20260710",
+  "summary": {
+    "best_feature": "control_change",
+    "best_feature_positive_gain_auroc": 0.5320342057763143,
+    "d7c_gate_positive_gain_auroc": 0.49225127558057624,
+    "d7c_score_positive_gain_auroc": 0.49223702322101043,
+    "d7c_veto_control_mean_psnr_delta": 0.0123663330078125,
+    "d7c_veto_control_regression_le_0p2_count": 18,
+    "d7c_veto_gain_oracle_mean_psnr_delta": 0.07825429280598958,
+    "d7c_veto_gain_oracle_regression_le_0p2_count": 0,
+    "ungated_control_mean_psnr_delta": 0.033065325419108074,
+    "ungated_control_regression_le_0p2_count": 91
+  }
+}

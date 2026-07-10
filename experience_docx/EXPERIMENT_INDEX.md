@@ -19,6 +19,38 @@ cards, text logs, result tables, and AI-readable packages back to `main`, but
 keep diagnostic experiment code on its route branch unless a separate promotion
 decision says otherwise.
 
+## Current CHD-RM v5 Route State
+
+As of the v3f closeout on 2026-07-10, v3d RARM adapter-only remains paused and
+no v3f-B ranker training, v3d continuation, 20-epoch continuation, v4/RARM
+expansion, neighbor/FAM1/backbone unfreeze, canary expansion, or locked-test
+access is authorized.
+
+v3f ran the no-training `D7c safety veto + FAM2 operator-correctability ranker`
+audit authorized by v3e. The v3f decision is
+`V3F_A_SCALAR_PROXY_SEPARABILITY_WEAK_NO_RANKER_TRAINING`.
+
+Key v3f facts:
+
+- best deployable scalar proxy for actual current-FAM2 positive marginal gain
+  was FAM2 correction magnitude with AUROC `0.532034`, below the predeclared
+  `0.56` gate for ranker training;
+- D7c score and D7c hard gate remained near random for current FAM2 positive
+  gain: AUROC `0.492237` and `0.492251`;
+- D7c-vetoed replay reduced `<= -0.2 dB` regressions from `91` to `18` versus
+  ungated control, but reduced mean PSNR delta from `+0.033065` to `+0.012366`;
+- the D7c-vetoed gain oracle has real upper-bound value (`+0.078254` mean PSNR
+  delta, zero `<= -0.2 dB` regressions), but the audited deployable scalar
+  features do not recover it.
+
+Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
+`experience_docx/experiment_cards/haze4k-chd-rm-v3f-operator-correctability-ranker.md`,
+and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3f_operator_correctability_ranker_20260710/`
+for current CHD-RM status. The next supported action is not more training from
+this route; any future route must introduce new operator-context features,
+operator target semantics, or a different correction operator before another
+correctability-ranker screen.
+
 ## Official Architecture Anchor
 
 The immutable clean ConvIR-B architecture anchor is:
@@ -126,7 +158,6 @@ without a material new reason.
 | --- | --- | --- | --- | --- | --- | --- |
 | Cloud py310/cu128 environment and code-consistency audit | Completed cloud audit | Protected code files in `Dehazing/ITS`, `pytorch-gradual-warmup-lr`, and `experience_docx/tools` match GitHub anchor (`41/41`, zero diffs); current `py310`/`convir-cu128` stack is Python `3.10.13`, torch `2.11.0+cu128`, torchvision `0.26.0+cu128`; old `/root/autodl-tmp/workspace/ConvIR-B` is dirty historical workspace. | Use GitHub anchor as migration authority; recreate env from `CLOUD_PY310_ENVIRONMENT.md`; do not copy old dirty cloud workspace. | [env](CLOUD_PY310_ENVIRONMENT.md) | [logs](experiment_logs/cloud_py310_environment_20260610/) | `github/codex/haze4k-official-arch-anchor` |
 | Official ConvIR-B architecture anchor | Completed cloud preflight | Strict `haze4k-base.pkl` load passed, checkpoint sha256 `6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088`, parameter count `8,630,665`, synthetic and Haze4K train-crop forwards finite, source audit passed, `--learning_rate`/`--leaning_rate` compatible, locked test untouched. | `OFFICIAL_ANCHOR_PREFLIGHT_OK`; keep branch immutable and require future architecture changes to branch from it. | [card](experiment_cards/2026-06-10-haze4k-official-arch-anchor.md) | [logs](experiment_logs/haze4k_official_arch_anchor_20260610/) | `github/codex/haze4k-official-arch-anchor` |
-| CHD-RM v3a D7c-gated no-op connection audit | Completed no-training cloud audit | D7c gate tensors are connected into FAM2 as an external gate tensor, but zero-init gamma/beta keep the candidate exact A0-equivalent. State compatibility passed with only `FAM2.modulator.weight` and `FAM2.modulator.bias` missing, parameter delta `8320`, internal val-inner 600 output/PSNR/SSIM delta max abs all `0.0`, and nontrivial D7c gate coverage `599/600`. | `V3A_D7C_GATED_NOOP_CONNECTION_PASS_AUTHORIZE_NO_TRAINING_RARM_PREFLIGHT_ONLY`; RARM/training/adapter/locked-test remain blocked pending a separate preflight/design decision. | [card](experiment_cards/haze4k-chd-rm-v3a-d7c-gated-noop-connection-audit.md) | [logs](experiment_logs/haze4k_v5_chd_rm_v3a_d7c_gated_noop_connection_audit_20260710/) | `codex/haze4k-v5-v3a-d7c-gated-noop-connection-audit` |
 | FAM `modres` 5-epoch scout | Completed diagnostic | Mean PSNR `+0.0953 dB`, but median delta negative and strong-reference regressions `142/250`. | Do not promote unchanged `modres`; mechanism is active but preservation fails. | [card](experiment_cards/2026-05-31-haze4k-fam-feature-modulation.md) | [logs](experiment_logs/haze4k_fam_modres_scout_stop5_20260531/) | `github/main` |
 | FAM2-only 20-epoch scout | Completed diagnostic | Mean PSNR `+0.1739 dB`; hard bottom 25% `+0.8159 dB`; easy top 25% `-0.2860 dB`; strong-reference regressions `138/250`. | Keep as diagnostic; preservation gate fails. | [card](experiment_cards/2026-05-31-haze4k-fam2-only-modulation.md) | [logs](experiment_logs/haze4k_fam2_modres_stop20_20260531/) | retained leaf branches |
 | FAM2 bounded gamma | Completed diagnostic | Mean PSNR `-0.0271 dB`; hard `+0.8054 dB`; easy `-1.2740 dB`; strong-reference regressions `181/250`. | Bounded gamma does not solve preservation; do not promote. | [card](experiment_cards/2026-06-01-haze4k-fam2-bounded-modulation.md) | [logs](experiment_logs/haze4k_fam2_bounded_gamma_stop20_20260601/) | retained leaf branches |
@@ -179,7 +210,6 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | --- | ---: | --- |
 | `experiment_logs/cloud_py310_environment_20260610/` | 19 | Cloud/GitHub protected-code consistency manifests, py310/convir-cu128 package probes, conda exports, pip freezes, and workspace warning. |
 | `experiment_logs/haze4k_official_arch_anchor_20260610/` | 6 | Official architecture anchor cloud preflight script, log, structured JSON, status, README, and source audit. |
-| `experiment_logs/haze4k_v5_chd_rm_v3a_d7c_gated_noop_connection_audit_20260710/` | 50+ | v3a D7c-gated FAM2 no-op connection audit, attempt history, state compatibility, modulation zero stats, random/real/internal val-inner 600 equivalence JSON/CSV, forbidden-flow audit, run script, log, status, and final route decision. |
 | `experiment_logs/haze4k_fam_modres_preflight_20260531/` | 3 | FAM preflight and one-batch train probe logs. |
 | `experiment_logs/haze4k_fam_modres_scout_stop5_20260531/` | 8 | Stop5 train logs, compare JSON, per-image CSV, run script, README. |
 | `experiment_logs/haze4k_fam2_modres_preflight_20260531/` | 3 | FAM2 equivalence and real-batch preflight JSON. |
