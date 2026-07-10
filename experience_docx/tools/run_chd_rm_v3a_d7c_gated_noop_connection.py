@@ -566,7 +566,7 @@ def main():
     param_delta = cand_params - base_params
     expected_missing = ["FAM2.modulator.weight", "FAM2.modulator.bias"]
     expected_shapes = {
-        "FAM2.modulator.weight": [128, 65, 1, 1],
+        "FAM2.modulator.weight": [128, 64, 1, 1],
         "FAM2.modulator.bias": [128],
     }
     state_ok = (

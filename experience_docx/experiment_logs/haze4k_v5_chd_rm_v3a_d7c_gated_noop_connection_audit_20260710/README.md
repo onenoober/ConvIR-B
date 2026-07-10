@@ -58,3 +58,8 @@ Pending.
 - Attempt 2 still showed a batch-mode real-batch diff of `2.384e-7` while
   val-inner 600 remained exactly `0.0`. Correction before attempt 3: force
   deterministic cuDNN and disable TF32 for the audit process.
+- Attempt 3 passed random, real batch, and val-inner 600 equivalence, but
+  closeout still failed because the audit script retained the obsolete
+  `[128,65,1,1]` expected modulator shape from the earlier gate-concat design.
+  Correction before attempt 4: expected shape is `[128,64,1,1]` because D7c gate
+  externally multiplies gamma/beta and adds no parameters.

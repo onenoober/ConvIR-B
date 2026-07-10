@@ -26,7 +26,7 @@ This is not RARM, not training, and not a candidate-quality experiment.
 - Keep FAM1 original.
 - FAM2 has the same zero-initialized `1x1` gamma/beta modulator shape as v2i.
 - D7c gate is an external tensor passed into FAM2.
-- D7c gate is resized to FAM2 scale and multiplies gamma/beta.
+- D7c gate is resized to FAM2 scale and externally multiplies gamma/beta.
 - Since gamma/beta are zero initialized, final output must equal A0 exactly.
 
 Allowed new checkpoint-missing keys:
