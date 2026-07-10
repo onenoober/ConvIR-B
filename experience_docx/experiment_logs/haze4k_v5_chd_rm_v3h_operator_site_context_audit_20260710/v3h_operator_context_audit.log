@@ -1,0 +1,154 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3h-operator-site-context-audit/Dehazing/ITS/d7c_gate.py:45: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=map_location)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3h-operator-site-context-audit/Dehazing/ITS/d7c_gate.py:93: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(path, map_location=device)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3h-operator-site-context-audit/Dehazing/ITS/d7c_gate.py:103: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(path, map_location=device)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3h-operator-site-context-audit/experience_docx/tools/chd_rm_v3h_operator_context_audit.py:63: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_numpy.cpp:206.)
+  hazy_t = torch.from_numpy(np.asarray(hazy).transpose(2, 0, 1)).float() / 255.0
+{
+  "route_id": "haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710",
+  "phase": "no_training_operator_site_context_feature_audit",
+  "decision": "V3H_OPERATOR_CONTEXT_FEATURES_WEAK_NO_ROUTER_TRAINING",
+  "training_authorized": false,
+  "locked_test_touched": false,
+  "sample_count": 600,
+  "active_sample_count": 592400,
+  "split_rule": "even image index calibration, odd image index holdout",
+  "target": {
+    "primary": "keep_score = - gradient wrt alpha at alpha=1 under D7c hard action gate",
+    "positive_label": "keep_score >= 0, equivalent to v3g ACTION_CLOSE_FILTER_GRAD_ORACLE keeping alpha active",
+    "secondary": "open_score = - gradient wrt alpha at alpha=0"
+  },
+  "metric_contract": {
+    "baseline": "A0 PSNR on internal train-derived val_inner split",
+    "replay": "feature top/bottom fraction alpha masks under same D7c hard action gate",
+    "gate": "feature holdout keep_dir_auroc >= 0.56 and replay holdout mean > hard D7c action by 0.02 dB without worse <= -0.2 dB count"
+  },
+  "best_holdout_feature": {
+    "feature": "d7c_logit_mean",
+    "keep_auroc": 0.5047291426505728,
+    "keep_dir_auroc": 0.5047291426505728,
+    "keep_direction": "high",
+    "keep_ap": 0.5061625116644761,
+    "keep_positive_rate": 0.5015135375653956,
+    "keep_spearman": 0.007875000026393408,
+    "open_auroc": 0.5074369620500271,
+    "open_dir_auroc": 0.5074369620500271,
+    "open_direction": "high",
+    "open_ap": 0.513065354244911,
+    "open_positive_rate": 0.5057339140283695,
+    "open_spearman": 0.011278124625859068,
+    "split": "holdout_odd"
+  },
+  "selected_replay_candidates": [
+    {
+      "feature": "d7c_logit_mean",
+      "direction": "low",
+      "fraction": 0.25,
+      "calib_sample_mean_keep_score": 1.48701138208418e-11,
+      "calib_sample_positive_ratio": 0.5007912141417693,
+      "calib_sample_count": 73937
+    },
+    {
+      "feature": "input_luma",
+      "direction": "low",
+      "fraction": 0.25,
+      "calib_sample_mean_keep_score": 9.387561908380526e-12,
+      "calib_sample_positive_ratio": 0.505930724806254,
+      "calib_sample_count": 73937
+    },
+    {
+      "feature": "input_dark",
+      "direction": "low",
+      "fraction": 0.25,
+      "calib_sample_mean_keep_score": 4.510734234047797e-12,
+      "calib_sample_positive_ratio": 0.5056796031671349,
+      "calib_sample_count": 74389
+    },
+    {
+      "feature": "d7c_logit_max",
+      "direction": "low",
+      "fraction": 0.25,
+      "calib_sample_mean_keep_score": 2.2454878668282108e-12,
+      "calib_sample_positive_ratio": 0.49949281144758373,
+      "calib_sample_count": 73937
+    },
+    {
+      "feature": "residual_abs",
+      "direction": "high",
+      "fraction": 0.25,
+      "calib_sample_mean_keep_score": 6.981747536875804e-13,
+      "calib_sample_positive_ratio": 0.5046898229490472,
+      "calib_sample_count": 73990
+    },
+    {
+      "feature": "a0_luma",
+      "direction": "low",
+      "fraction": 0.25,
+      "calib_sample_mean_keep_score": -3.713420196338468e-12,
+      "calib_sample_positive_ratio": 0.5067016514059267,
+      "calib_sample_count": 73937
+    },
+    {
+      "feature": "action_delta_signed",
+      "direction": "low",
+      "fraction": 0.25,
+      "calib_sample_mean_keep_score": -1.682856284879186e-11,
+      "calib_sample_positive_ratio": 0.5051868482627101,
+      "calib_sample_count": 73937
+    },
+    {
+      "feature": "d7c_score",
+      "direction": "low",
+      "fraction": 0.25,
+      "calib_sample_mean_keep_score": -1.995654336228725e-11,
+      "calib_sample_positive_ratio": 0.5035638448949782,
+      "calib_sample_count": 73937
+    }
+  ],
+  "best_holdout_feature_policy": {
+    "split": "holdout_odd",
+    "policy": "FEATURE_04_residual_abs_high_0.25",
+    "n": 300,
+    "mean_psnr_delta": 0.008995369062156998,
+    "median_psnr_delta": 0.002482615587808823,
+    "p10_psnr_delta": -0.032779453305512615,
+    "worst_psnr_delta": -0.0880808256023613,
+    "positive_ratio": 0.5666666666666667,
+    "regression_le_0p2_count": 0,
+    "regression_le_0p5_count": 0
+  },
+  "hard_d7c_holdout": {
+    "split": "holdout_odd",
+    "policy": "W_U_G_D_ACTION_HARD",
+    "n": 300,
+    "mean_psnr_delta": 0.009352250366733858,
+    "median_psnr_delta": -0.0034588325255668906,
+    "p10_psnr_delta": -0.11129276396574567,
+    "worst_psnr_delta": -0.3620775678552022,
+    "positive_ratio": 0.4766666666666667,
+    "regression_le_0p2_count": 9,
+    "regression_le_0p5_count": 0
+  },
+  "oracle_holdout": {
+    "split": "holdout_odd",
+    "policy": "ACTION_CLOSE_FILTER_GRAD_ORACLE",
+    "n": 300,
+    "mean_psnr_delta": 0.42032490058466226,
+    "median_psnr_delta": 0.33281438626210047,
+    "p10_psnr_delta": 0.05976667796480869,
+    "worst_psnr_delta": -0.00024148151366887305,
+    "positive_ratio": 0.9933333333333333,
+    "regression_le_0p2_count": 0,
+    "regression_le_0p5_count": 0
+  },
+  "feature_gate_pass": false,
+  "replay_gate_pass": false,
+  "next_action": "Stop current FAM2 operator-context route; new information or target semantics required before training.",
+  "artifacts": {
+    "feature_summary_csv": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3h-operator-site-context-audit/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710/v3h_operator_context_feature_summary.csv",
+    "replay_candidates_csv": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3h-operator-site-context-audit/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710/v3h_operator_context_replay_candidates.csv",
+    "policy_summary_csv": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3h-operator-site-context-audit/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710/v3h_operator_context_policy_summary.csv"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710",
+  "locked_test_touched": false,
+  "locked_test_authorized": false,
+  "allowed_split": "Haze4K train-derived val_inner",
+  "allowed_sample_count": 600
+}
