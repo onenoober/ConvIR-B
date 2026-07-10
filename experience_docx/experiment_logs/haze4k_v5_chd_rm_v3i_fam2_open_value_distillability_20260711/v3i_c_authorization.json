@@ -1,0 +1,15 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711",
+  "authorized_stage": "v3i-C counterfactual response information audit",
+  "basis": "v3i-B full-context single-forward OOF replay failed all minimum pass gates; only counterfactual/disagreement information audits are authorized.",
+  "training_authorized": "diagnostic tiny heads only",
+  "controller_canary_authorized": false,
+  "locked_test_authorized": false,
+  "forbidden": [
+    "single-forward controller canary after v3i-B fail",
+    "locked Haze4K test",
+    "backbone/FAM1/FAM2 producer unfreeze",
+    "checkpoint or weight archival in GitHub",
+    "treating response-conditioned success as deployable single-forward success"
+  ]
+}
