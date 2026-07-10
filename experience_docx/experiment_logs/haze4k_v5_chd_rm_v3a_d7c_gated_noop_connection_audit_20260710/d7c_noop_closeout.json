@@ -1,0 +1,26 @@
+{
+  "RARM": "not_connected_or_trained",
+  "adapter_training": "none",
+  "candidate_mode": "fam2_d7c_noop",
+  "d7c_fixed_threshold": 0.5773006677627563,
+  "d7c_gate_forward_connection": "connected",
+  "decision_label": "V3A_D7C_GATED_NOOP_CONNECTION_PASS_AUTHORIZE_NO_TRAINING_RARM_PREFLIGHT_ONLY",
+  "expected_missing_candidate_keys": [
+    "FAM2.modulator.weight",
+    "FAM2.modulator.bias"
+  ],
+  "internal_val600_max_abs_diff": 0.0,
+  "internal_val600_nontrivial_gate_images": 599,
+  "internal_val600_noop_pass": true,
+  "internal_val600_psnr_delta_max_abs": 0.0,
+  "internal_val600_ssim_delta_max_abs": 0.0,
+  "locked_haze4k_test_usage": "none",
+  "next_authorized_stage": "RARM/training still blocked; only a separate preflight design decision may be written",
+  "param_delta": 8320,
+  "pass": true,
+  "random_noop_pass": true,
+  "real_batch_noop_pass": true,
+  "route_id": "haze4k_v5_chd_rm_v3a_d7c_gated_noop_connection_audit_20260710",
+  "source_branch": "github/codex/haze4k-official-arch-anchor",
+  "training": "none"
+}

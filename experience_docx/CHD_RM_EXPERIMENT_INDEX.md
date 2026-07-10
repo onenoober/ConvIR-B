@@ -2,9 +2,9 @@
 
 Date: 2026-07-10
 
-Status: v2i FAM2 no-op architecture equivalence passed. The next authorized
-experiment is a D7c-gated no-op connection audit only; RARM/training remains
-blocked.
+Status: v3a D7c-gated no-op connection audit passed. RARM/training, adapter
+work, canary expansion, and locked-test access remain blocked until a separate
+preflight/design decision is written.
 
 ## Research Direction
 
@@ -46,7 +46,7 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v2f need target/head redesign | `codex/haze4k-v5-v2f-chd-rm-need-target-head-redesign` | F4 authorized | F0-F3/F2 first-stage shows LDHN core support, frozen feature separability, and density-conditioned target de-proxying; run frozen-side density-stratified head canary only | `F4_AUTHORIZED_PENDING_CLOUD_NO_V3_RARM` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2f_need_target_head_redesign_20260709/` |
 | v2h actionable prior sufficiency | `codex/haze4k-v5-v2h-actionable-prior-sufficiency` | completed with D preflight blocked | D7c A/B/C passed prior sufficiency; FAM2 no-op must move to a separate architecture branch | `V2H_ABC_PASS_D_BLOCKED_CREATE_SEPARATE_NOOP_ARCH_BRANCH` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2h_actionable_prior_sufficiency_20260709/` |
 | v2i FAM2 no-op arch equivalence | `codex/haze4k-v5-v2i-fam2-noop-arch-equivalence` | completed | FAM2-only zero-init architecture insertion from official anchor is exact A0-equivalent on random input, real train-derived batch, and internal val-inner 600 | `V2I_FAM2_NOOP_ARCH_EQUIVALENCE_PASS_AUTHORIZE_D7C_GATED_NOOP_CONNECTION_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2i_fam2_noop_arch_equivalence_20260710/` |
-| v3a D7c-gated no-op connection audit | `codex/haze4k-v5-v3a-d7c-gated-noop-connection-audit` | authorized only as no-training no-op audit | may connect D7c gate tensors only if final modulation remains mathematically no-op and exact A0 equivalence is re-proven | `AUTHORIZED_BY_V2I_NO_TRAINING_NO_RARM` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3a_d7c_gated_noop_connection_audit_20260710/` |
+| v3a D7c-gated no-op connection audit | `codex/haze4k-v5-v3a-d7c-gated-noop-connection-audit` | completed no-training audit | D7c gate tensors are connected into FAM2 as an external gate tensor; final zero-init modulation remains exact A0-equivalent on random, real-batch, and internal val-inner 600 checks | `V3A_D7C_GATED_NOOP_CONNECTION_PASS_AUTHORIZE_NO_TRAINING_RARM_PREFLIGHT_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3a_d7c_gated_noop_connection_audit_20260710/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
@@ -170,6 +170,38 @@ Decision: `V2I_FAM2_NOOP_ARCH_EQUIVALENCE_PASS_AUTHORIZE_D7C_GATED_NOOP_CONNECTI
 
 This authorizes only a separate D7c-gated no-op connection audit, not training.
 
+## v3a Closeout
+
+v3a ran the authorized D7c-gated FAM2 no-op connection audit on `convir-4090`.
+The route starts from `github/codex/haze4k-official-arch-anchor`, connects D7c
+gate tensors into FAM2 as an external gate tensor, and keeps final gamma/beta
+modulation zero-initialized.
+
+v3a passed:
+
+- candidate missing keys exactly `FAM2.modulator.weight` and
+  `FAM2.modulator.bias`;
+- unexpected keys and shape mismatches empty;
+- parameter delta exactly `8320`;
+- random and real-batch no-op equivalence passed;
+- internal val-inner 600 output max absolute diff `0.0`;
+- internal val-inner 600 PSNR/SSIM max absolute deltas `0.0` / `0.0`;
+- nontrivial D7c gate coverage `599/600`;
+- no locked Haze4K test, no training, no RARM, no adapter training, and no
+  ConvIR-B unfreeze.
+
+Attempts 1-4 were engineering/audit closeout issues, not scientific failures:
+CUDA no-op expression perturbation, deterministic audit setup, obsolete
+modulator shape expectation, and a missing-key order comparison bug. Attempt 5
+is the final valid pass.
+
+Decision:
+`V3A_D7C_GATED_NOOP_CONNECTION_PASS_AUTHORIZE_NO_TRAINING_RARM_PREFLIGHT_ONLY`.
+
+This pass authorizes only a separate preflight/design decision for any next
+route. It does not authorize RARM, training, adapter work, canary expansion, or
+locked-test access.
+
 ## Gate Summary
 
 | Stage | Must Pass Before |
@@ -177,6 +209,8 @@ This authorizes only a separate D7c-gated no-op connection audit, not training.
 | v1 data/baseline lock | any density/need training |
 | v2 density/need calibration | RARM connection |
 | v2e control and recall audit | v3 no-op RARM audit |
+| v2i FAM2 no-op arch equivalence | D7c-gated no-op connection audit |
+| v3a D7c-gated no-op connection audit | a separate preflight/design decision only |
 | v3 no-op RARM audit | RARM training |
 | v4 single-scale matched controls | final candidate consideration |
 | v5 low-haze protection | final candidate consideration |

@@ -1,0 +1,10 @@
+state RUNNING_AUDIT
+route v3a_d7c_gated_noop_connection
+attempt5_start 2026-07-10T11:57:40+08:00
+prior_attempt4_classification PREFLIGHT_FAILED_ENGINEERING audit_key_order_only
+locked_test forbidden
+training forbidden
+rarm forbidden
+v3a_start 2026-07-10T11:57:41+08:00 cuda_visible_devices=0
+v3a_done rc=0 2026-07-10T11:59:30+08:00
+V3A_D7C_GATED_NOOP_CONNECTION_OK

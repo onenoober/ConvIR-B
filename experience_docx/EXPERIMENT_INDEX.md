@@ -41,16 +41,24 @@ separate model-structure no-op branch from `github/codex/haze4k-official-arch-an
 F5/v3/RARM/D2/adapter training, canary expansion, architecture mutation inside
 v2h, and locked-test use remain blocked.
 
-The follow-up route `codex/haze4k-v5-v2i-fam2-noop-arch-equivalence` has now
-passed. It starts from the official anchor and tests only FAM2 zero-init no-op
+The follow-up route `codex/haze4k-v5-v2i-fam2-noop-arch-equivalence` passed.
+It starts from the official anchor and tests only FAM2 zero-init no-op
 architecture equivalence against A0. It did not connect D7c, RARM, or any
 training path. Results: exact missing keys `FAM2.modulator.weight` and
 `FAM2.modulator.bias`, parameter delta `8320`, zero modulator stats, random and
 real-batch output diff `0.0`, internal val-inner 600 output diff `0.0`, and
 PSNR/SSIM deltas `0.0`. Decision:
 `V2I_FAM2_NOOP_ARCH_EQUIVALENCE_PASS_AUTHORIZE_D7C_GATED_NOOP_CONNECTION_ONLY`.
-This authorizes only a later D7c-gated no-op connection audit; RARM/training
-remains blocked.
+
+The next route `codex/haze4k-v5-v3a-d7c-gated-noop-connection-audit` also
+passed as a no-training cloud audit. It connects nontrivial D7c gate tensors
+into the FAM2 no-op shell while preserving exact A0 equivalence: parameter
+delta `8320`, expected missing keys only, internal val-inner 600 output diff
+`0.0`, PSNR/SSIM deltas `0.0`, and nontrivial D7c gate coverage `599/600`.
+Decision:
+`V3A_D7C_GATED_NOOP_CONNECTION_PASS_AUTHORIZE_NO_TRAINING_RARM_PREFLIGHT_ONLY`.
+This authorizes only a separate preflight/design decision. RARM/training,
+adapter work, canary expansion, and locked-test access remain blocked.
 
 ## Official Architecture Anchor
 
