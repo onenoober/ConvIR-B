@@ -2,7 +2,7 @@
 
 Date: 2026-07-10
 
-Status: `PLANNED`
+Status: `COMPLETED_GATE_FAIL`
 
 Evidence root:
 `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710/`
@@ -104,8 +104,54 @@ exact, no-op equivalence breaks, D7c gates are trivial, frozen parameters
 receive gradients, one-step effect is zero or too large, any command touches
 locked test, or a cloud workspace/session/output path conflict is found.
 
-## Current Decision
+## Final Decision
 
-`PLANNED_V3D_STAGE0_PREFLIGHT_ONLY`
+`V3D_PAUSE_D7C_SAFER_BUT_NOT_MATCHED_CONTROL_UTILITY_NO_20EPOCH_NO_V4`
 
-No RARM training is authorized until Stage 0 passes on `convir-4090`.
+v3d completed on `convir-4090` through Stage 0, Stage 1 one-epoch
+adapter-only smoke, Stage 1 five-epoch adapter-only resume, and a matched
+five-epoch `fam2_modres` control. Locked Haze4K test was not used.
+
+Stage 0 passed:
+
+- official A0 partial init missed exactly `FAM2.modulator.weight` and
+  `FAM2.modulator.bias`;
+- trainable scope was exactly those two keys, `8320` parameters;
+- pre-step no-op final-output max abs diff was `0.0`;
+- D7c gates were nontrivial on `8/8` checked samples;
+- trainable gradients were finite and nonzero, frozen gradients were zero;
+- one-step output max abs diff was `0.00016286969184875488`.
+
+D7c-gated RARM Stage 1 five-epoch adapter-only passed the no-collapse gate on
+all 600 internal val-inner samples but remained a weak utility signal:
+
+- mean / median PSNR delta: `+0.02947239875793457` /
+  `+0.0002765655517578125`;
+- p10 / worst PSNR delta: `-0.18007774353027345` /
+  `-0.7528419494628906`;
+- positive PSNR ratio: `0.5016666666666667`;
+- regressions `<= -0.2 dB`: `50`;
+- regressions `<= -1.0 dB`: `0`.
+
+The matched-budget ungated `fam2_modres` control had slightly higher mean
+utility but worse tail safety:
+
+- mean / median PSNR delta: `+0.033065325419108074` /
+  `-0.001331329345703125`;
+- p10 / worst PSNR delta: `-0.28456764221191405` /
+  `-0.8744926452636719`;
+- positive PSNR ratio: `0.49833333333333335`;
+- regressions `<= -0.2 dB`: `91`;
+- regressions `<= -1.0 dB`: `0`.
+
+Paired comparison:
+
+- D7c minus control mean PSNR delta: `-0.0035929266611735024`;
+- D7c-better image ratio: `0.5116666666666667`;
+- D7c reduced `<= -0.2 dB` regressions by `41` images versus control.
+
+D7c is safer than ungated FAM2 modulation, but it does not beat the
+matched-budget control on mean utility. Therefore v3d cannot claim
+matched-budget utility and must pause. No 20-epoch continuation,
+adapter-neighbor unfreeze, v4/RARM expansion, canary expansion, or locked-test
+access is authorized from v3d.

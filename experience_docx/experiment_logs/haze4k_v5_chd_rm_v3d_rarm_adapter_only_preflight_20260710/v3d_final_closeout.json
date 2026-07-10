@@ -1,0 +1,6 @@
+{
+  "continue_allowed": false,
+  "decision": "V3D_PAUSE_D7C_SAFER_BUT_NOT_MATCHED_CONTROL_UTILITY_NO_20EPOCH_NO_V4",
+  "locked_test_authorized": false,
+  "next_action": "Archive v3d evidence to GitHub main; no further RARM training is authorized from v3d."
+}

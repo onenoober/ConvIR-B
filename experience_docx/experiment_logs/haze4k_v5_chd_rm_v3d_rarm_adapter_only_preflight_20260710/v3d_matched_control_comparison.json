@@ -1,0 +1,39 @@
+{
+  "continue_allowed": false,
+  "control": {
+    "max_output_max_abs_diff": 0.008549153804779053,
+    "mean_psnr_delta": 0.033065325419108074,
+    "median_psnr_delta": -0.001331329345703125,
+    "p10_psnr_delta": -0.28456764221191405,
+    "positive_psnr_ratio": 0.49833333333333335,
+    "regression_le_0p2_count": 91,
+    "regression_le_1p0_count": 0,
+    "worst_psnr_delta": -0.8744926452636719
+  },
+  "d7c": {
+    "max_output_max_abs_diff": 0.008836627006530762,
+    "mean_psnr_delta": 0.02947239875793457,
+    "median_psnr_delta": 0.0002765655517578125,
+    "p10_psnr_delta": -0.18007774353027345,
+    "positive_psnr_ratio": 0.5016666666666667,
+    "regression_le_0p2_count": 50,
+    "regression_le_1p0_count": 0,
+    "worst_psnr_delta": -0.7528419494628906
+  },
+  "d7c_better_image_ratio": 0.5116666666666667,
+  "d7c_tail_safer": true,
+  "d7c_utility_beats_control": false,
+  "decision": "V3D_PAUSE_D7C_SAFER_BUT_NOT_MATCHED_CONTROL_UTILITY_NO_20EPOCH_NO_V4",
+  "locked_test_authorized": false,
+  "next_action": "Archive v3d evidence to GitHub main; no further RARM training is authorized from v3d.",
+  "paired_d7c_minus_control": {
+    "best": 0.7863235473632812,
+    "mean": -0.0035929266611735024,
+    "median": 0.0015468597412109375,
+    "p10": -0.17045669555664064,
+    "worst": -0.8437309265136719
+  },
+  "rationale": "D7c is safer in mild-tail regression count, but it does not beat the matched FAM2 modres control on mean PSNR delta. The route therefore cannot claim matched-budget utility and must pause before 20-epoch, neighbor, v4, or locked-test steps.",
+  "regression_le_0p2_reduction_vs_control": 41,
+  "sample_count": 600
+}
