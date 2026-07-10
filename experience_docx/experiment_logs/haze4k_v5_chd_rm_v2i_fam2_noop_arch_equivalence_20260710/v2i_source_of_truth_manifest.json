@@ -1,0 +1,27 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v2i_fam2_noop_arch_equivalence_20260710",
+  "status": "PLANNED",
+  "route_identity": "new model-structure no-op audit",
+  "source_branch": "github/codex/haze4k-official-arch-anchor",
+  "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+  "branch": "codex/haze4k-v5-v2i-fam2-noop-arch-equivalence",
+  "cloud_host": "convir-4090",
+  "cloud_python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "cloud_workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2i-fam2-noop-arch-equivalence",
+  "dataset": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "split": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/haze4k_internal_split_2400_600.json",
+  "metric_view": "train-derived val_inner 600 images; not locked Haze4K test",
+  "baseline_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "locked_haze4k_test_usage": "none_authorized",
+  "forbidden": [
+    "locked_test",
+    "D2",
+    "F5",
+    "v3",
+    "RARM",
+    "D7c_gate_forward_injection",
+    "adapter_training",
+    "ConvIR-B_unfreeze",
+    "new_probe_training"
+  ]
+}

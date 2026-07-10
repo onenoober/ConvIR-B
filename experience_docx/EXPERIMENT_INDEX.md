@@ -19,6 +19,34 @@ cards, text logs, result tables, and AI-readable packages back to `main`, but
 keep diagnostic experiment code on its route branch unless a separate promotion
 decision says otherwise.
 
+## Current CHD-RM v5 Route State
+
+As of the v2h C/D closeout, D7c prior sufficiency is supported by A/B/C:
+v2h-A passed deployable risk coverage, v2h-B showed a strong diagnostic
+shadow-modulation upper bound, and v2h-C passed five-fold train OOF calibration
+stability. Key C metrics: D7c action recall mean/min `0.576335` / `0.556955`,
+low-adjacent recall mean `0.170063`, negative false mean/max `0.003403` /
+`0.003996`, and selected coverage std `0.010785`; density-matched negative
+false mean/max was `0.049636` / `0.063885`.
+
+v2h-D did not validate FAM2/no-op numerically because the branch correctly
+blocked architecture variants: `Official ConvIR-B anchor only supports
+fam_mode='original'. Create a route branch for architecture variants.` This is
+an architecture-boundary blocker, not a negative no-op result.
+
+Decision: `V2H_ABC_PASS_D_BLOCKED_CREATE_SEPARATE_NOOP_ARCH_BRANCH`. Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
+`experience_docx/experiment_cards/haze4k-chd-rm-v2h-actionable-prior-sufficiency.md`,
+and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v2h_actionable_prior_sufficiency_20260709/` for the current CHD-RM status. The next supported action is a
+separate model-structure no-op branch from `github/codex/haze4k-official-arch-anchor`.
+F5/v3/RARM/D2/adapter training, canary expansion, architecture mutation inside
+v2h, and locked-test use remain blocked.
+
+The follow-up route is now `codex/haze4k-v5-v2i-fam2-noop-arch-equivalence`.
+It starts from the official anchor and tests only FAM2 zero-init no-op
+architecture equivalence against A0. It does not connect D7c, RARM, or any
+training path. If v2i passes, it may authorize only a later D7c-gated no-op
+connection audit; RARM/training remains blocked.
+
 ## Official Architecture Anchor
 
 The immutable clean ConvIR-B architecture anchor is:

@@ -1,0 +1,10 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v2i_fam2_noop_arch_equivalence_20260710",
+  "locked_haze4k_test_usage": "none",
+  "policy": "v2i uses only the Haze4K train-derived val_inner 600 split for no-op equivalence; locked Haze4K test remains blocked",
+  "D2": "not_authorized",
+  "F5": "not_authorized",
+  "v3": "not_authorized",
+  "RARM": "not_authorized",
+  "training": "not_authorized"
+}

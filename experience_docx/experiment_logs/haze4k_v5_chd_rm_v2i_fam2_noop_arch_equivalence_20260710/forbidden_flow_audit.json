@@ -1,0 +1,16 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v2i_fam2_noop_arch_equivalence_20260710",
+  "forbidden_flows": {
+    "architecture_mutation_inside_v2h": "not_allowed",
+    "RARM_connection": "not_allowed",
+    "RARM_training": "not_allowed",
+    "D7c_gate_forward_injection": "not_allowed",
+    "adapter_training": "not_allowed",
+    "ConvIR-B_unfreeze": "not_allowed",
+    "loss_change": "not_allowed",
+    "selector_probe_training": "not_allowed",
+    "locked_Haze4K_test": "not_allowed",
+    "checkpoint_or_weight_archive": "not_allowed",
+    "image_or_raw_output_archive": "not_allowed"
+  }
+}
