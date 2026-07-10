@@ -19,6 +19,7 @@ import torch
 import torch.nn.functional as F
 
 from chd_rm_v3i_b_full_context_probe import (
+    D7C_THRESHOLD,
     bootstrap_delta,
     build_gate_producer,
     build_model,
@@ -345,7 +346,7 @@ def main():
     parser.add_argument("--control_checkpoint", required=True)
     parser.add_argument("--data_dir", required=True)
     parser.add_argument("--split_json", required=True)
-    parser.add_argument("--source_split", default="val")
+    parser.add_argument("--source_split", default="train")
     parser.add_argument("--split_key", default="val_inner")
     parser.add_argument("--density_artifact", required=True)
     parser.add_argument("--d7c_artifact", required=True)
@@ -370,6 +371,7 @@ def main():
     parser.add_argument("--ungated_mean_line", type=float, default=0.03306524052036514)
     parser.add_argument("--v3i_b_best_mean_line", type=float, default=0.01662677374336075)
     parser.add_argument("--bootstrap_draws", type=int, default=2000)
+    parser.add_argument("--d7c_threshold", type=float, default=D7C_THRESHOLD)
     parser.add_argument("--no_context_channels", action="store_true")
     args = parser.parse_args()
     audit(args)
