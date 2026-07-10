@@ -1,0 +1,6 @@
+{
+  "locked_haze4k_test_usage": "none",
+  "runtime_split": "train-derived internal val_inner 600",
+  "source_split": "train",
+  "status": "planned_no_locked_test"
+}

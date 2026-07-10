@@ -46,16 +46,79 @@ class SCM(nn.Module):
         return x
 
 class FAM(nn.Module):
-    def __init__(self, channel):
+    def __init__(self, channel, mode='original'):
         super(FAM, self).__init__()
+        if mode not in ('original', 'modres', 'd7c_noop'):
+            raise ValueError(f'Unsupported FAM mode: {mode}')
+        self.mode = mode
         self.merge = BasicConv(channel*2, channel, kernel_size=3, stride=1, relu=False)
+        if self.mode in ('modres', 'd7c_noop'):
+            rng_state = torch.get_rng_state()
+            self.modulator = nn.Conv2d(channel, channel * 2, kernel_size=1, stride=1, padding=0)
+            torch.set_rng_state(rng_state)
+            nn.init.zeros_(self.modulator.weight)
+            nn.init.zeros_(self.modulator.bias)
 
-    def forward(self, x1, x2):
-        return self.merge(torch.cat([x1, x2], dim=1))
+    def forward(self, x1, x2, d7c_gate=None):
+        fused = self.merge(torch.cat([x1, x2], dim=1))
+        if self.mode == 'original':
+            return fused
+        if self.mode == 'd7c_noop':
+            if d7c_gate is None:
+                raise ValueError('d7c_gate is required for d7c_noop FAM mode')
+            if d7c_gate.shape[-2:] != x2.shape[-2:]:
+                d7c_gate = F.interpolate(d7c_gate, size=x2.shape[-2:], mode='nearest')
+        else:
+            d7c_gate = None
+        gamma, beta = self.modulator(x2).chunk(2, dim=1)
+        if d7c_gate is not None:
+            d7c_gate = d7c_gate.to(dtype=x2.dtype)
+            gamma = gamma * d7c_gate
+            beta = beta * d7c_gate
+        return fused * (1 + gamma) + beta
+
+    def modulation_stats(self, x2, d7c_gate=None):
+        if self.mode == 'original':
+            return None
+        with torch.no_grad():
+            if self.mode == 'd7c_noop':
+                if d7c_gate is None:
+                    raise ValueError('d7c_gate is required for d7c_noop FAM mode')
+                if d7c_gate.shape[-2:] != x2.shape[-2:]:
+                    d7c_gate = F.interpolate(d7c_gate, size=x2.shape[-2:], mode='nearest')
+                gate_stats = {
+                    'd7c_gate_mean': d7c_gate.mean().item(),
+                    'd7c_gate_std': d7c_gate.std(unbiased=False).item(),
+                    'd7c_gate_min': d7c_gate.min().item(),
+                    'd7c_gate_max': d7c_gate.max().item(),
+                    'd7c_gate_shape': list(d7c_gate.shape),
+                }
+            else:
+                d7c_gate = None
+                gate_stats = {}
+            gamma, beta = self.modulator(x2).chunk(2, dim=1)
+            if d7c_gate is not None:
+                d7c_gate = d7c_gate.to(dtype=x2.dtype)
+                gamma = gamma * d7c_gate
+                beta = beta * d7c_gate
+            stats = {
+                'gamma_mean': gamma.mean().item(),
+                'gamma_std': gamma.std(unbiased=False).item(),
+                'gamma_min': gamma.min().item(),
+                'gamma_max': gamma.max().item(),
+                'beta_mean': beta.mean().item(),
+                'beta_std': beta.std(unbiased=False).item(),
+                'beta_min': beta.min().item(),
+                'beta_max': beta.max().item(),
+            }
+            stats.update(gate_stats)
+            return stats
 
 class ConvIR(nn.Module):
-    def __init__(self, version, data):
+    def __init__(self, version, data, fam_mode='original'):
         super(ConvIR, self).__init__()
+        if fam_mode not in ('original', 'fam2_modres', 'fam2_d7c_noop'):
+            raise ValueError(f'Unsupported ConvIR FAM mode for v3a: {fam_mode}')
         
         if version == 'small':
             num_res = 4
@@ -99,12 +162,18 @@ class ConvIR(nn.Module):
             ]
         )
 
-        self.FAM1 = FAM(base_channel * 4)
+        fam2_mode = {
+            'original': 'original',
+            'fam2_modres': 'modres',
+            'fam2_d7c_noop': 'd7c_noop',
+        }[fam_mode]
+
+        self.FAM1 = FAM(base_channel * 4, 'original')
         self.SCM1 = SCM(base_channel * 4)
-        self.FAM2 = FAM(base_channel * 2)
+        self.FAM2 = FAM(base_channel * 2, fam2_mode)
         self.SCM2 = SCM(base_channel * 2)
 
-    def forward(self, x):
+    def forward(self, x, d7c_gate=None):
         x_2 = F.interpolate(x, scale_factor=0.5)
         x_4 = F.interpolate(x_2, scale_factor=0.5)
         z2 = self.SCM2(x_2)
@@ -116,7 +185,7 @@ class ConvIR(nn.Module):
         res1 = self.Encoder[0](x_)
         # 128
         z = self.feat_extract[1](res1)
-        z = self.FAM2(z, z2)
+        z = self.FAM2(z, z2, d7c_gate=d7c_gate)
         res2 = self.Encoder[1](z)
         # 64
         z = self.feat_extract[2](res2)
@@ -145,11 +214,27 @@ class ConvIR(nn.Module):
 
         return outputs
 
+    def collect_modulation_stats(self, x, d7c_gate=None):
+        x_2 = F.interpolate(x, scale_factor=0.5)
+        x_4 = F.interpolate(x_2, scale_factor=0.5)
+        z2 = self.SCM2(x_2)
+        z4 = self.SCM1(x_4)
+
+        stats = {}
+        fam1_stats = self.FAM1.modulation_stats(z4)
+        fam2_stats = self.FAM2.modulation_stats(z2, d7c_gate=d7c_gate)
+        if fam1_stats is not None:
+            stats['FAM1'] = fam1_stats
+        if fam2_stats is not None:
+            stats['FAM2'] = fam2_stats
+        return stats
+
 
 def build_net(version, data, fam_mode='original'):
-    if fam_mode != 'original':
+    if fam_mode not in ('original', 'fam2_modres', 'fam2_d7c_noop'):
         raise ValueError(
-            "Official ConvIR-B anchor only supports fam_mode='original'. "
-            "Create a route branch for architecture variants."
+            "v3a D7c-gated no-op architecture branch only supports "
+            "fam_mode='original', fam_mode='fam2_modres', or "
+            "fam_mode='fam2_d7c_noop'."
         )
-    return ConvIR(version, data)
+    return ConvIR(version, data, fam_mode)

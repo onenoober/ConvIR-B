@@ -1,0 +1,5 @@
+route_id=haze4k_v5_chd_rm_v3a_d7c_gated_noop_connection_audit_20260710
+status=PLANNED
+locked_haze4k_test_usage=none
+training=none
+RARM=not_connected_or_trained
