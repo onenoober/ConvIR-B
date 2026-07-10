@@ -570,7 +570,7 @@ def main():
         "FAM2.modulator.bias": [128],
     }
     state_ok = (
-        sorted(candidate_load["missing_candidate_keys"]) == expected_missing
+        sorted(candidate_load["missing_candidate_keys"]) == sorted(expected_missing)
         and candidate_load["unexpected_keys"] == []
         and candidate_load["shape_mismatch"] == []
         and param_delta == 8320
