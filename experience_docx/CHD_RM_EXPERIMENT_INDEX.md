@@ -2,13 +2,13 @@
 
 Date: 2026-07-10
 
-Status: v3g FAM2 action-space correctability audit completed after v3f.
+Status: v3h operator-site context feature audit completed after v3g.
 v3d remains stopped: no v3f-B ranker training, 20-epoch continuation, v4/RARM
 expansion, neighbor/FAM1 or backbone unfreeze, canary expansion, or locked-test
-access is authorized. v3g found a strong label-oracle action space at the true
-FAM2 actuator, while hard D7c and ungated W_U action replay remain weak or
-tail-risky. The latest bottleneck is deployable operator-site context/controller
-quality, not D7c prior existence and not FAM2 actuator realizability.
+access is authorized. v3g showed strong FAM2 action-space oracle capacity, but
+v3h found audited deployable operator-site features near random and replay-weak.
+The latest bottleneck is missing deployable action-site signal/controller, not
+D7c prior existence and not FAM2 actuator realizability.
 
 ## Research Direction
 
@@ -57,6 +57,8 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v3d RARM adapter-only preflight | `codex/haze4k-v5-v3d-rarm-adapter-only-preflight` | paused after matched-control gate | Stage 0 exact no-op/freeze/gradient checks passed; D7c-gated 5-epoch adapter-only was safer than ungated control but did not beat matched-budget mean utility (`+0.02947 dB` vs control `+0.03307 dB`) | `V3D_PAUSE_D7C_SAFER_BUT_NOT_MATCHED_CONTROL_UTILITY_NO_20EPOCH_NO_V4` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710/` |
 | v3e matched utility mechanism audit | `codex/haze4k-v5-v3e-matched-utility-mechanism-audit` | completed mechanism audit | Paired mean remains inconclusive but D7c tail safety is stable; 2x2 replay and gain audit show hard gate is a safety valve and D7c score is near-random for current FAM2 operator gain | `V3E_OPERATOR_CORRECTABILITY_MISMATCH_PRIMARY_HARD_GATE_SAFETY_TRADEOFF_SECONDARY_NO_RARM_EXPANSION` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710/` |
 | v3f operator-correctability ranker audit | `codex/haze4k-v5-v3f-operator-correctability-ranker` | completed gate stop | D7c-vetoed gain oracle has useful upper-bound value, but best deployable scalar proxy AUROC is only `0.532034`, below the `0.56` training gate | `V3F_A_SCALAR_PROXY_SEPARABILITY_WEAK_NO_RANKER_TRAINING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3f_operator_correctability_ranker_20260710/` |
+| v3g FAM2 action-space correctability | `codex/haze4k-v5-v3g-fam2-action-space-correctability` | completed gate pass; no training | Label-derived FAM2 alpha oracle is strong and finite-difference validated, but hard D7c and ungated action replay remain weak/tail-risky | `V3G_ACTION_ORACLE_STRONG_FEATURES_WEAK_REQUIRE_OPERATOR_CONTEXT_NO_TRAINING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3g_fam2_action_space_correctability_20260710/` |
+| v3h operator-site context audit | `codex/haze4k-v5-v3h-operator-site-context-audit` | completed gate fail; no training | Audited inference-time operator-site features were near-random for the v3g keep/open action target; best feature replay did not beat hard D7c mean utility on holdout | `V3H_OPERATOR_CONTEXT_FEATURES_WEAK_NO_ROUTER_TRAINING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
@@ -406,6 +408,34 @@ not train v3f-B or another router from scalar proxies. The only authorized next
 work is a separate no-training operator-site context feature audit on internal
 `val_inner`.
 
+## v3h Closeout
+
+v3h ran the authorized no-training operator-site context feature audit on
+`convir-4090`. It used internal train-derived `val_inner` 600 only,
+produced no checkpoints, and did not touch the Haze4K locked test.
+
+Decision:
+`V3H_OPERATOR_CONTEXT_FEATURES_WEAK_NO_ROUTER_TRAINING`.
+
+Key holdout evidence:
+
+- best feature `d7c_logit_mean`: keep dir AUROC `0.504729`, AP
+  `0.506163`, Spearman `0.007875`;
+- best feature replay `FEATURE_04_residual_abs_high_0.25`: mean
+  `+0.008995 dB`, p10 `-0.032779 dB`, zero `<= -0.2 dB`
+  regressions;
+- hard D7c action replay: mean `+0.009352 dB`, p10
+  `-0.111293 dB`, `9` regressions <= -0.2 dB;
+- gradient oracle reference: mean `+0.420325 dB`, p10
+  `+0.059767 dB`, zero `<= -0.2 dB` regressions.
+
+Interpretation: v3g proved the actuator oracle exists, but v3h shows the audited
+deployable operator-site features do not recover it. The best feature replay is
+tail-safer only because it is much more selective; it does not improve holdout
+mean utility and is not a training signal. No current FAM2 scalar/operator-site
+feature training route is authorized. Future work requires materially new
+information, target semantics, or a different controller source.
+
 ## Gate Summary
 
 | Stage | Must Pass Before |
@@ -424,6 +454,7 @@ work is a separate no-training operator-site context feature audit on internal
 | v3e matched utility mechanism audit | separate v3f design/audit for D7c safety veto plus FAM2 operator-correctability ranker only; no direct RARM expansion |
 | v3f operator-correctability ranker audit | no v3f-B scalar-feature ranker training; future work needs new operator context, target semantics, or correction operator |
 | v3g FAM2 action-space correctability | no-training operator-site context feature audit only; no router/ranker training yet |
+| v3h operator-site context audit | no current FAM2 scalar/operator-site feature router training; new information/target semantics/controller source required |
 | v3 no-op RARM audit | RARM training |
 | v4 single-scale matched controls | final candidate consideration |
 | v5 low-haze protection | final candidate consideration |

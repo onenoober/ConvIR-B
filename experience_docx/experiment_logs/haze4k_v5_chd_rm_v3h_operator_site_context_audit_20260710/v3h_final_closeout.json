@@ -1,0 +1,87 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710",
+  "date": "2026-07-10",
+  "decision": "V3H_OPERATOR_CONTEXT_FEATURES_WEAK_NO_ROUTER_TRAINING",
+  "status": "COMPLETED_GATE_FAIL_STOP_NO_TRAINING",
+  "training_authorized": false,
+  "locked_test_touched": false,
+  "sample_count": 600,
+  "active_sample_count": 592400,
+  "split_rule": "even image index calibration, odd image index holdout",
+  "key_results": {
+    "best_holdout_feature": {
+      "feature": "d7c_logit_mean",
+      "keep_auroc": 0.5047291426505728,
+      "keep_dir_auroc": 0.5047291426505728,
+      "keep_direction": "high",
+      "keep_ap": 0.5061625116644761,
+      "keep_positive_rate": 0.5015135375653956,
+      "keep_spearman": 0.007875000026393408,
+      "open_auroc": 0.5074369620500271,
+      "open_dir_auroc": 0.5074369620500271,
+      "open_direction": "high",
+      "open_ap": 0.513065354244911,
+      "open_positive_rate": 0.5057339140283695,
+      "open_spearman": 0.011278124625859068,
+      "split": "holdout_odd"
+    },
+    "best_holdout_feature_policy": {
+      "split": "holdout_odd",
+      "policy": "FEATURE_04_residual_abs_high_0.25",
+      "n": 300,
+      "mean_psnr_delta": 0.008995369062156998,
+      "median_psnr_delta": 0.002482615587808823,
+      "p10_psnr_delta": -0.032779453305512615,
+      "worst_psnr_delta": -0.0880808256023613,
+      "positive_ratio": 0.5666666666666667,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0
+    },
+    "hard_d7c_holdout": {
+      "split": "holdout_odd",
+      "policy": "W_U_G_D_ACTION_HARD",
+      "n": 300,
+      "mean_psnr_delta": 0.009352250366733858,
+      "median_psnr_delta": -0.0034588325255668906,
+      "p10_psnr_delta": -0.11129276396574567,
+      "worst_psnr_delta": -0.3620775678552022,
+      "positive_ratio": 0.4766666666666667,
+      "regression_le_0p2_count": 9,
+      "regression_le_0p5_count": 0
+    },
+    "oracle_holdout": {
+      "split": "holdout_odd",
+      "policy": "ACTION_CLOSE_FILTER_GRAD_ORACLE",
+      "n": 300,
+      "mean_psnr_delta": 0.42032490058466226,
+      "median_psnr_delta": 0.33281438626210047,
+      "p10_psnr_delta": 0.05976667796480869,
+      "worst_psnr_delta": -0.00024148151366887305,
+      "positive_ratio": 0.9933333333333333,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0
+    },
+    "feature_gate_pass": false,
+    "replay_gate_pass": false
+  },
+  "interpretation": [
+    "v3g action-space oracle remains strong on holdout, confirming correctability exists at the FAM2 action site.",
+    "Audited inference-time operator-site features are near-random for the keep/open action target; the best holdout keep dir AUROC is about 0.505.",
+    "Simple feature top/bottom fraction replay does not beat hard D7c action on holdout mean utility, although the best residual_abs policy reduces tail regressions by using a much narrower action subset.",
+    "The current bottleneck is missing deployable action-site signal, not actuator capacity."
+  ],
+  "next_authorized_work": "None within the current FAM2 scalar/operator-site feature route. New information, target semantics, or a materially different controller source is required before any further training route.",
+  "forbidden_next": [
+    "Do not train v3f-B or any scalar/operator-site feature router from v3h.",
+    "Do not continue v3d or the same FAM2 adapter.",
+    "Do not use locked Haze4K test, canary expansion, 20-epoch continuation, v4/RARM expansion, or backbone/FAM1/neighbor unfreeze."
+  ],
+  "artifacts": {
+    "summary_json": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710/v3h_operator_context_audit_summary.json",
+    "feature_summary_csv": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710/v3h_operator_context_feature_summary.csv",
+    "replay_candidates_csv": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710/v3h_operator_context_replay_candidates.csv",
+    "policy_summary_csv": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710/v3h_operator_context_policy_summary.csv",
+    "log": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710/v3h_operator_context_audit.log",
+    "status": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710/status.txt"
+  }
+}

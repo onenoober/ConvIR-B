@@ -1,0 +1,10 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710",
+  "source_branch": "origin/codex/haze4k-v5-v3g-fam2-action-space-correctability",
+  "source_commit": "6edfbfcde45264effd4c083649077f9d017d21a9",
+  "github_main_evidence_commit_before_route": "f4ffa74a7376c4df765b2f809602098d2f88bef3",
+  "runtime_host": "convir-4090",
+  "cloud_python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3h-operator-site-context-audit",
+  "locked_test_policy": "blocked; internal val_inner only"
+}
