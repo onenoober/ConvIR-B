@@ -1,0 +1,16 @@
+{
+  "RARM": "not_connected_or_trained",
+  "adapter_training": "none",
+  "decision_label": "V3C_GATE_FORWARD_CONTRACT_PASS_AUTHORIZE_NO_TRAINING_ENTRYPOINT_PREFLIGHT_ONLY",
+  "locked_haze4k_test_usage": "none",
+  "max_abs_diff": 0.0,
+  "modulation_stats_gate_seen": true,
+  "next_authorized_stage": "no-training entrypoint preflight is passed; RARM/training still requires a separate written decision",
+  "nontrivial_gate_images": 16,
+  "pass": true,
+  "psnr_delta_max_abs": 0.0,
+  "route_id": "haze4k_v5_chd_rm_v3c_gate_forward_contract_20260710",
+  "samples": 16,
+  "ssim_delta_max_abs": 0.0,
+  "training": "none"
+}

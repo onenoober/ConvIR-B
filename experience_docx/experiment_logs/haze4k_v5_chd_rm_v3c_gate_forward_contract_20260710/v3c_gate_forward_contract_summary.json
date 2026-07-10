@@ -1,0 +1,31 @@
+{
+  "candidate_load": {
+    "bad_missing": [],
+    "loaded_count": 602,
+    "missing_candidate_keys": [
+      "FAM2.modulator.weight",
+      "FAM2.modulator.bias"
+    ],
+    "shape_mismatch": [],
+    "unexpected_keys": []
+  },
+  "candidate_missing_ok": true,
+  "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "d7c_artifact_sha256": "09f449232024395cf64db15a2a0efa0f12d3e0e049e1da3d67229a3dc5729361",
+  "d7c_selected_coverage_max": 0.6701125502586365,
+  "d7c_selected_coverage_mean": 0.3246304675703868,
+  "d7c_selected_coverage_min": 0.015908146277070045,
+  "d7c_threshold": 0.5773006677627563,
+  "density_artifact_sha256": "1ffce13dccb41d96a47c2b5275f87bf2fdb73c226a190cfa240e5c71c1ec326f",
+  "max_abs_diff": 0.0,
+  "modulation_stats_gate_seen": true,
+  "nontrivial_gate_images": 16,
+  "pass": true,
+  "psnr_delta_max_abs": 0.0,
+  "route_id": "haze4k_v5_chd_rm_v3c_gate_forward_contract_20260710",
+  "samples": 16,
+  "source_split": "train",
+  "split_key": "val_inner",
+  "ssim_delta_max_abs": 0.0,
+  "static_source_contract_pass": true
+}

@@ -2,7 +2,7 @@
 
 Date: 2026-07-10
 
-Status: `PENDING_CLOUD_NO_TRAINING_PREFLIGHT`
+Status: `COMPLETED_GATE_PASS`
 
 Evidence root:
 `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3c_gate_forward_contract_20260710/`
@@ -75,4 +75,27 @@ command path touches locked test.
 
 ## Decision
 
-Pending cloud no-training audit.
+`V3C_GATE_FORWARD_CONTRACT_PASS_AUTHORIZE_NO_TRAINING_ENTRYPOINT_PREFLIGHT_ONLY`
+
+The cloud no-training audit passed on `convir-4090` using a fresh workspace at
+commit `0a350393776c4263386c72c8b81be076d9d984a5`.
+
+Key evidence:
+
+- source contract checks passed;
+- official A0 partial init missed exactly `FAM2.modulator.weight` and
+  `FAM2.modulator.bias`;
+- checked samples: `16` internal val-inner images;
+- nontrivial D7c gate images: `16/16`;
+- D7c selected coverage mean/min/max:
+  `0.3246304675703868` / `0.015908146277070045` /
+  `0.6701125502586365`;
+- output max absolute difference: `0.0`;
+- PSNR/SSIM max absolute deltas: `0.0` / `0.0`;
+- modulation stats include D7c gate stats;
+- training, RARM, adapter training, ConvIR-B unfreeze, canary expansion, and
+  locked Haze4K test were not used.
+
+This closes the v3b entrypoint-contract blocker. It still does not authorize
+RARM/training. Any next step toward RARM or training must be written as a
+separate decision with its own resource and metric contract.

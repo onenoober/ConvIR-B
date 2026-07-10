@@ -1,0 +1,35 @@
+{
+  "checks": [
+    {
+      "needle": "forward_with_optional_d7c(model, args, input_img)",
+      "pass": true,
+      "path": "Dehazing/ITS/train.py"
+    },
+    {
+      "needle": "collect_modulation_stats_with_optional_d7c(model, args, input_img)",
+      "pass": true,
+      "path": "Dehazing/ITS/train.py"
+    },
+    {
+      "needle": "forward_with_optional_d7c(model, args, input_img)[2]",
+      "pass": true,
+      "path": "Dehazing/ITS/valid.py"
+    },
+    {
+      "needle": "forward_with_optional_d7c(model, args, input_img)[2]",
+      "pass": true,
+      "path": "Dehazing/ITS/eval.py"
+    },
+    {
+      "needle": "args.d7c_gate_producer = build_d7c_gate_producer(args, device)",
+      "pass": true,
+      "path": "Dehazing/ITS/main.py"
+    },
+    {
+      "needle": "--allow_fam2_partial_init",
+      "pass": true,
+      "path": "Dehazing/ITS/main.py"
+    }
+  ],
+  "pass": true
+}
