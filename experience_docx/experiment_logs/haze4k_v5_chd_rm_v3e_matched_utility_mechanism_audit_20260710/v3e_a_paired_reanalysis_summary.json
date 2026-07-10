@@ -1,0 +1,81 @@
+{
+  "bootstrap_iterations": 20000,
+  "category_counts": {
+    "both_negative": 267,
+    "both_positive": 268,
+    "control_avoids_d7c_0p2_regression": 10,
+    "control_better": 293,
+    "d7c_avoids_control_0p2_regression": 51,
+    "d7c_better": 307,
+    "mixed": 65
+  },
+  "control_delta": {
+    "max": 1.36749267578125,
+    "mean": 0.033065325419108074,
+    "median": -0.001331329345703125,
+    "min": -0.8744926452636719,
+    "n": 600,
+    "p01": -0.692802848815918,
+    "p05": -0.41665287017822267,
+    "p10": -0.2845676422119141,
+    "p90": 0.4113502502441407,
+    "p95": 0.5435943603515625,
+    "p99": 0.861173210144043,
+    "std": 0.2865780469934589
+  },
+  "correlations": {
+    "base_psnr_vs_d7c_minus_control": -0.022958786041507216,
+    "gate_vs_control_delta": -0.029511056314770735,
+    "gate_vs_d7c_delta": -0.0073004267759362645,
+    "gate_vs_d7c_minus_control": 0.0424956808700188
+  },
+  "d7c_delta": {
+    "max": 1.0660514831542969,
+    "mean": 0.02947239875793457,
+    "median": 0.0002765655517578125,
+    "min": -0.7528419494628906,
+    "n": 600,
+    "p01": -0.5127999114990234,
+    "p05": -0.2661966323852539,
+    "p10": -0.18007774353027345,
+    "p90": 0.2940433502197267,
+    "p95": 0.46224575042724575,
+    "p99": 0.6443073272705078,
+    "std": 0.2161916679232826
+  },
+  "d7c_win_rate_ci95": [
+    0.4716666666666667,
+    0.5116666666666667,
+    0.5516666666666666
+  ],
+  "decision": "V3E_A_SINGLE_SEED_MEAN_INCONCLUSIVE_TAIL_SAFETY_STABLE",
+  "locked_test_touched": false,
+  "paired_d7c_minus_control": {
+    "max": 0.7863235473632812,
+    "mean": -0.0035929266611735024,
+    "median": 0.0015468597412109375,
+    "min": -0.8437309265136719,
+    "n": 600,
+    "p01": -0.5762091445922852,
+    "p05": -0.23026866912841795,
+    "p10": -0.17045669555664061,
+    "p90": 0.15311851501464846,
+    "p95": 0.219452667236328,
+    "p99": 0.4496109771728515,
+    "std": 0.1618736140079758
+  },
+  "paired_mean_ci95": [
+    -0.016759186585744223,
+    -0.0036483271916707355,
+    0.009302092552185061
+  ],
+  "phase": "v3e-A paired reanalysis",
+  "route_id": "haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710",
+  "sample_count": 600,
+  "source_v3d_logdir": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710",
+  "tail_regression_reduction_ci95": [
+    26.0,
+    41.0,
+    57.0
+  ]
+}

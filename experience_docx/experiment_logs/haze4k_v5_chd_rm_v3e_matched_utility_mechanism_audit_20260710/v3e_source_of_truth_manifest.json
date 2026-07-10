@@ -1,0 +1,18 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710",
+  "date": "2026-07-10",
+  "route_branch": "codex/haze4k-v5-v3e-matched-utility-mechanism-audit",
+  "parent_branch": "origin/codex/haze4k-v5-v3d-rarm-adapter-only-preflight",
+  "parent_commit": "c52f65fcfe413e47bbf2324f02c968ed19c50980",
+  "cloud_workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3e-matched-utility-mechanism-audit",
+  "v3d_raw_workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "dataset_root": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "split_json": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/haze4k_internal_split_2400_600.json",
+  "split_key": "val_inner",
+  "source_split": "train",
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "d7c_5epoch_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-rarm-fam2-adapteronly-e5frome1-seed3407-20260710/Training-Results/Final.pkl",
+  "ungated_control_5epoch_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-fam2modres-control-e5frome1-seed3407-20260710/Training-Results/Final.pkl",
+  "locked_test_authorized": false
+}

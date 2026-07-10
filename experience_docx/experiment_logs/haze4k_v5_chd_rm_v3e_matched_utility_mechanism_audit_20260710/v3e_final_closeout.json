@@ -1,0 +1,50 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710",
+  "decision": "V3E_OPERATOR_CORRECTABILITY_MISMATCH_PRIMARY_HARD_GATE_SAFETY_TRADEOFF_SECONDARY_NO_RARM_EXPANSION",
+  "status": "COMPLETED_GATE_PASS",
+  "continue_v3d_training_allowed": false,
+  "locked_test_authorized": false,
+  "training_authorized": false,
+  "summary": {
+    "v3e_a": {
+      "decision": "V3E_A_SINGLE_SEED_MEAN_INCONCLUSIVE_TAIL_SAFETY_STABLE",
+      "paired_mean_ci95": [-0.016759186585744223, -0.0036483271916707355, 0.009302092552185061],
+      "tail_regression_reduction_ci95": [26.0, 41.0, 57.0],
+      "d7c_win_rate_ci95": [0.4716666666666667, 0.5116666666666667, 0.5516666666666666]
+    },
+    "v3e_b": {
+      "W_D_G_D_mean": 0.02947239875793457,
+      "W_D_G_D_regression_le_0p2": 50,
+      "W_D_G_1_mean": 0.03898995081583659,
+      "W_D_G_1_regression_le_0p2": 113,
+      "W_U_G_D_mean": 0.012783807118733724,
+      "W_U_G_D_regression_le_0p2": 23,
+      "W_U_G_1_mean": 0.033065325419108074,
+      "W_U_G_1_regression_le_0p2": 91,
+      "interpretation": "D7c hard gate strongly reduces tail risk but drops ungated mean utility; opening D7c-trained weights improves mean slightly but makes the tail unsafe."
+    },
+    "v3e_c": {
+      "score_vs_ungated_gain_auroc": 0.49211479656993606,
+      "score_vs_d7c_gain_auroc": 0.4903625927777954,
+      "ungated_positive_gain_precision_in_gate": 0.47997506444493115,
+      "ungated_positive_gain_rate_outside_gate": 0.4979132272048377,
+      "interpretation": "D7c score is near-random for current FAM2 positive operator gain; actionability is not the same as FAM2-specific correctability."
+    },
+    "v3e_d": {
+      "d7c_mean_pre_clip_norm": 0.03056341130286455,
+      "d7c_mean_clip_scale": 0.03605430415484002,
+      "control_mean_pre_clip_norm": 0.05549951922148466,
+      "control_mean_clip_scale": 0.019232364514832997,
+      "effective_weight_decay": 0,
+      "scheduler_saved": false,
+      "interpretation": "Training contract has real issues: all audited batches are clipped hard, CLI weight_decay is not effective, and scheduler state is not checkpointed. Component gradient cosines are positive in this small audit, so loss-gradient conflict is not the primary proven blocker."
+    }
+  },
+  "primary_bottleneck": "operator_specific_correctability_mismatch",
+  "secondary_bottlenecks": [
+    "hard_gate_mean_safety_tradeoff",
+    "effective_intervention_budget_mismatch",
+    "training_contract_clip_weight_decay_scheduler_issues"
+  ],
+  "next_action": "Open a separate v3f design/audit route for D7c safety veto plus FAM2 operator-correctability ranker using internal/OOF actual FAM2 marginal gain targets only. Do not continue v3d, do not run 20 epoch, and do not touch locked test."
+}
