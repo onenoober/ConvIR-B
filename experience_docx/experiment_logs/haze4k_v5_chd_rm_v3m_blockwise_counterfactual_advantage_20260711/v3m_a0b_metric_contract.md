@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: `CORRECTED_R1_NOT_RUN`.
+Status: `COMPLETED_GATE_PASS`.
 
 ## Route And Scope
 
@@ -91,3 +91,14 @@ clamping. The continuous alpha is solved from the unclamped residual in
 candidates. They are therefore not pointwise nested under the reported metric.
 The first command is retained as `FAILED_METRIC_CONTRACT`; it is not a
 scientific gate result. A0b-r1 is the first valid decision-producing audit.
+
+## A0b-r1 Result
+
+All pinned input hashes matched. The two fixed-step OOF replays were exact
+over 1,200 names per operator. Every one of the eight pairs passed the
+corrected gate: the largest paired mean-gap 95% upper bound was `0.0013426 dB`,
+all finite-grid checks met the `1e-6 dB` numerical tolerance, and the existing
+p10/severe tail checks passed for both policies in every pair.
+
+Decision:
+`V3M_A0B_QUANTIZATION_GAP_SMALL_AUTHORIZE_A1_FEASIBLE_LOCAL_ACTUATION_ONLY`.

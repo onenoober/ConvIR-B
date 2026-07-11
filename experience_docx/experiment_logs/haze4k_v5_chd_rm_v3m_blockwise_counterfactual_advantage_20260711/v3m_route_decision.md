@@ -57,3 +57,21 @@ for grid numerical monotonicity, treats continuous pixel as a ceiling
 diagnostic, and requires both policies to satisfy their existing p10/severe
 tail checks against fixed `alpha=0.125`. No A1 result exists until A0b-r1
 closes.
+
+## A0b-r1 Decision
+
+A0b-r1 retained the exact same pinned inputs and paired OOF names, then applied
+the corrected semantics. Fixed `alpha=0.125` replay was exact for both
+operators. All eight dense/continuous-vs-common pairs passed their `0.005 dB`
+mean-gap upper-bound gate, all finite-grid comparisons met `1e-6 dB` numerical
+monotonicity, and both policies in every pair preserved p10 and severe-count
+tail safety against their own fixed-step reference.
+
+Decision:
+`V3M_A0B_QUANTIZATION_GAP_SMALL_AUTHORIZE_A1_FEASIBLE_LOCAL_ACTUATION_ONLY`.
+
+The next and only authorized stage is A1 feasible-local-actuation audit. It
+must determine whether the frozen block16 oracle action can be actuated from
+the already available deployable signal without controller training. Nothing
+in A0b-r1 authorizes a learned controller, route-confirm selection, physics or
+proxy policy work, canary, or locked-test access.

@@ -1,6 +1,6 @@
 # v3m Blockwise Counterfactual Advantage
 
-Status: `PREFLIGHT_A0B_R1_CORRECTED_METRIC_CONTRACT_ONLY`.
+Status: `A0B_R1_PASS_A1_FEASIBLE_LOCAL_ACTUATION_ONLY`.
 
 Route card:
 `experience_docx/experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3m-blockwise-counterfactual-advantage.md`
@@ -49,3 +49,14 @@ The initial A0b output is retained as a metric-contract-mismatched diagnostic:
 continuous alpha is solved before final output clamping, so a pointwise nested
 candidate check is invalid for that pair. `v3m_a0b_metric_contract.md` records
 the correction and A0b-r1 remains read-only.
+
+## A0b-r1 Closeout
+
+`v3m_a0b_r1_closeout.md` records the valid corrected result. All eight paired
+quantization-gap checks passed with exact fixed-alpha replay, input SHA checks,
+and existing tail-safety preservation. Decision:
+`V3M_A0B_QUANTIZATION_GAP_SMALL_AUTHORIZE_A1_FEASIBLE_LOCAL_ACTUATION_ONLY`.
+
+Only A1 feasible-local-actuation audit is now authorized. It needs a separate
+metric contract and must not train a controller, select route-confirm choices,
+launch a canary, or access locked test.

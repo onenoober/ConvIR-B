@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: `PREFLIGHT_A0B_R1_CORRECTED_METRIC_CONTRACT_ONLY`
+Status: `A0B_R1_PASS_A1_FEASIBLE_LOCAL_ACTUATION_ONLY`
 
 Branch: `codex/haze4k-v5-v3m-blockwise-counterfactual-advantage`
 
@@ -102,6 +102,23 @@ the final output clamp and therefore is not pointwise nested with the clamped
 five-level pixel candidates. A0b-r1 corrects this provenance-preserving
 semantic error; it is still a no-inference audit and remains the only
 authorized phase.
+
+## A0b-r1 Result
+
+The corrected read-only cross-audit passed. Fixed `alpha=0.125` replay was
+exact for all 1,200 OOF names of both operators. For every dense/continuous
+comparison, the paired mean-gap 95% upper bound was at most `0.0013426 dB`,
+well below the preregistered `0.005 dB`; all finite-grid numerical monotonicity
+and both-policy p10/severe tail checks passed. The full compact closeout is
+`v3m_a0b_r1_closeout.md` in the evidence root.
+
+Decision:
+`V3M_A0B_QUANTIZATION_GAP_SMALL_AUTHORIZE_A1_FEASIBLE_LOCAL_ACTUATION_ONLY`.
+
+This rules out action-ladder density as the material cause of the remaining
+block16-to-pixel gap. It authorizes only A1 feasible-local-actuation audit;
+controller training, canary, physics/proxy work, and locked-test access remain
+blocked.
 
 ## Engineering Deviation
 
