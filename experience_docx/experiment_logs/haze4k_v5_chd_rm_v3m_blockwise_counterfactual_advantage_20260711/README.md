@@ -1,6 +1,6 @@
 # v3m Blockwise Counterfactual Advantage
 
-Status: `A0B_R1_PASS_A1_FEASIBLE_LOCAL_ACTUATION_ONLY`.
+Status: `PREFLIGHT_A1_BLOCK16_LOCAL_OBSERVABILITY_SMOKE_ONLY`.
 
 Route card:
 `experience_docx/experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3m-blockwise-counterfactual-advantage.md`
@@ -60,3 +60,11 @@ and existing tail-safety preservation. Decision:
 Only A1 feasible-local-actuation audit is now authorized. It needs a separate
 metric contract and must not train a controller, select route-confirm choices,
 launch a canary, or access locked test.
+
+## A1 Preflight
+
+`v3m_a1_metric_contract.md` freezes a no-training block16 local-observability
+audit. It writes its large block table only on cloud and tests four fixed
+signals with grouped per-image OOF AUC. `run_v3m_a1_smoke32.sh` is the required
+32-image replay screen; only its explicit pass marker authorizes
+`run_v3m_a1_formal.sh` on all 1,200 OOF images.

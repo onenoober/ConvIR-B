@@ -75,3 +75,17 @@ must determine whether the frozen block16 oracle action can be actuated from
 the already available deployable signal without controller training. Nothing
 in A0b-r1 authorizes a learned controller, route-confirm selection, physics or
 proxy policy work, canary, or locked-test access.
+
+## A1 Preflight Decision
+
+A1 may determine only whether any fixed, inference-time signal can rank the
+block16 common-ladder oracle's `alpha > 0.125` action label without fitting a
+controller. The candidate signals are frozen before launch: D7c score mean,
+direct-step energy, their fixed product, and alpha1 clamp exposure. The gate is
+grouped by image on OOF: one same-direction signal must have an AUROC CI95 low
+of at least `0.56` for both frozen operators, with valid positive/negative
+blocks in at least 80% of images. A 32-image fixed-alpha replay screen precedes
+the 1,200-image formal audit.
+
+No controller, calibration threshold, route-confirm choice, canary, physics or
+proxy policy, training, or locked-test access is authorized by this preflight.

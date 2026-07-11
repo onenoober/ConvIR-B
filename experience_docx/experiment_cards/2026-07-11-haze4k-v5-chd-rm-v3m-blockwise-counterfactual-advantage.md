@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: `A0B_R1_PASS_A1_FEASIBLE_LOCAL_ACTUATION_ONLY`
+Status: `PREFLIGHT_A1_BLOCK16_LOCAL_OBSERVABILITY_SMOKE_ONLY`
 
 Branch: `codex/haze4k-v5-v3m-blockwise-counterfactual-advantage`
 
@@ -119,6 +119,15 @@ This rules out action-ladder density as the material cause of the remaining
 block16-to-pixel gap. It authorizes only A1 feasible-local-actuation audit;
 controller training, canary, physics/proxy work, and locked-test access remain
 blocked.
+
+## A1 Preflight
+
+`v3m_a1_metric_contract.md` defines the only authorized A1 work: frozen
+block16 common-ladder oracle labels versus four predeclared, inference-time
+signals. It uses no learned controller, no threshold selection, no
+route-confirm, and no locked test. A deterministic 32-image OOF replay screen
+must prove `alpha=0.125` reproduction before the 1,200-image OOF audit can
+read its scientific gate.
 
 ## Engineering Deviation
 
