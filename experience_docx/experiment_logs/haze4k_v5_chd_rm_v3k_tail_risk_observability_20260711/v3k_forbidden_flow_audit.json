@@ -1,0 +1,9 @@
+{
+  "locked_test_touched": false,
+  "canary_authorized": false,
+  "new_model_search_authorized": false,
+  "v3j_route_confirm_used_for_strategy_selection": false,
+  "saved_probe_weights_allowed": false,
+  "raw_feature_tensors_allowed": false,
+  "backbone_training_allowed": false
+}

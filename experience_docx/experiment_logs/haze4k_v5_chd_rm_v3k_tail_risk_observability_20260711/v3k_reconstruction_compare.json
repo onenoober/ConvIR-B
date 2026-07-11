@@ -1,0 +1,598 @@
+[
+  {
+    "label": "OOF",
+    "max_abs_psnr_delta_diff": 0.2168338971691739,
+    "mismatches": [
+      {
+        "abs_diff": 0.07004987253051809,
+        "key": [
+          "OOF",
+          2,
+          0,
+          "1000_0.74_1.6.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.6598495262319943,
+        "reference": 0.7298993987625124,
+        "row": 2
+      },
+      {
+        "abs_diff": 0.03011713636961133,
+        "key": [
+          "OOF",
+          2,
+          0,
+          "1000_0.74_1.6.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.8618688140636479,
+        "reference": 0.8919859504332592,
+        "row": 3
+      },
+      {
+        "abs_diff": 0.2168338971691739,
+        "key": [
+          "OOF",
+          3,
+          1,
+          "1001_0.89_1.66.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.6747406620359726,
+        "reference": 0.4579067648667987,
+        "row": 6
+      },
+      {
+        "abs_diff": 0.019085258283155326,
+        "key": [
+          "OOF",
+          3,
+          1,
+          "1001_0.89_1.66.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.7498553607127718,
+        "reference": 0.7689406189959271,
+        "row": 7
+      },
+      {
+        "abs_diff": 0.016622660240493303,
+        "key": [
+          "OOF",
+          4,
+          2,
+          "1005_0.74_1.81.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.5946785935806105,
+        "reference": -0.6113012538211038,
+        "row": 10
+      },
+      {
+        "abs_diff": 0.003946482676667529,
+        "key": [
+          "OOF",
+          4,
+          2,
+          "1005_0.74_1.81.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.697148641079032,
+        "reference": -0.7010951237556995,
+        "row": 11
+      },
+      {
+        "abs_diff": 0.04686191264590889,
+        "key": [
+          "OOF",
+          0,
+          3,
+          "1010_0.91_1.13.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.06793226446581002,
+        "reference": 0.021070351819901134,
+        "row": 14
+      },
+      {
+        "abs_diff": 0.01212668658040883,
+        "key": [
+          "OOF",
+          0,
+          3,
+          "1010_0.91_1.13.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.038340520282233115,
+        "reference": 0.050467206862641945,
+        "row": 15
+      },
+      {
+        "abs_diff": 0.09379674030449792,
+        "key": [
+          "OOF",
+          1,
+          4,
+          "1014_0.74_1.61.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.19999184391785718,
+        "reference": -0.10619510361335927,
+        "row": 18
+      },
+      {
+        "abs_diff": 0.10330989524001666,
+        "key": [
+          "OOF",
+          1,
+          4,
+          "1014_0.74_1.61.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.4464623063971658,
+        "reference": -0.3431524111571491,
+        "row": 19
+      },
+      {
+        "abs_diff": 0.02042042513878073,
+        "key": [
+          "OOF",
+          2,
+          5,
+          "1019_0.82_1.87.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.2794565018700652,
+        "reference": 0.2590360767312845,
+        "row": 22
+      },
+      {
+        "abs_diff": 0.004348399611593834,
+        "key": [
+          "OOF",
+          2,
+          5,
+          "1019_0.82_1.87.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.2548098996509438,
+        "reference": 0.25915829926253764,
+        "row": 23
+      },
+      {
+        "abs_diff": 0.01531482063528955,
+        "key": [
+          "OOF",
+          4,
+          6,
+          "1024_0.69_1.66.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.10835537630295278,
+        "reference": 0.12367019693824233,
+        "row": 26
+      },
+      {
+        "abs_diff": 0.018603210059538355,
+        "key": [
+          "OOF",
+          4,
+          6,
+          "1024_0.69_1.66.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.20759080245060346,
+        "reference": 0.22619401251014182,
+        "row": 27
+      },
+      {
+        "abs_diff": 0.00024152254832188191,
+        "key": [
+          "OOF",
+          0,
+          7,
+          "1026_0.77_0.89.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.010989815018575655,
+        "reference": -0.010748292470253773,
+        "row": 30
+      },
+      {
+        "abs_diff": 3.082252886343895e-05,
+        "key": [
+          "OOF",
+          0,
+          7,
+          "1026_0.77_0.89.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.013703529041862339,
+        "reference": -0.013734351570725778,
+        "row": 31
+      },
+      {
+        "abs_diff": 0.024618787420223498,
+        "key": [
+          "OOF",
+          1,
+          8,
+          "1028_0.97_1.41.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.026575365045538035,
+        "reference": -0.05119415246576153,
+        "row": 34
+      },
+      {
+        "abs_diff": 0.026466197871457098,
+        "key": [
+          "OOF",
+          1,
+          8,
+          "1028_0.97_1.41.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.016840277830404204,
+        "reference": -0.0433064757018613,
+        "row": 35
+      },
+      {
+        "abs_diff": 0.036660713942403333,
+        "key": [
+          "OOF",
+          3,
+          9,
+          "102_0.94_1.18.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.0891325712297899,
+        "reference": -0.12579328517219324,
+        "row": 38
+      },
+      {
+        "abs_diff": 0.013090179571037197,
+        "key": [
+          "OOF",
+          3,
+          9,
+          "102_0.94_1.18.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.11643310469621326,
+        "reference": -0.10334292512517607,
+        "row": 39
+      },
+      {
+        "kind": "severe_set",
+        "reconstructed_only": 28,
+        "reference_only": 27
+      }
+    ],
+    "passed": false,
+    "reference_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3k-tail-risk-observability-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/direct_correction_oof_policy_replay.csv",
+    "row_count_reconstructed": 4800,
+    "row_count_reference": 4800,
+    "severe_set_exact": false,
+    "severe_threshold_db": -0.2,
+    "tolerance": 1e-06
+  },
+  {
+    "label": "CONFIRM",
+    "max_abs_psnr_delta_diff": 0.3161523066131551,
+    "mismatches": [
+      {
+        "abs_diff": 0.019603766470140727,
+        "key": [
+          "CONFIRM",
+          0,
+          0,
+          "1003_0.9_1.06.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.06153572019591991,
+        "reference": 0.04193195372577918,
+        "row": 2
+      },
+      {
+        "abs_diff": 0.00986098824544257,
+        "key": [
+          "CONFIRM",
+          0,
+          0,
+          "1003_0.9_1.06.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.14660640877342956,
+        "reference": 0.136745420527987,
+        "row": 3
+      },
+      {
+        "abs_diff": 0.02256111749704104,
+        "key": [
+          "CONFIRM",
+          0,
+          1,
+          "1006_0.89_1.55.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.4155193142913802,
+        "reference": -0.3929581967943392,
+        "row": 6
+      },
+      {
+        "abs_diff": 7.727672437596311e-05,
+        "key": [
+          "CONFIRM",
+          0,
+          1,
+          "1006_0.89_1.55.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.4912392743801348,
+        "reference": -0.49116199765575885,
+        "row": 7
+      },
+      {
+        "abs_diff": 0.15147922303994932,
+        "key": [
+          "CONFIRM",
+          0,
+          2,
+          "1009_0.84_0.56.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.16888941223951548,
+        "reference": -0.3203686352794648,
+        "row": 10
+      },
+      {
+        "abs_diff": 0.08536583978489887,
+        "key": [
+          "CONFIRM",
+          0,
+          2,
+          "1009_0.84_0.56.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.4442272833509264,
+        "reference": -0.5295931231358253,
+        "row": 11
+      },
+      {
+        "abs_diff": 0.013294413483492917,
+        "key": [
+          "CONFIRM",
+          0,
+          3,
+          "100_0.65_1.43.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.34751679338336317,
+        "reference": 0.3608112068668561,
+        "row": 14
+      },
+      {
+        "abs_diff": 0.020566054494793207,
+        "key": [
+          "CONFIRM",
+          0,
+          3,
+          "100_0.65_1.43.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.3087841041775903,
+        "reference": 0.2882180496827971,
+        "row": 15
+      },
+      {
+        "abs_diff": 0.3161523066131551,
+        "key": [
+          "CONFIRM",
+          0,
+          4,
+          "1011_0.79_0.66.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.007542209111875309,
+        "reference": -0.3236945157250304,
+        "row": 18
+      },
+      {
+        "abs_diff": 0.08139802017474551,
+        "key": [
+          "CONFIRM",
+          0,
+          4,
+          "1011_0.79_0.66.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.6078954978643196,
+        "reference": -0.6892935180390651,
+        "row": 19
+      },
+      {
+        "abs_diff": 0.002025694893845298,
+        "key": [
+          "CONFIRM",
+          0,
+          5,
+          "1018_0.88_0.54.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.009589450746403827,
+        "reference": -0.011615145640249125,
+        "row": 22
+      },
+      {
+        "abs_diff": 0.0007631342209961645,
+        "key": [
+          "CONFIRM",
+          0,
+          5,
+          "1018_0.88_0.54.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.01380354055977051,
+        "reference": -0.014566674780766675,
+        "row": 23
+      },
+      {
+        "abs_diff": 0.005039886456341236,
+        "key": [
+          "CONFIRM",
+          0,
+          6,
+          "101_0.78_1.87.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.1477237428307312,
+        "reference": 0.15276362928707243,
+        "row": 26
+      },
+      {
+        "abs_diff": 0.009866212418092601,
+        "key": [
+          "CONFIRM",
+          0,
+          6,
+          "101_0.78_1.87.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.23373817350362813,
+        "reference": 0.22387196108553553,
+        "row": 27
+      },
+      {
+        "abs_diff": 0.01319274108548285,
+        "key": [
+          "CONFIRM",
+          0,
+          7,
+          "1020_0.5_0.98.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.04413462236519905,
+        "reference": -0.0573273634506819,
+        "row": 30
+      },
+      {
+        "abs_diff": 0.022936485080279567,
+        "key": [
+          "CONFIRM",
+          0,
+          7,
+          "1020_0.5_0.98.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.02548781185666371,
+        "reference": -0.002551326776384144,
+        "row": 31
+      },
+      {
+        "abs_diff": 0.004578669730783247,
+        "key": [
+          "CONFIRM",
+          0,
+          8,
+          "1021_0.73_0.84.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.02116652314568057,
+        "reference": -0.02574519287646382,
+        "row": 34
+      },
+      {
+        "abs_diff": 0.0017945078823231597,
+        "key": [
+          "CONFIRM",
+          0,
+          8,
+          "1021_0.73_0.84.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.019934986514606123,
+        "reference": -0.021729494396929283,
+        "row": 35
+      },
+      {
+        "abs_diff": 0.0073287047292254215,
+        "key": [
+          "CONFIRM",
+          0,
+          9,
+          "1025_0.95_1.79.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.21372982764398074,
+        "reference": 0.22105853237320616,
+        "row": 38
+      },
+      {
+        "abs_diff": 0.011438978824493518,
+        "key": [
+          "CONFIRM",
+          0,
+          9,
+          "1025_0.95_1.79.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.22069132465442465,
+        "reference": 0.23213030347891817,
+        "row": 39
+      },
+      {
+        "kind": "severe_set",
+        "reconstructed_only": 11,
+        "reference_only": 12
+      }
+    ],
+    "passed": false,
+    "reference_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3k-tail-risk-observability-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/direct_correction_route_confirm_policy_replay.csv",
+    "row_count_reconstructed": 2400,
+    "row_count_reference": 2400,
+    "severe_set_exact": false,
+    "severe_threshold_db": -0.2,
+    "tolerance": 1e-06
+  }
+]

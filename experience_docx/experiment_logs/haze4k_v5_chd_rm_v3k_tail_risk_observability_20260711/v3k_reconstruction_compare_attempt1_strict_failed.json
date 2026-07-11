@@ -1,0 +1,598 @@
+[
+  {
+    "label": "OOF",
+    "max_abs_psnr_delta_diff": 0.17231003379045973,
+    "mismatches": [
+      {
+        "abs_diff": 0.030336422230256233,
+        "key": [
+          "OOF",
+          2,
+          0,
+          "1000_0.74_1.6.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.6995629765322562,
+        "reference": 0.7298993987625124,
+        "row": 2
+      },
+      {
+        "abs_diff": 0.01384883450801766,
+        "key": [
+          "OOF",
+          2,
+          0,
+          "1000_0.74_1.6.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.8781371159252416,
+        "reference": 0.8919859504332592,
+        "row": 3
+      },
+      {
+        "abs_diff": 0.17231003379045973,
+        "key": [
+          "OOF",
+          3,
+          1,
+          "1001_0.89_1.66.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.6302167986572584,
+        "reference": 0.4579067648667987,
+        "row": 6
+      },
+      {
+        "abs_diff": 0.030446537618566083,
+        "key": [
+          "OOF",
+          3,
+          1,
+          "1001_0.89_1.66.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.7384940813773611,
+        "reference": 0.7689406189959271,
+        "row": 7
+      },
+      {
+        "abs_diff": 0.010665650124899173,
+        "key": [
+          "OOF",
+          4,
+          2,
+          "1005_0.74_1.81.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.621966903946003,
+        "reference": -0.6113012538211038,
+        "row": 10
+      },
+      {
+        "abs_diff": 0.01508707168652279,
+        "key": [
+          "OOF",
+          4,
+          2,
+          "1005_0.74_1.81.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.7161821954422223,
+        "reference": -0.7010951237556995,
+        "row": 11
+      },
+      {
+        "abs_diff": 0.025306405514477603,
+        "key": [
+          "OOF",
+          0,
+          3,
+          "1010_0.91_1.13.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.04637675733437874,
+        "reference": 0.021070351819901134,
+        "row": 14
+      },
+      {
+        "abs_diff": 0.018720266540547925,
+        "key": [
+          "OOF",
+          0,
+          3,
+          "1010_0.91_1.13.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.03174694032209402,
+        "reference": 0.050467206862641945,
+        "row": 15
+      },
+      {
+        "abs_diff": 0.026407267461252104,
+        "key": [
+          "OOF",
+          1,
+          4,
+          "1014_0.74_1.61.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.13260237107461137,
+        "reference": -0.10619510361335927,
+        "row": 18
+      },
+      {
+        "abs_diff": 0.17062340980177737,
+        "key": [
+          "OOF",
+          1,
+          4,
+          "1014_0.74_1.61.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.5137758209589265,
+        "reference": -0.3431524111571491,
+        "row": 19
+      },
+      {
+        "abs_diff": 0.0020903778637944015,
+        "key": [
+          "OOF",
+          2,
+          5,
+          "1019_0.82_1.87.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.2611264545950789,
+        "reference": 0.2590360767312845,
+        "row": 22
+      },
+      {
+        "abs_diff": 0.00011060930519590784,
+        "key": [
+          "OOF",
+          2,
+          5,
+          "1019_0.82_1.87.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.25926890856773355,
+        "reference": 0.25915829926253764,
+        "row": 23
+      },
+      {
+        "abs_diff": 0.03492969758708142,
+        "key": [
+          "OOF",
+          4,
+          6,
+          "1024_0.69_1.66.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.15859989452532375,
+        "reference": 0.12367019693824233,
+        "row": 26
+      },
+      {
+        "abs_diff": 0.00010026084831338267,
+        "key": [
+          "OOF",
+          4,
+          6,
+          "1024_0.69_1.66.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.22609375166182843,
+        "reference": 0.22619401251014182,
+        "row": 27
+      },
+      {
+        "abs_diff": 0.0003074762729227132,
+        "key": [
+          "OOF",
+          0,
+          7,
+          "1026_0.77_0.89.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.011055768743176486,
+        "reference": -0.010748292470253773,
+        "row": 30
+      },
+      {
+        "abs_diff": 0.0025390250237222745,
+        "key": [
+          "OOF",
+          0,
+          7,
+          "1026_0.77_0.89.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.016273376594448052,
+        "reference": -0.013734351570725778,
+        "row": 31
+      },
+      {
+        "abs_diff": 0.029745805409909565,
+        "key": [
+          "OOF",
+          1,
+          8,
+          "1028_0.97_1.41.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.02144834705585197,
+        "reference": -0.05119415246576153,
+        "row": 34
+      },
+      {
+        "abs_diff": 0.01411723146080135,
+        "key": [
+          "OOF",
+          1,
+          8,
+          "1028_0.97_1.41.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.029189244241059953,
+        "reference": -0.0433064757018613,
+        "row": 35
+      },
+      {
+        "abs_diff": 0.024140051216740233,
+        "key": [
+          "OOF",
+          3,
+          9,
+          "102_0.94_1.18.png",
+          "OOF_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.101653233955453,
+        "reference": -0.12579328517219324,
+        "row": 38
+      },
+      {
+        "abs_diff": 0.0037016158342879635,
+        "key": [
+          "OOF",
+          3,
+          9,
+          "102_0.94_1.18.png",
+          "OOF_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.10704454095946403,
+        "reference": -0.10334292512517607,
+        "row": 39
+      },
+      {
+        "kind": "severe_set",
+        "reconstructed_only": 19,
+        "reference_only": 27
+      }
+    ],
+    "passed": false,
+    "reference_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3k-tail-risk-observability-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/direct_correction_oof_policy_replay.csv",
+    "row_count_reconstructed": 4800,
+    "row_count_reference": 4800,
+    "severe_set_exact": false,
+    "severe_threshold_db": -0.2,
+    "tolerance": 1e-06
+  },
+  {
+    "label": "CONFIRM",
+    "max_abs_psnr_delta_diff": 0.15583147328816693,
+    "mismatches": [
+      {
+        "abs_diff": 0.07272973533877547,
+        "key": [
+          "CONFIRM",
+          0,
+          0,
+          "1003_0.9_1.06.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.03079778161299629,
+        "reference": 0.04193195372577918,
+        "row": 2
+      },
+      {
+        "abs_diff": 0.05754478860788481,
+        "key": [
+          "CONFIRM",
+          0,
+          0,
+          "1003_0.9_1.06.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.07920063192010218,
+        "reference": 0.136745420527987,
+        "row": 3
+      },
+      {
+        "abs_diff": 0.0700850007271967,
+        "key": [
+          "CONFIRM",
+          0,
+          1,
+          "1006_0.89_1.55.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.4630431975215359,
+        "reference": -0.3929581967943392,
+        "row": 6
+      },
+      {
+        "abs_diff": 0.008945120794336958,
+        "key": [
+          "CONFIRM",
+          0,
+          1,
+          "1006_0.89_1.55.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.5001071184500958,
+        "reference": -0.49116199765575885,
+        "row": 7
+      },
+      {
+        "abs_diff": 0.06977741715178354,
+        "key": [
+          "CONFIRM",
+          0,
+          2,
+          "1009_0.84_0.56.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.25059121812768126,
+        "reference": -0.3203686352794648,
+        "row": 10
+      },
+      {
+        "abs_diff": 0.09590220868530253,
+        "key": [
+          "CONFIRM",
+          0,
+          2,
+          "1009_0.84_0.56.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.6254953318211278,
+        "reference": -0.5295931231358253,
+        "row": 11
+      },
+      {
+        "abs_diff": 0.06264076312526612,
+        "key": [
+          "CONFIRM",
+          0,
+          3,
+          "100_0.65_1.43.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.4234519699921222,
+        "reference": 0.3608112068668561,
+        "row": 14
+      },
+      {
+        "abs_diff": 0.018156394041149326,
+        "key": [
+          "CONFIRM",
+          0,
+          3,
+          "100_0.65_1.43.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.3063744437239464,
+        "reference": 0.2882180496827971,
+        "row": 15
+      },
+      {
+        "abs_diff": 0.0865888443167222,
+        "key": [
+          "CONFIRM",
+          0,
+          4,
+          "1011_0.79_0.66.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.23710567140830818,
+        "reference": -0.3236945157250304,
+        "row": 18
+      },
+      {
+        "abs_diff": 0.13597222474494686,
+        "key": [
+          "CONFIRM",
+          0,
+          4,
+          "1011_0.79_0.66.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.825265742784012,
+        "reference": -0.6892935180390651,
+        "row": 19
+      },
+      {
+        "abs_diff": 5.228187487205105e-05,
+        "key": [
+          "CONFIRM",
+          0,
+          5,
+          "1018_0.88_0.54.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.011562863765377074,
+        "reference": -0.011615145640249125,
+        "row": 22
+      },
+      {
+        "abs_diff": 0.0014750553781297526,
+        "key": [
+          "CONFIRM",
+          0,
+          5,
+          "1018_0.88_0.54.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.013091619402636923,
+        "reference": -0.014566674780766675,
+        "row": 23
+      },
+      {
+        "abs_diff": 0.15583147328816693,
+        "key": [
+          "CONFIRM",
+          0,
+          6,
+          "101_0.78_1.87.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.0030678440010944996,
+        "reference": 0.15276362928707243,
+        "row": 26
+      },
+      {
+        "abs_diff": 0.06100676849066744,
+        "key": [
+          "CONFIRM",
+          0,
+          6,
+          "101_0.78_1.87.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.1628651925948681,
+        "reference": 0.22387196108553553,
+        "row": 27
+      },
+      {
+        "abs_diff": 0.01897238091005704,
+        "key": [
+          "CONFIRM",
+          0,
+          7,
+          "1020_0.5_0.98.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.07629974436073894,
+        "reference": -0.0573273634506819,
+        "row": 30
+      },
+      {
+        "abs_diff": 0.0003556072853996284,
+        "key": [
+          "CONFIRM",
+          0,
+          7,
+          "1020_0.5_0.98.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.0021957194909845157,
+        "reference": -0.002551326776384144,
+        "row": 31
+      },
+      {
+        "abs_diff": 0.00515314457257432,
+        "key": [
+          "CONFIRM",
+          0,
+          8,
+          "1021_0.73_0.84.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.0205920483038895,
+        "reference": -0.02574519287646382,
+        "row": 34
+      },
+      {
+        "abs_diff": 0.0004714881666814108,
+        "key": [
+          "CONFIRM",
+          0,
+          8,
+          "1021_0.73_0.84.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": -0.022200982563610694,
+        "reference": -0.021729494396929283,
+        "row": 35
+      },
+      {
+        "abs_diff": 0.08678244263739998,
+        "key": [
+          "CONFIRM",
+          0,
+          9,
+          "1025_0.95_1.79.png",
+          "CONFIRM_DIRECT_LINEAR"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.13427608973580618,
+        "reference": 0.22105853237320616,
+        "row": 38
+      },
+      {
+        "abs_diff": 0.03720141284008349,
+        "key": [
+          "CONFIRM",
+          0,
+          9,
+          "1025_0.95_1.79.png",
+          "CONFIRM_DIRECT_CONTEXT"
+        ],
+        "kind": "psnr_delta",
+        "reconstructed": 0.19492889063883467,
+        "reference": 0.23213030347891817,
+        "row": 39
+      },
+      {
+        "kind": "severe_set",
+        "reconstructed_only": 24,
+        "reference_only": 19
+      }
+    ],
+    "passed": false,
+    "reference_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3k-tail-risk-observability-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/direct_correction_route_confirm_policy_replay.csv",
+    "row_count_reconstructed": 2400,
+    "row_count_reference": 2400,
+    "severe_set_exact": false,
+    "severe_threshold_db": -0.2,
+    "tolerance": 1e-06
+  }
+]

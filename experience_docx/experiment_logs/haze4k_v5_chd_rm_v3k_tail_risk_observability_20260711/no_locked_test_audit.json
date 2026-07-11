@@ -1,0 +1,6 @@
+{
+  "route": "haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711",
+  "source_split": "train",
+  "locked_test_touched": false,
+  "policy": "locked Haze4K test is forbidden for v3k diagnostics"
+}

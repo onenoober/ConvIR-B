@@ -1,0 +1,38 @@
+[
+  {
+    "le_0p5_count_le_hard": true,
+    "minimum_gate_pass": true,
+    "open_holdout_only_no_canary": true,
+    "p10_ge_hard": true,
+    "paired_mean_ci95_low_gt_0": true,
+    "policy": "v3k_val_inner_open_holdout_FIXED_ALPHA_0.125_CONTEXT",
+    "severe_le_0p2_le_hard": true
+  },
+  {
+    "le_0p5_count_le_hard": true,
+    "minimum_gate_pass": true,
+    "open_holdout_only_no_canary": true,
+    "p10_ge_hard": true,
+    "paired_mean_ci95_low_gt_0": true,
+    "policy": "v3k_val_inner_open_holdout_FIXED_ALPHA_0.125_LINEAR",
+    "severe_le_0p2_le_hard": true
+  },
+  {
+    "le_0p5_count_le_hard": true,
+    "minimum_gate_pass": true,
+    "open_holdout_only_no_canary": true,
+    "p10_ge_hard": true,
+    "paired_mean_ci95_low_gt_0": true,
+    "policy": "v3k_val_inner_open_holdout_FIXED_ALPHA_0.25_CONTEXT",
+    "severe_le_0p2_le_hard": true
+  },
+  {
+    "le_0p5_count_le_hard": true,
+    "minimum_gate_pass": true,
+    "open_holdout_only_no_canary": true,
+    "p10_ge_hard": true,
+    "paired_mean_ci95_low_gt_0": true,
+    "policy": "v3k_val_inner_open_holdout_FIXED_ALPHA_0.25_LINEAR",
+    "severe_le_0p2_le_hard": true
+  }
+]

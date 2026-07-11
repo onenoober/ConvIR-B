@@ -1,6 +1,6 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-06-10
+Date: 2026-07-11
 
 Status: evidence index plus official architecture anchor registry.
 
@@ -21,48 +21,44 @@ decision says otherwise.
 
 ## Current CHD-RM v5 Route State
 
-As of the v3j closeout on 2026-07-11, v3d RARM adapter-only remains paused and
-no v3f-B ranker training, v3d continuation, 20-epoch continuation, v4/RARM
-expansion, neighbor/FAM1 or backbone unfreeze, canary expansion, current-signal
-FAM2 router/distillation, v3j no-op architecture equivalence, or locked-test
-access is authorized.
+As of the v3k closeout on 2026-07-11, the current CHD-RM decision is
+`V3K_PROVISIONAL_MICRO_ALPHA_SAFE_STEP_SUPPORTED_NO_CANARY_NO_NEW_SEALED_SPLIT`.
+No v3f-B ranker training, v3d continuation, 20-epoch continuation, v4/RARM
+expansion, neighbor/FAM1 or backbone unfreeze, current-signal FAM2
+router/distillation, v3j/v3k canary, direct-residual continuation, or
+locked-test access is authorized.
 
-v3g showed that the true FAM2 action space has a strong label-derived oracle,
-v3h then found the audited deployable operator-site features near-random, and
-v3i showed that the privileged open-value target is strong and spatially
-compressible but not distillable from the audited deployable signals. v3j then
-changed the actuator: a bounded output-residual action space passed under the
-privileged teacher, but deployable tiny direct residual heads failed the dual
-OOF + route-confirm tail-safety gate. The v3j final decision is
-`V3J_DIRECT_SAFE_CORRECTION_OOF_FAIL_REQUIRE_NEW_INFORMATION_NO_INTERNAL_ROUTER`.
+v3k was added after v3j to separate wrong-direction direct corrections from
+harmful overshoot and to test the corrected harmful full-step boundary
+`alpha* = 0.5`. Strict reconstruction of v3j-B row identities/counts matched,
+but direct-head PSNR deltas and severe sets differed, so v3k is labeled as a
+new-replicate/provisional diagnostic, not authorization evidence.
 
-Key v3j facts on train-derived splits:
+Key v3k facts:
 
-- v3j-A primary bounded projection `PRIMARY_FULL_CLIP_P99_D7C` on
-  `v3j_route_confirm` 600: mean `+0.229641 dB`, p10 `+0.002454 dB`, worst
-  `-0.018076 dB`, zero regressions <= -0.2 dB, bootstrap CI95 low vs hard
-  `+0.199968`;
-- hard D7c reference on `v3j_route_confirm`: mean `+0.008634 dB`, p10
-  `-0.131343 dB`, `23` regressions <= -0.2 dB;
-- v3j-B `CONFIRM_DIRECT_LINEAR`: mean `+0.057145 dB`, but p10
-  `-0.392219 dB`, `121` regressions <= -0.2 dB, `108` direct-only severe
-  cases;
-- v3j-B `CONFIRM_DIRECT_CONTEXT`: mean `+0.099199 dB`, but p10
-  `-0.444083 dB`, `121` regressions <= -0.2 dB, `111` direct-only severe
-  cases.
+- bottleneck: A0-relative correction advantage sign and safe-step
+  observability;
+- OOF context direct corrections: wrong-direction `328/1200`, harmful
+  overshoot `264/1200`, alpha* median `0.519`;
+- OOF linear direct corrections: wrong-direction `342/1200`, harmful
+  overshoot `326/1200`, alpha* median `0.344`;
+- grouped OOF `alpha=0.125 context`: mean `+0.0298 dB`, p10 `-0.0279 dB`,
+  zero severe regressions, paired CI95 low vs hard `+0.0067`;
+- historical open `val_inner` `alpha=0.125 context`: mean `+0.0287 dB`, p10
+  `-0.0324 dB`, zero severe regressions, paired CI95 low vs hard `+0.0062`;
+- `alpha=0.25 context` gives larger mean but creates severe regressions on both
+  OOF and open holdout, so it is mechanism evidence rather than a safe default.
 
-The latest bottleneck is deployable tail-safety information, not the bounded
-residual actuator, not mean-value learnability, not FAM2 actuator realizability,
-not the label-derived open-value oracle, and not spatial compressibility of a
-privileged target. The current internal-router/direct-residual route is stopped;
-further work requires genuinely new tail-risk information or target semantics
-before any model-promotion experiment.
+The provisional best-supported policy is `context alpha=0.125`, but it cannot
+authorize canary because `val_inner` is historical open holdout and no genuinely
+new sealed train-derived or external validation split exists. The next real
+promotion step requires a new sealed split plus deterministic saved head
+artifacts, then fixed-policy validation before any canary or locked-test access.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
-`experience_docx/experiment_cards/haze4k-chd-rm-v3j-bounded-safe-correction-audit.md`,
-and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/`
-for current CHD-RM status. No router/ranker/direct-residual training is
-authorized from the current evidence.
+`experience_docx/experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3k-tail-risk-observability.md`,
+and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711/`
+for current CHD-RM status.
 
 ## Official Architecture Anchor
 
@@ -159,7 +155,7 @@ without a material new reason.
 
 | Family | Current verdict | Reopen condition |
 | --- | --- | --- |
-| [FAM/FAM2 feature modulation](family_summaries/fam_family_summary.md) | Closed for unchanged deployable FAM routing, current v3h/v3i signal sets, and v3j tiny direct bounded residual heads: v3j showed the bounded actuator is viable under a privileged teacher, but deployable residual heads create unsafe tails. | Reopen only with materially new tail-risk information, target semantics, correction-confidence design, or bounded experts that first pass a held-out replay gate with explicit false-intervention protection. |
+| [FAM/FAM2 feature modulation](family_summaries/fam_family_summary.md) | Closed for unchanged deployable FAM routing, current v3h/v3i signal sets, v3j tiny direct bounded residual heads, and v3k provisional micro-alpha diagnosis: `context alpha=0.125` is tail-safer, but not canary-authorizing without a new sealed split. | Reopen only with materially new tail-risk information, target semantics, correction-confidence design, or bounded experts that first pass a clean-reference OOF plus new sealed-split replay gate with explicit false-intervention protection. |
 | [Hard-frequency and haze-prior loss routes](family_summaries/frequency_prior_family_summary.md) | Closed for the tested weighting/SCM forms: hard movement came with global/easy damage. | A loss route shows target-group gain with explicit strong/easy protection before stop20. |
 | [PFD/RHFD preservation routes](family_summaries/pfd_rhfd_family_summary.md) | Diagnostic only: preservation improved in B1r, but hard-gain and strong-case gates failed. | A new mechanism explains how hard gain is recovered without losing the preservation benefit. |
 | [APDR output residual/action-bank routes](family_summaries/apdr_family_summary.md) | Current broad output-residual and coefficient-mapping forms are stopped; v0.4E OOF did not pass, and exact v0.4E numbers require fixed-code rerun before sealing. | A separately pre-registered safe-subset route passes fixed-code OOF/held-out gates without severe regressions. |

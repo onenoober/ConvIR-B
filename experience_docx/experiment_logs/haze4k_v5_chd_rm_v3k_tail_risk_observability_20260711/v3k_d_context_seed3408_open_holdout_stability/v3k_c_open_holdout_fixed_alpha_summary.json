@@ -1,0 +1,129 @@
+{
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "a0_checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "bootstrap_vs_hard": [
+    {
+      "ci95_high": 0.025042480782993842,
+      "ci95_low": 0.006270299209275802,
+      "mean": 0.015921806558389005,
+      "n": 600,
+      "policy": "v3k_val_inner_open_holdout_FIXED_ALPHA_0.125_CONTEXT"
+    },
+    {
+      "ci95_high": 0.04916290456530546,
+      "ci95_low": 0.02785966098882624,
+      "mean": 0.038573729997979984,
+      "n": 600,
+      "policy": "v3k_val_inner_open_holdout_FIXED_ALPHA_0.25_CONTEXT"
+    }
+  ],
+  "canary_authorized": false,
+  "control_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-fam2modres-control-e5frome1-seed3407-20260710/Training-Results/Final.pkl",
+  "control_checkpoint_sha256": "08207119a5cf9e5c439dd2cb81b99029ade1861f2739d31e75f2f9f78d57c0f2",
+  "decision": "V3K_C_OPEN_HOLDOUT_DIAGNOSTIC_ONLY_NO_CANARY",
+  "fixed_alphas": [
+    0.125,
+    0.25
+  ],
+  "heads": [
+    "context"
+  ],
+  "holdout_role": "open historical val_inner diagnostic; not a new sealed split",
+  "locked_test_touched": false,
+  "new_sealed_split_available": false,
+  "pass_policies_open_holdout": [
+    "v3k_val_inner_open_holdout_FIXED_ALPHA_0.125_CONTEXT",
+    "v3k_val_inner_open_holdout_FIXED_ALPHA_0.25_CONTEXT"
+  ],
+  "phase": "v3k-C open train-derived holdout fixed-alpha diagnostic",
+  "policy_summary": [
+    {
+      "best_psnr_delta": 0.0,
+      "mean_psnr_delta": 0.0,
+      "median_psnr_delta": 0.0,
+      "n": 600,
+      "p05_psnr_delta": 0.0,
+      "p10_psnr_delta": 0.0,
+      "policy": "v3k_val_inner_open_holdout_A0",
+      "positive_ratio": 0.0,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": 0.0
+    },
+    {
+      "best_psnr_delta": 0.2138668581818095,
+      "mean_psnr_delta": 0.028705620520118363,
+      "median_psnr_delta": 0.016992243536417817,
+      "n": 600,
+      "p05_psnr_delta": -0.05932570263922336,
+      "p10_psnr_delta": -0.03153000508053623,
+      "policy": "v3k_val_inner_open_holdout_FIXED_ALPHA_0.125_CONTEXT",
+      "positive_ratio": 0.6866666666666666,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.12945245863541288
+    },
+    {
+      "best_psnr_delta": 0.41898727497780186,
+      "mean_psnr_delta": 0.05135754395970934,
+      "median_psnr_delta": 0.02766853185296725,
+      "n": 600,
+      "p05_psnr_delta": -0.1301283360347824,
+      "p10_psnr_delta": -0.07172929164011776,
+      "policy": "v3k_val_inner_open_holdout_FIXED_ALPHA_0.25_CONTEXT",
+      "positive_ratio": 0.6583333333333333,
+      "regression_le_0p2_count": 9,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.26807314795927795
+    },
+    {
+      "best_psnr_delta": 0.5147968323806609,
+      "mean_psnr_delta": 0.012783813961729357,
+      "median_psnr_delta": -0.0010759805321356453,
+      "n": 600,
+      "p05_psnr_delta": -0.17617702338978383,
+      "p10_psnr_delta": -0.12151199691896011,
+      "policy": "v3k_val_inner_open_holdout_HARD_D7C_ALPHA1",
+      "positive_ratio": 0.485,
+      "regression_le_0p2_count": 23,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.40053883645291677
+    }
+  ],
+  "primary_predeclared_policy": "v3k_val_inner_open_holdout_FIXED_ALPHA_0.125_CONTEXT",
+  "provisional_gates": [
+    {
+      "le_0p5_count_le_hard": true,
+      "minimum_gate_pass": true,
+      "open_holdout_only_no_canary": true,
+      "p10_ge_hard": true,
+      "paired_mean_ci95_low_gt_0": true,
+      "policy": "v3k_val_inner_open_holdout_FIXED_ALPHA_0.125_CONTEXT",
+      "severe_le_0p2_le_hard": true
+    },
+    {
+      "le_0p5_count_le_hard": true,
+      "minimum_gate_pass": true,
+      "open_holdout_only_no_canary": true,
+      "p10_ge_hard": true,
+      "paired_mean_ci95_low_gt_0": true,
+      "policy": "v3k_val_inner_open_holdout_FIXED_ALPHA_0.25_CONTEXT",
+      "severe_le_0p2_le_hard": true
+    }
+  ],
+  "raw_feature_tensors_saved": false,
+  "route_id": "haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711",
+  "sample_counts": {
+    "holdout_images": 600,
+    "sampled_training_sites": 152455,
+    "train_holdout_overlap": 0,
+    "train_images": 1200
+  },
+  "saved_probe_weights": false,
+  "secondary_predeclared_policy": "v3k_val_inner_open_holdout_FIXED_ALPHA_0.25_CONTEXT",
+  "strategy_selection_source": "OOF provisional gates from v3k new replicate",
+  "training_authorized": false,
+  "v3j_b_decision": "V3J_DIRECT_SAFE_CORRECTION_OOF_FAIL_REQUIRE_NEW_INFORMATION_NO_INTERNAL_ROUTER",
+  "v3j_b_summary": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3k-tail-risk-observability-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/direct_correction_probe_summary.json",
+  "v3j_b_summary_sha256": "80ed95d2903a55dfe5df15eee7ebf8c2ac84a894daf5b5674e0566df86c98f16"
+}

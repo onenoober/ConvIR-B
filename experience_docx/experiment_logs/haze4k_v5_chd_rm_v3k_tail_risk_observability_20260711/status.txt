@@ -1,0 +1,24 @@
+v3k_start haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T12:29:06+08:00
+v3k_log /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3k-tail-risk-observability-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711/v3k_a0_a1_a2_reconstruction_audit_20260711T122906.log
+v3k_heartbeat haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T12:34:06+08:00
+v3k_heartbeat haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T12:39:06+08:00
+v3k_heartbeat haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T12:44:06+08:00
+v3k_done rc=1 haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T12:46:55+08:00
+V3K_A0_A1_A2_RECONSTRUCTION_AUDIT_FAILED
+v3k_new_replicate_start haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T12:50:39+08:00
+v3k_new_replicate_log /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3k-tail-risk-observability-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711/v3k_a0_a1_a2_new_replicate_diagnostic_20260711T125039.log
+v3k_new_replicate_heartbeat haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T12:55:39+08:00
+v3k_new_replicate_heartbeat haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T13:00:39+08:00
+v3k_new_replicate_heartbeat haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T13:05:39+08:00
+v3k_new_replicate_done rc=0 haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T13:08:01+08:00
+V3K_NEW_REPLICATE_DIAGNOSTIC_OK
+v3k_c_start haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T13:29:14+08:00
+v3k_c_log /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3k-tail-risk-observability-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711/v3k_c_open_holdout_fixed_alpha_20260711T132914.log
+v3k_c_heartbeat haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T13:34:14+08:00
+v3k_c_done rc=0 haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T13:38:22+08:00
+V3K_C_OPEN_HOLDOUT_FIXED_ALPHA_OK
+v3k_d_start seed=3408 haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T13:42:44+08:00
+v3k_d_log /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3k-tail-risk-observability-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711/v3k_d_context_seed3408_open_holdout_stability/v3k_d_context_seed3408_open_holdout_stability_20260711T134244.log
+v3k_d_heartbeat seed=3408 haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T13:47:44+08:00
+v3k_d_done rc=0 seed=3408 haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711 2026-07-11T13:52:37+08:00
+V3K_D_CONTEXT_SEED_HOLDOUT_STABILITY_OK
