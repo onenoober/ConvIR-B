@@ -26,7 +26,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 import chd_rm_v3l_a1_oracle_granularity_audit as v3l_a1
-from chd_rm_v3i_a_teacher_compressibility_audit import read_json, write_csv, write_json
+from chd_rm_v3i_a_teacher_compressibility_audit import read_json, write_json
 from chd_rm_v3j_a_bounded_action_audit import names_from_manifest
 
 
@@ -65,7 +65,17 @@ def read_rows(path):
 def write_rows(path, rows):
     if not rows:
         raise ValueError(f"cannot write an empty CSV: {path}")
-    write_csv(path, rows)
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fields = []
+    for row in rows:
+        for key in row:
+            if key not in fields:
+                fields.append(key)
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def apply_grid_pixel_oracle(base_pred, output_step, label, _eps):

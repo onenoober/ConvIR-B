@@ -1,6 +1,6 @@
 # v3m Blockwise Counterfactual Advantage
 
-Status: `PREFLIGHT_A0A_SUMMARY_REBUILD_ONLY`.
+Status: `A0A_PASS_A0B_MECHANISM_AUDIT_ONLY`.
 
 Route card:
 `experience_docx/experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3m-blockwise-counterfactual-advantage.md`
@@ -28,3 +28,17 @@ must not be committed or synced to GitHub.
 
 `v3m_deviation_log.md` records the initial summary-only engineering failure and
 the constrained rebuild command.
+
+## A0a Closeout
+
+`v3m_a0a_closeout.md` is the canonical compact A0a result and integrity
+record. It records the dual-operator gate values, the raw-table preservation
+checks, and the repaired finite operator-agreement statistics.
+
+Decision:
+`V3M_A0_COMMON_ACTION_GRANULARITY_PASS_AUTHORIZE_A0B_DENSE_AND_CONTINUOUS_MECHANISM_ONLY`.
+
+Only the A0b dense-grid and continuous-pixel mechanism cross-audit is
+authorized. No model/inference rerun is needed for that cross-audit; it must
+not promote a policy or authorize A1, local actuation, controller training,
+canary, or locked-test access.

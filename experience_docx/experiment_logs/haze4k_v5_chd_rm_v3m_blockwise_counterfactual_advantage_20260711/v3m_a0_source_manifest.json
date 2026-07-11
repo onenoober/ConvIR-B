@@ -1,0 +1,26 @@
+{
+  "a0_closeout_sha256": "2ca39ec1e17f4be794121603e3392a4e042e4d93b0e823454f7cf539f172d05d",
+  "canary_authorized": false,
+  "clean_reference_group_manifest_sha256": "c8c00fefc965ded3389b6311fc67ea521e1f3174f27793688544abe09dc420e7",
+  "common_action_set": [
+    0.0,
+    0.125,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "confirm_row_order_sha256": "a3f331046810597d96cceff22af99e4165f788f4d500c93968d0354b6fd4338e",
+  "fresh_split_manifest_sha256": "c8c00fefc965ded3389b6311fc67ea521e1f3174f27793688544abe09dc420e7",
+  "locked_test_touched": false,
+  "operator_artifact_manifest_sha256": "1d2ffa499128ad08a272d67c5439583900afe8ef87fb3256193ad5fe21c3af84",
+  "parent_cloud_worktree": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711",
+  "parent_evidence_commit": "5acaaa54d7aca7c9764dc3dd757ff58cdf6d96fa",
+  "raw_per_image_output": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-counterfactual-advantage-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/cloud_only_raw_common_action",
+  "reused_v3l_a1_source_sha256": "4bac7e3e10db36381d99a1ed8b61e3dc8f19f2274fe96ac929d4efe12b20e68b",
+  "route_id": "haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711",
+  "row_order_sha256": "def9388ecbb8fb398522324003fce088a46d1ba9bc3f50a7d2f81c8e4c0dffc7",
+  "source_branch": "codex/haze4k-v5-v3m-blockwise-counterfactual-advantage",
+  "source_commit": "0621fb490e9205830e84fc4d2173715a0fd1c57f",
+  "training_authorized": false,
+  "v3m_script_sha256": "34bbf0625224c620239eae346cc01e5a2c1893d87181ea594d03e314855ace4e"
+}

@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: `PREFLIGHT_A0A_SUMMARY_REBUILD_ONLY`
+Status: `A0A_PASS_A0B_MECHANISM_AUDIT_ONLY`
 
 Branch: `codex/haze4k-v5-v3m-blockwise-counterfactual-advantage`
 
@@ -64,9 +64,31 @@ authorizes neither a block controller nor physics policy work.
 - Output: cloud-only per-image rows under `cloud_only_raw_common_action/` and
   compact summary/gate artifacts in this evidence root.
 
+## A0a Result
+
+The common-action A0a gate passed for both frozen operators. The exact OOF
+block16 results relative to fixed `alpha=0.125` were:
+
+| Operator | Mean lift (dB) | Lift CI95 low (dB) | Retention | Retention CI95 low | Candidate / reference p10 (dB) | Severe count | Pass |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `D_ref` | `+0.3571825` | `+0.3381417` | `0.8481430` | `0.8403679` | `+0.0080694` / `-0.0274989` | `0` / `0` | yes |
+| `D_rep` | `+0.3555132` | `+0.3374088` | `0.8499444` | `0.8423180` | `+0.0068382` / `-0.0269539` | `0` / `0` | yes |
+
+The raw replay tables remained cloud-only. A constrained compact-artifact
+repair corrected a diagnostic field-name error in operator agreement without
+rerunning inference: all three raw-table hashes and both gate rows were exactly
+unchanged, and the repaired block16 cross-operator Pearson correlation was
+`0.9975927`. See `v3m_a0a_closeout.md` in the evidence root.
+
+Decision:
+`V3M_A0_COMMON_ACTION_GRANULARITY_PASS_AUTHORIZE_A0B_DENSE_AND_CONTINUOUS_MECHANISM_ONLY`.
+
 ## Next Stage
 
-No stage is authorized before A0a completes.
+Only A0b dense-grid and continuous-pixel mechanism cross-audit is authorized.
+It must validate the corresponding frozen v3l artifacts and metric pairing
+without using route-confirm for selection. A0a does not authorize local
+actuation, physics, proxy, controller training, canary, or locked-test access.
 
 ## Engineering Deviation
 

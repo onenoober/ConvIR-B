@@ -27,3 +27,13 @@ because the summary reader used `mean_selected_alpha_mean`, while raw rows store
 second recovery backs up the original JSON and agreement CSV, then rebuilds only
 compact artifacts from the same verified raw rows and deterministic bootstrap
 seed. It cannot run inference or change raw rows.
+
+## 2026-07-11 compact CSV archive normalization
+
+The shared CSV helper emitted CRLF line endings, which caused the repository's
+whitespace gate to reject otherwise valid compact CSV evidence. The completed
+A0a compact CSV files were normalized from CRLF to LF only; no cells, row
+ordering, raw files, gate values, or JSON data changed. The v3m writer now
+specifies LF for later compact outputs. The A0 source manifest retains the
+pre-normalization script SHA because it records the script that produced the
+scientific result.
