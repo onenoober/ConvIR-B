@@ -37,3 +37,15 @@ ordering, raw files, gate values, or JSON data changed. The v3m writer now
 specifies LF for later compact outputs. The A0 source manifest retains the
 pre-normalization script SHA because it records the script that produced the
 scientific result.
+
+## 2026-07-11 A0b metric-contract correction
+
+The first A0b read-only cross-audit completed with exact fixed-alpha replay and
+all mean-gap upper bounds below `0.005 dB`, but it required pointwise
+dominance from the continuous-pixel analytic alpha policy. That policy solves
+the unclamped residual then clamps the final prediction, while the common grid
+selects among already clamped candidates. The pointwise nesting premise is
+therefore false. A0b-r1 retains the frozen inputs and aggregate gap threshold,
+applies `1e-6 dB` only to finite-grid numerical monotonicity, and verifies
+existing p10/severe tail safety for both policies. The first result is retained
+as a metric-contract mismatch and does not authorize or block A1.

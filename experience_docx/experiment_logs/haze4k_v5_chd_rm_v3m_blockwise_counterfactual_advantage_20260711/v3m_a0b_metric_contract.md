@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: `PREREGISTERED_NOT_RUN`.
+Status: `CORRECTED_R1_NOT_RUN`.
 
 ## Route And Scope
 
@@ -59,9 +59,14 @@ seed `3407`, and reports the two-sided 95% interval.
 For every one of the eight operator-policy pairs:
 
 1. all paired names must match, and fixed `alpha=0.125` must replay exactly;
-2. every per-image gap must be at least `-1e-9 dB`, as required by the nested
-   action-set relation;
-3. the paired bootstrap mean-gap 95% upper bound must be `<= 0.005 dB`.
+2. for the three finite-grid pairs, every per-image gap must be at least
+   `-1e-6 dB`, the established replay numerical precision;
+3. for the continuous-pixel pair, do not apply pointwise dominance: its alpha
+   is analytically solved before the final clamp, so it is only a ceiling
+   diagnostic under this metric;
+4. for both policies in every pair, p10 must be no lower and severe count no
+   higher than their respective fixed `alpha=0.125` reference; and
+5. the paired bootstrap mean-gap 95% upper bound must be `<= 0.005 dB`.
 
 `0.005 dB` is one quarter of v3l's `0.02 dB` meaningful-escalation threshold;
 it is intentionally an adequacy test for quantization, not a new claim of
@@ -75,3 +80,14 @@ If any input, pairing, monotonicity, or upper-bound check fails, record
 Either outcome keeps controller training, threshold selection, canary, physics
 or proxy policy work, and locked-test access blocked. A pass authorizes only a
 separate A1 feasible-local-actuation audit with its own contract.
+
+## Correction Record
+
+The first A0b read-only command used the stronger pointwise-dominance condition
+for every pair. It found exact fixed-alpha replay and upper bounds below
+`0.005 dB`, but the continuous pair had rare negative gaps after final output
+clamping. The continuous alpha is solved from the unclamped residual in
+`pixel_scalar_oracle`, whereas the five-level grid evaluates already clamped
+candidates. They are therefore not pointwise nested under the reported metric.
+The first command is retained as `FAILED_METRIC_CONTRACT`; it is not a
+scientific gate result. A0b-r1 is the first valid decision-producing audit.

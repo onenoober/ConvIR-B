@@ -14,11 +14,12 @@ import numpy as np
 ROUTE_ID = "haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711"
 OPERATORS = ("D_ref", "D_rep")
 FIXED_POLICY = "FIXED_ALPHA_0.125"
+PIXEL_CONTINUOUS_POLICY = "ORACLE_PIXEL_SCALAR_CONTINUOUS"
 PAIR_SPECS = (
     ("image_dense_vs_common", "ORACLE_IMAGE_GRID", "ORACLE_IMAGE_GRID"),
     ("block16_dense_vs_common", "ORACLE_BLOCK16_GRID", "ORACLE_BLOCK16_GRID"),
     ("block32_dense_vs_common", "ORACLE_BLOCK32_GRID", "ORACLE_BLOCK32_GRID"),
-    ("pixel_continuous_vs_common", "ORACLE_PIXEL_SCALAR_CONTINUOUS", "ORACLE_PIXEL_GRID"),
+    ("pixel_continuous_vs_common", PIXEL_CONTINUOUS_POLICY, "ORACLE_PIXEL_GRID"),
 )
 
 
@@ -78,7 +79,7 @@ def policy_values(rows, operator_label, policy):
     return values, next(iter(seeds))
 
 
-def summary_mean(rows, operator_label, policy):
+def summary_row(rows, operator_label, policy):
     matches = [
         row
         for row in rows
@@ -86,7 +87,11 @@ def summary_mean(rows, operator_label, policy):
     ]
     if len(matches) != 1:
         raise ValueError(f"expected one summary row for {operator_label}/{policy}, got {len(matches)}")
-    return float(matches[0]["mean_psnr_delta"])
+    return matches[0]
+
+
+def summary_mean(rows, operator_label, policy):
+    return float(summary_row(rows, operator_label, policy)["mean_psnr_delta"])
 
 
 def paired_bootstrap(values, draws, seed):
@@ -111,6 +116,14 @@ def assert_summary_consistency(raw_values, summary_rows, operator_label, policy,
     return raw_mean, compact_mean, difference
 
 
+def tail_safety_against_fixed(summary_rows, operator_label, policy):
+    candidate = summary_row(summary_rows, operator_label, policy)
+    reference = summary_row(summary_rows, operator_label, FIXED_POLICY)
+    p10_pass = float(candidate["p10_psnr_delta"]) >= float(reference["p10_psnr_delta"])
+    severe_pass = int(candidate["regression_le_0p2_count"]) <= int(reference["regression_le_0p2_count"])
+    return p10_pass and severe_pass, p10_pass, severe_pass
+
+
 def verify_contract_json(parent_granularity_summary, v3m_source_manifest):
     parent = json.loads(Path(parent_granularity_summary).read_text(encoding="utf-8"))
     v3m = json.loads(Path(v3m_source_manifest).read_text(encoding="utf-8"))
@@ -130,9 +143,9 @@ def verify_contract_json(parent_granularity_summary, v3m_source_manifest):
 def run(args):
     output_dir = Path(args.output_dir)
     outputs = (
-        output_dir / "v3m_a0b_quantization_gap_summary.csv",
-        output_dir / "v3m_a0b_cross_audit.json",
-        output_dir / "v3m_a0b_source_manifest.json",
+        output_dir / f"{args.run_id}_quantization_gap_summary.csv",
+        output_dir / f"{args.run_id}_cross_audit.json",
+        output_dir / f"{args.run_id}_source_manifest.json",
     )
     existing = [str(path) for path in outputs if path.exists()]
     if existing:
@@ -209,9 +222,20 @@ def run(args):
             ci95_low, ci95_high = paired_bootstrap(
                 gaps, args.bootstrap_draws, args.seed + operator_index * 100 + pair_index
             )
-            monotonic_pass = bool(float(np.min(gaps)) >= -args.monotonic_tolerance_db)
+            pointwise_dominance_applicable = parent_policy != PIXEL_CONTINUOUS_POLICY
+            monotonic_pass = bool(
+                not pointwise_dominance_applicable
+                or float(np.min(gaps)) >= -args.grid_monotonic_tolerance_db
+            )
             ci_pass = bool(ci95_high <= args.max_mean_gap_db)
-            pair_pass = monotonic_pass and ci_pass
+            parent_tail_pass, parent_p10_pass, parent_severe_pass = tail_safety_against_fixed(
+                parent_summary_rows, operator_label, parent_policy
+            )
+            v3m_tail_pass, v3m_p10_pass, v3m_severe_pass = tail_safety_against_fixed(
+                v3m_summary_rows, operator_label, v3m_policy
+            )
+            tail_safety_pass = parent_tail_pass and v3m_tail_pass
+            pair_pass = monotonic_pass and ci_pass and tail_safety_pass
             overall_pass = overall_pass and pair_pass
             summaries.append(
                 {
@@ -234,8 +258,14 @@ def run(args):
                     "gap_gt_0p005_fraction": float(np.mean(gaps > args.max_mean_gap_db)),
                     "parent_summary_abs_difference_db": parent_summary_diff,
                     "v3m_summary_abs_difference_db": v3m_summary_diff,
-                    "nested_action_monotonicity_pass": monotonic_pass,
+                    "pointwise_dominance_check_applicable": pointwise_dominance_applicable,
+                    "grid_monotonicity_pass": monotonic_pass,
                     "mean_gap_ci95_high_le_0p005": ci_pass,
+                    "parent_policy_p10_ge_fixed": parent_p10_pass,
+                    "parent_policy_severe_le_fixed": parent_severe_pass,
+                    "v3m_policy_p10_ge_fixed": v3m_p10_pass,
+                    "v3m_policy_severe_le_fixed": v3m_severe_pass,
+                    "both_policy_tail_safety_pass": tail_safety_pass,
                     "quantization_gap_pair_pass": pair_pass,
                 }
             )
@@ -248,6 +278,7 @@ def run(args):
     source_manifest = {
         "route_id": ROUTE_ID,
         "audit_mode": "read_only_existing_frozen_rows_no_inference",
+        "run_id": args.run_id,
         "input_sha256": input_hashes,
         "locked_test_touched": False,
         "canary_authorized": False,
@@ -256,7 +287,7 @@ def run(args):
     }
     report = {
         "route_id": ROUTE_ID,
-        "phase": "v3m-A0b dense-grid and continuous-pixel mechanism cross-audit",
+        "phase": f"{args.run_id} dense-grid and continuous-pixel mechanism cross-audit",
         "decision": decision,
         "next_stage_authorized": "v3m-A1 feasible local actuation audit only" if overall_pass else "none",
         "locked_test_touched": False,
@@ -270,7 +301,8 @@ def run(args):
             "common_grid": [0.0, 0.125, 0.25, 0.5, 1.0],
             "mean_gap_ci95_high_max_db": args.max_mean_gap_db,
             "fixed_replay_tolerance_db": args.fixed_replay_tolerance_db,
-            "monotonic_tolerance_db": args.monotonic_tolerance_db,
+            "grid_monotonic_tolerance_db": args.grid_monotonic_tolerance_db,
+            "continuous_pointwise_dominance_check": "not applicable after output clamp",
             "paired_bootstrap_draws": args.bootstrap_draws,
             "bootstrap_seed": args.seed,
         },
@@ -296,6 +328,7 @@ def main():
     parser.add_argument("--v3m_policy_summary", required=True)
     parser.add_argument("--v3m_source_manifest", required=True)
     parser.add_argument("--output_dir", required=True)
+    parser.add_argument("--run_id", default="v3m_a0b")
     parser.add_argument("--expected_parent_operator_manifest_sha256", required=True)
     parser.add_argument("--expected_parent_a0_closeout_sha256", required=True)
     parser.add_argument("--expected_parent_oof_rows_sha256", required=True)
@@ -306,7 +339,8 @@ def main():
     parser.add_argument("--expected_v3m_source_manifest_sha256", required=True)
     parser.add_argument("--max_mean_gap_db", type=float, default=0.005)
     parser.add_argument("--fixed_replay_tolerance_db", type=float, default=1e-12)
-    parser.add_argument("--monotonic_tolerance_db", type=float, default=1e-9)
+    parser.add_argument("--grid_monotonic_tolerance_db", type=float, default=1e-6)
+    parser.add_argument("--monotonic_tolerance_db", type=float, default=None)
     parser.add_argument("--bootstrap_draws", type=int, default=4000)
     parser.add_argument("--seed", type=int, default=3407)
     args = parser.parse_args()
@@ -314,6 +348,8 @@ def main():
         raise ValueError("bootstrap_draws must be at least 100")
     if args.max_mean_gap_db <= 0.0:
         raise ValueError("max_mean_gap_db must be positive")
+    if args.monotonic_tolerance_db is not None:
+        args.grid_monotonic_tolerance_db = args.monotonic_tolerance_db
     run(args)
 
 

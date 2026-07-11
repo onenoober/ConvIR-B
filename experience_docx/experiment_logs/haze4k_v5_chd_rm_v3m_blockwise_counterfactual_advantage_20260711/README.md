@@ -1,6 +1,6 @@
 # v3m Blockwise Counterfactual Advantage
 
-Status: `PREFLIGHT_A0B_DENSE_CONTINUOUS_CROSS_AUDIT_ONLY`.
+Status: `PREFLIGHT_A0B_R1_CORRECTED_METRIC_CONTRACT_ONLY`.
 
 Route card:
 `experience_docx/experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3m-blockwise-counterfactual-advantage.md`
@@ -44,3 +44,8 @@ policy mappings, and quantization-gap gate before it reads any paired outcome.
 No model/inference rerun is needed. It cannot promote a policy, controller,
 training, canary, or locked-test access; only its own written pass closeout may
 authorize the A1 feasible-local-actuation audit.
+
+The initial A0b output is retained as a metric-contract-mismatched diagnostic:
+continuous alpha is solved before final output clamping, so a pointwise nested
+candidate check is invalid for that pair. `v3m_a0b_metric_contract.md` records
+the correction and A0b-r1 remains read-only.

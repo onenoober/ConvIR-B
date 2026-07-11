@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: `PREFLIGHT_A0B_DENSE_CONTINUOUS_CROSS_AUDIT_ONLY`
+Status: `PREFLIGHT_A0B_R1_CORRECTED_METRIC_CONTRACT_ONLY`
 
 Branch: `codex/haze4k-v5-v3m-blockwise-counterfactual-advantage`
 
@@ -95,6 +95,13 @@ compares the 33-level v3l grid (and its continuous-pixel ceiling) against the
 five-level A0a common ladder on exactly paired OOF names. The only possible
 A0b pass authorization is A1 feasible-local-actuation audit; A0b itself cannot
 authorize a controller, training, canary, physics/proxy route, or locked test.
+
+The first A0b read-only audit exposed a metric-contract error before a valid
+scientific decision: continuous pixel alpha is analytically optimized before
+the final output clamp and therefore is not pointwise nested with the clamped
+five-level pixel candidates. A0b-r1 corrects this provenance-preserving
+semantic error; it is still a no-inference audit and remains the only
+authorized phase.
 
 ## Engineering Deviation
 

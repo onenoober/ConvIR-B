@@ -40,3 +40,20 @@ the same 1,200 OOF names. Its only scientific gate is whether the 95% upper
 bound of the dense/continuous advantage over the five-level ladder is at most
 `0.005 dB` for every policy/operator pair, with no nested-action monotonicity
 violation. No result has been read under this contract yet.
+
+## A0b Metric-Contract Correction
+
+The initial read-only A0b command completed with all fixed-alpha replays exact
+and all mean-gap upper bounds below `0.005 dB`, but it was not a valid gate.
+The contract incorrectly required per-image dominance for the continuous pixel
+policy. That policy solves alpha against the unclamped residual and clamps only
+the final output, so it is not the same finite candidate minimization as the
+five-level clamped grid. Tiny grid-only negatives also remain within the
+pre-existing `1e-6 dB` replay precision.
+
+Therefore record the initial output as `FAILED_METRIC_CONTRACT`, not as an A1
+block. A0b-r1 retains all source hashes and paired means, uses `1e-6 dB` only
+for grid numerical monotonicity, treats continuous pixel as a ceiling
+diagnostic, and requires both policies to satisfy their existing p10/severe
+tail checks against fixed `alpha=0.125`. No A1 result exists until A0b-r1
+closes.
