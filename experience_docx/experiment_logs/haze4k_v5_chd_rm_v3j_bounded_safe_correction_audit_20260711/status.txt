@@ -1,0 +1,12 @@
+v3j_a_start haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711 2026-07-11T09:57:07+08:00
+v3j_a_done rc=1 haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711 2026-07-11T10:04:15+08:00
+V3J_A_BOUNDED_ACTION_AUDIT_FAILED
+v3j_a_start haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711 2026-07-11T10:05:44+08:00
+v3j_a_done rc=0 haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711 2026-07-11T10:13:10+08:00
+V3J_A_BOUNDED_ACTION_AUDIT_OK
+v3j_b_start haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711 2026-07-11T10:23:54+08:00
+v3j_b_log /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3j-bounded-safe-correction-audit/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/v3j_b_direct_correction_oof_20260711T102354.log
+v3j_b_heartbeat haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711 2026-07-11T10:28:54+08:00
+v3j_b_heartbeat haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711 2026-07-11T10:33:54+08:00
+v3j_b_done rc=0 haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711 2026-07-11T10:36:45+08:00
+V3J_B_DIRECT_CORRECTION_OOF_OK

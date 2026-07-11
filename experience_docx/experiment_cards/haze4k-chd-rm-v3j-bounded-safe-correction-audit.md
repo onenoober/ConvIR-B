@@ -4,7 +4,7 @@ Date: 2026-07-11
 Branch: `codex/haze4k-v5-v3j-bounded-safe-correction-audit`
 Evidence:
 `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/`
-Status: planned
+Status: closed, no promotion
 
 ## Purpose
 
@@ -33,4 +33,13 @@ v3j-B: direct residual OOF diagnostic only if v3j-A passes.
 
 ## Decision
 
-Pending v3j-A.
+v3j-A passed; v3j-B failed. The bounded output-residual actuator is viable
+under the privileged teacher, but deployable tiny direct residual heads create
+unsafe tails even with positive mean gains.
+
+Final decision:
+`V3J_DIRECT_SAFE_CORRECTION_OOF_FAIL_REQUIRE_NEW_INFORMATION_NO_INTERNAL_ROUTER`.
+
+No v3j canary, no no-op architecture equivalence, and no internal-router
+continuation are authorized. A future route must add new tail-risk information
+before any model-promotion experiment.

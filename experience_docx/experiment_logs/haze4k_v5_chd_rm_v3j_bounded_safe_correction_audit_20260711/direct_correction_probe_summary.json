@@ -1,0 +1,183 @@
+{
+  "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+  "a0_checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "confirm_bootstrap_vs_hard": [
+    {
+      "ci95_high": 0.1277886600443174,
+      "ci95_low": 0.05358147172286236,
+      "mean": 0.0905649106437409,
+      "n": 600,
+      "policy": "CONFIRM_DIRECT_CONTEXT"
+    },
+    {
+      "ci95_high": 0.07996236952989837,
+      "ci95_low": 0.017483289574922845,
+      "mean": 0.04851071550097453,
+      "n": 600,
+      "policy": "CONFIRM_DIRECT_LINEAR"
+    }
+  ],
+  "confirm_policy_summary": [
+    {
+      "best_psnr_delta": 0.0,
+      "mean_psnr_delta": 0.0,
+      "median_psnr_delta": 0.0,
+      "n": 600,
+      "p05_psnr_delta": 0.0,
+      "p10_psnr_delta": 0.0,
+      "policy": "CONFIRM_A0",
+      "positive_ratio": 0.0,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": 0.0
+    },
+    {
+      "best_psnr_delta": 1.4550289816789643,
+      "mean_psnr_delta": 0.09919925451164367,
+      "median_psnr_delta": 0.00798466183335833,
+      "n": 600,
+      "p05_psnr_delta": -0.6267779038397713,
+      "p10_psnr_delta": -0.44408343490701085,
+      "policy": "CONFIRM_DIRECT_CONTEXT",
+      "positive_ratio": 0.5233333333333333,
+      "regression_le_0p2_count": 121,
+      "regression_le_0p5_count": 45,
+      "worst_psnr_delta": -1.4932216362161626
+    },
+    {
+      "best_psnr_delta": 1.3750382690757803,
+      "mean_psnr_delta": 0.0571450593688773,
+      "median_psnr_delta": -0.00479621261509422,
+      "n": 600,
+      "p05_psnr_delta": -0.5514124690499617,
+      "p10_psnr_delta": -0.39221871655873886,
+      "policy": "CONFIRM_DIRECT_LINEAR",
+      "positive_ratio": 0.47333333333333333,
+      "regression_le_0p2_count": 121,
+      "regression_le_0p5_count": 35,
+      "worst_psnr_delta": -1.3373065008071165
+    },
+    {
+      "best_psnr_delta": 0.6653993149518982,
+      "mean_psnr_delta": 0.008634343867902773,
+      "median_psnr_delta": 0.0019312297462281691,
+      "n": 600,
+      "p05_psnr_delta": -0.1759438353143171,
+      "p10_psnr_delta": -0.13134300922241735,
+      "policy": "CONFIRM_HARD_D7C_ALPHA1",
+      "positive_ratio": 0.5166666666666667,
+      "regression_le_0p2_count": 23,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.3497653327339876
+    }
+  ],
+  "control_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-fam2modres-control-e5frome1-seed3407-20260710/Training-Results/Final.pkl",
+  "control_checkpoint_sha256": "08207119a5cf9e5c439dd2cb81b99029ade1861f2739d31e75f2f9f78d57c0f2",
+  "decision": "V3J_DIRECT_SAFE_CORRECTION_OOF_FAIL_REQUIRE_NEW_INFORMATION_NO_INTERNAL_ROUTER",
+  "direct_confirm_pass_policies": [],
+  "direct_confirm_strong_policies": [],
+  "direct_dual_pass_heads": [],
+  "direct_dual_strong_heads": [],
+  "direct_oof_pass_policies": [],
+  "direct_oof_strong_policies": [],
+  "feature_manifest": {
+    "feature_channels": 393,
+    "head_context": "1x1 projection -> depthwise 3x3 -> pointwise 1x1 -> 3-channel bounded residual",
+    "head_linear": "1x1 linear projection to 3-channel bounded residual",
+    "probe_weights_saved": false,
+    "raw_feature_tensors_saved": false
+  },
+  "locked_test_touched": false,
+  "metric_contract": {
+    "fixed_25pct_oracle_gap_line": 0.11251170518611245,
+    "fixed_ungated_mean_line": 0.03306524052036514,
+    "minimum_pass": "paired mean delta vs hard D7c CI95 low > 0, severe regressions <= hard, p10 >= hard and fixed v3i hard p10 line",
+    "replay": "A0 + upsampled bounded residual under D7c output veto",
+    "strong_pass": "minimum pass plus mean > fixed ungated line and >= fixed 25% oracle-gap line",
+    "target": "bounded low-resolution residual from CC_MIN4_FROM_OPEN_TOP_0.5 teacher"
+  },
+  "oof_bootstrap_vs_hard": [
+    {
+      "ci95_high": 0.07250873647644245,
+      "ci95_low": 0.0222410751571669,
+      "mean": 0.04792103256950366,
+      "n": 1200,
+      "policy": "OOF_DIRECT_CONTEXT"
+    },
+    {
+      "ci95_high": 0.04474064298700834,
+      "ci95_low": 0.0018122307626416976,
+      "mean": 0.022987040277301245,
+      "n": 1200,
+      "policy": "OOF_DIRECT_LINEAR"
+    }
+  ],
+  "oof_policy_summary": [
+    {
+      "best_psnr_delta": 0.0,
+      "mean_psnr_delta": 0.0,
+      "median_psnr_delta": 0.0,
+      "n": 1200,
+      "p05_psnr_delta": 0.0,
+      "p10_psnr_delta": 0.0,
+      "policy": "OOF_A0",
+      "positive_ratio": 0.0,
+      "regression_le_0p2_count": 0,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": 0.0
+    },
+    {
+      "best_psnr_delta": 1.7600086199032674,
+      "mean_psnr_delta": 0.06484628822192331,
+      "median_psnr_delta": -4.698311282069767e-05,
+      "n": 1200,
+      "p05_psnr_delta": -0.6979314870829505,
+      "p10_psnr_delta": -0.5044254168577297,
+      "policy": "OOF_DIRECT_CONTEXT",
+      "positive_ratio": 0.49833333333333335,
+      "regression_le_0p2_count": 277,
+      "regression_le_0p5_count": 124,
+      "worst_psnr_delta": -1.6414856223849128
+    },
+    {
+      "best_psnr_delta": 1.6097747379600094,
+      "mean_psnr_delta": 0.03991229592972091,
+      "median_psnr_delta": -0.008448528592087001,
+      "n": 1200,
+      "p05_psnr_delta": -0.5855366878961231,
+      "p10_psnr_delta": -0.4107549197543086,
+      "policy": "OOF_DIRECT_LINEAR",
+      "positive_ratio": 0.44666666666666666,
+      "regression_le_0p2_count": 234,
+      "regression_le_0p5_count": 92,
+      "worst_psnr_delta": -1.6091849255304993
+    },
+    {
+      "best_psnr_delta": 0.6195595116582595,
+      "mean_psnr_delta": 0.01692525565241966,
+      "median_psnr_delta": 0.0005363139743366219,
+      "n": 1200,
+      "p05_psnr_delta": -0.16106039304023057,
+      "p10_psnr_delta": -0.10607614545783475,
+      "policy": "OOF_HARD_D7C_ALPHA1",
+      "positive_ratio": 0.5066666666666667,
+      "regression_le_0p2_count": 35,
+      "regression_le_0p5_count": 0,
+      "worst_psnr_delta": -0.4197341383542934
+    }
+  ],
+  "phase": "v3j-B direct bounded residual OOF diagnostic",
+  "route_id": "haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711",
+  "sample_counts": {
+    "active_sample_fraction": 0.7481223967728182,
+    "clean_reference_count": 1200,
+    "controller_train_images": 1200,
+    "route_confirm_images": 600,
+    "sampled_training_sites": 152455
+  },
+  "saved_probe_weights": false,
+  "training_authorized": false,
+  "v3j_a_decision": "V3J_BOUNDED_ACTION_SPACE_PASS_AUTHORIZE_DIRECT_CORRECTION_OOF_ONLY",
+  "v3j_a_summary": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3j-bounded-safe-correction-audit/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/v3j_a_bounded_action_audit_summary.json",
+  "v3j_a_summary_sha256": "f72a45171a559005cf8fc9b0aceca9e43da05e445a008eb1984a3685c8be1c90"
+}
