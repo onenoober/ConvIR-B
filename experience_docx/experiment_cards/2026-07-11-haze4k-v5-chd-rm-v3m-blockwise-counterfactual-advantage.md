@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: `PREFLIGHT_A0A_COMMON_ACTION_ONLY`
+Status: `PREFLIGHT_A0A_SUMMARY_REBUILD_ONLY`
 
 Branch: `codex/haze4k-v5-v3m-blockwise-counterfactual-advantage`
 
@@ -67,3 +67,11 @@ authorizes neither a block controller nor physics policy work.
 ## Next Stage
 
 No stage is authorized before A0a completes.
+
+## Engineering Deviation
+
+The first A0a launcher completed all frozen replay segments and wrote its
+cloud-only raw tables, then failed during bootstrap summary construction because
+the percentile helper used a NumPy array as a boolean. The repaired summary
+command may only read those verified raw tables. It must not load checkpoints,
+rerun inference, replace rows, or alter the frozen action set or gates.

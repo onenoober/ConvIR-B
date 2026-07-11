@@ -10,3 +10,7 @@ only as an audit result and cannot select policies, thresholds, or gates.
 
 Only a dual-operator A0a pass authorizes A0b dense-grid and continuous-pixel
 mechanism audits. No other next stage is implied by A0a alone.
+
+The initial frozen replay completed, but its bootstrap-summary implementation
+failed before any gate decision. The only authorized recovery is a no-inference
+summary rebuild from the existing verified cloud-only raw rows.

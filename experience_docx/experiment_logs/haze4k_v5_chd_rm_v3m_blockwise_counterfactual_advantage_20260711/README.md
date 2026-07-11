@@ -1,6 +1,6 @@
 # v3m Blockwise Counterfactual Advantage
 
-Status: `PREFLIGHT_A0A_COMMON_ACTION_ONLY`.
+Status: `PREFLIGHT_A0A_SUMMARY_REBUILD_ONLY`.
 
 Route card:
 `experience_docx/experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3m-blockwise-counterfactual-advantage.md`
@@ -25,3 +25,6 @@ canary blocked.
 
 Cloud-only per-image outputs live under `cloud_only_raw_common_action/` and
 must not be committed or synced to GitHub.
+
+`v3m_deviation_log.md` records the initial summary-only engineering failure and
+the constrained rebuild command.

@@ -100,9 +100,10 @@ def grouped_values(rows, policy):
 
 
 def percentile(values, fraction):
-    if not values:
+    array = np.asarray(values, dtype=np.float64)
+    if array.size == 0:
         return float("nan")
-    return float(np.quantile(np.asarray(values, dtype=np.float64), fraction, method="linear"))
+    return float(np.quantile(array, fraction, method="linear"))
 
 
 def bootstrap_statistics(candidate, reference, seed, draws):
@@ -289,7 +290,18 @@ def run(args):
     manifest = read_json(args.fresh_split_manifest)
     train_names = names_from_manifest(manifest, args.train_key, args.max_train_samples)
     confirm_names = names_from_manifest(manifest, args.confirm_key, args.max_confirm_samples)
-    raw_dir = run_common_oracle(args)
+    raw_dir = output_dir / "cloud_only_raw_common_action"
+    if args.summarize_existing_raw:
+        required = [
+            raw_dir / "v3l_a1_oracle_policy_rows_cloud_only.csv",
+            raw_dir / "v3l_a1_oracle_policy_oof_rows_cloud_only.csv",
+            raw_dir / "v3l_a1_oracle_policy_summary.csv",
+        ]
+        missing = [str(path) for path in required if not path.is_file()]
+        if missing:
+            raise FileNotFoundError("cannot rebuild summary; missing raw files: " + ", ".join(missing))
+    else:
+        raw_dir = run_common_oracle(args)
     retention_rows, gate_rows, policy_summary, confirm_summary, agreement_rows, dual_pass = summarize_common_action(args, raw_dir)
 
     decision = (
@@ -401,6 +413,7 @@ def main():
     parser.add_argument("--d7c_threshold", type=float, default=None)
     parser.add_argument("--progress_every", type=int, default=25)
     parser.add_argument("--include_confirm_audit", action="store_true")
+    parser.add_argument("--summarize_existing_raw", action="store_true")
     parser.add_argument("--allow_overwrite", action="store_true")
     args = parser.parse_args()
     if args.d7c_threshold is None:
