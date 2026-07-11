@@ -240,12 +240,17 @@ def run(args):
         torch.backends.cudnn.benchmark = False
         torch.backends.cudnn.deterministic = True
     manifest = read_json(args.fresh_split_manifest)
-    names = names_from_manifest(manifest, args.train_key, args.max_train_samples)
+    full_names = names_from_manifest(manifest, args.train_key, args.formal_sample_count)
+    if len(full_names) != args.formal_sample_count:
+        raise ValueError(f"expected {args.formal_sample_count} full OOF names, got {len(full_names)}")
+    names = full_names[: args.max_train_samples]
     if args.run_mode == "formal" and len(names) != args.formal_sample_count:
         raise ValueError(f"formal run requires {args.formal_sample_count} names, got {len(names)}")
     if args.run_mode == "smoke" and len(names) != args.smoke_sample_count:
         raise ValueError(f"smoke run requires {args.smoke_sample_count} names, got {len(names)}")
-    folds, _ = v3l_a1.v3j_b.fold_assignments(names, args.fold_count)
+    full_folds, _ = v3l_a1.v3j_b.fold_assignments(full_names, args.fold_count)
+    fold_by_name = dict(zip(full_names, full_folds.tolist()))
+    folds = np.asarray([fold_by_name[name] for name in names], dtype=np.int64)
     reference = load_fixed_reference(args.reference_oof_rows)
     expected_reference_keys = {(operator, name) for operator in args.operator_labels for name in names}
     if not expected_reference_keys.issubset(reference):

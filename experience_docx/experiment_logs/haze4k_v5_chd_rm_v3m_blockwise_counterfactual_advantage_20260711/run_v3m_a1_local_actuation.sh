@@ -49,7 +49,7 @@ test -s "$EVID/v3m_a0_source_manifest.json"
 if [ "$MODE" = smoke ]; then
   test ! -e "$OUT"
 else
-  SMOKE=${SMOKE:-$EVID/a1_smoke32_r1/v3m_a1_smoke32_r1_summary.json}
+  SMOKE=${SMOKE:-$EVID/a1_smoke32_r2/v3m_a1_smoke32_r2_summary.json}
   test -s "$SMOKE"
   test ! -e "$EVID/v3m_a1_block_rows_cloud_only.csv"
   "$PY" - "$SMOKE" <<'PY'

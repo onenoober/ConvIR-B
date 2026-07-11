@@ -67,6 +67,7 @@ launch a canary, or access locked test.
 audit. It writes its large block table only on cloud and tests four fixed
 signals with grouped per-image OOF AUC. `run_v3m_a1_smoke32.sh` is the required
 32-image replay template; the first attempt is retained as an engineering
-failure and `run_v3m_a1_smoke32_r1.sh` is the corrected screen. Only its
+failure, r1 preserved the wrong subset fold map, and
+`run_v3m_a1_smoke32_r2.sh` is the corrected screen. Only its
 explicit pass marker authorizes
 `run_v3m_a1_formal.sh` on all 1,200 OOF images.

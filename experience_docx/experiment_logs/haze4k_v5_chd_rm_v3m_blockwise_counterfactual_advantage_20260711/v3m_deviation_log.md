@@ -58,3 +58,11 @@ first fixed-alpha replay differed from the frozen reference, so it stopped
 before processing an image; the partial cloud-only CSV has only its header.
 The r1 smoke restores the exact v3l-A1 initialization and uses a separate
 output root. This is an engineering failure, not an A1 observability result.
+
+## 2026-07-12 A1 smoke fold-map repair
+
+Smoke r1 retained the v3l-A1 deterministic initialization but built OOF folds
+from only 32 names. Frozen OOF heads are keyed by folds assigned over the full
+1,200-name manifest, so the subset selected the wrong fold head and still
+failed fixed-alpha replay. Smoke r2 builds the full fold map first, then takes
+the 32-name prefix and writes a third, separate cloud-only output root.
