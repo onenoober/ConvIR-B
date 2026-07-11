@@ -18,8 +18,8 @@ STAMP=$(date +%Y%m%dT%H%M%S)
 
 case "$MODE" in
   smoke)
-    OUT="$EVID/a1_smoke32"
-    TAG=v3m_a1_smoke32
+    OUT="$EVID/${SMOKE_OUTPUT_DIR:-a1_smoke32}"
+    TAG=${SMOKE_TAG:-v3m_a1_smoke32}
     MAX_TRAIN=32
     PROGRESS=8
     LOG="$EVID/v3m_a1_smoke32_${STAMP}.log"
@@ -49,9 +49,10 @@ test -s "$EVID/v3m_a0_source_manifest.json"
 if [ "$MODE" = smoke ]; then
   test ! -e "$OUT"
 else
-  test -s "$EVID/a1_smoke32/v3m_a1_smoke32_summary.json"
+  SMOKE=${SMOKE:-$EVID/a1_smoke32_r1/v3m_a1_smoke32_r1_summary.json}
+  test -s "$SMOKE"
   test ! -e "$EVID/v3m_a1_block_rows_cloud_only.csv"
-  "$PY" - "$EVID/a1_smoke32/v3m_a1_smoke32_summary.json" <<'PY'
+  "$PY" - "$SMOKE" <<'PY'
 import json
 import sys
 summary = json.load(open(sys.argv[1], encoding="utf-8"))

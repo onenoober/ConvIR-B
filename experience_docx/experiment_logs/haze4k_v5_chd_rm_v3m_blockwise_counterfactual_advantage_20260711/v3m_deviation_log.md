@@ -49,3 +49,12 @@ therefore false. A0b-r1 retains the frozen inputs and aggregate gap threshold,
 applies `1e-6 dB` only to finite-grid numerical monotonicity, and verifies
 existing p10/severe tail safety for both policies. The first result is retained
 as a metric-contract mismatch and does not authorize or block A1.
+
+## 2026-07-12 A1 smoke determinism repair
+
+The first A1 smoke launched on the same GPU and frozen assets as A0 but omitted
+the v3l-A1 random/NumPy/Torch/CUDA seed and cuDNN deterministic setup. Its
+first fixed-alpha replay differed from the frozen reference, so it stopped
+before processing an image; the partial cloud-only CSV has only its header.
+The r1 smoke restores the exact v3l-A1 initialization and uses a separate
+output root. This is an engineering failure, not an A1 observability result.

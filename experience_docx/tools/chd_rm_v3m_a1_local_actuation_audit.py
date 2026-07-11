@@ -6,6 +6,7 @@ import csv
 import hashlib
 import json
 import math
+import random
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -230,6 +231,14 @@ def run(args):
 
     input_hashes = verify_input_contract(args)
     closeout, artifacts = v3l_a1.validate_authorization(args)
+    # Match the v3l-A1 setup that produced the frozen v3m fixed-alpha reference.
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(args.seed)
+        torch.backends.cudnn.benchmark = False
+        torch.backends.cudnn.deterministic = True
     manifest = read_json(args.fresh_split_manifest)
     names = names_from_manifest(manifest, args.train_key, args.max_train_samples)
     if args.run_mode == "formal" and len(names) != args.formal_sample_count:

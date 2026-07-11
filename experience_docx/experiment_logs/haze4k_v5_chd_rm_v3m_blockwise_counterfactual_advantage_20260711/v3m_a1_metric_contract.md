@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: `PREREGISTERED_SMOKE_NOT_RUN`.
+Status: `CORRECTED_SMOKE_R1_NOT_RUN`.
 
 ## Scope
 
@@ -69,3 +69,12 @@ No outcome authorizes controller training, a learned ranker, threshold or
 route-confirm selection, canary, physics/proxy policy work, or locked-test
 access. A formal pass authorizes only a separately contracted A2 OOF
 calibration audit.
+
+## Smoke Correction
+
+The first 32-image smoke stopped on its first fixed-alpha replay because the
+custom A1 reader omitted the random/NumPy/Torch/CUDA seed and cuDNN
+deterministic settings used by the v3l-A1 reference run. No image completed,
+the partial cloud-only table contains only its header, and no A1 metric was
+read. Smoke r1 reproduces the v3l-A1 initialization exactly and writes a new
+output root; the initial smoke output is retained as `FAILED_ENGINEERING`.

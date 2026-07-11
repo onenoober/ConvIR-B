@@ -66,5 +66,7 @@ launch a canary, or access locked test.
 `v3m_a1_metric_contract.md` freezes a no-training block16 local-observability
 audit. It writes its large block table only on cloud and tests four fixed
 signals with grouped per-image OOF AUC. `run_v3m_a1_smoke32.sh` is the required
-32-image replay screen; only its explicit pass marker authorizes
+32-image replay template; the first attempt is retained as an engineering
+failure and `run_v3m_a1_smoke32_r1.sh` is the corrected screen. Only its
+explicit pass marker authorizes
 `run_v3m_a1_formal.sh` on all 1,200 OOF images.
