@@ -1,0 +1,60 @@
+{
+  "available_privileged_metadata": [
+    "trans"
+  ],
+  "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+  "extra_dirs": [],
+  "locked_test_touched_for_metrics": false,
+  "missing_or_not_found_metadata": [
+    "airlight",
+    "beta",
+    "depth",
+    "atmospheric_light",
+    "atom"
+  ],
+  "split_rows": [
+    {
+      "exists": true,
+      "file_count": 3001,
+      "metadata_kind": "haze",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train/haze",
+      "split": "train"
+    },
+    {
+      "exists": true,
+      "file_count": 3000,
+      "metadata_kind": "gt",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train/gt",
+      "split": "train"
+    },
+    {
+      "exists": true,
+      "file_count": 3000,
+      "metadata_kind": "trans",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train/trans",
+      "split": "train"
+    },
+    {
+      "exists": true,
+      "file_count": 1000,
+      "metadata_kind": "haze",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test/haze",
+      "split": "test"
+    },
+    {
+      "exists": true,
+      "file_count": 1000,
+      "metadata_kind": "gt",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test/gt",
+      "split": "test"
+    },
+    {
+      "exists": true,
+      "file_count": 1000,
+      "metadata_kind": "trans",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test/trans",
+      "split": "test"
+    }
+  ],
+  "test_trans_exists_metadata_only": true
+}

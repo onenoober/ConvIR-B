@@ -1,0 +1,564 @@
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/Dehazing/ITS/d7c_gate.py:45: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=map_location)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/Dehazing/ITS/d7c_gate.py:93: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(path, map_location=device)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/Dehazing/ITS/d7c_gate.py:103: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(path, map_location=device)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/tools/chd_rm_v3i_a_teacher_compressibility_audit.py:114: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_numpy.cpp:206.)
+  image_t = torch.from_numpy(np.asarray(image).transpose(2, 0, 1)).float() / 255.0
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/autograd/graph.py:825: UserWarning: reflection_pad2d_backward_cuda does not have a deterministic implementation, but you set 'torch.use_deterministic_algorithms(True, warn_only=True)'. You can file an issue at https://github.com/pytorch/pytorch/issues to help us prioritize adding deterministic support for this operation. (Triggered internally at ../aten/src/ATen/Context.cpp:91.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/autograd/graph.py:825: UserWarning: adaptive_avg_pool2d_backward_cuda does not have a deterministic implementation, but you set 'torch.use_deterministic_algorithms(True, warn_only=True)'. You can file an issue at https://github.com/pytorch/pytorch/issues to help us prioritize adding deterministic support for this operation. (Triggered internally at ../aten/src/ATen/Context.cpp:91.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+v3j_b_extract_progress 25/1200
+v3j_b_extract_progress 50/1200
+v3j_b_extract_progress 75/1200
+v3j_b_extract_progress 100/1200
+v3j_b_extract_progress 125/1200
+v3j_b_extract_progress 150/1200
+v3j_b_extract_progress 175/1200
+v3j_b_extract_progress 200/1200
+v3j_b_extract_progress 225/1200
+v3j_b_extract_progress 250/1200
+v3j_b_extract_progress 275/1200
+v3j_b_extract_progress 300/1200
+v3j_b_extract_progress 325/1200
+v3j_b_extract_progress 350/1200
+v3j_b_extract_progress 375/1200
+v3j_b_extract_progress 400/1200
+v3j_b_extract_progress 425/1200
+v3j_b_extract_progress 450/1200
+v3j_b_extract_progress 475/1200
+v3j_b_extract_progress 500/1200
+v3j_b_extract_progress 525/1200
+v3j_b_extract_progress 550/1200
+v3j_b_extract_progress 575/1200
+v3j_b_extract_progress 600/1200
+v3j_b_extract_progress 625/1200
+v3j_b_extract_progress 650/1200
+v3j_b_extract_progress 675/1200
+v3j_b_extract_progress 700/1200
+v3j_b_extract_progress 725/1200
+v3j_b_extract_progress 750/1200
+v3j_b_extract_progress 775/1200
+v3j_b_extract_progress 800/1200
+v3j_b_extract_progress 825/1200
+v3j_b_extract_progress 850/1200
+v3j_b_extract_progress 875/1200
+v3j_b_extract_progress 900/1200
+v3j_b_extract_progress 925/1200
+v3j_b_extract_progress 950/1200
+v3j_b_extract_progress 975/1200
+v3j_b_extract_progress 1000/1200
+v3j_b_extract_progress 1025/1200
+v3j_b_extract_progress 1050/1200
+v3j_b_extract_progress 1075/1200
+v3j_b_extract_progress 1100/1200
+v3j_b_extract_progress 1125/1200
+v3j_b_extract_progress 1150/1200
+v3j_b_extract_progress 1175/1200
+v3j_b_extract_progress 1200/1200
+v3l_a0_seed_3407_fold_done 0
+v3l_a0_seed_3407_fold_done 1
+v3l_a0_seed_3407_fold_done 2
+v3l_a0_seed_3407_fold_done 3
+v3l_a0_seed_3407_fold_done 4
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/tools/chd_rm_v3l_a0_canonical_operator.py:271: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  artifact_a = torch.load(artifact_path, map_location=device)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/tools/chd_rm_v3l_a0_canonical_operator.py:272: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  artifact_b = torch.load(artifact_path, map_location=device)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/Dehazing/ITS/d7c_gate.py:45: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(path, map_location=map_location)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/Dehazing/ITS/d7c_gate.py:93: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(path, map_location=device)
+/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/Dehazing/ITS/d7c_gate.py:103: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(path, map_location=device)
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 25/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 50/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 75/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 100/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 125/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 150/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 175/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 200/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 225/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 250/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 275/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 300/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 325/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 350/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 375/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 400/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 425/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 450/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 475/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 500/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 525/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 550/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 575/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 600/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 625/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 650/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 675/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 700/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 725/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 750/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 775/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 800/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 825/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 850/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 875/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 900/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 925/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 950/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 975/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 1000/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 1025/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 1050/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 1075/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 1100/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 1125/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 1150/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 1175/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_oof 1200/1200
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 25/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 50/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 75/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 100/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 125/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 150/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 175/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 200/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 225/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 250/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 275/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 300/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 325/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 350/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 375/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 400/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 425/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 450/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 475/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 500/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 525/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 550/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 575/600
+v3l_a0_replay_v3l_a0_D_ref_context_seed3407_confirm_audit_only 600/600
+v3j_b_extract_progress 25/1200
+v3j_b_extract_progress 50/1200
+v3j_b_extract_progress 75/1200
+v3j_b_extract_progress 100/1200
+v3j_b_extract_progress 125/1200
+v3j_b_extract_progress 150/1200
+v3j_b_extract_progress 175/1200
+v3j_b_extract_progress 200/1200
+v3j_b_extract_progress 225/1200
+v3j_b_extract_progress 250/1200
+v3j_b_extract_progress 275/1200
+v3j_b_extract_progress 300/1200
+v3j_b_extract_progress 325/1200
+v3j_b_extract_progress 350/1200
+v3j_b_extract_progress 375/1200
+v3j_b_extract_progress 400/1200
+v3j_b_extract_progress 425/1200
+v3j_b_extract_progress 450/1200
+v3j_b_extract_progress 475/1200
+v3j_b_extract_progress 500/1200
+v3j_b_extract_progress 525/1200
+v3j_b_extract_progress 550/1200
+v3j_b_extract_progress 575/1200
+v3j_b_extract_progress 600/1200
+v3j_b_extract_progress 625/1200
+v3j_b_extract_progress 650/1200
+v3j_b_extract_progress 675/1200
+v3j_b_extract_progress 700/1200
+v3j_b_extract_progress 725/1200
+v3j_b_extract_progress 750/1200
+v3j_b_extract_progress 775/1200
+v3j_b_extract_progress 800/1200
+v3j_b_extract_progress 825/1200
+v3j_b_extract_progress 850/1200
+v3j_b_extract_progress 875/1200
+v3j_b_extract_progress 900/1200
+v3j_b_extract_progress 925/1200
+v3j_b_extract_progress 950/1200
+v3j_b_extract_progress 975/1200
+v3j_b_extract_progress 1000/1200
+v3j_b_extract_progress 1025/1200
+v3j_b_extract_progress 1050/1200
+v3j_b_extract_progress 1075/1200
+v3j_b_extract_progress 1100/1200
+v3j_b_extract_progress 1125/1200
+v3j_b_extract_progress 1150/1200
+v3j_b_extract_progress 1175/1200
+v3j_b_extract_progress 1200/1200
+v3l_a0_seed_3408_fold_done 0
+v3l_a0_seed_3408_fold_done 1
+v3l_a0_seed_3408_fold_done 2
+v3l_a0_seed_3408_fold_done 3
+v3l_a0_seed_3408_fold_done 4
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 25/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 50/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 75/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 100/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 125/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 150/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 175/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 200/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 225/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 250/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 275/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 300/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 325/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 350/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 375/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 400/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 425/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 450/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 475/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 500/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 525/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 550/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 575/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 600/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 625/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 650/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 675/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 700/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 725/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 750/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 775/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 800/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 825/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 850/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 875/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 900/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 925/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 950/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 975/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 1000/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 1025/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 1050/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 1075/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 1100/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 1125/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 1150/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 1175/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_oof 1200/1200
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 25/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 50/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 75/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 100/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 125/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 150/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 175/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 200/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 225/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 250/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 275/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 300/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 325/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 350/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 375/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 400/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 425/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 450/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 475/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 500/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 525/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 550/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 575/600
+v3l_a0_replay_v3l_a0_D_rep_context_seed3408_confirm_audit_only 600/600
+{
+  "canary_authorized": false,
+  "decision": "V3L_A0_CANONICAL_OPERATOR_REPLAY_PASS_AUTHORIZE_A1_ORACLE_GRANULARITY_AUDIT",
+  "locked_test_touched": false,
+  "metric_contract": {
+    "baseline": "A0 PSNR on train-derived clean-reference grouped OOF",
+    "operator": "context direct bounded residual head under D7c output veto",
+    "replay_gate": {
+      "artifact_sha": "stable repeat hash",
+      "max_abs_direct_tensor_diff": 1e-07,
+      "max_abs_psnr_delta_diff": 1e-06,
+      "row_identity_order": "exact",
+      "severe_set": "exact at <= -0.2 dB"
+    }
+  },
+  "new_model_search_authorized": false,
+  "next_stage_authorized": "v3l-A1 oracle granularity audit only",
+  "operator_artifacts_saved_cloud_only": true,
+  "phase": "v3l-A0 canonical context direct-operator freeze",
+  "raw_feature_tensors_saved": false,
+  "results": [
+    {
+      "artifact_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/cloud_only_artifacts/v3l_a0_D_ref_context_seed3407.pt",
+      "artifact_sha256": "3c5ed807cc0cb25170720fe2b8f34cbe81b7bbc3857f7a3f1423f73d77cd6692",
+      "artifact_sha256_repeat": "3c5ed807cc0cb25170720fe2b8f34cbe81b7bbc3857f7a3f1423f73d77cd6692",
+      "artifact_sha_stable": true,
+      "operator_label": "D_ref",
+      "passed": true,
+      "replay": [
+        {
+          "label": "D_ref_OOF",
+          "max_abs_direct_tensor_diff": 0.0,
+          "max_abs_psnr_delta_diff": 0.0,
+          "mismatches": [],
+          "passed": true,
+          "psnr_tolerance": 1e-06,
+          "route_confirm_used_for_strategy_selection": false,
+          "row_count_pass1": 3600,
+          "row_count_pass2": 3600,
+          "severe_set_exact": true,
+          "severe_threshold_db": -0.2,
+          "summary_pass1": [
+            {
+              "best_psnr_delta": 0.0,
+              "mean_psnr_delta": 0.0,
+              "median_psnr_delta": 0.0,
+              "n": 1200,
+              "p05_psnr_delta": 0.0,
+              "p10_psnr_delta": 0.0,
+              "policy": "OOF_A0",
+              "positive_ratio": 0.0,
+              "regression_le_0p2_count": 0,
+              "regression_le_0p5_count": 0,
+              "worst_psnr_delta": 0.0
+            },
+            {
+              "best_psnr_delta": 1.7312317682268343,
+              "mean_psnr_delta": 0.0662505005479105,
+              "median_psnr_delta": 0.0011015259921443032,
+              "n": 1200,
+              "p05_psnr_delta": -0.6963317981730426,
+              "p10_psnr_delta": -0.4980978061867887,
+              "policy": "OOF_DIRECT_CONTEXT",
+              "positive_ratio": 0.5066666666666667,
+              "regression_le_0p2_count": 277,
+              "regression_le_0p5_count": 119,
+              "worst_psnr_delta": -1.5960476416493705
+            },
+            {
+              "best_psnr_delta": 0.6191675776180716,
+              "mean_psnr_delta": 0.01693569846546801,
+              "median_psnr_delta": 0.0005619668616958506,
+              "n": 1200,
+              "p05_psnr_delta": -0.16059093843778205,
+              "p10_psnr_delta": -0.10695354724456435,
+              "policy": "OOF_HARD_D7C_ALPHA1",
+              "positive_ratio": 0.5083333333333333,
+              "regression_le_0p2_count": 35,
+              "regression_le_0p5_count": 0,
+              "worst_psnr_delta": -0.42084108992759184
+            }
+          ],
+          "tensor_tolerance": 1e-07
+        },
+        {
+          "label": "D_ref_CONFIRM_AUDIT_ONLY",
+          "max_abs_direct_tensor_diff": 0.0,
+          "max_abs_psnr_delta_diff": 0.0,
+          "mismatches": [],
+          "passed": true,
+          "psnr_tolerance": 1e-06,
+          "route_confirm_used_for_strategy_selection": false,
+          "row_count_pass1": 1800,
+          "row_count_pass2": 1800,
+          "severe_set_exact": true,
+          "severe_threshold_db": -0.2,
+          "summary_pass1": [
+            {
+              "best_psnr_delta": 0.0,
+              "mean_psnr_delta": 0.0,
+              "median_psnr_delta": 0.0,
+              "n": 600,
+              "p05_psnr_delta": 0.0,
+              "p10_psnr_delta": 0.0,
+              "policy": "CONFIRM_AUDIT_ONLY_A0",
+              "positive_ratio": 0.0,
+              "regression_le_0p2_count": 0,
+              "regression_le_0p5_count": 0,
+              "worst_psnr_delta": 0.0
+            },
+            {
+              "best_psnr_delta": 1.45561110489394,
+              "mean_psnr_delta": 0.1016423995436282,
+              "median_psnr_delta": 0.014067739632832144,
+              "n": 600,
+              "p05_psnr_delta": -0.6335792726556747,
+              "p10_psnr_delta": -0.44555737576247123,
+              "policy": "CONFIRM_AUDIT_ONLY_DIRECT_CONTEXT",
+              "positive_ratio": 0.525,
+              "regression_le_0p2_count": 125,
+              "regression_le_0p5_count": 47,
+              "worst_psnr_delta": -1.4773000961963447
+            },
+            {
+              "best_psnr_delta": 0.6648794268465394,
+              "mean_psnr_delta": 0.008600671031654503,
+              "median_psnr_delta": 0.0015130798962097458,
+              "n": 600,
+              "p05_psnr_delta": -0.17647115878191,
+              "p10_psnr_delta": -0.13070833273427382,
+              "policy": "CONFIRM_AUDIT_ONLY_HARD_D7C_ALPHA1",
+              "positive_ratio": 0.515,
+              "regression_le_0p2_count": 23,
+              "regression_le_0p5_count": 0,
+              "worst_psnr_delta": -0.3530504384307278
+            }
+          ],
+          "tensor_tolerance": 1e-07
+        }
+      ],
+      "sample_counts": {
+        "active_sample_fraction": 0.7481223967728182,
+        "clean_reference_count": 1200,
+        "controller_train_images": 1200,
+        "sampled_training_sites": 152455
+      },
+      "seed": 3407
+    },
+    {
+      "artifact_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/cloud_only_artifacts/v3l_a0_D_rep_context_seed3408.pt",
+      "artifact_sha256": "3843471c6f4c130495ee6f6d62193c4235d9c89061621288ecb8d7455944ae62",
+      "artifact_sha256_repeat": "3843471c6f4c130495ee6f6d62193c4235d9c89061621288ecb8d7455944ae62",
+      "artifact_sha_stable": true,
+      "operator_label": "D_rep",
+      "passed": true,
+      "replay": [
+        {
+          "label": "D_rep_OOF",
+          "max_abs_direct_tensor_diff": 0.0,
+          "max_abs_psnr_delta_diff": 0.0,
+          "mismatches": [],
+          "passed": true,
+          "psnr_tolerance": 1e-06,
+          "route_confirm_used_for_strategy_selection": false,
+          "row_count_pass1": 3600,
+          "row_count_pass2": 3600,
+          "severe_set_exact": true,
+          "severe_threshold_db": -0.2,
+          "summary_pass1": [
+            {
+              "best_psnr_delta": 0.0,
+              "mean_psnr_delta": 0.0,
+              "median_psnr_delta": 0.0,
+              "n": 1200,
+              "p05_psnr_delta": 0.0,
+              "p10_psnr_delta": 0.0,
+              "policy": "OOF_A0",
+              "positive_ratio": 0.0,
+              "regression_le_0p2_count": 0,
+              "regression_le_0p5_count": 0,
+              "worst_psnr_delta": 0.0
+            },
+            {
+              "best_psnr_delta": 1.678571511119408,
+              "mean_psnr_delta": 0.06938032154206873,
+              "median_psnr_delta": 0.0011999894013356993,
+              "n": 1200,
+              "p05_psnr_delta": -0.6872115999656729,
+              "p10_psnr_delta": -0.4868391529924537,
+              "policy": "OOF_DIRECT_CONTEXT",
+              "positive_ratio": 0.5108333333333334,
+              "regression_le_0p2_count": 268,
+              "regression_le_0p5_count": 113,
+              "worst_psnr_delta": -1.6197744484135796
+            },
+            {
+              "best_psnr_delta": 0.6191675776180716,
+              "mean_psnr_delta": 0.01693569846546801,
+              "median_psnr_delta": 0.0005619668616958506,
+              "n": 1200,
+              "p05_psnr_delta": -0.16059093843778205,
+              "p10_psnr_delta": -0.10695354724456435,
+              "policy": "OOF_HARD_D7C_ALPHA1",
+              "positive_ratio": 0.5083333333333333,
+              "regression_le_0p2_count": 35,
+              "regression_le_0p5_count": 0,
+              "worst_psnr_delta": -0.42084108992759184
+            }
+          ],
+          "tensor_tolerance": 1e-07
+        },
+        {
+          "label": "D_rep_CONFIRM_AUDIT_ONLY",
+          "max_abs_direct_tensor_diff": 0.0,
+          "max_abs_psnr_delta_diff": 0.0,
+          "mismatches": [],
+          "passed": true,
+          "psnr_tolerance": 1e-06,
+          "route_confirm_used_for_strategy_selection": false,
+          "row_count_pass1": 1800,
+          "row_count_pass2": 1800,
+          "severe_set_exact": true,
+          "severe_threshold_db": -0.2,
+          "summary_pass1": [
+            {
+              "best_psnr_delta": 0.0,
+              "mean_psnr_delta": 0.0,
+              "median_psnr_delta": 0.0,
+              "n": 600,
+              "p05_psnr_delta": 0.0,
+              "p10_psnr_delta": 0.0,
+              "policy": "CONFIRM_AUDIT_ONLY_A0",
+              "positive_ratio": 0.0,
+              "regression_le_0p2_count": 0,
+              "regression_le_0p5_count": 0,
+              "worst_psnr_delta": 0.0
+            },
+            {
+              "best_psnr_delta": 1.5510341146444517,
+              "mean_psnr_delta": 0.09508256181651632,
+              "median_psnr_delta": 0.014881985257858332,
+              "n": 600,
+              "p05_psnr_delta": -0.7006647819663474,
+              "p10_psnr_delta": -0.47052969810820927,
+              "policy": "CONFIRM_AUDIT_ONLY_DIRECT_CONTEXT",
+              "positive_ratio": 0.5316666666666666,
+              "regression_le_0p2_count": 142,
+              "regression_le_0p5_count": 54,
+              "worst_psnr_delta": -1.580608840807912
+            },
+            {
+              "best_psnr_delta": 0.6648794268465394,
+              "mean_psnr_delta": 0.008600671031654503,
+              "median_psnr_delta": 0.0015130798962097458,
+              "n": 600,
+              "p05_psnr_delta": -0.17647115878191,
+              "p10_psnr_delta": -0.13070833273427382,
+              "policy": "CONFIRM_AUDIT_ONLY_HARD_D7C_ALPHA1",
+              "positive_ratio": 0.515,
+              "regression_le_0p2_count": 23,
+              "regression_le_0p5_count": 0,
+              "worst_psnr_delta": -0.3530504384307278
+            }
+          ],
+          "tensor_tolerance": 1e-07
+        }
+      ],
+      "sample_counts": {
+        "active_sample_fraction": 0.7481223967728182,
+        "clean_reference_count": 1200,
+        "controller_train_images": 1200,
+        "sampled_training_sites": 152455
+      },
+      "seed": 3408
+    }
+  ],
+  "route_confirm_role": "deterministic replay audit only; not strategy selection",
+  "route_confirm_used_for_strategy_selection": false,
+  "route_id": "haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711",
+  "source_assets": {
+    "a0_checkpoint": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+    "a0_checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "control_checkpoint": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-fam2modres-control-e5frome1-seed3407-20260710/Training-Results/Final.pkl",
+    "control_checkpoint_sha256": "08207119a5cf9e5c439dd2cb81b99029ade1861f2739d31e75f2f9f78d57c0f2",
+    "data_dir": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+    "fresh_split_manifest": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/fresh_route_confirm_split_manifest.json",
+    "v3j_a_decision": "V3J_BOUNDED_ACTION_SPACE_PASS_AUTHORIZE_DIRECT_CORRECTION_OOF_ONLY",
+    "v3j_a_summary": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/v3j_a_bounded_action_audit_summary.json",
+    "v3j_b_decision": "V3J_DIRECT_SAFE_CORRECTION_OOF_FAIL_REQUIRE_NEW_INFORMATION_NO_INTERNAL_ROUTER",
+    "v3j_b_summary": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/direct_correction_probe_summary.json"
+  }
+}

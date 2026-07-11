@@ -1,0 +1,7 @@
+split,metadata_kind,path,exists,file_count
+train,haze,/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train/haze,True,3001
+train,gt,/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train/gt,True,3000
+train,trans,/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train/trans,True,3000
+test,haze,/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test/haze,True,1000
+test,gt,/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test/gt,True,1000
+test,trans,/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test/trans,True,1000

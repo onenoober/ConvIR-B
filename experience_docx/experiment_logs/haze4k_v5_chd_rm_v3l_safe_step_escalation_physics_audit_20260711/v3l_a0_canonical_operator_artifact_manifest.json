@@ -1,0 +1,20 @@
+[
+  {
+    "artifact_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/cloud_only_artifacts/v3l_a0_D_ref_context_seed3407.pt",
+    "artifact_sha256": "3c5ed807cc0cb25170720fe2b8f34cbe81b7bbc3857f7a3f1423f73d77cd6692",
+    "artifact_size_bytes": 335232,
+    "cloud_only_not_for_github": true,
+    "operator_label": "D_ref",
+    "passed": true,
+    "seed": 3407
+  },
+  {
+    "artifact_path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/cloud_only_artifacts/v3l_a0_D_rep_context_seed3408.pt",
+    "artifact_sha256": "3843471c6f4c130495ee6f6d62193c4235d9c89061621288ecb8d7455944ae62",
+    "artifact_size_bytes": 335104,
+    "cloud_only_not_for_github": true,
+    "operator_label": "D_rep",
+    "passed": true,
+    "seed": 3408
+  }
+]

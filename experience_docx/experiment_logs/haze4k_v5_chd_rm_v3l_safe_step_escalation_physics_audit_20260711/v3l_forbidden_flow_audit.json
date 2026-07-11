@@ -1,0 +1,14 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711",
+  "locked_test_authorized": false,
+  "locked_test_touched": false,
+  "canary_authorized": false,
+  "new_model_search_authorized": false,
+  "backbone_training_authorized": false,
+  "confidence_training_authorized": false,
+  "larger_head_authorized": false,
+  "v3j_route_confirm_strategy_selection_authorized": false,
+  "a0_only_initially_authorized": true,
+  "cloud_only_head_artifacts_allowed": true,
+  "github_weight_sync_allowed": false
+}
