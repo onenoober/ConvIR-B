@@ -30,3 +30,13 @@ A0b may only cross-audit the already computed dense-grid and continuous-pixel
 frozen evidence. It cannot use route-confirm to select a policy and cannot
 authorize A1 feasible local actuation, any physics/proxy work, training,
 canary, or locked-test access.
+
+## A0b Preflight Decision
+
+`v3m_a0b_metric_contract.md` freezes a no-inference cross-audit. It requires
+the v3l 33-level grid and continuous-pixel rows to have the pinned SHA256
+values, exact fixed-alpha replay agreement with the v3m five-level rows, and
+the same 1,200 OOF names. Its only scientific gate is whether the 95% upper
+bound of the dense/continuous advantage over the five-level ladder is at most
+`0.005 dB` for every policy/operator pair, with no nested-action monotonicity
+violation. No result has been read under this contract yet.

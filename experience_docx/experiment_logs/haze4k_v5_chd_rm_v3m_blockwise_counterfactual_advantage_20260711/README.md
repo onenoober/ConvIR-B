@@ -1,6 +1,6 @@
 # v3m Blockwise Counterfactual Advantage
 
-Status: `A0A_PASS_A0B_MECHANISM_AUDIT_ONLY`.
+Status: `PREFLIGHT_A0B_DENSE_CONTINUOUS_CROSS_AUDIT_ONLY`.
 
 Route card:
 `experience_docx/experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3m-blockwise-counterfactual-advantage.md`
@@ -39,6 +39,8 @@ Decision:
 `V3M_A0_COMMON_ACTION_GRANULARITY_PASS_AUTHORIZE_A0B_DENSE_AND_CONTINUOUS_MECHANISM_ONLY`.
 
 Only the A0b dense-grid and continuous-pixel mechanism cross-audit is
-authorized. No model/inference rerun is needed for that cross-audit; it must
-not promote a policy or authorize A1, local actuation, controller training,
-canary, or locked-test access.
+authorized. `v3m_a0b_metric_contract.md` freezes its paired OOF source hashes,
+policy mappings, and quantization-gap gate before it reads any paired outcome.
+No model/inference rerun is needed. It cannot promote a policy, controller,
+training, canary, or locked-test access; only its own written pass closeout may
+authorize the A1 feasible-local-actuation audit.

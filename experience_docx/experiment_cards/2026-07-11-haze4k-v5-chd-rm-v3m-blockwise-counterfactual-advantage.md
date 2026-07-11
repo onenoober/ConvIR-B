@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: `A0A_PASS_A0B_MECHANISM_AUDIT_ONLY`
+Status: `PREFLIGHT_A0B_DENSE_CONTINUOUS_CROSS_AUDIT_ONLY`
 
 Branch: `codex/haze4k-v5-v3m-blockwise-counterfactual-advantage`
 
@@ -89,6 +89,12 @@ Only A0b dense-grid and continuous-pixel mechanism cross-audit is authorized.
 It must validate the corresponding frozen v3l artifacts and metric pairing
 without using route-confirm for selection. A0a does not authorize local
 actuation, physics, proxy, controller training, canary, or locked-test access.
+
+The A0b contract is `v3m_a0b_metric_contract.md` in the evidence root. It
+compares the 33-level v3l grid (and its continuous-pixel ceiling) against the
+five-level A0a common ladder on exactly paired OOF names. The only possible
+A0b pass authorization is A1 feasible-local-actuation audit; A0b itself cannot
+authorize a controller, training, canary, physics/proxy route, or locked test.
 
 ## Engineering Deviation
 
