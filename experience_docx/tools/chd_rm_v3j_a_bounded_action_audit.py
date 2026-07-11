@@ -8,6 +8,7 @@ compact text evidence.
 """
 
 import argparse
+import json
 import random
 import sys
 from collections import defaultdict
