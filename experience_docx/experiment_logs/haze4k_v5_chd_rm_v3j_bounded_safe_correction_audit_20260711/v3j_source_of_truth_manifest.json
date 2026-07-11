@@ -1,0 +1,11 @@
+{
+  "branch": "codex/haze4k-v5-v3j-bounded-safe-correction-audit",
+  "cloud_workspace": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3j-bounded-safe-correction-audit",
+  "evidence_root": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711",
+  "locked_test_touched": false,
+  "parent_branch": "codex/haze4k-v5-v3i-fam2-open-value-distillability",
+  "parent_commit": "85176145ada3148ca92ab7f4feb28529611dccfa",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "route_id": "haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711",
+  "status": "planned"
+}

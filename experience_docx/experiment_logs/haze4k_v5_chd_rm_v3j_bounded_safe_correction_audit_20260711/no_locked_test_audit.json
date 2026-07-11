@@ -1,0 +1,13 @@
+{
+  "authorized_splits": [
+    "Haze4K train-derived train_inner split only"
+  ],
+  "forbidden": [
+    "Haze4K locked test",
+    "test-selected thresholds",
+    "locked-test replay"
+  ],
+  "locked_test_authorized": false,
+  "locked_test_touched": false,
+  "route_id": "haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711"
+}

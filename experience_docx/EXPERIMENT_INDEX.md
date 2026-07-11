@@ -21,43 +21,48 @@ decision says otherwise.
 
 ## Current CHD-RM v5 Route State
 
-As of the v3i closeout on 2026-07-11, v3d RARM adapter-only remains paused and
+As of the v3j closeout on 2026-07-11, v3d RARM adapter-only remains paused and
 no v3f-B ranker training, v3d continuation, 20-epoch continuation, v4/RARM
 expansion, neighbor/FAM1 or backbone unfreeze, canary expansion, current-signal
-FAM2 router/distillation, or locked-test access is authorized.
+FAM2 router/distillation, v3j no-op architecture equivalence, or locked-test
+access is authorized.
 
 v3g showed that the true FAM2 action space has a strong label-derived oracle,
 v3h then found the audited deployable operator-site features near-random, and
-v3i finally split the remaining question: the privileged open-value target is
-strong and spatially compressible, but full-context, counterfactual response,
-and checkpoint/transform disagreement signals all failed OOF replay. The v3i
-final decision is
-`V3I_ALL_DEPLOYABLE_SIGNALS_FAIL_STOP_FAM2_ROUTER_REDESIGN_CANDIDATE`.
+v3i showed that the privileged open-value target is strong and spatially
+compressible but not distillable from the audited deployable signals. v3j then
+changed the actuator: a bounded output-residual action space passed under the
+privileged teacher, but deployable tiny direct residual heads failed the dual
+OOF + route-confirm tail-safety gate. The v3j final decision is
+`V3J_DIRECT_SAFE_CORRECTION_OOF_FAIL_REQUIRE_NEW_INFORMATION_NO_INTERNAL_ROUTER`.
 
-Key v3i facts on internal train-derived `val_inner` 600 images:
+Key v3j facts on train-derived splits:
 
-- hard D7c replay mean `+0.012784 dB` with `23` regressions <= -0.2 dB;
-- GT open top50 oracle mean `+0.411695 dB` with zero regressions <= -0.2 dB;
-- best compressed policy `ALPHA_SECANT_Q3` mean `+0.412879 dB` with zero
-  regressions <= -0.2 dB;
-- best full-context OOF replay `OOF_DW3X3_TOP50` mean `+0.016627 dB`, but
-  bootstrap delta vs hard CI low `-0.000163`;
-- best counterfactual-response OOF replay `OOF_CF_RESPONSE_DW3X3_TOP50` mean
-  `+0.008543 dB`, delta vs hard mean `-0.004241`, CI low `-0.009492`;
-- best disagreement OOF replay `OOF_DISAGREE_LINEAR_TOP50` mean
-  `+0.010534 dB`, delta vs hard mean `-0.002250`, CI low `-0.007422`.
+- v3j-A primary bounded projection `PRIMARY_FULL_CLIP_P99_D7C` on
+  `v3j_route_confirm` 600: mean `+0.229641 dB`, p10 `+0.002454 dB`, worst
+  `-0.018076 dB`, zero regressions <= -0.2 dB, bootstrap CI95 low vs hard
+  `+0.199968`;
+- hard D7c reference on `v3j_route_confirm`: mean `+0.008634 dB`, p10
+  `-0.131343 dB`, `23` regressions <= -0.2 dB;
+- v3j-B `CONFIRM_DIRECT_LINEAR`: mean `+0.057145 dB`, but p10
+  `-0.392219 dB`, `121` regressions <= -0.2 dB, `108` direct-only severe
+  cases;
+- v3j-B `CONFIRM_DIRECT_CONTEXT`: mean `+0.099199 dB`, but p10
+  `-0.444083 dB`, `121` regressions <= -0.2 dB, `111` direct-only severe
+  cases.
 
-The latest bottleneck is the missing deployable inference-time controller
-signal, not FAM2 actuator realizability, not the label-derived open-value oracle,
-and not spatial compressibility of the privileged target. The current FAM2
-router/distillation route is stopped; further work requires a materially new
-correction-confidence or bounded-expert design that first passes a no-training
-held-out separability/replay gate.
+The latest bottleneck is deployable tail-safety information, not the bounded
+residual actuator, not mean-value learnability, not FAM2 actuator realizability,
+not the label-derived open-value oracle, and not spatial compressibility of a
+privileged target. The current internal-router/direct-residual route is stopped;
+further work requires genuinely new tail-risk information or target semantics
+before any model-promotion experiment.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
-`experience_docx/experiment_cards/haze4k-chd-rm-v3i-fam2-open-value-distillability.md`,
-and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711/`
-for current CHD-RM status. No router/ranker training is authorized.
+`experience_docx/experiment_cards/haze4k-chd-rm-v3j-bounded-safe-correction-audit.md`,
+and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/`
+for current CHD-RM status. No router/ranker/direct-residual training is
+authorized from the current evidence.
 
 ## Official Architecture Anchor
 
@@ -154,7 +159,7 @@ without a material new reason.
 
 | Family | Current verdict | Reopen condition |
 | --- | --- | --- |
-| [FAM/FAM2 feature modulation](family_summaries/fam_family_summary.md) | Closed for unchanged deployable FAM routing and current v3h/v3i signal sets: v3i confirmed the open-value oracle is strong and compressible, but all audited deployable signals failed OOF replay. | Reopen only with materially new information, target semantics, correction-confidence design, or bounded experts that first pass a no-training held-out separability/replay gate. |
+| [FAM/FAM2 feature modulation](family_summaries/fam_family_summary.md) | Closed for unchanged deployable FAM routing, current v3h/v3i signal sets, and v3j tiny direct bounded residual heads: v3j showed the bounded actuator is viable under a privileged teacher, but deployable residual heads create unsafe tails. | Reopen only with materially new tail-risk information, target semantics, correction-confidence design, or bounded experts that first pass a held-out replay gate with explicit false-intervention protection. |
 | [Hard-frequency and haze-prior loss routes](family_summaries/frequency_prior_family_summary.md) | Closed for the tested weighting/SCM forms: hard movement came with global/easy damage. | A loss route shows target-group gain with explicit strong/easy protection before stop20. |
 | [PFD/RHFD preservation routes](family_summaries/pfd_rhfd_family_summary.md) | Diagnostic only: preservation improved in B1r, but hard-gain and strong-case gates failed. | A new mechanism explains how hard gain is recovered without losing the preservation benefit. |
 | [APDR output residual/action-bank routes](family_summaries/apdr_family_summary.md) | Current broad output-residual and coefficient-mapping forms are stopped; v0.4E OOF did not pass, and exact v0.4E numbers require fixed-code rerun before sealing. | A separately pre-registered safe-subset route passes fixed-code OOF/held-out gates without severe regressions. |

@@ -1,0 +1,42 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711",
+  "branch": "codex/haze4k-v5-v3j-bounded-safe-correction-audit",
+  "runnable_commit": "601763c",
+  "status": "closed_no_promotion",
+  "locked_test_touched": false,
+  "v3j_a": {
+    "decision": "V3J_BOUNDED_ACTION_SPACE_PASS_AUTHORIZE_DIRECT_CORRECTION_OOF_ONLY",
+    "primary_full_clip_p99_d7c": {
+      "mean_psnr_delta": 0.22964086484805668,
+      "p10_psnr_delta": 0.0024537244463978423,
+      "worst_psnr_delta": -0.018075797959021145,
+      "regression_le_0p2_count": 0,
+      "bootstrap_ci95_low_vs_hard": 0.19996765545856815
+    }
+  },
+  "v3j_b": {
+    "decision": "V3J_DIRECT_SAFE_CORRECTION_OOF_FAIL_REQUIRE_NEW_INFORMATION_NO_INTERNAL_ROUTER",
+    "dual_pass_heads": [],
+    "confirm_hard_d7c": {
+      "mean_psnr_delta": 0.008634343867902773,
+      "p10_psnr_delta": -0.13134300922241735,
+      "regression_le_0p2_count": 23
+    },
+    "confirm_direct_linear": {
+      "mean_psnr_delta": 0.0571450593688773,
+      "p10_psnr_delta": -0.39221871655873886,
+      "regression_le_0p2_count": 121,
+      "direct_only_severe_count": 108,
+      "median_direct_minus_hard": -0.013117414493120094
+    },
+    "confirm_direct_context": {
+      "mean_psnr_delta": 0.09919925451164367,
+      "p10_psnr_delta": -0.44408343490701085,
+      "regression_le_0p2_count": 121,
+      "direct_only_severe_count": 111,
+      "median_direct_minus_hard": -0.0005164039851521807
+    }
+  },
+  "bottleneck": "deployable_tail_safety_not_bounded_actuator_or_mean_signal",
+  "next_action": "stop_v3j; require new tail-risk information before any model-promotion route"
+}

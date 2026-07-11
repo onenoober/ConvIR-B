@@ -1,0 +1,20 @@
+{
+  "canary_authorized": false,
+  "forbidden": [
+    "current-signal FAM2 router/distillation",
+    "v3d continuation",
+    "v3f-B scalar ranker training",
+    "backbone/FAM producer unfreeze",
+    "locked Haze4K test",
+    "changing teacher/bound/gate after route-confirm metrics"
+  ],
+  "locked_test_authorized": false,
+  "not_a_continuation_of": [
+    "v3d",
+    "v3f-B",
+    "v3i router route"
+  ],
+  "route_id": "haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711",
+  "route_identity": "new no-training diagnostic audit until gates authorize more",
+  "training_authorized_initially": false
+}

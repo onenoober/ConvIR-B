@@ -1,0 +1,17 @@
+{
+  "bound_calib_count": 600,
+  "bound_calib_key": "v3j_controller_calib",
+  "bound_percentile": 99.0,
+  "bound_sample_stride": 8,
+  "bound_teacher_policy": "CC_MIN4_FROM_OPEN_TOP_0.5",
+  "channel_abs_sample_counts": [
+    17685600,
+    17685600,
+    17685600
+  ],
+  "channel_bounds_rgb": [
+    0.00459820032119751,
+    0.004700765013694763,
+    0.0047370195388793945
+  ]
+}
