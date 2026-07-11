@@ -1,6 +1,6 @@
 # v3m Blockwise Counterfactual Advantage
 
-Status: `A1_SMOKE_PASS_FORMAL_OOF_ONLY`.
+Status: `A1_PASS_A2_OOF_CALIBRATION_AUDIT_ONLY`.
 
 Route card:
 `experience_docx/experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3m-blockwise-counterfactual-advantage.md`
@@ -79,3 +79,10 @@ exactly and wrote the expected 40,000 cloud-only block records. Its compact
 summary, replay CSV, signal CSV, and source manifest are retained under
 `a1_smoke32_r2/`; the raw block table is cloud-only. Decision:
 `V3M_A1_SMOKE_REPLAY_PASS_AUTHORIZE_FORMAL_OOF_ONLY`.
+
+## A1 Formal Closeout
+
+`v3m_a1_formal_closeout.md` records exact dual-operator replay and the formal
+signal gate. Direct-step energy and D7c score passed; the next and only
+authorized stage is A2 OOF calibration audit. No training or test access is
+authorized.

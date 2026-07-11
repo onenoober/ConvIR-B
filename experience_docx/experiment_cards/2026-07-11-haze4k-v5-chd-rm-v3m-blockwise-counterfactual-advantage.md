@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: `A1_SMOKE_PASS_FORMAL_OOF_ONLY`
+Status: `A1_PASS_A2_OOF_CALIBRATION_AUDIT_ONLY`
 
 Branch: `codex/haze4k-v5-v3m-blockwise-counterfactual-advantage`
 
@@ -142,6 +142,19 @@ Decision:
 
 The only promotion is the exact 1,200-image OOF A1 audit defined in
 `v3m_a1_metric_contract.md`; all other route restrictions remain unchanged.
+
+## A1 Formal Result
+
+Both frozen operators replayed all 1,200 fixed-alpha rows exactly. The
+predeclared direct-step-energy signal passed decisively: grouped image AUROC
+CI95 lows were `0.8522` (`D_ref`) and `0.8516` (`D_rep`), with valid labels in
+over 99.5% of images. D7c score also passed; alpha1 clipping did not. See
+`v3m_a1_formal_closeout.md` for the compact result.
+
+Decision: `V3M_A1_LOCAL_SIGNAL_PASS_AUTHORIZE_A2_OOF_CALIBRATION_AUDIT_ONLY`.
+Only A2 OOF calibration audit is authorized. Training, learned controller,
+route-confirm selection, canary, physics/proxy work, and locked test remain
+blocked.
 
 ## Engineering Deviation
 

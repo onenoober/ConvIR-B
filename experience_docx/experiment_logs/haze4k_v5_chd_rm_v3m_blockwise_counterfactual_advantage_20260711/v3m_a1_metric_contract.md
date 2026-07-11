@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: `SMOKE_PASS_FORMAL_OOF_AUTHORIZED`.
+Status: `COMPLETED_GATE_PASS`.
 
 ## Scope
 
@@ -88,3 +88,10 @@ prefix. `D_ref` and `D_rep` both reproduced fixed `alpha=0.125` exactly with
 maximum difference `0 dB`; the 40,000 block records and four compact output
 artifacts were complete. The smoke has no scientific AUC decision and did not
 select a signal. It authorizes only the formal 1,200-image OOF run.
+
+## Formal Result
+
+All 2,400 fixed-alpha replays were exact. Direct-step energy passed for both
+operators (AUROC CI95 low `0.8522` / `0.8516`); D7c score and fixed score-times-
+energy also passed, while clip exposure did not. The decision is
+`V3M_A1_LOCAL_SIGNAL_PASS_AUTHORIZE_A2_OOF_CALIBRATION_AUDIT_ONLY`.

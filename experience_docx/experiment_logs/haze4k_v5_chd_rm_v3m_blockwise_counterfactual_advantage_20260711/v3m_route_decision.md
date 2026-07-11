@@ -103,3 +103,17 @@ Decision:
 Only the exact 1,200-image formal A1 OOF audit is authorized. It must use the
 same signal set, direction, target, bootstrap, and gate in the existing metric
 contract; no other next stage is implied by this engineering screen.
+
+## A1 Formal Decision
+
+Both frozen operators reproduced all 1,200 fixed-alpha OOF rows exactly.
+Direct-step energy passed the common local-observability gate with grouped
+AUROC CI95 lows `0.8522` and `0.8516`; D7c score and its fixed product also
+passed, while clip exposure failed. This is a strong deployable observability
+result, not a trained controller.
+
+Decision: `V3M_A1_LOCAL_SIGNAL_PASS_AUTHORIZE_A2_OOF_CALIBRATION_AUDIT_ONLY`.
+
+A2 may only perform fold-separated OOF calibration of a fixed signal. No
+learned controller, route-confirm threshold, canary, training, physics/proxy
+policy, or locked-test access is authorized.
