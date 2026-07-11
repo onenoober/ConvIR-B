@@ -13,6 +13,7 @@ import hashlib
 import json
 import math
 import random
+import shutil
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -176,7 +177,7 @@ def operator_agreement(rows):
         if row["split"] != "OOF" or row["policy"] not in COMMON_POLICIES:
             continue
         key = (row["policy"], row["name"])
-        grouped[key][row["operator_label"]] = float(row.get("mean_selected_alpha_mean", "nan"))
+        grouped[key][row["operator_label"]] = float(row.get("selected_alpha_mean", "nan"))
     output = []
     for policy in COMMON_POLICIES:
         pairs = [values for (item_policy, _), values in grouped.items() if item_policy == policy]
@@ -285,7 +286,15 @@ def run(args):
     output_dir = Path(args.output_dir)
     summary_path = output_dir / "v3m_a0_common_action_summary.json"
     if summary_path.exists():
-        raise FileExistsError(f"refusing to overwrite A0 summary: {summary_path}")
+        if not (args.summarize_existing_raw and args.rewrite_compact_summary_from_existing_raw):
+            raise FileExistsError(f"refusing to overwrite A0 summary: {summary_path}")
+        summary_backup = output_dir / "v3m_a0_common_action_summary_pre_operator_agreement_fix.json"
+        agreement_path = output_dir / "v3m_a0_operator_agreement.csv"
+        agreement_backup = output_dir / "v3m_a0_operator_agreement_pre_operator_agreement_fix.csv"
+        if summary_backup.exists() or agreement_backup.exists():
+            raise FileExistsError("refusing a second compact-summary rewrite")
+        shutil.copy2(summary_path, summary_backup)
+        shutil.copy2(agreement_path, agreement_backup)
 
     manifest = read_json(args.fresh_split_manifest)
     train_names = names_from_manifest(manifest, args.train_key, args.max_train_samples)
@@ -414,6 +423,7 @@ def main():
     parser.add_argument("--progress_every", type=int, default=25)
     parser.add_argument("--include_confirm_audit", action="store_true")
     parser.add_argument("--summarize_existing_raw", action="store_true")
+    parser.add_argument("--rewrite_compact_summary_from_existing_raw", action="store_true")
     parser.add_argument("--allow_overwrite", action="store_true")
     args = parser.parse_args()
     if args.d7c_threshold is None:
