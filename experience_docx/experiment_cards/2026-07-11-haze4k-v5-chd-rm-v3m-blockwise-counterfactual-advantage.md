@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: `PREFLIGHT_A1_BLOCK16_LOCAL_OBSERVABILITY_SMOKE_ONLY`
+Status: `A1_SMOKE_PASS_FORMAL_OOF_ONLY`
 
 Branch: `codex/haze4k-v5-v3m-blockwise-counterfactual-advantage`
 
@@ -128,6 +128,20 @@ signals. It uses no learned controller, no threshold selection, no
 route-confirm, and no locked test. A deterministic 32-image OOF replay screen
 must prove `alpha=0.125` reproduction before the 1,200-image OOF audit can
 read its scientific gate.
+
+## A1 Smoke Result
+
+The corrected r2 32-image screen completed on the frozen OOF fold map. Both
+operators reproduced every fixed `alpha=0.125` reference exactly (maximum
+absolute PSNR-delta difference `0 dB`), and the cloud-only block table has
+`40,001` lines including header. The predeclared signal scores were not used
+for selection at this stage.
+
+Decision:
+`V3M_A1_SMOKE_REPLAY_PASS_AUTHORIZE_FORMAL_OOF_ONLY`.
+
+The only promotion is the exact 1,200-image OOF A1 audit defined in
+`v3m_a1_metric_contract.md`; all other route restrictions remain unchanged.
 
 ## Engineering Deviation
 

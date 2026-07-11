@@ -1,0 +1,9 @@
+operator_label,signal,image_count,valid_image_count,valid_image_fraction,oracle_escalate_positive_block_count,oracle_escalate_positive_fraction,mean_image_auroc,mean_image_auroc_ci95_low,mean_image_auroc_ci95_high,auroc_ci95_low_ge_0p56,valid_image_fraction_ge_0p80,local_signal_pair_pass
+D_ref,d7c_score_mean,32,31,0.96875,9177,0.45885,0.7642332426042102,0.7217073524352065,0.8053854713593966,True,True,True
+D_rep,d7c_score_mean,32,31,0.96875,9173,0.45865,0.764581440475561,0.7205896478766696,0.8058768512014428,True,True,True
+D_ref,direct_step_energy,32,31,0.96875,9177,0.45885,0.802378376421204,0.7623208992876026,0.8419780059505616,True,True,True
+D_rep,direct_step_energy,32,31,0.96875,9173,0.45865,0.8017120657430219,0.7590505991437007,0.8427524044071996,True,True,True
+D_ref,d7c_score_times_step_energy,32,31,0.96875,9177,0.45885,0.7963668495729143,0.753211063443333,0.8395178560344202,True,True,True
+D_rep,d7c_score_times_step_energy,32,31,0.96875,9173,0.45865,0.795939240766279,0.7525923781023366,0.8396990161554503,True,True,True
+D_ref,alpha1_clip_fraction,32,31,0.96875,9177,0.45885,0.5284944597967707,0.5133526431808908,0.5454427173876972,False,True,False
+D_rep,alpha1_clip_fraction,32,31,0.96875,9173,0.45865,0.5289888595514445,0.513827532375584,0.5473505020824551,False,True,False

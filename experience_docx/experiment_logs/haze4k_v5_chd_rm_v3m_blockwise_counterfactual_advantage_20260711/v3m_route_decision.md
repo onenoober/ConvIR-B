@@ -89,3 +89,17 @@ the 1,200-image formal audit.
 
 No controller, calibration threshold, route-confirm choice, canary, physics or
 proxy policy, training, or locked-test access is authorized by this preflight.
+
+## A1 Smoke Decision
+
+The corrected r2 screen used the full 1,200-name OOF fold map before selecting
+its first 32 names. All 64 fixed-alpha replay comparisons were exact and its
+cloud-only block table contained 40,000 records. The smoke signal summaries are
+engineering diagnostics only and did not select a candidate.
+
+Decision:
+`V3M_A1_SMOKE_REPLAY_PASS_AUTHORIZE_FORMAL_OOF_ONLY`.
+
+Only the exact 1,200-image formal A1 OOF audit is authorized. It must use the
+same signal set, direction, target, bootstrap, and gate in the existing metric
+contract; no other next stage is implied by this engineering screen.

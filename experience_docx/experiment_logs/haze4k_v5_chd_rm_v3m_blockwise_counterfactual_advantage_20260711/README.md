@@ -1,6 +1,6 @@
 # v3m Blockwise Counterfactual Advantage
 
-Status: `PREFLIGHT_A1_BLOCK16_LOCAL_OBSERVABILITY_SMOKE_ONLY`.
+Status: `A1_SMOKE_PASS_FORMAL_OOF_ONLY`.
 
 Route card:
 `experience_docx/experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3m-blockwise-counterfactual-advantage.md`
@@ -71,3 +71,11 @@ failure, r1 preserved the wrong subset fold map, and
 `run_v3m_a1_smoke32_r2.sh` is the corrected screen. Only its
 explicit pass marker authorizes
 `run_v3m_a1_formal.sh` on all 1,200 OOF images.
+
+## A1 Smoke Result
+
+The corrected r2 smoke reproduced both frozen operators' 32 fixed-alpha rows
+exactly and wrote the expected 40,000 cloud-only block records. Its compact
+summary, replay CSV, signal CSV, and source manifest are retained under
+`a1_smoke32_r2/`; the raw block table is cloud-only. Decision:
+`V3M_A1_SMOKE_REPLAY_PASS_AUTHORIZE_FORMAL_OOF_ONLY`.

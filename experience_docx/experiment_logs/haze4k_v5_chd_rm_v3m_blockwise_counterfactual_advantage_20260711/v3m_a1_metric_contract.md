@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: `CORRECTED_SMOKE_R2_NOT_RUN`.
+Status: `SMOKE_PASS_FORMAL_OOF_AUTHORIZED`.
 
 ## Scope
 
@@ -80,3 +80,11 @@ read. Smoke r1 restored the initialization but still recomputed OOF folds from
 the 32-image subset, which selects different frozen fold heads. Smoke r2 uses
 the exact 1,200-image fold map before taking the deterministic 32-image prefix.
 Each failed smoke output remains cloud-only as `FAILED_ENGINEERING`.
+
+## Smoke r2 Result
+
+Smoke r2 used the full 1,200-name fold assignment before selecting its 32-name
+prefix. `D_ref` and `D_rep` both reproduced fixed `alpha=0.125` exactly with
+maximum difference `0 dB`; the 40,000 block records and four compact output
+artifacts were complete. The smoke has no scientific AUC decision and did not
+select a signal. It authorizes only the formal 1,200-image OOF run.
