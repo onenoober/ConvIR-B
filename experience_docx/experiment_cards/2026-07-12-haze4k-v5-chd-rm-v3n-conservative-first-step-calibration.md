@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `PLANNED_A0_LABEL_ONLY_PREFLIGHT`
+Status: `A0_FAIL_STOP_NO_REPLAY`
 
 Branch: `codex/haze4k-v5-v3n-conservative-first-step-calibration`
 
@@ -68,3 +68,22 @@ Fail decision:
 
 No A0 result can authorize formal replay, route-confirm, canary, locked test,
 training, learned ranker, physics/proxy continuation, or deployment.
+
+## A0 Result
+
+The corrected r1 A0 label-only preflight completed on `convir-4090`. The fixed
+99th-percentile train-negative threshold was `2.189333099522628e-05` for every
+operator/fold. Under the preregistered strict `score > threshold` rule, no
+held-out blocks were selected for either frozen operator:
+
+| Operator | Selected coverage | Positive recall | Negative false rate | Pass |
+| --- | ---: | ---: | ---: | --- |
+| `D_ref` | `0.0` | `0.0` | `0.0` | no |
+| `D_rep` | `0.0` | `0.0` | `0.0` | no |
+
+Decision:
+`V3N_A0_CONSERVATIVE_LABEL_PREFLIGHT_FAIL_STOP_NO_REPLAY`.
+
+This conservative direct-step-energy first-step rule has no usable coverage
+under the preregistered false-intervention protection. Do not loosen to `>=`,
+lower the quantile, or replay a policy under this v3n route.

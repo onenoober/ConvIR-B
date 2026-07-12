@@ -1,0 +1,4 @@
+v3n_a0_start 2026-07-12T0900+08:00 code_sha=dd73be9084014f746d289f29c981159a380a97f6
+v3n_a0_r0_engineering_failed 2026-07-12T0900+08:00 AttributeError max_fold_negative_false_rate_per_fold typo no_scientific_result
+v3n_a0_r1_start 2026-07-12T0905+08:00 code_sha=a76318f25afbb61dce52d700d3a79f3f8143a6dd
+v3n_a0_r1_done 2026-07-12T0905+08:00

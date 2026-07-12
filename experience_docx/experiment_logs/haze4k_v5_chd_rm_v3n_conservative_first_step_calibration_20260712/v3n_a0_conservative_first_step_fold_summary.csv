@@ -1,0 +1,11 @@
+operator_label,holdout_fold,threshold_direct_step_energy,train_negative_count,heldout_total_blocks,heldout_positive_blocks,heldout_negative_blocks,selected_blocks,selected_positive_blocks,selected_negative_blocks,selected_oracle_action_0,selected_oracle_action_1,selected_oracle_action_2,selected_oracle_action_3,selected_oracle_action_4,selected_coverage,positive_recall,negative_false_rate,selected_precision,selected_match_alpha_0p25_rate,selected_over_escalate_rate,selected_under_escalate_rate
+D_ref,0,2.189333099522628e-05,636351,218425,59516,158909,0,0,0,0,0,0,0,0,0.0,0.0,0.0,nan,nan,nan,nan
+D_ref,1,2.189333099522628e-05,638383,214975,58098,156877,0,0,0,0,0,0,0,0,0.0,0.0,0.0,nan,nan,nan,nan
+D_ref,2,2.189333099522628e-05,636391,217850,58981,158869,0,0,0,0,0,0,0,0,0.0,0.0,0.0,nan,nan,nan,nan
+D_ref,3,2.189333099522628e-05,637128,218425,60293,158132,0,0,0,0,0,0,0,0,0.0,0.0,0.0,nan,nan,nan,nan
+D_ref,4,2.189333099522628e-05,632787,219000,56527,162473,0,0,0,0,0,0,0,0,0.0,0.0,0.0,nan,nan,nan,nan
+D_rep,0,2.189333099522628e-05,636264,218425,59247,159178,0,0,0,0,0,0,0,0,0.0,0.0,0.0,nan,nan,nan,nan
+D_rep,1,2.189333099522628e-05,638637,214975,58170,156805,0,0,0,0,0,0,0,0,0.0,0.0,0.0,nan,nan,nan,nan
+D_rep,2,2.189333099522628e-05,637122,217850,59530,158320,0,0,0,0,0,0,0,0,0.0,0.0,0.0,nan,nan,nan,nan
+D_rep,3,2.189333099522628e-05,637184,218425,60167,158258,0,0,0,0,0,0,0,0,0.0,0.0,0.0,nan,nan,nan,nan
+D_rep,4,2.189333099522628e-05,632561,219000,56119,162881,0,0,0,0,0,0,0,0,0.0,0.0,0.0,nan,nan,nan,nan

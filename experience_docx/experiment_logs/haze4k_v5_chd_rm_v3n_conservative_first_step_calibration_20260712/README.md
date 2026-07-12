@@ -1,6 +1,6 @@
 # v3n Conservative First-Step Calibration
 
-Status: `PLANNED_A0_LABEL_ONLY_PREFLIGHT`
+Status: `A0_FAIL_STOP_NO_REPLAY`
 
 Route card:
 `experience_docx/experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3n-conservative-first-step-calibration.md`
@@ -17,3 +17,22 @@ search, or physics/proxy continuation is authorized in A0.
 ## A0 Contract
 
 See `v3n_a0_metric_contract.md`.
+
+## A0 Closeout
+
+`v3n_a0_conservative_first_step_closeout.md` records the completed label-only
+preflight. R0 failed engineering because the script referenced a misspelled
+gate argument; r1 fixed the typo and completed without training, policy replay,
+route-confirm, canary, or locked-test access.
+
+The fixed 99th-percentile train-negative threshold equaled
+`2.189333099522628e-05` for every operator/fold. With the preregistered strict
+`score > threshold` rule, both operators selected zero held-out blocks:
+selected coverage `0.0`, positive recall `0.0`, negative false rate `0.0`.
+
+Decision:
+`V3N_A0_CONSERVATIVE_LABEL_PREFLIGHT_FAIL_STOP_NO_REPLAY`.
+
+No A1 replay smoke, formal replay, route-confirm, canary, locked test,
+training, learned ranker, physics/proxy continuation, or deployment is
+authorized from this route.
