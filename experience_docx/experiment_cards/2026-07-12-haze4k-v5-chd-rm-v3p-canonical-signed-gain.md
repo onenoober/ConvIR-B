@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `A2_PASS_B0_PHYSICS_FORWARD_CONTRACT_PLANNED`
+Status: `B0_SMOKE_GATE_FAIL_PHYSICS_ROUTE_STOP`
 
 Evidence root:
 `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/`
@@ -135,6 +135,16 @@ numerical `PASS` does not authorize policy replay, training, or promotion.
   Both operators have zero severe fixed-baseline regressions and zero selected
   harmful SSE. The direct hard-mosaic and additive SSE forms agree within
   `2.274e-13`.
+- B0 scalar-A smoke has a structural pass but a numerical forward-contract
+  fail. All 32 train-derived OOF triplets map and decode exactly as frozen,
+  including the deliberate exclusion of `train/haze/.DS_Store`; `A` remains in
+  `[0.526, 0.919]`. However, its sRGB forward RMSE has p95 `0.123837`, p99
+  `0.148307`, and maximum `0.159017`, far beyond the preregistered `8/255 =
+  0.031373` tolerance. Linear-space p99 is worse at `0.215065`.
+- Read-only failure diagnostics do not support a semantic repair: `1-t`,
+  per-channel A, and both filename-implied `exp(-beta * depth)` alternatives
+  all increase residual error. The archived B0 diagnosis records the exact
+  comparisons without copying image or per-pixel data.
 
 ## Current Boundary
 
@@ -152,6 +162,14 @@ diagnostic, never as an after-the-fact alternative B1 semantic. B0 failure
 means the mapping, color space, resize, transmission serialization, or data
 package is inconsistent; it stops the physics-estimator route rather than
 authorizing `t_hat/A_hat` fitting.
+
+The B0 smoke closeout is
+`V3P_B0_SCALAR_A_SMOKE_FAIL_STOP_PHYSICS_ROUTE`. It authorizes nothing:
+do not run B0 formal, B1 privileged ceiling, `t_hat/A_hat` fitting, selector
+training, policy replay, canary, or locked test. Any later candidate-pair
+assessor must be a separately authorized fresh route; repairing B0 would first
+require externally authoritative Haze4K generation provenance, not a relaxed
+residual tolerance or a new transform sweep.
 
 The A2 oracle does not fit a selector, tune a threshold, replay a learned
 policy, alter the action space, access a canary or locked test split, or

@@ -1,0 +1,2 @@
+shape,image_count,srgb_forward_rmse_mean,srgb_forward_rmse_p95,srgb_forward_rmse_p99,srgb_forward_rmse_max
+400x400,32,0.077502379770376,0.12383658959677062,0.14830679358462362,0.1590173587244191
