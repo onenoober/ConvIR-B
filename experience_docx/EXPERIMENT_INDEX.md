@@ -49,6 +49,11 @@ Key v3m facts:
   (`+0.0828 dB`), but retention versus block16 oracle is only about `0.232`,
   paired lift p10 is about `-0.22` to `-0.23 dB`, severe counts rise from `0`
   to `148`/`146`, and hard counts rise from `0` to `39`/`41`.
+- corrected A3 post-fail decomposition confirms the failure is stable across
+  the two frozen operators: severe-overlap Jaccard `0.9090909`, hard-overlap
+  Jaccard `0.9047619`, policy-lift correlation `0.9930474`, selected-alpha
+  correlation `0.9962972`; severe images still retain positive block16-oracle
+  headroom on average, while aggressive calibration bins over-escalate heavily.
 
 The bottleneck is now safe utility calibration of aggressive local actions.
 Action granularity and label observability alone are not enough. Any next route
@@ -263,7 +268,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v17_rc_expert_mix_20260605/` | 21 | v1.7 3000-row train-derived A0/UDP feature table, alpha-grid oracle and fixed-shrink summaries, OOF gain/risk predictability, risk-coverage curves, fold stability, train-heldout confirmation, per-image policy tables, launcher, logs, and status. |
 | `experiment_logs/haze4k_v18_execution_queue_20260606/` | completed | v1.8 post-diagnosis queue card, README, cloud launchers, monitor/progress/repair transcripts, corrected table-only router policy outputs, data/domain preflight outputs, Q5 domain-adaptation inventory/policy diagnostics, repaired per-seed BiDPFM1 fusion-neighbor train/eval evidence, and final multi-seed aggregate. |
 | `experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/` | 29 | v3l compact evidence: A0 deterministic operator replay closeout and manifests, A1 oracle granularity summaries/gates, B physics metadata and privileged transmission-risk summaries, run scripts, logs, status, and route decision. Cloud-only weights and per-image/raw tables are excluded. |
-| `experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/` | compact | v3m compact evidence: A0a common-action oracle, A0b-r1 dense/continuous cross-audit, A1 local observability, A2 fold-separated label calibration, and A3 frozen policy replay fail-stop. Cloud-only raw block/per-image tables are excluded. |
+| `experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/` | compact | v3m compact evidence: A0a common-action oracle, A0b-r1 dense/continuous cross-audit, A1 local observability, A2 fold-separated label calibration, A3 frozen policy replay fail-stop, and corrected A3 failure decomposition. Cloud-only raw block/per-image tables are excluded. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |

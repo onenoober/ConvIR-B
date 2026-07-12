@@ -126,3 +126,35 @@ Decision:
 
 No route-confirm audit, canary, locked test, training, learned controller,
 ranker, physics/proxy continuation, or policy deployment is authorized.
+
+## A3 Failure-Decomposition Diagnostic
+
+`v3m_a3_failure_decomposition_closeout.md` records a corrected r1
+diagnostic-only post-fail audit over the already completed A3/A2 cloud rows.
+It does not train, tune thresholds, rerun inference, replay a new policy, use
+route-confirm, touch canary, or touch locked test. The first r0 diagnostic used
+the wrong tail definition (`policy_lift_vs_fixed` instead of actual
+`policy_psnr_delta`) and is recorded only as a metric-mismatched operational
+deviation; r1 matches the A3 closeout severe/hard counts.
+
+Key r1 facts:
+
+- cross-operator tail failures are highly stable: severe overlap `140` of union
+  `154` (Jaccard `0.9090909`), hard overlap `38` of union `42` (Jaccard
+  `0.9047619`);
+- policy-lift and selected-alpha correlations across the two frozen operators
+  are `0.9930474` and `0.9962972`;
+- severe images still retain positive block16-oracle headroom on average
+  (`+0.2754318 dB` for `D_ref`, `+0.2682955 dB` for `D_rep`);
+- A2 calibration action confusion shows the current direct-step-energy bins are
+  unsafe for aggressive actions: selected `alpha=0.25`/`0.5` match the held-out
+  oracle action only about `6%`/`9%`, with roughly balanced over- and
+  under-escalation; selected `alpha=1.0` still over-escalates about `42%`.
+
+Decision:
+`V3M_A3_FAILURE_DECOMPOSITION_DIAGNOSTIC_ONLY_NO_AUTHORIZATION`.
+
+The diagnostic sharpens the bottleneck to safe utility calibration / action
+semantics under aggressive local escalation. It does not authorize
+route-confirm, canary, locked-test access, controller training, learned ranker,
+physics/proxy continuation, or policy deployment.

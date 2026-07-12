@@ -66,3 +66,18 @@ from only 32 names. Frozen OOF heads are keyed by folds assigned over the full
 1,200-name manifest, so the subset selected the wrong fold head and still
 failed fixed-alpha replay. Smoke r2 builds the full fold map first, then takes
 the 32-name prefix and writes a third, separate cloud-only output root.
+
+## 2026-07-12 A3 failure-decomposition r0 metric mismatch
+
+The first post-fail A3 diagnostic script completed successfully but reported
+severe/hard counts using `policy_lift_vs_fixed` tail thresholds. The canonical
+A3 closeout defines severe/hard for policy/fixed columns using actual
+`policy_psnr_delta` and `fixed_psnr_delta` relative to A0. The r0 diagnostic
+therefore undercounted severe/hard and is not a valid diagnostic result.
+
+The r0 compact outputs and launcher were moved on cloud to
+`metric_mismatch_r0_a3_failure_decomposition_20260712T0819/`. The corrected r1
+script keeps the same raw input hashes, uses `policy_psnr_delta`/`fixed_psnr_delta`
+for severe/hard counts, reproduces the A3 closeout counts (`148/39` and
+`146/41` policy severe/hard, fixed `0/0`), and is the only synced diagnostic
+result.

@@ -209,6 +209,28 @@ Decision:
 No route-confirm audit, canary, locked test, training, learned controller,
 ranker, physics/proxy continuation, or policy deployment is authorized.
 
+## A3 Failure-Decomposition Diagnostic
+
+A corrected r1 post-fail diagnostic read only the completed A3 replay rows and
+A2 calibration bins; it did not rerun inference, replay a new policy, tune a
+threshold, use route-confirm, train, touch canary, or touch locked test. The r0
+diagnostic used paired lift for severe/hard counts and is retained only as a
+metric-mismatched operational deviation.
+
+The r1 audit confirms the A3 tail is stable and structural, not an operator
+fluke: D_ref/D_rep severe overlap was `140` of union `154`, hard overlap was
+`38` of union `42`, policy-lift correlation was `0.9930474`, and selected-alpha
+correlation was `0.9962972`. Severe images still had positive block16-oracle
+headroom on average (`+0.2754318 dB` / `+0.2682955 dB`), so the blocker is not
+absence of oracle value. The A2 direct-step-energy calibration bins also mix
+oracle labels heavily for aggressive actions: selected `alpha=0.25`/`0.5`
+matched held-out oracle action only about `6%`/`9%`, and selected `alpha=1.0`
+over-escalated about `42%`.
+
+Decision:
+`V3M_A3_FAILURE_DECOMPOSITION_DIAGNOSTIC_ONLY_NO_AUTHORIZATION`.
+This does not change the A3 fail-stop or authorize any next stage.
+
 ## Engineering Deviation
 
 The first A0a launcher completed all frozen replay segments and wrote its

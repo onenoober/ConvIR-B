@@ -1,10 +1,11 @@
 # FAM/FAM2 Family Summary
 
-Date: 2026-07-11
+Date: 2026-07-12
 
 Status: closed for unchanged deployable FAM routing, current v3h/v3i signal
 sets, v3j tiny direct bounded residual heads, v3k provisional micro-alpha, and
-v3l transmission-only physics risk after v3l.
+v3l transmission-only physics risk after v3m A3 showed direct-step-energy
+block policy replay has unsafe tails.
 
 ## Sources
 
@@ -22,6 +23,7 @@ v3l transmission-only physics risk after v3l.
   - `../experiment_cards/haze4k-chd-rm-v3j-bounded-safe-correction-audit.md`
   - `../experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3k-tail-risk-observability.md`
   - `../experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3l-safe-step-escalation-physics-audit.md`
+  - `../experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3m-blockwise-counterfactual-advantage.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_fam_modres_scout_stop5_20260531/`
   - `../experiment_logs/haze4k_fam2_modres_stop20_20260531/`
@@ -34,6 +36,7 @@ v3l transmission-only physics risk after v3l.
   - `../experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/`
   - `../experiment_logs/haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711/`
   - `../experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/`
+  - `../experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/`
 
 ## Established Facts
 
@@ -50,6 +53,7 @@ v3l transmission-only physics risk after v3l.
 | CHD-RM v3j bounded safe-correction audit | Primary bounded output-residual teacher projection was safe (`PRIMARY_FULL_CLIP_P99_D7C` mean `+0.229641 dB`, p10 `+0.002454 dB`, zero severe), but deployable direct linear/context heads caused `121` route-confirm severe regressions each despite positive mean gains. | `V3J_DIRECT_SAFE_CORRECTION_OOF_FAIL_REQUIRE_NEW_INFORMATION_NO_INTERNAL_ROUTER`. |
 | CHD-RM v3k tail-risk observability | Corrected the harmful full-step boundary to `alpha* = 0.5` and showed direct heads mix wrong-direction with harmful overshoot. `context alpha=0.125` was tail-safe on grouped OOF and historical open holdout, but reconstruction mismatch and missing new sealed split made the conclusion provisional. | `V3K_PROVISIONAL_MICRO_ALPHA_SAFE_STEP_SUPPORTED_NO_CANARY_NO_NEW_SEALED_SPLIT`. |
 | CHD-RM v3l safe-step escalation and physics audit | Frozen context operators replayed exactly and oracle image/block/pixel step-size policies had large zero-severe upside, but privileged transmission-only features failed the direct-severe OOF AUC gate (`~0.635`/`~0.631` vs `0.65`). | `V3L_B_PRIVILEGED_TRANSMISSION_RISK_WEAK_STOP_NO_PHYSICS_POLICY`. |
+| CHD-RM v3m blockwise counterfactual advantage | Common-action block16 oracle value and direct-step-energy label observability are real, but actual frozen policy replay retained only about `23%` of block16 oracle lift and created unsafe tails. Corrected post-fail decomposition shows severe/hard failures are highly stable across the two frozen operators and aggressive A2 bins over-escalate heavily. | `V3M_A3_FROZEN_POLICY_REPLAY_FAIL_STOP_NO_ROUTE_CONFIRM`; diagnostic `V3M_A3_FAILURE_DECOMPOSITION_DIAGNOSTIC_ONLY_NO_AUTHORIZATION`. |
 
 ## Family Verdict
 
@@ -74,7 +78,12 @@ teacher, but deployable tiny direct residual heads create unsafe tails on both
 OOF and route-confirm. v3k/v3l sharpened that into a step-size observability
 problem: a tiny `alpha=0.125` step is tail-safer, and oracle step selection has
 large zero-severe upside, but raw transmission metadata cannot identify
-direct-severe risk strongly enough to become a policy.
+direct-severe risk strongly enough to become a policy. v3m then showed that
+common-action block16 oracle value and direct-step-energy label observability
+are not sufficient: fold-separated label calibration produced positive mean
+PSNR but unsafe image-level tails, with corrected post-fail diagnostics showing
+stable cross-operator severe/hard failures and heavy over-escalation in
+aggressive calibration bins.
 
 The family remains closed for unchanged deployable FAM routing, direct
 router/ranker/distillation from the current signal sets, tiny direct bounded
@@ -106,6 +115,9 @@ new sealed-split replay gates with explicit false-intervention protection.
   validation split and deterministic saved operator artifacts.
 - Do not build a physics-risk policy from raw Haze4K transmission alone; v3l
   privileged transmission failed the direct-severe OOF AUC gate.
+- Do not treat v3m A1/A2 label observability as policy safety; v3m A3 replay
+  failed tail gates and the corrected decomposition shows aggressive
+  calibration bins mix oracle actions too heavily.
 
 ## Reopen Condition
 
@@ -114,5 +126,5 @@ information, target semantics, a different controller source, joint
 correction-confidence design, or bounded experts first pass clean OOF plus new
 sealed-split separability/replay gates, including explicit false-intervention
 protection for strong-reference/easy images. Reusing the current v3h/v3i signal
-sets, the v3j tiny direct-residual formulation, or v3l raw-transmission-only
-risk features is not sufficient.
+sets, the v3j tiny direct-residual formulation, v3l raw-transmission-only risk
+features, or v3m direct-step-energy mean-action calibration is not sufficient.

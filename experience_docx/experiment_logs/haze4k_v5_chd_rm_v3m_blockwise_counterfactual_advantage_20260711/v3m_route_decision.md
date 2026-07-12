@@ -117,3 +117,57 @@ Decision: `V3M_A1_LOCAL_SIGNAL_PASS_AUTHORIZE_A2_OOF_CALIBRATION_AUDIT_ONLY`.
 A2 may only perform fold-separated OOF calibration of a fixed signal. No
 learned controller, route-confirm threshold, canary, training, physics/proxy
 policy, or locked-test access is authorized.
+
+## A2 Decision
+
+A2 used only the fixed A1 primary signal, `direct_step_energy`, with
+fold-separated OOF calibration. The monotone calibration rule collapsed from
+16 target bins to 9 actual bins because of duplicate calibration-fold score
+quantiles, but passed the label-only gates by a wide margin for both frozen
+operators. Ordinal MAE improvement CI95 lows were `0.6734292` and `0.6719839`;
+escalation AUROC CI95 lows were `0.8518716` and `0.8514065`; AP-lift CI95 lows
+were `0.3123022` and `0.3117141`.
+
+Decision:
+`V3M_A2_OOF_CALIBRATION_PASS_AUTHORIZE_A3_FROZEN_POLICY_REPLAY_ONLY`.
+
+A2 is label-only and does not claim actual PSNR policy utility. Only A3 frozen
+policy replay is authorized. No learned controller, route-confirm threshold,
+canary, training, physics/proxy policy, or locked-test access is authorized.
+
+## A3 Decision
+
+A3 replayed the frozen A2 calibrated block16 policy on all 1,200 train-derived
+OOF images for both frozen operators. Fixed `alpha=0.125` replay was exact. The
+policy had positive mean lift over fixed alpha (`+0.0828431 dB` and
+`+0.0826054 dB`) but failed the preregistered utility gate: retention versus
+block16 oracle was only about `0.232`, paired lift p10 was about `-0.22` to
+`-0.23 dB`, severe counts rose from `0` to `148`/`146`, and hard counts rose
+from `0` to `39`/`41`.
+
+Decision:
+`V3M_A3_FROZEN_POLICY_REPLAY_FAIL_STOP_NO_ROUTE_CONFIRM`.
+
+No route-confirm audit, canary, locked-test access, controller training,
+learned ranker, physics/proxy continuation, or policy deployment is authorized.
+
+## A3 Failure-Decomposition Diagnostic Decision
+
+A corrected r1 post-fail diagnostic read only the completed A3 replay rows and
+A2 calibration bins. It did not train, tune thresholds, rerun inference, replay
+a new policy, use route-confirm, touch canary, or touch locked test. The r0
+diagnostic used paired lift instead of actual policy PSNR delta for severe/hard
+counts and is retained only as a metric-mismatched operational deviation.
+
+R1 confirms that the tail failure is stable across frozen operators: severe
+overlap was `140` of union `154`, hard overlap was `38` of union `42`, policy
+lift correlation was `0.9930474`, selected-alpha correlation was `0.9962972`,
+and oracle-lift correlation was `0.9970668`. Severe images still had positive
+block16-oracle headroom on average, while aggressive A2 calibration bins mixed
+oracle labels heavily.
+
+Decision:
+`V3M_A3_FAILURE_DECOMPOSITION_DIAGNOSTIC_ONLY_NO_AUTHORIZATION`.
+
+This sharpens the bottleneck to safe utility calibration / action semantics
+under aggressive local escalation, but it authorizes no next stage.
