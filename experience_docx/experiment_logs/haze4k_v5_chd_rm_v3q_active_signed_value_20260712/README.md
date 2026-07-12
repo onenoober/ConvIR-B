@@ -1,6 +1,6 @@
 # v3q Active Signed-Value Evidence
 
-Status: `A1_SMOKE_PASS_FORMAL_AUTHORIZED`
+Status: `A1_FORMAL_FAIL_STOP_LEARNED_SIGNED_SCORING`
 
 ## A0a Smoke
 
@@ -45,8 +45,8 @@ maximum energy plateau, harmful rates remained `29.53%` / `30.13%`.
 
 ## Next Authorization
 
-Only `v3q-A0b-formal` is authorized. No linear probe, sidecar, score threshold,
-policy replay, canary, or locked-test action is authorized yet.
+The v3q learned signed-scoring route is terminally stopped. No A2, calibration,
+threshold, policy replay, sidecar, canary, or locked-test action is authorized.
 
 ## A0b Smoke
 
@@ -97,6 +97,19 @@ The grouped, per-image-weighted A1 structural smoke completed at
 feature-table hash and ran all five pre-registered controls across five frozen
 outer folds for both operators. Its compact outputs contain 10 configuration
 rows and 50 fold rows; the numerical values are not a scientific gate.
+
+## A1 Formal And Terminal Result
+
+The 1,200-image-per-operator grouped OOF probe completed at
+`2026-07-12T21:50:36+08:00` with
+`V3Q_A1_FAIL_STOP_LEARNED_SIGNED_SCORING`.
+
+Full weighted AUC was `.62689` / `.63287` for D_ref/D_rep, compared with
+energy-only `.57652` / `.58101`. Its unsigned-only control was `.62578` /
+`.63212`, leaving an effectively zero signed margin. The within-image shuffled
+label control retained `.61958` / `.62432`, while metadata reached `.54079` /
+`.54365`. This identifies unsigned/image-level context as the apparent source
+of predictability, not an eligible block-level signed signal.
 
 ## Artifact Boundary
 

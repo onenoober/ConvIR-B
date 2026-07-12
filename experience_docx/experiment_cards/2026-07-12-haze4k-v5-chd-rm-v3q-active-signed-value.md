@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `A1_SMOKE_PASS_FORMAL_AUTHORIZED`
+Status: `A1_FORMAL_FAIL_STOP_LEARNED_SIGNED_SCORING`
 
 ## Route Identity
 
@@ -362,3 +362,24 @@ non-gray active rows; all five pre-registered configurations generated five
 outer-fold summaries (50 fold rows total). The frozen A0b smoke-table SHA,
 A0b formal closeout/schema hashes, grouped-fold contract, and compact-only
 artifact boundary passed. Its numerical scores are not a scientific gate.
+
+## A1 Formal Result And Terminal Decision
+
+The full grouped-OOF probe completed at `2026-07-12T21:50:36+08:00` with
+`V3Q_A1_FAIL_STOP_LEARNED_SIGNED_SCORING`.
+
+| Operator | Full | Energy-only | Unsigned-only | Within-image shuffle | Metadata control |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| D_ref weighted AUC | .62689 | .57652 | .62578 | .61958 | .54079 |
+| D_rep weighted AUC | .63287 | .58101 | .63212 | .62432 | .54365 |
+
+The full probe is only `.00111` / `.00075` above the unsigned-only control,
+far below the predeclared `.02` signed-information margin. Within-image label
+shuffling retains AUC `.61958` / `.62432`, while metadata also exceeds the
+`.53` negative-control ceiling. Predictability is therefore dominated by
+unsigned and image-level context rather than a usable block-level signed signal.
+
+This is terminal for learned signed scoring from the A0b 24-feature schema. Do
+not continue with A2, calibration, threshold search, policy replay, sidecar
+training, canary, or locked-test access. Reopening requires a new route with a
+separately justified representation and independent label/control contract.
