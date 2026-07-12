@@ -18,7 +18,7 @@ from pathlib import Path
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "1.0.0"
+SERVER_VERSION = "1.1.0"
 REMOTE_HOST = "convir-4090"
 REMOTE_BASE = "/sda/home/wangyuxin/ConvIR-B"
 REMOTE_REPOS = f"{REMOTE_BASE}/repos"
@@ -141,6 +141,16 @@ def run_local(args, timeout):
     if result.returncode != 0:
         raise ToolError(output or f"local operation failed with rc={result.returncode}")
     return output
+
+
+def inspect_local(args, timeout=30):
+    """Run a fixed local inspection command without treating a finding as a tool failure."""
+    try:
+        result = subprocess.run(args, text=True, capture_output=True, timeout=timeout, check=False)
+    except subprocess.TimeoutExpired:
+        return {"ok": False, "returncode": None, "output": f"timed out after {timeout}s"}
+    output = (result.stdout + result.stderr).strip()
+    return {"ok": result.returncode == 0, "returncode": result.returncode, "output": output[:8192]}
 
 
 def run_remote_body(body, timeout=45):
@@ -293,6 +303,7 @@ def tool_evidence_fetch(arguments):
     destination_dir.mkdir(parents=True, exist_ok=True)
     fetched = []
     skipped = []
+    pending = []
     for name in names:
         destination = (destination_dir / name).resolve()
         try:
@@ -305,13 +316,71 @@ def tool_evidence_fetch(arguments):
                 raise ToolError(f"refusing to overwrite hash-mismatched local evidence: {destination}")
             skipped.append(name)
             continue
-        source = f"{REMOTE_HOST}:{context['evidence_dir']}/{name}"
-        run_local(["scp", source, str(destination)], timeout=60)
-        if sha256_file(destination) != expected:
-            destination.unlink(missing_ok=True)
-            raise ToolError(f"downloaded evidence hash mismatch: {name}")
-        fetched.append(name)
-    return text_result(json.dumps({"fetched": fetched, "already_verified": skipped, "destination": str(destination_dir)}, indent=2))
+        pending.append((name, destination, expected))
+    if pending:
+        transfer_timeout = min(
+            180,
+            max(60, 30 + sum(records[name]["bytes"] for name, _, _ in pending) // (256 * 1024)),
+        )
+        with tempfile.TemporaryDirectory(prefix=".convir-evidence-", dir=destination_dir) as staging:
+            staging_dir = Path(staging)
+            sources = [f"{REMOTE_HOST}:{context['evidence_dir']}/{name}" for name, _, _ in pending]
+            run_local(["scp", *sources, str(staging_dir)], timeout=transfer_timeout)
+            for name, _, expected in pending:
+                staged = staging_dir / name
+                if not staged.is_file() or sha256_file(staged) != expected:
+                    raise ToolError(f"downloaded evidence hash mismatch: {name}")
+            for name, destination, expected in pending:
+                try:
+                    os.link(staging_dir / name, destination)
+                except FileExistsError as exc:
+                    raise ToolError(f"refusing to overwrite newly created local evidence: {destination}") from exc
+                if sha256_file(destination) != expected:
+                    destination.unlink(missing_ok=True)
+                    raise ToolError(f"local evidence hash mismatch after transfer: {name}")
+                fetched.append(name)
+    return text_result(json.dumps({"fetched": fetched, "already_verified": skipped, "destination": str(destination_dir), "transfer": "single_scp"}, indent=2))
+
+
+def tool_git_evidence_status(arguments):
+    route_id = require_token(arguments.get("route_id"), "route_id")
+    local_repo = validate_local_repo(arguments.get("local_repo"))
+    prefix = ["git", "-C", str(local_repo)]
+    branch = run_local([*prefix, "branch", "--show-current"], timeout=15)
+    head = run_local([*prefix, "rev-parse", "HEAD"], timeout=15)
+    local_main = run_local([*prefix, "rev-parse", "--verify", "github/main"], timeout=15)
+    remote_main_raw = run_local([*prefix, "ls-remote", "github", "refs/heads/main"], timeout=30)
+    remote_main_fields = remote_main_raw.split()
+    if len(remote_main_fields) != 2 or not SHA40.fullmatch(remote_main_fields[0]):
+        raise ToolError("github main could not be resolved through git ls-remote")
+    remote_main = remote_main_fields[0]
+    status = run_local([*prefix, "status", "--short"], timeout=20)
+    diff_check = inspect_local([*prefix, "diff", "--check"], timeout=20)
+    cached_diff_check = inspect_local([*prefix, "diff", "--cached", "--check"], timeout=20)
+    ahead = behind = None
+    if local_main == remote_main:
+        counts = run_local([*prefix, "rev-list", "--left-right", "--count", "HEAD...github/main"], timeout=20).split()
+        if len(counts) == 2 and all(item.isdigit() for item in counts):
+            ahead, behind = map(int, counts)
+    route_evidence_prefix = f"experience_docx/experiment_logs/{route_id}/"
+    changed_paths = status.splitlines()[:100] if status else []
+    route_evidence_changes = [line for line in changed_paths if route_evidence_prefix in line]
+    return text_result(json.dumps({
+        "local_repo": str(local_repo),
+        "branch": branch,
+        "head": head,
+        "github_main_local": local_main,
+        "github_main_remote": remote_main,
+        "github_main_ref_fresh": local_main == remote_main,
+        "ahead_of_github_main": ahead,
+        "behind_github_main": behind,
+        "worktree_clean": not status,
+        "changed_paths": changed_paths,
+        "route_evidence_changes": route_evidence_changes,
+        "diff_check": diff_check,
+        "cached_diff_check": cached_diff_check,
+        "git_mutations_performed": False,
+    }, indent=2))
 
 
 TOOLS = {
@@ -372,6 +441,16 @@ TOOLS = {
             "additionalProperties": False,
         },
         "handler": tool_evidence_fetch,
+    },
+    "convir_git_evidence_status": {
+        "description": "Read-only local/GitHub audit for a named route evidence worktree. It compares the local github/main ref with git ls-remote, reports clean state and diff checks, and never fetches, stages, commits, or pushes.",
+        "inputSchema": {
+            "type": "object",
+            "required": ["route_id", "local_repo"],
+            "properties": {"route_id": {"type": "string"}, "local_repo": {"type": "string"}},
+            "additionalProperties": False,
+        },
+        "handler": tool_git_evidence_status,
     },
 }
 

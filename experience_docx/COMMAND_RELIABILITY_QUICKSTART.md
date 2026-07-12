@@ -17,6 +17,9 @@ enough.
 - Runtime host: `convir-4090`.
 - Cloud Python:
   `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
+- `convir-4090` SSH uses key-only noninteractive transport, a 15-second
+  connection timeout, 10-second keepalives with two missed probes, and a
+  10-minute per-host control connection.
 - Local WSL is for editing and syntax/static checks only.
 - Every monitor, sync, or audit command should print a visible `*_OK` or
   `*_FAILED` marker, or write an explicit status file.

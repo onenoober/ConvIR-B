@@ -26,11 +26,14 @@ fragment. Current rules remain canonical in:
 | `convir_route_launch` | launch one tracked runner in a new tmux session | cloud runtime only; runner still enforces stage-specific gates |
 | `convir_route_monitor` | bounded `status.txt` tail, tmux state, closeout names | read-only |
 | `convir_evidence_manifest` | compact top-level evidence names, sizes, hashes | read-only |
-| `convir_evidence_fetch` | explicit compact-file allowlist, remote/local SHA-256 verification | copies into a named local Git worktree only; never stages, commits, pushes, or overwrites a mismatched file |
+| `convir_evidence_fetch` | explicit compact-file allowlist, one SCP transfer, remote/local SHA-256 verification | copies into a named local Git worktree only; never stages, commits, pushes, or overwrites a mismatched file |
+| `convir_git_evidence_status` | local evidence worktree, GitHub `main` ref freshness, and whitespace audit | read-only; uses `git ls-remote`, never fetches, stages, commits, or pushes |
 
 The server rejects arbitrary SSH execution, arbitrary remote/local paths,
 `cloud_only` artifacts, raw files, files over 1 MiB, Git mutations, sudo, and
-destructive operations. It does not access a canary or locked test by itself;
+destructive operations. Evidence fetch first verifies the exact remote manifest,
+then transfers the approved files together into a local staging directory before
+verifying each local hash. It does not access a canary or locked test by itself;
 the route runner and typed closeout remain mandatory.
 
 ## Persistent Operations Worktree
@@ -72,6 +75,8 @@ private-key material, or tokens in this TOML entry.
 3. Use `convir_route_monitor` for routine read-only state.
 4. Review `convir_evidence_manifest`, then call `convir_evidence_fetch` only
    with an explicit compact-file allowlist.
-5. Perform Git staging, route-branch commits, and terminal `main` sync through
+5. Use `convir_git_evidence_status` before staging to inspect local changes,
+   whitespace checks, and whether the local `github/main` ref matches GitHub.
+6. Perform Git staging, route-branch commits, and terminal `main` sync through
    the written evidence protocol; the MCP intentionally does not automate
    those judgement-bearing steps.
