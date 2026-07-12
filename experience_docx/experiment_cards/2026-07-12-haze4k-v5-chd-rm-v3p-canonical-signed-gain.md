@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `A1R_PASS_A2_CONSTRAINED_G1_ORACLE_PLANNED`
+Status: `A2_PASS_B0_PHYSICS_FORWARD_CONTRACT_PLANNED`
 
 Evidence root:
 `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/`
@@ -113,6 +113,34 @@ numerical `PASS` does not authorize policy replay, training, or promotion.
 - `PASS`: `V3P_A0_CANONICAL_NUMERICAL_PASS_AUTHORIZE_A1_RECONSTRUCTION_ONLY`.
 - `INCONCLUSIVE`: `V3P_A0_CANONICAL_NUMERICAL_INCONCLUSIVE_REPAIR_ONLY`.
 - `FAIL`: `V3P_A0_CANONICAL_NUMERICAL_HARD_FAIL_STOP`.
+
+## Completed Evidence
+
+- A0 canonical reconstruction passed on both operators: all 2,400 OOF images
+  and 2,177,350 raw block-table rows have exact coverage, fixed `.125` replay
+  deltas below `1e-6 dB`, no non-gray G1 sign flip, and normalized numerical
+  errors below the preregistered envelope. Its closeout authorizes only A1.
+- The first A1 reader is retained as an engineering-invalid result: it used
+  left-open/right-closed bins and failed 859/2,400 action-count
+  reconstructions. A1r corrected only this source-semantic defect to match
+  `searchsorted(..., side="right")`, then matched all 2,400 image action
+  counts and showed that selection, rather than hard-block rendering, is the
+  active bottleneck.
+- A2 passed as a read-only constrained G1 ceiling. With the fixed 25% cap, the
+  LCB95 lift versus uniform `.125` is `+0.045132 dB` (`D_ref`) and
+  `+0.045011 dB` (`D_rep`); versus uniform `.25` it is `+0.021617 dB` and
+  `+0.021320 dB`. Selected-pixel-coverage LCB95 is `17.539%` and `17.549%`.
+  Both operators have zero severe fixed-baseline regressions and zero selected
+  harmful SSE. The direct hard-mosaic and additive SSE forms agree within
+  `2.274e-13`.
+
+## Current Boundary
+
+`V3P_A2_CONSTRAINED_G1_ORACLE_PASS_AUTHORIZE_B0_PHYSICS_FORWARD_CONTRACT_ONLY`
+does not authorize selector fitting, threshold tuning, policy replay, canary,
+or locked-test access. B0 must first define and test a target-free
+physics-forward observability contract against the fixed canonical G1 labels;
+only a typed B0 result may name any later continuation.
 
 The A2 oracle does not fit a selector, tune a threshold, replay a learned
 policy, alter the action space, access a canary or locked test split, or

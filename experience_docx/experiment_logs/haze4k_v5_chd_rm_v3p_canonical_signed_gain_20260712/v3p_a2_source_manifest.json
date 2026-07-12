@@ -1,0 +1,6 @@
+{
+  "a1_closeout_sha256": "f4ab127c6dea1fa7f23c5b8481887d522bb32bddbb89e83a7019a532789fe829",
+  "canonical_blocks_sha256": "52e6cd8829d37750cfb1e9e2fec39e6ac5cead2e324dbc353df93e5263e89765",
+  "raw_per_image_cloud_only": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/a2_constrained_g1_oracle/v3p_a2_per_image_cloud_only.csv",
+  "route_id": "haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712"
+}
