@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `A0_PASS_A1R_ENGINEERING_REPAIR_PLANNED`
+Status: `A1R_PASS_A2_CONSTRAINED_G1_ORACLE_PLANNED`
 
 Evidence root:
 `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/`
@@ -83,6 +83,9 @@ Selected profile: `audit/evaluation` with the smallest decisive sequence:
 2. 32-image integrity smoke;
 3. 1,200-image formal reconstruction only if smoke explicitly authorizes it.
 4. read-only A1 reconstruction only if formal A0 explicitly authorizes it.
+5. constrained G1 oracle only if the repaired A1r reconstruction explicitly
+   authorizes it. This stage is a fixed, read-only ceiling measurement, not a
+   deployed selector or policy replay.
 
 The tracked runner is
 `experience_docx/tools/run_v3p_a0_canonical_signed_gain.sh`. Raw block/image
@@ -98,6 +101,7 @@ only compact JSON/CSV/README evidence after a terminal stage marker.
 | A0 formal | 1,200 OOF images per operator | the same structural and numerical checks for every candidate, with worst-case candidate/image/block family enforcement | A1 reconstruction and G1 decomposition only |
 | A1 reconstruction | 2,400 paired v3p/v3m image rows and all canonical blocks | reconstruct frozen A2 bin actions; require exact per-image selected-action counts, full pairing, and fixed replay `<=1e-6 dB`; decompose action-path and renderer SSE without a new replay | A2 constrained G1 oracle only |
 | A1r engineering repair | same frozen rows and bins | A1's first reader used left-open/right-closed bins, while v3m A3 used `searchsorted(..., side="right")`; re-run only that source-semantic correction under a new run id and require exact action counts | A2 constrained G1 oracle only |
+| A2 constrained G1 oracle | 1,200 OOF images per operator | begin from uniform `.125`; select only canonical non-gray beneficial `.125 -> .25` blocks in deterministic descending-G1 order (then block coordinates), with a fixed maximum 25% block cap and the hard non-overlap block executor; require per-operator LCB95 lift over `.125` `> .02 dB`, over uniform `.25` `> .01 dB`, selected-pixel-coverage LCB95 `> .01`, zero severe `<= -.2 dB` fixed-baseline regressions, and zero selected harmful SSE | B0 physics forward contract only |
 
 Structural mismatch, coverage failure, fixed replay mismatch, or a non-gray
 signed-gain flip is `FAIL`. Envelope exceedance with intact structure and no
@@ -109,6 +113,13 @@ numerical `PASS` does not authorize policy replay, training, or promotion.
 - `PASS`: `V3P_A0_CANONICAL_NUMERICAL_PASS_AUTHORIZE_A1_RECONSTRUCTION_ONLY`.
 - `INCONCLUSIVE`: `V3P_A0_CANONICAL_NUMERICAL_INCONCLUSIVE_REPAIR_ONLY`.
 - `FAIL`: `V3P_A0_CANONICAL_NUMERICAL_HARD_FAIL_STOP`.
+
+The A2 oracle does not fit a selector, tune a threshold, replay a learned
+policy, alter the action space, access a canary or locked test split, or
+authorize any of those actions. It exists to decide whether the canonical
+first-step signal has enough value beyond both uniform baselines to justify a
+physics-forward contract. A failed A2 closes the adaptive-controller path at
+the uniform frontier.
 
 At any intermediate stage, compact evidence is committed to the route branch.
 GitHub `main` is updated only at a terminal decision or explicitly recorded

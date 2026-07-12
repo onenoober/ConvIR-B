@@ -62,6 +62,14 @@ case "$MODE" in
     PROGRESS=0
     CONTRACT_ARG=()
     ;;
+  a2_constrained_g1_oracle)
+    STAGE=v3p-A2-constrained-G1-oracle
+    OUT=$RUN_ROOT/a2_constrained_g1_oracle
+    TAG=v3p_a2
+    MAX_TRAIN=0
+    PROGRESS=0
+    CONTRACT_ARG=()
+    ;;
   *)
     echo "V3P_A0_INVALID_MODE mode=$MODE"
     exit 2
@@ -72,6 +80,55 @@ test "$(git -C "$REMOTE_REPO" branch --show-current)" = "$BRANCH"
 test "$(git -C "$REMOTE_REPO" rev-parse HEAD)" = "$EXPECTED_ROUTE_COMMIT"
 test -z "$(git -C "$REMOTE_REPO" status --porcelain)"
 test -x "$PY"
+
+if [ "$MODE" = a2_constrained_g1_oracle ]; then
+  test -s "$RUN_ROOT/a0_formal/v3p_a0_block_candidate_losses_cloud_only.csv"
+  test -s "$EVID_STAGE/v3p_a1r_closeout.json"
+  test ! -e "$OUT"
+  "$PY" - "$EVID_STAGE/v3p_a1r_closeout.json" <<'PY'
+import json
+import sys
+value = json.load(open(sys.argv[1], encoding="utf-8"))
+if value["decision"] != "V3P_A1_RECONSTRUCTION_PASS_AUTHORIZE_A2_CONSTRAINED_G1_ORACLE_ONLY":
+    raise SystemExit("v3p A2 requires the repaired A1 reconstruction pass")
+if value.get("locked_test_touched") or value.get("canary_touched") or value.get("training_occurred"):
+    raise SystemExit("v3p A2 requires a read-only A1 closeout")
+PY
+  mkdir -p "$RUN_ROOT" "$EVID_STAGE"
+  LOG=$RUN_ROOT/${TAG}_${STAMP}.log
+  echo "stage_start route=$ROUTE_ID stage=$STAGE run=$TAG time=$(date --iso-8601=seconds)" | tee -a "$STATUS"
+  echo "stage_paths repo=$REMOTE_REPO run_root=$RUN_ROOT evid_stage=$EVID_STAGE log=$LOG" | tee -a "$STATUS"
+  set +e
+  PYTHONUNBUFFERED=1 "$PY" "$REMOTE_REPO/experience_docx/tools/chd_rm_v3p_a2_constrained_g1_oracle.py" \
+    --canonical_blocks "$RUN_ROOT/a0_formal/v3p_a0_block_candidate_losses_cloud_only.csv" \
+    --a1_closeout "$EVID_STAGE/v3p_a1r_closeout.json" \
+    --output_dir "$OUT" --run_tag "$TAG" > "$LOG" 2>&1 &
+  pid=$!
+  (
+    while kill -0 "$pid" 2>/dev/null; do
+      echo "stage_heartbeat route=$ROUTE_ID stage=$STAGE pid=$pid time=$(date --iso-8601=seconds)" >> "$STATUS"
+      sleep 60
+    done
+  ) &
+  heartbeat_pid=$!
+  wait "$pid"
+  rc=$?
+  kill "$heartbeat_pid" 2>/dev/null
+  wait "$heartbeat_pid" 2>/dev/null
+  set -e
+  echo "stage_done route=$ROUTE_ID stage=$STAGE rc=$rc time=$(date --iso-8601=seconds)" | tee -a "$STATUS"
+  if [ "$rc" -ne 0 ]; then
+    echo "V3P_A2_CONSTRAINED_G1_ORACLE_FAILED" | tee -a "$STATUS"
+    exit "$rc"
+  fi
+  cp "$OUT/${TAG}_closeout.json" "$EVID_STAGE/${TAG}_closeout.json"
+  cp "$OUT/${TAG}_summary.json" "$EVID_STAGE/${TAG}_summary.json"
+  cp "$OUT/${TAG}_source_manifest.json" "$EVID_STAGE/${TAG}_source_manifest.json"
+  cp "$OUT/${TAG}_by_fold.csv" "$EVID_STAGE/${TAG}_by_fold.csv"
+  echo "V3P_A2_CONSTRAINED_G1_ORACLE_OK" | tee -a "$STATUS"
+  exit 0
+fi
+
 test -s "$BASE/checkpoints/official/Haze4K/haze4k-base.pkl"
 test -s "$BASE/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-fam2modres-control-e5frome1-seed3407-20260710/Training-Results/Final.pkl"
 test -s "$V3J_EVID/fresh_route_confirm_split_manifest.json"
