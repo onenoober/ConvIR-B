@@ -370,8 +370,9 @@ def summarize_image(result, old_losses, element_count):
 
 
 def run(args):
-    if args.run_mode not in {"smoke", "formal"}:
-        raise ValueError("run_mode must be smoke or formal")
+    is_smoke = args.run_mode.startswith("smoke")
+    if not is_smoke and args.run_mode != "formal":
+        raise ValueError("run_mode must be smoke* or formal")
     if args.block_size != BLOCK_SIZE or args.grid_steps != GRID_STEPS:
         raise ValueError("v3r-A0 requires fixed block16 and 65-point grids")
     if sorted(args.operator_labels) != sorted(OPERATORS):
@@ -388,7 +389,7 @@ def run(args):
     if source_head != args.expected_v3p_source_commit:
         raise RuntimeError(f"pinned v3p source commit mismatch: {source_head}")
 
-    expected_images = args.smoke_sample_count if args.run_mode == "smoke" else args.formal_sample_count
+    expected_images = args.smoke_sample_count if is_smoke else args.formal_sample_count
     if args.max_train_samples != expected_images:
         raise ValueError("run mode and image count are inconsistent")
     output_dir = Path(args.output_dir)
@@ -451,7 +452,7 @@ def run(args):
     source_count = 0
     source_reader = None
     source_by_key = None
-    if args.run_mode == "smoke":
+    if is_smoke:
         selected_names = set(names)
         source_by_key = {}
         with Path(args.canonical_blocks).open(newline="", encoding="utf-8") as source_handle:
@@ -712,10 +713,10 @@ def run(args):
         "route_id": ROUTE_ID,
         "run_id": args.run_tag,
         "stage": f"v3r-A0-{args.run_mode}",
-        "state": state if args.run_mode == "formal" else "COMPLETED_GATE_PASS",
-        "gate_type": "structural_integrity" if args.run_mode == "smoke" else "scientific_utility",
-        "decision": "V3R_A0_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY" if args.run_mode == "smoke" else decision,
-        "authorizes": "v3r-A0 formal only" if args.run_mode == "smoke" else authorizes,
+        "state": state if not is_smoke else "COMPLETED_GATE_PASS",
+        "gate_type": "structural_integrity" if is_smoke else "scientific_utility",
+        "decision": "V3R_A0_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY" if is_smoke else decision,
+        "authorizes": "v3r-A0 formal only" if is_smoke else authorizes,
         "metric_contract": "v3r route card A0 privileged rendered repair geometry",
         "reason": "pinned v3p reconstruction with anchor-preserving fixed-grid scale, channel, direction-line, and direct-clean ceilings",
         "source_rows_consumed": source_count,

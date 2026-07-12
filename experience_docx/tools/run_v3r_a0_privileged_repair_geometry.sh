@@ -44,6 +44,14 @@ case "$MODE" in
     SOURCE_ROWS=40000
     PROGRESS=8
     ;;
+  smoke_r2)
+    STAGE=v3r-A0-smoke-r2
+    OUT=$RUN_ROOT/a0_smoke32_r2
+    TAG=v3r_a0_smoke32_r2
+    MAX_TRAIN=32
+    SOURCE_ROWS=40000
+    PROGRESS=8
+    ;;
   formal)
     STAGE=v3r-A0-formal
     OUT=$RUN_ROOT/a0_formal
