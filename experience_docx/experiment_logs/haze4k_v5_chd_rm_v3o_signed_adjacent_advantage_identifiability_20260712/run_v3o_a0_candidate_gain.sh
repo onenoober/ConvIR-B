@@ -67,7 +67,6 @@ if value["decision"] != "V3O_A0_SMOKE_REPLAY_INTEGRITY_PASS_AUTHORIZE_FORMAL_OOF
     raise SystemExit("formal A0 requires a passing v3o-A0 smoke integrity gate")
 PY
 fi
-tmux has-session -t v3o_a0 2>/dev/null && { echo "V3O_A0_SESSION_ACTIVE" | tee -a "$STATUS"; exit 3; } || true
 nvidia-smi -i "$GPU" --query-gpu=index,memory.free,utilization.gpu --format=csv,noheader
 
 set +e
