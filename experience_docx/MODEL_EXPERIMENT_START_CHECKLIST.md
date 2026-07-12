@@ -84,9 +84,11 @@ Otherwise establish a matched baseline on the authorized cloud runtime before
 making an improvement claim.
 
 For ConvIR-B, record at minimum the official checkpoint path and hash, official
-reference PSNR/SSIM, reproduced PSNR/SSIM, verified sample count, latency, peak
-GPU memory, and any explained reproduction gap. Raw outputs and large
-per-sample tables remain on cloud.
+reference PSNR/SSIM, reproduced aggregate PSNR/SSIM, exact matched data/metric
+view, verified sample count, explicit runtime, and any explained reproduction
+gap. Add latency, peak GPU memory, per-sample outputs, or images only when the
+route's written cost, mechanism, failure-diagnosis, or promotion gate needs
+them. Raw outputs and large per-sample tables remain on cloud.
 
 ## 4. Keep The Route Bundle Small
 

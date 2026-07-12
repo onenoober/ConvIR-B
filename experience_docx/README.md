@@ -97,6 +97,9 @@ reusable or too large for the route card.
 - Current workflow/governance rules come from GitHub `main`. Copies of these
   rule files inside older route branches, local worktrees, and cloud workspaces
   are historical snapshots and must not override current `main` rules.
+- A directory name or local branch label such as `main`, `github-main`, or
+  `main-sync` is not proof of authority. Resolve the `github/main` remote ref and
+  record its exact commit before using current rules.
 - `convir-4090` is the runtime/raw-output source.
 - Local WSL is editing, syntax/static-check, sync staging, and local-safety
   inspection only.
@@ -126,5 +129,9 @@ do not decide research status.
 
 ConvIR-B routes still require a trustworthy baseline contract before a model
 change can make an improvement claim. Run evaluation and runtime validation only
-on the authorized cloud runtime, record checkpoint path/hash and matched metric
-settings, and explain any reproduction gap before promotion.
+on the authorized cloud runtime. Record only what is needed to reconstruct the
+aggregate claim: checkpoint path/hash, code and explicit runtime, dataset/split
+and verified sample count, preprocessing/metric settings, aggregate result, and
+any reproduction gap. Add per-sample outputs, images, latency, memory, or visual
+labels only when a written mechanism, failure-diagnosis, cost, or promotion gate
+needs them.

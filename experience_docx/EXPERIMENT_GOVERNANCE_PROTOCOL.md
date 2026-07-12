@@ -72,19 +72,23 @@ Before changing the model, establish the baseline:
 
 1. verify dataset layout, split policy, pairing, decoding, and preprocessing;
 2. verify metric implementation and evaluation script behavior;
-3. verify checkpoint loading, saving, export, and resume behavior;
+3. verify checkpoint loading and only the saving, export, or resume behaviors
+   the route will actually use;
 4. reproduce the expected baseline or record why reproduction differs;
-5. run a minimal train/eval smoke if training will be modified;
-6. create the first matched reference table for later gates.
+5. if training will be modified, verify the relevant entrypoint under the first
+   authorized cloud stage rather than adding a separate generic baseline stage;
+6. retain the smallest matched aggregate reference needed by later gates.
 
 If the baseline is not verified, no improvement claim is valid yet.
 
 For ConvIR-B, "verified baseline" means evaluating the official pretrained
 checkpoint on the authorized runtime host before any from-scratch or
-modified-model training. Record the checkpoint path and hash, official
-reference PSNR/SSIM, runtime PSNR/SSIM, latency, peak GPU memory, output image
-path, and a short quality note. A reproduction gap is acceptable only after the
-likely cause is written down.
+modified-model training. Record the checkpoint path and hash, code and explicit
+runtime, matched dataset/split/preprocessing/metric view, verified sample count,
+official reference PSNR/SSIM, and reproduced aggregate PSNR/SSIM. Record
+latency, memory, per-sample outputs, images, or quality labels only when a
+written cost, mechanism, failure-diagnosis, or promotion gate needs them. A
+reproduction gap is acceptable only after the likely cause is written down.
 
 ## Most Valuable Attempt Standard
 

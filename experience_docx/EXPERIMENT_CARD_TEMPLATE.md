@@ -35,14 +35,14 @@ Status: <draft | preflight | authorized | running | stopped | completed>
 - Reference entrypoints that must remain stable:
 - Checkpoint/export/resume contract:
 
-## ConvIR-B Baseline Defaults
+## Optional Legacy CSD Reference
 
-Use this block only when the route actually targets the ConvIR-B baseline
-contract. Fill unknown runtime values after downloading the checkpoint and
-before authorizing a route. Do not invent checkpoint hashes, sample counts,
-latency, memory, or budget points.
+Delete this block unless the route is a CSD desnowing route. These are historical
+CSD references, not defaults for Haze4K or another task. Fill unknown runtime
+values after downloading the checkpoint and before authorizing a route. Do not
+invent checkpoint hashes, sample counts, latency, memory, or budget points.
 
-| Field | Default or required value |
+| Field | Historical CSD reference or route requirement |
 | --- | --- |
 | Target baseline | ConvIR-B from official/repository pretrained checkpoint |
 | Baseline checkpoint runtime path | `<CKPT_ROOT>/desnowing/<CSD_CONVIR_B_CHECKPOINT>.pkl` |
@@ -58,17 +58,17 @@ latency, memory, or budget points.
 | Training batch size | 8 unless hardware forces a written change |
 | Random seed policy | route-defined; cite matched predecessor/noise rationale before promotion |
 | Primary metric | PSNR |
-| Secondary metric | SSIM, per-image PSNR delta, latency, peak GPU memory |
+| Secondary metric | SSIM; add per-image PSNR delta, latency, or peak GPU memory only when a written gate needs it |
 | Minimum meaningful final gain | route-defined; legacy CSD replacement reference is `+0.10 dB` PSNR with SSIM delta >= `-0.001` |
 | Maximum FLOPs increase | `+5%` over ConvIR-B |
 | Maximum average latency increase | `+10%` over matched runtime ConvIR-B baseline when claiming drop-in replacement |
 | Maximum peak memory increase | `+10%` over matched runtime ConvIR-B baseline and must fit current GPU |
 | Strong-case regression threshold | route-defined; legacy CSD replacement final reference is <= 1% |
-| Worst-case regression threshold | no unexplained image with PSNR delta <= `-0.20 dB` |
+| Worst-case regression threshold | route-defined; any historical `-0.20 dB` line requires a cited matching CSD contract |
 | Failure default | failed gate becomes diagnostic only; next step must target the failed mechanism, preservation, or cost cause |
 
-Use `CONVIR_B_EXECUTION_GUIDE.md` as the source for task variants such as SRRS,
-Snow100K, deraining, dehazing, and motion deblurring.
+For SRRS, Snow100K, deraining, dehazing, motion deblurring, or Haze4K, remove
+this block and use the matched task contract in `CONVIR_B_EXECUTION_GUIDE.md`.
 
 ## Most Valuable Attempt
 

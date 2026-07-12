@@ -18,14 +18,16 @@ syntax/static-check only.
 
 ## Required Order
 
-1. Download the official pretrained model for each target task from the root
-   `README.md` model links.
+1. Resolve the official pretrained model for the target task from the root
+   `README.md` model links; reuse an existing verified asset when its hash and
+   identity match instead of downloading it again.
 2. Record the checkpoint source, runtime path, file size, and sha256 hash.
 3. Run the repository evaluation command for the target task and dataset on the
    authorized runtime host.
-4. Record baseline PSNR, SSIM when available, per-image PSNR, average
-   latency, peak GPU memory, output path, and qualitative artifact notes.
-5. Compare local results with the official table in the root `README.md`.
+4. Record the exact data/metric view, verified sample count, and aggregate PSNR
+   and SSIM when available.
+5. Compare the reproduced cloud result with the official table in the root
+   `README.md`.
 6. Explain any reproduction gap before starting a model-change route.
 7. Optimize for best result under a fixed budget, not for an unconstrained
    "best score".
@@ -127,10 +129,13 @@ claim:
 - explicit Python plus material framework/runtime and GPU identity;
 - command line and working directory;
 - PSNR and SSIM when the task code reports them;
-- latency/memory only when later gates use them;
-- raw output and per-sample table paths on cloud when generated;
 - difference from the official table;
 - whether the gap is accepted, explained, or blocking.
+
+Add latency/memory only when a later cost gate uses them. Add raw-output,
+per-sample-table, image, or visual-review paths only when they are generated for
+a written mechanism, failure-diagnosis, safety, or promotion gate. These raw
+artifacts stay on cloud.
 
 ## Replacement Budget Contract
 

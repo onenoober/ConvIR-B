@@ -56,9 +56,33 @@ The older flow tended to create detours in five ways:
   mitigation is to sync at terminal decisions, user pauses/stops, or explicit
   major handoff milestones.
 
+## Three-Endpoint Verification
+
+The 2026-07-12 post-change audit checked all three endpoints without launching
+an experiment:
+
+- GitHub `main` resolved to `567e6ba14edb8b3b4dbca9965923ebe78fdddca9`
+  before this follow-up cleanup; its router and L2 ownership were internally
+  consistent.
+- The primary local WSL worktree was intentionally treated as dirty staging. Its
+  automatically loaded `AGENTS.md` still contained the longer pre-cleanup
+  workflow and was aligned after this audit; unrelated local experiment files
+  were left untouched.
+- `convir-4090` had the required explicit Python plus separate `repos/` and
+  `runs/` roots, and no active tmux session. It also retained many historical
+  route workspaces and rule snapshots. Those remain reproduction material, not
+  current governance sources.
+
+This audit also found and removed one cross-document overconstraint: baseline
+sections still required per-image, visual, latency, and memory evidence for
+every route despite the new minimum-evidence rule. They are now conditional on
+a written mechanism, failure-diagnosis, cost, safety, or promotion gate. The
+generic card now labels CSD-specific values as historical CSD references so
+Haze4K cannot inherit them by default.
+
 ## Verdict
 
-The optimized workflow should be materially less绕弯路 than the older process
+The optimized workflow should be materially less indirect than the older process
 because it keeps the hard constraints on identity, authority, data view, gate
 source, locked-test protection, and reproducible closeout, while removing fixed
 stage ladders, duplicated documentation, broad default analysis, and
