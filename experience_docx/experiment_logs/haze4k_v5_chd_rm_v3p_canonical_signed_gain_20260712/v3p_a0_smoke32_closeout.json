@@ -1,0 +1,63 @@
+{
+  "atol_sse": 1e-12,
+  "authorizes": "v3p-A0 formal 1200-image OOF canonical reconstruction only",
+  "canary_touched": false,
+  "decision": "V3P_A0_SMOKE_CANONICAL_NUMERICAL_PASS_AUTHORIZE_FORMAL_OOF_ONLY",
+  "fixed_alpha_replay_tolerance_db": 1e-06,
+  "gate_type": "numerical_equivalence",
+  "integrity_rows": [
+    {
+      "block_count": 20000,
+      "coverage_shapes": {
+        "400x400": {
+          "block_count": 625,
+          "coverage_max": 1,
+          "coverage_min": 1,
+          "coverage_sum": 160000,
+          "height": 400,
+          "width": 400
+        }
+      },
+      "fixed_alpha_max_abs_psnr_delta_diff_db": 5.791177528635671e-07,
+      "fixed_replay_pass": true,
+      "image_count": 32,
+      "max_normalized_numeric_error": 0.000220293546205552,
+      "non_gray_signed_gain_flips": 0,
+      "numerical_envelope_pass": true,
+      "operator_label": "D_ref",
+      "seed": 3407,
+      "signed_gain_stability_pass": true
+    },
+    {
+      "block_count": 20000,
+      "coverage_shapes": {
+        "400x400": {
+          "block_count": 625,
+          "coverage_max": 1,
+          "coverage_min": 1,
+          "coverage_sum": 160000,
+          "height": 400,
+          "width": 400
+        }
+      },
+      "fixed_alpha_max_abs_psnr_delta_diff_db": 3.8790535938915127e-07,
+      "fixed_replay_pass": true,
+      "image_count": 32,
+      "max_normalized_numeric_error": 0.0002183810734999411,
+      "non_gray_signed_gain_flips": 0,
+      "numerical_envelope_pass": true,
+      "operator_label": "D_rep",
+      "seed": 3408,
+      "signed_gain_stability_pass": true
+    }
+  ],
+  "locked_test_touched": false,
+  "metric_contract": "route card canonical SSE section",
+  "reason": "canonical block SSE, full-image high-precision reference, GPU float64 cross-check, coverage audit, and non-gray signed-gain stability",
+  "route_id": "haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712",
+  "rtol": 1e-12,
+  "run_id": "v3p_a0_smoke32",
+  "stage": "v3p-A0-smoke",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": false
+}
