@@ -21,13 +21,14 @@ decision says otherwise.
 
 ## Current CHD-RM v5 Route State
 
-As of the v3o A0 smoke closeout on 2026-07-12, the current CHD-RM decision is
-`V3O_A0_SMOKE_REPLAY_INTEGRITY_PASS_AUTHORIZE_FORMAL_OOF_ONLY`. The exact
-1,200-image candidate-SSE formal audit is the sole new authorization. No policy
-replay, route-confirm audit, canary expansion, locked-test access, controller
-training, learned ranker, physics/proxy continuation, current-signal FAM2
-router/distillation, direct-residual continuation, v4/RARM expansion,
-neighbor/FAM1 route, backbone unfreeze, or policy deployment is authorized.
+As of the v3o formal A0 closeout on 2026-07-12, the current CHD-RM decision is
+`V3O_A0_CANDIDATE_SSE_REPLAY_INTEGRITY_FAIL_STOP`. The 1,200-image
+candidate-SSE audit did not meet its fixed aggregation-integrity gate, so no further v3o
+stage is authorized. No policy replay, route-confirm audit, canary expansion,
+locked-test access, controller training, learned ranker, physics/proxy
+continuation, current-signal FAM2 router/distillation, direct-residual
+continuation, v4/RARM expansion, neighbor/FAM1 route, backbone unfreeze, or
+policy deployment is authorized.
 
 v3m followed v3l by normalizing the action ladder across image/block/pixel
 oracles, then testing local observability, fold-separated label calibration,
@@ -60,11 +61,12 @@ Key v3m facts:
   percentile train-negative `direct_step_energy` threshold. It failed before
   replay because the threshold saturated at `2.189333099522628e-05` in every
   operator/fold and selected zero held-out blocks for both operators.
-- v3o smoke then reproduced fixed `alpha=.125` exactly on 32 OOF images per
-  frozen operator and reconstructed candidate image MSE from block SSE within
-  `6.07e-11` (`D_ref`) and `7.56e-11` (`D_rep`). This is a measurement-integrity
-  pass, not policy evidence; it authorizes only the same candidate-SSE audit on
-  1,200 grouped OOF images.
+- v3o smoke reproduced fixed `alpha=.125` exactly on 32 OOF images per frozen
+  operator, but its 1,200-image formal audit later reached candidate-MSE
+  aggregation maxima `2.839408504325125e-10` (`D_ref`) and
+  `3.528073042047275e-10` (`D_rep`), above the preregistered `1e-10` gate.
+  Fixed-alpha replay stayed exact, but the measurement contract failed; this
+  does not authorize tolerance relaxation, A1, or policy evidence.
 
 The bottleneck is now stronger than v3m alone: action granularity, local label
 observability, and a simple conservative false-intervention threshold on
@@ -282,7 +284,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/` | 29 | v3l compact evidence: A0 deterministic operator replay closeout and manifests, A1 oracle granularity summaries/gates, B physics metadata and privileged transmission-risk summaries, run scripts, logs, status, and route decision. Cloud-only weights and per-image/raw tables are excluded. |
 | `experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/` | compact | v3m compact evidence: A0a common-action oracle, A0b-r1 dense/continuous cross-audit, A1 local observability, A2 fold-separated label calibration, A3 frozen policy replay fail-stop, and corrected A3 failure decomposition. Cloud-only raw block/per-image tables are excluded. |
 | `experiment_logs/haze4k_v5_chd_rm_v3n_conservative_first_step_calibration_20260712/` | compact | v3n compact evidence: conservative first-step label-only preflight using fixed 99th-percentile train-negative `direct_step_energy` threshold. The rule selected zero held-out blocks and stopped with no replay. |
-| `experiment_logs/haze4k_v5_chd_rm_v3o_signed_adjacent_advantage_identifiability_20260712/` | compact | v3o compact evidence: A0 32-image candidate-SSE replay-integrity smoke passed for both frozen operators; only the formal 1,200-image candidate-SSE audit is authorized. Cloud-only raw candidate-loss and per-image tables are excluded. |
+| `experiment_logs/haze4k_v5_chd_rm_v3o_signed_adjacent_advantage_identifiability_20260712/` | compact | v3o compact evidence: A0 smoke passed, then 1,200-image formal candidate-SSE aggregation exceeded the fixed integrity gate and closed the route. Cloud-only raw candidate-loss and per-image tables are excluded. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |

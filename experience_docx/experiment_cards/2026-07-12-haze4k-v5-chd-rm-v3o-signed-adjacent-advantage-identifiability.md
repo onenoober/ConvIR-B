@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `COMPLETED_GATE_PASS_A0_SMOKE_FORMAL_A0_ONLY`
+Status: `COMPLETED_GATE_FAIL_A0_FORMAL_REPLAY_INTEGRITY`
 
 Branch: `codex/haze4k-v5-v3o-signed-adjacent-advantage-identifiability`
 
@@ -79,6 +79,16 @@ and `7.561563202841681e-11` for `D_rep`, below `1e-10`. The source manifest
 records no training, canary, or locked-test access. This authorizes formal A0
 only; it does not authorize A1 or any policy, training, canary, route-confirm,
 or locked-test action.
+
+## A0 Formal Closeout
+
+Formal A0 completed on 1,200 grouped OOF images per frozen operator and stopped
+with `V3O_A0_CANDIDATE_SSE_REPLAY_INTEGRITY_FAIL_STOP`. Fixed `alpha=0.125`
+replay remained exact at `0.0 dB`, but the maximum direct-versus-block-aggregated
+candidate MSE differences were `2.839408504325125e-10` (`D_ref`) and
+`3.528073042047275e-10` (`D_rep`), exceeding the preregistered `1e-10` gate.
+The route may not loosen that threshold post hoc. A1, any policy replay,
+training, canary, route-confirm, and locked-test action are unauthorized.
 
 ## Archive Rule
 

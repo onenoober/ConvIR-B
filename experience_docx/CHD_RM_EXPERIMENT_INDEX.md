@@ -2,14 +2,14 @@
 
 Date: 2026-07-12
 
-Status: v3o A0 smoke passed fixed-candidate replay integrity on 32 OOF images
-per frozen operator. The only current authorization is its exact 1,200-image
-formal candidate-SSE audit; no policy replay, route-confirm audit, canary
-expansion, locked-test access, controller training, learned ranker, or policy
-deployment is authorized. v3m showed that block16 common-action oracle value
-and deployable local label observability are real, but the frozen A2 calibrated
-policy converts them into unsafe image-level tails. v3n then tested stricter
-`.125 -> .25` false-intervention semantics and selected zero held-out blocks.
+Status: v3o formal A0 completed and closed at an aggregation-integrity fail-stop.
+Fixed `alpha=.125` replay remained exact on 1,200 OOF images per frozen
+operator, but candidate MSE reconstructed from block SSE exceeded the fixed
+`1e-10` tolerance for both operators. No A1, policy replay, route-confirm
+audit, canary expansion, locked-test access, controller training, learned
+ranker, or policy deployment is authorized. v3m showed that block16
+common-action oracle value and deployable local label observability are real,
+but the frozen A2 calibrated policy converts them into unsafe image-level tails.
 
 ## Research Direction
 
@@ -60,7 +60,7 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v3f operator-correctability ranker audit | `codex/haze4k-v5-v3f-operator-correctability-ranker` | completed gate stop | D7c-vetoed gain oracle has useful upper-bound value, but best deployable scalar proxy AUROC is only `0.532034`, below the `0.56` training gate | `V3F_A_SCALAR_PROXY_SEPARABILITY_WEAK_NO_RANKER_TRAINING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3f_operator_correctability_ranker_20260710/` |
 | v3m blockwise counterfactual advantage | `codex/haze4k-v5-v3m-blockwise-counterfactual-advantage` | completed gate stop | Block16 common-action oracle retained about 85% of pixel-grid lift and A1/A2 found strong direct-step-energy label observability, but A3 frozen policy replay retained only about 23% of block16 oracle lift and created severe tail regressions; corrected post-fail decomposition shows severe/hard failures are highly cross-operator stable and aggressive calibration bins over-escalate heavily | `V3M_A3_FROZEN_POLICY_REPLAY_FAIL_STOP_NO_ROUTE_CONFIRM`; diagnostic `V3M_A3_FAILURE_DECOMPOSITION_DIAGNOSTIC_ONLY_NO_AUTHORIZATION` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/` |
 | v3n conservative first-step calibration | `codex/haze4k-v5-v3n-conservative-first-step-calibration` | completed gate stop | Fixed false-intervention semantics (`alpha=0.125` default, only `.25` escalation above 99th-percentile train-negative `direct_step_energy`) selected zero held-out blocks for both operators, so no replay is authorized | `V3N_A0_CONSERVATIVE_LABEL_PREFLIGHT_FAIL_STOP_NO_REPLAY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3n_conservative_first_step_calibration_20260712/` |
-| v3o signed adjacent-advantage identifiability | `codex/haze4k-v5-v3o-signed-adjacent-advantage-identifiability` | A0 smoke gate passed | Fixed `alpha=.125` replay was exact on 32 OOF images per operator and block-SSE aggregation errors were below `1e-10`; formal 1,200-image candidate-SSE audit only is authorized | `V3O_A0_SMOKE_REPLAY_INTEGRITY_PASS_AUTHORIZE_FORMAL_OOF_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3o_signed_adjacent_advantage_identifiability_20260712/` |
+| v3o signed adjacent-advantage identifiability | `codex/haze4k-v5-v3o-signed-adjacent-advantage-identifiability` | completed gate fail | Formal fixed-alpha replay was exact on 1,200 OOF images per operator, but candidate-MSE aggregation maxima `2.839408504325125e-10` / `3.528073042047275e-10` exceeded the fixed `1e-10` integrity gate | `V3O_A0_CANDIDATE_SSE_REPLAY_INTEGRITY_FAIL_STOP` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3o_signed_adjacent_advantage_identifiability_20260712/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
