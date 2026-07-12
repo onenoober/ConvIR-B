@@ -88,8 +88,8 @@ test -s "$V3M_EVID/v3m_a0_source_manifest.json"
 nvidia-smi -i "$GPU" --query-gpu=index,memory.free,utilization.gpu --format=csv,noheader
 
 if [ "$MODE" = formal ]; then
-  test -s "$EVID_STAGE/v3r_a0_smoke32_r1_closeout.json"
-  "$PY" - "$EVID_STAGE/v3r_a0_smoke32_r1_closeout.json" <<'PY'
+  test -s "$EVID_STAGE/v3r_a0_smoke32_r2_closeout.json"
+  "$PY" - "$EVID_STAGE/v3r_a0_smoke32_r2_closeout.json" <<'PY'
 import json
 import sys
 closeout = json.load(open(sys.argv[1], encoding="utf-8"))

@@ -1,0 +1,51 @@
+{
+  "authorizes": "v3r-A0 formal only",
+  "canary_touched": false,
+  "decision": "V3R_A0_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY",
+  "dual_operator": {
+    "channel_scale": {
+      "lcb95_by_operator_db": {
+        "D_ref": 0.0016093103201208687,
+        "D_rep": 0.002305336328548674
+      },
+      "passes_sesoi": false,
+      "worst_operator_lcb95_db": 0.0016093103201208687
+    },
+    "direct_clean": {
+      "lcb95_by_operator_db": {
+        "D_ref": 0.19453020663761478,
+        "D_rep": 0.1947972705013994
+      },
+      "passes_sesoi": true,
+      "worst_operator_lcb95_db": 0.19453020663761478
+    },
+    "direction_line": {
+      "lcb95_by_operator_db": {
+        "D_ref": 0.19453012948922466,
+        "D_rep": 0.19479722362828397
+      },
+      "passes_sesoi": true,
+      "worst_operator_lcb95_db": 0.19453012948922466
+    },
+    "scale": {
+      "lcb95_by_operator_db": {
+        "D_ref": 0.00010030867295294233,
+        "D_rep": 8.935775377771904e-05
+      },
+      "passes_sesoi": false,
+      "worst_operator_lcb95_db": 8.935775377771904e-05
+    }
+  },
+  "expected_source_rows": 40000,
+  "gate_type": "structural_integrity",
+  "locked_test_touched": false,
+  "metric_contract": "v3r route card A0 privileged rendered repair geometry",
+  "reason": "pinned v3p reconstruction with anchor-preserving fixed-grid scale, channel, direction-line, and direct-clean ceilings",
+  "route_id": "haze4k_v5_chd_rm_v3r_signed_margin_operator_repair_20260712",
+  "run_id": "v3r_a0_smoke32_r2",
+  "sesoi_db": 0.005,
+  "source_rows_consumed": 40000,
+  "stage": "v3r-A0-smoke_r2",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": false
+}

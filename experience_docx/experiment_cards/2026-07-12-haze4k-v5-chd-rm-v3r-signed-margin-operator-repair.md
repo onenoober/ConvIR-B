@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `PLANNED_A0_PRIVILEGED_REPAIR_GEOMETRY_ONLY`
+Status: `V3R_A0_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY`
 
 ## Route Identity
 
@@ -169,3 +169,19 @@ NO_PHYSICS_REOPEN
 NO_CANARY
 NO_LOCKED_TEST
 ```
+
+## A0 Smoke Result
+
+The successful isolated 32-image smoke (`v3r_a0_smoke32_r2`) completed on
+`convir-4090` with `V3R_A0_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY`. Its pinned source
+hash, 40,000 selected source-row identities, old signed states, and fixed
+`.125` replay all passed; it touched no canary or locked test and performed no
+training. Earlier dtype and run-mode dispatch attempts are engineering-invalid
+and remain cloud-only; no scientific result is attributed to them.
+
+The smoke is structurally authorized but not a scientific decision. Its compact
+diagnostic is consistent across D_ref/D_rep: scale LCB95 lift over old `.25` is
+only `+0.00010/+0.00009 dB`, channel-scale `+0.00161/+0.00231 dB`, while the
+direction-line ceiling is `+0.19453/+0.19480 dB` with zero repaired harmful
+SSE. Formal A0 alone may now test whether that pattern holds on all 1,200 OOF
+images per operator.
