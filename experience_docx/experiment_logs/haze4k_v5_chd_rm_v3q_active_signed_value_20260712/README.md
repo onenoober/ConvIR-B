@@ -1,6 +1,6 @@
 # v3q Active Signed-Value Evidence
 
-Status: `A0A_SMOKE_PASS_FORMAL_AUTHORIZED`
+Status: `A0A_FORMAL_PASS_A0B_FEATURE_CONTRACT_ONLY`
 
 ## A0a Smoke
 
@@ -27,11 +27,27 @@ The active-only energy AUC against harmful blocks was `0.5700468` for D_ref and
 `0.5750839` for D_rep. This is a label-contract diagnostic, not a policy or
 promotion result.
 
+## A0a Formal
+
+The 1,200-image-per-operator formal audit completed at
+`2026-07-12T20:18:17+08:00` with decision:
+
+```text
+V3Q_A0A_FORMAL_PASS_AUTHORIZE_A0B_FEATURE_CONTRACT_ONLY
+```
+
+The canonical SHA-256 and all formal count/pairing checks passed. Within the
+strict active stratum, energy had signed-G1 Pearson `0.2272782` / `0.2295866`
+and beneficial-versus-harmful AUC `0.5822605` / `0.5832841` for D_ref/D_rep.
+The much larger all-nonbeneficial AUC (`0.8893952` / `0.8895896`) is driven by
+zero-energy abstain rows and is not a signed-value scientific gate. At the
+maximum energy plateau, harmful rates remained `29.53%` / `30.13%`.
+
 ## Next Authorization
 
-Only `v3q-A0a-formal` is authorized. Its preflight must verify a new output
-path, the same route commit and canonical SHA-256, a clean cloud checkout, and
-the smoke closeout recorded here.
+Only `v3q-A0b-feature-contract-only` is authorized. It must define and audit
+inference-time candidate-pair features before any linear probe, sidecar, score
+threshold, or policy replay is permitted.
 
 ## Artifact Boundary
 

@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `A0A_SMOKE_PASS_FORMAL_AUTHORIZED`
+Status: `A0A_FORMAL_PASS_A0B_FEATURE_CONTRACT_ONLY`
 
 ## Route Identity
 
@@ -209,3 +209,28 @@ The A0a 32-image smoke completed on `convir-4090` at
 
 Compact evidence is under
 `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3q_active_signed_value_20260712/`.
+
+## A0a Formal Result
+
+The formal read-only audit completed on `convir-4090` at
+`2026-07-12T20:18:17+08:00` with
+`V3Q_A0A_FORMAL_PASS_AUTHORIZE_A0B_FEATURE_CONTRACT_ONLY`.
+
+- The v3p canonical block SHA-256 and all expected counts matched exactly:
+  1,088,675 rows and 503,995 active rows per operator, with 22 D_ref and 8
+  D_rep active numerical-gray abstentions retained as abstentions.
+- Active-only energy correlation is `0.22728` / `0.22959` with signed G1 and
+  `0.48707` / `0.49025` with absolute G1. The latter remains materially larger;
+  zero-energy rows must not be included in a signed-value claim.
+- Active beneficial-versus-harmful energy AUC is `0.58226` / `0.58328`, while
+  the legacy all-nonbeneficial AUC is `0.88940` / `0.88959` because of the
+  large zero-energy abstain class.
+- At the exact maximum energy, 29.53% / 30.13% of active blocks are harmful.
+  This closes threshold-only escalation as an A0b continuation.
+- D_ref/D_rep agreement is stable at the image-group unit: sum-G1 Pearson
+  `0.99830`, active-energy Pearson `0.99944`, and within-image energy/G1
+  correlation Pearson `0.95960`.
+
+This is a structural/diagnostic result, not evidence for a learned scorer or a
+deployed policy. Only a separately specified A0b candidate-pair feature
+contract is authorized.
