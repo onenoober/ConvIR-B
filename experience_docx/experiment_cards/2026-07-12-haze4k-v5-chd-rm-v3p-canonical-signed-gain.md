@@ -102,6 +102,8 @@ only compact JSON/CSV/README evidence after a terminal stage marker.
 | A1 reconstruction | 2,400 paired v3p/v3m image rows and all canonical blocks | reconstruct frozen A2 bin actions; require exact per-image selected-action counts, full pairing, and fixed replay `<=1e-6 dB`; decompose action-path and renderer SSE without a new replay | A2 constrained G1 oracle only |
 | A1r engineering repair | same frozen rows and bins | A1's first reader used left-open/right-closed bins, while v3m A3 used `searchsorted(..., side="right")`; re-run only that source-semantic correction under a new run id and require exact action counts | A2 constrained G1 oracle only |
 | A2 constrained G1 oracle | 1,200 OOF images per operator | begin from uniform `.125`; select only canonical non-gray beneficial `.125 -> .25` blocks in deterministic descending-G1 order (then block coordinates), with a fixed maximum 25% block cap and the hard non-overlap block executor; require per-operator LCB95 lift over `.125` `> .02 dB`, over uniform `.25` `> .01 dB`, selected-pixel-coverage LCB95 `> .01`, zero severe `<= -.2 dB` fixed-baseline regressions, and zero selected harmful SSE | B0 physics forward contract only |
+| B0 scalar-A smoke | first 32 sorted train-derived OOF triplets | enforce 3,000 PNG numeric ids for each train modality, ignore only `train/haze/.DS_Store`, map haze numeric prefixes to `gt/<id>.png` and `trans/<id>.png`, decode source RGB and uint8 transmission without resize/crop, fit a spatially global scalar A per image, require A within `[-1/255, 1+1/255]` and maximum sRGB forward RMSE `<= 8/255`; report linear-space sensitivity only | B0 formal only |
+| B0 scalar-A formal | all 1,200 train-derived OOF triplets | repeat the frozen smoke contract, write the block forward-residual MSE p99 noise floor for later abstention, and require no structural or numerical violation | B1 privileged `t+A` `.125/.25` ceiling only |
 
 Structural mismatch, coverage failure, fixed replay mismatch, or a non-gray
 signed-gain flip is `FAIL`. Envelope exceedance with intact structure and no
@@ -138,9 +140,18 @@ numerical `PASS` does not authorize policy replay, training, or promotion.
 
 `V3P_A2_CONSTRAINED_G1_ORACLE_PASS_AUTHORIZE_B0_PHYSICS_FORWARD_CONTRACT_ONLY`
 does not authorize selector fitting, threshold tuning, policy replay, canary,
-or locked-test access. B0 must first define and test a target-free
-physics-forward observability contract against the fixed canonical G1 labels;
-only a typed B0 result may name any later continuation.
+or locked-test access. B0 must first validate the privileged scalar-A
+physics-forward data contract on the fixed train-derived OOF triplets; only a
+typed B0 result may name any later continuation.
+
+B0 is a train-only privileged data-contract audit, not a target-free selector:
+for every frozen OOF haze triplet it estimates one spatially global scalar
+`A` from `I ~= tJ + (1-t)A` in the exact RGB/PIL `[0,1]` loader space. The
+standard IEC sRGB-to-linear reconstruction is retained only as a sensitivity
+diagnostic, never as an after-the-fact alternative B1 semantic. B0 failure
+means the mapping, color space, resize, transmission serialization, or data
+package is inconsistent; it stops the physics-estimator route rather than
+authorizing `t_hat/A_hat` fitting.
 
 The A2 oracle does not fit a selector, tune a threshold, replay a learned
 policy, alter the action space, access a canary or locked test split, or

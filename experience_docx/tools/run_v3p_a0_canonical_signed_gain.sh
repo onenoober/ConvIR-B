@@ -70,6 +70,22 @@ case "$MODE" in
     PROGRESS=0
     CONTRACT_ARG=()
     ;;
+  b0_scalar_a_smoke)
+    STAGE=v3p-B0-scalar-A-smoke
+    OUT=$RUN_ROOT/b0_scalar_a_smoke32
+    TAG=v3p_b0_smoke32
+    MAX_TRAIN=32
+    PROGRESS=0
+    CONTRACT_ARG=()
+    ;;
+  b0_scalar_a_formal)
+    STAGE=v3p-B0-scalar-A-formal
+    OUT=$RUN_ROOT/b0_scalar_a_formal
+    TAG=v3p_b0
+    MAX_TRAIN=1200
+    PROGRESS=0
+    CONTRACT_ARG=()
+    ;;
   *)
     echo "V3P_A0_INVALID_MODE mode=$MODE"
     exit 2
@@ -126,6 +142,69 @@ PY
   cp "$OUT/${TAG}_source_manifest.json" "$EVID_STAGE/${TAG}_source_manifest.json"
   cp "$OUT/${TAG}_by_fold.csv" "$EVID_STAGE/${TAG}_by_fold.csv"
   echo "V3P_A2_CONSTRAINED_G1_ORACLE_OK" | tee -a "$STATUS"
+  exit 0
+fi
+
+if [ "$MODE" = b0_scalar_a_smoke ] || [ "$MODE" = b0_scalar_a_formal ]; then
+  test -d "$BASE/datasets/Haze4K/Haze4K/train/haze"
+  test -d "$BASE/datasets/Haze4K/Haze4K/train/gt"
+  test -d "$BASE/datasets/Haze4K/Haze4K/train/trans"
+  test -s "$V3J_EVID/fresh_route_confirm_split_manifest.json"
+  test -s "$EVID_STAGE/v3p_a2_closeout.json"
+  test ! -e "$OUT"
+  "$PY" - "$EVID_STAGE/v3p_a2_closeout.json" <<'PY'
+import json
+import sys
+value = json.load(open(sys.argv[1], encoding="utf-8"))
+if value["decision"] != "V3P_A2_CONSTRAINED_G1_ORACLE_PASS_AUTHORIZE_B0_PHYSICS_FORWARD_CONTRACT_ONLY":
+    raise SystemExit("v3p B0 requires the A2 constrained-G1 authorization")
+if value.get("locked_test_touched") or value.get("canary_touched") or value.get("training_occurred"):
+    raise SystemExit("v3p B0 requires a read-only A2 closeout")
+PY
+  if [ "$MODE" = b0_scalar_a_formal ]; then
+    test -s "$EVID_STAGE/v3p_b0_smoke32_closeout.json"
+    "$PY" - "$EVID_STAGE/v3p_b0_smoke32_closeout.json" <<'PY'
+import json
+import sys
+value = json.load(open(sys.argv[1], encoding="utf-8"))
+if value["decision"] != "V3P_B0_SCALAR_A_SMOKE_PASS_AUTHORIZE_FORMAL_OOF_ONLY":
+    raise SystemExit("v3p B0 formal requires a passing B0 smoke closeout")
+PY
+  fi
+  mkdir -p "$RUN_ROOT" "$EVID_STAGE"
+  LOG=$RUN_ROOT/${TAG}_${STAMP}.log
+  echo "stage_start route=$ROUTE_ID stage=$STAGE run=$TAG time=$(date --iso-8601=seconds)" | tee -a "$STATUS"
+  echo "stage_paths repo=$REMOTE_REPO run_root=$RUN_ROOT evid_stage=$EVID_STAGE log=$LOG" | tee -a "$STATUS"
+  set +e
+  PYTHONUNBUFFERED=1 "$PY" "$REMOTE_REPO/experience_docx/tools/chd_rm_v3p_b0_scalar_a_forward_contract.py" \
+    --data_dir "$BASE/datasets/Haze4K/Haze4K" \
+    --fresh_split_manifest "$V3J_EVID/fresh_route_confirm_split_manifest.json" \
+    --output_dir "$OUT" --run_tag "$TAG" \
+    --run_mode "${MODE#b0_scalar_a_}" --expected_images "$MAX_TRAIN" > "$LOG" 2>&1 &
+  pid=$!
+  (
+    while kill -0 "$pid" 2>/dev/null; do
+      echo "stage_heartbeat route=$ROUTE_ID stage=$STAGE pid=$pid time=$(date --iso-8601=seconds)" >> "$STATUS"
+      sleep 60
+    done
+  ) &
+  heartbeat_pid=$!
+  wait "$pid"
+  rc=$?
+  kill "$heartbeat_pid" 2>/dev/null
+  wait "$heartbeat_pid" 2>/dev/null
+  set -e
+  echo "stage_done route=$ROUTE_ID stage=$STAGE rc=$rc time=$(date --iso-8601=seconds)" | tee -a "$STATUS"
+  if [ "$rc" -ne 0 ]; then
+    echo "V3P_B0_SCALAR_A_${MODE^^}_FAILED" | tee -a "$STATUS"
+    exit "$rc"
+  fi
+  cp "$OUT/${TAG}_closeout.json" "$EVID_STAGE/${TAG}_closeout.json"
+  cp "$OUT/${TAG}_summary.json" "$EVID_STAGE/${TAG}_summary.json"
+  cp "$OUT/${TAG}_source_manifest.json" "$EVID_STAGE/${TAG}_source_manifest.json"
+  cp "$OUT/${TAG}_forward_contract.json" "$EVID_STAGE/${TAG}_forward_contract.json"
+  cp "$OUT/${TAG}_by_shape.csv" "$EVID_STAGE/${TAG}_by_shape.csv"
+  echo "V3P_B0_SCALAR_A_${MODE^^}_OK" | tee -a "$STATUS"
   exit 0
 fi
 
