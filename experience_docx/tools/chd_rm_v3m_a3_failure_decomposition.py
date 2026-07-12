@@ -96,18 +96,25 @@ def pearson(xs, ys):
 
 def summarize_rows(rows):
     lifts = [row["policy_lift_vs_fixed"] for row in rows]
+    policy_deltas = [row["policy_psnr_delta"] for row in rows]
+    fixed_deltas = [row["fixed_psnr_delta"] for row in rows]
     oracle_lifts = [row["oracle_block16_lift_vs_fixed"] for row in rows]
-    fixed = [row["fixed_psnr_delta"] for row in rows]
     return {
         "count": len(rows),
         "mean_policy_lift_vs_fixed": mean(lifts),
         "p10_policy_lift_vs_fixed": quantile(lifts, 0.10),
         "p05_policy_lift_vs_fixed": quantile(lifts, 0.05),
         "worst_policy_lift_vs_fixed": min(lifts) if rows else float("nan"),
-        "severe_le_minus_0p2_count": sum(1 for row in rows if row["policy_lift_vs_fixed"] <= -0.2),
-        "hard_le_minus_0p5_count": sum(1 for row in rows if row["policy_lift_vs_fixed"] <= -0.5),
-        "negative_count": sum(1 for row in rows if row["policy_lift_vs_fixed"] < 0.0),
-        "mean_fixed_psnr_delta": mean(fixed),
+        "mean_policy_psnr_delta": mean(policy_deltas),
+        "p10_policy_psnr_delta": quantile(policy_deltas, 0.10),
+        "p05_policy_psnr_delta": quantile(policy_deltas, 0.05),
+        "worst_policy_psnr_delta": min(policy_deltas) if rows else float("nan"),
+        "policy_severe_le_minus_0p2_count": sum(1 for row in rows if row["policy_psnr_delta"] <= -0.2),
+        "policy_hard_le_minus_0p5_count": sum(1 for row in rows if row["policy_psnr_delta"] <= -0.5),
+        "fixed_severe_le_minus_0p2_count": sum(1 for row in rows if row["fixed_psnr_delta"] <= -0.2),
+        "fixed_hard_le_minus_0p5_count": sum(1 for row in rows if row["fixed_psnr_delta"] <= -0.5),
+        "negative_lift_vs_fixed_count": sum(1 for row in rows if row["policy_lift_vs_fixed"] < 0.0),
+        "mean_fixed_psnr_delta": mean(fixed_deltas),
         "mean_oracle_block16_lift_vs_fixed": mean(oracle_lifts),
         "mean_retention_vs_oracle": (
             mean(lifts) / mean(oracle_lifts) if math.isfinite(mean(oracle_lifts)) and mean(oracle_lifts) > 0 else float("nan")
@@ -211,19 +218,19 @@ def build_operator_summary(rows):
                 ),
                 "corr_severe_score_selected_alpha_mean": pearson(
                     [row["selected_alpha_mean"] for row in subset],
-                    [1.0 if row["policy_lift_vs_fixed"] <= -0.2 else 0.0 for row in subset],
+                    [1.0 if row["policy_psnr_delta"] <= -0.2 else 0.0 for row in subset],
                 ),
                 "severe_subset_mean_oracle_lift": mean(
-                    row["oracle_block16_lift_vs_fixed"] for row in subset if row["policy_lift_vs_fixed"] <= -0.2
+                    row["oracle_block16_lift_vs_fixed"] for row in subset if row["policy_psnr_delta"] <= -0.2
                 ),
                 "severe_subset_mean_selected_alpha": mean(
-                    row["selected_alpha_mean"] for row in subset if row["policy_lift_vs_fixed"] <= -0.2
+                    row["selected_alpha_mean"] for row in subset if row["policy_psnr_delta"] <= -0.2
                 ),
                 "severe_subset_mean_frac_alpha_1": mean(
-                    row["frac_alpha_1"] for row in subset if row["policy_lift_vs_fixed"] <= -0.2
+                    row["frac_alpha_1"] for row in subset if row["policy_psnr_delta"] <= -0.2
                 ),
                 "severe_subset_mean_frac_alpha_ge_0p5": mean(
-                    row["frac_alpha_ge_0p5"] for row in subset if row["policy_lift_vs_fixed"] <= -0.2
+                    row["frac_alpha_ge_0p5"] for row in subset if row["policy_psnr_delta"] <= -0.2
                 ),
             }
         )
@@ -234,10 +241,10 @@ def build_operator_summary(rows):
 def build_cross_operator_summary(rows):
     by_operator = {operator: {row["name"]: row for row in rows if row["operator_label"] == operator} for operator in OPERATORS}
     shared_names = sorted(set(by_operator["D_ref"]).intersection(by_operator["D_rep"]))
-    severe_ref = {name for name, row in by_operator["D_ref"].items() if row["policy_lift_vs_fixed"] <= -0.2}
-    severe_rep = {name for name, row in by_operator["D_rep"].items() if row["policy_lift_vs_fixed"] <= -0.2}
-    hard_ref = {name for name, row in by_operator["D_ref"].items() if row["policy_lift_vs_fixed"] <= -0.5}
-    hard_rep = {name for name, row in by_operator["D_rep"].items() if row["policy_lift_vs_fixed"] <= -0.5}
+    severe_ref = {name for name, row in by_operator["D_ref"].items() if row["policy_psnr_delta"] <= -0.2}
+    severe_rep = {name for name, row in by_operator["D_rep"].items() if row["policy_psnr_delta"] <= -0.2}
+    hard_ref = {name for name, row in by_operator["D_ref"].items() if row["policy_psnr_delta"] <= -0.5}
+    hard_rep = {name for name, row in by_operator["D_rep"].items() if row["policy_psnr_delta"] <= -0.5}
 
     def jaccard(a_set, b_set):
         union = len(a_set.union(b_set))
@@ -343,8 +350,10 @@ def write_closeout(path, summary):
     for row in summary["operator_summaries"]:
         operator_lines.append(
             "| `{operator_label}` | `{mean_policy_lift_vs_fixed:+.7f}` | `{p10_policy_lift_vs_fixed:+.7f}` | "
-            "`{severe_le_minus_0p2_count}` | `{hard_le_minus_0p5_count}` | `{mean_selected_alpha:.7f}` | "
-            "`{mean_frac_alpha_1:.7f}` | `{severe_subset_mean_oracle_lift:+.7f}` |".format(**row)
+            "`{policy_severe_le_minus_0p2_count} / {fixed_severe_le_minus_0p2_count}` | "
+            "`{policy_hard_le_minus_0p5_count} / {fixed_hard_le_minus_0p5_count}` | "
+            "`{mean_selected_alpha:.7f}` | `{mean_frac_alpha_1:.7f}` | "
+            "`{severe_subset_mean_oracle_lift:+.7f}` |".format(**row)
         )
 
     cross = summary["cross_operator_summary"]
@@ -358,7 +367,7 @@ use route-confirm, touch canary, or touch locked test.
 
 ## Operator Summary
 
-| Operator | Mean lift | p10 lift | Severe | Hard | Mean selected alpha | Mean alpha=1 fraction | Severe-subset oracle lift |
+| Operator | Mean lift vs fixed | p10 lift vs fixed | Severe policy/fixed | Hard policy/fixed | Mean selected alpha | Mean alpha=1 fraction | Severe-subset oracle lift |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 {chr(10).join(operator_lines)}
 
