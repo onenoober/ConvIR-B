@@ -306,8 +306,16 @@ def main():
         and lookup[(operator, "metadata_only_nondeployable_control")]["weighted_auc"] <= 0.53
         for operator in OPERATORS
     )
-    decision = "V3Q_A1_PASS_AUTHORIZE_A2_SIGNED_FEATURE_ABLATION_ONLY" if full_pass else "V3Q_A1_FAIL_STOP_LEARNED_SIGNED_SCORING"
-    state = "COMPLETED_GATE_PASS" if full_pass else "COMPLETED_GATE_FAIL"
+    if args.run_mode == "smoke":
+        decision = "V3Q_A1_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY"
+        state = "COMPLETED_GATE_PASS"
+        authorizes = "v3q-A1-formal"
+        reason = "pinned source, grouped-fold, per-image-weight, and compact-output contracts passed"
+    else:
+        decision = "V3Q_A1_PASS_AUTHORIZE_A2_SIGNED_FEATURE_ABLATION_ONLY" if full_pass else "V3Q_A1_FAIL_STOP_LEARNED_SIGNED_SCORING"
+        state = "COMPLETED_GATE_PASS" if full_pass else "COMPLETED_GATE_FAIL"
+        authorizes = "v3q-A2 signed feature ablation only" if full_pass else "none"
+        reason = "both operators cleared the signed utility and negative-control gate" if full_pass else "signed probe did not clear both-operator utility and negative-control gate"
     source_manifest = {
         "route_id": ROUTE_ID, "run_tag": args.run_tag, "run_mode": args.run_mode,
         "route_commit": args.route_commit, "feature_table": str(Path(args.features)),
@@ -323,8 +331,7 @@ def main():
         "route_id": ROUTE_ID, "run_id": args.run_tag, "stage": "v3q-A1-signed-linear-probe",
         "state": state, "gate_type": "scientific_utility", "decision": decision,
         "metric_contract": "v3q route card A1 grouped OOF per-image-weighted signed probe",
-        "authorizes": "v3q-A2 signed feature ablation only" if full_pass else "none",
-        "reason": "both operators must exceed signed AUC and control margins" if full_pass else "signed probe did not clear both-operator utility and negative-control gate",
+        "authorizes": authorizes, "reason": reason,
         "locked_test_touched": False, "canary_touched": False, "policy_replay_occurred": False,
     }
     write_rows(output_dir / f"{args.run_tag}_summary.csv", summary_rows)

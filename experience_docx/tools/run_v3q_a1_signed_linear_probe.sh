@@ -13,7 +13,14 @@ STATUS=$RUN_ROOT/status.txt
 
 case "$MODE" in
   smoke) TAG=v3q_a1_smoke32; FEATURES=$RUN_ROOT/a0b_smoke32/v3q_a0b_smoke32_active_features_cloud_only.csv; FEATURE_SHA=bd04ea09f1d325a2425ce7cadaa76a5a060e598feca9e256fcf06588be4576ab; OUT=$RUN_ROOT/a1_smoke32 ;;
-  formal) TAG=v3q_a1; FEATURES=$RUN_ROOT/a0b_formal/v3q_a0b_active_features_cloud_only.csv; FEATURE_SHA=2cda824bf6ca7b11ed0a50d56d785790200a6680fcfb9a4b34e154f40f111b82; OUT=$RUN_ROOT/a1_formal; test -s "$EVID/v3q_a1_smoke32_closeout.json" ;;
+  formal) TAG=v3q_a1; FEATURES=$RUN_ROOT/a0b_formal/v3q_a0b_active_features_cloud_only.csv; FEATURE_SHA=2cda824bf6ca7b11ed0a50d56d785790200a6680fcfb9a4b34e154f40f111b82; OUT=$RUN_ROOT/a1_formal; test -s "$EVID/v3q_a1_smoke32_closeout.json"; "$PY" - "$EVID/v3q_a1_smoke32_closeout.json" <<'PY'
+import json
+import sys
+
+if json.load(open(sys.argv[1], encoding="utf-8")).get("decision") != "V3Q_A1_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY":
+    raise SystemExit("A1 formal requires a passing A1 smoke closeout")
+PY
+  ;;
   *) echo V3Q_A1_INVALID_MODE; exit 2 ;;
 esac
 test "$(git -C "$REMOTE_REPO" rev-parse HEAD)" = "$EXPECTED_ROUTE_COMMIT"
