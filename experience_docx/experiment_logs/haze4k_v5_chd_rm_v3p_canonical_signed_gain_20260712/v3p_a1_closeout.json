@@ -1,0 +1,42 @@
+{
+  "action_count_mismatches": 859,
+  "authorizes": "none",
+  "canary_touched": false,
+  "canonical_image_count": 2400,
+  "decision": "V3P_A1_RECONSTRUCTION_INTEGRITY_FAIL_STOP",
+  "fixed_replay_max_abs_diff_db": 7.683041687300829e-07,
+  "gate_type": "structural_integrity",
+  "locked_test_touched": false,
+  "metric_contract": "reconstruct frozen A2 bins on v3p canonical block SSE; compare action counts and fixed replay to v3m A3",
+  "missing_policy_rows": 0,
+  "operator_rows": [
+    {
+      "executor_interaction_sse_positive_images": 662,
+      "executor_interaction_sse_total": -1.201384126766735,
+      "image_count": 1200,
+      "operator_label": "D_ref",
+      "rendered_mean_lift_db": 0.0828430025334773,
+      "rendered_p10_lift_db": -0.22514580440840604,
+      "selector_mean_lift_db": 0.0828392608065592,
+      "selector_p10_lift_db": -0.22441999504133747
+    },
+    {
+      "executor_interaction_sse_positive_images": 718,
+      "executor_interaction_sse_total": -1.3429765624063812,
+      "image_count": 1200,
+      "operator_label": "D_rep",
+      "rendered_mean_lift_db": 0.08260533557098583,
+      "rendered_p10_lift_db": -0.23202431388628497,
+      "selector_mean_lift_db": 0.08262506593125567,
+      "selector_p10_lift_db": -0.23303918103785293
+    }
+  ],
+  "reason": "read-only action-path reconstruction and executor interaction decomposition",
+  "route_id": "haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712",
+  "run_id": "v3p_a1",
+  "stage": "v3p-A1-reconstruction",
+  "state": "COMPLETED_GATE_FAIL",
+  "training_occurred": false,
+  "unmatched_calibration_bins": 0,
+  "v3m_policy_image_count": 2400
+}
