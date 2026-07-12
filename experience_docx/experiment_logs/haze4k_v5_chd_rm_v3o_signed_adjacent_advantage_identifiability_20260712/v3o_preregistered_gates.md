@@ -9,6 +9,10 @@
 
 Pass: formal A0 only. Fail: engineering stop; do not interpret a candidate gain.
 
+Result: `PASS` with
+`V3O_A0_SMOKE_REPLAY_INTEGRITY_PASS_AUTHORIZE_FORMAL_OOF_ONLY`; only A0 formal
+is now authorized.
+
 ## A0 Formal
 
 - exactly 1,200 OOF names and five folds per operator;

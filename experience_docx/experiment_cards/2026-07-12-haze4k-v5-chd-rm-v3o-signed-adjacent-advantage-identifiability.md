@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `PLANNED_A0_SMOKE_ONLY`
+Status: `COMPLETED_GATE_PASS_A0_SMOKE_FORMAL_A0_ONLY`
 
 Branch: `codex/haze4k-v5-v3o-signed-adjacent-advantage-identifiability`
 
@@ -68,6 +68,17 @@ For both operators, A0 passes only when fixed `alpha=0.125` replay differs by
 at most `1e-6 dB`, every candidate's block-aggregated image MSE differs from
 the direct candidate MSE by at most `1e-10`, row identity and fold mapping are
 complete, and no forbidden data was touched. A0 does not assert policy utility.
+
+## A0 Smoke Closeout
+
+Smoke passed on 32 OOF images per frozen operator with
+`V3O_A0_SMOKE_REPLAY_INTEGRITY_PASS_AUTHORIZE_FORMAL_OOF_ONLY`. The fixed
+`alpha=0.125` replay difference was `0.0 dB` for both operators. Maximum
+candidate-MSE aggregation differences were `6.073581362234931e-11` for `D_ref`
+and `7.561563202841681e-11` for `D_rep`, below `1e-10`. The source manifest
+records no training, canary, or locked-test access. This authorizes formal A0
+only; it does not authorize A1 or any policy, training, canary, route-confirm,
+or locked-test action.
 
 ## Archive Rule
 
