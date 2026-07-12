@@ -1,0 +1,64 @@
+{
+  "activity_delta_abs": 1e-06,
+  "authorizes": "none; this fixed safety curriculum is stopped",
+  "canary_touched": false,
+  "cells": {
+    "output_safety_curriculum": {
+      "final": {
+        "anchor": 8.807120366327581e-08,
+        "delta_abs": 6.077910931701069e-05,
+        "harm": 2.6223267468594713e-07,
+        "margin": 2.182059039679274e-06,
+        "render": 0.0003222787163963403,
+        "repair": 0.006456589495428489
+      },
+      "final_activity_pass": false,
+      "initial": {
+        "anchor": 0.0,
+        "delta_abs": 0.0,
+        "harm": 2.8721490252792137e-07,
+        "margin": 2.2540165325879435e-06,
+        "render": 0.0003221425098445252,
+        "repair": 0.0
+      },
+      "input_form": "output",
+      "midpoint": {
+        "anchor": 2.232153519798885e-07,
+        "delta_abs": 0.0013417915252773582,
+        "harm": 8.103070285869762e-07,
+        "margin": 3.873870768056342e-06,
+        "render": 0.00031850232306851467,
+        "repair": 0.14352543566201348
+      },
+      "midpoint_activity_pass": true,
+      "midpoint_relative_render_reduction": 0.011299926786338683,
+      "objective": "safety_curriculum",
+      "parameter_count": 2883,
+      "relative_render_reduction": -0.0004228145856343462,
+      "safety_nonworse_vs_v3u": true,
+      "v3u_final_safety_reference": {
+        "anchor": 6.74478656037536e-07,
+        "harm": 2.2906834828972933e-06,
+        "margin": 7.832882713110223e-06
+      }
+    }
+  },
+  "decision": "V3V_S1_SAFETY_PHASE_LOSES_ACTIVITY_STOP_SAFETY_CURRICULUM",
+  "gate_type": "mechanism_safety_curriculum",
+  "locked_test_touched": false,
+  "metric_contract": "32 fixed OOF images, output-side Delta-u, 8-epoch render warmup then 8-epoch anchor/margin/harm/CVaR safety phase, no repair penalty",
+  "min_relative_render_reduction": 0.001,
+  "route_id": "haze4k_v5_chd_rm_v3v_safety_curriculum_activation_20260713",
+  "run_id": "v3v_s1_safety_curriculum32",
+  "safety_weights": {
+    "anchor": 30.0,
+    "cvar": 40.0,
+    "harm": 20.0,
+    "margin": 5.0,
+    "repair": 0.0
+  },
+  "stage": "v3v-S1-output-side-safety-curriculum",
+  "state": "COMPLETED_GATE_FAIL",
+  "training_occurred": true,
+  "warmup_epochs": 8
+}
