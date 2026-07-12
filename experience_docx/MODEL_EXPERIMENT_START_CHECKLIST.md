@@ -1,227 +1,123 @@
 # Model Experiment Start Checklist
 
-Date: 2026-06-10
+Date: 2026-07-12
 
-Status: checklist for starting and governing a model experiment.
+Status: one-time setup checklist for a new route or a changed route contract.
 
-## 0. Universal Route Framing Gate
+## Purpose
 
-Before starting any new route, method, architecture change, teacher/distillation
-plan, selector, loss, or runtime experiment, complete this route framing gate:
+Use this checklist once when a route is created, rescued, continued under a new
+contract, or materially changed. It produces one route card and an execution
+profile. Per-launch checks, monitoring, and closeout belong to
+`MODEL_RUN_OPERATIONS_PROTOCOL.md`; do not repeat them here.
 
-- Fact-source decision: name the authoritative evidence sources that will ground
-  the task. Use GitHub `main` or the named GitHub branch for route memory and
-  current decisions; use cloud runtime state for active/raw outputs; use local
-  files only for editing, syntax checks, sync staging, or local-safety checks.
-- Route-identity decision: label the work as a new route, continuation, rescue,
-  ablation, reproducibility audit, or evidence sync. Write the consequences of
-  that label before launch.
-- Forbidden-flow list: record which tempting actions are not allowed for this
-  route, such as expanding a failed canary, launching selector probes, increasing
-  epochs/folds/samples, changing loss weights, touching locked test, or treating
-  a diagnostic phase as a promotion gate.
-- Resource-preflight list: identify required cloud branch/commit, workspace,
-  explicit Python path, dataset/split, checkpoint, teacher/expert asset, output
-  root, command script, status/log file, and tmux/session name before launch.
-- Metric-contract list: define baseline, exact sample/crop/split pairing,
-  metric direction, pass/fail thresholds, and what later phase each gate
-  authorizes. For every formal decision gate, also record its gate type,
-  analysis unit, threshold/margin source, `PASS`/`INCONCLUSIVE`/`FAIL` meaning,
-  and allowed scientific claim according to the canonical Gate Policy in
-  `EXPERIMENT_GOVERNANCE_PROTOCOL.md`. Do not interpret a result if
-  base/before/after metrics were computed on different data views.
-- Transport plan: choose the stable command/sync pattern up front from
-  `COMMAND_RELIABILITY_QUICKSTART.md`. Prefer `tar`/`scp`/`rsync` or stable
-  script bodies through WSL/SSH with explicit success markers; avoid ad hoc
-  nested PowerShell/WSL/SSH quoting. Use `COMMAND_RELIABILITY_PROTOCOL.md` only
-  for failed or unfamiliar command-boundary cases.
-- Archive plan: decide which files belong on the route branch and which compact
-  evidence belongs on GitHub `main`. Use a clean `github/main` worktree for
-  evidence sync and stage explicit paths only.
+## 1. Identify The Route And Source
 
-If any item is unknown, do not launch a cloud runtime command yet. Fill the
-route card or evidence README first, or classify the missing item as an
-engineering blocker.
+Record in the route card:
 
-## 0B. Route Source And Anchor Compliance Gate
+- authoritative GitHub `main` or named-branch evidence paths and the relevant
+  current cloud paths;
+- route type: new route, continuation, rescue, ablation, reproducibility audit,
+  policy/replay, or evidence sync;
+- source branch and commit, route branch, parent rationale, and comparison
+  baseline;
+- forbidden continuations, including disallowed selector probes, budget/scope
+  expansion, canary expansion, and locked-test access;
+- the single scientific question and the earliest result that can answer it.
 
-After the route identity is known, choose the correct starting source before
-code edits or cloud runs:
+New Haze4K model-structure routes must start from the immutable
+`github/codex/haze4k-official-arch-anchor`. Other route types use the parent
+authorized by the current index, route card, or family summary. The canonical
+source and load rules live in `OFFICIAL_ARCH_ANCHOR_POLICY.md` and
+`Haze4K_ARCH_FINETUNE_WORKFLOW.md`; link to them rather than copying them.
 
-- New model-structure or architecture routes in this repository must start from
-  `github/codex/haze4k-official-arch-anchor`, not from a dirty worktree or an
-  unrelated experimental branch.
-- Continuations, rescues, ablations, audits, selectors, losses, adapters,
-  data-policy changes, and fine-tuning routes start from the named parent
-  GitHub branch/commit authorized by the current index, route card, or family
-  summary. Do not reset them to the official anchor unless the framing gate says
-  the work is a new model-structure route.
-- Evidence sync and archival tasks start from a clean `github/main` worktree and
-  restore only the explicitly allowed compact evidence paths from the route
-  branch.
-- Record the starting branch, starting commit, parent/source rationale, locked
-  test policy, and any forbidden continuations in the route card or evidence
-  README before launch.
-- Keep `github/codex/haze4k-official-arch-anchor` unchanged except for
-  documentation, command reliability, or text-evidence maintenance.
-- Create or update the route card with the checkpoint path/hash, strict or
-  partial load contract, new-module initialization rule when applicable,
-  locked-test policy, cloud workspace, output root, command script, status file,
-  and evidence root.
-- Mark the route invalid for anchor or parent-route comparison if the required
-  source gate was skipped or the starting source cannot be reconstructed.
+## 2. Complete Static Preflight Once Per Route Commit
 
-## 1. Define Objective And Assumptions
+Freeze and verify the facts that should not change between stage launches:
 
-- Name the new project objective in one sentence.
-- List what is known.
-- List what is unknown.
-- Mark assumptions that still need evidence.
-- Identify the baseline, target metric, and constraints that matter for the
-  first decision.
+- code interfaces and syntax/static checks;
+- dataset, split, pairing, preprocessing, sample count, and metric
+  implementation;
+- checkpoint, teacher, cache, or expert asset paths and SHA-256 values;
+- strict/partial load, initialization, freeze, and resume contracts when
+  applicable;
+- exact baseline and matched sample/crop/split view;
+- primary metric, direction, comparison family, analysis unit, threshold source,
+  and `PASS`/`INCONCLUSIVE`/`FAIL` meanings;
+- scientific, preservation, cost, and locked-test gates;
+- fixed budget, seed/fold policy, and the selected execution profile.
 
-## 2. Create A Documentation Map
+Formal gates must follow the canonical Gate Policy in
+`EXPERIMENT_GOVERNANCE_PROTOCOL.md`. A threshold derived from the formal result
+it judges is diagnostic only. Base/before/after values computed on different
+data views cannot support a decision.
 
-Create or choose documents for:
+Cloud HEAD, GPU availability, tmux conflicts, output-directory availability,
+previous-stage authorization, and the current locked-test flag are dynamic.
+Check those immediately before each launch under
+`MODEL_RUN_OPERATIONS_PROTOCOL.md`, not during route setup.
 
-- current state;
-- experiment log;
-- artifact manifest;
-- runbook;
-- workflow commands;
-- analysis commands;
-- dated experiment cards.
+## 3. Establish Or Reuse A Verified Baseline
 
-Write where each fact belongs before facts start accumulating.
+Reuse a baseline only when its checkpoint hash, split, preprocessing, metric
+code, sample/crop view, runtime assumptions, and budget match the new route.
+Otherwise establish a matched baseline on the authorized cloud runtime before
+making an improvement claim.
 
-## 3. Set Repository Boundaries
+For ConvIR-B, record at minimum the official checkpoint path and hash, official
+reference PSNR/SSIM, reproduced PSNR/SSIM, verified sample count, latency, peak
+GPU memory, and any explained reproduction gap. Raw outputs and large
+per-sample tables remain on cloud.
 
-- Create a branch or isolated workspace from the source chosen in the Route
-  Source And Anchor Compliance Gate. New model-structure routes use the official
-  anchor; continuations, rescues, audits, and evidence syncs use their named
-  parent or clean `github/main` source.
-- Check version-control status before edits.
-- Identify unrelated local changes and leave them untouched.
-- Decide what can be committed and what must remain external.
-- Keep reference entrypoints stable until an experiment card says otherwise.
+## 4. Keep The Route Bundle Small
 
-## 4. Verify Data And Metrics
+Create only:
 
-- Confirm dataset ownership, location, and allowed use.
-- Confirm split definitions.
-- Confirm pairing or label integrity.
-- Confirm preprocessing and decoding.
-- Confirm metric code and expected direction.
-- Confirm sample counts and missing-file handling.
-- Save a small text-only audit result.
+- one route card containing identity, hypothesis, static contract, gates, and
+  authorization rules;
+- one durable stage runner on the route branch;
+- one cloud `status.txt` and one typed `<stage>_closeout.json` per executed stage;
+- one evidence README and compact decision summaries at closeout.
 
-## 5. Verify Runtime
+Create a separate contract, manifest, runbook, or analysis document only when it
+is independently reusable or cannot remain readable inside the route card. Do
+not maintain duplicate current-state documents.
 
-- Confirm Python or runtime version.
-- Confirm core dependencies.
-- Confirm hardware availability.
-- Confirm storage paths.
-- Confirm checkpoint read/write.
-- Confirm logging.
-- Confirm resume behavior.
-- Confirm evaluation can run from saved artifacts.
-- Record durable dependency or environment facts in the runbook.
+Use three distinct cloud locations, defined by the runtime protocol:
 
-## 6. Establish Baseline
+```text
+REMOTE_REPO = clean code checkout
+RUN_ROOT    = logs, status, raw tables, checkpoints, and outputs outside Git
+EVID_STAGE  = compact evidence staged in the repository at closeout
+```
 
-- Run reference evaluation if available.
-- Run a minimal no-change smoke.
-- Run the first fair baseline if needed.
-- Record baseline config and artifacts.
-- Define matched gate references for later routes.
-- Do not modify the model before this is complete unless the first task is only
-  repository bring-up.
+## 5. Select The Smallest Execution Profile
 
-### ConvIR-B Baseline Minimum
+Choose one profile in the route card. Do not add stages just because an older
+route used them.
 
-For this repository, baseline establishment means pretrained-checkpoint
-evaluation before any training or model edits:
+| Profile | Default stages |
+| --- | --- |
+| audit/evaluation | static contract -> cloud smoke -> formal evaluation |
+| training | static contract -> cloud smoke -> short scout -> hard gate -> formal/full budget |
+| policy/replay | integrity smoke -> out-of-fold formal replay -> sealed confirmation only if authorized |
 
-- download the official checkpoint from the root `README.md` links;
-- record local checkpoint path, file size, and sha256 hash;
-- run each target task's repository evaluation command;
-- use `--version base` or the task folder's base-equivalent setting for
-  ConvIR-B;
-- record official-reference PSNR/SSIM and local PSNR/SSIM;
-- record dataset split and verified sample count;
-- record inference output directory, average latency, and peak GPU memory;
-- save or export per-sample PSNR where possible;
-- inspect saved outputs for obvious artifacts and list example filenames;
-- label the baseline as accepted only after reproduction gaps are explained.
+The route card may omit a stage when it cannot answer the route question, or
+add one specialized stage when its decision value is written in advance.
+Locked test is never a debugging stage.
 
-## 7. Define First Failure Inventory
+## 6. Ready-To-Launch Decision
 
-Collect the smallest useful evidence for:
+Mark the route `PLANNED` only when all of the following are explicit:
 
-- average quality;
-- subgroup quality;
-- per-sample wins and losses;
-- runtime and memory;
-- training stability;
-- obvious failure cases;
-- data or label issues.
+- source commit and cloud asset identities are reconstructable;
+- the route question, forbidden flows, profile, and previous-stage authorization
+  rule are written;
+- the metric/gate contract compares the same data view;
+- cloud code, run-output, evidence-stage, runner, status, and closeout paths are
+  named;
+- the first stage is the cheapest stage that can resolve its current question.
 
-Convert observations into candidate failure modes. Do not jump directly to a
-solution.
-
-For ConvIR-B restoration tasks, include per-sample PSNR deltas, worst-10%
-samples, strong-reference regressions, texture or edge errors when measurable,
-frequency-domain loss/error when relevant, and runtime or memory outliers.
-
-## 8. Choose The First Route
-
-Use this filter:
-
-- Does it target one failure mode?
-- Can it be tested cheaply first?
-- Does it change one primary variable?
-- Does it have an early hard gate?
-- Does it measure the claimed mechanism?
-- Does it protect already-good cases?
-- Does failure teach what not to try next?
-
-If not, rewrite the route.
-
-Write the first route as "fixed budget under ConvIR-B constraints": FLOPs <=
-ConvIR-B +5%, latency <= matched runtime baseline +10%, peak memory <= matched
-runtime baseline +10% and fitting the current GPU, with matched 5/20/80/full
-epoch gates.
-
-## 9. Launch Discipline
-
-Before launch:
-
-- freeze the config;
-- record the command or job spec;
-- record the expected artifact paths;
-- record gate times or steps;
-- record stop rules;
-- record who can approve scope changes.
-
-During launch:
-
-- monitor without changing scope;
-- record infrastructure failures separately from scientific failures;
-- stop only at written gates or clear runtime failure;
-- do not replace the run with a reduced version and call it equivalent.
-
-For ConvIR-B, use successive halving by default: smoke, 5 epochs, 20 epochs,
-80 epochs, then full budget. A candidate reaches the next stage only when the
-written quality, mechanism, preservation, and cost gates all pass or when the
-card says why the next stage is still informative.
-
-## 10. After The Run
-
-- Record final status.
-- Record metrics and mechanism checks.
-- Label the result precisely.
-- Update artifact retention.
-- Write what the result rules in or rules out.
-- If evidence must be shared, create a compact text-only review package.
-- Audit source/local/remote parity for any published evidence package.
-- Create the next card only after the decision is clear.
+If a static contract item changes, update the route card, rerun the affected
+static checks, and use a new run id when the scientific comparison changed. Do
+not silently repair a route after seeing results.

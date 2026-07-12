@@ -32,45 +32,20 @@
 
 ## Universal Route Workflow
 
-This is the default execution flow for later reasoning and action. Use this
-order for every new route, method, architecture, loss, selector,
-teacher/distillation plan, or runtime experiment unless a stricter task-specific
-protocol applies. Do not skip ahead to coding or launching because a previous
-chat already seems to imply the answer.
+Use this order for every route; the matching L2 document owns the detailed
+checks. Do not repeat those checklists in route cards or other rule files.
 
-1. Fact-source gate: first identify the authoritative sources for the task.
-   For research state, use GitHub `main` or the named GitHub branch plus current
-   cloud runtime state; use attachments only as task input. Treat local files as
-   editable/sync staging unless the task is explicitly local editing.
-2. Route-identity gate: decide whether this is a new route, a continuation, a
-   rescue, an ablation, or an evidence sync. Record what is explicitly not
-   allowed before work starts, especially forbidden continuations, selector
-   probes, canary expansion, and locked-test access.
-3. Resource-preflight gate: before any cloud launch, verify cloud branch/commit,
-   workspace, explicit Python, dataset/split, checkpoint/teacher assets, output
-   root, command script, status/log paths, tmux/session conflicts, and locked-test
-   policy. If a required asset is missing, classify the blocker; do not silently
-   substitute a different local or cloud source.
-4. Metric-contract gate: define the exact baseline, sample/crop/split pairing,
-   metric direction, gate thresholds, and comparison scope before running. Ensure
-   before/after/base metrics are computed on the same data view; rerun rather
-   than interpret if the metric contract is wrong. Formal gates must follow the
-   canonical Gate Policy in `experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md`:
-   classify the gate, record the threshold source and decision meanings, and do
-   not interpret a failure beyond what that gate type tests.
-5. Transport gate: use stable PowerShell -> WSL -> SSH transfer patterns from
-   `COMMAND_RELIABILITY_QUICKSTART.md`. Prefer `tar`/`scp`/`rsync` or stable
-   script bodies with explicit `*_OK` markers over ad hoc nested quoting; read
-   the longer command protocol only for failed or unfamiliar boundary cases.
-6. Stage-gate execution: run the smallest phase that answers the current
-   question. Launch later phases only when the written previous gate authorizes
-   them; never use locked test, canary expansion, or broad queues as a debugging
-   shortcut.
-7. Closeout and archive gate: after the last authorized phase, write the final
-   decision into the route card, evidence README, closeout JSON, central index,
-   and family summary as applicable. Keep runnable code on the route branch and
-   sync only compact text evidence to GitHub `main` unless a separate promotion
-   decision says otherwise.
+1. Ground the task in GitHub evidence and current cloud state.
+2. Classify the route and record forbidden continuations and locked-test policy.
+3. Complete the one-time route setup in
+   `experience_docx/MODEL_EXPERIMENT_START_CHECKLIST.md`.
+4. Before each cloud launch, complete the dynamic preflight and run only the
+   authorized stage from `experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md`.
+5. Use `experience_docx/COMMAND_RELIABILITY_QUICKSTART.md` for transport.
+6. Interpret formal gates only with the canonical Gate Policy in
+   `experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md`.
+7. At a terminal route decision or explicit major handoff, archive compact text
+   evidence with `experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.
 
 ## Read Budget
 
@@ -106,6 +81,8 @@ metric contract, stage authorization, and closeout/archive.
 ## Sync Gates
 
 - Sync only valuable compact text evidence, not raw artifacts or broad outputs.
+- Commit intermediate compact evidence to the route branch. Sync GitHub `main`
+  only at a terminal route state or an explicitly recorded major handoff.
 - Use a clean `github/main` worktree, stage explicit paths, and follow
   `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` for path selection, checks, push, and
   verification.
@@ -121,8 +98,9 @@ metric contract, stage authorization, and closeout/archive.
 
 ## Command Reliability
 
-- For PowerShell -> WSL -> SSH, prefer a small Bash script piped through WSL/SSH
-  over fragile nested quoting.
+- For PowerShell -> WSL -> SSH, prefer
+  `experience_docx/tools/convir_remote_script.sh <local-script>` over nested
+  quoting.
 - Monitoring/sync/audit commands should print `*_OK` or write a status file.
 - If quoting, CRLF, PATH, or shell-boundary failures occur, record the invalid
   and corrected forms in the reliability protocol. Use

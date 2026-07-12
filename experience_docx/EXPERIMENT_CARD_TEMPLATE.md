@@ -157,26 +157,17 @@ Route-specific additions:
 - Allowed resume behavior:
 - Sample-size policy:
 - Dependency/version assumptions:
-
-ConvIR-B default budget ladder:
-
-| Stage | Budget | Promotion rule |
-| --- | --- | --- |
-| smoke | 0 to 1 epoch or fixed-batch probe | finite loss/gradients, correct shapes, checkpoint/eval path works |
-| scout | 5 epochs | within 0.50 dB of matched baseline scout point and cost limits hold |
-| first hard gate | 20 epochs | within 0.25 dB of matched baseline or clear target-group gain; strong-case regression <= 2% |
-| promotion | 80 epochs | mean PSNR >= matched baseline - 0.10 dB; mechanism metric supports hypothesis |
-| final | full budget | mean PSNR gain >= +0.10 dB; SSIM delta >= -0.001; cost and regression limits pass |
+- Selected execution profile (`audit/evaluation`, `training`, or
+  `policy/replay`):
+- Omitted or specialized stage rationale:
 
 ## Gates
 
-| Gate | Image/global metric rule | Mechanism rule | Stop/continue rule |
-| --- | --- | --- | --- |
-| sanity | finite loss, output shape equals baseline, eval runs on at least 8 images | loss/branch activity is non-degenerate when relevant | stop if shape, checkpoint, or finite-loss checks fail |
-| early trajectory | 5-epoch PSNR within 0.50 dB of matched baseline scout point | first mechanism signal moves in intended direction or remains neutral | stop unless the failed metric makes the next diagnostic informative |
-| first hard gate | 20-epoch PSNR within 0.25 dB of matched baseline or target-group gain is clear | route-specific mechanism metric supports the hypothesis | promote only if strong-case regression <= 2% and cost limits hold |
-| promotion | 80-epoch mean PSNR >= matched baseline - 0.10 dB | mechanism still supports the hypothesis | continue to full only if regression/cost limits still hold |
-| final | PSNR gain >= +0.10 dB and SSIM delta >= -0.001 | mechanism and controls do not contradict the claim | label as positive candidate only if quality, mechanism, preservation, and cost all pass |
+| Stage | Question | Budget/sample scope | Gate type and threshold source | `PASS` authorizes |
+| --- | --- | --- | --- | --- |
+| first authorized stage | | | | |
+| next stage, if needed | | | | |
+| terminal decision stage | | | | `none` |
 
 ## Analysis Plan
 

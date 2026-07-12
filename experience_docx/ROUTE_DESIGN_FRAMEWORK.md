@@ -34,8 +34,8 @@ strong-case regressions stay within the written limits?
 
 This framework does not restate the clean-route rule. For ConvIR-B/Haze4K
 model-structure routes, use `OFFICIAL_ARCH_ANCHOR_POLICY.md` as the canonical
-source policy and `MODEL_EXPERIMENT_START_CHECKLIST.md` sections `0` and `0B`
-as the start gate.
+source policy and `MODEL_EXPERIMENT_START_CHECKLIST.md` as the one-time start
+gate.
 
 ## Generic Route Families
 
@@ -139,9 +139,10 @@ A route is not promoted on a single number alone. Promotion should require:
 - cost/deployability acceptability;
 - a clear next experiment or finalization plan.
 
-For ConvIR-B, promotion from 20 to 80 epochs should require both matched-budget
-quality and preservation: average PSNR alone is insufficient if the top-baseline
-images regress or if latency/memory exceeds the card's limits.
+For ConvIR-B training routes, promotion to the next budget stage should require
+both matched-budget quality and preservation: average PSNR alone is insufficient
+if the top-baseline images regress or if latency/memory exceeds the card's
+limits. Stage sizes come from the route card, not this design framework.
 
 ## Reopen Rules
 

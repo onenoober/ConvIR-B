@@ -154,19 +154,16 @@ Default cost limits for a ConvIR-B replacement route:
 | Inference output size | same as baseline |
 | Checkpoint/export/resume | same contract unless explicitly tested |
 
-Default training-budget ladder:
+Select the route profile with `MODEL_EXPERIMENT_START_CHECKLIST.md`. For a
+training route, the route card defines its short scout, first hard gate, and
+formal/full budget from the matched baseline and the earliest decisive
+question. Audit/evaluation and policy/replay routes do not inherit training
+epoch stages.
 
-| Stage | Budget | Purpose |
-| --- | --- | --- |
-| smoke | 0 to 1 epoch or fixed-batch probe | verify code, loss, gradients, and checkpoint path |
-| scout | 5 epochs | reject collapsed or clearly expensive routes |
-| first hard gate | 20 epochs | decide whether the route deserves meaningful training |
-| promotion | 80 epochs | decide whether full training is informative |
-| final | full budget from the card | make the replacement or ablation decision |
-
-Use the same budget ladder for the baseline learning curve when training is part
-of the comparison. A candidate cannot be called faster unless it is compared
-with the matched baseline point at the same epoch, step, or wall-clock budget.
+Use the same declared budget points for the baseline learning curve when
+training is part of the comparison. A candidate cannot be called faster unless
+it is compared with the matched baseline at the same epoch, step, or wall-clock
+budget.
 
 ## Default Gates For CSD Desnowing
 

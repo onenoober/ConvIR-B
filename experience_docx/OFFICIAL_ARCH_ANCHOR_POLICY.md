@@ -66,8 +66,9 @@ anchor and must be relabeled as setup work or rerun from a compliant branch.
   `Universal Route Workflow`.
 - Governance rule: `EXPERIMENT_GOVERNANCE_PROTOCOL.md`, section `Official
   Anchor Clean Route Rule`.
-- Start gate: `MODEL_EXPERIMENT_START_CHECKLIST.md`, section
-  `0B. Route Source And Anchor Compliance Gate`.
+- Start gate: `MODEL_EXPERIMENT_START_CHECKLIST.md`, sections
+  `Identify The Route And Source` and `Complete Static Preflight Once Per Route
+  Commit`.
 - GitHub Actions guard: `.github/workflows/official-anchor-guard.yml` blocks
   protected runtime/model path edits that target this branch. Configure GitHub
   branch protection to require this check for hard server-side enforcement.

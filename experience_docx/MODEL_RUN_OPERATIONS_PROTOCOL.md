@@ -1,272 +1,238 @@
 # Model Run Operations Protocol
 
-Date: 2026-06-04
+Date: 2026-07-12
 
-Status: required workflow for cloud model training, testing, evaluation, and
-post-run audits in this repository.
+Status: per-launch workflow for cloud training, evaluation, inference, replay,
+and post-run audits.
 
 ## Purpose
 
-This protocol fills the operational gap between experiment governance and shell
-command reliability. Use it for every model smoke test, runtime validation,
-training run, evaluation run, inference run, post-run audit, and cloud evidence
-sync.
+Use this protocol immediately before, during, and after each authorized cloud
+stage. Route identity, static contracts, and profile selection are completed
+once in `MODEL_EXPERIMENT_START_CHECKLIST.md`. Formal gate design and
+interpretation remain canonical in `EXPERIMENT_GOVERNANCE_PROTOCOL.md`.
 
-The local WSL checkout remains editing and compile/static-check only. Runtime
-work happens on `convir-4090` unless the user explicitly overrides that rule.
-For research status and route-memory reads, use GitHub `main` or the explicitly
-named GitHub branch plus current cloud runtime state. Do not use the local
-working tree, local `experience_docx/`, or local git state to determine the
-current experiment situation.
+Local WSL is editing and syntax/static-check only. Runtime work happens on
+`convir-4090` unless the user explicitly overrides a specific command.
 
-## Universal Runtime Order
+## Per-Stage Runtime Order
 
-Every cloud runtime task starts with the same order, regardless of whether the
-idea is a new architecture, teacher route, loss, adapter, selector, ablation, or
-audit:
+For each stage, use only this sequence:
 
-1. Establish fact sources: cite the GitHub `main`/named branch paths and current
-   cloud paths that define the route state. Do not infer route memory from local
-   dirty files or chat history.
-2. Classify the route: new route, continuation, rescue, ablation, audit, or
-   evidence sync. Record forbidden continuations and locked-test policy before
-   any command can launch.
-3. Preflight resources: verify branch/commit, remote workspace, explicit cloud
-   Python, dataset/split, checkpoints, teacher/expert runtime assets, output
-   root, command script, status/log paths, and tmux/session names.
-4. Freeze the metric contract: baseline, crop/sample/split pairing, metric
-   direction, thresholds, and phase authorization must be written before launch.
-   If a bug is found in metric alignment, rerun the phase and mark the prior
-   result as engineering-invalid or metric-mismatched.
-5. Use reliable transport: transfer scripts/files with the stable patterns in
-   `COMMAND_RELIABILITY_QUICKSTART.md`, and require visible `*_OK` or
-   `*_FAILED` markers. Read `COMMAND_RELIABILITY_PROTOCOL.md` only for failed
-   or unfamiliar command-boundary cases.
-6. Execute by gates: run the smallest authorized phase first, and only launch
-   later phases when the written gate passes. Locked test and broad canary/full
-   queues remain blocked unless explicitly authorized by prior evidence.
-7. Close out before archiving: final route card, evidence README, closeout JSON,
-   central index, and family summary must reflect the final decision before
-   GitHub sync.
+```text
+previous closeout authorizes stage -> dynamic preflight -> durable runner ->
+routine monitor -> typed closeout -> compact route-branch evidence
+```
+
+Do not rerun one-time route setup at every launch. Do not launch a later stage
+because it appears next in a generic sequence; the previous typed closeout must
+name it in `authorizes`.
 
 ## Run State Labels
 
-Use explicit state labels in route cards, evidence READMEs, and `status.txt`:
+Use explicit labels in the route card, evidence README, and `status.txt`:
 
 | State | Meaning |
 | --- | --- |
-| `PLANNED` | route card and command are drafted but not launched |
-| `PREFLIGHT_RUNNING` | syntax, zero-init, data, or smoke checks are running on cloud |
-| `PREFLIGHT_FAILED_ENGINEERING` | launch is blocked by implementation, data, path, or environment issue |
-| `RUNNING_TRAIN` | training tmux/session is active |
-| `RUNNING_EVAL` | evaluation or compare command is active |
-| `RUNNING_AUDIT` | post-run mechanism, bucket, or failure audit is active |
-| `COMPLETED_GATE_PASS` | internal gates passed; next action follows the card |
-| `COMPLETED_GATE_FAIL` | internal gates failed; locked test remains blocked unless the card says otherwise |
-| `FAILED_INFRA` | cloud, storage, dependency, or interruption failure; not a scientific result |
-| `FAILED_COMMAND` | shell/PATH/quoting command failure; fix command protocol before interpreting results |
-| `SYNCED_TO_GITHUB` | text evidence has been committed and pushed to GitHub |
+| `PLANNED` | route setup is complete but no cloud stage is active |
+| `PREFLIGHT_RUNNING` | dynamic cloud checks or smoke are active |
+| `PREFLIGHT_FAILED_ENGINEERING` | implementation, asset, path, or environment blocks launch |
+| `RUNNING_TRAIN` | training is active |
+| `RUNNING_EVAL` | evaluation or comparison is active |
+| `RUNNING_AUDIT` | replay, mechanism, bucket, or failure audit is active |
+| `COMPLETED_GATE_PASS` | typed gate passed and closeout states the authorized next stage |
+| `COMPLETED_INCONCLUSIVE` | evidence cannot separate pass from fail; promotion is blocked |
+| `COMPLETED_GATE_FAIL` | typed gate failed; only the written continuation is stopped |
+| `FAILED_INFRA` | cloud, storage, dependency, or interruption failure; not scientific evidence |
+| `FAILED_COMMAND` | transport, shell, PATH, quoting, or marker failure |
+| `SYNCED_TO_GITHUB` | terminal or major-handoff compact evidence is on GitHub `main` |
 
-Do not collapse these into generic "failed" or "done" labels.
+Do not collapse these into generic `failed` or `done` labels.
 
-## Pre-Launch Checklist
+## Separate Code, Runtime, And Evidence Paths
 
-## Staged Screen Before Full Formal
-
-Do not launch new multi-variant model/loss/router routes directly at full
-`5 folds x 3 seeds` scale. The default progression is:
-
-```text
-small train-derived screen -> fixed top candidate/policy -> full formal 5x3
-```
-
-For Haze4K DTA-style routes, the default screen is `folds 0,1 x seeds
-3407,3411` across the proposed variants, with locked test untouched. Full `5x3`
-is allowed only after the route card or evidence README records a
-screen-to-formal promotion decision and fixes the candidate/policy being
-validated. If broad queues are generated by script defaults, the script is
-wrong; change the defaults before launch.
-
-Cloud GPU allocation should be dynamic by default. Probe current GPU memory and
-utilization before each job launch, use the maximum currently free GPUs within
-the route's parallelism cap, and keep the queue progressing when only part of
-the machine is available. Do not pause a route simply because other users are
-occupying some GPUs. Launch one job per fresh probe, not a whole stale snapshot
-of free GPUs, to reduce race-condition OOMs when other users grab a card. Only
-wait when no candidate GPU is below the route's free-resource threshold.
-
-Before launching any cloud runtime command, record or verify:
-
-- branch name and GitHub/cloud commit; local commit only if local files are
-  being copied or staged;
-- whether the working tree has unrelated changes;
-- remote workspace path on `convir-4090`;
-- exact remote Python path, normally `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`;
-- data root, depth/prior cache root when applicable, and checkpoint path;
-- split JSON or dataset split name;
-- run id, output root, model name, and evidence root;
-- tmux session name and whether it already exists;
-- command script path under `experience_docx/experiment_logs/<route_id>/`;
-- stdout/stderr log path;
-- `status.txt` path and expected status markers;
-- locked-test policy and whether the command touches locked data;
-- stop rules, eval cadence, and post-run audit commands.
-
-If any item is unknown, do not launch the run; update the route card or evidence
-README first.
-
-## Remote Workspace Sync
-
-Use explicit cloud workspaces. Do not assume the local WSL checkout is the
-runtime checkout.
-
-Recommended pattern:
+Each route defines three different cloud roots:
 
 ```bash
-REMOTE_ROOT=/sda/home/wangyuxin/ConvIR-B/repos/<repo-route-workspace>
-EVID=$REMOTE_ROOT/experience_docx/experiment_logs/<route_id>
+REMOTE_REPO=/sda/home/wangyuxin/ConvIR-B/repos/<route-workspace>
+RUN_ROOT=/sda/home/wangyuxin/ConvIR-B/runs/<route_id>
+EVID_STAGE=$REMOTE_REPO/experience_docx/experiment_logs/<route_id>
 PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
 ```
 
-Before runtime validation, verify the remote checkout has the intended code:
+- `REMOTE_REPO` is a Git checkout for code and tracked runners. Keep it clean
+  while a stage runs.
+- `RUN_ROOT` holds `status.txt`, stdout/stderr, checkpoints, raw tables, arrays,
+  images, and other runtime outputs. It is outside Git.
+- `EVID_STAGE` receives only curated compact text evidence during stage closeout.
+  Commit that evidence to the route branch after review.
+
+Never point `RUN_ROOT` at the repository evidence directory. Do not copy raw
+outputs into `EVID_STAGE` as a convenience.
+
+## Dynamic Preflight Before Every Launch
+
+Verify only facts that can change between launches:
+
+- the route card's static preflight applies to the exact intended route commit;
+- `REMOTE_REPO` branch, HEAD, and worktree status match that commit;
+- the explicit `PY` is executable and required dataset/checkpoint/cache assets
+  exist at their recorded identities;
+- the previous `<stage>_closeout.json` authorizes this stage, or this is the
+  route's written first stage;
+- the current command does not exceed its locked-test authorization;
+- enough current GPU memory is free for this stage;
+- the tmux session name is free and the output path is new, or the route card
+  explicitly authorizes an exact resume;
+- the tracked runner, `RUN_ROOT/status.txt`, log path, and closeout path are
+  explicit.
+
+If any item fails, write the matching engineering, infrastructure, or command
+state and stop. Do not substitute another commit, asset, split, output path, or
+Python environment silently.
+
+Probe GPU availability immediately before each job. Allocate only within the
+route's written parallelism cap and launch one job per fresh probe. Partial GPU
+availability is not itself a reason to pause; no qualifying GPU is.
+
+Check session and output availability from the launcher before creating tmux:
 
 ```bash
-ssh convir-4090 'cd /sda/home/wangyuxin/ConvIR-B/repos/<repo-route-workspace> && git branch --show-current && git rev-parse --short HEAD && git status --short'
+tmux has-session -t "$SESSION" 2>/dev/null \
+  && { echo SESSION_CONFLICT; exit 1; } \
+  || echo SESSION_FREE
+test ! -e "$OUTPUT_DIR" \
+  && echo OUTPUT_FREE \
+  || { echo OUTPUT_CONFLICT; exit 1; }
 ```
 
-If remote code was copied outside Git, record the source local commit and copy
-time in `status.txt` or the route README.
+Do not repeat the session-conflict check from inside the newly created session;
+that makes the session conflict with itself.
 
-## Session And Output Naming
+## Durable Stage Runner
 
-Use stable, unique names:
+Every cloud stage uses one tracked route runner. Prefer one parameterized runner
+for all stages over a separate launch script per sample size.
 
-- tmux train session: `<route_short>_train`;
-- tmux post/eval session: `<route_short>_post` or `<route_short>_eval`;
-- output model name: include route, active modules, scope, seed, and date;
-- evidence root: `experience_docx/experiment_logs/<route_id>/`;
-- training log: `train_<model_name>.log`;
-- gate output: `<route_short>_gate_<splits>.json`;
-- per-image compare: `scout_eval_per_image_<candidate>_vs_a0.csv`.
-
-Before launch:
-
-```bash
-tmux has-session -t <session> 2>/dev/null && echo SESSION_ACTIVE || echo SESSION_FREE
-test -e <output_dir> && echo OUTPUT_EXISTS || echo OUTPUT_FREE
-```
-
-Do not overwrite an existing output directory unless the route card explicitly
-marks the run as a resume or rerun and preserves the old evidence.
-
-## Command Script Requirements
-
-Every runtime command should be represented by a durable script under the route
-evidence root, even if launched manually.
-
-The script must:
+The runner must:
 
 - use `set -euo pipefail`;
-- define `REMOTE_ROOT`, `EVID`, `PY`, data/checkpoint paths, and model/run name;
-- `mkdir -p "$EVID"` before writing logs;
-- append start and finish markers to `status.txt`;
-- write stdout/stderr to a named `.log`;
-- print final `*_OK` or `*_FAILED` marker;
-- avoid raw `python` unless a conda activation is recorded and verified;
-- not include locked-test commands unless the gate policy allows them.
+- define `REMOTE_REPO`, `RUN_ROOT`, `PY`, data/checkpoint paths, route id, stage,
+  and run id;
+- create runtime directories only under `RUN_ROOT`;
+- use the explicit cloud Python path;
+- append start, progress, and terminal markers to `status.txt`;
+- capture stdout/stderr in a named runtime log;
+- return the underlying process exit code and print a final `*_OK` or
+  `*_FAILED` marker;
+- reject locked-test stages unless the route card and previous closeout
+  authorize them.
 
-Minimum marker pattern:
+Minimum exit handling:
 
 ```bash
-echo "run_start <run_id> $(date --iso-8601=seconds)" | tee -a "$STATUS"
+echo "stage_start route=$ROUTE_ID stage=$STAGE run=$RUN_ID time=$(date --iso-8601=seconds)" \
+  | tee -a "$STATUS"
 set +e
 "$PY" <entrypoint> <args> 2>&1 | tee "$LOG"
 rc=${PIPESTATUS[0]}
 set -e
-echo "run_done rc=$rc <run_id> $(date --iso-8601=seconds)" | tee -a "$STATUS"
+echo "stage_done route=$ROUTE_ID stage=$STAGE rc=$rc time=$(date --iso-8601=seconds)" \
+  | tee -a "$STATUS"
 exit "$rc"
 ```
 
-## Monitoring Rules
+Use `COMMAND_RELIABILITY_QUICKSTART.md` and
+`tools/convir_remote_script.sh` to cross the PowerShell/WSL/SSH boundary.
 
-Monitoring is read-only unless the user asks for an action.
+## Monitoring
 
-Each monitor should report:
+Routine monitoring is read-only and reports only:
 
-- remote time;
-- tmux sessions and active/inactive state;
-- latest status markers;
-- latest epoch/iteration when applicable;
-- latest validation metric if available;
-- checkpoint existence and mtimes;
-- eval/gate/audit file existence;
-- recent evidence files;
-- final `REMOTE_MONITOR_OK` and local `EVIDENCE_SYNC_OK` if synced.
+- state and whether the expected session/process is active;
+- current epoch, fold, seed, sample, or other progress unit;
+- latest primary metric when available;
+- terminal decision or the last status marker.
 
-Do not use silent commands. For example, prefer:
+End routine polls with `REMOTE_MONITOR_OK`. Do not repeatedly enumerate every
+artifact, timestamp, checkpoint, or directory while a healthy stage is running.
+Perform the full artifact and identity audit once after a terminal marker or
+when diagnosing a specific failure.
 
-```bash
-if tmux has-session -t "$s" 2>/dev/null; then
-  printf '%s=ACTIVE\n' "$s"
-else
-  printf '%s=NOT_ACTIVE\n' "$s"
-fi
+## Typed Stage Closeout
+
+After a stage terminates, audit its runtime outputs and write one compact
+`<stage>_closeout.json` with at least:
+
+```json
+{
+  "route_id": "<route_id>",
+  "run_id": "<run_id>",
+  "stage": "<stage>",
+  "state": "COMPLETED_GATE_PASS",
+  "gate_type": "scientific_utility",
+  "decision": "PASS",
+  "metric_contract": "<route-card section or reusable contract path>",
+  "authorizes": "<next_stage_or_none>",
+  "reason": "<compact evidence-backed reason>"
+}
 ```
 
-## Post-Run Required Artifacts
+Use `decision: null` for infrastructure, command, or engineering-invalid runs.
+The closeout must distinguish structural, numerical-equivalence, scientific-
+utility, and safety/promotion gates. Interpret `PASS`, `INCONCLUSIVE`, and
+`FAIL` only as allowed by the canonical Gate Policy.
 
-For any formal model route, produce or explicitly waive:
+Minimum compact closeout evidence is:
 
-- train log;
-- run script used for training;
-- Best/Final checkpoint existence summary, but not checkpoint files in Git;
-- eval compare JSON for each internal split;
-- per-image compare CSV for each internal split when feasible;
-- gate JSON with pass/fail and locked-test permission;
-- mechanism audit CSV/JSON for route-specific claims;
-- failure/depth/quality audit when regressions matter;
-- evidence README with key metrics and decision label;
-- updated experiment card, central index, and family summary.
+- the tracked stage runner;
+- terminal `status.txt` excerpt or compact status file;
+- the typed closeout JSON;
+- evidence README with primary metrics, decision, and raw cloud paths;
+- compact aggregate summaries needed to audit the decision.
+
+Add mechanism summaries or specialized contracts only when the route's claim
+requires them. Keep checkpoints, images, arrays, raw logs, raw inference
+outputs, selected-action tables, feature tables, and large per-image tables in
+`RUN_ROOT`.
+
+After an intermediate stage, commit reviewed compact evidence to the route
+branch. Do not sync GitHub `main` until the route reaches a terminal state or an
+explicit major handoff milestone.
 
 ## Locked-Test Protection
 
-Default rule: no locked test until the written internal gates pass.
-
-Before any command that could touch locked data, confirm in the route card and
-gate JSON:
-
-- selected checkpoint is fixed;
-- internal regular/hard gates pass;
-- locked-test command is run once;
-- output path is new and immutable;
-- result will be recorded as locked evidence, not used for further selection.
-
-If unsure, do not run the command.
+Locked test is blocked unless a previous typed closeout explicitly authorizes
+it. Before the single sealed command, confirm that the checkpoint/policy is
+fixed, all required internal and safety gates passed, the output path is new and
+immutable, and the result cannot be used for further selection. If any point is
+uncertain, stop.
 
 ## Failure Handling
 
-Classify failures before retrying:
+Classify before retrying:
 
 | Failure type | Action |
 | --- | --- |
-| command quoting, CRLF, PATH | update `COMMAND_RELIABILITY_PROTOCOL.md`, rerun only the corrected command |
-| missing data/checkpoint/cache | stop launch, record missing path, fix path or sync data |
-| compile/import error | engineering failure, fix code before runtime interpretation |
-| NaN/Inf/OOM | engineering or capacity failure; record exact step and resource context |
-| interrupted cloud job | infra failure; resume only if the script and checkpoint policy support resume |
-| internal gate fail | scientific route result; do not change scope and call it the same run |
-| locked-test policy violation risk | stop immediately and ask/record before proceeding |
+| command, CRLF, PATH, or marker failure | mark `FAILED_COMMAND`; fix only transport and rerun the same intended operation |
+| missing or mismatched asset | mark engineering-invalid; repair preflight without scientific interpretation |
+| compile/import error | mark engineering failure; fix code under a new commit |
+| NaN/Inf/OOM | classify implementation or capacity cause; record step and resources before choosing a new run id |
+| interrupted cloud job | mark `FAILED_INFRA`; resume only under the frozen resume contract |
+| structural gate `FAIL` | stop because evidence integrity or eligibility is invalid |
+| numerical-equivalence `FAIL` | stop the equivalence claim; do not call the mechanism ineffective |
+| scientific-utility `FAIL` | stop the written scientific continuation only |
+| safety/promotion `FAIL` | block deployment, locked confirmation, or promotion named by the gate |
+| locked-test violation risk | stop immediately and record the policy conflict |
 
-Never "repair" a failed run by silently changing batch size, loss weights,
-active modules, split, seed, checkpoint, or evaluation script. That is a new
-diagnostic and needs a new run id or card update.
+Never silently change batch size, loss, modules, split, seed, checkpoint,
+evaluation code, or threshold and call it the same run. A changed scientific
+contract requires a new run id and route-card update.
 
 ## GitHub Closeout
 
-After the final authorized cloud phase completes, follow
-`BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` for evidence-only GitHub archival. This
-operations protocol owns runtime closeout and status labels; the branch-sync
-protocol owns path selection, staging checks, push, and verification.
-
-Once evidence is pushed, label the route `SYNCED_TO_GITHUB` in the evidence
-README or route card if the run is otherwise complete.
+At a terminal route decision or recorded major handoff, finalize the route card,
+evidence README, typed closeout, central index, and family summary when its
+verdict changed. Then follow `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` for explicit
+path selection, audits, push through the `github` remote, and remote
+verification. Mark `SYNCED_TO_GITHUB` only after that verification succeeds.

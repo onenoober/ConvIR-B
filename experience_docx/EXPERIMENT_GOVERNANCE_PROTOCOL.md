@@ -21,21 +21,12 @@ must also be judged against the mechanism it claims to improve.
 
 ## Documentation Authority
 
-Create a small documentation map before the first serious run. Keep each fact
-in one authoritative place.
-
-| Fact type | Suggested document |
-| --- | --- |
-| Current executable state, active run status, and immediate restrictions | `CURRENT_STATE.md` |
-| Run facts, metrics, checkpoints, configs, and stop reasons | `EXPERIMENT_LOG.md` |
-| Artifact paths, retention decisions, and cleanup policy | `ARTIFACT_MANIFEST.md` |
-| Server, dependency, storage, and recovery facts | `RUNBOOK.md` |
-| Reusable commands and operational procedures | `WORKFLOW.md` |
-| Evaluation, analysis, and visualization commands | `ANALYSIS_COMMANDS.md` |
-| Candidate hypotheses, changes, gates, and decision rules | dated experiment cards |
-
-Do not put full run history in current state. Do not put long command templates
-in experiment cards. Do not put route conclusions in the artifact manifest.
+Keep each fact in one authoritative place. The minimum route bundle and its
+ownership are defined in `MODEL_EXPERIMENT_START_CHECKLIST.md` and the router's
+`Execution Ownership` table. Do not create a separate current-state file,
+experiment log, manifest, runbook, workflow, and analysis-command file by
+default. Add a specialized document only when it is independently reusable or
+cannot remain readable in the route card, runner, closeout, or evidence README.
 
 ## Repository Hygiene Rule
 
@@ -288,22 +279,11 @@ old threshold and relabel the old result.
 Continue past weak global metrics only if mechanism metrics make the next
 budget block informative.
 
-Use successive halving by default when training cost matters:
-
-| Stage | Role |
-| --- | --- |
-| smoke | verify implementation, checkpoint, shape, finite losses, and basic runtime |
-| 5 epoch scout | reject collapse and obvious cost violations |
-| 20 epoch hard gate | decide whether meaningful training is justified |
-| 80 epoch promotion | decide whether full budget is likely to answer the route question |
-| full budget | assign the final decision label |
-
-For ConvIR-B CSD desnowing defaults, the 20-epoch hard gate requires quality to
-be within `0.25 dB` of the matched baseline point or to show a clear target-group
-gain, strong-case regression count <= `2%`, and cost limits still passing. The
-final replacement gate requires at least `+0.10 dB` PSNR, SSIM delta >=
-`-0.001`, FLOPs <= `+5%`, latency <= `+10%`, and final strong-case regression
-count <= `1%`.
+Select the route profile once with `MODEL_EXPERIMENT_START_CHECKLIST.md` and
+execute it with `MODEL_RUN_OPERATIONS_PROTOCOL.md`. Training may use successive
+halving, but epoch counts and thresholds must come from the route's matched
+baseline, noise, minimum worthwhile effect, and cost contract. Audit/evaluation
+and policy/replay routes must not inherit training epoch stages.
 
 ## Mechanism Metric Rule
 
@@ -357,6 +337,9 @@ Define before launch:
 As a default, do not commit datasets, model weights, raw large outputs, or
 temporary logs. Commit small text evidence only when it is curated, documented,
 and safe for review.
+
+The canonical cloud separation between clean code, raw runtime outputs, and
+compact evidence staging lives in `MODEL_RUN_OPERATIONS_PROTOCOL.md`.
 
 ## Evidence Package Rule
 
