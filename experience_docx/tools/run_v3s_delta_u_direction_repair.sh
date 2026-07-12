@@ -25,8 +25,8 @@ STAMP=$(date +%Y%m%dT%H%M%S)
 case "$MODE" in
   noop_smoke)
     STAGE=v3s-S0-exact-noop-smoke
-    RUN_TAG=v3s_s0_noop32_r2
-    OUT=$RUN_ROOT/s0_noop32_r2
+    RUN_TAG=v3s_s0_noop32_r3
+    OUT=$RUN_ROOT/s0_noop32_r3
     ;;
   scout_train)
     STAGE=v3s-S1-fixed32-trainability-scout
@@ -70,8 +70,8 @@ nvidia-smi -i "$GPU" --query-gpu=index,memory.free,utilization.gpu --format=csv,
 
 case "$MODE" in
   scout_train)
-    test -s "$EVID_STAGE/v3s_s0_noop32_r2_closeout.json"
-    "$PY" - "$EVID_STAGE/v3s_s0_noop32_r2_closeout.json" <<'PY'
+    test -s "$EVID_STAGE/v3s_s0_noop32_r3_closeout.json"
+    "$PY" - "$EVID_STAGE/v3s_s0_noop32_r3_closeout.json" <<'PY'
 import json
 import sys
 closeout = json.load(open(sys.argv[1], encoding="utf-8"))
