@@ -1,6 +1,6 @@
 # CHD-RM Haze4K Experiment Index
 
-Date: 2026-07-12
+Date: 2026-07-13
 
 Status: v3o remains an immutable aggregation-integrity fail-stop, while v3p
 independently passed canonical float64 A0/A1r/A2 and then closed its scalar-A
@@ -20,7 +20,7 @@ contract; v3q scoring, calibration, and policy continuation are closed.
 Continuous haze-density-aware region-adaptive residual modulation with low-haze protection for ConvIR-B Haze4K dehazing.
 ```
 
-## Current v3r/v3s Decision
+## Current v3r/v3s/v3t Decision
 
 v3r proves that the frozen direct operator's dominant ceiling is signed
 direction: scale and channel-scale fail, while bounded direction-line repair
@@ -30,10 +30,22 @@ real rendered `.125/.25` anchor/harm/CVaR losses. S0 exactly reproduced the old
 operator, but the fixed-32 scout failed its written activity gate with finite
 gradients, final `|Delta u|=1.252e-7 < 1e-6`, and no rendered-loss reduction.
 
-Do not resume v3s, lower its activity threshold, tune its losses, train a
-scorer/policy, or use canary/locked test. The next fresh diagnostic must decide
-whether the zero lock comes from the safety objective or from missing frozen
-context before proposing another learned direction-repair operator.
+v3t supplied that required diagnosis while holding v3s support, bounds, data,
+and rendered `.25` form fixed. Its S0 no-op was exact for both output-side and
+frozen-context heads on both operators. Its four 16-epoch S1 cells all failed
+the predeclared activity line: output-safe `2.72e-7`, output-utility `2.40e-7`,
+context-safe `1.82e-7`, and context-utility `2.07e-7` final `|Delta u|`, with
+rendered-loss reductions only `0.00013%`, `0.00011%`, `0.000075%`, and
+`0.000026%`. The utility cells removed anchor/harm/CVaR but retained the v3s
+minimal-repair penalty, so v3t closes the regularized rendered form rather than
+all possible activation objectives.
+
+Do not resume v3s/v3t, lower their activity thresholds, tune their losses,
+train a scorer/policy, or use canary/locked test. The next fresh diagnostic
+must keep the v3t output-side conditions and remove only the repair-magnitude
+penalty, optimizing real rendered `.25` candidate MSE. It can authorize only a
+new safety-curriculum training-contract design after its written activation
+gate passes.
 
 ## Current Scope
 
@@ -83,6 +95,7 @@ context before proposing another learned direction-repair operator.
 | v3q active signed-value observability | `codex/haze4k-v5-v3q-active-signed-value-20260712` | completed gate fail | Formal active candidate-pair contract passed, but full grouped OOF AUC `.62689` / `.63287` was almost unchanged by absolute-value features (`.62578` / `.63212`) and within-image shuffled labels retained `.61958` / `.62432` | `V3Q_A1_FAIL_STOP_LEARNED_SIGNED_SCORING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3q_active_signed_value_20260712/` |
 | v3r signed-margin operator repair | `codex/haze4k-v5-v3r-signed-margin-operator-repair-20260712` | completed privileged ceiling pass | Scale/channel scale fail the dual-operator SESOI, while bounded direction-line repair reaches worst-operator LCB95 `+0.280496 dB` over old `.25`; 36.5% of active blocks are wrong-direction | `V3R_A0_DIRECTION_REPAIR_CEILING_PASS_AUTHORIZE_DIRECTION_REPAIR_ROUTE_DESIGN_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3r_signed_margin_operator_repair_20260712/` |
 | v3s zero-init Delta-u direction repair | `codex/haze4k-v5-v3s-delta-u-direction-repair-20260713` | completed trainability gate fail | Exact no-op passes on both frozen operators; the fixed-32 real-render scout has finite gradients but final `|Delta u|=1.252e-7 < 1e-6` and does not lower rendered loss | `V3S_S1_TRAINABILITY_FAIL_STOP_THIS_LOW_CAPACITY_CONTRACT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3s_delta_u_direction_repair_20260713/` |
+| v3t zero-lock versus context diagnostic | `codex/haze4k-v5-v3t-zero-lock-context-diagnostic-20260713` | completed mechanism diagnostic | Exact dual-form no-op passes; all four fixed-32, 16-epoch output/context x safe/utility cells remain below both activity lines, including utility controls without anchor/harm/CVaR | `V3T_S1_ALL_UTILITY_CELLS_INACTIVE_REQUIRE_OPTIMIZATION_REDESIGN` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3t_zero_lock_context_diagnostic_20260713/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |

@@ -1,6 +1,6 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-07-12
+Date: 2026-07-13
 
 Status: evidence index plus official architecture anchor registry.
 
@@ -95,13 +95,24 @@ no-op gate passed, but the 32-image real-render scout remained near zero
 (`|Delta u|=1.252e-7 < 1e-6`) and did not lower rendered `.25` loss. This exact
 representation/loss contract is terminally stopped before five-fold training.
 
+v3t then held the v3s support, bounds, fixed 32 names, and rendered `.25`
+contract fixed while factorially changing only input form (output-side versus
+frozen full context) and objective (safe versus utility). S0 was exact no-op
+across both forms and frozen operators. All four 16-epoch S1 cells remained
+inactive: final `|Delta u|` was `2.72e-7`, `2.40e-7`, `1.82e-7`, and `2.07e-7`,
+with only `0.00013%`, `0.00011%`, `0.000075%`, and `0.000026%` rendered-loss
+reductions. The utility controls removed anchor/harm/CVaR but intentionally
+retained the minimal-repair penalty. Thus neither frozen context nor those
+safety terms explains activation within this regularized rendered form.
+
 The remaining bottleneck is not amplitude, scalar scoring, action granularity,
 or the hard-block executor: privileged evidence requires direction repair, but
-the first safe low-capacity learned form is optimization-inactive. Any next
-route must independently distinguish a safety-objective zero-lock from missing
-frozen contextual representation before it changes a learned operator. It may
-not resume v3s, relax its activity gate, train a scorer/policy, access a canary,
-or touch the locked test.
+the regularized learned form remains optimization-inactive. Do not resume v3s
+or v3t, relax their activity gates, tune their losses, train a scorer/policy,
+access a canary, or touch the locked test. The next fresh activation diagnostic
+must hold v3t output-side conditions fixed and remove only the repair-magnitude
+penalty, optimizing real rendered `.25` candidate MSE; it can authorize only a
+new safety-curriculum contract if its predeclared activity gate passes.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
 `experience_docx/experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3p-canonical-signed-gain.md`,
@@ -317,6 +328,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v3q_active_signed_value_20260712/` | compact | v3q active signed-value audit passed canonical candidate-pair feature reconstruction, then formal grouped linear probing found full AUC nearly identical to unsigned-only and survived within-image label shuffling. Learned signed scoring under this 24-feature schema is terminally stopped; raw feature tables remain cloud-only. |
 | `experiment_logs/haze4k_v5_chd_rm_v3r_signed_margin_operator_repair_20260712/` | compact | v3r privileged repair geometry passed only the bounded direction-line ceiling: worst-operator LCB95 `+0.280496 dB` over old `.25`, versus scale `+0.000220 dB` and channel-scale `+0.004571 dB`. It authorizes direction-repair design only. |
 | `experiment_logs/haze4k_v5_chd_rm_v3s_delta_u_direction_repair_20260713/` | compact | v3s exact zero-init no-op passed, then the fixed-32 real-render trainability scout failed before formal training: finite gradients but `|Delta u|=1.252e-7 < 1e-6` and no rendered-loss reduction. This representation/loss contract is stopped. |
+| `experiment_logs/haze4k_v5_chd_rm_v3t_zero_lock_context_diagnostic_20260713/` | compact | v3t exact output-side and frozen-context no-op passed, then all four fixed-32 factorial cells remained inactive despite utility controls without anchor/harm/CVaR. It closes the regularized rendered form that retains the minimal-repair penalty; raw outputs remain cloud-only. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
