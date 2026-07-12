@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `A0_PASS_A1_PLANNED`
+Status: `A0_PASS_A1R_ENGINEERING_REPAIR_PLANNED`
 
 Evidence root:
 `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/`
@@ -97,6 +97,7 @@ only compact JSON/CSV/README evidence after a terminal stage marker.
 | A0 smoke | 32 OOF images per operator | row/fold/hash identity; coverage exactly one; fixed `.125` replay `<=1e-6 dB`; every normalized numerical check `<=1`; no non-gray G1 sign flip | formal only |
 | A0 formal | 1,200 OOF images per operator | the same structural and numerical checks for every candidate, with worst-case candidate/image/block family enforcement | A1 reconstruction and G1 decomposition only |
 | A1 reconstruction | 2,400 paired v3p/v3m image rows and all canonical blocks | reconstruct frozen A2 bin actions; require exact per-image selected-action counts, full pairing, and fixed replay `<=1e-6 dB`; decompose action-path and renderer SSE without a new replay | A2 constrained G1 oracle only |
+| A1r engineering repair | same frozen rows and bins | A1's first reader used left-open/right-closed bins, while v3m A3 used `searchsorted(..., side="right")`; re-run only that source-semantic correction under a new run id and require exact action counts | A2 constrained G1 oracle only |
 
 Structural mismatch, coverage failure, fixed replay mismatch, or a non-gray
 signed-gain flip is `FAIL`. Envelope exceedance with intact structure and no

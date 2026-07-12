@@ -54,6 +54,14 @@ case "$MODE" in
     PROGRESS=0
     CONTRACT_ARG=()
     ;;
+  a1_reconstruction_repair)
+    STAGE=v3p-A1r-reconstruction
+    OUT=$RUN_ROOT/a1_reconstruction_r1
+    TAG=v3p_a1r
+    MAX_TRAIN=0
+    PROGRESS=0
+    CONTRACT_ARG=()
+    ;;
   *)
     echo "V3P_A0_INVALID_MODE mode=$MODE"
     exit 2
@@ -97,7 +105,7 @@ if value["decision"] != "V3P_A0_SMOKE_CANONICAL_NUMERICAL_PASS_AUTHORIZE_FORMAL_
 PY
 fi
 
-if [ "$MODE" = a1_reconstruction ]; then
+if [ "$MODE" = a1_reconstruction ] || [ "$MODE" = a1_reconstruction_repair ]; then
   test -s "$EVID_STAGE/v3p_a0_closeout.json"
   "$PY" - "$EVID_STAGE/v3p_a0_closeout.json" <<'PY'
 import json

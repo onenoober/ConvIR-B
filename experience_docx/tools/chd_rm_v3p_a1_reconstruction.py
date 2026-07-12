@@ -2,6 +2,7 @@
 """v3p-A1 read-only reconstruction of the frozen v3m-A3 policy failure."""
 
 import argparse
+import bisect
 import csv
 import hashlib
 import json
@@ -53,20 +54,29 @@ def read_bins(path):
     result = defaultdict(lambda: defaultdict(list))
     with Path(path).open(newline="", encoding="utf-8") as handle:
         for row in csv.DictReader(handle):
-            result[row["operator_label"]][int(row["holdout_fold"])].append(
-                (parse_bound(row["score_lower_exclusive"]), parse_bound(row["score_upper_inclusive"]), float(row["monotone_alpha"]))
-            )
+            result[row["operator_label"]][int(row["holdout_fold"])].append(row)
     for operator in result:
         for fold in result[operator]:
-            result[operator][fold].sort(key=lambda item: item[1])
+            rows = sorted(result[operator][fold], key=lambda item: int(item["bin_index"]))
+            boundaries = []
+            actions = []
+            for index, row in enumerate(rows):
+                if int(row["bin_index"]) != index:
+                    raise ValueError(f"non-contiguous calibration bins for {operator}/fold={fold}")
+                upper = parse_bound(row["score_upper_inclusive"])
+                if math.isfinite(upper):
+                    boundaries.append(upper)
+                actions.append(int(row["monotone_action_index"]))
+            if len(actions) != len(boundaries) + 1:
+                raise ValueError(f"calibration boundary/action mismatch for {operator}/fold={fold}")
+            result[operator][fold] = (boundaries, actions)
     return result
 
 
 def selected_alpha(bins, operator, fold, energy):
-    for lower, upper, alpha in bins[operator][fold]:
-        if energy > lower and energy <= upper:
-            return alpha
-    raise ValueError(f"no calibration bin for {operator}/fold={fold}/energy={energy}")
+    boundaries, actions = bins[operator][fold]
+    action_index = actions[bisect.bisect_right(boundaries, energy)]
+    return LADDER[action_index]
 
 
 def read_policy_rows(path):
