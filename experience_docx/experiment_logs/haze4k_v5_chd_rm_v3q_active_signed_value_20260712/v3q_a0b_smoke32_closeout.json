@@ -1,0 +1,14 @@
+{
+  "authorizes": "v3q-A0b-formal",
+  "canary_touched": false,
+  "decision": "V3Q_A0B_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY",
+  "gate_type": "structural_integrity",
+  "locked_test_touched": false,
+  "metric_contract": "v3q route card A0b candidate-pair feature contract",
+  "reason": "pinned producer/source assets, canonical active-key verification, and inference-only schema passed",
+  "route_id": "haze4k_v5_chd_rm_v3q_active_signed_value_20260712",
+  "run_id": "v3q_a0b_smoke32",
+  "stage": "v3q-A0b-candidate-pair-feature-contract",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": false
+}

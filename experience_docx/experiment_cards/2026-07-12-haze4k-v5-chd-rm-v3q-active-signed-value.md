@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `A0A_FORMAL_PASS_A0B_FEATURE_CONTRACT_ONLY`
+Status: `A0B_SMOKE_PASS_FORMAL_AUTHORIZED`
 
 ## Route Identity
 
@@ -287,3 +287,23 @@ The raw feature table stays in `RUN_ROOT`. A0b copies only schema, source
 manifest, compact operator/fold counts, typed closeout, and README text into
 `EVID_STAGE`. No A0b result authorizes sidecar training, threshold calibration,
 policy replay, canary, or locked-test access.
+
+## A0b Smoke Result
+
+The 32-image candidate-pair feature-contract smoke completed on
+`convir-4090` at `2026-07-12T20:45:30+08:00` with
+`V3Q_A0B_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY`.
+
+- The pinned v3p source commit, canonical source SHA-256, frozen assets, and
+  route commit all matched their recorded contracts.
+- Each operator emitted and canonically verified `14,151` active rows. The
+  D_ref counts were `9,177` beneficial and `4,974` harmful; D_rep had `9,173`
+  beneficial and `4,978` harmful. Both active gray counts were zero.
+- Exact ordered key checks passed, with maximum direct-energy and G1
+  differences both `0.0` against the canonical source.
+- The 24 model feature columns were disjoint from metadata, target, and
+  forbidden-field lists. The raw feature CSV remains under cloud `RUN_ROOT`.
+- This stage performed no training, canary, or locked-test operation.
+
+Only `v3q-A0b-formal` is now authorized. It must reproduce the complete
+1,200-image feature contract before a signed linear probe can be considered.

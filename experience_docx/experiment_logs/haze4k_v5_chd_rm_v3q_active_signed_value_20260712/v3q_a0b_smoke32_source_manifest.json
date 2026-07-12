@@ -1,0 +1,79 @@
+{
+  "canary_touched": false,
+  "canonical_blocks": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/a0_formal/v3p_a0_block_candidate_losses_cloud_only.csv",
+  "canonical_blocks_sha256": "52e6cd8829d37750cfb1e9e2fec39e6ac5cead2e324dbc353df93e5263e89765",
+  "feature_table_cloud_only": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3q_active_signed_value_20260712/a0b_smoke32/v3q_a0b_smoke32_active_features_cloud_only.csv",
+  "input_sha256": {
+    "a0_checkpoint": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "control_checkpoint": "08207119a5cf9e5c439dd2cb81b99029ade1861f2739d31e75f2f9f78d57c0f2",
+    "d7c_artifact": "09f449232024395cf64db15a2a0efa0f12d3e0e049e1da3d67229a3dc5729361",
+    "density_artifact": "1ffce13dccb41d96a47c2b5275f87bf2fdb73c226a190cfa240e5c71c1ec326f",
+    "fresh_split_manifest": "c8c00fefc965ded3389b6311fc67ea521e1f3174f27793688544abe09dc420e7",
+    "parent_a0_closeout": "2ca39ec1e17f4be794121603e3392a4e042e4d93b0e823454f7cf539f172d05d",
+    "parent_operator_manifest": "1d2ffa499128ad08a272d67c5439583900afe8ef87fb3256193ad5fe21c3af84",
+    "v3m_a0_source_manifest": "8966996c9c93f6f2f3fbdda536b69ea6aa03e1bf5432f127de47ca8ea95dd8a5",
+    "v3m_fixed_reference_oof_rows": "b4a10184fab77b0045440dc88530d000a892acf2105a6295d5ad8a488c67ecb1"
+  },
+  "locked_test_touched": false,
+  "route_commit": "3ef94dfd9632a4c17f1a42c3f4e64decf9229a8a",
+  "route_id": "haze4k_v5_chd_rm_v3q_active_signed_value_20260712",
+  "run_mode": "smoke",
+  "run_tag": "v3q_a0b_smoke32",
+  "schema": {
+    "feature_schema_sha256": "2338549db5ece28b0192bc54cc98a90a1aecc659abb8c58c42c6673ca7505a99",
+    "forbidden_model_features": [
+      "name",
+      "seed",
+      "fold",
+      "clean_reference_group",
+      "operator_label",
+      "g1",
+      "g1_epsilon",
+      "g1_state"
+    ],
+    "metadata_columns": [
+      "operator_label",
+      "seed",
+      "fold",
+      "name",
+      "clean_reference_group",
+      "block_y",
+      "block_x"
+    ],
+    "model_feature_columns": [
+      "direct_step_energy",
+      "d7c_score_mean",
+      "delta_l1_mean",
+      "delta_r_mean",
+      "delta_g_mean",
+      "delta_b_mean",
+      "delta_r_std",
+      "delta_g_std",
+      "delta_b_std",
+      "midpoint_r_mean",
+      "midpoint_g_mean",
+      "midpoint_b_mean",
+      "hazy_minus_midpoint_dot_delta",
+      "gradient_alignment",
+      "cov_hazy_minus_midpoint_delta_r",
+      "cov_hazy_minus_midpoint_delta_g",
+      "cov_hazy_minus_midpoint_delta_b",
+      "hazy_luminance_mean",
+      "hazy_luminance_std",
+      "hazy_saturation_mean",
+      "clip_fraction_0p125",
+      "clip_fraction_0p25",
+      "signed_distance_to_clip_0p125",
+      "signed_distance_to_clip_0p25"
+    ],
+    "target_columns": [
+      "g1",
+      "g1_epsilon",
+      "g1_state"
+    ]
+  },
+  "training_occurred": false,
+  "v3p_producer_script_sha256": "de6a8adaf266e47895a231b485d9d6185a315a42ab025cdaa361af1b1874007f",
+  "v3p_repo": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3p-canonical-signed-gain-20260712",
+  "v3p_source_commit": "555fd008e29f02128564f2fad41d0095ee44f5ea"
+}

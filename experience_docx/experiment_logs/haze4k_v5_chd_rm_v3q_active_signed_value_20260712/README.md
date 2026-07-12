@@ -1,6 +1,6 @@
 # v3q Active Signed-Value Evidence
 
-Status: `A0A_FORMAL_PASS_A0B_FEATURE_CONTRACT_ONLY`
+Status: `A0B_SMOKE_PASS_FORMAL_AUTHORIZED`
 
 ## A0a Smoke
 
@@ -45,11 +45,32 @@ maximum energy plateau, harmful rates remained `29.53%` / `30.13%`.
 
 ## Next Authorization
 
-Only `v3q-A0b-feature-contract-only` is authorized. It must define and audit
-inference-time candidate-pair features before any linear probe, sidecar, score
-threshold, or policy replay is permitted.
+Only `v3q-A0b-formal` is authorized. No linear probe, sidecar, score threshold,
+policy replay, canary, or locked-test action is authorized yet.
+
+## A0b Smoke
+
+The candidate-pair feature-contract smoke completed on `convir-4090` at
+`2026-07-12T20:45:30+08:00` with:
+
+```text
+V3Q_A0B_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY
+```
+
+The pinned producer, v3p canonical SHA-256, frozen asset contracts, and route
+commit all matched. Each operator produced exactly `14,151` active feature rows
+and reproduced canonical key order, G1 state, direct-step energy, and G1 with
+maximum observed differences of `0.0`. The 24 inference-time model features
+were disjoint from metadata, targets, and forbidden fields. It performed no
+training, canary, or locked-test work.
+
+The raw cloud-only feature table remains in:
+
+```text
+/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3q_active_signed_value_20260712/a0b_smoke32/
+```
 
 ## Artifact Boundary
 
-The four files in this directory are compact evidence only. Raw source tables,
-runtime logs, and any future feature table remain in cloud `RUN_ROOT`.
+This directory contains compact evidence only. Raw source tables, runtime logs,
+and feature tables remain in cloud `RUN_ROOT`.
