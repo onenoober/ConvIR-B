@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `A0B_SMOKE_PASS_FORMAL_AUTHORIZED`
+Status: `A0B_FORMAL_PASS_A1_SIGNED_LINEAR_PROBE_ONLY`
 
 ## Route Identity
 
@@ -307,3 +307,25 @@ The 32-image candidate-pair feature-contract smoke completed on
 
 Only `v3q-A0b-formal` is now authorized. It must reproduce the complete
 1,200-image feature contract before a signed linear probe can be considered.
+
+## A0b Formal Result
+
+The 1,200-image-per-operator candidate-pair feature contract completed on
+`convir-4090` at `2026-07-12T21:32:07+08:00` with
+`V3Q_A0B_FORMAL_PASS_AUTHORIZE_A1_SIGNED_LINEAR_PROBE_ONLY`.
+
+- Each operator emitted exactly `503,995` active rows. D_ref retained `22`
+  numerical-gray abstentions (`293,415` beneficial, `210,558` harmful); D_rep
+  retained `8` (`293,232` beneficial, `210,755` harmful).
+- The cloud-only table contains `1,007,990` active rows plus its header. All
+  canonical key, G1-state, direct-energy, and signed-G1 checks passed with
+  maximum observed energy/G1 difference `0.0`.
+- The 24 inference-time feature columns remained disjoint from metadata,
+  labels, and the forbidden-field list. No training, canary, or locked-test
+  action occurred.
+
+Only a signed linear probe is authorized next. It must use clean-reference
+grouped outer folds, per-image rather than per-block weighting, and report the
+energy-only, unsigned-magnitude-only, within-image shuffled-label, and
+metadata-only negative controls. It may not tune or replay a policy, choose a
+deployment threshold, create a sidecar, or access canary/locked data.

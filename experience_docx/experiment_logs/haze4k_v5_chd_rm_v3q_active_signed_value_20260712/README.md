@@ -1,6 +1,6 @@
 # v3q Active Signed-Value Evidence
 
-Status: `A0B_SMOKE_PASS_FORMAL_AUTHORIZED`
+Status: `A0B_FORMAL_PASS_A1_SIGNED_LINEAR_PROBE_ONLY`
 
 ## A0a Smoke
 
@@ -69,6 +69,25 @@ The raw cloud-only feature table remains in:
 ```text
 /sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3q_active_signed_value_20260712/a0b_smoke32/
 ```
+
+## A0b Formal
+
+The 1,200-image-per-operator feature contract completed at
+`2026-07-12T21:32:07+08:00` with:
+
+```text
+V3Q_A0B_FORMAL_PASS_AUTHORIZE_A1_SIGNED_LINEAR_PROBE_ONLY
+```
+
+Both operator tables reproduced all `503,995` active canonical keys and their
+G1 states, with zero maximum direct-energy and G1 difference. D_ref retained
+`22` active numerical-gray abstentions; D_rep retained `8`. The full
+cloud-only CSV has `1,007,990` rows plus header and preserves the 24-column
+inference-time schema without metadata or target leakage.
+
+Only a clean-reference-grouped, per-image-weighted signed linear probe with
+specified negative controls is now authorized. This is an observability gate,
+not permission for a threshold, policy replay, sidecar, canary, or locked test.
 
 ## Artifact Boundary
 
