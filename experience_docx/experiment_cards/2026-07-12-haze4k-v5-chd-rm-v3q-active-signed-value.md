@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `DRAFT_A0A_STATIC_CONTRACT`
+Status: `A0A_SMOKE_PASS_FORMAL_AUTHORIZED`
 
 ## Route Identity
 
@@ -189,3 +189,23 @@ coverage, or policy.
 - `INCONCLUSIVE` authorizes: only A0a read/transport repair.
 - `FAIL` stops: v3q use of this canonical label source; no threshold or policy
   continuation.
+
+## Completed Evidence
+
+The A0a 32-image smoke completed on `convir-4090` at
+`2026-07-12T20:10:29+08:00` with
+`V3Q_A0A_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY`.
+
+- The pinned canonical block SHA-256 matched
+  `52e6cd8829d37750cfb1e9e2fec39e6ac5cead2e324dbc353df93e5263e89765`.
+- Both operators read exactly 20,000 block rows across the same 32
+  clean-reference groups; no metadata was used as a model feature, and no GPU,
+  training, canary, or locked-test operation occurred.
+- The smoke active-only beneficial-versus-harmful energy AUC was `0.57005`
+  (`D_ref`) and `0.57508` (`D_rep`), confirming the previously observed
+  magnitude/sign gap without treating the result as a policy gate.
+- The typed closeout authorizes A0a formal only. The formal stage must repeat
+  dynamic preflight with a fresh `a0a_formal` output path.
+
+Compact evidence is under
+`experience_docx/experiment_logs/haze4k_v5_chd_rm_v3q_active_signed_value_20260712/`.

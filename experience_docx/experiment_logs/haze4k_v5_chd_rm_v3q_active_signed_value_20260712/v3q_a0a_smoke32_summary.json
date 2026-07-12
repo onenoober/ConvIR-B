@@ -1,0 +1,48 @@
+{
+  "cross_operator": {
+    "paired_image_count": 32,
+    "sum_G1_pearson": 0.9978699752551946,
+    "sum_active_energy_pearson": 0.9986777851155735,
+    "within_image_energy_G1_pearson": 0.9981486760448214
+  },
+  "operators": [
+    {
+      "abstain_count": 5849,
+      "active_count": 14151,
+      "beneficial_active_count": 9177,
+      "energy_auc_beneficial_vs_all_nonbeneficial": 0.8024034865111511,
+      "energy_auc_beneficial_vs_harmful_only": 0.5700468304202229,
+      "harmful_active_count": 4974,
+      "image_count": 32,
+      "max_active_energy": 2.189333099522628e-05,
+      "max_energy_active_count": 3032,
+      "max_energy_beneficial_rate": 0.7427440633245382,
+      "max_energy_harmful_rate": 0.25725593667546176,
+      "numerical_gray_active_count": 0,
+      "operator_label": "D_ref",
+      "pearson_energy_G1_active": 0.22634433126969097,
+      "pearson_energy_abs_G1_active": 0.4856149784722629,
+      "row_count": 20000,
+      "zero_energy_abstain_count": 5849
+    },
+    {
+      "abstain_count": 5849,
+      "active_count": 14151,
+      "beneficial_active_count": 9173,
+      "energy_auc_beneficial_vs_all_nonbeneficial": 0.8046335522072757,
+      "energy_auc_beneficial_vs_harmful_only": 0.5750838629465999,
+      "harmful_active_count": 4978,
+      "image_count": 32,
+      "max_active_energy": 2.189333099522628e-05,
+      "max_energy_active_count": 3135,
+      "max_energy_beneficial_rate": 0.754066985645933,
+      "max_energy_harmful_rate": 0.24593301435406698,
+      "numerical_gray_active_count": 0,
+      "operator_label": "D_rep",
+      "pearson_energy_G1_active": 0.23435806767175796,
+      "pearson_energy_abs_G1_active": 0.4871760832302418,
+      "row_count": 20000,
+      "zero_energy_abstain_count": 5849
+    }
+  ]
+}
