@@ -1,6 +1,6 @@
 # Experiment Governance Protocol
 
-Date: 2026-06-10
+Date: 2026-07-12
 
 Status: generic protocol for model experiments.
 
@@ -213,6 +213,69 @@ Disallowed without explicit approval:
 
 Every formal route needs gates. Gate names can vary by project, but each role
 should exist.
+
+This section is the canonical repository rule for designing and interpreting
+experiment gates. Other documents should link here instead of copying it.
+
+### Minimum Gate Contract
+
+Before a formal phase runs, each decision gate must state:
+
+- gate type, estimand, analysis unit, reference, and metric direction;
+- threshold or margin and its independent source;
+- applicable decision rules: structural gates use `PASS`/`FAIL`; numerical,
+  scientific, and safety gates use `PASS`/`INCONCLUSIVE`/`FAIL`;
+- the scientific claim allowed by the result;
+- the exact next phase, if any, authorized by `PASS`.
+
+A threshold without a defensible pre-result source is diagnostic only. Valid
+sources include an engineering tolerance, a high-precision numerical reference,
+a baseline/noise study, a minimum worthwhile effect, or an explicit risk/cost
+budget. Do not derive a new threshold from the formal result it will judge.
+
+### Gate Types
+
+| Gate type | Use | Required decision basis |
+| --- | --- | --- |
+| structural integrity | hashes, pairing, row/fold identity, coverage, forbidden data access | binary hard check |
+| numerical equivalence | two implementations of the same mathematical quantity | high-precision reference, predeclared `atol + rtol * scale`, and semantic stability |
+| scientific utility | lift, retention, coverage, mechanism value | minimum worthwhile effect plus grouped uncertainty interval |
+| safety or promotion | severe failures, lower tail, cumulative harm, deployability | direct replay plus a predeclared maximum risk and one-sided upper confidence bound |
+
+The analysis unit must match the claim. In particular, block-level AUC, FPR,
+precision, or correlation cannot by itself authorize an image-level policy.
+Image deployment gates must include image-level direct replay and cumulative
+harm or tail-risk measurements.
+
+### Decision Meaning
+
+- `PASS`: all hard checks and the typed gate pass; authorize only the written
+  next phase.
+- `INCONCLUSIVE`: evidence does not separate pass from fail; authorize only
+  more evidence or repair in the same phase, never promotion.
+- `FAIL`: stop the written continuation. The scientific interpretation is
+  limited to the gate type: a numerical-equivalence failure is not a mechanism
+  failure, and a diagnostic ranking failure is not automatically a safety
+  failure.
+
+Historical decisions remain unchanged. A later route may repair a numerical or
+engineering contract only under a new preregistered route; it must not edit the
+old threshold and relabel the old result.
+
+### Efficient Use
+
+- Use one primary scientific question per stage, with integrity and safety as
+  mandatory guards. Extra metrics are diagnostic and cannot authorize scope.
+- Smoke validates implementation and catches obvious failure. It must not be
+  used to calibrate a formal maximum, threshold, or margin.
+- Declare the formal comparison family before running. When many candidates or
+  metrics are inspected, use a worst-case family rule or an appropriate
+  multiplicity-aware interval.
+- For numerical identity, compute from the same canonical values, use an
+  independent high-precision implementation, and define a gray zone where sign
+  or class labels must abstain.
+- Freeze selector, threshold, and executor in that order. Do not tune them
+  together on the same held-out evidence.
 
 | Gate role | Purpose |
 | --- | --- |

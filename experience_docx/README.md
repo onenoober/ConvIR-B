@@ -61,6 +61,7 @@ pointers elsewhere. Do not duplicate the full rule body across layers.
 | --- | --- | --- | --- |
 | Current status, result, decision, or route memory | GitHub `main` or named branch copy of `EXPERIMENT_INDEX.md` | Relevant family summary, route card, evidence README/log dir | Local dirty checkout, chat history, unrelated route logs |
 | New route, method, loss, selector, teacher, or audit | `MODEL_EXPERIMENT_START_CHECKLIST.md` sections `0` and `0B` | `ROUTE_DESIGN_FRAMEWORK.md`, `EXPERIMENT_CARD_TEMPLATE.md`, relevant family summary | Full governance package |
+| Gate design, threshold, or scientific interpretation | `EXPERIMENT_GOVERNANCE_PROTOCOL.md` section `Gate Policy` | Relevant route card and metric contract | Unrelated historical gate files |
 | New Haze4K model-structure route | `OFFICIAL_ARCH_ANCHOR_POLICY.md` and `Haze4K_ARCH_FINETUNE_WORKFLOW.md` | `CONVIR_B_EXECUTION_GUIDE.md` baseline contract, route card template | Old failed route branches unless explicitly continuing |
 | Cloud launch, monitoring, eval, inference, or post-run audit | `MODEL_RUN_OPERATIONS_PROTOCOL.md` and `COMMAND_RELIABILITY_QUICKSTART.md` | `COMMAND_RELIABILITY_PROTOCOL.md` only for failed/unfamiliar command-boundary cases | Historical command failures |
 | Evidence sync to GitHub `main` | `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` | Affected index/card/family/evidence README | Route code unless promotion is explicitly approved |

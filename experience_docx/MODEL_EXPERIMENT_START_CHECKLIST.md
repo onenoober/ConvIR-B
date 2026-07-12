@@ -25,8 +25,11 @@ plan, selector, loss, or runtime experiment, complete this route framing gate:
   root, command script, status/log file, and tmux/session name before launch.
 - Metric-contract list: define baseline, exact sample/crop/split pairing,
   metric direction, pass/fail thresholds, and what later phase each gate
-  authorizes. Do not interpret a result if base/before/after metrics were
-  computed on different data views.
+  authorizes. For every formal decision gate, also record its gate type,
+  analysis unit, threshold/margin source, `PASS`/`INCONCLUSIVE`/`FAIL` meaning,
+  and allowed scientific claim according to the canonical Gate Policy in
+  `EXPERIMENT_GOVERNANCE_PROTOCOL.md`. Do not interpret a result if
+  base/before/after metrics were computed on different data views.
 - Transport plan: choose the stable command/sync pattern up front from
   `COMMAND_RELIABILITY_QUICKSTART.md`. Prefer `tar`/`scp`/`rsync` or stable
   script bodies through WSL/SSH with explicit success markers; avoid ad hoc

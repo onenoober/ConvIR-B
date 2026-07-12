@@ -54,7 +54,10 @@ chat already seems to imply the answer.
 4. Metric-contract gate: define the exact baseline, sample/crop/split pairing,
    metric direction, gate thresholds, and comparison scope before running. Ensure
    before/after/base metrics are computed on the same data view; rerun rather
-   than interpret if the metric contract is wrong.
+   than interpret if the metric contract is wrong. Formal gates must follow the
+   canonical Gate Policy in `experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md`:
+   classify the gate, record the threshold source and decision meanings, and do
+   not interpret a failure beyond what that gate type tests.
 5. Transport gate: use stable PowerShell -> WSL -> SSH transfer patterns from
    `COMMAND_RELIABILITY_QUICKSTART.md`. Prefer `tar`/`scp`/`rsync` or stable
    script bodies with explicit `*_OK` markers over ad hoc nested quoting; read
