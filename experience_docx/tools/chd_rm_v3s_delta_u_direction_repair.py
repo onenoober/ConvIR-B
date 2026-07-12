@@ -225,7 +225,7 @@ def frozen_sample(args, legacy, frozen, name, fold, device):
         padded, height, width = legacy.pad_to_factor(input_img)
         label = label[:, :, :height, :width]
         hazy = padded[:, :, :height, :width]
-        base_prediction = legacy.forward_final(frozen["base"], padded, height, width)
+        base_prediction = legacy.v3l_a0.forward_final(frozen["base"], padded, height, width)
         gate_full, _, _ = frozen["gate_producer"](padded)
         hard_gate = legacy.action_gate_from_full(
             gate_full,
