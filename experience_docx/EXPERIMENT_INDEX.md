@@ -85,12 +85,23 @@ but unsigned-only was `.62578` / `.63212` and within-image shuffled labels
 retained `.61958` / `.62432`. This closes learned signed scoring, calibration,
 and policy continuation under that feature schema.
 
-The remaining scientific bottleneck is deployable signed first-step value and
-image-level cumulative-harm control, not action granularity or the hard-block
-executor. The current Haze4K package cannot support a privileged `t+A` bridge.
-Any new value assessor requires a separately authorized fresh route with a new
-representation and independent label/control contract before any replay
-expansion, route-confirm, canary, or locked-test access.
+v3r then isolated the frozen operator geometry: scale and channel-scale ceilings
+fail the dual-operator `+0.005 dB` SESOI, while bounded direction-line repair
+passes at worst-operator LCB95 `+0.280496 dB` over old `.25`; about 36.5% of
+active blocks are wrong-direction. v3s tested the first learned response to
+that result, a zero-init low-capacity `Delta u` field conditioned only on haze,
+base prediction, and old step with anchor/harm/CVaR constraints. Its exact
+no-op gate passed, but the 32-image real-render scout remained near zero
+(`|Delta u|=1.252e-7 < 1e-6`) and did not lower rendered `.25` loss. This exact
+representation/loss contract is terminally stopped before five-fold training.
+
+The remaining bottleneck is not amplitude, scalar scoring, action granularity,
+or the hard-block executor: privileged evidence requires direction repair, but
+the first safe low-capacity learned form is optimization-inactive. Any next
+route must independently distinguish a safety-objective zero-lock from missing
+frozen contextual representation before it changes a learned operator. It may
+not resume v3s, relax its activity gate, train a scorer/policy, access a canary,
+or touch the locked test.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
 `experience_docx/experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3p-canonical-signed-gain.md`,
@@ -304,6 +315,8 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v3o_signed_adjacent_advantage_identifiability_20260712/` | compact | v3o compact evidence: A0 smoke passed, then 1,200-image formal candidate-SSE aggregation exceeded the fixed integrity gate and closed the route. Cloud-only raw candidate-loss and per-image tables are excluded. |
 | `experiment_logs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/` | compact | v3p canonical float64 reconstruction passed A0/A1r/A2 and established constrained first-step oracle headroom, then B0 scalar-A physics smoke failed its fixed forward-data contract. The physics branch is closed; raw block/per-image tables remain cloud-only. |
 | `experiment_logs/haze4k_v5_chd_rm_v3q_active_signed_value_20260712/` | compact | v3q active signed-value audit passed canonical candidate-pair feature reconstruction, then formal grouped linear probing found full AUC nearly identical to unsigned-only and survived within-image label shuffling. Learned signed scoring under this 24-feature schema is terminally stopped; raw feature tables remain cloud-only. |
+| `experiment_logs/haze4k_v5_chd_rm_v3r_signed_margin_operator_repair_20260712/` | compact | v3r privileged repair geometry passed only the bounded direction-line ceiling: worst-operator LCB95 `+0.280496 dB` over old `.25`, versus scale `+0.000220 dB` and channel-scale `+0.004571 dB`. It authorizes direction-repair design only. |
+| `experiment_logs/haze4k_v5_chd_rm_v3s_delta_u_direction_repair_20260713/` | compact | v3s exact zero-init no-op passed, then the fixed-32 real-render trainability scout failed before formal training: finite gradients but `|Delta u|=1.252e-7 < 1e-6` and no rendered-loss reduction. This representation/loss contract is stopped. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
@@ -425,6 +438,14 @@ The active conclusion is conservative:
   magnitude/image-level predictability but no independently controlled signed
   block-value signal. Do not repeat its linear scoring, calibration, threshold,
   or policy continuation without a new representation and label/control route.
+- CHD-RM v3r established that changing residual direction, rather than scale or
+  RGB channel scale, has substantial privileged ceiling. It is not a deployable
+  result and does not authorize post-hoc scoring or policy replay.
+- CHD-RM v3s exact no-op was structurally sound, but its first low-capacity
+  output-side `Delta u` form with anchor/harm/CVaR loss stayed below the
+  activity gate on a fixed 32-image scout. Do not resume, tune, or widen this
+  exact representation/loss contract; diagnose zero-lock versus missing context
+  in a fresh route before any new learned-operator training.
 
 ## Artifact Boundary
 

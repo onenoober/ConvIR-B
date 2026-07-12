@@ -1,0 +1,51 @@
+{
+  "authorizes": "new direction-repair representation/training contract design only",
+  "canary_touched": false,
+  "decision": "V3R_A0_DIRECTION_REPAIR_CEILING_PASS_AUTHORIZE_DIRECTION_REPAIR_ROUTE_DESIGN_ONLY",
+  "dual_operator": {
+    "channel_scale": {
+      "lcb95_by_operator_db": {
+        "D_ref": 0.004571065003749389,
+        "D_rep": 0.005125094056777
+      },
+      "passes_sesoi": false,
+      "worst_operator_lcb95_db": 0.004571065003749389
+    },
+    "direct_clean": {
+      "lcb95_by_operator_db": {
+        "D_ref": 0.28088952279691815,
+        "D_rep": 0.28049637825705
+      },
+      "passes_sesoi": true,
+      "worst_operator_lcb95_db": 0.28049637825705
+    },
+    "direction_line": {
+      "lcb95_by_operator_db": {
+        "D_ref": 0.2808887401661375,
+        "D_rep": 0.2804957100319593
+      },
+      "passes_sesoi": true,
+      "worst_operator_lcb95_db": 0.2804957100319593
+    },
+    "scale": {
+      "lcb95_by_operator_db": {
+        "D_ref": 0.0002260329842283373,
+        "D_rep": 0.00022003111917267575
+      },
+      "passes_sesoi": false,
+      "worst_operator_lcb95_db": 0.00022003111917267575
+    }
+  },
+  "expected_source_rows": 2177350,
+  "gate_type": "scientific_utility",
+  "locked_test_touched": false,
+  "metric_contract": "v3r route card A0 privileged rendered repair geometry",
+  "reason": "pinned v3p reconstruction with anchor-preserving fixed-grid scale, channel, direction-line, and direct-clean ceilings",
+  "route_id": "haze4k_v5_chd_rm_v3r_signed_margin_operator_repair_20260712",
+  "run_id": "v3r_a0",
+  "sesoi_db": 0.005,
+  "source_rows_consumed": 2177350,
+  "stage": "v3r-A0-formal",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": false
+}

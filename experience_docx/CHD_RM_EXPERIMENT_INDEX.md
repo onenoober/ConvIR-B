@@ -20,6 +20,21 @@ contract; v3q scoring, calibration, and policy continuation are closed.
 Continuous haze-density-aware region-adaptive residual modulation with low-haze protection for ConvIR-B Haze4K dehazing.
 ```
 
+## Current v3r/v3s Decision
+
+v3r proves that the frozen direct operator's dominant ceiling is signed
+direction: scale and channel-scale fail, while bounded direction-line repair
+passes by `+0.280496 dB` worst-operator LCB95 over old `.25`. v3s then tested
+the first learned, zero-init bounded `Delta u` field under the old support and
+real rendered `.125/.25` anchor/harm/CVaR losses. S0 exactly reproduced the old
+operator, but the fixed-32 scout failed its written activity gate with finite
+gradients, final `|Delta u|=1.252e-7 < 1e-6`, and no rendered-loss reduction.
+
+Do not resume v3s, lower its activity threshold, tune its losses, train a
+scorer/policy, or use canary/locked test. The next fresh diagnostic must decide
+whether the zero lock comes from the safety objective or from missing frozen
+context before proposing another learned direction-repair operator.
+
 ## Current Scope
 
 - Dataset: Haze4K only.
@@ -66,6 +81,8 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v3o signed adjacent-advantage identifiability | `codex/haze4k-v5-v3o-signed-adjacent-advantage-identifiability` | completed gate fail | Formal fixed-alpha replay was exact on 1,200 OOF images per operator, but candidate-MSE aggregation maxima `2.839408504325125e-10` / `3.528073042047275e-10` exceeded the fixed `1e-10` integrity gate | `V3O_A0_CANDIDATE_SSE_REPLAY_INTEGRITY_FAIL_STOP` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3o_signed_adjacent_advantage_identifiability_20260712/` |
 | v3p canonical signed-gain reconstruction | `codex/haze4k-v5-v3p-canonical-signed-gain-20260712` | completed physics-branch stop | Fresh canonical A0 passed; A1r isolated selection as the bottleneck; fixed-cap constrained G1 A2 passed with LCB95 lift about `+0.045 dB` over `.125` and `+0.021 dB` over `.25`; B0 scalar-A smoke then failed with sRGB RMSE p99 `0.148307` versus `8/255` | `V3P_B0_SCALAR_A_SMOKE_FAIL_STOP_PHYSICS_ROUTE` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/` |
 | v3q active signed-value observability | `codex/haze4k-v5-v3q-active-signed-value-20260712` | completed gate fail | Formal active candidate-pair contract passed, but full grouped OOF AUC `.62689` / `.63287` was almost unchanged by absolute-value features (`.62578` / `.63212`) and within-image shuffled labels retained `.61958` / `.62432` | `V3Q_A1_FAIL_STOP_LEARNED_SIGNED_SCORING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3q_active_signed_value_20260712/` |
+| v3r signed-margin operator repair | `codex/haze4k-v5-v3r-signed-margin-operator-repair-20260712` | completed privileged ceiling pass | Scale/channel scale fail the dual-operator SESOI, while bounded direction-line repair reaches worst-operator LCB95 `+0.280496 dB` over old `.25`; 36.5% of active blocks are wrong-direction | `V3R_A0_DIRECTION_REPAIR_CEILING_PASS_AUTHORIZE_DIRECTION_REPAIR_ROUTE_DESIGN_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3r_signed_margin_operator_repair_20260712/` |
+| v3s zero-init Delta-u direction repair | `codex/haze4k-v5-v3s-delta-u-direction-repair-20260713` | completed trainability gate fail | Exact no-op passes on both frozen operators; the fixed-32 real-render scout has finite gradients but final `|Delta u|=1.252e-7 < 1e-6` and does not lower rendered loss | `V3S_S1_TRAINABILITY_FAIL_STOP_THIS_LOW_CAPACITY_CONTRACT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3s_delta_u_direction_repair_20260713/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |

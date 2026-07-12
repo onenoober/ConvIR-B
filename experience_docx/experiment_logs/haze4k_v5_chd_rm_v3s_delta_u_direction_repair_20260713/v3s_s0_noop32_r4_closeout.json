@@ -1,0 +1,22 @@
+{
+  "authorizes": "v3s-S1 fixed-32 trainability scout only",
+  "canary_touched": false,
+  "counts": {
+    "D_ref": 32,
+    "D_rep": 32
+  },
+  "decision": "V3S_S0_EXACT_NOOP_PASS_AUTHORIZE_SCOUT_ONLY",
+  "gate_type": "structural_integrity",
+  "locked_test_touched": false,
+  "max_abs_delta": 0.0,
+  "max_abs_prediction_diff": 0.0,
+  "max_abs_reference_psnr_delta_diff_db": 0.0,
+  "metric_contract": "zero DIRR head must exactly reproduce frozen v3p .125 replay",
+  "reason": "zero-init Delta-u branch checked on frozen OOF names",
+  "replay_tolerance_db": 1e-06,
+  "route_id": "haze4k_v5_chd_rm_v3s_delta_u_direction_repair_20260713",
+  "run_id": "v3s_s0_noop32_r4",
+  "stage": "v3s-S0-exact-noop-smoke",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": false
+}
