@@ -78,19 +78,25 @@ Key v3m facts:
   Fixed-alpha replay stayed exact, but the measurement contract failed; this
   does not authorize tolerance relaxation, A1, or policy evidence.
 
+v3q then tested the frozen active `.125 -> .25` first-step labels with a
+strictly inference-time 24-scalar candidate-pair schema. Its formal grouped,
+per-image-weighted linear probe stopped: full signed AUC was `.62689` / `.63287`,
+but unsigned-only was `.62578` / `.63212` and within-image shuffled labels
+retained `.61958` / `.62432`. This closes learned signed scoring, calibration,
+and policy continuation under that feature schema.
+
 The remaining scientific bottleneck is deployable signed first-step value and
 image-level cumulative-harm control, not action granularity or the hard-block
 executor. The current Haze4K package cannot support a privileged `t+A` bridge.
-Any candidate-pair value assessor or data-provenance repair therefore requires
-a separately authorized fresh route with frozen risk-coverage gates before any
-replay expansion, route-confirm, canary, or locked-test access.
+Any new value assessor requires a separately authorized fresh route with a new
+representation and independent label/control contract before any replay
+expansion, route-confirm, canary, or locked-test access.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
 `experience_docx/experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3p-canonical-signed-gain.md`,
-and
-`experience_docx/experiment_logs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/`
-for current CHD-RM status; the v3o card remains the authority for its historical
-fail-stop.
+`experience_docx/experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3q-active-signed-value.md`,
+and their corresponding compact evidence directories for current CHD-RM status;
+the v3o card remains the authority for its historical fail-stop.
 
 ## Official Architecture Anchor
 
@@ -297,6 +303,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v3n_conservative_first_step_calibration_20260712/` | compact | v3n compact evidence: conservative first-step label-only preflight using fixed 99th-percentile train-negative `direct_step_energy` threshold. The rule selected zero held-out blocks and stopped with no replay. |
 | `experiment_logs/haze4k_v5_chd_rm_v3o_signed_adjacent_advantage_identifiability_20260712/` | compact | v3o compact evidence: A0 smoke passed, then 1,200-image formal candidate-SSE aggregation exceeded the fixed integrity gate and closed the route. Cloud-only raw candidate-loss and per-image tables are excluded. |
 | `experiment_logs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/` | compact | v3p canonical float64 reconstruction passed A0/A1r/A2 and established constrained first-step oracle headroom, then B0 scalar-A physics smoke failed its fixed forward-data contract. The physics branch is closed; raw block/per-image tables remain cloud-only. |
+| `experiment_logs/haze4k_v5_chd_rm_v3q_active_signed_value_20260712/` | compact | v3q active signed-value audit passed canonical candidate-pair feature reconstruction, then formal grouped linear probing found full AUC nearly identical to unsigned-only and survived within-image label shuffling. Learned signed scoring under this 24-feature schema is terminally stopped; raw feature tables remain cloud-only. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
@@ -414,6 +421,10 @@ The active conclusion is conservative:
   transmission-only features failed the direct-severe OOF AUC gate. The route
   is closed with no physics policy, canary, locked-test access, or direct
   residual continuation authorized.
+- CHD-RM v3q established that the candidate-pair 24-scalar schema carries
+  magnitude/image-level predictability but no independently controlled signed
+  block-value signal. Do not repeat its linear scoring, calibration, threshold,
+  or policy continuation without a new representation and label/control route.
 
 ## Artifact Boundary
 

@@ -1,0 +1,14 @@
+{
+  "authorizes": "v3q-A0b-feature-contract-only",
+  "canary_touched": false,
+  "decision": "V3Q_A0A_FORMAL_PASS_AUTHORIZE_A0B_FEATURE_CONTRACT_ONLY",
+  "gate_type": "structural_integrity",
+  "locked_test_touched": false,
+  "metric_contract": "route card frozen label contract",
+  "reason": "pinned canonical source hash, active-stratum counts, one-to-one OOF grouping, and no forbidden runtime data",
+  "route_id": "haze4k_v5_chd_rm_v3q_active_signed_value_20260712",
+  "run_id": "v3q_a0a",
+  "stage": "v3q-A0a-active-signed-contract",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": false
+}

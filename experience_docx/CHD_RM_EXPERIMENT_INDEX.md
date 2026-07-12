@@ -8,8 +8,11 @@ physics branch at B0 smoke. v3p A2 proves constrained `.125 -> .25` oracle
 headroom; B0's structurally valid train-only triplets fail the fixed sRGB
 forward-data contract, so B0 formal, B1 privileged physics, estimated physics,
 policy replay, training, canary, and locked-test access are blocked. The
-remaining question is deployable signed first-step value with image-level
-harm control, requiring a separately authorized fresh route.
+v3q subsequently audited a frozen inference-time 24-scalar candidate-pair
+schema. Its grouped OOF signed linear probe stopped because unsigned-only and
+within-image-shuffled controls retained nearly all apparent discrimination. The
+remaining question requires a new representation and independent label/control
+contract; v3q scoring, calibration, and policy continuation are closed.
 
 ## Research Direction
 
@@ -62,6 +65,7 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v3n conservative first-step calibration | `codex/haze4k-v5-v3n-conservative-first-step-calibration` | completed gate stop | Fixed false-intervention semantics (`alpha=0.125` default, only `.25` escalation above 99th-percentile train-negative `direct_step_energy`) selected zero held-out blocks for both operators, so no replay is authorized | `V3N_A0_CONSERVATIVE_LABEL_PREFLIGHT_FAIL_STOP_NO_REPLAY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3n_conservative_first_step_calibration_20260712/` |
 | v3o signed adjacent-advantage identifiability | `codex/haze4k-v5-v3o-signed-adjacent-advantage-identifiability` | completed gate fail | Formal fixed-alpha replay was exact on 1,200 OOF images per operator, but candidate-MSE aggregation maxima `2.839408504325125e-10` / `3.528073042047275e-10` exceeded the fixed `1e-10` integrity gate | `V3O_A0_CANDIDATE_SSE_REPLAY_INTEGRITY_FAIL_STOP` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3o_signed_adjacent_advantage_identifiability_20260712/` |
 | v3p canonical signed-gain reconstruction | `codex/haze4k-v5-v3p-canonical-signed-gain-20260712` | completed physics-branch stop | Fresh canonical A0 passed; A1r isolated selection as the bottleneck; fixed-cap constrained G1 A2 passed with LCB95 lift about `+0.045 dB` over `.125` and `+0.021 dB` over `.25`; B0 scalar-A smoke then failed with sRGB RMSE p99 `0.148307` versus `8/255` | `V3P_B0_SCALAR_A_SMOKE_FAIL_STOP_PHYSICS_ROUTE` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/` |
+| v3q active signed-value observability | `codex/haze4k-v5-v3q-active-signed-value-20260712` | completed gate fail | Formal active candidate-pair contract passed, but full grouped OOF AUC `.62689` / `.63287` was almost unchanged by absolute-value features (`.62578` / `.63212`) and within-image shuffled labels retained `.61958` / `.62432` | `V3Q_A1_FAIL_STOP_LEARNED_SIGNED_SCORING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3q_active_signed_value_20260712/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |

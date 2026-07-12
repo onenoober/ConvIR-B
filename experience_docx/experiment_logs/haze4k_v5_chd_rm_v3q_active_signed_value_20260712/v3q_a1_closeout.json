@@ -1,0 +1,14 @@
+{
+  "authorizes": "none",
+  "canary_touched": false,
+  "decision": "V3Q_A1_FAIL_STOP_LEARNED_SIGNED_SCORING",
+  "gate_type": "scientific_utility",
+  "locked_test_touched": false,
+  "metric_contract": "v3q route card A1 grouped OOF per-image-weighted signed probe",
+  "policy_replay_occurred": false,
+  "reason": "signed probe did not clear both-operator utility and negative-control gate",
+  "route_id": "haze4k_v5_chd_rm_v3q_active_signed_value_20260712",
+  "run_id": "v3q_a1",
+  "stage": "v3q-A1-signed-linear-probe",
+  "state": "COMPLETED_GATE_FAIL"
+}

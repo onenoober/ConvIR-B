@@ -1,0 +1,33 @@
+{
+  "canary_touched": false,
+  "canonical_blocks": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/a0_formal/v3p_a0_block_candidate_losses_cloud_only.csv",
+  "canonical_blocks_sha256": "52e6cd8829d37750cfb1e9e2fec39e6ac5cead2e324dbc353df93e5263e89765",
+  "canonical_images": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/a0_formal/v3p_a0_image_candidate_replay_cloud_only.csv",
+  "forbidden_model_features": [
+    "name",
+    "fold",
+    "clean_reference_group",
+    "index",
+    "numeric_image_id"
+  ],
+  "gpu_used": false,
+  "locked_test_touched": false,
+  "required_block_columns": [
+    "block_x",
+    "block_y",
+    "clean_reference_group",
+    "direct_step_energy",
+    "fold",
+    "gain_0125_to_025",
+    "gain_0125_to_025_state",
+    "name",
+    "operator_label"
+  ],
+  "route_id": "haze4k_v5_chd_rm_v3q_active_signed_value_20260712",
+  "run_mode": "formal",
+  "run_tag": "v3q_a0a",
+  "runnable_route_commit": "f8075125489f1404f08e724a84b4ca84e8c7c4f6",
+  "selected_clean_reference_group_count": 1200,
+  "selected_image_count": 1200,
+  "training_occurred": false
+}
