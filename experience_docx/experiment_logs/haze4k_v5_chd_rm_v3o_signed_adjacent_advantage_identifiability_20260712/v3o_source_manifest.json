@@ -1,0 +1,9 @@
+{
+  "route_id": "haze4k_v5_chd_rm_v3o_signed_adjacent_advantage_identifiability_20260712",
+  "parent_evidence_main_commit": "4d097680160e4f6b433b5e6fb62d31df46c28415",
+  "runnable_source_branch": "github/codex/haze4k-v5-v3m-blockwise-counterfactual-advantage",
+  "runnable_source_commit": "2c9cb511627895981c4c489cacd990326185ced6",
+  "locked_test_touched": false,
+  "canary_touched": false,
+  "training_occurred": false
+}

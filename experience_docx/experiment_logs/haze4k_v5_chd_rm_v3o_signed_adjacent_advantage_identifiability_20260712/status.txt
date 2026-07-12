@@ -1,0 +1,5 @@
+route_created 2026-07-12
+state PLANNED_A0_SMOKE_ONLY
+locked_test_touched false
+canary_touched false
+training_occurred false
