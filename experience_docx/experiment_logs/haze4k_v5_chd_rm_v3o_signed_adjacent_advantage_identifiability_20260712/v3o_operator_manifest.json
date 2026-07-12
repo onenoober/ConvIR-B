@@ -1,0 +1,6 @@
+{
+  "operators": ["D_ref", "D_rep"],
+  "operator_source": "v3l canonical frozen artifacts verified by the inherited v3m A1 input contract",
+  "action_ladder": [0.0, 0.125, 0.25, 0.5, 1.0],
+  "fixed_reference_alpha": 0.125
+}
