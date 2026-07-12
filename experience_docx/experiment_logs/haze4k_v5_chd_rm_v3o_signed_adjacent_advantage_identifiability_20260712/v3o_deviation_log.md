@@ -19,3 +19,14 @@ The cloud artifact, v3m source manifest, and v3m durable runner agree on
 The runner is corrected to that already-established hash. No candidate output,
 policy replay, training, canary, or locked-test access occurred in this failed
 attempt.
+
+## 2026-07-12 A0 smoke shared-validator argument failure
+
+After input hashes passed, v3o-A0 called the inherited v3l authorization
+validator without its required `confirm_key` attribute and stopped before data
+loading or model forward. v3m uses the same validator with
+`confirm_key=v3j_route_confirm`; v3o now declares the same default solely for
+the validator's locked-test-name guard. A0 never reads that split or its names,
+and it remains unavailable for selection, metrics, or replay. No candidate
+output, policy replay, training, canary, or locked-test access occurred in this
+failed attempt.

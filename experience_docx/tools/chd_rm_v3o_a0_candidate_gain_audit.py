@@ -464,6 +464,7 @@ def main():
     parser.add_argument("--expected_control_checkpoint_sha256", required=True)
     parser.add_argument("--source_split", default="train")
     parser.add_argument("--train_key", default="v3j_controller_train")
+    parser.add_argument("--confirm_key", default="v3j_route_confirm")
     parser.add_argument("--max_train_samples", type=int, required=True)
     parser.add_argument("--smoke_sample_count", type=int, default=32)
     parser.add_argument("--formal_sample_count", type=int, default=1200)
