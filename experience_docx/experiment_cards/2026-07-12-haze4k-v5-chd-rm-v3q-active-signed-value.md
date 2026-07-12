@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `A0B_FORMAL_PASS_A1_SIGNED_LINEAR_PROBE_ONLY`
+Status: `A1_SMOKE_PASS_FORMAL_AUTHORIZED`
 
 ## Route Identity
 
@@ -352,3 +352,13 @@ controls; neither may enter a candidate scorer.
 Failure of the formal gate stops learned signed scoring under this 24-feature
 schema. A1 does not authorize calibration, a threshold, a policy replay, a
 sidecar, canary, or locked test in either outcome.
+
+## A1 Smoke Result
+
+The A1 grouped, per-image-weighted structural smoke completed at
+`2026-07-12T21:44:28+08:00` with
+`V3Q_A1_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY`. Both operators supplied `14,151`
+non-gray active rows; all five pre-registered configurations generated five
+outer-fold summaries (50 fold rows total). The frozen A0b smoke-table SHA,
+A0b formal closeout/schema hashes, grouped-fold contract, and compact-only
+artifact boundary passed. Its numerical scores are not a scientific gate.

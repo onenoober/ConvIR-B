@@ -1,0 +1,75 @@
+{
+  "a0b_closeout_sha256": "8ad2b7235b5ccb7447338a5abedbce1854e7e8d201b5ba4db05e1965476fc202",
+  "canary_touched": false,
+  "controls": [
+    "full_signed_features",
+    "energy_only",
+    "unsigned_magnitude_only",
+    "within_image_shuffled_label",
+    "metadata_only_nondeployable_control"
+  ],
+  "feature_table": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3q_active_signed_value_20260712/a0b_smoke32/v3q_a0b_smoke32_active_features_cloud_only.csv",
+  "feature_table_sha256": "bd04ea09f1d325a2425ce7cadaa76a5a060e598feca9e256fcf06588be4576ab",
+  "locked_test_touched": false,
+  "outer_fold_contract": "frozen clean-reference grouped five-fold labels from A0b; no fold reassignment",
+  "policy_replay_occurred": false,
+  "route_commit": "9906bd33f1b1089ae6ed4d76c98dca4acffb48cb",
+  "route_id": "haze4k_v5_chd_rm_v3q_active_signed_value_20260712",
+  "run_mode": "smoke",
+  "run_tag": "v3q_a1_smoke32",
+  "schema": {
+    "feature_schema_sha256": "2338549db5ece28b0192bc54cc98a90a1aecc659abb8c58c42c6673ca7505a99",
+    "forbidden_model_features": [
+      "name",
+      "seed",
+      "fold",
+      "clean_reference_group",
+      "operator_label",
+      "g1",
+      "g1_epsilon",
+      "g1_state"
+    ],
+    "metadata_columns": [
+      "operator_label",
+      "seed",
+      "fold",
+      "name",
+      "clean_reference_group",
+      "block_y",
+      "block_x"
+    ],
+    "model_feature_columns": [
+      "direct_step_energy",
+      "d7c_score_mean",
+      "delta_l1_mean",
+      "delta_r_mean",
+      "delta_g_mean",
+      "delta_b_mean",
+      "delta_r_std",
+      "delta_g_std",
+      "delta_b_std",
+      "midpoint_r_mean",
+      "midpoint_g_mean",
+      "midpoint_b_mean",
+      "hazy_minus_midpoint_dot_delta",
+      "gradient_alignment",
+      "cov_hazy_minus_midpoint_delta_r",
+      "cov_hazy_minus_midpoint_delta_g",
+      "cov_hazy_minus_midpoint_delta_b",
+      "hazy_luminance_mean",
+      "hazy_luminance_std",
+      "hazy_saturation_mean",
+      "clip_fraction_0p125",
+      "clip_fraction_0p25",
+      "signed_distance_to_clip_0p125",
+      "signed_distance_to_clip_0p25"
+    ],
+    "target_columns": [
+      "g1",
+      "g1_epsilon",
+      "g1_state"
+    ]
+  },
+  "schema_sha256": "3934b44811e802216735b8b46da24fab656dee22adc55f90c253bfbdc83e40dd",
+  "weight_contract": "each eligible block has weight 1 / eligible blocks in its image"
+}

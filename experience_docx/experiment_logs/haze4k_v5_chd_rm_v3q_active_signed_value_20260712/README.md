@@ -1,6 +1,6 @@
 # v3q Active Signed-Value Evidence
 
-Status: `A0B_FORMAL_PASS_A1_SIGNED_LINEAR_PROBE_ONLY`
+Status: `A1_SMOKE_PASS_FORMAL_AUTHORIZED`
 
 ## A0a Smoke
 
@@ -88,6 +88,15 @@ inference-time schema without metadata or target leakage.
 Only a clean-reference-grouped, per-image-weighted signed linear probe with
 specified negative controls is now authorized. This is an observability gate,
 not permission for a threshold, policy replay, sidecar, canary, or locked test.
+
+## A1 Smoke
+
+The grouped, per-image-weighted A1 structural smoke completed at
+`2026-07-12T21:44:28+08:00` with
+`V3Q_A1_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY`. It reproduced the frozen smoke
+feature-table hash and ran all five pre-registered controls across five frozen
+outer folds for both operators. Its compact outputs contain 10 configuration
+rows and 50 fold rows; the numerical values are not a scientific gate.
 
 ## Artifact Boundary
 

@@ -1,0 +1,95 @@
+{
+  "gate_pass": false,
+  "rows": [
+    {
+      "config": "full_signed_features",
+      "eligible_row_count": 14151,
+      "operator_label": "D_ref",
+      "weighted_auc": 0.6092855334281921,
+      "weighted_brier": 0.2288772016763687,
+      "weighted_logloss": 0.6486655473709106,
+      "weighted_prevalence": 0.6261705160140991
+    },
+    {
+      "config": "energy_only",
+      "eligible_row_count": 14151,
+      "operator_label": "D_ref",
+      "weighted_auc": 0.5278671979904175,
+      "weighted_brier": 0.23508740961551666,
+      "weighted_logloss": 0.6634400486946106,
+      "weighted_prevalence": 0.6261705160140991
+    },
+    {
+      "config": "unsigned_magnitude_only",
+      "eligible_row_count": 14151,
+      "operator_label": "D_ref",
+      "weighted_auc": 0.6095911264419556,
+      "weighted_brier": 0.22881591320037842,
+      "weighted_logloss": 0.6485096216201782,
+      "weighted_prevalence": 0.6261705160140991
+    },
+    {
+      "config": "within_image_shuffled_label",
+      "eligible_row_count": 14151,
+      "operator_label": "D_ref",
+      "weighted_auc": 0.5671834349632263,
+      "weighted_brier": 0.23153115808963776,
+      "weighted_logloss": 0.654026985168457,
+      "weighted_prevalence": 0.6261705160140991
+    },
+    {
+      "config": "metadata_only_nondeployable_control",
+      "eligible_row_count": 14151,
+      "operator_label": "D_ref",
+      "weighted_auc": 0.5120171904563904,
+      "weighted_brier": 0.24034765362739563,
+      "weighted_logloss": 0.6758898496627808,
+      "weighted_prevalence": 0.6261705160140991
+    },
+    {
+      "config": "full_signed_features",
+      "eligible_row_count": 14151,
+      "operator_label": "D_rep",
+      "weighted_auc": 0.6011470556259155,
+      "weighted_brier": 0.2312706708908081,
+      "weighted_logloss": 0.6544166803359985,
+      "weighted_prevalence": 0.6258227825164795
+    },
+    {
+      "config": "energy_only",
+      "eligible_row_count": 14151,
+      "operator_label": "D_rep",
+      "weighted_auc": 0.5288515090942383,
+      "weighted_brier": 0.23498912155628204,
+      "weighted_logloss": 0.6632106304168701,
+      "weighted_prevalence": 0.6258227825164795
+    },
+    {
+      "config": "unsigned_magnitude_only",
+      "eligible_row_count": 14151,
+      "operator_label": "D_rep",
+      "weighted_auc": 0.6008169651031494,
+      "weighted_brier": 0.2310100942850113,
+      "weighted_logloss": 0.6534979343414307,
+      "weighted_prevalence": 0.6258227825164795
+    },
+    {
+      "config": "within_image_shuffled_label",
+      "eligible_row_count": 14151,
+      "operator_label": "D_rep",
+      "weighted_auc": 0.5666179060935974,
+      "weighted_brier": 0.2319454401731491,
+      "weighted_logloss": 0.6550482511520386,
+      "weighted_prevalence": 0.6258227825164795
+    },
+    {
+      "config": "metadata_only_nondeployable_control",
+      "eligible_row_count": 14151,
+      "operator_label": "D_rep",
+      "weighted_auc": 0.5062422752380371,
+      "weighted_brier": 0.24137669801712036,
+      "weighted_logloss": 0.6780325770378113,
+      "weighted_prevalence": 0.6258227825164795
+    }
+  ]
+}

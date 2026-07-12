@@ -1,0 +1,14 @@
+{
+  "authorizes": "v3q-A1-formal",
+  "canary_touched": false,
+  "decision": "V3Q_A1_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY",
+  "gate_type": "scientific_utility",
+  "locked_test_touched": false,
+  "metric_contract": "v3q route card A1 grouped OOF per-image-weighted signed probe",
+  "policy_replay_occurred": false,
+  "reason": "pinned source, grouped-fold, per-image-weight, and compact-output contracts passed",
+  "route_id": "haze4k_v5_chd_rm_v3q_active_signed_value_20260712",
+  "run_id": "v3q_a1_smoke32",
+  "stage": "v3q-A1-signed-linear-probe",
+  "state": "COMPLETED_GATE_PASS"
+}
