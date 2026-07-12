@@ -15,3 +15,12 @@ SESOI. The formal result is required before any route conclusion or follow-on
 repair design.
 
 Raw block/image rows and logs remain under the cloud A0 smoke r2 run directory.
+
+## A0 Formal
+
+The formal 1,200-image-per-operator audit passed the direction-repair ceiling
+gate. Scale and channel-scale fail the dual-operator `+0.005 dB` SESOI, while
+the bounded direction-line repair passes with worst-operator LCB95
+`+0.280496 dB` over old uniform `.25`. This is privileged geometry evidence,
+not a learned or deployable policy. It authorizes only direction-repair
+representation/training-contract design.

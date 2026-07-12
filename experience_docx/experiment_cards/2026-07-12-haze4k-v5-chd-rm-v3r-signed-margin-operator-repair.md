@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `V3R_A0_SMOKE_PASS_AUTHORIZE_FORMAL_ONLY`
+Status: `V3R_A0_DIRECTION_REPAIR_CEILING_PASS_AUTHORIZE_DIRECTION_REPAIR_ROUTE_DESIGN_ONLY`
 
 ## Route Identity
 
@@ -185,3 +185,25 @@ only `+0.00010/+0.00009 dB`, channel-scale `+0.00161/+0.00231 dB`, while the
 direction-line ceiling is `+0.19453/+0.19480 dB` with zero repaired harmful
 SSE. Formal A0 alone may now test whether that pattern holds on all 1,200 OOF
 images per operator.
+
+## A0 Formal Result
+
+The 1,200-image-per-operator formal audit completed with
+`V3R_A0_DIRECTION_REPAIR_CEILING_PASS_AUTHORIZE_DIRECTION_REPAIR_ROUTE_DESIGN_ONLY`.
+It consumed all `2,177,350` pinned v3p source rows, preserved canonical source
+identity and old `.125` replay, and touched neither canary nor locked test.
+
+The worst-operator LCB95 lift over old uniform `.25` is `+0.000220 dB` for
+scale, `+0.004571 dB` for channel-scale, and `+0.280496 dB` for the bounded
+direction-line repair. Only the latter exceeds the preregistered `+0.005 dB`
+SESOI. Direction-line repair leaves harmful/beneficial signed SSE near zero and
+has zero severe image regressions, but it requires substantial rotation
+(median about `81` degrees; p90 about `129` degrees) and relative residual
+change (median about `1.71`).
+
+`wrong_direction` accounts for `184,188/503,995` D_ref active blocks and
+`184,437/503,995` D_rep active blocks. Scale repairs fewer than `0.1%` of this
+stratum; channel scale repairs only `18.1%/19.9%`; direction-line repair fixes
+more than `99.99%`. The next stage may design a zero-init bounded direction
+repair head and its no-op/training contracts. It may not train, calibrate, or
+replay a policy until those contracts pass.
