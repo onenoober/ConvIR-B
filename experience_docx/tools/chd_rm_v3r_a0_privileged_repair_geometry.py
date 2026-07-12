@@ -161,7 +161,7 @@ def select_scale(y0, residual, label, old_losses, active, block_size, grid):
         first_value = torch.where(first_update, torch.full_like(first_value, float(value)), first_value)
         first_seen |= feasible
     height, width = residual.shape[-2:]
-    selected = expand_block_map(best_value, height, width, block_size)
+    selected = expand_block_map(best_value, height, width, block_size).to(residual.dtype)
     repaired = residual * selected
     repaired = torch.where(expand_block_map(first_seen.to(residual.dtype), height, width, block_size) > 0, repaired, residual)
     return {
@@ -187,7 +187,7 @@ def select_channel_scale(y0, residual, label, old_losses, active, block_size, gr
         best_gain = torch.where(update, gain, best_gain)
         best_value = torch.where(update, torch.full_like(best_value, float(value)), best_value)
     height, width = residual.shape[-2:]
-    selected = expand_block_map(best_value, height, width, block_size)
+    selected = expand_block_map(best_value, height, width, block_size).to(residual.dtype)
     candidate = residual * selected
     losses = attach_tolerance(losses_for_step(y0, candidate, label, block_size), old_losses["atol"], old_losses["rtol"])
     gain, epsilon = step_gain(losses)
@@ -219,7 +219,7 @@ def select_direction_line(y0, residual, target_residual, label, old_losses, acti
         first_value = torch.where(first_update, torch.full_like(first_value, float(value)), first_value)
         first_seen |= feasible
     height, width = residual.shape[-2:]
-    selected = expand_block_map(best_value, height, width, block_size)
+    selected = expand_block_map(best_value, height, width, block_size).to(residual.dtype)
     candidate = (1.0 - selected) * residual + selected * target_residual
     repaired = torch.where(expand_block_map(first_seen.to(residual.dtype), height, width, block_size) > 0, candidate, residual)
     return {
@@ -440,8 +440,8 @@ def run(args):
     action_model = v3i_a.build_model("fam2_d7c_noop", args.control_checkpoint, device)
     gate_producer = v3i_a.build_gate_producer(args, device)
     bound_values = read_json(args.v3j_a_bounds)["channel_bounds_rgb"]
-    bound = torch.tensor(bound_values, dtype=torch.float64, device=device)
-    grid = torch.linspace(0.0, 1.0, args.grid_steps + 1, dtype=torch.float64, device=device)
+    bound = torch.tensor(bound_values, dtype=torch.float32, device=device)
+    grid = torch.linspace(0.0, 1.0, args.grid_steps + 1, dtype=torch.float32, device=device)
     numerical = read_json(args.v3p_numerical_contract)
     atol = float(numerical["atol_sse"])
     rtol = float(numerical["rtol"])
@@ -500,10 +500,8 @@ def run(args):
                     pred_low = v3l_a1.v3j_b.score_map("context", model, fmap, mean, std, bound_values)
                     output_gate = v3j_a.output_gate_from_action_gate(hard_gate, base_pred.shape[-2:])
                     residual = output_gate * F.interpolate(pred_low, size=base_pred.shape[-2:], mode="bilinear", align_corners=False)
-                    residual = residual.to(torch.float64)
-                    y0 = base_pred.to(torch.float64)
-                    label64 = label.to(torch.float64)
-                    old_losses = attach_tolerance(losses_for_step(y0, residual, label64, args.block_size), atol, rtol)
+                    y0 = base_pred
+                    old_losses = attach_tolerance(losses_for_step(y0, residual, label, args.block_size), atol, rtol)
                     old_losses["residual"] = residual
                     old_losses["y0"] = y0
                     old_gain, old_epsilon = step_gain(old_losses)
@@ -511,20 +509,20 @@ def run(args):
                     support = expand_block_map(active.to(residual.dtype), height, width, args.block_size)
                     bound_view = bound.view(1, 3, 1, 1)
                     target_residual = torch.maximum(
-                        torch.minimum(4.0 * (label64 - y0), bound_view), -bound_view
+                        torch.minimum(4.0 * (label - y0), bound_view), -bound_view
                     ) * support
                     selections = {
-                        "scale": select_scale(y0, residual, label64, old_losses, active, args.block_size, grid),
-                        "channel_scale": select_channel_scale(y0, residual, label64, old_losses, active, args.block_size, grid),
-                        "direction_line": select_direction_line(y0, residual, target_residual, label64, old_losses, active, args.block_size, grid),
-                        "direct_clean": select_direct_clean(y0, residual, target_residual, label64, old_losses, active, args.block_size),
+                        "scale": select_scale(y0, residual, label, old_losses, active, args.block_size, grid),
+                        "channel_scale": select_channel_scale(y0, residual, label, old_losses, active, args.block_size, grid),
+                        "direction_line": select_direction_line(y0, residual, target_residual, label, old_losses, active, args.block_size, grid),
+                        "direct_clean": select_direct_clean(y0, residual, target_residual, label, old_losses, active, args.block_size),
                     }
                     evaluated = {
-                        key: evaluate_type(key, value, y0, label64, old_losses, args.block_size, bound, active)
+                        key: evaluate_type(key, value, y0, label, old_losses, args.block_size, bound, active)
                         for key, value in selections.items()
                     }
-                    categories = block_categories(old_losses, residual, label64, active)
-                    element_count = int(label64.numel())
+                    categories = block_categories(old_losses, residual, label, active)
+                    element_count = int(label.numel())
                     fixed_delta = psnr_from_sse(old_losses[0.125]["total"], element_count) - float(base_psnr)
                     if abs(fixed_delta - float(reference[(operator, name)])) > args.replay_tolerance_db:
                         raise RuntimeError(f"fixed-alpha replay mismatch for {operator}/{name}")

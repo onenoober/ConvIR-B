@@ -137,8 +137,10 @@ repair is required; it does not authorize a frozen post-hoc scorer.
 - Operators: exactly `D_ref` and `D_rep`, with their v3l artifacts, D7c gate,
   density artifact, A0 checkpoint, control checkpoint, bounds, and reference
   rows pinned to the v3p source contracts.
-- Metric: float64 rendered RGB SSE with v3p numerical tolerance and image PSNR
-  derived from rendered full-image MSE.
+- Metric: the frozen v3p float32 add-and-clamp candidate renderer, followed by
+  float64 RGB SSE reduction with v3p numerical tolerance; image PSNR derives
+  from that rendered full-image MSE. A `float64` render is forbidden because it
+  is not replay-equivalent to the frozen v3p candidate path.
 - Analysis unit: clean-reference image group. D_ref/D_rep are paired repeated
   measurements, never independent samples.
 - Profile: `audit/evaluation`: cloud smoke then formal audit.
