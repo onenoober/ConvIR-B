@@ -234,3 +234,56 @@ The formal read-only audit completed on `convir-4090` at
 This is a structural/diagnostic result, not evidence for a learned scorer or a
 deployed policy. Only a separately specified A0b candidate-pair feature
 contract is authorized.
+
+## A0b Candidate-Pair Feature Contract
+
+A0b asks a narrower engineering question: can v3q regenerate the frozen v3p
+candidate pair and attach a strictly inference-time, active-block scalar feature
+schema while preserving the canonical key and signed-label contract?
+
+The frozen candidate producer is source code only, not governance authority:
+
+```text
+V3P_REMOTE_REPO=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3p-canonical-signed-gain-20260712
+V3P_SOURCE_COMMIT=555fd008e29f02128564f2fad41d0095ee44f5ea
+```
+
+It must use the exact v3p assets and SHA-256 contract already recorded by A0a:
+official A0 checkpoint, frozen control checkpoint, v3j split/bounds, v3l
+operator artifacts, density artifact, D7c artifact, and fixed OOF reference.
+Candidate construction remains block16, hard non-overlap, clamp, D_ref/D_rep,
+and action pair `.125 -> .25` exactly as in v3p. The v3p canonical block CSV is
+the label source and later identity reference; it is never copied into v3q.
+
+The raw A0b cloud feature table may contain metadata solely for grouping and
+identity, plus separate target columns. The following are forbidden model
+features: `name`, `index`, `fold`, `clean_reference_group`, numeric image id,
+operator label, GT pixels, canonical candidate SSE, G1, G1 state, and any
+target-derived aggregate.
+
+The frozen inference-time scalar schema is:
+
+```text
+direct_step_energy, d7c_score_mean,
+delta channel mean/std, midpoint channel mean,
+<I - midpoint, delta>,
+<grad(I - midpoint), grad(delta)>,
+per-channel covariance(I - midpoint, delta),
+hazy luminance mean/std, hazy saturation mean,
+raw-candidate clip fractions and signed distance-to-clip at .125/.25
+```
+
+`I`, `y_.125`, `y_.25`, midpoint, delta, and raw pre-clamp candidates are all
+computed from the frozen inference path before labels are consulted. A0b does
+not export FAM feature maps, context patches, image crops, or learned features.
+Those require a later contract if the linear probe is insufficient.
+
+| Stage | Question | Gate | `PASS` authorizes |
+| --- | --- | --- | --- |
+| A0b smoke | Do 32 paired images reproduce active-row keys, canonical G1 states, direct-step energy, and no-leak schema under the pinned producer? | structural `PASS/FAIL`; exact 32-image name/group pair, active-row count, no duplicate key, no forbidden model field, canonical state equality, direct-energy and G1 numerical match within the source gray-zone contract | A0b formal only |
+| A0b formal | Does the 1,200-image table reproduce all A0a active counts and paired keys while retaining only inference-time model fields? | structural `PASS/FAIL`; v3p source/assets hashes, 5-fold groups, active counts, row identity, schema allowlist, no target or metadata in feature list | A1 signed-linear probe only |
+
+The raw feature table stays in `RUN_ROOT`. A0b copies only schema, source
+manifest, compact operator/fold counts, typed closeout, and README text into
+`EVID_STAGE`. No A0b result authorizes sidecar training, threshold calibration,
+policy replay, canary, or locked-test access.
