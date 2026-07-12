@@ -195,7 +195,7 @@ def summarize_operator(operator, fold_rows, args):
     summary["min_fold_positive_recall"] = min(row["positive_recall"] for row in fold_rows)
     summary["operator_gate_pass"] = (
         summary["negative_false_rate"] <= args.max_negative_false_rate
-        and summary["max_fold_negative_false_rate"] <= args.max_fold_negative_false_rate_per_fold
+        and summary["max_fold_negative_false_rate"] <= args.max_negative_false_rate_per_fold
         and summary["selected_coverage"] >= args.min_selected_coverage
         and summary["min_fold_selected_coverage"] >= args.min_selected_coverage_per_fold
         and summary["selected_precision"] >= args.min_selected_precision
