@@ -12,7 +12,7 @@ Status: `A0A_FORMAL_PASS_A0B_FEATURE_CONTRACT_ONLY`
   candidate change, is there inference-time information that can identify its
   canonical signed first-step value without relying on the easy zero-energy
   abstain class?
-- Current GitHub process-rule commit: `37c4104fc363e5e38989c6d3af5ff9c0eb0d605e`.
+- Current GitHub process-rule commit: `af4176c6a66fd8fea9325ddf9ad4a5eeea2e9cd9`.
 - Historical evidence source: GitHub `main` paths
   `experience_docx/experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3p-canonical-signed-gain.md`
   and
