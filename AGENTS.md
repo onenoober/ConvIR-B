@@ -109,6 +109,11 @@ metric contract, stage authorization, and closeout/archive.
 
 ## Command Reliability
 
+- Follow the MCP-first transport selection rule in
+  `experience_docx/COMMAND_RELIABILITY_QUICKSTART.md`. When its bounded
+  `convir-ops` operation matches the user task and the MCP is registered, select
+  that tool directly; use the script wrapper only for operations outside that
+  scope or when the MCP is unavailable.
 - For PowerShell -> WSL -> SSH, prefer
   `experience_docx/tools/convir_remote_script.sh <local-script>` over nested
   quoting.

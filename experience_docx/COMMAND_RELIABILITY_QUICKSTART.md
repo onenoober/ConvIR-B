@@ -1,6 +1,6 @@
 # Command Reliability Quickstart
 
-Date: 2026-07-06
+Date: 2026-07-12
 
 Status: default lightweight command transport policy for new work.
 
@@ -31,7 +31,8 @@ enough.
 | Task | Default transport | Read more only if |
 | --- | --- | --- |
 | PowerShell -> WSL local script | Write or pipe a small Bash script, strip BOM/CRLF, then run with WSL Bash. | The script needs nested quotes, loops, regex pipes, or heredocs. |
-| WSL -> `convir-4090` remote script | Run `tools/convir_remote_script.sh <local-script>` from `experience_docx/`. | The remote command itself must consume stdin or needs file arguments. |
+| Standard bounded `convir-4090` route operation in Codex | Automatically select the registered `convir-ops` MCP tool. | The task needs an operation outside its declared tool boundary. |
+| WSL -> `convir-4090` remote script | Run `tools/convir_remote_script.sh <local-script>` from `experience_docx/`. | `convir-ops` is unavailable or the remote command must consume stdin or needs file arguments. |
 | File sync to cloud | Use `tar`/`scp`/`rsync` on explicit files or directories. | The sync is large, incremental, or needs excludes. |
 | Evidence sync to GitHub | Use a clean local `github/main` worktree; stage explicit text evidence paths. | Cloud GitHub credentials have been verified in the same task. |
 
@@ -63,13 +64,20 @@ interpolation or general job orchestration.
 Do not use this wrapper when the remote program needs the same stdin stream.
 Transfer a durable script or input file first in that case.
 
-## Optional Codex Tool Entry
+## MCP-First Codex Entry
 
-For a persistent Codex-only tool entry, use the restricted `convir-ops` MCP
-described in `CONVIR_OPS_MCP.md`. It invokes this wrapper for bounded route
-preflight, tracked-runner launch, monitoring, and compact-evidence discovery;
-it does not permit arbitrary SSH execution or replace stage authorization and
-GitHub evidence review.
+When `convir-ops` is registered, Codex should automatically select its bounded
+tool that exactly matches the user task: route preflight, tracked-runner launch,
+routine monitor, compact-evidence manifest/fetch, or Git/evidence status. This
+avoids rebuilding the same PowerShell -> WSL -> SSH command by hand.
+
+Tool selection is task-driven, not a timer or background scheduler. Launch
+remains allowed only after the user requests execution and the route's typed
+closeout and stage gates authorize it. The MCP cannot replace those checks,
+GitHub evidence review, or explicit Git staging/commit/push. Use the script
+wrapper for an operation that is not covered or when the MCP is unavailable.
+
+The exact tool boundary is documented in `CONVIR_OPS_MCP.md`.
 
 ## Failure Handling
 
