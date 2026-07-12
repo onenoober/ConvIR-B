@@ -2,7 +2,7 @@
 
 Date: 2026-07-13
 
-Status: `S0_PASSED_S1_AUTHORIZED`
+Status: `V3U_S1_RENDER_ONLY_ACTIVATION_PASS_AUTHORIZE_SAFETY_CURRICULUM_DESIGN_ONLY`
 
 ## Scope
 
@@ -79,6 +79,22 @@ use them for optimization or the activity decision.
 64 candidate checks, `Delta u` and new-vs-old prediction difference were
 exactly zero; the fixed `.125` reference replay maximum was `0.0 dB` against
 the `1e-6 dB` tolerance. This structural pass authorizes S1 only.
+
+## S1 Result
+
+`v3u_s1_render_only32` passed the fixed activation gate with final mean
+`|Delta u|=0.0041701270` and rendered `.25` MSE reduction `2.92747396%`
+(`0.00032214251 -> 0.00031271187`). The 16-epoch history verifies that total
+loss exactly equaled rendered MSE on every epoch and that `repair_weight=0.0`.
+This isolates the minimal-repair penalty as sufficient to cause the v3s/v3t
+zero lock under the frozen output-side contract.
+
+The result is not a safety pass: final anchor, harm, and margin diagnostics
+rose to `6.7448e-7`, `2.2907e-6`, and `7.8329e-6`, while repair magnitude rose
+to `0.445731`. They were intentionally not optimized in v3u. The sole
+authorized continuation is a new predeclared safety-curriculum contract design;
+formal candidate training, policy work, canary, and locked-test access remain
+blocked.
 
 ## Forbidden Continuations
 

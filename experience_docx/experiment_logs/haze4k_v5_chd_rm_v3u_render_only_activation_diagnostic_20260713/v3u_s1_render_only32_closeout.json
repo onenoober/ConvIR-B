@@ -1,0 +1,40 @@
+{
+  "activity_delta_abs": 1e-06,
+  "authorizes": "new safety-curriculum training-contract design only; no training, policy, canary, or locked test",
+  "canary_touched": false,
+  "cells": {
+    "output_render_only": {
+      "activity_pass": true,
+      "final": {
+        "anchor": 6.74478656037536e-07,
+        "delta_abs": 0.004170127018142011,
+        "harm": 2.2906834828972933e-06,
+        "margin": 7.832882713110223e-06,
+        "render": 0.00031271187174297665,
+        "repair": 0.4457310053621768
+      },
+      "initial": {
+        "anchor": 0.0,
+        "delta_abs": 0.0,
+        "harm": 2.8721490252792137e-07,
+        "margin": 2.2540165325879435e-06,
+        "render": 0.0003221425098445252,
+        "repair": 0.0
+      },
+      "input_form": "output",
+      "objective": "render_only",
+      "parameter_count": 2883,
+      "relative_render_reduction": 0.029274739636504423
+    }
+  },
+  "decision": "V3U_S1_RENDER_ONLY_ACTIVATION_PASS_AUTHORIZE_SAFETY_CURRICULUM_DESIGN_ONLY",
+  "gate_type": "mechanism_activation",
+  "locked_test_touched": false,
+  "metric_contract": "32 fixed OOF images, output-side Delta-u, real rendered alpha=.25 MSE only, no repair penalty",
+  "min_relative_render_reduction": 0.001,
+  "route_id": "haze4k_v5_chd_rm_v3u_render_only_activation_diagnostic_20260713",
+  "run_id": "v3u_s1_render_only32",
+  "stage": "v3u-S1-output-side-render-only-activation",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": true
+}
