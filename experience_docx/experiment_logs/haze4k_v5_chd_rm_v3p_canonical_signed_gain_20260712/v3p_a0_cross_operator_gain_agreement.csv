@@ -1,0 +1,6 @@
+field,paired_image_count,pearson_ref_rep
+candidate_sse_0p125,1200,0.9999994586334144
+candidate_sse_0p25,1200,0.9999978005639327
+candidate_sse_0p5,1200,0.9999909347891547
+candidate_sse_1,1200,0.9999616979344615
+fixed_psnr_delta,1200,0.9963163108858283
