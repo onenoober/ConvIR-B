@@ -20,7 +20,7 @@ contract; v3q scoring, calibration, and policy continuation are closed.
 Continuous haze-density-aware region-adaptive residual modulation with low-haze protection for ConvIR-B Haze4K dehazing.
 ```
 
-## Current v3r/v3s/v3t Decision
+## Current v3r/v3s/v3t/v3u Decision
 
 v3r proves that the frozen direct operator's dominant ceiling is signed
 direction: scale and channel-scale fail, while bounded direction-line repair
@@ -40,12 +40,20 @@ rendered-loss reductions only `0.00013%`, `0.00011%`, `0.000075%`, and
 minimal-repair penalty, so v3t closes the regularized rendered form rather than
 all possible activation objectives.
 
-Do not resume v3s/v3t, lower their activity thresholds, tune their losses,
-train a scorer/policy, or use canary/locked test. The next fresh diagnostic
-must keep the v3t output-side conditions and remove only the repair-magnitude
-penalty, optimizing real rendered `.25` candidate MSE. It can authorize only a
-new safety-curriculum training-contract design after its written activation
-gate passes.
+v3u then removed only that penalty while retaining the output-side head and
+fixed 32-name, 16-epoch contract. Exact no-op passed first. Render-only S1
+activated strongly: final `|Delta u|=0.0041701270` and rendered `.25` MSE
+reduction `2.92747396%` (`0.00032214251 -> 0.00031271187`), with total loss
+equal to rendered MSE throughout. This identifies the minimal-repair penalty as
+sufficient for the prior zero lock. It is not a candidate safety result:
+anchor/harm/margin diagnostics increase to `6.7448e-7`, `2.2907e-6`, and
+`7.8329e-6`, while repair magnitude reaches `0.445731`.
+
+Do not resume v3s/v3t, lower activity thresholds, treat v3u as formal
+candidate training, train a scorer/policy, or use canary/locked test. The next
+fresh route must predeclare a safety curriculum that retains activation and
+directly audits safety; only its written gate may authorize a later training
+contract.
 
 ## Current Scope
 
@@ -96,6 +104,7 @@ gate passes.
 | v3r signed-margin operator repair | `codex/haze4k-v5-v3r-signed-margin-operator-repair-20260712` | completed privileged ceiling pass | Scale/channel scale fail the dual-operator SESOI, while bounded direction-line repair reaches worst-operator LCB95 `+0.280496 dB` over old `.25`; 36.5% of active blocks are wrong-direction | `V3R_A0_DIRECTION_REPAIR_CEILING_PASS_AUTHORIZE_DIRECTION_REPAIR_ROUTE_DESIGN_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3r_signed_margin_operator_repair_20260712/` |
 | v3s zero-init Delta-u direction repair | `codex/haze4k-v5-v3s-delta-u-direction-repair-20260713` | completed trainability gate fail | Exact no-op passes on both frozen operators; the fixed-32 real-render scout has finite gradients but final `|Delta u|=1.252e-7 < 1e-6` and does not lower rendered loss | `V3S_S1_TRAINABILITY_FAIL_STOP_THIS_LOW_CAPACITY_CONTRACT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3s_delta_u_direction_repair_20260713/` |
 | v3t zero-lock versus context diagnostic | `codex/haze4k-v5-v3t-zero-lock-context-diagnostic-20260713` | completed mechanism diagnostic | Exact dual-form no-op passes; all four fixed-32, 16-epoch output/context x safe/utility cells remain below both activity lines, including utility controls without anchor/harm/CVaR | `V3T_S1_ALL_UTILITY_CELLS_INACTIVE_REQUIRE_OPTIMIZATION_REDESIGN` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3t_zero_lock_context_diagnostic_20260713/` |
+| v3u render-only activation diagnostic | `codex/haze4k-v5-v3u-render-only-activation-diagnostic-20260713` | completed activation gate pass | Exact output-side no-op passes; fixed-32 render-only S1 reaches `|Delta u|=0.0041701270` and `2.92747396%` rendered-MSE reduction, but safety diagnostics rise | `V3U_S1_RENDER_ONLY_ACTIVATION_PASS_AUTHORIZE_SAFETY_CURRICULUM_DESIGN_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3u_render_only_activation_diagnostic_20260713/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |

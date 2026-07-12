@@ -105,14 +105,23 @@ reductions. The utility controls removed anchor/harm/CVaR but intentionally
 retained the minimal-repair penalty. Thus neither frozen context nor those
 safety terms explains activation within this regularized rendered form.
 
+v3u held the output-side v3t conditions fixed and removed only that
+minimal-repair penalty. S0 was exact on all 32 names and both operators. Its
+single 16-epoch render-only S1 passed: final mean `|Delta u|=0.0041701270`,
+rendered `.25` MSE fell from `0.00032214251` to `0.00031271187` (`2.92747396%`),
+and every history row has `total == render` with `repair_weight=0.0`. This
+identifies the repair penalty as sufficient to cause the prior zero lock under
+the frozen output-side contract. It is not a safe candidate: anchor, harm, and
+margin diagnostics increased to `6.7448e-7`, `2.2907e-6`, and `7.8329e-6`, and
+repair magnitude reached `0.445731`.
+
 The remaining bottleneck is not amplitude, scalar scoring, action granularity,
-or the hard-block executor: privileged evidence requires direction repair, but
-the regularized learned form remains optimization-inactive. Do not resume v3s
-or v3t, relax their activity gates, tune their losses, train a scorer/policy,
-access a canary, or touch the locked test. The next fresh activation diagnostic
-must hold v3t output-side conditions fixed and remove only the repair-magnitude
-penalty, optimizing real rendered `.25` candidate MSE; it can authorize only a
-new safety-curriculum contract if its predeclared activity gate passes.
+or the hard-block executor: direction repair can activate, but its safety terms
+must be introduced without recreating zero lock. Do not resume v3s/v3t, relax
+their activity gates, or treat unregularized v3u as formal training. The next
+fresh route must predeclare a safety curriculum with both an activation-retention
+gate and a direct safety diagnostic; it may not train a scorer/policy, access a
+canary, or touch the locked test.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
 `experience_docx/experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3p-canonical-signed-gain.md`,
@@ -329,6 +338,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v3r_signed_margin_operator_repair_20260712/` | compact | v3r privileged repair geometry passed only the bounded direction-line ceiling: worst-operator LCB95 `+0.280496 dB` over old `.25`, versus scale `+0.000220 dB` and channel-scale `+0.004571 dB`. It authorizes direction-repair design only. |
 | `experiment_logs/haze4k_v5_chd_rm_v3s_delta_u_direction_repair_20260713/` | compact | v3s exact zero-init no-op passed, then the fixed-32 real-render trainability scout failed before formal training: finite gradients but `|Delta u|=1.252e-7 < 1e-6` and no rendered-loss reduction. This representation/loss contract is stopped. |
 | `experiment_logs/haze4k_v5_chd_rm_v3t_zero_lock_context_diagnostic_20260713/` | compact | v3t exact output-side and frozen-context no-op passed, then all four fixed-32 factorial cells remained inactive despite utility controls without anchor/harm/CVaR. It closes the regularized rendered form that retains the minimal-repair penalty; raw outputs remain cloud-only. |
+| `experiment_logs/haze4k_v5_chd_rm_v3u_render_only_activation_diagnostic_20260713/` | compact | v3u exact output-side no-op passed, then fixed-32 render-only activation passed (`|Delta u|=0.0041701270`, rendered-MSE reduction `2.92747396%`). The repair penalty is sufficient to explain the earlier zero lock, but safety diagnostics rise; only a new safety-curriculum diagnostic is authorized. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
