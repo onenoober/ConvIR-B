@@ -60,6 +60,14 @@ interpolation or general job orchestration.
 Do not use this wrapper when the remote program needs the same stdin stream.
 Transfer a durable script or input file first in that case.
 
+## Optional Codex Tool Entry
+
+For a persistent Codex-only tool entry, use the restricted `convir-ops` MCP
+described in `CONVIR_OPS_MCP.md`. It invokes this wrapper for bounded route
+preflight, tracked-runner launch, monitoring, and compact-evidence discovery;
+it does not permit arbitrary SSH execution or replace stage authorization and
+GitHub evidence review.
+
 ## Failure Handling
 
 If a command fails because of transport, quoting, CRLF, PATH, stdin, or shell
