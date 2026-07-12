@@ -21,6 +21,10 @@ is now authorized.
 
 Pass: A1 energy sufficiency audit only. Fail: `V3O_A0_CANDIDATE_SSE_REPLAY_INTEGRITY_FAIL_STOP`.
 
+Result: `FAIL` with `V3O_A0_CANDIDATE_SSE_REPLAY_INTEGRITY_FAIL_STOP`. Fixed
+replay passed, but candidate-SSE aggregation exceeded the fixed `1e-10`
+tolerance for both operators. A1 is not authorized.
+
 ## A1
 
 No policy replay is authorized. The audit must determine whether any

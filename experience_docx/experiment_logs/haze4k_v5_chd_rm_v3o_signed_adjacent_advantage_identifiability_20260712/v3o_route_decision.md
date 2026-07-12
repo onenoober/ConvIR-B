@@ -28,3 +28,16 @@ This validates measurement integrity only. It authorizes exactly formal A0 on
 the frozen 1,200-image grouped OOF set; it does not authorize A1, policy
 replay, threshold selection, training, canary, route-confirm selection, or
 locked-test access.
+
+## A0 Formal Decision
+
+`V3O_A0_CANDIDATE_SSE_REPLAY_INTEGRITY_FAIL_STOP`
+
+Formal A0 completed on 1,200 OOF images per frozen operator. The fixed-alpha
+replay check remained exact (`0.0 dB` maximum paired difference), and row
+counts were complete, but the maximum direct candidate-MSE versus summed
+block-SSE differences were `2.839408504325125e-10` for `D_ref` and
+`3.528073042047275e-10` for `D_rep`, exceeding the preregistered `1e-10`
+tolerance. This is an internal metric-contract fail-stop, not a basis to loosen
+the tolerance after observing the formal data. A1 and every policy, training,
+canary, route-confirm, and locked-test action remain unauthorized.
