@@ -2,7 +2,7 @@
 
 Date: 2026-07-12
 
-Status: `PLANNED`
+Status: `A0_PASS_A1_PLANNED`
 
 Evidence root:
 `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/`
@@ -82,6 +82,7 @@ Selected profile: `audit/evaluation` with the smallest decisive sequence:
 1. numerical preflight;
 2. 32-image integrity smoke;
 3. 1,200-image formal reconstruction only if smoke explicitly authorizes it.
+4. read-only A1 reconstruction only if formal A0 explicitly authorizes it.
 
 The tracked runner is
 `experience_docx/tools/run_v3p_a0_canonical_signed_gain.sh`. Raw block/image
@@ -95,6 +96,7 @@ only compact JSON/CSV/README evidence after a terminal stage marker.
 | numerical preflight | synthetic tensor / shape | longdouble available; every coverage map is exact; frozen scale-aware envelope is written before OOF | smoke only |
 | A0 smoke | 32 OOF images per operator | row/fold/hash identity; coverage exactly one; fixed `.125` replay `<=1e-6 dB`; every normalized numerical check `<=1`; no non-gray G1 sign flip | formal only |
 | A0 formal | 1,200 OOF images per operator | the same structural and numerical checks for every candidate, with worst-case candidate/image/block family enforcement | A1 reconstruction and G1 decomposition only |
+| A1 reconstruction | 2,400 paired v3p/v3m image rows and all canonical blocks | reconstruct frozen A2 bin actions; require exact per-image selected-action counts, full pairing, and fixed replay `<=1e-6 dB`; decompose action-path and renderer SSE without a new replay | A2 constrained G1 oracle only |
 
 Structural mismatch, coverage failure, fixed replay mismatch, or a non-gray
 signed-gain flip is `FAIL`. Envelope exceedance with intact structure and no

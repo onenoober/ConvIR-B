@@ -46,6 +46,14 @@ case "$MODE" in
     CONTRACT=$EVID_STAGE/v3p_a0_numerical_reference_contract.json
     CONTRACT_ARG=(--numerical_contract "$CONTRACT")
     ;;
+  a1_reconstruction)
+    STAGE=v3p-A1-reconstruction
+    OUT=$RUN_ROOT/a1_reconstruction
+    TAG=v3p_a1
+    MAX_TRAIN=0
+    PROGRESS=0
+    CONTRACT_ARG=()
+    ;;
   *)
     echo "V3P_A0_INVALID_MODE mode=$MODE"
     exit 2
@@ -87,6 +95,41 @@ value = json.load(open(sys.argv[1], encoding="utf-8"))
 if value["decision"] != "V3P_A0_SMOKE_CANONICAL_NUMERICAL_PASS_AUTHORIZE_FORMAL_OOF_ONLY":
     raise SystemExit("v3p formal requires a passing v3p-A0 smoke closeout")
 PY
+fi
+
+if [ "$MODE" = a1_reconstruction ]; then
+  test -s "$EVID_STAGE/v3p_a0_closeout.json"
+  "$PY" - "$EVID_STAGE/v3p_a0_closeout.json" <<'PY'
+import json
+import sys
+value = json.load(open(sys.argv[1], encoding="utf-8"))
+if value["decision"] != "V3P_A0_CANONICAL_NUMERICAL_PASS_AUTHORIZE_A1_RECONSTRUCTION_ONLY":
+    raise SystemExit("v3p A1 requires a passing A0 canonical closeout")
+PY
+  mkdir -p "$RUN_ROOT" "$EVID_STAGE"
+  LOG=$RUN_ROOT/${TAG}_${STAMP}.log
+  echo "stage_start route=$ROUTE_ID stage=$STAGE run=$TAG time=$(date --iso-8601=seconds)" | tee -a "$STATUS"
+  echo "stage_paths repo=$REMOTE_REPO run_root=$RUN_ROOT evid_stage=$EVID_STAGE gpu=$GPU log=$LOG" | tee -a "$STATUS"
+  set +e
+  PYTHONUNBUFFERED=1 "$PY" "$REMOTE_REPO/experience_docx/tools/chd_rm_v3p_a1_reconstruction.py" \
+    --canonical_blocks "$RUN_ROOT/a0_formal/v3p_a0_block_candidate_losses_cloud_only.csv" \
+    --policy_rows "$V3M_EVID/v3m_a3_policy_replay_rows_cloud_only.csv" \
+    --calibration_bins "$V3M_EVID/v3m_a2_calibration_bins.csv" \
+    --a0_closeout "$EVID_STAGE/v3p_a0_closeout.json" \
+    --output_dir "$OUT" --run_tag "$TAG" --replay_tolerance_db 1e-6 > "$LOG" 2>&1
+  rc=$?
+  set -e
+  echo "stage_done route=$ROUTE_ID stage=$STAGE rc=$rc time=$(date --iso-8601=seconds)" | tee -a "$STATUS"
+  if [ "$rc" -ne 0 ]; then
+    echo "V3P_A1_RECONSTRUCTION_FAILED" | tee -a "$STATUS"
+    exit "$rc"
+  fi
+  cp "$OUT/${TAG}_closeout.json" "$EVID_STAGE/${TAG}_closeout.json"
+  cp "$OUT/${TAG}_summary.json" "$EVID_STAGE/${TAG}_summary.json"
+  cp "$OUT/${TAG}_source_manifest.json" "$EVID_STAGE/${TAG}_source_manifest.json"
+  cp "$OUT/${TAG}_action_path_decomposition.csv" "$EVID_STAGE/${TAG}_action_path_decomposition.csv"
+  echo "V3P_A1_RECONSTRUCTION_OK" | tee -a "$STATUS"
+  exit 0
 fi
 
 mkdir -p "$RUN_ROOT" "$EVID_STAGE"
