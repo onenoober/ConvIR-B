@@ -329,3 +329,26 @@ grouped outer folds, per-image rather than per-block weighting, and report the
 energy-only, unsigned-magnitude-only, within-image shuffled-label, and
 metadata-only negative controls. It may not tune or replay a policy, choose a
 deployment threshold, create a sidecar, or access canary/locked data.
+
+## A1 Signed Linear Probe
+
+A1 evaluates whether the fixed 24-dimensional inference-time schema contains
+signed information under the actual clean-reference grouped OOF partition. It
+uses exactly five frozen outer folds and weights each eligible block by the
+reciprocal of its image's eligible block count. Numerical-gray abstentions are
+excluded rather than relabelled.
+
+The deployable candidate is a standardized logistic linear score over the 24
+allowed features. It is compared with energy only and the absolute-value form
+of the same feature vector. Within-image shuffled labels and a metadata-only
+`(fold, block_y, block_x)` diagnostic are explicitly non-deployable leakage
+controls; neither may enter a candidate scorer.
+
+| Stage | Gate | `PASS` authorizes |
+| --- | --- | --- |
+| A1 smoke | structural; frozen smoke-table SHA-256, A0b formal closeout/schema hashes, expected non-gray rows, five OOF folds, compact output only | A1 formal only |
+| A1 formal | scientific utility; for both operators, full-score per-image-weighted OOF AUC at least `.60`, at least `.02` above both energy-only and unsigned controls, with shuffled-label and metadata controls at most `.53` | A2 signed feature-ablation contract only |
+
+Failure of the formal gate stops learned signed scoring under this 24-feature
+schema. A1 does not authorize calibration, a threshold, a policy replay, a
+sidecar, canary, or locked test in either outcome.
