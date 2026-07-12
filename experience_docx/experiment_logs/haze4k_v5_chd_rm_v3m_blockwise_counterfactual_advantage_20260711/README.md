@@ -1,6 +1,6 @@
 # v3m Blockwise Counterfactual Advantage
 
-Status: `A1_PASS_A2_OOF_CALIBRATION_AUDIT_ONLY`.
+Status: `A3_FAIL_STOP_NO_ROUTE_CONFIRM`.
 
 Route card:
 `experience_docx/experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3m-blockwise-counterfactual-advantage.md`
@@ -86,3 +86,43 @@ summary, replay CSV, signal CSV, and source manifest are retained under
 signal gate. Direct-step energy and D7c score passed; the next and only
 authorized stage is A2 OOF calibration audit. No training or test access is
 authorized.
+
+## A2 Closeout
+
+`v3m_a2_closeout.md` records the fold-separated OOF label-calibration result.
+Using only A1's fixed primary signal, `direct_step_energy`, the 16-target-bin
+monotone calibration rule collapsed deterministically to 9 actual bins because
+of duplicate calibration-fold score quantiles. It still passed by a wide
+margin on labels:
+
+- `D_ref` ordinal MAE improvement CI95 low `0.6734292`;
+- `D_rep` ordinal MAE improvement CI95 low `0.6719839`;
+- escalation AUROC CI95 lows `0.8518716` and `0.8514065`;
+- AP-lift CI95 lows `0.3123022` and `0.3117141`.
+
+Decision:
+`V3M_A2_OOF_CALIBRATION_PASS_AUTHORIZE_A3_FROZEN_POLICY_REPLAY_ONLY`.
+
+A2 is label-only evidence and does not claim actual PSNR utility.
+
+## A3 Closeout
+
+`v3m_a3_closeout.md` records the actual frozen policy replay. A3 smoke r0
+failed engineering before image replay because the wrapper omitted
+`confirm_key`; r1 fixed the wrapper and passed fixed-alpha replay. A3 formal
+then completed all 1,200 train-derived OOF images for both operators with exact
+fixed `alpha=0.125` replay.
+
+The calibrated policy had positive mean PSNR lift over fixed alpha but failed
+retention and tail safety:
+
+| Operator | Mean lift vs fixed | Lift CI95 low | Retention CI95 low | Paired lift p10 | Severe policy/fixed | Hard policy/fixed |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `D_ref` | `+0.0828431 dB` | `+0.0659919 dB` | `0.1911805` | `-0.2209025 dB` | `148 / 0` | `39 / 0` |
+| `D_rep` | `+0.0826054 dB` | `+0.0662187 dB` | `0.1922018` | `-0.2306944 dB` | `146 / 0` | `41 / 0` |
+
+Decision:
+`V3M_A3_FROZEN_POLICY_REPLAY_FAIL_STOP_NO_ROUTE_CONFIRM`.
+
+No route-confirm audit, canary, locked test, training, learned controller,
+ranker, physics/proxy continuation, or policy deployment is authorized.

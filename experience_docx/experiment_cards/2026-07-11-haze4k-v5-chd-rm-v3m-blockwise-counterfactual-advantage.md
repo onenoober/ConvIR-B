@@ -2,7 +2,7 @@
 
 Date: 2026-07-11
 
-Status: `A1_PASS_A2_OOF_CALIBRATION_AUDIT_ONLY`
+Status: `A3_FAIL_STOP_NO_ROUTE_CONFIRM`
 
 Branch: `codex/haze4k-v5-v3m-blockwise-counterfactual-advantage`
 
@@ -155,6 +155,59 @@ Decision: `V3M_A1_LOCAL_SIGNAL_PASS_AUTHORIZE_A2_OOF_CALIBRATION_AUDIT_ONLY`.
 Only A2 OOF calibration audit is authorized. Training, learned controller,
 route-confirm selection, canary, physics/proxy work, and locked test remain
 blocked.
+
+## A2 Plan
+
+`v3m_a2_metric_contract.md` defines the only authorized A2 work: a
+fold-separated OOF label-calibration audit using the fixed A1 primary signal
+`direct_step_energy`. It uses train folds to build a fixed 16-bin monotone
+calibration map and evaluates only the held-out fold. It does not train a
+controller, use route-confirm for threshold selection, replay policy utility,
+touch canary, or touch locked test.
+
+A2 can only authorize A3 frozen-policy replay. A2 cannot claim actual PSNR
+policy utility because the A1 block table does not contain every calibrated
+candidate action's block MSE.
+
+## A2 Result
+
+The fold-separated OOF calibration audit passed for both frozen operators.
+Using only `direct_step_energy`, the fixed 16-bin monotone calibration rule
+beat the fixed `alpha=0.125` label baseline with image-grouped ordinal MAE
+improvement CI95 lows `0.6734292` (`D_ref`) and `0.6719839` (`D_rep`).
+Escalation AUROC CI95 lows were `0.8518716` and `0.8514065`; AP-lift CI95 lows
+were `0.3123022` and `0.3117141`. Minimum fold Spearman was `0.9761905` for
+both operators. See `v3m_a2_closeout.md`.
+
+Decision:
+`V3M_A2_OOF_CALIBRATION_PASS_AUTHORIZE_A3_FROZEN_POLICY_REPLAY_ONLY`.
+Only A3 frozen-policy replay is authorized. Training, learned controllers,
+route-confirm selection, canary, physics/proxy work, and locked test remain
+blocked.
+
+## A3 Plan
+
+`v3m_a3_metric_contract.md` defines the only authorized A3 work: frozen replay
+of the A2 calibrated block16 policy on the same train-derived OOF split. It
+first runs a 32-image smoke replay using the full 1,200-image fold map, then
+the formal 1,200-image replay only if smoke passes. The candidate policy is
+fixed from `v3m_a2_calibration_bins.csv`; A3 may not recalibrate, train, tune,
+use route-confirm for selection, touch canary, or touch locked test.
+
+## A3 Result
+
+A3 formal completed all 1,200 train-derived OOF images for both operators with
+exact fixed-alpha replay, but failed the policy utility gate. Mean PSNR lift
+over fixed `alpha=0.125` was positive (`+0.0828431 dB` for `D_ref`,
+`+0.0826054 dB` for `D_rep`), but retention versus block16 oracle was only
+about `0.232` and the tail was unsafe: paired lift p10 was about `-0.22` to
+`-0.23 dB`, severe counts rose from `0` to `148`/`146`, and hard counts rose
+from `0` to `39`/`41`. See `v3m_a3_closeout.md`.
+
+Decision:
+`V3M_A3_FROZEN_POLICY_REPLAY_FAIL_STOP_NO_ROUTE_CONFIRM`.
+No route-confirm audit, canary, locked test, training, learned controller,
+ranker, physics/proxy continuation, or policy deployment is authorized.
 
 ## Engineering Deviation
 
