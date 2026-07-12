@@ -1,0 +1,31 @@
+{
+  "authorizes": "none",
+  "canary_touched": false,
+  "checkpoint_cloud_only": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3s_delta_u_direction_repair_20260713/s1_scout32/v3s_s1_scout32_checkpoint_cloud_only.pt",
+  "checkpoint_sha256": "3c1974855fd12c435fce19b5ee706d8a44c19639b39ccc26eb4184b7a339ca82",
+  "decision": "V3S_S1_TRAINABILITY_FAIL_STOP",
+  "final": {
+    "anchor": 1.0430767360958271e-10,
+    "cvar": 9.922400749928784e-07,
+    "delta_abs": 1.252361929715562e-07,
+    "epoch": 8,
+    "gradient_norm": 0.005594212329015136,
+    "harm": 2.872230879802373e-07,
+    "margin": 2.2540317701214008e-06,
+    "render": 0.0003221426341042388,
+    "repair": 1.3399520014445443e-05,
+    "run_label": "v3s_s1_scout32",
+    "total": 0.000379117984266486,
+    "updates": 8
+  },
+  "gate_type": "structural_integrity",
+  "initial_render_loss": 0.0003221424813091289,
+  "locked_test_touched": false,
+  "metric_contract": "finite real-rendered loss and nonzero bounded Delta-u on fixed 32 OOF names",
+  "reason": "scout is a numerical activity check, not a utility claim",
+  "route_id": "haze4k_v5_chd_rm_v3s_delta_u_direction_repair_20260713",
+  "run_id": "v3s_s1_scout32",
+  "stage": "v3s-S1-fixed32-trainability-scout",
+  "state": "COMPLETED_GATE_FAIL",
+  "training_occurred": true
+}
