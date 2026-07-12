@@ -2,7 +2,7 @@
 
 Date: 2026-07-13
 
-Status: `PLANNED`
+Status: `S0_PASSED_S1_AUTHORIZED`
 
 ## Scope
 
@@ -72,6 +72,13 @@ S1 uses only the mean real rendered `.25` candidate MSE for gradient updates.
 Anchor, block-margin, harm, CVaR, and repair magnitude are not added to the
 loss. The runner records the latter quantities only as diagnostics and does not
 use them for optimization or the activity decision.
+
+## S0 Result
+
+`v3u_s0_noop32` passed all 32 fixed OOF names on both frozen operators. Across
+64 candidate checks, `Delta u` and new-vs-old prediction difference were
+exactly zero; the fixed `.125` reference replay maximum was `0.0 dB` against
+the `1e-6 dB` tolerance. This structural pass authorizes S1 only.
 
 ## Forbidden Continuations
 
