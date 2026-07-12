@@ -1,6 +1,6 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-07-11
+Date: 2026-07-12
 
 Status: evidence index plus official architecture anchor registry.
 
@@ -21,50 +21,45 @@ decision says otherwise.
 
 ## Current CHD-RM v5 Route State
 
-As of the v3l closeout on 2026-07-11, the current CHD-RM decision is
-`V3L_B_PRIVILEGED_TRANSMISSION_RISK_WEAK_STOP_NO_PHYSICS_POLICY`. No v3f-B
-ranker training, v3d continuation, 20-epoch continuation, v4/RARM expansion,
-neighbor/FAM1 or backbone unfreeze, current-signal FAM2 router/distillation,
-v3j/v3k/v3l canary, direct-residual continuation, physics-risk policy, or
-locked-test access is authorized.
+As of the v3m closeout on 2026-07-12, the current CHD-RM decision is
+`V3M_A3_FROZEN_POLICY_REPLAY_FAIL_STOP_NO_ROUTE_CONFIRM`. No route-confirm
+audit, canary expansion, locked-test access, controller training, learned
+ranker, physics/proxy continuation, current-signal FAM2 router/distillation,
+direct-residual continuation, v4/RARM expansion, neighbor/FAM1 route, backbone
+unfreeze, or policy deployment is authorized.
 
-v3l followed v3k by freezing deterministic context direct-head operators before
-testing oracle step-size headroom and privileged physics risk. A0 exact replay
-passed for `D_ref` seed `3407` and `D_rep` seed `3408`: row identity/order,
-per-image PSNR deltas, direct tensors, severe sets, and artifact SHA all
-matched the pre-registered replay checks.
+v3m followed v3l by normalizing the action ladder across image/block/pixel
+oracles, then testing local observability, fold-separated label calibration,
+and finally actual frozen policy replay. The result is sharper than v3l:
+block16 and the `direct_step_energy` signal are real, but the deployable
+calibrated policy is not safe.
 
-Key v3l facts:
+Key v3m facts:
 
-- full-step direct correction remains tail-risky on OOF: `D_ref` direct
-  alpha1 mean `+0.06625 dB` with `277` severe regressions and `D_rep` mean
-  `+0.06938 dB` with `268` severe regressions;
-- fixed `alpha=0.125` remains the only non-oracle safe reference in this route:
-  both frozen operators have mean about `+0.030 dB`, p10 about `-0.027 dB`,
-  and zero severe regressions;
-- oracle step-size upside is large and dual-operator confirmed: image oracle
-  mean about `+0.211 dB`, 16x16 block oracle about `+0.386-0.388 dB`, 32x32
-  block oracle about `+0.359-0.361 dB`, and pixel scalar oracle about
-  `+0.449-0.451 dB`, all with zero severe regressions;
-- direction/overshoot remains mixed: `D_ref` has `323` wrong-direction and
-  `268` harmful-overshoot OOF cases; `D_rep` has `319` wrong-direction and
-  `267` harmful-overshoot OOF cases;
-- Haze4K physics metadata exposes `train/trans` and `test/trans`, but no
-  airlight/beta/depth/atmos files were found;
-- privileged transmission features failed the direct-severe OOF risk gate:
-  best direct-severe AUC was about `0.635` for `D_ref` and `0.631` for `D_rep`,
-  below the pre-registered `0.65` threshold.
+- common-action block16 oracle is strong: retention versus pixel-grid lift is
+  about `0.848-0.850`, with CI95 lows above `0.840`, and no severe regression
+  increase versus fixed `alpha=0.125`;
+- dense/continuous action density is not the bottleneck: A0b-r1 max paired
+  quantization-gap CI95 upper is `0.0013426 dB`, below the `0.005 dB` gate;
+- A1 local observability passed: `direct_step_energy` image-grouped AUROC CI95
+  lows are `0.8522` (`D_ref`) and `0.8516` (`D_rep`);
+- A2 fold-separated label calibration passed strongly: ordinal MAE improvement
+  CI95 lows are `0.6734292` and `0.6719839`;
+- A3 actual policy replay failed: mean lift over fixed is positive
+  (`+0.0828 dB`), but retention versus block16 oracle is only about `0.232`,
+  paired lift p10 is about `-0.22` to `-0.23 dB`, severe counts rise from `0`
+  to `148`/`146`, and hard counts rise from `0` to `39`/`41`.
 
-The bottleneck is now localized to deployable step-size/risk observability. The
-direct operator has real oracle upside, but raw transmission metadata alone is
-not strong enough to justify a physics-risk policy. Any next route must bring a
-materially stronger deployable risk signal and validate fixed choices on a new
-sealed train-derived or external split before canary or locked-test access.
+The bottleneck is now safe utility calibration of aggressive local actions.
+Action granularity and label observability alone are not enough. Any next route
+must change the action safety semantics, add explicit false-intervention
+protection, or provide materially stronger local value/risk information before
+any route-confirm, canary, or locked-test access.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
-`experience_docx/experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3l-safe-step-escalation-physics-audit.md`,
+`experience_docx/experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3m-blockwise-counterfactual-advantage.md`,
 and
-`experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/`
+`experience_docx/experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/`
 for current CHD-RM status.
 
 ## Official Architecture Anchor
@@ -162,7 +157,7 @@ without a material new reason.
 
 | Family | Current verdict | Reopen condition |
 | --- | --- | --- |
-| [FAM/FAM2 feature modulation](family_summaries/fam_family_summary.md) | Closed for unchanged deployable FAM routing, current v3h/v3i signal sets, v3j tiny direct bounded residual heads, v3k provisional micro-alpha diagnosis, and v3l transmission-only physics risk. `context alpha=0.125` is tail-safer, but oracle headroom remains un-deployable and raw transmission risk is too weak. | Reopen only with materially new tail-risk information, target semantics, correction-confidence design, or bounded experts that first pass clean-reference OOF plus new sealed-split replay gates with explicit false-intervention protection. |
+| [FAM/FAM2 feature modulation](family_summaries/fam_family_summary.md) | Closed for unchanged deployable FAM routing, current v3h/v3i signal sets, v3j tiny direct bounded residual heads, v3k provisional micro-alpha diagnosis, v3l transmission-only physics risk, and v3m direct-step-energy block policy replay. `context alpha=0.125` is tail-safer, block16 oracle headroom is real, and local labels are observable, but the tested calibrated policy creates unsafe tails. | Reopen only with materially new tail-risk information, target semantics, correction-confidence design, explicit false-intervention protection, or bounded experts that first pass clean-reference OOF plus new sealed-split replay gates. |
 | [Hard-frequency and haze-prior loss routes](family_summaries/frequency_prior_family_summary.md) | Closed for the tested weighting/SCM forms: hard movement came with global/easy damage. | A loss route shows target-group gain with explicit strong/easy protection before stop20. |
 | [PFD/RHFD preservation routes](family_summaries/pfd_rhfd_family_summary.md) | Diagnostic only: preservation improved in B1r, but hard-gain and strong-case gates failed. | A new mechanism explains how hard gain is recovered without losing the preservation benefit. |
 | [APDR output residual/action-bank routes](family_summaries/apdr_family_summary.md) | Current broad output-residual and coefficient-mapping forms are stopped; v0.4E OOF did not pass, and exact v0.4E numbers require fixed-code rerun before sealing. | A separately pre-registered safe-subset route passes fixed-code OOF/held-out gates without severe regressions. |
@@ -268,6 +263,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v17_rc_expert_mix_20260605/` | 21 | v1.7 3000-row train-derived A0/UDP feature table, alpha-grid oracle and fixed-shrink summaries, OOF gain/risk predictability, risk-coverage curves, fold stability, train-heldout confirmation, per-image policy tables, launcher, logs, and status. |
 | `experiment_logs/haze4k_v18_execution_queue_20260606/` | completed | v1.8 post-diagnosis queue card, README, cloud launchers, monitor/progress/repair transcripts, corrected table-only router policy outputs, data/domain preflight outputs, Q5 domain-adaptation inventory/policy diagnostics, repaired per-seed BiDPFM1 fusion-neighbor train/eval evidence, and final multi-seed aggregate. |
 | `experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/` | 29 | v3l compact evidence: A0 deterministic operator replay closeout and manifests, A1 oracle granularity summaries/gates, B physics metadata and privileged transmission-risk summaries, run scripts, logs, status, and route decision. Cloud-only weights and per-image/raw tables are excluded. |
+| `experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/` | compact | v3m compact evidence: A0a common-action oracle, A0b-r1 dense/continuous cross-audit, A1 local observability, A2 fold-separated label calibration, and A3 frozen policy replay fail-stop. Cloud-only raw block/per-image tables are excluded. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |

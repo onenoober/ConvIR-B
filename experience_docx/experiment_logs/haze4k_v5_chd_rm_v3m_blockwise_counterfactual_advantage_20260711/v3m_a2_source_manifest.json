@@ -1,0 +1,30 @@
+{
+  "calibration": {
+    "action_ladder": [
+      0.0,
+      0.125,
+      0.25,
+      0.5,
+      1.0
+    ],
+    "bin_count": 16,
+    "fold_count": 5,
+    "median_rule": "lower_median_action_index_per_train_bin",
+    "monotone_enforcement": "cumulative_max_over_train_bin_medians"
+  },
+  "canary_authorized": false,
+  "input_sha256": {
+    "a1_block_rows_cloud_only": "e29c8ca2f1759e4025637924e5a826cd0fdcd86cfcdea2b38fd2f8682782aa39",
+    "a1_signal_summary": "449de6183ba1104bb0618ddf0ecc8c509739abdf1a96aaea79b4127454643e69",
+    "a1_source_manifest": "304512574ed23142f06fc5d17d04ef1635d32e28cbd50fdd1c199c0dc726d2b1",
+    "a1_summary": "6387ee7819460366b7606b73aeb8e1d64ab7d80fb774a507a30968d56c7392e1"
+  },
+  "locked_test_touched": false,
+  "phase": "v3m-A2 fold-separated OOF calibration audit",
+  "primary_signal": "direct_step_energy",
+  "route_confirm_used_for_strategy_selection": false,
+  "route_id": "haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711",
+  "run_tag": "v3m_a2",
+  "training_authorized": false,
+  "v3m_a2_script_sha256": "680b0c8a91fc3d435a7513c3ffd0485d353ea4904ca0df454dcee2e257939b7d"
+}

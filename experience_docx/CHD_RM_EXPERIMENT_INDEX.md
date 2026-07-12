@@ -1,15 +1,14 @@
 # CHD-RM Haze4K Experiment Index
 
-Date: 2026-07-11
+Date: 2026-07-12
 
-Status: v3l safe-step escalation and privileged physics audit closed after
-v3k. Deterministic context direct operators were frozen and replay-verified;
-oracle step-size headroom is large, but raw Haze4K transmission metadata is too
-weak to identify direct-severe risk. The current bottleneck is deployable
-step-size/risk observability. No canary, locked-test access, direct-residual
-continuation, physics-risk policy, or promotion step is authorized without a
-materially stronger deployable risk signal and a genuinely new sealed
-train-derived or external validation split.
+Status: v3m blockwise counterfactual advantage closed at A3 fail-stop. Block16
+common-action oracle value and deployable local label observability are real,
+but the frozen A2 calibrated policy converts them into unsafe image-level
+tails: no route-confirm audit, canary expansion, locked-test access, controller
+training, learned ranker, or policy deployment is authorized. The current
+bottleneck is not action granularity or label observability alone; it is safe
+utility calibration of aggressive local actions.
 
 ## Research Direction
 
@@ -58,12 +57,7 @@ Continuous haze-density-aware region-adaptive residual modulation with low-haze 
 | v3d RARM adapter-only preflight | `codex/haze4k-v5-v3d-rarm-adapter-only-preflight` | paused after matched-control gate | Stage 0 exact no-op/freeze/gradient checks passed; D7c-gated 5-epoch adapter-only was safer than ungated control but did not beat matched-budget mean utility (`+0.02947 dB` vs control `+0.03307 dB`) | `V3D_PAUSE_D7C_SAFER_BUT_NOT_MATCHED_CONTROL_UTILITY_NO_20EPOCH_NO_V4` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3d_rarm_adapter_only_preflight_20260710/` |
 | v3e matched utility mechanism audit | `codex/haze4k-v5-v3e-matched-utility-mechanism-audit` | completed mechanism audit | Paired mean remains inconclusive but D7c tail safety is stable; 2x2 replay and gain audit show hard gate is a safety valve and D7c score is near-random for current FAM2 operator gain | `V3E_OPERATOR_CORRECTABILITY_MISMATCH_PRIMARY_HARD_GATE_SAFETY_TRADEOFF_SECONDARY_NO_RARM_EXPANSION` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3e_matched_utility_mechanism_audit_20260710/` |
 | v3f operator-correctability ranker audit | `codex/haze4k-v5-v3f-operator-correctability-ranker` | completed gate stop | D7c-vetoed gain oracle has useful upper-bound value, but best deployable scalar proxy AUROC is only `0.532034`, below the `0.56` training gate | `V3F_A_SCALAR_PROXY_SEPARABILITY_WEAK_NO_RANKER_TRAINING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3f_operator_correctability_ranker_20260710/` |
-| v3g FAM2 action-space correctability | `codex/haze4k-v5-v3g-fam2-action-space-correctability` | completed gate pass; no training | Label-derived FAM2 alpha oracle is strong and finite-difference validated, but hard D7c and ungated action replay remain weak/tail-risky | `V3G_ACTION_ORACLE_STRONG_FEATURES_WEAK_REQUIRE_OPERATOR_CONTEXT_NO_TRAINING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3g_fam2_action_space_correctability_20260710/` |
-| v3h operator-site context audit | `codex/haze4k-v5-v3h-operator-site-context-audit` | completed gate fail; no training | Audited inference-time operator-site features were near-random for the v3g keep/open action target; best feature replay did not beat hard D7c mean utility on holdout | `V3H_OPERATOR_CONTEXT_FEATURES_WEAK_NO_ROUTER_TRAINING` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3h_operator_site_context_audit_20260710/` |
-| v3i FAM2 open-value distillability | `codex/haze4k-v5-v3i-fam2-open-value-distillability` | completed final stop; no training | Privileged open-value oracle is strong and compressible (`ALPHA_SECANT_Q3` mean `+0.412879 dB`, zero severe), but full-context, counterfactual-response, and disagreement OOF probes all failed to stably beat hard D7c | `V3I_ALL_DEPLOYABLE_SIGNALS_FAIL_STOP_FAM2_ROUTER_REDESIGN_CANDIDATE` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711/` |
-| v3j bounded safe-correction audit | `codex/haze4k-v5-v3j-bounded-safe-correction-audit` | closed no promotion | Bounded output-residual teacher projections were safe and strong, but deployable tiny direct residual heads improved mean PSNR while causing many direct-only severe regressions on OOF and route-confirm | `V3J_DIRECT_SAFE_CORRECTION_OOF_FAIL_REQUIRE_NEW_INFORMATION_NO_INTERNAL_ROUTER` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/` |
-| v3k tail-risk observability | `codex/haze4k-v5-v3k-tail-risk-observability` | provisional diagnostic complete; no canary | Direct heads mix wrong-direction cases with harmful overshoot; grouped OOF and historical open holdout support `context alpha=0.125` as tail-safe provisional micro-step, but strict v3j-B reconstruction failed and no new sealed split exists | `V3K_PROVISIONAL_MICRO_ALPHA_SAFE_STEP_SUPPORTED_NO_CANARY_NO_NEW_SEALED_SPLIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3k_tail_risk_observability_20260711/` |
-| v3l safe-step escalation and physics audit | `codex/haze4k-v5-v3l-safe-step-escalation-physics-audit` | closed B weak stop; no canary | Deterministic context operators replay exactly; oracle image/block/pixel step-size policies show large zero-severe upside, but privileged transmission-only risk fails the direct-severe OOF AUC gate | `V3L_B_PRIVILEGED_TRANSMISSION_RISK_WEAK_STOP_NO_PHYSICS_POLICY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/` |
+| v3m blockwise counterfactual advantage | `codex/haze4k-v5-v3m-blockwise-counterfactual-advantage` | completed gate stop | Block16 common-action oracle retained about 85% of pixel-grid lift and A1/A2 found strong direct-step-energy label observability, but A3 frozen policy replay retained only about 23% of block16 oracle lift and created severe tail regressions | `V3M_A3_FROZEN_POLICY_REPLAY_FAIL_STOP_NO_ROUTE_CONFIRM` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
@@ -384,207 +378,6 @@ unfreeze, canary expansion, or locked-test access from this evidence. Any future
 route must introduce new operator-context features, operator target semantics,
 or a different correction operator before another correctability-ranker screen.
 
-## v3g Closeout
-
-v3g ran the authorized no-training FAM2 action-space correctability audit on
-`convir-4090`. It used internal train-derived `val_inner` 600 only,
-produced no checkpoints, and did not touch the Haze4K locked test.
-
-Decision:
-`V3G_ACTION_ORACLE_STRONG_FEATURES_WEAK_REQUIRE_OPERATOR_CONTEXT_NO_TRAINING`.
-
-Key evidence:
-
-- best action-space oracle `ACTION_CLOSE_FILTER_POSITIVE_GRAD`: mean PSNR
-  delta `+0.412676 dB`, median `+0.338481 dB`, p10
-  `+0.060075 dB`, worst `-0.000241 dB`;
-- gradient/finite-difference alignment: sign agreement `0.910641`,
-  Spearman `0.932047`, rows `3640`;
-- hard D7c action replay: mean `+0.012784 dB`, p10
-  `-0.121512 dB`, `23` regressions <= -0.2 dB;
-- ungated W_U action replay: mean `+0.033065 dB`, p10
-  `-0.284573 dB`, `91` regressions <= -0.2 dB;
-- output D7c gain oracle reference: mean `+0.078254 dB`.
-
-Interpretation: the FAM2 actuator can realize a strong correction oracle when
-alpha is selected with label-derived gate-site gradients. The remaining blocker
-is a deployable inference-time operator-site context/controller. Therefore do
-not train v3f-B or another router from scalar proxies. The only authorized next
-work is a separate no-training operator-site context feature audit on internal
-`val_inner`.
-
-## v3h Closeout
-
-v3h ran the authorized no-training operator-site context feature audit on
-`convir-4090`. It used internal train-derived `val_inner` 600 only,
-produced no checkpoints, and did not touch the Haze4K locked test.
-
-Decision:
-`V3H_OPERATOR_CONTEXT_FEATURES_WEAK_NO_ROUTER_TRAINING`.
-
-Key holdout evidence:
-
-- best feature `d7c_logit_mean`: keep dir AUROC `0.504729`, AP
-  `0.506163`, Spearman `0.007875`;
-- best feature replay `FEATURE_04_residual_abs_high_0.25`: mean
-  `+0.008995 dB`, p10 `-0.032779 dB`, zero `<= -0.2 dB`
-  regressions;
-- hard D7c action replay: mean `+0.009352 dB`, p10
-  `-0.111293 dB`, `9` regressions <= -0.2 dB;
-- gradient oracle reference: mean `+0.420325 dB`, p10
-  `+0.059767 dB`, zero `<= -0.2 dB` regressions.
-
-Interpretation: v3g proved the actuator oracle exists, but v3h shows the audited
-deployable operator-site features do not recover it. The best feature replay is
-tail-safer only because it is much more selective; it does not improve holdout
-mean utility and is not a training signal. No current FAM2 scalar/operator-site
-feature training route is authorized. Future work requires materially new
-information, target semantics, or a different controller source.
-
-## v3i Closeout
-
-v3i ran the authorized no-training FAM2 open-value distillability and deployable
-signal audit on `convir-4090`. It used internal train-derived `val_inner` 600
-only, produced no checkpoints, and did not touch the Haze4K locked test.
-
-Decision:
-`V3I_ALL_DEPLOYABLE_SIGNALS_FAIL_STOP_FAM2_ROUTER_REDESIGN_CANDIDATE`.
-
-Key evidence:
-
-- hard D7c replay: mean `+0.012784 dB`, p10 `-0.121512 dB`, `23`
-  regressions <= -0.2 dB;
-- GT open top50 oracle: mean `+0.411695 dB`, p10 `+0.060772 dB`, zero
-  regressions <= -0.2 dB;
-- best compressed policy `ALPHA_SECANT_Q3`: mean `+0.412879 dB`, p10
-  `+0.060226 dB`, zero regressions <= -0.2 dB;
-- v3i-B best full-context OOF replay `OOF_DW3X3_TOP50`: mean
-  `+0.016627 dB`, bootstrap delta vs hard mean `+0.003843`, CI low
-  `-0.000163`; no minimum or strong pass;
-- v3i-C best counterfactual-response OOF replay `OOF_CF_RESPONSE_DW3X3_TOP50`:
-  mean `+0.008543 dB`, bootstrap delta vs hard mean `-0.004241`, CI low
-  `-0.009492`; no minimum or strong pass;
-- v3i-D best disagreement OOF replay `OOF_DISAGREE_LINEAR_TOP50`: mean
-  `+0.010534 dB`, bootstrap delta vs hard mean `-0.002250`, CI low
-  `-0.007422`; no minimum or strong pass.
-
-Interpretation: the privileged FAM2 open-value oracle is real and compactly
-replayable, but it is not currently distillable from the audited deployable
-signals. The bottleneck is the missing inference-time controller signal. Stop
-FAM2 router/distillation from the v3h/v3i signal sets. A future route should
-redesign the correction/controller formulation, such as joint
-correction-confidence or bounded experts with explicit false-action protection,
-and must first pass a no-training held-out separability/replay gate.
-
-## v3j Closeout
-
-v3j ran the authorized bounded safe-correction audit on `convir-4090` using
-train-derived splits only. It produced no checkpoints, saved no probe weights,
-and did not touch the Haze4K locked test.
-
-Decision:
-`V3J_DIRECT_SAFE_CORRECTION_OOF_FAIL_REQUIRE_NEW_INFORMATION_NO_INTERNAL_ROUTER`.
-
-Key evidence:
-
-- v3j-A primary bounded projection `PRIMARY_FULL_CLIP_P99_D7C`: mean
-  `+0.229641 dB`, p10 `+0.002454 dB`, worst `-0.018076 dB`, zero regressions
-  <= -0.2 dB, bootstrap CI95 low vs hard `+0.199968`;
-- hard D7c reference on `v3j_route_confirm`: mean `+0.008634 dB`, p10
-  `-0.131343 dB`, `23` regressions <= -0.2 dB;
-- v3j-B OOF direct linear/context both improved mean but failed tail gates:
-  direct linear severe `234`, direct context severe `277`, versus hard `35`;
-- v3j-B route-confirm direct linear: mean `+0.057145 dB`, p10
-  `-0.392219 dB`, severe `121`, direct-only severe `108`;
-- v3j-B route-confirm direct context: mean `+0.099199 dB`, p10
-  `-0.444083 dB`, severe `121`, direct-only severe `111`.
-
-Interpretation: the bounded residual actuator and privileged teacher target are
-not the current blocker. The blocker is deployable tail-risk control: tiny heads
-can find average gain but cannot avoid false harmful residuals. Stop v3j no-op
-architecture equivalence, canary expansion, and internal-router/direct-residual
-continuations. A future route must add genuinely new tail-risk information
-before any model-promotion experiment.
-
-## v3k Closeout
-
-v3k ran the authorized tail-risk observability diagnosis on `convir-4090` using
-train-derived grouped OOF evidence plus historical open `val_inner` holdout. It
-did not touch locked test, authorize canary, save promotion artifacts, or use
-v3j route-confirm to choose alpha/clip/risk thresholds.
-
-Decision:
-`V3K_PROVISIONAL_MICRO_ALPHA_SAFE_STEP_SUPPORTED_NO_CANARY_NO_NEW_SEALED_SPLIT`.
-
-Key evidence:
-
-- strict v3j-B reconstruction failed despite matched row identities/counts:
-  OOF max direct PSNR delta difference `0.2168 dB`, confirm max difference
-  `0.3162 dB`, and severe sets differed;
-- critical harmful full-step boundary is `alpha* = 0.5`;
-- OOF context: wrong-direction `328/1200`, harmful overshoot `264/1200`,
-  alpha* median `0.519`;
-- OOF linear: wrong-direction `342/1200`, harmful overshoot `326/1200`,
-  alpha* median `0.344`;
-- grouped OOF `alpha=0.125 context`: mean `+0.0298 dB`, p10 `-0.0279 dB`,
-  zero severe regressions, paired CI95 low vs hard `+0.0067`;
-- historical open `val_inner` `alpha=0.125 context`: mean `+0.0287 dB`, p10
-  `-0.0324 dB`, zero severe regressions, paired CI95 low vs hard `+0.0062`;
-- seed `3408` context-only repeat preserved the same conclusion.
-
-Interpretation: the sharper bottleneck is A0-relative correction advantage sign
-and safe-step observability. The evidence supports `context alpha=0.125` as a
-provisional safe micro-step, not as a promotion-ready policy. No canary is
-authorized until the policy is selected inside clean-reference grouped OOF and
-validated on a genuinely new sealed train-derived or external split with
-deterministic saved head artifacts.
-
-## v3l Closeout
-
-v3l ran the authorized safe-step escalation and privileged physics audit on
-`convir-4090` using train-derived OOF evidence. It did not touch locked test,
-authorize canary, train confidence/router models, train a deployable physics
-estimator, or promote the direct residual head as a model candidate.
-
-Decision:
-`V3L_B_PRIVILEGED_TRANSMISSION_RISK_WEAK_STOP_NO_PHYSICS_POLICY`.
-
-Key evidence:
-
-- A0 froze two canonical context direct operators, `D_ref` seed `3407` and
-  `D_rep` seed `3408`, and exact double replay passed with max PSNR delta diff
-  `0.0`, max direct tensor diff `0.0`, exact severe sets at `<= -0.2 dB`, and
-  stable artifact SHA.
-- Full-step direct correction stayed tail-risky on OOF: `D_ref` direct alpha1
-  mean `+0.06625 dB` with `277` severe regressions and `119` hard severe
-  regressions; `D_rep` mean `+0.06938 dB` with `268` severe and `113` hard
-  severe regressions.
-- Fixed `alpha=0.125` stayed the only non-oracle safe reference in this route:
-  `D_ref` mean `+0.02969 dB`, p10 `-0.02750 dB`, severe `0`; `D_rep` mean
-  `+0.02990 dB`, p10 `-0.02695 dB`, severe `0`.
-- Oracle step-size upside is real and dual-operator confirmed. Image oracle
-  mean is about `+0.211 dB`, 16x16 block oracle about `+0.386-0.388 dB`,
-  32x32 block oracle about `+0.359-0.361 dB`, and pixel scalar oracle about
-  `+0.449-0.451 dB`; all had zero severe regressions.
-- Direction/step-size decomposition is stable across frozen operators:
-  `D_ref` wrong-direction `323` and harmful overshoot `268`; `D_rep`
-  wrong-direction `319` and harmful overshoot `267`.
-- Physics metadata audit found `train/trans` and `test/trans`, but no
-  airlight/beta/depth/atmos files.
-- Privileged transmission features failed the pre-registered direct-severe OOF
-  risk gate on both operators: best direct-severe AUC was about `0.635` for
-  `D_ref` and `0.631` for `D_rep`, below the `0.65` gate. Low-alpha and
-  wrong-or-harmful signals were only moderate and do not rescue the failed
-  direct-severe gate.
-
-Interpretation: the direct operator has real oracle upside, so the bottleneck
-is no longer whether correction is useful in principle. The bottleneck is
-deployable step-size/risk observability. Raw Haze4K transmission alone is not
-strong enough to justify a physics-risk policy. No next stage is authorized
-from v3l; any future route needs materially stronger deployable risk
-information and a new sealed validation split before canary or locked-test
-access.
-
 ## Gate Summary
 
 | Stage | Must Pass Before |
@@ -602,12 +395,6 @@ access.
 | v3d matched-control utility gate | v3e mechanism audit only; no 20-epoch, v4, neighbor/FAM1/backbone unfreeze, or locked test |
 | v3e matched utility mechanism audit | separate v3f design/audit for D7c safety veto plus FAM2 operator-correctability ranker only; no direct RARM expansion |
 | v3f operator-correctability ranker audit | no v3f-B scalar-feature ranker training; future work needs new operator context, target semantics, or correction operator |
-| v3g FAM2 action-space correctability | no-training operator-site context feature audit only; no router/ranker training yet |
-| v3h operator-site context audit | no-training v3i open-value distillability/deployable-signal audit only; no router/ranker training |
-| v3i FAM2 open-value distillability | no current FAM2 router/distillation; future route requires new correction-confidence or bounded-expert design plus no-training held-out gate |
-| v3j bounded safe-correction audit | stop v3j; no no-op architecture equivalence, canary, internal-router, or direct-residual continuation without new tail-risk information |
-| v3k tail-risk observability | provisional only; no canary or locked test; next promotion step requires new sealed train-derived/external validation split plus deterministic saved head artifacts |
-| v3l safe-step escalation and physics audit | closed weak-stop; no physics policy, canary, locked test, confidence/router training, deployable t/A estimator, or larger direct head without stronger deployable risk observability and a new sealed validation split |
 | v3 no-op RARM audit | RARM training |
 | v4 single-scale matched controls | final candidate consideration |
 | v5 low-haze protection | final candidate consideration |

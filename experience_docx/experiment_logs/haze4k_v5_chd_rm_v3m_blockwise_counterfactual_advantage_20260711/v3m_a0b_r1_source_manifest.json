@@ -1,0 +1,19 @@
+{
+  "audit_mode": "read_only_existing_frozen_rows_no_inference",
+  "canary_authorized": false,
+  "input_sha256": {
+    "parent_a0_closeout": "2ca39ec1e17f4be794121603e3392a4e042e4d93b0e823454f7cf539f172d05d",
+    "parent_granularity_summary": "fca8e73dcf86e58cd2b60cfb8fc74967167a6f91d70ca2b3b3cb4d9c959964db",
+    "parent_oof_rows": "2a1b3a45cbeab6e646da4c45d17d7a8ad8c45f4ba477d06dbf5d3ab630e284cc",
+    "parent_operator_manifest": "1d2ffa499128ad08a272d67c5439583900afe8ef87fb3256193ad5fe21c3af84",
+    "parent_policy_summary": "7b538152bdac38526d50b500148c961819a78c6c0f9219be4626b962ca795d78",
+    "v3m_oof_rows": "b4a10184fab77b0045440dc88530d000a892acf2105a6295d5ad8a488c67ecb1",
+    "v3m_policy_summary": "925da8410154d16a20ab54ba0e3996dd99224fd94cad6d655c092dc745b940ec",
+    "v3m_source_manifest": "8966996c9c93f6f2f3fbdda536b69ea6aa03e1bf5432f127de47ca8ea95dd8a5"
+  },
+  "locked_test_touched": false,
+  "raw_per_image_outputs_written": false,
+  "route_id": "haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711",
+  "run_id": "v3m_a0b_r1",
+  "training_authorized": false
+}
