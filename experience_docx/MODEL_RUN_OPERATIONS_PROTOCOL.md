@@ -28,6 +28,10 @@ Do not rerun one-time route setup at every launch. Do not launch a later stage
 because it appears next in a generic sequence; the previous typed closeout must
 name it in `authorizes`.
 
+The route card records the GitHub `main` rules commit used for this sequence.
+Do not consult the cloud checkout's copies of governance files when they differ;
+those copies belong to the route's historical code snapshot.
+
 ## Run State Labels
 
 Use explicit labels in the route card, evidence README, and `status.txt`:
@@ -75,7 +79,12 @@ outputs into `EVID_STAGE` as a convenience.
 Verify only facts that can change between launches:
 
 - the route card's static preflight applies to the exact intended route commit;
+- the recorded GitHub `main` rules commit is current for this launch, or any
+  newer rule change has been reviewed and explicitly reconciled;
 - `REMOTE_REPO` branch, HEAD, and worktree status match that commit;
+- route id, `REMOTE_REPO` directory name, branch, source commit, run id, and
+  output root all identify the same route; any cross-route mismatch is an
+  engineering blocker;
 - the explicit `PY` is executable and required dataset/checkpoint/cache assets
   exist at their recorded identities;
 - the previous `<stage>_closeout.json` authorizes this stage, or this is the
@@ -90,6 +99,11 @@ Verify only facts that can change between launches:
 If any item fails, write the matching engineering, infrastructure, or command
 state and stop. Do not substitute another commit, asset, split, output path, or
 Python environment silently.
+
+Create a fresh `REMOTE_REPO` for a new route. An existing cloud workspace may be
+used only for its explicitly named continuation or exact resume after its branch,
+HEAD, dirty files, sessions, and output paths are understood. Never clean or
+overwrite a historical workspace to make it fit a new route.
 
 Probe GPU availability immediately before each job. Allocate only within the
 route's written parallelism cap and launch one job per fresh probe. Partial GPU

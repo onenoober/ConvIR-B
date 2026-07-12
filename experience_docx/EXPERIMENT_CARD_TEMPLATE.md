@@ -103,13 +103,12 @@ being targeted.
 
 ## Preflight
 
+Keep only checks that can invalidate this route before formal cost. Delete
+irrelevant rows rather than executing every example.
+
 | Check | Pass line | Result |
 | --- | --- | --- |
-| shape/static check | <rule> | <pending> |
-| finite forward/backward | <rule> | <pending> |
-| neutral-init or no-op | <rule> | <pending> |
-| small overfit or probe | <rule> | <pending> |
-| cost check | <rule> | <pending> |
+| <route-relevant check> | <rule> | <pending> |
 
 ## Mechanism Metrics
 
@@ -117,20 +116,19 @@ being targeted.
 | --- | --- | --- | --- |
 | <metric> | <reason> | <subset> | <artifact> |
 
-Minimum ConvIR-B always-on metrics:
+Minimum compact decision metrics:
 
 | Metric | Why it matters | Gate subset | Final artifact |
 | --- | --- | --- | --- |
-| per-image PSNR delta vs baseline | catches average-score wins that damage many images | full validation when feasible | CSV or summary table |
-| worst-10% PSNR delta | measures weak-case recovery | full validation or predeclared subset | CSV or summary table |
-| strong-reference regression count | protects images already handled by ConvIR-B | top 25% baseline PSNR group | regression list |
-| worst-case regression count | catches severe local failures | full validation or predeclared subset | regression list |
-| latency and peak GPU memory | enforces fixed-budget comparison | timed eval subset plus full eval where feasible | run log |
-| artifact count by label | catches visual failures not captured by PSNR | saved output sample set | review notes |
+| primary effect and grouped uncertainty | answers the route question at the correct analysis unit | formal comparison | compact summary |
+| protected/lower-tail summary | prevents mean-only promotion | formal comparison | compact summary |
+| one hypothesis mechanism metric | tests whether the claimed mechanism acted | route-relevant subset | compact summary |
+| cost metric, when gated | checks declared deployment budget | matched timed subset | compact summary |
 
-Route-specific additions:
+Possible route-specific additions; select only those used by the hypothesis or
+safety gate:
 
-| Route type | Required additions |
+| Route type | Candidate additions |
 | --- | --- |
 | selector/router/mask | entropy, selection distribution, false intervention on strong-reference images |
 | preservation guard | protected-case recall, guard activity, regression count |

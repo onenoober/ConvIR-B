@@ -1,6 +1,6 @@
 # ConvIR-B Execution Guide
 
-Date: 2026-05-31
+Date: 2026-07-12
 
 Status: ConvIR-B project overlay for the generic experiment protocol.
 
@@ -115,7 +115,8 @@ local command in the experiment card:
 
 ## Baseline Record Fields
 
-Every baseline reproduction note must include:
+Every baseline reproduction note must include enough to reproduce the aggregate
+claim:
 
 - dataset root and verified sample count;
 - checkpoint source URL;
@@ -123,18 +124,15 @@ Every baseline reproduction note must include:
 - checkpoint sha256;
 - checkpoint file size;
 - git commit or source snapshot;
-- Python, PyTorch, CUDA, GPU model, driver, and cuDNN state;
+- explicit Python plus material framework/runtime and GPU identity;
 - command line and working directory;
 - PSNR and SSIM when the task code reports them;
-- per-sample PSNR CSV path;
-- average latency after warmup and number of timed images;
-- peak GPU memory;
-- output image directory;
-- qualitative artifact count and examples by filename;
+- latency/memory only when later gates use them;
+- raw output and per-sample table paths on cloud when generated;
 - difference from the official table;
 - whether the gap is accepted, explained, or blocking.
 
-## Fixed-Budget Contract
+## Replacement Budget Contract
 
 The default route question is:
 
@@ -143,7 +141,10 @@ Can the candidate beat the matched ConvIR-B runtime baseline under the same data
 evaluation, and hardware contract while staying within the cost limits?
 ```
 
-Default cost limits for a ConvIR-B replacement route:
+The following values are a drop-in replacement reference, not universal route
+eligibility. Use them only when the route objective is an operational ConvIR-B
+replacement and no newer deployment budget exists. Diagnostic, mechanism, and
+positive-ablation routes may exceed them, but cannot claim drop-in replacement.
 
 | Constraint | Default limit |
 | --- | --- |
@@ -165,17 +166,19 @@ training is part of the comparison. A candidate cannot be called faster unless
 it is compared with the matched baseline at the same epoch, step, or wall-clock
 budget.
 
-## Default Gates For CSD Desnowing
+## Legacy CSD Gate Reference
 
-These defaults are intentionally conservative and should be overwritten only
-when a card gives a task-specific reason.
+These values preserve the earlier CSD desnowing contract. They are not automatic
+defaults for Haze4K or other tasks. A new CSD route may adopt them only after the
+route card cites the matched baseline/noise source and confirms the same metric
+and analysis unit.
 
 | Gate | Continue only if all are true |
 | --- | --- |
 | smoke | finite forward/backward; no NaN/Inf loss; output shape equals baseline; peak memory fits GPU; eval runs on at least 8 images |
-| 5 epoch scout | PSNR is within 0.50 dB of the matched baseline scout point, latency <= +10%, no systematic artifact pattern in saved images |
-| 20 epoch hard gate | PSNR is within 0.25 dB of the matched baseline 20-epoch point or shows a clear target-group gain; strong-case regression count <= 2% of validation images; peak memory <= +10% |
-| 80 epoch promotion | mean PSNR is >= matched baseline - 0.10 dB and at least one mechanism metric supports the hypothesis; worst-10% PSNR delta is non-negative or explained |
+| early scout | PSNR is within the card's independently sourced margin at the same budget, cost remains eligible, and no systematic artifact pattern appears |
+| first hard utility gate | matched quality or target-group gain meets the written minimum effect; preservation and capacity budgets pass |
+| promotion | matched quality, mechanism, preservation, uncertainty, and cost jointly support the written next phase |
 | final replacement | mean PSNR gain >= +0.10 dB and SSIM delta >= -0.001; FLOPs <= +5%; latency <= +10%; strong-case regression count <= 1% |
 | positive ablation | mechanism or target subgroup improves, but replacement gates are not met; label as ablation, not main baseline |
 
@@ -183,23 +186,20 @@ Minimum meaningful final improvement for CSD desnowing is `+0.10 dB PSNR` with
 SSIM delta >= `-0.001`. Smaller gains can be retained only as
 diagnostic evidence if they explain a mechanism or rule out a route.
 
-## Always-On Mechanism And Regression Metrics
+## Formal Decision Metrics
 
-Do not judge image restoration only by average PSNR. At minimum, record these
-for every formal ConvIR-B route:
+Do not judge a formal image-restoration decision only by average PSNR. Retain
+the smallest aggregate set that supports the route's typed gate:
 
-- per-image PSNR and per-image delta versus the local ConvIR-B baseline;
-- delta distribution: mean, median, worst 10%, best 10%, and p5/p95;
-- strong-reference group: images where baseline PSNR is in the top 25%;
-- strong-case regression count: strong-reference images with PSNR delta <=
-  -0.05 dB;
-- worst-case regression count: any image with PSNR delta <= -0.20 dB;
-- edge or texture-region error summary if an analysis script exists;
-- FFT loss or frequency-domain error summary when the route touches the loss,
-  frequency blocks, or texture recovery;
-- average latency, timed image count, warmup count, and peak GPU memory;
-- output artifact count by simple labels such as color shift, ringing, blur,
-  residual snow/rain/haze, edge halo, or texture washout.
+- primary quality effect with grouped uncertainty at the claim's analysis unit;
+- protected/strong-case and lower-tail regression summaries;
+- the one mechanism metric required by the route hypothesis;
+- latency, memory, or FLOPs only when cost is part of the gate.
+
+Generate raw per-image deltas when needed for these aggregates, but keep them in
+cloud `RUN_ROOT`. Do not curate a large per-image table, visual artifact catalog,
+FFT report, or edge/texture report at every stage. Add those only for a relevant
+mechanism claim, a diagnosed failure, or a terminal promotion audit.
 
 Route-specific metrics are added only when relevant:
 
@@ -219,21 +219,14 @@ Failure must still teach the next action.
 | --- | --- |
 | baseline reproduction blocked | do not modify the model; fix data, checkpoint, metric, or environment contract |
 | smoke fails | implementation invalid; debug shape, device, checkpoint, loss, or dependency path |
-| 5 epoch scout fails on quality and mechanism | route is diagnostic only; inspect target definition before more training |
-| 20 epoch hard gate fails on quality but mechanism moves | run a cheaper targeted ablation or adjust insertion/loss weight, not full training |
-| 20 epoch hard gate fails on mechanism | close this route under the current hypothesis |
-| 80 epoch promotion fails on regressions | add preservation guard or narrow target; do not promote as replacement |
+| early scientific gate fails on quality and mechanism | stop the written continuation; inspect target definition before more budget |
+| scientific utility fails on quality but mechanism moves | keep as a typed ablation or run only a predeclared cheaper diagnostic |
+| scientific utility fails on mechanism | close the current hypothesis, not unrelated route families |
+| safety/promotion fails on regressions | block the written promotion; do not infer that the mechanism is absent |
 | final cost fails | keep as ablation only unless the project explicitly changes deployment constraints |
 
-## What Not To Fix Yet
+## Do Not Globalize Route Parameters
 
-Until the matched runtime baseline package exists, do not freeze:
-
-- final checkpoint filenames beyond the recorded downloaded file;
-- exact artifact root outside the current machine policy;
-- final seed set beyond the default seed policy in the card template;
-- a specific model modification route;
-- route-specific thresholds for metrics that do not exist yet.
-
-Those details become authoritative only after the first formal experiment card
-is filled and the baseline reproduction evidence is attached.
+Checkpoint filenames, artifact roots, seed sets, model modifications, sample
+sizes, and route-specific thresholds belong in the route card. Do not turn one
+route's convenient values into repository-wide defaults.

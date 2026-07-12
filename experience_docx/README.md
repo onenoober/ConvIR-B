@@ -32,7 +32,7 @@ do not reduce any required gate.
 | L0 default rules | `AGENTS.md` | Hard execution rules, fact-source authority, Universal Route Workflow, and read budget. |
 | L1 router | `experience_docx/README.md` | This file; choose the next minimal rule/evidence file. |
 | L2 execution protocols | `MODEL_EXPERIMENT_START_CHECKLIST.md`, `MODEL_RUN_OPERATIONS_PROTOCOL.md`, `COMMAND_RELIABILITY_QUICKSTART.md`, `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` | One-time route setup, per-launch runtime work, command transport, and terminal evidence archival respectively. |
-| L2 source policy | `OFFICIAL_ARCH_ANCHOR_POLICY.md`, `Haze4K_ARCH_FINETUNE_WORKFLOW.md` | Clean-route and architecture/fine-tune rules for Haze4K model-structure work. |
+| L2 source policy | `OFFICIAL_ARCH_ANCHOR_POLICY.md`, `Haze4K_ARCH_FINETUNE_WORKFLOW.md` | Anchor/source rules plus Haze4K partial-load, initialization, and trainable-scope guidance. |
 | L3 design aids | `ROUTE_DESIGN_FRAMEWORK.md`, `EXPERIMENT_GOVERNANCE_PROTOCOL.md`, `EXPERIMENT_CARD_TEMPLATE.md`, `CONVIR_B_EXECUTION_GUIDE.md` | Deeper design guidance, baseline contracts, and card templates. |
 | L4 evidence indexes | `EXPERIMENT_INDEX.md`, `family_summaries/`, `experiment_cards/`, `experiment_logs/<route_id>/README.md` | Route state, decisions, evidence paths, and compact results. |
 | L5 archives and cleanup maps | `COMMAND_RELIABILITY_PROTOCOL.md`, `CLOUD_PY310_ENVIRONMENT.md`, `BRANCH_ROUTE_INDEX.md`, historical logs | Historical, deep troubleshooting, or remote-branch cleanup context; do not read by default. |
@@ -92,6 +92,9 @@ reusable or too large for the route card.
 
 - GitHub `main` and named GitHub route branches are the durable compact evidence
   sources for status, decisions, and route memory.
+- Current workflow/governance rules come from GitHub `main`. Copies of these
+  rule files inside older route branches, local worktrees, and cloud workspaces
+  are historical snapshots and must not override current `main` rules.
 - `convir-4090` is the runtime/raw-output source.
 - Local WSL is editing, syntax/static-check, sync staging, and local-safety
   inspection only.
@@ -99,6 +102,9 @@ reusable or too large for the route card.
   route card, evidence README, closeout JSON, central index, or family summary.
 - Historical cloud/environment files preserve provenance and should not override
   current `AGENTS.md` or runtime protocol rules.
+- Existing route workspaces remain untouched for reproducibility. Start new
+  routes in fresh workspaces; reuse an old workspace only for an explicitly
+  authorized continuation or exact resume.
 
 ## Baseline Rule
 

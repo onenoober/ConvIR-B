@@ -299,17 +299,18 @@ Choose metrics that match the route's claim.
 | data or preprocessing change | label/data integrity, group balance, robustness, distribution shift |
 | inference or deployment policy | latency, memory, failure fallback, calibration, no-op behavior |
 
-For ConvIR-B image restoration, every formal route should also record
-per-sample PSNR deltas, worst-10% sample behavior, strong-reference regressions,
-worst-case regressions, latency, peak GPU memory, and artifact counts. Add
-edge/texture-region error, frequency-domain error, selector entropy, selection
-distribution, false intervention, loss scale, or gradient health only when the
-route claims those mechanisms.
+For ConvIR-B image restoration, a formal decision needs a primary effect with
+grouped uncertainty, a protected/lower-tail summary, and one metric tied to the
+claimed mechanism. Add latency/memory only when cost is gated. Keep raw
+per-sample values on cloud and add visual, edge/texture, frequency, selector,
+loss-scale, or gradient audits only when the claim, a failure diagnosis, or a
+terminal promotion decision requires them.
 
 ## Control Rule
 
 Any route that claims selectivity, confidence, routing, or external-prior value
-needs controls:
+must predeclare the smallest control set that rules out its plausible confounds.
+Choose from:
 
 - shuffled feature control;
 - shuffled label or permutation control;
@@ -388,7 +389,8 @@ When a required dependency is missing, record whether it is:
 - version-sensitive for reproducibility.
 
 Install or update dependencies according to the project's execution policy, then
-record durable environment facts in the runbook.
+record durable environment facts in the route card or in a reusable runbook
+only when one is justified by the documentation ownership rule.
 
 ## Decision Labels
 

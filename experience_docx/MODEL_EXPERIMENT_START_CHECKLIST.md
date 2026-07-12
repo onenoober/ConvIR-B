@@ -17,6 +17,7 @@ Record in the route card:
 
 - authoritative GitHub `main` or named-branch evidence paths and the relevant
   current cloud paths;
+- the GitHub `main` commit supplying current process rules;
 - route type: new route, continuation, rescue, ablation, reproducibility audit,
   policy/replay, or evidence sync;
 - source branch and commit, route branch, parent rationale, and comparison
@@ -30,6 +31,10 @@ New Haze4K model-structure routes must start from the immutable
 authorized by the current index, route card, or family summary. The canonical
 source and load rules live in `OFFICIAL_ARCH_ANCHOR_POLICY.md` and
 `Haze4K_ARCH_FINETUNE_WORKFLOW.md`; link to them rather than copying them.
+
+Do not copy process defaults from an older route checkout. Its code and route
+card may define a continuation contract, but current stage, path, monitoring,
+sync, and gate-interpretation rules come from GitHub `main`.
 
 ## 2. Complete Static Preflight Once Per Route Commit
 

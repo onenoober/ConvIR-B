@@ -1,21 +1,20 @@
 # Haze4K Architecture Fine-Tune Workflow
 
-Date: 2026-06-10
+Date: 2026-07-12
 
-Status: dedicated workflow for fast validation of ConvIR-B Haze4K architecture
-changes by partial loading the official pretrained checkpoint, freezing trusted
-modules, and progressively fine-tuning only the declared new route.
+Status: Haze4K-specific source, partial-load, initialization, and trainable-scope
+supplement for architecture routes.
 
 ## 0. Authority And Scope
 
-This workflow is the required route pattern when a new Haze4K model structure
-is proposed after the official architecture anchor was established.
+Use this supplement when a new Haze4K model structure is proposed after the
+official architecture anchor was established. `MODEL_EXPERIMENT_START_CHECKLIST.md`
+owns one-time route setup and profile selection;
+`MODEL_RUN_OPERATIONS_PROTOCOL.md` owns per-stage paths, launch, monitoring, and
+closeout. This file must not define a second generic stage or sync workflow.
 
 Highest-priority rules:
 
-- Default runtime server is `convir-4090`; invoke it as `ssh convir-4090`.
-- Local WSL checkout is for editing and compile/static checks only. Do not run
-  training, smoke tests, evaluation, inference, or demos locally.
 - Treat `github/codex/haze4k-official-arch-anchor` as an immutable official
   ConvIR-B Haze4K architecture anchor.
 - Every new architecture change starts from the anchor as a new branch:
@@ -74,8 +73,10 @@ Required route naming:
 - branch: `codex/<new-route>`;
 - cloud workspace:
   `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-<new-route>`;
-- evidence root:
-  `experience_docx/experiment_logs/<route_id>/`;
+- raw runtime root:
+  `/sda/home/wangyuxin/ConvIR-B/runs/<route_id>/`;
+- compact evidence staging root:
+  `$REMOTE_REPO/experience_docx/experiment_logs/<route_id>/` at closeout only;
 - route card:
   `experience_docx/experiment_cards/<date>-<route_id>.md`;
 - model name:
@@ -88,7 +89,7 @@ Before writing model code, create or update the route card with:
 - new parameter prefixes;
 - partial-load allowlist;
 - frozen/trainable scopes;
-- stage ladder and stop gates;
+- selected training profile, first trainable scope, and typed stop gates;
 - locked-test policy;
 - text evidence paths.
 
@@ -214,40 +215,33 @@ official ConvIR-B keys: strict shape match required
 Do not use broad allowlists such as `missing=*`, and do not ignore unexpected
 keys to make a run start.
 
-## 4. Freeze And Progressive Fine-Tune Ladder
+## 4. Trainable Scope Contract
 
-The default goal is fast usefulness validation, not immediate full training.
-Use the smallest trainable set that can test the mechanism.
+Use the smallest trainable scope that can answer the route's declared mechanism
+question. Do not force every architecture through adapter-only, neighbors,
+selected backbone, and full fine-tune in sequence.
 
-| Stage | Trainable modules | Budget | Purpose | Continue only if |
-| --- | --- | --- | --- | --- |
-| Stage 0 preflight | none or fixed-batch only | synthetic + one train batch | prove load, no-op, shape, finite loss, prior availability | strict partial-load passes; no-op or bounded-diff passes; no locked test touched |
-| Stage 1 adapter-only | new module prefixes only | smoke/1 epoch, then up to 5 epochs | reject collapse and verify branch can learn | finite gradients, stable loss scale, cost within limits, no catastrophic val damage |
-| Stage 2 adapter+neighbors | new modules plus declared nearby fusion layers | up to 20 epochs | test whether local integration helps | internal regular/hard gate passes or mechanism evidence justifies one narrow exception |
-| Stage 3 selected backbone | new modules plus a small declared backbone subset | up to 80 epochs | decide whether route deserves serious training | matched quality, mechanism, preservation, and cost remain plausible |
-| Stage 4 full fine-tune | explicitly declared, low LR | full budget only after Stage 3 | final candidate evidence | only after checkpoint selection and locked-test policy are fixed |
-
-Default freeze scopes:
+Available scope labels:
 
 - `adapter_only`: train only route prefixes; freeze ConvIR-B backbone and keep
   frozen modules in eval mode.
 - `adapter_neighbor`: train route prefixes plus explicitly listed adjacent
   layers, usually with a lower LR for neighbors.
 - `selected_backbone`: train route prefixes plus predeclared backbone stage(s).
-- `all`: allowed only after earlier gates pass or when the route is explicitly
-  not a fast partial-load validation.
+- `all`: use only when the mechanism genuinely requires global adaptation and
+  the route card explains why a smaller scope cannot answer the question.
 
-Default LR grouping:
+Choose the initial scope before formal results. If the mechanism requires
+adjacent or backbone integration, start at that declared scope instead of
+running a knowingly uninformative adapter-only stage. Widening scope is a new
+stage and requires the previous typed closeout to authorize it.
 
-```text
-new modules:      1e-4 to 2e-4
-neighbor layers:  1e-5
-selected backbone: 5e-6 to 1e-5
-weight decay:     1e-4 unless the route card explains otherwise
-grad clip:        keep the existing ConvIR-B contract unless diagnosed
-```
+There is no repository-wide learning-rate or epoch ladder. Freeze the budget,
+LR groups, weight decay, and gradient policy from the matched predecessor,
+baseline behavior, or a predeclared scale diagnostic. Do not tune them from the
+formal result they will judge.
 
-Every train log should print:
+The raw train log should print one compact startup summary:
 
 - trainable and frozen parameter counts;
 - trainable prefix list;
@@ -256,184 +250,85 @@ Every train log should print:
 - route-specific branch activity, such as gate mean, residual norm, mask
   coverage, or prior confidence.
 
-## 5. Minimum Cloud Preflight Script
+## 5. Architecture Preflight Payload
 
-Create a durable script under the route evidence root before running it on
-`convir-4090`. The script must use the new server paths and explicit Python.
+Use the durable runner, `REMOTE_REPO`, `RUN_ROOT`, status markers, and typed
+closeout from `MODEL_RUN_OPERATIONS_PROTOCOL.md`. This supplement adds only the
+Haze4K architecture checks that the runner must invoke:
 
-Template:
-
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-BASE=/sda/home/wangyuxin/ConvIR-B
-WORK=$BASE/repos/ConvIR-B-<new-route>
-ITS=$WORK/Dehazing/ITS
-EVID=$WORK/experience_docx/experiment_logs/<route_id>
-PY=$BASE/envs/convir-cu121/bin/python
-DATA=$BASE/datasets/Haze4K/Haze4K
-A0=$BASE/checkpoints/official/Haze4K/haze4k-base.pkl
-STATUS=$EVID/status.txt
-LOG=$EVID/preflight_<route_id>.log
-JSON_OUT=$EVID/preflight_<route_id>.json
-export CUDA_VISIBLE_DEVICES=0 TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
-
-mkdir -p "$EVID"
-{
-  echo "preflight_start <route_id> $(date --iso-8601=seconds)"
-  echo "work=$WORK"
-  echo "data=$DATA"
-  echo "a0=$A0"
-  echo "python=$PY"
-} | tee -a "$STATUS"
-
-cd "$ITS"
-set +e
-PYTHONUNBUFFERED=1 "$PY" <route_preflight.py> \
-  --data_dir "$DATA" \
-  --checkpoint "$A0" \
-  --output "$JSON_OUT" \
-  > "$LOG" 2>&1
-rc=$?
-set -e
-echo "preflight_done rc=$rc <route_id> $(date --iso-8601=seconds)" | tee -a "$STATUS"
-if [[ "$rc" -eq 0 ]]; then
-  echo "<ROUTE>_PREFLIGHT_OK" | tee -a "$STATUS"
-else
-  echo "<ROUTE>_PREFLIGHT_FAILED" | tee -a "$STATUS"
-fi
-exit "$rc"
-```
-
-Minimum JSON fields:
-
-- `branch`, `commit`, `python`, `torch_version`, `cuda_device_name`;
 - `checkpoint`, `checkpoint_sha256`;
-- `data_dir`, train/validation sample counts;
 - `partial_load.loaded_count`, `missing_new_modules`, `unexpected`,
   `shape_mismatch`;
 - `parameter_count_total`, `parameter_count_trainable_by_scope`;
 - `synthetic_output_shapes`, `synthetic_forward_finite`;
 - `noop_or_bounded_diff_vs_a0`;
-- `one_batch_forward_finite`, `one_batch_loss`;
+- one real-batch finite forward; backward/loss only when the selected profile
+  trains;
 - `locked_test_touched=false`;
-- `pass=true/false`.
+- a typed structural decision and the exact next stage it authorizes.
 
-## 6. Stage 1/2 Training Command Pattern
+## 6. Training Command Contract
 
-Training must run on `convir-4090` and should follow the existing Haze4K
-workflow: durable script, status markers, stdout/stderr log, unique model name,
-and no overwrite of existing outputs.
+The tracked runner supplies the route's frozen values for `--arch`, trainable
+scope, data/split, checkpoint, seed policy, optimizer groups, budget, evaluation
+cadence, and output root. This supplement does not prescribe batch size,
+learning rate, epoch count, save cadence, or a universal adapter-first command.
 
-Adapter-only template:
-
-```bash
-PYTHONUNBUFFERED=1 "$PY" main.py \
-  --model_name "$MODEL_NAME" \
-  --data Haze4K \
-  --version base \
-  --fam_mode original \
-  --arch <route_arch> \
-  --<route>_train_scope adapter_only \
-  --mode train \
-  --data_dir "$DATA" \
-  --batch_size 8 \
-  --leaning_rate 0.0001 \
-  --weight_decay 0.0001 \
-  --grad_clip_norm 0.001 \
-  --num_epoch 1000 \
-  --stop_epoch 5 \
-  --print_freq 50 \
-  --num_worker 8 \
-  --save_freq 5 \
-  --valid_freq 1 \
-  --init_model "$A0" \
-  --seed 3407 \
-  > "$TRAIN_LOG" 2>&1
-```
-
-Stage 2 should change only the declared scope and LR grouping, for example:
-
-```text
---<route>_train_scope adapter_neighbor
---<route>_neighbor_learning_rate 0.00001
---stop_epoch 20
-```
-
-Do not silently change data split, active modules, loss weights, seed, or
-checkpoint after seeing Stage 1 results. A changed scope is a new declared
-stage or a new route id.
+Do not silently change data split, active modules, loss weights, seed,
+checkpoint, scope, or budget after seeing a formal result. A changed scope is a
+new declared stage; a changed scientific comparison requires a new run id and
+route-card update.
 
 ## 7. Internal Evaluation And Gates
 
 No locked Haze4K test should be used to select checkpoint, scope, scale,
 threshold, or active module.
 
-Default internal evaluation:
+For a formal internal evaluation:
 
-- compare A0 vs candidate Best and Final;
+- compare A0 with the single fixed candidate checkpoint named by the stage;
 - evaluate at least `val_regular` and `val_hard` when split JSON exists;
 - use the same data decoding, padding, and metric code as existing tools;
-- write compare JSON and per-image CSV;
-- write one gate JSON with pass/fail and next action.
+- keep raw per-image comparisons in `RUN_ROOT`;
+- write one compact typed closeout with decision and next-stage authorization.
 
-Minimum metrics:
+Minimum compact metrics:
 
-- mean and median PSNR delta;
-- SSIM delta when available;
-- hard bottom-25% PSNR delta;
-- easy/top-reference preservation delta;
-- positive ratio;
-- strong-reference regression ratio and count;
-- worst regression count at `<= -0.20 dB`;
-- route-specific activity, e.g. gate coverage, residual norm, confidence, or
-  prior consistency;
-- parameter, latency, and peak memory deltas when measured.
+- primary quality effect with uncertainty at the image/group unit;
+- hard/lower-tail and strong-reference preservation summaries;
+- one route-specific activity metric, such as bounded residual norm or gate
+  coverage;
+- parameter, latency, or peak-memory deltas only when the route's gate uses
+  them.
 
-Fast-validation default gates:
+Architecture-specific gate questions are:
 
-| Gate | Continue line |
+| Gate type | Required question |
 | --- | --- |
-| Preflight | strict partial-load, finite forward, no-op/bounded-diff, no locked test |
-| 5-epoch adapter-only | no collapse; regular mean not worse than A0 by more than the card limit; branch activity nonzero but bounded |
-| 20-epoch adapter+neighbor | hard/target group improves or mechanism metric strongly moves; strong-reference and worst-tail budgets remain within the card |
-| 80-epoch selected-backbone | matched quality, mechanism, preservation, and cost are all plausible enough for full training or a clean locked confirmation |
+| structural integrity | Did strict partial-load, shapes, finite forward, neutral/bounded initialization, and locked-test protection pass? |
+| scope viability | Is the declared trainable scope active and numerically healthy under its written budget? |
+| scientific utility | Does matched evaluation support the mechanism while preserving strong and tail cases? |
+| safety/promotion | Do direct replay, tail risk, cost, and uncertainty support only the written promotion action? |
 
-For current Haze4K single-seed work, remember the existing stop20 noise floor:
-mean PSNR std `0.2206 dB` and hard-bucket std `0.4551 dB`. A single-seed gain
-below `+0.10 dB` is a directional/mechanism signal, not promotion evidence.
+Epoch counts are route parameters, not gate identities. The historical Haze4K
+stop20 noise estimates (`0.2206 dB` mean PSNR std and `0.4551 dB` hard-bucket
+std) may be cited only when the current data, metric, budget, and seed contract
+match; otherwise measure or justify a current uncertainty reference.
 
 ## 8. Evidence And Closeout
 
-Every stage must leave text evidence under `experience_docx/experiment_logs/<route_id>/`:
+Follow `MODEL_RUN_OPERATIONS_PROTOCOL.md`: raw logs, per-image tables,
+checkpoints, and outputs stay in `RUN_ROOT`; only the runner, typed closeout,
+compact status, evidence README, and necessary aggregate summaries enter
+`EVID_STAGE`.
 
-- route README with status and key metrics;
-- command scripts used;
-- `status.txt` with start/done markers;
-- train/eval/preflight logs;
-- partial-load JSON;
-- compare JSON/CSV;
-- gate JSON;
-- route-specific mechanism audit;
-- decision label and next action.
-
-After any cloud run completes, sync text evidence back to GitHub before calling
-the run closed:
-
-- update the route card;
-- update `EXPERIMENT_INDEX.md`;
-- update the relevant `family_summaries/` file if a family verdict changes;
-- update the evidence README;
-- commit and push only text evidence and small structured artifacts;
-- do not commit checkpoints, model weights, datasets, images, arrays, archives,
-  or raw inference outputs.
-
-If GitHub push is unavailable, report the exact local evidence paths and the
-reason the push failed.
+Commit intermediate compact evidence to the route branch. Update the central
+index/family summary and sync GitHub `main` only at a terminal decision or an
+explicit major handoff, as defined by `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.
 
 ## 9. Route Card Checklist
 
-Before launching Stage 0, the card must answer:
+Before launching the first cloud stage, the card must answer:
 
 - What failure mode from existing evidence is targeted?
 - Why is this route materially different from failed prior routes?
@@ -441,8 +336,9 @@ Before launching Stage 0, the card must answer:
 - Which checkpoint path and sha256 is used?
 - Which new parameter prefixes are allowed to be missing?
 - Which new modules are initialized to zero, identity, or conservative gates?
-- Which modules are frozen in Stage 1?
-- Which modules may unfreeze in Stage 2 and at what LR?
+- Which modules are trainable in the first informative scope?
+- Which wider scope, if any, may be authorized later and what question would it
+  answer?
 - Which internal splits and gates decide continuation?
 - Which route-specific mechanism metric proves the branch is active?
 - What result stops the route without more training?
@@ -458,8 +354,8 @@ Before launching Stage 0, the card must answer:
   unexpected key.
 - Do not change official pretrained layer shapes and still claim clean
   Haze4K pretrained reuse.
-- Do not train the whole backbone first when adapter-only can test the
-  mechanism.
+- Do not train the whole backbone first when a smaller scope can answer the
+  mechanism; if it cannot, state why before launch.
 - Do not tune thresholds, scales, active modules, or checkpoints from locked
   Haze4K test results.
 - Do not overwrite an existing output directory or tmux session.

@@ -29,6 +29,13 @@
   should link to that source instead of copying the rule body. Do not mix
   runtime rules, design guidance, historical troubleshooting, branch cleanup, or
   experiment evidence in the same document section.
+- Current process rules come from GitHub `main`. Rule files inside an older
+  local/cloud route checkout are historical snapshots, not current authority.
+  Preserve their route evidence, but do not let their old stage, sync, path, or
+  monitoring defaults govern new work.
+- A new route uses a fresh local/cloud workspace. Reuse an existing workspace
+  only for an explicitly named continuation or exact resume after checking its
+  dirty state; never repurpose a historical route directory for a new route.
 
 ## Universal Route Workflow
 
@@ -91,6 +98,8 @@ metric contract, stage authorization, and closeout/archive.
 
 - Before launch, satisfy the resource-preflight and metric-contract gates in
   the Universal Route Workflow and `MODEL_RUN_OPERATIONS_PROTOCOL.md`.
+- Record the GitHub `main` rules commit used for planning. Cloud route checkouts
+  provide code and runtime state, not governance authority.
 - Do not overwrite active sessions, output dirs, or model names; inspect first.
 - Every cloud run needs a durable command script, heartbeat/status, stdout/stderr
   capture, and compact evidence closeout.
