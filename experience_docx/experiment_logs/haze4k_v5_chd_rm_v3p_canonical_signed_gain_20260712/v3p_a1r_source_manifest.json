@@ -1,0 +1,8 @@
+{
+  "a0_closeout_sha256": "309e2f9579d13314fe7305fdc57d032652e73d8984ee34822b63fbe61270e6f3",
+  "calibration_bins_sha256": "8ec92048058b754c99f4701c4abdfa7323973597060c0b13cea9820306483d62",
+  "canonical_blocks_sha256": "52e6cd8829d37750cfb1e9e2fec39e6ac5cead2e324dbc353df93e5263e89765",
+  "policy_rows_sha256": "f4deff821186bad2476db3f273f3daf0c0f77d26fa157f9f482bfad3884b5424",
+  "raw_image_reconstruction_cloud_only": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/a1_reconstruction_r1/v3p_a1r_image_reconstruction_cloud_only.csv",
+  "route_id": "haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712"
+}

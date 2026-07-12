@@ -1,0 +1,52 @@
+{
+  "authorizes": "v3p-B0 physics forward contract only",
+  "canary_touched": false,
+  "decision": "V3P_A2_CONSTRAINED_G1_ORACLE_PASS_AUTHORIZE_B0_PHYSICS_FORWARD_CONTRACT_ONLY",
+  "gate_type": "scientific_utility",
+  "locked_test_touched": false,
+  "max_block_coverage": 0.25,
+  "metric_contract": "default .125, only beneficial .125->.25 canonical G1 blocks, hard non-overlap executor, fixed 25% block cap",
+  "minimum_coverage": 0.01,
+  "minimum_lift_vs_fixed_db": 0.02,
+  "minimum_lift_vs_uniform_025_db": 0.01,
+  "operator_rows": [
+    {
+      "hard_mosaic_additive_abs_error_max": 2.2737367544323206e-13,
+      "image_count": 1200,
+      "operator_label": "D_ref",
+      "oracle_mean_lift_vs_fixed_db": 0.047481898919784854,
+      "oracle_mean_lift_vs_fixed_lcb95_db": 0.04513179221269748,
+      "oracle_mean_lift_vs_uniform_025_db": 0.023803721642282526,
+      "oracle_mean_lift_vs_uniform_025_lcb95_db": 0.02161744807970752,
+      "selected_harmful_sse": 0.0,
+      "selected_pixel_coverage_lcb95": 0.17538875277777777,
+      "selected_pixel_coverage_mean": 0.18048225,
+      "severe_lift_vs_fixed_count": 0
+    },
+    {
+      "hard_mosaic_additive_abs_error_max": 2.2737367544323206e-13,
+      "image_count": 1200,
+      "operator_label": "D_rep",
+      "oracle_mean_lift_vs_fixed_db": 0.04740244966031271,
+      "oracle_mean_lift_vs_fixed_lcb95_db": 0.04501118343069682,
+      "oracle_mean_lift_vs_uniform_025_db": 0.02345306933315366,
+      "oracle_mean_lift_vs_uniform_025_lcb95_db": 0.02131965607532667,
+      "selected_harmful_sse": 0.0,
+      "selected_pixel_coverage_lcb95": 0.17549073194444448,
+      "selected_pixel_coverage_mean": 0.18054880555555555,
+      "severe_lift_vs_fixed_count": 0
+    }
+  ],
+  "reason": "Both canonical operators clear every preregistered constrained-G1 utility and safety gate.",
+  "route_id": "haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712",
+  "run_id": "v3p_a2",
+  "source_manifest": {
+    "a1_closeout_sha256": "f4ab127c6dea1fa7f23c5b8481887d522bb32bddbb89e83a7019a532789fe829",
+    "canonical_blocks_sha256": "52e6cd8829d37750cfb1e9e2fec39e6ac5cead2e324dbc353df93e5263e89765",
+    "raw_per_image_cloud_only": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/a2_constrained_g1_oracle/v3p_a2_per_image_cloud_only.csv",
+    "route_id": "haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712"
+  },
+  "stage": "v3p-A2-constrained-G1-oracle",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": false
+}

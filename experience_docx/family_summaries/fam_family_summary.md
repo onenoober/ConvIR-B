@@ -4,8 +4,9 @@ Date: 2026-07-12
 
 Status: closed for unchanged deployable FAM routing, current v3h/v3i signal
 sets, v3j tiny direct bounded residual heads, v3k provisional micro-alpha, v3l
-transmission-only physics risk, v3m direct-step-energy block policy replay, and
-v3n conservative first-step direct-step-energy thresholding.
+transmission-only physics risk, v3m direct-step-energy block policy replay,
+v3n conservative first-step direct-step-energy thresholding, and v3p scalar-A
+physics on the current Haze4K package.
 
 ## Sources
 
@@ -25,6 +26,7 @@ v3n conservative first-step direct-step-energy thresholding.
   - `../experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3l-safe-step-escalation-physics-audit.md`
   - `../experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3m-blockwise-counterfactual-advantage.md`
   - `../experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3n-conservative-first-step-calibration.md`
+  - `../experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3p-canonical-signed-gain.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_fam_modres_scout_stop5_20260531/`
   - `../experiment_logs/haze4k_fam2_modres_stop20_20260531/`
@@ -39,6 +41,7 @@ v3n conservative first-step direct-step-energy thresholding.
   - `../experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/`
   - `../experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/`
   - `../experiment_logs/haze4k_v5_chd_rm_v3n_conservative_first_step_calibration_20260712/`
+  - `../experiment_logs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/`
 
 ## Established Facts
 
@@ -57,6 +60,7 @@ v3n conservative first-step direct-step-energy thresholding.
 | CHD-RM v3l safe-step escalation and physics audit | Frozen context operators replayed exactly and oracle image/block/pixel step-size policies had large zero-severe upside, but privileged transmission-only features failed the direct-severe OOF AUC gate (`~0.635`/`~0.631` vs `0.65`). | `V3L_B_PRIVILEGED_TRANSMISSION_RISK_WEAK_STOP_NO_PHYSICS_POLICY`. |
 | CHD-RM v3m blockwise counterfactual advantage | Common-action block16 oracle value and direct-step-energy label observability are real, but actual frozen policy replay retained only about `23%` of block16 oracle lift and created unsafe tails. Corrected post-fail decomposition shows severe/hard failures are highly stable across the two frozen operators and aggressive A2 bins over-escalate heavily. | `V3M_A3_FROZEN_POLICY_REPLAY_FAIL_STOP_NO_ROUTE_CONFIRM`; diagnostic `V3M_A3_FAILURE_DECOMPOSITION_DIAGNOSTIC_ONLY_NO_AUTHORIZATION`. |
 | CHD-RM v3n conservative first-step calibration | A stricter false-intervention rule defaulting to `alpha=0.125` and allowing only `.25` above the 99th-percentile train-negative `direct_step_energy` threshold selected zero held-out blocks for both operators. | `V3N_A0_CONSERVATIVE_LABEL_PREFLIGHT_FAIL_STOP_NO_REPLAY`. |
+| CHD-RM v3p canonical reconstruction and physics audit | Fresh float64 canonical reconstruction passes, and a fixed 25% constrained G1 oracle has nontrivial two-operator headroom. The scalar-A physics smoke has correct triplets but fails sRGB forward reconstruction far above its `8/255` margin; direct transmission semantic checks are worse. | `V3P_B0_SCALAR_A_SMOKE_FAIL_STOP_PHYSICS_ROUTE`; no B0 formal/B1 or physics estimator. |
 
 ## Family Verdict
 
@@ -90,6 +94,14 @@ aggressive calibration bins. v3n then tested the simplest conservative
 first-step protection; it achieved zero false intervention only by selecting no
 blocks, so `direct_step_energy` alone still does not provide an actionable safe
 policy.
+
+v3p changes the evidence classification without reopening the stopped policy:
+the v3o numeric fail remains historical, but canonical float64 measurement and
+the constrained G1 oracle are valid. This removes renderer and action-ladder
+granularity as the immediate explanation, while preserving selection and
+image-level harm as the bottleneck. The current Haze4K `haze/gt/trans` package
+does not satisfy the scalar-A forward contract even under its directly specified
+alternative semantics, so privileged physics cannot bridge that bottleneck.
 
 The family remains closed for unchanged deployable FAM routing, direct
 router/ranker/distillation from the current signal sets, tiny direct bounded
@@ -127,6 +139,10 @@ new sealed-split replay gates with explicit false-intervention protection.
 - Do not replay a conservative direct-step-energy `.125 -> .25` policy from
   v3n; the preregistered 99th-percentile negative threshold had zero held-out
   coverage.
+- Do not relax v3p B0's `8/255` forward-residual margin, rerun B0 formal/B1,
+  estimate `t_hat/A_hat`, or treat the current `trans` PNGs as a physics policy
+  basis. The compact B0 diagnosis already tests raw/inverted transmission,
+  channel-wise A, and filename-implied exponential alternatives.
 
 ## Reopen Condition
 
@@ -138,3 +154,7 @@ protection for strong-reference/easy images. Reusing the current v3h/v3i signal
 sets, the v3j tiny direct-residual formulation, v3l raw-transmission-only risk
 features, v3m direct-step-energy mean-action calibration, or v3n conservative
 direct-step-energy first-step thresholding is not sufficient.
+The current Haze4K package can support a physics route only after independent
+authoritative generator/serialization provenance validates a new data contract;
+otherwise the next route must be a separately authorized candidate-pair value
+assessor with frozen image-level harm gates.

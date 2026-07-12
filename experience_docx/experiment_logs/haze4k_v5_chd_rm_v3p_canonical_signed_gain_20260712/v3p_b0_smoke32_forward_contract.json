@@ -1,0 +1,15 @@
+{
+  "B1_noise_floor": "block forward-residual MSE p99; B1 must abstain unless its physics score margin exceeds this MSE times block RGB pixel count",
+  "block_size": 16,
+  "data_scope": "train-only v3j_controller_train OOF names; no canary or locked test",
+  "decode": "PIL source RGB PNG for haze/GT, uint8 transmission as L or exact replicated RGB, divided by 255; no resize, crop, interpolation, or BGR conversion",
+  "forward_formula": "I ~= t J + (1-t) A",
+  "linear_sensitivity": "IEC sRGB-to-linear transform is diagnostic only and cannot replace the frozen sRGB B1 contract",
+  "maximum_srgb_rmse": 0.03137254901960784,
+  "pairing": "haze name numeric prefix -> gt/<id>.png and trans/<id>.png; ignore only train/haze/.DS_Store",
+  "primary_color_space": "sRGB encoded loader semantics",
+  "route_id": "haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712",
+  "scalar_a_formula": "sum_{p,c}(1-t_p)(I_{p,c}-t_p J_{p,c}) / sum_{p,c}(1-t_p)^2",
+  "scalar_a_range_tolerance": 0.00392156862745098,
+  "stage": "v3p-B0-scalar-A-forward-contract"
+}

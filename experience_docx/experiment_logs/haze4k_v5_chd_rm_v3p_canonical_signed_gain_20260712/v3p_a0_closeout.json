@@ -1,0 +1,79 @@
+{
+  "atol_sse": 1e-12,
+  "authorizes": "v3p-A1 frozen reconstruction and G1 decomposition only",
+  "canary_touched": false,
+  "decision": "V3P_A0_CANONICAL_NUMERICAL_PASS_AUTHORIZE_A1_RECONSTRUCTION_ONLY",
+  "fixed_alpha_replay_tolerance_db": 1e-06,
+  "gate_type": "numerical_equivalence",
+  "integrity_rows": [
+    {
+      "block_count": 1088675,
+      "coverage_shapes": {
+        "400x400": {
+          "block_count": 625,
+          "coverage_max": 1,
+          "coverage_min": 1,
+          "coverage_sum": 160000,
+          "height": 400,
+          "width": 400
+        },
+        "480x640": {
+          "block_count": 1200,
+          "coverage_max": 1,
+          "coverage_min": 1,
+          "coverage_sum": 307200,
+          "height": 480,
+          "width": 640
+        }
+      },
+      "fixed_alpha_max_abs_psnr_delta_diff_db": 7.683041687300829e-07,
+      "fixed_replay_pass": true,
+      "image_count": 1200,
+      "max_normalized_numeric_error": 0.000309889744085385,
+      "non_gray_signed_gain_flips": 0,
+      "numerical_envelope_pass": true,
+      "operator_label": "D_ref",
+      "seed": 3407,
+      "signed_gain_stability_pass": true
+    },
+    {
+      "block_count": 1088675,
+      "coverage_shapes": {
+        "400x400": {
+          "block_count": 625,
+          "coverage_max": 1,
+          "coverage_min": 1,
+          "coverage_sum": 160000,
+          "height": 400,
+          "width": 400
+        },
+        "480x640": {
+          "block_count": 1200,
+          "coverage_max": 1,
+          "coverage_min": 1,
+          "coverage_sum": 307200,
+          "height": 480,
+          "width": 640
+        }
+      },
+      "fixed_alpha_max_abs_psnr_delta_diff_db": 7.047559833495143e-07,
+      "fixed_replay_pass": true,
+      "image_count": 1200,
+      "max_normalized_numeric_error": 0.00023147699253357607,
+      "non_gray_signed_gain_flips": 0,
+      "numerical_envelope_pass": true,
+      "operator_label": "D_rep",
+      "seed": 3408,
+      "signed_gain_stability_pass": true
+    }
+  ],
+  "locked_test_touched": false,
+  "metric_contract": "route card canonical SSE section",
+  "reason": "canonical block SSE, full-image high-precision reference, GPU float64 cross-check, coverage audit, and non-gray signed-gain stability",
+  "route_id": "haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712",
+  "rtol": 1e-12,
+  "run_id": "v3p_a0",
+  "stage": "v3p-A0-formal",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": false
+}
