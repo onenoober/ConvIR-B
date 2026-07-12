@@ -32,7 +32,9 @@
 - Current process rules come from GitHub `main`. Rule files inside an older
   local/cloud route checkout are historical snapshots, not current authority.
   Preserve their route evidence, but do not let their old stage, sync, path, or
-  monitoring defaults govern new work.
+  monitoring defaults govern new work. When a workflow step names a rule path,
+  read that path from a freshly fetched `github/main`; read a local copy only
+  when the task is editing that rule.
 - A new route uses a fresh local/cloud workspace. Reuse an existing workspace
   only for an explicitly named continuation or exact resume after checking its
   dirty state; never repurpose a historical route directory for a new route.
