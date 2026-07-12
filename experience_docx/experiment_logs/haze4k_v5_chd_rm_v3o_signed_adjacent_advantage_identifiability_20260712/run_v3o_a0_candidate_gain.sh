@@ -88,7 +88,7 @@ CUDA_VISIBLE_DEVICES="$GPU" PYTHONUNBUFFERED=1 "$PY" experience_docx/tools/chd_r
   --expected_parent_operator_manifest_sha256 1d2ffa499128ad08a272d67c5439583900afe8ef87fb3256193ad5fe21c3af84 \
   --expected_reference_oof_rows_sha256 b4a10184fab77b0045440dc88530d000a892acf2105a6295d5ad8a488c67ecb1 \
   --expected_v3m_a0_source_manifest_sha256 8966996c9c93f6f2f3fbdda536b69ea6aa03e1bf5432f127de47ca8ea95dd8a5 \
-  --expected_density_artifact_sha256 1ffce13dccb41d96a47c2b5275f87bf2fdbf73c226a190cfa240e5c71c1ec326f \
+  --expected_density_artifact_sha256 1ffce13dccb41d96a47c2b5275f87bf2fdb73c226a190cfa240e5c71c1ec326f \
   --expected_d7c_artifact_sha256 09f449232024395cf64db15a2a0efa0f12d3e0e049e1da3d67229a3dc5729361 \
   --expected_a0_checkpoint_sha256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088 \
   --expected_control_checkpoint_sha256 08207119a5cf9e5c439dd2cb81b99029ade1861f2739d31e75f2f9f78d57c0f2 \
