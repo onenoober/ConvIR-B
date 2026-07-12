@@ -1,0 +1,116 @@
+{
+  "action_count_mismatches": 0,
+  "action_path_rows": [
+    {
+      "beneficial_sse": 1.14706476351097,
+      "count": 611931,
+      "harmful_sse": 1.5504490712155472,
+      "net_sse": -0.40338430770457717,
+      "operator_label": "D_ref",
+      "selected_alpha": 0.0
+    },
+    {
+      "beneficial_sse": 183.13597101728195,
+      "count": 204488,
+      "harmful_sse": 132.26924724550827,
+      "net_sse": 50.86672377177368,
+      "operator_label": "D_ref",
+      "selected_alpha": 0.25
+    },
+    {
+      "beneficial_sse": 1486.538131418398,
+      "count": 136324,
+      "harmful_sse": 886.7831974358402,
+      "net_sse": 599.754933982558,
+      "operator_label": "D_ref",
+      "selected_alpha": 0.5
+    },
+    {
+      "beneficial_sse": 6832.211391245737,
+      "count": 135932,
+      "harmful_sse": 2804.792192375852,
+      "net_sse": 4027.419198869885,
+      "operator_label": "D_ref",
+      "selected_alpha": 1.0
+    },
+    {
+      "beneficial_sse": 1.0669458912795773,
+      "count": 612186,
+      "harmful_sse": 1.5255890205110818,
+      "net_sse": -0.45864312923150463,
+      "operator_label": "D_rep",
+      "selected_alpha": 0.0
+    },
+    {
+      "beneficial_sse": 172.96470878045446,
+      "count": 177340,
+      "harmful_sse": 122.0673684334579,
+      "net_sse": 50.89734034699655,
+      "operator_label": "D_rep",
+      "selected_alpha": 0.25
+    },
+    {
+      "beneficial_sse": 1505.2756351453704,
+      "count": 135944,
+      "harmful_sse": 872.4232213532025,
+      "net_sse": 632.852413792168,
+      "operator_label": "D_rep",
+      "selected_alpha": 0.5
+    },
+    {
+      "beneficial_sse": 6774.699477996549,
+      "count": 136189,
+      "harmful_sse": 2794.6790194270898,
+      "net_sse": 3980.0204585694596,
+      "operator_label": "D_rep",
+      "selected_alpha": 1.0
+    }
+  ],
+  "authorizes": "v3p-A2 constrained G1 oracle only",
+  "canary_touched": false,
+  "canonical_image_count": 2400,
+  "decision": "V3P_A1_RECONSTRUCTION_PASS_AUTHORIZE_A2_CONSTRAINED_G1_ORACLE_ONLY",
+  "fixed_replay_max_abs_diff_db": 7.683041687300829e-07,
+  "gate_type": "structural_integrity",
+  "locked_test_touched": false,
+  "metric_contract": "reconstruct frozen A2 bins on v3p canonical block SSE; compare action counts and fixed replay to v3m A3",
+  "missing_policy_rows": 0,
+  "operator_rows": [
+    {
+      "executor_interaction_sse_positive_images": 784,
+      "executor_interaction_sse_total": 0.0023599985763969045,
+      "image_count": 1200,
+      "operator_label": "D_ref",
+      "rendered_mean_lift_db": 0.0828430025334773,
+      "rendered_p10_lift_db": -0.22514580440840604,
+      "selector_mean_lift_db": 0.08284308144988198,
+      "selector_p10_lift_db": -0.2251457000389081
+    },
+    {
+      "executor_interaction_sse_positive_images": 779,
+      "executor_interaction_sse_total": 0.002270259986312695,
+      "image_count": 1200,
+      "operator_label": "D_rep",
+      "rendered_mean_lift_db": 0.08260533557098583,
+      "rendered_p10_lift_db": -0.23202431388628497,
+      "selector_mean_lift_db": 0.08260542158670649,
+      "selector_p10_lift_db": -0.23202444056272498
+    }
+  ],
+  "reason": "read-only action-path reconstruction and executor interaction decomposition",
+  "route_id": "haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712",
+  "run_id": "v3p_a1r",
+  "source_manifest": {
+    "a0_closeout_sha256": "309e2f9579d13314fe7305fdc57d032652e73d8984ee34822b63fbe61270e6f3",
+    "calibration_bins_sha256": "8ec92048058b754c99f4701c4abdfa7323973597060c0b13cea9820306483d62",
+    "canonical_blocks_sha256": "52e6cd8829d37750cfb1e9e2fec39e6ac5cead2e324dbc353df93e5263e89765",
+    "policy_rows_sha256": "f4deff821186bad2476db3f273f3daf0c0f77d26fa157f9f482bfad3884b5424",
+    "raw_image_reconstruction_cloud_only": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/a1_reconstruction_r1/v3p_a1r_image_reconstruction_cloud_only.csv",
+    "route_id": "haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712"
+  },
+  "stage": "v3p-A1-reconstruction",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": false,
+  "unmatched_calibration_bins": 0,
+  "v3m_policy_image_count": 2400
+}
