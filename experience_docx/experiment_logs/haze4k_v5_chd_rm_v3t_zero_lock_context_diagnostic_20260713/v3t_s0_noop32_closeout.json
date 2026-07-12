@@ -1,0 +1,21 @@
+{
+  "authorizes": "v3t-S1 four-cell fixed32 diagnostic only",
+  "canary_touched": false,
+  "counts": {
+    "context_safe": 64,
+    "context_utility": 64,
+    "output_safe": 64,
+    "output_utility": 64
+  },
+  "decision": "V3T_S0_NOOP_PASS_AUTHORIZE_FACTORIAL_ONLY",
+  "gate_type": "structural_integrity",
+  "locked_test_touched": false,
+  "max_abs_delta": 0.0,
+  "max_abs_prediction_diff": 0.0,
+  "max_abs_reference_psnr_delta_diff_db": 0.0,
+  "route_id": "haze4k_v5_chd_rm_v3t_zero_lock_context_diagnostic_20260713",
+  "run_id": "v3t_s0_noop32",
+  "stage": "v3t-S0-dual-form-exact-noop",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": false
+}
