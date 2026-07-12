@@ -106,10 +106,10 @@ A candidate is worth a serious run only if it has:
 If failure would not clarify what to do next, the route is under-specified.
 
 For ConvIR-B, phrase the attempt as fixed-budget optimization: a candidate must
-beat or explain its relationship to the local ConvIR-B baseline under declared
-FLOP, latency, memory, data, metric, and training-budget limits. Do not use
-"best effect" as the objective unless the budget constraints are written next
-to it.
+beat or explain its relationship to the matched runtime ConvIR-B baseline under
+declared FLOP, latency, memory, data, metric, and training-budget limits. Do not
+use "best effect" as the objective unless the budget constraints are written
+next to it.
 
 ## Primary Variable Rule
 
@@ -355,7 +355,8 @@ create a curated text-only package:
 - record exactly which source artifacts were copied;
 - after publishing or pushing the package, audit that source, local copy, and
   remote copy contain the intended file set;
-- record the audit result in the artifact manifest or equivalent index.
+- record the audit result in the typed closeout, evidence README, route card, or
+  central index as appropriate.
 
 The package should let a reviewer understand the decision without becoming a
 second raw experiment directory.

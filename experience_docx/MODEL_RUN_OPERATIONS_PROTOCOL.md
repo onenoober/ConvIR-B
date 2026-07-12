@@ -74,6 +74,10 @@ PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
 Never point `RUN_ROOT` at the repository evidence directory. Do not copy raw
 outputs into `EVID_STAGE` as a convenience.
 
+The governance files inside `REMOTE_REPO` are part of that route's code
+snapshot. They may document historical reproduction, but the current execution
+rules are the GitHub `main` rules commit recorded in the route card.
+
 ## Dynamic Preflight Before Every Launch
 
 Verify only facts that can change between launches:

@@ -13,9 +13,13 @@ Status: <draft | preflight | authorized | running | stopped | completed>
 - Main metric:
 - Secondary metrics:
 - Execution environment:
-- Artifact root:
-- Branch or isolated workspace:
-- Review package location:
+- GitHub rules commit:
+- Local WSL path, if used for editing/static checks:
+- GitHub route branch and source commit:
+- Cloud `REMOTE_REPO`:
+- Cloud `RUN_ROOT`:
+- Cloud `EVID_STAGE`:
+- Explicit cloud Python:
 
 ## Baseline Contract
 
@@ -33,32 +37,33 @@ Status: <draft | preflight | authorized | running | stopped | completed>
 
 ## ConvIR-B Baseline Defaults
 
-Use this block for this repository. Fill unknown local values after downloading
-the checkpoint and before authorizing a route. Do not invent checkpoint hashes,
-sample counts, latency, or memory values.
+Use this block only when the route actually targets the ConvIR-B baseline
+contract. Fill unknown runtime values after downloading the checkpoint and
+before authorizing a route. Do not invent checkpoint hashes, sample counts,
+latency, memory, or budget points.
 
 | Field | Default or required value |
 | --- | --- |
 | Target baseline | ConvIR-B from official/repository pretrained checkpoint |
-| Baseline checkpoint local path | `<CKPT_ROOT>/desnowing/<CSD_CONVIR_B_CHECKPOINT>.pkl` |
+| Baseline checkpoint runtime path | `<CKPT_ROOT>/desnowing/<CSD_CONVIR_B_CHECKPOINT>.pkl` |
 | Baseline checkpoint hash | `sha256:<fill after download>` |
 | Checkpoint source | root `README.md` pretrained model link |
 | Official ConvIR-B CSD result | 39.10 PSNR, 0.99 SSIM |
 | Official ConvIR-B model cost | 8.63M parameters, 71.22G FLOPs |
 | CSD evaluation command | `cd Image_desnowing && python main.py --data CSD --version base --save_image True --mode test --data_dir <DATA_ROOT>/CSD --test_model <CKPT>` |
-| CSD training command for matched curves | `cd Image_desnowing && python main.py --data CSD --version base --mode train --data_dir <DATA_ROOT>/CSD --batch_size 8 --num_epoch <5|20|80|full>` |
+| CSD training command for matched curves | route-defined command and budget; do not inherit a fixed epoch ladder unless the card cites it |
 | Validation/test split | `CSD/test2000`; verify and record actual image count |
 | Evaluation batch size | 1 |
 | Training crop size | 256 random crop |
 | Training batch size | 8 unless hardware forces a written change |
-| Random seed policy | run seed `3407` for first scout; use `3407, 2026, 929` for promoted claims when feasible |
+| Random seed policy | route-defined; cite matched predecessor/noise rationale before promotion |
 | Primary metric | PSNR |
 | Secondary metric | SSIM, per-image PSNR delta, latency, peak GPU memory |
-| Minimum meaningful final gain | `+0.10 dB` PSNR with SSIM delta >= `-0.001` |
+| Minimum meaningful final gain | route-defined; legacy CSD replacement reference is `+0.10 dB` PSNR with SSIM delta >= `-0.001` |
 | Maximum FLOPs increase | `+5%` over ConvIR-B |
-| Maximum average latency increase | `+10%` over local ConvIR-B baseline |
-| Maximum peak memory increase | `+10%` over local ConvIR-B baseline and must fit current GPU |
-| Strong-case regression threshold | <= 1% final; <= 2% at 20-epoch gate |
+| Maximum average latency increase | `+10%` over matched runtime ConvIR-B baseline when claiming drop-in replacement |
+| Maximum peak memory increase | `+10%` over matched runtime ConvIR-B baseline and must fit current GPU |
+| Strong-case regression threshold | route-defined; legacy CSD replacement final reference is <= 1% |
 | Worst-case regression threshold | no unexplained image with PSNR delta <= `-0.20 dB` |
 | Failure default | failed gate becomes diagnostic only; next step must target the failed mechanism, preservation, or cost cause |
 
@@ -179,6 +184,9 @@ safety gate:
 - Required artifacts to delete or keep external:
 - Evidence package contents:
 - Evidence package audit:
+  Keep raw logs, images, arrays, checkpoints, and large per-image/action/feature
+  tables in cloud `RUN_ROOT`. List only compact terminal or major-handoff
+  evidence for GitHub `main`.
 
 ## Decision
 
@@ -188,3 +196,7 @@ safety gate:
 - Preservation or regression reason:
 - Cost/deployability reason:
 - What this decides next:
+- Typed closeout path:
+- `PASS` authorizes:
+- `INCONCLUSIVE` authorizes:
+- `FAIL` stops:

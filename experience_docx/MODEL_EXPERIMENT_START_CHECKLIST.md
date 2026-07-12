@@ -62,6 +62,20 @@ previous-stage authorization, and the current locked-test flag are dynamic.
 Check those immediately before each launch under
 `MODEL_RUN_OPERATIONS_PROTOCOL.md`, not during route setup.
 
+Rerun the affected static preflight, and update the route card before launch, if
+any of these change:
+
+- source or route commit;
+- tracked runner or entrypoint;
+- dataset, split, pairing, preprocessing, or metric implementation;
+- checkpoint, teacher, cache, or expert asset identity;
+- baseline/matched-view contract;
+- gate threshold source, analysis unit, or decision meaning;
+- dependency or environment assumption that can affect the result.
+
+Do not rerun static checks merely because another stage is launching with the
+same frozen contract.
+
 ## 3. Establish Or Reuse A Verified Baseline
 
 Reuse a baseline only when its checkpoint hash, split, preprocessing, metric
@@ -88,6 +102,15 @@ Create a separate contract, manifest, runbook, or analysis document only when it
 is independently reusable or cannot remain readable inside the route card. Do
 not maintain duplicate current-state documents.
 
+The route card must also name the three endpoints used by the route:
+
+- local WSL path, only for editing/static/sync staging;
+- GitHub source branch/commit and, when applicable, route branch;
+- cloud `REMOTE_REPO`, `RUN_ROOT`, explicit `PY`, and `EVID_STAGE`.
+
+If those identities disagree, stop before launch and classify it as an
+engineering blocker.
+
 Use three distinct cloud locations, defined by the runtime protocol:
 
 ```text
@@ -104,7 +127,7 @@ route used them.
 | Profile | Default stages |
 | --- | --- |
 | audit/evaluation | static contract -> cloud smoke -> formal evaluation |
-| training | static contract -> cloud smoke -> short scout -> hard gate -> formal/full budget |
+| training | static contract -> cloud smoke -> short scout -> hard gate -> formal decision budget |
 | policy/replay | integrity smoke -> out-of-fold formal replay -> sealed confirmation only if authorized |
 
 The route card may omit a stage when it cannot answer the route question, or

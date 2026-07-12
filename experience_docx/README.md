@@ -1,6 +1,6 @@
 # Experiment Rules Router
 
-Date: 2026-06-10
+Date: 2026-07-12
 
 Status: lightweight router for model experiment rules.
 
@@ -35,7 +35,7 @@ do not reduce any required gate.
 | L2 source policy | `OFFICIAL_ARCH_ANCHOR_POLICY.md`, `Haze4K_ARCH_FINETUNE_WORKFLOW.md` | Anchor/source rules plus Haze4K partial-load, initialization, and trainable-scope guidance. |
 | L3 design aids | `ROUTE_DESIGN_FRAMEWORK.md`, `EXPERIMENT_GOVERNANCE_PROTOCOL.md`, `EXPERIMENT_CARD_TEMPLATE.md`, `CONVIR_B_EXECUTION_GUIDE.md` | Deeper design guidance, baseline contracts, and card templates. |
 | L4 evidence indexes | `EXPERIMENT_INDEX.md`, `family_summaries/`, `experiment_cards/`, `experiment_logs/<route_id>/README.md` | Route state, decisions, evidence paths, and compact results. |
-| L5 archives and cleanup maps | `COMMAND_RELIABILITY_PROTOCOL.md`, `CLOUD_PY310_ENVIRONMENT.md`, `BRANCH_ROUTE_INDEX.md`, historical logs | Historical, deep troubleshooting, or remote-branch cleanup context; do not read by default. |
+| L5 archives, cleanup maps, and rule audits | `COMMAND_RELIABILITY_PROTOCOL.md`, `CLOUD_PY310_ENVIRONMENT.md`, `BRANCH_ROUTE_INDEX.md`, `WORKFLOW_CHANGE_EVALUATION_20260712.md`, historical logs | Historical, deep troubleshooting, remote-branch cleanup, or workflow-change audit context; do not read by default. |
 
 ## Future Text Placement
 
@@ -51,6 +51,8 @@ All new rule or evidence text must stay in its proper layer:
   documents.
 - Put historical environment or branch-cleanup context in L5 archives, not in
   current runtime rules.
+- Put workflow-change evaluations in L5 audit notes; they may justify a rule
+  change, but they are not execution protocols.
 
 When a rule touches multiple files, update the canonical source and add short
 pointers elsewhere. Do not duplicate the full rule body across layers.
@@ -105,6 +107,20 @@ reusable or too large for the route card.
 - Existing route workspaces remain untouched for reproducibility. Start new
   routes in fresh workspaces; reuse an old workspace only for an explicitly
   authorized continuation or exact resume.
+
+## Endpoint Responsibility Matrix
+
+| Endpoint | Owns | Must not own |
+| --- | --- | --- |
+| Local WSL | rule editing, syntax/static checks, sync staging, local safety inspection | runtime validation, experiment status authority, raw-output truth |
+| GitHub `main` | current process rules, terminal compact evidence, central status/index, family verdicts | raw outputs, checkpoints, route runtime workspaces, unpromoted experiment code |
+| GitHub route branch | runnable route code, tracked runners, intermediate compact evidence for that route | global process rules, unrelated route memory, raw runtime artifacts |
+| `convir-4090` | runtime execution, current active state, raw logs, checkpoints, images, arrays, large tables | current governance authority, final durable evidence archive |
+
+The automation rule is simple: plan from GitHub `main`, run on cloud, keep raw
+artifacts on cloud, and archive only compact terminal or major-handoff evidence
+back to GitHub `main`. Local files may stage and inspect that process, but they
+do not decide research status.
 
 ## Baseline Rule
 

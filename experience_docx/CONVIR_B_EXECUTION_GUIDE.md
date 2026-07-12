@@ -104,7 +104,7 @@ python main.py \
 ### Other Target Tasks
 
 Use the corresponding task README as the command authority, then record the
-local command in the experiment card:
+exact cloud runtime command in the experiment card:
 
 | Task | Entrypoint | ConvIR-B note |
 | --- | --- | --- |
@@ -120,7 +120,7 @@ claim:
 
 - dataset root and verified sample count;
 - checkpoint source URL;
-- local checkpoint path;
+- runtime checkpoint path;
 - checkpoint sha256;
 - checkpoint file size;
 - git commit or source snapshot;
@@ -157,7 +157,7 @@ positive-ablation routes may exceed them, but cannot claim drop-in replacement.
 
 Select the route profile with `MODEL_EXPERIMENT_START_CHECKLIST.md`. For a
 training route, the route card defines its short scout, first hard gate, and
-formal/full budget from the matched baseline and the earliest decisive
+formal decision budget from the matched baseline and the earliest decisive
 question. Audit/evaluation and policy/replay routes do not inherit training
 epoch stages.
 
