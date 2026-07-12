@@ -21,12 +21,12 @@ decision says otherwise.
 
 ## Current CHD-RM v5 Route State
 
-As of the v3m closeout on 2026-07-12, the current CHD-RM decision is
-`V3M_A3_FROZEN_POLICY_REPLAY_FAIL_STOP_NO_ROUTE_CONFIRM`. No route-confirm
-audit, canary expansion, locked-test access, controller training, learned
-ranker, physics/proxy continuation, current-signal FAM2 router/distillation,
-direct-residual continuation, v4/RARM expansion, neighbor/FAM1 route, backbone
-unfreeze, or policy deployment is authorized.
+As of the v3n closeout on 2026-07-12, the current CHD-RM decision is
+`V3N_A0_CONSERVATIVE_LABEL_PREFLIGHT_FAIL_STOP_NO_REPLAY`. No replay smoke,
+formal replay, route-confirm audit, canary expansion, locked-test access,
+controller training, learned ranker, physics/proxy continuation, current-signal
+FAM2 router/distillation, direct-residual continuation, v4/RARM expansion,
+neighbor/FAM1 route, backbone unfreeze, or policy deployment is authorized.
 
 v3m followed v3l by normalizing the action ladder across image/block/pixel
 oracles, then testing local observability, fold-separated label calibration,
@@ -54,12 +54,18 @@ Key v3m facts:
   Jaccard `0.9047619`, policy-lift correlation `0.9930474`, selected-alpha
   correlation `0.9962972`; severe images still retain positive block16-oracle
   headroom on average, while aggressive calibration bins over-escalate heavily.
+- v3n tested a materially different false-intervention target semantics:
+  default `alpha=0.125`, only allow `.125 -> .25`, and set a fixed 99th
+  percentile train-negative `direct_step_energy` threshold. It failed before
+  replay because the threshold saturated at `2.189333099522628e-05` in every
+  operator/fold and selected zero held-out blocks for both operators.
 
-The bottleneck is now safe utility calibration of aggressive local actions.
-Action granularity and label observability alone are not enough. Any next route
-must change the action safety semantics, add explicit false-intervention
-protection, or provide materially stronger local value/risk information before
-any route-confirm, canary, or locked-test access.
+The bottleneck is now stronger than v3m alone: action granularity, local label
+observability, and a simple conservative false-intervention threshold on
+`direct_step_energy` are not enough. Any next route must provide materially
+stronger local value/risk information or a different correction-confidence
+mechanism before any replay expansion, route-confirm, canary, or locked-test
+access.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
 `experience_docx/experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3m-blockwise-counterfactual-advantage.md`,
@@ -269,6 +275,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v18_execution_queue_20260606/` | completed | v1.8 post-diagnosis queue card, README, cloud launchers, monitor/progress/repair transcripts, corrected table-only router policy outputs, data/domain preflight outputs, Q5 domain-adaptation inventory/policy diagnostics, repaired per-seed BiDPFM1 fusion-neighbor train/eval evidence, and final multi-seed aggregate. |
 | `experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/` | 29 | v3l compact evidence: A0 deterministic operator replay closeout and manifests, A1 oracle granularity summaries/gates, B physics metadata and privileged transmission-risk summaries, run scripts, logs, status, and route decision. Cloud-only weights and per-image/raw tables are excluded. |
 | `experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/` | compact | v3m compact evidence: A0a common-action oracle, A0b-r1 dense/continuous cross-audit, A1 local observability, A2 fold-separated label calibration, A3 frozen policy replay fail-stop, and corrected A3 failure decomposition. Cloud-only raw block/per-image tables are excluded. |
+| `experiment_logs/haze4k_v5_chd_rm_v3n_conservative_first_step_calibration_20260712/` | compact | v3n compact evidence: conservative first-step label-only preflight using fixed 99th-percentile train-negative `direct_step_energy` threshold. The rule selected zero held-out blocks and stopped with no replay. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
