@@ -2,7 +2,7 @@
 
 Date: 2026-07-13
 
-Status: `PLANNED`
+Status: `V3V_S1_SAFETY_PHASE_LOSES_ACTIVITY_STOP_SAFETY_CURRICULUM`
 
 ## Scope
 
@@ -42,6 +42,15 @@ Status: `PLANNED`
 
 No result authorizes formal candidate training, policy/scorer work, calibration,
 canary, deployment, or locked-test access.
+
+## Result
+
+S0 was exact no-op. S1 warmup passed at epoch 8 (`|Delta u|=0.00134179`,
+rendered-MSE reduction `1.12999%`), but the fixed full-weight safety phase
+ended with a rendered-MSE reduction of `-0.04228%`, despite final
+`|Delta u|=6.0779e-5`. Anchor, harm, and margin all improved versus the fixed
+v3u references. This closes the sudden 8+8 full-weight switch; any successor
+must change only the safety-weight schedule.
 
 ## Evidence Boundary
 
