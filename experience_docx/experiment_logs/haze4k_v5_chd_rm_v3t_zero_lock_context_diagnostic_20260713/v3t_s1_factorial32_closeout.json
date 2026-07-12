@@ -1,0 +1,109 @@
+{
+  "activity_delta_abs": 1e-06,
+  "authorizes": "new route design only; no formal training, policy, canary, or locked test",
+  "canary_touched": false,
+  "cells": {
+    "context_safe": {
+      "activity_pass": false,
+      "final": {
+        "anchor": 8.753886504564434e-12,
+        "delta_abs": 1.8175629701994156e-07,
+        "harm": 2.8723013656417606e-07,
+        "margin": 2.2540594228903643e-06,
+        "render": 0.0003221422679189345,
+        "repair": 1.9413445142557606e-05
+      },
+      "initial": {
+        "anchor": 0.0,
+        "delta_abs": 0.0,
+        "harm": 2.8721490252792137e-07,
+        "margin": 2.2540165325879435e-06,
+        "render": 0.0003221425098445252,
+        "repair": 0.0
+      },
+      "input_form": "context",
+      "objective": "safe",
+      "parameter_count": 87771,
+      "relative_render_reduction": 7.509893394335285e-07
+    },
+    "context_utility": {
+      "activity_pass": false,
+      "final": {
+        "anchor": 2.0691004465334117e-11,
+        "delta_abs": 2.0749237255104913e-07,
+        "harm": 2.872460527214571e-07,
+        "margin": 2.2540733750076036e-06,
+        "render": 0.0003221424273647244,
+        "repair": 2.2173069615050167e-05
+      },
+      "initial": {
+        "anchor": 0.0,
+        "delta_abs": 0.0,
+        "harm": 2.8721490252792137e-07,
+        "margin": 2.2540165325879435e-06,
+        "render": 0.0003221425098445252,
+        "repair": 0.0
+      },
+      "input_form": "context",
+      "objective": "utility",
+      "parameter_count": 87771,
+      "relative_render_reduction": 2.5603513428525607e-07
+    },
+    "output_safe": {
+      "activity_pass": false,
+      "final": {
+        "anchor": 2.8421709430404007e-12,
+        "delta_abs": 2.724263095318924e-07,
+        "harm": 2.871865945053287e-07,
+        "margin": 2.253996209622411e-06,
+        "render": 0.00032214209193170973,
+        "repair": 2.925321434243955e-05
+      },
+      "initial": {
+        "anchor": 0.0,
+        "delta_abs": 0.0,
+        "harm": 2.8721490252792137e-07,
+        "margin": 2.2540165325879435e-06,
+        "render": 0.0003221425098445252,
+        "repair": 0.0
+      },
+      "input_form": "output",
+      "objective": "safe",
+      "parameter_count": 2883,
+      "relative_render_reduction": 1.29729173484852e-06
+    },
+    "output_utility": {
+      "activity_pass": false,
+      "final": {
+        "anchor": 2.8819613362429664e-11,
+        "delta_abs": 2.397161828204819e-07,
+        "harm": 2.87249349639751e-07,
+        "margin": 2.254157111081234e-06,
+        "render": 0.00032214214769510363,
+        "repair": 2.5583955108210432e-05
+      },
+      "initial": {
+        "anchor": 0.0,
+        "delta_abs": 0.0,
+        "harm": 2.8721490252792137e-07,
+        "margin": 2.2540165325879435e-06,
+        "render": 0.0003221425098445252,
+        "repair": 0.0
+      },
+      "input_form": "output",
+      "objective": "utility",
+      "parameter_count": 2883,
+      "relative_render_reduction": 1.1241901037431884e-06
+    }
+  },
+  "decision": "V3T_S1_ALL_UTILITY_CELLS_INACTIVE_REQUIRE_OPTIMIZATION_REDESIGN",
+  "gate_type": "mechanism_diagnostic",
+  "locked_test_touched": false,
+  "metric_contract": "32 fixed OOF images, real rendered alpha=.25 objective, factorial frozen-context and safety-objective controls",
+  "min_relative_render_reduction": 0.001,
+  "route_id": "haze4k_v5_chd_rm_v3t_zero_lock_context_diagnostic_20260713",
+  "run_id": "v3t_s1_factorial32",
+  "stage": "v3t-S1-four-cell-zero-lock-diagnostic",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": true
+}
