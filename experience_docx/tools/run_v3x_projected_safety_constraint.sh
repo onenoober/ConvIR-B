@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REMOTE_REPO=${REMOTE_REPO:-/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3x-projected-safety-constraint-20260713}
-RUN_ROOT=${RUN_ROOT:-/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3x_projected_safety_constraint_20260713}
+REMOTE_REPO=${REMOTE_REPO:-/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3y-cross-sample-safety-20260713}
+RUN_ROOT=${RUN_ROOT:-/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3y_cross_sample_safety_20260713}
 PY=${PY:-/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python}
 BASE=${BASE:-/sda/home/wangyuxin/ConvIR-B}
 V3S_ROOT=${V3S_ROOT:-/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3s-delta-u-direction-repair-20260713}
@@ -11,10 +11,10 @@ V3M_ROOT=${V3M_ROOT:-/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-c
 V3L_ROOT=${V3L_ROOT:-/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711}
 GPU=${GPU:-1}
 MODE=${MODE:?set MODE=noop|projected}
-EXPECTED_ROUTE_COMMIT=${EXPECTED_ROUTE_COMMIT:?set the exact v3x route commit before launch}
+EXPECTED_ROUTE_COMMIT=${EXPECTED_ROUTE_COMMIT:?set the exact v3y route commit before launch}
 
-ROUTE_ID=haze4k_v5_chd_rm_v3x_projected_safety_constraint_20260713
-BRANCH=codex/haze4k-v5-v3x-projected-safety-constraint-20260713
+ROUTE_ID=haze4k_v5_chd_rm_v3y_cross_sample_safety_20260713
+BRANCH=codex/haze4k-v5-v3y-cross-sample-safety-20260713
 EXPECTED_V3S_COMMIT=2860f580bb25cc75ec9ade56378af6d77f5c8d8b
 EXPECTED_V3P_COMMIT=555fd008e29f02128564f2fad41d0095ee44f5ea
 EVID_STAGE=$REMOTE_REPO/experience_docx/experiment_logs/$ROUTE_ID
@@ -26,13 +26,13 @@ STAMP=$(date +%Y%m%dT%H%M%S)
 
 case "$MODE" in
   noop)
-    STAGE=v3x-S0-output-form-exact-noop
-    RUN_TAG=v3x_s0_noop32_r1
+    STAGE=v3y-S0-output-form-exact-noop
+    RUN_TAG=v3y_s0_noop32
     OUT=$RUN_ROOT/s0_noop32_r1
     ;;
   projected)
-    STAGE=v3x-S1-output-side-projected-direct-safety
-    RUN_TAG=v3x_s1_projected32_r1
+    STAGE=v3y-S1-output-side-cross-sample-direct-safety
+    RUN_TAG=v3y_s1_projected32
     OUT=$RUN_ROOT/s1_projected32_r1
     ;;
   *)
@@ -63,8 +63,8 @@ test ! -e "$OUT"
 nvidia-smi -i "$GPU" --query-gpu=index,memory.free,utilization.gpu --format=csv,noheader
 
 if [ "$MODE" = projected ]; then
-  test -s "$EVID_STAGE/v3x_s0_noop32_r1_closeout.json"
-  "$PY" - "$EVID_STAGE/v3x_s0_noop32_r1_closeout.json" <<'PY'
+  test -s "$EVID_STAGE/v3y_s0_noop32_closeout.json"
+  "$PY" - "$EVID_STAGE/v3y_s0_noop32_closeout.json" <<'PY'
 import json
 import sys
 closeout = json.load(open(sys.argv[1], encoding="utf-8"))

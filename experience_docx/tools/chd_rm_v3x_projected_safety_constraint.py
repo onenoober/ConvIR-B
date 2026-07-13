@@ -11,7 +11,7 @@ from pathlib import Path
 import torch
 
 
-ROUTE_ID = "haze4k_v5_chd_rm_v3x_projected_safety_constraint_20260713"
+ROUTE_ID = "haze4k_v5_chd_rm_v3y_cross_sample_safety_20260713"
 V3W = None
 
 
@@ -116,27 +116,39 @@ def run_projected(args, v3s, legacy, frozen, names, folds, device, output_dir):
     source = json.loads(source_path.read_text(encoding="utf-8"))
     source["mode"] = "projected"
     source["objective"] = {"warmup_epochs": args.warmup_epochs, "render_objective": "MSE", "constraints": ["anchor", "harm", "margin", "CVaR25"]}
+    all_names, _ = v3s.load_names_and_folds(args, legacy)
+    heldout_names = all_names[args.sample_count:args.sample_count * 2]
+    if len(heldout_names) != args.sample_count or set(heldout_names) & set(names):
+        raise RuntimeError("v3y requires a disjoint fixed 32-name holdout")
+    source["heldout_names"] = list(heldout_names)
     V3W.write_json(source_path, source)
     models = V3W.import_v3w_models()
     first = V3W.frozen_output_sample(args, v3s, legacy, frozen, names[0], folds[names[0]], device)
     cells = V3W.build_cells(models, first, args, device)
     label, (kind, objective, model) = next(iter(cells.items()))
+    heldout_initial = V3W.evaluate_cell(args, v3s, legacy, frozen, heldout_names, folds, kind, model, device)
     initial, midpoint, final, history = train_projected(args, v3s, legacy, frozen, names, folds, kind, objective, model, device, label)
+    heldout_final = V3W.evaluate_cell(args, v3s, legacy, frozen, heldout_names, folds, kind, model, device)
     reduction = (initial["render"] - final["render"]) / max(initial["render"], 1e-30)
     midpoint_reduction = (initial["render"] - midpoint["render"]) / max(initial["render"], 1e-30)
     midpoint_pass = midpoint["delta_abs"] >= args.activity_delta_abs and midpoint_reduction >= args.min_relative_render_reduction
     final_pass = final["delta_abs"] >= args.activity_delta_abs and reduction >= args.min_relative_render_reduction
     safety_pass = all(final[key] <= V3W.V3U_FINAL_SAFETY[key] for key in V3W.V3U_FINAL_SAFETY)
-    decision = "V3X_S1_PROJECTED_SAFETY_PASS_AUTHORIZE_SAFETY_CONTRACT_DESIGN_ONLY" if midpoint_pass and final_pass and safety_pass else "V3X_S1_PROJECTED_SAFETY_FAIL_STOP"
+    heldout_reduction = (heldout_initial["render"] - heldout_final["render"]) / max(heldout_initial["render"], 1e-30)
+    heldout_pass = (heldout_final["delta_abs"] >= args.activity_delta_abs and heldout_reduction >= 0.0
+                    and all(heldout_final[key] <= V3W.V3U_FINAL_SAFETY[key] for key in V3W.V3U_FINAL_SAFETY))
+    decision = "V3Y_S1_CROSS_SAMPLE_SAFETY_PASS_AUTHORIZE_SEALED_INTERNAL_CONFIRMATION_ONLY" if midpoint_pass and final_pass and safety_pass and heldout_pass else "V3Y_S1_CROSS_SAMPLE_SAFETY_FAIL_STOP"
     closeout = {"route_id": ROUTE_ID, "run_id": args.run_tag, "stage": "v3x-S1-projected-direct-safety",
-                "state": "COMPLETED_GATE_PASS" if decision.startswith("V3X_S1_PROJECTED_SAFETY_PASS") else "COMPLETED_GATE_FAIL",
+                "state": "COMPLETED_GATE_PASS" if decision.startswith("V3Y_S1_CROSS_SAMPLE_SAFETY_PASS") else "COMPLETED_GATE_FAIL",
                 "gate_type": "mechanism_direct_safety", "decision": decision,
-                "authorizes": "safety-training-contract design only" if decision.endswith("ONLY") else "none; projected safety mechanism stopped",
-                "metric_contract": "fixed32 output Delta-u with render gradient projected against anchor/harm/margin/CVaR first-order safety constraints",
+                "authorizes": "sealed internal safety confirmation only" if decision.endswith("ONLY") else "none; cross-sample safety contract stopped",
+                "metric_contract": "train32 output Delta-u with projected direct safety and disjoint heldout32 activity, nonnegative render, and v3u-reference safety gate",
                 "cells": {label: {"initial": initial, "midpoint": midpoint, "final": final, "relative_render_reduction": reduction,
                                    "midpoint_relative_render_reduction": midpoint_reduction, "midpoint_activity_pass": midpoint_pass,
                                    "final_activity_pass": final_pass, "safety_nonworse_vs_v3u": safety_pass,
-                                   "parameter_count": sum(value.numel() for value in model.parameters())}},
+                                   "parameter_count": sum(value.numel() for value in model.parameters()),
+                                   "heldout_initial": heldout_initial, "heldout_final": heldout_final,
+                                   "heldout_relative_render_reduction": heldout_reduction, "heldout_pass": heldout_pass}},
                 "locked_test_touched": False, "canary_touched": False, "training_occurred": True}
     V3W.write_rows(Path(output_dir) / f"{args.run_tag}_history.csv", history)
     V3W.write_json(Path(output_dir) / f"{args.run_tag}_summary.json", closeout)
@@ -149,8 +161,8 @@ def run_noop_v3x(original, args, v3s, legacy, frozen, names, folds, device, outp
     passed = closeout["state"] == "COMPLETED_GATE_PASS"
     closeout.update({
         "stage": "v3x-S0-output-form-exact-noop",
-        "decision": "V3X_S0_NOOP_PASS_AUTHORIZE_PROJECTED_SAFETY_ONLY" if passed else "V3X_S0_NOOP_FAIL_STOP",
-        "authorizes": "v3x-S1 projected direct-safety fixed32 diagnostic only" if passed else "none",
+        "decision": "V3Y_S0_NOOP_PASS_AUTHORIZE_CROSS_SAMPLE_SAFETY_ONLY" if passed else "V3Y_S0_NOOP_FAIL_STOP",
+        "authorizes": "v3y-S1 cross-sample direct-safety fixed32 diagnostic only" if passed else "none",
     })
     legacy.write_json(Path(output_dir) / f"{args.run_tag}_closeout.json", closeout)
     return closeout
