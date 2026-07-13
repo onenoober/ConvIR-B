@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REMOTE_REPO=${REMOTE_REPO:-/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3y-cross-sample-safety-20260713}
-RUN_ROOT=${RUN_ROOT:-/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3y_cross_sample_safety_20260713}
+REMOTE_REPO=${REMOTE_REPO:-/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3z-sealed-confirmation-20260713}
+RUN_ROOT=${RUN_ROOT:-/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713}
 PY=${PY:-/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python}
 BASE=${BASE:-/sda/home/wangyuxin/ConvIR-B}
 V3S_ROOT=${V3S_ROOT:-/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3s-delta-u-direction-repair-20260713}
@@ -11,10 +11,10 @@ V3M_ROOT=${V3M_ROOT:-/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-c
 V3L_ROOT=${V3L_ROOT:-/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711}
 GPU=${GPU:-1}
 MODE=${MODE:?set MODE=noop|projected}
-EXPECTED_ROUTE_COMMIT=${EXPECTED_ROUTE_COMMIT:?set the exact v3y route commit before launch}
+EXPECTED_ROUTE_COMMIT=${EXPECTED_ROUTE_COMMIT:?set the exact v3z route commit before launch}
 
-ROUTE_ID=haze4k_v5_chd_rm_v3y_cross_sample_safety_20260713
-BRANCH=codex/haze4k-v5-v3y-cross-sample-safety-20260713
+ROUTE_ID=haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713
+BRANCH=codex/haze4k-v5-v3z-sealed-confirmation-20260713
 EXPECTED_V3S_COMMIT=2860f580bb25cc75ec9ade56378af6d77f5c8d8b
 EXPECTED_V3P_COMMIT=555fd008e29f02128564f2fad41d0095ee44f5ea
 EVID_STAGE=$REMOTE_REPO/experience_docx/experiment_logs/$ROUTE_ID
@@ -26,17 +26,17 @@ STAMP=$(date +%Y%m%dT%H%M%S)
 
 case "$MODE" in
   noop)
-    STAGE=v3y-S0-output-form-exact-noop
-    RUN_TAG=v3y_s0_noop32_r1
-    OUT=$RUN_ROOT/s0_noop32_r2
+    STAGE=v3z-S0-output-form-exact-noop
+    RUN_TAG=v3z_s0_noop128
+    OUT=$RUN_ROOT/s0_noop128
     ;;
   projected)
-    STAGE=v3y-S1-output-side-cross-sample-direct-safety
-    RUN_TAG=v3y_s1_projected32_r1
-    OUT=$RUN_ROOT/s1_projected32_r2
+    STAGE=v3z-S1-output-side-sealed-cross-sample-confirmation
+    RUN_TAG=v3z_s1_projected128
+    OUT=$RUN_ROOT/s1_projected128
     ;;
   *)
-    echo V3X_INVALID_MODE
+    echo V3Z_INVALID_MODE
     exit 2
     ;;
 esac
@@ -63,13 +63,13 @@ test ! -e "$OUT"
 nvidia-smi -i "$GPU" --query-gpu=index,memory.free,utilization.gpu --format=csv,noheader
 
 if [ "$MODE" = projected ]; then
-  test -s "$EVID_STAGE/v3y_s0_noop32_r1_closeout.json"
-  "$PY" - "$EVID_STAGE/v3y_s0_noop32_r1_closeout.json" <<'PY'
+  test -s "$EVID_STAGE/v3z_s0_noop128_closeout.json"
+  "$PY" - "$EVID_STAGE/v3z_s0_noop128_closeout.json" <<'PY'
 import json
 import sys
 closeout = json.load(open(sys.argv[1], encoding="utf-8"))
-if closeout.get("state") != "COMPLETED_GATE_PASS":
-    raise SystemExit("v3x projected stage requires S0 no-op pass")
+if closeout.get("decision") != "V3Z_S0_NOOP_PASS_AUTHORIZE_SEALED_CONFIRMATION_ONLY":
+    raise SystemExit("v3z projected stage requires its S0 no-op pass")
 PY
 fi
 
@@ -103,6 +103,7 @@ ARGS=(
   --expected_v3j_a_bounds_sha256 485ea12ff14c33b87105a50b6d118a9937c7e7f1b113062fe03d91eef3c9cc21
   --output_dir "$OUT"
   --run_tag "$RUN_TAG"
+  --sample_count 128
   --seed 3407
   --device cuda
 )
@@ -113,7 +114,7 @@ rc=${PIPESTATUS[0]}
 set -e
 echo "stage_done route=$ROUTE_ID stage=$STAGE rc=$rc time=$(date --iso-8601=seconds)" | tee -a "$STATUS"
 if [ "$rc" -ne 0 ]; then
-  echo "V3Y_${MODE^^}_FAILED" | tee -a "$STATUS"
+  echo "V3Z_${MODE^^}_FAILED" | tee -a "$STATUS"
   exit "$rc"
 fi
 
@@ -123,4 +124,4 @@ if [ "$MODE" = projected ]; then
   cp "$OUT/${RUN_TAG}_history.csv" "$EVID_STAGE/${RUN_TAG}_history.csv"
   cp "$OUT/${RUN_TAG}_summary.json" "$EVID_STAGE/${RUN_TAG}_summary.json"
 fi
-echo "V3Y_${MODE^^}_OK" | tee -a "$STATUS"
+echo "V3Z_${MODE^^}_OK" | tee -a "$STATUS"

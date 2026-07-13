@@ -436,8 +436,8 @@ def parse_args():
 
 def main():
     args = parse_args()
-    if args.source_split.lower() != "train" or args.sample_count != 32:
-        raise ValueError("v3w is fixed to the first 32 train-derived OOF names")
+    if args.source_split.lower() != "train" or args.sample_count not in (32, 128):
+        raise ValueError("route requires a fixed train-derived OOF sample count of 32 or 128")
     if args.device == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("v3w requires the authorized CUDA runtime")
     if args.epochs <= 0 or args.risk_window <= 0 or not 0 < args.warmup_epochs < args.epochs or not 0.0 < args.cvar_fraction <= 1.0:

@@ -11,7 +11,7 @@ from pathlib import Path
 import torch
 
 
-ROUTE_ID = "haze4k_v5_chd_rm_v3y_cross_sample_safety_20260713"
+ROUTE_ID = "haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713"
 V3W = None
 
 
@@ -119,7 +119,7 @@ def run_projected(args, v3s, legacy, frozen, names, folds, device, output_dir):
     all_names, _ = v3s.load_names_and_folds(args, legacy)
     heldout_names = all_names[args.sample_count:args.sample_count * 2]
     if len(heldout_names) != args.sample_count or set(heldout_names) & set(names):
-        raise RuntimeError("v3y requires a disjoint fixed 32-name holdout")
+        raise RuntimeError("v3z requires a disjoint fixed heldout sample")
     source["heldout_names"] = list(heldout_names)
     V3W.write_json(source_path, source)
     models = V3W.import_v3w_models()
@@ -137,12 +137,12 @@ def run_projected(args, v3s, legacy, frozen, names, folds, device, output_dir):
     heldout_reduction = (heldout_initial["render"] - heldout_final["render"]) / max(heldout_initial["render"], 1e-30)
     heldout_pass = (heldout_final["delta_abs"] >= args.activity_delta_abs and heldout_reduction >= 0.0
                     and all(heldout_final[key] <= V3W.V3U_FINAL_SAFETY[key] for key in V3W.V3U_FINAL_SAFETY))
-    decision = "V3Y_S1_CROSS_SAMPLE_SAFETY_PASS_AUTHORIZE_SEALED_INTERNAL_CONFIRMATION_ONLY" if midpoint_pass and final_pass and safety_pass and heldout_pass else "V3Y_S1_CROSS_SAMPLE_SAFETY_FAIL_STOP"
-    closeout = {"route_id": ROUTE_ID, "run_id": args.run_tag, "stage": "v3y-S1-output-side-cross-sample-direct-safety",
-                "state": "COMPLETED_GATE_PASS" if decision.startswith("V3Y_S1_CROSS_SAMPLE_SAFETY_PASS") else "COMPLETED_GATE_FAIL",
+    decision = "V3Z_S1_SEALED_CONFIRMATION_PASS_CLOSE_PROJECTED_HEAD_ROUTE" if midpoint_pass and final_pass and safety_pass and heldout_pass else "V3Z_S1_SEALED_CONFIRMATION_FAIL_CLOSE_PROJECTED_HEAD_ROUTE"
+    closeout = {"route_id": ROUTE_ID, "run_id": args.run_tag, "stage": "v3z-S1-output-side-sealed-cross-sample-confirmation",
+                "state": "COMPLETED_GATE_PASS" if decision.startswith("V3Z_S1_SEALED_CONFIRMATION_PASS") else "COMPLETED_GATE_FAIL",
                 "gate_type": "mechanism_direct_safety", "decision": decision,
-                "authorizes": "sealed internal safety confirmation only" if decision.endswith("ONLY") else "none; cross-sample safety contract stopped",
-                "metric_contract": "train32 output Delta-u with projected direct safety and disjoint heldout32 activity, nonnegative render, and v3u-reference safety gate",
+                "authorizes": "none; terminal confirmation",
+                "metric_contract": "train128 output Delta-u with projected direct safety and disjoint heldout128 activity, nonnegative render, and v3u-reference safety gate",
                 "cells": {label: {"initial": initial, "midpoint": midpoint, "final": final, "relative_render_reduction": reduction,
                                    "midpoint_relative_render_reduction": midpoint_reduction, "midpoint_activity_pass": midpoint_pass,
                                    "final_activity_pass": final_pass, "safety_nonworse_vs_v3u": safety_pass,
@@ -160,9 +160,9 @@ def run_noop_v3x(original, args, v3s, legacy, frozen, names, folds, device, outp
     closeout = original(args, v3s, legacy, frozen, names, folds, device, output_dir)
     passed = closeout["state"] == "COMPLETED_GATE_PASS"
     closeout.update({
-        "stage": "v3y-S0-output-form-exact-noop",
-        "decision": "V3Y_S0_NOOP_PASS_AUTHORIZE_CROSS_SAMPLE_SAFETY_ONLY" if passed else "V3Y_S0_NOOP_FAIL_STOP",
-        "authorizes": "v3y-S1 cross-sample direct-safety fixed32 diagnostic only" if passed else "none",
+        "stage": "v3z-S0-output-form-exact-noop",
+        "decision": "V3Z_S0_NOOP_PASS_AUTHORIZE_SEALED_CONFIRMATION_ONLY" if passed else "V3Z_S0_NOOP_FAIL_STOP",
+        "authorizes": "v3z-S1 sealed train128/heldout128 confirmation only" if passed else "none",
     })
     legacy.write_json(Path(output_dir) / f"{args.run_tag}_closeout.json", closeout)
     return closeout
