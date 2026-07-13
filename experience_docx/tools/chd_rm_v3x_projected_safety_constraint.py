@@ -143,9 +143,23 @@ def run_projected(args, v3s, legacy, frozen, names, folds, device, output_dir):
     return closeout
 
 
+def run_noop_v3x(original, args, v3s, legacy, frozen, names, folds, device, output_dir):
+    closeout = original(args, v3s, legacy, frozen, names, folds, device, output_dir)
+    passed = closeout["state"] == "COMPLETED_GATE_PASS"
+    closeout.update({
+        "stage": "v3x-S0-output-form-exact-noop",
+        "decision": "V3X_S0_NOOP_PASS_AUTHORIZE_PROJECTED_SAFETY_ONLY" if passed else "V3X_S0_NOOP_FAIL_STOP",
+        "authorizes": "v3x-S1 projected direct-safety fixed32 diagnostic only" if passed else "none",
+    })
+    legacy.write_json(Path(output_dir) / f"{args.run_tag}_closeout.json", closeout)
+    return closeout
+
+
 def main():
     legacy = load_legacy()
     legacy.ROUTE_ID = ROUTE_ID
+    original_noop = legacy.run_noop
+    legacy.run_noop = lambda *values: run_noop_v3x(original_noop, *values)
     legacy.run_curriculum = run_projected
     original = sys.argv[:]
     sys.argv = ["v3x"] + ["ramp" if value == "projected" else value for value in sys.argv[1:]]

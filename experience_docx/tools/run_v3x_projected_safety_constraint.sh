@@ -27,8 +27,8 @@ STAMP=$(date +%Y%m%dT%H%M%S)
 case "$MODE" in
   noop)
     STAGE=v3x-S0-output-form-exact-noop
-    RUN_TAG=v3x_s0_noop32
-    OUT=$RUN_ROOT/s0_noop32
+    RUN_TAG=v3x_s0_noop32_r1
+    OUT=$RUN_ROOT/s0_noop32_r1
     ;;
   projected)
     STAGE=v3x-S1-output-side-projected-direct-safety
@@ -63,8 +63,8 @@ test ! -e "$OUT"
 nvidia-smi -i "$GPU" --query-gpu=index,memory.free,utilization.gpu --format=csv,noheader
 
 if [ "$MODE" = projected ]; then
-  test -s "$EVID_STAGE/v3x_s0_noop32_closeout.json"
-  "$PY" - "$EVID_STAGE/v3x_s0_noop32_closeout.json" <<'PY'
+  test -s "$EVID_STAGE/v3x_s0_noop32_r1_closeout.json"
+  "$PY" - "$EVID_STAGE/v3x_s0_noop32_r1_closeout.json" <<'PY'
 import json
 import sys
 closeout = json.load(open(sys.argv[1], encoding="utf-8"))
