@@ -259,7 +259,7 @@ explanations instead.
 - Evidence role and independence reason: every v4a result is engineering/debug or development evidence; no candidate confirmation is claimed.
 - Cost/deployability reason: v4a adds cloud diagnostic storage only and has no deployable inference artifact.
 - What this decides next: only the written A0D/A0P branches after numerical reconstruction, then A0M or A1F according to the adaptive table.
-- Typed closeout path: `RUN_ROOT/a0r/v4a_a0r_closeout.json` staged as compact evidence after review.
+- Typed closeout path: `RUN_ROOT/a0r-run-id/v4a_a0r_closeout.json` staged as compact evidence after review.
 - `PASS` authorizes: `A0D_AND_A0P_ONLY`.
 - `INCONCLUSIVE` authorizes: `NO_PROMOTION; WRITE_R3_REVIEWED_AMENDMENT_ONLY`.
 - `FAIL` stops: `A0P_A0M_A1_V4B_V4C_CANARY_AND_LOCKED_TEST`.

@@ -236,6 +236,7 @@ def instrumented_train_projected(args, v3s, legacy, frozen, names, folds, kind, 
         window_names=[],
     )
     midpoint = None
+    midpoint_per_image: list[dict[str, Any]] = []
     history = []
     trace_rows = []
     global_update = 0
@@ -352,6 +353,19 @@ def instrumented_train_projected(args, v3s, legacy, frozen, names, folds, kind, 
         print(json.dumps({"V4A_A0R_PROGRESS": row}, sort_keys=True), flush=True)
         if epoch == args.warmup_epochs:
             midpoint = SOURCE.V3W.evaluate_cell(args, v3s, legacy, frozen, names, folds, kind, model, device)
+            midpoint_per_image = per_image_rows(
+                args=args,
+                v3s=v3s,
+                legacy=legacy,
+                frozen=frozen,
+                names=names,
+                folds=folds,
+                kind=kind,
+                model=model,
+                device=device,
+                split="update",
+                point="warmup_end",
+            )
             append_trace_state(
                 model=model,
                 optimizer=optimizer,
@@ -373,7 +387,7 @@ def instrumented_train_projected(args, v3s, legacy, frozen, names, folds, kind, 
         phase="projected_safety",
         window_names=[],
     )
-    return initial, midpoint, final, history, trace_rows
+    return initial, midpoint, final, history, trace_rows, midpoint_per_image
 
 
 def instrumented_run_projected(args, v3s, legacy, frozen, names, folds, device, output_dir):
@@ -397,7 +411,7 @@ def instrumented_run_projected(args, v3s, legacy, frozen, names, folds, device, 
     if len(heldout_names) != args.sample_count or set(heldout_names) & set(names):
         raise RuntimeError("v3z requires a disjoint fixed heldout sample")
     source_manifest["heldout_names"] = list(heldout_names)
-    legacy.write_json(source_path, source_manifest)
+    SOURCE.V3W.write_json(source_path, source_manifest)
     TRACE.update(
         {
             "route_id": ROUTE_ID,
@@ -414,11 +428,11 @@ def instrumented_run_projected(args, v3s, legacy, frozen, names, folds, device, 
             "states": [],
         }
     )
-    models = legacy.import_v3w_models()
-    first = legacy.frozen_output_sample(args, v3s, legacy, frozen, names[0], folds[names[0]], device)
-    cells = legacy.build_cells(models, first, args, device)
+    models = SOURCE.V3W.import_v3w_models()
+    first = SOURCE.V3W.frozen_output_sample(args, v3s, legacy, frozen, names[0], folds[names[0]], device)
+    cells = SOURCE.V3W.build_cells(models, first, args, device)
     label, (kind, objective, model) = next(iter(cells.items()))
-    heldout_initial = legacy.evaluate_cell(args, v3s, legacy, frozen, heldout_names, folds, kind, model, device)
+    heldout_initial = SOURCE.V3W.evaluate_cell(args, v3s, legacy, frozen, heldout_names, folds, kind, model, device)
     initial_rows = per_image_rows(
         args=args, v3s=v3s, legacy=legacy, frozen=frozen, names=names, folds=folds, kind=kind,
         model=model, device=device, split="update", point="initial"
@@ -427,18 +441,14 @@ def instrumented_run_projected(args, v3s, legacy, frozen, names, folds, device, 
         args=args, v3s=v3s, legacy=legacy, frozen=frozen, names=heldout_names, folds=folds, kind=kind,
         model=model, device=device, split="heldout", point="initial"
     )
-    initial, midpoint, final, history, trace_rows = instrumented_train_projected(
+    initial, midpoint, final, history, trace_rows, midpoint_rows = instrumented_train_projected(
         args, v3s, legacy, frozen, names, folds, kind, objective, model, device, label
-    )
-    midpoint_rows = per_image_rows(
-        args=args, v3s=v3s, legacy=legacy, frozen=frozen, names=names, folds=folds, kind=kind,
-        model=model, device=device, split="update", point="warmup_end"
     )
     final_rows = per_image_rows(
         args=args, v3s=v3s, legacy=legacy, frozen=frozen, names=names, folds=folds, kind=kind,
         model=model, device=device, split="update", point="final"
     )
-    heldout_final = legacy.evaluate_cell(args, v3s, legacy, frozen, heldout_names, folds, kind, model, device)
+    heldout_final = SOURCE.V3W.evaluate_cell(args, v3s, legacy, frozen, heldout_names, folds, kind, model, device)
     heldout_final_rows = per_image_rows(
         args=args, v3s=v3s, legacy=legacy, frozen=frozen, names=heldout_names, folds=folds, kind=kind,
         model=model, device=device, split="heldout", point="final"
@@ -461,9 +471,9 @@ def instrumented_run_projected(args, v3s, legacy, frozen, names, folds, device, 
             }
         }
     }
-    legacy.write_rows(Path(output_dir) / f"{args.run_tag}_history.csv", history)
-    legacy.write_rows(Path(output_dir) / f"{args.run_tag}_per_image.csv", initial_rows + heldout_initial_rows + midpoint_rows + final_rows + heldout_final_rows)
-    legacy.write_rows(Path(output_dir) / f"{args.run_tag}_projection_trace.csv", trace_rows)
+    SOURCE.V3W.write_rows(Path(output_dir) / f"{args.run_tag}_history.csv", history)
+    SOURCE.V3W.write_rows(Path(output_dir) / f"{args.run_tag}_per_image.csv", initial_rows + heldout_initial_rows + midpoint_rows + final_rows + heldout_final_rows)
+    SOURCE.V3W.write_rows(Path(output_dir) / f"{args.run_tag}_projection_trace.csv", trace_rows)
     TRACE["state_count"] = len(TRACE["states"])
     TRACE["projection_trace_rows"] = len(trace_rows)
     TRACE["per_image_rows"] = len(initial_rows + heldout_initial_rows + midpoint_rows + final_rows + heldout_final_rows)
@@ -486,7 +496,7 @@ def instrumented_run_projected(args, v3s, legacy, frozen, names, folds, device, 
         "trace_manifest": str(trace_path),
         "trace_manifest_sha256": sha256_file(trace_path),
     }
-    legacy.write_json(Path(output_dir) / f"{args.run_tag}_reconstruction.json", reconstruction)
+    SOURCE.V3W.write_json(Path(output_dir) / f"{args.run_tag}_reconstruction.json", reconstruction)
     return reconstruction
 
 

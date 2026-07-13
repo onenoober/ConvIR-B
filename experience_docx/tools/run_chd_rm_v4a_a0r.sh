@@ -17,7 +17,8 @@ EXPECTED_ROUTE_COMMIT=${EXPECTED_ROUTE_COMMIT:?set exact v4a route commit}
 EXPECTED_V3Z_COMMIT=3caddcc5265732e5be77e3404119a28cb28c11e6
 EXPECTED_V3S_COMMIT=2860f580bb25cc75ec9ade56378af6d77f5c8d8b
 EXPECTED_V3P_COMMIT=555fd008e29f02128564f2fad41d0095ee44f5ea
-OUT=$RUN_ROOT/a0r
+RUN_ID=${RUN_ID:-a0r_r2}
+OUT=$RUN_ROOT/$RUN_ID
 STATUS=$RUN_ROOT/status.txt
 EVID_STAGE=$REMOTE_REPO/experience_docx/experiment_logs/$ROUTE_ID
 HISTORICAL_ROOT=$BASE/runs/haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713
@@ -57,7 +58,7 @@ nvidia-smi -i "$GPU" --query-gpu=index,memory.free,utilization.gpu --format=csv,
 mkdir -p "$RUN_ROOT" "$EVID_STAGE" "$OUT"
 STAMP=$(date +%Y%m%dT%H%M%S)
 LOG=$RUN_ROOT/v4a_a0r_${STAMP}.log
-echo "stage_start route=$ROUTE_ID stage=v4a-A0R-instrumented-reconstruction run=v4a_a0r_reconstruction time=$(date --iso-8601=seconds)" | tee -a "$STATUS"
+echo "stage_start route=$ROUTE_ID stage=v4a-A0R-instrumented-reconstruction run=$RUN_ID time=$(date --iso-8601=seconds)" | tee -a "$STATUS"
 echo "stage_paths repo=$REMOTE_REPO run_root=$RUN_ROOT evid_stage=$EVID_STAGE output=$OUT log=$LOG" | tee -a "$STATUS"
 
 COMMON_ARGS=(
@@ -114,7 +115,7 @@ if [ "$rc" -eq 0 ]; then
 fi
 set -e
 
-echo "stage_done route=$ROUTE_ID stage=v4a-A0R-instrumented-reconstruction rc=$rc time=$(date --iso-8601=seconds)" | tee -a "$STATUS"
+echo "stage_done route=$ROUTE_ID stage=v4a-A0R-instrumented-reconstruction run=$RUN_ID rc=$rc time=$(date --iso-8601=seconds)" | tee -a "$STATUS"
 if [ "$rc" -ne 0 ]; then
   echo V4A_A0R_FAILED_COMMAND_OR_INFRA | tee -a "$STATUS"
   exit "$rc"

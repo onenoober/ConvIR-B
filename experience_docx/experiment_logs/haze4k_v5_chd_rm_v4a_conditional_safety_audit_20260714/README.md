@@ -16,6 +16,9 @@ The A0R runner imports the immutable v3z source at
 under the cloud run root, and stages only compact manifests, summaries, and
 typed closeouts here.
 
-No A0R result exists yet. A cloud launch requires fresh source snapshots,
-asset-hash preflight, a clean route checkout, and the route-card contract hash
-recorded in the launch transcript.
+No A0R scientific result exists yet. The first A0R launch completed the exact
+no-op check, then stopped with `FAILED_COMMAND_OR_INFRA` before projected
+reconstruction because the wrapper called a v3p legacy module as if it were the
+v3w module. The failed output remains cloud-only under `RUN_ROOT/a0r`; no
+projected epoch, per-image row, or gate decision was produced. The corrected
+runner uses a new output id under the unchanged contract.
