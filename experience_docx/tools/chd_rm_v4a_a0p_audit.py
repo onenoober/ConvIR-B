@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import gc
 import hashlib
 import importlib.util
 import json
@@ -207,6 +208,12 @@ def validate_adamw(optimizer: torch.optim.Optimizer) -> None:
 
 def metric_psnr(mse: float) -> float:
     return 10.0 * math.log10(1.0 / max(mse, 1e-30))
+
+
+def release_cuda_memory() -> None:
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
 
 
 def scalar(value: torch.Tensor) -> float:
@@ -795,7 +802,7 @@ def run_a0p(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
         raw_writer = csv.DictWriter(raw_handle, fieldnames=RAW_FIELDS, lineterminator="\n")
         raw_writer.writeheader()
         for state_index, state in enumerate(states):
-            payload = torch.load(state["path"], map_location=device)
+            payload = torch.load(state["path"], map_location="cpu")
             if payload.get("replicate_id") != "r1" or payload.get("state_kind") != "pre" or int(payload.get("epoch", -1)) != int(state["epoch"]):
                 raise RuntimeError("retained state payload identity mismatch")
             label, model, optimizer, parameters = load_cell(payload, args, v3s, legacy, frozen, list(names), folds, device)
@@ -803,6 +810,8 @@ def run_a0p(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
             for key in METRIC_KEYS:
                 pre[key][state_index] = baseline[key]
             raw_count += write_raw_rows(raw_writer, record_kind="pre_state", state_index=state_index, state=state, method="pre_state", window="pre_state", names=heldout_names, population=baseline)
+            del model, optimizer, parameters
+            release_cuda_memory()
             for method_index, method in enumerate(METHODS):
                 for window_index, window in enumerate(WINDOWS):
                     try:
@@ -827,6 +836,8 @@ def run_a0p(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
                         for key in METRIC_KEYS:
                             post[key][state_index, method_index, window_index] = population[key]
                         raw_count += write_raw_rows(raw_writer, record_kind="post_step", state_index=state_index, state=state, method=method, window=window, names=heldout_names, population=population)
+                    del population
+                    release_cuda_memory()
             print(json.dumps({"V4A_A0P_PROGRESS": {"completed_states": state_index + 1, "total_states": len(states), "raw_rows": raw_count}}, sort_keys=True), flush=True)
     write_rows(diagnostic_path, diagnostics)
     complete = all(np.isfinite(array).all() for array in (*pre.values(), *post.values()))
