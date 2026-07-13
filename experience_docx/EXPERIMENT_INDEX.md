@@ -116,15 +116,16 @@ margin diagnostics increased to `6.7448e-7`, `2.2907e-6`, and `7.8329e-6`, and
 repair magnitude reached `0.445731`.
 
 The remaining bottleneck is not amplitude, scalar scoring, action granularity,
-or the hard-block executor: direction repair can activate, but its safety terms
-must be introduced without recreating zero lock. v3v's 8-epoch render warmup
-passed (`|Delta u|=0.00134179`, MSE reduction `1.12999%`) and its full safety
-phase improved all three safety diagnostics, but final MSE reduction became
-`-0.04228%`; the abrupt 8+8 full-weight schedule is stopped. Do not resume
-v3s/v3t, relax gates, repeat v3v, or treat v3u as formal training. The next
-fresh route may test only a predeclared gradual safety-weight ramp with the same
-activation-retention and direct-safety gates; policy, canary, and locked test
-remain blocked.
+or the hard-block executor: direction repair can activate, but the tested safety
+losses erase that activity. v3v's abrupt 8+8 full-weight switch ended at
+`-0.04228%` rendered-MSE reduction. v3w then held the same head, assets,
+fixed-32 protocol, and gates while linearly ramping safety weights from `1/8`
+to full scale; its warmup passed (`|Delta u|=0.00134179`, MSE reduction
+`1.12999%`), but final reduction was `-0.05676%` despite non-worse safety
+diagnostics. Do not resume v3s/v3t, relax gates, repeat v3v/v3w, search another
+fixed safety-weight schedule, or treat v3u as formal training. Any new route
+must introduce a materially different direct low-haze-safety mechanism; policy,
+canary, and locked test remain blocked.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
 `experience_docx/experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3p-canonical-signed-gain.md`,
@@ -343,6 +344,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v3t_zero_lock_context_diagnostic_20260713/` | compact | v3t exact output-side and frozen-context no-op passed, then all four fixed-32 factorial cells remained inactive despite utility controls without anchor/harm/CVaR. It closes the regularized rendered form that retains the minimal-repair penalty; raw outputs remain cloud-only. |
 | `experiment_logs/haze4k_v5_chd_rm_v3u_render_only_activation_diagnostic_20260713/` | compact | v3u exact output-side no-op passed, then fixed-32 render-only activation passed (`|Delta u|=0.0041701270`, rendered-MSE reduction `2.92747396%`). The repair penalty is sufficient to explain the earlier zero lock, but safety diagnostics rise; only a new safety-curriculum diagnostic is authorized. |
 | `experiment_logs/haze4k_v5_chd_rm_v3v_safety_curriculum_activation_20260713/` | compact | v3v exact no-op and render warmup passed, but abrupt full-weight anchor/margin/harm/CVaR made final rendered MSE `0.04228%` worse despite non-worse safety diagnostics. This schedule is stopped; only a gradual-ramp diagnostic is authorized. |
+| `experiment_logs/haze4k_v5_chd_rm_v3w_gradual_safety_ramp_20260713/` | compact | v3w exact no-op and render warmup passed, but linear `1/8` to full safety-weight ramp made final rendered MSE `0.05676%` worse despite non-worse safety diagnostics. Fixed safety-weight schedule search is stopped; only a materially different direct low-haze-safety mechanism may be designed. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |

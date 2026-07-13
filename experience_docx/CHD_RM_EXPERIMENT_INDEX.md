@@ -20,7 +20,7 @@ contract; v3q scoring, calibration, and policy continuation are closed.
 Continuous haze-density-aware region-adaptive residual modulation with low-haze protection for ConvIR-B Haze4K dehazing.
 ```
 
-## Current v3r/v3s/v3t/v3u/v3v Decision
+## Current v3r/v3s/v3t/v3u/v3v/v3w Decision
 
 v3r proves that the frozen direct operator's dominant ceiling is signed
 direction: scale and channel-scale fail, while bounded direction-line repair
@@ -59,9 +59,13 @@ v3v tested the first such curriculum: eight render-only warmup epochs followed
 by eight full v3s safety-weight epochs with repair still zero. Warmup passed
 (`|Delta u|=0.00134179`, MSE reduction `1.12999%`) and final safety diagnostics
 were non-worse than v3u, but final rendered-MSE reduction was `-0.04228%`.
-The abrupt full-weight switch is therefore terminally stopped. Only a new
-predeclared gradual weight-ramp diagnostic may follow; all policy, canary, and
-locked-test restrictions remain.
+v3w then tested the only authorized linear alternative: the same warmup followed
+by safety weights rising from `1/8` to full scale. Its warmup matched the pass,
+but final rendered-MSE reduction was `-0.05676%` while safety remained
+non-worse. Both fixed schedules are terminally stopped. Do not search another
+fixed safety-weight schedule; any future route must use a materially different
+direct low-haze-safety mechanism. Policy, canary, and locked-test restrictions
+remain unchanged.
 
 ## Current Scope
 
@@ -114,6 +118,7 @@ locked-test restrictions remain.
 | v3t zero-lock versus context diagnostic | `codex/haze4k-v5-v3t-zero-lock-context-diagnostic-20260713` | completed mechanism diagnostic | Exact dual-form no-op passes; all four fixed-32, 16-epoch output/context x safe/utility cells remain below both activity lines, including utility controls without anchor/harm/CVaR | `V3T_S1_ALL_UTILITY_CELLS_INACTIVE_REQUIRE_OPTIMIZATION_REDESIGN` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3t_zero_lock_context_diagnostic_20260713/` |
 | v3u render-only activation diagnostic | `codex/haze4k-v5-v3u-render-only-activation-diagnostic-20260713` | completed activation gate pass | Exact output-side no-op passes; fixed-32 render-only S1 reaches `|Delta u|=0.0041701270` and `2.92747396%` rendered-MSE reduction, but safety diagnostics rise | `V3U_S1_RENDER_ONLY_ACTIVATION_PASS_AUTHORIZE_SAFETY_CURRICULUM_DESIGN_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3u_render_only_activation_diagnostic_20260713/` |
 | v3v safety-curriculum activation | `codex/haze4k-v5-v3v-safety-curriculum-activation-20260713` | completed curriculum gate fail | Warmup activates and safety diagnostics improve, but the abrupt full-weight safety phase yields final rendered-MSE reduction `-0.04228%` | `V3V_S1_SAFETY_PHASE_LOSES_ACTIVITY_STOP_SAFETY_CURRICULUM` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3v_safety_curriculum_activation_20260713/` |
+| v3w gradual safety ramp | `codex/haze4k-v5-v3w-gradual-safety-ramp-20260713` | completed curriculum gate fail | Exact no-op and warmup pass, but the fixed `1/8` to full linear safety ramp yields final rendered-MSE reduction `-0.05676%` despite non-worse safety diagnostics | `V3W_S1_RAMP_LOSES_ACTIVITY_STOP_GRADUAL_RAMP` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3w_gradual_safety_ramp_20260713/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |

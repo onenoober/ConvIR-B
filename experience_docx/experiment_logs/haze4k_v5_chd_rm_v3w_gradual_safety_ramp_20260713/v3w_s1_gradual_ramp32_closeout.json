@@ -1,0 +1,64 @@
+{
+  "activity_delta_abs": 1e-06,
+  "authorizes": "none; this fixed gradual safety ramp is stopped",
+  "canary_touched": false,
+  "cells": {
+    "output_safety_curriculum": {
+      "final": {
+        "anchor": 1.1269332844676683e-07,
+        "delta_abs": 7.585987178337916e-05,
+        "harm": 2.5851761620288016e-07,
+        "margin": 2.1652574067054786e-06,
+        "render": 0.0003223253738156018,
+        "repair": 0.008052875781231705
+      },
+      "final_activity_pass": false,
+      "initial": {
+        "anchor": 0.0,
+        "delta_abs": 0.0,
+        "harm": 2.8721490252792137e-07,
+        "margin": 2.2540165325879435e-06,
+        "render": 0.0003221425098445252,
+        "repair": 0.0
+      },
+      "input_form": "output",
+      "midpoint": {
+        "anchor": 2.232153519798885e-07,
+        "delta_abs": 0.0013417915252773582,
+        "harm": 8.103070285869762e-07,
+        "margin": 3.873870768056342e-06,
+        "render": 0.00031850232306851467,
+        "repair": 0.14352543566201348
+      },
+      "midpoint_activity_pass": true,
+      "midpoint_relative_render_reduction": 0.011299926786338683,
+      "objective": "safety_curriculum",
+      "parameter_count": 2883,
+      "relative_render_reduction": -0.0005676493026792421,
+      "safety_nonworse_vs_v3u": true,
+      "v3u_final_safety_reference": {
+        "anchor": 6.74478656037536e-07,
+        "harm": 2.2906834828972933e-06,
+        "margin": 7.832882713110223e-06
+      }
+    }
+  },
+  "decision": "V3W_S1_RAMP_LOSES_ACTIVITY_STOP_GRADUAL_RAMP",
+  "gate_type": "mechanism_safety_curriculum",
+  "locked_test_touched": false,
+  "metric_contract": "32 fixed OOF images, output-side Delta-u, 8-epoch render warmup then fixed linear safety ramp to full anchor/margin/harm/CVaR, no repair penalty",
+  "min_relative_render_reduction": 0.001,
+  "route_id": "haze4k_v5_chd_rm_v3w_gradual_safety_ramp_20260713",
+  "run_id": "v3w_s1_gradual_ramp32",
+  "safety_weights": {
+    "anchor": 30.0,
+    "cvar": 40.0,
+    "harm": 20.0,
+    "margin": 5.0,
+    "repair": 0.0
+  },
+  "stage": "v3w-S1-output-side-gradual-safety-ramp",
+  "state": "COMPLETED_GATE_FAIL",
+  "training_occurred": true,
+  "warmup_epochs": 8
+}
