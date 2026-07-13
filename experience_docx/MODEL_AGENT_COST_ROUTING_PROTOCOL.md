@@ -47,6 +47,42 @@ model id/version, case manifest, exact critical-field score, unauthorized-action
 count, decision, and reviewer. The workflow evaluation file is not itself a
 qualification pass.
 
+## Active Model Identity And Effort
+
+Model identity is task configuration, not experiment evidence. Establish it
+before applying a role floor, using the first available source in this order:
+
+1. a dispatcher receipt or product-supplied task metadata;
+2. current-session CLI `/status` output;
+3. for an interactive Codex App task with no machine-readable identity tool, an
+   explicit current-turn user confirmation of the visible model selector.
+
+The third source is valid only for the current interactive task. It must never
+be reused as experiment evidence, copied from old chat history, or propagated
+into an unattended child task. A dispatched child uses the dispatcher receipt,
+because the dispatcher starts it with an explicit `--model` and effort.
+
+Shell environment variables are not a required identity channel. Do not infer
+that a task is unqualified because `CODEX_MODEL`, `OPENAI_MODEL`, or a similar
+variable is absent from a tool subprocess. If two valid identity sources
+conflict, prefer current product metadata or the dispatcher receipt; otherwise
+stop and ask the user to confirm the visible current-task selection.
+
+Reasoning effort is a minimum, not an equality check. The order used by this
+protocol is `low < medium < high < xhigh`; therefore `xhigh` satisfies a `high`
+requirement. A higher qualified model or effort may perform a lower-class task.
+This does not require a down-route when a switch would not amortize.
+
+The standard marker remains machine-compatible:
+
+```text
+MODEL_ROUTE class=<class> role=<stable-role> effort=<active-effort>
+```
+
+When identity did not come from a dispatcher receipt, record the source in the
+adjacent progress text. Do not add unvalidated fields to the dispatcher marker
+or request schema.
+
 ## Non-Negotiable Reliability Invariants
 
 Model down-routing is allowed only while all of these remain unchanged:
@@ -67,8 +103,8 @@ If reducing context or model tier would skip any invariant, do not down-route.
 
 ## Task Classes And Minimum Models
 
-Classify the current task before the first substantive tool call and again when
-scope changes.
+Classify the current task envelope before the first substantive tool call and
+again at a durable boundary or when scope expands.
 
 | Class | Typical work | Minimum model | Allowed behavior |
 | --- | --- | --- | --- |
@@ -89,6 +125,26 @@ Additional hard assignments:
   reopen condition, or current-route conclusion change is `R3`.
 - A command/transport failure is at least `R2`; never let an `R0`/`R1` agent
   reinterpret partial output as scientific evidence.
+
+## Task Envelope And Continuity
+
+Classify the user-visible outcome and the highest-authority decision still
+needed inside the current task, not each supporting tool call in isolation.
+Exact-path reads, cloud inventory, or compact metric extraction performed to
+support an unresolved `R3` interpretation remain inside that `R3` envelope.
+They do not turn the active task into an independent `R0` task.
+
+Raise the class immediately when new scope requires it. Lower the class only
+after a durable boundary has closed the higher-class meaning and written the
+minimum handoff payload. A lower-class continuation must have one bounded next
+action that can finish without recovering the parent reasoning or making the
+parent decision. This preserves both scientific ownership and context cost.
+
+A stronger active role may complete adjacent lower-class operations in the same
+envelope. After a durable boundary, however, eligible standalone repetition or
+a bounded batch should use the dispatcher by default. Keeping that independent
+work on a stronger model requires a concrete `dispatch=not_amortized` reason;
+the user's stronger default model is not such a reason.
 
 ## Qualification Gate
 
@@ -134,10 +190,17 @@ requires a higher role than the active model:
 3. resume in a new task or after an explicit model switch;
 4. reread only the minimal durable handoff, not the prior chat transcript.
 
-If the active model identity is unavailable, allow `R0` only. Do not claim an
-automatic in-task switch without a verified product capability. A model may
-down-route a later independent task, but it must not delegate high-risk meaning
-to a lower role through a prompt or subagent.
+Apply the identity-source contract above before declaring identity unavailable.
+For an unattended task with no dispatcher receipt, product metadata, or current
+CLI status, allow `R0` only. For an interactive Codex App task, request a
+current-turn selector confirmation before failing closed. Missing shell
+environment variables are never negative evidence.
+
+Do not claim an automatic in-task switch without a verified product capability.
+The repository dispatcher creates a new ephemeral Codex task; it does not
+replace the model of the current task. A model may down-route a later
+independent task, but it must not delegate high-risk meaning to a lower role
+through an ordinary prompt or subagent.
 
 ## Deterministic External Dispatcher
 
@@ -155,6 +218,9 @@ schema-valid request from the durable handoff fields, and then stops that scope.
 The external process fetches `github/main`, rejects a stale rules commit, parses
 the canonical role and qualification tables, validates the route worktree HEAD,
 and starts exactly one ephemeral `codex exec` task with the selected model.
+The explicit child `--model` and effort override the user's default model for
+that child, so a Sol-default interactive task can still dispatch qualified work
+to Terra or Luna.
 
 Dispatch is allowed only for:
 
@@ -166,6 +232,12 @@ Do not dispatch one adjacent short operation merely because a cheaper model is
 qualified. Keep it in the current task when reloading context would cost more.
 The request must identify both source and target roles plus one allowed dispatch
 reason so this boundary is mechanically auditable.
+
+Conversely, do not keep an independent lower-class scope on the user's default
+model merely for convenience. Repeated/long monitoring, a standalone bounded
+status or evidence batch, and written-design-to-engineering handoffs are the
+intended cost-saving boundaries. The dispatcher validation records successful
+explicit selection of Luna for `R0/R1`, Terra for `R2`, and Sol for `R3`.
 
 Before any tool call, the child task must emit the exact `MODEL_ROUTE` marker
 and acknowledge the dispatcher handoff SHA. The dispatcher fails if the marker
@@ -193,6 +265,13 @@ copying it.
 | Exact-tuple preflight, authorized launch, repeated monitor, explicit evidence fetch | `R1` / `fast` | Dispatch a bounded batch only after `route_id`, `state`, `decision`, and `authorizes` are machine-verified. Keep a short adjacent preflight/launch/monitor sequence in the current qualified balanced task. |
 | Result interpretation, terminal gate, family verdict, reopen/promotion decision | `R3` / `frontier` | Required escalation before scientific interpretation or a verdict-changing write. |
 | Unchanged-verdict route-branch archival or routine sync | `R2` / `balanced` | Dispatch when it is a standalone batch; verdict-changing sync remains `R3`. |
+
+Supporting reads before an unresolved scientific verdict stay in the current
+`R3` envelope. Once that verdict or design is durably recorded, a fresh
+workspace/runner implementation is an `R2` Terra boundary; a later independent
+preflight/launch/monitor batch is an `R1` Luna boundary; final interpretation
+returns to an `R3` Sol task. This is the normal cost-saving route, not an
+exception.
 
 The route card must record the planned task boundaries, minimum roles, and
 whether each eligible down-route is expected to amortize. At a boundary that is
@@ -249,6 +328,11 @@ or long monitoring, or batches of identical bounded operations. Choose the
 lowest total context and model cost, not the lowest price for each individual
 turn.
 
+Do not recompute the class downward after every read. First close the active
+task envelope, then dispatch its independent continuation. This avoids both the
+false economy of reloading context for one read and the opposite failure of
+running every later bounded operation on the user's default frontier model.
+
 Minimum handoff payload:
 
 ```text
@@ -275,10 +359,16 @@ Escalate to `frontier` before scientific design or interpretation. This default
 avoids paying frontier cost for routine operations without making a lower-cost
 model the owner of an ambiguous or high-impact decision.
 
+An explicitly selected stronger interactive model is accepted when established
+by the identity contract, but it is not inherited by dispatcher children. At
+each durable boundary, select the cheapest qualified role for the new envelope.
+
 Official product references used for the dated mapping:
 
 - <https://openai.com/index/gpt-5-6/>
 - <https://developers.openai.com/api/docs/models>
 - <https://developers.openai.com/api/docs/models/compare>
 - <https://help.openai.com/en/articles/20001325-a-preview-of-gpt-56-sol-terra-and-luna>
+- <https://learn.chatgpt.com/docs/models#choosing-sol-terra-and-luna>
+- <https://learn.chatgpt.com/docs/models#pick-a-reasoning-effort>
 - <https://learn.chatgpt.com/docs/config-file/config-reference>

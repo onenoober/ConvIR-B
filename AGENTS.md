@@ -30,6 +30,9 @@
   weaken any experiment gate or change route semantics. If the active model is
   below the required role, stop before external writes or scientific decisions
   and emit a durable handoff for an explicit switch.
+- Use that protocol's active-identity, effort-minimum, and task-envelope rules;
+  a missing shell model variable is not evidence of a lower model, and
+  supporting reads do not split an unresolved higher-class task.
 - At an eligible new experiment task boundary, explicit major handoff, required
   escalation, or amortized batch of bounded operations, use the deterministic
   dispatcher from that protocol as the default task launcher. Run its dry-run
