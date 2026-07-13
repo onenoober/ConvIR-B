@@ -27,8 +27,8 @@ STAMP=$(date +%Y%m%dT%H%M%S)
 case "$MODE" in
   noop)
     STAGE=v3y-S0-output-form-exact-noop
-    RUN_TAG=v3y_s0_noop32
-    OUT=$RUN_ROOT/s0_noop32_r1
+    RUN_TAG=v3y_s0_noop32_r1
+    OUT=$RUN_ROOT/s0_noop32_r2
     ;;
   projected)
     STAGE=v3y-S1-output-side-cross-sample-direct-safety
@@ -63,8 +63,8 @@ test ! -e "$OUT"
 nvidia-smi -i "$GPU" --query-gpu=index,memory.free,utilization.gpu --format=csv,noheader
 
 if [ "$MODE" = projected ]; then
-  test -s "$EVID_STAGE/v3y_s0_noop32_closeout.json"
-  "$PY" - "$EVID_STAGE/v3y_s0_noop32_closeout.json" <<'PY'
+  test -s "$EVID_STAGE/v3y_s0_noop32_r1_closeout.json"
+  "$PY" - "$EVID_STAGE/v3y_s0_noop32_r1_closeout.json" <<'PY'
 import json
 import sys
 closeout = json.load(open(sys.argv[1], encoding="utf-8"))
@@ -113,7 +113,7 @@ rc=${PIPESTATUS[0]}
 set -e
 echo "stage_done route=$ROUTE_ID stage=$STAGE rc=$rc time=$(date --iso-8601=seconds)" | tee -a "$STATUS"
 if [ "$rc" -ne 0 ]; then
-  echo "V3X_${MODE^^}_FAILED" | tee -a "$STATUS"
+  echo "V3Y_${MODE^^}_FAILED" | tee -a "$STATUS"
   exit "$rc"
 fi
 
@@ -123,4 +123,4 @@ if [ "$MODE" = projected ]; then
   cp "$OUT/${RUN_TAG}_history.csv" "$EVID_STAGE/${RUN_TAG}_history.csv"
   cp "$OUT/${RUN_TAG}_summary.json" "$EVID_STAGE/${RUN_TAG}_summary.json"
 fi
-echo "V3X_${MODE^^}_OK" | tee -a "$STATUS"
+echo "V3Y_${MODE^^}_OK" | tee -a "$STATUS"

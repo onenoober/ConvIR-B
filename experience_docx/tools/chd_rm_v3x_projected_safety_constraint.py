@@ -160,7 +160,7 @@ def run_noop_v3x(original, args, v3s, legacy, frozen, names, folds, device, outp
     closeout = original(args, v3s, legacy, frozen, names, folds, device, output_dir)
     passed = closeout["state"] == "COMPLETED_GATE_PASS"
     closeout.update({
-        "stage": "v3x-S0-output-form-exact-noop",
+        "stage": "v3y-S0-output-form-exact-noop",
         "decision": "V3Y_S0_NOOP_PASS_AUTHORIZE_CROSS_SAMPLE_SAFETY_ONLY" if passed else "V3Y_S0_NOOP_FAIL_STOP",
         "authorizes": "v3y-S1 cross-sample direct-safety fixed32 diagnostic only" if passed else "none",
     })
