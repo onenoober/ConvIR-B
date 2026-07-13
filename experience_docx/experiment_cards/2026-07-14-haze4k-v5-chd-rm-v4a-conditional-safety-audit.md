@@ -28,7 +28,7 @@ Use `MODEL_AGENT_COST_ROUTING_PROTOCOL.md` for role qualifications and dispatch 
 | Applicable scope | Task class | Minimum role | Boundary action |
 | --- | --- | --- | --- |
 | scientific design / gate contract | `R3_SCIENTIFIC_AUTHORITY` | `frontier` | `dispatch=not_amortized: current route design and first diagnostic remain one R3 envelope` |
-| workspace / runner engineering | `R2_ENGINEERING_CONTROL` | `balanced` | `dispatch=not_amortized: runner implements the unclosed A0R contract` |
+| workspace / runner engineering | `R2_ENGINEERING_CONTROL` | `balanced` | `dispatch=not_amortized: runner implements the frozen A0R-passed A0P contract` |
 | preflight / launch / monitor / evidence fetch | `R1_BOUNDED_EXECUTION` | `fast` | `standalone_repetition after a machine-verified typed authorization` |
 | result interpretation / terminal verdict | `R3_SCIENTIFIC_AUTHORITY` | `frontier` | `required_escalation before any branch or verdict decision` |
 | unchanged-verdict archival / sync | `R2_ENGINEERING_CONTROL` | `balanced` | `major_handoff after a reviewed closeout` |
@@ -384,7 +384,7 @@ v4b, v4c, canary, locked test, promotion, or checkpoint selection.
 
 ## Decision
 
-- Decision label: `V4A_A0R_PASS_A0DP_AMENDMENT_FROZEN_AWAITING_R2_IMPLEMENTATION`.
+- Decision label: `V4A_A0R_PASS_A0DP_AMENDMENT_FROZEN_R2_IMPLEMENTATION_COMPLETE_AWAITING_R1_PREFLIGHT`.
 - Image/global metric reason: historical global utility/safety disagreement needs exact per-image reconstruction before any redefinition or new model claim.
 - Mechanism reason: actual AdamW displacement and projection-order effects are currently unobserved.
 - Preservation or regression reason: low-haze and tail safety remain unresolved; the old `.125` anchor is retained without relaxation.
@@ -394,8 +394,8 @@ v4b, v4c, canary, locked test, promotion, or checkpoint selection.
 - Group/split/seed uncertainty and interaction reason: historical fixed slices and fixed4 windows are diagnostic; A0P pairs states/windows and retains the update-method interaction.
 - Evidence role and independence reason: every v4a result is engineering/debug or development evidence; no candidate confirmation is claimed.
 - Cost/deployability reason: v4a adds cloud diagnostic storage only and has no deployable inference artifact.
-- What this decides next: implement and statically validate the amended A0D/A0P
-  tools only. Cloud preflight and launch require their own dynamic authorization;
+- What this decides next: the amended A0D/A0P tools are statically validated.
+  Cloud preflight and launch require their own dynamic authorization;
   an A0P closeout can emit only a new R3 handoff.
 - Typed closeout path: `RUN_ROOT/a0r-run-id/v4a_a0r_closeout.json` staged as compact evidence after review.
 - `PASS` authorizes: `A0D_AND_A0P_ONLY`.
