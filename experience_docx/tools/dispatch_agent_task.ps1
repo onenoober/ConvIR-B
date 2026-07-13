@@ -1,0 +1,440 @@
+param(
+    [Parameter(Mandatory = $true)]
+    [string]$RequestPath,
+
+    [switch]$Execute,
+
+    [string]$OutputRoot,
+
+    [string]$WslDistribution = "Ubuntu-22.04"
+)
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
+
+$requiredRequestFields = @(
+    "schema_version",
+    "rules_commit",
+    "repository_linux_path",
+    "task_class",
+    "source_role",
+    "required_role",
+    "dispatch_reason",
+    "effort",
+    "route_branch_commit",
+    "route_id",
+    "stage_state",
+    "decision",
+    "authorizes",
+    "cloud_status",
+    "next_action",
+    "authorization_check"
+)
+$requiredAuthorizationFields = @("verified", "mechanism", "checked_fields")
+$validClasses = @(
+    "R0_READ_ONLY",
+    "R1_BOUNDED_EXECUTION",
+    "R2_ENGINEERING_CONTROL",
+    "R3_SCIENTIFIC_AUTHORITY"
+)
+$validRoles = @("fast", "balanced", "frontier")
+$roleRank = @{fast = 0; balanced = 1; frontier = 2}
+$minimumRole = @{
+    R0_READ_ONLY = "fast"
+    R1_BOUNDED_EXECUTION = "fast"
+    R2_ENGINEERING_CONTROL = "balanced"
+    R3_SCIENTIFIC_AUTHORITY = "frontier"
+}
+$nonToolItemTypes = @("agent_message", "reasoning", "error")
+
+function Assert-ExactProperties {
+    param(
+        [Parameter(Mandatory = $true)]$Object,
+        [Parameter(Mandatory = $true)][string[]]$Expected,
+        [Parameter(Mandatory = $true)][string]$Label
+    )
+
+    $actual = @($Object.PSObject.Properties.Name | Sort-Object)
+    $wanted = @($Expected | Sort-Object)
+    if (($actual -join "`n") -ne ($wanted -join "`n")) {
+        throw "$Label fields must be exactly: $($wanted -join ', ')"
+    }
+}
+
+function Invoke-WslGit {
+    param(
+        [Parameter(Mandatory = $true)][string]$Repository,
+        [Parameter(Mandatory = $true)][string[]]$Arguments
+    )
+
+    $savedPreference = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $output = & wsl.exe -d $WslDistribution -- git -C $Repository @Arguments 2>&1
+    $exitCode = $LASTEXITCODE
+    $ErrorActionPreference = $savedPreference
+    if ($exitCode -ne 0) {
+        throw "git command failed ($exitCode): git -C $Repository $($Arguments -join ' ')`n$($output -join "`n")"
+    }
+    return @($output | ForEach-Object { $_.ToString() })
+}
+
+function Get-Sha256 {
+    param([Parameter(Mandatory = $true)][string]$Text)
+
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($Text)
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    try {
+        return (($sha.ComputeHash($bytes) | ForEach-Object { $_.ToString("x2") }) -join "")
+    }
+    finally {
+        $sha.Dispose()
+    }
+}
+
+function Convert-DisplayModelToId {
+    param([Parameter(Mandatory = $true)][string]$DisplayName)
+
+    return (($DisplayName.Trim().ToLowerInvariant() -replace "\s+", "-") -replace "[^a-z0-9.-]", "")
+}
+
+function Get-TaskWindowsPath {
+    param([Parameter(Mandatory = $true)][string]$LinuxPath)
+
+    return "\\wsl.localhost\$WslDistribution" + ($LinuxPath -replace "/", "\")
+}
+
+function Read-JsonLines {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    $events = @()
+    foreach ($line in Get-Content -LiteralPath $Path) {
+        if (-not [string]::IsNullOrWhiteSpace($line)) {
+            $events += ($line | ConvertFrom-Json)
+        }
+    }
+    return $events
+}
+
+$totalStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+$resolvedRequestPath = (Resolve-Path -LiteralPath $RequestPath).Path
+$request = Get-Content -Raw -LiteralPath $resolvedRequestPath | ConvertFrom-Json
+Assert-ExactProperties -Object $request -Expected $requiredRequestFields -Label "request"
+Assert-ExactProperties -Object $request.authorization_check -Expected $requiredAuthorizationFields -Label "authorization_check"
+
+if ($request.schema_version -ne 1) {
+    throw "Unsupported schema_version: $($request.schema_version)"
+}
+if ($request.rules_commit -notmatch "^[0-9a-f]{40}$") {
+    throw "rules_commit must be a full lowercase SHA"
+}
+if ($request.repository_linux_path -notmatch "^/") {
+    throw "repository_linux_path must be absolute"
+}
+if ($request.task_class -notin $validClasses) {
+    throw "Unknown task_class: $($request.task_class)"
+}
+if ($request.required_role -notin $validRoles) {
+    throw "Unknown required_role: $($request.required_role)"
+}
+if ($request.source_role -notin $validRoles) {
+    throw "Unknown source_role: $($request.source_role)"
+}
+if ($request.dispatch_reason -notin @("required_escalation", "standalone_repetition", "batch_bounded_operations", "major_handoff")) {
+    throw "Unknown dispatch_reason: $($request.dispatch_reason)"
+}
+if ($request.effort -notin @("low", "medium", "high")) {
+    throw "Unknown effort: $($request.effort)"
+}
+if ([string]::IsNullOrWhiteSpace($request.next_action) -or $request.next_action.Length -gt 2000) {
+    throw "next_action must contain 1-2000 characters"
+}
+$nonemptyStringFields = @("route_id", "stage_state", "decision", "authorizes", "cloud_status")
+foreach ($field in $nonemptyStringFields) {
+    if ($request.$field -isnot [string] -or [string]::IsNullOrWhiteSpace($request.$field)) {
+        throw "$field must be a nonempty string"
+    }
+}
+if ($request.authorization_check.mechanism -notin @("not_applicable", "runner_exact_tuple", "balanced_closeout_audit")) {
+    throw "Unknown authorization mechanism: $($request.authorization_check.mechanism)"
+}
+$checkedFields = @($request.authorization_check.checked_fields)
+if (@($checkedFields | Select-Object -Unique).Count -ne $checkedFields.Count) {
+    throw "authorization_check.checked_fields must be unique"
+}
+foreach ($field in $checkedFields) {
+    if ($field -notin @("route_id", "state", "decision", "authorizes")) {
+        throw "Unknown authorization checked field: $field"
+    }
+}
+
+$repository = $request.repository_linux_path
+$taskWindowsPath = Get-TaskWindowsPath -LinuxPath $repository
+if (-not (Test-Path -LiteralPath $taskWindowsPath -PathType Container)) {
+    throw "Repository is not visible at $taskWindowsPath"
+}
+
+Invoke-WslGit -Repository $repository -Arguments @("fetch", "github", "main") | Out-Null
+$currentRulesCommit = (Invoke-WslGit -Repository $repository -Arguments @("rev-parse", "github/main") | Select-Object -Last 1).Trim()
+if ($request.rules_commit -ne $currentRulesCommit) {
+    throw "STALE_RULES expected=$currentRulesCommit request=$($request.rules_commit)"
+}
+
+$policyLines = Invoke-WslGit -Repository $repository -Arguments @(
+    "show",
+    "github/main:experience_docx/MODEL_AGENT_COST_ROUTING_PROTOCOL.md"
+)
+$policy = $policyLines -join "`n"
+
+$mappingPattern = '(?m)^\| `(?<role>frontier|balanced|fast)` \| (?<model>GPT-[^|]+?) \| (?<effort>[^|]+?) \|'
+$qualificationPattern = '(?m)^\| `(?<role>frontier|balanced|fast)` / (?<model>GPT-[^|]+?) \| [^|]+ \| `R(?<max>[0-3])` \|'
+$mappingMatches = [regex]::Matches($policy, $mappingPattern)
+$qualificationMatches = [regex]::Matches($policy, $qualificationPattern)
+if ($mappingMatches.Count -ne 3 -or $qualificationMatches.Count -ne 3) {
+    throw "Could not parse the canonical role and qualification tables"
+}
+
+$modelsByRole = @{}
+foreach ($match in $mappingMatches) {
+    $modelsByRole[$match.Groups["role"].Value] = Convert-DisplayModelToId $match.Groups["model"].Value
+}
+$maxClassByRole = @{}
+foreach ($match in $qualificationMatches) {
+    $maxClassByRole[$match.Groups["role"].Value] = [int]$match.Groups["max"].Value
+}
+
+$classLevel = [int]$request.task_class.Substring(1, 1)
+$minimum = $minimumRole[$request.task_class]
+if ($roleRank[$request.required_role] -lt $roleRank[$minimum]) {
+    throw "ROLE_BELOW_MINIMUM class=$($request.task_class) minimum=$minimum request=$($request.required_role)"
+}
+if ($maxClassByRole[$request.required_role] -lt $classLevel) {
+    throw "MODEL_NOT_QUALIFIED role=$($request.required_role) maximum=R$($maxClassByRole[$request.required_role]) request=R$classLevel"
+}
+
+$sourceRank = $roleRank[$request.source_role]
+$targetRank = $roleRank[$request.required_role]
+if ($request.dispatch_reason -eq "required_escalation" -and $targetRank -le $sourceRank) {
+    throw "required_escalation must move to a stronger role"
+}
+if ($request.dispatch_reason -in @("standalone_repetition", "batch_bounded_operations") -and $targetRank -ge $sourceRank) {
+    throw "$($request.dispatch_reason) must move to a cheaper role"
+}
+if ($request.source_role -eq $request.required_role -and $request.dispatch_reason -ne "major_handoff") {
+    throw "Same-role dispatch is allowed only at a major handoff"
+}
+
+$expectedEffort = "medium"
+if ($request.required_role -eq "frontier") {
+    $expectedEffort = "high"
+}
+elseif ($request.required_role -eq "fast" -and $classLevel -eq 0) {
+    $expectedEffort = "low"
+}
+if ($request.effort -ne $expectedEffort) {
+    throw "EFFORT_MISMATCH expected=$expectedEffort request=$($request.effort)"
+}
+
+if ($classLevel -eq 0) {
+    if ($request.authorization_check.mechanism -ne "not_applicable" -or $request.authorization_check.verified) {
+        throw "R0 authorization_check must be unverified and not_applicable"
+    }
+}
+elseif ($classLevel -eq 1) {
+    $requiredChecks = @("authorizes", "decision", "route_id", "state")
+    $actualChecks = @($request.authorization_check.checked_fields | Sort-Object)
+    if (-not $request.authorization_check.verified -or ($actualChecks -join "`n") -ne ($requiredChecks -join "`n")) {
+        throw "R1 requires verified route_id/state/decision/authorizes checks"
+    }
+    if ($request.stage_state -ne "PASS" -or $request.decision -ne "CONTINUE" -or $request.authorizes -eq "NONE") {
+        throw "R1 authorization tuple does not permit execution"
+    }
+    if ($request.required_role -eq "fast" -and $request.authorization_check.mechanism -ne "runner_exact_tuple") {
+        throw "Fast R1 requires runner_exact_tuple authorization"
+    }
+    if ($request.required_role -eq "balanced" -and $request.authorization_check.mechanism -notin @("runner_exact_tuple", "balanced_closeout_audit")) {
+        throw "Balanced R1 requires an exact runner check or balanced closeout audit"
+    }
+}
+
+if ($request.route_branch_commit -ne "none") {
+    if ($request.route_branch_commit -notmatch "^[0-9a-f]{40}$") {
+        throw "route_branch_commit must be none or a full lowercase SHA"
+    }
+    $repositoryHead = (Invoke-WslGit -Repository $repository -Arguments @("rev-parse", "HEAD") | Select-Object -Last 1).Trim()
+    if ($repositoryHead -ne $request.route_branch_commit) {
+        throw "ROUTE_COMMIT_MISMATCH repository=$repositoryHead request=$($request.route_branch_commit)"
+    }
+}
+elseif ($classLevel -gt 0) {
+    throw "R1-R3 requests require route_branch_commit"
+}
+
+$selectedModel = $modelsByRole[$request.required_role]
+$sandbox = if ($classLevel -le 1) { "read-only" } else { "workspace-write" }
+$handoff = [ordered]@{
+    rules_commit = $currentRulesCommit
+    route_branch_commit = $request.route_branch_commit
+    route_id = $request.route_id
+    task_class = $request.task_class
+    source_role = $request.source_role
+    required_role = $request.required_role
+    dispatch_reason = $request.dispatch_reason
+    effort = $request.effort
+    stage_state = $request.stage_state
+    decision = $request.decision
+    authorizes = $request.authorizes
+    cloud_status = $request.cloud_status
+    next_action = $request.next_action
+}
+$handoffJson = $handoff | ConvertTo-Json -Compress
+$handoffSha = Get-Sha256 -Text $handoffJson
+$routeMarker = "MODEL_ROUTE class=$($request.task_class) role=$($request.required_role) effort=$($request.effort)"
+$handoffAck = "HANDOFF_ACK sha256=$handoffSha"
+$promptLines = @(
+    'Use $experiment-model-router for this task.',
+    "The deterministic external dispatcher selected model=$selectedModel from github/main@$currentRulesCommit.",
+    "Before any tool call, send a progress message containing exactly these two lines:",
+    $routeMarker,
+    $handoffAck,
+    "Do not downgrade the role or expand the task scope.",
+    "If new evidence requires a stronger role, stop before the next write or decision and emit MODEL_SWITCH_REQUIRED with a new dispatcher request.",
+    "Handoff JSON: $handoffJson",
+    "Perform exactly this next action: $($request.next_action)"
+)
+$childPrompt = $promptLines -join [Environment]::NewLine
+$prelaunchSeconds = [Math]::Round($totalStopwatch.Elapsed.TotalSeconds, 3)
+
+$dispatchPlan = [ordered]@{
+    dispatcher_status = "DRY_RUN_OK"
+    rules_commit = $currentRulesCommit
+    task_class = $request.task_class
+    source_role = $request.source_role
+    selected_role = $request.required_role
+    dispatch_reason = $request.dispatch_reason
+    selected_model = $selectedModel
+    effort = $request.effort
+    sandbox = $sandbox
+    repository_linux_path = $repository
+    handoff_sha256 = $handoffSha
+    prelaunch_seconds = $prelaunchSeconds
+    model_calls_before_launch = 0
+    output_root = $null
+}
+
+if (-not $Execute) {
+    $dispatchPlan | ConvertTo-Json -Depth 6
+    Write-Output "MODEL_DISPATCH_DRY_RUN_OK"
+    exit 0
+}
+
+if ([string]::IsNullOrWhiteSpace($OutputRoot)) {
+    $safeRoute = $request.route_id -replace "[^A-Za-z0-9._-]", "_"
+    $runName = (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ") + "-$safeRoute-$($request.required_role)"
+    $OutputRoot = Join-Path (Join-Path $env:USERPROFILE ".codex\dispatcher-runs") $runName
+}
+$resolvedOutputRoot = [System.IO.Path]::GetFullPath($OutputRoot)
+if (Test-Path -LiteralPath $resolvedOutputRoot) {
+    throw "Refusing to overwrite output root: $resolvedOutputRoot"
+}
+New-Item -ItemType Directory -Path $resolvedOutputRoot | Out-Null
+$promptPath = Join-Path $resolvedOutputRoot "child_prompt.txt"
+$eventsPath = Join-Path $resolvedOutputRoot "events.jsonl"
+$stderrPath = Join-Path $resolvedOutputRoot "stderr.log"
+$answerPath = Join-Path $resolvedOutputRoot "answer.txt"
+$metadataPath = Join-Path $resolvedOutputRoot "dispatch_metadata.json"
+$childPrompt | Set-Content -Encoding utf8 -LiteralPath $promptPath
+
+$codex = Get-Command codex.cmd -ErrorAction Stop
+$savedPreference = $ErrorActionPreference
+$ErrorActionPreference = "Continue"
+$cliVersion = (& $codex.Source --version 2>$null).Trim()
+$ErrorActionPreference = $savedPreference
+$arguments = @(
+    "exec",
+    "--model", $selectedModel,
+    "-c", ('model_reasoning_effort="' + $request.effort + '"'),
+    "--sandbox", $sandbox,
+    "--ephemeral",
+    "--output-last-message", $answerPath,
+    "--json",
+    "--cd", $taskWindowsPath,
+    "-"
+)
+
+$launchStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+$ErrorActionPreference = "Continue"
+$childExitCode = $null
+Push-Location -LiteralPath $env:TEMP
+try {
+    $childPrompt | & $codex.Source @arguments 1> $eventsPath 2> $stderrPath
+    $childExitCode = $LASTEXITCODE
+}
+finally {
+    Pop-Location
+    $ErrorActionPreference = $savedPreference
+}
+$launchStopwatch.Stop()
+$totalStopwatch.Stop()
+
+$events = Read-JsonLines -Path $eventsPath
+$ackIndex = -1
+$firstToolIndex = -1
+$turnCompleted = $false
+$switchRequired = $false
+$usage = $null
+for ($index = 0; $index -lt $events.Count; $index++) {
+    $event = $events[$index]
+    if ($event.type -eq "turn.completed") {
+        $turnCompleted = $true
+        $usage = $event.usage
+    }
+    if ($event.type -in @("item.started", "item.completed") -and $null -ne $event.item) {
+        if ($event.item.type -eq "agent_message") {
+            $text = [string]$event.item.text
+            if ($ackIndex -lt 0 -and $text.Contains($routeMarker) -and $text.Contains($handoffAck)) {
+                $ackIndex = $index
+            }
+            if ($text.Contains("MODEL_SWITCH_REQUIRED")) {
+                $switchRequired = $true
+            }
+        }
+        if ($event.type -eq "item.started" -and $event.item.type -notin $nonToolItemTypes -and $firstToolIndex -lt 0) {
+            $firstToolIndex = $index
+        }
+    }
+}
+$toolBeforeAck = $firstToolIndex -ge 0 -and ($ackIndex -lt 0 -or $firstToolIndex -lt $ackIndex)
+$dispatchPassed = $childExitCode -eq 0 -and $turnCompleted -and $ackIndex -ge 0 -and -not $toolBeforeAck
+$status = if ($dispatchPassed) { "PASS" } else { "FAIL" }
+
+$metadata = [ordered]@{
+    dispatcher_status = $status
+    rules_commit = $currentRulesCommit
+    cli_version = $cliVersion
+    task_class = $request.task_class
+    source_role = $request.source_role
+    selected_role = $request.required_role
+    dispatch_reason = $request.dispatch_reason
+    selected_model = $selectedModel
+    effort = $request.effort
+    sandbox = $sandbox
+    repository_linux_path = $repository
+    handoff_sha256 = $handoffSha
+    route_marker = $routeMarker
+    child_exit_code = $childExitCode
+    turn_completed = $turnCompleted
+    handoff_ack_seen = $ackIndex -ge 0
+    tool_before_ack = $toolBeforeAck
+    switch_required = $switchRequired
+    prelaunch_seconds = $prelaunchSeconds
+    child_elapsed_seconds = [Math]::Round($launchStopwatch.Elapsed.TotalSeconds, 3)
+    total_elapsed_seconds = [Math]::Round($totalStopwatch.Elapsed.TotalSeconds, 3)
+    model_calls_before_launch = 0
+    usage = $usage
+}
+$metadata | ConvertTo-Json -Depth 8 | Set-Content -Encoding utf8 -LiteralPath $metadataPath
+
+if (-not $dispatchPassed) {
+    throw "MODEL_DISPATCH_FAILED output=$resolvedOutputRoot"
+}
+Write-Output "MODEL_DISPATCH_OK model=$selectedModel role=$($request.required_role) output=$resolvedOutputRoot"

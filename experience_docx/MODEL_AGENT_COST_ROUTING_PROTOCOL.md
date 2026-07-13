@@ -139,6 +139,47 @@ automatic in-task switch without a verified product capability. A model may
 down-route a later independent task, but it must not delegate high-risk meaning
 to a lower role through a prompt or subagent.
 
+## Deterministic External Dispatcher
+
+Repository state: enabled for qualified task boundaries after the dated
+dispatcher validation in `model_agent_dispatcher/20260713/README.md`.
+
+Use `experience_docx/tools/dispatch_agent_task.ps1` when an explicit model-task
+boundary passes the switching and context-amortization rules below. Its request
+contract is owned by
+`experience_docx/tools/agent_model_dispatch_request.schema.json`.
+
+The dispatcher is not a classifier and must not make an extra model call to
+choose a role. The active task classifies its current operation, writes one
+schema-valid request from the durable handoff fields, and then stops that scope.
+The external process fetches `github/main`, rejects a stale rules commit, parses
+the canonical role and qualification tables, validates the route worktree HEAD,
+and starts exactly one ephemeral `codex exec` task with the selected model.
+
+Dispatch is allowed only for:
+
+- required escalation to a stronger role;
+- standalone repeated or batched bounded work delegated to a cheaper role; or
+- an explicit major handoff, including a same-role fresh task.
+
+Do not dispatch one adjacent short operation merely because a cheaper model is
+qualified. Keep it in the current task when reloading context would cost more.
+The request must identify both source and target roles plus one allowed dispatch
+reason so this boundary is mechanically auditable.
+
+Before any tool call, the child task must emit the exact `MODEL_ROUTE` marker
+and acknowledge the dispatcher handoff SHA. The dispatcher fails if the marker
+is absent, the SHA is absent, a tool starts before acknowledgement, the model
+is unqualified, the route commit differs, or a fast `R1` request lacks a
+machine-verified `route_id`/`state`/`decision`/`authorizes` tuple. It never
+bypasses the experiment authorization, cloud preflight, metric, gate, locked-
+test, or evidence-sync protocols.
+
+The default invocation is a zero-model-call dry run. Add `-Execute` only after
+the request is complete and the next action is already authorized. Store raw
+dispatcher events outside the repository and archive only a compact terminal
+audit when routing behavior or qualification changes.
+
 ## Token And Time Budget
 
 Reduce tokens by shrinking context first and model price second.

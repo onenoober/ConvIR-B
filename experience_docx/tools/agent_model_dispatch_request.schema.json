@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "rules_commit",
+    "repository_linux_path",
+    "task_class",
+    "source_role",
+    "required_role",
+    "dispatch_reason",
+    "effort",
+    "route_branch_commit",
+    "route_id",
+    "stage_state",
+    "decision",
+    "authorizes",
+    "cloud_status",
+    "next_action",
+    "authorization_check"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "rules_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "repository_linux_path": {"type": "string", "pattern": "^/"},
+    "task_class": {
+      "enum": ["R0_READ_ONLY", "R1_BOUNDED_EXECUTION", "R2_ENGINEERING_CONTROL", "R3_SCIENTIFIC_AUTHORITY"]
+    },
+    "source_role": {"enum": ["fast", "balanced", "frontier"]},
+    "required_role": {"enum": ["fast", "balanced", "frontier"]},
+    "dispatch_reason": {
+      "enum": ["required_escalation", "standalone_repetition", "batch_bounded_operations", "major_handoff"]
+    },
+    "effort": {"enum": ["low", "medium", "high"]},
+    "route_branch_commit": {
+      "type": "string",
+      "pattern": "^(none|[0-9a-f]{40})$"
+    },
+    "route_id": {"type": "string", "minLength": 1},
+    "stage_state": {"type": "string", "minLength": 1},
+    "decision": {"type": "string", "minLength": 1},
+    "authorizes": {"type": "string", "minLength": 1},
+    "cloud_status": {"type": "string", "minLength": 1},
+    "next_action": {"type": "string", "minLength": 1, "maxLength": 2000},
+    "authorization_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verified", "mechanism", "checked_fields"],
+      "properties": {
+        "verified": {"type": "boolean"},
+        "mechanism": {
+          "enum": ["not_applicable", "runner_exact_tuple", "balanced_closeout_audit"]
+        },
+        "checked_fields": {
+          "type": "array",
+          "items": {"enum": ["route_id", "state", "decision", "authorizes"]},
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}
