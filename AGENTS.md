@@ -24,6 +24,12 @@
   for editing, syntax/compile-only checks, sync staging, and verifying whether a
   local operation is safe.
 - Do not treat chat history as authoritative evidence.
+- Before substantive experiment work, classify the task and use the cheapest
+  qualified model allowed by
+  `experience_docx/MODEL_AGENT_COST_ROUTING_PROTOCOL.md`. Model routing must not
+  weaken any experiment gate or change route semantics. If the active model is
+  below the required role, stop before external writes or scientific decisions
+  and emit a durable handoff for an explicit switch.
 - New rule text must follow the repository document layers in
   `experience_docx/README.md`. Keep one canonical source per rule; other files
   should link to that source instead of copying the rule body. Do not mix
@@ -80,6 +86,7 @@ metric contract, stage authorization, and closeout/archive.
 
 | Task | Read |
 | --- | --- |
+| Model choice, token/cost control, or task handoff | `MODEL_AGENT_COST_ROUTING_PROTOCOL.md` |
 | Experiment status/result/decision | GitHub `main`/named GitHub branch copy of `EXPERIMENT_INDEX.md`, then only the relevant family summary, route card, and evidence README/log dir |
 | Cloud command, monitoring, sync, PowerShell/WSL/SSH | `COMMAND_RELIABILITY_QUICKSTART.md`; read `COMMAND_RELIABILITY_PROTOCOL.md` only for failed or unfamiliar command-boundary cases |
 | Training, smoke, eval, inference, post-run audit | `MODEL_RUN_OPERATIONS_PROTOCOL.md` |

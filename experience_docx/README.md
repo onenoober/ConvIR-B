@@ -31,11 +31,11 @@ do not reduce any required gate.
 | --- | --- | --- |
 | L0 default rules | `AGENTS.md` | Hard execution rules, fact-source authority, Universal Route Workflow, and read budget. |
 | L1 router | `experience_docx/README.md` | This file; choose the next minimal rule/evidence file. |
-| L2 execution protocols | `MODEL_EXPERIMENT_START_CHECKLIST.md`, `MODEL_RUN_OPERATIONS_PROTOCOL.md`, `COMMAND_RELIABILITY_QUICKSTART.md`, `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` | One-time route setup, per-launch runtime work, command transport, and terminal evidence archival respectively. |
+| L2 execution protocols | `MODEL_AGENT_COST_ROUTING_PROTOCOL.md`, `MODEL_EXPERIMENT_START_CHECKLIST.md`, `MODEL_RUN_OPERATIONS_PROTOCOL.md`, `COMMAND_RELIABILITY_QUICKSTART.md`, `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` | Agent-model/task routing, one-time route setup, per-launch runtime work, command transport, and terminal evidence archival respectively. |
 | L2 source policy | `OFFICIAL_ARCH_ANCHOR_POLICY.md`, `Haze4K_ARCH_FINETUNE_WORKFLOW.md` | Anchor/source rules plus Haze4K partial-load, initialization, and trainable-scope guidance. |
 | L3 design aids | `ROUTE_DESIGN_FRAMEWORK.md`, `EXPERIMENT_GOVERNANCE_PROTOCOL.md`, `EXPERIMENT_CARD_TEMPLATE.md`, `CONVIR_B_EXECUTION_GUIDE.md` | Deeper design guidance, baseline contracts, and card templates. |
 | L4 evidence indexes | `EXPERIMENT_INDEX.md`, `family_summaries/`, `experiment_cards/`, `experiment_logs/<route_id>/README.md` | Route state, decisions, evidence paths, and compact results. |
-| L5 archives, cleanup maps, and rule audits | `COMMAND_RELIABILITY_PROTOCOL.md`, `CLOUD_PY310_ENVIRONMENT.md`, `BRANCH_ROUTE_INDEX.md`, `WORKFLOW_CHANGE_EVALUATION_20260712.md`, historical logs | Historical, deep troubleshooting, remote-branch cleanup, or workflow-change audit context; do not read by default. |
+| L5 archives, cleanup maps, and rule audits | `COMMAND_RELIABILITY_PROTOCOL.md`, `CLOUD_PY310_ENVIRONMENT.md`, `BRANCH_ROUTE_INDEX.md`, `WORKFLOW_CHANGE_EVALUATION_20260712.md`, `MODEL_ROUTING_WORKFLOW_EVALUATION_20260713.md`, historical logs | Historical, deep troubleshooting, remote-branch cleanup, or workflow-change audit context; do not read by default. |
 
 ## Future Text Placement
 
@@ -43,6 +43,8 @@ All new rule or evidence text must stay in its proper layer:
 
 - Put default execution rules and read-budget changes in `AGENTS.md`.
 - Put task routing and document ownership changes in this router.
+- Put agent-model roles, qualification, escalation, and token-budget rules in
+  `MODEL_AGENT_COST_ROUTING_PROTOCOL.md`.
 - Put start/run/sync operational rules in the matching L2 protocol.
 - Put current command transport defaults in `COMMAND_RELIABILITY_QUICKSTART.md`;
   put only reusable failure history in `COMMAND_RELIABILITY_PROTOCOL.md`.
@@ -63,6 +65,7 @@ Use each operational document once for its own job:
 
 | Moment | Canonical document | Output |
 | --- | --- | --- |
+| Before task execution or after a scope change | `MODEL_AGENT_COST_ROUTING_PROTOCOL.md` | task class, minimum qualified model role, and bounded handoff when escalation is required |
 | Route creation or contract change | `MODEL_EXPERIMENT_START_CHECKLIST.md` | one route card and a selected execution profile |
 | Every cloud stage launch and monitor | `MODEL_RUN_OPERATIONS_PROTOCOL.md` | durable runner, `status.txt`, and typed stage closeout |
 | PowerShell/WSL/SSH boundary | `COMMAND_RELIABILITY_QUICKSTART.md` | a command with an explicit success/failure marker |
@@ -79,6 +82,7 @@ reusable or too large for the route card.
 
 | Task | Read first | Then only if needed | Do not read by default |
 | --- | --- | --- | --- |
+| Choose an agent model, reduce token cost, compact, or hand off | `MODEL_AGENT_COST_ROUTING_PROTOCOL.md` | `MODEL_ROUTING_WORKFLOW_EVALUATION_20260713.md` only for qualification or rule audit | Unrelated route history and full chat transcript |
 | Current status, result, decision, or route memory | GitHub `main` or named branch copy of `EXPERIMENT_INDEX.md` | Relevant family summary, route card, evidence README/log dir | Local dirty checkout, chat history, unrelated route logs |
 | New route, method, loss, selector, teacher, or audit | `MODEL_EXPERIMENT_START_CHECKLIST.md` | `ROUTE_DESIGN_FRAMEWORK.md`, `EXPERIMENT_CARD_TEMPLATE.md`, relevant family summary | Full governance package |
 | Gate design, threshold, or scientific interpretation | `EXPERIMENT_GOVERNANCE_PROTOCOL.md` section `Gate Policy` | Relevant route card and metric contract | Unrelated historical gate files |
