@@ -32,8 +32,8 @@ case "$MODE" in
     ;;
   projected)
     STAGE=v3x-S1-output-side-projected-direct-safety
-    RUN_TAG=v3x_s1_projected32
-    OUT=$RUN_ROOT/s1_projected32
+    RUN_TAG=v3x_s1_projected32_r1
+    OUT=$RUN_ROOT/s1_projected32_r1
     ;;
   *)
     echo V3X_INVALID_MODE

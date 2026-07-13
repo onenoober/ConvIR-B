@@ -12,6 +12,7 @@ import torch
 
 
 ROUTE_ID = "haze4k_v5_chd_rm_v3x_projected_safety_constraint_20260713"
+V3W = None
 
 
 def load_legacy():
@@ -51,7 +52,7 @@ def train_projected(args, v3s, legacy, frozen, names, folds, kind, objective, mo
         raise ValueError(f"unexpected objective: {objective}")
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
     parameters = [parameter for parameter in model.parameters() if parameter.requires_grad]
-    initial = legacy.evaluate_cell(args, v3s, legacy, frozen, names, folds, kind, model, device)
+    initial = V3W.evaluate_cell(args, v3s, legacy, frozen, names, folds, kind, model, device)
     midpoint = None
     history = []
     for epoch in range(1, args.epochs + 1):
@@ -63,10 +64,10 @@ def train_projected(args, v3s, legacy, frozen, names, folds, kind, objective, mo
             optimizer.zero_grad(set_to_none=True)
             terms = defaultdict(list)
             for name in names[start:start + args.risk_window]:
-                sample = legacy.frozen_output_sample(args, v3s, legacy, frozen, name, folds[name], device)
+                sample = V3W.frozen_output_sample(args, v3s, legacy, frozen, name, folds[name], device)
                 sample["delta_bound"] = args.delta_bound
-                for operator in legacy.OPERATORS:
-                    values = legacy.candidate_metrics(v3s, sample, legacy.delta_for(kind, model, sample, operator), operator)
+                for operator in V3W.OPERATORS:
+                    values = V3W.candidate_metrics(v3s, sample, V3W.delta_for(kind, model, sample, operator), operator)
                     for key, value in values.items():
                         terms[key].append(value)
             means = {key: torch.stack(value).mean() for key, value in terms.items()}
@@ -105,8 +106,8 @@ def train_projected(args, v3s, legacy, frozen, names, folds, kind, objective, mo
         history.append(row)
         print(json.dumps({"PROJECTED_PROGRESS": row}, sort_keys=True), flush=True)
         if epoch == args.warmup_epochs:
-            midpoint = legacy.evaluate_cell(args, v3s, legacy, frozen, names, folds, kind, model, device)
-    final = legacy.evaluate_cell(args, v3s, legacy, frozen, names, folds, kind, model, device)
+            midpoint = V3W.evaluate_cell(args, v3s, legacy, frozen, names, folds, kind, model, device)
+    final = V3W.evaluate_cell(args, v3s, legacy, frozen, names, folds, kind, model, device)
     return initial, midpoint, final, history
 
 
@@ -115,17 +116,17 @@ def run_projected(args, v3s, legacy, frozen, names, folds, device, output_dir):
     source = json.loads(source_path.read_text(encoding="utf-8"))
     source["mode"] = "projected"
     source["objective"] = {"warmup_epochs": args.warmup_epochs, "render_objective": "MSE", "constraints": ["anchor", "harm", "margin", "CVaR25"]}
-    legacy.write_json(source_path, source)
-    models = legacy.import_v3w_models()
-    first = legacy.frozen_output_sample(args, v3s, legacy, frozen, names[0], folds[names[0]], device)
-    cells = legacy.build_cells(models, first, args, device)
+    V3W.write_json(source_path, source)
+    models = V3W.import_v3w_models()
+    first = V3W.frozen_output_sample(args, v3s, legacy, frozen, names[0], folds[names[0]], device)
+    cells = V3W.build_cells(models, first, args, device)
     label, (kind, objective, model) = next(iter(cells.items()))
     initial, midpoint, final, history = train_projected(args, v3s, legacy, frozen, names, folds, kind, objective, model, device, label)
     reduction = (initial["render"] - final["render"]) / max(initial["render"], 1e-30)
     midpoint_reduction = (initial["render"] - midpoint["render"]) / max(initial["render"], 1e-30)
     midpoint_pass = midpoint["delta_abs"] >= args.activity_delta_abs and midpoint_reduction >= args.min_relative_render_reduction
     final_pass = final["delta_abs"] >= args.activity_delta_abs and reduction >= args.min_relative_render_reduction
-    safety_pass = all(final[key] <= legacy.V3U_FINAL_SAFETY[key] for key in legacy.V3U_FINAL_SAFETY)
+    safety_pass = all(final[key] <= V3W.V3U_FINAL_SAFETY[key] for key in V3W.V3U_FINAL_SAFETY)
     decision = "V3X_S1_PROJECTED_SAFETY_PASS_AUTHORIZE_SAFETY_CONTRACT_DESIGN_ONLY" if midpoint_pass and final_pass and safety_pass else "V3X_S1_PROJECTED_SAFETY_FAIL_STOP"
     closeout = {"route_id": ROUTE_ID, "run_id": args.run_tag, "stage": "v3x-S1-projected-direct-safety",
                 "state": "COMPLETED_GATE_PASS" if decision.startswith("V3X_S1_PROJECTED_SAFETY_PASS") else "COMPLETED_GATE_FAIL",
@@ -137,9 +138,9 @@ def run_projected(args, v3s, legacy, frozen, names, folds, device, output_dir):
                                    "final_activity_pass": final_pass, "safety_nonworse_vs_v3u": safety_pass,
                                    "parameter_count": sum(value.numel() for value in model.parameters())}},
                 "locked_test_touched": False, "canary_touched": False, "training_occurred": True}
-    legacy.write_rows(Path(output_dir) / f"{args.run_tag}_history.csv", history)
-    legacy.write_json(Path(output_dir) / f"{args.run_tag}_summary.json", closeout)
-    legacy.write_json(Path(output_dir) / f"{args.run_tag}_closeout.json", closeout)
+    V3W.write_rows(Path(output_dir) / f"{args.run_tag}_history.csv", history)
+    V3W.write_json(Path(output_dir) / f"{args.run_tag}_summary.json", closeout)
+    V3W.write_json(Path(output_dir) / f"{args.run_tag}_closeout.json", closeout)
     return closeout
 
 
@@ -156,14 +157,15 @@ def run_noop_v3x(original, args, v3s, legacy, frozen, names, folds, device, outp
 
 
 def main():
-    legacy = load_legacy()
-    legacy.ROUTE_ID = ROUTE_ID
-    original_noop = legacy.run_noop
-    legacy.run_noop = lambda *values: run_noop_v3x(original_noop, *values)
-    legacy.run_curriculum = run_projected
+    global V3W
+    V3W = load_legacy()
+    V3W.ROUTE_ID = ROUTE_ID
+    original_noop = V3W.run_noop
+    V3W.run_noop = lambda *values: run_noop_v3x(original_noop, *values)
+    V3W.run_curriculum = run_projected
     original = sys.argv[:]
     sys.argv = ["v3x"] + ["ramp" if value == "projected" else value for value in sys.argv[1:]]
-    legacy.main()
+    V3W.main()
     sys.argv = original
 
 
