@@ -15,6 +15,21 @@ interpretation remain canonical in `EXPERIMENT_GOVERNANCE_PROTOCOL.md`.
 Local WSL is editing and syntax/static-check only. Runtime work happens on
 `convir-4090` unless the user explicitly overrides a specific command.
 
+## Agent Routing Before Stage Work
+
+At the start of a fresh task or after a scope changes, apply the canonical
+boundary recipe in `MODEL_AGENT_COST_ROUTING_PROTOCOL.md` before the next
+substantive tool call. A dispatched child performs only its bounded handoff:
+for example, exact-tuple preflight/launch/monitor as `R1`, or engineering repair
+as `R2`. Terminal scientific interpretation remains `R3` even when the runner
+already wrote numeric `PASS` or `FAIL` fields.
+
+Do not dispatch separately between adjacent preflight, launch, short monitor,
+and intermediate evidence operations when context reload would cost more than
+the lower model saves. Do not call the local dispatcher from the cloud runner.
+Agent routing changes who performs this protocol; it does not change the
+protocol, runner, route commit, output path, or authorization chain.
+
 ## Per-Stage Runtime Order
 
 For each stage, use only this sequence:

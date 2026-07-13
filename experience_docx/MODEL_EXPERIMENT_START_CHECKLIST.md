@@ -11,6 +11,20 @@ contract, or materially changed. It produces one route card and an execution
 profile. Per-launch checks, monitoring, and closeout belong to
 `MODEL_RUN_OPERATIONS_PROTOCOL.md`; do not repeat them here.
 
+## 0. Record The Agent-Routing Plan
+
+Before route setup writes or cloud operations, classify the planned scopes with
+`MODEL_AGENT_COST_ROUTING_PROTOCOL.md` and record a compact agent-routing table
+in the route card. It must name the scientific-design, engineering, bounded
+operation, interpretation, and archival scopes that actually apply; their
+minimum stable roles; and the intended dispatcher boundary or
+`dispatch=not_amortized` decision.
+
+The route card records the plan, not a second copy of the routing rules. At an
+eligible boundary, the external dispatcher dry-run and `-Execute` flow are
+owned by the canonical protocol. Dispatcher output does not authorize an
+experiment stage and must not replace the route card or typed closeout.
+
 ## 1. Identify The Route And Source
 
 Record in the route card:
@@ -147,6 +161,8 @@ Mark the route `PLANNED` only when all of the following are explicit:
 - cloud code, run-output, evidence-stage, runner, status, and closeout paths are
   named;
 - the first stage is the cheapest stage that can resolve its current question.
+- the agent-routing plan identifies every applicable scope and any planned
+  dispatcher handoff before its first substantive action.
 
 If a static contract item changes, update the route card, rerun the affected
 static checks, and use a new run id when the scientific comparison changed. Do

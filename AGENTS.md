@@ -30,6 +30,12 @@
   weaken any experiment gate or change route semantics. If the active model is
   below the required role, stop before external writes or scientific decisions
   and emit a durable handoff for an explicit switch.
+- At an eligible new experiment task boundary, explicit major handoff, required
+  escalation, or amortized batch of bounded operations, use the deterministic
+  dispatcher from that protocol as the default task launcher. Run its dry-run
+  first and add `-Execute` only after the handoff and scientific authorization
+  are complete. Keep adjacent short operations in the current qualified task
+  when the protocol says a switch would not amortize.
 - New rule text must follow the repository document layers in
   `experience_docx/README.md`. Keep one canonical source per rule; other files
   should link to that source instead of copying the rule body. Do not mix
@@ -50,16 +56,19 @@
 Use this order for every route; the matching L2 document owns the detailed
 checks. Do not repeat those checklists in route cards or other rule files.
 
-1. Ground the task in GitHub evidence and current cloud state.
-2. Classify the route and record forbidden continuations and locked-test policy.
-3. Complete the one-time route setup in
+1. Classify the current agent task and execute any required or amortized model
+   dispatch under `MODEL_AGENT_COST_ROUTING_PROTOCOL.md`.
+2. Ground the task in GitHub evidence and current cloud state.
+3. Classify the experiment route and record forbidden continuations and
+   locked-test policy.
+4. Complete the one-time route setup in
    `experience_docx/MODEL_EXPERIMENT_START_CHECKLIST.md`.
-4. Before each cloud launch, complete the dynamic preflight and run only the
+5. Before each cloud launch, complete the dynamic preflight and run only the
    authorized stage from `experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md`.
-5. Use `experience_docx/COMMAND_RELIABILITY_QUICKSTART.md` for transport.
-6. Interpret formal gates only with the canonical Gate Policy in
+6. Use `experience_docx/COMMAND_RELIABILITY_QUICKSTART.md` for transport.
+7. Interpret formal gates only with the canonical Gate Policy in
    `experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md`.
-7. At a terminal route decision or explicit major handoff, archive compact text
+8. At a terminal route decision or explicit major handoff, archive compact text
    evidence with `experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.
 
 ## Read Budget

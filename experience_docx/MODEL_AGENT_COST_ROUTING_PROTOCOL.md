@@ -180,6 +180,47 @@ the request is complete and the next action is already authorized. Store raw
 dispatcher events outside the repository and archive only a compact terminal
 audit when routing behavior or qualification changes.
 
+### ConvIR Experiment Boundary Recipe
+
+For every new ConvIR experiment route, apply this finite sequence. This section
+owns the sequence; route cards and other protocols should link here instead of
+copying it.
+
+| Boundary | Task class / role | Dispatcher action |
+| --- | --- | --- |
+| Bottleneck synthesis, route question, gate or metric design | `R3` / `frontier` | Escalate through the dispatcher when the active role is lower; otherwise remain in the current frontier task. |
+| Written design to fresh workspace, tracked runner, engineering repair | `R2` / `balanced` | Dispatch one standalone or batched engineering scope when it amortizes context reload. |
+| Exact-tuple preflight, authorized launch, repeated monitor, explicit evidence fetch | `R1` / `fast` | Dispatch a bounded batch only after `route_id`, `state`, `decision`, and `authorizes` are machine-verified. Keep a short adjacent preflight/launch/monitor sequence in the current qualified balanced task. |
+| Result interpretation, terminal gate, family verdict, reopen/promotion decision | `R3` / `frontier` | Required escalation before scientific interpretation or a verdict-changing write. |
+| Unchanged-verdict route-branch archival or routine sync | `R2` / `balanced` | Dispatch when it is a standalone batch; verdict-changing sync remains `R3`. |
+
+The route card must record the planned task boundaries, minimum roles, and
+whether each eligible down-route is expected to amortize. At a boundary that is
+eligible for dispatch, create the schema-valid request, run
+`dispatch_agent_task.ps1` without `-Execute`, review `MODEL_DISPATCH_DRY_RUN_OK`,
+then rerun with `-Execute`. The child owns exactly the request's `next_action`;
+it must not continue into the next scientific or engineering class.
+
+From a PowerShell session rooted at the route worktree, use the same reviewed
+request for both calls:
+
+```powershell
+$request = "C:\path\to\dispatch-request.json"
+$dispatcher = ".\experience_docx\tools\dispatch_agent_task.ps1"
+& $dispatcher -RequestPath $request
+& $dispatcher -RequestPath $request -Execute
+```
+
+Do not call the dispatcher from a cloud runner or inside a training process.
+It selects the local agent task that will invoke the existing route setup,
+`convir-ops`, monitoring, closeout, or sync tools. This keeps model-cost routing
+orthogonal to GPU execution and experiment semantics.
+
+If an eligible boundary is deliberately kept in the current task because the
+switch would not amortize, record `dispatch=not_amortized` in the route card's
+agent-routing plan. If dispatch is required by role, `not_amortized` is not an
+override: fail closed and switch.
+
 ## Token And Time Budget
 
 Reduce tokens by shrinking context first and model price second.

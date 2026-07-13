@@ -21,6 +21,23 @@ Status: <draft | preflight | authorized | running | stopped | completed>
 - Cloud `EVID_STAGE`:
 - Explicit cloud Python:
 
+## Agent Execution Routing
+
+Use stable roles from `MODEL_AGENT_COST_ROUTING_PROTOCOL.md`; do not copy its
+role/model mapping or qualification tables here.
+
+| Applicable scope | Task class | Minimum role | Boundary action |
+| --- | --- | --- | --- |
+| scientific design / gate contract | `<R3_SCIENTIFIC_AUTHORITY or n/a>` | `<frontier or n/a>` | `<required_escalation, current_qualified_task, or n/a>` |
+| workspace / runner engineering | `<R2_ENGINEERING_CONTROL or n/a>` | `<balanced or n/a>` | `<batch_bounded_operations, major_handoff, dispatch=not_amortized, or n/a>` |
+| preflight / launch / monitor / evidence fetch | `<R1_BOUNDED_EXECUTION or n/a>` | `<fast or n/a>` | `<batch_bounded_operations, standalone_repetition, dispatch=not_amortized, or n/a>` |
+| result interpretation / terminal verdict | `<R3_SCIENTIFIC_AUTHORITY or n/a>` | `<frontier or n/a>` | `<required_escalation, current_qualified_task, or n/a>` |
+| unchanged-verdict archival / sync | `<R2_ENGINEERING_CONTROL or n/a>` | `<balanced or n/a>` | `<batch_bounded_operations, major_handoff, dispatch=not_amortized, or n/a>` |
+
+For every dispatcher boundary, record only the durable handoff source and
+planned `next_action`. Raw dispatcher events stay outside Git unless routing
+behavior or qualification itself is under audit.
+
 ## Baseline Contract
 
 - Baseline implementation:
