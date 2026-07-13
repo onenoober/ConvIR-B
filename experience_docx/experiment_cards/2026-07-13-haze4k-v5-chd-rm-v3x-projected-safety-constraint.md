@@ -1,6 +1,6 @@
 # Haze4K v5 CHD-RM v3x Projected Direct Safety Constraint
 
-Status: `PLANNED`.
+Status: `V3X_S1_PROJECTED_SAFETY_PASS_AUTHORIZE_SAFETY_CONTRACT_DESIGN_ONLY`.
 
 This fresh anchor diagnostic follows v3w, which stopped both abrupt and linear
 fixed safety-weight schedules. The question is whether an activated output-side
@@ -30,3 +30,9 @@ warmup and final activity line (`|Delta u| >= 1e-6`, rendered-MSE reduction
 Failure stops projected direct safety. A pass authorizes only a new
 safety-training-contract design, never policy, canary, deployment, or locked
 test.
+
+S0-r1 exact no-op passed. S1 passed: the final rendered-MSE reduction was
+`1.69283%` and `|Delta u|=0.00194937`; final anchor `3.1227e-7`, harm
+`1.0852e-6`, and margin `4.6448e-6` are each below the fixed v3u references.
+Projection was active on `87.5%` of post-warmup updates. This proves a local
+fixed32 feasible direction, not general low-haze protection or a candidate.

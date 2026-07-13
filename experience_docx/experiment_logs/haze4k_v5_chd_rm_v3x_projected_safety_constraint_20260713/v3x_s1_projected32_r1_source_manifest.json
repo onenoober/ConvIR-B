@@ -1,0 +1,121 @@
+{
+  "assets": {
+    "a0_checkpoint": {
+      "bytes": 34797069,
+      "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    "control_checkpoint": {
+      "bytes": 34798010,
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-fam2modres-control-e5frome1-seed3407-20260710/Training-Results/Final.pkl",
+      "sha256": "08207119a5cf9e5c439dd2cb81b99029ade1861f2739d31e75f2f9f78d57c0f2"
+    },
+    "d7c_artifact": {
+      "bytes": 288048,
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2d-chd-rm-need-spatial-hard-negative/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/d7c_full/artifacts/d7c_mc_topk_hn_ordinal_head.pt",
+      "sha256": "09f449232024395cf64db15a2a0efa0f12d3e0e049e1da3d67229a3dc5729361"
+    },
+    "density_artifact": {
+      "bytes": 59658,
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2-chd-rm-density-need-calibration/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2_density_need_calibration_20260708/artifacts/d3_density_only_head.pt",
+      "sha256": "1ffce13dccb41d96a47c2b5275f87bf2fdb73c226a190cfa240e5c71c1ec326f"
+    },
+    "fresh_split_manifest": {
+      "bytes": 66646,
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-counterfactual-advantage-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/fresh_route_confirm_split_manifest.json",
+      "sha256": "c8c00fefc965ded3389b6311fc67ea521e1f3174f27793688544abe09dc420e7"
+    },
+    "operator_artifact_manifest": {
+      "bytes": 1021,
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/v3l_a0_canonical_operator_artifact_manifest.json",
+      "sha256": "1d2ffa499128ad08a272d67c5439583900afe8ef87fb3256193ad5fe21c3af84"
+    },
+    "reference_oof_rows": {
+      "bytes": 2671809,
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-counterfactual-advantage-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/cloud_only_raw_common_action/v3l_a1_oracle_policy_oof_rows_cloud_only.csv",
+      "sha256": "b4a10184fab77b0045440dc88530d000a892acf2105a6295d5ad8a488c67ecb1"
+    },
+    "v3j_a_bounds": {
+      "bytes": 374,
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-counterfactual-advantage-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/bounded_action_space_bounds.json",
+      "sha256": "485ea12ff14c33b87105a50b6d118a9937c7e7f1b113062fe03d91eef3c9cc21"
+    }
+  },
+  "canary_touched": false,
+  "delta_bound": [
+    0.00919640064239502,
+    0.009401530027389526,
+    0.009474039077758789
+  ],
+  "frozen_operator_artifacts": [
+    {
+      "operator_label": "D_ref",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/cloud_only_artifacts/v3l_a0_D_ref_context_seed3407.pt",
+      "seed": 3407,
+      "sha256": "3c5ed807cc0cb25170720fe2b8f34cbe81b7bbc3857f7a3f1423f73d77cd6692"
+    },
+    {
+      "operator_label": "D_rep",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/cloud_only_artifacts/v3l_a0_D_rep_context_seed3408.pt",
+      "seed": 3408,
+      "sha256": "3843471c6f4c130495ee6f6d62193c4235d9c89061621288ecb8d7455944ae62"
+    }
+  ],
+  "locked_test_touched": false,
+  "mode": "projected",
+  "names": [
+    "1000_0.74_1.6.png",
+    "1001_0.89_1.66.png",
+    "1005_0.74_1.81.png",
+    "1010_0.91_1.13.png",
+    "1014_0.74_1.61.png",
+    "1019_0.82_1.87.png",
+    "1024_0.69_1.66.png",
+    "1026_0.77_0.89.png",
+    "1028_0.97_1.41.png",
+    "102_0.94_1.18.png",
+    "1030_0.75_1.69.png",
+    "1033_0.52_1.2.png",
+    "1035_0.76_1.14.png",
+    "1038_0.87_1.29.png",
+    "1039_0.79_1.79.png",
+    "1041_0.64_0.82.png",
+    "1046_0.91_1.69.png",
+    "1047_0.89_1.57.png",
+    "1048_0.73_0.95.png",
+    "1049_0.97_1.09.png",
+    "104_0.88_1.76.png",
+    "1052_0.73_1.22.png",
+    "1055_0.8_1.95.png",
+    "1059_0.87_0.7.png",
+    "105_0.74_1.06.png",
+    "1061_0.91_0.94.png",
+    "1062_0.58_1.51.png",
+    "1063_0.51_1.61.png",
+    "1069_0.66_1.4.png",
+    "1070_0.79_1.57.png",
+    "1077_0.94_0.84.png",
+    "1078_0.96_0.54.png"
+  ],
+  "objective": {
+    "constraints": [
+      "anchor",
+      "harm",
+      "margin",
+      "CVaR25"
+    ],
+    "render_objective": "MSE",
+    "warmup_epochs": 8
+  },
+  "route_id": "haze4k_v5_chd_rm_v3x_projected_safety_constraint_20260713",
+  "run_id": "v3x_s1_projected32_r1",
+  "v3p_commit": "555fd008e29f02128564f2fad41d0095ee44f5ea",
+  "v3p_root": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3p-canonical-signed-gain-20260712",
+  "v3s_commit": "2860f580bb25cc75ec9ade56378af6d77f5c8d8b",
+  "v3s_root": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3s-delta-u-direction-repair-20260713",
+  "v3u_final_safety_reference": {
+    "anchor": 6.74478656037536e-07,
+    "harm": 2.2906834828972933e-06,
+    "margin": 7.832882713110223e-06
+  }
+}
