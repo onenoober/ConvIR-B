@@ -20,7 +20,7 @@ contract; v3q scoring, calibration, and policy continuation are closed.
 Continuous haze-density-aware region-adaptive residual modulation with low-haze protection for ConvIR-B Haze4K dehazing.
 ```
 
-## Current v3r/v3s/v3t/v3u/v3v/v3w Decision
+## Current v3r/v3s/v3t/v3u/v3v/v3w/v3x Decision
 
 v3r proves that the frozen direct operator's dominant ceiling is signed
 direction: scale and channel-scale fail, while bounded direction-line repair
@@ -66,6 +66,15 @@ non-worse. Both fixed schedules are terminally stopped. Do not search another
 fixed safety-weight schedule; any future route must use a materially different
 direct low-haze-safety mechanism. Policy, canary, and locked-test restrictions
 remain unchanged.
+
+v3x tested that required mechanism without changing the frozen head, assets,
+fixed32 names, or warmup: each post-warmup render gradient was projected against
+anchor, harm, margin, and CVaR first-order constraints. It passed with `1.69283%`
+rendered-MSE reduction, final `|Delta u|=0.00194937`, and final anchor/harm/margin
+below v3u references; `87.5%` of post-warmup updates required projection. This
+proves only local feasible direction, not low-haze generalization. The next
+fresh route must predeclare cross-sample low-haze-safety gates before any
+candidate training; policy, canary, and locked-test restrictions remain.
 
 ## Current Scope
 
@@ -119,6 +128,7 @@ remain unchanged.
 | v3u render-only activation diagnostic | `codex/haze4k-v5-v3u-render-only-activation-diagnostic-20260713` | completed activation gate pass | Exact output-side no-op passes; fixed-32 render-only S1 reaches `|Delta u|=0.0041701270` and `2.92747396%` rendered-MSE reduction, but safety diagnostics rise | `V3U_S1_RENDER_ONLY_ACTIVATION_PASS_AUTHORIZE_SAFETY_CURRICULUM_DESIGN_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3u_render_only_activation_diagnostic_20260713/` |
 | v3v safety-curriculum activation | `codex/haze4k-v5-v3v-safety-curriculum-activation-20260713` | completed curriculum gate fail | Warmup activates and safety diagnostics improve, but the abrupt full-weight safety phase yields final rendered-MSE reduction `-0.04228%` | `V3V_S1_SAFETY_PHASE_LOSES_ACTIVITY_STOP_SAFETY_CURRICULUM` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3v_safety_curriculum_activation_20260713/` |
 | v3w gradual safety ramp | `codex/haze4k-v5-v3w-gradual-safety-ramp-20260713` | completed curriculum gate fail | Exact no-op and warmup pass, but the fixed `1/8` to full linear safety ramp yields final rendered-MSE reduction `-0.05676%` despite non-worse safety diagnostics | `V3W_S1_RAMP_LOSES_ACTIVITY_STOP_GRADUAL_RAMP` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3w_gradual_safety_ramp_20260713/` |
+| v3x projected direct safety | `codex/haze4k-v5-v3x-projected-safety-constraint-20260713` | completed mechanism pass | Exact no-op passes; the post-warmup projected constraint update retains `1.69283%` rendered-MSE reduction and meets all fixed v3u safety references | `V3X_S1_PROJECTED_SAFETY_PASS_AUTHORIZE_SAFETY_CONTRACT_DESIGN_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3x_projected_safety_constraint_20260713/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |

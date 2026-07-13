@@ -123,9 +123,14 @@ fixed-32 protocol, and gates while linearly ramping safety weights from `1/8`
 to full scale; its warmup passed (`|Delta u|=0.00134179`, MSE reduction
 `1.12999%`), but final reduction was `-0.05676%` despite non-worse safety
 diagnostics. Do not resume v3s/v3t, relax gates, repeat v3v/v3w, search another
-fixed safety-weight schedule, or treat v3u as formal training. Any new route
-must introduce a materially different direct low-haze-safety mechanism; policy,
-canary, and locked test remain blocked.
+fixed safety-weight schedule, or treat v3u as formal training. v3x supplied the
+required direct mechanism: after the same eight-epoch warmup, it projected the
+render gradient against anchor, harm, margin, and CVaR constraints per update.
+Its fixed32 S1 passed (`1.69283%` rendered-MSE reduction, `|Delta u|=0.00194937`,
+and all three v3u safety references met); projection intervened on `87.5%` of
+post-warmup updates. This is local feasibility evidence only. The next route
+must test a predeclared cross-sample low-haze-safety contract; policy, canary,
+and locked test remain blocked.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
 `experience_docx/experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3p-canonical-signed-gain.md`,
@@ -345,6 +350,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v3u_render_only_activation_diagnostic_20260713/` | compact | v3u exact output-side no-op passed, then fixed-32 render-only activation passed (`|Delta u|=0.0041701270`, rendered-MSE reduction `2.92747396%`). The repair penalty is sufficient to explain the earlier zero lock, but safety diagnostics rise; only a new safety-curriculum diagnostic is authorized. |
 | `experiment_logs/haze4k_v5_chd_rm_v3v_safety_curriculum_activation_20260713/` | compact | v3v exact no-op and render warmup passed, but abrupt full-weight anchor/margin/harm/CVaR made final rendered MSE `0.04228%` worse despite non-worse safety diagnostics. This schedule is stopped; only a gradual-ramp diagnostic is authorized. |
 | `experiment_logs/haze4k_v5_chd_rm_v3w_gradual_safety_ramp_20260713/` | compact | v3w exact no-op and render warmup passed, but linear `1/8` to full safety-weight ramp made final rendered MSE `0.05676%` worse despite non-worse safety diagnostics. Fixed safety-weight schedule search is stopped; only a materially different direct low-haze-safety mechanism may be designed. |
+| `experiment_logs/haze4k_v5_chd_rm_v3x_projected_safety_constraint_20260713/` | compact | v3x exact no-op passed, then per-update projection against anchor/harm/margin/CVaR retained fixed32 activity and `1.69283%` rendered-MSE reduction while meeting v3u safety references. It authorizes only cross-sample low-haze-safety contract design. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |

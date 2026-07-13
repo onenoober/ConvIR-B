@@ -1,0 +1,47 @@
+{
+  "authorizes": "safety-training-contract design only",
+  "canary_touched": false,
+  "cells": {
+    "output_safety_curriculum": {
+      "final": {
+        "anchor": 3.122681846434716e-07,
+        "delta_abs": 0.0019493738471965116,
+        "harm": 1.0852222658286337e-06,
+        "margin": 4.644795755570641e-06,
+        "render": 0.0003166891690398188,
+        "repair": 0.20915869374584872
+      },
+      "final_activity_pass": true,
+      "initial": {
+        "anchor": 0.0,
+        "delta_abs": 0.0,
+        "harm": 2.8721490252792137e-07,
+        "margin": 2.2540165325879435e-06,
+        "render": 0.0003221425098445252,
+        "repair": 0.0
+      },
+      "midpoint": {
+        "anchor": 2.232153519798885e-07,
+        "delta_abs": 0.0013417915252773582,
+        "harm": 8.103070285869762e-07,
+        "margin": 3.873870768056342e-06,
+        "render": 0.00031850232306851467,
+        "repair": 0.14352543566201348
+      },
+      "midpoint_activity_pass": true,
+      "midpoint_relative_render_reduction": 0.011299926786338683,
+      "parameter_count": 2883,
+      "relative_render_reduction": 0.016928348907874088,
+      "safety_nonworse_vs_v3u": true
+    }
+  },
+  "decision": "V3X_S1_PROJECTED_SAFETY_PASS_AUTHORIZE_SAFETY_CONTRACT_DESIGN_ONLY",
+  "gate_type": "mechanism_direct_safety",
+  "locked_test_touched": false,
+  "metric_contract": "fixed32 output Delta-u with render gradient projected against anchor/harm/margin/CVaR first-order safety constraints",
+  "route_id": "haze4k_v5_chd_rm_v3x_projected_safety_constraint_20260713",
+  "run_id": "v3x_s1_projected32_r1",
+  "stage": "v3x-S1-projected-direct-safety",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": true
+}
