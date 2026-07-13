@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["case_manifest_id", "decisions"],
+  "properties": {
+    "case_manifest_id": {
+      "const": "gpt56-routing-qualification-20260713-v1"
+    },
+    "decisions": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "case_id",
+          "task_class",
+          "authoritative_source",
+          "identity",
+          "stage_state",
+          "decision",
+          "authorizes",
+          "failure_class",
+          "required_role",
+          "requested_write_may_proceed_now",
+          "may_continue",
+          "must_escalate",
+          "locked_test_policy",
+          "evidence_paths_allowed",
+          "evidence_paths_rejected"
+        ],
+        "properties": {
+          "case_id": {
+            "enum": [
+              "Q1_EXACT_NOOP_NARROW_AUTH",
+              "Q2_PARTIAL_POSITIVE_TERMINAL_FAIL",
+              "Q3_COMMAND_TRANSPORT_FAILURE",
+              "Q4_LOCKED_TEST_FAIL",
+              "Q5_EVIDENCE_ALLOWLIST_VIOLATION",
+              "Q6_ROUTE_CLOSEOUT_IDENTITY_MISMATCH"
+            ]
+          },
+          "task_class": {
+            "enum": ["R0_READ_ONLY", "R1_BOUNDED_EXECUTION", "R2_ENGINEERING_CONTROL", "R3_SCIENTIFIC_AUTHORITY"]
+          },
+          "authoritative_source": {
+            "enum": ["GITHUB_MAIN", "NAMED_ROUTE_BRANCH", "CLOUD_RAW_OUTPUT"]
+          },
+          "identity": {
+            "enum": ["MATCH", "MISMATCH", "NOT_APPLICABLE"]
+          },
+          "stage_state": {
+            "enum": ["PASS", "FAIL", "COMMAND_FAILED", "LOCKED_TEST_FAILED", "SYNC_BLOCKED", "IDENTITY_MISMATCH"]
+          },
+          "decision": {
+            "enum": ["CONTINUE", "STOP", "ESCALATE", "BLOCK_SYNC"]
+          },
+          "authorizes": {
+            "enum": [
+              "RUN_TRACKED_S1_ONLY",
+              "NONE",
+              "R2_REPAIR_THEN_SAME_COMMAND_RERUN",
+              "NARROW_TO_ALLOWLIST_THEN_R2_SYNC"
+            ]
+          },
+          "failure_class": {
+            "enum": ["NONE", "SCIENTIFIC_GATE", "COMMAND_TRANSPORT", "LOCKED_TEST", "EVIDENCE_POLICY", "AUTHORIZATION_IDENTITY"]
+          },
+          "required_role": {
+            "enum": ["FAST", "BALANCED", "FRONTIER"]
+          },
+          "requested_write_may_proceed_now": {"type": "boolean"},
+          "may_continue": {"type": "boolean"},
+          "must_escalate": {"type": "boolean"},
+          "locked_test_policy": {
+            "enum": ["NOT_APPLICABLE", "NO_FURTHER_SELECTION"]
+          },
+          "evidence_paths_allowed": {
+            "type": "array",
+            "items": {"type": "string"},
+            "uniqueItems": true
+          },
+          "evidence_paths_rejected": {
+            "type": "array",
+            "items": {"type": "string"},
+            "uniqueItems": true
+          }
+        }
+      }
+    }
+  }
+}

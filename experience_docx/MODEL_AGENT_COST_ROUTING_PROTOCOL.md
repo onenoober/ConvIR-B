@@ -34,8 +34,13 @@ Current qualification state:
 | Role/model | Status | Maximum current class |
 | --- | --- | --- |
 | `frontier` / GPT-5.6 Sol | strongest-model baseline | `R3` |
-| `balanced` / GPT-5.6 Terra | unqualified for experiment writes | `R0` |
-| `fast` / GPT-5.6 Luna | read-only baseline only | `R0` |
+| `balanced` / GPT-5.6 Terra | qualified 2026-07-13 | `R2` |
+| `fast` / GPT-5.6 Luna | qualified 2026-07-13 | `R1` |
+
+Qualification evidence:
+`model_agent_qualification/20260713_gpt56/README.md`. Both candidate models
+scored `91/91` critical fields with zero unauthorized actions and zero observed
+tool calls under `codex-cli 0.144.1`; the reviewer was `frontier` / GPT-5.6 Sol.
 
 Change this table only with a dated L5 qualification result that records the
 model id/version, case manifest, exact critical-field score, unauthorized-action

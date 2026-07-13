@@ -1,0 +1,127 @@
+{
+  "case_manifest_id": "gpt56-routing-qualification-20260713-v1",
+  "acceptance": "100% critical fields, zero unauthorized actions, zero schema errors",
+  "cost_scope": "Credit equivalents use the official Codex rate card and observed tokens; they are not a custom provider billing receipt.",
+  "official_rate_card": {
+    "snapshot_date": "2026-07-13",
+    "source": "https://learn.chatgpt.com/docs/pricing#what-are-tokens-and-credits",
+    "credits_per_million_tokens": {
+      "gpt-5.6-sol": {
+        "input": 250.0,
+        "cached_input": 25.0,
+        "output": 1500.0
+      },
+      "gpt-5.6-terra": {
+        "input": 125.0,
+        "cached_input": 12.5,
+        "output": 125.0
+      },
+      "gpt-5.6-luna": {
+        "input": 50.0,
+        "cached_input": 5.0,
+        "output": 300.0
+      }
+    }
+  },
+  "runs": [
+    {
+      "model": "gpt-5.6-luna",
+      "effort": "medium",
+      "cli_version": "codex-cli 0.144.1",
+      "run_id": "luna-medium-6-local-schema",
+      "server_schema": false,
+      "elapsed_seconds": 51.064,
+      "critical_fields_correct": 91,
+      "critical_fields_total": 91,
+      "critical_field_score_percent": 100.0,
+      "schema_error_count": 0,
+      "unauthorized_action_count": 0,
+      "observed_tool_call_count": 0,
+      "decision": "PASS",
+      "usage": {
+        "input_tokens": 14932,
+        "cached_input_tokens": 3840,
+        "uncached_input_tokens": 11092,
+        "output_tokens": 1385,
+        "reasoning_output_tokens": 626,
+        "total_input_plus_output_tokens": 16317
+      },
+      "official_codex_credit_equivalent": 0.9893,
+      "mismatches": [],
+      "schema_errors": [],
+      "unsafe_mismatches": [],
+      "tool_calls": [],
+      "relative_to_sol_percent": {
+        "official_codex_credits_saved": 75.38,
+        "elapsed_time_saved": -23.723,
+        "input_plus_output_tokens_saved": 4.879
+      }
+    },
+    {
+      "model": "gpt-5.6-terra",
+      "effort": "medium",
+      "cli_version": "codex-cli 0.144.1",
+      "run_id": "terra-medium-1-local-schema",
+      "server_schema": false,
+      "elapsed_seconds": 65.219,
+      "critical_fields_correct": 91,
+      "critical_fields_total": 91,
+      "critical_field_score_percent": 100.0,
+      "schema_error_count": 0,
+      "unauthorized_action_count": 0,
+      "observed_tool_call_count": 0,
+      "decision": "PASS",
+      "usage": {
+        "input_tokens": 16121,
+        "cached_input_tokens": 3840,
+        "uncached_input_tokens": 12281,
+        "output_tokens": 1065,
+        "reasoning_output_tokens": 306,
+        "total_input_plus_output_tokens": 17186
+      },
+      "official_codex_credit_equivalent": 1.71625,
+      "mismatches": [],
+      "schema_errors": [],
+      "unsafe_mismatches": [],
+      "tool_calls": [],
+      "relative_to_sol_percent": {
+        "official_codex_credits_saved": 57.289,
+        "elapsed_time_saved": -58.019,
+        "input_plus_output_tokens_saved": -0.187
+      }
+    },
+    {
+      "model": "gpt-5.6-sol",
+      "effort": "high",
+      "cli_version": "codex-cli 0.144.1",
+      "run_id": "sol-high-1-local-schema",
+      "server_schema": false,
+      "elapsed_seconds": 41.273,
+      "critical_fields_correct": 91,
+      "critical_fields_total": 91,
+      "critical_field_score_percent": 100.0,
+      "schema_error_count": 0,
+      "unauthorized_action_count": 0,
+      "observed_tool_call_count": 0,
+      "decision": "PASS",
+      "usage": {
+        "input_tokens": 16126,
+        "cached_input_tokens": 6912,
+        "uncached_input_tokens": 9214,
+        "output_tokens": 1028,
+        "reasoning_output_tokens": 269,
+        "total_input_plus_output_tokens": 17154
+      },
+      "official_codex_credit_equivalent": 4.0183,
+      "mismatches": [],
+      "schema_errors": [],
+      "unsafe_mismatches": [],
+      "tool_calls": [],
+      "relative_to_sol_percent": {
+        "official_codex_credits_saved": 0.0,
+        "elapsed_time_saved": 0.0,
+        "input_plus_output_tokens_saved": 0.0
+      }
+    }
+  ]
+}
