@@ -55,7 +55,7 @@ test -s "$BASE/repos/ConvIR-B-haze4k-v5-v2-chd-rm-density-need-calibration/exper
 test -s "$BASE/repos/ConvIR-B-haze4k-v5-v2d-chd-rm-need-spatial-hard-negative/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/d7c_full/artifacts/d7c_mc_topk_hn_ordinal_head.pt"
 nvidia-smi -i "$GPU" --query-gpu=index,memory.free,utilization.gpu --format=csv,noheader
 
-mkdir -p "$RUN_ROOT" "$EVID_STAGE" "$OUT"
+mkdir -p "$RUN_ROOT" "$EVID_STAGE"
 STAMP=$(date +%Y%m%dT%H%M%S)
 LOG=$RUN_ROOT/v4a_a0d_${STAMP}.log
 echo "stage_start route=$ROUTE_ID stage=v4a-A0D-descriptive-risk-decomposition run=$RUN_ID time=$(date --iso-8601=seconds)" | tee -a "$STATUS"
