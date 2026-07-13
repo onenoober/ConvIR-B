@@ -20,7 +20,7 @@ contract; v3q scoring, calibration, and policy continuation are closed.
 Continuous haze-density-aware region-adaptive residual modulation with low-haze protection for ConvIR-B Haze4K dehazing.
 ```
 
-## Current v3r/v3s/v3t/v3u/v3v/v3w/v3x Decision
+## Current v3r/v3s/v3t/v3u/v3v/v3w/v3x/v3y/v3z Decision
 
 v3r proves that the frozen direct operator's dominant ceiling is signed
 direction: scale and channel-scale fail, while bounded direction-line repair
@@ -76,6 +76,16 @@ proves only local feasible direction, not low-haze generalization. The next
 fresh route must predeclare cross-sample low-haze-safety gates before any
 candidate training; policy, canary, and locked-test restrictions remain.
 
+v3y passed the first cross-sample check: a fixed train32/heldout32 split
+retained heldout rendered-MSE reduction `2.97251%`, activity, and the v3u
+safety references. Its written terminal v3z confirmation expanded this to a
+sealed train128/heldout128 contract. v3z retained train activity and a `4.14653%`
+train rendered-MSE reduction, but heldout anchor `1.23885e-6` and harm
+`3.60745e-6` exceeded the references despite `1.35612%` heldout MSE reduction.
+The projected frozen-head route is closed. Do not tune its sample scope, loss,
+bounds, gates, or safety thresholds; no policy, canary, candidate, or locked
+test action is authorized.
+
 ## Current Scope
 
 - Dataset: Haze4K only.
@@ -129,6 +139,8 @@ candidate training; policy, canary, and locked-test restrictions remain.
 | v3v safety-curriculum activation | `codex/haze4k-v5-v3v-safety-curriculum-activation-20260713` | completed curriculum gate fail | Warmup activates and safety diagnostics improve, but the abrupt full-weight safety phase yields final rendered-MSE reduction `-0.04228%` | `V3V_S1_SAFETY_PHASE_LOSES_ACTIVITY_STOP_SAFETY_CURRICULUM` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3v_safety_curriculum_activation_20260713/` |
 | v3w gradual safety ramp | `codex/haze4k-v5-v3w-gradual-safety-ramp-20260713` | completed curriculum gate fail | Exact no-op and warmup pass, but the fixed `1/8` to full linear safety ramp yields final rendered-MSE reduction `-0.05676%` despite non-worse safety diagnostics | `V3W_S1_RAMP_LOSES_ACTIVITY_STOP_GRADUAL_RAMP` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3w_gradual_safety_ramp_20260713/` |
 | v3x projected direct safety | `codex/haze4k-v5-v3x-projected-safety-constraint-20260713` | completed mechanism pass | Exact no-op passes; the post-warmup projected constraint update retains `1.69283%` rendered-MSE reduction and meets all fixed v3u safety references | `V3X_S1_PROJECTED_SAFETY_PASS_AUTHORIZE_SAFETY_CONTRACT_DESIGN_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3x_projected_safety_constraint_20260713/` |
+| v3y cross-sample safety | `codex/haze4k-v5-v3y-cross-sample-safety-20260713` | completed cross-sample pass | Fixed train32/heldout32 passes activity, heldout MSE reduction `2.97251%`, and v3u safety references | `V3Y_S1_CROSS_SAMPLE_SAFETY_PASS_AUTHORIZE_SEALED_INTERNAL_CONFIRMATION_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3y_cross_sample_safety_20260713/` |
+| v3z sealed confirmation | `codex/haze4k-v5-v3z-sealed-confirmation-20260713` | completed terminal gate fail | train128 passes, but heldout128 anchor/harm exceed fixed safety references despite positive rendered-MSE reduction | `V3Z_S1_SEALED_CONFIRMATION_FAIL_CLOSE_PROJECTED_HEAD_ROUTE` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |

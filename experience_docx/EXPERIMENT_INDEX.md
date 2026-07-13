@@ -128,9 +128,13 @@ required direct mechanism: after the same eight-epoch warmup, it projected the
 render gradient against anchor, harm, margin, and CVaR constraints per update.
 Its fixed32 S1 passed (`1.69283%` rendered-MSE reduction, `|Delta u|=0.00194937`,
 and all three v3u safety references met); projection intervened on `87.5%` of
-post-warmup updates. This is local feasibility evidence only. The next route
-must test a predeclared cross-sample low-haze-safety contract; policy, canary,
-and locked test remain blocked.
+post-warmup updates. v3y then passed the fixed train32/heldout32 cross-sample
+contract (heldout rendered-MSE reduction `2.97251%`), but terminal v3z failed
+the sealed train128/heldout128 safety confirmation: heldout rendered MSE still
+improved `1.35612%`, yet anchor `1.23885e-6` and harm `3.60745e-6` exceeded the
+fixed references. Close this frozen projected-head route. Do not tune its
+weights, bounds, gates, sample scope, or safety thresholds; policy, canary, and
+locked test remain blocked.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
 `experience_docx/experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3p-canonical-signed-gain.md`,

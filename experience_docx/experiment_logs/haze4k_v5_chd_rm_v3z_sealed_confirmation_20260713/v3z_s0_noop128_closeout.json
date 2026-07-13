@@ -1,0 +1,18 @@
+{
+  "authorizes": "v3z-S1 sealed train128/heldout128 confirmation only",
+  "canary_touched": false,
+  "counts": {
+    "output_safety_curriculum": 256
+  },
+  "decision": "V3Z_S0_NOOP_PASS_AUTHORIZE_SEALED_CONFIRMATION_ONLY",
+  "gate_type": "structural_integrity",
+  "locked_test_touched": false,
+  "max_abs_delta": 0.0,
+  "max_abs_prediction_diff": 0.0,
+  "max_abs_reference_psnr_delta_diff_db": 0.0,
+  "route_id": "haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713",
+  "run_id": "v3z_s0_noop128",
+  "stage": "v3z-S0-output-form-exact-noop",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": false
+}
