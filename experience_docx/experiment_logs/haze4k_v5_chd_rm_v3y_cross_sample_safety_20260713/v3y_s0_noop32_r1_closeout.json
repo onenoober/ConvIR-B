@@ -1,0 +1,18 @@
+{
+  "authorizes": "v3y-S1 cross-sample direct-safety fixed32 diagnostic only",
+  "canary_touched": false,
+  "counts": {
+    "output_safety_curriculum": 64
+  },
+  "decision": "V3Y_S0_NOOP_PASS_AUTHORIZE_CROSS_SAMPLE_SAFETY_ONLY",
+  "gate_type": "structural_integrity",
+  "locked_test_touched": false,
+  "max_abs_delta": 0.0,
+  "max_abs_prediction_diff": 0.0,
+  "max_abs_reference_psnr_delta_diff_db": 0.0,
+  "route_id": "haze4k_v5_chd_rm_v3y_cross_sample_safety_20260713",
+  "run_id": "v3y_s0_noop32_r1",
+  "stage": "v3y-S0-output-form-exact-noop",
+  "state": "COMPLETED_GATE_PASS",
+  "training_occurred": false
+}
