@@ -73,3 +73,26 @@ The invalid and corrected forms are archived in
 Raw CLI events and stderr remain under the local Codex dispatcher-run directory
 and are not committed. The compact machine result is
 `dispatcher_validation_results.json`.
+
+## Final Risk-Routing Integration
+
+A post-sync integration test at
+`github/main@b4afd321d9eae5b53db1055d207b8257989feee4` executed three
+isolated, no-tool handoffs through the installed dispatcher:
+
+| Class | Selected model | Handoff | Tool events | Credits | Wall time |
+| --- | --- | --- | ---: | ---: | ---: |
+| `R1_BOUNDED_EXECUTION` | GPT-5.6 Luna | pass | 0 | 0.635200 | 16.217 s |
+| `R2_ENGINEERING_CONTROL` | GPT-5.6 Terra | pass | 0 | 1.669750 | 15.876 s |
+| `R3_SCIENTIFIC_AUTHORITY` | GPT-5.6 Sol | pass | 0 | 3.420500 | 15.959 s |
+
+All route markers and handoff SHAs appeared before any possible tool event, all
+child turns completed, and the repository HEAD/worktree remained unchanged.
+No ConvIR or cloud operation was attempted.
+
+The routed sequence used `5.725450` official credit equivalents. Pricing the
+same three observed token streams entirely at the Sol rate gives `10.124750`,
+so risk routing saved `4.399300` credits (`43.451%`) for this sequence. This is
+an observed-token rate comparison, not a separately sampled all-Sol sequence or
+a custom-provider billing receipt. Exact fields are archived in
+`final_risk_routing_validation_results.json`.
