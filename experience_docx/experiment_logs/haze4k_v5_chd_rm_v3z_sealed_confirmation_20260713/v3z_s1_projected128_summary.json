@@ -1,0 +1,65 @@
+{
+  "authorizes": "none; terminal confirmation",
+  "canary_touched": false,
+  "cells": {
+    "output_safety_curriculum": {
+      "final": {
+        "anchor": 5.357472332434554e-07,
+        "delta_abs": 0.0036908677186175964,
+        "harm": 1.6709586247998232e-06,
+        "margin": 5.065244915646093e-06,
+        "render": 0.00033981879322197983,
+        "repair": 0.3944962105679224
+      },
+      "final_activity_pass": true,
+      "heldout_final": {
+        "anchor": 1.2388485188807863e-06,
+        "delta_abs": 0.002981423295452146,
+        "harm": 3.6074538840580317e-06,
+        "margin": 7.305645680515116e-06,
+        "render": 0.00023305799407324912,
+        "repair": 0.3186728684099762
+      },
+      "heldout_initial": {
+        "anchor": 0.0,
+        "delta_abs": 0.0,
+        "harm": 5.916883978329679e-07,
+        "margin": 2.0713082852972207e-06,
+        "render": 0.00023626197830850515,
+        "repair": 0.0
+      },
+      "heldout_pass": false,
+      "heldout_relative_render_reduction": 0.013561150457617625,
+      "initial": {
+        "anchor": 0.0,
+        "delta_abs": 0.0,
+        "harm": 2.468319380000139e-07,
+        "margin": 1.4025234195756513e-06,
+        "render": 0.0003545190358593686,
+        "repair": 0.0
+      },
+      "midpoint": {
+        "anchor": 5.621479033379728e-07,
+        "delta_abs": 0.003822778664037685,
+        "harm": 1.7542922066127176e-06,
+        "margin": 5.278528665727785e-06,
+        "render": 0.000339659910814305,
+        "repair": 0.40853232801327977
+      },
+      "midpoint_activity_pass": true,
+      "midpoint_relative_render_reduction": 0.04191347584212077,
+      "parameter_count": 2883,
+      "relative_render_reduction": 0.04146531257977387,
+      "safety_nonworse_vs_v3u": true
+    }
+  },
+  "decision": "V3Z_S1_SEALED_CONFIRMATION_FAIL_CLOSE_PROJECTED_HEAD_ROUTE",
+  "gate_type": "mechanism_direct_safety",
+  "locked_test_touched": false,
+  "metric_contract": "train128 output Delta-u with projected direct safety and disjoint heldout128 activity, nonnegative render, and v3u-reference safety gate",
+  "route_id": "haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713",
+  "run_id": "v3z_s1_projected128",
+  "stage": "v3z-S1-output-side-sealed-cross-sample-confirmation",
+  "state": "COMPLETED_GATE_FAIL",
+  "training_occurred": true
+}
