@@ -246,9 +246,145 @@ explanations instead.
 - Cloud retention/deletion policy: retain raw state through the terminal v4a decision and one subsequent verification window; delete only after compact evidence is synced and the decision card records deletion approval.
 - Compact GitHub evidence: only paths, hashes, counts, schema version, aggregate summaries, and typed closeout are committed; no state, raw per-image table, or gradient tensor enters Git.
 
+## A0D/A0P Amendment
+
+This amendment was frozen after the A0R gate passed. It is the only authority
+for A0D/A0P method mathematics, windows, endpoints, bootstrap, and typed
+triggers. It does not alter the A0R numerical contract or authorize A0M, A1,
+v4b, v4c, canary, locked test, promotion, or checkpoint selection.
+
+### A0R Prerequisite
+
+- Canonical state source: A0R `r1` only, with every `pre` state from epochs
+  9-16. `r2` is a reconstruction control and cannot select a method, window,
+  parameter, or threshold.
+- Required typed tuple: `state=COMPLETED_GATE_PASS`,
+  `decision=V4A_A0R_REPRODUCTION_PASS_AUTHORIZE_A0D_AND_A0P`, and
+  `authorizes=A0D_AND_A0P_ONLY`.
+- Required numerical facts: no-op exact; all historical/R1, historical/R2,
+  and R1/R2 aggregate and history discrepancies are zero under tolerance
+  `1e-9`; each replicate has 515 states, 512 projection rows, and 1,280
+  per-image rows.
+- `D_ref` and `D_rep` remain paired frozen evaluation environments inside every
+  image cluster. They are not update-method levels and cannot be averaged as
+  independent evidence.
+
+### A0D Contract
+
+- Population: report A0R `r1` final rows separately for `update128` and
+  `heldout128`, with both frozen operators and no exclusions or substitutions.
+- Per image/operator quantities, using the canonical rendered MSE `e`, are
+  `H_inherited=max(e_old_250-e_old_125,0)`,
+  `H_total=max(e_new_250-e_old_125,0)`,
+  `H_intervention=H_total-H_inherited`, and
+  `H_predecessor_positive=max(e_new_250-e_old_250,0)`. The last quantity must
+  never be relabeled as total intervention harm.
+- For each operator and split, report mean, median, p95, CVaR10, PSNR mean and
+  p05, severe count (`delta_psnr <= -0.2 dB`), hard count
+  (`delta_psnr <= -0.5 dB`), and burden divided by support fraction. A
+  zero-support row is retained and marks the normalized-burden field invalid.
+- Freeze quartile groups from A0R initial pre-intervention values only, using
+  linear 25/50/75 percentiles and name-order tie breaking, for filename haze
+  parameters, old-step energy, support fraction, inherited harm, and the old
+  `.25` pre-clamp fraction. Pre-clamp fraction is the fraction of the old
+  `.25` tensor outside `[0,1]` before the frozen clamp. No target or candidate
+  outcome may define a group.
+- Every group/tail report retains its planned denominator, missing/nonfinite
+  count, and zero/tie rule. A0D is descriptive: only schema, hash, row
+  completeness, and finite-value checks can pass or fail; it cannot rank or
+  select an A0P method/window/state.
+
+### A0P Population And Common Quantities
+
+- A0P uses all 256 retained A0R `r1` pre-update states from epochs 9-16. Each
+  state restores the exact repair-head, AdamW, RNG, update index, and source
+  manifest hash before every factor cell.
+- Every state evaluates the complete Cartesian design of three methods and
+  three windows. Each post-step state is rendered against all heldout128 images
+  under both `D_ref` and `D_rep`; that heldout bank cannot participate in
+  proposal construction, projection, backtracking, or stopping.
+- Let `g` be the rendered `.25` MSE gradient, and let
+  `c_anchor`, `c_harm`, `c_margin`, and `c_cvar` be the four v3z constraint
+  gradients, in that order, on the assigned construction window. Gradients and
+  active-set calculations use float64. The original v3z source SHA and all
+  state/source manifests must match before a cell is eligible.
+- AdamW is fixed to learning rate `5e-4`, weight decay `1e-5`,
+  betas `(0.9,0.999)`, epsilon `1e-8`, `amsgrad=false`, and clip norm `0.1`.
+  Its restored moments and step counter are part of the state identity.
+
+### A0P Method Factor
+
+1. `historical_sequential_gradient`: call the immutable v3z
+   `projected_grad` implementation as numerical authority, with the four
+   constraints in the recorded order, clip to `0.1`, and take one cloned AdamW
+   step.
+2. `exact_gradient_intersection`: solve
+   `argmin_d 0.5*||d-g||^2` subject to `c_k^T d >= 0` for all four constraints.
+   Enumerate all 16 active sets, normalize nonzero rows, use SVD pseudoinverse
+   `rcond=1e-12`, require primal and dual residuals `<= 1e-10`, and break equal
+   objective values by lexicographic active-set tuple. Clip the result to `0.1`
+   and take the same cloned AdamW step. An absent feasible active-set solution,
+   nonfinite value, or failed residual is an invalid cell.
+3. `actual_proposal_projection_with_backtracking`: form the actual AdamW
+   displacement `p0=AdamW(theta,clip_0.1(g))-theta`, including restored moments,
+   bias correction, and decoupled decay. Solve
+   `argmin_p 0.5*||p-p0||^2` subject to `c_k^T p <= 0` with the same active-set
+   solver. Test `beta` in descending order from
+   `{1, 2^-1, ..., 2^-10}` using full post-clamp construction-window renders.
+   Accept the first beta for which every rendered MSE/anchor/harm/margin/CVaR
+   quantity `R_j` satisfies
+   `R_j(post) <= R_j(pre) + 2*(1e-12 + 1e-12*max(abs(R_j(pre)),abs(R_j(post))))`.
+   If none passes, record exact zero displacement and `backtracking_null`; it
+   remains an analyzed cell, not a dropped state.
+
+### A0P Window Factor
+
+- `fixed4`: the exact recorded historical state window.
+- `shuffled16`: rank all update128 names by SHA-256 of
+  `shuffled16|state_sha256|name` and take the lowest 16.
+- `prestratified32`: compute the initial inherited-harm ratio per image as the
+  worst-operator `H_inherited/max(old_125_mse,1e-30)`, sort by `(ratio,name)`,
+  form eight consecutive strata of 16, then choose four per stratum by
+  SHA-256 rank `prestratified32|state_sha256|stratum|name`.
+- Materialize and hash every assignment before the first shadow outcome is
+  evaluated. A missing name, overlap error, or wrong cardinality fails the
+  affected cell and the complete-family gate.
+
+### A0P Endpoints, Bootstrap, And Trigger
+
+- Store actual parameter displacement, each `c_k^T p`, KKT residual, active
+  set, displacement norm, beta, and full heldout render metrics. The post-step
+  safety endpoints are anchor, harm, margin, CVaR25, CVaR10, severe/hard
+  counts, and rendered MSE; utility endpoints are mean and p05 PSNR.
+- Use exactly 1,000 paired two-way bootstrap replicates with
+  `numpy.random.Generator(numpy.random.PCG64(3407))`: resample 256 state IDs
+  and heldout128 image IDs independently with replacement while retaining both
+  paired operators and all nine cells. Build simultaneous 95% max-statistic
+  bounds over all cell effects, both non-historical versus historical contrasts,
+  and method-by-window difference-in-differences. Do not bootstrap cells
+  separately and combine their intervals.
+- Utility non-inferiority is fixed at `-0.005 dB`. Safety is smaller-is-better;
+  utility is larger-is-better. Unrounded float64 comparisons govern ties.
+- A proposal/window is positive only if the complete family is present, every
+  solver is valid, simultaneous safety UCBs are within the frozen numerical
+  tolerance both absolutely and versus historical for both operators, at least
+  one harm or CVaR25 UCB is strictly lower than minus that tolerance, and
+  simultaneous worst-operator mean-PSNR LCBs are at least `-0.005 dB` both
+  absolutely and versus historical.
+- Multiple positive proposal windows are ordered by lowest worst safety UCB,
+  then `fixed4`, `shuffled16`, `prestratified32`. Their only typed outcome is
+  `A0P_ACTUAL_PROPOSAL_POSITIVE_R3_HANDOFF`. No positive proposal produces an
+  automatic A0M authorization. If no nonhistorical method is positive, emit
+  `A0P_NO_LOCAL_CORRECTION_R3_HANDOFF`. Exact-gradient-only positivity,
+  interaction reversal, incomplete family, or numerical failure produces
+  `A0P_INCONCLUSIVE_AMENDMENT_REQUIRED`.
+- Any missing, unpaired, infeasible, nonfinite, hash-mismatched, or
+  unverifiable cell is `FAIL_CLOSED`; no fallback may drop cells, replace actual
+  renders, or alter method/window definitions after outcomes exist.
+
 ## Decision
 
-- Decision label: `V4A_A0R_PLANNED_AWAITING_STATIC_AND_DYNAMIC_PREFLIGHT`.
+- Decision label: `V4A_A0R_PASS_A0DP_AMENDMENT_FROZEN_AWAITING_R2_IMPLEMENTATION`.
 - Image/global metric reason: historical global utility/safety disagreement needs exact per-image reconstruction before any redefinition or new model claim.
 - Mechanism reason: actual AdamW displacement and projection-order effects are currently unobserved.
 - Preservation or regression reason: low-haze and tail safety remain unresolved; the old `.125` anchor is retained without relaxation.
@@ -258,7 +394,9 @@ explanations instead.
 - Group/split/seed uncertainty and interaction reason: historical fixed slices and fixed4 windows are diagnostic; A0P pairs states/windows and retains the update-method interaction.
 - Evidence role and independence reason: every v4a result is engineering/debug or development evidence; no candidate confirmation is claimed.
 - Cost/deployability reason: v4a adds cloud diagnostic storage only and has no deployable inference artifact.
-- What this decides next: only the written A0D/A0P branches after numerical reconstruction, then A0M or A1F according to the adaptive table.
+- What this decides next: implement and statically validate the amended A0D/A0P
+  tools only. Cloud preflight and launch require their own dynamic authorization;
+  an A0P closeout can emit only a new R3 handoff.
 - Typed closeout path: `RUN_ROOT/a0r-run-id/v4a_a0r_closeout.json` staged as compact evidence after review.
 - `PASS` authorizes: `A0D_AND_A0P_ONLY`.
 - `INCONCLUSIVE` authorizes: `NO_PROMOTION; WRITE_R3_REVIEWED_AMENDMENT_ONLY`.

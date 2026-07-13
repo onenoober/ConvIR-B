@@ -1,0 +1,54 @@
+{
+  "authorizes": "A0D_AND_A0P_ONLY",
+  "canary_touched": false,
+  "contract_id": "cdcd70988b32984fcd1adfb567da60bf3a05a331e5da0a6e4604cf72ba16c6c9",
+  "decision": "V4A_A0R_REPRODUCTION_PASS_AUTHORIZE_A0D_AND_A0P",
+  "evidence_role": "engineering_debug",
+  "gate_type": "numerical_equivalence",
+  "locked_test_touched": false,
+  "metric_contract": "2026-07-14 v4a card A0R gate",
+  "reason": "two reconstructed trajectories, original observable aggregates, no-op fields, and retained-state counts were compared under the frozen numerical contract",
+  "route_id": "haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714",
+  "run_id": "v4a_a0r_reconstruction",
+  "stage": "v4a-A0R-instrumented-reconstruction",
+  "state": "COMPLETED_GATE_PASS",
+  "summary": {
+    "contract_max_abs": {
+      "historical_r1": 0.0,
+      "historical_r1_key": "cells.output_safety_curriculum.final.anchor",
+      "historical_r2": 0.0,
+      "historical_r2_key": "cells.output_safety_curriculum.final.anchor",
+      "r1_r2": 0.0,
+      "r1_r2_key": "cells.output_safety_curriculum.final.anchor"
+    },
+    "evidence_role": "engineering_debug",
+    "historical_closeout": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713/s1_projected128/v3z_s1_projected128_closeout.json",
+    "historical_history": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713/s1_projected128/v3z_s1_projected128_history.csv",
+    "history_max_abs": {
+      "historical_r1": 0.0,
+      "historical_r2": 0.0,
+      "r1_r2": 0.0
+    },
+    "noop_exact": true,
+    "reproduction_pass": true,
+    "route_id": "haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714",
+    "stage": "v4a-A0R-instrumented-reconstruction",
+    "tolerance": 1e-09,
+    "trace_counts": [
+      {
+        "per_image_rows": 1280,
+        "projection_trace_rows": 512,
+        "replicate": "r1",
+        "state_count": 515,
+        "trace_sha256": "370f3f46b949391a8200c50b893561d78608adfef3c59f9ba2f76dd84a155780"
+      },
+      {
+        "per_image_rows": 1280,
+        "projection_trace_rows": 512,
+        "replicate": "r2",
+        "state_count": 515,
+        "trace_sha256": "060e0d4cf83b3db9c11120dd5c8d5f864bd1d6d8c86f85dcc45fde5cd98a4541"
+      }
+    ]
+  }
+}
