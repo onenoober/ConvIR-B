@@ -138,7 +138,7 @@ def run_projected(args, v3s, legacy, frozen, names, folds, device, output_dir):
     heldout_pass = (heldout_final["delta_abs"] >= args.activity_delta_abs and heldout_reduction >= 0.0
                     and all(heldout_final[key] <= V3W.V3U_FINAL_SAFETY[key] for key in V3W.V3U_FINAL_SAFETY))
     decision = "V3Y_S1_CROSS_SAMPLE_SAFETY_PASS_AUTHORIZE_SEALED_INTERNAL_CONFIRMATION_ONLY" if midpoint_pass and final_pass and safety_pass and heldout_pass else "V3Y_S1_CROSS_SAMPLE_SAFETY_FAIL_STOP"
-    closeout = {"route_id": ROUTE_ID, "run_id": args.run_tag, "stage": "v3x-S1-projected-direct-safety",
+    closeout = {"route_id": ROUTE_ID, "run_id": args.run_tag, "stage": "v3y-S1-output-side-cross-sample-direct-safety",
                 "state": "COMPLETED_GATE_PASS" if decision.startswith("V3Y_S1_CROSS_SAMPLE_SAFETY_PASS") else "COMPLETED_GATE_FAIL",
                 "gate_type": "mechanism_direct_safety", "decision": decision,
                 "authorizes": "sealed internal safety confirmation only" if decision.endswith("ONLY") else "none; cross-sample safety contract stopped",
