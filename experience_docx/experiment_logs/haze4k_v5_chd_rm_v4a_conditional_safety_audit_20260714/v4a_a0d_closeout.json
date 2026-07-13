@@ -1,0 +1,51 @@
+{
+  "a0r_closeout_sha256": "4d5e220ef7352b7476095ddb9b8294d7b781864d447e9db4f5e52447dd5c836f",
+  "a0r_final_state_sha256": "ed0832f220996af3fd8e617b7d04d643dc6ca052a3603adee99d59e78fd1e125",
+  "authorizes": "A0P_INTERPRETATION_ONLY",
+  "canary_touched": false,
+  "candidate_selected": false,
+  "contract_id": "2d44d1a822c8624fc1c8266533a92320d7ed763de406e99d4113f86cd115b207",
+  "decision": "V4A_A0D_DESCRIPTIVE_COMPLETE_AUTHORIZE_A0P_INTERPRETATION_ONLY",
+  "evidence_role": "development_screening",
+  "group_edges": {
+    "H_inherited": [
+      0.0,
+      0.0,
+      2.964952727779746e-09
+    ],
+    "haze_param_1": [
+      0.65,
+      0.78,
+      0.89
+    ],
+    "haze_param_2": [
+      0.9475,
+      1.26,
+      1.64
+    ],
+    "old_preclamp_fraction": [
+      2.0833333564951317e-06,
+      7.70833357819356e-05,
+      0.0005385416588978842
+    ],
+    "old_step_l2": [
+      0.0017203583556693047,
+      0.0027458284748718143,
+      0.0034386549377813935
+    ],
+    "support_fraction": [
+      0.15981901437044144,
+      0.3742627501487732,
+      0.5664374828338623
+    ]
+  },
+  "locked_test_touched": false,
+  "metric_contract": "v4a amended A0D descriptive risk decomposition",
+  "raw_rows_cloud_only": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/a0d_r2/v4a_a0d_a0d_rows_cloud_only.csv",
+  "route_id": "haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714",
+  "row_count": 512,
+  "stage": "v4a-A0D-descriptive-risk-decomposition",
+  "state": "COMPLETED_GATE_PASS",
+  "summary": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/a0d_r2/v4a_a0d_group_tail_summary.csv",
+  "summary_count": 100
+}

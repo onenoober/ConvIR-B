@@ -37,3 +37,13 @@ After an R3 review, the card now freezes the A0D/A0P state, method, window,
 actual-render, bootstrap, and trigger contract. A0D/A0P are not yet implemented
 or launched. They remain development-only diagnostics; no result can authorize
 A0M, A1, v4b, v4c, canary, or locked test without a new R3 decision.
+
+A0D corrected run `a0d_r2` completed its descriptive gate with 512 finite
+image/operator rows and 100 compact group/tail summaries. Its typed closeout is
+`COMPLETED_GATE_PASS` with decision
+`V4A_A0D_DESCRIPTIVE_COMPLETE_AUTHORIZE_A0P_INTERPRETATION_ONLY`; it selected
+no candidate and did not touch canary or locked test. Its raw rows remain at
+`RUN_ROOT/a0d_r2/v4a_a0d_a0d_rows_cloud_only.csv`; only the closeout and group
+summary are committed. The earlier `a0d_r1` output is a preserved command
+failure caused by precreating an output path the frozen source requires to be
+new; it is not scientific evidence.
