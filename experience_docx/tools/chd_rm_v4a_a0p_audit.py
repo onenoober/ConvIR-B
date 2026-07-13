@@ -246,7 +246,7 @@ def load_cell(
     models = SOURCE.V3W.import_v3w_models()
     first = SOURCE.V3W.frozen_output_sample(args, v3s, legacy, frozen, names[0], folds[names[0]], device)
     cells = SOURCE.V3W.build_cells(models, first, args, device)
-    label, (kind, objective, model) = next(iter(cells.items()))
+    _, (kind, objective, model) = next(iter(cells.items()))
     if kind != "output" or objective != "safety_curriculum":
         raise RuntimeError("A0P did not reconstruct the frozen output safety cell")
     model.load_state_dict(payload["model_state"], strict=True)
@@ -257,7 +257,7 @@ def load_cell(
     if not parameters:
         raise RuntimeError("A0P restored no trainable parameters")
     restore_rng(payload)
-    return label, model, optimizer, parameters
+    return kind, model, optimizer, parameters
 
 
 def construction_terms(
