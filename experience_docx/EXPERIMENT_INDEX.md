@@ -137,10 +137,10 @@ weights, bounds, gates, sample scope, or safety thresholds; policy, canary, and
 locked test remain blocked.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
-`experience_docx/experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3p-canonical-signed-gain.md`,
-`experience_docx/experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3q-active-signed-value.md`,
-and their corresponding compact evidence directories for current CHD-RM status;
-the v3o card remains the authority for its historical fail-stop.
+`experience_docx/experiment_cards/2026-07-13-haze4k-v5-chd-rm-v3z-sealed-confirmation.md`,
+and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713/`
+for current CHD-RM status. Earlier route cards and closeouts remain the authority
+for their own historical decisions.
 
 ## Official Architecture Anchor
 
@@ -355,6 +355,8 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v3v_safety_curriculum_activation_20260713/` | compact | v3v exact no-op and render warmup passed, but abrupt full-weight anchor/margin/harm/CVaR made final rendered MSE `0.04228%` worse despite non-worse safety diagnostics. This schedule is stopped; only a gradual-ramp diagnostic is authorized. |
 | `experiment_logs/haze4k_v5_chd_rm_v3w_gradual_safety_ramp_20260713/` | compact | v3w exact no-op and render warmup passed, but linear `1/8` to full safety-weight ramp made final rendered MSE `0.05676%` worse despite non-worse safety diagnostics. Fixed safety-weight schedule search is stopped; only a materially different direct low-haze-safety mechanism may be designed. |
 | `experiment_logs/haze4k_v5_chd_rm_v3x_projected_safety_constraint_20260713/` | compact | v3x exact no-op passed, then per-update projection against anchor/harm/margin/CVaR retained fixed32 activity and `1.69283%` rendered-MSE reduction while meeting v3u safety references. It authorizes only cross-sample low-haze-safety contract design. |
+| `experiment_logs/haze4k_v5_chd_rm_v3y_cross_sample_safety_20260713/` | compact | v3y fixed train32/heldout32 cross-sample confirmation passed activity, positive heldout rendered-MSE reduction, and all fixed v3u safety references. It authorized only the larger sealed internal confirmation. |
+| `experiment_logs/haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713/` | compact | v3z terminal train128/heldout128 confirmation retained train activity and positive heldout rendered-MSE reduction, but heldout anchor and harm exceeded the fixed references. The frozen projected-head route is closed with no further tuning, policy, canary, candidate, or locked-test authorization. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
@@ -479,11 +481,16 @@ The active conclusion is conservative:
 - CHD-RM v3r established that changing residual direction, rather than scale or
   RGB channel scale, has substantial privileged ceiling. It is not a deployable
   result and does not authorize post-hoc scoring or policy replay.
-- CHD-RM v3s exact no-op was structurally sound, but its first low-capacity
-  output-side `Delta u` form with anchor/harm/CVaR loss stayed below the
-  activity gate on a fixed 32-image scout. Do not resume, tune, or widen this
-  exact representation/loss contract; diagnose zero-lock versus missing context
-  in a fresh route before any new learned-operator training.
+- CHD-RM v3s-v3z resolved the direction-repair sequence. v3s/v3t showed that
+  the regularized rendered form stayed inactive; v3u identified the minimal-
+  repair penalty as sufficient for zero lock; v3v/v3w stopped abrupt and linear
+  fixed safety-weight schedules; v3x established a locally feasible projected
+  update; and v3y passed the first disjoint cross-sample check. Terminal v3z
+  then failed the sealed train128/heldout128 safety gate because heldout anchor
+  and harm exceeded fixed references despite positive rendered-MSE reduction.
+  The frozen projected-head route is closed. Do not tune its weights, bounds,
+  gates, sample scope, or safety thresholds; policy, canary, candidate training,
+  and locked test remain blocked.
 
 ## Artifact Boundary
 
