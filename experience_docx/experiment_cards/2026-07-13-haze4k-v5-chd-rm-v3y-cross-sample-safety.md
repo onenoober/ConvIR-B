@@ -1,6 +1,6 @@
 # Haze4K v5 CHD-RM v3y Cross-Sample Safety Contract
 
-Status: `PLANNED`.
+Status: `V3Y_S1_CROSS_SAMPLE_SAFETY_PASS_AUTHORIZE_SEALED_INTERNAL_CONFIRMATION_ONLY`.
 
 v3x established fixed32 local feasibility for projected direct safety but did not
 test whether safety and residual activity transfer beyond the images used for
@@ -20,3 +20,8 @@ training activity/safety at the v3x gate plus held-out activity, nonnegative
 rendered-MSE reduction, and anchor/harm/margin no worse than the fixed v3u
 references. Pass authorizes only a larger sealed internal safety confirmation;
 policy, canary, candidate training, deployment, and locked test are forbidden.
+
+S0-r1 passed exact no-op. S1-r1 passed on both scopes: train32 rendered-MSE
+reduction `1.69283%`, heldout32 reduction `2.97251%`, heldout `|Delta u|`
+`0.00189638`, and all fixed v3u safety references met. This authorizes only a
+larger sealed internal confirmation.
