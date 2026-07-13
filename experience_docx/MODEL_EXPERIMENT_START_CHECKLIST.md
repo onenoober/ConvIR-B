@@ -1,6 +1,6 @@
 # Model Experiment Start Checklist
 
-Date: 2026-07-12
+Date: 2026-07-13
 
 Status: one-time setup checklist for a new route or a changed route contract.
 
@@ -33,12 +33,18 @@ Record in the route card:
   current cloud paths;
 - the GitHub `main` commit supplying current process rules;
 - route type: new route, continuation, rescue, ablation, reproducibility audit,
-  policy/replay, or evidence sync;
+  `policy_replay`, or evidence sync;
 - source branch and commit, route branch, parent rationale, and comparison
   baseline;
-- forbidden continuations, including disallowed selector probes, budget/scope
-  expansion, canary expansion, and locked-test access;
-- the single scientific question and the earliest result that can answer it.
+- forbidden continuations and evidence reuse, including disallowed selector
+  probes, budget/scope expansion, canary expansion, and locked-test access;
+- the primary estimand and earliest result that can answer it, including
+  population, analysis unit, contrast/reference, outcome, and aggregation;
+- the preferred mechanism, competing hypotheses, and cheapest observation that
+  distinguishes them;
+- design type token: `paired_ablation`, `full_factorial`,
+  `fractional_factorial`, `feasibility_oracle`, `screening_confirmation`,
+  `adaptive`, or `hybrid: <rationale>`.
 
 New Haze4K model-structure routes must start from the immutable
 `github/codex/haze4k-official-arch-anchor`. Other route types use the parent
@@ -63,8 +69,31 @@ Freeze and verify the facts that should not change between stage launches:
 - exact baseline and matched sample/crop/split view;
 - primary metric, direction, comparison family, analysis unit, threshold source,
   and `PASS`/`INCONCLUSIVE`/`FAIL` meanings;
+- factor levels, required main effects/interactions, and alias assumptions when
+  the design is factorial;
+- data-role ledger using exact `engineering_debug`, `development_screening`,
+  `confirmation`, and `sealed_final` tokens;
+- paired operator and seed/fold policy, natural grouping unit, required grouped
+  resampling, and multiplicity treatment;
+- preregistered adaptive branches, their triggers, budgets, and evidence-reuse
+  limits;
 - scientific, preservation, cost, and locked-test gates;
-- fixed budget, seed/fold policy, and the selected execution profile.
+- fixed budget, seed/fold policy, and the selected decision profile;
+- state-retention contract for any learned diagnostic, selector, adapter, or
+  model whose later causal or trajectory analysis may need reconstruction.
+
+From a freshly fetched GitHub `main` rules worktree, run the tracked static
+validator against the filled route card:
+
+```text
+python3 experience_docx/tools/validate_experiment_card.py <route-card-path>
+```
+
+It must print `ROUTE_CARD_CONTRACT_OK` with the card SHA-256 before the route is
+marked `PLANNED`. The validator checks contract completeness and exact machine
+tokens; it does not judge whether the hypothesis, estimand, threshold, or design
+is scientifically correct. That judgment remains an R3 review under
+`MODEL_AGENT_COST_ROUTING_PROTOCOL.md`.
 
 Formal gates must follow the canonical Gate Policy in
 `EXPERIMENT_GOVERNANCE_PROTOCOL.md`. A threshold derived from the formal result
@@ -85,6 +114,9 @@ any of these change:
 - checkpoint, teacher, cache, or expert asset identity;
 - baseline/matched-view contract;
 - gate threshold source, analysis unit, or decision meaning;
+- factor design, alias assumption, data role, adaptive branch, or sealed-use
+  contract;
+- required state identity or retention contract;
 - dependency or environment assumption that can affect the result.
 
 Do not rerun static checks merely because another stage is launching with the
@@ -108,8 +140,9 @@ them. Raw outputs and large per-sample tables remain on cloud.
 
 Create only:
 
-- one route card containing identity, hypothesis, static contract, gates, and
-  authorization rules;
+- one route card containing identity, competing hypotheses, estimand, design,
+  data roles, static contract, gates, adaptive branches, state-retention
+  contract, and authorization rules;
 - one durable stage runner on the route branch;
 - one cloud `status.txt` and one typed `<stage>_closeout.json` per executed stage;
 - one evidence README and compact decision summaries at closeout.
@@ -135,32 +168,43 @@ RUN_ROOT    = logs, status, raw tables, checkpoints, and outputs outside Git
 EVID_STAGE  = compact evidence staged in the repository at closeout
 ```
 
-## 5. Select The Smallest Execution Profile
+## 5. Select The Smallest Decision Design
 
-Choose one profile in the route card. Do not add stages just because an older
-route used them.
+Choose the smallest profile, or a justified composition, that identifies the
+estimand. Do not add stages because an older route used them and do not force a
+linear stage ladder when a factorial or adaptive design is more informative.
 
-| Profile | Default stages |
+| Profile | Default evidence sequence |
 | --- | --- |
-| audit/evaluation | static contract -> cloud smoke -> formal evaluation |
-| training | static contract -> cloud smoke -> short scout -> hard gate -> formal decision budget |
-| policy/replay | integrity smoke -> out-of-fold formal replay -> sealed confirmation only if authorized |
+| `audit_evaluation` | static contract -> cloud smoke -> formal evaluation |
+| `feasibility_oracle` | integrity check -> privileged upper-bound analysis -> stop or authorize learnability work |
+| `paired_single_intervention_training` | static contract -> cloud smoke -> matched scout/hard gate -> independent formal decision budget |
+| `factorial_screening` | integrity/smoke -> paired factor cells -> interaction-aware selection -> independent frozen-candidate confirmation |
+| `adaptive_decision` | common preflight -> preregistered branch trigger -> only the authorized branch -> independent confirmation when promotion is claimed |
+| `policy_replay` | integrity smoke -> out-of-fold development/replay -> freeze full operator/policy -> sealed confirmation only if authorized |
 
 The route card may omit a stage when it cannot answer the route question, or
 add one specialized stage when its decision value is written in advance.
-Locked test is never a debugging stage.
+Screening evidence selects candidates but does not prove promotion. Locked test
+is never a debugging, threshold-fitting, branch-selection, or repair stage.
 
 ## 6. Ready-To-Launch Decision
 
 Mark the route `PLANNED` only when all of the following are explicit:
 
 - source commit and cloud asset identities are reconstructable;
-- the route question, forbidden flows, profile, and previous-stage authorization
-  rule are written;
+- the estimand, competing hypotheses, design, forbidden flows/evidence reuse,
+  profile, and previous-stage authorization rule are written;
 - the metric/gate contract compares the same data view;
+- data roles, paired/grouped analysis, multiplicity, adaptive branches, and
+  sealed-use policy are explicit where applicable;
+- learned-state retention is sufficient to reconstruct any later analysis the
+  route claims it can perform;
 - cloud code, run-output, evidence-stage, runner, status, and closeout paths are
   named;
-- the first stage is the cheapest stage that can resolve its current question.
+- the first stage is the cheapest stage that can resolve its current question;
+- the exact filled card passes `validate_experiment_card.py` from the recorded
+  GitHub rules commit with no unresolved placeholders;
 - the agent-routing plan identifies every applicable scope and any planned
   dispatcher handoff before its first substantive action.
 

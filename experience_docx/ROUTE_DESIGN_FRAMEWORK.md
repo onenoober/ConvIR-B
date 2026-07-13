@@ -1,19 +1,21 @@
 # Route Design Framework
 
-Date: 2026-06-10
+Date: 2026-07-13
 
 Status: framework for designing candidate model experiments.
 
 ## Route Selection
 
-Start by writing the route as a question, not as a preferred answer.
+Start by writing the route as a question, not as a preferred answer. The unit
+of design is one clear estimand, not necessarily one changed variable.
 
 Good form:
 
 ```text
-Does changing <one variable> improve <target metric family> because it fixes
-<observed failure mode>, without violating <preservation/cost/deployability
-constraint>?
+For <target population and analysis unit>, what is the effect of <intervention
+or factor contrast> relative to <reference>, on <target metric family>, and is
+that effect explained by <mechanism> without violating
+<preservation/cost/deployability constraint>?
 ```
 
 Bad form:
@@ -25,10 +27,87 @@ Try a stronger module and see if the score improves.
 ConvIR-B form for this repository:
 
 ```text
-Does changing <one variable> improve <target ConvIR-B failure group> under the
-same data and evaluation contract, while FLOPs, latency, memory, and
-strong-case regressions stay within the written limits?
+For <target ConvIR-B group>, what is the matched-contract effect of <candidate
+or factor contrast> relative to <anchor/direct predecessor>, including any
+predeclared interaction, while FLOPs, latency, memory, and strong-case
+regressions stay within the written limits?
 ```
+
+An estimand is incomplete unless it names the population, analysis unit,
+intervention or contrast, reference, outcome, and aggregation. A route may
+change several factors when their main effects and relevant interactions remain
+identifiable. A one-change ablation is a design option, not a universal rule.
+Label the estimand causal only when factor assignment, pairing/blocking,
+exclusions, and dependence support that interpretation; otherwise use
+associational or predictive language and state the identifying assumptions.
+
+## Competing Hypotheses
+
+Write at least one plausible alternative to the preferred mechanism before
+choosing the experiment. Include the null and the cheapest discriminating
+measurement. Typical alternatives include:
+
+- the apparent mechanism is inherited from the predecessor rather than added
+  by the intervention;
+- the signal exists but is not learnable from deployable inputs;
+- the signal is learnable, but the optimizer, sampling policy, representation,
+  or gate prevents it from being used;
+- an average gain is caused by a subgroup or budget imbalance;
+- a selector appears useful only because of leakage, calibration reuse, or an
+  easier proxy feature.
+
+Prefer an experiment whose outcomes separate these alternatives. A run that
+can only say "the combined system did not work" is usually too confounded to be
+the next expensive attempt.
+
+## Design Selection
+
+Choose the cheapest design that identifies the written estimand.
+
+| Condition | Preferred design | Required interpretation |
+| --- | --- | --- |
+| interactions are scientifically implausible and a single contrast answers the question | paired single-factor ablation | estimates only that contrast under the frozen context |
+| two or more factors may interact | full factorial when affordable; otherwise a justified fractional factorial | report main effects, predeclared interactions, alias structure, and assumptions |
+| many cheap candidates precede an expensive run | exploratory screening followed by an independently evaluated candidate | screening ranks candidates; it does not prove promotion |
+| later work depends on whether a useful action exists at all | privileged feasibility oracle before learnability or deployment work | oracle establishes attainable headroom, not deployability |
+| the next useful action depends on an observed intermediate result | preregistered adaptive decision tree | branch conditions, budgets, and evidence reuse are fixed before results |
+| a generalization claim concerns content, scene, degradation, or source groups | repeated grouped splits or leave-one-group-out, when supported by the data | report group, split, and seed variation; do not infer failure from one convenient split |
+
+Fractional designs are acceptable only when the route card identifies which
+effects are aliased and why the excluded interactions are negligible. If that
+assumption becomes doubtful, resolve the ambiguity with a targeted follow-up or
+fuller design before promotion.
+
+## Efficient Evidence Sequence
+
+Do not default to a linear train-longer sequence. Use only the stages needed by
+the current uncertainty:
+
+1. recover trustworthy state, identities, and a matched baseline;
+2. use a feasibility oracle or cheap diagnostic when it can rule out the route;
+3. screen mechanisms or interacting factors on development evidence;
+4. freeze the selected candidate and run independent confirmation;
+5. use sealed evidence once, only after model, operator, thresholds, and policy
+   are locked and no further selection will follow.
+
+Steps may be omitted when they cannot affect the decision. They must not be
+collapsed when doing so reuses the same evidence for discovery and proof.
+
+## Risk Decomposition
+
+When a candidate inherits an action, failure, or correction from a predecessor,
+separate inherited risk from intervention-added risk. Use the same anchor and
+analysis unit for both:
+
+```text
+inherited_harm          = harm(predecessor relative to anchor)
+candidate_total_harm    = harm(candidate relative to anchor)
+intervention_added_harm = candidate_total_harm - inherited_harm
+```
+
+Report total safety as well as the incremental contrast. Do not attribute an
+existing predecessor failure to the new intervention, and do not hide a harmful
+total system behind a favorable incremental contrast.
 
 ## Official Anchor Start Rule
 

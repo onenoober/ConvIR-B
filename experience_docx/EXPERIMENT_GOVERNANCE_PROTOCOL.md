@@ -1,6 +1,6 @@
 # Experiment Governance Protocol
 
-Date: 2026-07-12
+Date: 2026-07-13
 
 Status: generic protocol for model experiments.
 
@@ -10,7 +10,7 @@ Do not start an expensive experiment until the experiment card states:
 
 1. what failure or opportunity is being targeted;
 2. what mechanism is expected to help;
-3. what exact change will be made;
+3. what estimand, intervention, factors, and comparisons will be used;
 4. what evidence would prove the mechanism is active;
 5. what evidence would stop the route;
 6. which baseline and budget are the reference;
@@ -99,7 +99,7 @@ A candidate is worth a serious run only if it has:
 
 - a known target;
 - a cheap preflight or earlier diagnostic inside the project;
-- one primary variable whenever possible;
+- one clear estimand and a design that can identify it;
 - an earliest decisive gate;
 - matched-budget comparison;
 - mechanism metrics;
@@ -115,20 +115,39 @@ declared FLOP, latency, memory, data, metric, and training-budget limits. Do not
 use "best effect" as the objective unless the budget constraints are written
 next to it.
 
-## Primary Variable Rule
+## Causal Identification And Design Rule
 
-The first serious run for a route should change one primary variable:
+The first serious run must answer one clear estimand. Before launch, name its
+population, analysis unit, intervention or factor contrast, reference, outcome,
+and aggregation. Also name the preferred mechanism, at least one plausible
+alternative, and the observation that separates them.
 
-- one architecture insertion;
-- one loss definition;
-- one training schedule;
-- one data/preprocessing change;
-- one selector/gating mechanism;
-- one adapter or head;
-- one inference-time policy.
+Causal wording is permitted only for an assigned intervention under a design
+whose pairing, blocking/randomization, exclusions, and dependence structure
+identify that contrast. Otherwise declare the identifying assumptions,
+sensitivity limits, and associational or predictive claim. Define formal
+subgroups from pre-intervention or independently frozen information; candidate
+outcomes may create exploratory subgroups only.
 
-A combined route is allowed only when the interaction itself is the primary
-variable and the experiment card says how that interaction will be judged.
+Use a paired single-factor ablation only when interactions with the frozen
+context are scientifically implausible or irrelevant to the claim. When
+optimizer, schedule, sampling, representation, loss, selector, executor, or
+other factors may interact, use a full factorial design when affordable or a
+justified fractional factorial design. A multi-factor run is valid only when:
+
+- factor levels, randomization or pairing, and the primary contrast are fixed;
+- required main effects and interactions are estimable;
+- a fractional design records its resolution, alias structure, and negligible-
+  interaction assumptions;
+- seeds, folds, data order, and evaluation operators are paired where possible;
+- the comparison family and multiplicity treatment are declared;
+- failed/missing cells and exclusions follow a predeclared policy and remain
+  visible in the evidence;
+- a combined winner is not used to claim individual-factor causality when the
+  design cannot identify those contributions.
+
+Sequential ablation is permitted only for low-interaction questions whose
+written contrast remains identifiable under the frozen context.
 
 ## Preflight Rule
 
@@ -148,6 +167,14 @@ Possible preflights:
 - shuffled feature, shuffled label, or permutation controls;
 - held-out group checks.
 
+When the downstream question is whether a useful correction, action, or
+selection target exists, use a privileged feasibility oracle before paying for
+learnability or deployment experiments. Ground truth or otherwise unavailable
+information may be used for this bound only when the result is labeled
+non-deployable and cannot enter the candidate's inference inputs. State whether
+the oracle respects the deployable action/cost constraints; otherwise treat it
+as a loose upper bound.
+
 Preflight can authorize a formal experiment. It does not prove the route works.
 
 ## Fair Comparison Rule
@@ -166,6 +193,10 @@ Write the fair contract before launch:
 - hardware or runtime assumptions;
 - resume policy;
 - random seed or seed policy.
+- experiment design, factor levels, and any alias structure;
+- data-role ledger for debugging, screening, confirmation, and sealed use;
+- paired operator, seed/fold, and grouped-resampling policy;
+- predeclared adaptive branches and evidence-reuse limits, when applicable.
 
 If a run changes budget, split, metric, data, or resume policy after launch, it
 must be relabeled. Do not compare it as a fair candidate unless the experiment
@@ -175,6 +206,10 @@ card already allowed that change.
 
 Predeclare the sample size behind each claim:
 
+- justify formal sample, group, split, and seed counts using the minimum
+  worthwhile effect/risk margin and a pre-result variance or precision target;
+- when the available dataset is fixed, report the attainable interval width or
+  smallest reliably detectable effect and limit the claim accordingly;
 - use the full available evaluation set when feasible;
 - otherwise define a scientifically adequate subset before looking at results;
 - use fixed small subsets only for smoke, debugging, or gate-only diagnostics;
@@ -182,6 +217,18 @@ Predeclare the sample size behind each claim:
   that subset is decisive;
 - label any subset-only result as diagnostic unless full-set evidence is not
   relevant to the claim.
+- for a generalization claim across natural groups, use repeated grouped splits,
+  leave-one-group-out, or another justified group-respecting design when the
+  number of groups permits it;
+- report uncertainty across both group splits and random seeds when either can
+  change the decision;
+- treat a single favorable or unfavorable group split as diagnostic unless the
+  claim is explicitly limited to that fixed deployment population.
+
+Do not use post-result power to rescue a decision. A claim of equivalence,
+preservation, or absence of a meaningful effect requires a predeclared
+equivalence/non-inferiority margin and an interval-based decision; failure to
+reject a zero-effect null is not evidence of equivalence.
 
 ## In-Flight Integrity Rule
 
@@ -195,6 +242,8 @@ Allowed actions:
 - stop at a predeclared gate;
 - resume with the same contract;
 - stop for infrastructure failure and document it.
+- take a preregistered adaptive branch whose trigger, budget, and allowed data
+  were frozen before the result.
 
 Disallowed without explicit approval:
 
@@ -203,6 +252,8 @@ Disallowed without explicit approval:
 - changing metrics after seeing results;
 - launching a smaller replacement and treating it as the same run;
 - moving the goalposts for success or failure.
+- inventing an adaptive branch after inspecting results or treating a selected
+  screening winner as independently confirmed.
 
 ## Gate Policy
 
@@ -218,10 +269,16 @@ Before a formal phase runs, each decision gate must state:
 
 - gate type, estimand, analysis unit, reference, and metric direction;
 - threshold or margin and its independent source;
+- uncertainty estimator, dependence/group structure, and sample-size or
+  precision basis;
 - applicable decision rules: structural gates use `PASS`/`FAIL`; numerical,
   scientific, and safety gates use `PASS`/`INCONCLUSIVE`/`FAIL`;
 - the scientific claim allowed by the result;
 - the exact next phase, if any, authorized by `PASS`.
+- whether the claim is exploratory or confirmatory and which data role supplies
+  the evidence;
+- for adaptive or multi-factor designs, the comparison family, interaction or
+  branch estimand, and selection-adjusted decision rule.
 
 A threshold without a defensible pre-result source is diagnostic only. Valid
 sources include an engineering tolerance, a high-precision numerical reference,
@@ -234,7 +291,7 @@ budget. Do not derive a new threshold from the formal result it will judge.
 | --- | --- | --- |
 | structural integrity | hashes, pairing, row/fold identity, coverage, forbidden data access | binary hard check |
 | numerical equivalence | two implementations of the same mathematical quantity | high-precision reference, predeclared `atol + rtol * scale`, and semantic stability |
-| scientific utility | lift, retention, coverage, mechanism value | minimum worthwhile effect plus grouped uncertainty interval |
+| scientific utility | lift, retention, coverage, mechanism value | minimum worthwhile effect plus group-respecting uncertainty over the relevant split/seed sources |
 | safety or promotion | severe failures, lower tail, cumulative harm, deployability | direct replay plus a predeclared maximum risk and one-sided upper confidence bound |
 
 The analysis unit must match the claim. In particular, block-level AUC, FPR,
@@ -259,26 +316,36 @@ old threshold and relabel the old result.
 
 ### Efficient Use
 
-- Use one primary scientific question per stage, with integrity and safety as
-  mandatory guards. Extra metrics are diagnostic and cannot authorize scope.
+- Use one primary estimand per decision gate, with integrity and safety as
+  mandatory guards. A stage may estimate multiple predeclared factorial terms;
+  extra unregistered metrics remain diagnostic and cannot authorize scope.
 - Smoke validates implementation and catches obvious failure. It must not be
   used to calibrate a formal maximum, threshold, or margin.
 - Declare the formal comparison family before running. When many candidates or
   metrics are inspected, use a worst-case family rule or an appropriate
   multiplicity-aware interval.
+- Pair seeds, folds, samples, and evaluation operators where possible; estimate
+  differences on the paired unit rather than comparing unrelated aggregates.
+- Separate exploratory screening from confirmatory inference. Candidate
+  selection, factor screening, threshold fitting, and policy fitting cannot
+  share the evidence used to claim independent confirmation unless a valid
+  selection-adjusted analysis was preregistered.
 - For numerical identity, compute from the same canonical values, use an
   independent high-precision implementation, and define a gray zone where sign
   or class labels must abstain.
 - Freeze selector, threshold, and executor in that order. Do not tune them
   together on the same held-out evidence.
 
+These roles are selected by the route design; they are not a mandatory linear
+ladder.
+
 | Gate role | Purpose |
 | --- | --- |
-| sanity gate | collapse check, finite losses, branch/loss activity, runtime health |
-| early trajectory gate | matched quality, speed, and first mechanism signal |
-| first hard gate | decide whether the route deserves more budget |
-| promotion gate | require quality, mechanism, and preservation to remain plausible |
-| final scout point | assign decision label and decide next work |
+| integrity/sanity | validate identities, implementation, finite behavior, and no-op/activity contracts |
+| information | decide whether another measurement or budget block can distinguish the competing hypotheses |
+| selection | choose a candidate, factor cell, or adaptive branch using `development_screening` evidence only |
+| independent confirmation | judge the frozen candidate on `confirmation` evidence under the written comparison family |
+| sealed final | make the single final decision on `sealed_final` evidence without further selection |
 
 Continue past weak global metrics only if mechanism metrics make the next
 budget block informative.
@@ -286,8 +353,51 @@ budget block informative.
 Select the route profile once with `MODEL_EXPERIMENT_START_CHECKLIST.md` and
 execute it with `MODEL_RUN_OPERATIONS_PROTOCOL.md`. Training may use successive
 halving, but epoch counts and thresholds must come from the route's matched
-baseline, noise, minimum worthwhile effect, and cost contract. Audit/evaluation
-and policy/replay routes must not inherit training epoch stages.
+baseline, noise, minimum worthwhile effect, and cost contract.
+`audit_evaluation` and `policy_replay` profiles must not inherit training epoch
+stages.
+
+### Evidence Roles And Confirmation
+
+Assign each sample, group, fold, or dataset an evidence role before inspecting
+the result used for a decision:
+
+| Machine token | Allowed use | Claim limit |
+| --- | --- | --- |
+| `engineering_debug` | implementation checks and failure repair | no scientific promotion |
+| `development_screening` | hypotheses, candidates, factors, thresholds, and branch selection | exploratory ranking only |
+| `confirmation` | frozen-candidate effect, mechanism, preservation, and cost inference | confirmatory claim under the written comparison family |
+| `sealed_final` | one final test after the complete model/operator/policy is frozen | final confirmation only; no subsequent selection |
+
+Use these exact tokens in route cards, runners, and typed closeouts. Display text
+may explain the role but must not invent a second machine value.
+
+Do not relabel development evidence as confirmation after seeing it. A screened
+candidate requires untouched or otherwise valid selection-adjusted evidence.
+When a separate confirmation set is infeasible, nested group-respecting
+resampling may support confirmation only if every selection, fitting, and
+threshold decision stays inside each outer training partition and outer
+outcomes remain untouched until scoring.
+Sealed evidence may be used only after architecture, weights, preprocessing,
+operator, selector, threshold, executor, fallback, and decision rule are fixed.
+After sealed use, its result may close or report the route, but cannot tune or
+reopen the same candidate contract.
+
+### Risk Attribution
+
+For interventions layered on a predecessor, predeclare a common anchor and
+report both total and incremental harm on the same analysis unit:
+
+```text
+inherited_harm          = harm(predecessor relative to anchor)
+candidate_total_harm    = harm(candidate relative to anchor)
+intervention_added_harm = candidate_total_harm - inherited_harm
+```
+
+Safety and promotion gates must still constrain total candidate harm. The
+incremental contrast identifies what the new intervention added; it must not
+assign inherited baseline failures to the intervention or excuse an unsafe
+combined system.
 
 ## Mechanism Metric Rule
 

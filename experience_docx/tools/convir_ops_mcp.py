@@ -18,7 +18,7 @@ from pathlib import Path
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "1.1.0"
+SERVER_VERSION = "1.1.1"
 REMOTE_HOST = "convir-4090"
 REMOTE_BASE = "/sda/home/wangyuxin/ConvIR-B"
 REMOTE_REPOS = f"{REMOTE_BASE}/repos"
@@ -236,7 +236,10 @@ def manifest_body(context, files=None):
             '  case "$name" in *.json|*.csv|*.md|*.txt) ;; *) continue ;; esac',
             '  case "$name" in *cloud_only*) continue ;; esac',
             '  size=$(wc -c < "$path")',
-            f'  if [ "$size" -le {MAX_EVIDENCE_BYTES} ]; then printf "%s\\t%s\\t%s\\n" "$name" "$size" "$(sha256sum "$path" | awk \"{{print \\\$1}}\")"; fi',
+            f'  if [ "$size" -le {MAX_EVIDENCE_BYTES} ]; then',
+            '    read -r digest _ < <(sha256sum "$path")',
+            '    printf "%s\\t%s\\t%s\\n" "$name" "$size" "$digest"',
+            '  fi',
             'done',
         ])
     else:
@@ -246,7 +249,8 @@ def manifest_body(context, files=None):
                 'test -f "$path"',
                 'size=$(wc -c < "$path")',
                 f'test "$size" -le {MAX_EVIDENCE_BYTES}',
-                f'printf "{name}\\t%s\\t%s\\n" "$size" "$(sha256sum \"$path\" | awk \"{{print \\\$1}}\")"',
+                'read -r digest _ < <(sha256sum "$path")',
+                f'printf "{name}\\t%s\\t%s\\n" "$size" "$digest"',
             ])
     lines.append("echo CONVIR_OPS_EVIDENCE_MANIFEST_OK")
     return "\n".join(lines)

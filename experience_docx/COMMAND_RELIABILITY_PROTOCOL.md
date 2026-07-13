@@ -1,6 +1,6 @@
 # Command Reliability Protocol
 
-Date: 2026-06-04
+Date: 2026-07-13
 
 Status: detailed archive for avoiding repeated invalid commands in this
 repository. For new work, read `COMMAND_RELIABILITY_QUICKSTART.md` first.
@@ -1014,3 +1014,93 @@ finally {
 Keep the explicit Codex `--cd` argument pointed at the intended repository.
 Changing only the wrapper process's current directory prevents the `cmd.exe`
 fallback without changing the child task's workspace.
+
+## 2026-07-13 Generated evidence-manifest awk positional expansion
+
+Observed while reading a terminal route's compact cloud evidence through
+`convir_evidence_manifest`. Filenames and sizes appeared and the wrapper printed
+success markers, but every SHA-256 field was empty and stderr repeated an
+unbound positional-parameter error. Treat this as `FAILED_COMMAND` for manifest
+integrity; do not use the partial listing as new scientific evidence.
+
+Invalid generated remote-body form:
+
+```bash
+sha256sum "$path" | awk "{print \\$1}"
+```
+
+Failure class:
+
+```text
+bash: line 11: $1: unbound variable
+```
+
+The Python-to-Bash generation boundary could leave two backslashes before
+`$1`. Bash consumed one as a literal backslash and expanded the remaining
+positional parameter under `set -u` before awk ran.
+
+Corrected form in `convir-ops` server `1.1.1`:
+
+```bash
+read -r digest _ < <(sha256sum "$path")
+printf '%s\t%s\t%s\n' "$name" "$size" "$digest"
+```
+
+Avoid shell-language positional fields inside generated command strings when a
+native shell read can parse the fixed output. A successful wrapper marker does
+not override malformed per-file records; manifest consumers must continue to
+require a 64-character lowercase hash for every accepted record.
+
+## 2026-07-13 PowerShell variable immediately before a colon
+
+Observed during a static whitespace audit. PowerShell parsed the colon after
+`$p` as part of the variable reference and rejected the command before any file
+was inspected.
+
+Invalid form:
+
+```powershell
+"TRAILING $p:$($_.LineNumber)"
+```
+
+Failure class:
+
+```text
+Variable reference is not valid. ':' was not followed by a valid variable name character.
+```
+
+Corrected form:
+
+```powershell
+"TRAILING ${p}:$($_.LineNumber)"
+```
+
+Use braces whenever interpolated PowerShell variable text is immediately
+followed by a colon or another character that can extend a variable token.
+
+## 2026-07-13 PowerShell double-quoted rg pattern consumed file paths
+
+Observed during a fixed-token audit. A double-quoted PowerShell regex ended
+with an escaped double quote, so the intended string terminator was consumed
+and `rg` received the later file paths as part of one malformed regex.
+
+Invalid form:
+
+```powershell
+rg -n "old-token|SERVER_VERSION = \"1\.1\.0\"" <files>
+```
+
+Failure class:
+
+```text
+rg: regex parse error: unrecognized escape sequence
+```
+
+Corrected form:
+
+```powershell
+rg -n -F -e 'old-token' -e 'SERVER_VERSION = "1.1.0"' <files>
+```
+
+For an exact deprecated-token audit, prefer separate fixed-string `-e`
+arguments. This avoids both regex escaping and PowerShell quote nesting.

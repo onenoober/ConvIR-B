@@ -1,8 +1,9 @@
 # Convir Operations MCP
 
-Date: 2026-07-12
+Date: 2026-07-13
 
-Status: optional local Codex tool entry for the persistent `convir-4090` host.
+Status: optional local Codex tool entry for the persistent `convir-4090` host;
+current tracked server version `1.1.1`.
 
 ## Purpose
 

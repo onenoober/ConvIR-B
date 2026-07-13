@@ -163,33 +163,13 @@ positive-ablation routes may exceed them, but cannot claim drop-in replacement.
 Select the route profile with `MODEL_EXPERIMENT_START_CHECKLIST.md`. For a
 training route, the route card defines its short scout, first hard gate, and
 formal decision budget from the matched baseline and the earliest decisive
-question. Audit/evaluation and policy/replay routes do not inherit training
-epoch stages.
+question. `audit_evaluation` and `policy_replay` profiles do not inherit
+training epoch stages.
 
 Use the same declared budget points for the baseline learning curve when
 training is part of the comparison. A candidate cannot be called faster unless
 it is compared with the matched baseline at the same epoch, step, or wall-clock
 budget.
-
-## Legacy CSD Gate Reference
-
-These values preserve the earlier CSD desnowing contract. They are not automatic
-defaults for Haze4K or other tasks. A new CSD route may adopt them only after the
-route card cites the matched baseline/noise source and confirms the same metric
-and analysis unit.
-
-| Gate | Continue only if all are true |
-| --- | --- |
-| smoke | finite forward/backward; no NaN/Inf loss; output shape equals baseline; peak memory fits GPU; eval runs on at least 8 images |
-| early scout | PSNR is within the card's independently sourced margin at the same budget, cost remains eligible, and no systematic artifact pattern appears |
-| first hard utility gate | matched quality or target-group gain meets the written minimum effect; preservation and capacity budgets pass |
-| promotion | matched quality, mechanism, preservation, uncertainty, and cost jointly support the written next phase |
-| final replacement | mean PSNR gain >= +0.10 dB and SSIM delta >= -0.001; FLOPs <= +5%; latency <= +10%; strong-case regression count <= 1% |
-| positive ablation | mechanism or target subgroup improves, but replacement gates are not met; label as ablation, not main baseline |
-
-Minimum meaningful final improvement for CSD desnowing is `+0.10 dB PSNR` with
-SSIM delta >= `-0.001`. Smaller gains can be retained only as
-diagnostic evidence if they explain a mechanism or rule out a route.
 
 ## Formal Decision Metrics
 

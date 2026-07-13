@@ -2,7 +2,7 @@
 
 Date: <YYYY-MM-DD>
 
-Status: <draft | preflight | authorized | running | stopped | completed>
+Status: <DRAFT | PLANNED | AUTHORIZED | RUNNING | STOPPED | COMPLETED>
 
 ## Scope
 
@@ -52,41 +52,6 @@ behavior or qualification itself is under audit.
 - Reference entrypoints that must remain stable:
 - Checkpoint/export/resume contract:
 
-## Optional Legacy CSD Reference
-
-Delete this block unless the route is a CSD desnowing route. These are historical
-CSD references, not defaults for Haze4K or another task. Fill unknown runtime
-values after downloading the checkpoint and before authorizing a route. Do not
-invent checkpoint hashes, sample counts, latency, memory, or budget points.
-
-| Field | Historical CSD reference or route requirement |
-| --- | --- |
-| Target baseline | ConvIR-B from official/repository pretrained checkpoint |
-| Baseline checkpoint runtime path | `<CKPT_ROOT>/desnowing/<CSD_CONVIR_B_CHECKPOINT>.pkl` |
-| Baseline checkpoint hash | `sha256:<fill after download>` |
-| Checkpoint source | root `README.md` pretrained model link |
-| Official ConvIR-B CSD result | 39.10 PSNR, 0.99 SSIM |
-| Official ConvIR-B model cost | 8.63M parameters, 71.22G FLOPs |
-| CSD evaluation command | `cd Image_desnowing && python main.py --data CSD --version base --save_image True --mode test --data_dir <DATA_ROOT>/CSD --test_model <CKPT>` |
-| CSD training command for matched curves | route-defined command and budget; do not inherit a fixed epoch ladder unless the card cites it |
-| Validation/test split | `CSD/test2000`; verify and record actual image count |
-| Evaluation batch size | 1 |
-| Training crop size | 256 random crop |
-| Training batch size | 8 unless hardware forces a written change |
-| Random seed policy | route-defined; cite matched predecessor/noise rationale before promotion |
-| Primary metric | PSNR |
-| Secondary metric | SSIM; add per-image PSNR delta, latency, or peak GPU memory only when a written gate needs it |
-| Minimum meaningful final gain | route-defined; legacy CSD replacement reference is `+0.10 dB` PSNR with SSIM delta >= `-0.001` |
-| Maximum FLOPs increase | `+5%` over ConvIR-B |
-| Maximum average latency increase | `+10%` over matched runtime ConvIR-B baseline when claiming drop-in replacement |
-| Maximum peak memory increase | `+10%` over matched runtime ConvIR-B baseline and must fit current GPU |
-| Strong-case regression threshold | route-defined; legacy CSD replacement final reference is <= 1% |
-| Worst-case regression threshold | route-defined; any historical `-0.20 dB` line requires a cited matching CSD contract |
-| Failure default | failed gate becomes diagnostic only; next step must target the failed mechanism, preservation, or cost cause |
-
-For SRRS, Snow100K, deraining, dehazing, motion deblurring, or Haze4K, remove
-this block and use the matched task contract in `CONVIR_B_EXECUTION_GUIDE.md`.
-
 ## Most Valuable Attempt
 
 - Why this is the highest-value next attempt:
@@ -102,14 +67,74 @@ this block and use the matched task contract in `CONVIR_B_EXECUTION_GUIDE.md`.
 
 - Observed failure:
 - Target mechanism:
-- Primary variable:
+- Null hypothesis:
+- Preferred causal hypothesis:
+- Competing hypothesis or confound:
+- Cheapest observation that separates them:
 
 Mechanism sentence:
 
 ```text
-If we change <X>, <metric family Y> should improve because <failure mode Z> is
-being targeted.
+For <population/unit>, <intervention or factor contrast> relative to <reference>
+should change <outcome> because <mechanism>; <discriminating result> would favor
+<competing explanation> instead.
 ```
+
+## Estimand And Risk Attribution
+
+- Target population:
+- Analysis unit and grouping unit:
+- Intervention or factor contrast:
+- Reference/direct predecessor:
+- Outcome, direction, and aggregation:
+- Claim type: <causal | associational | predictive>
+- Identification assumptions and sensitivity limits:
+- Minimum worthwhile effect or risk limit:
+- Equivalence/non-inferiority margin and independent source, if claimed:
+- Common safety anchor:
+- Inherited-harm estimand:
+- Candidate-total-harm estimand:
+- Intervention-added-harm estimand:
+
+## Design And Identifiability
+
+Allowed design tokens are `paired_ablation`, `full_factorial`,
+`fractional_factorial`, `feasibility_oracle`, `screening_confirmation`,
+`adaptive`, and `hybrid: <rationale>`.
+
+- Design type: <design token>
+- Why this is the cheapest design that identifies the estimand:
+- Experimental unit and randomization/pairing:
+- Blocking, exclusion, failure, and missing-cell policy:
+- Formal subgroup definitions and pre-intervention/independent source:
+- Primary comparison family and multiplicity treatment:
+
+Delete the factor table for a non-factorial route.
+
+| Factor | Levels | Main effect required? | Required interactions |
+| --- | --- | --- | --- |
+| <factor> | <levels> | <yes/no> | <terms> |
+
+- Fractional-design resolution and alias structure, if applicable:
+- Negligible-interaction assumptions and targeted de-alias follow-up:
+- Paired seeds/folds/data order/evaluation operators:
+- Natural groups and repeated grouped-split or leave-one-group-out plan:
+- Split/seed uncertainty required for the claim:
+- Uncertainty estimator and dependence/group structure:
+- Sample/group/split/seed count justified by power or target interval width:
+- Fixed-data attainable precision or smallest reliably detectable effect:
+
+## Adaptive Decision Paths
+
+Delete this section for a non-adaptive route.
+
+| Frozen trigger | Authorized next branch | Budget/data role | Stops or forbids |
+| --- | --- | --- | --- |
+| <condition> | <branch> | <scope> | <continuation> |
+
+- Evidence that branches may share:
+- Evidence that must remain independent:
+- Rule for an unlisted outcome:
 
 ## Change
 
@@ -163,6 +188,21 @@ safety gate:
 | --- | --- | --- |
 | <control> | <reason> | <rule> |
 
+## Evidence-Role Ledger
+
+Assign roles before inspecting evidence used for a decision. Do not relabel
+development evidence as confirmation after results are known.
+
+| Evidence source or groups | Role | Allowed uses | Forbidden uses |
+| --- | --- | --- | --- |
+| <source> | <engineering_debug, development_screening, confirmation, or sealed_final> | <uses> | <uses> |
+
+- Candidate/threshold/operator freeze point:
+- Independent confirmation contract:
+- Nested group-respecting resampling contract, if no separate confirmation set:
+- Final sealed-use authorization and one-use policy:
+- Post-sealed rule (`report/close only; no tuning or reselection`):
+
 ## Fair Run Contract
 
 - Training or inference budget:
@@ -177,17 +217,22 @@ safety gate:
 - Allowed resume behavior:
 - Sample-size policy:
 - Dependency/version assumptions:
-- Selected execution profile (`audit/evaluation`, `training`, or
-  `policy/replay`):
+Allowed profile tokens are `audit_evaluation`, `feasibility_oracle`,
+`paired_single_intervention_training`, `factorial_screening`,
+`adaptive_decision`, `policy_replay`, and `hybrid: <rationale>`.
+
+- Selected decision profile: <profile token>
+- Learned-state retention required: <yes | no: scientific rationale>
 - Omitted or specialized stage rationale:
 
 ## Gates
 
-| Stage | Question | Budget/sample scope | Gate type and threshold source | `PASS` authorizes |
+| Stage | Estimand/question | Evidence role and budget/sample scope | Gate type, threshold source, and multiplicity rule | `PASS` authorizes |
 | --- | --- | --- | --- | --- |
 | first authorized stage | | | | |
 | next stage, if needed | | | | |
-| terminal decision stage | | | | `none` |
+| independent confirmation | | | | |
+| sealed final, only if needed | | | | `none` |
 
 ## Analysis Plan
 
@@ -196,6 +241,9 @@ safety gate:
 - Complexity analysis:
 - Robustness or held-out analysis:
 - Regression analysis:
+- Main-effect/interaction and alias analysis, if applicable:
+- Group/split/seed uncertainty and sensitivity analysis:
+- Screening-selection versus confirmation analysis:
 - Required docs to update:
 - Required artifacts to retain:
 - Required artifacts to delete or keep external:
@@ -205,12 +253,33 @@ safety gate:
   tables in cloud `RUN_ROOT`. List only compact terminal or major-handoff
   evidence for GitHub `main`.
 
+## Learned-State Retention
+
+Delete this section only when no later causal, mechanism, optimizer,
+projection, window, selector, trajectory, or exact-resume analysis can need a
+learned state.
+
+- Retained steps/epochs/factor cells and why each is needed:
+- Model/checkpoint state path and hash contract:
+- Optimizer/scheduler state contract:
+- RNG states required and unavailable-state disclosure:
+- Data-order/sampler identity:
+- Config hash, code commit, Python/environment identity, and parent checkpoint:
+- Trace-manifest path and schema:
+- Cloud retention/deletion policy:
+- Compact GitHub evidence (`paths/hashes/schema/counts` only):
+
 ## Decision
 
 - Decision label:
 - Image/global metric reason:
 - Mechanism reason:
 - Preservation or regression reason:
+- Inherited harm versus anchor:
+- Candidate total harm versus anchor:
+- Intervention-added harm versus predecessor:
+- Group/split/seed uncertainty and interaction reason:
+- Evidence role and independence reason:
 - Cost/deployability reason:
 - What this decides next:
 - Typed closeout path:

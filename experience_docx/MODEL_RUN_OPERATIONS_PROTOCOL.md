@@ -1,6 +1,6 @@
 # Model Run Operations Protocol
 
-Date: 2026-07-12
+Date: 2026-07-13
 
 Status: per-launch workflow for cloud training, evaluation, inference, replay,
 and post-run audits.
@@ -98,6 +98,9 @@ rules are the GitHub `main` rules commit recorded in the route card.
 Verify only facts that can change between launches:
 
 - the route card's static preflight applies to the exact intended route commit;
+- the exact tracked route card still passes `validate_experiment_card.py
+  --launch-ready` from the recorded GitHub rules commit; record its current
+  `ROUTE_CARD_CONTRACT_OK` SHA-256 in the launch transcript;
 - the recorded GitHub `main` rules commit is current for this launch, or any
   newer rule change has been reviewed and explicitly reconciled;
 - `REMOTE_REPO` branch, HEAD, and worktree status match that commit;
@@ -108,12 +111,16 @@ Verify only facts that can change between launches:
   exist at their recorded identities;
 - the previous `<stage>_closeout.json` authorizes this stage, or this is the
   route's written first stage;
+- the command uses only the evidence role authorized for this stage and follows
+  any preregistered adaptive-branch trigger;
 - the current command does not exceed its locked-test authorization;
 - enough current GPU memory is free for this stage;
 - the tmux session name is free and the output path is new, or the route card
   explicitly authorizes an exact resume;
 - the tracked runner, `RUN_ROOT/status.txt`, log path, and closeout path are
-  explicit.
+  explicit;
+- any required learned-state directory and trace manifest are new, writable,
+  and under `RUN_ROOT`.
 
 If any item fails, write the matching engineering, infrastructure, or command
 state and stop. Do not substitute another commit, asset, split, output path, or
@@ -159,7 +166,9 @@ The runner must:
 - return the underlying process exit code and print a final `*_OK` or
   `*_FAILED` marker;
 - reject locked-test stages unless the route card and previous closeout
-  authorize them.
+  authorize them;
+- preserve the state and trace manifest required by the route card when the
+  stage learns parameters or policy state.
 
 Minimum exit handling:
 
@@ -177,6 +186,30 @@ exit "$rc"
 
 Use `COMMAND_RELIABILITY_QUICKSTART.md` and
 `tools/convir_remote_script.sh` to cross the PowerShell/WSL/SSH boundary.
+
+## Learned State Retention
+
+When later mechanism, optimizer, projection, window, selector, or trajectory
+analysis may depend on learned state, the stage must retain enough information
+under `RUN_ROOT` to reconstruct the analyzed point. The route card decides
+which states are needed; retaining only a final scalar metric is insufficient.
+
+For every retained point, record:
+
+- model/checkpoint state and its SHA-256 identity;
+- optimizer and scheduler state when the claim depends on training dynamics or
+  exact resume;
+- Python, NumPy, framework, sampler, and accelerator RNG state when supported,
+  or an explicit list of unavailable RNG state;
+- global step/epoch, seed, fold, data-order/sampler identity, config hash, code
+  commit, explicit Python/environment identity, and parent checkpoint;
+- a trace manifest mapping the state to logs, metrics, factor cell, evidence
+  role, and any adaptive branch.
+
+Save only the cadence required by the written analysis and retention budget.
+Checkpoints, optimizer/RNG state, and raw traces remain in `RUN_ROOT`. Compact
+evidence may contain their paths, hashes, schemas, row/count summaries, and
+retention decision, but never copies of the raw state by default.
 
 ## Monitoring
 
@@ -202,6 +235,8 @@ After a stage terminates, audit its runtime outputs and write one compact
   "route_id": "<route_id>",
   "run_id": "<run_id>",
   "stage": "<stage>",
+  "evidence_role": "<engineering_debug|development_screening|confirmation|sealed_final>",
+  "contract_id": "<frozen_route_card_or_config_identity>",
   "state": "COMPLETED_GATE_PASS",
   "gate_type": "scientific_utility",
   "decision": "PASS",
@@ -222,7 +257,9 @@ Minimum compact closeout evidence is:
 - terminal `status.txt` excerpt or compact status file;
 - the typed closeout JSON;
 - evidence README with primary metrics, decision, and raw cloud paths;
-- compact aggregate summaries needed to audit the decision.
+- compact aggregate summaries needed to audit the decision;
+- retained-state manifest summary, hashes, and counts when the route card
+  requires learned-state reconstruction.
 
 Add mechanism summaries or specialized contracts only when the route's claim
 requires them. Keep checkpoints, images, arrays, raw logs, raw inference
@@ -236,10 +273,11 @@ explicit major handoff milestone.
 ## Locked-Test Protection
 
 Locked test is blocked unless a previous typed closeout explicitly authorizes
-it. Before the single sealed command, confirm that the checkpoint/policy is
-fixed, all required internal and safety gates passed, the output path is new and
-immutable, and the result cannot be used for further selection. If any point is
-uncertain, stop.
+it. Before the single sealed command, confirm that architecture, weights,
+preprocessing, operator, selector, thresholds, executor, fallback, and decision
+rule are fixed and identified; all required internal and safety gates passed;
+the output path is new and immutable; and the result cannot be used for further
+selection, tuning, branch choice, or repair. If any point is uncertain, stop.
 
 ## Failure Handling
 
