@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 
-Status: v4a A0P closed optimizer/projection/window local repair. Its metric-
-aligned A1F privileged feasibility oracle now passes the full heldout128 gate:
-safe bounded direction materially exceeds privileged shrink and reaches most
-images under both paired operators. This identifies representation/reachability
-as the next bottleneck, but authorizes only a fresh A1R design. Direct training,
-policy, candidate, canary, and locked-test access remain blocked.
+Status: v4a A0P closed optimizer/projection/window local repair, and A1F proved
+that safe bounded direction headroom exists. A1R now completes the fresh512
+four-fold OOF representation screen: true targets beat the size-block-shuffled
+control and remain broadly repairable, but material lift and privileged-oracle
+retention both fail. The current output/context probe family is closed. Only a
+new R3 amendment/design is allowed; direct training, policy, candidate, canary,
+and locked-test access remain blocked.
 
 ## Research Direction
 
@@ -15,7 +16,7 @@ policy, candidate, canary, and locked-test access remain blocked.
 Continuous haze-density-aware region-adaptive residual modulation with low-haze protection for ConvIR-B Haze4K dehazing.
 ```
 
-## Current v3r-v4a-A1F Decision
+## Current v3r-v4a-A1R Decision
 
 v3r proves that the frozen direct operator's dominant ceiling is signed
 direction: scale and channel-scale fail, while bounded direction-line repair
@@ -106,6 +107,23 @@ action-space feasibility. Because GT selects every action, only a fresh A1R
 representation-sufficiency design is authorized; no direct training or sealed
 data action is allowed.
 
+A1R tested that representation question on fresh train-derived names 256:768
+with four OOF folds and the frozen output/context x linear/local-spatial factor
+family. Formal completed 5,120 paired rows and 4,000 paired image bootstrap
+draws with exact source identity, 20 retained states, and zero safety excess or
+severe/hard regression. The primary context-spatial cell has worst-operator
+direction-over-shrink LCB95 `+0.0152048253 dB` versus `+0.020`, and oracle-
+retention LCB95 `0.0923048771` versus `0.25`, so the material gate fails. The
+true-minus-size-block-shuffled LCB95 `+0.0072693470 dB` and repairable-fraction
+LCB95 `0.56640625` pass, proving some image-conditioned direction information
+without enough material recovery. Context-spatial exceeds context-linear by
+only about `+0.00092 dB` at the worst-operator point estimate. Close this probe
+family: the bottleneck is material representation-to-action reachability, not
+bounded-action existence, the tested local spatial readout, optimizer/window
+selection, or safety feasibility. Only a separately preregistered R3
+amendment/design may be
+considered; no execution or sealed-data action is authorized.
+
 ## Current Scope
 
 - Dataset: Haze4K only.
@@ -163,6 +181,7 @@ data action is allowed.
 | v3z sealed confirmation | `codex/haze4k-v5-v3z-sealed-confirmation-20260713` | completed terminal gate fail | train128 passes, but heldout128 anchor/harm exceed fixed safety references despite positive rendered-MSE reduction | `V3Z_S1_SEALED_CONFIRMATION_FAIL_CLOSE_PROJECTED_HEAD_ROUTE` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713/` |
 | v4a conditional safety audit | `codex/haze4k-v5-v4a-conditional-safety-audit-20260714` | completed A0P R3 handoff | exact reconstruction and risk decomposition pass; complete 256-state 3-by-3 A0P finds no exact/proposal/window local correction, with actual-proposal harm/CVaR point effects worse across both operators | `V4A_A0P_NO_LOCAL_CORRECTION_AUTHORIZE_A1F_METRIC_ALIGNED_FEASIBILITY_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/` |
 | v4a-A1F Delta-u action feasibility | `codex/haze4k-v5-v4a-a1f-deltau-action-feasibility-20260714` | completed privileged feasibility pass | exact replay and action integrity pass; heldout worst-operator direction-over-shrink LCB95 `+0.105475 dB`, repairable-fraction LCB95 `0.6953125`, and direction-versus-old-`.25` LCB95 `+0.200613 dB`, with zero severe/hard regression | `V4A_A1F_SAFE_DIRECTION_HEADROOM_PASS_AUTHORIZE_A1R_REPRESENTATION_SUFFICIENCY_DESIGN_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/` |
+| v4a-A1R representation sufficiency | `codex/haze4k-v5-v4a-a1r-representation-sufficiency-20260714` | completed R3-reviewed gate fail | fresh512 four-fold OOF is structurally valid; primary lift LCB95 `+0.015205 dB` and oracle-retention LCB95 `0.092305` fail, while true-minus-shuffle `+0.007269 dB`, repairable fraction `0.56640625`, and all safety guards pass | `V4A_A1R_PRIMARY_REPRESENTATION_SUFFICIENCY_FAIL_DIRECTIONAL_SIGNAL_BELOW_MATERIAL_UTILITY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |

@@ -1,0 +1,56 @@
+{
+  "bootstrap_replicates": 4000,
+  "bootstrap_seed": 3407,
+  "cell_pairing_retained": true,
+  "cell_results": {
+    "context_linear": {
+      "worst_operator_gain_vs_shrink_db": 0.016811004651589953,
+      "worst_operator_gain_vs_shrink_db_lcb95": 0.014284161222342273,
+      "worst_operator_gain_vs_shrink_db_ucb95": 0.019254709297624642,
+      "worst_operator_repairable_fraction": 0.59765625,
+      "worst_operator_repairable_fraction_lcb95": 0.55859375,
+      "worst_operator_repairable_fraction_ucb95": 0.626953125
+    },
+    "context_spatial": {
+      "worst_operator_gain_vs_shrink_db": 0.01795423685844691,
+      "worst_operator_gain_vs_shrink_db_lcb95": 0.015204825311930667,
+      "worst_operator_gain_vs_shrink_db_ucb95": 0.02065382718559354,
+      "worst_operator_repairable_fraction": 0.60546875,
+      "worst_operator_repairable_fraction_lcb95": 0.56640625,
+      "worst_operator_repairable_fraction_ucb95": 0.634765625
+    },
+    "context_spatial_shuffled": {
+      "worst_operator_gain_vs_shrink_db": 0.009106798634541016,
+      "worst_operator_gain_vs_shrink_db_lcb95": 0.0076857094332780235,
+      "worst_operator_gain_vs_shrink_db_ucb95": 0.010513368257837954,
+      "worst_operator_repairable_fraction": 0.513671875,
+      "worst_operator_repairable_fraction_lcb95": 0.4765625,
+      "worst_operator_repairable_fraction_ucb95": 0.548828125
+    },
+    "output_linear": {
+      "worst_operator_gain_vs_shrink_db": 0.016091751024475874,
+      "worst_operator_gain_vs_shrink_db_lcb95": 0.01351499576262468,
+      "worst_operator_gain_vs_shrink_db_ucb95": 0.018615793542535487,
+      "worst_operator_repairable_fraction": 0.548828125,
+      "worst_operator_repairable_fraction_lcb95": 0.5078125,
+      "worst_operator_repairable_fraction_ucb95": 0.578125
+    },
+    "output_spatial": {
+      "worst_operator_gain_vs_shrink_db": 0.01478218678575969,
+      "worst_operator_gain_vs_shrink_db_lcb95": 0.012425440264584572,
+      "worst_operator_gain_vs_shrink_db_ucb95": 0.016996334844981732,
+      "worst_operator_repairable_fraction": 0.552734375,
+      "worst_operator_repairable_fraction_lcb95": 0.515625,
+      "worst_operator_repairable_fraction_ucb95": 0.583984375
+    }
+  },
+  "operator_pairing_retained": true,
+  "primary_oracle_retention": 0.10517384974519041,
+  "primary_oracle_retention_lcb95": 0.0923048771007728,
+  "primary_oracle_retention_ucb95": 0.11663397796928049,
+  "primary_true_minus_shuffle_db": 0.008816999719706058,
+  "primary_true_minus_shuffle_db_lcb95": 0.007269346983620341,
+  "primary_true_minus_shuffle_db_ucb95": 0.010365926533626377,
+  "schema_version": 1,
+  "worst_operator_within_each_draw": true
+}
