@@ -100,12 +100,12 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
             planned = payload(OPS.tool_prepare_authorized({**args, "phase": "plan"}))
             next_stage = payload(OPS.tool_prepare_authorized({**args, "output_id": "a0d", "phase": "plan"}))
         self.assertTrue(planned["ok"])
-        context = planned["observed"]["authorization_tuple"]
+        context = planned["observed"]
         self.assertEqual("repair.v2", context["mode"])
         self.assertLessEqual(len(context["session"]), 64)
         self.assertRegex(context["session"], r"^convir-")
-        self.assertNotEqual(context["session"], next_stage["observed"]["authorization_tuple"]["session"])
-        self.assertNotEqual(context["remote_repo"], next_stage["observed"]["authorization_tuple"]["remote_repo"])
+        self.assertNotEqual(context["session"], next_stage["observed"]["session"])
+        self.assertNotEqual(context["remote_repo"], next_stage["observed"]["remote_repo"])
 
     def test_secret_first_use_is_race_safe(self):
         secrets, failures = [], []
@@ -143,7 +143,7 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
         with patch.object(OPS, "run_remote_body", return_value="a" * 64 + "  runner\nCONVIR_OPS_PREFLIGHT_OK"):
             prepared = payload(OPS.tool_prepare_authorized({**self.args, "phase": "apply", "plan_hash": plan["expected"]["plan_hash"]}))
         receipt = json.loads((OPS.RECEIPT_DIR / (prepared["receipt"] + ".json")).read_text())["payload"]
-        self.assertEqual(plan["observed"]["authorization_tuple"]["remote_repo"], receipt["remote_repo"])
+        self.assertEqual(plan["observed"]["remote_repo"], receipt["remote_repo"])
 
     def test_compact_monitor_uses_sealed_terminal_tuples_and_budgeted_timeout(self):
         prepared = self.prepare()
@@ -192,7 +192,8 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
             "CONVIR_OPS_LAUNCH_OK",
         ]) as remote:
             started = payload(OPS.tool_start_authorized({
-                **self.args, "plan_hash": plan["expected"]["plan_hash"], "idempotency_key": "start-1",
+                "plan_token": plan["plan_token"], "plan_hash": plan["expected"]["plan_hash"],
+                "idempotency_key": "start-1",
             }))
         self.assertTrue(started["ok"])
         self.assertEqual(2, remote.call_count)

@@ -315,6 +315,12 @@ def receipt_path(token):
     return RECEIPT_DIR / f"{token}.json"
 
 
+def plan_path(token):
+    if not isinstance(token, str) or not re.fullmatch(r"[0-9a-f]{64}", token):
+        raise ToolError("plan_token is unknown or malformed")
+    return RECEIPT_DIR / f"plan-{token}.json"
+
+
 @contextmanager
 def locked_receipt(token):
     path = receipt_path(token)
@@ -357,6 +363,58 @@ def issue_receipt(context, preflight_output):
     with os.fdopen(fd, "w", encoding="utf-8") as handle:
         json.dump(record, handle, sort_keys=True, separators=(",", ":"))
     return token, payload
+
+
+def issue_plan(context, now):
+    payload = {
+        "schema_version": SCHEMA_VERSION, "context": context, "issued_at": now,
+        "expires_at": now + RECEIPT_TTL_SECONDS, "plan_nonce": uuid.uuid4().hex,
+    }
+    token = receipt_token(payload)
+    RECEIPT_DIR.mkdir(mode=0o700, parents=True, exist_ok=True)
+    record = {"payload": payload, "consumed": False, "receipt": None}
+    path = plan_path(token)
+    try:
+        fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+    except FileExistsError as exc:
+        raise ToolError("plan token collision") from exc
+    with os.fdopen(fd, "w", encoding="utf-8") as handle:
+        json.dump(record, handle, sort_keys=True, separators=(",", ":"))
+    return token, payload
+
+
+@contextmanager
+def locked_plan(token):
+    path = plan_path(token)
+    lock = path.with_suffix(".lock")
+    deadline = time.monotonic() + 5
+    while True:
+        try:
+            lock.mkdir()
+            break
+        except FileExistsError:
+            if time.monotonic() >= deadline:
+                raise ToolError("plan record is busy")
+            time.sleep(0.02)
+    try:
+        if not path.is_file():
+            raise ToolError("plan_token is unknown or malformed")
+        record = json.loads(path.read_text(encoding="utf-8"))
+        yield record
+        temporary = path.with_suffix(".tmp")
+        temporary.write_text(json.dumps(record, sort_keys=True, separators=(",", ":")), encoding="utf-8")
+        os.replace(temporary, path)
+    finally:
+        lock.rmdir()
+
+
+def validate_plan_record(token, record):
+    payload = record.get("payload")
+    if not isinstance(payload, dict) or not hmac.compare_digest(token, receipt_token(payload)):
+        raise ToolError("plan token integrity validation failed")
+    if time.time() > payload["expires_at"]:
+        raise ToolError("plan token has expired")
+    return payload
 
 
 def resolve_receipt(arguments, *, require_unlaunched=False):
@@ -494,7 +552,17 @@ def tool_prepare_authorized(arguments):
         plan = canonical_digest(context)
         if phase == "plan":
             output = run_remote_body(github_plan_body(context), timeout=30)
-            return typed_result(True, "PREPARE_PLANNED", observed={"github_checks": output, "authorization_tuple": context}, expected={"plan_hash": plan}, allowed_next_actions=["route_prepare_authorized.apply"])
+            plan_token, plan_payload = issue_plan(context, int(time.time()))
+            return typed_result(
+                True, "PREPARE_PLANNED",
+                observed={
+                    "github_checks": output, "remote_repo": context["remote_repo"],
+                    "session": context["session"], "mode": context["mode"], "output_id": context["output_id"],
+                    "closeout_filename": context["closeout_filename"],
+                },
+                expected={"plan_hash": plan}, allowed_next_actions=["route_start_authorized"],
+                plan_token=plan_token, plan_expires_at=plan_payload["expires_at"],
+            )
         if arguments.get("plan_hash") != plan:
             return typed_failure("PREPARE_REJECTED", "authorization", "plan_hash does not bind this exact authorization tuple", expected={"plan_hash": plan})
         try:
@@ -621,27 +689,35 @@ def tool_closeout_validate(arguments):
 
 def tool_start_authorized(arguments):
     """Compose reviewed apply and receipt launch without exposing free-form commands."""
-    prepare_arguments = dict(arguments)
-    idempotency_key = prepare_arguments.pop("idempotency_key", None)
-    prepare_arguments["phase"] = "apply"
-    prepared_result = tool_prepare_authorized(prepare_arguments)
-    prepared = structured_payload(prepared_result)
-    if not prepared["ok"]:
-        return prepared_result
-    receipt = prepared["receipt"]
-    launched_result = tool_receipt_launch({"receipt": receipt, "idempotency_key": idempotency_key})
-    launched = structured_payload(launched_result)
-    context = prepared["expected"]["authorization_tuple"]
-    return typed_result(
-        launched["ok"], launched["operation_state"], launched["failure_class"],
-        observed={
-            "session": context["session"], "output_id": context["output_id"],
-            "remote_repo": context["remote_repo"], "launch_state": launched["operation_state"],
-        },
-        expected={"receipt_digest": prepared["receipt_digest"], "plan_hash": arguments.get("plan_hash")},
-        mismatches=launched["mismatches"], allowed_next_actions=launched["allowed_next_actions"],
-        receipt=receipt, receipt_expires_at=prepared["receipt_expires_at"],
-    )
+    token = arguments.get("plan_token")
+    idempotency_key = require_token(arguments.get("idempotency_key"), "idempotency_key")
+    with locked_plan(token) as plan_record:
+        plan_payload = validate_plan_record(token, plan_record)
+        context = plan_payload["context"]
+        plan_hash = canonical_digest(context)
+        if arguments.get("plan_hash") != plan_hash:
+            return typed_failure("START_REJECTED", "authorization", "plan_hash does not bind the stored plan", expected={"plan_hash": plan_hash})
+        if plan_record.get("consumed"):
+            return typed_failure("START_REJECTED", "authorization", "plan token has already been consumed", observed={"receipt": plan_record.get("receipt")})
+        try:
+            output = run_remote_body(preflight_body(context, context["require_gpu"], create_clone=True), timeout=45)
+        except Exception as exc:
+            return typed_failure("PREPARE_RECOVERY_REQUIRED", failure_class_for_error(exc), str(exc) or type(exc).__name__, observed={"remote_repo": context["remote_repo"], "fresh_workspace_cleanup": "trap_after_path_reservation"}, allowed_next_actions=["route_prepare_authorized.plan"])
+        receipt, receipt_payload_value = issue_receipt(context, output)
+        plan_record["consumed"] = True
+        plan_record["receipt"] = receipt
+        launched_result = tool_receipt_launch({"receipt": receipt, "idempotency_key": idempotency_key})
+        launched = structured_payload(launched_result)
+        return typed_result(
+            launched["ok"], launched["operation_state"], launched["failure_class"],
+            observed={
+                "session": context["session"], "output_id": context["output_id"],
+                "remote_repo": context["remote_repo"], "launch_state": launched["operation_state"],
+            },
+            expected={"receipt_digest": canonical_digest(receipt_payload_value), "plan_hash": plan_hash},
+            mismatches=launched["mismatches"], allowed_next_actions=launched["allowed_next_actions"],
+            receipt=receipt, receipt_expires_at=receipt_payload_value["expires_at"],
+        )
 
 
 def tool_finish(arguments):
@@ -913,18 +989,15 @@ TOOLS = {
     },
 }
 
-_start_properties = dict(TOOLS["convir_route_prepare_authorized"]["inputSchema"]["properties"])
-_start_properties.pop("phase")
-_start_properties["idempotency_key"] = {"type": "string"}
-_start_required = [
-    field for field in TOOLS["convir_route_prepare_authorized"]["inputSchema"]["required"]
-    if field != "phase"
-] + ["plan_hash", "idempotency_key"]
 TOOLS["convir_route_start_authorized"] = {
     "description": "Recommended normal-path composition: after a reviewed prepare plan, apply the exact plan hash and launch its receipt-bound runner in one call.",
     "inputSchema": {
-        "type": "object", "required": _start_required,
-        "properties": _start_properties, "additionalProperties": False,
+        "type": "object", "required": ["plan_token", "plan_hash", "idempotency_key"],
+        "properties": {
+            "plan_token": {"type": "string"}, "plan_hash": {"type": "string"},
+            "idempotency_key": {"type": "string"},
+        },
+        "additionalProperties": False,
     },
     "handler": tool_start_authorized,
 }

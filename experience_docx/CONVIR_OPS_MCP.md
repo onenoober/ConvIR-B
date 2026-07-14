@@ -77,10 +77,11 @@ private-key material, or tokens in this TOML entry.
 ## Normal Use
 
 1. Use `convir_route_prepare_authorized` with `phase=plan`, then apply the
-   returned plan hash after the typed closeout authorizes the stage. Preparation
-   seals the output id and target closeout filename and requires both to be new.
+   returned plan token and hash after the typed closeout authorizes the stage.
+   Preparation seals the output id and target closeout filename and requires
+   both to be new; the complete tuple is not retransmitted on the normal path.
 2. On the normal path, use `convir_route_start_authorized` with the reviewed
-   plan hash and a stable idempotency key. Use the separate launch primitive
+   plan token/hash and a stable idempotency key. Use the separate launch primitive
    only for recovery or boundary diagnostics. A changed tuple, receipt,
    session, output identity, or corrected attempt requires fresh preparation.
 3. Use `convir_route_finish` for bounded server-side monitoring and automatic
