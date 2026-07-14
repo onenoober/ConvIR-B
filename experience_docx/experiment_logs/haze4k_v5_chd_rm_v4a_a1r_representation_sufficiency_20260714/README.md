@@ -1,6 +1,6 @@
 # v4a-A1R Representation Sufficiency Evidence
 
-Status: smoke `COMPLETED_GATE_PASS`; formal is authorized and pending.
+Status: `COMPLETED_R3_REVIEW`; formal gate failed on material utility.
 
 This route is a fresh-name, four-fold OOF, nondeployable representation audit
 after A1F proved safe bounded direction headroom beyond privileged shrink. It
@@ -35,3 +35,24 @@ minimum first-gradient norm was `3.682724952697754`. The smoke retained both
 native feature-size blocks (2 names at 208x208 and 30 at 240x320), completed
 two diagnostic batches for every cell, and touched neither canary nor locked
 test. No smoke metric or cell outcome is scientific evidence.
+
+Formal r1 (`v4a_a1r_formal_r1`) completed the preregistered fresh512, four-fold
+OOF development screen with 5,120 paired rows and `structural_valid=true`.
+The primary context-spatial cell failed the material utility gate:
+
+- worst-operator safe lift over shrink LCB95: `+0.0152048253 dB` vs `+0.020`;
+- primary oracle-headroom retention LCB95: `0.0923048771` vs `0.25`;
+- true-minus-size-block-shuffled lift LCB95: `+0.0072693470 dB` vs `+0.005`;
+- repairable fraction LCB95: `0.56640625` vs `0.20`;
+- bound/support excess maxima: `0.0` / `0.0`; severe/hard regressions: `0` / `0`.
+
+R3 review decision:
+`V4A_A1R_PRIMARY_REPRESENTATION_SUFFICIENCY_FAIL_DIRECTIONAL_SIGNAL_BELOW_MATERIAL_UTILITY`.
+The frozen representation carries real target-direction information, but only a
+small fraction of privileged headroom is recoverable under this direct probe;
+the local spatial readout adds little over context-linear (`+0.00092 dB` in the
+worst-operator point estimate). This is a representation-to-action materiality
+failure, not an action-space, safety, optimizer, or command failure. The route
+is terminal for this probe family. Only a new R3 amendment/design may be
+considered; direct training, candidate selection, policy fitting, canary, and
+locked-test access remain forbidden.

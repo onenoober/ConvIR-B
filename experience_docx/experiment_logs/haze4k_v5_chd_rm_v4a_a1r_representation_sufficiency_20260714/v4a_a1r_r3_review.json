@@ -1,0 +1,53 @@
+{
+  "authorizes": "R3_AMENDMENT_DESIGN_ONLY",
+  "canary_touched": false,
+  "claim_limit": "development_screening_only; no deployable candidate or confirmation claim",
+  "decision": "V4A_A1R_PRIMARY_REPRESENTATION_SUFFICIENCY_FAIL_DIRECTIONAL_SIGNAL_BELOW_MATERIAL_UTILITY",
+  "evidence_role": "development_screening",
+  "forbidden_continuations": [
+    "DIRECT_TRAINING",
+    "CANDIDATE_SELECTION",
+    "POLICY_FITTING",
+    "CANARY",
+    "LOCKED_TEST"
+  ],
+  "gate_type": "scientific_utility",
+  "gates": {
+    "primary_worst_operator_gain_vs_shrink_db_lcb95": {
+      "observed": 0.015204825311930667,
+      "threshold": 0.02,
+      "pass": false
+    },
+    "primary_oracle_retention_lcb95": {
+      "observed": 0.0923048771007728,
+      "threshold": 0.25,
+      "pass": false
+    },
+    "primary_true_minus_shuffle_db_lcb95": {
+      "observed": 0.007269346983620341,
+      "threshold": 0.005,
+      "pass": true
+    },
+    "primary_repairable_fraction_lcb95": {
+      "observed": 0.56640625,
+      "threshold": 0.2,
+      "pass": true
+    },
+    "structural_valid": true,
+    "bound_excess_max": 0.0,
+    "support_excess_max": 0.0,
+    "severe_regressions": 0,
+    "hard_regressions": 0
+  },
+  "interpretation": "The frozen output/context representation contains real direction information because true targets beat the size-block-shuffled control, but direct probe recovery is far below the material utility and privileged-headroom-retention floors. Context-spatial is only marginally above context-linear, so local spatial readout capacity is not established as the active bottleneck.",
+  "next_allowed": "A separately preregistered R3 amendment/design may test a materially different representation-to-action contract on untouched evidence; no execution is authorized by this review.",
+  "parent_review_sha256": "a8b9064308710ac5fc890b9de0158c1faddb4d51f7d298d4991e9ddfb3616e1d",
+  "route_card_sha256": "9ef996592aaa8e8cc86c9705bdc81c7cc1ccc3ac7af45549a88f4b9fa56e9743",
+  "route_commit": "49816258fbb8c56298b14ab53793d46945c975f9",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714",
+  "run_id": "v4a_a1r_formal_r1",
+  "stage": "v4a-A1R-formal",
+  "state": "COMPLETED_R3_REVIEW",
+  "structural_valid": true,
+  "locked_test_touched": false
+}
