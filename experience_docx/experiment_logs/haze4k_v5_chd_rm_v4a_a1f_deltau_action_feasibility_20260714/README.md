@@ -1,6 +1,6 @@
 # v4a-A1F Delta-u Action Feasibility Evidence
 
-Status: `PLANNED` after an engineering-only S0 repair.
+Status: `COMPLETED_GATE_PASS`; A1F formal only is authorized.
 
 This route is a privileged, train-derived feasibility oracle after v4a A0P
 found no local optimizer/projection/window correction. It restores the exact
@@ -24,3 +24,23 @@ requires bitwise equality of the zero-action rendered tensors and canonicalizes
 only that identical candidate to the already replayed predecessor metrics.
 Other candidates and all scientific thresholds are unchanged. See
 `v4a_a1f_smoke_r1_failure_closeout.json`.
+
+The repaired smoke, `v4a_a1f_s0_smoke_r2` at route commit `42dbbf18`, passed
+the frozen S0 contract:
+
+- typed tuple: `COMPLETED_GATE_PASS` /
+  `V4A_A1F_S0_ALIGNMENT_PASS_AUTHORIZE_FORMAL_ONLY` / `A1F_FORMAL_ONLY`;
+- 8 update plus 8 heldout images, both operators, 32 complete rows;
+- exact A0D replay: maximum MSE and PSNR discrepancies `0.0`;
+- zero-action tensor, bound, and support excess maxima `0.0`;
+- batched zero-grid MSE drift, retained only as an engineering diagnostic:
+  `1.1641532182693481e-10`;
+- severe and hard regressions versus old `.25`: `0` in every split/operator;
+- runtime `4.0465 s`, peak allocated GPU memory `618.27 MiB`;
+- training, candidate selection, canary, and locked-test access all `false`.
+
+Raw rows and the full log remain under
+`/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/v4a_a1f_s0_smoke_r2/`
+and the route `RUN_ROOT`; they are not Git evidence. The compact smoke package
+is the closeout, source manifest, operator summary, bootstrap-not-run marker,
+failure closeout, and this README.
