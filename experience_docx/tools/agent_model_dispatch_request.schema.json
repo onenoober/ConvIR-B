@@ -7,9 +7,13 @@
     "rules_commit",
     "repository_linux_path",
     "task_class",
+    "source_identity",
     "source_role",
+    "source_effort",
     "required_role",
     "dispatch_reason",
+    "routing_basis",
+    "routing_basis_ref",
     "effort",
     "route_branch_commit",
     "route_id",
@@ -21,16 +25,26 @@
     "authorization_check"
   ],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 2},
     "rules_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
     "repository_linux_path": {"type": "string", "pattern": "^/"},
     "task_class": {
       "enum": ["R0_READ_ONLY", "R1_BOUNDED_EXECUTION", "R2_ENGINEERING_CONTROL", "R3_SCIENTIFIC_AUTHORITY"]
     },
-    "source_role": {"enum": ["fast", "balanced", "frontier"]},
+    "source_identity": {
+      "enum": ["unknown", "user_pinned_task", "product_metadata", "cli_status", "dispatcher_receipt"]
+    },
+    "source_role": {"enum": ["unknown", "fast", "balanced", "frontier"]},
+    "source_effort": {"enum": ["unknown", "low", "medium", "high", "xhigh"]},
     "required_role": {"enum": ["fast", "balanced", "frontier"]},
     "dispatch_reason": {
-      "enum": ["required_escalation", "standalone_repetition", "batch_bounded_operations", "major_handoff"]
+      "enum": ["task_routing", "standalone_repetition", "batch_bounded_operations", "major_handoff"]
+    },
+    "routing_basis": {"enum": ["dispatcher_classification", "typed_handoff"]},
+    "routing_basis_ref": {
+      "type": "string",
+      "pattern": "^(none|github:[0-9a-f]{40}:[A-Za-z0-9._/-]+)$",
+      "maxLength": 1000
     },
     "effort": {"enum": ["low", "medium", "high"]},
     "route_branch_commit": {

@@ -17,8 +17,11 @@ Before route setup writes or cloud operations, classify the planned scopes with
 `MODEL_AGENT_COST_ROUTING_PROTOCOL.md` and record a compact agent-routing table
 in the route card. It must name the scientific-design, engineering, bounded
 operation, interpretation, and archival scopes that actually apply; their
-minimum stable roles; and the intended dispatcher boundary or
-`dispatch=not_amortized` decision.
+minimum stable roles; host identity mode; routing basis; intended dispatcher
+boundary; and any `dispatch=not_amortized` decision. Plan the fewest safe
+model-task boundaries for the whole route: batch adjacent operations only when
+they share task class, route commit, authorization, evidence context, and stop
+condition.
 
 The route card records the plan, not a second copy of the routing rules. At an
 eligible boundary, the external dispatcher dry-run and `-Execute` flow are

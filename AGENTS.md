@@ -30,15 +30,24 @@
   weaken any experiment gate or change route semantics. If the active model is
   below the required role, stop before external writes or scientific decisions
   and emit a durable handoff for an explicit switch.
-- Use that protocol's active-identity, effort-minimum, and task-envelope rules;
+- Use that protocol's host-identity, effort-minimum, and task-envelope rules;
   a missing shell model variable is not evidence of a lower model, and
   supporting reads do not split an unresolved higher-class task.
+- The host may be `unknown` or explicitly pinned by the user for the lifetime of
+  the current interactive task. Source identity does not restrict dispatcher
+  upgrades, downgrades, or same-role routing; ambiguous classification must
+  route to `frontier`. Do not ask for selector confirmation merely to launch an
+  explicit dispatcher child.
 - At an eligible new experiment task boundary, explicit major handoff, required
   escalation, or amortized batch of bounded operations, use the deterministic
   dispatcher from that protocol as the default task launcher. Run its dry-run
   first and add `-Execute` only after the handoff and scientific authorization
   are complete. Keep adjacent short operations in the current qualified task
   when the protocol says a switch would not amortize.
+- Optimize model boundaries for the remaining task's total uncached tokens and
+  official credit-equivalent cost. Batch adjacent same-class operations that
+  share context and authorization; never use cost amortization to cross a
+  scientific, engineering, or locked-test boundary.
 - New rule text must follow the repository document layers in
   `experience_docx/README.md`. Keep one canonical source per rule; other files
   should link to that source instead of copying the rule body. Do not mix

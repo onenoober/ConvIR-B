@@ -1,6 +1,6 @@
 # Experiment Rules Router
 
-Date: 2026-07-13
+Date: 2026-07-14
 
 Status: lightweight router for model experiment rules.
 
@@ -35,7 +35,7 @@ do not reduce any required gate.
 | L2 source policy | `OFFICIAL_ARCH_ANCHOR_POLICY.md`, `Haze4K_ARCH_FINETUNE_WORKFLOW.md` | Anchor/source rules plus Haze4K partial-load, initialization, and trainable-scope guidance. |
 | L3 design aids | `ROUTE_DESIGN_FRAMEWORK.md`, `EXPERIMENT_GOVERNANCE_PROTOCOL.md`, `EXPERIMENT_CARD_TEMPLATE.md`, `CONVIR_B_EXECUTION_GUIDE.md` | Deeper design guidance, baseline contracts, and card templates. |
 | L4 evidence indexes | `EXPERIMENT_INDEX.md`, `family_summaries/`, `experiment_cards/`, `experiment_logs/<route_id>/README.md` | Route state, decisions, evidence paths, and compact results. |
-| L5 archives, cleanup maps, and rule audits | `COMMAND_RELIABILITY_PROTOCOL.md`, `CLOUD_PY310_ENVIRONMENT.md`, `BRANCH_ROUTE_INDEX.md`, `WORKFLOW_CHANGE_EVALUATION_20260712.md`, `SCIENTIFIC_FRAMEWORK_CHANGE_EVALUATION_20260713.md`, `MODEL_ROUTING_WORKFLOW_EVALUATION_20260713.md`, `MODEL_ROUTING_IDENTITY_CONTINUITY_EVALUATION_20260713.md`, historical logs | Historical, deep troubleshooting, remote-branch cleanup, or workflow-change audit context; do not read by default. |
+| L5 archives, cleanup maps, and rule audits | `COMMAND_RELIABILITY_PROTOCOL.md`, `CLOUD_PY310_ENVIRONMENT.md`, `BRANCH_ROUTE_INDEX.md`, `WORKFLOW_CHANGE_EVALUATION_20260712.md`, `SCIENTIFIC_FRAMEWORK_CHANGE_EVALUATION_20260713.md`, `MODEL_ROUTING_WORKFLOW_EVALUATION_20260713.md`, `MODEL_ROUTING_IDENTITY_CONTINUITY_EVALUATION_20260713.md`, `MODEL_ROUTING_UNKNOWN_HOST_TOTAL_COST_EVALUATION_20260714.md`, historical logs | Historical, deep troubleshooting, remote-branch cleanup, or workflow-change audit context; do not read by default. |
 
 ## Future Text Placement
 
@@ -82,7 +82,7 @@ reusable or too large for the route card.
 
 | Task | Read first | Then only if needed | Do not read by default |
 | --- | --- | --- | --- |
-| Choose an agent model, reduce token cost, compact, or hand off | `MODEL_AGENT_COST_ROUTING_PROTOCOL.md` | `MODEL_ROUTING_WORKFLOW_EVALUATION_20260713.md` only for qualification or rule audit | Unrelated route history and full chat transcript |
+| Choose an agent model, reduce token cost, compact, or hand off | `MODEL_AGENT_COST_ROUTING_PROTOCOL.md` | Relevant dated model-routing evaluation only for qualification or rule audit | Unrelated route history and full chat transcript |
 | Current status, result, decision, or route memory | GitHub `main` or named branch copy of `EXPERIMENT_INDEX.md` | Relevant family summary, route card, evidence README/log dir | Local dirty checkout, chat history, unrelated route logs |
 | New route, method, loss, selector, teacher, or audit | `MODEL_EXPERIMENT_START_CHECKLIST.md` | `ROUTE_DESIGN_FRAMEWORK.md`, `EXPERIMENT_CARD_TEMPLATE.md`, relevant family summary | Full governance package |
 | Gate design, threshold, or scientific interpretation | `EXPERIMENT_GOVERNANCE_PROTOCOL.md` section `Gate Policy` | Relevant route card and metric contract | Unrelated historical gate files |

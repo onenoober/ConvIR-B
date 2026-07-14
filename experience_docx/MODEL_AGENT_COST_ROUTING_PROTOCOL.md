@@ -1,6 +1,6 @@
 # Model-Agent Cost Routing Protocol
 
-Date: 2026-07-13
+Date: 2026-07-14
 
 Status: canonical L2 protocol for selecting the cheapest qualified agent model
 without changing experiment semantics or weakening execution gates.
@@ -47,41 +47,74 @@ model id/version, case manifest, exact critical-field score, unauthorized-action
 count, decision, and reviewer. The workflow evaluation file is not itself a
 qualification pass.
 
-## Active Model Identity And Effort
+## Host Identity Modes And Effort
 
-Model identity is task configuration, not experiment evidence. Establish it
-before applying a role floor, using the first available source in this order:
+Host identity is task configuration, not experiment evidence. It controls
+whether the current host may execute work itself; it is not needed to select an
+explicit child model. Use one of these modes:
 
-1. a dispatcher receipt or product-supplied task metadata;
-2. current-session CLI `/status` output;
-3. for an interactive Codex App task with no machine-readable identity tool, an
-   explicit current-turn user confirmation of the visible model selector.
+| Mode | Source | Lifetime | Host behavior |
+| --- | --- | --- | --- |
+| `dispatcher_receipt` | verified child receipt | child task | Execute only the received class and bounded action. |
+| `product_metadata` or `cli_status` | product-supplied metadata or current CLI `/status` | current task/session | The qualified host may execute or dispatch under the amortization rule. |
+| `user_pinned_task` | user explicitly names the visible model and effort and states that they remain fixed | current interactive task | Reuse the pin across turns without asking again. |
+| `unknown` | no trustworthy identity receipt | until a trustworthy source appears | Apply the routing table and dispatch; do not perform the routed experiment action itself. |
 
-The third source is valid only for the current interactive task. It must never
-be reused as experiment evidence, copied from old chat history, or propagated
-into an unattended child task. A dispatched child uses the dispatcher receipt,
-because the dispatcher starts it with an explicit `--model` and effort.
+A `user_pinned_task` identity remains valid across ordinary turns and context
+compaction in the same interactive task. Invalidate it on a new/forked task, an
+explicit `/model` or `/reasoning` change, conflicting product metadata, loss of
+task continuity, or user withdrawal. When it becomes invalid, fall back to
+`unknown`; do not ask for confirmation merely to launch an explicit child.
+The pin is never experiment evidence and is never propagated as a child
+identity. A dispatched child uses its dispatcher receipt.
 
-Shell environment variables are not a required identity channel. Do not infer
-that a task is unqualified because `CODEX_MODEL`, `OPENAI_MODEL`, or a similar
-variable is absent from a tool subprocess. If two valid identity sources
-conflict, prefer current product metadata or the dispatcher receipt; otherwise
-stop and ask the user to confirm the visible current-task selection.
+Host identity is audit data for model switching. It does not constrain whether
+the dispatcher may route down, up, or laterally. Any host may perform the
+minimal orchestration needed to classify the requested action with the
+canonical table and create, dry-run, and execute a dispatcher request. An
+unknown host must not perform the routed experiment action itself. Use one of
+two routing bases:
 
-Reasoning effort is a minimum, not an equality check. The order used by this
-protocol is `low < medium < high < xhigh`; therefore `xhigh` satisfies a `high`
-requirement. A higher qualified model or effort may perform a lower-class task.
-This does not require a down-route when a switch would not amortize.
+1. `typed_handoff`: copy the exact class, role, authorization tuple, and bounded
+   action from a durable GitHub handoff and cite it as
+   `routing_basis_ref=github:<commit>:<path>`;
+2. `dispatcher_classification`: apply the hard task-class assignments in this
+   protocol. Clear bounded work may be routed to a lower qualified role
+   regardless of the host model. Any ambiguity about scientific meaning,
+   failure class, authorization, canary, or locked test is `R3` / `frontier` /
+   `high`.
 
-The standard marker remains machine-compatible:
+This classification grants no experiment authority to the host; the explicitly
+selected child owns the bounded action. If the dispatcher is unavailable,
+either establish a known qualified host for direct execution or stop. Manual
+selector confirmation is a fallback for direct execution, not a prerequisite
+for routing.
+
+Shell environment variables are not an identity channel. Missing
+`CODEX_MODEL`, `OPENAI_MODEL`, or similar variables are non-evidence. When two
+known sources conflict, prefer a dispatcher receipt or current product metadata
+over a user pin and invalidate the weaker source.
+
+Reasoning effort is a minimum, not an equality check. The order is
+`low < medium < high < xhigh`; `xhigh` therefore satisfies a `high` minimum. A
+higher qualified model or effort may perform a lower-class task when keeping
+the current context minimizes the remaining task's total token and credit cost.
+
+Known tasks use the standard marker:
 
 ```text
 MODEL_ROUTE class=<class> role=<stable-role> effort=<active-effort>
 ```
 
-When identity did not come from a dispatcher receipt, record the source in the
-adjacent progress text. Do not add unvalidated fields to the dispatcher marker
-or request schema.
+An unknown orchestration host may report:
+
+```text
+MODEL_ROUTE class=R0_READ_ONLY role=unknown effort=unknown
+```
+
+Dispatcher children must always use a known role and known effort. Record the
+host identity mode in adjacent progress text or in the schema-v2 request; do not
+add identity fields to the marker itself.
 
 ## Non-Negotiable Reliability Invariants
 
@@ -180,8 +213,8 @@ never grants `R2` or `R3` authority to `fast`, or `R3` authority to `balanced`.
 
 ## Fail-Closed Switching
 
-The active task cannot assume that a model switch happened. When the task class
-requires a higher role than the active model:
+The active task cannot assume that a model switch happened. A known host whose
+task class requires a higher role must:
 
 1. stop before the next external write, launch, commit, push, or scientific
    decision;
@@ -190,11 +223,12 @@ requires a higher role than the active model:
 3. resume in a new task or after an explicit model switch;
 4. reread only the minimal durable handoff, not the prior chat transcript.
 
-Apply the identity-source contract above before declaring identity unavailable.
-For an unattended task with no dispatcher receipt, product metadata, or current
-CLI status, allow `R0` only. For an interactive Codex App task, request a
-current-turn selector confirmation before failing closed. Missing shell
-environment variables are never negative evidence.
+Model switching never compares the source role with the target role. The host
+uses `task_routing` to launch the lowest qualified role for the declared class,
+whether that is a downgrade, upgrade, or same-role child, and then stops owning
+the dispatched action. Do not require the user to reveal or change the host
+selector for this path. A known host role matters only when deciding whether the
+current host may execute an action without dispatch.
 
 Do not claim an automatic in-task switch without a verified product capability.
 The repository dispatcher creates a new ephemeral Codex task; it does not
@@ -204,17 +238,21 @@ through an ordinary prompt or subagent.
 
 ## Deterministic External Dispatcher
 
-Repository state: enabled for qualified task boundaries after the dated
-dispatcher validation in `model_agent_dispatcher/20260713/README.md`.
+Repository state: the known-source v1 behavior is validated in
+`model_agent_dispatcher/20260713/README.md`. Schema-v2 unknown-host and
+task-pinned behavior is implemented with a fail-closed static audit in
+`MODEL_ROUTING_UNKNOWN_HOST_TOTAL_COST_EVALUATION_20260714.md`; run its dated
+end-to-end validation before promoting that candidate to GitHub `main`.
 
 Use `experience_docx/tools/dispatch_agent_task.ps1` when an explicit model-task
 boundary passes the switching and context-amortization rules below. Its request
 contract is owned by
 `experience_docx/tools/agent_model_dispatch_request.schema.json`.
 
-The dispatcher is not a classifier and must not make an extra model call to
-choose a role. The active task classifies its current operation, writes one
-schema-valid request from the durable handoff fields, and then stops that scope.
+The dispatcher does not make an extra model call to choose a role. The host acts
+as the scheduler: it copies a typed handoff or mechanically applies the task
+class table, writes one schema-valid request, and stops that scope. Ambiguous
+classification is always declared `R3`, not guessed downward.
 The external process fetches `github/main`, rejects a stale rules commit, parses
 the canonical role and qualification tables, validates the route worktree HEAD,
 and starts exactly one ephemeral `codex exec` task with the selected model.
@@ -224,20 +262,32 @@ to Terra or Luna.
 
 Dispatch is allowed only for:
 
-- required escalation to a stronger role;
+- source-independent `task_routing` to the qualified role for the declared
+  class;
 - standalone repeated or batched bounded work delegated to a cheaper role; or
 - an explicit major handoff, including a same-role fresh task.
 
 Do not dispatch one adjacent short operation merely because a cheaper model is
-qualified. Keep it in the current task when reloading context would cost more.
-The request must identify both source and target roles plus one allowed dispatch
-reason so this boundary is mechanically auditable.
+qualified when a known qualified host will continue it more cheaply in the
+warm context. A pure scheduling host instead batches adjacent operations with
+the same class, route commit, authorization, and context into one bounded child
+request. The schema-v2 request records source identity/role/effort for audit,
+but only target class/role/effort, qualification, and authorization affect
+dispatch acceptance.
 
 Conversely, do not keep an independent lower-class scope on the user's default
 model merely for convenience. Repeated/long monitoring, a standalone bounded
 status or evidence batch, and written-design-to-engineering handoffs are the
 intended cost-saving boundaries. The dispatcher validation records successful
 explicit selection of Luna for `R0/R1`, Terra for `R2`, and Sol for `R3`.
+
+For `typed_handoff`, `routing_basis_ref` must use
+`github:<commit>:<path>`; the dispatcher fetches the commit from `github` and
+fails if the path does not exist. `dispatcher_classification` uses no reference.
+The dispatcher does not enforce source/target rank direction. It enforces the
+declared class floor, dated target qualification, target effort, route identity,
+and authorization contract. A host may therefore route to a cheaper, stronger,
+or same role without exposing its own identity.
 
 Before any tool call, the child task must emit the exact `MODEL_ROUTE` marker
 and acknowledge the dispatcher handoff SHA. The dispatcher fails if the marker
@@ -260,7 +310,8 @@ copying it.
 
 | Boundary | Task class / role | Dispatcher action |
 | --- | --- | --- |
-| Bottleneck synthesis, route question, gate or metric design | `R3` / `frontier` | Escalate through the dispatcher when the active role is lower; otherwise remain in the current frontier task. |
+| Unclassified or ambiguous large task | `R3` / `frontier` | Use `task_routing`; require one frontier planning child to write a compact whole-task routing plan before lower-role work. |
+| Bottleneck synthesis, route question, gate or metric design | `R3` / `frontier` | Route to frontier independently of source identity, or remain only when a known frontier host is intentionally executing the warm envelope. |
 | Written design to fresh workspace, tracked runner, engineering repair | `R2` / `balanced` | Dispatch one standalone or batched engineering scope when it amortizes context reload. |
 | Exact-tuple preflight, authorized launch, repeated monitor, explicit evidence fetch | `R1` / `fast` | Dispatch a bounded batch only after `route_id`, `state`, `decision`, and `authorizes` are machine-verified. Keep a short adjacent preflight/launch/monitor sequence in the current qualified balanced task. |
 | Result interpretation, terminal gate, family verdict, reopen/promotion decision | `R3` / `frontier` | Required escalation before scientific interpretation or a verdict-changing write. |
@@ -273,9 +324,10 @@ preflight/launch/monitor batch is an `R1` Luna boundary; final interpretation
 returns to an `R3` Sol task. This is the normal cost-saving route, not an
 exception.
 
-The route card must record the planned task boundaries, minimum roles, and
-whether each eligible down-route is expected to amortize. At a boundary that is
-eligible for dispatch, create the schema-valid request, run
+The route card must record the host identity mode, routing basis, planned task
+boundaries, minimum roles, atomic batches, and whether each optional down-route
+reduces projected whole-task tokens and credits after context reload. At an
+eligible boundary, create the schema-valid request, run
 `dispatch_agent_task.ps1` without `-Execute`, review `MODEL_DISPATCH_DRY_RUN_OK`,
 then rerun with `-Execute`. The child owns exactly the request's `next_action`;
 it must not continue into the next scientific or engineering class.
@@ -295,15 +347,23 @@ It selects the local agent task that will invoke the existing route setup,
 `convir-ops`, monitoring, closeout, or sync tools. This keeps model-cost routing
 orthogonal to GPU execution and experiment semantics.
 
-If an eligible boundary is deliberately kept in the current task because the
-switch would not amortize, record `dispatch=not_amortized` in the route card's
-agent-routing plan. If dispatch is required by role, `not_amortized` is not an
-override: fail closed and switch.
+If an eligible boundary is deliberately kept in a known qualified task because
+the switch would not amortize, record `dispatch=not_amortized` and the bounded
+remaining scope in the route card's agent-routing plan. Unknown hosts cannot
+use `not_amortized`. If dispatch is required by role, `not_amortized` is never
+an override.
 
-## Token And Time Budget
+## Whole-Task Token, Credit, And Time Budget
 
-Reduce tokens by shrinking context first and model price second.
+Optimize the remaining user-visible task, not the next tool call. Scientific
+authority and written authorization are hard constraints. Among safe plans,
+minimize total uncached input plus output/reasoning tokens first, then official
+credit-equivalent cost and wall time. Track cached input separately; do not call
+a high-cache plan token-free.
 
+- For an unclassified or ambiguous large task, pay for at most one frontier
+  planning child per continuous scope; reuse its durable routing plan until the
+  scope changes.
 - Start a fresh task at a terminal route decision or explicit major handoff.
 - Compact only after the current closeout/evidence is durably committed; never
   compact away unsynced authorization or failure details.
@@ -320,13 +380,28 @@ Reduce tokens by shrinking context first and model price second.
 - Do not use token caps that can interrupt a required launch audit, closeout, or
   sync halfway through. Budget by task boundary instead.
 
-Amortize model switches. Keep adjacent `R0`/`R1` operations such as preflight,
-launch, short monitoring, and intermediate route-branch archival in one
-qualified `balanced` task when opening a separate fast task would reload the
-same context. Use a separate `fast` task for standalone status checks, repeated
-or long monitoring, or batches of identical bounded operations. Choose the
-lowest total context and model cost, not the lowest price for each individual
-turn.
+For every optional dispatch, compare the remaining-envelope alternatives:
+
+```text
+keep = incremental current-context work at the known host role
+dispatch = request/handoff + child context reload + child work at target role
+```
+
+Dispatch only when the child is required for authority or the second plan is
+expected to reduce total credits without a dominated increase in total
+uncached tokens. When estimates are uncertain for one short adjacent action,
+keep the known qualified context. When several same-class operations share the
+same route commit, authorization, evidence set, and stop condition, group them
+as one atomic batch. An atomic batch may include preflight, an already
+authorized launch, and short monitoring only when all remain `R1` and the child
+can stop before interpretation or engineering repair.
+
+Amortize model switches. Keep adjacent `R0`/`R1` operations in one known
+qualified `balanced` task when opening a fast task would reload more context
+than the remaining work. Use one `fast` child for standalone status, repeated
+or long monitoring, or a batch of identical bounded operations. Do not launch a
+new child per poll. A task-scoped user pin avoids repeated identity checks but
+does not justify keeping later independent work on a more expensive role.
 
 Do not recompute the class downward after every read. First close the active
 task envelope, then dispatch its independent continuation. This avoids both the
@@ -339,6 +414,9 @@ Minimum handoff payload:
 rules_commit=<github/main SHA>
 route_branch_commit=<SHA>
 route_id=<id>
+source_identity=<unknown or trusted source>
+routing_basis=<dispatcher_classification or typed_handoff>
+routing_basis_ref=<github:commit:path or none>
 stage_state=<typed state>
 decision=<typed decision>
 authorizes=<exact next action or none>
@@ -351,17 +429,19 @@ handoff.
 
 ## Recommended Default
 
-Use `frontier` until the dated Terra/Luna qualification result exists. After
-qualification, use `balanced`/medium for a new experiment task whose class is
-not yet known. Down-route a fresh bounded task to `fast` only when classification,
-qualification, exact authorization checks, and switch amortization all pass.
-Escalate to `frontier` before scientific design or interpretation. This default
-avoids paying frontier cost for routine operations without making a lower-cost
-model the owner of an ambiguous or high-impact decision.
+Use a task-scoped pin when the user explicitly fixes the current host model and
+effort; otherwise record the host as unknown without asking. In both cases, the
+host may route a clear class to its lowest qualified target. Route ambiguous
+work to `frontier`/high, independent `R2` work to `balanced`/medium, and
+amortized `R0`/exact `R1` batches to `fast` low/medium after the dated
+qualifications. Return to `frontier`/high for scientific design or
+interpretation.
 
-An explicitly selected stronger interactive model is accepted when established
-by the identity contract, but it is not inherited by dispatcher children. At
-each durable boundary, select the cheapest qualified role for the new envelope.
+An explicitly selected stronger interactive model is not inherited by
+dispatcher children. Keep it only while its warm context is cheaper for the
+remaining bounded envelope; otherwise select the cheapest qualified role at the
+next durable boundary. This avoids both repeated cold starts and the much larger
+cost of running the entire experiment lifecycle on the strongest model.
 
 Official product references used for the dated mapping:
 
