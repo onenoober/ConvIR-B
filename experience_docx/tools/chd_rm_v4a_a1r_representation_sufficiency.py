@@ -190,33 +190,53 @@ def feature_stats(items: list[dict[str, Any]], representation: str) -> tuple[tor
     return mean.to(dtype=torch.float32).view(1, -1, 1, 1), std.to(dtype=torch.float32).view(1, -1, 1, 1)
 
 
-def shuffled_targets(items: list[dict[str, Any]]) -> dict[tuple[str, str], torch.Tensor]:
-    result: dict[tuple[str, str], torch.Tensor] = {}
-    for operator in SOURCE.V3W.OPERATORS:
-        values = sorted((item for item in items if item["operator"] == operator), key=lambda row: row["name"])
+def spatial_shape(item: dict[str, Any]) -> tuple[int, int]:
+    return tuple(int(value) for value in item["target_low"].shape[-2:])
+
+
+def shape_batches(items: list[dict[str, Any]], batch_size: int) -> list[list[dict[str, Any]]]:
+    grouped: dict[tuple[int, int], list[dict[str, Any]]] = defaultdict(list)
+    for item in items:
+        grouped[spatial_shape(item)].append(item)
+    batches: list[list[dict[str, Any]]] = []
+    for shape in sorted(grouped):
+        values = sorted(grouped[shape], key=lambda row: (row["name"], row["operator"]))
+        batches.extend(values[offset:offset + batch_size] for offset in range(0, len(values), batch_size))
+    return batches
+
+
+def shuffled_target_mapping(items: list[dict[str, Any]]) -> dict[tuple[str, str], tuple[str, torch.Tensor]]:
+    grouped: dict[tuple[str, tuple[int, int]], list[dict[str, Any]]] = defaultdict(list)
+    for item in items:
+        grouped[(str(item["operator"]), spatial_shape(item))].append(item)
+    result: dict[tuple[str, str], tuple[str, torch.Tensor]] = {}
+    for (operator, shape), group in sorted(grouped.items()):
+        values = sorted(group, key=lambda row: row["name"])
         if len(values) < 2:
-            raise RuntimeError("shuffle control requires at least two names per operator")
+            raise RuntimeError(f"shuffle control requires at least two names per operator/shape block: {operator}/{shape}")
         for index, item in enumerate(values):
             other = values[(index + 1) % len(values)]
             if other["name"] == item["name"]:
                 raise RuntimeError("shuffle produced a self-pair")
             if other["target_low"].shape != item["target_low"].shape:
-                raise RuntimeError("cross-image shuffle requires identical target shapes")
-            result[(item["name"], operator)] = other["target_low"]
+                raise RuntimeError("shape-blocked shuffle produced unequal target shapes")
+            result[(str(item["name"]), operator)] = (str(other["name"]), other["target_low"])
     return result
 
 
+def shuffled_targets(items: list[dict[str, Any]]) -> dict[tuple[str, str], torch.Tensor]:
+    return {key: value[1] for key, value in shuffled_target_mapping(items).items()}
+
+
 def shuffled_mapping_identity(items: list[dict[str, Any]]) -> str:
-    mapping: dict[str, str] = {}
-    for operator in SOURCE.V3W.OPERATORS:
-        names = sorted({str(item["name"]) for item in items if item["operator"] == operator})
-        if len(names) < 2:
-            raise RuntimeError("shuffle identity requires at least two names per operator")
-        for index, name in enumerate(names):
-            other = names[(index + 1) % len(names)]
-            if other == name:
-                raise RuntimeError("shuffle identity produced a self-pair")
-            mapping[f"{operator}:{name}"] = other
+    by_key = {(str(item["name"]), str(item["operator"])): item for item in items}
+    mapping = {
+        f"{operator}:{name}": {
+            "target_name": target_name,
+            "spatial_shape": list(spatial_shape(by_key[(name, operator)])),
+        }
+        for (name, operator), (target_name, _) in shuffled_target_mapping(items).items()
+    }
     return canonical_hash(mapping)
 
 
@@ -246,19 +266,18 @@ def train_probe(
     ).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=audit.learning_rate, weight_decay=audit.weight_decay)
     shuffled = shuffled_targets(items) if bool(spec["shuffled"]) else {}
-    ordered = sorted(items, key=lambda row: (row["name"], row["operator"]))
+    ordered_batches = shape_batches(items, audit.batch_size)
     epochs = 1 if smoke else audit.epochs
-    max_batches = 2 if smoke else math.ceil(len(ordered) / audit.batch_size)
+    max_batches = 2 if smoke else len(ordered_batches)
     history: list[dict[str, Any]] = []
     first_gradient_norm = 0.0
     for epoch in range(1, epochs + 1):
         model.train()
         total_loss = 0.0
         batches = 0
-        for offset in range(0, len(ordered), audit.batch_size):
+        for batch in ordered_batches:
             if smoke and batches >= max_batches:
                 break
-            batch = ordered[offset:offset + audit.batch_size]
             features = torch.cat([item_features(row, representation) for row in batch]).to(device)
             current = torch.cat([row["current_low"] for row in batch]).to(device)
             support = torch.cat([row["support_low"] for row in batch]).to(device)
@@ -557,8 +576,38 @@ def run_a1r(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
         (tuple(item["output_features"].shape), tuple(item["context_base"].shape), tuple(item["target_low"].shape))
         for item in cache
     }
-    if len(feature_shapes) != 1:
-        raise RuntimeError(f"A1R cached feature shapes differ: {len(feature_shapes)}")
+    channel_signatures: set[tuple[int, int, int, int, int]] = set()
+    shape_name_sets: dict[tuple[int, int], set[str]] = defaultdict(set)
+    for item in cache:
+        tensor_shapes = {
+            tuple(value.shape[-2:])
+            for value in (
+                item["output_features"], item["context_base"], item["support_low"],
+                item["current_low"], item["target_low"],
+            )
+        }
+        if len(tensor_shapes) != 1:
+            raise RuntimeError(f"A1R cached tensors disagree spatially for {item['name']}/{item['operator']}")
+        if any(int(value.shape[0]) != 1 for value in (
+            item["output_features"], item["context_base"], item["support_low"],
+            item["current_low"], item["target_low"],
+        )):
+            raise RuntimeError("A1R cache requires one image per cached item")
+        shape = spatial_shape(item)
+        shape_name_sets[shape].add(str(item["name"]))
+        channel_signatures.add((
+            int(item["output_features"].shape[1]), int(item["context_base"].shape[1]),
+            int(item["support_low"].shape[1]), int(item["current_low"].shape[1]),
+            int(item["target_low"].shape[1]),
+        ))
+    if len(channel_signatures) != 1:
+        raise RuntimeError(f"A1R cached channel signatures differ: {len(channel_signatures)}")
+    if any(len(names_in_shape) < 2 for names_in_shape in shape_name_sets.values()):
+        raise RuntimeError("A1R shape-blocked shuffle lacks two names in a spatial block")
+    spatial_shape_name_counts = {
+        f"{shape[0]}x{shape[1]}": len(names_in_shape)
+        for shape, names_in_shape in sorted(shape_name_sets.items())
+    }
     output = Path(output_dir)
     source_path = output / f"{args.run_tag}_source_manifest.json"
     source = json.loads(source_path.read_text(encoding="utf-8"))
@@ -576,7 +625,8 @@ def run_a1r(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
         "weight_decay": audit.weight_decay,
         "grad_clip_norm": audit.grad_clip_norm,
         "seed": audit.seed,
-        "shuffle_rule": "within_operator_sorted_training_names_cyclic_plus_one",
+        "batch_rule": "exact_spatial_shape_blocks_then_sorted_name_operator_slices_no_resize_crop_or_padding",
+        "shuffle_rule": "within_operator_and_exact_spatial_shape_sorted_training_names_cyclic_plus_one",
         "bootstrap_replicates": BOOTSTRAP_REPLICATES,
         "thresholds": {
             "gain_db": GAIN_THRESHOLD_DB,
@@ -605,6 +655,7 @@ def run_a1r(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
         "stage_name_count": len(stage_names),
         "sample_shapes": [list(value) for value in sorted(sample_shapes)],
         "feature_shapes": [[list(shape) for shape in value] for value in sorted(feature_shapes)],
+        "spatial_shape_name_counts": spatial_shape_name_counts,
         "probe_config": config,
         "probe_config_sha256": canonical_hash(config),
         "locked_test_touched": False,
@@ -616,6 +667,7 @@ def run_a1r(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
     zero_max = 0.0
     gradient_min = math.inf
     shuffle_self_pairs = 0
+    shuffle_mapping_count = 0
     bound_excess_max = 0.0
     support_excess_max = 0.0
     histories: list[dict[str, Any]] = []
@@ -640,15 +692,18 @@ def run_a1r(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
             histories.extend(history)
             gradient_min = min(gradient_min, gradient)
             if bool(spec["shuffled"]):
-                mapping = shuffled_targets(cache)
-                shuffle_self_pairs += sum(key[0] == "" for key in mapping)
+                mapping = shuffled_target_mapping(cache)
+                shuffle_self_pairs += sum(name == target_name for (name, _), (target_name, _) in mapping.items())
+                shuffle_mapping_count = len(mapping)
         structural_valid = (
             len(cache) == 32 * len(SOURCE.V3W.OPERATORS)
-            and len(feature_shapes) == 1
+            and len(feature_shapes) == len(shape_name_sets)
+            and all(len(names_in_shape) >= 2 for names_in_shape in shape_name_sets.values())
             and zero_max == 0.0
             and math.isfinite(gradient_min)
             and gradient_min > 0.0
             and shuffle_self_pairs == 0
+            and shuffle_mapping_count == len(cache)
             and not set(parent_names) & set(stage_names)
         )
         state = "COMPLETED_GATE_PASS" if structural_valid else "COMPLETED_GATE_FAIL"

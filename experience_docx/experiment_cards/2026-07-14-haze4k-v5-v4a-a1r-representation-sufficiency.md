@@ -96,7 +96,7 @@ head/objective rather than missing deployable representation information.
 
 - Design type: `full_factorial`
 - Why this is the cheapest design that identifies the estimand: frozen maps are cached once and small probes isolate representation, local spatial capacity, and mapping validity before any full image model training.
-- Experimental unit and randomization/pairing: fixed image groups; all cells/operators share folds, cache, target, optimizer schedule, and evaluation draws; target shuffle is a deterministic within-operator cyclic permutation of training images.
+- Experimental unit and randomization/pairing: fixed image groups; all cells/operators share folds, cache, target, optimizer schedule, and evaluation draws; exact spatial size is a nuisance block for batching and the target shuffle is a deterministic within-operator-and-size-block cyclic permutation of training images.
 - Blocking, exclusion, failure, and missing-cell policy: four fixed OOF folds block image identity; no row is excluded; any missing fold/cell/name/operator, nonfinite value, state/hash mismatch, or unsafe selected row fails closed.
 - Formal subgroup definitions and pre-intervention/independent source: representation, readout, operator, and fresh fold only; A1F harm strata may be descriptive but cannot alter gates.
 - Primary comparison family and multiplicity treatment: one preregistered primary context-spatial gate; other 2x2 cells are paired mechanism controls and cannot independently authorize continuation.
@@ -117,7 +117,7 @@ Factor family:
 | `output_spatial` | same output12 | zero-init 3x3-depthwise-1x1 local head | true | output information control |
 | `context_linear` | frozen full context plus output12 | zero-init 1x1 linear | true | context linear separability |
 | `context_spatial` | frozen full context plus output12 | zero-init local spatial head | true | preregistered primary |
-| `context_spatial_shuffled` | same as primary | same local spatial head | cyclic cross-image target permutation within operator/train fold | mapping control |
+| `context_spatial_shuffled` | same as primary | same local spatial head | cyclic cross-image target permutation within operator/exact-size/train-fold block | mapping control |
 
 ## Adaptive Decision Paths
 
@@ -131,7 +131,7 @@ Factor family:
 ## Change
 
 - Code branch: `codex/haze4k-v5-v4a-a1r-representation-sufficiency-20260714`.
-- Exact code/config change: add a no-deployment probe audit that restores the exact v3z state, constructs the fixed A1F target on fresh names, trains five small OOF cells, and evaluates predicted direction through the unchanged safe grid.
+- Exact code/config change: add a no-deployment probe audit that restores the exact v3z state, constructs the fixed A1F target on fresh names, trains five small OOF cells, and evaluates predicted direction through the unchanged safe grid. After smoke r1 exposed the two native Haze4K spatial sizes, batch construction and the shuffled control were amended before any probe update to block on exact feature size without resize, crop, or padding.
 - Enabled mechanisms: fold-specific feature normalization, direct bounded target-endpoint regression, 2x2 representation/readout factors, shuffled target control, paired safe-grid replay, and grouped bootstrap.
 - Explicitly disabled mechanisms: ConvIR/control/operator/current-head updates, renderer/safety loss tuning, action-bound/support expansion, selector/threshold/policy fitting, candidate selection, canary, locked test, and architecture promotion.
 - Parameter/runtime/memory impact expected: diagnostic probes only, final states under `RUN_ROOT`; one frozen cache/evaluation pass per image plus 20 small fold/cell fits.
@@ -148,7 +148,7 @@ Factor family:
 | parent authorization | A1F R3 review SHA `a8b9064308710ac5fc890b9de0158c1faddb4d51f7d298d4991e9ddfb3616e1d` authorizes `A1R_ROUTE_DESIGN_ONLY` | source complete; runtime recheck required |
 | state/source identity | A0R final state, v3z/A1F commits, source/asset hashes exact | runtime recheck required |
 | data isolation | exact fresh indices 256:768, zero overlap with A1F 0:256, four folds of 128 | static complete; runtime recheck required |
-| factor contract | five complete cells, true/shuffled mapping identities, zero-init current-state equality | static complete; smoke required |
+| factor contract | five complete cells, true/shuffled mapping identities within exact spatial-size blocks, zero-init current-state equality | static complete; smoke required |
 | GPU capacity | selected GPU has at least 18,000 MiB free and at most 10% utilization | dynamic check required |
 
 ## Mechanism Metrics
@@ -175,7 +175,7 @@ Factor family:
 
 | Evidence source or groups | Role | Allowed uses | Forbidden uses |
 | --- | --- | --- | --- |
-| first 32 fresh names smoke | `engineering_debug` | source, fold, no-op, finite gradient, mapping checks | scientific threshold or cell selection |
+| first 32 fresh names smoke | `engineering_debug` | source, fold, native-size block, no-op, finite gradient, mapping checks | scientific threshold or cell selection |
 | fresh512 four-fold OOF | `development_screening` | primary representation decision and mechanism controls | promotion or independent confirmation |
 | A1F 0:256 names/results | historical parent evidence | thresholds and target contract only | A1R training, validation, or rescue |
 | Haze4K locked test | `sealed_final` | none in A1R | all access |
@@ -189,7 +189,7 @@ Factor family:
 ## Fair Run Contract
 
 - Training or inference budget: smoke caches 32 names and performs two diagnostic updates per cell; formal caches 512 names and trains five cells across four OOF folds for eight epochs each.
-- Batch/sample policy: action-resolution tensors, deterministic batch size eight, both operators as paired items, no exclusions/substitutions/augmentation.
+- Batch/sample policy: native action-resolution tensors, deterministic exact-spatial-size blocks and name/operator order, batch size at most eight, both operators as paired items, no resize/crop/padding, exclusions, substitutions, or augmentation.
 - Optimizer: AdamW LR `5e-4`, weight decay `1e-5`, gradient clip `0.1`, independently reset for every fold/cell.
 - Schedule: constant LR, eight formal epochs, no early stopping or checkpoint selection.
 - Loss weights: one normalized active-support endpoint MSE only; shuffled cell changes only target-name assignment.
@@ -210,7 +210,7 @@ Factor family:
 - Model/checkpoint state path and hash contract: `RUN_ROOT/run-id/models/cell/foldN.pt` plus SHA-256 in `probe_state_manifest.json`; raw states remain cloud-only.
 - Optimizer/scheduler state contract: no resume/dynamics claim, so optimizer state is not retained; fixed optimizer/schedule and final model state are sufficient for OOF reconstruction.
 - RNG states required and unavailable-state disclosure: seed, deterministic flags, fold map, batch order, shuffle map, and PyTorch initial seed are recorded; accelerator RNG snapshot is not required after final deterministic state save.
-- Data-order/sampler identity: sorted fresh names, recorded four-fold assignment, deterministic operator order and batch slices, no stochastic sampler.
+- Data-order/sampler identity: exact-size block then sorted fresh name/operator, recorded four-fold assignment, deterministic batch slices, no stochastic sampler; shuffle maps are cyclic only within operator and exact-size block.
 - Config hash, code commit, Python/environment identity, and parent checkpoint: source manifest records route commit/card SHA, explicit Python, probe config hash, parent source commits, A0R state SHA, and asset hashes.
 - Trace-manifest path and schema: `RUN_ROOT/run-id/probe_state_manifest.json`, schema version 1 with cell/fold/path/hash/train/heldout counts and normalizer shapes.
 - Cloud retention/deletion policy: final states, raw OOF rows, cache diagnostics, histories, logs, and manifests remain under `RUN_ROOT`; in-memory feature caches are released after the run.
@@ -220,7 +220,7 @@ Factor family:
 
 | Stage | Estimand/question | Evidence role and scope | Gate type and threshold | `PASS` authorizes |
 | --- | --- | --- | --- | --- |
-| S0 smoke | Are source, fresh split, target, cells, no-op, and gradients structurally valid? | `engineering_debug`, first 32 fresh names | exact identities/folds/no overlap; zero endpoint discrepancy; all five cells finite with nonzero gradient; shuffle has no self-pair | A1R formal only |
+| S0 smoke | Are source, fresh split, native-size blocks, target, cells, no-op, and gradients structurally valid? | `engineering_debug`, first 32 fresh names | exact identities/folds/no overlap; every size block has at least two names; zero endpoint discrepancy; all five cells finite with nonzero gradient; size-blocked shuffle is complete and has no self-pair | A1R formal only |
 | A1R formal | Does primary frozen context plus local spatial readout contain material target direction information? | `development_screening`, full fresh512 four-fold OOF | 4,000 paired draws; worst-operator primary over-shrink LCB95 `>=+0.020 dB`, oracle-retention LCB95 `>=0.25`, true-minus-shuffle LCB95 `>=+0.005 dB`, repairable LCB95 `>=0.20`, complete family and pointwise safety | R3 handoff for separate target-learning training-contract design only |
 | independent confirmation | not part of A1R | none | prohibited | none |
 | sealed final | not part of A1R | none | prohibited | none |

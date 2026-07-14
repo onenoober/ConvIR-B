@@ -1,0 +1,24 @@
+{
+  "authorizes": "SAME_STAGE_ENGINEERING_REPAIR_ONLY",
+  "canary_touched": false,
+  "decision": null,
+  "evidence_role": "engineering_debug",
+  "failure_class": "engineering",
+  "gate_type": "structural_integrity",
+  "log_path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_smoke_20260714T172916.log",
+  "locked_test_touched": false,
+  "observed_native_image_size_counts": {
+    "smoke_400x400": 2,
+    "smoke_480x640": 30,
+    "formal_400x400": 57,
+    "formal_480x640": 455
+  },
+  "output_path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_s0_smoke_r1",
+  "reason": "All 32 smoke names cached, then the pre-update global feature-shape assertion found two native spatial shapes. No probe update, metric gate, or scientific interpretation occurred.",
+  "route_commit": "bb5f0a2e02d4548827485cd9dde826895fd87c5f",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714",
+  "run_id": "v4a_a1r_s0_smoke_r1",
+  "stage": "v4a-A1R-smoke",
+  "state": "PREFLIGHT_FAILED_ENGINEERING",
+  "training_occurred": false
+}
