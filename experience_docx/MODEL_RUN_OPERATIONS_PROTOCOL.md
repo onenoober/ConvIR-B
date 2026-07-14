@@ -44,6 +44,10 @@ receipt-bound clone. A failed fresh preparation removes only the clone it just
 created and returns recovery state; it never cleans an existing workspace.
 Receipt-bound monitoring emits one final bounded status snapshot and its poll
 count; it does not expose transport wrapper success markers.
+The recommended normal path uses the schema-v2 composed start and finish calls;
+they preserve the same prepare, launch, monitor, and closeout checks internally
+while removing redundant model round trips. The primitive calls remain the
+recovery and audit surface.
 
 The route card records the GitHub `main` rules commit used for this sequence.
 Do not consult the cloud checkout's copies of governance files when they differ;

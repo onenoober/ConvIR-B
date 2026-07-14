@@ -188,6 +188,13 @@ def typed_failure(operation_state, failure_class, message, **kwargs):
     return typed_result(False, operation_state, failure_class, mismatches=[message], **kwargs)
 
 
+def structured_payload(result):
+    payload = result.get("structuredContent")
+    if not isinstance(payload, dict):
+        raise ToolError("internal typed result is missing structuredContent")
+    return payload
+
+
 def failure_class_for_error(error):
     message = str(error).lower()
     if "conflict" in message or "must_not_exist" in message or "collision" in message:
@@ -612,6 +619,56 @@ def tool_closeout_validate(arguments):
         return typed_failure("CLOSEOUT_FAILED", "command_infra", type(exc).__name__)
 
 
+def tool_start_authorized(arguments):
+    """Compose reviewed apply and receipt launch without exposing free-form commands."""
+    prepare_arguments = dict(arguments)
+    idempotency_key = prepare_arguments.pop("idempotency_key", None)
+    prepare_arguments["phase"] = "apply"
+    prepared_result = tool_prepare_authorized(prepare_arguments)
+    prepared = structured_payload(prepared_result)
+    if not prepared["ok"]:
+        return prepared_result
+    receipt = prepared["receipt"]
+    launched_result = tool_receipt_launch({"receipt": receipt, "idempotency_key": idempotency_key})
+    launched = structured_payload(launched_result)
+    context = prepared["expected"]["authorization_tuple"]
+    return typed_result(
+        launched["ok"], launched["operation_state"], launched["failure_class"],
+        observed={
+            "session": context["session"], "output_id": context["output_id"],
+            "remote_repo": context["remote_repo"], "launch_state": launched["operation_state"],
+        },
+        expected={"receipt_digest": prepared["receipt_digest"], "plan_hash": arguments.get("plan_hash")},
+        mismatches=launched["mismatches"], allowed_next_actions=launched["allowed_next_actions"],
+        receipt=receipt, receipt_expires_at=prepared["receipt_expires_at"],
+    )
+
+
+def tool_finish(arguments):
+    """Observe a bounded interval and validate sealed closeout when inactive."""
+    monitor_arguments = {key: arguments[key] for key in ("receipt", "monitor_mode", "max_polls", "interval_seconds") if key in arguments}
+    monitor_arguments.setdefault("monitor_mode", "until_terminal")
+    monitor_arguments.setdefault("max_polls", 15)
+    monitor_arguments.setdefault("interval_seconds", 3)
+    monitored_result = tool_receipt_monitor(monitor_arguments)
+    monitored = structured_payload(monitored_result)
+    if not monitored["ok"] or monitored["operation_state"] == "MONITOR_OBSERVED":
+        return monitored_result
+    closeout_result = tool_closeout_validate({"receipt": arguments.get("receipt"), "terminal_tuple": arguments.get("terminal_tuple")})
+    closeout = structured_payload(closeout_result)
+    monitor_summary = {
+        key: monitored["observed"].get(key)
+        for key in ("active", "terminal", "poll_count", "status")
+    }
+    return typed_result(
+        closeout["ok"], closeout["operation_state"], closeout["failure_class"],
+        observed={"monitor": monitor_summary, "terminal_tuple": closeout["observed"]},
+        expected=closeout["expected"], mismatches=closeout["mismatches"],
+        allowed_next_actions=closeout["allowed_next_actions"],
+        **{key: closeout[key] for key in ("manifest", "archive_candidate") if key in closeout},
+    )
+
+
 def validate_evidence_file(name):
     require_token(name.rsplit(".", 1)[0] if "." in name else "", "evidence filename stem")
     suffix = Path(name).suffix.lower()
@@ -854,6 +911,37 @@ TOOLS = {
         },
         "handler": tool_git_evidence_status,
     },
+}
+
+_start_properties = dict(TOOLS["convir_route_prepare_authorized"]["inputSchema"]["properties"])
+_start_properties.pop("phase")
+_start_properties["idempotency_key"] = {"type": "string"}
+_start_required = [
+    field for field in TOOLS["convir_route_prepare_authorized"]["inputSchema"]["required"]
+    if field != "phase"
+] + ["plan_hash", "idempotency_key"]
+TOOLS["convir_route_start_authorized"] = {
+    "description": "Recommended normal-path composition: after a reviewed prepare plan, apply the exact plan hash and launch its receipt-bound runner in one call.",
+    "inputSchema": {
+        "type": "object", "required": _start_required,
+        "properties": _start_properties, "additionalProperties": False,
+    },
+    "handler": tool_start_authorized,
+}
+TOOLS["convir_route_finish"] = {
+    "description": "Recommended normal-path composition: bounded monitoring followed by sealed closeout validation only after the session is inactive or a sealed terminal tuple is observed.",
+    "inputSchema": {
+        "type": "object", "required": ["receipt", "terminal_tuple"],
+        "properties": {
+            "receipt": {"type": "string"},
+            "terminal_tuple": {"type": "object", "required": ["state", "decision", "authorizes"]},
+            "monitor_mode": {"enum": ["poll", "until_change", "until_terminal"], "default": "until_terminal"},
+            "max_polls": {"type": "integer", "minimum": 1, "maximum": 20},
+            "interval_seconds": {"type": "integer", "minimum": 0, "maximum": 30},
+        },
+        "additionalProperties": False,
+    },
+    "handler": tool_finish,
 }
 
 

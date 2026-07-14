@@ -27,6 +27,8 @@ fragment. Current rules remain canonical in:
 | `convir_route_launch` | receipt-bound idempotent launch of the sealed tracked runner | cloud runtime only; it repeats dynamic preflight and accepts no command, path, or tuple fields |
 | `convir_route_monitor` | receipt-bound bounded `poll`, `until_change`, or server-side `until_terminal` monitoring | read-only observation; it never interprets a gate |
 | `convir_route_closeout_validate` | validates one compact runner closeout against the exact receipt terminal tuple | returns checksum manifest and archive-ready candidate only; never commits or pushes |
+| `convir_route_start_authorized` | recommended composition of reviewed `apply` plus receipt-bound launch | preserves both typed boundaries while removing one model round trip |
+| `convir_route_finish` | recommended composition of bounded monitor plus sealed closeout validation | validates only after terminal observation or session exit; never interprets the scientific gate |
 | `convir_evidence_manifest` | compact top-level evidence names, sizes, hashes | read-only |
 | `convir_evidence_fetch` | explicit compact-file allowlist, one SCP transfer, remote/local SHA-256 verification | copies into a named local Git worktree only; never stages, commits, pushes, or overwrites a mismatched file |
 | `convir_git_evidence_status` | local evidence worktree, GitHub `main` ref freshness, and whitespace audit | read-only; uses `git ls-remote`, never fetches, stages, commits, or pushes |
@@ -77,13 +79,16 @@ private-key material, or tokens in this TOML entry.
 1. Use `convir_route_prepare_authorized` with `phase=plan`, then apply the
    returned plan hash after the typed closeout authorizes the stage. Preparation
    seals the output id and target closeout filename and requires both to be new.
-2. Use `convir_route_launch` once with that receipt and a stable idempotency
-   key. A changed tuple, receipt, session, output identity, or retry requires
-   fresh preparation.
-3. Use `convir_route_monitor` only with the receipt and a bounded mode.
-4. Validate terminal compact evidence with `convir_route_closeout_validate`;
-   the receipt supplies the closeout path, while the caller supplies only one
-   tuple from the sealed allowed set. Review its archive candidate outside the MCP.
+2. On the normal path, use `convir_route_start_authorized` with the reviewed
+   plan hash and a stable idempotency key. Use the separate launch primitive
+   only for recovery or boundary diagnostics. A changed tuple, receipt,
+   session, output identity, or corrected attempt requires fresh preparation.
+3. Use `convir_route_finish` for bounded server-side monitoring and automatic
+   sealed closeout validation. Use the separate monitor/closeout primitives
+   only for recovery or boundary diagnostics.
+4. For separate closeout validation, the receipt supplies the closeout path,
+   while the caller supplies only one tuple from the sealed allowed set. Review
+   its archive candidate outside the MCP.
 5. Review `convir_evidence_manifest`, then call `convir_evidence_fetch` only
    with an explicit compact-file allowlist.
 6. Use `convir_git_evidence_status` before staging to inspect local changes,

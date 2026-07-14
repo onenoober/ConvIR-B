@@ -184,6 +184,30 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
             result = payload(OPS.tool_closeout_validate({"receipt": prepared["receipt"], "terminal_tuple": A0R_TERMINAL_TUPLE}))
         self.assertEqual(expected_hash, result["manifest"]["closeout_sha256"])
 
+    def test_composed_start_and_finish_preserve_receipt_boundaries(self):
+        with patch.object(OPS, "run_remote_body", return_value="CONVIR_OPS_PLAN_GITHUB_OK"):
+            plan = payload(OPS.tool_prepare_authorized({**self.args, "phase": "plan"}))
+        with patch.object(OPS, "run_remote_body", side_effect=[
+            "a" * 64 + "  experience_docx/tools/run_a0r.sh\nCONVIR_OPS_PREFLIGHT_OK",
+            "CONVIR_OPS_LAUNCH_OK",
+        ]) as remote:
+            started = payload(OPS.tool_start_authorized({
+                **self.args, "plan_hash": plan["expected"]["plan_hash"], "idempotency_key": "start-1",
+            }))
+        self.assertTrue(started["ok"])
+        self.assertEqual(2, remote.call_count)
+        closeout = {"route_id": "a0r", **A0R_TERMINAL_TUPLE}
+        finish_outputs = [
+            "CONVIR_OPS_MONITOR_META polls=2 active=false terminal=false\nCONVIR_OPS_MONITOR_STATUS_BEGIN\nV4A_A0R_OK\nCONVIR_OPS_MONITOR_STATUS_END",
+            "CONVIR_OPS_CLOSEOUT_SHA256=" + "b" * 64 + "\nCONVIR_OPS_CLOSEOUT_JSON_BEGIN\n" + json.dumps(closeout) + "\nCONVIR_OPS_CLOSEOUT_JSON_END",
+        ]
+        with patch.object(OPS, "run_remote_body", side_effect=finish_outputs) as remote:
+            finished = payload(OPS.tool_finish({"receipt": started["receipt"], "terminal_tuple": A0R_TERMINAL_TUPLE}))
+        self.assertTrue(finished["ok"])
+        self.assertEqual("CLOSEOUT_VALIDATED", finished["operation_state"])
+        self.assertEqual(2, remote.call_count)
+        self.assertEqual(2, finished["observed"]["monitor"]["poll_count"])
+
     def test_stale_plan_and_unsealed_tuple_are_rejected(self):
         with patch.object(OPS, "run_remote_body", return_value="CONVIR_OPS_PLAN_GITHUB_OK"):
             plan = payload(OPS.tool_prepare_authorized({**self.args, "phase": "plan"}))
@@ -220,6 +244,7 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
         self.assertEqual({
             "convir_route_prepare_authorized", "convir_route_launch",
             "convir_route_monitor", "convir_route_closeout_validate",
+            "convir_route_start_authorized", "convir_route_finish",
             "convir_evidence_manifest", "convir_evidence_fetch",
             "convir_git_evidence_status",
         }, names)
