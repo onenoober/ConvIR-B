@@ -136,9 +136,21 @@ fixed references. Close this frozen projected-head route. Do not tune its
 weights, bounds, gates, sample scope, or safety thresholds; policy, canary, and
 locked test remain blocked.
 
+v4a reconstructed the closed v3z trajectory exactly, separated inherited from
+intervention-added risk, and completed a 256-state, 3-by-3 paired audit of
+historical sequential projection, exact common-intersection projection, actual
+AdamW proposal projection/backtracking, and three risk-window estimators. The
+complete family and joint bootstrap are structurally valid, but no
+nonhistorical cell has a simultaneous harm/CVaR improvement. Exact projection
+is effectively identical to historical; actual-proposal harm/CVaR point
+effects are worse for all windows and both operators. Do not start A0M or tune
+optimizer/window contracts. Only a new metric-aligned privileged A1F bounded
+`Delta-u` action-space feasibility route may be designed; policy, candidate,
+canary, and locked test remain blocked.
+
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
-`experience_docx/experiment_cards/2026-07-13-haze4k-v5-chd-rm-v3z-sealed-confirmation.md`,
-and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713/`
+`experience_docx/experiment_cards/2026-07-14-haze4k-v5-chd-rm-v4a-conditional-safety-audit.md`,
+and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/`
 for current CHD-RM status. Earlier route cards and closeouts remain the authority
 for their own historical decisions.
 
@@ -357,6 +369,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v3x_projected_safety_constraint_20260713/` | compact | v3x exact no-op passed, then per-update projection against anchor/harm/margin/CVaR retained fixed32 activity and `1.69283%` rendered-MSE reduction while meeting v3u safety references. It authorizes only cross-sample low-haze-safety contract design. |
 | `experiment_logs/haze4k_v5_chd_rm_v3y_cross_sample_safety_20260713/` | compact | v3y fixed train32/heldout32 cross-sample confirmation passed activity, positive heldout rendered-MSE reduction, and all fixed v3u safety references. It authorized only the larger sealed internal confirmation. |
 | `experiment_logs/haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713/` | compact | v3z terminal train128/heldout128 confirmation retained train activity and positive heldout rendered-MSE reduction, but heldout anchor and harm exceeded the fixed references. The frozen projected-head route is closed with no further tuning, policy, canary, candidate, or locked-test authorization. |
+| `experiment_logs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/` | compact | v4a exact reconstruction and descriptive decomposition pass; complete A0P finds no local exact/proposal/window safety correction and authorizes only metric-aligned privileged A1F bounded-action feasibility design. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
@@ -491,6 +504,11 @@ The active conclusion is conservative:
   The frozen projected-head route is closed. Do not tune its weights, bounds,
   gates, sample scope, or safety thresholds; policy, canary, candidate training,
   and locked test remain blocked.
+- CHD-RM v4a rules out projection order, the tested AdamW proposal correction,
+  and fixed-versus-shuffled/stratified risk windows as material local repairs
+  for the v3z heldout-safety failure. The next question is bounded action-space
+  feasibility under the same anchor and population, not optimizer retuning or
+  another safety-window search.
 
 ## Artifact Boundary
 
