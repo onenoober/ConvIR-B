@@ -94,6 +94,22 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
         self.assertLessEqual(len(result["observed"]["session"]), 64)
         self.assertIn("structuredContent", reloaded.typed_result(True, "CHECK"))
 
+    def test_plan_token_reloads_across_process_before_composed_start(self):
+        with patch.object(OPS, "run_remote_body", return_value="CONVIR_OPS_PLAN_GITHUB_OK"):
+            plan = payload(OPS.tool_prepare_authorized({**self.args, "phase": "plan"}))
+        reloaded = load_fresh_ops_module()
+        reloaded.RECEIPT_DIR = OPS.RECEIPT_DIR
+        with patch.object(reloaded, "run_remote_body", side_effect=[
+            "a" * 64 + "  experience_docx/tools/run_a0r.sh\nCONVIR_OPS_PREFLIGHT_OK",
+            "CONVIR_OPS_LAUNCH_OK",
+        ]):
+            started = payload(reloaded.tool_start_authorized({
+                "plan_token": plan["plan_token"], "plan_hash": plan["expected"]["plan_hash"],
+                "idempotency_key": "reload-plan-1",
+            }))
+        self.assertTrue(started["ok"])
+        self.assertEqual("LAUNCHED", started["operation_state"])
+
     def test_safe_arbitrary_mode_and_bounded_session_are_sealed(self):
         args = {**self.args, "route_id": "r" * 80, "mode": "repair.v2"}
         with patch.object(OPS, "run_remote_body", return_value="CONVIR_OPS_PLAN_GITHUB_OK"):
