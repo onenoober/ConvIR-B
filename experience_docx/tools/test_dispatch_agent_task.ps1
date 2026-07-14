@@ -84,7 +84,7 @@ function Invoke-Case {
 $resolvedDispatcher = (Resolve-Path -LiteralPath $DispatcherPath).Path
 $rulesCommit = Invoke-GitValue -Arguments @("rev-parse", "github/main")
 $headCommit = Invoke-GitValue -Arguments @("rev-parse", "HEAD")
-$testRoot = Join-Path $env:TEMP ("agent-model-dispatcher-tests-" + [guid]::NewGuid().ToString("N"))
+$testRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("agent-model-dispatcher-tests-" + [guid]::NewGuid().ToString("N"))
 New-Item -ItemType Directory -Path $testRoot | Out-Null
 
 $base = [ordered]@{
