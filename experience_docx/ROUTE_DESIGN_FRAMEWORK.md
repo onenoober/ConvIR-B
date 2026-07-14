@@ -93,6 +93,27 @@ the current uncertainty:
 Steps may be omitted when they cannot affect the decision. They must not be
 collapsed when doing so reuses the same evidence for discovery and proof.
 
+### Sequential Decision Value
+
+Order formal work by expected decision value, not by the order in which code
+components were implemented:
+
+- run the cheapest primary comparison and its mandatory integrity/safety
+  guards first when they can terminate the route;
+- defer secondary factor cells, mechanism controls, extra seeds, or larger
+  budgets until their result can change a written next action;
+- when a negative primary result still leaves multiple materially different
+  next designs, run only the preregistered controls needed to distinguish
+  those designs;
+- keep a full factorial design when interaction identification is itself the
+  route question or when dropping cells would confound the claimed mechanism;
+- never use staged execution to inspect a result and then invent a favorable
+  comparison family, threshold, control, or branch.
+
+The route card records the maximum budget and the release condition for every
+deferred block. Saving runtime is valid only when the stopped block can no
+longer change the decision allowed by the frozen contract.
+
 ## Risk Decomposition
 
 When a candidate inherits an action, failure, or correction from a predecessor,

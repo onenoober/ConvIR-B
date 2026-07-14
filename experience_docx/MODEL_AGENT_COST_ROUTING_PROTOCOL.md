@@ -327,25 +327,36 @@ copying it.
 | --- | --- | --- |
 | Unclassified or ambiguous large task | `R3` / `frontier` | Use `task_routing`; require one frontier planning child to write a compact whole-task routing plan before lower-role work. |
 | Bottleneck synthesis, route question, gate or metric design | `R3` / `frontier` | Route to frontier independently of source identity, or remain only when a known frontier host is intentionally executing the warm envelope. |
-| Written design to fresh workspace, tracked runner, engineering repair | `R2` / `balanced` | Dispatch one standalone or batched engineering scope when it amortizes context reload. |
-| Exact-tuple preflight, authorized launch, repeated monitor, explicit evidence fetch | `R1` / `fast` | Dispatch a bounded batch only after `route_id`, `state`, `decision`, and `authorizes` are machine-verified. Keep a short adjacent preflight/launch/monitor sequence in the current qualified balanced task. |
+| Written design to fresh workspace, tracked runner, smoke repair, and unchanged-verdict route evidence | `R2` / `balanced` | Use one warm engineering package when these operations share the route contract; do not create a child per repair or Git operation. |
+| Exact-tuple plan/start, short observation, and closeout fetch | `R1` / `fast` | Dispatch one bounded stage package only after `route_id`, `state`, `decision`, and `authorizes` are machine-verified against a GitHub typed JSON handoff. Keep it in the warm engineering task when a separate child would not amortize. |
+| Healthy long-run observation | `R0` / `fast` | Use one persistent child for all receipt-bound observation windows. Never launch a child per poll and stop before interpretation or repair. |
 | Result interpretation, terminal gate, family verdict, reopen/promotion decision | `R3` / `frontier` | Required escalation before scientific interpretation or a verdict-changing write. |
 | Unchanged-verdict route-branch archival or routine sync | `R2` / `balanced` | Dispatch when it is a standalone batch; verdict-changing sync remains `R3`. |
 
 Supporting reads before an unresolved scientific verdict stay in the current
 `R3` envelope. Once that verdict or design is durably recorded, a fresh
-workspace/runner implementation is an `R2` Terra boundary; a later independent
-preflight/launch/monitor batch is an `R1` Luna boundary; final interpretation
-returns to an `R3` Sol task. This is the normal cost-saving route, not an
-exception.
+workspace/runner implementation is one `R2` Terra boundary; a later independent
+authorized stage package and any healthy long observation use at most one
+continuous Luna task; final interpretation returns to one `R3` Sol task. This
+is the normal cost-saving route, not an exception.
 
 The route card must record the host identity mode, routing basis, planned task
 boundaries, minimum roles, atomic batches, and whether each optional down-route
 reduces projected whole-task tokens and credits after context reload. At an
 eligible boundary, create the schema-valid request, run
 `dispatch_agent_task.ps1` without `-Execute`, review `MODEL_DISPATCH_DRY_RUN_OK`,
-then rerun with `-Execute`. The child owns exactly the request's `next_action`;
-it must not continue into the next scientific or engineering class.
+then rerun with `-Execute`. The child owns exactly the request's `next_action`,
+which may describe one atomic same-class package with a shared authorization
+and stop condition; it must not continue into the next scientific or
+engineering class.
+
+Every `R1` dispatcher request uses `routing_basis=typed_handoff` and binds
+`routing_basis_ref` to the exact GitHub JSON closeout whose
+`route_id/state/decision/authorizes` tuple is copied into the request. The
+dispatcher reads and compares that evidence itself. A caller-supplied
+`authorization_check.verified=true` without this exact evidence match is not
+sufficient. Schema-v1 lifecycle tool names are rejected; the only active
+normal lifecycle is `plan_manifest -> start_authorized -> finish`.
 
 From a PowerShell session rooted at the route worktree, use the same reviewed
 request for both calls:

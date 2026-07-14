@@ -27,27 +27,30 @@ route commit, output path, or authorization chain.
 For each stage, use only this sequence:
 
 ```text
-previous closeout authorizes stage -> dynamic preflight -> durable runner ->
-routine monitor -> typed closeout -> compact route-branch evidence
+previous closeout authorizes stage -> dynamic preflight -> durable runner with
+integrated pre-smoke -> server-side observation windows -> runner closeout ->
+receipt-bound closeout validation -> compact route-branch evidence
 ```
 
 Do not rerun one-time route setup at every launch. Do not launch a later stage
 because it appears next in a generic sequence; the previous typed closeout must
 name it in `authorizes`.
 
-For `convir-ops` schema-v2, authorized preparation first performs read-only
-GitHub identity/path checks, then `apply` creates exactly one fresh remote GitHub
-clone and seals its exact `REMOTE_REPO`, runner hash, session, output id,
-closeout filename, and authorization tuple in a persistent receipt. Launch,
-monitor, and closeout use only that
-receipt-bound clone. A failed fresh preparation removes only the clone it just
-created and returns recovery state; it never cleans an existing workspace.
-Receipt-bound monitoring emits one final bounded status snapshot and its poll
-count; it does not expose transport wrapper success markers.
-The recommended normal path uses the schema-v2 composed start and finish calls;
-they preserve the same prepare, launch, monitor, and closeout checks internally
-while removing redundant model round trips. The primitive calls remain the
-recovery and audit surface.
+`convir-ops` schema v2 is the only active lifecycle contract. Authorized
+planning reads the exact GitHub manifest and runner without contacting the
+cloud. Start performs one cloud preparation, seals the exact `REMOTE_REPO`,
+runner hash, GPU resource floor and selected GPU, session, output id, closeout
+filename, monitor profile, and authorization tuple in a persistent receipt,
+then repeats only launch-dynamic checks immediately before tmux creation.
+Launch, observation, and closeout validation use only that receipt. A failed
+fresh preparation removes only the workspace it just created; an exact
+continuation never cleans or overwrites an unexpected workspace.
+
+The public lifecycle exposes only manifest plan, authorized start, and finish.
+Preparation, launch, monitor, and closeout primitives are internal recovery
+functions rather than model-visible tools. `finish` performs one bounded
+server-side observation window and, when terminal evidence exists, validates
+the sealed closeout in the same remote call.
 Load the normal-path plan from the route-committed operations manifest owned by
 the one-time start checklist; do not restate its machine fields in the prompt.
 
@@ -125,6 +128,8 @@ Verify only facts that can change between launches:
   any preregistered adaptive-branch trigger;
 - the current command does not exceed its locked-test authorization;
 - enough current GPU memory is free for this stage;
+- the route manifest's minimum free-memory and maximum utilization thresholds
+  select one GPU, and that exact GPU still satisfies both thresholds at launch;
 - the tmux session name is free and the output path is new, or the route card
   explicitly authorizes an exact resume;
 - the tracked runner, `RUN_ROOT/status.txt`, log path, and closeout path are
@@ -172,6 +177,10 @@ The runner must:
 - create runtime directories only under `RUN_ROOT`;
 - use the explicit cloud Python path;
 - append start, progress, and terminal markers to `status.txt`;
+- execute its route-specific identity, native-shape/batch, no-op, finite-value,
+  and tiny-update pre-smoke before expensive work in the same tracked process;
+- write a heartbeat at the route-card cadence and phase timing for setup,
+  cache/data preparation, train/eval/audit work, summary, and closeout;
 - capture stdout/stderr in a named runtime log;
 - return the underlying process exit code and print a final `*_OK` or
   `*_FAILED` marker;
@@ -179,6 +188,8 @@ The runner must:
   authorize them;
 - preserve the state and trace manifest required by the route card when the
   stage learns parameters or policy state.
+- write `route_commit`, `run_id`, and the tracked runner SHA-256 into its typed
+  closeout so receipt validation can reject stale or cross-run evidence.
 
 Minimum exit handling:
 
@@ -223,12 +234,33 @@ retention decision, but never copies of the raw state by default.
 
 ## Monitoring
 
+The operations manifest selects one fixed profile for the stage:
+
+| Profile | Server-side observation window | Intended use |
+| --- | --- | --- |
+| `short` | up to 120 seconds | smoke, quick audit, short evaluation |
+| `standard` | up to 300 seconds | ordinary training/evaluation |
+| `long` | up to 480 seconds | long formal runs with healthy heartbeats |
+
+The profile is sealed in the receipt. A caller passes only the receipt; it does
+not choose a new interval while the stage runs. One qualified fast task owns
+all healthy observation windows for a long stage. It may call `finish` again
+after a nonterminal snapshot, but must not dispatch a new child per window.
+Escalate out of that task only for a stale heartbeat, session/output mismatch,
+command/infra failure, engineering repair, or terminal scientific
+interpretation.
+If the session has ended and the sealed closeout is absent, classify it as a
+closeout/evaluation failure and enter engineering review. Do not keep polling a
+dead session for evidence that its runner can no longer write.
+
 Routine monitoring is read-only and reports only:
 
 - state and whether the expected session/process is active;
 - current epoch, fold, seed, sample, or other progress unit;
 - latest primary metric when available;
 - terminal decision or the last status marker.
+- heartbeat age, observation-window poll count, and phase timing/ETA when the
+  runner exposes them.
 
 End routine polls with `REMOTE_MONITOR_OK`. Do not repeatedly enumerate every
 artifact, timestamp, checkpoint, or directory while a healthy stage is running.
@@ -245,6 +277,8 @@ After a stage terminates, audit its runtime outputs and write one compact
   "route_id": "<route_id>",
   "run_id": "<run_id>",
   "stage": "<stage>",
+  "route_commit": "<40-character route commit>",
+  "runner_sha256": "<tracked runner SHA-256>",
   "evidence_role": "<engineering_debug|development_screening|confirmation|sealed_final>",
   "contract_id": "<frozen_route_card_or_config_identity>",
   "state": "COMPLETED_GATE_PASS",

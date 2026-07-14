@@ -67,9 +67,11 @@ Transfer a durable script or input file first in that case.
 ## MCP-First Codex Entry
 
 When `convir-ops` is registered, Codex should automatically select its bounded
-tool that exactly matches the user task: route preflight, tracked-runner launch,
-routine monitor, compact-evidence manifest/fetch, or Git/evidence status. This
-avoids rebuilding the same PowerShell -> WSL -> SSH command by hand.
+schema-v2 tool that exactly matches the user task: manifest plan, authorized
+start, bounded finish, compact-evidence manifest/fetch, or Git/evidence status.
+Legacy preflight/launch/monitor schemas are not active tools. This avoids
+rebuilding the same PowerShell -> WSL -> SSH command by hand and avoids adding
+recovery-only schemas to every model context.
 
 Tool selection is task-driven, not a timer or background scheduler. Launch
 remains allowed only after the user requests execution and the route's typed

@@ -31,7 +31,7 @@ do not reduce any required gate.
 | --- | --- | --- |
 | L0 default rules | `AGENTS.md` | Hard execution rules, fact-source authority, Universal Route Workflow, and read budget. |
 | L1 router | `experience_docx/README.md` | This file; choose the next minimal rule/evidence file. |
-| L2 execution protocols | `MODEL_AGENT_COST_ROUTING_PROTOCOL.md`, `MODEL_EXPERIMENT_START_CHECKLIST.md`, `MODEL_RUN_OPERATIONS_PROTOCOL.md`, `COMMAND_RELIABILITY_QUICKSTART.md`, `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` | Agent-model/task routing, one-time route setup, per-launch runtime work, command transport, and terminal evidence archival respectively. |
+| L2 execution protocols | `MODEL_AGENT_COST_ROUTING_PROTOCOL.md`, `MODEL_EXPERIMENT_START_CHECKLIST.md`, `MODEL_RUN_OPERATIONS_PROTOCOL.md`, `CONVIR_OPS_MCP.md`, `COMMAND_RELIABILITY_QUICKSTART.md`, `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` | Agent-model/task routing, one-time route setup, per-launch runtime work, bounded schema-v2 operations, command transport, and terminal evidence archival respectively. |
 | L2 source policy | `OFFICIAL_ARCH_ANCHOR_POLICY.md`, `Haze4K_ARCH_FINETUNE_WORKFLOW.md` | Anchor/source rules plus Haze4K partial-load, initialization, and trainable-scope guidance. |
 | L3 design aids | `ROUTE_DESIGN_FRAMEWORK.md`, `EXPERIMENT_GOVERNANCE_PROTOCOL.md`, `EXPERIMENT_CARD_TEMPLATE.md`, `CONVIR_B_EXECUTION_GUIDE.md` | Deeper design guidance, baseline contracts, and card templates. |
 | L4 evidence indexes | `EXPERIMENT_INDEX.md`, `family_summaries/`, `experiment_cards/`, `experiment_logs/<route_id>/README.md` | Route state, decisions, evidence paths, and compact results. |
@@ -46,6 +46,8 @@ All new rule or evidence text must stay in its proper layer:
 - Put agent-model roles, qualification, escalation, and token-budget rules in
   `MODEL_AGENT_COST_ROUTING_PROTOCOL.md`.
 - Put start/run/sync operational rules in the matching L2 protocol.
+- Put the active bounded MCP schema and signed lifecycle only in
+  `CONVIR_OPS_MCP.md`; historical tool schemas stay in L5 evidence.
 - Put current command transport defaults in `COMMAND_RELIABILITY_QUICKSTART.md`;
   put only reusable failure history in `COMMAND_RELIABILITY_PROTOCOL.md`.
 - Put route design rationale in L3 design aids, not in runtime protocols.

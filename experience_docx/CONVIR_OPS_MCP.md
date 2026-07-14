@@ -1,113 +1,109 @@
 # Convir Operations MCP
 
-Date: 2026-07-13
+Date: 2026-07-14
 
-Status: optional local Codex tool entry for the persistent `convir-4090` host;
-current tracked server version `1.2.0`.
+Status: canonical schema-v2 operations contract; active server version `2.0.0`.
 
 ## Purpose
 
-`convir-ops` reduces repeated PowerShell/WSL/SSH transport without changing
-experiment governance. It is a local stdio MCP server that runs under WSL and
-uses the tracked `tools/convir_remote_script.sh` wrapper for remote calls.
+`convir-ops-v2` is the restricted local stdio bridge for tracked operations on
+`convir-4090`. It reduces repeated PowerShell/WSL/SSH transport without
+changing experiment authority, scientific gates, or evidence roles. It accepts
+signed route identities and fixed operation ids, never arbitrary commands or
+paths.
 
-The server is deliberately narrower than SSH. It accepts route identity and
-tracked runner parameters, never an arbitrary remote command, path, or shell
-fragment. Current rules remain canonical in:
+Current transport, runtime, and archival authority remains in
+`COMMAND_RELIABILITY_QUICKSTART.md`, `MODEL_RUN_OPERATIONS_PROTOCOL.md`, and
+`BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.
 
-- `COMMAND_RELIABILITY_QUICKSTART.md` for transport;
-- `MODEL_RUN_OPERATIONS_PROTOCOL.md` for stage authorization and runner rules;
-- `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` for reviewed GitHub archival.
+## Active Tool Surface
 
-## Tool Boundary
+Only these six tools are model-visible:
 
 | Tool | Scope | Mutation boundary |
 | --- | --- | --- |
-| `convir_route_prepare_authorized` | two-phase `plan`/`apply` authorization and fresh route-derived workspace preflight | `apply` issues a launch-expiring, one-use receipt; it does not launch |
-| `convir_route_launch` | receipt-bound idempotent launch of the sealed tracked runner | cloud runtime only; it repeats dynamic preflight and accepts no command, path, or tuple fields |
-| `convir_route_monitor` | receipt-bound bounded `poll`, `until_change`, or server-side `until_terminal` monitoring | read-only observation; it never interprets a gate |
-| `convir_route_closeout_validate` | validates one compact runner closeout against the exact receipt terminal tuple | returns checksum manifest and archive-ready candidate only; never commits or pushes |
-| `convir_route_start_authorized` | recommended composition of reviewed `apply` plus receipt-bound launch | accepts only the signed plan token; repeat use returns the same idempotent receipt/launch state |
-| `convir_route_finish` | recommended composition of bounded monitor plus sealed closeout validation | validates only after terminal observation or session exit; never interprets the scientific gate |
-| `convir_route_plan_manifest` | recommended token-minimal plan from one operation in a route-committed `route_operations.json` | reads the exact GitHub commit, validates every field, and returns only a short plan token/hash |
-| `convir_evidence_manifest` | compact top-level evidence names, sizes, hashes | read-only |
-| `convir_evidence_fetch` | explicit compact-file allowlist, one SCP transfer, remote/local SHA-256 verification | copies into a named local Git worktree only; never stages, commits, pushes, or overwrites a mismatched file |
-| `convir_git_evidence_status` | local evidence worktree, GitHub `main` ref freshness, and whitespace audit | read-only; uses `git ls-remote`, never fetches, stages, commits, or pushes |
+| `convir_route_plan_manifest` | read and seal one operation from the exact GitHub `route_operations.json` | local/GitHub read-only; no cloud call |
+| `convir_route_start_authorized` | prepare the sealed workspace/resource contract and idempotently launch its tracked runner | exact cloud route only |
+| `convir_route_finish` | observe one sealed server-side window and validate terminal closeout provenance in the same SSH call | monitoring is read-only; validation never interprets a scientific gate |
+| `convir_evidence_manifest` | list compact top-level evidence names, sizes, and hashes | cloud read-only |
+| `convir_evidence_fetch` | fetch an explicit compact allowlist with remote/local SHA-256 verification | local named worktree copy only; never stages or pushes |
+| `convir_git_evidence_status` | inspect local evidence worktree and GitHub-main freshness | local/GitHub read-only |
 
-The server rejects arbitrary SSH execution, arbitrary remote/local paths,
-`cloud_only` artifacts, raw files, files over 1 MiB, Git mutations, sudo, and
-destructive operations. Evidence fetch first verifies the exact remote manifest,
-then transfers the approved files together into a local staging directory before
-verifying each local hash. It does not access a canary or locked test by itself;
-the route runner and typed closeout remain mandatory. Lifecycle calls use schema
-version `2` typed results: `ok`, `operation_state`, `failure_class`,
-`observed`, `expected`, `mismatches`, `allowed_next_actions`, and an audit
-digest. A failed command/infra attempt is never retried automatically or
-promoted as evidence; a corrected attempt needs a new preparation receipt.
+Preparation, launch, monitor, and closeout primitives remain internal functions
+for implementation testing. They are not MCP tools and must not be restored as
+a default compatibility surface. Historical schema-v1 code and evidence remain
+readable only as archives.
+
+## Route Operations Manifest
+
+The fixed path is `experience_docx/route_operations.json`. The exact top-level
+fields are:
+
+```text
+schema_version, route_id, repo_name, workspace_id, rules_commit, operations
+```
+
+Each operation contains exactly:
+
+```text
+runner_relpath, mode, require_gpu, stage_state, decision, authorizes,
+locked_test_policy, forbidden_continuations, output_id, closeout_filename,
+collision_policy, authorization_relpath, prior_terminal_tuple,
+allowed_terminal_tuples, workspace_policy, monitor_profile,
+heartbeat_timeout_seconds, min_free_gpu_mib, max_gpu_utilization_pct
+```
+
+Unknown or missing fields fail closed. `workspace_policy` is `fresh_route` for
+the first route workspace or `exact_continuation` for a clean, same-branch,
+fast-forward-only continuation. It never authorizes reuse of another route or
+an exact resume. Non-GPU operations require `min_free_gpu_mib=0` and
+`max_gpu_utilization_pct=100`. GPU operations seal one GPU satisfying both
+resource thresholds and recheck that exact GPU immediately before launch.
+
+`monitor_profile` is `short`, `standard`, or `long`, with maximum server-side
+windows of 120, 300, or 480 seconds. A caller cannot change the profile after
+planning. A stale heartbeat returns an engineering escalation rather than a
+scientific result. An ended session without its sealed closeout fails as
+`CLOSEOUT_MISSING`; repeated polling is not an allowed recovery.
+
+## Signed Lifecycle
+
+1. Call `convir_route_plan_manifest` with schema version, branch, full route
+   commit, and operation id. Planning performs one local GitHub fetch, checks
+   current `main`, the route head, manifest, and runner, then returns a signed
+   expiring plan token.
+2. Review the plan digest and call `convir_route_start_authorized` with only
+   that token. Start prepares a fresh or exact-continuation workspace, verifies
+   the prior four-field authorization tuple, seals the runner/resource/output
+   identities, and launches idempotently.
+3. Call `convir_route_finish` with only the receipt. A healthy long route keeps
+   all repeated finish calls in one qualified fast task. Terminal validation
+   requires exact `route_id`, `run_id`, `route_commit`, `runner_sha256`, and an
+   allowed `state`/`decision`/`authorizes` tuple.
+4. Review and fetch compact evidence explicitly. Git staging, commits, pushes,
+   scientific interpretation, canary, and locked-test decisions remain outside
+   this MCP.
 
 ## Persistent Operations Worktree
 
-Keep one clean local checkout dedicated to this MCP, separate from experiment
-worktrees:
+Use one clean, dedicated checkout:
 
 ```text
-/home/ubuntu/workspace/ConvIR-B-operations-main
+/home/ubuntu/workspace/ConvIR-B-operations-v2
 ```
 
-It tracks GitHub `main` and owns the canonical local source for
-`convir_ops_mcp.py` and `convir_remote_script.sh`. Before a process-rule update
-is relied on, fast-forward this worktree from `github/main`; do not point the
-MCP at a historical route checkout.
+It tracks GitHub `main`. Do not point the MCP at a route checkout, the retired
+`ConvIR-B-operations-main` v1 worktree, or a worktree with untracked transport
+scripts.
 
 ## Codex Configuration
-
-Add this user-level entry to `~/.codex/config.toml` after the operations
-worktree is present:
 
 ```toml
 [mcp_servers.convir_ops]
 command = "wsl.exe"
-args = ["-d", "Ubuntu-22.04", "--", "python3", "/home/ubuntu/workspace/ConvIR-B-operations-main/experience_docx/tools/convir_ops_mcp.py"]
+args = ["-d", "Ubuntu-22.04", "--", "python3", "/home/ubuntu/workspace/ConvIR-B-operations-v2/experience_docx/tools/convir_ops_mcp.py"]
 startup_timeout_sec = 20
 ```
 
-Restart Codex after changing MCP configuration. Keep `convir-4090` credentials
-only in WSL SSH configuration or the SSH agent; never place host credentials,
-private-key material, or tokens in this TOML entry.
-
-## Normal Use
-
-1. On the normal path, use `convir_route_plan_manifest` with the exact route
-   branch, commit, and operation id. The manifest path is fixed at
-   `experience_docx/route_operations.json`. Use full-field
-   `convir_route_prepare_authorized` only for recovery or contract diagnostics.
-   Planning seals the output id and target closeout filename and requires both
-   to be new; the complete tuple is not retransmitted in model context.
-   A route's first stage uses the typed initial authorization owned by
-   `MODEL_EXPERIMENT_START_CHECKLIST.md`; later stages use the prior closeout.
-
-The route-operations manifest has exact top-level fields `schema_version`,
-`route_id`, `repo_name`, `rules_commit`, and `operations`. The caller's GitHub
-branch and commit locate and bind the manifest itself, so the file never embeds
-its own commit SHA. Each operation has the same runner, mode, GPU, authorization,
-locked-test, forbidden-continuation, output, closeout, collision, prior-tuple,
-and allowed-terminal fields validated by the full prepare contract. Unknown or
-missing fields fail closed.
-2. On the normal path, review the returned hash, then use
-   `convir_route_start_authorized` with only its signed plan token. The token
-   deterministically owns the idempotency key. Use the separate launch primitive
-   only for recovery or boundary diagnostics. A changed tuple, receipt,
-   session, output identity, or corrected attempt requires fresh preparation.
-3. Use `convir_route_finish` for bounded server-side monitoring and automatic
-   sealed closeout validation. Use the separate monitor/closeout primitives
-   only for recovery or boundary diagnostics.
-4. For separate closeout validation, the receipt supplies both the closeout
-   path and allowed terminal set. The tool accepts the observed tuple only when
-   it belongs to that set. Review its archive candidate outside the MCP.
-5. Review `convir_evidence_manifest`, then call `convir_evidence_fetch` only
-   with an explicit compact-file allowlist.
-6. Use `convir_git_evidence_status` before staging to inspect local changes,
-   whitespace checks, and whether the local `github/main` ref matches GitHub.
-7. Perform Git staging, route-branch commits, and terminal `main` sync through
-   the written evidence protocol; the MCP intentionally does not automate
-   those judgement-bearing steps.
+Keep credentials only in WSL SSH configuration or its agent. Restart Codex
+after changing the MCP path. There must be no second active v1 registration.

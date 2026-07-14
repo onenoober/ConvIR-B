@@ -51,6 +51,12 @@ $validDispatchReasons = @("task_routing", "standalone_repetition", "batch_bounde
 $validRoutingBases = @("dispatcher_classification", "typed_handoff")
 $validExecutionScopes = @("local_read_only", "local_workspace_write", "wsl_workspace_transport", "wsl_cloud_transport")
 $validTransportContracts = @("local_only", "tracked_convir_cloud")
+$legacyLifecycleTools = @(
+    "convir_route_prepare_authorized",
+    "convir_route_launch",
+    "convir_route_monitor",
+    "convir_route_closeout_validate"
+)
 $roleRank = @{fast = 0; balanced = 1; frontier = 2}
 $minimumRole = @{
     R0_READ_ONLY = "fast"
@@ -197,6 +203,11 @@ if ($request.completion_marker -notmatch "^[A-Z][A-Z0-9_]{2,127}$") {
 if ([string]::IsNullOrWhiteSpace($request.next_action) -or $request.next_action.Length -gt 2000) {
     throw "next_action must contain 1-2000 characters"
 }
+foreach ($legacyTool in $legacyLifecycleTools) {
+    if ($request.next_action.Contains($legacyTool)) {
+        throw "LEGACY_LIFECYCLE_TOOL_REJECTED tool=$legacyTool"
+    }
+}
 $nonemptyStringFields = @("route_id", "stage_state", "decision", "authorizes", "cloud_status")
 foreach ($field in $nonemptyStringFields) {
     if ($request.$field -isnot [string] -or [string]::IsNullOrWhiteSpace($request.$field)) {
@@ -205,6 +216,9 @@ foreach ($field in $nonemptyStringFields) {
 }
 if ($request.authorization_check.mechanism -notin @("not_applicable", "runner_exact_tuple", "balanced_closeout_audit")) {
     throw "Unknown authorization mechanism: $($request.authorization_check.mechanism)"
+}
+if ($request.authorization_check.verified -isnot [bool]) {
+    throw "authorization_check.verified must be boolean"
 }
 $checkedFields = @($request.authorization_check.checked_fields)
 if (@($checkedFields | Select-Object -Unique).Count -ne $checkedFields.Count) {
@@ -248,6 +262,8 @@ if ($request.rules_commit -ne $currentRulesCommit) {
     throw "STALE_RULES expected=$currentRulesCommit request=$($request.rules_commit)"
 }
 
+$basisCommit = $null
+$basisPath = $null
 if ($request.routing_basis -eq "typed_handoff") {
     $basisMatch = [regex]::Match($request.routing_basis_ref, '^github:(?<commit>[0-9a-f]{40}):(?<path>[A-Za-z0-9._/-]+)$')
     $basisCommit = $basisMatch.Groups["commit"].Value
@@ -316,6 +332,27 @@ elseif ($classLevel -eq 1) {
     if ($request.authorizes.Trim().ToUpperInvariant() -eq "NONE") {
         throw "R1 authorization tuple authorizes no action"
     }
+    if ($request.routing_basis -ne "typed_handoff" -or $basisPath -notmatch '\.json$') {
+        throw "R1 requires a GitHub typed JSON handoff"
+    }
+    $authorizationLines = Invoke-WslGit -Repository $repository -Arguments @("show", "${basisCommit}:$basisPath")
+    try {
+        $authorization = ($authorizationLines -join "`n") | ConvertFrom-Json
+    }
+    catch {
+        throw "R1 typed handoff is not valid JSON: $($request.routing_basis_ref)"
+    }
+    $expectedAuthorization = [ordered]@{
+        route_id = [string]$request.route_id
+        state = [string]$request.stage_state
+        decision = [string]$request.decision
+        authorizes = [string]$request.authorizes
+    }
+    foreach ($field in @("route_id", "state", "decision", "authorizes")) {
+        if ($null -eq $authorization.PSObject.Properties[$field] -or [string]$authorization.$field -cne $expectedAuthorization[$field]) {
+            throw "R1_AUTHORIZATION_MISMATCH field=$field"
+        }
+    }
     if ($request.required_role -eq "fast" -and $request.authorization_check.mechanism -ne "runner_exact_tuple") {
         throw "Fast R1 requires runner_exact_tuple authorization"
     }
@@ -367,6 +404,7 @@ $handoff = [ordered]@{
     authorizes = $request.authorizes
     cloud_status = $request.cloud_status
     next_action = $request.next_action
+    authorization_evidence = $(if ($classLevel -eq 1) { $request.routing_basis_ref } else { "not_applicable" })
 }
 $handoffJson = $handoff | ConvertTo-Json -Compress
 $handoffSha = Get-Sha256 -Text $handoffJson

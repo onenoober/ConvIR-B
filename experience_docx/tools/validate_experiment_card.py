@@ -170,6 +170,11 @@ REQUIRED_FIELDS = {
         "Selected decision profile",
         "Learned-state retention required",
         "Omitted or specialized stage rationale",
+        "Integrated pre-smoke contract",
+        "Expected wall-time budget and required phase timings",
+        "Heartbeat cadence, stale threshold, and monitor profile",
+        "Maximum model-visible observations and escalation condition",
+        "Workspace policy",
     ),
     "Analysis Plan": (
         "Per-sample or subgroup analysis",

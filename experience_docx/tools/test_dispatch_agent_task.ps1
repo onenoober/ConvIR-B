@@ -122,11 +122,14 @@ $r1.dispatch_reason = "batch_bounded_operations"
 $r1.effort = "medium"
 $r1.execution_scope = "wsl_cloud_transport"
 $r1.transport_contract = "tracked_convir_cloud"
-$r1.next_action = "Use convir_route_prepare_authorized for the authorized tuple."
+$r1.next_action = "Use convir_route_plan_manifest, convir_route_start_authorized, and convir_route_finish for one authorized stage package."
 $r1.route_branch_commit = $headCommit
+$r1.route_id = "haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714"
 $r1.stage_state = "COMPLETED_GATE_PASS"
 $r1.decision = "V4A_A0R_REPRODUCTION_PASS_AUTHORIZE_A0D_AND_A0P"
 $r1.authorizes = "A0D_AND_A0P_ONLY"
+$r1.routing_basis = "typed_handoff"
+$r1.routing_basis_ref = "github:${rulesCommit}:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/v4a_a0r_closeout.json"
 $r1.authorization_check.verified = $true
 $r1.authorization_check.mechanism = "runner_exact_tuple"
 $r1.authorization_check.checked_fields = @("route_id", "state", "decision", "authorizes")
@@ -160,6 +163,16 @@ $stale.rules_commit = "0000000000000000000000000000000000000000"
 
 $incompleteR1 = Copy-Request $r1
 $incompleteR1.authorization_check.checked_fields = @("state")
+
+$mismatchedR1 = Copy-Request $r1
+$mismatchedR1.decision = "TAMPERED_DECISION"
+
+$unboundR1 = Copy-Request $r1
+$unboundR1.routing_basis = "dispatcher_classification"
+$unboundR1.routing_basis_ref = "none"
+
+$legacyR1 = Copy-Request $r1
+$legacyR1.next_action = "Call convir_route_monitor with the existing receipt."
 
 $underRoleR2 = Copy-Request $r2
 $underRoleR2.required_role = "fast"
@@ -225,6 +238,9 @@ $results += Invoke-Case -Name "unknown_classified_r3_sol" -Request $unknownR3 -S
 $results += Invoke-Case -Name "same_role_r0_luna" -Request $sameRole -ShouldPass $true -ExpectedModel "gpt-5.6-luna"
 $results += Invoke-Case -Name "stale_rules" -Request $stale -ShouldPass $false -ExpectedModel ""
 $results += Invoke-Case -Name "incomplete_r1" -Request $incompleteR1 -ShouldPass $false -ExpectedModel ""
+$results += Invoke-Case -Name "mismatched_r1_evidence" -Request $mismatchedR1 -ShouldPass $false -ExpectedModel ""
+$results += Invoke-Case -Name "unbound_r1_evidence" -Request $unboundR1 -ShouldPass $false -ExpectedModel ""
+$results += Invoke-Case -Name "legacy_r1_lifecycle_tool" -Request $legacyR1 -ShouldPass $false -ExpectedModel ""
 $results += Invoke-Case -Name "under_role_r2" -Request $underRoleR2 -ShouldPass $false -ExpectedModel ""
 $results += Invoke-Case -Name "wsl_workspace_transport" -Request $wslWorkspace -ShouldPass $true -ExpectedModel "gpt-5.6-terra"
 $results += Invoke-Case -Name "wsl_workspace_transport_contract_rejected" -Request $wslWorkspaceCloud -ShouldPass $false -ExpectedModel ""

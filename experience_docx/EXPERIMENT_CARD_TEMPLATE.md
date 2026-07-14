@@ -34,7 +34,8 @@ role/model mapping or qualification tables here.
 | --- | --- | --- | --- | --- |
 | scientific design / gate contract | `<R3_SCIENTIFIC_AUTHORITY or n/a>` | `<frontier or n/a>` | `<dispatcher_classification, typed_handoff: github:commit:path, or n/a>` | `<task_routing, current_qualified_task, or n/a>` |
 | workspace / runner engineering | `<R2_ENGINEERING_CONTROL or n/a>` | `<balanced or n/a>` | `<dispatcher_classification, typed_handoff: github:commit:path, or n/a>` | `<task_routing, batch_bounded_operations, major_handoff, dispatch=not_amortized, or n/a>` |
-| preflight / launch / monitor / evidence fetch | `<R1_BOUNDED_EXECUTION or n/a>` | `<fast or n/a>` | `<dispatcher_classification, typed_handoff: github:commit:path, or n/a>` | `<task_routing, batch_bounded_operations, standalone_repetition, dispatch=not_amortized, or n/a>` |
+| authorized start / short observation / closeout fetch | `<R1_BOUNDED_EXECUTION or n/a>` | `<fast or n/a>` | `<dispatcher_classification, typed_handoff: github:commit:path, or n/a>` | `<task_routing, batch_bounded_operations, dispatch=not_amortized, or n/a>` |
+| healthy long-run observation | `<R0_READ_ONLY or n/a>` | `<fast or n/a>` | `<dispatcher_classification, typed_handoff: github:commit:path, or n/a>` | `<one persistent task, standalone_repetition, or n/a>` |
 | result interpretation / terminal verdict | `<R3_SCIENTIFIC_AUTHORITY or n/a>` | `<frontier or n/a>` | `<dispatcher_classification, typed_handoff: github:commit:path, or n/a>` | `<task_routing, current_qualified_task, or n/a>` |
 | unchanged-verdict archival / sync | `<R2_ENGINEERING_CONTROL or n/a>` | `<balanced or n/a>` | `<dispatcher_classification, typed_handoff: github:commit:path, or n/a>` | `<task_routing, batch_bounded_operations, major_handoff, dispatch=not_amortized, or n/a>` |
 
@@ -229,6 +230,11 @@ Allowed profile tokens are `audit_evaluation`, `feasibility_oracle`,
 - Selected decision profile: <profile token>
 - Learned-state retention required: <yes | no: scientific rationale>
 - Omitted or specialized stage rationale:
+- Integrated pre-smoke contract:
+- Expected wall-time budget and required phase timings:
+- Heartbeat cadence, stale threshold, and monitor profile:
+- Maximum model-visible observations and escalation condition:
+- Workspace policy (`fresh_route` or `exact_continuation`) and rationale:
 
 ## Gates
 

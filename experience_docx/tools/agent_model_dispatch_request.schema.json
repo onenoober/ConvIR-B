@@ -86,5 +86,18 @@
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"task_class": {"const": "R1_BOUNDED_EXECUTION"}}},
+      "then": {
+        "properties": {
+          "routing_basis": {"const": "typed_handoff"},
+          "routing_basis_ref": {
+            "pattern": "^github:[0-9a-f]{40}:[A-Za-z0-9._/-]+\\.json$"
+          }
+        }
+      }
+    }
+  ]
 }
