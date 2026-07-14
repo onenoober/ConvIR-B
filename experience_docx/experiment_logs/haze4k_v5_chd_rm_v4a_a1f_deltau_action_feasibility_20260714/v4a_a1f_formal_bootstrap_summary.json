@@ -1,0 +1,33 @@
+{
+  "bootstrap_replicates": 4000,
+  "bootstrap_seed": 3407,
+  "operator_pairing_retained": true,
+  "operator_points": {
+    "D_ref": {
+      "direction_selected": 0.765625,
+      "direction_vs_current_db": 0.1996049730760603,
+      "direction_vs_old25_db": 0.22436089637098577,
+      "direction_vs_shrink_db": 0.12912196443293458
+    },
+    "D_rep": {
+      "direction_selected": 0.765625,
+      "direction_vs_current_db": 0.1992848657779082,
+      "direction_vs_old25_db": 0.22430940043141964,
+      "direction_vs_shrink_db": 0.12871556454097796
+    }
+  },
+  "schema_version": 1,
+  "worst_operator_direction_selected": 0.765625,
+  "worst_operator_direction_selected_lcb95": 0.6953125,
+  "worst_operator_direction_selected_ucb95": 0.8203125,
+  "worst_operator_direction_vs_current_db": 0.1992848657779082,
+  "worst_operator_direction_vs_current_db_lcb95": 0.1588322191867315,
+  "worst_operator_direction_vs_current_db_ucb95": 0.2391948288140736,
+  "worst_operator_direction_vs_old25_db": 0.22430940043141964,
+  "worst_operator_direction_vs_old25_db_lcb95": 0.2006127363199677,
+  "worst_operator_direction_vs_old25_db_ucb95": 0.24662591679342966,
+  "worst_operator_direction_vs_shrink_db": 0.12871556454097796,
+  "worst_operator_direction_vs_shrink_db_lcb95": 0.10547509458061993,
+  "worst_operator_direction_vs_shrink_db_ucb95": 0.15176271375413602,
+  "worst_operator_within_each_draw": true
+}

@@ -1,0 +1,34 @@
+{
+  "authorizes": "A1R_ROUTE_DESIGN_ONLY",
+  "bootstrap_summary_sha256": "a3ca3f638eda127085f64a57a699aafe3b5826e8321f7c8bcb507616b05d3262",
+  "candidate_selected": false,
+  "canary_touched": false,
+  "contract_id": "458fb270f055db5880c33ca77c254f7388b2835c9774c150452ce373cd3fc141",
+  "decision": "V4A_A1F_SAFE_DIRECTION_HEADROOM_PASS_AUTHORIZE_A1R_REPRESENTATION_SUFFICIENCY_DESIGN_ONLY",
+  "evidence_role": "development_screening",
+  "forbidden_continuations": [
+    "DIRECT_V4B_OR_V4C_TRAINING",
+    "POLICY_OR_SELECTOR_REPLAY",
+    "CANARY",
+    "CANDIDATE_SELECTION",
+    "LOCKED_TEST"
+  ],
+  "formal_closeout_sha256": "d135b207ae12ff0176ec66964ee2dc7391e32671c170859492196c0eda957b63",
+  "formal_route_commit": "b30ec5d6e1c911e5687bc64f8c9f8b5e0357c660",
+  "gate_metrics": {
+    "direction_vs_current_db_lcb95": 0.1588322191867315,
+    "direction_vs_old25_db_lcb95": 0.2006127363199677,
+    "direction_vs_shrink_db_lcb95": 0.10547509458061993,
+    "direction_vs_shrink_db_threshold": 0.005,
+    "repairable_fraction_lcb95": 0.6953125,
+    "repairable_fraction_threshold": 0.2
+  },
+  "locked_test_touched": false,
+  "operator_summary_sha256": "6617a437f9af17eb48b5ca68ce484333ca73f77f9945930a189d4657115213ab",
+  "reason": "The privileged bounded direction union materially exceeds privileged shrink on heldout128 for both paired operators while every selected action is anchor- and predecessor-nonworse. This supports representation/reachability insufficiency rather than bounded-action infeasibility, but clean-target action selection limits the claim to nondeployable development screening.",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714",
+  "source_manifest_sha256": "56d347d425f146e6cf813af3ad01abc454497fb45fc6e1aa398effbab6694702",
+  "state": "COMPLETED_R3_REVIEW",
+  "structural_valid": true,
+  "training_occurred": false
+}

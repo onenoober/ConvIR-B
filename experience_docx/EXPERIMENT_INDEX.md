@@ -148,9 +148,18 @@ optimizer/window contracts. Only a new metric-aligned privileged A1F bounded
 `Delta-u` action-space feasibility route may be designed; policy, candidate,
 canary, and locked test remain blocked.
 
+v4a-A1F then passed that privileged feasibility question on the exact failed
+state. Heldout worst-operator direction-over-shrink LCB95 is `+0.105475 dB`,
+repairable-fraction LCB95 is `0.6953125`, and direction-versus-old-`.25` LCB95
+is `+0.200613 dB`, with zero severe/hard regressions and exact replay. The
+current bottleneck is representation/reachability, not bounded-action
+existence. The clean-target oracle is nondeployable and authorizes only a fresh
+A1R representation-sufficiency design; direct training, policy, candidate,
+canary, and locked test remain blocked.
+
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
-`experience_docx/experiment_cards/2026-07-14-haze4k-v5-chd-rm-v4a-conditional-safety-audit.md`,
-and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/`
+`experience_docx/experiment_cards/2026-07-14-haze4k-v5-v4a-a1f-deltau-action-feasibility.md`,
+and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/`
 for current CHD-RM status. Earlier route cards and closeouts remain the authority
 for their own historical decisions.
 
@@ -370,6 +379,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v3y_cross_sample_safety_20260713/` | compact | v3y fixed train32/heldout32 cross-sample confirmation passed activity, positive heldout rendered-MSE reduction, and all fixed v3u safety references. It authorized only the larger sealed internal confirmation. |
 | `experiment_logs/haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713/` | compact | v3z terminal train128/heldout128 confirmation retained train activity and positive heldout rendered-MSE reduction, but heldout anchor and harm exceeded the fixed references. The frozen projected-head route is closed with no further tuning, policy, canary, candidate, or locked-test authorization. |
 | `experiment_logs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/` | compact | v4a exact reconstruction and descriptive decomposition pass; complete A0P finds no local exact/proposal/window safety correction and authorizes only metric-aligned privileged A1F bounded-action feasibility design. |
+| `experiment_logs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/` | compact | v4a-A1F exact replay and action integrity pass; full privileged heldout feasibility shows safe bounded direction materially exceeds shrink under both operators and authorizes only fresh A1R representation-sufficiency design. Raw per-image/action rows remain cloud-only. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
@@ -506,9 +516,11 @@ The active conclusion is conservative:
   and locked test remain blocked.
 - CHD-RM v4a rules out projection order, the tested AdamW proposal correction,
   and fixed-versus-shuffled/stratified risk windows as material local repairs
-  for the v3z heldout-safety failure. The next question is bounded action-space
-  feasibility under the same anchor and population, not optimizer retuning or
-  another safety-window search.
+  for the v3z heldout-safety failure. A1F then proves safe bounded direction
+  headroom beyond shrink on the same anchor/population. The remaining
+  bottleneck is representation/reachability, not another optimizer/window
+  search or action-space expansion. Only A1R design is authorized; the
+  privileged oracle cannot be treated as a deployable candidate.
 
 ## Artifact Boundary
 
