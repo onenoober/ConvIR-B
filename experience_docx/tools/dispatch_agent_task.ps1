@@ -197,7 +197,7 @@ if ($request.routing_basis -notin $validRoutingBases) {
 if ($request.routing_basis_ref -isnot [string] -or [string]::IsNullOrWhiteSpace($request.routing_basis_ref) -or $request.routing_basis_ref.Length -gt 1000) {
     throw "routing_basis_ref must contain 1-1000 characters"
 }
-if ($request.effort -notin @("low", "medium", "high")) {
+if ($request.effort -notin @("low", "medium", "high", "xhigh")) {
     throw "Unknown effort: $($request.effort)"
 }
 if ($request.execution_scope -notin $validExecutionScopes) {
@@ -316,15 +316,18 @@ if ($maxClassByRole[$request.required_role] -lt $classLevel) {
     throw "MODEL_NOT_QUALIFIED role=$($request.required_role) maximum=R$($maxClassByRole[$request.required_role]) request=R$classLevel"
 }
 
-$expectedEffort = "medium"
-if ($request.required_role -eq "frontier") {
-    $expectedEffort = "high"
+$allowedEfforts = @("medium")
+if ($request.required_role -eq "frontier" -and $classLevel -eq 3) {
+    $allowedEfforts = @("high", "xhigh")
+}
+elseif ($request.required_role -eq "frontier") {
+    $allowedEfforts = @("high")
 }
 elseif ($request.required_role -eq "fast" -and $classLevel -eq 0) {
-    $expectedEffort = "low"
+    $allowedEfforts = @("low")
 }
-if ($request.effort -ne $expectedEffort) {
-    throw "EFFORT_MISMATCH expected=$expectedEffort request=$($request.effort)"
+if ($request.effort -notin $allowedEfforts) {
+    throw "EFFORT_MISMATCH expected=$($allowedEfforts -join '|') request=$($request.effort)"
 }
 
 if ($classLevel -eq 0) {

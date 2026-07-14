@@ -47,7 +47,8 @@ function Invoke-Case {
         [string]$Name,
         $Request,
         [bool]$ShouldPass,
-        [string]$ExpectedModel
+        [string]$ExpectedModel,
+        [string]$ExpectedEffort = ""
     )
 
     $requestPath = Join-Path $testRoot "$Name.json"
@@ -67,6 +68,9 @@ function Invoke-Case {
         if (-not $rendered.Contains('"selected_model"') -or -not $rendered.Contains($ExpectedModel)) {
             throw "$Name did not select $ExpectedModel"
         }
+        if ($ExpectedEffort -and $rendered -notmatch ('"effort"\s*:\s*"' + [regex]::Escape($ExpectedEffort) + '"')) {
+            throw "$Name did not preserve effort=$ExpectedEffort"
+        }
     }
     elseif ($exitCode -eq 0) {
         throw "$Name expected fail but passed"
@@ -77,6 +81,7 @@ function Invoke-Case {
         expected = if ($ShouldPass) { "PASS" } else { "FAIL_CLOSED" }
         observed_exit_code = $exitCode
         expected_model = if ($ShouldPass) { $ExpectedModel } else { $null }
+        expected_effort = if ($ShouldPass -and $ExpectedEffort) { $ExpectedEffort } else { $null }
         decision = "PASS"
     }
 }
@@ -165,6 +170,17 @@ $r3.execution_scope = "local_workspace_write"
 $r3.route_branch_commit = $headCommit
 $r3.authorizes = "SCIENTIFIC_REVIEW_ONLY"
 
+$r3Xhigh = Copy-Request $r3
+$r3Xhigh.effort = "xhigh"
+$r3Xhigh.next_action = "Resolve a conflicting cross-route scientific decision under the frozen evidence contract."
+
+$r3Medium = Copy-Request $r3
+$r3Medium.effort = "medium"
+
+$r2FrontierXhigh = Copy-Request $r2
+$r2FrontierXhigh.required_role = "frontier"
+$r2FrontierXhigh.effort = "xhigh"
+
 $stale = Copy-Request $r0
 $stale.rules_commit = "0000000000000000000000000000000000000000"
 
@@ -236,7 +252,10 @@ $results = @()
 $results += Invoke-Case -Name "r0_luna" -Request $r0 -ShouldPass $true -ExpectedModel "gpt-5.6-luna"
 $results += Invoke-Case -Name "r1_luna" -Request $r1 -ShouldPass $true -ExpectedModel "gpt-5.6-luna"
 $results += Invoke-Case -Name "r2_terra" -Request $r2 -ShouldPass $true -ExpectedModel "gpt-5.6-terra"
-$results += Invoke-Case -Name "r3_sol" -Request $r3 -ShouldPass $true -ExpectedModel "gpt-5.6-sol"
+$results += Invoke-Case -Name "r3_sol" -Request $r3 -ShouldPass $true -ExpectedModel "gpt-5.6-sol" -ExpectedEffort "high"
+$results += Invoke-Case -Name "r3_sol_xhigh" -Request $r3Xhigh -ShouldPass $true -ExpectedModel "gpt-5.6-sol" -ExpectedEffort "xhigh"
+$results += Invoke-Case -Name "r3_medium_rejected" -Request $r3Medium -ShouldPass $false -ExpectedModel ""
+$results += Invoke-Case -Name "r2_frontier_xhigh_rejected" -Request $r2FrontierXhigh -ShouldPass $false -ExpectedModel ""
 $results += Invoke-Case -Name "unknown_classified_r0_luna" -Request $unknownClassifiedR0 -ShouldPass $true -ExpectedModel "gpt-5.6-luna"
 $results += Invoke-Case -Name "unknown_typed_r0_luna" -Request $unknownTyped -ShouldPass $true -ExpectedModel "gpt-5.6-luna"
 $results += Invoke-Case -Name "unknown_classified_r1_luna" -Request $unknownR1 -ShouldPass $true -ExpectedModel "gpt-5.6-luna"

@@ -49,7 +49,7 @@
       "pattern": "^(none|github:[0-9a-f]{40}:[A-Za-z0-9._/-]+)$",
       "maxLength": 1000
     },
-    "effort": {"enum": ["low", "medium", "high"]},
+    "effort": {"enum": ["low", "medium", "high", "xhigh"]},
     "execution_scope": {
       "enum": ["local_read_only", "local_workspace_write", "wsl_workspace_transport", "wsl_cloud_transport"]
     },
@@ -96,6 +96,18 @@
           "routing_basis_ref": {
             "pattern": "^github:[0-9a-f]{40}:[A-Za-z0-9._/-]+\\.json$"
           }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["effort"],
+        "properties": {"effort": {"const": "xhigh"}}
+      },
+      "then": {
+        "properties": {
+          "task_class": {"const": "R3_SCIENTIFIC_AUTHORITY"},
+          "required_role": {"const": "frontier"}
         }
       }
     }

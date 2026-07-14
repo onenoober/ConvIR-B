@@ -1,6 +1,6 @@
 # Model-Agent Cost Routing Protocol
 
-Date: 2026-07-14
+Date: 2026-07-15
 
 Status: canonical L2 protocol for selecting the cheapest qualified agent model
 without changing experiment semantics or weakening execution gates.
@@ -99,6 +99,33 @@ Reasoning effort is a minimum, not an equality check. The order is
 `low < medium < high < xhigh`; `xhigh` therefore satisfies a `high` minimum. A
 higher qualified model or effort may perform a lower-class task when keeping
 the current context minimizes the remaining task's total token and credit cost.
+
+### R3 Sol Effort Selection
+
+`high` remains the default and minimum dispatcher effort for
+`R3_SCIENTIFIC_AUTHORITY`. The dispatcher also accepts `xhigh` only when the
+target is `frontier` / GPT-5.6 Sol and the declared task class is exactly `R3`.
+It does not accept `xhigh` for `R0`-`R2`, even when a stronger target role was
+requested.
+
+Select `xhigh` when deeper reasoning can materially change a high-impact
+scientific decision and at least one of these conditions holds:
+
+- the task owns locked-test, canary, promotion, stop/reopen, or another
+  difficult-to-reverse decision;
+- evidence is conflicting, incomplete, or failure classification is ambiguous
+  enough to change the authorized continuation;
+- the task jointly designs or changes model structure, data/split, metric,
+  gate, estimand, or adaptive branches with interacting tradeoffs;
+- cross-route bottleneck synthesis or a large whole-route plan must reconcile
+  several durable evidence sources before work can be safely decomposed.
+
+Use `high` for ordinary R3 interpretation with a frozen contract, an
+unambiguous typed result, a narrow single-decision design, or a short warm
+continuation where `xhigh` is unlikely to alter the decision. The route card
+records `high` or `xhigh` and the compact rationale. The dispatcher never
+infers `xhigh` from prose and never treats extra effort as extra experiment
+authority.
 
 Known tasks use the standard marker:
 
@@ -238,11 +265,11 @@ through an ordinary prompt or subagent.
 
 ## Deterministic External Dispatcher
 
-Repository state: the known-source v1 behavior is validated in
-`model_agent_dispatcher/20260713/README.md`. Schema-v2 unknown-host and
-task-pinned behavior is implemented with a fail-closed static audit in
-`MODEL_ROUTING_UNKNOWN_HOST_TOTAL_COST_EVALUATION_20260714.md`; run its dated
-end-to-end validation before promoting that candidate to GitHub `main`.
+Repository state: schema v2 is active on GitHub `main` after the cloud
+`20/20` fail-closed dispatcher matrix and adoption decision recorded in
+`UNIVERSAL_EXPERIMENT_OPS_V2_EVALUATION_20260714.md`. The earlier v1 and
+candidate evaluations remain historical qualification/audit evidence, not
+active dispatcher contracts.
 
 Use `experience_docx/tools/dispatch_agent_task.ps1` when an explicit model-task
 boundary passes the switching and context-amortization rules below. Its request
@@ -325,7 +352,7 @@ copying it.
 
 | Boundary | Task class / role | Dispatcher action |
 | --- | --- | --- |
-| Unclassified or ambiguous large task | `R3` / `frontier` | Use `task_routing`; require one frontier planning child to write a compact whole-task routing plan before lower-role work. |
+| Unclassified or ambiguous large task | `R3` / `frontier` | Use `task_routing`; require one frontier planning child to write a compact whole-task routing plan before lower-role work. Use `xhigh` only when the R3 criteria above are met. |
 | Bottleneck synthesis, route question, gate or metric design | `R3` / `frontier` | Route to frontier independently of source identity, or remain only when a known frontier host is intentionally executing the warm envelope. |
 | Written design to fresh workspace, tracked runner, smoke repair, and unchanged-verdict route evidence | `R2` / `balanced` | Use one warm engineering package when these operations share the route contract; do not create a child per repair or Git operation. |
 | Exact-tuple plan/start, short observation, and closeout fetch | `R1` / `fast` | Dispatch one bounded stage package only after `route_id`, `state`, `decision`, and `authorizes` are machine-verified against a GitHub typed JSON handoff. Keep it in the warm engineering task when a separate child would not amortize. |
@@ -458,9 +485,10 @@ handoff.
 Use a task-scoped pin when the user explicitly fixes the current host model and
 effort; otherwise record the host as unknown without asking. In both cases, the
 host may route a clear class to its lowest qualified target. Route ambiguous
-work to `frontier`/high, independent `R2` work to `balanced`/medium, and
+work to `frontier`/high by default, select `frontier`/xhigh only under the R3
+criteria above, route independent `R2` work to `balanced`/medium, and route
 amortized `R0`/exact `R1` batches to `fast` low/medium after the dated
-qualifications. Return to `frontier`/high for scientific design or
+qualifications. Return to `frontier` before scientific design or
 interpretation.
 
 An explicitly selected stronger interactive model is not inherited by

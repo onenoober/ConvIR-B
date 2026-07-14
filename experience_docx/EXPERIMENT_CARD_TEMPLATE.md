@@ -28,6 +28,7 @@ role/model mapping or qualification tables here.
 
 - Host identity mode: `<unknown | user_pinned_task | product_metadata | cli_status | dispatcher_receipt>`
 - Task-scoped host pin: `<role/effort/source or n/a>`
+- R3 target effort and rationale: `<high: default rationale | xhigh: qualifying R3 condition | not applicable: reason>`
 - Whole-task batching plan: `<the minimum durable model-task boundaries and atomic batches>`
 
 | Applicable scope | Task class | Minimum role | Routing basis/ref | Boundary action |
