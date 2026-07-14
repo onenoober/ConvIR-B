@@ -3,7 +3,7 @@
 Date: 2026-07-13
 
 Status: optional local Codex tool entry for the persistent `convir-4090` host;
-current tracked server version `1.1.1`.
+current tracked server version `1.2.0`.
 
 ## Purpose
 
@@ -23,9 +23,10 @@ fragment. Current rules remain canonical in:
 
 | Tool | Scope | Mutation boundary |
 | --- | --- | --- |
-| `convir_route_preflight` | route branch/commit, clean tree, runner, tmux, optional GPU probe | read-only |
-| `convir_route_launch` | launch one tracked runner in a new tmux session | cloud runtime only; runner still enforces stage-specific gates |
-| `convir_route_monitor` | bounded `status.txt` tail, tmux state, closeout names | read-only |
+| `convir_route_prepare_authorized` | two-phase `plan`/`apply` authorization and fresh route-derived workspace preflight | `apply` issues a launch-expiring, one-use receipt; it does not launch |
+| `convir_route_launch` | receipt-bound idempotent launch of the sealed tracked runner | cloud runtime only; it repeats dynamic preflight and accepts no command, path, or tuple fields |
+| `convir_route_monitor` | receipt-bound bounded `poll`, `until_change`, or server-side `until_terminal` monitoring | read-only observation; it never interprets a gate |
+| `convir_route_closeout_validate` | validates one compact runner closeout against the exact receipt terminal tuple | returns checksum manifest and archive-ready candidate only; never commits or pushes |
 | `convir_evidence_manifest` | compact top-level evidence names, sizes, hashes | read-only |
 | `convir_evidence_fetch` | explicit compact-file allowlist, one SCP transfer, remote/local SHA-256 verification | copies into a named local Git worktree only; never stages, commits, pushes, or overwrites a mismatched file |
 | `convir_git_evidence_status` | local evidence worktree, GitHub `main` ref freshness, and whitespace audit | read-only; uses `git ls-remote`, never fetches, stages, commits, or pushes |
@@ -35,7 +36,11 @@ The server rejects arbitrary SSH execution, arbitrary remote/local paths,
 destructive operations. Evidence fetch first verifies the exact remote manifest,
 then transfers the approved files together into a local staging directory before
 verifying each local hash. It does not access a canary or locked test by itself;
-the route runner and typed closeout remain mandatory.
+the route runner and typed closeout remain mandatory. Lifecycle calls use schema
+version `2` typed results: `ok`, `operation_state`, `failure_class`,
+`observed`, `expected`, `mismatches`, `allowed_next_actions`, and an audit
+digest. A failed command/infra attempt is never retried automatically or
+promoted as evidence; a corrected attempt needs a new preparation receipt.
 
 ## Persistent Operations Worktree
 
@@ -69,15 +74,20 @@ private-key material, or tokens in this TOML entry.
 
 ## Normal Use
 
-1. Use `convir_route_preflight` only after a typed closeout authorizes the
-   requested stage.
-2. Use `convir_route_launch` with the exact route commit, tracked runner,
-   mode, and a new tmux session name.
-3. Use `convir_route_monitor` for routine read-only state.
-4. Review `convir_evidence_manifest`, then call `convir_evidence_fetch` only
+1. Use `convir_route_prepare_authorized` with `phase=plan`, then apply the
+   returned plan hash after the typed closeout authorizes the stage. Preparation
+   seals the output id and target closeout filename and requires both to be new.
+2. Use `convir_route_launch` once with that receipt and a stable idempotency
+   key. A changed tuple, receipt, session, output identity, or retry requires
+   fresh preparation.
+3. Use `convir_route_monitor` only with the receipt and a bounded mode.
+4. Validate terminal compact evidence with `convir_route_closeout_validate`;
+   the receipt supplies the closeout path, while the caller supplies only one
+   tuple from the sealed allowed set. Review its archive candidate outside the MCP.
+5. Review `convir_evidence_manifest`, then call `convir_evidence_fetch` only
    with an explicit compact-file allowlist.
-5. Use `convir_git_evidence_status` before staging to inspect local changes,
+6. Use `convir_git_evidence_status` before staging to inspect local changes,
    whitespace checks, and whether the local `github/main` ref matches GitHub.
-6. Perform Git staging, route-branch commits, and terminal `main` sync through
+7. Perform Git staging, route-branch commits, and terminal `main` sync through
    the written evidence protocol; the MCP intentionally does not automate
    those judgement-bearing steps.

@@ -94,6 +94,7 @@ $base = [ordered]@{
     routing_basis_ref = "none"
     effort = "low"
     execution_scope = "local_read_only"
+    transport_contract = "local_only"
     completion_marker = "DISPATCHER_DRY_RUN_TEST_OK"
     route_branch_commit = "none"
     route_id = "dispatcher-dry-run-test"
@@ -120,7 +121,8 @@ $r1.required_role = "fast"
 $r1.dispatch_reason = "batch_bounded_operations"
 $r1.effort = "medium"
 $r1.execution_scope = "wsl_cloud_transport"
-$r1.next_action = "Use convir_route_preflight for the authorized tuple."
+$r1.transport_contract = "tracked_convir_cloud"
+$r1.next_action = "Use convir_route_prepare_authorized for the authorized tuple."
 $r1.route_branch_commit = $headCommit
 $r1.stage_state = "COMPLETED_GATE_PASS"
 $r1.decision = "V4A_A0R_REPRODUCTION_PASS_AUTHORIZE_A0D_AND_A0P"
@@ -161,6 +163,13 @@ $incompleteR1.authorization_check.checked_fields = @("state")
 
 $underRoleR2 = Copy-Request $r2
 $underRoleR2.required_role = "fast"
+
+$wslWorkspace = Copy-Request $r2
+$wslWorkspace.execution_scope = "wsl_workspace_transport"
+$wslWorkspace.next_action = "Use WSL only to repair the local dispatcher fixtures."
+
+$wslWorkspaceCloud = Copy-Request $wslWorkspace
+$wslWorkspaceCloud.transport_contract = "tracked_convir_cloud"
 
 $sameRole = Copy-Request $r0
 $sameRole.source_role = "fast"
@@ -217,6 +226,8 @@ $results += Invoke-Case -Name "same_role_r0_luna" -Request $sameRole -ShouldPass
 $results += Invoke-Case -Name "stale_rules" -Request $stale -ShouldPass $false -ExpectedModel ""
 $results += Invoke-Case -Name "incomplete_r1" -Request $incompleteR1 -ShouldPass $false -ExpectedModel ""
 $results += Invoke-Case -Name "under_role_r2" -Request $underRoleR2 -ShouldPass $false -ExpectedModel ""
+$results += Invoke-Case -Name "wsl_workspace_transport" -Request $wslWorkspace -ShouldPass $true -ExpectedModel "gpt-5.6-terra"
+$results += Invoke-Case -Name "wsl_workspace_transport_contract_rejected" -Request $wslWorkspaceCloud -ShouldPass $false -ExpectedModel ""
 $results += Invoke-Case -Name "typed_without_reference" -Request $typedWithoutReference -ShouldPass $false -ExpectedModel ""
 $results += Invoke-Case -Name "identity_tuple_mismatch" -Request $identityTupleMismatch -ShouldPass $false -ExpectedModel ""
 

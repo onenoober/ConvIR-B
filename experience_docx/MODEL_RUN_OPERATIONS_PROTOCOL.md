@@ -17,18 +17,10 @@ Local WSL is editing and syntax/static-check only. Runtime work happens on
 
 ## Agent Routing Before Stage Work
 
-At the start of a fresh task or after a scope changes, apply the canonical
-boundary recipe in `MODEL_AGENT_COST_ROUTING_PROTOCOL.md` before the next
-substantive tool call. A dispatched child performs only its bounded handoff:
-for example, exact-tuple preflight/launch/monitor as `R1`, or engineering repair
-as `R2`. Terminal scientific interpretation remains `R3` even when the runner
-already wrote numeric `PASS` or `FAIL` fields.
-
-Do not dispatch separately between adjacent preflight, launch, short monitor,
-and intermediate evidence operations when context reload would cost more than
-the lower model saves. Do not call the local dispatcher from the cloud runner.
-Agent routing changes who performs this protocol; it does not change the
-protocol, runner, route commit, output path, or authorization chain.
+Apply the canonical task-boundary and routing rules in
+`MODEL_AGENT_COST_ROUTING_PROTOCOL.md` before substantive stage work. Routing
+only assigns the bounded operator; it never changes this lifecycle, the runner,
+route commit, output path, or authorization chain.
 
 ## Per-Stage Runtime Order
 
@@ -42,6 +34,16 @@ routine monitor -> typed closeout -> compact route-branch evidence
 Do not rerun one-time route setup at every launch. Do not launch a later stage
 because it appears next in a generic sequence; the previous typed closeout must
 name it in `authorizes`.
+
+For `convir-ops` schema-v2, authorized preparation first performs read-only
+GitHub identity/path checks, then `apply` creates exactly one fresh remote GitHub
+clone and seals its exact `REMOTE_REPO`, runner hash, session, output id,
+closeout filename, and authorization tuple in a persistent receipt. Launch,
+monitor, and closeout use only that
+receipt-bound clone. A failed fresh preparation removes only the clone it just
+created and returns recovery state; it never cleans an existing workspace.
+Receipt-bound monitoring emits one final bounded status snapshot and its poll
+count; it does not expose transport wrapper success markers.
 
 The route card records the GitHub `main` rules commit used for this sequence.
 Do not consult the cloud checkout's copies of governance files when they differ;

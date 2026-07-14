@@ -16,6 +16,7 @@
     "routing_basis_ref",
     "effort",
     "execution_scope",
+    "transport_contract",
     "completion_marker",
     "route_branch_commit",
     "route_id",
@@ -50,7 +51,10 @@
     },
     "effort": {"enum": ["low", "medium", "high"]},
     "execution_scope": {
-      "enum": ["local_read_only", "local_workspace_write", "wsl_cloud_transport"]
+      "enum": ["local_read_only", "local_workspace_write", "wsl_workspace_transport", "wsl_cloud_transport"]
+    },
+    "transport_contract": {
+      "enum": ["local_only", "tracked_convir_cloud"]
     },
     "completion_marker": {
       "type": "string",

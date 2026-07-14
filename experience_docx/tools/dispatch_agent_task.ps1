@@ -26,6 +26,7 @@ $requiredRequestFields = @(
     "routing_basis_ref",
     "effort",
     "execution_scope",
+    "transport_contract",
     "completion_marker",
     "route_branch_commit",
     "route_id",
@@ -48,7 +49,8 @@ $validSourceIdentities = @("unknown", "user_pinned_task", "product_metadata", "c
 $validSourceEfforts = @("unknown", "low", "medium", "high", "xhigh")
 $validDispatchReasons = @("task_routing", "standalone_repetition", "batch_bounded_operations", "major_handoff")
 $validRoutingBases = @("dispatcher_classification", "typed_handoff")
-$validExecutionScopes = @("local_read_only", "local_workspace_write", "wsl_cloud_transport")
+$validExecutionScopes = @("local_read_only", "local_workspace_write", "wsl_workspace_transport", "wsl_cloud_transport")
+$validTransportContracts = @("local_only", "tracked_convir_cloud")
 $roleRank = @{fast = 0; balanced = 1; frontier = 2}
 $minimumRole = @{
     R0_READ_ONLY = "fast"
@@ -186,6 +188,9 @@ if ($request.effort -notin @("low", "medium", "high")) {
 if ($request.execution_scope -notin $validExecutionScopes) {
     throw "Unknown execution_scope: $($request.execution_scope)"
 }
+if ($request.transport_contract -notin $validTransportContracts) {
+    throw "Unknown transport_contract: $($request.transport_contract)"
+}
 if ($request.completion_marker -notmatch "^[A-Z][A-Z0-9_]{2,127}$") {
     throw "completion_marker must be an uppercase machine marker"
 }
@@ -224,9 +229,11 @@ if ($request.routing_basis -eq "typed_handoff" -and $request.routing_basis_ref -
 if ($request.routing_basis -ne "typed_handoff" -and $request.routing_basis_ref -ne "none") {
     throw "$($request.routing_basis) requires routing_basis_ref=none"
 }
-if ($request.execution_scope -eq "wsl_cloud_transport" -and
-    -not ($request.next_action.Contains("convir_remote_script.sh") -or $request.next_action.Contains("convir_route_"))) {
-    throw "wsl_cloud_transport requires a tracked convir transport in next_action"
+if ($request.execution_scope -eq "wsl_cloud_transport" -and $request.transport_contract -ne "tracked_convir_cloud") {
+    throw "wsl_cloud_transport requires transport_contract=tracked_convir_cloud"
+}
+if ($request.execution_scope -ne "wsl_cloud_transport" -and $request.transport_contract -ne "local_only") {
+    throw "non-cloud execution scopes require transport_contract=local_only"
 }
 
 $repository = $request.repository_linux_path
@@ -334,6 +341,7 @@ $selectedModel = $modelsByRole[$request.required_role]
 $sandboxByExecutionScope = @{
     local_read_only = "read-only"
     local_workspace_write = "workspace-write"
+    wsl_workspace_transport = "danger-full-access"
     wsl_cloud_transport = "danger-full-access"
 }
 $sandbox = $sandboxByExecutionScope[$request.execution_scope]
@@ -352,6 +360,7 @@ $handoff = [ordered]@{
     routing_basis_ref = $request.routing_basis_ref
     effort = $request.effort
     execution_scope = $request.execution_scope
+    transport_contract = $request.transport_contract
     completion_marker = $request.completion_marker
     stage_state = $request.stage_state
     decision = $request.decision
@@ -376,6 +385,8 @@ $promptLines = @(
     $routeMarker,
     $handoffAck,
     "Do not downgrade the role or expand the task scope.",
+    $(if ($request.execution_scope -eq "wsl_workspace_transport") { "This scope permits WSL local workspace transport only. Do not call convir_remote_script.sh, convir_route_ tools, convir-ops, SSH, or cloud commands." }),
+    $(if ($request.transport_contract -eq "tracked_convir_cloud") { "Cloud access is limited to the tracked ConvIR transport named by the bounded next action; do not construct arbitrary SSH commands." }),
     $basisInstruction,
     "If new evidence requires a stronger role, stop before the next write or decision and emit MODEL_SWITCH_REQUIRED with a new dispatcher request.",
     "Handoff JSON: $handoffJson",
@@ -400,6 +411,7 @@ $dispatchPlan = [ordered]@{
     selected_model = $selectedModel
     effort = $request.effort
     execution_scope = $request.execution_scope
+    transport_contract = $request.transport_contract
     completion_marker = $request.completion_marker
     sandbox = $sandbox
     repository_linux_path = $repository
@@ -516,6 +528,7 @@ $metadata = [ordered]@{
     selected_model = $selectedModel
     effort = $request.effort
     execution_scope = $request.execution_scope
+    transport_contract = $request.transport_contract
     completion_marker = $request.completion_marker
     sandbox = $sandbox
     repository_linux_path = $repository
