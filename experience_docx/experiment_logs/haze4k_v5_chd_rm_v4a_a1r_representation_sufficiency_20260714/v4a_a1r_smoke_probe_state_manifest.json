@@ -1,0 +1,10 @@
+{
+  "optimizer_state_retained": false,
+  "probe_config_sha256": "4c4609b12ec47caca591b62b21d6bcdfdfd17fcc7bfb79d4c4e1ffd02acd3b6c",
+  "resume_authorized": false,
+  "route_id": "haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714",
+  "schema_version": 1,
+  "stage": "smoke",
+  "state_count": 0,
+  "states": []
+}

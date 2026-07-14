@@ -1,6 +1,6 @@
 # v4a-A1R Representation Sufficiency Evidence
 
-Status: `PREFLIGHT_FAILED_ENGINEERING`; same-stage smoke r2 repair is frozen and pending.
+Status: smoke `COMPLETED_GATE_PASS`; formal is authorized and pending.
 
 This route is a fresh-name, four-fold OOF, nondeployable representation audit
 after A1F proved safe bounded direction headroom beyond privileged shrink. It
@@ -25,3 +25,13 @@ an engineering-invalid run, not scientific evidence. The frozen repair blocks
 batches and shuffled targets by exact feature size without resize, crop, or
 padding; it preserves the data, folds, targets, optimizer, epochs, loss,
 metrics, thresholds, and locked-test prohibition.
+
+Smoke r2 (`v4a_a1r_s0_smoke_r2`) passed the repaired structural contract at
+route commit `d79fdff7f2bd923d84969ac242f214d6736b2d7f`. The exact typed tuple is
+`COMPLETED_GATE_PASS` /
+`V4A_A1R_S0_INTEGRITY_PASS_AUTHORIZE_FORMAL_ONLY` / `A1R_FORMAL_ONLY`.
+Zero-correction, bound-excess, and support-excess maxima were all `0.0`; the
+minimum first-gradient norm was `3.682724952697754`. The smoke retained both
+native feature-size blocks (2 names at 208x208 and 30 at 240x320), completed
+two diagnostic batches for every cell, and touched neither canary nor locked
+test. No smoke metric or cell outcome is scientific evidence.
