@@ -2,7 +2,7 @@
 
 Date: 2026-07-14
 
-Status: `PLANNED`
+Status: `COMPLETED`
 
 ## Scope
 
@@ -229,9 +229,32 @@ frozen numerical tolerance. A tie or shrink fallback is not repairable.
 - Evidence package contents: route card, README, closeout JSON, source manifest JSON, operator summary CSV, and bootstrap summary JSON.
 - Evidence package audit: explicit text paths only; no raw per-image/action table, checkpoint, tensor, image, or log enters Git.
 
+## Results And R3 Review
+
+- The repaired S0 smoke passed 32/32 image/operator rows with exact A0D MSE
+  and PSNR replay, zero-action tensor discrepancy, bound excess, and support
+  excess all `0.0`.
+- Formal completed 512/512 rows and 4,000 PCG64(3407) paired image bootstrap
+  draws with operator pairing and the worst operator retained within each draw.
+- Heldout worst-operator direction-over-shrink was `+0.128716 dB` with LCB95
+  `+0.105475 dB`, above the preregistered `+0.005 dB` gate.
+- Heldout repairable-image fraction was `0.765625` with LCB95 `0.6953125`,
+  above the preregistered `0.20` gate.
+- Heldout worst-operator lift versus old `.25` was `+0.224309 dB` with LCB95
+  `+0.200613 dB`; every selected row was anchor- and predecessor-nonworse,
+  with zero severe/hard regression.
+- The safe direction oracle also improved over the current v3z repair by
+  worst-operator `+0.199285 dB`, LCB95 `+0.158832 dB`.
+- The result identifies safe bounded direction headroom beyond privileged
+  shrink/abstention at the exact failed v3z state. It favors representation or
+  reachable-action insufficiency over action-space infeasibility.
+- This remains privileged `development_screening`: clean targets select each
+  action, so it is nondeployable and cannot authorize candidate training,
+  promotion, canary, or locked-test access.
+
 ## Decision
 
-- Decision label: `V4A_A1F_PLANNED_METRIC_ALIGNED_BOUNDED_ACTION_FEASIBILITY_ONLY`.
+- Decision label: `V4A_A1F_SAFE_DIRECTION_HEADROOM_PASS_AUTHORIZE_A1R_REPRESENTATION_SUFFICIENCY_DESIGN_ONLY`.
 - Image/global metric reason: the heldout128 safety failure must be tested at the same image/operator level without allowing update128 to rescue it.
 - Mechanism reason: direction-over-shrink isolates action direction from optimizer, window, and abstention explanations.
 - Preservation or regression reason: every selected action must be non-worse than old `.125` at `.125` and old `.25` at `.25` before aggregate lift is considered.
@@ -241,8 +264,10 @@ frozen numerical tolerance. A tie or shrink fallback is not repairable.
 - Group/split/seed uncertainty and interaction reason: image-group bootstrap retains paired operators and uses the worst operator per draw.
 - Evidence role and independence reason: privileged development evidence can decide whether A1R is informative but cannot select a deployable candidate.
 - Cost/deployability reason: no training or deployable change; privileged GT use makes A1F nondeployable by design.
-- What this decides next: A1R design only if the full formal gate passes; otherwise terminal learned-repair closeout.
-- Typed closeout path: `RUN_ROOT/stage-run-id/v4a_a1f_closeout.json`.
-- `PASS` authorizes: `R3_REVIEW_FOR_A1R_DESIGN_ONLY`.
+- What this decides next: a fresh, preregistered A1R representation-sufficiency
+  audit only; the A1F oracle action and heldout outcomes cannot train or select
+  that representation.
+- Typed closeout path: `RUN_ROOT/v4a_a1f_formal_r1/v4a_a1f_closeout.json`.
+- `PASS` authorizes: `A1R_ROUTE_DESIGN_ONLY`.
 - `INCONCLUSIVE` authorizes: `SAME_STAGE_ENGINEERING_OR_PREDECLARED_EVIDENCE_REPAIR_ONLY`.
 - `FAIL` stops: `A1R_V4B_V4C_POLICY_CANARY_AND_LOCKED_TEST`.

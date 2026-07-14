@@ -1,6 +1,6 @@
 # v4a-A1F Delta-u Action Feasibility Evidence
 
-Status: `COMPLETED_GATE_PASS`; A1F formal only is authorized.
+Status: `COMPLETED_R3_REVIEW`; A1R route design only is authorized.
 
 This route is a privileged, train-derived feasibility oracle after v4a A0P
 found no local optimizer/projection/window correction. It restores the exact
@@ -44,3 +44,24 @@ Raw rows and the full log remain under
 and the route `RUN_ROOT`; they are not Git evidence. The compact smoke package
 is the closeout, source manifest, operator summary, bootstrap-not-run marker,
 failure closeout, and this README.
+
+Formal `v4a_a1f_formal_r1` at route commit `b30ec5d6` completed all 512
+image/operator rows. The preregistered heldout gates passed:
+
+- worst-operator direction-over-shrink LCB95 `+0.105475 dB` versus `+0.005`;
+- worst-operator repairable-fraction LCB95 `0.6953125` versus `0.20`;
+- worst-operator direction-versus-old-`.25` LCB95 `+0.200613 dB` versus `0`;
+- exact A0D replay, zero-action tensor discrepancy, bound excess, and support
+  excess all `0.0`; severe/hard regressions `0` for every split/operator.
+
+R3 decision:
+`V4A_A1F_SAFE_DIRECTION_HEADROOM_PASS_AUTHORIZE_A1R_REPRESENTATION_SUFFICIENCY_DESIGN_ONLY`.
+The result proves privileged safe bounded direction headroom beyond shrink at
+the exact failed v3z state; it does not provide a deployable selector or
+candidate. Only a fresh A1R design is authorized. Training, policy replay,
+canary, candidate selection, and locked test remain blocked.
+
+Formal raw rows and logs remain under
+`/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/v4a_a1f_formal_r1/`.
+The compact terminal package adds the formal closeout, source manifest,
+operator summary, bootstrap summary, and `v4a_a1f_r3_review.json`.
