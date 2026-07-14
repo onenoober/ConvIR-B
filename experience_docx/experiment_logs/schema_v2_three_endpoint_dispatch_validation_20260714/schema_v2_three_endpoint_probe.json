@@ -1,0 +1,7 @@
+{
+  "schema_version": 2,
+  "route_commit": "6077d258d9308e05310bc8225f57a820ed1a2223",
+  "github_branch_commit": "6077d258d9308e05310bc8225f57a820ed1a2223",
+  "source_rank_independent": true,
+  "route_specific_r1_tuple_supported": true
+}

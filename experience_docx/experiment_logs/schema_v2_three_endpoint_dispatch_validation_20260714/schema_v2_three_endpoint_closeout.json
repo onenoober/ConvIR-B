@@ -1,0 +1,12 @@
+{
+  "route_id": "schema_v2_three_endpoint_dispatch_validation_20260714",
+  "state": "COMPLETED_VALIDATION_PASS",
+  "decision": "SCHEMA_V2_THREE_ENDPOINT_PROBE_PASS",
+  "authorizes": "SOL_THREE_ENDPOINT_CLOSEOUT_AUDIT_ONLY",
+  "failure_class": "NONE",
+  "route_commit": "6077d258d9308e05310bc8225f57a820ed1a2223",
+  "schema_version": 2,
+  "gpu_used": false,
+  "dataset_accessed": false,
+  "experiment_modified": false
+}
