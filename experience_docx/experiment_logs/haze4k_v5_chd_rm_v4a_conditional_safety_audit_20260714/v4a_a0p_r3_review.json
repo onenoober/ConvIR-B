@@ -1,0 +1,26 @@
+{
+  "authorizes": "A1F_ROUTE_DESIGN_AND_IMPLEMENTATION_ONLY",
+  "canary_touched": false,
+  "decision": "V4A_A0P_NO_LOCAL_CORRECTION_AUTHORIZE_A1F_METRIC_ALIGNED_FEASIBILITY_ONLY",
+  "evidence_role": "development_screening",
+  "gate_type": "scientific_utility",
+  "locked_test_touched": false,
+  "metric_contract": "2026-07-14 v4a card A0P amendment and frozen adaptive branch",
+  "reason": "The complete paired factorial found no simultaneous harm/CVaR improvement from exact-gradient or actual-AdamW-proposal correction under any frozen risk window; only a metric-aligned privileged action-space feasibility audit can separate bounded-action headroom from representation insufficiency.",
+  "route_id": "haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714",
+  "rules_commit": "7df7ae151911e8de077849215fdec8383c0b4dba",
+  "source_closeout_contract_id": "286bb055f7c37393446e8590968892268bbb4282a354616670ee7c539d92dabc",
+  "source_closeout_sha256": "656a929ba76eb18f510f7a53973a56c29f876c40139d7f133f5a7a7ece3ff9de",
+  "stage": "v4a-A0P-R3-scientific-review",
+  "state": "COMPLETED_R3_REVIEW",
+  "summary": {
+    "complete_family": true,
+    "exact_positive_windows": [],
+    "factor_cells": 2304,
+    "interaction_reversal": false,
+    "proposal_positive_windows": [],
+    "raw_rows_count": 655360,
+    "state_count": 256,
+    "structural_valid": true
+  }
+}

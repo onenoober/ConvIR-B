@@ -20,7 +20,7 @@ contract; v3q scoring, calibration, and policy continuation are closed.
 Continuous haze-density-aware region-adaptive residual modulation with low-haze protection for ConvIR-B Haze4K dehazing.
 ```
 
-## Current v3r/v3s/v3t/v3u/v3v/v3w/v3x/v3y/v3z Decision
+## Current v3r-v4a Decision
 
 v3r proves that the frozen direct operator's dominant ceiling is signed
 direction: scale and channel-scale fail, while bounded direction-line repair
@@ -86,6 +86,19 @@ The projected frozen-head route is closed. Do not tune its sample scope, loss,
 bounds, gates, or safety thresholds; no policy, canary, candidate, or locked
 test action is authorized.
 
+v4a then reconstructed v3z exactly and separated per-image inherited/added
+risk before testing all 256 retained safety states in a complete 3-by-3 paired
+update-method/window audit. A0R and A0D passed their integrity/descriptive
+gates. A0P completed 2,304 cells and the joint 1,000-draw bootstrap with no
+missing or invalid solver result, but neither exact common-intersection nor
+actual-AdamW-proposal correction produced a simultaneous harm/CVaR safety
+improvement under fixed4, shuffled16, or prestratified32. Exact projection was
+effectively identical to historical sequential projection; actual-proposal
+harm/CVaR point effects were worse in all windows and both operators. A0M,
+optimizer/window retuning, policy, canary, candidate, and locked test remain
+blocked. Only a new metric-aligned privileged A1F bounded-action feasibility
+route may be designed.
+
 ## Current Scope
 
 - Dataset: Haze4K only.
@@ -141,6 +154,7 @@ test action is authorized.
 | v3x projected direct safety | `codex/haze4k-v5-v3x-projected-safety-constraint-20260713` | completed mechanism pass | Exact no-op passes; the post-warmup projected constraint update retains `1.69283%` rendered-MSE reduction and meets all fixed v3u safety references | `V3X_S1_PROJECTED_SAFETY_PASS_AUTHORIZE_SAFETY_CONTRACT_DESIGN_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3x_projected_safety_constraint_20260713/` |
 | v3y cross-sample safety | `codex/haze4k-v5-v3y-cross-sample-safety-20260713` | completed cross-sample pass | Fixed train32/heldout32 passes activity, heldout MSE reduction `2.97251%`, and v3u safety references | `V3Y_S1_CROSS_SAMPLE_SAFETY_PASS_AUTHORIZE_SEALED_INTERNAL_CONFIRMATION_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3y_cross_sample_safety_20260713/` |
 | v3z sealed confirmation | `codex/haze4k-v5-v3z-sealed-confirmation-20260713` | completed terminal gate fail | train128 passes, but heldout128 anchor/harm exceed fixed safety references despite positive rendered-MSE reduction | `V3Z_S1_SEALED_CONFIRMATION_FAIL_CLOSE_PROJECTED_HEAD_ROUTE` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713/` |
+| v4a conditional safety audit | `codex/haze4k-v5-v4a-conditional-safety-audit-20260714` | completed A0P R3 handoff | exact reconstruction and risk decomposition pass; complete 256-state 3-by-3 A0P finds no exact/proposal/window local correction, with actual-proposal harm/CVaR point effects worse across both operators | `V4A_A0P_NO_LOCAL_CORRECTION_AUTHORIZE_A1F_METRIC_ALIGNED_FEASIBILITY_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
