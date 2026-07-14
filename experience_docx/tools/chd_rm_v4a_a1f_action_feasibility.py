@@ -9,6 +9,7 @@ import hashlib
 import json
 import math
 import sys
+import time
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -71,6 +72,21 @@ def numerical_tolerance(*values: float) -> float:
 
 def clamp_channelwise(value: torch.Tensor, bound: torch.Tensor) -> torch.Tensor:
     return torch.maximum(torch.minimum(value, bound), -bound)
+
+
+def active_saturation_fraction(value: torch.Tensor, bound: torch.Tensor, support: torch.Tensor) -> float:
+    active = support.expand_as(value) > 0.0
+    if not bool(active.any()):
+        return 0.0
+    saturated = torch.isclose(value.abs(), bound.expand_as(value), rtol=1e-5, atol=1e-7)
+    return float(saturated.masked_select(active).float().mean().item())
+
+
+def emit_progress(status_file: Path, value: dict[str, Any]) -> None:
+    line = json.dumps(value, sort_keys=True)
+    print(line, flush=True)
+    with status_file.open("a", encoding="utf-8") as handle:
+        handle.write(line + "\n")
 
 
 def validate_review(path: Path, expected_sha256: str) -> dict[str, Any]:
@@ -189,6 +205,22 @@ def summarize_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
             result[f"mean_{key}"] = float(np.mean(array))
             result[f"p05_{key}"] = float(np.quantile(array, 0.05, method="linear"))
             result[f"p10_{key}"] = float(np.quantile(array, 0.10, method="linear"))
+        for key in (
+            "inherited_harm",
+            "direction_total_harm",
+            "direction_added_harm",
+            "shrink_grid_value",
+            "direction_grid_value",
+            "shrink_delta_abs",
+            "direction_delta_abs",
+            "current_bound_saturation_fraction",
+            "target_bound_saturation_fraction",
+            "direction_bound_saturation_fraction",
+        ):
+            array = np.asarray([float(row[key]) for row in values], dtype=np.float64)
+            result[f"mean_{key}"] = float(np.mean(array))
+            result[f"min_{key}"] = float(np.min(array))
+            result[f"max_{key}"] = float(np.max(array))
         summaries.append(result)
     return summaries
 
@@ -233,6 +265,9 @@ def bootstrap_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 def run_a1f(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], folds: dict[str, int], device: torch.device, output_dir: str) -> dict[str, Any]:
     assert SOURCE is not None and AUDIT is not None
+    started = time.perf_counter()
+    if device.type == "cuda":
+        torch.cuda.reset_peak_memory_stats(device)
     a0p.validate_frozen_args(args)
     audit = AUDIT
     review = validate_review(Path(audit.r3_review), audit.expected_r3_review_sha256)
@@ -278,6 +313,8 @@ def run_a1f(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
     replay_psnr_max = 0.0
     bound_excess_max = 0.0
     support_excess_max = 0.0
+    zero_tensor_max_abs = 0.0
+    grid_zero_mse_max_abs = 0.0
     with torch.no_grad():
         for split, split_names in selected_names.items():
             for name_index, name in enumerate(split_names):
@@ -324,7 +361,25 @@ def run_a1f(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
                         abs(old_high_psnr - float(reference["old_250_psnr"])),
                         abs((current_psnr - old_high_psnr) - float(reference["delta_psnr"])),
                     )
-                    shrink_candidates = grid_metrics(sample, step, torch.zeros_like(current_delta), current_delta, GRID)
+                    zero_delta = torch.zeros_like(current_delta)
+                    _, _, zero_low, zero_high = v3s.candidate_predictions(sample["base"], step, zero_delta)
+                    zero_tensor_max_abs = max(
+                        zero_tensor_max_abs,
+                        float((zero_low - old_low).abs().max().item()),
+                        float((zero_high - old_high).abs().max().item()),
+                    )
+                    if zero_tensor_max_abs != 0.0:
+                        raise RuntimeError("zero Delta-u does not exactly reproduce the predecessor tensors")
+                    shrink_candidates = grid_metrics(sample, step, zero_delta, current_delta, GRID)
+                    zero_rows = [candidate for candidate in shrink_candidates if candidate["grid_value"] == 0.0]
+                    if len(zero_rows) != 1:
+                        raise RuntimeError("shrink grid does not contain exactly one zero action")
+                    grid_zero_mse_max_abs = max(
+                        grid_zero_mse_max_abs,
+                        abs(float(zero_rows[0]["low_mse"]) - old_low_mse),
+                        abs(float(zero_rows[0]["high_mse"]) - old_high_mse),
+                    )
+                    zero_rows[0].update({"low_mse": old_low_mse, "high_mse": old_high_mse, "delta_abs": 0.0})
                     for candidate in shrink_candidates:
                         candidate.update({"family": "shrink", "family_rank": 0})
                     shrink, shrink_safe_count = select_safe(shrink_candidates, old_low_mse, old_high_mse)
@@ -344,6 +399,10 @@ def run_a1f(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
                     )
                     inherited_harm = max(old_high_mse - old_low_mse, 0.0)
                     direction_total_harm = max(float(direction["high_mse"]) - old_low_mse, 0.0)
+                    if direction["family"] == "direction":
+                        selected_delta = current_delta + float(direction["grid_value"]) * (target_delta - current_delta)
+                    else:
+                        selected_delta = float(direction["grid_value"]) * current_delta
                     row = {
                         "schema_version": 1,
                         "split": split,
@@ -356,11 +415,13 @@ def run_a1f(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
                         "shrink_low_mse": float(shrink["low_mse"]),
                         "shrink_high_mse": float(shrink["high_mse"]),
                         "shrink_grid_value": float(shrink["grid_value"]),
+                        "shrink_delta_abs": float(shrink["delta_abs"]),
                         "shrink_safe_count": shrink_safe_count,
                         "direction_low_mse": float(direction["low_mse"]),
                         "direction_high_mse": float(direction["high_mse"]),
                         "direction_family": str(direction["family"]),
                         "direction_grid_value": float(direction["grid_value"]),
+                        "direction_delta_abs": float(direction["delta_abs"]),
                         "direction_safe_count": direction_safe_count,
                         "direction_selected": direction_selected,
                         "direction_vs_shrink_db": direction_vs_shrink,
@@ -373,11 +434,17 @@ def run_a1f(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
                         "direction_added_harm": direction_total_harm - inherited_harm,
                         "current_delta_abs": float(current_delta.abs().mean().item()),
                         "target_delta_abs": float(target_delta.abs().mean().item()),
+                        "current_bound_saturation_fraction": active_saturation_fraction(current_delta, delta_bound, support),
+                        "target_bound_saturation_fraction": active_saturation_fraction(target_delta, delta_bound, support),
+                        "direction_bound_saturation_fraction": active_saturation_fraction(selected_delta, delta_bound, support),
                     }
                     if not all(math.isfinite(float(value)) for key, value in row.items() if key not in {"split", "name", "operator", "direction_family"}):
                         raise FloatingPointError("non-finite A1F row")
                     rows.append(row)
-                print(json.dumps({"V4A_A1F_PROGRESS": {"stage": audit.a1f_stage, "split": split, "completed_images": name_index + 1, "total_images": len(split_names)}}, sort_keys=True), flush=True)
+                emit_progress(
+                    Path(audit.status_file),
+                    {"V4A_A1F_PROGRESS": {"stage": audit.a1f_stage, "split": split, "completed_images": name_index + 1, "total_images": len(split_names)}},
+                )
     raw_path = output / "v4a_a1f_rows_cloud_only.csv"
     write_rows(raw_path, rows)
     summaries = summarize_rows(rows)
@@ -388,7 +455,17 @@ def run_a1f(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
         and replay_psnr_max <= PSNR_REPLAY_TOLERANCE_DB
         and bound_excess_max <= 1e-7
         and support_excess_max == 0.0
+        and zero_tensor_max_abs == 0.0
         and len(rows) == 2 * limit * len(SOURCE.V3W.OPERATORS)
+        and all(
+            float(row["direction_low_mse"])
+            <= float(row["old_low_mse"])
+            + numerical_tolerance(float(row["direction_low_mse"]), float(row["old_low_mse"]))
+            and float(row["direction_high_mse"])
+            <= float(row["old_high_mse"])
+            + numerical_tolerance(float(row["direction_high_mse"]), float(row["old_high_mse"]))
+            for row in rows
+        )
         and all(not row["direction_severe_vs_old25"] and not row["direction_hard_vs_old25"] for row in rows)
     )
     bootstrap: dict[str, Any] | None = None
@@ -450,6 +527,14 @@ def run_a1f(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
         "replay_psnr_max_abs_db": replay_psnr_max,
         "bound_excess_max": bound_excess_max,
         "support_excess_max": support_excess_max,
+        "zero_tensor_max_abs": zero_tensor_max_abs,
+        "grid_zero_mse_max_abs": grid_zero_mse_max_abs,
+        "wall_seconds": time.perf_counter() - started,
+        "peak_gpu_memory_mib": (
+            float(torch.cuda.max_memory_allocated(device)) / (1024.0 * 1024.0)
+            if device.type == "cuda"
+            else 0.0
+        ),
         "r3_review_sha256": sha256_file(Path(audit.r3_review)),
         "a0d_rows_sha256": sha256_file(Path(audit.a0d_rows)),
         "a0r_trace_manifest_sha256": sha256_file(Path(audit.a0r_trace_dir) / "trace_manifest.json"),
@@ -481,6 +566,7 @@ def audit(argv: list[str]) -> None:
     parser.add_argument("--expected-r3-review-sha256", required=True)
     parser.add_argument("--expected-route-commit", required=True)
     parser.add_argument("--expected-route-card-sha256", required=True)
+    parser.add_argument("--status-file", required=True)
     parser.add_argument("--a1f-stage", required=True, choices=("smoke", "formal"))
     args, v3z_args = parser.parse_known_args(argv)
     if not v3z_args:

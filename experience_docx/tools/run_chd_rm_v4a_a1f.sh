@@ -152,6 +152,7 @@ CUDA_VISIBLE_DEVICES="$GPU" PYTHONUNBUFFERED=1 "$PY" "$RUNNER" audit \
   --r3-review "$R3_REVIEW" --expected-r3-review-sha256 "$EXPECTED_R3_REVIEW_SHA256" \
   --expected-route-commit "$EXPECTED_ROUTE_COMMIT" \
   --expected-route-card-sha256 "$EXPECTED_ROUTE_CARD_SHA256" \
+  --status-file "$STATUS" \
   --a1f-stage "$STAGE" --mode projected --output_dir "$OUT" \
   --run_tag "$RUN_ID" "${COMMON_ARGS[@]}" 2>&1 | tee -a "$LOG"
 rc=${PIPESTATUS[0]}
@@ -159,7 +160,7 @@ set -e
 
 echo "stage_done route=$ROUTE_ID stage=v4a-A1F-$STAGE run=$RUN_ID rc=$rc time=$(date --iso-8601=seconds)" | tee -a "$STATUS"
 if [ "$rc" -ne 0 ]; then
-  echo "V4A_A1F_${STAGE^^}_FAILED_COMMAND_OR_INFRA" | tee -a "$STATUS"
+  echo "V4A_A1F_${STAGE^^}_FAILED_RUNTIME_REQUIRES_CLASSIFICATION" | tee -a "$STATUS"
   exit "$rc"
 fi
 

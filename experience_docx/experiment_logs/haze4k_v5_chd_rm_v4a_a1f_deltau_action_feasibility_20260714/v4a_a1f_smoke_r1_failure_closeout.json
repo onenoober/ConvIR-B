@@ -1,0 +1,24 @@
+{
+  "authorizes": "SAME_STAGE_ENGINEERING_REPAIR_ONLY",
+  "candidate_selected": false,
+  "canary_touched": false,
+  "contract_id": "458fb270f055db5880c33ca77c254f7388b2835c9774c150452ce373cd3fc141",
+  "decision": null,
+  "evidence_role": "engineering_debug",
+  "failure_class": "ENGINEERING_NUMERICAL_CANONICALIZATION",
+  "gate_type": "structural_integrity",
+  "locked_test_touched": false,
+  "metric_contract": "2026-07-14 v4a-A1F card: S0 alignment smoke",
+  "progress": {
+    "heldout128_completed_images": 3,
+    "planned_images_per_split": 8,
+    "update128_completed_images": 8
+  },
+  "reason": "The guaranteed zero-action predecessor was re-reduced in a batched float32 grid and could be excluded by the 1e-12 singleton-baseline comparison; no scientific gate was evaluated.",
+  "route_commit": "ff9cf921ae3941a8b1b1adf0f22546bc895d32e7",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714",
+  "run_id": "v4a_a1f_s0_smoke_r1",
+  "stage": "v4a-A1F-smoke",
+  "state": "PREFLIGHT_FAILED_ENGINEERING",
+  "training_occurred": false
+}
