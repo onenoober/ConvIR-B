@@ -3,6 +3,7 @@
 import importlib.util
 import json
 import subprocess
+import sys
 import tempfile
 import threading
 import unittest
@@ -65,12 +66,14 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
     def test_receipt_tamper_and_reuse_are_rejected(self):
         prepared = self.prepare()
         tampered = payload(OPS.tool_receipt_launch({"receipt": "0" * 64, "idempotency_key": "launch-1"}))
-        with patch.object(OPS, "run_remote_body", return_value="CONVIR_OPS_LAUNCH_OK"):
+        with patch.object(OPS, "run_remote_body", return_value="CONVIR_OPS_LAUNCH_OK") as remote:
             launched = payload(OPS.tool_receipt_launch({"receipt": prepared["receipt"], "idempotency_key": "launch-1"}))
             reused = payload(OPS.tool_receipt_launch({"receipt": prepared["receipt"], "idempotency_key": "launch-2"}))
         self.assertFalse(tampered["ok"])
         self.assertTrue(launched["ok"])
         self.assertFalse(reused["ok"])
+        self.assertIn("RUN_ID=a0r-r2", remote.call_args.args[0])
+        self.assertIn("OUTPUT_ID=a0r-r2", remote.call_args.args[0])
 
     def test_tuple_mismatch_is_not_a_closeout_pass(self):
         prepared = self.prepare()
@@ -198,6 +201,30 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
         self.assertEqual("collision", collision["failure_class"])
         self.assertEqual("command_infra", timeout["failure_class"])
         self.assertEqual("authorization", forbidden["failure_class"])
+
+    def test_mcp_stdio_exposes_only_schema_v2_lifecycle_and_evidence_tools(self):
+        requests = [
+            {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2024-11-05"}},
+            {"jsonrpc": "2.0", "id": 2, "method": "tools/list", "params": {}},
+        ]
+        completed = subprocess.run(
+            [sys.executable, str(MODULE_PATH)],
+            input="".join(json.dumps(item) + "\n" for item in requests),
+            text=True,
+            capture_output=True,
+            check=True,
+            timeout=10,
+        )
+        responses = [json.loads(line) for line in completed.stdout.splitlines()]
+        names = {tool["name"] for tool in responses[1]["result"]["tools"]}
+        self.assertEqual({
+            "convir_route_prepare_authorized", "convir_route_launch",
+            "convir_route_monitor", "convir_route_closeout_validate",
+            "convir_evidence_manifest", "convir_evidence_fetch",
+            "convir_git_evidence_status",
+        }, names)
+        prepare = next(tool for tool in responses[1]["result"]["tools"] if tool["name"] == "convir_route_prepare_authorized")
+        self.assertIn("closeout_filename", prepare["inputSchema"]["required"])
 
 
 if __name__ == "__main__":
