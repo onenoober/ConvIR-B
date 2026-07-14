@@ -1,6 +1,6 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-07-13
+Date: 2026-07-14
 
 Status: evidence index plus official architecture anchor registry.
 
@@ -148,9 +148,30 @@ optimizer/window contracts. Only a new metric-aligned privileged A1F bounded
 `Delta-u` action-space feasibility route may be designed; policy, candidate,
 canary, and locked test remain blocked.
 
+v4a-A1F then passed that privileged feasibility question on the exact failed
+state. Heldout worst-operator direction-over-shrink LCB95 is `+0.105475 dB`,
+repairable-fraction LCB95 is `0.6953125`, and direction-versus-old-`.25` LCB95
+is `+0.200613 dB`, with zero severe/hard regressions and exact replay. The
+action space is not the bottleneck. The clean-target oracle is nondeployable and
+authorized only the fresh A1R representation-sufficiency screen.
+
+v4a-A1R then completed a fresh512 four-fold OOF factorial probe. Its primary
+context-spatial cell retained real image-conditioned direction signal: the
+true-minus-size-block-shuffled LCB95 is `+0.007269 dB`, repairable-fraction
+LCB95 is `0.56640625`, and all safety guards pass. It nevertheless fails the
+material gate: direction-over-shrink LCB95 is `+0.015205 dB` versus `+0.020`,
+and oracle-retention LCB95 is `0.092305` versus `0.25`. Context-spatial adds
+only about `+0.00092 dB` over context-linear at the worst-operator point
+estimate. The current bottleneck is material representation-to-action
+reachability under the frozen output/context contract, not action existence,
+the tested local spatial readout, optimizer/window choice, or safety
+feasibility. This probe family is closed; only a separately preregistered R3 amendment/design is
+allowed. Direct training, policy, candidate, canary, and locked test remain
+blocked.
+
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
-`experience_docx/experiment_cards/2026-07-14-haze4k-v5-chd-rm-v4a-conditional-safety-audit.md`,
-and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/`
+`experience_docx/experiment_cards/2026-07-14-haze4k-v5-v4a-a1r-representation-sufficiency.md`,
+and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/`
 for current CHD-RM status. Earlier route cards and closeouts remain the authority
 for their own historical decisions.
 
@@ -370,6 +391,8 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v3y_cross_sample_safety_20260713/` | compact | v3y fixed train32/heldout32 cross-sample confirmation passed activity, positive heldout rendered-MSE reduction, and all fixed v3u safety references. It authorized only the larger sealed internal confirmation. |
 | `experiment_logs/haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713/` | compact | v3z terminal train128/heldout128 confirmation retained train activity and positive heldout rendered-MSE reduction, but heldout anchor and harm exceeded the fixed references. The frozen projected-head route is closed with no further tuning, policy, canary, candidate, or locked-test authorization. |
 | `experiment_logs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/` | compact | v4a exact reconstruction and descriptive decomposition pass; complete A0P finds no local exact/proposal/window safety correction and authorizes only metric-aligned privileged A1F bounded-action feasibility design. |
+| `experiment_logs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/` | compact | v4a-A1F exact replay and action integrity pass; full privileged heldout feasibility shows safe bounded direction materially exceeds shrink under both operators and authorizes only fresh A1R representation-sufficiency design. Raw per-image/action rows remain cloud-only. |
+| `experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/` | compact | v4a-A1R fresh512 four-fold OOF representation screen: true context-spatial targets beat the size-block-shuffled control and remain broadly repairable, but material lift and oracle-retention gates fail. The current probe family is closed; raw OOF rows and learned states remain cloud-only. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
@@ -506,9 +529,13 @@ The active conclusion is conservative:
   and locked test remain blocked.
 - CHD-RM v4a rules out projection order, the tested AdamW proposal correction,
   and fixed-versus-shuffled/stratified risk windows as material local repairs
-  for the v3z heldout-safety failure. The next question is bounded action-space
-  feasibility under the same anchor and population, not optimizer retuning or
-  another safety-window search.
+  for the v3z heldout-safety failure. A1F proves safe bounded direction headroom
+  beyond shrink. A1R then finds real direction information in the frozen
+  representation but fails both material lift and oracle-retention gates, with
+  little benefit from local spatial readout. The remaining bottleneck is
+  material representation-to-action reachability, not another optimizer/window,
+  action-space, or tested local-head search. Only a new R3 amendment/design is
+  allowed; direct training and sealed-data actions remain blocked.
 
 ## Artifact Boundary
 

@@ -1,0 +1,6 @@
+batches,cell,epoch,fold,mean_target_loss,model_seed,schema_version
+2,output_linear,1,0,1.5155303478240967,3407,1
+2,output_spatial,1,0,1.5249009132385254,3408,1
+2,context_linear,1,0,1.4553724527359009,3409,1
+2,context_spatial,1,0,1.5250419974327087,3410,1
+2,context_spatial_shuffled,1,0,1.0398520827293396,3410,1
