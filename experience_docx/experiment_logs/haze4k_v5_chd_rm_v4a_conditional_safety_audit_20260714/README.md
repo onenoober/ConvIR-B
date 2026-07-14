@@ -1,6 +1,6 @@
 # v4a Conditional Safety Audit Evidence
 
-Status: `V4A_A0R_PASS_A0DP_AMENDMENT_FROZEN_AWAITING_R2_IMPLEMENTATION`.
+Status: `V4A_A0P_COMPLETE_R3_AUTHORIZE_A1F_FEASIBILITY_DESIGN_ONLY`.
 
 This route is an instrumented reconstruction and failure-identification audit
 of the closed v3z projected-head contract. It is not a candidate model route,
@@ -47,3 +47,24 @@ no candidate and did not touch canary or locked test. Its raw rows remain at
 summary are committed. The earlier `a0d_r1` output is a preserved command
 failure caused by precreating an output path the frozen source requires to be
 new; it is not scientific evidence.
+
+A0P corrected run `a0p_r4` completed all 256 states, all 2,304 factor cells,
+both frozen operators, 655,360 raw rows, and the predeclared joint 1,000-draw
+bootstrap. Its closeout is structurally valid and records
+`A0P_NO_LOCAL_CORRECTION_R3_HANDOFF`. Earlier `a0p_r1` through `a0p_r3` are
+command/capacity failures only and contribute no scientific result.
+
+The R3 review found no exact-projection, actual-AdamW-proposal, or risk-window
+cell with simultaneous safety improvement. Exact projection was effectively
+identical to the historical method; actual-proposal projection had positive
+harm/CVaR point effects in every window and both operators while utility
+remained within the non-inferiority budget. There was no interaction reversal
+and no exact-only positive result.
+
+Decision:
+`V4A_A0P_NO_LOCAL_CORRECTION_AUTHORIZE_A1F_METRIC_ALIGNED_FEASIBILITY_ONLY`.
+Only a new privileged, v3z-aligned bounded-action feasibility route may be
+designed. A0M, optimizer/window retuning, policy replay, candidate training,
+canary, and locked test remain blocked. Raw rows and projection diagnostics
+remain cloud-only under `RUN_ROOT/a0p_r4`; GitHub receives only the closeout,
+step summary, bootstrap summary, window-assignment manifest, and R3 review.

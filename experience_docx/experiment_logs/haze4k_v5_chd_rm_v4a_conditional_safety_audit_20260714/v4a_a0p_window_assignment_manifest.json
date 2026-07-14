@@ -1,0 +1,11 @@
+{
+  "assignment_sha256": "f4dfcf34a436a162c7ea09fcaee42218997a4e9cb35d4622ae38f00493576341",
+  "raw_assignments_cloud_only": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/a0p_r4/v4a_a0p_window_assignments_cloud_only.json",
+  "schema_version": 1,
+  "state_count": 256,
+  "window_cardinality": {
+    "fixed4": 4,
+    "prestratified32": 32,
+    "shuffled16": 16
+  }
+}

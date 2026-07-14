@@ -2,7 +2,7 @@
 
 Date: 2026-07-14
 
-Status: `PLANNED`
+Status: `A0P_COMPLETE_R3_AUTHORIZE_A1F_FEASIBILITY_DESIGN_ONLY`
 
 ## Scope
 
@@ -401,3 +401,46 @@ v4b, v4c, canary, locked test, promotion, or checkpoint selection.
 - `PASS` authorizes: `A0D_AND_A0P_ONLY`.
 - `INCONCLUSIVE` authorizes: `NO_PROMOTION; WRITE_R3_REVIEWED_AMENDMENT_ONLY`.
 - `FAIL` stops: `A0P_A0M_A1_V4B_V4C_CANARY_AND_LOCKED_TEST`.
+
+## A0P Result And R3 Decision
+
+A0P `a0p_r4` completed the full frozen family: 256 retained states, 2,304
+method/window cells, 128 heldout images, both operators, 655,360 raw rows, and
+the joint 1,000-replicate max-statistic bootstrap. Every solver was valid,
+there were no missing/nonfinite cells, and no backtracking cell collapsed to a
+null step. The typed closeout is `COMPLETED_GATE_PASS` with decision
+`A0P_NO_LOCAL_CORRECTION_R3_HANDOFF`.
+
+The R3 interpretation is mechanism-specific:
+
+- exact common-intersection projection was numerically indistinguishable from
+  the historical sequential projection. Across windows and operators, its
+  harm effect versus historical was approximately `-2.1e-12` to `-5.7e-12`
+  and its CVaR25 effect approximately `-7.7e-12` to `-2.0e-11`; every
+  simultaneous interval crossed zero;
+- actual-proposal projection changed the applied displacement and preserved
+  the `-0.005 dB` utility non-inferiority line, but its harm, CVaR25, and
+  CVaR10 point effects versus historical were all positive for every window
+  and both operators: about `+2.08e-10` to `+2.26e-10`, `+7.32e-10` to
+  `+7.98e-10`, and `+1.08e-9` to `+1.17e-9`, respectively;
+- fixed4, shuffled16, and prestratified32 did not produce a positive method or
+  a sign-reversing interaction. Window estimation and projection order are
+  therefore not supported as the material v3z heldout-safety bottleneck;
+- no method/window had a simultaneous harm or CVaR25 UCB strictly below the
+  historical method. Discrete severe/hard intervals also crossed zero, but
+  this did not hide a positive continuous harm/CVaR result.
+
+This closes A0M and any optimizer/window retuning continuation. The only
+authorized continuation is a new, train-derived, privileged A1F route that
+tests v3z-aligned bounded `Delta-u` action-space feasibility under the same
+old `.125` anchor, old `.25` predecessor, heldout128 population, and paired
+`D_ref`/`D_rep` render contract. It must first prove metric/source alignment
+with v3r/v3z and must not repeat generic alpha/block16 oracle questions already
+answered by v3j/v3l/v3m. A1F may authorize only a separately frozen
+representation-sufficiency audit or terminal learned-repair closeout.
+
+Decision:
+`V4A_A0P_NO_LOCAL_CORRECTION_AUTHORIZE_A1F_METRIC_ALIGNED_FEASIBILITY_ONLY`.
+
+Canary, locked test, candidate selection, A0M, optimizer retuning, risk-window
+search, policy replay, and direct v4b/v4c training remain forbidden.
