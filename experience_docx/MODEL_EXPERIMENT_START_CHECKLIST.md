@@ -146,6 +146,10 @@ Create only:
 - one route card containing identity, competing hypotheses, estimand, design,
   data roles, static contract, gates, adaptive branches, state-retention
   contract, and authorization rules;
+- one compact typed initial-authorization JSON for the first cloud stage when
+  no same-route closeout exists yet;
+- one compact `route_operations.json` containing the machine fields for all
+  currently authorized stages when schema-v2 operations are used;
 - one durable stage runner on the route branch;
 - one cloud `status.txt` and one typed `<stage>_closeout.json` per executed stage;
 - one evidence README and compact decision summaries at closeout.
@@ -153,6 +157,18 @@ Create only:
 Create a separate contract, manifest, runbook, or analysis document only when it
 is independently reusable or cannot remain readable inside the route card. Do
 not maintain duplicate current-state documents.
+
+The initial-authorization JSON is a machine boundary, not a second route card.
+It contains the exact `route_id`, `state=PLANNED`, one safe-token `decision`,
+and one safe-token `authorizes` value naming only the first stage. It also
+records the route-card SHA-256 and locked-test policy as audit fields. R3 must
+review it with the route card before the route commit is frozen. Schema-v2
+operations verify its exact four-field authorization tuple from that commit;
+after the first stage, the previous typed closeout replaces it as authorization.
+The route-operations manifest is the single machine-readable projection of the
+route card for runtime orchestration. Its schema and validation boundary are
+owned by `CONVIR_OPS_MCP.md`; callers pass its GitHub path and operation id
+instead of retransmitting the runner, output, policy, and tuple fields.
 
 The route card must also name the three endpoints used by the route:
 
@@ -208,6 +224,11 @@ Mark the route `PLANNED` only when all of the following are explicit:
 - the first stage is the cheapest stage that can resolve its current question;
 - the exact filled card passes `validate_experiment_card.py` from the recorded
   GitHub rules commit with no unresolved placeholders;
+- the first-stage typed authorization JSON is committed at the named path and
+  matches the frozen route card, or a named same-route closeout authorizes the
+  continuation;
+- any schema-v2 route-operations manifest matches that authorization, the route
+  commit, runner, outputs, and allowed terminal tuples;
 - the agent-routing plan identifies every applicable scope and any planned
   dispatcher handoff before its first substantive action.
 

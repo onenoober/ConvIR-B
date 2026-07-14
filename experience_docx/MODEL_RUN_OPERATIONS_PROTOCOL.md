@@ -48,8 +48,12 @@ The recommended normal path uses the schema-v2 composed start and finish calls;
 they preserve the same prepare, launch, monitor, and closeout checks internally
 while removing redundant model round trips. The primitive calls remain the
 recovery and audit surface.
+Load the normal-path plan from the route-committed operations manifest owned by
+the one-time start checklist; do not restate its machine fields in the prompt.
 
 The route card records the GitHub `main` rules commit used for this sequence.
+First-stage typed authorization is created under the one-time start checklist;
+later stages use the previous closeout. This protocol does not recreate either.
 Do not consult the cloud checkout's copies of governance files when they differ;
 those copies belong to the route's historical code snapshot.
 

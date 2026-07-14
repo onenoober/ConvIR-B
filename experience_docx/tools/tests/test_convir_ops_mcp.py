@@ -57,7 +57,7 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
         failed = self.prepare(lambda body, **_kwargs: "CONVIR_OPS_PLAN_GITHUB_OK" if "CONVIR_OPS_PLAN_GITHUB_OK" in body else (_ for _ in ()).throw(subprocess.TimeoutExpired("mock", 1)))
         corrected = self.prepare()
         with patch.object(OPS, "run_remote_body", return_value="noise\nCONVIR_OPS_CLOSEOUT_SHA256=" + "a" * 64 + "\nCONVIR_OPS_CLOSEOUT_JSON_BEGIN\n" + json.dumps({"route_id": "a0r", **A0R_TERMINAL_TUPLE}) + "\nCONVIR_OPS_CLOSEOUT_JSON_END\nwrapper"):
-            validated = payload(OPS.tool_closeout_validate({"receipt": corrected["receipt"], "terminal_tuple": A0R_TERMINAL_TUPLE}))
+            validated = payload(OPS.tool_closeout_validate({"receipt": corrected["receipt"]}))
         self.assertEqual("command_infra", failed["failure_class"])
         self.assertTrue(corrected["ok"])
         self.assertNotEqual(failed.get("receipt"), corrected["receipt"])
@@ -79,7 +79,7 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
         prepared = self.prepare()
         closeout = {"state": "COMPLETED_GATE_PASS", "decision": "wrong", "authorizes": "A0D_AND_A0P_ONLY"}
         with patch.object(OPS, "run_remote_body", return_value="CONVIR_OPS_CLOSEOUT_JSON_BEGIN\n" + json.dumps({"route_id": "a0r", **closeout}) + "\nCONVIR_OPS_CLOSEOUT_JSON_END"):
-            result = payload(OPS.tool_closeout_validate({"receipt": prepared["receipt"], "terminal_tuple": A0R_TERMINAL_TUPLE}))
+            result = payload(OPS.tool_closeout_validate({"receipt": prepared["receipt"]}))
         self.assertEqual("evidence", result["failure_class"])
 
     def test_receipt_reloads_across_process_memory_and_derives_session(self):
@@ -109,6 +109,31 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
             }))
         self.assertTrue(started["ok"])
         self.assertEqual("LAUNCHED", started["operation_state"])
+
+    def test_manifest_plan_loads_exact_operation_with_short_request(self):
+        operation_fields = {
+            "runner_relpath", "mode", "require_gpu", "stage_state", "decision", "authorizes",
+            "locked_test_policy", "forbidden_continuations", "output_id", "closeout_filename",
+            "collision_policy", "authorization_relpath", "prior_terminal_tuple", "allowed_terminal_tuples",
+        }
+        operation = {key: self.args.get(key, True) for key in operation_fields}
+        manifest = {
+            "schema_version": 2, "route_id": self.args["route_id"], "repo_name": self.args["repo_name"],
+            "rules_commit": self.args["rules_commit"], "operations": {"A0R": operation},
+        }
+        short = {
+            "schema_version": 2, "repo_name": self.args["repo_name"], "branch": self.args["branch"],
+            "route_branch_commit": self.args["route_branch_commit"],
+            "manifest_relpath": "experience_docx/experiment_logs/a0r/route_operations.json",
+            "operation_id": "A0R",
+        }
+        manifest_output = "CONVIR_OPS_MANIFEST_JSON_BEGIN\n" + json.dumps(manifest) + "\nCONVIR_OPS_MANIFEST_JSON_END"
+        with patch.object(OPS, "run_remote_body", side_effect=[manifest_output, "CONVIR_OPS_PLAN_GITHUB_OK"]) as remote:
+            planned = payload(OPS.tool_plan_manifest(short))
+        self.assertTrue(planned["ok"])
+        self.assertEqual(2, remote.call_count)
+        self.assertEqual("A0R", planned["observed"]["operation_id"])
+        self.assertLess(len(json.dumps(short)), len(json.dumps({**self.args, "phase": "plan"})))
 
     def test_safe_arbitrary_mode_and_bounded_session_are_sealed(self):
         args = {**self.args, "route_id": "r" * 80, "mode": "repair.v2"}
@@ -197,7 +222,7 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
         expected_hash = __import__("hashlib").sha256(raw).hexdigest()
         output = "CONVIR_OPS_CLOSEOUT_SHA256=" + expected_hash + "\nCONVIR_OPS_CLOSEOUT_JSON_BEGIN\n" + raw.decode() + "CONVIR_OPS_CLOSEOUT_JSON_END"
         with patch.object(OPS, "run_remote_body", return_value=output):
-            result = payload(OPS.tool_closeout_validate({"receipt": prepared["receipt"], "terminal_tuple": A0R_TERMINAL_TUPLE}))
+            result = payload(OPS.tool_closeout_validate({"receipt": prepared["receipt"]}))
         self.assertEqual(expected_hash, result["manifest"]["closeout_sha256"])
 
     def test_composed_start_and_finish_preserve_receipt_boundaries(self):
@@ -219,7 +244,7 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
             "CONVIR_OPS_CLOSEOUT_SHA256=" + "b" * 64 + "\nCONVIR_OPS_CLOSEOUT_JSON_BEGIN\n" + json.dumps(closeout) + "\nCONVIR_OPS_CLOSEOUT_JSON_END",
         ]
         with patch.object(OPS, "run_remote_body", side_effect=finish_outputs) as remote:
-            finished = payload(OPS.tool_finish({"receipt": started["receipt"], "terminal_tuple": A0R_TERMINAL_TUPLE}))
+            finished = payload(OPS.tool_finish({"receipt": started["receipt"]}))
         self.assertTrue(finished["ok"])
         self.assertEqual("CLOSEOUT_VALIDATED", finished["operation_state"])
         self.assertEqual(2, remote.call_count)
@@ -230,10 +255,13 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
             plan = payload(OPS.tool_prepare_authorized({**self.args, "phase": "plan"}))
         stale = payload(OPS.tool_prepare_authorized({**self.args, "phase": "apply", "plan_hash": "0" * 64}))
         prepared = self.prepare()
-        rejected = payload(OPS.tool_closeout_validate({"receipt": prepared["receipt"], "terminal_tuple": {"state": "COMPLETED_GATE_PASS", "decision": "other", "authorizes": "A0D_AND_A0P_ONLY"}}))
+        wrong = {"route_id": "a0r", "state": "COMPLETED_GATE_PASS", "decision": "other", "authorizes": "A0D_AND_A0P_ONLY"}
+        output = "CONVIR_OPS_CLOSEOUT_SHA256=" + "a" * 64 + "\nCONVIR_OPS_CLOSEOUT_JSON_BEGIN\n" + json.dumps(wrong) + "\nCONVIR_OPS_CLOSEOUT_JSON_END"
+        with patch.object(OPS, "run_remote_body", return_value=output):
+            rejected = payload(OPS.tool_closeout_validate({"receipt": prepared["receipt"]}))
         self.assertEqual(64, len(plan["expected"]["plan_hash"]))
         self.assertFalse(stale["ok"])
-        self.assertEqual("authorization", rejected["failure_class"])
+        self.assertEqual("evidence", rejected["failure_class"])
 
     def test_collision_timeout_and_forbidden_input_are_typed_failures(self):
         collision = self.prepare(lambda body, **_kwargs: "CONVIR_OPS_PLAN_GITHUB_OK" if "CONVIR_OPS_PLAN_GITHUB_OK" in body else (_ for _ in ()).throw(OPS.ToolError("CONVIR_OPS_SESSION_CONFLICT")))
@@ -261,7 +289,7 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
         self.assertEqual({
             "convir_route_prepare_authorized", "convir_route_launch",
             "convir_route_monitor", "convir_route_closeout_validate",
-            "convir_route_start_authorized", "convir_route_finish",
+            "convir_route_start_authorized", "convir_route_finish", "convir_route_plan_manifest",
             "convir_evidence_manifest", "convir_evidence_fetch",
             "convir_git_evidence_status",
         }, names)

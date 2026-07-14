@@ -28,6 +28,7 @@ REMOTE_BASE = "/sda/home/wangyuxin/ConvIR-B"
 REMOTE_REPOS = f"{REMOTE_BASE}/repos"
 REMOTE_RUNS = f"{REMOTE_BASE}/runs"
 REMOTE_PYTHON = f"{REMOTE_BASE}/envs/convir-cu121/bin/python"
+GITHUB_URL = "git@github.com:onenoober/ConvIR-B.git"
 LOCAL_WORKSPACE_ROOT = Path(os.environ.get("CONVIR_OPS_LOCAL_WORKSPACE_ROOT", "/home/ubuntu/workspace")).resolve()
 MAX_EVIDENCE_BYTES = 1024 * 1024
 SAFE_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
@@ -210,7 +211,6 @@ def route_context(arguments):
     return {
         "route_id": route_id,
         "repo_name": repo_name,
-        "source_repo": f"{REMOTE_REPOS}/{repo_name}",
         "run_root": f"{REMOTE_RUNS}/{route_id}",
         "evidence_dir": f"{REMOTE_REPOS}/{repo_name}/experience_docx/experiment_logs/{route_id}",
     }
@@ -482,21 +482,106 @@ def run_remote_body(body, timeout=45):
 def github_plan_body(context):
     """Read-only GitHub identity and tree checks for the plan phase."""
     return "\n".join([
-        f"SOURCE_REPO={q(context['source_repo'])}", f"BRANCH={q(context['branch'])}",
+        f"GITHUB_URL={q(GITHUB_URL)}", f"BRANCH={q(context['branch'])}",
         f"EXPECTED_COMMIT={q(context['expected_commit'])}", f"RULES_COMMIT={q(context['rules_commit'])}", f"RUNNER={q(context['runner_relpath'])}",
-        'test -d "$SOURCE_REPO/.git"',
-        'GITHUB_URL=$(git -C "$SOURCE_REPO" remote get-url github)',
-        'test -n "$GITHUB_URL"',
         'test "$(git ls-remote "$GITHUB_URL" "refs/heads/$BRANCH" | awk \'NR==1 {print $1}\')" = "$EXPECTED_COMMIT"',
         'test "$(git ls-remote "$GITHUB_URL" refs/heads/main | awk \'NR==1 {print $1}\')" = "$RULES_COMMIT"',
-        'git -C "$SOURCE_REPO" cat-file -e "$EXPECTED_COMMIT:$RUNNER"',
+        'TMP=$(mktemp -d)', 'trap \'rm -rf -- "$TMP"\' EXIT',
+        'git init --quiet --bare "$TMP/repo"',
+        'git -C "$TMP/repo" fetch --quiet --depth=1 "$GITHUB_URL" "$EXPECTED_COMMIT"',
+        'git -C "$TMP/repo" cat-file -e "$EXPECTED_COMMIT:$RUNNER"',
         'echo CONVIR_OPS_PLAN_GITHUB_OK',
     ])
 
 
+def github_manifest_body(request):
+    """Fetch one bounded route-operations manifest from the exact GitHub commit."""
+    return "\n".join([
+        f"GITHUB_URL={q(GITHUB_URL)}", f"BRANCH={q(request['branch'])}",
+        f"EXPECTED_COMMIT={q(request['route_branch_commit'])}", f"MANIFEST={q(request['manifest_relpath'])}",
+        'test "$(git ls-remote "$GITHUB_URL" "refs/heads/$BRANCH" | awk \'NR==1 {print $1}\')" = "$EXPECTED_COMMIT"',
+        'TMP=$(mktemp -d)', 'trap \'rm -rf -- "$TMP"\' EXIT',
+        'git init --quiet --bare "$TMP/repo"',
+        'git -C "$TMP/repo" fetch --quiet --depth=1 "$GITHUB_URL" "$EXPECTED_COMMIT"',
+        'git -C "$TMP/repo" cat-file -e "$EXPECTED_COMMIT:$MANIFEST"',
+        'bytes=$(git -C "$TMP/repo" show "$EXPECTED_COMMIT:$MANIFEST" | wc -c)',
+        'test "$bytes" -le 65536',
+        'echo CONVIR_OPS_MANIFEST_JSON_BEGIN',
+        'git -C "$TMP/repo" show "$EXPECTED_COMMIT:$MANIFEST"',
+        'echo CONVIR_OPS_MANIFEST_JSON_END',
+    ])
+
+
+def load_operation_manifest(arguments):
+    if arguments.get("schema_version") != SCHEMA_VERSION:
+        raise ToolError("schema_version must be 2")
+    request = {
+        "repo_name": require_token(arguments.get("repo_name"), "repo_name"),
+        "branch": require_branch(arguments.get("branch")),
+        "route_branch_commit": require_commit(arguments.get("route_branch_commit")),
+        "manifest_relpath": require_repo_relpath(arguments.get("manifest_relpath"), "manifest_relpath"),
+        "operation_id": require_token(arguments.get("operation_id"), "operation_id"),
+    }
+    output = run_remote_body(github_manifest_body(request), timeout=45)
+    begin, end = "CONVIR_OPS_MANIFEST_JSON_BEGIN", "CONVIR_OPS_MANIFEST_JSON_END"
+    start, finish = output.find(begin), output.find(end)
+    if start < 0 or finish < 0 or finish <= start:
+        raise ToolError("route operations manifest markers are missing")
+    manifest = json.loads(output[start + len(begin):finish].strip())
+    required_top = {"schema_version", "route_id", "repo_name", "rules_commit", "operations"}
+    if not isinstance(manifest, dict) or set(manifest) != required_top or manifest.get("schema_version") != SCHEMA_VERSION:
+        raise ToolError("route operations manifest has an invalid top-level contract")
+    if manifest.get("repo_name") != request["repo_name"]:
+        raise ToolError("route operations manifest repo_name mismatch")
+    operations = manifest.get("operations")
+    if not isinstance(operations, dict) or not operations or len(operations) > 32:
+        raise ToolError("route operations manifest must contain 1-32 operations")
+    if request["operation_id"] not in operations:
+        raise ToolError("operation_id is absent from route operations manifest")
+    operation = operations[request["operation_id"]]
+    required_operation = {
+        "runner_relpath", "mode", "require_gpu", "stage_state", "decision", "authorizes",
+        "locked_test_policy", "forbidden_continuations", "output_id", "closeout_filename",
+        "collision_policy", "authorization_relpath", "prior_terminal_tuple", "allowed_terminal_tuples",
+    }
+    if not isinstance(operation, dict) or set(operation) != required_operation:
+        raise ToolError("selected route operation has an invalid field contract")
+    context = authorization_context({
+        "schema_version": SCHEMA_VERSION, "route_id": manifest.get("route_id"),
+        "repo_name": request["repo_name"], "branch": request["branch"],
+        "route_branch_commit": request["route_branch_commit"], "rules_commit": manifest.get("rules_commit"),
+        **operation,
+    })
+    return request, manifest, context
+
+
+def tool_plan_manifest(arguments):
+    try:
+        request, manifest, context = load_operation_manifest(arguments)
+        github_output = run_remote_body(github_plan_body(context), timeout=45)
+        plan_hash = canonical_digest(context)
+        plan_token, plan_payload = issue_plan(context, int(time.time()))
+        return typed_result(
+            True, "PREPARE_PLANNED",
+            observed={
+                "manifest_digest": canonical_digest(manifest), "operation_id": request["operation_id"],
+                "github_checks_digest": canonical_digest(github_output), "remote_repo": context["remote_repo"],
+                "session": context["session"], "output_id": context["output_id"],
+            },
+            expected={"plan_hash": plan_hash}, allowed_next_actions=["route_start_authorized"],
+            plan_token=plan_token, plan_expires_at=plan_payload["expires_at"],
+        )
+    except ToolError as exc:
+        return typed_failure("PREPARE_REJECTED", failure_class_for_error(exc), str(exc))
+    except (json.JSONDecodeError, TypeError):
+        return typed_failure("PREPARE_REJECTED", "authorization", "route operations manifest is not valid compact JSON")
+    except Exception as exc:
+        return typed_failure("PREPARE_FAILED", "command_infra", type(exc).__name__)
+
+
 def preflight_body(context, include_gpu, create_clone=False):
     lines = [
-        f"REMOTE_REPO={q(context['remote_repo'])}", f"SOURCE_REPO={q(context.get('source_repo', context['remote_repo']))}",
+        f"REMOTE_REPO={q(context['remote_repo'])}", f"GITHUB_URL={q(GITHUB_URL)}",
         f"RUN_ROOT={q(context['run_root'])}",
         f"BRANCH={q(context['branch'])}",
         f"EXPECTED_COMMIT={q(context['expected_commit'])}",
@@ -507,11 +592,9 @@ def preflight_body(context, include_gpu, create_clone=False):
         'FRESH_CREATED=0' if create_clone else ':',
         'cleanup_fresh() { rc=$?; if [ "$FRESH_CREATED" = 1 ]; then rm -rf -- "$REMOTE_REPO"; echo CONVIR_OPS_FRESH_WORKSPACE_CLEANED; fi; exit "$rc"; }' if create_clone else ':',
         'trap cleanup_fresh ERR' if create_clone else ':',
-        'test -d "$SOURCE_REPO/.git"',
-        'GITHUB_URL=$(git -C "$SOURCE_REPO" remote get-url github)' if create_clone else ':',
         'test ! -e "$REMOTE_REPO"' if create_clone else 'test -d "$REMOTE_REPO/.git"',
         'FRESH_CREATED=1' if create_clone else ':',
-        'git clone --origin github --no-checkout "$GITHUB_URL" "$REMOTE_REPO"' if create_clone else ':',
+        'git clone --origin github --no-checkout --single-branch --branch "$BRANCH" "$GITHUB_URL" "$REMOTE_REPO"' if create_clone else ':',
         'git -C "$REMOTE_REPO" fetch --quiet github "$BRANCH" main' if create_clone else ':',
         'git -C "$REMOTE_REPO" checkout --quiet "$BRANCH"',
         'test "$(git -C "$REMOTE_REPO" branch --show-current)" = "$BRANCH"',
@@ -589,7 +672,6 @@ def tool_receipt_launch(arguments):
                 return typed_failure("LAUNCH_REJECTED", "authorization", "receipt has been consumed by a different idempotency key")
             context = {
             "route_id": payload["route_id"], "repo_name": payload["repo_name"], "remote_repo": payload["remote_repo"],
-            "source_repo": payload["remote_repo"],
             "run_root": f"{REMOTE_RUNS}/{payload['route_id']}", "branch": payload["branch"], "expected_commit": payload["route_branch_commit"],
             "runner_relpath": payload["runner_relpath"], "mode": payload["mode"], "session": payload["session"], "require_gpu": payload["require_gpu"],
             "output_path": payload["output_path"], "rules_commit": payload["rules_commit"], "authorization_relpath": payload["authorization_relpath"], "prior_terminal_tuple": payload["prior_terminal_tuple"],
@@ -657,9 +739,6 @@ def tool_closeout_validate(arguments):
         token, lock = resolve_receipt(arguments)
         with lock as record:
             payload = validate_receipt_record(token, record)
-        expected = require_terminal_tuple(arguments.get("terminal_tuple"), "terminal_tuple")
-        if expected not in payload["allowed_terminal_tuples"]:
-            return typed_failure("CLOSEOUT_REJECTED", "authorization", "terminal tuple is not in the sealed allowed_terminal_tuples set", expected={"allowed_terminal_tuples": payload["allowed_terminal_tuples"]})
         filename = payload["closeout_filename"]
         remote_path = f"{payload['remote_repo']}/experience_docx/experiment_logs/{payload['route_id']}/{filename}"
         extractor = "import hashlib,json,sys; raw=open(sys.argv[1],'rb').read(65537); assert len(raw)<=65536; value=json.loads(raw); print('CONVIR_OPS_CLOSEOUT_SHA256='+hashlib.sha256(raw).hexdigest()); print('CONVIR_OPS_CLOSEOUT_JSON_BEGIN'); print(json.dumps(value,sort_keys=True,separators=(',',':'))); print('CONVIR_OPS_CLOSEOUT_JSON_END')"
@@ -671,14 +750,14 @@ def tool_closeout_validate(arguments):
         observed = json.loads(output[start + len(begin):finish].strip())
         if observed.get("route_id") != payload["route_id"]:
             return typed_failure("CLOSEOUT_INVALID", "evidence", "runner closeout route_id mismatch", observed={"route_id": observed.get("route_id")}, expected={"route_id": payload["route_id"]})
-        actual = {key: observed.get(key) for key in expected}
-        if actual != expected:
-            return typed_failure("CLOSEOUT_INVALID", "evidence", "runner closeout tuple mismatch", observed=actual, expected=expected)
+        actual = {key: observed.get(key) for key in ("state", "decision", "authorizes")}
+        if actual not in payload["allowed_terminal_tuples"]:
+            return typed_failure("CLOSEOUT_INVALID", "evidence", "runner closeout tuple is not in the sealed allowed set", observed=actual, expected={"allowed_terminal_tuples": payload["allowed_terminal_tuples"]})
         sha_match = re.search(r"(?m)^CONVIR_OPS_CLOSEOUT_SHA256=([0-9a-f]{64})$", output)
         if not sha_match:
             raise ToolError("closeout raw SHA-256 is missing")
         manifest = {"closeout_filename": filename, "closeout_sha256": sha_match.group(1), "receipt_digest": canonical_digest(payload)}
-        return typed_result(True, "CLOSEOUT_VALIDATED", observed=actual, expected=expected, allowed_next_actions=["human_review_archive_candidate"], manifest=manifest, archive_candidate=json.dumps({"route_id": payload["route_id"], "terminal_tuple": actual, "manifest": manifest}, sort_keys=True))
+        return typed_result(True, "CLOSEOUT_VALIDATED", observed=actual, expected={"allowed_terminal_tuples": payload["allowed_terminal_tuples"]}, allowed_next_actions=["human_review_archive_candidate"], manifest=manifest, archive_candidate=json.dumps({"route_id": payload["route_id"], "terminal_tuple": actual, "manifest": manifest}, sort_keys=True))
     except ToolError as exc:
         return typed_failure("CLOSEOUT_REJECTED", "authorization", str(exc))
     except (json.JSONDecodeError, TypeError):
@@ -730,7 +809,7 @@ def tool_finish(arguments):
     monitored = structured_payload(monitored_result)
     if not monitored["ok"] or monitored["operation_state"] == "MONITOR_OBSERVED":
         return monitored_result
-    closeout_result = tool_closeout_validate({"receipt": arguments.get("receipt"), "terminal_tuple": arguments.get("terminal_tuple")})
+    closeout_result = tool_closeout_validate({"receipt": arguments.get("receipt")})
     closeout = structured_payload(closeout_result)
     monitor_summary = {
         key: monitored["observed"].get(key)
@@ -951,8 +1030,8 @@ TOOLS = {
         "description": "Receipt-bound typed closeout validation. It checks only the exact sealed terminal tuple and returns a checksum manifest plus an archive candidate; it never commits or pushes.",
         "inputSchema": {
             "type": "object",
-            "required": ["receipt", "terminal_tuple"],
-            "properties": {"receipt": {"type": "string"}, "terminal_tuple": {"type": "object", "required": ["state", "decision", "authorizes"], "additionalProperties": False, "properties": {"state": {"type": "string"}, "decision": {"type": "string"}, "authorizes": {"type": "string"}}}},
+            "required": ["receipt"],
+            "properties": {"receipt": {"type": "string"}},
             "additionalProperties": False,
         },
         "handler": tool_closeout_validate,
@@ -1004,10 +1083,9 @@ TOOLS["convir_route_start_authorized"] = {
 TOOLS["convir_route_finish"] = {
     "description": "Recommended normal-path composition: bounded monitoring followed by sealed closeout validation only after the session is inactive or a sealed terminal tuple is observed.",
     "inputSchema": {
-        "type": "object", "required": ["receipt", "terminal_tuple"],
+        "type": "object", "required": ["receipt"],
         "properties": {
             "receipt": {"type": "string"},
-            "terminal_tuple": {"type": "object", "required": ["state", "decision", "authorizes"]},
             "monitor_mode": {"enum": ["poll", "until_change", "until_terminal"], "default": "until_terminal"},
             "max_polls": {"type": "integer", "minimum": 1, "maximum": 20},
             "interval_seconds": {"type": "integer", "minimum": 0, "maximum": 30},
@@ -1015,6 +1093,20 @@ TOOLS["convir_route_finish"] = {
         "additionalProperties": False,
     },
     "handler": tool_finish,
+}
+TOOLS["convir_route_plan_manifest"] = {
+    "description": "Recommended token-minimal plan: load one sealed operation from a bounded route_operations.json at the exact GitHub route commit and issue a short persisted plan token.",
+    "inputSchema": {
+        "type": "object",
+        "required": ["schema_version", "repo_name", "branch", "route_branch_commit", "manifest_relpath", "operation_id"],
+        "properties": {
+            "schema_version": {"const": 2}, "repo_name": {"type": "string"},
+            "branch": {"type": "string"}, "route_branch_commit": {"type": "string"},
+            "manifest_relpath": {"type": "string"}, "operation_id": {"type": "string"},
+        },
+        "additionalProperties": False,
+    },
+    "handler": tool_plan_manifest,
 }
 
 

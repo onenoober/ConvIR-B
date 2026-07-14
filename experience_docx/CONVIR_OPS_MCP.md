@@ -29,6 +29,7 @@ fragment. Current rules remain canonical in:
 | `convir_route_closeout_validate` | validates one compact runner closeout against the exact receipt terminal tuple | returns checksum manifest and archive-ready candidate only; never commits or pushes |
 | `convir_route_start_authorized` | recommended composition of reviewed `apply` plus receipt-bound launch | preserves both typed boundaries while removing one model round trip |
 | `convir_route_finish` | recommended composition of bounded monitor plus sealed closeout validation | validates only after terminal observation or session exit; never interprets the scientific gate |
+| `convir_route_plan_manifest` | recommended token-minimal plan from one operation in a route-committed `route_operations.json` | reads the exact GitHub commit, validates every field, and returns only a short plan token/hash |
 | `convir_evidence_manifest` | compact top-level evidence names, sizes, hashes | read-only |
 | `convir_evidence_fetch` | explicit compact-file allowlist, one SCP transfer, remote/local SHA-256 verification | copies into a named local Git worktree only; never stages, commits, pushes, or overwrites a mismatched file |
 | `convir_git_evidence_status` | local evidence worktree, GitHub `main` ref freshness, and whitespace audit | read-only; uses `git ls-remote`, never fetches, stages, commits, or pushes |
@@ -76,10 +77,21 @@ private-key material, or tokens in this TOML entry.
 
 ## Normal Use
 
-1. Use `convir_route_prepare_authorized` with `phase=plan`, then apply the
-   returned plan token and hash after the typed closeout authorizes the stage.
-   Preparation seals the output id and target closeout filename and requires
-   both to be new; the complete tuple is not retransmitted on the normal path.
+1. On the normal path, use `convir_route_plan_manifest` with the exact route
+   commit, manifest path, and operation id. Use full-field
+   `convir_route_prepare_authorized` only for recovery or contract diagnostics.
+   Planning seals the output id and target closeout filename and requires both
+   to be new; the complete tuple is not retransmitted in model context.
+   A route's first stage uses the typed initial authorization owned by
+   `MODEL_EXPERIMENT_START_CHECKLIST.md`; later stages use the prior closeout.
+
+The route-operations manifest has exact top-level fields `schema_version`,
+`route_id`, `repo_name`, `rules_commit`, and `operations`. The caller's GitHub
+branch and commit locate and bind the manifest itself, so the file never embeds
+its own commit SHA. Each operation has the same runner, mode, GPU, authorization,
+locked-test, forbidden-continuation, output, closeout, collision, prior-tuple,
+and allowed-terminal fields validated by the full prepare contract. Unknown or
+missing fields fail closed.
 2. On the normal path, use `convir_route_start_authorized` with the reviewed
    plan token/hash and a stable idempotency key. Use the separate launch primitive
    only for recovery or boundary diagnostics. A changed tuple, receipt,
@@ -87,9 +99,9 @@ private-key material, or tokens in this TOML entry.
 3. Use `convir_route_finish` for bounded server-side monitoring and automatic
    sealed closeout validation. Use the separate monitor/closeout primitives
    only for recovery or boundary diagnostics.
-4. For separate closeout validation, the receipt supplies the closeout path,
-   while the caller supplies only one tuple from the sealed allowed set. Review
-   its archive candidate outside the MCP.
+4. For separate closeout validation, the receipt supplies both the closeout
+   path and allowed terminal set. The tool accepts the observed tuple only when
+   it belongs to that set. Review its archive candidate outside the MCP.
 5. Review `convir_evidence_manifest`, then call `convir_evidence_fetch` only
    with an explicit compact-file allowlist.
 6. Use `convir_git_evidence_status` before staging to inspect local changes,
