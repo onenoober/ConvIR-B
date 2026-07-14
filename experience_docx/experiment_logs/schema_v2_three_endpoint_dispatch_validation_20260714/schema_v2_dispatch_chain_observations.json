@@ -44,11 +44,31 @@
     "closeout": "schema_v2_three_endpoint_closeout.json",
     "probe": "schema_v2_three_endpoint_probe.json"
   },
+  "sol_review": {
+    "dispatcher_status": "PASS",
+    "task_class": "R3_SCIENTIFIC_AUTHORITY",
+    "selected_model": "gpt-5.6-sol",
+    "selected_role": "frontier",
+    "effort": "high",
+    "handoff_ack_seen": true,
+    "tool_before_ack": false,
+    "completion_marker_seen": true,
+    "decision": "PASS",
+    "completion_marker": "SCHEMA_V2_SOL_REVIEW_OK"
+  },
   "safety": {
     "gpu_used": false,
     "dataset_accessed": false,
     "experiment_modified": false,
     "isolated_route_only": true
   },
-  "review_state": "PENDING_SOL_R3_REVIEW"
+  "cleanup": {
+    "cloud_repo_removed": true,
+    "cloud_run_root_removed": true,
+    "cloud_session_absent": true,
+    "temporary_runner_removed": true,
+    "temporary_launch_authorization_removed": true,
+    "raw_dispatch_outputs_retained": false
+  },
+  "review_state": "SOL_R3_PASS"
 }
