@@ -166,9 +166,10 @@ review it with the route card before the route commit is frozen. Schema-v2
 operations verify its exact four-field authorization tuple from that commit;
 after the first stage, the previous typed closeout replaces it as authorization.
 The route-operations manifest is the single machine-readable projection of the
-route card for runtime orchestration. Its schema and validation boundary are
-owned by `CONVIR_OPS_MCP.md`; callers pass its GitHub path and operation id
-instead of retransmitting the runner, output, policy, and tuple fields.
+route card for runtime orchestration. Its schema, fixed GitHub path, and
+validation boundary are owned by `CONVIR_OPS_MCP.md`; callers pass only branch,
+commit, and operation id instead of retransmitting runner, output, policy, and
+tuple fields.
 
 The route card must also name the three endpoints used by the route:
 

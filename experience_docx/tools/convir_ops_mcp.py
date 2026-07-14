@@ -29,6 +29,7 @@ REMOTE_REPOS = f"{REMOTE_BASE}/repos"
 REMOTE_RUNS = f"{REMOTE_BASE}/runs"
 REMOTE_PYTHON = f"{REMOTE_BASE}/envs/convir-cu121/bin/python"
 GITHUB_URL = "git@github.com:onenoober/ConvIR-B.git"
+ROUTE_OPERATIONS_RELPATH = "experience_docx/route_operations.json"
 LOCAL_WORKSPACE_ROOT = Path(os.environ.get("CONVIR_OPS_LOCAL_WORKSPACE_ROOT", "/home/ubuntu/workspace")).resolve()
 MAX_EVIDENCE_BYTES = 1024 * 1024
 SAFE_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
@@ -498,7 +499,7 @@ def github_manifest_body(request):
     """Fetch one bounded route-operations manifest from the exact GitHub commit."""
     return "\n".join([
         f"GITHUB_URL={q(GITHUB_URL)}", f"BRANCH={q(request['branch'])}",
-        f"EXPECTED_COMMIT={q(request['route_branch_commit'])}", f"MANIFEST={q(request['manifest_relpath'])}",
+        f"EXPECTED_COMMIT={q(request['route_branch_commit'])}", f"MANIFEST={q(ROUTE_OPERATIONS_RELPATH)}",
         'test "$(git ls-remote "$GITHUB_URL" "refs/heads/$BRANCH" | awk \'NR==1 {print $1}\')" = "$EXPECTED_COMMIT"',
         'TMP=$(mktemp -d)', 'trap \'rm -rf -- "$TMP"\' EXIT',
         'git init --quiet --bare "$TMP/repo"',
@@ -516,10 +517,8 @@ def load_operation_manifest(arguments):
     if arguments.get("schema_version") != SCHEMA_VERSION:
         raise ToolError("schema_version must be 2")
     request = {
-        "repo_name": require_token(arguments.get("repo_name"), "repo_name"),
         "branch": require_branch(arguments.get("branch")),
         "route_branch_commit": require_commit(arguments.get("route_branch_commit")),
-        "manifest_relpath": require_repo_relpath(arguments.get("manifest_relpath"), "manifest_relpath"),
         "operation_id": require_token(arguments.get("operation_id"), "operation_id"),
     }
     output = run_remote_body(github_manifest_body(request), timeout=45)
@@ -531,8 +530,7 @@ def load_operation_manifest(arguments):
     required_top = {"schema_version", "route_id", "repo_name", "rules_commit", "operations"}
     if not isinstance(manifest, dict) or set(manifest) != required_top or manifest.get("schema_version") != SCHEMA_VERSION:
         raise ToolError("route operations manifest has an invalid top-level contract")
-    if manifest.get("repo_name") != request["repo_name"]:
-        raise ToolError("route operations manifest repo_name mismatch")
+    repo_name = require_token(manifest.get("repo_name"), "route operations manifest repo_name")
     operations = manifest.get("operations")
     if not isinstance(operations, dict) or not operations or len(operations) > 32:
         raise ToolError("route operations manifest must contain 1-32 operations")
@@ -548,7 +546,7 @@ def load_operation_manifest(arguments):
         raise ToolError("selected route operation has an invalid field contract")
     context = authorization_context({
         "schema_version": SCHEMA_VERSION, "route_id": manifest.get("route_id"),
-        "repo_name": request["repo_name"], "branch": request["branch"],
+        "repo_name": repo_name, "branch": request["branch"],
         "route_branch_commit": request["route_branch_commit"], "rules_commit": manifest.get("rules_commit"),
         **operation,
     })
@@ -769,15 +767,16 @@ def tool_closeout_validate(arguments):
 def tool_start_authorized(arguments):
     """Compose reviewed apply and receipt launch without exposing free-form commands."""
     token = arguments.get("plan_token")
-    idempotency_key = require_token(arguments.get("idempotency_key"), "idempotency_key")
+    idempotency_key = token[:32] if isinstance(token, str) else token
     with locked_plan(token) as plan_record:
         plan_payload = validate_plan_record(token, plan_record)
         context = plan_payload["context"]
         plan_hash = canonical_digest(context)
-        if arguments.get("plan_hash") != plan_hash:
-            return typed_failure("START_REJECTED", "authorization", "plan_hash does not bind the stored plan", expected={"plan_hash": plan_hash})
         if plan_record.get("consumed"):
-            return typed_failure("START_REJECTED", "authorization", "plan token has already been consumed", observed={"receipt": plan_record.get("receipt")})
+            receipt = plan_record.get("receipt")
+            if not receipt:
+                return typed_failure("START_REJECTED", "authorization", "consumed plan record is missing its receipt")
+            return tool_receipt_launch({"receipt": receipt, "idempotency_key": idempotency_key})
         try:
             output = run_remote_body(preflight_body(context, context["require_gpu"], create_clone=True), timeout=45)
         except Exception as exc:
@@ -1071,10 +1070,9 @@ TOOLS = {
 TOOLS["convir_route_start_authorized"] = {
     "description": "Recommended normal-path composition: after a reviewed prepare plan, apply the exact plan hash and launch its receipt-bound runner in one call.",
     "inputSchema": {
-        "type": "object", "required": ["plan_token", "plan_hash", "idempotency_key"],
+        "type": "object", "required": ["plan_token"],
         "properties": {
-            "plan_token": {"type": "string"}, "plan_hash": {"type": "string"},
-            "idempotency_key": {"type": "string"},
+            "plan_token": {"type": "string"},
         },
         "additionalProperties": False,
     },
@@ -1098,11 +1096,11 @@ TOOLS["convir_route_plan_manifest"] = {
     "description": "Recommended token-minimal plan: load one sealed operation from a bounded route_operations.json at the exact GitHub route commit and issue a short persisted plan token.",
     "inputSchema": {
         "type": "object",
-        "required": ["schema_version", "repo_name", "branch", "route_branch_commit", "manifest_relpath", "operation_id"],
+        "required": ["schema_version", "branch", "route_branch_commit", "operation_id"],
         "properties": {
-            "schema_version": {"const": 2}, "repo_name": {"type": "string"},
+            "schema_version": {"const": 2},
             "branch": {"type": "string"}, "route_branch_commit": {"type": "string"},
-            "manifest_relpath": {"type": "string"}, "operation_id": {"type": "string"},
+            "operation_id": {"type": "string"},
         },
         "additionalProperties": False,
     },

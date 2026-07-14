@@ -27,7 +27,7 @@ fragment. Current rules remain canonical in:
 | `convir_route_launch` | receipt-bound idempotent launch of the sealed tracked runner | cloud runtime only; it repeats dynamic preflight and accepts no command, path, or tuple fields |
 | `convir_route_monitor` | receipt-bound bounded `poll`, `until_change`, or server-side `until_terminal` monitoring | read-only observation; it never interprets a gate |
 | `convir_route_closeout_validate` | validates one compact runner closeout against the exact receipt terminal tuple | returns checksum manifest and archive-ready candidate only; never commits or pushes |
-| `convir_route_start_authorized` | recommended composition of reviewed `apply` plus receipt-bound launch | preserves both typed boundaries while removing one model round trip |
+| `convir_route_start_authorized` | recommended composition of reviewed `apply` plus receipt-bound launch | accepts only the signed plan token; repeat use returns the same idempotent receipt/launch state |
 | `convir_route_finish` | recommended composition of bounded monitor plus sealed closeout validation | validates only after terminal observation or session exit; never interprets the scientific gate |
 | `convir_route_plan_manifest` | recommended token-minimal plan from one operation in a route-committed `route_operations.json` | reads the exact GitHub commit, validates every field, and returns only a short plan token/hash |
 | `convir_evidence_manifest` | compact top-level evidence names, sizes, hashes | read-only |
@@ -78,7 +78,8 @@ private-key material, or tokens in this TOML entry.
 ## Normal Use
 
 1. On the normal path, use `convir_route_plan_manifest` with the exact route
-   commit, manifest path, and operation id. Use full-field
+   branch, commit, and operation id. The manifest path is fixed at
+   `experience_docx/route_operations.json`. Use full-field
    `convir_route_prepare_authorized` only for recovery or contract diagnostics.
    Planning seals the output id and target closeout filename and requires both
    to be new; the complete tuple is not retransmitted in model context.
@@ -92,8 +93,9 @@ its own commit SHA. Each operation has the same runner, mode, GPU, authorization
 locked-test, forbidden-continuation, output, closeout, collision, prior-tuple,
 and allowed-terminal fields validated by the full prepare contract. Unknown or
 missing fields fail closed.
-2. On the normal path, use `convir_route_start_authorized` with the reviewed
-   plan token/hash and a stable idempotency key. Use the separate launch primitive
+2. On the normal path, review the returned hash, then use
+   `convir_route_start_authorized` with only its signed plan token. The token
+   deterministically owns the idempotency key. Use the separate launch primitive
    only for recovery or boundary diagnostics. A changed tuple, receipt,
    session, output identity, or corrected attempt requires fresh preparation.
 3. Use `convir_route_finish` for bounded server-side monitoring and automatic

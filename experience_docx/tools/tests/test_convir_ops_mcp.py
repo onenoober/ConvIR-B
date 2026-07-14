@@ -104,8 +104,7 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
             "CONVIR_OPS_LAUNCH_OK",
         ]):
             started = payload(reloaded.tool_start_authorized({
-                "plan_token": plan["plan_token"], "plan_hash": plan["expected"]["plan_hash"],
-                "idempotency_key": "reload-plan-1",
+                "plan_token": plan["plan_token"],
             }))
         self.assertTrue(started["ok"])
         self.assertEqual("LAUNCHED", started["operation_state"])
@@ -122,9 +121,8 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
             "rules_commit": self.args["rules_commit"], "operations": {"A0R": operation},
         }
         short = {
-            "schema_version": 2, "repo_name": self.args["repo_name"], "branch": self.args["branch"],
+            "schema_version": 2, "branch": self.args["branch"],
             "route_branch_commit": self.args["route_branch_commit"],
-            "manifest_relpath": "experience_docx/experiment_logs/a0r/route_operations.json",
             "operation_id": "A0R",
         }
         manifest_output = "CONVIR_OPS_MANIFEST_JSON_BEGIN\n" + json.dumps(manifest) + "\nCONVIR_OPS_MANIFEST_JSON_END"
@@ -233,11 +231,12 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
             "CONVIR_OPS_LAUNCH_OK",
         ]) as remote:
             started = payload(OPS.tool_start_authorized({
-                "plan_token": plan["plan_token"], "plan_hash": plan["expected"]["plan_hash"],
-                "idempotency_key": "start-1",
+                "plan_token": plan["plan_token"],
             }))
+            repeated = payload(OPS.tool_start_authorized({"plan_token": plan["plan_token"]}))
         self.assertTrue(started["ok"])
         self.assertEqual(2, remote.call_count)
+        self.assertEqual("LAUNCH_IDEMPOTENT", repeated["operation_state"])
         closeout = {"route_id": "a0r", **A0R_TERMINAL_TUPLE}
         finish_outputs = [
             "CONVIR_OPS_MONITOR_META polls=2 active=false terminal=false\nCONVIR_OPS_MONITOR_STATUS_BEGIN\nV4A_A0R_OK\nCONVIR_OPS_MONITOR_STATUS_END",
