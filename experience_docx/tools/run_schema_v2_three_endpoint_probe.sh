@@ -8,6 +8,10 @@ EVIDENCE_DIR="${REMOTE_REPO}/experience_docx/experiment_logs/${ROUTE_ID}"
 STATUS_PATH="${RUN_ROOT}/status.txt"
 CLOSEOUT_PATH="${EVIDENCE_DIR}/schema_v2_three_endpoint_closeout.json"
 PROBE_PATH="${EVIDENCE_DIR}/schema_v2_three_endpoint_probe.json"
+AUTH_PATH="${EVIDENCE_DIR}/schema_v2_launch_authorization.json"
+EXPECTED_AUTH_STATE="CLOUD_ENDPOINT_READY"
+EXPECTED_AUTH_DECISION="RUN_SCHEMA_V2_THREE_ENDPOINT_PROBE"
+EXPECTED_AUTHORIZES="SCHEMA_V2_CLOUD_PROBE_ONLY"
 
 mkdir -p "${RUN_ROOT}" "${EVIDENCE_DIR}"
 exec > >(tee -a "${RUN_ROOT}/stdout.log") 2> >(tee -a "${RUN_ROOT}/stderr.log" >&2)
@@ -41,6 +45,7 @@ printf 'state=RUNNING\nroute_id=%s\n' "${ROUTE_ID}" > "${STATUS_PATH}"
 
 test "${MODE}" = "schema-v2-three-end-validation"
 test -x "${PY}"
+test -f "${AUTH_PATH}"
 test "$(git -C "${REMOTE_REPO}" branch --show-current)" = "${BRANCH}"
 LOCAL_HEAD="$(git -C "${REMOTE_REPO}" rev-parse HEAD)"
 test "${LOCAL_HEAD}" = "${EXPECTED_ROUTE_COMMIT}"
@@ -48,6 +53,25 @@ test "${LOCAL_HEAD}" = "${EXPECTED_ROUTE_COMMIT}"
 REMOTE_LINE="$(git -C "${REMOTE_REPO}" ls-remote github "refs/heads/${BRANCH}")"
 REMOTE_HEAD="$(printf '%s\n' "${REMOTE_LINE}" | awk 'NR == 1 {print $1}')"
 test "${REMOTE_HEAD}" = "${EXPECTED_ROUTE_COMMIT}"
+
+AUTH_PATH="${AUTH_PATH}" ROUTE_ID="${ROUTE_ID}" EXPECTED_AUTH_STATE="${EXPECTED_AUTH_STATE}" EXPECTED_AUTH_DECISION="${EXPECTED_AUTH_DECISION}" EXPECTED_AUTHORIZES="${EXPECTED_AUTHORIZES}" "${PY}" - <<'PY'
+import json
+import os
+from pathlib import Path
+
+authorization = json.loads(Path(os.environ["AUTH_PATH"]).read_text(encoding="utf-8"))
+expected = {
+    "route_id": os.environ["ROUTE_ID"],
+    "state": os.environ["EXPECTED_AUTH_STATE"],
+    "decision": os.environ["EXPECTED_AUTH_DECISION"],
+    "authorizes": os.environ["EXPECTED_AUTHORIZES"],
+}
+for field, value in expected.items():
+    assert authorization[field] == value
+assert authorization["schema_version"] == 2
+assert authorization["gpu_required"] is False
+assert authorization["locked_test_authorized"] is False
+PY
 
 REMOTE_REPO="${REMOTE_REPO}" EXPECTED_ROUTE_COMMIT="${EXPECTED_ROUTE_COMMIT}" REMOTE_HEAD="${REMOTE_HEAD}" PROBE_PATH="${PROBE_PATH}" "${PY}" - <<'PY'
 import json
