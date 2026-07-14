@@ -11,6 +11,7 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+$isLinuxHost = $PSVersionTable.PSEdition -eq "Core" -and [System.IO.Path]::DirectorySeparatorChar -eq '/'
 
 $requiredRequestFields = @(
     "schema_version",
@@ -86,14 +87,19 @@ function Invoke-WslGit {
         [Parameter(Mandatory = $true)][string[]]$Arguments
     )
 
-    $stderrPath = Join-Path $env:TEMP ("codex-wsl-git-" + [guid]::NewGuid().ToString("N") + ".stderr")
+    $stderrPath = Join-Path ([System.IO.Path]::GetTempPath()) ("codex-wsl-git-" + [guid]::NewGuid().ToString("N") + ".stderr")
     $stderrLines = @()
     $output = @()
     $exitCode = $null
     $savedPreference = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
     try {
-        $output = & wsl.exe -d $WslDistribution -- git -C $Repository @Arguments 2> $stderrPath
+        if ($isLinuxHost) {
+            $output = & git -C $Repository @Arguments 2> $stderrPath
+        }
+        else {
+            $output = & wsl.exe -d $WslDistribution -- git -C $Repository @Arguments 2> $stderrPath
+        }
         $exitCode = $LASTEXITCODE
         if (Test-Path -LiteralPath $stderrPath) {
             $stderrLines = @(Get-Content -LiteralPath $stderrPath)
@@ -134,6 +140,9 @@ function Convert-DisplayModelToId {
 function Get-TaskWindowsPath {
     param([Parameter(Mandatory = $true)][string]$LinuxPath)
 
+    if ($isLinuxHost) {
+        return $LinuxPath
+    }
     return "\\wsl.localhost\$WslDistribution" + ($LinuxPath -replace "/", "\")
 }
 
@@ -463,6 +472,10 @@ if (-not $Execute) {
     $dispatchPlan | ConvertTo-Json -Depth 6
     Write-Output "MODEL_DISPATCH_DRY_RUN_OK"
     exit 0
+}
+
+if ($isLinuxHost) {
+    throw "Dispatcher execution is supported only from the Windows Codex host; Linux supports validated dry-run only"
 }
 
 if ([string]::IsNullOrWhiteSpace($OutputRoot)) {

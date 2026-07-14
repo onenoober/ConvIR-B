@@ -10,6 +10,8 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+$isLinuxHost = $PSVersionTable.PSEdition -eq "Core" -and [System.IO.Path]::DirectorySeparatorChar -eq '/'
+$powerShellHost = if ($isLinuxHost) { Join-Path $PSHOME "pwsh" } else { "powershell.exe" }
 
 function Invoke-GitValue {
     param([string[]]$Arguments)
@@ -17,7 +19,12 @@ function Invoke-GitValue {
     $savedPreference = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
     try {
-        $output = & wsl.exe -d $WslDistribution -- git -C $RepositoryLinuxPath @Arguments 2>$null
+        if ($isLinuxHost) {
+            $output = & git -C $RepositoryLinuxPath @Arguments 2>$null
+        }
+        else {
+            $output = & wsl.exe -d $WslDistribution -- git -C $RepositoryLinuxPath @Arguments 2>$null
+        }
         $exitCode = $LASTEXITCODE
     }
     finally {
@@ -47,7 +54,7 @@ function Invoke-Case {
     $Request | ConvertTo-Json -Depth 8 | Set-Content -Encoding utf8 -LiteralPath $requestPath
     $savedPreference = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
-    $output = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $DispatcherPath `
+    $output = & $powerShellHost -NoProfile -ExecutionPolicy Bypass -File $DispatcherPath `
         -RequestPath $requestPath -WslDistribution $WslDistribution 2>&1
     $exitCode = $LASTEXITCODE
     $ErrorActionPreference = $savedPreference
