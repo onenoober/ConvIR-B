@@ -14,8 +14,16 @@ $ErrorActionPreference = "Stop"
 function Invoke-GitValue {
     param([string[]]$Arguments)
 
-    $output = & wsl.exe -d $WslDistribution -- git -C $RepositoryLinuxPath @Arguments 2>$null
-    if ($LASTEXITCODE -ne 0) {
+    $savedPreference = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        $output = & wsl.exe -d $WslDistribution -- git -C $RepositoryLinuxPath @Arguments 2>$null
+        $exitCode = $LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $savedPreference
+    }
+    if ($exitCode -ne 0) {
         throw "git failed: $($Arguments -join ' ')"
     }
     return ($output | Select-Object -Last 1).Trim()
@@ -85,6 +93,8 @@ $base = [ordered]@{
     routing_basis = "dispatcher_classification"
     routing_basis_ref = "none"
     effort = "low"
+    execution_scope = "local_read_only"
+    completion_marker = "DISPATCHER_DRY_RUN_TEST_OK"
     route_branch_commit = "none"
     route_id = "dispatcher-dry-run-test"
     stage_state = "NOT_APPLICABLE"
@@ -109,6 +119,8 @@ $r1.source_effort = "medium"
 $r1.required_role = "fast"
 $r1.dispatch_reason = "batch_bounded_operations"
 $r1.effort = "medium"
+$r1.execution_scope = "wsl_cloud_transport"
+$r1.next_action = "Use convir_route_preflight for the authorized tuple."
 $r1.route_branch_commit = $headCommit
 $r1.stage_state = "COMPLETED_GATE_PASS"
 $r1.decision = "V4A_A0R_REPRODUCTION_PASS_AUTHORIZE_A0D_AND_A0P"
@@ -125,6 +137,7 @@ $r2.source_effort = "high"
 $r2.required_role = "balanced"
 $r2.dispatch_reason = "batch_bounded_operations"
 $r2.effort = "medium"
+$r2.execution_scope = "local_workspace_write"
 $r2.route_branch_commit = $headCommit
 $r2.authorizes = "ENGINEERING_CONTROL_ONLY"
 
@@ -136,6 +149,7 @@ $r3.source_effort = "medium"
 $r3.required_role = "frontier"
 $r3.dispatch_reason = "task_routing"
 $r3.effort = "high"
+$r3.execution_scope = "local_workspace_write"
 $r3.route_branch_commit = $headCommit
 $r3.authorizes = "SCIENTIFIC_REVIEW_ONLY"
 

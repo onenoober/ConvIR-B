@@ -15,6 +15,8 @@
     "routing_basis",
     "routing_basis_ref",
     "effort",
+    "execution_scope",
+    "completion_marker",
     "route_branch_commit",
     "route_id",
     "stage_state",
@@ -47,6 +49,13 @@
       "maxLength": 1000
     },
     "effort": {"enum": ["low", "medium", "high"]},
+    "execution_scope": {
+      "enum": ["local_read_only", "local_workspace_write", "wsl_cloud_transport"]
+    },
+    "completion_marker": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]{2,127}$"
+    },
     "route_branch_commit": {
       "type": "string",
       "pattern": "^(none|[0-9a-f]{40})$"

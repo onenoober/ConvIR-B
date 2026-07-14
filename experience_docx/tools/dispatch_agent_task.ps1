@@ -25,6 +25,8 @@ $requiredRequestFields = @(
     "routing_basis",
     "routing_basis_ref",
     "effort",
+    "execution_scope",
+    "completion_marker",
     "route_branch_commit",
     "route_id",
     "stage_state",
@@ -46,6 +48,7 @@ $validSourceIdentities = @("unknown", "user_pinned_task", "product_metadata", "c
 $validSourceEfforts = @("unknown", "low", "medium", "high", "xhigh")
 $validDispatchReasons = @("task_routing", "standalone_repetition", "batch_bounded_operations", "major_handoff")
 $validRoutingBases = @("dispatcher_classification", "typed_handoff")
+$validExecutionScopes = @("local_read_only", "local_workspace_write", "wsl_cloud_transport")
 $roleRank = @{fast = 0; balanced = 1; frontier = 2}
 $minimumRole = @{
     R0_READ_ONLY = "fast"
@@ -180,6 +183,12 @@ if ($request.routing_basis_ref -isnot [string] -or [string]::IsNullOrWhiteSpace(
 if ($request.effort -notin @("low", "medium", "high")) {
     throw "Unknown effort: $($request.effort)"
 }
+if ($request.execution_scope -notin $validExecutionScopes) {
+    throw "Unknown execution_scope: $($request.execution_scope)"
+}
+if ($request.completion_marker -notmatch "^[A-Z][A-Z0-9_]{2,127}$") {
+    throw "completion_marker must be an uppercase machine marker"
+}
 if ([string]::IsNullOrWhiteSpace($request.next_action) -or $request.next_action.Length -gt 2000) {
     throw "next_action must contain 1-2000 characters"
 }
@@ -214,6 +223,10 @@ if ($request.routing_basis -eq "typed_handoff" -and $request.routing_basis_ref -
 }
 if ($request.routing_basis -ne "typed_handoff" -and $request.routing_basis_ref -ne "none") {
     throw "$($request.routing_basis) requires routing_basis_ref=none"
+}
+if ($request.execution_scope -eq "wsl_cloud_transport" -and
+    -not ($request.next_action.Contains("convir_remote_script.sh") -or $request.next_action.Contains("convir_route_"))) {
+    throw "wsl_cloud_transport requires a tracked convir transport in next_action"
 }
 
 $repository = $request.repository_linux_path
@@ -318,7 +331,12 @@ elseif ($classLevel -gt 0) {
 }
 
 $selectedModel = $modelsByRole[$request.required_role]
-$sandbox = if ($classLevel -le 1) { "read-only" } else { "workspace-write" }
+$sandboxByExecutionScope = @{
+    local_read_only = "read-only"
+    local_workspace_write = "workspace-write"
+    wsl_cloud_transport = "danger-full-access"
+}
+$sandbox = $sandboxByExecutionScope[$request.execution_scope]
 $handoff = [ordered]@{
     schema_version = $request.schema_version
     rules_commit = $currentRulesCommit
@@ -333,6 +351,8 @@ $handoff = [ordered]@{
     routing_basis = $request.routing_basis
     routing_basis_ref = $request.routing_basis_ref
     effort = $request.effort
+    execution_scope = $request.execution_scope
+    completion_marker = $request.completion_marker
     stage_state = $request.stage_state
     decision = $request.decision
     authorizes = $request.authorizes
@@ -359,7 +379,8 @@ $promptLines = @(
     $basisInstruction,
     "If new evidence requires a stronger role, stop before the next write or decision and emit MODEL_SWITCH_REQUIRED with a new dispatcher request.",
     "Handoff JSON: $handoffJson",
-    "Perform exactly this next action: $($request.next_action)"
+    "Perform exactly this next action: $($request.next_action)",
+    "Report success only after the action's success conditions are verified. On success, end the final answer with this exact marker on its own line: $($request.completion_marker)"
 )
 $childPrompt = $promptLines -join [Environment]::NewLine
 $prelaunchSeconds = [Math]::Round($totalStopwatch.Elapsed.TotalSeconds, 3)
@@ -378,6 +399,8 @@ $dispatchPlan = [ordered]@{
     routing_basis_ref = $request.routing_basis_ref
     selected_model = $selectedModel
     effort = $request.effort
+    execution_scope = $request.execution_scope
+    completion_marker = $request.completion_marker
     sandbox = $sandbox
     repository_linux_path = $repository
     handoff_sha256 = $handoffSha
@@ -469,7 +492,12 @@ for ($index = 0; $index -lt $events.Count; $index++) {
     }
 }
 $toolBeforeAck = $firstToolIndex -ge 0 -and ($ackIndex -lt 0 -or $firstToolIndex -lt $ackIndex)
-$dispatchPassed = $childExitCode -eq 0 -and $turnCompleted -and $ackIndex -ge 0 -and -not $toolBeforeAck
+$answerLines = @()
+if (Test-Path -LiteralPath $answerPath) {
+    $answerLines = @(Get-Content -LiteralPath $answerPath | ForEach-Object { $_.Trim() })
+}
+$completionMarkerSeen = $answerLines -contains $request.completion_marker
+$dispatchPassed = $childExitCode -eq 0 -and $turnCompleted -and $ackIndex -ge 0 -and -not $toolBeforeAck -and -not $switchRequired -and $completionMarkerSeen
 $status = if ($dispatchPassed) { "PASS" } else { "FAIL" }
 
 $metadata = [ordered]@{
@@ -487,6 +515,8 @@ $metadata = [ordered]@{
     routing_basis_ref = $request.routing_basis_ref
     selected_model = $selectedModel
     effort = $request.effort
+    execution_scope = $request.execution_scope
+    completion_marker = $request.completion_marker
     sandbox = $sandbox
     repository_linux_path = $repository
     handoff_sha256 = $handoffSha
@@ -496,6 +526,7 @@ $metadata = [ordered]@{
     handoff_ack_seen = $ackIndex -ge 0
     tool_before_ack = $toolBeforeAck
     switch_required = $switchRequired
+    completion_marker_seen = $completionMarkerSeen
     prelaunch_seconds = $prelaunchSeconds
     child_elapsed_seconds = [Math]::Round($launchStopwatch.Elapsed.TotalSeconds, 3)
     total_elapsed_seconds = [Math]::Round($totalStopwatch.Elapsed.TotalSeconds, 3)

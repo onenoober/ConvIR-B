@@ -297,6 +297,18 @@ machine-verified `route_id`/`state`/`decision`/`authorizes` tuple. It never
 bypasses the experiment authorization, cloud preflight, metric, gate, locked-
 test, or evidence-sync protocols.
 
+Each schema-v2 request also declares one `execution_scope` and one uppercase
+`completion_marker`. `local_read_only` and `local_workspace_write` use the
+matching Codex sandbox. `wsl_cloud_transport` is the only scope that uses
+`danger-full-access`, because the Windows sandbox otherwise blocks the WSL
+process that hosts both the tracked SSH wrapper and `convir-ops`; the dispatcher
+accepts that scope only when `next_action` names one of those tracked
+transports. This is a transport permission, not broader experiment authority.
+The child must verify the requested success condition and put the exact
+completion marker on its own final-answer line. A missing marker, a requested
+model escalation, a tool call before acknowledgement, or a nonzero child exit
+causes dispatcher failure even when the child turn itself completed normally.
+
 The default invocation is a zero-model-call dry run. Add `-Execute` only after
 the request is complete and the next action is already authorized. Store raw
 dispatcher events outside the repository and archive only a compact terminal
