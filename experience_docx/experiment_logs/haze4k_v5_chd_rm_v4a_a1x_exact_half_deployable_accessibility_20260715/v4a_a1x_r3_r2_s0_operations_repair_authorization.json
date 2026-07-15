@@ -11,6 +11,26 @@
     "sha256": "5b25395a25f056b362ba669d0ad11ab34282e8aa5b71e37f89fc87af50d5a50a",
     "reviewed_implementation_commit": "8371d9eb4c67e63169aa837558cfa5a36818fbe8"
   },
+  "validator_dependency_amendment": {
+    "reviewed_authorization_commit": "679cf4ed0816b2dc75d780e6e74c393729bb5871",
+    "state": "R3_VALIDATOR_DEPENDENCY_AMENDMENT_COMPLETE",
+    "decision": "V4A_A1X_CURRENT_LAUNCH_READY_VALIDATOR_PINNED_FOR_R2_REPAIR",
+    "authorizes": "R2_LOCAL_S0_OPERATIONS_REPAIR_ONLY",
+    "resolution": "VENDOR_ONE_BYTE_EXACT_STANDALONE_VALIDATOR",
+    "rationale": "The immutable anchor and reviewed route commit do not contain the required current launch-ready validator. The smallest reproducible resolution is one byte-exact 16,302-byte standard-library-only file copied from the recorded github/main rules commit; no scientific or runtime contract changes.",
+    "source": {
+      "repository_ref": "github/main",
+      "commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+      "path": "experience_docx/tools/validate_experiment_card.py",
+      "git_blob_sha1": "57376b5d905de31e4531b9b8a43069ccada1b226",
+      "sha256": "b0dd51e4db637d8754bec2158a01719670177b5ee64b833fdd2bd36cf932d834",
+      "size_bytes": 16302
+    },
+    "destination_path": "experience_docx/tools/validate_experiment_card.py",
+    "copy_contract": "Create the destination byte-for-byte from the pinned source and do not modify it.",
+    "immutable_validation_invocation": "test \"$(sha256sum experience_docx/tools/validate_experiment_card.py | cut -d ' ' -f1)\" = \"b0dd51e4db637d8754bec2158a01719670177b5ee64b833fdd2bd36cf932d834\" && python3 experience_docx/tools/validate_experiment_card.py --launch-ready experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md",
+    "verified_review_output": "ROUTE_CARD_CONTRACT_OK sha256=c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da status=PLANNED"
+  },
   "route_identity": "BOUNDED_ENGINEERING_REPAIR_OF_EXISTING_PLANNED_ROUTE",
   "state": "R3_R2_S0_OPERATIONS_REPAIR_AUTHORIZATION_COMPLETE",
   "decision": "V4A_A1X_BOUNDED_R2_S0_OPERATIONS_REPAIR_AUTHORIZED",
@@ -29,6 +49,11 @@
     "scientific_decision": false
   },
   "exact_allowed_files": [
+    {
+      "path": "experience_docx/tools/validate_experiment_card.py",
+      "action": "CREATE",
+      "purpose": "Copy byte-for-byte from github/main@fe08ba7c0fde4d6086083490430246ea39fbf766 at the same path, require SHA-256 b0dd51e4db637d8754bec2158a01719670177b5ee64b833fdd2bd36cf932d834, and use only for the required launch-ready static card validation."
+    },
     {
       "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
       "action": "MODIFY",
@@ -141,7 +166,7 @@
     "Parse every created or modified JSON file successfully.",
     "Run python syntax compilation only for the modified Python entrypoint and route validator.",
     "Run bash -n only for the new durable shell runner.",
-    "Run github/main@fe08ba7c0fde4d6086083490430246ea39fbf766 experience_docx/tools/validate_experiment_card.py --launch-ready against the unchanged route card and record ROUTE_CARD_CONTRACT_OK with its SHA-256.",
+    "Create experience_docx/tools/validate_experiment_card.py byte-for-byte from github/main@fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/tools/validate_experiment_card.py, verify SHA-256 b0dd51e4db637d8754bec2158a01719670177b5ee64b833fdd2bd36cf932d834, then run exactly: test \"$(sha256sum experience_docx/tools/validate_experiment_card.py | cut -d ' ' -f1)\" = \"b0dd51e4db637d8754bec2158a01719670177b5ee64b833fdd2bd36cf932d834\" && python3 experience_docx/tools/validate_experiment_card.py --launch-ready experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md. Require ROUTE_CARD_CONTRACT_OK sha256=c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da status=PLANNED.",
     "Run the updated route-specific static validator and require A1X_ROUTE_STATIC_VALIDATOR_OK.",
     "Statically prove that route_operations.json has exactly one A1X_S0 operation with the manifest and terminal tuples frozen here and that the referenced shell runner exists.",
     "Statically prove that the runner checks the exact route_id/state/decision/authorizes tuple, rejects missing or mismatched authorization, and rejects formal mode.",
