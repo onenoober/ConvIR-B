@@ -1,0 +1,85 @@
+{
+  "schema_version": 2,
+  "review_type": "R3_FINAL_INITIAL_STAGE_AUTHORIZATION_REVIEW",
+  "closure_type": "BLOCKER",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "reviewed_route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "reviewed_route_commit": "53e28f9672495f2291d08b1f02567329fa66e7b1",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "state": "R3_S0_FINAL_AUTHORIZATION_REVIEW_COMPLETE_BLOCKED",
+  "decision": "V4A_A1X_S0_AUTHORIZATION_BLOCKED_RUNNER_ENTRYPOINT_CONTRACT",
+  "authorizes": "NONE",
+  "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+  "failure_phase": "initial_authorization_review",
+  "initial_authorization_created": false,
+  "reviewed_evidence": [
+    "route_commit:53e28f9672495f2291d08b1f02567329fa66e7b1:experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "route_commit:53e28f9672495f2291d08b1f02567329fa66e7b1:experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "route_commit:53e28f9672495f2291d08b1f02567329fa66e7b1:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_s0_semantics_repair_static_validation.json",
+    "route_commit:53e28f9672495f2291d08b1f02567329fa66e7b1:experience_docx/route_operations.json",
+    "route_commit:53e28f9672495f2291d08b1f02567329fa66e7b1:experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+    "route_commit:53e28f9672495f2291d08b1f02567329fa66e7b1:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_completion_repair_closeout.json",
+    "local_untracked_handoff:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_semantics_repair_closeout.json"
+  ],
+  "verified_semantics": {
+    "corrected_source_findings_empty": true,
+    "isolated_negative_controls_exactly_seven": true,
+    "aggregate_negative_codes_exactly_seven": true,
+    "authoritative_first32_equal": true,
+    "frozen_hashes_match": true,
+    "entrypoint_hash": "b0da2e618ff055ab4f95435d66a2df31d3ee7aed2c74d81b68b8a7d8e86c65de",
+    "validator_hash": "fa42133d72d1c2dd1e01f4bdea00df9bfd976601922b82595f56211a79d278bf",
+    "runner_hash": "3f0434a5064a1fe196a688b0699177f2658e8d5acabab97465443f2df956040b",
+    "route_operations_hash": "a5cbe7d8e0559ee75c1b53b152561f10f754befb4e289963da3c465520e3f22f",
+    "a1x_access_hash": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+    "cuda_parameter_structural_source_gate": true,
+    "lifecycle_terminal_source_semantics": true
+  },
+  "blocking_findings": [
+    {
+      "code": "RUNNER_ENTRYPOINT_ARGUMENT_AND_AUTHORIZATION_CONTRACT_MISMATCH",
+      "severity": "BLOCKING",
+      "paths": [
+        "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+        "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py"
+      ],
+      "reason": "The committed runner invokes the entrypoint with --authorization-json, --route-commit, --run-id, --official-checkpoint, --official-checkpoint-sha256, five data roots, --status-json, --heartbeat-json, --learned-state-manifest-json, and --closeout-json. The committed entrypoint parser accepts only --stage, --run-root, --learned-state-manifest-json, and --closeout-json, does not parse or verify the authorization tuple, and unconditionally raises after stage parsing. Therefore the bound runner/manifest/entrypoint tuple cannot execute the authorized A1X_S0 operation or produce its lifecycle closeout, despite the source-only semantic validator passing its seven isolated and aggregate fixtures."
+    }
+  ],
+  "frozen_s0_scope": {
+    "stage": "S0",
+    "evidence_role": "engineering_debug",
+    "data_scope": "explicit_already_consumed_A1R_first32_names_only",
+    "formal_status": "blocked",
+    "locked_test_policy": "blocked"
+  },
+  "forbidden_continuations": [
+    "S0_PREFLIGHT_OR_RUN",
+    "A1X_FORMAL_CONFIRMATION",
+    "A1X_DATA_ACCESS",
+    "CONFIRMATION_DATA_ACCESS",
+    "DIRECT_ACTION_CALIBRATION",
+    "CANDIDATE_SELECTION",
+    "POLICY_FITTING",
+    "PROMOTION",
+    "CANARY",
+    "LOCKED_TEST"
+  ],
+  "scope_confirmations": {
+    "cloud_transport": false,
+    "ssh_calls": false,
+    "convir_ops_calls": false,
+    "runner_started": false,
+    "training_started": false,
+    "evaluation_started": false,
+    "inference_started": false,
+    "a1r_data_touched": false,
+    "a1x_data_touched": false,
+    "confirmation_touched": false,
+    "canary_touched": false,
+    "locked_test_touched": false,
+    "scientific_contract_changed": false
+  },
+  "retry_policy": "NO_AUTOMATIC_RETRY",
+  "next_boundary": "Repair the exact runner-entrypoint authorization and argument contract under a new explicit R2 engineering authorization, then require a fresh R3 source review. This blocker authorizes no S0, formal, data access, cloud transport, training, evaluation, inference, candidate selection, canary, or locked-test action."
+}
