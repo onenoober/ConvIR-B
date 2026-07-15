@@ -1,0 +1,105 @@
+{
+  "aggregate_fixture_analyzed": true,
+  "aggregate_negative_codes": [
+    "FROZEN_ACTIVE_SUPPORT_IS_REPLACED_BY_ALL_ONES",
+    "FROZEN_OPERATOR_CONTRACT_IS_LABEL_ONLY",
+    "LEARNED_STATE_RETENTION_AND_PHASE_LIFECYCLE_ARE_INCOMPLETE",
+    "MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED",
+    "S0_TERMINAL_TUPLE_CANNOT_REPORT_THE_FROZEN_PASS_GATE",
+    "TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE",
+    "ZERO_INITIALIZATION_NOOP_GATE_IS_MEASURED_AFTER_OPTIMIZER_UPDATES"
+  ],
+  "authoritative_first32_equal": true,
+  "canary_touched": false,
+  "checkpoint_opened": false,
+  "cloud_transport": false,
+  "corrected_source_findings": [],
+  "data_accessed": false,
+  "entrypoint_sha256": "b0da2e618ff055ab4f95435d66a2df31d3ee7aed2c74d81b68b8a7d8e86c65de",
+  "formal_authorized": false,
+  "frozen_hashes": {
+    "Dehazing/ITS/models/A1XAccess.py": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+    "experience_docx/route_operations.json": "a5cbe7d8e0559ee75c1b53b152561f10f754befb4e289963da3c465520e3f22f"
+  },
+  "isolated_negative_controls": [
+    {
+      "detected_finding_codes": [
+        "TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE"
+      ],
+      "expected_code": "TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE",
+      "id": "NEG_SEM_01",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "detected_finding_codes": [
+        "FROZEN_OPERATOR_CONTRACT_IS_LABEL_ONLY"
+      ],
+      "expected_code": "FROZEN_OPERATOR_CONTRACT_IS_LABEL_ONLY",
+      "id": "NEG_SEM_02",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "detected_finding_codes": [
+        "FROZEN_ACTIVE_SUPPORT_IS_REPLACED_BY_ALL_ONES"
+      ],
+      "expected_code": "FROZEN_ACTIVE_SUPPORT_IS_REPLACED_BY_ALL_ONES",
+      "id": "NEG_SEM_03",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "detected_finding_codes": [
+        "ZERO_INITIALIZATION_NOOP_GATE_IS_MEASURED_AFTER_OPTIMIZER_UPDATES"
+      ],
+      "expected_code": "ZERO_INITIALIZATION_NOOP_GATE_IS_MEASURED_AFTER_OPTIMIZER_UPDATES",
+      "id": "NEG_SEM_04",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "ast_anchor_identity": {
+        "call_target": "torch.cuda.synchronize",
+        "column": 130,
+        "function": "cuda_profile_pair.measure",
+        "line": 76,
+        "role": "post_measured_call_synchronization"
+      },
+      "detected_finding_codes": [
+        "MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED"
+      ],
+      "expected_code": "MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED",
+      "id": "NEG_SEM_05",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "detected_finding_codes": [
+        "LEARNED_STATE_RETENTION_AND_PHASE_LIFECYCLE_ARE_INCOMPLETE"
+      ],
+      "expected_code": "LEARNED_STATE_RETENTION_AND_PHASE_LIFECYCLE_ARE_INCOMPLETE",
+      "id": "NEG_SEM_06",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "detected_finding_codes": [
+        "S0_TERMINAL_TUPLE_CANNOT_REPORT_THE_FROZEN_PASS_GATE"
+      ],
+      "expected_code": "S0_TERMINAL_TUPLE_CANNOT_REPORT_THE_FROZEN_PASS_GATE",
+      "id": "NEG_SEM_07",
+      "isolated": true,
+      "target_code_executed_false": true
+    }
+  ],
+  "locked_test_touched": false,
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "runtime_started": false,
+  "s0_authorized": false,
+  "schema_version": 2,
+  "target_code_executed": false,
+  "target_code_imported": false,
+  "validator": "A1X_S0_SEMANTICS_REPAIR_STATIC_VALIDATOR_OK",
+  "validator_sha256": "fa42133d72d1c2dd1e01f4bdea00df9bfd976601922b82595f56211a79d278bf"
+}

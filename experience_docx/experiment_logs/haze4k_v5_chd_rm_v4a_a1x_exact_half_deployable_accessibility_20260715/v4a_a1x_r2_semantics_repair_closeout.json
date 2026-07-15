@@ -1,0 +1,19 @@
+{
+  "schema_version": 2,
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "state": "R2_S0_SEMANTICS_REPAIR_COMPLETE",
+  "decision": "V4A_A1X_S0_RUNNER_SEMANTICS_COMPLETE_AWAIT_R3_REVIEW",
+  "authorizes": "R3_S0_FINAL_AUTHORIZATION_REVIEW_ONLY",
+  "validator_marker": "A1X_S0_SEMANTICS_REPAIR_STATIC_VALIDATOR_OK",
+  "static_validation": "v4a_a1x_s0_semantics_repair_static_validation.json",
+  "runtime_started": false,
+  "target_code_imported": false,
+  "target_code_executed": false,
+  "data_accessed": false,
+  "checkpoint_opened": false,
+  "cloud_transport": false,
+  "s0_authorized": false,
+  "formal_authorized": false,
+  "canary_touched": false,
+  "locked_test_touched": false
+}
