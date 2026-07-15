@@ -1,0 +1,140 @@
+{
+  "schema_version": 2,
+  "record_type": "R3_POST_VALIDATION_AUDIT_EXACT_RESUME_AUTHORIZATION",
+  "closure_type": "AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "route_branch_commit": "493acb91dcf5da4e9d14840f1e0cefcb14c37273",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "state": "R3_POST_VALIDATION_AUDIT_EXACT_RESUME_AUTHORIZED",
+  "decision": "V4A_A1X_AUTHORIZE_ONE_R2_COMMIT_ONLY_CLOSEOUT_REPLACEMENT",
+  "authorizes": "R2_COMMIT_ONLY_CLOSEOUT_REPLACEMENT_AND_ORIGINAL_SIX_PATH_LOCAL_COMMIT_ONLY",
+  "task_class": "R2_ENGINEERING_CONTROL",
+  "required_role": "balanced",
+  "effort": "medium",
+  "transport_contract": "local_only",
+  "cloud_status": "inactive; no S0 run launched",
+  "reviewed_evidence": {
+    "static_validation": {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_static_validation.json",
+      "sha256": "6993f15ea5d7224e83a236db3260280cc65146ffb80c5af5158cb717baeeec9e",
+      "validator": "A1X_S0_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_STATIC_VALIDATOR_OK"
+    },
+    "failure_closeout": {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_closeout.json",
+      "sha256": "2916e927e48738ce07808a7ae1296d0a10798a0e2c164dd456078985e41c2f5c",
+      "state": "R3_SOURCE_ONLY_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_BLOCKED",
+      "decision": "V4A_A1X_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_FAILED_STOP",
+      "authorizes": "NONE",
+      "blocker_code": "LOCAL_STATIC_EVIDENCE_AUDIT_COMMAND_FAILED"
+    },
+    "dispatcher_answer": {
+      "path": "C:/Users/wukongtao/.codex/dispatcher-runs/20260715T223755Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-balanced/answer.txt",
+      "sha256": "1621062c889979c212e39772f6e89e8544697eea4414a49ad6ec777c22860e1c"
+    },
+    "dispatcher_events": {
+      "path": "C:/Users/wukongtao/.codex/dispatcher-runs/20260715T223755Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-balanced/events.jsonl",
+      "sha256": "70a39fd424296b1d242936ebbc6f48424b71110fc9bb3a65209521fea29e120e"
+    }
+  },
+  "audit_finding": {
+    "exact_resume_condition_met": true,
+    "all_authorized_compile_static_validation_gates_passed": true,
+    "authorized_command_results": [
+      {
+        "event_id": "item_30",
+        "gate": "entrypoint_py_compile",
+        "exit_code": 0
+      },
+      {
+        "event_id": "item_31",
+        "gate": "validator_py_compile",
+        "exit_code": 0
+      },
+      {
+        "event_id": "item_32",
+        "gate": "source_static_validator",
+        "exit_code": 0,
+        "marker": "A1X_S0_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_STATIC_VALIDATOR_OK"
+      },
+      {
+        "event_id": "item_34",
+        "gate": "six_path_diff_check",
+        "exit_code": 0
+      },
+      {
+        "event_id": "item_35",
+        "gate": "implementation_diff_allowlist",
+        "exit_code": 0
+      }
+    ],
+    "sole_later_failure": {
+      "event_id": "item_40",
+      "phase": "post_validation_powershell_evidence_summary",
+      "exit_code": 1,
+      "error": "IncompleteDollarSubexpressionReference",
+      "message": "$(subexpression) is missing the closing ')'."
+    },
+    "runtime_started": false,
+    "runner_executed": false,
+    "entrypoint_imported": false,
+    "entrypoint_executed": false,
+    "data_accessed": false,
+    "checkpoint_opened": false,
+    "runtime_manifest_opened": false,
+    "cloud_transport": false,
+    "initial_authorization_created": false,
+    "s0_authorized": false,
+    "formal_authorized": false,
+    "canary_touched": false,
+    "locked_test_touched": false
+  },
+  "bound_implementation_hashes": {
+    "experience_docx/route_operations.json": "077620a2326d10a3206a86b9f9c639d3ccdefc4a089ca4ba293423e7e4f38a8a",
+    "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": "0c1722d9ca1b08a83e23d29a1f92f6db67cb65113ed9ace021e4fb88b0c9b026",
+    "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh": "cc7a826ee9ef25f66148516875fd5065fd49e8a65537c774b25d6f6b5b0562fc",
+    "experience_docx/tools/validate_haze4k_v4a_a1x_route.py": "b5751e32e05c301c9580af7b36eb9dee77fc1610979913b2549b0d98087728b0"
+  },
+  "required_closeout_replacement": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_closeout.json",
+    "state": "R3_SOURCE_ONLY_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_COMPLETE",
+    "decision": "V4A_A1X_SEMANTICS_AND_RUNTIME_ASSET_TRANSPORT_COMPLETE_AWAIT_FRESH_R3_REVIEW",
+    "authorizes": "R3_S0_INITIAL_AUTHORIZATION_REVIEW_ONLY",
+    "failure_class": null,
+    "post_repair_hashes": {
+      "experience_docx/route_operations.json": "077620a2326d10a3206a86b9f9c639d3ccdefc4a089ca4ba293423e7e4f38a8a",
+      "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": "0c1722d9ca1b08a83e23d29a1f92f6db67cb65113ed9ace021e4fb88b0c9b026",
+      "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh": "cc7a826ee9ef25f66148516875fd5065fd49e8a65537c774b25d6f6b5b0562fc",
+      "experience_docx/tools/validate_haze4k_v4a_a1x_route.py": "b5751e32e05c301c9580af7b36eb9dee77fc1610979913b2549b0d98087728b0"
+    },
+    "static_validation_sha256": "6993f15ea5d7224e83a236db3260280cc65146ffb80c5af5158cb717baeeec9e"
+  },
+  "r2_commit_only_continuation": {
+    "attempt_limit": 1,
+    "automatic_retry": false,
+    "exact_write_paths": [
+      "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_closeout.json"
+    ],
+    "exact_local_commit_paths": [
+      "experience_docx/route_operations.json",
+      "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_static_validation.json",
+      "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_closeout.json"
+    ],
+    "push_permitted": false,
+    "stop_after_local_commit": true
+  },
+  "prohibitions": [
+    "DO_NOT_RERUN_COMPILE_OR_STATIC_VALIDATION",
+    "DO_NOT_EDIT_THE_FOUR_IMPLEMENTATION_FILES",
+    "DO_NOT_ACCESS_RUNTIME_ASSETS_DATA_OR_CHECKPOINTS",
+    "DO_NOT_CREATE_OR_EXECUTE_S0_AUTHORIZATION",
+    "DO_NOT_AUTHORIZE_OR_EXECUTE_FORMAL_OR_CANARY",
+    "DO_NOT_ACCESS_LOCKED_TEST",
+    "DO_NOT_USE_CLOUD_TRANSPORT",
+    "DO_NOT_PUSH"
+  ],
+  "next_boundary": "FRESH_R3_S0_INITIAL_AUTHORIZATION_REVIEW_REQUIRED"
+}
