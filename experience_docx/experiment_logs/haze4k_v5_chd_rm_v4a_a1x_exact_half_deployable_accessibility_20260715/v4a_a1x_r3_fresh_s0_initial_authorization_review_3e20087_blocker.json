@@ -1,0 +1,144 @@
+{
+  "schema_version": 2,
+  "review_type": "R3_FRESH_S0_INITIAL_AUTHORIZATION_REVIEW",
+  "closure_type": "BLOCKER",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "reviewed_route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "reviewed_route_commit": "3e2008716c47279651ebb5fb1e3f709bd0835f68",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "state": "R3_FRESH_S0_INITIAL_AUTHORIZATION_REVIEW_COMPLETE_BLOCKED",
+  "decision": "V4A_A1X_S0_INITIAL_AUTHORIZATION_BLOCKED_RUNTIME_IDENTITY_AND_CLOSEOUT_PROVENANCE",
+  "authorizes": "NONE",
+  "task_class": "R3_SCIENTIFIC_AUTHORITY",
+  "required_role": "frontier",
+  "effort": "high",
+  "transport_contract": "local_only",
+  "failure_class": "ENGINEERING_RESOURCE_PREFLIGHT_CONTRACT",
+  "failure_phase": "initial_authorization_review",
+  "initial_authorization_created": false,
+  "required_initial_authorization_tuple": {
+    "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+    "state": "PLANNED",
+    "decision": "V4A_A1X_S0_AUTHORIZED_INITIAL_ONLY",
+    "authorizes": "A1X_S0_ONLY"
+  },
+  "required_initial_authorization_guards": {
+    "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+    "route_commit": "3e2008716c47279651ebb5fb1e3f709bd0835f68",
+    "route_card_sha256": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+    "locked_test_policy": "blocked",
+    "contract_id": "A1X_S0_RUNTIME_ASSET_TRANSPORT_V1",
+    "runtime_asset_manifest_json": "REQUIRED_CONCRETE_ABSOLUTE_PATH_NOT_DURABLY_AVAILABLE",
+    "runtime_asset_manifest_sha256": "REQUIRED_CONCRETE_BYTE_SHA256_NOT_DURABLY_AVAILABLE"
+  },
+  "reviewed_evidence": [
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:AGENTS.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_AGENT_COST_ROUTING_PROTOCOL.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_EXPERIMENT_START_CHECKLIST.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md",
+    "github:3e2008716c47279651ebb5fb1e3f709bd0835f68:experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md",
+    "github:3e2008716c47279651ebb5fb1e3f709bd0835f68:experience_docx/route_operations.json",
+    "github:3e2008716c47279651ebb5fb1e3f709bd0835f68:experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+    "github:3e2008716c47279651ebb5fb1e3f709bd0835f68:experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "github:3e2008716c47279651ebb5fb1e3f709bd0835f68:experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "github:3e2008716c47279651ebb5fb1e3f709bd0835f68:Dehazing/ITS/models/A1XAccess.py",
+    "github:3e2008716c47279651ebb5fb1e3f709bd0835f68:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_authorization.json",
+    "github:3e2008716c47279651ebb5fb1e3f709bd0835f68:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_authorization_dominance_exact_resume_authorization.json",
+    "github:3e2008716c47279651ebb5fb1e3f709bd0835f68:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_post_validation_audit_exact_resume_authorization.json",
+    "github:3e2008716c47279651ebb5fb1e3f709bd0835f68:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_closeout.json",
+    "github:3e2008716c47279651ebb5fb1e3f709bd0835f68:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_static_validation.json"
+  ],
+  "reviewed_source_hashes": {
+    "experience_docx/route_operations.json": "077620a2326d10a3206a86b9f9c639d3ccdefc4a089ca4ba293423e7e4f38a8a",
+    "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": "0c1722d9ca1b08a83e23d29a1f92f6db67cb65113ed9ace021e4fb88b0c9b026",
+    "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh": "cc7a826ee9ef25f66148516875fd5065fd49e8a65537c774b25d6f6b5b0562fc",
+    "experience_docx/tools/validate_haze4k_v4a_a1x_route.py": "b5751e32e05c301c9580af7b36eb9dee77fc1610979913b2549b0d98087728b0",
+    "Dehazing/ITS/models/A1XAccess.py": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+    "route_card": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+    "static_validation": "6993f15ea5d7224e83a236db3260280cc65146ffb80c5af5158cb717baeeec9e"
+  },
+  "verified_frozen_s0_source_contract": {
+    "first32_exact_order_count_and_uniqueness": true,
+    "official_checkpoint_identity_and_strict_load_source_present": true,
+    "official_model_eval_and_all_historical_parameters_frozen_source_present": true,
+    "only_independent_a1x_access_heads_are_optimizer_trainable": true,
+    "true_and_target_only_shuffled_cells_are_source_distinct": true,
+    "d_ref_d_rep_and_measured_support_provenance_predicates_present": true,
+    "zero_initialized_pre_update_noop_predicate_present": true,
+    "cuda_only_parameter_mac_latency_memory_gate_source_present": true,
+    "status_heartbeat_state_manifest_and_terminal_tuple_source_present": true,
+    "runner_and_entrypoint_cli_option_sets_match": true,
+    "authorization_guard_dominates_manifest_and_runtime_opens": true,
+    "workspace_policy": "fresh_route",
+    "formal_mode_enabled": false,
+    "locked_test_policy": "blocked"
+  },
+  "blocking_findings": [
+    {
+      "code": "CONCRETE_RUNTIME_ASSET_MANIFEST_IDENTITY_NOT_DURABLY_AVAILABLE",
+      "severity": "BLOCKING",
+      "paths": [
+        "experience_docx/route_operations.json",
+        "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py"
+      ],
+      "reason": "The frozen authorization guard requires one concrete absolute runtime_asset_manifest_json value and the SHA-256 of those exact manifest bytes before any manifest, asset, checkpoint, operator, support, data, model, or runtime open. The committed operation projects only the environment-variable names A1X_RUNTIME_ASSET_MANIFEST_JSON and A1X_RUNTIME_ASSET_MANIFEST_SHA256; no committed route evidence or initial_authorization.json supplies their concrete values. This local-only no-asset review cannot invent, materialize, inspect, or hash that future runtime manifest, so the exact initial authorization cannot be created and operator/support/runtime-asset provenance cannot yet be authorized."
+    },
+    {
+      "code": "TYPED_CLOSEOUT_RUNNER_IDENTITY_PROVENANCE_MISSING",
+      "severity": "BLOCKING",
+      "paths": [
+        "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+        "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py"
+      ],
+      "reason": "MODEL_RUN_OPERATIONS_PROTOCOL.md requires every tracked runner to write route_commit, run_id, and its tracked runner SHA-256 into the typed closeout so receipt validation can reject stale or cross-run evidence. The runner does not pass a runner SHA-256 and the entrypoint identity/terminal closeout contains no runner_sha256 field. Therefore even a later valid S0 terminal cannot satisfy the required receipt-bound closeout provenance contract."
+    }
+  ],
+  "frozen_s0_scope": {
+    "stage": "S0",
+    "evidence_role": "engineering_debug",
+    "data_scope": "explicit_already_consumed_A1R_first32_names_only",
+    "cells": [
+      "A1X_ACCESS_TRUE",
+      "A1X_ACCESS_SHUFFLED"
+    ],
+    "updates_per_cell": 2,
+    "formal_status": "blocked",
+    "locked_test_policy": "blocked"
+  },
+  "forbidden_continuations": [
+    "INITIAL_AUTHORIZATION_CREATION",
+    "S0_PREFLIGHT_OR_RUN",
+    "A1X_FORMAL_CONFIRMATION",
+    "A1X_DATA_ACCESS",
+    "CONFIRMATION_DATA_ACCESS",
+    "RUNTIME_ASSET_MATERIALIZATION_OR_ACCESS",
+    "TRAINING",
+    "EVALUATION",
+    "INFERENCE",
+    "CANDIDATE_SELECTION",
+    "PROMOTION",
+    "CANARY",
+    "LOCKED_TEST",
+    "CLOUD_TRANSPORT",
+    "PUSH"
+  ],
+  "scope_confirmations": {
+    "source_files_modified": false,
+    "validator_or_runtime_commands_run": false,
+    "runtime_manifest_or_assets_accessed": false,
+    "dataset_or_checkpoint_accessed": false,
+    "cloud_or_ssh_or_convir_ops_used": false,
+    "runner_started": false,
+    "initial_authorization_created": false,
+    "s0_or_formal_authorized": false,
+    "a1r_data_touched": false,
+    "a1x_data_touched": false,
+    "confirmation_touched": false,
+    "canary_touched": false,
+    "locked_test_touched": false,
+    "scientific_contract_changed": false,
+    "push_performed": false
+  },
+  "retry_policy": "NO_AUTOMATIC_RETRY",
+  "next_boundary": "Stop with no initial authorization and no stage authority. A new explicit dispatcher task must first bind a durable concrete runtime-asset manifest absolute path and byte SHA-256 without changing the frozen S0 semantics, and repair tracked-runner SHA-256 propagation into the typed closeout under a separately authorized engineering boundary. Then a fresh frontier R3 S0 initial-authorization review is required."
+}
