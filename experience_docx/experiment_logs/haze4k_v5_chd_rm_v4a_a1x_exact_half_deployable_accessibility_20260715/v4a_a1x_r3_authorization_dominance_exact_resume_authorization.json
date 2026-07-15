@@ -1,0 +1,255 @@
+{
+  "schema_version": 2,
+  "authorization_type": "R3_AUTHORIZATION_DOMINANCE_ATOMIC_EXACT_RESUME_AUTHORIZATION",
+  "closure_type": "AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "authorization_parent_commit": "ea85e76930a72fbde1c9d3e81c91cfe56caa858d",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "route_identity": "EXACT_RESUME_OF_BLOCKED_FRONTIER_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_AUTHORIZATION_TUPLE_ONLY",
+  "state": "R3_AUTHORIZATION_DOMINANCE_ATOMIC_REVIEW_COMPLETE",
+  "decision": "V4A_A1X_AUTHORIZE_ONE_BOUNDED_SOURCE_ONLY_AUTHORIZATION_TUPLE_LITERAL_EXACT_RESUME",
+  "authorizes": "R2_LOCAL_AUTHORIZATION_TUPLE_LITERAL_EXACT_RESUME_ONLY",
+  "task_class": "R2_ENGINEERING_CONTROL",
+  "required_role": "balanced",
+  "effort": "medium",
+  "transport_contract": "local_only",
+  "cloud_status": "inactive; no S0 run launched",
+  "reviewed_prior_authorization": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_authorization.json",
+    "commit": "ea85e76930a72fbde1c9d3e81c91cfe56caa858d",
+    "sha256": "f771cd54d965331bf39eb09645e406979eb774819f83141871db45823456ca2c",
+    "state": "R3_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_DESIGN_COMPLETE",
+    "decision": "V4A_A1X_AUTHORIZE_ONE_FRONTIER_SOURCE_ONLY_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR",
+    "authorizes": "R3_FRONTIER_SOURCE_ONLY_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_ONLY"
+  },
+  "reviewed_failure_closeout": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_closeout.json",
+    "tracked": false,
+    "sha256": "8c1825b217dcc3b769bc2e04afbe26810e092b75c02d44e172ee7cbbebd9e1f2",
+    "state": "R3_SOURCE_ONLY_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_BLOCKED",
+    "decision": "V4A_A1X_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_FAILED_STOP",
+    "authorizes": "NONE",
+    "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+    "failure_phase": "source_static_validation",
+    "blocker_code": "INITIAL_AUTHORIZATION_TUPLE_OR_DOMINANCE_INVALID",
+    "attempt_count": 1,
+    "automatic_retry": false,
+    "runtime_started": false,
+    "runner_executed": false,
+    "entrypoint_imported": false,
+    "entrypoint_executed": false,
+    "data_accessed": false,
+    "checkpoint_opened": false,
+    "runtime_manifest_opened": false,
+    "cloud_transport": false,
+    "initial_authorization_created": false,
+    "s0_authorized": false,
+    "formal_authorized": false,
+    "canary_touched": false,
+    "locked_test_touched": false,
+    "push_performed": false
+  },
+  "reviewed_working_state": {
+    "head_commit": "ea85e76930a72fbde1c9d3e81c91cfe56caa858d",
+    "preserved_diff_path_count": 4,
+    "preserved_diff_insertions": 1157,
+    "preserved_diff_deletions": 280,
+    "post_repair_hashes": {
+      "experience_docx/route_operations.json": "077620a2326d10a3206a86b9f9c639d3ccdefc4a089ca4ba293423e7e4f38a8a",
+      "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh": "cc7a826ee9ef25f66148516875fd5065fd49e8a65537c774b25d6f6b5b0562fc",
+      "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": "b0e0f02592e8dba1bd1baa20ac9d75e468fede4ac2d4ebffc1b03a24160287f7",
+      "experience_docx/tools/validate_haze4k_v4a_a1x_route.py": "7b9ed48b6c9e48fe34449975564b51595ee868d7f8c1633685813f8ae2e48c55"
+    },
+    "preserve_uncommitted_source_and_closeout": true,
+    "staged_paths_before_authorization": [],
+    "runtime_started": false,
+    "data_asset_or_checkpoint_accessed": false,
+    "cloud_transport": false
+  },
+  "authorization_proof_decomposition": {
+    "aggregate_result": false,
+    "exact_tuple": {
+      "value": false,
+      "validator_source": "authorization_proof lines 202-209",
+      "entrypoint_source": "authorization_guard line 151",
+      "ast_cause": "The expected assignment is one ast.Dict whose route_id value is ast.Name(id='ROUTE_ID'). ast.literal_eval(expected.value) rejects that Name with ValueError, the exception path assigns expected_value=None, and the exact dictionary equality is therefore false.",
+      "runtime_source_semantics_valid": true,
+      "runtime_value": "ROUTE_ID is the exact literal haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715, so authorization_guard compares the required future route_id correctly at runtime."
+    },
+    "exact_fields": {
+      "value": true,
+      "validator_source": "authorization_proof line 210",
+      "entrypoint_source": "authorization_guard line 152",
+      "ast_cause": "required is a direct ast.Dict assignment and its seven ast.Constant keys equal exactly source_commit, route_commit, route_card_sha256, locked_test_policy, contract_id, runtime_asset_manifest_json, and runtime_asset_manifest_sha256."
+    },
+    "protected_absent": {
+      "value": true,
+      "validator_source": "authorization_proof lines 211-212",
+      "entrypoint_source": "module top-level imports lines 3-14",
+      "ast_cause": "The top-level import roots are argparse, copy, hashlib, json, math, os, random, subprocess, sys, tempfile, time, and pathlib. Their intersection with numpy, torch, PIL, and Dehazing is empty."
+    },
+    "ordered": {
+      "value": true,
+      "validator_source": "authorization_proof lines 213-214",
+      "entrypoint_source": "main lines 628-644",
+      "ast_cause": "ast.unparse(main) contains authorization_guard(args), validate_manifest(args, authorization), and runtime_lifecycle(args, manifest, records) exactly in that index order. The corresponding source calls are lines 634, 637, and 642."
+    },
+    "first_open": {
+      "value": true,
+      "validator_source": "authorization_proof line 215",
+      "entrypoint_source": "authorization_guard lines 148-159 and main lines 628-644",
+      "ast_cause": "calls(authorization_guard, 'read_json') is nonempty for read_json(authorization_path), while calls(main, 'read_json') is empty. The first protected input opened on the S0 path is therefore authorization_json; manifest and runtime helpers are reached only after the guard returns."
+    },
+    "sole_false_component": "exact_tuple",
+    "classification": "VALIDATOR_LITERAL_EVALUATION_FALSE_NEGATIVE_WITH_RUNTIME_GUARD_SEMANTICS_VALID"
+  },
+  "independent_authorization_guard_assessment": {
+    "required_future_initial_tuple_validated": true,
+    "required_manifest_identities_bound_by_authorization": true,
+    "guard_dominates_manifest_asset_checkpoint_and_protected_module_open": true,
+    "allowed_first_input_open": "authorization_json only",
+    "source_order": [
+      "main parses CLI using top-level standard-library imports only.",
+      "authorization_guard canonicalizes and opens authorization_json.",
+      "authorization_guard compares route_id, state, decision, authorizes, source_commit, route_commit, route_card_sha256, locked_test_policy, contract_id, runtime_asset_manifest_json, and runtime_asset_manifest_sha256.",
+      "authorization_guard requires an absolute manifest path and a lowercase 64-character hexadecimal manifest SHA-256 string.",
+      "main records authorized status and heartbeat, then calls validate_manifest.",
+      "validate_manifest requires the canonical manifest path to equal the authorized path and hashes the exact manifest bytes before read_json parses them.",
+      "validate_manifest checks manifest identity, source chain, checkpoint/state pins, operator pins, record identity, descriptors, and assets after authorization dominance.",
+      "runtime_lifecycle imports numpy and torch only after validate_manifest returns; Dehazing model imports occur only through runtime helpers reached from that lifecycle."
+    ],
+    "precise_source_cause": "authorization_guard lines 149-158 complete the exact tuple and identity comparisons before main line 637 can enter validate_manifest. validate_manifest lines 264-280 binds canonical path and byte hash before manifest JSON parsing. runtime_lifecycle begins at line 570 and contains the first numpy/torch imports, after main line 642.",
+    "r3_decision": "The guard is semantically correct and dominant. The blocker does not justify weakening or redesigning authorization_proof, the guard, manifest validation, asset validation, runner behavior, or any scientific predicate."
+  },
+  "bounded_exact_resume": {
+    "attempt_limit": 1,
+    "automatic_retry": false,
+    "resume_existing_working_diff": true,
+    "semantic_correction_count": 1,
+    "correction_kind": "SOURCE_REPRESENTATION_ONLY_SEMANTIC_EQUIVALENT_LITERALIZATION",
+    "entrypoint_path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "reviewed_entrypoint_sha256": "b0e0f02592e8dba1bd1baa20ac9d75e468fede4ac2d4ebffc1b03a24160287f7",
+    "exact_old_source": "expected = {\"route_id\": ROUTE_ID, \"state\": \"PLANNED\", \"decision\": \"V4A_A1X_S0_AUTHORIZED_INITIAL_ONLY\", \"authorizes\": \"A1X_S0_ONLY\"}",
+    "exact_new_source": "expected = {\"route_id\": \"haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715\", \"state\": \"PLANNED\", \"decision\": \"V4A_A1X_S0_AUTHORIZED_INITIAL_ONLY\", \"authorizes\": \"A1X_S0_ONLY\"}",
+    "required_effect": "ast.literal_eval must recover the exact four-field future initial tuple, while authorization_guard runtime comparisons remain byte-for-value identical.",
+    "negative_control_preservation": "NEG_CONTRACT_AUTH_01 must remain unchanged. Its single mutation of state PLANNED to PLANNED_WEAK must independently emit exactly INITIAL_AUTHORIZATION_TUPLE_OR_DOMINANCE_INVALID, and the aggregate fixture must retain that code with all other fifteen exact codes.",
+    "validator_predicate_change_authorized": false,
+    "mechanical_validator_provenance_rebinding": {
+      "authorized": true,
+      "reason": "The existing source-only validator requires git HEAD to equal IMPLEMENTATION_PARENT. Committing this authorization necessarily advances HEAD, so one exact constant-only provenance rebind is required before the unchanged validator sequence can run.",
+      "path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "reviewed_sha256": "7b9ed48b6c9e48fe34449975564b51595ee868d7f8c1633685813f8ae2e48c55",
+      "exact_change": "Replace only IMPLEMENTATION_PARENT = 'ea85e76930a72fbde1c9d3e81c91cfe56caa858d' with the full commit SHA that contains this exact-resume authorization JSON.",
+      "not_a_predicate_correction": true,
+      "prohibited": "Do not change AUTHORIZATION_PATH, authorization_proof, any contract or semantic predicate, MUTATIONS, NEGATIVE_IDS, POSITIVE_IDS, expected codes, aggregate construction, evidence schema, or validator command."
+    }
+  },
+  "exact_allowed_implementation_paths": [
+    {
+      "path": "experience_docx/route_operations.json",
+      "action": "PRESERVE_CURRENT_BYTES_AND_COMMIT_AS_PART_OF_THE_ORIGINAL_SIX_PATH_REPAIR"
+    },
+    {
+      "path": "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "action": "PRESERVE_CURRENT_BYTES_AND_COMMIT_AS_PART_OF_THE_ORIGINAL_SIX_PATH_REPAIR"
+    },
+    {
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "action": "MODIFY_ONLY_THE_EXACT_AUTHORIZATION_GUARD_ROUTE_ID_LITERAL_SUBSTITUTION"
+    },
+    {
+      "path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "action": "MODIFY_ONLY_THE_EXACT_IMPLEMENTATION_PARENT_COMMIT_PROVENANCE_REBIND"
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_static_validation.json",
+      "action": "CREATE_ONLY_FROM_THE_ALREADY_AUTHORIZED_SOURCE_ONLY_VALIDATOR_AFTER_ALL_PREDICATES_AND_CONTROLS_PASS"
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_closeout.json",
+      "action": "REPLACE_WITH_SUCCESS_ONLY_AFTER_ALL_STATIC_GATES_PASS_OR_REPLACE_ONCE_WITH_A_NEW_TYPED_FAILURE"
+    }
+  ],
+  "required_validation_sequence": [
+    ["wsl.exe", "-d", "Ubuntu-22.04", "--", "/usr/bin/python3", "-m", "py_compile", "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py"],
+    ["wsl.exe", "-d", "Ubuntu-22.04", "--", "/usr/bin/python3", "-m", "py_compile", "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/validate_haze4k_v4a_a1x_route.py"],
+    ["wsl.exe", "-d", "Ubuntu-22.04", "--", "/usr/bin/python3", "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/validate_haze4k_v4a_a1x_route.py", "--repo", "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715", "--output-json", "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_static_validation.json"],
+    ["wsl.exe", "-d", "Ubuntu-22.04", "--", "/usr/bin/git", "-C", "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715", "diff", "--check", "--", "experience_docx/route_operations.json", "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh", "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py", "experience_docx/tools/validate_haze4k_v4a_a1x_route.py", "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_static_validation.json", "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_semantic_preserving_runtime_asset_repair_closeout.json"],
+    ["wsl.exe", "-d", "Ubuntu-22.04", "--", "/usr/bin/git", "-C", "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715", "diff", "--name-only", "--"]
+  ],
+  "required_success_closeout_tuple": {
+    "state": "R3_SOURCE_ONLY_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_COMPLETE",
+    "decision": "V4A_A1X_SEMANTICS_AND_RUNTIME_ASSET_TRANSPORT_COMPLETE_AWAIT_FRESH_R3_REVIEW",
+    "authorizes": "R3_S0_INITIAL_AUTHORIZATION_REVIEW_ONLY",
+    "failure_class": null
+  },
+  "required_failure_closeout_tuple": {
+    "state": "R3_SOURCE_ONLY_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_BLOCKED",
+    "decision": "V4A_A1X_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_FAILED_STOP",
+    "authorizes": "NONE",
+    "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+    "next_boundary": "FRESH_R3_FRONTIER_REVIEW_REQUIRED"
+  },
+  "explicit_no_runtime_no_data_boundaries": {
+    "cloud_transport": false,
+    "ssh_calls": false,
+    "convir_ops_calls": false,
+    "runner_execution": false,
+    "entrypoint_execution": false,
+    "entrypoint_import": false,
+    "runtime_manifest_open": false,
+    "asset_manifest_materialization": false,
+    "filesystem_enumeration": false,
+    "dataset_open": false,
+    "tensor_open": false,
+    "checkpoint_open": false,
+    "model_state_open": false,
+    "operator_artifact_open": false,
+    "a1r_data_access": false,
+    "a1x_data_access": false,
+    "confirmation_data_access": false,
+    "initial_authorization_created": false,
+    "s0_preflight_or_run": false,
+    "s0_authorized": false,
+    "formal_authorized": false,
+    "training": false,
+    "evaluation": false,
+    "inference": false,
+    "candidate_selection": false,
+    "promotion": false,
+    "canary": false,
+    "locked_test": false,
+    "push": false
+  },
+  "forbidden_changes": [
+    "ANY_SOURCE_CHANGE_OTHER_THAN_THE_EXACT_ROUTE_ID_LITERAL_SUBSTITUTION",
+    "ANY_VALIDATOR_CHANGE_OTHER_THAN_THE_EXACT_IMPLEMENTATION_PARENT_SHA_REBIND",
+    "ANY_AUTHORIZATION_PROOF_PREDICATE_OR_NEGATIVE_CONTROL_WEAKENING",
+    "ANY_CHANGE_TO_ROUTE_OPERATIONS_RUNNER_ASSET_CONTRACT_SEMANTIC_PREDICATES_OR_RUNNER_PREDICATES",
+    "ANY_CHANGE_TO_MODEL_ARCHITECTURE_DATA_SPLIT_METRIC_LOSS_OPTIMIZER_SEED_UPDATE_COUNT_GATE_THRESHOLD_OR_TERMINAL_TUPLE",
+    "ANY_FILE_OUTSIDE_THE_ORIGINAL_SIX_IMPLEMENTATION_PATHS",
+    "INITIAL_AUTHORIZATION_CREATION",
+    "S0_OR_FORMAL_AUTHORIZATION",
+    "RUNNER_ENTRYPOINT_TRAINING_EVALUATION_INFERENCE_SMOKE_DEMO_OR_S0_EXECUTION",
+    "RUNTIME_MANIFEST_ASSET_DATA_TENSOR_CHECKPOINT_STATE_OR_OPERATOR_ACCESS",
+    "SSH_CLOUD_CONVIR_OPS_CANARY_LOCKED_TEST_OR_PUSH",
+    "AUTOMATIC_RETRY"
+  ],
+  "commit_contract": {
+    "this_r3_review_commit": "Commit only this authorization JSON with a single-token subject. Preserve the dirty four-file repair and failure closeout unstaged.",
+    "future_exact_resume_commit": "After the exact source substitution, exact validator parent rebind, and successful unchanged static sequence, commit exactly the original six implementation paths and stop for fresh R3 review. Do not include this authorization path again or any unrelated file."
+  },
+  "retry_policy": "NO_AUTOMATIC_RETRY. This document authorizes exactly one explicit local source-only exact-resume attempt.",
+  "failure_boundary": "On any additional predicate failure, nonexact negative control, aggregate regression, semantic ambiguity, hash mismatch, need for another source or validator correction, extra-file need, failed compile/static command, runtime/data/checkpoint/asset/remote requirement, or commit failure, write the typed failure closeout once if possible and stop. Do not retry, weaken proof, create an initial authorization, authorize S0/formal, or push.",
+  "success_conditions": [
+    "authorization_proof_records_exact_tuple_false_and_the_other_four_components_true_with_precise_ast_causes",
+    "independent_guard_review_confirms_exact_future_initial_tuple_and_manifest_identity_dominance_before_protected_opens",
+    "exactly_one_semantic_equivalent_source_correction_is_authorized",
+    "only_the_exact_validator_parent_sha_provenance_rebind_is_additionally_allowed",
+    "all_semantic_asset_runner_positive_and_negative_predicates_remain_frozen",
+    "the_existing_compile_static_sequence_and_original_six_implementation_paths_are_exact",
+    "all_no_runtime_no_data_no_stage_no_remote_boundaries_are_explicit",
+    "authorization_is_committed_locally_without_source_closeout_or_unrelated_paths"
+  ]
+}
