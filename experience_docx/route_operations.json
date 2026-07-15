@@ -13,6 +13,90 @@
       "output_id": "v4a-a1x-s0-r1", "closeout_filename": "v4a_a1x_s0_closeout.json", "collision_policy": "must_not_exist", "authorization_relpath": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/initial_authorization.json",
       "prior_terminal_tuple": {"state": "PLANNED", "decision": "V4A_A1X_S0_AUTHORIZED_INITIAL_ONLY", "authorizes": "A1X_S0_ONLY"},
       "allowed_terminal_tuples": [{"state":"COMPLETED_GATE_PASS","decision":"V4A_A1X_S0_PASS_AUTHORIZE_FORMAL_ONLY","authorizes":"A1X_FORMAL_CONFIRMATION_ONLY"},{"state":"COMPLETED_GATE_FAIL","decision":"V4A_A1X_S0_ENGINEERING_GATE_FAIL_STOP","authorizes":"NONE"},{"state":"COMPLETED_GATE_INCONCLUSIVE","decision":"V4A_A1X_S0_ENGINEERING_GATE_INCONCLUSIVE_STOP","authorizes":"NONE"}],
+    "runtime_asset_contract": {
+      "contract_id": "A1X_S0_RUNTIME_ASSET_TRANSPORT_V1",
+      "manifest_schema_version": 1,
+      "stage": "s0",
+      "evidence_role": "engineering_debug",
+      "immutability_rule": "A future initial authorization must bind both the exact absolute manifest path and the SHA-256 of its bytes. Neither the runner nor entrypoint may discover, regenerate, rewrite, merge, substitute, or repair a manifest or asset. A path match without a content match, or a content match at an unbound path, fails closed.",
+      "future_manifest_identity_fields": ["schema_version", "contract_id", "route_id", "stage", "evidence_role", "locked_test_policy", "asset_set_id", "asset_root", "source_chain", "checkpoint_and_state_assets", "operator_assets", "native_shape_pairs", "first32_names", "record_order", "records"],
+      "source_chain": {
+        "a1x_anchor": {"branch": "github/codex/haze4k-official-arch-anchor", "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"},
+        "a1r_smoke": {"route_id": "haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714", "route_commit": "d79fdff7f2bd923d84969ac242f214d6736b2d7f", "run_id": "v4a_a1r_s0_smoke_r2", "source_manifest_runtime_path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_s0_smoke_r2/v4a_a1r_source_manifest.json", "source_manifest_github_ref": "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_smoke_source_manifest.json", "source_manifest_git_blob_sha1": "c477612a456df86f465ce305436022305fb64118", "source_manifest_sha256": "900dcb1dfb4e2e25ff283e7753b8288b1df0a23cbdd66547131b8a1045dfe474"},
+        "a1c_exact_half": {"route_id": "haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715", "route_commit": "b62dd75ea30123e2fca94ecb1d4a57c02dbc8f64", "run_id": "v4a-a1c-s0-r1", "source_manifest_runtime_path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a-a1c-s0-r1/v4a_a1c_source_manifest.json", "source_manifest_github_ref": "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a_a1c_s0_source_manifest.json", "source_manifest_git_blob_sha1": "f39c7fb6f696420223f5e273f418beeaa5d9b711", "source_manifest_sha256": "6cad07413599d5ad163d3cbe9cf39f09efa2f7de249ffeca0db92b0ad5258284"},
+        "parent_source_checkouts": [{"role": "A1F_PARENT", "commit": "d4f8d0936869c822ae19b5c21172efc2eb973dd8"}, {"role": "V3Z_SOURCE", "commit": "3caddcc5265732e5be77e3404119a28cb28c11e6"}, {"role": "V3S_SOURCE", "commit": "2860f580bb25cc75ec9ade56378af6d77f5c8d8b"}, {"role": "V3P_SOURCE", "commit": "555fd008e29f02128564f2fad41d0095ee44f5ea"}],
+        "required_parent_evidence_hashes": {"a1f_r3_review_sha256": "a8b9064308710ac5fc890b9de0158c1faddb4d51f7d298d4991e9ddfb3616e1d", "a0r_trace_manifest_sha256": "370f3f46b949391a8200c50b893561d78608adfef3c59f9ba2f76dd84a155780"}
+      },
+      "checkpoint_and_state_assets": {
+        "official_a0_checkpoint": {"path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl", "bytes": 34797069, "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"},
+        "control_checkpoint": {"path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-fam2modres-control-e5frome1-seed3407-20260710/Training-Results/Final.pkl", "bytes": 34798010, "sha256": "08207119a5cf9e5c439dd2cb81b99029ade1861f2739d31e75f2f9f78d57c0f2"},
+        "a0r_final_model_state": {"path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/a0r_r2/r1/trace/states/epoch16_update512_final.pt", "sha256": "ed0832f220996af3fd8e617b7d04d643dc6ca052a3603adee99d59e78fd1e125"},
+        "density_artifact": {"path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2-chd-rm-density-need-calibration/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2_density_need_calibration_20260708/artifacts/d3_density_only_head.pt", "bytes": 59658, "sha256": "1ffce13dccb41d96a47c2b5275f87bf2fdb73c226a190cfa240e5c71c1ec326f"},
+        "d7c_artifact": {"path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2d-chd-rm-need-spatial-hard-negative/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/d7c_full/artifacts/d7c_mc_topk_hn_ordinal_head.pt", "bytes": 288048, "sha256": "09f449232024395cf64db15a2a0efa0f12d3e0e049e1da3d67229a3dc5729361"},
+        "fresh_split_manifest": {"path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-counterfactual-advantage-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/fresh_route_confirm_split_manifest.json", "bytes": 66646, "sha256": "c8c00fefc965ded3389b6311fc67ea521e1f3174f27793688544abe09dc420e7"},
+        "v3j_action_bounds": {"path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-counterfactual-advantage-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/bounded_action_space_bounds.json", "bytes": 374, "sha256": "485ea12ff14c33b87105a50b6d118a9937c7e7f1b113062fe03d91eef3c9cc21"},
+        "reference_oof_rows": {"path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-counterfactual-advantage-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/cloud_only_raw_common_action/v3l_a1_oracle_policy_oof_rows_cloud_only.csv", "bytes": 2671809, "sha256": "b4a10184fab77b0045440dc88530d000a892acf2105a6295d5ad8a488c67ecb1"}
+      },
+      "operator_assets": {
+        "manifest": {"path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/v3l_a0_canonical_operator_artifact_manifest.json", "bytes": 1021, "git_blob_sha1": "43e9400c5a0bb5f4eb6195a610e11e80872c0fc8", "sha256": "1d2ffa499128ad08a272d67c5439583900afe8ef87fb3256193ad5fe21c3af84"},
+        "ordered_operators": ["D_ref", "D_rep"],
+        "D_ref": {"seed": 3407, "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/cloud_only_artifacts/v3l_a0_D_ref_context_seed3407.pt", "bytes": 335232, "sha256": "3c5ed807cc0cb25170720fe2b8f34cbe81b7bbc3857f7a3f1423f73d77cd6692"},
+        "D_rep": {"seed": 3408, "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/cloud_only_artifacts/v3l_a0_D_rep_context_seed3408.pt", "bytes": 335104, "sha256": "3843471c6f4c130495ee6f6d62193c4235d9c89061621288ecb8d7455944ae62"},
+        "distinctness_rule": "D_ref and D_rep must retain their exact distinct path, content SHA-256, seed, and producer branch. A label-only branch, shared operator artifact, fallback operator, or swapped mapping is forbidden. Per-record tensors may numerically coincide, but their explicit operator provenance and record paths may not alias."
+      },
+      "native_shape_pairs": [{"native_image_hw": [400, 400], "exact_a1r_context_hw": [208, 208]}, {"native_image_hw": [480, 640], "exact_a1r_context_hw": [240, 320]}],
+      "exact_half_transport": {"cell": "exact_half", "float_tensor_rule": "torch.nn.functional.interpolate(native_tensor, size=exact_a1r_context_hw, mode='bilinear', align_corners=False, antialias=False)", "support_rule": "torch.nn.functional.interpolate(native_support_float, size=exact_a1r_context_hw, mode='bilinear', align_corners=False, antialias=False) > 0.0", "forbidden": ["resize_to_any_other_shape", "crop", "padding", "antialias_true", "nearest_support_substitution", "missing_shape_substitution"]},
+      "delta_bound": [0.00919640064239502, 0.009401530027389526, 0.009474039077758789],
+      "first32_names": ["1594_0.71_0.5.png", "1595_0.99_1.84.png", "1597_0.69_1.45.png", "1598_0.67_1.4.png", "159_0.6_1.46.png", "1600_0.78_1.77.png", "1603_0.54_0.74.png", "1607_0.91_0.88.png", "160_0.63_1.04.png", "1613_0.56_1.31.png", "1614_0.81_0.78.png", "1615_0.91_1.25.png", "1616_0.76_0.88.png", "1617_0.56_1.97.png", "1619_0.94_1.08.png", "1622_0.98_1.75.png", "1623_0.78_1.81.png", "1627_0.94_0.52.png", "1628_0.8_1.49.png", "1633_0.73_1.49.png", "1634_0.75_1.81.png", "1639_0.69_1.12.png", "1640_0.53_0.59.png", "1646_0.55_1.55.png", "1649_0.8_0.86.png", "1650_0.76_1.07.png", "1652_0.62_1.35.png", "1653_0.9_1.01.png", "1654_0.66_1.9.png", "1656_0.64_1.45.png", "1658_0.96_1.72.png", "1660_0.83_0.67.png"],
+      "first32_identity_rule": "The manifest first32_names array must equal this array byte-for-value and order-for-order, have count 32 and uniqueness 32, and equal A1R smoke source manifest fresh_names[0:32]. No sort, enumeration, glob, missing-name skip, replacement, or extra name is permitted.",
+      "record_contract": {
+        "record_count": 64,
+        "key_set": "exact Cartesian product of first32_names and ordered_operators",
+        "record_order": "native_image_hw ascending by the frozen pair order, then name lexicographically, then operator in [D_ref,D_rep] order",
+        "required_record_fields": ["name", "operator", "native_image_hw", "exact_a1r_context_hw", "hazy_rgb_native", "frozen_base_rgb_native", "old_0p125_rgb_native", "old_0p25_rgb_native", "current_delta_u_native", "target_delta_u_native", "measured_active_support_native"],
+        "tensor_descriptor_fields": ["path", "sha256", "bytes", "encoding", "dtype", "shape", "producer_role"],
+        "tensor_encoding": "npy_allow_pickle_false",
+        "float_tensor_contract": {"dtype": "float32", "shape": "[1,3,H,W]", "finite": true},
+        "support_tensor_contract": {"dtype": "bool", "shape": "[1,1,H,W]", "finite": true, "nonempty": true},
+        "per_name_shared_fields": ["hazy_rgb_native", "frozen_base_rgb_native"],
+        "per_name_shared_rule": "For one name, D_ref and D_rep records must use identical path, SHA-256, bytes, dtype, shape, and producer_role for both per-name shared fields.",
+        "per_operator_fields": ["old_0p125_rgb_native", "old_0p25_rgb_native", "current_delta_u_native", "target_delta_u_native", "measured_active_support_native"],
+        "per_operator_rule": "Each per-operator descriptor is addressed only by its exact (name,operator) key. Paths must be explicit and operator-specific; basename conventions, root-plus-name inference, cross-operator fallback, and another record's descriptor are forbidden.",
+        "shape_rule": "Every descriptor native shape must match its record native_image_hw. The record exact_a1r_context_hw must be the one frozen pair for that native shape. Both native pairs must occur, and no third pair is accepted.",
+        "batch_rule": "Build batches only from the 64 manifest records, grouped by exact native shape, then sorted by name and operator, batch size at most four. No filesystem query may contribute a name or record.",
+        "shuffle_rule": "For A1X_ACCESS_SHUFFLED only, map target_delta_u_native within each exact (operator,native_image_hw) block by sorted-name cyclic plus one. All five forward inputs, measured support, and current endpoint remain on the source name/operator record. Every block must have at least two names and no self-pair."
+      },
+      "semantic_roles": {
+        "hazy_rgb_native": {"scope": "per_name_shared", "source": "A1R frozen_output_sample sample['hazy']", "forward_input_order": 0},
+        "frozen_base_rgb_native": {"scope": "per_name_shared", "source": "A1R frozen_output_sample sample['base'] from the pinned official/control/model-state chain", "forward_input_order": 1},
+        "old_0p125_rgb_native": {"scope": "per_name_operator", "source": "clamp(frozen_base_rgb_native + 0.125 * frozen_operator_step(name,operator), 0.0, 1.0)", "forward_input_order": 2},
+        "old_0p25_rgb_native": {"scope": "per_name_operator", "source": "clamp(frozen_base_rgb_native + 0.25 * frozen_operator_step(name,operator), 0.0, 1.0)", "forward_input_order": 3},
+        "current_delta_u_native": {"scope": "per_name_operator", "source": "pinned V3W.delta_for('output', frozen_current_model, frozen_output_sample, operator)", "forward_input_order": 4, "endpoint_role": "zero_initialized_baseline_endpoint"},
+        "target_delta_u_native": {"scope": "per_name_operator", "source": "support * clamp_channelwise(support * clamp_channelwise(4.0 * (clean_label - frozen_base_rgb_native), action_bound) - frozen_operator_step(name,operator), delta_bound)", "forward_input": false, "training_role": "privileged_endpoint_target_only"},
+        "measured_active_support_native": {"scope": "per_name_operator", "source": "measured frozen sample support for the exact name/operator, converted to bool by support > 0.0", "forward_input": false, "training_role": "mask and measured active-element denominator", "forbidden_sources": ["target_delta_u_native", "torch.ones_like", "constant_one", "full_tensor_mean", "fallback_support"]},
+        "head_input": "Concatenate the D0 exact-half transports in forward_input_order to exactly [N,15,h,w]. Clean label, target, support, safe-grid winner, action amplitude, and outcome must not reach the head.",
+        "predicted_endpoint": "clamp_channelwise(D0(current_delta_u_native) + D0(measured_active_support_native) * delta_bound * A1X_ACCESS_Head(head_input), delta_bound)",
+        "loss": "sum(((predicted_endpoint - D0(target_delta_u_native)) ** 2) * active_support) / measured_active_support_element_count",
+        "zero_noop": "Before optimizer construction or mutation, the maximum absolute difference between predicted_endpoint and D0(current_delta_u_native) must equal 0.0 for both cells and both operators/native-shape coverage."
+      },
+      "path_and_content_validation": {
+        "manifest_path": "Compare the CLI absolute path to the path pinned inside the already-validated initial authorization before opening the manifest.",
+        "manifest_content": "Stream SHA-256 of the exact manifest bytes and compare to both CLI and authorization SHA-256 before JSON parsing.",
+        "source_manifests": "Require the exact A1R and A1C runtime paths and SHA-256 values above, then require their route_id, route_commit, run_id, shape, name, state, checkpoint, model-state, and operator fields to match this contract.",
+        "parent_checkouts": "Use explicit roots supplied by the frozen manifest; require absolute canonical paths, clean Git worktrees, and exact commits above before importing any parent source module.",
+        "static_assets": "For every checkpoint, state, operator, and parent evidence asset, require exact absolute canonical path, regular non-symlink file, byte count when frozen above, and streaming SHA-256 before load.",
+        "record_assets": "For every descriptor, require path under the manifest asset_root, exact absolute canonical non-symlink regular file, exact bytes and SHA-256, npy loading with allow_pickle=False, exact dtype and shape, finite float content, and nonempty bool support before tensor use.",
+        "no_enumeration": "Prohibit glob, rglob, iterdir, listdir, scandir, walk, recursive discovery, filename parsing, and directory-derived membership. Only the literal authorization path, manifest paths, and 64 explicit record descriptors may be opened.",
+        "no_substitution": "Missing, unreadable, duplicate-key, extra-key, extra-record, wrong-order, wrong-shape, wrong-path, wrong-byte-count, wrong-hash, wrong-dtype, nonfinite, empty-support, operator-alias, source-identity, or locked-policy mismatch is terminal. Do not regenerate, resize to a substitute shape, skip, relabel, fall back, or continue partially."
+      },
+      "preflight_failure_tuple": {"state": "FAILED_PREFLIGHT", "decision": "V4A_A1X_S0_RUNTIME_ASSET_PREFLIGHT_FAILED_STOP", "authorizes": "NONE", "failure_class": "RESOURCE_PREFLIGHT", "runtime_started": false, "scientific_gate_evaluated": false},
+      "manifest_path_env": "A1X_RUNTIME_ASSET_MANIFEST_JSON",
+      "manifest_sha256_env": "A1X_RUNTIME_ASSET_MANIFEST_SHA256",
+      "authorization_binding_required": true,
+      "preflight_before_runtime_required": true,
+      "filesystem_enumeration": false,
+      "lifecycle_capture": {"status_phases": ["authorized", "assets_verified", "cells_initialized", "cell_progress", "cost_gate", "states_written", "terminal"], "heartbeat_atomic": true, "heartbeat_max_interval_seconds": 60, "runner_combined_stdout_stderr": true, "runner_runtime_log_required": true, "runner_pipe_status_required": true, "terminal_marker_owner": "runner_only"}
+      },
       "workspace_policy": "fresh_route", "monitor_profile": "short", "heartbeat_timeout_seconds": 300, "min_free_gpu_mib": 12000, "max_gpu_utilization_pct": 10
     }
   ]

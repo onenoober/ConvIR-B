@@ -1,0 +1,391 @@
+{
+  "aggregate_fixture_analyzed": true,
+  "aggregate_negative_codes": [
+    "RUNNER_ENTRYPOINT_CLI_ARGUMENT_SET_MISMATCH",
+    "INITIAL_AUTHORIZATION_TUPLE_OR_DOMINANCE_INVALID",
+    "S0_LIFECYCLE_UNREACHABLE_OR_INCOMPLETE",
+    "RUNTIME_ASSET_MANIFEST_IDENTITY_UNGUARDED",
+    "RUNTIME_ASSET_OPERATOR_PROVENANCE_INVALID",
+    "RUNTIME_ASSET_SUPPORT_PROVENANCE_INVALID",
+    "RUNTIME_ASSET_FIRST32_OR_ENUMERATION_INVALID",
+    "RUNTIME_ASSET_PATH_CONTENT_VALIDATION_INVALID",
+    "RUNTIME_ASSET_NATIVE_SHAPE_TRANSPORT_INVALID",
+    "TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE",
+    "FROZEN_OPERATOR_CONTRACT_IS_LABEL_ONLY",
+    "FROZEN_ACTIVE_SUPPORT_IS_REPLACED_BY_ALL_ONES",
+    "ZERO_INITIALIZATION_NOOP_GATE_IS_MEASURED_AFTER_OPTIMIZER_UPDATES",
+    "MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED",
+    "LEARNED_STATE_RETENTION_AND_PHASE_LIFECYCLE_ARE_INCOMPLETE",
+    "S0_TERMINAL_TUPLE_CANNOT_REPORT_THE_FROZEN_PASS_GATE"
+  ],
+  "authoritative_first32_equal": true,
+  "authorization_base_commit": "a17a2bbc44602ae19e16dbe21ef150d6e57387ae",
+  "authorization_sha256": "f771cd54d965331bf39eb09645e406979eb774819f83141871db45823456ca2c",
+  "canary_touched": false,
+  "checkpoint_opened": false,
+  "cloud_transport": false,
+  "corrected_source_findings": [],
+  "data_accessed": false,
+  "entrypoint_executed": false,
+  "entrypoint_imported": false,
+  "formal_authorized": false,
+  "implementation_parent_commit": "493acb91dcf5da4e9d14840f1e0cefcb14c37273",
+  "independent_negative_controls": [
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "RUNNER_ENTRYPOINT_CLI_ARGUMENT_SET_MISMATCH"
+      ],
+      "expected_code": "RUNNER_ENTRYPOINT_CLI_ARGUMENT_SET_MISMATCH",
+      "id": "NEG_CONTRACT_CLI_01",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "INITIAL_AUTHORIZATION_TUPLE_OR_DOMINANCE_INVALID"
+      ],
+      "expected_code": "INITIAL_AUTHORIZATION_TUPLE_OR_DOMINANCE_INVALID",
+      "id": "NEG_CONTRACT_AUTH_01",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "S0_LIFECYCLE_UNREACHABLE_OR_INCOMPLETE"
+      ],
+      "expected_code": "S0_LIFECYCLE_UNREACHABLE_OR_INCOMPLETE",
+      "id": "NEG_CONTRACT_LIFECYCLE_01",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "RUNTIME_ASSET_MANIFEST_IDENTITY_UNGUARDED"
+      ],
+      "expected_code": "RUNTIME_ASSET_MANIFEST_IDENTITY_UNGUARDED",
+      "id": "NEG_ASSET_MANIFEST_01",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "RUNTIME_ASSET_OPERATOR_PROVENANCE_INVALID"
+      ],
+      "expected_code": "RUNTIME_ASSET_OPERATOR_PROVENANCE_INVALID",
+      "id": "NEG_ASSET_OPERATOR_01",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "RUNTIME_ASSET_SUPPORT_PROVENANCE_INVALID"
+      ],
+      "expected_code": "RUNTIME_ASSET_SUPPORT_PROVENANCE_INVALID",
+      "id": "NEG_ASSET_SUPPORT_01",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "RUNTIME_ASSET_FIRST32_OR_ENUMERATION_INVALID"
+      ],
+      "expected_code": "RUNTIME_ASSET_FIRST32_OR_ENUMERATION_INVALID",
+      "id": "NEG_ASSET_FIRST32_01",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "RUNTIME_ASSET_PATH_CONTENT_VALIDATION_INVALID"
+      ],
+      "expected_code": "RUNTIME_ASSET_PATH_CONTENT_VALIDATION_INVALID",
+      "id": "NEG_ASSET_PATH_CONTENT_01",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "RUNTIME_ASSET_NATIVE_SHAPE_TRANSPORT_INVALID"
+      ],
+      "expected_code": "RUNTIME_ASSET_NATIVE_SHAPE_TRANSPORT_INVALID",
+      "id": "NEG_ASSET_SHAPE_01",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE"
+      ],
+      "expected_code": "TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE",
+      "id": "NEG_SEM_01",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "FROZEN_OPERATOR_CONTRACT_IS_LABEL_ONLY"
+      ],
+      "expected_code": "FROZEN_OPERATOR_CONTRACT_IS_LABEL_ONLY",
+      "id": "NEG_SEM_02",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "FROZEN_ACTIVE_SUPPORT_IS_REPLACED_BY_ALL_ONES"
+      ],
+      "expected_code": "FROZEN_ACTIVE_SUPPORT_IS_REPLACED_BY_ALL_ONES",
+      "id": "NEG_SEM_03",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "ZERO_INITIALIZATION_NOOP_GATE_IS_MEASURED_AFTER_OPTIMIZER_UPDATES"
+      ],
+      "expected_code": "ZERO_INITIALIZATION_NOOP_GATE_IS_MEASURED_AFTER_OPTIMIZER_UPDATES",
+      "id": "NEG_SEM_04",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED"
+      ],
+      "expected_code": "MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED",
+      "id": "NEG_SEM_05",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "LEARNED_STATE_RETENTION_AND_PHASE_LIFECYCLE_ARE_INCOMPLETE"
+      ],
+      "expected_code": "LEARNED_STATE_RETENTION_AND_PHASE_LIFECYCLE_ARE_INCOMPLETE",
+      "id": "NEG_SEM_06",
+      "isolated": true,
+      "target_code_executed_false": true
+    },
+    {
+      "authorizes": "NONE",
+      "detected_finding_codes": [
+        "S0_TERMINAL_TUPLE_CANNOT_REPORT_THE_FROZEN_PASS_GATE"
+      ],
+      "expected_code": "S0_TERMINAL_TUPLE_CANNOT_REPORT_THE_FROZEN_PASS_GATE",
+      "id": "NEG_SEM_07",
+      "isolated": true,
+      "target_code_executed_false": true
+    }
+  ],
+  "initial_authorization_created": false,
+  "locked_test_touched": false,
+  "positive_proofs": [
+    {
+      "details": {
+        "parser_options": [
+          "--stage",
+          "--authorization-json",
+          "--route-commit",
+          "--run-id",
+          "--run-root",
+          "--runtime-asset-manifest-json",
+          "--runtime-asset-manifest-sha256",
+          "--status-json",
+          "--heartbeat-json",
+          "--learned-state-manifest-json",
+          "--closeout-json"
+        ],
+        "runner_options": [
+          "--stage",
+          "--authorization-json",
+          "--route-commit",
+          "--run-id",
+          "--run-root",
+          "--runtime-asset-manifest-json",
+          "--runtime-asset-manifest-sha256",
+          "--status-json",
+          "--heartbeat-json",
+          "--learned-state-manifest-json",
+          "--closeout-json"
+        ],
+        "stage": "s0"
+      },
+      "id": "POS_CLI_01",
+      "passed": true
+    },
+    {
+      "details": {
+        "exact_future_initial_tuple": true,
+        "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715"
+      },
+      "id": "POS_AUTH_01",
+      "passed": true
+    },
+    {
+      "details": {
+        "guard_before_manifest_and_runtime": true,
+        "top_level_target_imports": []
+      },
+      "id": "POS_AUTH_02",
+      "passed": true
+    },
+    {
+      "details": {
+        "path_and_byte_hash_before_parse": true
+      },
+      "id": "POS_MANIFEST_01",
+      "passed": true
+    },
+    {
+      "details": {
+        "canonical_contract_projection": true,
+        "source_checkpoint_operator_pins": true
+      },
+      "id": "POS_ASSET_01",
+      "passed": true
+    },
+    {
+      "details": {
+        "first32_operator_cross_product": true,
+        "record_count": 64
+      },
+      "id": "POS_ASSET_02",
+      "passed": true
+    },
+    {
+      "details": {
+        "descriptor_fields": [
+          "path",
+          "sha256",
+          "bytes",
+          "encoding",
+          "dtype",
+          "shape",
+          "producer_role"
+        ],
+        "path_content_predicate": true
+      },
+      "id": "POS_ASSET_03",
+      "passed": true
+    },
+    {
+      "details": {
+        "per_name_shared_and_operator_distinct": true
+      },
+      "id": "POS_ASSET_04",
+      "passed": true
+    },
+    {
+      "details": {
+        "committed_equal": true,
+        "first32_count": 32
+      },
+      "id": "POS_DATA_01",
+      "passed": true
+    },
+    {
+      "details": {
+        "target_only_cyclic_shuffle": true
+      },
+      "id": "POS_DATA_02",
+      "passed": true
+    },
+    {
+      "details": {
+        "predicate": true
+      },
+      "id": "POS_SEM_01",
+      "passed": true
+    },
+    {
+      "details": {
+        "predicate": true
+      },
+      "id": "POS_SEM_02",
+      "passed": true
+    },
+    {
+      "details": {
+        "predicate": true
+      },
+      "id": "POS_SEM_03",
+      "passed": true
+    },
+    {
+      "details": {
+        "predicate": true
+      },
+      "id": "POS_SEM_04",
+      "passed": true
+    },
+    {
+      "details": {
+        "predicate": true
+      },
+      "id": "POS_SEM_05",
+      "passed": true
+    },
+    {
+      "details": {
+        "predicate": true
+      },
+      "id": "POS_SEM_06",
+      "passed": true
+    },
+    {
+      "details": {
+        "predicate": true
+      },
+      "id": "POS_SEM_07",
+      "passed": true
+    },
+    {
+      "details": {
+        "combined_capture_pipe_status_closeout_markers": true
+      },
+      "id": "POS_RUNNER_01",
+      "passed": true
+    },
+    {
+      "details": {
+        "frozen": true,
+        "hashes": {
+          "Dehazing/ITS/models/A1XAccess.py": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+          "design_handoff": "630b81edb07fd6a4f4243c529998e5c97fbeb834926d3fd9cde5ce26bca6340a",
+          "route_card": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da"
+        },
+        "semantic_base_commit": "53e28f9672495f2291d08b1f02567329fa66e7b1"
+      },
+      "id": "POS_FROZEN_01",
+      "passed": true
+    }
+  ],
+  "post_repair_hashes": {
+    "experience_docx/route_operations.json": "077620a2326d10a3206a86b9f9c639d3ccdefc4a089ca4ba293423e7e4f38a8a",
+    "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": "0c1722d9ca1b08a83e23d29a1f92f6db67cb65113ed9ace021e4fb88b0c9b026",
+    "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh": "cc7a826ee9ef25f66148516875fd5065fd49e8a65537c774b25d6f6b5b0562fc",
+    "experience_docx/tools/validate_haze4k_v4a_a1x_route.py": "b5751e32e05c301c9580af7b36eb9dee77fc1610979913b2549b0d98087728b0"
+  },
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "runner_executed": false,
+  "runtime_manifest_opened": false,
+  "runtime_started": false,
+  "s0_authorized": false,
+  "schema_version": 2,
+  "validator": "A1X_S0_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_STATIC_VALIDATOR_OK"
+}
