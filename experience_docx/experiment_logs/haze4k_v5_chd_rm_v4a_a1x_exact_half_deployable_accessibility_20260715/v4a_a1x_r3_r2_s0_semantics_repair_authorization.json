@@ -1,0 +1,292 @@
+{
+  "schema_version": 2,
+  "authorization_type": "R3_BOUNDED_R2_S0_SEMANTICS_REPAIR_AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "authorization_base_commit": "a9283820e0a73ad376fd00e62b5b1847ff66456f",
+  "reviewed_blocker": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_s0_final_authorization_review_237a97b_blocker.json",
+    "commit": "a9283820e0a73ad376fd00e62b5b1847ff66456f",
+    "git_blob_sha1": "aa52374e9fbb69e5efd37aad15e625fe4b8f19f1",
+    "sha256": "6eed074eb50ec22a746623131efecfe473841239cf55d3a82b1fe4c7b1efada1",
+    "state": "R3_S0_FINAL_AUTHORIZATION_REVIEW_COMPLETE_BLOCKED",
+    "decision": "V4A_A1X_S0_AUTHORIZATION_BLOCKED_UNRESOLVED_RUNNER_SEMANTICS_AND_VALIDATOR_FALSE_NEGATIVES",
+    "authorizes": "NONE",
+    "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+    "blocking_finding_count": 8
+  },
+  "route_identity": "CONTINUATION_REPAIR_OF_EXISTING_PLANNED_ROUTE",
+  "amendment_review": {
+    "outcome": "EXACT_SEVEN_SEMANTIC_CORRECTIONS_AUTHORIZABLE_AS_BOUNDED_R2_ENGINEERING_WITHOUT_SCIENTIFIC_CONTRACT_CHANGE",
+    "scientific_contract_changed": false,
+    "finding_set_is_exact_and_closed": true,
+    "rationale": "The committed blocker establishes seven remaining runner-semantic defects plus inadequate static proof. Each correction below implements an already frozen S0 contract and may be reviewed through source-only semantic validation. No data, split, model, input, target, optimizer, loss, seed, update, metric, threshold, gate, formal, canary, or locked-test field changes.",
+    "preserves": [
+      "EXACT_ALREADY_CONSUMED_A1R_FIRST32_IDENTITY_ORDER_AND_ENGINEERING_DEBUG_ROLE",
+      "S0_ONLY_SCOPE_AND_OPERATOR_NATIVE_SHAPE_BLOCKING",
+      "OFFICIAL_FROZEN_CONVIR_MODEL_AND_UNCHANGED_A1X_ACCESS_HEAD_ARCHITECTURE",
+      "FIVE_DEPLOYABLE_INPUTS_TARGET_AND_FORBIDDEN_INPUTS",
+      "ADAMW_ACTIVE_SUPPORT_LOSS_SEED_AND_EXACT_TWO_UPDATE_BUDGET",
+      "STRUCTURAL_COST_THRESHOLDS_GATE_AND_THREE_ALLOWED_TERMINAL_TUPLES",
+      "FORMAL_CANARY_AND_LOCKED_TEST_BLOCKS"
+    ]
+  },
+  "state": "R3_R2_S0_SEMANTICS_REPAIR_AUTHORIZATION_COMPLETE",
+  "decision": "V4A_A1X_BOUNDED_R2_S0_SEMANTICS_REPAIR_AUTHORIZED",
+  "authorizes": "R2_LOCAL_S0_SEMANTICS_REPAIR_ONLY",
+  "task_class": "R2_ENGINEERING_CONTROL",
+  "required_role": "balanced",
+  "effort": "medium",
+  "authorization_scope": {
+    "purpose": "Correct exactly seven frozen S0 runner-semantic defects and replace the validator false negatives with source-only semantic coverage and one isolated negative control per defect.",
+    "workspace": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715",
+    "transport_contract": "local_only",
+    "local_route_branch_commit": true,
+    "push_or_remote_verification": false,
+    "runtime_execution": false,
+    "target_code_execution": false,
+    "target_code_import": false,
+    "runner_execution": false,
+    "cloud_transport": false,
+    "data_or_checkpoint_access": false,
+    "initial_stage_authorization": false,
+    "s0_authorization": false,
+    "formal_authorization": false,
+    "scientific_decision": false
+  },
+  "reviewed_evidence": [
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:AGENTS.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/README.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_AGENT_COST_ROUTING_PROTOCOL.md",
+    "github:a9283820e0a73ad376fd00e62b5b1847ff66456f:experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md",
+    "github:a9283820e0a73ad376fd00e62b5b1847ff66456f:experience_docx/route_operations.json",
+    "github:a9283820e0a73ad376fd00e62b5b1847ff66456f:Dehazing/ITS/models/A1XAccess.py",
+    "github:a9283820e0a73ad376fd00e62b5b1847ff66456f:experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "github:a9283820e0a73ad376fd00e62b5b1847ff66456f:experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "github:a9283820e0a73ad376fd00e62b5b1847ff66456f:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_s0_final_authorization_review_237a97b_blocker.json"
+  ],
+  "exact_allowed_files": [
+    {
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "action": "MODIFY",
+      "purpose": "Implement only the seven exact semantic corrections. Formal mode and every data, runtime, cloud, canary, and locked-test continuation remain blocked."
+    },
+    {
+      "path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "action": "MODIFY",
+      "purpose": "Add source-only semantic coverage, authoritative first32 equality, a corrected-source positive control, and seven isolated negative controls without importing or executing target code."
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_semantics_repair_static_validation.json",
+      "action": "CREATE",
+      "purpose": "Record JSON/syntax/source-semantic checks, seven isolated negative-control results, source hashes, and false runtime/data/cloud/formal/canary/locked flags."
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_semantics_repair_closeout.json",
+      "action": "CREATE",
+      "purpose": "Close the bounded R2 repair with the exact repaired finding set, hashes, proof records, prohibited-scope confirmations, and an R3-review-only next boundary."
+    }
+  ],
+  "exact_seven_semantic_repairs": [
+    {
+      "code": "TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE",
+      "required_correction": "Construct independent complete model/head state and an independent AdamW optimizer for A1X_ACCESS_TRUE and A1X_ACCESS_SHUFFLED. Both cells must start from byte-identical frozen official-model state and identically initialized pre-update A1X head state under seed 3407, while sharing no mutable parameter, buffer, optimizer object, optimizer state, gradient, or update counter. The shuffled cell must not inherit any true-cell update.",
+      "required_semantic_proof": "AST and def-use analysis proves two independently constructed cell state bundles, disjoint mutable object identities, identical pre-update initialization provenance, separate optimizer construction, and exactly two updates in each cell.",
+      "isolated_negative_control": "NEG_SEM_01_SHARED_TRUE_SHUFFLED_MODEL_OR_OPTIMIZER"
+    },
+    {
+      "code": "FROZEN_OPERATOR_CONTRACT_IS_LABEL_ONLY",
+      "required_correction": "Make D_ref and D_rep select or compute their distinct frozen operator-specific render paths and resulting operator-specific tensors. The operator value must control concrete renderer/artifact data flow before input and target construction; duplicating one tensor path and changing only a label is forbidden. Reuse only the already frozen renderer, grids, bounds, support, and operator semantics; ambiguity must block R2 rather than create a new definition.",
+      "required_semantic_proof": "AST control/data-flow proves both frozen operator branches reach distinct renderer or artifact producers and their produced tensors flow into the corresponding batches, with a fail-closed guard against label-only identical provenance.",
+      "isolated_negative_control": "NEG_SEM_02_LABEL_ONLY_OPERATOR_DUPLICATION"
+    },
+    {
+      "code": "FROZEN_ACTIVE_SUPPORT_IS_REPLACED_BY_ALL_ONES",
+      "required_correction": "Derive active support from the existing frozen support definition or operator-specific support artifact and measure its active element count for every operator/native-shape batch. Use that measured mask on predicted-versus-target endpoint error and normalize by the measured active-support element count. all-ones, full-tensor mean, empty support, invented support, or fallback support is forbidden and must fail closed.",
+      "required_semantic_proof": "AST provenance proves the mask is produced by the frozen support path, flows into both the squared-error numerator and element-count denominator, and is guarded as finite and nonempty; it rejects torch.ones_like, equivalent constant masks, and full-tensor loss fallbacks.",
+      "isolated_negative_control": "NEG_SEM_03_ALL_ONES_OR_FULL_TENSOR_SUPPORT"
+    },
+    {
+      "code": "ZERO_INITIALIZATION_NOOP_GATE_IS_MEASURED_AFTER_OPTIMIZER_UPDATES",
+      "required_correction": "For each independent cell, measure the zero-initialized final projection no-op before optimizer construction or any backward/step mutation and before the learned-state object can be reused. On the frozen operator/native-shape inputs, record maximum endpoint discrepancy exactly 0.0 and retain the measurement separately from post-update gradient and finite-update checks.",
+      "required_semantic_proof": "AST control-flow and mutation-order analysis proves no-op measurement and its fail-closed 0.0 assertion dominate optimizer construction, backward, optimizer.step, and all parameter mutation paths for both cells.",
+      "isolated_negative_control": "NEG_SEM_04_NOOP_MEASURED_AFTER_UPDATE"
+    },
+    {
+      "code": "MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED",
+      "required_correction": "Implement the frozen cost, latency, and memory profiling contract as CUDA-only future S0 behavior on convir-4090 at both frozen native shapes. Move the matched baseline and A1X paths plus all profiling tensors to the same CUDA device/dtype/batch/shape; use CUDA synchronization around timed regions, matched warmup and repeat counts, median latency, reset peak-memory statistics before each matched measurement, and measured CUDA peak memory. CPU profiler activity, CPU timing, CUDA fallback, mixed-device comparison, constant results, and missing-shape substitution are forbidden. CUDA unavailability must write an INCONCLUSIVE engineering terminal tuple rather than run on CPU.",
+      "required_semantic_proof": "AST provenance proves explicit CUDA device guards, CUDA placement for both matched paths and probes, synchronization, warmup/repeat/median computation, peak-memory reset/read, both native-shape coverage, threshold comparison to MAC 10 percent, latency 15 percent, and memory 15 percent, and no CPU or fallback profiling branch.",
+      "isolated_negative_control": "NEG_SEM_05_CPU_OR_FALLBACK_PROFILING"
+    },
+    {
+      "code": "LEARNED_STATE_RETENTION_AND_PHASE_LIFECYCLE_ARE_INCOMPLETE",
+      "required_correction": "Write distinct retained learned-state files for the true and shuffled cells under the future run root after their exact two updates, compute SHA-256 from each written file, and write a typed manifest containing route/run identity, cell, relative and absolute state path, SHA-256, seed, update count, model/config identity, and no-resume disclosure. Record nonconstant measured setup, cache, train, eval_or_audit, summary, and closeout phase timings. Placeholder paths, null hashes, shared state files, unverified hashes, and total-only timing are forbidden.",
+      "required_semantic_proof": "AST and lifecycle data-flow prove two distinct state writes, post-write SHA-256 computation from the same paths, manifest entries for both cells, hash/path consistency guards, and independently measured required phase timings before closeout.",
+      "isolated_negative_control": "NEG_SEM_06_MISSING_DISTINCT_STATE_HASH_OR_PHASE_TIMINGS"
+    },
+    {
+      "code": "S0_TERMINAL_TUPLE_CANNOT_REPORT_THE_FROZEN_PASS_GATE",
+      "required_correction": "Make all three frozen S0 terminal tuples reachable and written through the typed closeout writer before the terminal marker: PASS only when every frozen structural and measured cost gate passes; FAIL when a completed valid measurement breaches a frozen engineering threshold or structural gate; INCONCLUSIVE when required evidence cannot be validly measured or established without a scientific gate result. No success path may force INCONCLUSIVE, and no branch may authorize anything outside its exact tuple.",
+      "required_semantic_proof": "AST control-flow proves reachable PASS, FAIL, and INCONCLUSIVE branches, each writes the exact state/decision/authorizes tuple before marker emission, each is driven by measured or fail-closed conditions, and no constant or dead branch masks a tuple.",
+      "isolated_negative_control": "NEG_SEM_07_UNREACHABLE_OR_MISWRITTEN_TERMINAL_TUPLE"
+    }
+  ],
+  "semantic_validator_contract": {
+    "target_execution_allowed": false,
+    "target_import_allowed": false,
+    "data_or_checkpoint_open_allowed": false,
+    "proof_method": "Parse Python AST and source text only. Perform control-flow, mutation-order, object-identity, and def-use checks without importing or executing the entrypoint, model, runner, loader, renderer, profiler, or dataset-facing code.",
+    "corrected_source_positive_control": "The unmodified corrected source must produce zero findings for all seven exact codes and must satisfy every required semantic proof.",
+    "authoritative_first32_guard": "The validator EXPECTED tuple must equal S0_FIRST32_NAMES and the committed authoritative fresh_names[0:32] order, including 1650_0.76_1.07.png; the three values must be compared directly rather than asserted by independent token presence.",
+    "isolated_negative_control_policy": "Create exactly seven source-only negative fixtures in memory or a temporary nontracked location. Each fixture changes exactly one repaired semantic from the corrected positive control, preserves the other six semantics, emits its one expected finding code, and cannot pass the aggregate authorization base. Do not create or read runtime, data, checkpoint, image, or cloud artifacts.",
+    "required_isolated_negative_controls": [
+      {"id": "NEG_SEM_01_SHARED_TRUE_SHUFFLED_MODEL_OR_OPTIMIZER", "expected_code": "TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE"},
+      {"id": "NEG_SEM_02_LABEL_ONLY_OPERATOR_DUPLICATION", "expected_code": "FROZEN_OPERATOR_CONTRACT_IS_LABEL_ONLY"},
+      {"id": "NEG_SEM_03_ALL_ONES_OR_FULL_TENSOR_SUPPORT", "expected_code": "FROZEN_ACTIVE_SUPPORT_IS_REPLACED_BY_ALL_ONES"},
+      {"id": "NEG_SEM_04_NOOP_MEASURED_AFTER_UPDATE", "expected_code": "ZERO_INITIALIZATION_NOOP_GATE_IS_MEASURED_AFTER_OPTIMIZER_UPDATES"},
+      {"id": "NEG_SEM_05_CPU_OR_FALLBACK_PROFILING", "expected_code": "MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED"},
+      {"id": "NEG_SEM_06_MISSING_DISTINCT_STATE_HASH_OR_PHASE_TIMINGS", "expected_code": "LEARNED_STATE_RETENTION_AND_PHASE_LIFECYCLE_ARE_INCOMPLETE"},
+      {"id": "NEG_SEM_07_UNREACHABLE_OR_MISWRITTEN_TERMINAL_TUPLE", "expected_code": "S0_TERMINAL_TUPLE_CANNOT_REPORT_THE_FROZEN_PASS_GATE"}
+    ],
+    "aggregate_negative_control": "A source-only aggregate fixture containing all seven isolated defects must report all seven expected codes and authorizes NONE.",
+    "required_static_validation_output": "A1X_S0_SEMANTICS_REPAIR_STATIC_VALIDATOR_OK"
+  },
+  "frozen_scientific_contract": {
+    "data": {
+      "scope": "EXACT_ALREADY_CONSUMED_A1R_FIRST32_NAMES_ONLY",
+      "evidence_role": "engineering_debug",
+      "selection": "authoritative fresh_names[0:32] in exact committed order",
+      "count": 32,
+      "dataset_enumeration": false,
+      "a1x_or_confirmation_access": false
+    },
+    "split": "S0_ENGINEERING_DEBUG_ONLY_WITH_DETERMINISTIC_EXACT_NATIVE_SHAPE_AND_OPERATOR_BLOCKS",
+    "model": {
+      "official_model": "UNCHANGED_FROZEN_OFFICIAL_CONVIR_MODEL_IN_EVAL_MODE",
+      "head": "UNCHANGED_A1X_ACCESS_HEAD_ARCHITECTURE_WITH_ZERO_INITIALIZED_FINAL_PROJECTION",
+      "trainable_scope": "A1X_ACCESS_HEAD_ONLY_PER_INDEPENDENT_CELL",
+      "added_parameter_limit": 300000
+    },
+    "inputs": {
+      "exact_deployable_inputs": ["D0_HAZY_RGB", "FROZEN_BASE_RGB", "OLD_0P125_RGB", "OLD_0P25_RGB", "CURRENT_DELTA_U"],
+      "concatenated_channels": 15,
+      "target": "TARGET_DELTA_U",
+      "forbidden_forward_inputs": ["CLEAN_RGB", "TARGET_DELTA_U", "SAFE_GRID_WINNER", "ACTION_AMPLITUDE", "OUTER_OUTCOME"]
+    },
+    "optimizer": {"name": "AdamW", "learning_rate": 0.0005, "weight_decay": 0.00001, "gradient_clip_norm": 0.1, "reset": "EVERY_CELL"},
+    "loss": {"name": "normalized_active_support_endpoint_mse", "weight": 1.0, "support": "FROZEN_MEASURED_ACTIVE_SUPPORT_ONLY"},
+    "seed": 3407,
+    "updates": {"cells": ["A1X_ACCESS_TRUE", "A1X_ACCESS_SHUFFLED"], "updates_per_cell": 2, "schedule": "constant"},
+    "batch_and_shuffle": {
+      "batch_policy": "deterministic_exact_native_shape_blocks_then_sorted_name_operator_order_batch_at_most_four",
+      "shuffle_policy": "within_operator_and_exact_native_shape_sorted_names_cyclic_plus_one_no_self_pair_target_only",
+      "resize_crop_padding_exclusion_substitution_augmentation": false
+    },
+    "gate": {
+      "stage": "S0",
+      "zero_init_max_endpoint_discrepancy": 0.0,
+      "mac_overhead_max_percent": 10.0,
+      "matched_median_cuda_latency_overhead_max_percent": 15.0,
+      "cuda_peak_memory_overhead_max_percent": 15.0,
+      "native_shape_coverage": "BOTH_FROZEN_NATIVE_SHAPES",
+      "allowed_terminal_tuples": [
+        {"state": "COMPLETED_GATE_PASS", "decision": "V4A_A1X_S0_PASS_AUTHORIZE_FORMAL_ONLY", "authorizes": "A1X_FORMAL_CONFIRMATION_ONLY"},
+        {"state": "COMPLETED_GATE_FAIL", "decision": "V4A_A1X_S0_ENGINEERING_GATE_FAIL_STOP", "authorizes": "NONE"},
+        {"state": "COMPLETED_GATE_INCONCLUSIVE", "decision": "V4A_A1X_S0_ENGINEERING_GATE_INCONCLUSIVE_STOP", "authorizes": "NONE"}
+      ]
+    },
+    "formal": {
+      "contract": "BYTE_FROZEN_IN_FULL_FROM_ROUTE_CARD_SHA256_c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+      "fields_preserved": "ALL_FORMAL_DATA_SPLIT_FOLD_MODEL_INPUT_TARGET_OPTIMIZER_LOSS_SEED_EPOCH_UPDATE_METRIC_THRESHOLD_GATE_TERMINAL_AND_REPORTING_FIELDS",
+      "status": "BLOCKED",
+      "formal_mode_enabled": false,
+      "authorization": "NONE"
+    },
+    "locked_test": {
+      "contract": "BYTE_FROZEN_IN_FULL_FROM_ROUTE_CARD_SHA256_c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+      "policy": "blocked",
+      "authorization": "NONE"
+    }
+  },
+  "frozen_source_hashes": {
+    "route_card_sha256": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+    "route_operations_sha256": "a5cbe7d8e0559ee75c1b53b152561f10f754befb4e289963da3c465520e3f22f",
+    "a1x_head_sha256": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+    "pre_repair_entrypoint_sha256": "75d5de3b92e2d576f5aa928ed0e2b8998b995b6fc8b6d1c66b278310f1c31480",
+    "pre_repair_validator_sha256": "b269991ff0ea4c3482a1d18d56a0f3c7ec27b068fe29b79f8a56907a7fc69736"
+  },
+  "required_r2_validations": [
+    "Parse every created or modified JSON file successfully.",
+    "Run Python syntax compilation only for the modified entrypoint and validator.",
+    "Run the source-only validator without importing or executing target code and require zero corrected-source findings, all seven isolated negative controls, the seven-code aggregate negative control, authoritative first32 equality, and A1X_S0_SEMANTICS_REPAIR_STATIC_VALIDATOR_OK.",
+    "Verify route card, route_operations.json, A1XAccess.py, runner, and every file outside exact_allowed_files are byte-identical to authorization_base_commit.",
+    "Verify the tracked diff is limited to exact_allowed_files, git diff --check passes, and no prohibited artifact type is staged.",
+    "Record exact hashes, proof records, negative-control isolation results, and false runtime/data/cloud/formal/canary/locked flags in the R2 static-validation record and closeout."
+  ],
+  "required_r2_closeout_tuple": {
+    "state": "R2_S0_SEMANTICS_REPAIR_COMPLETE",
+    "decision": "V4A_A1X_S0_RUNNER_SEMANTICS_COMPLETE_AWAIT_R3_REVIEW",
+    "authorizes": "R3_S0_FINAL_AUTHORIZATION_REVIEW_ONLY"
+  },
+  "r2_failure_tuple": {
+    "state": "R2_S0_SEMANTICS_REPAIR_BLOCKED",
+    "decision": "V4A_A1X_S0_RUNNER_SEMANTICS_REPAIR_FAILED_STOP",
+    "authorizes": "NONE"
+  },
+  "explicit_no_runtime_no_data_boundaries": {
+    "cloud_transport": false,
+    "ssh_calls": false,
+    "convir_ops_calls": false,
+    "runner_execution": false,
+    "target_code_execution": false,
+    "target_code_import": false,
+    "s0_preflight_or_run": false,
+    "s0_authorized": false,
+    "formal_authorized": false,
+    "initial_authorization_created": false,
+    "dataset_or_checkpoint_open": false,
+    "a1r_data_access": false,
+    "a1x_data_access": false,
+    "confirmation_data_access": false,
+    "training": false,
+    "evaluation": false,
+    "inference": false,
+    "candidate_selection": false,
+    "promotion": false,
+    "canary": false,
+    "locked_test": false
+  },
+  "forbidden_changes": [
+    "ANY_FILE_OUTSIDE_EXACT_ALLOWED_FILES",
+    "ROUTE_CARD_DESIGN_HANDOFF_ROUTE_OPERATIONS_RUNNER_OR_A1X_ACCESS_MODEL_CHANGE",
+    "DATA_NAME_ORDER_SPLIT_EVIDENCE_ROLE_OPERATOR_OR_NATIVE_SHAPE_CHANGE",
+    "MODEL_ARCHITECTURE_INPUT_TARGET_OPTIMIZER_LOSS_SEED_UPDATE_OR_BATCH_CHANGE",
+    "SUPPORT_RENDERER_GRID_BOUND_METRIC_THRESHOLD_GATE_OR_COST_BUDGET_CHANGE",
+    "CPU_OR_FALLBACK_RUNTIME_PROFILING",
+    "STAGE_SCOPE_EXPANSION",
+    "INITIAL_S0_AUTHORIZATION_CREATION",
+    "S0_PREFLIGHT_OR_RUN",
+    "FORMAL_OPERATION_ENABLEMENT_OR_AUTHORIZATION",
+    "RUNTIME_CLOUD_DATA_OR_CHECKPOINT_ACCESS",
+    "DIRECT_ACTION_CALIBRATION_CANDIDATE_SELECTION_POLICY_FITTING_OR_PROMOTION",
+    "A1X_CONFIRMATION_CANARY_OR_LOCKED_TEST_ACCESS"
+  ],
+  "retry_policy": "NO_AUTOMATIC_RETRY",
+  "failure_boundary": "On any ambiguity in the frozen operator or active-support implementation, required-file expansion, frozen-hash mismatch, semantic-proof or isolated-negative-control failure, target import/execution, runtime/data/cloud requirement, or need for scientific-contract change, write the R2 failure tuple with authorizes NONE if a closeout can be written without crossing the boundary, otherwise make no substitute write; stop and request fresh R3 review.",
+  "success_conditions": [
+    "repair_commit_descends_from_a9283820e0a73ad376fd00e62b5b1847ff66456f",
+    "tracked_diff_matches_exact_allowed_files_only",
+    "all_json_syntax_and_source_only_semantic_validations_pass",
+    "corrected_source_has_zero_findings_and_each_of_seven_isolated_negative_controls_reports_exactly_its_expected_code",
+    "true_and_shuffled_model_head_optimizer_and_mutable_state_are_independent_with_identical_pre_update_initialization",
+    "operator_specific_render_data_flow_and_measured_frozen_active_support_are_proven",
+    "zero_init_noop_is_measured_before_any_update_for_both_cells",
+    "future_s0_cost_latency_memory_profiling_is_cuda_only_matched_and_covers_both_native_shapes",
+    "distinct_learned_state_files_sha256_manifest_entries_and_required_phase_timings_are_proven",
+    "all_three_frozen_terminal_tuples_are_reachable_and_written_before_the_terminal_marker",
+    "repair_closeout_matches_required_r2_closeout_tuple",
+    "no_runtime_target_import_data_checkpoint_cloud_s0_formal_canary_or_locked_boundary_crossed"
+  ],
+  "next_boundary": "One qualified R2 local-only repair may modify exactly the four allowed files, run only syntax and source-static validation, and create one local route-branch commit. It must not push, import or execute target code, run the entrypoint or runner, access data or checkpoints, call SSH/cloud/convir-ops, create initial authorization, or authorize S0/formal. After the committed R2 closeout, stop for a fresh R3 S0 final authorization review."
+}
