@@ -1,0 +1,264 @@
+{
+  "schema_version": 2,
+  "record_type": "R3_BOUNDED_R2_RUNNER_ENTRYPOINT_REPAIR_AUTHORIZATION_STOP",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "reviewed_route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "reviewed_route_commit": "0395486a1c8b35a36eae657c143bf25fd3fd527a",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_identity": "CONTINUATION_REPAIR_REVIEW_OF_EXISTING_PLANNED_ROUTE",
+  "state": "R3_RUNNER_ENTRYPOINT_REPAIR_REVIEW_COMPLETE_BLOCKED",
+  "decision": "V4A_A1X_R2_RUNNER_ENTRYPOINT_REPAIR_NOT_AUTHORIZED_MISSING_FROZEN_RUNTIME_ASSET_CONTRACT",
+  "authorizes": "NONE",
+  "failure_class": "SCIENTIFIC_RUNTIME_INPUT_CONTRACT",
+  "failure_phase": "bounded_r2_repair_authorization_review",
+  "reviewed_evidence": [
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:AGENTS.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_AGENT_COST_ROUTING_PROTOCOL.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_EXPERIMENT_START_CHECKLIST.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md",
+    "github:0395486a1c8b35a36eae657c143bf25fd3fd527a:experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md",
+    "github:0395486a1c8b35a36eae657c143bf25fd3fd527a:experience_docx/route_operations.json",
+    "github:0395486a1c8b35a36eae657c143bf25fd3fd527a:experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+    "github:0395486a1c8b35a36eae657c143bf25fd3fd527a:experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "github:0395486a1c8b35a36eae657c143bf25fd3fd527a:experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "github:0395486a1c8b35a36eae657c143bf25fd3fd527a:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_completion_repair_static_validation.json",
+    "github:0395486a1c8b35a36eae657c143bf25fd3fd527a:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_completion_repair_closeout.json",
+    "github:0395486a1c8b35a36eae657c143bf25fd3fd527a:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_s0_semantics_repair_static_validation.json",
+    "github:0395486a1c8b35a36eae657c143bf25fd3fd527a:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_semantics_repair_closeout.json",
+    "github:0395486a1c8b35a36eae657c143bf25fd3fd527a:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_s0_final_authorization_review_53e28f9_blocker.json",
+    "github:d79fdff7f2bd923d84969ac242f214d6736b2d7f:experience_docx/tools/chd_rm_v4a_a1r_representation_sufficiency.py",
+    "github:b62dd75ea30123e2fca94ecb1d4a57c02dbc8f64:experience_docx/tools/chd_rm_v4a_a1c_safe_action_interface_ceiling_v2.py",
+    "github:42dbbf18ed1ad219ae4e3d838fc372001d6cbd38:experience_docx/tools/chd_rm_v4a_a1f_action_feasibility.py"
+  ],
+  "diagnosis": {
+    "cli_contract": {
+      "status": "BLOCKING_MISMATCH",
+      "runner_supplied_arguments": [
+        "--stage",
+        "--authorization-json",
+        "--route-commit",
+        "--run-id",
+        "--official-checkpoint",
+        "--official-checkpoint-sha256",
+        "--hazy-root",
+        "--frozen-base-root",
+        "--old-0125-root",
+        "--old-025-root",
+        "--current-delta-root",
+        "--target-delta-root",
+        "--status-json",
+        "--heartbeat-json",
+        "--learned-state-manifest-json",
+        "--closeout-json"
+      ],
+      "entrypoint_accepted_arguments": [
+        "--stage",
+        "--run-root",
+        "--learned-state-manifest-json",
+        "--closeout-json"
+      ],
+      "exact_gap": "The entrypoint rejects twelve runner-supplied arguments and requires --run-root, which the runner does not supply. Parsing therefore fails before any S0 lifecycle can begin."
+    },
+    "initial_authorization_contract": {
+      "status": "ABSENT",
+      "required_exact_tuple": {
+        "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+        "state": "PLANNED",
+        "decision": "V4A_A1X_S0_AUTHORIZED_INITIAL_ONLY",
+        "authorizes": "A1X_S0_ONLY"
+      },
+      "required_audit_guards": {
+        "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+        "route_card_sha256": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+        "locked_test_policy": "blocked"
+      },
+      "ordering_requirement": "The exact tuple and audit guards must dominate every dataset, image, tensor-artifact, model-state, and checkpoint open. Authorization mismatch must remain a typed non-scientific stop with authorizes NONE."
+    },
+    "lifecycle_contract": {
+      "status": "UNREACHABLE_AND_INCOMPLETE",
+      "exact_gap": "The entrypoint defines semantic helper functions but main only parses four arguments, rejects non-s0, and unconditionally raises. It has no reachable status writer, heartbeat writer, official checkpoint load, first32 data flow, independent-cell update flow, structural gate, learned-state manifest write, typed closeout write, or terminal return path.",
+      "runner_effect": "Because no closeout is written, the runner exits at its closeout-existence check before emitting A1X_S0_OK or A1X_S0_FAILED. Runner ownership of the sole terminal marker is therefore structurally present but unreachable."
+    },
+    "reachable_s0_contract": {
+      "status": "BLOCKED_BY_UNFROZEN_ASSET_TRANSPORT",
+      "exact_gap": "The seven-semantics source introduces abstract renderer, frozen_support_artifact, baseline, augmented, native_shapes, forward, and target-selector dependencies, but the committed runner and route manifest bind none of their concrete identities, hashes, path layout, or construction rules. The runner exposes only hazy, frozen_base, old_0125, old_025, current_delta, and target_delta roots. Those bindings do not state how D_ref and D_rep select distinct concrete tensors, how measured frozen active support is loaded or computed, or which pinned operator/support artifacts and parent-state identities are valid.",
+      "scientific_risk": "Choosing a directory convention, deriving support from a target tensor, duplicating operator inputs, or reconstructing prior-route artifacts without a frozen identity would change data/operator/support semantics and exceeds R2 engineering authority."
+    }
+  },
+  "runner_change_decision": {
+    "runner_changes_required": true,
+    "entrypoint_validator_evidence_only_suffices": false,
+    "reason": "Under the current evidence, the runner must bind one explicit immutable runtime-asset manifest or explicit operator/support asset arguments and hashes. That binding must identify D_ref and D_rep provenance, measured support provenance, both native shapes, and every required parent/model-state asset before the entrypoint can implement the already frozen semantics without invention.",
+    "route_operations_reconciliation_required": "R3 must decide whether the new asset binding is entirely internal to the tracked runner's existing DATA_ROOT contract or requires a route_operations and first-stage authorization projection change. R2 may not make that choice."
+  },
+  "authorization_scope": {
+    "bounded_r2_repair_valid": false,
+    "exact_allowed_files": [],
+    "source_edit_authorized": false,
+    "validator_execution_authorized": false,
+    "syntax_or_static_validation_authorized": false,
+    "runner_execution_authorized": false,
+    "initial_authorization_creation_authorized": false,
+    "s0_or_formal_authorized": false,
+    "commit_authorized": "THIS_STOP_JSON_ONLY",
+    "push_authorized": false
+  },
+  "frozen_hashes": {
+    "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": {
+      "git_blob_sha1": "8758b4b12c4928c2b31b04e7979988d27f4e1bd5",
+      "sha256": "b0da2e618ff055ab4f95435d66a2df31d3ee7aed2c74d81b68b8a7d8e86c65de"
+    },
+    "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh": {
+      "git_blob_sha1": "e481eb47c93e839688c167ec6736a7ea88c56f81",
+      "sha256": "3f0434a5064a1fe196a688b0699177f2658e8d5acabab97465443f2df956040b"
+    },
+    "experience_docx/tools/validate_haze4k_v4a_a1x_route.py": {
+      "git_blob_sha1": "d8779ca5931f0aeef96bc3d26801282450ba2319",
+      "sha256": "fa42133d72d1c2dd1e01f4bdea00df9bfd976601922b82595f56211a79d278bf"
+    },
+    "experience_docx/route_operations.json": {
+      "git_blob_sha1": "60bf933612eba821d8b8abd036f4589a72207c92",
+      "sha256": "a5cbe7d8e0559ee75c1b53b152561f10f754befb4e289963da3c465520e3f22f"
+    },
+    "experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md": {
+      "git_blob_sha1": "37031714ab7094094e8d1c7f2da0edd32116eca8",
+      "sha256": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da"
+    },
+    "Dehazing/ITS/models/A1XAccess.py": {
+      "git_blob_sha1": "03ead2bc6fb076c2715fded2e1147aa251b9383f",
+      "sha256": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33"
+    },
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_completion_repair_static_validation.json": {
+      "git_blob_sha1": "2d457699bee49b5a839a4b48daa23a979f0d64a4",
+      "sha256": "114c7d5b82b58b2b3cc033656c40138cd4b1b438556be45c8910e191ba21d03a"
+    },
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_completion_repair_closeout.json": {
+      "git_blob_sha1": "e34d10752f965dab44dd85dc623a9e173f9353da",
+      "sha256": "ebab3e123e4ca0bae2d5ad3a3082bfdb7f6a5069e74dfb7dc58cfeec1822b152"
+    },
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_s0_semantics_repair_static_validation.json": {
+      "git_blob_sha1": "fc840f97d4d1ccf30122cb1ef0baad45bdb3f7e1",
+      "sha256": "9941419329a239d8e1f70cb265927b95d1523a0e212bfa26e4321ad64b2e3e18"
+    },
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_semantics_repair_closeout.json": {
+      "git_blob_sha1": "e3037db15313fe5f3f96fd27fba5ea6c2748b091",
+      "sha256": "6ed78fcdfa53c757c92f930a76a2483730741d5c41f1f6c05b6a9609134ea6b1"
+    },
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_s0_final_authorization_review_53e28f9_blocker.json": {
+      "git_blob_sha1": "ea823aef0c04fb64e0f9f94ccefcc346d50468ea",
+      "sha256": "3c096de76c9759ca4c7068fb97f246289b34556cb073c3d23bbc80626d4f6ec9"
+    },
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_design_handoff.json": {
+      "git_blob_sha1": "4c65474a43bc1930b7e7800a26d6cc6e0a0aa35a",
+      "sha256": "630b81edb07fd6a4f4243c529998e5c97fbeb834926d3fd9cde5ce26bca6340a"
+    }
+  },
+  "seven_semantics_preservation_required": [
+    "TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE",
+    "FROZEN_OPERATOR_CONTRACT_IS_LABEL_ONLY",
+    "FROZEN_ACTIVE_SUPPORT_IS_REPLACED_BY_ALL_ONES",
+    "ZERO_INITIALIZATION_NOOP_GATE_IS_MEASURED_AFTER_OPTIMIZER_UPDATES",
+    "MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED",
+    "LEARNED_STATE_RETENTION_AND_PHASE_LIFECYCLE_ARE_INCOMPLETE",
+    "S0_TERMINAL_TUPLE_CANNOT_REPORT_THE_FROZEN_PASS_GATE"
+  ],
+  "required_positive_ast_source_proofs_for_any_future_authorization": [
+    "POS_CLI_01_RUNNER_ARGUMENT_SET_EQUALS_ENTRYPOINT_REQUIRED_ARGUMENT_SET",
+    "POS_CLI_02_NO_EXTRA_REQUIRED_ENTRYPOINT_ARGUMENT_AND_FORMAL_MODE_REJECTED",
+    "POS_AUTH_01_EXACT_ROUTE_ID_STATE_DECISION_AUTHORIZES_TUPLE",
+    "POS_AUTH_02_SOURCE_COMMIT_ROUTE_CARD_HASH_AND_LOCKED_POLICY_GUARDS",
+    "POS_AUTH_03_AUTHORIZATION_GUARD_DOMINATES_ALL_DATA_IMAGE_ARTIFACT_MODEL_AND_CHECKPOINT_OPENS",
+    "POS_LIFECYCLE_01_MAIN_REACHES_AUTH_MODEL_FIRST32_INDEPENDENT_CELLS_ZERO_NOOP_CUDA_GATE_STATE_MANIFEST_AND_TYPED_CLOSEOUT",
+    "POS_LIFECYCLE_02_STATUS_START_PHASE_PROGRESS_TERMINAL_AND_ATOMIC_HEARTBEAT_WRITERS_ARE_REACHABLE",
+    "POS_LIFECYCLE_03_PASS_FAIL_INCONCLUSIVE_TUPLES_ARE_REACHABLE_AND_WRITTEN_BEFORE_RETURN",
+    "POS_LIFECYCLE_04_RUNNER_REQUIRES_CLOSEOUT_THEN_OWNS_EXACTLY_ONE_TERMINAL_MARKER_AND_PROPAGATES_ENTRYPOINT_EXIT",
+    "POS_ASSET_01_EXPLICIT_PINNED_D_REF_D_REP_AND_MEASURED_SUPPORT_PROVENANCE",
+    "POS_ASSET_02_BOTH_NATIVE_SHAPES_AND_MATCHED_BASELINE_AUGMENTED_CUDA_PATHS_HAVE_PINNED_CONSTRUCTION",
+    "POS_SEM_01_THROUGH_POS_SEM_07_CURRENT_SEVEN_SEMANTIC_PROOFS_REMAIN_PASSING",
+    "POS_DATA_01_EXACT_LITERAL_FIRST32_ONLY_WITH_NO_ENUMERATION_OR_SUBSTITUTION",
+    "POS_FROZEN_01_MODEL_INPUT_TARGET_LOSS_OPTIMIZER_SEED_UPDATE_PARAMETER_AND_COST_GATES_UNCHANGED"
+  ],
+  "independent_negative_controls_for_any_future_authorization": [
+    {
+      "id": "NEG_CONTRACT_CLI_01",
+      "target": "CLI",
+      "single_mutation": "Remove or rename exactly one runner-supplied parser argument, or add one unsupplied required parser argument such as --run-root.",
+      "expected_finding_code": "RUNNER_ENTRYPOINT_CLI_ARGUMENT_SET_MISMATCH",
+      "isolation_requirement": "Authorization, lifecycle, asset, and seven-semantic proofs remain unchanged."
+    },
+    {
+      "id": "NEG_CONTRACT_AUTH_01",
+      "target": "AUTHORIZATION",
+      "single_mutation": "Weaken one exact tuple field or move one checkpoint/data/artifact open so it is no longer dominated by the exact authorization guard.",
+      "expected_finding_code": "INITIAL_AUTHORIZATION_TUPLE_OR_DOMINANCE_INVALID",
+      "isolation_requirement": "CLI, lifecycle, asset, and seven-semantic proofs remain unchanged."
+    },
+    {
+      "id": "NEG_CONTRACT_LIFECYCLE_01",
+      "target": "LIFECYCLE",
+      "single_mutation": "Replace the reachable S0 orchestration with an unconditional raise or dead branch, or remove exactly one required status, heartbeat, learned-state manifest, typed closeout, or runner-after-closeout marker dependency.",
+      "expected_finding_code": "S0_LIFECYCLE_UNREACHABLE_OR_INCOMPLETE",
+      "isolation_requirement": "CLI, authorization, asset, and seven-semantic proofs remain unchanged."
+    }
+  ],
+  "future_validation_sequence_not_authorized_by_this_stop": [
+    "Parse the future R3 authorization and every created or modified JSON file.",
+    "Verify all frozen hashes and the newly frozen runtime-asset manifest hash before source edits are accepted.",
+    "Run Python syntax compilation only for the authorized entrypoint and validator.",
+    "Run bash -n only if the future authorization explicitly permits a runner change.",
+    "Run one source-only validator without importing or executing target, model, runner, loader, renderer, profiler, data, or checkpoint code.",
+    "Require every positive CLI, authorization, lifecycle, asset, first32, frozen-contract, and seven-semantics proof.",
+    "Require the existing seven isolated semantic negative controls plus exactly one isolated negative control each for CLI, authorization, and lifecycle.",
+    "Require an aggregate source-only fixture to report all ten expected finding codes and authorizes NONE.",
+    "Verify the tracked diff is limited to the future exact allowlist, git diff --check passes, and no prohibited artifact is staged.",
+    "Write a typed R2 closeout and stop for a fresh R3 final authorization review without runtime, data, checkpoint, cloud, S0, formal, canary, or locked-test action."
+  ],
+  "future_success_tuple_not_authorized": {
+    "state": "R2_S0_RUNNER_ENTRYPOINT_CONTRACT_REPAIR_COMPLETE",
+    "decision": "V4A_A1X_S0_RUNNER_ENTRYPOINT_CONTRACT_COMPLETE_AWAIT_R3_REVIEW",
+    "authorizes": "R3_S0_FINAL_AUTHORIZATION_REVIEW_ONLY"
+  },
+  "future_failure_tuple": {
+    "state": "R2_S0_RUNNER_ENTRYPOINT_CONTRACT_REPAIR_BLOCKED",
+    "decision": "V4A_A1X_S0_RUNNER_ENTRYPOINT_CONTRACT_REPAIR_FAILED_STOP",
+    "authorizes": "NONE"
+  },
+  "one_attempt_no_runtime_boundaries": {
+    "automatic_retry": false,
+    "cloud_transport": false,
+    "ssh_calls": false,
+    "convir_ops_calls": false,
+    "runner_execution": false,
+    "entrypoint_execution": false,
+    "target_import": false,
+    "target_execution": false,
+    "syntax_or_static_validation_in_this_review": false,
+    "dataset_or_checkpoint_open": false,
+    "a1r_data_access": false,
+    "a1x_data_access": false,
+    "confirmation_data_access": false,
+    "s0_preflight_or_run": false,
+    "s0_authorized": false,
+    "formal_authorized": false,
+    "initial_authorization_created": false,
+    "training": false,
+    "evaluation": false,
+    "inference": false,
+    "candidate_selection": false,
+    "promotion": false,
+    "canary": false,
+    "locked_test": false,
+    "push": false
+  },
+  "scope_confirmations": {
+    "source_files_modified": false,
+    "validator_or_runtime_commands_run": false,
+    "data_or_checkpoint_accessed": false,
+    "cloud_or_ssh_used": false,
+    "initial_authorization_created": false,
+    "s0_or_formal_authorized": false,
+    "scientific_contract_changed": false
+  },
+  "retry_policy": "NO_AUTOMATIC_RETRY",
+  "next_boundary": "Stop with no R2 repair authorization. A fresh R3 review must first freeze an explicit immutable runtime-asset transport contract for D_ref, D_rep, measured active support, both native shapes, and required parent/model-state identities; decide its runner and route_operations projection; and then issue a new exact-file bounded R2 authorization. S0, formal, data/checkpoint access, cloud transport, initial authorization creation, canary, and locked test remain blocked."
+}
