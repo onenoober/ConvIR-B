@@ -6,7 +6,7 @@
   "rules_commit": "d502a990fb8766d6b0b8e57ed913d1a2200297de",
   "operations": {
     "A1C_S0": {
-      "runner_relpath": "experience_docx/tools/run_chd_rm_v4a_a1c.sh",
+      "runner_relpath": "experience_docx/tools/run_chd_rm_v4a_a1c_safe_action_interface_ceiling_v2.sh",
       "mode": "s0",
       "require_gpu": true,
       "stage_state": "PLANNED",
@@ -14,11 +14,11 @@
       "authorizes": "A1C_S0_ONLY",
       "locked_test_policy": "blocked",
       "forbidden_continuations": [
-        "A1C_FORMAL",
-        "A1X",
-        "DIRECT_TRAINING",
-        "POLICY_FITTING",
-        "CANDIDATE_SELECTION",
+        "DIRECT_FORMAL_WITHOUT_S0_CLOSEOUT",
+        "TRAINING",
+        "POLICY",
+        "CANDIDATE",
+        "CONFIRMATION",
         "CANARY",
         "LOCKED_TEST"
       ],
@@ -35,7 +35,7 @@
         {
           "state": "COMPLETED_GATE_PASS",
           "decision": "V4A_A1C_S0_ALIGNMENT_PASS_AUTHORIZE_FORMAL_ONLY",
-          "authorizes": "A1C_FORMAL_EXACT_HALF_ONLY"
+          "authorizes": "A1C_FORMAL_INTERFACE_CEILING_ONLY"
         },
         {
           "state": "COMPLETED_GATE_FAIL",
@@ -45,6 +45,64 @@
       ],
       "workspace_policy": "fresh_route",
       "monitor_profile": "short",
+      "heartbeat_timeout_seconds": 300,
+      "min_free_gpu_mib": 12000,
+      "max_gpu_utilization_pct": 10
+    },
+    "A1C_FORMAL": {
+      "runner_relpath": "experience_docx/tools/run_chd_rm_v4a_a1c_safe_action_interface_ceiling_v2.sh",
+      "mode": "formal",
+      "require_gpu": true,
+      "stage_state": "COMPLETED_GATE_PASS",
+      "decision": "V4A_A1C_S0_ALIGNMENT_PASS_AUTHORIZE_FORMAL_ONLY",
+      "authorizes": "A1C_FORMAL_INTERFACE_CEILING_ONLY",
+      "locked_test_policy": "blocked",
+      "forbidden_continuations": [
+        "TRAINING",
+        "POLICY",
+        "CANDIDATE",
+        "CONFIRMATION",
+        "CANARY",
+        "LOCKED_TEST"
+      ],
+      "output_id": "v4a_a1c_formal_r1",
+      "closeout_filename": "v4a_a1c_formal_closeout.json",
+      "collision_policy": "must_not_exist",
+      "authorization_relpath": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a_a1c_s0_closeout.json",
+      "prior_terminal_tuple": {
+        "state": "COMPLETED_GATE_PASS",
+        "decision": "V4A_A1C_S0_ALIGNMENT_PASS_AUTHORIZE_FORMAL_ONLY",
+        "authorizes": "A1C_FORMAL_INTERFACE_CEILING_ONLY"
+      },
+      "allowed_terminal_tuples": [
+        {
+          "state": "COMPLETED_GATE_PASS",
+          "decision": "V4A_A1C_EXACT_HALF_INTERFACE_ADEQUACY_PASS_R3_HANDOFF",
+          "authorizes": "R3_REVIEW_ONLY"
+        },
+        {
+          "state": "COMPLETED_GATE_PASS",
+          "decision": "V4A_A1C_ANTIALIASED_HALF_INTERFACE_ADEQUACY_ONLY_PASS_R3_HANDOFF",
+          "authorizes": "R3_REVIEW_ONLY"
+        },
+        {
+          "state": "COMPLETED_GATE_FAIL",
+          "decision": "V4A_A1C_HALF_INTERFACE_ADEQUACY_FAIL_R3_HANDOFF",
+          "authorizes": "R3_REVIEW_ONLY"
+        },
+        {
+          "state": "COMPLETED_GATE_INCONCLUSIVE",
+          "decision": "V4A_A1C_INTERFACE_RESULT_INCONCLUSIVE_R3_HANDOFF",
+          "authorizes": "R3_REVIEW_ONLY"
+        },
+        {
+          "state": "COMPLETED_GATE_FAIL",
+          "decision": "V4A_A1C_FULL_REFERENCE_OR_INTEGRITY_FAIL_R3_HANDOFF",
+          "authorizes": "R3_REVIEW_ONLY"
+        }
+      ],
+      "workspace_policy": "exact_continuation",
+      "monitor_profile": "standard",
       "heartbeat_timeout_seconds": 300,
       "min_free_gpu_mib": 12000,
       "max_gpu_utilization_pct": 10
