@@ -1,0 +1,261 @@
+{
+  "schema_version": 2,
+  "authorization_type": "R3_BOUNDED_R2_S0_RUNNER_CORRECTNESS_NEGATIVE_FIXTURE_EXACT_RESUME_AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "authorization_parent_commit": "480f9f1ba3ab7c7a98c11888927c6b3bc3853fac",
+  "route_identity": "EXACT_RESUME_OF_BLOCKED_R2_RUNNER_CORRECTNESS_REPAIR",
+  "state": "R3_R2_NEGATIVE_FIXTURE_EXACT_RESUME_AUTHORIZATION_COMPLETE",
+  "decision": "V4A_A1X_BOUNDED_R2_NEGATIVE_FIXTURE_EXACT_RESUME_AUTHORIZED",
+  "authorizes": "R2_LOCAL_NEGATIVE_FIXTURE_EXACT_RESUME_ONLY",
+  "task_class": "R2_ENGINEERING_CONTROL",
+  "required_role": "balanced",
+  "effort": "medium",
+  "reviewed_authorization": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_runner_correctness_repair_authorization.json",
+    "commit": "480f9f1ba3ab7c7a98c11888927c6b3bc3853fac",
+    "sha256": "3730f9e255be5bd8ac92d6d76d478f3cab09286f2c78c7b7f8ed64801338ded5",
+    "state": "R3_R2_S0_RUNNER_CORRECTNESS_REPAIR_AUTHORIZATION_COMPLETE",
+    "decision": "V4A_A1X_BOUNDED_R2_RUNNER_CORRECTNESS_REPAIR_AUTHORIZED",
+    "authorizes": "R2_LOCAL_RUNNER_CORRECTNESS_REPAIR_ONLY"
+  },
+  "reviewed_failure_closeout": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_correctness_repair_closeout.json",
+    "sha256": "31a7e212a398faeadd74838976c0ba766673866e48f6125fb6baa087edd61ec8",
+    "git_blob_sha1": "b9b1f720318af4e9047fcfe1113ad7c51742f447",
+    "state": "R2_S0_RUNNER_CORRECTNESS_REPAIR_BLOCKED",
+    "decision": "V4A_A1X_R2_STATIC_NEGATIVE_FIXTURE_BLOCKED",
+    "authorizes": "NONE",
+    "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+    "failure_phase": "semantic_static_validation",
+    "syntax_compile": "PASS",
+    "bash_n": "PASS",
+    "semantic_static_validator": "FAIL: base negative fixture did not detect all nine findings",
+    "runtime_started": false,
+    "data_accessed": false,
+    "checkpoint_opened": false,
+    "cloud_transport": false,
+    "formal_authorized": false,
+    "canary_touched": false,
+    "locked_test_touched": false
+  },
+  "reviewed_working_state": {
+    "tracked_source_diff_parent": "480f9f1ba3ab7c7a98c11888927c6b3bc3853fac",
+    "entrypoint_sha256": "75d5de3b92e2d576f5aa928ed0e2b8998b995b6fc8b6d1c66b278310f1c31480",
+    "runner_sha256": "3f0434a5064a1fe196a688b0699177f2658e8d5acabab97465443f2df956040b",
+    "validator_sha256": "7926f7ca607c6c2ed2f01dece9c881bad6222aa108d39916175aeb3cc5177cb1",
+    "static_validation_json_present": false,
+    "failure_closeout_present": true,
+    "diff_check": "PASS",
+    "review_outcome": "The attempted repair remains within the original five-file engineering boundary. The typed failure is narrow: the validator uses one aggregate authorization-base fixture and does not establish independent rejection of each of the nine known defects. Completing isolated source-only negative fixtures and any directly corresponding corrections does not change the frozen scientific contract."
+  },
+  "authorization_scope": {
+    "purpose": "Resume the existing uncommitted R2 repair exactly once to complete source-only semantic negative fixtures, make only directly corresponding corrections inside the original five-file allowlist, and close the same repair contract.",
+    "workspace": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715",
+    "transport_contract": "local_only",
+    "resume_existing_working_diff": true,
+    "new_route_or_stage": false,
+    "runtime_execution": false,
+    "target_import_or_execution": false,
+    "runner_execution": false,
+    "cloud_transport": false,
+    "data_or_checkpoint_access": false,
+    "initial_stage_authorization": false,
+    "s0_authorization": false,
+    "formal_authorization": false,
+    "scientific_contract_change": false,
+    "push_or_remote_verification": false
+  },
+  "exact_allowed_files": [
+    {
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "action": "MODIFY_EXISTING_WORKING_DIFF_ONLY_AS_DIRECTLY_REQUIRED_BY_POSITIVE_OR_NEGATIVE_STATIC_PROOFS"
+    },
+    {
+      "path": "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "action": "MODIFY_EXISTING_WORKING_DIFF_ONLY_AS_DIRECTLY_REQUIRED_BY_POSITIVE_OR_NEGATIVE_STATIC_PROOFS"
+    },
+    {
+      "path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "action": "MODIFY_TO_COMPLETE_ISOLATED_NEGATIVE_FIXTURES_AND_DIRECTLY_CORRESPONDING_SEMANTIC_PROOFS"
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_correctness_repair_static_validation.json",
+      "action": "CREATE_ONLY_AFTER_ALL_REQUIRED_STATIC_CONTROLS_PASS"
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_correctness_repair_closeout.json",
+      "action": "REPLACE_THE_TYPED_FAILURE_WITH_SUCCESS_CLOSEOUT_ONLY_AFTER_ALL_GATES_PASS_OR_UPDATE_WITH_ONE_NEW_TYPED_FAILURE"
+    }
+  ],
+  "known_finding_codes": [
+    "A1X_HEAD_PARAMETERS_ARE_ALL_FROZEN",
+    "OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING",
+    "SHUFFLED_TARGET_CONTROL_IS_REVERSED",
+    "FROZEN_LOSS_AND_OPERATOR_CONTRACT_NOT_IMPLEMENTED",
+    "INTEGRATED_S0_CHECKS_ARE_DECLARED_BUT_NOT_MEASURED",
+    "DURABLE_LIFECYCLE_AND_CLOSEOUT_CONTRACT_INCOMPLETE",
+    "REMOTE_REPO_DOES_NOT_MATCH_FROZEN_FRESH_ROUTE_WORKSPACE",
+    "FINAL_MARKER_CONTRACT_DUPLICATED",
+    "STATIC_VALIDATOR_PROVES_TOKENS_NOT_REQUIRED_SEMANTICS"
+  ],
+  "negative_fixture_contract": {
+    "fixture_method": "Start each fixture from the same corrected source snapshot, apply exactly one in-memory source mutation, parse source only, and invoke the same semantic proof functions used by the corrected-source positive control. Do not write fixture source files, import target modules, execute target code, invoke the runner, or open data/checkpoints.",
+    "independence_requirement": "Each fixture must differ from the corrected source snapshot only by its declared mutation. Its expected finding code must be detected from semantic structure or data-flow, not from mutation ids, fixture labels, raw token absence/presence, exceptions, or another fixture's defect.",
+    "aggregate_base_requirement": "The immutable authorization-base sources at 597cbb1fa82c9cf31c93ed8328f9d80e47f2198f must also be rejected with all nine known finding codes, but this aggregate result does not replace any isolated fixture.",
+    "positive_control_requirement": "The unmutated corrected entrypoint, runner, validator, route JSON, and frozen hashes must pass every positive semantic proof and produce zero known finding codes before the static-validation JSON or success closeout is written.",
+    "required_fixture_records": [
+      "fixture_id",
+      "expected_finding_code",
+      "mutated_source_path",
+      "mutation_description",
+      "source_before_sha256",
+      "source_after_sha256",
+      "detected_finding_codes",
+      "expected_code_detected",
+      "target_code_executed_false",
+      "data_or_checkpoint_opened_false"
+    ],
+    "required_isolated_fixtures": [
+      {
+        "fixture_id": "NEG_01_HEAD_TRAINABLE_SCOPE",
+        "expected_finding_code": "A1X_HEAD_PARAMETERS_ARE_ALL_FROZEN",
+        "mutation": "Replace the all-registered-head-parameter trainable scope with the committed prefix-based freezing defect while leaving every other corrected source contract unchanged."
+      },
+      {
+        "fixture_id": "NEG_02_OFFICIAL_MODEL_LOAD_FREEZE_AUDIT",
+        "expected_finding_code": "OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING",
+        "mutation": "Remove the strict official checkpoint construction/load/key-shape/eval/freeze audit while leaving the corrected head and all other contracts unchanged."
+      },
+      {
+        "fixture_id": "NEG_03_TARGET_ONLY_SHUFFLE",
+        "expected_finding_code": "SHUFFLED_TARGET_CONTROL_IS_REVERSED",
+        "mutation": "Restore the committed defect that changes a deployable forward input or keeps the target unpaired instead of applying target-only plus-one pairing within operator and exact-native-shape blocks."
+      },
+      {
+        "fixture_id": "NEG_04_OPERATOR_NATIVE_ACTIVE_SUPPORT_LOSS",
+        "expected_finding_code": "FROZEN_LOSS_AND_OPERATOR_CONTRACT_NOT_IMPLEMENTED",
+        "mutation": "Restore one committed collapsed-operator, non-native-shape, unconstrained-batch, wrong-update-count, or full-tensor-mean realization that violates the frozen combined contract, with all unrelated contracts corrected."
+      },
+      {
+        "fixture_id": "NEG_05_MEASURED_STRUCTURAL_COST_CHECKS",
+        "expected_finding_code": "INTEGRATED_S0_CHECKS_ARE_DECLARED_BUT_NOT_MEASURED",
+        "mutation": "Replace measured threshold-derived structural/cost results with the committed declared or constant PASS behavior while leaving lifecycle and all other corrected contracts unchanged."
+      },
+      {
+        "fixture_id": "NEG_06_DURABLE_LIFECYCLE_CLOSEOUT",
+        "expected_finding_code": "DURABLE_LIFECYCLE_AND_CLOSEOUT_CONTRACT_INCOMPLETE",
+        "mutation": "Restore the committed incomplete status, heartbeat, learned-state, timing, closeout-provenance, or phase-sensitive runtime_started behavior without changing marker ownership or another finding."
+      },
+      {
+        "fixture_id": "NEG_07_FROZEN_REMOTE_REPO",
+        "expected_finding_code": "REMOTE_REPO_DOES_NOT_MATCH_FROZEN_FRESH_ROUTE_WORKSPACE",
+        "mutation": "Bind REMOTE_REPO to the committed non-fresh repository root while preserving all other corrected shell control flow."
+      },
+      {
+        "fixture_id": "NEG_08_SINGLE_TERMINAL_MARKER_OWNER",
+        "expected_finding_code": "FINAL_MARKER_CONTRACT_DUPLICATED",
+        "mutation": "Restore Python terminal-marker emission so ownership is duplicated with the otherwise corrected shell runner, or equivalently violate the preserved-exit/durable-evidence-before-marker contract in isolation."
+      },
+      {
+        "fixture_id": "NEG_09_VALIDATOR_SEMANTIC_PROOF",
+        "expected_finding_code": "STATIC_VALIDATOR_PROVES_TOKENS_NOT_REQUIRED_SEMANTICS",
+        "mutation": "Replace one required validator semantic or def-use proof with token-presence acceptance, remove the isolated-fixture matrix, or make fixture labels determine detection while leaving the target sources corrected. The validator's own source analyzer must reject the mutated validator source without executing it."
+      }
+    ],
+    "required_pass_condition": "All nine isolated fixtures are independently rejected with their expected finding code, the aggregate authorization-base fixture is rejected with all nine codes, the unmutated corrected sources pass with zero known codes, and the validator self-proof passes."
+  },
+  "required_static_proof_markers": [
+    "SEMANTIC_A1X_HEAD_TRAINABLE_SCOPE_PASS",
+    "SEMANTIC_OFFICIAL_MODEL_LOAD_FREEZE_EVAL_PASS",
+    "SEMANTIC_TARGET_ONLY_OPERATOR_SHAPE_SHUFFLE_PASS",
+    "SEMANTIC_ACTIVE_SUPPORT_OPERATOR_NATIVE_BATCH_LOSS_PASS",
+    "SEMANTIC_MEASURED_STRUCTURAL_COST_CHECKS_PASS",
+    "SEMANTIC_COMPLETE_LIFECYCLE_CLOSEOUT_PASS",
+    "SEMANTIC_FROZEN_REMOTE_REPO_PASS",
+    "SEMANTIC_EXACTLY_ONE_TERMINAL_MARKER_PASS",
+    "SEMANTIC_VALIDATOR_NEGATIVE_FIXTURE_PASS",
+    "STATIC_FROZEN_SCIENTIFIC_HASHES_PASS",
+    "A1X_S0_RUNNER_CORRECTNESS_STATIC_VALIDATOR_OK"
+  ],
+  "frozen_contract": {
+    "source": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_runner_correctness_repair_authorization.json",
+    "meaning": "Every scientific, data, split, model, checkpoint, input, target, optimizer, loss, seed, update, operator, support, native-shape, batch, shuffle, metric, threshold, gate, terminal-tuple, formal, canary, and locked-test field remains byte-for-byte or semantically frozen as required by the reviewed authorization.",
+    "allowed_change": "Only strengthen the source-static proof implementation and make directly corresponding engineering corrections necessary for the already-authorized nine findings."
+  },
+  "required_validation_sequence": [
+    "Parse this authorization and every created or modified JSON file.",
+    "Run Python syntax compilation only for the modified entrypoint and validator.",
+    "Run bash -n only for the modified shell runner.",
+    "Run the source-only validator without importing or executing target code and without opening data or checkpoints.",
+    "Require all nine isolated negative fixtures, the aggregate authorization-base fixture, the corrected-source positive control, every static proof marker, and A1X_S0_RUNNER_CORRECTNESS_STATIC_VALIDATOR_OK.",
+    "Verify frozen hashes and verify every path outside the original five-file allowlist is unchanged from the authorization parent, excluding this committed resume authorization itself.",
+    "Verify git diff --check and verify the repair commit contains exactly the original five allowed files and no dispatch request or prohibited artifact.",
+    "Only after all preceding checks pass, replace the failure closeout with the required success tuple and create one local repair commit; do not push."
+  ],
+  "required_success_closeout_tuple": {
+    "state": "R2_S0_RUNNER_CORRECTNESS_REPAIR_COMPLETE",
+    "decision": "V4A_A1X_S0_RUNNER_CORRECTNESS_REPAIRED_AWAIT_R3_REVIEW",
+    "authorizes": "R3_S0_FINAL_AUTHORIZATION_REVIEW_ONLY"
+  },
+  "required_failure_closeout_tuple": {
+    "state": "R2_S0_RUNNER_CORRECTNESS_REPAIR_BLOCKED",
+    "authorizes": "NONE",
+    "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+    "next_boundary": "Fresh R3/frontier review is required before any further write, repair, commit, or runtime action."
+  },
+  "explicit_no_runtime_no_data_boundaries": {
+    "cloud_transport": false,
+    "ssh_calls": false,
+    "convir_ops_calls": false,
+    "runner_execution": false,
+    "target_entrypoint_execution": false,
+    "target_module_import": false,
+    "s0_preflight_or_run": false,
+    "s0_authorized": false,
+    "formal_authorized": false,
+    "initial_authorization_created": false,
+    "any_dataset_enumeration": false,
+    "a1r_data_access": false,
+    "a1x_data_access": false,
+    "confirmation_data_access": false,
+    "checkpoint_open": false,
+    "training": false,
+    "evaluation": false,
+    "inference": false,
+    "candidate_selection": false,
+    "promotion": false,
+    "canary": false,
+    "locked_test": false,
+    "push": false
+  },
+  "forbidden_changes": [
+    "ANY_REPAIR_FILE_OUTSIDE_THE_ORIGINAL_FIVE_FILE_ALLOWLIST",
+    "NEW_FIXTURE_FILES_OR_GENERATED_MUTANT_FILES",
+    "MUTATION_LABEL_OR_RAW_TOKEN_PRESENCE_AS_PASS_OR_FAILURE_EVIDENCE",
+    "ROUTE_CARD_DESIGN_HANDOFF_A1X_HEAD_OR_ROUTE_OPERATIONS_CHANGE",
+    "DATA_SPLIT_MODEL_CHECKPOINT_INPUT_TARGET_OPTIMIZER_LOSS_SEED_UPDATE_OPERATOR_SUPPORT_NATIVE_SHAPE_BATCH_SHUFFLE_METRIC_THRESHOLD_GATE_OR_TERMINAL_TUPLE_CHANGE",
+    "STAGE_SCOPE_EXPANSION",
+    "INITIAL_S0_AUTHORIZATION_CREATION",
+    "S0_OR_FORMAL_ENABLEMENT",
+    "RUNTIME_CLOUD_DATA_OR_CHECKPOINT_ACCESS",
+    "CONFIRMATION_CANARY_OR_LOCKED_TEST_ACCESS",
+    "PUSH_OR_REMOTE_VERIFICATION"
+  ],
+  "retry_policy": "NO_AUTOMATIC_RETRY. This document authorizes one explicit exact-resume attempt only; it is not an automatic retry of the blocked task.",
+  "failure_boundary": "On any isolated fixture that does not reject its expected defect, any corrected-source positive-control failure, any validator exception used as defect evidence, any required-file expansion, frozen-contract mismatch, scientific ambiguity, failed required validation, or commit failure, write the typed R2 blocker if possible and stop. Do not retry, weaken the proof, commit a partial repair, or cross runtime/data/remote/formal/canary/locked-test boundaries.",
+  "success_conditions": [
+    "existing_r2_working_diff_is_resumed_without_reset_or_replacement",
+    "repair_changes_remain_inside_the_original_five_allowed_files",
+    "all_nine_known_bad_mutations_fail_independently_with_expected_codes",
+    "aggregate_authorization_base_fixture_reports_all_nine_codes",
+    "corrected_sources_pass_with_zero_known_finding_codes",
+    "all_required_syntax_and_source_static_proofs_pass",
+    "frozen_scientific_contract_remains_unchanged",
+    "success_closeout_matches_the_required_tuple",
+    "one_local_five_file_repair_commit_is_created_and_not_pushed",
+    "no_runtime_target_import_data_checkpoint_remote_s0_formal_canary_or_locked_boundary_is_crossed"
+  ],
+  "next_boundary": "One separately dispatched qualified R2 local-only task may resume the existing working diff exactly once, modify only the same five previously authorized files, complete the nine isolated negative fixtures and directly corresponding corrections, run syntax and source-only static validation, and create one local five-file repair commit only after every required negative and positive control passes. It must then stop for fresh R3 final authorization review."
+}
