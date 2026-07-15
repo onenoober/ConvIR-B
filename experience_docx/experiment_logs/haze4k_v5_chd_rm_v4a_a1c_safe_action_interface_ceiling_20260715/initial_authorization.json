@@ -18,7 +18,7 @@
   "locked_test_policy": "blocked",
   "locked_test_touched": false,
   "route_card_path": "experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1c-safe-action-interface-ceiling.md",
-  "route_card_sha256": "a070d84d5bc218f3af16efaf5ec6dea3fb9aa14dd213b9bf9789654b07100263",
+  "route_card_sha256": "d647a05ccffb53dd94ac5a4077fd710913ddfe9e6228475032da450899b04232",
   "route_id": "haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715",
   "rules_commit": "d502a990fb8766d6b0b8e57ed913d1a2200297de",
   "state": "PLANNED"

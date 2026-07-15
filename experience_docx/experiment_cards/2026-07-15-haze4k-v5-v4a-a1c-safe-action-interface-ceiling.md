@@ -17,9 +17,9 @@ Status: `PLANNED`
 - Authoritative experiment evidence: `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/v4a_a1f_r3_review.json`, `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_formal_bootstrap_summary.json`, and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_r3_review.json` from that GitHub rules commit.
 - Local WSL path, if used for editing/static checks: `/home/ubuntu/workspace/ConvIR-B-v4a-a1c-safe-action-interface-ceiling-20260715`.
 - GitHub route branch and source commit: `codex/haze4k-v5-v4a-a1c-safe-action-interface-ceiling-20260715` from `github/main@d502a990fb8766d6b0b8e57ed913d1a2200297de`; scientific replay sources remain pinned separately below.
-- Cloud `REMOTE_REPO`: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1c-r3-haze4k_v5_chd_rm_v4a_a1c-a1c20260715r3-047e7304f9be3b6f` as deterministically derived by schema-v2 from repo name `ConvIR-B-v4a-a1c-r3` and workspace id `a1c20260715r3`.
+- Cloud `REMOTE_REPO`: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1c-r4-haze4k_v5_chd_rm_v4a_a1c-a1c20260715r4-d2a0226e99d04c02` as deterministically derived by schema-v2 from repo name `ConvIR-B-v4a-a1c-r4` and workspace id `a1c20260715r4`.
 - Cloud `RUN_ROOT`: `/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715`.
-- Cloud `EVID_STAGE`: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1c-r3-haze4k_v5_chd_rm_v4a_a1c-a1c20260715r3-047e7304f9be3b6f/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715`.
+- Cloud `EVID_STAGE`: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1c-r4-haze4k_v5_chd_rm_v4a_a1c-a1c20260715r4-d2a0226e99d04c02/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715`.
 - Explicit cloud Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 
 ## Agent Execution Routing

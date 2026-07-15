@@ -12,7 +12,8 @@ RUNNER_SHA256=${RUNNER_SHA256:?set by the authorized operation}
 GPU=${GPU:?set by the authorized operation}
 PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
 BASE=/sda/home/wangyuxin/ConvIR-B
-RUNNER=$REMOTE_REPO/experience_docx/tools/chd_rm_v4a_a1c_safe_action_interface_ceiling_v2.py
+SHELL_RUNNER=$0
+EVALUATOR=$REMOTE_REPO/experience_docx/tools/chd_rm_v4a_a1c_safe_action_interface_ceiling_v2.py
 CARD=$REMOTE_REPO/experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1c-safe-action-interface-ceiling.md
 AUTH0=$REMOTE_REPO/experience_docx/experiment_logs/$ROUTE_ID/initial_authorization.json
 S0_CLOSEOUT=$REMOTE_REPO/experience_docx/experiment_logs/$ROUTE_ID/v4a_a1c_s0_closeout.json
@@ -52,8 +53,8 @@ case "$MODE" in s0|formal) ;; *) echo "invalid sealed MODE=$MODE" >&2; exit 2;; 
 test "$(git -C "$REMOTE_REPO" branch --show-current)" = codex/haze4k-v5-v4a-a1c-safe-action-interface-ceiling-20260715
 test "$(git -C "$REMOTE_REPO" rev-parse HEAD)" = "$EXPECTED_ROUTE_COMMIT"
 test -z "$(git -C "$REMOTE_REPO" status --porcelain)"
-test -x "$PY"; test -f "$RUNNER" -a -f "$CARD" -a -f "$AUTH0"
-test "$(sha256sum "$RUNNER" | awk '{print $1}')" = "$RUNNER_SHA256"
+test -x "$PY"; test -f "$SHELL_RUNNER" -a -f "$EVALUATOR" -a -f "$CARD" -a -f "$AUTH0"
+test "$(sha256sum "$SHELL_RUNNER" | awk '{print $1}')" = "$RUNNER_SHA256"
 test ! -e "$OUT"
 if [ "$MODE" = s0 ]; then
   "$PY" - "$AUTH0" <<'PY'
@@ -95,7 +96,7 @@ COMMON_ARGS=(
 )
 trap - ERR
 set +e
-CUDA_VISIBLE_DEVICES="$GPU" PYTHONUNBUFFERED=1 "$PY" "$RUNNER" audit --a1c-stage "$MODE" --v3z-root "$V3Z_ROOT" --a1f-module "$A1F_MODULE" --a0r-trace-dir "$A0R_TRACE" --expected-route-commit "$EXPECTED_ROUTE_COMMIT" --expected-route-card-sha256 "$(sha256sum "$CARD" | awk '{print $1}')" --runner-sha256 "$RUNNER_SHA256" --status-file "$STATUS" "${COMMON_ARGS[@]}" 2>&1 | tee -a "$LOG"
+CUDA_VISIBLE_DEVICES="$GPU" PYTHONUNBUFFERED=1 "$PY" "$EVALUATOR" audit --a1c-stage "$MODE" --v3z-root "$V3Z_ROOT" --a1f-module "$A1F_MODULE" --a0r-trace-dir "$A0R_TRACE" --expected-route-commit "$EXPECTED_ROUTE_COMMIT" --expected-route-card-sha256 "$(sha256sum "$CARD" | awk '{print $1}')" --runner-sha256 "$RUNNER_SHA256" --status-file "$STATUS" "${COMMON_ARGS[@]}" 2>&1 | tee -a "$LOG"
 rc=${PIPESTATUS[0]}; set -e
 printf 'stage_done route=%s mode=%s run=%s rc=%s\n' "$ROUTE_ID" "$MODE" "$RUN_ID" "$rc" | tee -a "$STATUS"
 if [ "$rc" -ne 0 ]; then echo "V4A_A1C_${MODE^^}_FAILED_RUNTIME_REQUIRES_CLASSIFICATION" | tee -a "$STATUS"; exit "$rc"; fi
