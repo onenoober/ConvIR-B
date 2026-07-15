@@ -118,6 +118,33 @@ function Invoke-WslGit {
     return @($output | ForEach-Object { $_.ToString() })
 }
 
+function Test-ConvirOpsReadiness {
+    param(
+        [Parameter(Mandatory = $true)][string]$Distribution
+    )
+
+    $server = "/home/ubuntu/workspace/ConvIR-B-operations-v2/experience_docx/tools/convir_ops_mcp.py"
+    $probe = @(
+        '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05"}}',
+        '{"jsonrpc":"2.0","id":2,"method":"ping","params":{}}'
+    ) -join "`n"
+    $savedPreference = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        $output = $probe | & wsl.exe -d $Distribution -- timeout 15s python3 $server 2>&1
+        $exitCode = $LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $savedPreference
+    }
+    if ($exitCode -ne 0 -or -not (@($output) -match '"serverInfo"') -or -not (@($output) -match '"jsonrpc"')) {
+        $detail = (@($output) -join " ").Trim()
+        if ($detail.Length -gt 512) { $detail = $detail.Substring(0, 512) }
+        throw "MCP_READINESS_FAILED phase=mcp_startup exit_code=$exitCode detail=$detail"
+    }
+    Write-Output "MCP_READINESS_OK"
+}
+
 function Get-Sha256 {
     param([Parameter(Mandatory = $true)][string]$Text)
 
@@ -428,6 +455,12 @@ $basisInstruction = if ($request.routing_basis -eq "typed_handoff") {
 else {
     "The host acted only as a dispatcher and applied the canonical task-class table; if the class is ambiguous, stop before the next action and request R3/frontier routing."
 }
+$retryInstruction = if ($request.task_class -in @("R0_READ_ONLY", "R1_BOUNDED_EXECUTION")) {
+    "For one command_infra failure only, a single retry is allowed when failure_phase is remote_transport, mcp_startup, resource_preflight, workspace_prepare, or evidence_manifest and observed runner_started is false. Retry the exact same route, receipt/plan, runner, data, metric, gate, and output contract. Never retry after launch state is unknown, after runner_started=true, or for evaluation/scientific failures."
+}
+else {
+    "Do not retry this task automatically; report typed failure and stop at the declared boundary."
+}
 $promptLines = @(
     'Use $experiment-model-router for this task.',
     "The deterministic external dispatcher selected model=$selectedModel from github/main@$currentRulesCommit.",
@@ -438,6 +471,7 @@ $promptLines = @(
     $(if ($request.execution_scope -eq "wsl_workspace_transport") { "This scope permits WSL local workspace transport only. Do not call convir_remote_script.sh, convir_route_ tools, convir-ops, SSH, or cloud commands." }),
     $(if ($request.transport_contract -eq "tracked_convir_cloud") { "Cloud access is limited to the tracked ConvIR transport named by the bounded next action; do not construct arbitrary SSH commands." }),
     $basisInstruction,
+    $retryInstruction,
     "If new evidence requires a stronger role, stop before the next write or decision and emit MODEL_SWITCH_REQUIRED with a new dispatcher request.",
     "Handoff JSON: $handoffJson",
     "Perform exactly this next action: $($request.next_action)",
@@ -469,6 +503,7 @@ $dispatchPlan = [ordered]@{
     prelaunch_seconds = $prelaunchSeconds
     model_calls_before_launch = 0
     output_root = $null
+    mcp_readiness = "not_applicable"
 }
 
 if (-not $Execute) {
@@ -499,6 +534,11 @@ $metadataPath = Join-Path $resolvedOutputRoot "dispatch_metadata.json"
 $childPrompt | Set-Content -Encoding utf8 -LiteralPath $promptPath
 
 $codex = Get-Command codex.cmd -ErrorAction Stop
+$mcpReadiness = "not_applicable"
+if ($request.execution_scope -eq "wsl_cloud_transport" -and $request.next_action -match "convir_(route|evidence)|convir-ops") {
+    Test-ConvirOpsReadiness -Distribution $WslDistribution | Out-Null
+    $mcpReadiness = "ready"
+}
 $savedPreference = $ErrorActionPreference
 $ErrorActionPreference = "Continue"
 $cliVersion = (& $codex.Source --version 2>$null).Trim()
@@ -598,6 +638,7 @@ $metadata = [ordered]@{
     child_elapsed_seconds = [Math]::Round($launchStopwatch.Elapsed.TotalSeconds, 3)
     total_elapsed_seconds = [Math]::Round($totalStopwatch.Elapsed.TotalSeconds, 3)
     model_calls_before_launch = 0
+    mcp_readiness = $mcpReadiness
     usage = $usage
 }
 $metadata | ConvertTo-Json -Depth 8 | Set-Content -Encoding utf8 -LiteralPath $metadataPath
