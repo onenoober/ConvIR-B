@@ -1,0 +1,260 @@
+{
+  "schema_version": 2,
+  "record_type": "A1X_R3_IDENTITY_PROVENANCE_REPAIR_AUTHORIZATION",
+  "subject": "A1X_R3_IDENTITY_AUTH",
+  "closure_type": "AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "authorization_base_commit": "25944a62861609f6e9046d7176209fa4820be45a",
+  "reviewed_route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "reviewed_route_commit": "3e2008716c47279651ebb5fb1e3f709bd0835f68",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "task_class": "R3_SCIENTIFIC_AUTHORITY",
+  "required_role": "frontier",
+  "effort": "high",
+  "state": "R3_RUNTIME_IDENTITY_PROVENANCE_REPAIR_DESIGN_COMPLETE",
+  "decision": "V4A_A1X_AUTHORIZE_ONE_R2_LOCAL_SOURCE_REPAIR_FOR_TWO_BLOCKERS",
+  "authorizes": "R2_LOCAL_SOURCE_REPAIR_ONLY",
+  "transport_contract": "local_only",
+  "cloud_status": "inactive; no resource preflight or S0 run authorized",
+  "route_identity": "CONTINUATION_OF_BLOCKED_FRESH_S0_INITIAL_AUTHORIZATION",
+  "reviewed_blockers": [
+    {
+      "code": "CONCRETE_RUNTIME_ASSET_MANIFEST_IDENTITY_NOT_DURABLY_AVAILABLE",
+      "severity": "BLOCKING",
+      "source_paths": [
+        "experience_docx/route_operations.json",
+        "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py"
+      ],
+      "current_hashes": {
+        "experience_docx/route_operations.json": "077620a2326d10a3206a86b9f9c639d3ccdefc4a089ca4ba293423e7e4f38a8a",
+        "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": "0c1722d9ca1b08a83e23d29a1f92f6db67cb65113ed9ace021e4fb88b0c9b026"
+      },
+      "finding": "The current contract transports only A1X_RUNTIME_ASSET_MANIFEST_JSON and A1X_RUNTIME_ASSET_MANIFEST_SHA256 names. No committed initial authorization contains the concrete absolute path and the SHA-256 of those exact bytes, so authorization dominance cannot bind the manifest before any runtime asset open."
+    },
+    {
+      "code": "TYPED_CLOSEOUT_RUNNER_IDENTITY_PROVENANCE_MISSING",
+      "severity": "BLOCKING",
+      "source_paths": [
+        "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+        "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py"
+      ],
+      "current_hashes": {
+        "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh": "cc7a826ee9ef25f66148516875fd5065fd49e8a65537c774b25d6f6b5b0562fc",
+        "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": "0c1722d9ca1b08a83e23d29a1f92f6db67cb65113ed9ace021e4fb88b0c9b026"
+      },
+      "finding": "The tracked runner does not propagate its own SHA-256 and terminal closeout construction has no runner_sha256 field. Every typed terminal must carry the tracked runner identity required by MODEL_RUN_OPERATIONS_PROTOCOL.md."
+    }
+  ],
+  "frozen_s0_contract": {
+    "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+    "route_card_sha256": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+    "a1x_access_model_sha256": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+    "first32": {
+      "count": 32,
+      "identity": "The committed S0_FIRST32_NAMES literal, exact order and uniqueness, remains unchanged; no filesystem enumeration or replacement is permitted.",
+      "source_manifest_relation": "Must remain equal to the frozen A1R smoke source manifest first32 slice."
+    },
+    "assets": {
+      "operators": ["D_ref", "D_rep"],
+      "operator_identity": "Retain distinct pinned path, seed, producer, and byte SHA for D_ref and D_rep; label-only, alias, swap, fallback, or shared-artifact repairs are forbidden.",
+      "support": "Retain measured_active_support_native as the validated nonempty boolean support descriptor; ones, target-derived support, and fallback support are forbidden.",
+      "checkpoint_and_state": "Retain the official checkpoint, control checkpoint, and pinned model-state identities and strict-load behavior exactly as already recorded in route_operations.json."
+    },
+    "semantics": {
+      "forward_inputs": ["hazy_rgb_native", "frozen_base_rgb_native", "old_0p125_rgb_native", "old_0p25_rgb_native", "current_delta_u_native"],
+      "target": "target_delta_u_native",
+      "cells": ["A1X_ACCESS_TRUE", "A1X_ACCESS_SHUFFLED"],
+      "shuffle": "Only target_delta_u_native is within-block cyclically shuffled; all five inputs, support, endpoint, operator, and shape provenance stay on the source record.",
+      "interface": "Exact frozen half-resolution pairs (400,400)->(208,208) and (480,640)->(240,320), bilinear, align_corners=false, antialias=false.",
+      "authorization_dominance": "Parse only the initial authorization first; verify the exact PLANNED/V4A_A1X_S0_AUTHORIZED_INITIAL_ONLY/A1X_S0_ONLY tuple and all identity fields before manifest hashing, manifest parsing, asset access, imports, or runtime construction.",
+      "formal_mode": false,
+      "locked_test_policy": "blocked"
+    }
+  },
+  "required_staged_sequence": [
+    {
+      "stage": "R2_LOCAL_SOURCE_REPAIR",
+      "authorization": "This JSON authorizes exactly one R2 engineering-control implementation from this commit as direct parent.",
+      "actions": [
+        "Add a tracked standard-library-only manifest preflight/materializer helper that accepts only explicit source-manifest and asset descriptor inputs, emits a compact manifest identity record, canonicalizes one absolute output path, streams its bytes for SHA-256, and never discovers names by directory enumeration.",
+        "Make route_operations.json require a concrete absolute manifest path and exact byte SHA in the future initial authorization; environment-variable names may remain transport channels only and may not satisfy authorization.",
+        "Make the runner compute the SHA-256 of its tracked script, pass it as an explicit runner_sha256 argument, and preserve explicit cloud Python, collision guard, combined stdout/stderr capture, PIPESTATUS propagation, status/heartbeat paths, and runner-only terminal markers.",
+        "Make the entrypoint parse and validate runner_sha256 and copy that exact value into every terminal typed closeout, including authorization/preflight failure, PASS, FAIL, and INCONCLUSIVE paths, without changing frozen S0 computation or terminal tuples.",
+        "Extend the validator with source-derived identity and runner-provenance predicates while retaining every existing frozen semantic predicate and mutation suite."
+      ],
+      "prohibitions": [
+        "No runtime manifest, asset, data, checkpoint, operator, support, or model-state access.",
+        "No S0, training, evaluation, inference, smoke, formal, candidate, promotion, canary, locked test, SSH, cloud, convir-ops, or push.",
+        "No change to route id, first32, operators, support, checkpoint identities, inputs, target, shuffle, interface, seed, optimizer, loss, metric, gate, formal=false, or locked-test=blocked.",
+        "No broad rewrite, validator token-only proof, synthesized findings, union-only aggregate, or source file outside the exact allowlist."
+      ]
+    },
+    {
+      "stage": "R2_STATIC_PROOF_AND_COMMIT",
+      "actions": [
+        "Run only local WSL syntax/compile checks and the source-only validator against the committed route; no entrypoint import or runtime execution.",
+        "Require positive proofs for concrete-path-before-parse, exact-byte-hash-before-parse, runner argument parity, 64-hex runner identity, and runner_sha256 presence in every terminal constructor.",
+        "Require the pre-existing frozen positive suite to pass and require directly analyzed aggregate and isolated mutations for the two blocker families. Commit the source repair and compact evidence once; do not amend or retry after a failure."
+      ],
+      "required_outputs": [
+        "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_static_validation.json",
+        "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_closeout.json"
+      ],
+      "required_success_tuple": {
+        "state": "R2_RUNTIME_IDENTITY_PROVENANCE_REPAIR_COMPLETE",
+        "decision": "V4A_A1X_R2_SOURCE_REPAIR_STATIC_PROOF_COMPLETE_AWAIT_CLOUD_RESOURCE_PREFLIGHT",
+        "authorizes": "R3_CLOUD_RESOURCE_PREFLIGHT_ONLY",
+        "failure_class": null
+      },
+      "required_failure_tuple": {
+        "state": "R2_RUNTIME_IDENTITY_PROVENANCE_REPAIR_BLOCKED",
+        "decision": "V4A_A1X_R2_RUNTIME_IDENTITY_PROVENANCE_REPAIR_FAILED_STOP",
+        "authorizes": "NONE",
+        "failure_class": "ENGINEERING_RUNNER_CONTRACT"
+      }
+    },
+    {
+      "stage": "SEPARATE_CLOUD_RESOURCE_PREFLIGHT_NOT_AUTHORIZED_HERE",
+      "required_future_authorization": "A new explicit dispatcher authorization after the committed R2 static proof.",
+      "allowed_purpose": "On convir-4090 only, materialize or fetch the compact manifest identity, bind one concrete absolute runtime_asset_manifest_json path and the SHA-256 of those exact bytes, and write compact preflight evidence without starting S0.",
+      "hard_stop": "Do not create initial_authorization.json, open S0 tensors/checkpoints for execution, run the runner, train, evaluate, infer, or alter any frozen identity."
+    },
+    {
+      "stage": "FRESH_R3_INITIAL_AUTHORIZATION_REVIEW_NOT_AUTHORIZED_HERE",
+      "condition": "Only after the separate resource-preflight evidence contains the concrete absolute path and byte SHA and the R2 commit/static proof is verified.",
+      "purpose": "A fresh frontier review may bind those two concrete values in the initial authorization while preserving PLANNED, A1X_S0_ONLY, formal=false, and locked-test=blocked.",
+      "hard_stop": "This design JSON never authorizes initial authorization creation, S0, formal, canary, locked test, or promotion."
+    }
+  ],
+  "exact_allowed_implementation_files": [
+    {
+      "path": "experience_docx/route_operations.json",
+      "action": "MODIFY",
+      "base_sha256": "077620a2326d10a3206a86b9f9c639d3ccdefc4a089ca4ba293423e7e4f38a8a",
+      "anchors": ["operations", "operation_id=A1X_S0", "runtime_asset_contract", "manifest_path_env", "manifest_sha256_env", "lifecycle_capture"],
+      "scope": "Add only a lossless durable-identity/materializer projection and runner_sha256 closeout requirement; preserve every existing S0 contract field and value."
+    },
+    {
+      "path": "experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py",
+      "action": "CREATE",
+      "anchors": ["main", "absolute_output_path", "stream_sha256", "record_contract"],
+      "scope": "Tracked source-only preflight/materializer for the separately authorized cloud resource-preflight. It must emit compact manifest identity only from explicit descriptors, use no enumeration, and never launch or import the S0 runtime."
+    },
+    {
+      "path": "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "action": "MODIFY",
+      "base_sha256": "cc7a826ee9ef25f66148516875fd5065fd49e8a65537c774b25d6f6b5b0562fc",
+      "anchors": ["ROUTE_COMMIT", "RUN_ID", "AUTHORIZATION_JSON", "A1X_RUNTIME_ASSET_MANIFEST_JSON", "A1X_RUNTIME_ASSET_MANIFEST_SHA256", "ENTRYPOINT", "PIPESTATUS", "A1X_S0_OK", "A1X_S0_FAILED"],
+      "scope": "Compute the tracked runner SHA-256 once from the runner itself and pass it opaquely as --runner-sha256; retain all existing lifecycle capture and marker ownership."
+    },
+    {
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "action": "MODIFY",
+      "base_sha256": "0c1722d9ca1b08a83e23d29a1f92f6db67cb65113ed9ace021e4fb88b0c9b026",
+      "anchors": ["authorization_guard", "validate_manifest", "terminal_closeout", "TERMINALS", "main", "runtime_asset_manifest_json", "runtime_asset_manifest_sha256"],
+      "scope": "Require a concrete absolute path and exact 64-hex byte SHA from the future initial authorization, parse only after authorization/path/hash checks, accept runner_sha256, and include it in every terminal typed closeout without changing S0 semantics."
+    },
+    {
+      "path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "action": "MODIFY",
+      "base_sha256": "b5751e32e05c301c9580af7b36eb9dee77fc1610979913b2549b0d98087728b0",
+      "anchors": ["source_findings", "authorization_proof", "manifest_identity_proof", "runner_capture_proof", "isolated_fixtures", "aggregate_fixture", "main"],
+      "scope": "Add independent source-derived checks for concrete manifest identity and runner_sha256 propagation while retaining all existing semantic, asset, lifecycle, and aggregate mutation proofs."
+    }
+  ],
+  "static_proofs": {
+    "positive": [
+      "future initial authorization has non-placeholder absolute runtime_asset_manifest_json and 64-hex runtime_asset_manifest_sha256 fields before manifest parse",
+      "manifest path is canonical regular non-symlink and its streamed bytes hash equals both authorization and CLI values",
+      "runner parser and invocation have matching --runner-sha256 option and the runner hashes its tracked script",
+      "all terminal closeout constructors, including preflight failure and all three frozen S0 terminal outcomes, carry the exact runner_sha256",
+      "route id, first32, operators, support, checkpoint/state pins, exact-half shapes, authorization dominance, formal=false, and locked-test=blocked remain source-identical",
+      "local validation resolves repo and validator paths before reporting and writes only the two compact output records"
+    ],
+    "negative_controls": [
+      {
+        "id": "NEG_IDENTITY_MANIFEST_PLACEHOLDER_01",
+        "mutation": "Replace the concrete absolute manifest path with an environment-variable name, relative path, empty value, or zero/placeholder hash.",
+        "expected_code": "CONCRETE_RUNTIME_ASSET_MANIFEST_IDENTITY_NOT_DURABLE",
+        "authorizes": "NONE"
+      },
+      {
+        "id": "NEG_IDENTITY_MANIFEST_ORDER_01",
+        "mutation": "Move manifest JSON parsing or any runtime import before authorization, canonical path, and byte-hash checks.",
+        "expected_code": "RUNTIME_ASSET_MANIFEST_IDENTITY_ORDER_INVALID",
+        "authorizes": "NONE"
+      },
+      {
+        "id": "NEG_IDENTITY_RUNNER_ARGUMENT_01",
+        "mutation": "Remove, rename, or mismatch --runner-sha256 between runner invocation and entrypoint parser.",
+        "expected_code": "RUNNER_SHA256_ARGUMENT_SET_MISMATCH",
+        "authorizes": "NONE"
+      },
+      {
+        "id": "NEG_IDENTITY_CLOSEOUT_01",
+        "mutation": "Remove runner_sha256 from any one terminal constructor or substitute a recomputed/unrelated value.",
+        "expected_code": "RUNNER_SHA256_CLOSEOUT_PROVENANCE_MISSING",
+        "authorizes": "NONE"
+      },
+      {
+        "id": "NEG_IDENTITY_AGGREGATE_01",
+        "mutation": "Apply all four blocker mutations to one analyzed source fixture.",
+        "expected_code": "DIRECT_AGGREGATE_MUST_REPORT_ALL_IDENTITY_CODES",
+        "authorizes": "NONE"
+      }
+    ],
+    "non_regression": "The existing frozen positive proofs and every existing isolated/aggregate semantic and asset negative control must still be independently analyzed; no declared token list or synthesized result is accepted."
+  },
+  "output_evidence": {
+    "implementation_commit": "One commit whose direct parent is this authorization commit; no amend, retry, or unrelated path.",
+    "static_validation": "v4a_a1x_r2_runtime_identity_provenance_repair_static_validation.json with source hashes, positive predicates, isolated controls, direct aggregate codes, and all no-runtime flags false.",
+    "closeout": "v4a_a1x_r2_runtime_identity_provenance_repair_closeout.json with one typed success/failure tuple, implementation commit, static-validation SHA-256, changed-path allowlist, and next boundary.",
+    "future_resource_preflight": "A separately authorized compact manifest-identity record containing the concrete absolute path, exact byte SHA-256, route/stage/contract identity, and no S0 execution evidence."
+  },
+  "forbidden_continuations": [
+    "INITIAL_AUTHORIZATION_CREATION",
+    "S0_PREFLIGHT_OR_RUN",
+    "A1X_DATA_ACCESS",
+    "CONFIRMATION_DATA_ACCESS",
+    "TRAINING",
+    "EVALUATION",
+    "INFERENCE",
+    "CANDIDATE_SELECTION",
+    "PROMOTION",
+    "CANARY",
+    "LOCKED_TEST",
+    "CLOUD_TRANSPORT",
+    "SSH",
+    "CONVIR_OPS",
+    "PUSH"
+  ],
+  "no_retry_policy": {
+    "automatic_retry": false,
+    "stop_on": [
+      "semantic ambiguity",
+      "missing or extra allowed file",
+      "base hash mismatch",
+      "static proof or isolated-control failure",
+      "aggregate fixture mismatch",
+      "runtime/data/checkpoint/asset access",
+      "cloud or remote request",
+      "attempt to invent a concrete manifest path or SHA"
+    ],
+    "typed_failure": "Write one R2 failure closeout if possible, authorizes NONE, and stop. Do not weaken the proof or repeat the attempt."
+  },
+  "scope_confirmations": {
+    "source_files_modified_by_this_r3_review": false,
+    "source_validation_run": false,
+    "runtime_manifest_or_assets_accessed": false,
+    "dataset_or_checkpoint_accessed": false,
+    "cloud_or_ssh_or_convir_ops_used": false,
+    "runner_started": false,
+    "initial_authorization_created": false,
+    "s0_or_formal_authorized": false,
+    "canary_touched": false,
+    "locked_test_touched": false,
+    "push_performed": false
+  },
+  "next_boundary": "After and only after one committed R2 source repair passes its static proof, a separate authorization may run the cloud resource-preflight to materialize/fetch the compact manifest identity without S0. A fresh frontier R3 review must then bind the concrete absolute path and byte SHA before any initial S0 authorization. This record authorizes no cloud action, initial authorization, S0, formal, canary, locked test, or push.",
+  "completion_marker": "A1X_R3_RUNTIME_IDENTITY_PROVENANCE_REPAIR_DESIGN_COMPLETE"
+}
