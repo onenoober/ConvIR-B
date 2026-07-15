@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "task_class": "R3_SCIENTIFIC_AUTHORITY",
+  "decision": "STOP_TYPED",
+  "stop_type": "SOURCE_HASH_UNVERIFIED",
+  "dispatcher_answer": "C:/Users/wukongtao/.codex/dispatcher-runs/20260715T202929Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-balanced/answer.txt",
+  "expected_entrypoint_sha256": "b0da2e618ff055ab4f95435d66a2df31d3ee7aed2c74d81b68b8a7d8e86c65de",
+  "current_entrypoint_sha256": null,
+  "expected_validator_sha256": "fa42133d72d1c2dd1e01f4bdea00df9bfd976601922b82595f56211a79d278bf",
+  "current_validator_sha256": "fa42133d72d1c2dd1e01f4bdea00df9bfd976601922b82595f56211a79d278bf",
+  "authorized_command": null,
+  "reason": "The dispatcher answer was reviewed and the validator hash matches, but the current exact entrypoint source path/hash could not be established under the declared no-scan boundary."
+}
