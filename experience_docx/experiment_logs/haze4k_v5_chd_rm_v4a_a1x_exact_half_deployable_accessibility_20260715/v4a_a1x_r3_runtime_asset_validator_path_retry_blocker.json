@@ -1,0 +1,121 @@
+{
+  "schema_version": 2,
+  "record_type": "R3_RUNTIME_ASSET_VALIDATOR_PATH_RETRY_REVIEW_BLOCKER",
+  "closure_type": "BLOCKER",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "reviewed_route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "reviewed_route_commit": "2681b6737515f24062b287a60b83c2b41dabc98c",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_identity": "CONTINUATION_REPAIR_OF_EXISTING_PLANNED_ROUTE",
+  "task_class": "R3_SCIENTIFIC_AUTHORITY",
+  "required_role": "frontier",
+  "effort": "high",
+  "state": "R3_RUNTIME_ASSET_VALIDATOR_PATH_RETRY_REVIEW_COMPLETE_BLOCKED",
+  "decision": "V4A_A1X_R2_RUNTIME_ASSET_VALIDATOR_PATH_RETRY_NOT_AUTHORIZED_CONTRACT_AND_PROOF_WEAKENING",
+  "authorizes": "NONE",
+  "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+  "failure_phase": "r3_source_only_retry_authorization_review",
+  "reviewed_evidence": {
+    "repair_authorization": {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_runtime_asset_contract_r2_repair_authorization.json",
+      "sha256": "282267b30cd6ff750fa3edd17505f236eb817da19a28bbf757f544d7df703da1"
+    },
+    "r2_closeout": {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_asset_contract_repair_closeout.json",
+      "sha256": "35bba55f9502d9b036d39d8453b3c277d4239919e9a61536e88df5be09ed0bdf",
+      "state": "R2_S0_RUNNER_ENTRYPOINT_CONTRACT_REPAIR_BLOCKED",
+      "decision": "V4A_A1X_S0_RUNNER_ENTRYPOINT_CONTRACT_REPAIR_FAILED_STOP",
+      "authorizes": "NONE"
+    }
+  },
+  "verified_post_repair_hashes": {
+    "experience_docx/route_operations.json": "a96017b27312e3fd2ee60eea87ac3caf75e2713801dcf68035239d7bb657ea7e",
+    "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh": "0ab755d19431e23c5db6105865a80ffe55fe320f24bf34413165c634dd5a7ffa",
+    "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": "de3ace62ef944aebb54ffaa0cb6403718ca84421e19ed254ba7d103a064889fc",
+    "experience_docx/tools/validate_haze4k_v4a_a1x_route.py": "7daa91e22d38925f6cc91bb9a53f900842bdf3f27d59b7eb5a838e748ea920bc"
+  },
+  "path_normalization_assessment": {
+    "failure_mechanism_confirmed_by_source_review": true,
+    "validator_path_is_absolute": true,
+    "repo_argument_may_remain_relative": true,
+    "failing_expression": "str(path.relative_to(repo)) for Path(__file__) when --repo is relative",
+    "failure_occurs_before_static_evidence_write": true,
+    "validator_only_path_normalization_false_positive": false,
+    "retry_authorized": false,
+    "reason": "Resolving repo and validator paths consistently would remove the reported exception, but it would then allow a weakened validator to emit unsupported positive and negative proof claims for source that changes the frozen runtime contract. The path defect is real but is not the only blocker."
+  },
+  "blocking_findings": [
+    {
+      "code": "STATIC_PROOF_PREDICATES_NOT_IMPLEMENTED",
+      "severity": "BLOCKING",
+      "path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "source_locations": [31, 32],
+      "reason": "The validator constructs every isolated negative-control result directly from the NEGATIVES constant and copies every positive proof label into the payload. It applies no independent mutations, analyzes no mutated source, and builds the aggregate code list without analyzing an aggregate fixture. This violates the frozen requirement for sixteen independently detected controls, one directly analyzed aggregate fixture, and no proof weakening."
+    },
+    {
+      "code": "FROZEN_S0_SCIENTIFIC_SEMANTICS_REPLACED",
+      "severity": "BLOCKING",
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "source_locations": [79, 101],
+      "reason": "runtime_lifecycle consumes only target_delta_u_native from records[:2], defines prediction as target multiplied by zero, and optimizes a zero-valued loss. It does not execute the frozen five-input A1X forward path, true-versus-shuffled target mapping, measured-support normalized endpoint MSE, frozen base-model/operator rendering, matched CUDA cost gates, or distinct retained learned-state contract. This is a scientific-contract change, not a path-only repair."
+    },
+    {
+      "code": "RUNTIME_ASSET_VALIDATION_PREDICATES_INCOMPLETE",
+      "severity": "BLOCKING",
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "source_locations": [50, 77],
+      "reason": "Manifest validation checks path, byte count, hash, record keys, order, and two shared descriptors, but omits required encoding, dtype, tensor shape, finiteness, nonempty measured support, producer-role, exact source-chain/checkpoint/operator identities, per-operator distinctness, both-shape occurrence, and target-only shuffled-mapping predicates."
+    },
+    {
+      "code": "INITIAL_AUTHORIZATION_CONTRACT_MISMATCH",
+      "severity": "BLOCKING",
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "source_locations": [39, 48],
+      "reason": "authorization_guard expects the R3 bounded-repair tuple rather than a future initial S0 authorization tuple and also requires top-level fields that are not present in the committed repair authorization. The guarded runtime contract therefore is not the frozen initial-authorization contract."
+    },
+    {
+      "code": "ROUTE_OPERATION_RUNTIME_ASSET_CONTRACT_ABBREVIATED",
+      "severity": "BLOCKING",
+      "path": "experience_docx/route_operations.json",
+      "source_locations": [7],
+      "reason": "The added runtime_asset_contract is a short summary rather than the exact frozen transport contract. It omits the immutable manifest identity fields, source chain, checkpoint/state and operator pins, descriptor contract, semantic roles, exact-half transport, and shuffle rules required by the R3 authorization."
+    },
+    {
+      "code": "RUNNER_DURABLE_OUTPUT_CAPTURE_REMOVED",
+      "severity": "BLOCKING",
+      "path": "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "source_locations": [18, 19],
+      "reason": "The preserved runner removes runtime.log and the tee/PIPESTATUS capture while the route workflow requires durable stdout and stderr capture for every future cloud run. This is outside a validator-path-only retry."
+    }
+  ],
+  "frozen_contract_assessment": {
+    "scientific_contract_unchanged": false,
+    "proof_predicates_unchanged": false,
+    "source_behavior_preserved": false,
+    "path_only_retry_criteria_met": false
+  },
+  "forbidden_continuations": [
+    "AUTOMATIC_OR_PATH_ONLY_R2_RETRY",
+    "PROOF_WEAKENING",
+    "SOURCE_COMMIT_OF_THE_PRESERVED_DIFF",
+    "INITIAL_AUTHORIZATION_CREATION",
+    "S0_OR_FORMAL_AUTHORIZATION",
+    "RUNTIME_OR_DATA_OR_CHECKPOINT_ACCESS",
+    "CLOUD_OR_SSH_OR_CONVIR_OPS",
+    "CANARY_OR_LOCKED_TEST",
+    "PUSH"
+  ],
+  "scope_confirmations": {
+    "source_files_modified_by_r3": false,
+    "source_only_validator_executed_by_r3": false,
+    "runtime_executed": false,
+    "runtime_assets_or_data_or_checkpoints_accessed": false,
+    "cloud_or_ssh_or_convir_ops_used": false,
+    "initial_authorization_created": false,
+    "s0_or_formal_authorized": false,
+    "canary_or_locked_test_touched": false,
+    "push_performed": false
+  },
+  "retry_policy": "NO_AUTOMATIC_RETRY",
+  "next_boundary": "A new explicit R3 authorization would be required before any R2 repair. It must restore the frozen source behavior and all positive, isolated-negative, and aggregate proof predicates while fixing path normalization. This blocker itself authorizes no repair, validation, runtime, stage, cloud, data, checkpoint, canary, locked-test, or push action."
+}
