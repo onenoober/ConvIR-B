@@ -184,8 +184,8 @@ def run_a1c(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
     payload, _, state_path = PARENT.load_final_state(Path(audit.a0r_trace_dir))
     all_names, _ = v3s.load_names_and_folds(args, legacy)
     fresh = list(all_names[256:768])
-    selected = fresh[:32] if audit.mode == "s0" else fresh
-    if len(fresh) != 512 or len(set(fresh)) != 512 or len(selected) != (32 if audit.mode == "s0" else 512):
+    selected = fresh[:32] if audit.a1c_stage == "s0" else fresh
+    if len(fresh) != 512 or len(set(fresh)) != 512 or len(selected) != (32 if audit.a1c_stage == "s0" else 512):
         raise RuntimeError("A1C frozen fresh512/S0 name contract failed")
     _, model, optimizer, parameters = PARENT.a0p.load_cell(payload, args, v3s, legacy, frozen, list(all_names[:128]), folds, device)
     del optimizer, parameters
@@ -193,7 +193,7 @@ def run_a1c(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
     out = Path(output_dir)
     source_path = out / f"{args.run_tag}_source_manifest.json"
     source = json.loads(source_path.read_text(encoding="utf-8"))
-    source.update({"route_id": ROUTE_ID, "route_commit": audit.expected_route_commit, "stage": audit.mode, "cells": list(CELLS), "a1r_transport_pairs": {"400x400": "208x208", "480x640": "240x320"}, "fresh_names_sha256": hashlib.sha256("\n".join(fresh).encode()).hexdigest(), "final_state_sha256": sha256(state_path), "locked_test_touched": False, "canary_touched": False, "confirmation_touched": False})
+    source.update({"route_id": ROUTE_ID, "route_commit": audit.expected_route_commit, "stage": audit.a1c_stage, "cells": list(CELLS), "a1r_transport_pairs": {"400x400": "208x208", "480x640": "240x320"}, "fresh_names_sha256": hashlib.sha256("\n".join(fresh).encode()).hexdigest(), "final_state_sha256": sha256(state_path), "locked_test_touched": False, "canary_touched": False, "confirmation_touched": False})
     PARENT.write_json(out / "v4a_a1c_source_manifest.json", source)
     rows: list[dict[str, Any]] = []
     limits = {"zero": 0.0, "endpoint": 0.0, "support": 0.0, "grid_zero": 0.0}
@@ -223,15 +223,15 @@ def run_a1c(args: Any, v3s: Any, legacy: Any, frozen: Any, names: list[str], fol
                     tolerance = PARENT.numerical_tolerance(old_low_mse, old_high_mse, float(chosen["low_mse"]), float(chosen["high_mse"]))
                     action = selected_delta(current, value, chosen)
                     rows.append({"name": name, "operator": operator, "cell": cell, "native_shape": shape, "low_shape": "full" if low_size is None else f"{low_size[0]}x{low_size[1]}", "gain": high_psnr - shrink_psnr, "repairable": float(high_psnr > old_psnr), "anchor_nonworse": float(chosen["low_mse"]) <= old_low_mse + tolerance, "predecessor_nonworse": float(chosen["high_mse"]) <= old_high_mse + tolerance, "severe": high_psnr - old_psnr <= -0.2, "hard": high_psnr - old_psnr <= -0.5, "safe_count": safe_count, "saturation": PARENT.active_saturation_fraction(action, delta_bound, support)})
-            PARENT.emit_progress(Path(audit.status_file), {"V4A_A1C_PROGRESS": {"stage": audit.mode, "completed_images": number, "total_images": len(selected), "cells": list(CELLS)}})
+            PARENT.emit_progress(Path(audit.status_file), {"V4A_A1C_PROGRESS": {"stage": audit.a1c_stage, "completed_images": number, "total_images": len(selected), "cells": list(CELLS)}})
     structural = len(rows) == len(selected) * len(SOURCE.V3W.OPERATORS) * len(CELLS) and limits["zero"] == 0.0 and limits["endpoint"] <= 1e-7 and limits["support"] == 0.0 and limits["grid_zero"] <= 1e-9 and all(row["anchor_nonworse"] and row["predecessor_nonworse"] and not row["severe"] and not row["hard"] for row in rows)
     PARENT.write_rows(out / "v4a_a1c_rows_cloud_only.csv", rows)
     summary = [{"cell": cell, "operator": op, "count": len(group), "mean_gain_db": float(np.mean([row["gain"] for row in group]))} for (cell, op), group in sorted(((key, value) for key, value in defaultdict(list, {key: [row for row in rows if (row["cell"], row["operator"]) == key] for key in {(row["cell"], row["operator"]) for row in rows}}).items()))]
     PARENT.write_rows(out / "v4a_a1c_cell_operator_summary.csv", summary)
-    bootstrap = paired_bootstrap(rows) if audit.mode == "formal" and structural else {"schema_version": 2, "status": "NOT_RUN_S0"}
+    bootstrap = paired_bootstrap(rows) if audit.a1c_stage == "formal" and structural else {"schema_version": 2, "status": "NOT_RUN_S0"}
     PARENT.write_json(out / "v4a_a1c_bootstrap_summary.json", bootstrap)
-    state, decision, authorizes = ("COMPLETED_GATE_PASS", "V4A_A1C_S0_ALIGNMENT_PASS_AUTHORIZE_FORMAL_ONLY", "A1C_FORMAL_INTERFACE_CEILING_ONLY") if audit.mode == "s0" and structural else (("COMPLETED_GATE_FAIL", "V4A_A1C_S0_ALIGNMENT_FAIL_STOP", "NONE") if audit.mode == "s0" else classify(bootstrap, structural))
-    closeout = {"schema_version": 2, "route_id": ROUTE_ID, "run_id": args.run_tag, "route_commit": audit.expected_route_commit, "runner_sha256": audit.runner_sha256, "stage": audit.mode, "state": state, "decision": decision, "authorizes": authorizes, "cells": list(CELLS), "structural_valid": structural, "evidence_role": "engineering_debug" if audit.mode == "s0" else "development_screening", "gate_type": "structural_integrity" if audit.mode == "s0" else "scientific_utility", "limits": limits, "source_manifest": str(out / "v4a_a1c_source_manifest.json"), "bootstrap_summary": str(out / "v4a_a1c_bootstrap_summary.json"), "raw_rows_cloud_only": str(out / "v4a_a1c_rows_cloud_only.csv"), "locked_test_touched": False, "canary_touched": False, "confirmation_touched": False, "training_occurred": False, "candidate_selected": False, "wall_seconds": time.perf_counter() - started}
+    state, decision, authorizes = ("COMPLETED_GATE_PASS", "V4A_A1C_S0_ALIGNMENT_PASS_AUTHORIZE_FORMAL_ONLY", "A1C_FORMAL_INTERFACE_CEILING_ONLY") if audit.a1c_stage == "s0" and structural else (("COMPLETED_GATE_FAIL", "V4A_A1C_S0_ALIGNMENT_FAIL_STOP", "NONE") if audit.a1c_stage == "s0" else classify(bootstrap, structural))
+    closeout = {"schema_version": 2, "route_id": ROUTE_ID, "run_id": args.run_tag, "route_commit": audit.expected_route_commit, "runner_sha256": audit.runner_sha256, "stage": audit.a1c_stage, "state": state, "decision": decision, "authorizes": authorizes, "cells": list(CELLS), "structural_valid": structural, "evidence_role": "engineering_debug" if audit.a1c_stage == "s0" else "development_screening", "gate_type": "structural_integrity" if audit.a1c_stage == "s0" else "scientific_utility", "limits": limits, "source_manifest": str(out / "v4a_a1c_source_manifest.json"), "bootstrap_summary": str(out / "v4a_a1c_bootstrap_summary.json"), "raw_rows_cloud_only": str(out / "v4a_a1c_rows_cloud_only.csv"), "locked_test_touched": False, "canary_touched": False, "confirmation_touched": False, "training_occurred": False, "candidate_selected": False, "wall_seconds": time.perf_counter() - started}
     PARENT.write_json(out / "v4a_a1c_closeout.json", closeout)
     print(json.dumps(closeout, sort_keys=True), flush=True)
     return closeout
@@ -241,7 +241,7 @@ def audit(argv: list[str]) -> None:
     parser = argparse.ArgumentParser(add_help=False)
     for flag in ("v3z-root", "a1f-module", "a0r-trace-dir", "expected-route-commit", "expected-route-card-sha256", "runner-sha256", "status-file"):
         parser.add_argument(f"--{flag}", required=True)
-    parser.add_argument("--mode", required=True, choices=("s0", "formal"))
+    parser.add_argument("--a1c-stage", required=True, choices=("s0", "formal"))
     args, v3z_args = parser.parse_known_args(argv)
     if not v3z_args:
         raise ValueError("frozen v3z arguments are required")
