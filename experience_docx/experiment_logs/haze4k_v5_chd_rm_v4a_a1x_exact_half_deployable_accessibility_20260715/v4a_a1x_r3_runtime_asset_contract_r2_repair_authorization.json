@@ -1,0 +1,562 @@
+{
+  "schema_version": 2,
+  "record_type": "R3_RUNTIME_ASSET_CONTRACT_AND_BOUNDED_R2_REPAIR_AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "authorization_base_commit": "a8acf26f9dfdab4df3ea4737c53cbbeb82d87f99",
+  "route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_identity": "CONTINUATION_REPAIR_OF_EXISTING_PLANNED_ROUTE",
+  "task_class": "R3_SCIENTIFIC_AUTHORITY",
+  "required_role": "frontier",
+  "effort": "xhigh",
+  "state": "R3_RUNTIME_ASSET_CONTRACT_DESIGN_COMPLETE",
+  "decision": "V4A_A1X_RUNTIME_ASSET_CONTRACT_FROZEN_AUTHORIZE_ONE_BOUNDED_R2_REPAIR",
+  "authorizes": "R2_LOCAL_RUNNER_ENTRYPOINT_RUNTIME_ASSET_CONTRACT_REPAIR_ONLY",
+  "host_identity_mode": "dispatcher_receipt",
+  "transport_contract": "local_only",
+  "reviewed_stop": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_runner_entrypoint_contract_repair_authorization_stop.json",
+    "commit": "a8acf26f9dfdab4df3ea4737c53cbbeb82d87f99",
+    "git_blob_sha1": "2a8c1c21d16487cf227fe5939ef2cf12086a81c8",
+    "sha256": "f848815d0b060dde422744fe2fb41258853eddd44bf0583e32823c0f8296bc0d",
+    "state": "R3_RUNNER_ENTRYPOINT_REPAIR_REVIEW_COMPLETE_BLOCKED",
+    "decision": "V4A_A1X_R2_RUNNER_ENTRYPOINT_REPAIR_NOT_AUTHORIZED_MISSING_FROZEN_RUNTIME_ASSET_CONTRACT",
+    "authorizes": "NONE"
+  },
+  "reviewed_evidence": [
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:AGENTS.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_AGENT_COST_ROUTING_PROTOCOL.md",
+    "github:a8acf26f9dfdab4df3ea4737c53cbbeb82d87f99:experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md",
+    "github:a8acf26f9dfdab4df3ea4737c53cbbeb82d87f99:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_design_handoff.json",
+    "github:a8acf26f9dfdab4df3ea4737c53cbbeb82d87f99:experience_docx/route_operations.json",
+    "github:a8acf26f9dfdab4df3ea4737c53cbbeb82d87f99:experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+    "github:a8acf26f9dfdab4df3ea4737c53cbbeb82d87f99:experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "github:a8acf26f9dfdab4df3ea4737c53cbbeb82d87f99:experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "github:793deadd24cede38bbd51ad8299765e0edabac9c:experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "github:793deadd24cede38bbd51ad8299765e0edabac9c:experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+    "github:a8acf26f9dfdab4df3ea4737c53cbbeb82d87f99:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_completion_repair_static_validation.json",
+    "github:a8acf26f9dfdab4df3ea4737c53cbbeb82d87f99:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_completion_repair_closeout.json",
+    "github:a8acf26f9dfdab4df3ea4737c53cbbeb82d87f99:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_s0_semantics_repair_static_validation.json",
+    "github:a8acf26f9dfdab4df3ea4737c53cbbeb82d87f99:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_semantics_repair_closeout.json",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_smoke_source_manifest.json",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_smoke_closeout.json",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_r3_review.json",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a_a1c_s0_source_manifest.json",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a_a1c_s0_closeout.json",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/v3l_a0_canonical_operator_artifact_manifest.json"
+  ],
+  "r3_design_assessment": {
+    "contract_uniquely_freezeable": true,
+    "scientific_contract_changed": false,
+    "reason": "The card fixes the five forward inputs, target, support, operators, exact-half transport, first32 data role, native shapes, model, loss, optimizer, seed, update budget, cost gates, and terminal tuples. The A1R and A1C source manifests fix the parent source chain, model state, checkpoints, operator artifacts, and shape transport. The only missing element was an immutable transport envelope binding those roles to explicit per-name and per-operator paths and content hashes.",
+    "resolution": "Freeze one manifest-only runtime transport. The runner passes one exact manifest path and SHA-256. The entrypoint validates the initial authorization before any manifest, dataset tensor, source module, model state, checkpoint, or operator artifact open; then it validates every explicit path and content hash without filesystem enumeration.",
+    "asset_materialization_status": "NOT_AUTHORIZED_AND_NOT_PERFORMED",
+    "initial_authorization_status": "NOT_CREATED_AND_NOT_AUTHORIZED",
+    "s0_status": "BLOCKED"
+  },
+  "runtime_asset_transport_contract": {
+    "contract_id": "A1X_S0_RUNTIME_ASSET_TRANSPORT_V1",
+    "manifest_schema_version": 1,
+    "stage": "s0",
+    "evidence_role": "engineering_debug",
+    "immutability_rule": "A future initial authorization must bind both the exact absolute manifest path and the SHA-256 of its bytes. Neither the runner nor entrypoint may discover, regenerate, rewrite, merge, substitute, or repair a manifest or asset. A path match without a content match, or a content match at an unbound path, fails closed.",
+    "future_manifest_identity_fields": [
+      "schema_version",
+      "contract_id",
+      "route_id",
+      "stage",
+      "evidence_role",
+      "locked_test_policy",
+      "asset_set_id",
+      "asset_root",
+      "source_chain",
+      "checkpoint_and_state_assets",
+      "operator_assets",
+      "native_shape_pairs",
+      "first32_names",
+      "record_order",
+      "records"
+    ],
+    "source_chain": {
+      "a1x_anchor": {
+        "branch": "github/codex/haze4k-official-arch-anchor",
+        "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+      },
+      "a1r_smoke": {
+        "route_id": "haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714",
+        "route_commit": "d79fdff7f2bd923d84969ac242f214d6736b2d7f",
+        "run_id": "v4a_a1r_s0_smoke_r2",
+        "source_manifest_runtime_path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_s0_smoke_r2/v4a_a1r_source_manifest.json",
+        "source_manifest_github_ref": "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_smoke_source_manifest.json",
+        "source_manifest_git_blob_sha1": "c477612a456df86f465ce305436022305fb64118",
+        "source_manifest_sha256": "900dcb1dfb4e2e25ff283e7753b8288b1df0a23cbdd66547131b8a1045dfe474"
+      },
+      "a1c_exact_half": {
+        "route_id": "haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715",
+        "route_commit": "b62dd75ea30123e2fca94ecb1d4a57c02dbc8f64",
+        "run_id": "v4a-a1c-s0-r1",
+        "source_manifest_runtime_path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a-a1c-s0-r1/v4a_a1c_source_manifest.json",
+        "source_manifest_github_ref": "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a_a1c_s0_source_manifest.json",
+        "source_manifest_git_blob_sha1": "f39c7fb6f696420223f5e273f418beeaa5d9b711",
+        "source_manifest_sha256": "6cad07413599d5ad163d3cbe9cf39f09efa2f7de249ffeca0db92b0ad5258284"
+      },
+      "parent_source_checkouts": [
+        {"role": "A1F_PARENT", "commit": "d4f8d0936869c822ae19b5c21172efc2eb973dd8"},
+        {"role": "V3Z_SOURCE", "commit": "3caddcc5265732e5be77e3404119a28cb28c11e6"},
+        {"role": "V3S_SOURCE", "commit": "2860f580bb25cc75ec9ade56378af6d77f5c8d8b"},
+        {"role": "V3P_SOURCE", "commit": "555fd008e29f02128564f2fad41d0095ee44f5ea"}
+      ],
+      "required_parent_evidence_hashes": {
+        "a1f_r3_review_sha256": "a8b9064308710ac5fc890b9de0158c1faddb4d51f7d298d4991e9ddfb3616e1d",
+        "a0r_trace_manifest_sha256": "370f3f46b949391a8200c50b893561d78608adfef3c59f9ba2f76dd84a155780"
+      }
+    },
+    "checkpoint_and_state_assets": {
+      "official_a0_checkpoint": {
+        "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+        "bytes": 34797069,
+        "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+      },
+      "control_checkpoint": {
+        "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-fam2modres-control-e5frome1-seed3407-20260710/Training-Results/Final.pkl",
+        "bytes": 34798010,
+        "sha256": "08207119a5cf9e5c439dd2cb81b99029ade1861f2739d31e75f2f9f78d57c0f2"
+      },
+      "a0r_final_model_state": {
+        "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/a0r_r2/r1/trace/states/epoch16_update512_final.pt",
+        "sha256": "ed0832f220996af3fd8e617b7d04d643dc6ca052a3603adee99d59e78fd1e125"
+      },
+      "density_artifact": {
+        "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2-chd-rm-density-need-calibration/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2_density_need_calibration_20260708/artifacts/d3_density_only_head.pt",
+        "bytes": 59658,
+        "sha256": "1ffce13dccb41d96a47c2b5275f87bf2fdb73c226a190cfa240e5c71c1ec326f"
+      },
+      "d7c_artifact": {
+        "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2d-chd-rm-need-spatial-hard-negative/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/d7c_full/artifacts/d7c_mc_topk_hn_ordinal_head.pt",
+        "bytes": 288048,
+        "sha256": "09f449232024395cf64db15a2a0efa0f12d3e0e049e1da3d67229a3dc5729361"
+      },
+      "fresh_split_manifest": {
+        "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-counterfactual-advantage-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/fresh_route_confirm_split_manifest.json",
+        "bytes": 66646,
+        "sha256": "c8c00fefc965ded3389b6311fc67ea521e1f3174f27793688544abe09dc420e7"
+      },
+      "v3j_action_bounds": {
+        "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-counterfactual-advantage-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/bounded_action_space_bounds.json",
+        "bytes": 374,
+        "sha256": "485ea12ff14c33b87105a50b6d118a9937c7e7f1b113062fe03d91eef3c9cc21"
+      },
+      "reference_oof_rows": {
+        "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-counterfactual-advantage-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/cloud_only_raw_common_action/v3l_a1_oracle_policy_oof_rows_cloud_only.csv",
+        "bytes": 2671809,
+        "sha256": "b4a10184fab77b0045440dc88530d000a892acf2105a6295d5ad8a488c67ecb1"
+      }
+    },
+    "operator_assets": {
+      "manifest": {
+        "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/v3l_a0_canonical_operator_artifact_manifest.json",
+        "bytes": 1021,
+        "git_blob_sha1": "43e9400c5a0bb5f4eb6195a610e11e80872c0fc8",
+        "sha256": "1d2ffa499128ad08a272d67c5439583900afe8ef87fb3256193ad5fe21c3af84"
+      },
+      "ordered_operators": ["D_ref", "D_rep"],
+      "D_ref": {
+        "seed": 3407,
+        "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/cloud_only_artifacts/v3l_a0_D_ref_context_seed3407.pt",
+        "bytes": 335232,
+        "sha256": "3c5ed807cc0cb25170720fe2b8f34cbe81b7bbc3857f7a3f1423f73d77cd6692"
+      },
+      "D_rep": {
+        "seed": 3408,
+        "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/cloud_only_artifacts/v3l_a0_D_rep_context_seed3408.pt",
+        "bytes": 335104,
+        "sha256": "3843471c6f4c130495ee6f6d62193c4235d9c89061621288ecb8d7455944ae62"
+      },
+      "distinctness_rule": "D_ref and D_rep must retain their exact distinct path, content SHA-256, seed, and producer branch. A label-only branch, shared operator artifact, fallback operator, or swapped mapping is forbidden. Per-record tensors may numerically coincide, but their explicit operator provenance and record paths may not alias."
+    },
+    "native_shape_pairs": [
+      {"native_image_hw": [400, 400], "exact_a1r_context_hw": [208, 208]},
+      {"native_image_hw": [480, 640], "exact_a1r_context_hw": [240, 320]}
+    ],
+    "exact_half_transport": {
+      "cell": "exact_half",
+      "float_tensor_rule": "torch.nn.functional.interpolate(native_tensor, size=exact_a1r_context_hw, mode='bilinear', align_corners=False, antialias=False)",
+      "support_rule": "torch.nn.functional.interpolate(native_support_float, size=exact_a1r_context_hw, mode='bilinear', align_corners=False, antialias=False) > 0.0",
+      "forbidden": ["resize_to_any_other_shape", "crop", "padding", "antialias_true", "nearest_support_substitution", "missing_shape_substitution"]
+    },
+    "delta_bound": [0.00919640064239502, 0.009401530027389526, 0.009474039077758789],
+    "first32_names": [
+      "1594_0.71_0.5.png",
+      "1595_0.99_1.84.png",
+      "1597_0.69_1.45.png",
+      "1598_0.67_1.4.png",
+      "159_0.6_1.46.png",
+      "1600_0.78_1.77.png",
+      "1603_0.54_0.74.png",
+      "1607_0.91_0.88.png",
+      "160_0.63_1.04.png",
+      "1613_0.56_1.31.png",
+      "1614_0.81_0.78.png",
+      "1615_0.91_1.25.png",
+      "1616_0.76_0.88.png",
+      "1617_0.56_1.97.png",
+      "1619_0.94_1.08.png",
+      "1622_0.98_1.75.png",
+      "1623_0.78_1.81.png",
+      "1627_0.94_0.52.png",
+      "1628_0.8_1.49.png",
+      "1633_0.73_1.49.png",
+      "1634_0.75_1.81.png",
+      "1639_0.69_1.12.png",
+      "1640_0.53_0.59.png",
+      "1646_0.55_1.55.png",
+      "1649_0.8_0.86.png",
+      "1650_0.76_1.07.png",
+      "1652_0.62_1.35.png",
+      "1653_0.9_1.01.png",
+      "1654_0.66_1.9.png",
+      "1656_0.64_1.45.png",
+      "1658_0.96_1.72.png",
+      "1660_0.83_0.67.png"
+    ],
+    "first32_identity_rule": "The manifest first32_names array must equal this array byte-for-value and order-for-order, have count 32 and uniqueness 32, and equal A1R smoke source manifest fresh_names[0:32]. No sort, enumeration, glob, missing-name skip, replacement, or extra name is permitted.",
+    "record_contract": {
+      "record_count": 64,
+      "key_set": "exact Cartesian product of first32_names and ordered_operators",
+      "record_order": "native_image_hw ascending by the frozen pair order, then name lexicographically, then operator in [D_ref,D_rep] order",
+      "required_record_fields": [
+        "name",
+        "operator",
+        "native_image_hw",
+        "exact_a1r_context_hw",
+        "hazy_rgb_native",
+        "frozen_base_rgb_native",
+        "old_0p125_rgb_native",
+        "old_0p25_rgb_native",
+        "current_delta_u_native",
+        "target_delta_u_native",
+        "measured_active_support_native"
+      ],
+      "tensor_descriptor_fields": ["path", "sha256", "bytes", "encoding", "dtype", "shape", "producer_role"],
+      "tensor_encoding": "npy_allow_pickle_false",
+      "float_tensor_contract": {"dtype": "float32", "shape": "[1,3,H,W]", "finite": true},
+      "support_tensor_contract": {"dtype": "bool", "shape": "[1,1,H,W]", "finite": true, "nonempty": true},
+      "per_name_shared_fields": ["hazy_rgb_native", "frozen_base_rgb_native"],
+      "per_name_shared_rule": "For one name, D_ref and D_rep records must use identical path, SHA-256, bytes, dtype, shape, and producer_role for both per-name shared fields.",
+      "per_operator_fields": ["old_0p125_rgb_native", "old_0p25_rgb_native", "current_delta_u_native", "target_delta_u_native", "measured_active_support_native"],
+      "per_operator_rule": "Each per-operator descriptor is addressed only by its exact (name,operator) key. Paths must be explicit and operator-specific; basename conventions, root-plus-name inference, cross-operator fallback, and another record's descriptor are forbidden.",
+      "shape_rule": "Every descriptor native shape must match its record native_image_hw. The record exact_a1r_context_hw must be the one frozen pair for that native shape. Both native pairs must occur, and no third pair is accepted.",
+      "batch_rule": "Build batches only from the 64 manifest records, grouped by exact native shape, then sorted by name and operator, batch size at most four. No filesystem query may contribute a name or record.",
+      "shuffle_rule": "For A1X_ACCESS_SHUFFLED only, map target_delta_u_native within each exact (operator,native_image_hw) block by sorted-name cyclic plus one. All five forward inputs, measured support, and current endpoint remain on the source name/operator record. Every block must have at least two names and no self-pair."
+    },
+    "semantic_roles": {
+      "hazy_rgb_native": {
+        "scope": "per_name_shared",
+        "source": "A1R frozen_output_sample sample['hazy']",
+        "forward_input_order": 0
+      },
+      "frozen_base_rgb_native": {
+        "scope": "per_name_shared",
+        "source": "A1R frozen_output_sample sample['base'] from the pinned official/control/model-state chain",
+        "forward_input_order": 1
+      },
+      "old_0p125_rgb_native": {
+        "scope": "per_name_operator",
+        "source": "clamp(frozen_base_rgb_native + 0.125 * frozen_operator_step(name,operator), 0.0, 1.0)",
+        "forward_input_order": 2
+      },
+      "old_0p25_rgb_native": {
+        "scope": "per_name_operator",
+        "source": "clamp(frozen_base_rgb_native + 0.25 * frozen_operator_step(name,operator), 0.0, 1.0)",
+        "forward_input_order": 3
+      },
+      "current_delta_u_native": {
+        "scope": "per_name_operator",
+        "source": "pinned V3W.delta_for('output', frozen_current_model, frozen_output_sample, operator)",
+        "forward_input_order": 4,
+        "endpoint_role": "zero_initialized_baseline_endpoint"
+      },
+      "target_delta_u_native": {
+        "scope": "per_name_operator",
+        "source": "support * clamp_channelwise(support * clamp_channelwise(4.0 * (clean_label - frozen_base_rgb_native), action_bound) - frozen_operator_step(name,operator), delta_bound)",
+        "forward_input": false,
+        "training_role": "privileged_endpoint_target_only"
+      },
+      "measured_active_support_native": {
+        "scope": "per_name_operator",
+        "source": "measured frozen sample support for the exact name/operator, converted to bool by support > 0.0",
+        "forward_input": false,
+        "training_role": "mask and measured active-element denominator",
+        "forbidden_sources": ["target_delta_u_native", "torch.ones_like", "constant_one", "full_tensor_mean", "fallback_support"]
+      },
+      "head_input": "Concatenate the D0 exact-half transports in forward_input_order to exactly [N,15,h,w]. Clean label, target, support, safe-grid winner, action amplitude, and outcome must not reach the head.",
+      "predicted_endpoint": "clamp_channelwise(D0(current_delta_u_native) + D0(measured_active_support_native) * delta_bound * A1X_ACCESS_Head(head_input), delta_bound)",
+      "loss": "sum(((predicted_endpoint - D0(target_delta_u_native)) ** 2) * active_support) / measured_active_support_element_count",
+      "zero_noop": "Before optimizer construction or mutation, the maximum absolute difference between predicted_endpoint and D0(current_delta_u_native) must equal 0.0 for both cells and both operators/native-shape coverage."
+    },
+    "path_and_content_validation": {
+      "manifest_path": "Compare the CLI absolute path to the path pinned inside the already-validated initial authorization before opening the manifest.",
+      "manifest_content": "Stream SHA-256 of the exact manifest bytes and compare to both CLI and authorization SHA-256 before JSON parsing.",
+      "source_manifests": "Require the exact A1R and A1C runtime paths and SHA-256 values above, then require their route_id, route_commit, run_id, shape, name, state, checkpoint, model-state, and operator fields to match this contract.",
+      "parent_checkouts": "Use explicit roots supplied by the frozen manifest; require absolute canonical paths, clean Git worktrees, and exact commits above before importing any parent source module.",
+      "static_assets": "For every checkpoint, state, operator, and parent evidence asset, require exact absolute canonical path, regular non-symlink file, byte count when frozen above, and streaming SHA-256 before load.",
+      "record_assets": "For every descriptor, require path under the manifest asset_root, exact absolute canonical non-symlink regular file, exact bytes and SHA-256, npy loading with allow_pickle=False, exact dtype and shape, finite float content, and nonempty bool support before tensor use.",
+      "no_enumeration": "Prohibit glob, rglob, iterdir, listdir, scandir, walk, recursive discovery, filename parsing, and directory-derived membership. Only the literal authorization path, manifest paths, and 64 explicit record descriptors may be opened.",
+      "no_substitution": "Missing, unreadable, duplicate-key, extra-key, extra-record, wrong-order, wrong-shape, wrong-path, wrong-byte-count, wrong-hash, wrong-dtype, nonfinite, empty-support, operator-alias, source-identity, or locked-policy mismatch is terminal. Do not regenerate, resize to a substitute shape, skip, relabel, fall back, or continue partially."
+    },
+    "preflight_failure_tuple": {
+      "state": "FAILED_PREFLIGHT",
+      "decision": "V4A_A1X_S0_RUNTIME_ASSET_PREFLIGHT_FAILED_STOP",
+      "authorizes": "NONE",
+      "failure_class": "RESOURCE_PREFLIGHT",
+      "runtime_started": false,
+      "scientific_gate_evaluated": false
+    }
+  },
+  "projection_contract": {
+    "route_operations_schema_v2": {
+      "file": "experience_docx/route_operations.json",
+      "allowed_change": "Add exactly one runtime_asset_contract object to the existing A1X_S0 operation; preserve every existing field and value.",
+      "required_object": {
+        "contract_id": "A1X_S0_RUNTIME_ASSET_TRANSPORT_V1",
+        "manifest_schema_version": 1,
+        "manifest_path_env": "A1X_RUNTIME_ASSET_MANIFEST_JSON",
+        "manifest_sha256_env": "A1X_RUNTIME_ASSET_MANIFEST_SHA256",
+        "record_count": 64,
+        "operators": ["D_ref", "D_rep"],
+        "native_shape_pairs": ["400x400:208x208", "480x640:240x320"],
+        "first32_source_manifest_sha256": "900dcb1dfb4e2e25ff283e7753b8288b1df0a23cbdd66547131b8a1045dfe474",
+        "authorization_binding_required": true,
+        "preflight_before_runtime_required": true,
+        "filesystem_enumeration": false
+      },
+      "unchanged_guards": ["schema_version", "route_id", "source_commit", "state", "decision", "authorizes", "locked_test_policy", "formal_mode_enabled", "forbidden_continuations", "prior_terminal_tuple", "allowed_terminal_tuples", "workspace_policy", "collision_policy"]
+    },
+    "runner": {
+      "file": "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "required_environment": ["ROUTE_COMMIT", "RUN_ID", "AUTHORIZATION_JSON", "A1X_RUNTIME_ASSET_MANIFEST_JSON", "A1X_RUNTIME_ASSET_MANIFEST_SHA256"],
+      "removed_environment": ["DATA_ROOT", "OFFICIAL_CHECKPOINT"],
+      "required_entrypoint_arguments_in_order": [
+        "--stage",
+        "--authorization-json",
+        "--route-commit",
+        "--run-id",
+        "--run-root",
+        "--runtime-asset-manifest-json",
+        "--runtime-asset-manifest-sha256",
+        "--status-json",
+        "--heartbeat-json",
+        "--learned-state-manifest-json",
+        "--closeout-json"
+      ],
+      "removed_arguments": ["--official-checkpoint", "--official-checkpoint-sha256", "--hazy-root", "--frozen-base-root", "--old-0125-root", "--old-025-root", "--current-delta-root", "--target-delta-root"],
+      "asset_open_rule": "The shell runner must not test, hash, parse, enumerate, or open the runtime manifest, source manifests, record assets, checkpoint, state, or operator files. It passes opaque path/hash values to the guarded entrypoint.",
+      "terminal_marker_rule": "After entrypoint return, require the closeout file to exist. The runner alone emits exactly one terminal marker: A1X_S0_OK only for entrypoint exit 0, otherwise A1X_S0_FAILED. Propagate the entrypoint exit code. The entrypoint and validator emit neither marker."
+    },
+    "entrypoint": {
+      "file": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "parser_rule": "The required parser argument set must equal the runner argument set above. No unsupplied required argument is allowed. Only stage s0 is accepted.",
+      "authorization_guard_order": [
+        "Parse CLI without importing target, model, renderer, profiler, loader, NumPy, PIL, or torch modules.",
+        "Open only authorization-json and require exact route_id/state/decision/authorizes tuple.",
+        "Require source_commit 3b4da35440c8c26a7d1bcaf1daf342e11d9a3898, route card SHA-256 c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da, locked_test_policy blocked, exact route_commit, contract_id, exact manifest absolute path, and exact manifest SHA-256.",
+        "On authorization mismatch, write only the typed authorization failure closeout when possible and stop with authorizes NONE before every manifest, source, data, tensor, model, state, checkpoint, operator, renderer, profiler, and loader open.",
+        "After authorization passes, validate manifest path and bytes hash before JSON parsing, then validate the complete source chain and all static assets, then validate all 64 records, then import/build runtime code."
+      ],
+      "data_open_rule": "Every load takes one already-validated descriptor selected by exact (name,operator,role). No function accepts a root plus name, discovers a filename, or loads a role through a label-only branch.",
+      "operator_rule": "D_ref and D_rep must call distinct pinned operator producer branches and flow their own record tensors into input, support, current endpoint, and target selection.",
+      "lifecycle_rule": "Reach authorization, manifest/source/static-asset/record preflight, model/checkpoint exact load and freeze, first32 two-cell execution, pre-update no-op, exact two updates, matched CUDA gates, learned-state writes, compact evidence writes, typed closeout, and return. No unconditional raise or dead required branch remains.",
+      "frozen_terminal_tuples": [
+        {"state": "COMPLETED_GATE_PASS", "decision": "V4A_A1X_S0_PASS_AUTHORIZE_FORMAL_ONLY", "authorizes": "A1X_FORMAL_CONFIRMATION_ONLY"},
+        {"state": "COMPLETED_GATE_FAIL", "decision": "V4A_A1X_S0_ENGINEERING_GATE_FAIL_STOP", "authorizes": "NONE"},
+        {"state": "COMPLETED_GATE_INCONCLUSIVE", "decision": "V4A_A1X_S0_ENGINEERING_GATE_INCONCLUSIVE_STOP", "authorizes": "NONE"}
+      ]
+    },
+    "lifecycle_evidence": {
+      "status_jsonl": "Append compact authorized, assets_verified, cells_initialized, cell_progress, cost_gate, states_written, and terminal records with route/run/contract/manifest identities.",
+      "heartbeat_json": "Atomically replace at phase transitions and at least every 60 seconds; include route_commit, run_id, phase, progress, timestamp, and manifest SHA-256.",
+      "learned_state_manifest": "Record schema, route/run/source/contract/manifest identity, first32 source identity, exact cell names, distinct absolute and relative state paths, post-write SHA-256, seed 3407, update_count 2, model/config identity, no_resume true, and setup/cache/train/eval_or_audit/summary/closeout timings.",
+      "closeout": "Record authorization and manifest path/hash, source/checkpoint/state/operator verification booleans, exact names/operators/shapes/counts, all structural and CUDA gate results, zero-noop values, state-manifest hash, false A1X/confirmation/canary/locked flags, one allowed terminal tuple or the preflight failure tuple, and no raw rows or tensor values.",
+      "ownership": "Entrypoint owns status, heartbeat, learned-state manifest, typed closeout, and exit code. Runner owns the sole terminal marker."
+    }
+  },
+  "frozen_scientific_and_engineering_contract": {
+    "seven_semantic_repairs": [
+      "TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE",
+      "FROZEN_OPERATOR_CONTRACT_IS_LABEL_ONLY",
+      "FROZEN_ACTIVE_SUPPORT_IS_REPLACED_BY_ALL_ONES",
+      "ZERO_INITIALIZATION_NOOP_GATE_IS_MEASURED_AFTER_OPTIMIZER_UPDATES",
+      "MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED",
+      "LEARNED_STATE_RETENTION_AND_PHASE_LIFECYCLE_ARE_INCOMPLETE",
+      "S0_TERMINAL_TUPLE_CANNOT_REPORT_THE_FROZEN_PASS_GATE"
+    ],
+    "model": "Frozen official ConvIR/source chain in eval mode; unchanged A1X_ACCESS_Head architecture; trainable A1X_ACCESS_* head only in two independent cells; added parameters <=300000.",
+    "optimizer": {"name": "AdamW", "learning_rate": 0.0005, "weight_decay": 0.00001, "gradient_clip_norm": 0.1, "reset": "each independent cell"},
+    "loss": {"name": "normalized_active_support_endpoint_mse", "weight": 1.0, "support": "frozen measured active support only"},
+    "seed": 3407,
+    "updates": {"A1X_ACCESS_TRUE": 2, "A1X_ACCESS_SHUFFLED": 2},
+    "schedule": "constant",
+    "cuda_parameter_gates": {"added_parameters_max": 300000, "mac_overhead_max_percent": 10.0, "matched_median_cuda_latency_overhead_max_percent": 15.0, "cuda_peak_memory_overhead_max_percent": 15.0, "native_shapes_required": 2, "cuda_fallback": false},
+    "cuda_pairing": "At each native shape, baseline and augmented paths use the same frozen upstream producer, CUDA device, float32 dtype, batch, record, warmup count 5, repeat count 11, synchronization boundaries, profiler convention, and positive finite baseline denominators. Augmented differs only by the A1X_ACCESS head and endpoint application.",
+    "formal_mode": "blocked",
+    "locked_test_policy": "blocked",
+    "terminal_marker_owner": "runner_only"
+  },
+  "source_only_validator_contract": {
+    "method": "Parse source text, shell text, JSON text, and Python AST only. Do not import or execute the entrypoint, model, runner, loader, renderer, profiler, data, checkpoint, state, operator, or manifest-facing runtime code.",
+    "required_positive_proofs": [
+      "POS_CLI_01_RUNNER_ARGUMENT_SET_EQUALS_ENTRYPOINT_REQUIRED_ARGUMENT_SET",
+      "POS_CLI_02_NO_EXTRA_REQUIRED_ENTRYPOINT_ARGUMENT_AND_FORMAL_MODE_REJECTED",
+      "POS_AUTH_01_EXACT_ROUTE_ID_STATE_DECISION_AUTHORIZES_TUPLE",
+      "POS_AUTH_02_SOURCE_COMMIT_ROUTE_CARD_HASH_LOCKED_POLICY_CONTRACT_PATH_AND_CONTRACT_HASH_GUARDS",
+      "POS_AUTH_03_AUTHORIZATION_GUARD_DOMINATES_ALL_MANIFEST_DATA_TENSOR_SOURCE_MODEL_STATE_CHECKPOINT_OPERATOR_RENDERER_PROFILER_AND_LOADER_OPENS",
+      "POS_ASSET_01_MANIFEST_PATH_AND_BYTES_SHA256_VALIDATED_BEFORE_JSON_PARSE",
+      "POS_ASSET_02_PINNED_A1R_A1C_PARENT_CHECKPOINT_STATE_AND_OPERATOR_IDENTITIES",
+      "POS_ASSET_03_EXACT_64_RECORD_NAME_OPERATOR_CROSS_PRODUCT_AND_NO_FILESYSTEM_ENUMERATION",
+      "POS_ASSET_04_PER_NAME_SHARED_AND_PER_OPERATOR_ROLE_MAPPING",
+      "POS_ASSET_05_PATH_BYTES_HASH_DTYPE_SHAPE_FINITE_AND_SUPPORT_VALIDATION",
+      "POS_ASSET_06_BOTH_NATIVE_SHAPE_PAIRS_AND_EXACT_D0_TRANSPORT",
+      "POS_ASSET_07_DISTINCT_D_REF_D_REP_PRODUCER_AND_RECORD_PROVENANCE",
+      "POS_DATA_01_EXACT_LITERAL_FIRST32_MEMBERSHIP_ORDER_COUNT_UNIQUENESS_AND_A1R_SOURCE_EQUALITY",
+      "POS_DATA_02_SHAPE_OPERATOR_BLOCKED_TRUE_AND_TARGET_ONLY_SHUFFLED_MAPPING",
+      "POS_LIFECYCLE_01_REACHABLE_AUTH_ASSET_MODEL_FIRST32_INDEPENDENT_CELLS_ZERO_NOOP_CUDA_GATE_STATE_MANIFEST_CLOSEOUT_AND_RETURN",
+      "POS_LIFECYCLE_02_STATUS_PHASE_PROGRESS_TERMINAL_AND_ATOMIC_HEARTBEAT_WRITERS_REACHABLE",
+      "POS_LIFECYCLE_03_PREFLIGHT_FAILURE_AND_PASS_FAIL_INCONCLUSIVE_TUPLES_WRITTEN_BEFORE_RETURN",
+      "POS_LIFECYCLE_04_RUNNER_REQUIRES_CLOSEOUT_OWNS_EXACTLY_ONE_TERMINAL_MARKER_AND_PROPAGATES_EXIT",
+      "POS_SEM_01_THROUGH_POS_SEM_07_EXISTING_SEVEN_SEMANTIC_PROOFS",
+      "POS_FROZEN_01_MODEL_INPUT_TARGET_LOSS_OPTIMIZER_SEED_UPDATE_PARAMETER_CUDA_AND_LOCKED_TEST_CONTRACTS_UNCHANGED"
+    ],
+    "required_independent_negative_controls": [
+      {"id": "NEG_CONTRACT_CLI_01", "single_mutation": "Remove or rename one required CLI argument or add one unsupplied required argument.", "expected_code": "RUNNER_ENTRYPOINT_CLI_ARGUMENT_SET_MISMATCH"},
+      {"id": "NEG_CONTRACT_AUTH_01", "single_mutation": "Weaken one exact authorization field or move one protected open before the exact guard.", "expected_code": "INITIAL_AUTHORIZATION_TUPLE_OR_DOMINANCE_INVALID"},
+      {"id": "NEG_CONTRACT_LIFECYCLE_01", "single_mutation": "Make one required lifecycle writer, terminal tuple, closeout dependency, or return path unreachable.", "expected_code": "S0_LIFECYCLE_UNREACHABLE_OR_INCOMPLETE"},
+      {"id": "NEG_ASSET_MANIFEST_01", "single_mutation": "Parse the runtime manifest before exact bound path and byte-hash validation.", "expected_code": "RUNTIME_ASSET_MANIFEST_IDENTITY_UNGUARDED"},
+      {"id": "NEG_ASSET_OPERATOR_01", "single_mutation": "Alias D_rep to D_ref producer, artifact, or record path while retaining labels.", "expected_code": "RUNTIME_ASSET_OPERATOR_PROVENANCE_INVALID"},
+      {"id": "NEG_ASSET_SUPPORT_01", "single_mutation": "Use ones, full-tensor mean, target-derived support, empty fallback, or an unmeasured denominator.", "expected_code": "RUNTIME_ASSET_SUPPORT_PROVENANCE_INVALID"},
+      {"id": "NEG_ASSET_FIRST32_01", "single_mutation": "Enumerate a directory or alter, sort, omit, replace, or append one first32 name.", "expected_code": "RUNTIME_ASSET_FIRST32_OR_ENUMERATION_INVALID"},
+      {"id": "NEG_ASSET_PATH_CONTENT_01", "single_mutation": "Accept path-only, hash-only, missing byte count, symlink, traversal, or out-of-root record validation.", "expected_code": "RUNTIME_ASSET_PATH_CONTENT_VALIDATION_INVALID"},
+      {"id": "NEG_ASSET_SHAPE_01", "single_mutation": "Accept a missing, third, substituted, resized, cropped, padded, or antialiased native/exact-half shape pair.", "expected_code": "RUNTIME_ASSET_NATIVE_SHAPE_TRANSPORT_INVALID"},
+      {"id": "NEG_SEM_01", "expected_code": "TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE"},
+      {"id": "NEG_SEM_02", "expected_code": "FROZEN_OPERATOR_CONTRACT_IS_LABEL_ONLY"},
+      {"id": "NEG_SEM_03", "expected_code": "FROZEN_ACTIVE_SUPPORT_IS_REPLACED_BY_ALL_ONES"},
+      {"id": "NEG_SEM_04", "expected_code": "ZERO_INITIALIZATION_NOOP_GATE_IS_MEASURED_AFTER_OPTIMIZER_UPDATES"},
+      {"id": "NEG_SEM_05", "expected_code": "MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED"},
+      {"id": "NEG_SEM_06", "expected_code": "LEARNED_STATE_RETENTION_AND_PHASE_LIFECYCLE_ARE_INCOMPLETE"},
+      {"id": "NEG_SEM_07", "expected_code": "S0_TERMINAL_TUPLE_CANNOT_REPORT_THE_FROZEN_PASS_GATE"}
+    ],
+    "isolation_rule": "Each negative starts from the corrected positive source, applies exactly one mutation, reports exactly its one expected code, preserves the other fifteen proofs, and authorizes NONE.",
+    "aggregate_rule": "One directly analyzed aggregate source containing all sixteen independent mutations must report exactly all sixteen expected codes. A union of isolated outputs is not accepted.",
+    "required_marker": "A1X_S0_RUNTIME_ASSET_CONTRACT_REPAIR_STATIC_VALIDATOR_OK"
+  },
+  "bounded_r2_authorization": {
+    "task_class": "R2_ENGINEERING_CONTROL",
+    "required_role": "balanced",
+    "effort": "medium",
+    "purpose": "Perform one local source-only repair that projects the frozen runtime-asset contract into route_operations schema-v2, runner, entrypoint, validator, and compact R2 evidence without opening or materializing any runtime asset.",
+    "exact_allowed_files": [
+      {"path": "experience_docx/route_operations.json", "action": "MODIFY", "purpose": "Add only the exact runtime_asset_contract object to the existing A1X_S0 operation."},
+      {"path": "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh", "action": "MODIFY", "purpose": "Replace ambiguous roots with the exact opaque manifest path/hash transport and preserve runner terminal-marker ownership."},
+      {"path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py", "action": "MODIFY", "purpose": "Implement exact parser, authorization dominance, manifest/source/static/record validation, data opens, reachable frozen S0 lifecycle, and compact evidence."},
+      {"path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py", "action": "MODIFY", "purpose": "Add the exact source-only positive proofs and sixteen independent/aggregate negative controls without target import or execution."},
+      {"path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_asset_contract_repair_static_validation.json", "action": "CREATE", "purpose": "Record frozen hashes, all positive proofs, all isolated and aggregate findings, and false runtime/data/cloud/stage flags."},
+      {"path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_asset_contract_repair_closeout.json", "action": "CREATE", "purpose": "Close the single R2 attempt with exact hashes, generated-evidence identities, success or failure tuple, and R3-review-only next boundary."}
+    ],
+    "frozen_pre_repair_hashes": {
+      "experience_docx/route_operations.json": "a5cbe7d8e0559ee75c1b53b152561f10f754befb4e289963da3c465520e3f22f",
+      "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh": "3f0434a5064a1fe196a688b0699177f2658e8d5acabab97465443f2df956040b",
+      "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": "b0da2e618ff055ab4f95435d66a2df31d3ee7aed2c74d81b68b8a7d8e86c65de",
+      "experience_docx/tools/validate_haze4k_v4a_a1x_route.py": "fa42133d72d1c2dd1e01f4bdea00df9bfd976601922b82595f56211a79d278bf",
+      "experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+      "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_design_handoff.json": "630b81edb07fd6a4f4243c529998e5c97fbeb834926d3fd9cde5ce26bca6340a",
+      "Dehazing/ITS/models/A1XAccess.py": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33"
+    },
+    "required_generated_evidence": {
+      "static_validation_schema_version": 2,
+      "static_validation_marker": "A1X_S0_RUNTIME_ASSET_CONTRACT_REPAIR_STATIC_VALIDATOR_OK",
+      "required_fields": ["route_id", "authorization_base_commit", "authorization_sha256", "post_repair_hashes", "positive_proofs", "independent_negative_controls", "aggregate_negative_codes", "authoritative_first32_equal", "runtime_started", "target_imported", "target_executed", "data_accessed", "checkpoint_opened", "cloud_transport", "initial_authorization_created", "s0_authorized", "formal_authorized", "canary_touched", "locked_test_touched"],
+      "closeout_required_fields": ["schema_version", "route_id", "repair_parent_commit", "authorization_sha256", "state", "decision", "authorizes", "failure_class", "post_repair_hashes", "static_validation_sha256", "runtime_started", "data_accessed", "cloud_transport", "initial_authorization_created", "s0_authorized", "formal_authorized", "canary_touched", "locked_test_touched", "next_boundary"]
+    },
+    "required_validation_sequence": [
+      "Confirm HEAD equals authorization_base_commit before the authorization commit and the R2 repair parent is the authorization commit.",
+      "Parse this authorization and every created or modified JSON file.",
+      "Verify every frozen pre-repair hash and the A1R, A1C, and operator source-manifest Git blob/SHA-256 pins before accepting source edits.",
+      "Run Python syntax compilation only for the authorized entrypoint and validator.",
+      "Run bash -n only for the authorized runner.",
+      "Run one source-only validator without importing or executing target, model, runner, loader, renderer, profiler, data, checkpoint, state, operator, or runtime-manifest code.",
+      "Require every positive CLI, authorization, asset, data, lifecycle, frozen-contract, and seven-semantics proof.",
+      "Require all sixteen isolated negative controls and the directly analyzed sixteen-code aggregate fixture.",
+      "Require exact first32 membership/order, both shape pairs, all frozen hashes, no-enumeration proof, and all no-runtime/no-data flags.",
+      "Verify the tracked diff is limited to exact_allowed_files, git diff --check passes, and no prohibited artifact is staged.",
+      "Write the typed static-validation record and R2 closeout, create one local repair commit, and stop for fresh R3 final authorization review without runtime, data, checkpoint, cloud, S0, formal, canary, or locked-test action."
+    ],
+    "success_tuple": {
+      "state": "R2_S0_RUNNER_ENTRYPOINT_CONTRACT_REPAIR_COMPLETE",
+      "decision": "V4A_A1X_S0_RUNNER_ENTRYPOINT_CONTRACT_COMPLETE_AWAIT_R3_REVIEW",
+      "authorizes": "R3_S0_FINAL_AUTHORIZATION_REVIEW_ONLY"
+    },
+    "failure_tuple": {
+      "state": "R2_S0_RUNNER_ENTRYPOINT_CONTRACT_REPAIR_BLOCKED",
+      "decision": "V4A_A1X_S0_RUNNER_ENTRYPOINT_CONTRACT_REPAIR_FAILED_STOP",
+      "authorizes": "NONE",
+      "failure_class": "ENGINEERING_RUNNER_CONTRACT"
+    },
+    "one_attempt_no_runtime_boundaries": {
+      "automatic_retry": false,
+      "cloud_transport": false,
+      "ssh_calls": false,
+      "convir_ops_calls": false,
+      "runner_execution": false,
+      "entrypoint_execution": false,
+      "target_import": false,
+      "target_execution": false,
+      "runtime_manifest_open": false,
+      "asset_materialization": false,
+      "filesystem_enumeration": false,
+      "dataset_or_checkpoint_open": false,
+      "a1r_data_access": false,
+      "a1x_data_access": false,
+      "confirmation_data_access": false,
+      "initial_authorization_created": false,
+      "s0_preflight_or_run": false,
+      "s0_authorized": false,
+      "formal_authorized": false,
+      "training": false,
+      "evaluation": false,
+      "inference": false,
+      "candidate_selection": false,
+      "promotion": false,
+      "canary": false,
+      "locked_test": false,
+      "push": false
+    },
+    "failure_boundary": "On any ambiguous semantic role, frozen-hash mismatch, extra file requirement, runtime/data/checkpoint/remote requirement, source-only proof failure, commit-parent mismatch, or requested scope expansion, write the R2 failure tuple once if possible and stop. Do not retry, weaken a proof, materialize an asset, create initial authorization, authorize a stage, or request cloud transport."
+  },
+  "forbidden_changes": [
+    "MODEL_ARCHITECTURE_OR_A1X_ACCESS_HEAD_CHANGE",
+    "DATASET_SPLIT_FIRST32_MEMBERSHIP_OR_ORDER_CHANGE",
+    "D_REF_D_REP_OPERATOR_SUPPORT_BOUND_GRID_RENDERER_OR_EXACT_HALF_CHANGE",
+    "FORWARD_INPUT_TARGET_LOSS_OPTIMIZER_SEED_UPDATE_BATCH_OR_SHUFFLE_CHANGE",
+    "PARAMETER_MAC_LATENCY_MEMORY_THRESHOLD_OR_PROFILING_CONVENTION_CHANGE",
+    "TERMINAL_TUPLE_OR_RUNNER_MARKER_OWNERSHIP_CHANGE",
+    "FILESYSTEM_ENUMERATION_OR_ASSET_SUBSTITUTION",
+    "RUNTIME_ASSET_MATERIALIZATION_OR_OPEN",
+    "INITIAL_AUTHORIZATION_CREATION",
+    "S0_OR_FORMAL_AUTHORIZATION",
+    "A1X_CONFIRMATION_CANARY_OR_LOCKED_TEST_ACCESS",
+    "RUNTIME_CLOUD_SSH_CONVIR_OPS_PUSH_OR_AUTOMATIC_RETRY"
+  ],
+  "scope_confirmations": {
+    "source_files_modified_in_this_r3_review": false,
+    "validator_or_runtime_commands_run": false,
+    "runtime_asset_manifest_created_or_opened": false,
+    "data_or_checkpoint_accessed": false,
+    "cloud_or_ssh_used": false,
+    "initial_authorization_created": false,
+    "s0_or_formal_authorized": false,
+    "canary_or_locked_test_touched": false,
+    "scientific_contract_changed": false,
+    "push_performed": false
+  },
+  "retry_policy": "NO_AUTOMATIC_RETRY",
+  "next_boundary": "One balanced/medium R2 local source-only repair may implement exactly this authorization. After its one typed closeout and local commit, stop for a fresh frontier R3 final authorization review. A concrete runtime-asset manifest, its materialization, initial authorization, S0, formal, cloud transport, confirmation, canary, and locked test remain unauthorized."
+}
