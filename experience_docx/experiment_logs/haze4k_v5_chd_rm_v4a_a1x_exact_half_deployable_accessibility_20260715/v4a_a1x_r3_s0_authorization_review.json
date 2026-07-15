@@ -1,0 +1,74 @@
+{
+  "schema_version": 2,
+  "review_type": "R3_INITIAL_STAGE_AUTHORIZATION_REVIEW",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "reviewed_route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "reviewed_route_commit": "8371d9eb4c67e63169aa837558cfa5a36818fbe8",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "state": "R3_S0_AUTHORIZATION_REVIEW_COMPLETE_BLOCKED",
+  "decision": "V4A_A1X_S0_AUTHORIZATION_BLOCKED_INCOMPLETE_R1_TUPLE",
+  "authorizes": "NONE",
+  "initial_authorization_created": false,
+  "reviewed_evidence": [
+    "experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md",
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_design_handoff.json",
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_setup_closeout.json",
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_commit_sync_closeout.json",
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_static_validation.json",
+    "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_EXPERIMENT_START_CHECKLIST.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md"
+  ],
+  "frozen_s0_scope": {
+    "stage": "S0",
+    "evidence_role": "engineering_debug",
+    "data_scope": "explicit_already_consumed_A1R_first32_names_only",
+    "formal_status": "blocked_pending_authorized_S0_and_committed_S0_closeout",
+    "locked_test_policy": "blocked"
+  },
+  "blocking_findings": [
+    {
+      "code": "MISSING_SCHEMA_V2_ROUTE_OPERATIONS_MANIFEST",
+      "reason": "The reviewed route commit has no experience_docx/route_operations.json sealing an S0 operation, route commit, runner, output id, closeout path, authorization tuple, monitor profile, resource floor, and allowed terminal tuples."
+    },
+    {
+      "code": "TRACKED_RUNNER_IS_PLANNING_ONLY",
+      "reason": "The committed runner refuses every invocation without --emit-plan and implements no integrated S0 preflight/run, status, heartbeat, runtime log, learned-state retention, or typed closeout path."
+    },
+    {
+      "code": "S0_AUTHORIZATION_GUARD_MISMATCH",
+      "reason": "The runner requires authorizes=A1X_FORMAL_CONFIRMATION_ONLY for both declared stages instead of a distinct initial S0-only token, so it cannot machine-check an exact first-stage S0 authorization tuple."
+    },
+    {
+      "code": "CURRENT_LAUNCH_READY_VALIDATION_NOT_REPRESENTED",
+      "reason": "The committed static result records only the route-specific A1X_ROUTE_STATIC_VALIDATOR_OK check; it does not record the current github/main validate_experiment_card.py launch-ready ROUTE_CARD_CONTRACT_OK projection required before first-stage authorization."
+    }
+  ],
+  "forbidden_continuations": [
+    "S0_PREFLIGHT_OR_RUN",
+    "A1X_FORMAL_CONFIRMATION",
+    "A1X_DATA_ACCESS",
+    "CONFIRMATION_DATA_ACCESS",
+    "DIRECT_ACTION_CALIBRATION",
+    "CANDIDATE_SELECTION",
+    "POLICY_FITTING",
+    "PROMOTION",
+    "CANARY",
+    "LOCKED_TEST"
+  ],
+  "scope_confirmations": {
+    "cloud_command": false,
+    "runner_started": false,
+    "training_started": false,
+    "evaluation_started": false,
+    "inference_started": false,
+    "a1x_data_touched": false,
+    "confirmation_touched": false,
+    "canary_touched": false,
+    "locked_test_touched": false,
+    "scientific_contract_changed": false
+  },
+  "retry_policy": "NO_AUTOMATIC_RETRY",
+  "next_boundary": "A separately authorized R2 engineering repair must create the frozen-contract S0 runner and schema-v2 operations projection, align the S0-only authorization guard, and record current launch-ready static validation before a new R3 authorization review. This review itself authorizes no repair or runtime action."
+}
