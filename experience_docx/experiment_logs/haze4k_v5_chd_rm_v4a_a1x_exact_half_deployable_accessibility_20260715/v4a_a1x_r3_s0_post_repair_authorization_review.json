@@ -1,0 +1,97 @@
+{
+  "schema_version": 2,
+  "review_type": "R3_POST_REPAIR_INITIAL_STAGE_AUTHORIZATION_REVIEW",
+  "closure_type": "BLOCKER",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "reviewed_route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "reviewed_route_commit": "2c137db905cdb5304ba268cb6f5707502ea84cc7",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "state": "R3_S0_AUTHORIZATION_REVIEW_COMPLETE_BLOCKED",
+  "decision": "V4A_A1X_S0_AUTHORIZATION_BLOCKED_INCOMPLETE_S0_RUNNER",
+  "authorizes": "NONE",
+  "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+  "failure_phase": "initial_authorization_review",
+  "initial_authorization_created": false,
+  "initial_authorization_path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/initial_authorization.json",
+  "reviewed_evidence": [
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_AGENT_COST_ROUTING_PROTOCOL.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_EXPERIMENT_START_CHECKLIST.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md",
+    "github:2c137db905cdb5304ba268cb6f5707502ea84cc7:experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md",
+    "github:2c137db905cdb5304ba268cb6f5707502ea84cc7:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_operations_repair_authorization.json",
+    "github:2c137db905cdb5304ba268cb6f5707502ea84cc7:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_operations_repair_closeout.json",
+    "github:2c137db905cdb5304ba268cb6f5707502ea84cc7:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_operations_repair_static_validation.json",
+    "github:2c137db905cdb5304ba268cb6f5707502ea84cc7:experience_docx/route_operations.json",
+    "github:2c137db905cdb5304ba268cb6f5707502ea84cc7:experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+    "github:2c137db905cdb5304ba268cb6f5707502ea84cc7:experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py"
+  ],
+  "verified_repair_requirements": {
+    "repair_commit_descends_from_authorization_commit": true,
+    "repair_diff_matches_exact_allowed_files": true,
+    "frozen_route_card_unchanged": true,
+    "frozen_design_handoff_unchanged": true,
+    "frozen_a1x_head_unchanged": true,
+    "route_operations_has_exactly_one_a1x_s0_projection": true,
+    "authorization_guard_checks_route_state_decision_authorizes_and_source": true,
+    "formal_mode_rejected": true,
+    "json_parse": "PASS",
+    "python_compile": "PASS",
+    "bash_n": "PASS",
+    "diff_check": "PASS"
+  },
+  "blocking_findings": [
+    {
+      "code": "S0_ENTRYPOINT_HAS_NO_FROZEN_IMPLEMENTATION",
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "sha256": "c8428cbe4f892e5f0a7e715e24d6d846942255d6c5b0a871264a2f23a1398d4c",
+      "reason": "The committed entrypoint explicitly states that it contains no data discovery or training implementation. It does not select the already-consumed A1R first32 engineering-debug names, load and freeze the official model, construct the frozen true/shuffled cells, perform the required two updates, or check source identity, input provenance, native shapes, exact no-op, finite forward/loss/backward, nonzero gradient, shuffle integrity, parameter/MAC cost, matched latency, or peak memory."
+    },
+    {
+      "code": "TRACKED_RUNNER_OMITS_DURABLE_STAGE_LIFECYCLE",
+      "path": "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "sha256": "e25f7bd8252e6908234ccfaddf7043d861ccfc67e0fe203cab7c85a563fe33e4",
+      "reason": "The runner checks the authorization tuple and rejects formal mode, but it does not bind the explicit cloud Python, run id, output root, data/checkpoint assets, status path, heartbeat path, runtime log, learned-state path, or closeout path. It delegates to the stub entrypoint without any lifecycle output arguments and cannot execute the route-card integrated S0 pre-smoke contract."
+    },
+    {
+      "code": "S0_LIFECYCLE_OUTPUTS_ARE_NOT_TYPED_CLOSEOUTS",
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "sha256": "c8428cbe4f892e5f0a7e715e24d6d846942255d6c5b0a871264a2f23a1398d4c",
+      "reason": "When optional output paths are supplied, the entrypoint writes the same minimal runtime_started=false payload to status, heartbeat, learned-state manifest, and closeout destinations. It records no gate measurements, phase timing, terminal state/decision/authorizes tuple, failure class, route commit, run id, or tracked runner hash and therefore cannot produce receipt-verifiable S0 evidence."
+    }
+  ],
+  "frozen_s0_scope": {
+    "stage": "S0",
+    "evidence_role": "engineering_debug",
+    "data_scope": "explicit_already_consumed_A1R_first32_names_only",
+    "formal_status": "blocked",
+    "locked_test_policy": "blocked"
+  },
+  "forbidden_continuations": [
+    "S0_PREFLIGHT_OR_RUN",
+    "A1X_FORMAL_CONFIRMATION",
+    "A1X_DATA_ACCESS",
+    "CONFIRMATION_DATA_ACCESS",
+    "DIRECT_ACTION_CALIBRATION",
+    "CANDIDATE_SELECTION",
+    "POLICY_FITTING",
+    "PROMOTION",
+    "CANARY",
+    "LOCKED_TEST"
+  ],
+  "scope_confirmations": {
+    "cloud_transport": false,
+    "convir_ops_calls": false,
+    "runner_started": false,
+    "training_started": false,
+    "evaluation_started": false,
+    "inference_started": false,
+    "a1r_data_touched": false,
+    "a1x_data_touched": false,
+    "confirmation_touched": false,
+    "canary_touched": false,
+    "locked_test_touched": false,
+    "scientific_contract_changed": false
+  },
+  "retry_policy": "NO_AUTOMATIC_RETRY",
+  "next_boundary": "Stop with no stage authorization. A new explicitly authorized R2 engineering repair may replace the stub with the already frozen complete S0 runner and lifecycle contract; after that repair is committed and remotely verified, a fresh R3 review is required. This blocker authorizes no repair, cloud transport, S0, formal, data access, training, evaluation, inference, candidate selection, canary, or locked-test action."
+}
