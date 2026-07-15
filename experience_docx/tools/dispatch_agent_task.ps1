@@ -124,6 +124,7 @@ function Test-ConvirOpsReadiness {
     )
 
     $server = "/home/ubuntu/workspace/ConvIR-B-operations-v2/experience_docx/tools/convir_ops_mcp.py"
+    $expectedVersion = "2.1.0"
     $probe = @(
         '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05"}}',
         '{"jsonrpc":"2.0","id":2,"method":"ping","params":{}}'
@@ -137,7 +138,13 @@ function Test-ConvirOpsReadiness {
     finally {
         $ErrorActionPreference = $savedPreference
     }
-    if ($exitCode -ne 0 -or -not (@($output) -match '"serverInfo"') -or -not (@($output) -match '"jsonrpc"')) {
+    $hashOutput = & wsl.exe -d $Distribution -- sha256sum $server 2>$null
+    $hashExitCode = $LASTEXITCODE
+    $sourceHash = if ($hashExitCode -eq 0) { (($hashOutput | Select-Object -Last 1) -split '\s+')[0] } else { "unavailable" }
+    $rendered = @($output) -join "`n"
+    $sourceMarker = '"sourceSha256":"' + $sourceHash + '"'
+    $versionMarker = '"version":"' + $expectedVersion + '"'
+    if ($exitCode -ne 0 -or $hashExitCode -ne 0 -or -not $rendered.Contains('"serverInfo"') -or -not $rendered.Contains('"jsonrpc"') -or -not $rendered.Contains($sourceMarker) -or -not $rendered.Contains($versionMarker)) {
         $detail = (@($output) -join " ").Trim()
         if ($detail.Length -gt 512) { $detail = $detail.Substring(0, 512) }
         throw "MCP_READINESS_FAILED phase=mcp_startup exit_code=$exitCode detail=$detail"

@@ -84,6 +84,11 @@ wrapper for an operation that is not covered or when the MCP is unavailable.
 
 The exact tool boundary is documented in `CONVIR_OPS_MCP.md`.
 
+After updating the tracked MCP server, restart its host process and verify the
+initialize response's source SHA-256 before the next route call. Evidence
+manifest/fetch requests use the route's `repo_name` plus `workspace_id` so the
+tool resolves the sealed hashed checkout rather than a guessed cloud path.
+
 ## Failure Handling
 
 If a command fails because of transport, quoting, CRLF, PATH, stdin, or shell

@@ -226,7 +226,9 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
             missing = payload(OPS.tool_finish({"receipt": prepared["receipt"]}))
         self.assertEqual("CLOSEOUT_MISSING", missing["operation_state"])
         self.assertEqual("evaluation", missing["failure_class"])
-        self.assertIn("session_created", OPS.monitor_body(json.loads((OPS.RECEIPT_DIR / (prepared["receipt"] + ".json")).read_text())["payload"], 1, 0))
+        monitor_body = OPS.monitor_body(json.loads((OPS.RECEIPT_DIR / (prepared["receipt"] + ".json")).read_text())["payload"], 1, 0)
+        self.assertIn("session_created", monitor_body)
+        self.assertIn('test "$active" = true || break', monitor_body)
 
     def test_gpu_thresholds_are_sealed_and_rechecked_on_the_same_gpu(self):
         gpu_args = {**self.args, "require_gpu": True, "min_free_gpu_mib": 12000, "max_gpu_utilization_pct": 5}
@@ -352,6 +354,15 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
         self.assertIn('case "${name,,}" in *cloud_only*) continue ;; esac', body)
         self.assertIn("CONVIR_OPS_EVIDENCE_MANIFEST_OK", body)
 
+    def test_evidence_workspace_identity_derives_the_sealed_remote_repo(self):
+        evidence = OPS.route_context({
+            "route_id": self.args["route_id"],
+            "repo_name": self.args["repo_name"],
+            "workspace_id": self.args["workspace_id"],
+        })
+        authorized = OPS.authorization_context(self.args)
+        self.assertTrue(evidence["evidence_dir"].startswith(authorized["remote_repo"] + "/"))
+
     def test_mcp_stdio_exposes_only_schema_v2_lifecycle_and_evidence_tools(self):
         requests = [
             {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2024-11-05"}},
@@ -366,6 +377,8 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
             timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
+        self.assertEqual("2.1.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual(OPS.SERVER_SOURCE_SHA256, responses[0]["result"]["serverInfo"]["sourceSha256"])
         names = {tool["name"] for tool in responses[1]["result"]["tools"]}
         self.assertEqual({
             "convir_route_start_authorized", "convir_route_finish", "convir_route_plan_manifest",
@@ -375,6 +388,8 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
         finish = next(tool for tool in responses[1]["result"]["tools"] if tool["name"] == "convir_route_finish")
         self.assertEqual(["receipt"], finish["inputSchema"]["required"])
         self.assertEqual({"receipt"}, set(finish["inputSchema"]["properties"]))
+        evidence = next(tool for tool in responses[1]["result"]["tools"] if tool["name"] == "convir_evidence_manifest")
+        self.assertEqual({"route_id", "repo_name", "workspace_id"}, set(evidence["inputSchema"]["required"]))
 
 
 if __name__ == "__main__":
