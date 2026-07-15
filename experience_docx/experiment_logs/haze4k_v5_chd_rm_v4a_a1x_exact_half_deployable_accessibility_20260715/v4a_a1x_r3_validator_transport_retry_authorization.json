@@ -1,0 +1,83 @@
+{
+  "schema_version": 2,
+  "authorization_type": "r3_validator_transport_retry",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_branch_base_commit": "23a944cec48e52df6294af9fd12a8fdf821e6171",
+  "state": "R3_SOURCE_REVIEW_COMPLETE",
+  "decision": "V4A_A1X_VALIDATOR_STATIC_SEQUENCE_AUTHORIZED_TRANSPORT_RETRY_ONLY",
+  "authorizes": "ONE_ZERO_SOURCE_EDIT_R2_STATIC_VALIDATION_AND_REPAIR_COMMIT_ONLY",
+  "task_class": "R2_ENGINEERING_CONTROL",
+  "required_role": "balanced",
+  "effort": "medium",
+  "routing_basis": "typed_handoff",
+  "routing_basis_ref": "route_branch:23a944cec48e52df6294af9fd12a8fdf821e6171:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_validator_transport_retry_authorization.json",
+  "reviewed_source": {
+    "entrypoint_path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "entrypoint_sha256": "b0da2e618ff055ab4f95435d66a2df31d3ee7aed2c74d81b68b8a7d8e86c65de",
+    "validator_path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "validator_sha256": "fa42133d72d1c2dd1e01f4bdea00df9bfd976601922b82595f56211a79d278bf"
+  },
+  "authorized_validator_predicates": [
+    "independent_true_and_shuffled_learned_state_identity_and_equal_preupdate_initialization",
+    "matched_cuda_measurement_synchronization_positive_finite_baseline_and_frozen_overhead_thresholds",
+    "authoritative_committed_first32_exact_equality"
+  ],
+  "frozen_inputs": {
+    "Dehazing/ITS/models/A1XAccess.py": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+    "experience_docx/route_operations.json": "a5cbe7d8e0559ee75c1b53b152561f10f754befb4e289963da3c465520e3f22f",
+    "experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_design_handoff.json": "630b81edb07fd6a4f4243c529998e5c97fbeb834926d3fd9cde5ce26bca6340a"
+  },
+  "transport_contract": {
+    "scope": "wsl_workspace_transport",
+    "mode": "local_only",
+    "workspace": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715",
+    "one_shot": true,
+    "automatic_retry": false,
+    "source_edits_allowed": false,
+    "target_import_allowed": false,
+    "target_execution_allowed": false,
+    "tests_runtime_data_checkpoints_cloud_allowed": false
+  },
+  "authorized_commands": [
+    "wsl.exe -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-a1x-route-20260715 /usr/bin/python3 -m py_compile experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "wsl.exe -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-a1x-route-20260715 /usr/bin/python3 experience_docx/tools/validate_haze4k_v4a_a1x_route.py --repo /home/ubuntu/workspace/ConvIR-B-a1x-route-20260715 --output-json /home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_s0_semantics_repair_static_validation.json"
+  ],
+  "allowed_success_writes": [
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_s0_semantics_repair_static_validation.json",
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_semantics_repair_closeout.json"
+  ],
+  "repair_commit_paths": [
+    "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_s0_semantics_repair_static_validation.json",
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_semantics_repair_closeout.json"
+  ],
+  "success_conditions": [
+    "route_head_starts_at_23a944cec48e52df6294af9fd12a8fdf821e6171_plus_this_authorization_commit",
+    "reviewed_entrypoint_and_validator_hashes_match_before_and_after_both_commands",
+    "all_frozen_input_hashes_match",
+    "py_compile_exits_zero",
+    "validator_exits_zero_and_emits_A1X_S0_SEMANTICS_REPAIR_STATIC_VALIDATOR_OK",
+    "static_validation_reports_no_corrected_source_findings",
+    "target_code_executed_false",
+    "target_code_imported_false",
+    "runtime_started_false",
+    "data_accessed_false",
+    "checkpoint_opened_false",
+    "cloud_transport_false",
+    "s0_authorized_false",
+    "formal_authorized_false",
+    "canary_touched_false",
+    "locked_test_touched_false",
+    "repair_commit_contains_only_the_four_exact_repair_commit_paths"
+  ],
+  "failure_rule": "Any command failure, hash mismatch, unexpected write, changed source byte, target import or execution, runtime or data access, or validator discrepancy must stop without retry and write only a typed stop closeout when that write is still possible.",
+  "post_success_authorization": "R3_REVIEW_ONLY",
+  "cloud_status": "inactive; no S0 run launched",
+  "a1x_data_touched": false,
+  "confirmation_touched": false,
+  "canary_touched": false,
+  "locked_test_touched": false
+}
