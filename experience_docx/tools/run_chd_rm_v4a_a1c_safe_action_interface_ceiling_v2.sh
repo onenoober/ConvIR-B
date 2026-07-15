@@ -29,6 +29,25 @@ A0R_TRACE=$BASE/runs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/a0r_
 V3J_EVID=$V3M_ROOT/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711
 V3L_EVID=$V3L_ROOT/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711
 
+mkdir -p "$RUN_ROOT" "$EVID"
+LOG=$RUN_ROOT/v4a_a1c_${MODE}_$(date +%Y%m%dT%H%M%S).log
+exec > >(tee -a "$LOG") 2>&1
+
+status() {
+  printf '%s\n' "$1" >> "$STATUS"
+  printf '%s\n' "$1"
+}
+
+preflight_error() {
+  local rc=$?
+  status "command_engineering_failure route=$ROUTE_ID mode=$MODE phase=preflight rc=$rc command=$BASH_COMMAND"
+  status "V4A_A1C_${MODE^^}_COMMAND_ENGINEERING_FAILURE_REQUIRES_CLASSIFICATION"
+  exit "$rc"
+}
+
+trap preflight_error ERR
+status "heartbeat route=$ROUTE_ID mode=$MODE phase=preflight_setup"
+
 case "$MODE" in s0|formal) ;; *) echo "invalid sealed MODE=$MODE" >&2; exit 2;; esac
 test "$(git -C "$REMOTE_REPO" branch --show-current)" = codex/haze4k-v5-v4a-a1c-safe-action-interface-ceiling-20260715
 test "$(git -C "$REMOTE_REPO" rev-parse HEAD)" = "$EXPECTED_ROUTE_COMMIT"
@@ -52,9 +71,7 @@ GPU_STATUS=$(nvidia-smi -i "$GPU" --query-gpu=memory.free,utilization.gpu --form
 GPU_FREE=$(printf '%s\n' "$GPU_STATUS" | awk -F, '{gsub(/ /,"",$1);print $1}')
 GPU_UTIL=$(printf '%s\n' "$GPU_STATUS" | awk -F, '{gsub(/ /,"",$2);print $2}')
 test "$GPU_FREE" -ge 12000; test "$GPU_UTIL" -le 10
-mkdir -p "$RUN_ROOT" "$EVID"
-printf 'heartbeat route=%s mode=%s phase=preflight gpu=%s free_mib=%s util=%s\n' "$ROUTE_ID" "$MODE" "$GPU" "$GPU_FREE" "$GPU_UTIL" | tee -a "$STATUS"
-LOG=$RUN_ROOT/v4a_a1c_${MODE}_$(date +%Y%m%dT%H%M%S).log
+status "heartbeat route=$ROUTE_ID mode=$MODE phase=preflight gpu=$GPU free_mib=$GPU_FREE util=$GPU_UTIL"
 COMMON_ARGS=(
   --v3s_root "$V3S_ROOT" --expected_v3s_commit 2860f580bb25cc75ec9ade56378af6d77f5c8d8b
   --v3p_root "$V3P_ROOT" --expected_v3p_commit 555fd008e29f02128564f2fad41d0095ee44f5ea
@@ -76,6 +93,7 @@ COMMON_ARGS=(
   --sample_count 128 --epochs 16 --risk_window 4 --warmup_epochs 8 --learning_rate 0.0005 --weight_decay 0.00001 --grad_clip_norm 0.1 --cvar_fraction 0.25 --seed 3407 --device cuda
   --mode projected --output_dir "$OUT" --run_tag "$RUN_ID"
 )
+trap - ERR
 set +e
 CUDA_VISIBLE_DEVICES="$GPU" PYTHONUNBUFFERED=1 "$PY" "$RUNNER" audit --a1c-stage "$MODE" --v3z-root "$V3Z_ROOT" --a1f-module "$A1F_MODULE" --a0r-trace-dir "$A0R_TRACE" --expected-route-commit "$EXPECTED_ROUTE_COMMIT" --expected-route-card-sha256 "$(sha256sum "$CARD" | awk '{print $1}')" --runner-sha256 "$RUNNER_SHA256" --status-file "$STATUS" "${COMMON_ARGS[@]}" 2>&1 | tee -a "$LOG"
 rc=${PIPESTATUS[0]}; set -e
