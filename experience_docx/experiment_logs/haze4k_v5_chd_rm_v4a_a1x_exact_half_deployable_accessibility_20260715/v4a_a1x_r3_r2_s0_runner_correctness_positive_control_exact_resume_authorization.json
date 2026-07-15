@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "authorization_type": "R3_BOUNDED_R2_S0_RUNNER_CORRECTNESS_POSITIVE_CONTROL_EXACT_RESUME_AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "authorization_parent_commit": "c4fee646b37fe1a2c388a339708948fbe901fcc4",
+  "route_identity": "EXACT_RESUME_OF_BLOCKED_R2_RUNNER_CORRECTNESS_POSITIVE_CONTROL",
+  "state": "R3_R2_POSITIVE_CONTROL_EXACT_RESUME_AUTHORIZATION_COMPLETE",
+  "decision": "V4A_A1X_BOUNDED_R2_POSITIVE_CONTROL_EXACT_RESUME_AUTHORIZED",
+  "authorizes": "R2_LOCAL_POSITIVE_CONTROL_EXACT_RESUME_ONLY",
+  "task_class": "R2_ENGINEERING_CONTROL",
+  "required_role": "balanced",
+  "effort": "medium",
+  "reviewed_prior_authorization": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_runner_correctness_negative_fixture_exact_resume_authorization.json",
+    "commit": "c4fee646b37fe1a2c388a339708948fbe901fcc4",
+    "sha256": "413c9b48a84e26654b5a56837ace30d24c5cb258c741e7a2be728641c084d3eb",
+    "state": "R3_R2_NEGATIVE_FIXTURE_EXACT_RESUME_AUTHORIZATION_COMPLETE",
+    "decision": "V4A_A1X_BOUNDED_R2_NEGATIVE_FIXTURE_EXACT_RESUME_AUTHORIZED",
+    "authorizes": "R2_LOCAL_NEGATIVE_FIXTURE_EXACT_RESUME_ONLY"
+  },
+  "reviewed_failure_closeout": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_correctness_repair_closeout.json",
+    "sha256": "4010ac63164317d56a9cd5db5e1c98d590ae7644edc9b90006c1b72c793ada94",
+    "git_blob_sha1": "2ee73330a14408dcb0c017cebf81a2e5552d05af",
+    "state": "R2_S0_RUNNER_CORRECTNESS_REPAIR_BLOCKED",
+    "decision": "V4A_A1X_R2_STATIC_POSITIVE_CONTROL_BLOCKED",
+    "authorizes": "NONE",
+    "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+    "failure_phase": "semantic_static_validation",
+    "syntax_compile": "PASS",
+    "bash_n": "PASS",
+    "semantic_static_validator": "FAIL: corrected source violates semantic contract",
+    "runtime_started": false,
+    "data_accessed": false,
+    "checkpoint_opened": false,
+    "cloud_transport": false,
+    "formal_authorized": false,
+    "canary_touched": false,
+    "locked_test_touched": false
+  },
+  "reviewed_working_state": {
+    "tracked_source_diff_parent": "c4fee646b37fe1a2c388a339708948fbe901fcc4",
+    "entrypoint_sha256": "75d5de3b92e2d576f5aa928ed0e2b8998b995b6fc8b6d1c66b278310f1c31480",
+    "runner_sha256": "3f0434a5064a1fe196a688b0699177f2658e8d5acabab97465443f2df956040b",
+    "validator_sha256": "0f614c221f3908e95ebf4b72623260e7abef9ce536313b12dd43698018c2ccb8",
+    "static_validation_json_present": false,
+    "failure_closeout_present": true,
+    "original_repair_allowlist_file_count": 5,
+    "present_working_files_in_allowlist": 4,
+    "diff_check": "PASS",
+    "review_outcome": "The corrected entrypoint and runner implement the two contracts named by the positive-control findings. Source tracing proves that the two findings are produced by validator predicates, not by remaining target-source defects. The repair may resume once only to correct those predicates and expose exact finding-code diagnostics before any generic failure."
+  },
+  "corrected_source_finding_diagnosis": {
+    "derivation_method": "Source-only control-flow and AST-predicate tracing of semantic_findings against the reviewed working snapshot; no target import, target execution, runner execution, data access, checkpoint access, or validator execution was used.",
+    "return_order_contract": "semantic_findings returns sorted(set(findings)).",
+    "exact_detected_finding_codes": [
+      "OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING",
+      "SHUFFLED_TARGET_CONTROL_IS_REVERSED"
+    ],
+    "finding_count": 2,
+    "classification": "VALIDATOR_FALSE_POSITIVES_ONLY",
+    "remaining_entrypoint_or_runner_defect_for_these_codes": false,
+    "findings": [
+      {
+        "code": "OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING",
+        "classification": "VALIDATOR_FALSE_POSITIVE",
+        "trigger": "semantic_findings calls true_call on requires_grad_ inside load_official_model, so it requires a literal True argument.",
+        "corrected_source_evidence": "load_official_model constructs the official model, audits exact checkpoint keys and shapes, uses strict=True, calls eval(), applies requires_grad_(False) to every official parameter, and fails closed if training mode or any trainable official parameter remains.",
+        "direct_correction": "Replace the inverted True predicate with an AST proof of all-official-parameter freezing using requires_grad_(False), while preserving construction, exact key/shape, strict load, eval, and fail-closed audit proofs."
+      },
+      {
+        "code": "SHUFFLED_TARGET_CONTROL_IS_REVERSED",
+        "classification": "VALIDATOR_FALSE_POSITIVE",
+        "trigger": "semantic_findings compares ast.unparse(forward_batch) with a raw double-quoted target-map subscript string; ast.unparse canonicalizes the string literals with different quoting, so the semantic expression is rejected by representation spelling.",
+        "corrected_source_evidence": "shuffled_target_map groups by frozen operator and native shape, sorts by source name, pairs by plus-one wrap, and rejects self-pairs; forward_batch builds all five deployable inputs from each source example and obtains only TARGET_DELTA_U through the paired target_map entry.",
+        "direct_correction": "Replace the quote-sensitive unparsed-source equality with AST structure and def-use checks for source-keyed deployable inputs and paired target-only lookup, preserving operator/native-shape grouping, plus-one wrap, full coverage, and no-self-pair guards."
+      }
+    ],
+    "all_other_known_codes_from_corrected_sources": "NOT_EMITTED_BY_THE_REVIEWED_SEMANTIC_FINDINGS_CONTROL_FLOW"
+  },
+  "authorization_scope": {
+    "purpose": "Resume the existing uncommitted R2 repair exactly once to correct the two diagnosed validator false-positive predicates, add fail-first exact finding-code diagnostics, rerun the already-required source-only proof matrix, and close the same five-file repair contract.",
+    "workspace": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715",
+    "transport_contract": "local_only",
+    "resume_existing_working_diff": true,
+    "new_route_or_stage": false,
+    "runtime_execution": false,
+    "target_import_or_execution": false,
+    "runner_execution": false,
+    "cloud_transport": false,
+    "data_or_checkpoint_access": false,
+    "initial_stage_authorization": false,
+    "s0_authorization": false,
+    "formal_authorization": false,
+    "scientific_contract_change": false,
+    "push_or_remote_verification": false
+  },
+  "exact_allowed_files": [
+    {
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "action": "PRESERVE_EXISTING_WORKING_FILE_BYTE_IDENTICAL",
+      "required_sha256": "75d5de3b92e2d576f5aa928ed0e2b8998b995b6fc8b6d1c66b278310f1c31480"
+    },
+    {
+      "path": "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "action": "PRESERVE_EXISTING_WORKING_FILE_BYTE_IDENTICAL",
+      "required_sha256": "3f0434a5064a1fe196a688b0699177f2658e8d5acabab97465443f2df956040b"
+    },
+    {
+      "path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "action": "MODIFY_ONLY_THE_TWO_DIAGNOSED_FALSE_POSITIVE_PREDICATES_THEIR_DIRECT_SELF_PROOFS_AND_PRE_FAILURE_FINDING_CODE_DIAGNOSTICS"
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_correctness_repair_static_validation.json",
+      "action": "CREATE_ONLY_AFTER_ALL_REQUIRED_STATIC_CONTROLS_PASS"
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_correctness_repair_closeout.json",
+      "action": "REPLACE_THE_TYPED_FAILURE_WITH_SUCCESS_CLOSEOUT_ONLY_AFTER_ALL_GATES_PASS_OR_UPDATE_WITH_ONE_NEW_TYPED_FAILURE"
+    }
+  ],
+  "diagnostic_finding_code_contract": {
+    "required_behavior": "Compute and emit a deterministic structured finding-code record before any generic require or exception can replace the exact reason. This applies to the corrected-source positive control, each isolated fixture, the aggregate authorization-base fixture, and validator self-proof.",
+    "corrected_source_required_record": {
+      "record_type": "CORRECTED_SOURCE_FINDINGS",
+      "detected_finding_codes": "EXACT_SORTED_LIST_FROM_SEMANTIC_FINDINGS",
+      "required_pass_value": []
+    },
+    "isolated_fixture_required_record_fields": [
+      "fixture_id",
+      "expected_finding_code",
+      "detected_finding_codes",
+      "expected_code_detected"
+    ],
+    "aggregate_base_required_record": {
+      "record_type": "AUTHORIZATION_BASE_FINDINGS",
+      "base_commit": "597cbb1fa82c9cf31c93ed8328f9d80e47f2198f",
+      "detected_finding_codes": "EXACT_SORTED_LIST_FROM_SEMANTIC_FINDINGS"
+    },
+    "failure_rule": "If any control fails, the exact finding-code record must already be durable in validator output or be included verbatim in the raised diagnostic. A generic message without the exact detected codes is prohibited."
+  },
+  "required_control_matrix": {
+    "known_finding_codes": [
+      "A1X_HEAD_PARAMETERS_ARE_ALL_FROZEN",
+      "OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING",
+      "SHUFFLED_TARGET_CONTROL_IS_REVERSED",
+      "FROZEN_LOSS_AND_OPERATOR_CONTRACT_NOT_IMPLEMENTED",
+      "INTEGRATED_S0_CHECKS_ARE_DECLARED_BUT_NOT_MEASURED",
+      "DURABLE_LIFECYCLE_AND_CLOSEOUT_CONTRACT_INCOMPLETE",
+      "REMOTE_REPO_DOES_NOT_MATCH_FROZEN_FRESH_ROUTE_WORKSPACE",
+      "FINAL_MARKER_CONTRACT_DUPLICATED",
+      "STATIC_VALIDATOR_PROVES_TOKENS_NOT_REQUIRED_SEMANTICS"
+    ],
+    "isolated_negative_requirement": "All nine isolated fixtures must start independently from the same corrected source snapshot, apply exactly one declared in-memory mutation, and be rejected by the same semantic analyzer with their corresponding expected code. Labels, mutation ids, raw token absence or presence, and exceptions are not finding evidence.",
+    "aggregate_base_requirement": "The immutable authorization-base sources at 597cbb1fa82c9cf31c93ed8328f9d80e47f2198f must be rejected with all nine known finding codes; this aggregate result does not replace any isolated fixture.",
+    "corrected_source_requirement": "The unmutated corrected entrypoint, runner, and validator must produce exactly zero known finding codes before success evidence is written.",
+    "validator_self_proof_requirement": "A source-only mutation of each directly corrected validator proof must be rejected by the validator analyzer itself, including inverted official freeze polarity, quote/spelling-only target acceptance, omitted pre-failure diagnostics, and bypassed isolated-fixture analysis. The validator must not execute its mutated source.",
+    "required_pass_condition": "All nine isolated negatives reject with their expected codes, the aggregate base rejects with all nine codes, corrected sources produce zero codes, every exact diagnostic is emitted before its gate, and validator self-proof passes."
+  },
+  "frozen_contract": {
+    "source": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_runner_correctness_repair_authorization.json",
+    "meaning": "Every scientific, data, split, model, checkpoint, input, target, optimizer, loss, seed, update, operator, support, native-shape, batch, shuffle, metric, threshold, gate, terminal-tuple, formal, canary, and locked-test field remains frozen. The prior negative-fixture exact-resume authorization remains the canonical proof-matrix definition except where this document narrows the directly permitted positive-control corrections and strengthens diagnostics.",
+    "allowed_change": "Only the two diagnosed validator false-positive predicates, their direct source-only self-proofs, and exact pre-failure finding-code diagnostics may change."
+  },
+  "required_validation_sequence": [
+    "Parse this authorization and every created or modified JSON file.",
+    "Run Python syntax compilation only for the modified entrypoint and validator, and run bash -n only for the modified shell runner.",
+    "Run only the source-only validator permitted by the prior authorization; do not import or execute target code, invoke the runner, or open data or checkpoints.",
+    "Require exact finding-code diagnostics before each generic gate.",
+    "Require all nine isolated negative fixtures, aggregate authorization-base rejection with all nine codes, corrected-source zero findings, validator self-proof, all static proof markers, and A1X_S0_RUNNER_CORRECTNESS_STATIC_VALIDATOR_OK.",
+    "Verify the entrypoint and runner retain their reviewed SHA-256 values and every frozen file remains unchanged.",
+    "Verify every repair change remains inside the original five-file allowlist, excluding this committed authorization itself, and verify git diff --check.",
+    "Only after every preceding check passes, replace the failure closeout with the success tuple, create the static-validation JSON, and create one local five-file repair commit whose parent is the commit containing this authorization; do not push."
+  ],
+  "required_success_closeout_tuple": {
+    "state": "R2_S0_RUNNER_CORRECTNESS_REPAIR_COMPLETE",
+    "decision": "V4A_A1X_S0_RUNNER_CORRECTNESS_REPAIRED_AWAIT_R3_REVIEW",
+    "authorizes": "R3_S0_FINAL_AUTHORIZATION_REVIEW_ONLY"
+  },
+  "required_failure_closeout_tuple": {
+    "state": "R2_S0_RUNNER_CORRECTNESS_REPAIR_BLOCKED",
+    "authorizes": "NONE",
+    "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+    "next_boundary": "Fresh R3/frontier review is required before any further write, repair, commit, or runtime action."
+  },
+  "explicit_no_runtime_no_data_boundaries": {
+    "cloud_transport": false,
+    "ssh_calls": false,
+    "convir_ops_calls": false,
+    "runner_execution": false,
+    "target_entrypoint_execution": false,
+    "target_module_import": false,
+    "s0_preflight_or_run": false,
+    "s0_authorized": false,
+    "formal_authorized": false,
+    "initial_authorization_created": false,
+    "any_dataset_enumeration": false,
+    "a1r_data_access": false,
+    "a1x_data_access": false,
+    "confirmation_data_access": false,
+    "checkpoint_open": false,
+    "training": false,
+    "evaluation": false,
+    "inference": false,
+    "candidate_selection": false,
+    "promotion": false,
+    "canary": false,
+    "locked_test": false,
+    "push": false
+  },
+  "forbidden_changes": [
+    "ANY_REPAIR_FILE_OUTSIDE_THE_ORIGINAL_FIVE_FILE_ALLOWLIST",
+    "ENTRYPOINT_OR_RUNNER_CHANGE_FROM_THE_REVIEWED_WORKING_HASHES",
+    "ANY_VALIDATOR_CHANGE_NOT_DIRECTLY_REQUIRED_BY_THE_TWO_FALSE_POSITIVES_THEIR_SELF_PROOFS_OR_EXACT_DIAGNOSTICS",
+    "NEW_FIXTURE_FILES_OR_GENERATED_MUTANT_FILES",
+    "MUTATION_LABEL_ID_RAW_TOKEN_OR_EXCEPTION_AS_PASS_OR_FAILURE_EVIDENCE",
+    "ROUTE_CARD_DESIGN_HANDOFF_A1X_HEAD_OR_ROUTE_OPERATIONS_CHANGE",
+    "DATA_SPLIT_MODEL_CHECKPOINT_INPUT_TARGET_OPTIMIZER_LOSS_SEED_UPDATE_OPERATOR_SUPPORT_NATIVE_SHAPE_BATCH_SHUFFLE_METRIC_THRESHOLD_GATE_OR_TERMINAL_TUPLE_CHANGE",
+    "STAGE_SCOPE_EXPANSION",
+    "INITIAL_S0_AUTHORIZATION_CREATION",
+    "S0_OR_FORMAL_ENABLEMENT",
+    "RUNTIME_CLOUD_DATA_OR_CHECKPOINT_ACCESS",
+    "CONFIRMATION_CANARY_OR_LOCKED_TEST_ACCESS",
+    "PUSH_OR_REMOTE_VERIFICATION"
+  ],
+  "retry_policy": "NO_AUTOMATIC_RETRY. This document authorizes one explicit exact-resume attempt only.",
+  "failure_boundary": "On any exact-code diagnostic mismatch, isolated-negative failure, aggregate-base failure, corrected-source nonzero finding, validator self-proof failure, entrypoint or runner hash change, required-file expansion, frozen-contract mismatch, scientific ambiguity, failed required validation, or commit failure, update the typed R2 blocker if possible and stop. Do not retry, weaken a proof, commit a partial repair, or cross runtime, data, checkpoint, remote, S0, formal, canary, or locked-test boundaries.",
+  "success_conditions": [
+    "existing_r2_working_diff_is_preserved_and_resumed_without_reset_or_replacement",
+    "only_the_two_diagnosed_validator_false_positive_predicates_their_self_proofs_and_exact_diagnostics_are_changed",
+    "entrypoint_and_runner_match_the_reviewed_working_hashes",
+    "all_nine_known_bad_mutations_fail_independently_with_expected_codes",
+    "aggregate_authorization_base_fixture_reports_all_nine_codes",
+    "corrected_sources_report_zero_known_finding_codes",
+    "diagnostic_finding_codes_are_emitted_before_any_generic_failure",
+    "validator_self_proof_and_all_required_source_static_proofs_pass",
+    "frozen_scientific_contract_remains_unchanged",
+    "success_closeout_matches_the_required_tuple",
+    "one_local_five_file_repair_commit_is_created_and_not_pushed",
+    "no_runtime_target_import_data_checkpoint_remote_s0_formal_canary_or_locked_boundary_is_crossed"
+  ],
+  "next_boundary": "One separately dispatched qualified R2 local-only task may resume the existing working diff exactly once, preserve the entrypoint and runner byte-for-byte, correct only the two diagnosed validator false-positive predicates and their direct self-proofs, add exact pre-failure finding-code diagnostics, run the authorized syntax and source-only controls, and create one local five-file repair commit only after every required negative and positive control passes. It must then stop for fresh R3 final authorization review."
+}
