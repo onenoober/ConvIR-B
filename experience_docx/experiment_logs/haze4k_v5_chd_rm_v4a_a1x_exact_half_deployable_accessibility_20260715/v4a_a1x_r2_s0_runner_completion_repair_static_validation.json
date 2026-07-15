@@ -1,0 +1,37 @@
+{
+  "a1x_data_touched": false,
+  "canary_touched": false,
+  "confirmation_touched": false,
+  "entrypoint_sha256": "fb8f4c5f904aabbf6abb3dc31d0624d7297a9235b029e5a94cfab35c9ae69ded",
+  "formal_authorized": false,
+  "frozen_hashes": {
+    "Dehazing/ITS/models/A1XAccess.py": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+    "experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_design_handoff.json": "630b81edb07fd6a4f4243c529998e5c97fbeb834926d3fd9cde5ce26bca6340a",
+    "experience_docx/route_operations.json": "a5cbe7d8e0559ee75c1b53b152561f10f754befb4e289963da3c465520e3f22f"
+  },
+  "locked_test_touched": false,
+  "proof_markers": [
+    "STATIC_EXACT_FIRST32_LITERAL_MATCH_PASS",
+    "STATIC_EXACT_FIRST32_COUNT_UNIQUE_ORDER_PASS",
+    "STATIC_NO_FILESYSTEM_ENUMERATION_PASS",
+    "STATIC_IMAGE_OPEN_DERIVES_ONLY_FROM_FIRST32_PASS",
+    "STATIC_NO_A1X_CONFIRMATION_CANARY_LOCKED_OPEN_PASS",
+    "STATIC_FORMAL_MODE_REJECTED_PASS",
+    "STATIC_EXACT_AUTHORIZATION_GUARD_PRECEDES_OPENS_PASS",
+    "STATIC_MODEL_FREEZE_AND_TRAINABLE_PREFIX_PASS",
+    "STATIC_FIVE_INPUT_PROVENANCE_PASS",
+    "STATIC_TRUE_SHUFFLED_TWO_UPDATE_CONTRACT_PASS",
+    "STATIC_INTEGRATED_S0_CHECK_SURFACES_PASS",
+    "STATIC_DISTINCT_LIFECYCLE_PATHS_AND_WRITERS_PASS",
+    "STATIC_TYPED_CLOSEOUT_FIELDS_AND_TERMINAL_TUPLES_PASS",
+    "STATIC_RUNNER_EXPLICIT_PYTHON_ROOTS_LOG_AND_EXIT_PASS",
+    "STATIC_FROZEN_FILES_HASHES_PASS"
+  ],
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "runner_sha256": "74c4a2c54dfd8e9f46b31595af2e60a6f0c29fcd0485ef54a1fb7a114cd700ff",
+  "runtime_started": false,
+  "schema_version": 1,
+  "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+  "validator": "A1X_S0_RUNNER_COMPLETION_STATIC_VALIDATOR_OK"
+}
