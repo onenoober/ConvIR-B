@@ -1,0 +1,128 @@
+{
+  "schema_version": 2,
+  "review_type": "R3_FINAL_INITIAL_STAGE_AUTHORIZATION_REVIEW",
+  "closure_type": "BLOCKER",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "reviewed_route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "reviewed_route_commit": "237a97bb72984a5e83753baafc91f781f1491a55",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "state": "R3_S0_FINAL_AUTHORIZATION_REVIEW_COMPLETE_BLOCKED",
+  "decision": "V4A_A1X_S0_AUTHORIZATION_BLOCKED_UNRESOLVED_RUNNER_SEMANTICS_AND_VALIDATOR_FALSE_NEGATIVES",
+  "authorizes": "NONE",
+  "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+  "failure_phase": "initial_authorization_review",
+  "initial_authorization_created": false,
+  "initial_authorization_path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/initial_authorization.json",
+  "reviewed_evidence": [
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:AGENTS.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_AGENT_COST_ROUTING_PROTOCOL.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_EXPERIMENT_START_CHECKLIST.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_smoke_source_manifest.json",
+    "github:237a97bb72984a5e83753baafc91f781f1491a55:experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md",
+    "github:237a97bb72984a5e83753baafc91f781f1491a55:experience_docx/route_operations.json",
+    "github:237a97bb72984a5e83753baafc91f781f1491a55:Dehazing/ITS/models/A1XAccess.py",
+    "github:237a97bb72984a5e83753baafc91f781f1491a55:experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "github:237a97bb72984a5e83753baafc91f781f1491a55:experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+    "github:237a97bb72984a5e83753baafc91f781f1491a55:experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "github:237a97bb72984a5e83753baafc91f781f1491a55:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_operations_repair_closeout.json",
+    "github:237a97bb72984a5e83753baafc91f781f1491a55:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_correctness_repair_closeout.json",
+    "github:237a97bb72984a5e83753baafc91f781f1491a55:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_correctness_repair_static_validation.json"
+  ],
+  "verified_evidence": {
+    "route_head_matches_requested_commit": true,
+    "github_route_ref_matches_requested_commit": true,
+    "operations_manifest_has_exactly_one_a1x_s0_operation": true,
+    "operations_manifest_tuple_and_formal_locked_policies_match_frozen_contract": true,
+    "runner_remote_repo_explicit_python_output_collision_and_single_marker_surfaces_match": true,
+    "entrypoint_first32_matches_authoritative_a1r_fresh_names_0_32_exactly": true,
+    "entrypoint_first32_count_unique_order": true,
+    "frozen_route_card_design_handoff_head_and_manifest_hashes_match": true,
+    "correctness_closeout_tuple_matches_required_r2_tuple": true,
+    "correctness_evidence_hashes_match_committed_entrypoint_runner_and_validator": true,
+    "corrected_source_zero_known_findings_recorded": true,
+    "nine_isolated_negative_records_present_with_expected_codes": true,
+    "aggregate_authorization_base_records_all_nine_codes": true,
+    "four_validator_self_proof_records_present_with_expected_codes": true,
+    "runtime_or_data_validation_performed": false
+  },
+  "blocking_findings": [
+    {
+      "code": "TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE",
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "reason": "main constructs one head and one optimizer, then run_cell updates that same pair first for A1X_ACCESS_TRUE and then for A1X_ACCESS_SHUFFLED. The frozen card requires an identical shuffled-target head and optimizer reset for every cell, so the shuffled control must not inherit the two true-cell updates."
+    },
+    {
+      "code": "FROZEN_OPERATOR_CONTRACT_IS_LABEL_ONLY",
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "reason": "main creates D_ref and D_rep examples by calling load_example with the same six roots and name, while load_example never uses operator to select an operator artifact or compute an operator-specific tensor. The two required frozen operators therefore produce duplicated inputs and targets distinguished only by a string label."
+    },
+    {
+      "code": "FROZEN_ACTIVE_SUPPORT_IS_REPLACED_BY_ALL_ONES",
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "reason": "active_support returns torch.ones_like for every target and no frozen support asset or support computation is loaded. normalized_active_support_endpoint_mse therefore becomes a full-tensor loss rather than the frozen active-support endpoint loss required by the card and repair authorization."
+    },
+    {
+      "code": "ZERO_INITIALIZATION_NOOP_GATE_IS_MEASURED_AFTER_OPTIMIZER_UPDATES",
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "reason": "measure_checks reads final_projection.weight only after both cells have completed two optimizer steps, even though the same run requires nonzero gradients. This does not test the frozen zero-initialized current-endpoint no-op before work and makes the required exact 0.0 gate dependent on post-training weights."
+    },
+    {
+      "code": "MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED",
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "reason": "the entrypoint never selects or moves the model, head, or probes to CUDA; profile_measurement requests CPU profiler activity only and does not enable memory profiling. It cannot establish the card's matched convir-4090 CUDA latency and peak-memory overhead gates at both native shapes."
+    },
+    {
+      "code": "LEARNED_STATE_RETENTION_AND_PHASE_LIFECYCLE_ARE_INCOMPLETE",
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "reason": "the learned-state manifest records path=not_exported and sha256=null for both cells, and phase_timings contains only one total_seconds value. The frozen lifecycle requires retained per-cell state paths and hashes plus setup/cache/train/eval-or-audit/summary/closeout phase timings sufficient for reconstruction and receipt validation."
+    },
+    {
+      "code": "S0_TERMINAL_TUPLE_CANNOT_REPORT_THE_FROZEN_PASS_GATE",
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "reason": "after all integrated checks pass, the success path always writes COMPLETED_GATE_INCONCLUSIVE with authorizes NONE. The route card and route_operations.json require S0 PASS to write COMPLETED_GATE_PASS / V4A_A1X_S0_PASS_AUTHORIZE_FORMAL_ONLY / A1X_FORMAL_CONFIRMATION_ONLY, while engineering gate failures use their frozen fail or inconclusive tuples."
+    },
+    {
+      "code": "STATIC_VALIDATOR_HAS_MATERIAL_FALSE_NEGATIVES_AND_UNSUPPORTED_PROOF_MARKERS",
+      "path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "reason": "semantic_findings checks a small set of AST calls and source substrings and does not test cell reset, operator-specific data flow, real active support, no-op measurement ordering, CUDA cost measurement, retained state hashes, phase timings, or terminal tuple selection. Its EXPECTED first32 tuple also contains 1650_0.78_1.77.png instead of the authoritative 1650_0.76_1.07.png and is never compared with S0_FIRST32_NAMES. The recorded zero findings, nine negatives, aggregate rejection, self-proofs, and proof-marker list therefore do not prove the frozen runner semantics."
+    }
+  ],
+  "frozen_s0_scope": {
+    "stage": "S0",
+    "evidence_role": "engineering_debug",
+    "data_scope": "explicit_already_consumed_A1R_first32_names_only",
+    "s0_status": "blocked",
+    "formal_status": "blocked",
+    "locked_test_policy": "blocked"
+  },
+  "forbidden_continuations": [
+    "S0_PREFLIGHT_OR_RUN",
+    "A1X_FORMAL_CONFIRMATION",
+    "A1X_DATA_ACCESS",
+    "CONFIRMATION_DATA_ACCESS",
+    "DIRECT_ACTION_CALIBRATION",
+    "CANDIDATE_SELECTION",
+    "POLICY_FITTING",
+    "PROMOTION",
+    "CANARY",
+    "LOCKED_TEST"
+  ],
+  "scope_confirmations": {
+    "cloud_transport": false,
+    "ssh_calls": false,
+    "convir_ops_calls": false,
+    "runner_started": false,
+    "training_started": false,
+    "evaluation_started": false,
+    "inference_started": false,
+    "a1r_data_touched": false,
+    "a1x_data_touched": false,
+    "confirmation_touched": false,
+    "canary_touched": false,
+    "locked_test_touched": false,
+    "scientific_contract_changed": false
+  },
+  "retry_policy": "NO_AUTOMATIC_RETRY",
+  "next_boundary": "Stop with no initial authorization. This review authorizes no repair or runtime action. Any future correction requires a new explicit R3 authorization defining the bounded engineering repair and a fresh R3 final authorization review after the committed repair. S0, formal, data access, checkpoint access, cloud transport, training, evaluation, inference, candidate selection, canary, and locked test remain blocked."
+}
