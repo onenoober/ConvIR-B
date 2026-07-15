@@ -1,0 +1,228 @@
+{
+  "schema_version": 2,
+  "authorization_type": "R3_BOUNDED_R2_S0_RUNNER_CORRECTNESS_FREEZE_POLARITY_SELFPROOF_ANCHOR_EXACT_RESUME_AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "authorization_parent_commit": "453bd092d168132143af39d4ddce8bee5a6e1fc1",
+  "route_identity": "EXACT_RESUME_OF_BLOCKED_R2_RUNNER_CORRECTNESS_FREEZE_POLARITY_SELFPROOF_ANCHOR_REPAIR",
+  "state": "R3_R2_FREEZE_POLARITY_SELFPROOF_ANCHOR_EXACT_RESUME_AUTHORIZATION_COMPLETE",
+  "decision": "V4A_A1X_BOUNDED_R2_FREEZE_POLARITY_SELFPROOF_ANCHOR_EXACT_RESUME_AUTHORIZED",
+  "authorizes": "R2_LOCAL_FREEZE_POLARITY_SELFPROOF_ANCHOR_EXACT_RESUME_ONLY",
+  "task_class": "R2_ENGINEERING_CONTROL",
+  "required_role": "balanced",
+  "effort": "medium",
+  "reviewed_prior_authorization": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_runner_correctness_neg09_anchor_exact_resume_authorization.json",
+    "commit": "453bd092d168132143af39d4ddce8bee5a6e1fc1",
+    "sha256": "8c0324481db17caf76694453860d81a2ac08c31564506de5140c5e18731a02d5",
+    "state": "R3_R2_NEG09_ANCHOR_EXACT_RESUME_AUTHORIZATION_COMPLETE",
+    "decision": "V4A_A1X_BOUNDED_R2_NEG09_ANCHOR_EXACT_RESUME_AUTHORIZED",
+    "authorizes": "R2_LOCAL_NEG09_ANCHOR_EXACT_RESUME_ONLY"
+  },
+  "reviewed_typed_failure": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_correctness_repair_closeout.json",
+    "sha256": "d2b7811e8bc242980c5913f5781a280607a041db0025151194ae61b0154b6866",
+    "state": "R2_S0_RUNNER_CORRECTNESS_REPAIR_BLOCKED",
+    "decision": "V4A_A1X_R2_NEG09_ANCHOR_EXACT_RESUME_BLOCKED_SELF_PROOF_ANCHOR",
+    "authorizes": "NONE",
+    "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+    "failure_phase": "semantic_static_validation",
+    "syntax_compile": "PASS",
+    "bash_n": "PASS",
+    "semantic_static_validator": "FAIL: INVERTED_OFFICIAL_FREEZE_POLARITY validator self-proof mutation anchor is not unique after corrected source emitted [], all nine isolated negatives rejected with expected codes including NEG_09, and aggregate base emitted all nine codes",
+    "entrypoint_sha256": "75d5de3b92e2d576f5aa928ed0e2b8998b995b6fc8b6d1c66b278310f1c31480",
+    "runner_sha256": "3f0434a5064a1fe196a688b0699177f2658e8d5acabab97465443f2df956040b",
+    "validator_sha256": "bbddc47e23411da4cca4320ac3a024847f4b9e5a94fa7a1a9794da18950d6b2f",
+    "runtime_started": false,
+    "data_accessed": false,
+    "checkpoint_opened": false,
+    "cloud_transport": false,
+    "formal_authorized": false,
+    "canary_touched": false,
+    "locked_test_touched": false
+  },
+  "review_outcome": "Source-only review confirms that the preserved entrypoint and runner match their reviewed hashes and that the typed failure stopped after corrected-source zero findings, all nine isolated negative fixtures including NEG_09, and the aggregate authorization base with all nine codes passed. The remaining failure is confined to the INVERTED_OFFICIAL_FREEZE_POLARITY validator self-proof raw-text mutation anchor. This is a validator self-proof targeting defect only; no target, runtime, data, checkpoint, remote, stage, or scientific contract was exercised.",
+  "freeze_polarity_selfproof_failure_diagnosis": {
+    "derivation_method": "Source-only inspection of the preserved validator working file and typed closeout; neither target code nor the validator was executed or imported.",
+    "fixture_id": "INVERTED_OFFICIAL_FREEZE_POLARITY",
+    "expected_finding_code": "OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING",
+    "failed_raw_text_anchor": "item.args[0].value is False",
+    "intended_semantic_target": "The unique ast.Compare inside official_freeze_ast_proof that proves the requires_grad_ argument is the constant False.",
+    "failure_reason": "Raw-text replacement does not uniquely identify the intended function-scoped semantic predicate and can collide with or target self-proof fixture text instead of the proof predicate. The repair must resolve the intended compare structurally before applying an in-memory source mutation.",
+    "classification": "VALIDATOR_SELF_PROOF_MUTATION_ANCHOR_NONUNIQUE",
+    "corrected_source_findings_before_failure": [],
+    "isolated_negative_fixtures_passed_before_failure": 9,
+    "neg09_expected_code_detected_before_failure": true,
+    "aggregate_authorization_base_codes_detected_before_failure": 9,
+    "remaining_entrypoint_or_runner_defect": false,
+    "scientific_interpretation": "NOT_APPLICABLE"
+  },
+  "authorization_scope": {
+    "purpose": "Resume the preserved R2 repair exactly once to replace only the INVERTED_OFFICIAL_FREEZE_POLARITY raw-text self-proof mutation anchor with structurally unique function-scoped AST targeting, retain exact pre-gate diagnostics, rerun the complete previously authorized source-only proof matrix, and close the same five-file repair contract.",
+    "workspace": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715",
+    "transport_contract": "local_only",
+    "resume_existing_working_diff": true,
+    "new_route_or_stage": false,
+    "runtime_execution": false,
+    "target_import_or_execution": false,
+    "validator_import": false,
+    "runner_execution": false,
+    "cloud_transport": false,
+    "data_or_checkpoint_access": false,
+    "initial_stage_authorization": false,
+    "s0_authorization": false,
+    "formal_authorization": false,
+    "scientific_contract_change": false,
+    "push_or_remote_verification": false
+  },
+  "exact_allowed_files": [
+    {
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "action": "PRESERVE_EXISTING_WORKING_FILE_BYTE_IDENTICAL",
+      "required_sha256": "75d5de3b92e2d576f5aa928ed0e2b8998b995b6fc8b6d1c66b278310f1c31480"
+    },
+    {
+      "path": "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "action": "PRESERVE_EXISTING_WORKING_FILE_BYTE_IDENTICAL",
+      "required_sha256": "3f0434a5064a1fe196a688b0699177f2658e8d5acabab97465443f2df956040b"
+    },
+    {
+      "path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "action": "MODIFY_ONLY_FREEZE_POLARITY_SELFPROOF_AST_TARGETING_AND_ITS_DIRECT_EXACT_DIAGNOSTICS_WITHOUT_WEAKENING_SEMANTIC_ANALYSIS_OR_ANY_EXISTING_CONTROL",
+      "required_pre_resume_sha256": "bbddc47e23411da4cca4320ac3a024847f4b9e5a94fa7a1a9794da18950d6b2f"
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_correctness_repair_static_validation.json",
+      "action": "CREATE_ONLY_AFTER_ALL_REQUIRED_STATIC_CONTROLS_PASS"
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_correctness_repair_closeout.json",
+      "action": "REPLACE_THE_TYPED_FREEZE_POLARITY_SELFPROOF_FAILURE_WITH_SUCCESS_CLOSEOUT_ONLY_AFTER_ALL_GATES_PASS_OR_UPDATE_WITH_ONE_NEW_TYPED_FAILURE"
+    }
+  ],
+  "freeze_polarity_ast_target_contract": {
+    "required_target": "Exactly one ast.Compare inside the official_freeze_ast_proof function whose left side structurally resolves to the requires_grad_ call argument constant-value access, whose operator is ast.Is, and whose comparator is ast.Constant(False).",
+    "uniqueness_rule": "Resolve and require the function identity, surrounding requires_grad_ call proof, argument-value access, ast.Is operator, and False comparator before applying the in-memory mutation. Repository-wide raw-text counts, string spelling, fixture labels, mutation ids, exceptions, or token-presence checks are not structural uniqueness evidence.",
+    "mutation_rule": "INVERTED_OFFICIAL_FREEZE_POLARITY must mutate only the resolved False comparator to True in an in-memory copy of validator_text, preserve syntactically valid source, and pass that mutated source to the unchanged semantic_findings analyzer.",
+    "required_rejection": "The mutated validator must emit OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING through semantic_findings; mutation success or an exception alone is not rejection evidence.",
+    "diagnostic_rule": "The self-proof must emit one deterministic VALIDATOR_SELF_PROOF_FINDINGS record containing the fixture id, expected code, detected codes, and expected-code boolean before a generic require can obscure the result.",
+    "non_regression_rule": "NEG_09 structural targeting and its independent self-proof remain active and unchanged except for direct shared-helper adjustments strictly necessary to support the freeze-polarity AST mutation without weakening either control."
+  },
+  "required_control_matrix": {
+    "known_finding_codes": [
+      "A1X_HEAD_PARAMETERS_ARE_ALL_FROZEN",
+      "OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING",
+      "SHUFFLED_TARGET_CONTROL_IS_REVERSED",
+      "FROZEN_LOSS_AND_OPERATOR_CONTRACT_NOT_IMPLEMENTED",
+      "INTEGRATED_S0_CHECKS_ARE_DECLARED_BUT_NOT_MEASURED",
+      "DURABLE_LIFECYCLE_AND_CLOSEOUT_CONTRACT_INCOMPLETE",
+      "REMOTE_REPO_DOES_NOT_MATCH_FROZEN_FRESH_ROUTE_WORKSPACE",
+      "FINAL_MARKER_CONTRACT_DUPLICATED",
+      "STATIC_VALIDATOR_PROVES_TOKENS_NOT_REQUIRED_SEMANTICS"
+    ],
+    "previously_passing_gates": "Python syntax compilation for the entrypoint and validator, bash -n for the runner, corrected-source zero findings, all nine isolated negative fixtures including NEG_09, and aggregate authorization-base rejection with all nine codes passed before the self-proof failure and must pass again. Frozen hash, file-boundary, every static proof marker, and git diff --check gates remain independently required before success.",
+    "corrected_source_requirement": "The unmutated corrected entrypoint, runner, and validator must produce exactly [] before any success evidence is written.",
+    "isolated_negative_requirement": "All nine isolated fixtures, including NEG_09_VALIDATOR_SEMANTIC_PROOF, must independently start from the same corrected source snapshot, apply exactly one declared in-memory structural mutation, and be rejected by semantic_findings with their corresponding expected code.",
+    "aggregate_base_requirement": "The immutable authorization-base sources at 597cbb1fa82c9cf31c93ed8328f9d80e47f2198f must be rejected with exactly all nine known finding codes; this aggregate result does not replace any isolated fixture.",
+    "validator_self_proof_requirement": "Every validator self-proof control must pass, including structurally inverted official freeze polarity, quote/spelling-only target acceptance, omitted pre-failure diagnostics, and structurally bypassed isolated-fixture analysis. Mutated validator source must be analyzed and never executed.",
+    "diagnostic_requirement": "Corrected-source, each isolated fixture, aggregate-base, and each validator-self-proof exact finding-code record must be emitted before its generic gate.",
+    "required_pass_condition": "Every already-passing gate must pass again; corrected sources emit zero findings; all nine isolated negatives independently reject with expected codes including NEG_09; aggregate base emits exactly all nine codes; the AST-targeted freeze-polarity self-proof and every other validator self-proof pass; every static proof marker passes; entrypoint and runner hashes remain exact."
+  },
+  "frozen_contract": {
+    "source": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_runner_correctness_repair_authorization.json",
+    "proof_matrix_source": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_runner_correctness_negative_fixture_exact_resume_authorization.json",
+    "positive_control_source": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_runner_correctness_positive_control_exact_resume_authorization.json",
+    "neg09_anchor_source": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_runner_correctness_neg09_anchor_exact_resume_authorization.json",
+    "meaning": "Every scientific, data, split, model, checkpoint, input, target, optimizer, loss, seed, update, operator, support, native-shape, batch, shuffle, metric, threshold, gate, terminal-tuple, formal, canary, and locked-test field remains frozen.",
+    "required_hashes": {
+      "experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+      "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_design_handoff.json": "630b81edb07fd6a4f4243c529998e5c97fbeb834926d3fd9cde5ce26bca6340a",
+      "Dehazing/ITS/models/A1XAccess.py": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+      "experience_docx/route_operations.json": "a5cbe7d8e0559ee75c1b53b152561f10f754befb4e289963da3c465520e3f22f"
+    },
+    "allowed_change": "Only the validator implementation directly required to replace the freeze-polarity raw-text self-proof anchor with structurally unique AST targeting and its corresponding exact diagnostics may change; the static-validation and closeout evidence may be written only as required by the result."
+  },
+  "required_validation_sequence": [
+    "Parse this authorization and every created or modified JSON file.",
+    "Verify HEAD is the commit containing this authorization and the preserved working state still begins with the reviewed entrypoint, runner, validator, and typed-failure hashes; require the static-validation JSON to remain absent before validation.",
+    "Run Python syntax compilation only for the entrypoint and validator and bash -n only for the runner.",
+    "Run only the previously authorized source-only static validator; do not import or execute target code, invoke the runner, enumerate data, or open checkpoints.",
+    "Require the freeze-polarity function-scoped AST target to resolve exactly once and require its mutated source to produce OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING.",
+    "Require corrected-source zero findings, all nine independent negative rejections including NEG_09, aggregate authorization-base rejection with exactly all nine codes, every validator self-proof, exact pre-gate diagnostics, all static proof markers, and A1X_S0_RUNNER_CORRECTNESS_STATIC_VALIDATOR_OK.",
+    "Verify the entrypoint and runner retain their reviewed SHA-256 values, all frozen files remain unchanged, every repair change remains inside the original five-file allowlist excluding this authorization, and git diff --check passes.",
+    "Only after every preceding check passes, create the static-validation JSON, replace the failure closeout with the exact success tuple, and create one local five-file repair commit whose parent is the commit containing this authorization; do not push."
+  ],
+  "required_success_closeout_tuple": {
+    "state": "R2_S0_RUNNER_CORRECTNESS_REPAIR_COMPLETE",
+    "decision": "V4A_A1X_S0_RUNNER_CORRECTNESS_REPAIRED_AWAIT_R3_REVIEW",
+    "authorizes": "R3_S0_FINAL_AUTHORIZATION_REVIEW_ONLY"
+  },
+  "required_failure_closeout_tuple": {
+    "state": "R2_S0_RUNNER_CORRECTNESS_REPAIR_BLOCKED",
+    "authorizes": "NONE",
+    "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+    "next_boundary": "Fresh R3/frontier review is required before any further write, repair, commit, or runtime action."
+  },
+  "explicit_no_runtime_no_data_boundaries": {
+    "cloud_transport": false,
+    "ssh_calls": false,
+    "convir_ops_calls": false,
+    "runner_execution": false,
+    "target_entrypoint_execution": false,
+    "target_module_import": false,
+    "validator_import": false,
+    "s0_preflight_or_run": false,
+    "s0_authorized": false,
+    "formal_authorized": false,
+    "initial_authorization_created": false,
+    "any_dataset_enumeration": false,
+    "a1r_data_access": false,
+    "a1x_data_access": false,
+    "confirmation_data_access": false,
+    "checkpoint_open": false,
+    "training": false,
+    "evaluation": false,
+    "inference": false,
+    "candidate_selection": false,
+    "promotion": false,
+    "canary": false,
+    "locked_test": false,
+    "push": false
+  },
+  "forbidden_changes": [
+    "ANY_REPAIR_FILE_OUTSIDE_THE_ORIGINAL_FIVE_FILE_ALLOWLIST",
+    "ENTRYPOINT_OR_RUNNER_CHANGE_FROM_THE_REVIEWED_WORKING_HASHES",
+    "ANY_VALIDATOR_CHANGE_NOT_DIRECTLY_REQUIRED_BY_FREEZE_POLARITY_AST_TARGETING_OR_ITS_CORRESPONDING_EXACT_DIAGNOSTICS",
+    "RAW_TEXT_OBFUSCATION_STRING_SPELLING_FIXTURE_LABEL_OR_MUTATION_ID_AS_STRUCTURAL_UNIQUENESS_EVIDENCE",
+    "REMOVAL_WEAKENING_OR_CIRCULAR_EXEMPTION_OF_FREEZE_POLARITY_NEG09_OR_ANY_VALIDATOR_SELF_PROOF",
+    "NEW_FIXTURE_FILES_OR_GENERATED_MUTANT_FILES",
+    "MUTATION_LABEL_ID_RAW_TOKEN_EXCEPTION_OR_MUTATION_SUCCESS_AS_PASS_OR_FAILURE_EVIDENCE",
+    "ROUTE_CARD_DESIGN_HANDOFF_A1X_HEAD_OR_ROUTE_OPERATIONS_CHANGE",
+    "DATA_SPLIT_MODEL_CHECKPOINT_INPUT_TARGET_OPTIMIZER_LOSS_SEED_UPDATE_OPERATOR_SUPPORT_NATIVE_SHAPE_BATCH_SHUFFLE_METRIC_THRESHOLD_GATE_OR_TERMINAL_TUPLE_CHANGE",
+    "STAGE_SCOPE_EXPANSION",
+    "INITIAL_S0_AUTHORIZATION_CREATION",
+    "S0_OR_FORMAL_ENABLEMENT",
+    "RUNTIME_CLOUD_DATA_OR_CHECKPOINT_ACCESS",
+    "CONFIRMATION_CANARY_OR_LOCKED_TEST_ACCESS",
+    "PUSH_OR_REMOTE_VERIFICATION"
+  ],
+  "retry_policy": "NO_AUTOMATIC_RETRY. This document authorizes one explicit exact-resume attempt only.",
+  "failure_boundary": "On any AST-target ambiguity, exact-code diagnostic mismatch, isolated-negative failure, aggregate-base failure, corrected-source nonzero finding, validator self-proof failure, entrypoint or runner hash change, required-file expansion, frozen-contract mismatch, scientific ambiguity, failed required validation, or commit failure, update the typed R2 blocker if possible and stop. Do not retry, weaken a proof, commit a partial repair, or cross runtime, data, checkpoint, remote, S0, formal, canary, or locked-test boundaries.",
+  "success_conditions": [
+    "existing_five_file_r2_repair_contract_is_preserved_and_resumed_without_reset_or_replacement",
+    "only_freeze_polarity_function_scoped_ast_mutation_targeting_and_its_direct_exact_diagnostics_are_changed_in_the_validator",
+    "entrypoint_and_runner_match_the_reviewed_working_hashes",
+    "all_previously_passing_syntax_static_hash_boundary_and_diagnostic_gates_pass_again",
+    "corrected_sources_report_exactly_zero_known_finding_codes",
+    "all_nine_known_bad_mutations_fail_independently_with_expected_codes_including_neg09",
+    "aggregate_authorization_base_fixture_reports_exactly_all_nine_codes",
+    "freeze_polarity_selfproof_detects_official_model_load_and_freeze_audit_missing_through_semantic_findings",
+    "all_other_validator_selfproofs_and_required_source_static_proofs_pass_without_executing_mutated_source",
+    "frozen_scientific_contract_remains_unchanged",
+    "success_closeout_matches_the_required_tuple",
+    "one_local_five_file_repair_commit_is_created_and_not_pushed",
+    "no_runtime_target_import_data_checkpoint_remote_s0_formal_canary_or_locked_boundary_is_crossed"
+  ],
+  "next_boundary": "One separately dispatched qualified R2 local-only task may resume the preserved five-file repair contract exactly once, preserve the entrypoint and runner byte-for-byte, change only the validator code directly required to structurally target the unique official-freeze False comparator and retain exact diagnostics, run the authorized syntax and source-only static controls, update the static-validation and closeout evidence, and create one local five-file repair commit only after every required positive and negative gate passes. It must then stop for fresh R3 final authorization review; this authorization does not permit S0 or formal execution."
+}
