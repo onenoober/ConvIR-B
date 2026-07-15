@@ -115,10 +115,7 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
         plan = self.plan_full()
         reloaded = load_fresh_ops_module()
         reloaded.RECEIPT_DIR = OPS.RECEIPT_DIR
-        with patch.object(reloaded, "run_remote_body", side_effect=[
-            "a" * 64 + "  experience_docx/tools/run_a0r.sh\nCONVIR_OPS_PREFLIGHT_OK",
-            "CONVIR_OPS_LAUNCH_OK",
-        ]):
+        with patch.object(reloaded, "run_remote_body", return_value="a" * 64 + "  experience_docx/tools/run_a0r.sh\nCONVIR_OPS_PREFLIGHT_OK\nCONVIR_OPS_LAUNCH_OK"):
             started = payload(reloaded.tool_start_authorized({
                 "plan_token": plan["plan_token"],
             }))
@@ -149,7 +146,7 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
             "refs/heads/main": self.args["rules_commit"],
             "refs/heads/codex/a0r": self.args["route_branch_commit"],
         }
-        with patch.object(OPS, "run_local", side_effect=local_git), patch.object(OPS, "github_ref_shas", return_value=refs) as remote_refs, patch.object(OPS, "run_remote_body") as remote:
+        with patch.object(OPS, "_run_local", side_effect=local_git), patch.object(OPS, "github_ref_shas", return_value=refs) as remote_refs, patch.object(OPS, "run_remote_body") as remote:
             planned = payload(OPS.tool_plan_manifest(short))
         self.assertTrue(planned["ok"])
         remote.assert_not_called()
@@ -235,11 +232,11 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
         gpu_args = {**self.args, "require_gpu": True, "min_free_gpu_mib": 12000, "max_gpu_utilization_pct": 5}
         plan = self.plan_full(gpu_args)
         preflight = "a" * 64 + "  experience_docx/tools/run_a0r.sh\nCONVIR_OPS_GPU_OK index=2 min_free_mib=12000 max_util_pct=5\nCONVIR_OPS_PREFLIGHT_OK"
-        with patch.object(OPS, "run_remote_body", side_effect=[preflight, "CONVIR_OPS_LAUNCH_OK"]) as remote:
+        with patch.object(OPS, "run_remote_body", side_effect=["CONVIR_OPS_GPU_OK index=2 min_free_mib=12000 max_util_pct=5\nCONVIR_OPS_RESOURCE_OK", preflight + "\nCONVIR_OPS_LAUNCH_OK"]) as remote:
             started = payload(OPS.tool_start_authorized({"plan_token": plan["plan_token"]}))
         self.assertTrue(started["ok"])
         self.assertIn('nvidia-smi -i "$GPU_INDEX"', remote.call_args_list[1].args[0])
-        self.assertIn("GPU_INDEX=2", remote.call_args_list[1].args[0])
+        self.assertIn("GPU_ATTEMPTS=2", remote.call_args_list[1].args[0])
 
     def test_exact_continuation_never_clones_or_cleans_existing_workspace(self):
         continuation = {**self.args, "workspace_policy": "exact_continuation"}
@@ -290,16 +287,13 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
 
     def test_composed_start_and_finish_preserve_receipt_boundaries(self):
         plan = self.plan_full()
-        with patch.object(OPS, "run_remote_body", side_effect=[
-            "a" * 64 + "  experience_docx/tools/run_a0r.sh\nCONVIR_OPS_PREFLIGHT_OK",
-            "CONVIR_OPS_LAUNCH_OK",
-        ]) as remote:
+        with patch.object(OPS, "run_remote_body", return_value="a" * 64 + "  experience_docx/tools/run_a0r.sh\nCONVIR_OPS_PREFLIGHT_OK\nCONVIR_OPS_LAUNCH_OK") as remote:
             started = payload(OPS.tool_start_authorized({
                 "plan_token": plan["plan_token"],
             }))
             repeated = payload(OPS.tool_start_authorized({"plan_token": plan["plan_token"]}))
         self.assertTrue(started["ok"])
-        self.assertEqual(2, remote.call_count)
+        self.assertEqual(1, remote.call_count)
         self.assertEqual("LAUNCH_IDEMPOTENT", repeated["operation_state"])
         closeout = closeout_payload()
         finish_output = "CONVIR_OPS_MONITOR_META polls=2 active=false terminal=true stale=false heartbeat_age=1\nCONVIR_OPS_MONITOR_STATUS_BEGIN\nV4A_A0R_OK\nCONVIR_OPS_MONITOR_STATUS_END\nCONVIR_OPS_CLOSEOUT_SHA256=" + "b" * 64 + "\nCONVIR_OPS_CLOSEOUT_JSON_BEGIN\n" + json.dumps(closeout) + "\nCONVIR_OPS_CLOSEOUT_JSON_END"
@@ -329,6 +323,34 @@ class ConvirOpsLifecycleTests(unittest.TestCase):
         self.assertEqual("collision", collision["failure_class"])
         self.assertEqual("command_infra", timeout["failure_class"])
         self.assertEqual("authorization", forbidden["failure_class"])
+
+    def test_failure_phase_is_preserved_for_resource_and_transport_errors(self):
+        self.assertEqual("resource_preflight", OPS.failure_phase_for_error(OPS.ToolError("phase=resource_preflight failed")))
+        error = OPS.ToolError("resource unavailable", failure_phase="resource_preflight", failure_class="command_infra")
+        self.assertEqual("command_infra", OPS.failure_class_for_error(error))
+        self.assertEqual("resource_preflight", OPS.failure_phase_for_error(error))
+
+    def test_monitor_body_avoids_nested_python_command_substitution(self):
+        prepared = self.prepare()
+        record = json.loads((OPS.RECEIPT_DIR / (prepared["receipt"] + ".json")).read_text())
+        body = OPS.monitor_body(record["payload"], 1, 0)
+        self.assertIn('monitor_tmp=$(mktemp -d)', body)
+        self.assertIn('<<\'PY\'', body)
+        self.assertNotIn('allowed=json.loads(sys.argv[1]); raw=sys.argv[2]', body)
+
+    def test_manifest_parser_requires_marker_and_accepts_empty_manifest(self):
+        self.assertEqual({}, OPS.parse_manifest("CONVIR_OPS_EVIDENCE_MANIFEST_OK\nCONVIR_REMOTE_SCRIPT_OK\n"))
+        with self.assertRaises(OPS.ToolError):
+            OPS.parse_manifest("")
+        with self.assertRaises(OPS.ToolError):
+            OPS.parse_manifest("bad\nCONVIR_OPS_EVIDENCE_MANIFEST_OK\n")
+
+    def test_manifest_body_filters_raw_and_cloud_only_files(self):
+        context = OPS.route_context({"route_id": "a0r", "repo_name": "convir"})
+        body = OPS.manifest_body(context)
+        self.assertIn('test -f "$path" || continue', body)
+        self.assertIn('case "${name,,}" in *cloud_only*) continue ;; esac', body)
+        self.assertIn("CONVIR_OPS_EVIDENCE_MANIFEST_OK", body)
 
     def test_mcp_stdio_exposes_only_schema_v2_lifecycle_and_evidence_tools(self):
         requests = [

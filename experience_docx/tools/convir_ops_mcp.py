@@ -43,6 +43,10 @@ MONITOR_MAX_POLLS = 64
 MONITOR_MAX_INTERVAL_SECONDS = 60
 MAX_CLOSEOUT_BYTES = 64 * 1024
 MAX_MONITOR_SECONDS = 480
+START_RESOURCE_ATTEMPTS = 2
+REMOTE_PREFLIGHT_TIMEOUT = 120
+REMOTE_LAUNCH_TIMEOUT = 150
+REMOTE_CLOSEOUT_TIMEOUT = 60
 MONITOR_PROFILES = {
     "short": {"max_polls": 9, "interval_seconds": 15},
     "standard": {"max_polls": 21, "interval_seconds": 15},
@@ -52,7 +56,12 @@ RECEIPT_DIR = Path(os.environ.get("CONVIR_OPS_RECEIPT_DIR", "~/.codex/convir-ops
 
 
 class ToolError(RuntimeError):
-    """Expected user-facing tool rejection."""
+    """Expected user-facing tool rejection with a typed operational phase."""
+
+    def __init__(self, message, *, failure_phase=None, failure_class=None):
+        super().__init__(message)
+        self.failure_phase = failure_phase
+        self.failure_class = failure_class
 
 
 def emit(value):
@@ -196,6 +205,19 @@ def typed_failure(operation_state, failure_class, message, **kwargs):
     return typed_result(False, operation_state, failure_class, mismatches=[message], **kwargs)
 
 
+def failure_phase_for_error(error):
+    phase = getattr(error, "failure_phase", None)
+    if phase:
+        return phase
+    message = str(error)
+    marker = re.search(r"(?:^|\s)phase=([A-Za-z0-9_.-]+)", message)
+    return marker.group(1) if marker else "unknown"
+
+
+def failure_details(error):
+    return {"failure_phase": failure_phase_for_error(error)}
+
+
 def structured_payload(result):
     payload = result.get("structuredContent")
     if not isinstance(payload, dict):
@@ -204,6 +226,9 @@ def structured_payload(result):
 
 
 def failure_class_for_error(error):
+    explicit = getattr(error, "failure_class", None)
+    if explicit:
+        return explicit
     message = str(error).lower()
     if "conflict" in message or "must_not_exist" in message or "collision" in message:
         return "collision"
@@ -389,6 +414,19 @@ def issue_receipt(context, preflight_output):
     return token, payload
 
 
+def mark_receipt_launched(token, idempotency_key, launch_result):
+    with locked_receipt(token) as record:
+        payload = validate_receipt_record(token, record)
+        if record.get("launched"):
+            if record.get("launch_key") != idempotency_key:
+                raise ToolError("receipt has been consumed by a different idempotency key")
+            return payload
+        record["launched"] = True
+        record["launch_key"] = idempotency_key
+        record["launch_result"] = launch_result
+        return payload
+
+
 def issue_plan(context, now):
     payload = {
         "schema_version": SCHEMA_VERSION, "context": context, "issued_at": now,
@@ -452,13 +490,26 @@ def helper_path():
 
 
 def run_local(args, timeout):
+    return _run_local(args, timeout, phase="local_command")
+
+
+def _run_local(args, timeout, *, phase):
+    started = time.monotonic()
     try:
         result = subprocess.run(args, text=True, capture_output=True, timeout=timeout, check=False)
     except subprocess.TimeoutExpired as exc:
-        raise ToolError(f"local operation timed out after {timeout}s") from exc
+        elapsed = round(time.monotonic() - started, 3)
+        raise ToolError(
+            f"phase={phase} command_class=local timeout_seconds={timeout} elapsed_seconds={elapsed}",
+            failure_phase=phase, failure_class="command_infra",
+        ) from exc
     if result.returncode != 0:
         output = (result.stdout + result.stderr).strip()
-        raise ToolError(output or f"local operation failed with rc={result.returncode}")
+        detail = output[:8192] if output else f"local operation failed with rc={result.returncode}"
+        raise ToolError(
+            f"phase={phase} command_class=local rc={result.returncode}: {detail}",
+            failure_phase=phase, failure_class="command_infra",
+        )
     return result.stdout.strip()
 
 
@@ -472,14 +523,22 @@ def inspect_local(args, timeout=30):
     return {"ok": result.returncode == 0, "returncode": result.returncode, "output": output[:8192]}
 
 
-def run_remote_body(body, timeout=45):
+def run_remote_body(body, timeout=120, *, phase="remote_transport"):
     with tempfile.NamedTemporaryFile("w", suffix=".sh", prefix="convir-ops-", delete=False, encoding="utf-8") as handle:
         body_path = Path(handle.name)
         handle.write("#!/usr/bin/env bash\nset -euo pipefail\n")
         handle.write(body)
         handle.write("\n")
     try:
-        return run_local(["bash", str(helper_path()), str(body_path)], timeout)
+        try:
+            return _run_local(["bash", str(helper_path()), str(body_path)], timeout, phase=phase)
+        except ToolError as exc:
+            message = str(exc)
+            if "CONVIR_OPS_RESOURCE_UNAVAILABLE" in message:
+                raise ToolError(message, failure_phase="resource_preflight", failure_class="command_infra") from exc
+            if "CONVIR_OPS_SESSION_CONFLICT" in message:
+                raise ToolError(message, failure_phase="workspace_prepare", failure_class="collision") from exc
+            raise
     finally:
         body_path.unlink(missing_ok=True)
 
@@ -492,7 +551,7 @@ def github_ref_shas(refs):
     """Resolve an exact set of GitHub refs in one network round trip."""
     if not refs or len(refs) != len(set(refs)):
         raise ToolError("GitHub refs must be a non-empty unique list")
-    output = run_local(["git", "ls-remote", GITHUB_URL, *refs], timeout=30)
+    output = _run_local(["git", "ls-remote", GITHUB_URL, *refs], timeout=60, phase="github_ref_fetch")
     observed = {}
     for line in output.splitlines():
         fields = line.split()
@@ -513,9 +572,9 @@ def verify_github_context(context):
         raise ToolError("GitHub main does not match rules_commit")
     with tempfile.TemporaryDirectory(prefix="convir-ops-plan-") as temporary:
         bare_repo = str(Path(temporary) / "repo.git")
-        run_local(["git", "init", "--quiet", "--bare", bare_repo], timeout=15)
-        run_local(["git", "-C", bare_repo, "fetch", "--quiet", "--depth=1", GITHUB_URL, context["expected_commit"]], timeout=45)
-        run_local(["git", "-C", bare_repo, "cat-file", "-e", f"{context['expected_commit']}:{context['runner_relpath']}"], timeout=15)
+        _run_local(["git", "init", "--quiet", "--bare", bare_repo], timeout=30, phase="local_git_prepare")
+        _run_local(["git", "-C", bare_repo, "fetch", "--quiet", "--depth=1", GITHUB_URL, context["expected_commit"]], timeout=120, phase="local_git_fetch")
+        _run_local(["git", "-C", bare_repo, "cat-file", "-e", f"{context['expected_commit']}:{context['runner_relpath']}"], timeout=30, phase="local_git_verify")
     return {
         "branch": context["branch"], "route_commit": context["expected_commit"],
         "rules_commit": context["rules_commit"], "runner_relpath": context["runner_relpath"],
@@ -536,9 +595,9 @@ def load_operation_manifest(arguments):
         raise ToolError("route branch head does not match route_branch_commit")
     with tempfile.TemporaryDirectory(prefix="convir-ops-plan-") as temporary:
         bare_repo = str(Path(temporary) / "repo.git")
-        run_local(["git", "init", "--quiet", "--bare", bare_repo], timeout=15)
-        run_local(["git", "-C", bare_repo, "fetch", "--quiet", "--depth=1", GITHUB_URL, request["route_branch_commit"]], timeout=45)
-        manifest_raw = run_local(["git", "-C", bare_repo, "show", f"{request['route_branch_commit']}:{ROUTE_OPERATIONS_RELPATH}"], timeout=15)
+        _run_local(["git", "init", "--quiet", "--bare", bare_repo], timeout=30, phase="local_git_prepare")
+        _run_local(["git", "-C", bare_repo, "fetch", "--quiet", "--depth=1", GITHUB_URL, request["route_branch_commit"]], timeout=120, phase="local_git_fetch")
+        manifest_raw = _run_local(["git", "-C", bare_repo, "show", f"{request['route_branch_commit']}:{ROUTE_OPERATIONS_RELPATH}"], timeout=30, phase="local_git_manifest")
         if len(manifest_raw.encode("utf-8")) > 65536:
             raise ToolError("route operations manifest exceeds 64 KiB")
         manifest = json.loads(manifest_raw)
@@ -568,7 +627,7 @@ def load_operation_manifest(arguments):
             "route_branch_commit": request["route_branch_commit"], "rules_commit": manifest.get("rules_commit"),
             **operation,
         })
-        run_local(["git", "-C", bare_repo, "cat-file", "-e", f"{request['route_branch_commit']}:{context['runner_relpath']}"], timeout=15)
+        _run_local(["git", "-C", bare_repo, "cat-file", "-e", f"{request['route_branch_commit']}:{context['runner_relpath']}"], timeout=30, phase="local_git_verify")
     if refs["refs/heads/main"] != context["rules_commit"]:
         raise ToolError("GitHub main does not match the manifest rules_commit")
     checks = {
@@ -594,14 +653,14 @@ def tool_plan_manifest(arguments):
             plan_token=plan_token, plan_expires_at=plan_payload["expires_at"],
         )
     except ToolError as exc:
-        return typed_failure("PREPARE_REJECTED", failure_class_for_error(exc), str(exc))
+        return typed_failure("PREPARE_REJECTED", failure_class_for_error(exc), str(exc), **failure_details(exc))
     except (json.JSONDecodeError, TypeError):
         return typed_failure("PREPARE_REJECTED", "authorization", "route operations manifest is not valid compact JSON")
     except Exception as exc:
-        return typed_failure("PREPARE_FAILED", "command_infra", type(exc).__name__)
+        return typed_failure("PREPARE_FAILED", "command_infra", type(exc).__name__, failure_phase="github_ref_fetch")
 
 
-def preflight_body(context, include_gpu, create_clone=False):
+def preflight_body(context, include_gpu, create_clone=False, *, gpu_attempts=1, keep_fresh_trap=False):
     lines = [
         f"REMOTE_REPO={q(context['remote_repo'])}", f"GITHUB_URL={q(GITHUB_URL)}",
         f"RUN_ROOT={q(context['run_root'])}",
@@ -672,20 +731,75 @@ def preflight_body(context, include_gpu, create_clone=False):
         ])
         if context.get("gpu_index") is None:
             lines.extend([
-                'GPU_INDEX=$(nvidia-smi --query-gpu=index,memory.free,utilization.gpu --format=csv,noheader,nounits | awk -F, -v min="$MIN_FREE_GPU_MIB" -v max="$MAX_GPU_UTIL" \'{gsub(/ /,"",$1); gsub(/ /,"",$2); gsub(/ /,"",$3); if ($2 >= min && $3 <= max) {print $1; exit}}\')',
-                'test -n "$GPU_INDEX"',
+                f"GPU_ATTEMPTS={int(gpu_attempts)}",
+                'GPU_INDEX=""',
+                'for attempt in $(seq 1 "$GPU_ATTEMPTS"); do',
+                '  GPU_INDEX=$(nvidia-smi --query-gpu=index,memory.free,utilization.gpu --format=csv,noheader,nounits 2>/dev/null | awk -F, -v min="$MIN_FREE_GPU_MIB" -v max="$MAX_GPU_UTIL" \'{gsub(/ /,"",$1); gsub(/ /,"",$2); gsub(/ /,"",$3); if ($2 >= min && $3 <= max) {print $1; exit}}\' || true)',
+                '  if test -n "$GPU_INDEX"; then',
+                '    GPU_OK=$(nvidia-smi -i "$GPU_INDEX" --query-gpu=memory.free,utilization.gpu --format=csv,noheader,nounits 2>/dev/null | awk -F, -v min="$MIN_FREE_GPU_MIB" -v max="$MAX_GPU_UTIL" \'{gsub(/ /,"",$1); gsub(/ /,"",$2); if ($1 >= min && $2 <= max) print "yes"}\' || true)',
+                '    test "$GPU_OK" = yes && break',
+                '  fi',
+                '  GPU_INDEX=""',
+                '  test "$attempt" = "$GPU_ATTEMPTS" || sleep 2',
+                'done',
+                'if test -z "$GPU_INDEX"; then echo "CONVIR_OPS_RESOURCE_UNAVAILABLE phase=resource_preflight min_free_mib=$MIN_FREE_GPU_MIB max_util_pct=$MAX_GPU_UTIL attempts=$GPU_ATTEMPTS"; exit 75; fi',
             ])
         else:
             lines.extend([
                 f"GPU_INDEX={int(context['gpu_index'])}",
-                'GPU_OK=$(nvidia-smi -i "$GPU_INDEX" --query-gpu=memory.free,utilization.gpu --format=csv,noheader,nounits | awk -F, -v min="$MIN_FREE_GPU_MIB" -v max="$MAX_GPU_UTIL" \'{gsub(/ /,"",$1); gsub(/ /,"",$2); if ($1 >= min && $2 <= max) print "yes"}\')',
-                'test "$GPU_OK" = yes',
+                'GPU_OK=$(nvidia-smi -i "$GPU_INDEX" --query-gpu=memory.free,utilization.gpu --format=csv,noheader,nounits 2>/dev/null | awk -F, -v min="$MIN_FREE_GPU_MIB" -v max="$MAX_GPU_UTIL" \'{gsub(/ /,"",$1); gsub(/ /,"",$2); if ($1 >= min && $2 <= max) print "yes"}\' || true)',
+                'if test "$GPU_OK" != yes; then echo "CONVIR_OPS_RESOURCE_UNAVAILABLE phase=resource_preflight gpu_index=$GPU_INDEX min_free_mib=$MIN_FREE_GPU_MIB max_util_pct=$MAX_GPU_UTIL"; exit 75; fi',
             ])
         lines.append('echo "CONVIR_OPS_GPU_OK index=$GPU_INDEX min_free_mib=$MIN_FREE_GPU_MIB max_util_pct=$MAX_GPU_UTIL"')
-    if create_clone and context.get("workspace_policy") == "fresh_route":
+    if create_clone and context.get("workspace_policy") == "fresh_route" and not keep_fresh_trap:
         lines.append('trap - ERR')
     lines.append('echo "CONVIR_OPS_PREFLIGHT_OK route=$RUN_ROOT mode=' + context["mode"] + '"')
     return "\n".join(lines)
+
+
+def gpu_probe_body(context, attempts=START_RESOURCE_ATTEMPTS):
+    """Probe the sealed GPU contract before reserving a fresh workspace."""
+    minimum = int(context["min_free_gpu_mib"])
+    maximum = int(context["max_gpu_utilization_pct"])
+    return "\n".join([
+        f"MIN_FREE_GPU_MIB={minimum}", f"MAX_GPU_UTIL={maximum}", f"GPU_ATTEMPTS={int(attempts)}",
+        'GPU_INDEX=""',
+        'for attempt in $(seq 1 "$GPU_ATTEMPTS"); do',
+        '  GPU_INDEX=$(nvidia-smi --query-gpu=index,memory.free,utilization.gpu --format=csv,noheader,nounits 2>/dev/null | awk -F, -v min="$MIN_FREE_GPU_MIB" -v max="$MAX_GPU_UTIL" \'{gsub(/ /,"",$1); gsub(/ /,"",$2); gsub(/ /,"",$3); if ($2 >= min && $3 <= max) {print $1; exit}}\' || true)',
+        '  if test -n "$GPU_INDEX"; then',
+        '    GPU_OK=$(nvidia-smi -i "$GPU_INDEX" --query-gpu=memory.free,utilization.gpu --format=csv,noheader,nounits 2>/dev/null | awk -F, -v min="$MIN_FREE_GPU_MIB" -v max="$MAX_GPU_UTIL" \'{gsub(/ /,"",$1); gsub(/ /,"",$2); if ($1 >= min && $2 <= max) print "yes"}\' || true)',
+        '    test "$GPU_OK" = yes && break',
+        '  fi',
+        '  GPU_INDEX=""',
+        '  test "$attempt" = "$GPU_ATTEMPTS" || sleep 2',
+        'done',
+        'if test -z "$GPU_INDEX"; then echo "CONVIR_OPS_RESOURCE_UNAVAILABLE phase=resource_preflight min_free_mib=$MIN_FREE_GPU_MIB max_util_pct=$MAX_GPU_UTIL attempts=$GPU_ATTEMPTS"; exit 75; fi',
+        'echo "CONVIR_OPS_GPU_OK index=$GPU_INDEX min_free_mib=$MIN_FREE_GPU_MIB max_util_pct=$MAX_GPU_UTIL"',
+        'echo CONVIR_OPS_RESOURCE_OK',
+    ])
+
+
+def atomic_start_body(context):
+    """Prepare and launch in one remote shell after the dynamic checks."""
+    gpu_env = ' GPU="$GPU_INDEX"' if context["require_gpu"] else ""
+    launch = (
+        f'tmux new-session -d -s {q(context["session"])} env '
+        f'EXPECTED_ROUTE_COMMIT={q(context["expected_commit"])} '
+        'RUNNER_SHA256="$RUNNER_SHA" '
+        f'MODE={q(context["mode"])} REMOTE_REPO={q(context["remote_repo"])} '
+        f'RUN_ROOT={q(context["run_root"])} RUN_ID={q(context["output_id"])} '
+        f'OUTPUT_ID={q(context["output_id"])}{gpu_env} '
+        f'bash {q(context["remote_repo"] + "/" + context["runner_relpath"])}'
+    )
+    return "\n".join([
+        preflight_body(
+            context, context["require_gpu"], create_clone=True,
+            gpu_attempts=START_RESOURCE_ATTEMPTS, keep_fresh_trap=True,
+        ),
+        launch,
+        'trap - ERR',
+        'echo "CONVIR_OPS_LAUNCH_OK session=$SESSION gpu=${GPU_INDEX:-none}"',
+    ])
 
 
 def tool_prepare_authorized(arguments):
@@ -710,15 +824,22 @@ def tool_prepare_authorized(arguments):
         if arguments.get("plan_hash") != plan:
             return typed_failure("PREPARE_REJECTED", "authorization", "plan_hash does not bind this exact authorization tuple", expected={"plan_hash": plan})
         try:
-            output = run_remote_body(preflight_body(context, context["require_gpu"], create_clone=True), timeout=45)
+            output = run_remote_body(
+                preflight_body(context, context["require_gpu"], create_clone=True),
+                timeout=REMOTE_PREFLIGHT_TIMEOUT, phase="workspace_prepare",
+            )
         except Exception as exc:
-            return typed_failure("PREPARE_RECOVERY_REQUIRED", failure_class_for_error(exc), str(exc) or type(exc).__name__, observed={"remote_repo": context["remote_repo"], "fresh_workspace_cleanup": "trap_after_path_reservation"}, allowed_next_actions=["route_prepare_authorized.apply"])
+            return typed_failure(
+                "PREPARE_RECOVERY_REQUIRED", failure_class_for_error(exc), str(exc) or type(exc).__name__,
+                observed={"remote_repo": context["remote_repo"], "fresh_workspace_cleanup": "trap_after_path_reservation"},
+                allowed_next_actions=["route_prepare_authorized.apply"], **failure_details(exc),
+            )
         receipt, payload = issue_receipt(context, output)
         return typed_result(True, "PREPARED", observed={"preflight": output}, expected={"authorization_tuple": context}, allowed_next_actions=["route_launch"], receipt=receipt, receipt_expires_at=payload["expires_at"], receipt_digest=canonical_digest(payload))
     except ToolError as exc:
-        return typed_failure("PREPARE_REJECTED", failure_class_for_error(exc), str(exc))
+        return typed_failure("PREPARE_REJECTED", failure_class_for_error(exc), str(exc), **failure_details(exc))
     except Exception as exc:
-        return typed_failure("PREPARE_FAILED", "command_infra", type(exc).__name__)
+        return typed_failure("PREPARE_FAILED", "command_infra", type(exc).__name__, failure_phase="workspace_prepare")
 
 
 def tool_receipt_launch(arguments):
@@ -746,15 +867,15 @@ def tool_receipt_launch(arguments):
             preflight_body(context, context["require_gpu"]),
             f"tmux new-session -d -s {q(context['session'])} env EXPECTED_ROUTE_COMMIT={q(context['expected_commit'])} RUNNER_SHA256={q(payload['runner_sha256'])} MODE={q(context['mode'])} REMOTE_REPO={q(context['remote_repo'])} RUN_ROOT={q(context['run_root'])} RUN_ID={q(payload['output_id'])} OUTPUT_ID={q(payload['output_id'])}{gpu_env} bash {q(context['remote_repo'] + '/' + context['runner_relpath'])}",
             'echo "CONVIR_OPS_LAUNCH_OK session=$SESSION"',
-            ]), timeout=60)
+            ]), timeout=REMOTE_LAUNCH_TIMEOUT, phase="launch_command")
             record["launched"] = True
             record["launch_key"] = key
             record["launch_result"] = {"transport": output, "session": payload["session"], "output_id": payload["output_id"]}
             return typed_result(True, "LAUNCHED", observed=record["launch_result"], expected={"receipt": token}, allowed_next_actions=["route_monitor", "route_closeout_validate"])
     except ToolError as exc:
-        return typed_failure("LAUNCH_REJECTED", "authorization", str(exc))
+        return typed_failure("LAUNCH_REJECTED", failure_class_for_error(exc), str(exc), **failure_details(exc))
     except Exception as exc:
-        return typed_failure("LAUNCH_FAILED", "command_infra", type(exc).__name__, allowed_next_actions=["route_prepare_authorized.apply"])
+        return typed_failure("LAUNCH_FAILED", "command_infra", type(exc).__name__, allowed_next_actions=["route_prepare_authorized.apply"], **failure_details(exc))
 
 
 def closeout_extractor():
@@ -768,14 +889,26 @@ def monitor_body(payload, max_polls, interval, include_closeout=False):
         f"RUN_ROOT={q(remote_run_root)}", f"SESSION={q(payload['session'])}", f"PY={q(REMOTE_PYTHON)}",
         f"TERMINALS={q(json.dumps(payload['allowed_terminal_tuples'], separators=(',', ':')))}",
         f"MAX_POLLS={max_polls}", f"INTERVAL={interval}", f"HEARTBEAT_TIMEOUT={int(payload['heartbeat_timeout_seconds'])}",
-        "previous=''", "stale=false", "for n in $(seq 1 \"$MAX_POLLS\"); do",
+        "previous=''", "stale=false", "terminal=false", "monitor_tmp=$(mktemp -d)",
+        "trap 'rm -rf -- \"$monitor_tmp\"' EXIT",
+        "printf '%s' \"$TERMINALS\" > \"$monitor_tmp/allowed.json\"",
+        "for n in $(seq 1 \"$MAX_POLLS\"); do",
         '  active=false; tmux has-session -t "$SESSION" 2>/dev/null && active=true',
         '  status=$(test -f "$RUN_ROOT/status.txt" && tail -n 16 "$RUN_ROOT/status.txt" || true)',
         '  heartbeat_age=-1',
         '  if test -f "$RUN_ROOT/status.txt"; then heartbeat_age=$(( $(date +%s) - $(stat -c %Y "$RUN_ROOT/status.txt") )); elif test "$active" = true; then session_created=$(tmux display-message -p -t "$SESSION" "#{session_created}" 2>/dev/null || true); test -z "$session_created" || heartbeat_age=$(( $(date +%s) - session_created )); fi',
-        '  terminal=$($PY -c "import json,re,sys; allowed=json.loads(sys.argv[1]); raw=sys.argv[2]; present=lambda k,v: re.search(r\"(?m)(?:^|[ \\t])\"+re.escape(str(k))+r\"=\"+re.escape(str(v))+r\"(?=$|[ \\t])\",raw) is not None; print(any(all(present(k,v) for k,v in item.items()) for item in allowed))" "$TERMINALS" "$status")',
+        '  printf "%s" "$status" > "$monitor_tmp/status.txt"',
+        '  if "$PY" - "$monitor_tmp/allowed.json" "$monitor_tmp/status.txt" <<\'PY\'',
+        'import json, re, sys',
+        'allowed = json.load(open(sys.argv[1], encoding="utf-8"))',
+        'raw = open(sys.argv[2], encoding="utf-8", errors="replace").read()',
+        'def present(key, value):',
+        '    pattern = r"(?m)(?:^|[ \\t])" + re.escape(str(key)) + r"=" + re.escape(str(value)) + r"(?=$|[ \\t])"',
+        '    return re.search(pattern, raw) is not None',
+        'raise SystemExit(0 if any(all(present(key, value) for key, value in item.items()) for item in allowed) else 1)',
+        'PY',
+        '  then terminal=true; final_status="$status"; final_active="$active"; final_heartbeat_age="$heartbeat_age"; break; fi',
         '  final_status="$status"; final_active="$active"; final_heartbeat_age="$heartbeat_age"',
-        '  test "$terminal" = True && { terminal=true; break; }',
         '  test "$active" != true || test "$heartbeat_age" -lt 0 || test "$heartbeat_age" -lt "$HEARTBEAT_TIMEOUT" || { stale=true; break; }',
         '  test "$n" = "$MAX_POLLS" || sleep "$INTERVAL"', 'done',
         'printf "CONVIR_OPS_MONITOR_META polls=%s active=%s terminal=%s stale=%s heartbeat_age=%s\\n" "$n" "$final_active" "${terminal:-false}" "$stale" "$final_heartbeat_age"',
@@ -813,14 +946,16 @@ def tool_receipt_monitor(arguments):
         interval = require_int(arguments.get("interval_seconds"), "interval_seconds", 0, 0, MONITOR_MAX_INTERVAL_SECONDS)
         max_polls = min(max_polls, max(1, MAX_MONITOR_SECONDS // max(1, interval + 1)))
         timeout = max_polls * max(1, interval) + 20
-        observed = parse_monitor_output(run_remote_body(monitor_body(payload, max_polls, interval), timeout=timeout))
+        observed = parse_monitor_output(
+            run_remote_body(monitor_body(payload, max_polls, interval), timeout=timeout, phase="monitor")
+        )
         state = "MONITOR_STALE" if observed["stale"] else ("MONITOR_TERMINAL" if observed["terminal"] else ("MONITOR_OBSERVED" if observed["active"] else "MONITOR_INACTIVE_CLOSEOUT_PENDING"))
         actions = ["engineering_review"] if observed["stale"] else (["route_finish"] if observed["terminal"] or not observed["active"] else ["route_finish"])
         return typed_result(True, state, observed=observed, expected={"receipt": canonical_digest(payload)}, allowed_next_actions=actions)
     except ToolError as exc:
-        return typed_failure("MONITOR_REJECTED", "authorization", str(exc))
+        return typed_failure("MONITOR_REJECTED", failure_class_for_error(exc), str(exc), **failure_details(exc))
     except Exception as exc:
-        return typed_failure("MONITOR_FAILED", "command_infra", type(exc).__name__)
+        return typed_failure("MONITOR_FAILED", "command_infra", type(exc).__name__, failure_phase="monitor")
 
 
 def closeout_result_from_output(payload, output):
@@ -855,18 +990,21 @@ def tool_closeout_validate(arguments):
             payload = validate_receipt_record(token, record)
         filename = payload["closeout_filename"]
         remote_path = f"{payload['remote_repo']}/experience_docx/experiment_logs/{payload['route_id']}/{filename}"
-        output = run_remote_body(f"test -f {q(remote_path)}\n{q(REMOTE_PYTHON)} -c {q(closeout_extractor())} {q(remote_path)}", timeout=30)
+        output = run_remote_body(
+            f"test -f {q(remote_path)}\n{q(REMOTE_PYTHON)} -c {q(closeout_extractor())} {q(remote_path)}",
+            timeout=REMOTE_CLOSEOUT_TIMEOUT, phase="closeout",
+        )
         return closeout_result_from_output(payload, output)
     except ToolError as exc:
-        return typed_failure("CLOSEOUT_REJECTED", "authorization", str(exc))
+        return typed_failure("CLOSEOUT_REJECTED", failure_class_for_error(exc), str(exc), **failure_details(exc))
     except (json.JSONDecodeError, TypeError):
         return typed_failure("CLOSEOUT_INVALID", "evaluation", "runner closeout is not valid compact JSON")
     except Exception as exc:
-        return typed_failure("CLOSEOUT_FAILED", "command_infra", type(exc).__name__)
+        return typed_failure("CLOSEOUT_FAILED", "command_infra", type(exc).__name__, failure_phase="closeout")
 
 
 def _tool_start_authorized(arguments):
-    """Compose reviewed apply and receipt launch without exposing free-form commands."""
+    """Prepare and launch one exact route in a bounded, receipt-safe envelope."""
     token = arguments.get("plan_token")
     idempotency_key = token[:32] if isinstance(token, str) else token
     with locked_plan(token) as plan_record:
@@ -878,24 +1016,68 @@ def _tool_start_authorized(arguments):
             if not receipt:
                 return typed_failure("START_REJECTED", "authorization", "consumed plan record is missing its receipt")
             return tool_receipt_launch({"receipt": receipt, "idempotency_key": idempotency_key})
+        if context["require_gpu"]:
+            try:
+                run_remote_body(
+                    gpu_probe_body(context),
+                    timeout=30,
+                    phase="resource_preflight",
+                )
+            except ToolError as exc:
+                if failure_phase_for_error(exc) == "resource_preflight":
+                    return typed_failure(
+                        "RESOURCE_WAIT_REQUIRED", "command_infra", str(exc) or type(exc).__name__,
+                        observed={
+                            "remote_repo": context["remote_repo"],
+                            "min_free_gpu_mib": context["min_free_gpu_mib"],
+                            "max_gpu_utilization_pct": context["max_gpu_utilization_pct"],
+                            "attempts": START_RESOURCE_ATTEMPTS,
+                        }, expected={"runner_started": False},
+                        allowed_next_actions=["route_start_authorized"],
+                        retry_after_seconds=15, **failure_details(exc),
+                    )
+                return typed_failure(
+                    "START_RECOVERY_REQUIRED", failure_class_for_error(exc), str(exc) or type(exc).__name__,
+                    observed={"remote_repo": context["remote_repo"], "runner_started": False},
+                    allowed_next_actions=["route_start_authorized"], **failure_details(exc),
+                )
         try:
-            output = run_remote_body(preflight_body(context, context["require_gpu"], create_clone=True), timeout=45)
-        except Exception as exc:
-            return typed_failure("PREPARE_RECOVERY_REQUIRED", failure_class_for_error(exc), str(exc) or type(exc).__name__, observed={"remote_repo": context["remote_repo"], "fresh_workspace_cleanup": "trap_after_path_reservation"}, allowed_next_actions=["route_prepare_authorized.plan"])
+            output = run_remote_body(
+                atomic_start_body(context),
+                timeout=REMOTE_LAUNCH_TIMEOUT,
+                phase="launch_command",
+            )
+        except ToolError as exc:
+            if failure_phase_for_error(exc) == "resource_preflight":
+                return typed_failure(
+                    "RESOURCE_WAIT_REQUIRED", "command_infra", str(exc) or type(exc).__name__,
+                    observed={"remote_repo": context["remote_repo"], "runner_started": False, "workspace_cleanup": "fresh_workspace_trap"},
+                    expected={"runner_started": False}, allowed_next_actions=["route_start_authorized"],
+                    retry_after_seconds=15, **failure_details(exc),
+                )
+            return typed_failure(
+                "START_STATE_UNKNOWN" if failure_phase_for_error(exc) == "launch_command" else "START_RECOVERY_REQUIRED",
+                failure_class_for_error(exc), str(exc) or type(exc).__name__,
+                observed={"remote_repo": context["remote_repo"], "runner_started": "unknown"},
+                expected={"runner_started": False},
+                allowed_next_actions=["engineering_review"], **failure_details(exc),
+            )
         receipt, receipt_payload_value = issue_receipt(context, output)
+        launch_result = {
+            "transport": output,
+            "session": context["session"],
+            "output_id": context["output_id"],
+        }
+        mark_receipt_launched(receipt, idempotency_key, launch_result)
         plan_record["consumed"] = True
         plan_record["receipt"] = receipt
-        launched_result = tool_receipt_launch({"receipt": receipt, "idempotency_key": idempotency_key})
-        launched = structured_payload(launched_result)
         return typed_result(
-            launched["ok"], launched["operation_state"], launched["failure_class"],
-            observed={
+            True, "LAUNCHED", observed={
                 "session": context["session"], "output_id": context["output_id"],
-                "remote_repo": context["remote_repo"], "launch_state": launched["operation_state"],
-            },
-            expected={"receipt_digest": canonical_digest(receipt_payload_value), "plan_hash": plan_hash},
-            mismatches=launched["mismatches"], allowed_next_actions=launched["allowed_next_actions"],
-            receipt=receipt, receipt_expires_at=receipt_payload_value["expires_at"],
+                "remote_repo": context["remote_repo"], "launch_state": "LAUNCHED",
+            }, expected={"receipt_digest": canonical_digest(receipt_payload_value), "plan_hash": plan_hash},
+            allowed_next_actions=["route_finish"], receipt=receipt,
+            receipt_expires_at=receipt_payload_value["expires_at"],
         )
 
 
@@ -903,9 +1085,9 @@ def tool_start_authorized(arguments):
     try:
         return _tool_start_authorized(arguments)
     except ToolError as exc:
-        return typed_failure("START_REJECTED", failure_class_for_error(exc), str(exc))
+        return typed_failure("START_REJECTED", failure_class_for_error(exc), str(exc), **failure_details(exc))
     except Exception as exc:
-        return typed_failure("START_FAILED", "command_infra", type(exc).__name__)
+        return typed_failure("START_FAILED", "command_infra", type(exc).__name__, failure_phase="launch_command")
 
 
 def tool_finish(arguments):
@@ -920,6 +1102,7 @@ def tool_finish(arguments):
         output = run_remote_body(
             monitor_body(payload, max_polls, profile["interval_seconds"], include_closeout=True),
             timeout=timeout,
+            phase="monitor",
         )
         monitor = parse_monitor_output(output)
         if monitor["stale"]:
@@ -950,11 +1133,11 @@ def tool_finish(arguments):
             **{key: closeout[key] for key in ("manifest", "archive_candidate") if key in closeout},
         )
     except ToolError as exc:
-        return typed_failure("FINISH_REJECTED", failure_class_for_error(exc), str(exc))
+        return typed_failure("FINISH_REJECTED", failure_class_for_error(exc), str(exc), **failure_details(exc))
     except (json.JSONDecodeError, TypeError):
         return typed_failure("FINISH_INVALID", "evaluation", "runner closeout is not valid compact JSON")
     except Exception as exc:
-        return typed_failure("FINISH_FAILED", "command_infra", type(exc).__name__)
+        return typed_failure("FINISH_FAILED", "command_infra", type(exc).__name__, failure_phase="closeout")
 
 
 def validate_evidence_file(name):
@@ -966,17 +1149,23 @@ def validate_evidence_file(name):
 
 
 def manifest_body(context, files=None):
-    lines = [f"EVIDENCE_DIR={q(context['evidence_dir'])}", 'test -d "$EVIDENCE_DIR"']
+    lines = [
+        "export LC_ALL=C",
+        f"EVIDENCE_DIR={q(context['evidence_dir'])}",
+        'if test ! -d "$EVIDENCE_DIR"; then echo CONVIR_OPS_EVIDENCE_UNAVAILABLE >&2; exit 66; fi',
+    ]
     if files is None:
         lines.extend([
             'shopt -s nullglob',
             'for path in "$EVIDENCE_DIR"/*; do',
             '  name=$(basename "$path")',
-            '  case "$name" in *.json|*.csv|*.md|*.txt) ;; *) continue ;; esac',
-            '  case "$name" in *cloud_only*) continue ;; esac',
+            '  test -f "$path" || continue',
+            '  [[ "$name" =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}\.(json|csv|md|txt)$ ]] || continue',
+            '  case "${name,,}" in *cloud_only*) continue ;; esac',
             '  size=$(wc -c < "$path")',
             f'  if [ "$size" -le {MAX_EVIDENCE_BYTES} ]; then',
             '    read -r digest _ < <(sha256sum "$path")',
+            '    test "${#digest}" -eq 64 || { echo CONVIR_OPS_EVIDENCE_INVALID_HASH >&2; exit 67; }',
             '    printf "%s\\t%s\\t%s\\n" "$name" "$size" "$digest"',
             '  fi',
             'done',
@@ -989,7 +1178,8 @@ def manifest_body(context, files=None):
                 'size=$(wc -c < "$path")',
                 f'test "$size" -le {MAX_EVIDENCE_BYTES}',
                 'read -r digest _ < <(sha256sum "$path")',
-                f'printf "{name}\\t%s\\t%s\\n" "$size" "$digest"',
+                'test "${#digest}" -eq 64',
+                f'printf "%s\\t%s\\t%s\\n" {q(name)} "$size" "$digest"',
             ])
     lines.append("echo CONVIR_OPS_EVIDENCE_MANIFEST_OK")
     return "\n".join(lines)
@@ -997,16 +1187,49 @@ def manifest_body(context, files=None):
 
 def parse_manifest(output):
     records = {}
+    marker_count = sum(1 for line in output.splitlines() if line == "CONVIR_OPS_EVIDENCE_MANIFEST_OK")
+    if marker_count != 1:
+        raise ToolError(
+            "phase=evidence_manifest evidence manifest marker is missing or duplicated",
+            failure_phase="evidence_manifest", failure_class="command_infra",
+        )
     for line in output.splitlines():
         fields = line.split("\t")
         if len(fields) == 3 and fields[1].isdigit() and re.fullmatch(r"[0-9a-f]{64}", fields[2]):
+            if fields[0] in records:
+                raise ToolError(
+                    f"phase=evidence_manifest duplicate evidence record: {fields[0]}",
+                    failure_phase="evidence_manifest", failure_class="command_infra",
+                )
             records[fields[0]] = {"bytes": int(fields[1]), "sha256": fields[2]}
+        elif line not in {"CONVIR_OPS_EVIDENCE_MANIFEST_OK", "CONVIR_REMOTE_SCRIPT_OK", ""}:
+            raise ToolError(
+                "phase=evidence_manifest malformed evidence record",
+                failure_phase="evidence_manifest", failure_class="command_infra",
+            )
     return records
 
 
 def tool_evidence_manifest(arguments):
-    context = route_context(arguments)
-    return text_result(run_remote_body(manifest_body(context), timeout=30))
+    try:
+        context = route_context(arguments)
+        output = run_remote_body(manifest_body(context), timeout=60, phase="evidence_manifest")
+        records = parse_manifest(output)
+        result = {
+            "schema_version": SCHEMA_VERSION,
+            "ok": True,
+            "operation_state": "EVIDENCE_MANIFEST_READY",
+            "failure_class": "none",
+            "failure_phase": "evidence_manifest",
+            "observed": {"files": records, "count": len(records)},
+            "allowed_next_actions": ["evidence_review"],
+        }
+        result["audit_digest"] = canonical_digest(result)
+        return text_result(json.dumps(result, sort_keys=True), structured_content=result)
+    except ToolError as exc:
+        return typed_failure("EVIDENCE_MANIFEST_FAILED", failure_class_for_error(exc), str(exc), **failure_details(exc))
+    except Exception as exc:
+        return typed_failure("EVIDENCE_MANIFEST_FAILED", "command_infra", type(exc).__name__, failure_phase="evidence_manifest")
 
 
 def validate_local_repo(value):
@@ -1031,99 +1254,116 @@ def sha256_file(path):
 
 
 def tool_evidence_fetch(arguments):
-    context = route_context(arguments)
-    local_repo = validate_local_repo(arguments.get("local_repo"))
-    files = arguments.get("files")
-    if not isinstance(files, list) or not files or len(files) > 32:
-        raise ToolError("files must be a non-empty list of at most 32 compact evidence filenames")
-    names = [validate_evidence_file(item) for item in files]
-    if len(set(names)) != len(names):
-        raise ToolError("files must not contain duplicates")
-    records = parse_manifest(run_remote_body(manifest_body(context, names), timeout=45))
-    if set(records) != set(names):
-        raise ToolError("remote evidence manifest did not return the requested allowlist exactly")
-    destination_dir = local_repo / "experience_docx" / "experiment_logs" / context["route_id"]
-    destination_dir.mkdir(parents=True, exist_ok=True)
-    fetched = []
-    skipped = []
-    pending = []
-    for name in names:
-        destination = (destination_dir / name).resolve()
-        try:
-            destination.relative_to(local_repo)
-        except ValueError as exc:
-            raise ToolError("resolved evidence destination escaped local_repo") from exc
-        expected = records[name]["sha256"]
-        if destination.exists():
-            if sha256_file(destination) != expected:
-                raise ToolError(f"refusing to overwrite hash-mismatched local evidence: {destination}")
-            skipped.append(name)
-            continue
-        pending.append((name, destination, expected))
-    if pending:
-        transfer_timeout = min(
-            180,
-            max(60, 30 + sum(records[name]["bytes"] for name, _, _ in pending) // (256 * 1024)),
-        )
-        with tempfile.TemporaryDirectory(prefix=".convir-evidence-", dir=destination_dir) as staging:
-            staging_dir = Path(staging)
-            sources = [f"{REMOTE_HOST}:{context['evidence_dir']}/{name}" for name, _, _ in pending]
-            run_local(["scp", *sources, str(staging_dir)], timeout=transfer_timeout)
-            for name, _, expected in pending:
-                staged = staging_dir / name
-                if not staged.is_file() or sha256_file(staged) != expected:
-                    raise ToolError(f"downloaded evidence hash mismatch: {name}")
-            for name, destination, expected in pending:
-                try:
-                    os.link(staging_dir / name, destination)
-                except FileExistsError as exc:
-                    raise ToolError(f"refusing to overwrite newly created local evidence: {destination}") from exc
+    try:
+        context = route_context(arguments)
+        local_repo = validate_local_repo(arguments.get("local_repo"))
+        files = arguments.get("files")
+        if not isinstance(files, list) or not files or len(files) > 32:
+            raise ToolError("files must be a non-empty list of at most 32 compact evidence filenames")
+        names = [validate_evidence_file(item) for item in files]
+        if len(set(names)) != len(names):
+            raise ToolError("files must not contain duplicates")
+        records = parse_manifest(run_remote_body(manifest_body(context, names), timeout=60, phase="evidence_manifest"))
+        if set(records) != set(names):
+            raise ToolError(
+                "remote evidence manifest did not return the requested allowlist exactly",
+                failure_phase="evidence_manifest", failure_class="command_infra",
+            )
+        destination_dir = local_repo / "experience_docx" / "experiment_logs" / context["route_id"]
+        destination_dir.mkdir(parents=True, exist_ok=True)
+        fetched = []
+        skipped = []
+        pending = []
+        for name in names:
+            destination = (destination_dir / name).resolve()
+            try:
+                destination.relative_to(local_repo)
+            except ValueError as exc:
+                raise ToolError("resolved evidence destination escaped local_repo") from exc
+            expected = records[name]["sha256"]
+            if destination.exists():
                 if sha256_file(destination) != expected:
-                    destination.unlink(missing_ok=True)
-                    raise ToolError(f"local evidence hash mismatch after transfer: {name}")
-                fetched.append(name)
-    return text_result(json.dumps({"fetched": fetched, "already_verified": skipped, "destination": str(destination_dir), "transfer": "single_scp"}, indent=2))
+                    raise ToolError(f"refusing to overwrite hash-mismatched local evidence: {destination}")
+                skipped.append(name)
+                continue
+            pending.append((name, destination, expected))
+        if pending:
+            transfer_timeout = min(
+                300,
+                max(90, 45 + sum(records[name]["bytes"] for name, _, _ in pending) // (256 * 1024)),
+            )
+            with tempfile.TemporaryDirectory(prefix=".convir-evidence-", dir=destination_dir) as staging:
+                staging_dir = Path(staging)
+                sources = [f"{REMOTE_HOST}:{context['evidence_dir']}/{name}" for name, _, _ in pending]
+                _run_local(["scp", *sources, str(staging_dir)], transfer_timeout, phase="evidence_transfer")
+                for name, _, expected in pending:
+                    staged = staging_dir / name
+                    if not staged.is_file() or sha256_file(staged) != expected:
+                        raise ToolError(
+                            f"downloaded evidence hash mismatch: {name}",
+                            failure_phase="evidence_transfer", failure_class="command_infra",
+                        )
+                for name, destination, expected in pending:
+                    try:
+                        os.link(staging_dir / name, destination)
+                    except FileExistsError as exc:
+                        raise ToolError(f"refusing to overwrite newly created local evidence: {destination}") from exc
+                    if sha256_file(destination) != expected:
+                        destination.unlink(missing_ok=True)
+                        raise ToolError(f"local evidence hash mismatch after transfer: {name}")
+                    fetched.append(name)
+        result = {"fetched": fetched, "already_verified": skipped, "destination": str(destination_dir), "transfer": "single_scp"}
+        return text_result(json.dumps(result, indent=2), structured_content=result)
+    except ToolError as exc:
+        return typed_failure("EVIDENCE_FETCH_FAILED", failure_class_for_error(exc), str(exc), **failure_details(exc))
+    except Exception as exc:
+        return typed_failure("EVIDENCE_FETCH_FAILED", "command_infra", type(exc).__name__, failure_phase="evidence_transfer")
 
 
 def tool_git_evidence_status(arguments):
-    route_id = require_token(arguments.get("route_id"), "route_id")
-    local_repo = validate_local_repo(arguments.get("local_repo"))
-    prefix = ["git", "-C", str(local_repo)]
-    branch = run_local([*prefix, "branch", "--show-current"], timeout=15)
-    head = run_local([*prefix, "rev-parse", "HEAD"], timeout=15)
-    local_main = run_local([*prefix, "rev-parse", "--verify", "github/main"], timeout=15)
-    remote_main_raw = run_local([*prefix, "ls-remote", "github", "refs/heads/main"], timeout=30)
-    remote_main_fields = remote_main_raw.split()
-    if len(remote_main_fields) != 2 or not SHA40.fullmatch(remote_main_fields[0]):
-        raise ToolError("github main could not be resolved through git ls-remote")
-    remote_main = remote_main_fields[0]
-    status = run_local([*prefix, "status", "--short"], timeout=20)
-    diff_check = inspect_local([*prefix, "diff", "--check"], timeout=20)
-    cached_diff_check = inspect_local([*prefix, "diff", "--cached", "--check"], timeout=20)
-    ahead = behind = None
-    if local_main == remote_main:
-        counts = run_local([*prefix, "rev-list", "--left-right", "--count", "HEAD...github/main"], timeout=20).split()
-        if len(counts) == 2 and all(item.isdigit() for item in counts):
-            ahead, behind = map(int, counts)
-    route_evidence_prefix = f"experience_docx/experiment_logs/{route_id}/"
-    changed_paths = status.splitlines()[:100] if status else []
-    route_evidence_changes = [line for line in changed_paths if route_evidence_prefix in line]
-    return text_result(json.dumps({
-        "local_repo": str(local_repo),
-        "branch": branch,
-        "head": head,
-        "github_main_local": local_main,
-        "github_main_remote": remote_main,
-        "github_main_ref_fresh": local_main == remote_main,
-        "ahead_of_github_main": ahead,
-        "behind_github_main": behind,
-        "worktree_clean": not status,
-        "changed_paths": changed_paths,
-        "route_evidence_changes": route_evidence_changes,
-        "diff_check": diff_check,
-        "cached_diff_check": cached_diff_check,
-        "git_mutations_performed": False,
-    }, indent=2))
+    try:
+        route_id = require_token(arguments.get("route_id"), "route_id")
+        local_repo = validate_local_repo(arguments.get("local_repo"))
+        prefix = ["git", "-C", str(local_repo)]
+        branch = _run_local([*prefix, "branch", "--show-current"], timeout=30, phase="git_status")
+        head = _run_local([*prefix, "rev-parse", "HEAD"], timeout=30, phase="git_status")
+        local_main = _run_local([*prefix, "rev-parse", "--verify", "github/main"], timeout=30, phase="git_status")
+        remote_main_raw = _run_local([*prefix, "ls-remote", "github", "refs/heads/main"], timeout=60, phase="github_ref_fetch")
+        remote_main_fields = remote_main_raw.split()
+        if len(remote_main_fields) != 2 or not SHA40.fullmatch(remote_main_fields[0]):
+            raise ToolError("github main could not be resolved through git ls-remote", failure_phase="github_ref_fetch", failure_class="command_infra")
+        remote_main = remote_main_fields[0]
+        status = _run_local([*prefix, "status", "--short"], timeout=30, phase="git_status")
+        diff_check = inspect_local([*prefix, "diff", "--check"], timeout=30)
+        cached_diff_check = inspect_local([*prefix, "diff", "--cached", "--check"], timeout=30)
+        ahead = behind = None
+        if local_main == remote_main:
+            counts = _run_local([*prefix, "rev-list", "--left-right", "--count", "HEAD...github/main"], timeout=30, phase="git_status").split()
+            if len(counts) == 2 and all(item.isdigit() for item in counts):
+                ahead, behind = map(int, counts)
+        route_evidence_prefix = f"experience_docx/experiment_logs/{route_id}/"
+        changed_paths = status.splitlines()[:100] if status else []
+        route_evidence_changes = [line for line in changed_paths if route_evidence_prefix in line]
+        return text_result(json.dumps({
+            "local_repo": str(local_repo),
+            "branch": branch,
+            "head": head,
+            "github_main_local": local_main,
+            "github_main_remote": remote_main,
+            "github_main_ref_fresh": local_main == remote_main,
+            "ahead_of_github_main": ahead,
+            "behind_github_main": behind,
+            "worktree_clean": not status,
+            "changed_paths": changed_paths,
+            "route_evidence_changes": route_evidence_changes,
+            "diff_check": diff_check,
+            "cached_diff_check": cached_diff_check,
+            "git_mutations_performed": False,
+        }, indent=2))
+    except ToolError as exc:
+        return typed_failure("GIT_STATUS_FAILED", failure_class_for_error(exc), str(exc), **failure_details(exc))
+    except Exception as exc:
+        return typed_failure("GIT_STATUS_FAILED", "command_infra", type(exc).__name__, failure_phase="git_status")
 
 
 TOOLS = {

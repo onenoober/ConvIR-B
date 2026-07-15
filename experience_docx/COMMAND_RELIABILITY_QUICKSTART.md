@@ -25,6 +25,9 @@ enough.
   `*_FAILED` marker, or write an explicit status file.
 - Treat shell-boundary, quoting, CRLF, PATH, and silent-output failures as
   command failures, not scientific results.
+- Operations tools attach `failure_phase` to typed failures. Use the phase to
+  retry only the affected engineering step; never infer a gate or metric result
+  from a command failure.
 
 ## Transport Choices
 
@@ -91,6 +94,13 @@ boundary behavior:
 3. rerun only the affected operational step with a stable script-body pattern;
 4. consult `COMMAND_RELIABILITY_PROTOCOL.md` for the matching historical
    failure class if the fix is not obvious.
+
+For an exact R0/R1 operation, one bounded retry is permitted only when the
+typed result says `failure_class=command_infra`, the phase is a retryable
+transport/resource/evidence phase, and `runner_started=false`. Reuse the same
+route, receipt or plan, runner, output, and thresholds. A timeout after the
+launch boundary is `START_STATE_UNKNOWN` and requires inspection rather than a
+blind retry.
 
 ## Archive Boundary
 

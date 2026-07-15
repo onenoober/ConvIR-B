@@ -456,6 +456,28 @@ or long monitoring, or a batch of identical bounded operations. Do not launch a
 new child per poll. A task-scoped user pin avoids repeated identity checks but
 does not justify keeping later independent work on a more expensive role.
 
+Before an `R0`/`R1` child that will call `convir-ops`, the dispatcher performs a
+short read-only MCP readiness probe. This probe is transport preparation only;
+it does not plan, start, monitor, or authorize a route. If the probe fails, the
+child is not launched and the failure is recorded as `command_infra` with
+`failure_phase=mcp_startup`, preserving the child-turn budget.
+
+Within one already-launched `R0`/`R1` child, permit at most one exact retry for
+an operational failure when the typed result identifies a retryable transport,
+resource-preflight, workspace-prepare, or evidence-manifest phase and proves
+that `runner_started=false`. The retry must reuse the same receipt/plan and
+contract. Never retry an unknown launch state, a runner/evaluation failure, or a
+scientific decision. This reduces wasted child turns without weakening
+fail-closed behavior.
+
+Record a warm-context decision at each optional boundary: `dispatch` when the
+target child amortizes its handoff and context reload over a bounded batch, or
+`dispatch=not_amortized` with a short reason when the known qualified host keeps
+adjacent same-class work. The latter is allowed only for known qualified hosts;
+it never authorizes a lower role to perform R3 interpretation or a verdict
+change. Group plan/start/short observation and evidence-manifest operations by
+route commit and stop condition rather than opening a child per MCP call.
+
 Do not recompute the class downward after every read. First close the active
 task envelope, then dispatch its independent continuation. This avoids both the
 false economy of reloading context for one read and the opposite failure of
