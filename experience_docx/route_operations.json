@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "route_id": "haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715",
-  "repo_name": "ConvIR-B-v4a-a1c",
-  "workspace_id": "a1c20260715",
+  "repo_name": "ConvIR-B-v4a-a1c-r2",
+  "workspace_id": "a1c20260715r2",
   "rules_commit": "d502a990fb8766d6b0b8e57ed913d1a2200297de",
   "operations": {
     "A1C_S0": {
