@@ -1,0 +1,202 @@
+{
+  "schema_version": 2,
+  "record_type": "A1X_R3_RUNNER_SHA_CLOSEOUT_PROVENANCE_EXACT_RESUME_AUTHORIZATION",
+  "subject": "A1X_R3_RUNNER_SHA_AUTH",
+  "closure_type": "AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "authorization_base_commit": "2325daed224f73bae22243114daaf554a550179b",
+  "reviewed_route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "reviewed_route_commit": "2325daed224f73bae22243114daaf554a550179b",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "task_class": "R3_SCIENTIFIC_AUTHORITY",
+  "required_role": "frontier",
+  "effort": "high",
+  "state": "R3_RUNNER_SHA_CLOSEOUT_PROVENANCE_EXACT_RESUME_AUTHORIZED",
+  "decision": "V4A_A1X_AUTHORIZE_ONE_R2_VALIDATOR_ONLY_CLOSEOUT_PROVENANCE_CORRECTION_AND_ORIGINAL_SEVEN_PATH_FINAL_COMMIT",
+  "authorizes": "R2_VALIDATOR_ONLY_CORRECTION_STATIC_PROOF_AND_ORIGINAL_SEVEN_PATH_LOCAL_COMMIT_ONLY",
+  "transport_contract": "local_only",
+  "cloud_status": "inactive; no resource preflight or S0 run authorized",
+  "reviewed_failure_closeout": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_closeout.json",
+    "sha256": "2f6614aa7876a32f6d1d54306887365a2b9a6960b6e82a228c3f8860124ce865",
+    "state": "R2_RUNTIME_IDENTITY_PROVENANCE_REPAIR_BLOCKED",
+    "decision": "V4A_A1X_R2_RUNTIME_IDENTITY_PROVENANCE_REPAIR_FAILED_STOP",
+    "authorizes": "NONE",
+    "failure_code": "RUNNER_SHA256_CLOSEOUT_PROVENANCE_MISSING"
+  },
+  "reviewed_dirty_repair": {
+    "source_file_count": 5,
+    "source_hashes": {
+      "experience_docx/route_operations.json": "2871a5edb7ea67dfb707fa7a114ecc344523586e2390f6bd4ee8447f0bafe12f",
+      "experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py": "52d7ceb348df975002c090f65b3a90cbc7f6a815836ca9058f6b1936bc69ee65",
+      "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh": "148502b912a1516778ee9940bf69fdde4f9fe538f4998bf7a1c9b3d8686e5dd4",
+      "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": "52ff6ff97f0369833452e29b7138ba40f1dfd13f1842ca5c1257c1b92fc05da2",
+      "experience_docx/tools/validate_haze4k_v4a_a1x_route.py": "db0bdcffbc3cb3a629bc85a295c36c8ecd760c02ca707eafc779354c20f63998"
+    },
+    "source_edits_performed_by_this_review": false,
+    "source_validation_rerun_by_this_review": false
+  },
+  "atomic_review_finding": {
+    "classification": "VALIDATOR_FALSE_NEGATIVE",
+    "runner_sha256_exactly_propagated": true,
+    "terminal_path_omission_found": false,
+    "finding": "The entrypoint identity(args) record includes the exact args.runner_sha256 value. PASS and FAIL closeouts inherit it through base -> closeout_base -> terminal_closeout; authorization and manifest preflight failures construct their closeout directly from identity(args); runtime INCONCLUSIVE constructs base from identity(args) and passes that base to terminal_closeout. The validator returns false only because runner_closeout_proof requires the literal text identity(args) inside terminal_closeout, although terminal_closeout correctly receives the already-provenanced base payload and has no args parameter.",
+    "single_bounded_correction_available": true
+  },
+  "terminal_path_source_proof": [
+    {
+      "path_id": "PASS",
+      "source_flow": "identity(args).runner_sha256 -> runtime_lifecycle base -> closeout_base -> terminal_closeout(PASS) -> payload -> write_json",
+      "source_lines": [113, 605, 613, 614, 504, 506, 507],
+      "provenance_present": true
+    },
+    {
+      "path_id": "FAIL",
+      "source_flow": "identity(args).runner_sha256 -> runtime_lifecycle base -> closeout_base -> terminal_closeout(FAIL) -> payload -> write_json",
+      "source_lines": [113, 598, 605, 613, 614, 504, 506, 507],
+      "provenance_present": true
+    },
+    {
+      "path_id": "FAILED_PREFLIGHT_STAGE_BLOCK",
+      "source_flow": "main stage guard -> write_preflight_failure -> dict(identity(args), ...) -> write_json(args.closeout_json, payload)",
+      "source_lines": [113, 619, 620, 621, 633, 634],
+      "provenance_present": true
+    },
+    {
+      "path_id": "FAILED_PREFLIGHT_AUTH_OR_MANIFEST",
+      "source_flow": "main preflight exception handler -> write_preflight_failure -> dict(identity(args), ...) -> write_json(args.closeout_json, payload)",
+      "source_lines": [113, 619, 620, 621, 635, 642],
+      "provenance_present": true
+    },
+    {
+      "path_id": "INCONCLUSIVE",
+      "source_flow": "main RuntimeError handler -> write_runtime_inconclusive -> dict(identity(args), ...) -> terminal_closeout(INCONCLUSIVE) -> payload -> write_json",
+      "source_lines": [113, 624, 625, 626, 643, 647, 504, 506, 507],
+      "provenance_present": true
+    }
+  ],
+  "exact_allowed_edit": {
+    "source_runtime_edits": "NONE",
+    "allowed_path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "allowed_anchors": [
+      "IMPLEMENTATION_PARENT",
+      "AUTHORIZATION_PATH",
+      "runner_closeout_proof"
+    ],
+    "required_changes": [
+      "Set IMPLEMENTATION_PARENT to the exact commit containing this authorization record, resolved by git rev-parse HEAD before the validator edit.",
+      "Set AUTHORIZATION_PATH to this authorization record so the generated static proof binds the exact resume authority.",
+      "Replace only runner_closeout_proof with an AST def-use proof of the identity -> base -> closeout payload chains described here; do not add identity(args) to terminal_closeout and do not modify the entrypoint or runner."
+    ],
+    "forbidden_changes": [
+      "No edit to route_operations.json, the manifest materializer, the runner, the entrypoint, model code, route card, design handoff, data, split, metric, gate, threshold, terminal tuples, formal policy, or locked-test policy.",
+      "No token-only fallback, declared-proof acceptance, synthesized finding, union-only aggregate, weakened mutation, new terminal outcome, or recomputed runner identity.",
+      "No change outside the three named validator anchors before static evidence generation."
+    ]
+  },
+  "required_ast_source_proof": {
+    "identity": "AST must prove identity returns runner_sha256 from args.runner_sha256.",
+    "terminal_constructor": "AST must prove terminal_closeout derives payload from its base argument plus only the frozen state, decision, and authorizes tuple, then writes that same payload to closeout_path.",
+    "pass_fail": "AST must prove runtime_lifecycle assigns base from identity(args), derives closeout_base from that same base, and passes closeout_base to terminal_closeout with terminal_kind and args.closeout_json.",
+    "preflight": "AST must prove write_preflight_failure derives payload directly from identity(args) and writes that payload to args.closeout_json.",
+    "inconclusive": "AST must prove write_runtime_inconclusive assigns base from identity(args) and passes that same base to terminal_closeout with INCONCLUSIVE and args.closeout_json.",
+    "no_lexical_shortcut": "The proof may use ast.unparse only to identify exact expressions inside already-selected AST nodes; acceptance must be based on assignments, call arguments, and variable flow, not on requiring identity(args) text inside terminal_closeout."
+  },
+  "negative_behavior": {
+    "preserve_all_existing_mutations": true,
+    "identity_closeout_mutation": {
+      "id": "NEG_IDENTITY_CLOSEOUT_01",
+      "unchanged_mutation": "Remove only the runner_sha256 mapping from identity(args).",
+      "required_exact_result": [
+        "RUNNER_SHA256_CLOSEOUT_PROVENANCE_MISSING"
+      ],
+      "target_code_executed": false
+    },
+    "aggregate_requirement": "The directly analyzed aggregate mutation must still report every existing contract, semantic, asset, manifest-identity, runner-argument, and runner-closeout code, including all four IDENTITY_CODES and DIRECT_AGGREGATE_MUST_REPORT_ALL_IDENTITY_CODES.",
+    "non_regression": "All existing POS_CLI, POS_AUTH, POS_MANIFEST, POS_ASSET, POS_DATA, POS_SEM, POS_RUNNER, POS_FROZEN, POS_IDENTITY_MANIFEST, and POS_IDENTITY_RUNNER proofs remain unchanged; only POS_IDENTITY_CLOSEOUT may change implementation to the required AST def-use proof."
+  },
+  "authorized_static_command_sequence": [
+    "/usr/bin/git diff --check -- experience_docx/route_operations.json experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py experience_docx/tools/validate_haze4k_v4a_a1x_route.py experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_closeout.json",
+    "/usr/bin/python3 -m py_compile experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "/usr/bin/bash -n experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+    "/usr/bin/python3 experience_docx/tools/validate_haze4k_v4a_a1x_route.py --repo /home/ubuntu/workspace/ConvIR-B-a1x-route-20260715 --output-json /home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_static_validation.json"
+  ],
+  "required_static_success": {
+    "validator_marker": "A1X_S0_SEMANTIC_PRESERVING_RUNTIME_ASSET_REPAIR_STATIC_VALIDATOR_OK",
+    "corrected_source_findings": [],
+    "positive_proofs_all_pass": true,
+    "isolated_negative_controls_all_exact": true,
+    "aggregate_negative_codes_exact": true,
+    "runtime_started": false,
+    "runner_executed": false,
+    "entrypoint_imported": false,
+    "entrypoint_executed": false,
+    "data_accessed": false,
+    "checkpoint_opened": false,
+    "runtime_manifest_opened": false,
+    "cloud_transport": false
+  },
+  "required_success_closeout": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_closeout.json",
+    "state": "R2_RUNTIME_IDENTITY_PROVENANCE_REPAIR_COMPLETE",
+    "decision": "V4A_A1X_R2_SOURCE_REPAIR_STATIC_PROOF_COMPLETE_AWAIT_CLOUD_RESOURCE_PREFLIGHT",
+    "authorizes": "R3_CLOUD_RESOURCE_PREFLIGHT_ONLY",
+    "failure_class": null,
+    "boundary_note": "This tuple hands control back to a fresh R3 review; it does not authorize the R2 task to use cloud transport or start S0."
+  },
+  "original_seven_path_final_commit": {
+    "required_direct_parent": "the commit containing this authorization record",
+    "paths": [
+      "experience_docx/route_operations.json",
+      "experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py",
+      "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_static_validation.json",
+      "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_closeout.json"
+    ],
+    "exact_path_count": 7,
+    "commit_subject": "A1X_R2_RUNTIME_IDENTITY_PROVENANCE_REPAIR",
+    "amend": false,
+    "push": false
+  },
+  "no_retry_policy": {
+    "automatic_retry": false,
+    "single_static_attempt": true,
+    "on_any_failure": "Write or retain one precise typed blocker with authorizes NONE, preserve the dirty repair, and stop before another edit, validation command, commit, cloud request, or dispatcher retry."
+  },
+  "forbidden_continuations": [
+    "RUNTIME_ASSET_OR_DATA_OPEN",
+    "CHECKPOINT_OR_MODEL_STATE_OPEN",
+    "ENTRYPOINT_IMPORT_OR_EXECUTION",
+    "RUNNER_EXECUTION",
+    "RESOURCE_PREFLIGHT",
+    "INITIAL_AUTHORIZATION_CREATION",
+    "S0",
+    "TRAINING",
+    "EVALUATION",
+    "INFERENCE",
+    "FORMAL",
+    "CANARY",
+    "LOCKED_TEST",
+    "CLOUD_TRANSPORT",
+    "SSH",
+    "CONVIR_OPS",
+    "PUSH"
+  ],
+  "scope_confirmations": {
+    "source_files_modified_by_this_r3_review": false,
+    "source_validation_run": false,
+    "runtime_or_assets_or_data_accessed": false,
+    "checkpoint_opened": false,
+    "cloud_or_ssh_or_convir_ops_used": false,
+    "runner_started": false,
+    "initial_authorization_created": false,
+    "s0_or_formal_authorized": false,
+    "canary_touched": false,
+    "locked_test_touched": false,
+    "push_performed": false
+  },
+  "next_boundary": "One R2 local validator-only correction, one authorized static command sequence, and the original seven-path local commit on exact success. No retry and no cloud action are authorized by this record.",
+  "completion_marker": "A1X_R3_RUNNER_SHA_CLOSEOUT_ATOMIC_REVIEW_COMPLETE"
+}
