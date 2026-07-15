@@ -1,0 +1,13 @@
+{
+  "a1x_data_touched": false,
+  "canary_touched": false,
+  "cloud_command": false,
+  "handoff_sha256": "630b81edb07fd6a4f4243c529998e5c97fbeb834926d3fd9cde5ce26bca6340a",
+  "head_sha256": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+  "locked_test_touched": false,
+  "route_card_sha256": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "runner_sha256": "2552cf2b1c960b77d00ae2e58eadabee4420667530f02fac46c2c5a89a2e236c",
+  "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+  "validator": "PASS"
+}

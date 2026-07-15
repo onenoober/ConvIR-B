@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "closeout_type": "R2_IDENTITY_ALIGNMENT_AND_ROUTE_BRANCH_SYNC",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "state": "R2_COMMIT_SYNC_COMPLETE",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+  "route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "workspace": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715",
+  "decision": "V4A_A1X_EXACT_HALF_DEPLOYABLE_INPUT_ACCESSIBILITY_DIAGNOSTIC_JUSTIFIED",
+  "authorization": "R2_ENGINEERING_IDENTITY_AND_ROUTE_EVIDENCE_SYNC_ONLY",
+  "card_status": "PLANNED",
+  "identity_alignment": {
+    "previous_workspace": "/home/ubuntu/workspace/ConvIR-B-v4a-a1x-exact-half-accessibility-20260715",
+    "current_workspace": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715",
+    "scientific_contract_changed": false,
+    "metric_changed": false,
+    "split_changed": false,
+    "gate_changed": false,
+    "prohibition_changed": false
+  },
+  "static_checks": {
+    "pre_alignment_machine_validator": "PASS",
+    "pre_alignment_route_card_sha256": "5458653d659f4cf2a6871be4a89e6bbf496c032316ceeafc2c8ab14d1555d4a0",
+    "post_alignment_py_compile": "PASS",
+    "post_alignment_machine_validator": "PASS",
+    "post_alignment_machine_validator_marker": "A1X_ROUTE_STATIC_VALIDATOR_OK"
+  },
+  "files_sha256": {
+    "route_card": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+    "r3_handoff": "630b81edb07fd6a4f4243c529998e5c97fbeb834926d3fd9cde5ce26bca6340a",
+    "a1x_access_head": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+    "tracked_runner": "2552cf2b1c960b77d00ae2e58eadabee4420667530f02fac46c2c5a89a2e236c",
+    "machine_validator": "2c7a32306dbcac26ae5b8bda633ebb406f20f074135796d66d64344dc4a1753f",
+    "static_validation": "573994c02dbfb625d50c4819b2bacd348961023699577b0476034465f03431b9"
+  },
+  "forbidden_scope_confirmations": {
+    "a1x_data_touched": false,
+    "confirmation_data_touched": false,
+    "canary_touched": false,
+    "locked_test_touched": false,
+    "cloud_command": false,
+    "runner_started": false,
+    "training_started": false,
+    "evaluation_started": false,
+    "inference_started": false,
+    "candidate_selected": false
+  },
+  "next_boundary": "R1 remains blocked pending a separate R3 review and explicit R1 authorization; this closeout authorizes no runtime action."
+}

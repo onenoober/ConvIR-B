@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "handoff_type": "r3_scientific_route_design",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "state": "R3_DESIGN_COMPLETE",
+  "decision": "V4A_A1X_EXACT_HALF_DEPLOYABLE_INPUT_ACCESSIBILITY_DIAGNOSTIC_JUSTIFIED",
+  "authorizes": "R2_LOCAL_ROUTE_SETUP_ONLY",
+  "route_card_path": "experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md",
+  "route_card_sha256": "5458653d659f4cf2a6871be4a89e6bbf496c032316ceeafc2c8ab14d1555d4a0",
+  "source_branch": "github/codex/haze4k-official-arch-anchor",
+  "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+  "route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "task_class": "R2_ENGINEERING_CONTROL",
+  "required_role": "balanced",
+  "effort": "medium",
+  "routing_basis": "dispatcher_classification",
+  "routing_basis_ref": "none",
+  "parent_evidence": [
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_r3_review.json",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a_a1c_formal_closeout.json",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a_a1c_formal_bootstrap_summary.json"
+  ],
+  "frozen_scientific_contract": {
+    "interface": "exact_a1r_half",
+    "target_population": "frozen_train_list_indices_768_1200",
+    "formal_name_count": 432,
+    "outer_folds": 4,
+    "outer_fold_size": 108,
+    "true_cells": [
+      "a1x_access_true",
+      "a1x_access_shuffled"
+    ],
+    "evidence_claim": "deployable_input_direction_accessibility_only",
+    "locked_test_policy": "blocked"
+  },
+  "forbidden_continuations": [
+    "CLOUD_LAUNCH",
+    "A1X_DATA_ACCESS",
+    "TRAINING",
+    "EVALUATION",
+    "INFERENCE",
+    "A1R_LOCAL_PROBE_CONTINUATION",
+    "DIRECT_ACTION_CALIBRATION",
+    "CANDIDATE_SELECTION",
+    "POLICY_FITTING",
+    "PROMOTION",
+    "CANARY",
+    "LOCKED_TEST"
+  ],
+  "next_action": "Create one fresh local WSL route workspace from the exact immutable anchor commit; copy and operationalize the frozen card; implement only the audit-owned A1X_ACCESS diagnostic, tracked runner, machine projections, and syntax/static checks; do not access A1X or any confirmation/sealed data, do not call cloud transport, and stop with exact file hashes and validator output for the next authorization boundary.",
+  "success_conditions": [
+    "fresh_anchor_derived_workspace",
+    "no_scientific_contract_change",
+    "route_card_validator_pass",
+    "syntax_static_checks_only",
+    "a1x_data_touched_false",
+    "canary_touched_false",
+    "locked_test_touched_false",
+    "no_cloud_command"
+  ],
+  "a1x_data_touched": false,
+  "confirmation_touched": false,
+  "canary_touched": false,
+  "locked_test_touched": false,
+  "cloud_status": "inactive; no successor workspace, runner, or run launched",
+  "dispatch_ready": false,
+  "dispatch_blocker": "Commit the reviewed card and handoff to a GitHub route-design evidence ref before using typed_handoff routing; until then only dispatcher_classification may route the bounded R2 local setup."
+}

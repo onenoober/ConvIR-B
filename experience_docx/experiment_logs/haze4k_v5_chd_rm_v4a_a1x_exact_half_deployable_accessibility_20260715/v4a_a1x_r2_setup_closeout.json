@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "closeout_type": "R2_LOCAL_ROUTE_SETUP",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "state": "R2_LOCAL_SETUP_COMPLETE",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+  "route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "workspace": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715",
+  "authorization": "R2_LOCAL_ROUTE_SETUP_ONLY",
+  "static_checks": {
+    "py_compile": "PASS",
+    "machine_validator": "PASS",
+    "machine_validator_marker": "A1X_ROUTE_STATIC_VALIDATOR_OK"
+  },
+  "files_sha256": {
+    "route_card": "5458653d659f4cf2a6871be4a89e6bbf496c032316ceeafc2c8ab14d1555d4a0",
+    "r3_handoff": "630b81edb07fd6a4f4243c529998e5c97fbeb834926d3fd9cde5ce26bca6340a",
+    "a1x_access_head": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+    "tracked_runner": "2552cf2b1c960b77d00ae2e58eadabee4420667530f02fac46c2c5a89a2e236c",
+    "machine_validator": "0e915dd6c78914a7cb47e63f20835744035c15ec8eaa5af930145405d31bae30",
+    "static_validation": "f3bb60e17368334906b4e0320c5ccc5b40ecec913e27cb7b20ee3c093a9a3d82"
+  },
+  "forbidden_scope_confirmations": {
+    "a1x_data_touched": false,
+    "confirmation_data_touched": false,
+    "canary_touched": false,
+    "locked_test_touched": false,
+    "cloud_command": false,
+    "runner_started": false,
+    "training_started": false,
+    "evaluation_started": false,
+    "inference_started": false,
+    "candidate_selected": false,
+    "scientific_contract_changed": false
+  },
+  "next_boundary": "R1 authorization is required before any S0 or formal execution; this closeout authorizes no runtime action."
+}
