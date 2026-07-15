@@ -42,6 +42,9 @@ def sha256(path: Path) -> str:
 def load_module(path: Path, name: str) -> Any:
     if not path.is_file():
         raise FileNotFoundError(path)
+    parent = str(path.parent.resolve())
+    if parent not in sys.path:
+        sys.path.insert(0, parent)
     spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"cannot load {path}")
