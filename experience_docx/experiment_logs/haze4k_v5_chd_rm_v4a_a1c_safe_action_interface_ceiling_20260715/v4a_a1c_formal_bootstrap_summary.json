@@ -1,0 +1,57 @@
+{
+  "antialiased_minus_exact_gain_lcb": -0.007773999508891516,
+  "bootstrap_replicates": 4000,
+  "bootstrap_seed": 3407,
+  "cells": {
+    "antialiased_half": {
+      "gain_lcb": 0.12717044502976715,
+      "gain_ucb": 0.15464375190602608,
+      "repairable_lcb": 0.990234375,
+      "repairable_ucb": 1.0,
+      "retention_by_native_shape": {
+        "400x400": {
+          "lcb": 0.8706436977692142,
+          "ucb": 0.8706436977692142
+        },
+        "480x640": {
+          "lcb": 0.8214514089715516,
+          "ucb": 0.8214514089715516
+        }
+      },
+      "worst_native_size_retention_lcb": 0.8214514089715516,
+      "worst_native_size_retention_ucb": 0.8214514089715516,
+      "worst_operator_gain_db": 0.14055408158338575
+    },
+    "exact_half": {
+      "gain_lcb": 0.13402443736782954,
+      "gain_ucb": 0.1623328866119037,
+      "repairable_lcb": 0.990234375,
+      "repairable_ucb": 1.0,
+      "retention_by_native_shape": {
+        "400x400": {
+          "lcb": 0.8936199774106891,
+          "ucb": 0.8936199774106891
+        },
+        "480x640": {
+          "lcb": 0.8653953623850754,
+          "ucb": 0.8653953623850754
+        }
+      },
+      "worst_native_size_retention_lcb": 0.8653953623850754,
+      "worst_native_size_retention_ucb": 0.8653953623850754,
+      "worst_operator_gain_db": 0.1478158440857934
+    },
+    "full": {
+      "gain_lcb": 0.15782298787153282,
+      "gain_ucb": 0.18372509001556386,
+      "repairable_lcb": 1.0,
+      "repairable_ucb": 1.0,
+      "worst_operator_gain_db": 0.1704619654098629
+    }
+  },
+  "full_alpha": 0.05,
+  "half_family_alpha": 0.025,
+  "operators_worst_within_draw": true,
+  "paired_image_resampling": true,
+  "schema_version": 2
+}
