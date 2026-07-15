@@ -1,0 +1,259 @@
+{
+  "schema_version": 2,
+  "authorization_type": "R3_BOUNDED_R2_S0_SEMANTICS_NEGSEM01_EXACT_RESUME_AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "authorization_parent_commit": "ffc1d2f92b389c91dee5cf8d2726011ca70fa4dd",
+  "route_identity": "EXACT_RESUME_OF_BLOCKED_R2_S0_SEMANTICS_REPAIR_NEG_SEM_01_ONLY",
+  "state": "R3_R2_S0_SEMANTICS_NEGSEM01_EXACT_RESUME_AUTHORIZATION_COMPLETE",
+  "decision": "V4A_A1X_BOUNDED_R2_NEG_SEM_01_EXACT_RESUME_AUTHORIZED",
+  "authorizes": "R2_LOCAL_NEG_SEM_01_EXACT_RESUME_ONLY",
+  "task_class": "R2_ENGINEERING_CONTROL",
+  "required_role": "balanced",
+  "effort": "medium",
+  "reviewed_prior_authorization": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_semantics_repair_authorization.json",
+    "commit": "ffc1d2f92b389c91dee5cf8d2726011ca70fa4dd",
+    "git_blob_sha1": "d4ec7d83fbde49a29a260632af607e6897a162e1",
+    "sha256": "ed7c6d06323d3a6e40e732e5381fc282ad3efc3c7fc3d04a4e112b2bc7a6f112",
+    "state": "R3_R2_S0_SEMANTICS_REPAIR_AUTHORIZATION_COMPLETE",
+    "decision": "V4A_A1X_BOUNDED_R2_S0_SEMANTICS_REPAIR_AUTHORIZED",
+    "authorizes": "R2_LOCAL_S0_SEMANTICS_REPAIR_ONLY"
+  },
+  "reviewed_failure_closeout": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_semantics_repair_closeout.json",
+    "tracked": false,
+    "sha256": "b27a1d63038efb54eb425d8a08d915d3f6ccc5f490105dda41ca6bc3156389c2",
+    "state": "R2_S0_SEMANTICS_REPAIR_BLOCKED",
+    "decision": "V4A_A1X_S0_RUNNER_SEMANTICS_REPAIR_FAILED_STOP",
+    "authorizes": "NONE",
+    "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+    "failure_phase": "SOURCE_ONLY_SEMANTIC_VALIDATION",
+    "failure_detail": "NEG_SEM_01 isolated source fixture did not emit TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE; detected_finding_codes was [].",
+    "retry_policy": "NO_AUTOMATIC_RETRY",
+    "runtime_started": false,
+    "target_code_executed": false,
+    "target_code_imported": false,
+    "data_accessed": false,
+    "checkpoint_opened": false,
+    "cloud_transport": false,
+    "s0_authorized": false,
+    "formal_authorized": false,
+    "canary_touched": false,
+    "locked_test_touched": false
+  },
+  "reviewed_working_state": {
+    "tracked_source_diff_parent": "ffc1d2f92b389c91dee5cf8d2726011ca70fa4dd",
+    "entrypoint_path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "entrypoint_sha256": "d0e493ee81b7d55d48fe9d21dceeb25c9bb587bf558c1738a76db6653bcfe4cf",
+    "validator_path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "validator_sha256": "3ba4943b547643593f42ddcc8011c05edce1c0700987d2f70f3f09e0ca5c7e71",
+    "runner_sha256": "3f0434a5064a1fe196a688b0699177f2658e8d5acabab97465443f2df956040b",
+    "tracked_diff_path_count": 2,
+    "tracked_diff_insertions": 108,
+    "tracked_diff_deletions": 387,
+    "static_validation_json_present": false,
+    "failure_closeout_present": true,
+    "review_outcome": "The existing R2 diff contains the seven-semantics source repair and a source-only validator. The typed stop is confined to NEG_SEM_01: its mutation creates shared model identity, but source_findings accepts the mutant because it tests broad token presence rather than the mutated assignment and learned-state ownership graph. This is a validator negative-control false negative; it does not authorize a scientific-contract change or weakening of the other six semantics."
+  },
+  "neg_sem_01_diagnosis": {
+    "fixture_id": "NEG_SEM_01_SHARED_TRUE_SHUFFLED_MODEL_OR_OPTIMIZER",
+    "expected_finding_code": "TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE",
+    "observed_finding_codes": [],
+    "classification": "SOURCE_ONLY_SEMANTIC_ANALYZER_FALSE_NEGATIVE",
+    "current_mutation": {
+      "source_anchor": "copy.deepcopy(official_model)",
+      "replacement": "official_model",
+      "semantic_effect": "The model assignment in independent_cell_bundle aliases the frozen official model, so the true and shuffled bundles share model parameters and buffers even though their heads and optimizers remain separately constructed."
+    },
+    "false_negative_cause": "source_findings requires only broad strings such as copy.deepcopy, AdamW, and the literal runtime identity-guard expression. The mutant retains copy.deepcopy in the separate state_dict copy and retains the guard text, so every marker remains present although model ownership is shared.",
+    "required_analyzer_correction": "Use Python AST plus bounded control-flow and def-use analysis for this finding. Prove that independent_cells constructs the true and shuffled bundles through two distinct calls; each call creates a new model object by deep-copying official_model, creates a new head, constructs a new AdamW over only that head's parameters, owns its initial state and update counter, and returns no shared mutable learned-state object. Prove that the two calls use the same seed and identical pre-update initialization provenance while remaining disjoint. Raw token presence, mutation labels, fixture ids, and exception text are not semantic evidence.",
+    "required_fixture_correction": "Apply exactly one source-only in-memory mutation that aliases a true/shuffled model, head, optimizer, complete cell bundle, or equivalent learned-state owner. The mutation must be anchored to the AST object or assignment it changes, must preserve the other six corrected semantics, and must cause the corrected analyzer to emit exactly TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE.",
+    "required_positive_proof": "The unmodified reviewed corrected source must emit no TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE finding and must satisfy the same AST ownership proof used to reject NEG_SEM_01. The positive proof must not accept source merely because an identity-guard token or deepcopy token exists.",
+    "entrypoint_defect_established": false,
+    "scientific_contract_changed": false
+  },
+  "authorization_scope": {
+    "purpose": "Resume the existing blocked seven-semantics R2 working diff exactly once to repair only the NEG_SEM_01 mutation and semantic analyzer, rerun every prior source-only gate and all seven isolated semantics negatives independently, and update the existing static-validation and closeout evidence.",
+    "workspace": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715",
+    "transport_contract": "local_only",
+    "resume_existing_working_diff": true,
+    "new_route_or_stage": false,
+    "runtime_execution": false,
+    "target_code_execution": false,
+    "target_code_import": false,
+    "runner_execution": false,
+    "cloud_transport": false,
+    "data_or_checkpoint_access": false,
+    "initial_stage_authorization": false,
+    "s0_authorization": false,
+    "formal_authorization": false,
+    "scientific_contract_change": false,
+    "push_or_remote_verification": false
+  },
+  "exact_allowed_files": [
+    {
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "action": "PRESERVE_REVIEWED_WORKING_FILE_BYTE_IDENTICAL_UNLESS_THE_STRENGTHENED_NEG_SEM_01_POSITIVE_OR_NEGATIVE_AST_PROOF_DIRECTLY_ESTABLISHES_ONE_MINIMAL_LEARNED_STATE_IDENTITY_DEFECT",
+      "reviewed_sha256": "d0e493ee81b7d55d48fe9d21dceeb25c9bb587bf558c1738a76db6653bcfe4cf",
+      "conditional_change_limit": "If and only if the corrected analyzer rejects the unmodified positive source for a concrete model, head, optimizer, parameter, buffer, optimizer-state, gradient, or update-counter ownership defect, modify only independent_cell_bundle, independent_cells, or their direct identity guard enough to make the already-frozen independence contract statically provable. Do not change initialization, architecture, optimizer settings, seed, update count, loss, data flow, or runtime scope."
+    },
+    {
+      "path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "action": "MODIFY_ONLY_NEG_SEM_01_MUTATION_AST_IDENTITY_ANALYSIS_DIRECT_POSITIVE_PROOF_AND_THE_MINIMAL_SHARED_ANALYZER_PLUMBING_REQUIRED_TO_EMIT_EXACT_CODES",
+      "reviewed_sha256": "3ba4943b547643593f42ddcc8011c05edce1c0700987d2f70f3f09e0ca5c7e71",
+      "preserve": "Keep NEG_SEM_02 through NEG_SEM_07 mutations and semantic requirements unchanged except for mechanical call-signature adaptation that is strictly required to run them through the same analyzer. No predicate may be weakened."
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_semantics_repair_static_validation.json",
+      "action": "CREATE_ONLY_AFTER_ALL_PRIOR_AND_EXACT_RESUME_STATIC_GATES_PASS",
+      "required_contents": "Record exact source hashes, zero corrected-source findings, seven independent fixture records, aggregate proof, authoritative first32 equality, frozen hashes, syntax results, and false runtime/import/data/checkpoint/cloud/S0/formal/canary/locked flags."
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_semantics_repair_closeout.json",
+      "action": "REPLACE_THE_TYPED_NEG_SEM_01_FAILURE_WITH_SUCCESS_ONLY_AFTER_EVERY_GATE_PASSES_OR_UPDATE_ONCE_WITH_THE_NEW_TYPED_FAILURE",
+      "reviewed_sha256": "b27a1d63038efb54eb425d8a08d915d3f6ccc5f490105dda41ca6bc3156389c2"
+    }
+  ],
+  "required_independent_negative_controls": [
+    {
+      "id": "NEG_SEM_01_SHARED_TRUE_SHUFFLED_MODEL_OR_OPTIMIZER",
+      "expected_code": "TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE",
+      "exact_resume_change_allowed": true
+    },
+    {
+      "id": "NEG_SEM_02_LABEL_ONLY_OPERATOR_DUPLICATION",
+      "expected_code": "FROZEN_OPERATOR_CONTRACT_IS_LABEL_ONLY",
+      "exact_resume_change_allowed": false
+    },
+    {
+      "id": "NEG_SEM_03_ALL_ONES_OR_FULL_TENSOR_SUPPORT",
+      "expected_code": "FROZEN_ACTIVE_SUPPORT_IS_REPLACED_BY_ALL_ONES",
+      "exact_resume_change_allowed": false
+    },
+    {
+      "id": "NEG_SEM_04_NOOP_MEASURED_AFTER_UPDATE",
+      "expected_code": "ZERO_INITIALIZATION_NOOP_GATE_IS_MEASURED_AFTER_OPTIMIZER_UPDATES",
+      "exact_resume_change_allowed": false
+    },
+    {
+      "id": "NEG_SEM_05_CPU_OR_FALLBACK_PROFILING",
+      "expected_code": "MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED",
+      "exact_resume_change_allowed": false
+    },
+    {
+      "id": "NEG_SEM_06_MISSING_DISTINCT_STATE_HASH_OR_PHASE_TIMINGS",
+      "expected_code": "LEARNED_STATE_RETENTION_AND_PHASE_LIFECYCLE_ARE_INCOMPLETE",
+      "exact_resume_change_allowed": false
+    },
+    {
+      "id": "NEG_SEM_07_UNREACHABLE_OR_MISWRITTEN_TERMINAL_TUPLE",
+      "expected_code": "S0_TERMINAL_TUPLE_CANNOT_REPORT_THE_FROZEN_PASS_GATE",
+      "exact_resume_change_allowed": false
+    }
+  ],
+  "required_control_matrix": {
+    "independence_rule": "Each negative starts independently from the exact same corrected positive source, applies exactly one declared in-memory source mutation, and is analyzed independently. No negative may inherit another fixture's mutation or finding.",
+    "exact_detection_rule": "Each fixture must emit exactly its one expected finding code. Mutation labels, ids, token absence, raised exceptions, or aggregate code presence are not substitutes for independent semantic detection.",
+    "corrected_source_rule": "The unmodified corrected source must emit zero findings for all seven exact codes under the same analyzer used for the negatives.",
+    "aggregate_rule": "The prior authorization's seven-defect aggregate negative control must still report all seven expected codes and authorizes NONE; aggregate success does not replace any independent fixture.",
+    "first32_rule": "EXPECTED, S0_FIRST32_NAMES, and the committed authoritative fresh_names[0:32] order must remain exactly equal, including 1650_0.76_1.07.png.",
+    "frozen_rule": "Every prior frozen hash and scientific field remains unchanged. The source-only proof may become stricter but may not weaken, rename, remove, or bypass any prior semantic requirement.",
+    "required_static_marker": "A1X_S0_SEMANTICS_REPAIR_STATIC_VALIDATOR_OK"
+  },
+  "frozen_source_hashes": {
+    "route_card_sha256": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+    "route_operations_sha256": "a5cbe7d8e0559ee75c1b53b152561f10f754befb4e289963da3c465520e3f22f",
+    "a1x_head_sha256": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+    "runner_sha256": "3f0434a5064a1fe196a688b0699177f2658e8d5acabab97465443f2df956040b"
+  },
+  "frozen_scientific_contract": {
+    "source": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_semantics_repair_authorization.json",
+    "meaning": "All prior data, split, evidence-role, model, architecture, input, target, optimizer, loss, seed, update, operator, support, native-shape, batch, shuffle, metric, threshold, cost, gate, terminal-tuple, formal, canary, and locked-test fields remain frozen in full.",
+    "allowed_change": "Only the source-only NEG_SEM_01 mutation, its AST learned-state identity analyzer and direct positive proof, minimal shared analyzer plumbing, static-validation evidence, and typed closeout may change. The reviewed entrypoint remains byte-identical unless the strengthened proof directly establishes a minimal defect inside its existing independence implementation."
+  },
+  "required_validation_sequence": [
+    "Parse this authorization and every created or modified JSON file.",
+    "Run Python syntax compilation only for the modified entrypoint and validator; do not import or execute target code.",
+    "Run only the previously authorized source-only validator. It may parse source and inspect committed text but must not import or execute the target entrypoint, model, runner, renderer, profiler, loader, or data-facing code.",
+    "Require the unmodified corrected source to report zero findings under all seven semantic proofs.",
+    "Require NEG_SEM_01 to apply one learned-state alias mutation and independently emit exactly TRUE_AND_SHUFFLED_CELLS_SHARE_LEARNED_STATE through AST ownership analysis.",
+    "Require NEG_SEM_02 through NEG_SEM_07 independently to apply exactly one mutation each and emit exactly their prior expected finding code.",
+    "Require the prior seven-code aggregate negative proof, authoritative first32 equality, all prior static proof markers, and A1X_S0_SEMANTICS_REPAIR_STATIC_VALIDATOR_OK.",
+    "Verify route card, route_operations.json, A1XAccess.py, runner, every frozen scientific field, and every file outside the four-file repair allowlist remain unchanged.",
+    "Verify any entrypoint change is absent or is directly required by a concrete strengthened positive-proof finding and remains inside the conditional limit; record the before and after SHA-256 and rationale.",
+    "Verify git diff --check, parse the static-validation and closeout JSON, and confirm no prohibited artifact is staged.",
+    "Only after every preceding gate passes, write the success static-validation record and success closeout, then create one local four-file repair commit whose parent contains this authorization. Do not push."
+  ],
+  "required_success_closeout_tuple": {
+    "state": "R2_S0_SEMANTICS_REPAIR_COMPLETE",
+    "decision": "V4A_A1X_S0_RUNNER_SEMANTICS_COMPLETE_AWAIT_R3_REVIEW",
+    "authorizes": "R3_S0_FINAL_AUTHORIZATION_REVIEW_ONLY"
+  },
+  "required_failure_closeout_tuple": {
+    "state": "R2_S0_SEMANTICS_REPAIR_BLOCKED",
+    "decision": "V4A_A1X_S0_RUNNER_SEMANTICS_REPAIR_FAILED_STOP",
+    "authorizes": "NONE",
+    "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+    "next_boundary": "FRESH_R3_FRONTIER_REVIEW_REQUIRED"
+  },
+  "explicit_no_runtime_no_data_boundaries": {
+    "cloud_transport": false,
+    "ssh_calls": false,
+    "convir_ops_calls": false,
+    "runner_execution": false,
+    "target_entrypoint_execution": false,
+    "target_module_import": false,
+    "s0_preflight_or_run": false,
+    "s0_authorized": false,
+    "formal_authorized": false,
+    "initial_authorization_created": false,
+    "any_dataset_enumeration": false,
+    "dataset_or_checkpoint_open": false,
+    "a1r_data_access": false,
+    "a1x_data_access": false,
+    "confirmation_data_access": false,
+    "training": false,
+    "evaluation": false,
+    "inference": false,
+    "candidate_selection": false,
+    "promotion": false,
+    "canary": false,
+    "locked_test": false,
+    "push": false
+  },
+  "forbidden_changes": [
+    "ANY_REPAIR_FILE_OUTSIDE_THE_PRIOR_FOUR_FILE_ALLOWLIST",
+    "ANY_ENTRYPOINT_CHANGE_NOT_FORCED_BY_A_CONCRETE_STRENGTHENED_NEG_SEM_01_POSITIVE_OR_NEGATIVE_PROOF",
+    "ANY_VALIDATOR_CHANGE_NOT_DIRECTLY_REQUIRED_BY_NEG_SEM_01_AST_IDENTITY_ANALYSIS_ITS_FIXTURE_DIRECT_POSITIVE_PROOF_OR_MINIMAL_SHARED_PLUMBING",
+    "WEAKENING_REMOVING_RENAMING_OR_BYPASSING_NEG_SEM_02_THROUGH_NEG_SEM_07",
+    "MUTATION_LABEL_FIXTURE_ID_RAW_TOKEN_PRESENCE_OR_EXCEPTION_AS_SEMANTIC_EVIDENCE",
+    "NEW_FIXTURE_FILES_OR_PERSISTED_MUTANT_SOURCE_FILES",
+    "ROUTE_CARD_DESIGN_HANDOFF_ROUTE_OPERATIONS_RUNNER_OR_A1X_ACCESS_MODEL_CHANGE",
+    "DATA_NAME_ORDER_SPLIT_EVIDENCE_ROLE_OPERATOR_NATIVE_SHAPE_MODEL_ARCHITECTURE_INPUT_TARGET_OPTIMIZER_LOSS_SEED_UPDATE_BATCH_SUPPORT_RENDERER_GRID_BOUND_METRIC_THRESHOLD_COST_GATE_OR_TERMINAL_TUPLE_CHANGE",
+    "STAGE_SCOPE_EXPANSION",
+    "INITIAL_S0_AUTHORIZATION_CREATION",
+    "S0_PREFLIGHT_RUN_OR_AUTHORIZATION",
+    "FORMAL_OPERATION_ENABLEMENT_OR_AUTHORIZATION",
+    "RUNTIME_TARGET_IMPORT_CLOUD_DATA_OR_CHECKPOINT_ACCESS",
+    "CONFIRMATION_CANARY_OR_LOCKED_TEST_ACCESS",
+    "PUSH_OR_REMOTE_VERIFICATION"
+  ],
+  "retry_policy": "NO_AUTOMATIC_RETRY. This document authorizes one explicit exact-resume attempt only.",
+  "failure_boundary": "On any nonexact NEG_SEM_01 finding, failure of any one of the seven independent negatives, corrected-source finding, aggregate failure, frozen-hash mismatch, entrypoint change without a direct strengthened-proof requirement, required-file expansion, scientific ambiguity, target import or execution, runtime/data/checkpoint/remote requirement, failed validation, or commit failure, update the typed R2 blocker once if possible and stop. Do not retry, weaken a proof, commit a partial success, or cross runtime, data, checkpoint, remote, S0, formal, canary, or locked-test boundaries.",
+  "success_conditions": [
+    "existing_seven_semantics_r2_working_diff_is_resumed_without_reset_or_replacement",
+    "only_neg_sem_01_mutation_ast_identity_analysis_direct_positive_proof_and_minimal_shared_plumbing_are_changed",
+    "reviewed_entrypoint_is_preserved_or_any_change_is_directly_forced_and_minimal_under_the_strengthened_identity_proof",
+    "corrected_source_reports_zero_findings_for_all_seven_semantics",
+    "neg_sem_01_independently_reports_exactly_true_and_shuffled_cells_share_learned_state",
+    "neg_sem_02_through_neg_sem_07_each_independently_report_exactly_their_prior_expected_code",
+    "aggregate_negative_proof_reports_all_seven_codes",
+    "authoritative_first32_and_all_prior_static_and_frozen_gates_pass",
+    "success_closeout_matches_the_required_tuple",
+    "one_local_four_file_repair_commit_is_created_and_not_pushed",
+    "no_runtime_target_import_data_checkpoint_remote_s0_formal_canary_or_locked_boundary_is_crossed"
+  ],
+  "next_boundary": "One separately dispatched qualified R2 local-only task may resume the existing working diff exactly once. It may correct only the NEG_SEM_01 learned-state alias mutation, AST identity analyzer, direct positive proof, and minimal shared analyzer plumbing; it must preserve the other six corrected semantics and require all seven negatives independently. It may update the authorized static-validation and closeout files and create one local repair commit only after all prior gates pass. It must not import or execute target code, access data or checkpoints, call SSH/cloud/convir-ops, create initial authorization, authorize S0 or formal, push, or continue after success or typed failure."
+}
