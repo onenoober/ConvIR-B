@@ -3,7 +3,7 @@
   "route_id": "haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715",
   "repo_name": "ConvIR-B-v4a-a1c-r5",
   "workspace_id": "a1c20260715r5",
-  "rules_commit": "a05e651d7dde6bf47bbd22d03a07ce2b6e9e2583",
+  "rules_commit": "31a576a52b3e21b9694a691c8e1d2b251561b706",
   "operations": {
     "A1C_S0": {
       "runner_relpath": "experience_docx/tools/run_chd_rm_v4a_a1c_safe_action_interface_ceiling_v2.sh",

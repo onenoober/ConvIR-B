@@ -2,7 +2,7 @@
 
 Date: 2026-07-15
 
-Status: `PLANNED`
+Status: `COMPLETED_GATE_PASS_AUTHORIZE_R3_REVIEW_ONLY`
 
 ## Scope
 
@@ -13,14 +13,22 @@ Status: `PLANNED`
 - Main metric: paired-image bootstrap lower bound of each half-interface worst-operator mean safe gain over the privileged shrink oracle, jointly gated with draw-wise retention of the full privileged reference.
 - Secondary metrics: full-reference gain and repairable fraction, interface repairable fraction, anti-aliased-minus-exact gain, interface endpoint error, full-to-half spectral loss diagnostics, safety excess, severe/hard regressions, action-grid choice, runtime, and peak memory.
 - Execution environment: local WSL for editing and syntax/static checks only; any future runtime is restricted to `convir-4090`.
-- GitHub rules commit: `d502a990fb8766d6b0b8e57ed913d1a2200297de`.
+- GitHub rules commit used for the terminal route anchor: `31a576a52b3e21b9694a691c8e1d2b251561b706`.
 - Authoritative experiment evidence: `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/v4a_a1f_r3_review.json`, `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_formal_bootstrap_summary.json`, and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_r3_review.json` from that GitHub rules commit.
 - Local WSL path, if used for editing/static checks: `/home/ubuntu/workspace/ConvIR-B-v4a-a1c-safe-action-interface-ceiling-20260715`.
-- GitHub route branch and source commit: `codex/haze4k-v5-v4a-a1c-safe-action-interface-ceiling-20260715` from `github/main@d502a990fb8766d6b0b8e57ed913d1a2200297de`; scientific replay sources remain pinned separately below.
+- GitHub route branch: `codex/haze4k-v5-v4a-a1c-safe-action-interface-ceiling-20260715`; the formal run was sealed at route commit `0d795021bc31b6a744bbbb1a86c45a3271a6ccb4`, while the terminal evidence/rules refresh is at the later route tip; scientific replay sources remain pinned separately below.
 - Cloud `REMOTE_REPO`: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1c-r5-haze4k_v5_chd_rm_v4a_a1c-a1c20260715r5-3f6965d1e945d4eb` as deterministically derived by schema-v2 from repo name `ConvIR-B-v4a-a1c-r5` and workspace id `a1c20260715r5`.
 - Cloud `RUN_ROOT`: `/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715`.
 - Cloud `EVID_STAGE`: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1c-r5-haze4k_v5_chd_rm_v4a_a1c-a1c20260715r5-3f6965d1e945d4eb/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715`.
 - Explicit cloud Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
+
+## Terminal Result
+
+- S0 closeout: `COMPLETED_GATE_PASS`, authorizes `A1C_FORMAL_INTERFACE_CEILING_ONLY`.
+- Formal closeout: `COMPLETED_GATE_PASS`, decision `V4A_A1C_EXACT_HALF_INTERFACE_ADEQUACY_PASS_R3_HANDOFF`, authorizes `R3_REVIEW_ONLY`.
+- Formal provenance: route commit `0d795021bc31b6a744bbbb1a86c45a3271a6ccb4`, run id `v4a_a1c_formal_r1`, runner SHA-256 `6d24874cb6e00e7aec2ee493f0e19ff3e227bed82b42aafb158a891954749019`, 512/512 images, all three cells and both operators, `structural_valid=true`, `training_occurred=false`.
+- Compact formal evidence is archived under `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/`; raw rows and runtime artifacts remain cloud-only.
+- This typed result does not authorize implementation, A1X data access, candidate/policy work, confirmation, canary, or locked-test access. A fresh R3 review is required.
 
 ## Agent Execution Routing
 
@@ -158,13 +166,13 @@ silent clip. Interface endpoints are clipped only where A1R clips them.
 
 | Check | Pass line | Result |
 | --- | --- | --- |
-| route/rules identity | exact route branch from `d502a990...`; clean dedicated workspace; rules commit equals current `github/main` | frozen in this setup; recheck at R2 and before S0 |
+| route/rules identity | exact route branch; clean dedicated workspace; rules commit equals current `github/main` | verified at terminal route/evidence refresh; formal run provenance remains pinned to `0d795021...` |
 | parent scientific authority | A1R R3 review is `COMPLETED_R3_REVIEW`, decision closes the current probe family, and authorizes only a separate R3 amendment/design | verified from `github/main`; A1C remains a separate no-learning design |
 | source/state identity | A1F helper commit, A1R helper commit, A0R state SHA, fresh split SHA, and asset hashes match the named GitHub evidence | contract frozen; runner-integrated recheck required |
 | interface identity | exact 400x400/208x208 and 480x640/240x320 full/context shape pairs; `D0`, `Daa`, `U`, dtype, support order, endpoint clamp, and theoretical correction bounds match the formulas above | contract frozen; R2 reference checks and S0 required |
 | authorization boundary | initial JSON exact tuple permits only S0; formal requires the committed S0 pass tuple | frozen in `route_operations.json` |
-| runner availability | the reserved `v2` runner and entrypoint do not exist in this setup commit; inherited draft runtime files are explicitly outside this revised manifest | expected blocker until the bounded R2 implementation package completes |
-| GPU capacity | a future selected GPU has at least 18,000 MiB free and at most 10% utilization | dynamic cloud preflight only; no cloud contact in this task |
+| runner availability | the reserved `v2` runner and entrypoint are tracked and the formal closeout records the exact runner SHA | verified by S0/formal provenance |
+| GPU capacity | the selected GPU satisfied the sealed `12,000 MiB` free and `10%` utilization thresholds | verified by authorized cloud start; no threshold relaxation |
 
 ## Mechanism Metrics
 
@@ -266,7 +274,7 @@ Formal typed outcome mapping before R3 interpretation:
 
 ## Decision
 
-- Decision label: `V4A_A1C_S0_AUTHORIZED_INITIAL_ONLY`.
+- Decision label: `V4A_A1C_EXACT_HALF_INTERFACE_ADEQUACY_PASS_R3_HANDOFF`.
 - Image/global metric reason: rendered safe utility is an image-level claim; pixel errors or operator means without paired image uncertainty cannot decide the interface ceiling.
 - Mechanism reason: an ideal target correction passed through the exact A1R transport removes learner error, while the antialiased cell changes only the downsample filter.
 - Preservation or regression reason: every selected action must remain non-worse than old `.125` at `.125` and old `.25` at `.25`, with zero severe/hard regression, before aggregate utility is considered.
