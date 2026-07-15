@@ -1,0 +1,243 @@
+{
+  "schema_version": 2,
+  "authorization_type": "R3_BOUNDED_R2_S0_SEMANTICS_CUDA_POSITIVE_GATE_EXACT_RESUME_AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "authorization_parent_commit": "58e0d46cff55ea7e66e91161f8a699d548cf377a",
+  "route_identity": "EXACT_RESUME_OF_BLOCKED_R2_S0_SEMANTICS_REPAIR_CUDA_POSITIVE_GATE_ONLY",
+  "state": "R3_R2_S0_SEMANTICS_CUDA_POSITIVE_GATE_EXACT_RESUME_AUTHORIZATION_COMPLETE",
+  "decision": "V4A_A1X_BOUNDED_R2_CUDA_POSITIVE_GATE_EXACT_RESUME_AUTHORIZED",
+  "authorizes": "R2_LOCAL_CUDA_POSITIVE_GATE_EXACT_RESUME_ONLY",
+  "task_class": "R2_ENGINEERING_CONTROL",
+  "required_role": "balanced",
+  "effort": "medium",
+  "reviewed_prior_authorization": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_semantics_negsem05_exact_resume_authorization.json",
+    "commit": "58e0d46cff55ea7e66e91161f8a699d548cf377a",
+    "git_blob_sha1": "8e2dd1901a54ef2c1aa0ba9fd3213cbd78a021aa",
+    "sha256": "74ba920e397321aeade204221d032f11416bdc4569022134923adda78568d65e",
+    "state": "R3_R2_S0_SEMANTICS_NEGSEM05_EXACT_RESUME_AUTHORIZATION_COMPLETE",
+    "decision": "V4A_A1X_BOUNDED_R2_NEG_SEM_05_EXACT_RESUME_AUTHORIZED",
+    "authorizes": "R2_LOCAL_NEG_SEM_05_EXACT_RESUME_ONLY"
+  },
+  "reviewed_failure_closeout": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_semantics_repair_closeout.json",
+    "tracked": false,
+    "sha256": "4bfe500f2f6ee5e89a16e416cdfb26a0581ead56a6908b92296950594790d56c",
+    "state": "R2_S0_SEMANTICS_REPAIR_BLOCKED",
+    "decision": "V4A_A1X_S0_RUNNER_SEMANTICS_REPAIR_FAILED_STOP",
+    "authorizes": "NONE",
+    "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+    "failure_phase": "SOURCE_ONLY_SEMANTIC_VALIDATION",
+    "retry_policy": "NO_AUTOMATIC_RETRY",
+    "source_only_validator_passed": false,
+    "target_code_executed": false,
+    "target_code_imported": false,
+    "data_accessed": false,
+    "checkpoint_opened": false,
+    "cloud_transport": false,
+    "s0_authorized": false,
+    "formal_authorized": false
+  },
+  "reviewed_working_state": {
+    "tracked_source_diff_parent": "58e0d46cff55ea7e66e91161f8a699d548cf377a",
+    "entrypoint_path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "entrypoint_sha256": "d0e493ee81b7d55d48fe9d21dceeb25c9bb587bf558c1738a76db6653bcfe4cf",
+    "validator_path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "validator_sha256": "07fe595efd78c148b2e86e45b97685c36999877ed8172083b4f72a26c42d670e",
+    "runner_sha256": "3f0434a5064a1fe196a688b0699177f2658e8d5acabab97465443f2df956040b",
+    "tracked_diff_path_count": 2,
+    "tracked_diff_insertions": 245,
+    "tracked_diff_deletions": 376,
+    "preserved_semantics_repairs": 7,
+    "runtime_started": false,
+    "data_or_checkpoint_accessed": false,
+    "cloud_transport": false
+  },
+  "r3_diagnosis": {
+    "classification": "ENTRYPOINT_FROZEN_MATCHED_CUDA_COST_GATE_INCOMPLETE_WITH_SECONDARY_VALIDATOR_STATEMENT_ORDER_FALSE_POSITIVE",
+    "primary_decision": "NOT_A_VALIDATOR_ONLY_FALSE_POSITIVE",
+    "scientific_contract_changed": false,
+    "threshold_changed": false,
+    "evidence": [
+      "cuda_profile_pair.measure returns only median_seconds and peak_memory_bytes.",
+      "No measured MAC value is produced for either matched path.",
+      "cuda_cost_contract returns raw baseline and augmented pairs without computing overhead percentages.",
+      "No frozen MAC 10 percent, matched median CUDA latency 15 percent, or CUDA peak-memory 15 percent threshold is applied.",
+      "The strengthened validator also compares post-call synchronization by line number, while the reviewed entrypoint places multiple ordered statements on one source line. That validator ordering defect is real but cannot establish the missing MAC and threshold gate."
+    ],
+    "resolution": "Authorize one bounded R2 exact resume to complete the already frozen entrypoint cost gate and make the directly corresponding AST positive proof and NEG_SEM_05 control structurally sound. This authorization does not alter the route question, thresholds, stage, data, model, or runtime authority."
+  },
+  "frozen_cost_contract": {
+    "native_shape_count": 2,
+    "added_parameters_max": 300000,
+    "mac_overhead_max_percent": 10.0,
+    "matched_median_cuda_latency_overhead_max_percent": 15.0,
+    "cuda_peak_memory_overhead_max_percent": 15.0,
+    "overhead_formula": "100 * (augmented - baseline) / baseline",
+    "denominator_rule": "Each baseline MAC, median latency, and peak-memory value must be finite and strictly positive; otherwise the future S0 result is engineering INCONCLUSIVE and never PASS.",
+    "matched_measurement_rule": "At each of the two frozen native shapes, baseline and augmented paths use the same CUDA device, dtype, batch size, input shape, probe, warmup count, repeat count, synchronization boundaries, and measurement convention.",
+    "latency_rule": "Use CUDA synchronization immediately before timing and immediately after the measured call, retain the matched repeated samples, and compare median latency overhead with the frozen 15 percent maximum.",
+    "memory_rule": "Reset CUDA peak-memory statistics before each matched measurement, read measured peak allocation on the same CUDA device, and compare peak-memory overhead with the frozen 15 percent maximum.",
+    "mac_rule": "Measure actual multiply-accumulate cost for both matched paths at each frozen native shape using one identical deterministic counting convention. Raw elapsed time, constants, parameter count, or unconverted profiler FLOPs may not be relabeled as MACs. Compare MAC overhead with the frozen 10 percent maximum.",
+    "cuda_unavailable_rule": "No CPU or fallback profiling is allowed. CUDA unavailability must map to the existing engineering INCONCLUSIVE terminal tuple in future S0 behavior.",
+    "pass_rule": "The structural cost result may be PASS only when added parameters and every MAC, matched median CUDA latency, and CUDA peak-memory threshold pass at both frozen native shapes."
+  },
+  "authorization_scope": {
+    "purpose": "Resume the preserved seven-semantics working diff exactly once to implement only the missing frozen matched CUDA latency, MAC, and peak-memory measurement-and-threshold gate; correct only the directly corresponding AST positive proof and NEG_SEM_05 isolated control; rerun source-only static validation; and update the existing typed static-validation and closeout evidence.",
+    "workspace": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715",
+    "transport_contract": "local_only",
+    "resume_existing_working_diff": true,
+    "new_route_or_stage": false,
+    "entrypoint_change": true,
+    "validator_change": true,
+    "runtime_execution": false,
+    "target_code_execution": false,
+    "target_code_import": false,
+    "runner_execution": false,
+    "cloud_transport": false,
+    "data_or_checkpoint_access": false,
+    "initial_stage_authorization": false,
+    "s0_authorization": false,
+    "formal_authorization": false,
+    "scientific_contract_change": false,
+    "threshold_change": false,
+    "push_or_remote_verification": false
+  },
+  "exact_allowed_files": [
+    {
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "action": "MODIFY_ONLY_CUDA_PROFILE_PAIR_CUDA_COST_CONTRACT_AND_MINIMAL_DIRECT_S0_RESULT_WIRING_REQUIRED_TO_MEASURE_COMPARE_AND_FAIL_CLOSED_ON_THE_FROZEN_COST_GATE",
+      "reviewed_sha256": "d0e493ee81b7d55d48fe9d21dceeb25c9bb587bf558c1738a76db6653bcfe4cf",
+      "preserve": "Preserve the other six repaired semantics and all route, model, operator, support, optimizer, loss, seed, update, native-shape, lifecycle, terminal, and no-runtime behavior. Do not execute or import this file locally."
+    },
+    {
+      "path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "action": "MODIFY_ONLY_MATCHED_CUDA_COST_AND_MEMORY_POSITIVE_PROOF_NEG_SEM_05_ISOLATED_MUTATION_AND_MINIMAL_SHARED_ANALYZER_PLUMBING",
+      "reviewed_sha256": "07fe595efd78c148b2e86e45b97685c36999877ed8172083b4f72a26c42d670e",
+      "preserve": "Keep NEG_SEM_01, NEG_SEM_02, NEG_SEM_03, NEG_SEM_04, NEG_SEM_06, and NEG_SEM_07 predicates, mutations, expected codes, and independence unchanged. Statement order must be proven structurally by AST block order or full source position, not line number alone."
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_semantics_repair_static_validation.json",
+      "action": "CREATE_ONLY_AFTER_ALL_CORRECTED_SOURCE_PRIOR_NEGATIVE_AND_CUDA_POSITIVE_GATES_PASS",
+      "required_contents": "Record exact source hashes, zero corrected-source findings, seven independent negative records, the analyzed seven-defect aggregate, authoritative first32 equality, frozen hashes, syntax results, CUDA gate proof fields, NEG_SEM_05 AST anchor identity, and false runtime/import/data/checkpoint/cloud/S0/formal/canary/locked flags."
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_semantics_repair_closeout.json",
+      "action": "REPLACE_WITH_SUCCESS_ONLY_AFTER_EVERY_AUTHORIZED_STATIC_GATE_PASSES_OR_UPDATE_ONCE_WITH_THE_NEW_TYPED_FAILURE",
+      "reviewed_sha256": "4bfe500f2f6ee5e89a16e416cdfb26a0581ead56a6908b92296950594790d56c"
+    }
+  ],
+  "required_cuda_positive_proof": {
+    "corrected_source_finding_codes": [],
+    "required_structure": [
+      "explicit CUDA availability fail-closed branch",
+      "one matched baseline and augmented measurement routine",
+      "same CUDA device dtype batch probe and native shape",
+      "matched warmup and repeat counts",
+      "pre-timing and post-call CUDA synchronization",
+      "per-measurement CUDA peak-memory reset and same-device peak read",
+      "median latency selection",
+      "measured MAC values under one deterministic convention",
+      "strictly positive finite baseline denominators",
+      "overhead computation for MAC latency and peak memory",
+      "both frozen native shapes",
+      "comparisons against exactly 10.0 15.0 and 15.0 percent",
+      "all-shapes all-metrics pass conjunction with no constant PASS path"
+    ],
+    "forbidden_acceptance": "Token presence, function names, fixture ids, exception text, constants without def-use into the result, CPU fallback, mixed paths, missing-shape substitution, raw FLOPs relabeled as MACs, or a declared PASS value is not positive proof."
+  },
+  "required_isolated_negative_control": {
+    "id": "NEG_SEM_05_CPU_OR_FALLBACK_PROFILING",
+    "expected_code": "MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED",
+    "starting_source": "THE_EXACT_CORRECTED_POSITIVE_ENTRYPOINT",
+    "mutation_count": 1,
+    "mutation": "Use AST function ownership and ordered statement identity to replace only the post-measured-call torch.cuda.synchronize call inside cuda_profile_pair.measure with a non-CUDA call.",
+    "required_result": "The independently analyzed mutant emits exactly MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED and no other semantic finding.",
+    "prohibited_shortcuts": "Do not use raw text count, line number alone, mutation label, fixture id, exception type, a persisted mutant file, or inherited aggregate findings as detection evidence."
+  },
+  "preserved_control_matrix": {
+    "independent_negative_count": 7,
+    "aggregate_negative_required": true,
+    "other_six_exact_resume_change_allowed": false,
+    "corrected_source_rule": "The unmodified corrected source must emit zero findings under the same analyzer used for every negative.",
+    "independence_rule": "Each negative starts from the corrected positive source and applies exactly one mutation. No negative inherits another mutation or finding.",
+    "aggregate_rule": "One source containing all seven defects must be analyzed directly and report all seven exact codes; a union of isolated outputs is not a substitute.",
+    "required_static_marker": "A1X_S0_SEMANTICS_REPAIR_STATIC_VALIDATOR_OK"
+  },
+  "frozen_source_hashes": {
+    "route_card_sha256": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+    "route_operations_sha256": "a5cbe7d8e0559ee75c1b53b152561f10f754befb4e289963da3c465520e3f22f",
+    "a1x_head_sha256": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+    "runner_sha256": "3f0434a5064a1fe196a688b0699177f2658e8d5acabab97465443f2df956040b"
+  },
+  "required_validation_sequence": [
+    "Parse this authorization and every created or modified JSON file.",
+    "Run syntax compilation only for the entrypoint and validator. Do not import or execute target code.",
+    "Run only the source-only AST validator. It may parse source and inspect committed text but may not import or execute the target entrypoint, model, runner, profiler, renderer, loader, or data-facing code.",
+    "Require zero corrected-source findings under all seven proofs, including the complete frozen CUDA measurement-and-threshold positive proof.",
+    "Require NEG_SEM_05 to apply its one AST-selected mutation and independently emit exactly MATCHED_CUDA_COST_AND_MEMORY_GATE_IS_NOT_IMPLEMENTED.",
+    "Require the other six independent negatives and the directly analyzed seven-defect aggregate to retain their previously passing exact results.",
+    "Verify authoritative first32 equality and all frozen hashes and no-runtime no-data flags.",
+    "Verify the diff outside the four-file allowlist is unchanged from the preserved working state, run git diff --check, and confirm no prohibited artifact is staged.",
+    "Only after every preceding gate passes, write the success static-validation record and success closeout and create one local exact-resume repair commit whose parent contains this authorization. Do not push."
+  ],
+  "required_success_closeout_tuple": {
+    "state": "R2_S0_SEMANTICS_REPAIR_COMPLETE",
+    "decision": "V4A_A1X_S0_RUNNER_SEMANTICS_COMPLETE_AWAIT_R3_REVIEW",
+    "authorizes": "R3_S0_FINAL_AUTHORIZATION_REVIEW_ONLY"
+  },
+  "required_failure_closeout_tuple": {
+    "state": "R2_S0_SEMANTICS_REPAIR_BLOCKED",
+    "decision": "V4A_A1X_S0_RUNNER_SEMANTICS_REPAIR_FAILED_STOP",
+    "authorizes": "NONE",
+    "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+    "next_boundary": "FRESH_R3_FRONTIER_REVIEW_REQUIRED"
+  },
+  "explicit_no_runtime_no_data_boundaries": {
+    "cloud_transport": false,
+    "ssh_calls": false,
+    "convir_ops_calls": false,
+    "runner_execution": false,
+    "target_entrypoint_execution": false,
+    "target_module_import": false,
+    "s0_preflight_or_run": false,
+    "s0_authorized": false,
+    "formal_authorized": false,
+    "initial_authorization_created": false,
+    "dataset_enumeration": false,
+    "dataset_or_checkpoint_open": false,
+    "training": false,
+    "evaluation": false,
+    "inference": false,
+    "candidate_selection": false,
+    "promotion": false,
+    "canary": false,
+    "locked_test": false,
+    "push": false
+  },
+  "forbidden_changes": [
+    "ANY_REPAIR_FILE_OUTSIDE_THE_FOUR_FILE_ALLOWLIST",
+    "ANY_ENTRYPOINT_CHANGE_OUTSIDE_THE_DIRECT_FROZEN_CUDA_COST_GATE_AND_MINIMAL_RESULT_WIRING",
+    "ANY_VALIDATOR_CHANGE_OUTSIDE_THE_DIRECT_CUDA_POSITIVE_PROOF_NEG_SEM_05_CONTROL_OR_MINIMAL_SHARED_PLUMBING",
+    "WEAKENING_REMOVING_RENAMING_OR_BYPASSING_ANY_OF_THE_OTHER_SIX_SEMANTIC_REPAIRS_OR_CONTROLS",
+    "MAC_LATENCY_MEMORY_PARAMETER_THRESHOLD_OR_OVERHEAD_FORMULA_CHANGE",
+    "CPU_PROFILING_CUDA_FALLBACK_MIXED_DEVICE_CONSTANT_PASS_OR_MISSING_SHAPE_ACCEPTANCE",
+    "ROUTE_CARD_DESIGN_HANDOFF_ROUTE_OPERATIONS_RUNNER_OR_A1X_ACCESS_MODEL_CHANGE",
+    "DATA_SPLIT_MODEL_ARCHITECTURE_INPUT_TARGET_OPTIMIZER_LOSS_SEED_UPDATE_OPERATOR_SUPPORT_BATCH_METRIC_GATE_OR_TERMINAL_TUPLE_CHANGE",
+    "NEW_ROUTE_INITIAL_AUTHORIZATION_S0_AUTHORIZATION_OR_FORMAL_AUTHORIZATION",
+    "TARGET_EXECUTION_IMPORT_RUNTIME_DATA_CHECKPOINT_CLOUD_CANARY_OR_LOCKED_TEST_ACCESS",
+    "AUTOMATIC_RETRY_PUSH_OR_REMOTE_VERIFICATION"
+  ],
+  "retry_policy": "NO_AUTOMATIC_RETRY. This document authorizes one explicit exact-resume attempt only.",
+  "failure_boundary": "On any corrected-source finding, nonexact NEG_SEM_05 result, regression in another semantic control, frozen-hash mismatch, scope expansion, scientific ambiguity, runtime/import/data/checkpoint/remote requirement, failed static validation, or commit failure, write the typed R2 blocker once if possible and stop. Do not retry, weaken proof, authorize a stage, or cross the local source-only boundary.",
+  "success_conditions": [
+    "authorization_json_parses",
+    "r3_diagnosis_records_entrypoint_gate_incomplete_not_validator_only_false_positive",
+    "only_direct_entrypoint_validator_negative_control_static_validation_and_closeout_changes_authorized",
+    "all_seven_semantics_and_frozen_thresholds_preserved",
+    "all_no_runtime_no_data_no_stage_boundaries_explicit",
+    "authorization_committed_locally_without_preserved_working_diff_or_unrelated_files"
+  ]
+}
