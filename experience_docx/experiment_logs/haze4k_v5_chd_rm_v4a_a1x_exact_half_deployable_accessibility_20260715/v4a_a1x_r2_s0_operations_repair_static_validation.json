@@ -1,0 +1,19 @@
+{
+  "a1x_data_touched": false,
+  "bash_n": "PASS",
+  "canary_touched": false,
+  "card_validation_marker": "ROUTE_CARD_CONTRACT_OK sha256=c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da status=PLANNED",
+  "entrypoint_sha256": "c8428cbe4f892e5f0a7e715e24d6d846942255d6c5b0a871264a2f23a1398d4c",
+  "handoff_sha256": "630b81edb07fd6a4f4243c529998e5c97fbeb834926d3fd9cde5ce26bca6340a",
+  "head_sha256": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+  "locked_test_touched": false,
+  "python_compile": "PASS",
+  "route_card_sha256": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_operations_sha256": "a5cbe7d8e0559ee75c1b53b152561f10f754befb4e289963da3c465520e3f22f",
+  "runner_sha256": "e25f7bd8252e6908234ccfaddf7043d861ccfc67e0fe203cab7c85a563fe33e4",
+  "runtime_started": false,
+  "validator_dependency_sha256": "b0dd51e4db637d8754bec2158a01719670177b5ee64b833fdd2bd36cf932d834",
+  "validator_marker": "A1X_ROUTE_STATIC_VALIDATOR_OK",
+  "validator": "PASS"
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 2,
+  "operations": [
+    {
+      "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+      "repo_name": "ConvIR-B-v4a-a1x-exact-half-accessibility-20260715",
+      "workspace_id": "a1x20260715s0r1",
+      "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+      "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "operation_id": "A1X_S0", "runner_relpath": "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh", "mode": "s0", "require_gpu": true,
+      "state": "PLANNED", "decision": "V4A_A1X_S0_AUTHORIZED_INITIAL_ONLY", "authorizes": "A1X_S0_ONLY", "locked_test_policy": "blocked", "formal_mode_enabled": false,
+      "forbidden_continuations": ["DIRECT_FORMAL_WITHOUT_S0_CLOSEOUT", "A1X_DATA_ACCESS", "CONFIRMATION_DATA_ACCESS", "DIRECT_ACTION_CALIBRATION", "CANDIDATE_SELECTION", "POLICY_FITTING", "PROMOTION", "CANARY", "LOCKED_TEST"],
+      "output_id": "v4a-a1x-s0-r1", "closeout_filename": "v4a_a1x_s0_closeout.json", "collision_policy": "must_not_exist", "authorization_relpath": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/initial_authorization.json",
+      "prior_terminal_tuple": {"state": "PLANNED", "decision": "V4A_A1X_S0_AUTHORIZED_INITIAL_ONLY", "authorizes": "A1X_S0_ONLY"},
+      "allowed_terminal_tuples": [{"state":"COMPLETED_GATE_PASS","decision":"V4A_A1X_S0_PASS_AUTHORIZE_FORMAL_ONLY","authorizes":"A1X_FORMAL_CONFIRMATION_ONLY"},{"state":"COMPLETED_GATE_FAIL","decision":"V4A_A1X_S0_ENGINEERING_GATE_FAIL_STOP","authorizes":"NONE"},{"state":"COMPLETED_GATE_INCONCLUSIVE","decision":"V4A_A1X_S0_ENGINEERING_GATE_INCONCLUSIVE_STOP","authorizes":"NONE"}],
+      "workspace_policy": "fresh_route", "monitor_profile": "short", "heartbeat_timeout_seconds": 300, "min_free_gpu_mib": 12000, "max_gpu_utilization_pct": 10
+    }
+  ]
+}

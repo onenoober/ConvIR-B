@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "authorization_commit": "660fb77fc538468635571ee5c82693e006b8439f",
+  "state": "R2_S0_OPERATIONS_REPAIR_COMPLETE",
+  "decision": "V4A_A1X_S0_OPERATIONS_CONTRACT_REPAIRED_AWAIT_R3_REVIEW",
+  "authorizes": "R3_S0_AUTHORIZATION_REVIEW_ONLY",
+  "validation": {
+    "json_parse": "PASS",
+    "python_compile": "PASS",
+    "bash_n": "PASS",
+    "launch_ready_card": "ROUTE_CARD_CONTRACT_OK sha256=c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da status=PLANNED",
+    "route_static_validator": "A1X_ROUTE_STATIC_VALIDATOR_OK",
+    "immutable_validator_sha256": "b0dd51e4db637d8754bec2158a01719670177b5ee64b833fdd2bd36cf932d834"
+  },
+  "frozen_hashes": {
+    "route_card": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+    "design_handoff": "630b81edb07fd6a4f4243c529998e5c97fbeb834926d3fd9cde5ce26bca6340a",
+    "a1x_head": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33"
+  },
+  "forbidden_scope": {
+    "cloud_transport": false,
+    "convir_ops_calls": false,
+    "runner_execution": false,
+    "data_access": false,
+    "training": false,
+    "evaluation": false,
+    "inference": false,
+    "formal_authorized": false,
+    "canary": false,
+    "locked_test": false
+  },
+  "next_boundary": "R3_S0_AUTHORIZATION_REVIEW_ONLY"
+}
