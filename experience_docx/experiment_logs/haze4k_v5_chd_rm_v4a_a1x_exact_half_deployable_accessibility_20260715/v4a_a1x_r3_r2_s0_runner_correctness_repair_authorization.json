@@ -1,0 +1,262 @@
+{
+  "schema_version": 2,
+  "authorization_type": "R3_BOUNDED_R2_S0_RUNNER_CORRECTNESS_REPAIR_AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "authorization_base_commit": "597cbb1fa82c9cf31c93ed8328f9d80e47f2198f",
+  "reviewed_blocker": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_s0_final_authorization_review.json",
+    "commit": "597cbb1fa82c9cf31c93ed8328f9d80e47f2198f",
+    "git_blob_sha1": "22e347b900c91f24ddb36b64c3218956ae9040aa",
+    "sha256": "bb66619c43c9666863695fefb0851e5858e9d73b40c1cd7b524a69daa7fa7ecc",
+    "state": "R3_S0_FINAL_AUTHORIZATION_REVIEW_COMPLETE_BLOCKED",
+    "decision": "V4A_A1X_S0_AUTHORIZATION_BLOCKED_INVALID_RUNNER_CONTRACT",
+    "authorizes": "NONE",
+    "failure_class": "ENGINEERING_RUNNER_CONTRACT",
+    "blocking_finding_count": 9
+  },
+  "amendment_review": {
+    "outcome": "BOUNDED_R2_CORRECTION_AUTHORIZABLE_WITHOUT_SCIENTIFIC_CONTRACT_CHANGE",
+    "scientific_contract_changed": false,
+    "finding_set_is_exact_and_closed": true,
+    "rationale": "All nine committed findings are incorrect or incomplete engineering realizations of contracts already frozen by the route card and prior R3 authorization. Correcting only those realizations does not change the data, split, model architecture, deployable inputs, target, optimizer, loss, seed, update budget, metric, threshold, gate, stage, formal policy, canary policy, or locked-test policy.",
+    "supersedes_for_future_repair": "The implementation and static-proof portions of v4a_a1x_r3_r2_s0_runner_completion_repair_authorization.json are insufficient for this repair because token-presence validation admitted semantically invalid code. Its scientific contract remains frozen and is not superseded.",
+    "preserves": [
+      "DATA_IDENTITY_ORDER_AND_EXACT_CONSUMED_A1R_FIRST32_SCOPE",
+      "ENGINEERING_DEBUG_SPLIT_AND_EVIDENCE_ROLE",
+      "OFFICIAL_CONVIR_MODEL_CHECKPOINT_AND_FROZEN_A1X_HEAD_ARCHITECTURE",
+      "FIVE_DEPLOYABLE_INPUTS_AND_FORBIDDEN_INPUTS",
+      "TRUE_TARGET_AND_WITHIN_OPERATOR_NATIVE_SHAPE_SHUFFLED_TARGET_CELLS",
+      "ADAMW_OPTIMIZER_ACTIVE_SUPPORT_LOSS_SEED_AND_TWO_UPDATE_BUDGET",
+      "METRICS_THRESHOLDS_STRUCTURAL_COST_GATE_AND_TERMINAL_TUPLES",
+      "S0_ONLY_FORMAL_BLOCKED_CANARY_BLOCKED_AND_LOCKED_TEST_BLOCKED"
+    ]
+  },
+  "route_identity": "CONTINUATION_REPAIR_OF_EXISTING_PLANNED_ROUTE",
+  "state": "R3_R2_S0_RUNNER_CORRECTNESS_REPAIR_AUTHORIZATION_COMPLETE",
+  "decision": "V4A_A1X_BOUNDED_R2_RUNNER_CORRECTNESS_REPAIR_AUTHORIZED",
+  "authorizes": "R2_LOCAL_RUNNER_CORRECTNESS_REPAIR_ONLY",
+  "task_class": "R2_ENGINEERING_CONTROL",
+  "required_role": "balanced",
+  "effort": "medium",
+  "authorization_scope": {
+    "purpose": "Correct exactly the nine ENGINEERING_RUNNER_CONTRACT findings in the committed blocker and prove the corrected source semantics without running target code or touching runtime assets.",
+    "workspace": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715",
+    "transport_contract": "local_only",
+    "local_route_branch_commit": true,
+    "push_or_remote_verification": false,
+    "runtime_execution": false,
+    "runner_execution": false,
+    "cloud_transport": false,
+    "data_or_checkpoint_access": false,
+    "initial_stage_authorization": false,
+    "formal_authorization": false,
+    "scientific_decision": false
+  },
+  "reviewed_evidence": [
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:AGENTS.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_AGENT_COST_ROUTING_PROTOCOL.md",
+    "github:fe08ba7c0fde4d6086083490430246ea39fbf766:experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md",
+    "github:597cbb1fa82c9cf31c93ed8328f9d80e47f2198f:experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md",
+    "github:597cbb1fa82c9cf31c93ed8328f9d80e47f2198f:experience_docx/route_operations.json",
+    "github:597cbb1fa82c9cf31c93ed8328f9d80e47f2198f:Dehazing/ITS/models/A1XAccess.py",
+    "github:597cbb1fa82c9cf31c93ed8328f9d80e47f2198f:experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "github:597cbb1fa82c9cf31c93ed8328f9d80e47f2198f:experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+    "github:597cbb1fa82c9cf31c93ed8328f9d80e47f2198f:experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "github:597cbb1fa82c9cf31c93ed8328f9d80e47f2198f:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_runner_completion_repair_authorization.json",
+    "github:597cbb1fa82c9cf31c93ed8328f9d80e47f2198f:experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_s0_final_authorization_review.json"
+  ],
+  "exact_allowed_files": [
+    {
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "action": "MODIFY",
+      "purpose": "Correct findings 1-6 only: integrated official-model/head training, true shuffle semantics, operator/native-shape batches and active-support loss, measured checks, and accurate lifecycle evidence."
+    },
+    {
+      "path": "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "action": "MODIFY",
+      "purpose": "Correct findings 7-8 only: bind the frozen fresh route REMOTE_REPO and make the shell runner the sole terminal-marker owner."
+    },
+    {
+      "path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "action": "MODIFY",
+      "purpose": "Correct finding 9 by replacing token-presence claims with semantic Python AST, structured JSON, and parsed shell-source proofs."
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_correctness_repair_static_validation.json",
+      "action": "CREATE",
+      "purpose": "Record syntax and semantic static-proof results, exact source hashes, and false runtime/data/formal/canary/locked flags."
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_runner_correctness_repair_closeout.json",
+      "action": "CREATE",
+      "purpose": "Close the bounded correction with the required tuple, exact hashes, nine resolved finding codes, and an R3-review-only next boundary."
+    }
+  ],
+  "exact_nine_corrections": [
+    {
+      "code": "A1X_HEAD_PARAMETERS_ARE_ALL_FROZEN",
+      "required_correction": "Use the registered A1X head parameter scope itself as the complete trainable set; every A1X head parameter must require gradients, the optimizer must receive exactly that nonempty set, and no official-model parameter may require gradients. Do not infer head membership by applying the external A1X_ACCESS_ prefix to the head's internal parameter names.",
+      "required_semantic_proof": "AST data-flow proves a nonempty optimizer parameter collection sourced from all head parameters, proves those parameters are enabled, and proves official-model parameters are separately disabled."
+    },
+    {
+      "code": "OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING",
+      "required_correction": "Construct the frozen official ConvIR model from the existing route source, load the official checkpoint with exact official keys and shapes before S0 model work, attach or invoke the unchanged A1X_ACCESS_Head as the only trainable component, put the official model in eval mode, freeze every official parameter, and record measured load/freeze/eval audit results. The checkpoint hash check alone is insufficient.",
+      "required_semantic_proof": "AST call and data-flow proofs identify official model construction, checkpoint deserialization, exact key/shape or strict load validation, official-model eval/freeze traversal, unchanged A1X head construction, and fail-closed guards before forward or optimizer steps."
+    },
+    {
+      "code": "SHUFFLED_TARGET_CONTROL_IS_REVERSED",
+      "required_correction": "For A1X_ACCESS_SHUFFLED, keep all five deployable inputs from the source name and cyclically permute only TARGET_DELTA_U within each frozen operator and exact-native-shape block in sorted-name order with plus-one wrap and no self-pair. A paired name must never select CURRENT_DELTA_U or any other forward input.",
+      "required_semantic_proof": "AST def-use tracing proves every forward-input load is keyed by the source name, only the target load may use the paired name, pairing is grouped by operator and native shape, and guards prove complete coverage and no self-pairs."
+    },
+    {
+      "code": "FROZEN_LOSS_AND_OPERATOR_CONTRACT_NOT_IMPLEMENTED",
+      "required_correction": "Represent both frozen operators explicitly; form deterministic exact-native-shape blocks, then sorted name/operator batches of at most four; perform exactly two updates per true and shuffled cell; and compute normalized_active_support_endpoint_mse only on the frozen active support for the predicted versus target endpoint, normalized by the active-support element count. No resize, crop, padding, exclusion, substitution, augmentation, full-tensor mean, or operator collapse is allowed.",
+      "required_semantic_proof": "AST control/data-flow proofs identify the operator loop or axis, native-shape grouping before batching, deterministic sort, batch-size upper bound, exactly two optimizer steps per cell, active-support masking of both endpoint error and denominator, and absence of forbidden spatial transforms."
+    },
+    {
+      "code": "INTEGRATED_S0_CHECKS_ARE_DECLARED_BUT_NOT_MEASURED",
+      "required_correction": "Compute every integrated S0 result from observed values or explicit identity audits. Measure exact current-endpoint no-op, native-shape preservation, added parameters, MAC overhead, matched median latency overhead, and peak-memory overhead at both frozen native shapes; compare those measurements with the frozen 0.0, 300000, 10 percent, 15 percent, and 15 percent limits. Never create PASS values by constant fill or by iterating check names without measurement evidence.",
+      "required_semantic_proof": "AST provenance proves each structural/cost result is derived from a named measured value and threshold comparison, proves both native shapes are covered for MAC/latency/memory, and rejects constant PASS dictionary comprehensions or equivalent fabricated results."
+    },
+    {
+      "code": "DURABLE_LIFECYCLE_AND_CLOSEOUT_CONTRACT_INCOMPLETE",
+      "required_correction": "Maintain distinct durable status, heartbeat, runtime log, learned-state manifest, and closeout paths. Append start/phase/progress/terminal status, atomically refresh heartbeat at least every 60 seconds during model or data work, retain each learned state path and SHA-256, record nonempty measured phase timings, and populate every frozen typed-closeout field including runner_sha256 and route_card_sha256. Track runtime_started by phase so post-start failures cannot report false. Write a terminal status before the sole final marker.",
+      "required_semantic_proof": "AST and shell data-flow prove distinct path bindings and writers, lifecycle write ordering, heartbeat fields/cadence surface, learned-state path/hash retention, nonconstant phase timing capture, required closeout keys with nonempty provenance, phase-sensitive runtime_started, and terminal status preceding marker emission."
+    },
+    {
+      "code": "REMOTE_REPO_DOES_NOT_MATCH_FROZEN_FRESH_ROUTE_WORKSPACE",
+      "required_correction": "Bind REMOTE_REPO exactly to /sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1x-exact-half-accessibility-20260715 and derive the entrypoint and tracked route files from that root. No fallback repository root is allowed.",
+      "required_semantic_proof": "Parsed shell assignments prove one literal REMOTE_REPO binding with the exact frozen value and prove referenced tracked paths derive from it."
+    },
+    {
+      "code": "FINAL_MARKER_CONTRACT_DUPLICATED",
+      "required_correction": "The Python entrypoint must write closeout/status and return an exit code without printing A1X_S0_OK or A1X_S0_FAILED. The shell runner must preserve PIPESTATUS[0], verify the terminal evidence path, print exactly one corresponding terminal marker after terminal evidence is durable, and return the entrypoint exit code.",
+      "required_semantic_proof": "Python AST proves zero success/failure marker string emissions; parsed shell control flow proves exactly one mutually exclusive marker emission after terminal evidence handling and preserved entrypoint exit status."
+    },
+    {
+      "code": "STATIC_VALIDATOR_PROVES_TOKENS_NOT_REQUIRED_SEMANTICS",
+      "required_correction": "Implement a source-only semantic validator that parses Python AST, route JSON, and shell source without importing or executing the entrypoint, runner, model, loader, or any dataset-facing code. Validate definitions, call targets, arguments, scopes, control flow, and def-use provenance for corrections 1-8; raw string or token presence may locate candidates but may not establish a PASS.",
+      "required_semantic_proof": "The validator contains dedicated failing semantic checks for all eight preceding finding codes, produces one proof record per code, rejects the exact nine-defect base sources, accepts only the corrected source contract, and writes A1X_S0_RUNNER_CORRECTNESS_STATIC_VALIDATOR_OK only after all semantic proofs pass."
+    }
+  ],
+  "frozen_contract_sources": {
+    "scientific_contract_canonical_source": "experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md",
+    "implementation_contract_reference": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_r2_s0_runner_completion_repair_authorization.json",
+    "terminal_tuple_source": "experience_docx/route_operations.json A1X_S0 allowed_terminal_tuples",
+    "data": "exact literal already-consumed A1R first32 names only, unchanged identity/order/count/provenance; no filesystem discovery",
+    "split": "engineering_debug only; no A1X or confirmation split access",
+    "model": "official ConvIR checkpoint SHA-256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088 plus unchanged A1X_ACCESS_Head; only the head is trainable",
+    "inputs": "D0_HAZY_RGB, FROZEN_BASE_RGB, OLD_0P125_RGB, OLD_0P25_RGB, CURRENT_DELTA_U; 15 channels; no clean, target, winner, amplitude, or outcome forward input",
+    "optimizer": "AdamW learning_rate=0.0005 weight_decay=0.00001 gradient_clip_norm=0.1",
+    "loss": "normalized_active_support_endpoint_mse with weight 1.0",
+    "seed": 3407,
+    "updates": "exactly two per A1X_ACCESS_TRUE cell and two per A1X_ACCESS_SHUFFLED cell",
+    "batch_and_shuffle": "deterministic exact-native-shape blocks then sorted name/operator batches at most four; target-only cyclic plus-one shuffle within operator and shape with no self-pair",
+    "metric_and_gate": "unchanged route-card structural/cost metrics, thresholds, gate meaning, and A1X_S0 terminal tuples; engineering measurements only",
+    "formal": "blocked",
+    "canary": "blocked",
+    "locked_test": "blocked"
+  },
+  "frozen_hashes_at_authorization_base": {
+    "experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_design_handoff.json": "630b81edb07fd6a4f4243c529998e5c97fbeb834926d3fd9cde5ce26bca6340a",
+    "Dehazing/ITS/models/A1XAccess.py": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+    "experience_docx/route_operations.json": "a5cbe7d8e0559ee75c1b53b152561f10f754befb4e289963da3c465520e3f22f",
+    "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": "fb8f4c5f904aabbf6abb3dc31d0624d7297a9235b029e5a94cfab35c9ae69ded",
+    "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh": "74c4a2c54dfd8e9f46b31595af2e60a6f0c29fcd0485ef54a1fb7a114cd700ff",
+    "experience_docx/tools/validate_haze4k_v4a_a1x_route.py": "584f43076d6698632fd3fb90f03f60f15d85c47adaed62552f101d071b678f1a"
+  },
+  "semantic_static_validation_contract": {
+    "target_execution_allowed": false,
+    "target_import_allowed": false,
+    "data_or_checkpoint_open_allowed": false,
+    "validator_execution_allowed": true,
+    "proof_method": "Parse source and structured evidence only. AST/static validation may execute the validator itself but must not import or execute target code or open runtime assets.",
+    "base_negative_fixture": {
+      "commit": "597cbb1fa82c9cf31c93ed8328f9d80e47f2198f",
+      "required_result": "All nine committed finding codes are detected against their corresponding base source snapshots without executing them."
+    },
+    "required_positive_proofs": [
+      "SEMANTIC_A1X_HEAD_TRAINABLE_SCOPE_PASS",
+      "SEMANTIC_OFFICIAL_MODEL_LOAD_FREEZE_EVAL_PASS",
+      "SEMANTIC_TARGET_ONLY_OPERATOR_SHAPE_SHUFFLE_PASS",
+      "SEMANTIC_ACTIVE_SUPPORT_OPERATOR_NATIVE_BATCH_LOSS_PASS",
+      "SEMANTIC_MEASURED_STRUCTURAL_COST_CHECKS_PASS",
+      "SEMANTIC_COMPLETE_LIFECYCLE_CLOSEOUT_PASS",
+      "SEMANTIC_FROZEN_REMOTE_REPO_PASS",
+      "SEMANTIC_EXACTLY_ONE_TERMINAL_MARKER_PASS",
+      "SEMANTIC_VALIDATOR_NEGATIVE_FIXTURE_PASS",
+      "STATIC_FROZEN_SCIENTIFIC_HASHES_PASS"
+    ],
+    "required_static_validation_output": "A1X_S0_RUNNER_CORRECTNESS_STATIC_VALIDATOR_OK"
+  },
+  "required_validations": [
+    "Parse this authorization and every created or modified JSON file successfully.",
+    "Run Python syntax compilation only for the modified entrypoint and validator.",
+    "Run bash -n only for the modified shell runner.",
+    "Run the source-only validator and require the base negative fixture, every semantic positive proof, and A1X_S0_RUNNER_CORRECTNESS_STATIC_VALIDATOR_OK.",
+    "Verify the route card, design handoff, A1XAccess.py, route_operations.json, exact first32 identity, and all other files outside exact_allowed_files are byte-identical to authorization_base_commit.",
+    "Verify the tracked diff is limited to exact_allowed_files, git diff --check passes, and no prohibited artifact type is staged.",
+    "Commit locally on the named route branch and verify the commit parent is the commit containing this authorization; do not push.",
+    "Record exact hashes, all nine resolved codes, proof markers, and false runtime/data/formal/canary/locked flags in the R2 closeout."
+  ],
+  "required_r2_closeout_tuple": {
+    "state": "R2_S0_RUNNER_CORRECTNESS_REPAIR_COMPLETE",
+    "decision": "V4A_A1X_S0_RUNNER_CORRECTNESS_REPAIRED_AWAIT_R3_REVIEW",
+    "authorizes": "R3_S0_FINAL_AUTHORIZATION_REVIEW_ONLY"
+  },
+  "explicit_no_runtime_no_data_boundaries": {
+    "cloud_transport": false,
+    "ssh_calls": false,
+    "convir_ops_calls": false,
+    "runner_execution": false,
+    "s0_preflight_or_run": false,
+    "s0_authorized": false,
+    "formal_authorized": false,
+    "initial_authorization_created": false,
+    "any_dataset_enumeration": false,
+    "a1r_data_access": false,
+    "a1x_data_access": false,
+    "confirmation_data_access": false,
+    "checkpoint_open": false,
+    "training": false,
+    "evaluation": false,
+    "inference": false,
+    "candidate_selection": false,
+    "promotion": false,
+    "canary": false,
+    "locked_test": false
+  },
+  "forbidden_changes": [
+    "ANY_FILE_OUTSIDE_EXACT_ALLOWED_FILES",
+    "ROUTE_CARD_DESIGN_HANDOFF_A1X_HEAD_OR_ROUTE_OPERATIONS_CHANGE",
+    "DATA_IDENTITY_ORDER_COUNT_PROVENANCE_SPLIT_OR_EVIDENCE_ROLE_CHANGE",
+    "FILESYSTEM_BASED_DATASET_DISCOVERY",
+    "MODEL_ARCHITECTURE_CHECKPOINT_INPUT_TARGET_OPTIMIZER_LOSS_SEED_OR_UPDATE_CHANGE",
+    "OPERATOR_SUPPORT_NATIVE_SHAPE_BATCH_OR_SHUFFLE_SEMANTICS_CHANGE",
+    "METRIC_THRESHOLD_GATE_TERMINAL_TUPLE_OR_COST_BUDGET_CHANGE",
+    "STAGE_SCOPE_EXPANSION",
+    "INITIAL_S0_AUTHORIZATION_CREATION",
+    "FORMAL_OPERATION_ENABLEMENT",
+    "RUNTIME_CLOUD_CHECKPOINT_OR_DATA_ACCESS",
+    "A1X_CONFIRMATION_CANARY_OR_LOCKED_TEST_ACCESS",
+    "TOKEN_PRESENCE_AS_SEMANTIC_PASS_EVIDENCE",
+    "PUSH_OR_REMOTE_VERIFICATION"
+  ],
+  "retry_policy": "NO_AUTOMATIC_RETRY",
+  "failure_boundary": "On any required-file expansion, frozen-hash mismatch, ambiguous official-model integration, inability to prove one of the nine semantics statically, validator negative-fixture failure, commit failure, or need for scientific-contract change, do not substitute, retry, or weaken a proof. Emit a typed R2 blocker with authorizes NONE and stop before runtime, data, checkpoint, remote, or scientific action.",
+  "success_conditions": [
+    "repair_commit_descends_from_the_commit_containing_this_authorization",
+    "tracked_diff_matches_exact_allowed_files_only",
+    "all_required_syntax_and_semantic_static_proofs_pass",
+    "base_negative_fixture_detects_all_nine_committed_defects",
+    "all_nine_finding_codes_are_resolved_without_scientific_contract_change",
+    "frozen_contract_files_and_hashes_remain_unchanged",
+    "repair_closeout_matches_required_r2_closeout_tuple",
+    "one_local_route_branch_commit_is_created_and_not_pushed",
+    "no_runtime_data_checkpoint_remote_formal_canary_or_locked_boundary_is_crossed"
+  ],
+  "next_boundary": "One separately dispatched qualified R2 local-only task may correct exactly the nine findings by changing exactly the five allowed files, run syntax and semantic source-static validation only, and commit the correction locally. It must not push, run the entrypoint or runner, access any dataset or checkpoint, call SSH/cloud/convir-ops, create initial authorization, authorize formal, or touch confirmation, canary, or locked test. After the committed R2 closeout, stop for a fresh R3 final authorization review."
+}
