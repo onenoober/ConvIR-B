@@ -1,0 +1,224 @@
+{
+  "authorization_base_detected_finding_codes": [
+    "A1X_HEAD_PARAMETERS_ARE_ALL_FROZEN",
+    "DURABLE_LIFECYCLE_AND_CLOSEOUT_CONTRACT_INCOMPLETE",
+    "FINAL_MARKER_CONTRACT_DUPLICATED",
+    "FROZEN_LOSS_AND_OPERATOR_CONTRACT_NOT_IMPLEMENTED",
+    "INTEGRATED_S0_CHECKS_ARE_DECLARED_BUT_NOT_MEASURED",
+    "OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING",
+    "REMOTE_REPO_DOES_NOT_MATCH_FROZEN_FRESH_ROUTE_WORKSPACE",
+    "SHUFFLED_TARGET_CONTROL_IS_REVERSED",
+    "STATIC_VALIDATOR_PROVES_TOKENS_NOT_REQUIRED_SEMANTICS"
+  ],
+  "canary_touched": false,
+  "checkpoint_opened": false,
+  "cloud_transport": false,
+  "corrected_source_detected_finding_codes": [],
+  "data_accessed": false,
+  "entrypoint_sha256": "75d5de3b92e2d576f5aa928ed0e2b8998b995b6fc8b6d1c66b278310f1c31480",
+  "formal_authorized": false,
+  "frozen_hashes": {
+    "Dehazing/ITS/models/A1XAccess.py": "625b60368dde9316df3c506cd339b94650e05243edc7cb8090f0b5b555b6df33",
+    "experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1x-exact-half-deployable-accessibility.md": "c723e59a3cb06de63b1ae4a72eabcd64ca0a3d08ba1346f3a53e0a52cce452da",
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_design_handoff.json": "630b81edb07fd6a4f4243c529998e5c97fbeb834926d3fd9cde5ce26bca6340a",
+    "experience_docx/route_operations.json": "a5cbe7d8e0559ee75c1b53b152561f10f754befb4e289963da3c465520e3f22f"
+  },
+  "isolated_negative_fixtures": [
+    {
+      "data_or_checkpoint_opened_false": true,
+      "detected_finding_codes": [
+        "A1X_HEAD_PARAMETERS_ARE_ALL_FROZEN"
+      ],
+      "expected_code_detected": true,
+      "expected_finding_code": "A1X_HEAD_PARAMETERS_ARE_ALL_FROZEN",
+      "fixture_id": "NEG_01_HEAD_TRAINABLE_SCOPE",
+      "mutated_source_path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "mutation_description": "one in-memory structural mutation",
+      "record_type": "ISOLATED_FIXTURE_FINDINGS",
+      "source_after_sha256": "a8d1ba10094563b6a3d24049828e7098ae23a9886d853308f3dbf4cf3880130b",
+      "source_before_sha256": "75d5de3b92e2d576f5aa928ed0e2b8998b995b6fc8b6d1c66b278310f1c31480",
+      "target_code_executed_false": true
+    },
+    {
+      "data_or_checkpoint_opened_false": true,
+      "detected_finding_codes": [
+        "OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING"
+      ],
+      "expected_code_detected": true,
+      "expected_finding_code": "OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING",
+      "fixture_id": "NEG_02_OFFICIAL_MODEL_LOAD_FREEZE_AUDIT",
+      "mutated_source_path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "mutation_description": "one in-memory structural mutation",
+      "record_type": "ISOLATED_FIXTURE_FINDINGS",
+      "source_after_sha256": "acc1d15904dd1a86855ac9ffcfb39c283f40594ab4121182f57938fd289fc039",
+      "source_before_sha256": "75d5de3b92e2d576f5aa928ed0e2b8998b995b6fc8b6d1c66b278310f1c31480",
+      "target_code_executed_false": true
+    },
+    {
+      "data_or_checkpoint_opened_false": true,
+      "detected_finding_codes": [
+        "SHUFFLED_TARGET_CONTROL_IS_REVERSED"
+      ],
+      "expected_code_detected": true,
+      "expected_finding_code": "SHUFFLED_TARGET_CONTROL_IS_REVERSED",
+      "fixture_id": "NEG_03_TARGET_ONLY_SHUFFLE",
+      "mutated_source_path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "mutation_description": "one in-memory structural mutation",
+      "record_type": "ISOLATED_FIXTURE_FINDINGS",
+      "source_after_sha256": "d5e00a78c5833d8e07f44fa7b3365b425e07a7f09e2216673474c8013ef2974b",
+      "source_before_sha256": "75d5de3b92e2d576f5aa928ed0e2b8998b995b6fc8b6d1c66b278310f1c31480",
+      "target_code_executed_false": true
+    },
+    {
+      "data_or_checkpoint_opened_false": true,
+      "detected_finding_codes": [
+        "FROZEN_LOSS_AND_OPERATOR_CONTRACT_NOT_IMPLEMENTED"
+      ],
+      "expected_code_detected": true,
+      "expected_finding_code": "FROZEN_LOSS_AND_OPERATOR_CONTRACT_NOT_IMPLEMENTED",
+      "fixture_id": "NEG_04_OPERATOR_NATIVE_ACTIVE_SUPPORT_LOSS",
+      "mutated_source_path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "mutation_description": "one in-memory structural mutation",
+      "record_type": "ISOLATED_FIXTURE_FINDINGS",
+      "source_after_sha256": "9ca0dfbd99988ce920bbc88999a8906ef9cc0137f3fda5f3ecbb53b6a0bf46d7",
+      "source_before_sha256": "75d5de3b92e2d576f5aa928ed0e2b8998b995b6fc8b6d1c66b278310f1c31480",
+      "target_code_executed_false": true
+    },
+    {
+      "data_or_checkpoint_opened_false": true,
+      "detected_finding_codes": [
+        "INTEGRATED_S0_CHECKS_ARE_DECLARED_BUT_NOT_MEASURED"
+      ],
+      "expected_code_detected": true,
+      "expected_finding_code": "INTEGRATED_S0_CHECKS_ARE_DECLARED_BUT_NOT_MEASURED",
+      "fixture_id": "NEG_05_MEASURED_STRUCTURAL_COST_CHECKS",
+      "mutated_source_path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "mutation_description": "one in-memory structural mutation",
+      "record_type": "ISOLATED_FIXTURE_FINDINGS",
+      "source_after_sha256": "89b1265fbc6f1bc230d1b66067261d38b6335e16c52e1d46afde1fd658685077",
+      "source_before_sha256": "75d5de3b92e2d576f5aa928ed0e2b8998b995b6fc8b6d1c66b278310f1c31480",
+      "target_code_executed_false": true
+    },
+    {
+      "data_or_checkpoint_opened_false": true,
+      "detected_finding_codes": [
+        "DURABLE_LIFECYCLE_AND_CLOSEOUT_CONTRACT_INCOMPLETE"
+      ],
+      "expected_code_detected": true,
+      "expected_finding_code": "DURABLE_LIFECYCLE_AND_CLOSEOUT_CONTRACT_INCOMPLETE",
+      "fixture_id": "NEG_06_DURABLE_LIFECYCLE_CLOSEOUT",
+      "mutated_source_path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "mutation_description": "one in-memory structural mutation",
+      "record_type": "ISOLATED_FIXTURE_FINDINGS",
+      "source_after_sha256": "72309abe2324829a620aa14c87a7f2a3c1c0eb874a41a15f54630d8cd2cacddd",
+      "source_before_sha256": "75d5de3b92e2d576f5aa928ed0e2b8998b995b6fc8b6d1c66b278310f1c31480",
+      "target_code_executed_false": true
+    },
+    {
+      "data_or_checkpoint_opened_false": true,
+      "detected_finding_codes": [
+        "REMOTE_REPO_DOES_NOT_MATCH_FROZEN_FRESH_ROUTE_WORKSPACE"
+      ],
+      "expected_code_detected": true,
+      "expected_finding_code": "REMOTE_REPO_DOES_NOT_MATCH_FROZEN_FRESH_ROUTE_WORKSPACE",
+      "fixture_id": "NEG_07_FROZEN_REMOTE_REPO",
+      "mutated_source_path": "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "mutation_description": "one in-memory structural mutation",
+      "record_type": "ISOLATED_FIXTURE_FINDINGS",
+      "source_after_sha256": "66684c953e1f38b2288e87c1c71ba414c3d229c14c9c1c0a3fcaf64345a01546",
+      "source_before_sha256": "3f0434a5064a1fe196a688b0699177f2658e8d5acabab97465443f2df956040b",
+      "target_code_executed_false": true
+    },
+    {
+      "data_or_checkpoint_opened_false": true,
+      "detected_finding_codes": [
+        "FINAL_MARKER_CONTRACT_DUPLICATED"
+      ],
+      "expected_code_detected": true,
+      "expected_finding_code": "FINAL_MARKER_CONTRACT_DUPLICATED",
+      "fixture_id": "NEG_08_SINGLE_TERMINAL_MARKER_OWNER",
+      "mutated_source_path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "mutation_description": "one in-memory structural mutation",
+      "record_type": "ISOLATED_FIXTURE_FINDINGS",
+      "source_after_sha256": "178b715307242999e305f9c03304cd00df6834631b2c68b2cfe5f3a697a833f4",
+      "source_before_sha256": "75d5de3b92e2d576f5aa928ed0e2b8998b995b6fc8b6d1c66b278310f1c31480",
+      "target_code_executed_false": true
+    },
+    {
+      "data_or_checkpoint_opened_false": true,
+      "detected_finding_codes": [
+        "STATIC_VALIDATOR_PROVES_TOKENS_NOT_REQUIRED_SEMANTICS"
+      ],
+      "expected_code_detected": true,
+      "expected_finding_code": "STATIC_VALIDATOR_PROVES_TOKENS_NOT_REQUIRED_SEMANTICS",
+      "fixture_id": "NEG_09_VALIDATOR_SEMANTIC_PROOF",
+      "mutated_source_path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "mutation_description": "one in-memory structural mutation",
+      "record_type": "ISOLATED_FIXTURE_FINDINGS",
+      "source_after_sha256": "95b4c7b1dcd740a61274d0134db547140a41772fba7a6ce3555fbe2048c00c23",
+      "source_before_sha256": "b269991ff0ea4c3482a1d18d56a0f3c7ec27b068fe29b79f8a56907a7fc69736",
+      "target_code_executed_false": true
+    }
+  ],
+  "locked_test_touched": false,
+  "proof_markers": [
+    "SEMANTIC_A1X_HEAD_TRAINABLE_SCOPE_PASS",
+    "SEMANTIC_OFFICIAL_MODEL_LOAD_FREEZE_EVAL_PASS",
+    "SEMANTIC_TARGET_ONLY_OPERATOR_SHAPE_SHUFFLE_PASS",
+    "SEMANTIC_ACTIVE_SUPPORT_OPERATOR_NATIVE_BATCH_LOSS_PASS",
+    "SEMANTIC_MEASURED_STRUCTURAL_COST_CHECKS_PASS",
+    "SEMANTIC_COMPLETE_LIFECYCLE_CLOSEOUT_PASS",
+    "SEMANTIC_FROZEN_REMOTE_REPO_PASS",
+    "SEMANTIC_EXACTLY_ONE_TERMINAL_MARKER_PASS",
+    "SEMANTIC_VALIDATOR_NEGATIVE_FIXTURE_PASS",
+    "STATIC_FROZEN_SCIENTIFIC_HASHES_PASS"
+  ],
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "runner_sha256": "3f0434a5064a1fe196a688b0699177f2658e8d5acabab97465443f2df956040b",
+  "runtime_started": false,
+  "schema_version": 2,
+  "validator": "A1X_S0_RUNNER_CORRECTNESS_STATIC_VALIDATOR_OK",
+  "validator_self_proof": [
+    {
+      "detected_finding_codes": [
+        "OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING"
+      ],
+      "expected_code_detected": true,
+      "expected_finding_code": "OFFICIAL_MODEL_LOAD_AND_FREEZE_AUDIT_MISSING",
+      "fixture_id": "INVERTED_OFFICIAL_FREEZE_POLARITY",
+      "record_type": "VALIDATOR_SELF_PROOF_FINDINGS",
+      "validator_executed_false": true
+    },
+    {
+      "detected_finding_codes": [
+        "SHUFFLED_TARGET_CONTROL_IS_REVERSED"
+      ],
+      "expected_code_detected": true,
+      "expected_finding_code": "SHUFFLED_TARGET_CONTROL_IS_REVERSED",
+      "fixture_id": "QUOTE_SPELLING_ONLY_TARGET_ACCEPTANCE",
+      "record_type": "VALIDATOR_SELF_PROOF_FINDINGS",
+      "validator_executed_false": true
+    },
+    {
+      "detected_finding_codes": [
+        "STATIC_VALIDATOR_PROVES_TOKENS_NOT_REQUIRED_SEMANTICS"
+      ],
+      "expected_code_detected": true,
+      "expected_finding_code": "STATIC_VALIDATOR_PROVES_TOKENS_NOT_REQUIRED_SEMANTICS",
+      "fixture_id": "OMITTED_PRE_FAILURE_DIAGNOSTICS",
+      "record_type": "VALIDATOR_SELF_PROOF_FINDINGS",
+      "validator_executed_false": true
+    },
+    {
+      "detected_finding_codes": [
+        "STATIC_VALIDATOR_PROVES_TOKENS_NOT_REQUIRED_SEMANTICS"
+      ],
+      "expected_code_detected": true,
+      "expected_finding_code": "STATIC_VALIDATOR_PROVES_TOKENS_NOT_REQUIRED_SEMANTICS",
+      "fixture_id": "BYPASSED_ISOLATED_FIXTURE_ANALYSIS",
+      "record_type": "VALIDATOR_SELF_PROOF_FINDINGS",
+      "validator_executed_false": true
+    }
+  ],
+  "validator_sha256": "b269991ff0ea4c3482a1d18d56a0f3c7ec27b068fe29b79f8a56907a7fc69736"
+}
