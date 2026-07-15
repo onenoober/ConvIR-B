@@ -1,0 +1,34 @@
+{
+  "authorizes": "A1C_FORMAL_INTERFACE_CEILING_ONLY",
+  "bootstrap_summary": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a-a1c-s0-r1/v4a_a1c_bootstrap_summary.json",
+  "canary_touched": false,
+  "candidate_selected": false,
+  "cells": [
+    "full",
+    "exact_half",
+    "antialiased_half"
+  ],
+  "confirmation_touched": false,
+  "decision": "V4A_A1C_S0_ALIGNMENT_PASS_AUTHORIZE_FORMAL_ONLY",
+  "evidence_role": "engineering_debug",
+  "gate_type": "structural_integrity",
+  "limits": {
+    "endpoint": 0.0,
+    "grid_zero": 5.820766091346741e-11,
+    "support": 0.0,
+    "zero": 0.0
+  },
+  "locked_test_touched": false,
+  "raw_rows_cloud_only": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a-a1c-s0-r1/v4a_a1c_rows_cloud_only.csv",
+  "route_commit": "b62dd75ea30123e2fca94ecb1d4a57c02dbc8f64",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715",
+  "run_id": "v4a-a1c-s0-r1",
+  "runner_sha256": "6d24874cb6e00e7aec2ee493f0e19ff3e227bed82b42aafb158a891954749019",
+  "schema_version": 2,
+  "source_manifest": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a-a1c-s0-r1/v4a_a1c_source_manifest.json",
+  "stage": "s0",
+  "state": "COMPLETED_GATE_PASS",
+  "structural_valid": true,
+  "training_occurred": false,
+  "wall_seconds": 9.31312101893127
+}

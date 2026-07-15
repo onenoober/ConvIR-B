@@ -1,6 +1,6 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-07-14
+Date: 2026-07-15
 
 Status: evidence index plus official architecture anchor registry.
 
@@ -168,6 +168,21 @@ the tested local spatial readout, optimizer/window choice, or safety
 feasibility. This probe family is closed; only a separately preregistered R3 amendment/design is
 allowed. Direct training, policy, candidate, canary, and locked test remain
 blocked.
+
+v4a-A1C then completed the frozen interface-ceiling replay on the same fresh512
+development population. S0 alignment passed, and formal evaluated all 512
+images, both operators, and full/exact-half/antialiased-half cells with no
+training or candidate selection. The typed formal closeout is
+`V4A_A1C_EXACT_HALF_INTERFACE_ADEQUACY_PASS_R3_HANDOFF`, with state
+`COMPLETED_GATE_PASS` and authorization limited to `R3_REVIEW_ONLY`. This is a
+development-screening interface ceiling, not a deployable or confirmation
+result; implementation, A1X data access, candidate/policy work, canary, and
+locked test remain blocked until a fresh R3 review.
+
+Use `experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1c-safe-action-interface-ceiling.md`
+and
+`experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/`
+for the compact A1C terminal evidence.
 
 Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
 `experience_docx/experiment_cards/2026-07-14-haze4k-v5-v4a-a1r-representation-sufficiency.md`,
@@ -393,6 +408,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/` | compact | v4a exact reconstruction and descriptive decomposition pass; complete A0P finds no local exact/proposal/window safety correction and authorizes only metric-aligned privileged A1F bounded-action feasibility design. |
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/` | compact | v4a-A1F exact replay and action integrity pass; full privileged heldout feasibility shows safe bounded direction materially exceeds shrink under both operators and authorizes only fresh A1R representation-sufficiency design. Raw per-image/action rows remain cloud-only. |
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/` | compact | v4a-A1R fresh512 four-fold OOF representation screen: true context-spatial targets beat the size-block-shuffled control and remain broadly repairable, but material lift and oracle-retention gates fail. The current probe family is closed; raw OOF rows and learned states remain cloud-only. |
+| `experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/` | compact | v4a-A1C S0 and formal interface-ceiling replay: all 512 development-screen images and three interface cells completed without training; exact-half adequacy passed and authorizes only fresh R3 review. Raw rows remain cloud-only. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
@@ -532,10 +548,12 @@ The active conclusion is conservative:
   for the v3z heldout-safety failure. A1F proves safe bounded direction headroom
   beyond shrink. A1R then finds real direction information in the frozen
   representation but fails both material lift and oracle-retention gates, with
-  little benefit from local spatial readout. The remaining bottleneck is
-  material representation-to-action reachability, not another optimizer/window,
-  action-space, or tested local-head search. Only a new R3 amendment/design is
-  allowed; direct training and sealed-data actions remain blocked.
+  little benefit from local spatial readout. A1C then shows that the frozen
+  exact-half interface itself clears the preregistered adequacy gate, so the
+  remaining bottleneck stays material representation-to-action reachability,
+  not another optimizer/window, action-space, interface-resolution, or tested
+  local-head search. A1C authorizes only fresh R3 review; direct implementation,
+  training, confirmation, and sealed-data actions remain blocked.
 
 ## Artifact Boundary
 

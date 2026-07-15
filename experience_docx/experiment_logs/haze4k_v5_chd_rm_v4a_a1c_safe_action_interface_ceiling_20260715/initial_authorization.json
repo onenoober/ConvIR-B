@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "authorization_type": "initial_route_stage",
+  "authorizes": "A1C_S0_ONLY",
+  "canary_touched": false,
+  "confirmation_touched": false,
+  "decision": "V4A_A1C_S0_AUTHORIZED_INITIAL_ONLY",
+  "forbidden_continuations": [
+    "A1C_FORMAL",
+    "A1X",
+    "DIRECT_TRAINING",
+    "POLICY_FITTING",
+    "CANDIDATE_SELECTION",
+    "CONFIRMATION",
+    "CANARY",
+    "LOCKED_TEST"
+  ],
+  "locked_test_policy": "blocked",
+  "locked_test_touched": false,
+  "route_card_path": "experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1c-safe-action-interface-ceiling.md",
+  "route_card_sha256": "33471f1dc934ff2b0f6302f18340a983f43c43469ae02874fdf17bb1a20b3415",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715",
+  "rules_commit": "d502a990fb8766d6b0b8e57ed913d1a2200297de",
+  "state": "PLANNED"
+}

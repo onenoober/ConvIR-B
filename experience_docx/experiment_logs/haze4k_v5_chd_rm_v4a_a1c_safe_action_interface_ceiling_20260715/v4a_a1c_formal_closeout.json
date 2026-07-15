@@ -1,0 +1,34 @@
+{
+  "authorizes": "R3_REVIEW_ONLY",
+  "bootstrap_summary": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a_a1c_formal_r1/v4a_a1c_bootstrap_summary.json",
+  "canary_touched": false,
+  "candidate_selected": false,
+  "cells": [
+    "full",
+    "exact_half",
+    "antialiased_half"
+  ],
+  "confirmation_touched": false,
+  "decision": "V4A_A1C_EXACT_HALF_INTERFACE_ADEQUACY_PASS_R3_HANDOFF",
+  "evidence_role": "development_screening",
+  "gate_type": "scientific_utility",
+  "limits": {
+    "endpoint": 0.0,
+    "grid_zero": 1.1641532182693481e-10,
+    "support": 0.0,
+    "zero": 0.0
+  },
+  "locked_test_touched": false,
+  "raw_rows_cloud_only": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a_a1c_formal_r1/v4a_a1c_rows_cloud_only.csv",
+  "route_commit": "0d795021bc31b6a744bbbb1a86c45a3271a6ccb4",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715",
+  "run_id": "v4a_a1c_formal_r1",
+  "runner_sha256": "6d24874cb6e00e7aec2ee493f0e19ff3e227bed82b42aafb158a891954749019",
+  "schema_version": 2,
+  "source_manifest": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a_a1c_formal_r1/v4a_a1c_source_manifest.json",
+  "stage": "formal",
+  "state": "COMPLETED_GATE_PASS",
+  "structural_valid": true,
+  "training_occurred": false,
+  "wall_seconds": 100.52592400740832
+}
