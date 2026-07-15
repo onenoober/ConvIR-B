@@ -1,0 +1,199 @@
+{
+  "schema_version": 2,
+  "authorization_type": "R3_BOUNDED_R2_S0_OPERATIONS_REPAIR_AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "authorization_base_commit": "14ffad09015f3d1b9f0079f284016594e95ed341",
+  "reviewed_blocker": {
+    "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_s0_authorization_review.json",
+    "commit": "14ffad09015f3d1b9f0079f284016594e95ed341",
+    "sha256": "5b25395a25f056b362ba669d0ad11ab34282e8aa5b71e37f89fc87af50d5a50a",
+    "reviewed_implementation_commit": "8371d9eb4c67e63169aa837558cfa5a36818fbe8"
+  },
+  "route_identity": "BOUNDED_ENGINEERING_REPAIR_OF_EXISTING_PLANNED_ROUTE",
+  "state": "R3_R2_S0_OPERATIONS_REPAIR_AUTHORIZATION_COMPLETE",
+  "decision": "V4A_A1X_BOUNDED_R2_S0_OPERATIONS_REPAIR_AUTHORIZED",
+  "authorizes": "R2_LOCAL_S0_OPERATIONS_REPAIR_ONLY",
+  "task_class": "R2_ENGINEERING_CONTROL",
+  "required_role": "balanced",
+  "effort": "medium",
+  "authorization_scope": {
+    "purpose": "Implement only the already frozen S0 runner, schema-v2 route-operations projection, exact initial-stage guard, and current launch-ready static-validation contract named by the committed blocker.",
+    "workspace": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715",
+    "transport_contract": "local_only",
+    "route_branch_commit_and_push": true,
+    "runtime_execution": false,
+    "data_access": false,
+    "stage_authorization": false,
+    "scientific_decision": false
+  },
+  "exact_allowed_files": [
+    {
+      "path": "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "action": "MODIFY",
+      "purpose": "Replace planning-only behavior with the frozen S0 implementation and typed status, heartbeat, log, learned-state-manifest, and closeout writers; formal execution must remain rejected."
+    },
+    {
+      "path": "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "action": "CREATE",
+      "purpose": "Provide the durable schema-v2 shell runner that performs exact identity and authorization guards before delegating only to the S0 entrypoint."
+    },
+    {
+      "path": "experience_docx/route_operations.json",
+      "action": "CREATE",
+      "purpose": "Project the single future A1X_S0 operation using the exact manifest contract below; this projection is not an S0 authorization."
+    },
+    {
+      "path": "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "action": "MODIFY",
+      "purpose": "Statically validate the frozen card/head identities, exact S0 manifest and guard, required runner surfaces, and no-runtime/no-data evidence."
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_operations_repair_static_validation.json",
+      "action": "CREATE",
+      "purpose": "Record only syntax/static results, including the current github/main launch-ready card marker and hashes."
+    },
+    {
+      "path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_s0_operations_repair_closeout.json",
+      "action": "CREATE",
+      "purpose": "Close the R2 repair with exact file hashes, validation markers, forbidden-scope confirmations, and an R3-review-only next boundary."
+    }
+  ],
+  "frozen_scientific_contract": {
+    "data": "UNCHANGED",
+    "split": "UNCHANGED",
+    "metric": "UNCHANGED",
+    "gate": "UNCHANGED",
+    "model_semantics": "UNCHANGED",
+    "stage_scope": "UNCHANGED_S0_ENGINEERING_DEBUG_A1R_FIRST32_ONLY",
+    "forbidden_continuations": "UNCHANGED",
+    "locked_test_policy": "blocked"
+  },
+  "future_s0_manifest_contract": {
+    "manifest_is_authorization": false,
+    "schema_version": 2,
+    "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+    "repo_name": "ConvIR-B-v4a-a1x-exact-half-accessibility-20260715",
+    "workspace_id": "a1x20260715s0r1",
+    "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+    "operation_id": "A1X_S0",
+    "runner_relpath": "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+    "mode": "s0",
+    "require_gpu": true,
+    "stage_state": "PLANNED",
+    "decision": "V4A_A1X_S0_AUTHORIZED_INITIAL_ONLY",
+    "authorizes": "A1X_S0_ONLY",
+    "locked_test_policy": "blocked",
+    "forbidden_continuations": [
+      "DIRECT_FORMAL_WITHOUT_S0_CLOSEOUT",
+      "A1X_DATA_ACCESS",
+      "CONFIRMATION_DATA_ACCESS",
+      "DIRECT_ACTION_CALIBRATION",
+      "CANDIDATE_SELECTION",
+      "POLICY_FITTING",
+      "PROMOTION",
+      "CANARY",
+      "LOCKED_TEST"
+    ],
+    "output_id": "v4a-a1x-s0-r1",
+    "closeout_filename": "v4a_a1x_s0_closeout.json",
+    "collision_policy": "must_not_exist",
+    "authorization_relpath": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/initial_authorization.json",
+    "prior_terminal_tuple": {
+      "state": "PLANNED",
+      "decision": "V4A_A1X_S0_AUTHORIZED_INITIAL_ONLY",
+      "authorizes": "A1X_S0_ONLY"
+    },
+    "allowed_terminal_tuples": [
+      {
+        "state": "COMPLETED_GATE_PASS",
+        "decision": "V4A_A1X_S0_PASS_AUTHORIZE_FORMAL_ONLY",
+        "authorizes": "A1X_FORMAL_CONFIRMATION_ONLY"
+      },
+      {
+        "state": "COMPLETED_GATE_FAIL",
+        "decision": "V4A_A1X_S0_ENGINEERING_GATE_FAIL_STOP",
+        "authorizes": "NONE"
+      },
+      {
+        "state": "COMPLETED_GATE_INCONCLUSIVE",
+        "decision": "V4A_A1X_S0_ENGINEERING_GATE_INCONCLUSIVE_STOP",
+        "authorizes": "NONE"
+      }
+    ],
+    "workspace_policy": "fresh_route",
+    "monitor_profile": "short",
+    "heartbeat_timeout_seconds": 300,
+    "min_free_gpu_mib": 12000,
+    "max_gpu_utilization_pct": 10
+  },
+  "exact_guard_contract": {
+    "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+    "state": "PLANNED",
+    "decision": "V4A_A1X_S0_AUTHORIZED_INITIAL_ONLY",
+    "authorizes": "A1X_S0_ONLY",
+    "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+    "formal_mode_enabled": false,
+    "missing_authorization_must_fail_closed": true
+  },
+  "required_validations": [
+    "Parse every created or modified JSON file successfully.",
+    "Run python syntax compilation only for the modified Python entrypoint and route validator.",
+    "Run bash -n only for the new durable shell runner.",
+    "Run github/main@fe08ba7c0fde4d6086083490430246ea39fbf766 experience_docx/tools/validate_experiment_card.py --launch-ready against the unchanged route card and record ROUTE_CARD_CONTRACT_OK with its SHA-256.",
+    "Run the updated route-specific static validator and require A1X_ROUTE_STATIC_VALIDATOR_OK.",
+    "Statically prove that route_operations.json has exactly one A1X_S0 operation with the manifest and terminal tuples frozen here and that the referenced shell runner exists.",
+    "Statically prove that the runner checks the exact route_id/state/decision/authorizes tuple, rejects missing or mismatched authorization, and rejects formal mode.",
+    "Verify the route card, R3 design handoff, and Dehazing/ITS/models/A1XAccess.py hashes are unchanged from authorization_base_commit.",
+    "Verify the tracked diff is limited to exact_allowed_files, git diff --check passes, and no prohibited artifact type is staged.",
+    "Record exact hashes and false runtime/data/canary/locked-test flags in the R2 repair closeout."
+  ],
+  "required_r2_closeout_tuple": {
+    "state": "R2_S0_OPERATIONS_REPAIR_COMPLETE",
+    "decision": "V4A_A1X_S0_OPERATIONS_CONTRACT_REPAIRED_AWAIT_R3_REVIEW",
+    "authorizes": "R3_S0_AUTHORIZATION_REVIEW_ONLY"
+  },
+  "explicit_no_runtime_no_data_boundaries": {
+    "cloud_transport": false,
+    "convir_ops_calls": false,
+    "runner_execution": false,
+    "s0_preflight_or_run": false,
+    "s0_authorized": false,
+    "formal_authorized": false,
+    "initial_authorization_created": false,
+    "a1r_data_access": false,
+    "a1x_data_access": false,
+    "confirmation_data_access": false,
+    "training": false,
+    "evaluation": false,
+    "inference": false,
+    "candidate_selection": false,
+    "canary": false,
+    "locked_test": false
+  },
+  "forbidden_changes": [
+    "ANY_FILE_OUTSIDE_EXACT_ALLOWED_FILES",
+    "ROUTE_CARD_CHANGE",
+    "A1X_ACCESS_MODEL_OR_HEAD_CHANGE",
+    "DATA_OR_SPLIT_CHANGE",
+    "METRIC_THRESHOLD_OR_GATE_CHANGE",
+    "MODEL_OR_TRAINING_SEMANTICS_CHANGE",
+    "STAGE_SCOPE_EXPANSION",
+    "FORBIDDEN_CONTINUATION_CHANGE",
+    "INITIAL_S0_AUTHORIZATION_CREATION",
+    "FORMAL_OPERATION_ENABLEMENT",
+    "RUNTIME_OR_DATA_ACCESS",
+    "CANARY_OR_LOCKED_TEST_ACCESS"
+  ],
+  "retry_policy": "NO_AUTOMATIC_RETRY",
+  "success_conditions": [
+    "repair_commit_descends_from_authorization_base_commit",
+    "tracked_diff_matches_exact_allowed_files_only",
+    "required_validations_all_pass",
+    "repair_closeout_matches_required_r2_closeout_tuple",
+    "route_branch_repair_commit_pushed_and_verified",
+    "no_runtime_or_data_boundary_crossed"
+  ],
+  "next_boundary": "After the bounded R2 repair commit is pushed and verified, stop for a fresh R3 S0 authorization review. This authorization does not create or authorize initial S0, formal, data access, cloud transport, training, evaluation, inference, candidate selection, canary, or locked-test work."
+}
