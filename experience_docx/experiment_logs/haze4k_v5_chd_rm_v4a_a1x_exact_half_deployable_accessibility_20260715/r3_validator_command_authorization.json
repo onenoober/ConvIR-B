@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "task_class": "R3_SCIENTIFIC_AUTHORITY",
+  "decision": "AUTHORIZE_R2_VALIDATOR_COMMAND_ONLY",
+  "prior_stop_classification": "PATH_SELECTION_FALSE_NEGATIVE",
+  "supersedes_commit": "7c946c2f12bdccb39d829569f0946eb4b0bc8a66",
+  "supersedes_path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/r3_authorization.json",
+  "entrypoint_path": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+  "entrypoint_sha256": "b0da2e618ff055ab4f95435d66a2df31d3ee7aed2c74d81b68b8a7d8e86c65de",
+  "validator_path": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+  "validator_sha256": "fa42133d72d1c2dd1e01f4bdea00df9bfd976601922b82595f56211a79d278bf",
+  "authorized_command": "wsl.exe -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-a1x-route-20260715 /usr/bin/python3 experience_docx/tools/validate_haze4k_v4a_a1x_route.py --repo /home/ubuntu/workspace/ConvIR-B-a1x-route-20260715 --output-json /home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_s0_semantics_repair_static_validation.json",
+  "required_success_marker": "A1X_S0_SEMANTICS_REPAIR_STATIC_VALIDATOR_OK",
+  "authorization_scope": "Run the authorized command once. Only its exact success marker authorizes the success closeout and four-path repair commit. No compile rerun, source edit, target import or execution, tests, runtime, data or checkpoint access, SSH, cloud, convir-ops, push, or stage authorization is permitted.",
+  "reason": "Direct sha256sum at the exact handed-off paths matched both expected hashes, so the prior SOURCE_HASH_UNVERIFIED stop resulted from erroneous candidate-path selection rather than a source-integrity failure."
+}
