@@ -742,13 +742,13 @@ def preflight_body(context, include_gpu, create_clone=False, *, gpu_attempts=1, 
                 '  GPU_INDEX=""',
                 '  test "$attempt" = "$GPU_ATTEMPTS" || sleep 2',
                 'done',
-                'if test -z "$GPU_INDEX"; then echo "CONVIR_OPS_RESOURCE_UNAVAILABLE phase=resource_preflight min_free_mib=$MIN_FREE_GPU_MIB max_util_pct=$MAX_GPU_UTIL attempts=$GPU_ATTEMPTS"; exit 75; fi',
+                'if test -z "$GPU_INDEX"; then echo "CONVIR_OPS_RESOURCE_UNAVAILABLE phase=resource_preflight min_free_mib=$MIN_FREE_GPU_MIB max_util_pct=$MAX_GPU_UTIL attempts=$GPU_ATTEMPTS"; false; fi',
             ])
         else:
             lines.extend([
                 f"GPU_INDEX={int(context['gpu_index'])}",
                 'GPU_OK=$(nvidia-smi -i "$GPU_INDEX" --query-gpu=memory.free,utilization.gpu --format=csv,noheader,nounits 2>/dev/null | awk -F, -v min="$MIN_FREE_GPU_MIB" -v max="$MAX_GPU_UTIL" \'{gsub(/ /,"",$1); gsub(/ /,"",$2); if ($1 >= min && $2 <= max) print "yes"}\' || true)',
-                'if test "$GPU_OK" != yes; then echo "CONVIR_OPS_RESOURCE_UNAVAILABLE phase=resource_preflight gpu_index=$GPU_INDEX min_free_mib=$MIN_FREE_GPU_MIB max_util_pct=$MAX_GPU_UTIL"; exit 75; fi',
+                'if test "$GPU_OK" != yes; then echo "CONVIR_OPS_RESOURCE_UNAVAILABLE phase=resource_preflight gpu_index=$GPU_INDEX min_free_mib=$MIN_FREE_GPU_MIB max_util_pct=$MAX_GPU_UTIL"; false; fi',
             ])
         lines.append('echo "CONVIR_OPS_GPU_OK index=$GPU_INDEX min_free_mib=$MIN_FREE_GPU_MIB max_util_pct=$MAX_GPU_UTIL"')
     if create_clone and context.get("workspace_policy") == "fresh_route" and not keep_fresh_trap:
@@ -773,7 +773,7 @@ def gpu_probe_body(context, attempts=START_RESOURCE_ATTEMPTS):
         '  GPU_INDEX=""',
         '  test "$attempt" = "$GPU_ATTEMPTS" || sleep 2',
         'done',
-        'if test -z "$GPU_INDEX"; then echo "CONVIR_OPS_RESOURCE_UNAVAILABLE phase=resource_preflight min_free_mib=$MIN_FREE_GPU_MIB max_util_pct=$MAX_GPU_UTIL attempts=$GPU_ATTEMPTS"; exit 75; fi',
+        'if test -z "$GPU_INDEX"; then echo "CONVIR_OPS_RESOURCE_UNAVAILABLE phase=resource_preflight min_free_mib=$MIN_FREE_GPU_MIB max_util_pct=$MAX_GPU_UTIL attempts=$GPU_ATTEMPTS"; false; fi',
         'echo "CONVIR_OPS_GPU_OK index=$GPU_INDEX min_free_mib=$MIN_FREE_GPU_MIB max_util_pct=$MAX_GPU_UTIL"',
         'echo CONVIR_OPS_RESOURCE_OK',
     ])
