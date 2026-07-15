@@ -2,7 +2,7 @@
 
 Date: 2026-07-14
 
-Status: canonical schema-v2 operations contract; active server version `2.0.0`.
+Status: canonical schema-v2 operations contract; active server version `2.1.0`.
 
 ## Purpose
 
@@ -103,6 +103,9 @@ files whose names pass the compact allowlist and whose SHA-256 is complete.
 Empty directories produce an empty typed manifest; missing directories,
 malformed records, duplicate records, oversized files, and cloud-only names
 are typed `command_infra` failures with `failure_phase=evidence_manifest`.
+Evidence manifest/fetch requests require `route_id`, `repo_name`, and
+`workspace_id`; the server derives the same hashed fresh-workspace path sealed
+by route start instead of treating `repo_name` as a literal cloud directory.
 
 ## Persistent Operations Worktree
 
@@ -126,4 +129,7 @@ startup_timeout_sec = 20
 ```
 
 Keep credentials only in WSL SSH configuration or its agent. Restart Codex
-after changing the MCP path. There must be no second active v1 registration.
+after changing the MCP path or fast-forwarding MCP server code. Initialization
+returns the active source SHA-256, and dispatcher readiness requires it to match
+the tracked file before paying for a child turn. There must be no second active
+v1 registration or stale v2 process.

@@ -23,7 +23,8 @@ from pathlib import Path
 
 
 SERVER_NAME = "convir-ops-v2"
-SERVER_VERSION = "2.0.0"
+SERVER_VERSION = "2.1.0"
+SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 REMOTE_HOST = "convir-4090"
 REMOTE_BASE = "/sda/home/wangyuxin/ConvIR-B"
 REMOTE_REPOS = f"{REMOTE_BASE}/repos"
@@ -237,14 +238,29 @@ def failure_class_for_error(error):
     return "authorization"
 
 
+def derive_remote_repo(repo_name, route_id, workspace_id):
+    workspace_digest = hashlib.sha256(
+        f"{repo_name}\0{route_id}\0{workspace_id}".encode("utf-8")
+    ).hexdigest()[:16]
+    workspace_prefix = f"{repo_name[:20]}-{route_id[:24]}-{workspace_id[:20]}"[:64]
+    return f"{REMOTE_REPOS}/{workspace_prefix}-{workspace_digest}"
+
+
 def route_context(arguments):
     route_id = require_token(arguments.get("route_id"), "route_id")
     repo_name = require_token(arguments.get("repo_name"), "repo_name")
+    workspace_id = arguments.get("workspace_id")
+    remote_repo = None
+    if workspace_id is not None:
+        workspace_id = require_token(workspace_id, "workspace_id")
+        remote_repo = derive_remote_repo(repo_name, route_id, workspace_id)
+    evidence_root = remote_repo or f"{REMOTE_REPOS}/{repo_name}"
     return {
         "route_id": route_id,
         "repo_name": repo_name,
+        "workspace_id": workspace_id,
         "run_root": f"{REMOTE_RUNS}/{route_id}",
-        "evidence_dir": f"{REMOTE_REPOS}/{repo_name}/experience_docx/experiment_logs/{route_id}",
+        "evidence_dir": f"{evidence_root}/experience_docx/experiment_logs/{route_id}",
     }
 
 
@@ -281,11 +297,9 @@ def authorization_context(arguments):
     context["session"] = derive_session(context["route_id"], context["mode"], context["expected_commit"], context["output_id"])
     context["workspace_id"] = require_token(arguments.get("workspace_id"), "workspace_id")
     context["workspace_policy"] = require_enum(arguments.get("workspace_policy"), "workspace_policy", {"fresh_route", "exact_continuation"})
-    workspace_digest = hashlib.sha256(
-        f"{context['repo_name']}\0{context['route_id']}\0{context['workspace_id']}".encode("utf-8")
-    ).hexdigest()[:16]
-    workspace_prefix = f"{context['repo_name'][:20]}-{context['route_id'][:24]}-{context['workspace_id'][:20]}"[:64]
-    context["remote_repo"] = f"{REMOTE_REPOS}/{workspace_prefix}-{workspace_digest}"
+    context["remote_repo"] = derive_remote_repo(
+        context["repo_name"], context["route_id"], context["workspace_id"],
+    )
     if arguments.get("collision_policy") != "must_not_exist":
         raise ToolError("collision_policy must be must_not_exist")
     context["output_path"] = f"{context['run_root']}/{context['output_id']}"
@@ -909,6 +923,7 @@ def monitor_body(payload, max_polls, interval, include_closeout=False):
         'PY',
         '  then terminal=true; final_status="$status"; final_active="$active"; final_heartbeat_age="$heartbeat_age"; break; fi',
         '  final_status="$status"; final_active="$active"; final_heartbeat_age="$heartbeat_age"',
+        '  test "$active" = true || break',
         '  test "$active" != true || test "$heartbeat_age" -lt 0 || test "$heartbeat_age" -lt "$HEARTBEAT_TIMEOUT" || { stale=true; break; }',
         '  test "$n" = "$MAX_POLLS" || sleep "$INTERVAL"', 'done',
         'printf "CONVIR_OPS_MONITOR_META polls=%s active=%s terminal=%s stale=%s heartbeat_age=%s\\n" "$n" "$final_active" "${terminal:-false}" "$stale" "$final_heartbeat_age"',
@@ -1406,8 +1421,12 @@ TOOLS = {
         "description": "Read-only inventory of top-level compact evidence eligible for review. It excludes cloud_only files and files larger than 1 MiB.",
         "inputSchema": {
             "type": "object",
-            "required": ["route_id", "repo_name"],
-            "properties": {"route_id": {"type": "string"}, "repo_name": {"type": "string"}},
+            "required": ["route_id", "repo_name", "workspace_id"],
+            "properties": {
+                "route_id": {"type": "string"},
+                "repo_name": {"type": "string"},
+                "workspace_id": {"type": "string"},
+            },
             "additionalProperties": False,
         },
         "handler": tool_evidence_manifest,
@@ -1416,8 +1435,14 @@ TOOLS = {
         "description": "Fetch an explicit allowlist of compact evidence into a local Git worktree after remote and local SHA-256 verification. It never stages, commits, or pushes Git.",
         "inputSchema": {
             "type": "object",
-            "required": ["route_id", "repo_name", "local_repo", "files"],
-            "properties": {"route_id": {"type": "string"}, "repo_name": {"type": "string"}, "local_repo": {"type": "string"}, "files": {"type": "array", "items": {"type": "string"}, "minItems": 1, "maxItems": 32}},
+            "required": ["route_id", "repo_name", "workspace_id", "local_repo", "files"],
+            "properties": {
+                "route_id": {"type": "string"},
+                "repo_name": {"type": "string"},
+                "workspace_id": {"type": "string"},
+                "local_repo": {"type": "string"},
+                "files": {"type": "array", "items": {"type": "string"}, "minItems": 1, "maxItems": 32},
+            },
             "additionalProperties": False,
         },
         "handler": tool_evidence_fetch,
@@ -1441,7 +1466,15 @@ def handle(request):
     params = request.get("params") or {}
     if method == "initialize":
         version = params.get("protocolVersion", "2024-11-05")
-        return {"protocolVersion": version, "capabilities": {"tools": {}}, "serverInfo": {"name": SERVER_NAME, "version": SERVER_VERSION}}
+        return {
+            "protocolVersion": version,
+            "capabilities": {"tools": {}},
+            "serverInfo": {
+                "name": SERVER_NAME,
+                "version": SERVER_VERSION,
+                "sourceSha256": SERVER_SOURCE_SHA256,
+            },
+        }
     if method == "tools/list":
         return {"tools": [{key: value[key] for key in ("description", "inputSchema")} | {"name": name} for name, value in TOOLS.items()]}
     if method == "tools/call":
