@@ -7,15 +7,18 @@ Status: evidence index plus official architecture anchor registry.
 ## Operations Infrastructure Validation
 
 The generic metadata-only run-monitoring route is still under engineering
-validation and is not yet a project default. Its first cloud candidate run,
-`candidate-7b1ee1580-r1`, stopped safely before control-plane and cost tests
-because a literal substring audit mistook explanatory text containing
-`signal.` for a process-control call. The typed closeout is
-`FAILED_ENGINEERING`; it records zero model calls and no GPU, dataset,
-checkpoint, canary, or locked-test access. This is a validation-harness false
-positive, not evidence that telemetry controlled a workload. One semantic
-source-audit repair on a new candidate identity is authorized; adoption and
-model-experiment use remain blocked until the full cloud gate passes.
+validation and is not yet a project default. Two cloud candidates stopped
+safely before control-plane and cost tests. `candidate-7b1ee1580-r1` exposed a
+raw-text audit false positive on explanatory `signal.` prose.
+`candidate-4bbd03154-r2` then exposed one separate syntax-tree matcher defect:
+the matcher did not inspect a method call whose receiver was a compound
+`Path("/proc") / ...` expression. Both typed closeouts are
+`FAILED_ENGINEERING` and record zero model calls and no GPU, dataset,
+checkpoint, canary, or locked-test access. These are validation-harness
+failures, not evidence that telemetry controlled a workload. One deterministic
+compound-receiver matcher correction on a new candidate identity is authorized;
+adoption and model-experiment use remain blocked until the full cloud gate
+passes.
 
 Use `experience_docx/experiment_cards/2026-07-16-generic-run-monitoring-validation.md`,
 `experience_docx/family_summaries/operations_infrastructure_summary.md`, and

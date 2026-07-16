@@ -1,0 +1,12 @@
+{
+  "candidate_commit": "4bbd031546f031dcc350d7a039bdb28ecf6856e2",
+  "closeout_sha256": "08821e038c4469392c6f8206691913e20021f2af9aec4df4153e643f5f91a3fd",
+  "failure_class": "validation_harness_ast_matcher",
+  "failed_test": "test_semantic_source_audit_rejects_control_and_non_proc_reads",
+  "failed_test_count": 1,
+  "passed_test_count_before_stop": 5,
+  "raw_logs_location": "/sda/home/wangyuxin/ConvIR-B/runs/generic_run_monitoring_validation_20260716/candidate-4bbd03154-r2",
+  "root_cause": "dotted_name returned null for read_text on a compound Path receiver",
+  "schema_version": 1,
+  "transport_marker": "CONVIRCTL_REMOTE_SCRIPT_OK"
+}

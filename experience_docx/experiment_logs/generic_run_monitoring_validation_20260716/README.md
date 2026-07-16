@@ -26,3 +26,12 @@ here. Raw `launch.log` and `runtime.log` remain cloud-only.
 
 The failure did not authorize adoption. One deterministic semantic-audit repair
 may be validated under a fresh candidate commit/output identity.
+
+`candidate-4bbd03154-r2` then tested the semantic audit and also closed
+`FAILED_ENGINEERING`. Its method-name extractor did not reach
+`read_text` when the receiver was the compound
+`Path("/proc") / str(pid) / "stat"` expression, so it incorrectly reported
+that the required read was absent. Five of six telemetry tests passed, and its
+closeout again records no model or protected-resource use. One deterministic
+compound-receiver matcher correction may be tested under a new identity; all
+other scope remains frozen.

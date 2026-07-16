@@ -97,3 +97,11 @@ Fill only after terminal evidence.
 - This authorizes exactly one semantic source-audit correction and a fresh
   candidate identity. It does not authorize adoption, `main` integration, MCP
   reload, or any model operation.
+- `candidate-4bbd03154-r2` also ended `FAILED_ENGINEERING` before control-plane
+  and cost phases. The new syntax-tree audit skipped the legitimate
+  `/proc/PID/stat` read because the method receiver was a compound path
+  expression; five telemetry tests again passed.
+- Its typed closeout again records model calls `0` and every protected-resource
+  flag `false`. This authorizes only one compound-receiver matcher correction
+  and a fresh candidate identity; all adoption and model operations remain
+  blocked.

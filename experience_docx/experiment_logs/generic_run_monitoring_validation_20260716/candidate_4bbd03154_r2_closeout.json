@@ -1,0 +1,18 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "checkpoint_touched": false,
+  "dataset_touched": false,
+  "decision": null,
+  "gpu_used": false,
+  "locked_test_touched": false,
+  "model_calls": 0,
+  "route_commit": "4bbd031546f031dcc350d7a039bdb28ecf6856e2",
+  "route_id": "generic_run_monitoring_validation_20260716",
+  "run_id": "candidate-4bbd03154-r2",
+  "runner_sha256": "21df0834d7de2f4102714decc5a5f4ce092274b633cdfdfd383011a83499ae06",
+  "schema_version": 1,
+  "state": "FAILED_ENGINEERING",
+  "timestamp_unix": 1784204110.4284568,
+  "validation_pass": false
+}
