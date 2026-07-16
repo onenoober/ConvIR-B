@@ -94,4 +94,6 @@ Before adoption, cloud synthetic validation must pass telemetry atomicity,
 identity binding, fail-open unwritable-path behavior, parent non-interference,
 heartbeat/status/launch fallback, stale-then-closeout recovery,
 dead-without-closeout finite stop, receipt-bound closeout, and the fixed CPU/file
-cost gate. No model, dataset, checkpoint, GPU, or scientific result is used.
+cost gate. A syntax-tree safety audit must reject actual process/GPU control and
+non-`/proc` reads while ignoring explanatory prose. No model, dataset,
+checkpoint, GPU, or scientific result is used.

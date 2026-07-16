@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 def load(path):
-    spec = importlib.util.spec_from_file_location("run_telemetry_validation", path)
+    spec = importlib.util.spec_from_file_location(f"validation_{Path(path).stem}", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -24,7 +24,8 @@ def main():
     args = parser.parse_args()
     telemetry_path = Path(args.telemetry).resolve()
     telemetry = load(telemetry_path)
-    source = telemetry_path.read_text(encoding="utf-8")
+    audit = load(telemetry_path.with_name("audit_run_telemetry.py"))
+    forbidden = audit.audit_path(telemetry_path)
     with tempfile.TemporaryDirectory() as root:
         heartbeat = Path(root) / "heartbeat.json"
         started_wall = time.monotonic()
@@ -41,7 +42,6 @@ def main():
         cpu = time.process_time() - started_cpu
         value = json.loads(heartbeat.read_text(encoding="utf-8"))
         files = sorted(path.name for path in Path(root).iterdir())
-    forbidden = [token for token in ("os.kill", "signal.", "terminate(", "nvidia-smi", "CUDA") if token in source]
     summary = {
         "schema_version": 1,
         "validation": "generic_run_monitoring",
@@ -54,7 +54,8 @@ def main():
         "heartbeat_bytes": len(json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n"),
         "final_sequence": value["sequence"],
         "files_created": files,
-        "forbidden_control_tokens": forbidden,
+        "source_audit": "python_ast_v1",
+        "forbidden_control_constructs": forbidden,
         "reads_scientific_outputs": False,
         "sends_process_signals": False,
         "queries_gpu": False,

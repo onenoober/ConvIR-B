@@ -14,6 +14,10 @@ MODULE_PATH = Path(__file__).parents[1] / "run_telemetry.py"
 SPEC = importlib.util.spec_from_file_location("run_telemetry", MODULE_PATH)
 TELEMETRY = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(TELEMETRY)
+AUDIT_PATH = Path(__file__).parents[1] / "audit_run_telemetry.py"
+AUDIT_SPEC = importlib.util.spec_from_file_location("audit_run_telemetry", AUDIT_PATH)
+AUDIT = importlib.util.module_from_spec(AUDIT_SPEC)
+AUDIT_SPEC.loader.exec_module(AUDIT)
 
 
 class RunTelemetryTests(unittest.TestCase):
@@ -90,10 +94,27 @@ class RunTelemetryTests(unittest.TestCase):
             ]))
             self.assertEqual("KEEP", target.read_text(encoding="utf-8"))
 
-    def test_source_contains_no_process_or_gpu_control(self):
-        source = MODULE_PATH.read_text(encoding="utf-8")
-        for forbidden in ("os.kill", "signal.", "terminate(", "nvidia-smi", "CUDA"):
-            self.assertNotIn(forbidden, source)
+    def test_semantic_source_audit_rejects_control_and_non_proc_reads(self):
+        self.assertEqual([], AUDIT.audit_path(MODULE_PATH))
+        safe_prose = '''
+"""Without sending any signal. No nvidia-smi or CUDA control is used."""
+from pathlib import Path
+def process_start_ticks(pid):
+    return (Path("/proc") / str(pid) / "stat").read_text(encoding="utf-8")
+'''
+        self.assertEqual([], AUDIT.audit_source(safe_prose))
+        unsafe_cases = {
+            "signal_import": "import signal\ndef process_start_ticks(pid): return '/proc'\n",
+            "kill_call": "import os\ndef process_start_ticks(pid): return '/proc'\nos.kill(1, 9)\n",
+            "gpu_command": "import os\ndef process_start_ticks(pid): return '/proc'\nos.system('nvidia-smi')\n",
+            "data_read": "from pathlib import Path\ndef process_start_ticks(pid): return '/proc'\nPath('/data/result').read_text()\n",
+            "read_hidden_in_proc_function": "from pathlib import Path\ndef process_start_ticks(pid):\n    marker='/proc'\n    return Path('/data/result').read_text(encoding='utf-8')\n",
+            "aliased_control": "import os as x\ndef process_start_ticks(pid): return '/proc'\nx.system('true')\n",
+            "dynamic_control": "import os\ndef process_start_ticks(pid): return '/proc'\ngetattr(os, 'kill')(1, 9)\n",
+        }
+        for name, source in unsafe_cases.items():
+            with self.subTest(name=name):
+                self.assertTrue(AUDIT.audit_source(source))
 
 
 if __name__ == "__main__":
