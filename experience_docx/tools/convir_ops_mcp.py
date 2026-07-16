@@ -18,7 +18,7 @@ from pathlib import Path
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "4.0.0"
+SERVER_VERSION = "4.1.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 REMOTE_HOST = "convir-4090"
@@ -756,7 +756,10 @@ def issue_receipt(context, gpu_index, launch_output):
     }
     return write_new_record(
         "receipt", payload,
-        {"launched": True, "finish_calls": 0, "finish_closed": None},
+        {
+            "launched": True, "finish_calls": 0, "finish_closed": None,
+            "monitor_stale_count": 0,
+        },
     )
 
 
@@ -856,7 +859,10 @@ def begin_finish(token):
             record["finish_closed"] = "OBSERVATION_BUDGET_EXHAUSTED"
             raise ToolError("finish observation budget is exhausted")
         record["finish_calls"] = calls + 1
-        return record["payload"]["context"]
+        context = dict(record["payload"]["context"])
+        context["_receipt_issued_at"] = int(record["payload"]["issued_at"])
+        context["_monitor_stale_count"] = int(record.get("monitor_stale_count", 0))
+        return context
 
 
 def close_finish(token, state):
@@ -864,25 +870,40 @@ def close_finish(token, state):
         record["finish_closed"] = require_token(state, "finish_closed")
 
 
+def record_stale_observation(token):
+    """Record a bounded warning without closing later closeout validation."""
+    with locked_record("receipt", token) as record:
+        count = record.get("monitor_stale_count", 0)
+        if not isinstance(count, int) or count < 0:
+            raise ToolError("receipt stale counter is invalid", failure_class="command_infra")
+        record["monitor_stale_count"] = count + 1
+        return count + 1
+
+
 def monitor_body(context, profile):
     status = f"{context['output_path']}/status.txt"
+    heartbeat = f"{context['output_path']}/heartbeat.json"
     return "\n".join([
         f"SESSION={q(context['session'])}",
         f"STATUS={q(status)}",
+        f"HEARTBEAT={q(heartbeat)}",
         f"CLOSEOUT={q(context['closeout_path'])}",
         f"MAX_POLLS={profile['max_polls']}",
         f"INTERVAL={profile['interval_seconds']}",
         f"STALE={int(context['heartbeat_timeout_seconds'])}",
-        'active=false; terminal=false; stale=false; heartbeat_age=-1; n=0',
+        f"LAUNCHED_AT={int(context.get('_receipt_issued_at', int(time.time())))}",
+        'active=false; terminal=false; stale=false; heartbeat_age=-1; heartbeat_source=launch; n=0',
         'for n in $(seq 1 "$MAX_POLLS"); do',
         '  active=false; tmux has-session -t "$SESSION" 2>/dev/null && active=true',
         '  test ! -f "$CLOSEOUT" || { terminal=true; break; }',
-        '  if test -f "$STATUS"; then heartbeat_age=$(( $(date +%s) - $(stat -c %Y "$STATUS") )); fi',
+        '  if test -f "$HEARTBEAT"; then heartbeat_source=heartbeat; heartbeat_age=$(( $(date +%s) - $(stat -c %Y "$HEARTBEAT") ));',
+        '  elif test -f "$STATUS"; then heartbeat_source=status; heartbeat_age=$(( $(date +%s) - $(stat -c %Y "$STATUS") ));',
+        '  else heartbeat_source=launch; heartbeat_age=$(( $(date +%s) - LAUNCHED_AT )); fi',
         '  if test "$active" = true && test "$heartbeat_age" -ge "$STALE"; then stale=true; break; fi',
         '  test "$active" = true || break',
         '  test "$n" = "$MAX_POLLS" || sleep "$INTERVAL"',
         'done',
-        'echo "CONVIR_OPS_MONITOR polls=$n active=$active terminal=$terminal stale=$stale heartbeat_age=$heartbeat_age"',
+        'echo "CONVIR_OPS_MONITOR polls=$n active=$active terminal=$terminal stale=$stale heartbeat_age=$heartbeat_age heartbeat_source=$heartbeat_source"',
         'echo CONVIR_OPS_STATUS_BEGIN',
         'test ! -f "$STATUS" || tail -n 20 "$STATUS"',
         'echo CONVIR_OPS_STATUS_END',
@@ -903,7 +924,7 @@ def monitor_body(context, profile):
 
 def parse_monitor(output):
     meta = re.search(
-        r"(?m)^CONVIR_OPS_MONITOR polls=(\d+) active=(true|false) terminal=(true|false) stale=(true|false) heartbeat_age=(-?\d+)$",
+        r"(?m)^CONVIR_OPS_MONITOR polls=(\d+) active=(true|false) terminal=(true|false) stale=(true|false) heartbeat_age=(-?\d+)(?: heartbeat_source=(heartbeat|status|launch))?$",
         output,
     )
     begin = output.find("CONVIR_OPS_STATUS_BEGIN")
@@ -914,6 +935,7 @@ def parse_monitor(output):
         "poll_count": int(meta.group(1)), "active": meta.group(2) == "true",
         "terminal": meta.group(3) == "true", "stale": meta.group(4) == "true",
         "heartbeat_age_seconds": int(meta.group(5)),
+        "heartbeat_source": meta.group(6) or "legacy_status",
         "status": output[begin + len("CONVIR_OPS_STATUS_BEGIN"):end].strip()[:4096],
     }
 
@@ -954,10 +976,12 @@ def tool_finish(args):
         )
         monitor = parse_monitor(output)
         if monitor["stale"]:
-            close_finish(token, "MONITOR_STALE")
+            stale_count = record_stale_observation(token)
             return typed_failure(
                 "MONITOR_STALE", "command_infra", "heartbeat exceeded the sealed limit",
-                observed=monitor, next_actions=["engineering_review_once"], failure_phase="monitor",
+                observed={**monitor, "receipt_stale_observations": stale_count},
+                next_actions=["wait_until_expected_end_then_convir_route_finish", "engineering_review_once"],
+                failure_phase="monitor", receipt_remains_open=True,
             )
         closeout = parse_closeout(context, output)
         if closeout:

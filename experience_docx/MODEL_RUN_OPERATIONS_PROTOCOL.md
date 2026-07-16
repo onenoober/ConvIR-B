@@ -22,6 +22,10 @@ run integrated identity/input/no-op/shape/finite checks before expensive work;
 write progress and heartbeat to `status.txt`; capture stdout/stderr; reject
 forbidden data/locked-test access; and write one closeout bound to route id, run
 id, route commit, runner SHA-256, evidence role, and allowed terminal tuple.
+For long operations, follow `GENERIC_RUN_MONITORING_PROTOCOL.md`: a fail-open
+metadata-only sidecar may atomically replace `heartbeat.json`, while the runner
+appends milestone-only `status.txt`. Telemetry never reads scientific outputs
+or controls the workload; the runner remains the sole closeout owner.
 
 Resume only at predeclared complete units with matching hashes. An incomplete
 unit restarts. Resume cannot reveal confirmation results early or change the
@@ -30,9 +34,11 @@ scientific contract.
 ## Observe And Stop
 
 `convir_route_finish` observes one window: `short` is 30 seconds and `standard`
-is 60 seconds. A healthy active run may be observed again. Stale heartbeat or a
-dead session without closeout gets one engineering inspection and then stops;
-never create a watcher loop or task per poll.
+is 60 seconds. A healthy active run may be observed again near its frozen ETA.
+A stale active heartbeat is an infrastructure warning and leaves the receipt
+open for later terminal closeout validation; it never stops or restarts the
+workload. A dead session without closeout gets one engineering inspection and
+then stops. Never create a watcher loop or task per poll.
 
 Failure classes stay distinct: command/transport, preflight/resource,
 engineering/runtime, evidence/closeout, and scientific/safety gate. Use one

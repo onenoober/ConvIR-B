@@ -258,6 +258,55 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertEqual("CLOSEOUT_MISSING", first["operation_state"])
         self.assertEqual("FINISH_REJECTED", second["operation_state"])
 
+    def test_stale_heartbeat_does_not_block_later_closeout_validation(self):
+        ctx = context()
+        receipt_payload = {
+            "context": ctx, "gpu_index": None,
+            "launch_digest": "f" * 64, "issued_at": int(time.time()) - 300,
+        }
+        receipt = OPS.write_new_record(
+            "receipt", receipt_payload,
+            {
+                "launched": True, "finish_calls": 0, "finish_closed": None,
+                "monitor_stale_count": 0,
+            },
+        )
+        stale = (
+            "CONVIR_OPS_MONITOR polls=1 active=true terminal=false stale=true "
+            "heartbeat_age=300 heartbeat_source=heartbeat\n"
+            "CONVIR_OPS_STATUS_BEGIN\nwork\nCONVIR_OPS_STATUS_END\n"
+        )
+        raw = json.dumps({
+            "route_id": "a1x", "run_id": "a1x-s0-r1",
+            "route_commit": "a" * 40, "runner_sha256": "e" * 64,
+            **terminal(),
+        }, separators=(",", ":")).encode()
+        complete = (
+            "CONVIR_OPS_MONITOR polls=1 active=false terminal=true stale=false "
+            "heartbeat_age=301 heartbeat_source=heartbeat\n"
+            "CONVIR_OPS_STATUS_BEGIN\ndone\nCONVIR_OPS_STATUS_END\n"
+            + "CONVIR_OPS_CLOSEOUT_SHA256=" + __import__("hashlib").sha256(raw).hexdigest()
+            + "\nCONVIR_OPS_CLOSEOUT_BEGIN\n" + raw.decode() + "\nCONVIR_OPS_CLOSEOUT_END\n"
+        )
+        with patch.object(OPS, "run_remote", side_effect=[stale, complete]):
+            first = payload(OPS.tool_finish({"receipt": receipt}))
+            second = payload(OPS.tool_finish({"receipt": receipt}))
+        self.assertEqual("MONITOR_STALE", first["operation_state"])
+        self.assertTrue(first["receipt_remains_open"])
+        self.assertEqual("CLOSEOUT_VALIDATED", second["operation_state"])
+
+    def test_monitor_prefers_heartbeat_then_status_then_launch_age(self):
+        body = OPS.monitor_body({**context(), "_receipt_issued_at": 123}, {"max_polls": 1, "interval_seconds": 0})
+        self.assertIn('test -f "$HEARTBEAT"', body)
+        self.assertIn('elif test -f "$STATUS"', body)
+        self.assertIn("LAUNCHED_AT=123", body)
+        parsed = OPS.parse_monitor(
+            "CONVIR_OPS_MONITOR polls=1 active=true terminal=false stale=false "
+            "heartbeat_age=4 heartbeat_source=heartbeat\n"
+            "CONVIR_OPS_STATUS_BEGIN\nok\nCONVIR_OPS_STATUS_END\n"
+        )
+        self.assertEqual("heartbeat", parsed["heartbeat_source"])
+
     def test_closeout_requires_receipt_identity_and_allowed_tuple(self):
         ctx = context()
         raw = json.dumps({
