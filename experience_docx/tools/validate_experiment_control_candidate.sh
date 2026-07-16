@@ -52,7 +52,7 @@ if [[ $observed_pwsh_sha256 != "$pwsh_sha256" ]]; then
   exit 1
 fi
 
-git clone --quiet --no-checkout "$repo_url" "$checkout"
+git clone --quiet --no-checkout --origin github "$repo_url" "$checkout"
 git -C "$checkout" checkout --quiet --detach "$candidate"
 observed_candidate=$(git -C "$checkout" rev-parse HEAD)
 if [[ $observed_candidate != "$candidate" ]]; then
