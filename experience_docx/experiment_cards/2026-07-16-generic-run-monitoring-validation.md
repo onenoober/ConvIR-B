@@ -86,3 +86,14 @@ Fill only after terminal evidence.
 - Mechanism/control and safety reason:
 - Evidence-independence and cost reason:
 - Authorized next action or terminal stop:
+
+## Candidate Validation History
+
+- `candidate-7b1ee1580-r1` ended `FAILED_ENGINEERING` before the control-plane
+  and cost phases. Five telemetry behavior tests passed; the sixth raw-text
+  source audit falsely matched `signal.` in explanatory prose.
+- The typed closeout records model calls `0` and GPU, dataset, checkpoint,
+  canary, and locked-test access all `false`. No model experiment ran.
+- This authorizes exactly one semantic source-audit correction and a fresh
+  candidate identity. It does not authorize adoption, `main` integration, MCP
+  reload, or any model operation.
