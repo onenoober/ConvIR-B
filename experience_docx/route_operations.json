@@ -55,7 +55,7 @@
       ],
       "workspace_policy": "fresh_route",
       "output_policy": "new",
-      "monitor_profile": "long",
+      "monitor_profile": "standard",
       "heartbeat_timeout_seconds": 300,
       "min_free_gpu_mib": 12000,
       "max_gpu_utilization_pct": 10
