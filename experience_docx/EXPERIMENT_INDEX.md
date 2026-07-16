@@ -229,6 +229,14 @@ for their own historical decisions.
 
 ## Official Architecture Anchor
 
+v4a-A1X-v3 D0 completed the preregistered fresh512, four-fold, five-cell
+development screen. The proposed A1X-global cell beat shuffle (LCB95 `+0.007963
+dB`) and its local control (LCB95 `+0.000890 dB`), with structural/safety guards
+passing, but failed material gain (`+0.013200 dB` versus `+0.020`) and retention
+(`0.080069` versus `0.25`). The typed decision is
+`A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP`; the 432-name confirmation stage was
+not touched and is not authorized.
+
 The immutable clean ConvIR-B architecture anchor is:
 
 - branch: `github/codex/haze4k-official-arch-anchor`

@@ -1,0 +1,28 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "candidate_selected": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP",
+  "evidence_role": "development_screening",
+  "formal_authorized": false,
+  "gate_type": "scientific_utility",
+  "locked_test_touched": false,
+  "route_commit": "d4aad68d224112d8f5fae0fe36065b9d60cc6ad8",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716",
+  "run_id": "a1x-v3-d0-closeout-r3",
+  "runner_sha256": "8c83a18c81cfaa35833912ebb64f9e2ef7c5fa332cd9376ed6e9ec48a995aa85",
+  "schema_version": 1,
+  "source_evidence_sha256": {
+    "v4a_a1r_bootstrap_summary.json": "6195c65c20230725ac006a599b1a6527211df1c0b0dd0274e2e7124aaaff64fe",
+    "v4a_a1r_cell_operator_summary.csv": "b8590131f3e8866dee3ee3640917754683f2a4a46a3253293d953e4dc11ceb1c",
+    "v4a_a1r_closeout.json": "d762eeba9303459d33b318041770cb594cb9be4f69638faed8b26af550d6e10a",
+    "v4a_a1r_fold_history.csv": "2d8dc2557574f888e96fe1c0d6aa2616d20f58d50369ebfe59eaba9caa29e7c1",
+    "v4a_a1r_probe_state_manifest.json": "ce463271846fdae9a2cb2c6d6931a2bccc3fe9d801cad684c27d9c0f084b3bce"
+  },
+  "source_run_id": "a1x-v3-d0-r1",
+  "stage": "d0",
+  "state": "COMPLETED_GATE_FAIL",
+  "structural_valid": true,
+  "summary_sha256": "d338a87fd18d72bb995128988085205e09448843b910acaf6fb36e27ae95342f"
+}

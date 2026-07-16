@@ -1,6 +1,6 @@
 # A1X-v3 evidence
 
-Status: S0 r4 `COMPLETED_GATE_PASS`; only A1X_V3_D0_DESIGN_ONLY is authorized.
+Status: D0 `COMPLETED_GATE_FAIL`; the current global-head contract is stopped.
 
 The initial route bundle contains only A1X_V3_S0, an engineering_debug integrity gate on the independently sealed A1R debug32 names. It cannot run D0 or formal and must record confirmation_images_targets_outcomes_touched=false.
 
@@ -37,3 +37,18 @@ range guards passed. Confirmation, canary, and locked test remained untouched.
 
 Typed tuple: `COMPLETED_GATE_PASS /
 A1X_V3_S0_PASS_AUTHORIZE_D0_DESIGN_ONLY / A1X_V3_D0_DESIGN_ONLY`.
+
+## D0 terminal result
+
+D0 completed all `512` development images, `5,120` paired OOF rows, five cells,
+four folds, and `20` fold/cell states. A post-run output-path bug was repaired
+without retraining by verifying five fixed source-artifact SHA-256 hashes. The
+formal typed tuple is `COMPLETED_GATE_FAIL /
+A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP / NONE`.
+
+The proposed A1X-global cell passed true-minus-shuffle LCB95 (`+0.007963 dB`)
+and paired global-minus-local LCB95 (`+0.000890 dB`), with all structural and
+safety guards passing. It failed the material gain LCB95 (`+0.013200 dB` versus
+`+0.020`) and oracle-retention LCB95 (`0.080069` versus `0.25`). Therefore the
+current global-head contract stops and the 432-name confirmation stage remains
+untouched and unauthorized.

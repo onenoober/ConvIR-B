@@ -28,3 +28,12 @@ remain blocked.
 
 Do not revive old A1X outputs, relax the 1% microfit gate, change width/epoch/LR,
 search inputs or thresholds, or reinterpret r1 as a scientific failure.
+
+## D0 terminal result
+
+A1X-v3 D0 completed fresh512 OOF and stopped the current global-head contract.
+True-minus-shuffle and global-minus-local were positive, but gain and oracle
+retention missed their preregistered lower-bound gates. Do not consume the 432
+confirmation names, widen/search the same head, or tune LR/epochs/thresholds. A
+new route must introduce an inference-time information source or joint
+correction-confidence representation.

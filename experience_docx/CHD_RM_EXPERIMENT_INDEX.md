@@ -146,6 +146,12 @@ changing data, head, loss, optimizer, budget, thresholds, or gates.
 
 ## Current Scope
 
+A1X-v3 D0 completed all fresh512 OOF units and failed its frozen material gate.
+True-minus-shuffle LCB95 is `+0.007963 dB` and global-minus-local LCB95 is
+`+0.000890 dB`, but gain LCB95 is `+0.013200 dB` and retention LCB95 is
+`0.080069`. The typed decision stops the current global-head contract and does
+not authorize the 432-name confirmation stage.
+
 - Dataset: Haze4K only.
 - Backbone: ConvIR-B.
 - Task: single-image dehazing.
