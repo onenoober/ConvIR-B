@@ -4,12 +4,12 @@
   "rules_commit": "179c0cc8ee4e667037aa29fa3dd90790af9b503e",
   "route_card_relpath": "experience_docx/experiment_cards/2026-07-16-haze4k-v5-v4a-a1x-accessibility-v3.md",
   "operations": {
-    "A1X_V3_S0_R2": {
+    "A1X_V3_S0_R3": {
       "runner_relpath": "experience_docx/tools/run_chd_rm_v4a_a1x_accessibility_v3_s0_r2.sh",
       "mode": "s0",
       "require_gpu": true,
-      "output_id": "a1x-v3-s0-r2",
-      "closeout_filename": "a1x_v3_s0_r2_closeout.json",
+      "output_id": "a1x-v3-s0-r3",
+      "closeout_filename": "a1x_v3_s0_r3_closeout.json",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
       "allowed_terminal_tuples": [
