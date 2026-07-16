@@ -35,27 +35,17 @@ class ConvirctlTests(unittest.TestCase):
         self.git("config", "user.name", "Command Transport Test")
         self.fake_ssh = self.root / "fake ssh"
         self.fake_ssh.write_text(
-            """#!/usr/bin/python3
-import json
-import os
-import sys
-import time
-
-raw = sys.stdin.buffer.read()
-Path = __import__('pathlib').Path
-Path(os.environ['FAKE_SSH_RECORD']).write_text(
-    json.dumps({'argv': sys.argv[1:], 'stdin_hex': raw.hex()}), encoding='utf-8'
-)
-mode = os.environ.get('FAKE_SSH_MODE', 'echo')
-if mode == 'fail':
-    sys.stderr.write('remote failed')
-    raise SystemExit(17)
-if mode == 'timeout':
-    time.sleep(5)
-if mode == 'large':
-    sys.stdout.write('x' * (70 * 1024))
-else:
-    sys.stdout.write('REMOTE_TEST_OK\n')
+            """#!/bin/bash
+set -euo pipefail
+printf '%s\n' "$@" > "${FAKE_SSH_RECORD}.argv"
+/bin/cat > "${FAKE_SSH_RECORD}.stdin"
+case "${FAKE_SSH_MODE:-echo}" in
+  fail) printf '%s\n' 'remote failed' >&2; exit 17 ;;
+  timeout) exec /bin/sleep 5 ;;
+  large) /usr/bin/head -c 71680 /dev/zero | /usr/bin/tr '\000' x ;;
+  echo) printf '%s\n' 'REMOTE_TEST_OK' ;;
+  *) exit 19 ;;
+esac
 """,
             encoding="utf-8",
         )
@@ -203,13 +193,12 @@ else:
         script = self.commit_file("ops/remote.sh", raw)
         value = self.call("remote-script", "--script", str(script))
         self.assertTrue(value["ok"])
-        record = json.loads(self.record.read_text(encoding="utf-8"))
-        normalized = bytes.fromhex(record["stdin_hex"])
+        normalized = Path(f"{self.record}.stdin").read_bytes()
         self.assertFalse(normalized.startswith(b"\xef\xbb\xbf"))
         self.assertNotIn(b"\r", normalized)
         self.assertIn(b"literal | $()", normalized)
         self.assertEqual(
-            record["argv"],
+            Path(f"{self.record}.argv").read_text(encoding="utf-8").splitlines(),
             [
                 "-T", "-o", "BatchMode=yes", "-o", "ConnectTimeout=30",
                 "convir-4090", "/bin/bash", "-s", "--",
@@ -282,7 +271,7 @@ else:
         with mock.patch.dict(os.environ, {"FAKE_SSH_MODE": "fail"}, clear=False):
             original = self.fake_ssh.read_text(encoding="utf-8")
             self.fake_ssh.write_text(
-                original.replace("raise SystemExit(17)", "raise SystemExit(255)"),
+                original.replace("exit 17", "exit 255"),
                 encoding="utf-8",
             )
             self.fake_ssh.chmod(self.fake_ssh.stat().st_mode | stat.S_IXUSR)
