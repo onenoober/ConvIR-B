@@ -165,16 +165,24 @@ class TelemetryAudit(ast.NodeVisitor):
 
     def visit_Call(self, node: ast.Call) -> None:
         name = dotted_name(node.func)
-        if name:
-            leaf = name.rsplit(".", 1)[-1]
+        leaf = (
+            node.func.attr if isinstance(node.func, ast.Attribute)
+            else node.func.id if isinstance(node.func, ast.Name)
+            else None
+        )
+        display_name = name or (f"<expression>.{leaf}" if leaf else "<dynamic>")
+        if leaf:
             if name in DYNAMIC_CALLS:
                 self.finding(node, f"forbidden dynamic call {name}")
-            if any(name == prefix or name.startswith(prefix + ".") for prefix in FORBIDDEN_CALLS):
+            if name and any(
+                name == prefix or name.startswith(prefix + ".")
+                for prefix in FORBIDDEN_CALLS
+            ):
                 self.finding(node, f"forbidden call {name}")
-            if name.startswith("os.exec") or name.startswith("os.spawn"):
+            if name and name.startswith(("os.exec", "os.spawn")):
                 self.finding(node, f"forbidden call {name}")
             if leaf in FORBIDDEN_METHODS or leaf.startswith(("exec", "spawn")):
-                self.finding(node, f"forbidden control method {name}")
+                self.finding(node, f"forbidden control method {display_name}")
             current = self.function_stack[-1] if self.function_stack else "<module>"
             if leaf in READ_METHODS:
                 if current == "process_start_ticks" and is_exact_proc_stat_read(node):
@@ -182,13 +190,29 @@ class TelemetryAudit(ast.NodeVisitor):
                 elif current == "append_event" and name == "os.open" and is_exact_status_append_open(node):
                     pass
                 else:
-                    self.finding(node, f"unexpected file/process read {name} in {current}")
+                    self.finding(
+                        node,
+                        f"unexpected file/process read {display_name} in {current}",
+                    )
             if name == "getattr":
-                allowed = (
+                allowed = False
+                if (
                     len(node.args) == 3
                     and isinstance(node.args[1], ast.Constant)
-                    and node.args[1].value in {"O_NOFOLLOW", "parent_pid"}
-                )
+                    and isinstance(node.args[2], ast.Constant)
+                ):
+                    attribute = node.args[1].value
+                    allowed = (
+                        attribute == "O_NOFOLLOW"
+                        and isinstance(node.args[0], ast.Name)
+                        and node.args[0].id == "os"
+                        and node.args[2].value == 0
+                    ) or (
+                        attribute == "parent_pid"
+                        and isinstance(node.args[0], ast.Name)
+                        and node.args[0].id == "args"
+                        and node.args[2].value is None
+                    )
                 if not allowed:
                     self.finding(node, "forbidden dynamic attribute lookup")
         self.generic_visit(node)

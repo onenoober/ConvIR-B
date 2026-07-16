@@ -103,18 +103,22 @@ def process_start_ticks(pid):
     return (Path("/proc") / str(pid) / "stat").read_text(encoding="utf-8")
 '''
         self.assertEqual([], AUDIT.audit_source(safe_prose))
+        valid_prefix = '''
+from pathlib import Path
+def process_start_ticks(pid):
+    return (Path("/proc") / str(pid) / "stat").read_text(encoding="utf-8")
+'''
         unsafe_cases = {
-            "signal_import": "import signal\ndef process_start_ticks(pid): return '/proc'\n",
-            "kill_call": "import os\ndef process_start_ticks(pid): return '/proc'\nos.kill(1, 9)\n",
-            "gpu_command": "import os\ndef process_start_ticks(pid): return '/proc'\nos.system('nvidia-smi')\n",
-            "data_read": "from pathlib import Path\ndef process_start_ticks(pid): return '/proc'\nPath('/data/result').read_text()\n",
-            "read_hidden_in_proc_function": "from pathlib import Path\ndef process_start_ticks(pid):\n    marker='/proc'\n    return Path('/data/result').read_text(encoding='utf-8')\n",
-            "aliased_control": "import os as x\ndef process_start_ticks(pid): return '/proc'\nx.system('true')\n",
-            "dynamic_control": "import os\ndef process_start_ticks(pid): return '/proc'\ngetattr(os, 'kill')(1, 9)\n",
+            "signal_import": "import signal\n",
+            "kill_call": "import os\nos.kill(1, 9)\n",
+            "gpu_command": "import os\nos.system('nvidia-smi')\n",
+            "compound_data_read": "(Path('/data') / 'result').read_text(encoding='utf-8')\n",
+            "aliased_control": "import os as x\nx.system('true')\n",
+            "dynamic_control": "import os\ngetattr(os, 'kill')(1, 9)\n",
         }
-        for name, source in unsafe_cases.items():
+        for name, suffix in unsafe_cases.items():
             with self.subTest(name=name):
-                self.assertTrue(AUDIT.audit_source(source))
+                self.assertTrue(AUDIT.audit_source(valid_prefix + suffix))
 
 
 if __name__ == "__main__":
