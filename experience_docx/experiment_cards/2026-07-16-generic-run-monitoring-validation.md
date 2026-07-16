@@ -80,13 +80,14 @@ Status: `RUNNING`
 
 ## Decision
 
-- Verdict and primary reason: isolated candidate gate passed; six telemetry and
-  22 control-plane tests passed with a typed `COMPLETED_GATE_PASS` closeout.
+- Verdict and primary reason: strengthened isolated candidate gate passed;
+  seven telemetry and 22 control-plane tests passed with a typed
+  `COMPLETED_GATE_PASS` closeout.
 - Mechanism/control and safety reason: telemetry remained metadata-only and
   fail-open; semantic audit found no process/GPU control or scientific-output
   read, and control-plane observation remained bounded and receipt-bound.
 - Evidence-independence and cost reason: no model, GPU, dataset, checkpoint,
-  canary, or locked test was used; 100 pulses consumed `0.160066823` CPU
+  canary, or locked test was used; 100 pulses consumed `0.154600732` CPU
   seconds and produced only one 230-byte heartbeat file.
 - Authorized next action or terminal stop: main-integration review only,
   followed by registered-service schema-v4 end-to-end validation. Model
@@ -115,3 +116,7 @@ Status: `RUNNING`
   CPU/file gate passed, and its closeout authorizes
   `MAIN_INTEGRATION_REVIEW_ONLY`. This is not yet permission to run a model
   experiment.
+- `candidate-48203394e-r4` repeated the entire gate after adding a seventh
+  lifecycle test. The unlimited sidecar exited after the exact parent was
+  naturally reaped, all seven telemetry and 22 control-plane tests passed, and
+  the typed closeout again authorizes only main-integration review.

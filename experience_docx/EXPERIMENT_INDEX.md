@@ -9,15 +9,18 @@ Status: evidence index plus official architecture anchor registry.
 The generic metadata-only run-monitoring route has passed its isolated cloud
 candidate gate but is not yet a project default. Two earlier candidates stopped
 safely on validation-harness defects and were archived before correction.
-`candidate-33a772268-r3` then passed all six telemetry tests, all 22 restricted
-control-plane tests, the semantic source audit, the fixed file/cost gate, and a
-typed `COMPLETED_GATE_PASS` closeout. One hundred atomic pulses used
-`0.160066823` CPU seconds, projected to `0.0960400938` CPU seconds per hour at
-a 60-second interval, and created only `heartbeat.json`. The closeout records
-zero model calls and no GPU, dataset, checkpoint, canary, or locked-test access.
-This authorizes main-integration review only. Project-default adoption and model
-experiment use remain blocked until the generic subset is integrated, the
-registered six-tool service is updated, and a receipt-bound end-to-end
+`candidate-33a772268-r3` passed the initial isolated gate. The strengthened
+`candidate-48203394e-r4` then added the missing unlimited-sidecar lifecycle
+case and passed all seven telemetry tests, all 22 restricted control-plane
+tests, the semantic source audit, the fixed file/cost gate, and a typed
+`COMPLETED_GATE_PASS` closeout. The new test proves that an unlimited sidecar
+exits after its exact parent is naturally reaped. One hundred atomic pulses
+used `0.154600732` CPU seconds, projected to `0.0927604392` CPU seconds per
+hour at a 60-second interval, and created only `heartbeat.json`. The closeout
+records zero model calls and no GPU, dataset, checkpoint, canary, or locked-test
+access. This authorizes main-integration review only. Project-default adoption
+and model-experiment use remain blocked until the generic subset is integrated,
+the registered six-tool service is updated, and a receipt-bound end-to-end
 validation passes.
 
 Use `experience_docx/experiment_cards/2026-07-16-generic-run-monitoring-validation.md`,

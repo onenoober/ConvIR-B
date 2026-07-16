@@ -43,3 +43,9 @@ SHA-256 identities. Raw logs remain at
 `/sda/home/wangyuxin/ConvIR-B/runs/generic_run_monitoring_validation_20260716/candidate-33a772268-r3`.
 The pass authorizes integration review only; registered-service end-to-end
 validation is still required before adoption.
+
+`candidate-48203394e-r4` strengthened that result by adding a direct unlimited-
+sidecar lifecycle case. It proves the sidecar exits after its exact parent is
+naturally reaped, without sending a signal. All seven telemetry and 22 control-
+plane tests passed. The stronger summary, closeout, and outcome are archived
+here; the adoption boundary is unchanged.
