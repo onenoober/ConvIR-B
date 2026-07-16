@@ -979,42 +979,6 @@ printf 'LOCAL_WSL_PIPELINE_OK\n'
 '@ | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
 
-## 2026-07-13 Start Windows CLI wrappers outside a UNC current directory
-
-Observed while validating the external agent-model dispatcher from a WSL UNC
-workspace. `codex.cmd` completed because it received an explicit `--cd`, but
-`cmd.exe` could not use the parent PowerShell process's UNC current directory
-and silently fell back to the Windows directory.
-
-Invalid form:
-
-```powershell
-$childPrompt | & $codexCmd @arguments
-```
-
-Failure class:
-
-```text
-CMD.EXE was started with a UNC path as the current directory.
-UNC paths are not supported. Defaulting to Windows directory.
-```
-
-Corrected form:
-
-```powershell
-Push-Location -LiteralPath $env:TEMP
-try {
-    $childPrompt | & $codexCmd @arguments
-}
-finally {
-    Pop-Location
-}
-```
-
-Keep the explicit Codex `--cd` argument pointed at the intended repository.
-Changing only the wrapper process's current directory prevents the `cmd.exe`
-fallback without changing the child task's workspace.
-
 ## 2026-07-13 Generated evidence-manifest awk positional expansion
 
 Observed while reading a terminal route's compact cloud evidence through

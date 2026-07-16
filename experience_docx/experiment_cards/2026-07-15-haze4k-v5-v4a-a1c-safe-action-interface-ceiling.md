@@ -17,7 +17,7 @@ Status: `COMPLETED_GATE_PASS_AUTHORIZE_R3_REVIEW_ONLY`
 - Authoritative experiment evidence: `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/v4a_a1f_r3_review.json`, `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_formal_bootstrap_summary.json`, and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_r3_review.json` from that GitHub rules commit.
 - Local WSL path, if used for editing/static checks: `/home/ubuntu/workspace/ConvIR-B-v4a-a1c-safe-action-interface-ceiling-20260715`.
 - GitHub route branch: `codex/haze4k-v5-v4a-a1c-safe-action-interface-ceiling-20260715`; the formal run was sealed at route commit `0d795021bc31b6a744bbbb1a86c45a3271a6ccb4`, while the terminal evidence/rules refresh is at the later route tip; scientific replay sources remain pinned separately below.
-- Cloud `REMOTE_REPO`: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1c-r5-haze4k_v5_chd_rm_v4a_a1c-a1c20260715r5-3f6965d1e945d4eb` as deterministically derived by schema-v2 from repo name `ConvIR-B-v4a-a1c-r5` and workspace id `a1c20260715r5`.
+- Cloud `REMOTE_REPO`: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1c-r5-haze4k_v5_chd_rm_v4a_a1c-a1c20260715r5-3f6965d1e945d4eb`, the historical receipt-bound A1C workspace.
 - Cloud `RUN_ROOT`: `/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715`.
 - Cloud `EVID_STAGE`: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1c-r5-haze4k_v5_chd_rm_v4a_a1c-a1c20260715r5-3f6965d1e945d4eb/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715`.
 - Explicit cloud Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
@@ -30,28 +30,11 @@ Status: `COMPLETED_GATE_PASS_AUTHORIZE_R3_REVIEW_ONLY`
 - Compact formal evidence is archived under `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/`; raw rows and runtime artifacts remain cloud-only.
 - This typed result does not authorize implementation, A1X data access, candidate/policy work, confirmation, canary, or locked-test access. A fresh R3 review is required.
 
-## Agent Execution Routing
+## Historical Execution Note
 
-Use `MODEL_AGENT_COST_ROUTING_PROTOCOL.md` for the canonical role table and dispatcher mechanics.
-
-- Host identity mode: `dispatcher_receipt`.
-- Task-scoped host pin: `frontier/xhigh` from dispatcher handoff SHA-256 `33bd63cebce8207927da131ccfdd67bca89022ef88c14954bfe15fa74b3fbfd5` for this R3 contract-design task only.
-- R3 target effort and rationale: `xhigh`: the task jointly freezes the interface estimand, reused-data claim limit, paired oracle construction, multiplicity rule, branch gates, and later-stage authority after reconciling A1F and A1R.
-- Whole-task batching plan: one current R3 contract package; one later R2 runner/static package; one exact-tuple R1 S0 package; one R2 compact S0 closeout commit; one exact-tuple R1 formal start/short-observation package; one persistent R0 observation package only if the formal stage remains healthy beyond that window; one R3 interpretation package; and one R2 unchanged-verdict archive package. No package may cross an engineering repair, scientific decision, or authorization boundary.
-
-| Applicable scope | Task class | Minimum role | Routing basis/ref | Boundary action |
-| --- | --- | --- | --- | --- |
-| scientific design / gate contract | `R3_SCIENTIFIC_AUTHORITY` | `frontier` | `dispatcher_classification`; received handoff above | current dispatched task; stop after validated setup commit |
-| workspace / runner engineering | `R2_ENGINEERING_CONTROL` | `balanced` | `dispatcher_classification`; this card and initial authorization at the setup commit | one `task_routing` package for runner implementation and syntax/static checks only |
-| authorized S0 or formal start / short observation / compact fetch | `R1_BOUNDED_EXECUTION` | `fast` | `typed_handoff`; exact committed initial authorization or S0 closeout tuple | one bounded package per committed authorization; no repair or interpretation |
-| healthy long-run observation | `R0_READ_ONLY` | `fast` | `typed_handoff`; receipt from the exact formal start | one persistent task for all healthy windows; stop before repair or interpretation |
-| result interpretation / terminal verdict | `R3_SCIENTIFIC_AUTHORITY` | `frontier` | `typed_handoff`; formal closeout at the then-current route commit | new `task_routing` package before any scientific branch token is issued |
-| unchanged-verdict archival / sync | `R2_ENGINEERING_CONTROL` | `balanced` | `typed_handoff`; committed R3 review | one `major_handoff` package after the verdict; no verdict changes |
-
-The current task does not use `dispatch=not_amortized`. Each later package is an
-independent durable boundary whose cheaper qualified role avoids carrying the
-full R3 design context. Actual dispatcher requests must replace the descriptive
-references above with the exact GitHub commit and path then in force.
+The retired multi-model execution packaging used during A1C has no current
+authority. It does not alter the terminal scientific result above. New work
+uses the current single-qualified-model protocol from GitHub `main`.
 
 ## Baseline Contract
 
@@ -153,7 +136,7 @@ silent clip. Interface endpoints are clipped only where A1R clips them.
 ## Change
 
 - Code branch: `codex/haze4k-v5-v4a-a1c-safe-action-interface-ceiling-20260715`.
-- Exact code/config change: this task adds only the frozen route card, schema-v2 operations projection, and typed initial authorization. A later R2 package may implement the reserved no-training audit and runner verbatim from this contract.
+- Exact code/config change: the completed historical route added the frozen card, no-training audit, and tracked runner. Its retired control projection has been deleted without changing the result.
 - Enabled mechanisms: full privileged target replay, exact A1R half correction transport, anti-aliased half correction transport, fixed safe-grid selection, paired grouped bootstrap, and explicit interface adequacy classification.
 - Explicitly disabled mechanisms: probe/model/operator/current-head updates, training, optimization, fitting, calibration, target/grid/bound/support changes, candidate or policy selection, confirmation, canary, and locked test.
 - Parameter/runtime/memory impact expected: zero deployable parameters and no retained state; one frozen model pass per image/operator plus three tensor-only direction grids.
@@ -234,7 +217,7 @@ silent clip. Interface endpoints are clipped only where A1R clips them.
 - Expected wall-time budget and required phase timings: R2 must refine estimates only from static implementation analysis before S0; conservative hard budgets are S0 `<=20` minutes and formal `<=90` minutes, with setup, source-forward, interface-grid, bootstrap, summary, and closeout timings reported separately.
 - Heartbeat cadence, stale threshold, and monitor profile: future runner heartbeat at least every 60 seconds; S0 uses `short`, formal uses `standard`, and both use a 300-second stale threshold.
 - Maximum model-visible observations and escalation condition: one start receipt and at most nine S0 or twenty-one formal status windows in their respective persistent tasks; stale heartbeat, missing closeout, source mismatch, collision, nonfinite result, or budget overrun stops for engineering escalation without scientific interpretation.
-- Workspace policy (`fresh_route` or `exact_continuation`) and rationale: S0 uses `fresh_route` for the first schema-v2 cloud workspace; formal uses `exact_continuation` only after a clean same-branch fast-forward commit containing the validated S0 closeout. Neither policy permits reuse of an older route or dirty workspace.
+- Workspace policy (`fresh_route` or `exact_continuation`) and rationale: S0 used a fresh workspace; formal used a clean same-branch continuation after its S0 closeout. Neither policy permitted reuse of an older route or dirty workspace.
 
 ## Gates
 

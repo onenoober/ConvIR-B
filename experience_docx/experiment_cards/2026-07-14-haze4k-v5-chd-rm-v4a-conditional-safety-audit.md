@@ -21,17 +21,11 @@ Status: `A0P_COMPLETE_R3_AUTHORIZE_A1F_FEASIBILITY_DESIGN_ONLY`
 - Cloud `EVID_STAGE`: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-conditional-safety-audit-20260714/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714`.
 - Explicit cloud Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 
-## Agent Execution Routing
+## Historical Execution Note
 
-Use `MODEL_AGENT_COST_ROUTING_PROTOCOL.md` for role qualifications and dispatch mechanics.
-
-| Applicable scope | Task class | Minimum role | Boundary action |
-| --- | --- | --- | --- |
-| scientific design / gate contract | `R3_SCIENTIFIC_AUTHORITY` | `frontier` | `dispatch=not_amortized: current route design and first diagnostic remain one R3 envelope` |
-| workspace / runner engineering | `R2_ENGINEERING_CONTROL` | `balanced` | `dispatch=not_amortized: runner implements the frozen A0R-passed A0P contract` |
-| preflight / launch / monitor / evidence fetch | `R1_BOUNDED_EXECUTION` | `fast` | `standalone_repetition after a machine-verified typed authorization` |
-| result interpretation / terminal verdict | `R3_SCIENTIFIC_AUTHORITY` | `frontier` | `required_escalation before any branch or verdict decision` |
-| unchanged-verdict archival / sync | `R2_ENGINEERING_CONTROL` | `balanced` | `major_handoff after a reviewed closeout` |
+The retired multi-model execution packaging has no current authority and does
+not change this card's scientific evidence. New work follows current GitHub
+`main` rules and one qualified warm task.
 
 ## Baseline Contract
 

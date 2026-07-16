@@ -21,17 +21,11 @@ Status: `PLANNED`
 - Cloud `EVID_STAGE`: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1r-representation-sufficiency-20260714/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714`.
 - Explicit cloud Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 
-## Agent Execution Routing
+## Historical Execution Note
 
-Use `MODEL_AGENT_COST_ROUTING_PROTOCOL.md` for qualifications and dispatch mechanics.
-
-| Applicable scope | Task class | Minimum role | Boundary action |
-| --- | --- | --- | --- |
-| A1R estimand, factor family, target, and gate design | `R3_SCIENTIFIC_AUTHORITY` | `frontier` | `current_qualified_task`: Sol/xhigh confirmed by the user |
-| fresh workspace and tracked probe engineering | `R2_ENGINEERING_CONTROL` | `balanced` | `dispatch=not_amortized`: implementation is tightly coupled to the just-completed A1F R3 interpretation |
-| exact preflight, launch, short monitor, compact fetch | `R1_BOUNDED_EXECUTION` | `fast` | `dispatch=not_amortized`: smoke/formal use one frozen runner and adjacent authorization chain |
-| result interpretation and family verdict | `R3_SCIENTIFIC_AUTHORITY` | `frontier` | `current_qualified_task` |
-| route/main compact archival | `R2_ENGINEERING_CONTROL` | `balanced` | `dispatch=not_amortized`: archive immediately after the R3 terminal handoff |
+The retired multi-model execution packaging has no current authority and does
+not change this card's scientific evidence. New work follows current GitHub
+`main` rules and one qualified warm task.
 
 ## Baseline Contract
 

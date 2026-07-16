@@ -21,17 +21,11 @@ Status: `COMPLETED`
 - Cloud `EVID_STAGE`: `/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1f-deltau-action-feasibility-20260714/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714`.
 - Explicit cloud Python: `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
 
-## Agent Execution Routing
+## Historical Execution Note
 
-Use `MODEL_AGENT_COST_ROUTING_PROTOCOL.md` for role qualifications and dispatch mechanics.
-
-| Applicable scope | Task class | Minimum role | Boundary action |
-| --- | --- | --- | --- |
-| scientific design / gate contract | `R3_SCIENTIFIC_AUTHORITY` | `frontier` | `current_qualified_task`: Sol/xhigh confirmed by the user |
-| workspace / runner engineering | `R2_ENGINEERING_CONTROL` | `balanced` | `dispatch=not_amortized`: one compact no-training route remains inside the user-authorized Sol task |
-| preflight / launch / monitor / evidence fetch | `R1_BOUNDED_EXECUTION` | `fast` | `dispatch=not_amortized`: adjacent smoke/formal operations use one frozen runner and compact context |
-| result interpretation / terminal verdict | `R3_SCIENTIFIC_AUTHORITY` | `frontier` | `current_qualified_task` |
-| unchanged-verdict archival / sync | `R2_ENGINEERING_CONTROL` | `balanced` | `dispatch=not_amortized`: archive immediately after the R3 terminal handoff |
+The retired multi-model execution packaging has no current authority and does
+not change this card's scientific evidence. New work follows current GitHub
+`main` rules and one qualified warm task.
 
 ## Baseline Contract
 

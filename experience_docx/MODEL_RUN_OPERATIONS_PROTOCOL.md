@@ -1,353 +1,137 @@
 # Model Run Operations Protocol
 
-Date: 2026-07-13
+Date: 2026-07-16
 
-Status: per-launch workflow for cloud training, evaluation, inference, replay,
-and post-run audits.
+Status: per-launch cloud lifecycle. Route design belongs to the start
+checklist; formal interpretation belongs to the Gate Policy.
 
-## Purpose
-
-Use this protocol immediately before, during, and after each authorized cloud
-stage. Route identity, static contracts, and profile selection are completed
-once in `MODEL_EXPERIMENT_START_CHECKLIST.md`. Formal gate design and
-interpretation remain canonical in `EXPERIMENT_GOVERNANCE_PROTOCOL.md`.
-
-Local WSL is editing and syntax/static-check only. Runtime work happens on
-`convir-4090` unless the user explicitly overrides a specific command.
-
-## Agent Routing Before Stage Work
-
-Apply the canonical task-boundary and routing rules in
-`MODEL_AGENT_COST_ROUTING_PROTOCOL.md` before substantive stage work. Routing
-only assigns the bounded operator; it never changes this lifecycle, the runner,
-route commit, output path, or authorization chain.
-
-## Per-Stage Runtime Order
-
-For each stage, use only this sequence:
+## Required Order
 
 ```text
-previous closeout authorizes stage -> dynamic preflight -> durable runner with
-integrated pre-smoke -> server-side observation windows -> runner closeout ->
-receipt-bound closeout validation -> compact route-branch evidence
+typed prior authorization -> dynamic preflight -> tracked runner with
+integrated smoke -> bounded observation -> typed closeout -> compact evidence
 ```
 
-Do not rerun one-time route setup at every launch. Do not launch a later stage
-because it appears next in a generic sequence; the previous typed closeout must
-name it in `authorizes`.
+The frozen route card plus operations manifest authorize the first stage. Every
+later stage requires the exact previous closeout. A semantic-preserving
+engineering repair reuses that authority; it never creates a new R3 document.
 
-`convir-ops` schema v2 is the only active lifecycle contract. Authorized
-planning reads the exact GitHub manifest and runner without contacting the
-cloud. Start performs one cloud preparation, seals the exact `REMOTE_REPO`,
-runner hash, GPU resource floor and selected GPU, session, output id, closeout
-filename, monitor profile, and authorization tuple in a persistent receipt,
-then repeats only launch-dynamic checks immediately before tmux creation.
-Launch, observation, and closeout validation use only that receipt. A failed
-fresh preparation removes only the workspace it just created; an exact
-continuation never cleans or overwrites an unexpected workspace.
+Local WSL remains syntax/compile-only. Runtime runs only on `convir-4090`
+with the explicit cloud Python.
 
-The public lifecycle exposes only manifest plan, authorized start, and finish.
-Preparation, launch, monitor, and closeout primitives are internal recovery
-functions rather than model-visible tools. `finish` performs one bounded
-server-side observation window and, when terminal evidence exists, validates
-the sealed closeout in the same remote call.
-Load the normal-path plan from the route-committed operations manifest owned by
-the one-time start checklist; do not restate its machine fields in the prompt.
+## Dynamic Preflight
 
-The route card records the GitHub `main` rules commit used for this sequence.
-First-stage typed authorization is created under the one-time start checklist;
-later stages use the previous closeout. This protocol does not recreate either.
-Do not consult the cloud checkout's copies of governance files when they differ;
-those copies belong to the route's historical code snapshot.
+Immediately before launch verify only changing facts:
 
-## Run State Labels
+- route branch HEAD and clean cloud workspace match the exact route commit;
+- the manifest's canonical rule-bundle digest still matches current GitHub
+  `main`, or a changed bundle received one explicit compatibility review;
+- runner and required asset hashes match the route commit/asset manifest;
+- the first-stage card authorization or prior closeout tuple matches;
+- data role and locked-test policy permit the exact stage;
+- the selected GPU satisfies the frozen resource floor immediately before
+  launch;
+- session and output are new, or an exact unit-boundary resume is frozen;
+- status, heartbeat, log, closeout, and retained-state paths are explicit.
 
-Use explicit labels in the route card, evidence README, and `status.txt`:
+Never substitute a commit, split, asset, environment, threshold, output, or
+stage silently. A prelaunch failure is engineering state.
 
-| State | Meaning |
-| --- | --- |
-| `PLANNED` | route setup is complete but no cloud stage is active |
-| `PREFLIGHT_RUNNING` | dynamic cloud checks or smoke are active |
-| `PREFLIGHT_FAILED_ENGINEERING` | implementation, asset, path, or environment blocks launch |
-| `RUNNING_TRAIN` | training is active |
-| `RUNNING_EVAL` | evaluation or comparison is active |
-| `RUNNING_AUDIT` | replay, mechanism, bucket, or failure audit is active |
-| `COMPLETED_GATE_PASS` | typed gate passed and closeout states the authorized next stage |
-| `COMPLETED_INCONCLUSIVE` | evidence cannot separate pass from fail; promotion is blocked |
-| `COMPLETED_GATE_FAIL` | typed gate failed; only the written continuation is stopped |
-| `FAILED_INFRA` | cloud, storage, dependency, or interruption failure; not scientific evidence |
-| `FAILED_COMMAND` | transport, shell, PATH, quoting, or marker failure |
-| `SYNCED_TO_GITHUB` | terminal or major-handoff compact evidence is on GitHub `main` |
+## Runner Contract
 
-Do not collapse these into generic `failed` or `done` labels.
+Use one parameterized tracked runner for the route. It must:
 
-## Separate Code, Runtime, And Evidence Paths
+- use `set -euo pipefail` and the explicit cloud Python;
+- write only to the route `RUN_ROOT`, except the compact closeout in the
+  route evidence directory;
+- run route-specific identity, shape, input-whitelist, no-op, finite and tiny
+  update checks before expensive work in the same process;
+- append phase, progress, heartbeat, timing, and terminal markers to
+  `status.txt`;
+- capture combined stdout/stderr and return the underlying exit code;
+- reject unauthorized locked-test access;
+- write route id, run id, route commit, runner SHA-256 and one allowed terminal
+  tuple to its closeout;
+- retain only the states needed by the frozen analysis.
 
-Each route defines three different cloud roots:
+## Bounded Resume
 
-```bash
-REMOTE_REPO=/sda/home/wangyuxin/ConvIR-B/repos/<route-workspace>
-RUN_ROOT=/sda/home/wangyuxin/ConvIR-B/runs/<route_id>
-EVID_STAGE=$REMOTE_REPO/experience_docx/experiment_logs/<route_id>
-PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
-```
+Permit resume only at a complete unit named before launch, such as a fold,
+seed, factor cell, or checkpoint boundary. The runner must hash completed units
+and run only missing units. It may not expose intermediate confirmation results
+or change model, data, epoch, threshold, order, or gate after resume.
 
-- `REMOTE_REPO` is a Git checkout for code and tracked runners. Keep it clean
-  while a stage runs.
-- `RUN_ROOT` holds `status.txt`, stdout/stderr, checkpoints, raw tables, arrays,
-  images, and other runtime outputs. It is outside Git.
-- `EVID_STAGE` receives only curated compact text evidence during stage closeout.
-  Commit that evidence to the route branch after review.
-
-Never point `RUN_ROOT` at the repository evidence directory. Do not copy raw
-outputs into `EVID_STAGE` as a convenience.
-
-The governance files inside `REMOTE_REPO` are part of that route's code
-snapshot. They may document historical reproduction, but the current execution
-rules are the GitHub `main` rules commit recorded in the route card.
-
-## Dynamic Preflight Before Every Launch
-
-Verify only facts that can change between launches:
-
-- the route card's static preflight applies to the exact intended route commit;
-- the exact tracked route card still passes `validate_experiment_card.py
-  --launch-ready` from the recorded GitHub rules commit; record its current
-  `ROUTE_CARD_CONTRACT_OK` SHA-256 in the launch transcript;
-- the recorded GitHub `main` rules commit is current for this launch, or any
-  newer rule change has been reviewed and explicitly reconciled;
-- `REMOTE_REPO` branch, HEAD, and worktree status match that commit;
-- route id, `REMOTE_REPO` directory name, branch, source commit, run id, and
-  output root all identify the same route; any cross-route mismatch is an
-  engineering blocker;
-- the explicit `PY` is executable and required dataset/checkpoint/cache assets
-  exist at their recorded identities;
-- the previous `<stage>_closeout.json` authorizes this stage, or this is the
-  route's written first stage;
-- the command uses only the evidence role authorized for this stage and follows
-  any preregistered adaptive-branch trigger;
-- the current command does not exceed its locked-test authorization;
-- enough current GPU memory is free for this stage;
-- the route manifest's minimum free-memory and maximum utilization thresholds
-  select one GPU, and that exact GPU still satisfies both thresholds at launch;
-- the tmux session name is free and the output path is new, or the route card
-  explicitly authorizes an exact resume;
-- the tracked runner, `RUN_ROOT/status.txt`, log path, and closeout path are
-  explicit;
-- any required learned-state directory and trace manifest are new, writable,
-  and under `RUN_ROOT`.
-
-If any item fails, write the matching engineering, infrastructure, or command
-state and stop. Do not substitute another commit, asset, split, output path, or
-Python environment silently.
-
-Create a fresh `REMOTE_REPO` for a new route. An existing cloud workspace may be
-used only for its explicitly named continuation or exact resume after its branch,
-HEAD, dirty files, sessions, and output paths are understood. Never clean or
-overwrite a historical workspace to make it fit a new route.
-
-Probe GPU availability immediately before each job. Allocate only within the
-route's written parallelism cap and launch one job per fresh probe. Partial GPU
-availability is not itself a reason to pause; no qualifying GPU is.
-
-Check session and output availability from the launcher before creating tmux:
-
-```bash
-tmux has-session -t "$SESSION" 2>/dev/null \
-  && { echo SESSION_CONFLICT; exit 1; } \
-  || echo SESSION_FREE
-test ! -e "$OUTPUT_DIR" \
-  && echo OUTPUT_FREE \
-  || { echo OUTPUT_CONFLICT; exit 1; }
-```
-
-Do not repeat the session-conflict check from inside the newly created session;
-that makes the session conflict with itself.
-
-## Durable Stage Runner
-
-Every cloud stage uses one tracked route runner. Prefer one parameterized runner
-for all stages over a separate launch script per sample size.
-
-The runner must:
-
-- use `set -euo pipefail`;
-- define `REMOTE_REPO`, `RUN_ROOT`, `PY`, data/checkpoint paths, route id, stage,
-  and run id;
-- create runtime directories only under `RUN_ROOT`;
-- use the explicit cloud Python path;
-- append start, progress, and terminal markers to `status.txt`;
-- execute its route-specific identity, native-shape/batch, no-op, finite-value,
-  and tiny-update pre-smoke before expensive work in the same tracked process;
-- write a heartbeat at the route-card cadence and phase timing for setup,
-  cache/data preparation, train/eval/audit work, summary, and closeout;
-- capture stdout/stderr in a named runtime log;
-- return the underlying process exit code and print a final `*_OK` or
-  `*_FAILED` marker;
-- reject locked-test stages unless the route card and previous closeout
-  authorize them;
-- preserve the state and trace manifest required by the route card when the
-  stage learns parameters or policy state.
-- write `route_commit`, `run_id`, and the tracked runner SHA-256 into its typed
-  closeout so receipt validation can reject stale or cross-run evidence.
-
-Minimum exit handling:
-
-```bash
-echo "stage_start route=$ROUTE_ID stage=$STAGE run=$RUN_ID time=$(date --iso-8601=seconds)" \
-  | tee -a "$STATUS"
-set +e
-"$PY" <entrypoint> <args> 2>&1 | tee "$LOG"
-rc=${PIPESTATUS[0]}
-set -e
-echo "stage_done route=$ROUTE_ID stage=$STAGE rc=$rc time=$(date --iso-8601=seconds)" \
-  | tee -a "$STATUS"
-exit "$rc"
-```
-
-Use `COMMAND_RELIABILITY_QUICKSTART.md` and
-`tools/convir_remote_script.sh` to cross the PowerShell/WSL/SSH boundary.
-
-## Learned State Retention
-
-When later mechanism, optimizer, projection, window, selector, or trajectory
-analysis may depend on learned state, the stage must retain enough information
-under `RUN_ROOT` to reconstruct the analyzed point. The route card decides
-which states are needed; retaining only a final scalar metric is insufficient.
-
-For every retained point, record:
-
-- model/checkpoint state and its SHA-256 identity;
-- optimizer and scheduler state when the claim depends on training dynamics or
-  exact resume;
-- Python, NumPy, framework, sampler, and accelerator RNG state when supported,
-  or an explicit list of unavailable RNG state;
-- global step/epoch, seed, fold, data-order/sampler identity, config hash, code
-  commit, explicit Python/environment identity, and parent checkpoint;
-- a trace manifest mapping the state to logs, metrics, factor cell, evidence
-  role, and any adaptive branch.
-
-Save only the cadence required by the written analysis and retention budget.
-Checkpoints, optimizer/RNG state, and raw traces remain in `RUN_ROOT`. Compact
-evidence may contain their paths, hashes, schemas, row/count summaries, and
-retention decision, but never copies of the raw state by default.
+An interruption before a complete unit restarts that unit. A changed scientific
+contract requires a new route/run id. Resume never needs a new scientific
+authorization when the frozen contract and completed-unit hashes still match.
 
 ## Monitoring
 
-The operations manifest selects one fixed profile for the stage:
+The MCP `finish` tool performs one server-side observation window. Use one
+current task for all healthy observations; never create a task per poll.
 
-| Profile | Server-side observation window | Intended use |
-| --- | --- | --- |
-| `short` | up to 120 seconds | smoke, quick audit, short evaluation |
-| `standard` | up to 300 seconds | ordinary training/evaluation |
-| `long` | up to 480 seconds | long formal runs with healthy heartbeats |
+| Profile | Maximum window |
+| --- | ---: |
+| `short` | 30 seconds |
+| `standard` | 60 seconds |
+| `long` | 60 seconds |
 
-The profile is sealed in the receipt. A caller passes only the receipt; it does
-not choose a new interval while the stage runs. One qualified fast task owns
-all healthy observation windows for a long stage. It may call `finish` again
-after a nonterminal snapshot, but must not dispatch a new child per window.
-Escalate out of that task only for a stale heartbeat, session/output mismatch,
-command/infra failure, engineering repair, or terminal scientific
-interpretation.
-If the session has ended and the sealed closeout is absent, classify it as a
-closeout/evaluation failure and enter engineering review. Do not keep polling a
-dead session for evidence that its runner can no longer write.
+Report only state, active session/process, progress unit, latest primary metric
+when available, last marker, heartbeat age, and phase timing. A stale heartbeat
+or ended session without closeout enters one engineering review. Do not poll a
+dead session repeatedly.
 
-Routine monitoring is read-only and reports only:
+## Typed Closeout
 
-- state and whether the expected session/process is active;
-- current epoch, fold, seed, sample, or other progress unit;
-- latest primary metric when available;
-- terminal decision or the last status marker.
-- heartbeat age, observation-window poll count, and phase timing/ETA when the
-  runner exposes them.
-
-End routine polls with `REMOTE_MONITOR_OK`. Do not repeatedly enumerate every
-artifact, timestamp, checkpoint, or directory while a healthy stage is running.
-Perform the full artifact and identity audit once after a terminal marker or
-when diagnosing a specific failure.
-
-## Typed Stage Closeout
-
-After a stage terminates, audit its runtime outputs and write one compact
-`<stage>_closeout.json` with at least:
+Each stage writes one compact JSON containing at least:
 
 ```json
 {
-  "route_id": "<route_id>",
-  "run_id": "<run_id>",
-  "stage": "<stage>",
-  "route_commit": "<40-character route commit>",
-  "runner_sha256": "<tracked runner SHA-256>",
-  "evidence_role": "<engineering_debug|development_screening|confirmation|sealed_final>",
-  "contract_id": "<frozen_route_card_or_config_identity>",
+  "route_id": "route",
+  "run_id": "run",
+  "stage": "s0",
+  "route_commit": "40-hex",
+  "runner_sha256": "64-hex",
+  "evidence_role": "engineering_debug",
   "state": "COMPLETED_GATE_PASS",
-  "gate_type": "scientific_utility",
   "decision": "PASS",
-  "metric_contract": "<route-card section or reusable contract path>",
-  "authorizes": "<next_stage_or_none>",
-  "reason": "<compact evidence-backed reason>"
+  "authorizes": "formal",
+  "reason": "compact evidence-backed reason"
 }
 ```
 
-Use `decision: null` for infrastructure, command, or engineering-invalid runs.
-The closeout must distinguish structural, numerical-equivalence, scientific-
-utility, and safety/promotion gates. Interpret `PASS`, `INCONCLUSIVE`, and
-`FAIL` only as allowed by the canonical Gate Policy.
+Use `decision: null` for command, infrastructure, or engineering-invalid
+runs. The MCP validates provenance and the allowed tuple; it never interprets a
+scientific result.
 
-Minimum compact closeout evidence is:
-
-- the tracked stage runner;
-- terminal `status.txt` excerpt or compact status file;
-- the typed closeout JSON;
-- evidence README with primary metrics, decision, and raw cloud paths;
-- compact aggregate summaries needed to audit the decision;
-- retained-state manifest summary, hashes, and counts when the route card
-  requires learned-state reconstruction.
-
-Add mechanism summaries or specialized contracts only when the route's claim
-requires them. Keep checkpoints, images, arrays, raw logs, raw inference
-outputs, selected-action tables, feature tables, and large per-image tables in
+Minimum compact evidence is the runner, status excerpt, closeout, evidence
+README, primary aggregate summary, and required state hashes/counts. Raw logs,
+checkpoints, images, arrays, predictions, and large tables stay in
 `RUN_ROOT`.
 
-After an intermediate stage, commit reviewed compact evidence to the route
-branch. Do not sync GitHub `main` until the route reaches a terminal state or an
-explicit major handoff milestone.
+## Finite Failure Handling
 
-## Locked-Test Protection
-
-Locked test is blocked unless a previous typed closeout explicitly authorizes
-it. Before the single sealed command, confirm that architecture, weights,
-preprocessing, operator, selector, thresholds, executor, fallback, and decision
-rule are fixed and identified; all required internal and safety gates passed;
-the output path is new and immutable; and the result cannot be used for further
-selection, tuning, branch choice, or repair. If any point is uncertain, stop.
-
-## Failure Handling
-
-Classify before retrying:
-
-| Failure type | Action |
+| Failure | Action |
 | --- | --- |
-| command, CRLF, PATH, or marker failure | mark `FAILED_COMMAND`; fix only transport and rerun the same intended operation |
-| missing or mismatched asset | mark engineering-invalid; repair preflight without scientific interpretation |
-| compile/import error | mark engineering failure; fix code under a new commit |
-| NaN/Inf/OOM | classify implementation or capacity cause; record step and resources before choosing a new run id |
-| interrupted cloud job | mark `FAILED_INFRA`; resume only under the frozen resume contract |
-| structural gate `FAIL` | stop because evidence integrity or eligibility is invalid |
-| numerical-equivalence `FAIL` | stop the equivalence claim; do not call the mechanism ineffective |
-| scientific-utility `FAIL` | stop the written scientific continuation only |
-| safety/promotion `FAIL` | block deployment, locked confirmation, or promotion named by the gate |
-| locked-test violation risk | stop immediately and record the policy conflict |
+| quoting/CRLF/PATH/marker | label `FAILED_COMMAND`; apply one canonical transport correction |
+| missing/mismatched asset or import | one engineering repair cycle under the same scientific contract |
+| resource unavailable before launch | return `RESOURCE_WAIT_REQUIRED`; later retry the exact plan without changing thresholds |
+| timeout after launch boundary | return `START_STATE_UNKNOWN`; inspect once before any action |
+| NaN/Inf/OOM | record point/resources; R3 decides whether the contract must change |
+| infrastructure interruption | exact unit-boundary resume if frozen; otherwise new run id |
+| structural/equivalence/scientific/safety gate fail | stop only the continuation named by the frozen gate |
 
-Never silently change batch size, loss, modules, split, seed, checkpoint,
-evaluation code, or threshold and call it the same run. A changed scientific
-contract requires a new run id and route-card update.
+A second same-class command failure or a repeated same-root engineering failure
+produces one blocker. Never generate a new authorization, route-specific
+validator, child task, or changed threshold as recovery.
 
-## GitHub Closeout
+## Locked Test And Archive
 
-At a terminal route decision or recorded major handoff, finalize the route card,
-evidence README, typed closeout, central index, and family summary when its
-verdict changed. Then follow `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` for explicit
-path selection, audits, push through the `github` remote, and remote
-verification. Mark `SYNCED_TO_GITHUB` only after that verification succeeds.
+Locked test requires a previous closeout that explicitly authorizes its single
+sealed command and identifies fixed architecture, weights, preprocessing,
+operator, thresholds, fallback, output, and post-result no-tuning rule.
+
+Commit intermediate compact evidence to the route branch. At terminal state or
+an explicit major handoff, update the route card, evidence README/closeout,
+index and changed family summary, then follow
+`BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.

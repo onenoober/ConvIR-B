@@ -13,7 +13,6 @@ fresh R3 review.
 
 Compact files in this directory:
 
-- `initial_authorization.json`
 - `v4a_a1c_s0_closeout.json`
 - `v4a_a1c_s0_source_manifest.json`
 - `v4a_a1c_s0_bootstrap_summary.json`
