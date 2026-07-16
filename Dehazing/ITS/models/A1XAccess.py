@@ -32,8 +32,9 @@ class A1X_ACCESS_Head(nn.Module):
     input_channels = 15
     output_channels = 3
 
-    def __init__(self):
+    def __init__(self, input_channels=15):
         super().__init__()
+        self.input_channels = input_channels
         self.stem = nn.Sequential(
             nn.Conv2d(self.input_channels, 24, 1, bias=False),
             nn.GroupNorm(1, 24),
