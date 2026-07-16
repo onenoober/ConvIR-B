@@ -1,0 +1,88 @@
+{
+  "bootstrap": {
+    "a1x_global_minus_local_db": 0.0014183182613759393,
+    "a1x_global_minus_local_db_lcb95": 0.0008903691914609532,
+    "a1x_global_minus_local_db_ucb95": 0.0019894427684826743,
+    "bootstrap_replicates": 4000,
+    "bootstrap_seed": 3407,
+    "cell_pairing_retained": true,
+    "cell_results": {
+      "a1x_global": {
+        "worst_operator_gain_vs_shrink_db": 0.015680223319131895,
+        "worst_operator_gain_vs_shrink_db_lcb95": 0.013200206480211855,
+        "worst_operator_gain_vs_shrink_db_ucb95": 0.018181748504214265,
+        "worst_operator_repairable_fraction": 0.556640625,
+        "worst_operator_repairable_fraction_lcb95": 0.51953125,
+        "worst_operator_repairable_fraction_ucb95": 0.591796875
+      },
+      "a1x_global_shuffled": {
+        "worst_operator_gain_vs_shrink_db": 0.006097118539830325,
+        "worst_operator_gain_vs_shrink_db_lcb95": 0.005075352887018804,
+        "worst_operator_gain_vs_shrink_db_ucb95": 0.007123201184614077,
+        "worst_operator_repairable_fraction": 0.484375,
+        "worst_operator_repairable_fraction_lcb95": 0.447265625,
+        "worst_operator_repairable_fraction_ucb95": 0.517578125
+      },
+      "a1x_local": {
+        "worst_operator_gain_vs_shrink_db": 0.014252326902199929,
+        "worst_operator_gain_vs_shrink_db_lcb95": 0.011969118139867486,
+        "worst_operator_gain_vs_shrink_db_ucb95": 0.016497079307305693,
+        "worst_operator_repairable_fraction": 0.533203125,
+        "worst_operator_repairable_fraction_lcb95": 0.49609375,
+        "worst_operator_repairable_fraction_ucb95": 0.568359375
+      },
+      "context_global": {
+        "worst_operator_gain_vs_shrink_db": 0.01768907818591131,
+        "worst_operator_gain_vs_shrink_db_lcb95": 0.014838342785031142,
+        "worst_operator_gain_vs_shrink_db_ucb95": 0.020495627135592193,
+        "worst_operator_repairable_fraction": 0.583984375,
+        "worst_operator_repairable_fraction_lcb95": 0.546875,
+        "worst_operator_repairable_fraction_ucb95": 0.6171875
+      },
+      "context_local": {
+        "worst_operator_gain_vs_shrink_db": 0.017806220439104993,
+        "worst_operator_gain_vs_shrink_db_lcb95": 0.015048139681628686,
+        "worst_operator_gain_vs_shrink_db_ucb95": 0.020453875375343863,
+        "worst_operator_repairable_fraction": 0.587890625,
+        "worst_operator_repairable_fraction_lcb95": 0.548828125,
+        "worst_operator_repairable_fraction_ucb95": 0.6171875
+      }
+    },
+    "operator_pairing_retained": true,
+    "primary_oracle_retention": 0.0916673692093366,
+    "primary_oracle_retention_lcb95": 0.08006881448270772,
+    "primary_oracle_retention_ucb95": 0.10284149276552654,
+    "primary_true_minus_shuffle_db": 0.009577268823493676,
+    "primary_true_minus_shuffle_db_lcb95": 0.007962963133478586,
+    "primary_true_minus_shuffle_db_ucb95": 0.011207225641771769,
+    "schema_version": 1,
+    "worst_operator_within_each_draw": true
+  },
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP",
+  "evidence_role": "development_screening",
+  "gates": {
+    "gain_lcb95_ge_0p020": false,
+    "global_minus_local_lcb95_gt_0": true,
+    "retention_lcb95_ge_0p25": false,
+    "structural_and_safety_guards": true,
+    "true_minus_shuffle_lcb95_ge_0p005": true
+  },
+  "locked_test_touched": false,
+  "name_count": 512,
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716",
+  "row_count": 5120,
+  "schema_version": 1,
+  "source_evidence_sha256": {
+    "v4a_a1r_bootstrap_summary.json": "6195c65c20230725ac006a599b1a6527211df1c0b0dd0274e2e7124aaaff64fe",
+    "v4a_a1r_cell_operator_summary.csv": "b8590131f3e8866dee3ee3640917754683f2a4a46a3253293d953e4dc11ceb1c",
+    "v4a_a1r_closeout.json": "d762eeba9303459d33b318041770cb594cb9be4f69638faed8b26af550d6e10a",
+    "v4a_a1r_fold_history.csv": "2d8dc2557574f888e96fe1c0d6aa2616d20f58d50369ebfe59eaba9caa29e7c1",
+    "v4a_a1r_probe_state_manifest.json": "ce463271846fdae9a2cb2c6d6931a2bccc3fe9d801cad684c27d9c0f084b3bce"
+  },
+  "source_route_commit": "86c8c3827507f20b4dec0862ff25b4110e6e9630",
+  "source_run_id": "a1x-v3-d0-r1",
+  "stage": "d0",
+  "state_count": 20
+}

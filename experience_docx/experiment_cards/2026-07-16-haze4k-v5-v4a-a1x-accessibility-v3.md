@@ -2,7 +2,7 @@
 
 Date: 2026-07-16
 
-Status: PLANNED
+Status: COMPLETED_GATE_FAIL
 
 ## Identity
 
@@ -77,6 +77,12 @@ states. Frozen results fail gain (`0.013200 < 0.020`) and retention (`0.080069 <
 0.25`) while passing true-minus-shuffle (`0.007963 >= 0.005`), global-minus-local
 (`0.000890 > 0`), and structural/safety guards. The expected typed result is D0
 FAIL with no formal authorization.
+
+The repaired typed closeout confirms that expected result. Proposed gain LCB95
+is `+0.013200 dB`, retention LCB95 is `0.080069`, true-minus-shuffle LCB95 is
+`+0.007963 dB`, and global-minus-local LCB95 is `+0.000890 dB`. The first two
+gates fail; structural/safety guards pass. This closes the global-head contract
+and forbids any 432-name formal run under this route.
 
 D0 will not be added to route_operations.json until S0 has a committed typed PASS. Its 2x2 audit will use all A1R fresh512 development groups, four folds, true and hash-deranged shuffle targets, image-balanced training, paired image bootstrap, and the five fixed promotion requirements above. D0 FAIL stops before confirmation data use.
 
