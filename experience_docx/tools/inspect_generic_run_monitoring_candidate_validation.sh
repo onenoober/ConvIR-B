@@ -16,6 +16,13 @@ if test -f "$OUTPUT_PATH/status.txt"; then
   tail -n 12 "$OUTPUT_PATH/status.txt"
   echo GENERIC_MONITOR_CANDIDATE_STATUS_END
 fi
+for log in launch.log runtime.log; do
+  if test -f "$OUTPUT_PATH/$log"; then
+    echo "GENERIC_MONITOR_CANDIDATE_LOG_BEGIN name=$log"
+    tail -n 80 "$OUTPUT_PATH/$log"
+    echo "GENERIC_MONITOR_CANDIDATE_LOG_END name=$log"
+  fi
+done
 if test -f "$CLOSEOUT"; then
   echo "GENERIC_MONITOR_CANDIDATE_CLOSEOUT_SHA256=$(sha256sum "$CLOSEOUT" | awk '{print $1}')"
   echo GENERIC_MONITOR_CANDIDATE_CLOSEOUT_BEGIN
