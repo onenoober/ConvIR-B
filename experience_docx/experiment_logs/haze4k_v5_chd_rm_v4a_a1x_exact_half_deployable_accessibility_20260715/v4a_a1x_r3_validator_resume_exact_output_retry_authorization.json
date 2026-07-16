@@ -1,0 +1,131 @@
+{
+  "schema_version": 2,
+  "record_type": "A1X_R3_VALIDATOR_RESUME_EXACT_OUTPUT_RETRY_AUTHORIZATION",
+  "subject": "A1X_R3_VALIDATOR_RESUME_EXACT_OUTPUT_REVIEW",
+  "closure_type": "AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "authorization_base_commit": "b1651adea645aed92aea00ec6994dd56638b720d",
+  "reviewed_route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "reviewed_route_commit": "b1651adea645aed92aea00ec6994dd56638b720d",
+  "original_resume_authorization_commit": "e14550bbbd4b18519c32ed7f321c8f0787978924",
+  "original_resume_authorization_path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_runner_sha_closeout_provenance_exact_resume_authorization.json",
+  "prior_blocker_path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_validator_resume_read_timeout_review_blocker.json",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "task_class": "R3_SCIENTIFIC_AUTHORITY",
+  "required_role": "frontier",
+  "effort": "high",
+  "state": "R3_VALIDATOR_RESUME_EXACT_OUTPUT_RETRY_AUTHORIZED",
+  "decision": "V4A_A1X_AUTHORIZE_ONE_R2_VALIDATOR_ONLY_EXACT_RETRY_AFTER_PRE_ACTION_READ_TIMEOUT",
+  "authorizes": "ONE_R2_VALIDATOR_ONLY_RETRY_WITH_SEPARATE_EXACT_PATH_READS_DIRECT_WSL_GIT_UNCHANGED_STATIC_SEQUENCE_AND_ORIGINAL_SEVEN_PATH_LOCAL_COMMIT_ONLY",
+  "transport_contract": "local_only",
+  "cloud_status": "inactive; no resource preflight or S0 run authorized",
+  "reviewed_dispatcher_output": {
+    "output_root": "C:/Users/wukongtao/.codex/dispatcher-runs/20260716T000156Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-balanced",
+    "answer_path": "C:/Users/wukongtao/.codex/dispatcher-runs/20260716T000156Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-balanced/answer.txt",
+    "events_path": "C:/Users/wukongtao/.codex/dispatcher-runs/20260716T000156Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-balanced/events.jsonl",
+    "child_task_class": "R2_ENGINEERING_CONTROL",
+    "child_role": "balanced",
+    "child_effort": "medium",
+    "child_handoff_sha256": "f888e5db5acff727176b3986e410a3c9387e7050c25ab91a275fde0897051fd5",
+    "command_execution_count": 1,
+    "first_command_was_combined": true,
+    "first_command_components": [
+      "Get-Content skill and AGENTS.md reads",
+      "Windows Git worktree, status, HEAD, and branch reads",
+      "rg file discovery"
+    ],
+    "first_command_exit_code": 124,
+    "first_command_status": "failed",
+    "first_command_aggregated_output": "",
+    "repository_read_result_returned_to_child": false,
+    "repository_edit_or_later_action_observed": false,
+    "subsequent_tool_call_count": 0,
+    "typed_failure": "Typed failure: initial read/verification command timed out before any repository state was read or modified. Per the no-retry instruction, I stopped at the local authorization-read boundary.",
+    "review_finding": "The child timed out in its first combined Get-Content/Windows-Git/rg command before any repository read result returned. Empty command output, no later tool event, and the immediate typed failure establish that it obtained no repository evidence and performed no edit, validation, staging, commit, runtime, or cloud action."
+  },
+  "preserved_dirty_sha256": {
+    "hash_algorithm": "SHA-256 over exact file bytes via sha256sum",
+    "all_exact": true,
+    "paths": {
+      "experience_docx/route_operations.json": "2871a5edb7ea67dfb707fa7a114ecc344523586e2390f6bd4ee8447f0bafe12f",
+      "experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py": "52d7ceb348df975002c090f65b3a90cbc7f6a815836ca9058f6b1936bc69ee65",
+      "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh": "148502b912a1516778ee9940bf69fdde4f9fe538f4998bf7a1c9b3d8686e5dd4",
+      "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": "52ff6ff97f0369833452e29b7138ba40f1dfd13f1842ca5c1257c1b92fc05da2",
+      "experience_docx/tools/validate_haze4k_v4a_a1x_route.py": "db0bdcffbc3cb3a629bc85a295c36c8ecd760c02ca707eafc779354c20f63998",
+      "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_closeout.json": "2f6614aa7876a32f6d1d54306887365a2b9a6960b6e82a228c3f8860124ce865"
+    }
+  },
+  "single_retry_contract": {
+    "retry_count": 1,
+    "retry_task_class": "R2_ENGINEERING_CONTROL",
+    "retry_role": "balanced",
+    "retry_effort": "medium",
+    "read_contract": [
+      "Read each required exact path in a separate command so one timeout cannot hide which read completed.",
+      "Use direct WSL Git for repository identity, diff, staging, and commit operations.",
+      "Do not use Windows Git, rg, file discovery, wildcard discovery, recursive listing, or any broad scan."
+    ],
+    "allowed_source_edit": "Only the three validator anchors IMPLEMENTATION_PARENT, AUTHORIZATION_PATH, and runner_closeout_proof authorized by the original resume authorization may change.",
+    "source_runtime_edits": "NONE",
+    "automatic_retry": false,
+    "on_any_retry_failure": "Write or retain one precise typed blocker with authorizes NONE, preserve the dirty repair, and stop before another edit, validation command, commit, runtime action, cloud action, dispatcher retry, or push."
+  },
+  "authorized_static_command_sequence": [
+    "/usr/bin/git diff --check -- experience_docx/route_operations.json experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py experience_docx/tools/validate_haze4k_v4a_a1x_route.py experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_closeout.json",
+    "/usr/bin/python3 -m py_compile experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "/usr/bin/bash -n experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+    "/usr/bin/python3 experience_docx/tools/validate_haze4k_v4a_a1x_route.py --repo /home/ubuntu/workspace/ConvIR-B-a1x-route-20260715 --output-json /home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_static_validation.json"
+  ],
+  "original_seven_path_final_commit": {
+    "required_direct_parent": "the commit containing this retry authorization record",
+    "paths": [
+      "experience_docx/route_operations.json",
+      "experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py",
+      "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_static_validation.json",
+      "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_closeout.json"
+    ],
+    "exact_path_count": 7,
+    "commit_subject": "A1X_R2_RUNTIME_IDENTITY_PROVENANCE_REPAIR",
+    "amend": false,
+    "push": false
+  },
+  "forbidden_continuations": [
+    "BROAD_SCAN",
+    "RG",
+    "WINDOWS_GIT",
+    "RUNTIME_ASSET_OR_DATA_OPEN",
+    "CHECKPOINT_OR_MODEL_STATE_OPEN",
+    "ENTRYPOINT_IMPORT_OR_EXECUTION",
+    "RUNNER_EXECUTION",
+    "RESOURCE_PREFLIGHT",
+    "S0",
+    "TRAINING",
+    "EVALUATION",
+    "INFERENCE",
+    "FORMAL",
+    "CANARY",
+    "LOCKED_TEST",
+    "CLOUD_TRANSPORT",
+    "SSH",
+    "CONVIR_OPS",
+    "PUSH"
+  ],
+  "scope_confirmations": {
+    "source_files_modified_by_this_review": false,
+    "validator_or_static_sequence_run_by_this_review": false,
+    "repository_staging_or_commit_before_this_record": false,
+    "runtime_or_assets_or_data_accessed": false,
+    "checkpoint_opened": false,
+    "cloud_or_ssh_or_convir_ops_used": false,
+    "runner_started": false,
+    "s0_or_formal_authorized": false,
+    "canary_touched": false,
+    "locked_test_touched": false,
+    "push_performed": false
+  },
+  "next_boundary": "One R2 validator-only retry using separate exact-path reads and direct WSL Git, followed by the unchanged single static command sequence and original seven-path local commit only on exact success. No second retry, runtime, cloud action, or push is authorized.",
+  "completion_marker": "A1X_R3_VALIDATOR_RESUME_EXACT_OUTPUT_REVIEW_COMPLETE"
+}
