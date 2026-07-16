@@ -2,7 +2,7 @@
 
 Date: 2026-07-16
 
-Status: L5 workflow-change audit; candidate pending cloud contract validation.
+Status: L5 workflow-change audit; adoption gate passed.
 
 ## Question
 
@@ -90,7 +90,7 @@ The candidate is acceptable only if all conditions pass:
 | Child prompt contract | nested dispatch, router reload, broad discovery, and transport selection prohibited |
 | MCP surface | exactly the six documented bounded tools |
 
-## Current Validation
+## Validation Evidence
 
 Local permitted checks at the candidate worktree:
 
@@ -102,14 +102,44 @@ Local permitted checks at the candidate worktree:
 - `git diff --check`: pass;
 - model calls: `0`.
 
-Runtime/behavioral contract validation remains pending on `convir-4090`. No
-local tests, smoke, training, evaluation, inference, or dispatcher child calls
-were run.
+Cloud validation on `convir-4090` at exact candidate
+`ca5bc6df09fc50e2d5a3cd22adf37ec94010adad` produced:
 
-## Candidate Decision
+- dispatcher role/effort/fail-closed matrix: `27/27 PASS`;
+- dispatcher model calls: `0`;
+- exact R1 typed authorization pass and mismatch rejection: pass;
+- `-Execute` without `-EnableOptionalDispatch`: rejected before a model call;
+- explicit optional-dispatch request on the Linux validator: stopped at the
+  platform gate before a model call;
+- circuit breaker: atomic open, duplicate rejection, failed-state retention,
+  and explicit post-recovery clear all pass;
+- child prompt nested-dispatch/router-reload/discovery/transport restrictions:
+  pass;
+- model-visible MCP surface: exactly the six documented tools;
+- candidate checkout diff/whitespace and clean-tree checks: pass;
+- PowerShell Core `7.4.6`, verified against official archive SHA-256
+  `6f6015203c47806c5cc444c19d8ed019695e610fbd948154264bf9ca8e157561`;
+- cloud validation stderr: empty.
 
-`PENDING_CLOUD_CONTRACT_VALIDATION`.
+The tracked zero-model runner is
+`experience_docx/tools/validate_experiment_control_candidate.sh`. Its cloud run
+root retained only compact `status.txt`, `summary.txt`, `stdout.log`, and empty
+`stderr.log`; the candidate checkout, PowerShell extraction, transferred
+archive, and transferred runner were removed after validation.
 
-Adopt only after the zero-model dispatcher contract matrix passes on
-`convir-4090`. A failed matrix blocks adoption and must be repaired in the
-current Sol task; it must not generate a dispatcher child or resume A1X.
+No local tests, smoke, training, evaluation, inference, experiment lifecycle
+tool, dispatcher child, or model switch ran. A1X remained paused and untouched.
+
+## Decision
+
+`ADOPT_SINGLE_MODEL_DEFAULT_OPTIONAL_DISPATCH`.
+
+The current qualified model is the default control plane. Dispatcher execution
+remains available only as explicit opt-in for a bounded operation that clearly
+amortizes its cold-start and handoff cost. Its failure circuit-breaks the exact
+authorization tuple and returns recovery to the current qualified task.
+
+This audit establishes safety, bounded execution, and removal of known
+recursive control paths. It does not claim a percentage reduction in real
+end-to-end experiment cost; that remains measurable only across future routes
+without rerunning experiments solely for accounting.

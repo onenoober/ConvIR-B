@@ -57,6 +57,8 @@ All new rule or evidence text must stay in its proper layer:
   current runtime rules.
 - Put workflow-change evaluations in L5 audit notes; they may justify a rule
   change, but they are not execution protocols.
+- Put reusable governance-only cloud contract runners in `experience_docx/tools/`;
+  they must state a zero-model boundary and must not share experiment runners.
 
 When a rule touches multiple files, update the canonical source and add short
 pointers elsewhere. Do not duplicate the full rule body across layers.
