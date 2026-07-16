@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_accessibility_v2_20260716",
+  "source_checkouts": {
+    "a1r": {
+      "commit": "7053405a5d6b862ab6edfce12acd491099ad58f6",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1r-representation-sufficiency-20260714"
+    },
+    "a1f": {
+      "commit": "d4f8d0936869c822ae19b5c21172efc2eb973dd8",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1f-deltau-action-feasibility-20260714"
+    },
+    "v3z": {
+      "commit": "3caddcc5265732e5be77e3404119a28cb28c11e6",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3z-source-3caddcc5265732e5be77e3404119a28cb28c11e6"
+    },
+    "v3s": {
+      "commit": "2860f580bb25cc75ec9ade56378af6d77f5c8d8b",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3s-source-2860f580bb25cc75ec9ade56378af6d77f5c8d8b"
+    },
+    "v3p": {
+      "commit": "555fd008e29f02128564f2fad41d0095ee44f5ea",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3p-source-555fd008e29f02128564f2fad41d0095ee44f5ea"
+    }
+  },
+  "files": {
+    "a1f_r3_review": {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1f-deltau-action-feasibility-20260714/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/v4a_a1f_r3_review.json",
+      "sha256": "a8b9064308710ac5fc890b9de0158c1faddb4d51f7d298d4991e9ddfb3616e1d"
+    },
+    "a0r_trace_manifest": {
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/a0r_r2/r1/trace/trace_manifest.json",
+      "sha256": "370f3f46b949391a8200c50b893561d78608adfef3c59f9ba2f76dd84a155780"
+    },
+    "official_checkpoint": {
+      "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    "control_checkpoint": {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3d-rarm-adapter-only-preflight/Dehazing/ITS/results/ConvIR-Haze4K-v3d-fam2modres-control-e5frome1-seed3407-20260710/Training-Results/Final.pkl",
+      "sha256": "08207119a5cf9e5c439dd2cb81b99029ade1861f2739d31e75f2f9f78d57c0f2"
+    },
+    "a0r_final_state": {
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/a0r_r2/r1/trace/states/epoch16_update512_final.pt",
+      "sha256": "ed0832f220996af3fd8e617b7d04d643dc6ca052a3603adee99d59e78fd1e125"
+    },
+    "fresh_split_manifest": {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-counterfactual-advantage-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/fresh_route_confirm_split_manifest.json",
+      "sha256": "c8c00fefc965ded3389b6311fc67ea521e1f3174f27793688544abe09dc420e7"
+    },
+    "action_bounds": {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-counterfactual-advantage-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3j_bounded_safe_correction_audit_20260711/bounded_action_space_bounds.json",
+      "sha256": "485ea12ff14c33b87105a50b6d118a9937c7e7f1b113062fe03d91eef3c9cc21"
+    },
+    "operator_manifest": {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3l-safe-step-escalation-physics-audit-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/v3l_a0_canonical_operator_artifact_manifest.json",
+      "sha256": "1d2ffa499128ad08a272d67c5439583900afe8ef87fb3256193ad5fe21c3af84"
+    },
+    "density_head": {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2-chd-rm-density-need-calibration/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2_density_need_calibration_20260708/artifacts/d3_density_only_head.pt",
+      "sha256": "1ffce13dccb41d96a47c2b5275f87bf2fdb73c226a190cfa240e5c71c1ec326f"
+    },
+    "d7c_head": {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v2d-chd-rm-need-spatial-hard-negative/experience_docx/experiment_logs/haze4k_v5_chd_rm_v2d_need_spatial_hard_negative_20260709/d7c_full/artifacts/d7c_mc_topk_hn_ordinal_head.pt",
+      "sha256": "09f449232024395cf64db15a2a0efa0f12d3e0e049e1da3d67229a3dc5729361"
+    },
+    "reference_oof_rows": {
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-counterfactual-advantage-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/cloud_only_raw_common_action/v3l_a1_oracle_policy_oof_rows_cloud_only.csv",
+      "sha256": "b4a10184fab77b0045440dc88530d000a892acf2105a6295d5ad8a488c67ecb1"
+    }
+  },
+  "data": {
+    "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+    "name_source": "frozen 1200-name order from fresh_split_manifest",
+    "a1x_indices": [768, 1200]
+  }
+}

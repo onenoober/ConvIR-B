@@ -1,0 +1,49 @@
+{
+  "schema_version": 3,
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_accessibility_v2_20260716",
+  "repo_name": "ConvIR-B",
+  "workspace_id": "a1x-v2-s0-20260716",
+  "rules_commit": "713aa5e2aa5a9c0dc1e09738dfb129db7327d9fd",
+  "rules_digest": "629a1125edba1bbc376aae3a90252d50f64c7769590731fa779d5ffe841053ae",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-16-haze4k-v5-v4a-a1x-accessibility-v2.md",
+  "route_card_blob": "40fc37ea93faf862ee7f1ec58b2abd3ba7f655f8",
+  "operations": {
+    "A1X_V2_S0": {
+      "runner_relpath": "experience_docx/tools/run_chd_rm_v4a_a1x_accessibility_v2.sh",
+      "mode": "s0",
+      "require_gpu": true,
+      "stage_state": "PLANNED",
+      "decision": "A1X_V2_S0_CARD_AUTHORIZED",
+      "authorizes": "A1X_V2_S0",
+      "locked_test_policy": "blocked",
+      "forbidden_continuations": [
+        "A1X_FORMAL_BEFORE_S0_PASS",
+        "CANARY",
+        "LOCKED_TEST",
+        "RESULT_CONDITIONED_REPAIR"
+      ],
+      "output_id": "a1x-v2-s0-r1",
+      "closeout_filename": "a1x_v2_s0_closeout.json",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "allowed_terminal_tuples": [
+        {
+          "state": "COMPLETED_GATE_PASS",
+          "decision": "A1X_V2_S0_PASS_AUTHORIZE_FORMAL",
+          "authorizes": "A1X_V2_FORMAL_ONLY"
+        },
+        {
+          "state": "COMPLETED_GATE_FAIL",
+          "decision": "A1X_V2_S0_ENGINEERING_FAIL_STOP",
+          "authorizes": "NONE"
+        }
+      ],
+      "workspace_policy": "fresh_route",
+      "output_policy": "new",
+      "monitor_profile": "short",
+      "heartbeat_timeout_seconds": 180,
+      "min_free_gpu_mib": 18000,
+      "max_gpu_utilization_pct": 10
+    }
+  }
+}
