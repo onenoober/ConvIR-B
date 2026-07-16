@@ -54,3 +54,9 @@ Canonical corrections retained from prior incidents:
 - a Windows executable leaked into WSL PATH: use the absolute Linux binary.
 - SSH consumed wrapper stdin and skipped later markers: send one complete script
   as SSH stdin and return one structured result.
+- 2026-07-16 invalid: cloud GitHub HTTPS ref read hit the fixed low-speed abort
+  before validation. Corrected once: use the cloud's configured non-interactive
+  GitHub SSH transport, shared clone, and one exact ref fetch.
+- 2026-07-16 invalid: assumed `/usr/bin/rg` existed in WSL. Corrected once: test
+  the explicit Linux path and use an already available fixed Linux reader when
+  it is absent; never fall through to a Windows PATH executable.

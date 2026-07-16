@@ -242,6 +242,22 @@ else:
             "REJECTED",
         )
 
+    def test_remote_script_rejects_binary_and_oversized_content(self):
+        binary = self.commit_file(
+            "binary.sh", b"set -euo pipefail\n\x00echo invalid\n"
+        )
+        self.assertEqual(
+            self.call("remote-script", "--script", str(binary))["state"], "REJECTED"
+        )
+        oversized = self.commit_file(
+            "oversized.sh",
+            b"set -euo pipefail\n#" + b"x" * convirctl.MAX_SCRIPT_BYTES,
+        )
+        self.assertEqual(
+            self.call("remote-script", "--script", str(oversized))["state"],
+            "REJECTED",
+        )
+
     def test_remote_failure_timeout_and_output_limit_are_typed(self):
         script = self.commit_file("remote.sh", b"set -euo pipefail\necho ok\n")
         with mock.patch.dict(os.environ, {"FAKE_SSH_MODE": "fail"}, clear=False):
