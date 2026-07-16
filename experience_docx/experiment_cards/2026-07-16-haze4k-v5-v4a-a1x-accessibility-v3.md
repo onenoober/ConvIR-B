@@ -2,7 +2,7 @@
 
 Date: 2026-07-16
 
-Status: PLANNED
+Status: ENGINEERING_REPAIR_PLANNED after S0 r1 preflight failure; no model workload ran.
 
 ## Identity
 
@@ -36,6 +36,16 @@ Status: PLANNED
 - Runner and required assets: experience_docx/tools/run_chd_rm_v4a_a1x_accessibility_v3_s0.sh; S0 entrypoint, debug32 manifest, parent128 state-identity split, asset manifest, A1C reference source, and generic run telemetry.
 
 ## Operations And Evidence
+
+- S0 r1 closeout: `FAILED_ENGINEERING` before `preflight_pass`; the pinned A1C
+  reference checkout path was absent on `convir-4090`. No runtime log or model
+  summary was created, and confirmation/canary/locked-test flags remained
+  false. This is an asset-packaging failure, not an S0 gate result.
+- Frozen repair boundary: vendor only the exact A1C `endpoint` reference needed
+  for bit-exact transport comparison into the route commit, preserve its
+  upstream commit/source hash provenance, and use a fresh `a1x-v3-s0-r2`
+  output. No data, model, loss, threshold, epoch, LR, width, or gate changes are
+  authorized by this repair.
 
 - First operation: A1X_V3_S0
 - Expected wall time and monitor profile: at most 20 minutes; short profile; 60-second metadata-only heartbeat, 300-second stale threshold, one expected-end observation.
