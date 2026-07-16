@@ -1,6 +1,6 @@
 # Generic Run Monitoring Validation Evidence
 
-Status: `CANDIDATE_GATE_PASS_INTEGRATION_REVIEW_ONLY`
+Status: `COMPLETED_ADOPTED`
 
 This control-only route validates metadata-only telemetry and bounded closeout
 monitoring on `convir-4090`. It uses no GPU, model, checkpoint, dataset,
@@ -49,3 +49,20 @@ sidecar lifecycle case. It proves the sidecar exits after its exact parent is
 naturally reaped, without sending a signal. All seven telemetry and 22 control-
 plane tests passed. The stronger summary, closeout, and outcome are archived
 here; the adoption boundary is unchanged.
+
+## Receipt-Bound Registered-Service E2E
+
+The final `generic-monitor-e2e-r1` operation passed through the registered
+`convir-ops 4.1.0` executable with exactly six schema-v4 tools. It completed
+plan, launch, one bounded finish, closeout validation, evidence listing/fetch,
+and read-only Git audit. Evidence fetch performed no Git mutation. The terminal
+tuple authorizes `GENERIC_RUN_MONITORING_ADOPTION` only; it does not authorize a
+model experiment.
+
+- closeout: `generic_run_monitoring_e2e_closeout.json`, SHA-256
+  `2e6f627eb5b3a6b0d3645aa0cfd91b43992d2625a8df41d345a77270cbad8f72`;
+- summary: `generic_run_monitoring_e2e_summary.json`, SHA-256
+  `5199e564a6da93a77ffcd8178c6415ccfb4511ae299cd79d6430087959eddb2c`;
+- control report: `generic_run_monitoring_e2e_outcome.json`;
+- raw runtime log remains cloud-only under
+  `/sda/home/wangyuxin/ConvIR-B/runs/generic_run_monitoring_validation_20260716/generic-monitor-e2e-r1`.

@@ -1,0 +1,18 @@
+{
+  "authorizes": "GENERIC_RUN_MONITORING_ADOPTION",
+  "canary_touched": false,
+  "checkpoint_touched": false,
+  "dataset_touched": false,
+  "decision": "GENERIC_RUN_MONITORING_E2E_PASS",
+  "gpu_used": false,
+  "locked_test_touched": false,
+  "model_calls": 0,
+  "route_commit": "c84823d2c135936c0793768eecaa654dc206ca2f",
+  "route_id": "generic_run_monitoring_validation_20260716",
+  "run_id": "generic-monitor-e2e-r1",
+  "runner_sha256": "c8cfbe5d4650a21e0aead2c01586192b8cf7fae2e0f9d49b8f8c71e210be97b6",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "timestamp_unix": 1784207236.7643178,
+  "validation_pass": true
+}

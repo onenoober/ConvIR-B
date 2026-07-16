@@ -70,3 +70,9 @@ Canonical corrections retained from prior incidents:
   complete stdin script with fixed host/shell, timeout, and 64 KiB stream caps.
   Manual actions still require an unchanged committed script through
   `convirctl remote-script`; no generic command surface was added.
+- 2026-07-16 invalid: expected the current Codex task's MCP client to reconnect
+  after normally terminating its uniquely identified old server process.
+  Corrected once: do not hot-reload an active task's stdio transport. Fast-
+  forward the dedicated registered worktree, then either let a new app/task
+  session spawn the updated server or validate the exact registered executable
+  with one isolated state directory and the unchanged six-tool interface.

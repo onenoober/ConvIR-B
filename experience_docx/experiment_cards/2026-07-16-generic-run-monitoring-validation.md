@@ -2,7 +2,7 @@
 
 Date: 2026-07-16
 
-Status: `PLANNED`
+Status: `COMPLETED`
 
 ## Identity
 
@@ -83,19 +83,17 @@ Status: `PLANNED`
 
 ## Decision
 
-- Verdict and primary reason: strengthened isolated candidate gate passed;
-  seven telemetry and 22 control-plane tests passed with a typed
-  `COMPLETED_GATE_PASS` closeout. The final registered-service E2E gate is now
-  planned under its exact prior authorization.
+- Verdict and primary reason: adopted; the strengthened candidate and final
+  receipt-bound registered-service E2E both passed their frozen gates.
 - Mechanism/control and safety reason: telemetry remained metadata-only and
   fail-open; semantic audit found no process/GPU control or scientific-output
   read, and control-plane observation remained bounded and receipt-bound.
 - Evidence-independence and cost reason: no model, GPU, dataset, checkpoint,
-  canary, or locked test was used; 100 pulses consumed `0.154600732` CPU
-  seconds and produced only one 230-byte heartbeat file.
-- Authorized next action or terminal stop: run only the receipt-bound
-  registered-service schema-v4 E2E operation. Model experiments and adoption
-  remain blocked until its typed closeout passes.
+  canary, or locked test was used; final E2E 100-pulse CPU was
+  `0.154378791` seconds and produced only one 231-byte heartbeat file.
+- Authorized next action or terminal stop: adopt generic monitoring for future
+  long cloud operations. This closeout does not authorize A1X, training,
+  evaluation, inference, canary, or locked-test access.
 
 ## Candidate Validation History
 
@@ -138,3 +136,12 @@ Status: `PLANNED`
   registered executable and path will be exercised through one isolated stdio
   instance and isolated state directory. This does not broaden its six-tool
   interface or experiment scope.
+- The isolated registered-path instance reported server `4.1.0`, source SHA-256
+  `dc07ac60056b5e7da52f045419f196c82f6a19a64255408504056b1329ecc2ae`,
+  and exactly six schema-v4 tools. It completed `PLAN_READY -> LAUNCHED ->
+  CLOSEOUT_VALIDATED`, fetched the two receipt-bound evidence files without Git
+  mutation, and validated the adoption terminal tuple.
+- The final closeout SHA-256 is
+  `2e6f627eb5b3a6b0d3645aa0cfd91b43992d2625a8df41d345a77270cbad8f72`;
+  summary SHA-256 is
+  `5199e564a6da93a77ffcd8178c6415ccfb4511ae299cd79d6430087959eddb2c`.
