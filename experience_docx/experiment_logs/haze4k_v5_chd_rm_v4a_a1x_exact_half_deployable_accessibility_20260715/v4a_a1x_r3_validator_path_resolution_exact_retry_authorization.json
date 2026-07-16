@@ -1,0 +1,169 @@
+{
+  "schema_version": 2,
+  "record_type": "A1X_R3_VALIDATOR_PATH_RESOLUTION_EXACT_RETRY_AUTHORIZATION",
+  "subject": "A1X_R3_VALIDATOR_PATH_RESOLUTION_REVIEW",
+  "closure_type": "AUTHORIZATION",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "authorization_base_commit": "a8629a46e94abb6fcb1f3cc7f11788551d2122ec",
+  "reviewed_route_branch": "codex/haze4k-v5-v4a-a1x-exact-half-accessibility-20260715",
+  "reviewed_route_commit": "a8629a46e94abb6fcb1f3cc7f11788551d2122ec",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "task_class": "R3_SCIENTIFIC_AUTHORITY",
+  "required_role": "frontier",
+  "effort": "high",
+  "state": "R3_VALIDATOR_PATH_RESOLUTION_EXACT_RETRY_AUTHORIZED",
+  "decision": "V4A_A1X_AUTHORIZE_ONE_FINAL_R2_VALIDATOR_ONLY_RETRY_WITH_EXACT_PATHS",
+  "authorizes": "ONE_FINAL_R2_VALIDATOR_ONLY_RETRY_WITH_SEPARATE_EXACT_READS_UNCHANGED_STATIC_SEQUENCE_AND_ORIGINAL_SEVEN_PATH_LOCAL_COMMIT_ONLY",
+  "transport_contract": "local_only",
+  "cloud_status": "inactive; no resource preflight or S0 run authorized",
+  "reviewed_dispatcher_output": {
+    "output_root": "C:/Users/wukongtao/.codex/dispatcher-runs/20260716T001843Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-balanced",
+    "answer_path": "C:/Users/wukongtao/.codex/dispatcher-runs/20260716T001843Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-balanced/answer.txt",
+    "events_path": "C:/Users/wukongtao/.codex/dispatcher-runs/20260716T001843Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-balanced/events.jsonl",
+    "metadata_path": "C:/Users/wukongtao/.codex/dispatcher-runs/20260716T001843Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-balanced/dispatch_metadata.json",
+    "child_task_class": "R2_ENGINEERING_CONTROL",
+    "child_role": "balanced",
+    "child_effort": "medium",
+    "child_handoff_sha256": "dcb70d84d90dec16afa5787c6a971e3d64ceaf92355383241f44ea682bb76be2",
+    "command_execution_count": 2,
+    "exact_commands": [
+      "wsl.exe cat /mnt/c/Users/wukongtao/.codex/skills/experiment-model-router/SKILL.md",
+      "wsl.exe cat /home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/AGENTS.md"
+    ],
+    "only_skill_and_agents_exact_reads": true,
+    "repository_hash_or_identity_read": false,
+    "repository_edit": false,
+    "validation_or_compile": false,
+    "staging": false,
+    "commit": false,
+    "runtime_or_cloud_action": false,
+    "typed_failure": "PRE_ACTION_PATH_RESOLUTION_BLOCKED",
+    "review_finding": "After the required route marker and handoff acknowledgment, the child read only the exact skill and AGENTS.md paths, then stopped with PRE_ACTION_PATH_RESOLUTION_BLOCKED. The event stream contains no repository hash, identity read, edit, validation, staging, commit, runtime, or cloud action."
+  },
+  "exact_path_resolution": {
+    "repository_root": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715",
+    "skill": "/mnt/c/Users/wukongtao/.codex/skills/experiment-model-router/SKILL.md",
+    "agents": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/AGENTS.md",
+    "path_resolution_retry_authorization": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_validator_path_resolution_exact_retry_authorization.json",
+    "prior_retry_authorization": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_validator_resume_exact_output_retry_authorization.json",
+    "original_resume_authorization": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_runner_sha_closeout_provenance_exact_resume_authorization.json",
+    "validator": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "route_operations": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/route_operations.json",
+    "manifest_helper": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py",
+    "runner": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+    "entrypoint": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+    "validator_dirty_path": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "failure_closeout": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_closeout.json",
+    "static_validation_output": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_static_validation.json"
+  },
+  "preserved_dirty_sha256": {
+    "hash_algorithm": "SHA-256 over exact file bytes via sha256sum",
+    "source_commit": "a8629a46e94abb6fcb1f3cc7f11788551d2122ec",
+    "all_exact": true,
+    "paths": {
+      "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/route_operations.json": "2871a5edb7ea67dfb707fa7a114ecc344523586e2390f6bd4ee8447f0bafe12f",
+      "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py": "52d7ceb348df975002c090f65b3a90cbc7f6a815836ca9058f6b1936bc69ee65",
+      "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh": "148502b912a1516778ee9940bf69fdde4f9fe538f4998bf7a1c9b3d8686e5dd4",
+      "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": "52ff6ff97f0369833452e29b7138ba40f1dfd13f1842ca5c1257c1b92fc05da2",
+      "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/validate_haze4k_v4a_a1x_route.py": "db0bdcffbc3cb3a629bc85a295c36c8ecd760c02ca707eafc779354c20f63998",
+      "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_closeout.json": "2f6614aa7876a32f6d1d54306887365a2b9a6960b6e82a228c3f8860124ce865"
+    }
+  },
+  "final_r2_retry_contract": {
+    "retry_count": 1,
+    "retry_is_final": true,
+    "retry_task_class": "R2_ENGINEERING_CONTROL",
+    "retry_role": "balanced",
+    "retry_effort": "medium",
+    "required_head": "the commit containing this authorization record",
+    "read_contract": [
+      "Read each required exact path in a separate tool call.",
+      "Use the absolute paths in exact_path_resolution; no discovery or path substitution is permitted.",
+      "Verify required_head with direct WSL /usr/bin/git rev-parse HEAD.",
+      "Verify all six preserved_dirty_sha256 paths independently with /usr/bin/sha256sum before any edit.",
+      "Use direct WSL Git only; do not use Windows Git or bash -lc."
+    ],
+    "exact_validator_anchors": {
+      "allowed_path": "/home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "allowed_anchors": [
+        "IMPLEMENTATION_PARENT",
+        "AUTHORIZATION_PATH",
+        "runner_closeout_proof"
+      ],
+      "required_changes": [
+        "Set IMPLEMENTATION_PARENT to the exact required_head commit returned before the validator edit.",
+        "Set AUTHORIZATION_PATH to experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_validator_path_resolution_exact_retry_authorization.json.",
+        "Replace only runner_closeout_proof with the AST def-use proof authorized by the original resume authorization."
+      ],
+      "source_runtime_edits": "NONE",
+      "other_source_edits": "NONE"
+    },
+    "automatic_retry": false,
+    "further_retry_authorized": false,
+    "on_any_failure": "Write or retain one precise typed blocker with authorizes NONE, preserve the dirty repair, and stop before another edit, validation command, commit, runtime action, cloud action, dispatcher retry, or push."
+  },
+  "authorized_static_command_sequence": [
+    "/usr/bin/git diff --check -- experience_docx/route_operations.json experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py experience_docx/tools/validate_haze4k_v4a_a1x_route.py experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_closeout.json",
+    "/usr/bin/python3 -m py_compile experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+    "/usr/bin/bash -n experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+    "/usr/bin/python3 experience_docx/tools/validate_haze4k_v4a_a1x_route.py --repo /home/ubuntu/workspace/ConvIR-B-a1x-route-20260715 --output-json /home/ubuntu/workspace/ConvIR-B-a1x-route-20260715/experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_static_validation.json"
+  ],
+  "original_seven_path_final_commit": {
+    "required_direct_parent": "the commit containing this authorization record",
+    "paths": [
+      "experience_docx/route_operations.json",
+      "experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py",
+      "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh",
+      "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py",
+      "experience_docx/tools/validate_haze4k_v4a_a1x_route.py",
+      "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_static_validation.json",
+      "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_closeout.json"
+    ],
+    "exact_path_count": 7,
+    "commit_subject": "A1X_R2_RUNTIME_IDENTITY_PROVENANCE_REPAIR",
+    "amend": false,
+    "push": false
+  },
+  "forbidden_continuations": [
+    "BROAD_SCAN",
+    "RG",
+    "FILE_DISCOVERY",
+    "WILDCARD_OR_RECURSIVE_LISTING",
+    "COMBINED_READ_COMMAND",
+    "BASH_LC",
+    "WINDOWS_GIT",
+    "SOURCE_RUNTIME_EDIT",
+    "RUNTIME_ASSET_OR_DATA_OPEN",
+    "CHECKPOINT_OR_MODEL_STATE_OPEN",
+    "ENTRYPOINT_IMPORT_OR_EXECUTION",
+    "RUNNER_EXECUTION",
+    "RESOURCE_PREFLIGHT",
+    "S0",
+    "TRAINING",
+    "EVALUATION",
+    "INFERENCE",
+    "FORMAL",
+    "CANARY",
+    "LOCKED_TEST",
+    "CLOUD_TRANSPORT",
+    "SSH",
+    "CONVIR_OPS",
+    "PUSH",
+    "FURTHER_RETRY"
+  ],
+  "scope_confirmations": {
+    "source_files_modified_by_this_review": false,
+    "validator_or_static_sequence_run_by_this_review": false,
+    "repository_staging_or_commit_before_this_record": false,
+    "runtime_or_assets_or_data_accessed": false,
+    "checkpoint_opened": false,
+    "cloud_or_ssh_or_convir_ops_used": false,
+    "runner_started": false,
+    "s0_or_formal_authorized": false,
+    "canary_touched": false,
+    "locked_test_touched": false,
+    "push_performed": false
+  },
+  "next_boundary": "One final R2 validator-only retry using separate exact-path reads and direct WSL Git, followed by the unchanged single static command sequence and original seven-path local commit only on exact success. No further retry, runtime, cloud action, or push is authorized.",
+  "completion_marker": "A1X_R3_VALIDATOR_PATH_RESOLUTION_REVIEW_COMPLETE"
+}
