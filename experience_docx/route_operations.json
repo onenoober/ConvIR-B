@@ -8,8 +8,8 @@
       "runner_relpath": "experience_docx/tools/run_chd_rm_v4a_a1x_v3_d0_closeout_repair.sh",
       "mode": "d0_closeout_repair",
       "require_gpu": false,
-      "output_id": "a1x-v3-d0-closeout-r2",
-      "closeout_filename": "a1x_v3_d0_closeout.json",
+      "output_id": "a1x-v3-d0-closeout-r3",
+      "closeout_filename": "a1x_v3_d0_repaired_closeout.json",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
       "allowed_terminal_tuples": [

@@ -82,7 +82,7 @@ def main() -> None:
         "canary_touched": False, "locked_test_touched": False,
         "candidate_selected": False, "formal_authorized": False,
     }
-    write_json(output / "a1x_v3_d0_closeout.json", closeout)
+    write_json(output / "a1x_v3_d0_repaired_closeout.json", closeout)
     print(json.dumps(closeout, sort_keys=True), flush=True)
 
 
