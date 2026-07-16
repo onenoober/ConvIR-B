@@ -64,6 +64,24 @@ class RunTelemetryTests(unittest.TestCase):
             self.assertIn("WORKLOAD_OK", output)
             self.assertTrue(heartbeat.is_file())
 
+    def test_unbounded_sidecar_exits_after_parent_is_reaped(self):
+        with tempfile.TemporaryDirectory() as root:
+            heartbeat = Path(root) / "heartbeat.json"
+            workload = subprocess.Popen([
+                sys.executable, "-c", "import time; time.sleep(.4)",
+            ])
+            sidecar = subprocess.Popen([
+                sys.executable, str(MODULE_PATH), "sidecar",
+                "--route-id", "route-a", "--run-id", "run-1",
+                "--phase", "work", "--heartbeat", str(heartbeat),
+                "--parent-pid", str(workload.pid),
+                "--interval-seconds", "0.03",
+            ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertEqual(0, workload.wait(timeout=5))
+            stdout, stderr = sidecar.communicate(timeout=5)
+            self.assertEqual((0, "", ""), (sidecar.returncode, stdout, stderr))
+            self.assertTrue(heartbeat.is_file())
+
     def test_unwritable_telemetry_is_fail_open(self):
         started = time.monotonic()
         result = subprocess.run([
