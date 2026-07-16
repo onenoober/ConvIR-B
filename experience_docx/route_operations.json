@@ -8,7 +8,7 @@
       "runner_relpath": "experience_docx/tools/run_generic_run_monitoring_validation.sh",
       "mode": "synthetic_validation",
       "require_gpu": false,
-      "output_id": "generic-monitor-validation-r1",
+      "output_id": "generic-monitor-validation-r2",
       "closeout_filename": "generic_run_monitoring_validation_closeout.json",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,

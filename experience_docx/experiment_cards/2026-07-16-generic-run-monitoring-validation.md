@@ -65,6 +65,19 @@ Status: `PLANNED`
 - Compact Git evidence and cloud-only raw artifacts: summary and typed closeout
   are compact; test stdout remains in the cloud output.
 
+## Prelaunch Control-Plane Incident
+
+- The first planned output identity `generic-monitor-validation-r1` did not
+  reach SSH: the MCP's internal temporary script conflicted with the committed-
+  script-only transport contract. It produced no receipt and no runner.
+- One committed read-only inspection at route commit
+  `862dc4533d8ce351937204cb849b6412f3c303f8` confirmed that the exact remote
+  repository, output path, closeout, and tmux session were all absent.
+- The single allowed repair keeps the six-tool schema and fixed host, sends only
+  internally generated bodies through bounded SSH stdin, and changes the next
+  output identity to `generic-monitor-validation-r2`. No experiment scope,
+  model, data, gate, or authorization changed.
+
 ## Decision
 
 Fill only after terminal evidence.

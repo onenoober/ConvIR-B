@@ -11,6 +11,7 @@ import shlex
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import uuid
 from contextlib import contextmanager
@@ -27,6 +28,10 @@ REMOTE_REPOS = f"{REMOTE_BASE}/repos"
 REMOTE_RUNS = f"{REMOTE_BASE}/runs"
 REMOTE_PYTHON = f"{REMOTE_BASE}/envs/convir-cu121/bin/python"
 GITHUB_URL = "git@github.com:onenoober/ConvIR-B.git"
+SSH = "/usr/bin/ssh"
+REMOTE_BASH = "/bin/bash"
+MAX_REMOTE_SCRIPT_BYTES = 256 * 1024
+MAX_REMOTE_CAPTURE_BYTES = 64 * 1024
 ROUTE_OPERATIONS_RELPATH = "experience_docx/route_operations.json"
 RULE_BUNDLE_RELPATHS = (
     "AGENTS.md",
@@ -212,17 +217,6 @@ def derive_session(route_id, mode, commit, output_id):
     return f"convir-{route_id[:18]}-{mode[:10]}-{output_id[:10]}-{digest}"[:64]
 
 
-def helper_path():
-    path = Path(__file__).with_name("convir_remote_script.sh")
-    if not path.is_file():
-        raise ToolError(
-            "tracked remote wrapper is missing",
-            failure_phase="remote_transport",
-            failure_class="command_infra",
-        )
-    return path
-
-
 def run_local(args, *, timeout, phase):
     try:
         result = subprocess.run(args, text=True, capture_output=True, timeout=timeout)
@@ -253,17 +247,112 @@ def inspect_local(args, *, timeout=30):
 
 
 def run_remote(body, *, timeout=120, phase="remote_transport"):
-    with tempfile.NamedTemporaryFile("w", suffix=".sh", delete=False, encoding="utf-8") as handle:
-        path = Path(handle.name)
-        handle.write("#!/usr/bin/env bash\nset -euo pipefail\n")
-        handle.write(body)
-        handle.write("\n")
-    try:
-        return run_local(
-            ["bash", str(helper_path()), str(path)], timeout=timeout, phase=phase
+    """Send an internally generated script over one fixed, bounded SSH channel."""
+    if not isinstance(body, str) or "\x00" in body:
+        raise ToolError(
+            "remote body must be NUL-free text",
+            failure_phase=phase,
+            failure_class="contract",
         )
-    finally:
-        path.unlink(missing_ok=True)
+    script = (
+        "#!/usr/bin/env bash\nset -euo pipefail\n" + body.rstrip("\n") + "\n"
+    ).encode("utf-8")
+    if len(script) > MAX_REMOTE_SCRIPT_BYTES:
+        raise ToolError(
+            "remote body exceeds the fixed size limit",
+            failure_phase=phase,
+            failure_class="contract",
+        )
+    connect_timeout = max(1, min(int(timeout), 30))
+    argv = [
+        SSH, "-T", "-o", "BatchMode=yes",
+        "-o", f"ConnectTimeout={connect_timeout}",
+        REMOTE_HOST, REMOTE_BASH, "-s", "--",
+    ]
+    try:
+        process = subprocess.Popen(
+            argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+    except OSError as exc:
+        raise ToolError(
+            f"{phase} could not start",
+            failure_phase=phase,
+            failure_class="command_infra",
+        ) from exc
+
+    stdout = bytearray()
+    stderr = bytearray()
+    thread_errors = []
+    store_limit = MAX_REMOTE_CAPTURE_BYTES + 1
+
+    def drain(stream, target):
+        try:
+            while True:
+                block = stream.read(8192)
+                if not block:
+                    break
+                remaining = store_limit - len(target)
+                if remaining > 0:
+                    target.extend(block[:remaining])
+        except OSError as exc:
+            thread_errors.append(exc)
+        finally:
+            stream.close()
+
+    def feed():
+        try:
+            process.stdin.write(script)
+            process.stdin.flush()
+        except BrokenPipeError:
+            pass
+        except OSError as exc:
+            thread_errors.append(exc)
+        finally:
+            process.stdin.close()
+
+    threads = [
+        threading.Thread(target=drain, args=(process.stdout, stdout), daemon=True),
+        threading.Thread(target=drain, args=(process.stderr, stderr), daemon=True),
+        threading.Thread(target=feed, daemon=True),
+    ]
+    for thread in threads:
+        thread.start()
+    try:
+        return_code = process.wait(timeout=timeout)
+    except subprocess.TimeoutExpired as exc:
+        process.kill()
+        process.wait()
+        for thread in threads:
+            thread.join(timeout=5)
+        raise ToolError(
+            f"{phase} timed out; remote state is unknown",
+            failure_phase=phase,
+            failure_class="command_infra",
+        ) from exc
+    for thread in threads:
+        thread.join(timeout=5)
+    if any(thread.is_alive() for thread in threads) or thread_errors:
+        raise ToolError(
+            f"{phase} streams did not close cleanly",
+            failure_phase=phase,
+            failure_class="command_infra",
+        )
+    if len(stdout) > MAX_REMOTE_CAPTURE_BYTES or len(stderr) > MAX_REMOTE_CAPTURE_BYTES:
+        raise ToolError(
+            f"{phase} output exceeded the fixed capture limit",
+            failure_phase=phase,
+            failure_class="command_infra",
+        )
+    stdout_text = bytes(stdout).decode("utf-8", errors="replace")
+    stderr_text = bytes(stderr).decode("utf-8", errors="replace")
+    if return_code:
+        detail = (stdout_text + stderr_text).strip()[:4096]
+        raise ToolError(
+            f"{phase} failed rc={return_code}: {detail}",
+            failure_phase=phase,
+            failure_class="command_infra",
+        )
+    return stdout_text.strip()
 
 
 def github_refs(refs):

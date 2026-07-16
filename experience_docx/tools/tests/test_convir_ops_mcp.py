@@ -1,7 +1,8 @@
-"""Mocked-transport tests for the minimal convir-ops schema-v4 lifecycle."""
+"""Transport and lifecycle tests for the minimal convir-ops schema-v4 bridge."""
 
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -202,6 +203,55 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertIn("+refs/heads/codex/a1x:refs/convir-verify/route", fetches[0])
         self.assertIn("+refs/heads/main:refs/convir-verify/main", fetches[0])
 
+    def test_remote_transport_uses_fixed_argv_and_complete_stdin(self):
+        with tempfile.TemporaryDirectory() as root:
+            root = Path(root)
+            fake_ssh = root / "fake-ssh"
+            argv_path = root / "argv.json"
+            stdin_path = root / "stdin.bin"
+            fake_ssh.write_text(
+                f"#!{sys.executable}\n"
+                "import json, os, sys\n"
+                "from pathlib import Path\n"
+                "Path(os.environ['CONVIR_TEST_ARGV']).write_text(json.dumps(sys.argv[1:]))\n"
+                "Path(os.environ['CONVIR_TEST_STDIN']).write_bytes(sys.stdin.buffer.read())\n"
+                "sys.stdout.write('REMOTE_BOUNDARY_OK\\n')\n",
+                encoding="utf-8",
+            )
+            fake_ssh.chmod(0o700)
+            with (
+                patch.object(OPS, "SSH", str(fake_ssh)),
+                patch.dict(os.environ, {
+                    "CONVIR_TEST_ARGV": str(argv_path),
+                    "CONVIR_TEST_STDIN": str(stdin_path),
+                }),
+            ):
+                output = OPS.run_remote("printf 'PAYLOAD_OK\\n'", timeout=5)
+            self.assertEqual("REMOTE_BOUNDARY_OK", output)
+            self.assertEqual([
+                "-T", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5",
+                "convir-4090", "/bin/bash", "-s", "--",
+            ], json.loads(argv_path.read_text(encoding="utf-8")))
+            self.assertEqual(
+                b"#!/usr/bin/env bash\nset -euo pipefail\nprintf 'PAYLOAD_OK\\n'\n",
+                stdin_path.read_bytes(),
+            )
+
+    def test_remote_transport_drains_but_rejects_oversized_output(self):
+        with tempfile.TemporaryDirectory() as root:
+            fake_ssh = Path(root) / "fake-ssh"
+            fake_ssh.write_text(
+                f"#!{sys.executable}\n"
+                "import sys\n"
+                "sys.stdin.buffer.read()\n"
+                f"sys.stdout.write('x' * {OPS.MAX_REMOTE_CAPTURE_BYTES + 1})\n",
+                encoding="utf-8",
+            )
+            fake_ssh.chmod(0o700)
+            with patch.object(OPS, "SSH", str(fake_ssh)):
+                with self.assertRaisesRegex(OPS.ToolError, "output exceeded"):
+                    OPS.run_remote("true", timeout=5)
+
     def test_live_rules_check_does_not_mutate_signed_plan(self):
         ctx = context()
         before = json.dumps(ctx, sort_keys=True)
@@ -353,7 +403,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("4.0.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("4.1.0", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")

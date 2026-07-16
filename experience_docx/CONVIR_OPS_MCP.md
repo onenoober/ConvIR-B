@@ -21,6 +21,11 @@ arbitrary command, remote path, metric, threshold, or scientific verdict.
 
 Do not add generic shell, SSH, cleanup, retry, watcher, commit, push,
 authorization-file, validator or model-routing tools.
+Internally generated, schema-bound bodies cross the fixed host boundary only as
+one stdin script to fixed `/usr/bin/ssh` and `/bin/bash`; stdout and stderr are
+drained with 64 KiB caps and every call has a hard timeout. No tool accepts the
+body or any remote command from a caller. The separate `convirctl remote-script`
+contract remains limited to unchanged Git-tracked scripts for manual actions.
 
 ## Manifest
 
