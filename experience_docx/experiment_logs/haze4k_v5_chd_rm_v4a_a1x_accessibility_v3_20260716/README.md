@@ -1,6 +1,6 @@
 # A1X-v3 evidence
 
-Status: S0 r1 `FAILED_ENGINEERING` during asset preflight; no model workload ran.
+Status: S0 r4 `COMPLETED_GATE_PASS`; only A1X_V3_D0_DESIGN_ONLY is authorized.
 
 The initial route bundle contains only A1X_V3_S0, an engineering_debug integrity gate on the independently sealed A1R debug32 names. It cannot run D0 or formal and must record confirmation_images_targets_outcomes_touched=false.
 
@@ -23,3 +23,17 @@ and `locked_test_touched=false`. This run has no scientific interpretation.
 The only authorized repair is to vendor the exact A1C endpoint reference with
 its upstream provenance and launch a fresh r2 output after a new commit and
 schema-v4 plan review.
+
+## S0 r4 pass
+
+The repaired fresh output `a1x-v3-s0-r4` passed at route commit
+`2e6ab06d983c21afcb1fcefc77003980d5ce5e4d`. Exact A1C transport and zero
+no-op discrepancies are `0.0`; the two-epoch image-operator-balanced microfit
+reduced target loss by `38.3314%` versus the fixed `1%` gate, with first
+gradient norm `0.976905`. The head has `21,867` parameters, largest-shape MACs
+`545,359,104`, and peak allocated memory `3052.10 MiB`. Both exact-half shapes,
+deterministic CUDA, freeze/trainable scope, finite workload, soft support, and
+range guards passed. Confirmation, canary, and locked test remained untouched.
+
+Typed tuple: `COMPLETED_GATE_PASS /
+A1X_V3_S0_PASS_AUTHORIZE_D0_DESIGN_ONLY / A1X_V3_D0_DESIGN_ONLY`.

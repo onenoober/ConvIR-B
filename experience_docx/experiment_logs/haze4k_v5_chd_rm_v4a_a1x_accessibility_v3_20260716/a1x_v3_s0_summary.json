@@ -1,0 +1,105 @@
+{
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "evidence_role": "engineering_debug",
+  "frozen_parameter_count": 8,
+  "frozen_parameter_names_sha256": "7b34177e474112a9a1a7c8efb30c07456f21ec443d029b59ffe73bc5a4992a99",
+  "gate": {
+    "deterministic_cuda": {
+      "cublas_workspace_config": ":4096:8",
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": true,
+      "use_deterministic_algorithms": true
+    },
+    "input_channels": 15,
+    "mac_limit_largest_exact_half": 600000000,
+    "macs_by_shape": {
+      "208x208": 307219968,
+      "240x320": 545359104
+    },
+    "microfit": {
+      "epochs": 2,
+      "final_image_balanced_target_loss": 0.2697704788297415,
+      "first_gradient_norm": 0.9769051671028137,
+      "image_operator_item_count": 64,
+      "initial_image_balanced_target_loss": 0.43745168671011925,
+      "loss_reduction_fraction": 0.38331366177013515,
+      "minimum_reduction_fraction": 0.01,
+      "optimizer_steps": 16,
+      "optimizer_unit_size": 8,
+      "pass": true,
+      "unequal_shape_batches_sample_weighted": true
+    },
+    "microfit_loss_reduction_fraction": 0.38331366177013515,
+    "native_exact_half_shapes": [
+      [
+        208,
+        208
+      ],
+      [
+        240,
+        320
+      ]
+    ],
+    "parameter_count": 21867,
+    "parameter_limit": 300000,
+    "pass": true,
+    "trainable_parameter_names": [
+      "stem.0.weight",
+      "stem.1.weight",
+      "stem.1.bias",
+      "encoder_24.depthwise.weight",
+      "encoder_24.pointwise.weight",
+      "encoder_24.norm.weight",
+      "encoder_24.norm.bias",
+      "encoder_48.depthwise.weight",
+      "encoder_48.pointwise.weight",
+      "encoder_48.norm.weight",
+      "encoder_48.norm.bias",
+      "encoder_96.depthwise.weight",
+      "encoder_96.pointwise.weight",
+      "encoder_96.norm.weight",
+      "encoder_96.norm.bias",
+      "global_projection.1.weight",
+      "global_projection.1.bias",
+      "decoder_48.depthwise.weight",
+      "decoder_48.pointwise.weight",
+      "decoder_48.norm.weight",
+      "decoder_48.norm.bias",
+      "decoder_24.depthwise.weight",
+      "decoder_24.pointwise.weight",
+      "decoder_24.norm.weight",
+      "decoder_24.norm.bias",
+      "final_projection.weight",
+      "final_projection.bias"
+    ],
+    "trainable_parameter_scope_exact": true,
+    "zero_correction_max_abs": 0.0
+  },
+  "locked_test_touched": false,
+  "name_count": 32,
+  "peak_gpu_memory_mib": 3052.1025390625,
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716",
+  "schema_version": 1,
+  "stage": "s0",
+  "transport": {
+    "correction_range_excess": 0.0,
+    "max_abs_vs_a1c_reference": 0.0,
+    "observed_low_shapes": [
+      [
+        208,
+        208
+      ],
+      [
+        240,
+        320
+      ]
+    ],
+    "pass": true,
+    "reference_source_sha256": "24f9575dd2ab98197a4db205db449caa68d4edf842e7f6f8610d08d4079cbfd5",
+    "reference_upstream_commit": "9c4bc79cfdadb00aa91ac6c6baed58fdbc6be068",
+    "reference_upstream_source_sha256": "0b947a36a83178aaa5d8316273a24de835c52af437332b3b2607c74ffe9cac12",
+    "soft_support_preserved": true,
+    "zero_endpoint_noop_max_abs": 0.0
+  }
+}

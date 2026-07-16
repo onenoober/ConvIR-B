@@ -2,7 +2,7 @@
 
 Date: 2026-07-16
 
-Status: PLANNED
+Status: COMPLETED_GATE_PASS
 
 ## Identity
 
@@ -58,6 +58,11 @@ Status: PLANNED
 | A1X_V3_S0 | engineering_debug | explicit debug32 x two operators, two-epoch microfit | D0 design only on PASS; otherwise stop |
 
 ## Planned Later Stages
+
+S0 r4 passed the complete engineering gate at route commit `2e6ab06d...`: exact
+transport/no-op `0.0`, microfit reduction `38.3314%`, 21,867 parameters, largest
+MACs 545,359,104, peak memory 3052.10 MiB, and forbidden-data flags false. It
+authorizes D0 design only.
 
 D0 will not be added to route_operations.json until S0 has a committed typed PASS. Its 2x2 audit will use all A1R fresh512 development groups, four folds, true and hash-deranged shuffle targets, image-balanced training, paired image bootstrap, and the five fixed promotion requirements above. D0 FAIL stops before confirmation data use.
 
