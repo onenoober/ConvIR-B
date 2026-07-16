@@ -86,6 +86,129 @@ function Invoke-Case {
     }
 }
 
+function Invoke-RejectedExecutionCase {
+    param(
+        [string]$Name,
+        $Request,
+        [string[]]$ExtraArguments,
+        [string]$ExpectedMarker
+    )
+
+    $requestPath = Join-Path $testRoot "$Name.json"
+    $Request | ConvertTo-Json -Depth 8 | Set-Content -Encoding utf8 -LiteralPath $requestPath
+    $savedPreference = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $output = & $powerShellHost -NoProfile -ExecutionPolicy Bypass -File $DispatcherPath `
+        -RequestPath $requestPath -WslDistribution $WslDistribution @ExtraArguments 2>&1
+    $exitCode = $LASTEXITCODE
+    $ErrorActionPreference = $savedPreference
+    $rendered = $output -join "`n"
+    if ($exitCode -eq 0 -or -not $rendered.Contains($ExpectedMarker)) {
+        throw "$Name expected $ExpectedMarker but observed: $rendered"
+    }
+    return [ordered]@{
+        case = $Name
+        expected = "FAIL_CLOSED_ZERO_MODEL_CALLS"
+        observed_exit_code = $exitCode
+        expected_marker = $ExpectedMarker
+        decision = "PASS"
+    }
+}
+
+function Assert-DispatcherSourceContract {
+    param([string]$Path)
+
+    $source = Get-Content -Raw -LiteralPath $Path
+    $requiredFragments = @(
+        '[switch]$EnableOptionalDispatch',
+        'OPTIONAL_DISPATCH_NOT_ENABLED',
+        'DISPATCH_CIRCUIT_OPEN',
+        'Write-CircuitBreaker -Path $circuitBreakerPath -Status "IN_PROGRESS"',
+        'Write-CircuitBreaker -Path $circuitBreakerPath -Status "FAILED"',
+        'Remove-Item -LiteralPath $circuitBreakerPath -Force',
+        'Do not call dispatch_agent_task.ps1, create another agent/model task, or generate a dispatcher request.',
+        'Do not reload the skill or routing protocol.',
+        'Do not perform broad discovery or choose a different PowerShell, WSL, Git, SSH, or shell transport.'
+    )
+    foreach ($fragment in $requiredFragments) {
+        if (-not $source.Contains($fragment)) {
+            throw "Dispatcher source contract is missing: $fragment"
+        }
+    }
+    if ($source.Contains('Use $experiment-model-router for this task.')) {
+        throw "Dispatcher child must not reload experiment-model-router"
+    }
+    return [ordered]@{
+        case = "dispatcher_source_contract"
+        expected = "OPTIONAL_DISPATCH_WITH_CIRCUIT_BREAKER"
+        observed_exit_code = 0
+        decision = "PASS"
+    }
+}
+
+function Test-CircuitBreakerHelpers {
+    param(
+        [string]$Path,
+        $Request,
+        [string]$Root
+    )
+
+    $tokens = $null
+    $errors = $null
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile($Path, [ref]$tokens, [ref]$errors)
+    if ($errors.Count) {
+        throw "Dispatcher parser errors prevent circuit-breaker testing"
+    }
+    foreach ($name in @("Get-Sha256", "Get-CircuitBreakerPath", "Write-CircuitBreaker")) {
+        $definition = $ast.Find({
+            param($node)
+            $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq $name
+        }, $true)
+        if ($null -eq $definition) {
+            throw "Missing dispatcher helper: $name"
+        }
+        Invoke-Expression $definition.Extent.Text
+    }
+
+    $breakerPath = Get-CircuitBreakerPath -Request $Request -Root $Root
+    Write-CircuitBreaker -Path $breakerPath -Status "IN_PROGRESS" -Request $Request -RulesCommit $Request.rules_commit -HandoffSha ("a" * 64) -OutputRoot $Root -CreateNew
+    if (-not (Test-Path -LiteralPath $breakerPath)) {
+        throw "Circuit breaker was not created"
+    }
+    $opened = Get-Content -Raw -LiteralPath $breakerPath | ConvertFrom-Json
+    if ($opened.status -ne "IN_PROGRESS" -or $opened.route_id -ne $Request.route_id) {
+        throw "Circuit breaker did not preserve the authorization tuple"
+    }
+
+    $duplicateRejected = $false
+    try {
+        Write-CircuitBreaker -Path $breakerPath -Status "IN_PROGRESS" -Request $Request -RulesCommit $Request.rules_commit -HandoffSha ("b" * 64) -OutputRoot $Root -CreateNew
+    }
+    catch {
+        $duplicateRejected = $_.Exception.Message.Contains("DISPATCH_CIRCUIT_OPEN")
+    }
+    if (-not $duplicateRejected) {
+        throw "Duplicate circuit-breaker acquisition did not fail closed"
+    }
+
+    Write-CircuitBreaker -Path $breakerPath -Status "FAILED" -Request $Request -RulesCommit $Request.rules_commit -HandoffSha ("a" * 64) -OutputRoot $Root
+    $failed = Get-Content -Raw -LiteralPath $breakerPath | ConvertFrom-Json
+    if ($failed.status -ne "FAILED") {
+        throw "Circuit breaker did not retain failed state"
+    }
+    Remove-Item -LiteralPath $breakerPath -Force
+    if (Test-Path -LiteralPath $breakerPath) {
+        throw "Circuit breaker could not be cleared after explicit recovery"
+    }
+
+    return [ordered]@{
+        case = "circuit_breaker_helpers"
+        expected = "ATOMIC_OPEN_FAIL_CLOSED_MANUAL_CLEAR"
+        observed_exit_code = 0
+        decision = "PASS"
+    }
+}
+
 $resolvedDispatcher = (Resolve-Path -LiteralPath $DispatcherPath).Path
 $rulesCommit = Invoke-GitValue -Arguments @("rev-parse", "github/main")
 $headCommit = Invoke-GitValue -Arguments @("rev-parse", "HEAD")
@@ -272,6 +395,12 @@ $results += Invoke-Case -Name "wsl_workspace_transport" -Request $wslWorkspace -
 $results += Invoke-Case -Name "wsl_workspace_transport_contract_rejected" -Request $wslWorkspaceCloud -ShouldPass $false -ExpectedModel ""
 $results += Invoke-Case -Name "typed_without_reference" -Request $typedWithoutReference -ShouldPass $false -ExpectedModel ""
 $results += Invoke-Case -Name "identity_tuple_mismatch" -Request $identityTupleMismatch -ShouldPass $false -ExpectedModel ""
+$results += Invoke-RejectedExecutionCase -Name "execute_requires_explicit_opt_in" -Request $r0 -ExtraArguments @("-Execute") -ExpectedMarker "OPTIONAL_DISPATCH_NOT_ENABLED"
+if ($isLinuxHost) {
+    $results += Invoke-RejectedExecutionCase -Name "explicit_opt_in_reaches_platform_gate" -Request $r0 -ExtraArguments @("-Execute", "-EnableOptionalDispatch") -ExpectedMarker "execution is supported only from the Windows Codex host"
+}
+$results += Assert-DispatcherSourceContract -Path $resolvedDispatcher
+$results += Test-CircuitBreakerHelpers -Path $resolvedDispatcher -Request $r0 -Root (Join-Path $testRoot "circuit-breakers")
 
 [ordered]@{
     status = "PASS"

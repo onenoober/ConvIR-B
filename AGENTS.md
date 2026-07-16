@@ -24,30 +24,26 @@
   for editing, syntax/compile-only checks, sync staging, and verifying whether a
   local operation is safe.
 - Do not treat chat history as authoritative evidence.
-- Before substantive experiment work, classify the task and use the cheapest
-  qualified model allowed by
-  `experience_docx/MODEL_AGENT_COST_ROUTING_PROTOCOL.md`. Model routing must not
-  weaken any experiment gate or change route semantics. If the active model is
-  below the required role, stop before external writes or scientific decisions
-  and emit a durable handoff for an explicit switch.
-- Use that protocol's host-identity, effort-minimum, and task-envelope rules;
-  a missing shell model variable is not evidence of a lower model, and
-  supporting reads do not split an unresolved higher-class task.
-- The host may be `unknown` or explicitly pinned by the user for the lifetime of
-  the current interactive task. Source identity does not restrict dispatcher
-  upgrades, downgrades, or same-role routing; ambiguous classification must
-  route to `frontier`. Do not ask for selector confirmation merely to launch an
-  explicit dispatcher child.
-- At an eligible new experiment task boundary, explicit major handoff, required
-  escalation, or amortized batch of bounded operations, use the deterministic
-  dispatcher from that protocol as the default task launcher. Run its dry-run
-  first and add `-Execute` only after the handoff and scientific authorization
-  are complete. Keep adjacent short operations in the current qualified task
-  when the protocol says a switch would not amortize.
-- Optimize model boundaries for the remaining task's total uncached tokens and
-  official credit-equivalent cost. Batch adjacent same-class operations that
-  share context and authorization; never use cost amortization to cross a
-  scientific, engineering, or locked-test boundary.
+- Before substantive experiment work, classify the whole current task under
+  `experience_docx/MODEL_AGENT_COST_ROUTING_PROTOCOL.md`. The current qualified
+  model executes the warm task envelope directly by default; a stronger model
+  may perform lower-class work without switching. Model routing must not weaken
+  an experiment gate or change route semantics.
+- Respect an explicit user model/effort pin for the current task. If the active
+  model is below the required role, stop before external writes or scientific
+  decisions and emit one durable switch handoff. A missing shell model variable
+  is not evidence of a lower model, and supporting reads do not split an
+  unresolved higher-class task.
+- The external dispatcher is optional and default-disabled. Use it only after
+  explicit user opt-in for an amortized bounded batch or major handoff; dry-run
+  first, then require the launcher's separate execution opt-in. A dispatcher
+  child must not dispatch another child, reload the routing skill, or invent a
+  new command transport. A failed authorization tuple opens the launcher's
+  circuit breaker and must not be dispatched again automatically.
+- Optimize the remaining user-visible task's total uncached tokens and official
+  credit-equivalent cost. Preserve warm context unless an optional dispatch has
+  a concrete net saving; never use cost optimization to cross a scientific,
+  engineering, or locked-test boundary.
 - New rule text must follow the repository document layers in
   `experience_docx/README.md`. Keep one canonical source per rule; other files
   should link to that source instead of copying the rule body. Do not mix
@@ -68,8 +64,9 @@
 Use this order for every route; the matching L2 document owns the detailed
 checks. Do not repeat those checklists in route cards or other rule files.
 
-1. Classify the current agent task and execute any required or amortized model
-   dispatch under `MODEL_AGENT_COST_ROUTING_PROTOCOL.md`.
+1. Classify the current agent task under
+   `MODEL_AGENT_COST_ROUTING_PROTOCOL.md`; keep it in the current qualified task
+   unless an explicit switch or optional dispatch is justified.
 2. Ground the task in GitHub evidence and current cloud state.
 3. Classify the experiment route and record forbidden continuations and
    locked-test policy.

@@ -1,21 +1,17 @@
 # Model-Agent Cost Routing Protocol
 
-Date: 2026-07-15
+Date: 2026-07-16
 
-Status: canonical L2 protocol for selecting the cheapest qualified agent model
-without changing experiment semantics or weakening execution gates.
+Status: canonical L2 protocol for model qualification, task continuity, optional
+dispatch, and model-cost control. It does not authorize experiment execution.
 
 ## Purpose And Authority
 
-Use this protocol before experiment planning, implementation, cloud operation,
-result interpretation, or evidence sync. It selects the agent model and
-reasoning effort for the current task. It does not authorize a route, stage,
-metric, command, locked-test action, or scientific continuation.
-
-All experiment authority remains with current GitHub evidence, the route card,
-the previous typed closeout, and the matching execution protocol. Changing the
-agent model must never change the route commit, runner, data, checkpoint,
-metric contract, gate, output root, or authorization chain.
+Classify the whole current task before experiment planning, implementation,
+cloud operation, result interpretation, or evidence sync. Use the current
+qualified model for the complete warm task envelope by default. Model routing
+must never change the route commit, runner, data, checkpoint, metric contract,
+gate, output root, authorization chain, or locked-test policy.
 
 Current model-role mapping, based on the public GPT-5.6 family on 2026-07-13:
 
@@ -25,9 +21,9 @@ Current model-role mapping, based on the public GPT-5.6 family on 2026-07-13:
 | `balanced` | GPT-5.6 Terra | medium | Existing-contract engineering and reviewed writes. |
 | `fast` | GPT-5.6 Luna | low or medium | Bounded, deterministic, mostly read-only operations. |
 
-The role is canonical; the model name is a dated mapping. When the model family
-changes, update only this table after qualification. Do not rewrite route cards
-or historical evidence merely because a newer model exists.
+The stable role is canonical; the model name is a dated mapping. Update only
+this table after a new qualification. Do not rewrite route evidence when a
+model family changes.
 
 Current qualification state:
 
@@ -39,141 +35,26 @@ Current qualification state:
 
 Qualification evidence:
 `model_agent_qualification/20260713_gpt56/README.md`. Both candidate models
-scored `91/91` critical fields with zero unauthorized actions and zero observed
-tool calls under `codex-cli 0.144.1`; the reviewer was `frontier` / GPT-5.6 Sol.
+scored `91/91` critical fields with zero unauthorized actions under
+`codex-cli 0.144.1`; the reviewer was `frontier` / GPT-5.6 Sol.
 
-Change this table only with a dated L5 qualification result that records the
-model id/version, case manifest, exact critical-field score, unauthorized-action
-count, decision, and reviewer. The workflow evaluation file is not itself a
-qualification pass.
-
-## Host Identity Modes And Effort
-
-Host identity is task configuration, not experiment evidence. It controls
-whether the current host may execute work itself; it is not needed to select an
-explicit child model. Use one of these modes:
-
-| Mode | Source | Lifetime | Host behavior |
-| --- | --- | --- | --- |
-| `dispatcher_receipt` | verified child receipt | child task | Execute only the received class and bounded action. |
-| `product_metadata` or `cli_status` | product-supplied metadata or current CLI `/status` | current task/session | The qualified host may execute or dispatch under the amortization rule. |
-| `user_pinned_task` | user explicitly names the visible model and effort and states that they remain fixed | current interactive task | Reuse the pin across turns without asking again. |
-| `unknown` | no trustworthy identity receipt | until a trustworthy source appears | Apply the routing table and dispatch; do not perform the routed experiment action itself. |
-
-A `user_pinned_task` identity remains valid across ordinary turns and context
-compaction in the same interactive task. Invalidate it on a new/forked task, an
-explicit `/model` or `/reasoning` change, conflicting product metadata, loss of
-task continuity, or user withdrawal. When it becomes invalid, fall back to
-`unknown`; do not ask for confirmation merely to launch an explicit child.
-The pin is never experiment evidence and is never propagated as a child
-identity. A dispatched child uses its dispatcher receipt.
-
-Host identity is audit data for model switching. It does not constrain whether
-the dispatcher may route down, up, or laterally. Any host may perform the
-minimal orchestration needed to classify the requested action with the
-canonical table and create, dry-run, and execute a dispatcher request. An
-unknown host must not perform the routed experiment action itself. Use one of
-two routing bases:
-
-1. `typed_handoff`: copy the exact class, role, authorization tuple, and bounded
-   action from a durable GitHub handoff and cite it as
-   `routing_basis_ref=github:<commit>:<path>`;
-2. `dispatcher_classification`: apply the hard task-class assignments in this
-   protocol. Clear bounded work may be routed to a lower qualified role
-   regardless of the host model. Any ambiguity about scientific meaning,
-   failure class, authorization, canary, or locked test is `R3` / `frontier` /
-   `high`.
-
-This classification grants no experiment authority to the host; the explicitly
-selected child owns the bounded action. If the dispatcher is unavailable,
-either establish a known qualified host for direct execution or stop. Manual
-selector confirmation is a fallback for direct execution, not a prerequisite
-for routing.
-
-Shell environment variables are not an identity channel. Missing
-`CODEX_MODEL`, `OPENAI_MODEL`, or similar variables are non-evidence. When two
-known sources conflict, prefer a dispatcher receipt or current product metadata
-over a user pin and invalidate the weaker source.
-
-Reasoning effort is a minimum, not an equality check. The order is
-`low < medium < high < xhigh`; `xhigh` therefore satisfies a `high` minimum. A
-higher qualified model or effort may perform a lower-class task when keeping
-the current context minimizes the remaining task's total token and credit cost.
-
-### R3 Sol Effort Selection
-
-`high` remains the default and minimum dispatcher effort for
-`R3_SCIENTIFIC_AUTHORITY`. The dispatcher also accepts `xhigh` only when the
-target is `frontier` / GPT-5.6 Sol and the declared task class is exactly `R3`.
-It does not accept `xhigh` for `R0`-`R2`, even when a stronger target role was
-requested.
-
-Select `xhigh` when deeper reasoning can materially change a high-impact
-scientific decision and at least one of these conditions holds:
-
-- the task owns locked-test, canary, promotion, stop/reopen, or another
-  difficult-to-reverse decision;
-- evidence is conflicting, incomplete, or failure classification is ambiguous
-  enough to change the authorized continuation;
-- the task jointly designs or changes model structure, data/split, metric,
-  gate, estimand, or adaptive branches with interacting tradeoffs;
-- cross-route bottleneck synthesis or a large whole-route plan must reconcile
-  several durable evidence sources before work can be safely decomposed.
-
-Use `high` for ordinary R3 interpretation with a frozen contract, an
-unambiguous typed result, a narrow single-decision design, or a short warm
-continuation where `xhigh` is unlikely to alter the decision. The route card
-records `high` or `xhigh` and the compact rationale. The dispatcher never
-infers `xhigh` from prose and never treats extra effort as extra experiment
-authority.
-
-Known tasks use the standard marker:
-
-```text
-MODEL_ROUTE class=<class> role=<stable-role> effort=<active-effort>
-```
-
-An unknown orchestration host may report:
-
-```text
-MODEL_ROUTE class=R0_READ_ONLY role=unknown effort=unknown
-```
-
-Dispatcher children must always use a known role and known effort. Record the
-host identity mode in adjacent progress text or in the schema-v2 request; do not
-add identity fields to the marker itself.
-
-## Non-Negotiable Reliability Invariants
-
-Model down-routing is allowed only while all of these remain unchanged:
-
-- GitHub `main` or the named route branch is the experiment-memory source;
-- local WSL remains editing and syntax/compile-only;
-- cloud runtime remains `convir-4090` with the explicit cloud Python;
-- every new route uses a fresh workspace and the authorized source commit;
-- every launch has current dynamic preflight, a tracked runner, a fresh session
-  and output directory, status/log capture, and a typed closeout;
-- the previous closeout explicitly authorizes the launched stage;
-- formal gates use their written metric contract and canonical Gate Policy;
-- locked test remains blocked without explicit prior authorization;
-- compact evidence selection, staging, push, and remote verification remain
-  unchanged.
-
-If reducing context or model tier would skip any invariant, do not down-route.
+Change qualification only with a dated L5 result recording model id/version,
+case manifest, exact critical-field score, unauthorized-action count, decision,
+and frontier review. A workflow evaluation is not a qualification pass.
 
 ## Task Classes And Minimum Models
 
-Classify the current task envelope before the first substantive tool call and
-again at a durable boundary or when scope expands.
+Classify the user-visible outcome and the highest-authority decision still open
+inside the task. Supporting reads do not split an unresolved higher-class task.
 
 | Class | Typical work | Minimum model | Allowed behavior |
 | --- | --- | --- | --- |
-| `R0_READ_ONLY` | status, bounded monitor, exact-path read, SHA/list/tree inspection, compact metric extraction | qualified `fast`, low | No writes and no scientific interpretation beyond reporting typed fields. |
-| `R1_BOUNDED_EXECUTION` | MCP preflight/launch of an already authorized tracked runner, explicit compact evidence fetch, syntax/static validation | qualified `fast`, medium | Inputs must come verbatim from the current card/closeout; no command, parameter, or route redesign. |
-| `R2_ENGINEERING_CONTROL` | route setup from a written design, transport repair, typed-closeout integrity audit, explicit route-branch evidence commit, terminal sync with unchanged verdict | `balanced`, medium | May make reviewed engineering changes that do not alter scientific semantics; new commit/run id required when protocols require it. |
-| `R3_SCIENTIFIC_AUTHORITY` | bottleneck synthesis, new route/gate/metric design, training or model-structure code, result interpretation, ambiguous failure classification, family verdict, promotion, canary or locked test | `frontier`, high | Owns scientific meaning and irreversible/high-impact decisions. |
+| `R0_READ_ONLY` | status, bounded monitor, exact-path read, SHA/list/tree inspection, compact metric extraction | qualified `fast`, low | No writes and no scientific interpretation beyond typed-field reporting. |
+| `R1_BOUNDED_EXECUTION` | MCP plan/start/finish of an already authorized runner, explicit compact evidence fetch, syntax/static validation | qualified `fast`, medium | Inputs remain verbatim from the current typed card/closeout; no redesign. |
+| `R2_ENGINEERING_CONTROL` | route setup from a written design, transport repair, closeout integrity audit, unchanged-verdict evidence commit/sync | `balanced`, medium | Reviewed engineering changes only; scientific semantics remain frozen. |
+| `R3_SCIENTIFIC_AUTHORITY` | bottleneck synthesis, route/gate/metric design, model or training change, result interpretation, ambiguous failure, family verdict, promotion, canary, locked test | `frontier`, high | Owns scientific meaning and difficult-to-reverse decisions. |
 
-Additional hard assignments:
+Hard assignments:
 
 - Any change to data, split, checkpoint, optimizer, loss, model structure,
   metric, threshold, gate, or authorized stage is `R3`.
@@ -181,315 +62,220 @@ Additional hard assignments:
   decision is `R3`, even when a script computed the metrics.
 - Locked-test selection, launch authorization, interpretation, and post-result
   restrictions are always `R3`.
-- A routine GitHub `main` sync with no verdict change is `R2`; a family verdict,
-  reopen condition, or current-route conclusion change is `R3`.
-- A command/transport failure is at least `R2`; never let an `R0`/`R1` agent
-  reinterpret partial output as scientific evidence.
+- Routine unchanged-verdict sync is `R2`; a verdict or reopen-condition change
+  is `R3`.
+- A command/transport failure is at least `R2`. Partial output from it is never
+  scientific evidence.
 
-## Task Envelope And Continuity
+Raise the class immediately when scope expands. Lower it only after the
+higher-class decision is durably closed and a bounded next action is written.
+A stronger qualified model or higher effort may perform every lower class
+directly. Keeping a warm stronger-model context requires no exception or
+dispatcher justification.
 
-Classify the user-visible outcome and the highest-authority decision still
-needed inside the current task, not each supporting tool call in isolation.
-Exact-path reads, cloud inventory, or compact metric extraction performed to
-support an unresolved `R3` interpretation remain inside that `R3` envelope.
-They do not turn the active task into an independent `R0` task.
+## Identity, Effort, And Switching
 
-Raise the class immediately when new scope requires it. Lower the class only
-after a durable boundary has closed the higher-class meaning and written the
-minimum handoff payload. A lower-class continuation must have one bounded next
-action that can finish without recovering the parent reasoning or making the
-parent decision. This preserves both scientific ownership and context cost.
+Accept current product metadata, a verified dispatcher receipt, or an explicit
+user model/effort pin for the current interactive task. A user pin survives
+ordinary turns and context compaction; invalidate it on a new/forked task, an
+explicit selector change, conflicting product metadata, loss of continuity, or
+user withdrawal. Shell environment variables are not identity evidence.
 
-A stronger active role may complete adjacent lower-class operations in the same
-envelope. After a durable boundary, however, eligible standalone repetition or
-a bounded batch should use the dispatcher by default. Keeping that independent
-work on a stronger model requires a concrete `dispatch=not_amortized` reason;
-the user's stronger default model is not such a reason.
+Reasoning effort is a minimum: `low < medium < high < xhigh`. A higher effort
+satisfies a lower minimum but grants no extra experiment authority. Use this
+marker before substantive work and when scope changes:
+
+```text
+MODEL_ROUTE class=<class> role=<stable-role> effort=<active-effort>
+```
+
+`R3` uses `high` by default. Select Sol `xhigh` only when deeper reasoning can
+materially change a high-impact decision and at least one condition holds:
+
+- locked-test, canary, promotion, stop/reopen, or another difficult-to-reverse
+  decision is owned by this task;
+- evidence or failure classification is conflicting enough to change the
+  authorized continuation;
+- interacting changes to structure, data/split, metric, estimand, gate, or
+  adaptive branches are designed together;
+- cross-route synthesis must reconcile several durable evidence sources.
+
+When a known active model is below the class minimum, stop before the next
+external write, launch, commit, push, or scientific decision and emit one
+`MODEL_SWITCH_REQUIRED` handoff containing the required role, class, durable
+evidence references, and one blocked next action. Resume only after an explicit
+model switch or in a new qualified task. Do not claim an in-task switch without
+a verified product capability.
+
+An unknown host may perform `R0` reporting. For `R1`-`R3`, establish a known
+qualified model or stop with the same single switch handoff. An explicitly
+enabled dispatcher may satisfy that handoff, but it is never mandatory.
+
+## Non-Negotiable Experiment Invariants
+
+No model choice or cost optimization may weaken these facts:
+
+- GitHub `main` or the named GitHub route branch is experiment memory;
+- local WSL remains editing and syntax/compile-only;
+- runtime remains `convir-4090` with the explicit cloud Python;
+- a new route uses a fresh workspace and its authorized source commit;
+- every launch has current dynamic preflight, a tracked runner, fresh session
+  and output directory, status/log capture, and typed closeout;
+- the previous closeout explicitly authorizes the exact launched stage;
+- formal gates use the written metric contract and canonical Gate Policy;
+- locked test remains blocked without explicit prior authorization;
+- compact evidence selection, staging, push, and remote verification remain
+  unchanged.
+
+If a proposed switch or smaller context would skip one invariant, reject it.
 
 ## Qualification Gate
 
-`fast` may perform `R0` immediately. It may perform `R1` only after the current
-fast model/version passes the repository qualification audit. `balanced` may
-perform `R1`/`R2` only after its current model/version passes the same critical-
-field audit at those scopes. Until then, use `frontier` for writes and decisions.
+`fast` may perform `R0`. It may perform `R1` only while its dated qualification
+is current and the tracked runner or MCP operation machine-checks the exact
+`route_id`, `state`, `decision`, and `authorizes` tuple from a GitHub typed JSON
+handoff. A state-only or prose-only check is insufficient. Ambiguity requires
+`frontier`; an exact engineering audit may use qualified `balanced`.
 
-In addition to model qualification, a fast `R1` launch requires the tracked
-runner or bounded preflight to machine-check the prior closeout's exact
-`route_id`, `state`, `decision`, and `authorizes` values. A check of `state`
-alone is insufficient. If any value is unstructured, implicit, or checked only
-by model judgment, use at least a qualified `balanced` model and escalate any
-ambiguity to `frontier`.
+Qualification must have exact agreement on fact source; route id, branch,
+commit, stage, runner, and output root; authorization tuple and failure class;
+locked-test/canary policy; evidence allowlist; and stop/continue/escalate. The
+acceptance line is `100%` on safety-critical fields with zero unauthorized
+writes or continuations. Repeat after a model-family/version change or a
+safety-critical execution error.
 
-Qualification uses compact historical cases and requires exact agreement on:
+## Optional External Dispatcher
 
-- authoritative fact source;
-- route id, branch, commit, stage, runner, and output root;
-- `state`, `decision`, `authorizes`, and failure class;
-- locked-test and canary policy;
-- explicit evidence allowlist;
-- whether to continue, stop, or escalate.
+`experience_docx/tools/dispatch_agent_task.ps1` is an optional cost tool, not
+the experiment control plane. It is default-disabled. Use it only when the user
+explicitly enables dispatcher execution for the current task and one of these
+cases has a concrete net benefit:
 
-The acceptance line is `100%` on these safety-critical fields with zero
-unauthorized writes or continuations. Quality wording and explanatory style are
-not scored. Repeat qualification after a model-family/version change or after
-one safety-critical execution error.
+- long or repeated read-only monitoring with one stable authorization;
+- an amortized batch of bounded same-class operations;
+- an explicit major handoff or a required model switch.
 
-Until `fast` is qualified for `R1`, route bounded execution through a qualified
-`balanced` model. Until `balanced` is qualified, use `frontier`. Qualification
-never grants `R2` or `R3` authority to `fast`, or `R3` authority to `balanced`.
+Do not dispatch an adjacent short operation, routine supporting read, transport
+repair, or warm continuation. Never dispatch merely because a cheaper role
+exists. Compare the complete remaining alternatives:
 
-## Fail-Closed Switching
+```text
+keep = incremental work in the current qualified warm context
+dispatch = request preparation + child context reload + child work + review
+```
 
-The active task cannot assume that a model switch happened. A known host whose
-task class requires a higher role must:
+Dispatch only when it is required for qualification or is expected to reduce
+total official credits without increasing uncached tokens enough to dominate
+that saving. Batch operations only when class, route commit, authorization
+tuple, evidence set, and stop condition are identical.
 
-1. stop before the next external write, launch, commit, push, or scientific
-   decision;
-2. emit `MODEL_SWITCH_REQUIRED` with the required stable role, current task
-   class, exact durable handoff evidence, and the blocked next action;
-3. resume in a new task or after an explicit model switch;
-4. reread only the minimal durable handoff, not the prior chat transcript.
+The launcher validates the schema-v2 request, current rules commit, role floor,
+route HEAD, typed `R1` authorization, execution scope, and transport contract.
+Dry-run makes zero model calls. Actual execution additionally requires both
+`-Execute` and `-EnableOptionalDispatch`; neither flag authorizes an experiment
+stage. Raw child events stay outside the repository.
 
-Model switching never compares the source role with the target role. The host
-uses `task_routing` to launch the lowest qualified role for the declared class,
-whether that is a downgrade, upgrade, or same-role child, and then stops owning
-the dispatched action. Do not require the user to reveal or change the host
-selector for this path. A known host role matters only when deciding whether the
-current host may execute an action without dispatch.
+The launcher provides the verified rule, repository, handoff, path, and
+transport constraints. A child must:
 
-Do not claim an automatic in-task switch without a verified product capability.
-The repository dispatcher creates a new ephemeral Codex task; it does not
-replace the model of the current task. A model may down-route a later
-independent task, but it must not delegate high-risk meaning to a lower role
-through an ordinary prompt or subagent.
+- acknowledge its route marker and handoff before any tool call;
+- execute exactly one bounded next action using supplied paths;
+- not call the dispatcher, create another model task, or reload the routing
+  skill/protocol;
+- use the named structured MCP operation for covered cloud work and avoid
+  free-form SSH, PowerShell, WSL, Git, or shell-form selection;
+- report one typed success or failure and stop at the boundary.
 
-## Deterministic External Dispatcher
+If evidence requires a stronger role, the child emits one
+`MODEL_SWITCH_REQUIRED` result and stops. It must not produce or execute another
+dispatcher request. The current interactive task owns any recovery.
 
-Repository state: schema v2 is active on GitHub `main` after the cloud
-`20/20` fail-closed dispatcher matrix and adoption decision recorded in
-`UNIVERSAL_EXPERIMENT_OPS_V2_EVALUATION_20260714.md`. The earlier v1 and
-candidate evaluations remain historical qualification/audit evidence, not
-active dispatcher contracts.
+### Dispatch Circuit Breaker
 
-Use `experience_docx/tools/dispatch_agent_task.ps1` when an explicit model-task
-boundary passes the switching and context-amortization rules below. Its request
-contract is owned by
-`experience_docx/tools/agent_model_dispatch_request.schema.json`.
+The authorization identity is the exact tuple:
 
-The dispatcher does not make an extra model call to choose a role. The host acts
-as the scheduler: it copies a typed handoff or mechanically applies the task
-class table, writes one schema-valid request, and stops that scope. Ambiguous
-classification is always declared `R3`, not guessed downward.
-The external process fetches `github/main`, rejects a stale rules commit, parses
-the canonical role and qualification tables, validates the route worktree HEAD,
-and starts exactly one ephemeral `codex exec` task with the selected model.
-The explicit child `--model` and effort override the user's default model for
-that child, so a Sol-default interactive task can still dispatch qualified work
-to Terra or Luna.
+```text
+route_id + stage_state + decision + authorizes
+```
 
-Dispatch is allowed only for:
+After an actual child starts but fails dispatcher acceptance, the launcher
+writes a persistent breaker record keyed by the SHA-256 of that tuple. Any
+later `-Execute` for the same tuple fails before a model call. Dispatcher
+failure must never cause automatic reclassification, authorization generation,
+or another child.
 
-- source-independent `task_routing` to the qualified role for the declared
-  class;
-- standalone repeated or batched bounded work delegated to a cheaper role; or
-- an explicit major handoff, including a same-role fresh task.
+Recovery is deliberately manual: diagnose in the current qualified task,
+record the resolved cause, verify that retrying the same authorization is still
+scientifically valid, then remove the named breaker file before a new explicit
+dispatch. The launcher has no retry or clear-breaker switch.
 
-Do not dispatch one adjacent short operation merely because a cheaper model is
-qualified when a known qualified host will continue it more cheaply in the
-warm context. A pure scheduling host instead batches adjacent operations with
-the same class, route commit, authorization, and context into one bounded child
-request. The schema-v2 request records source identity/role/effort for audit,
-but only target class/role/effort, qualification, and authorization affect
-dispatch acceptance.
+### Bounded Child Contract
 
-Conversely, do not keep an independent lower-class scope on the user's default
-model merely for convenience. Repeated/long monitoring, a standalone bounded
-status or evidence batch, and written-design-to-engineering handoffs are the
-intended cost-saving boundaries. The dispatcher validation records successful
-explicit selection of Luna for `R0/R1`, Terra for `R2`, and Sol for `R3`.
+Every `R1` request uses `routing_basis=typed_handoff` and binds
+`routing_basis_ref` to the exact GitHub JSON whose
+`route_id/state/decision/authorizes` fields are copied into the request. A
+caller-provided `verified=true` is insufficient without an exact evidence
+match. The active route lifecycle remains:
 
-For `typed_handoff`, `routing_basis_ref` must use
-`github:<commit>:<path>`; the dispatcher fetches the commit from `github` and
-fails if the path does not exist. `dispatcher_classification` uses no reference.
-The dispatcher does not enforce source/target rank direction. It enforces the
-declared class floor, dated target qualification, target effort, route identity,
-and authorization contract. A host may therefore route to a cheaper, stronger,
-or same role without exposing its own identity.
+```text
+convir_route_plan_manifest -> convir_route_start_authorized -> convir_route_finish
+```
 
-Before any tool call, the child task must emit the exact `MODEL_ROUTE` marker
-and acknowledge the dispatcher handoff SHA. The dispatcher fails if the marker
-is absent, the SHA is absent, a tool starts before acknowledgement, the model
-is unqualified, the route commit differs, or a fast `R1` request lacks a
-machine-verified `route_id`/`state`/`decision`/`authorizes` tuple. It never
-bypasses the experiment authorization, cloud preflight, metric, gate, locked-
-test, or evidence-sync protocols.
+The dispatcher does not run in a cloud runner or training process. It may
+launch only one ephemeral Codex child. A child cannot cross into a different
+task class, scientific interpretation, repair, or evidence verdict.
 
-Each schema-v2 request also declares one `execution_scope`, one structured
-`transport_contract`, and one uppercase `completion_marker`.
-`local_read_only` and `local_workspace_write` use the matching Codex sandbox.
-`wsl_workspace_transport` and
-`wsl_cloud_transport` use `danger-full-access`, because the Windows sandbox
-otherwise blocks WSL process transport. `transport_contract=local_only` is
-required for every non-cloud scope; `transport_contract=tracked_convir_cloud`
-is required for `wsl_cloud_transport`. The dispatcher validates that structured
-field rather than inferring transport authority from prose in `next_action`.
-These are transport permissions, not broader experiment authority.
-The child must verify the requested success condition and put the exact
-completion marker on its own final-answer line. A missing marker, a requested
-model escalation, a tool call before acknowledgement, or a nonzero child exit
-causes dispatcher failure even when the child turn itself completed normally.
-
-The default invocation is a zero-model-call dry run. Add `-Execute` only after
-the request is complete and the next action is already authorized. Store raw
-dispatcher events outside the repository and archive only a compact terminal
-audit when routing behavior or qualification changes.
-
-### ConvIR Experiment Boundary Recipe
-
-For every new ConvIR experiment route, apply this finite sequence. This section
-owns the sequence; route cards and other protocols should link here instead of
-copying it.
-
-| Boundary | Task class / role | Dispatcher action |
-| --- | --- | --- |
-| Unclassified or ambiguous large task | `R3` / `frontier` | Use `task_routing`; require one frontier planning child to write a compact whole-task routing plan before lower-role work. Use `xhigh` only when the R3 criteria above are met. |
-| Bottleneck synthesis, route question, gate or metric design | `R3` / `frontier` | Route to frontier independently of source identity, or remain only when a known frontier host is intentionally executing the warm envelope. |
-| Written design to fresh workspace, tracked runner, smoke repair, and unchanged-verdict route evidence | `R2` / `balanced` | Use one warm engineering package when these operations share the route contract; do not create a child per repair or Git operation. |
-| Exact-tuple plan/start, short observation, and closeout fetch | `R1` / `fast` | Dispatch one bounded stage package only after `route_id`, `state`, `decision`, and `authorizes` are machine-verified against a GitHub typed JSON handoff. Keep it in the warm engineering task when a separate child would not amortize. |
-| Healthy long-run observation | `R0` / `fast` | Use one persistent child for all receipt-bound observation windows. Never launch a child per poll and stop before interpretation or repair. |
-| Result interpretation, terminal gate, family verdict, reopen/promotion decision | `R3` / `frontier` | Required escalation before scientific interpretation or a verdict-changing write. |
-| Unchanged-verdict route-branch archival or routine sync | `R2` / `balanced` | Dispatch when it is a standalone batch; verdict-changing sync remains `R3`. |
-
-Supporting reads before an unresolved scientific verdict stay in the current
-`R3` envelope. Once that verdict or design is durably recorded, a fresh
-workspace/runner implementation is one `R2` Terra boundary; a later independent
-authorized stage package and any healthy long observation use at most one
-continuous Luna task; final interpretation returns to one `R3` Sol task. This
-is the normal cost-saving route, not an exception.
-
-The route card must record the host identity mode, routing basis, planned task
-boundaries, minimum roles, atomic batches, and whether each optional down-route
-reduces projected whole-task tokens and credits after context reload. At an
-eligible boundary, create the schema-valid request, run
-`dispatch_agent_task.ps1` without `-Execute`, review `MODEL_DISPATCH_DRY_RUN_OK`,
-then rerun with `-Execute`. The child owns exactly the request's `next_action`,
-which may describe one atomic same-class package with a shared authorization
-and stop condition; it must not continue into the next scientific or
-engineering class.
-
-Every `R1` dispatcher request uses `routing_basis=typed_handoff` and binds
-`routing_basis_ref` to the exact GitHub JSON closeout whose
-`route_id/state/decision/authorizes` tuple is copied into the request. The
-dispatcher reads and compares that evidence itself. A caller-supplied
-`authorization_check.verified=true` without this exact evidence match is not
-sufficient. Schema-v1 lifecycle tool names are rejected; the only active
-normal lifecycle is `plan_manifest -> start_authorized -> finish`.
-
-From a PowerShell session rooted at the route worktree, use the same reviewed
-request for both calls:
+Use one reviewed request for dry-run and optional execution:
 
 ```powershell
 $request = "C:\path\to\dispatch-request.json"
 $dispatcher = ".\experience_docx\tools\dispatch_agent_task.ps1"
 & $dispatcher -RequestPath $request
-& $dispatcher -RequestPath $request -Execute
+& $dispatcher -RequestPath $request -Execute -EnableOptionalDispatch
 ```
 
-Do not call the dispatcher from a cloud runner or inside a training process.
-It selects the local agent task that will invoke the existing route setup,
-`convir-ops`, monitoring, closeout, or sync tools. This keeps model-cost routing
-orthogonal to GPU execution and experiment semantics.
+## Bounded Engineering Recovery
 
-If an eligible boundary is deliberately kept in a known qualified task because
-the switch would not amortize, record `dispatch=not_amortized` and the bounded
-remaining scope in the route card's agent-routing plan. Unknown hosts cannot
-use `not_amortized`. If dispatch is required by role, `not_amortized` is never
-an override.
-
-## Whole-Task Token, Credit, And Time Budget
-
-Optimize the remaining user-visible task, not the next tool call. Scientific
-authority and written authorization are hard constraints. Among safe plans,
-minimize total uncached input plus output/reasoning tokens first, then official
-credit-equivalent cost and wall time. Track cached input separately; do not call
-a high-cache plan token-free.
-
-- For an unclassified or ambiguous large task, pay for at most one frontier
-  planning child per continuous scope; reuse its durable routing plan until the
-  scope changes.
-- Start a fresh task at a terminal route decision or explicit major handoff.
-- Compact only after the current closeout/evidence is durably committed; never
-  compact away unsynced authorization or failure details.
-- Read the router plus the minimum current-route evidence. Expand only at a
-  written decision point.
-- Use bounded MCP status/monitor results. Do not paste full stdout, raw tables,
-  per-image results, or unrelated historical documents into the task.
-- Keep routine updates to state, progress, primary metric, terminal marker, and
-  exact next authorization.
-- Reuse stable route cards, runner paths, and typed JSON instead of restating
-  their contents in prompts.
-- Do not use multiple agents for routine work. Temporary dual-model shadowing is
-  allowed only for qualification or a recorded reliability audit.
-- Do not use token caps that can interrupt a required launch audit, closeout, or
-  sync halfway through. Budget by task boundary instead.
-
-For every optional dispatch, compare the remaining-envelope alternatives:
+Command-boundary recovery is owned by
+`COMMAND_RELIABILITY_QUICKSTART.md`. In summary, one deterministic correction
+is allowed before launch; a second failure at the same boundary stops with one
+blocker. Never use this recursive flow:
 
 ```text
-keep = incremental current-context work at the known host role
-dispatch = request/handoff + child context reload + child work at target role
+failure -> new authorization -> dispatcher child -> failure
 ```
 
-Dispatch only when the child is required for authority or the second plan is
-expected to reduce total credits without a dominated increase in total
-uncached tokens. When estimates are uncertain for one short adjacent action,
-keep the known qualified context. When several same-class operations share the
-same route commit, authorization, evidence set, and stop condition, group them
-as one atomic batch. An atomic batch may include preflight, an already
-authorized launch, and short monitoring only when all remain `R1` and the child
-can stop before interpretation or engineering repair.
+A command failure is engineering state, not evidence and not permission to
+change a route, command contract, threshold, or scientific decision.
 
-Amortize model switches. Keep adjacent `R0`/`R1` operations in one known
-qualified `balanced` task when opening a fast task would reload more context
-than the remaining work. Use one `fast` child for standalone status, repeated
-or long monitoring, or a batch of identical bounded operations. Do not launch a
-new child per poll. A task-scoped user pin avoids repeated identity checks but
-does not justify keeping later independent work on a more expensive role.
+## Whole-Task Budget
 
-Before an `R0`/`R1` child that will call `convir-ops`, the dispatcher performs a
-short read-only MCP readiness probe. This probe is transport preparation only;
-it does not plan, start, monitor, or authorize a route. If the probe fails, the
-child is not launched and the failure is recorded as `command_infra` with
-`failure_phase=mcp_startup`, preserving the child-turn budget.
+Optimize the remaining user-visible task, not each tool call. In order:
 
-Within one already-launched `R0`/`R1` child, permit at most one exact retry for
-an operational failure when the typed result identifies a retryable transport,
-resource-preflight, workspace-prepare, or evidence-manifest phase and proves
-that `runner_started=false`. The retry must reuse the same receipt/plan and
-contract. Never retry an unknown launch state, a runner/evaluation failure, or a
-scientific decision. This reduces wasted child turns without weakening
-fail-closed behavior.
+1. preserve scientific authority and written authorization;
+2. minimize total uncached input plus output/reasoning tokens;
+3. minimize official credit-equivalent cost;
+4. minimize wall time without weakening the first three constraints.
 
-Record a warm-context decision at each optional boundary: `dispatch` when the
-target child amortizes its handoff and context reload over a bounded batch, or
-`dispatch=not_amortized` with a short reason when the known qualified host keeps
-adjacent same-class work. The latter is allowed only for known qualified hosts;
-it never authorizes a lower role to perform R3 interpretation or a verdict
-change. Group plan/start/short observation and evidence-manifest operations by
-route commit and stop condition rather than opening a child per MCP call.
+Practical defaults:
 
-Do not recompute the class downward after every read. First close the active
-task envelope, then dispatch its independent continuation. This avoids both the
-false economy of reloading context for one read and the opposite failure of
-running every later bounded operation on the user's default frontier model.
+- keep one qualified current task across adjacent classes it is allowed to own;
+- read the router plus the minimum current-route evidence and expand only at a
+  written decision point;
+- use bounded MCP results rather than full stdout, raw tables, images, or chat
+  transcripts;
+- reuse route cards, runner paths, typed JSON, and compact closeouts by durable
+  reference;
+- do not create multiple agents for routine work or one child per poll;
+- compact only after authorization and failure details are durably recorded;
+- do not use token caps that can interrupt launch audit, closeout, or sync.
 
-Minimum handoff payload:
+Minimum durable switch or optional-dispatch payload:
 
 ```text
 rules_commit=<github/main SHA>
 route_branch_commit=<SHA>
 route_id=<id>
-source_identity=<unknown or trusted source>
 routing_basis=<dispatcher_classification or typed_handoff>
 routing_basis_ref=<github:commit:path or none>
 stage_state=<typed state>
@@ -499,25 +285,17 @@ cloud_status=<active/inactive and terminal marker>
 next_action=<one bounded action>
 ```
 
-Anything recoverable from those references should not be copied into the
-handoff.
+Anything recoverable from these references stays out of the handoff.
 
 ## Recommended Default
 
-Use a task-scoped pin when the user explicitly fixes the current host model and
-effort; otherwise record the host as unknown without asking. In both cases, the
-host may route a clear class to its lowest qualified target. Route ambiguous
-work to `frontier`/high by default, select `frontier`/xhigh only under the R3
-criteria above, route independent `R2` work to `balanced`/medium, and route
-amortized `R0`/exact `R1` batches to `fast` low/medium after the dated
-qualifications. Return to `frontier` before scientific design or
-interpretation.
-
-An explicitly selected stronger interactive model is not inherited by
-dispatcher children. Keep it only while its warm context is cheaper for the
-remaining bounded envelope; otherwise select the cheapest qualified role at the
-next durable boundary. This avoids both repeated cold starts and the much larger
-cost of running the entire experiment lifecycle on the strongest model.
+Run the whole warm task on the current qualified model. Honor an explicit user
+pin. A frontier model may directly perform `R0`-`R3`; a balanced model may
+perform `R0`-`R2`; a fast model may perform qualified `R0`-`R1`. Switch only
+when the active role is below the class floor. Keep the dispatcher off unless
+the user opts in and a long bounded batch or major handoff clearly amortizes
+the cold start. Return to `frontier` before scientific design, interpretation,
+promotion, canary, or locked-test work.
 
 Official product references used for the dated mapping:
 

@@ -1,6 +1,6 @@
 # Command Reliability Quickstart
 
-Date: 2026-07-12
+Date: 2026-07-16
 
 Status: default lightweight command transport policy for new work.
 
@@ -34,6 +34,7 @@ enough.
 | Task | Default transport | Read more only if |
 | --- | --- | --- |
 | PowerShell -> WSL local script | Write or pipe a small Bash script, strip BOM/CRLF, then run with WSL Bash. | The script needs nested quotes, loops, regex pipes, or heredocs. |
+| Simple Git or path operation in WSL | Pass an argument array directly with `wsl.exe -d <distro> -- git -C <repo> ...`; use an exact UNC path for PowerShell file reads. | The operation actually requires shell syntax rather than Git arguments. |
 | Standard bounded `convir-4090` route operation in Codex | Automatically select the registered `convir-ops` MCP tool. | The task needs an operation outside its declared tool boundary. |
 | WSL -> `convir-4090` remote script | Run `tools/convir_remote_script.sh <local-script>` from `experience_docx/`. | `convir-ops` is unavailable or the remote command must consume stdin or needs file arguments. |
 | File sync to cloud | Use `tar`/`scp`/`rsync` on explicit files or directories. | The sync is large, incremental, or needs excludes. |
@@ -84,6 +85,12 @@ wrapper for an operation that is not covered or when the MCP is unavailable.
 
 The exact tool boundary is documented in `CONVIR_OPS_MCP.md`.
 
+Do not wrap simple Git/path operations in `bash -lc`, interpolate them into a
+single shell string, or let a dispatcher child choose among PowerShell, WSL,
+SSH, and Git forms. Use argument arrays and exact supplied paths. This removes
+the nested quoting and PATH ambiguity that commonly turns a read or commit into
+an unrelated recovery task.
+
 After updating the tracked MCP server, restart its host process and verify the
 initialize response's source SHA-256 before the next route call. Evidence
 manifest/fetch requests use the route's `repo_name` plus `workspace_id` so the
@@ -92,13 +99,16 @@ tool resolves the sealed hashed checkout rather than a guessed cloud path.
 ## Failure Handling
 
 If a command fails because of transport, quoting, CRLF, PATH, stdin, or shell
-boundary behavior:
+boundary behavior, recovery is finite:
 
 1. label it `FAILED_COMMAND`;
 2. do not interpret partial output as experiment evidence;
-3. rerun only the affected operational step with a stable script-body pattern;
-4. consult `COMMAND_RELIABILITY_PROTOCOL.md` for the matching historical
-   failure class if the fix is not obvious.
+3. correct only the affected boundary once using the canonical deterministic
+   form in this file;
+4. if the same boundary class fails again, stop with one blocker and the two
+   failed forms; do not create a new authorization or dispatcher task;
+5. consult the targeted matching section of `COMMAND_RELIABILITY_PROTOCOL.md`
+   only when the first correction is not obvious.
 
 For an exact R0/R1 operation, one bounded retry is permitted only when the
 typed result says `failure_class=command_infra`, the phase is a retryable
@@ -106,6 +116,12 @@ transport/resource/evidence phase, and `runner_started=false`. Reuse the same
 route, receipt or plan, runner, output, and thresholds. A timeout after the
 launch boundary is `START_STATE_UNKNOWN` and requires inspection rather than a
 blind retry.
+
+Never recurse through `failure -> new R3 authorization -> dispatcher child ->
+failure`. A pre-launch engineering correction does not create new scientific
+authority. Dispatcher-child failure is governed by the circuit breaker in
+`MODEL_AGENT_COST_ROUTING_PROTOCOL.md` and must be recovered in the current
+qualified task.
 
 ## Archive Boundary
 

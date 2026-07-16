@@ -4,6 +4,8 @@ param(
 
     [switch]$Execute,
 
+    [switch]$EnableOptionalDispatch,
+
     [string]$OutputRoot,
 
     [string]$WslDistribution = "Ubuntu-22.04"
@@ -162,6 +164,71 @@ function Get-Sha256 {
     }
     finally {
         $sha.Dispose()
+    }
+}
+
+function Get-CircuitBreakerPath {
+    param(
+        [Parameter(Mandatory = $true)]$Request,
+        [Parameter(Mandatory = $true)][string]$Root
+    )
+
+    $tuple = [ordered]@{
+        route_id = [string]$Request.route_id
+        stage_state = [string]$Request.stage_state
+        decision = [string]$Request.decision
+        authorizes = [string]$Request.authorizes
+    } | ConvertTo-Json -Compress
+    $key = Get-Sha256 -Text $tuple
+    return Join-Path $Root "$key.json"
+}
+
+function Write-CircuitBreaker {
+    param(
+        [Parameter(Mandatory = $true)][string]$Path,
+        [Parameter(Mandatory = $true)][string]$Status,
+        [Parameter(Mandatory = $true)]$Request,
+        [Parameter(Mandatory = $true)][string]$RulesCommit,
+        [Parameter(Mandatory = $true)][string]$HandoffSha,
+        [Parameter(Mandatory = $true)][string]$OutputRoot,
+        [switch]$CreateNew
+    )
+
+    New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
+    $json = [ordered]@{
+        schema_version = 1
+        status = $Status
+        opened_at_utc = (Get-Date).ToUniversalTime().ToString("o")
+        route_id = [string]$Request.route_id
+        stage_state = [string]$Request.stage_state
+        decision = [string]$Request.decision
+        authorizes = [string]$Request.authorizes
+        rules_commit = $RulesCommit
+        handoff_sha256 = $HandoffSha
+        output_root = $OutputRoot
+    } | ConvertTo-Json -Depth 4
+    if (-not $CreateNew) {
+        $json | Set-Content -Encoding utf8 -LiteralPath $Path
+        return
+    }
+
+    try {
+        $stream = [System.IO.File]::Open($Path, [System.IO.FileMode]::CreateNew, [System.IO.FileAccess]::Write, [System.IO.FileShare]::None)
+        try {
+            $writer = [System.IO.StreamWriter]::new($stream, [System.Text.UTF8Encoding]::new($false))
+            try {
+                $writer.Write($json)
+            }
+            finally {
+                $writer.Dispose()
+            }
+        }
+        finally {
+            if ($null -ne $stream) { $stream.Dispose() }
+        }
+    }
+    catch [System.IO.IOException] {
+        throw "DISPATCH_CIRCUIT_OPEN breaker=$Path"
     }
 }
 
@@ -431,6 +498,7 @@ $sandbox = $sandboxByExecutionScope[$request.execution_scope]
 $handoff = [ordered]@{
     schema_version = $request.schema_version
     rules_commit = $currentRulesCommit
+    repository_linux_path = $repository
     route_branch_commit = $request.route_branch_commit
     route_id = $request.route_id
     task_class = $request.task_class
@@ -456,6 +524,14 @@ $handoffJson = $handoff | ConvertTo-Json -Compress
 $handoffSha = Get-Sha256 -Text $handoffJson
 $routeMarker = "MODEL_ROUTE class=$($request.task_class) role=$($request.required_role) effort=$($request.effort)"
 $handoffAck = "HANDOFF_ACK sha256=$handoffSha"
+$defaultBreakerRoot = if ($isLinuxHost) {
+    Join-Path ([System.IO.Path]::GetTempPath()) "codex-dispatcher-breakers"
+}
+else {
+    Join-Path $env:USERPROFILE ".codex\dispatcher-breakers"
+}
+$resolvedBreakerRoot = [System.IO.Path]::GetFullPath($defaultBreakerRoot)
+$circuitBreakerPath = Get-CircuitBreakerPath -Request $request -Root $resolvedBreakerRoot
 $basisInstruction = if ($request.routing_basis -eq "typed_handoff") {
     "Before the next action, read and verify routing_basis_ref=$($request.routing_basis_ref); fail closed if it does not match the handoff JSON."
 }
@@ -469,17 +545,18 @@ else {
     "Do not retry this task automatically; report typed failure and stop at the declared boundary."
 }
 $promptLines = @(
-    'Use $experiment-model-router for this task.',
-    "The deterministic external dispatcher selected model=$selectedModel from github/main@$currentRulesCommit.",
+    "The launcher already applied the experiment-model-router policy from github/main@$currentRulesCommit and selected model=$selectedModel. Do not reload the skill or routing protocol.",
     "Before any tool call, send a progress message containing exactly these two lines:",
     $routeMarker,
     $handoffAck,
     "Do not downgrade the role or expand the task scope.",
+    "Do not call dispatch_agent_task.ps1, create another agent/model task, or generate a dispatcher request.",
+    "Use the exact repository and evidence paths in the handoff. Do not perform broad discovery or choose a different PowerShell, WSL, Git, SSH, or shell transport.",
     $(if ($request.execution_scope -eq "wsl_workspace_transport") { "This scope permits WSL local workspace transport only. Do not call convir_remote_script.sh, convir_route_ tools, convir-ops, SSH, or cloud commands." }),
     $(if ($request.transport_contract -eq "tracked_convir_cloud") { "Cloud access is limited to the tracked ConvIR transport named by the bounded next action; do not construct arbitrary SSH commands." }),
     $basisInstruction,
     $retryInstruction,
-    "If new evidence requires a stronger role, stop before the next write or decision and emit MODEL_SWITCH_REQUIRED with a new dispatcher request.",
+    "If new evidence requires a stronger role, stop before the next write or decision and report one MODEL_SWITCH_REQUIRED blocker. Do not create or execute a new dispatcher request.",
     "Handoff JSON: $handoffJson",
     "Perform exactly this next action: $($request.next_action)",
     "Report success only after the action's success conditions are verified. On success, end the final answer with this exact marker on its own line: $($request.completion_marker)"
@@ -507,6 +584,7 @@ $dispatchPlan = [ordered]@{
     sandbox = $sandbox
     repository_linux_path = $repository
     handoff_sha256 = $handoffSha
+    circuit_breaker_path = $circuitBreakerPath
     prelaunch_seconds = $prelaunchSeconds
     model_calls_before_launch = 0
     output_root = $null
@@ -519,8 +597,16 @@ if (-not $Execute) {
     exit 0
 }
 
+if (-not $EnableOptionalDispatch) {
+    throw "OPTIONAL_DISPATCH_NOT_ENABLED: -Execute requires -EnableOptionalDispatch"
+}
+
 if ($isLinuxHost) {
     throw "Dispatcher execution is supported only from the Windows Codex host; Linux supports validated dry-run only"
+}
+
+if (Test-Path -LiteralPath $circuitBreakerPath) {
+    throw "DISPATCH_CIRCUIT_OPEN tuple=$($request.route_id)/$($request.stage_state)/$($request.decision)/$($request.authorizes) breaker=$circuitBreakerPath"
 }
 
 if ([string]::IsNullOrWhiteSpace($OutputRoot)) {
@@ -567,6 +653,7 @@ $ErrorActionPreference = "Continue"
 $childExitCode = $null
 Push-Location -LiteralPath $env:TEMP
 try {
+    Write-CircuitBreaker -Path $circuitBreakerPath -Status "IN_PROGRESS" -Request $request -RulesCommit $currentRulesCommit -HandoffSha $handoffSha -OutputRoot $resolvedOutputRoot -CreateNew
     $childPrompt | & $codex.Source @arguments 1> $eventsPath 2> $stderrPath
     $childExitCode = $LASTEXITCODE
 }
@@ -634,6 +721,7 @@ $metadata = [ordered]@{
     sandbox = $sandbox
     repository_linux_path = $repository
     handoff_sha256 = $handoffSha
+    circuit_breaker_path = $circuitBreakerPath
     route_marker = $routeMarker
     child_exit_code = $childExitCode
     turn_completed = $turnCompleted
@@ -651,6 +739,8 @@ $metadata = [ordered]@{
 $metadata | ConvertTo-Json -Depth 8 | Set-Content -Encoding utf8 -LiteralPath $metadataPath
 
 if (-not $dispatchPassed) {
-    throw "MODEL_DISPATCH_FAILED output=$resolvedOutputRoot"
+    Write-CircuitBreaker -Path $circuitBreakerPath -Status "FAILED" -Request $request -RulesCommit $currentRulesCommit -HandoffSha $handoffSha -OutputRoot $resolvedOutputRoot
+    throw "MODEL_DISPATCH_FAILED output=$resolvedOutputRoot circuit_breaker=$circuitBreakerPath"
 }
+Remove-Item -LiteralPath $circuitBreakerPath -Force
 Write-Output "MODEL_DISPATCH_OK model=$selectedModel role=$($request.required_role) output=$resolvedOutputRoot"
