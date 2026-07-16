@@ -252,6 +252,23 @@ class ConvirOpsV4Tests(unittest.TestCase):
                 with self.assertRaisesRegex(OPS.ToolError, "output exceeded"):
                     OPS.run_remote("true", timeout=5)
 
+    def test_remote_transport_timeout_is_unknown_and_bounded(self):
+        with tempfile.TemporaryDirectory() as root:
+            fake_ssh = Path(root) / "fake-ssh"
+            fake_ssh.write_text(
+                f"#!{sys.executable}\n"
+                "import sys, time\n"
+                "sys.stdin.buffer.read()\n"
+                "time.sleep(10)\n",
+                encoding="utf-8",
+            )
+            fake_ssh.chmod(0o700)
+            started = time.monotonic()
+            with patch.object(OPS, "SSH", str(fake_ssh)):
+                with self.assertRaisesRegex(OPS.ToolError, "remote state is unknown"):
+                    OPS.run_remote("true", timeout=0.1)
+            self.assertLess(time.monotonic() - started, 3.0)
+
     def test_live_rules_check_does_not_mutate_signed_plan(self):
         ctx = context()
         before = json.dumps(ctx, sort_keys=True)
