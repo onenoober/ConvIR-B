@@ -26,7 +26,7 @@ RUNTIME_LOG_PATH="$OUTPUT_PATH/runtime.log"
 A1X_STAGE=s0
 LEGACY_STAGE=smoke
 LIMIT=20m
-CLOSEOUT_FILENAME=a1x_v3_s0_closeout.json
+CLOSEOUT_FILENAME="${A1X_S0_CLOSEOUT_FILENAME:-a1x_v3_s0_closeout.json}"
 
 CLOSEOUT_PATH="$OUTPUT_PATH/$CLOSEOUT_FILENAME"
 SEALED_CLOSEOUT_PATH="$EVID_STAGE/$CLOSEOUT_FILENAME"
@@ -94,7 +94,7 @@ test -f "$DEBUG_MANIFEST"
 test -f "$PARENT_SPLIT"
 test "$(git -C "$REMOTE_REPO" rev-parse HEAD)" = "$EXPECTED_ROUTE_COMMIT"
 test -z "$(git -C "$REMOTE_REPO" status --porcelain)"
-test "$(sha256sum "$REMOTE_REPO/experience_docx/tools/run_chd_rm_v4a_a1x_accessibility_v3_s0.sh" | awk '{print $1}')" = "$RUNNER_SHA256"
+test "$(sha256sum "$REMOTE_REPO/${A1X_RUNNER_RELPATH:-experience_docx/tools/run_chd_rm_v4a_a1x_accessibility_v3_s0.sh}" | awk '{print $1}')" = "$RUNNER_SHA256"
 
 export A1X_STAGE CLOSEOUT_PATH EVID_STAGE EXPECTED_ROUTE_COMMIT HEARTBEAT_PATH
 export REMOTE_REPO RUN_ID RUNNER_SHA256 STATUS_PATH
@@ -104,6 +104,7 @@ export CUBLAS_WORKSPACE_CONFIG=:4096:8
 "$PY" - "$ASSET_MANIFEST" <<'PY'
 import hashlib
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -123,16 +124,20 @@ for value in manifest["source_checkouts"].values():
         check=True, capture_output=True, text=True,
     ).stdout.strip()
     assert head == value["commit"] and not dirty
-reference = Path(manifest["a1c_reference_source"]["path"])
+vendored = manifest["vendored_a1c_reference"]
+reference = Path(os.environ["A1X_REFERENCE_SOURCE"])
+assert reference == Path(os.environ["REMOTE_REPO"]) / vendored["route_relpath"]
 assert reference.is_file() and reference.is_absolute() and not reference.is_symlink()
-assert hashlib.sha256(reference.read_bytes()).hexdigest() == manifest["a1c_reference_source"]["sha256"]
+assert hashlib.sha256(reference.read_bytes()).hexdigest() == vendored["sha256"]
+assert vendored["upstream_commit"] == "9c4bc79cfdadb00aa91ac6c6baed58fdbc6be068"
+assert vendored["upstream_source_sha256"] == "0b947a36a83178aaa5d8316273a24de835c52af437332b3b2607c74ffe9cac12"
 data = Path(manifest["data"]["path"])
 assert (data / "train" / "haze").is_dir()
 assert (data / "train" / "gt").is_dir()
 assert manifest["data"]["confirmation_images_targets_outcomes_touched"] is False
 print("A1X_V3_S0_ASSET_PREFLIGHT_OK")
 PY
-A1C_REFERENCE_SOURCE=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1c-safe-action-interface-ceiling-20260715/experience_docx/tools/chd_rm_v4a_a1c_safe_action_interface_ceiling_v2.py
+A1C_REFERENCE_SOURCE="$A1X_REFERENCE_SOURCE"
 export A1C_REFERENCE_SOURCE
 
 A1R_ROOT=$BASE/repos/ConvIR-B-v4a-a1r-representation-sufficiency-20260714

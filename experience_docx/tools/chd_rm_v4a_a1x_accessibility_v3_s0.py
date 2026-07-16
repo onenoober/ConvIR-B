@@ -413,6 +413,10 @@ def exact_transport(
 def transport_equivalence(records: list[dict[str, Any]]) -> dict[str, Any]:
     reference_path = Path(os.environ["A1C_REFERENCE_SOURCE"])
     reference = load_module(reference_path, "a1x_v3_a1c_reference")
+    if reference.UPSTREAM_COMMIT != "9c4bc79cfdadb00aa91ac6c6baed58fdbc6be068":
+        raise RuntimeError("vendored A1C upstream commit drift")
+    if reference.UPSTREAM_SOURCE_SHA256 != "0b947a36a83178aaa5d8316273a24de835c52af437332b3b2607c74ffe9cac12":
+        raise RuntimeError("vendored A1C upstream source hash drift")
     reference.PARENT = A1R.PARENT
     max_abs = 0.0
     range_excess = 0.0
@@ -438,6 +442,8 @@ def transport_equivalence(records: list[dict[str, Any]]) -> dict[str, Any]:
                 raise RuntimeError("A1C low shape mismatch")
     return {
         "reference_source_sha256": sha256_file(reference_path),
+        "reference_upstream_commit": reference.UPSTREAM_COMMIT,
+        "reference_upstream_source_sha256": reference.UPSTREAM_SOURCE_SHA256,
         "max_abs_vs_a1c_reference": max_abs,
         "correction_range_excess": range_excess,
         "zero_endpoint_noop_max_abs": zero_noop_max_abs,

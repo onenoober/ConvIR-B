@@ -11,10 +11,6 @@
       "commit": "d4f8d0936869c822ae19b5c21172efc2eb973dd8",
       "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1f-deltau-action-feasibility-20260714"
     },
-    "a1c_reference": {
-      "commit": "9c4bc79cfdadb00aa91ac6c6baed58fdbc6be068",
-      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1c-safe-action-interface-ceiling-20260715"
-    },
     "v3z": {
       "commit": "3caddcc5265732e5be77e3404119a28cb28c11e6",
       "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3z-source-3caddcc5265732e5be77e3404119a28cb28c11e6"
@@ -28,9 +24,11 @@
       "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3p-source-555fd008e29f02128564f2fad41d0095ee44f5ea"
     }
   },
-  "a1c_reference_source": {
-    "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v4a-a1c-safe-action-interface-ceiling-20260715/experience_docx/tools/chd_rm_v4a_a1c_safe_action_interface_ceiling_v2.py",
-    "sha256": "0b947a36a83178aaa5d8316273a24de835c52af437332b3b2607c74ffe9cac12"
+  "vendored_a1c_reference": {
+    "route_relpath": "experience_docx/tools/a1x_v3_a1c_exact_half_reference.py",
+    "sha256": "24f9575dd2ab98197a4db205db449caa68d4edf842e7f6f8610d08d4079cbfd5",
+    "upstream_commit": "9c4bc79cfdadb00aa91ac6c6baed58fdbc6be068",
+    "upstream_source_sha256": "0b947a36a83178aaa5d8316273a24de835c52af437332b3b2607c74ffe9cac12"
   },
   "data": {
     "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",

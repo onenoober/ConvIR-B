@@ -2,7 +2,7 @@
 
 Date: 2026-07-16
 
-Status: ENGINEERING_REPAIR_PLANNED after S0 r1 preflight failure; no model workload ran.
+Status: PLANNED
 
 ## Identity
 
@@ -47,7 +47,7 @@ Status: ENGINEERING_REPAIR_PLANNED after S0 r1 preflight failure; no model workl
   output. No data, model, loss, threshold, epoch, LR, width, or gate changes are
   authorized by this repair.
 
-- First operation: A1X_V3_S0
+- First operation: A1X_V3_S0 (r1 archived); repair operation: A1X_V3_S0_R2.
 - Expected wall time and monitor profile: at most 20 minutes; short profile; 60-second metadata-only heartbeat, 300-second stale threshold, one expected-end observation.
 - Complete-unit resume policy: none for S0; an interrupted S0 uses a new output id after one engineering review. Future formal may resume only complete hash-matching fold/cell units after separate authorization.
 - Cloud workspace/run/output/status/closeout: fresh route workspace; run root /sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716; new output a1x-v3-s0-r1; status.txt, heartbeat.json, runtime.log, and a1x_v3_s0_closeout.json.
