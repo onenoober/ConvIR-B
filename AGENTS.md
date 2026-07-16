@@ -58,6 +58,17 @@
 - Engineering failure never changes data, metric, threshold, gate, locked-test
   policy, or scientific authorization.
 
+## Three-End Command Boundary
+
+- Windows calls WSL only as `wsl.exe -d Ubuntu-22.04 --exec` plus a fixed Linux
+  program and literal argv. Never use Windows Git on the WSL UNC worktree and
+  never place PowerShell, WSL, and SSH syntax in one command string.
+- Standard route lifecycle uses `convir-ops` v4. Any uncovered cloud action uses
+  one committed, unchanged Bash file through `experience_docx/tools/convirctl.py
+  remote-script`; no inline SSH command or untracked script is valid.
+- Use explicit binaries, JSON/status/closeout markers, and SHA-256 identity. A
+  remote timeout is unknown state with one inspection and no blind retry.
+
 ## Documentation Ownership
 
 Keep one canonical source per rule. `experience_docx/README.md` routes reads.

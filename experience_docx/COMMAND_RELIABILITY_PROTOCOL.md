@@ -2,24 +2,55 @@
 
 Date: 2026-07-16
 
-Use direct argument arrays for simple Git/path operations. Use the bounded
-`convir-ops` tools for their route lifecycle. For an uncovered cloud command,
-write a small Bash script and run
-`experience_docx/tools/convir_remote_script.sh <script>`; do not build nested
-PowerShell -> WSL -> SSH quoting. Use explicit paths and an `*_OK` marker or
-status file.
+## One Selection Table
 
-Quoting, CRLF, PATH, stdin and marker failures are `FAILED_COMMAND`, never
-experiment evidence. Apply one canonical correction. If the same boundary class
-fails again, stop that operation and report both failed forms. A timeout after
-launch is unknown state and must be inspected once before any action.
+| Need | Only default | Do not use |
+| --- | --- | --- |
+| Windows -> WSL file, Git, or fixed program | `wsl.exe -d Ubuntu-22.04 --exec <absolute-program> <argv...>` | Windows Git on a WSL UNC path; `bash -lc`; nested quoting |
+| Standard experiment plan/start/finish/evidence | the six bounded `convir-ops` v4 tools | generic SSH, dispatcher, watcher, or per-poll task |
+| Cloud action not covered by MCP | committed, unchanged `.sh` file plus `convirctl.py remote-script --script <absolute-path>` | inline remote command, heredoc crossing shells, untracked/dirty script |
+| Git/branch/SHA preflight | `convirctl.py git-state` | parsing human-formatted `git status` text |
+| File identity | `convirctl.py sha256` | filename/mtime as identity |
+| Result state | JSON, durable `status.txt`, typed closeout, and explicit `*_OK` marker | silence or terminal appearance as evidence |
 
-Transport repair cannot change experiment scope or create authorization.
+GitHub carries branch, exact commit, tracked runner, rules, and compact evidence;
+it never carries a command string. WSL Git owns WSL worktrees. Cloud owns raw
+runtime state. File transfer uses an explicit allowlist plus SHA-256.
 
-## Current Canonical Corrections
+## Fixed Transport Contract
 
-- Invalid: send a PowerShell-unescaped `|` regex through a WSL command string;
-  PowerShell splits it into commands. Corrected: use `Select-String` on an
-  explicit file list or a direct WSL argument array without nested shells.
-- Invalid: run Windows Git against a WSL UNC worktree and hit ownership/path
-  translation. Corrected: run `wsl.exe ... git -C /absolute/wsl/path ...`.
+`experience_docx/tools/convirctl.py` has only `git-state`, `sha256`, and
+`remote-script`. It uses argument arrays and fixed `/usr/bin/git`,
+`/usr/bin/ssh`, `/bin/bash`, and host `convir-4090`. `remote-script` accepts only
+an absolute workspace path to an unchanged Git-tracked `.sh`, reads its exact
+committed blob, removes UTF-8 BOM and
+CRLF, requires the first executable line to be `set -euo pipefail`, runs
+`bash -n`, and sends the complete file on SSH stdin. It does not accept a remote
+command string. Results are one JSON object with a marker and exit code; output
+is capped at 64 KiB per stream.
+
+From PowerShell, invoke the fixed WSL program directly. Example:
+
+```powershell
+wsl.exe -d Ubuntu-22.04 --exec /usr/bin/python3 /home/ubuntu/workspace/ConvIR-B/experience_docx/tools/convirctl.py git-state --repo /home/ubuntu/workspace/ConvIR-B --require-clean
+```
+
+## Finite Failure Rule
+
+Quoting, CRLF/BOM, PATH, stdin, host-key, Git transport, and missing-marker
+failures are command failures, never experiment evidence. Record the invalid
+form and one canonical correction. If the same boundary class fails again, stop
+that operation and report both forms. A timeout after a remote action begins is
+`REMOTE_STATE_UNKNOWN`: inspect once and never retry blindly. Transport repair
+cannot change experiment scope, evidence role, gate, data, or authorization.
+
+Canonical corrections retained from prior incidents:
+
+- PowerShell parsed an unescaped `|`, regex, `$()`, or quote: pass literal argv
+  through `wsl.exe --exec`, or move the whole cloud body into a committed Bash
+  file.
+- Windows Git rejected a WSL UNC worktree: use WSL `/usr/bin/git -C
+  /absolute/wsl/path`.
+- a Windows executable leaked into WSL PATH: use the absolute Linux binary.
+- SSH consumed wrapper stdin and skipped later markers: send one complete script
+  as SSH stdin and return one structured result.
