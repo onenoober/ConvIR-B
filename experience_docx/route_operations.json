@@ -36,7 +36,7 @@
       "min_free_gpu_mib": 12000,
       "max_gpu_utilization_pct": 10
     },
-    "A1X_V3_D0": {
+    "A1X_V3_D0_DESIGN_ONLY": {
       "runner_relpath": "experience_docx/tools/run_chd_rm_v4a_a1x_v3_d0.sh",
       "mode": "d0",
       "require_gpu": true,
