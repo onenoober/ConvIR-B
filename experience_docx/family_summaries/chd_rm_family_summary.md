@@ -3,8 +3,7 @@
 Date: 2026-07-16
 
 Status: A1C established an adequate privileged exact-half interface, A1R found
-real but sub-material local-readout direction signal, and A1X-v3 S0 r1 stopped
-before model execution on a missing reference-checkout path.
+real but sub-material local-readout direction signal, and A1X-v3 S0 r4 passed the repaired exact-half engineering gate.
 
 ## Current Read
 
@@ -15,9 +14,9 @@ before model execution on a missing reference-checkout path.
 - A1C shows the exact-half transport itself is adequate under a privileged
   selector, so a multiscale-global A1X representation/readout audit remains the
   highest-value implementation route.
-- A1X-v3 S0 r1 is not evidence for or against that mechanism. It failed before
-  `preflight_pass` because the cloud host lacked the named A1C reference
-  checkout. All forbidden-data flags are false.
+- A1X-v3 S0 r4 passed exact transport/no-op, learnability, deterministic CUDA,
+  parameter/MAC/memory, native-shape, and freeze-scope guards. It authorizes only
+  the preregistered D0 design; all forbidden-data flags are false.
 
 ## Decision
 

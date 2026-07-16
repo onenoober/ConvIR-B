@@ -8,10 +8,9 @@ the material representation gate, and A1C completed the privileged
 interface-ceiling replay. A1C's exact-half adequacy passed on the reused fresh512
 development screen and authorizes only a fresh R3 review; direct training,
 policy, candidate, canary, and locked-test access remain blocked.
-The first A1X-v3 S0 attempt ended before model execution because its pinned A1C
-reference checkout path was absent on the cloud host; this is an archived
-engineering failure, not an S0 result, and authorizes only a fixed asset repair
-to a fresh output.
+A1X-v3 S0 r4 passed after the archived asset-path repair: exact transport and
+no-op differences are zero, microfit reduction is 38.3314%, engineering budgets
+pass, and only D0 design is authorized. The 432-name confirmation remains blocked.
 
 ## Research Direction
 

@@ -1,0 +1,23 @@
+{
+  "authorizes": "A1X_V3_D0_DESIGN_ONLY",
+  "canary_touched": false,
+  "candidate_selected": false,
+  "config_sha256": "46b063a87863f95cf9ed888619aacc113c534c6d6116afe4a380efc81a807211",
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "A1X_V3_S0_PASS_AUTHORIZE_D0_DESIGN_ONLY",
+  "evidence_role": "engineering_debug",
+  "gate_type": "structural_integrity",
+  "locked_test_touched": false,
+  "policy_created": false,
+  "route_commit": "2e6ab06d983c21afcb1fcefc77003980d5ce5e4d",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716",
+  "run_id": "a1x-v3-s0-r4",
+  "runner_sha256": "a22b910c634dbeae449ba5d16b2a747eabd61dd38a8f4aa5b43e4eba6adc771f",
+  "schema_version": 1,
+  "stage": "s0",
+  "state": "COMPLETED_GATE_PASS",
+  "structural_valid": true,
+  "summary_sha256": "9a88c9322ef9ed9fb760bead22188c08354a0fb513a3a0fea050018fb0a98ade",
+  "training_scope": "engineering_microfit_only",
+  "wall_seconds": 15.89241960272193
+}

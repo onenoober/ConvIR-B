@@ -205,15 +205,16 @@ development-screening interface ceiling, not a deployable or confirmation
 result; implementation, A1X data access, candidate/policy work, canary, and
 locked test remain blocked until a fresh R3 review.
 
-v4a-A1X-v3 has started the separately preregistered implementation route, but
-its first S0 attempt produced no model result. `a1x-v3-s0-r1` closed as
+v4a-A1X-v3 passed its repaired S0 engineering gate after the archived r1
+asset-path failure. `a1x-v3-s0-r1` closed as
 `FAILED_ENGINEERING / null / NONE` before `preflight_pass` because its manifest
 named an A1C reference checkout path absent from the current cloud host. The
 route, other pinned source commits, and Haze4K train directories passed the
 read-only fact audit; no runtime log or S0 summary was created. Confirmation,
-canary, and locked-test flags remain false. Only the frozen asset-packaging
-repair on a new output is allowed; D0 and the 432-name confirmation stage remain
-blocked.
+canary, and locked-test flags remain false. The repaired r4 exact transport/no-op differences are `0.0`, microfit loss
+reduction is `38.3314%`, parameter/MAC/memory guards pass, and all forbidden-data
+flags are false. This authorizes D0 design only; the 432-name confirmation stage
+remains blocked.
 
 Use `experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1c-safe-action-interface-ceiling.md`
 and
