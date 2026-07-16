@@ -76,3 +76,10 @@ They never stage, commit, or push.
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. After an update, restart the host and verify version
 `4.1.0`, source SHA-256, and exactly six tools.
+
+The 2026-07-16 adoption audit verified the registered executable at
+`main@dca94d71c9fe73e4e93910b0587927c79ab7023c`: version `4.1.0`, source
+SHA-256 `dc07ac60056b5e7da52f045419f196c82f6a19a64255408504056b1329ecc2ae`,
+schema v4, and exactly six tools. Do not terminate an active task's stdio server
+to force reload; use a new app/task session or an isolated-state validation of
+the exact registered executable.

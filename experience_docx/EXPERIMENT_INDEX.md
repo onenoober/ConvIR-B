@@ -6,22 +6,24 @@ Status: evidence index plus official architecture anchor registry.
 
 ## Operations Infrastructure Validation
 
-The generic metadata-only run-monitoring route has passed its isolated cloud
-candidate gate but is not yet a project default. Two earlier candidates stopped
-safely on validation-harness defects and were archived before correction.
-`candidate-33a772268-r3` passed the initial isolated gate. The strengthened
-`candidate-48203394e-r4` then added the missing unlimited-sidecar lifecycle
-case and passed all seven telemetry tests, all 22 restricted control-plane
-tests, the semantic source audit, the fixed file/cost gate, and a typed
-`COMPLETED_GATE_PASS` closeout. The new test proves that an unlimited sidecar
-exits after its exact parent is naturally reaped. One hundred atomic pulses
-used `0.154600732` CPU seconds, projected to `0.0927604392` CPU seconds per
-hour at a 60-second interval, and created only `heartbeat.json`. The closeout
-records zero model calls and no GPU, dataset, checkpoint, canary, or locked-test
-access. This authorizes main-integration review only. Project-default adoption
-and model-experiment use remain blocked until the generic subset is integrated,
-the registered six-tool service is updated, and a receipt-bound end-to-end
-validation passes.
+The generic metadata-only run-monitoring route is completed and adopted for
+future long cloud operations. Two early validation-harness failures were
+archived before correction. The strengthened candidate then passed seven
+telemetry tests, 22 restricted control-plane tests, semantic control/data-read
+rejection, fail-open behavior, exact-parent exit, stale/closeout recovery, and
+the fixed file/cost gate. The reviewed generic subset was fast-forwarded to
+GitHub `main@dca94d71c9fe73e4e93910b0587927c79ab7023c`.
+
+The final receipt-bound E2E at
+`c84823d2c135936c0793768eecaa654dc206ca2f` verified `convir-ops 4.1.0`,
+exactly six schema-v4 tools, `PLAN_READY -> LAUNCHED -> CLOSEOUT_VALIDATED`,
+receipt-bound compact evidence fetch with no Git mutation, and terminal
+authorization `GENERIC_RUN_MONITORING_ADOPTION`. One hundred atomic pulses
+used `0.154378791` CPU seconds, projected to `0.0926272746` CPU seconds per
+hour at a 60-second interval, and created only a 231-byte `heartbeat.json`.
+The closeout records zero model calls and no GPU, dataset, checkpoint, canary,
+or locked-test access. This adoption does not authorize or start any scientific
+experiment.
 
 Use `experience_docx/experiment_cards/2026-07-16-generic-run-monitoring-validation.md`,
 `experience_docx/family_summaries/operations_infrastructure_summary.md`, and

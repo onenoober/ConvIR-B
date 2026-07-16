@@ -2,16 +2,16 @@
 
 Date: 2026-07-16
 
-Status: `RUNNING`
+Status: `COMPLETED`
 
 ## Identity
 
 - Route id: `generic_run_monitoring_validation_20260716`.
 - Question: Can metadata-only monitoring provide bounded liveness and later
   closeout recovery without model polling or workload interference?
-- Rules commit: `39009822a54aa0e756ab196d1be2d0d7aa0fae7c`.
+- Rules commit: `dca94d71c9fe73e4e93910b0587927c79ab7023c`.
 - Source branch/commit: GitHub
-  `main@39009822a54aa0e756ab196d1be2d0d7aa0fae7c`.
+  `main@dca94d71c9fe73e4e93910b0587927c79ab7023c`.
 - Route branch: `codex/generic-run-monitoring-20260716`.
 - Locked test/canary policy: prohibited; this validation uses no dataset, model,
   checkpoint, GPU, inference, training, evaluation, canary, or locked test.
@@ -31,7 +31,8 @@ Status: `RUNNING`
 - Primary gate, uncertainty and threshold source: deterministic integrity gate;
   100 pulses, CPU time `<5s`, exactly one heartbeat file, no forbidden control
   token, and all unit tests pass.
-- `PASS` authorizes: main-branch integration review for generic future use.
+- `PASS` authorizes: candidate pass authorizes main integration review; the
+  later receipt-bound E2E pass authorizes generic monitoring adoption only.
 - `INCONCLUSIVE` authorizes: none; fix one engineering root cause on a new
   output identity.
 - `FAIL` stops: adoption and use in any experiment runner.
@@ -49,7 +50,8 @@ Status: `RUNNING`
   process, no GPU, hard runner timeout 10 minutes.
 - Resource/cost limits or descriptive-only rationale: 100 pulses CPU `<5s`;
   heartbeat payload `<4096` bytes; no persistent process after its parent exits.
-- Runner and required assets: `experience_docx/tools/run_generic_run_monitoring_validation.sh`;
+- Runner and required assets: `experience_docx/tools/run_generic_run_monitoring_validation.sh` and
+  `experience_docx/tools/run_generic_run_monitoring_e2e_validation.sh`;
   tracked Python sources and tests only, with no external runtime asset.
 
 ## Operations And Evidence
@@ -57,6 +59,7 @@ Status: `RUNNING`
 | Operation | Evidence role/scope | Gate | Pass authorizes |
 | --- | --- | --- | --- |
 | `GENERIC_MONITOR_VALIDATION` | engineering-only synthetic cloud validation | all tests and cost/control checks pass | main integration review only |
+| `MAIN_INTEGRATION_REVIEW_ONLY` | receipt-bound registered-service E2E | server 4.1.0, six schema-v4 tools, tests/cost, closeout and evidence fetch pass | generic monitoring adoption only |
 
 - First operation: GENERIC_MONITOR_VALIDATION
 - Expected wall time and monitor profile: under 10 minutes; `short`.
@@ -80,18 +83,17 @@ Status: `RUNNING`
 
 ## Decision
 
-- Verdict and primary reason: strengthened isolated candidate gate passed;
-  seven telemetry and 22 control-plane tests passed with a typed
-  `COMPLETED_GATE_PASS` closeout.
+- Verdict and primary reason: adopted; the strengthened candidate and final
+  receipt-bound registered-service E2E both passed their frozen gates.
 - Mechanism/control and safety reason: telemetry remained metadata-only and
   fail-open; semantic audit found no process/GPU control or scientific-output
   read, and control-plane observation remained bounded and receipt-bound.
 - Evidence-independence and cost reason: no model, GPU, dataset, checkpoint,
-  canary, or locked test was used; 100 pulses consumed `0.154600732` CPU
-  seconds and produced only one 230-byte heartbeat file.
-- Authorized next action or terminal stop: main-integration review only,
-  followed by registered-service schema-v4 end-to-end validation. Model
-  experiments and project-default adoption remain blocked until that passes.
+  canary, or locked test was used; final E2E 100-pulse CPU was
+  `0.154378791` seconds and produced only one 231-byte heartbeat file.
+- Authorized next action or terminal stop: adopt generic monitoring for future
+  long cloud operations. This closeout does not authorize A1X, training,
+  evaluation, inference, canary, or locked-test access.
 
 ## Candidate Validation History
 
@@ -120,3 +122,26 @@ Status: `RUNNING`
   lifecycle test. The unlimited sidecar exited after the exact parent was
   naturally reaped, all seven telemetry and 22 control-plane tests passed, and
   the typed closeout again authorizes only main-integration review.
+
+## Registered-Service End-to-End Gate
+
+- GitHub main integration completed by non-force fast-forward at
+  `dca94d71c9fe73e4e93910b0587927c79ab7023c`; the dedicated
+  `ConvIR-B-operations-v4` worktree is clean at that exact commit.
+- The final CPU-only schema-v4 operation uses the fresh output identity
+  `generic-monitor-e2e-r1`. It must verify server `4.1.0`, exactly six tools,
+  plan/start/receipt/finish, typed closeout, and receipt-bound evidence fetch.
+- The current Codex MCP transport did not reconnect after its uniquely
+  identified old process was normally terminated. Therefore the same
+  registered executable and path will be exercised through one isolated stdio
+  instance and isolated state directory. This does not broaden its six-tool
+  interface or experiment scope.
+- The isolated registered-path instance reported server `4.1.0`, source SHA-256
+  `dc07ac60056b5e7da52f045419f196c82f6a19a64255408504056b1329ecc2ae`,
+  and exactly six schema-v4 tools. It completed `PLAN_READY -> LAUNCHED ->
+  CLOSEOUT_VALIDATED`, fetched the two receipt-bound evidence files without Git
+  mutation, and validated the adoption terminal tuple.
+- The final closeout SHA-256 is
+  `2e6f627eb5b3a6b0d3645aa0cfd91b43992d2625a8df41d345a77270cbad8f72`;
+  summary SHA-256 is
+  `5199e564a6da93a77ffcd8178c6415ccfb4511ae299cd79d6430087959eddb2c`.

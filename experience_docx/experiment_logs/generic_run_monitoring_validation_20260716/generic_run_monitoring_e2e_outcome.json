@@ -1,0 +1,47 @@
+{
+  "closeout_safety_identity_valid": true,
+  "closeout_sha256": "2e6f627eb5b3a6b0d3645aa0cfd91b43992d2625a8df41d345a77270cbad8f72",
+  "evidence_fetch_git_mutations": false,
+  "evidence_files": [
+    "generic_run_monitoring_e2e_closeout.json",
+    "generic_run_monitoring_e2e_summary.json"
+  ],
+  "finish_state": "CLOSEOUT_VALIDATED",
+  "github_main_commit": "dca94d71c9fe73e4e93910b0587927c79ab7023c",
+  "github_main_ref_fresh": true,
+  "pass": true,
+  "plan_state": "PLAN_READY",
+  "plan_token_sha256": "96fa53c0d26057f9b87617888a007a5a24bad1122a556dca8e61b492482696b0",
+  "planned_identity": {
+    "output_path": "/sda/home/wangyuxin/ConvIR-B/runs/generic_run_monitoring_validation_20260716/generic-monitor-e2e-r1",
+    "remote_repo": "/sda/home/wangyuxin/ConvIR-B/repos/generic_run_monitoring_validatio-generic-monitor-e2e-r1-fe385dd1d23f878f",
+    "route_id": "generic_run_monitoring_validation_20260716",
+    "session": "convir-generic_run_monito-synthetic_-generic-mo-2a090389cff4"
+  },
+  "pulse_cpu_seconds": 0.15437879100000002,
+  "receipt_sha256": "8be38b408088b163a2f7f91a1fd8ca6ebd2318027524988f76de8bc83373446e",
+  "route_commit": "c84823d2c135936c0793768eecaa654dc206ca2f",
+  "route_schema_version": 4,
+  "runner_sha256": "c8cfbe5d4650a21e0aead2c01586192b8cf7fae2e0f9d49b8f8c71e210be97b6",
+  "schema_version": 1,
+  "server_name": "convir-ops",
+  "server_source_sha256": "dc07ac60056b5e7da52f045419f196c82f6a19a64255408504056b1329ecc2ae",
+  "server_version": "4.1.0",
+  "start_state": "LAUNCHED",
+  "summary_safety_contract_valid": true,
+  "summary_sha256": "5199e564a6da93a77ffcd8178c6415ccfb4511ae299cd79d6430087959eddb2c",
+  "terminal_tuple": {
+    "authorizes": "GENERIC_RUN_MONITORING_ADOPTION",
+    "decision": "GENERIC_RUN_MONITORING_E2E_PASS",
+    "state": "COMPLETED_GATE_PASS"
+  },
+  "tool_count": 6,
+  "tool_names": [
+    "convir_evidence_fetch",
+    "convir_evidence_list",
+    "convir_git_status",
+    "convir_route_finish",
+    "convir_route_plan",
+    "convir_route_start"
+  ]
+}

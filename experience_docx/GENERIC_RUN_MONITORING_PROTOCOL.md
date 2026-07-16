@@ -2,8 +2,11 @@
 
 Date: 2026-07-16
 
-Status: validation candidate. It becomes the default only after the synthetic
-cloud closeout passes and the reviewed generic files reach GitHub `main`.
+Status: adopted for future long cloud operations. The reviewed generic files
+are on GitHub `main@dca94d71c9fe73e4e93910b0587927c79ab7023c`, and the
+receipt-bound registered-service E2E gate passed at route commit
+`c84823d2c135936c0793768eecaa654dc206ca2f`. Adoption does not authorize any
+model experiment or change a route's scientific gate.
 
 ## Non-Interference Boundary
 
@@ -88,12 +91,21 @@ An operation may choose a longer interval when individual kernels routinely
 block CPU scheduling, but must keep the stale threshold at least three times
 the interval. Monitoring cadence is never a scientific factor.
 
-## Adoption Gate
+## Adoption Evidence
 
-Before adoption, cloud synthetic validation must pass telemetry atomicity,
+Cloud synthetic validation passed telemetry atomicity,
 identity binding, fail-open unwritable-path behavior, parent non-interference,
 heartbeat/status/launch fallback, stale-then-closeout recovery,
 dead-without-closeout finite stop, receipt-bound closeout, and the fixed CPU/file
 cost gate. A syntax-tree safety audit must reject actual process/GPU control and
 non-`/proc` reads while ignoring explanatory prose. No model, dataset,
 checkpoint, GPU, or scientific result is used.
+
+The strengthened candidate passed seven telemetry tests and 22 restricted
+control-plane tests. The final E2E used the registered `convir-ops 4.1.0`
+executable, exactly six schema-v4 tools, a fresh plan/output/receipt, one bounded
+finish window, and receipt-bound evidence fetch. Its terminal tuple is
+`COMPLETED_GATE_PASS / GENERIC_RUN_MONITORING_E2E_PASS /
+GENERIC_RUN_MONITORING_ADOPTION`. One hundred pulses consumed
+`0.154378791` CPU seconds, projected to `0.0926272746` CPU seconds per hour at
+a 60-second interval, and created only one 231-byte `heartbeat.json`.
