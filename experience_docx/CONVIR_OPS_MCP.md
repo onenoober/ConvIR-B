@@ -2,7 +2,7 @@
 
 Date: 2026-07-16
 
-Status: schema v4; server `4.0.0`.
+Status: schema v4; server `4.1.0`.
 
 `convir-ops` is a restricted local stdio bridge to `convir-4090`. It accepts
 only a GitHub route branch, exact commit, and operation id. It never accepts an
@@ -21,6 +21,11 @@ arbitrary command, remote path, metric, threshold, or scientific verdict.
 
 Do not add generic shell, SSH, cleanup, retry, watcher, commit, push,
 authorization-file, validator or model-routing tools.
+Internally generated, schema-bound bodies cross the fixed host boundary only as
+one stdin script to fixed `/usr/bin/ssh` and `/bin/bash`; stdout and stderr are
+drained with 64 KiB caps and every call has a hard timeout. No tool accepts the
+body or any remote command from a caller. The separate `convirctl remote-script`
+contract remains limited to unchanged Git-tracked scripts for manual actions.
 
 ## Manifest
 
@@ -55,10 +60,13 @@ valid.
 Start checks resources before creating a fresh workspace and again immediately
 before launch. Resource wait may reuse the unchanged plan. Any failure after
 the launch boundary becomes `START_STATE_UNKNOWN` and forbids blind retry. A
-receipt is the only input for finish/evidence tools. A dead session without
-closeout, stale heartbeat, or validated closeout permanently closes `finish`
-for that receipt. Healthy receipts have a hard maximum of 64 observation
-windows, preventing an unbounded watcher loop.
+receipt is the only input for finish/evidence tools. Finish prefers
+`heartbeat.json`, falls back to `status.txt`, and then to receipt launch time. A
+stale active heartbeat is a bounded infrastructure warning: it never controls
+the workload and leaves the receipt open for later closeout validation. A dead
+session without closeout or a validated closeout closes `finish`. Healthy
+receipts have a hard maximum of 64 observation windows, preventing an unbounded
+watcher loop.
 
 Evidence tools allow only top-level `.json/.csv/.md/.txt` files up to 1 MiB.
 They never stage, commit, or push.
@@ -67,4 +75,4 @@ They never stage, commit, or push.
 
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. After an update, restart the host and verify version
-`4.0.0`, source SHA-256, and exactly six tools.
+`4.1.0`, source SHA-256, and exactly six tools.

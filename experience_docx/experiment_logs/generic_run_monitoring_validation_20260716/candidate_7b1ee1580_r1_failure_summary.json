@@ -1,0 +1,12 @@
+{
+  "candidate_commit": "7b1ee15804677b0ef89b46e090a68268610ea848",
+  "closeout_sha256": "d8d03ed865b210dbe7b45c8fb5fd67fe04fe5854cdcec46eaf99a36164689195",
+  "failure_class": "validation_harness_false_positive",
+  "failed_test": "test_source_contains_no_process_or_gpu_control",
+  "failed_test_count": 1,
+  "passed_test_count_before_stop": 5,
+  "raw_logs_location": "/sda/home/wangyuxin/ConvIR-B/runs/generic_run_monitoring_validation_20260716/candidate-7b1ee1580-r1",
+  "root_cause": "raw substring signal. matched explanatory docstring text",
+  "schema_version": 1,
+  "transport_marker": "CONVIRCTL_REMOTE_SCRIPT_OK"
+}

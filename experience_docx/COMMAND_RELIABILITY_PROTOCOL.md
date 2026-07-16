@@ -63,3 +63,10 @@ Canonical corrections retained from prior incidents:
 - 2026-07-16 invalid: assumed `/usr/bin/rg` existed in WSL. Corrected once: test
   the explicit Linux path and use an already available fixed Linux reader when
   it is absent; never fall through to a Windows PATH executable.
+- 2026-07-16 invalid: `convir-ops` wrote an internally generated launch body to
+  `/tmp` and passed it to `convirctl remote-script`, whose external-operator
+  contract correctly rejects scripts outside the workspace or Git. Corrected
+  once: non-user-addressable MCP bodies use fixed `/usr/bin/ssh` argv and one
+  complete stdin script with fixed host/shell, timeout, and 64 KiB stream caps.
+  Manual actions still require an unchanged committed script through
+  `convirctl remote-script`; no generic command surface was added.

@@ -1,7 +1,8 @@
-"""Mocked-transport tests for the minimal convir-ops schema-v4 lifecycle."""
+"""Transport and lifecycle tests for the minimal convir-ops schema-v4 bridge."""
 
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -202,6 +203,72 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertIn("+refs/heads/codex/a1x:refs/convir-verify/route", fetches[0])
         self.assertIn("+refs/heads/main:refs/convir-verify/main", fetches[0])
 
+    def test_remote_transport_uses_fixed_argv_and_complete_stdin(self):
+        with tempfile.TemporaryDirectory() as root:
+            root = Path(root)
+            fake_ssh = root / "fake-ssh"
+            argv_path = root / "argv.json"
+            stdin_path = root / "stdin.bin"
+            fake_ssh.write_text(
+                f"#!{sys.executable}\n"
+                "import json, os, sys\n"
+                "from pathlib import Path\n"
+                "Path(os.environ['CONVIR_TEST_ARGV']).write_text(json.dumps(sys.argv[1:]))\n"
+                "Path(os.environ['CONVIR_TEST_STDIN']).write_bytes(sys.stdin.buffer.read())\n"
+                "sys.stdout.write('REMOTE_BOUNDARY_OK\\n')\n",
+                encoding="utf-8",
+            )
+            fake_ssh.chmod(0o700)
+            with (
+                patch.object(OPS, "SSH", str(fake_ssh)),
+                patch.dict(os.environ, {
+                    "CONVIR_TEST_ARGV": str(argv_path),
+                    "CONVIR_TEST_STDIN": str(stdin_path),
+                }),
+            ):
+                output = OPS.run_remote("printf 'PAYLOAD_OK\\n'", timeout=5)
+            self.assertEqual("REMOTE_BOUNDARY_OK", output)
+            self.assertEqual([
+                "-T", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5",
+                "convir-4090", "/bin/bash", "-s", "--",
+            ], json.loads(argv_path.read_text(encoding="utf-8")))
+            self.assertEqual(
+                b"#!/usr/bin/env bash\nset -euo pipefail\nprintf 'PAYLOAD_OK\\n'\n",
+                stdin_path.read_bytes(),
+            )
+
+    def test_remote_transport_drains_but_rejects_oversized_output(self):
+        with tempfile.TemporaryDirectory() as root:
+            fake_ssh = Path(root) / "fake-ssh"
+            fake_ssh.write_text(
+                f"#!{sys.executable}\n"
+                "import sys\n"
+                "sys.stdin.buffer.read()\n"
+                f"sys.stdout.write('x' * {OPS.MAX_REMOTE_CAPTURE_BYTES + 1})\n",
+                encoding="utf-8",
+            )
+            fake_ssh.chmod(0o700)
+            with patch.object(OPS, "SSH", str(fake_ssh)):
+                with self.assertRaisesRegex(OPS.ToolError, "output exceeded"):
+                    OPS.run_remote("true", timeout=5)
+
+    def test_remote_transport_timeout_is_unknown_and_bounded(self):
+        with tempfile.TemporaryDirectory() as root:
+            fake_ssh = Path(root) / "fake-ssh"
+            fake_ssh.write_text(
+                f"#!{sys.executable}\n"
+                "import sys, time\n"
+                "sys.stdin.buffer.read()\n"
+                "time.sleep(10)\n",
+                encoding="utf-8",
+            )
+            fake_ssh.chmod(0o700)
+            started = time.monotonic()
+            with patch.object(OPS, "SSH", str(fake_ssh)):
+                with self.assertRaisesRegex(OPS.ToolError, "remote state is unknown"):
+                    OPS.run_remote("true", timeout=0.1)
+            self.assertLess(time.monotonic() - started, 3.0)
+
     def test_live_rules_check_does_not_mutate_signed_plan(self):
         ctx = context()
         before = json.dumps(ctx, sort_keys=True)
@@ -258,6 +325,55 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertEqual("CLOSEOUT_MISSING", first["operation_state"])
         self.assertEqual("FINISH_REJECTED", second["operation_state"])
 
+    def test_stale_heartbeat_does_not_block_later_closeout_validation(self):
+        ctx = context()
+        receipt_payload = {
+            "context": ctx, "gpu_index": None,
+            "launch_digest": "f" * 64, "issued_at": int(time.time()) - 300,
+        }
+        receipt = OPS.write_new_record(
+            "receipt", receipt_payload,
+            {
+                "launched": True, "finish_calls": 0, "finish_closed": None,
+                "monitor_stale_count": 0,
+            },
+        )
+        stale = (
+            "CONVIR_OPS_MONITOR polls=1 active=true terminal=false stale=true "
+            "heartbeat_age=300 heartbeat_source=heartbeat\n"
+            "CONVIR_OPS_STATUS_BEGIN\nwork\nCONVIR_OPS_STATUS_END\n"
+        )
+        raw = json.dumps({
+            "route_id": "a1x", "run_id": "a1x-s0-r1",
+            "route_commit": "a" * 40, "runner_sha256": "e" * 64,
+            **terminal(),
+        }, separators=(",", ":")).encode()
+        complete = (
+            "CONVIR_OPS_MONITOR polls=1 active=false terminal=true stale=false "
+            "heartbeat_age=301 heartbeat_source=heartbeat\n"
+            "CONVIR_OPS_STATUS_BEGIN\ndone\nCONVIR_OPS_STATUS_END\n"
+            + "CONVIR_OPS_CLOSEOUT_SHA256=" + __import__("hashlib").sha256(raw).hexdigest()
+            + "\nCONVIR_OPS_CLOSEOUT_BEGIN\n" + raw.decode() + "\nCONVIR_OPS_CLOSEOUT_END\n"
+        )
+        with patch.object(OPS, "run_remote", side_effect=[stale, complete]):
+            first = payload(OPS.tool_finish({"receipt": receipt}))
+            second = payload(OPS.tool_finish({"receipt": receipt}))
+        self.assertEqual("MONITOR_STALE", first["operation_state"])
+        self.assertTrue(first["receipt_remains_open"])
+        self.assertEqual("CLOSEOUT_VALIDATED", second["operation_state"])
+
+    def test_monitor_prefers_heartbeat_then_status_then_launch_age(self):
+        body = OPS.monitor_body({**context(), "_receipt_issued_at": 123}, {"max_polls": 1, "interval_seconds": 0})
+        self.assertIn('test -f "$HEARTBEAT"', body)
+        self.assertIn('elif test -f "$STATUS"', body)
+        self.assertIn("LAUNCHED_AT=123", body)
+        parsed = OPS.parse_monitor(
+            "CONVIR_OPS_MONITOR polls=1 active=true terminal=false stale=false "
+            "heartbeat_age=4 heartbeat_source=heartbeat\n"
+            "CONVIR_OPS_STATUS_BEGIN\nok\nCONVIR_OPS_STATUS_END\n"
+        )
+        self.assertEqual("heartbeat", parsed["heartbeat_source"])
+
     def test_closeout_requires_receipt_identity_and_allowed_tuple(self):
         ctx = context()
         raw = json.dumps({
@@ -304,7 +420,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("4.0.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("4.1.0", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")

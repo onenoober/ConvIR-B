@@ -1,0 +1,11 @@
+{
+  "candidate_commit": "33a7722688f7a26b4c025e6c926804987c49c392",
+  "closeout_sha256": "4e522be510c56fa1e4156658a905ca03c33853fcb50d59ca538a1db601132a17",
+  "control_plane_tests_passed": 22,
+  "raw_logs_location": "/sda/home/wangyuxin/ConvIR-B/runs/generic_run_monitoring_validation_20260716/candidate-33a772268-r3",
+  "schema_version": 1,
+  "summary_sha256": "541359fdf11933d7656df89f3e090c2a82b25a2a7ce4c9ed6c65b571f723230e",
+  "telemetry_tests_passed": 6,
+  "terminal_marker": "GENERIC_RUN_MONITORING_VALIDATION_OK",
+  "transport_marker": "CONVIRCTL_REMOTE_SCRIPT_OK"
+}

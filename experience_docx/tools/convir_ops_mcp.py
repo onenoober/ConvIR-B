@@ -11,6 +11,7 @@ import shlex
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import uuid
 from contextlib import contextmanager
@@ -18,7 +19,7 @@ from pathlib import Path
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "4.0.0"
+SERVER_VERSION = "4.1.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 REMOTE_HOST = "convir-4090"
@@ -27,6 +28,10 @@ REMOTE_REPOS = f"{REMOTE_BASE}/repos"
 REMOTE_RUNS = f"{REMOTE_BASE}/runs"
 REMOTE_PYTHON = f"{REMOTE_BASE}/envs/convir-cu121/bin/python"
 GITHUB_URL = "git@github.com:onenoober/ConvIR-B.git"
+SSH = "/usr/bin/ssh"
+REMOTE_BASH = "/bin/bash"
+MAX_REMOTE_SCRIPT_BYTES = 256 * 1024
+MAX_REMOTE_CAPTURE_BYTES = 64 * 1024
 ROUTE_OPERATIONS_RELPATH = "experience_docx/route_operations.json"
 RULE_BUNDLE_RELPATHS = (
     "AGENTS.md",
@@ -212,17 +217,6 @@ def derive_session(route_id, mode, commit, output_id):
     return f"convir-{route_id[:18]}-{mode[:10]}-{output_id[:10]}-{digest}"[:64]
 
 
-def helper_path():
-    path = Path(__file__).with_name("convir_remote_script.sh")
-    if not path.is_file():
-        raise ToolError(
-            "tracked remote wrapper is missing",
-            failure_phase="remote_transport",
-            failure_class="command_infra",
-        )
-    return path
-
-
 def run_local(args, *, timeout, phase):
     try:
         result = subprocess.run(args, text=True, capture_output=True, timeout=timeout)
@@ -253,17 +247,112 @@ def inspect_local(args, *, timeout=30):
 
 
 def run_remote(body, *, timeout=120, phase="remote_transport"):
-    with tempfile.NamedTemporaryFile("w", suffix=".sh", delete=False, encoding="utf-8") as handle:
-        path = Path(handle.name)
-        handle.write("#!/usr/bin/env bash\nset -euo pipefail\n")
-        handle.write(body)
-        handle.write("\n")
-    try:
-        return run_local(
-            ["bash", str(helper_path()), str(path)], timeout=timeout, phase=phase
+    """Send an internally generated script over one fixed, bounded SSH channel."""
+    if not isinstance(body, str) or "\x00" in body:
+        raise ToolError(
+            "remote body must be NUL-free text",
+            failure_phase=phase,
+            failure_class="contract",
         )
-    finally:
-        path.unlink(missing_ok=True)
+    script = (
+        "#!/usr/bin/env bash\nset -euo pipefail\n" + body.rstrip("\n") + "\n"
+    ).encode("utf-8")
+    if len(script) > MAX_REMOTE_SCRIPT_BYTES:
+        raise ToolError(
+            "remote body exceeds the fixed size limit",
+            failure_phase=phase,
+            failure_class="contract",
+        )
+    connect_timeout = max(1, min(int(timeout), 30))
+    argv = [
+        SSH, "-T", "-o", "BatchMode=yes",
+        "-o", f"ConnectTimeout={connect_timeout}",
+        REMOTE_HOST, REMOTE_BASH, "-s", "--",
+    ]
+    try:
+        process = subprocess.Popen(
+            argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+    except OSError as exc:
+        raise ToolError(
+            f"{phase} could not start",
+            failure_phase=phase,
+            failure_class="command_infra",
+        ) from exc
+
+    stdout = bytearray()
+    stderr = bytearray()
+    thread_errors = []
+    store_limit = MAX_REMOTE_CAPTURE_BYTES + 1
+
+    def drain(stream, target):
+        try:
+            while True:
+                block = stream.read(8192)
+                if not block:
+                    break
+                remaining = store_limit - len(target)
+                if remaining > 0:
+                    target.extend(block[:remaining])
+        except OSError as exc:
+            thread_errors.append(exc)
+        finally:
+            stream.close()
+
+    def feed():
+        try:
+            process.stdin.write(script)
+            process.stdin.flush()
+        except BrokenPipeError:
+            pass
+        except OSError as exc:
+            thread_errors.append(exc)
+        finally:
+            process.stdin.close()
+
+    threads = [
+        threading.Thread(target=drain, args=(process.stdout, stdout), daemon=True),
+        threading.Thread(target=drain, args=(process.stderr, stderr), daemon=True),
+        threading.Thread(target=feed, daemon=True),
+    ]
+    for thread in threads:
+        thread.start()
+    try:
+        return_code = process.wait(timeout=timeout)
+    except subprocess.TimeoutExpired as exc:
+        process.kill()
+        process.wait()
+        for thread in threads:
+            thread.join(timeout=5)
+        raise ToolError(
+            f"{phase} timed out; remote state is unknown",
+            failure_phase=phase,
+            failure_class="command_infra",
+        ) from exc
+    for thread in threads:
+        thread.join(timeout=5)
+    if any(thread.is_alive() for thread in threads) or thread_errors:
+        raise ToolError(
+            f"{phase} streams did not close cleanly",
+            failure_phase=phase,
+            failure_class="command_infra",
+        )
+    if len(stdout) > MAX_REMOTE_CAPTURE_BYTES or len(stderr) > MAX_REMOTE_CAPTURE_BYTES:
+        raise ToolError(
+            f"{phase} output exceeded the fixed capture limit",
+            failure_phase=phase,
+            failure_class="command_infra",
+        )
+    stdout_text = bytes(stdout).decode("utf-8", errors="replace")
+    stderr_text = bytes(stderr).decode("utf-8", errors="replace")
+    if return_code:
+        detail = (stdout_text + stderr_text).strip()[:4096]
+        raise ToolError(
+            f"{phase} failed rc={return_code}: {detail}",
+            failure_phase=phase,
+            failure_class="command_infra",
+        )
+    return stdout_text.strip()
 
 
 def github_refs(refs):
@@ -756,7 +845,10 @@ def issue_receipt(context, gpu_index, launch_output):
     }
     return write_new_record(
         "receipt", payload,
-        {"launched": True, "finish_calls": 0, "finish_closed": None},
+        {
+            "launched": True, "finish_calls": 0, "finish_closed": None,
+            "monitor_stale_count": 0,
+        },
     )
 
 
@@ -856,7 +948,10 @@ def begin_finish(token):
             record["finish_closed"] = "OBSERVATION_BUDGET_EXHAUSTED"
             raise ToolError("finish observation budget is exhausted")
         record["finish_calls"] = calls + 1
-        return record["payload"]["context"]
+        context = dict(record["payload"]["context"])
+        context["_receipt_issued_at"] = int(record["payload"]["issued_at"])
+        context["_monitor_stale_count"] = int(record.get("monitor_stale_count", 0))
+        return context
 
 
 def close_finish(token, state):
@@ -864,25 +959,40 @@ def close_finish(token, state):
         record["finish_closed"] = require_token(state, "finish_closed")
 
 
+def record_stale_observation(token):
+    """Record a bounded warning without closing later closeout validation."""
+    with locked_record("receipt", token) as record:
+        count = record.get("monitor_stale_count", 0)
+        if not isinstance(count, int) or count < 0:
+            raise ToolError("receipt stale counter is invalid", failure_class="command_infra")
+        record["monitor_stale_count"] = count + 1
+        return count + 1
+
+
 def monitor_body(context, profile):
     status = f"{context['output_path']}/status.txt"
+    heartbeat = f"{context['output_path']}/heartbeat.json"
     return "\n".join([
         f"SESSION={q(context['session'])}",
         f"STATUS={q(status)}",
+        f"HEARTBEAT={q(heartbeat)}",
         f"CLOSEOUT={q(context['closeout_path'])}",
         f"MAX_POLLS={profile['max_polls']}",
         f"INTERVAL={profile['interval_seconds']}",
         f"STALE={int(context['heartbeat_timeout_seconds'])}",
-        'active=false; terminal=false; stale=false; heartbeat_age=-1; n=0',
+        f"LAUNCHED_AT={int(context.get('_receipt_issued_at', int(time.time())))}",
+        'active=false; terminal=false; stale=false; heartbeat_age=-1; heartbeat_source=launch; n=0',
         'for n in $(seq 1 "$MAX_POLLS"); do',
         '  active=false; tmux has-session -t "$SESSION" 2>/dev/null && active=true',
         '  test ! -f "$CLOSEOUT" || { terminal=true; break; }',
-        '  if test -f "$STATUS"; then heartbeat_age=$(( $(date +%s) - $(stat -c %Y "$STATUS") )); fi',
+        '  if test -f "$HEARTBEAT"; then heartbeat_source=heartbeat; heartbeat_age=$(( $(date +%s) - $(stat -c %Y "$HEARTBEAT") ));',
+        '  elif test -f "$STATUS"; then heartbeat_source=status; heartbeat_age=$(( $(date +%s) - $(stat -c %Y "$STATUS") ));',
+        '  else heartbeat_source=launch; heartbeat_age=$(( $(date +%s) - LAUNCHED_AT )); fi',
         '  if test "$active" = true && test "$heartbeat_age" -ge "$STALE"; then stale=true; break; fi',
         '  test "$active" = true || break',
         '  test "$n" = "$MAX_POLLS" || sleep "$INTERVAL"',
         'done',
-        'echo "CONVIR_OPS_MONITOR polls=$n active=$active terminal=$terminal stale=$stale heartbeat_age=$heartbeat_age"',
+        'echo "CONVIR_OPS_MONITOR polls=$n active=$active terminal=$terminal stale=$stale heartbeat_age=$heartbeat_age heartbeat_source=$heartbeat_source"',
         'echo CONVIR_OPS_STATUS_BEGIN',
         'test ! -f "$STATUS" || tail -n 20 "$STATUS"',
         'echo CONVIR_OPS_STATUS_END',
@@ -903,7 +1013,7 @@ def monitor_body(context, profile):
 
 def parse_monitor(output):
     meta = re.search(
-        r"(?m)^CONVIR_OPS_MONITOR polls=(\d+) active=(true|false) terminal=(true|false) stale=(true|false) heartbeat_age=(-?\d+)$",
+        r"(?m)^CONVIR_OPS_MONITOR polls=(\d+) active=(true|false) terminal=(true|false) stale=(true|false) heartbeat_age=(-?\d+)(?: heartbeat_source=(heartbeat|status|launch))?$",
         output,
     )
     begin = output.find("CONVIR_OPS_STATUS_BEGIN")
@@ -914,6 +1024,7 @@ def parse_monitor(output):
         "poll_count": int(meta.group(1)), "active": meta.group(2) == "true",
         "terminal": meta.group(3) == "true", "stale": meta.group(4) == "true",
         "heartbeat_age_seconds": int(meta.group(5)),
+        "heartbeat_source": meta.group(6) or "legacy_status",
         "status": output[begin + len("CONVIR_OPS_STATUS_BEGIN"):end].strip()[:4096],
     }
 
@@ -954,10 +1065,12 @@ def tool_finish(args):
         )
         monitor = parse_monitor(output)
         if monitor["stale"]:
-            close_finish(token, "MONITOR_STALE")
+            stale_count = record_stale_observation(token)
             return typed_failure(
                 "MONITOR_STALE", "command_infra", "heartbeat exceeded the sealed limit",
-                observed=monitor, next_actions=["engineering_review_once"], failure_phase="monitor",
+                observed={**monitor, "receipt_stale_observations": stale_count},
+                next_actions=["wait_until_expected_end_then_convir_route_finish", "engineering_review_once"],
+                failure_phase="monitor", receipt_remains_open=True,
             )
         closeout = parse_closeout(context, output)
         if closeout:

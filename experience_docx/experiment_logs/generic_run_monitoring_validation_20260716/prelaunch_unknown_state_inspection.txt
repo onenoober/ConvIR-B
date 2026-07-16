@@ -1,0 +1,8 @@
+Generic run monitoring prelaunch unknown-state inspection
+Date: 2026-07-16
+Route branch commit inspected: 862dc4533d8ce351937204cb849b6412f3c303f8
+Inspection script SHA-256: 902405fff9cd4e25ae5f744783ce762007a5a8ac35adf256dee9a658f27f0b9f
+Transport marker: CONVIRCTL_REMOTE_SCRIPT_OK
+Inspection marker: GENERIC_MONITOR_START_UNKNOWN_INSPECTION_OK
+Observed: repo_exists=false output_exists=false closeout_exists=false session_active=false
+Conclusion: the r1 runner never started and left no cloud workspace, output, closeout, or tmux session.
