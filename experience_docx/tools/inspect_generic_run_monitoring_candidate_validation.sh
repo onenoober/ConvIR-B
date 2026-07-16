@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REMOTE_REPO=/sda/home/wangyuxin/ConvIR-B/repos/generic-monitoring-candidate-7b1ee1580
-OUTPUT_PATH=/sda/home/wangyuxin/ConvIR-B/runs/generic_run_monitoring_validation_20260716/candidate-7b1ee1580-r1
-SESSION=convir-generic-monitor-candidate-7b1ee1580
+REMOTE_REPO=/sda/home/wangyuxin/ConvIR-B/repos/generic-monitoring-candidate-4bbd03154
+OUTPUT_PATH=/sda/home/wangyuxin/ConvIR-B/runs/generic_run_monitoring_validation_20260716/candidate-4bbd03154-r2
+SESSION=convir-generic-monitor-candidate-4bbd03154
 EVIDENCE="$REMOTE_REPO/experience_docx/experiment_logs/generic_run_monitoring_validation_20260716"
 CLOSEOUT="$EVIDENCE/generic_run_monitoring_validation_closeout.json"
 SUMMARY="$EVIDENCE/generic_run_monitoring_validation_summary.json"
