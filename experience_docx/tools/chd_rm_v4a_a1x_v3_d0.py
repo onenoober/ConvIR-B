@@ -133,7 +133,12 @@ def bootstrap_summary(rows):
 
 def run_d0(*args, **kwargs):
     closeout = ORIGINAL_RUN(*args, **kwargs)
-    output = Path(kwargs.get("output_dir", args[6] if len(args) > 6 else ""))
+    output_value = kwargs.get("output_dir")
+    if output_value is None:
+        if len(args) <= 7:
+            raise RuntimeError("D0 output_dir is unavailable")
+        output_value = args[7]
+    output = Path(output_value)
     bootstrap_path = output / "v4a_a1r_bootstrap_summary.json"
     bootstrap = json.loads(bootstrap_path.read_text())
     primary = bootstrap["cell_results"][PRIMARY]

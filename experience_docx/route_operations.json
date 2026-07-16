@@ -4,23 +4,18 @@
   "rules_commit": "02b37438f5264520ba6a52f9c928e6c94e07f724",
   "route_card_relpath": "experience_docx/experiment_cards/2026-07-16-haze4k-v5-v4a-a1x-accessibility-v3.md",
   "operations": {
-    "A1X_V3_S0_R4": {
-      "runner_relpath": "experience_docx/tools/run_chd_rm_v4a_a1x_accessibility_v3_s0_r2.sh",
-      "mode": "s0",
-      "require_gpu": true,
-      "output_id": "a1x-v3-s0-r4",
-      "closeout_filename": "a1x_v3_s0_r4_closeout.json",
+    "A1X_V3_D0_CLOSEOUT_REPAIR": {
+      "runner_relpath": "experience_docx/tools/run_chd_rm_v4a_a1x_v3_d0_closeout_repair.sh",
+      "mode": "d0_closeout_repair",
+      "require_gpu": false,
+      "output_id": "a1x-v3-d0-closeout-r2",
+      "closeout_filename": "a1x_v3_d0_closeout.json",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
       "allowed_terminal_tuples": [
         {
-          "state": "COMPLETED_GATE_PASS",
-          "decision": "A1X_V3_S0_PASS_AUTHORIZE_D0_DESIGN_ONLY",
-          "authorizes": "A1X_V3_D0_DESIGN_ONLY"
-        },
-        {
           "state": "COMPLETED_GATE_FAIL",
-          "decision": "A1X_V3_S0_ENGINEERING_FAIL_STOP",
+          "decision": "A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP",
           "authorizes": "NONE"
         },
         {
@@ -32,33 +27,9 @@
       "workspace_policy": "fresh_route",
       "output_policy": "new",
       "monitor_profile": "short",
-      "heartbeat_timeout_seconds": 300,
-      "min_free_gpu_mib": 12000,
-      "max_gpu_utilization_pct": 10
-    },
-    "A1X_V3_D0_DESIGN_ONLY": {
-      "runner_relpath": "experience_docx/tools/run_chd_rm_v4a_a1x_v3_d0.sh",
-      "mode": "d0",
-      "require_gpu": true,
-      "output_id": "a1x-v3-d0-r1",
-      "closeout_filename": "a1x_v3_d0_closeout.json",
-      "prior_closeout_relpath": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716/a1x_v3_s0_r4_closeout.json",
-      "prior_terminal_tuple": {
-        "state": "COMPLETED_GATE_PASS",
-        "decision": "A1X_V3_S0_PASS_AUTHORIZE_D0_DESIGN_ONLY",
-        "authorizes": "A1X_V3_D0_DESIGN_ONLY"
-      },
-      "allowed_terminal_tuples": [
-        {"state": "COMPLETED_GATE_PASS", "decision": "A1X_V3_D0_PASS_AUTHORIZE_FORMAL_DESIGN_ONLY", "authorizes": "A1X_V3_FORMAL_DESIGN_ONLY"},
-        {"state": "COMPLETED_GATE_FAIL", "decision": "A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP", "authorizes": "NONE"},
-        {"state": "FAILED_ENGINEERING", "decision": null, "authorizes": "NONE"}
-      ],
-      "workspace_policy": "fresh_route",
-      "output_policy": "new",
-      "monitor_profile": "standard",
-      "heartbeat_timeout_seconds": 300,
-      "min_free_gpu_mib": 12000,
-      "max_gpu_utilization_pct": 10
+      "heartbeat_timeout_seconds": 120,
+      "min_free_gpu_mib": 0,
+      "max_gpu_utilization_pct": 100
     }
   }
 }

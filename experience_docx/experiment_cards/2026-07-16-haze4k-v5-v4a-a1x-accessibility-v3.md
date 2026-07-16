@@ -47,7 +47,7 @@ Status: PLANNED
   output. No data, model, loss, threshold, epoch, LR, width, or gate changes are
   authorized by this repair.
 
-- First operation: A1X_V3_S0_R4
+- First operation: A1X_V3_D0_CLOSEOUT_REPAIR
 - Expected wall time and monitor profile: at most 20 minutes; short profile; 60-second metadata-only heartbeat, 300-second stale threshold, one expected-end observation.
 - Complete-unit resume policy: none for S0; an interrupted S0 uses a new output id after one engineering review. Future formal may resume only complete hash-matching fold/cell units after separate authorization.
 - Cloud workspace/run/output/status/closeout: fresh route workspace; run root /sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716; new output a1x-v3-s0-r1; status.txt, heartbeat.json, runtime.log, and a1x_v3_s0_closeout.json.
@@ -69,6 +69,14 @@ representation/readout audit plus the proposed A1X-global shuffled control. It
 reuses A1R fresh512, folds, optimizer, eight epochs, batch size, loss, safe
 selector, and bootstrap, and adds the paired global-minus-local lower bound.
 The 432-name confirmation range remains forbidden.
+
+D0 r1 completed all 512 images, 5,120 OOF rows, and 20 fold/cell states, then
+failed only while resolving the output path for typed closeout. The evidence-only
+repair binds five source artifact hashes and regenerates no predictions or model
+states. Frozen results fail gain (`0.013200 < 0.020`) and retention (`0.080069 <
+0.25`) while passing true-minus-shuffle (`0.007963 >= 0.005`), global-minus-local
+(`0.000890 > 0`), and structural/safety guards. The expected typed result is D0
+FAIL with no formal authorization.
 
 D0 will not be added to route_operations.json until S0 has a committed typed PASS. Its 2x2 audit will use all A1R fresh512 development groups, four folds, true and hash-deranged shuffle targets, image-balanced training, paired image bootstrap, and the five fixed promotion requirements above. D0 FAIL stops before confirmation data use.
 
