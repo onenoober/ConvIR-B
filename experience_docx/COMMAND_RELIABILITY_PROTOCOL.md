@@ -2,6 +2,9 @@
 
 Date: 2026-07-16
 
+Validation evidence: `COMMAND_TRANSPORT_V1_VALIDATION.md` (28/28 cloud control
+tests, zero model calls).
+
 ## One Selection Table
 
 | Need | Only default | Do not use |
@@ -23,8 +26,8 @@ runtime state. File transfer uses an explicit allowlist plus SHA-256.
 `remote-script`. It uses argument arrays and fixed `/usr/bin/git`,
 `/usr/bin/ssh`, `/bin/bash`, and host `convir-4090`. `remote-script` accepts only
 an absolute workspace path to an unchanged Git-tracked `.sh`, reads its exact
-committed blob, removes UTF-8 BOM and
-CRLF, requires the first executable line to be `set -euo pipefail`, runs
+committed blob, removes UTF-8 BOM and CRLF, requires the first executable line
+to be `set -euo pipefail`, runs
 `bash -n`, and sends the complete file on SSH stdin. It does not accept a remote
 command string. Results are one JSON object with a marker and exit code; output
 is capped at 64 KiB per stream.
