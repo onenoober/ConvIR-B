@@ -36,6 +36,42 @@ boundary, quoting, CRLF, PATH, stdin, or silent-output lesson.
 
 ## Invalid Command Patterns To Avoid
 
+### PowerShell pipeline UTF-8 BOM before WSL Bash
+
+2026-07-16 recurrence after a Codex restart:
+
+Avoid assuming that a PowerShell here-string piped directly to WSL becomes a
+BOM-free Bash script, even when CR bytes are stripped:
+
+```powershell
+$script | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
+```
+
+Failure mode observed:
+
+- the first token arrived as `BOM + set`, so Bash reported
+  `set: command not found`;
+- later commands continued without `set -euo pipefail`, which could hide a
+  failed audit behind a final success marker.
+
+Corrected forms:
+
+- for simple commands, call `wsl ... bash -lc` directly without piping a
+  PowerShell string;
+- for script bodies, encode with `[System.Text.UTF8Encoding]::new($false)` and
+  pass/decode the bytes without a BOM before invoking Bash;
+- require an explicit final marker and preserve the WSL exit code.
+
+Treat any output produced after the failed first-line `set` as command-invalid
+until the affected audit is rerun with a BOM-free transport.
+
+The same 2026-07-16 audit also confirmed that embedding a Python list/glob
+expression or a grep regular expression with nested quotes inside
+`wsl ... bash -lc` can terminate the wrong quote layer. Those commands failed
+before their static audit markers. Use PowerShell native JSON/text parsing for
+Windows-accessible WSL files, or send a BOM-free script body, instead of
+retrying the compact inline form.
+
 ### PowerShell to WSL inline regex pipes
 
 Avoid inline commands where PowerShell, WSL Bash, and regex pipes all appear in

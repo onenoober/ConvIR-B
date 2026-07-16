@@ -1,131 +1,76 @@
 # Agent Instructions
+## Non-Negotiable Boundaries
 
-## Hard Rules
+- Local WSL is for editing and syntax/compile checks only. Run tests, smoke,
+  training, evaluation, inference, demos, and runtime validation only on
+  `convir-4090`, using
+  `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`. If the host is
+  unavailable, stop the runtime action; never fall back locally.
+- GitHub `main` owns current rules and terminal compact evidence. A named route
+  branch owns runnable route code and intermediate compact evidence. Cloud owns
+  raw runtime state. Chat and local worktrees are not experiment memory.
+- `github/codex/haze4k-official-arch-anchor` is immutable. Every new
+  model-structure route starts from it in fresh local and cloud workspaces.
+- Do not commit datasets, weights, checkpoints, images, arrays, archives, raw
+  inference outputs, or large per-sample/feature/action tables.
 
-- Local WSL = editing and syntax/compile-only checks. Do not run tests, smoke
-  tests, training, evaluation, inference, demos, or runtime commands locally.
-- Runtime validation runs only on `convir-4090` unless the user explicitly
-  overrides a specific command. If unavailable, report it; do not fall back
-  locally.
-- Use explicit cloud Python paths, especially
-  `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
-- GitHub `main` = durable compact evidence archive and current experiment
-  status source. Cloud = runtime/raw-output source. Local = editing/sync
-  staging only.
-- Do not commit checkpoints, weights, datasets, images, arrays, archives, raw
-  inference outputs, large per-image tables, selected-action tables, or raw
-  feature tables by default.
-- `github/codex/haze4k-official-arch-anchor` is immutable. New model-structure
-  routes must branch from it.
-- For experiment status, result, decision, and route-memory questions, read
-  GitHub `main` or the named GitHub branch directly. Do not use the local
-  working tree, local `experience_docx/`, or local git state as project memory;
-  they may be dirty, stale, or on the wrong branch. Local reads are allowed only
-  for editing, syntax/compile-only checks, sync staging, and verifying whether a
-  local operation is safe.
-- Do not treat chat history as authoritative evidence.
-- New rule text must follow the repository document layers in
-  `experience_docx/README.md`. Keep one canonical source per rule; other files
-  should link to that source instead of copying the rule body. Do not mix
-  runtime rules, design guidance, historical troubleshooting, branch cleanup, or
-  experiment evidence in the same document section.
+## One Finite Workflow
 
-## Universal Route Workflow
+1. Read GitHub `EXPERIMENT_INDEX.md`, then only the relevant family summary,
+   route card, compact evidence, and current cloud state.
+2. Freeze one route card: route identity, estimand, evidence roles, locked-test
+   policy, gate, stop rule, implementation contract, and smallest useful stage
+   sequence. Follow `EXPERIMENT_GOVERNANCE_PROTOCOL.md`.
+3. Create only the bundle in `MODEL_EXPERIMENT_START_CHECKLIST.md`: one card,
+   one operations manifest, one runner, route code, and an asset manifest only
+   when necessary.
+4. Launch and monitor only through `MODEL_RUN_OPERATIONS_PROTOCOL.md`. Prefer
+   the six bounded `convir-ops` tools; use `COMMAND_RELIABILITY_PROTOCOL.md`
+   for uncovered command boundaries.
+5. A typed closeout is the only later-stage authorization. Interpret scientific
+   gates once, after complete evidence.
+6. After each completed cloud operation, push its compact evidence to the route
+   branch before the next stage. At a terminal decision or explicit major
+   handoff, archive the curated verdict to main under
+   `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.
 
-This is the default execution flow for later reasoning and action. Use this
-order for every new route, method, architecture, loss, selector,
-teacher/distillation plan, or runtime experiment unless a stricter task-specific
-protocol applies. Do not skip ahead to coding or launching because a previous
-chat already seems to imply the answer.
+## Model Qualification And Cost
 
-1. Fact-source gate: first identify the authoritative sources for the task.
-   For research state, use GitHub `main` or the named GitHub branch plus current
-   cloud runtime state; use attachments only as task input. Treat local files as
-   editable/sync staging unless the task is explicitly local editing.
-2. Route-identity gate: decide whether this is a new route, a continuation, a
-   rescue, an ablation, or an evidence sync. Record what is explicitly not
-   allowed before work starts, especially forbidden continuations, selector
-   probes, canary expansion, and locked-test access.
-3. Resource-preflight gate: before any cloud launch, verify cloud branch/commit,
-   workspace, explicit Python, dataset/split, checkpoint/teacher assets, output
-   root, command script, status/log paths, tmux/session conflicts, and locked-test
-   policy. If a required asset is missing, classify the blocker; do not silently
-   substitute a different local or cloud source.
-4. Metric-contract gate: define the exact baseline, sample/crop/split pairing,
-   metric direction, gate thresholds, and comparison scope before running. Ensure
-   before/after/base metrics are computed on the same data view; rerun rather
-   than interpret if the metric contract is wrong.
-5. Transport gate: use stable PowerShell -> WSL -> SSH transfer patterns from
-   `COMMAND_RELIABILITY_QUICKSTART.md`. Prefer `tar`/`scp`/`rsync` or stable
-   script bodies with explicit `*_OK` markers over ad hoc nested quoting; read
-   the longer command protocol only for failed or unfamiliar boundary cases.
-6. Stage-gate execution: run the smallest phase that answers the current
-   question. Launch later phases only when the written previous gate authorizes
-   them; never use locked test, canary expansion, or broad queues as a debugging
-   shortcut.
-7. Closeout and archive gate: after the last authorized phase, write the final
-   decision into the route card, evidence README, closeout JSON, central index,
-   and family summary as applicable. Keep runnable code on the route branch and
-   sync only compact text evidence to GitHub `main` unless a separate promotion
-   decision says otherwise.
+- Honor an explicit user model/effort pin. Check model qualification only when
+  the user asks or the active model is unknown/below the repository floor.
+- Keep one qualified task for design, implementation, launch, monitoring,
+  interpretation, and archive. Do not create dispatcher children, per-stage
+  model tasks, or automatic model switches.
+- If the current model is insufficient, stop before the next write or launch
+  and issue one explicit handoff under `MODEL_QUALIFICATION_PROTOCOL.md`.
 
-## Read Budget
+## Finite Recovery
 
-Read the smallest useful set; do not open all governance docs by default. Use
-`rg` and targeted excerpts. Stop reading once the task is grounded.
+- Inspect before mutation. Never overwrite an active session, output, or
+  historical workspace.
+- One command-boundary class gets one deterministic correction. One engineering
+  root cause gets one repair cycle. A repeated same-class/root failure stops
+  that operation with one blocker.
+- A timeout after the launch boundary is unknown state and requires one
+  inspection; never retry blindly. A dead session without closeout is inspected
+  once and never polled repeatedly.
+- Engineering failure never changes data, metric, threshold, gate, locked-test
+  policy, or scientific authorization.
 
-### Adaptive Context Expansion
+## Three-End Command Boundary
 
-Use a small starting context, then expand only at decision points. The
-non-negotiable gates remain fact source, route identity, resource preflight,
-metric contract, stage authorization, and closeout/archive.
+- Windows calls WSL only as `wsl.exe -d Ubuntu-22.04 --exec` plus a fixed Linux
+  program and literal argv. Never use Windows Git on the WSL UNC worktree and
+  never place PowerShell, WSL, and SSH syntax in one command string.
+- Standard route lifecycle uses `convir-ops` v4. Any uncovered cloud action uses
+  one committed, unchanged Bash file through `experience_docx/tools/convirctl.py
+  remote-script`; no inline SSH command or untracked script is valid.
+- Use explicit binaries, JSON/status/closeout markers, and SHA-256 identity. A
+  remote timeout is unknown state with one inspection and no blind retry.
 
-- Start with the router plus the minimum current-route evidence needed for the
-  question.
-- Expand to the relevant L2 protocol before new route start, cloud launch,
-  runtime monitoring, evidence sync, or command execution.
-- Expand to route card, family summary, evidence README/log status, and cloud
-  state before interpreting results or deciding pass/fail/pause/promote.
-- Expand to historical archives only for command-boundary failures, old cloud
-  provenance, or branch-cleanup tasks.
-- Never use context minimization to skip locked-test policy, forbidden-flow
-  checks, metric alignment, resource preflight, or written stage gates.
+## Documentation Ownership
 
-| Task | Read |
-| --- | --- |
-| Experiment status/result/decision | GitHub `main`/named GitHub branch copy of `EXPERIMENT_INDEX.md`, then only the relevant family summary, route card, and evidence README/log dir |
-| Cloud command, monitoring, sync, PowerShell/WSL/SSH | `COMMAND_RELIABILITY_QUICKSTART.md`; read `COMMAND_RELIABILITY_PROTOCOL.md` only for failed or unfamiliar command-boundary cases |
-| Training, smoke, eval, inference, post-run audit | `MODEL_RUN_OPERATIONS_PROTOCOL.md` |
-| Evidence sync to GitHub | `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`, affected index/card/family/README |
-| New Haze4K architecture/fine-tune route | `Haze4K_ARCH_FINETUNE_WORKFLOW.md`, partial-load/init/freeze rules |
-| New experiment family/governance | Relevant sections only from `README.md`, governance/checklist/design/template docs |
-
-## Sync Gates
-
-- Sync only valuable compact text evidence, not raw artifacts or broad outputs.
-- Use a clean `github/main` worktree, stage explicit paths, and follow
-  `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` for path selection, checks, push, and
-  verification.
-
-## Cloud Gates
-
-- Before launch, satisfy the resource-preflight and metric-contract gates in
-  the Universal Route Workflow and `MODEL_RUN_OPERATIONS_PROTOCOL.md`.
-- Do not overwrite active sessions, output dirs, or model names; inspect first.
-- Every cloud run needs a durable command script, heartbeat/status, stdout/stderr
-  capture, and compact evidence closeout.
-- Distinguish infra/preflight/training/eval/scientific-gate failures explicitly.
-
-## Command Reliability
-
-- For PowerShell -> WSL -> SSH, prefer a small Bash script piped through WSL/SSH
-  over fragile nested quoting.
-- Monitoring/sync/audit commands should print `*_OK` or write a status file.
-- If quoting, CRLF, PATH, or shell-boundary failures occur, record the invalid
-  and corrected forms in the reliability protocol. Use
-  `COMMAND_RELIABILITY_QUICKSTART.md` for current defaults and the longer
-  protocol only for historical troubleshooting.
-
-When docs and conversation conflict, prefer current GitHub evidence docs and
-current cloud runtime state; do not resolve research status from the local
-working tree. State uncertainty and cite the GitHub path or cloud path used.
+Keep one canonical source per rule. `experience_docx/README.md` routes reads.
+Historical route checkouts and incident documents preserve provenance only and
+must not restore old dispatcher, authorization-file, validator/selfproof,
+monitoring, or sync behavior.
