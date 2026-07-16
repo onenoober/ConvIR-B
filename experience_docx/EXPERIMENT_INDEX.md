@@ -205,6 +205,16 @@ development-screening interface ceiling, not a deployable or confirmation
 result; implementation, A1X data access, candidate/policy work, canary, and
 locked test remain blocked until a fresh R3 review.
 
+v4a-A1X-v3 has started the separately preregistered implementation route, but
+its first S0 attempt produced no model result. `a1x-v3-s0-r1` closed as
+`FAILED_ENGINEERING / null / NONE` before `preflight_pass` because its manifest
+named an A1C reference checkout path absent from the current cloud host. The
+route, other pinned source commits, and Haze4K train directories passed the
+read-only fact audit; no runtime log or S0 summary was created. Confirmation,
+canary, and locked-test flags remain false. Only the frozen asset-packaging
+repair on a new output is allowed; D0 and the 432-name confirmation stage remain
+blocked.
+
 Use `experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1c-safe-action-interface-ceiling.md`
 and
 `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/`
@@ -435,6 +445,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/` | compact | v4a-A1F exact replay and action integrity pass; full privileged heldout feasibility shows safe bounded direction materially exceeds shrink under both operators and authorizes only fresh A1R representation-sufficiency design. Raw per-image/action rows remain cloud-only. |
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/` | compact | v4a-A1R fresh512 four-fold OOF representation screen: true context-spatial targets beat the size-block-shuffled control and remain broadly repairable, but material lift and oracle-retention gates fail. The current probe family is closed; raw OOF rows and learned states remain cloud-only. |
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/` | compact | v4a-A1C S0 and formal interface-ceiling replay: all 512 development-screen images and three interface cells completed without training; exact-half adequacy passed and authorizes only fresh R3 review. Raw rows remain cloud-only. |
+| `experiment_logs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716/` | compact | v4a-A1X-v3 S0 r1 closed `FAILED_ENGINEERING` before model execution because the pinned A1C reference checkout path was absent. No scientific gate result; confirmation/canary/locked test untouched; only a fixed asset-packaging repair with a fresh output is allowed. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |

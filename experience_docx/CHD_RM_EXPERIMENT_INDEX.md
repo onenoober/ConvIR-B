@@ -1,6 +1,6 @@
 # CHD-RM Haze4K Experiment Index
 
-Date: 2026-07-15
+Date: 2026-07-16
 
 Status: v4a A0P closed optimizer/projection/window local repair, A1F proved
 that safe bounded direction headroom exists, A1R found directional signal below
@@ -8,6 +8,10 @@ the material representation gate, and A1C completed the privileged
 interface-ceiling replay. A1C's exact-half adequacy passed on the reused fresh512
 development screen and authorizes only a fresh R3 review; direct training,
 policy, candidate, canary, and locked-test access remain blocked.
+The first A1X-v3 S0 attempt ended before model execution because its pinned A1C
+reference checkout path was absent on the cloud host; this is an archived
+engineering failure, not an S0 result, and authorizes only a fixed asset repair
+to a fresh output.
 
 ## Research Direction
 
@@ -132,6 +136,15 @@ training. The typed formal closeout is
 the tested exact-half transport clears its preregistered adequacy gate; it is
 still an interface ceiling, not a deployable or confirmation result.
 
+A1X-v3 r1 attempted only the 32-name S0 engineering gate. It closed with
+`FAILED_ENGINEERING / null / NONE` before `preflight_pass`: the route-local
+bundle, data directories, and A1R/A1F/v3z/v3s/v3p source identities were
+available, but the named A1C reference checkout path was absent. No model
+workload, target-loss result, or S0 gate decision exists. The typed closeout
+records confirmation, canary, and locked-test access as false. A repair may
+vendor the exact hashed A1C endpoint reference and use a fresh output, without
+changing data, head, loss, optimizer, budget, thresholds, or gates.
+
 ## Current Scope
 
 - Dataset: Haze4K only.
@@ -191,6 +204,7 @@ still an interface ceiling, not a deployable or confirmation result.
 | v4a-A1F Delta-u action feasibility | `codex/haze4k-v5-v4a-a1f-deltau-action-feasibility-20260714` | completed privileged feasibility pass | exact replay and action integrity pass; heldout worst-operator direction-over-shrink LCB95 `+0.105475 dB`, repairable-fraction LCB95 `0.6953125`, and direction-versus-old-`.25` LCB95 `+0.200613 dB`, with zero severe/hard regression | `V4A_A1F_SAFE_DIRECTION_HEADROOM_PASS_AUTHORIZE_A1R_REPRESENTATION_SUFFICIENCY_DESIGN_ONLY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/` |
 | v4a-A1R representation sufficiency | `codex/haze4k-v5-v4a-a1r-representation-sufficiency-20260714` | completed R3-reviewed gate fail | fresh512 four-fold OOF is structurally valid; primary lift LCB95 `+0.015205 dB` and oracle-retention LCB95 `0.092305` fail, while true-minus-shuffle `+0.007269 dB`, repairable fraction `0.56640625`, and all safety guards pass | `V4A_A1R_PRIMARY_REPRESENTATION_SUFFICIENCY_FAIL_DIRECTIONAL_SIGNAL_BELOW_MATERIAL_UTILITY` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/` |
 | v4a-A1C safe-action interface ceiling | `codex/haze4k-v5-v4a-a1c-safe-action-interface-ceiling-20260715` | completed formal exact-half adequacy pass | S0 and formal replay are structurally valid on all 512 development-screen images and both operators; exact-half interface passes the frozen adequacy tuple without training or candidate selection | `V4A_A1C_EXACT_HALF_INTERFACE_ADEQUACY_PASS_R3_HANDOFF` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/` |
+| v4a-A1X-v3 accessibility | `codex/haze4k-v5-v4a-a1x-accessibility-v3-20260716` | S0 r1 engineering repair pending | no model workload ran; A1C reference checkout path absent during asset preflight, while other pinned assets and data paths passed | `FAILED_ENGINEERING / null / NONE`; only fixed asset packaging to fresh r2 | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |

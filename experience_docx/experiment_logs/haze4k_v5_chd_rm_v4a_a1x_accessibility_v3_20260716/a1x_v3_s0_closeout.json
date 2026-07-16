@@ -1,0 +1,18 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": null,
+  "evidence_role": "engineering_debug",
+  "gate_type": "structural_integrity",
+  "locked_test_touched": false,
+  "returncode": 1,
+  "route_commit": "fbbd2553dd9ac31c0b532203bad4225dbfc0aa1a",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716",
+  "run_id": "a1x-v3-s0-r1",
+  "runner_sha256": "fdb11d487c832e7743d2759015576bf16993652d9180210f3dc7aef62ac255d2",
+  "schema_version": 1,
+  "stage": "s0",
+  "state": "FAILED_ENGINEERING",
+  "timestamp_unix": 1784211220.692951
+}
