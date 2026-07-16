@@ -18,9 +18,9 @@ from pathlib import Path
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "3.0.0"
+SERVER_VERSION = "4.0.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 REMOTE_HOST = "convir-4090"
 REMOTE_BASE = "/sda/home/wangyuxin/ConvIR-B"
 REMOTE_REPOS = f"{REMOTE_BASE}/repos"
@@ -30,21 +30,24 @@ GITHUB_URL = "git@github.com:onenoober/ConvIR-B.git"
 ROUTE_OPERATIONS_RELPATH = "experience_docx/route_operations.json"
 RULE_BUNDLE_RELPATHS = (
     "AGENTS.md",
-    "experience_docx/MODEL_AGENT_COST_ROUTING_PROTOCOL.md",
-    "experience_docx/MODEL_EXPERIMENT_START_CHECKLIST.md",
+    "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md",
     "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md",
     "experience_docx/CONVIR_OPS_MCP.md",
-    "experience_docx/COMMAND_RELIABILITY_QUICKSTART.md",
-    "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md",
-    "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md",
 )
 LOCAL_WORKSPACE_ROOT = Path(
     os.environ.get("CONVIR_OPS_LOCAL_WORKSPACE_ROOT", "/home/ubuntu/workspace")
 ).resolve()
+LOCAL_GIT_SEED = Path(
+    os.environ.get(
+        "CONVIR_OPS_LOCAL_GIT_SEED",
+        str(Path(__file__).resolve().parents[2]),
+    )
+).resolve()
 STATE_DIR = Path(
-    os.environ.get("CONVIR_OPS_STATE_DIR", "~/.codex/convir-ops-v3")
+    os.environ.get("CONVIR_OPS_STATE_DIR", "~/.codex/convir-ops-v4")
 ).expanduser().resolve()
 PLAN_TTL_SECONDS = 15 * 60
+MAX_FINISH_WINDOWS = 64
 MAX_EVIDENCE_BYTES = 1024 * 1024
 MAX_MANIFEST_BYTES = 16 * 1024
 MAX_CLOSEOUT_BYTES = 64 * 1024
@@ -56,12 +59,11 @@ ALLOWED_EVIDENCE_SUFFIXES = {".json", ".csv", ".md", ".txt"}
 MONITOR_PROFILES = {
     "short": {"max_polls": 3, "interval_seconds": 10},
     "standard": {"max_polls": 4, "interval_seconds": 15},
-    "long": {"max_polls": 4, "interval_seconds": 15},
 }
 
 
 class ToolError(RuntimeError):
-    def __init__(self, message, *, failure_phase="unknown", failure_class="authorization"):
+    def __init__(self, message, *, failure_phase="unknown", failure_class="contract"):
         super().__init__(message)
         self.failure_phase = failure_phase
         self.failure_class = failure_class
@@ -159,40 +161,48 @@ def require_enum(value, name, choices):
     return value
 
 
-def require_string_list(value, name):
-    if not isinstance(value, list) or len(value) > 16:
-        raise ToolError(f"{name} must contain at most 16 tokens")
-    result = [require_token(item, name) for item in value]
-    if len(result) != len(set(result)):
-        raise ToolError(f"{name} contains duplicates")
-    return result
-
-
-def require_terminal_tuple(value, name, *, allow_null=False):
+def require_terminal_tuple(value, name, *, allow_null=False, allow_null_decision=False):
     if value is None and allow_null:
         return None
     if not isinstance(value, dict) or set(value) != {"state", "decision", "authorizes"}:
         raise ToolError(f"{name} must contain state, decision, authorizes")
-    return {key: require_token(value[key], f"{name}.{key}") for key in value}
+    decision = value["decision"]
+    if decision is None and not allow_null_decision:
+        raise ToolError(f"{name}.decision cannot be null")
+    return {
+        "state": require_token(value["state"], f"{name}.state"),
+        "decision": None if decision is None else require_token(decision, f"{name}.decision"),
+        "authorizes": require_token(value["authorizes"], f"{name}.authorizes"),
+    }
 
 
 def require_terminal_tuples(value):
     if not isinstance(value, list) or not 1 <= len(value) <= 8:
         raise ToolError("allowed_terminal_tuples must contain 1-8 tuples")
-    result = [require_terminal_tuple(item, "allowed_terminal_tuples") for item in value]
+    result = [
+        require_terminal_tuple(item, "allowed_terminal_tuples", allow_null_decision=True)
+        for item in value
+    ]
     if len({canonical_digest(item) for item in result}) != len(result):
         raise ToolError("allowed_terminal_tuples contains duplicates")
     return result
+
+
+def first_operation_from_card(text):
+    match = re.search(r"(?m)^- First operation:\s*([^\s]+)\s*$", text)
+    if not match:
+        raise ToolError("route card must contain one exact First operation field")
+    return require_token(match.group(1), "First operation")
 
 
 def q(value):
     return shlex.quote(str(value))
 
 
-def derive_remote_repo(repo_name, route_id, workspace_id):
-    seed = f"{repo_name}\0{route_id}\0{workspace_id}".encode()
+def derive_remote_repo(route_id, output_id):
+    seed = f"{route_id}\0{output_id}".encode()
     digest = hashlib.sha256(seed).hexdigest()[:16]
-    prefix = f"{repo_name[:20]}-{route_id[:24]}-{workspace_id[:20]}"[:64]
+    prefix = f"{route_id[:32]}-{output_id[:24]}"[:56]
     return f"{REMOTE_REPOS}/{prefix}-{digest}"
 
 
@@ -321,26 +331,92 @@ def blob_sha(repo, commit, path):
     return require_sha(value, "blob", SHA40)
 
 
+def prepare_seeded_bare(path):
+    if not LOCAL_GIT_SEED.is_dir():
+        raise ToolError(
+            "local Git seed is unavailable",
+            failure_phase="local_git_prepare",
+            failure_class="command_infra",
+        )
+    run_local(
+        ["git", "-C", str(LOCAL_GIT_SEED), "rev-parse", "--git-dir"],
+        timeout=30,
+        phase="local_git_prepare",
+    )
+    run_local(
+        ["git", "clone", "--quiet", "--bare", "--shared", str(LOCAL_GIT_SEED), path],
+        timeout=30,
+        phase="local_git_prepare",
+    )
+
+
+def fetch_verified_refs(repo, branch_ref, expected_branch, expected_main):
+    run_local(
+        [
+            "git", "-C", repo, "fetch", "--quiet", "--no-tags", "--depth=1", GITHUB_URL,
+            f"+{branch_ref}:refs/convir-verify/route",
+            "+refs/heads/main:refs/convir-verify/main",
+        ],
+        timeout=120,
+        phase="local_git_fetch",
+    )
+    observed_branch = run_local(
+        ["git", "-C", repo, "rev-parse", "refs/convir-verify/route"],
+        timeout=30,
+        phase="local_git_verify",
+    )
+    observed_main = run_local(
+        ["git", "-C", repo, "rev-parse", "refs/convir-verify/main"],
+        timeout=30,
+        phase="local_git_verify",
+    )
+    if observed_branch != expected_branch or observed_main != expected_main:
+        raise ToolError("fetched GitHub refs do not match ls-remote")
+
+
+def ensure_commit(repo, commit):
+    try:
+        result = subprocess.run(
+            ["git", "-C", repo, "cat-file", "-e", f"{commit}^{{commit}}"],
+            capture_output=True,
+            timeout=30,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise ToolError(
+            "local Git commit check timed out",
+            failure_phase="local_git_verify",
+            failure_class="command_infra",
+        ) from exc
+    if result.returncode == 0:
+        return
+    run_local(
+        ["git", "-C", repo, "fetch", "--quiet", "--no-tags", "--depth=1", GITHUB_URL, commit],
+        timeout=120,
+        phase="local_git_fetch",
+    )
+    run_local(
+        ["git", "-C", repo, "cat-file", "-e", f"{commit}^{{commit}}"],
+        timeout=30,
+        phase="local_git_verify",
+    )
+
+
 def parse_manifest(value, branch, route_commit, current_main, bare_repo, operation_id):
     expected_top = {
-        "schema_version", "route_id", "repo_name", "workspace_id",
-        "rules_commit", "rules_digest", "route_card_relpath", "route_card_blob",
-        "operations",
+        "schema_version", "route_id", "rules_commit",
+        "route_card_relpath", "operations",
     }
     if not isinstance(value, dict) or set(value) != expected_top:
         raise ToolError("route operations manifest has an invalid top-level contract")
     if value.get("schema_version") != SCHEMA_VERSION:
         raise ToolError(f"route operations manifest must use schema {SCHEMA_VERSION}")
     route_id = require_token(value["route_id"], "route_id")
-    repo_name = require_token(value["repo_name"], "repo_name")
-    workspace_id = require_token(value["workspace_id"], "workspace_id")
     rules_commit = require_sha(value["rules_commit"], "rules_commit", SHA40)
-    rules_digest = require_sha(value["rules_digest"], "rules_digest", SHA256)
     route_card = require_relpath(
         value["route_card_relpath"], "route_card_relpath", ".md",
         prefix="experience_docx/experiment_cards/",
     )
-    route_card_blob = require_sha(value["route_card_blob"], "route_card_blob", SHA40)
+    route_card_blob = blob_sha(bare_repo, route_commit, route_card)
     operations = value["operations"]
     if not isinstance(operations, dict) or not 1 <= len(operations) <= 8:
         raise ToolError("operations must contain 1-8 entries")
@@ -348,9 +424,8 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
         raise ToolError("operation_id is absent from the manifest")
     operation = operations[operation_id]
     operation_fields = {
-        "runner_relpath", "mode", "require_gpu", "stage_state", "decision",
-        "authorizes", "locked_test_policy", "forbidden_continuations",
-        "output_id", "closeout_filename", "prior_closeout_relpath",
+        "runner_relpath", "mode", "require_gpu", "output_id",
+        "closeout_filename", "prior_closeout_relpath",
         "prior_terminal_tuple", "allowed_terminal_tuples", "workspace_policy",
         "output_policy", "monitor_profile", "heartbeat_timeout_seconds",
         "min_free_gpu_mib", "max_gpu_utilization_pct",
@@ -370,17 +445,20 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
     if prior_path is not None:
         prior_path = require_relpath(prior_path, "prior_closeout_relpath", ".json")
         prior_tuple = require_terminal_tuple(prior_tuple, "prior_terminal_tuple")
+        if (
+            prior_tuple["state"] != "COMPLETED_GATE_PASS"
+            or prior_tuple["authorizes"] != operation_id
+        ):
+            raise ToolError("prior closeout must authorize the selected operation id")
         prior = json.loads(git_show(bare_repo, route_commit, prior_path))
         actual = {key: prior.get(key) for key in prior_tuple}
         if prior.get("route_id") != route_id or actual != prior_tuple:
             raise ToolError("prior closeout does not match its sealed terminal tuple")
-    elif operation_id not in git_show(bare_repo, route_commit, route_card):
-        raise ToolError("first operation id is not named by the frozen route card")
-    if blob_sha(bare_repo, route_commit, route_card) != route_card_blob:
-        raise ToolError("route_card_blob does not match the route commit")
+    elif first_operation_from_card(git_show(bare_repo, route_commit, route_card)) != operation_id:
+        raise ToolError("selected operation is not the frozen first operation")
     recorded_rules = rule_bundle_digest(bare_repo, rules_commit)
     current_rules = rule_bundle_digest(bare_repo, current_main)
-    if recorded_rules != rules_digest or current_rules != rules_digest:
+    if recorded_rules != current_rules:
         raise ToolError(
             "canonical rule bundle changed; one compatibility review is required"
         )
@@ -402,32 +480,20 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
         "route_branch_commit": route_commit,
         "current_rules_commit": current_main,
         "route_id": route_id,
-        "repo_name": repo_name,
-        "workspace_id": workspace_id,
-        "remote_repo": derive_remote_repo(repo_name, route_id, workspace_id),
+        "remote_repo": derive_remote_repo(route_id, output_id),
         "run_root": f"{REMOTE_RUNS}/{route_id}",
         "route_card_relpath": route_card,
         "route_card_blob": route_card_blob,
         "rules_commit": rules_commit,
-        "rules_digest": rules_digest,
+        "rules_bundle_digest": recorded_rules,
         "runner_relpath": runner,
         "runner_sha256": runner_sha,
         "mode": mode,
         "require_gpu": require_gpu,
-        "stage_state": require_token(operation["stage_state"], "stage_state"),
-        "decision": require_token(operation["decision"], "decision"),
-        "authorizes": require_token(operation["authorizes"], "authorizes"),
-        "locked_test_policy": require_enum(
-            operation["locked_test_policy"], "locked_test_policy",
-            {"blocked", "explicitly_authorized"},
-        ),
-        "forbidden_continuations": require_string_list(
-            operation["forbidden_continuations"], "forbidden_continuations"
-        ),
         "output_id": output_id,
         "output_path": f"{REMOTE_RUNS}/{route_id}/{output_id}",
         "closeout_filename": closeout,
-        "closeout_path": f"{derive_remote_repo(repo_name, route_id, workspace_id)}/experience_docx/experiment_logs/{route_id}/{closeout}",
+        "closeout_path": f"{derive_remote_repo(route_id, output_id)}/experience_docx/experiment_logs/{route_id}/{closeout}",
         "prior_closeout_relpath": prior_path,
         "prior_terminal_tuple": prior_tuple,
         "allowed_terminal_tuples": require_terminal_tuples(operation["allowed_terminal_tuples"]),
@@ -463,24 +529,17 @@ def load_operation(args):
         raise ToolError("route branch HEAD does not match route_branch_commit")
     with tempfile.TemporaryDirectory(prefix="convir-ops-plan-") as temporary:
         bare_repo = str(Path(temporary) / "repo.git")
-        run_local(["git", "init", "--quiet", "--bare", bare_repo], timeout=30, phase="local_git_prepare")
-        for commit in {route_commit, refs["refs/heads/main"]}:
-            run_local(
-                ["git", "-C", bare_repo, "fetch", "--quiet", "--depth=1", GITHUB_URL, commit],
-                timeout=120,
-                phase="local_git_fetch",
-            )
+        prepare_seeded_bare(bare_repo)
+        fetch_verified_refs(
+            bare_repo, branch_ref, route_commit, refs["refs/heads/main"]
+        )
         manifest_raw = git_show(bare_repo, route_commit, ROUTE_OPERATIONS_RELPATH)
         if len(manifest_raw.encode()) > MAX_MANIFEST_BYTES:
             raise ToolError("route_operations.json exceeds 16 KiB")
         manifest = json.loads(manifest_raw)
         rules_commit = manifest.get("rules_commit") if isinstance(manifest, dict) else None
         if isinstance(rules_commit, str) and SHA40.fullmatch(rules_commit):
-            run_local(
-                ["git", "-C", bare_repo, "fetch", "--quiet", "--depth=1", GITHUB_URL, rules_commit],
-                timeout=120,
-                phase="local_git_fetch",
-            )
+            ensure_commit(bare_repo, rules_commit)
         context = parse_manifest(
             manifest, branch, route_commit, refs["refs/heads/main"], bare_repo, operation_id
         )
@@ -570,14 +629,14 @@ def tool_plan_manifest(args):
                 "remote_repo": context["remote_repo"],
                 "output_path": context["output_path"],
                 "session": context["session"],
-                "rules_digest": context["rules_digest"],
+                "rules_bundle_digest": context["rules_bundle_digest"],
             },
             expected={
                 "route_commit": context["route_branch_commit"],
                 "route_card_blob": context["route_card_blob"],
                 "runner_sha256": context["runner_sha256"],
             },
-            next_actions=["convir_route_start_authorized"],
+            next_actions=["convir_route_start"],
             plan_token=token,
             plan_expires_at=payload["expires_at"],
         )
@@ -594,18 +653,12 @@ def verify_live_context(context):
     current = refs["refs/heads/main"]
     if current == context["current_rules_commit"]:
         return
-    with tempfile.TemporaryDirectory(prefix="convir-ops-rules-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="convir-ops-live-rules-") as temporary:
         repo = str(Path(temporary) / "repo.git")
-        run_local(["git", "init", "--quiet", "--bare", repo], timeout=30, phase="local_git_prepare")
-        for commit in {current, context["rules_commit"]}:
-            run_local(
-                ["git", "-C", repo, "fetch", "--quiet", "--depth=1", GITHUB_URL, commit],
-                timeout=120,
-                phase="local_git_fetch",
-            )
-        if rule_bundle_digest(repo, current) != context["rules_digest"]:
-            raise ToolError("canonical rule bundle changed after planning")
-    context["current_rules_commit"] = current
+        prepare_seeded_bare(repo)
+        ensure_commit(repo, current)
+        if rule_bundle_digest(repo, current) != context["rules_bundle_digest"]:
+            raise ToolError("canonical rules changed after planning; create one fresh plan")
 
 
 def gpu_probe_body(context):
@@ -701,10 +754,13 @@ def issue_receipt(context, gpu_index, launch_output):
         "launch_digest": hashlib.sha256(launch_output.encode()).hexdigest(),
         "issued_at": int(time.time()),
     }
-    return write_new_record("receipt", payload, {"launched": True})
+    return write_new_record(
+        "receipt", payload,
+        {"launched": True, "finish_calls": 0, "finish_closed": None},
+    )
 
 
-def tool_start_authorized(args):
+def tool_start(args):
     token = args.get("plan_token")
     try:
         with locked_record("plan", token) as record:
@@ -736,7 +792,7 @@ def tool_start_authorized(args):
                     return typed_failure(
                         "RESOURCE_WAIT_REQUIRED", "command_infra", str(exc),
                         expected={"runner_started": False},
-                        next_actions=["convir_route_start_authorized"],
+                        next_actions=["convir_route_start"],
                         retry_after_seconds=30,
                         failure_phase="resource_preflight",
                     )
@@ -751,7 +807,7 @@ def tool_start_authorized(args):
                     return typed_failure(
                         "RESOURCE_WAIT_REQUIRED", "command_infra", "resource changed before launch",
                         expected={"runner_started": False},
-                        next_actions=["convir_route_start_authorized"],
+                        next_actions=["convir_route_start"],
                         retry_after_seconds=30,
                         failure_phase="resource_preflight",
                     )
@@ -785,6 +841,27 @@ def receipt_context(token):
         if not record.get("launched"):
             raise ToolError("receipt has no successful launch")
         return record["payload"]["context"]
+
+
+def begin_finish(token):
+    with locked_record("receipt", token) as record:
+        if not record.get("launched"):
+            raise ToolError("receipt has no successful launch")
+        if record.get("finish_closed"):
+            raise ToolError(f"finish is closed: {record['finish_closed']}")
+        calls = record.get("finish_calls", 0)
+        if not isinstance(calls, int) or calls < 0:
+            raise ToolError("receipt finish counter is invalid", failure_class="command_infra")
+        if calls >= MAX_FINISH_WINDOWS:
+            record["finish_closed"] = "OBSERVATION_BUDGET_EXHAUSTED"
+            raise ToolError("finish observation budget is exhausted")
+        record["finish_calls"] = calls + 1
+        return record["payload"]["context"]
+
+
+def close_finish(token, state):
+    with locked_record("receipt", token) as record:
+        record["finish_closed"] = require_token(state, "finish_closed")
 
 
 def monitor_body(context, profile):
@@ -866,8 +943,9 @@ def parse_closeout(context, output):
 
 
 def tool_finish(args):
+    token = args.get("receipt")
     try:
-        context = receipt_context(args.get("receipt"))
+        context = begin_finish(token)
         profile = MONITOR_PROFILES[context["monitor_profile"]]
         output = run_remote(
             monitor_body(context, profile),
@@ -876,12 +954,14 @@ def tool_finish(args):
         )
         monitor = parse_monitor(output)
         if monitor["stale"]:
+            close_finish(token, "MONITOR_STALE")
             return typed_failure(
                 "MONITOR_STALE", "command_infra", "heartbeat exceeded the sealed limit",
                 observed=monitor, next_actions=["engineering_review_once"], failure_phase="monitor",
             )
         closeout = parse_closeout(context, output)
         if closeout:
+            close_finish(token, "CLOSEOUT_VALIDATED")
             return typed_result(
                 True, "CLOSEOUT_VALIDATED",
                 observed={"monitor": monitor, "closeout": closeout},
@@ -889,6 +969,7 @@ def tool_finish(args):
                 manifest={"closeout_filename": closeout["closeout_filename"], "closeout_sha256": closeout["closeout_sha256"]},
             )
         if not monitor["active"]:
+            close_finish(token, "CLOSEOUT_MISSING")
             return typed_failure(
                 "CLOSEOUT_MISSING", "evidence", "session ended without closeout",
                 observed=monitor, next_actions=["engineering_review_once"], failure_phase="closeout",
@@ -1090,26 +1171,26 @@ def tool_git_evidence_status(args):
 
 
 TOOLS = {
-    "convir_route_plan_manifest": {
-        "description": "Read and seal one schema-v3 operation from the exact GitHub route commit without contacting the cloud.",
+    "convir_route_plan": {
+        "description": "Read and seal one schema-v4 operation from the exact GitHub route commit without contacting the cloud.",
         "inputSchema": {
             "type": "object",
             "required": ["schema_version", "branch", "route_branch_commit", "operation_id"],
             "properties": {
-                "schema_version": {"const": 3}, "branch": {"type": "string"},
+                "schema_version": {"const": 4}, "branch": {"type": "string"},
                 "route_branch_commit": {"type": "string"}, "operation_id": {"type": "string"},
             },
             "additionalProperties": False,
         },
         "handler": tool_plan_manifest,
     },
-    "convir_route_start_authorized": {
-        "description": "Apply a reviewed plan once and return a receipt bound to its exact route, runner, output, and rules digest.",
+    "convir_route_start": {
+        "description": "Apply a reviewed plan once and return a receipt bound to its exact route, runner, output, and rules bundle.",
         "inputSchema": {
             "type": "object", "required": ["plan_token"],
             "properties": {"plan_token": {"type": "string"}}, "additionalProperties": False,
         },
-        "handler": tool_start_authorized,
+        "handler": tool_start,
     },
     "convir_route_finish": {
         "description": "Observe one sealed window of at most 60 seconds and validate terminal closeout provenance.",
@@ -1119,7 +1200,7 @@ TOOLS = {
         },
         "handler": tool_finish,
     },
-    "convir_evidence_manifest": {
+    "convir_evidence_list": {
         "description": "List compact top-level evidence from the workspace sealed by a launch receipt.",
         "inputSchema": {
             "type": "object", "required": ["receipt"],
@@ -1139,7 +1220,7 @@ TOOLS = {
         },
         "handler": tool_evidence_fetch,
     },
-    "convir_git_evidence_status": {
+    "convir_git_status": {
         "description": "Read-only worktree and GitHub-main freshness audit; never fetch, stage, commit, or push.",
         "inputSchema": {
             "type": "object", "required": ["route_id", "local_repo"],

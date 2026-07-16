@@ -1,4 +1,4 @@
-"""Mocked-transport tests for the minimal convir-ops schema-v3 lifecycle."""
+"""Mocked-transport tests for the minimal convir-ops schema-v4 lifecycle."""
 
 import importlib.util
 import json
@@ -30,11 +30,6 @@ def operation(**overrides):
         "runner_relpath": "experience_docx/tools/run_a1x.sh",
         "mode": "s0",
         "require_gpu": False,
-        "stage_state": "PLANNED",
-        "decision": "START",
-        "authorizes": "s0",
-        "locked_test_policy": "blocked",
-        "forbidden_continuations": ["locked_test"],
         "output_id": "a1x-s0-r1",
         "closeout_filename": "s0_closeout.json",
         "prior_closeout_relpath": None,
@@ -51,44 +46,33 @@ def operation(**overrides):
     return value
 
 
-def manifest(op=None):
+def manifest(op=None, operation_id="S0"):
     return {
-        "schema_version": 3,
+        "schema_version": 4,
         "route_id": "a1x",
-        "repo_name": "convir-a1x",
-        "workspace_id": "a1x-v2",
         "rules_commit": "b" * 40,
-        "rules_digest": "d" * 64,
         "route_card_relpath": "experience_docx/experiment_cards/a1x.md",
-        "route_card_blob": "c" * 40,
-        "operations": {"S0": op or operation()},
+        "operations": {operation_id: op or operation()},
     }
 
 
 def context(require_gpu=False):
     return {
-        "schema_version": 3,
+        "schema_version": 4,
         "branch": "codex/a1x",
         "route_branch_commit": "a" * 40,
         "current_rules_commit": "b" * 40,
         "route_id": "a1x",
-        "repo_name": "convir-a1x",
-        "workspace_id": "a1x-v2",
         "remote_repo": "/remote/a1x",
         "run_root": "/runs/a1x",
         "route_card_relpath": "experience_docx/experiment_cards/a1x.md",
         "route_card_blob": "c" * 40,
         "rules_commit": "b" * 40,
-        "rules_digest": "d" * 64,
+        "rules_bundle_digest": "d" * 64,
         "runner_relpath": "experience_docx/tools/run_a1x.sh",
         "runner_sha256": "e" * 64,
         "mode": "s0",
         "require_gpu": require_gpu,
-        "stage_state": "PLANNED",
-        "decision": "START",
-        "authorizes": "s0",
-        "locked_test_policy": "blocked",
-        "forbidden_continuations": ["locked_test"],
         "output_id": "a1x-s0-r1",
         "output_path": "/runs/a1x/a1x-s0-r1",
         "closeout_filename": "s0_closeout.json",
@@ -106,7 +90,7 @@ def context(require_gpu=False):
     }
 
 
-class ConvirOpsV3Tests(unittest.TestCase):
+class ConvirOpsV4Tests(unittest.TestCase):
     def setUp(self):
         self.state = tempfile.TemporaryDirectory()
         OPS.STATE_DIR = Path(self.state.name)
@@ -116,7 +100,7 @@ class ConvirOpsV3Tests(unittest.TestCase):
 
     def parse(self, value=None, operation_id="S0"):
         with (
-            patch.object(OPS, "git_show", side_effect=lambda _repo, _commit, path: "First authorized stage: S0\n" if path.endswith("a1x.md") else "runner"),
+            patch.object(OPS, "git_show", side_effect=lambda _repo, _commit, path: "- First operation: S0\n" if path.endswith("a1x.md") else "runner"),
             patch.object(OPS, "git_show_bytes", return_value=b"runner\n"),
             patch.object(OPS, "blob_sha", return_value="c" * 40),
             patch.object(OPS, "rule_bundle_digest", return_value="d" * 64),
@@ -126,29 +110,60 @@ class ConvirOpsV3Tests(unittest.TestCase):
     def test_first_operation_is_authorized_by_frozen_card(self):
         value = self.parse()
         self.assertIsNone(value["prior_closeout_relpath"])
-        self.assertEqual("d" * 64, value["rules_digest"])
+        self.assertEqual("d" * 64, value["rules_bundle_digest"])
         self.assertEqual(__import__("hashlib").sha256(b"runner\n").hexdigest(), value["runner_sha256"])
 
     def test_later_operation_requires_exact_prior_closeout(self):
-        prior = terminal("S0_PASS", "formal")
+        prior = terminal("S0_PASS", "FORMAL")
         op = operation(
             mode="formal", prior_closeout_relpath="experience_docx/experiment_logs/a1x/s0_closeout.json",
-            prior_terminal_tuple=prior, stage_state=prior["state"], decision=prior["decision"],
-            authorizes=prior["authorizes"], output_id="a1x-formal-r1",
+            prior_terminal_tuple=prior, output_id="a1x-formal-r1",
         )
-        value = manifest(op)
+        value = manifest(op, "FORMAL")
         with (
-            patch.object(OPS, "git_show", side_effect=lambda _repo, _commit, path: json.dumps({"route_id": "a1x", **prior}) if path.endswith("s0_closeout.json") else ("First authorized stage: S0\n" if path.endswith("a1x.md") else "runner")),
+            patch.object(OPS, "git_show", side_effect=lambda _repo, _commit, path: json.dumps({"route_id": "a1x", **prior}) if path.endswith("s0_closeout.json") else ("- First operation: S0\n" if path.endswith("a1x.md") else "runner")),
             patch.object(OPS, "git_show_bytes", return_value=b"runner\n"),
             patch.object(OPS, "blob_sha", return_value="c" * 40),
             patch.object(OPS, "rule_bundle_digest", return_value="d" * 64),
         ):
-            parsed = OPS.parse_manifest(value, "codex/a1x", "a" * 40, "b" * 40, "/tmp/repo", "S0")
+            parsed = OPS.parse_manifest(value, "codex/a1x", "a" * 40, "b" * 40, "/tmp/repo", "FORMAL")
         self.assertEqual(prior, parsed["prior_terminal_tuple"])
+
+    def test_later_operation_rejects_ambiguous_authorization(self):
+        prior = terminal("S0_PASS", "OTHER")
+        value = manifest(operation(
+            mode="formal",
+            prior_closeout_relpath="experience_docx/experiment_logs/a1x/s0_closeout.json",
+            prior_terminal_tuple=prior,
+        ), "FORMAL")
+        with (
+            patch.object(OPS, "git_show", return_value=json.dumps({"route_id": "a1x", **prior})),
+            patch.object(OPS, "git_show_bytes", return_value=b"runner\n"),
+            patch.object(OPS, "blob_sha", return_value="c" * 40),
+            patch.object(OPS, "rule_bundle_digest", return_value="d" * 64),
+        ):
+            with self.assertRaises(OPS.ToolError):
+                OPS.parse_manifest(value, "codex/a1x", "a" * 40, "b" * 40, "/tmp/repo", "FORMAL")
+
+    def test_later_operation_requires_pass_state(self):
+        prior = {"state": "FAILED_ENGINEERING", "decision": "STOP", "authorizes": "FORMAL"}
+        value = manifest(operation(
+            mode="formal",
+            prior_closeout_relpath="experience_docx/experiment_logs/a1x/s0_closeout.json",
+            prior_terminal_tuple=prior,
+        ), "FORMAL")
+        with (
+            patch.object(OPS, "git_show", return_value=json.dumps({"route_id": "a1x", **prior})),
+            patch.object(OPS, "git_show_bytes", return_value=b"runner\n"),
+            patch.object(OPS, "blob_sha", return_value="c" * 40),
+            patch.object(OPS, "rule_bundle_digest", return_value="d" * 64),
+        ):
+            with self.assertRaises(OPS.ToolError):
+                OPS.parse_manifest(value, "codex/a1x", "a" * 40, "b" * 40, "/tmp/repo", "FORMAL")
 
     def test_current_rule_bundle_must_match_recorded_digest(self):
         with (
-            patch.object(OPS, "git_show", side_effect=lambda _repo, _commit, path: "First authorized stage: S0\n" if path.endswith("a1x.md") else "runner"),
+            patch.object(OPS, "git_show", side_effect=lambda _repo, _commit, path: "- First operation: S0\n" if path.endswith("a1x.md") else "runner"),
             patch.object(OPS, "git_show_bytes", return_value=b"runner\n"),
             patch.object(OPS, "blob_sha", return_value="c" * 40),
             patch.object(OPS, "rule_bundle_digest", side_effect=["d" * 64, "f" * 64]),
@@ -160,13 +175,56 @@ class ConvirOpsV3Tests(unittest.TestCase):
         for profile in OPS.MONITOR_PROFILES.values():
             self.assertLessEqual(profile["max_polls"] * profile["interval_seconds"], 60)
 
+    def test_first_operation_requires_exact_card_field(self):
+        self.assertEqual("S0", OPS.first_operation_from_card("- First operation: S0\n"))
+        with self.assertRaises(OPS.ToolError):
+            OPS.first_operation_from_card("S0 appears elsewhere")
+
+    def test_verified_ref_fetch_uses_one_bounded_network_call(self):
+        branch = "a" * 40
+        main = "b" * 40
+        observed = []
+
+        def fake_run(command, **_kwargs):
+            observed.append(command)
+            if command[-1] == "refs/convir-verify/route":
+                return branch
+            if command[-1] == "refs/convir-verify/main":
+                return main
+            return ""
+
+        with patch.object(OPS, "run_local", side_effect=fake_run):
+            OPS.fetch_verified_refs(
+                "/tmp/repo.git", "refs/heads/codex/a1x", branch, main
+            )
+        fetches = [command for command in observed if "fetch" in command]
+        self.assertEqual(1, len(fetches))
+        self.assertIn("+refs/heads/codex/a1x:refs/convir-verify/route", fetches[0])
+        self.assertIn("+refs/heads/main:refs/convir-verify/main", fetches[0])
+
+    def test_live_rules_check_does_not_mutate_signed_plan(self):
+        ctx = context()
+        before = json.dumps(ctx, sort_keys=True)
+        refs = {
+            "refs/heads/codex/a1x": "a" * 40,
+            "refs/heads/main": "f" * 40,
+        }
+        with (
+            patch.object(OPS, "github_refs", return_value=refs),
+            patch.object(OPS, "prepare_seeded_bare"),
+            patch.object(OPS, "ensure_commit"),
+            patch.object(OPS, "rule_bundle_digest", return_value="d" * 64),
+        ):
+            OPS.verify_live_context(ctx)
+        self.assertEqual(before, json.dumps(ctx, sort_keys=True))
+
     def test_launch_timeout_opens_unknown_state_without_blind_retry(self):
         plan = {"context": context(), "issued_at": int(time.time()), "expires_at": int(time.time()) + 60, "nonce": "n"}
         token = OPS.write_new_record("plan", plan, {"receipt": None})
         error = OPS.ToolError("timeout", failure_phase="launch_command", failure_class="command_infra")
         with patch.object(OPS, "verify_live_context"), patch.object(OPS, "run_remote", side_effect=error):
-            first = payload(OPS.tool_start_authorized({"plan_token": token}))
-            second = payload(OPS.tool_start_authorized({"plan_token": token}))
+            first = payload(OPS.tool_start({"plan_token": token}))
+            second = payload(OPS.tool_start({"plan_token": token}))
         self.assertEqual("START_STATE_UNKNOWN", first["operation_state"])
         self.assertEqual("START_STATE_UNKNOWN", second["operation_state"])
 
@@ -175,10 +233,30 @@ class ConvirOpsV3Tests(unittest.TestCase):
         token = OPS.write_new_record("plan", plan, {"receipt": None})
         error = OPS.ToolError("no gpu", failure_phase="resource_preflight", failure_class="command_infra")
         with patch.object(OPS, "verify_live_context"), patch.object(OPS, "run_remote", side_effect=error):
-            first = payload(OPS.tool_start_authorized({"plan_token": token}))
-            second = payload(OPS.tool_start_authorized({"plan_token": token}))
+            first = payload(OPS.tool_start({"plan_token": token}))
+            second = payload(OPS.tool_start({"plan_token": token}))
         self.assertEqual("RESOURCE_WAIT_REQUIRED", first["operation_state"])
         self.assertEqual("RESOURCE_WAIT_REQUIRED", second["operation_state"])
+
+    def test_dead_session_closes_finish_and_cannot_be_polled_again(self):
+        receipt_payload = {
+            "context": context(), "gpu_index": None,
+            "launch_digest": "f" * 64, "issued_at": 1,
+        }
+        receipt = OPS.write_new_record(
+            "receipt", receipt_payload,
+            {"launched": True, "finish_calls": 0, "finish_closed": None},
+        )
+        output = (
+            "CONVIR_OPS_MONITOR polls=1 active=false terminal=false "
+            "stale=false heartbeat_age=-1\n"
+            "CONVIR_OPS_STATUS_BEGIN\nCONVIR_OPS_STATUS_END\n"
+        )
+        with patch.object(OPS, "run_remote", return_value=output):
+            first = payload(OPS.tool_finish({"receipt": receipt}))
+            second = payload(OPS.tool_finish({"receipt": receipt}))
+        self.assertEqual("CLOSEOUT_MISSING", first["operation_state"])
+        self.assertEqual("FINISH_REJECTED", second["operation_state"])
 
     def test_closeout_requires_receipt_identity_and_allowed_tuple(self):
         ctx = context()
@@ -190,6 +268,12 @@ class ConvirOpsV3Tests(unittest.TestCase):
         self.assertEqual(terminal(), OPS.parse_closeout(ctx, output)["terminal_tuple"])
         with self.assertRaises(OPS.ToolError):
             OPS.parse_closeout(ctx, output.replace('"run_id":"a1x-s0-r1"', '"run_id":"other"'))
+
+    def test_engineering_closeout_allows_null_decision_but_cannot_authorize_next_stage(self):
+        failure = {"state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE"}
+        self.assertEqual(failure, OPS.require_terminal_tuples([failure])[0])
+        with self.assertRaises(OPS.ToolError):
+            OPS.require_terminal_tuple(failure, "prior_terminal_tuple")
 
     def test_evidence_tools_resolve_workspace_only_from_receipt(self):
         receipt_payload = {"context": context(), "gpu_index": None, "launch_digest": "f" * 64, "issued_at": 1}
@@ -210,7 +294,7 @@ class ConvirOpsV3Tests(unittest.TestCase):
             with OPS.locked_record("plan", token):
                 pass
 
-    def test_stdio_exposes_exact_six_schema_v3_tools(self):
+    def test_stdio_exposes_exact_six_schema_v4_tools(self):
         requests = [
             {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2024-11-05"}},
             {"jsonrpc": "2.0", "id": 2, "method": "tools/list", "params": {}},
@@ -220,13 +304,13 @@ class ConvirOpsV3Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("3.0.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("4.0.0", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
-        evidence = next(item for item in tools if item["name"] == "convir_evidence_manifest")
+        evidence = next(item for item in tools if item["name"] == "convir_evidence_list")
         self.assertEqual(["receipt"], evidence["inputSchema"]["required"])
-        plan = next(item for item in tools if item["name"] == "convir_route_plan_manifest")
-        self.assertEqual(3, plan["inputSchema"]["properties"]["schema_version"]["const"])
+        plan = next(item for item in tools if item["name"] == "convir_route_plan")
+        self.assertEqual(4, plan["inputSchema"]["properties"]["schema_version"]["const"])
 
 
 if __name__ == "__main__":
