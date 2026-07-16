@@ -6,19 +6,19 @@ Status: evidence index plus official architecture anchor registry.
 
 ## Operations Infrastructure Validation
 
-The generic metadata-only run-monitoring route is still under engineering
-validation and is not yet a project default. Two cloud candidates stopped
-safely before control-plane and cost tests. `candidate-7b1ee1580-r1` exposed a
-raw-text audit false positive on explanatory `signal.` prose.
-`candidate-4bbd03154-r2` then exposed one separate syntax-tree matcher defect:
-the matcher did not inspect a method call whose receiver was a compound
-`Path("/proc") / ...` expression. Both typed closeouts are
-`FAILED_ENGINEERING` and record zero model calls and no GPU, dataset,
-checkpoint, canary, or locked-test access. These are validation-harness
-failures, not evidence that telemetry controlled a workload. One deterministic
-compound-receiver matcher correction on a new candidate identity is authorized;
-adoption and model-experiment use remain blocked until the full cloud gate
-passes.
+The generic metadata-only run-monitoring route has passed its isolated cloud
+candidate gate but is not yet a project default. Two earlier candidates stopped
+safely on validation-harness defects and were archived before correction.
+`candidate-33a772268-r3` then passed all six telemetry tests, all 22 restricted
+control-plane tests, the semantic source audit, the fixed file/cost gate, and a
+typed `COMPLETED_GATE_PASS` closeout. One hundred atomic pulses used
+`0.160066823` CPU seconds, projected to `0.0960400938` CPU seconds per hour at
+a 60-second interval, and created only `heartbeat.json`. The closeout records
+zero model calls and no GPU, dataset, checkpoint, canary, or locked-test access.
+This authorizes main-integration review only. Project-default adoption and model
+experiment use remain blocked until the generic subset is integrated, the
+registered six-tool service is updated, and a receipt-bound end-to-end
+validation passes.
 
 Use `experience_docx/experiment_cards/2026-07-16-generic-run-monitoring-validation.md`,
 `experience_docx/family_summaries/operations_infrastructure_summary.md`, and

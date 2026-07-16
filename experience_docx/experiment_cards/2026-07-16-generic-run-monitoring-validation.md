@@ -2,7 +2,7 @@
 
 Date: 2026-07-16
 
-Status: `PLANNED`
+Status: `RUNNING`
 
 ## Identity
 
@@ -80,12 +80,17 @@ Status: `PLANNED`
 
 ## Decision
 
-Fill only after terminal evidence.
-
-- Verdict and primary reason:
-- Mechanism/control and safety reason:
-- Evidence-independence and cost reason:
-- Authorized next action or terminal stop:
+- Verdict and primary reason: isolated candidate gate passed; six telemetry and
+  22 control-plane tests passed with a typed `COMPLETED_GATE_PASS` closeout.
+- Mechanism/control and safety reason: telemetry remained metadata-only and
+  fail-open; semantic audit found no process/GPU control or scientific-output
+  read, and control-plane observation remained bounded and receipt-bound.
+- Evidence-independence and cost reason: no model, GPU, dataset, checkpoint,
+  canary, or locked test was used; 100 pulses consumed `0.160066823` CPU
+  seconds and produced only one 230-byte heartbeat file.
+- Authorized next action or terminal stop: main-integration review only,
+  followed by registered-service schema-v4 end-to-end validation. Model
+  experiments and project-default adoption remain blocked until that passes.
 
 ## Candidate Validation History
 
@@ -105,3 +110,8 @@ Fill only after terminal evidence.
   flag `false`. This authorizes only one compound-receiver matcher correction
   and a fresh candidate identity; all adoption and model operations remain
   blocked.
+- `candidate-33a772268-r3` completed all three milestones. Telemetry tests were
+  6/6, control-plane tests were 22/22, semantic audit findings were empty, the
+  CPU/file gate passed, and its closeout authorizes
+  `MAIN_INTEGRATION_REVIEW_ONLY`. This is not yet permission to run a model
+  experiment.

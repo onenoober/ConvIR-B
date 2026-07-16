@@ -1,0 +1,18 @@
+{
+  "authorizes": "MAIN_INTEGRATION_REVIEW_ONLY",
+  "canary_touched": false,
+  "checkpoint_touched": false,
+  "dataset_touched": false,
+  "decision": "GENERIC_RUN_MONITORING_VALIDATION_PASS",
+  "gpu_used": false,
+  "locked_test_touched": false,
+  "model_calls": 0,
+  "route_commit": "33a7722688f7a26b4c025e6c926804987c49c392",
+  "route_id": "generic_run_monitoring_validation_20260716",
+  "run_id": "candidate-33a772268-r3",
+  "runner_sha256": "21df0834d7de2f4102714decc5a5f4ce092274b633cdfdfd383011a83499ae06",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "timestamp_unix": 1784204548.1449542,
+  "validation_pass": true
+}
