@@ -13,6 +13,7 @@ EVID_STAGE="$REMOTE_REPO/experience_docx/experiment_logs/$ROUTE_ID"
 STATUS_PATH="$OUTPUT_PATH/status.txt"
 HEARTBEAT_PATH="$OUTPUT_PATH/heartbeat.json"
 RUNTIME_LOG_PATH="$OUTPUT_PATH/runtime.log"
+WORKLOAD_OUTPUT_PATH="$OUTPUT_PATH/workload"
 
 : "${MODE:?MODE is required}"
 : "${REMOTE_REPO:?REMOTE_REPO is required}"
@@ -196,7 +197,7 @@ timeout --signal=TERM --kill-after=2m "$LIMIT" env CUDA_VISIBLE_DEVICES="$GPU" P
   --probe-epochs 2 --probe-batch-size 8 --probe-width 24 \
   --probe-learning-rate 0.0005 --probe-weight-decay 0.00001 \
   --probe-grad-clip-norm 0.1 --probe-seed 3407 \
-  --mode projected --output_dir "$OUTPUT_PATH" --run_tag "$RUN_ID" "${COMMON_ARGS[@]}" \
+  --mode projected --output_dir "$WORKLOAD_OUTPUT_PATH" --run_tag "$RUN_ID" "${COMMON_ARGS[@]}" \
   2>&1 | tee -a "$RUNTIME_LOG_PATH"
 rc=${PIPESTATUS[0]}
 set -e
@@ -204,8 +205,8 @@ set -e
 if [[ $rc -ne 0 ]]; then
   write_failed_closeout "$rc"
 fi
-if [[ -f "$OUTPUT_PATH/a1x_v3_s0_summary.json" ]]; then
-  cp "$OUTPUT_PATH/a1x_v3_s0_summary.json" "$EVID_STAGE/a1x_v3_s0_summary.json"
+if [[ -f "$WORKLOAD_OUTPUT_PATH/a1x_v3_s0_summary.json" ]]; then
+  cp "$WORKLOAD_OUTPUT_PATH/a1x_v3_s0_summary.json" "$EVID_STAGE/a1x_v3_s0_summary.json"
 fi
 seal_closeout
 "$PY" "$TELEMETRY" event --route-id "$ROUTE_ID" --run-id "$RUN_ID" \
