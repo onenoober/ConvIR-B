@@ -1,0 +1,56 @@
+{
+  "schema_version": 2,
+  "record_type": "A1X_R3_VALIDATOR_RESUME_READ_TIMEOUT_REVIEW_BLOCKER",
+  "route_id": "haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715",
+  "rules_commit": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+  "reviewed_route_commit": "e14550bbbd4b18519c32ed7f321c8f0787978924",
+  "task_class": "R3_SCIENTIFIC_AUTHORITY",
+  "required_role": "frontier",
+  "effort": "high",
+  "state": "R3_VALIDATOR_RESUME_READ_TIMEOUT_REVIEW_BLOCKED",
+  "decision": "DISPATCHER_RUN_EVIDENCE_UNAVAILABLE_EXACT_RETRY_NOT_AUTHORIZED",
+  "authorizes": "NONE",
+  "failure_class": "COMMAND_BOUNDARY_EVIDENCE_UNAVAILABLE",
+  "failure_phase": "dispatcher_run_exact_review",
+  "failure_code": "DISPATCHER_RUN_20260716T000156Z_ARTIFACTS_NOT_FOUND_AT_EXACT_PATHS",
+  "failure_detail": "The requested dispatcher run could not be reviewed from either exact output-root form permitted by the bounded review. Without its events, stderr, answer, or metadata, this review cannot prove that the failed child timed out before its first repository read or any later action. The direct-WSL-Git-only command boundary also cannot recompute the raw SHA-256 values recorded by the prior authorization, so preservation cannot be asserted from a different hash algorithm.",
+  "dispatcher_run_id": "20260716T000156Z",
+  "exact_dispatcher_artifacts_checked": [
+    "/mnt/c/Users/wukongtao/.codex/dispatcher-runs/20260716T000156Z/dispatch_metadata.json",
+    "/mnt/c/Users/wukongtao/.codex/dispatcher-runs/20260716T000156Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-frontier/dispatch_metadata.json",
+    "/mnt/c/Users/wukongtao/.codex/dispatcher-runs/20260716T000156Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-frontier/events.jsonl",
+    "/mnt/c/Users/wukongtao/.codex/dispatcher-runs/20260716T000156Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-frontier/stderr.log",
+    "/mnt/c/Users/wukongtao/.codex/dispatcher-runs/20260716T000156Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-frontier/answer.txt",
+    "/mnt/c/Users/wukongtao/.codex/dispatcher-runs/20260716T000156Z-haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715-frontier/child_prompt.txt"
+  ],
+  "confirmed_git_state": {
+    "github_main": "fe08ba7c0fde4d6086083490430246ea39fbf766",
+    "head": "e14550bbbd4b18519c32ed7f321c8f0787978924",
+    "exact_resume_authorization_path": "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r3_runner_sha_closeout_provenance_exact_resume_authorization.json",
+    "exact_resume_authorization_present_at_head": true,
+    "dirty_sha256_preservation_verified": false,
+    "failure_closeout_sha256_preservation_verified": false
+  },
+  "preserved_expected_hashes_from_authorization": {
+    "experience_docx/route_operations.json": "2871a5edb7ea67dfb707fa7a114ecc344523586e2390f6bd4ee8447f0bafe12f",
+    "experience_docx/tools/preflight_chd_rm_v4a_a1x_runtime_manifest.py": "52d7ceb348df975002c090f65b3a90cbc7f6a815836ca9058f6b1936bc69ee65",
+    "experience_docx/tools/run_chd_rm_v4a_a1x_exact_half_accessibility.sh": "148502b912a1516778ee9940bf69fdde4f9fe538f4998bf7a1c9b3d8686e5dd4",
+    "experience_docx/tools/chd_rm_v4a_a1x_exact_half_accessibility.py": "52ff6ff97f0369833452e29b7138ba40f1dfd13f1842ca5c1257c1b92fc05da2",
+    "experience_docx/tools/validate_haze4k_v4a_a1x_route.py": "db0bdcffbc3cb3a629bc85a295c36c8ecd760c02ca707eafc779354c20f63998",
+    "experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_exact_half_deployable_accessibility_20260715/v4a_a1x_r2_runtime_identity_provenance_repair_closeout.json": "2f6614aa7876a32f6d1d54306887365a2b9a6960b6e82a228c3f8860124ce865"
+  },
+  "scope_confirmations": {
+    "source_files_modified": false,
+    "validator_or_static_sequence_run": false,
+    "runtime_or_assets_or_data_accessed": false,
+    "checkpoint_opened": false,
+    "cloud_or_ssh_or_convir_ops_used": false,
+    "runner_started": false,
+    "s0_or_formal_authorized": false,
+    "canary_touched": false,
+    "locked_test_touched": false,
+    "push_performed": false
+  },
+  "next_boundary": "Provide the exact dispatcher output root or a durable compact audit for run 20260716T000156Z, then obtain a fresh R3 review before any retry, source edit, validation, commit beyond this blocker, runtime action, or cloud action.",
+  "completion_marker": "A1X_R3_VALIDATOR_RESUME_READ_TIMEOUT_REVIEW_BLOCKED"
+}
