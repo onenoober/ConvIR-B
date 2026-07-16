@@ -58,7 +58,7 @@ Status: `PLANNED`
 | --- | --- | --- | --- |
 | `GENERIC_MONITOR_VALIDATION` | engineering-only synthetic cloud validation | all tests and cost/control checks pass | main integration review only |
 
-- First operation: `GENERIC_MONITOR_VALIDATION`.
+- First operation: GENERIC_MONITOR_VALIDATION
 - Expected wall time and monitor profile: under 10 minutes; `short`.
 - Complete-unit resume policy: none; new output only.
 - Cloud workspace/run/output/status/closeout: derived by schema-v4 MCP.
