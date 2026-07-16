@@ -1,7 +1,7 @@
 {
   "schema_version": 4,
   "route_id": "generic_run_monitoring_validation_20260716",
-  "rules_commit": "39009822a54aa0e756ab196d1be2d0d7aa0fae7c",
+  "rules_commit": "dca94d71c9fe73e4e93910b0587927c79ab7023c",
   "route_card_relpath": "experience_docx/experiment_cards/2026-07-16-generic-run-monitoring-validation.md",
   "operations": {
     "GENERIC_MONITOR_VALIDATION": {
@@ -17,6 +17,37 @@
           "state": "COMPLETED_GATE_PASS",
           "decision": "GENERIC_RUN_MONITORING_VALIDATION_PASS",
           "authorizes": "MAIN_INTEGRATION_REVIEW_ONLY"
+        },
+        {
+          "state": "FAILED_ENGINEERING",
+          "decision": null,
+          "authorizes": "NONE"
+        }
+      ],
+      "workspace_policy": "fresh_route",
+      "output_policy": "new",
+      "monitor_profile": "short",
+      "heartbeat_timeout_seconds": 120,
+      "min_free_gpu_mib": 0,
+      "max_gpu_utilization_pct": 100
+    },
+    "MAIN_INTEGRATION_REVIEW_ONLY": {
+      "runner_relpath": "experience_docx/tools/run_generic_run_monitoring_e2e_validation.sh",
+      "mode": "synthetic_e2e",
+      "require_gpu": false,
+      "output_id": "generic-monitor-e2e-r1",
+      "closeout_filename": "generic_run_monitoring_e2e_closeout.json",
+      "prior_closeout_relpath": "experience_docx/experiment_logs/generic_run_monitoring_validation_20260716/candidate_48203394e_r4_closeout.json",
+      "prior_terminal_tuple": {
+        "state": "COMPLETED_GATE_PASS",
+        "decision": "GENERIC_RUN_MONITORING_VALIDATION_PASS",
+        "authorizes": "MAIN_INTEGRATION_REVIEW_ONLY"
+      },
+      "allowed_terminal_tuples": [
+        {
+          "state": "COMPLETED_GATE_PASS",
+          "decision": "GENERIC_RUN_MONITORING_E2E_PASS",
+          "authorizes": "GENERIC_RUN_MONITORING_ADOPTION"
         },
         {
           "state": "FAILED_ENGINEERING",
