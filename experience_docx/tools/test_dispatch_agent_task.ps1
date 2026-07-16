@@ -214,6 +214,7 @@ $rulesCommit = Invoke-GitValue -Arguments @("rev-parse", "github/main")
 $headCommit = Invoke-GitValue -Arguments @("rev-parse", "HEAD")
 $testRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("agent-model-dispatcher-tests-" + [guid]::NewGuid().ToString("N"))
 New-Item -ItemType Directory -Path $testRoot | Out-Null
+try {
 
 $base = [ordered]@{
     schema_version = 2
@@ -410,3 +411,9 @@ $results += Test-CircuitBreakerHelpers -Path $resolvedDispatcher -Request $r0 -R
     cases = $results
 } | ConvertTo-Json -Depth 8
 Write-Output "DISPATCHER_DRY_RUN_TESTS_OK"
+}
+finally {
+    if (Test-Path -LiteralPath $testRoot) {
+        Remove-Item -LiteralPath $testRoot -Recurse -Force
+    }
+}
