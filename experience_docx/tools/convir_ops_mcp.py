@@ -54,9 +54,9 @@ SHA40 = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 ALLOWED_EVIDENCE_SUFFIXES = {".json", ".csv", ".md", ".txt"}
 MONITOR_PROFILES = {
-    "short": {"max_polls": 4, "interval_seconds": 10},
-    "standard": {"max_polls": 5, "interval_seconds": 15},
-    "long": {"max_polls": 5, "interval_seconds": 15},
+    "short": {"max_polls": 3, "interval_seconds": 10},
+    "standard": {"max_polls": 4, "interval_seconds": 15},
+    "long": {"max_polls": 4, "interval_seconds": 15},
 }
 
 
