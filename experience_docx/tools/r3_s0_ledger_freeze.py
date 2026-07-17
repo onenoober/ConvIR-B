@@ -9,6 +9,7 @@ import hashlib
 import json
 import os
 import time
+from array import array
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -23,7 +24,7 @@ from route_program_api import (
 
 
 ROUTE_ID = "haze4k_v5_r3_proposal_first_acv_20260717"
-OPERATION_ID = "R3_S0_LEDGER_FREEZE_R2"
+OPERATION_ID = "R3_S0_LEDGER_FREEZE_R3"
 EXPECTED_TRAIN_INNER = 2400
 EXPECTED_VAL_INNER = 600
 EXPECTED_HISTORICAL = 1200
@@ -103,7 +104,7 @@ def select_confirmation(groups, target_count, seed, max_transitions):
     for _, ordered, group_size in strata:
         expected = len(ordered) * group_size * ratio
         next_states = {}
-        layer_parents = {}
+        layer_choices = array("H", [65535]) * (total_count + 1)
         for previous_count in sorted(states):
             previous_penalty = states[previous_count]
             for take in range(len(ordered) + 1):
@@ -115,9 +116,9 @@ def select_confirmation(groups, target_count, seed, max_transitions):
                 current = next_states.get(count)
                 if current is None or candidate < current - 1e-12:
                     next_states[count] = candidate
-                    layer_parents[count] = (previous_count, take)
+                    layer_choices[count] = take
         states = next_states
-        parents.append(layer_parents)
+        parents.append(layer_choices)
 
     selected_count, _ = min(
         states.items(),
@@ -125,9 +126,14 @@ def select_confirmation(groups, target_count, seed, max_transitions):
     )
     choices = []
     count = selected_count
-    for layer_parents in reversed(parents):
-        count, take = layer_parents[count]
+    for layer_choices, (_, _, group_size) in zip(
+        reversed(parents), reversed(strata)
+    ):
+        take = layer_choices[count]
+        if take == 65535:
+            raise RuntimeError("confirmation allocation backpointer is missing")
         choices.append(take)
+        count -= take * group_size
     choices.reverse()
     selected = {
         group
@@ -142,6 +148,8 @@ def select_confirmation(groups, target_count, seed, max_transitions):
         "stratum_count": len(strata),
         "transition_count": transitions,
         "max_transitions": max_transitions,
+        "state_count_upper_bound": total_count + 1,
+        "backpointer_bytes": sum(item.buffer_info()[1] * item.itemsize for item in parents),
     }
 
 
@@ -466,11 +474,7 @@ def contract(context_path):
     prepare_phase_output(context)
     max_transitions = int(os.environ["CONVIR_ROUTE_MAX_DP_TRANSITIONS"])
     max_contract_seconds = float(os.environ["CONVIR_ROUTE_MAX_CONTRACT_SECONDS"])
-    train = [
-        f"g{group:04d}_{group:04d}_{signature}.png"
-        for group in range(600)
-        for signature in ("a", "b")
-    ]
+    train = [f"g{group:04d}_sig{group:04d}.png" for group in range(1200)]
     started = time.perf_counter()
     first = build_ledger(
         train, ["v0000_a.png"], [], 3407, 432, 4, max_transitions
@@ -489,9 +493,16 @@ def contract(context_path):
         "synthetic_partition_complete": development | confirmation
         == set(train),
         "representative_name_count": len(train) == EXPECTED_ELIGIBLE,
-        "representative_group_count": len(group_names(train)) == 600,
+        "representative_group_count": len(group_names(train)) == 1200,
+        "representative_unique_profile_count": len({
+            group_profile(items) for items in group_names(train).values()
+        }) == 1200,
         "transition_cap_respected": first["allocation"]["transition_count"]
         <= max_transitions,
+        "state_bound_respected": first["allocation"]["state_count_upper_bound"]
+        <= EXPECTED_ELIGIBLE + 1,
+        "backpointer_memory_bounded": first["allocation"]["backpointer_bytes"]
+        <= 3 * 1024 * 1024,
         "representative_wall_time": elapsed_seconds <= max_contract_seconds,
         "workload_output_absent": not (context.output_path / "workload").exists(),
         "protected_assets_unavailable": not context.assets,

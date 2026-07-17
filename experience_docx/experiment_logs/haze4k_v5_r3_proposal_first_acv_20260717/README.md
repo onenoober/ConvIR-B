@@ -2,12 +2,12 @@
 
 Date: 2026-07-17
 
-Status: `S0_R2_REPAIR_PLANNED`
+Status: `S0_R3_REPAIR_PLANNED`
 
 The route starts from the immutable official Haze4K architecture anchor and
 contains only the metadata ledger operation. The first
 `R3_S0_LEDGER_FREEZE` attempt timed out; the explicitly authorized
-`R3_S0_LEDGER_FREEZE_R2` repair reads
+`R3_S0_LEDGER_FREEZE_R3` repair reads
 two SHA-bound development assets, freezes a group-complete development and
 confirmation ledger, and publishes only compact counts/hashes/overlap/fold
 evidence. The name-level ledger remains cloud-only.
@@ -22,9 +22,11 @@ but the workload reached the 600-second timeout and closed as
 This is not an S0 scientific failure. No r1 ledger summary, role matrix, fold
 summary, signature balance, source identity, or access-audit result was
 published, and the closeout records an empty `verified_assets` list. A0 remains
-blocked. R2 keeps the scientific/data contract unchanged and replaces only the
-unbounded repeated-score allocation with bounded deterministic dynamic
-programming. It uses new output `r3-s0-ledger-r2`; r1 remains immutable.
+blocked. R2 fixed the original timeout but stopped at its arbitrary transition
+cap. R3 keeps the scientific/data contract and exact allocator objective,
+derives the transition bound from the frozen 1,200-name population, and uses
+compact backpointers. It uses new output `r3-s0-ledger-r3`; r1/r2 remain
+immutable.
 
 Expected compact files after an authorized future S0 run:
 
@@ -34,13 +36,13 @@ Expected compact files after an authorized future S0 run:
 - `r3_s0_signature_balance.csv`
 - `r3_s0_source_identity.json`
 - `r3_s0_access_audit.json`
-- `r3_s0_ledger_freeze_r2_closeout.json`
+- `r3_s0_ledger_freeze_r3_closeout.json`
 
 Current evidence:
 
 - `r3_s0_ledger_freeze_closeout.json`: validated terminal closeout, SHA-256
   `01c71f3f8f6f9d719934ed65917efe5a1ed9ed9b946f9ba1d1ab5a3576136955`.
 
-The r1 terminal tuple authorizes `NONE`. Only an r2 S0 PASS may authorize a
+The r1/r2 terminal tuples authorize `NONE`. Only an r3 S0 PASS may authorize a
 reviewed A0 amendment; it never authorizes A0 start, critic training,
 architecture work, or protected-data use automatically.

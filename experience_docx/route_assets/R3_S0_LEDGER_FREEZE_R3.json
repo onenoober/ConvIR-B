@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
-  "operation_id": "R3_S0_LEDGER_FREEZE_R2",
+  "operation_id": "R3_S0_LEDGER_FREEZE_R3",
   "assets": [
     {
       "id": "v1_split",
