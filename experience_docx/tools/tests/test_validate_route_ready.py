@@ -53,6 +53,38 @@ def main():
         with self.assertRaises(READY.ReadyError):
             READY.claim_published_name(owners, "summary.json", "D0 evidence")
 
+    def test_common_authoring_errors_are_reported_together(self):
+        manifest = {
+            "operations": {
+                "S0": {
+                    "monitor_profile": "fast",
+                    "allowed_terminal_tuples": [
+                        {"state": "PASS", "decision": "PASS", "authorizes": "A0"},
+                    ],
+                },
+            },
+        }
+        errors = READY.authoring_errors(
+            manifest, ["--launch-ready requires Status: PLANNED"],
+        )
+        self.assertEqual(3, len(errors))
+        self.assertTrue(any("route card" in error for error in errors))
+        self.assertTrue(any("monitor_profile" in error for error in errors))
+        self.assertTrue(any("FAILED_ENGINEERING / null / NONE" in error for error in errors))
+
+    def test_valid_common_authoring_fields_add_no_errors(self):
+        manifest = {
+            "operations": {
+                "S0": {
+                    "monitor_profile": "short",
+                    "allowed_terminal_tuples": [
+                        READY.GENERIC_ENGINEERING_TERMINAL.copy(),
+                    ],
+                },
+            },
+        }
+        self.assertEqual([], READY.authoring_errors(manifest, []))
+
 
 if __name__ == "__main__":
     unittest.main()

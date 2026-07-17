@@ -44,16 +44,33 @@ with current GitHub main, compiles Python/Bash syntax, validates runtime/asset
 schemas, checks the entrypoint interface, and proves that all published
 evidence and closeout filenames are route-wide unique.
 
-After `ROUTE_READY_OK`, make one commit, push once, then use one
-`convir_route_plan` and one `convir_route_start`. Runtime identity, cloud paths,
-resources, assets, CPU-only contract execution, telemetry, timeout, evidence
-publication, and typed closeout are owned by MCP plus the generic lifecycle.
-Do not repeat those checks manually. Observe at the frozen expected end with
-`convir_route_finish`; an active healthy run needs no resident model watcher.
+Do not run separate `py_compile`, JSON formatting/parse, `git diff --check`,
+card, manifest, runtime-spec, or asset-schema checks before this gate. They are
+already included, and common independent card/monitor/engineering-terminal
+authoring errors are reported together in the same invocation.
+
+After `ROUTE_READY_OK`, make one commit and push once. For a route authored and
+pushed in the current clean worktree, the default launch path is one
+`convir_route_plan`, exact verification of the requested branch/commit and the
+returned operation/output identity with zero mismatches, then one immediate
+`convir_route_start` when start authorization is already `YES`. Do not insert
+`convir_git_status` between push and plan by default; reserve it for an
+uncertain checkout, a reopened task, or an evidence-sync worktree. Runtime
+identity, cloud paths, resources, assets, CPU-only contract execution,
+telemetry, timeout, evidence publication, and typed closeout are owned by MCP
+plus the generic lifecycle. Do not repeat those checks manually. Observe at
+the frozen expected end with `convir_route_finish`; an active healthy run needs
+no resident model watcher.
 If start returns `START_STATE_UNKNOWN`, never create another plan or launch.
 Repeat that same sealed start once: its built-in metadata-only recovery either
 returns the original launch receipt, proves a clean unchanged retry, or stops
 as ambiguous.
+
+From Windows, use fixed WSL argv such as `wsl.exe --exec /usr/bin/git -C
+<absolute-wsl-path> ...`; do not use nested `bash -lc` quoting. Read the known
+index, family summary, route card, and route evidence directory directly. Do
+not run broad repository searches when those authoritative paths already
+identify the required files.
 
 `--bootstrap-runtime-bundle` is valid only for the first infrastructure branch
 that introduces this bundle. It still requires every already-present main file

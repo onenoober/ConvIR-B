@@ -110,3 +110,8 @@ Canonical corrections retained from prior incidents:
   `wsl.exe --exec /usr/bin/test -f <literal-absolute-path>` separately for
   each fixed path; do not use a cross-shell variable loop for a finite path
   allowlist.
+- 2026-07-17 invalid: relied on a PowerShell working directory for WSL Git,
+  then embedded a quoted regular expression in `bash -lc`; Git inspected the
+  wrong filesystem and PowerShell parsed the expression before WSL. Corrected
+  once: pass the absolute WSL repository after `/usr/bin/git -C` and invoke
+  fixed Linux readers through `wsl.exe --exec` with literal argv.

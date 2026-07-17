@@ -30,6 +30,9 @@ class ReadyError(RuntimeError):
 
 GIT = "/usr/bin/git"
 BASH = "/bin/bash"
+GENERIC_ENGINEERING_TERMINAL = {
+    "state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE",
+}
 
 
 def claim_published_name(owners: dict[str, str], name: str, owner: str) -> None:
@@ -152,15 +155,38 @@ def check_entrypoint(raw: bytes, relpath: str) -> None:
         raise ReadyError("entrypoint main must dispatch contract/run with --context")
 
 
-def validate_card(repo: Path, snapshot: str, relpath: str) -> str:
+def inspect_card(repo: Path, snapshot: str, relpath: str) -> tuple[list[str], str]:
     raw = show(repo, snapshot, relpath)
     with tempfile.TemporaryDirectory(prefix="route-ready-card-") as temporary:
         path = Path(temporary) / "card.md"
         path.write_bytes(raw)
         errors, digest = card_validator.validate(path, launch_ready=True)
-    if errors:
-        raise ReadyError("route card failed: " + "; ".join(errors))
-    return digest
+    return errors, digest
+
+
+def authoring_errors(manifest: dict[str, Any], card_errors: list[str]) -> list[str]:
+    """Collect frequent independent authoring mistakes before strict parsing."""
+    errors = [f"route card: {error}" for error in card_errors]
+    operations = manifest.get("operations", {})
+    if not isinstance(operations, dict):
+        return errors
+    for operation_id, operation in operations.items():
+        if not isinstance(operation, dict):
+            continue
+        profile = operation.get("monitor_profile")
+        if profile not in ops.MONITOR_PROFILES:
+            errors.append(
+                f"{operation_id}: monitor_profile must be one of "
+                f"{sorted(ops.MONITOR_PROFILES)}"
+            )
+        terminals = operation.get("allowed_terminal_tuples")
+        if not isinstance(terminals, list) \
+                or GENERIC_ENGINEERING_TERMINAL not in terminals:
+            errors.append(
+                f"{operation_id}: allowed_terminal_tuples must include "
+                "FAILED_ENGINEERING / null / NONE"
+            )
+    return errors
 
 
 def canonical_bundle_check(repo: Path, snapshot: str, current_main: str,
@@ -208,12 +234,28 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
         raise ReadyError("operation output_id values must be unique")
     if len({item.get("closeout_filename") for item in operations.values()}) != len(operations):
         raise ReadyError("operation closeout filenames must be unique")
+    card_errors = []
+    card_digest = None
+    route_card_relpath = manifest.get("route_card_relpath")
+    if isinstance(route_card_relpath, str):
+        try:
+            card_errors, card_digest = inspect_card(
+                repo, snapshot, route_card_relpath,
+            )
+        except ReadyError as exc:
+            card_errors = [str(exc)]
+    else:
+        card_errors = ["manifest route_card_relpath is missing or invalid"]
+    common_errors = authoring_errors(manifest, card_errors)
+    if common_errors:
+        raise ReadyError("authoring errors: " + "; ".join(common_errors))
+    if card_digest is None:
+        raise ReadyError("route card inspection produced no digest")
     parsed_contexts = {
         requested[0]: ops.parse_manifest(
             manifest, branch, snapshot, current_main, str(repo), requested[0],
         )
     }
-    card_digest = validate_card(repo, snapshot, manifest["route_card_relpath"])
     show(
         repo, snapshot,
         f"experience_docx/experiment_logs/{manifest['route_id']}/README.md",

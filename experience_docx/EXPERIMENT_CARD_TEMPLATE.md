@@ -2,7 +2,7 @@
 
 Date: <YYYY-MM-DD>
 
-Status: <DRAFT | PLANNED | RUNNING | STOPPED | COMPLETED>
+Status: PLANNED
 
 ## Identity
 
@@ -29,7 +29,7 @@ Status: <DRAFT | PLANNED | RUNNING | STOPPED | COMPLETED>
 
 - Exact change and disabled mechanisms:
 - Checkpoint/load/init/freeze contract:
-- Input whitelist and prohibited inputs:
+- Input whitelist and prohibited inputs: <Deployable inputs; exclude filename/group/fold IDs and role-leaking fields>
 - Dataset/split/preprocessing/metric identities:
 - Matched baseline and budget:
 - Resource/cost limits or descriptive-only rationale:
@@ -43,10 +43,11 @@ Status: <DRAFT | PLANNED | RUNNING | STOPPED | COMPLETED>
 | | | | |
 
 - First operation:
-- Expected wall time and monitor profile:
+- Expected wall time and monitor profile: <Duration and short|standard profile>
 - Complete-unit resume policy:
 - Cloud workspace/run/output/status/closeout:
 - Compact Git evidence and cloud-only raw artifacts:
+- Required engineering terminal tuple: `FAILED_ENGINEERING / null / NONE`
 
 ## Decision
 
