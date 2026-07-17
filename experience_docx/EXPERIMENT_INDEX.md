@@ -243,8 +243,51 @@ route, other pinned source commits, and Haze4K train directories passed the
 read-only fact audit; no runtime log or S0 summary was created. Confirmation,
 canary, and locked-test flags remain false. The repaired r4 exact transport/no-op differences are `0.0`, microfit loss
 reduction is `38.3314%`, parameter/MAC/memory guards pass, and all forbidden-data
-flags are false. This authorizes D0 design only; the 432-name confirmation stage
-remains blocked.
+flags are false. At that historical point the tuple authorized D0 design only.
+D0 subsequently completed and failed; the S0 tuple is no longer a current
+authorization and the 432-name stage was never opened.
+
+## Current R3 Design Handoff
+
+v4a-A1X-v3 D0 completed the preregistered fresh512, four-fold, five-cell
+development screen. The proposed A1X-global cell beat shuffle (LCB95 `+0.007963
+dB`) and its local control (LCB95 `+0.000890 dB`), with structural/safety
+guards passing, but failed material gain (`+0.013200 dB` versus `+0.020`)
+and retention (`0.080069` versus `0.25`). The typed decision is
+`A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP`; the historical 432-name
+confirmation stage was not touched and is not authorized.
+
+The 2026-07-17 R3 cloud-evidence audit then reconciled the compact GitHub
+evidence with the cloud-only v3p candidate-loss tables and current A1
+closeouts. It sharpens the bottleneck to a joint GT-free proposal-to-value
+problem: privileged safe actions and the exact-half transport exist, but no
+inference-only candidate bank has yet been shown to contain that headroom, and
+the direct A1R/A1X target heads have not retained enough candidate-specific
+value to select it safely. In the paired `1,088,675`-block-per-operator table,
+about `53.72%` of blocks have best-second MSE gap `<=1e-10`, best-action
+agreement across operators is `0.942934`, and high-margin active decisions
+collapse to no-op versus full action. This makes tie-aware, regret-weighted,
+asymmetric-harm learning with abstention the highest-value next mechanism test,
+but only after a GT-free proposal-bank oracle passes.
+
+The audit is retrospective development evidence and authorizes only
+`R3_S0_A0_DESIGN_ONLY`. Because the full v3p table was used at project level,
+the historical 432-name A1X remainder is reclassified as
+`historical_audit_only`; a new sealed confirmation split must come from the
+1,200 train-inner images outside the v3p action-label chain.
+
+The detailed design reference is now frozen as documentation, not runtime:
+
+`R3_S0_LEDGER_FREEZE -> R3_A0_GT_FREE_PROPOSAL_ORACLE ->
+R3_A1_ACV_SCREEN -> R3_A2_ACV_FULL_OOF ->
+[optional R3_B0/B1 adapter integration] -> R3_C0_FROZEN_CONFIRMATION`.
+
+Only the first operation may enter a future runtime manifest after a separate
+launch-ready amendment. Later operations require the exact prior typed
+closeout, compact GitHub evidence sync, and a new amendment. The draft card is
+`experience_docx/experiment_cards/2026-07-17-haze4k-v5-r3-proposal-first-acv-design.md`;
+the detailed rationale and operation/artifact reference is
+`experience_docx/experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/recommended_r3_route.md`.
 
 Use `experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1c-safe-action-interface-ceiling.md`
 and
@@ -258,31 +301,6 @@ for current CHD-RM status. Earlier route cards and closeouts remain the authorit
 for their own historical decisions.
 
 ## Official Architecture Anchor
-
-v4a-A1X-v3 D0 completed the preregistered fresh512, four-fold, five-cell
-development screen. The proposed A1X-global cell beat shuffle (LCB95 `+0.007963
-dB`) and its local control (LCB95 `+0.000890 dB`), with structural/safety guards
-passing, but failed material gain (`+0.013200 dB` versus `+0.020`) and retention
-(`0.080069` versus `0.25`). The typed decision is
-`A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP`; the 432-name confirmation stage was
-not touched and is not authorized.
-
-The 2026-07-17 R3 cloud-evidence audit then reconciled the compact GitHub
-evidence with the cloud-only v3p candidate-loss tables and current A1
-closeouts. It sharpens the bottleneck to a joint GT-free proposal-to-value
-problem: privileged safe actions and the exact-half transport exist, but no
-inference-only candidate bank has yet been shown to contain that headroom, and
-the direct A1R/A1X target heads have not retained enough candidate-specific
-value to select it safely. In the paired `1,088,675`-block-per-operator table,
-about `53.72%` of blocks have best-second MSE gap `<=1e-10`, best-action
-agreement across operators is `0.942934`, and high-margin active decisions
-collapse to no-op versus full action. This makes tie-aware, regret-weighted,
-asymmetric-harm learning with abstention the highest-value next mechanism test,
-but only after a GT-free proposal-bank oracle passes. The audit is retrospective
-development evidence and authorizes only `R3_S0_A0_DESIGN_ONLY`. Because the
-full v3p table was used at project level, the historical 432-name A1X remainder
-is reclassified as `historical_audit_only`; a new sealed confirmation split must
-come from the 1,200 train-inner images outside the v3p action-label chain.
 
 The immutable clean ConvIR-B architecture anchor is:
 
@@ -502,7 +520,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/` | compact | v4a-A1R fresh512 four-fold OOF representation screen: true context-spatial targets beat the size-block-shuffled control and remain broadly repairable, but material lift and oracle-retention gates fail. The current probe family is closed; raw OOF rows and learned states remain cloud-only. |
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/` | compact | v4a-A1C S0 and formal interface-ceiling replay: all 512 development-screen images and three interface cells completed without training; exact-half adequacy passed and authorizes only fresh R3 review. Raw rows remain cloud-only. |
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716/` | compact | v4a-A1X-v3 repaired S0 passed, then D0 global-head development screening beat shuffle and the local control but failed material gain and oracle-retention gates. Typed stop: `A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP`; no confirmation, canary, or locked-test access. |
-| `experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/` | compact | Retrospective GitHub-plus-cloud raw-table audit: separates GT-free proposal headroom from candidate-conditioned valuation, records v3p tie/margin and cross-operator structure, retires the historical 432-name range from independent confirmation use, and authorizes only a fresh R3 S0/A0 design. Raw tables remain cloud-only. |
+| `experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/` | compact | Retrospective GitHub-plus-cloud raw-table audit: separates GT-free proposal headroom from candidate-conditioned valuation, records v3p tie/margin and cross-operator structure, retires the historical 432-name range from independent confirmation use, and authorizes only a fresh R3 S0/A0 design. The evidence root also contains the detailed proposal-first operation/artifact reference; raw tables remain cloud-only. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |

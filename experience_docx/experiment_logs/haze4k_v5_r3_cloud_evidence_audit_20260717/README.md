@@ -46,3 +46,12 @@ The detailed design recommendation, gates, data ledger, factor cells,
 architecture boundary, and time-critical stop list are in
 `recommended_r3_route.md`. It is a design recommendation only and does not
 itself authorize runtime.
+
+The matching canonical draft card is
+`../../experiment_cards/2026-07-17-haze4k-v5-r3-proposal-first-acv-design.md`.
+It adds the proposed one-operation-at-a-time route contract, generic-runner
+boundary, strict partial-load/adapter rules, confirmation freeze tuple, and
+compact-versus-cloud-only artifact policy. The card is
+`DRAFT` with `DESIGN_ONLY` authorization; no `route_operations.json`,
+runtime spec, entrypoint, cloud output, or model run is created by this
+documentation handoff.

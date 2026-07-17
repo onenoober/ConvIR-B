@@ -32,3 +32,21 @@ Evidence root: `experience_docx/experiment_logs/haze4k_v5_r3_cloud_evidence_audi
 Decision: `R3_CLOUD_EVIDENCE_AUDIT_COMPLETE_S0_A0_DESIGN_ONLY`.
 The audit confirms that safe actions and an adequate exact-half transport exist, while A1R/A1X retain too little privileged value for the current direct-target readout contract. It also shows that the untested upstream question is a GT-free candidate-bank oracle: A1F uses privileged direction selection, so proposal quality and value selection remain confounded.
 A new R3 design must first separate proposal from valuation, use explicit action identity and candidate response, optimize pairwise/listwise regret with ties and abstention, and use the 1,200 train-inner images outside the v3p action-label chain. The historical 432-name A1X range is no longer eligible as an independent confirmation population after project-level v3p outcome use and this full-table audit.
+
+## Documentation Handoff
+
+The audit's authorized design work is recorded in:
+
+- draft route card:
+  `experience_docx/experiment_cards/2026-07-17-haze4k-v5-r3-proposal-first-acv-design.md`;
+- detailed scientific, operation, artifact, reporting, and stop reference:
+  `experience_docx/experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/recommended_r3_route.md`.
+
+The proposed order is S0 ledger freeze, A0 GT-free proposal oracle, A1
+two-fold futility screen, A2 complete grouped OOF, optional adapter-only
+integration, and one frozen new-432 confirmation. These documents remain
+`DRAFT` with `DESIGN_ONLY` authorization and create no runtime
+authorization. A future launch-ready
+amendment must list only the first authorized operation and freeze exact
+proposal formulas, assets, source commit, runtime budget, and typed terminal
+tuples.

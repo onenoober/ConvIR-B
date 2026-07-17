@@ -1,8 +1,12 @@
 # DTA Depth-Transmission Adapter Family Summary
 
-Date: 2026-06-13
+Date: 2026-07-17
 
-Status: DTA-v3.7 D9 one-shot locked Haze4K confirmation failed for the sealed D8 policy; no post-test tuning is allowed, and future DTA work must be a new train-derived route rather than a locked-test repair.
+Status: DTA-v3.7 D9 one-shot locked Haze4K confirmation failed for the sealed
+D8 policy; no post-test tuning is allowed, and future DTA work must be a new
+train-derived route rather than a locked-test repair. The R3 audit uses D8/D9
+only as historical evidence that response signal can work in-domain while
+shift/calibration remains a separate promotion bottleneck.
 
 ## Scope
 
@@ -107,6 +111,15 @@ and failed promotion: mean `+0.020946`, hard `+0.021359`, positive ratio
 output-difference features helped train-derived separability, but the sealed
 policy did not generalize to locked Haze4K strongly enough for promotion.
 
+For R3 interpretation, D8/D9 is a counterexample to the claim that candidate
+response is generally useless: output-difference features produced material
+train-derived value. It is simultaneously evidence that an in-domain response
+pass is insufficient. Any new response-conditioned critic must report
+calibration and risk-coverage by fold/operator/haze stratum, freeze its
+operating point before confirmation, and require separate external-domain
+evidence for a real/non-uniform haze claim. D9 outcomes remain final evidence
+and cannot select R3 features, actions, thresholds, or models.
+
 ## 2026-06-13 DTA-v3.7 D7 Fixed Output-Difference Confirmation Outcome
 
 Decision: `D7_FIXED_OUTPUTDIFF_CONFIRM_PASS_LOCKED_TEST_UNTOUCHED`.
@@ -162,6 +175,11 @@ all-image worst regressions inside the strict gate.
 
 Do not use locked Haze4K test for checkpoint, gate, depth mode, or loss
 selection.
+
+The proposal-first R3-ACV draft is not a DTA-v3.7 repair. It may cite the D8/D9
+effect-size boundary when preregistering response and distribution-shift
+controls, but all R3 fitting/selection must use the new train-inner ledger and
+must not encode D9 feedback into the candidate bank or calibration.
 
 
 ## 2026-06-12 DepthDirect Follow-Up

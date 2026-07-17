@@ -32,6 +32,18 @@ a fresh R3 S0/A0 contract that first tests a GT-free multi-candidate bank and
 then a matched state-only -> state+action -> state+action+response critic with
 tie-aware regret, asymmetric harm, and abstention.
 
+The detailed documentation-only handoff is:
+
+- draft route card:
+  `../experiment_cards/2026-07-17-haze4k-v5-r3-proposal-first-acv-design.md`;
+- evidence-grounded operation/artifact reference:
+  `../experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/recommended_r3_route.md`.
+
+It proposes one-operation-at-a-time progression:
+`S0 ledger -> A0 GT-free proposal oracle -> A1 two-fold futility screen ->
+A2 four-fold OOF -> optional adapter-only integration -> one new-432
+confirmation`. This is a reference, not a launch authorization.
+
 ## D0 terminal result
 
 A1X-v3 D0 completed fresh512 OOF and stopped the current global-head contract.
@@ -59,3 +71,19 @@ separate shift/calibration gate even after an in-domain pass.
 
 Evidence:
 `experience_docx/experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/`.
+
+## R3 Gate Summary
+
+| Stage | Minimum decision evidence | Stop rule |
+| --- | --- | --- |
+| S0 | target 768 development/432 confirmation group-complete ledger, four outer folds, exact hashes/roles/access guards | any overlap, unsealed confirmation, or unresolved identity |
+| A0 | proposal gain LCB95 `>=+0.080 dB`, privileged retention LCB95 `>=0.50`, repairable LCB95 `>=0.50` | weak GT-free bank stops critic and architecture work |
+| A1 | folds 0/1 x seeds 3407/3411, C0-C3 plus action-only/action-shuffle/response-shuffle/unsigned controls | futility only; cannot promote |
+| A2 | policy gain LCB95 `>=+0.020 dB`, retention `>=0.25`, true-minus-shuffle `>=+0.005 dB`, response increment `>=+0.005 dB` when claimed | failure closes current critic contract; no width/LR/epoch rescue |
+| B | strict partial load, exact no-op, adapter-only first, only after A2 plus explicit integration need | no full unfreeze; omit B when standalone critic suffices |
+| C0 | one frozen candidate on the untouched new 432 with no interim outcome exposure | failure closes candidate; pass supports Haze4K mechanism only |
+
+Primary action semantics are no-op versus full bounded action because the v3p
+high-margin active subset contains only those optima. Intermediate amplitudes
+are characterization, not a first-line search. The primary bank is capped at
+nine unique candidates; expanding it is a new A0 design.

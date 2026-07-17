@@ -103,3 +103,10 @@ Canonical corrections retained from prior incidents:
   `sed '1s/^\xEF\xBB\xBF//' | tr -d '\r' | ssh convir-4090 'bash -s'`;
   require an explicit terminal `*_OK` marker and classify the BOM-bearing form
   as a command failure even if later read-only output was produced.
+- 2026-07-17 invalid: embedded a Bash `for f ... "$f"` loop inside a
+  PowerShell double-quoted `wsl.exe --exec /bin/sh -c` argument while checking
+  documentation paths. PowerShell consumed the loop variable and WSL reported
+  an unterminated quoted string before checking any file. Corrected once: call
+  `wsl.exe --exec /usr/bin/test -f <literal-absolute-path>` separately for
+  each fixed path; do not use a cross-shell variable loop for a finite path
+  allowlist.

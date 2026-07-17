@@ -1,12 +1,16 @@
 # FAM/FAM2 Family Summary
 
-Date: 2026-07-12
+Date: 2026-07-17
 
 Status: closed for unchanged deployable FAM routing, current v3h/v3i signal
 sets, v3j tiny direct bounded residual heads, v3k provisional micro-alpha, v3l
 transmission-only physics risk, v3m direct-step-energy block policy replay,
 v3n conservative first-step direct-step-energy thresholding, and v3p scalar-A
 physics on the current Haze4K package.
+
+The 2026-07-17 R3 evidence audit does not reopen unchanged FAM/FAM2 routing. It
+clarifies that v3i-C closes a single fixed-action counterfactual RGB-response
+probe, not every multi-action action-conditioned value model.
 
 ## Sources
 
@@ -27,6 +31,8 @@ physics on the current Haze4K package.
   - `../experiment_cards/2026-07-11-haze4k-v5-chd-rm-v3m-blockwise-counterfactual-advantage.md`
   - `../experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3n-conservative-first-step-calibration.md`
   - `../experiment_cards/2026-07-12-haze4k-v5-chd-rm-v3p-canonical-signed-gain.md`
+  - `../experiment_cards/2026-07-17-haze4k-v5-r3-cloud-evidence-audit.md`
+  - `../experiment_cards/2026-07-17-haze4k-v5-r3-proposal-first-acv-design.md`
 - Evidence roots:
   - `../experiment_logs/haze4k_fam_modres_scout_stop5_20260531/`
   - `../experiment_logs/haze4k_fam2_modres_stop20_20260531/`
@@ -42,6 +48,7 @@ physics on the current Haze4K package.
   - `../experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/`
   - `../experiment_logs/haze4k_v5_chd_rm_v3n_conservative_first_step_calibration_20260712/`
   - `../experiment_logs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/`
+  - `../experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/`
 
 ## Established Facts
 
@@ -61,6 +68,7 @@ physics on the current Haze4K package.
 | CHD-RM v3m blockwise counterfactual advantage | Common-action block16 oracle value and direct-step-energy label observability are real, but actual frozen policy replay retained only about `23%` of block16 oracle lift and created unsafe tails. Corrected post-fail decomposition shows severe/hard failures are highly stable across the two frozen operators and aggressive A2 bins over-escalate heavily. | `V3M_A3_FROZEN_POLICY_REPLAY_FAIL_STOP_NO_ROUTE_CONFIRM`; diagnostic `V3M_A3_FAILURE_DECOMPOSITION_DIAGNOSTIC_ONLY_NO_AUTHORIZATION`. |
 | CHD-RM v3n conservative first-step calibration | A stricter false-intervention rule defaulting to `alpha=0.125` and allowing only `.25` above the 99th-percentile train-negative `direct_step_energy` threshold selected zero held-out blocks for both operators. | `V3N_A0_CONSERVATIVE_LABEL_PREFLIGHT_FAIL_STOP_NO_REPLAY`. |
 | CHD-RM v3p canonical reconstruction and physics audit | Fresh float64 canonical reconstruction passes, and a fixed 25% constrained G1 oracle has nontrivial two-operator headroom. The scalar-A physics smoke has correct triplets but fails sRGB forward reconstruction far above its `8/255` margin; direct transmission semantic checks are worse. | `V3P_B0_SCALAR_A_SMOKE_FAIL_STOP_PHYSICS_ROUTE`; no B0 formal/B1 or physics estimator. |
+| 2026-07-17 R3 cross-family audit | v3i-C's fixed-action response probe remains negative: best OOF mean `+0.008543 dB` and paired delta versus hard D7c CI95 low `-0.009492 dB`. It did not test explicit action identity, same-image multi-candidate ranking, regret weighting, or abstention. | Do not repeat fixed-action Y1-Y0. A separately registered proposal-first multi-action critic remains an open CHD-RM/R3 question, not a FAM2 route continuation. |
 
 ## Family Verdict
 
@@ -103,6 +111,14 @@ image-level harm as the bottleneck. The current Haze4K `haze/gt/trans` package
 does not satisfy the scalar-A forward contract even under its directly specified
 alternative semantics, so privileged physics cannot bridge that bottleneck.
 
+The R3 audit narrows the v3i conclusion. The negative result applies to the
+frozen single-action counterfactual response and its tested OOF compression.
+It does not establish that response is universally uninformative when the model
+is conditioned on explicit action identity and compares multiple candidates
+within the same image. Such a test must live in the new proposal-first R3
+factorial, include action/response shuffles and direct regret targets, and may
+not reuse v3i outcomes as confirmation.
+
 The family remains closed for unchanged deployable FAM routing, direct
 router/ranker/distillation from the current signal sets, tiny direct bounded
 residual heads, raw-transmission-only physics risk policies, and continued
@@ -124,8 +140,11 @@ new sealed-split replay gates with explicit false-intervention protection.
 - Do not continue the same v3d FAM2 adapter, launch 20-epoch continuation, use
   locked Haze4K test, or expand to v4/RARM from this evidence.
 - Do not keep sweeping the current v3h/v3i scalar, operator-site,
-  counterfactual-response, or disagreement signal sets; they already failed
-  held-out no-training OOF/replay audits.
+  fixed-single-action counterfactual-response, or disagreement signal sets;
+  they already failed held-out no-training OOF/replay audits. A multi-action
+  action-conditioned critic is materially different only when candidate
+  identity, same-image ranking/regret, response shuffle, and abstention are all
+  predeclared.
 - Do not treat positive mean gains from v3j-style direct residual heads as
   sufficient; v3j-B improved mean but produced `121/600` route-confirm severe
   regressions for both direct heads.

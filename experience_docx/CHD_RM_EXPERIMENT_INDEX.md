@@ -148,6 +148,11 @@ records confirmation, canary, and locked-test access as false. A repair may
 vendor the exact hashed A1C endpoint reference and use a fresh output, without
 changing data, head, loss, optimizer, budget, thresholds, or gates.
 
+That paragraph is historical provenance only. The repaired S0 later passed and
+D0 completed with terminal decision
+`A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP`. No A1X repair, D0 continuation, or
+historical 432 confirmation is currently authorized.
+
 ## Current Scope
 
 A1X-v3 D0 completed all fresh512 OOF units and failed its frozen material gate.
@@ -173,6 +178,52 @@ output-difference features can pass train-derived validation and still fail
 locked generalization. The only authorized continuation is a preregistered R3
 S0/A0 design that tests a GT-free multi-candidate bank before any value-model or
 architecture training.
+
+## R3 Proposal-First Design Reference
+
+The documentation-only R3-ACV draft turns the audit into a staged route
+contract without authorizing runtime:
+
+1. `R3_S0_LEDGER_FREEZE`: assign the 1,200 train-inner groups outside v3p
+   to a target 768 grouped development plus 432 sealed confirmation ledger,
+   freeze four outer folds, hashes, roles, and access guards before outcomes.
+2. `R3_A0_GT_FREE_PROPOSAL_ORACLE`: evaluate one deterministic inference-only
+   bank, capped at nine unique candidates, with old-.125/no-op as reference and
+   no-op versus full bounded action as the primary decision.
+3. `R3_A1_ACV_SCREEN`: run C0 state-only, C1 state+action, C2
+   state+action+RGB response, C3 state+action+frozen deep response, and the
+   required action-only/shuffle/unsigned controls on folds 0/1 x seeds
+   3407/3411. This stage can stop cells but cannot promote.
+4. `R3_A2_ACV_FULL_OOF`: complete all four grouped outer folds for surviving
+   cells, select the simplest passing cell, and freeze proposal, critic,
+   calibration, abstention, code, and metric identities.
+5. Optional `R3_B0/B1`: only if a standalone passing critic has an explicit
+   integration/latency requirement. Start from the immutable official anchor,
+   use strict partial load, no-op initialization, and adapter-only scope first.
+6. `R3_C0_FROZEN_CONFIRMATION`: execute the new 432 exactly once with no
+   interim outcome exposure or post-result tuning.
+
+A0 requires proposal-oracle gain LCB95 `>=+0.080 dB`, privileged retention
+LCB95 `>=0.50`, and repairable fraction LCB95 `>=0.50`. A2 requires policy
+gain LCB95 `>=+0.020 dB`, proposal retention LCB95 `>=0.25`,
+true-minus-action-shuffle LCB95 `>=+0.005 dB`, and response increment LCB95
+`>=+0.005 dB` to claim response value, plus the frozen severe/hard and
+risk-coverage guards.
+
+Every operation uses a new output and the unchanged generic route runner. Only
+one currently authorized operation may appear in `route_operations.json`;
+later stages require the prior typed closeout and GitHub evidence sync.
+
+References:
+
+- draft card:
+  `experience_docx/experiment_cards/2026-07-17-haze4k-v5-r3-proposal-first-acv-design.md`;
+- detailed rationale/operation/artifact plan:
+  `experience_docx/experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/recommended_r3_route.md`.
+
+The current decision remains
+`DRAFT_R3_PROPOSAL_FIRST_ACV_REFERENCE_NO_RUNTIME_AUTHORIZATION` under the
+audit authorization `R3_S0_A0_DESIGN_ONLY`.
 
 - Dataset: Haze4K only.
 - Backbone: ConvIR-B.
@@ -233,6 +284,7 @@ architecture training.
 | v4a-A1C safe-action interface ceiling | `codex/haze4k-v5-v4a-a1c-safe-action-interface-ceiling-20260715` | completed formal exact-half adequacy pass | S0 and formal replay are structurally valid on all 512 development-screen images and both operators; exact-half interface passes the frozen adequacy tuple without training or candidate selection | `V4A_A1C_EXACT_HALF_INTERFACE_ADEQUACY_PASS_R3_HANDOFF` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/` |
 | v4a-A1X-v3 accessibility | `codex/haze4k-v5-v4a-a1x-accessibility-v3-20260716` | completed D0 gate fail | repaired S0 passed; fresh512 D0 retained real signal but failed gain LCB95 `+0.013200 < +0.020 dB` and oracle-retention LCB95 `0.080069 < 0.25` | `A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716/` |
 | R3 cloud evidence audit | `codex/haze4k-v5-r3-evidence-audit-20260717` | completed diagnostic-only audit | identifies joint GT-free proposal/value bottleneck, tie-heavy action targets, decisive current-head effect-size failure, and a clean 1,200-image source for a new ledger; historical 432 confirmation role retired | `R3_CLOUD_EVIDENCE_AUDIT_COMPLETE_S0_A0_DESIGN_ONLY` | `experience_docx/experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/` |
+| R3 proposal-first ACV | not created; future route must branch from the immutable official anchor | draft design only | detailed S0/A0/A1/A2/optional-B/C0 data, factor, gate, runtime, evidence, and stop contract; no runtime bundle exists | `DRAFT_R3_PROPOSAL_FIRST_ACV_REFERENCE_NO_RUNTIME_AUTHORIZATION` | `experience_docx/experiment_cards/2026-07-17-haze4k-v5-r3-proposal-first-acv-design.md` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |
