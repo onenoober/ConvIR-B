@@ -42,5 +42,13 @@ the staged validator without bootstrap. The report records
 operation was launched. See `strict_main_validation.json` and strict-check
 branch commit `03d24d77487410aa35ea90b6ecd08415a2ef39bf`.
 
+The 2026-07-17 route-authoring slimming update passed its final CPU-only cloud
+acceptance at `2980c7970604c22a85242ca3ec669b030b08690b`: 83/83 tool tests,
+targeted Python compilation, and diff checks passed. The MCP server and generic
+runtime bundle are byte-unchanged from baseline main
+`dd17b42237bee1cc2663a75b91bdc1dd85c48f74`; model calls, GPU access, and
+protected-data access were all zero. See
+`route_authoring_fastpath_cloud_acceptance.json`.
+
 Route card:
 `experience_docx/experiment_cards/2026-07-17-route-ready-fastpath-validation.md`.

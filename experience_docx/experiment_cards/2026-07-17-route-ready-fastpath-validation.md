@@ -58,3 +58,14 @@ Status: COMPLETED
   `COMPLETED_GATE_PASS / ROUTE_READY_FASTPATH_VALIDATION_PASS /
   ROUTE_READY_FASTPATH_ADOPTION` at commit
   `528ad61112a9cf7142a90864264f0230f18b93a3`.
+
+## Authoring Fast-Path Acceptance
+
+The later preparation-flow slimming update passed 83/83 CPU-only cloud tests
+at main commit `2980c7970604c22a85242ca3ec669b030b08690b`. The accepted change
+removes duplicate authoring checks, aggregates common errors, limits default
+materialization to the currently authorized operation, defines representative
+fixture reuse, and keeps repair-selected engineering evidence cloud-only. MCP,
+schema, generic runtime files, scientific contracts, and protected-data rules
+are unchanged. This acceptance used zero model calls, GPU access, and protected
+data access.

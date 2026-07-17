@@ -60,6 +60,15 @@ and
 `experience_docx/experiment_logs/route_ready_fastpath_validation_20260717/` and
 `experience_docx/experiment_logs/convir_ops_v4_2_final_acceptance_20260717/`.
 
+The 2026-07-17 route-authoring slimming update is adopted at
+`2980c7970604c22a85242ca3ec669b030b08690b` after 83/83 CPU-only cloud tests.
+It removes duplicate preparation checks, aggregates common authoring errors,
+uses representative fixture reuse, and defers repair-selected failure sync
+until a successful replacement closes. MCP/schema/runtime identities and all
+scientific/data gates are unchanged; model calls, GPU access, and protected
+data access were zero. Compact acceptance evidence is in
+`route_ready_fastpath_validation_20260717/route_authoring_fastpath_cloud_acceptance.json`.
+
 ## Purpose
 
 This file is the main branch reading map for the Haze4K experiment sequence.

@@ -1,0 +1,22 @@
+{
+  "baseline_main_commit": "dd17b42237bee1cc2663a75b91bdc1dd85c48f74",
+  "candidate_commit": "2980c7970604c22a85242ca3ec669b030b08690b",
+  "checks": {
+    "all_tool_tests_passed": true,
+    "diff_check_passed": true,
+    "mcp_and_runtime_bundle_unchanged": true,
+    "targeted_python_compile_passed": true
+  },
+  "cloud_host": "convir-4090",
+  "decision": "ROUTE_AUTHORING_FASTPATH_OPTIMIZATION_ADOPTED",
+  "gpu_access": 0,
+  "marker": "ROUTE_AUTHORING_FASTPATH_CLOUD_OK",
+  "model_calls": 0,
+  "protected_data_access": 0,
+  "schema_version": 1,
+  "script_git_blob": "fd228288a5138be6e6f3edb577ebba542b1a1949",
+  "script_relpath": "experience_docx/tools/validate_route_authoring_fastpath_cloud.sh",
+  "script_sha256": "638429750fb2533dd75ac907d4e08e8b8444164b9cc4a8e47fe3cff4cbf79c0a",
+  "status": "PASS",
+  "test_count": 83
+}

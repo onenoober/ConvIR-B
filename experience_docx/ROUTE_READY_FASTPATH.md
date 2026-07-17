@@ -7,6 +7,9 @@ Status: generic runtime adopted after the CPU-only r2 E2E closeout in
 schema-v4 v4.3 engineering-review gate is adopted after fresh-process
 acceptance; the six-tool surface and route schema are unchanged. Strict
 post-integration validation passed on main with no bootstrap runtime files.
+The route-authoring slimming update was adopted after 83/83 CPU-only cloud
+tests at `2980c7970604c22a85242ca3ec669b030b08690b`; MCP, schema, and the
+generic runtime bundle remain unchanged.
 
 ## Default Bundle
 
