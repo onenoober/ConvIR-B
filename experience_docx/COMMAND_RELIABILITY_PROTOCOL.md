@@ -92,6 +92,28 @@ wsl -d Ubuntu-22.04 -- /usr/bin/sed -n 1,200p /home/ubuntu/workspace/route/exper
 Use an explicit WSL executable and absolute WSL path for fixed, single-process
 reads. The failed forms above are `FAILED_COMMAND`, not experiment evidence.
 
+2026-07-17 recurrence:
+
+Avoid passing Git's `@{upstream}` revision syntax unquoted through PowerShell:
+
+```powershell
+wsl -d Ubuntu-22.04 -- /usr/bin/git -C /home/ubuntu/workspace/route rev-parse @{upstream}
+```
+
+Failure mode observed:
+
+- PowerShell parsed `@{upstream}` as a hash literal and rejected the command
+  before WSL or Git ran.
+
+Corrected form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- /usr/bin/git -C /home/ubuntu/workspace/route rev-parse refs/remotes/github/codex/route-name
+```
+
+For non-interactive verification, prefer the explicit remote-tracking ref over
+shell-sensitive shorthand.
+
 ### PowerShell to WSL inline regex pipes
 
 Avoid inline commands where PowerShell, WSL Bash, and regex pipes all appear in
