@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+  "operation_id": "R3_S0_LEDGER_FREEZE",
+  "entrypoint_relpath": "experience_docx/tools/r3_s0_ledger_freeze.py",
+  "asset_manifest_relpath": "experience_docx/route_assets/R3_S0_LEDGER_FREEZE.json",
+  "timeout_seconds": 600,
+  "expected_wall_seconds": 120,
+  "total_units": 2,
+  "evidence_role": "development_screening",
+  "resume_policy": "none",
+  "protected_data_permissions": {
+    "allow_confirmation": false,
+    "allow_canary": false,
+    "allow_locked_test": false
+  },
+  "environment": {
+    "CONVIR_ROUTE_LEDGER_SEED": "3407",
+    "CONVIR_ROUTE_CONFIRMATION_TARGET": "432",
+    "CONVIR_ROUTE_FOLD_COUNT": "4"
+  },
+  "evidence_files": [
+    {
+      "source_relpath": "workload/s0_ledger_summary.json",
+      "destination_filename": "r3_s0_ledger_summary.json",
+      "required": true,
+      "max_bytes": 131072
+    },
+    {
+      "source_relpath": "workload/s0_data_role_matrix.csv",
+      "destination_filename": "r3_s0_data_role_matrix.csv",
+      "required": true,
+      "max_bytes": 65536
+    },
+    {
+      "source_relpath": "workload/s0_fold_summary.csv",
+      "destination_filename": "r3_s0_fold_summary.csv",
+      "required": true,
+      "max_bytes": 65536
+    },
+    {
+      "source_relpath": "workload/s0_signature_balance.csv",
+      "destination_filename": "r3_s0_signature_balance.csv",
+      "required": true,
+      "max_bytes": 131072
+    },
+    {
+      "source_relpath": "workload/s0_source_identity.json",
+      "destination_filename": "r3_s0_source_identity.json",
+      "required": true,
+      "max_bytes": 65536
+    },
+    {
+      "source_relpath": "workload/s0_access_audit.json",
+      "destination_filename": "r3_s0_access_audit.json",
+      "required": true,
+      "max_bytes": 65536
+    }
+  ]
+}

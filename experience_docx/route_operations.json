@@ -1,0 +1,40 @@
+{
+  "schema_version": 4,
+  "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+  "rules_commit": "20a95a23a464dbc50f04173e361645371bb69abe",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-17-haze4k-v5-r3-proposal-first-acv-s0.md",
+  "operations": {
+    "R3_S0_LEDGER_FREEZE": {
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "mode": "r3_s0_ledger_freeze",
+      "require_gpu": false,
+      "output_id": "r3-s0-ledger-r1",
+      "closeout_filename": "r3_s0_ledger_freeze_closeout.json",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "allowed_terminal_tuples": [
+        {
+          "state": "COMPLETED_GATE_PASS",
+          "decision": "R3_S0_LEDGER_FREEZE_PASS",
+          "authorizes": "R3_A0_GT_FREE_PROPOSAL_ORACLE"
+        },
+        {
+          "state": "COMPLETED_GATE_FAIL",
+          "decision": "R3_S0_LEDGER_FREEZE_FAIL_STOP",
+          "authorizes": "NONE"
+        },
+        {
+          "state": "FAILED_ENGINEERING",
+          "decision": null,
+          "authorizes": "NONE"
+        }
+      ],
+      "workspace_policy": "fresh_route",
+      "output_policy": "new",
+      "monitor_profile": "short",
+      "heartbeat_timeout_seconds": 180,
+      "min_free_gpu_mib": 0,
+      "max_gpu_utilization_pct": 100
+    }
+  }
+}

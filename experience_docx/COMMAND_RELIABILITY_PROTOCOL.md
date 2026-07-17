@@ -36,6 +36,62 @@ boundary, quoting, CRLF, PATH, stdin, or silent-output lesson.
 
 ## Invalid Command Patterns To Avoid
 
+### PowerShell expansion before WSL receives the command
+
+2026-07-17 recurrence:
+
+Avoid putting Bash loop variables such as `$f` in a double-quoted PowerShell
+string passed to `wsl ... bash -lc`.
+
+Failure mode observed:
+
+- PowerShell expanded `$f` before WSL received the loop;
+- Bash received an unterminated quoted command and the read-only comparison did
+  not execute.
+
+Also avoid Bash command substitution such as `$()` in a double-quoted
+PowerShell string used for WSL Git hash comparisons.
+
+Failure mode observed:
+
+- PowerShell evaluated the substitution on the Windows side;
+- Windows Git was invoked against WSL paths and Bash again received an
+  unterminated quoted command.
+
+Corrected form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- /usr/bin/git -C /home/ubuntu/workspace/route hash-object /home/ubuntu/workspace/route/path/to/file
+wsl -d Ubuntu-22.04 -- /usr/bin/git -C /home/ubuntu/workspace/route rev-parse github/main:path/to/file
+```
+
+Compare the two returned hashes at the caller layer. For loops or other shell
+logic, pipe a CR-stripped script body as described below instead of embedding
+Bash variables or substitutions in a PowerShell string.
+
+2026-07-17 recurrence:
+
+Avoid calling a WSL-only utility directly while the active shell is
+PowerShell, even when the working directory is a WSL UNC path:
+
+```powershell
+sed -n '1,200p' experience_docx/file.md
+```
+
+Failure mode observed:
+
+- PowerShell attempted to resolve `sed` as a Windows command and stopped before
+  any WSL file read occurred.
+
+Corrected form:
+
+```powershell
+wsl -d Ubuntu-22.04 -- /usr/bin/sed -n 1,200p /home/ubuntu/workspace/route/experience_docx/file.md
+```
+
+Use an explicit WSL executable and absolute WSL path for fixed, single-process
+reads. The failed forms above are `FAILED_COMMAND`, not experiment evidence.
+
 ### PowerShell to WSL inline regex pipes
 
 Avoid inline commands where PowerShell, WSL Bash, and regex pipes all appear in
