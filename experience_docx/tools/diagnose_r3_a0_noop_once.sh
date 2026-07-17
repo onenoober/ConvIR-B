@@ -18,7 +18,7 @@ from PIL import Image
 out = Path(sys.argv[1])
 data = Path(sys.argv[2])
 row = json.loads((out / "a0_cache_units_cloud_only.jsonl").open(encoding="utf-8").readline())
-payload = torch.load(out / "cache_cloud_only" / f"{row['unit_key']}.pt", map_location="cpu")
+payload = torch.load(out / "candidate_cache_cloud_only" / f"{row['unit_key']}.pt", map_location="cpu")
 base = payload["base"].float()
 step = payload["step"].float()
 candidates = payload["candidates"].float()
