@@ -49,6 +49,11 @@ cannot change experiment scope, evidence role, gate, data, or authorization.
 
 Canonical corrections retained from prior incidents:
 
+- A PowerShell here-string added a UTF-8 BOM, so remote Bash did not activate
+  strict mode and an outer success marker hid an inner failure. Do not pipe an
+  ad hoc script across PowerShell/WSL/SSH. Commit the script with executable
+  mode and use `convirctl.py remote-script`, which strips BOM/CRLF, validates
+  strict mode, preserves the remote exit code, and requires its typed marker.
 - PowerShell parsed an unescaped `|`, regex, `$()`, or quote: pass literal argv
   through `wsl.exe --exec`, or move the whole cloud body into a committed Bash
   file.
