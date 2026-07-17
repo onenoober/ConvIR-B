@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-branch=codex/route-authoring-fastpath-20260717
+branch=main
+baseline=dd17b42237bee1cc2663a75b91bdc1dd85c48f74
 github=git@github.com:onenoober/ConvIR-B.git
 seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
 python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
@@ -10,10 +11,11 @@ trap 'rm -rf -- "$work"' EXIT
 
 git clone --quiet --shared --no-checkout "$seed" "$work/repo"
 git -C "$work/repo" fetch --quiet --no-tags "$github" \
-  "+refs/heads/$branch:refs/validation/candidate" \
-  "+refs/heads/main:refs/validation/main"
+  "+refs/heads/$branch:refs/validation/candidate"
 candidate=$(git -C "$work/repo" rev-parse refs/validation/candidate)
-main=$(git -C "$work/repo" rev-parse refs/validation/main)
+git -C "$work/repo" cat-file -e "$baseline^{commit}"
+git -C "$work/repo" merge-base --is-ancestor "$baseline" "$candidate"
+main=$baseline
 git -C "$work/repo" checkout --quiet --detach "$candidate"
 test -z "$(git -C "$work/repo" status --porcelain)"
 
