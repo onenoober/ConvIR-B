@@ -39,7 +39,10 @@ completed = subprocess.run(
     timeout=30,
 )
 responses = [json.loads(line) for line in completed.stdout.splitlines()]
-assert responses[0]["result"]["serverInfo"] == {"name": "convir-ops", "version": "4.3.0"}
+server_info = responses[0]["result"]["serverInfo"]
+assert server_info["name"] == "convir-ops"
+assert server_info["version"] == "4.3.0"
+assert server_info["sourceSha256"] == hashlib.sha256(server.read_bytes()).hexdigest()
 tools = responses[1]["result"]["tools"]
 assert len(tools) == 6
 finish = next(item for item in tools if item["name"] == "convir_route_finish")
