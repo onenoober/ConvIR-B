@@ -57,7 +57,7 @@ def main():
         manifest = {
             "operations": {
                 "S0": {
-                    "monitor_profile": "fast",
+                    "monitor_profile": ["fast"],
                     "allowed_terminal_tuples": [
                         {"state": "PASS", "decision": "PASS", "authorizes": "A0"},
                     ],

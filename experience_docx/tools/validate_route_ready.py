@@ -174,7 +174,7 @@ def authoring_errors(manifest: dict[str, Any], card_errors: list[str]) -> list[s
         if not isinstance(operation, dict):
             continue
         profile = operation.get("monitor_profile")
-        if profile not in ops.MONITOR_PROFILES:
+        if not isinstance(profile, str) or profile not in ops.MONITOR_PROFILES:
             errors.append(
                 f"{operation_id}: monitor_profile must be one of "
                 f"{sorted(ops.MONITOR_PROFILES)}"
