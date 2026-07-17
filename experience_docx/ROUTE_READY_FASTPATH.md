@@ -4,8 +4,9 @@ Date: 2026-07-17
 
 Status: generic runtime adopted after the CPU-only r2 E2E closeout in
 `experiment_cards/2026-07-17-route-ready-fastpath-validation.md`. The
-schema-v4 v4.2 unknown-start recovery remains candidate until main integration
-and fresh-process activation; the six-tool surface is unchanged.
+schema-v4 v4.2 unknown-start recovery remains candidate until fresh-process
+activation; the six-tool surface is unchanged. Strict
+post-integration validation passed on main with no bootstrap runtime files.
 
 ## Default Bundle
 

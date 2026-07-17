@@ -100,6 +100,6 @@ the exact registered executable.
 The v4.2 candidate at
 `980821176f09514d913f4ad0507e494b3c45971b` passed 73 cloud tests with schema
 v4, exactly six tools, bounded unknown-start receipt recovery, clean-abandoned-
-workspace retry, shared-seed checkout, and zero model calls. This is candidate
-evidence until the code reaches main and a fresh process verifies the registered
+workspace retry, shared-seed checkout, and zero model calls. The code is on
+main; candidate status remains until a fresh process verifies the registered
 source identity.

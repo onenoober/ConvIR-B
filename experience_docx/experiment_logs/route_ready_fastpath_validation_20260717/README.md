@@ -33,7 +33,14 @@ the cloud-tested v4.2 candidate recovered its receipt without a second launch.
 Candidate `980821176f09514d913f4ad0507e494b3c45971b` then passed 73 cloud
 tests with schema v4 and exactly six tools; see
 `convir_ops_4_2_candidate_validation.json`. Registered-service activation still
-requires main integration and a fresh MCP process.
+requires a fresh MCP process loading main.
+
+After main integration at
+`baced3179770f44b5a6ed750b1d3d585d9859adc`, an ordinary minimal route passed
+the staged validator without bootstrap. The report records
+`bootstrap_missing_from_main=[]` and `runtime_bundle_canonical=true`; no cloud
+operation was launched. See `strict_main_validation.json` and strict-check
+branch commit `03d24d77487410aa35ea90b6ecd08415a2ef39bf`.
 
 Route card:
 `experience_docx/experiment_cards/2026-07-17-route-ready-fastpath-validation.md`.

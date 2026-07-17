@@ -43,8 +43,8 @@ The archived r1 engineering failure exposed both a `run/` versus `workload/`
 mapping defect and an old v4.1 start-timeout state with a completed closeout but
 no receipt. r2 repaired only the mapping. The six-tool schema-v4 v4.2 candidate
 adds same-plan metadata-only receipt recovery and shared-seed cloud checkout;
-`980821176f09514d913f4ad0507e494b3c45971b` passed 73 cloud tests. It remains a
-candidate until main integration and a fresh MCP process loads it.
+`980821176f09514d913f4ad0507e494b3c45971b` passed 73 cloud tests. The code is
+on main; it remains a candidate until a fresh MCP process loads it.
 
 Use `experience_docx/ROUTE_READY_FASTPATH.md`,
 `experience_docx/experiment_cards/2026-07-17-route-ready-fastpath-validation.md`,

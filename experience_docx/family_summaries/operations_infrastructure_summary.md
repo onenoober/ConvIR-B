@@ -3,8 +3,8 @@
 Date: 2026-07-17
 
 Status: generic run monitoring and the route-ready generic runtime are adopted;
-schema-v4 start-recovery v4.2 passed candidate tests and awaits fresh-process
-activation after main integration.
+schema-v4 start-recovery v4.2 passed candidate tests, is on main, and awaits
+fresh-process activation.
 
 ## Current Verdict
 
@@ -32,8 +32,8 @@ valid closeout but had no receipt. The v4.2 candidate keeps exactly six
 schema-v4 tools, adds one same-plan metadata-only receipt recovery, and uses the
 immutable cloud anchor as a shared Git object seed. Candidate
 `980821176f09514d913f4ad0507e494b3c45971b` passed 73 cloud tests with zero
-model calls. It is not registered-service evidence until main is integrated and
-a fresh MCP process loads v4.2.
+model calls. It is not registered-service evidence until a fresh MCP process
+loads v4.2 from main.
 
 ## Revalidation Condition
 
