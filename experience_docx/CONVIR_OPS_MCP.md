@@ -2,8 +2,10 @@
 
 Date: 2026-07-16
 
-Status: schema v4; server `4.3.0` adds the receipt-bound engineering-failure
-decision gate while retaining exactly six tools and the existing route schema.
+Status: schema v4; server `4.3.1` retains the receipt-bound engineering-failure
+decision gate and adds a narrow compatibility transition for historical
+engineering receipts auto-archived by the v4.3 migration. It retains exactly
+six tools and the existing route schema.
 
 `convir-ops` is a restricted local stdio bridge to `convir-4090`. It accepts
 only a GitHub route branch, exact commit, and operation id. It never accepts an
@@ -99,7 +101,11 @@ They require a scientific validated closeout or an explicit engineering
 
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. After an update, restart the host and verify version
-`4.3.0`, source SHA-256, exactly six tools, and the repair/archive finish schema.
+`4.3.1`, source SHA-256, exactly six tools, and the repair/archive finish schema.
+
+Only an engineering receipt carrying `v43_migrated_at` may change its automatic
+legacy `archive` resolution to an explicit user-selected `repair`. A normal
+v4.3 archive decision remains terminal and cannot be reopened.
 
 The 2026-07-16 adoption audit verified the registered executable at
 `main@dca94d71c9fe73e4e93910b0587927c79ab7023c`: version `4.1.0`, source

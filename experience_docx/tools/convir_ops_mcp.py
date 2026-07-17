@@ -19,7 +19,7 @@ from pathlib import Path
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "4.3.0"
+SERVER_VERSION = "4.3.1"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 REMOTE_HOST = "convir-4090"
@@ -1205,17 +1205,32 @@ def resolve_engineering_failure(token, resolution):
     with locked_record("receipt", token) as record:
         if not record.get("launched"):
             raise ToolError("receipt has no successful launch")
-        if record.get("finish_closed") != "ENGINEERING_REVIEW_REQUIRED":
+        migrated_archive_repair = (
+            resolution == "repair"
+            and record.get("finish_closed") == "ENGINEERING_ARCHIVE_AUTHORIZED"
+            and record.get("engineering_failure_resolution") == "archive"
+            and isinstance(record.get("v43_migrated_at"), int)
+        )
+        if (
+            record.get("finish_closed") != "ENGINEERING_REVIEW_REQUIRED"
+            and not migrated_archive_repair
+        ):
             raise ToolError("receipt is not awaiting an engineering failure decision")
         closeout = record.get("terminal_closeout")
         if not isinstance(closeout, dict) or closeout.get("terminal_tuple", {}).get("state") != "FAILED_ENGINEERING":
             raise ToolError("receipt has no validated engineering closeout", failure_class="evidence")
         record["engineering_failure_resolution"] = resolution
         if resolution == "repair":
+            if migrated_archive_repair:
+                record["v431_migrated_archive_reopened_at"] = int(time.time())
             record["finish_closed"] = "ENGINEERING_REPAIR_AUTHORIZED"
             return typed_result(
                 True, "ENGINEERING_REPAIR_AUTHORIZED",
-                observed={"closeout": closeout, "resolution": resolution},
+                observed={
+                    "closeout": closeout,
+                    "resolution": resolution,
+                    "migrated_archive_reopened": migrated_archive_repair,
+                },
                 next_actions=["prepare_one_same_contract_engineering_repair"],
                 archive_authorized=False, relaunch_authorized=False,
             )

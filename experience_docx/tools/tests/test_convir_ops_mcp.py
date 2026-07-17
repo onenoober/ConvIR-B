@@ -506,6 +506,59 @@ class ConvirOpsV4Tests(unittest.TestCase):
             evidence = OPS.tool_evidence_manifest({"receipt": receipt})["structuredContent"]
         self.assertEqual("README.md", evidence["files"][0]["name"])
 
+    def test_auto_migrated_engineering_archive_can_be_reopened_for_repair(self):
+        closeout = {
+            "identity": {}, "terminal_tuple": engineering_terminal(),
+            "closeout_sha256": "1" * 64, "closeout_filename": "s0_closeout.json",
+            "engineering_diagnostic": {"failure_phase": "workload"},
+        }
+        receipt = OPS.write_new_record(
+            "receipt",
+            {
+                "context": context(), "gpu_index": None,
+                "launch_digest": "f" * 64, "issued_at": 1,
+            },
+            {
+                "launched": True, "finish_calls": 1,
+                "finish_closed": "ENGINEERING_ARCHIVE_AUTHORIZED",
+                "monitor_stale_count": 0, "terminal_closeout": closeout,
+                "engineering_failure_resolution": "archive",
+                "v43_migrated_at": 123,
+            },
+        )
+        reopened = payload(OPS.tool_finish({
+            "receipt": receipt, "engineering_failure_resolution": "repair",
+        }))
+        self.assertEqual("ENGINEERING_REPAIR_AUTHORIZED", reopened["operation_state"])
+        self.assertTrue(reopened["observed"]["migrated_archive_reopened"])
+        self.assertFalse(reopened["archive_authorized"])
+        blocked = payload(OPS.tool_evidence_manifest({"receipt": receipt}))
+        self.assertEqual("EVIDENCE_MANIFEST_FAILED", blocked["operation_state"])
+
+    def test_explicit_engineering_archive_cannot_be_reopened_for_repair(self):
+        closeout = {
+            "identity": {}, "terminal_tuple": engineering_terminal(),
+            "closeout_sha256": "1" * 64, "closeout_filename": "s0_closeout.json",
+            "engineering_diagnostic": {"failure_phase": "workload"},
+        }
+        receipt = OPS.write_new_record(
+            "receipt",
+            {
+                "context": context(), "gpu_index": None,
+                "launch_digest": "f" * 64, "issued_at": 1,
+            },
+            {
+                "launched": True, "finish_calls": 1,
+                "finish_closed": "ENGINEERING_ARCHIVE_AUTHORIZED",
+                "monitor_stale_count": 0, "terminal_closeout": closeout,
+                "engineering_failure_resolution": "archive",
+            },
+        )
+        rejected = payload(OPS.tool_finish({
+            "receipt": receipt, "engineering_failure_resolution": "repair",
+        }))
+        self.assertEqual("FINISH_REJECTED", rejected["operation_state"])
+
     def test_monitor_prefers_heartbeat_then_status_then_launch_age(self):
         body = OPS.monitor_body({**context(), "_receipt_issued_at": 123}, {"max_polls": 1, "interval_seconds": 0})
         self.assertIn('test -f "$HEARTBEAT"', body)
@@ -572,7 +625,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("4.3.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("4.3.1", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")
