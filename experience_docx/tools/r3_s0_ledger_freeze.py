@@ -24,7 +24,7 @@ from route_program_api import (
 
 
 ROUTE_ID = "haze4k_v5_r3_proposal_first_acv_20260717"
-OPERATION_ID = "R3_S0_LEDGER_FREEZE_R3"
+OPERATION_ID = "R3_S0_LEDGER_FREEZE_R4"
 EXPECTED_TRAIN_INNER = 2400
 EXPECTED_VAL_INNER = 600
 EXPECTED_HISTORICAL = 1200
@@ -176,8 +176,6 @@ def assign_folds(development_groups, groups, fold_count, seed):
         candidates = []
         rotation = int(stable_token("fold-tie", group, seed)[:8], 16) % fold_count
         for fold in range(fold_count):
-            new_count = fold_counts[fold] + len(groups[group])
-            count_error = abs(new_count - target_count)
             signature_error = sum(
                 abs(
                     fold_signatures[fold][signature]
@@ -188,7 +186,9 @@ def assign_folds(development_groups, groups, fold_count, seed):
                 for signature in signatures
             )
             tie_rank = (fold - rotation) % fold_count
-            candidates.append((count_error + signature_error, count_error, tie_rank, fold))
+            candidates.append(
+                (fold_counts[fold], signature_error, tie_rank, fold)
+            )
         fold = min(candidates)[-1]
         fold_groups[fold].append(group)
         fold_counts[fold] += len(groups[group])
@@ -504,6 +504,15 @@ def contract(context_path):
         "backpointer_memory_bounded": first["allocation"]["backpointer_bytes"]
         <= 3 * 1024 * 1024,
         "representative_wall_time": elapsed_seconds <= max_contract_seconds,
+        "representative_fold_count_exact": len(first["development_folds"]) == 4,
+        "representative_folds_nonempty": all(
+            first["development_folds"][str(fold)] for fold in range(4)
+        ),
+        "representative_fold_balance": max(
+            len(first["development_folds"][str(fold)]) for fold in range(4)
+        ) - min(
+            len(first["development_folds"][str(fold)]) for fold in range(4)
+        ) <= 1,
         "workload_output_absent": not (context.output_path / "workload").exists(),
         "protected_assets_unavailable": not context.assets,
     }

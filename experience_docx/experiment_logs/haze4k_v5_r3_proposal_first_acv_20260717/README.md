@@ -2,7 +2,7 @@
 
 Date: 2026-07-17
 
-Status: `S0_R3_FOLD_IMPLEMENTATION_INVALID_A0_BLOCKED`
+Status: `S0_R4_FOLD_REPAIR_PLANNED`
 
 The route starts from the immutable official Haze4K architecture anchor and
 contains only the metadata ledger operation. The first
@@ -60,5 +60,10 @@ R3 compact evidence:
 - `r3_s0_access_audit.json`
 - `r3_s0_ledger_freeze_r3_closeout.json`
 
-All r1/r2/r3 terminal tuples authorize `NONE`. A0 remains blocked. Only a
-same-contract fold-allocation repair may produce a valid S0 decision.
+All r1/r2/r3 terminal tuples authorize `NONE`. R4 changes only the invalid
+fold allocation objective to group-complete least-loaded assignment and adds a
+representative four-fold balance contract. A0 remains blocked unless r4 reaches
+the frozen S0 PASS tuple.
+
+R4 compact evidence uses write-once `r3_s0_r4_*` filenames so the r3 evidence
+above remains immutable.

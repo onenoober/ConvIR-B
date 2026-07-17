@@ -2,7 +2,7 @@
 
 Date: 2026-07-17
 
-Status: STOPPED
+Status: PLANNED
 
 ## Identity
 
@@ -27,32 +27,32 @@ Status: STOPPED
 
 ## Implementation Contract
 
-- Exact change and disabled mechanisms: r3 keeps the exact S0 scientific/data contract and exact count-first/profile-balance-second objective; it uses deterministic profile-stratum dynamic programming with population-derived transition/state bounds and compact backpointers; disable model import, image decoding, GT decoding, candidate-loss analysis, training, inference, checkpoint load, GPU, threshold search, and protected-data access
+- Exact change and disabled mechanisms: r4 retains the exact r3 ledger and replaces only the invalid fold choice objective with group-complete least-loaded assignment, using signature deviation and seeded rotation only as tie-breaks; disable model import, image decoding, GT decoding, candidate-loss analysis, training, inference, checkpoint load, GPU, threshold search, and protected-data access
 - Checkpoint/load/init/freeze contract: no checkpoint or model exists in S0; the `Dehazing/ITS` tree remains byte-identical to the official anchor
 - Input whitelist and prohibited inputs: whitelist only the v1 split JSON fields `splits.train_inner` and `splits.val_inner` plus v3p CSV columns `name`, `clean_reference_group`, and `operator_label`; prohibit all candidate loss/PSNR columns as decision inputs, all image bytes, GT, predictions, file ids as model inputs, confirmation outcomes, canary, and locked test
 - Dataset/split/preprocessing/metric identities: v1 split SHA-256 `1b486d2ea518d409a2f5988845b93a23aaae1ab8c12881d37e81a16e41917925` and v3p image table SHA-256 `080f2e76152e335bca7cbf5b57630e74ba9e6d9598da80f482cfa4b549aa14d6`; clean group is filename stem before the first underscore, haze signature is the remaining stem, seed 3407, target confirmation count 432, four development folds
 - Matched baseline and budget: no scientific baseline or model budget; one pass through the 82,675-byte split JSON and 1,727,653-byte v3p image table, with the exact allocator repeated on a protected-data-free worst-structure 1,200-name/1,200-group/1,200-profile fixture and capped at the derived 1,442,401 transitions
 - Resource/cost limits or descriptive-only rationale: CPU only, no GPU, representative double-run synthetic contract at most 10 seconds, expected formal wall under 60 seconds and hard timeout 600 seconds; exactly two external file assets and no dataset directory
-- Runner and required assets: unchanged `experience_docx/tools/run_route_operation.sh`, runtime spec `R3_S0_LEDGER_FREEZE_R3.json`, route-specific `r3_s0_ledger_freeze.py`, and the same two SHA-bound development assets
+- Runner and required assets: unchanged `experience_docx/tools/run_route_operation.sh`, runtime spec `R3_S0_LEDGER_FREEZE_R4.json`, route-specific `r3_s0_ledger_freeze.py`, and the same two SHA-bound development assets
 
 ## Operations And Evidence
 
 | Operation | Evidence role/scope | Gate | Pass authorizes |
 | --- | --- | --- | --- |
-| `R3_S0_LEDGER_FREEZE_R3` | `development_screening` metadata only; exact same two source assets and eligible identities as r1/r2 | exact identity/count/pairing/group/fold/signature/hash/access tuple | reviewed A0 operation amendment only |
+| `R3_S0_LEDGER_FREEZE_R4` | `development_screening` metadata only; exact same two source assets and eligible identities as r1-r3 | exact identity/count/pairing/group/fold/signature/hash/access tuple | reviewed A0 operation amendment only |
 
-- First operation: R3_S0_LEDGER_FREEZE_R3
+- First operation: R3_S0_LEDGER_FREEZE_R4
 - Expected wall time and monitor profile: 60 seconds expected, 600 seconds hard timeout, `short` monitor profile, no resident watcher
 - Complete-unit resume policy: `none`; any interruption or engineering repair uses one fresh output and keeps the scientific/data contract unchanged
-- Cloud workspace/run/output/status/closeout: MCP-derived fresh route workspace; run root `/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r3_proposal_first_acv_20260717`; new output `r3-s0-ledger-r3` with fixed `control/contract/workload/heartbeat.json/status.txt/runtime.log` layout; closeout `r3_s0_ledger_freeze_r3_closeout.json`; r1/r2 remain immutable
+- Cloud workspace/run/output/status/closeout: MCP-derived fresh route workspace; run root `/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r3_proposal_first_acv_20260717`; new output `r3-s0-ledger-r4` with fixed `control/contract/workload/heartbeat.json/status.txt/runtime.log` layout; closeout `r3_s0_ledger_freeze_r4_closeout.json`; r1-r3 remain immutable
 - Compact Git evidence and cloud-only raw artifacts: Git may receive the summary, role matrix, fold summary, signature balance, source identity, access audit, status, and closeout; the complete name-level ledger remains cloud-only and no weights, images, arrays, predictions, or candidate rows are synced
 
 ## Decision
 
-- Verdict and primary reason: r3 completed as `COMPLETED_GATE_FAIL / R3_S0_LEDGER_FREEZE_FAIL_STOP / NONE`, but the only failed check was `fold_count_balance`: the implementation assigned 768 singleton development groups as `256/256/0/256` instead of the feasible `192/192/192/192`
+- Verdict and primary reason: r4 repair is planned because r3's only failed check came from an invalid fold allocation objective, not from the data contract
 - Mechanism/control and safety reason: exact source counts, pairing, eligible difference, 432 confirmation count, zero name/group overlap, fold coverage, fold pair separation, and haze-signature balance all passed; no confirmation outcome, canary, locked test, model, checkpoint, image, GT, or GPU was accessed
 - Evidence-independence and cost reason: the ledger split is structurally feasible; the r3 typed FAIL is invalid as a data-contract conclusion because the greedy fold allocator failed a trivially feasible singleton balance condition
-- Authorized next action or terminal stop: A0 remains blocked; only a same-contract fold-allocation repair with a representative `192 x 4` contract may produce a valid S0 decision
+- Authorized next action or terminal stop: run only r4; A0 remains blocked unless r4 reaches the frozen S0 PASS tuple
 
 ## Closeout
 
