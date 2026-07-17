@@ -116,6 +116,14 @@ shell-sensitive shorthand.
 
 ### PowerShell to WSL inline regex pipes
 
+2026-07-17 recurrence:
+
+An inline `grep -E "R3|proposal.first|ACV"` passed through a double-quoted
+PowerShell command was split at the `|` characters before WSL received it.
+The read-only evidence review did not run. The corrected audit used separate
+fixed `/usr/bin/grep` or `/usr/bin/sed` calls without an inline alternation;
+the failed form is command/transport failure, not experiment evidence.
+
 Avoid inline commands where PowerShell, WSL Bash, and regex pipes all appear in
 one string, for example:
 

@@ -2,7 +2,7 @@
 
 Date: 2026-07-17
 
-Status: PLANNED
+Status: STOPPED
 
 ## Identity
 
@@ -49,7 +49,16 @@ Status: PLANNED
 
 ## Decision
 
-- Verdict and primary reason: pending S0; no runtime has been authorized or started
-- Mechanism/control and safety reason: only source identity and group-complete metadata separation are tested; no model or scientific utility claim is possible
-- Evidence-independence and cost reason: the 1,200 eligible names are outside the historical v3p action-label chain, while all historical rows are used only to exclude identities; CPU metadata parsing is the cheapest decisive gate
-- Authorized next action or terminal stop: with `start_authorization=NO`, preparation stops after the staged route-ready gate and route commit; S0 workload remains blocked
+- Verdict and primary reason: `FAILED_ENGINEERING`; the synthetic contract passed, but the frozen workload exited through the 600-second timeout as `run program failed rc=124` before producing an S0 scientific decision
+- Mechanism/control and safety reason: no ledger summary was published, `verified_assets` is empty in the closeout, and no confirmation outcome, canary, locked test, model, checkpoint, image, GT, or GPU evidence exists; this terminal state is not S0 scientific `FAIL`
+- Evidence-independence and cost reason: the attempted operation remained CPU-only and did not authorize use of any result; the timeout must not be interpreted as evidence for or against the ledger or R3 mechanism
+- Authorized next action or terminal stop: `NONE`; A0 remains blocked, and any same-contract engineering root-cause repair requires a separate reviewed authorization with no automatic relaunch
+
+## Closeout
+
+- Run id: `r3-s0-ledger-r1`
+- Route commit: `813ffba60d0f2ae13557f7621fb10dc880d749af`
+- Terminal tuple: `FAILED_ENGINEERING / null / NONE`
+- Failure phase: `workload`
+- Closeout: `../experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/r3_s0_ledger_freeze_closeout.json`
+- Closeout SHA-256: `01c71f3f8f6f9d719934ed65917efe5a1ed9ed9b946f9ba1d1ab5a3576136955`

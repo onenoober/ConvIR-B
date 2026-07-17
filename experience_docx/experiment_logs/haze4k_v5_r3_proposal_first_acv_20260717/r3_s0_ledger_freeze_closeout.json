@@ -1,0 +1,23 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": null,
+  "details": {
+    "error_message": "run program failed rc=124",
+    "error_type": "LifecycleError"
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {},
+  "failure_phase": "workload",
+  "locked_test_touched": false,
+  "operation_id": "R3_S0_LEDGER_FREEZE",
+  "returncode": 1,
+  "route_commit": "813ffba60d0f2ae13557f7621fb10dc880d749af",
+  "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+  "run_id": "r3-s0-ledger-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "FAILED_ENGINEERING",
+  "verified_assets": []
+}
