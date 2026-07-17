@@ -77,6 +77,20 @@ real-structure engineering assertions. MCP/schema/runtime identities and all
 scientific authorization boundaries remain unchanged. Evidence is in
 `route_ready_fastpath_validation_20260717/route_flow_tools_cloud_acceptance.json`.
 
+The startup-verification and ordinary engineering-repair update is adopted
+after 106/106 CPU-only cloud tests at candidate
+`1ff07c3ff6965a364b628ad18f4a40b4bf3cd736`. Schema v4 and exactly six MCP
+tools are retained. `convir_route_start` now returns `RUNNING_VERIFIED` only
+after positive workload progress; a live zero-progress process is
+`LAUNCHED_PENDING_VERIFICATION`, and an early engineering closeout is returned
+directly instead of remaining silent until ETA. Engineering failure defaults
+to `ENGINEERING_AUTO_REPAIR_AUTHORIZED`; the new repair gate permits only
+same-contract path/output/symbol-binding/fixture changes and sends sensitive
+scientific, data, model, metric, threshold, seed, budget or control-flow changes
+to user review. Acceptance used zero model calls and no GPU or protected data.
+Evidence is in
+`route_ready_fastpath_validation_20260717/convir_ops_v432_cloud_acceptance.json`.
+
 ## Purpose
 
 This file is the main branch reading map for the Haze4K experiment sequence.

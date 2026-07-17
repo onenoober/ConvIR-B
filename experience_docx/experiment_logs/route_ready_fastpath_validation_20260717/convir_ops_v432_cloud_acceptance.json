@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "status": "CONVIR_OPS_V432_CLOUD_OK",
+  "candidate_commit": "1ff07c3ff6965a364b628ad18f4a40b4bf3cd736",
+  "server_version": "4.3.2",
+  "route_schema_version": 4,
+  "tool_count": 6,
+  "tests_passed": 106,
+  "tests_failed": 0,
+  "startup_states": [
+    "RUNNING_VERIFIED",
+    "LAUNCHED_PENDING_VERIFICATION"
+  ],
+  "engineering_failure_state": "ENGINEERING_AUTO_REPAIR_AUTHORIZED",
+  "repair_gate_pass_state": "AUTO_REPAIR_ELIGIBLE",
+  "repair_gate_review_state": "SENSITIVE_REPAIR_REVIEW_REQUIRED",
+  "failed_evidence_sync_default": false,
+  "project_model_calls": 0,
+  "gpu_access": 0,
+  "protected_data_access": 0,
+  "confirmation_access": 0,
+  "canary_access": 0,
+  "locked_test_access": 0,
+  "transport": {
+    "tool": "convirctl.py remote-script",
+    "script_git_blob": "d5e477194a300d7ce318739167a9994782d1b3ca",
+    "script_sha256": "fa45c32803cb1a65c39bd5cf3be28cb4aa5d7095d87e5d3c5fa31a4c0cdcf103",
+    "marker": "CONVIRCTL_REMOTE_SCRIPT_OK",
+    "inner_marker": "CONVIR_OPS_V432_CLOUD_OK",
+    "output_truncated": false
+  },
+  "invalid_attempts": [
+    "Calling the new script from the immutable anchor returned no required marker and was rejected as evidence.",
+    "An ad hoc PowerShell/WSL/SSH stdin wrapper added a UTF-8 BOM and hid an inner failure; it was rejected as evidence."
+  ],
+  "decision": "CONVIR_OPS_V432_ADOPTION",
+  "scope": "Control-plane startup verification and same-contract engineering repair classification only; no scientific route authorization."
+}
