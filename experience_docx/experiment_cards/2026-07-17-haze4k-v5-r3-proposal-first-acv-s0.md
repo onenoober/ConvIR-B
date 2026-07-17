@@ -2,7 +2,7 @@
 
 Date: 2026-07-17
 
-Status: PLANNED
+Status: STOPPED
 
 ## Identity
 
@@ -49,10 +49,10 @@ Status: PLANNED
 
 ## Decision
 
-- Verdict and primary reason: r3 repair is planned after r2 proved the timeout fix but hit its arbitrary transition cap; no S0 scientific decision exists yet
-- Mechanism/control and safety reason: no ledger summary was published, `verified_assets` is empty in the closeout, and no confirmation outcome, canary, locked test, model, checkpoint, image, GT, or GPU evidence exists; this terminal state is not S0 scientific `FAIL`
-- Evidence-independence and cost reason: the attempted operation remained CPU-only and did not authorize use of any result; the timeout must not be interpreted as evidence for or against the ledger or R3 mechanism
-- Authorized next action or terminal stop: run only the explicitly authorized r3 same-contract engineering repair; A0 remains blocked unless r3 reaches the frozen S0 PASS tuple
+- Verdict and primary reason: r3 completed as `COMPLETED_GATE_FAIL / R3_S0_LEDGER_FREEZE_FAIL_STOP / NONE`, but the only failed check was `fold_count_balance`: the implementation assigned 768 singleton development groups as `256/256/0/256` instead of the feasible `192/192/192/192`
+- Mechanism/control and safety reason: exact source counts, pairing, eligible difference, 432 confirmation count, zero name/group overlap, fold coverage, fold pair separation, and haze-signature balance all passed; no confirmation outcome, canary, locked test, model, checkpoint, image, GT, or GPU was accessed
+- Evidence-independence and cost reason: the ledger split is structurally feasible; the r3 typed FAIL is invalid as a data-contract conclusion because the greedy fold allocator failed a trivially feasible singleton balance condition
+- Authorized next action or terminal stop: A0 remains blocked; only a same-contract fold-allocation repair with a representative `192 x 4` contract may produce a valid S0 decision
 
 ## Closeout
 
@@ -62,3 +62,13 @@ Status: PLANNED
 - Failure phase: `workload`
 - Closeout: `../experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/r3_s0_ledger_freeze_closeout.json`
 - Closeout SHA-256: `01c71f3f8f6f9d719934ed65917efe5a1ed9ed9b946f9ba1d1ab5a3576136955`
+
+## R3 Closeout
+
+- Run id: `r3-s0-ledger-r3`
+- Route commit: `5f6b4a0bdedc16e7c48660d4ec70c53cda1c4200`
+- Terminal tuple: `COMPLETED_GATE_FAIL / R3_S0_LEDGER_FREEZE_FAIL_STOP / NONE`
+- Exact counts: eligible `1200`, development `768`, confirmation `432`
+- Passed checks: every frozen S0 check except `fold_count_balance`
+- Invalid fold counts: `256 / 256 / 0 / 256`
+- Closeout SHA-256: `6888cb82d9140c397113dc6b799da4478ba10c6cf4f343cebd1fc81fc222d84a`

@@ -2,7 +2,7 @@
 
 Date: 2026-07-17
 
-Status: `S0_R3_REPAIR_PLANNED`
+Status: `S0_R3_FOLD_IMPLEMENTATION_INVALID_A0_BLOCKED`
 
 The route starts from the immutable official Haze4K architecture anchor and
 contains only the metadata ledger operation. The first
@@ -43,6 +43,22 @@ Current evidence:
 - `r3_s0_ledger_freeze_closeout.json`: validated terminal closeout, SHA-256
   `01c71f3f8f6f9d719934ed65917efe5a1ed9ed9b946f9ba1d1ab5a3576136955`.
 
-The r1/r2 terminal tuples authorize `NONE`. Only an r3 S0 PASS may authorize a
-reviewed A0 amendment; it never authorizes A0 start, critic training,
-architecture work, or protected-data use automatically.
+R3 completed the metadata ledger and passed every source, pairing, role,
+overlap, confirmation-count, coverage, and signature check. Its only failed
+check was fold balance: 768 singleton development groups were assigned
+`256/256/0/256`, although `192/192/192/192` is trivially feasible. The typed
+FAIL is retained exactly but cannot support a data-contract conclusion; it
+identifies a fold allocator implementation defect.
+
+R3 compact evidence:
+
+- `r3_s0_ledger_summary.json`
+- `r3_s0_data_role_matrix.csv`
+- `r3_s0_fold_summary.csv`
+- `r3_s0_signature_balance.csv`
+- `r3_s0_source_identity.json`
+- `r3_s0_access_audit.json`
+- `r3_s0_ledger_freeze_r3_closeout.json`
+
+All r1/r2/r3 terminal tuples authorize `NONE`. A0 remains blocked. Only a
+same-contract fold-allocation repair may produce a valid S0 decision.
