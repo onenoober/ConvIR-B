@@ -1,0 +1,19 @@
+{
+  "canary_touched": false,
+  "candidate_outcomes_used_for_assignment": false,
+  "checkpoint_loaded": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "dataset_directory_accessed": false,
+  "gpu_accessed": false,
+  "gt_decoded": false,
+  "historical_development_assets_read": true,
+  "historical_v3p_identity_columns_only": true,
+  "image_decoded": false,
+  "inference_occurred": false,
+  "locked_test_touched": false,
+  "model_calls": 0,
+  "operation_id": "R3_S0_LEDGER_FREEZE_R4",
+  "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+  "schema_version": 1,
+  "training_occurred": false
+}

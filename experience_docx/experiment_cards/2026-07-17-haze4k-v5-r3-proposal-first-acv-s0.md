@@ -2,7 +2,7 @@
 
 Date: 2026-07-17
 
-Status: PLANNED
+Status: COMPLETED
 
 ## Identity
 
@@ -49,10 +49,10 @@ Status: PLANNED
 
 ## Decision
 
-- Verdict and primary reason: r4 repair is planned because r3's only failed check came from an invalid fold allocation objective, not from the data contract
-- Mechanism/control and safety reason: exact source counts, pairing, eligible difference, 432 confirmation count, zero name/group overlap, fold coverage, fold pair separation, and haze-signature balance all passed; no confirmation outcome, canary, locked test, model, checkpoint, image, GT, or GPU was accessed
-- Evidence-independence and cost reason: the ledger split is structurally feasible; the r3 typed FAIL is invalid as a data-contract conclusion because the greedy fold allocator failed a trivially feasible singleton balance condition
-- Authorized next action or terminal stop: run only r4; A0 remains blocked unless r4 reaches the frozen S0 PASS tuple
+- Verdict and primary reason: `R3_S0_LEDGER_FREEZE_PASS`; all 16 frozen structural checks pass with exact 1,200 eligible, 768 development, 432 sealed confirmation, and four 192-image development folds
+- Mechanism/control and safety reason: exact source counts, pairing, eligible difference, zero name/group overlap, fold coverage/separation/balance, and haze-signature balance passed; no confirmation outcome, canary, locked test, model, checkpoint, image, GT, or GPU was accessed
+- Evidence-independence and cost reason: the name-level ledger remains cloud-only while compact hashes freeze development, confirmation, groups, and folds before any A0 candidate response or GT-derived value exists
+- Authorized next action or terminal stop: only an independently reviewed `R3_A0_GT_FREE_PROPOSAL_ORACLE` amendment; this closeout does not authorize A0 creation or start
 
 ## Closeout
 
@@ -72,3 +72,13 @@ Status: PLANNED
 - Passed checks: every frozen S0 check except `fold_count_balance`
 - Invalid fold counts: `256 / 256 / 0 / 256`
 - Closeout SHA-256: `6888cb82d9140c397113dc6b799da4478ba10c6cf4f343cebd1fc81fc222d84a`
+
+## R4 Closeout
+
+- Run id: `r3-s0-ledger-r4`
+- Route commit: `2966a755a8dae9e31ff1d3ef71657a668aeac51d`
+- Terminal tuple: `COMPLETED_GATE_PASS / R3_S0_LEDGER_FREEZE_PASS / R3_A0_GT_FREE_PROPOSAL_ORACLE`
+- Exact counts: eligible `1200`, development `768`, confirmation `432`
+- Development folds: `192 / 192 / 192 / 192`
+- Ledger SHA-256: `bf09dd05e2fd53c26158b31351554102f10fc6574b7dbe4e0d0b8b95b1cbd02a`
+- Closeout SHA-256: `2887031918b7d6d0654b7920436e6b94f610f1bc7f1c575e5dcf771e92fce7c3`

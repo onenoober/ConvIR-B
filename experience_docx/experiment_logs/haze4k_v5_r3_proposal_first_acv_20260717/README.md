@@ -2,7 +2,7 @@
 
 Date: 2026-07-17
 
-Status: `S0_R4_FOLD_REPAIR_PLANNED`
+Status: `S0_R4_PASS_A0_AMENDMENT_REVIEW_ONLY`
 
 The route starts from the immutable official Haze4K architecture anchor and
 contains only the metadata ledger operation. The first
@@ -67,3 +67,24 @@ the frozen S0 PASS tuple.
 
 R4 compact evidence uses write-once `r3_s0_r4_*` filenames so the r3 evidence
 above remains immutable.
+
+R4 passed all 16 structural checks: exact 1,200 eligible identities, 768
+development, 432 sealed confirmation, four disjoint 192-image development
+folds, zero role/group overlap, exact source pairing, and haze-signature
+balance. Ledger SHA-256 is
+`bf09dd05e2fd53c26158b31351554102f10fc6574b7dbe4e0d0b8b95b1cbd02a`.
+No model, GPU, image, GT, checkpoint, confirmation outcome, canary, locked test,
+training, or inference was accessed.
+
+R4 evidence:
+
+- `r3_s0_r4_ledger_summary.json`
+- `r3_s0_r4_data_role_matrix.csv`
+- `r3_s0_r4_fold_summary.csv`
+- `r3_s0_r4_signature_balance.csv`
+- `r3_s0_r4_source_identity.json`
+- `r3_s0_r4_access_audit.json`
+- `r3_s0_ledger_freeze_r4_closeout.json`
+
+The typed PASS authorizes only an independent A0 amendment review. It does not
+authorize A0 creation, candidate generation, model work, or workload start.

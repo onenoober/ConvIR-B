@@ -1,0 +1,22 @@
+{
+  "entrypoint_sha256": "b08b95d560157cca3c4cdbabc3e0074bbc23cebe29fb2c8598c0cab16c75eb70",
+  "operation_id": "R3_S0_LEDGER_FREEZE_R4",
+  "route_commit": "2966a755a8dae9e31ff1d3ef71657a668aeac51d",
+  "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+  "schema_version": 1,
+  "v1_split": {
+    "bytes": 82675,
+    "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v1-chd-rm-data-baseline-lock/experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/haze4k_internal_split_2400_600.json",
+    "sha256": "1b486d2ea518d409a2f5988845b93a23aaae1ab8c12881d37e81a16e41917925"
+  },
+  "v3p_image_rows": {
+    "bytes": 1727653,
+    "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/a0_formal/v3p_a0_image_candidate_replay_cloud_only.csv",
+    "read_columns": [
+      "name",
+      "clean_reference_group",
+      "operator_label"
+    ],
+    "sha256": "080f2e76152e335bca7cbf5b57630e74ba9e6d9598da80f482cfa4b549aa14d6"
+  }
+}

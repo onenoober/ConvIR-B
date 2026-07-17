@@ -1,0 +1,50 @@
+{
+  "authorizes": "R3_A0_GT_FREE_PROPOSAL_ORACLE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "R3_S0_LEDGER_FREEZE_PASS",
+  "details": {
+    "confirmation_count": 432,
+    "development_count": 768,
+    "eligible_count": 1200,
+    "gpu_accessed": false,
+    "ledger_sha256": "bf09dd05e2fd53c26158b31351554102f10fc6574b7dbe4e0d0b8b95b1cbd02a",
+    "model_calls": 0,
+    "structural_valid": true
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "r3_s0_r4_access_audit.json": "e54e07aa1f8783c446b07bbb6d506e72d984fb81057638310a5ec2c50158f6fd",
+    "r3_s0_r4_data_role_matrix.csv": "e6c2965ca9c992a9a1e23285c65dc3a3e37fcd4f43b41274ebbc242b719a0246",
+    "r3_s0_r4_fold_summary.csv": "66ff714e95084da00a5d917097256a0f03cba9a43fafdaab9ede8526a71e9098",
+    "r3_s0_r4_ledger_summary.json": "90fdc8216760532a092888984508e1f7013d3b006cdeb2978a873ffa171bf605",
+    "r3_s0_r4_signature_balance.csv": "caeec5c911049ebb520c2d59a85d0f27cc1e756225515364d449cd3ea389c4f8",
+    "r3_s0_r4_source_identity.json": "eef6c33a2bda919ea333e843487ffad18dafe662d7f976a94c3a74957f9f79b6"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "R3_S0_LEDGER_FREEZE_R4",
+  "returncode": 0,
+  "route_commit": "2966a755a8dae9e31ff1d3ef71657a668aeac51d",
+  "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+  "run_id": "r3-s0-ledger-r4",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "v1_split",
+      "kind": "file",
+      "sha256": "1b486d2ea518d409a2f5988845b93a23aaae1ab8c12881d37e81a16e41917925"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "v3p_image_rows",
+      "kind": "file",
+      "sha256": "080f2e76152e335bca7cbf5b57630e74ba9e6d9598da80f482cfa4b549aa14d6"
+    }
+  ]
+}
