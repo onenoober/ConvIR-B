@@ -55,6 +55,14 @@ identity probe. Production activation used
 state without deleting any receipt or HMAC key, and removed only expired plans
 and the obsolete isolated v4.2 E2E state directory.
 
+The v4.3 migration intentionally marked historical engineering receipts as
+archived, but that made a later explicit user repair choice impossible. v4.3.1
+adds only a migration-compatibility transition: a receipt carrying
+`v43_migrated_at` may change its automatic archive to repair; a normal explicit
+archive remains terminal. Candidate
+`ea12f8aeaa5317831ad0fa228f470e1d0069a993` passed 81/81 cloud tests and a
+fresh stdio/source identity probe with schema v4 and exactly six tools.
+
 ## Revalidation Condition
 
 Use the adopted protocol for future long operations without a resident model or
