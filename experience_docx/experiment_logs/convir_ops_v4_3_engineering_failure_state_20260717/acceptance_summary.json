@@ -1,0 +1,19 @@
+{
+  "candidate_commit": "e2b1c15906163ad7f587d8daa9581854426a1c15",
+  "cloud_host": "convir-4090",
+  "decision": "CONVIR_OPS_V4_3_CLOUD_ACCEPTANCE_PASS",
+  "finish_resolution_enum": [
+    "repair",
+    "archive"
+  ],
+  "gpu_accessed": false,
+  "model_calls": 0,
+  "protected_data_accessed": false,
+  "schema_version": 1,
+  "server_source_sha256": "59adcfa653646d3f0b6d10afe5f1b72171f163d214e2c07f0884a974e7bc4e66",
+  "server_version": "4.3.0",
+  "test_count": 78,
+  "test_seconds": 3.139,
+  "tests_passed": 78,
+  "tool_count": 6
+}

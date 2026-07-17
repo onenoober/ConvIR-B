@@ -3,7 +3,8 @@
 Date: 2026-07-17
 
 Status: generic run monitoring and the route-ready generic runtime are adopted;
-schema-v4 start-recovery v4.2 is adopted after fresh-process activation.
+schema-v4 v4.3 engineering-failure review passed cloud acceptance and awaits
+fresh-process production activation.
 
 ## Current Verdict
 
@@ -41,6 +42,17 @@ GPU, dataset, checkpoint, confirmation, canary, or locked-test access. The
 terminal infrastructure decision is `CONVIR_OPS_V4_2_ADOPTION`; route-specific
 scientific authorization remains independent.
 
+The first real R3 S0 workload then exposed a post-closeout governance defect:
+v4.2 treated a valid `FAILED_ENGINEERING` closeout like a scientific/archive
+terminal state, and failure closeout reconstruction dropped identities of
+assets verified before the runtime failure. v4.3 retains exactly six tools and
+schema v4, but makes engineering failure a receipt-bound human decision state:
+evidence stays locked until explicit `repair` or `archive`; repair does not
+authorize relaunch, and archive does not authorize repair. The lifecycle now
+retains verified asset identities in parent-process state for failure closeout.
+The exact candidate passed 78/78 cloud tests plus an independent stdio/source
+identity probe at `e2b1c15906163ad7f587d8daa9581854426a1c15`.
+
 ## Revalidation Condition
 
 Use the adopted protocol for future long operations without a resident model or
@@ -48,6 +60,11 @@ polling watcher. Revalidate before use only if the telemetry payload/permissions
 process-observation mechanism, six-tool schema, remote transport, stale/finish
 semantics, or cost bound changes. Scientific route authorization remains
 independent and must still come from each route's own typed closeout.
+
+Do not call v4.3 adopted until the dedicated registered worktree is updated to
+GitHub main and a fresh stdio process proves version/source/tool schema. After
+activation, revalidate if the engineering-resolution enum, evidence lock, or
+failure-provenance contract changes.
 
 Use `ROUTE_READY_FASTPATH.md` for new routes. Revalidate the generic runtime
 only when its context/runtime/asset/evidence schemas or lifecycle ownership
