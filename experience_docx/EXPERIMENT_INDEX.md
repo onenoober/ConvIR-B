@@ -1,6 +1,6 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-07-15
+Date: 2026-07-17
 
 Status: evidence index plus official architecture anchor registry.
 
@@ -29,6 +29,27 @@ Use `experience_docx/experiment_cards/2026-07-16-generic-run-monitoring-validati
 `experience_docx/family_summaries/operations_infrastructure_summary.md`, and
 `experience_docx/experiment_logs/generic_run_monitoring_validation_20260716/`
 for the current evidence.
+
+The route-ready generic runtime is now separately adopted after the CPU-only r2
+E2E at `528ad61112a9cf7142a90864264f0230f18b93a3`. The frozen terminal tuple is
+`COMPLETED_GATE_PASS / ROUTE_READY_FASTPATH_VALIDATION_PASS /
+ROUTE_READY_FASTPATH_ADOPTION`. It verifies the exact staged MCP parser,
+declarative runtime/asset schemas, context-only entrypoints, contract-before-run,
+fixed `control/contract/workload` paths, write-once compact evidence, and typed
+closeout ownership. It used zero model calls and no GPU, dataset, checkpoint,
+confirmation, canary, or locked test.
+
+The archived r1 engineering failure exposed both a `run/` versus `workload/`
+mapping defect and an old v4.1 start-timeout state with a completed closeout but
+no receipt. r2 repaired only the mapping. The six-tool schema-v4 v4.2 candidate
+adds same-plan metadata-only receipt recovery and shared-seed cloud checkout;
+`980821176f09514d913f4ad0507e494b3c45971b` passed 73 cloud tests. It remains a
+candidate until main integration and a fresh MCP process loads it.
+
+Use `experience_docx/ROUTE_READY_FASTPATH.md`,
+`experience_docx/experiment_cards/2026-07-17-route-ready-fastpath-validation.md`,
+and
+`experience_docx/experiment_logs/route_ready_fastpath_validation_20260717/`.
 
 ## Purpose
 

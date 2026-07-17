@@ -76,3 +76,14 @@ Canonical corrections retained from prior incidents:
   forward the dedicated registered worktree, then either let a new app/task
   session spawn the updated server or validate the exact registered executable
   with one isolated state directory and the unchanged six-tool interface.
+- 2026-07-17 invalid: dynamically JSON-quoted a multi-command `bash -lc` body
+  inside PowerShell; the shell boundary produced an unmatched double quote
+  before any repository command ran. Corrected once: invoke fixed Linux
+  programs with literal argv through `wsl.exe --exec`; use a committed script
+  when a command needs shell composition.
+- 2026-07-17 incident: a schema-v4 start crossed the launch boundary and timed
+  out after the runner had already produced a typed closeout, leaving no
+  receipt and only an unactionable `inspect_once` label. Corrected in the
+  unchanged six-tool surface: one repeat of the same sealed start performs a
+  metadata-only inspection, recovers a receipt from exact bound runtime state,
+  or proves and cleans only an untouched exact fresh workspace before retry.

@@ -19,7 +19,7 @@ from pathlib import Path
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "4.1.0"
+SERVER_VERSION = "4.2.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 REMOTE_HOST = "convir-4090"
@@ -27,6 +27,7 @@ REMOTE_BASE = "/sda/home/wangyuxin/ConvIR-B"
 REMOTE_REPOS = f"{REMOTE_BASE}/repos"
 REMOTE_RUNS = f"{REMOTE_BASE}/runs"
 REMOTE_PYTHON = f"{REMOTE_BASE}/envs/convir-cu121/bin/python"
+CLOUD_GIT_SEED = f"{REMOTE_REPOS}/ConvIR-B-official-arch-anchor"
 GITHUB_URL = "git@github.com:onenoober/ConvIR-B.git"
 SSH = "/usr/bin/ssh"
 REMOTE_BASH = "/bin/bash"
@@ -780,6 +781,7 @@ def atomic_start_body(context, gpu_index):
     lines = [
         f"REMOTE_REPO={q(context['remote_repo'])}",
         f"GITHUB_URL={q(GITHUB_URL)}",
+        f"GIT_SEED={q(CLOUD_GIT_SEED)}",
         f"BRANCH={q(context['branch'])}",
         f"EXPECTED_COMMIT={q(context['route_branch_commit'])}",
         f"RUNNER={q(context['runner_relpath'])}",
@@ -798,7 +800,12 @@ def atomic_start_body(context, gpu_index):
         'if test "$WORKSPACE_POLICY" = fresh_route; then',
         '  test ! -e "$REMOTE_REPO"',
         '  FRESH_CREATED=1',
-        '  git clone --quiet --origin github --single-branch --branch "$BRANCH" "$GITHUB_URL" "$REMOTE_REPO"',
+        '  test -d "$GIT_SEED/.git"',
+        '  git clone --quiet --shared --no-checkout "$GIT_SEED" "$REMOTE_REPO"',
+        '  git -C "$REMOTE_REPO" remote rename origin seed',
+        '  git -C "$REMOTE_REPO" remote add github "$GITHUB_URL"',
+        '  git -C "$REMOTE_REPO" fetch --quiet --no-tags --depth=1 github "+refs/heads/$BRANCH:refs/remotes/github/$BRANCH"',
+        '  git -C "$REMOTE_REPO" checkout --quiet -b "$BRANCH" "$EXPECTED_COMMIT"',
         'else',
         '  test -d "$REMOTE_REPO/.git"',
         '  test -z "$(git -C "$REMOTE_REPO" status --porcelain)"',
@@ -836,6 +843,106 @@ def atomic_start_body(context, gpu_index):
     return "\n".join(lines)
 
 
+def unknown_start_inspection_body(context):
+    return "\n".join([
+        f"REMOTE_REPO={q(context['remote_repo'])}",
+        f"EXPECTED_COMMIT={q(context['route_branch_commit'])}",
+        f"EXPECTED_BRANCH={q(context['branch'])}",
+        f"RUNNER={q(context['runner_relpath'])}",
+        f"EXPECTED_RUNNER_SHA={q(context['runner_sha256'])}",
+        f"OUTPUT_PATH={q(context['output_path'])}",
+        f"CLOSEOUT={q(context['closeout_path'])}",
+        f"SESSION={q(context['session'])}",
+        f"ROUTE_ID={q(context['route_id'])}",
+        f"RUN_ID={q(context['output_id'])}",
+        'repo=absent; runner=absent; dirty=-1',
+        'if test -e "$REMOTE_REPO"; then',
+        '  if test -d "$REMOTE_REPO/.git"; then',
+        '    head=$(git -C "$REMOTE_REPO" rev-parse HEAD 2>/dev/null || true)',
+        '    branch=$(git -C "$REMOTE_REPO" branch --show-current 2>/dev/null || true)',
+        '    if test "$head" = "$EXPECTED_COMMIT" && test "$branch" = "$EXPECTED_BRANCH"; then repo=exact; else repo=mismatch; fi',
+        '    dirty=$(git -C "$REMOTE_REPO" status --porcelain 2>/dev/null | wc -l)',
+        '  else repo=partial; fi',
+        'fi',
+        'if test -f "$REMOTE_REPO/$RUNNER"; then',
+        '  runner_sha=$(sha256sum "$REMOTE_REPO/$RUNNER" | awk \'{print $1}\')',
+        '  if test "$runner_sha" = "$EXPECTED_RUNNER_SHA"; then runner=exact; else runner=mismatch; fi',
+        'fi',
+        'active=false; tmux has-session -t "$SESSION" 2>/dev/null && active=true || true',
+        'output=absent; test ! -d "$OUTPUT_PATH" || output=present',
+        'identity_path="$OUTPUT_PATH/control/lifecycle_identity.json"',
+        f'json_states=$({q(REMOTE_PYTHON)} - "$identity_path" "$CLOSEOUT" "$ROUTE_ID" "$RUN_ID" "$EXPECTED_COMMIT" "$EXPECTED_RUNNER_SHA" <<\'PY\'',
+        'import json, pathlib, sys',
+        'identity_path, closeout_path, route_id, run_id, commit, runner = sys.argv[1:]',
+        'expected = {"route_id": route_id, "run_id": run_id, "route_commit": commit, "runner_sha256": runner}',
+        'def inspect(path):',
+        '    candidate = pathlib.Path(path)',
+        '    if not candidate.is_file():',
+        '        return "absent"',
+        '    try:',
+        '        value = json.loads(candidate.read_text(encoding="utf-8"))',
+        '    except Exception:',
+        '        return "invalid"',
+        '    return "valid" if isinstance(value, dict) and all(value.get(key) == item for key, item in expected.items()) else "invalid"',
+        'print(inspect(identity_path), inspect(closeout_path))',
+        'PY',
+        ')',
+        'read -r identity closeout <<<"$json_states"',
+        'printf "CONVIR_OPS_START_INSPECTION repo=%s runner=%s active=%s output=%s identity=%s closeout=%s dirty=%s\\n" "$repo" "$runner" "$active" "$output" "$identity" "$closeout" "$dirty"',
+    ])
+
+
+def parse_unknown_start_inspection(output):
+    match = re.search(
+        r"(?m)^CONVIR_OPS_START_INSPECTION "
+        r"repo=(absent|exact|mismatch|partial) "
+        r"runner=(absent|exact|mismatch) active=(true|false) "
+        r"output=(absent|present) identity=(absent|valid|invalid) "
+        r"closeout=(absent|valid|invalid) dirty=(-?\d+)$",
+        output,
+    )
+    if not match:
+        raise ToolError(
+            "unknown-start inspection marker is missing",
+            failure_phase="start_recovery", failure_class="command_infra",
+        )
+    return {
+        "repo": match.group(1),
+        "runner": match.group(2),
+        "active": match.group(3) == "true",
+        "output": match.group(4),
+        "identity": match.group(5),
+        "closeout": match.group(6),
+        "dirty_entries": int(match.group(7)),
+    }
+
+
+def abandoned_start_cleanup_body(context):
+    return "\n".join([
+        f"REMOTE_REPO={q(context['remote_repo'])}",
+        f"EXPECTED_COMMIT={q(context['route_branch_commit'])}",
+        f"EXPECTED_BRANCH={q(context['branch'])}",
+        f"RUNNER={q(context['runner_relpath'])}",
+        f"EXPECTED_RUNNER_SHA={q(context['runner_sha256'])}",
+        f"OUTPUT_PATH={q(context['output_path'])}",
+        f"CLOSEOUT={q(context['closeout_path'])}",
+        f"SESSION={q(context['session'])}",
+        f"REPO_ROOT={q(REMOTE_REPOS)}",
+        'case "$REMOTE_REPO" in "$REPO_ROOT"/*) ;; *) exit 91 ;; esac',
+        'test -d "$REMOTE_REPO/.git"',
+        'test "$(git -C "$REMOTE_REPO" rev-parse HEAD)" = "$EXPECTED_COMMIT"',
+        'test "$(git -C "$REMOTE_REPO" branch --show-current)" = "$EXPECTED_BRANCH"',
+        'test -z "$(git -C "$REMOTE_REPO" status --porcelain)"',
+        'test "$(sha256sum "$REMOTE_REPO/$RUNNER" | awk \'{print $1}\')" = "$EXPECTED_RUNNER_SHA"',
+        'tmux has-session -t "$SESSION" 2>/dev/null && exit 92 || true',
+        'test ! -e "$OUTPUT_PATH"',
+        'test ! -e "$CLOSEOUT"',
+        'rm -rf -- "$REMOTE_REPO"',
+        'test ! -e "$REMOTE_REPO"',
+        'echo CONVIR_OPS_ABANDONED_START_CLEANUP_OK',
+    ])
+
+
 def issue_receipt(context, gpu_index, launch_output):
     payload = {
         "context": context,
@@ -852,6 +959,106 @@ def issue_receipt(context, gpu_index, launch_output):
     )
 
 
+def recover_unknown_start(record):
+    payload = record["payload"]
+    context = payload["context"]
+    if record.get("recovery_attempted"):
+        return typed_failure(
+            "START_STATE_UNKNOWN", "command_infra",
+            "the single unknown-start recovery inspection was already consumed",
+            observed={"remote_repo": context["remote_repo"], "runner_started": "unknown"},
+            next_actions=["engineering_review_once"], failure_phase="start_recovery",
+        )
+    record["recovery_attempted"] = True
+    try:
+        inspection_output = run_remote(
+            unknown_start_inspection_body(context), timeout=30, phase="start_recovery"
+        )
+        observed = parse_unknown_start_inspection(inspection_output)
+    except ToolError as exc:
+        return typed_failure(
+            "START_STATE_UNKNOWN", "command_infra", str(exc),
+            observed={"remote_repo": context["remote_repo"], "runner_started": "unknown"},
+            next_actions=["engineering_review_once"], failure_phase="start_recovery",
+        )
+    launch_proven = (
+        observed["repo"] == "exact"
+        and observed["runner"] == "exact"
+        and (
+            observed["active"]
+            or (
+                observed["output"] == "present"
+                and observed["identity"] != "invalid"
+            )
+            or observed["closeout"] == "valid"
+        )
+    )
+    if launch_proven:
+        receipt = issue_receipt(
+            context, record.get("gpu_index"), inspection_output,
+        )
+        record["receipt"] = receipt
+        return typed_result(
+            True, "LAUNCH_RECOVERED",
+            observed={**observed, "route_id": context["route_id"],
+                      "session": context["session"], "output_path": context["output_path"]},
+            expected={"runner_sha256": context["runner_sha256"]},
+            next_actions=["convir_route_finish"], receipt=receipt,
+        )
+    no_runtime_signal = (
+        not observed["active"]
+        and observed["output"] == "absent"
+        and observed["closeout"] == "absent"
+    )
+    if observed["repo"] == "absent" and no_runtime_signal:
+        record["attempted"] = False
+        record.pop("recovery_attempted", None)
+        return typed_failure(
+            "START_RETRY_READY", "command_infra",
+            "inspection proved that launch did not create a workspace or output",
+            observed=observed, expected={"runner_started": False},
+            next_actions=["convir_route_start"], failure_phase="start_recovery",
+        )
+    if (
+        context["workspace_policy"] == "fresh_route"
+        and observed["repo"] == "exact"
+        and observed["runner"] == "exact"
+        and observed["dirty_entries"] == 0
+        and no_runtime_signal
+    ):
+        try:
+            cleanup_output = run_remote(
+                abandoned_start_cleanup_body(context), timeout=30,
+                phase="start_recovery_cleanup",
+            )
+            if cleanup_output.splitlines().count("CONVIR_OPS_ABANDONED_START_CLEANUP_OK") != 1:
+                raise ToolError(
+                    "abandoned-start cleanup marker is missing",
+                    failure_phase="start_recovery_cleanup", failure_class="command_infra",
+                )
+        except ToolError as exc:
+            return typed_failure(
+                "START_STATE_UNKNOWN", "command_infra", str(exc),
+                observed=observed, next_actions=["engineering_review_once"],
+                failure_phase="start_recovery_cleanup",
+            )
+        record["attempted"] = False
+        record.pop("recovery_attempted", None)
+        return typed_failure(
+            "START_RETRY_READY", "command_infra",
+            "an exact clean abandoned workspace was removed before any runner output",
+            observed={**observed, "workspace_cleanup": "completed"},
+            expected={"runner_started": False}, next_actions=["convir_route_start"],
+            failure_phase="start_recovery_cleanup",
+        )
+    return typed_failure(
+        "START_STATE_UNKNOWN", "command_infra",
+        "inspection could not prove a launch or a safe retry state",
+        observed=observed, next_actions=["engineering_review_once"],
+        failure_phase="start_recovery",
+    )
+
+
 def tool_start(args):
     token = args.get("plan_token")
     try:
@@ -865,11 +1072,7 @@ def tool_start(args):
                     receipt=record["receipt"],
                 )
             if record.get("attempted"):
-                return typed_failure(
-                    "START_STATE_UNKNOWN", "command_infra",
-                    "a prior launch attempt crossed the start boundary without a receipt",
-                    next_actions=["inspect_once"],
-                )
+                return recover_unknown_start(record)
             if time.time() > payload["expires_at"]:
                 raise ToolError("plan has expired")
             context = payload["context"]
@@ -888,6 +1091,7 @@ def tool_start(args):
                         retry_after_seconds=30,
                         failure_phase="resource_preflight",
                     )
+            record["gpu_index"] = gpu_index
             record["attempted"] = True
             try:
                 output = run_remote(
@@ -906,7 +1110,7 @@ def tool_start(args):
                 return typed_failure(
                     "START_STATE_UNKNOWN", "command_infra", str(exc),
                     observed={"remote_repo": context["remote_repo"], "runner_started": "unknown"},
-                    next_actions=["inspect_once"],
+                    next_actions=["convir_route_start"],
                     failure_phase="launch_command",
                 )
             receipt = issue_receipt(context, gpu_index, output)

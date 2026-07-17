@@ -9,6 +9,7 @@ Read only the source needed for the next decision.
 | current status/result | `EXPERIMENT_INDEX.md` -> relevant family summary -> route card -> compact closeout/current cloud state |
 | model qualification | `MODEL_QUALIFICATION_PROTOCOL.md` |
 | scientific design/gates | `EXPERIMENT_GOVERNANCE_PROTOCOL.md` |
+| fastest safe route build/launch | `ROUTE_READY_FASTPATH.md` |
 | new or changed route | `MODEL_EXPERIMENT_START_CHECKLIST.md` and `EXPERIMENT_CARD_TEMPLATE.md` |
 | cloud launch/monitor/closeout | `MODEL_RUN_OPERATIONS_PROTOCOL.md` and `CONVIR_OPS_MCP.md` |
 | low-cost generic liveness telemetry | `GENERIC_RUN_MONITORING_PROTOCOL.md` |

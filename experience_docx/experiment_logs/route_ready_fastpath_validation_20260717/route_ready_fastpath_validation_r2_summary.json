@@ -1,0 +1,17 @@
+{
+  "canary_touched": false,
+  "checkpoint_accessed": false,
+  "cloud_unit_tests_passed": true,
+  "confirmation_images_targets_outcomes_touched": false,
+  "contract_before_run": true,
+  "dataset_accessed": false,
+  "generic_runner_used": true,
+  "gpu_accessed": false,
+  "locked_test_touched": false,
+  "model_calls": 0,
+  "operation_id": "ROUTE_READY_FASTPATH_VALIDATION",
+  "position_free_context_paths": true,
+  "route_id": "route_ready_fastpath_validation_20260717",
+  "schema_version": 1,
+  "typed_closeout_owned_by_lifecycle": true
+}

@@ -34,6 +34,7 @@ Status: <DRAFT | PLANNED | RUNNING | STOPPED | COMPLETED>
 - Matched baseline and budget:
 - Resource/cost limits or descriptive-only rationale:
 - Runner and required assets:
+- Runtime spec and `contract --context` / `run --context` entrypoint:
 
 ## Operations And Evidence
 

@@ -1,0 +1,23 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": null,
+  "details": {
+    "error_message": "required evidence missing: workload/summary.json",
+    "error_type": "LifecycleError"
+  },
+  "evidence_role": "engineering_debug",
+  "evidence_sha256": {},
+  "failure_phase": "evidence",
+  "locked_test_touched": false,
+  "operation_id": "ROUTE_READY_FASTPATH_VALIDATION",
+  "returncode": 1,
+  "route_commit": "a98d3b3951190a11b3ecfd94a62b48d7741d44e0",
+  "route_id": "route_ready_fastpath_validation_20260717",
+  "run_id": "route-ready-fastpath-validation-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "FAILED_ENGINEERING",
+  "verified_assets": []
+}
