@@ -1,14 +1,14 @@
 {
   "schema_version": 4,
   "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
-  "rules_commit": "11042043f0a56aabb60c2b546ba16c2a9dfb8f8d",
+  "rules_commit": "1bd39464c6597d198e97a21565fb1c10fcef1c44",
   "route_card_relpath": "experience_docx/experiment_cards/2026-07-17-haze4k-v5-r3-proposal-first-acv-a0.md",
   "operations": {
     "R3_A0_GT_FREE_PROPOSAL_ORACLE": {
       "runner_relpath": "experience_docx/tools/run_route_operation.sh",
       "mode": "r3_a0_gt_free_proposal_oracle",
       "require_gpu": true,
-      "output_id": "r3-a0-proposal-r1",
+      "output_id": "r3-a0-proposal-r2",
       "closeout_filename": "r3_a0_proposal_oracle_closeout.json",
       "prior_closeout_relpath": "experience_docx/experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/r3_s0_ledger_freeze_r4_closeout.json",
       "prior_terminal_tuple": {
