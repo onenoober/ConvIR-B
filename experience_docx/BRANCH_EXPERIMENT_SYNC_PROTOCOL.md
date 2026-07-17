@@ -12,9 +12,14 @@ explicit major handoff. Raw runtime artifacts stay on cloud.
 to choose `repair` or `archive`. Before that choice, do not fetch evidence into
 a worktree, edit route memory, stage, commit, push, or sync main. If `repair` is
 chosen, keep the failed-run compact evidence cloud-only while preparing the one
-authorized same-contract repair. If `archive` is chosen, fetch and sync only
-the compact failure closeout/diagnostic evidence. An engineering failure alone
-does not change a family verdict or justify a central-index scientific entry.
+authorized same-contract repair. After that repair passes, sync the successful
+replacement evidence; do not also sync the superseded failed bundle by
+default. The successful route memory may retain a short root-cause/repair
+provenance note without copying the failure artifacts. If `archive` is chosen,
+fetch and sync only the compact failure closeout/diagnostic evidence. The cloud
+runner must still create the typed failure closeout: retaining it on cloud is
+required provenance, not Git evidence sync. An engineering failure alone does
+not change a family verdict or justify a central-index scientific entry.
 
 Use a clean worktree from fresh `github/main`. Restore or copy only explicit
 card, closeout, README, compact status/aggregate files, then update the central

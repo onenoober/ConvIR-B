@@ -40,9 +40,11 @@
 6. After a scientific/safety terminal closeout, push compact evidence to the
    route branch before the next stage. After an engineering closeout, sync only
    when the user explicitly chooses `archive`; choosing `repair` keeps the
-   failed-run evidence cloud-only until the repair route closes. At a terminal
-   scientific decision or explicit major handoff, archive the curated verdict
-   to main under `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.
+   failed-run evidence cloud-only and syncs the successful replacement only
+   after the repair passes. The required cloud failure closeout is diagnostic
+   provenance, not Git sync. At a terminal scientific decision or explicit
+   major handoff, archive the curated verdict to main under
+   `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.
 
 ## Model Qualification And Cost
 

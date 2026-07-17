@@ -35,6 +35,7 @@ Status: PLANNED
 - Resource/cost limits or descriptive-only rationale:
 - Runner and required assets:
 - Runtime spec and `contract --context` / `run --context` entrypoint:
+- Representative engineering fixture or metadata-only exemption: <Exact path and minimum valid synthetic shape|exemption and code/runtime/asset reuse identity>
 
 ## Operations And Evidence
 

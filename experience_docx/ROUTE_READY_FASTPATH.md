@@ -26,6 +26,12 @@ Every operation uses the unchanged
 route-specific shell lifecycle, validator, dispatcher, watcher, authorization
 file, receipt, closeout writer, or output-path wrapper.
 
+Materialize only the operation currently authorized to run. Freeze the later
+stage sequence and stop rules in the route card, but do not prebuild dormant
+runtime specs, entrypoints, or asset manifests. Add a later operation only
+after its prerequisite closeout authorizes it, unless it is already authorized
+and shares the exact frozen implementation without result-dependent changes.
+
 ## One Gate Before One Push
 
 Stage the complete route bundle, then run exactly one static gate against the
@@ -108,6 +114,26 @@ useful for determinism but do not validate ETA or launch readiness.
 - the success closeout or generic
   `FAILED_ENGINEERING / null / NONE` closeout.
 
+### Representative Engineering Fixture
+
+A route that changes or exercises a real model, optimizer, or nontrivial
+algorithm must use the smallest protected-data-free fixture that traverses the
+exact production construction and changed execution path. Preserve the real
+module graph, tensor rank/channel relationships, load/init/freeze and trainable
+scope, forward/backward path, new-module gradient, and result finalizer that
+the workload will use. Reduce batch and spatial size only where those
+relationships remain valid; do not replace the changed path with a surrogate
+mini-implementation.
+
+The fixture is an engineering check, not a scientific sample. Metadata-only,
+schema-only, and ledger operations are exempt when their card records that no
+model or numerical workload path exists. Run a representative fixture once per
+unchanged exercised-code/entrypoint/runtime-spec/asset identity. A later stage
+or repair may reuse that result when those identities and the exercised path
+are unchanged; do not repeat it merely for reassurance. The
+same-asymptotic-scale probe above remains additionally required when formal
+cost or termination depends on problem size.
+
 The fixed output layout is:
 
 ```text
@@ -135,9 +161,12 @@ has a receipt-bound transition that can prove it safely.
 After an engineering failure, finish enters `ENGINEERING_REVIEW_REQUIRED` and
 evidence access is locked. Inspect once and pause for the user's explicit
 `repair` or `archive` choice. `repair` permits one semantic-preserving repair
-with a new output identity but does not authorize launch; `archive` permits
-compact failure evidence sync but no repair/relaunch. Do not change data,
-metrics, thresholds, gates, or scientific scope. Re-run the staged gate only
-when the card, manifest, runtime spec, entrypoint, asset manifest, or canonical
-runtime bundle changed. A cloud contract pass is not repeated for unchanged
-code, and it never constitutes a scientific result.
+with a new output identity but does not authorize launch or failed-run Git
+sync; after the repair passes, sync the successful replacement evidence.
+`archive` permits compact failure evidence sync but no repair/relaunch. The
+cloud failure closeout remains required for provenance and diagnosis, but its
+creation is not Git evidence sync. Do not change data, metrics, thresholds,
+gates, or scientific scope. Re-run the staged gate only when the card,
+manifest, runtime spec, entrypoint, asset manifest, or canonical runtime bundle
+changed. A cloud contract pass is not repeated for unchanged code, and it
+never constitutes a scientific result.
