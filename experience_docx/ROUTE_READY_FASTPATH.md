@@ -4,8 +4,8 @@ Date: 2026-07-17
 
 Status: generic runtime adopted after the CPU-only r2 E2E closeout in
 `experiment_cards/2026-07-17-route-ready-fastpath-validation.md`. The
-schema-v4 v4.2 unknown-start recovery is adopted after fresh-process acceptance;
-the six-tool surface is unchanged. Strict
+schema-v4 v4.3 engineering-review gate is adopted after fresh-process
+acceptance; the six-tool surface and route schema are unchanged. Strict
 post-integration validation passed on main with no bootstrap runtime files.
 
 ## Default Bundle
@@ -78,6 +78,11 @@ the entrypoint's synthetic output/finalizer contract, and cannot create
 owns only route science and writes one typed run result. The generic lifecycle
 alone owns:
 
+For algorithms whose termination or cost depends on formal problem size, the
+contract must include a protected-data-free same-asymptotic-scale probe and
+verify a frozen iteration/time/memory bound. Small functional fixtures remain
+useful for determinism but do not validate ETA or launch readiness.
+
 - fresh-output and identity preflight;
 - exact asset verification and resolved asset delivery;
 - timeout and process-group cleanup;
@@ -110,9 +115,12 @@ complete-unit asset; it never means in-place reuse of an ambiguous output.
 `exact_resume` is rejected at the staged gate until the schema-v4 control plane
 has a receipt-bound transition that can prove it safely.
 
-After an engineering failure, permit one semantic-preserving repair with a new
-output identity. Do not change data, metrics, thresholds, gates, or scientific
-scope. Re-run the staged gate only when the card, manifest, runtime spec,
-entrypoint, asset manifest, or canonical runtime bundle changed. A cloud
-contract pass is not repeated for unchanged code, and it never constitutes a
-scientific result.
+After an engineering failure, finish enters `ENGINEERING_REVIEW_REQUIRED` and
+evidence access is locked. Inspect once and pause for the user's explicit
+`repair` or `archive` choice. `repair` permits one semantic-preserving repair
+with a new output identity but does not authorize launch; `archive` permits
+compact failure evidence sync but no repair/relaunch. Do not change data,
+metrics, thresholds, gates, or scientific scope. Re-run the staged gate only
+when the card, manifest, runtime spec, entrypoint, asset manifest, or canonical
+runtime bundle changed. A cloud contract pass is not repeated for unchanged
+code, and it never constitutes a scientific result.

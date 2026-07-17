@@ -26,6 +26,10 @@ def terminal(decision="PASS", authorizes="formal"):
     return {"state": "COMPLETED_GATE_PASS", "decision": decision, "authorizes": authorizes}
 
 
+def engineering_terminal():
+    return {"state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE"}
+
+
 def operation(**overrides):
     value = {
         "runner_relpath": "experience_docx/tools/run_a1x.sh",
@@ -80,7 +84,7 @@ def context(require_gpu=False):
         "closeout_path": "/remote/a1x/experience_docx/experiment_logs/a1x/s0_closeout.json",
         "prior_closeout_relpath": None,
         "prior_terminal_tuple": None,
-        "allowed_terminal_tuples": [terminal()],
+        "allowed_terminal_tuples": [terminal(), engineering_terminal()],
         "workspace_policy": "fresh_route",
         "output_policy": "new",
         "monitor_profile": "short",
@@ -415,6 +419,93 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertTrue(first["receipt_remains_open"])
         self.assertEqual("CLOSEOUT_VALIDATED", second["operation_state"])
 
+    def test_engineering_closeout_requires_explicit_resolution_before_evidence(self):
+        ctx = context()
+        receipt_payload = {
+            "context": ctx, "gpu_index": None,
+            "launch_digest": "f" * 64, "issued_at": int(time.time()),
+        }
+        receipt = OPS.write_new_record(
+            "receipt", receipt_payload,
+            {
+                "launched": True, "finish_calls": 0, "finish_closed": None,
+                "monitor_stale_count": 0, "terminal_closeout": None,
+                "engineering_failure_resolution": None,
+            },
+        )
+        raw = json.dumps({
+            "route_id": "a1x", "run_id": "a1x-s0-r1",
+            "route_commit": "a" * 40, "runner_sha256": "e" * 64,
+            **engineering_terminal(), "failure_phase": "workload", "returncode": 1,
+            "verified_assets": [{
+                "id": "metadata", "kind": "file", "sha256": "1" * 64,
+                "path": "/must/not/be/returned",
+            }],
+            "details": {"error_type": "LifecycleError", "error_message": "run program failed rc=124"},
+        }, separators=(",", ":")).encode()
+        complete = (
+            "CONVIR_OPS_MONITOR polls=1 active=false terminal=true stale=false "
+            "heartbeat_age=0 heartbeat_source=heartbeat\n"
+            "CONVIR_OPS_STATUS_BEGIN\nfailed\nCONVIR_OPS_STATUS_END\n"
+            + "CONVIR_OPS_CLOSEOUT_SHA256=" + __import__("hashlib").sha256(raw).hexdigest()
+            + "\nCONVIR_OPS_CLOSEOUT_BEGIN\n" + raw.decode() + "\nCONVIR_OPS_CLOSEOUT_END\n"
+        )
+        with patch.object(OPS, "run_remote", return_value=complete):
+            stopped = payload(OPS.tool_finish({"receipt": receipt}))
+        self.assertEqual("ENGINEERING_REVIEW_REQUIRED", stopped["operation_state"])
+        self.assertFalse(stopped["ok"])
+        self.assertFalse(stopped["archive_authorized"])
+        self.assertFalse(stopped["relaunch_authorized"])
+        self.assertEqual("workload", stopped["failure_phase"])
+        self.assertEqual(
+            "metadata",
+            stopped["observed"]["closeout"]["engineering_diagnostic"]["verified_assets"][0]["id"],
+        )
+        self.assertNotIn(
+            "path",
+            stopped["observed"]["closeout"]["engineering_diagnostic"]["verified_assets"][0],
+        )
+        blocked = payload(OPS.tool_evidence_manifest({"receipt": receipt}))
+        self.assertEqual("EVIDENCE_MANIFEST_FAILED", blocked["operation_state"])
+        self.assertEqual("engineering_runtime", blocked["failure_class"])
+
+        repair = payload(OPS.tool_finish({
+            "receipt": receipt, "engineering_failure_resolution": "repair",
+        }))
+        self.assertEqual("ENGINEERING_REPAIR_AUTHORIZED", repair["operation_state"])
+        self.assertFalse(repair["archive_authorized"])
+        blocked_after_repair = payload(OPS.tool_evidence_manifest({"receipt": receipt}))
+        self.assertEqual("EVIDENCE_MANIFEST_FAILED", blocked_after_repair["operation_state"])
+
+    def test_engineering_archive_resolution_unlocks_compact_evidence(self):
+        receipt_payload = {
+            "context": context(), "gpu_index": None,
+            "launch_digest": "f" * 64, "issued_at": 1,
+        }
+        closeout = {
+            "identity": {}, "terminal_tuple": engineering_terminal(),
+            "closeout_sha256": "1" * 64, "closeout_filename": "s0_closeout.json",
+            "engineering_diagnostic": {"failure_phase": "workload"},
+        }
+        receipt = OPS.write_new_record(
+            "receipt", receipt_payload,
+            {
+                "launched": True, "finish_calls": 1,
+                "finish_closed": "ENGINEERING_REVIEW_REQUIRED",
+                "monitor_stale_count": 0, "terminal_closeout": closeout,
+                "engineering_failure_resolution": None,
+            },
+        )
+        archived = payload(OPS.tool_finish({
+            "receipt": receipt, "engineering_failure_resolution": "archive",
+        }))
+        self.assertEqual("ENGINEERING_ARCHIVE_AUTHORIZED", archived["operation_state"])
+        self.assertTrue(archived["archive_authorized"])
+        remote = "README.md\t12\t" + "a" * 64 + "\nCONVIR_OPS_EVIDENCE_MANIFEST_OK\nCONVIR_REMOTE_SCRIPT_OK"
+        with patch.object(OPS, "run_remote", return_value=remote):
+            evidence = OPS.tool_evidence_manifest({"receipt": receipt})["structuredContent"]
+        self.assertEqual("README.md", evidence["files"][0]["name"])
+
     def test_monitor_prefers_heartbeat_then_status_then_launch_age(self):
         body = OPS.monitor_body({**context(), "_receipt_issued_at": 123}, {"max_polls": 1, "interval_seconds": 0})
         self.assertIn('test -f "$HEARTBEAT"', body)
@@ -444,9 +535,17 @@ class ConvirOpsV4Tests(unittest.TestCase):
         with self.assertRaises(OPS.ToolError):
             OPS.require_terminal_tuple(failure, "prior_terminal_tuple")
 
+    def test_engineering_failure_class_tracks_phase_without_changing_review_gate(self):
+        self.assertEqual("preflight_resource", OPS.engineering_failure_class("asset_preflight"))
+        self.assertEqual("engineering_runtime", OPS.engineering_failure_class("workload"))
+        self.assertEqual("evidence_closeout", OPS.engineering_failure_class("evidence"))
+
     def test_evidence_tools_resolve_workspace_only_from_receipt(self):
         receipt_payload = {"context": context(), "gpu_index": None, "launch_digest": "f" * 64, "issued_at": 1}
-        receipt = OPS.write_new_record("receipt", receipt_payload, {"launched": True})
+        receipt = OPS.write_new_record(
+            "receipt", receipt_payload,
+            {"launched": True, "finish_closed": "CLOSEOUT_VALIDATED"},
+        )
         remote = "README.md\t12\t" + "a" * 64 + "\nCONVIR_OPS_EVIDENCE_MANIFEST_OK\nCONVIR_REMOTE_SCRIPT_OK"
         with patch.object(OPS, "run_remote", return_value=remote):
             result = OPS.tool_evidence_manifest({"receipt": receipt})["structuredContent"]
@@ -473,13 +572,18 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("4.2.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("4.3.0", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")
         self.assertEqual(["receipt"], evidence["inputSchema"]["required"])
         plan = next(item for item in tools if item["name"] == "convir_route_plan")
         self.assertEqual(4, plan["inputSchema"]["properties"]["schema_version"]["const"])
+        finish = next(item for item in tools if item["name"] == "convir_route_finish")
+        self.assertEqual(
+            ["repair", "archive"],
+            finish["inputSchema"]["properties"]["engineering_failure_resolution"]["enum"],
+        )
 
 
 if __name__ == "__main__":

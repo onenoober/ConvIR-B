@@ -33,11 +33,16 @@
    owned by the staged validator, MCP, and generic lifecycle. Use
    `COMMAND_RELIABILITY_PROTOCOL.md` only for uncovered command boundaries.
 5. A typed closeout is the only later-stage authorization. Interpret scientific
-   gates once, after complete evidence.
-6. After each completed cloud operation, push its compact evidence to the route
-   branch before the next stage. At a terminal decision or explicit major
-   handoff, archive the curated verdict to main under
-   `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.
+   gates once, after complete evidence. `FAILED_ENGINEERING` instead enters
+   `ENGINEERING_REVIEW_REQUIRED`: inspect once, pause, and ask the user to choose
+   one same-contract repair or archive. It never authorizes evidence fetch,
+   Git sync, another plan, or a relaunch by itself.
+6. After a scientific/safety terminal closeout, push compact evidence to the
+   route branch before the next stage. After an engineering closeout, sync only
+   when the user explicitly chooses `archive`; choosing `repair` keeps the
+   failed-run evidence cloud-only until the repair route closes. At a terminal
+   scientific decision or explicit major handoff, archive the curated verdict
+   to main under `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.
 
 ## Model Qualification And Cost
 
@@ -62,6 +67,10 @@
   without closeout is inspected once and never polled repeatedly.
 - Engineering failure never changes data, metric, threshold, gate, locked-test
   policy, or scientific authorization.
+- Engineering failure is a mandatory human decision boundary. Do not fetch,
+  stage, commit, push, update project memory, create a repair branch, or launch
+  again before the user chooses `repair` or `archive`. Default recommendation
+  is one deterministic same-contract repair when the root cause is identifiable.
 
 ## Three-End Command Boundary
 

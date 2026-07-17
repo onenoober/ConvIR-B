@@ -19,7 +19,7 @@ from pathlib import Path
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "4.2.0"
+SERVER_VERSION = "4.3.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 REMOTE_HOST = "convir-4090"
@@ -954,7 +954,8 @@ def issue_receipt(context, gpu_index, launch_output):
         "receipt", payload,
         {
             "launched": True, "finish_calls": 0, "finish_closed": None,
-            "monitor_stale_count": 0,
+            "monitor_stale_count": 0, "terminal_closeout": None,
+            "engineering_failure_resolution": None,
         },
     )
 
@@ -1132,11 +1133,32 @@ def tool_start(args):
         return failure_result("START_REJECTED", exc, "launch_command")
 
 
-def receipt_context(token):
+def evidence_context(args):
+    token = args.get("receipt")
     with locked_record("receipt", token) as record:
         if not record.get("launched"):
             raise ToolError("receipt has no successful launch")
-        return record["payload"]["context"]
+        closed = record.get("finish_closed")
+        if closed == "ENGINEERING_REVIEW_REQUIRED":
+            raise ToolError(
+                "engineering failure requires an explicit repair-or-archive decision before evidence access",
+                failure_phase="engineering_review", failure_class="engineering_runtime",
+            )
+        if closed == "ENGINEERING_REPAIR_AUTHORIZED":
+            raise ToolError(
+                "engineering repair was selected; failed-run evidence remains cloud-only unless archive is separately chosen",
+                failure_phase="engineering_review", failure_class="engineering_runtime",
+            )
+        if closed not in {"CLOSEOUT_VALIDATED", "ENGINEERING_ARCHIVE_AUTHORIZED"}:
+            raise ToolError(
+                "evidence access requires a validated terminal closeout",
+                failure_phase="evidence_manifest", failure_class="contract",
+            )
+        context = record["payload"]["context"]
+    return {
+        **context,
+        "evidence_dir": f"{context['remote_repo']}/experience_docx/experiment_logs/{context['route_id']}",
+    }
 
 
 def begin_finish(token):
@@ -1161,6 +1183,49 @@ def begin_finish(token):
 def close_finish(token, state):
     with locked_record("receipt", token) as record:
         record["finish_closed"] = require_token(state, "finish_closed")
+
+
+def close_scientific_finish(token, closeout):
+    with locked_record("receipt", token) as record:
+        record["terminal_closeout"] = closeout
+        record["finish_closed"] = "CLOSEOUT_VALIDATED"
+
+
+def require_engineering_review(token, closeout):
+    with locked_record("receipt", token) as record:
+        record["terminal_closeout"] = closeout
+        record["engineering_failure_resolution"] = None
+        record["finish_closed"] = "ENGINEERING_REVIEW_REQUIRED"
+
+
+def resolve_engineering_failure(token, resolution):
+    resolution = require_enum(
+        resolution, "engineering_failure_resolution", {"repair", "archive"},
+    )
+    with locked_record("receipt", token) as record:
+        if not record.get("launched"):
+            raise ToolError("receipt has no successful launch")
+        if record.get("finish_closed") != "ENGINEERING_REVIEW_REQUIRED":
+            raise ToolError("receipt is not awaiting an engineering failure decision")
+        closeout = record.get("terminal_closeout")
+        if not isinstance(closeout, dict) or closeout.get("terminal_tuple", {}).get("state") != "FAILED_ENGINEERING":
+            raise ToolError("receipt has no validated engineering closeout", failure_class="evidence")
+        record["engineering_failure_resolution"] = resolution
+        if resolution == "repair":
+            record["finish_closed"] = "ENGINEERING_REPAIR_AUTHORIZED"
+            return typed_result(
+                True, "ENGINEERING_REPAIR_AUTHORIZED",
+                observed={"closeout": closeout, "resolution": resolution},
+                next_actions=["prepare_one_same_contract_engineering_repair"],
+                archive_authorized=False, relaunch_authorized=False,
+            )
+        record["finish_closed"] = "ENGINEERING_ARCHIVE_AUTHORIZED"
+        return typed_result(
+            True, "ENGINEERING_ARCHIVE_AUTHORIZED",
+            observed={"closeout": closeout, "resolution": resolution},
+            next_actions=["convir_evidence_list", "convir_evidence_fetch", "archive_compact_failure_evidence"],
+            archive_authorized=True, relaunch_authorized=False,
+        )
 
 
 def record_stale_observation(token):
@@ -1251,15 +1316,52 @@ def parse_closeout(context, output):
     match = re.search(r"(?m)^CONVIR_OPS_CLOSEOUT_SHA256=([0-9a-f]{64})$", output)
     if not match:
         raise ToolError("closeout SHA-256 is missing", failure_class="evidence")
-    return {
+    result = {
         "identity": expected_identity, "terminal_tuple": terminal,
         "closeout_sha256": match.group(1), "closeout_filename": context["closeout_filename"],
     }
+    if terminal["state"] == "FAILED_ENGINEERING":
+        details = value.get("details") if isinstance(value.get("details"), dict) else {}
+        error_type = details.get("error_type")
+        error_message = details.get("error_message")
+        verified_assets = value.get("verified_assets")
+        safe_assets = []
+        if isinstance(verified_assets, list):
+            for item in verified_assets[:64]:
+                if not isinstance(item, dict):
+                    continue
+                safe_assets.append({
+                    key: item[key] for key in (
+                        "id", "kind", "access_role", "contract_access", "sha256", "commit",
+                    ) if key in item
+                })
+        result["engineering_diagnostic"] = {
+            "failure_phase": value.get("failure_phase") if isinstance(value.get("failure_phase"), str) else None,
+            "returncode": value.get("returncode") if isinstance(value.get("returncode"), int) else None,
+            "error_type": error_type[:128] if isinstance(error_type, str) else None,
+            "error_message": error_message[:2048] if isinstance(error_message, str) else None,
+            "verified_assets": safe_assets,
+        }
+    return result
+
+
+def engineering_failure_class(phase):
+    if phase in {
+        "environment", "identity_preflight", "manifest_preflight",
+        "asset_preflight", "output_preflight", "resource_preflight",
+    }:
+        return "preflight_resource"
+    if phase in {"evidence", "finalize", "failure_closeout", "closeout"}:
+        return "evidence_closeout"
+    return "engineering_runtime"
 
 
 def tool_finish(args):
     token = args.get("receipt")
     try:
+        resolution = args.get("engineering_failure_resolution")
+        if resolution is not None:
+            return resolve_engineering_failure(token, resolution)
         context = begin_finish(token)
         profile = MONITOR_PROFILES[context["monitor_profile"]]
         output = run_remote(
@@ -1278,7 +1380,18 @@ def tool_finish(args):
             )
         closeout = parse_closeout(context, output)
         if closeout:
-            close_finish(token, "CLOSEOUT_VALIDATED")
+            if closeout["terminal_tuple"]["state"] == "FAILED_ENGINEERING":
+                require_engineering_review(token, closeout)
+                failure_phase = closeout["engineering_diagnostic"]["failure_phase"]
+                return typed_failure(
+                    "ENGINEERING_REVIEW_REQUIRED", engineering_failure_class(failure_phase),
+                    "engineering closeout is not scientific evidence; pause and request an explicit repair-or-archive decision",
+                    observed={"monitor": monitor, "closeout": closeout},
+                    next_actions=["inspect_failure_once", "request_user_repair_or_archive_decision"],
+                    failure_phase=failure_phase,
+                    archive_authorized=False, relaunch_authorized=False,
+                )
+            close_scientific_finish(token, closeout)
             return typed_result(
                 True, "CLOSEOUT_VALIDATED",
                 observed={"monitor": monitor, "closeout": closeout},
@@ -1296,14 +1409,6 @@ def tool_finish(args):
         return failure_result("FINISH_INVALID", ToolError(str(exc), failure_class="evidence"), "closeout")
     except Exception as exc:
         return failure_result("FINISH_REJECTED", exc, "monitor")
-
-
-def evidence_context(args):
-    context = receipt_context(args.get("receipt"))
-    return {
-        **context,
-        "evidence_dir": f"{context['remote_repo']}/experience_docx/experiment_logs/{context['route_id']}",
-    }
 
 
 def validate_evidence_name(name):
@@ -1510,10 +1615,14 @@ TOOLS = {
         "handler": tool_start,
     },
     "convir_route_finish": {
-        "description": "Observe one sealed window of at most 60 seconds and validate terminal closeout provenance.",
+        "description": "Observe one sealed window, validate closeout provenance, and require an explicit repair-or-archive decision after engineering failure.",
         "inputSchema": {
             "type": "object", "required": ["receipt"],
-            "properties": {"receipt": {"type": "string"}}, "additionalProperties": False,
+            "properties": {
+                "receipt": {"type": "string"},
+                "engineering_failure_resolution": {"enum": ["repair", "archive"]},
+            },
+            "additionalProperties": False,
         },
         "handler": tool_finish,
     },

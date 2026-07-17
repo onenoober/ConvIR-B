@@ -158,6 +158,62 @@ class LifecycleTests(unittest.TestCase):
                 )
             self.assertEqual("old-local", local.read_text())
 
+    def test_verified_asset_identity_survives_failure_closeout_path(self):
+        value, runtime = self.normalized()
+        operation = value["operations"]["S0"]
+        env = {
+            "ROUTE_ID": "route", "RUN_ID": "route-r1",
+            "EXPECTED_ROUTE_COMMIT": "a" * 40, "RUNNER_SHA256": "b" * 64,
+        }
+        assets = [{
+            "id": "metadata", "kind": "file", "path": "/cloud/metadata.csv",
+            "sha256": "c" * 64, "access_role": "development_screening",
+            "contract_access": False,
+        }]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "output"
+            (output / "control").mkdir(parents=True)
+            recovered = LIFE.verified_asset_identities(assets)
+            self.assertEqual("metadata", recovered[0]["id"])
+            self.assertNotIn("path", recovered[0])
+            evidence = root / "evidence"
+            evidence.mkdir()
+            result = {
+                "state": "FAILED_ENGINEERING", "decision": None,
+                "authorizes": "NONE", "details": {"error_type": "Timeout"},
+            }
+            closeout_path = LIFE.write_closeout(
+                env=env, spec=runtime, operation=operation, output=output,
+                evidence_root=evidence, result=result, evidence_sha256={},
+                verified_assets=recovered, failure_phase="workload", returncode=1,
+            )
+            closeout = json.loads(closeout_path.read_text())
+            self.assertEqual("metadata", closeout["verified_assets"][0]["id"])
+            self.assertEqual("c" * 64, closeout["verified_assets"][0]["sha256"])
+
+    def test_partial_asset_verification_retains_only_successful_identities(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = root / "first.json"
+            first.write_text("{}")
+            assets = {
+                "assets": [
+                    {
+                        "id": "first", "kind": "file", "path": str(first),
+                        "sha256": LIFE.sha256(first),
+                        "access_role": "development_screening", "contract_access": False,
+                    },
+                    {
+                        "id": "missing", "kind": "file", "path": str(root / "missing.json"),
+                        "sha256": "d" * 64,
+                        "access_role": "development_screening", "contract_access": False,
+                    },
+                ],
+            }
+            with self.assertRaises(LIFE.LifecycleError):
+                LIFE.verify_assets(assets, repo=root, run_root=root, output=root / "output")
+            self.assertEqual(["first"], [item["id"] for item in LIFE.VERIFIED_ASSETS])
 
 if __name__ == "__main__":
     unittest.main()

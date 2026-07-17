@@ -2,8 +2,8 @@
 
 Date: 2026-07-16
 
-Status: schema v4; server `4.2.0` adopted after fresh-process acceptance. The
-tool count and argument schemas remain unchanged from `4.1.0`.
+Status: schema v4; server `4.3.0` adds the receipt-bound engineering-failure
+decision gate while retaining exactly six tools and the existing route schema.
 
 `convir-ops` is a restricted local stdio bridge to `convir-4090`. It accepts
 only a GitHub route branch, exact commit, and operation id. It never accepts an
@@ -20,7 +20,7 @@ route validator or a route-specific shell surface.
 | --- | --- |
 | `convir_route_plan` | validate and seal one committed operation; no cloud call |
 | `convir_route_start` | run one sealed plan and return a receipt |
-| `convir_route_finish` | observe at most 60 seconds and validate closeout |
+| `convir_route_finish` | observe at most 60 seconds, validate closeout, and resolve an engineering failure only after an explicit user choice |
 | `convir_evidence_list` | list eligible compact evidence for a receipt |
 | `convir_evidence_fetch` | fetch an explicit allowlist with SHA-256 checks |
 | `convir_git_status` | read-only evidence-worktree/GitHub audit |
@@ -81,14 +81,25 @@ session without closeout or a validated closeout closes `finish`. Healthy
 receipts have a hard maximum of 64 observation windows, preventing an unbounded
 watcher loop.
 
+A validated `FAILED_ENGINEERING / null / NONE` closeout does not enter the
+scientific/archive path. Finish records `ENGINEERING_REVIEW_REQUIRED` in the
+HMAC-protected receipt and returns an error result whose only next actions are
+one read-only diagnosis and a user repair-or-archive decision. Evidence
+list/fetch are locked in this state. After the user decides, call the same
+finish tool with `engineering_failure_resolution=repair|archive`. `repair`
+authorizes preparation of one same-contract fix but no launch or evidence
+sync. `archive` unlocks compact evidence but no relaunch. No additional MCP
+tool or authorization file is introduced.
+
 Evidence tools allow only top-level `.json/.csv/.md/.txt` files up to 1 MiB.
-They never stage, commit, or push.
+They require a scientific validated closeout or an explicit engineering
+`archive` resolution and never stage, commit, or push.
 
 ## Registration
 
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. After an update, restart the host and verify version
-`4.2.0`, source SHA-256, and exactly six tools.
+`4.3.0`, source SHA-256, exactly six tools, and the repair/archive finish schema.
 
 The 2026-07-16 adoption audit verified the registered executable at
 `main@dca94d71c9fe73e4e93910b0587927c79ab7023c`: version `4.1.0`, source

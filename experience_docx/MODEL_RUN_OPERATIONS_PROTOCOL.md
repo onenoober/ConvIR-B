@@ -7,7 +7,7 @@ Date: 2026-07-16
 ```text
 one staged route-ready gate -> one exact route commit/push -> one MCP plan ->
 dynamic cloud preflight -> generic runner/contract -> bounded observation ->
-typed closeout -> compact archive
+typed closeout -> scientific archive OR engineering review decision
 ```
 
 Local WSL remains syntax/compile-only. Before launch, verify exact route HEAD,
@@ -40,6 +40,14 @@ Scientific computation belongs only to the run phase. Route-specific shell
 lifecycle, closeout, telemetry, output-path, timeout, and evidence-copy code is
 not allowed by default.
 
+For any operation whose cost or termination depends on sample count, group
+count, candidate count, graph size, search depth, or matrix dimension, the CPU
+contract must also execute a protected-data-free synthetic probe at the same
+asymptotic scale as the formal workload. Freeze and check maximum iterations,
+wall time and peak-memory class before launch. A tiny functional fixture proves
+determinism/correctness only and cannot support an ETA or launch-ready claim.
+Do not compensate for an unbounded algorithm by merely increasing timeout.
+
 For long operations, follow `GENERIC_RUN_MONITORING_PROTOCOL.md`: a fail-open
 metadata-only sidecar may atomically replace `heartbeat.json`, while the runner
 appends milestone-only `status.txt`. Telemetry never reads scientific outputs
@@ -66,6 +74,36 @@ cause. `START_STATE_UNKNOWN` forbids a second launch. Repeat the same sealed
 start call once only to run its metadata-only recovery inspection; it may
 recover a receipt, prove a clean retry state, or stop as ambiguous.
 Resource wait may retry the unchanged prelaunch plan.
+
+## Engineering Failure State Machine
+
+`FAILED_ENGINEERING` always has `decision:null` and `authorizes:NONE`. When
+`convir_route_finish` validates that tuple it returns
+`ENGINEERING_REVIEW_REQUIRED`, not a scientific/archive authorization. Perform
+at most one receipt-bound, read-only root-cause inspection, report the exact
+failure and then stop for an explicit user decision:
+
+```text
+FAILED_ENGINEERING
+  -> ENGINEERING_REVIEW_REQUIRED
+  -> repair  -> ENGINEERING_REPAIR_AUTHORIZED
+  -> archive -> ENGINEERING_ARCHIVE_AUTHORIZED
+```
+
+Before that decision, do not call evidence list/fetch, create or edit a repair
+bundle, stage/commit/push, update the route card/index/family summary, create a
+new plan, or start a workload. The MCP enforces the evidence lock. `repair`
+allows one deterministic root-cause repair with the scientific/data contract
+unchanged; it does not authorize launch, archive, or in-place output reuse.
+Freeze a new code commit and output identity, rerun the appropriate static and
+representative-scale engineering gates, and request separate start
+authorization. `archive` unlocks only compact failure evidence and keeps
+relaunch blocked. A repeated same-root engineering failure stops and returns to
+the user; it does not consume scientific evidence or become scientific `FAIL`.
+
+Failure closeouts must retain the identities of assets successfully verified
+before the failure. An empty list means verification did not complete, not
+merely that the workload failed later.
 
 Raw logs, checkpoints, images, arrays, predictions and large tables remain in
 the cloud run root. Only curated compact text evidence is eligible for Git.

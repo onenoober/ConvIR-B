@@ -96,6 +96,14 @@ resume the exact contract. Never change scope, metrics, data, thresholds or
 comparison family after seeing results. Engineering failure has `decision:null`
 and is not scientific evidence.
 
+A feasibility claim must be identified by the method used to decide it. If a
+heuristic search, greedy assignment, approximate solver, or local optimizer
+fails to find a valid solution, the allowed conclusion is only that the frozen
+method failed. It cannot establish that the data contract or feasible set is
+empty unless the method is complete for that claim or an independently valid
+infeasibility certificate is produced. Freeze this distinction in PASS/FAIL
+wording before launch.
+
 Use precise terminal labels: positive candidate, positive ablation, negative
 fair ablation, diagnostic only, inconclusive, or invalid engineering run.
 

@@ -25,7 +25,9 @@ documents.
 
 The card names the first operation. Every later operation requires the exact
 prior typed closeout. Semantic-preserving engineering repair keeps the same
-scientific contract and changes only the necessary code/output identity.
+scientific contract and changes only the necessary code/output identity. A
+heuristic or approximate solver may gate the solver contract, but cannot gate
+data/feasible-set impossibility without a valid infeasibility certificate.
 
 ## Static Gate
 
@@ -35,6 +37,12 @@ behavior that can be checked without local runtime; metrics/gates; output,
 heartbeat, closeout and retention. Stage the complete bundle and run the one
 route-ready validator. It includes the existing launch-ready card validator and
 the exact MCP parser. Repeat only after a relevant contract change.
+
+When workload termination/cost scales with data, groups, candidates, search or
+matrix size, require a protected-data-free synthetic contract at the same
+asymptotic scale. Record a measured wall-time bound, iteration bound and memory
+class supporting `expected_wall_seconds` and `timeout_seconds`; a toy fixture is
+not a performance gate.
 
 ```text
 git add <complete-route-bundle>
