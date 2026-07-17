@@ -34,6 +34,9 @@ stage sequence and stop rules in the route card, but do not prebuild dormant
 runtime specs, entrypoints, or asset manifests. Add a later operation only
 after its prerequisite closeout authorizes it, unless it is already authorized
 and shares the exact frozen implementation without result-dependent changes.
+Use `prepare_next_operation.py` only after the exact prerequisite closeout and
+`build_route_asset_manifest.py` only from an explicit identity request; their
+contracts and one-pass commands are in `ROUTE_FLOW_TOOLS.md`.
 
 ## One Gate Before One Push
 
@@ -127,6 +130,11 @@ scope, forward/backward path, new-module gradient, and result finalizer that
 the workload will use. Reduce batch and spatial size only where those
 relationships remain valid; do not replace the changed path with a surrogate
 mini-implementation.
+
+Use the assertions in `route_engineering_fixture.py` for trainable scope,
+no-op, finite tensor, nonzero-gradient, and microfit checks when they apply.
+They standardize checks but never replace the exact production construction or
+the route's frozen thresholds.
 
 The fixture is an engineering check, not a scientific sample. Metadata-only,
 schema-only, and ledger operations are exempt when their card records that no

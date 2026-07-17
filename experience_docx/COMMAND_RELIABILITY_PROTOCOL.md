@@ -115,3 +115,8 @@ Canonical corrections retained from prior incidents:
   wrong filesystem and PowerShell parsed the expression before WSL. Corrected
   once: pass the absolute WSL repository after `/usr/bin/git -C` and invoke
   fixed Linux readers through `wsl.exe --exec` with literal argv.
+- 2026-07-17 invalid: passed Git revision syntax containing `^{commit}` through
+  PowerShell, which interpreted the braces as a script block before WSL ran.
+  Corrected once: use fixed-argv `git show -s --format=%H <sha>` when only
+  commit existence/identity is needed; do not pass shell metacharacters across
+  the Windows-to-WSL boundary.

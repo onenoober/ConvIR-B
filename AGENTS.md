@@ -27,6 +27,9 @@
    an asset manifest only when necessary. Stage the complete bundle and require
    one `validate_route_ready.py` pass. All operations use the unchanged generic
    runner; route-specific shell lifecycle is prohibited by default.
+   Use the bounded amendment, asset, fixture, and evidence helpers in
+   `ROUTE_FLOW_TOOLS.md` for mechanical work; they never authorize a stage or
+   change a scientific contract.
 4. After one commit/push, launch and monitor only through
    `MODEL_RUN_OPERATIONS_PROTOCOL.md` and the six bounded `convir-ops` tools.
    Do not repeat static, identity, path, resource, or contract checks already

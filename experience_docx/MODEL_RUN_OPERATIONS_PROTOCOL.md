@@ -41,8 +41,10 @@ lifecycle, closeout, telemetry, output-path, timeout, and evidence-copy code is
 not allowed by default.
 
 The representative engineering fixture and its metadata-only exemptions are
-defined once in `ROUTE_READY_FASTPATH.md`. Reuse that fixture result for an
-unchanged exercised path; do not add another route-specific smoke layer.
+defined once in `ROUTE_READY_FASTPATH.md`. Generic assertions are provided by
+`route_engineering_fixture.py` and documented in `ROUTE_FLOW_TOOLS.md`. Reuse
+that fixture result for an unchanged exercised path; do not add another
+route-specific smoke layer.
 
 For any operation whose cost or termination depends on sample count, group
 count, candidate count, graph size, search depth, or matrix dimension, the CPU

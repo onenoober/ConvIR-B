@@ -28,11 +28,16 @@ changed. Reject
 code, binaries, datasets, weights, images, arrays, archives, broad logs, raw
 predictions/features/actions, large tables, and unrelated paths.
 
-Before push, inspect exact staged names/sizes, run `git diff --check`, parse
-staged JSON/CSV when practical, and confirm no model/code path entered an
-evidence-only sync. Push without force and verify local HEAD equals GitHub main.
-If push fails, report the clean local evidence paths; do not call cloud-only
-evidence synced.
+Stage the complete compact bundle, then run exactly one
+`validate_evidence_sync.py` gate as documented in `ROUTE_FLOW_TOOLS.md`. It
+checks exact staged names/sizes, diff hygiene, JSON/CSV, route identity,
+code-path exclusion, and the engineering-failure policy. Use
+`--allow-project-memory-update` only for a terminal decision/major handoff, and
+`--engineering-archive` only after an explicit archive choice; the flags cannot
+be combined. Do not repeat the covered checks manually. After
+`EVIDENCE_SYNC_OK`, commit and push once without force and verify the remote
+identity. If push fails, report the clean local evidence paths; do not call
+cloud-only evidence synced.
 
 Delete a superseded route branch only after terminal evidence is readable from
 main and no unique runnable snapshot must be retained.

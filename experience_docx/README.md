@@ -10,11 +10,12 @@ Read only the source needed for the next decision.
 | model qualification | `MODEL_QUALIFICATION_PROTOCOL.md` |
 | scientific design/gates | `EXPERIMENT_GOVERNANCE_PROTOCOL.md` |
 | fastest safe route build/launch | `ROUTE_READY_FASTPATH.md` |
+| route amendment/assets/fixture/evidence helpers | `ROUTE_FLOW_TOOLS.md` |
 | new or changed route | `MODEL_EXPERIMENT_START_CHECKLIST.md` and `EXPERIMENT_CARD_TEMPLATE.md` |
 | cloud launch/monitor/closeout | `MODEL_RUN_OPERATIONS_PROTOCOL.md` and `CONVIR_OPS_MCP.md` |
 | low-cost generic liveness telemetry | `GENERIC_RUN_MONITORING_PROTOCOL.md` |
 | command transport | `COMMAND_RELIABILITY_PROTOCOL.md`; validation evidence in `COMMAND_TRANSPORT_V1_VALIDATION.md` |
-| evidence archive | `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` |
+| evidence archive | `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` and `ROUTE_FLOW_TOOLS.md` |
 | Haze4K architecture route | `OFFICIAL_ARCH_ANCHOR_POLICY.md` and `Haze4K_ARCH_FINETUNE_WORKFLOW.md` |
 
 Authority is GitHub `main` for current rules and terminal evidence, the named
