@@ -8,7 +8,7 @@
       "runner_relpath": "experience_docx/tools/run_route_operation.sh",
       "mode": "r3_a0_gt_free_proposal_oracle",
       "require_gpu": true,
-      "output_id": "r3-a0-proposal-r2",
+      "output_id": "r3-a0-proposal-r3",
       "closeout_filename": "r3_a0_proposal_oracle_closeout.json",
       "prior_closeout_relpath": "experience_docx/experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/r3_s0_ledger_freeze_r4_closeout.json",
       "prior_terminal_tuple": {

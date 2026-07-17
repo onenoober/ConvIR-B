@@ -113,7 +113,13 @@ def numerical_tolerance(*values: float) -> float:
     return 2.0 * (1e-12 + 1e-12 * max(abs(value) for value in values))
 
 
+def clamp_channelwise(value: Any, bound: Any) -> Any:
+    return value.minimum(bound).maximum(-bound)
+
+
 def contract(context_path: Path) -> None:
+    import torch
+
     context = load_context(context_path, "contract")
     prepare_phase_output(context)
     synthetic = [
@@ -133,6 +139,10 @@ def contract(context_path: Path) -> None:
         if value not in seen:
             seen.add(value)
             deduplicated.append(name)
+    fixture_value = torch.tensor([[[[-2.0, 2.0]], [[-0.5, 0.5]], [[-3.0, 3.0]]]])
+    fixture_bound = torch.tensor([0.25, 1.0, 2.0]).view(1, 3, 1, 1)
+    fixture_clamped = clamp_channelwise(fixture_value, fixture_bound)
+    fixture_expected = torch.tensor([[[[-0.25, 0.25]], [[-0.5, 0.5]], [[-2.0, 2.0]]]])
     checks = {
         "contract_cpu_only": context.device == "cpu"
         and os.environ.get("CUDA_VISIBLE_DEVICES") == "",
@@ -147,6 +157,9 @@ def contract(context_path: Path) -> None:
         "half_transport_frozen": HALF_SIZES[(400, 400)] == (208, 208)
         and HALF_SIZES[(480, 640)] == (240, 320),
         "gate_order_valid": GAIN_PASS > GAIN_INCONCLUSIVE > 0.0,
+        "channelwise_clamp_fixture": torch.equal(fixture_clamped, fixture_expected)
+        and fixture_clamped.shape == fixture_value.shape
+        and fixture_clamped.dtype == fixture_value.dtype,
         "workload_absent": not (context.output_path / "workload").exists(),
     }
     atomic_json(
@@ -283,7 +296,7 @@ def run(context_path: Path) -> None:
             raise RuntimeError(f"unregistered exact-half shape: {(height, width)}")
         low = F.interpolate(value, size=HALF_SIZES[(height, width)], mode="bilinear", align_corners=False, antialias=False)
         replay = F.interpolate(low, size=(height, width), mode="bilinear", align_corners=False)
-        return support * a0p.clamp_channelwise(replay, bound)
+        return support * clamp_channelwise(replay, bound)
 
     total_units = len(development) * len(OPERATORS)
     completed = 0
@@ -309,15 +322,15 @@ def run(context_path: Path) -> None:
                 current = source.V3W.delta_for(kind, model, {"hazy": hazy, "base": base, "steps": {operator: step}, "support": support}, operator)
                 reference_render = torch.clamp(base + 0.25 * step, 0.0, 1.0)
                 current_render = torch.clamp(base + 0.25 * (step + current), 0.0, 1.0)
-                response = support * a0p.clamp_channelwise(4.0 * (current_render - reference_render), delta_bound)
+                response = support * clamp_channelwise(4.0 * (current_render - reference_render), delta_bound)
                 candidates = [
                     (BANK[0], torch.zeros_like(current)),
-                    (BANK[1], support * a0p.clamp_channelwise(current, delta_bound)),
-                    (BANK[2], support * a0p.clamp_channelwise(-current, delta_bound)),
+                    (BANK[1], support * clamp_channelwise(current, delta_bound)),
+                    (BANK[2], support * clamp_channelwise(-current, delta_bound)),
                     (BANK[3], exact_half(current, support, delta_bound)),
                     (BANK[4], exact_half(-current, support, delta_bound)),
                     (BANK[5], response),
-                    (BANK[6], support * a0p.clamp_channelwise(-response, delta_bound)),
+                    (BANK[6], support * clamp_channelwise(-response, delta_bound)),
                     (BANK[7], exact_half(response, support, delta_bound)),
                     (BANK[8], exact_half(-response, support, delta_bound)),
                 ]
@@ -445,8 +458,8 @@ def run(context_path: Path) -> None:
         proposal_gain = metric_psnr(selected_mse) - metric_psnr(old_high_mse)
 
         delta_bound = base.new_tensor(args.delta_bound).view(1, 3, 1, 1)
-        target_step = support * a0p.clamp_channelwise(4.0 * (label - base), base.new_tensor(frozen["bound"]).view(1, 3, 1, 1))
-        target_delta = support * a0p.clamp_channelwise(target_step - step, delta_bound)
+        target_step = support * clamp_channelwise(4.0 * (label - base), base.new_tensor(frozen["bound"]).view(1, 3, 1, 1))
+        target_delta = support * clamp_channelwise(target_step - step, delta_bound)
         best_privileged_mse = old_high_mse
         for offset in range(0, len(GRID), 8):
             values = base.new_tensor(GRID[offset:offset + 8]).view(-1, 1, 1, 1)

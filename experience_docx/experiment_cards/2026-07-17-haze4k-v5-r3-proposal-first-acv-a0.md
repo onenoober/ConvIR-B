@@ -44,8 +44,9 @@ Status: PLANNED
 - First operation: `R3_A0_GT_FREE_PROPOSAL_ORACLE`
 - Expected wall time and monitor profile: 7,200 seconds expected, 14,400 seconds hard timeout, `standard` monitor profile, one finish near frozen ETA and no watcher
 - Complete-unit resume policy: `none`; any engineering failure stops for user repair-or-archive decision and is not synchronized or relaunched automatically
-- Cloud workspace/run/output/status/closeout: MCP-derived fresh route workspace; run root `/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r3_proposal_first_acv_20260717`; output `r3-a0-proposal-r2`; closeout `r3_a0_proposal_oracle_closeout.json`
+- Cloud workspace/run/output/status/closeout: MCP-derived fresh route workspace; run root `/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r3_proposal_first_acv_20260717`; output `r3-a0-proposal-r3`; closeout `r3_a0_proposal_oracle_closeout.json`
 - Same-contract engineering repair: `r1` stopped in asset preflight because the SHA-bound canonical operator manifest's historical workspace path no longer existed. `r2` points to the surviving canonical `v3l` workspace copy with the identical frozen SHA-256 `1d2ffa499128ad08a272d67c5439583900afe8ef87fb3256193ad5fe21c3af84`; operator contents and all scientific settings are unchanged.
+- Same-contract workload repair: `r2` passed all asset checks and the CPU contract, then stopped at development workload unit zero because the entrypoint called a non-exported `a0p.clamp_channelwise`. `r3` uses the identical A1F channelwise clamp formula locally and adds a protected-data-free CPU tensor fixture covering its broadcast, bounds, shape and dtype; all scientific settings remain unchanged.
 - Compact Git evidence and cloud-only raw artifacts: Git may receive bank identity, cache manifest hash/count, structural/operator/bootstrap/risk/resource/access summaries, status and closeout; development names, cache tensors, raw per-image/candidate rows, losses, responses, renders and predictions remain cloud-only
 
 ## Frozen Bank
