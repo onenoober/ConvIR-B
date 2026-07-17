@@ -179,7 +179,8 @@ def load_context(path: Path, expected_phase: str) -> RouteContext:
     heartbeat_path = _absolute_path(value["heartbeat_path"], "heartbeat_path")
     if output_path != (run_root / run_id).resolve():
         raise ContractError("output_path must equal run_root/run_id")
-    if phase_output != (output_path / expected_phase).resolve():
+    phase_directory = "contract" if expected_phase == "contract" else "workload"
+    if phase_output != (output_path / phase_directory).resolve():
         raise ContractError("phase_output_path does not match the phase")
     if result_path != (phase_output / f"{expected_phase}_result.json").resolve():
         raise ContractError("result_path does not match the phase result contract")

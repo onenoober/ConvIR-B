@@ -14,14 +14,15 @@ import route_program_api as API  # noqa: E402
 
 def context(root: Path, phase: str):
     output = root / "runs/r1"
+    phase_directory = "contract" if phase == "contract" else "workload"
     return {
         "schema_version": 1, "phase": phase, "route_id": "route",
         "operation_id": "S0", "run_id": "r1", "route_commit": "a" * 40,
         "runner_sha256": "b" * 64,
         "entrypoint_relpath": "experience_docx/tools/program.py",
         "remote_repo": str(root / "repo"), "run_root": str(root / "runs"),
-        "output_path": str(output), "phase_output_path": str(output / phase),
-        "result_path": str(output / phase / f"{phase}_result.json"),
+        "output_path": str(output), "phase_output_path": str(output / phase_directory),
+        "result_path": str(output / phase_directory / f"{phase}_result.json"),
         "status_path": str(output / "status.txt"),
         "heartbeat_path": str(output / "heartbeat.json"), "device": "cpu",
         "total_units": 1, "evidence_role": "engineering_debug",

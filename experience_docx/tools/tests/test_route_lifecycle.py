@@ -106,6 +106,8 @@ class LifecycleTests(unittest.TestCase):
         )
         self.assertEqual("cpu", contract["device"])
         self.assertEqual("cuda", run["device"])
+        self.assertEqual("contract", Path(contract["phase_output_path"]).name)
+        self.assertEqual("workload", Path(run["phase_output_path"]).name)
 
     def test_contract_context_filters_protected_assets(self):
         _, runtime = self.normalized()

@@ -166,7 +166,7 @@ def verify_assets(asset_manifest: dict[str, Any] | None, *, repo: Path,
 def context_value(*, phase: str, env: dict[str, str], spec: dict[str, Any],
                   output: Path, status: Path, heartbeat: Path,
                   assets: list[dict[str, Any]]) -> dict[str, Any]:
-    phase_output = output / phase
+    phase_output = output / ("contract" if phase == "contract" else "workload")
     context_assets = assets if phase == "run" else [
         item for item in assets if item["contract_access"]
     ]

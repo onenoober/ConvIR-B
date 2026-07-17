@@ -8,8 +8,8 @@
       "runner_relpath": "experience_docx/tools/run_route_operation.sh",
       "mode": "route_ready_validation",
       "require_gpu": false,
-      "output_id": "route-ready-fastpath-validation-r1",
-      "closeout_filename": "route_ready_fastpath_validation_closeout.json",
+      "output_id": "route-ready-fastpath-validation-r2",
+      "closeout_filename": "route_ready_fastpath_validation_r2_closeout.json",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
       "allowed_terminal_tuples": [

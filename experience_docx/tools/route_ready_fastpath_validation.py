@@ -43,6 +43,8 @@ def contract(context_path: Path) -> None:
 
 def run(context_path: Path) -> None:
     context = load_context(context_path, "run")
+    if context.phase_output_path.name != "workload":
+        raise RuntimeError("run phase is outside the fixed workload directory")
     prepare_phase_output(context)
     contract_report = context.output_path / "contract/unit_tests.txt"
     if not contract_report.is_file() or "OK" not in contract_report.read_text(encoding="utf-8"):

@@ -18,7 +18,7 @@
   "evidence_files": [
     {
       "source_relpath": "workload/summary.json",
-      "destination_filename": "route_ready_fastpath_validation_summary.json",
+      "destination_filename": "route_ready_fastpath_validation_r2_summary.json",
       "required": true,
       "max_bytes": 65536
     }

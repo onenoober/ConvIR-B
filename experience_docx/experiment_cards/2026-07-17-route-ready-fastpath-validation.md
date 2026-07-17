@@ -47,3 +47,11 @@ Status: PLANNED
 - Complete-unit resume policy: none; fresh output only
 - Cloud workspace/run/output/status/closeout: schema-v4 derived fresh paths with generic control/contract/workload layout
 - Compact Git evidence and cloud-only raw artifacts: summary and typed closeout only; unit-test stdout remains cloud-only
+
+## Engineering Repair History
+
+- r1: `FAILED_ENGINEERING / null / NONE` after contract pass; run output used
+  `run/` while the frozen evidence contract required `workload/`. No model,
+  GPU, dataset, checkpoint, confirmation, canary, or locked test was touched.
+- r2: same scope/gate with only the directory mapping and a cross-component
+  layout assertion repaired; new output, closeout, and summary names.
