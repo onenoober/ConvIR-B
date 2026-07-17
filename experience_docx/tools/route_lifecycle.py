@@ -32,6 +32,7 @@ REQUIRED_ENV = {
     "OUTPUT_PATH", "RUN_ID", "OUTPUT_ID", "GPU",
 }
 MAX_CLOSEOUT_BYTES = 64 * 1024
+VERIFIED_ASSETS: list[dict[str, Any]] = []
 
 
 class LifecycleError(RuntimeError):
@@ -127,6 +128,8 @@ def resolve_asset_path(value: str, *, repo: Path, run_root: Path, output: Path) 
 
 def verify_assets(asset_manifest: dict[str, Any] | None, *, repo: Path,
                   run_root: Path, output: Path) -> list[dict[str, Any]]:
+    global VERIFIED_ASSETS
+    VERIFIED_ASSETS = []
     if asset_manifest is None:
         return []
     observed = []
@@ -160,6 +163,7 @@ def verify_assets(asset_manifest: dict[str, Any] | None, *, repo: Path,
                 "commit": item["commit"], "access_role": item["access_role"],
                 "contract_access": item["contract_access"],
             })
+        VERIFIED_ASSETS = verified_asset_identities(observed)
     return observed
 
 
@@ -376,6 +380,18 @@ def lifecycle_identity(env: dict[str, str], spec: dict[str, Any]) -> dict[str, A
     }
 
 
+def verified_asset_identities(assets: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
+    identities = []
+    for item in assets or []:
+        identity = {
+            key: item[key] for key in (
+                "id", "kind", "access_role", "contract_access", "sha256", "commit",
+            ) if key in item
+        }
+        identities.append(identity)
+    return sorted(identities, key=lambda item: item["id"])
+
+
 def output_owned_by_run(output: Path, env: dict[str, str], spec: dict[str, Any]) -> bool:
     marker = output / "control/lifecycle_identity.json"
     try:
@@ -390,14 +406,7 @@ def write_closeout(*, env: dict[str, str], spec: dict[str, Any], operation: dict
                    returncode: int = 0,
                    verified_assets: list[dict[str, Any]] | None = None,
                    write_local_copy: bool = True) -> Path:
-    asset_identities = []
-    for item in verified_assets or []:
-        identity = {
-            key: item[key] for key in (
-                "id", "kind", "access_role", "contract_access", "sha256", "commit",
-            ) if key in item
-        }
-        asset_identities.append(identity)
+    asset_identities = verified_asset_identities(verified_assets)
     closeout = {
         "schema_version": 1,
         "route_id": spec["route_id"],
@@ -415,7 +424,7 @@ def write_closeout(*, env: dict[str, str], spec: dict[str, Any], operation: dict
         "canary_touched": result.get("canary_touched", False),
         "locked_test_touched": result.get("locked_test_touched", False),
         "evidence_sha256": dict(sorted(evidence_sha256.items())),
-        "verified_assets": sorted(asset_identities, key=lambda item: item["id"]),
+        "verified_assets": asset_identities,
         "details": result.get("details", {}),
         "failure_phase": failure_phase,
         "returncode": returncode,
@@ -440,6 +449,8 @@ def write_closeout(*, env: dict[str, str], spec: dict[str, Any], operation: dict
 
 
 def lifecycle() -> int:
+    global VERIFIED_ASSETS
+    VERIFIED_ASSETS = []
     env = require_environment()
     repo, run_root, output = validate_lifecycle_paths(env)
     manifest_path = repo / "experience_docx/route_operations.json"
@@ -572,6 +583,7 @@ def main() -> None:
                 env=env, spec=spec, operation=operation, output=output,
                 evidence_root=evidence_root, result=failure, evidence_sha256={},
                 failure_phase=getattr(exc, "phase", "lifecycle"), returncode=1,
+                verified_assets=VERIFIED_ASSETS,
                 write_local_copy=owns_output,
             )
         except BaseException as closeout_exc:

@@ -7,8 +7,8 @@ import argparse
 import csv
 import hashlib
 import json
-import math
 import os
+import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -23,7 +23,7 @@ from route_program_api import (
 
 
 ROUTE_ID = "haze4k_v5_r3_proposal_first_acv_20260717"
-OPERATION_ID = "R3_S0_LEDGER_FREEZE"
+OPERATION_ID = "R3_S0_LEDGER_FREEZE_R2"
 EXPECTED_TRAIN_INNER = 2400
 EXPECTED_VAL_INNER = 600
 EXPECTED_HISTORICAL = 1200
@@ -76,78 +76,73 @@ def profile_key(profile):
     return json.dumps(profile, separators=(",", ":"))
 
 
-def profile_penalty(selected, groups_by_profile, target_ratio):
-    selected_counts = Counter()
-    for group in selected:
-        selected_counts[group_profile(groups_by_profile["groups"][group])] += len(
-            groups_by_profile["groups"][group]
-        )
-    return sum(
-        abs(selected_counts[profile] - total * target_ratio)
-        for profile, total in groups_by_profile["profile_image_counts"].items()
-    )
-
-
-def select_confirmation(groups, target_count, seed):
+def select_confirmation(groups, target_count, seed, max_transitions):
     total_count = sum(len(items) for items in groups.values())
     ratio = target_count / total_count
     by_profile = defaultdict(list)
     for group, items in groups.items():
         by_profile[group_profile(items)].append(group)
-    selected = set()
-    for profile, profile_groups in sorted(by_profile.items(), key=lambda item: profile_key(item[0])):
+    strata = []
+    for profile, profile_groups in sorted(
+        by_profile.items(), key=lambda item: profile_key(item[0])
+    ):
         ordered = sorted(
             profile_groups,
             key=lambda group: (stable_token("confirmation", group, seed), group),
         )
-        take = int(math.floor(len(ordered) * ratio))
-        selected.update(ordered[:take])
-    profile_totals = {
-        profile: sum(len(groups[group]) for group in profile_groups)
-        for profile, profile_groups in by_profile.items()
-    }
-    profile_state = {
-        "groups": groups,
-        "profile_image_counts": profile_totals,
-    }
+        group_size = len(groups[ordered[0]])
+        if any(len(groups[group]) != group_size for group in ordered):
+            raise ValueError("groups sharing a profile must have equal size")
+        strata.append((profile, ordered, group_size))
 
-    def score(candidate):
-        count = sum(len(groups[group]) for group in candidate)
-        return (
-            abs(count - target_count),
-            profile_penalty(candidate, profile_state, ratio),
-        )
+    # For each reachable image count, retain the globally lowest profile-balance
+    # penalty. The choice tuple is a deterministic final tie-break only.
+    states = {0: 0.0}
+    parents = []
+    transitions = 0
+    for _, ordered, group_size in strata:
+        expected = len(ordered) * group_size * ratio
+        next_states = {}
+        layer_parents = {}
+        for previous_count in sorted(states):
+            previous_penalty = states[previous_count]
+            for take in range(len(ordered) + 1):
+                transitions += 1
+                if transitions > max_transitions:
+                    raise RuntimeError("confirmation allocation transition cap exceeded")
+                count = previous_count + take * group_size
+                candidate = previous_penalty + abs(take * group_size - expected)
+                current = next_states.get(count)
+                if current is None or candidate < current - 1e-12:
+                    next_states[count] = candidate
+                    layer_parents[count] = (previous_count, take)
+        states = next_states
+        parents.append(layer_parents)
 
-    while True:
-        current_score = score(selected)
-        best_score = current_score
-        best_selected = None
-        best_token = None
-        for group in sorted(groups):
-            candidate = set(selected)
-            if group in candidate:
-                candidate.remove(group)
-                action = "remove"
-            else:
-                candidate.add(group)
-                action = "add"
-            candidate_score = score(candidate)
-            token = stable_token(f"adjust-{action}", group, seed)
-            if candidate_score < best_score or (
-                candidate_score == best_score
-                and best_selected is not None
-                and token < best_token
-            ):
-                best_score = candidate_score
-                best_selected = candidate
-                best_token = token
-        if best_selected is None or best_score >= current_score:
-            break
-        selected = best_selected
+    selected_count, _ = min(
+        states.items(),
+        key=lambda item: (abs(item[0] - target_count), item[1], item[0]),
+    )
+    choices = []
+    count = selected_count
+    for layer_parents in reversed(parents):
+        count, take = layer_parents[count]
+        choices.append(take)
+    choices.reverse()
+    selected = {
+        group
+        for (_, ordered, _), take in zip(strata, choices)
+        for group in ordered[:take]
+    }
 
     confirmation = sorted(selected)
     development = sorted(set(groups) - selected)
-    return development, confirmation
+    return development, confirmation, {
+        "selected_count": selected_count,
+        "stratum_count": len(strata),
+        "transition_count": transitions,
+        "max_transitions": max_transitions,
+    }
 
 
 def assign_folds(development_groups, groups, fold_count, seed):
@@ -193,14 +188,22 @@ def assign_folds(development_groups, groups, fold_count, seed):
     return {fold: sorted(items) for fold, items in fold_groups.items()}
 
 
-def build_ledger(train_inner, val_inner, historical_names, seed, confirmation_target, fold_count):
+def build_ledger(
+    train_inner,
+    val_inner,
+    historical_names,
+    seed,
+    confirmation_target,
+    fold_count,
+    max_transitions,
+):
     train_set = set(train_inner)
     val_set = set(val_inner)
     historical_set = set(historical_names)
     eligible = sorted(train_set - historical_set)
     groups = group_names(eligible)
-    development_groups, confirmation_groups = select_confirmation(
-        groups, confirmation_target, seed
+    development_groups, confirmation_groups, allocation = select_confirmation(
+        groups, confirmation_target, seed, max_transitions
     )
     folds = assign_folds(development_groups, groups, fold_count, seed)
     development_names = sorted(
@@ -220,6 +223,7 @@ def build_ledger(train_inner, val_inner, historical_names, seed, confirmation_ta
         "seed": seed,
         "confirmation_target": confirmation_target,
         "fold_count": fold_count,
+        "allocation": allocation,
         "group_rule": "filename stem before first underscore",
         "haze_signature_rule": "filename stem after first underscore",
         "roles": {
@@ -429,6 +433,7 @@ def compact_outputs(ledger, groups, train_set, val_set, historical_set, row_coun
             "confirmation": len(confirmation_groups),
         },
         "fold_counts": fold_counts,
+        "allocation": ledger["allocation"],
         "hashes": {
             "ledger": sha256_value(ledger),
             "development_names": sha256_value(sorted(development)),
@@ -459,23 +464,21 @@ def compact_outputs(ledger, groups, train_set, val_set, historical_set, row_coun
 def contract(context_path):
     context = load_context(context_path, "contract")
     prepare_phase_output(context)
+    max_transitions = int(os.environ["CONVIR_ROUTE_MAX_DP_TRANSITIONS"])
+    max_contract_seconds = float(os.environ["CONVIR_ROUTE_MAX_CONTRACT_SECONDS"])
     train = [
-        "g00_a.png",
-        "g00_b.png",
-        "g01_a.png",
-        "g01_b.png",
-        "g02_a.png",
-        "g02_b.png",
-        "g03_a.png",
-        "g03_b.png",
-        "g04_a.png",
-        "g04_b.png",
-        "g05_a.png",
-        "g05_b.png",
+        f"g{group:04d}_{group:04d}_{signature}.png"
+        for group in range(600)
+        for signature in ("a", "b")
     ]
-    historical = train[:4]
-    first = build_ledger(train, ["v00_a.png"], historical, 3407, 3, 2)[0]
-    second = build_ledger(train, ["v00_a.png"], historical, 3407, 3, 2)[0]
+    started = time.perf_counter()
+    first = build_ledger(
+        train, ["v0000_a.png"], [], 3407, 432, 4, max_transitions
+    )[0]
+    second = build_ledger(
+        train, ["v0000_a.png"], [], 3407, 432, 4, max_transitions
+    )[0]
+    elapsed_seconds = time.perf_counter() - started
     development = set(first["roles"]["development"])
     confirmation = set(first["roles"]["confirmation"])
     checks = {
@@ -484,7 +487,12 @@ def contract(context_path):
         "deterministic_ledger": canonical_bytes(first) == canonical_bytes(second),
         "synthetic_role_overlap_zero": not development & confirmation,
         "synthetic_partition_complete": development | confirmation
-        == set(train) - set(historical),
+        == set(train),
+        "representative_name_count": len(train) == EXPECTED_ELIGIBLE,
+        "representative_group_count": len(group_names(train)) == 600,
+        "transition_cap_respected": first["allocation"]["transition_count"]
+        <= max_transitions,
+        "representative_wall_time": elapsed_seconds <= max_contract_seconds,
         "workload_output_absent": not (context.output_path / "workload").exists(),
         "protected_assets_unavailable": not context.assets,
     }
@@ -494,6 +502,8 @@ def contract(context_path):
             "schema_version": 1,
             "checks": checks,
             "synthetic_ledger_sha256": sha256_value(first),
+            "elapsed_seconds": elapsed_seconds,
+            "allocation": first["allocation"],
         },
     )
     write_contract_result(context, checks=checks)
@@ -509,6 +519,7 @@ def run(context_path):
     seed = int(os.environ["CONVIR_ROUTE_LEDGER_SEED"])
     confirmation_target = int(os.environ["CONVIR_ROUTE_CONFIRMATION_TARGET"])
     fold_count = int(os.environ["CONVIR_ROUTE_FOLD_COUNT"])
+    max_transitions = int(os.environ["CONVIR_ROUTE_MAX_DP_TRANSITIONS"])
     train_inner, val_inner, rows_by_name, row_count, operators_valid = source_names(
         split_path, v3p_path
     )
@@ -520,6 +531,7 @@ def run(context_path):
         seed,
         confirmation_target,
         fold_count,
+        max_transitions,
     )
     summary, role_rows, fold_rows, signature_rows = compact_outputs(
         ledger,

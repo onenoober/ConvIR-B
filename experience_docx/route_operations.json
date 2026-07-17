@@ -1,15 +1,15 @@
 {
   "schema_version": 4,
   "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
-  "rules_commit": "20a95a23a464dbc50f04173e361645371bb69abe",
+  "rules_commit": "11042043f0a56aabb60c2b546ba16c2a9dfb8f8d",
   "route_card_relpath": "experience_docx/experiment_cards/2026-07-17-haze4k-v5-r3-proposal-first-acv-s0.md",
   "operations": {
-    "R3_S0_LEDGER_FREEZE": {
+    "R3_S0_LEDGER_FREEZE_R2": {
       "runner_relpath": "experience_docx/tools/run_route_operation.sh",
-      "mode": "r3_s0_ledger_freeze",
+      "mode": "r3_s0_ledger_freeze_r2",
       "require_gpu": false,
-      "output_id": "r3-s0-ledger-r1",
-      "closeout_filename": "r3_s0_ledger_freeze_closeout.json",
+      "output_id": "r3-s0-ledger-r2",
+      "closeout_filename": "r3_s0_ledger_freeze_r2_closeout.json",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
       "allowed_terminal_tuples": [

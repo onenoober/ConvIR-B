@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
-  "operation_id": "R3_S0_LEDGER_FREEZE",
+  "operation_id": "R3_S0_LEDGER_FREEZE_R2",
   "entrypoint_relpath": "experience_docx/tools/r3_s0_ledger_freeze.py",
-  "asset_manifest_relpath": "experience_docx/route_assets/R3_S0_LEDGER_FREEZE.json",
+  "asset_manifest_relpath": "experience_docx/route_assets/R3_S0_LEDGER_FREEZE_R2.json",
   "timeout_seconds": 600,
-  "expected_wall_seconds": 120,
+  "expected_wall_seconds": 60,
   "total_units": 2,
   "evidence_role": "development_screening",
   "resume_policy": "none",
@@ -17,7 +17,9 @@
   "environment": {
     "CONVIR_ROUTE_LEDGER_SEED": "3407",
     "CONVIR_ROUTE_CONFIRMATION_TARGET": "432",
-    "CONVIR_ROUTE_FOLD_COUNT": "4"
+    "CONVIR_ROUTE_FOLD_COUNT": "4",
+    "CONVIR_ROUTE_MAX_DP_TRANSITIONS": "1000000",
+    "CONVIR_ROUTE_MAX_CONTRACT_SECONDS": "10"
   },
   "evidence_files": [
     {
