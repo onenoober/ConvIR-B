@@ -22,12 +22,16 @@
 2. Freeze one route card: route identity, estimand, evidence roles, locked-test
    policy, gate, stop rule, implementation contract, and smallest useful stage
    sequence. Follow `EXPERIMENT_GOVERNANCE_PROTOCOL.md`.
-3. Create only the bundle in `MODEL_EXPERIMENT_START_CHECKLIST.md`: one card,
-   one operations manifest, one runner, route code, and an asset manifest only
-   when necessary.
-4. Launch and monitor only through `MODEL_RUN_OPERATIONS_PROTOCOL.md`. Prefer
-   the six bounded `convir-ops` tools; use `COMMAND_RELIABILITY_PROTOCOL.md`
-   for uncovered command boundaries.
+3. Use `ROUTE_READY_FASTPATH.md`: create one card, one operations manifest, one
+   runtime spec per operation, one Python entrypoint, one evidence README, and
+   an asset manifest only when necessary. Stage the complete bundle and require
+   one `validate_route_ready.py` pass. All operations use the unchanged generic
+   runner; route-specific shell lifecycle is prohibited by default.
+4. After one commit/push, launch and monitor only through
+   `MODEL_RUN_OPERATIONS_PROTOCOL.md` and the six bounded `convir-ops` tools.
+   Do not repeat static, identity, path, resource, or contract checks already
+   owned by the staged validator, MCP, and generic lifecycle. Use
+   `COMMAND_RELIABILITY_PROTOCOL.md` only for uncovered command boundaries.
 5. A typed closeout is the only later-stage authorization. Interpret scientific
    gates once, after complete evidence.
 6. After each completed cloud operation, push its compact evidence to the route

@@ -5,31 +5,50 @@ Date: 2026-07-16
 ## Launch Order
 
 ```text
-exact route commit -> card/manifest operation -> dynamic cloud preflight ->
-tracked runner -> bounded observation -> typed closeout -> compact archive
+one staged route-ready gate -> one exact route commit/push -> one MCP plan ->
+dynamic cloud preflight -> generic runner/contract -> bounded observation ->
+typed closeout -> compact archive
 ```
 
 Local WSL remains syntax/compile-only. Before launch, verify exact route HEAD,
 clean/fresh or exact-continuation workspace, runner/assets, prior closeout, data
-role, locked-test policy, GPU floor, new/exact-resume output, status, heartbeat,
+role, locked-test policy, GPU floor, new output/recovery asset, status, heartbeat,
 log and closeout paths. Never substitute a commit, data, split, checkpoint,
 threshold, output, or stage silently.
 
-## Runner
+For the default path, `validate_route_ready.py` performs the complete static
+check once before commit. MCP plan/start and the generic contract phase own the
+dynamic checks once after push. Do not insert another route-specific checklist,
+shell preflight, validator, or path wrapper between them.
 
-One tracked runner must use `set -euo pipefail` and the explicit cloud Python;
-run integrated identity/input/no-op/shape/finite checks before expensive work;
-write progress and heartbeat to `status.txt`; capture stdout/stderr; reject
-forbidden data/locked-test access; and write one closeout bound to route id, run
-id, route commit, runner SHA-256, evidence role, and allowed terminal tuple.
+## Generic Runner
+
+Every route-ready operation uses the unchanged
+`experience_docx/tools/run_route_operation.sh` and one declarative runtime spec.
+The route-specific Python entrypoint implements only `contract --context` and
+`run --context`; it receives every path and verified asset through
+`RouteContext`. The generic lifecycle uses the explicit cloud Python, performs
+identity/asset/output preflight, executes the CPU-only synthetic contract before
+expensive work, captures stdout/stderr, enforces timeout/protected-data/result
+contracts, publishes compact evidence write-once, and writes one closeout bound
+to route id, run id, route commit, runner SHA-256, evidence role, and allowed
+terminal tuple.
+
+The contract phase validates route-specific input/no-op/shape/finite and
+output/finalizer behavior that is safe on CPU, and cannot create `workload/`.
+Scientific computation belongs only to the run phase. Route-specific shell
+lifecycle, closeout, telemetry, output-path, timeout, and evidence-copy code is
+not allowed by default.
+
 For long operations, follow `GENERIC_RUN_MONITORING_PROTOCOL.md`: a fail-open
 metadata-only sidecar may atomically replace `heartbeat.json`, while the runner
 appends milestone-only `status.txt`. Telemetry never reads scientific outputs
 or controls the workload; the runner remains the sole closeout owner.
 
-Resume only at predeclared complete units with matching hashes. An incomplete
-unit restarts. Resume cannot reveal confirmation results early or change the
-scientific contract.
+Recovery uses a new output. A `complete_units` route may consume only a
+predeclared complete-unit asset with matching identity; an incomplete unit
+restarts. In-place `exact_resume` is not part of fast-path v1. Recovery cannot
+reveal confirmation results early or change the scientific contract.
 
 ## Observe And Stop
 

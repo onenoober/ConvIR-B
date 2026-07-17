@@ -1,0 +1,35 @@
+{
+  "schema_version": 4,
+  "route_id": "route_ready_fastpath_validation_20260717",
+  "rules_commit": "ee2f8e4259c64eef83a1e93cd2535310fd86e92b",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-17-route-ready-fastpath-validation.md",
+  "operations": {
+    "ROUTE_READY_FASTPATH_VALIDATION": {
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "mode": "route_ready_validation",
+      "require_gpu": false,
+      "output_id": "route-ready-fastpath-validation-r1",
+      "closeout_filename": "route_ready_fastpath_validation_closeout.json",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "allowed_terminal_tuples": [
+        {
+          "state": "COMPLETED_GATE_PASS",
+          "decision": "ROUTE_READY_FASTPATH_VALIDATION_PASS",
+          "authorizes": "ROUTE_READY_FASTPATH_ADOPTION"
+        },
+        {
+          "state": "FAILED_ENGINEERING",
+          "decision": null,
+          "authorizes": "NONE"
+        }
+      ],
+      "workspace_policy": "fresh_route",
+      "output_policy": "new",
+      "monitor_profile": "short",
+      "heartbeat_timeout_seconds": 120,
+      "min_free_gpu_mib": 0,
+      "max_gpu_utilization_pct": 100
+    }
+  }
+}

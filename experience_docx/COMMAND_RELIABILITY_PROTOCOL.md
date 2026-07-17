@@ -76,3 +76,8 @@ Canonical corrections retained from prior incidents:
   forward the dedicated registered worktree, then either let a new app/task
   session spawn the updated server or validate the exact registered executable
   with one isolated state directory and the unchanged six-tool interface.
+- 2026-07-17 invalid: dynamically JSON-quoted a multi-command `bash -lc` body
+  inside PowerShell; the shell boundary produced an unmatched double quote
+  before any repository command ran. Corrected once: invoke fixed Linux
+  programs with literal argv through `wsl.exe --exec`; use a committed script
+  when a command needs shell composition.

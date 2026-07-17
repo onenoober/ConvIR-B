@@ -8,6 +8,11 @@ Status: schema v4; server `4.1.0`.
 only a GitHub route branch, exact commit, and operation id. It never accepts an
 arbitrary command, remote path, metric, threshold, or scientific verdict.
 
+For new routes, first require one staged `validate_route_ready.py` pass under
+`ROUTE_READY_FASTPATH.md`, then commit/push once and call plan/start. The staged
+gate shares this server's exact `parse_manifest`; MCP must not gain a second
+route validator or a route-specific shell surface.
+
 ## Six Tools
 
 | Tool | Purpose |
