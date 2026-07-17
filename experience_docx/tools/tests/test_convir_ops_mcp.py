@@ -9,7 +9,7 @@ import tempfile
 import time
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 
 MODULE_PATH = Path(__file__).parents[1] / "convir_ops_mcp.py"
@@ -176,6 +176,19 @@ class ConvirOpsV4Tests(unittest.TestCase):
         for profile in OPS.MONITOR_PROFILES.values():
             self.assertLessEqual(profile["max_polls"] * profile["interval_seconds"], 60)
 
+    def test_unknown_start_recovery_bodies_have_valid_bash_syntax(self):
+        for body in (
+            OPS.atomic_start_body(context(), None),
+            OPS.unknown_start_inspection_body(context()),
+            OPS.abandoned_start_cleanup_body(context()),
+        ):
+            completed = subprocess.run(
+                ["/bin/bash", "-n"], input=body, text=True,
+                capture_output=True, timeout=10,
+            )
+            self.assertEqual(0, completed.returncode, completed.stderr)
+        self.assertIn("clone --quiet --shared --no-checkout", OPS.atomic_start_body(context(), None))
+
     def test_first_operation_requires_exact_card_field(self):
         self.assertEqual("S0", OPS.first_operation_from_card("- First operation: S0\n"))
         with self.assertRaises(OPS.ToolError):
@@ -285,15 +298,55 @@ class ConvirOpsV4Tests(unittest.TestCase):
             OPS.verify_live_context(ctx)
         self.assertEqual(before, json.dumps(ctx, sort_keys=True))
 
-    def test_launch_timeout_opens_unknown_state_without_blind_retry(self):
+    def test_launch_timeout_recovers_receipt_from_bound_output(self):
         plan = {"context": context(), "issued_at": int(time.time()), "expires_at": int(time.time()) + 60, "nonce": "n"}
         token = OPS.write_new_record("plan", plan, {"receipt": None})
         error = OPS.ToolError("timeout", failure_phase="launch_command", failure_class="command_infra")
-        with patch.object(OPS, "verify_live_context"), patch.object(OPS, "run_remote", side_effect=error):
+        inspection = (
+            "CONVIR_OPS_START_INSPECTION repo=exact runner=exact active=false "
+            "output=present identity=valid closeout=valid dirty=1\n"
+        )
+        with patch.object(OPS, "verify_live_context"), patch.object(
+            OPS, "run_remote", side_effect=[error, inspection]
+        ):
+            first = payload(OPS.tool_start({"plan_token": token}))
+            second = payload(OPS.tool_start({"plan_token": token}))
+            third = payload(OPS.tool_start({"plan_token": token}))
+        self.assertEqual("START_STATE_UNKNOWN", first["operation_state"])
+        self.assertEqual("LAUNCH_RECOVERED", second["operation_state"])
+        self.assertEqual("LAUNCH_IDEMPOTENT", third["operation_state"])
+        self.assertEqual(second["receipt"], third["receipt"])
+
+    def test_abandoned_exact_workspace_is_cleaned_before_retry(self):
+        plan = {"context": context(), "issued_at": int(time.time()), "expires_at": int(time.time()) + 60, "nonce": "n"}
+        token = OPS.write_new_record("plan", plan, {"receipt": None})
+        error = OPS.ToolError("timeout", failure_phase="launch_command", failure_class="command_infra")
+        inspection = (
+            "CONVIR_OPS_START_INSPECTION repo=exact runner=exact active=false "
+            "output=absent identity=absent closeout=absent dirty=0\n"
+        )
+        with patch.object(OPS, "verify_live_context"), patch.object(
+            OPS, "run_remote",
+            side_effect=[error, inspection, "CONVIR_OPS_ABANDONED_START_CLEANUP_OK\n"],
+        ):
             first = payload(OPS.tool_start({"plan_token": token}))
             second = payload(OPS.tool_start({"plan_token": token}))
         self.assertEqual("START_STATE_UNKNOWN", first["operation_state"])
+        self.assertEqual("START_RETRY_READY", second["operation_state"])
+        self.assertEqual(["convir_route_start"], second["allowed_next_actions"])
+
+    def test_unknown_start_recovery_is_single_shot(self):
+        plan = {"context": context(), "issued_at": int(time.time()), "expires_at": int(time.time()) + 60, "nonce": "n"}
+        token = OPS.write_new_record("plan", plan, {"receipt": None})
+        error = OPS.ToolError("timeout", failure_phase="launch_command", failure_class="command_infra")
+        remote = Mock(side_effect=[error, error])
+        with patch.object(OPS, "verify_live_context"), patch.object(OPS, "run_remote", remote):
+            payload(OPS.tool_start({"plan_token": token}))
+            second = payload(OPS.tool_start({"plan_token": token}))
+            third = payload(OPS.tool_start({"plan_token": token}))
         self.assertEqual("START_STATE_UNKNOWN", second["operation_state"])
+        self.assertEqual("START_STATE_UNKNOWN", third["operation_state"])
+        self.assertEqual(2, remote.call_count)
 
     def test_resource_wait_is_retryable_before_launch_attempt(self):
         plan = {"context": context(require_gpu=True), "issued_at": int(time.time()), "expires_at": int(time.time()) + 60, "nonce": "n"}
@@ -420,7 +473,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("4.1.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("4.2.0", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")

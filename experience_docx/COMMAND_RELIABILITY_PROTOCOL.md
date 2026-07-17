@@ -81,3 +81,9 @@ Canonical corrections retained from prior incidents:
   before any repository command ran. Corrected once: invoke fixed Linux
   programs with literal argv through `wsl.exe --exec`; use a committed script
   when a command needs shell composition.
+- 2026-07-17 incident: a schema-v4 start crossed the launch boundary and timed
+  out after the runner had already produced a typed closeout, leaving no
+  receipt and only an unactionable `inspect_once` label. Corrected in the
+  unchanged six-tool surface: one repeat of the same sealed start performs a
+  metadata-only inspection, recovers a receipt from exact bound runtime state,
+  or proves and cleans only an untouched exact fresh workspace before retry.

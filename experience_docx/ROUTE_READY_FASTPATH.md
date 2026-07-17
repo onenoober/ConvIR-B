@@ -47,6 +47,10 @@ resources, assets, CPU-only contract execution, telemetry, timeout, evidence
 publication, and typed closeout are owned by MCP plus the generic lifecycle.
 Do not repeat those checks manually. Observe at the frozen expected end with
 `convir_route_finish`; an active healthy run needs no resident model watcher.
+If start returns `START_STATE_UNKNOWN`, never create another plan or launch.
+Repeat that same sealed start once: its built-in metadata-only recovery either
+returns the original launch receipt, proves a clean unchanged retry, or stops
+as ambiguous.
 
 `--bootstrap-runtime-bundle` is valid only for the first infrastructure branch
 that introduces this bundle. It still requires every already-present main file

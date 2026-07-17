@@ -2,7 +2,8 @@
 
 Date: 2026-07-16
 
-Status: schema v4; server `4.1.0`.
+Status: schema v4; server `4.2.0` candidate. The tool count and argument schemas
+remain unchanged from `4.1.0`.
 
 `convir-ops` is a restricted local stdio bridge to `convir-4090`. It accepts
 only a GitHub route branch, exact commit, and operation id. It never accepts an
@@ -63,9 +64,16 @@ valid.
 ## Finite State
 
 Start checks resources before creating a fresh workspace and again immediately
-before launch. Resource wait may reuse the unchanged plan. Any failure after
-the launch boundary becomes `START_STATE_UNKNOWN` and forbids blind retry. A
-receipt is the only input for finish/evidence tools. Finish prefers
+before launch. Fresh workspaces use the immutable cloud anchor as a local shared
+object seed and fetch only the exact route branch tip, avoiding a full GitHub
+history clone on every route. Resource wait may reuse the unchanged plan. Any timeout after
+the launch boundary becomes `START_STATE_UNKNOWN` and forbids a second launch.
+One repeat of the same `convir_route_start` performs a bounded metadata-only
+inspection. Exact repo/runner plus an active session, bound output, or valid
+closeout recovers a receipt without launching again. Proven no-launch resets
+the unchanged plan; an exact clean abandoned fresh workspace may be removed
+only before any session/output/closeout exists. Ambiguous state stops after
+that single inspection. A receipt is the only input for finish/evidence tools. Finish prefers
 `heartbeat.json`, falls back to `status.txt`, and then to receipt launch time. A
 stale active heartbeat is a bounded infrastructure warning: it never controls
 the workload and leaves the receipt open for later closeout validation. A dead
@@ -80,7 +88,7 @@ They never stage, commit, or push.
 
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. After an update, restart the host and verify version
-`4.1.0`, source SHA-256, and exactly six tools.
+`4.2.0`, source SHA-256, and exactly six tools.
 
 The 2026-07-16 adoption audit verified the registered executable at
 `main@dca94d71c9fe73e4e93910b0587927c79ab7023c`: version `4.1.0`, source

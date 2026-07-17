@@ -62,7 +62,9 @@ then stops. Never create a watcher loop or task per poll.
 Failure classes stay distinct: command/transport, preflight/resource,
 engineering/runtime, evidence/closeout, and scientific/safety gate. Use one
 deterministic command correction and one engineering repair cycle per root
-cause. `START_STATE_UNKNOWN` requires one inspection and no blind retry.
+cause. `START_STATE_UNKNOWN` forbids a second launch. Repeat the same sealed
+start call once only to run its metadata-only recovery inspection; it may
+recover a receipt, prove a clean retry state, or stop as ambiguous.
 Resource wait may retry the unchanged prelaunch plan.
 
 Raw logs, checkpoints, images, arrays, predictions and large tables remain in

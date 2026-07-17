@@ -56,9 +56,10 @@
 - One command-boundary class gets one deterministic correction. One engineering
   root cause gets one repair cycle. A repeated same-class/root failure stops
   that operation with one blocker.
-- A timeout after the launch boundary is unknown state and requires one
-  inspection; never retry blindly. A dead session without closeout is inspected
-  once and never polled repeatedly.
+- A timeout after the launch boundary is unknown state and forbids a second
+  launch. Repeat the same sealed start call once only for its built-in
+  metadata inspection and receipt recovery/clean-retry decision. A dead session
+  without closeout is inspected once and never polled repeatedly.
 - Engineering failure never changes data, metric, threshold, gate, locked-test
   policy, or scientific authorization.
 
