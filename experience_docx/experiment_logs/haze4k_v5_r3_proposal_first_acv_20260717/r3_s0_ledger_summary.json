@@ -1,0 +1,80 @@
+{
+  "allocation": {
+    "backpointer_bytes": 2649406,
+    "max_transitions": 1442401,
+    "selected_count": 432,
+    "state_count_upper_bound": 1201,
+    "stratum_count": 1103,
+    "transition_count": 1385169
+  },
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "checkpoint_accessed": false,
+  "checks": {
+    "confirmation_near_target": true,
+    "development_confirmation_group_overlap_zero": true,
+    "development_confirmation_overlap_zero": true,
+    "eligible_1200": true,
+    "eligible_exact_difference": true,
+    "fold_count_balance": false,
+    "fold_count_exact": true,
+    "fold_pair_overlap_zero": true,
+    "fold_union_exact_development": true,
+    "haze_signature_balance": true,
+    "historical_1200": true,
+    "historical_inside_train": true,
+    "paired_v3p_operator_rows": true,
+    "train_inner_2400": true,
+    "train_val_overlap_zero": true,
+    "val_inner_600": true
+  },
+  "confirmation_images_targets_outcomes_touched": false,
+  "counts": {
+    "confirmation": 432,
+    "confirmation_target": 432,
+    "development": 768,
+    "eligible": 1200,
+    "historical_v3p": 1200,
+    "max_group_size": 1,
+    "train_inner": 2400,
+    "v3p_identity_rows": 2400,
+    "val_inner": 600
+  },
+  "decision": "R3_S0_LEDGER_FREEZE_FAIL_STOP",
+  "fold_counts": {
+    "0": 256,
+    "1": 256,
+    "2": 0,
+    "3": 256
+  },
+  "gpu_accessed": false,
+  "group_counts": {
+    "confirmation": 432,
+    "development": 768,
+    "eligible": 1200
+  },
+  "gt_decoded": false,
+  "hashes": {
+    "confirmation_groups": "21f1fbfee54cc112f6c8539c75199fec3d783ff2c1fae105aee38ff8e538a190",
+    "confirmation_names": "831bb8cf1e327d06fafe5dd287beaec74562b8d5bfcc6446ad9f4af30c5402a7",
+    "development_groups": "55618ad83ab5c9dbb57e9677fcd5a00a49df9f7ec5e7e87e2566e112cde5b26e",
+    "development_names": "f27615a286b691e77372656c0c82b521f5472082007c4012c1db9896e747edae",
+    "ledger": "ad7fd9799f3768d6caf0739c9652e65327376e92bd7620d80493b835e8b92e0b"
+  },
+  "identity_only_v3p_columns": [
+    "name",
+    "clean_reference_group",
+    "operator_label"
+  ],
+  "image_decoded": false,
+  "inference_occurred": false,
+  "locked_test_touched": false,
+  "model_calls": 0,
+  "name_level_ledger_cloud_only": true,
+  "operation_id": "R3_S0_LEDGER_FREEZE_R3",
+  "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "structural_valid": false,
+  "training_occurred": false
+}

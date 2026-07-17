@@ -1,0 +1,6 @@
+role,image_count,group_count,published_names
+train_inner,2400,2400,false
+historical_v3p,1200,1200,false
+r3_development,768,768,false
+r3_confirmation,432,432,false
+val_inner_historical,600,600,false

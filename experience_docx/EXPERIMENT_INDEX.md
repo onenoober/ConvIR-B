@@ -289,6 +289,17 @@ closeout, compact GitHub evidence sync, and a new amendment. The draft card is
 the detailed rationale and operation/artifact reference is
 `experience_docx/experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/recommended_r3_route.md`.
 
+The repaired R3 S0 ledger operation then completed at route commit
+`2966a755a8dae9e31ff1d3ef71657a668aeac51d`. All 16 structural checks passed:
+the 1,200 train-inner identities outside historical v3p split exactly into 768
+development and 432 sealed confirmation identities, with four disjoint
+192-image development folds, zero role/group overlap, exact source pairing,
+and haze-signature balance. The name-level ledger remains cloud-only; Git
+retains hashes and compact counts. Typed decision:
+`R3_S0_LEDGER_FREEZE_PASS`, authorizing only an independent
+`R3_A0_GT_FREE_PROPOSAL_ORACLE` amendment review. A0 creation/start is not
+authorized.
+
 Use `experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1c-safe-action-interface-ceiling.md`
 and
 `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/`
@@ -521,6 +532,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/` | compact | v4a-A1C S0 and formal interface-ceiling replay: all 512 development-screen images and three interface cells completed without training; exact-half adequacy passed and authorizes only fresh R3 review. Raw rows remain cloud-only. |
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716/` | compact | v4a-A1X-v3 repaired S0 passed, then D0 global-head development screening beat shuffle and the local control but failed material gain and oracle-retention gates. Typed stop: `A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP`; no confirmation, canary, or locked-test access. |
 | `experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/` | compact | Retrospective GitHub-plus-cloud raw-table audit: separates GT-free proposal headroom from candidate-conditioned valuation, records v3p tie/margin and cross-operator structure, retires the historical 432-name range from independent confirmation use, and authorizes only a fresh R3 S0/A0 design. The evidence root also contains the detailed proposal-first operation/artifact reference; raw tables remain cloud-only. |
+| `experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/` | compact | R3 S0 repaired ledger freeze: r4 passes all 16 structural checks with exact 1,200 eligible, 768 development, 432 sealed confirmation, and four disjoint 192-image folds. No image/GT/model/GPU/protected outcome was accessed. It authorizes only A0 amendment review, not A0 start. |
 | `experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/` | compact | First frozen R3 S0 ledger operation: synthetic contract passed, but the CPU-only workload reached its 600-second timeout (`rc=124`) before publishing ledger evidence. Terminal tuple is `FAILED_ENGINEERING / null / NONE`; this is not a scientific S0 failure and A0 remains blocked. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
@@ -667,11 +679,11 @@ The active conclusion is conservative:
   material-gain and retention gates. The R3 audit therefore separates the
   remaining problem into GT-free candidate proposal and candidate-conditioned
   valuation/risk, rather than treating another wider direct target head as the
-  default continuation. The first frozen S0 ledger launch passed its synthetic
-  contract but timed out in the workload before producing a ledger decision.
-  This is `FAILED_ENGINEERING`, not scientific `FAIL`; A0, training,
-  confirmation, and sealed-data actions remain blocked. Only a separately
-  reviewed same-contract engineering root-cause repair may reopen S0.
+  default continuation. The repaired S0 ledger now passes its structural
+  contract and seals a fresh 768-development/432-confirmation split with four
+  balanced development folds. This authorizes only independent A0 proposal-
+  oracle amendment review; A0 workload start, training, confirmation outcomes,
+  and sealed-data actions remain blocked pending that amendment.
 
 ## Artifact Boundary
 

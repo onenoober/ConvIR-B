@@ -3,8 +3,8 @@
 Date: 2026-07-17
 
 Status: A1C established an adequate privileged exact-half interface, A1R and
-A1X found real but sub-material direction signal, and the first frozen R3 S0
-ledger attempt ended `FAILED_ENGINEERING` before a scientific decision.
+A1X found real but sub-material direction signal, and repaired R3 S0 now passes
+the fresh development/confirmation ledger contract.
 
 ## Current Read
 
@@ -21,15 +21,15 @@ ledger attempt ended `FAILED_ENGINEERING` before a scientific decision.
   useful directions before asking a candidate-conditioned critic to value them.
 - The historical 432-name A1X confirmation range is now `historical_audit_only`;
   a new ledger must come from the 1,200 train-inner images outside v3p.
-- The first CPU-only S0 launch passed its synthetic contract but timed out in
-  the workload at 600 seconds (`rc=124`). It published no ledger summary and
-  authorizes neither A0 nor a scientific interpretation.
+- Repaired S0 r4 passes all 16 structural checks with 768 development, 432
+  sealed confirmation, and four disjoint 192-image development folds. The
+  name-level ledger remains cloud-only and frozen by hashes.
 
 ## Decision
 
 Decision: `R3_CLOUD_EVIDENCE_AUDIT_COMPLETE_S0_A0_DESIGN_ONLY`.
 
-Execution status: `R3_S0_FAILED_ENGINEERING_A0_BLOCKED`.
+Execution status: `R3_S0_LEDGER_FREEZE_PASS_A0_AMENDMENT_REVIEW_ONLY`.
 
 Do not widen or retune A1X, repeat a single fixed-action RGB-response probe,
 reuse the historical 432 as confirmation, or start model training. Design only
@@ -49,11 +49,10 @@ It proposes one-operation-at-a-time progression:
 A2 four-fold OOF -> optional adapter-only integration -> one new-432
 confirmation`. This is a reference, not a launch authorization.
 
-The first exact-contract S0 execution is closed as an engineering timeout, not
-a data or mechanism failure. Do not launch A0, consume confirmation outcomes,
-or silently change the ledger algorithm, timeout, assets, seed, grouping,
-thresholds, or output identity. A same-contract root-cause repair requires a
-new explicit review and launch authorization.
+The repaired S0 operation establishes the fresh data ledger only. Do not launch
+A0 or consume confirmation outcomes. The typed PASS authorizes an independent
+A0 amendment review with exact proposal formulas/assets; it does not authorize
+candidate generation, model work, or workload start.
 
 Evidence:
 `experience_docx/experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/`.
