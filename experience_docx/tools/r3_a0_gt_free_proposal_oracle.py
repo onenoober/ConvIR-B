@@ -117,6 +117,23 @@ def clamp_channelwise(value: Any, bound: Any) -> Any:
     return value.minimum(bound).maximum(-bound)
 
 
+def safe_candidate_indices(
+    names: list[str], candidates: Any, low_mse: Any, high_mse: Any,
+    old_low_mse: float, old_high_mse: float,
+) -> list[int]:
+    if not names or names[0] != "reference_noop" \
+            or not bool((candidates[0:1] == 0.0).all()):
+        raise RuntimeError("proposal bank lost its exact no-op identity")
+    safe = [0]
+    for candidate_index in range(1, len(names)):
+        low_value = float(low_mse[candidate_index])
+        high_value = float(high_mse[candidate_index])
+        tolerance = numerical_tolerance(old_low_mse, old_high_mse, low_value, high_value)
+        if low_value <= old_low_mse + tolerance and high_value <= old_high_mse + tolerance:
+            safe.append(candidate_index)
+    return safe
+
+
 def contract(context_path: Path) -> None:
     import torch
 
@@ -143,6 +160,12 @@ def contract(context_path: Path) -> None:
     fixture_bound = torch.tensor([0.25, 1.0, 2.0]).view(1, 3, 1, 1)
     fixture_clamped = clamp_channelwise(fixture_value, fixture_bound)
     fixture_expected = torch.tensor([[[[-0.25, 0.25]], [[-0.5, 0.5]], [[-2.0, 2.0]]]])
+    fixture_candidates = torch.tensor([[[[0.0]]], [[[1.0]]]])
+    fixture_safe = safe_candidate_indices(
+        ["reference_noop", "unsafe_control"], fixture_candidates,
+        torch.tensor([1.0 + 8.0e-11, 2.0]), torch.tensor([1.0 + 8.0e-11, 2.0]),
+        1.0, 1.0,
+    )
     checks = {
         "contract_cpu_only": context.device == "cpu"
         and os.environ.get("CUDA_VISIBLE_DEVICES") == "",
@@ -160,6 +183,7 @@ def contract(context_path: Path) -> None:
         "channelwise_clamp_fixture": torch.equal(fixture_clamped, fixture_expected)
         and fixture_clamped.shape == fixture_value.shape
         and fixture_clamped.dtype == fixture_value.dtype,
+        "exact_noop_survives_reduction_drift": fixture_safe == [0],
         "workload_absent": not (context.output_path / "workload").exists(),
     }
     atomic_json(
@@ -444,15 +468,9 @@ def run(context_path: Path) -> None:
         high = torch.clamp(base + 0.25 * (step + candidates), 0.0, 1.0)
         low_mse = (low - label).square().mean(dim=(1, 2, 3))
         high_mse = (high - label).square().mean(dim=(1, 2, 3))
-        safe = []
-        for candidate_index in range(len(names)):
-            low_value = float(low_mse[candidate_index])
-            high_value = float(high_mse[candidate_index])
-            tolerance = numerical_tolerance(old_low_mse, old_high_mse, low_value, high_value)
-            if low_value <= old_low_mse + tolerance and high_value <= old_high_mse + tolerance:
-                safe.append(candidate_index)
-        if not safe or names[0] != "reference_noop":
-            raise RuntimeError("proposal bank lost its safe no-op")
+        safe = safe_candidate_indices(
+            names, candidates, low_mse, high_mse, old_low_mse, old_high_mse,
+        )
         selected_index = min(safe, key=lambda item: (float(high_mse[item]), item))
         selected_mse = float(high_mse[selected_index])
         proposal_gain = metric_psnr(selected_mse) - metric_psnr(old_high_mse)
