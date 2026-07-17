@@ -1,0 +1,20 @@
+{
+  "bootstrap_missing_from_main": [],
+  "checks": {
+    "asset_schema": true,
+    "card_launch_ready": true,
+    "contract_and_run_interface": true,
+    "mcp_parser_shared": true,
+    "output_and_evidence_names_unique": true,
+    "python_bash_syntax": true,
+    "runtime_bundle_canonical": true,
+    "staged_snapshot": true
+  },
+  "cloud_operation_launched": false,
+  "current_main": "baced3179770f44b5a6ed750b1d3d585d9859adc",
+  "operation_id": "ROUTE_READY_STRICT_CHECK",
+  "route_id": "route_ready_strict_check_20260717",
+  "schema_version": 1,
+  "snapshot_commit": "924d904e8aa215b92b2fc5c31c7864b5156629c1",
+  "status": "ROUTE_READY"
+}

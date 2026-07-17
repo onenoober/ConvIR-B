@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "route_id": "route_ready_strict_check_20260717",
+  "operation_id": "ROUTE_READY_STRICT_CHECK",
+  "entrypoint_relpath": "experience_docx/tools/route_ready_strict_check.py",
+  "asset_manifest_relpath": null,
+  "timeout_seconds": 300,
+  "expected_wall_seconds": 60,
+  "total_units": 1,
+  "evidence_role": "engineering_debug",
+  "resume_policy": "none",
+  "protected_data_permissions": {
+    "allow_confirmation": false,
+    "allow_canary": false,
+    "allow_locked_test": false
+  },
+  "environment": {},
+  "evidence_files": [
+    {
+      "source_relpath": "workload/summary.json",
+      "destination_filename": "route_ready_strict_check_summary.json",
+      "required": true,
+      "max_bytes": 65536
+    }
+  ]
+}
