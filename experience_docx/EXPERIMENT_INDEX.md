@@ -43,13 +43,22 @@ The archived r1 engineering failure exposed both a `run/` versus `workload/`
 mapping defect and an old v4.1 start-timeout state with a completed closeout but
 no receipt. r2 repaired only the mapping. The six-tool schema-v4 v4.2 candidate
 adds same-plan metadata-only receipt recovery and shared-seed cloud checkout;
-`980821176f09514d913f4ad0507e494b3c45971b` passed 73 cloud tests. The code is
-on main; it remains a candidate until a fresh MCP process loads it.
+`980821176f09514d913f4ad0507e494b3c45971b` passed 73 cloud tests.
+
+Fresh-process final acceptance on 2026-07-17 closed that candidate state. The
+registered source SHA-256 matches GitHub main, the live surface remains exactly
+six tools, three consecutive status audits were identical and non-mutating, and
+a new cloud execution at `8a93cbb9af9c9731e2fe118cfb241edaf22067cb`
+passed 73/73 tests with zero model calls. The infrastructure decision is
+`CONVIR_OPS_V4_2_ADOPTION`; it authorizes only the generic operations layer and
+does not authorize a scientific route.
 
 Use `experience_docx/ROUTE_READY_FASTPATH.md`,
 `experience_docx/experiment_cards/2026-07-17-route-ready-fastpath-validation.md`,
+`experience_docx/experiment_cards/2026-07-17-convir-ops-v4-2-final-acceptance.md`,
 and
-`experience_docx/experiment_logs/route_ready_fastpath_validation_20260717/`.
+`experience_docx/experiment_logs/route_ready_fastpath_validation_20260717/` and
+`experience_docx/experiment_logs/convir_ops_v4_2_final_acceptance_20260717/`.
 
 ## Purpose
 

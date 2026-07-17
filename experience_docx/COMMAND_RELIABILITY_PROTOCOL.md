@@ -87,3 +87,12 @@ Canonical corrections retained from prior incidents:
   unchanged six-tool surface: one repeat of the same sealed start performs a
   metadata-only inspection, recovers a receipt from exact bound runtime state,
   or proves and cleans only an untouched exact fresh workspace before retry.
+- 2026-07-17 invalid: invoked bare `rg` after crossing from PowerShell into WSL;
+  WSL PATH resolved the Codex WindowsApps binary and returned permission denied.
+  Corrected once: use `wsl.exe --exec` with an available absolute Linux reader,
+  here `/usr/bin/find`, `/bin/cat`, or `/usr/bin/sed`; never allow PATH fallback
+  to select a Windows executable.
+- 2026-07-17 invalid: passed an unquoted extended regular expression containing
+  `|` through PowerShell, which parsed the alternatives as pipelines before WSL
+  ran. Corrected once: stop that lookup and use a fixed absolute reader with
+  literal argv; shell composition belongs only in a committed Bash script.

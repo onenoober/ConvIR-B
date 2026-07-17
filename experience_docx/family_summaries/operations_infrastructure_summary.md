@@ -3,8 +3,7 @@
 Date: 2026-07-17
 
 Status: generic run monitoring and the route-ready generic runtime are adopted;
-schema-v4 start-recovery v4.2 passed candidate tests, is on main, and awaits
-fresh-process activation.
+schema-v4 start-recovery v4.2 is adopted after fresh-process activation.
 
 ## Current Verdict
 
@@ -32,8 +31,15 @@ valid closeout but had no receipt. The v4.2 candidate keeps exactly six
 schema-v4 tools, adds one same-plan metadata-only receipt recovery, and uses the
 immutable cloud anchor as a shared Git object seed. Candidate
 `980821176f09514d913f4ad0507e494b3c45971b` passed 73 cloud tests with zero
-model calls. It is not registered-service evidence until a fresh MCP process
-loads v4.2 from main.
+model calls.
+
+The 2026-07-17 final acceptance then verified a fresh registered process whose
+source SHA-256 matches main, exactly six live tools, three identical non-mutating
+status audits, and a new 73/73 cloud test execution at
+`8a93cbb9af9c9731e2fe118cfb241edaf22067cb`. It records zero model calls and no
+GPU, dataset, checkpoint, confirmation, canary, or locked-test access. The
+terminal infrastructure decision is `CONVIR_OPS_V4_2_ADOPTION`; route-specific
+scientific authorization remains independent.
 
 ## Revalidation Condition
 

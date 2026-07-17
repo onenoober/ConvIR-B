@@ -2,8 +2,8 @@
 
 Date: 2026-07-16
 
-Status: schema v4; server `4.2.0` candidate. The tool count and argument schemas
-remain unchanged from `4.1.0`.
+Status: schema v4; server `4.2.0` adopted after fresh-process acceptance. The
+tool count and argument schemas remain unchanged from `4.1.0`.
 
 `convir-ops` is a restricted local stdio bridge to `convir-4090`. It accepts
 only a GitHub route branch, exact commit, and operation id. It never accepts an
@@ -97,9 +97,19 @@ schema v4, and exactly six tools. Do not terminate an active task's stdio server
 to force reload; use a new app/task session or an isolated-state validation of
 the exact registered executable.
 
-The v4.2 candidate at
+The pre-activation v4.2 candidate at
 `980821176f09514d913f4ad0507e494b3c45971b` passed 73 cloud tests with schema
 v4, exactly six tools, bounded unknown-start receipt recovery, clean-abandoned-
 workspace retry, shared-seed checkout, and zero model calls. The code is on
-main; candidate status remains until a fresh process verifies the registered
-source identity.
+main.
+
+Final acceptance on 2026-07-17 verified the fresh registered process at
+`/home/ubuntu/workspace/ConvIR-B-operations-v4/experience_docx/tools/convir_ops_mcp.py`.
+Its source SHA-256
+`f84330ffc1ffe5b6973f710078e81bfb35bd4ffccab97e15096397e6e75d6e8a`
+matches GitHub main exactly, the live surface contains exactly six tools, and
+three consecutive read-only status calls returned the same clean/fresh main
+identity without Git mutation. A new cloud execution at
+`8a93cbb9af9c9731e2fe118cfb241edaf22067cb` again passed all 73 tests with
+zero model calls. This closes candidate status as `CONVIR_OPS_V4_2_ADOPTION`;
+see `experiment_logs/convir_ops_v4_2_final_acceptance_20260717/`.

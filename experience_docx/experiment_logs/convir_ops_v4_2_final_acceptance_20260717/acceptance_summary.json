@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "route_id": "convir_ops_v4_2_final_acceptance_20260717",
+  "date": "2026-07-17",
+  "verdict": "PASS",
+  "decision": "CONVIR_OPS_V4_2_ADOPTION",
+  "authorizes": "GENERIC_ROUTE_READY_OPERATIONS",
+  "does_not_authorize": [
+    "A1X",
+    "training",
+    "evaluation",
+    "inference",
+    "confirmation",
+    "canary",
+    "locked_test"
+  ],
+  "github_main_commit": "da4effe39ae32fdb815cbb9fbfb3372ec41ac251",
+  "cloud_validation": {
+    "branch": "codex/route-ready-runner-v1-20260717",
+    "commit": "8a93cbb9af9c9731e2fe118cfb241edaf22067cb",
+    "script_relpath": "experience_docx/tools/validate_convir_ops_4_2_candidate.sh",
+    "script_git_blob": "a47c92266795f4e0a9959aa15c5255cccf6432ff",
+    "script_sha256": "a8f3a198dfbb2140cbe2c72f5d6b619e24fdd0ae778bebea363fee4de1a903c8",
+    "transport_marker": "CONVIRCTL_REMOTE_SCRIPT_OK",
+    "gate_marker": "CONVIR_OPS_4_2_VALIDATION_OK",
+    "exit_code": 0,
+    "tests_run": 73,
+    "tests_passed": 73,
+    "schema_version": 4,
+    "tool_count": 6,
+    "model_calls": 0
+  },
+  "registered_service": {
+    "fresh_process_after_restart": true,
+    "source_path": "/home/ubuntu/workspace/ConvIR-B-operations-v4/experience_docx/tools/convir_ops_mcp.py",
+    "server_version": "4.2.0",
+    "schema_version": 4,
+    "tool_count": 6,
+    "source_sha256": "f84330ffc1ffe5b6973f710078e81bfb35bd4ffccab97e15096397e6e75d6e8a",
+    "github_main_source_sha256": "f84330ffc1ffe5b6973f710078e81bfb35bd4ffccab97e15096397e6e75d6e8a",
+    "source_matches_main": true,
+    "live_read_only_calls": 3,
+    "identical_results": true,
+    "github_main_ref_fresh": true,
+    "worktree_clean": true,
+    "diff_check_ok": true,
+    "cached_diff_check_ok": true,
+    "route_evidence_changes": [],
+    "git_mutations_performed": false
+  },
+  "protected_resource_access": {
+    "model": false,
+    "gpu": false,
+    "dataset": false,
+    "checkpoint": false,
+    "confirmation": false,
+    "canary": false,
+    "locked_test": false
+  },
+  "experiment_plan_created": false,
+  "experiment_start_called": false,
+  "limitations": [
+    "Scientific route authorization remains route-specific.",
+    "exact_resume is unsupported; recovery uses a new output.",
+    "Any MCP source, schema, transport, lifecycle, telemetry-permission, or finish-semantics change requires restart and revalidation."
+  ]
+}
