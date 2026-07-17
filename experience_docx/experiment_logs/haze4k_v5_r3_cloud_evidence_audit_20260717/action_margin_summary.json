@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "source_rows_per_operator": 1088675,
+  "paired_key_hash_match": true,
+  "all_blocks": {
+    "D_ref": {
+      "best_second_gap_le_1e_10": 0.5372154224,
+      "best_second_gap_le_1e_6": 0.6956281719,
+      "fixed_0p125_optimal_fraction": 0.5532854158,
+      "block_oracle_gain_vs_fixed_db_median": 0.2549779867
+    },
+    "D_rep": {
+      "best_second_gap_le_1e_10": 0.5372062369,
+      "best_second_gap_le_1e_6": 0.697496498,
+      "fixed_0p125_optimal_fraction": 0.5532725561,
+      "block_oracle_gain_vs_fixed_db_median": 0.2541360405
+    }
+  },
+  "active_blocks": {
+    "count_per_operator": 503995,
+    "fraction": 0.4629434863,
+    "D_ref_action_counts": {
+      "noop_0": 192933,
+      "a_0p125": 17647,
+      "a_0p25": 24453,
+      "a_0p5": 44452,
+      "a_1": 224510
+    },
+    "D_rep_action_counts": {
+      "noop_0": 193116,
+      "a_0p125": 17646,
+      "a_0p25": 24598,
+      "a_0p5": 44648,
+      "a_1": 223987
+    },
+    "D_ref_best_second_gap_median": 0.0000029932519466,
+    "D_rep_best_second_gap_median": 0.0000029289092524,
+    "D_ref_gap_gt_1e_5_fraction": 0.3167848887,
+    "D_rep_gap_gt_1e_5_fraction": 0.315138047,
+    "high_margin_gt_1e_5_actions": "only_0_or_1",
+    "direct_step_energy_auc_beneficial_vs_harmful": {
+      "D_ref": 0.5822604965,
+      "D_rep": 0.5832840593
+    },
+    "direct_step_energy_auc_high_margin_gt_1e_5": {
+      "D_ref": 0.4701147282,
+      "D_rep": 0.4631035624
+    }
+  },
+  "cross_operator": {
+    "block_best_action_agreement": 0.9429343009,
+    "first_step_sign_agreement": 0.9687335523,
+    "image_uniform_action_agreement": 0.8958333333,
+    "image_block_gain_correlation": 0.9970667765,
+    "other_operator_action_image_regret_db_median": {
+      "D_ref": 0.005142371,
+      "D_rep": 0.0046772254
+    },
+    "other_operator_action_image_regret_db_p95": {
+      "D_ref": 0.0324963039,
+      "D_rep": 0.0263231882
+    }
+  },
+  "interpretation": [
+    "Tie and near-tie blocks require soft/tie-aware targets and should not be equal-weight hard classes.",
+    "High-margin active decisions collapse to no-op versus full bounded action before amplitude refinement.",
+    "Cross-operator stability rules out operator noise as the main explanation for severe policy errors.",
+    "Use regret weighting and abstention; do not optimize block classification accuracy alone."
+  ]
+}

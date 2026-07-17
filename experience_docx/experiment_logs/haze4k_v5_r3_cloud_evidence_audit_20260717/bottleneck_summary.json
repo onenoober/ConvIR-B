@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "decision": "R3_CLOUD_EVIDENCE_AUDIT_COMPLETE_S0_A0_DESIGN_ONLY",
+  "current_bottleneck": "joint_GT_free_candidate_proposal_and_candidate_conditioned_value_risk_identifiability",
+  "bottleneck_chain": [
+    {
+      "component": "bounded_safe_action_existence",
+      "status": "not_bottleneck",
+      "evidence": "A1F direction-over-shrink LCB95 +0.105475 dB; repairable LCB95 0.6953125"
+    },
+    {
+      "component": "exact_half_interface",
+      "status": "not_bottleneck",
+      "evidence": "A1C exact-half gain LCB +0.134024 dB; worst-size retention LCB 0.865395"
+    },
+    {
+      "component": "current_direct_target_readout",
+      "status": "materially_insufficient",
+      "evidence": "A1R retention UCB 0.116634; A1X retention UCB 0.102841 versus 0.25"
+    },
+    {
+      "component": "GT_free_proposal_bank",
+      "status": "not_yet_identified",
+      "evidence": "A1F direction family is privileged; deployable proposal oracle was not isolated"
+    },
+    {
+      "component": "candidate_specific_value",
+      "status": "open_only_for_multi_action_regret_contract",
+      "evidence": "v3i-C fixed-action RGB response failed; DTA output-difference worked in-domain but failed locked generalization"
+    },
+    {
+      "component": "safety",
+      "status": "downstream_manifestation_and_calibration_constraint",
+      "evidence": "v3m tail failures stable across operators; safe actions exist under A1F"
+    },
+    {
+      "component": "distribution_shift",
+      "status": "future_promotion_bottleneck",
+      "evidence": "DTA D8 +0.078297 dB train-derived versus D9 +0.020946 dB locked"
+    }
+  ],
+  "precision_assessment": {
+    "A1R": {
+      "gain_point": 0.0179542369,
+      "gain_lcb95": 0.0152048253,
+      "gain_ucb95": 0.0206538272,
+      "retention_point": 0.1051738497,
+      "retention_lcb95": 0.0923048771,
+      "retention_ucb95": 0.116633978
+    },
+    "A1X": {
+      "gain_point": 0.0156802233,
+      "gain_lcb95": 0.0132002065,
+      "gain_ucb95": 0.0181817485,
+      "retention_point": 0.0916673692,
+      "retention_lcb95": 0.0800688145,
+      "retention_ucb95": 0.1028414928
+    },
+    "conclusion": "A1X fails by effect size, not sample precision; A1R gain is borderline but retention is decisively sub-material."
+  },
+  "authorized_next_action": "R3_S0_A0_DESIGN_ONLY",
+  "prohibited": [
+    "same_A1X_head_widening_or_epoch_search",
+    "single_fixed_action_deltaY_rerun",
+    "historical_432_confirmation_use",
+    "direct_model_training_before_proposal_and_value_gates",
+    "canary",
+    "locked_test"
+  ]
+}

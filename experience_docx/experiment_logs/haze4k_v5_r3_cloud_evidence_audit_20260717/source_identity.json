@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "audit_date": "2026-07-17",
+  "host": "convir-4090",
+  "cloud_python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "github_main_commit": "5b9dc758f128179dbf8373f9acab9dd33799d04e",
+  "source_repositories": [
+    {
+      "name": "v1_data_baseline",
+      "commit": "793d8a3510733debeb7538ff14d70313445fe010",
+      "dirty_count": 0
+    },
+    {
+      "name": "v3m_blockwise",
+      "commit": "b951766876b724b0c1a423a091af457dc41bc662",
+      "dirty_count": 35,
+      "identity_rule": "file_sha256_controls"
+    },
+    {
+      "name": "v3p_canonical",
+      "commit": "555fd008e29f02128564f2fad41d0095ee44f5ea",
+      "dirty_count": 0
+    },
+    {
+      "name": "v3q_signed_value",
+      "commit": "ebf34244e425f4e1b765c3a33db91cfc3c4f6765",
+      "dirty_count": 0
+    },
+    {
+      "name": "v3i_fam2_value",
+      "commit": "85176145ada3148ca92ab7f4feb28529611dccfa",
+      "dirty_count": 6,
+      "identity_rule": "file_sha256_controls"
+    },
+    {
+      "name": "v4a_a1f",
+      "commit": "d4f8d0936869c822ae19b5c21172efc2eb973dd8",
+      "dirty_count": 0
+    },
+    {
+      "name": "v4a_a1r",
+      "commit": "7053405a5d6b862ab6edfce12acd491099ad58f6",
+      "dirty_count": 0
+    },
+    {
+      "name": "v4a_a1c",
+      "commit": "0d795021bc31b6a744bbbb1a86c45a3271a6ccb4",
+      "dirty_count": 3,
+      "identity_rule": "file_sha256_controls"
+    },
+    {
+      "name": "v4a_a1x",
+      "commit": "d4aad68d224112d8f5fae0fe36065b9d60cc6ad8",
+      "dirty_count": 2,
+      "identity_rule": "file_sha256_controls"
+    },
+    {
+      "name": "dta_v37_d8_d9",
+      "commit": "5541ca9e6375ec6a3d0d27ed6e819eec621e773a",
+      "dirty_count": 436,
+      "identity_rule": "file_sha256_controls"
+    }
+  ],
+  "sources": [
+    {
+      "id": "v1_split",
+      "bytes": 82675,
+      "sha256": "1b486d2ea518d409a2f5988845b93a23aaae1ab8c12881d37e81a16e41917925",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-haze4k-v5-v1-chd-rm-data-baseline-lock/experience_docx/experiment_logs/haze4k_v5_chd_rm_v1_data_baseline_lock_20260708/haze4k_internal_split_2400_600.json"
+    },
+    {
+      "id": "v3p_blocks",
+      "bytes": 851339956,
+      "sha256": "52e6cd8829d37750cfb1e9e2fec39e6ac5cead2e324dbc353df93e5263e89765",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/a0_formal/v3p_a0_block_candidate_losses_cloud_only.csv"
+    },
+    {
+      "id": "v3p_images",
+      "bytes": 1727653,
+      "sha256": "080f2e76152e335bca7cbf5b57630e74ba9e6d9598da80f482cfa4b549aa14d6",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/a0_formal/v3p_a0_image_candidate_replay_cloud_only.csv"
+    },
+    {
+      "id": "v3m_a3_replay",
+      "bytes": 602406,
+      "sha256": "f4deff821186bad2476db3f273f3daf0c0f77d26fa157f9f482bfad3884b5424",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3m-blockwise-counterfactual-advantage-20260711/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/v3m_a3_policy_replay_rows_cloud_only.csv"
+    },
+    {
+      "id": "v3q_active_features",
+      "bytes": 576854246,
+      "sha256": "2cda824bf6ca7b11ed0a50d56d785790200a6680fcfb9a4b34e154f40f111b82",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v3q_active_signed_value_20260712/a0b_formal/v3q_a0b_active_features_cloud_only.csv"
+    },
+    {
+      "id": "v3i_counterfactual",
+      "bytes": 8533,
+      "sha256": "7e0ab870ea1481124a838f83eeb2296eb01eafc84c2a154e3fd816ae1ef41fb2",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3i-fam2-open-value-distillability/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711/v3i_c_counterfactual_response_summary.json"
+    },
+    {
+      "id": "v3i_closeout",
+      "bytes": 6588,
+      "sha256": "08de5c945647cfdbcb86dd7254baffd7e9ab3dae37160ad656b1ba3433faa4c8",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-v3i-fam2-open-value-distillability/experience_docx/experiment_logs/haze4k_v5_chd_rm_v3i_fam2_open_value_distillability_20260711/v3i_final_closeout.json"
+    },
+    {
+      "id": "a1f_bootstrap",
+      "bytes": 1394,
+      "sha256": "a3ca3f638eda127085f64a57a699aafe3b5826e8321f7c8bcb507616b05d3262",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/v4a_a1f_formal_r1/v4a_a1f_bootstrap_summary.json"
+    },
+    {
+      "id": "a1r_bootstrap",
+      "bytes": 2646,
+      "sha256": "48691bb1f97284d840a85ffbf0c6182b2e14e4f00193234cae943b373573cf97",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/v4a_a1r_formal_r1/v4a_a1r_bootstrap_summary.json"
+    },
+    {
+      "id": "a1c_bootstrap",
+      "bytes": 1700,
+      "sha256": "8600e30997283be54d13913310f81926971d36c43a6af242c7ab6e489cfc11cf",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/v4a_a1c_formal_r1/v4a_a1c_bootstrap_summary.json"
+    },
+    {
+      "id": "a1x_bootstrap",
+      "bytes": 2809,
+      "sha256": "6195c65c20230725ac006a599b1a6527211df1c0b0dd0274e2e7124aaaff64fe",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716/a1x-v3-d0-r1/workload/v4a_a1r_bootstrap_summary.json"
+    },
+    {
+      "id": "dta_d8_summary",
+      "bytes": 3463,
+      "sha256": "e35f699ee8ee0ccb8c1c8efc71cb3156720d2df4cb487cab4a2c0e774a1ec3c6",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_d8_fixed_formal_summary.json"
+    },
+    {
+      "id": "dta_d9_summary",
+      "bytes": 7786,
+      "sha256": "0fbc38a1dc949e6f56770ff7ec2b1fb480823b7b61a4db0032534d5a6388a9df",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-dta-v3-7-u-tqs-mix-d8-formal-5541ca9/experience_docx/experiment_logs/haze4k_dta_v3_7_u_tqs_mix_20260613/v37_d9_locked_fixed_policy_summary.json"
+    }
+  ],
+  "access": {
+    "model_calls": 0,
+    "gpu_used": false,
+    "checkpoint_loaded": false,
+    "image_decoded": false,
+    "gt_decoded": false,
+    "new_inference": false,
+    "new_training": false,
+    "canary_touched": false,
+    "locked_dataset_touched": false,
+    "existing_locked_compact_summary_read": true
+  }
+}

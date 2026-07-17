@@ -1,0 +1,6 @@
+r3_cloud_evidence_audit_start 2026-07-17T12:49:57+08:00 host=convir-4090 mode=read_only_cpu
+r3_cloud_evidence_audit_sources_verified sha256_count=13
+r3_cloud_evidence_audit_rows_verified per_operator=1088675 paired_keys=true
+r3_cloud_evidence_audit_data_role_deviation historical_a1x_432_role=retired
+r3_cloud_evidence_audit_done decision=R3_CLOUD_EVIDENCE_AUDIT_COMPLETE_S0_A0_DESIGN_ONLY authorizes=R3_S0_A0_DESIGN_ONLY
+R3_CLOUD_EVIDENCE_AUDIT_OK

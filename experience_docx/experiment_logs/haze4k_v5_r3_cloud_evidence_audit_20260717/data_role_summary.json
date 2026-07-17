@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "split_contract": {
+    "train_inner": 2400,
+    "val_inner": 600,
+    "overlap": 0
+  },
+  "v3p_action_label_chain": {
+    "count": 1200,
+    "inside_train_inner": 1200,
+    "inside_val_inner": 0
+  },
+  "historical_partition": {
+    "a1f": 256,
+    "a1r_a1x_development": 512,
+    "a1x_withheld_historical": 432,
+    "union": 1200,
+    "pairwise_overlap": 0
+  },
+  "train_inner_outside_v3p": {
+    "count": 1200,
+    "recommended_role": "new_R3_development_and_confirmation_source"
+  },
+  "current_roles": {
+    "v3p1200": "historical_development_and_audit",
+    "a1f256": "historical_privileged_development",
+    "a1r_a1x512": "historical_development_screening",
+    "historical_a1x432": "historical_audit_only",
+    "train_inner_not_v3p1200": "eligible_for_new_preregistered_ledger",
+    "val_inner600": "historically_seen_across_many_routes_not_new_confirmation",
+    "locked_test": "sealed_final_only"
+  },
+  "deviation": {
+    "occurred": true,
+    "description": "The full v3p 1,200-image candidate table was scanned before the 432-image remainder was classified as a withheld A1X subset; aggregate action outcomes include it.",
+    "per_name_results_retained": false,
+    "image_or_gt_decoded": false,
+    "correction": "Retire the historical 432 confirmation role and form a new ledger only from train_inner_not_v3p1200."
+  },
+  "independence_limits": [
+    "D_ref and D_rep are paired measurements, not independent images.",
+    "A1R, A1C, and A1X-D0 reuse the same 512 images.",
+    "Bootstrap replicates quantify uncertainty but do not increase the number of independent groups."
+  ]
+}

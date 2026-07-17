@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r3_cloud_evidence_audit_20260717",
+  "stage": "R3_CLOUD_EVIDENCE_AUDIT",
+  "state": "COMPLETED_GATE_PASS",
+  "terminal_label": "diagnostic_only",
+  "decision": "R3_CLOUD_EVIDENCE_AUDIT_COMPLETE_S0_A0_DESIGN_ONLY",
+  "authorizes": "R3_S0_A0_DESIGN_ONLY",
+  "evidence_role": "development_screening",
+  "structural_valid": true,
+  "scientific_candidate_selected": false,
+  "training_occurred": false,
+  "inference_occurred": false,
+  "model_calls": 0,
+  "gpu_used": false,
+  "checkpoint_loaded": false,
+  "image_decoded": false,
+  "canary_touched": false,
+  "locked_dataset_touched": false,
+  "existing_locked_compact_summary_read": true,
+  "historical_a1x_432_confirmation_role_retired": true,
+  "raw_artifacts_cloud_only": true,
+  "compact_files": [
+    "README.md",
+    "recommended_r3_route.md",
+    "source_identity.json",
+    "data_role_summary.json",
+    "data_role_deviation.md",
+    "action_margin_summary.json",
+    "bottleneck_summary.json",
+    "closeout.json",
+    "status.txt"
+  ],
+  "forbidden_next": [
+    "historical_432_confirmation",
+    "implementation_without_new_card",
+    "training",
+    "canary",
+    "locked_test"
+  ]
+}

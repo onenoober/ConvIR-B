@@ -96,3 +96,10 @@ Canonical corrections retained from prior incidents:
   `|` through PowerShell, which parsed the alternatives as pipelines before WSL
   ran. Corrected once: stop that lookup and use a fixed absolute reader with
   literal argv; shell composition belongs only in a committed Bash script.
+- 2026-07-17 invalid: a PowerShell here-string retained a UTF-8 BOM when piped
+  through WSL and SSH, so remote Bash read a BOM-prefixed `set` token instead
+  of the shell builtin. CR stripping alone is insufficient. Corrected once: strip the BOM
+  on the first line and then CR before SSH, for example
+  `sed '1s/^\xEF\xBB\xBF//' | tr -d '\r' | ssh convir-4090 'bash -s'`;
+  require an explicit terminal `*_OK` marker and classify the BOM-bearing form
+  as a command failure even if later read-only output was produced.
