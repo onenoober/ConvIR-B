@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+  "operation_id": "R3_A0_GT_FREE_PROPOSAL_ORACLE",
+  "entrypoint_relpath": "experience_docx/tools/r3_a0_gt_free_proposal_oracle.py",
+  "asset_manifest_relpath": "experience_docx/route_assets/R3_A0_GT_FREE_PROPOSAL_ORACLE.json",
+  "timeout_seconds": 14400,
+  "expected_wall_seconds": 7200,
+  "total_units": 1536,
+  "evidence_role": "development_screening",
+  "resume_policy": "none",
+  "protected_data_permissions": {
+    "allow_confirmation": false,
+    "allow_canary": false,
+    "allow_locked_test": false
+  },
+  "environment": {
+    "CONVIR_ROUTE_BOOTSTRAP_DRAWS": "4000",
+    "CONVIR_ROUTE_BOOTSTRAP_SEED": "3407",
+    "CONVIR_ROUTE_DEVELOPMENT_COUNT": "768",
+    "CONVIR_ROUTE_OPERATOR_COUNT": "2",
+    "CONVIR_ROUTE_PRIMARY_BANK_CAP": "9",
+    "CONVIR_ROUTE_CACHE_DTYPE": "float16"
+  },
+  "evidence_files": [
+    {"source_relpath": "workload/a0_bank_identity.json", "destination_filename": "r3_a0_bank_identity.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/a0_cache_manifest.json", "destination_filename": "r3_a0_cache_manifest.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/a0_structural_summary.json", "destination_filename": "r3_a0_structural_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/a0_operator_aggregate.csv", "destination_filename": "r3_a0_operator_aggregate.csv", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/a0_bootstrap_summary.json", "destination_filename": "r3_a0_bootstrap_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/a0_risk_summary.json", "destination_filename": "r3_a0_risk_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/a0_resource_summary.json", "destination_filename": "r3_a0_resource_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/a0_source_access_audit.json", "destination_filename": "r3_a0_source_access_audit.json", "required": true, "max_bytes": 131072}
+  ]
+}

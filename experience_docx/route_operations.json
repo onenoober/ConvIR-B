@@ -2,25 +2,34 @@
   "schema_version": 4,
   "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
   "rules_commit": "11042043f0a56aabb60c2b546ba16c2a9dfb8f8d",
-  "route_card_relpath": "experience_docx/experiment_cards/2026-07-17-haze4k-v5-r3-proposal-first-acv-s0.md",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-17-haze4k-v5-r3-proposal-first-acv-a0.md",
   "operations": {
-    "R3_S0_LEDGER_FREEZE_R4": {
+    "R3_A0_GT_FREE_PROPOSAL_ORACLE": {
       "runner_relpath": "experience_docx/tools/run_route_operation.sh",
-      "mode": "r3_s0_ledger_freeze_r4",
-      "require_gpu": false,
-      "output_id": "r3-s0-ledger-r4",
-      "closeout_filename": "r3_s0_ledger_freeze_r4_closeout.json",
-      "prior_closeout_relpath": null,
-      "prior_terminal_tuple": null,
+      "mode": "r3_a0_gt_free_proposal_oracle",
+      "require_gpu": true,
+      "output_id": "r3-a0-proposal-r1",
+      "closeout_filename": "r3_a0_proposal_oracle_closeout.json",
+      "prior_closeout_relpath": "experience_docx/experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/r3_s0_ledger_freeze_r4_closeout.json",
+      "prior_terminal_tuple": {
+        "state": "COMPLETED_GATE_PASS",
+        "decision": "R3_S0_LEDGER_FREEZE_PASS",
+        "authorizes": "R3_A0_GT_FREE_PROPOSAL_ORACLE"
+      },
       "allowed_terminal_tuples": [
         {
           "state": "COMPLETED_GATE_PASS",
-          "decision": "R3_S0_LEDGER_FREEZE_PASS",
-          "authorizes": "R3_A0_GT_FREE_PROPOSAL_ORACLE"
+          "decision": "R3_A0_GT_FREE_PROPOSAL_ORACLE_PASS",
+          "authorizes": "R3_A1_AMENDMENT_REVIEW"
+        },
+        {
+          "state": "COMPLETED_GATE_INCONCLUSIVE",
+          "decision": "R3_A0_GT_FREE_PROPOSAL_ORACLE_INCONCLUSIVE",
+          "authorizes": "R3_A1_STATE_ACTION_AMENDMENT_REVIEW"
         },
         {
           "state": "COMPLETED_GATE_FAIL",
-          "decision": "R3_S0_LEDGER_FREEZE_FAIL_STOP",
+          "decision": "R3_A0_GT_FREE_PROPOSAL_ORACLE_FAIL_STOP",
           "authorizes": "NONE"
         },
         {
@@ -31,10 +40,10 @@
       ],
       "workspace_policy": "fresh_route",
       "output_policy": "new",
-      "monitor_profile": "short",
-      "heartbeat_timeout_seconds": 180,
-      "min_free_gpu_mib": 0,
-      "max_gpu_utilization_pct": 100
+      "monitor_profile": "standard",
+      "heartbeat_timeout_seconds": 300,
+      "min_free_gpu_mib": 12000,
+      "max_gpu_utilization_pct": 20
     }
   }
 }
