@@ -7,9 +7,27 @@ Status: adopted after 97/97 CPU-only cloud tests at
 files are unchanged.
 
 These helpers remove mechanical authoring and archival work without changing
-the route card, MCP/schema, generic runtime, scientific gates, or launch
-authorization. Request files are temporary operator inputs and must stay
-outside the route worktree, normally under `/tmp`.
+scientific gates or launch authorization. Request files are temporary operator
+inputs and must stay outside the route worktree, normally under `/tmp`.
+
+## Classify One Engineering Repair
+
+After `ENGINEERING_AUTO_REPAIR_AUTHORIZED`, diagnose once, prepare one staged
+candidate with a new output identity, and run:
+
+```text
+python3 experience_docx/tools/validate_engineering_repair.py \
+  --repo . --base <failed-route-commit> --operation <OPERATION_ID>
+```
+
+The gate freezes route/runtime/data/permission/seed/budget contracts and asset
+identities. It allows immutable-identity file/Git path relocation, output
+identity replacement, import/symbol qualification repair, protected-data-free
+contract fixtures, and a standard route-card repair note. It returns
+`SENSITIVE_REPAIR_REVIEW_REQUIRED` for algorithm/control-flow changes,
+directory/data path changes, model/checkpoint identity changes, runtime-spec
+changes, unexpected files, or unparseable input. Only
+`AUTO_REPAIR_ELIGIBLE` may proceed automatically to route-ready and launch.
 
 ## Advance One Authorized Operation
 

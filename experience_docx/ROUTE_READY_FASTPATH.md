@@ -72,7 +72,11 @@ identity, cloud paths, resources, assets, CPU-only contract execution,
 telemetry, timeout, evidence publication, and typed closeout are owned by MCP
 plus the generic lifecycle. Do not repeat those checks manually. Observe at
 the frozen expected end with `convir_route_finish`; an active healthy run needs
-no resident model watcher.
+no resident model watcher. `RUNNING_VERIFIED` is the only nonterminal start
+state that permits telling the user the experiment is normally running.
+`LAUNCHED_PENDING_VERIFICATION` means only that the process exists; call one
+later finish after the startup interval and report any early failure
+immediately.
 If start returns `START_STATE_UNKNOWN`, never create another plan or launch.
 Repeat that same sealed start once: its built-in metadata-only recovery either
 returns the original launch receipt, proves a clean unchanged retry, or stops
@@ -169,11 +173,18 @@ complete-unit asset; it never means in-place reuse of an ambiguous output.
 `exact_resume` is rejected at the staged gate until the schema-v4 control plane
 has a receipt-bound transition that can prove it safely.
 
-After an engineering failure, finish enters `ENGINEERING_REVIEW_REQUIRED` and
-evidence access is locked. Inspect once and pause for the user's explicit
-`repair` or `archive` choice. `repair` permits one semantic-preserving repair
-with a new output identity but does not authorize launch or failed-run Git
-sync; after the repair passes, sync the successful replacement evidence.
+After an engineering failure, start/finish enters
+`ENGINEERING_AUTO_REPAIR_AUTHORIZED` and evidence access is locked. Inspect
+once, prepare one candidate with a new output identity, then run:
+
+```text
+python3 experience_docx/tools/validate_engineering_repair.py \
+  --repo . --base <failed-route-commit> --operation <OPERATION_ID>
+```
+
+`AUTO_REPAIR_ELIGIBLE` proceeds without another repair prompt through the
+normal route-ready/commit/push/plan/start path.
+`SENSITIVE_REPAIR_REVIEW_REQUIRED` pauses before state-changing actions.
 `archive` permits compact failure evidence sync but no repair/relaunch. The
 cloud failure closeout remains required for provenance and diagnosis, but its
 creation is not Git evidence sync. Do not change data, metrics, thresholds,

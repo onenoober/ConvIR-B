@@ -310,14 +310,21 @@ class ConvirOpsV4Tests(unittest.TestCase):
             "CONVIR_OPS_START_INSPECTION repo=exact runner=exact active=false "
             "output=present identity=valid closeout=valid dirty=1\n"
         )
+        monitor = (
+            "CONVIR_OPS_MONITOR polls=1 active=true terminal=false stale=false "
+            "heartbeat_age=1 heartbeat_source=heartbeat\n"
+            "CONVIR_OPS_STATUS_BEGIN\n"
+            '{"phase":"workload","completed":1,"total":2}\n'
+            "CONVIR_OPS_STATUS_END\n"
+        )
         with patch.object(OPS, "verify_live_context"), patch.object(
-            OPS, "run_remote", side_effect=[error, inspection]
+            OPS, "run_remote", side_effect=[error, inspection, monitor]
         ):
             first = payload(OPS.tool_start({"plan_token": token}))
             second = payload(OPS.tool_start({"plan_token": token}))
             third = payload(OPS.tool_start({"plan_token": token}))
         self.assertEqual("START_STATE_UNKNOWN", first["operation_state"])
-        self.assertEqual("LAUNCH_RECOVERED", second["operation_state"])
+        self.assertEqual("RUNNING_VERIFIED", second["operation_state"])
         self.assertEqual("LAUNCH_IDEMPOTENT", third["operation_state"])
         self.assertEqual(second["receipt"], third["receipt"])
 
@@ -381,6 +388,78 @@ class ConvirOpsV4Tests(unittest.TestCase):
             second = payload(OPS.tool_finish({"receipt": receipt}))
         self.assertEqual("CLOSEOUT_MISSING", first["operation_state"])
         self.assertEqual("FINISH_REJECTED", second["operation_state"])
+
+    def test_start_returns_running_verified_only_after_positive_progress(self):
+        plan = {
+            "context": context(), "issued_at": int(time.time()),
+            "expires_at": int(time.time()) + 60, "nonce": "n",
+        }
+        token = OPS.write_new_record("plan", plan, {"receipt": None})
+        monitor = (
+            "CONVIR_OPS_MONITOR polls=1 active=true terminal=false stale=false "
+            "heartbeat_age=1 heartbeat_source=heartbeat\n"
+            "CONVIR_OPS_STATUS_BEGIN\n"
+            '{"phase":"contract","event":"contract_pass","completed":1,"total":1}\n'
+            '{"phase":"workload","event":"workload_progress","completed":3,"total":10}\n'
+            "CONVIR_OPS_STATUS_END\n"
+        )
+        with patch.object(OPS, "verify_live_context"), patch.object(
+            OPS, "run_remote", side_effect=["CONVIR_OPS_LAUNCHED\n", monitor],
+        ):
+            result = payload(OPS.tool_start({"plan_token": token}))
+        self.assertEqual("RUNNING_VERIFIED", result["operation_state"])
+        self.assertEqual(3, result["observed"]["workload_progress"]["completed_units"])
+        self.assertTrue(result["workload_verified"])
+        self.assertIn("receipt", result)
+
+    def test_start_does_not_claim_running_at_workload_zero(self):
+        plan = {
+            "context": context(), "issued_at": int(time.time()),
+            "expires_at": int(time.time()) + 60, "nonce": "n",
+        }
+        token = OPS.write_new_record("plan", plan, {"receipt": None})
+        monitor = (
+            "CONVIR_OPS_MONITOR polls=1 active=true terminal=false stale=false "
+            "heartbeat_age=1 heartbeat_source=heartbeat\n"
+            "CONVIR_OPS_STATUS_BEGIN\n"
+            '{"phase":"contract","event":"contract_pass","completed":1,"total":1}\n'
+            '{"phase":"workload","event":"workload_start","completed":0,"total":10}\n'
+            "CONVIR_OPS_STATUS_END\n"
+        )
+        with patch.object(OPS, "verify_live_context"), patch.object(
+            OPS, "run_remote", side_effect=["CONVIR_OPS_LAUNCHED\n", monitor],
+        ):
+            result = payload(OPS.tool_start({"plan_token": token}))
+        self.assertEqual("LAUNCHED_PENDING_VERIFICATION", result["operation_state"])
+        self.assertFalse(result["workload_verified"])
+
+    def test_start_surfaces_early_engineering_failure_and_auto_authorizes_repair(self):
+        plan = {
+            "context": context(), "issued_at": int(time.time()),
+            "expires_at": int(time.time()) + 60, "nonce": "n",
+        }
+        token = OPS.write_new_record("plan", plan, {"receipt": None})
+        raw = json.dumps({
+            "route_id": "a1x", "run_id": "a1x-s0-r1",
+            "route_commit": "a" * 40, "runner_sha256": "e" * 64,
+            **engineering_terminal(), "failure_phase": "asset_preflight", "returncode": 1,
+            "details": {"error_type": "LifecycleError", "error_message": "asset mismatch"},
+        }, separators=(",", ":")).encode()
+        monitor = (
+            "CONVIR_OPS_MONITOR polls=1 active=false terminal=true stale=false "
+            "heartbeat_age=1 heartbeat_source=heartbeat\n"
+            "CONVIR_OPS_STATUS_BEGIN\nfailed\nCONVIR_OPS_STATUS_END\n"
+            "CONVIR_OPS_CLOSEOUT_SHA256=" + __import__("hashlib").sha256(raw).hexdigest()
+            + "\nCONVIR_OPS_CLOSEOUT_BEGIN\n" + raw.decode() + "\nCONVIR_OPS_CLOSEOUT_END\n"
+        )
+        with patch.object(OPS, "verify_live_context"), patch.object(
+            OPS, "run_remote", side_effect=["CONVIR_OPS_LAUNCHED\n", monitor],
+        ):
+            result = payload(OPS.tool_start({"plan_token": token}))
+        self.assertEqual("ENGINEERING_AUTO_REPAIR_AUTHORIZED", result["operation_state"])
+        self.assertFalse(result["ok"])
+        self.assertEqual("asset_preflight", result["failure_phase"])
+        self.assertIn("receipt", result)
 
     def test_stale_heartbeat_does_not_block_later_closeout_validation(self):
         ctx = context()
@@ -452,7 +531,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
         )
         with patch.object(OPS, "run_remote", return_value=complete):
             stopped = payload(OPS.tool_finish({"receipt": receipt}))
-        self.assertEqual("ENGINEERING_REVIEW_REQUIRED", stopped["operation_state"])
+        self.assertEqual("ENGINEERING_AUTO_REPAIR_AUTHORIZED", stopped["operation_state"])
         self.assertFalse(stopped["ok"])
         self.assertFalse(stopped["archive_authorized"])
         self.assertFalse(stopped["relaunch_authorized"])
@@ -472,7 +551,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
         repair = payload(OPS.tool_finish({
             "receipt": receipt, "engineering_failure_resolution": "repair",
         }))
-        self.assertEqual("ENGINEERING_REPAIR_AUTHORIZED", repair["operation_state"])
+        self.assertEqual("ENGINEERING_AUTO_REPAIR_AUTHORIZED", repair["operation_state"])
         self.assertFalse(repair["archive_authorized"])
         blocked_after_repair = payload(OPS.tool_evidence_manifest({"receipt": receipt}))
         self.assertEqual("EVIDENCE_MANIFEST_FAILED", blocked_after_repair["operation_state"])
@@ -625,7 +704,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("4.3.1", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("4.3.2", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")

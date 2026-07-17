@@ -19,7 +19,7 @@ from pathlib import Path
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "4.3.1"
+SERVER_VERSION = "4.3.2"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 REMOTE_HOST = "convir-4090"
@@ -955,7 +955,7 @@ def issue_receipt(context, gpu_index, launch_output):
         {
             "launched": True, "finish_calls": 0, "finish_closed": None,
             "monitor_stale_count": 0, "terminal_closeout": None,
-            "engineering_failure_resolution": None,
+            "engineering_failure_resolution": None, "workload_verified": False,
         },
     )
 
@@ -999,13 +999,7 @@ def recover_unknown_start(record):
             context, record.get("gpu_index"), inspection_output,
         )
         record["receipt"] = receipt
-        return typed_result(
-            True, "LAUNCH_RECOVERED",
-            observed={**observed, "route_id": context["route_id"],
-                      "session": context["session"], "output_path": context["output_path"]},
-            expected={"runner_sha256": context["runner_sha256"]},
-            next_actions=["convir_route_finish"], receipt=receipt,
-        )
+        return tool_finish({"receipt": receipt})
     no_runtime_signal = (
         not observed["active"]
         and observed["output"] == "absent"
@@ -1116,19 +1110,10 @@ def tool_start(args):
                 )
             receipt = issue_receipt(context, gpu_index, output)
             record["receipt"] = receipt
-            return typed_result(
-                True, "LAUNCHED",
-                observed={
-                    "route_id": context["route_id"],
-                    "session": context["session"],
-                    "output_path": context["output_path"],
-                    "remote_repo": context["remote_repo"],
-                    "gpu_index": gpu_index,
-                },
-                expected={"runner_sha256": context["runner_sha256"]},
-                next_actions=["convir_route_finish"],
-                receipt=receipt,
-            )
+            # A created process is not evidence that the scientific workload is
+            # healthy. Spend one bounded observation window before reporting
+            # the start result so preflight and unit-zero failures are visible.
+            return tool_finish({"receipt": receipt})
     except Exception as exc:
         return failure_result("START_REJECTED", exc, "launch_command")
 
@@ -1144,7 +1129,7 @@ def evidence_context(args):
                 "engineering failure requires an explicit repair-or-archive decision before evidence access",
                 failure_phase="engineering_review", failure_class="engineering_runtime",
             )
-        if closed == "ENGINEERING_REPAIR_AUTHORIZED":
+        if closed in {"ENGINEERING_REPAIR_AUTHORIZED", "ENGINEERING_AUTO_REPAIR_AUTHORIZED"}:
             raise ToolError(
                 "engineering repair was selected; failed-run evidence remains cloud-only unless archive is separately chosen",
                 failure_phase="engineering_review", failure_class="engineering_runtime",
@@ -1191,11 +1176,11 @@ def close_scientific_finish(token, closeout):
         record["finish_closed"] = "CLOSEOUT_VALIDATED"
 
 
-def require_engineering_review(token, closeout):
+def authorize_engineering_auto_repair(token, closeout):
     with locked_record("receipt", token) as record:
         record["terminal_closeout"] = closeout
-        record["engineering_failure_resolution"] = None
-        record["finish_closed"] = "ENGINEERING_REVIEW_REQUIRED"
+        record["engineering_failure_resolution"] = "repair"
+        record["finish_closed"] = "ENGINEERING_AUTO_REPAIR_AUTHORIZED"
 
 
 def resolve_engineering_failure(token, resolution):
@@ -1211,10 +1196,17 @@ def resolve_engineering_failure(token, resolution):
             and record.get("engineering_failure_resolution") == "archive"
             and isinstance(record.get("v43_migrated_at"), int)
         )
-        if (
-            record.get("finish_closed") != "ENGINEERING_REVIEW_REQUIRED"
-            and not migrated_archive_repair
-        ):
+        current_state = record.get("finish_closed")
+        if current_state == "ENGINEERING_AUTO_REPAIR_AUTHORIZED" and resolution == "repair":
+            return typed_result(
+                True, "ENGINEERING_AUTO_REPAIR_AUTHORIZED",
+                observed={"closeout": record.get("terminal_closeout"), "resolution": "repair"},
+                next_actions=["inspect_failure_once", "prepare_one_same_contract_engineering_repair"],
+                archive_authorized=False, relaunch_authorized=False,
+            )
+        if current_state not in {
+            "ENGINEERING_REVIEW_REQUIRED", "ENGINEERING_AUTO_REPAIR_AUTHORIZED",
+        } and not migrated_archive_repair:
             raise ToolError("receipt is not awaiting an engineering failure decision")
         closeout = record.get("terminal_closeout")
         if not isinstance(closeout, dict) or closeout.get("terminal_tuple", {}).get("state") != "FAILED_ENGINEERING":
@@ -1313,6 +1305,43 @@ def parse_monitor(output):
     }
 
 
+def workload_progress(status):
+    """Return the strongest machine-readable positive workload progress."""
+    best_completed = 0
+    best_total = 0
+
+    def visit(value, workload=False):
+        nonlocal best_completed, best_total
+        if isinstance(value, dict):
+            phase = value.get("phase")
+            event = value.get("event")
+            in_workload = workload or phase == "workload" or event in {
+                "workload_start", "workload_progress", "workload_pass",
+            } or "R3_A0_PROGRESS" in value
+            completed = value.get("completed_units", value.get("completed"))
+            total = value.get("total_units", value.get("total"))
+            if in_workload and isinstance(completed, int) and completed > best_completed:
+                best_completed = completed
+                best_total = total if isinstance(total, int) and total >= completed else 0
+            for item in value.values():
+                visit(item, in_workload)
+        elif isinstance(value, list):
+            for item in value:
+                visit(item, workload)
+
+    for line in status.splitlines():
+        try:
+            visit(json.loads(line))
+        except (json.JSONDecodeError, TypeError):
+            continue
+    return {"completed_units": best_completed, "total_units": best_total}
+
+
+def record_workload_verified(token):
+    with locked_record("receipt", token) as record:
+        record["workload_verified"] = True
+
+
 def parse_closeout(context, output):
     begin = output.find("CONVIR_OPS_CLOSEOUT_BEGIN")
     end = output.find("CONVIR_OPS_CLOSEOUT_END")
@@ -1396,15 +1425,15 @@ def tool_finish(args):
         closeout = parse_closeout(context, output)
         if closeout:
             if closeout["terminal_tuple"]["state"] == "FAILED_ENGINEERING":
-                require_engineering_review(token, closeout)
+                authorize_engineering_auto_repair(token, closeout)
                 failure_phase = closeout["engineering_diagnostic"]["failure_phase"]
                 return typed_failure(
-                    "ENGINEERING_REVIEW_REQUIRED", engineering_failure_class(failure_phase),
-                    "engineering closeout is not scientific evidence; pause and request an explicit repair-or-archive decision",
+                    "ENGINEERING_AUTO_REPAIR_AUTHORIZED", engineering_failure_class(failure_phase),
+                    "engineering failure was detected before a healthy workload claim; one same-contract repair is authorized automatically, while sensitive changes still require review",
                     observed={"monitor": monitor, "closeout": closeout},
-                    next_actions=["inspect_failure_once", "request_user_repair_or_archive_decision"],
+                    next_actions=["inspect_failure_once", "prepare_one_same_contract_engineering_repair"],
                     failure_phase=failure_phase,
-                    archive_authorized=False, relaunch_authorized=False,
+                    archive_authorized=False, relaunch_authorized=False, receipt=token,
                 )
             close_scientific_finish(token, closeout)
             return typed_result(
@@ -1412,6 +1441,7 @@ def tool_finish(args):
                 observed={"monitor": monitor, "closeout": closeout},
                 next_actions=["scientific_review_or_archive"],
                 manifest={"closeout_filename": closeout["closeout_filename"], "closeout_sha256": closeout["closeout_sha256"]},
+                receipt=token,
             )
         if not monitor["active"]:
             close_finish(token, "CLOSEOUT_MISSING")
@@ -1419,7 +1449,21 @@ def tool_finish(args):
                 "CLOSEOUT_MISSING", "evidence", "session ended without closeout",
                 observed=monitor, next_actions=["engineering_review_once"], failure_phase="closeout",
             )
-        return typed_result(True, "MONITOR_OBSERVED", observed=monitor, next_actions=["convir_route_finish"])
+        progress = workload_progress(monitor["status"])
+        if progress["completed_units"] > 0:
+            record_workload_verified(token)
+            return typed_result(
+                True, "RUNNING_VERIFIED",
+                observed={**monitor, "workload_progress": progress},
+                next_actions=["wait_until_expected_end_then_convir_route_finish"],
+                receipt=token, workload_verified=True,
+            )
+        return typed_result(
+            True, "LAUNCHED_PENDING_VERIFICATION",
+            observed={**monitor, "workload_progress": progress},
+            next_actions=["convir_route_finish_after_startup_interval"],
+            receipt=token, workload_verified=False,
+        )
     except (json.JSONDecodeError, TypeError) as exc:
         return failure_result("FINISH_INVALID", ToolError(str(exc), failure_class="evidence"), "closeout")
     except Exception as exc:
@@ -1622,7 +1666,7 @@ TOOLS = {
         "handler": tool_plan_manifest,
     },
     "convir_route_start": {
-        "description": "Apply a reviewed plan once and return a receipt bound to its exact route, runner, output, and rules bundle.",
+        "description": "Apply a reviewed plan once, then perform one bounded startup observation; return RUNNING_VERIFIED only after positive workload progress, otherwise expose pending verification or an early failure.",
         "inputSchema": {
             "type": "object", "required": ["plan_token"],
             "properties": {"plan_token": {"type": "string"}}, "additionalProperties": False,
@@ -1630,7 +1674,7 @@ TOOLS = {
         "handler": tool_start,
     },
     "convir_route_finish": {
-        "description": "Observe one sealed window, validate closeout provenance, and require an explicit repair-or-archive decision after engineering failure.",
+        "description": "Observe one sealed window, validate closeout provenance, and automatically authorize one same-contract engineering repair while keeping sensitive changes and archive decisions explicit.",
         "inputSchema": {
             "type": "object", "required": ["receipt"],
             "properties": {

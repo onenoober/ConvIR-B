@@ -2,10 +2,9 @@
 
 Date: 2026-07-16
 
-Status: schema v4; server `4.3.1` retains the receipt-bound engineering-failure
-decision gate and adds a narrow compatibility transition for historical
-engineering receipts auto-archived by the v4.3 migration. It retains exactly
-six tools and the existing route schema.
+Status: schema v4; server `4.3.2` retains exactly six tools and the existing
+route schema. Start performs one bounded startup verification, and ordinary
+engineering failures authorize one same-contract repair candidate automatically.
 
 `convir-ops` is a restricted local stdio bridge to `convir-4090`. It accepts
 only a GitHub route branch, exact commit, and operation id. It never accepts an
@@ -21,8 +20,8 @@ route validator or a route-specific shell surface.
 | Tool | Purpose |
 | --- | --- |
 | `convir_route_plan` | validate and seal one committed operation; no cloud call |
-| `convir_route_start` | run one sealed plan and return a receipt |
-| `convir_route_finish` | observe at most 60 seconds, validate closeout, and resolve an engineering failure only after an explicit user choice |
+| `convir_route_start` | run one sealed plan and return verified, pending, or early-failure state with a receipt |
+| `convir_route_finish` | observe at most 60 seconds, validate closeout, and auto-authorize one same-contract repair |
 | `convir_evidence_list` | list eligible compact evidence for a receipt |
 | `convir_evidence_fetch` | fetch an explicit allowlist with SHA-256 checks |
 | `convir_git_status` | read-only evidence-worktree/GitHub audit |
@@ -83,15 +82,19 @@ session without closeout or a validated closeout closes `finish`. Healthy
 receipts have a hard maximum of 64 observation windows, preventing an unbounded
 watcher loop.
 
+A successful launch command is not a successful experiment start. Start spends
+one bounded monitor window and returns `RUNNING_VERIFIED` only after positive
+machine-readable workload progress. It returns
+`LAUNCHED_PENDING_VERIFICATION` for a live zero-progress process, or the typed
+engineering closeout directly when startup fails.
+
 A validated `FAILED_ENGINEERING / null / NONE` closeout does not enter the
-scientific/archive path. Finish records `ENGINEERING_REVIEW_REQUIRED` in the
-HMAC-protected receipt and returns an error result whose only next actions are
-one read-only diagnosis and a user repair-or-archive decision. Evidence
-list/fetch are locked in this state. After the user decides, call the same
-finish tool with `engineering_failure_resolution=repair|archive`. `repair`
-authorizes preparation of one same-contract fix but no launch or evidence
-sync. `archive` unlocks compact evidence but no relaunch. No additional MCP
-tool or authorization file is introduced.
+scientific/archive path. Start/finish records
+`ENGINEERING_AUTO_REPAIR_AUTHORIZED` in the HMAC-protected receipt and returns
+the failure immediately. Evidence list/fetch remain locked. The external
+`validate_engineering_repair.py` gate distinguishes same-contract mechanical
+repairs from sensitive scientific/data/model changes before commit/push/start.
+Explicit `archive` still unlocks compact failure evidence but no relaunch.
 
 Evidence tools allow only top-level `.json/.csv/.md/.txt` files up to 1 MiB.
 They require a scientific validated closeout or an explicit engineering
@@ -101,7 +104,7 @@ They require a scientific validated closeout or an explicit engineering
 
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. After an update, restart the host and verify version
-`4.3.1`, source SHA-256, exactly six tools, and the repair/archive finish schema.
+`4.3.2`, source SHA-256, exactly six tools, and the startup/repair states.
 
 Only an engineering receipt carrying `v43_migrated_at` may change its automatic
 legacy `archive` resolution to an explicit user-selected `repair`. A normal

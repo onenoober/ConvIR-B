@@ -7,6 +7,17 @@ v4.3 engineering-failure review are adopted after fresh-process activation.
 
 ## Current Verdict
 
+The v4.3.2 candidate changes only control-plane startup reporting and ordinary
+engineering-failure handling. A launch command no longer produces a green
+experiment claim by itself: start spends one bounded observation window and
+returns `RUNNING_VERIFIED` only after positive workload progress, otherwise
+`LAUNCHED_PENDING_VERIFICATION` or the early typed failure. Engineering
+failures default to one same-contract repair candidate; the external
+`validate_engineering_repair.py` gate permits only immutable-identity path,
+output, import/symbol-binding and protected-data-free fixture changes. Any
+scientific/data/model/metric/threshold/seed/budget/control-flow change requires
+user review. Schema v4 and the six-tool MCP surface remain unchanged.
+
 The first two cloud candidates stopped on validation-harness defects and were
 archived with `FAILED_ENGINEERING` closeouts. The strengthened candidate passed
 seven telemetry tests, 22 restricted control-plane tests, semantic control/data-

@@ -66,6 +66,14 @@ reveal confirmation results early or change the scientific contract.
 
 ## Observe And Stop
 
+`convir_route_start` creates the cloud process and immediately spends one
+bounded observation window. `RUNNING_VERIFIED` is the only nonterminal state
+that may be reported as "the experiment is running"; it requires positive
+machine-readable workload progress. `LAUNCHED_PENDING_VERIFICATION` means only
+that a process exists and must not be described as successful entry into the
+experiment. An engineering closeout during this window is returned directly by
+`start`, so preflight or unit-zero failure cannot stay silent until the ETA.
+
 `convir_route_finish` observes one window: `short` is 30 seconds and `standard`
 is 60 seconds. A healthy active run may be observed again near its frozen ETA.
 A stale active heartbeat is an infrastructure warning and leaves the receipt
@@ -84,28 +92,27 @@ Resource wait may retry the unchanged prelaunch plan.
 ## Engineering Failure State Machine
 
 `FAILED_ENGINEERING` always has `decision:null` and `authorizes:NONE`. When
-`convir_route_finish` validates that tuple it returns
-`ENGINEERING_REVIEW_REQUIRED`, not a scientific/archive authorization. Perform
-at most one receipt-bound, read-only root-cause inspection, report the exact
-failure and then stop for an explicit user decision:
+`convir_route_start` or `convir_route_finish` validates that tuple it returns
+`ENGINEERING_AUTO_REPAIR_AUTHORIZED`, not a scientific/archive authorization.
+Perform at most one receipt-bound, read-only diagnosis and prepare one repair:
 
 ```text
 FAILED_ENGINEERING
-  -> ENGINEERING_REVIEW_REQUIRED
-  -> repair  -> ENGINEERING_REPAIR_AUTHORIZED
-  -> archive -> ENGINEERING_ARCHIVE_AUTHORIZED
+  -> ENGINEERING_AUTO_REPAIR_AUTHORIZED
+  -> AUTO_REPAIR_ELIGIBLE -> one same-contract repair cycle
+  -> SENSITIVE_REPAIR_REVIEW_REQUIRED -> user decision
+  -> explicit archive -> ENGINEERING_ARCHIVE_AUTHORIZED
 ```
 
-Before that decision, do not call evidence list/fetch, create or edit a repair
-bundle, stage/commit/push, update the route card/index/family summary, create a
-new plan, or start a workload. The MCP enforces the evidence lock. `repair`
-allows one deterministic root-cause repair with the scientific/data contract
-unchanged; it does not authorize launch, archive, or in-place output reuse.
-Freeze a new code commit and output identity, rerun the appropriate static and
-representative-scale engineering gates, and request separate start
-authorization. `archive` unlocks only compact failure evidence and keeps
-relaunch blocked. A repeated same-root engineering failure stops and returns to
-the user; it does not consume scientific evidence or become scientific `FAIL`.
+The MCP keeps evidence locked. `validate_engineering_repair.py` permits only a
+new output identity, immutable-identity file/Git path relocation, import/symbol
+binding repair with unchanged arguments/control flow, and protected-data-free
+contract fixture additions. It rejects data-directory changes and any runtime
+spec, permission, seed/budget, algorithm constant/control-flow, model or asset
+identity change. An eligible repair uses the normal single route-ready gate,
+commit/push, plan and existing start authorization without another user repair
+prompt. A sensitive repair pauses before commit/push/start. `archive` unlocks
+only compact failure evidence. A repeated same-root failure stops for review.
 
 Failure closeouts must retain the identities of assets successfully verified
 before the failure. An empty list means verification did not complete, not
