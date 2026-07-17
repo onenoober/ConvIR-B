@@ -2,9 +2,8 @@
 
 Date: 2026-07-17
 
-Status: generic run monitoring and the route-ready generic runtime are adopted;
-schema-v4 v4.3 engineering-failure review passed cloud acceptance and awaits
-fresh-process production activation.
+Status: generic run monitoring, the route-ready generic runtime and schema-v4
+v4.3 engineering-failure review are adopted after fresh-process activation.
 
 ## Current Verdict
 
@@ -50,8 +49,11 @@ schema v4, but makes engineering failure a receipt-bound human decision state:
 evidence stays locked until explicit `repair` or `archive`; repair does not
 authorize relaunch, and archive does not authorize repair. The lifecycle now
 retains verified asset identities in parent-process state for failure closeout.
-The exact candidate passed 78/78 cloud tests plus an independent stdio/source
-identity probe at `e2b1c15906163ad7f587d8daa9581854426a1c15`.
+The final candidate passed 79/79 cloud tests plus an independent stdio/source
+identity probe. Production activation used
+`github/main@a42c46e61bc1b66df7470377991d8bdc8a27f383`, migrated signed historical
+state without deleting any receipt or HMAC key, and removed only expired plans
+and the obsolete isolated v4.2 E2E state directory.
 
 ## Revalidation Condition
 
@@ -61,10 +63,9 @@ process-observation mechanism, six-tool schema, remote transport, stale/finish
 semantics, or cost bound changes. Scientific route authorization remains
 independent and must still come from each route's own typed closeout.
 
-Do not call v4.3 adopted until the dedicated registered worktree is updated to
-GitHub main and a fresh stdio process proves version/source/tool schema. After
-activation, revalidate if the engineering-resolution enum, evidence lock, or
-failure-provenance contract changes.
+Revalidate if the engineering-resolution enum, evidence lock,
+failure-provenance contract, signed-state migration, or registered source path
+changes.
 
 Use `ROUTE_READY_FASTPATH.md` for new routes. Revalidate the generic runtime
 only when its context/runtime/asset/evidence schemas or lifecycle ownership
