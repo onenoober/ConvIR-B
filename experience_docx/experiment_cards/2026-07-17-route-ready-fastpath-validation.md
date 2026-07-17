@@ -69,3 +69,13 @@ fixture reuse, and keeps repair-selected engineering evidence cloud-only. MCP,
 schema, generic runtime files, scientific contracts, and protected-data rules
 are unchanged. This acceptance used zero model calls, GPU access, and protected
 data access.
+
+## Route Flow Tools Acceptance
+
+The next reusable layer passed 97/97 CPU-only cloud tests at
+`b72663e546239289a6a1679ae0b404b46bf0e1a5`. It adds one staged compact-evidence
+gate, one exact-prior-bound operation amendment generator, one protected-role-
+aware asset manifest builder, and reusable real-structure fixture assertions.
+No MCP/schema/generic-runtime file changed. The acceptance used zero project
+model calls, GPU access, or protected data; one synthetic CPU `torch.nn`
+forward exercised the fixture helper.

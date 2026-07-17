@@ -1,0 +1,29 @@
+{
+  "baseline_main_commit": "7ae53fa6f98ffeca8c04ec8a6b21b51da5f07fd3",
+  "candidate_commit": "b72663e546239289a6a1679ae0b404b46bf0e1a5",
+  "checks": {
+    "all_tool_tests_passed": true,
+    "diff_check_passed": true,
+    "mcp_and_runtime_bundle_unchanged": true,
+    "targeted_python_compile_passed": true
+  },
+  "cloud_host": "convir-4090",
+  "decision": "ROUTE_FLOW_TOOLS_ADOPTED",
+  "gpu_access": 0,
+  "marker": "ROUTE_FLOW_TOOLS_CLOUD_OK",
+  "project_model_calls": 0,
+  "protected_data_access": 0,
+  "schema_version": 1,
+  "script_git_blob": "8b3d779df6a0705b2f68fc5c766123b90f6d5ff5",
+  "script_relpath": "experience_docx/tools/validate_route_flow_tools_cloud.sh",
+  "script_sha256": "b5cf29da5ca67d4355da4387338a43eea345d1dd4629098c9298c352965bb3d2",
+  "status": "PASS",
+  "synthetic_fixture_forwards": 1,
+  "test_count": 97,
+  "tools": [
+    "validate_evidence_sync.py",
+    "prepare_next_operation.py",
+    "route_engineering_fixture.py",
+    "build_route_asset_manifest.py"
+  ]
+}

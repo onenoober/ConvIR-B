@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-branch=codex/route-flow-tools-v1-20260717
+branch=main
 baseline=7ae53fa6f98ffeca8c04ec8a6b21b51da5f07fd3
 github=git@github.com:onenoober/ConvIR-B.git
 seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor

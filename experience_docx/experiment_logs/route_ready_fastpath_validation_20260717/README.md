@@ -50,5 +50,13 @@ runtime bundle are byte-unchanged from baseline main
 protected-data access were all zero. See
 `route_authoring_fastpath_cloud_acceptance.json`.
 
+The reusable route-flow tools then passed 97/97 CPU-only cloud tests at
+`b72663e546239289a6a1679ae0b404b46bf0e1a5`. The acceptance covers the staged
+evidence-sync gate, prior-closeout-bound next-operation preparation, safe asset
+identity generation, and real-structure fixture assertions. MCP and generic
+runtime files are unchanged; project-model calls, GPU access, and protected
+data access were zero. One synthetic CPU `torch.nn` forward tested the fixture
+helper. See `route_flow_tools_cloud_acceptance.json`.
+
 Route card:
 `experience_docx/experiment_cards/2026-07-17-route-ready-fastpath-validation.md`.

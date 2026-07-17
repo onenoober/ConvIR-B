@@ -69,6 +69,14 @@ scientific/data gates are unchanged; model calls, GPU access, and protected
 data access were zero. Compact acceptance evidence is in
 `route_ready_fastpath_validation_20260717/route_authoring_fastpath_cloud_acceptance.json`.
 
+The reusable route-flow tools are adopted after 97/97 CPU-only cloud tests at
+`b72663e546239289a6a1679ae0b404b46bf0e1a5`. They consolidate successful
+evidence sync, bind next-operation amendments to the exact authorizing
+closeout, generate asset identities without opening protected roles, and reuse
+real-structure engineering assertions. MCP/schema/runtime identities and all
+scientific authorization boundaries remain unchanged. Evidence is in
+`route_ready_fastpath_validation_20260717/route_flow_tools_cloud_acceptance.json`.
+
 ## Purpose
 
 This file is the main branch reading map for the Haze4K experiment sequence.

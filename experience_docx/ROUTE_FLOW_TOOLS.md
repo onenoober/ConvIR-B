@@ -2,6 +2,10 @@
 
 Date: 2026-07-17
 
+Status: adopted after 97/97 CPU-only cloud tests at
+`b72663e546239289a6a1679ae0b404b46bf0e1a5`; MCP, schema, and generic runtime
+files are unchanged.
+
 These helpers remove mechanical authoring and archival work without changing
 the route card, MCP/schema, generic runtime, scientific gates, or launch
 authorization. Request files are temporary operator inputs and must stay
