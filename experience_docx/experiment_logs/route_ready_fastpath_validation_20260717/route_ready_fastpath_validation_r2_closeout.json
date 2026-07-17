@@ -1,0 +1,25 @@
+{
+  "authorizes": "ROUTE_READY_FASTPATH_ADOPTION",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "ROUTE_READY_FASTPATH_VALIDATION_PASS",
+  "details": {
+    "cloud_unit_tests_passed": true,
+    "model_calls": 0
+  },
+  "evidence_role": "engineering_debug",
+  "evidence_sha256": {
+    "route_ready_fastpath_validation_r2_summary.json": "107d3c19f9e53c7b5f3ce0049189144da2ccfa4c2a2f45c38b62c573cea94d38"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "ROUTE_READY_FASTPATH_VALIDATION",
+  "returncode": 0,
+  "route_commit": "528ad61112a9cf7142a90864264f0230f18b93a3",
+  "route_id": "route_ready_fastpath_validation_20260717",
+  "run_id": "route-ready-fastpath-validation-r2",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "verified_assets": []
+}

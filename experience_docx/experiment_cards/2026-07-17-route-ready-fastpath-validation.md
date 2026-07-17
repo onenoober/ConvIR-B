@@ -2,7 +2,7 @@
 
 Date: 2026-07-17
 
-Status: PLANNED
+Status: COMPLETED
 
 ## Identity
 
@@ -54,4 +54,7 @@ Status: PLANNED
   `run/` while the frozen evidence contract required `workload/`. No model,
   GPU, dataset, checkpoint, confirmation, canary, or locked test was touched.
 - r2: same scope/gate with only the directory mapping and a cross-component
-  layout assertion repaired; new output, closeout, and summary names.
+  layout assertion repaired; new output, closeout, and summary names. It passed
+  `COMPLETED_GATE_PASS / ROUTE_READY_FASTPATH_VALIDATION_PASS /
+  ROUTE_READY_FASTPATH_ADOPTION` at commit
+  `528ad61112a9cf7142a90864264f0230f18b93a3`.

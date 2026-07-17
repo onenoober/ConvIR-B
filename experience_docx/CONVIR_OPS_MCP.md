@@ -96,3 +96,10 @@ SHA-256 `dc07ac60056b5e7da52f045419f196c82f6a19a64255408504056b1329ecc2ae`,
 schema v4, and exactly six tools. Do not terminate an active task's stdio server
 to force reload; use a new app/task session or an isolated-state validation of
 the exact registered executable.
+
+The v4.2 candidate at
+`980821176f09514d913f4ad0507e494b3c45971b` passed 73 cloud tests with schema
+v4, exactly six tools, bounded unknown-start receipt recovery, clean-abandoned-
+workspace retry, shared-seed checkout, and zero model calls. This is candidate
+evidence until the code reaches main and a fresh process verifies the registered
+source identity.

@@ -1,0 +1,12 @@
+{
+  "candidate_commit": "980821176f09514d913f4ad0507e494b3c45971b",
+  "cloud_unit_tests": 73,
+  "model_calls": 0,
+  "schema_version": 4,
+  "script_git_blob": "a47c92266795f4e0a9959aa15c5255cccf6432ff",
+  "script_sha256": "a8f3a198dfbb2140cbe2c72f5d6b619e24fdd0ae778bebea363fee4de1a903c8",
+  "server_version": "4.2.0",
+  "status": "PASS",
+  "tool_count": 6,
+  "validation_marker": "CONVIR_OPS_4_2_VALIDATION_OK"
+}
