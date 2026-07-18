@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "operation": "COMMAND_CONTROL_HARDENING_ACCEPTANCE",
+  "candidate_branch": "codex/command-reliability-20260718",
+  "candidate_commit": "8447f8dd54b079505a24a8e6df8d1716256ba4b2",
+  "final_main_commit": "339661094ea7626ac3b87239a84c0dd2be066c70",
+  "cloud_host": "convir-4090",
+  "validation_marker": "CONVIR_OPS_V432_CLOUD_OK",
+  "cloud_candidate": "8447f8dd54b079505a24a8e6df8d1716256ba4b2",
+  "final_main_validation": "CONVIR_OPS_V432_CLOUD_OK candidate=339661094ea7626ac3b87239a84c0dd2be066c70 tests=111 schema=4 tools=6 model_calls=0 gpu_access=0 protected_data_access=0",
+  "tests": 111,
+  "schema_version_mcp": 4,
+  "mcp_server_version": "4.3.2",
+  "mcp_tool_count": 6,
+  "model_calls": 0,
+  "gpu_access": 0,
+  "protected_data_access": 0,
+  "acceptance": "PASS",
+  "scope": [
+    "task/worktree identity binding",
+    "literal ref-bound repository show/list/search",
+    "fixed argv and bounded output transport",
+    "generic workload progress API and legacy NAME_PROGRESS compatibility",
+    "automatic ordinary same-contract repair rule",
+    "compact command protocol with duplicate incident recipes removed"
+  ],
+  "scientific_contract_changed": false,
+  "data_roles_changed": false,
+  "metric_threshold_seed_budget_changed": false,
+  "protected_data_policy_changed": false,
+  "validation_harness_repairs": [
+    "bind remote acceptance to the candidate branch because SSH stdin does not forward local environment",
+    "set PYTHONPATH for the independent probe",
+    "add explicit ERR stage/command failure markers"
+  ]
+}

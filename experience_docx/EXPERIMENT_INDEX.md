@@ -1,8 +1,105 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-06-10
+Date: 2026-07-18
 
 Status: evidence index plus official architecture anchor registry.
+
+## Operations Infrastructure Validation
+
+The generic metadata-only run-monitoring route is completed and adopted for
+future long cloud operations. Two early validation-harness failures were
+archived before correction. The strengthened candidate then passed seven
+telemetry tests, 22 restricted control-plane tests, semantic control/data-read
+rejection, fail-open behavior, exact-parent exit, stale/closeout recovery, and
+the fixed file/cost gate. The reviewed generic subset was fast-forwarded to
+GitHub `main@dca94d71c9fe73e4e93910b0587927c79ab7023c`.
+
+The final receipt-bound E2E at
+`c84823d2c135936c0793768eecaa654dc206ca2f` verified `convir-ops 4.1.0`,
+exactly six schema-v4 tools, `PLAN_READY -> LAUNCHED -> CLOSEOUT_VALIDATED`,
+receipt-bound compact evidence fetch with no Git mutation, and terminal
+authorization `GENERIC_RUN_MONITORING_ADOPTION`. One hundred atomic pulses
+used `0.154378791` CPU seconds, projected to `0.0926272746` CPU seconds per
+hour at a 60-second interval, and created only a 231-byte `heartbeat.json`.
+The closeout records zero model calls and no GPU, dataset, checkpoint, canary,
+or locked-test access. This adoption does not authorize or start any scientific
+experiment.
+
+Use `experience_docx/experiment_cards/2026-07-16-generic-run-monitoring-validation.md`,
+`experience_docx/family_summaries/operations_infrastructure_summary.md`, and
+`experience_docx/experiment_logs/generic_run_monitoring_validation_20260716/`
+for the current evidence.
+
+The route-ready generic runtime is now separately adopted after the CPU-only r2
+E2E at `528ad61112a9cf7142a90864264f0230f18b93a3`. The frozen terminal tuple is
+`COMPLETED_GATE_PASS / ROUTE_READY_FASTPATH_VALIDATION_PASS /
+ROUTE_READY_FASTPATH_ADOPTION`. It verifies the exact staged MCP parser,
+declarative runtime/asset schemas, context-only entrypoints, contract-before-run,
+fixed `control/contract/workload` paths, write-once compact evidence, and typed
+closeout ownership. It used zero model calls and no GPU, dataset, checkpoint,
+confirmation, canary, or locked test.
+
+The archived r1 engineering failure exposed both a `run/` versus `workload/`
+mapping defect and an old v4.1 start-timeout state with a completed closeout but
+no receipt. r2 repaired only the mapping. The six-tool schema-v4 v4.2 candidate
+adds same-plan metadata-only receipt recovery and shared-seed cloud checkout;
+`980821176f09514d913f4ad0507e494b3c45971b` passed 73 cloud tests.
+
+Fresh-process final acceptance on 2026-07-17 closed that candidate state. The
+registered source SHA-256 matches GitHub main, the live surface remains exactly
+six tools, three consecutive status audits were identical and non-mutating, and
+a new cloud execution at `8a93cbb9af9c9731e2fe118cfb241edaf22067cb`
+passed 73/73 tests with zero model calls. The infrastructure decision is
+`CONVIR_OPS_V4_2_ADOPTION`; it authorizes only the generic operations layer and
+does not authorize a scientific route.
+
+Use `experience_docx/ROUTE_READY_FASTPATH.md`,
+`experience_docx/experiment_cards/2026-07-17-route-ready-fastpath-validation.md`,
+`experience_docx/experiment_cards/2026-07-17-convir-ops-v4-2-final-acceptance.md`,
+and
+`experience_docx/experiment_logs/route_ready_fastpath_validation_20260717/` and
+`experience_docx/experiment_logs/convir_ops_v4_2_final_acceptance_20260717/`.
+
+The 2026-07-17 route-authoring slimming update is adopted at
+`2980c7970604c22a85242ca3ec669b030b08690b` after 83/83 CPU-only cloud tests.
+It removes duplicate preparation checks, aggregates common authoring errors,
+uses representative fixture reuse, and defers repair-selected failure sync
+until a successful replacement closes. MCP/schema/runtime identities and all
+scientific/data gates are unchanged; model calls, GPU access, and protected
+data access were zero. Compact acceptance evidence is in
+`route_ready_fastpath_validation_20260717/route_authoring_fastpath_cloud_acceptance.json`.
+
+The reusable route-flow tools are adopted after 97/97 CPU-only cloud tests at
+`b72663e546239289a6a1679ae0b404b46bf0e1a5`. They consolidate successful
+evidence sync, bind next-operation amendments to the exact authorizing
+closeout, generate asset identities without opening protected roles, and reuse
+real-structure engineering assertions. MCP/schema/runtime identities and all
+scientific authorization boundaries remain unchanged. Evidence is in
+`route_ready_fastpath_validation_20260717/route_flow_tools_cloud_acceptance.json`.
+
+The startup-verification and ordinary engineering-repair update is adopted
+after 106/106 CPU-only cloud tests at candidate
+`1ff07c3ff6965a364b628ad18f4a40b4bf3cd736`. Schema v4 and exactly six MCP
+tools are retained. `convir_route_start` now returns `RUNNING_VERIFIED` only
+after positive workload progress; a live zero-progress process is
+`LAUNCHED_PENDING_VERIFICATION`, and an early engineering closeout is returned
+directly instead of remaining silent until ETA. Engineering failure defaults
+to `ENGINEERING_AUTO_REPAIR_AUTHORIZED`; the new repair gate permits only
+same-contract path/output/symbol-binding/fixture changes and sends sensitive
+scientific, data, model, metric, threshold, seed, budget or control-flow changes
+to user review. Acceptance used zero model calls and no GPU or protected data.
+Evidence is in
+`route_ready_fastpath_validation_20260717/convir_ops_v432_cloud_acceptance.json`.
+
+The command-reliability hardening is adopted after 111/111 isolated CPU-only
+cloud tests at `8447f8dd54b079505a24a8e6df8d1716256ba4b2`. It adds task/worktree
+identity binding, literal ref-bound repository readers, one generic workload
+progress API with legacy A1 telemetry compatibility, and a compact transport
+contract. MCP 4.3.2, schema v4, exactly six tools, scientific contracts, data
+roles, gates, thresholds, seeds, budgets, and protected-data policy are
+unchanged. The acceptance used zero model calls, GPU access, and protected-data
+access. Evidence is in
+`experiment_logs/command_reliability_acceptance_20260718/`.
 
 ## Purpose
 
@@ -18,6 +115,270 @@ For future route branches, follow `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`: sync
 cards, text logs, result tables, and AI-readable packages back to `main`, but
 keep diagnostic experiment code on its route branch unless a separate promotion
 decision says otherwise.
+
+## Current CHD-RM v5 Route State
+
+The historical v3o decision remains
+`V3O_A0_CANDIDATE_SSE_REPLAY_INTEGRITY_FAIL_STOP`; v3p does not rewrite it.
+v3p separately reconstructed the frozen candidate losses under a new
+preregistered float64 contract. Its 1,200-image-per-operator A0 passed;
+repaired A1 reconstruction showed the selector, rather than the hard-block
+renderer, is the active bottleneck; and constrained first-step G1 oracle A2
+passed. At a fixed 25% cap, the two-operator LCB95 lift over uniform `.125` is
+about `+0.045 dB`, and the LCB95 lift over uniform `.25` is about `+0.021 dB`,
+with no severe regression or selected harmful SSE.
+
+The authorized scalar-A physics B0 smoke then closed the physics branch:
+all 32 train-only triplets had valid mapping/decode and scalar-A range, but
+sRGB forward RMSE p99 was `0.148307` and maximum `0.159017`, above the fixed
+`8/255 = 0.031373` contract; linear and directly specified transmission
+alternatives were worse. The terminal decision is
+`V3P_B0_SCALAR_A_SMOKE_FAIL_STOP_PHYSICS_ROUTE`. No B0 formal, B1 privileged
+ceiling, estimated physics, policy replay, training, canary, or locked-test
+access is authorized from v3p.
+
+v3m followed v3l by normalizing the action ladder across image/block/pixel
+oracles, then testing local observability, fold-separated label calibration,
+and finally actual frozen policy replay. The result is sharper than v3l:
+block16 and the `direct_step_energy` signal are real, but the deployable
+calibrated policy is not safe.
+
+Key v3m facts:
+
+- common-action block16 oracle is strong: retention versus pixel-grid lift is
+  about `0.848-0.850`, with CI95 lows above `0.840`, and no severe regression
+  increase versus fixed `alpha=0.125`;
+- dense/continuous action density is not the bottleneck: A0b-r1 max paired
+  quantization-gap CI95 upper is `0.0013426 dB`, below the `0.005 dB` gate;
+- A1 local observability passed: `direct_step_energy` image-grouped AUROC CI95
+  lows are `0.8522` (`D_ref`) and `0.8516` (`D_rep`);
+- A2 fold-separated label calibration passed strongly: ordinal MAE improvement
+  CI95 lows are `0.6734292` and `0.6719839`;
+- A3 actual policy replay failed: mean lift over fixed is positive
+  (`+0.0828 dB`), but retention versus block16 oracle is only about `0.232`,
+  paired lift p10 is about `-0.22` to `-0.23 dB`, severe counts rise from `0`
+  to `148`/`146`, and hard counts rise from `0` to `39`/`41`.
+- corrected A3 post-fail decomposition confirms the failure is stable across
+  the two frozen operators: severe-overlap Jaccard `0.9090909`, hard-overlap
+  Jaccard `0.9047619`, policy-lift correlation `0.9930474`, selected-alpha
+  correlation `0.9962972`; severe images still retain positive block16-oracle
+  headroom on average, while aggressive calibration bins over-escalate heavily.
+- v3n tested a materially different false-intervention target semantics:
+  default `alpha=0.125`, only allow `.125 -> .25`, and set a fixed 99th
+  percentile train-negative `direct_step_energy` threshold. It failed before
+  replay because the threshold saturated at `2.189333099522628e-05` in every
+  operator/fold and selected zero held-out blocks for both operators.
+- v3o smoke reproduced fixed `alpha=.125` exactly on 32 OOF images per frozen
+  operator, but its 1,200-image formal audit later reached candidate-MSE
+  aggregation maxima `2.839408504325125e-10` (`D_ref`) and
+  `3.528073042047275e-10` (`D_rep`), above the preregistered `1e-10` gate.
+  Fixed-alpha replay stayed exact, but the measurement contract failed; this
+  does not authorize tolerance relaxation, A1, or policy evidence.
+
+v3q then tested the frozen active `.125 -> .25` first-step labels with a
+strictly inference-time 24-scalar candidate-pair schema. Its formal grouped,
+per-image-weighted linear probe stopped: full signed AUC was `.62689` / `.63287`,
+but unsigned-only was `.62578` / `.63212` and within-image shuffled labels
+retained `.61958` / `.62432`. This closes learned signed scoring, calibration,
+and policy continuation under that feature schema.
+
+v3r then isolated the frozen operator geometry: scale and channel-scale ceilings
+fail the dual-operator `+0.005 dB` SESOI, while bounded direction-line repair
+passes at worst-operator LCB95 `+0.280496 dB` over old `.25`; about 36.5% of
+active blocks are wrong-direction. v3s tested the first learned response to
+that result, a zero-init low-capacity `Delta u` field conditioned only on haze,
+base prediction, and old step with anchor/harm/CVaR constraints. Its exact
+no-op gate passed, but the 32-image real-render scout remained near zero
+(`|Delta u|=1.252e-7 < 1e-6`) and did not lower rendered `.25` loss. This exact
+representation/loss contract is terminally stopped before five-fold training.
+
+v3t then held the v3s support, bounds, fixed 32 names, and rendered `.25`
+contract fixed while factorially changing only input form (output-side versus
+frozen full context) and objective (safe versus utility). S0 was exact no-op
+across both forms and frozen operators. All four 16-epoch S1 cells remained
+inactive: final `|Delta u|` was `2.72e-7`, `2.40e-7`, `1.82e-7`, and `2.07e-7`,
+with only `0.00013%`, `0.00011%`, `0.000075%`, and `0.000026%` rendered-loss
+reductions. The utility controls removed anchor/harm/CVaR but intentionally
+retained the minimal-repair penalty. Thus neither frozen context nor those
+safety terms explains activation within this regularized rendered form.
+
+v3u held the output-side v3t conditions fixed and removed only that
+minimal-repair penalty. S0 was exact on all 32 names and both operators. Its
+single 16-epoch render-only S1 passed: final mean `|Delta u|=0.0041701270`,
+rendered `.25` MSE fell from `0.00032214251` to `0.00031271187` (`2.92747396%`),
+and every history row has `total == render` with `repair_weight=0.0`. This
+identifies the repair penalty as sufficient to cause the prior zero lock under
+the frozen output-side contract. It is not a safe candidate: anchor, harm, and
+margin diagnostics increased to `6.7448e-7`, `2.2907e-6`, and `7.8329e-6`, and
+repair magnitude reached `0.445731`.
+
+The remaining bottleneck is not amplitude, scalar scoring, action granularity,
+or the hard-block executor: direction repair can activate, but the tested safety
+losses erase that activity. v3v's abrupt 8+8 full-weight switch ended at
+`-0.04228%` rendered-MSE reduction. v3w then held the same head, assets,
+fixed-32 protocol, and gates while linearly ramping safety weights from `1/8`
+to full scale; its warmup passed (`|Delta u|=0.00134179`, MSE reduction
+`1.12999%`), but final reduction was `-0.05676%` despite non-worse safety
+diagnostics. Do not resume v3s/v3t, relax gates, repeat v3v/v3w, search another
+fixed safety-weight schedule, or treat v3u as formal training. v3x supplied the
+required direct mechanism: after the same eight-epoch warmup, it projected the
+render gradient against anchor, harm, margin, and CVaR constraints per update.
+Its fixed32 S1 passed (`1.69283%` rendered-MSE reduction, `|Delta u|=0.00194937`,
+and all three v3u safety references met); projection intervened on `87.5%` of
+post-warmup updates. v3y then passed the fixed train32/heldout32 cross-sample
+contract (heldout rendered-MSE reduction `2.97251%`), but terminal v3z failed
+the sealed train128/heldout128 safety confirmation: heldout rendered MSE still
+improved `1.35612%`, yet anchor `1.23885e-6` and harm `3.60745e-6` exceeded the
+fixed references. Close this frozen projected-head route. Do not tune its
+weights, bounds, gates, sample scope, or safety thresholds; policy, canary, and
+locked test remain blocked.
+
+v4a reconstructed the closed v3z trajectory exactly, separated inherited from
+intervention-added risk, and completed a 256-state, 3-by-3 paired audit of
+historical sequential projection, exact common-intersection projection, actual
+AdamW proposal projection/backtracking, and three risk-window estimators. The
+complete family and joint bootstrap are structurally valid, but no
+nonhistorical cell has a simultaneous harm/CVaR improvement. Exact projection
+is effectively identical to historical; actual-proposal harm/CVaR point
+effects are worse for all windows and both operators. Do not start A0M or tune
+optimizer/window contracts. Only a new metric-aligned privileged A1F bounded
+`Delta-u` action-space feasibility route may be designed; policy, candidate,
+canary, and locked test remain blocked.
+
+v4a-A1F then passed that privileged feasibility question on the exact failed
+state. Heldout worst-operator direction-over-shrink LCB95 is `+0.105475 dB`,
+repairable-fraction LCB95 is `0.6953125`, and direction-versus-old-`.25` LCB95
+is `+0.200613 dB`, with zero severe/hard regressions and exact replay. The
+action space is not the bottleneck. The clean-target oracle is nondeployable and
+authorized only the fresh A1R representation-sufficiency screen.
+
+v4a-A1R then completed a fresh512 four-fold OOF factorial probe. Its primary
+context-spatial cell retained real image-conditioned direction signal: the
+true-minus-size-block-shuffled LCB95 is `+0.007269 dB`, repairable-fraction
+LCB95 is `0.56640625`, and all safety guards pass. It nevertheless fails the
+material gate: direction-over-shrink LCB95 is `+0.015205 dB` versus `+0.020`,
+and oracle-retention LCB95 is `0.092305` versus `0.25`. Context-spatial adds
+only about `+0.00092 dB` over context-linear at the worst-operator point
+estimate. The current bottleneck is material representation-to-action
+reachability under the frozen output/context contract, not action existence,
+the tested local spatial readout, optimizer/window choice, or safety
+feasibility. This probe family is closed; only a separately preregistered R3 amendment/design is
+allowed. Direct training, policy, candidate, canary, and locked test remain
+blocked.
+
+v4a-A1C then completed the frozen interface-ceiling replay on the same fresh512
+development population. S0 alignment passed, and formal evaluated all 512
+images, both operators, and full/exact-half/antialiased-half cells with no
+training or candidate selection. The typed formal closeout is
+`V4A_A1C_EXACT_HALF_INTERFACE_ADEQUACY_PASS_R3_HANDOFF`, with state
+`COMPLETED_GATE_PASS` and authorization limited to `R3_REVIEW_ONLY`. This is a
+development-screening interface ceiling, not a deployable or confirmation
+result; implementation, A1X data access, candidate/policy work, canary, and
+locked test remain blocked until a fresh R3 review.
+
+v4a-A1X-v3 passed its repaired S0 engineering gate after the archived r1
+asset-path failure. `a1x-v3-s0-r1` closed as
+`FAILED_ENGINEERING / null / NONE` before `preflight_pass` because its manifest
+named an A1C reference checkout path absent from the current cloud host. The
+route, other pinned source commits, and Haze4K train directories passed the
+read-only fact audit; no runtime log or S0 summary was created. Confirmation,
+canary, and locked-test flags remain false. The repaired r4 exact transport/no-op differences are `0.0`, microfit loss
+reduction is `38.3314%`, parameter/MAC/memory guards pass, and all forbidden-data
+flags are false. At that historical point the tuple authorized D0 design only.
+D0 subsequently completed and failed; the S0 tuple is no longer a current
+authorization and the 432-name stage was never opened.
+
+## Current R3 Design Handoff
+
+v4a-A1X-v3 D0 completed the preregistered fresh512, four-fold, five-cell
+development screen. The proposed A1X-global cell beat shuffle (LCB95 `+0.007963
+dB`) and its local control (LCB95 `+0.000890 dB`), with structural/safety
+guards passing, but failed material gain (`+0.013200 dB` versus `+0.020`)
+and retention (`0.080069` versus `0.25`). The typed decision is
+`A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP`; the historical 432-name
+confirmation stage was not touched and is not authorized.
+
+The 2026-07-17 R3 cloud-evidence audit then reconciled the compact GitHub
+evidence with the cloud-only v3p candidate-loss tables and current A1
+closeouts. It sharpens the bottleneck to a joint GT-free proposal-to-value
+problem: privileged safe actions and the exact-half transport exist, but no
+inference-only candidate bank has yet been shown to contain that headroom, and
+the direct A1R/A1X target heads have not retained enough candidate-specific
+value to select it safely. In the paired `1,088,675`-block-per-operator table,
+about `53.72%` of blocks have best-second MSE gap `<=1e-10`, best-action
+agreement across operators is `0.942934`, and high-margin active decisions
+collapse to no-op versus full action. This makes tie-aware, regret-weighted,
+asymmetric-harm learning with abstention the highest-value next mechanism test,
+but only after a GT-free proposal-bank oracle passes.
+
+The audit is retrospective development evidence and authorizes only
+`R3_S0_A0_DESIGN_ONLY`. Because the full v3p table was used at project level,
+the historical 432-name A1X remainder is reclassified as
+`historical_audit_only`; a new sealed confirmation split must come from the
+1,200 train-inner images outside the v3p action-label chain.
+
+The detailed design reference is now frozen as documentation, not runtime:
+
+`R3_S0_LEDGER_FREEZE -> R3_A0_GT_FREE_PROPOSAL_ORACLE ->
+R3_A1_ACV_SCREEN -> R3_A2_ACV_FULL_OOF ->
+[optional R3_B0/B1 adapter integration] -> R3_C0_FROZEN_CONFIRMATION`.
+
+Only the first operation may enter a future runtime manifest after a separate
+launch-ready amendment. Later operations require the exact prior typed
+closeout, compact GitHub evidence sync, and a new amendment. The draft card is
+`experience_docx/experiment_cards/2026-07-17-haze4k-v5-r3-proposal-first-acv-design.md`;
+the detailed rationale and operation/artifact reference is
+`experience_docx/experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/recommended_r3_route.md`.
+
+The repaired R3 S0 ledger operation then completed at route commit
+`2966a755a8dae9e31ff1d3ef71657a668aeac51d`. All 16 structural checks passed:
+the 1,200 train-inner identities outside historical v3p split exactly into 768
+development and 432 sealed confirmation identities, with four disjoint
+192-image development folds, zero role/group overlap, exact source pairing,
+and haze-signature balance. The name-level ledger remains cloud-only; Git
+retains hashes and compact counts. Typed decision:
+`R3_S0_LEDGER_FREEZE_PASS`, authorizing only an independent
+`R3_A0_GT_FREE_PROPOSAL_ORACLE` amendment review. A0 creation/start is not
+authorized.
+
+The independently amended A0 proposal oracle subsequently completed at route
+commit `207581b4abfff2224bc21d4d1ae4ad5c26118936` and output
+`r3-a0-proposal-r4`. The fixed nine-candidate GT-free bank passed on all 768
+development images and both frozen operators. Proposal-gain LCB95 is
+`+0.1451246743 dB` against the `+0.080 dB` gate, privileged-retention LCB95 is
+`0.6234106888` against `0.50`, and repairable-fraction LCB95 is `0.84375`
+against `0.50`. All 16 structural/safety checks passed, with zero new hard or
+severe cases. The 1,536-unit cache was sealed before GT scoring; confirmation
+outcomes, canary, locked test and historical A1X outcomes were not accessed,
+and no training occurred.
+
+The typed A0 decision is `R3_A0_GT_FREE_PROPOSAL_ORACLE_PASS`. The independently
+amended A1 screen then completed folds 0/1 x seeds 3407/3411 at route commit
+`4f7f500e1ea3e1f4f7913d94e20ac9769d2f63c9`. C3 deep-response is the sole
+stop-only survivor: gain point/UCB95 `+0.003918/+0.008674 dB` and retention
+point/UCB95 `0.025760/0.057381` remain below the later formal targets, but
+true-minus-action-shuffle point/LCB95/UCB95 is
+`+0.016492/+0.003152/+0.026110 dB` with zero severe/hard cases. C1 action and
+C2 RGB-response each fail safety with two severe/two hard cases; C2 also has
+negative true-minus-shuffle. C0 is null and the action-only/unsigned controls
+are unsafe.
+
+The validated A1 tuple is `COMPLETED_GATE_PASS /
+R3_A1_ACV_SCREEN_SURVIVOR / R3_A2_AMENDMENT_REVIEW`. This is weak structural
+evidence, not formal utility or promotion evidence. Only an independent A2
+amendment review is authorized; A2 runtime, confirmation, canary and locked test
+remain blocked and untouched.
+
+Use `experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1c-safe-action-interface-ceiling.md`
+and
+`experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/`
+for the compact A1C terminal evidence.
+
+Use `experience_docx/CHD_RM_EXPERIMENT_INDEX.md`,
+`experience_docx/experiment_cards/2026-07-14-haze4k-v5-v4a-a1r-representation-sufficiency.md`,
+and `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/`
+for current CHD-RM status. Earlier route cards and closeouts remain the authority
+for their own historical decisions.
 
 ## Official Architecture Anchor
 
@@ -114,7 +475,7 @@ without a material new reason.
 
 | Family | Current verdict | Reopen condition |
 | --- | --- | --- |
-| [FAM/FAM2 feature modulation](family_summaries/fam_family_summary.md) | Closed for unchanged deployable FAM routing: hard samples can improve, but easy/strong-reference preservation and selector quality failed. | A new deployable selector or preservation guard passes a predeclared held-out diagnostic. |
+| [FAM/FAM2 feature modulation](family_summaries/fam_family_summary.md) | Closed for unchanged deployable FAM routing, current v3h/v3i signal sets, v3j tiny direct bounded residual heads, v3k provisional micro-alpha diagnosis, v3l transmission-only physics risk, and v3m direct-step-energy block policy replay. `context alpha=0.125` is tail-safer, block16 oracle headroom is real, and local labels are observable, but the tested calibrated policy creates unsafe tails. | Reopen only with materially new tail-risk information, target semantics, correction-confidence design, explicit false-intervention protection, or bounded experts that first pass clean-reference OOF plus new sealed-split replay gates. |
 | [Hard-frequency and haze-prior loss routes](family_summaries/frequency_prior_family_summary.md) | Closed for the tested weighting/SCM forms: hard movement came with global/easy damage. | A loss route shows target-group gain with explicit strong/easy protection before stop20. |
 | [PFD/RHFD preservation routes](family_summaries/pfd_rhfd_family_summary.md) | Diagnostic only: preservation improved in B1r, but hard-gain and strong-case gates failed. | A new mechanism explains how hard gain is recovered without losing the preservation benefit. |
 | [APDR output residual/action-bank routes](family_summaries/apdr_family_summary.md) | Current broad output-residual and coefficient-mapping forms are stopped; v0.4E OOF did not pass, and exact v0.4E numbers require fixed-code rerun before sealing. | A separately pre-registered safe-subset route passes fixed-code OOF/held-out gates without severe regressions. |
@@ -219,6 +580,28 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_rc_expert_switch_v16_20260605/` | 35+ | v1.6 retrospective route utility leaderboard, A0+UDP oracle, A0+UDP+FAM2 overlap oracle, UDP accept/risk predictability, switch feature table, true OOF switch analysis, fixed internal policy candidate, one-shot locked-test confirmation, failure audit, launch scripts, logs, and status. |
 | `experiment_logs/haze4k_v17_rc_expert_mix_20260605/` | 21 | v1.7 3000-row train-derived A0/UDP feature table, alpha-grid oracle and fixed-shrink summaries, OOF gain/risk predictability, risk-coverage curves, fold stability, train-heldout confirmation, per-image policy tables, launcher, logs, and status. |
 | `experiment_logs/haze4k_v18_execution_queue_20260606/` | completed | v1.8 post-diagnosis queue card, README, cloud launchers, monitor/progress/repair transcripts, corrected table-only router policy outputs, data/domain preflight outputs, Q5 domain-adaptation inventory/policy diagnostics, repaired per-seed BiDPFM1 fusion-neighbor train/eval evidence, and final multi-seed aggregate. |
+| `experiment_logs/haze4k_v5_chd_rm_v3l_safe_step_escalation_physics_audit_20260711/` | 29 | v3l compact evidence: A0 deterministic operator replay closeout and manifests, A1 oracle granularity summaries/gates, B physics metadata and privileged transmission-risk summaries, run scripts, logs, status, and route decision. Cloud-only weights and per-image/raw tables are excluded. |
+| `experiment_logs/haze4k_v5_chd_rm_v3m_blockwise_counterfactual_advantage_20260711/` | compact | v3m compact evidence: A0a common-action oracle, A0b-r1 dense/continuous cross-audit, A1 local observability, A2 fold-separated label calibration, A3 frozen policy replay fail-stop, and corrected A3 failure decomposition. Cloud-only raw block/per-image tables are excluded. |
+| `experiment_logs/haze4k_v5_chd_rm_v3n_conservative_first_step_calibration_20260712/` | compact | v3n compact evidence: conservative first-step label-only preflight using fixed 99th-percentile train-negative `direct_step_energy` threshold. The rule selected zero held-out blocks and stopped with no replay. |
+| `experiment_logs/haze4k_v5_chd_rm_v3o_signed_adjacent_advantage_identifiability_20260712/` | compact | v3o compact evidence: A0 smoke passed, then 1,200-image formal candidate-SSE aggregation exceeded the fixed integrity gate and closed the route. Cloud-only raw candidate-loss and per-image tables are excluded. |
+| `experiment_logs/haze4k_v5_chd_rm_v3p_canonical_signed_gain_20260712/` | compact | v3p canonical float64 reconstruction passed A0/A1r/A2 and established constrained first-step oracle headroom, then B0 scalar-A physics smoke failed its fixed forward-data contract. The physics branch is closed; raw block/per-image tables remain cloud-only. |
+| `experiment_logs/haze4k_v5_chd_rm_v3q_active_signed_value_20260712/` | compact | v3q active signed-value audit passed canonical candidate-pair feature reconstruction, then formal grouped linear probing found full AUC nearly identical to unsigned-only and survived within-image label shuffling. Learned signed scoring under this 24-feature schema is terminally stopped; raw feature tables remain cloud-only. |
+| `experiment_logs/haze4k_v5_chd_rm_v3r_signed_margin_operator_repair_20260712/` | compact | v3r privileged repair geometry passed only the bounded direction-line ceiling: worst-operator LCB95 `+0.280496 dB` over old `.25`, versus scale `+0.000220 dB` and channel-scale `+0.004571 dB`. It authorizes direction-repair design only. |
+| `experiment_logs/haze4k_v5_chd_rm_v3s_delta_u_direction_repair_20260713/` | compact | v3s exact zero-init no-op passed, then the fixed-32 real-render trainability scout failed before formal training: finite gradients but `|Delta u|=1.252e-7 < 1e-6` and no rendered-loss reduction. This representation/loss contract is stopped. |
+| `experiment_logs/haze4k_v5_chd_rm_v3t_zero_lock_context_diagnostic_20260713/` | compact | v3t exact output-side and frozen-context no-op passed, then all four fixed-32 factorial cells remained inactive despite utility controls without anchor/harm/CVaR. It closes the regularized rendered form that retains the minimal-repair penalty; raw outputs remain cloud-only. |
+| `experiment_logs/haze4k_v5_chd_rm_v3u_render_only_activation_diagnostic_20260713/` | compact | v3u exact output-side no-op passed, then fixed-32 render-only activation passed (`|Delta u|=0.0041701270`, rendered-MSE reduction `2.92747396%`). The repair penalty is sufficient to explain the earlier zero lock, but safety diagnostics rise; only a new safety-curriculum diagnostic is authorized. |
+| `experiment_logs/haze4k_v5_chd_rm_v3v_safety_curriculum_activation_20260713/` | compact | v3v exact no-op and render warmup passed, but abrupt full-weight anchor/margin/harm/CVaR made final rendered MSE `0.04228%` worse despite non-worse safety diagnostics. This schedule is stopped; only a gradual-ramp diagnostic is authorized. |
+| `experiment_logs/haze4k_v5_chd_rm_v3w_gradual_safety_ramp_20260713/` | compact | v3w exact no-op and render warmup passed, but linear `1/8` to full safety-weight ramp made final rendered MSE `0.05676%` worse despite non-worse safety diagnostics. Fixed safety-weight schedule search is stopped; only a materially different direct low-haze-safety mechanism may be designed. |
+| `experiment_logs/haze4k_v5_chd_rm_v3x_projected_safety_constraint_20260713/` | compact | v3x exact no-op passed, then per-update projection against anchor/harm/margin/CVaR retained fixed32 activity and `1.69283%` rendered-MSE reduction while meeting v3u safety references. It authorizes only cross-sample low-haze-safety contract design. |
+| `experiment_logs/haze4k_v5_chd_rm_v3y_cross_sample_safety_20260713/` | compact | v3y fixed train32/heldout32 cross-sample confirmation passed activity, positive heldout rendered-MSE reduction, and all fixed v3u safety references. It authorized only the larger sealed internal confirmation. |
+| `experiment_logs/haze4k_v5_chd_rm_v3z_sealed_confirmation_20260713/` | compact | v3z terminal train128/heldout128 confirmation retained train activity and positive heldout rendered-MSE reduction, but heldout anchor and harm exceeded the fixed references. The frozen projected-head route is closed with no further tuning, policy, canary, candidate, or locked-test authorization. |
+| `experiment_logs/haze4k_v5_chd_rm_v4a_conditional_safety_audit_20260714/` | compact | v4a exact reconstruction and descriptive decomposition pass; complete A0P finds no local exact/proposal/window safety correction and authorizes only metric-aligned privileged A1F bounded-action feasibility design. |
+| `experiment_logs/haze4k_v5_chd_rm_v4a_a1f_deltau_action_feasibility_20260714/` | compact | v4a-A1F exact replay and action integrity pass; full privileged heldout feasibility shows safe bounded direction materially exceeds shrink under both operators and authorizes only fresh A1R representation-sufficiency design. Raw per-image/action rows remain cloud-only. |
+| `experiment_logs/haze4k_v5_chd_rm_v4a_a1r_representation_sufficiency_20260714/` | compact | v4a-A1R fresh512 four-fold OOF representation screen: true context-spatial targets beat the size-block-shuffled control and remain broadly repairable, but material lift and oracle-retention gates fail. The current probe family is closed; raw OOF rows and learned states remain cloud-only. |
+| `experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/` | compact | v4a-A1C S0 and formal interface-ceiling replay: all 512 development-screen images and three interface cells completed without training; exact-half adequacy passed and authorizes only fresh R3 review. Raw rows remain cloud-only. |
+| `experiment_logs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716/` | compact | v4a-A1X-v3 repaired S0 passed, then D0 global-head development screening beat shuffle and the local control but failed material gain and oracle-retention gates. Typed stop: `A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP`; no confirmation, canary, or locked-test access. |
+| `experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/` | compact | Retrospective GitHub-plus-cloud raw-table audit: separates GT-free proposal headroom from candidate-conditioned valuation, records v3p tie/margin and cross-operator structure, retires the historical 432-name range from independent confirmation use, and authorizes only a fresh R3 S0/A0 design. The evidence root also contains the detailed proposal-first operation/artifact reference; raw tables remain cloud-only. |
+| `experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/` | compact | R3 S0 r4 passed the ledger, A0 r4 passed the fixed GT-free proposal oracle, and the independently amended A1 two-fold screen completed. C3 deep-response is the sole safe stop-only survivor on positive shuffle contrast, but its gain/retention remain far below later formal targets; C1/C2 fail safety. Only `R3_A2_AMENDMENT_REVIEW` is authorized; A2/confirmation/canary/locked test were not started or accessed. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
@@ -331,6 +714,44 @@ The active conclusion is conservative:
   `fusion_neighbor` screen failed after repaired evidence closeout. The final
   aggregate was negative on both regular and hard splits, so this exact v1.8
   route is closed as a negative result rather than an incomplete queue.
+- CHD-RM v3l froze deterministic context direct operators and confirmed that
+  oracle step-size selection has large zero-severe upside, but privileged
+  transmission-only features failed the direct-severe OOF AUC gate. The route
+  is closed with no physics policy, canary, locked-test access, or direct
+  residual continuation authorized.
+- CHD-RM v3q established that the candidate-pair 24-scalar schema carries
+  magnitude/image-level predictability but no independently controlled signed
+  block-value signal. Do not repeat its linear scoring, calibration, threshold,
+  or policy continuation without a new representation and label/control route.
+- CHD-RM v3r established that changing residual direction, rather than scale or
+  RGB channel scale, has substantial privileged ceiling. It is not a deployable
+  result and does not authorize post-hoc scoring or policy replay.
+- CHD-RM v3s-v3z resolved the direction-repair sequence. v3s/v3t showed that
+  the regularized rendered form stayed inactive; v3u identified the minimal-
+  repair penalty as sufficient for zero lock; v3v/v3w stopped abrupt and linear
+  fixed safety-weight schedules; v3x established a locally feasible projected
+  update; and v3y passed the first disjoint cross-sample check. Terminal v3z
+  then failed the sealed train128/heldout128 safety gate because heldout anchor
+  and harm exceeded fixed references despite positive rendered-MSE reduction.
+  The frozen projected-head route is closed. Do not tune its weights, bounds,
+  gates, sample scope, or safety thresholds; policy, canary, candidate training,
+  and locked test remain blocked.
+- CHD-RM v4a rules out projection order, the tested AdamW proposal correction,
+  and fixed-versus-shuffled/stratified risk windows as material local repairs
+  for the v3z heldout-safety failure. A1F proves safe bounded direction headroom
+  beyond shrink. A1R then finds real direction information in the frozen
+  representation but fails both material lift and oracle-retention gates, with
+  little benefit from local spatial readout. A1C then shows that the frozen
+  exact-half interface itself clears the preregistered adequacy gate. A1X-global
+  adds statistically real global and non-shuffled signal but still fails the
+  material-gain and retention gates. The R3 audit therefore separates the
+  remaining problem into GT-free candidate proposal and candidate-conditioned
+  valuation/risk, rather than treating another wider direct target head as the
+  default continuation. The repaired S0 ledger now passes its structural
+  contract and seals a fresh 768-development/432-confirmation split with four
+  balanced development folds. This authorizes only independent A0 proposal-
+  oracle amendment review; A0 workload start, training, confirmation outcomes,
+  and sealed-data actions remain blocked pending that amendment.
 
 ## Artifact Boundary
 

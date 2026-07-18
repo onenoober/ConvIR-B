@@ -249,6 +249,30 @@ def asset_path(context: RouteContext, asset_id: str, *, kind: str | None = None)
     return asset.path
 
 
+def write_workload_progress(
+    context: RouteContext, *, completed_units: int, stage: str,
+) -> None:
+    """Append one generic machine-readable progress milestone."""
+    if context.phase != "run":
+        raise ContractError("workload progress requires run context")
+    completed = require_int(
+        completed_units, "completed_units", 0, context.total_units,
+    )
+    stage = require_token(stage, "stage")
+    value = {
+        "phase": "workload",
+        "event": "workload_progress",
+        "stage": stage,
+        "completed_units": completed,
+        "total_units": context.total_units,
+    }
+    line = json.dumps(value, sort_keys=True, separators=(",", ":"))
+    with context.status_path.open("a", encoding="utf-8") as stream:
+        stream.write(line + "\n")
+        stream.flush()
+    print(line, flush=True)
+
+
 def write_contract_result(context: RouteContext, *, checks: dict[str, bool]) -> None:
     if context.phase != "contract" or not checks \
             or not all(isinstance(key, str) and require_token(key, "check")
