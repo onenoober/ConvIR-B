@@ -1,10 +1,10 @@
 # Haze4K CHD-RM Family Summary
 
-Date: 2026-07-17
+Date: 2026-07-18
 
-Status: A1C established an adequate privileged exact-half interface, A1R and
-A1X found real but sub-material direction signal, and repaired R3 S0 now passes
-the fresh development/confirmation ledger contract.
+Status: R3 A0 passed the fixed GT-free proposal-bank oracle; candidate proposal
+is no longer the active bottleneck, and only an independent A1 amendment review
+is authorized.
 
 ## Current Read
 
@@ -17,8 +17,13 @@ the fresh development/confirmation ledger contract.
 - A1X-v3 D0 beat shuffle and its local control, but its gain UCB95 is only
   `.018182 dB` and its oracle-retention UCB95 only `.102841`. This
   closes the current global-head contract by effect size, not low precision.
-- The remaining upstream question is whether a GT-free proposal bank contains
-  useful directions before asking a candidate-conditioned critic to value them.
+- R3 A0 answers the remaining proposal question positively: proposal-gain
+  LCB95 is `+0.1451246743 dB`, privileged-retention LCB95 is `0.6234106888`,
+  and repairable-fraction LCB95 is `0.84375`, with all structural/safety gates
+  passing and zero new hard or severe cases.
+- The active bottleneck is now candidate-conditioned valuation and abstaining
+  risk control, not action existence, exact-half transport, or GT-free proposal
+  availability.
 - The historical 432-name A1X confirmation range is now `historical_audit_only`;
   a new ledger must come from the 1,200 train-inner images outside v3p.
 - Repaired S0 r4 passes all 16 structural checks with 768 development, 432
@@ -27,15 +32,15 @@ the fresh development/confirmation ledger contract.
 
 ## Decision
 
-Decision: `R3_CLOUD_EVIDENCE_AUDIT_COMPLETE_S0_A0_DESIGN_ONLY`.
+Decision: `R3_A0_GT_FREE_PROPOSAL_ORACLE_PASS`.
 
-Execution status: `R3_S0_LEDGER_FREEZE_PASS_A0_AMENDMENT_REVIEW_ONLY`.
+Execution status: `R3_A0_PASS_A1_AMENDMENT_REVIEW_ONLY`.
 
-Do not widen or retune A1X, repeat a single fixed-action RGB-response probe,
-reuse the historical 432 as confirmation, or start model training. Design only
-a fresh R3 S0/A0 contract that first tests a GT-free multi-candidate bank and
-then a matched state-only -> state+action -> state+action+response critic with
-tie-aware regret, asymmetric harm, and abstention.
+Do not widen or retune A1X, repeat the A0 proposal bank, reuse the historical
+432 as confirmation, or start model training. The only authorized continuation
+is independent amendment review for the matched state-only -> state+action ->
+state+action+response A1 critic with tie-aware regret, asymmetric harm and
+abstention. A1 creation and start are not authorized by A0 alone.
 
 The detailed documentation-only handoff is:
 
@@ -49,10 +54,11 @@ It proposes one-operation-at-a-time progression:
 A2 four-fold OOF -> optional adapter-only integration -> one new-432
 confirmation`. This is a reference, not a launch authorization.
 
-The repaired S0 operation establishes the fresh data ledger only. Do not launch
-A0 or consume confirmation outcomes. The typed PASS authorizes an independent
-A0 amendment review with exact proposal formulas/assets; it does not authorize
-candidate generation, model work, or workload start.
+The repaired S0 operation established the fresh data ledger, and A0 then
+completed the exact amended proposal-bank contract on the 768 development
+images without touching confirmation outcomes. Its typed PASS authorizes an
+independent A1 amendment review only; it does not authorize A1 creation,
+training, confirmation, canary or locked-test access.
 
 Evidence:
 `experience_docx/experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/`.

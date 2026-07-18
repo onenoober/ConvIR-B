@@ -1,0 +1,10 @@
+{
+  "cache_total_bytes": 28685905408,
+  "cache_unit_count": 1536,
+  "candidate_operator_units": 1536,
+  "model_forward_images": 768,
+  "peak_gpu_memory_mib": 998.93408203125,
+  "schema_version": 1,
+  "training_occurred": false,
+  "wall_seconds": 265.6624974152073
+}

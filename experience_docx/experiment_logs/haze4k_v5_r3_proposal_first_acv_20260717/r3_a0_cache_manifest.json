@@ -1,0 +1,16 @@
+{
+  "cache_manifest_sha256": "b54603b51c810436c14bc9e993aef9f1294902efbc51fadebdd2c84d7c827a1d",
+  "cache_total_bytes": 28685905408,
+  "candidate_cache_cloud_only": true,
+  "image_count": 768,
+  "operation_id": "R3_A0_GT_FREE_PROPOSAL_ORACLE",
+  "operators": [
+    "D_ref",
+    "D_rep"
+  ],
+  "raw_unit_manifest_cloud_only": true,
+  "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+  "schema_version": 1,
+  "sealed_before_gt_access": true,
+  "unit_count": 1536
+}

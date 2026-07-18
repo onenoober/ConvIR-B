@@ -1,0 +1,16 @@
+{
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "confirmation_names_sha256": "831bb8cf1e327d06fafe5dd287beaec74562b8d5bfcc6446ad9f4af30c5402a7",
+  "development_names_sha256": "f27615a286b691e77372656c0c82b521f5472082007c4012c1db9896e747edae",
+  "gt_development_images_accessed": 768,
+  "gt_first_access_after_cache_manifest_seal": true,
+  "hazy_development_images_accessed": 768,
+  "historical_a1x_432_outcomes_touched": false,
+  "ledger_sha256": "bf09dd05e2fd53c26158b31351554102f10fc6574b7dbe4e0d0b8b95b1cbd02a",
+  "locked_test_touched": false,
+  "proposal_generation_used_gt": false,
+  "route_commit": "207581b4abfff2224bc21d4d1ae4ad5c26118936",
+  "schema_version": 1,
+  "training_occurred": false
+}

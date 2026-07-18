@@ -1,0 +1,22 @@
+{
+  "checks": {
+    "anchor_safety": true,
+    "bank_cap_respected": true,
+    "bound_integrity": true,
+    "cache_sealed_before_gt": true,
+    "cache_units_complete": true,
+    "confirmation_count_432": true,
+    "development_count_768": true,
+    "exact_noop": true,
+    "finite_scores": true,
+    "hard_zero": true,
+    "paired_operators_complete": true,
+    "predecessor_safety": true,
+    "role_overlap_zero": true,
+    "score_units_complete": true,
+    "severe_zero": true,
+    "support_integrity": true
+  },
+  "schema_version": 1,
+  "structural_valid": true
+}

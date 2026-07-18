@@ -1,0 +1,17 @@
+{
+  "maximum_anchor_excess_mse": 2.9103830456733704e-11,
+  "maximum_predecessor_excess_mse": 1.1641532182693481e-10,
+  "new_hard_count": 0,
+  "new_severe_count": 0,
+  "operators": {
+    "D_ref": {
+      "cvar5_gain_db": -2.3319553968748644e-07,
+      "p10_gain_db": 0.0
+    },
+    "D_rep": {
+      "cvar5_gain_db": -1.977196474237749e-07,
+      "p10_gain_db": 0.0
+    }
+  },
+  "schema_version": 1
+}

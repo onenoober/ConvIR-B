@@ -1,0 +1,164 @@
+{
+  "authorizes": "R3_A1_AMENDMENT_REVIEW",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "R3_A0_GT_FREE_PROPOSAL_ORACLE_PASS",
+  "details": {
+    "cache_manifest_sha256": "b54603b51c810436c14bc9e993aef9f1294902efbc51fadebdd2c84d7c827a1d",
+    "development_count": 768,
+    "operator_count": 2,
+    "privileged_retention_lcb95": 0.6234106887873425,
+    "proposal_gain_lcb95_db": 0.14512467430729345,
+    "repairable_fraction_lcb95": 0.84375,
+    "structural_valid": true,
+    "training_occurred": false
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "r3_a0_bank_identity.json": "2268e348739f1cee61805379672d28e9936517b1e72c2822115447b8c64f87b9",
+    "r3_a0_bootstrap_summary.json": "4ea2756f2dca213cc39b6a0cc4d07e48a677c6a1b6004a28a6cb11be1ad0c9d5",
+    "r3_a0_cache_manifest.json": "553505119f228d9561b50db9816a27409189206f6c6e108485a81d7622593e47",
+    "r3_a0_operator_aggregate.csv": "2e6c427ffb9b0681e2db29ffc5faa364015d08f3ec7f3e1e4a325c1023e2dd98",
+    "r3_a0_resource_summary.json": "1a81198d46aa11c2fb8b9ddcefff599952d1784e113cfe0d3e2503d3c6b291d5",
+    "r3_a0_risk_summary.json": "146d7f9b2801a017b00eda6a154b1b4ba53a28a4235e2388f04cb3eddd0273c1",
+    "r3_a0_source_access_audit.json": "1baf52966412ab64121408e212e083ab9dc222f234981a0c11832e0d1169da86",
+    "r3_a0_structural_summary.json": "f12562155e23f9b5297e6c35bf7012cbf6809a26530c7ce0c32fc396ce443c2d"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "R3_A0_GT_FREE_PROPOSAL_ORACLE",
+  "returncode": 0,
+  "route_commit": "207581b4abfff2224bc21d4d1ae4ad5c26118936",
+  "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+  "run_id": "r3-a0-proposal-r4",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "commit": "d4f8d0936869c822ae19b5c21172efc2eb973dd8",
+      "contract_access": false,
+      "id": "a1f_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "bounds",
+      "kind": "file",
+      "sha256": "485ea12ff14c33b87105a50b6d118a9937c7e7f1b113062fe03d91eef3c9cc21"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "control_checkpoint",
+      "kind": "file",
+      "sha256": "08207119a5cf9e5c439dd2cb81b99029ade1861f2739d31e75f2f9f78d57c0f2"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "d7c_artifact",
+      "kind": "file",
+      "sha256": "09f449232024395cf64db15a2a0efa0f12d3e0e049e1da3d67229a3dc5729361"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "density_artifact",
+      "kind": "file",
+      "sha256": "1ffce13dccb41d96a47c2b5275f87bf2fdb73c226a190cfa240e5c71c1ec326f"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "final_state",
+      "kind": "file",
+      "sha256": "ed0832f220996af3fd8e617b7d04d643dc6ca052a3603adee99d59e78fd1e125"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "fresh_split_manifest",
+      "kind": "file",
+      "sha256": "c8c00fefc965ded3389b6311fc67ea521e1f3174f27793688544abe09dc420e7"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_data",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "operator_d_ref",
+      "kind": "file",
+      "sha256": "3c5ed807cc0cb25170720fe2b8f34cbe81b7bbc3857f7a3f1423f73d77cd6692"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "operator_d_rep",
+      "kind": "file",
+      "sha256": "3843471c6f4c130495ee6f6d62193c4235d9c89061621288ecb8d7455944ae62"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "operator_manifest",
+      "kind": "file",
+      "sha256": "1d2ffa499128ad08a272d67c5439583900afe8ef87fb3256193ad5fe21c3af84"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r4_ledger",
+      "kind": "file",
+      "sha256": "521eb68c6a77830e424e08ade10b939f2588706c350967b5007bfc46c20590c7"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reference_oof_rows",
+      "kind": "file",
+      "sha256": "b4a10184fab77b0045440dc88530d000a892acf2105a6295d5ad8a488c67ecb1"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "trace_manifest",
+      "kind": "file",
+      "sha256": "370f3f46b949391a8200c50b893561d78608adfef3c59f9ba2f76dd84a155780"
+    },
+    {
+      "access_role": "development_screening",
+      "commit": "555fd008e29f02128564f2fad41d0095ee44f5ea",
+      "contract_access": false,
+      "id": "v3p_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "development_screening",
+      "commit": "2860f580bb25cc75ec9ade56378af6d77f5c8d8b",
+      "contract_access": false,
+      "id": "v3s_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "development_screening",
+      "commit": "3caddcc5265732e5be77e3404119a28cb28c11e6",
+      "contract_access": false,
+      "id": "v3z_checkout",
+      "kind": "git_checkout"
+    }
+  ]
+}

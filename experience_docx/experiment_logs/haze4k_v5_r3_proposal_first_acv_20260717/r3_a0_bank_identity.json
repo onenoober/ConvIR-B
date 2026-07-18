@@ -1,0 +1,40 @@
+{
+  "amplitudes": [
+    0.0,
+    1.0
+  ],
+  "candidate_sources": [
+    "v4a_final_state_delta",
+    "actual_high_render_response_backprojection"
+  ],
+  "deduplication": "exact_float32_tensor_first_identity",
+  "half_sizes": {
+    "400x400": "208x208",
+    "480x640": "240x320"
+  },
+  "maximum_unique_candidates": 9,
+  "observed_candidate_presence": {
+    "reference_noop": 1536,
+    "response_negative_exact_half": 1536,
+    "response_negative_full": 1536,
+    "response_positive_exact_half": 1536,
+    "response_positive_full": 1536,
+    "state_negative_exact_half": 1536,
+    "state_negative_full": 1536,
+    "state_positive_exact_half": 1536,
+    "state_positive_full": 1536
+  },
+  "primary_bank": [
+    "reference_noop",
+    "state_positive_full",
+    "state_negative_full",
+    "state_positive_exact_half",
+    "state_negative_exact_half",
+    "response_positive_full",
+    "response_negative_full",
+    "response_positive_exact_half",
+    "response_negative_exact_half"
+  ],
+  "primary_bank_cap": 9,
+  "schema_version": 1
+}

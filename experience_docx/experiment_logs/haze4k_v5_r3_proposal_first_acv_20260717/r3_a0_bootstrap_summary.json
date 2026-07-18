@@ -1,0 +1,22 @@
+{
+  "draws": 4000,
+  "paired_image_resampling": true,
+  "privileged_retention": {
+    "lcb95": 0.6234106887873425,
+    "point": 0.6531851944650855,
+    "ucb95": 0.6824038343823012
+  },
+  "proposal_gain_db": {
+    "lcb95": 0.14512467430729345,
+    "point": 0.15566447774989256,
+    "ucb95": 0.16605698138726302
+  },
+  "repairable_fraction": {
+    "lcb95": 0.84375,
+    "point": 0.8644615885416668,
+    "ucb95": 0.8841145833333334
+  },
+  "schema_version": 1,
+  "seed": 3407,
+  "worse_operator_within_draw": true
+}

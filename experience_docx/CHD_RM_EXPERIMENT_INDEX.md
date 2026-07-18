@@ -1,20 +1,19 @@
 # CHD-RM Haze4K Experiment Index
 
-Date: 2026-07-17
+Date: 2026-07-18
 
-Status: v4a A0P closed optimizer/projection/window local repair, A1F proved
-that safe bounded direction headroom exists, A1R found directional signal below
-the material representation gate, and A1C established an adequate privileged
-exact-half interface. A1X-v3 D0 then failed the material gain and oracle-
-retention gates despite real true-over-shuffle and global-over-local signal.
+Status: R3 A0 passed the fixed GT-free proposal-bank oracle after S0 froze a
+fresh 768-development/432-confirmation ledger. Candidate proposal is no longer
+the active bottleneck; only independent A1 amendment review is authorized.
 
 The 2026-07-17 cloud evidence audit sharpens the bottleneck to joint GT-free
 candidate proposal plus candidate-conditioned value/risk identifiability. It
 retires the historical 432-name A1X confirmation role because the full v3p
 1,200-image outcome table has now been used in a project-level aggregate audit.
-Only R3 S0/A0 design on the 1,200 train-inner images outside the v3p action-label
-chain is authorized. Direct implementation, training, canary, and locked-test
-access remain blocked.
+R3 S0 subsequently passed, and A0 then passed on the 768 development images
+without accessing the sealed 432 outcomes. Direct A1 implementation, training,
+confirmation, canary and locked-test access remain blocked pending an
+independent amendment review.
 
 ## Research Direction
 
@@ -170,14 +169,17 @@ equal-weight hard action classification. A1R oracle-retention UCB95 is only
 0.116634 and A1X UCB95 only 0.102841, both far below the 0.25 gate, so the
 current heads fail by effect size rather than sample precision.
 
-The audit also separates proposal from valuation: A1F's strong direction family
-is privileged, so no GT-free proposal-bank oracle has yet been established.
+The audit separated proposal from valuation. R3 A0 has now established the
+GT-free proposal-bank oracle: gain LCB95 `+0.1451246743 dB`, privileged-
+retention LCB95 `0.6234106888`, and repairable-fraction LCB95 `0.84375`, with
+all structural/safety checks passing.
 FAM2 v3i-C already failed a fixed-action RGB-response probe, but did not test
 explicit multi-action identity or direct action regret. DTA-v3.7 shows that
 output-difference features can pass train-derived validation and still fail
-locked generalization. The only authorized continuation is a preregistered R3
-S0/A0 design that tests a GT-free multi-candidate bank before any value-model or
-architecture training.
+locked generalization. The remaining bottleneck is candidate-conditioned
+valuation and abstaining risk control. The only authorized continuation is an
+independent A1 amendment review; A1 creation or training is not authorized by
+the A0 PASS alone.
 
 ## R3 Proposal-First Design Reference
 
@@ -221,9 +223,9 @@ References:
 - detailed rationale/operation/artifact plan:
   `experience_docx/experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/recommended_r3_route.md`.
 
-The current decision remains
-`DRAFT_R3_PROPOSAL_FIRST_ACV_REFERENCE_NO_RUNTIME_AUTHORIZATION` under the
-audit authorization `R3_S0_A0_DESIGN_ONLY`.
+The design reference has now been partially executed. S0 and A0 are complete;
+the current decision is `R3_A0_GT_FREE_PROPOSAL_ORACLE_PASS` with authorization
+limited to `R3_A1_AMENDMENT_REVIEW`.
 
 - Dataset: Haze4K only.
 - Backbone: ConvIR-B.
@@ -284,7 +286,7 @@ audit authorization `R3_S0_A0_DESIGN_ONLY`.
 | v4a-A1C safe-action interface ceiling | `codex/haze4k-v5-v4a-a1c-safe-action-interface-ceiling-20260715` | completed formal exact-half adequacy pass | S0 and formal replay are structurally valid on all 512 development-screen images and both operators; exact-half interface passes the frozen adequacy tuple without training or candidate selection | `V4A_A1C_EXACT_HALF_INTERFACE_ADEQUACY_PASS_R3_HANDOFF` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/` |
 | v4a-A1X-v3 accessibility | `codex/haze4k-v5-v4a-a1x-accessibility-v3-20260716` | completed D0 gate fail | repaired S0 passed; fresh512 D0 retained real signal but failed gain LCB95 `+0.013200 < +0.020 dB` and oracle-retention LCB95 `0.080069 < 0.25` | `A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716/` |
 | R3 cloud evidence audit | `codex/haze4k-v5-r3-evidence-audit-20260717` | completed diagnostic-only audit | identifies joint GT-free proposal/value bottleneck, tie-heavy action targets, decisive current-head effect-size failure, and a clean 1,200-image source for a new ledger; historical 432 confirmation role retired | `R3_CLOUD_EVIDENCE_AUDIT_COMPLETE_S0_A0_DESIGN_ONLY` | `experience_docx/experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/` |
-| R3 proposal-first ACV | not created; future route must branch from the immutable official anchor | draft design only | detailed S0/A0/A1/A2/optional-B/C0 data, factor, gate, runtime, evidence, and stop contract; no runtime bundle exists | `DRAFT_R3_PROPOSAL_FIRST_ACV_REFERENCE_NO_RUNTIME_AUTHORIZATION` | `experience_docx/experiment_cards/2026-07-17-haze4k-v5-r3-proposal-first-acv-design.md` |
+| R3 proposal-first ACV | `codex/haze4k-v5-r3-proposal-first-acv-20260717` | S0 and A0 completed; A1 review only | S0 r4 freezes 768 development/432 confirmation with balanced folds; A0 r4 passes gain LCB95 `+0.145125 dB`, retention LCB95 `0.623411`, repairable LCB95 `0.84375`, all structural/safety checks, and zero protected-outcome access | `R3_A0_GT_FREE_PROPOSAL_ORACLE_PASS` | `experience_docx/experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |

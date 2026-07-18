@@ -331,6 +331,25 @@ retains hashes and compact counts. Typed decision:
 `R3_A0_GT_FREE_PROPOSAL_ORACLE` amendment review. A0 creation/start is not
 authorized.
 
+The independently amended A0 proposal oracle subsequently completed at route
+commit `207581b4abfff2224bc21d4d1ae4ad5c26118936` and output
+`r3-a0-proposal-r4`. The fixed nine-candidate GT-free bank passed on all 768
+development images and both frozen operators. Proposal-gain LCB95 is
+`+0.1451246743 dB` against the `+0.080 dB` gate, privileged-retention LCB95 is
+`0.6234106888` against `0.50`, and repairable-fraction LCB95 is `0.84375`
+against `0.50`. All 16 structural/safety checks passed, with zero new hard or
+severe cases. The 1,536-unit cache was sealed before GT scoring; confirmation
+outcomes, canary, locked test and historical A1X outcomes were not accessed,
+and no training occurred.
+
+The typed decision is `R3_A0_GT_FREE_PROPOSAL_ORACLE_PASS`, authorizing only
+an independent `R3_A1_AMENDMENT_REVIEW`. This establishes that the fixed
+GT-free bank contains material privileged-safe direction headroom; the next
+bottleneck is candidate-conditioned valuation and abstaining risk control, not
+proposal availability. A1 has not been created or started. Earlier A0 `r1-r3`
+engineering outputs were removed after `r4` archival and are not scientific
+evidence.
+
 Use `experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1c-safe-action-interface-ceiling.md`
 and
 `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/`
@@ -563,8 +582,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/` | compact | v4a-A1C S0 and formal interface-ceiling replay: all 512 development-screen images and three interface cells completed without training; exact-half adequacy passed and authorizes only fresh R3 review. Raw rows remain cloud-only. |
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716/` | compact | v4a-A1X-v3 repaired S0 passed, then D0 global-head development screening beat shuffle and the local control but failed material gain and oracle-retention gates. Typed stop: `A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP`; no confirmation, canary, or locked-test access. |
 | `experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/` | compact | Retrospective GitHub-plus-cloud raw-table audit: separates GT-free proposal headroom from candidate-conditioned valuation, records v3p tie/margin and cross-operator structure, retires the historical 432-name range from independent confirmation use, and authorizes only a fresh R3 S0/A0 design. The evidence root also contains the detailed proposal-first operation/artifact reference; raw tables remain cloud-only. |
-| `experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/` | compact | R3 S0 repaired ledger freeze: r4 passes all 16 structural checks with exact 1,200 eligible, 768 development, 432 sealed confirmation, and four disjoint 192-image folds. No image/GT/model/GPU/protected outcome was accessed. It authorizes only A0 amendment review, not A0 start. |
-| `experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/` | compact | First frozen R3 S0 ledger operation: synthetic contract passed, but the CPU-only workload reached its 600-second timeout (`rc=124`) before publishing ledger evidence. Terminal tuple is `FAILED_ENGINEERING / null / NONE`; this is not a scientific S0 failure and A0 remains blocked. |
+| `experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/` | compact | R3 S0 r4 passes the 1,200-name ledger contract, and A0 r4 passes the fixed GT-free proposal-bank oracle on 768 development images and both operators: gain LCB95 `+0.145125 dB`, retention LCB95 `0.623411`, repairable LCB95 `0.84375`, all 16 structural/safety checks pass, and confirmation/canary/locked test remain untouched. Only independent A1 amendment review is authorized. Earlier A0 engineering attempts are summarized in the card but are not retained as current evidence. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
