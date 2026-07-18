@@ -1,0 +1,5 @@
+count,hard_count,mean_gain_db,native_shape,operator,passes_floor,severe_count
+385,0,0.0016693115234375,400x400,D_ref,True,0
+383,0,0.0006078366511173099,480x640,D_ref,True,0
+385,0,0.0015232779762961648,400x400,D_rep,True,0
+383,0,0.000132757440870798,480x640,D_rep,True,0

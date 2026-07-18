@@ -1,0 +1,7 @@
+cell,coverage,hard_count,mean_gain_db,operator,severe_count
+joint_utility_risk,0.09309895833333333,0,0.0011399562160174053,D_ref,0
+joint_utility_risk,0.09375,0,0.0008298282821973165,D_rep,0
+independent_scalar,0.0,0,-5.463759104410807e-08,D_ref,0
+independent_scalar,0.0,0,-1.241763432820638e-08,D_rep,0
+risk_disabled,0.0,0,-5.463759104410807e-08,D_ref,0
+risk_disabled,0.0,0,-1.241763432820638e-08,D_rep,0

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r4_three_action_signed_utility_risk_20260718",
+  "operation_id": "R4_D0_THREE_ACTION_SIGNED_UTILITY_RISK_DEV",
+  "run_id": "r4-d0-three-action-dev-r1",
+  "decision": "R4_D0_THREE_ACTION_DEV_FAIL_STOP",
+  "authorizes": "NONE",
+  "primary_result": "The joint three-action utility-risk policy failed the frozen development contract. Its worse-operator gain was +0.000830 dB point with LCB95 -0.000241 dB, oracle retention was 0.00535 point with LCB95 -0.00154, and coverage was 9.31% point with LCB95 8.01%. It selected the negative action zero times and produced -0.00518 dB point gain on the negative-oracle subset with LCB95 -0.00771 dB. Safety gates passed with zero severe and hard cases and a severe-rate one-sided UCB95 of 0.",
+  "gate_reasons": [
+    "Gain LCB95 -0.000241 dB failed the +0.020 dB gate.",
+    "Oracle-retention LCB95 -0.001538 failed the 0.25 gate.",
+    "True-minus-sign-shuffle LCB95 +0.001712 dB failed the +0.005 dB specificity gate.",
+    "Joint-minus-independent LCB95 -0.000241 dB failed the +0.005 dB increment gate.",
+    "Negative-oracle-subset gain LCB95 -0.007708 dB failed the strict positive gate, with zero negative-action selections.",
+    "Coverage LCB95 0.080078 failed the 0.10 minimum coverage gate.",
+    "Safety, severe-rate, native-shape and structural/access gates passed, but PASS required every formal gate."
+  ],
+  "competing_explanation": "The evidence favors conservative abstention without signed-action identification over the proposed joint signed utility-risk mechanism. The risk outputs avoided severe harm, but the policy remained positive-only and failed specifically on images whose oracle action was negative. The small apparent joint-minus-control point difference is explained by the matched scalar and risk-disabled controls abstaining completely, not by material joint utility.",
+  "limitations": [
+    "This is development-only evidence on the frozen S0 768 images and does not estimate confirmation or test performance.",
+    "The conclusion applies to the frozen three representatives, inference-visible state/action/RGB/deep summaries, head-only scope, optimizer, folds, seeds and calibration rule; it does not directly reject unrelated representations or end-to-end architectures.",
+    "The matched scalar and risk-disabled controls calibrated to zero coverage, so the increment contrast is scientifically valid under the frozen rule but cannot characterize active control-policy quality.",
+    "Confirmation, historical A1X-432 outcomes, canary and locked test were not accessed."
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "R4_D0_THREE_ACTION_DEV_FAIL_STOP",
+  "details": {
+    "coverage_lcb95": 0.080078125,
+    "formal_pass": false,
+    "gain_lcb95_db": -0.00024100287506977717,
+    "hard_count": 0,
+    "joint_minus_independent_lcb95_db": -0.00024095730235179264,
+    "negative_oracle_subset_gain_lcb95_db": -0.007708241674635146,
+    "retention_lcb95": -0.0015384001477217412,
+    "severe_count": 0,
+    "severe_rate_ucb95": 0.0,
+    "structural_valid": true,
+    "true_minus_sign_shuffle_lcb95_db": 0.0017124491122861702
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "r4_bootstrap_summary.json": "b22723801aa1a87860eb5467a18f5d257771f20035f07a13fc11927db150315e",
+    "r4_cell_summary.csv": "63a71b05af4a4d4d63ffb9b07d16e98b88712cda1826257f723f235defeb34f6",
+    "r4_contract_summary.json": "a84dbccaec0217659a95df2c973fff341fd87442c25cff967d56b2cf31be61ff",
+    "r4_gate_summary.json": "75edcd5efd1d176eb45b907c358e049d6c1a7dd406f83b80ca031bec878594ae",
+    "r4_resource_summary.json": "eb180741f71347518b2c6505347a2ed977c3cdc25f72adb176b9e7965eee82f3",
+    "r4_risk_coverage.csv": "5fca68859ff4a41bc0acddc9a7630ae866255c0d86a8d6c0712483f4f8961437",
+    "r4_source_access_audit.json": "435ddd1cec301bf30052d958a8805d2ff89cb5b2131f6a6a6196e11f0cbf23d7",
+    "r4_strata_summary.csv": "3599092076c0c93ba4c3be8270f74d56f8a8b42f6756a8e8e8736fa113711233",
+    "r4_structural_summary.json": "5f7d51b398a303743c0a19612e1fe99f45896097dc1f91acbf317d0748cc6124",
+    "r4_training_summary.csv": "640a4de54c4a95520f7c593a50c2db34e0bb3c5f585b8be3a19da6fb5c7ccbd3"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "R4_D0_THREE_ACTION_SIGNED_UTILITY_RISK_DEV",
+  "returncode": 0,
+  "route_commit": "baec9a0fd130bd68ee6dba332d960308b14444c2",
+  "route_id": "haze4k_v5_r4_three_action_signed_utility_risk_20260718",
+  "run_id": "r4-d0-three-action-dev-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_cache_manifest",
+      "kind": "file",
+      "sha256": "553505119f228d9561b50db9816a27409189206f6c6e108485a81d7622593e47"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_candidate_cache",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_raw_manifest",
+      "kind": "file",
+      "sha256": "3123f2da6ac5e969fea8590a6c97ddbca46adf0e573fb1c03bec7d7a6c7ebfcc"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_data",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r4_ledger",
+      "kind": "file",
+      "sha256": "521eb68c6a77830e424e08ade10b939f2588706c350967b5007bfc46c20590c7"
+    }
+  ]
+}

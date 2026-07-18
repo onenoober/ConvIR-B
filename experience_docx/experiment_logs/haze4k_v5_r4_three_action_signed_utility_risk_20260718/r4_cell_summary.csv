@@ -1,0 +1,4 @@
+cell,coverage_point,gain_point_db,hard_count,negative_selection_rate,retention_point,severe_count
+joint_utility_risk,0.09309895833333333,0.0008298282821973165,0,0.0,0.005353335216615471,0
+independent_scalar,0.0,-5.463759104410807e-08,0,0.0,-3.50885760862837e-07,0
+risk_disabled,0.0,-5.463759104410807e-08,0,0.0,-3.50885760862837e-07,0

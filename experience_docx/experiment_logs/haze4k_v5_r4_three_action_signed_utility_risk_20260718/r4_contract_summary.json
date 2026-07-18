@@ -1,0 +1,49 @@
+{
+  "actions": [
+    "reference_noop",
+    "state_positive_full",
+    "state_negative_full"
+  ],
+  "analysis_unit": "clean-reference image/group; D_ref and D_rep paired",
+  "cells": [
+    "joint_utility_risk",
+    "independent_scalar",
+    "risk_disabled"
+  ],
+  "epochs": 32,
+  "folds": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "gates": {
+    "coverage_lcb95": 0.1,
+    "gain_lcb95_db": 0.02,
+    "hard_count": 0,
+    "joint_minus_independent_lcb95_db": 0.005,
+    "native_shape_mean_floor_db": -0.02,
+    "negative_oracle_subset_gain_lcb95_db": 0.0,
+    "retention_lcb95": 0.25,
+    "severe_count": 0,
+    "severe_rate_ucb95": 0.005,
+    "true_minus_sign_shuffle_lcb95_db": 0.005
+  },
+  "learning_rate": 0.001,
+  "operation_id": "R4_D0_THREE_ACTION_SIGNED_UTILITY_RISK_DEV",
+  "optimizer": "AdamW",
+  "population": "frozen R3 S0 768 development images",
+  "protected_data": {
+    "canary": "prohibited",
+    "confirmation": "prohibited",
+    "locked_test": "prohibited"
+  },
+  "question": "Can a joint candidate-conditioned utility/harm/severe head safely recover signed positive/negative action utility over exact no-op?",
+  "route_id": "haze4k_v5_r4_three_action_signed_utility_risk_20260718",
+  "schema_version": 1,
+  "seeds": [
+    3407,
+    3411
+  ],
+  "weight_decay": 0.0001
+}

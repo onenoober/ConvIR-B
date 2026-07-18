@@ -1,0 +1,15 @@
+{
+  "checks": {
+    "actions_exactly_frozen": true,
+    "all_cells_present": true,
+    "all_folds_present": true,
+    "collapsed_rows_complete": true,
+    "development_confirmation_disjoint": true,
+    "feature_units_complete": true,
+    "finite": true,
+    "oof_rows_complete": true,
+    "training_units_complete": true
+  },
+  "schema_version": 1,
+  "valid": true
+}

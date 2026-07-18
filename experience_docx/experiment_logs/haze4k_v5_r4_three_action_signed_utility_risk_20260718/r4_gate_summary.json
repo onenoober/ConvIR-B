@@ -1,0 +1,16 @@
+{
+  "gates": {
+    "coverage_lcb95": false,
+    "gain_lcb95": false,
+    "hard_point_zero": true,
+    "joint_minus_independent_lcb95": false,
+    "native_shape_floor": true,
+    "negative_oracle_subset_gain_lcb95": false,
+    "retention_lcb95": false,
+    "severe_point_zero": true,
+    "severe_rate_ucb95": true,
+    "true_minus_sign_shuffle_lcb95": false
+  },
+  "pass": false,
+  "schema_version": 1
+}
