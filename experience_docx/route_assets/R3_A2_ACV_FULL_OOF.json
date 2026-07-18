@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+  "operation_id": "R3_A2_ACV_FULL_OOF",
+  "assets": [
+    {"id": "r4_ledger", "kind": "file", "path": "{RUN_ROOT}/r3-s0-ledger-r4/workload/ledger_cloud_only.json", "sha256": "521eb68c6a77830e424e08ade10b939f2588706c350967b5007bfc46c20590c7", "access_role": "development_screening", "contract_access": false},
+    {"id": "a0_cache_manifest", "kind": "file", "path": "{RUN_ROOT}/r3-a0-proposal-r4/workload/a0_cache_manifest.json", "sha256": "553505119f228d9561b50db9816a27409189206f6c6e108485a81d7622593e47", "access_role": "development_screening", "contract_access": false},
+    {"id": "a0_raw_manifest", "kind": "file", "path": "{RUN_ROOT}/r3-a0-proposal-r4/workload/a0_cache_units_cloud_only.jsonl", "sha256": "3123f2da6ac5e969fea8590a6c97ddbca46adf0e573fb1c03bec7d7a6c7ebfcc", "access_role": "development_screening", "contract_access": false},
+    {"id": "a0_candidate_cache", "kind": "directory", "path": "{RUN_ROOT}/r3-a0-proposal-r4/workload/candidate_cache_cloud_only", "access_role": "development_screening", "contract_access": false},
+    {"id": "a1_closeout", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/r3_a1_acv_screen_closeout.json", "sha256": "713d91c866a1755f3fcdcdc5afcbd2591c4771e0a72e9c4cb0458c15466f7eef", "access_role": "development_screening", "contract_access": false},
+    {"id": "haze4k_data", "kind": "directory", "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K", "access_role": "development_screening", "contract_access": false},
+    {"id": "official_checkpoint", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl", "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088", "access_role": "development_screening", "contract_access": false}
+  ]
+}

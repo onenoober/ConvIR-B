@@ -1,35 +1,35 @@
 {
   "schema_version": 4,
   "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
-  "rules_commit": "423099bb2bfcb207aca57cfe4276bc4879871df1",
-  "route_card_relpath": "experience_docx/experiment_cards/2026-07-18-haze4k-v5-r3-proposal-first-acv-a1.md",
+  "rules_commit": "350c24d796bfcd92b5aa6482c1cf1c03ea87bcbd",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-18-haze4k-v5-r3-proposal-first-acv-a2.md",
   "operations": {
-    "R3_A1_ACV_SCREEN": {
+    "R3_A2_ACV_FULL_OOF": {
       "runner_relpath": "experience_docx/tools/run_route_operation.sh",
-      "mode": "r3_a1_acv_screen",
+      "mode": "r3_a2_acv_full_oof",
       "require_gpu": true,
-      "output_id": "r3-a1-screen-r1",
-      "closeout_filename": "r3_a1_acv_screen_closeout.json",
-      "prior_closeout_relpath": "experience_docx/experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/r3_a1_amendment_review_closeout.json",
+      "output_id": "r3-a2-oof-r1",
+      "closeout_filename": "r3_a2_acv_full_oof_closeout.json",
+      "prior_closeout_relpath": "experience_docx/experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/r3_a2_amendment_review_closeout.json",
       "prior_terminal_tuple": {
         "state": "COMPLETED_GATE_PASS",
-        "decision": "R3_A1_AMENDMENT_REVIEW_APPROVED",
-        "authorizes": "R3_A1_ACV_SCREEN"
+        "decision": "R3_A2_AMENDMENT_REVIEW_APPROVED",
+        "authorizes": "R3_A2_ACV_FULL_OOF"
       },
       "allowed_terminal_tuples": [
         {
           "state": "COMPLETED_GATE_PASS",
-          "decision": "R3_A1_ACV_SCREEN_SURVIVOR",
-          "authorizes": "R3_A2_AMENDMENT_REVIEW"
+          "decision": "R3_A2_ACV_FULL_OOF_PASS",
+          "authorizes": "R3_CANDIDATE_FREEZE_REVIEW"
         },
         {
           "state": "COMPLETED_GATE_INCONCLUSIVE",
-          "decision": "R3_A1_ACV_SCREEN_INCONCLUSIVE",
+          "decision": "R3_A2_ACV_FULL_OOF_INCONCLUSIVE",
           "authorizes": "NONE"
         },
         {
           "state": "COMPLETED_GATE_FAIL",
-          "decision": "R3_A1_ACV_SCREEN_FUTILITY_STOP",
+          "decision": "R3_A2_ACV_FULL_OOF_FAIL_STOP",
           "authorizes": "NONE"
         },
         {
