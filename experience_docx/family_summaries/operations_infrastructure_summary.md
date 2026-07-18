@@ -2,9 +2,9 @@
 
 Date: 2026-07-18
 
-Status: generic run monitoring, the route-ready generic runtime and schema-v4
-v4.3.2 engineering auto-repair path are adopted after fresh-process activation;
-the command-reliability slimming candidate is under isolated acceptance.
+Status: generic run monitoring, the route-ready generic runtime, schema-v4
+v4.3.2 engineering auto-repair path, and command-reliability hardening are
+adopted after fresh-process and isolated cloud acceptance.
 
 ## Current Verdict
 
@@ -78,9 +78,11 @@ surface and scientific authorization are unchanged.
 
 The command-reliability candidate adds task/worktree binding, literal ref-bound
 repository readers, a generic workload-progress API, and a compact single
-transport contract. It does not change the MCP version, schema, tool count,
-scientific route identity, or protected-data policy. Acceptance remains pending
-until the isolated convir-4090 test matrix completes.
+transport contract. It passed 111/111 isolated CPU-only cloud tests at
+`8447f8dd54b079505a24a8e6df8d1716256ba4b2`, with zero model calls, GPU access,
+or protected-data access. It does not change the MCP version, schema, tool
+count, scientific route identity, or protected-data policy. Compact evidence
+is in `experiment_logs/command_reliability_acceptance_20260718/`.
 
 ## Revalidation Condition
 

@@ -91,6 +91,16 @@ to user review. Acceptance used zero model calls and no GPU or protected data.
 Evidence is in
 `route_ready_fastpath_validation_20260717/convir_ops_v432_cloud_acceptance.json`.
 
+The command-reliability hardening is adopted after 111/111 isolated CPU-only
+cloud tests at `8447f8dd54b079505a24a8e6df8d1716256ba4b2`. It adds task/worktree
+identity binding, literal ref-bound repository readers, one generic workload
+progress API with legacy A1 telemetry compatibility, and a compact transport
+contract. MCP 4.3.2, schema v4, exactly six tools, scientific contracts, data
+roles, gates, thresholds, seeds, budgets, and protected-data policy are
+unchanged. The acceptance used zero model calls, GPU access, and protected-data
+access. Evidence is in
+`experiment_logs/command_reliability_acceptance_20260718/`.
+
 ## Purpose
 
 This file is the main branch reading map for the Haze4K experiment sequence.
