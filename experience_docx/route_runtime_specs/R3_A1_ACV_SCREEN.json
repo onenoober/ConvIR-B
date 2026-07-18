@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+  "operation_id": "R3_A1_ACV_SCREEN",
+  "entrypoint_relpath": "experience_docx/tools/r3_a1_acv_screen.py",
+  "asset_manifest_relpath": "experience_docx/route_assets/R3_A1_ACV_SCREEN.json",
+  "timeout_seconds": 21600,
+  "expected_wall_seconds": 10800,
+  "total_units": 24,
+  "evidence_role": "development_screening",
+  "resume_policy": "none",
+  "protected_data_permissions": {
+    "allow_confirmation": false,
+    "allow_canary": false,
+    "allow_locked_test": false
+  },
+  "environment": {
+    "CONVIR_ROUTE_SCREEN_FOLDS": "0,1",
+    "CONVIR_ROUTE_SEEDS": "3407,3411",
+    "CONVIR_ROUTE_EPOCHS": "32",
+    "CONVIR_ROUTE_OPTIMIZER": "AdamW",
+    "CONVIR_ROUTE_LEARNING_RATE": "0.001",
+    "CONVIR_ROUTE_WEIGHT_DECAY": "0.0001",
+    "CONVIR_ROUTE_BOOTSTRAP_DRAWS": "4000",
+    "CONVIR_ROUTE_BOOTSTRAP_SEED": "3407"
+  },
+  "evidence_files": [
+    {"source_relpath": "workload/a1_amendment_review.json", "destination_filename": "r3_a1_amendment_review.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/a1_contract_summary.json", "destination_filename": "r3_a1_contract_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/a1_cell_summary.csv", "destination_filename": "r3_a1_cell_summary.csv", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/a1_bootstrap_summary.json", "destination_filename": "r3_a1_bootstrap_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/a1_control_summary.csv", "destination_filename": "r3_a1_control_summary.csv", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/a1_risk_summary.csv", "destination_filename": "r3_a1_risk_summary.csv", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/a1_resource_summary.json", "destination_filename": "r3_a1_resource_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/a1_source_access_audit.json", "destination_filename": "r3_a1_source_access_audit.json", "required": true, "max_bytes": 131072}
+  ]
+}

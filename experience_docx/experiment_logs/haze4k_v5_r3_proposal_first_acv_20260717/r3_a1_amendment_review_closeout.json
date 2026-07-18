@@ -1,0 +1,27 @@
+{
+  "authorizes": "R3_A1_ACV_SCREEN",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "R3_A1_AMENDMENT_REVIEW_APPROVED",
+  "details": {
+    "a0_closeout_receipt": "73cb633b00734ad4a6de802f4bb285bac817160cf6a7958230cf786938a4b50f",
+    "a0_closeout_sha256": "527091e608deab2f27e4a6b00cd6d639bc416f3ff309bb3d7e1d0fa805ea8292",
+    "a0_gain_lcb95_db": 0.14512467430729345,
+    "a0_privileged_retention_lcb95": 0.6234106887873425,
+    "a0_repairable_fraction_lcb95": 0.84375,
+    "approved_folds": [0, 1],
+    "approved_seeds": [3407, 3411],
+    "approved_stage": "development_screening",
+    "review_result": "APPROVED_MINIMAL_SUFFICIENT_A1_SCREEN",
+    "runtime_forbidden": ["R3_A2_ACV_FULL_OOF", "confirmation", "canary", "locked_test"]
+  },
+  "evidence_role": "independent_amendment_review",
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "R3_A1_AMENDMENT_REVIEW",
+  "returncode": 0,
+  "route_commit": "207581b4abfff2224bc21d4d1ae4ad5c26118936",
+  "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS"
+}

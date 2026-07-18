@@ -1064,3 +1064,30 @@ find experience_docx/experiment_logs/haze4k_v2_26_nopost_risk_signal_separabilit
 printf 'LOCAL_WSL_PIPELINE_OK\n'
 '@ | wsl -d Ubuntu-22.04 -- bash -lc "tr -d '\r' | bash"
 ```
+
+## 2026-07-18 R3 A1 PowerShell, WSL, and SSH boundary corrections
+
+Four non-runtime inspection/static-check commands crossed the Windows-to-WSL
+boundary incorrectly while preparing R3 A1. None reached scientific workload
+execution.
+
+1. A direct WSL `git grep -E` alternation was split at `|`, causing Bash to
+   execute regex alternatives as commands. Put the entire search in a Bash
+   script body or use separate argument-safe `git show` calls.
+2. A PowerShell here-string arrived with a UTF-8 BOM, so `tr -d '\r'` alone
+   left `ï»¿set` as the first command. Prefer one-command WSL invocations or
+   strip the optional BOM before Bash.
+3. `ssh -n ... 'bash -s' <<'REMOTE'` discarded the intended remote script
+   because `-n` redirects SSH stdin. Omit `-n` whenever remote `bash -s` must
+   read its body from stdin.
+4. Appending `> /dev/null` after `wsl ...` in a PowerShell command redirected in
+   PowerShell rather than WSL and targeted a nonexistent UNC `dev/null`. Keep
+   redirection inside a WSL Bash script, or omit it for short static checks.
+
+Corrected representative forms:
+
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-r3-acv-20260717 -- git show github/main:experience_docx/EXPERIMENT_INDEX.md
+wsl -d Ubuntu-22.04 -- ssh convir-4090 'bash -s' < remote_body.sh
+wsl -d Ubuntu-22.04 --cd /home/ubuntu/workspace/ConvIR-B-r3-acv-20260717 -- python3 -m json.tool experience_docx/route_operations.json
+```
