@@ -2,9 +2,8 @@
 
 Date: 2026-07-18
 
-Status: candidate default pending cloud acceptance. This document becomes the
-single general experiment workflow only after its acceptance gate passes and
-the candidate is adopted on GitHub main.
+Status: adopted as the single default general experiment workflow after the
+cloud acceptance in experiment_logs/science_fastpath_validation_20260718/.
 
 ## Objective
 

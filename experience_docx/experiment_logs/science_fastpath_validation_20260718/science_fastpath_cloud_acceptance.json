@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "decision": "SCIENCE_FASTPATH_ADOPTION",
+  "authorizes": "SCIENCE_FASTPATH_DEFAULT",
+  "tested_commit": "7667d38b2bd10f18cb34e2f9ac00e61a011ce1b2",
+  "host": "convir-4090",
+  "tests_total": 122,
+  "tests_passed": 122,
+  "real_evidence_replay": {
+    "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+    "operation_id": "R3_A2_ACV_FULL_OOF",
+    "route_commit": "4875e7715e202952abc43b41256f70d469be34bd",
+    "receipt": "1a3197afc453964482aa75f13dcda642d823dd6580a98ec674e90f38663eaca5",
+    "formal_result_files_verified": 9,
+    "runtime_required_results_complete": true,
+    "closeout_hashes_match": true
+  },
+  "negative_cases_rejected": [
+    "missing formal result",
+    "tampered formal result",
+    "verdict-only archive",
+    "forbidden binary or raw result",
+    "incomplete scientific conclusion",
+    "dirty archive destination",
+    "conflicting terminal identity"
+  ],
+  "slimming_checks": {
+    "route_ready_requires_evidence_readme": false,
+    "single_cli_prepare_commit_push_verify": true,
+    "manual_parse_steps": 0,
+    "duplicative_document_updates": 0,
+    "post_terminal_cleanup_steps": 0
+  },
+  "unchanged_scientific_boundaries": [
+    "frozen scientific contract",
+    "protected-data isolation",
+    "risk-triggered production-path engineering validation",
+    "real workload verification",
+    "complete frozen gate interpretation",
+    "typed closeout authorization",
+    "GitHub retention of all required compact result evidence"
+  ]
+}
