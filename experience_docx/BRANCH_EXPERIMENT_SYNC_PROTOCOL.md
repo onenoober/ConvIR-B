@@ -2,10 +2,11 @@
 
 Date: 2026-07-16
 
-After every completed scientific/safety cloud operation, fetch, review, commit
-and push its compact evidence to the named route branch before another stage
-starts. Sync GitHub `main` only at a terminal scientific route decision or an
-explicit major handoff. Raw runtime artifacts stay on cloud.
+Scientific/safety terminal archive follows `SCIENCE_FASTPATH.md`. GitHub main
+retains the exact launch contract, typed closeout, every required and
+closeout-hash-bound compact result, one complete scientific conclusion, and
+one machine terminal index record. This is a result-and-evidence archive, not
+a verdict-only registry. Raw runtime artifacts stay on cloud.
 
 `FAILED_ENGINEERING` is the exception. Its validated closeout immediately
 enters `ENGINEERING_AUTO_REPAIR_AUTHORIZED`; perform one read-only diagnosis and
@@ -25,23 +26,25 @@ model structure or initialization, checkpoint/asset identity, metrics,
 thresholds, seed, optimizer, epoch/budget, scientific question, or algorithmic
 constants/control flow. A repeated same-root failure requires user review.
 
-Use a clean worktree from fresh `github/main`. Restore or copy only explicit
-card, closeout, README, compact status/aggregate files, then update the central
-index and a family summary only when its scientific verdict/reopen rule
-changed. Reject
-code, binaries, datasets, weights, images, arrays, archives, broad logs, raw
-predictions/features/actions, large tables, and unrelated paths.
+For normal scientific terminals, run `prepare_terminal_archive.py` once from
+the receipt-fetched route worktree into one clean reusable main archive
+worktree. The tool reads the frozen runtime spec and closeout SHA-256 manifest,
+requires every formal result, validates JSON/CSV/text and identities, stages
+only the complete compact bundle, writes one JSONL index record, and may commit,
+push and verify once. Do not repeat its diff, suffix, size, parse, hash or remote
+identity checks manually.
 
-Stage the complete compact bundle, then run exactly one
-`validate_evidence_sync.py` gate as documented in `ROUTE_FLOW_TOOLS.md`. It
-checks exact staged names/sizes, diff hygiene, JSON/CSV, route identity,
-code-path exclusion, and the engineering-failure policy. Use
-`--allow-project-memory-update` only for a terminal decision/major handoff, and
-`--engineering-archive` only after an explicit archive choice; the flags cannot
-be combined. Do not repeat the covered checks manually. After
-`EVIDENCE_SYNC_OK`, commit and push once without force and verify the remote
-identity. If push fails, report the clean local evidence paths; do not call
-cloud-only evidence synced.
+Do not require a route README, family-summary edit, route-card result rewrite or
+Markdown-index prose update. The launch card is retained unchanged as the
+contract; one conclusion JSON owns the scientific interpretation. Formal
+fold/cell/operator/bootstrap/risk/strata files remain in GitHub whenever they
+participate in a gate or interpretation. Reject code, binaries, datasets,
+weights, images, arrays, archives, broad logs, raw predictions/features/actions,
+large tables and unrelated paths.
 
-Delete a superseded route branch only after terminal evidence is readable from
-main and no unique runnable snapshot must be retained.
+After a successful terminal push, stop. Heartbeat deletion, branch deletion,
+worktree deletion, output cleanup and evidence reorganization are separate
+maintenance actions and are not part of an experiment closeout.
+
+`validate_evidence_sync.py` remains only for explicit engineering-failure
+archive and legacy bundles that cannot satisfy the science-fastpath schema.

@@ -110,6 +110,11 @@ fair ablation, diagnostic only, inconclusive, or invalid engineering run.
 ## Artifacts
 
 Cloud retains raw logs, checkpoints, predictions, images, arrays and large
-tables. Git retains only the minimum compact text needed to audit identities,
-gate inputs and the decision. Do not delete unique formal artifacts until the
-retention decision is written.
+tables. GitHub retains the frozen contract, typed closeout, all compact formal
+results required by the runtime spec or closeout hash manifest, and one complete
+scientific conclusion covering the primary result, gate reasons, competing
+explanation, limitations and authorization. This evidence must be sufficient to
+reproduce the decision; a verdict-only archive is invalid. Do not duplicate the
+same interpretation across README, family summary, route card and Markdown
+index. Do not delete unique formal artifacts until a separate retention decision
+is written.

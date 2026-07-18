@@ -50,11 +50,6 @@ Status: PLANNED
 - Compact Git evidence and cloud-only raw artifacts:
 - Required engineering terminal tuple: `FAILED_ENGINEERING / null / NONE`
 
-## Decision
-
-Fill only after terminal evidence.
-
-- Verdict and primary reason:
-- Mechanism/control and safety reason:
-- Evidence-independence and cost reason:
-- Authorized next action or terminal stop:
+The card is immutable after launch. Do not append terminal results here.
+Write the single scientific interpretation to the conclusion JSON required by
+`SCIENCE_FASTPATH.md`; the typed closeout remains the terminal authority.

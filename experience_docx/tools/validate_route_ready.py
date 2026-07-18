@@ -256,10 +256,6 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
             manifest, branch, snapshot, current_main, str(repo), requested[0],
         )
     }
-    show(
-        repo, snapshot,
-        f"experience_docx/experiment_logs/{manifest['route_id']}/README.md",
-    )
     bundle, bootstrap_missing = canonical_bundle_check(
         repo, snapshot, current_main, bootstrap,
     )

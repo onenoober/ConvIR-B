@@ -7,14 +7,15 @@ Date: 2026-07-16
 ```text
 one staged route-ready gate -> one exact route commit/push -> one MCP plan ->
 dynamic cloud preflight -> generic runner/contract -> bounded observation ->
-typed closeout -> scientific archive OR engineering review decision
+typed closeout -> one science-fastpath archive OR engineering review decision
 ```
 
-Local WSL remains syntax/compile-only. Before launch, verify exact route HEAD,
-clean/fresh or exact-continuation workspace, runner/assets, prior closeout, data
-role, locked-test policy, GPU floor, new output/recovery asset, status, heartbeat,
-log and closeout paths. Never substitute a commit, data, split, checkpoint,
-threshold, output, or stage silently.
+Local WSL remains syntax/compile-only. Before launch, the staged gate and
+MCP/generic lifecycle jointly verify exact route HEAD, workspace policy,
+runner/assets, prior closeout, data role, locked-test policy, GPU floor, new
+output/recovery identity, status/log/closeout paths and protected-data
+permissions. Never substitute a commit, data, split, checkpoint, threshold,
+output or stage silently. Do not manually repeat these machine-owned checks.
 
 For the default path, `validate_route_ready.py` performs the complete static
 check once before commit. MCP plan/start and the generic contract phase own the
@@ -119,4 +120,7 @@ before the failure. An empty list means verification did not complete, not
 merely that the workload failed later.
 
 Raw logs, checkpoints, images, arrays, predictions and large tables remain in
-the cloud run root. Only curated compact text evidence is eligible for Git.
+the cloud run root. GitHub retains the complete compact text evidence needed to
+reproduce the terminal decision, as defined by `SCIENCE_FASTPATH.md`. After a
+validated typed closeout, do not call finish again or perform heartbeat/status,
+branch, worktree or output cleanup as part of experiment completion.

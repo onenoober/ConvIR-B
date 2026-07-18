@@ -21,8 +21,12 @@ For a new route, create only:
 4. one Python entrypoint implementing `contract --context <json>` and
    `run --context <json>`;
 5. one typed asset manifest under `route_assets/` only when external assets are
-   required; and
-6. one evidence-directory README.
+   required.
+
+Do not create an evidence README. The route card is the immutable launch-time
+contract. Terminal interpretation belongs only in the science-fastpath
+conclusion JSON, while the typed closeout and formal result files own machine
+evidence.
 
 Every operation uses the unchanged
 `experience_docx/tools/run_route_operation.sh` from GitHub main. Do not create a

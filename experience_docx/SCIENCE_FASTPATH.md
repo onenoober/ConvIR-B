@@ -1,0 +1,134 @@
+# Science Fastpath
+
+Date: 2026-07-18
+
+Status: candidate default pending cloud acceptance. This document becomes the
+single general experiment workflow only after its acceptance gate passes and
+the candidate is adopted on GitHub main.
+
+## Objective
+
+Preserve the complete scientific loop while removing repeated checks,
+duplicative documentation, post-terminal cleanup, and manual evidence
+handling. The fastpath does not reduce experimental scope, samples, folds,
+seeds, epochs, controls, uncertainty estimation, GPU budget, or protected-data
+separation.
+
+## Seven Steps
+
+1. REVIEW: read the current index record, direct parent closeout, and current
+   cloud state. Decide whether the stage is authorized, already answered, or
+   conflicts with existing evidence. Do not perform broad repository or log
+   searches.
+2. FREEZE: write one launch-ready route card as the human-readable scientific
+   contract. Freeze the question, population, analysis unit, evidence roles,
+   data permissions, intervention, matched controls, required ablations,
+   strongest competing explanation, metrics, uncertainty, thresholds,
+   split/fold/seed/checkpoint/training budget, operation/output/commit identity,
+   and all terminal authorizations.
+3. VALIDATE: run one staged route-ready gate. Add one production-path
+   engineering fixture only when model, loss, data processing, metric, or
+   nontrivial algorithm code changed. Reuse an unchanged exercised-path result.
+4. START: push one route commit, seal one plan, and start once. Dynamic path,
+   asset, permission, resource, output-conflict, runtime and identity checks are
+   owned by MCP and the generic lifecycle. Do not repeat them manually.
+5. RUN: require one real workload-progress observation. Call finish near the
+   frozen ETA; if still healthy, call it at most once more. Do not create a
+   watcher, scan unrelated logs, or interpret partial scientific outcomes.
+6. DECIDE: after all planned units finish, compute the frozen gates once.
+   Require complete folds/seeds/cells/controls, valid uncertainty, and matching
+   protected-data access. Publish one typed closeout plus one scientific
+   conclusion. Scientific FAIL is terminal, never an engineering retry.
+7. ARCHIVE: run prepare_terminal_archive.py once. It retains the frozen
+   contract, typed closeout, all required compact result files and one complete
+   conclusion, updates one machine terminal index, and may perform one commit,
+   one push and one remote-commit verification. Stop when it succeeds.
+
+## GitHub Evidence Contract
+
+GitHub main remains the durable scientific memory, not a verdict-only registry.
+Each terminal archive retains:
+
+- the exact launch-time scientific contract;
+- the receipt-bound typed closeout;
+- every compact text result declared required by the frozen runtime spec;
+- every compact result bound by the closeout SHA-256 manifest;
+- one conclusion JSON containing the primary result, gate reasons, competing
+  explanation, limitations and next authorization; and
+- one JSONL index record pointing to the contract, closeout, conclusion, result
+  files, receipt and launch commit.
+
+Formal fold/cell/operator/bootstrap/risk/strata results remain separate JSON or
+CSV files when they participate in a gate or scientific interpretation. They
+must not be discarded merely to reduce file count. Resource and descriptive
+summaries are retained only when they diagnose validity, explain a limitation,
+or are named by the frozen result contract.
+
+Raw logs, checkpoints, weights, datasets, predictions, images, arrays and large
+per-sample tables remain cloud-only. The archive tool rejects missing required
+results, hash mismatches, verdict-only bundles, incomplete conclusions,
+identity conflicts, binary/large artifacts and stale main destinations.
+
+## Scientific Conclusion Schema
+
+One top-level JSON file under the route evidence directory replaces repeated
+result prose across the route card, README, family summary and central Markdown
+index. It contains route_id, operation_id, run_id, decision, authorizes,
+primary_result, gate_reasons, competing_explanation and limitations.
+
+The typed closeout remains the machine terminal authority. The conclusion is
+the single human/scientific interpretation and cannot change its terminal
+identity or authorization.
+
+## Risk-Triggered Engineering Gate
+
+- Configuration-only change: identity, contract, output and protected-data
+  permission checks.
+- Data/split/preprocessing change: pairing, group completeness, counts,
+  disjointness and leakage checks.
+- Model/loss/trainable-scope change: exact construction/load/freeze,
+  forward/backward, finite values, gradient and no-op checks as applicable.
+- Metric/aggregation change: an independently calculated small reference case
+  that verifies direction, pairing and aggregation.
+- Nontrivial bounded algorithm change: correctness plus a representative
+  problem-size termination/resource bound.
+- Unchanged exercised production path: reuse the prior engineering result; no
+  reassurance smoke or fixture rerun.
+
+## Explicit Non-Work
+
+Do not perform these actions after a valid scientific terminal closeout:
+
+- rewrite the same result into a route README, family summary and Markdown
+  index;
+- manually repeat JSON/CSV, suffix, size, diff or SHA checks owned by the
+  archive tool;
+- create a fresh disposable evidence worktree when one clean reusable main
+  archive worktree is available;
+- call finish again after the receipt is closed;
+- delete heartbeat/status files, route branches, worktrees or historical
+  outputs;
+- create or commit cleanup scripts;
+- reorganize evidence directories or remove superseded files; or
+- re-read remote raw files after the pushed commit identity matches.
+
+Cleanup or reorganization is a separate maintenance task, never part of
+experiment completion.
+
+## Adoption Gate
+
+Adopt this candidate only if cloud acceptance proves all of the following:
+
+- the focused fastpath tests pass;
+- the existing control-plane/tool test suite still passes;
+- real archived R3 A2 evidence passes a read-only complete-bundle audit;
+- missing, tampered, verdict-only, forbidden and conflicting evidence are all
+  rejected;
+- a clean simulated terminal archive needs one tool invocation plus one
+  commit/push boundary, with no manual parse, duplicate document update or
+  post-terminal cleanup; and
+- GitHub retains contract, closeout, scientific conclusion and every formal
+  result required to reproduce the decision.
+
+Failure leaves the current main workflow in force and authorizes no partial
+adoption.

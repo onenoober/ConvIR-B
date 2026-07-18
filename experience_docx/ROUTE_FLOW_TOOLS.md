@@ -160,6 +160,12 @@ thresholds. Metadata-only routes do not import it.
 
 ## Validate One Compact Evidence Sync
 
+This section is retained for explicit engineering archives and legacy bundles.
+Normal scientific/safety terminals use `prepare_terminal_archive.py`, which
+requires all runtime-required and closeout-hash-bound results, one scientific
+conclusion, and one machine terminal index record, then optionally performs the
+single commit/push/remote-identity boundary.
+
 In the clean evidence worktree, stage the complete compact bundle and run one
 gate:
 

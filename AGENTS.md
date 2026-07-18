@@ -17,38 +17,33 @@
 
 ## One Finite Workflow
 
-1. Read GitHub `EXPERIMENT_INDEX.md`, then only the relevant family summary,
-   route card, compact evidence, and current cloud state.
-2. Freeze one route card: route identity, estimand, evidence roles, locked-test
-   policy, gate, stop rule, implementation contract, and smallest useful stage
-   sequence. Follow `EXPERIMENT_GOVERNANCE_PROTOCOL.md`.
-3. Use `ROUTE_READY_FASTPATH.md`: create one card, one operations manifest, one
-   runtime spec per operation, one Python entrypoint, one evidence README, and
-   an asset manifest only when necessary. Stage the complete bundle and require
-   one `validate_route_ready.py` pass. All operations use the unchanged generic
-   runner; route-specific shell lifecycle is prohibited by default.
-   Use the bounded amendment, asset, fixture, and evidence helpers in
-   `ROUTE_FLOW_TOOLS.md` for mechanical work; they never authorize a stage or
-   change a scientific contract.
-4. After one commit/push, launch and monitor only through
-   `MODEL_RUN_OPERATIONS_PROTOCOL.md` and the six bounded `convir-ops` tools.
-   Do not repeat static, identity, path, resource, or contract checks already
-   owned by the staged validator, MCP, and generic lifecycle. Use
-   `COMMAND_RELIABILITY_PROTOCOL.md` only for uncovered command boundaries.
-5. A typed closeout is the only later-stage authorization. Interpret scientific
-   gates once, after complete evidence. `FAILED_ENGINEERING` enters the bounded
-   same-contract repair path: inspect once, classify once, and let the repair
-   gate authorize one mechanical repair. Sensitive changes or a repeated root
-   cause pause for the user. It never authorizes evidence fetch or Git sync
-   before a successful replacement, and never authorizes a relaunch by itself.
-6. After a scientific/safety terminal closeout, push compact evidence to the
-   route branch before the next stage. After an engineering closeout, sync only
-   when the user explicitly chooses `archive`; choosing `repair` keeps the
-   failed-run evidence cloud-only and syncs the successful replacement only
-   after the repair passes. The required cloud failure closeout is diagnostic
-   provenance, not Git sync. At a terminal scientific decision or explicit
-   major handoff, archive the curated verdict to main under
-   `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`.
+Follow `experience_docx/SCIENCE_FASTPATH.md` as the single default workflow:
+REVIEW, FREEZE, VALIDATE, START, RUN, DECIDE, ARCHIVE.
+
+1. Read only the current terminal index record, direct parent closeout, frozen
+   contract and current cloud state needed for the next decision.
+2. Freeze the complete scientific contract once. Preserve experimental scope,
+   controls, uncertainty, protected-data isolation, identities and terminal
+   actions; AI/token cost reduction never reduces the experiment.
+3. Run one staged route-ready gate. Use a risk-triggered production-path
+   engineering fixture only for a changed path and reuse unchanged validation.
+4. Commit/push once, plan once and start once through the bounded MCP tools.
+   Do not manually repeat checks owned by the validator or generic lifecycle.
+5. Confirm real workload progress once and finish near the frozen ETA. Do not
+   create watchers, broad log scans or interim scientific interpretations.
+6. Interpret complete evidence once. A typed closeout is the only stage
+   authorization; scientific FAIL is never an engineering retry.
+7. Use `prepare_terminal_archive.py` once to retain the launch contract, typed
+   closeout, every required/hash-bound compact result, one scientific conclusion
+   and one machine index record on GitHub main. Stop after commit/push identity
+   verification. Do not perform heartbeat, branch, worktree, output, directory
+   or historical cleanup as part of experiment completion.
+
+The existing manifest/runtime-spec/asset files remain machine interfaces and
+may be generated or validated mechanically. They are not separate documentation
+tasks. A route README and family-summary rewrite are not required for normal
+terminal archive. Engineering failure continues to use the bounded same-contract
+repair policy below and is not a scientific terminal archive.
 
 ## Model Qualification And Cost
 
