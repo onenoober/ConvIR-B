@@ -1,0 +1,3 @@
+control,hard_count,mean_gain_db,mean_response_shuffle_gain_db,severe_count
+C1_action_only,6,0.01216887061794599,0.01216887061794599,55
+C1_unsigned_target,15,-0.009956074257691702,-0.009956074257691702,40

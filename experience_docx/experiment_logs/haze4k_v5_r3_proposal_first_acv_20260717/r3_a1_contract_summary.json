@@ -1,0 +1,42 @@
+{
+  "analysis_unit": "clean-reference image/group with D_ref and D_rep paired",
+  "epochs": 32,
+  "folds": [
+    0,
+    1
+  ],
+  "futility_targets": {
+    "gain_db": 0.02,
+    "retention": 0.25,
+    "true_minus_shuffle_db": 0.005
+  },
+  "input_whitelist": [
+    "A0 sealed base/step/support/current",
+    "proposal identity",
+    "candidate-minus-reference RGB",
+    "official checkpoint-frozen ConvIR first-encoder response"
+  ],
+  "learning_rate": 0.001,
+  "optimizer": "AdamW",
+  "population": "exact S0 768 development names; outer folds 0/1 evaluated, one disjoint development fold calibrates abstention, and the remaining two development folds fit the critic",
+  "prohibited_inputs": [
+    "filename",
+    "fold id",
+    "GT/clean RGB as model input",
+    "confirmation",
+    "canary",
+    "locked test"
+  ],
+  "question": "Can any fixed proposal-first critic cell escape two-fold development futility without structural or safety failure?",
+  "schema_version": 1,
+  "seeds": [
+    3407,
+    3411
+  ],
+  "terminal_policy": {
+    "futility": "stop route",
+    "inconclusive": "no next runtime",
+    "survivor": "R3_A2_AMENDMENT_REVIEW only"
+  },
+  "weight_decay": 0.0001
+}

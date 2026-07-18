@@ -2,7 +2,7 @@
 
 Date: 2026-07-17
 
-Status: `S0_R4_PASS_A0_AMENDMENT_REVIEW_ONLY`
+Status: `A1_SCREEN_SURVIVOR_A2_AMENDMENT_REVIEW_ONLY`
 
 The route starts from the immutable official Haze4K architecture anchor and
 contains only the metadata ledger operation. The first
@@ -88,3 +88,35 @@ R4 evidence:
 
 The typed PASS authorizes only an independent A0 amendment review. It does not
 authorize A0 creation, candidate generation, model work, or workload start.
+
+## A0 And A1 Current Closeout
+
+A0 subsequently completed at route commit `207581b4abfff2224bc21d4d1ae4ad5c26118936`,
+output `r3-a0-proposal-r4`, receipt
+`73cb633b00734ad4a6de802f4bb285bac817160cf6a7958230cf786938a4b50f`.
+Its proposal gain LCB95 was `+0.145125 dB`, privileged-retention LCB95
+`0.623411`, repairable-fraction LCB95 `0.84375`, with all structural/safety
+checks passing. That result authorized only independent A1 amendment review.
+
+The approved A1 folds 0/1 x seeds 3407/3411 screen then completed under receipt
+`bcbc42b879d4dda6b68e0193b02f088e8e99df85c5d304f86d34bcca47e30a49`
+at route commit `4f7f500e1ea3e1f4f7913d94e20ac9769d2f63c9`. The validated tuple is
+`COMPLETED_GATE_PASS / R3_A1_ACV_SCREEN_SURVIVOR / R3_A2_AMENDMENT_REVIEW`.
+
+C3 deep-response is the sole stop-only survivor: gain point/UCB95
+`+0.003918/+0.008674 dB`, retention point/UCB95 `0.025760/0.057381`, and
+true-minus-action-shuffle point/LCB95/UCB95
+`+0.016492/+0.003152/+0.026110 dB`, with zero severe/hard cases. This is safe
+structural signal, not material utility. C1 action and C2 RGB-response each
+have two severe/two hard cases; C2 also has negative true-minus-shuffle. C0 is
+null, while action-only and unsigned controls are substantially unsafe.
+
+The screen used 9,153 trainable critic parameters, 24 units, `245.948 s` wall
+time, and `4032.621 MiB` peak GPU memory. Access audit confirms development
+targets only; confirmation, historical A1X outcomes, canary and locked test
+were untouched. Compact A1 evidence is `r3_a1_*` JSON/CSV plus
+`r3_a1_acv_screen_closeout.json`; raw OOF/training rows and cache remain
+cloud-only.
+
+The only allowed next action is independent `R3_A2_AMENDMENT_REVIEW`. No A2,
+confirmation, canary or locked-test runtime is authorized or started.

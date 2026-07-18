@@ -1,0 +1,11 @@
+{
+  "a0_cache_manifest_sha256": "b54603b51c810436c14bc9e993aef9f1294902efbc51fadebdd2c84d7c827a1d",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "development_images_targets_accessed": 768,
+  "historical_a1x_432_outcomes_touched": false,
+  "locked_test_touched": false,
+  "official_checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+  "route_commit": "4f7f500e1ea3e1f4f7913d94e20ac9769d2f63c9",
+  "schema_version": 1
+}

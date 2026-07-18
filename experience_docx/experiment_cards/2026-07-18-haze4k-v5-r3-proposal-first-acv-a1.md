@@ -2,7 +2,7 @@
 
 Date: 2026-07-18
 
-Status: PLANNED
+Status: `COMPLETED_GATE_PASS / R3_A1_ACV_SCREEN_SURVIVOR / R3_A2_AMENDMENT_REVIEW`
 
 ## Identity
 
@@ -134,3 +134,27 @@ shuffle `+0.005 dB`. Any structural/integrity failure or any new severe
   and model states. Git-eligible compact evidence is restricted to amendment,
   contract, cell/bootstrap/control/risk/resource/access summaries, status,
   receipt-bound closeout, route card, README, family summary, and index.
+
+## A1 Result And Decision
+
+Receipt `bcbc42b879d4dda6b68e0193b02f088e8e99df85c5d304f86d34bcca47e30a49`
+completed all 1,536 feature units and 24/24 critic units at route commit
+`4f7f500e1ea3e1f4f7913d94e20ac9769d2f63c9`. The validated closeout SHA-256
+is `713d91c866a1755f3fcdcdc5afcbd2591c4771e0a72e9c4cb0458c15466f7eef`.
+
+- C3 deep-response is the only screen survivor. Gain is `+0.003918 dB`
+  (LCB95 `+0.000108`, UCB95 `+0.008674`) and retention is `0.025760`
+  (UCB95 `0.057381`), both below the later formal targets. It survives only
+  because true-minus-action-shuffle is `+0.016492 dB` (LCB95 `+0.003152`,
+  UCB95 `+0.026110`) with zero severe and hard cases.
+- C1 action has gain `+0.016985 dB` and true-minus-shuffle `+0.025251 dB`,
+  but two severe and two hard cases fail safety. C2 RGB-response has gain
+  `+0.016069 dB`, but two severe/two hard cases and negative
+  true-minus-shuffle `-0.014676 dB`. C0 is effectively zero.
+- Action-only produced 55 severe/6 hard cases; unsigned target produced 40
+  severe/15 hard cases, supporting signed state-conditioned abstention.
+
+This PASS is a stop-only survivor decision, not a formal candidate or promotion
+result. C3 is a weak structural signal whose utility may disappear under full
+OOF. The only allowed next action is independent `R3_A2_AMENDMENT_REVIEW`; A2
+runtime, confirmation, canary, and locked test remain blocked.
