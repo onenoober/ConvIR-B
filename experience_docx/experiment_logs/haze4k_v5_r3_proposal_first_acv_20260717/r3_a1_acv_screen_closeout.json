@@ -1,0 +1,79 @@
+{
+  "authorizes": "R3_A2_AMENDMENT_REVIEW",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "R3_A1_ACV_SCREEN_SURVIVOR",
+  "details": {
+    "cell_count": 4,
+    "screen_fold_count": 2,
+    "seed_count": 2,
+    "structural_valid": true,
+    "survivors": [
+      "C3_deep_response"
+    ],
+    "training_units": 24
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "r3_a1_amendment_review.json": "ce56720a71764adb53337dbd9101ace367595bce04c781c81101c8210f8bb1c1",
+    "r3_a1_bootstrap_summary.json": "72ed21e02baac21a65d5eedc247321503a0da6de01562198dd448c5724f4f2d4",
+    "r3_a1_cell_summary.csv": "003ce3fca113d3a040f4391558267796c9c4a0aa42a65156be71e90302027b85",
+    "r3_a1_contract_summary.json": "ae812ebfc46d383ab0312d7b1aa8c3a289102d30a793faf2d326a20fda42d437",
+    "r3_a1_control_summary.csv": "9747c725f27c80d5016f2009b2d85f7cab0da394ea71501b31b3a4fae9f3300b",
+    "r3_a1_resource_summary.json": "83c60ad45c100e44ed43a93533bd6afccff305ef95502e19a888487b82e14d5c",
+    "r3_a1_risk_summary.csv": "0f0bf696d55ec843e283af23674e070657fc4bf492bbdc7c6db8c6945ba131fa",
+    "r3_a1_source_access_audit.json": "650df3daa101ba1b107381ce9866a3605d0c67b8c598a5094a7ef3a2857b8b8b"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "R3_A1_ACV_SCREEN",
+  "returncode": 0,
+  "route_commit": "4f7f500e1ea3e1f4f7913d94e20ac9769d2f63c9",
+  "route_id": "haze4k_v5_r3_proposal_first_acv_20260717",
+  "run_id": "r3-a1-screen-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_cache_manifest",
+      "kind": "file",
+      "sha256": "553505119f228d9561b50db9816a27409189206f6c6e108485a81d7622593e47"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_candidate_cache",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_raw_manifest",
+      "kind": "file",
+      "sha256": "3123f2da6ac5e969fea8590a6c97ddbca46adf0e573fb1c03bec7d7a6c7ebfcc"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_data",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r4_ledger",
+      "kind": "file",
+      "sha256": "521eb68c6a77830e424e08ade10b939f2588706c350967b5007bfc46c20590c7"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "basis": "A0 PASS exceeds all proposal-oracle gates and sealed cache makes the two-fold screen non-duplicative and executable",
+  "forbidden": [
+    "A2 runtime",
+    "confirmation",
+    "canary",
+    "locked test"
+  ],
+  "review": "APPROVED",
+  "schema_version": 1,
+  "scope": {
+    "cells": [
+      "C0_state",
+      "C1_action",
+      "C2_rgb_response",
+      "C3_deep_response"
+    ],
+    "controls": [
+      "C1_action_only",
+      "C1_unsigned_target"
+    ],
+    "folds": [
+      0,
+      1
+    ],
+    "seeds": [
+      3407,
+      3411
+    ]
+  },
+  "threshold_source": "pre-result R3 design card"
+}

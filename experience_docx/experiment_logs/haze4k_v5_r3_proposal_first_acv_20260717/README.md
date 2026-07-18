@@ -2,7 +2,7 @@
 
 Date: 2026-07-17
 
-Status: `A0_R4_PASS_A1_AMENDMENT_REVIEW_ONLY`
+Status: `A1_SCREEN_SURVIVOR_A2_AMENDMENT_REVIEW_ONLY`
 
 The route starts from the immutable official Haze4K architecture anchor. It
 first froze the metadata ledger and later executed the independently amended
@@ -133,3 +133,30 @@ card, but their receipts, sealed plans and cloud run directories were removed
 after this PASS archival so they cannot be mistaken for the current A0 result.
 Only `r4` is authoritative. The PASS authorizes an independent R3 A1 amendment
 review only; A1 has not been created, modified or started.
+
+## A1 Proposal-First ACV Development Screen
+
+The independent A1 amendment review approved only folds 0/1 x seeds
+3407/3411 with C0-C3 and fixed controls. Receipt
+`bcbc42b879d4dda6b68e0193b02f088e8e99df85c5d304f86d34bcca47e30a49`
+completed at route commit `4f7f500e1ea3e1f4f7913d94e20ac9769d2f63c9`; the validated tuple is
+`COMPLETED_GATE_PASS / R3_A1_ACV_SCREEN_SURVIVOR /
+R3_A2_AMENDMENT_REVIEW`.
+
+C3 deep-response is the sole stop-only survivor: gain point/UCB95
+`+0.003918/+0.008674 dB`, retention point/UCB95 `0.025760/0.057381`, and
+true-minus-action-shuffle point/LCB95/UCB95
+`+0.016492/+0.003152/+0.026110 dB`, with zero severe/hard cases. This is a
+safe structural signal, not material utility. C1 action and C2 RGB-response
+each have two severe/two hard cases; C2 also has negative true-minus-shuffle.
+C0 is null, while action-only and unsigned controls are substantially unsafe.
+
+The screen used 9,153 trainable critic parameters, 24 training units,
+`245.948 s` wall time, and `4032.621 MiB` peak GPU memory. Access audit confirms
+768 development targets only; confirmation, historical A1X 432 outcomes,
+canary and locked test were untouched. Compact evidence is the `r3_a1_*`
+JSON/CSV set plus `r3_a1_acv_screen_closeout.json`; raw OOF/training rows and
+cache remain cloud-only.
+
+The only allowed next action is independent `R3_A2_AMENDMENT_REVIEW`. No A2,
+confirmation, canary or locked-test runtime is authorized or started.

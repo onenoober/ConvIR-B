@@ -1,6 +1,6 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-07-17
+Date: 2026-07-18
 
 Status: evidence index plus official architecture anchor registry.
 
@@ -342,13 +342,22 @@ severe cases. The 1,536-unit cache was sealed before GT scoring; confirmation
 outcomes, canary, locked test and historical A1X outcomes were not accessed,
 and no training occurred.
 
-The typed decision is `R3_A0_GT_FREE_PROPOSAL_ORACLE_PASS`, authorizing only
-an independent `R3_A1_AMENDMENT_REVIEW`. This establishes that the fixed
-GT-free bank contains material privileged-safe direction headroom; the next
-bottleneck is candidate-conditioned valuation and abstaining risk control, not
-proposal availability. A1 has not been created or started. Earlier A0 `r1-r3`
-engineering outputs were removed after `r4` archival and are not scientific
-evidence.
+The typed A0 decision is `R3_A0_GT_FREE_PROPOSAL_ORACLE_PASS`. The independently
+amended A1 screen then completed folds 0/1 x seeds 3407/3411 at route commit
+`4f7f500e1ea3e1f4f7913d94e20ac9769d2f63c9`. C3 deep-response is the sole
+stop-only survivor: gain point/UCB95 `+0.003918/+0.008674 dB` and retention
+point/UCB95 `0.025760/0.057381` remain below the later formal targets, but
+true-minus-action-shuffle point/LCB95/UCB95 is
+`+0.016492/+0.003152/+0.026110 dB` with zero severe/hard cases. C1 action and
+C2 RGB-response each fail safety with two severe/two hard cases; C2 also has
+negative true-minus-shuffle. C0 is null and the action-only/unsigned controls
+are unsafe.
+
+The validated A1 tuple is `COMPLETED_GATE_PASS /
+R3_A1_ACV_SCREEN_SURVIVOR / R3_A2_AMENDMENT_REVIEW`. This is weak structural
+evidence, not formal utility or promotion evidence. Only an independent A2
+amendment review is authorized; A2 runtime, confirmation, canary and locked test
+remain blocked and untouched.
 
 Use `experience_docx/experiment_cards/2026-07-15-haze4k-v5-v4a-a1c-safe-action-interface-ceiling.md`
 and
@@ -582,7 +591,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/` | compact | v4a-A1C S0 and formal interface-ceiling replay: all 512 development-screen images and three interface cells completed without training; exact-half adequacy passed and authorizes only fresh R3 review. Raw rows remain cloud-only. |
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716/` | compact | v4a-A1X-v3 repaired S0 passed, then D0 global-head development screening beat shuffle and the local control but failed material gain and oracle-retention gates. Typed stop: `A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP`; no confirmation, canary, or locked-test access. |
 | `experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/` | compact | Retrospective GitHub-plus-cloud raw-table audit: separates GT-free proposal headroom from candidate-conditioned valuation, records v3p tie/margin and cross-operator structure, retires the historical 432-name range from independent confirmation use, and authorizes only a fresh R3 S0/A0 design. The evidence root also contains the detailed proposal-first operation/artifact reference; raw tables remain cloud-only. |
-| `experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/` | compact | R3 S0 r4 passes the 1,200-name ledger contract, and A0 r4 passes the fixed GT-free proposal-bank oracle on 768 development images and both operators: gain LCB95 `+0.145125 dB`, retention LCB95 `0.623411`, repairable LCB95 `0.84375`, all 16 structural/safety checks pass, and confirmation/canary/locked test remain untouched. Only independent A1 amendment review is authorized. Earlier A0 engineering attempts are summarized in the card but are not retained as current evidence. |
+| `experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/` | compact | R3 S0 r4 passed the ledger, A0 r4 passed the fixed GT-free proposal oracle, and the independently amended A1 two-fold screen completed. C3 deep-response is the sole safe stop-only survivor on positive shuffle contrast, but its gain/retention remain far below later formal targets; C1/C2 fail safety. Only `R3_A2_AMENDMENT_REVIEW` is authorized; A2/confirmation/canary/locked test were not started or accessed. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |

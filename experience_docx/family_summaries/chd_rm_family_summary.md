@@ -2,9 +2,9 @@
 
 Date: 2026-07-18
 
-Status: R3 A0 passed the fixed GT-free proposal-bank oracle; candidate proposal
-is no longer the active bottleneck, and only an independent A1 amendment review
-is authorized.
+Status: R3 A1 completed its stop-only two-fold screen; frozen deep response is
+the only safe structural survivor, and only independent A2 amendment review is
+authorized.
 
 ## Current Read
 
@@ -24,6 +24,11 @@ is authorized.
 - The active bottleneck is now candidate-conditioned valuation and abstaining
   risk control, not action existence, exact-half transport, or GT-free proposal
   availability.
+- R3 A1 isolates that bottleneck further. C3 frozen deep response is the sole
+  safe screen survivor because true-minus-shuffle is positive, but gain
+  `+0.003918 dB` and retention `0.025760` are weak. C1 action and C2 RGB
+  response each incur two severe/two hard cases; C2's shuffle contrast is
+  negative. Action-only and unsigned controls are substantially unsafe.
 - The historical 432-name A1X confirmation range is now `historical_audit_only`;
   a new ledger must come from the 1,200 train-inner images outside v3p.
 - Repaired S0 r4 passes all 16 structural checks with 768 development, 432
@@ -32,15 +37,14 @@ is authorized.
 
 ## Decision
 
-Decision: `R3_A0_GT_FREE_PROPOSAL_ORACLE_PASS`.
+Decision: `R3_A1_ACV_SCREEN_SURVIVOR`.
 
-Execution status: `R3_A0_PASS_A1_AMENDMENT_REVIEW_ONLY`.
+Execution status: `R3_A1_PASS_A2_AMENDMENT_REVIEW_ONLY`.
 
-Do not widen or retune A1X, repeat the A0 proposal bank, reuse the historical
-432 as confirmation, or start model training. The only authorized continuation
-is independent amendment review for the matched state-only -> state+action ->
-state+action+response A1 critic with tie-aware regret, asymmetric harm and
-abstention. A1 creation and start are not authorized by A0 alone.
+Do not widen or retune A1X, repeat the A0 proposal bank, rescue C1/C2 through
+threshold/seed/epoch changes, reuse the historical 432 as confirmation, or
+start A2 automatically. The only authorized continuation is an independent A2
+amendment review of the fixed C3 deep-response survivor.
 
 The detailed documentation-only handoff is:
 
@@ -54,11 +58,10 @@ It proposes one-operation-at-a-time progression:
 A2 four-fold OOF -> optional adapter-only integration -> one new-432
 confirmation`. This is a reference, not a launch authorization.
 
-The repaired S0 operation established the fresh data ledger, and A0 then
-completed the exact amended proposal-bank contract on the 768 development
-images without touching confirmation outcomes. Its typed PASS authorizes an
-independent A1 amendment review only; it does not authorize A1 creation,
-training, confirmation, canary or locked-test access.
+The repaired S0 established the fresh ledger, A0 passed the proposal-bank
+contract, and A1 completed the exact amended two-fold screen without touching
+confirmation outcomes. Its typed PASS authorizes A2 amendment review only; it
+does not authorize A2 creation/runtime, confirmation, canary or locked test.
 
 Evidence:
 `experience_docx/experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/`.
