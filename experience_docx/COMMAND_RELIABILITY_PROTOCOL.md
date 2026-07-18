@@ -50,6 +50,15 @@ cloud actions use only a committed remote-script. Verification steps that
 cross GitHub, SSH, and heartbeat boundaries must be separate bounded actions
 with their own marker, timeout, and failure location.
 
+2026-07-18 R4B cloud-audit documentation check: a PowerShell command string
+passed a `repo-search --term` value containing Markdown backticks. PowerShell
+treated the backticks as escapes and stopped with `The string is missing the
+terminator` before WSL ran. The invalid form was a double-quoted PowerShell
+command string containing `--term "authorizes `NONE`"`. The corrected form is
+to use literal search terms without shell metacharacters, such as
+`--term authorizes --term NONE`, while retaining the fixed `wsl.exe --exec`
+argument transport.
+
 ## Progress Contract
 
 Route entrypoints should call write_workload_progress from route_program_api for
