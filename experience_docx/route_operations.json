@@ -1,0 +1,29 @@
+{
+  "schema_version": 4,
+  "route_id": "haze4k_v5_r4b_three_action_setwise_utility_risk_20260718",
+  "rules_commit": "3fa309192b5ae69cc6b5d25f36c9c374afdcb23d",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-18-haze4k-v5-r4b-a1-setwise-mechanism-screen.md",
+  "operations": {
+    "R4B_A1_SETWISE_MECHANISM_SCREEN": {
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "mode": "r4b_a1_setwise_mechanism_screen",
+      "require_gpu": true,
+      "output_id": "r4b-a1-setwise-screen-r1",
+      "closeout_filename": "r4b_a1_setwise_mechanism_screen_closeout.json",
+      "prior_closeout_relpath": "experience_docx/experiment_logs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/r4b_a0_three_action_risk_feasibility_closeout.json",
+      "prior_terminal_tuple": {"state": "COMPLETED_GATE_PASS", "decision": "R4B_A0_RISK_FEASIBILITY_PASS", "authorizes": "R4B_A1_SETWISE_MECHANISM_SCREEN"},
+      "allowed_terminal_tuples": [
+        {"state": "COMPLETED_GATE_PASS", "decision": "R4B_A1_SETWISE_MECHANISM_SURVIVES", "authorizes": "R4B_A2_FULL_OOF"},
+        {"state": "COMPLETED_GATE_INCONCLUSIVE", "decision": "R4B_A1_SETWISE_MECHANISM_INCONCLUSIVE", "authorizes": "NONE"},
+        {"state": "COMPLETED_GATE_FAIL", "decision": "R4B_A1_SETWISE_MECHANISM_FUTILITY_STOP", "authorizes": "NONE"},
+        {"state": "FAILED_ENGINEERING", "decision": null, "authorizes": "NONE"}
+      ],
+      "workspace_policy": "fresh_route",
+      "output_policy": "new",
+      "monitor_profile": "standard",
+      "heartbeat_timeout_seconds": 600,
+      "min_free_gpu_mib": 12000,
+      "max_gpu_utilization_pct": 20
+    }
+  }
+}
