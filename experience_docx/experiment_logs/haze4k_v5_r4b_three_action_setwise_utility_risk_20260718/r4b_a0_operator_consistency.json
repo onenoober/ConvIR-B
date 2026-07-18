@@ -1,0 +1,10 @@
+{
+  "best_action_agreement": 0.98046875,
+  "minimum_active_severe_agreement": 0.9947916666666666,
+  "schema_version": 1,
+  "severe_label_agreement": {
+    "reference_noop": 1.0,
+    "state_negative_full": 0.9947916666666666,
+    "state_positive_full": 0.9947916666666666
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "event_sufficient": true,
+  "feasibility_gates": {
+    "active_severe_agreement": true,
+    "best_action_agreement": true,
+    "repairable_fraction_lcb95": true,
+    "safe_oracle_hard_zero": true,
+    "safe_oracle_severe_zero": true,
+    "three_action_oracle_gain_lcb95": true,
+    "three_over_nine_retention_lcb95": true
+  },
+  "formal_pass": true,
+  "schema_version": 1
+}

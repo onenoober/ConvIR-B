@@ -1,0 +1,13 @@
+{
+  "checks": {
+    "cache_units_complete": true,
+    "development_confirmation_disjoint": true,
+    "development_images_complete": true,
+    "finite": true,
+    "folds_complete": true,
+    "operator_image_rows_complete": true,
+    "three_actions_exact": true
+  },
+  "schema_version": 1,
+  "valid": true
+}

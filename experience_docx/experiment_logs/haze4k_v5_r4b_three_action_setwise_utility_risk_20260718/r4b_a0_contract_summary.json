@@ -1,0 +1,22 @@
+{
+  "actions": [
+    "reference_noop",
+    "state_positive_full",
+    "state_negative_full"
+  ],
+  "analysis_unit": "clean-reference image with both operators paired",
+  "bootstrap_draws": 4000,
+  "bootstrap_seed": 3407,
+  "gates": {
+    "gain_lcb95_db": 0.08,
+    "minimum_group_severe_each_active": 30,
+    "operator_agreement": 0.95,
+    "repairable_lcb95": 0.5,
+    "retention_lcb95": 0.95
+  },
+  "operation_id": "R4B_A0_THREE_ACTION_RISK_FEASIBILITY",
+  "population": "frozen S0 768 development images",
+  "question": "Does the frozen three-action bank retain all-nine oracle value and enough grouped downside events for a set-wise utility-risk screen?",
+  "route_id": "haze4k_v5_r4b_three_action_setwise_utility_risk_20260718",
+  "schema_version": 1
+}

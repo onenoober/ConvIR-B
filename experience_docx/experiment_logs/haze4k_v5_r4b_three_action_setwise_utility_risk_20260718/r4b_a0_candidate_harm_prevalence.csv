@@ -1,0 +1,4 @@
+action,cvar5_gain_db,group_count,group_hard_count,group_harm_count,group_severe_count,group_severe_rate,group_severe_ucb95,mean_gain_db,operator_image_hard_count,operator_image_severe_count,p10_gain_db
+reference_noop,0.0,768,0,0,0,0.0,0.0038930952434646352,0.0,0,0,0.0
+state_positive_full,-0.48740904671805246,768,15,322,90,0.1171875,0.13803181376484103,0.06130387385686239,29,176,-0.22530174255371094
+state_negative_full,-0.6397256727342482,768,65,578,277,0.3606770833333333,0.39019320129553975,-0.14156239728132883,129,550,-0.4763679504394531

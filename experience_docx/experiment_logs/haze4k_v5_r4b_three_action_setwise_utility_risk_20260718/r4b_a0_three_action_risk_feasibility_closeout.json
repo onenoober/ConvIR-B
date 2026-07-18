@@ -1,0 +1,75 @@
+{
+  "authorizes": "R4B_A1_SETWISE_MECHANISM_SCREEN",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "R4B_A0_RISK_FEASIBILITY_PASS",
+  "details": {
+    "best_action_agreement": 0.98046875,
+    "event_sufficient": true,
+    "minimum_active_severe_agreement": 0.9947916666666666,
+    "negative_group_severe": 277,
+    "positive_group_severe": 90,
+    "repairable_fraction_lcb95": 0.80859375,
+    "structural_valid": true,
+    "three_action_gain_lcb95_db": 0.14259838312864304,
+    "three_over_nine_retention_lcb95": 0.9953279076816421
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "r4b_a0_candidate_harm_prevalence.csv": "ad0952da76919be8405c2f917e53666cf14df7ecce840d5890e9cb5ed5107b87",
+    "r4b_a0_contract_summary.json": "645aaef4fe39ced4616a86f40463baea9eb7fd736d280fce6825b0d098d9c5b6",
+    "r4b_a0_gate_summary.json": "bf76094e397c8d43e6f25f084bd46c52fa806b009e08838d85abb4476ecf71ef",
+    "r4b_a0_margin_summary.csv": "da62780faf06cb9d8379a54078175a2af3da9c6482b7d48d63d09ab0cc86b370",
+    "r4b_a0_operator_consistency.json": "32c42f09872be0a3c8966b55082c665bd04bc3a42efa287e6cc78180d84ee04d",
+    "r4b_a0_oracle_bootstrap.json": "7f9d2b74ec7edb3991b7cf9b20cdd12e4b664311ee1c5e4503e03b91996b1c02",
+    "r4b_a0_rare_event_precision.json": "9c6a63ee2083e4e2bbc944883000ba299ffd51d8f908f41f26f19179883692cb",
+    "r4b_a0_resource_summary.json": "4af9652983f9f6f8a6ad2a2c0b60ddd35573f4f5303aae5eaa86301d22a6edb3",
+    "r4b_a0_source_access_audit.json": "c362d24ba7c107f694a1581bcda4f3403fda8ac1eac74f731afcbaf15c76800f",
+    "r4b_a0_structural_summary.json": "364014f325e45e418021a0259a6d3ec2ddf7d90367e6e4f5b4789e0ab2f4aa2c"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "R4B_A0_THREE_ACTION_RISK_FEASIBILITY",
+  "returncode": 0,
+  "route_commit": "a337ce29886a7348d63017674d799ad639296896",
+  "route_id": "haze4k_v5_r4b_three_action_setwise_utility_risk_20260718",
+  "run_id": "r4b-a0-risk-feasibility-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_cache_manifest",
+      "kind": "file",
+      "sha256": "553505119f228d9561b50db9816a27409189206f6c6e108485a81d7622593e47"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_candidate_cache",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_raw_manifest",
+      "kind": "file",
+      "sha256": "3123f2da6ac5e969fea8590a6c97ddbca46adf0e573fb1c03bec7d7a6c7ebfcc"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_data",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r4_ledger",
+      "kind": "file",
+      "sha256": "521eb68c6a77830e424e08ade10b939f2588706c350967b5007bfc46c20590c7"
+    }
+  ]
+}

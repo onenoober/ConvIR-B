@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r4b_three_action_setwise_utility_risk_20260718",
+  "operation_id": "R4B_A0_THREE_ACTION_RISK_FEASIBILITY",
+  "run_id": "r4b-a0-risk-feasibility-r1",
+  "decision": "R4B_A0_RISK_FEASIBILITY_PASS",
+  "authorizes": "R4B_A1_SETWISE_MECHANISM_SCREEN",
+  "primary_result": "The frozen no-op/positive-full/negative-full bank passes the preregistered development feasibility contract. Worse-operator three-action oracle gain LCB95 is +0.142598 dB, three-over-nine oracle retention LCB95 is 0.995328, and repairable-fraction LCB95 is 0.808594. Risk labels are sufficient at the clean-image grouped unit: positive-full has 90 severe groups and negative-full 277, with minimum cross-operator severe agreement 0.994792 and best-action agreement 0.980469.",
+  "gate_reasons": [
+    "Three-action oracle gain LCB95 +0.142598 dB passes the +0.080 dB gate.",
+    "Three-over-nine oracle retention LCB95 0.995328 passes the 0.95 reduction-fidelity gate.",
+    "Repairable-fraction LCB95 0.808594 passes the 0.50 gate.",
+    "Both active actions exceed the frozen minimum of 30 grouped severe events: positive-full 90 and negative-full 277.",
+    "Minimum active-action severe-label agreement 0.994792 and best-action agreement 0.980469 pass their 0.95 operator-consistency gates.",
+    "All structural, role-isolation and protected-data checks pass."
+  ],
+  "competing_explanation": "The action bank is not the limiting factor, and rare-event scarcity or operator-label disagreement cannot explain a future selector failure. Each active action is individually hazardous, especially negative-full, so success still depends on learning image-specific relative utility and downside risk rather than an action prior.",
+  "limitations": [
+    "A0 is an offline development oracle and risk-prevalence audit; it does not demonstrate inference-time learnability or policy safety.",
+    "The result applies to the frozen three-action reduction and does not characterize the other six A0 candidates as deployable choices.",
+    "Ground truth is used only for offline labels and gates, never as an authorized model input.",
+    "Confirmation, historical A1X-432 outcomes, canary and locked test were not accessed."
+  ]
+}

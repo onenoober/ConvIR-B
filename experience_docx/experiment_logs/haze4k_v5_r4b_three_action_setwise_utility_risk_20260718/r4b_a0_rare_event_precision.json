@@ -1,0 +1,43 @@
+{
+  "actions": {
+    "reference_noop": {
+      "hard": 0,
+      "harm": 0,
+      "severe": 0,
+      "severe_interval": {
+        "lcb95_two_sided": 0.0,
+        "point": 0.0,
+        "ucb95_one_sided": 0.0038930952434646352
+      }
+    },
+    "state_negative_full": {
+      "hard": 65,
+      "harm": 578,
+      "severe": 277,
+      "severe_interval": {
+        "lcb95_two_sided": 0.3266553053489335,
+        "point": 0.3606770833333333,
+        "ucb95_one_sided": 0.39019320129553975
+      }
+    },
+    "state_positive_full": {
+      "hard": 15,
+      "harm": 322,
+      "severe": 90,
+      "severe_interval": {
+        "lcb95_two_sided": 0.09529334926270576,
+        "point": 0.1171875,
+        "ucb95_one_sided": 0.13803181376484103
+      }
+    }
+  },
+  "minimum_events": 30,
+  "primary_unit": "clean-reference image; either operator",
+  "schema_version": 1,
+  "trials": 768,
+  "zero_event_policy_interval_at_n768": {
+    "lcb95_two_sided": 0.0,
+    "point": 0.0,
+    "ucb95_one_sided": 0.0038930952434646352
+  }
+}
