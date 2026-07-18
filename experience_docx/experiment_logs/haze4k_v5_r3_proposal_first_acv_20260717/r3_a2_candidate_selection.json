@@ -1,0 +1,24 @@
+{
+  "candidate": "C3_deep_response",
+  "candidate_source": "sole A1 screen survivor",
+  "formal_gates": {
+    "c3_minus_c1_lcb95": false,
+    "gain_lcb95": false,
+    "hard_paired_delta_ucb_nonpositive": true,
+    "hard_point_zero": true,
+    "retention_lcb95": false,
+    "severe_paired_delta_ucb_nonpositive": false,
+    "severe_point_zero": false,
+    "true_minus_action_shuffle_lcb95": true
+  },
+  "formal_pass": false,
+  "matched_control": "C1_action",
+  "next_action": "NONE",
+  "response_increment": {
+    "lcb95": -0.009480707626789809,
+    "point": -0.0019345767796039581,
+    "ucb95": 0.004995744892706474
+  },
+  "schema_version": 1,
+  "selected_before_a2_outcomes": true
+}

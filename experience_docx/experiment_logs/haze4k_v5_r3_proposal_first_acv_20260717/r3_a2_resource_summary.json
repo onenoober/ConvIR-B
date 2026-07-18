@@ -1,0 +1,8 @@
+{
+  "cache_units_read": 1536,
+  "peak_gpu_memory_mib": 4032.62109375,
+  "schema_version": 1,
+  "trainable_parameters": 9153,
+  "training_units": 16,
+  "wall_seconds": 216.89526797272265
+}

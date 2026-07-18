@@ -2,9 +2,9 @@
 
 Date: 2026-07-18
 
-Status: R3 A1 completed its stop-only two-fold screen; frozen deep response is
-the only safe structural survivor, and only independent A2 amendment review is
-authorized.
+Status: R3 A2 completed its full four-fold OOF and failed the formal utility,
+response-increment and severe-risk contract. The current critic route is closed
+and authorizes no next stage.
 
 ## Current Read
 
@@ -29,6 +29,12 @@ authorized.
   `+0.003918 dB` and retention `0.025760` are weak. C1 action and C2 RGB
   response each incur two severe/two hard cases; C2's shuffle contrast is
   negative. Action-only and unsigned controls are substantially unsafe.
+- R3 A2 completed all four folds, seeds `3407/3411`, C3/C1 matched cells, 32
+  epochs, shuffle controls and 4,000 paired bootstraps. C3 retained a positive
+  true-minus-shuffle LCB95 (`+0.011327 dB`) and zero hard cases, but failed gain
+  (`+0.006035 dB` LCB95), retention (`0.039107` LCB95), C3-minus-C1 increment
+  (`-0.009481 dB` LCB95), zero-severe and severe-risk gates with nine severe
+  cases. All structural checks passed.
 - The historical 432-name A1X confirmation range is now `historical_audit_only`;
   a new ledger must come from the 1,200 train-inner images outside v3p.
 - Repaired S0 r4 passes all 16 structural checks with 768 development, 432
@@ -37,14 +43,14 @@ authorized.
 
 ## Decision
 
-Decision: `R3_A1_ACV_SCREEN_SURVIVOR`.
+Decision: `R3_A2_ACV_FULL_OOF_FAIL_STOP`.
 
-Execution status: `R3_A1_PASS_A2_AMENDMENT_REVIEW_ONLY`.
+Execution status: `COMPLETED_GATE_FAIL / NONE`.
 
-Do not widen or retune A1X, repeat the A0 proposal bank, rescue C1/C2 through
-threshold/seed/epoch changes, reuse the historical 432 as confirmation, or
-start A2 automatically. The only authorized continuation is an independent A2
-amendment review of the fixed C3 deep-response survivor.
+Do not widen or retune A1X, repeat the A0 proposal bank, rescue C1/C2/C3 through
+cell/threshold/seed/epoch changes, rerun A2, reuse the historical 432 as
+confirmation, freeze a candidate, integrate the critic, or start confirmation,
+canary or locked test. The current route authorizes no continuation.
 
 The detailed documentation-only handoff is:
 
@@ -60,8 +66,10 @@ confirmation`. This is a reference, not a launch authorization.
 
 The repaired S0 established the fresh ledger, A0 passed the proposal-bank
 contract, and A1 completed the exact amended two-fold screen without touching
-confirmation outcomes. Its typed PASS authorizes A2 amendment review only; it
-does not authorize A2 creation/runtime, confirmation, canary or locked test.
+confirmation outcomes. Independent A2 amendment review then approved the
+complete frozen full-OOF contract, which ran to the terminal FAIL above. The
+typed A2 closeout authorizes `NONE`; confirmation, canary and locked test were
+not accessed.
 
 Evidence:
 `experience_docx/experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/`.

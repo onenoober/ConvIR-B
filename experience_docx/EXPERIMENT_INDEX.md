@@ -601,7 +601,7 @@ cloud-only runtime workflow; no local model runtime fallback was used.
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1c_safe_action_interface_ceiling_20260715/` | compact | v4a-A1C S0 and formal interface-ceiling replay: all 512 development-screen images and three interface cells completed without training; exact-half adequacy passed and authorizes only fresh R3 review. Raw rows remain cloud-only. |
 | `experiment_logs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716/` | compact | v4a-A1X-v3 repaired S0 passed, then D0 global-head development screening beat shuffle and the local control but failed material gain and oracle-retention gates. Typed stop: `A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP`; no confirmation, canary, or locked-test access. |
 | `experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/` | compact | Retrospective GitHub-plus-cloud raw-table audit: separates GT-free proposal headroom from candidate-conditioned valuation, records v3p tie/margin and cross-operator structure, retires the historical 432-name range from independent confirmation use, and authorizes only a fresh R3 S0/A0 design. The evidence root also contains the detailed proposal-first operation/artifact reference; raw tables remain cloud-only. |
-| `experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/` | compact | R3 S0 r4 passed the ledger, A0 r4 passed the fixed GT-free proposal oracle, and the independently amended A1 two-fold screen completed. C3 deep-response is the sole safe stop-only survivor on positive shuffle contrast, but its gain/retention remain far below later formal targets; C1/C2 fail safety. Only `R3_A2_AMENDMENT_REVIEW` is authorized; A2/confirmation/canary/locked test were not started or accessed. |
+| `experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/` | compact | R3 completed S0, A0, A1 and the independently approved full A2 development OOF. A2 retained positive action-specific signal but failed material gain, retention, C3-over-C1 response increment and severe-risk gates. Terminal decision: `R3_A2_ACV_FULL_OOF_FAIL_STOP`; `authorizes=NONE`. Confirmation, historical A1X-432 outcomes, canary and locked test were not accessed. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-haze-prior-scm/` | 12 | GitHub-readable compact package for the haze-prior SCM route. |
 | `../docs/ai_text_packages/2026-06-01-haze4k-route-summary/` | 3 | Compact AI-readable route matrix and evidence manifest for all Haze4K routes. |
 | `../docs/ai_text_packages/2026-06-04-haze4k-dpga-tail-control/` | 3 | Compact AI-readable DPGA tail-control package with gate summary and artifact manifest. |
@@ -747,11 +747,14 @@ The active conclusion is conservative:
   material-gain and retention gates. The R3 audit therefore separates the
   remaining problem into GT-free candidate proposal and candidate-conditioned
   valuation/risk, rather than treating another wider direct target head as the
-  default continuation. The repaired S0 ledger now passes its structural
-  contract and seals a fresh 768-development/432-confirmation split with four
-  balanced development folds. This authorizes only independent A0 proposal-
-  oracle amendment review; A0 workload start, training, confirmation outcomes,
-  and sealed-data actions remain blocked pending that amendment.
+  default continuation. R3 then repaired and froze the fresh ledger, passed the
+  GT-free proposal oracle, and completed the independently amended A1 screen.
+  Its sole safe survivor C3 completed the full four-fold/two-seed A2 OOF but
+  failed material gain (`+0.006035 dB` LCB95), retention (`0.039107` LCB95),
+  C3-over-C1 response increment (`-0.009481 dB` LCB95), and severe-risk gates
+  despite passing the shuffle-specificity and structural checks. The frozen
+  critic contract is closed as `R3_A2_ACV_FULL_OOF_FAIL_STOP`; it authorizes
+  nothing further, and confirmation, canary and locked test remain blocked.
 
 ## Artifact Boundary
 
