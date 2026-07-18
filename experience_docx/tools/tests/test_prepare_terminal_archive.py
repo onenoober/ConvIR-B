@@ -208,6 +208,28 @@ class TerminalArchiveTests(unittest.TestCase):
             self.assertEqual([], final["remaining_operator_steps"])
             self.assertEqual("", self.git(destination, "status", "--porcelain"))
 
+    def test_cli_commit_and_push_is_single_archive_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.source(root)
+            destination = self.destination(root)
+            remote = root / "github.git"
+            subprocess.run(["git", "init", "--bare", "-q", remote], check=True)
+            self.git(destination, "remote", "add", "github", str(remote))
+            self.git(destination, "push", "-q", "github", "HEAD:main")
+            repo, commit, closeout, card, conclusion = source
+            command = [
+                sys.executable, str(TOOLS / "prepare_terminal_archive.py"),
+                "--source-repo", str(repo), "--source-ref", commit,
+                "--route-id", "route", "--closeout", closeout,
+                "--contract", card, "--conclusion", conclusion,
+                "--receipt", "1" * 64, "--destination-repo", str(destination),
+                "--base-ref", "refs/remotes/github/main", "--commit-and-push",
+            ]
+            completed = subprocess.run(command, text=True, capture_output=True, check=True)
+            self.assertIn("TERMINAL_ARCHIVE_OK", completed.stdout)
+            self.assertEqual("", self.git(destination, "status", "--porcelain"))
+
 
 if __name__ == "__main__":
     unittest.main()

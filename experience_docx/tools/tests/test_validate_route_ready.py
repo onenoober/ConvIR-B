@@ -85,6 +85,10 @@ def main():
         }
         self.assertEqual([], READY.authoring_errors(manifest, []))
 
+    def test_evidence_readme_is_not_a_route_ready_dependency(self):
+        source = Path(READY.__file__).read_text(encoding="utf-8")
+        self.assertNotIn("experiment_logs/{manifest['route_id']}/README.md", source)
+
 
 if __name__ == "__main__":
     unittest.main()
