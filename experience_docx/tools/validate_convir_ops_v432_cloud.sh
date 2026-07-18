@@ -8,9 +8,9 @@ on_error() {
 }
 trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
 
-# This acceptance script is receipt-bound to the candidate commit; SSH stdin
-# does not forward the caller's environment into the remote shell.
-branch=codex/command-reliability-20260718
+# SSH stdin does not forward the caller's environment into the remote shell;
+# final acceptance therefore follows the immutable GitHub main ref.
+branch=main
 github=git@github.com:onenoober/ConvIR-B.git
 seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
 python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
