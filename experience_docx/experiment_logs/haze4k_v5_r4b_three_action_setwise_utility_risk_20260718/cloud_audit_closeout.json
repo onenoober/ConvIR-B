@@ -1,0 +1,46 @@
+{
+  "audit_id": "r4b-a1-cloud-audit-20260718-r1",
+  "authorizes": "NONE",
+  "cloud_only_raw_sha256": {
+    "r4b_a1_candidate_risk_rows_cloud_only.csv": "b09005357fc7177c379183796526f15a91c7b08aef2612bb106b653febeb6743",
+    "r4b_a1_oof_rows_cloud_only.csv": "717f5db9fc18cefc2badeb90eabe815d4dcabd10e00ca121014bd3dfb5df1929"
+  },
+  "completed_at_utc": "2026-07-18T15:20:00+00:00",
+  "decision": "ORIGINAL_BOTTLENECK_SUPPORTED_BUT_NARROWED",
+  "engineering_integrity": "ENGINEERING_INTEGRITY_VALID_WITH_RECORDED_NUMERICAL_GATE_FAILURE",
+  "evidence_role": "post_hoc_exploratory_audit",
+  "formal_terminal_state_affected": false,
+  "material_discrepancies": [],
+  "notice": "post-hoc exploratory analysis; does not change the original experiment terminal decision",
+  "operation_id": "R4B_A1_POSTHOC_CLOUD_EVIDENCE_AUDIT",
+  "post_hoc_exploratory_analysis": true,
+  "prohibited_followup": [
+    "rerun or retune R4B-A1",
+    "regenerate omitted scores by training or inference",
+    "access confirmation, historical A1X outcomes, canary or locked test",
+    "promote post-hoc subgroup findings to formal endpoints"
+  ],
+  "result_sha256": {
+    "action_margin_and_label_stability.csv": "07be69782009d76d399f71af796dcda5757e92a66414503977f760cd32cf329a",
+    "cloud_evidence_manifest.json": "cd03e892230fa1b0b88e34e56d5322ef81573197f4e2530825f37fdbd1c2ad41",
+    "engineering_integrity_audit.json": "f29229fcdc0e3cf7a81d28f496f0e89324033effdfe2d1f6a09c93878d950cef",
+    "fold_seed_operator_stability.csv": "2e0d87e14aa8ea1fc42f343f9ecb12999ad2168d0c5a93247f9d17539b2fb757",
+    "github_cloud_discrepancy.csv": "3f1420c492d0099017533643be13cccc78499e135bf8fe88a585efa46c665052",
+    "official_metric_reproduction.json": "a218cc1a8daf8dbcb9249825ddb84f8b48b23f3b9306d34ff0ee0677062d243f",
+    "per_sample_distribution_summary.json": "1af82af27034fd756aa9b29fb0fc52966c65c7d34a363a0b5deaf62e77fad007",
+    "prior_plan_reassessment.json": "3055b0df7c4ae977dccffd4da7106ae21c30dc14f11b6e08ddc9ccbc43ecc069",
+    "provenance_and_identity_audit.json": "d065ffcc8a09b68954e5acb5583def161374f1d6e11b70a34b2ca86130793bbe",
+    "risk_coverage_reanalysis.csv": "0785ecc67d22b80c0b65c97d39692a6e25a1d41df8f36b09a5c8204e447a746d",
+    "severe_hard_case_summary.csv": "9630b855e45d93d84fc8be6baec5ce09647512fef4fc5bbbd00e9ad6fe9aeaf0",
+    "subgroup_failure_summary.csv": "24e4dc95e9614f836da85fbf1bfc6a9955eb6e568bf6aeebae6fadddd86ef7bb",
+    "updated_bottleneck_assessment.json": "64349b96127bdc326eba875c26127c48f6ea9cdaa0ba44dd93933f4e71ae69bb"
+  },
+  "route_id": "haze4k_v5_r4b_three_action_setwise_utility_risk_20260718",
+  "schema_version": 1,
+  "source_identity_verified": true,
+  "source_operation_id": "R4B_A1_SETWISE_MECHANISM_SCREEN",
+  "source_route_commit": "336f1132c9aaffebda365b63e26a67aab4643531",
+  "source_run_id": "r4b-a1-setwise-screen-r1",
+  "started_at_utc": "2026-07-18T15:19:56+00:00",
+  "state": "COMPLETED_AUDIT"
+}

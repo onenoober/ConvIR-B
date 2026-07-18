@@ -1,0 +1,77 @@
+{
+  "audit_id": "r4b-a1-cloud-audit-20260718-r1",
+  "beginner_statement": "The system usually refuses to act, and when it acts it only chooses the positive direction. It can often recognize risky candidates, but the saved evidence is not rich enough to tell whether the main cause is the scores, the action rule, or the risk veto.",
+  "confidence": "high for the functional failure and abstention-dominant behavior; medium for the upstream mechanism",
+  "limitations": [
+    "no per-seed predictions",
+    "no per-action mean/q05 utility score vector",
+    "no region or semantic subgroup rows",
+    "no composite confidence for independent risk-coverage replay",
+    "post-hoc diagnostics do not alter the terminal decision"
+  ],
+  "mechanism_hypotheses": [
+    {
+      "confidence": "high",
+      "decision": "supported_but_not_isolated",
+      "hypothesis": "inference representation lacks material action-conditioned signed relative utility",
+      "id": "H1",
+      "missing": "per-action utility scores or an independent contract"
+    },
+    {
+      "confidence": "medium_high",
+      "decision": "behaviorally_supported_not_causal",
+      "hypothesis": "coverage/readout conflict causes positive-only high abstention",
+      "id": "H2",
+      "missing": "frozen composite score vector and preregistered component replay"
+    },
+    {
+      "confidence": "medium",
+      "decision": "needs_narrowing",
+      "hypothesis": "risk head predicts generic difficulty rather than action-specific harm",
+      "id": "H3",
+      "missing": "predeclared generic-vs-action-specific matched control; post-hoc cell and concordance metrics are descriptive"
+    },
+    {
+      "confidence": "medium",
+      "decision": "unresolved",
+      "hypothesis": "image/group aggregation hides local gain-harm cancellation",
+      "id": "H4",
+      "missing": "region-level utilities and fixed region labels"
+    },
+    {
+      "confidence": "medium_high",
+      "decision": "weakened_for_two_frozen_operators_only",
+      "hypothesis": "labels are unstable to implementation or perturbation",
+      "id": "H5",
+      "missing": "segmentation, sensor, precision and real-domain perturbations"
+    }
+  ],
+  "post_hoc_exploratory": true,
+  "previous_statement_decision": "supported_but_narrowed",
+  "raw_support": {
+    "negative_oracle_operator_images": 181,
+    "negative_oracle_selected_negative": 0,
+    "overall_noop_fraction": 0.9505208333333334,
+    "repairable_abstention_fraction": 0.9474548440065681,
+    "severe_risk_action_only_posthoc": {
+      "auprc": 0.3414842407847877,
+      "auroc": 0.6454723427485012,
+      "prevalence": 0.23567708333333334
+    },
+    "severe_risk_primary": {
+      "auprc": 0.6455047115180007,
+      "auroc": 0.8509510856777133,
+      "prevalence": 0.23567708333333334
+    },
+    "within_group_severe_score_concordance": {
+      "discordant_label_groups": 181,
+      "mean_score_gap": 0.30414020075611975,
+      "strict_concordance": 0.7790055248618785,
+      "tie_fraction": 0.0
+    }
+  },
+  "schema_version": 1,
+  "scope": "R4B-A1 folds 0/1, 384 development images, D_ref/D_rep, no-op/positive-full/negative-full, ensemble seeds 3407/3411",
+  "terminal_decision_affected": false,
+  "updated_formal_statement": "Within the frozen Haze4K development folds, three-action bank and R4B-A1 inference-visible representation, the deployable decision contract fails to convert candidate-conditioned signals into material signed utility and safe coverage. Raw policy rows show that the realized retention loss is dominated by abstention and the rare active policy remains positive-only; raw candidate-risk rows retain real risk discrimination, but the persisted artifacts cannot identify whether the upstream cause is utility representation, readout/coverage calibration, action-conditioned veto, or their interaction."
+}

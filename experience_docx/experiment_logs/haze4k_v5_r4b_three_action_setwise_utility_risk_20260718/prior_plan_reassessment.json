@@ -1,0 +1,52 @@
+{
+  "audit_id": "r4b-a1-cloud-audit-20260718-r1",
+  "current_authorization": "NONE",
+  "items": [
+    {
+      "assumption_supported": "partly: OOF policy rows and candidate risk rows exist and are identity-verified",
+      "data_role_risk": "reuses consumed development data; any hypothesis test would be post-hoc unless independently contracted",
+      "decision": "modify_and_delay",
+      "information_gain": "still potentially high after an independent contract, but the original replay design is not executable from the extant artifacts",
+      "lower_cost_offline_answer": "this audit already answers descriptive abstention/action/tail concentration but not causal component substitution",
+      "planned_item": "E1 R5_A0_FROZEN_OOF_COMPONENT_COUNTERFACTUAL_AUDIT",
+      "reason": "the exact per-action mean/q05 utility score vector and composite decision confidence required for base replay/component substitution were not persisted; do not regenerate them by retraining or inference"
+    },
+    {
+      "assumption_supported": "high abstention is observed, but score sufficiency is not established",
+      "data_role_risk": "development reuse and post-hoc readout selection",
+      "decision": "delay",
+      "information_gain": "conditional",
+      "lower_cost_offline_answer": "none beyond descriptive abstention decomposition",
+      "planned_item": "E2 R5_A1_FIXED_SCORE_READOUT_SUFFICIENCY_SCREEN",
+      "reason": "conditional on an E1 coverage-dominant result that is not available; frozen score vector is incomplete"
+    },
+    {
+      "assumption_supported": "not answered",
+      "data_role_risk": "new contract required; current route authorizes none",
+      "decision": "delay",
+      "information_gain": "conditional",
+      "lower_cost_offline_answer": "none; spatial tensors/regions were not persisted",
+      "planned_item": "E3 R5_A1_SPATIAL_CANDIDATE_RESPONSE_SUFFICIENCY_SCREEN",
+      "reason": "requires E1 action-dominant/interaction evidence and new spatial representation; neither is established by this audit"
+    },
+    {
+      "assumption_supported": "partly",
+      "data_role_risk": "a confirmatory claim would require a new independent contract",
+      "decision": "modify_and_delay",
+      "information_gain": "reduced but still conditional",
+      "lower_cost_offline_answer": "the post-hoc metrics in this audit",
+      "planned_item": "E4 R5_A1_ACTION_CONDITIONED_HARM_SPECIFICITY_SCREEN",
+      "reason": "raw action-risk rows permit descriptive within-group concordance and cell AUC, which partially narrows H3, but formal matched action-specific versus generic controls remain absent"
+    },
+    {
+      "assumption_supported": "not answered",
+      "data_role_risk": "development candidate cache reuse requires a new contract and fixed regions",
+      "decision": "retain_but_delay",
+      "information_gain": "potentially high only after upstream component attribution remains unresolved",
+      "lower_cost_offline_answer": "none from current artifacts",
+      "planned_item": "E5 R5_A0_REGION_AGGREGATION_CANCELLATION_AUDIT",
+      "reason": "A1 raw persistence has no region rows, so the aggregation hypothesis remains unresolved rather than supported"
+    }
+  ],
+  "schema_version": 1
+}
