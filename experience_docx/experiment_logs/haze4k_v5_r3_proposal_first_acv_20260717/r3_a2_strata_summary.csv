@@ -1,0 +1,9 @@
+count,hard_count,mean_gain_db,operator,p10_gain_db,severe_count,stratum
+192,0,-0.0008201400438944498,D_ref,0.0,0,easy_reference_top_quartile
+140,0,0.0234480653490339,D_ref,0.0,2,low_haze_transmission_ge_0.80
+385,0,0.021663799533596286,D_ref,-3.814697265625e-06,5,native_400x400
+383,0,-5.328624117779047e-07,D_ref,0.0,0,native_480x640
+192,0,-0.0012751519680023193,D_rep,0.0,0,easy_reference_top_quartile
+140,0,0.023216826575142995,D_rep,0.0,2,low_haze_transmission_ge_0.80
+385,0,0.023235737193714488,D_rep,0.0,4,native_400x400
+383,0,-2.4626211460203166e-05,D_rep,0.0,0,native_480x640

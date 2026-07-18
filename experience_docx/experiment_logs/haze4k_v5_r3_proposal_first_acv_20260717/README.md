@@ -2,7 +2,16 @@
 
 Date: 2026-07-17
 
-Status: `A1_SCREEN_SURVIVOR_A2_AMENDMENT_REVIEW_ONLY`
+Status: `A2_COMPLETED_GATE_FAIL_STOP / NONE`
+
+- Route card: `../../experiment_cards/2026-07-18-haze4k-v5-r3-proposal-first-acv-a2.md`
+- Central index: `../../EXPERIMENT_INDEX.md`
+- Primary terminal evidence: `r3_a2_acv_full_oof_closeout.json`,
+  `r3_a2_bootstrap_summary.json`, `r3_a2_gate_summary.json`,
+  `r3_a2_candidate_selection.json`, `r3_a2_cell_summary.csv`,
+  `r3_a2_risk_coverage.csv`, `r3_a2_strata_summary.csv`,
+  `r3_a2_structural_summary.json`, `r3_a2_resource_summary.json`, and
+  `r3_a2_source_access_audit.json`
 
 The route starts from the immutable official Haze4K architecture anchor and
 contains only the metadata ledger operation. The first
@@ -118,5 +127,40 @@ were untouched. Compact A1 evidence is `r3_a1_*` JSON/CSV plus
 `r3_a1_acv_screen_closeout.json`; raw OOF/training rows and cache remain
 cloud-only.
 
-The only allowed next action is independent `R3_A2_AMENDMENT_REVIEW`. No A2,
-confirmation, canary or locked-test runtime is authorized or started.
+At the A1 closeout, the only allowed next action was independent
+`R3_A2_AMENDMENT_REVIEW`; that historical authorization is now consumed by the
+A2 terminal closeout below. No confirmation, canary or locked-test runtime was
+authorized or started.
+
+## A2 Terminal Closeout
+
+The independent amendment review approved the complete preregistered A2
+development experiment without reducing experimental scope. All four outer
+folds, seeds `3407/3411`, C3 and matched C1, 32 epochs, shuffle controls, 4,000
+paired bootstraps, 1,536 cache units and 16 train/eval units completed. Runtime
+was `216.895 s`, peak GPU memory was `4032.621 MiB`, and the critic had 9,153
+trainable parameters.
+
+The validated terminal tuple is `COMPLETED_GATE_FAIL /
+R3_A2_ACV_FULL_OOF_FAIL_STOP / NONE`. C3 failed the material gain gate
+(`+0.006035 dB` LCB95 versus `+0.020`), retention gate (`0.039107` LCB95
+versus `0.25`), and response-increment gate (C3-minus-C1 point
+`-0.001935 dB`, LCB95 `-0.009481 dB` versus `+0.005`). It also had nine
+severe cases, failing the zero-severe and non-worse severe-risk gates. Its hard
+count was zero, and true-minus-action-shuffle LCB95 passed at `+0.011327 dB`.
+All structural checks passed.
+
+The response features contain action-specific signal, but they do not add
+material value beyond the matched action critic and do not meet the safety
+contract. The weak-screen-artifact explanation therefore dominates for this
+frozen C3 contract. This development-only result does not evaluate a materially
+new representation. The access audit confirms only 768 development targets
+were accessed; confirmation, historical A1X-432 outcomes, canary and locked
+test were untouched.
+
+- Route commit: `4875e7715e202952abc43b41256f70d469be34bd`
+- Output: `r3-a2-oof-r1`
+- Receipt: `1a3197afc453964482aa75f13dcda642d823dd6580a98ec674e90f38663eaca5`
+- Closeout SHA-256: `c44110a039e20c299f60689d459d8bceffbf404e205885887e76b49239b48b81`
+- Decision: stop the current critic contract; no rerun, neighboring variant, candidate freeze, integration, confirmation, canary or locked test
+- Authorized next action: `NONE`

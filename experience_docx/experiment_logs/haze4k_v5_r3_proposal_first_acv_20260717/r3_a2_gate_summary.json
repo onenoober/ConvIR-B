@@ -1,0 +1,14 @@
+{
+  "gates": {
+    "c3_minus_c1_lcb95": false,
+    "gain_lcb95": false,
+    "hard_paired_delta_ucb_nonpositive": true,
+    "hard_point_zero": true,
+    "retention_lcb95": false,
+    "severe_paired_delta_ucb_nonpositive": false,
+    "severe_point_zero": false,
+    "true_minus_action_shuffle_lcb95": true
+  },
+  "pass": false,
+  "schema_version": 1
+}

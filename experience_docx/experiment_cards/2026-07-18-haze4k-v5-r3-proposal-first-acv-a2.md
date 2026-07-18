@@ -2,7 +2,7 @@
 
 Date: 2026-07-18
 
-Status: PLANNED
+Status: `COMPLETED_GATE_FAIL / R3_A2_ACV_FULL_OOF_FAIL_STOP`
 
 ## Identity
 
@@ -57,3 +57,38 @@ resolved their declared roles.
 - Complete-unit resume policy: `none`; any same-contract engineering repair uses a new output
 - Cloud workspace/run/output/status/closeout: MCP fresh route workspace; run root `/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r3_proposal_first_acv_20260717`; output `r3-a2-oof-r1`; closeout `r3_a2_acv_full_oof_closeout.json`
 - Compact Git evidence and cloud-only raw artifacts: Git may receive structural/bootstrap/gate/selection/cell/risk-coverage/strata/resource/access summaries and closeout; raw OOF/training rows, predictions, cache and states remain cloud-only.
+
+## Terminal Result
+
+The independent amendment and the full approved A2 development experiment
+completed without reducing the frozen contract. All four outer folds, seeds
+`3407/3411`, C3 and matched C1, 32 AdamW epochs, action/response shuffles,
+4,000 paired image/group bootstraps, 1,536 cache units and 16 train/eval units
+completed. Structural evidence is valid.
+
+The terminal tuple is `COMPLETED_GATE_FAIL /
+R3_A2_ACV_FULL_OOF_FAIL_STOP / NONE`. C3 gain LCB95 was only
+`+0.006035 dB` against the `+0.020 dB` gate, retention LCB95 was
+`0.039107` against `0.25`, and C3-minus-C1 response increment was
+`-0.001935 dB` point with LCB95 `-0.009481 dB` against the
+`+0.005 dB` gate. True-minus-action-shuffle LCB95 passed at
+`+0.011327 dB`, but C3 had nine severe cases and failed both the zero-severe
+point gate and its non-worse one-sided risk bound. Hard count was zero.
+
+The positive shuffle contrast supports real action-conditioned signal, but it
+does not support the claimed value of the deep response: C3 was slightly worse
+than matched C1 and lacked material utility and retention. The strongest
+competing explanation, a weak A1 screen survivor rather than a useful
+response-increment mechanism, is therefore favored for this frozen critic
+contract. This is development-only evidence for C3/C1 and does not evaluate a
+materially new representation; confirmation, historical A1X outcomes, canary
+and locked test were untouched.
+
+- Operation/output: `R3_A2_ACV_FULL_OOF` / `r3-a2-oof-r1`
+- Route commit: `4875e7715e202952abc43b41256f70d469be34bd`
+- Receipt: `1a3197afc453964482aa75f13dcda642d823dd6580a98ec674e90f38663eaca5`
+- Closeout SHA-256: `c44110a039e20c299f60689d459d8bceffbf404e205885887e76b49239b48b81`
+- Resources: `216.895 s`, `4032.621 MiB` peak GPU memory, 9,153 trainable critic parameters
+- Protected-data audit: 768 development targets accessed; confirmation, historical A1X-432 outcomes, canary and locked test not touched
+- Stop rule: no width/LR/epoch/seed/threshold/cell rescue and no A2 rerun
+- Authorized next action: `NONE`; candidate freeze, integration, confirmation, canary and locked test remain prohibited

@@ -1,0 +1,14 @@
+{
+  "checks": {
+    "all_folds_present": true,
+    "cache_units_complete": true,
+    "candidate_fixed_c3": true,
+    "collapsed_rows_complete": true,
+    "development_confirmation_disjoint": true,
+    "finite": true,
+    "oof_rows_complete": true,
+    "training_units_complete": true
+  },
+  "schema_version": 1,
+  "valid": true
+}
