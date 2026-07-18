@@ -9,7 +9,7 @@ import re
 import subprocess
 import sys
 import threading
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 
 GIT = Path("/usr/bin/git")
@@ -19,6 +19,8 @@ REMOTE_HOST = "convir-4090"
 WORKSPACE_ROOT = Path("/home/ubuntu/workspace").resolve()
 MAX_SCRIPT_BYTES = 256 * 1024
 MAX_CAPTURE_BYTES = 64 * 1024
+MAX_REPO_TEXT_BYTES = 256 * 1024
+MAX_REPO_RESULTS = 1000
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 SAFE_REMOTE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 SAFE_REF = re.compile(r"^refs/(?:heads|remotes)/[A-Za-z0-9][A-Za-z0-9._/-]{0,240}$")
@@ -195,6 +197,42 @@ def safe_path(value, name, *, must_be_file=False, must_be_repo=False):
     return path
 
 
+def safe_repo_relpath(value, name="path"):
+    if not isinstance(value, str) or not value or "\x00" in value or "\n" in value or "\r" in value:
+        raise ControlError(f"{name} must be a non-empty single-line repository path")
+    candidate = PurePosixPath(value.replace("\\", "/"))
+    if candidate.is_absolute() or any(part in {"", ".", ".."} for part in candidate.parts):
+        raise ControlError(f"{name} must be a safe relative repository path")
+    return candidate.as_posix()
+
+
+def require_revision(value):
+    if value == "HEAD" or SHA40.fullmatch(value):
+        return value
+    if SAFE_BRANCH.fullmatch(value) and not unsafe_git_name(value):
+        return value
+    if SAFE_REF.fullmatch(value) and not unsafe_git_name(value[5:]):
+        return value
+    raise argparse.ArgumentTypeError("ref is not a safe commit, branch, or heads/remotes ref")
+
+
+def resolved_commit(repo, revision):
+    commit = git_output(repo, "rev-parse", "--verify", f"{revision}^{{commit}}")
+    if not SHA40.fullmatch(commit):
+        raise ControlError("ref did not resolve to one commit", state="GIT_REF_INVALID")
+    return commit
+
+
+def bounded_count(value):
+    try:
+        value = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("max-results must be an integer") from exc
+    if not 1 <= value <= MAX_REPO_RESULTS:
+        raise argparse.ArgumentTypeError(f"max-results must be in [1, {MAX_REPO_RESULTS}]")
+    return value
+
+
 def decode(raw):
     return raw.decode("utf-8", errors="replace")
 
@@ -286,6 +324,128 @@ def command_git_state(args):
         branch=branch, clean=not changed, changed_paths=changed[:100],
         changed_paths_truncated=len(changed) > 100, remote_head=remote_head,
         mismatches=[],
+    )
+
+
+def command_task_context(args):
+    repo = safe_path(args.repo, "repo", must_be_repo=True)
+    cwd = safe_path(args.cwd, "cwd")
+    if not cwd.is_dir():
+        raise ControlError("cwd is not a directory")
+    head = git_output(repo, "rev-parse", "HEAD")
+    branch = git_output(repo, "branch", "--show-current") or None
+    changed = git_output(repo, "status", "--porcelain").splitlines()
+    cwd_check = run_argv([GIT, "-C", cwd, "rev-parse", "--show-toplevel"], timeout=30)
+    cwd_repo_root = None
+    if cwd_check.returncode == 0:
+        candidate = Path(decode(cwd_check.stdout).strip()).resolve()
+        cwd_repo_root = str(candidate)
+    cwd_matches_repo = cwd_repo_root == str(repo)
+    tracking_ref = "refs/remotes/github/main"
+    tracking = run_argv([GIT, "-C", repo, "rev-parse", "--verify", tracking_ref], timeout=30)
+    github_main = decode(tracking.stdout).strip() if tracking.returncode == 0 else None
+    if github_main is not None and not SHA40.fullmatch(github_main):
+        github_main = None
+    fields = {
+        "repo": str(repo), "cwd": str(cwd), "cwd_repo_root": cwd_repo_root,
+        "cwd_matches_repo": cwd_matches_repo, "write_allowed": cwd_matches_repo,
+        "required_action": "none" if cwd_matches_repo else "bind_all_writes_to_local_repo_or_handoff",
+        "head": head, "branch": branch, "clean": not changed,
+        "changed_paths": changed[:100], "changed_paths_truncated": len(changed) > 100,
+        "github_main": github_main, "github_main_source": tracking_ref if github_main else None,
+        "control_source": str(Path(__file__).resolve()),
+    }
+    if not cwd_matches_repo:
+        return result(
+            False, "task-context", "TASK_CONTEXT_MISMATCH", failure_class="identity",
+            exit_code=3, **fields,
+        )
+    return result(True, "task-context", "TASK_CONTEXT_OK", **fields)
+
+
+def command_repo_show(args):
+    repo = safe_path(args.repo, "repo", must_be_repo=True)
+    relative = safe_repo_relpath(args.path)
+    commit = resolved_commit(repo, args.ref)
+    raw = git_bytes(repo, "show", f"{commit}:{relative}")
+    if len(raw) > MAX_REPO_TEXT_BYTES:
+        return result(
+            False, "repo-show", "REPO_TEXT_TOO_LARGE", failure_class="contract",
+            exit_code=3, repo=str(repo), ref=args.ref, commit=commit, path=relative,
+            size_bytes=len(raw), max_bytes=MAX_REPO_TEXT_BYTES,
+        )
+    try:
+        content = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return result(
+            False, "repo-show", "REPO_TEXT_NOT_UTF8", failure_class="contract",
+            exit_code=3, repo=str(repo), ref=args.ref, commit=commit, path=relative,
+            size_bytes=len(raw),
+        )
+    return result(
+        True, "repo-show", "REPO_SHOW_OK", repo=str(repo), ref=args.ref,
+        commit=commit, path=relative, size_bytes=len(raw), content=content,
+    )
+
+
+def command_repo_list(args):
+    repo = safe_path(args.repo, "repo", must_be_repo=True)
+    paths = [safe_repo_relpath(item) for item in args.path]
+    commit = resolved_commit(repo, args.ref)
+    argv = [GIT, "-C", repo, "ls-tree", "-r", "--name-only", commit]
+    if paths:
+        argv.extend(["--", *paths])
+    completed = run_argv_limited(
+        argv, input_bytes=b"", timeout=60, capture_limit=MAX_CAPTURE_BYTES,
+    )
+    if completed.returncode:
+        raise ControlError(
+            decode(completed.stderr).strip() or "git ls-tree failed",
+            state="GIT_COMMAND_FAILED", failure_class="command_infra",
+            exit_code=completed.returncode,
+        )
+    raw_paths = decode(completed.stdout).splitlines()
+    truncated = len(completed.stdout) > MAX_CAPTURE_BYTES or len(raw_paths) > args.max_results
+    return result(
+        True, "repo-list", "REPO_LIST_OK", repo=str(repo), ref=args.ref,
+        commit=commit, path_filters=paths, paths=raw_paths[:args.max_results],
+        result_count=min(len(raw_paths), args.max_results), truncated=truncated,
+    )
+
+
+def command_repo_search(args):
+    repo = safe_path(args.repo, "repo", must_be_repo=True)
+    paths = [safe_repo_relpath(item) for item in args.path]
+    terms = []
+    for term in args.term:
+        if not term or len(term) > 256 or any(item in term for item in ("\x00", "\n", "\r")):
+            raise ControlError("each search term must be 1-256 characters on one line")
+        terms.append(term)
+    if len(terms) > 8:
+        raise ControlError("repo-search accepts at most 8 literal terms")
+    commit = resolved_commit(repo, args.ref)
+    argv = [GIT, "-C", repo, "grep", "-n", "-I", "-F"]
+    for term in terms:
+        argv.extend(["-e", term])
+    argv.append(commit)
+    if paths:
+        argv.extend(["--", *paths])
+    completed = run_argv_limited(
+        argv, input_bytes=b"", timeout=60, capture_limit=MAX_CAPTURE_BYTES,
+    )
+    if completed.returncode not in {0, 1}:
+        raise ControlError(
+            decode(completed.stderr).strip() or "git grep failed",
+            state="GIT_COMMAND_FAILED", failure_class="command_infra",
+            exit_code=completed.returncode,
+        )
+    matches = decode(completed.stdout).splitlines() if completed.returncode == 0 else []
+    truncated = len(completed.stdout) > MAX_CAPTURE_BYTES or len(matches) > args.max_results
+    return result(
+        True, "repo-search", "REPO_SEARCH_OK", repo=str(repo), ref=args.ref,
+        commit=commit, terms=terms, path_filters=paths,
+        matches=matches[:args.max_results], result_count=min(len(matches), args.max_results),
+        zero_matches=not matches, truncated=truncated,
     )
 
 
@@ -434,6 +594,32 @@ def parser():
     git_state.add_argument("--timeout-seconds", type=bounded_timeout, default=60)
     git_state.set_defaults(handler=command_git_state)
 
+    task_context = commands.add_parser("task-context")
+    task_context.add_argument("--repo", required=True)
+    task_context.add_argument("--cwd", required=True)
+    task_context.set_defaults(handler=command_task_context)
+
+    repo_show = commands.add_parser("repo-show")
+    repo_show.add_argument("--repo", required=True)
+    repo_show.add_argument("--ref", type=require_revision, default="HEAD")
+    repo_show.add_argument("--path", required=True)
+    repo_show.set_defaults(handler=command_repo_show)
+
+    repo_list = commands.add_parser("repo-list")
+    repo_list.add_argument("--repo", required=True)
+    repo_list.add_argument("--ref", type=require_revision, default="HEAD")
+    repo_list.add_argument("--path", action="append", default=[])
+    repo_list.add_argument("--max-results", type=bounded_count, default=200)
+    repo_list.set_defaults(handler=command_repo_list)
+
+    repo_search = commands.add_parser("repo-search")
+    repo_search.add_argument("--repo", required=True)
+    repo_search.add_argument("--ref", type=require_revision, default="HEAD")
+    repo_search.add_argument("--term", action="append", required=True)
+    repo_search.add_argument("--path", action="append", default=[])
+    repo_search.add_argument("--max-results", type=bounded_count, default=200)
+    repo_search.set_defaults(handler=command_repo_search)
+
     sha = commands.add_parser("sha256")
     sha.add_argument("--file", required=True)
     sha.add_argument("--expected", type=lambda value: require_digest(value))
@@ -501,7 +687,10 @@ def main(argv=None):
     raw_args = list(sys.argv[1:] if argv is None else argv)
     operation = (
         raw_args[0]
-        if raw_args and raw_args[0] in {"git-state", "sha256", "remote-script"}
+        if raw_args and raw_args[0] in {
+            "git-state", "task-context", "repo-show", "repo-list", "repo-search",
+            "sha256", "remote-script",
+        }
         else "arguments"
     )
     try:

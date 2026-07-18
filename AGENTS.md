@@ -36,10 +36,11 @@
    owned by the staged validator, MCP, and generic lifecycle. Use
    `COMMAND_RELIABILITY_PROTOCOL.md` only for uncovered command boundaries.
 5. A typed closeout is the only later-stage authorization. Interpret scientific
-   gates once, after complete evidence. `FAILED_ENGINEERING` instead enters
-   `ENGINEERING_REVIEW_REQUIRED`: inspect once, pause, and ask the user to choose
-   one same-contract repair or archive. It never authorizes evidence fetch,
-   Git sync, another plan, or a relaunch by itself.
+   gates once, after complete evidence. `FAILED_ENGINEERING` enters the bounded
+   same-contract repair path: inspect once, classify once, and let the repair
+   gate authorize one mechanical repair. Sensitive changes or a repeated root
+   cause pause for the user. It never authorizes evidence fetch or Git sync
+   before a successful replacement, and never authorizes a relaunch by itself.
 6. After a scientific/safety terminal closeout, push compact evidence to the
    route branch before the next stage. After an engineering closeout, sync only
    when the user explicitly chooses `archive`; choosing `repair` keeps the
@@ -72,10 +73,11 @@
   without closeout is inspected once and never polled repeatedly.
 - Engineering failure never changes data, metric, threshold, gate, locked-test
   policy, or scientific authorization.
-- Engineering failure is a mandatory human decision boundary. Do not fetch,
-  stage, commit, push, update project memory, create a repair branch, or launch
-  again before the user chooses `repair` or `archive`. Default recommendation
-  is one deterministic same-contract repair when the root cause is identifiable.
+- A validated ordinary engineering failure gets one deterministic same-contract
+  repair cycle automatically. Do not fetch, stage, push, update project memory,
+  or relaunch until the repair gate classifies the candidate. Sensitive changes
+  and a repeated root cause stop for the user; explicit `archive` is the only
+  path that unlocks failure evidence.
 
 ## Three-End Command Boundary
 
@@ -85,6 +87,10 @@
 - Standard route lifecycle uses `convir-ops` v4. Any uncovered cloud action uses
   one committed, unchanged Bash file through `experience_docx/tools/convirctl.py
   remote-script`; no inline SSH command or untracked script is valid.
+- Before any write, bind the task to the requested worktree with
+  `convirctl.py task-context`. Use `repo-show`, `repo-list`, and `repo-search`
+  for literal, ref-bound reads instead of cross-shell `grep`, `sed`, or `git
+  show` pipelines.
 - Use explicit binaries, JSON/status/closeout markers, and SHA-256 identity. A
   remote timeout is unknown state with one inspection and no blind retry.
 

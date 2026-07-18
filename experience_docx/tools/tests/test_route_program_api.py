@@ -108,6 +108,35 @@ class RouteProgramApiTests(unittest.TestCase):
                     authorizes="NEXT", details={"payload": "x" * API.MAX_RESULT_BYTES},
                 )
 
+    def test_workload_progress_uses_one_generic_status_contract(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            value = self.load(root, "run")
+            API.write_workload_progress(
+                value, completed_units=1, stage="feature_extract",
+            )
+            progress = json.loads(value.status_path.read_text(encoding="utf-8"))
+            self.assertEqual("workload", progress["phase"])
+            self.assertEqual("workload_progress", progress["event"])
+            self.assertEqual(1, progress["completed_units"])
+            self.assertEqual(value.total_units, progress["total_units"])
+
+    def test_workload_progress_rejects_contract_phase_and_out_of_range(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            contract = self.load(root, "contract")
+            with self.assertRaises(API.ContractError):
+                API.write_workload_progress(
+                    contract, completed_units=1, stage="invalid",
+                )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            run = self.load(root, "run")
+            with self.assertRaises(API.ContractError):
+                API.write_workload_progress(
+                    run, completed_units=2, stage="invalid",
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

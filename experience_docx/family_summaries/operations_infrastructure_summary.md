@@ -1,9 +1,10 @@
 # Operations Infrastructure Summary
 
-Date: 2026-07-17
+Date: 2026-07-18
 
 Status: generic run monitoring, the route-ready generic runtime and schema-v4
-v4.3 engineering-failure review are adopted after fresh-process activation.
+v4.3.2 engineering auto-repair path are adopted after fresh-process activation;
+the command-reliability slimming candidate is under isolated acceptance.
 
 ## Current Verdict
 
@@ -55,27 +56,31 @@ GPU, dataset, checkpoint, confirmation, canary, or locked-test access. The
 terminal infrastructure decision is `CONVIR_OPS_V4_2_ADOPTION`; route-specific
 scientific authorization remains independent.
 
-The first real R3 S0 workload then exposed a post-closeout governance defect:
+The first real R3 S0 workload exposed a post-closeout governance defect:
 v4.2 treated a valid `FAILED_ENGINEERING` closeout like a scientific/archive
 terminal state, and failure closeout reconstruction dropped identities of
-assets verified before the runtime failure. v4.3 retains exactly six tools and
-schema v4, but makes engineering failure a receipt-bound human decision state:
-evidence stays locked until explicit `repair` or `archive`; repair does not
-authorize relaunch, and archive does not authorize repair. The lifecycle now
-retains verified asset identities in parent-process state for failure closeout.
+assets verified before the runtime failure. That historical behavior is closed;
+the lifecycle now retains verified asset identities and v4.3.2 routes ordinary
+engineering failures to one same-contract repair candidate while keeping
+evidence locked. Sensitive changes and repeated roots still stop for the user.
 The final candidate passed 79/79 cloud tests plus an independent stdio/source
 identity probe. Production activation used
 `github/main@a42c46e61bc1b66df7470377991d8bdc8a27f383`, migrated signed historical
 state without deleting any receipt or HMAC key, and removed only expired plans
 and the obsolete isolated v4.2 E2E state directory.
 
-The v4.3 migration intentionally marked historical engineering receipts as
-archived, but that made a later explicit user repair choice impossible. v4.3.1
-adds only a migration-compatibility transition: a receipt carrying
-`v43_migrated_at` may change its automatic archive to repair; a normal explicit
-archive remains terminal. Candidate
-`ea12f8aeaa5317831ad0fa228f470e1d0069a993` passed 81/81 cloud tests and a
-fresh stdio/source identity probe with schema v4 and exactly six tools.
+The historical v4.3 human-decision wording above is retained only as incident
+provenance. Current main uses v4.3.2: an ordinary validated engineering failure
+gets one same-contract repair candidate automatically, while sensitive changes
+and repeated roots stop for the user. Failure evidence stays cloud-only until
+the repair passes or the user explicitly chooses archive. The six-tool/schema-v4
+surface and scientific authorization are unchanged.
+
+The command-reliability candidate adds task/worktree binding, literal ref-bound
+repository readers, a generic workload-progress API, and a compact single
+transport contract. It does not change the MCP version, schema, tool count,
+scientific route identity, or protected-data policy. Acceptance remains pending
+until the isolated convir-4090 test matrix completes.
 
 ## Revalidation Condition
 

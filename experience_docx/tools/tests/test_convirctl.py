@@ -184,6 +184,53 @@ esac
         )
         self.assertEqual(bad_timeout["state"], "ARGUMENTS_INVALID")
 
+    def test_task_context_and_literal_repo_readers(self):
+        self.commit_file(
+            "notes/literal name.txt",
+            b"literal | $() {commit}\\nsecond line\\n",
+        )
+        context_ok = self.call(
+            "task-context", "--repo", str(self.repo), "--cwd", str(self.repo),
+        )
+        self.assertTrue(context_ok["ok"])
+        self.assertTrue(context_ok["cwd_matches_repo"])
+        context_mismatch = self.call(
+            "task-context", "--repo", str(self.repo), "--cwd", str(self.root),
+        )
+        self.assertEqual(context_mismatch["state"], "TASK_CONTEXT_MISMATCH")
+        self.assertFalse(context_mismatch["write_allowed"])
+
+        shown = self.call(
+            "repo-show", "--repo", str(self.repo),
+            "--path", "notes/literal name.txt",
+        )
+        self.assertTrue(shown["ok"])
+        self.assertIn("literal | $() {commit}", shown["content"])
+
+        found = self.call(
+            "repo-search", "--repo", str(self.repo),
+            "--term", "|", "--term", "$()", "--path", "notes",
+        )
+        self.assertTrue(found["ok"])
+        self.assertFalse(found["zero_matches"])
+        self.assertEqual(1, found["result_count"])
+
+        absent = self.call(
+            "repo-search", "--repo", str(self.repo), "--term", "does-not-exist",
+        )
+        self.assertTrue(absent["ok"])
+        self.assertTrue(absent["zero_matches"])
+        listed = self.call(
+            "repo-list", "--repo", str(self.repo), "--path", "notes",
+        )
+        self.assertTrue(listed["ok"])
+        self.assertEqual(["notes/literal name.txt"], listed["paths"])
+
+        unsafe = self.call(
+            "repo-show", "--repo", str(self.repo), "--path", "../outside.txt",
+        )
+        self.assertEqual("REJECTED", unsafe["state"])
+
     def test_remote_script_normalizes_bom_crlf_and_preserves_stdin(self):
         raw = (
             b"\xef\xbb\xbf#!/usr/bin/env bash\r\n"

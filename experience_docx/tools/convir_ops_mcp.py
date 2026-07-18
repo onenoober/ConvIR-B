@@ -1315,9 +1315,15 @@ def workload_progress(status):
         if isinstance(value, dict):
             phase = value.get("phase")
             event = value.get("event")
+            progress_envelope = any(
+                isinstance(key, str)
+                and re.fullmatch(r"[A-Z][A-Z0-9_]{0,63}_PROGRESS", key)
+                and isinstance(item, dict)
+                for key, item in value.items()
+            )
             in_workload = workload or phase == "workload" or event in {
                 "workload_start", "workload_progress", "workload_pass",
-            } or "R3_A0_PROGRESS" in value
+            } or progress_envelope
             completed = value.get("completed_units", value.get("completed"))
             total = value.get("total_units", value.get("total"))
             if in_workload and isinstance(completed, int) and completed > best_completed:

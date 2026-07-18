@@ -17,9 +17,13 @@ test -z "$(git -C "$work/repo" status --porcelain)"
 
 tools="$work/repo/experience_docx/tools"
 "$python" -m py_compile \
+  "$tools/convirctl.py" \
   "$tools/convir_ops_mcp.py" \
+  "$tools/route_program_api.py" \
+  "$tools/tests/test_convirctl.py" \
   "$tools/validate_engineering_repair.py" \
   "$tools/tests/test_convir_ops_mcp.py" \
+  "$tools/tests/test_route_program_api.py" \
   "$tools/tests/test_validate_engineering_repair.py"
 
 stdout="$work/unittest.stdout"
@@ -36,7 +40,7 @@ if [[ $rc -ne 0 ]]; then
 fi
 tests=$(sed -nE 's/^Ran ([0-9]+) tests?.*/\1/p' "$stderr" | tail -n 1)
 [[ $tests =~ ^[0-9]+$ ]]
-test "$tests" -ge 106
+test "$tests" -ge 111
 
 probe="$work/probe.json"
 "$python" - "$tools/convir_ops_mcp.py" "$probe" <<'PY'
@@ -53,10 +57,16 @@ assert set(ops.TOOLS) == {
     "convir_evidence_list", "convir_evidence_fetch", "convir_git_status",
 }
 progress = ops.workload_progress(
-    '{"phase":"workload","event":"workload_start","completed":0,"total":10}\n'
-    '{"R3_A0_PROGRESS":{"completed_units":4,"total_units":10}}\n'
+  '{"phase":"workload","event":"workload_start","completed":0,"total":10}\n'
+  '{"R3_A0_PROGRESS":{"completed_units":4,"total_units":10}}\n'
+  '{"R3_A1_PROGRESS":{"completed_units":8,"total_units":10}}\n'
 )
-assert progress == {"completed_units": 4, "total_units": 10}
+assert progress == {"completed_units": 8, "total_units": 10}
+assert ops.workload_progress(
+    '{"message":"completed_units","completed_units":99,"total_units":100}\n'
+) == {"completed_units": 0, "total_units": 0}
+from route_program_api import write_workload_progress
+assert callable(write_workload_progress)
 json.dump({
     "server_version": ops.SERVER_VERSION,
     "schema_version": ops.SCHEMA_VERSION,

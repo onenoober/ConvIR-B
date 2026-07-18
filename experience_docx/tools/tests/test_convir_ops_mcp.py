@@ -433,6 +433,40 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertEqual("LAUNCHED_PENDING_VERIFICATION", result["operation_state"])
         self.assertFalse(result["workload_verified"])
 
+    def test_start_accepts_a1_machine_readable_progress_envelope(self):
+        plan = {
+            "context": context(), "issued_at": int(time.time()),
+            "expires_at": int(time.time()) + 60, "nonce": "n",
+        }
+        token = OPS.write_new_record("plan", plan, {"receipt": None})
+        monitor = (
+            "CONVIR_OPS_MONITOR polls=1 active=true terminal=false stale=false "
+            "heartbeat_age=1 heartbeat_source=heartbeat\n"
+            "CONVIR_OPS_STATUS_BEGIN\n"
+            '{"phase":"workload","event":"workload_start","completed":0,"total":1536}\n'
+            '{"R3_A1_PROGRESS":{"stage":"feature_extract","completed_units":8,"total_units":1536}}\n'
+            "CONVIR_OPS_STATUS_END\n"
+        )
+        with patch.object(OPS, "verify_live_context"), patch.object(
+            OPS, "run_remote", side_effect=["CONVIR_OPS_LAUNCHED\n", monitor],
+        ):
+            result = payload(OPS.tool_start({"plan_token": token}))
+        self.assertEqual("RUNNING_VERIFIED", result["operation_state"])
+        self.assertEqual(
+            {"completed_units": 8, "total_units": 1536},
+            result["observed"]["workload_progress"],
+        )
+
+    def test_progress_parser_rejects_untyped_or_zero_progress(self):
+        status = "\n".join((
+            '{"message":"completed_units","completed_units":99,"total_units":100}',
+            '{"route_progress":{"completed_units":50,"total_units":100}}',
+            '{"R3_A2_PROGRESS":{"completed_units":0,"total_units":10}}',
+        ))
+        self.assertEqual(
+            {"completed_units": 0, "total_units": 0}, OPS.workload_progress(status)
+        )
+
     def test_start_surfaces_early_engineering_failure_and_auto_authorizes_repair(self):
         plan = {
             "context": context(), "issued_at": int(time.time()),
