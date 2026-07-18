@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+on_error() {
+  rc=$?
+  printf 'CONVIR_OPS_V432_CLOUD_FAILED line=%s command=%q rc=%s\n' "$1" "$2" "$rc" >&2
+  exit "$rc"
+}
+trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
+
 branch=${CONVIR_V432_BRANCH:-codex/route-flow-tools-v1-20260717}
 github=git@github.com:onenoober/ConvIR-B.git
 seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
@@ -8,9 +15,12 @@ python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
 work=$(mktemp -d /tmp/convir-ops-v432.XXXXXX)
 trap 'rm -rf -- "$work"' EXIT
 
+printf 'CONVIR_OPS_V432_CLOUD_STAGE=clone\n'
+
 git clone --quiet --shared --no-checkout "$seed" "$work/repo"
 git -C "$work/repo" fetch --quiet --no-tags "$github" \
   "+refs/heads/$branch:refs/validation/candidate"
+printf 'CONVIR_OPS_V432_CLOUD_STAGE=checkout candidate=%s\n' "$(git -C "$work/repo" rev-parse refs/validation/candidate)"
 candidate=$(git -C "$work/repo" rev-parse refs/validation/candidate)
 git -C "$work/repo" checkout --quiet --detach "$candidate"
 test -z "$(git -C "$work/repo" status --porcelain)"
