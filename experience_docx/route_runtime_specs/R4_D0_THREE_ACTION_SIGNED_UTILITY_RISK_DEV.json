@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r4_three_action_signed_utility_risk_20260718",
+  "operation_id": "R4_D0_THREE_ACTION_SIGNED_UTILITY_RISK_DEV",
+  "entrypoint_relpath": "experience_docx/tools/r4_three_action_signed_utility_risk.py",
+  "asset_manifest_relpath": "experience_docx/route_assets/R4_D0_THREE_ACTION_SIGNED_UTILITY_RISK_DEV.json",
+  "timeout_seconds": 21600,
+  "expected_wall_seconds": 10800,
+  "total_units": 1560,
+  "evidence_role": "development_screening",
+  "resume_policy": "none",
+  "protected_data_permissions": {"allow_confirmation": false, "allow_canary": false, "allow_locked_test": false},
+  "environment": {
+    "CONVIR_ROUTE_CELLS": "joint_utility_risk,independent_scalar,risk_disabled",
+    "CONVIR_ROUTE_ACTIONS": "reference_noop,state_positive_full,state_negative_full",
+    "CONVIR_ROUTE_FOLDS": "0,1,2,3",
+    "CONVIR_ROUTE_SEEDS": "3407,3411",
+    "CONVIR_ROUTE_EPOCHS": "32",
+    "CONVIR_ROUTE_OPTIMIZER": "AdamW",
+    "CONVIR_ROUTE_LEARNING_RATE": "0.001",
+    "CONVIR_ROUTE_WEIGHT_DECAY": "0.0001",
+    "CONVIR_ROUTE_BOOTSTRAP_DRAWS": "4000",
+    "CONVIR_ROUTE_BOOTSTRAP_SEED": "3407"
+  },
+  "evidence_files": [
+    {"source_relpath": "workload/r4_contract_summary.json", "destination_filename": "r4_contract_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/r4_structural_summary.json", "destination_filename": "r4_structural_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/r4_bootstrap_summary.json", "destination_filename": "r4_bootstrap_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/r4_gate_summary.json", "destination_filename": "r4_gate_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/r4_cell_summary.csv", "destination_filename": "r4_cell_summary.csv", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/r4_risk_coverage.csv", "destination_filename": "r4_risk_coverage.csv", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/r4_strata_summary.csv", "destination_filename": "r4_strata_summary.csv", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/r4_training_summary.csv", "destination_filename": "r4_training_summary.csv", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/r4_resource_summary.json", "destination_filename": "r4_resource_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/r4_source_access_audit.json", "destination_filename": "r4_source_access_audit.json", "required": true, "max_bytes": 131072}
+  ]
+}

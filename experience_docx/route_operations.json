@@ -1,0 +1,29 @@
+{
+  "schema_version": 4,
+  "route_id": "haze4k_v5_r4_three_action_signed_utility_risk_20260718",
+  "rules_commit": "cd89248b8f073785b0efad85f5384d07a4bf3cf1",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-18-haze4k-v5-r4-three-action-signed-utility-risk.md",
+  "operations": {
+    "R4_D0_THREE_ACTION_SIGNED_UTILITY_RISK_DEV": {
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "mode": "r4_three_action_signed_utility_risk_dev",
+      "require_gpu": true,
+      "output_id": "r4-d0-three-action-dev-r1",
+      "closeout_filename": "r4_d0_three_action_signed_utility_risk_dev_closeout.json",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "allowed_terminal_tuples": [
+        {"state": "COMPLETED_GATE_PASS", "decision": "R4_D0_THREE_ACTION_DEV_PASS", "authorizes": "R4_CONFIRMATION_REVIEW_ONLY"},
+        {"state": "COMPLETED_GATE_INCONCLUSIVE", "decision": "R4_D0_THREE_ACTION_DEV_INCONCLUSIVE", "authorizes": "NONE"},
+        {"state": "COMPLETED_GATE_FAIL", "decision": "R4_D0_THREE_ACTION_DEV_FAIL_STOP", "authorizes": "NONE"},
+        {"state": "FAILED_ENGINEERING", "decision": null, "authorizes": "NONE"}
+      ],
+      "workspace_policy": "fresh_route",
+      "output_policy": "new",
+      "monitor_profile": "standard",
+      "heartbeat_timeout_seconds": 600,
+      "min_free_gpu_mib": 12000,
+      "max_gpu_utilization_pct": 20
+    }
+  }
+}
