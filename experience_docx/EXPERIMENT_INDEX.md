@@ -288,6 +288,31 @@ flags are false. At that historical point the tuple authorized D0 design only.
 D0 subsequently completed and failed; the S0 tuple is no longer a current
 authorization and the 432-name stage was never opened.
 
+## Current Machine Terminal And R4B Cloud Audit
+
+The latest machine terminal record is R4B-A1:
+`COMPLETED_GATE_FAIL / R4B_A1_SETWISE_MECHANISM_FUTILITY_STOP / NONE` for
+`r4b-a1-setwise-screen-r1` at route commit `336f1132c9aaffebda365b63e26a67aab4643531`.
+Use `EXPERIMENT_TERMINAL_INDEX.jsonl` and the typed closeout as terminal
+authority; the older R3 prose below remains historical design context.
+
+The receipt-bound cloud audit completed as
+`ORIGINAL_BOTTLENECK_SUPPORTED_BUT_NARROWED`. It reproduced all formal point
+metrics, calibration metrics, structural counts and closeout-bound artifact
+hashes, found no protected-data mixing or material discrepancy, and did not
+change the R4B-A1 terminal decision. Its main descriptive refinement is that
+the realized retention loss is dominated by abstention (`94.7455%` of
+repairable operator-image rows), with positive-only actions and strong fold
+dependence in coverage. The exact upstream cause remains unresolved because
+the saved raw artifacts omit per-action utility score vectors, per-seed
+predictions, composite confidence, region rows and semantic subgroup labels.
+
+Evidence:
+`experiment_logs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/`.
+Cloud audit authority:
+`cloud_audit_closeout.json`. This is post-hoc exploratory analysis and
+authorizes `NONE`.
+
 ## Current R3 Design Handoff
 
 v4a-A1X-v3 D0 completed the preregistered fresh512, four-fold, five-cell
