@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "allowed": ["R3 S0 development ledger", "sealed R3 A0 candidate cache", "Haze4K development targets for offline labels", "official Haze4K checkpoint for frozen feature extraction after A0"],
+  "prohibited": ["confirmation identities or outcomes", "historical A1X-432 outcomes", "canary", "locked test", "filename or fold id as a model input", "ground truth RGB as a model input"],
+  "audit_required_each_operation": true
+}

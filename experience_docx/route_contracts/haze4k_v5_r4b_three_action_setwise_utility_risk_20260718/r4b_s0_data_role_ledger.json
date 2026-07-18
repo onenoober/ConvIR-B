@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "development": "frozen R3 S0 768 names in four 192-image folds",
+  "confirmation": "sealed 432 names; prohibited until a separately authorized confirmation stage",
+  "canary": "prohibited",
+  "locked_test": "prohibited",
+  "analysis_unit": "clean-reference image group with D_ref and D_rep paired",
+  "seed_policy": "3407 and 3411 form one fixed arithmetic-mean ensemble before policy decisions"
+}

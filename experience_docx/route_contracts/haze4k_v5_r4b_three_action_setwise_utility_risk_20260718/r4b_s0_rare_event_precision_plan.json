@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "primary_event_unit": "clean-reference image; event occurs when either D_ref or D_rep is severe",
+  "secondary_event_unit": "operator-image, descriptive only",
+  "severe_definition_db": -0.2,
+  "hard_definition_db": -0.5,
+  "confidence_method": "exact one-sided 95% Clopper-Pearson binomial upper bound",
+  "minimum_group_events_per_active_action_for_training": 30,
+  "a0_insufficient_event_rule": "INCONCLUSIVE",
+  "policy_risk_denominator": "selected clean-image groups at the frozen operating point",
+  "a2_severe_ucb_gate": 0.005,
+  "minimum_policy_coverage": 0.1,
+  "seed_event_rule": "one ensemble decision per image/operator; never average realized gains across seeds before event counting"
+}

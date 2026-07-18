@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "a0": {
+    "three_action_oracle_gain_lcb95_db": 0.08,
+    "three_over_nine_oracle_retention_lcb95": 0.95,
+    "repairable_fraction_lcb95": 0.5,
+    "minimum_group_severe_events_each_active_action": 30,
+    "minimum_cross_operator_severe_agreement": 0.95,
+    "minimum_cross_operator_best_action_agreement": 0.95
+  },
+  "a1_futility_targets": {
+    "gain_ucb95_db": 0.02,
+    "retention_ucb95": 0.25,
+    "true_minus_action_value_shuffle_ucb95_db": 0.005,
+    "setwise_minus_independent_ucb95_db": 0.005
+  },
+  "a2_formal": {
+    "gain_lcb95_db": 0.02,
+    "retention_lcb95": 0.25,
+    "true_minus_action_value_shuffle_lcb95_db": 0.005,
+    "setwise_minus_independent_lcb95_db": 0.005,
+    "utility_risk_minus_mean_only_lcb95_db": 0.005,
+    "negative_oracle_subset_gain_lcb95_db_strictly_above": 0.0,
+    "coverage_lcb95": 0.1,
+    "selected_severe_count": 0,
+    "selected_hard_count": 0,
+    "selected_group_severe_rate_exact_ucb95": 0.005,
+    "severe_auroc_lcb95_strictly_above": 0.5,
+    "severe_auprc_minus_prevalence_lcb95_strictly_above": 0.0
+  }
+}

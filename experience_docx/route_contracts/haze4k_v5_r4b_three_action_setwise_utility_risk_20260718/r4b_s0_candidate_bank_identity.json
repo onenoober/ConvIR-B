@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "source_bank": "sealed R3 A0 nine-action GT-free cache",
+  "source_cache_manifest_sha256": "553505119f228d9561b50db9816a27409189206f6c6e108485a81d7622593e47",
+  "actions": ["reference_noop", "state_positive_full", "state_negative_full"],
+  "reduction_basis": "pre-route read-only diagnosis indicated approximately 99.6% all-nine oracle retention; A0 must verify this formally",
+  "search_allowed": false
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 4,
+  "route_id": "haze4k_v5_r4b_three_action_setwise_utility_risk_20260718",
+  "rules_commit": "dae654c2512d110a2e64c65b4e4640113383a189",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-18-haze4k-v5-r4b-three-action-setwise-utility-risk.md",
+  "operations": {
+    "R4B_A0_THREE_ACTION_RISK_FEASIBILITY": {
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "mode": "r4b_a0_three_action_risk_feasibility",
+      "require_gpu": false,
+      "output_id": "r4b-a0-risk-feasibility-r1",
+      "closeout_filename": "r4b_a0_three_action_risk_feasibility_closeout.json",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "allowed_terminal_tuples": [
+        {"state": "COMPLETED_GATE_PASS", "decision": "R4B_A0_RISK_FEASIBILITY_PASS", "authorizes": "R4B_A1_SETWISE_MECHANISM_SCREEN"},
+        {"state": "COMPLETED_GATE_INCONCLUSIVE", "decision": "R4B_A0_RISK_FEASIBILITY_INCONCLUSIVE", "authorizes": "NONE"},
+        {"state": "COMPLETED_GATE_FAIL", "decision": "R4B_A0_RISK_FEASIBILITY_FAIL_STOP", "authorizes": "NONE"},
+        {"state": "FAILED_ENGINEERING", "decision": null, "authorizes": "NONE"}
+      ],
+      "workspace_policy": "fresh_route",
+      "output_policy": "new",
+      "monitor_profile": "short",
+      "heartbeat_timeout_seconds": 300,
+      "min_free_gpu_mib": 0,
+      "max_gpu_utilization_pct": 100
+    }
+  }
+}
