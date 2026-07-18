@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r4b_three_action_setwise_utility_risk_20260718",
+  "operation_id": "R4B_A1_SETWISE_MECHANISM_SCREEN",
+  "run_id": "r4b-a1-setwise-screen-r1",
+  "decision": "R4B_A1_SETWISE_MECHANISM_FUTILITY_STOP",
+  "authorizes": "NONE",
+  "primary_result": "The fully controlled two-fold set-wise mechanism screen fails the frozen futility contract. Primary policy gain is +0.000192 dB point with UCB95 +0.000707 dB, oracle retention is 0.001275 point with UCB95 0.004825, true-minus-action-value-shuffle UCB95 is +0.001876 dB, and set-wise-minus-independent UCB95 is +0.000360 dB. The primary policy selects no negative actions and has only 4.95% worse-operator coverage. In contrast, grouped severe risk is genuinely identifiable: severe AUROC is 0.850951 with LCB95 0.815020, AUPRC is 0.645505 at prevalence 0.235677, and AUPRC-minus-risk-label-shuffle LCB95 is +0.152328.",
+  "gate_reasons": [
+    "Gain UCB95 +0.000707 dB fails to reach the +0.020 dB A1 non-futility target.",
+    "Oracle-retention UCB95 0.004825 fails to reach 0.25.",
+    "True-minus-action-value-shuffle UCB95 +0.001876 dB fails to reach +0.005 dB.",
+    "Set-wise-minus-independent UCB95 +0.000360 dB and utility-risk-minus-mean-only UCB95 +0.000707 dB fail their +0.005 dB mechanism targets.",
+    "Primary-minus-best-nuisance UCB95 +0.000452 dB fails +0.005 dB; the primary point estimate is worse than the best nuisance control.",
+    "Risk discrimination gates pass strongly: severe AUROC LCB95 0.815020, AUPRC lift LCB95 +0.339207, and AUPRC-minus-risk-label-shuffle LCB95 +0.152328.",
+    "Selected severe/hard group counts are both zero, but observed primary coverage is only 4.95% and the 10% descriptive risk-coverage point has an exact severe UCB95 of 7.39%.",
+    "The runtime permutation audit reaches 1.907e-6 against the frozen 1e-6 numerical tolerance; this formal miss is tiny and is not the cause of the much larger utility futility."
+  ],
+  "competing_explanation": "The evidence rejects rare-risk unidentifiability as the main remaining explanation: candidate severe risk is learnable and survives the risk-label-shuffle control. The favored explanation is that the frozen state/action/RGB/first-encoder representation does not support material relative signed utility or safe action execution. Cross-candidate attention does not add value over the matched independent scorer and the policy remains positive-only and highly abstaining.",
+  "limitations": [
+    "A1 is a preregistered two-fold development futility screen, not the full four-fold A2 estimate; its valid FAIL prevents A2 rather than estimating final performance.",
+    "The conclusion applies to the frozen three-action bank, fixed set architecture, four inference-visible feature families, two-member ensemble, loss and calibration rule; it does not test a materially new inference-time representation.",
+    "The permutation tolerance miss is consistent with floating-point accumulation order, but the frozen gate is still formally failed and was not changed after the result.",
+    "Confirmation, historical A1X-432 outcomes, canary and locked test were not accessed."
+  ]
+}

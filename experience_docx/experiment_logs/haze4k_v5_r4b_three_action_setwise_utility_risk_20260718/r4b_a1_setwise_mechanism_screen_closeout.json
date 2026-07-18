@@ -1,0 +1,96 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "R4B_A1_SETWISE_MECHANISM_FUTILITY_STOP",
+  "details": {
+    "gain_ucb95_db": 0.0007070822020371756,
+    "permutation_max_abs": 1.9073486328125e-06,
+    "retention_ucb95": 0.004824858444045892,
+    "selected_hard_groups": 0,
+    "selected_severe_groups": 0,
+    "setwise_minus_independent_ucb95_db": 0.0003603499382734299,
+    "severe_auprc_lift_lcb95": 0.3392068932288541,
+    "severe_auprc_minus_shuffle_lcb95": 0.15232819960144917,
+    "severe_auroc_lcb95": 0.8150202830607443,
+    "structural_valid": true,
+    "survives": false,
+    "true_minus_shuffle_ucb95_db": 0.0018758796155452727,
+    "utility_risk_minus_mean_only_ucb95_db": 0.0007070822020371756
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "r4b_a1_bootstrap_summary.json": "9d5111fd73ee029b07626b9c919b7788357a4305491bb770cf2edd671112135d",
+    "r4b_a1_calibration_summary.csv": "e99f80465c38935e0518446a89eaba92b7c0ea41898bd3fda46268948317d98d",
+    "r4b_a1_cell_summary.csv": "5c651ae1b649d89fc8cd48b94adda0fa79d947f4b23eaaf23f05be8c3c91a4ba",
+    "r4b_a1_contract_summary.json": "cb85774f31a81bc34851c6037777b5a7aab079a25a499a878acd58003d3bd290",
+    "r4b_a1_control_summary.csv": "613508eb332c44e6bce2d00162d9f4c76e193c4a53d7d819324d4cf403fbd040",
+    "r4b_a1_gate_summary.json": "172fb9ac17fb4e9fc59e339529de8823e66a9ca394a34f928a97f3f993816a9a",
+    "r4b_a1_permutation_audit.json": "9403b014091697db3c0a46f1429d5adee69a47f2ca6a628063168cb0e233c3e8",
+    "r4b_a1_resource_summary.json": "fd7ba1a3994bb66f47f0c9883b75378a517f97871804a110eb032e87a9583c2e",
+    "r4b_a1_risk_coverage.csv": "300c2cf9864de9ecccc5318e65d55a1e37985d71c9aa188771653597f9947c84",
+    "r4b_a1_risk_discrimination.json": "1eea4e296d769484991d4e46017bfa6fc6aa72c624acc7784f6f9ba71d71bea7",
+    "r4b_a1_source_access_audit.json": "4865f6b571aca870cad0514dba8c3c6de7191664157f8fa119a9dd698b2a8e7d",
+    "r4b_a1_structural_summary.json": "8a755afee1d976161ff6d1ed2350b021e562c8d979937e137139011850bf6075",
+    "r4b_a1_training_summary.csv": "eb9b97a78b943814ccedd9cbf498b8e0a26ac5aba5a64fdcd5f9638ed2766a6a"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "R4B_A1_SETWISE_MECHANISM_SCREEN",
+  "returncode": 0,
+  "route_commit": "336f1132c9aaffebda365b63e26a67aab4643531",
+  "route_id": "haze4k_v5_r4b_three_action_setwise_utility_risk_20260718",
+  "run_id": "r4b-a1-setwise-screen-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_cache_manifest",
+      "kind": "file",
+      "sha256": "553505119f228d9561b50db9816a27409189206f6c6e108485a81d7622593e47"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_candidate_cache",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_closeout",
+      "kind": "file",
+      "sha256": "fac67a0213eec3c0aa18f46b851b27c652ec9d497f16f0bf0ccda035b5cff79d"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_raw_manifest",
+      "kind": "file",
+      "sha256": "3123f2da6ac5e969fea8590a6c97ddbca46adf0e573fb1c03bec7d7a6c7ebfcc"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_data",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r4_ledger",
+      "kind": "file",
+      "sha256": "521eb68c6a77830e424e08ade10b939f2588706c350967b5007bfc46c20590c7"
+    }
+  ]
+}

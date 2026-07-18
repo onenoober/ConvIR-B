@@ -1,0 +1,18 @@
+{
+  "gates": {
+    "gain_ucb95": false,
+    "permutation_equivariance": false,
+    "primary_minus_best_nuisance_ucb95": false,
+    "retention_ucb95": false,
+    "selected_hard_groups_zero": true,
+    "selected_severe_groups_zero": true,
+    "setwise_minus_independent_ucb95": false,
+    "severe_auprc_lift_lcb95": true,
+    "severe_auprc_minus_shuffle_lcb95": true,
+    "severe_auroc_lcb95": true,
+    "true_minus_shuffle_ucb95": false,
+    "utility_risk_minus_mean_only_ucb95": false
+  },
+  "schema_version": 1,
+  "survives": false
+}

@@ -1,0 +1,10 @@
+{
+  "conv_ir_trainable_parameters": 0,
+  "feature_units": 1536,
+  "independent_parameters": 23234,
+  "peak_gpu_memory_mib": 1632.46337890625,
+  "schema_version": 1,
+  "seed_model_training_units": 28,
+  "set_parameters": 23092,
+  "wall_seconds": 167.85348031576723
+}

@@ -1,0 +1,15 @@
+{
+  "checks": {
+    "all_cells_present": true,
+    "all_folds_present": true,
+    "development_confirmation_disjoint": true,
+    "feature_units_complete": true,
+    "finite": true,
+    "policy_rows_complete": true,
+    "risk_group_rows_complete": true,
+    "seed_model_units_complete": true,
+    "training_units_complete": true
+  },
+  "schema_version": 1,
+  "valid": true
+}
