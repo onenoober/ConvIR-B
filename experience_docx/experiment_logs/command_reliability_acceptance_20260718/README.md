@@ -6,6 +6,11 @@ The final marker was `CONVIR_OPS_V432_CLOUD_OK` at candidate commit
 exactly six MCP tools, zero model calls, zero GPU access, and zero protected
 data access.
 
+The final GitHub main commit `339661094ea7626ac3b87239a84c0dd2be066c70` was
+then rerun through the same isolated matrix and produced the same
+`CONVIR_OPS_V432_CLOUD_OK` marker with 111 tests and zero model, GPU, or
+protected-data access.
+
 The accepted changes bind writes to the requested worktree, replace fragile
 cross-shell repository reads with fixed-argv ref-bound readers, provide one
 generic workload-progress writer while accepting completed A1 NAME_PROGRESS

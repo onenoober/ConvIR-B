@@ -79,8 +79,9 @@ surface and scientific authorization are unchanged.
 The command-reliability candidate adds task/worktree binding, literal ref-bound
 repository readers, a generic workload-progress API, and a compact single
 transport contract. It passed 111/111 isolated CPU-only cloud tests at
-`8447f8dd54b079505a24a8e6df8d1716256ba4b2`, with zero model calls, GPU access,
-or protected-data access. It does not change the MCP version, schema, tool
+candidate `8447f8dd54b079505a24a8e6df8d1716256ba4b2` and again at final
+`github/main@339661094ea7626ac3b87239a84c0dd2be066c70`, with zero model calls,
+GPU access, or protected-data access. It does not change the MCP version, schema, tool
 count, scientific route identity, or protected-data policy. Compact evidence
 is in `experiment_logs/command_reliability_acceptance_20260718/`.
 
