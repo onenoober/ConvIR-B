@@ -55,7 +55,7 @@ tests=$(sed -nE 's/^Ran ([0-9]+) tests?.*/\1/p' "$stderr" | tail -n 1)
 test "$tests" -ge 111
 
 probe="$work/probe.json"
-"$python" - "$tools/convir_ops_mcp.py" "$probe" <<'PY'
+PYTHONPATH="$tools" "$python" - "$tools/convir_ops_mcp.py" "$probe" <<'PY'
 import importlib.util, json, sys
 path, output = sys.argv[1:]
 spec = importlib.util.spec_from_file_location("ops", path)
