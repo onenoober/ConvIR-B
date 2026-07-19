@@ -1,0 +1,14 @@
+{
+  "canary_touched": false,
+  "candidate_generation_rerun": false,
+  "checkpoint_loaded": false,
+  "confirmation_touched": false,
+  "locked_test_touched": false,
+  "r11_source_commit": "c183817e2b3befdeeb12278aa6e6a0574883b6d5",
+  "r11_terminal_preserved": true,
+  "r12_terminal_preserved": true,
+  "restoration_model_inference_run": false,
+  "restoration_model_training_run": false,
+  "route_commit": "635d17af3e6aefe37f424599057afb8d8c407859",
+  "schema_version": 1
+}

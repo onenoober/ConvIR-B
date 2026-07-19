@@ -1,0 +1,32 @@
+{
+  "bootstrap_draws": 4000,
+  "cells": [
+    "C1_ALIGNED_RELATIVE_CONTEXT",
+    "C0_LOCAL_ZERO_PAD",
+    "G1_GENERIC_NONACTION_CONTEXT",
+    "S1_WITHIN_IMAGE_CONTEXT_SHUFFLE",
+    "I1_FIXED_ACTION_ID_PERMUTATION"
+  ],
+  "context_dim": 108,
+  "epochs": 24,
+  "feature_dim": 411,
+  "folds": [
+    0,
+    1
+  ],
+  "operation_id": "R13_A0_IMAGE_RELATIVE_CONTEXT_OBSERVABILITY_SCREEN",
+  "route_id": "haze4k_v5_r13_image_relative_context_observability_20260719",
+  "schema_version": 1,
+  "seeds": [
+    3407,
+    3411
+  ],
+  "thresholds": {
+    "absolute_gain_db": 0.02,
+    "hard_gain_db": -0.5,
+    "retention": 0.25,
+    "severe_gain_db": -0.2,
+    "specific_increment_db": 0.01,
+    "tail_margin_db": -0.005
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "context_dim": 108,
+  "cross_action_rank_difference_channels": 18,
+  "feature_dim": 411,
+  "local_dim": 303,
+  "normalizer_source": "primary_outer_training_rows_only",
+  "quantile_channels": 54,
+  "quantiles": [
+    0.1,
+    0.5,
+    0.9
+  ],
+  "rank_channels": 18,
+  "robust_z_channels": 18,
+  "schema_version": 1,
+  "tie_method": "average"
+}
