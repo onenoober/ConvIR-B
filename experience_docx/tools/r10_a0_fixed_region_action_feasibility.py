@@ -50,9 +50,12 @@ SEVERE_GAIN = -0.2
 HARD_GAIN = -0.5
 ABSOLUTE_GAIN = 0.020
 INCREMENT_GAIN = 0.005
+LOCAL_GAIN = 0.005
 TAIL_MARGIN = -0.005
 MIXED_FRACTION = 0.25
 BIDIRECTIONAL_FRACTION = 0.10
+MIXED_MIN_AREA = 0.10
+DIRECTION_MIN_AREA = 0.05
 EXPECTED_RAW_ROWS = 1536
 EXPECTED_EVALUATED_NAMES = 384
 EXPECTED_EVALUATED_UNITS = 768
@@ -190,12 +193,20 @@ def tile_sse(errors: Any) -> tuple[Any, list[int]]:
     return values, pixel_counts
 
 
-def deterministic_permutation(name: str, replicate: int) -> Any:
+def deterministic_permutation(name: str, replicate: int, pixel_counts: Any) -> Any:
     import numpy as np
 
     digest = hashlib.sha256(f"{ROUTE_ID}|{name}|shuffle={replicate}".encode()).digest()
     seed = int.from_bytes(digest[:8], "big")
-    return np.random.default_rng(seed).permutation(TILES)
+    generator = np.random.default_rng(seed)
+    counts = np.asarray(pixel_counts, dtype=np.int64)
+    if counts.shape != (TILES,) or np.any(counts <= 0):
+        raise FeasibilityInconclusive("invalid tile pixel-count vector")
+    permutation = np.arange(TILES, dtype=np.int64)
+    for count in sorted(np.unique(counts)):
+        indices = np.flatnonzero(counts == count)
+        permutation[indices] = generator.permutation(indices)
+    return permutation
 
 
 def analyze_groups(groups: dict[str, dict[str, dict[str, Any]]]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -203,7 +214,9 @@ def analyze_groups(groups: dict[str, dict[str, dict[str, Any]]]) -> tuple[list[d
 
     rows = []
     local_safety_violations = 0
+    local_materiality_violations = 0
     shuffle_histogram_violations = 0
+    shuffle_area_violations = 0
     for name in sorted(groups):
         operator_units = groups[name]
         if set(operator_units) != set(OPERATORS):
@@ -218,8 +231,7 @@ def analyze_groups(groups: dict[str, dict[str, dict[str, Any]]]) -> tuple[list[d
                     psnr_gain(unit["sse"][0, tile], unit["sse"][action, tile])
                     for unit in operator_units.values()
                 ]
-                scores.append(min(gains) if all(unit["sse"][action, tile] <= unit["sse"][0, tile]
-                                                 for unit in operator_units.values()) else -math.inf)
+                scores.append(min(gains) if all(gain >= LOCAL_GAIN for gain in gains) else -math.inf)
             action_map.append(max(range(3), key=lambda action: (scores[action], -action)))
         action_map_array = np.asarray(action_map, dtype=np.int64)
         for operator, unit in operator_units.items():
@@ -227,6 +239,10 @@ def analyze_groups(groups: dict[str, dict[str, dict[str, Any]]]) -> tuple[list[d
                 local_safety_violations += bool(
                     unit["sse"][action, tile] > unit["sse"][0, tile]
                 )
+                if action != 0:
+                    local_materiality_violations += (
+                        psnr_gain(unit["sse"][0, tile], unit["sse"][action, tile]) < LOCAL_GAIN
+                    )
         region_gain = {}
         global_gain_by_operator = {}
         global_action_scores = [0.0]
@@ -237,6 +253,12 @@ def analyze_groups(groups: dict[str, dict[str, dict[str, Any]]]) -> tuple[list[d
             }
             global_action_scores.append(min(gains.values()) if all(value >= 0.0 for value in gains.values()) else -math.inf)
         global_action = max(range(3), key=lambda action: (global_action_scores[action], -action))
+        pixel_counts = np.asarray(
+            next(iter(operator_units.values()))["pixel_counts"], dtype=np.int64,
+        )
+        original_action_area = np.asarray([
+            pixel_counts[action_map_array == action].sum() for action in range(3)
+        ], dtype=np.int64)
         shuffle_gain = {operator: [] for operator in OPERATORS}
         for operator, unit in operator_units.items():
             reference_sse = float(unit["sse"][0].sum())
@@ -245,13 +267,26 @@ def analyze_groups(groups: dict[str, dict[str, dict[str, Any]]]) -> tuple[list[d
             global_gain_by_operator[operator] = psnr_gain(reference_sse, float(unit["sse"][global_action].sum()))
             original_histogram = np.bincount(action_map_array, minlength=3)
             for replicate in range(SHUFFLE_REPLICATES):
-                permuted = action_map_array[deterministic_permutation(name, replicate)]
+                permuted = action_map_array[
+                    deterministic_permutation(name, replicate, pixel_counts)
+                ]
                 shuffle_histogram_violations += not np.array_equal(
                     original_histogram, np.bincount(permuted, minlength=3),
+                )
+                permuted_action_area = np.asarray([
+                    pixel_counts[permuted == action].sum() for action in range(3)
+                ], dtype=np.int64)
+                shuffle_area_violations += not np.array_equal(
+                    original_action_area, permuted_action_area,
                 )
                 shuffled_sse = sum(float(unit["sse"][action, tile]) for tile, action in enumerate(permuted))
                 shuffle_gain[operator].append(psnr_gain(reference_sse, shuffled_sse))
         counts = np.bincount(action_map_array, minlength=3)
+        total_area = float(pixel_counts.sum())
+        area_fractions = {
+            action: float(pixel_counts[action_map_array == action].sum() / total_area)
+            for action in range(3)
+        }
         row = {
             "name": name,
             "fold": next(iter(operator_units.values()))["fold"],
@@ -259,8 +294,18 @@ def analyze_groups(groups: dict[str, dict[str, dict[str, Any]]]) -> tuple[list[d
             "noop_tiles": int(counts[0]),
             "positive_tiles": int(counts[1]),
             "negative_tiles": int(counts[2]),
-            "mixed_noop_active": bool(counts[0] > 0 and counts[1] + counts[2] > 0),
-            "bidirectional": bool(counts[1] > 0 and counts[2] > 0),
+            "noop_area_fraction": area_fractions[0],
+            "positive_area_fraction": area_fractions[1],
+            "negative_area_fraction": area_fractions[2],
+            "active_area_fraction": area_fractions[1] + area_fractions[2],
+            "mixed_noop_active": bool(
+                area_fractions[0] >= MIXED_MIN_AREA
+                and area_fractions[1] + area_fractions[2] >= MIXED_MIN_AREA
+            ),
+            "bidirectional": bool(
+                area_fractions[1] >= DIRECTION_MIN_AREA
+                and area_fractions[2] >= DIRECTION_MIN_AREA
+            ),
             "global_action": int(global_action),
             "action_map": [int(value) for value in action_map],
         }
@@ -271,7 +316,9 @@ def analyze_groups(groups: dict[str, dict[str, dict[str, Any]]]) -> tuple[list[d
         rows.append(row)
     return rows, {
         "local_safety_violations": int(local_safety_violations),
+        "local_materiality_violations": int(local_materiality_violations),
         "shuffle_histogram_violations": int(shuffle_histogram_violations),
+        "shuffle_area_violations": int(shuffle_area_violations),
     }
 
 
@@ -387,7 +434,9 @@ def contract(context_path: Path) -> None:
             len(unit["pixel_counts"]) == TILES for group in groups.values() for unit in group.values()
         ),
         "local_safety": integrity["local_safety_violations"] == 0,
+        "local_materiality": integrity["local_materiality_violations"] == 0,
         "shuffle_histogram": integrity["shuffle_histogram_violations"] == 0,
+        "shuffle_pixel_area": integrity["shuffle_area_violations"] == 0,
         "mixed_actions_exercised": all(
             row["mixed_noop_active"] and row["bidirectional"] for row in rows
         ),
@@ -632,8 +681,12 @@ def run(context_path: Path) -> None:
             raise FeasibilityInconclusive("R5 target/no-op/tile-partition replay mismatch")
         rows, integrity = analyze_groups(groups)
         if integrity["local_safety_violations"] != 0 \
-                or integrity["shuffle_histogram_violations"] != 0:
-            raise FeasibilityInconclusive("regional safety or shuffle-histogram construction failed")
+                or integrity["local_materiality_violations"] != 0 \
+                or integrity["shuffle_histogram_violations"] != 0 \
+                or integrity["shuffle_area_violations"] != 0:
+            raise FeasibilityInconclusive(
+                "regional materiality/safety or shuffle construction failed"
+            )
         write_workload_progress(context, completed_units=770, stage="region_maps_complete")
         boot = bootstrap(rows, BOOTSTRAP_DRAWS, BOOTSTRAP_SEED)
         write_workload_progress(context, completed_units=4770, stage="bootstrap_complete")
@@ -657,12 +710,32 @@ def run(context_path: Path) -> None:
             "folds_complete": sorted({row["fold"] for row in rows}) == list(FOLDS),
             "finite_metrics": all(math.isfinite(value["point"]) for value in boot.values()),
             "local_dual_operator_safety": integrity["local_safety_violations"] == 0,
+            "local_dual_operator_materiality": (
+                integrity["local_materiality_violations"] == 0
+            ),
             "shuffle_histograms_exact": integrity["shuffle_histogram_violations"] == 0,
+            "shuffle_pixel_area_exact": integrity["shuffle_area_violations"] == 0,
             "protected_roles_untouched": not any(context.protected_data_permissions.values()),
         }
         if not all(structural_checks.values()):
             failed = sorted(key for key, value in structural_checks.items() if not value)
             raise FeasibilityInconclusive(f"structural checks failed: {failed}")
+        fold_metrics = {
+            str(fold): evaluate_rows(
+                rows,
+                np.asarray(
+                    [index for index, row in enumerate(rows) if row["fold"] == fold],
+                    dtype=np.int64,
+                ),
+            )
+            for fold in FOLDS
+        }
+        fold_stability = all(
+            fold_metrics[str(fold)]["region_gain"] >= ABSOLUTE_GAIN
+            and fold_metrics[str(fold)]["region_minus_global"] >= INCREMENT_GAIN
+            and fold_metrics[str(fold)]["region_minus_shuffle"] >= INCREMENT_GAIN
+            for fold in FOLDS
+        )
         gates = {
             "region_gain_lcb95": boot["region_gain"]["lcb95"] >= ABSOLUTE_GAIN,
             "region_minus_global_lcb95": boot["region_minus_global"]["lcb95"] >= INCREMENT_GAIN,
@@ -674,6 +747,7 @@ def run(context_path: Path) -> None:
             "zero_region_hard": hard == 0,
             "mixed_fraction_lcb95": mixed["lcb95"] >= MIXED_FRACTION,
             "bidirectional_fraction_lcb95": bidirectional["lcb95"] >= BIDIRECTIONAL_FRACTION,
+            "both_folds_material": fold_stability,
         }
         passes = all(gates.values())
         decisive_fail = (
@@ -683,6 +757,9 @@ def run(context_path: Path) -> None:
             or boot["region_minus_global_cvar5"]["ucb95"] < TAIL_MARGIN
             or mixed["ucb95"] < MIXED_FRACTION
             or bidirectional["ucb95"] < BIDIRECTIONAL_FRACTION
+            or severe > 0
+            or hard > 0
+            or not fold_stability
         )
         if passes:
             state = "COMPLETED_GATE_PASS"
@@ -737,6 +814,9 @@ def run(context_path: Path) -> None:
                     "shuffle_mean_gain_db": float(np.mean([row[f"shuffle_{operator}"] for row in subset])),
                     "mixed_fraction": float(np.mean([row["mixed_noop_active"] for row in subset])),
                     "bidirectional_fraction": float(np.mean([row["bidirectional"] for row in subset])),
+                    "noop_area_fraction": float(np.mean([row["noop_area_fraction"] for row in subset])),
+                    "positive_area_fraction": float(np.mean([row["positive_area_fraction"] for row in subset])),
+                    "negative_area_fraction": float(np.mean([row["negative_area_fraction"] for row in subset])),
                 })
         action_distribution = {
             "schema_version": 1,
@@ -747,6 +827,10 @@ def run(context_path: Path) -> None:
             },
             "mixed_noop_active": mixed,
             "bidirectional_positive_negative": bidirectional,
+            "noop_area_fraction": float(np.mean([row["noop_area_fraction"] for row in rows])),
+            "positive_area_fraction": float(np.mean([row["positive_area_fraction"] for row in rows])),
+            "negative_area_fraction": float(np.mean([row["negative_area_fraction"] for row in rows])),
+            "active_area_fraction": float(np.mean([row["active_area_fraction"] for row in rows])),
             "global_action_counts": {
                 ACTIONS[action]: sum(row["global_action"] == action for row in rows)
                 for action in range(3)
@@ -762,6 +846,9 @@ def run(context_path: Path) -> None:
             ),
             "shared_region_map_by_construction": True,
             "local_dual_operator_safety_violations": integrity["local_safety_violations"],
+            "local_dual_operator_materiality_violations": (
+                integrity["local_materiality_violations"]
+            ),
         }
         contract_summary = {
             "schema_version": 1,
@@ -778,9 +865,12 @@ def run(context_path: Path) -> None:
             "thresholds": {
                 "absolute_gain_db": ABSOLUTE_GAIN,
                 "increment_gain_db": INCREMENT_GAIN,
+                "local_gain_db": LOCAL_GAIN,
                 "tail_margin_db": TAIL_MARGIN,
                 "mixed_fraction": MIXED_FRACTION,
                 "bidirectional_fraction": BIDIRECTIONAL_FRACTION,
+                "mixed_min_area": MIXED_MIN_AREA,
+                "direction_min_area": DIRECTION_MIN_AREA,
                 "severe_gain_db": SEVERE_GAIN,
                 "hard_gain_db": HARD_GAIN,
             },
@@ -810,6 +900,7 @@ def run(context_path: Path) -> None:
             "schema_version": 1,
             "replicates": SHUFFLE_REPLICATES,
             "histogram_violations": integrity["shuffle_histogram_violations"],
+            "pixel_area_violations": integrity["shuffle_area_violations"],
             "region_minus_shuffle": boot["region_minus_shuffle"],
             "control_worse_operator_gain": boot["shuffle_gain"],
         }
@@ -817,6 +908,7 @@ def run(context_path: Path) -> None:
             "schema_version": 1,
             "structural_checks": structural_checks,
             "gates": gates,
+            "fold_metrics": fold_metrics,
             "passes": passes,
             "decisive_fail": decisive_fail,
             "region_severe_groups": severe,
@@ -876,6 +968,7 @@ def run(context_path: Path) -> None:
                 "region_minus_shuffle_db": boot["region_minus_shuffle"]["point"],
                 "mixed_fraction": mixed["point"],
                 "bidirectional_fraction": bidirectional["point"],
+                "both_folds_material": fold_stability,
                 "region_severe_groups": severe,
                 "region_hard_groups": hard,
                 "r5_terminal_changed": False,

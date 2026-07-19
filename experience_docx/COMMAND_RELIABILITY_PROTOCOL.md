@@ -78,6 +78,22 @@ apply the code-path and binary-extension predicates to the returned literal
 name list in PowerShell. Require explicit `MAIN_EVIDENCE_STAGE_AUDIT_OK` only
 after all predicates pass.
 
+### 2026-07-19 R10 final-review command boundary
+
+Invalid form: Windows Git was invoked against the WSL UNC worktree and stopped
+on dubious ownership; a later `bash -lc` read resolved the bundled Windows
+`rg` path inside WSL and failed permission checking. Neither probe changed a
+file or contacted the cloud.
+
+Corrected form: bind the task with `convirctl.py task-context`, then use
+`wsl.exe -d Ubuntu-22.04 --exec` with fixed Linux programs and literal argv;
+use `convirctl.py` repository readers for ref-bound reads.
+
+Invalid form: the R10 commit subject was passed after `-m` without preserving
+it as one argv value, so Git treated the remaining words as pathspecs and
+created no commit. Corrected form: pass the complete subject as one literal
+PowerShell-quoted argv value to `/usr/bin/git commit -m`.
+
 ## Progress Contract
 
 Route entrypoints should call write_workload_progress from route_program_api for
