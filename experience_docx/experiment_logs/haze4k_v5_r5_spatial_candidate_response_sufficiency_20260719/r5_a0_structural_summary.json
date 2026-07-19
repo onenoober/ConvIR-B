@@ -1,0 +1,21 @@
+{
+  "checks": {
+    "cells_complete": true,
+    "development_confirmation_disjoint": true,
+    "development_groups_complete": true,
+    "evaluated_groups_complete": true,
+    "feature_units_complete": true,
+    "finite_primary_metrics": true,
+    "fixed_coverage_each_fold_cell": true,
+    "folds_complete": true,
+    "per_seed_rows_complete": true,
+    "policy_rows_complete": true,
+    "protected_group_support": true,
+    "protected_roles_untouched": true,
+    "seed_training_units_complete": true,
+    "shuffle_dc_preserved": true,
+    "shuffle_marginals_preserved": true
+  },
+  "schema_version": 1,
+  "valid": true
+}

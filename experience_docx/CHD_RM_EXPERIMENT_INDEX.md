@@ -1,10 +1,11 @@
 # CHD-RM Haze4K Experiment Index
 
-Date: 2026-07-18
+Date: 2026-07-19
 
-Status: R3 A0 passed the fixed GT-free proposal-bank oracle after S0 froze a
-fresh 768-development/432-confirmation ledger. Candidate proposal is no longer
-the active bottleneck; only independent A1 amendment review is authorized.
+Status: R5-A0 r2 is the latest terminal. Candidate-relative spatial response
+contains material mean utility and risk signal, but the frozen readout and 20%
+coverage fail severe, hard, CVaR5 and protected-cell safety gates. The family
+authorizes no next stage.
 
 The 2026-07-17 cloud evidence audit sharpens the bottleneck to joint GT-free
 candidate proposal plus candidate-conditioned value/risk identifiability. It
@@ -287,6 +288,8 @@ limited to `R3_A1_AMENDMENT_REVIEW`.
 | v4a-A1X-v3 accessibility | `codex/haze4k-v5-v4a-a1x-accessibility-v3-20260716` | completed D0 gate fail | repaired S0 passed; fresh512 D0 retained real signal but failed gain LCB95 `+0.013200 < +0.020 dB` and oracle-retention LCB95 `0.080069 < 0.25` | `A1X_V3_D0_GLOBAL_HEAD_CONTRACT_FAIL_STOP` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4a_a1x_accessibility_v3_20260716/` |
 | R3 cloud evidence audit | `codex/haze4k-v5-r3-evidence-audit-20260717` | completed diagnostic-only audit | identifies joint GT-free proposal/value bottleneck, tie-heavy action targets, decisive current-head effect-size failure, and a clean 1,200-image source for a new ledger; historical 432 confirmation role retired | `R3_CLOUD_EVIDENCE_AUDIT_COMPLETE_S0_A0_DESIGN_ONLY` | `experience_docx/experiment_logs/haze4k_v5_r3_cloud_evidence_audit_20260717/` |
 | R3 proposal-first ACV | `codex/haze4k-v5-r3-proposal-first-acv-20260717` | S0 and A0 completed; A1 review only | S0 r4 freezes 768 development/432 confirmation with balanced folds; A0 r4 passes gain LCB95 `+0.145125 dB`, retention LCB95 `0.623411`, repairable LCB95 `0.84375`, all structural/safety checks, and zero protected-outcome access | `R3_A0_GT_FREE_PROPOSAL_ORACLE_PASS` | `experience_docx/experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/` |
+| R4B set-wise utility-risk | `codex/haze4k-v5-r4b-three-action-setwise-utility-risk-20260718` | completed formal gate fail plus post-hoc cloud audit | A1 formal utility/retention gates fail while risk discrimination passes; cloud raw rows reproduce official metrics and narrow failure to dominant abstention/positive-only action without changing the terminal decision | `R4B_A1_SETWISE_MECHANISM_FUTILITY_STOP`; audit `ORIGINAL_BOTTLENECK_SUPPORTED_BUT_NARROWED` | `experience_docx/experiment_logs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/` |
+| R5 spatial candidate-response sufficiency | `codex/haze4k-v5-r5-independent-route-contract-20260719` | completed formal development-screen gate fail | Spatial response beats pooled/shuffle on mean utility and identifies severe risk, but fixed 20% coverage selects 10 severe/3 hard groups and fails CVaR5/protected-cell safety | `R5_A0_SPATIAL_RESPONSE_FUTILITY_OR_SAFETY_FAIL_STOP` | `experience_docx/experiment_logs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/` |
 | v3 no-op RARM audit | `codex/haze4k-v5-v3-chd-rm-noop-rarm-audit` | superseded by v3a naming | original v3 remains blocked as RARM route; use v3a for D7c-gated no-op connection only | `SUPERSEDED_BY_V3A_NOOP_CONNECTION_AUDIT` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v3_noop_rarm_audit_20260708/` |
 | v4 single-scale RARM | `codex/haze4k-v5-v4-chd-rm-single-scale-rarm` | blocked | blocked until v3 no-op gate is authorized and passed | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v4_single_scale_rarm_20260708/` |
 | v5 low-haze protection | `codex/haze4k-v5-v5-chd-rm-low-haze-protection` | blocked | blocked until a safe R_need/RARM gate exists | `BLOCKED` | `experience_docx/experiment_logs/haze4k_v5_chd_rm_v5_low_haze_protection_20260708/` |

@@ -1,0 +1,221 @@
+{
+  "audit_id": "r4b-a1-cloud-audit-20260718-r1",
+  "calibration_reproduction": {
+    "brier": 0.12591284408501693,
+    "ece": 0.04875300953790429
+  },
+  "formal_hash_checks": [
+    {
+      "expected": "9d5111fd73ee029b07626b9c919b7788357a4305491bb770cf2edd671112135d",
+      "file": "r4b_a1_bootstrap_summary.json",
+      "match": true,
+      "observed": "9d5111fd73ee029b07626b9c919b7788357a4305491bb770cf2edd671112135d"
+    },
+    {
+      "expected": "e99f80465c38935e0518446a89eaba92b7c0ea41898bd3fda46268948317d98d",
+      "file": "r4b_a1_calibration_summary.csv",
+      "match": true,
+      "observed": "e99f80465c38935e0518446a89eaba92b7c0ea41898bd3fda46268948317d98d"
+    },
+    {
+      "expected": "5c651ae1b649d89fc8cd48b94adda0fa79d947f4b23eaaf23f05be8c3c91a4ba",
+      "file": "r4b_a1_cell_summary.csv",
+      "match": true,
+      "observed": "5c651ae1b649d89fc8cd48b94adda0fa79d947f4b23eaaf23f05be8c3c91a4ba"
+    },
+    {
+      "expected": "cb85774f31a81bc34851c6037777b5a7aab079a25a499a878acd58003d3bd290",
+      "file": "r4b_a1_contract_summary.json",
+      "match": true,
+      "observed": "cb85774f31a81bc34851c6037777b5a7aab079a25a499a878acd58003d3bd290"
+    },
+    {
+      "expected": "613508eb332c44e6bce2d00162d9f4c76e193c4a53d7d819324d4cf403fbd040",
+      "file": "r4b_a1_control_summary.csv",
+      "match": true,
+      "observed": "613508eb332c44e6bce2d00162d9f4c76e193c4a53d7d819324d4cf403fbd040"
+    },
+    {
+      "expected": "172fb9ac17fb4e9fc59e339529de8823e66a9ca394a34f928a97f3f993816a9a",
+      "file": "r4b_a1_gate_summary.json",
+      "match": true,
+      "observed": "172fb9ac17fb4e9fc59e339529de8823e66a9ca394a34f928a97f3f993816a9a"
+    },
+    {
+      "expected": "9403b014091697db3c0a46f1429d5adee69a47f2ca6a628063168cb0e233c3e8",
+      "file": "r4b_a1_permutation_audit.json",
+      "match": true,
+      "observed": "9403b014091697db3c0a46f1429d5adee69a47f2ca6a628063168cb0e233c3e8"
+    },
+    {
+      "expected": "fd7ba1a3994bb66f47f0c9883b75378a517f97871804a110eb032e87a9583c2e",
+      "file": "r4b_a1_resource_summary.json",
+      "match": true,
+      "observed": "fd7ba1a3994bb66f47f0c9883b75378a517f97871804a110eb032e87a9583c2e"
+    },
+    {
+      "expected": "300c2cf9864de9ecccc5318e65d55a1e37985d71c9aa188771653597f9947c84",
+      "file": "r4b_a1_risk_coverage.csv",
+      "match": true,
+      "observed": "300c2cf9864de9ecccc5318e65d55a1e37985d71c9aa188771653597f9947c84"
+    },
+    {
+      "expected": "1eea4e296d769484991d4e46017bfa6fc6aa72c624acc7784f6f9ba71d71bea7",
+      "file": "r4b_a1_risk_discrimination.json",
+      "match": true,
+      "observed": "1eea4e296d769484991d4e46017bfa6fc6aa72c624acc7784f6f9ba71d71bea7"
+    },
+    {
+      "expected": "4865f6b571aca870cad0514dba8c3c6de7191664157f8fa119a9dd698b2a8e7d",
+      "file": "r4b_a1_source_access_audit.json",
+      "match": true,
+      "observed": "4865f6b571aca870cad0514dba8c3c6de7191664157f8fa119a9dd698b2a8e7d"
+    },
+    {
+      "expected": "8a755afee1d976161ff6d1ed2350b021e562c8d979937e137139011850bf6075",
+      "file": "r4b_a1_structural_summary.json",
+      "match": true,
+      "observed": "8a755afee1d976161ff6d1ed2350b021e562c8d979937e137139011850bf6075"
+    },
+    {
+      "expected": "eb9b97a78b943814ccedd9cbf498b8e0a26ac5aba5a64fdcd5f9638ed2766a6a",
+      "file": "r4b_a1_training_summary.csv",
+      "match": true,
+      "observed": "eb9b97a78b943814ccedd9cbf498b8e0a26ac5aba5a64fdcd5f9638ed2766a6a"
+    }
+  ],
+  "not_independently_reproduced": {
+    "bootstrap_intervals": "not rerun by design; compact result hashes match the typed closeout",
+    "per_seed_metrics": "predictions were ensemble-averaged before raw-row persistence",
+    "region_level_metrics": "A1 persisted image/operator rows, not region rows",
+    "risk_coverage_order": "composite confidence was not persisted in the two raw cloud tables",
+    "semantic_subgroups": "no subgroup labels persisted"
+  },
+  "operator_points": {
+    "formal_worst_operator": "D_rep",
+    "gain": {
+      "D_ref": 0.00023915370305379233,
+      "D_rep": 0.0001920461654663086
+    },
+    "oracle": {
+      "D_ref": 0.1516399880250295,
+      "D_rep": 0.150593434770902
+    },
+    "shuffle_gain": {
+      "D_ref": -0.0005536178747812907,
+      "D_rep": -0.0005069077014923096
+    }
+  },
+  "point_metrics": {
+    "gain": 0.0001920461654663086,
+    "primary_minus_best_nuisance": -0.0003118763367335001,
+    "retention": 0.0012752625355711468,
+    "setwise_minus_independent": -0.0019325464963912966,
+    "true_minus_shuffle": 0.0006989538669586182,
+    "utility_risk_minus_mean_only": 0.0001920461654663086
+  },
+  "reproducible": true,
+  "risk_metrics_by_cell_posthoc": {
+    "I_utility_risk": {
+      "harm": {
+        "auprc": 0.7623500356891991,
+        "auroc": 0.7339318695580863,
+        "prevalence": 0.6106770833333334
+      },
+      "severe": {
+        "auprc": 0.6135178569458754,
+        "auroc": 0.8338964864890303,
+        "prevalence": 0.23567708333333334
+      }
+    },
+    "S_action_only": {
+      "harm": {
+        "auprc": 0.7389539356639021,
+        "auroc": 0.6718307649521147,
+        "prevalence": 0.6106770833333334
+      },
+      "severe": {
+        "auprc": 0.3414842407847877,
+        "auroc": 0.6454723427485012,
+        "prevalence": 0.23567708333333334
+      }
+    },
+    "S_mean_only": {
+      "harm": {
+        "auprc": 0.6048090870648593,
+        "auroc": 0.5,
+        "prevalence": 0.6106770833333334
+      },
+      "severe": {
+        "auprc": 0.24554809396211782,
+        "auroc": 0.5,
+        "prevalence": 0.23567708333333334
+      }
+    },
+    "S_risk_label_shuffle": {
+      "harm": {
+        "auprc": 0.7471680176043242,
+        "auroc": 0.6747794710156813,
+        "prevalence": 0.6106770833333334
+      },
+      "severe": {
+        "auprc": 0.42262404626468975,
+        "auroc": 0.7081423475486367,
+        "prevalence": 0.23567708333333334
+      }
+    },
+    "S_state_only": {
+      "harm": {
+        "auprc": 0.6361307963914432,
+        "auroc": 0.5364755296617724,
+        "prevalence": 0.6106770833333334
+      },
+      "severe": {
+        "auprc": 0.41551220112622617,
+        "auroc": 0.7612497294041244,
+        "prevalence": 0.23567708333333334
+      }
+    },
+    "S_unsigned": {
+      "harm": {
+        "auprc": 0.6048090870648593,
+        "auroc": 0.5,
+        "prevalence": 0.6106770833333334
+      },
+      "severe": {
+        "auprc": 0.24554809396211782,
+        "auroc": 0.5,
+        "prevalence": 0.23567708333333334
+      }
+    },
+    "S_utility_risk": {
+      "harm": {
+        "auprc": 0.7993387630187611,
+        "auroc": 0.7539274482817636,
+        "prevalence": 0.6106770833333334
+      },
+      "severe": {
+        "auprc": 0.6455047115180007,
+        "auroc": 0.8509510856777133,
+        "prevalence": 0.23567708333333334
+      }
+    }
+  },
+  "schema_version": 1,
+  "structural_summary": {
+    "checks": {
+      "all_cells_present": true,
+      "all_folds_present": true,
+      "development_confirmation_disjoint": true,
+      "feature_units_complete": true,
+      "finite": true,
+      "policy_rows_complete": true,
+      "risk_group_rows_complete": true,
+      "seed_model_units_complete": true,
+      "training_units_complete": true
+    },
+    "schema_version": 1,
+    "valid": true
+  },
+  "terminal_state_affected": false
+}

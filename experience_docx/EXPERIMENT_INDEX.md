@@ -1,6 +1,6 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-07-18
+Date: 2026-07-19
 
 Status: evidence index plus official architecture anchor registry.
 
@@ -287,6 +287,50 @@ reduction is `38.3314%`, parameter/MAC/memory guards pass, and all forbidden-dat
 flags are false. At that historical point the tuple authorized D0 design only.
 D0 subsequently completed and failed; the S0 tuple is no longer a current
 authorization and the 432-name stage was never opened.
+
+## Current Machine Terminal, R4B Cloud Audit, And R5 Screen
+
+The previous machine terminal record is R4B-A1:
+`COMPLETED_GATE_FAIL / R4B_A1_SETWISE_MECHANISM_FUTILITY_STOP / NONE` for
+`r4b-a1-setwise-screen-r1` at route commit `336f1132c9aaffebda365b63e26a67aab4643531`.
+Use `EXPERIMENT_TERMINAL_INDEX.jsonl` and the typed closeout as terminal
+authority; the older R3 prose below remains historical design context.
+
+The receipt-bound cloud audit completed as
+`ORIGINAL_BOTTLENECK_SUPPORTED_BUT_NARROWED`. It reproduced all formal point
+metrics, calibration metrics, structural counts and closeout-bound artifact
+hashes, found no protected-data mixing or material discrepancy, and did not
+change the R4B-A1 terminal decision. Its main descriptive refinement is that
+the realized retention loss is dominated by abstention (`94.7455%` of
+repairable operator-image rows), with positive-only actions and strong fold
+dependence in coverage. The exact upstream cause remains unresolved because
+the saved raw artifacts omit per-action utility score vectors, per-seed
+predictions, composite confidence, region rows and semantic subgroup labels.
+
+Evidence:
+`experiment_logs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/`.
+Cloud audit authority:
+`cloud_audit_closeout.json`. This is post-hoc exploratory analysis and
+authorizes `NONE`.
+
+The latest machine terminal record is R5-A0 r2:
+`COMPLETED_GATE_FAIL / R5_A0_SPATIAL_RESPONSE_FUTILITY_OR_SAFETY_FAIL_STOP /
+NONE` at route commit `7e75eed504b2ead65a1971ec250dc7f59a79574d`. The
+same-contract r1 engineering failure remains preserved and is not scientific
+evidence. R2 completed all 1,552 frozen units, passed every structural and
+protected-access check, and showed material candidate-relative spatial signal:
+worse-operator gain `+0.025941 dB`, spatial-minus-pooled `+0.020161 dB`,
+true-minus-shuffle `+0.020303 dB`, and severe AUROC `0.840579`. It failed the
+predeclared safety contract with 10 selected severe groups, 3 hard groups,
+all-group severe UCB95 `0.043772`, CVaR5 spatial-minus-pooled LCB95
+`-0.302166 dB`, and protected-cell harm-increment UCB95 `+0.030836 dB`.
+
+R5 therefore narrows the functional bottleneck: spatial candidate-relative
+response contains signed utility and risk information, but the frozen
+representation/readout/20%-coverage contract cannot convert it into locally
+safe action and abstention. R5-A1, neighbor search, confirmation, canary and
+locked test remain prohibited. Evidence:
+`experiment_logs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/`.
 
 ## Current R3 Design Handoff
 

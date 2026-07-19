@@ -1,0 +1,8 @@
+{
+  "best_action_agreement": 0.9713541666666666,
+  "schema_version": 1,
+  "target_pearson": {
+    "state_negative_full": 0.9996353854652473,
+    "state_positive_full": 0.9995307523622877
+  }
+}

@@ -1,0 +1,18 @@
+available,coverage,cvar5_gain_db,hard_count,interpretation,mean_gain_db,n,negative_selection_rate,p10_gain_db,severe_count,subgroup,subgroup_family,worst20_mean_gain_db
+True,0.0,0.0,0,posthoc descriptive; not a preregistered subgroup endpoint,0.0,384,0.0,0.0,0,0,fold,0.0
+True,0.09895833333333333,-0.009239959716796874,0,posthoc descriptive; not a preregistered subgroup endpoint,0.0004311998685201009,384,0.0,0.0,0,1,fold,-0.009239959716796874
+True,0.049479166666666664,-0.004341506958007812,0,paired formal operator dimension,0.00023915370305379233,384,0.0,0.0,0,D_ref,operator,-0.004341506958007812
+True,0.049479166666666664,-0.004898452758789062,0,paired formal operator dimension,0.0001920461654663086,384,0.0,0.0,0,D_rep,operator,-0.004898452758789062
+True,0.0,0.0,0,posthoc descriptive action stratum,0.0,730,0.0,0.0,0,noop,selected_action,0.0
+True,1.0,-0.041942596435546875,0,posthoc descriptive action stratum,0.00435738814504523,38,0.0,-0.011817169189453126,0,positive_full,selected_action,-0.00909881591796875
+True,,,0,posthoc descriptive action stratum,,0,,,0,negative_full,selected_action,
+False,,,,not available in persisted R4B-A1 raw artifacts,,,,,,light_fog,semantic_or_region,
+False,,,,not available in persisted R4B-A1 raw artifacts,,,,,,medium_fog,semantic_or_region,
+False,,,,not available in persisted R4B-A1 raw artifacts,,,,,,heavy_fog,semantic_or_region,
+False,,,,not available in persisted R4B-A1 raw artifacts,,,,,,sky,semantic_or_region,
+False,,,,not available in persisted R4B-A1 raw artifacts,,,,,,highlight,semantic_or_region,
+False,,,,not available in persisted R4B-A1 raw artifacts,,,,,,low_texture,semantic_or_region,
+False,,,,not available in persisted R4B-A1 raw artifacts,,,,,,distance,semantic_or_region,
+False,,,,not available in persisted R4B-A1 raw artifacts,,,,,,edge,semantic_or_region,
+False,,,,not available in persisted R4B-A1 raw artifacts,,,,,,color_region,semantic_or_region,
+False,,,,not available in persisted R4B-A1 raw artifacts,,,,,,region_level,semantic_or_region,

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
+  "operation_id": "R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN",
+  "run_id": "r5-a0-spatial-response-screen-r2",
+  "state": "COMPLETED_GATE_FAIL",
+  "decision": "R5_A0_SPATIAL_RESPONSE_FUTILITY_OR_SAFETY_FAIL_STOP",
+  "authorizes": "NONE",
+  "primary_result": "The preregistered two-fold spatial candidate-response screen is structurally valid and shows non-futile average utility information, but decisively fails the frozen safety contract. At fixed 39/192 acted names per fold, the true spatial cell has worse-operator mean gain +0.025941 dB (95% grouped bootstrap interval +0.012476 to +0.040757), oracle retention 0.172387 (0.083632 to 0.264425), spatial-minus-pooled +0.020161 dB (0.006707 to 0.034034), and true-minus-shuffle +0.020303 dB (0.005851 to 0.035699). Severe risk remains identifiable (AUROC 0.840579, LCB95 0.804543; AUPRC lift 0.386462, LCB95 0.314581). However, the selected policy creates 10 severe and 3 hard groups, its all-group severe exact UCB95 is 0.043772 versus the 0.010 ceiling, its CVaR5 spatial-minus-pooled LCB95 is -0.302166 dB versus the -0.005 floor, and protected-cell harm increment UCB95 is +0.030836 dB versus the +0.005 ceiling.",
+  "gate_reasons": [
+    "All identity, role-isolation, completeness, finite-value, fixed-coverage, shuffle and protected-access structural checks pass.",
+    "The primary gain, retention, spatial-minus-pooled and true-minus-shuffle non-futility gates pass; the spatial-minus-generic point is positive but its interval crosses zero.",
+    "Severe-risk discrimination gates pass strongly, so generic inability to recognize risk is not the explanation for the terminal failure.",
+    "The selected policy violates both zero-event gates with 10 severe and 3 hard groups.",
+    "The exact severe-rate UCB95 is 0.043772, above the preregistered 0.010 ceiling.",
+    "The CVaR5 spatial-minus-pooled LCB95 is -0.302166 dB, far below the preregistered -0.005 dB safety floor.",
+    "The protected-cell harm increment UCB95 is +0.030836 dB, above the preregistered +0.005 dB ceiling."
+  ],
+  "mechanism_update": "Candidate-relative spatial layout contains material signed utility and action-specific risk information beyond pooled and shuffled controls, narrowing the earlier broad representation-insufficiency hypothesis. It is not sufficient under the frozen 8x8 full-DCT representation, 426-to-64-to-3 readout, two-seed ensemble and fixed 20% coverage policy: the extra mean benefit is coupled to materially worse tail and protected-region harm. The functional bottleneck is therefore narrowed to converting candidate-conditioned spatial signals into locally safe, calibrated action and abstention decisions, not merely detecting generic difficulty or adding spatial layout.",
+  "prohibited_followup": [
+    "Do not launch R5_A1_FULL_OOF_CONTRACT_REVIEW_ONLY or any R5 continuation.",
+    "Do not search neighboring grids, DCT frequencies, layers, heads, widths, depths, seeds, epochs, learning rates, loss weights, thresholds, coverage levels or post-hoc subgroups.",
+    "Do not reinterpret the descriptive risk-coverage curve as a rescue of the frozen 20% primary gate.",
+    "Do not access confirmation identities or outcomes, historical A1X outcomes, canary or locked test.",
+    "Do not treat r1 partial files as scientific evidence or overwrite its FAILED_ENGINEERING history."
+  ],
+  "limitations": [
+    "A0 is a preregistered two-fold development screen on 384 Haze4K development images, not full OOF or independent external validation.",
+    "The conclusion applies to the frozen candidate cache, three-action bank, 8x8 full-DCT response representation, matched controls, fixed readout, seeds and 20% coverage policy.",
+    "No semantic or fog-severity labels were used, so the compact evidence cannot attribute failures to sky, highlight, texture, distance or specific fog regions.",
+    "Confirmation, historical A1X outcomes, canary and locked test were untouched."
+  ]
+}

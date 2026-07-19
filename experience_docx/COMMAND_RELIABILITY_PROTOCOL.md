@@ -50,6 +50,19 @@ cloud actions use only a committed remote-script. Verification steps that
 cross GitHub, SSH, and heartbeat boundaries must be separate bounded actions
 with their own marker, timeout, and failure location.
 
+### 2026-07-19 evidence-sync staging audit boundary
+
+Invalid form: a PowerShell double-quoted `wsl ... bash -lc` command embedded
+Bash command substitution such as `names=$(git diff --cached --name-only)`.
+PowerShell expanded `$()` before WSL started, so the audit body reached Bash
+malformed and no allow/deny decision was produced.
+
+Corrected form: run `/usr/bin/git diff --cached --check` and
+`/usr/bin/git diff --cached --name-only` as separate fixed WSL commands, then
+apply the code-path and binary-extension predicates to the returned literal
+name list in PowerShell. Require explicit `MAIN_EVIDENCE_STAGE_AUDIT_OK` only
+after all predicates pass.
+
 ## Progress Contract
 
 Route entrypoints should call write_workload_progress from route_program_api for

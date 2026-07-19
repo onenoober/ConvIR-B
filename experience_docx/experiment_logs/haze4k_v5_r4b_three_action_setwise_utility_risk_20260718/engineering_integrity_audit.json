@@ -1,0 +1,38 @@
+{
+  "audit_id": "r4b-a1-cloud-audit-20260718-r1",
+  "checks": {
+    "checkpoint_match": true,
+    "config_match": true,
+    "data_role_match": true,
+    "duplicate_keys_absent": true,
+    "finite": true,
+    "fold_operator_cell_completeness": true,
+    "formal_evidence_hashes_match": true,
+    "ledger_match": true,
+    "official_points_reproduce": true,
+    "protected_data_mixed": false,
+    "source_commit_match": true
+  },
+  "classification": {
+    "engineering_integrity": "valid",
+    "mixed_problem": false,
+    "scientific_result": "formal mechanism futility failure",
+    "statistical_precision": "adequate_for_frozen_futility_decision; inadequate for unavailable semantic/per-seed questions"
+  },
+  "issues": [
+    {
+      "classification": "recorded formal gate failure, not an engineering-terminal failure",
+      "frozen_tolerance": 1e-06,
+      "id": "PERMUTATION_NUMERICAL_TOLERANCE_EXCEEDED",
+      "observed": 1.9073486328125e-06,
+      "primary_endpoint_invalidated": false,
+      "reason": "utility and retention upper bounds remain far below the non-futility thresholds and all raw point metrics reproduce"
+    }
+  ],
+  "original_closeout_retained": true,
+  "requires_corrective_contract": false,
+  "requires_integrity_event": false,
+  "schema_version": 1,
+  "scientific_conclusion_valid": true,
+  "status": "ENGINEERING_INTEGRITY_VALID_WITH_RECORDED_NUMERICAL_GATE_FAILURE"
+}

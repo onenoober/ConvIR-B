@@ -2,7 +2,10 @@
 
 Date: 2026-07-18
 
-Status: `PLANNED`
+Status: launch contract sealed as `PLANNED`; current terminal is
+`COMPLETED_GATE_FAIL / R4B_A1_SETWISE_MECHANISM_FUTILITY_STOP / NONE`.
+The post-hoc cloud evidence audit is `COMPLETED_AUDIT` and does not change the
+formal terminal tuple.
 
 ## Identity
 
@@ -46,3 +49,31 @@ Status: `PLANNED`
 - Complete-unit resume policy: `none`; one deterministic same-contract repair is allowed only for an ordinary engineering root cause.
 - Cloud workspace/run/output/status/closeout: fresh receipt-bound workspace; output `r4b-a1-setwise-screen-r1`; generic heartbeat/status; closeout `r4b_a1_setwise_mechanism_screen_closeout.json`.
 - Compact Git evidence and cloud-only raw artifacts: Git receives contract, typed closeout, bootstrap/gate/cell/control/risk/calibration/permutation/risk-coverage/training/resource/access evidence and conclusion. Raw OOF predictions, candidate tensors, labels, checkpoints and per-image risk rows remain cloud-only.
+
+## Terminal And Cloud Audit Addendum
+
+The formal A1 run completed normally at route commit
+`336f1132c9aaffebda365b63e26a67aab4643531`. Its point estimates, risk metrics,
+calibration values, row counts, data roles and all 13 closeout-bound compact
+artifact hashes reproduce from the receipt-bound cloud evidence. The recorded
+permutation maximum remains `1.9073486328125e-06` against the frozen `1e-06`
+tolerance; it does not invalidate the much larger utility and retention
+futility gaps.
+
+The bounded post-hoc audit adds the following interpretation without changing
+the contract or terminal decision:
+
+- `95.0521%` of primary operator-image rows are no-op;
+- among `609` operator-image rows with positive oracle headroom, `577`
+  (`94.7455%`) abstain;
+- the primary acts only on fold 1 (`9.8958%` coverage) and never on fold 0;
+- all `181` negative-oracle operator-image rows still receive zero negative
+  selections;
+- candidate severe scores are directionally concordant in `77.9006%` of the
+  `181` groups where the two active actions have different severe labels;
+- per-seed predictions, per-action mean/q05 utility vectors, composite
+  risk-coverage confidence, region rows and semantic subgroup labels were not
+  persisted and must not be reconstructed by rerunning training or inference.
+
+Cloud audit closeout:
+`../experiment_logs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/cloud_audit_closeout.json`.

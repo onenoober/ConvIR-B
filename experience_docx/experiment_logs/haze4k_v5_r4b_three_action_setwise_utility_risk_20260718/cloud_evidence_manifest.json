@@ -1,0 +1,198 @@
+{
+  "artifact_contracts": [
+    {
+      "evidence_class": "mixed",
+      "file": "cloud_evidence_manifest.json",
+      "inputs": "formal sources and audit outputs",
+      "key_fields": "sources/artifacts",
+      "question": "source inventory and output contract",
+      "retention": "GitHub",
+      "statistical_unit": "file"
+    },
+    {
+      "evidence_class": "formal verification",
+      "file": "provenance_and_identity_audit.json",
+      "inputs": "context/ledger/closeout/raw hashes",
+      "key_fields": "identity/population/raw_integrity",
+      "question": "identity, roles, duplicates and integrity",
+      "retention": "GitHub",
+      "statistical_unit": "file/image group"
+    },
+    {
+      "evidence_class": "verification plus exploratory diagnostics",
+      "file": "official_metric_reproduction.json",
+      "inputs": "raw OOF/risk plus compact summaries",
+      "key_fields": "metrics/limitations",
+      "question": "which official values reproduce",
+      "retention": "GitHub",
+      "statistical_unit": "clean-image group/worst operator"
+    },
+    {
+      "evidence_class": "formal verification",
+      "file": "github_cloud_discrepancy.csv",
+      "inputs": "formal summaries and cloud raw",
+      "key_fields": "official/cloud/difference/status",
+      "question": "GitHub-cloud value/hash differences",
+      "retention": "GitHub",
+      "statistical_unit": "metric/file"
+    },
+    {
+      "evidence_class": "post-hoc exploratory",
+      "file": "fold_seed_operator_stability.csv",
+      "inputs": "raw OOF plus contract",
+      "key_fields": "dimension/gain/tail/coverage",
+      "question": "fold/operator stability and seed gap",
+      "retention": "GitHub",
+      "statistical_unit": "operator-image"
+    },
+    {
+      "evidence_class": "post-hoc exploratory",
+      "file": "per_sample_distribution_summary.json",
+      "inputs": "raw primary OOF rows",
+      "key_fields": "distribution/regret decomposition",
+      "question": "whether means hide concentration",
+      "retention": "GitHub",
+      "statistical_unit": "operator-image and clean-image group"
+    },
+    {
+      "evidence_class": "mixed",
+      "file": "severe_hard_case_summary.csv",
+      "inputs": "raw OOF/risk and formal risk-coverage",
+      "key_fields": "event/count/rate",
+      "question": "tail counts by supported strata",
+      "retention": "GitHub",
+      "statistical_unit": "operator-image/group/action"
+    },
+    {
+      "evidence_class": "formal summary with audit limitation",
+      "file": "risk_coverage_reanalysis.csv",
+      "inputs": "formal compact curve",
+      "key_fields": "coverage/mean/CVaR/events/UCB",
+      "question": "what can be checked about coverage-tail tradeoff",
+      "retention": "GitHub",
+      "statistical_unit": "clean-image group/operator"
+    },
+    {
+      "evidence_class": "mixed",
+      "file": "action_margin_and_label_stability.csv",
+      "inputs": "A0 compact plus A1 raw risk",
+      "key_fields": "margin/agreement/concordance",
+      "question": "action separation and cross-operator stability",
+      "retention": "GitHub",
+      "statistical_unit": "name-action/operator"
+    },
+    {
+      "evidence_class": "post-hoc exploratory",
+      "file": "subgroup_failure_summary.csv",
+      "inputs": "raw OOF/risk",
+      "key_fields": "availability/gain/tail",
+      "question": "supported and missing subgroup evidence",
+      "retention": "GitHub",
+      "statistical_unit": "declared subgroup"
+    },
+    {
+      "evidence_class": "formal verification",
+      "file": "engineering_integrity_audit.json",
+      "inputs": "all audited sources",
+      "key_fields": "status/issues/validity",
+      "question": "engineering/statistical/scientific classification",
+      "retention": "GitHub",
+      "statistical_unit": "run/artifact"
+    },
+    {
+      "evidence_class": "post-hoc interpretation",
+      "file": "updated_bottleneck_assessment.json",
+      "inputs": "formal and raw audit results",
+      "key_fields": "decision/statement/hypotheses",
+      "question": "support/narrow/expand/reject bottleneck",
+      "retention": "GitHub",
+      "statistical_unit": "route"
+    },
+    {
+      "evidence_class": "post-hoc planning audit",
+      "file": "prior_plan_reassessment.json",
+      "inputs": "raw artifact sufficiency and roles",
+      "key_fields": "decision/reason",
+      "question": "whether E1-E5 remain justified",
+      "retention": "GitHub",
+      "statistical_unit": "planned item"
+    },
+    {
+      "evidence_class": "audit authority only",
+      "file": "cloud_audit_closeout.json",
+      "inputs": "all compact audit outputs",
+      "key_fields": "state/decision/hashes/authorization",
+      "question": "audit terminal and authorization",
+      "retention": "GitHub",
+      "statistical_unit": "audit"
+    }
+  ],
+  "audit_id": "r4b-a1-cloud-audit-20260718-r1",
+  "cloud_evidence_cutoff_utc": "2026-07-18T11:58:26+00:00",
+  "cloud_only_artifacts": [
+    "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/r4b-a1-setwise-screen-r1/workload/r4b_a1_oof_rows_cloud_only.csv",
+    "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/r4b-a1-setwise-screen-r1/workload/r4b_a1_candidate_risk_rows_cloud_only.csv",
+    "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/r4b-a1-setwise-screen-r1/stdout.log",
+    "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/r4b-a1-setwise-screen-r1/stderr.log",
+    "/sda/home/wangyuxin/ConvIR-B/audits/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/r4b-a1-cloud-audit-20260718-r1/audit.log"
+  ],
+  "schema_version": 1,
+  "sources": [
+    {
+      "bytes": 399217,
+      "formal_or_exploratory": "formal_raw_input",
+      "mtime_utc": "2026-07-18T11:58:19+00:00",
+      "role": "formal run raw OOF policy input",
+      "sha256": "717f5db9fc18cefc2badeb90eabe815d4dcabd10e00ca121014bd3dfb5df1929",
+      "source": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/r4b-a1-setwise-screen-r1/workload/r4b_a1_oof_rows_cloud_only.csv"
+    },
+    {
+      "bytes": 805668,
+      "formal_or_exploratory": "formal_raw_input",
+      "mtime_utc": "2026-07-18T11:58:19+00:00",
+      "role": "formal run raw candidate risk input",
+      "sha256": "b09005357fc7177c379183796526f15a91c7b08aef2612bb106b653febeb6743",
+      "source": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/r4b-a1-setwise-screen-r1/workload/r4b_a1_candidate_risk_rows_cloud_only.csv"
+    },
+    {
+      "bytes": 4122,
+      "formal_or_exploratory": "formal_provenance",
+      "mtime_utc": "2026-07-18T11:55:35+00:00",
+      "role": "receipt-bound run context",
+      "sha256": "5cbd7a9e4c0914b7524e92ff1dc852b3511f28936662b81262f7117f70021b60",
+      "source": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/r4b-a1-setwise-screen-r1/control/run_context.json"
+    },
+    {
+      "bytes": 26799,
+      "formal_or_exploratory": "formal_provenance",
+      "mtime_utc": "2026-07-18T11:58:26+00:00",
+      "role": "formal run status log",
+      "sha256": "28aaacc3c0569d48d5a031389923a8d9455c352a8c40c11542540ab056c1cf78",
+      "source": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/r4b-a1-setwise-screen-r1/status.txt"
+    },
+    {
+      "bytes": 4110,
+      "formal_or_exploratory": "formal_evidence",
+      "mtime_utc": "2026-07-18T11:58:26+00:00",
+      "role": "typed terminal closeout",
+      "sha256": "646b8d27f8580d94e8b99385a929aaa0f8333a2101842c4cd13a132e0a30e8da",
+      "source": "/sda/home/wangyuxin/ConvIR-B/repos/haze4k_v5_r4b_three_action_setwi-r4b-a1-setwise-screen-r-b2966b805cd092b3/experience_docx/experiment_logs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/r4b_a1_setwise_mechanism_screen_closeout.json"
+    },
+    {
+      "bytes": 71158,
+      "formal_or_exploratory": "formal_provenance",
+      "mtime_utc": "2026-07-17T11:53:57+00:00",
+      "role": "frozen data-role and fold ledger metadata",
+      "sha256": "521eb68c6a77830e424e08ade10b939f2588706c350967b5007bfc46c20590c7",
+      "source": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r3_proposal_first_acv_20260717/r3-s0-ledger-r4/workload/ledger_cloud_only.json"
+    },
+    {
+      "bytes": 34797069,
+      "formal_or_exploratory": "formal_provenance",
+      "mtime_utc": "2026-05-31T10:51:04+00:00",
+      "role": "official checkpoint identity only",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "source": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl"
+    }
+  ]
+}

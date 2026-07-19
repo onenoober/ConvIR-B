@@ -1,0 +1,85 @@
+{
+  "audit_id": "r4b-a1-cloud-audit-20260718-r1",
+  "audited_at_utc": "2026-07-18T15:19:56+00:00",
+  "audited_experiment": {
+    "operation_id": "R4B_A1_SETWISE_MECHANISM_SCREEN",
+    "route_id": "haze4k_v5_r4b_three_action_setwise_utility_risk_20260718",
+    "run_id": "r4b-a1-setwise-screen-r1"
+  },
+  "identity": {
+    "checkpoint_match": true,
+    "config_match": true,
+    "ledger_expected_sha256": "521eb68c6a77830e424e08ade10b939f2588706c350967b5007bfc46c20590c7",
+    "ledger_match": true,
+    "ledger_observed_sha256": "521eb68c6a77830e424e08ade10b939f2588706c350967b5007bfc46c20590c7",
+    "official_checkpoint_expected_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "official_checkpoint_observed_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "route_commit_expected": "336f1132c9aaffebda365b63e26a67aab4643531",
+    "route_commit_match": true,
+    "route_commit_observed": "336f1132c9aaffebda365b63e26a67aab4643531",
+    "route_operations_committed_sha256": "70d2eccfe427bbe7ef20f43e214d3fbde6bf6e84cfdfd14415b993b134f973fa",
+    "route_operations_working_sha256": "70d2eccfe427bbe7ef20f43e214d3fbde6bf6e84cfdfd14415b993b134f973fa"
+  },
+  "limitations": [
+    "cloud-only raw files are not listed in the formal closeout hash manifest; identity is inherited from the receipt-bound output path, run context and generation order",
+    "raw A1 persistence contains ensemble policy rows and candidate harm/severe scores, but not per-seed predictions, per-action mean/q05 utility vectors, model checkpoints or composite risk-coverage confidence",
+    "no semantic or fog-severity subgroup labels are present"
+  ],
+  "population_and_roles": {
+    "confirmation_metadata_count": 432,
+    "development_count": 768,
+    "evaluated_name_count": 384,
+    "evaluated_names_match_folds_0_1": true,
+    "protected_data_mixed": false,
+    "protected_name_overlap": [],
+    "source_access_audit": {
+      "a0_closeout_sha256": "fac67a0213eec3c0aa18f46b851b27c652ec9d497f16f0bf0ccda035b5cff79d",
+      "canary_touched": false,
+      "confirmation_images_targets_outcomes_touched": false,
+      "development_images_targets_accessed": 768,
+      "evaluated_development_images": 384,
+      "historical_a1x_432_outcomes_touched": false,
+      "locked_test_touched": false,
+      "official_checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "route_commit": "336f1132c9aaffebda365b63e26a67aab4643531",
+      "schema_version": 1
+    },
+    "unknown_development_names": []
+  },
+  "raw_integrity": {
+    "cells": [
+      "I_utility_risk",
+      "S_action_only",
+      "S_mean_only",
+      "S_risk_label_shuffle",
+      "S_state_only",
+      "S_unsigned",
+      "S_utility_risk"
+    ],
+    "finite_oof_metrics": true,
+    "folds": [
+      0,
+      1
+    ],
+    "formal_evidence_hashes_all_match": true,
+    "oof_duplicate_keys": 0,
+    "oof_rows": 5376,
+    "oof_unique_keys": 5376,
+    "operators": [
+      "D_ref",
+      "D_rep"
+    ],
+    "risk_duplicate_keys": 0,
+    "risk_rows": 10752,
+    "risk_unique_keys": 10752
+  },
+  "run_uniqueness": {
+    "duplicate_target_run": false,
+    "route_run_directories": [
+      "r4b-a0-risk-feasibility-r1",
+      "r4b-a1-setwise-screen-r1"
+    ],
+    "target_run_occurrences_under_route_root": 1
+  },
+  "schema_version": 1
+}

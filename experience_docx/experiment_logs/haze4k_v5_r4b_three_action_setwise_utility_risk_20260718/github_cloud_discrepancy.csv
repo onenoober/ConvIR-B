@@ -1,0 +1,37 @@
+item,github_official_value,cloud_audit_value,difference,tolerance,within_tolerance,difference_reason,terminal_state_affected,reproduction_status
+gain_point,0.0001920461654663086,0.0001920461654663086,0.0,1e-12,True,same frozen aggregation and worse-operator rule,False,reproduced_from_raw_oof
+retention_point,0.0012752625355711468,0.0012752625355711468,0.0,1e-12,True,same frozen aggregation and worse-operator rule,False,reproduced_from_raw_oof
+true_minus_shuffle_point,0.0006989538669586182,0.0006989538669586182,0.0,1e-12,True,same frozen aggregation and worse-operator rule,False,reproduced_from_raw_oof
+setwise_minus_independent_point,-0.0019325464963912966,-0.0019325464963912966,0.0,1e-12,True,same frozen aggregation and worse-operator rule,False,reproduced_from_raw_oof
+utility_risk_minus_mean_only_point,0.0001920461654663086,0.0001920461654663086,0.0,1e-12,True,same frozen aggregation and worse-operator rule,False,reproduced_from_raw_oof
+primary_minus_best_nuisance_point,-0.0003118763367335001,-0.0003118763367335001,0.0,1e-12,True,same frozen aggregation and worse-operator rule,False,reproduced_from_raw_oof
+sample_count_evaluated_images,384,384,0,0.0,True,unique clean-reference image groups,False,reproduced_from_raw_oof
+fold_count,2,2,0,0.0,True,folds 0 and 1,False,reproduced_from_raw_oof
+seed_count,2,2,0,0.0,True,raw predictions were ensemble-averaged before persistence; per-seed outputs unavailable,False,config_only
+operator_count,2,2,0,0.0,True,D_ref and D_rep,False,reproduced_from_raw_oof
+cell_count,7,7,0,0.0,True,all frozen cells present,False,reproduced_from_raw_oof
+primary_coverage,0.049479166666666664,0.049479166666666664,0.0,0.0,True,coverage is exactly recoverable,False,reproduced_from_raw_oof
+selected_severe_groups,0,0,0,0.0,True,grouped any-operator severe definition,False,reproduced_from_raw_oof
+selected_hard_groups,0,0,0,0.0,True,grouped any-operator hard definition,False,reproduced_from_raw_oof
+severe_auroc_point,0.8509510856777133,0.8509510856777133,0.0,1e-12,True,same name-action grouping and max-operator score,False,reproduced_from_raw_risk_rows
+severe_auprc_point,0.6455047115180009,0.6455047115180007,-2.220446049250313e-16,1e-12,True,same average-precision definition,False,reproduced_from_raw_risk_rows
+severe_prevalence,0.23567708333333334,0.23567708333333334,0.0,1e-12,True,same grouped labels,False,reproduced_from_raw_risk_rows
+severe_ece,0.04875300953790429,0.04875300953790429,0.0,1e-12,True,same ten fixed probability bins,False,reproduced_from_raw_risk_rows
+severe_brier,0.12591284408501704,0.12591284408501693,-1.1102230246251565e-16,1e-12,True,same grouped labels and probabilities,False,reproduced_from_raw_risk_rows
+permutation_max_abs,1.9073486328125e-06,1.9073486328125e-06,0.0,0.0,True,raw model tensors/checkpoints were not retained,False,hash_verified_summary_only
+bootstrap_intervals,formal hash-bound 4000-draw summaries,not recomputed,,,not_applicable,bounded audit did not rerun the frozen bootstrap,False,hash_verified_summary_only
+risk_coverage_curve,formal compact curve,not independently ordered from raw,,,not_applicable,the persisted raw tables omit the composite confidence used for ordering,False,summary_only
+semantic_subgroups,not reported,not available,,,not_applicable,no fog/sky/highlight/texture/distance/edge/color labels were persisted,False,not_available
+sha256:r4b_a1_bootstrap_summary.json,9d5111fd73ee029b07626b9c919b7788357a4305491bb770cf2edd671112135d,9d5111fd73ee029b07626b9c919b7788357a4305491bb770cf2edd671112135d,,,not_applicable,receipt-bound cloud compact evidence versus typed closeout,False,hash_reproduced
+sha256:r4b_a1_calibration_summary.csv,e99f80465c38935e0518446a89eaba92b7c0ea41898bd3fda46268948317d98d,e99f80465c38935e0518446a89eaba92b7c0ea41898bd3fda46268948317d98d,,,not_applicable,receipt-bound cloud compact evidence versus typed closeout,False,hash_reproduced
+sha256:r4b_a1_cell_summary.csv,5c651ae1b649d89fc8cd48b94adda0fa79d947f4b23eaaf23f05be8c3c91a4ba,5c651ae1b649d89fc8cd48b94adda0fa79d947f4b23eaaf23f05be8c3c91a4ba,,,not_applicable,receipt-bound cloud compact evidence versus typed closeout,False,hash_reproduced
+sha256:r4b_a1_contract_summary.json,cb85774f31a81bc34851c6037777b5a7aab079a25a499a878acd58003d3bd290,cb85774f31a81bc34851c6037777b5a7aab079a25a499a878acd58003d3bd290,,,not_applicable,receipt-bound cloud compact evidence versus typed closeout,False,hash_reproduced
+sha256:r4b_a1_control_summary.csv,613508eb332c44e6bce2d00162d9f4c76e193c4a53d7d819324d4cf403fbd040,613508eb332c44e6bce2d00162d9f4c76e193c4a53d7d819324d4cf403fbd040,,,not_applicable,receipt-bound cloud compact evidence versus typed closeout,False,hash_reproduced
+sha256:r4b_a1_gate_summary.json,172fb9ac17fb4e9fc59e339529de8823e66a9ca394a34f928a97f3f993816a9a,172fb9ac17fb4e9fc59e339529de8823e66a9ca394a34f928a97f3f993816a9a,,,not_applicable,receipt-bound cloud compact evidence versus typed closeout,False,hash_reproduced
+sha256:r4b_a1_permutation_audit.json,9403b014091697db3c0a46f1429d5adee69a47f2ca6a628063168cb0e233c3e8,9403b014091697db3c0a46f1429d5adee69a47f2ca6a628063168cb0e233c3e8,,,not_applicable,receipt-bound cloud compact evidence versus typed closeout,False,hash_reproduced
+sha256:r4b_a1_resource_summary.json,fd7ba1a3994bb66f47f0c9883b75378a517f97871804a110eb032e87a9583c2e,fd7ba1a3994bb66f47f0c9883b75378a517f97871804a110eb032e87a9583c2e,,,not_applicable,receipt-bound cloud compact evidence versus typed closeout,False,hash_reproduced
+sha256:r4b_a1_risk_coverage.csv,300c2cf9864de9ecccc5318e65d55a1e37985d71c9aa188771653597f9947c84,300c2cf9864de9ecccc5318e65d55a1e37985d71c9aa188771653597f9947c84,,,not_applicable,receipt-bound cloud compact evidence versus typed closeout,False,hash_reproduced
+sha256:r4b_a1_risk_discrimination.json,1eea4e296d769484991d4e46017bfa6fc6aa72c624acc7784f6f9ba71d71bea7,1eea4e296d769484991d4e46017bfa6fc6aa72c624acc7784f6f9ba71d71bea7,,,not_applicable,receipt-bound cloud compact evidence versus typed closeout,False,hash_reproduced
+sha256:r4b_a1_source_access_audit.json,4865f6b571aca870cad0514dba8c3c6de7191664157f8fa119a9dd698b2a8e7d,4865f6b571aca870cad0514dba8c3c6de7191664157f8fa119a9dd698b2a8e7d,,,not_applicable,receipt-bound cloud compact evidence versus typed closeout,False,hash_reproduced
+sha256:r4b_a1_structural_summary.json,8a755afee1d976161ff6d1ed2350b021e562c8d979937e137139011850bf6075,8a755afee1d976161ff6d1ed2350b021e562c8d979937e137139011850bf6075,,,not_applicable,receipt-bound cloud compact evidence versus typed closeout,False,hash_reproduced
+sha256:r4b_a1_training_summary.csv,eb9b97a78b943814ccedd9cbf498b8e0a26ac5aba5a64fdcd5f9638ed2766a6a,eb9b97a78b943814ccedd9cbf498b8e0a26ac5aba5a64fdcd5f9638ed2766a6a,,,not_applicable,receipt-bound cloud compact evidence versus typed closeout,False,hash_reproduced

@@ -1,0 +1,28 @@
+{
+  "all_group_severe_ucb95_exact": 0.04377205329657119,
+  "decisive_fail": true,
+  "gates": {
+    "all_group_severe_ucb95": false,
+    "coverage_exact": true,
+    "cvar5_spatial_minus_pooled_lcb95": false,
+    "gain_point_positive": true,
+    "gain_ucb95_reaches_target": true,
+    "native_shape_operator_mean_floor": true,
+    "protected_harm_increment_ucb95": false,
+    "retention_point_positive": true,
+    "retention_ucb95_reaches_target": true,
+    "selected_hard_groups_zero": false,
+    "selected_severe_groups_zero": false,
+    "severe_auprc_lift_lcb95": true,
+    "severe_auroc_lcb95": true,
+    "spatial_minus_generic_point_positive": true,
+    "spatial_minus_pooled_point_positive": true,
+    "spatial_minus_pooled_ucb95_reaches_target": true,
+    "true_minus_shuffle_point_positive": true,
+    "true_minus_shuffle_ucb95_reaches_target": true
+  },
+  "schema_version": 1,
+  "selected_hard_groups": 3,
+  "selected_severe_groups": 10,
+  "survives": false
+}

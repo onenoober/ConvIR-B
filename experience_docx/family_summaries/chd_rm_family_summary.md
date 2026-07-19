@@ -1,10 +1,12 @@
 # Haze4K CHD-RM Family Summary
 
-Date: 2026-07-18
+Date: 2026-07-19
 
-Status: R3 A2 completed its full four-fold OOF and failed the formal utility,
-response-increment and severe-risk contract. The current critic route is closed
-and authorizes no next stage.
+Status: R5-A0 r2 is the latest machine terminal. It completed normally and
+failed the frozen spatial candidate-response safety contract. R4B's
+receipt-bound post-hoc audit and R5's preregistered development screen jointly
+narrow the functional bottleneck; the family remains closed and authorizes no
+next stage.
 
 ## Current Read
 
@@ -40,17 +42,46 @@ and authorizes no next stage.
 - Repaired S0 r4 passes all 16 structural checks with 768 development, 432
   sealed confirmation, and four disjoint 192-image development folds. The
   name-level ledger remains cloud-only and frozen by hashes.
+- R4B-A0 established a strong three-action oracle, adequate severe-event
+  prevalence and high two-operator label agreement. R4B-A1 then failed all
+  material utility, retention, specificity and mechanism-increment gates while
+  retaining strong severe-risk discrimination.
+- The R4B-A1 cloud audit reproduced the formal point/calibration metrics and all
+  closeout-bound hashes. It found `95.0521%` no-op rows, `94.7455%` abstention
+  among repairable operator-image rows, zero negative selections across `181`
+  negative-oracle rows, fold-0 coverage `0%` and fold-1 coverage `9.8958%`.
+- Candidate risk is not purely generic difficulty: the primary severe AUROC is
+  `0.850951`, versus `0.761250` for state-only and `0.645472` for action-only;
+  severe-score direction agrees in `77.9006%` of action-label-discordant groups.
+  These are post-hoc descriptive diagnostics, not a new formal mechanism gate.
+- R5-A0 r2 is the independent preregistered follow-up. All structural checks
+  pass. Candidate-relative 8x8 full-DCT spatial response adds material mean
+  information over pooled and shuffled controls: gain `+0.025941 dB`,
+  spatial-minus-pooled `+0.020161 dB`, true-minus-shuffle `+0.020303 dB`, and
+  severe AUROC `0.840579`.
+- That signal is not safe under the frozen readout and 20% coverage. The policy
+  selects 10 severe and 3 hard groups; severe UCB95 is `0.043772`, CVaR5
+  spatial-minus-pooled LCB95 is `-0.302166 dB`, and protected-cell harm
+  increment UCB95 is `+0.030836 dB`. The broad representation-insufficiency
+  hypothesis is narrowed, but safe local action/abstention conversion remains
+  unresolved.
 
 ## Decision
 
-Decision: `R3_A2_ACV_FULL_OOF_FAIL_STOP`.
+Latest decision: `R5_A0_SPATIAL_RESPONSE_FUTILITY_OR_SAFETY_FAIL_STOP`.
+
+Prior R4B decision retained for history: `R4B_A1_SETWISE_MECHANISM_FUTILITY_STOP`.
+
+Prior R3 decision retained for history: `R3_A2_ACV_FULL_OOF_FAIL_STOP`.
 
 Execution status: `COMPLETED_GATE_FAIL / NONE`.
 
-Do not widen or retune A1X, repeat the A0 proposal bank, rescue C1/C2/C3 through
-cell/threshold/seed/epoch changes, rerun A2, reuse the historical 432 as
-confirmation, freeze a candidate, integrate the critic, or start confirmation,
-canary or locked test. The current route authorizes no continuation.
+Do not widen or retune A1X, repeat the A0 proposal bank, rescue C1/C2/C3, or
+search R5 grids, DCT bands, heads, widths, depths, seeds, epochs, losses,
+thresholds or coverage. Do not rerun A2, reuse the historical 432 as
+confirmation, freeze a candidate, integrate the critic, or start R5-A1,
+confirmation, canary or locked test. The current route authorizes no
+continuation.
 
 The detailed documentation-only handoff is:
 
@@ -73,6 +104,12 @@ not accessed.
 
 Evidence:
 `experience_docx/experiment_logs/haze4k_v5_r3_proposal_first_acv_20260717/`.
+
+The later R4 and R4B operations also authorize `NONE`. The R4B cloud audit is
+post-hoc exploratory analysis, does not change the formal terminal decision,
+and cannot authorize E1 or any training, inference, confirmation, canary or
+locked-test operation. Its closeout is at
+`../experiment_logs/haze4k_v5_r4b_three_action_setwise_utility_risk_20260718/cloud_audit_closeout.json`.
 
 ## D0 terminal result
 
