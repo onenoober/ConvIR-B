@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r7_r5_score_construction_identity_20260719",
+  "operation_id": "R7_A0_FROZEN_R5_SCORE_CONSTRUCTION_IDENTITY_AUDIT",
+  "assets": [
+    {"id": "r5_lifecycle_identity", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5-a0-spatial-response-screen-r2/control/lifecycle_identity.json", "sha256": "8fc059448f383fee6c41af51a9fadf493134ee82b8d7ec9c4eb44c694c1602be", "access_role": "development_screening", "contract_access": false},
+    {"id": "r5_per_seed_predictions", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5-a0-spatial-response-screen-r2/workload/r5_a0_per_seed_predictions_cloud_only.csv", "sha256": "6cfcea9353be8ba50038c9655ef1f533c3224e1b8d971282f2bbb21402017c14", "access_role": "development_screening", "contract_access": false},
+    {"id": "r5_candidate_scores", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5-a0-spatial-response-screen-r2/workload/r5_a0_candidate_scores_cloud_only.csv", "sha256": "53061beac134696216054e2aa4b2e6294313f0b9242a7f74a4346f79c30011a0", "access_role": "development_screening", "contract_access": false},
+    {"id": "r5_policy_rows", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5-a0-spatial-response-screen-r2/workload/r5_a0_policy_rows_cloud_only.csv", "sha256": "63c1aa4c7447e0fdb55611507eedbe0fd940f9cef10f0163e86f986a16baf150", "access_role": "development_screening", "contract_access": false},
+    {"id": "r5_closeout", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5_a0_spatial_response_sufficiency_closeout.json", "sha256": "e8d6151a9d7fc1198db1db1a0fc44e2de91da0bea0f4a01053c68bf0d5c0e4e7", "access_role": "development_screening", "contract_access": false},
+    {"id": "r5_cell_summary", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5_a0_cell_summary.csv", "sha256": "8498491e17937129ae2d90155b91848805f6f89eb862cf08e1daa1b87b4d1f3b", "access_role": "development_screening", "contract_access": false},
+    {"id": "r6_closeout", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r6_r5_decision_component_attribution_20260719/r6_a0_decision_component_attribution_closeout.json", "sha256": "7dd2ab4839ef28e390fb76533b1cba42bac75ae57054268d19109295fd522e3d", "access_role": "development_screening", "contract_access": false}
+  ]
+}
