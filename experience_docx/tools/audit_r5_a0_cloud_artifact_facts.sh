@@ -2,35 +2,44 @@
 set -euo pipefail
 
 route_id="haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719"
-operation_id="R5_A0_SPATIAL_CANDIDATE_RESPONSE_SUFFICIENCY_SCREEN"
+operation_id="R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN"
 run_id="r5-a0-spatial-response-screen-r2"
+route_commit="7e75eed504b2ead65a1971ec250dc7f59a79574d"
+runner_sha256="336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b"
 output_root="/sda/home/wangyuxin/ConvIR-B/runs/${route_id}/${run_id}"
 workload_root="${output_root}/workload"
-expected_closeout_sha256="e8d6151a9d7fc1198db1db1a0fc44e2de91da0bea0f4a01053c68bf0d5c0e4e7"
-closeout_name="r5_a0_spatial_response_sufficiency_closeout.json"
+identity_path="${output_root}/control/lifecycle_identity.json"
+cloud_python="/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python"
 
-if [[ -f "${workload_root}/${closeout_name}" ]]; then
-  closeout_path="${workload_root}/${closeout_name}"
-elif [[ -f "${output_root}/${closeout_name}" ]]; then
-  closeout_path="${output_root}/${closeout_name}"
-else
-  printf 'R5_RAW_ARTIFACT_FACTCHECK_FAIL missing_closeout=%s\n' "${closeout_name}" >&2
+if [[ ! -f "${identity_path}" ]]; then
+  printf 'R5_RAW_ARTIFACT_FACTCHECK_FAIL missing_identity=%s\n' "${identity_path}" >&2
   exit 2
 fi
 
-actual_closeout_sha256="$(/usr/bin/sha256sum "${closeout_path}" | /usr/bin/awk '{print $1}')"
-if [[ "${actual_closeout_sha256}" != "${expected_closeout_sha256}" ]]; then
-  printf 'R5_RAW_ARTIFACT_FACTCHECK_FAIL closeout_sha256=%s expected=%s\n' \
-    "${actual_closeout_sha256}" "${expected_closeout_sha256}" >&2
+if ! identity_values="$("${cloud_python}" -c 'import json, sys
+p, route, operation, run, commit, runner = sys.argv[1:]
+with open(p, encoding="utf-8") as stream:
+    value = json.load(stream)
+expected = {"schema_version": 1, "route_id": route, "operation_id": operation, "run_id": run, "route_commit": commit, "runner_sha256": runner}
+if value != expected:
+    raise SystemExit(5)
+print("\t".join((route, operation, run, commit, runner)))' \
+    "${identity_path}" "${route_id}" "${operation_id}" "${run_id}" \
+    "${route_commit}" "${runner_sha256}")"; then
+  printf 'R5_RAW_ARTIFACT_FACTCHECK_FAIL identity_mismatch=%s\n' "${identity_path}" >&2
   exit 3
 fi
+IFS=$'\t' read -r observed_route observed_operation observed_run observed_commit observed_runner \
+  <<< "${identity_values}"
 
-printf 'route_id=%s\n' "${route_id}"
-printf 'operation_id=%s\n' "${operation_id}"
-printf 'run_id=%s\n' "${run_id}"
+printf 'route_id=%s\n' "${observed_route}"
+printf 'operation_id=%s\n' "${observed_operation}"
+printf 'run_id=%s\n' "${observed_run}"
+printf 'route_commit=%s\n' "${observed_commit}"
+printf 'runner_sha256=%s\n' "${observed_runner}"
 printf 'output_root=%s\n' "${output_root}"
-printf 'closeout_path=%s\n' "${closeout_path}"
-printf 'closeout_sha256=%s\n' "${actual_closeout_sha256}"
+printf 'identity_path=%s\n' "${identity_path}"
+printf 'identity_sha256=%s\n' "$(/usr/bin/sha256sum "${identity_path}" | /usr/bin/awk '{print $1}')"
 
 files=(
   "r5_a0_per_seed_predictions_cloud_only.csv"
