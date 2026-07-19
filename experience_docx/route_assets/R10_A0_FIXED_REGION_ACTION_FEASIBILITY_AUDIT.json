@@ -1,0 +1,14 @@
+{
+  "schema_version":1,
+  "route_id":"haze4k_v5_r10_fixed_region_action_feasibility_20260719",
+  "operation_id":"R10_A0_FIXED_REGION_ACTION_FEASIBILITY_AUDIT",
+  "assets":[
+    {"id":"a0_cache_manifest","kind":"file","path":"/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r3_proposal_first_acv_20260717/r3-a0-proposal-r4/workload/a0_cache_manifest.json","sha256":"553505119f228d9561b50db9816a27409189206f6c6e108485a81d7622593e47","access_role":"development_screening","contract_access":false},
+    {"id":"a0_raw_manifest","kind":"file","path":"/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r3_proposal_first_acv_20260717/r3-a0-proposal-r4/workload/a0_cache_units_cloud_only.jsonl","sha256":"3123f2da6ac5e969fea8590a6c97ddbca46adf0e573fb1c03bec7d7a6c7ebfcc","access_role":"development_screening","contract_access":false},
+    {"id":"a0_candidate_cache","kind":"directory","path":"/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r3_proposal_first_acv_20260717/r3-a0-proposal-r4/workload/candidate_cache_cloud_only","access_role":"development_screening","contract_access":false},
+    {"id":"haze4k_data","kind":"directory","path":"/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K","access_role":"development_screening","contract_access":false},
+    {"id":"r5_candidate_scores","kind":"file","path":"/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5-a0-spatial-response-screen-r2/workload/r5_a0_candidate_scores_cloud_only.csv","sha256":"53061beac134696216054e2aa4b2e6294313f0b9242a7f74a4346f79c30011a0","access_role":"development_screening","contract_access":false},
+    {"id":"r5_closeout","kind":"file","path":"{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5_a0_spatial_response_sufficiency_closeout.json","sha256":"e8d6151a9d7fc1198db1db1a0fc44e2de91da0bea0f4a01053c68bf0d5c0e4e7","access_role":"development_screening","contract_access":false},
+    {"id":"r9_closeout","kind":"file","path":"{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r9_r5_decision_factorial_attribution_20260719/r9_a0_decision_factorial_attribution_closeout.json","sha256":"639820a25584852c3f8050d09d074a2053ae054c63c2b787698732ac6bc7bb34","access_role":"development_screening","contract_access":false}
+  ]
+}

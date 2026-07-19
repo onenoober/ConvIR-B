@@ -1,0 +1,25 @@
+{
+  "schema_version": 4,
+  "route_id": "haze4k_v5_r10_fixed_region_action_feasibility_20260719",
+  "rules_commit": "57d87d653cebcbe781bce1930598db88bfd5d3b9",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-19-haze4k-v5-r10-fixed-region-action-feasibility.md",
+  "operations": {
+    "R10_A0_FIXED_REGION_ACTION_FEASIBILITY_AUDIT": {
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "mode": "r10_a0_fixed_region_action_feasibility",
+      "require_gpu": false,
+      "output_id": "r10-a0-fixed-region-feasibility-r1",
+      "closeout_filename": "r10_a0_fixed_region_action_feasibility_closeout.json",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "allowed_terminal_tuples": [
+        {"state":"COMPLETED_GATE_PASS","decision":"R10_A0_FIXED_REGION_ACTION_FEASIBILITY_PASS","authorizes":"R10_REGION_OBSERVABILITY_CONTRACT_REVIEW_ONLY"},
+        {"state":"COMPLETED_GATE_INCONCLUSIVE","decision":"R10_A0_INPUT_OR_FEASIBILITY_INCONCLUSIVE_STOP","authorizes":"NONE"},
+        {"state":"COMPLETED_GATE_FAIL","decision":"R10_A0_FIXED_REGION_ACTION_FEASIBILITY_FAIL_STOP","authorizes":"NONE"},
+        {"state":"FAILED_ENGINEERING","decision":null,"authorizes":"NONE"}
+      ],
+      "workspace_policy":"fresh_route","output_policy":"new","monitor_profile":"standard",
+      "heartbeat_timeout_seconds":300,"min_free_gpu_mib":0,"max_gpu_utilization_pct":100
+    }
+  }
+}

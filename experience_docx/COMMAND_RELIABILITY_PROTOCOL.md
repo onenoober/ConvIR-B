@@ -50,6 +50,21 @@ cloud actions use only a committed remote-script. Verification steps that
 cross GitHub, SSH, and heartbeat boundaries must be separate bounded actions
 with their own marker, timeout, and failure location.
 
+### 2026-07-19 R10 authoring path probes
+
+Invalid form: `git show-ref --verify --quiet` correctly returned one when the
+new R10 branch was absent, but the orchestration layer treated the expected
+negative predicate as a failed command and stopped before worktree creation.
+Corrected form: use the zero-exit literal `git branch --list <branch>` and
+interpret empty stdout as absence before one `git worktree add -b`.
+
+Invalid form: the historical R5 route-contract worktree was asked to execute
+its own `experience_docx/tools/convirctl.py`, but that older snapshot predates
+the reader and the absolute path did not exist. Corrected form: execute the
+current main/R10 `convirctl.py` while passing the historical worktree through
+its explicit `--repo` argument. No cloud, data, or scientific operation ran in
+either failed probe.
+
 ### 2026-07-19 evidence-sync staging audit boundary
 
 Invalid form: a PowerShell double-quoted `wsl ... bash -lc` command embedded
