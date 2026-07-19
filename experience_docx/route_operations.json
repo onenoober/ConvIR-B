@@ -1,0 +1,30 @@
+{
+  "schema_version": 4,
+  "route_id": "haze4k_v5_r13_image_relative_context_observability_20260719",
+  "rules_commit": "0e9bda3163d0ab5fb658225cff09d1befd1d08d5",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-19-haze4k-v5-r13-image-relative-context-observability.md",
+  "operations": {
+    "R13_A0_IMAGE_RELATIVE_CONTEXT_OBSERVABILITY_SCREEN": {
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "mode": "r13_a0_image_relative_context_observability",
+      "require_gpu": false,
+      "output_id": "r13-a0-image-relative-context-r1",
+      "closeout_filename": "r13_a0_image_relative_context_observability_closeout.json",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "allowed_terminal_tuples": [
+        {"state":"COMPLETED_GATE_PASS","decision":"R13_A0_IMAGE_RELATIVE_CONTEXT_PASS","authorizes":"R13_FIXED_CONTEXT_MECHANISM_CONTRACT_REVIEW_ONLY"},
+        {"state":"COMPLETED_GATE_FAIL","decision":"R13_A0_RELATIVE_CONTEXT_UTILITY_FAIL_STOP","authorizes":"NONE"},
+        {"state":"COMPLETED_GATE_FAIL","decision":"R13_A0_RELATIVE_CONTEXT_SAFETY_FAIL_STOP","authorizes":"NONE"},
+        {"state":"COMPLETED_GATE_INCONCLUSIVE","decision":"R13_A0_INPUT_OR_CONTEXT_INCONCLUSIVE_STOP","authorizes":"NONE"},
+        {"state":"FAILED_ENGINEERING","decision":null,"authorizes":"NONE"}
+      ],
+      "workspace_policy": "fresh_route",
+      "output_policy": "new",
+      "monitor_profile": "short",
+      "heartbeat_timeout_seconds": 180,
+      "min_free_gpu_mib": 0,
+      "max_gpu_utilization_pct": 100
+    }
+  }
+}
