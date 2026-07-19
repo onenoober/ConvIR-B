@@ -1,0 +1,22 @@
+{
+  "authorizes": "NONE",
+  "competing_explanation": "The saved label is not shown to be corrupt. The frozen R5 source constructs `severe_any` by thresholding both operator targets and applying `any(0)`, then writes that group/action label on each operator candidate row. R7 instead required each duplicated label to equal the current operator row's own target threshold, so the R7 input gate was narrower than the authoritative R5 label semantics.",
+  "decision": "R7_A0_INPUT_IDENTITY_INCONCLUSIVE_STOP",
+  "gate_reasons": [
+    "All seven declared assets passed SHA-256 and lifecycle verification, the protected-data-free full-scale contract passed, and R7 returned code 0 without protected-data access.",
+    "The workload stopped at the frozen label-identity gate with `saved severe label disagrees with frozen target threshold`.",
+    "R5 source code records an any-operator group/action severe label on each operator row, while R7 compared it with a per-operator target threshold.",
+    "Because the input gate stopped before score reconstruction and policy replay, R7 cannot PASS or FAIL score-construction identity and authorizes NONE."
+  ],
+  "limitations": [
+    "R7 does not report native float32 score mismatches, float64 sensitivity, policy-row replay, or cell-summary replay because those stages were not reached.",
+    "The source-semantic explanation is an engineering interpretation of the frozen R5 code, not a changed R7 terminal tuple or a completed replacement audit.",
+    "R5 remains COMPLETED_GATE_FAIL / R5_A0_SPATIAL_RESPONSE_FUTILITY_OR_SAFETY_FAIL_STOP / NONE and R6 remains COMPLETED_GATE_INCONCLUSIVE / R6_A0_INPUT_OR_ATTRIBUTION_INCONCLUSIVE_STOP / NONE.",
+    "No tolerance change, in-place R7 repair, training, inference, confirmation, canary or locked-test access is authorized."
+  ],
+  "operation_id": "R7_A0_FROZEN_R5_SCORE_CONSTRUCTION_IDENTITY_AUDIT",
+  "primary_result": "R7-A0 is inconclusive because its severe-label identity check used per-operator rather than R5's authoritative any-operator group/action semantics; the score and policy identity question remains unanswered.",
+  "route_id": "haze4k_v5_r7_r5_score_construction_identity_20260719",
+  "run_id": "r7-a0-r5-score-identity-r1",
+  "schema_version": 1
+}

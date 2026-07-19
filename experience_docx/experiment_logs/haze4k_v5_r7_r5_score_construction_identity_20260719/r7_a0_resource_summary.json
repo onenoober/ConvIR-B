@@ -1,0 +1,8 @@
+{
+  "cpu_seconds": 7.592100874000001,
+  "gpu_used": false,
+  "reason": "saved severe label disagrees with frozen target threshold",
+  "schema_version": 1,
+  "status": "input_identity_inconclusive",
+  "wall_seconds": 2.1750952042639256
+}
