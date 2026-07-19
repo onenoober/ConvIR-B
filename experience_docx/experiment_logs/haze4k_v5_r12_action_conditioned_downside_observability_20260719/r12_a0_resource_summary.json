@@ -1,0 +1,9 @@
+{
+  "bootstrap_draws": 4000,
+  "cpu_seconds": 17.074393355999998,
+  "gpu_used": false,
+  "max_rss_mib": 145.65234375,
+  "models": 8,
+  "schema_version": 1,
+  "wall_seconds": 4.956052537076175
+}

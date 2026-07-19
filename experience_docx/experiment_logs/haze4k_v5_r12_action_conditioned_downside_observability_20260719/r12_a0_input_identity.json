@@ -1,0 +1,15 @@
+{
+  "asset_sha256": {
+    "r11_closeout": "0e6bc5a70cd86f2aa58a34004bb895ad0295b6d7a5b2f619695878de38d4eec9",
+    "r11_tile_predictions": "8f486c4c3e2cc699de9336aeb93be87dd99fb06c6f7708e377f2095a94236d3a"
+  },
+  "fold_counts": {
+    "0": 192,
+    "1": 192
+  },
+  "groups": 384,
+  "rows": 49152,
+  "schema_version": 1,
+  "severe_groups": 371,
+  "severe_rows": 11506
+}

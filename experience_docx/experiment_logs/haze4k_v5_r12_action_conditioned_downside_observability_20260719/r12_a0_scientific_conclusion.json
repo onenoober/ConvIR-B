@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r12_action_conditioned_downside_observability_20260719",
+  "operation_id": "R12_A0_ACTION_CONDITIONED_DOWNSIDE_OBSERVABILITY_SCREEN",
+  "run_id": "r12-a0-action-downside-r2",
+  "state": "COMPLETED_GATE_FAIL",
+  "decision": "R12_A0_ACTION_CONDITIONED_DOWNSIDE_FAIL_STOP",
+  "authorizes": "NONE",
+  "primary_result": "R12 completes the preregistered two-fold OOF action-conditioned severe-downside screen and fails decisively. The action-conditioned calibrator reaches clean-image macro AUROC 0.7221272157 (grouped-bootstrap LCB95 0.7069918582), below the frozen 0.75 line. It is better than sign-swap by 0.0779551628 AUROC (LCB95 0.0646005764) and label-shuffle by 0.1036711620 (LCB95 0.0888838330), showing real score/action downside structure, but its increment over the matched action-agnostic control is only 0.0173719553 (LCB95 0.0052133443; UCB95 0.0292756064), decisively below the 0.03 materiality line. At the fixed 20% rejection it captures only 0.4436789041 of severe actions (LCB95 0.4213472512) and leaves retained severe prevalence at 0.6954013699 of baseline (UCB95 0.7233159359), so the frozen decomposed readout is not sufficiently action-specific or tail-safe. No continuation is authorized.",
+  "gate_reasons": [
+    "All structural checks pass: the exact R11 FAIL_STOP closeout and receipt-bound tile-prediction asset were verified, 384 clean-image groups and 49,152 unique tile/action rows are complete, folds contain 192 groups each, all eight cross-fold fits converge with decreasing finite loss, and protected roles remain untouched.",
+    "Severe-event coverage is adequate rather than rare: 11,506 severe tile/action rows occur across 371 of 384 groups.",
+    "Primary action-conditioned AUROC is 0.7221272157411213 with LCB95 0.7069918581651181 and UCB95 0.7373118694220836, so the frozen 0.75 materiality line is decisively missed.",
+    "Action conditioning beats sign-swap and label-shuffle, but not the matched generic-risk threshold: primary-minus-action-agnostic is 0.017371955260418903 with UCB95 0.029275606423529683, below the required 0.03. Fold 0 has only 0.0019197065 action-specific increment while fold 1 has 0.0327411274.",
+    "Fixed 20% rejection is insufficiently safe: severe capture is 0.4436789041041639 with UCB95 0.46610821653267703, below 0.60, and retained severe-prevalence ratio is 0.6954013698697952 with LCB95 0.6673647293341537, above the maximum 0.60.",
+    "Both-fold materiality fails: fold AUROCs are 0.7085414316 and 0.7356399580, fold severe captures are 0.4120445105 and 0.4751432203, and fold 0 does not have positive increments over every control at the frozen margins.",
+    "The scientific failure is not an engineering failure: the repaired r2 contract, asset preflight, production-path synthetic fixture, workload, grouped bootstrap and typed closeout complete normally in 4.956 seconds wall time with 145.65 MiB peak RSS."
+  ],
+  "competing_explanation": "R12 favors a narrowed generic-risk explanation over the proposed readout-only rescue. Immutable R11 scores contain real downside structure and correct action orientation because action-conditioned risk beats sign-swap and label-shuffle. However, most deployable discrimination is already available to the action-agnostic control, the candidate-specific increment is small and fold-heterogeneous, and fixed rejection does not capture enough severe actions. Therefore simply separating a low-capacity downside head from utility is insufficient; future work, if separately authorized, requires genuinely new action-conditioned inference information or representation learning rather than another calibrator, rejection threshold, interaction, width, seed or coverage search on the reused population.",
+  "limitations": [
+    "R12 is a development-screening readout audit on the same 384 Haze4K development groups used by R11; it is not confirmation, external validation or a restoration-model experiment.",
+    "The input is immutable R11 OOF predicted utility plus tile coordinate and action sign. The result does not prove that downside is unobservable from all possible image, haze-density, semantic, uncertainty or candidate-response information sources.",
+    "The fixed linear action-conditioned interactions, balanced logistic objective, two folds and 20% rejection are one frozen mechanism contract. R12 authorizes NONE, so neighboring regularization, features, interactions, labels, folds, thresholds or coverage cannot be searched under this route.",
+    "No haze-density, protected-region or semantic annotations and no independent real nonuniform-haze development population are present, so error causes and external-domain behavior remain unresolved.",
+    "The first r1 attempt ended before science as FAILED_ENGINEERING because the tile-prediction SHA was copied incorrectly. The user-approved r2 changed only the corrected immutable asset SHA and fresh output identity; all scientific code and thresholds were unchanged.",
+    "R11 and all earlier terminal decisions remain unchanged. Confirmation, canary and locked test were not accessed."
+  ]
+}

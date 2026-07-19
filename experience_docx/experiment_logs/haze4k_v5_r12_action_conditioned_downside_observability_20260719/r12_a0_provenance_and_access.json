@@ -1,0 +1,13 @@
+{
+  "canary_touched": false,
+  "candidate_generation_rerun": false,
+  "confirmation_touched": false,
+  "image_or_target_opened": false,
+  "immutable_r11_outputs_only": true,
+  "locked_test_touched": false,
+  "r11_terminal_preserved": true,
+  "restoration_inference_run": false,
+  "restoration_training_run": false,
+  "route_commit": "fb3f64fa16b05fab48dc4610bdba9c51d17cb067",
+  "schema_version": 1
+}

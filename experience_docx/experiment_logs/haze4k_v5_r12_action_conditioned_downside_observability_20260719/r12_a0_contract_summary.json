@@ -1,0 +1,29 @@
+{
+  "bootstrap_draws": 4000,
+  "cells": [
+    "ACTION_CONDITIONED",
+    "ACTION_AGNOSTIC",
+    "SIGN_SWAP",
+    "LABEL_SHUFFLE"
+  ],
+  "feature_dim": 10,
+  "folds": [
+    0,
+    1
+  ],
+  "l2": 0.0001,
+  "max_iter": 200,
+  "operation_id": "R12_A0_ACTION_CONDITIONED_DOWNSIDE_OBSERVABILITY_SCREEN",
+  "optimizer": "L-BFGS-B",
+  "route_id": "haze4k_v5_r12_action_conditioned_downside_observability_20260719",
+  "schema_version": 1,
+  "thresholds": {
+    "auroc": 0.75,
+    "capture": 0.6,
+    "control_increment": 0.03,
+    "reject_fraction": 0.2,
+    "retained_ratio": 0.6,
+    "severe_gain_db": -0.2,
+    "shuffle_increment": 0.1
+  }
+}

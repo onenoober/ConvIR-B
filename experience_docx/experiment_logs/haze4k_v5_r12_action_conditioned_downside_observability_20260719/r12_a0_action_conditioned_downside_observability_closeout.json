@@ -1,0 +1,53 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "R12_A0_ACTION_CONDITIONED_DOWNSIDE_FAIL_STOP",
+  "details": {
+    "primary_auroc": 0.7221272157411213,
+    "primary_minus_action_agnostic": 0.017371955260418903,
+    "primary_minus_label_shuffle": 0.10367116200852777,
+    "primary_minus_sign_swap": 0.07795516281773107,
+    "r11_terminal_changed": false,
+    "retained_severe_prevalence_ratio": 0.6954013698697952,
+    "severe_capture_at_20pct": 0.4436789041041639
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "r12_a0_bootstrap_summary.json": "83adaaefb1e847a77587e8ba6efe738a732f246bbe9c4f782a98a61a6fc480c9",
+    "r12_a0_cell_summary.csv": "116e23a89cfbc4c33d6be12b52e6dc444b5802630799f2ad682cfdd7cd1268ca",
+    "r12_a0_contract_summary.json": "178a2be3e3f43f4ab2ef75457c39bf02b2e9f5f934b2d533c49993dbcd95eaea",
+    "r12_a0_fold_stability.csv": "1b8bc2e3a709b0a5bb7188ce50b87fd0810f611acec5ebaf6e8a682a4b0cdad8",
+    "r12_a0_gate_summary.json": "ad364a56ed3c05f7c858f549517a68cd24a6d8ef50c210a724ccceb82ff2155e",
+    "r12_a0_input_identity.json": "85d3a37e7c38629b564d6a161354963c151b12c8ce20448f42e01529b1204e5f",
+    "r12_a0_provenance_and_access.json": "f1e16d15d565f7bb0dcef59f040aee9c0146954946f8dae82ca3ef9eeb4bed99",
+    "r12_a0_resource_summary.json": "2c8f930bc950069c886608d7602446f185264964811371c563e05a3834df3cf9",
+    "r12_a0_risk_coverage.csv": "62d17a51bdef674dc7d376b70007b02cdaf8396fd8e9264b3ffe26fe6c20b313"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "R12_A0_ACTION_CONDITIONED_DOWNSIDE_OBSERVABILITY_SCREEN",
+  "returncode": 0,
+  "route_commit": "fb3f64fa16b05fab48dc4610bdba9c51d17cb067",
+  "route_id": "haze4k_v5_r12_action_conditioned_downside_observability_20260719",
+  "run_id": "r12-a0-action-downside-r2",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r11_closeout",
+      "kind": "file",
+      "sha256": "0e6bc5a70cd86f2aa58a34004bb895ad0295b6d7a5b2f619695878de38d4eec9"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r11_tile_predictions",
+      "kind": "file",
+      "sha256": "8f486c4c3e2cc699de9336aeb93be87dd99fb06c6f7708e377f2095a94236d3a"
+    }
+  ]
+}

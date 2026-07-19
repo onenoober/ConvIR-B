@@ -1,0 +1,67 @@
+{
+  "authorizes": "NONE",
+  "decision": "R12_A0_ACTION_CONDITIONED_DOWNSIDE_FAIL_STOP",
+  "decisive_fail": true,
+  "fold_metrics": [
+    {
+      "ACTION_AGNOSTIC_auroc": 0.7066217250681383,
+      "ACTION_AGNOSTIC_retained_severe_prevalence_ratio": 0.6813203047165091,
+      "ACTION_AGNOSTIC_severe_capture_at_20pct": 0.45494375622679284,
+      "ACTION_CONDITIONED_auroc": 0.7085414316110463,
+      "ACTION_CONDITIONED_retained_severe_prevalence_ratio": 0.7349443618539853,
+      "ACTION_CONDITIONED_severe_capture_at_20pct": 0.4120445105168116,
+      "LABEL_SHUFFLE_auroc": 0.6225484718140193,
+      "LABEL_SHUFFLE_retained_severe_prevalence_ratio": 0.8762746048048917,
+      "LABEL_SHUFFLE_severe_capture_at_20pct": 0.29898031615608667,
+      "SIGN_SWAP_auroc": 0.6283813493741781,
+      "SIGN_SWAP_retained_severe_prevalence_ratio": 0.8674272402834154,
+      "SIGN_SWAP_severe_capture_at_20pct": 0.30605820777326764,
+      "fold": 0,
+      "primary_minus_ACTION_AGNOSTIC_auroc": 0.0019197065429080729,
+      "primary_minus_LABEL_SHUFFLE_auroc": 0.08599295979702704,
+      "primary_minus_SIGN_SWAP_auroc": 0.08016008223686821
+    },
+    {
+      "ACTION_AGNOSTIC_auroc": 0.702898830649113,
+      "ACTION_AGNOSTIC_retained_severe_prevalence_ratio": 0.7309898594981601,
+      "ACTION_AGNOSTIC_severe_capture_at_20pct": 0.4152081124014719,
+      "ACTION_CONDITIONED_auroc": 0.7356399580210343,
+      "ACTION_CONDITIONED_retained_severe_prevalence_ratio": 0.6560709746167026,
+      "ACTION_CONDITIONED_severe_capture_at_20pct": 0.47514322030663786,
+      "LABEL_SHUFFLE_auroc": 0.6143856378989173,
+      "LABEL_SHUFFLE_retained_severe_prevalence_ratio": 0.8620106024560337,
+      "LABEL_SHUFFLE_severe_capture_at_20pct": 0.3103915180351731,
+      "SIGN_SWAP_auroc": 0.6598778602169613,
+      "SIGN_SWAP_retained_severe_prevalence_ratio": 0.8077062011418673,
+      "SIGN_SWAP_severe_capture_at_20pct": 0.3538350390865062,
+      "fold": 1,
+      "primary_minus_ACTION_AGNOSTIC_auroc": 0.032741127371921364,
+      "primary_minus_LABEL_SHUFFLE_auroc": 0.12125432012211701,
+      "primary_minus_SIGN_SWAP_auroc": 0.07576209780407306
+    }
+  ],
+  "gates": {
+    "both_folds_material": false,
+    "primary_auroc_lcb95": false,
+    "primary_minus_action_agnostic_lcb95": false,
+    "primary_minus_label_shuffle_lcb95": false,
+    "primary_minus_sign_swap_lcb95": true,
+    "retained_severe_ratio_ucb95": false,
+    "severe_capture_lcb95": false,
+    "severe_coverage": true
+  },
+  "passes": false,
+  "r11_terminal_changed": false,
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "structural_checks": {
+    "finite_scores": true,
+    "folds_complete": true,
+    "groups_complete": true,
+    "keys_unique": true,
+    "protected_roles_untouched": true,
+    "r11_terminal_exact": true,
+    "rows_complete": true,
+    "training_valid": true
+  }
+}
