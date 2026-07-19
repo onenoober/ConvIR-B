@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
+  "operation_id": "R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN",
+  "status": "DRAFT_NOT_AUTHORIZED",
+  "population": "Frozen Haze4K 768-image development ledger; provisional A0 outer test folds 0 and 1 only.",
+  "analysis_unit": "clean_reference_image_group",
+  "repeated_measurements": [
+    "D_ref and D_rep operators",
+    "positive-full and negative-full active actions",
+    "factor cells and ensemble seeds"
+  ],
+  "primary_estimands": [
+    {
+      "id": "E1_SELECTED_GAIN",
+      "contrast": "spatial candidate-response policy minus exact no-op",
+      "aggregation": "fixed 20% group coverage; worse operator inside each paired bootstrap draw",
+      "direction": "higher_is_better",
+      "screen_gate": "point > 0 and UCB95 >= 0.020 dB",
+      "claim_limit": "non-futility only"
+    },
+    {
+      "id": "E2_ORACLE_RETENTION",
+      "contrast": "selected gain divided by paired three-action oracle gain",
+      "aggregation": "worse operator inside draw",
+      "direction": "higher_is_better",
+      "screen_gate": "point > 0 and UCB95 >= 0.25",
+      "claim_limit": "non-futility only"
+    },
+    {
+      "id": "E3_SPATIAL_INCREMENT",
+      "contrast": "spatial policy gain minus pooled/DC-only policy gain",
+      "aggregation": "matched names, actions, coverage, operators, folds, seeds, and bootstrap draws",
+      "direction": "higher_is_better",
+      "screen_gate": "point > 0 and UCB95 >= 0.005 dB",
+      "claim_limit": "increment of this fixed representation-readout contract"
+    },
+    {
+      "id": "E4_LAYOUT_SPECIFICITY",
+      "contrast": "true spatial policy gain minus within-image spatial-shuffle policy gain",
+      "aggregation": "paired group bootstrap",
+      "direction": "higher_is_better",
+      "screen_gate": "point > 0 and UCB95 >= 0.005 dB",
+      "claim_limit": "layout-specific increment, not causal localization to semantics"
+    }
+  ],
+  "safety_estimands": [
+    {
+      "id": "S1_SEVERE_RATE",
+      "definition": "selected group gain <= -0.2 dB",
+      "gate": "zero events and one-sided exact all-group UCB95 <= 0.010"
+    },
+    {
+      "id": "S2_HARD_RATE",
+      "definition": "selected group gain <= -0.5 dB",
+      "gate": "zero events"
+    },
+    {
+      "id": "S3_CVAR5_INCREMENT",
+      "definition": "CVaR5 of spatial gain minus pooled gain at matched 20% coverage",
+      "gate": "LCB95 >= -0.005 dB"
+    },
+    {
+      "id": "S4_PROTECTED_CELL_HARM",
+      "definition": "clustered mean local harm in held-out cells where no-op is local oracle and no-op MSE is below the outer-training-fold 25th percentile",
+      "gate": "UCB95 <= 0.005 dB",
+      "claim_limit": "non-semantic fixed-cell protection only"
+    }
+  ],
+  "secondary_estimands": [
+    "pairwise active-action ranking concordance",
+    "negative-oracle-subset selected gain",
+    "severe AUROC and AUPRC-minus-prevalence",
+    "fold, seed, operator, and native-shape stability",
+    "fixed 10/30/40/60/100 percent descriptive risk-coverage curve",
+    "mean/q05/severe calibration",
+    "local cancellation prevalence and protected/heavy-recovery cell tails"
+  ],
+  "uncertainty": {
+    "draws": 4000,
+    "rng": "PCG64",
+    "seed": 3407,
+    "cluster": "clean_reference_image_group",
+    "pairing": "retain all cells, actions, seeds, and both operators for each sampled group",
+    "operator_rule": "take worse operator within each draw",
+    "intervals": "percentile 95 percent unless exact one-sided binomial UCB is specified"
+  },
+  "multiplicity": "One preregistered primary gate family; every listed primary, specificity, coverage, integrity, and safety gate must pass. Secondary estimands cannot rescue a failure.",
+  "threshold_sources": {
+    "gain_0.020_db": "pre-existing R4/R4B materiality floor",
+    "increment_0.005_db": "pre-existing mechanism SESOI",
+    "retention_0.25": "pre-existing requirement to retain a material quarter of oracle headroom",
+    "severe_minus_0.2_db": "frozen R4B severe definition",
+    "hard_minus_0.5_db": "frozen R4B hard definition",
+    "coverage_0.20": "pre-cloud E3 planning contract; fixed here to remove coverage tuning"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
+  "operation_id": "R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN",
+  "status": "DRAFT_NOT_AUTHORIZED",
+  "unique_primary_variable": "availability of all non-DC coefficients from the fixed 8x8 signed RGB candidate-minus-no-op response grid",
+  "fixed_cells": [
+    {
+      "id": "P0_POOLED_DC_ONLY",
+      "candidate_response_dc": "visible",
+      "candidate_response_non_dc": "zero_masked",
+      "state_spatial_non_dc": "zero_masked",
+      "spatial_permutation": "none",
+      "role": "matched primary reference"
+    },
+    {
+      "id": "S1_TRUE_SPATIAL_RESPONSE",
+      "candidate_response_dc": "visible",
+      "candidate_response_non_dc": "all_63_visible",
+      "state_spatial_non_dc": "zero_masked",
+      "spatial_permutation": "none",
+      "role": "preregistered primary"
+    },
+    {
+      "id": "S2_SPATIAL_RESPONSE_SHUFFLE",
+      "candidate_response_dc": "visible",
+      "candidate_response_non_dc": "all_63_visible_after_permutation",
+      "state_spatial_non_dc": "zero_masked",
+      "spatial_permutation": "deterministic hash-derived permutation of 64 cells within image, action, and operator before DCT; no target input",
+      "role": "layout-specificity negative control"
+    },
+    {
+      "id": "G0_GENERIC_STATE_SPATIAL",
+      "candidate_response_dc": "visible",
+      "candidate_response_non_dc": "zero_masked",
+      "state_spatial_non_dc": "all_63_visible_from_no-op RGB state with matched dimension",
+      "spatial_permutation": "none",
+      "role": "generic-difficulty nuisance control"
+    }
+  ],
+  "matched_contract": {
+    "input_dimension": "identical by fixed zero masks",
+    "scorer": "per-action MLP, hidden width 64, ReLU, mean/q05/severe outputs",
+    "parameters": "exactly identical across cells",
+    "seeds": [3407, 3411],
+    "epochs": 32,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "batch_size": 64,
+    "coverage": 0.2,
+    "checkpoint_selection": false,
+    "early_stopping": false
+  },
+  "structural_gates": [
+    "exact official anchor, checkpoint, fold, action, and operator identities",
+    "all outer folds 0 and 1, four cells, two seeds, two operators, and every frozen group complete",
+    "strict official checkpoint load and ConvIR trainable parameter count zero",
+    "pooled masking equality and valid deterministic shuffle with preserved channel marginals and DC",
+    "exact ceil(0.20 * N_test) acted groups for every cell",
+    "all metrics finite and no sample exclusion",
+    "confirmation, historical A1X outcomes, canary, and locked-test touched flags false"
+  ],
+  "scientific_gates": {
+    "selected_gain": "point > 0 and UCB95 >= 0.020 dB",
+    "oracle_retention": "point > 0 and UCB95 >= 0.25",
+    "spatial_minus_pooled": "point > 0 and UCB95 >= 0.005 dB",
+    "true_minus_spatial_shuffle": "point > 0 and UCB95 >= 0.005 dB",
+    "spatial_minus_generic_state": "point > 0",
+    "severe_discrimination": "AUROC LCB95 > 0.5 and AUPRC-minus-prevalence LCB95 > 0"
+  },
+  "safety_gates": {
+    "selected_severe_groups": 0,
+    "selected_hard_groups": 0,
+    "all_group_severe_rate_exact_ucb95_max": 0.01,
+    "cvar5_spatial_minus_pooled_lcb95_min_db": -0.005,
+    "operator_or_native_shape_mean_min_db": -0.02,
+    "protected_cell_mean_harm_ucb95_max_db": 0.005
+  },
+  "terminal_rules": [
+    {
+      "state": "COMPLETED_GATE_PASS",
+      "decision": "R5_A0_SPATIAL_RESPONSE_NONFUTILITY_PASS",
+      "authorizes": "R5_A1_FULL_OOF_CONTRACT_REVIEW_ONLY",
+      "interpretation": "This exact representation-readout contract is non-futile on the two-fold screen; sufficiency is not confirmed."
+    },
+    {
+      "state": "COMPLETED_GATE_FAIL",
+      "decision": "R5_A0_SPATIAL_RESPONSE_FUTILITY_OR_SAFETY_FAIL_STOP",
+      "authorizes": "NONE",
+      "interpretation": "The fixed response-layout factor is non-material or unsafe; close it without neighbor search."
+    },
+    {
+      "state": "COMPLETED_INCONCLUSIVE",
+      "decision": "R5_A0_SPATIAL_RESPONSE_INCONCLUSIVE_STOP",
+      "authorizes": "NONE",
+      "interpretation": "The frozen evidence is incomplete or statistically non-decisive; do not change the contract and retry automatically."
+    },
+    {
+      "state": "FAILED_ENGINEERING",
+      "decision": null,
+      "authorizes": "NONE",
+      "interpretation": "No scientific conclusion."
+    }
+  ],
+  "forbidden_rescues": [
+    "grid-size search",
+    "DCT coefficient subset search",
+    "feature-layer search",
+    "width or depth search",
+    "seed, epoch, LR, loss-weight, threshold, or coverage tuning",
+    "post-hoc subgroup selection",
+    "R4B score reconstruction",
+    "protected-data access"
+  ]
+}

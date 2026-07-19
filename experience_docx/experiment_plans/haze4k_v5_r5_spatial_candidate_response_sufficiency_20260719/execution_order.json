@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
+  "current_stop_after_step": 4,
+  "runtime_authorization": "NONE",
+  "steps": [
+    {
+      "order": 1,
+      "name": "verify_authoritative_evidence",
+      "status": "completed",
+      "result": "R4B-A1 remains COMPLETED_GATE_FAIL / R4B_A1_SETWISE_MECHANISM_FUTILITY_STOP / NONE; cloud audit reproduced formal metrics and hashes."
+    },
+    {
+      "order": 2,
+      "name": "exhaust_low_cost_existing_data_analysis",
+      "status": "completed",
+      "result": "Existing raw rows answered descriptive abstention, fold coverage, positive-only behavior, tail concentration, and candidate-risk concordance. Missing score vectors prevent causal component replay."
+    },
+    {
+      "order": 3,
+      "name": "integrity_stop_check",
+      "status": "completed",
+      "result": "Scientific result remains valid with a recorded permutation numerical gate failure; no integrity incident is required and no silent repair is allowed."
+    },
+    {
+      "order": 4,
+      "name": "draft_independent_route_contract",
+      "status": "completed",
+      "result": "R5 draft freezes one candidate-response spatial-layout factor, matched controls, fixed coverage, gates, protected-data policy, and terminal mapping; no runtime bundle exists."
+    },
+    {
+      "order": 5,
+      "name": "independent_contract_review",
+      "status": "pending_requires_new_authorization",
+      "pass_action": "Authorize only exact asset-identity completion and materialization of the first route-ready bundle.",
+      "fail_action": "Reject or revise the contract before any code or runtime artifact exists."
+    },
+    {
+      "order": 6,
+      "name": "resolve_assets_and_materialize_a0_bundle",
+      "status": "blocked",
+      "prerequisite": "Step 5 explicit approval",
+      "scope": "Exact route card, operation manifest, one runtime spec, one entrypoint, and typed asset manifest only. Runtime remains unauthorized."
+    },
+    {
+      "order": 7,
+      "name": "route_ready_validation_and_push",
+      "status": "blocked",
+      "prerequisite": "Complete step 6 bundle",
+      "scope": "One cloud-compliant route-ready validation, one commit, and one push; no plan or start."
+    },
+    {
+      "order": 8,
+      "name": "runtime_authorization_review",
+      "status": "blocked",
+      "prerequisite": "Exact validated pushed route commit",
+      "scope": "Separate decision on R5_A0 only."
+    },
+    {
+      "order": 9,
+      "name": "run_r5_a0_once",
+      "status": "blocked",
+      "prerequisite": "Typed runtime authorization for the exact operation and commit",
+      "stop_rule": "PASS authorizes A1 contract review only; FAIL or INCONCLUSIVE authorizes NONE."
+    },
+    {
+      "order": 10,
+      "name": "archive_terminal_evidence",
+      "status": "blocked",
+      "prerequisite": "Validated typed closeout",
+      "scope": "Sync complete compact evidence to GitHub main first; raw rows, tensors, logs, and states remain cloud-only."
+    }
+  ],
+  "result_interpretation_authorization": [
+    {
+      "result": "R5_A0_SPATIAL_RESPONSE_NONFUTILITY_PASS",
+      "interpretation": "The exact candidate-response layout factor survives a two-fold non-futility and safety screen; it is not yet sufficient or externally valid.",
+      "authorizes": "R5_A1_FULL_OOF_CONTRACT_REVIEW_ONLY",
+      "forbids": "A1 runtime, confirmation, model deployment, and representation search"
+    },
+    {
+      "result": "R5_A0_SPATIAL_RESPONSE_FUTILITY_OR_SAFETY_FAIL_STOP",
+      "interpretation": "The fixed layout factor is too small or unsafe under the matched contract.",
+      "authorizes": "NONE",
+      "forbids": "nearby grid, DCT, layer, head, coverage, or threshold search"
+    },
+    {
+      "result": "R5_A0_SPATIAL_RESPONSE_INCONCLUSIVE_STOP",
+      "interpretation": "Evidence integrity or precision is insufficient for the frozen decision.",
+      "authorizes": "NONE",
+      "forbids": "automatic rerun or contract relaxation"
+    },
+    {
+      "result": "FAILED_ENGINEERING",
+      "interpretation": "No scientific result.",
+      "authorizes": "NONE",
+      "forbids": "scientific interpretation or silent repair"
+    }
+  ]
+}

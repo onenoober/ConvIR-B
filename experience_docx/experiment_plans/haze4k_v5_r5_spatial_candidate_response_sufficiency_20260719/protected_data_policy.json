@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
+  "status": "DRAFT_BINDING_RESTRICTION",
+  "current_runtime_authorization": "NONE",
+  "allowed_now": [
+    "read-only verification of already public compact evidence",
+    "documentation maintenance",
+    "independent review of this draft contract"
+  ],
+  "prohibited_now": [
+    "local or cloud scientific computation",
+    "candidate generation",
+    "training, evaluation, inference, or offline metric calculation",
+    "route plan or start",
+    "creation of a runtime bundle that could be mistaken for authorization"
+  ],
+  "future_a0_permissions_if_separately_authorized": {
+    "engineering_debug": true,
+    "development_screening": true,
+    "confirmation": false,
+    "historical_a1x_432": false,
+    "canary": false,
+    "sealed_final_or_locked_test": false
+  },
+  "role_rules": [
+    "No seen development sample may be relabeled confirmation.",
+    "Clean RGB may be used only for fitting targets and evaluation inside outer-fold discipline; it is prohibited as a readout input.",
+    "All rows from one clean-reference image stay in one outer fold and one bootstrap cluster.",
+    "Protected identities and outcomes remain unavailable to CPU contracts, runtime, monitoring, and closeout helpers.",
+    "A0 PASS can authorize only A1 contract review; it cannot authorize protected access.",
+    "A future A1 PASS may request a separate confirmation contract review but cannot open confirmation automatically.",
+    "Locked test remains one-use and unavailable until every model, action, threshold, metric, and external-validation rule is frozen under a later approved contract."
+  ],
+  "violation_action": {
+    "scientific_state": "INCONCLUSIVE",
+    "authorizes": "NONE",
+    "integrity_action": "preserve the old terminal states, create a separate integrity incident, and stop all scientific interpretation"
+  }
+}

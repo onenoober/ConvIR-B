@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
+  "status": "DRAFT_NOT_AUTHORIZED",
+  "evidence_cutoff": "2026-07-18T15:20:00+00:00",
+  "hypotheses": [
+    {
+      "id": "H1",
+      "category": "priority_discrimination",
+      "priority": 1,
+      "hypothesis": "The frozen inference representation is insufficient for material action-conditioned signed relative utility.",
+      "github_support": [
+        "R4B-A1 gain and oracle retention were orders of magnitude below their frozen materiality gates.",
+        "R3/R4/R4B did not select the negative action despite a substantial negative-oracle subset."
+      ],
+      "cloud_support": [
+        "All 181 negative-oracle operator-image rows received zero negative selections.",
+        "577 of 609 repairable operator-image rows abstained."
+      ],
+      "counterevidence": [
+        "Primary severe AUROC was 0.851 and discordant-label risk concordance was 0.779.",
+        "Limited action-specific information exists, so total information absence is not established."
+      ],
+      "offline_answered": false,
+      "missing_evidence": "A new independently contracted representation factor or the unavailable per-action utility vector.",
+      "route_if_supported": "Continue only with the exact layout-preserving candidate-response representation after non-futility and full-OOF gates.",
+      "route_if_refuted": "Close this representation direction and increase the relative priority of fixed-readout or deeper interaction explanations."
+    },
+    {
+      "id": "H4",
+      "category": "requires_new_information_source",
+      "priority": 2,
+      "hypothesis": "Global response aggregation hides spatial gain-harm cancellation that is informative for action selection and protection.",
+      "github_support": [
+        "Mean and tail utility separate sharply as coverage rises.",
+        "The scientific target is spatially non-uniform and v3m established block16 oracle headroom."
+      ],
+      "cloud_support": [
+        "No region rows were persisted, so the cloud audit could not test cancellation.",
+        "Active-row p10 and CVaR5 were negative despite a positive mean."
+      ],
+      "counterevidence": [
+        "v4a-A1R local spatial and v4a-A1X multiscale-global readouts were non-material under their Delta-u target contracts.",
+        "Block16 and exact-half interfaces themselves were previously adequate."
+      ],
+      "offline_answered": false,
+      "missing_evidence": "Candidate-relative spatial response features and preregistered local protection outcomes.",
+      "route_if_supported": "Authorize only a full-OOF contract for the fixed response representation, then a separate region-action design review.",
+      "route_if_refuted": "Close the fixed 8x8 response-layout factor; do not search nearby grids, frequencies, or spatial heads."
+    },
+    {
+      "id": "H2",
+      "category": "secondary_retained",
+      "priority": 3,
+      "hypothesis": "Coverage/readout conflict dominates the realized utility loss.",
+      "github_support": [
+        "R4B-A1 retained almost no oracle gain and failed the coverage gate."
+      ],
+      "cloud_support": [
+        "94.75% of repairable operator-image rows abstained and fold 0 coverage was zero."
+      ],
+      "counterevidence": [
+        "37.5% of acted repairable rows selected a non-oracle action.",
+        "The policy remained positive-only, so coverage alone cannot explain signed action collapse."
+      ],
+      "offline_answered": "behaviorally_yes_causally_no",
+      "missing_evidence": "The unpersisted composite score vector and a preregistered fixed-score component replay.",
+      "route_if_supported": "A future fixed-score readout contract would require a genuinely new complete score source, not R4B reconstruction.",
+      "route_if_refuted": "Stop calibration/readout-neighbor work and retain representation or interaction mechanisms."
+    },
+    {
+      "id": "H3",
+      "category": "secondary_retained",
+      "priority": 4,
+      "hypothesis": "Risk is mainly generic image difficulty rather than candidate-specific harm.",
+      "github_support": [
+        "State-only and action-only risk controls carried signal while utility remained non-material."
+      ],
+      "cloud_support": [
+        "State-only severe AUROC was 0.761 and action-only AUROC was 0.645."
+      ],
+      "counterevidence": [
+        "Primary severe AUROC was 0.851.",
+        "Within-group discordant action-label concordance was 0.779 with no ties."
+      ],
+      "offline_answered": "partially_weakened",
+      "missing_evidence": "A matched generic-state versus candidate-response spatial control under an independent contract.",
+      "route_if_supported": "Prioritize an independently contracted candidate-harm target only after utility representation is localized.",
+      "route_if_refuted": "Do not build a generic difficulty gate as the main scientific route."
+    },
+    {
+      "id": "H5",
+      "category": "currently_basically_excluded_within_scope",
+      "priority": 5,
+      "hypothesis": "Action labels are unstable across the two frozen operators or small implementation perturbations.",
+      "github_support": [
+        "Historical fine-grained action tables sometimes had small margins."
+      ],
+      "cloud_support": [],
+      "counterevidence": [
+        "Three-action best-action agreement was about 0.9805 and severe-label agreement was at least 0.9948.",
+        "Current action margins were material and near ties were rare."
+      ],
+      "offline_answered": "excluded_for_current_two_operator_scope",
+      "missing_evidence": "Segmentation, compression, sensor, precision, and real-domain perturbations.",
+      "route_if_supported": "Stop learned regional action work and redesign the label/robustness contract.",
+      "route_if_refuted": "Proceed only within the explicitly tested operator scope; real-domain stability remains separate."
+    }
+  ]
+}

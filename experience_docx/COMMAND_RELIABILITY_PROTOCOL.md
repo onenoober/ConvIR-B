@@ -34,6 +34,41 @@ This longer file is an archive of known bad command forms and corrected
 patterns. Add to this file only when a command failure teaches a reusable
 boundary, quoting, CRLF, PATH, stdin, or silent-output lesson.
 
+## 2026-07-19 PowerShell-parsed regex in generated WSL command
+
+While opening the R5 route-contract audit, a generated PowerShell command
+embedded a double-quoted `bash -lc` payload containing a ripgrep alternation.
+PowerShell parsed the `|candidate-minus|` fragment before WSL received the
+command and stopped with `The term 'candidate-minus' is not recognized`.
+Nothing ran in WSL and no repository file was changed.
+
+Invalid form:
+
+```powershell
+wsl -d Ubuntu-22.04 bash -lc "cd /repo && rg -n \"first-encoder|candidate-minus|spatial\" ..."
+```
+
+Corrected form for this operation:
+
+```powershell
+wsl.exe -d Ubuntu-22.04 --exec /usr/bin/python3 \
+  /absolute/path/experience_docx/tools/convirctl.py repo-search \
+  --repo /absolute/repo --term candidate-minus --path experience_docx
+```
+
+Use one literal `--term` per repository read and let `convirctl.py` resolve the
+Git ref and argument vector. Do not return to an inline regex or another shell
+layer after this failure class.
+
+## 2026-07-19 Local JSON checker availability
+
+The R5 documentation-only static check attempted the explicit program
+`/usr/bin/jq`, but that executable is not installed in the local WSL image.
+The invalid form was `wsl.exe ... --exec /usr/bin/jq empty <file>`. No project
+runtime or file write occurred. The corrected syntax-only form is
+`wsl.exe ... --exec /usr/bin/python3 -m json.tool <file>`, using the standard
+library with one literal file argument per process.
+
 ## Invalid Command Patterns To Avoid
 
 ### PowerShell to WSL inline regex pipes

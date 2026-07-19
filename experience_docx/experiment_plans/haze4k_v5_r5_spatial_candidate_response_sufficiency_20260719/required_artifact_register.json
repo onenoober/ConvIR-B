@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
+  "status": "DRAFT_NOT_AUTHORIZED",
+  "current_files": [
+    {
+      "artifact": "route card",
+      "role": "draft preregistration",
+      "location": "experiment branch",
+      "main_sync": "only if route is materialized or terminally archived"
+    },
+    {
+      "artifact": "hypothesis and estimand registers",
+      "role": "planning synthesis and draft preregistration",
+      "location": "experiment branch",
+      "main_sync": "no before an authorized route transition"
+    },
+    {
+      "artifact": "asset, controls/gates, protected-data, execution-order, and artifact registers",
+      "role": "governance documentation",
+      "location": "experiment branch",
+      "main_sync": "no before an authorized route transition"
+    }
+  ],
+  "required_if_a0_is_later_authorized": [
+    {
+      "artifact": "provenance_and_identity.json",
+      "content": "route/source/rules commits, checkpoint, action/operator/config identities, runner, code and asset hashes",
+      "evidence_role": "formal route-gate support",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "data_role_and_access_audit.json",
+      "content": "fold/group counts, development role, no exclusions, all protected flags false",
+      "evidence_role": "formal structural gate",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "hypothesis_register.json and estimand_register.json",
+      "content": "launch-frozen versions with exact commit binding",
+      "evidence_role": "formal preregistration",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "oracle_upper_bound.json",
+      "content": "three-action oracle gain, retention denominator, fixed-cell oracle and operator pairing",
+      "evidence_role": "formal route-gate result",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "action_margin_summary.csv",
+      "content": "best-second action margins and near-tie prevalence by fold/operator",
+      "evidence_role": "formal route-gate support",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "label_stability.json",
+      "content": "D_ref/D_rep best-action and severe-label agreement plus fixed perturbation checks if contracted",
+      "evidence_role": "formal scope support",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "candidate_harm_prevalence.csv",
+      "content": "negative gain, severe, hard, and protected-cell harm prevalence by action/operator",
+      "evidence_role": "formal safety support",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "operator_consistency.json",
+      "content": "paired gains, action selections, risk labels, correlations, and worst-operator rule",
+      "evidence_role": "formal route-gate support",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "fold_seed_stability.csv",
+      "content": "complete fold/cell/seed results and interaction diagnostics",
+      "evidence_role": "formal completeness and limitation support",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "risk_coverage.csv",
+      "content": "primary fixed 20 percent point and descriptive 10/30/40/60/100 percent points",
+      "evidence_role": "20 percent formal; other points preregistered descriptive",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "calibration_summary.csv",
+      "content": "mean/q05 residual calibration, severe AUROC/AUPRC/ECE/Brier by fold/operator/cell",
+      "evidence_role": "formal route-gate support where named; otherwise descriptive",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "subgroup_and_tail_summary.csv",
+      "content": "protected/heavy-recovery fixed-cell groups, p10, CVaR5, worst-20, native shape, action and fold tails",
+      "evidence_role": "predeclared formal safety and descriptive limitations",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "bootstrap_summary.json",
+      "content": "all primary, control, safety and specificity intervals under the frozen paired group bootstrap",
+      "evidence_role": "formal route-gate result",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "typed_closeout.json",
+      "content": "state, decision, authorization, identities and hashes of every required compact result",
+      "evidence_role": "formal terminal authority",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "scientific_conclusion.json",
+      "content": "primary result, gate reasons, competing explanation, limitations and next authorization",
+      "evidence_role": "single formal human/scientific interpretation",
+      "github": "yes",
+      "cloud_only": false
+    },
+    {
+      "artifact": "EXPERIMENT_TERMINAL_INDEX.jsonl row",
+      "content": "exact contract, closeout, conclusion, results, receipt and route commit",
+      "evidence_role": "machine project memory",
+      "github": "main only after terminal archive",
+      "cloud_only": false
+    }
+  ],
+  "always_cloud_only_if_runtime_occurs": [
+    "raw per-image/action/operator/cell rows",
+    "candidate and no-op RGB tensors",
+    "8x8 grids and DCT arrays",
+    "per-seed prediction rows",
+    "readout checkpoints and optimizer states",
+    "full runtime logs and heartbeat history",
+    "datasets, images, labels, arrays, and archives"
+  ],
+  "github_sync_order_after_a_terminal": [
+    "exact launch contract",
+    "typed closeout and every closeout-bound compact result",
+    "single scientific conclusion",
+    "terminal index row",
+    "one commit and one push to GitHub main before treating cloud evidence as archived"
+  ]
+}

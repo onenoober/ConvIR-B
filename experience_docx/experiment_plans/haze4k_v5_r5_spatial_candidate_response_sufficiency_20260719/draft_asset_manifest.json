@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
+  "status": "DRAFT_ONLY_NOT_A_RUNTIME_ASSET_MANIFEST",
+  "runtime_authorization": "NONE",
+  "assets": [
+    {
+      "id": "official_architecture_anchor",
+      "kind": "git_commit",
+      "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "source": "github/codex/haze4k-official-arch-anchor",
+      "access_role": "unrestricted",
+      "identity_status": "verified_from_repository"
+    },
+    {
+      "id": "official_haze4k_checkpoint",
+      "kind": "file",
+      "cloud_path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "access_role": "unrestricted_model_asset",
+      "identity_status": "historically_verified_runtime_recheck_required"
+    },
+    {
+      "id": "haze4k_development_data",
+      "kind": "directory",
+      "cloud_path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+      "access_role": "development_screening",
+      "identity_status": "typed_directory_identity_required_before_materialization",
+      "contract_access": false
+    },
+    {
+      "id": "frozen_development_ledger_and_fold_map",
+      "kind": "file_set",
+      "source_evidence": "R4B S0 768-image ledger and four 192-image folds",
+      "access_role": "development_screening",
+      "identity_status": "exact paths_and_sha256_required_before_materialization",
+      "contract_access": false
+    },
+    {
+      "id": "frozen_operator_definitions",
+      "kind": "code_and_config",
+      "members": ["D_ref", "D_rep"],
+      "access_role": "unrestricted",
+      "identity_status": "exact source commits_and_config_hashes_required_before_materialization"
+    },
+    {
+      "id": "frozen_three_action_definitions",
+      "kind": "code_and_config",
+      "members": ["reference_noop", "state_positive_full", "state_negative_full"],
+      "access_role": "unrestricted",
+      "identity_status": "exact source commit_and_action_config_hash_required_before_materialization"
+    },
+    {
+      "id": "r4b_cloud_audit_compact_evidence",
+      "kind": "git_commit",
+      "identity": "e8de98ff5f20ae2148608fe7613615ef4bd27a4e",
+      "source": "github/codex/haze4k-v5-r4b-a1-cloud-evidence-audit-20260718",
+      "access_role": "historical_evidence",
+      "identity_status": "verified",
+      "runtime_input": false
+    }
+  ],
+  "explicitly_forbidden_assets": [
+    "R4B-A1 per-seed predictions",
+    "R4B-A1 omitted per-action utility/q05 vectors",
+    "R4B-A1 composite confidence",
+    "R4B-A1 selector checkpoint or predictions",
+    "confirmation identities, images, labels, predictions, or outcomes",
+    "historical A1X-432 outcomes",
+    "canary",
+    "locked test"
+  ],
+  "blocking_items": [
+    "Exact development ledger/fold-map paths and SHA-256 identities are unresolved.",
+    "Exact D_ref/D_rep and three-action source/config identities are unresolved.",
+    "No runtime spec, operation manifest, or typed production asset manifest exists.",
+    "No independent review has authorized route materialization or runtime."
+  ]
+}
