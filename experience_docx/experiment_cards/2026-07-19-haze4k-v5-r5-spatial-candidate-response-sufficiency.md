@@ -2,229 +2,105 @@
 
 Date: 2026-07-19
 
-Status: `DRAFT_NOT_AUTHORIZED`
-
-Runtime authorization: `NONE`
-
-This document is a route-design contract only. It is not launch-ready, is not
-listed in `route_operations.json`, and authorizes no local or cloud scientific
-calculation.
+Status: PLANNED
 
 ## Identity
 
 - Route id: `haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719`.
-- Provisional first operation: `R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN`.
-- Question: at fixed 20% image-group coverage, does preserving the spatial
-  layout of each frozen active candidate's RGB response relative to no-op add
-  non-futile signed action utility and tail safety beyond pooled, spatially
-  shuffled, and generic-state controls?
-- Rules commit used for design: `github/main@6443ec0da` plus the cloud-audit
-  interpretation at
-  `github/codex/haze4k-v5-r4b-a1-cloud-evidence-audit-20260718@e8de98ff5`.
-- Model source: immutable
-  `github/codex/haze4k-official-arch-anchor@3b4da35440c8c26a7d1bcaf1daf342e11d9a3898`.
-- Route branch:
-  `codex/haze4k-v5-r5-independent-route-contract-20260719`.
-- Locked test/canary policy: confirmation identities and outcomes, historical
-  A1X-432 outcomes, canary, and locked test are prohibited.
-
-## Evidence Basis And Role
-
-| Evidence | Role in the requested A-D hierarchy | Use in this contract |
-| --- | --- | --- |
-| R4B-A1 preregistration, typed closeout, conclusion, and terminal index | A, formal confirmatory evidence for the old route | fixes `COMPLETED_GATE_FAIL / R4B_A1_SETWISE_MECHANISM_FUTILITY_STOP / NONE` |
-| Identity-verified raw cloud OOF and candidate-risk rows and exact metric reproduction | B, raw support for the formal result | establishes reproducibility and the persisted-field boundary |
-| abstention, fold coverage, action-direction, and within-group risk concordance audits | C, post-hoc exploratory evidence | ranks mechanisms; cannot alter R4B-A1 or confirm R5 |
-| recorded permutation tolerance miss `1.907e-6 > 1e-6` | D, engineering/numerical evidence | remains visible; does not invalidate the much larger scientific futility gap |
-
-The cloud raw data improved mechanism resolution but did not change the old
-terminal decision. R4B-A1 per-action mean/q05 score vectors, per-seed
-predictions, composite confidence, and region rows were not persisted and must
-not be regenerated under the R4B identity.
-
-## Why This Is An Independent Factor
-
-R4B used three candidate actions but reduced candidate-minus-no-op RGB and
-first-encoder responses to summaries. v4a-A1R tested local spatial readout for
-a privileged bounded Delta-u direction target. v4a-A1X tested a multiscale
-global readout over five exact-half output-side tensors. Neither historical
-route crossed the R4B three-action signed-utility problem with an explicitly
-layout-preserving candidate-relative response representation.
-
-R5 therefore does not test generic "more spatial capacity." It freezes one
-new information factor: the non-DC layout of the active candidate's signed RGB
-response relative to no-op. It does not change the ConvIR checkpoint, action
-bank, action direction, evaluation operators, coverage, metric definitions, or
-protected-data policy.
+- Question: at fixed per-fold 20% clean-image coverage, does preserving the spatial layout of each frozen active candidate's RGB response relative to no-op add non-futile signed action utility and tail safety beyond pooled, spatial-shuffled, and generic-state controls?
+- Rules commit: `github/main@6443ec0daa1279d28f9c8970d75ac87578ace467`.
+- Source branch/commit: immutable `github/codex/haze4k-official-arch-anchor@3b4da35440c8c26a7d1bcaf1daf342e11d9a3898` plus the canonical runtime bundle copied byte-for-byte from the rules commit.
+- Route branch: `codex/haze4k-v5-r5-independent-route-contract-20260719`.
+- Locked test/canary policy: confirmation identities/outcomes, historical A1X-432 outcomes, canary, and locked test are prohibited; every corresponding access flag must remain false.
 
 ## Scientific Contract
 
-- Population and grouping unit: the frozen 768-image Haze4K development ledger
-  and its four 192-image folds; the provisional A0 test scope is outer folds
-  0/1, with one clean-reference image as the independent bootstrap cluster and
-  D_ref/D_rep paired within cluster.
-- Data role: `development_screening`. Historical reuse and post-hoc route
-  selection prohibit a confirmatory or external-validity claim.
-- Active actions: exact frozen `state_positive_full` and
-  `state_negative_full`; exact `reference_noop` is the fallback and zero
-  reference. No action search or action expansion.
-- Unique primary variable: whether all non-DC coefficients of the fixed 8x8
-  signed RGB candidate-minus-no-op response grid are exposed to the scorer or
-  masked to zero.
-- Primary reference: parameter-identical pooled/DC-only scorer with the
-  non-DC input block zero-masked.
-- Required negative control: deterministic within-image permutation of the 64
-  response cells before the same complete DCT, preserving channel marginals,
-  DC, action identity, vector dimension, model, folds, seeds, and budget.
-- Required nuisance control: no-op/state spatial coefficients with the
-  candidate-relative block masked, testing generic spatial difficulty.
-- Primary outcome: worse-operator selected-policy PSNR gain over no-op at
-  exactly 20% group coverage, plus retention against the same three-action
-  oracle.
-- Primary mechanistic contrasts: spatial minus pooled, true spatial minus
-  spatial shuffle, and spatial minus generic-state control.
-- Strongest competing explanation: a fixed low-capacity readout or generic
-  image difficulty, rather than missing candidate-relative spatial
-  information, explains the R4B failure.
-- Cheapest discriminating observation: a two-fold, complete-cell, fixed-budget
-  OOF non-futility screen. It is cheaper and more identifiable than training a
-  new restoration model, which would simultaneously change representation,
-  action generation, loss, calibration, and execution.
+- Population and analysis/grouping unit: frozen R3/R4B 768-image Haze4K development ledger with four 192-image folds; A0 evaluates outer folds 0 and 1, and one clean-reference image is the independent group while D_ref/D_rep, actions, cells, and seeds remain paired repeated measurements.
+- Intervention or factor contrast and reference: expose all non-DC coefficients from a fixed orthonormal DCT of each active candidate's 8x8 signed RGB response relative to no-op; compare the primary `S1_TRUE_SPATIAL_RESPONSE` with parameter-identical `P0_POOLED_DC_ONLY`, `S2_SPATIAL_RESPONSE_SHUFFLE`, and `G0_GENERIC_STATE_SPATIAL` cells.
+- Primary outcome, direction and aggregation: larger selected-policy PSNR gain, three-action oracle retention, spatial-minus-pooled, true-minus-shuffle, and spatial-minus-generic increments are better at exactly `ceil(0.20 * 192)=39` acted names per outer fold; 4,000 clean-image grouped bootstrap draws retain paired operators and use the worse operator inside each draw.
+- Preferred mechanism and strongest competing explanation: candidate-relative spatial layout exposes signed action information hidden by global summaries; the strongest competitor is that a fixed readout or generic spatial difficulty, rather than missing candidate-relative layout, explains the old failure.
+- Evidence roles and candidate/freeze point: R4B terminal evidence is historical formal support, its cloud distribution audit is post-hoc exploratory, and R5-A0 is a new `development_screening` operation; cache identities, cells, masks, 8x8 grid, full 63 non-DC coefficients, folds, seeds, model, loss, optimizer, fixed coverage, metrics, thresholds, and terminal actions freeze at this route commit before R5 outcomes.
+- Primary gate, uncertainty and threshold source: A0 is a non-futility screen; PASS requires gain point `>0` and UCB95 `>=+0.020 dB`, retention point `>0` and UCB95 `>=0.25`, spatial-minus-pooled and true-minus-shuffle points `>0` with UCB95 `>=+0.005 dB`, spatial-minus-generic point `>0`, severe AUROC LCB95 `>0.5`, AUPRC-minus-prevalence LCB95 `>0`, exact coverage, complete structure, zero selected severe/hard groups, all-group severe exact UCB95 `<=0.010`, CVaR5 spatial-minus-pooled LCB95 `>=-0.005 dB`, protected-cell harm-increment UCB95 `<=+0.005 dB`, and every operator/native-shape mean `>=-0.020 dB`; thresholds predate R5 and come from R4/R4B materiality, the pre-cloud E3 plan, and frozen severe/hard definitions.
+- `PASS` authorizes: `R5_A1_FULL_OOF_CONTRACT_REVIEW_ONLY`; it does not establish representation sufficiency and cannot launch A1, access confirmation, or train a restoration model.
+- `INCONCLUSIVE` authorizes: `NONE`; identity, completeness, finite-value, mask/shuffle, protected-access, or statistically unresolved direction failures stop without automatic retry.
+- `FAIL` stops: the fixed 8x8 full-DCT candidate-response representation with `NONE`; no grid, frequency, layer, head, width, depth, seed, epoch, LR, loss, threshold, coverage, or subgroup neighbor search.
 
-## Fixed Representation
+## Evidence Basis And Independent-Factor Boundary
 
-For each image, operator, and active action:
+R4B-A1 remains
+`COMPLETED_GATE_FAIL / R4B_A1_SETWISE_MECHANISM_FUTILITY_STOP / NONE`.
+Identity-verified raw rows reproduce its formal point and calibration metrics.
+The post-hoc audit shows `577/609` repairable operator-image rows abstain, fold
+0 coverage is zero, and all 181 negative-oracle rows receive no negative
+selection. It also shows real candidate-conditioned risk information. Missing
+R4B per-seed and per-action utility/q05 vectors must not be reconstructed.
 
-1. render the no-op and active candidate once under the new R5 identity using
-   the unchanged official checkpoint and frozen action definitions;
-2. compute signed RGB `candidate - no_op` on `[0,1]` outputs;
-3. adaptive-average-pool each RGB channel to exactly 8x8 with no crop,
-   padding, resize search, or alternative grid;
-4. apply the orthonormal two-dimensional DCT to each 8x8 channel;
-5. retain the DC term in every cell and expose either all 63 non-DC terms or
-   zeros according to the assigned representation cell.
+R5 does not rerun R4B or regenerate its missing scores. It reads the immutable
+R3 A0 candidate cache that was already a SHA-bound R4B input, verifies every
+unit hash, and computes a new representation under the R5 identity. R4B used
+global summaries. v4a-A1R tested a local spatial head for a privileged Delta-u
+direction target, and v4a-A1X tested multiscale-global output tensors. Neither
+tested the cross of frozen three-action signed utility with explicitly
+layout-preserving candidate-relative RGB response.
 
-All 63 non-DC coefficients are retained. There is no frequency selection,
-layer search, grid search, or feature subset search. The pooled, spatial,
-shuffle, and nuisance cells have the same input dimension by masking, and the
-same scorer parameter count.
+## Frozen Representation And Policy
 
-## Fixed Readout And Decision
+For each cached image/operator unit, exact no-op, positive-full, and
+negative-full renders use the historical add-and-clamp expression
+`clamp(base + 0.25 * (step + candidate_delta), 0, 1)`. The new response is
+`active_render - no_op_render`. Each RGB channel is adaptive-average-pooled to
+8x8 and transformed with a fixed orthonormal 8x8 DCT. All 63 non-DC
+coefficients are retained; there is no frequency selection.
 
-- Readout: one per-action MLP with input normalization fitted inside each outer
-  training partition, hidden width 64, ReLU, and three outputs: mean utility,
-  q05 utility, and severe probability. No attention, convolution, architecture
-  search, or old R4/R4B prediction input.
-- Initialization/seeds: only the readout is new; Xavier-uniform initialization
-  under seeds `3407` and `3411`; arithmetic-average OOF outputs before one
-  policy decision. ConvIR and candidate generation remain frozen.
-- Loss: fixed equal-weight mean-utility Huber, q05 pinball, and severe binary
-  cross-entropy terms. The q05 head is conditional quantile regression against
-  the observed candidate utility; the severe label is the frozen clean-image
-  any-operator event at `<=-0.2 dB`. No result-driven loss weights.
-- Fit budget: 32 AdamW epochs, LR `1e-3`, weight decay `1e-4`, batch size 64,
-  no early stopping or checkpoint selection.
-- Decision: for each held-out group choose the active action with the largest
-  averaged predicted q05 utility; rank groups by that value and act on exactly
-  `ceil(0.20 * N_test)` groups. Remaining groups use exact no-op. Ties use the
-  SHA-256 lexical order of the frozen group id. No threshold or calibration
-  search is permitted.
-- Descriptive-only coverage curve: fixed 10%, 30%, 40%, 60%, and 100% points.
-  It cannot replace or rescue the 20% primary decision.
+The common input is the exact 40 pooled state statistics, five action/sign
+features, 192 candidate-response DCT values, and 189 no-op-state non-DC DCT
+values. Cell masks keep input dimension and trainable parameter count exact:
 
-## Estimand, Uncertainty, And Gates
+| Cell | Candidate DC | Candidate non-DC | Generic-state non-DC | Role |
+| --- | --- | --- | --- | --- |
+| `P0_POOLED_DC_ONLY` | visible | zero | zero | matched pooled reference |
+| `S1_TRUE_SPATIAL_RESPONSE` | visible | all 63/channel | zero | preregistered primary |
+| `S2_SPATIAL_RESPONSE_SHUFFLE` | visible | deterministic within-image/action/operator cell permutation | zero | layout negative control |
+| `G0_GENERIC_STATE_SPATIAL` | visible | zero | all 63/channel | generic-difficulty control |
 
-- Statistical unit: clean-reference image group. Action and operator rows are
-  repeated paired measurements, never independent bootstrap units.
-- Resampling: 4,000 paired PCG64(3407) group bootstrap draws. Each draw retains
-  all cells, actions, and operators for sampled groups and takes the worse
-  D_ref/D_rep value before interval construction.
-- A0 is a non-futility screen. Utility gates use UCB95; safety and control
-  direction use the bounds stated below. A0 PASS is not evidence of
-  sufficiency and authorizes only a separately reviewed full-OOF contract.
-- Materiality gates: primary gain point estimate `>0` and UCB95
-  `>= +0.020 dB`; oracle-retention point estimate `>0` and UCB95 `>=0.25`;
-  spatial-minus-pooled and true-minus-shuffle point estimates `>0` and UCB95
-  `>=+0.005 dB`.
-- Specificity gate: spatial-minus-generic-state point estimate `>0`; severe
-  AUROC LCB95 `>0.5` and AUPRC-minus-prevalence LCB95 `>0` are required for the
-  primary spatial cell.
-- Coverage gate: exactly `ceil(0.20 * N_test)` acted clean-image groups, with
-  no missing or duplicate group.
-- Safety gates: zero selected severe groups at gain `<=-0.2 dB`; zero selected
-  hard groups at gain `<=-0.5 dB`; exact one-sided 95% UCB of the all-group
-  severe rate `<=0.010`; matched-coverage CVaR5 spatial-minus-pooled LCB95
-  `>=-0.005 dB`; and no operator/native-shape mean below `-0.020 dB`.
-- Fixed-cell protection audit: an 8x8 cell is protected only when no-op is the
-  local oracle and its no-op MSE is below the outer-training-fold 25th
-  percentile. Held-out definitions use that frozen fold threshold. The
-  protected-cell spatial-minus-pooled mean-harm UCB95 must be `<=0.005 dB`,
-  clustered by image. This is a preregistered non-semantic subgroup and cannot
-  support sky, highlight, texture, color, or real-domain claims.
-- Integrity gates: exact route/asset identities, complete folds/cells/seeds,
-  strict checkpoint load, no protected access, finite outputs, exact 20%
-  coverage, valid permutation identities, and coefficient masking equality.
+The same per-action MLP (`426 -> 64 ReLU -> 3`) emits mean utility, conditional
+q05 utility, and severe probability. A fold-specific normalizer is fitted only
+on true-feature outer-training rows and shared across all cells; cell masks are
+applied after normalization. The loss is an equal-weight sum of Huber mean
+utility, q05 pinball, and any-operator severe BCE. Only the MLP is trainable.
 
-## Terminal Mapping
+For each cell and outer fold, seed members 3407/3411 are averaged. For each
+clean image, each action's robust score is the minimum predicted q05 across
+D_ref/D_rep; the larger active action score determines one common action for
+both operators. Exactly the top 39 names in each test fold act, with SHA-256
+lexical tie breaking; all others use no-op. Fixed 10/30/40/60/100% curves are
+descriptive only and cannot rescue the 20% primary gate.
 
-- `PASS`: only when every integrity, utility non-futility, specificity,
-  coverage, and safety gate passes. Decision label:
-  `R5_A0_SPATIAL_RESPONSE_NONFUTILITY_PASS`; authorizes
-  `R5_A1_FULL_OOF_CONTRACT_REVIEW_ONLY`.
-- `FAIL`: a complete valid screen whose utility or spatial-increment UCB is
-  below its frozen threshold, or any safety failure. Decision label:
-  `R5_A0_SPATIAL_RESPONSE_FUTILITY_OR_SAFETY_FAIL_STOP`; authorizes `NONE`.
-- `INCONCLUSIVE`: missing cells/groups/seeds/operators, invalid identity or
-  shuffle, nonfinite output, protected-data violation, or a valid interval that
-  neither passes the lower-direction requirement nor proves UCB futility.
-  Decision label: `R5_A0_SPATIAL_RESPONSE_INCONCLUSIVE_STOP`; authorizes
-  `NONE`.
-- Engineering failure tuple, if runtime is later approved:
-  `FAILED_ENGINEERING / null / NONE`. It has no scientific interpretation.
+## Implementation Contract
 
-No terminal permits grid, DCT subset, width, depth, seed, epoch, LR, loss,
-coverage, threshold, operator, or subgroup search. A0 PASS does not authorize
-A1 runtime, confirmation access, a deployable policy, or model training.
+- Exact change and disabled mechanisms: add one cache-replay CPU diagnostic entrypoint, the four fixed masked cells, deterministic spatial shuffle, fixed policy, compact metrics, and grouped uncertainty; disable ConvIR execution, candidate generation, old-score input, attention/convolution, architecture or feature search, threshold calibration, checkpoint selection, protected roles, and any later operation.
+- Checkpoint/load/init/freeze contract: no model checkpoint is loaded because the route consumes the SHA-bound candidate cache; all cached tensors are immutable inputs and every unit hash must match; only the route-specific MLP initializes by Xavier-uniform under seeds 3407/3411 and trains, while official ConvIR code and parameters are neither constructed nor modified.
+- Input whitelist and prohibited inputs: allow the SHA-bound development ledger/cache manifests, cache tensors, Haze4K development clean targets for outcomes only, action identity/sign, and declared state/response features; prohibit filename/fold/operator as learned features, clean RGB or oracle action as learned input, R4/R4B predictions or missing scores, semantic labels, confirmation identities/outcomes, historical A1X outcomes, canary, locked test, and unregistered features.
+- Dataset/split/preprocessing/metric identities: exact 768-name development ledger, four frozen folds, test folds 0/1 with the other three folds fitting each outer model, paired D_ref/D_rep, historical candidate render and Haze4K label decode/crop, RGB MSE/PSNR on `[0,1]`, no exclusion, gain `<0` harm, gain `<=-0.2 dB` severe, and gain `<=-0.5 dB` hard.
+- Matched baseline and budget: four cells share exact input width by masking, MLP architecture, fold normalizer source, two seeds, 32 AdamW epochs, LR `1e-3`, weight decay `1e-4`, batch 64, data order, fixed coverage, and bootstrap draws; no early stopping, resume, or checkpoint selection.
+- Resource/cost limits or descriptive-only rationale: CPU-only cache replay reads 1,536 verified units and trains 16 fixed seed/cell/fold models; expected wall time 3,600 seconds and hard timeout 7,200 seconds; the CPU contract uses the production DCT/masks/model/loss/policy on protected-data-free tensors and a formal-size one-epoch timing probe to verify finite gradients, loss decrease, exact coverage, bounded iterations, and projected time/memory before workload.
+- Runner and required assets: unchanged generic `experience_docx/tools/run_route_operation.sh`; exact R3 ledger SHA-256 `521eb68c...`, cache-manifest SHA-256 `55350511...`, raw-manifest SHA-256 `3123f2da...`, candidate-cache directory, and Haze4K development directory; entrypoint `experience_docx/tools/r5_a0_spatial_response_sufficiency.py`.
+- Runtime spec and `contract --context` / `run --context` entrypoint: `experience_docx/route_runtime_specs/R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN.json`; the entrypoint implements only the exact generic two-phase interface.
+- Representative engineering fixture or metadata-only exemption: production DCT, masks, MLP, loss, optimizer, grouped policy, and finalizer run on synthetic `(1536, 2, 426)`-scale features in CPU contract; no exemption.
 
-## Implementation And Asset Boundary
+## Operations And Evidence
 
-- The official checkpoint must strict-load every official tensor with exact
-  shape. There are no new ConvIR parameters and no partial checkpoint load.
-- Only the diagnostic MLP is trainable. It must use a route-specific prefix and
-  never alter the official model builder/default behavior.
-- Candidate generation is a new R5 operation from the immutable anchor. It is
-  not a rerun, repair, or reconstruction of R4B-A1 and must not consume R4B-A1
-  checkpoints, omitted scores, or old predictions.
-- Allowed inputs: Haze4K development hazy/clean pairs for the frozen folds,
-  official checkpoint, fixed action/operator definitions, candidate/no-op RGB,
-  and the declared group/fold map. Clean RGB is a target/evaluation input only,
-  never a readout input.
-- Prohibited inputs: filenames as learned features, confirmation identities or
-  outcomes, historical A1X-432 outcomes, canary, locked test, semantic labels,
-  old R4/R4B predictions, GT-derived oracle action as a model input, and any
-  unregistered feature.
-- The draft asset manifest contains unresolved identities that block runtime
-  authorization. No route operation, runtime spec, entrypoint, cloud workspace,
-  output id, or launch receipt may be created from this draft.
+| Operation | Evidence role/scope | Gate | Pass authorizes |
+| --- | --- | --- | --- |
+| `R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN` | `development_screening`; outer folds 0/1, four fixed cells, two seeds, paired operators | complete identity/structure, material non-futility, layout specificity, fixed coverage, risk discrimination, tail and protected-cell safety | `R5_A1_FULL_OOF_CONTRACT_REVIEW_ONLY` |
 
-## Planned Evidence If Runtime Is Separately Authorized
+- First operation: R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN
+- Expected wall time and monitor profile: 3,600 seconds expected, 7,200 seconds hard timeout, `standard` monitor, one bounded startup observation and finish near the frozen ETA.
+- Complete-unit resume policy: `none`; any interruption uses a new output only after typed engineering review and cannot alter the scientific contract.
+- Cloud workspace/run/output/status/closeout: fresh route workspace; output id `r5-a0-spatial-response-screen-r1`; generic `status.txt`, `heartbeat.json`, and `runtime.log`; closeout `r5_a0_spatial_response_sufficiency_closeout.json`.
+- Compact Git evidence and cloud-only raw artifacts: Git receives the frozen contract, provenance/access/representation/structure/oracle/margin/label/harm/operator/fold-seed/risk-coverage/calibration/tail/bootstrap/gate/resource results, typed closeout, one scientific conclusion, and terminal index row; raw candidate tensors, per-image/action/operator/cell rows, per-seed scores, model states, logs, datasets, labels, images, and arrays remain cloud-only.
+- Required engineering terminal tuple: `FAILED_ENGINEERING / null / NONE`.
 
-GitHub compact evidence: immutable route card, typed asset/provenance and data
-role manifests, representation identity, factor/cell summary, oracle and margin
-summaries, label/operator/fold/seed stability, harm prevalence, fixed-coverage
-and descriptive risk-coverage results, calibration, protected-cell and tail
-results, grouped bootstrap, typed closeout, scientific conclusion, and terminal
-index record.
-
-Cloud-only evidence: raw per-image/action/operator/cell rows, candidate tensors,
-readout states, per-seed predictions, full logs, dataset content, images,
-arrays, and checkpoints.
-
-## Current Authorization
-
-Allowed now: read-only evidence verification, documentation maintenance, and
-review of this independent draft.
-
-Forbidden now: materializing runtime code/specs, generating candidate responses,
-training the diagnostic readout, running offline statistics, accessing any
-protected role, or launching R5. The only current action is contract review.
+The card is immutable after launch. Terminal interpretation belongs only in the
+science-fastpath conclusion JSON, and the typed closeout remains terminal
+authority.

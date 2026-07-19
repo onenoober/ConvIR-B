@@ -1,0 +1,29 @@
+{
+  "schema_version": 4,
+  "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
+  "rules_commit": "6443ec0daa1279d28f9c8970d75ac87578ace467",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-19-haze4k-v5-r5-spatial-candidate-response-sufficiency.md",
+  "operations": {
+    "R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN": {
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "mode": "r5_a0_spatial_response_sufficiency",
+      "require_gpu": false,
+      "output_id": "r5-a0-spatial-response-screen-r1",
+      "closeout_filename": "r5_a0_spatial_response_sufficiency_closeout.json",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "allowed_terminal_tuples": [
+        {"state": "COMPLETED_GATE_PASS", "decision": "R5_A0_SPATIAL_RESPONSE_NONFUTILITY_PASS", "authorizes": "R5_A1_FULL_OOF_CONTRACT_REVIEW_ONLY"},
+        {"state": "COMPLETED_GATE_INCONCLUSIVE", "decision": "R5_A0_SPATIAL_RESPONSE_INCONCLUSIVE_STOP", "authorizes": "NONE"},
+        {"state": "COMPLETED_GATE_FAIL", "decision": "R5_A0_SPATIAL_RESPONSE_FUTILITY_OR_SAFETY_FAIL_STOP", "authorizes": "NONE"},
+        {"state": "FAILED_ENGINEERING", "decision": null, "authorizes": "NONE"}
+      ],
+      "workspace_policy": "fresh_route",
+      "output_policy": "new",
+      "monitor_profile": "standard",
+      "heartbeat_timeout_seconds": 600,
+      "min_free_gpu_mib": 0,
+      "max_gpu_utilization_pct": 100
+    }
+  }
+}

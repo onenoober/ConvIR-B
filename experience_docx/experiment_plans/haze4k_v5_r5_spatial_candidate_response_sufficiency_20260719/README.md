@@ -2,9 +2,9 @@
 
 Date: 2026-07-19
 
-Status: `DRAFT_NOT_AUTHORIZED`
+Status: `MATERIALIZED_PRELAUNCH`
 
-Runtime authorization: `NONE`
+Runtime authorization: `R5_A0_USER_AUTHORIZED_PENDING_ROUTE_READY`
 
 ## Decision
 
@@ -22,12 +22,11 @@ rows have already answered the remaining low-cost descriptive questions about
 abstention, fold coverage, positive-only action selection, and candidate-risk
 concordance.
 
-The selected next action is therefore governance action D: establish one new
-independent route contract and do not run it. The proposed first scientific
-operation, if separately authorized later, isolates one new factor: preserving
-the spatial layout of candidate-minus-no-op response. This is narrower than
-generic spatial modeling and is explicitly distinguished from v4a-A1R and
-v4a-A1X.
+The selected route isolates one new factor: preserving the spatial layout of
+candidate-minus-no-op response. After independent review, the user authorized
+continuation in the frozen sequence. The route bundle is now materialized for
+one route-ready gate; scientific runtime remains conditional on an exact
+validated commit and sealed MCP plan.
 
 ## Package Index
 
@@ -56,10 +55,9 @@ v4a-A1X.
 This planning branch does not replace those authorities and must not add a row
 to `EXPERIMENT_TERMINAL_INDEX.jsonl` before a real typed terminal closeout.
 
-## Current Stop Line
+## Current Boundary
 
-Do not create `route_operations.json`, a runtime spec, an entrypoint, a cloud
-workspace, an output id, or a plan token. The next permissible event is an
-independent contract review that either rejects the draft or explicitly
-authorizes materialization of the first route bundle. Materialization still
-would not authorize scientific runtime.
+The route card, one operation, one runtime spec, one typed asset manifest, and
+one entrypoint may exist. Do not create a cloud workspace or plan token until
+the complete staged bundle passes the one route-ready gate and the exact commit
+is pushed. Only `R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN` is in scope.

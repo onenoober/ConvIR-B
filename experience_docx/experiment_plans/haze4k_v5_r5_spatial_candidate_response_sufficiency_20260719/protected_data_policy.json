@@ -1,19 +1,18 @@
 {
   "schema_version": 1,
   "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
-  "status": "DRAFT_BINDING_RESTRICTION",
-  "current_runtime_authorization": "NONE",
+  "status": "FROZEN_PRELAUNCH_RESTRICTION",
+  "current_runtime_authorization": "R5_A0_ONLY_AFTER_EXACT_ROUTE_READY_PLAN",
   "allowed_now": [
     "read-only verification of already public compact evidence",
     "documentation maintenance",
-    "independent review of this draft contract"
+    "implementation and static validation of the exact R5-A0 route bundle"
   ],
   "prohibited_now": [
-    "local or cloud scientific computation",
-    "candidate generation",
-    "training, evaluation, inference, or offline metric calculation",
-    "route plan or start",
-    "creation of a runtime bundle that could be mistaken for authorization"
+    "local scientific computation or runtime validation",
+    "candidate generation or R4B score reconstruction",
+    "any operation other than the exact validated R5-A0",
+    "plan or start before route-ready and exact GitHub commit verification"
   ],
   "future_a0_permissions_if_separately_authorized": {
     "engineering_debug": true,

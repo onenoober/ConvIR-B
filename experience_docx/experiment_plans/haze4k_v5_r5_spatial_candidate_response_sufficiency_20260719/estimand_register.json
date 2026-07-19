@@ -2,7 +2,7 @@
   "schema_version": 1,
   "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
   "operation_id": "R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN",
-  "status": "DRAFT_NOT_AUTHORIZED",
+  "status": "FROZEN_PRELAUNCH",
   "population": "Frozen Haze4K 768-image development ledger; provisional A0 outer test folds 0 and 1 only.",
   "analysis_unit": "clean_reference_image_group",
   "repeated_measurements": [

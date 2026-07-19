@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
-  "status": "DRAFT_ONLY_NOT_A_RUNTIME_ASSET_MANIFEST",
-  "runtime_authorization": "NONE",
+  "status": "SUPERSEDED_BY_TYPED_ROUTE_ASSET_MANIFEST",
+  "runtime_authorization": "R5_A0_ONLY_AFTER_ROUTE_READY_AND_EXACT_PLAN",
   "assets": [
     {
       "id": "official_architecture_anchor",
@@ -11,14 +11,6 @@
       "source": "github/codex/haze4k-official-arch-anchor",
       "access_role": "unrestricted",
       "identity_status": "verified_from_repository"
-    },
-    {
-      "id": "official_haze4k_checkpoint",
-      "kind": "file",
-      "cloud_path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
-      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
-      "access_role": "unrestricted_model_asset",
-      "identity_status": "historically_verified_runtime_recheck_required"
     },
     {
       "id": "haze4k_development_data",
@@ -70,10 +62,9 @@
     "canary",
     "locked test"
   ],
-  "blocking_items": [
-    "Exact development ledger/fold-map paths and SHA-256 identities are unresolved.",
-    "Exact D_ref/D_rep and three-action source/config identities are unresolved.",
-    "No runtime spec, operation manifest, or typed production asset manifest exists.",
-    "No independent review has authorized route materialization or runtime."
+  "resolved_for_typed_manifest": [
+    "The exact ledger, cache manifest, raw unit manifest, candidate-cache directory, and Haze4K development directory are frozen in experience_docx/route_assets/R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN.json.",
+    "The official checkpoint is intentionally absent because R5 replays frozen cache tensors and does not construct ConvIR or regenerate candidates.",
+    "Dynamic existence and file-hash checks remain owned by the generic cloud lifecycle before workload."
   ]
 }

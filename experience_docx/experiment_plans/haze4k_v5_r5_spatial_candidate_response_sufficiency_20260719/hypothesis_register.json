@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
-  "status": "DRAFT_NOT_AUTHORIZED",
+  "status": "FROZEN_PRELAUNCH",
   "evidence_cutoff": "2026-07-18T15:20:00+00:00",
   "hypotheses": [
     {

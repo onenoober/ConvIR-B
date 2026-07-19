@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
-  "current_stop_after_step": 4,
-  "runtime_authorization": "NONE",
+  "current_stop_after_step": 6,
+  "runtime_authorization": "R5_A0_USER_AUTHORIZED_PENDING_ROUTE_READY_AND_EXACT_PLAN",
   "steps": [
     {
       "order": 1,
@@ -26,33 +26,33 @@
       "order": 4,
       "name": "draft_independent_route_contract",
       "status": "completed",
-      "result": "R5 draft freezes one candidate-response spatial-layout factor, matched controls, fixed coverage, gates, protected-data policy, and terminal mapping; no runtime bundle exists."
+      "result": "R5 draft froze one candidate-response spatial-layout factor, matched controls, fixed coverage, gates, protected-data policy, and terminal mapping."
     },
     {
       "order": 5,
       "name": "independent_contract_review",
-      "status": "pending_requires_new_authorization",
+      "status": "completed",
       "pass_action": "Authorize only exact asset-identity completion and materialization of the first route-ready bundle.",
       "fail_action": "Reject or revise the contract before any code or runtime artifact exists."
     },
     {
       "order": 6,
       "name": "resolve_assets_and_materialize_a0_bundle",
-      "status": "blocked",
+      "status": "completed",
       "prerequisite": "Step 5 explicit approval",
-      "scope": "Exact route card, operation manifest, one runtime spec, one entrypoint, and typed asset manifest only. Runtime remains unauthorized."
+      "scope": "Exact route card, operation manifest, one runtime spec, one entrypoint, and typed asset manifest materialized; no scientific computation occurred."
     },
     {
       "order": 7,
       "name": "route_ready_validation_and_push",
-      "status": "blocked",
+      "status": "in_progress",
       "prerequisite": "Complete step 6 bundle",
       "scope": "One cloud-compliant route-ready validation, one commit, and one push; no plan or start."
     },
     {
       "order": 8,
       "name": "runtime_authorization_review",
-      "status": "blocked",
+      "status": "authorized_conditionally",
       "prerequisite": "Exact validated pushed route commit",
       "scope": "Separate decision on R5_A0 only."
     },

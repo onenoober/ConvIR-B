@@ -2,7 +2,7 @@
   "schema_version": 1,
   "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
   "operation_id": "R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN",
-  "status": "DRAFT_NOT_AUTHORIZED",
+  "status": "FROZEN_PRELAUNCH",
   "unique_primary_variable": "availability of all non-DC coefficients from the fixed 8x8 signed RGB candidate-minus-no-op response grid",
   "fixed_cells": [
     {
