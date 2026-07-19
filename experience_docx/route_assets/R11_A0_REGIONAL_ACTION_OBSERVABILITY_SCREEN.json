@@ -1,0 +1,15 @@
+{
+  "schema_version":1,
+  "route_id":"haze4k_v5_r11_regional_action_observability_20260719",
+  "operation_id":"R11_A0_REGIONAL_ACTION_OBSERVABILITY_SCREEN",
+  "assets":[
+    {"id":"a0_cache_manifest","kind":"file","path":"/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r3_proposal_first_acv_20260717/r3-a0-proposal-r4/workload/a0_cache_manifest.json","sha256":"553505119f228d9561b50db9816a27409189206f6c6e108485a81d7622593e47","access_role":"development_screening","contract_access":false},
+    {"id":"a0_raw_manifest","kind":"file","path":"/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r3_proposal_first_acv_20260717/r3-a0-proposal-r4/workload/a0_cache_units_cloud_only.jsonl","sha256":"3123f2da6ac5e969fea8590a6c97ddbca46adf0e573fb1c03bec7d7a6c7ebfcc","access_role":"development_screening","contract_access":false},
+    {"id":"a0_candidate_cache","kind":"directory","path":"/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r3_proposal_first_acv_20260717/r3-a0-proposal-r4/workload/candidate_cache_cloud_only","access_role":"development_screening","contract_access":false},
+    {"id":"haze4k_data","kind":"directory","path":"/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K","access_role":"development_screening","contract_access":false},
+    {"id":"r5_candidate_scores","kind":"file","path":"/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5-a0-spatial-response-screen-r2/workload/r5_a0_candidate_scores_cloud_only.csv","sha256":"53061beac134696216054e2aa4b2e6294313f0b9242a7f74a4346f79c30011a0","access_role":"development_screening","contract_access":false},
+    {"id":"r10_closeout","kind":"file","path":"{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r10_fixed_region_action_feasibility_20260719/r10_a0_fixed_region_action_feasibility_closeout.json","sha256":"fefc2c21fcbe4a215928e495920be2f4c698b0308de61236a22405d198718968","access_role":"development_screening","contract_access":false},
+    {"id":"r10_gate_summary","kind":"file","path":"{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r10_fixed_region_action_feasibility_20260719/r10_a0_gate_summary.json","sha256":"b014d6fab5c4242efc5731f22ee914cbb0e2d223c476159b354038276e99cd13","access_role":"development_screening","contract_access":false},
+    {"id":"r10_action_distribution","kind":"file","path":"{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r10_fixed_region_action_feasibility_20260719/r10_a0_region_action_distribution.json","sha256":"6074ae9d78877c02e3e015493e5d445501d925f96db82ba64fa2a1b7b579683b","access_role":"development_screening","contract_access":false}
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 4,
+  "route_id": "haze4k_v5_r11_regional_action_observability_20260719",
+  "rules_commit": "9f6800e278a4c15b81dadf0ec53d3c987987631d",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-19-haze4k-v5-r11-regional-observability.md",
+  "operations": {
+    "R11_A0_REGIONAL_ACTION_OBSERVABILITY_SCREEN": {
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "mode": "r11_a0_regional_action_observability",
+      "require_gpu": false,
+      "output_id": "r11-a0-regional-observability-r1",
+      "closeout_filename": "r11_a0_regional_action_observability_closeout.json",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "allowed_terminal_tuples": [
+        {"state":"COMPLETED_GATE_PASS","decision":"R11_A0_REGIONAL_OBSERVABILITY_PASS","authorizes":"R11_SAFE_REGIONAL_COVERAGE_CONTRACT_REVIEW_ONLY"},
+        {"state":"COMPLETED_GATE_INCONCLUSIVE","decision":"R11_A0_INPUT_OR_OBSERVABILITY_INCONCLUSIVE_STOP","authorizes":"NONE"},
+        {"state":"COMPLETED_GATE_FAIL","decision":"R11_A0_REGIONAL_OBSERVABILITY_FAIL_STOP","authorizes":"NONE"},
+        {"state":"FAILED_ENGINEERING","decision":null,"authorizes":"NONE"}
+      ],
+      "workspace_policy": "fresh_route",
+      "output_policy": "new",
+      "monitor_profile": "standard",
+      "heartbeat_timeout_seconds": 300,
+      "min_free_gpu_mib": 0,
+      "max_gpu_utilization_pct": 100
+    }
+  }
+}
