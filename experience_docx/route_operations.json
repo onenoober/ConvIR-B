@@ -1,0 +1,29 @@
+{
+  "schema_version": 4,
+  "route_id": "haze4k_v5_r8_r5_score_and_label_identity_20260719",
+  "rules_commit": "8a3533cfa6e2edb90b9905d9d2eb3d32bc0f8f56",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-19-haze4k-v5-r8-r5-score-label-identity.md",
+  "operations": {
+    "R8_A0_FROZEN_R5_SCORE_AND_LABEL_IDENTITY_AUDIT": {
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "mode": "r8_a0_r5_score_and_label_identity",
+      "require_gpu": false,
+      "output_id": "r8-a0-r5-score-label-identity-r1",
+      "closeout_filename": "r8_a0_score_and_label_identity_closeout.json",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "allowed_terminal_tuples": [
+        {"state": "COMPLETED_GATE_PASS", "decision": "R8_A0_SCORE_AND_LABEL_IDENTITY_PASS", "authorizes": "R8_NEXT_ATTRIBUTION_CONTRACT_REVIEW_ONLY"},
+        {"state": "COMPLETED_GATE_INCONCLUSIVE", "decision": "R8_A0_INPUT_IDENTITY_INCONCLUSIVE_STOP", "authorizes": "NONE"},
+        {"state": "COMPLETED_GATE_FAIL", "decision": "R8_A0_SCORE_LABEL_OR_POLICY_IDENTITY_FAIL_STOP", "authorizes": "NONE"},
+        {"state": "FAILED_ENGINEERING", "decision": null, "authorizes": "NONE"}
+      ],
+      "workspace_policy": "fresh_route",
+      "output_policy": "new",
+      "monitor_profile": "short",
+      "heartbeat_timeout_seconds": 300,
+      "min_free_gpu_mib": 0,
+      "max_gpu_utilization_pct": 100
+    }
+  }
+}

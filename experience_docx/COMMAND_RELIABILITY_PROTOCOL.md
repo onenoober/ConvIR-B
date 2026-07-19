@@ -63,6 +63,20 @@ apply the code-path and binary-extension predicates to the returned literal
 name list in PowerShell. Require explicit `MAIN_EVIDENCE_STAGE_AUDIT_OK` only
 after all predicates pass.
 
+### 2026-07-19 route-identity mechanical rename boundary
+
+Invalid form: generate one multi-file Perl program inside JavaScript and pass
+it through a PowerShell-quoted `wsl.exe ... perl -e` command. The generated
+program lost the loop-variable sigil before Perl execution and exited with
+`Missing $ on loop variable`; no repository file was written.
+
+Corrected form: invoke `/usr/bin/perl -pi -e` through fixed WSL argv once per
+literal old/new identity pair, with repository files supplied as literal argv.
+Use a delimiter absent from both literals (`#` for branch names containing
+`/`); the default `/` delimiter caused one later pair to stop before writing.
+Keep semantic changes in `apply_patch`, and require the staged route-ready gate
+before commit.
+
 ## Progress Contract
 
 Route entrypoints should call write_workload_progress from route_program_api for
