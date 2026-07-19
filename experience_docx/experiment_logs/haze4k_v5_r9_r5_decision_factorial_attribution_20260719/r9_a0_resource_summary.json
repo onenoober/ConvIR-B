@@ -1,0 +1,10 @@
+{
+  "bootstrap_draws": 4000,
+  "cpu_seconds": 10.037504977,
+  "gpu_used": false,
+  "max_rss_mib": 47.5,
+  "primary_rows_used": 2304,
+  "raw_rows_read": 9216,
+  "schema_version": 1,
+  "wall_seconds": 3.9474633568897843
+}

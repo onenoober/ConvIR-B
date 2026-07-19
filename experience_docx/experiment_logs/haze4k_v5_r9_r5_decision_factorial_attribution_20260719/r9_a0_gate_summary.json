@@ -1,0 +1,20 @@
+{
+  "all_single_pair_cells_decisively_excluded": false,
+  "attributed_cells": [
+    "P100",
+    "P010",
+    "P001",
+    "P110",
+    "P101",
+    "P011"
+  ],
+  "authorizes": "R9_NEXT_CONTRACT_REVIEW_ONLY",
+  "base_replay_valid": true,
+  "decision": "R9_A0_DECISION_FACTORIAL_ATTRIBUTION_PASS",
+  "diagnostic_gap_positive": true,
+  "r5_terminal_changed": false,
+  "r8_terminal_changed": false,
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "structural_valid": true
+}

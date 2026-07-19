@@ -1,0 +1,42 @@
+{
+  "actions": [
+    "state_positive_full",
+    "state_negative_full"
+  ],
+  "bootstrap_draws": 4000,
+  "bootstrap_seed": 3407,
+  "candidate_source": "R8_verified_authoritative_R5_ensemble_rows",
+  "cells": [
+    "P000",
+    "P001",
+    "P010",
+    "P011",
+    "P100",
+    "P101",
+    "P110",
+    "P111"
+  ],
+  "coverage": 0.2,
+  "folds": [
+    0,
+    1
+  ],
+  "operation_id": "R9_A0_FROZEN_R5_DECISION_FACTORIAL_ATTRIBUTION_AUDIT",
+  "operators": [
+    "D_ref",
+    "D_rep"
+  ],
+  "per_seed_reconstruction": false,
+  "route_id": "haze4k_v5_r9_r5_decision_factorial_attribution_20260719",
+  "runtime_schema_evidence_role": "development_screening",
+  "schema_version": 1,
+  "scientific_evidence_role": "post_hoc_development_mechanism_diagnostic",
+  "selected_per_fold": 39,
+  "thresholds": {
+    "hard_gain_db": -0.5,
+    "regret_recovery": 0.25,
+    "safety_noninferiority_db": -0.005,
+    "severe_gain_db": -0.2,
+    "utility_delta_db": 0.005
+  }
+}

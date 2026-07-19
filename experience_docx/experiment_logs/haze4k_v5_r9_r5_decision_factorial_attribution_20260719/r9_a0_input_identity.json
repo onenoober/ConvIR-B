@@ -1,0 +1,28 @@
+{
+  "asset_sha256": {
+    "r5_bootstrap_summary": "2e5154ff99244f06e773582cf59e4849124286e83cd6b3392e0bb5b7dd1e49ee",
+    "r5_candidate_scores": "53061beac134696216054e2aa4b2e6294313f0b9242a7f74a4346f79c30011a0",
+    "r5_cell_summary": "8498491e17937129ae2d90155b91848805f6f89eb862cf08e1daa1b87b4d1f3b",
+    "r5_closeout": "e8d6151a9d7fc1198db1db1a0fc44e2de91da0bea0f4a01053c68bf0d5c0e4e7",
+    "r5_gate_summary": "b8a28db1d718e685536bf4b34903f4dbe57b7ec749de2195af1ef30527fd2594",
+    "r5_policy_rows": "63c1aa4c7447e0fdb55611507eedbe0fd940f9cef10f0163e86f986a16baf150",
+    "r8_closeout": "4254840b803235d0eb060cbc8a5bbaca8c27c9f10fc6ed70064da0c6238d6ede"
+  },
+  "r5_closeout_terminal": {
+    "authorizes": "NONE",
+    "decision": "R5_A0_SPATIAL_RESPONSE_FUTILITY_OR_SAFETY_FAIL_STOP",
+    "state": "COMPLETED_GATE_FAIL"
+  },
+  "r8_closeout_terminal": {
+    "authorizes": "R8_NEXT_ATTRIBUTION_CONTRACT_REVIEW_ONLY",
+    "decision": "R8_A0_SCORE_AND_LABEL_IDENTITY_PASS",
+    "state": "COMPLETED_GATE_PASS"
+  },
+  "row_counts": {
+    "candidate_rows": 6144,
+    "policy_rows": 3072,
+    "primary_candidate_rows": 1536,
+    "primary_policy_rows": 768
+  },
+  "schema_version": 1
+}

@@ -1,0 +1,98 @@
+{
+  "authorizes": "R9_NEXT_CONTRACT_REVIEW_ONLY",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "R9_A0_DECISION_FACTORIAL_ATTRIBUTION_PASS",
+  "details": {
+    "attributed_cells": [
+      "P100",
+      "P010",
+      "P001",
+      "P110",
+      "P101",
+      "P011"
+    ],
+    "base_gain_db": 0.025940994421641033,
+    "base_selected_hard_groups": 3,
+    "base_selected_severe_groups": 10,
+    "diagnostic_ceiling_gain_db": 0.0927727719148,
+    "diagnostic_gap_db": 0.06683177749315897,
+    "r5_terminal_changed": false,
+    "r8_terminal_changed": false
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "r9_a0_base_replay_summary.json": "e8899699ce5a8dbb303233d162e51a06204ed53cab4269a4896cf596b5b17aa0",
+    "r9_a0_bootstrap_summary.json": "6998c17eda1b500cdff71ce97da09daf07af711956f8f49ca216d9e016e8f2e6",
+    "r9_a0_component_attribution.csv": "9b9121b0bb3048bd00211090034d52f22a96df2bab35a88446708345a6b46a96",
+    "r9_a0_contract_summary.json": "9ec786e8d7b1de807740c834590767eaf7968c747d153871fb8e9f3ca77da474",
+    "r9_a0_factorial_cell_summary.csv": "5585c218866e5bbffce4d114cd850c2f6ebaca123ef3e9b6a29932e200e6e9c3",
+    "r9_a0_gate_summary.json": "4f5fc86851d6e7d2ed76da54cf727f4da6d851d8ef15e2833e598499b803e955",
+    "r9_a0_input_identity.json": "714480715d5a86e0c0f6d5987b1e689e3413d6748846253f31cf91e62785ba4f",
+    "r9_a0_interaction_summary.csv": "ea2a0285e2a13f0ee84d19de98fbc83fa422d4d7b78ad596240f859fb3e0f137",
+    "r9_a0_provenance_and_access.json": "d8a0f72d806ba069ab92d6a897104b232c47ce5265ffe1d394550ddffaad8748",
+    "r9_a0_resource_summary.json": "0a26df71cedbb6d7929335e73bc19908ce6f66ecf6dd26b77a5a204fba14beff",
+    "r9_a0_risk_veto_summary.csv": "e7852234303137fa4a807eb3ce3b2d398d84f1930cab5ba5ace6580d8767a83c"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "R9_A0_FROZEN_R5_DECISION_FACTORIAL_ATTRIBUTION_AUDIT",
+  "returncode": 0,
+  "route_commit": "3f72363850d8f51268163f1cad3d15ca7d40cd74",
+  "route_id": "haze4k_v5_r9_r5_decision_factorial_attribution_20260719",
+  "run_id": "r9-a0-r5-decision-factorial-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_bootstrap_summary",
+      "kind": "file",
+      "sha256": "2e5154ff99244f06e773582cf59e4849124286e83cd6b3392e0bb5b7dd1e49ee"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_candidate_scores",
+      "kind": "file",
+      "sha256": "53061beac134696216054e2aa4b2e6294313f0b9242a7f74a4346f79c30011a0"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_cell_summary",
+      "kind": "file",
+      "sha256": "8498491e17937129ae2d90155b91848805f6f89eb862cf08e1daa1b87b4d1f3b"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_closeout",
+      "kind": "file",
+      "sha256": "e8d6151a9d7fc1198db1db1a0fc44e2de91da0bea0f4a01053c68bf0d5c0e4e7"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_gate_summary",
+      "kind": "file",
+      "sha256": "b8a28db1d718e685536bf4b34903f4dbe57b7ec749de2195af1ef30527fd2594"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_policy_rows",
+      "kind": "file",
+      "sha256": "63c1aa4c7447e0fdb55611507eedbe0fd940f9cef10f0163e86f986a16baf150"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r8_closeout",
+      "kind": "file",
+      "sha256": "4254840b803235d0eb060cbc8a5bbaca8c27c9f10fc6ed70064da0c6238d6ede"
+    }
+  ]
+}

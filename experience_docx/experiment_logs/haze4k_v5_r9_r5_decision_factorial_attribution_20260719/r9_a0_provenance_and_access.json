@@ -1,0 +1,29 @@
+{
+  "canary_touched": false,
+  "candidate_generation_rerun": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "inference_run": false,
+  "locked_test_touched": false,
+  "per_seed_reconstruction": false,
+  "r5_terminal_preserved": true,
+  "r6_terminal_preserved": true,
+  "r7_terminal_preserved": true,
+  "r8_terminal_preserved": true,
+  "route_commit": "3f72363850d8f51268163f1cad3d15ca7d40cd74",
+  "schema_version": 1,
+  "source_r5_identity": {
+    "operation_id": "R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN",
+    "route_commit": "7e75eed504b2ead65a1971ec250dc7f59a79574d",
+    "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
+    "run_id": "r5-a0-spatial-response-screen-r2",
+    "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b"
+  },
+  "source_r8_identity": {
+    "operation_id": "R8_A0_FROZEN_R5_SCORE_AND_LABEL_IDENTITY_AUDIT",
+    "route_commit": "8a0238f303a8195248b5c06d2c300da82c9d9dbd",
+    "route_id": "haze4k_v5_r8_r5_score_and_label_identity_20260719",
+    "run_id": "r8-a0-r5-score-label-identity-r1",
+    "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b"
+  },
+  "training_run": false
+}

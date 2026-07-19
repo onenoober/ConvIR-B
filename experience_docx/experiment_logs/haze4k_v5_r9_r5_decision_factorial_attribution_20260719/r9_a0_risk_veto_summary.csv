@@ -1,0 +1,9 @@
+cell,removed_mean_predicted_severe_score,risk_oracle,safe_backfilled_groups,selected_hard_groups,selected_mean_predicted_severe_score,selected_severe_groups,top39_removed_groups,unsafe_ineligible_groups
+P000,,0,0,3,0.06315091792739388,10,0,0
+P001,0.16813441850244998,1,10,0,0.05065733409456021,0,10,53
+P010,,0,0,0,0.07501102614659406,0,0,0
+P011,,1,0,0,0.07501102614659406,0,0,53
+P100,,0,0,0,0.051240587237955625,0,0,0
+P101,,1,0,0,0.051240587237955625,0,0,0
+P110,,0,0,0,0.12555025968033126,0,0,0
+P111,,1,0,0,0.12555025968033126,0,0,0

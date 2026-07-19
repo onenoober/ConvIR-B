@@ -1,0 +1,40 @@
+{
+  "checks": {
+    "all_policy_rows_exact": true,
+    "assignment_operator_invariant": true,
+    "base_d_ref_frozen_value": true,
+    "base_d_rep_frozen_value": true,
+    "base_worse_gain_frozen_value": true,
+    "coverage_exact": true,
+    "d_ref_gain_exact": true,
+    "d_rep_gain_exact": true,
+    "gain_lcb95_exact": true,
+    "gain_point_exact": true,
+    "gain_ucb95_exact": true,
+    "gate_counts_exact": true,
+    "hard_exact": true,
+    "negative_selection_exact": true,
+    "per_fold_coverage_exact": true,
+    "retention_lcb95_exact": true,
+    "retention_point_exact": true,
+    "retention_ucb95_exact": true,
+    "severe_exact": true
+  },
+  "counts": {
+    "hard": 3,
+    "negative": 9,
+    "selected": 78,
+    "severe": 10
+  },
+  "point": {
+    "cvar5": -0.24120454788208007,
+    "d_ref_gain": 0.02670895556608836,
+    "d_rep_gain": 0.025940994421641033,
+    "gain": 0.025940994421641033,
+    "retention": 0.17238735606707134
+  },
+  "policy_max_abs_difference": 0.0,
+  "policy_row_mismatches": 0,
+  "schema_version": 1,
+  "valid": true
+}

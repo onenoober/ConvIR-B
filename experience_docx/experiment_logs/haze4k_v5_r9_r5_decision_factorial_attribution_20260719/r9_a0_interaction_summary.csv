@@ -1,0 +1,4 @@
+interaction,interpretation,lcb95_db,point_db,ucb95_db
+action_x_coverage,descriptive_coupling_only,-0.020482725277543076,-0.009052296479543056,0.0023960170646508522
+action_x_risk,descriptive_coupling_only,-0.02046394161880016,-0.012758101026217144,-0.00620717257261276
+coverage_x_risk,descriptive_coupling_only,-0.02046394161880016,-0.012758101026217144,-0.00620717257261276

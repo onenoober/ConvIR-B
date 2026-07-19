@@ -1,0 +1,27 @@
+{
+  "authorizes": "R9_NEXT_CONTRACT_REVIEW_ONLY",
+  "competing_explanation": "Wrong signed action identity and missing explicit severe-risk veto are real secondary contributors, but neither is the primary utility explanation under this frozen whole-image action bank. Action-only P100 improves mean gain by 0.015320564309755962 dB and removes all severe/hard selections, yet its regret-recovery LCB95 is 0.13795433924409112, below the 0.25 utility threshold. Risk-only P001 safely replaces 10 severe top-39 selections and removes all severe/hard events, but its regret-recovery LCB95 is 0.10011444402143999. Coverage-only P010 recovers 0.9062082729902772 of the P111-P000 gap with LCB95 0.7640446109821991, making coverage/readout conflict the dominant utility mechanism in this diagnostic.",
+  "decision": "R9_A0_DECISION_FACTORIAL_ATTRIBUTION_PASS",
+  "gate_reasons": [
+    "The full R5 P000 base policy replays exactly: 0/768 primary policy-row mismatches, maximum absolute field difference 0, 78 selected groups, 9 negative actions, 10 severe groups, 3 hard groups, D_ref gain 0.02670895556608836 dB, D_rep/worse-operator gain 0.025940994421641033 dB, and exact R5 gain/retention bootstrap intervals.",
+    "The diagnostic P111-P000 gain gap is positive and material at 0.06683177749315897 dB with paired-bootstrap LCB95 0.04760682806372642 dB and UCB95 0.0873010693738858 dB.",
+    "Coverage-only P010 is utility- and safety-attributable: gain delta 0.06056350966294606 dB, LCB95 0.0446635061254104 dB, regret recovery 0.9062082729902772 with LCB95 0.7640446109821991, CVaR5 delta LCB95 0.12161887168884278 dB, and zero selected severe/hard groups.",
+    "Action-only P100 is safety-attributable but not utility-attributable: gain-delta LCB95 is 0.008676786720752715 dB and severe/hard counts are zero, while regret-recovery LCB95 0.13795433924409112 misses the fixed 0.25 utility threshold.",
+    "Risk-only P001 is safety-attributable but not utility-attributable: it removes 10 unsafe names from the original top-39 selections, backfills 10 safe names at fixed coverage, changes severe/hard counts from 10/3 to 0/0, and has gain-delta LCB95 0.006207172572612761 dB, while regret-recovery LCB95 0.10011444402143999 misses 0.25.",
+    "Action plus coverage P110 reaches the diagnostic ceiling P111: gain delta 0.06683177749315897 dB, regret recovery exactly 1.0 in every paired draw, worse-operator gain 0.0927727719148 dB, retention 0.6165088587376564, and zero severe/hard selections.",
+    "All assets, folds, operators, action rows and protected-data flags passed the frozen structural contract; 4,000 paired clean-image grouped bootstrap draws completed with no confirmation, canary, locked-test, training, inference or candidate-reconstruction access."
+  ],
+  "limitations": [
+    "R9 is a category-C post-hoc development mechanism diagnostic on 384 Haze4K development images and the frozen R5 whole-image two-action bank; it is not independent confirmation and cannot change the R5, R6, R7 or R8 terminal decisions.",
+    "P010, P110 and P111 use true outcome utility for diagnostic coverage/action assignment and are privileged ceilings, not deployable policies. The result localizes missing readout/coverage conversion but does not show that an observable model can reproduce the ordering.",
+    "The six listed attributed cells are not six equivalent utility successes: P100, P001 and P101 pass only the safety-attribution gate, whereas P010, P110 and P011 pass both utility and safety gates.",
+    "Risk veto adds no further selected-set change after true-utility coverage or oracle action has already avoided severe candidates; this is redundancy within the frozen factorial, not evidence that risk modeling is unnecessary in deployable settings.",
+    "The analysis has no region rows, semantic labels, per-region utilities, light-haze/protected-region subgroup contract or independent real nonuniform-haze validation, so it cannot yet establish regional adaptive restoration behavior.",
+    "PASS authorizes only review of one new contract informed by this localization. It does not automatically authorize training, inference, full grouped OOF, confirmation, canary, locked test, deployment, threshold tuning or architecture search."
+  ],
+  "operation_id": "R9_A0_FROZEN_R5_DECISION_FACTORIAL_ATTRIBUTION_AUDIT",
+  "primary_result": "R9 passes the frozen Action x Coverage x Risk attribution diagnostic. Coverage/readout conflict is the dominant recoverable whole-image utility bottleneck: true-utility coverage with the saved action recovers about 90.6% of the diagnostic gap while eliminating severe and hard selections. Action identity and an explicit severe-risk veto are secondary safety mechanisms that independently eliminate the observed tail harms but do not individually recover the preregistered share of utility. The next scientific step should therefore be a new contract for observable safe coverage/ranking with explicit action and risk safeguards, not direct model training or threshold search.",
+  "route_id": "haze4k_v5_r9_r5_decision_factorial_attribution_20260719",
+  "run_id": "r9-a0-r5-decision-factorial-r1",
+  "schema_version": 1
+}
