@@ -1,0 +1,15 @@
+{
+  "action_sign_channels": 1,
+  "coordinate_channels": 2,
+  "feature_dim": 303,
+  "global_channels": 30,
+  "neighborhood": [
+    3,
+    3
+  ],
+  "normalizer_source": "primary_outer_training_rows_only",
+  "oracle_budget_is_leakage_ineligible": true,
+  "response_channels_paired": 18,
+  "schema_version": 1,
+  "state_channels_paired": 12
+}

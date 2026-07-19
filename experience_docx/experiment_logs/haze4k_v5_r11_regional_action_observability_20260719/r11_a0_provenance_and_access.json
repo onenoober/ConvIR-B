@@ -1,0 +1,14 @@
+{
+  "broader_r3_ledger_opened": false,
+  "canary_touched": false,
+  "candidate_generation_rerun": false,
+  "checkpoint_loaded": false,
+  "confirmation_touched": false,
+  "diagnostic_probe_fitted": true,
+  "locked_test_touched": false,
+  "r10_terminal_preserved": true,
+  "restoration_model_inference_run": false,
+  "restoration_model_training_run": false,
+  "route_commit": "c183817e2b3befdeeb12278aa6e6a0574883b6d5",
+  "schema_version": 1
+}

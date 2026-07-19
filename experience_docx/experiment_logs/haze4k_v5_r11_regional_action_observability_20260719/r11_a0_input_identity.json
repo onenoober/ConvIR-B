@@ -1,0 +1,24 @@
+{
+  "asset_sha256": {
+    "a0_cache_manifest": "553505119f228d9561b50db9816a27409189206f6c6e108485a81d7622593e47",
+    "a0_candidate_cache": null,
+    "a0_raw_manifest": "3123f2da6ac5e969fea8590a6c97ddbca46adf0e573fb1c03bec7d7a6c7ebfcc",
+    "haze4k_data": null,
+    "r10_action_distribution": "6074ae9d78877c02e3e015493e5d445501d925f96db82ba64fa2a1b7b579683b",
+    "r10_closeout": "fefc2c21fcbe4a215928e495920be2f4c698b0308de61236a22405d198718968",
+    "r10_gate_summary": "b014d6fab5c4242efc5731f22ee914cbb0e2d223c476159b354038276e99cd13",
+    "r5_candidate_scores": "53061beac134696216054e2aa4b2e6294313f0b9242a7f74a4346f79c30011a0"
+  },
+  "cache_manifest_internal_identity": "b54603b51c810436c14bc9e993aef9f1294902efbc51fadebdd2c84d7c827a1d",
+  "candidate_rows": 6144,
+  "evaluated_names": 384,
+  "evaluated_units": 768,
+  "no_op_render_mismatches": 0,
+  "partition_sse_max_abs_difference": 2.2737367544323206e-13,
+  "primary_candidate_rows": 1536,
+  "raw_manifest_rows": 1536,
+  "schema_version": 1,
+  "target_max_abs_difference": 0.0,
+  "target_mismatches": 0,
+  "tile_action_rows": 49152
+}

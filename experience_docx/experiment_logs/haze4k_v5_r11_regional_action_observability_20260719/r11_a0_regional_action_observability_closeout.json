@@ -1,0 +1,101 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "R11_A0_REGIONAL_OBSERVABILITY_FAIL_STOP",
+  "details": {
+    "both_folds_material": false,
+    "oracle_retention": 0.3701027959330266,
+    "primary_gain_db": 0.0884324945844307,
+    "primary_hard_groups": 2,
+    "primary_minus_generic_db": -0.010954389798574299,
+    "primary_minus_global_db": -0.0625368741160323,
+    "primary_minus_pooled_db": -0.002899662270027928,
+    "primary_minus_shuffle_db": -0.0002767181593677781,
+    "primary_severe_groups": 9,
+    "r10_terminal_changed": false,
+    "seed_stability": true
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "r11_a0_bootstrap_summary.json": "0546802ce68714bb226f6b62ba57368c624c718a509c8b47c4a03d377e36965d",
+    "r11_a0_calibration_summary.csv": "e38d0f05eae4b0c88c8da36bdb738dc2f6b8384f5788a024e1778678e067d374",
+    "r11_a0_cell_summary.csv": "b9a21711950156e1c25e9fb11bbf81e961b5bac333d0ecd570f6086f6b9dc054",
+    "r11_a0_contract_summary.json": "1012d57318cab156c35f67932511444f11dbf1e11b3a4aa5dabf240c7d53dfbd",
+    "r11_a0_fold_seed_stability.csv": "d3c881accbf197f7cb9d35b3a4ed315fe709aef7784550a31c60096ac749cffd",
+    "r11_a0_gate_summary.json": "ede9b01ab4adbd1dd7bf5b4dc0a7206c01ba4cac97d50f0845fa4502ff564e38",
+    "r11_a0_input_identity.json": "04ec1774416d08f8167dc2bd1e58ccf6001851a7b406c45ee299124c1aa55aff",
+    "r11_a0_label_stability.json": "3ad24b7d1e2b8d35d66b3b1afa7a459b7ce28d7b447aa14bbec8eddf67cf462d",
+    "r11_a0_operator_consistency.json": "ff40a4da61daa764326a709abbfd26bc8317dc79676f59cfdb298cebf9b0d2de",
+    "r11_a0_oracle_replay.json": "e39813fd359ec416e924da6917bb9d4ce4fdc12f5bef3a87039e37e6675915db",
+    "r11_a0_provenance_and_access.json": "5c9fbab70be152241e32959692f49a64261cfb304fbe9401c54d8a2e20011ec6",
+    "r11_a0_representation_identity.json": "ec7cecc222017591a216c9e41de732745cd6b4c0673c43e06004c52e333b3784",
+    "r11_a0_resource_summary.json": "976ab5ab880c9c22b48787b84615fbac37e9898c4b758823127625d6077fcab6"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "R11_A0_REGIONAL_ACTION_OBSERVABILITY_SCREEN",
+  "returncode": 0,
+  "route_commit": "c183817e2b3befdeeb12278aa6e6a0574883b6d5",
+  "route_id": "haze4k_v5_r11_regional_action_observability_20260719",
+  "run_id": "r11-a0-regional-observability-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_cache_manifest",
+      "kind": "file",
+      "sha256": "553505119f228d9561b50db9816a27409189206f6c6e108485a81d7622593e47"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_candidate_cache",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "a0_raw_manifest",
+      "kind": "file",
+      "sha256": "3123f2da6ac5e969fea8590a6c97ddbca46adf0e573fb1c03bec7d7a6c7ebfcc"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_data",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r10_action_distribution",
+      "kind": "file",
+      "sha256": "6074ae9d78877c02e3e015493e5d445501d925f96db82ba64fa2a1b7b579683b"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r10_closeout",
+      "kind": "file",
+      "sha256": "fefc2c21fcbe4a215928e495920be2f4c698b0308de61236a22405d198718968"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r10_gate_summary",
+      "kind": "file",
+      "sha256": "b014d6fab5c4242efc5731f22ee914cbb0e2d223c476159b354038276e99cd13"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_candidate_scores",
+      "kind": "file",
+      "sha256": "53061beac134696216054e2aa4b2e6294313f0b9242a7f74a4346f79c30011a0"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "batch_size": 256,
+  "bootstrap_draws": 4000,
+  "bootstrap_seed": 3407,
+  "cells": [
+    "L1_LOCAL_CANDIDATE_CONTEXT",
+    "P0_POOLED_CANDIDATE_RESPONSE",
+    "S2_WITHIN_IMAGE_RESPONSE_SHUFFLE",
+    "G0_LOCAL_STATE_ONLY"
+  ],
+  "epochs": 24,
+  "feature_dim": 303,
+  "folds": [
+    0,
+    1
+  ],
+  "operation_id": "R11_A0_REGIONAL_ACTION_OBSERVABILITY_SCREEN",
+  "route_id": "haze4k_v5_r11_regional_action_observability_20260719",
+  "schema_version": 1,
+  "scientific_role": "development_oof_mechanism_screen",
+  "seeds": [
+    3407,
+    3411
+  ],
+  "thresholds": {
+    "absolute_gain_db": 0.02,
+    "hard_gain_db": -0.5,
+    "increment_gain_db": 0.005,
+    "local_gain_db": 0.005,
+    "retention": 0.25,
+    "seed_range_db": 0.02,
+    "severe_gain_db": -0.2,
+    "tail_margin_db": -0.005
+  }
+}

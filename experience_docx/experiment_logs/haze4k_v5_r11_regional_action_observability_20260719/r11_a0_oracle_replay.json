@@ -1,0 +1,13 @@
+{
+  "bidirectional_fraction": 0.765625,
+  "fold_metric_mismatches": 0,
+  "local_materiality_violations": 0,
+  "mixed_fraction": 0.90625,
+  "schema_version": 1,
+  "tile_counts": {
+    "reference_noop": 10206,
+    "state_negative_full": 5315,
+    "state_positive_full": 9055
+  },
+  "worse_operator_gain_db": 0.2389403580740129
+}

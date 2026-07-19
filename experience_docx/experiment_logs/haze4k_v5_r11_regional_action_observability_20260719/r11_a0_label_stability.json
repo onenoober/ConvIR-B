@@ -1,0 +1,7 @@
+{
+  "operator_eligibility_agreement": 0.99017333984375,
+  "oracle_margin_mean_db": 0.2534113521727388,
+  "oracle_margin_median_db": 0.034750198470494265,
+  "oracle_margin_p10_db": 0.0,
+  "schema_version": 1
+}
