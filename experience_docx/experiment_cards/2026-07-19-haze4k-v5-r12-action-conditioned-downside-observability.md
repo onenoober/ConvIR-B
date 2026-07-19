@@ -33,7 +33,7 @@ Status: PLANNED
 - Dataset/split/preprocessing/metric identities: exact R11 folds0/1, active actions 1/2, fixed severe label `actual_worst<=-0.2 dB`, normalized 8x8 coordinates, outer-training-only normalizer, balanced binary log loss, clean-image macro metrics with fold-stratified grouped bootstrap.
 - Matched baseline and budget: all cells share rows, feature width, outer folds, normalizer, optimizer, iterations, labels at evaluation, bootstrap and gates. Action-agnostic zeros action terms; sign-swap swaps positive/negative predicted score pairs within name/tile; label-shuffle permutes outer-training labels within each image using a name-bound deterministic seed.
 - Resource/cost limits or descriptive-only rationale: CPU-only calibration screen; expected 120 seconds, hard timeout 600 seconds, no resume. The protected-data-free contract uses all 49,152 formal-shape rows, eight deterministic fits and 4,000 grouped-bootstrap draws; wall time must be `<=120` seconds and peak RSS `<=1024 MiB`.
-- Runner and required assets: unchanged generic runner SHA-256 `336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b`; R11 closeout SHA-256 `0e6bc5a70cd86f2aa58a34004bb895ad0295b6d7a5b2f619695878de38d4eec9`; R11 cloud tile predictions SHA-256 `e45ae4b11843063fc4cd0360ebcc7f7e872989bc6f9657228ee1de9b90bb16c7`.
+- Runner and required assets: unchanged generic runner SHA-256 `336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b`; R11 closeout SHA-256 `0e6bc5a70cd86f2aa58a34004bb895ad0295b6d7a5b2f619695878de38d4eec9`; R11 cloud tile predictions SHA-256 `8f486c4c3e2cc699de9336aeb93be87dd99fb06c6f7708e377f2095a94236d3a`.
 - Runtime spec and `contract --context` / `run --context` entrypoint: `experience_docx/route_runtime_specs/R12_A0_ACTION_CONDITIONED_DOWNSIDE_OBSERVABILITY_SCREEN.json` and `experience_docx/tools/r12_a0_action_conditioned_downside_observability.py`.
 - Representative engineering fixture or metadata-only exemption: the entrypoint's production fit, controls, AUROC, risk-coverage, grouped bootstrap and finalizer run on a protected-data-free formal-shape synthetic fixture under the frozen cost bound.
 
@@ -46,7 +46,7 @@ Status: PLANNED
 - First operation: R12_A0_ACTION_CONDITIONED_DOWNSIDE_OBSERVABILITY_SCREEN
 - Expected wall time and monitor profile: 120 seconds expected, 600 seconds hard timeout, `short` profile.
 - Complete-unit resume policy: `none`; interruption requires typed engineering review and a new output identity without scientific changes.
-- Cloud workspace/run/output/status/closeout: fresh workspace; output `r12-a0-action-downside-r1`; closeout `r12_a0_action_conditioned_downside_observability_closeout.json`.
+- Cloud workspace/run/output/status/closeout: fresh workspace; output `r12-a0-action-downside-r2`; closeout `r12_a0_action_conditioned_downside_observability_closeout.json`.
 - Compact Git evidence and cloud-only raw artifacts: Git receives contract/provenance/input/cell/fold/bootstrap/risk-coverage/gate/resource evidence, typed closeout and one conclusion. Row scores, bootstrap arrays and runtime logs remain cloud-only.
 - Required engineering terminal tuple: `FAILED_ENGINEERING / null / NONE`.
 
