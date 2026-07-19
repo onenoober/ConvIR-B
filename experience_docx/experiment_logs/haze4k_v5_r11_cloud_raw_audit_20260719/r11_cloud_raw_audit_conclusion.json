@@ -1,0 +1,26 @@
+{
+  "authorizes": "NONE",
+  "competing_explanation": "The positive R11 mean is not solely a handful-of-images artifact: after removing the highest-gain 10% of images the worse-operator mean remains +0.04456 dB. But aligned response is no better than pooled or shuffled response and worse than generic state, exact signed-action agreement averages only 0.511 and drops to 0.262 on severe images, while high predicted scores retain substantial harm. The evidence therefore favors generic difficulty plus weakly calibrated placement/sign ranking over observable candidate-specific relative utility.",
+  "decision": "R11_ORIGINAL_BOTTLENECK_SUPPORTED_BUT_NARROWED",
+  "gate_reasons": [
+    "All eight whitelisted development assets match their recorded file identities; 768/768 formal cache units and 14,236,968,704 bytes match their manifest hashes with zero missing units or mismatches.",
+    "The 384 unique image rows, two balanced 192-image folds and 49,152 tile/action rows are complete; confirmation, canary and locked test remain untouched.",
+    "The independent fold-stratified 4,000-draw bootstrap reproduces every official point, LCB95 and UCB95 exactly; maximum absolute discrepancy is 0.0.",
+    "Net gain is concentrated but not wholly outlier-created: the best 10% of images contribute 54.7% of net gain, while the mean after dropping them remains +0.04456 dB.",
+    "The exact-budget replay places only 51.1% of all actions correctly on average and 26.2% on the nine severe images. Of 14,370 selected active tiles, 3,949 have negative local utility, 2,055 are <=-0.2 dB and 1,180 are <=-0.5 dB.",
+    "Prediction calibration is weak: tile eligibility AUROC is 0.5785, predicted-versus-actual worst utility Pearson is 0.2914, and even the top-score 10% of selected tiles contain 331 harmful, 306 severe and 251 hard local utilities.",
+    "Only 0.5229% of tile/action rows lie within +/-0.001 dB of the frozen +0.005 dB eligibility threshold; small threshold perturbations do not explain the formal control failure, although +/-0.005 dB spans about 31.0% of rows and limits broad label-margin claims."
+  ],
+  "limitations": [
+    "The audit is post-hoc development evidence and cannot modify the R11 terminal decision or authorize a continuation.",
+    "R11 fixes the outcome-derived R10 action count, so it contains no deployable abstention or coverage decision; retention loss cannot be attributed to over-abstention.",
+    "Tile local-utility diagnostics explain placement and sign behavior, but formal safety remains the image-level composite PSNR replay.",
+    "Only two 192-image folds and two seeds exist; fold-0 contains seven of nine severe images, but both folds independently fail the incremental/global lines.",
+    "No fog-severity, semantic, protected-region, external-domain, confirmation, canary or locked-test labels were read. Fixed-grid position variation cannot be interpreted semantically."
+  ],
+  "operation_id": "R11_CLOUD_RAW_READ_ONLY_AUDIT",
+  "primary_result": "Cloud raw evidence exactly reproduces the formal R11 FAIL and supports but narrows the bottleneck: the frozen representation/readout loses candidate-conditioned relative signed utility at placement/sign assignment and does not calibrate action-conditional downside. Mean benefit is real within the reused development population, but is non-specific and unsafe.",
+  "route_id": "haze4k_v5_r11_cloud_raw_audit_20260719",
+  "run_id": "r11-cloud-raw-audit-r2",
+  "schema_version": 1
+}

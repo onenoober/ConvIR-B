@@ -8,6 +8,12 @@ receipt-bound post-hoc audit and R5's preregistered development screen jointly
 narrow the functional bottleneck; the family remains closed and authorizes no
 next stage.
 
+The later R11 cloud raw audit is post-hoc and cutoff-bound. It exactly
+reproduces the formal R11 FAIL, verifies 768/768 cache identities, and narrows
+the interpretation to weak candidate-conditioned signed-utility placement plus
+uncalibrated action-conditional downside. It does not replace the current
+machine terminal, reopen a route or authorize protected-data access.
+
 ## Current Read
 
 - A1F proves safe bounded direction headroom exists beyond shrink.

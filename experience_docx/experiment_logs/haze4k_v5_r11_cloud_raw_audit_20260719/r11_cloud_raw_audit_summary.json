@@ -1,0 +1,237 @@
+{
+  "action_assignment": {
+    "action_breakdown_file": "r11_cloud_raw_audit_action_summary.csv",
+    "action_counts": {
+      "state_negative_full": 5315,
+      "state_positive_full": 9055
+    },
+    "exact_action_fraction_mean_per_image": 0.5112711588541666,
+    "exact_action_fraction_nonsevere_mean": 0.51725,
+    "exact_action_fraction_severe_mean": 0.2621527777777778,
+    "selected_actual_worst_distribution": {
+      "max": 3.3159613609313965,
+      "mean": 0.15153565664290525,
+      "median": 0.0036273874575272202,
+      "min": -3.2131400108337402,
+      "p05": -0.8237854063510894,
+      "p10": -0.3864661902189254,
+      "p90": 0.9100148856639863,
+      "p95": 1.222458910942077
+    },
+    "selected_hard_utility_tiles": 1180,
+    "selected_negative_utility_tiles": 3949,
+    "selected_severe_utility_tiles": 2055,
+    "selected_tiles": 14370
+  },
+  "evidence_role": "posthoc_read_only_cloud_raw_audit",
+  "input_identity": {
+    "duplicate_image_names": 0,
+    "fold_counts_image": {
+      "0": 192,
+      "1": 192
+    },
+    "fold_counts_tile": {
+      "0": 24576,
+      "1": 24576
+    },
+    "image_rows": 384,
+    "tile_action_rows": 49152,
+    "tile_rows_per_name_unique": [
+      128
+    ],
+    "unique_names_image": 384,
+    "unique_names_tile": 384
+  },
+  "limitations": [
+    "R11 has a privileged fixed R10 action budget and no deployable abstention decision.",
+    "Tile actual_worst is a local utility diagnostic; image PSNR gains remain the formal policy outcome.",
+    "Margin and risk-coverage analyses are post hoc and cannot change the R11 terminal decision.",
+    "No fog-severity, semantic, protected-region, confirmation, canary, or locked-test labels were read."
+  ],
+  "margins": {
+    "oracle": {
+      "max": 3.803678274154663,
+      "mean": 0.2534113522682067,
+      "median": 0.03475019708275795,
+      "min": 0.0,
+      "p05": 0.0,
+      "p10": 0.0,
+      "p90": 0.8412415087223053,
+      "p95": 1.1657390892505646
+    },
+    "oracle_le_0_005_fraction": 0.415283203125,
+    "oracle_zero_fraction": 0.415283203125,
+    "predicted_le_0_005_fraction": 0.07991536458333333,
+    "predicted_le_0_01_fraction": 0.14717610677083334,
+    "predicted_top1_top2": {
+      "max": 1.3387246131896973,
+      "mean": 0.12976944440993066,
+      "median": 0.04840158298611641,
+      "min": 1.3560056686401367e-06,
+      "p05": 0.00318053737282753,
+      "p10": 0.006546627730131149,
+      "p90": 0.4012225866317749,
+      "p95": 0.5917624235153198
+    }
+  },
+  "official_reproduction": {
+    "bootstrap_draws": 4000,
+    "bootstrap_seed": 3407,
+    "max_abs_difference": 0.0,
+    "recomputed": {
+      "G0_LOCAL_STATE_ONLY_D_ref": {
+        "lcb95": 0.08168891823140824,
+        "point": 0.10000059583298689,
+        "ucb95": 0.1180264399946968
+      },
+      "G0_LOCAL_STATE_ONLY_D_rep": {
+        "lcb95": 0.08114075565538906,
+        "point": 0.09938036283865044,
+        "ucb95": 0.11731342874423266
+      },
+      "G0_LOCAL_STATE_ONLY_gain": {
+        "lcb95": 0.08114075565538906,
+        "point": 0.09938036283865044,
+        "ucb95": 0.11731342874423266
+      },
+      "L1_LOCAL_CANDIDATE_CONTEXT_D_ref": {
+        "lcb95": 0.07038086700172365,
+        "point": 0.08904620603441259,
+        "ucb95": 0.10719061269411388
+      },
+      "L1_LOCAL_CANDIDATE_CONTEXT_D_rep": {
+        "lcb95": 0.06981624912273575,
+        "point": 0.0884324945844307,
+        "ucb95": 0.10651191829285596
+      },
+      "L1_LOCAL_CANDIDATE_CONTEXT_gain": {
+        "lcb95": 0.06981624912273575,
+        "point": 0.0884324945844307,
+        "ucb95": 0.10651191829285596
+      },
+      "P0_POOLED_CANDIDATE_RESPONSE_D_ref": {
+        "lcb95": 0.07456453026114478,
+        "point": 0.09194586830444051,
+        "ucb95": 0.10951206848157666
+      },
+      "P0_POOLED_CANDIDATE_RESPONSE_D_rep": {
+        "lcb95": 0.07361177167478405,
+        "point": 0.09093677110237315,
+        "ucb95": 0.10851772354424594
+      },
+      "P0_POOLED_CANDIDATE_RESPONSE_gain": {
+        "lcb95": 0.07361177167478405,
+        "point": 0.09093677110237315,
+        "ucb95": 0.10851772354424594
+      },
+      "S2_WITHIN_IMAGE_RESPONSE_SHUFFLE_D_ref": {
+        "lcb95": 0.0721393846352512,
+        "point": 0.08932292419378036,
+        "ucb95": 0.10637260923698073
+      },
+      "S2_WITHIN_IMAGE_RESPONSE_SHUFFLE_D_rep": {
+        "lcb95": 0.07119403282393243,
+        "point": 0.08838945789055952,
+        "ucb95": 0.10554005874417774
+      },
+      "S2_WITHIN_IMAGE_RESPONSE_SHUFFLE_gain": {
+        "lcb95": 0.07119403282393243,
+        "point": 0.08838945789055952,
+        "ucb95": 0.10554005874417774
+      },
+      "global_gain": {
+        "lcb95": 0.13298456717169127,
+        "point": 0.150480934131546,
+        "ucb95": 0.16837074230604873
+      },
+      "oracle_gain": {
+        "lcb95": 0.2205388801352661,
+        "point": 0.2389403580740129,
+        "ucb95": 0.25755971758828156
+      },
+      "primary_minus_G0_LOCAL_STATE_ONLY": {
+        "lcb95": -0.019056073784654452,
+        "point": -0.010954389798574299,
+        "ucb95": -0.0033633327442992213
+      },
+      "primary_minus_P0_POOLED_CANDIDATE_RESPONSE": {
+        "lcb95": -0.011846195712452354,
+        "point": -0.002899662270027928,
+        "ucb95": 0.005834169005241372
+      },
+      "primary_minus_S2_WITHIN_IMAGE_RESPONSE_SHUFFLE": {
+        "lcb95": -0.00893868847603392,
+        "point": -0.0002767181593677781,
+        "ucb95": 0.007763655101113556
+      },
+      "primary_minus_global": {
+        "lcb95": -0.07848124454400178,
+        "point": -0.0625368741160323,
+        "ucb95": -0.049623454109369004
+      },
+      "primary_minus_global_cvar5": {
+        "lcb95": -0.33499937842518634,
+        "point": -0.2453879143528866,
+        "ucb95": -0.16900776964763634
+      },
+      "retention": {
+        "lcb95": 0.2998807307567878,
+        "point": 0.3701027959330266,
+        "ucb95": 0.4336391471066116
+      }
+    },
+    "status": "EXACT"
+  },
+  "per_image_primary_d_rep": {
+    "distribution": {
+      "max": 0.75390081748254,
+      "mean": 0.0884324945844307,
+      "median": 0.02153529278718233,
+      "min": -0.6912142569431861,
+      "p05": -0.12786507317523615,
+      "p10": -0.061271959505137405,
+      "p90": 0.37083642300282404,
+      "p95": 0.45137482507107
+    },
+    "mean_after_dropping_top_10pct_images": 0.044557790807156786,
+    "negative_fraction": 0.2994791666666667,
+    "positive_fraction": 0.6927083333333334,
+    "positive_rows": 266,
+    "top_10pct_images_share_of_net_sum": 0.5473113094182355,
+    "top_10pct_images_share_of_positive_sum": 0.44558393119306816,
+    "top_10pct_positive_rows_share_of_positive_sum": 0.3322426108308391
+  },
+  "protected_data_touched": false,
+  "schema_version": 1,
+  "score_calibration": {
+    "eligibility_auc": 0.578512310117132,
+    "harm_detection_auc_using_negative_score": 0.663882835422639,
+    "pearson_predicted_vs_actual_worst": 0.29142477787236076,
+    "predicted_eligible_actual_eligible_fraction": 0.3424542720504856,
+    "predicted_eligible_actual_harm_fraction": 0.29300399349208694,
+    "predicted_eligible_rows": 20283,
+    "risk_coverage_file": "r11_cloud_raw_audit_risk_coverage.csv",
+    "selected_high_confidence_cut_p90": 0.5113038599491121,
+    "selected_high_confidence_hard_rows": 251,
+    "selected_high_confidence_harm_rows": 331,
+    "selected_high_confidence_rows": 1437,
+    "selected_high_confidence_severe_rows": 306,
+    "spearman_predicted_vs_actual_worst": 0.28669108356029543
+  },
+  "tail": {
+    "hard_images": 2,
+    "hard_overlap_operators": 2,
+    "operator_events": {
+      "D_ref": {
+        "hard": 2,
+        "severe": 9
+      },
+      "D_rep": {
+        "hard": 2,
+        "severe": 8
+      }
+    },
+    "severe_images": 9,
+    "severe_overlap_operators": 8
+  }
+}

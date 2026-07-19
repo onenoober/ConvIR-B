@@ -1,0 +1,31 @@
+{
+  "authorizes": "NONE",
+  "audited_experiment": "haze4k_v5_r11_regional_action_observability_20260719",
+  "audit_run_id": "r11-cloud-raw-audit-r2",
+  "decision": "R11_ORIGINAL_BOTTLENECK_SUPPORTED_BUT_NARROWED",
+  "details": {
+    "cache_bytes_verified": 14236968704,
+    "cache_hash_mismatches": 0,
+    "cache_units_verified": 768,
+    "hard_images": 2,
+    "official_bootstrap_max_abs_difference": 0.0,
+    "official_result_reproduced": true,
+    "protected_data_touched": false,
+    "severe_images": 9,
+    "terminal_decision_affected": false
+  },
+  "evidence_cutoff": "github/main@893ba97790ad19d745ff676f5bbf28bd37395d50",
+  "evidence_role": "posthoc_read_only_development_audit",
+  "operation_id": "R11_CLOUD_RAW_READ_ONLY_AUDIT",
+  "original_decision": "R11_A0_REGIONAL_OBSERVABILITY_FAIL_STOP",
+  "original_run_id": "r11-a0-regional-observability-r1",
+  "original_state": "COMPLETED_GATE_FAIL",
+  "route_commit": "c183817e2b3befdeeb12278aa6e6a0574883b6d5",
+  "route_id": "haze4k_v5_r11_cloud_raw_audit_20260719",
+  "schema_version": 1,
+  "state": "COMPLETED_READ_ONLY_AUDIT",
+  "superseded_audit_run": {
+    "reason": "Remove an empty-slice warning from an optional per-image post-hoc field; formal and derived results were unchanged.",
+    "run_id": "r11-cloud-raw-audit-r1"
+  }
+}

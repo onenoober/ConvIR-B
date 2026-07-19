@@ -111,6 +111,17 @@ Use this index first when asking what happened, which route is still relevant,
 and where the evidence lives. Use the listed source branch or commit only when
 you need the exact runnable code snapshot.
 
+### 2026-07-19 R11 cloud raw evidence audit
+
+At the frozen evidence cutoff `main@893ba97790ad19d745ff676f5bbf28bd37395d50`,
+a post-hoc read-only cloud audit verified all 768 R11 cache-unit hashes and
+reproduced every official 4,000-draw bootstrap point/interval exactly. It
+supports but narrows the R11 bottleneck to candidate-conditioned relative
+signed-utility placement plus action-conditional downside calibration. The
+audit is development-only, accessed no confirmation/canary/locked test, changes
+no terminal decision, and authorizes `NONE`. Evidence:
+`experiment_logs/haze4k_v5_r11_cloud_raw_audit_20260719/`.
+
 For future route branches, follow `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`: sync
 cards, text logs, result tables, and AI-readable packages back to `main`, but
 keep diagnostic experiment code on its route branch unless a separate promotion

@@ -1,0 +1,17 @@
+{
+  "bytes_read": 14236968704,
+  "checked_units": 768,
+  "elapsed_seconds": 14.82282543182373,
+  "evidence_role": "posthoc_read_only_cloud_raw_audit",
+  "expected_units": 768,
+  "hash_mismatches": 0,
+  "missing_units": 0,
+  "names": 384,
+  "operators": [
+    "D_ref",
+    "D_rep"
+  ],
+  "protected_data_touched": false,
+  "schema_version": 1,
+  "status": "EXACT"
+}
