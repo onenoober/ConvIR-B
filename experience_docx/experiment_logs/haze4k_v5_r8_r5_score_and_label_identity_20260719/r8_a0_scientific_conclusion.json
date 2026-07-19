@@ -1,0 +1,23 @@
+{
+  "authorizes": "R8_NEXT_ATTRIBUTION_CONTRACT_REVIEW_ONLY",
+  "competing_explanation": "A genuine inconsistency among saved per-seed predictions, ensemble candidate scores and R5 policy rows is rejected by the full finite-population audit. Python float64 arithmetic averaging differs numerically from R5's authoritative Torch float32 reduction, but the prespecified sensitivity comparison shows zero action-assignment changes and zero top-39 membership changes across all four cells and both folds.",
+  "decision": "R8_A0_SCORE_AND_LABEL_IDENTITY_PASS",
+  "gate_reasons": [
+    "All eight declared assets passed SHA-256 and lifecycle verification; the protected-data-free full-scale contract and all four workload milestones completed.",
+    "All 6,144 ensemble rows and all three score fields reproduce exactly under `torch.float32 -> stack -> mean(0)`, with zero native score mismatches.",
+    "All saved severe labels reproduce exactly under R5's any-operator group/action threshold semantics, with zero label mismatches.",
+    "All 3,072 saved policy rows replay exactly with maximum absolute field difference 0, and every four-cell count and operator gain matches the compact R5 cell summary.",
+    "The float64 sensitivity has 10,541 exact-value differences, maximum absolute difference 1.1920928955078125e-7, but zero action or top-39 changes."
+  ],
+  "limitations": [
+    "R8 is an integrity audit, not an Action x Coverage x Risk mechanism result and not a restoration-model experiment.",
+    "PASS authorizes only review of a new independently identified attribution contract; it does not authorize automatic execution, training, inference, full OOF, confirmation, canary, locked test or deployment.",
+    "Any replacement attribution contract must consume saved authoritative candidate scores or reconstruct with exact R5 float32 semantics and must use R5's any-operator group/action severe-label definition.",
+    "R5, R6 and R7 terminal decisions remain unchanged and must remain separately archived."
+  ],
+  "operation_id": "R8_A0_FROZEN_R5_SCORE_AND_LABEL_IDENTITY_AUDIT",
+  "primary_result": "R8-A0 passes the complete score, label and policy identity audit: R5 raw artifacts are internally consistent under their authoritative float32 and any-operator semantics, and the R6/R7 input stops are explained by narrower audit reconstruction contracts rather than invalid R5 evidence.",
+  "route_id": "haze4k_v5_r8_r5_score_and_label_identity_20260719",
+  "run_id": "r8-a0-r5-score-label-identity-r1",
+  "schema_version": 1
+}

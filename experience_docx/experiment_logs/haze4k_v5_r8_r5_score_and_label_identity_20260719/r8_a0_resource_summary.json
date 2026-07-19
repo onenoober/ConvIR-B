@@ -1,0 +1,9 @@
+{
+  "cpu_seconds": 8.099262589,
+  "gpu_used": false,
+  "max_rss_mib": 403.75,
+  "raw_rows_read": 21504,
+  "reconstruction_units": 6144,
+  "schema_version": 1,
+  "wall_seconds": 1.9716144353151321
+}

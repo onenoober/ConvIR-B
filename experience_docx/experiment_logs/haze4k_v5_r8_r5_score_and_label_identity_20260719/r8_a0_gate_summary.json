@@ -1,0 +1,20 @@
+{
+  "any_operator_severe_label_mismatches": 0,
+  "authorizes": "R8_NEXT_ATTRIBUTION_CONTRACT_REVIEW_ONLY",
+  "decision": "R8_A0_SCORE_AND_LABEL_IDENTITY_PASS",
+  "gates": {
+    "all_saved_cell_summaries_exact": true,
+    "all_saved_policy_rows_exact": true,
+    "native_float32_scores_exact": true,
+    "structural_valid": true,
+    "target_and_severe_label_identity_exact": true
+  },
+  "passes": true,
+  "policy_max_abs_difference": 0.0,
+  "policy_row_mismatches": 0,
+  "r5_terminal_changed": false,
+  "r6_terminal_changed": false,
+  "r7_terminal_changed": false,
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS"
+}

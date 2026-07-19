@@ -1,0 +1,31 @@
+{
+  "actions": [
+    "state_positive_full",
+    "state_negative_full"
+  ],
+  "audit_role": "engineering_integrity_with_post_hoc_mechanism_implication",
+  "authoritative_reconstruction": "torch_float32_stack_two_seed_predictions_then_mean_dim0",
+  "cells": [
+    "P0_POOLED_DC_ONLY",
+    "S1_TRUE_SPATIAL_RESPONSE",
+    "S2_SPATIAL_RESPONSE_SHUFFLE",
+    "G0_GENERIC_STATE_SPATIAL"
+  ],
+  "folds": [
+    0,
+    1
+  ],
+  "operation_id": "R8_A0_FROZEN_R5_SCORE_AND_LABEL_IDENTITY_AUDIT",
+  "operators": [
+    "D_ref",
+    "D_rep"
+  ],
+  "route_id": "haze4k_v5_r8_r5_score_and_label_identity_20260719",
+  "schema_version": 1,
+  "seeds": [
+    3407,
+    3411
+  ],
+  "selected_groups_per_fold_cell": 39,
+  "sensitivity_reconstruction": "python_float64_arithmetic_mean"
+}

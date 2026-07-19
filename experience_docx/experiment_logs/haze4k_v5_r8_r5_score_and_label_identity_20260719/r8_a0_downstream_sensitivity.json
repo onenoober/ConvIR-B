@@ -1,0 +1,56 @@
+{
+  "interpretation_role": "prespecified_sensitivity_not_authoritative_reconstruction",
+  "native_vs_float64_by_cell_fold": [
+    {
+      "action_assignment_changes": 0,
+      "cell": "G0_GENERIC_STATE_SPATIAL",
+      "fold": 0,
+      "top39_symmetric_difference": 0
+    },
+    {
+      "action_assignment_changes": 0,
+      "cell": "G0_GENERIC_STATE_SPATIAL",
+      "fold": 1,
+      "top39_symmetric_difference": 0
+    },
+    {
+      "action_assignment_changes": 0,
+      "cell": "P0_POOLED_DC_ONLY",
+      "fold": 0,
+      "top39_symmetric_difference": 0
+    },
+    {
+      "action_assignment_changes": 0,
+      "cell": "P0_POOLED_DC_ONLY",
+      "fold": 1,
+      "top39_symmetric_difference": 0
+    },
+    {
+      "action_assignment_changes": 0,
+      "cell": "S1_TRUE_SPATIAL_RESPONSE",
+      "fold": 0,
+      "top39_symmetric_difference": 0
+    },
+    {
+      "action_assignment_changes": 0,
+      "cell": "S1_TRUE_SPATIAL_RESPONSE",
+      "fold": 1,
+      "top39_symmetric_difference": 0
+    },
+    {
+      "action_assignment_changes": 0,
+      "cell": "S2_SPATIAL_RESPONSE_SHUFFLE",
+      "fold": 0,
+      "top39_symmetric_difference": 0
+    },
+    {
+      "action_assignment_changes": 0,
+      "cell": "S2_SPATIAL_RESPONSE_SHUFFLE",
+      "fold": 1,
+      "top39_symmetric_difference": 0
+    }
+  ],
+  "schema_version": 1,
+  "total_action_assignment_changes": 0,
+  "total_top39_symmetric_difference": 0
+}

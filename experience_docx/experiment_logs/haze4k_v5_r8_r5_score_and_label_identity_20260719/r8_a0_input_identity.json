@@ -1,0 +1,26 @@
+{
+  "asset_sha256": {
+    "r5_candidate_scores": "53061beac134696216054e2aa4b2e6294313f0b9242a7f74a4346f79c30011a0",
+    "r5_cell_summary": "8498491e17937129ae2d90155b91848805f6f89eb862cf08e1daa1b87b4d1f3b",
+    "r5_closeout": "e8d6151a9d7fc1198db1db1a0fc44e2de91da0bea0f4a01053c68bf0d5c0e4e7",
+    "r5_lifecycle_identity": "8fc059448f383fee6c41af51a9fadf493134ee82b8d7ec9c4eb44c694c1602be",
+    "r5_per_seed_predictions": "6cfcea9353be8ba50038c9655ef1f533c3224e1b8d971282f2bbb21402017c14",
+    "r5_policy_rows": "63c1aa4c7447e0fdb55611507eedbe0fd940f9cef10f0163e86f986a16baf150",
+    "r6_closeout": "7dd2ab4839ef28e390fb76533b1cba42bac75ae57054268d19109295fd522e3d",
+    "r7_closeout": "28b7affcd84fec30f5f17a70acb1cd9e5e233637025c2e34ea2614e10fdfbddf"
+  },
+  "r5_lifecycle_identity": {
+    "operation_id": "R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN",
+    "route_commit": "7e75eed504b2ead65a1971ec250dc7f59a79574d",
+    "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
+    "run_id": "r5-a0-spatial-response-screen-r2",
+    "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+    "schema_version": 1
+  },
+  "row_counts": {
+    "candidate": 6144,
+    "per_seed": 12288,
+    "policy": 3072
+  },
+  "schema_version": 1
+}

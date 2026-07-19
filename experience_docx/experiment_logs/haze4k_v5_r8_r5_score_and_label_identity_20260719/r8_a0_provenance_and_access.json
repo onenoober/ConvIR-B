@@ -1,0 +1,15 @@
+{
+  "canary_touched": false,
+  "candidate_generation_rerun": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "inference_run": false,
+  "locked_test_touched": false,
+  "r5_source_commit": "7e75eed504b2ead65a1971ec250dc7f59a79574d",
+  "r5_source_expression": "torch.stack(seed_predictions).mean(0)",
+  "r5_terminal_preserved": true,
+  "r6_terminal_preserved": true,
+  "r7_terminal_preserved": true,
+  "route_commit": "8a0238f303a8195248b5c06d2c300da82c9d9dbd",
+  "schema_version": 1,
+  "training_run": false
+}
