@@ -1,0 +1,8 @@
+{
+  "cpu_seconds": 0.09515579400000002,
+  "gpu_used": false,
+  "reason": "seed ensemble replay mismatch: q05_score",
+  "schema_version": 1,
+  "status": "input_or_base_replay_inconclusive",
+  "wall_seconds": 0.14071070682257414
+}

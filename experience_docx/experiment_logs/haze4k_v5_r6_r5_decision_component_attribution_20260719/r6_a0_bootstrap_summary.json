@@ -1,0 +1,5 @@
+{
+  "reason": "seed ensemble replay mismatch: q05_score",
+  "schema_version": 1,
+  "status": "input_or_base_replay_inconclusive"
+}

@@ -1,0 +1,23 @@
+{
+  "authorizes": "NONE",
+  "competing_explanation": "The mismatch may be a small serialization or numerical-aggregation difference rather than missing scientific information, but R6 preregistered exact seed-to-ensemble replay as an input-validity gate and did not authorize a post-outcome tolerance change or alternate reconstruction.",
+  "decision": "R6_A0_INPUT_OR_ATTRIBUTION_INCONCLUSIVE_STOP",
+  "evidence_interpretation": "Category C post-hoc mechanism diagnostic stopped at its input gate. The placeholder factorial, attribution, interaction and risk CSVs contain no scientific cell estimates and must not be interpreted as negative mechanism evidence.",
+  "gate_reasons": [
+    "All nine declared R5 assets passed SHA-256 and lifecycle verification, and R6-R2 completed with return code 0 without protected-data access.",
+    "The saved R5 candidate q05 score failed the preregistered exact arithmetic replay from the two saved per-seed q05 values.",
+    "Because the input/base-replay gate failed, the eight Action x Coverage x Risk counterfactual cells and their bootstrap attribution estimates were not computed.",
+    "The frozen terminal mapping therefore requires COMPLETED_GATE_INCONCLUSIVE and authorizes NONE."
+  ],
+  "limitations": [
+    "R6 does not determine whether action identity, coverage ranking, risk veto, or their interaction is the dominant R5 decision failure.",
+    "The audit covers only the 384 R5 development images, folds 0/1, D_ref/D_rep and the frozen three-action bank; it provides no regional or external-validation result.",
+    "No post-hoc tolerance relaxation, score reconstruction, R5 rerun, threshold search, training, inference, confirmation, canary or locked-test access is authorized.",
+    "R5 remains COMPLETED_GATE_FAIL / R5_A0_SPATIAL_RESPONSE_FUTILITY_OR_SAFETY_FAIL_STOP / NONE."
+  ],
+  "operation_id": "R6_A0_FROZEN_R5_DECISION_COMPONENT_ATTRIBUTION_AUDIT",
+  "primary_result": "R6-A0 is scientifically inconclusive: exact R5 seed-to-ensemble q05 replay failed before counterfactual attribution, so no decision component was confirmed, excluded, or ranked.",
+  "route_id": "haze4k_v5_r6_r5_decision_component_attribution_20260719",
+  "run_id": "r6-a0-r5-decision-attribution-r2",
+  "schema_version": 1
+}

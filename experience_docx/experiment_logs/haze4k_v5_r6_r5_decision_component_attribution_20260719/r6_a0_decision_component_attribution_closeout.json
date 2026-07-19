@@ -1,0 +1,99 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "R6_A0_INPUT_OR_ATTRIBUTION_INCONCLUSIVE_STOP",
+  "details": {
+    "r5_terminal_decision_changed": false,
+    "reason": "seed ensemble replay mismatch: q05_score"
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "r6_a0_base_replay_summary.json": "2bd49a1e3eb1ef1aeb96d988aeb2b6deb5c279876b291d44e8e9709ce32de63e",
+    "r6_a0_bootstrap_summary.json": "2bd49a1e3eb1ef1aeb96d988aeb2b6deb5c279876b291d44e8e9709ce32de63e",
+    "r6_a0_component_attribution.csv": "0c8700457e9173ccfa87c8ea6b23dbe268241e7d46aef5b509cb109e0b8ff66e",
+    "r6_a0_contract_summary.json": "2bd49a1e3eb1ef1aeb96d988aeb2b6deb5c279876b291d44e8e9709ce32de63e",
+    "r6_a0_factorial_cell_summary.csv": "0c8700457e9173ccfa87c8ea6b23dbe268241e7d46aef5b509cb109e0b8ff66e",
+    "r6_a0_gate_summary.json": "2bd49a1e3eb1ef1aeb96d988aeb2b6deb5c279876b291d44e8e9709ce32de63e",
+    "r6_a0_input_identity.json": "2bd49a1e3eb1ef1aeb96d988aeb2b6deb5c279876b291d44e8e9709ce32de63e",
+    "r6_a0_interaction_summary.csv": "0c8700457e9173ccfa87c8ea6b23dbe268241e7d46aef5b509cb109e0b8ff66e",
+    "r6_a0_provenance_and_access.json": "2bd49a1e3eb1ef1aeb96d988aeb2b6deb5c279876b291d44e8e9709ce32de63e",
+    "r6_a0_resource_summary.json": "5ccc70aa7a524c590601ad111f56e98e660b51612b56270cebd41f27bab9840a",
+    "r6_a0_risk_veto_summary.csv": "0c8700457e9173ccfa87c8ea6b23dbe268241e7d46aef5b509cb109e0b8ff66e"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "R6_A0_FROZEN_R5_DECISION_COMPONENT_ATTRIBUTION_AUDIT",
+  "returncode": 0,
+  "route_commit": "557a7e870bba52405f755af40aa6e5c4977c8424",
+  "route_id": "haze4k_v5_r6_r5_decision_component_attribution_20260719",
+  "run_id": "r6-a0-r5-decision-attribution-r2",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_INCONCLUSIVE",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_bootstrap_summary",
+      "kind": "file",
+      "sha256": "2e5154ff99244f06e773582cf59e4849124286e83cd6b3392e0bb5b7dd1e49ee"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_candidate_scores",
+      "kind": "file",
+      "sha256": "53061beac134696216054e2aa4b2e6294313f0b9242a7f74a4346f79c30011a0"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_cell_summary",
+      "kind": "file",
+      "sha256": "8498491e17937129ae2d90155b91848805f6f89eb862cf08e1daa1b87b4d1f3b"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_closeout",
+      "kind": "file",
+      "sha256": "e8d6151a9d7fc1198db1db1a0fc44e2de91da0bea0f4a01053c68bf0d5c0e4e7"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_gate_summary",
+      "kind": "file",
+      "sha256": "b8a28db1d718e685536bf4b34903f4dbe57b7ec749de2195af1ef30527fd2594"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_lifecycle_identity",
+      "kind": "file",
+      "sha256": "8fc059448f383fee6c41af51a9fadf493134ee82b8d7ec9c4eb44c694c1602be"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_per_seed_predictions",
+      "kind": "file",
+      "sha256": "6cfcea9353be8ba50038c9655ef1f533c3224e1b8d971282f2bbb21402017c14"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_policy_rows",
+      "kind": "file",
+      "sha256": "63c1aa4c7447e0fdb55611507eedbe0fd940f9cef10f0163e86f986a16baf150"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r5_risk_coverage",
+      "kind": "file",
+      "sha256": "caf43a17182bec89c9da9b477b7da11c98c5deeeef7317468c6718d1037d90d7"
+    }
+  ]
+}
