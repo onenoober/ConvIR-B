@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r12_action_conditioned_downside_observability_20260719",
+  "operation_id": "R12_A0_ACTION_CONDITIONED_DOWNSIDE_OBSERVABILITY_SCREEN",
+  "entrypoint_relpath": "experience_docx/tools/r12_a0_action_conditioned_downside_observability.py",
+  "asset_manifest_relpath": "experience_docx/route_assets/R12_A0_ACTION_CONDITIONED_DOWNSIDE_OBSERVABILITY_SCREEN.json",
+  "timeout_seconds": 600,
+  "expected_wall_seconds": 120,
+  "total_units": 12,
+  "evidence_role": "development_screening",
+  "resume_policy": "none",
+  "protected_data_permissions": {"allow_confirmation":false,"allow_canary":false,"allow_locked_test":false},
+  "environment": {
+    "CONVIR_ROUTE_BOOTSTRAP_DRAWS": "4000",
+    "CONVIR_ROUTE_BOOTSTRAP_SEED": "3407",
+    "CONVIR_ROUTE_SEVERE_GAIN_DB": "-0.2",
+    "CONVIR_ROUTE_REJECT_FRACTION": "0.2",
+    "CONVIR_ROUTE_L2": "0.0001",
+    "CONVIR_ROUTE_MAX_ITER": "200"
+  },
+  "evidence_files": [
+    {"source_relpath":"workload/r12_a0_contract_summary.json","destination_filename":"r12_a0_contract_summary.json","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r12_a0_provenance_and_access.json","destination_filename":"r12_a0_provenance_and_access.json","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r12_a0_input_identity.json","destination_filename":"r12_a0_input_identity.json","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r12_a0_cell_summary.csv","destination_filename":"r12_a0_cell_summary.csv","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r12_a0_fold_stability.csv","destination_filename":"r12_a0_fold_stability.csv","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r12_a0_bootstrap_summary.json","destination_filename":"r12_a0_bootstrap_summary.json","required":true,"max_bytes":262144},
+    {"source_relpath":"workload/r12_a0_risk_coverage.csv","destination_filename":"r12_a0_risk_coverage.csv","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r12_a0_gate_summary.json","destination_filename":"r12_a0_gate_summary.json","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r12_a0_resource_summary.json","destination_filename":"r12_a0_resource_summary.json","required":true,"max_bytes":131072}
+  ]
+}

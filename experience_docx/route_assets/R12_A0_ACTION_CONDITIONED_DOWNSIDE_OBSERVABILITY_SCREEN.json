@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r12_action_conditioned_downside_observability_20260719",
+  "operation_id": "R12_A0_ACTION_CONDITIONED_DOWNSIDE_OBSERVABILITY_SCREEN",
+  "assets": [
+    {"id":"r11_closeout","kind":"file","path":"{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r11_regional_action_observability_20260719/r11_a0_regional_action_observability_closeout.json","sha256":"0e6bc5a70cd86f2aa58a34004bb895ad0295b6d7a5b2f619695878de38d4eec9","access_role":"development_screening","contract_access":false},
+    {"id":"r11_tile_predictions","kind":"file","path":"/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r11_regional_action_observability_20260719/r11-a0-regional-observability-r1/workload/r11_a0_tile_predictions_cloud_only.csv","sha256":"e45ae4b11843063fc4cd0360ebcc7f7e872989bc6f9657228ee1de9b90bb16c7","access_role":"development_screening","contract_access":false}
+  ]
+}
