@@ -97,7 +97,8 @@ descriptive only and cannot rescue the 20% primary gate.
 - First operation: R5_A0_FROZEN_SPATIAL_RESPONSE_SUFFICIENCY_SCREEN
 - Expected wall time and monitor profile: 3,600 seconds expected, 7,200 seconds hard timeout, `standard` monitor, one bounded startup observation and finish near the frozen ETA.
 - Complete-unit resume policy: `none`; any interruption uses a new output only after typed engineering review and cannot alter the scientific contract.
-- Cloud workspace/run/output/status/closeout: fresh route workspace; output id `r5-a0-spatial-response-screen-r1`; generic `status.txt`, `heartbeat.json`, and `runtime.log`; closeout `r5_a0_spatial_response_sufficiency_closeout.json`.
+- Cloud workspace/run/output/status/closeout: fresh route workspace; output id `r5-a0-spatial-response-screen-r2`; generic `status.txt`, `heartbeat.json`, and `runtime.log`; closeout `r5_a0_spatial_response_sufficiency_closeout.json`.
+- Same-contract workload repair: r1 completed all frozen units but finalization traversed non-evaluated folds; r2 restricts result construction to preregistered folds 0/1 and changes only output identity.
 - Compact Git evidence and cloud-only raw artifacts: Git receives the frozen contract, provenance/access/representation/structure/oracle/margin/label/harm/operator/fold-seed/risk-coverage/calibration/tail/bootstrap/gate/resource results, typed closeout, one scientific conclusion, and terminal index row; raw candidate tensors, per-image/action/operator/cell rows, per-seed scores, model states, logs, datasets, labels, images, and arrays remain cloud-only.
 - Required engineering terminal tuple: `FAILED_ENGINEERING / null / NONE`.
 

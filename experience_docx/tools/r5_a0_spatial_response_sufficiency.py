@@ -831,6 +831,7 @@ def run(context_path: Path) -> None:
         by_name.setdefault(unit["name"], []).append(unit)
     if len(by_name) != 768 or any(sorted(item["operator"] for item in group) != sorted(OPERATORS) for group in by_name.values()):
         raise RuntimeError("clean-image/operator grouping failed")
+    evaluated_names = [name for name in sorted(by_name) if fold_lookup[name] in FOLDS]
     for group in by_name.values():
         severe_any = torch.stack([item["target"] for item in group]).le(SEVERE_GAIN).any(0).float()
         for item in group:
@@ -935,7 +936,7 @@ def run(context_path: Path) -> None:
 
     policy_metrics = policy_bootstrap(policy_rows)
     risk_group_rows = []
-    for name in sorted(by_name):
+    for name in evaluated_names:
         fold = fold_lookup[name]
         prediction_map = fold_predictions[(fold, PRIMARY_CELL)]
         group = {(unit["operator"]): unit for unit in by_name[name]}
@@ -1110,7 +1111,8 @@ def run(context_path: Path) -> None:
 
     oracle_actions = {}
     severe_labels = {}
-    for name, group in by_name.items():
+    for name in evaluated_names:
+        group = by_name[name]
         unit_map = {unit["operator"]: unit for unit in group}
         for operator in OPERATORS:
             values = [0.0, *[float(value) for value in unit_map[operator]["target"]]]
@@ -1118,13 +1120,13 @@ def run(context_path: Path) -> None:
             for action in range(2):
                 severe_labels[(name, operator, action)] = values[action + 1] <= SEVERE_GAIN
     action_agreement = np.mean(
-        [oracle_actions[(name, OPERATORS[0])] == oracle_actions[(name, OPERATORS[1])] for name in by_name]
+        [oracle_actions[(name, OPERATORS[0])] == oracle_actions[(name, OPERATORS[1])] for name in evaluated_names]
     )
     severe_agreement = np.mean(
         [
             severe_labels[(name, OPERATORS[0], action)]
             == severe_labels[(name, OPERATORS[1], action)]
-            for name in by_name
+            for name in evaluated_names
             for action in range(2)
         ]
     )
@@ -1139,11 +1141,11 @@ def run(context_path: Path) -> None:
     for action_index, action in enumerate(ACTIVE_ACTIONS):
         first = [
             float(next(unit for unit in by_name[name] if unit["operator"] == OPERATORS[0])["target"][action_index])
-            for name in sorted(by_name)
+            for name in evaluated_names
         ]
         second = [
             float(next(unit for unit in by_name[name] if unit["operator"] == OPERATORS[1])["target"][action_index])
-            for name in sorted(by_name)
+            for name in evaluated_names
         ]
         operator_consistency["target_pearson"][action] = pearson(first, second)
     operator_consistency["best_action_agreement"] = float(action_agreement)
