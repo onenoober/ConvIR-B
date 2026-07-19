@@ -1,0 +1,10 @@
+{
+  "cpu_seconds": 459.726239513,
+  "feature_units": 1536,
+  "gpu_used": false,
+  "max_rss_mib": 639.921875,
+  "model_parameters": 27523,
+  "schema_version": 1,
+  "seed_model_training_units": 16,
+  "wall_seconds": 84.20904631819576
+}

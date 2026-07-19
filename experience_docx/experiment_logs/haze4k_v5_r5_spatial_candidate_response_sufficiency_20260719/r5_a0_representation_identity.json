@@ -1,0 +1,23 @@
+{
+  "action_dim": 5,
+  "cell_nonzero_dimensions": {
+    "G0_GENERIC_STATE_SPATIAL": 237,
+    "P0_POOLED_DC_ONLY": 48,
+    "S1_TRUE_SPATIAL_RESPONSE": 237,
+    "S2_SPATIAL_RESPONSE_SHUFFLE": 237
+  },
+  "generic_spatial_dim": 189,
+  "grid": [
+    8,
+    8
+  ],
+  "input_dim": 426,
+  "normalizer": "outer_train_true_features_shared_then_mask",
+  "response": "active_render_minus_reference_noop_render",
+  "response_dim": 192,
+  "schema_version": 1,
+  "shuffle_dc_max_abs": 2.7939677238464355e-09,
+  "shuffle_marginal_max_abs": 0.0,
+  "state_dim": 40,
+  "transform": "orthonormal_dct_ii_full_63_non_dc_per_rgb_channel"
+}
