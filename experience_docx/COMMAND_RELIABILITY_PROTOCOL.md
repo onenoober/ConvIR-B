@@ -63,6 +63,36 @@ apply the code-path and binary-extension predicates to the returned literal
 name list in PowerShell. Require explicit `MAIN_EVIDENCE_STAGE_AUDIT_OK` only
 after all predicates pass.
 
+### 2026-07-19 R9 read-only authoring probe boundary
+
+Invalid form: a PowerShell command embedded `wsl ... bash -lc` with nested
+double-quoted `rg` glob and regular-expression arguments. PowerShell removed
+the intended quoting before Bash parsed the expression, so Bash stopped at an
+unquoted parenthesis. No repository mutation or scientific operation ran.
+
+Corrected form: use `wsl.exe -d Ubuntu-22.04 --exec` with an absolute Linux
+program and literal arguments, or use `convirctl.py repo-list`, `repo-show`,
+`repo-search`, and `git-state` for repository reads. Do not add another shell
+layer. Require the reader's typed `CONVIRCTL_*_OK` marker or the fixed
+program's zero exit before treating the probe as successful.
+
+Invalid follow-up form: a PowerShell `Select-String` alternation included an
+unescaped literal `run(`. The PowerShell regex parser rejected the unmatched
+parenthesis before any file read completed.
+
+Corrected follow-up form: use separate literal `convirctl.py repo-search`
+terms such as `subprocess`, `entrypoint`, and `contract`, or read the exact
+file through `repo-show`. A regex is unnecessary for this repository query.
+
+Invalid final regex form: a fixed WSL `grep -E` probe included a literal
+parenthesis whose escaping did not survive the PowerShell argument boundary.
+Python syntax compilation had already succeeded, but the auxiliary grep
+returned `Unmatched (` and produced no inspection result.
+
+Corrected final form: stop regex probes for this task. Use only literal
+`convirctl.py repo-search` terms or exact file reads; use `py_compile` and the
+AST-based route-ready validator for Python syntax/interface checks.
+
 ## Progress Contract
 
 Route entrypoints should call write_workload_progress from route_program_api for

@@ -1,0 +1,25 @@
+{
+  "schema_version": 4,
+  "route_id": "haze4k_v5_r9_r5_decision_factorial_attribution_20260719",
+  "rules_commit": "34d0bb6ffe30f28feb8610f32ce1e2d14f54a750",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-19-haze4k-v5-r9-r5-decision-factorial-attribution.md",
+  "operations": {
+    "R9_A0_FROZEN_R5_DECISION_FACTORIAL_ATTRIBUTION_AUDIT": {
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "mode": "r9_a0_r5_decision_factorial_attribution",
+      "require_gpu": false,
+      "output_id": "r9-a0-r5-decision-factorial-r1",
+      "closeout_filename": "r9_a0_decision_factorial_attribution_closeout.json",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "allowed_terminal_tuples": [
+        {"state":"COMPLETED_GATE_PASS","decision":"R9_A0_DECISION_FACTORIAL_ATTRIBUTION_PASS","authorizes":"R9_NEXT_CONTRACT_REVIEW_ONLY"},
+        {"state":"COMPLETED_GATE_INCONCLUSIVE","decision":"R9_A0_INPUT_OR_ATTRIBUTION_INCONCLUSIVE_STOP","authorizes":"NONE"},
+        {"state":"COMPLETED_GATE_FAIL","decision":"R9_A0_NO_SINGLE_OR_PAIR_ATTRIBUTION_STOP","authorizes":"NONE"},
+        {"state":"FAILED_ENGINEERING","decision":null,"authorizes":"NONE"}
+      ],
+      "workspace_policy":"fresh_route","output_policy":"new","monitor_profile":"short",
+      "heartbeat_timeout_seconds":300,"min_free_gpu_mib":0,"max_gpu_utilization_pct":100
+    }
+  }
+}

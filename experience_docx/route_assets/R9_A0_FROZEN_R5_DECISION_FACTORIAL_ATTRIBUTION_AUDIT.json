@@ -1,0 +1,14 @@
+{
+  "schema_version":1,
+  "route_id":"haze4k_v5_r9_r5_decision_factorial_attribution_20260719",
+  "operation_id":"R9_A0_FROZEN_R5_DECISION_FACTORIAL_ATTRIBUTION_AUDIT",
+  "assets":[
+    {"id":"r5_candidate_scores","kind":"file","path":"/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5-a0-spatial-response-screen-r2/workload/r5_a0_candidate_scores_cloud_only.csv","sha256":"53061beac134696216054e2aa4b2e6294313f0b9242a7f74a4346f79c30011a0","access_role":"development_screening","contract_access":false},
+    {"id":"r5_policy_rows","kind":"file","path":"/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5-a0-spatial-response-screen-r2/workload/r5_a0_policy_rows_cloud_only.csv","sha256":"63c1aa4c7447e0fdb55611507eedbe0fd940f9cef10f0163e86f986a16baf150","access_role":"development_screening","contract_access":false},
+    {"id":"r5_closeout","kind":"file","path":"{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5_a0_spatial_response_sufficiency_closeout.json","sha256":"e8d6151a9d7fc1198db1db1a0fc44e2de91da0bea0f4a01053c68bf0d5c0e4e7","access_role":"development_screening","contract_access":false},
+    {"id":"r5_cell_summary","kind":"file","path":"{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5_a0_cell_summary.csv","sha256":"8498491e17937129ae2d90155b91848805f6f89eb862cf08e1daa1b87b4d1f3b","access_role":"development_screening","contract_access":false},
+    {"id":"r5_bootstrap_summary","kind":"file","path":"{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5_a0_bootstrap_summary.json","sha256":"2e5154ff99244f06e773582cf59e4849124286e83cd6b3392e0bb5b7dd1e49ee","access_role":"development_screening","contract_access":false},
+    {"id":"r5_gate_summary","kind":"file","path":"{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5_a0_gate_summary.json","sha256":"b8a28db1d718e685536bf4b34903f4dbe57b7ec749de2195af1ef30527fd2594","access_role":"development_screening","contract_access":false},
+    {"id":"r8_closeout","kind":"file","path":"{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r8_r5_score_and_label_identity_20260719/r8_a0_score_and_label_identity_closeout.json","sha256":"4254840b803235d0eb060cbc8a5bbaca8c27c9f10fc6ed70064da0c6238d6ede","access_role":"development_screening","contract_access":false}
+  ]
+}

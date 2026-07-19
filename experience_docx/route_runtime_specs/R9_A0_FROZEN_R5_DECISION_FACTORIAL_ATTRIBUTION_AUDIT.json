@@ -1,0 +1,24 @@
+{
+  "schema_version":1,
+  "route_id":"haze4k_v5_r9_r5_decision_factorial_attribution_20260719",
+  "operation_id":"R9_A0_FROZEN_R5_DECISION_FACTORIAL_ATTRIBUTION_AUDIT",
+  "entrypoint_relpath":"experience_docx/tools/r9_a0_r5_decision_factorial_attribution.py",
+  "asset_manifest_relpath":"experience_docx/route_assets/R9_A0_FROZEN_R5_DECISION_FACTORIAL_ATTRIBUTION_AUDIT.json",
+  "timeout_seconds":900,"expected_wall_seconds":180,"total_units":4008,
+  "evidence_role":"development_screening","resume_policy":"none",
+  "protected_data_permissions":{"allow_confirmation":false,"allow_canary":false,"allow_locked_test":false},
+  "environment":{"CONVIR_ROUTE_BOOTSTRAP_DRAWS":"4000","CONVIR_ROUTE_BOOTSTRAP_SEED":"3407","CONVIR_ROUTE_COVERAGE":"0.20","CONVIR_ROUTE_HARD_GAIN_DB":"-0.5","CONVIR_ROUTE_SEVERE_GAIN_DB":"-0.2"},
+  "evidence_files":[
+    {"source_relpath":"workload/r9_a0_contract_summary.json","destination_filename":"r9_a0_contract_summary.json","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r9_a0_provenance_and_access.json","destination_filename":"r9_a0_provenance_and_access.json","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r9_a0_input_identity.json","destination_filename":"r9_a0_input_identity.json","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r9_a0_base_replay_summary.json","destination_filename":"r9_a0_base_replay_summary.json","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r9_a0_factorial_cell_summary.csv","destination_filename":"r9_a0_factorial_cell_summary.csv","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r9_a0_bootstrap_summary.json","destination_filename":"r9_a0_bootstrap_summary.json","required":true,"max_bytes":262144},
+    {"source_relpath":"workload/r9_a0_component_attribution.csv","destination_filename":"r9_a0_component_attribution.csv","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r9_a0_interaction_summary.csv","destination_filename":"r9_a0_interaction_summary.csv","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r9_a0_risk_veto_summary.csv","destination_filename":"r9_a0_risk_veto_summary.csv","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r9_a0_gate_summary.json","destination_filename":"r9_a0_gate_summary.json","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r9_a0_resource_summary.json","destination_filename":"r9_a0_resource_summary.json","required":true,"max_bytes":131072}
+  ]
+}
