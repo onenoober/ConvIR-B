@@ -1,0 +1,38 @@
+{
+  "actions": [
+    "reference_noop",
+    "state_positive_full",
+    "state_negative_full"
+  ],
+  "bootstrap_draws": 4000,
+  "bootstrap_seed": 3407,
+  "folds": [
+    0,
+    1
+  ],
+  "grid": [
+    8,
+    8
+  ],
+  "operation_id": "R10_A0_FIXED_REGION_ACTION_FEASIBILITY_AUDIT",
+  "operators": [
+    "D_ref",
+    "D_rep"
+  ],
+  "route_id": "haze4k_v5_r10_fixed_region_action_feasibility_20260719",
+  "schema_version": 1,
+  "scientific_role": "post_hoc_privileged_development_feasibility",
+  "shuffle_replicates": 16,
+  "thresholds": {
+    "absolute_gain_db": 0.02,
+    "bidirectional_fraction": 0.1,
+    "direction_min_area": 0.05,
+    "hard_gain_db": -0.5,
+    "increment_gain_db": 0.005,
+    "local_gain_db": 0.005,
+    "mixed_fraction": 0.25,
+    "mixed_min_area": 0.1,
+    "severe_gain_db": -0.2,
+    "tail_margin_db": -0.005
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "authorizes": "R10_REGION_OBSERVABILITY_CONTRACT_REVIEW_ONLY",
+  "decision": "R10_A0_FIXED_REGION_ACTION_FEASIBILITY_PASS",
+  "decisive_fail": false,
+  "fold_metrics": {
+    "0": {
+      "global_D_ref": 0.167031281571262,
+      "global_D_rep": 0.16629743586628165,
+      "global_gain": 0.16629743586628165,
+      "region_D_ref": 0.24985854181741884,
+      "region_D_rep": 0.24978769447812885,
+      "region_gain": 0.24978769447812885,
+      "region_minus_global": 0.08282726024615683,
+      "region_minus_global_cvar5": 0.005523547505376601,
+      "region_minus_shuffle": 0.1834712879261728,
+      "shuffle_D_ref": 0.06638725389124604,
+      "shuffle_D_rep": 0.06599770881108415,
+      "shuffle_gain": 0.06599770881108415
+    },
+    "1": {
+      "global_D_ref": 0.13613487872962773,
+      "global_D_rep": 0.13466443239681045,
+      "global_gain": 0.13466443239681045,
+      "region_D_ref": 0.2288601687485415,
+      "region_D_rep": 0.22809302166989695,
+      "region_gain": 0.22809302166989695,
+      "region_minus_global": 0.09272529001891378,
+      "region_minus_global_cvar5": 0.0029031945496236907,
+      "region_minus_shuffle": 0.17962044875269176,
+      "shuffle_D_ref": 0.04923971999584976,
+      "shuffle_D_rep": 0.04846684065133522,
+      "shuffle_gain": 0.04846684065133522
+    }
+  },
+  "gates": {
+    "bidirectional_fraction_lcb95": true,
+    "both_folds_material": true,
+    "mixed_fraction_lcb95": true,
+    "region_gain_lcb95": true,
+    "region_minus_global_cvar5_lcb95": true,
+    "region_minus_global_lcb95": true,
+    "region_minus_shuffle_lcb95": true,
+    "zero_region_hard": true,
+    "zero_region_severe": true
+  },
+  "passes": true,
+  "r5_terminal_changed": false,
+  "r9_terminal_changed": false,
+  "region_hard_groups": 0,
+  "region_severe_groups": 0,
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "structural_checks": {
+    "finite_metrics": true,
+    "folds_complete": true,
+    "local_dual_operator_materiality": true,
+    "local_dual_operator_safety": true,
+    "no_op_render_replay_exact": true,
+    "operator_grid_complete": true,
+    "population_complete": true,
+    "protected_roles_untouched": true,
+    "r5_target_replay_exact": true,
+    "shuffle_histograms_exact": true,
+    "shuffle_pixel_area_exact": true,
+    "tile_partition_exact": true
+  }
+}

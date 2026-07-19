@@ -1,0 +1,8 @@
+{
+  "exact": true,
+  "max_abs_difference": 0.0,
+  "mismatches": 0,
+  "no_op_render_mismatches": 0,
+  "partition_sse_max_abs_difference": 1.1368683772161603e-13,
+  "schema_version": 1
+}

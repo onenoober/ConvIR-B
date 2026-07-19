@@ -1,0 +1,16 @@
+{
+  "control_worse_operator_gain": {
+    "lcb95": 0.04427769913749583,
+    "point": 0.057232274731209676,
+    "ucb95": 0.07055779022717522
+  },
+  "histogram_violations": 0,
+  "pixel_area_violations": 0,
+  "region_minus_shuffle": {
+    "lcb95": 0.1663672347924294,
+    "point": 0.18154586833943226,
+    "ucb95": 0.1974023189496089
+  },
+  "replicates": 16,
+  "schema_version": 1
+}

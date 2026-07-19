@@ -1,0 +1,8 @@
+{
+  "global_gain_pearson": 0.9994056063933842,
+  "local_dual_operator_materiality_violations": 0,
+  "local_dual_operator_safety_violations": 0,
+  "region_gain_pearson": 0.9998417049132378,
+  "schema_version": 1,
+  "shared_region_map_by_construction": true
+}

@@ -1,0 +1,22 @@
+{
+  "asset_sha256": {
+    "a0_cache_manifest": "553505119f228d9561b50db9816a27409189206f6c6e108485a81d7622593e47",
+    "a0_candidate_cache": null,
+    "a0_raw_manifest": "3123f2da6ac5e969fea8590a6c97ddbca46adf0e573fb1c03bec7d7a6c7ebfcc",
+    "haze4k_data": null,
+    "r5_candidate_scores": "53061beac134696216054e2aa4b2e6294313f0b9242a7f74a4346f79c30011a0",
+    "r5_closeout": "e8d6151a9d7fc1198db1db1a0fc44e2de91da0bea0f4a01053c68bf0d5c0e4e7",
+    "r9_closeout": "639820a25584852c3f8050d09d074a2053ae054c63c2b787698732ac6bc7bb34"
+  },
+  "cache_manifest_internal_identity": "b54603b51c810436c14bc9e993aef9f1294902efbc51fadebdd2c84d7c827a1d",
+  "candidate_rows": 6144,
+  "evaluated_names": 384,
+  "evaluated_units": 768,
+  "no_op_render_mismatches": 0,
+  "partition_sse_max_abs_difference": 1.1368683772161603e-13,
+  "primary_candidate_rows": 1536,
+  "raw_manifest_rows": 1536,
+  "schema_version": 1,
+  "target_max_abs_difference": 0.0,
+  "target_mismatches": 0
+}

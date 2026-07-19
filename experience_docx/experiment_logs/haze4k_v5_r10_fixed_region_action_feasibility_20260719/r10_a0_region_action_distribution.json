@@ -1,0 +1,31 @@
+{
+  "active_area_fraction": 0.584716796875,
+  "bidirectional_positive_negative": {
+    "events": 294,
+    "lcb95": 0.7199948254450557,
+    "point": 0.765625,
+    "total": 384,
+    "ucb95": 0.807106428203432
+  },
+  "global_action_counts": {
+    "reference_noop": 85,
+    "state_negative_full": 88,
+    "state_positive_full": 211
+  },
+  "mixed_noop_active": {
+    "events": 348,
+    "lcb95": 0.8725749078419742,
+    "point": 0.90625,
+    "total": 384,
+    "ucb95": 0.9334730954125743
+  },
+  "negative_area_fraction": 0.21626790364583334,
+  "noop_area_fraction": 0.415283203125,
+  "positive_area_fraction": 0.3684488932291667,
+  "schema_version": 1,
+  "tile_counts": {
+    "negative": 5315,
+    "noop": 10206,
+    "positive": 9055
+  }
+}
