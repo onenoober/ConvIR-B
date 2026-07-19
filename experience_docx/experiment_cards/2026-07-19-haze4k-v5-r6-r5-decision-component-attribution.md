@@ -61,7 +61,8 @@ The three two-factor additive interactions are frozen as `P110-P100-P010+P000`, 
 - First operation: R6_A0_FROZEN_R5_DECISION_COMPONENT_ATTRIBUTION_AUDIT
 - Expected wall time and monitor profile: 180 seconds expected, 900 seconds hard timeout, `short` monitor profile, one bounded startup observation and one finish observation.
 - Complete-unit resume policy: `none`; interruption or engineering failure cannot be retried without a new output identity and the applicable engineering review.
-- Cloud workspace/run/output/status/closeout: fresh route workspace; output id `r6-a0-r5-decision-attribution-r1`; generic `status.txt`, `heartbeat.json`, and `runtime.log`; closeout `r6_a0_decision_component_attribution_closeout.json`.
+- Cloud workspace/run/output/status/closeout: fresh route workspace; output id `r6-a0-r5-decision-attribution-r2`; generic `status.txt`, `heartbeat.json`, and `runtime.log`; closeout `r6_a0_decision_component_attribution_closeout.json`.
+- Same-contract engineering repair: r1 stopped in the protected-data-free CPU contract because its synthetic fixture made the diagnostic ceiling gap nonpositive; r2 changes only that fixture's predicted q05 ordering so the unchanged production attribution/finalizer path has a strictly positive test gap.
 - Compact Git evidence and cloud-only raw artifacts: Git receives contract/provenance/input/base-replay/factorial/bootstrap/component/interaction/risk/gate/resource summaries, typed closeout, one scientific conclusion, and terminal index row. The three R5 raw inputs, R6 per-image factorial policy rows, logs, bootstrap draws, datasets, images, tensors and arrays remain cloud-only.
 - Required engineering terminal tuple: `FAILED_ENGINEERING / null / NONE`
 

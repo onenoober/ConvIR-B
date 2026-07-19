@@ -467,6 +467,11 @@ def contract(context_path: Path) -> None:
     context = load_context(context_path, "contract")
     prepare_phase_output(context)
     records = synthetic_records()
+    for record in records.values():
+        for operator in OPERATORS:
+            true_positive = float(record["truth"][(operator, 0)])
+            record["q05"][(operator, 0)] = true_positive - 1.0
+            record["q05"][(operator, 1)] = true_positive
     policies = {cell: build_policy(records, bits) for cell, bits in CELL_BITS.items()}
     first = bootstrap(policies, oracle_gains(records), 32, BOOTSTRAP_SEED)
     second = bootstrap(policies, oracle_gains(records), 32, BOOTSTRAP_SEED)
