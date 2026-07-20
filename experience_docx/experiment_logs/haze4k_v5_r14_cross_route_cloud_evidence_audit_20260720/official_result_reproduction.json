@@ -1,0 +1,141 @@
+{
+  "bootstrap_comparison": {
+    "r10": {
+      "all_within_1e-12": true,
+      "differences": {
+        "region_gain.lcb95": 0.0,
+        "region_gain.point": 0.0,
+        "region_gain.ucb95": 0.0,
+        "region_minus_global.lcb95": 0.0,
+        "region_minus_global.point": 0.0,
+        "region_minus_global.ucb95": 0.0,
+        "region_minus_global_cvar5.lcb95": 0.0,
+        "region_minus_global_cvar5.point": 0.0,
+        "region_minus_global_cvar5.ucb95": 0.0,
+        "region_minus_shuffle.lcb95": 0.0,
+        "region_minus_shuffle.point": 0.0,
+        "region_minus_shuffle.ucb95": 0.0
+      },
+      "keys": [
+        "region_gain",
+        "region_minus_global",
+        "region_minus_shuffle",
+        "region_minus_global_cvar5"
+      ],
+      "max_abs_difference": 0.0
+    },
+    "r11": {
+      "all_within_1e-12": true,
+      "differences": {
+        "L1_LOCAL_CANDIDATE_CONTEXT_gain.lcb95": 0.0,
+        "L1_LOCAL_CANDIDATE_CONTEXT_gain.point": 0.0,
+        "L1_LOCAL_CANDIDATE_CONTEXT_gain.ucb95": 0.0,
+        "primary_minus_G0_LOCAL_STATE_ONLY.lcb95": 0.0,
+        "primary_minus_G0_LOCAL_STATE_ONLY.point": 0.0,
+        "primary_minus_G0_LOCAL_STATE_ONLY.ucb95": 0.0,
+        "primary_minus_P0_POOLED_CANDIDATE_RESPONSE.lcb95": 0.0,
+        "primary_minus_P0_POOLED_CANDIDATE_RESPONSE.point": 0.0,
+        "primary_minus_P0_POOLED_CANDIDATE_RESPONSE.ucb95": 0.0,
+        "primary_minus_S2_WITHIN_IMAGE_RESPONSE_SHUFFLE.lcb95": 0.0,
+        "primary_minus_S2_WITHIN_IMAGE_RESPONSE_SHUFFLE.point": 0.0,
+        "primary_minus_S2_WITHIN_IMAGE_RESPONSE_SHUFFLE.ucb95": 0.0,
+        "primary_minus_global.lcb95": 0.0,
+        "primary_minus_global.point": 0.0,
+        "primary_minus_global.ucb95": 0.0,
+        "primary_minus_global_cvar5.lcb95": 0.0,
+        "primary_minus_global_cvar5.point": 0.0,
+        "primary_minus_global_cvar5.ucb95": 0.0,
+        "retention.lcb95": 0.0,
+        "retention.point": 0.0,
+        "retention.ucb95": 0.0
+      },
+      "keys": [
+        "L1_LOCAL_CANDIDATE_CONTEXT_gain",
+        "retention",
+        "primary_minus_P0_POOLED_CANDIDATE_RESPONSE",
+        "primary_minus_S2_WITHIN_IMAGE_RESPONSE_SHUFFLE",
+        "primary_minus_G0_LOCAL_STATE_ONLY",
+        "primary_minus_global",
+        "primary_minus_global_cvar5"
+      ],
+      "max_abs_difference": 0.0
+    },
+    "r12": {
+      "all_within_1e-12": true,
+      "differences": {
+        "ACTION_CONDITIONED_auroc.lcb95": 0.0,
+        "ACTION_CONDITIONED_auroc.point": 0.0,
+        "ACTION_CONDITIONED_auroc.ucb95": 0.0,
+        "ACTION_CONDITIONED_retained_severe_prevalence_ratio.lcb95": 0.0,
+        "ACTION_CONDITIONED_retained_severe_prevalence_ratio.point": 0.0,
+        "ACTION_CONDITIONED_retained_severe_prevalence_ratio.ucb95": 0.0,
+        "ACTION_CONDITIONED_severe_capture_at_20pct.lcb95": 0.0,
+        "ACTION_CONDITIONED_severe_capture_at_20pct.point": 0.0,
+        "ACTION_CONDITIONED_severe_capture_at_20pct.ucb95": 0.0,
+        "primary_minus_ACTION_AGNOSTIC_auroc.lcb95": 0.0,
+        "primary_minus_ACTION_AGNOSTIC_auroc.point": 0.0,
+        "primary_minus_ACTION_AGNOSTIC_auroc.ucb95": 0.0,
+        "primary_minus_LABEL_SHUFFLE_auroc.lcb95": 0.0,
+        "primary_minus_LABEL_SHUFFLE_auroc.point": 0.0,
+        "primary_minus_LABEL_SHUFFLE_auroc.ucb95": 0.0,
+        "primary_minus_SIGN_SWAP_auroc.lcb95": 0.0,
+        "primary_minus_SIGN_SWAP_auroc.point": 0.0,
+        "primary_minus_SIGN_SWAP_auroc.ucb95": 0.0
+      },
+      "keys": [
+        "ACTION_CONDITIONED_auroc",
+        "primary_minus_ACTION_AGNOSTIC_auroc",
+        "primary_minus_SIGN_SWAP_auroc",
+        "primary_minus_LABEL_SHUFFLE_auroc",
+        "ACTION_CONDITIONED_severe_capture_at_20pct",
+        "ACTION_CONDITIONED_retained_severe_prevalence_ratio"
+      ],
+      "max_abs_difference": 0.0
+    }
+  },
+  "compact_bundle_identity": {
+    "r10": {
+      "authorizes": "R10_REGION_OBSERVABILITY_CONTRACT_REVIEW_ONLY",
+      "closeout_sha256": "fefc2c21fcbe4a215928e495920be2f4c698b0308de61236a22405d198718968",
+      "decision": "R10_A0_FIXED_REGION_ACTION_FEASIBILITY_PASS",
+      "evidence_files": 12,
+      "hash_mismatches": {},
+      "route_commit": "c455577905efa8bb6f5c0daa84c3ec43c2ee6ff5",
+      "state": "COMPLETED_GATE_PASS",
+      "valid": true
+    },
+    "r11": {
+      "authorizes": "NONE",
+      "closeout_sha256": "0e6bc5a70cd86f2aa58a34004bb895ad0295b6d7a5b2f619695878de38d4eec9",
+      "decision": "R11_A0_REGIONAL_OBSERVABILITY_FAIL_STOP",
+      "evidence_files": 13,
+      "hash_mismatches": {},
+      "route_commit": "c183817e2b3befdeeb12278aa6e6a0574883b6d5",
+      "state": "COMPLETED_GATE_FAIL",
+      "valid": true
+    },
+    "r12": {
+      "authorizes": "NONE",
+      "closeout_sha256": "d8564976b45292ddff2ec81b5ade5cf0064f99078bba0811cc3451945dcb116f",
+      "decision": "R12_A0_ACTION_CONDITIONED_DOWNSIDE_FAIL_STOP",
+      "evidence_files": 9,
+      "hash_mismatches": {},
+      "route_commit": "fb3f64fa16b05fab48dc4610bdba9c51d17cb067",
+      "state": "COMPLETED_GATE_FAIL",
+      "valid": true
+    },
+    "r13": {
+      "authorizes": "NONE",
+      "closeout_sha256": "4f1e9c3725d93316e5102c30ea73e5caf2a7f6d4543b455ad2f8c0452a73231c",
+      "decision": "R13_A0_RELATIVE_CONTEXT_UTILITY_FAIL_STOP",
+      "evidence_files": 11,
+      "hash_mismatches": {},
+      "route_commit": "635d17af3e6aefe37f424599057afb8d8c407859",
+      "state": "COMPLETED_GATE_FAIL",
+      "valid": true
+    }
+  },
+  "max_raw_reproduction_difference": 0.0,
+  "status": "EXACT_RAW_REPRODUCTION_R10_R12; COMPACT_HASH_VERIFIED_ONLY_R13",
+  "terminal_decision_affected": false
+}

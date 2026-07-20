@@ -1,0 +1,106 @@
+{
+  "evidence_role": "formal grouped-metric reproduction plus fixed post-hoc calibration strata",
+  "fixed_strata": {
+    "action_1": {
+      "auroc": 0.6169787878601537,
+      "brier": 0.19123758638121116,
+      "rows": 24576
+    },
+    "action_2": {
+      "auroc": 0.812120162992077,
+      "brier": 0.1901053527303123,
+      "rows": 24576
+    },
+    "fold_0": {
+      "auroc": 0.7482804141470784,
+      "rows": 24576
+    },
+    "fold_1": {
+      "auroc": 0.7550775120760904,
+      "rows": 24576
+    }
+  },
+  "formal": {
+    "ACTION_AGNOSTIC_auroc": {
+      "lcb95": 0.6856852403443328,
+      "point": 0.7047552604807024,
+      "ucb95": 0.7239484892036917
+    },
+    "ACTION_AGNOSTIC_retained_severe_prevalence_ratio": {
+      "lcb95": 0.6774775628105177,
+      "point": 0.7062220222081185,
+      "ucb95": 0.7339817058573819
+    },
+    "ACTION_AGNOSTIC_severe_capture_at_20pct": {
+      "lcb95": 0.41281463531409457,
+      "point": 0.4350223822335052,
+      "ucb95": 0.4580179497515858
+    },
+    "ACTION_CONDITIONED_auroc": {
+      "lcb95": 0.7069918581651181,
+      "point": 0.7221272157411213,
+      "ucb95": 0.7373118694220836
+    },
+    "ACTION_CONDITIONED_retained_severe_prevalence_ratio": {
+      "lcb95": 0.6673647293341537,
+      "point": 0.6954013698697952,
+      "ucb95": 0.7233159359378688
+    },
+    "ACTION_CONDITIONED_severe_capture_at_20pct": {
+      "lcb95": 0.42134725124970485,
+      "point": 0.4436789041041639,
+      "ucb95": 0.46610821653267703
+    },
+    "LABEL_SHUFFLE_auroc": {
+      "lcb95": 0.6029805109976857,
+      "point": 0.6184560537325935,
+      "ucb95": 0.6337227875767215
+    },
+    "LABEL_SHUFFLE_retained_severe_prevalence_ratio": {
+      "lcb95": 0.8459179921401706,
+      "point": 0.8691233799076205,
+      "ucb95": 0.892386734515719
+    },
+    "LABEL_SHUFFLE_severe_capture_at_20pct": {
+      "lcb95": 0.2860906123874248,
+      "point": 0.30470129607390356,
+      "ucb95": 0.3232656062878635
+    },
+    "SIGN_SWAP_auroc": {
+      "lcb95": 0.6262020280063342,
+      "point": 0.6441720529233902,
+      "ucb95": 0.6617969712993761
+    },
+    "SIGN_SWAP_retained_severe_prevalence_ratio": {
+      "lcb95": 0.8085858926123931,
+      "point": 0.8374862341369789,
+      "ucb95": 0.8659450363912844
+    },
+    "SIGN_SWAP_severe_capture_at_20pct": {
+      "lcb95": 0.3072439708869726,
+      "point": 0.3300110126904169,
+      "ucb95": 0.35313128591008547
+    },
+    "primary_minus_ACTION_AGNOSTIC_auroc": {
+      "lcb95": 0.005213344295039807,
+      "point": 0.017371955260418903,
+      "ucb95": 0.029275606423529683
+    },
+    "primary_minus_LABEL_SHUFFLE_auroc": {
+      "lcb95": 0.08888383302807384,
+      "point": 0.10367116200852777,
+      "ucb95": 0.11858478648050297
+    },
+    "primary_minus_SIGN_SWAP_auroc": {
+      "lcb95": 0.06460057638659158,
+      "point": 0.07795516281773107,
+      "ucb95": 0.0915439472361167
+    }
+  },
+  "label_replay_mismatches": 0,
+  "risk_vs_damage_spearman": 0.19675139036761483,
+  "row_brier": 0.19067146955576172,
+  "row_ece_10_equal_width": 0.21337628024149383,
+  "rows": 49152,
+  "severe_rows": 11506
+}

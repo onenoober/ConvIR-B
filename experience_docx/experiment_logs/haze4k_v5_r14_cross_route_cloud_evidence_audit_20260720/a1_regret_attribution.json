@@ -1,0 +1,34 @@
+{
+  "chain_db": {
+    "formal_policy": 0.025940994421641033,
+    "positive_oracle": 0.1504808415969213,
+    "predicted_names_true_action": 0.046421642104784645,
+    "true_fixed_20pct": 0.0927727719148
+  },
+  "evidence_role": "post_hoc_attribution over formal OOF rows",
+  "gap_db": {
+    "abstention_or_fixed_coverage": 0.05770806968212129,
+    "action_direction": 0.020480647683143612,
+    "coverage_ranking": 0.04635112981001536,
+    "total_oracle_to_formal": 0.12453984717528026
+  },
+  "groups": 384,
+  "seed_q05_range": {
+    "max": 1.9196631908416748,
+    "median": 0.24400140717625618,
+    "p95": 1.0837813215330243
+  },
+  "selected_conservative_gain_distribution": {
+    "mean": 0.12695733094826722,
+    "mean_after_dropping_top10pct": 0.0767568860735212,
+    "median": 0.06063270568847656,
+    "p05": -0.4020702362060547,
+    "p95": 0.5482675552368164,
+    "positive_fraction": 0.6666666666666666,
+    "top10pct_share_of_positive_sum": 0.3061682499385694
+  },
+  "selected_groups": 78,
+  "selected_name_overlap_with_true_fixed": 31,
+  "selected_wrong_action": 19,
+  "selected_wrong_action_fraction": 0.24358974358974358
+}

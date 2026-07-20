@@ -1,0 +1,41 @@
+{
+  "eligibility_auroc": 0.578512310117132,
+  "evidence_role": "formal replay checks plus post-hoc measurement audit",
+  "false_active_tiles": 4759,
+  "groups": 384,
+  "high_true_margin_ge_0.02_accuracy": 0.5047060428318101,
+  "high_true_margin_rows": 14662,
+  "missed_active_tiles": 4759,
+  "numerical_stability": {
+    "float32_action_flips": 0,
+    "minimum_gate_distance": 6.271339952944668e-07,
+    "rows_within_1e-3_of_gate": 257,
+    "rows_within_1e-4_of_gate": 31
+  },
+  "operator_range_db": {
+    "median": 0.0005910098552703857,
+    "p90": 0.022251737117767335,
+    "p99": 0.1140505856275554
+  },
+  "oracle_map_replay_mismatches": 0,
+  "predicted_actual_worst_pearson": 0.29142477787236076,
+  "predicted_actual_worst_spearman": 0.28669108356029543,
+  "predicted_exact_action_accuracy": 0.5112711588541666,
+  "region_unit": {
+    "mean_boundary_disagreement": 0.34881882440476186,
+    "mean_singleton_fraction": 0.07861328125
+  },
+  "robust_tile_utility": {
+    "oracle_map_mean": 0.2534113522682067,
+    "predicted_map_mean": 0.08860544376458938,
+    "retention": 0.3496506489212477
+  },
+  "tile_action_rows": 49152,
+  "true_margin": {
+    "fraction_le_0.005": 0.332275390625,
+    "fraction_le_0.010": 0.3617757161458333,
+    "median": 0.06059524044394493,
+    "p10": 0.0
+  },
+  "wrong_signed_active_tiles": 2493
+}

@@ -1,0 +1,12 @@
+{
+  "evidence_role": "historical post-hoc external directional reference; different action family",
+  "fixed_haze4k_alpha": 0.375,
+  "images": 55,
+  "mean_dpsnr": -0.018156849254261365,
+  "mean_dssim": 0.008876933834769509,
+  "psnr_positive_fraction": 0.4727272727272727,
+  "psnr_ssim_sign_disagreement_fraction": 0.509090909090909,
+  "psnr_ssim_spearman": 0.08326118326118327,
+  "scope_warning": "NH-HAZE v2.7 WDMamba blend is not the R10-R13 action family and cannot validate transfer.",
+  "severe_dpsnr_le_minus_0.2": 13
+}

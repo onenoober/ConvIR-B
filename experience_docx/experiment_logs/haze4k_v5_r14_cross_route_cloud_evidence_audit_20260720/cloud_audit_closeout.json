@@ -1,0 +1,18 @@
+{
+  "audit_id": "haze4k_v5_r14_cross_route_cloud_evidence_audit_20260720",
+  "authorizes": "READ_ONLY_EVIDENCE_SYNC_ONLY",
+  "canary_touched": false,
+  "candidate_generated": false,
+  "checkpoint_selected_or_loaded": false,
+  "confirmation_touched": false,
+  "decision": "EXACT_R5_R13_PARADIGM_REMAINS_CLOSED_STRATEGIC_RECONSTRUCTION_REQUIRED",
+  "formal_reproduction_max_abs_difference": 0.0,
+  "locked_test_touched": false,
+  "old_terminal_decisions_changed": false,
+  "protected_data_touched": false,
+  "r13_raw_reproduction": "RAW_ASSET_UNAVAILABLE_COMPACT_HASH_VERIFIED_ONLY",
+  "schema_version": 1,
+  "state": "COMPLETED_READ_ONLY_AUDIT",
+  "training_run": false,
+  "wall_seconds": 16.468842029571533
+}

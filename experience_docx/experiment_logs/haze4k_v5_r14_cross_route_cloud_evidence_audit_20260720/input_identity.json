@@ -1,0 +1,160 @@
+{
+  "audit_repo_root": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-r14-cross-route-audit-fe4005f00",
+  "audit_source_commit": "fe4005f00128346872bccd2107a16973e52a417b",
+  "cloud_host": "convir-4090",
+  "cloud_root": "/sda/home/wangyuxin/ConvIR-B",
+  "inputs": {
+    "r10_region_rows": {
+      "bytes": 124355,
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r10_fixed_region_action_feasibility_20260719/r10-a0-fixed-region-feasibility-r1/workload/r10_a0_per_image_region_rows_cloud_only.csv",
+      "sha256": "92844bcfd03597d76999c71b43fd944430ec3d6e42efe76a926e89dcbf8aebab"
+    },
+    "r11_policy_rows": {
+      "bytes": 101042,
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r11_regional_action_observability_20260719/r11-a0-regional-observability-r1/workload/r11_a0_per_image_policy_rows_cloud_only.csv",
+      "sha256": "e45ae4b11843063fc4cd0360ebcc7f7e872989bc6f9657228ee1de9b90bb16c7"
+    },
+    "r11_tile_rows": {
+      "bytes": 5001298,
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r11_regional_action_observability_20260719/r11-a0-regional-observability-r1/workload/r11_a0_tile_predictions_cloud_only.csv",
+      "sha256": "8f486c4c3e2cc699de9336aeb93be87dd99fb06c6f7708e377f2095a94236d3a"
+    },
+    "r12_risk_rows": {
+      "bytes": 5123255,
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r12_action_conditioned_downside_observability_20260719/r12-a0-action-downside-r2/workload/r12_a0_oof_risk_scores_cloud_only.csv",
+      "sha256": "56dd30e46158f8a2f2f219614a3d4e0a96ffaad4fc37d19cf83cd1db4b7ab508"
+    },
+    "r3_cache_manifest": {
+      "bytes": 470,
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r3_proposal_first_acv_20260717/r3-a0-proposal-r4/workload/a0_cache_manifest.json",
+      "sha256": "553505119f228d9561b50db9816a27409189206f6c6e108485a81d7622593e47"
+    },
+    "r3_raw_manifest": {
+      "bytes": 833192,
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r3_proposal_first_acv_20260717/r3-a0-proposal-r4/workload/a0_cache_units_cloud_only.jsonl",
+      "sha256": "3123f2da6ac5e969fea8590a6c97ddbca46adf0e573fb1c03bec7d7a6c7ebfcc"
+    },
+    "r5_candidate_scores": {
+      "bytes": 943265,
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5-a0-spatial-response-screen-r2/workload/r5_a0_candidate_scores_cloud_only.csv",
+      "sha256": "53061beac134696216054e2aa4b2e6294313f0b9242a7f74a4346f79c30011a0"
+    },
+    "r5_policy_rows": {
+      "bytes": 387485,
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5-a0-spatial-response-screen-r2/workload/r5_a0_policy_rows_cloud_only.csv",
+      "sha256": "63c1aa4c7447e0fdb55611507eedbe0fd940f9cef10f0163e86f986a16baf150"
+    },
+    "r5_seed_rows": {
+      "bytes": 1921819,
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719/r5-a0-spatial-response-screen-r2/workload/r5_a0_per_seed_predictions_cloud_only.csv",
+      "sha256": "6cfcea9353be8ba50038c9655ef1f533c3224e1b8d971282f2bbb21402017c14"
+    }
+  },
+  "integrity_valid": true,
+  "known_sha_mismatches": {},
+  "protected_path_tokens_opened": [],
+  "r13_row_assets": "RAW_ASSET_UNAVAILABLE",
+  "run_status": {
+    "r10": {
+      "events": 103,
+      "expected_units": 4770,
+      "sha256": "ea708c1e2abc3b363d70316032b70a25a0d1cff08507622ede188206f5afdd38",
+      "terminal": {
+        "completed": 4770,
+        "event": "workload_end",
+        "phase": "terminal",
+        "route_id": "haze4k_v5_r10_fixed_region_action_feasibility_20260719",
+        "run_id": "r10-a0-fixed-region-feasibility-r1",
+        "schema_version": 1,
+        "sequence": 0,
+        "source": "generic_run_telemetry",
+        "timestamp_unix": 1784452129.0584078,
+        "total": 4770,
+        "writer_pid": 2492823
+      },
+      "terminal_events": 1,
+      "valid": true
+    },
+    "r11": {
+      "events": 118,
+      "expected_units": 4786,
+      "sha256": "a2d901b0f161c54978ba12a89382d572028ecd879f7f90fb9f8eabe450ad61df",
+      "terminal": {
+        "completed": 4786,
+        "event": "workload_end",
+        "phase": "terminal",
+        "route_id": "haze4k_v5_r11_regional_action_observability_20260719",
+        "run_id": "r11-a0-regional-observability-r1",
+        "schema_version": 1,
+        "sequence": 0,
+        "source": "generic_run_telemetry",
+        "timestamp_unix": 1784456823.6070828,
+        "total": 4786,
+        "writer_pid": 2595786
+      },
+      "terminal_events": 1,
+      "valid": true
+    },
+    "r12": {
+      "events": 13,
+      "expected_units": 12,
+      "sha256": "346e6b4d1fd7796cb578678dfb2ac2d78075d801d53c7979d24fc6cf8c23a7c8",
+      "terminal": {
+        "completed": 12,
+        "event": "workload_end",
+        "phase": "terminal",
+        "route_id": "haze4k_v5_r12_action_conditioned_downside_observability_20260719",
+        "run_id": "r12-a0-action-downside-r2",
+        "schema_version": 1,
+        "sequence": 0,
+        "source": "generic_run_telemetry",
+        "timestamp_unix": 1784467841.0731995,
+        "total": 12,
+        "writer_pid": 3019979
+      },
+      "terminal_events": 1,
+      "valid": true
+    },
+    "r13": {
+      "events": 121,
+      "expected_units": 4790,
+      "sha256": "da3f9d9bcb59c9f7c90c11a25ef0ffb99aaf84588110228f224fa98fdb7167ae",
+      "terminal": {
+        "completed": 4790,
+        "event": "workload_end",
+        "phase": "terminal",
+        "route_id": "haze4k_v5_r13_image_relative_context_observability_20260719",
+        "run_id": "r13-a0-image-relative-context-r1",
+        "schema_version": 1,
+        "sequence": 0,
+        "source": "generic_run_telemetry",
+        "timestamp_unix": 1784478029.070674,
+        "total": 4790,
+        "writer_pid": 3310919
+      },
+      "terminal_events": 1,
+      "valid": true
+    },
+    "r5": {
+      "events": 212,
+      "expected_units": 1552,
+      "sha256": "02fb0c2a36fa2f235f6d18eb063914434a8a176552f3e36cae1be912cea146cf",
+      "terminal": {
+        "completed": 1552,
+        "event": "workload_end",
+        "phase": "terminal",
+        "route_id": "haze4k_v5_r5_spatial_candidate_response_sufficiency_20260719",
+        "run_id": "r5-a0-spatial-response-screen-r2",
+        "schema_version": 1,
+        "sequence": 0,
+        "source": "generic_run_telemetry",
+        "timestamp_unix": 1784430834.9866977,
+        "total": 1552,
+        "writer_pid": 1060554
+      },
+      "terminal_events": 1,
+      "valid": true
+    }
+  },
+  "schema_version": 1
+}

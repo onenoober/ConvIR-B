@@ -1,0 +1,23 @@
+{
+  "conclusion": "The cloud artifacts cannot establish alignment with heavy-haze recovery, light-haze protection, or natural visual quality.",
+  "evidence_role": "post-hoc target-alignment audit",
+  "haze4k_target_dimensions_present": [
+    "PSNR"
+  ],
+  "operator_mean_worst_disagreement_rows": 260,
+  "r10_gain_distribution": {
+    "mean": 0.23813355953361662,
+    "mean_after_dropping_top10pct": 0.19405101764960905,
+    "median": 0.19644958156670111,
+    "p05": 0.008775574109905867,
+    "p95": 0.6106702002198999,
+    "positive_fraction": 0.9973958333333334,
+    "top10pct_share_of_positive_sum": 0.26787844808174055
+  },
+  "target_dimensions_absent": [
+    "semantic protection",
+    "haze severity",
+    "human naturalness",
+    "perceptual harm"
+  ]
+}

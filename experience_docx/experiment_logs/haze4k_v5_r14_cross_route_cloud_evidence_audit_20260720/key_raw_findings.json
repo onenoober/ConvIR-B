@@ -1,0 +1,30 @@
+{
+  "findings": [
+    {
+      "finding": "R10-R12 decisive raw-row metrics reproduce within 1e-12; R13 compact bundle hashes verify but row assets are unavailable.",
+      "id": "F1",
+      "role": "formal_reproduction"
+    },
+    {
+      "finding": "R11 exact-budget action accuracy 0.5113; high-margin accuracy 0.5047.",
+      "id": "F2",
+      "role": "post_hoc"
+    },
+    {
+      "finding": "R5 oracle-to-policy gap decomposes into coverage 0.057708, ranking 0.046351, direction 0.020481 dB.",
+      "id": "F3",
+      "role": "post_hoc"
+    },
+    {
+      "finding": "R12 primary AUROC 0.7221, fixed 20% capture 0.4437; row ECE 0.2134.",
+      "id": "F4",
+      "role": "formal_plus_post_hoc"
+    },
+    {
+      "finding": "NH-HAZE fixed Haze4K alpha has mean dPSNR -0.0182 and 13 severe images; action family differs.",
+      "id": "F5",
+      "role": "historical_external_reference"
+    }
+  ],
+  "schema_version": 1
+}

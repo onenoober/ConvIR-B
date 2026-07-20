@@ -1,0 +1,11 @@
+{
+  "r10_fold_balance": true,
+  "r10_names_unique": true,
+  "r11_fold_balance": true,
+  "r11_policy_names_unique": true,
+  "r11_tile_keys_unique": true,
+  "r12_fold_balance": true,
+  "r12_risk_keys_unique": true,
+  "r5_candidate_keys_unique": true,
+  "r5_policy_keys_unique": true
+}

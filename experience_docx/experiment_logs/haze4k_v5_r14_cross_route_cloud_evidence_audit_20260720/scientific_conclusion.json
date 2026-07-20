@@ -1,0 +1,28 @@
+{
+  "hypotheses": {
+    "H1": {
+      "basis": "poor exact-action and high-margin ranking with exact privileged budget; weak score-utility correlation",
+      "decision": "SUPPORTED_NOT_FULLY_PROVEN"
+    },
+    "H2": {
+      "basis": "R5 coverage/direction losses and R12 capture/calibration failure; cannot explain R11 exact-budget gap alone",
+      "decision": "SUPPORTED_AS_SECONDARY"
+    },
+    "H3": {
+      "basis": "ambiguous tile labels, fragmented maps, PSNR-only target and absent semantic/visual harm labels",
+      "decision": "NOT_EXCLUDED_AND_STRENGTHENED_UPSTREAM"
+    },
+    "H4": {
+      "basis": "NH-HAZE fixed Haze4K blend reversal; different action family prevents direct transfer claim",
+      "decision": "NOT_EXCLUDED_DIRECTIONALLY_SUPPORTED"
+    }
+  },
+  "route_status": "\u5df2\u8017\u5c3d\uff0c\u5e94\u5173\u95ed\uff1b\u603b\u76ee\u6807\u9700\u8981\u6218\u7565\u91cd\u6784",
+  "schema_version": 1,
+  "solution_family_updates": {
+    "S1": "\u652f\u6301\u4f46\u9700\u6536\u7a84\uff1a\u4ec5\u5728\u72ec\u7acb\u65b0\u4fe1\u606f\u5148\u8bc1\u660e\u589e\u91cf\u540e",
+    "S2": "\u53ef\u4fe1\u5ea6\u4e0b\u964d\u4e3a\u6b21\u7ea7\uff1a\u51b3\u7b56\u4e0d\u80fd\u521b\u9020\u7f3a\u5931\u4fe1\u606f",
+    "S3": "\u652f\u6301\u589e\u5f3a\uff1a\u5148\u5ba1\u8ba1\u6570\u636e\u3001\u76d1\u7763\u3001\u533a\u57df/\u52a8\u4f5c\u4e0e\u8bc4\u4ef7\u5b9a\u4e49"
+  },
+  "updated_bottleneck": "Observable candidate-conditioned signed utility is weak before policy construction, while the fixed PSNR/tile/action formulation itself is insufficiently aligned with the real target."
+}
