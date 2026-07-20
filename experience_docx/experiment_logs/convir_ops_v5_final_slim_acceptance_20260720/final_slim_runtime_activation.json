@@ -1,0 +1,33 @@
+{
+  "activation_validation_commit": "6d8d7c41e8d7af1d0d9f6853dde38e88184bc892",
+  "authoritative_route_snapshot": {
+    "authorizes": "R16_REGION_TARGET_SUPERVISION_REFORMULATION_ONLY",
+    "decision": "R16_S3_DOMAIN_MATCHED_ACTION_CEILING_FAIL_STRATEGIC_RESET",
+    "route_id": "haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720",
+    "state": "COMPLETED_GATE_FAIL"
+  },
+  "candidate_control_plane_commit": "31cc862f5107106dad8de266299b1bfea0b7a376",
+  "checkpoint_access": 0,
+  "compact_snapshot_verified": true,
+  "configured_runtime_script": "/home/ubuntu/workspace/ConvIR-B-operations-v4/experience_docx/tools/convir_ops_mcp.py",
+  "dataset_access": 0,
+  "evidence_cutoff": "2026-07-20 Asia/Shanghai",
+  "gpu_access": 0,
+  "historical_evidence_modified": false,
+  "model_calls": 0,
+  "production_runtime_ref": "github/main",
+  "protected_access": {
+    "canary": 0,
+    "confirmation": 0,
+    "locked_test": 0
+  },
+  "runtime_host": "convir-4090",
+  "schema_version": 1,
+  "server_source_sha256": "9224b44b32584f0298437fec8447606e6056bb5440697e052ee54a13d5650831",
+  "server_version": "5.0.0",
+  "state": "ACTIVE_VERIFIED",
+  "stdio_summary_bytes": 37,
+  "tool_count": 6,
+  "validation_marker": "CONVIR_OPS_V5_RUNTIME_ACTIVATION_OK",
+  "validation_script_sha256": "2c040e9b2f486bc6dcb2edfb54f25dbadfca9c26bad79bcbe4cc38dc683073d9"
+}
