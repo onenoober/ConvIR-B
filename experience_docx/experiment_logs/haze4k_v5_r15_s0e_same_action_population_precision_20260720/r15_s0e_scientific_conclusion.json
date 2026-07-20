@@ -1,0 +1,23 @@
+{
+  "authorizes": "R15_S3_REFORMULATION_ONLY",
+  "competing_explanation": "A failure can arise from domain/action/region mismatch rather than the absence of all useful inference information; a pass establishes only F00 measurement qualification, not deployment or target alignment.",
+  "decision": "R15_S0E_REAL_ACTION_HEADROOM_FAIL_STRATEGIC_RESET",
+  "gate_reasons": [
+    "All 55 image actions were generated GT-free, sealed, exactly regenerated and verified before GT scoring.",
+    "Failed frozen gates: ['region_gain_lcb95', 'region_minus_global_lcb95', 'region_minus_shuffle_lcb95', 'mixed_fraction_lcb95', 'bidirectional_fraction_lcb95', 'both_strata_material'].",
+    "Region-minus-global and region-minus-shuffle LCB95 were 0.000032 and 0.000464 dB.",
+    "Mixed and bidirectional LCB95 were 0.161380 and 0.077659.",
+    "Audit-stratum materiality was {'0': False, '1': False} and decisive failure was {'0': True, '1': True}; operator region means were {'D_ref': 0.0013105150229882412, 'D_rep': 0.0013105445799223197}."
+  ],
+  "limitations": [
+    "NH-HAZE was previously used and is not an independent external validation population.",
+    "This is a privileged paired-target feasibility audit, not a deployable policy.",
+    "PSNR and fixed 8x8 regions remain the audited F00 definition; semantic protection and naturalness are not measured.",
+    "No training, human annotation, confirmation, canary or locked-test access occurred."
+  ],
+  "operation_id": "R15_S0E_SAME_ACTION_POPULATION_PRECISION",
+  "primary_result": "Same-action real-development qualification ended COMPLETED_GATE_FAIL: region gain 0.001311 dB (LCB95 0.000520, UCB95 0.002491), CI half-width 0.000986 dB, with 0 severe and 0 hard images.",
+  "route_id": "haze4k_v5_r15_s0e_same_action_population_precision_20260720",
+  "run_id": "r15-s0e-same-action-population-r1",
+  "schema_version": 1
+}

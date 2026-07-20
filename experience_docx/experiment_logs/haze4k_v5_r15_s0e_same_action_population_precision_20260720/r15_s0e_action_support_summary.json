@@ -1,0 +1,43 @@
+{
+  "action_tile_counts": {
+    "negative": 115,
+    "noop": 3208,
+    "positive": 197
+  },
+  "bidirectional_positive_negative": {
+    "events": 9,
+    "lcb95": 0.07765881910622006,
+    "point": 0.16363636363636364,
+    "total": 55,
+    "ucb95": 0.28803000230782755
+  },
+  "maximum_action_abs": {
+    "max": 0.009458223357796669,
+    "mean": 0.009420137124305422
+  },
+  "maximum_render_delta_abs": {
+    "max": 0.0023645758628845215,
+    "mean": 0.0023550570011138918
+  },
+  "mixed_noop_active": {
+    "events": 15,
+    "lcb95": 0.16137964083343417,
+    "point": 0.2727272727272727,
+    "total": 55,
+    "ucb95": 0.4096194853448191
+  },
+  "model_support_fraction": {
+    "mean": 0.037279469514826566,
+    "median": 0.009411458857357502,
+    "p10": 0.0005239583551883698,
+    "p90": 0.09125833213329315,
+    "zero_units": 0
+  },
+  "regional_oracle_active_area": {
+    "mean": 0.08863636363636364,
+    "median": 0.03125,
+    "p10": 0.0,
+    "p90": 0.28125
+  },
+  "schema_version": 1
+}
