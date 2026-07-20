@@ -123,3 +123,20 @@ fresh clone had no repository or global author identity. The corrected form is
 to set the existing local project identity (`Codex <codex@openai.com>`) only in
 that dedicated sync repository, revalidate the already-staged compact allowlist,
 then commit and push once. Do not set cloud global Git configuration.
+
+## 2026-07-20 R15 independent probes and remote `stat` argv
+
+Invalid forms observed while opening R15 were (1) collecting unrelated WSL and
+SSH probes in one JavaScript `Promise.all`, which discarded successful outputs
+when one SSH process timed out, and (2) passing `stat -c '%n %s'` through a
+PowerShell/WSL/SSH command string, which split the format and made `stat` treat
+`%s` as a path. These are `FAILED_COMMAND`, never repository, cloud-asset or
+experiment evidence.
+
+Corrected form: keep independent identity probes in independent bounded calls
+and use fixed `wsl.exe --exec /usr/bin/ssh ... <argv>` whenever the remote
+command has no shell syntax. If a format string or pipeline is needed, place it
+in a committed fixed-path script or avoid it in favor of separate `test`,
+`sha256sum`, `git rev-parse` and `git status` probes, each with an explicit
+marker. Do not relaunch or reinterpret an experiment because an outer probe
+lost its output.
