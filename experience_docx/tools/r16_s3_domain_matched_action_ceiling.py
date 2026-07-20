@@ -340,6 +340,7 @@ def interval_half_width(value: dict[str, float]) -> float:
 def contract(context_path: Path) -> None:
     import numpy as np
     import torch
+    from mamba_ssm.ops.selective_scan_interface import selective_scan_ref
 
     context = load_context(context_path, "contract")
     prepare_phase_output(context)
@@ -349,6 +350,11 @@ def contract(context_path: Path) -> None:
     r10 = load_r10(context)
     device = torch.device("cpu")
     a0, wdmamba = build_models(context, device)
+    reference_scan_bindings = 0
+    for module in wdmamba.modules():
+        if hasattr(module, "selective_scan"):
+            module.selective_scan = selective_scan_ref
+            reference_scan_bindings += 1
     values_first = generate_actions(
         torch.linspace(0.0, 1.0, 3 * 256 * 256, dtype=torch.float32)
         .reshape(1, 3, 256, 256),
@@ -379,6 +385,7 @@ def contract(context_path: Path) -> None:
         "population_exact_01_50": tuple(population["allowed_ids"]) == EXPECTED_IDS,
         "protected_ids_exact_51_55": tuple(population["protected_ids"]) == PROTECTED_IDS,
         "exact_production_models_constructed": True,
+        "wdmamba_cpu_reference_scan_bound": reference_scan_bindings > 0,
         "deterministic_endpoint_hashes": first_identity == second_identity,
         "finite_endpoint_actions": all(
             bool(torch.isfinite(value).all()) for value in values_first.values()
