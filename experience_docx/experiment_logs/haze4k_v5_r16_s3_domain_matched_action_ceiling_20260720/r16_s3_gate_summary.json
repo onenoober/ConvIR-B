@@ -1,0 +1,42 @@
+{
+  "authorizes": "R16_REGION_TARGET_SUPERVISION_REFORMULATION_ONLY",
+  "decision": "R16_S3_DOMAIN_MATCHED_ACTION_CEILING_FAIL_STRATEGIC_RESET",
+  "decisive_fail": true,
+  "gates": {
+    "bidirectional_fraction_lcb95": false,
+    "both_replay_lanes_positive": true,
+    "both_strata_material": true,
+    "mixed_fraction_lcb95": false,
+    "region_gain_ci_half_width": false,
+    "region_gain_lcb95": true,
+    "region_minus_global_cvar5_lcb95": true,
+    "region_minus_global_lcb95": true,
+    "region_minus_shuffle_lcb95": true,
+    "zero_hard": true,
+    "zero_severe": true
+  },
+  "negative_conclusion_protection": "stratum point failure alone is not decisive; UCB contradiction is required",
+  "passes": false,
+  "region_gain_ci_half_width_db": 0.06675389766483433,
+  "region_hard_images": 0,
+  "region_severe_images": 0,
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "structural_checks": {
+    "full_population_replay_exact_before_gt": true,
+    "local_materiality": true,
+    "local_safety": true,
+    "paired_execution_replicas_exact": true,
+    "population_complete": true,
+    "population_exact_01_50": true,
+    "prior_terminal_authorized": true,
+    "protected_ids_51_55_not_opened_or_listed": true,
+    "protected_roles_untouched": true,
+    "r10_action_tuple_exact": true,
+    "scoring_pass_replay_exact": true,
+    "sha_strata_25_25": true,
+    "shuffle_histograms_exact": true,
+    "shuffle_pixel_area_exact": true,
+    "training_absent": true
+  }
+}

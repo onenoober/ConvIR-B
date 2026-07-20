@@ -1,0 +1,46 @@
+{
+  "action_system": "A0_NH_plus_or_minus_full_WDMamba_NH_residual",
+  "action_system_is_single_preregistered_variable": true,
+  "action_tile_counts": {
+    "negative": 8,
+    "noop": 2901,
+    "positive": 291
+  },
+  "bidirectional_positive_negative": {
+    "events": 0,
+    "lcb95": 0.0,
+    "point": 0.0,
+    "total": 50,
+    "ucb95": 0.07112173646419764
+  },
+  "mixed_noop_active": {
+    "events": 16,
+    "lcb95": 0.19520419466283928,
+    "point": 0.32,
+    "total": 50,
+    "ucb95": 0.4669938401147306
+  },
+  "negative_endpoint_gain_db": {
+    "maximum": -2.0898020248631983,
+    "mean": -3.4366776118575855,
+    "median": -3.3746138702833393,
+    "minimum": -5.2356265326718425
+  },
+  "positive_endpoint_gain_db": {
+    "maximum": -0.5503673775949331,
+    "mean": -2.4342208892874013,
+    "median": -2.211832417922279,
+    "minimum": -4.730559883248565
+  },
+  "regional_oracle_active_area": {
+    "mean": 0.0934375,
+    "median": 0.0625,
+    "p10": 0.014062500000000006,
+    "p90": 0.25
+  },
+  "residual_nonzero_fraction": {
+    "mean": 0.9981397151947021,
+    "median": 0.9985600709915161
+  },
+  "schema_version": 1
+}

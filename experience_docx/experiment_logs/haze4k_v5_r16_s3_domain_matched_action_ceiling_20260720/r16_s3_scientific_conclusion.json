@@ -1,0 +1,23 @@
+{
+  "authorizes": "R16_REGION_TARGET_SUPERVISION_REFORMULATION_ONLY",
+  "competing_explanation": "This compound action-system contrast cannot separate baseline-domain mismatch from residual-source mismatch; a FAIL supports but does not uniquely identify region, target or action-semantics misspecification.",
+  "decision": "R16_S3_DOMAIN_MATCHED_ACTION_CEILING_FAIL_STRATEGIC_RESET",
+  "gate_reasons": [
+    "Exactly NH-HAZE ids 01-50 were used as a checkpoint-training-overlap privileged capacity population; ids 51-55 and all protected roles remained sealed.",
+    "All actions were generated GT-free, sealed, replayed over the complete population, and verified again per image before GT scoring.",
+    "Failed frozen gates: ['mixed_fraction_lcb95', 'bidirectional_fraction_lcb95', 'region_gain_ci_half_width'].",
+    "Region-minus-global and region-minus-shuffle intervals were {'point': 0.12342902923984816, 'lcb95': 0.06514225286750183, 'ucb95': 0.1986500481971705} and {'point': 0.3527701249565559, 'lcb95': 0.25969631590865266, 'ucb95': 0.4619843446524885}.",
+    "SHA-stratum materiality was {'0': True, '1': True}; decisive UCB failure was {'0': False, '1': False}."
+  ],
+  "limitations": [
+    "All 50 images overlap checkpoint training and cannot support generalization, deployment or external-validation claims.",
+    "PSNR and fixed 8x8 regions remain the audited target/unit; semantic protection and naturalness are unmeasured.",
+    "D_ref and D_rep are identical deterministic execution replicas, not independent operators or samples.",
+    "No training, alpha search, checkpoint selection, confirmation, canary or locked-test access occurred."
+  ],
+  "operation_id": "R16_S3_DOMAIN_MATCHED_ACTION_CEILING",
+  "primary_result": "Domain-matched privileged capacity ceiling ended COMPLETED_GATE_FAIL: regional gain 0.123429 dB (LCB95 0.065142, UCB95 0.198650), CI half-width 0.066754 dB, with 0 severe and 0 hard images.",
+  "route_id": "haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720",
+  "run_id": "r16-s3-domain-matched-action-ceiling-r4",
+  "schema_version": 1
+}

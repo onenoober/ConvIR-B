@@ -1,0 +1,14 @@
+{
+  "execution_replica_count": 2,
+  "execution_replicas_count_as_samples": false,
+  "independent_image_groups": 50,
+  "maximum_resident_set_mib": 1394.29296875,
+  "model_forward_images": 150,
+  "peak_gpu_memory_mib": 3187.76123046875,
+  "per_stratum_bootstrap_draws": 4000,
+  "primary_bootstrap_draws": 4000,
+  "schema_version": 1,
+  "total_bootstrap_draws": 12000,
+  "training_occurred": false,
+  "wall_seconds": 207.2825367823243
+}

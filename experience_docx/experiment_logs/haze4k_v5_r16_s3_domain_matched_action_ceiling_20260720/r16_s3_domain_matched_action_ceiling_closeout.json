@@ -1,0 +1,131 @@
+{
+  "authorizes": "R16_REGION_TARGET_SUPERVISION_REFORMULATION_ONLY",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "R16_S3_DOMAIN_MATCHED_ACTION_CEILING_FAIL_STRATEGIC_RESET",
+  "details": {
+    "external_validation_claimed": false,
+    "hard_images": 0,
+    "old_terminals_changed": false,
+    "region_gain_ci_half_width_db": 0.06675389766483433,
+    "region_gain_db": 0.12342902923984816,
+    "region_gain_lcb95_db": 0.06514225286750183,
+    "region_gain_ucb95_db": 0.1986500481971705,
+    "region_minus_global_lcb95_db": 0.06514225286750183,
+    "region_minus_shuffle_lcb95_db": 0.25969631590865266,
+    "severe_images": 0,
+    "training_occurred": false
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "r16_s3_bootstrap_summary.json": "c49d1e73adf991a5f854010e77494c56c9fbcaff7870afe3d8b80e2170ad4b0e",
+    "r16_s3_endpoint_action_summary.json": "5d5e3ba4bcb8648914f2603d51c496bf458d11d29dbb56e157232767047a4c84",
+    "r16_s3_gate_summary.json": "bf86b034567cda01544b1fcde7ca792e272cb133d0b2d031f3592d98efdca441",
+    "r16_s3_identity_and_access.json": "c35f53f1d73f5bb9d64c579976bca1f56e5bcc6b5082cf925927a0a70185aa12",
+    "r16_s3_policy_summary.csv": "34d965f3d9762fde6747e36837f46c455a064ee7a8a3d41bb372dd8619811621",
+    "r16_s3_resource_summary.json": "0f4ce7221fee0a267f84293b86b3455121457a4dc16c9ce1d5bcf180e511a0f8",
+    "r16_s3_scientific_conclusion.json": "483f20925c68babd90c3d4bee13a789cafcdf1aa41028e5e951f31334b98ace6",
+    "r16_s3_strata_operator_summary.json": "94f5f40a144aa952d7591130e48875eceadacdba3fce1be370c7c7587b9bbe9c"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "R16_S3_DOMAIN_MATCHED_ACTION_CEILING",
+  "returncode": 0,
+  "route_commit": "7c6b1b51e430ca46ecb4ae277c9b14e71253904c",
+  "route_id": "haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720",
+  "run_id": "r16-s3-domain-matched-action-ceiling-r4",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "a0_nhhaze_checkpoint",
+      "kind": "file",
+      "sha256": "aab6a72613781900a23c3922ad2dd60f6b0d563018e33ae75162bcf3338f5bac"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "nhhaze_data",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "population_manifest",
+      "kind": "file",
+      "sha256": "d5a437ac008876bd475fa9dc82cba8444a9e945226d928d1049b5782ce63bb1e"
+    },
+    {
+      "access_role": "development_screening",
+      "commit": "c455577905efa8bb6f5c0daa84c3ec43c2ee6ff5",
+      "contract_access": true,
+      "id": "r10_source_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "s0e_closeout",
+      "kind": "file",
+      "sha256": "6aaec2c9536f7cc5676d5056f43475def8d4bda1e381242dae6eba0c8f8c4434"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "wdmamba_arch_source",
+      "kind": "file",
+      "sha256": "8cda6ae6aefc7d89793611d45d72a9df8a48beae9aed26d7b40a72a51efb48bd"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "wdmamba_denet_source",
+      "kind": "file",
+      "sha256": "c932f2efb3fdb857b401eff47774139f5625f0ac7f8458e5876369c8b3eabbf9"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "wdmamba_nhhaze_checkpoint",
+      "kind": "file",
+      "sha256": "e097524f466b24f32843867911f9cbd47be8d51e61e5e345f8a27c22c73d5c5a"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "wdmamba_registry_source",
+      "kind": "file",
+      "sha256": "21c23bd3bf727eb2decd99035120fc47316db92486d73116cca18e9fa8b6c854"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "wdmamba_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "wdmamba_ublock_source",
+      "kind": "file",
+      "sha256": "5ad2c9d372c5bdf318bf203e0761e44f3802894338bd2ef4fc66b5878ac8c8ff"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "wdmamba_wavelet_source",
+      "kind": "file",
+      "sha256": "3ec4506afd8914998d592d4022ca81ed259e364a27fdc88167f79634475ace7f"
+    }
+  ]
+}

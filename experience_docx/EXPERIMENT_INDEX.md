@@ -111,6 +111,28 @@ Use this index first when asking what happened, which route is still relevant,
 and where the evidence lives. Use the listed source branch or commit only when
 you need the exact runnable code snapshot.
 
+### 2026-07-20 R16 S3 domain-matched action ceiling
+
+R15-S0E authorized only strategic reformulation after the cross-domain R10
+action system lost material NH-HAZE headroom. R16 changed only the compound
+baseline/action-source identity to the frozen NH-HAZE ConvIR-B/WDMamba endpoint
+residual while retaining PSNR, fixed 8x8, three actions, safe-global, spatial
+shuffle, 4,000 image bootstrap draws and all inherited gates. It used exactly
+ids 01-50 as a checkpoint-training-overlap privileged capacity population;
+ids 51-55 and all confirmation/canary/locked roles remained sealed.
+
+The terminal is `COMPLETED_GATE_FAIL /
+R16_S3_DOMAIN_MATCHED_ACTION_CEILING_FAIL_STRATEGIC_RESET /
+R16_REGION_TARGET_SUPERVISION_REFORMULATION_ONLY`. Privileged regional gain was
+`+0.123429 dB` (LCB95 `+0.065142`, UCB95 `+0.198650`) with zero severe/hard
+images, so domain-matched regional headroom exists. The route nevertheless
+failed its frozen action-system qualification: bidirectional actions occurred
+in `0/50` images (UCB95 `0.071122 < 0.10`), mixed LCB95 was `0.195204`, and
+the image-level CI half-width was `0.066754 dB`. This closes selector/critic
+reopening and direct training; only region, target, action-semantics or
+supervision reformulation is authorized. Evidence is in
+`experience_docx/experiment_logs/haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720/`.
+
 ### 2026-07-19 R11 cloud raw evidence audit
 
 At the frozen evidence cutoff `main@893ba97790ad19d745ff676f5bbf28bd37395d50`,

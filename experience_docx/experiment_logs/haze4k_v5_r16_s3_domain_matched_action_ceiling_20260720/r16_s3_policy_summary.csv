@@ -1,0 +1,7 @@
+cvar5_gain_db,hard_count,image_count,mean_gain_db,operator,operator_role,policy,severe_count
+-6.428849777021915e-16,0,50,0.12342902923984816,D_ref,deterministic_execution_replica_not_sample,region_oracle,0
+-6.428849777021915e-16,0,50,0.12342902923984816,D_rep,deterministic_execution_replica_not_sample,region_oracle,0
+0.0,0,50,0.0,D_ref,deterministic_execution_replica_not_sample,safe_global_oracle,0
+0.0,0,50,0.0,D_rep,deterministic_execution_replica_not_sample,safe_global_oracle,0
+-0.760841445007897,3,50,-0.22934109571670772,D_ref,deterministic_execution_replica_not_sample,spatial_shuffle_control,24
+-0.760841445007897,3,50,-0.22934109571670772,D_rep,deterministic_execution_replica_not_sample,spatial_shuffle_control,24

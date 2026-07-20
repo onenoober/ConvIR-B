@@ -2,11 +2,22 @@
 
 Date: 2026-07-19
 
-Status: R5-A0 r2 is the latest machine terminal. It completed normally and
-failed the frozen spatial candidate-response safety contract. R4B's
-receipt-bound post-hoc audit and R5's preregistered development screen jointly
-narrow the functional bottleneck; the family remains closed and authorizes no
-next stage.
+Status: R16-S3 is the latest formal machine terminal. It completed normally as
+`R16_S3_DOMAIN_MATCHED_ACTION_CEILING_FAIL_STRATEGIC_RESET /
+R16_REGION_TARGET_SUPERVISION_REFORMULATION_ONLY`. The exact R5-R13
+selector/critic/context family remains closed; action-system capacity work may
+continue only through region, target, action-semantics or supervision
+reformulation.
+
+R15-S0E first showed that the Haze4K R10 action source loses material regional
+headroom on NH-HAZE. R16 then replaced only the compound baseline/action-source
+identity with frozen NH-HAZE ConvIR-B/WDMamba endpoints on ids 01-50, retaining
+all PSNR/8x8/control/gate definitions. Regional headroom returned at
+`+0.123429 dB` (LCB95 `+0.065142`) with zero severe/hard images, but the
+action-system qualification still failed: bidirectional support was `0/50`
+(UCB95 `0.071122 < 0.10`), mixed LCB95 was `0.195204`, and CI half-width
+was `0.066754 dB`. Because 01-50 overlap checkpoint training, this is a
+privileged capacity result, not external validation or deployability evidence.
 
 The later R11 cloud raw audit is post-hoc and cutoff-bound. It exactly
 reproduces the formal R11 FAIL, verifies 768/768 cache identities, and narrows
@@ -74,13 +85,16 @@ machine terminal, reopen a route or authorize protected-data access.
 
 ## Decision
 
-Latest decision: `R5_A0_SPATIAL_RESPONSE_FUTILITY_OR_SAFETY_FAIL_STOP`.
+Latest decision: `R16_S3_DOMAIN_MATCHED_ACTION_CEILING_FAIL_STRATEGIC_RESET`.
+
+Latest authorization: `R16_REGION_TARGET_SUPERVISION_REFORMULATION_ONLY`.
 
 Prior R4B decision retained for history: `R4B_A1_SETWISE_MECHANISM_FUTILITY_STOP`.
 
 Prior R3 decision retained for history: `R3_A2_ACV_FULL_OOF_FAIL_STOP`.
 
-Execution status: `COMPLETED_GATE_FAIL / NONE`.
+Execution status: `COMPLETED_GATE_FAIL /
+R16_REGION_TARGET_SUPERVISION_REFORMULATION_ONLY`.
 
 Do not widen or retune A1X, repeat the A0 proposal bank, rescue C1/C2/C3, or
 search R5 grids, DCT bands, heads, widths, depths, seeds, epochs, losses,

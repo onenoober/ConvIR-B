@@ -1,0 +1,20 @@
+{
+  "canary_touched": false,
+  "checkpoint_selected": false,
+  "confirmation_touched": false,
+  "data_role": "privileged_capacity_ceiling_checkpoint_training_overlap",
+  "eligible_as_external_validation": false,
+  "gt_first_open_after_complete_pass2_replay": true,
+  "ids_51_55_opened_or_listed": false,
+  "locked_test_touched": false,
+  "pass1_image_count": 50,
+  "pass1_manifest_sha256": "25f16a7e9ae16b1f6df73772df82e3268b6bc2ab9ab6e7ca3ed4808dd8483b90",
+  "pass2_replay_failures": [],
+  "pass3_replay_failures": [],
+  "route_commit": "7c6b1b51e430ca46ecb4ae277c9b14e71253904c",
+  "s0e_terminal_sha256": "6aaec2c9536f7cc5676d5056f43475def8d4bda1e381242dae6eba0c8f8c4434",
+  "sample_excluded": false,
+  "schema_version": 1,
+  "threshold_selected": false,
+  "training_occurred": false
+}
