@@ -152,7 +152,10 @@ def grouped_bootstrap(rows: list[dict[str, Any]], evaluate: Any, stratify_fold: 
     strata = ([np.flatnonzero(np.asarray([int(row["fold"]) for row in rows]) == fold) for fold in (0, 1)]
               if stratify_fold else [np.arange(len(rows))])
     for _ in range(BOOTSTRAP_DRAWS):
-        index = np.concatenate([rng.choice(s, len(s), replace=True) for s in strata])
+        if stratify_fold:
+            index = np.concatenate([rng.choice(s, len(s), replace=True) for s in strata])
+        else:
+            index = rng.integers(0, len(rows), len(rows))
         value = evaluate(rows, index)
         for key in samples:
             samples[key].append(value[key])
@@ -309,7 +312,8 @@ def analyze_r5(candidate: list[dict[str, str]], policy: list[dict[str, str]], se
     candidate = [r for r in candidate if r["cell"] == PRIMARY_R5]
     policy = [r for r in policy if r["cell"] == PRIMARY_R5]
     names = sorted({r["name"] for r in candidate})
-    target = {(r["name"], r["operator"], int(r["action"])): float(r["target_gain_db"])
+    action_id = {"state_positive_full": 1, "state_negative_full": 2}
+    target = {(r["name"], r["operator"], action_id[r["action"]]): float(r["target_gain_db"])
               for r in candidate}
     by_name_policy = defaultdict(list)
     for r in policy: by_name_policy[r["name"]].append(r)
@@ -343,7 +347,7 @@ def analyze_r5(candidate: list[dict[str, str]], policy: list[dict[str, str]], se
     seed_primary = [r for r in seeds if r["cell"] == PRIMARY_R5]
     seed_key = defaultdict(dict)
     for r in seed_primary:
-        seed_key[(r["name"], r["operator"], int(r["action"]))][int(r["seed"])] = float(r["q05_score"])
+        seed_key[(r["name"], r["operator"], action_id[r["action"]])][int(r["seed"])] = float(r["q05_score"])
     seed_ranges = [max(v.values()) - min(v.values()) for v in seed_key.values()]
     return {"evidence_role": "post_hoc_attribution over formal OOF rows",
         "groups": len(names), "selected_groups": len(selected),
@@ -516,6 +520,21 @@ def main() -> None:
     r10=parse_r10(read_csv(PATHS["r10_region_rows"])); r11t=read_csv(PATHS["r11_tile_rows"]); r11p=read_csv(PATHS["r11_policy_rows"]); r12=read_csv(PATHS["r12_risk_rows"])
     if not (len(r5c)==6144 and len(r5p)==3072 and len(r5s)==12288 and len(r10)==384 and len(r11t)==49152 and len(r11p)==384 and len(r12)==49152):
         raise RuntimeError("formal row counts changed after preflight")
+    raw_contract_checks = {
+      "r5_candidate_keys_unique": len({(r["cell"],r["name"],r["operator"],r["action"]) for r in r5c}) == 6144,
+      "r5_policy_keys_unique": len({(r["cell"],r["name"],r["operator"]) for r in r5p}) == 3072,
+      "r10_names_unique": len({r["name"] for r in r10}) == 384,
+      "r11_tile_keys_unique": len({(r["name"],r["fold"],r["tile"],r["action"]) for r in r11t}) == 49152,
+      "r11_policy_names_unique": len({r["name"] for r in r11p}) == 384,
+      "r12_risk_keys_unique": len({(r["name"],r["fold"],r["tile"],r["action"]) for r in r12}) == 49152,
+      "r10_fold_balance": Counter(int(r["fold"]) for r in r10) == Counter({0:192,1:192}),
+      "r11_fold_balance": Counter(int(r["fold"]) for r in r11p) == Counter({0:192,1:192}),
+      "r12_fold_balance": Counter(int(r["fold"]) for r in r12) == Counter({0:24576,1:24576}),
+    }
+    if not all(raw_contract_checks.values()):
+        write_json(args.output/"raw_contract_checks.json",raw_contract_checks)
+        raise RuntimeError("raw-table identity or grouping contract failed")
+    write_json(args.output/"raw_contract_checks.json",raw_contract_checks)
     r10_boot=grouped_bootstrap(r10,r10_evaluate,False); r11_boot=grouped_bootstrap(r11p,r11_evaluate,True); r12_boot,r12_points=r12_bootstrap(r12)
     logs=args.repo_root/"experience_docx/experiment_logs"
     off10=read_json(logs/"haze4k_v5_r10_fixed_region_action_feasibility_20260719/r10_a0_bootstrap_summary.json")
@@ -528,7 +547,9 @@ def main() -> None:
     compact={}
     for route,prefix,close in [("haze4k_v5_r10_fixed_region_action_feasibility_20260719","r10","r10_a0_fixed_region_action_feasibility_closeout.json"),("haze4k_v5_r11_regional_action_observability_20260719","r11","r11_a0_regional_action_observability_closeout.json"),("haze4k_v5_r12_action_conditioned_downside_observability_20260719","r12","r12_a0_action_conditioned_downside_observability_closeout.json"),("haze4k_v5_r13_image_relative_context_observability_20260719","r13","r13_a0_image_relative_context_observability_closeout.json")]:
         compact[prefix]=audit_compact_bundle(args.repo_root,f"experience_docx/experiment_logs/{route}",close)
-    reproduction={"status":"EXACT_RAW_REPRODUCTION_R10_R12; COMPACT_HASH_VERIFIED_ONLY_R13",
+    exact_raw = all(v["all_within_1e-12"] for v in comparison.values())
+    reproduction={"status":("EXACT_RAW_REPRODUCTION_R10_R12; COMPACT_HASH_VERIFIED_ONLY_R13"
+        if exact_raw else "RAW_REPRODUCTION_DISCREPANCY; COMPACT_HASH_VERIFIED_ONLY_R13"),
         "bootstrap_comparison":comparison,"compact_bundle_identity":compact,
         "max_raw_reproduction_difference":max(v["max_abs_difference"] for v in comparison.values()),
         "terminal_decision_affected":False}
