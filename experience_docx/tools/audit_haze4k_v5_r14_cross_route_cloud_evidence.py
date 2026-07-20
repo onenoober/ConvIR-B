@@ -496,6 +496,7 @@ def analyze_external(repo: Path) -> dict[str, Any]:
 
 def main() -> None:
     parser=argparse.ArgumentParser(); parser.add_argument("--repo-root",required=True,type=Path); parser.add_argument("--output",required=True,type=Path)
+    parser.add_argument("--source-commit", required=True)
     args=parser.parse_args(); started=time.time()
     if args.output.exists(): raise RuntimeError(f"output already exists: {args.output}")
     args.output.mkdir(parents=True); (args.output/"status.txt").write_text("R14_AUDIT_STARTED\n",encoding="utf-8")
@@ -509,7 +510,8 @@ def main() -> None:
       "r12":verify_status(R12.parent,"haze4k_v5_r12_action_conditioned_downside_observability_20260719",12),
       "r13":verify_status(R13_RUN,"haze4k_v5_r13_image_relative_context_observability_20260719",4790)}
     integrity_ok=not sha_mismatch and all(v["valid"] for v in statuses.values())
-    input_identity={"schema_version":1,"cloud_host":"convir-4090","cloud_root":str(ROOT),"inputs":identity,
+    input_identity={"schema_version":1,"cloud_host":"convir-4090","cloud_root":str(ROOT),
+        "audit_source_commit":args.source_commit,"audit_repo_root":str(args.repo_root),"inputs":identity,
         "known_sha_mismatches":sha_mismatch,"run_status":statuses,"protected_path_tokens_opened":[],
         "r13_row_assets":"RAW_ASSET_UNAVAILABLE","integrity_valid":integrity_ok}
     write_json(args.output/"input_identity.json",input_identity)
