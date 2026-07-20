@@ -72,5 +72,11 @@ R14_REPO=${ROOT}/repos/ConvIR-B-r14-cross-route-audit-ca93bbb0e
 if [[ -d "${R14_REPO}/.git" ]]; then
   printf 'AUDIT_R14_SOURCE_HEAD\t%s\n' "$(/usr/bin/git -C "${R14_REPO}" rev-parse HEAD)"
 fi
+R14_SYNC_REPO=${ROOT}/repos/ConvIR-B-r14-evidence-sync-r2-2667d59ed
+if [[ -d "${R14_SYNC_REPO}/.git" ]]; then
+  printf 'AUDIT_R14_SYNC_STAGED_BEGIN\n'
+  /usr/bin/git -C "${R14_SYNC_REPO}" diff --cached --name-only
+  printf 'AUDIT_R14_SYNC_STAGED_END\n'
+fi
 
 printf 'R14_CLOUD_EVIDENCE_PREFLIGHT_OK\n'
