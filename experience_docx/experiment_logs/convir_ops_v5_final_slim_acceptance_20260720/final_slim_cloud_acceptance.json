@@ -1,0 +1,23 @@
+{
+  "canary_access": 0,
+  "candidate_commit": "31cc862f5107106dad8de266299b1bfea0b7a376",
+  "checkpoint_access": 0,
+  "confirmation_access": 0,
+  "dataset_access": 0,
+  "decision": "CONVIR_OPS_V5_FINAL_SLIM_ADOPTION",
+  "default_summary_bytes": 73,
+  "gpu_access": 0,
+  "historical_r16_audit": "PASS",
+  "locked_test_access": 0,
+  "manifest_schemas": [
+    4,
+    5
+  ],
+  "mcp_protocol_schema": 4,
+  "model_calls": 0,
+  "old_evidence_modified": false,
+  "schema_version": 1,
+  "status": "COMPLETED_GATE_PASS",
+  "tests_passed": 131,
+  "tool_count": 6
+}

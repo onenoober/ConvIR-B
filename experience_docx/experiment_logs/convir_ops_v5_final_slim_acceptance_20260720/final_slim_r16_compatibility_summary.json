@@ -1,0 +1,23 @@
+{
+  "candidate_commit": "31cc862f5107106dad8de266299b1bfea0b7a376",
+  "cloud_artifact": "/sda/home/wangyuxin/ConvIR-B/runs/convir_ops_v5_final_slim_acceptance_20260720/r16-compatibility-31cc862f5107106dad8de266299b1bfea0b7a376.json",
+  "cloud_artifact_sha256": "5f955822eb7bcdade4b02a86405ae3326b7cfa3ad2bcc265754c3751290942a1",
+  "checks": {
+    "all_closeout_bound_results_present": true,
+    "all_result_hashes_match": true,
+    "all_runtime_required_results_present": true,
+    "compact_text_only": true,
+    "contract_bound": true,
+    "old_evidence_modified": false,
+    "single_scientific_conclusion_complete": true,
+    "terminal_tuple_complete": true,
+    "verdict_only_archive_rejected": true
+  },
+  "historical_closeout_sha256": "a993f738d399e42bbd88101bdaeadcd4ea6f86e457be4dd5f5813157457c15d4",
+  "historical_route_card_blob": "b7c2433751255d2d08a44de4fe38d8944a82d7cd",
+  "route_id": "haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720",
+  "schema_version": 1,
+  "status": "PASS",
+  "terminal_decision": "R16_S3_DOMAIN_MATCHED_ACTION_CEILING_FAIL_STRATEGIC_RESET",
+  "terminal_state": "COMPLETED_GATE_FAIL"
+}
