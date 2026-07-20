@@ -20,6 +20,8 @@ from route_runtime_contract import (
     ContractError,
     runtime_spec_relpath,
     validate_asset_manifest,
+    validate_model_capability,
+    validate_precision_certificate,
     validate_runtime_spec,
 )
 
@@ -164,6 +166,31 @@ def inspect_card(repo: Path, snapshot: str, relpath: str) -> tuple[list[str], st
     return errors, digest
 
 
+def inspect_slim_card(repo: Path, snapshot: str, relpath: str, *, route_id: str,
+                      contract_relpath: str) -> tuple[list[str], str]:
+    raw = show(repo, snapshot, relpath)
+    errors = []
+    if len(raw) > 8192:
+        errors.append("canonical route note exceeds 8 KiB")
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return ["canonical route note is not UTF-8"], __import__("hashlib").sha256(raw).hexdigest()
+    if "\\`" in text:
+        errors.append("escaped backticks are forbidden")
+    if not __import__("re").search(r"(?m)^Status:\s*PLANNED\s*$", text):
+        errors.append("canonical route note requires Status: PLANNED")
+    if f"- Route id: {route_id}" not in text:
+        errors.append("canonical route note route_id mismatch")
+    if f"- Scientific contract: {contract_relpath}" not in text:
+        errors.append("canonical route note contract pointer mismatch")
+    if not __import__("re").search(r"(?m)^## Scientific rationale\s*$", text):
+        errors.append("canonical route note requires one Scientific rationale section")
+    if any(token in text for token in ("<TBD>", "TODO", "【填写】")):
+        errors.append("canonical route note contains an unresolved placeholder")
+    return errors, __import__("hashlib").sha256(raw).hexdigest()
+
+
 def authoring_errors(manifest: dict[str, Any], card_errors: list[str]) -> list[str]:
     """Collect frequent independent authoring mistakes before strict parsing."""
     errors = [f"route card: {error}" for error in card_errors]
@@ -218,6 +245,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
     if len(raw) > ops.MAX_MANIFEST_BYTES:
         raise ReadyError("route_operations.json exceeds MCP size limit")
     manifest = json.loads(raw)
+    manifest_schema = manifest.get("schema_version") if isinstance(manifest, dict) else None
     operations = manifest.get("operations", {}) if isinstance(manifest, dict) else {}
     if not isinstance(operations, dict) or not operations:
         raise ReadyError("no operations selected")
@@ -239,9 +267,16 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
     route_card_relpath = manifest.get("route_card_relpath")
     if isinstance(route_card_relpath, str):
         try:
-            card_errors, card_digest = inspect_card(
-                repo, snapshot, route_card_relpath,
-            )
+            if manifest_schema == 5:
+                card_errors, card_digest = inspect_slim_card(
+                    repo, snapshot, route_card_relpath,
+                    route_id=manifest.get("route_id"),
+                    contract_relpath=manifest.get("scientific_contract_relpath"),
+                )
+            else:
+                card_errors, card_digest = inspect_card(
+                    repo, snapshot, route_card_relpath,
+                )
         except ReadyError as exc:
             card_errors = [str(exc)]
     else:
@@ -272,9 +307,12 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
             )
             spec_path = runtime_spec_relpath(operation_id)
             spec = validate_runtime_spec(json.loads(show(repo, snapshot, spec_path)), manifest, operation_id)
+            if manifest_schema == 5 and spec["schema_version"] != 2:
+                raise ReadyError(f"{operation_id}: canonical manifest requires runtime schema 2")
             entrypoint_raw = show(repo, snapshot, spec["entrypoint_relpath"])
             check_entrypoint(entrypoint_raw, spec["entrypoint_relpath"])
             asset_digest = None
+            asset = None
             if spec["asset_manifest_relpath"] is not None:
                 asset = validate_asset_manifest(
                     json.loads(show(repo, snapshot, spec["asset_manifest_relpath"])), spec,
@@ -282,6 +320,45 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                 asset_digest = __import__("hashlib").sha256(
                     json.dumps(asset, sort_keys=True, separators=(",", ":")).encode()
                 ).hexdigest()
+            capability_digest = None
+            capability_path = spec["engineering_contract"]["capability_profile_relpath"]
+            if capability_path is not None:
+                capability_raw = show(repo, snapshot, capability_path)
+                capability = validate_model_capability(
+                    json.loads(capability_raw), spec, asset,
+                )
+                capability_digest = __import__("hashlib").sha256(
+                    json.dumps(capability, sort_keys=True, separators=(",", ":")).encode()
+                ).hexdigest()
+            precision_digest = None
+            precision_path = spec["precision_contract"]["certificate_relpath"]
+            precision_feasible = None
+            if precision_path is not None:
+                precision_raw = show(repo, snapshot, precision_path)
+                precision = validate_precision_certificate(json.loads(precision_raw), spec)
+                precision_feasible = precision["feasible"]
+                precision_digest = __import__("hashlib").sha256(
+                    json.dumps(precision, sort_keys=True, separators=(",", ":")).encode()
+                ).hexdigest()
+            if manifest_schema == 5:
+                contract_path = manifest["scientific_contract_relpath"]
+                contract = ops.validate_scientific_contract(
+                    json.loads(show(repo, snapshot, contract_path)),
+                    manifest["route_id"], operation_id, operation,
+                )
+                population = contract["population"]
+                if population["evidence_role"] != spec["evidence_role"]:
+                    raise ReadyError(f"{operation_id}: evidence role differs across contracts")
+                permission_map = {
+                    "allow_confirmation": population["allow_confirmation"],
+                    "allow_canary": population["allow_canary"],
+                    "allow_locked_test": population["allow_locked_test"],
+                }
+                if permission_map != spec["protected_data_permissions"]:
+                    raise ReadyError(f"{operation_id}: protected permissions differ across contracts")
+                if precision_path is not None \
+                        and population["independent_group_count"] != precision["independent_groups_available"]:
+                    raise ReadyError(f"{operation_id}: independent group count differs across contracts")
             engineering = {"state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE"}
             if engineering not in context["allowed_terminal_tuples"]:
                 raise ReadyError(f"{operation_id} must allow the generic engineering closeout")
@@ -308,6 +385,12 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                 ).hexdigest(),
                 "entrypoint_sha256": __import__("hashlib").sha256(entrypoint_raw).hexdigest(),
                 "asset_manifest_digest": asset_digest,
+                "model_capability_digest": capability_digest,
+                "engineering_contract_mode": spec["engineering_contract"]["mode"],
+                "precision_certificate_digest": precision_digest,
+                "precision_mode": spec["precision_contract"]["mode"],
+                "precision_feasible": precision_feasible,
+                "canonical_scientific_contract": manifest_schema == 5,
                 "contract_phase_required": True,
                 "generic_failure_closeout": True,
             }
@@ -333,6 +416,8 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
             "python_bash_syntax": True,
             "contract_and_run_interface": True,
             "asset_schema": True,
+            "device_capability_contract": True,
+            "precision_feasibility_contract": True,
             "output_and_evidence_names_unique": True,
         },
     }

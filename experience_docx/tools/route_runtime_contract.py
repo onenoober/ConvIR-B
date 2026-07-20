@@ -5,16 +5,20 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 from pathlib import Path
 from typing import Any
 
 
-SPEC_SCHEMA_VERSION = 1
+SPEC_SCHEMA_VERSION = 2
+LEGACY_SPEC_SCHEMA_VERSION = 1
 ASSET_SCHEMA_VERSION = 1
 CONTEXT_SCHEMA_VERSION = 1
 GENERIC_RUNNER_RELPATH = "experience_docx/tools/run_route_operation.sh"
 RUNTIME_SPEC_DIRECTORY = "experience_docx/route_runtime_specs"
+MODEL_CAPABILITY_DIRECTORY = "experience_docx/model_capabilities"
+PRECISION_CERTIFICATE_DIRECTORY = "experience_docx/precision_certificates"
 RUNTIME_BUNDLE_RELPATHS = (
     GENERIC_RUNNER_RELPATH,
     "experience_docx/tools/route_lifecycle.py",
@@ -37,6 +41,11 @@ ASSET_ACCESS_ROLES = {
     "unrestricted", "engineering_debug", "development_screening",
     "confirmation", "canary", "sealed_final",
 }
+ENGINEERING_CONTRACT_MODES = {
+    "metadata_only", "cpu_exact", "cpu_reference_equivalent",
+    "gpu_synthetic_no_data",
+}
+PRECISION_MODES = {"formal_precision", "descriptive_capacity", "not_applicable"}
 
 
 class ContractError(ValueError):
@@ -148,17 +157,85 @@ def _validate_evidence_files(value: Any) -> list[dict[str, Any]]:
     return result
 
 
+def _validate_engineering_contract(value: Any, *, legacy: bool) -> dict[str, Any]:
+    if legacy:
+        return {
+            "mode": "cpu_exact", "capability_profile_relpath": None,
+            "max_seconds": 300, "legacy_implicit_contract": True,
+        }
+    expected = {"mode", "capability_profile_relpath", "max_seconds"}
+    if not isinstance(value, dict) or set(value) != expected:
+        raise ContractError("engineering_contract has an invalid field contract")
+    mode = value["mode"]
+    if mode not in ENGINEERING_CONTRACT_MODES:
+        raise ContractError(f"engineering_contract.mode must be one of {sorted(ENGINEERING_CONTRACT_MODES)}")
+    profile = value["capability_profile_relpath"]
+    if mode == "metadata_only":
+        if profile is not None:
+            raise ContractError("metadata-only contract cannot declare a capability profile")
+    else:
+        profile = require_relpath(
+            profile, "engineering_contract.capability_profile_relpath",
+            prefix=f"{MODEL_CAPABILITY_DIRECTORY}/", suffix=".json",
+        )
+    return {
+        "mode": mode, "capability_profile_relpath": profile,
+        "max_seconds": require_int(value["max_seconds"], "engineering_contract.max_seconds", 1, 900),
+        "legacy_implicit_contract": False,
+    }
+
+
+def _validate_precision_contract(value: Any, *, legacy: bool, role: str,
+                                 permissions: dict[str, bool]) -> dict[str, Any]:
+    if legacy:
+        return {
+            "mode": "not_applicable", "certificate_relpath": None,
+            "rationale": "legacy runtime schema 1", "legacy_implicit_contract": True,
+        }
+    expected = {"mode", "certificate_relpath", "rationale"}
+    if not isinstance(value, dict) or set(value) != expected:
+        raise ContractError("precision_contract has an invalid field contract")
+    mode = value["mode"]
+    if mode not in PRECISION_MODES:
+        raise ContractError(f"precision_contract.mode must be one of {sorted(PRECISION_MODES)}")
+    rationale = value["rationale"]
+    if not isinstance(rationale, str) or not 8 <= len(rationale) <= 512:
+        raise ContractError("precision_contract.rationale must contain 8-512 characters")
+    certificate = value["certificate_relpath"]
+    if mode == "not_applicable":
+        if certificate is not None or role != "engineering_debug":
+            raise ContractError("precision not_applicable is restricted to engineering_debug operations")
+    else:
+        certificate = require_relpath(
+            certificate, "precision_contract.certificate_relpath",
+            prefix=f"{PRECISION_CERTIFICATE_DIRECTORY}/", suffix=".json",
+        )
+    if mode == "descriptive_capacity":
+        if role != "development_screening" or any(permissions.values()):
+            raise ContractError("descriptive capacity requires unprotected development_screening evidence")
+    return {
+        "mode": mode, "certificate_relpath": certificate, "rationale": rationale,
+        "legacy_implicit_contract": False,
+    }
+
+
 def validate_runtime_spec(value: Any, manifest: dict[str, Any], operation_id: str) -> dict[str, Any]:
-    expected = {
+    legacy_expected = {
         "schema_version", "route_id", "operation_id", "entrypoint_relpath",
         "asset_manifest_relpath", "timeout_seconds", "expected_wall_seconds",
         "total_units", "evidence_role", "resume_policy", "protected_data_permissions",
         "environment", "evidence_files",
     }
-    if not isinstance(value, dict) or set(value) != expected:
+    current_expected = legacy_expected | {"engineering_contract", "precision_contract"}
+    if not isinstance(value, dict):
+        raise ContractError("runtime spec must be an object")
+    schema = value.get("schema_version")
+    legacy = schema == LEGACY_SPEC_SCHEMA_VERSION
+    expected = legacy_expected if legacy else current_expected
+    if set(value) != expected:
         raise ContractError("runtime spec has an invalid top-level contract")
-    if value["schema_version"] != SPEC_SCHEMA_VERSION:
-        raise ContractError(f"runtime spec must use schema {SPEC_SCHEMA_VERSION}")
+    if schema not in {LEGACY_SPEC_SCHEMA_VERSION, SPEC_SCHEMA_VERSION}:
+        raise ContractError(f"runtime spec must use schema {LEGACY_SPEC_SCHEMA_VERSION} or {SPEC_SCHEMA_VERSION}")
     if not isinstance(manifest, dict) or operation_id not in manifest.get("operations", {}):
         raise ContractError("runtime spec operation is absent from route manifest")
     operation = manifest["operations"][operation_id]
@@ -211,8 +288,16 @@ def validate_runtime_spec(value: Any, manifest: dict[str, Any], operation_id: st
                 or any(ord(character) < 32 for character in item):
             raise ContractError(f"environment value is invalid: {key}")
         normalized_environment[key] = item
+    engineering = _validate_engineering_contract(
+        value.get("engineering_contract"), legacy=legacy,
+    )
+    if engineering["mode"] == "gpu_synthetic_no_data" and not operation.get("require_gpu"):
+        raise ContractError("gpu synthetic contract requires a GPU operation")
+    precision = _validate_precision_contract(
+        value.get("precision_contract"), legacy=legacy, role=role, permissions=permissions,
+    )
     return {
-        "schema_version": SPEC_SCHEMA_VERSION,
+        "schema_version": schema,
         "route_id": route_id,
         "operation_id": operation_id,
         "entrypoint_relpath": entrypoint,
@@ -225,7 +310,126 @@ def validate_runtime_spec(value: Any, manifest: dict[str, Any], operation_id: st
         "protected_data_permissions": permissions,
         "environment": normalized_environment,
         "evidence_files": _validate_evidence_files(value["evidence_files"]),
+        "engineering_contract": engineering,
+        "precision_contract": precision,
     }
+
+
+def validate_model_capability(value: Any, spec: dict[str, Any],
+                              asset_manifest: dict[str, Any] | None) -> dict[str, Any]:
+    expected = {
+        "schema_version", "profile_id", "contract_mode", "minimum_fixture",
+        "bound_assets", "compatibility_imports", "production_path_statement",
+        "protected_data_prohibited", "scientific_output_prohibited",
+        "scientific_training_prohibited",
+    }
+    if not isinstance(value, dict) or set(value) != expected or value["schema_version"] != 1:
+        raise ContractError("model capability profile has an invalid top-level contract")
+    mode = value["contract_mode"]
+    if mode != spec["engineering_contract"]["mode"] or mode == "metadata_only":
+        raise ContractError("model capability mode does not match the runtime contract")
+    fixture = value["minimum_fixture"]
+    fixture_fields = {"batch", "channels", "height", "width"}
+    if not isinstance(fixture, dict) or set(fixture) != fixture_fields:
+        raise ContractError("minimum_fixture has an invalid field contract")
+    normalized_fixture = {
+        key: require_int(fixture[key], f"minimum_fixture.{key}", 1, 16384)
+        for key in sorted(fixture_fields)
+    }
+    assets = {item["id"]: item for item in (asset_manifest or {}).get("assets", [])}
+    bound = value["bound_assets"]
+    if not isinstance(bound, list) or not bound:
+        raise ContractError("model capability requires at least one bound asset identity")
+    normalized_bound = []
+    for index, item in enumerate(bound):
+        if not isinstance(item, dict) or set(item) != {"id", "identity"}:
+            raise ContractError(f"bound_assets[{index}] has an invalid field contract")
+        identifier = require_token(item["id"], f"bound_assets[{index}].id")
+        asset = assets.get(identifier)
+        identity = item["identity"]
+        actual = asset.get("sha256") if asset else None
+        if actual is None and asset is not None:
+            actual = asset.get("commit")
+        if asset is None or asset.get("contract_access") is not True:
+            raise ContractError(f"bound capability asset is unavailable to contract: {identifier}")
+        if not isinstance(identity, str) or not (SHA256.fullmatch(identity) or SHA40.fullmatch(identity)) \
+                or actual != identity:
+            raise ContractError(f"bound asset identity mismatch: {identifier}")
+        normalized_bound.append({"id": identifier, "identity": identity})
+    imports = value["compatibility_imports"]
+    if not isinstance(imports, list) or len(imports) > 32 \
+            or any(not isinstance(item, str) or not item or len(item) > 256 for item in imports):
+        raise ContractError("compatibility_imports has an invalid contract")
+    statement = value["production_path_statement"]
+    if not isinstance(statement, str) or not 16 <= len(statement) <= 1024:
+        raise ContractError("production_path_statement must contain 16-1024 characters")
+    for key in ("protected_data_prohibited", "scientific_output_prohibited",
+                "scientific_training_prohibited"):
+        if value[key] is not True:
+            raise ContractError(f"model capability requires {key}=true")
+    if mode == "gpu_synthetic_no_data":
+        exposed = [
+            item for item in assets.values()
+            if item.get("contract_access")
+            and item.get("access_role") not in {"unrestricted", "engineering_debug"}
+        ]
+        if exposed:
+            raise ContractError(
+                "gpu synthetic contract can expose only unrestricted/engineering assets"
+            )
+    return {
+        "schema_version": 1, "profile_id": require_token(value["profile_id"], "profile_id"),
+        "contract_mode": mode, "minimum_fixture": normalized_fixture,
+        "bound_assets": normalized_bound, "compatibility_imports": imports,
+        "production_path_statement": statement,
+        "protected_data_prohibited": True, "scientific_output_prohibited": True,
+        "scientific_training_prohibited": True,
+    }
+
+
+def validate_precision_certificate(value: Any, spec: dict[str, Any]) -> dict[str, Any]:
+    expected = {
+        "schema_version", "certificate_id", "estimand", "method",
+        "confidence_level", "target_half_width", "planning_sd",
+        "independent_groups_available", "independent_groups_required",
+        "feasible", "source_role", "source_reference",
+    }
+    if not isinstance(value, dict) or set(value) != expected or value["schema_version"] != 1:
+        raise ContractError("precision certificate has an invalid top-level contract")
+    if value["method"] not in {"normal_mean", "binomial_worst_case"}:
+        raise ContractError("precision certificate method is invalid")
+    if value["confidence_level"] != 0.95:
+        raise ContractError("precision certificate currently requires confidence_level 0.95")
+    half = value["target_half_width"]
+    sd = value["planning_sd"]
+    if not isinstance(half, (int, float)) or isinstance(half, bool) or not 0 < half < 1e6:
+        raise ContractError("target_half_width must be positive")
+    if value["method"] == "binomial_worst_case":
+        if sd != 0.5:
+            raise ContractError("binomial_worst_case requires planning_sd 0.5")
+    elif not isinstance(sd, (int, float)) or isinstance(sd, bool) or not 0 < sd < 1e6:
+        raise ContractError("planning_sd must be positive")
+    required = math.ceil((1.959963984540054 * float(sd) / float(half)) ** 2)
+    available = require_int(
+        value["independent_groups_available"], "independent_groups_available", 1, 10_000_000,
+    )
+    if value["independent_groups_required"] != required:
+        raise ContractError("independent_groups_required does not match the frozen calculation")
+    feasible = available >= required
+    if value["feasible"] is not feasible:
+        raise ContractError("precision feasibility flag is inconsistent")
+    mode = spec["precision_contract"]["mode"]
+    if mode == "formal_precision" and not feasible:
+        raise ContractError("formal precision route is infeasible at the available independent-group count")
+    role = value["source_role"]
+    if role not in {"unrestricted", "engineering_debug", "development_screening"}:
+        raise ContractError("precision planning cannot consume protected evidence roles")
+    reference = value["source_reference"]
+    estimand = value["estimand"]
+    if not isinstance(reference, str) or not 8 <= len(reference) <= 512 \
+            or not isinstance(estimand, str) or not 3 <= len(estimand) <= 256:
+        raise ContractError("precision certificate text fields are invalid")
+    return {**value, "computed_required_groups": required}
 
 
 def validate_asset_manifest(value: Any, spec: dict[str, Any]) -> dict[str, Any]:

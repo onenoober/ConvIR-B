@@ -10,8 +10,11 @@ import io
 import json
 import re
 import subprocess
+import tempfile
 from pathlib import Path, PurePosixPath
 from typing import Any
+
+import convir_ops_mcp as ops
 
 
 GIT = "/usr/bin/git"
@@ -105,8 +108,11 @@ def validate_contract(raw: bytes, relpath: str, route_id: str) -> None:
         if parsed.get("route_id") != route_id:
             raise TerminalArchiveError(f"contract route_id mismatch: {relpath}")
         return
-    text = raw.decode("utf-8").replace(chr(96), "")
-    if f"- Route id: {route_id}" not in text:
+    text = raw.decode("utf-8")
+    match = re.search(r"(?m)^- Route id:\s*(.+?)\s*$", text)
+    observed = "" if match is None else match.group(1).strip()
+    observed = observed.replace("\\`", "").replace("`", "").strip().rstrip(".")
+    if observed != route_id:
         raise TerminalArchiveError(f"contract route identity is missing: {relpath}")
 
 
@@ -189,6 +195,7 @@ def audit_source(
     receipt: str,
     *,
     existing_archive: bool = False,
+    evidence_dir_override: Path | None = None,
 ) -> dict[str, Any]:
     source_repo = source_repo.resolve()
     if not TOKEN.fullmatch(route_id):
@@ -218,8 +225,8 @@ def audit_source(
     contract_raw = git_blob(source_repo, source_commit, contract_relpath)
     validate_contract(contract_raw, contract_relpath, route_id)
 
-    evidence_dir = source_repo / closeout_path.parent
-    closeout_file = source_repo / closeout_path
+    evidence_dir = evidence_dir_override or (source_repo / closeout_path.parent)
+    closeout_file = evidence_dir / closeout_path.name
     if not closeout_file.is_file():
         raise TerminalArchiveError(f"closeout is missing from source worktree: {closeout_relpath}")
     closeout_raw = closeout_file.read_bytes()
@@ -267,7 +274,7 @@ def audit_source(
         closeout_relpath: closeout_raw,
     }
     if conclusion_relpath is not None:
-        conclusion_file = source_repo / conclusion_relpath
+        conclusion_file = evidence_dir / PurePosixPath(conclusion_relpath).name
         if not conclusion_file.is_file():
             raise TerminalArchiveError(
                 f"scientific conclusion is missing: {conclusion_relpath}"
@@ -330,6 +337,32 @@ def audit_source(
             "verdict_only_archive_rejected": True,
         },
     }
+
+
+def fetch_receipt_evidence(receipt: str, destination: Path) -> dict[str, dict[str, Any]]:
+    """Fetch only the MCP compact allowlist into an ephemeral directory."""
+    try:
+        context = ops.evidence_context({"receipt": receipt})
+        records = ops.parse_evidence_manifest(
+            ops.run_remote(
+                ops.evidence_manifest_body(context), timeout=60, phase="evidence_manifest",
+            )
+        )
+        if not records:
+            raise TerminalArchiveError("receipt has no compact evidence")
+        sources = [
+            f"{ops.REMOTE_HOST}:{context['evidence_dir']}/{name}"
+            for name in sorted(records)
+        ]
+        ops.run_local(["scp", *sources, str(destination)], timeout=300, phase="evidence_transfer")
+        for name, record in records.items():
+            path = destination / name
+            if not path.is_file() or path.stat().st_size != record["bytes"] \
+                    or hashlib.sha256(path.read_bytes()).hexdigest() != record["sha256"]:
+                raise TerminalArchiveError(f"receipt evidence identity mismatch: {name}")
+        return records
+    except ops.ToolError as exc:
+        raise TerminalArchiveError(f"receipt evidence fetch failed: {exc}") from exc
 
 
 def index_record(audit: dict[str, Any]) -> dict[str, Any]:
@@ -493,27 +526,39 @@ def main() -> None:
     parser.add_argument("--existing-archive", action="store_true")
     parser.add_argument("--destination-repo", type=Path)
     parser.add_argument("--base-ref", default="refs/remotes/github/main")
-    parser.add_argument("--commit-and-push", action="store_true")
+    parser.add_argument("--commit-and-push", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--prepare-only", action="store_true")
+    parser.add_argument("--local-evidence-only", action="store_true")
     parser.add_argument("--remote", default="github")
     parser.add_argument("--target-ref", default="main")
     parser.add_argument("--report", type=Path)
     args = parser.parse_args()
     if args.existing_archive and not args.audit_only:
         parser.error("--existing-archive is audit-only")
+    if args.prepare_only and args.commit_and_push:
+        parser.error("--prepare-only conflicts with --commit-and-push")
     if not args.audit_only and args.destination_repo is None:
         parser.error("--destination-repo is required unless --audit-only is used")
     try:
-        audit = audit_source(
-            args.source_repo, args.source_ref, args.route_id,
-            args.closeout, args.contract, args.conclusion, args.receipt,
-            existing_archive=args.existing_archive,
-        )
+        closeout_local = args.source_repo / args.closeout
+        fetch_needed = not closeout_local.is_file() and not args.local_evidence_only
+        with tempfile.TemporaryDirectory(prefix="terminal-evidence-") as temporary:
+            evidence_override = None
+            if fetch_needed:
+                evidence_override = Path(temporary)
+                fetch_receipt_evidence(args.receipt, evidence_override)
+            audit = audit_source(
+                args.source_repo, args.source_ref, args.route_id,
+                args.closeout, args.contract, args.conclusion, args.receipt,
+                existing_archive=args.existing_archive,
+                evidence_dir_override=evidence_override,
+            )
         report = serializable(audit)
         if not args.audit_only:
             report["archive"] = prepare_destination(
                 args.destination_repo, args.base_ref, audit,
             )
-            if args.commit_and_push:
+            if not args.prepare_only:
                 report["archive"]["finalize"] = finalize_destination(
                     args.destination_repo,
                     args.route_id,

@@ -70,3 +70,14 @@ milestones. It appends phase=workload and event=workload_progress with bounded
 completed_units and total_units to status.txt. The MCP also accepts legacy
 route-specific keys matching NAME_PROGRESS, so completed A1 routes remain
 observable without preserving a route-specific parser.
+
+### 2026-07-20 WSL worktree Git boundary
+
+Invalid form: invoking the Windows `git` selected by PowerShell while using a
+`\\wsl.localhost\...` worktree path. Windows Git rejected the Linux-owned
+worktree as dubious ownership before any repository mutation.
+
+Corrected form: invoke `wsl.exe -d Ubuntu-22.04 --exec /usr/bin/git -C
+<absolute-linux-worktree> ...` with literal argv. The final-slim control-plane
+acceptance must retain a regression proving that the normal experiment path is
+fully MCP-owned and never requires Windows Git against a WSL UNC path.

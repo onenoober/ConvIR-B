@@ -25,13 +25,14 @@ from route_runtime_contract import (
 )
 
 
-CONTEXT_FIELDS = {
+LEGACY_CONTEXT_FIELDS = {
     "schema_version", "phase", "route_id", "operation_id", "run_id",
     "route_commit", "runner_sha256", "entrypoint_relpath", "remote_repo",
     "run_root", "output_path", "phase_output_path", "result_path", "status_path",
     "heartbeat_path", "device", "total_units", "evidence_role",
     "resume_policy", "protected_data_permissions", "assets",
 }
+CONTEXT_FIELDS = LEGACY_CONTEXT_FIELDS | {"engineering_contract"}
 MAX_RESULT_BYTES = 32 * 1024
 
 
@@ -68,6 +69,7 @@ class RouteContext:
     resume_policy: str
     protected_data_permissions: dict[str, bool]
     assets: dict[str, RouteAsset]
+    engineering_contract: dict[str, Any]
 
 
 def atomic_json(path: Path, value: Any) -> None:
@@ -151,7 +153,9 @@ def _load_assets(value: Any) -> dict[str, RouteAsset]:
 
 def load_context(path: Path, expected_phase: str) -> RouteContext:
     value = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(value, dict) or set(value) != CONTEXT_FIELDS:
+    if not isinstance(value, dict) or frozenset(value) not in {
+        frozenset(LEGACY_CONTEXT_FIELDS), frozenset(CONTEXT_FIELDS),
+    }:
         raise ContractError("route context has an invalid field contract")
     if value["schema_version"] != CONTEXT_SCHEMA_VERSION:
         raise ContractError(f"route context must use schema {CONTEXT_SCHEMA_VERSION}")
@@ -195,7 +199,7 @@ def load_context(path: Path, expected_phase: str) -> RouteContext:
     } or not all(isinstance(item, bool) for item in permissions.values()):
         raise ContractError("route context protected-data permissions are invalid")
     device = value["device"]
-    if device not in {"cpu", "cuda"} or (expected_phase == "contract" and device != "cpu"):
+    if device not in {"cpu", "cuda"}:
         raise ContractError("route context device is invalid for the phase")
     evidence_role = value["evidence_role"]
     if evidence_role not in EVIDENCE_ROLES:
@@ -205,6 +209,17 @@ def load_context(path: Path, expected_phase: str) -> RouteContext:
         raise ContractError("route context resume_policy is invalid")
     total_units = require_int(value["total_units"], "total_units", 0, 10_000_000)
     assets = _load_assets(value["assets"])
+    engineering = value.get("engineering_contract", {
+        "mode": "cpu_exact", "legacy_implicit_contract": True,
+    })
+    if not isinstance(engineering, dict) or engineering.get("mode") not in {
+        "metadata_only", "cpu_exact", "cpu_reference_equivalent",
+        "gpu_synthetic_no_data",
+    }:
+        raise ContractError("route context engineering_contract is invalid")
+    if expected_phase == "contract" \
+            and engineering["mode"] != "gpu_synthetic_no_data" and device != "cpu":
+        raise ContractError("only gpu_synthetic_no_data may use CUDA in contract phase")
     return RouteContext(
         phase=expected_phase,
         route_id=route_id,
@@ -226,6 +241,7 @@ def load_context(path: Path, expected_phase: str) -> RouteContext:
         resume_policy=resume_policy,
         protected_data_permissions=permissions,
         assets=assets,
+        engineering_contract=engineering,
     )
 
 
@@ -273,7 +289,8 @@ def write_workload_progress(
     print(line, flush=True)
 
 
-def write_contract_result(context: RouteContext, *, checks: dict[str, bool]) -> None:
+def write_contract_result(context: RouteContext, *, checks: dict[str, bool],
+                          engineering: dict[str, Any] | None = None) -> None:
     if context.phase != "contract" or not checks \
             or not all(isinstance(key, str) and require_token(key, "check")
                        and isinstance(value, bool) for key, value in checks.items()):
@@ -291,6 +308,30 @@ def write_contract_result(context: RouteContext, *, checks: dict[str, bool]) -> 
         "canary_touched": False,
         "locked_test_touched": False,
     }
+    if not context.engineering_contract.get("legacy_implicit_contract"):
+        expected = {
+            "mode", "device", "fixture", "production_path_exercised",
+            "protected_data_touched", "scientific_output_created",
+            "scientific_training_occurred",
+        }
+        if not isinstance(engineering, dict) or set(engineering) != expected:
+            raise ContractError("schema-2 contract requires complete engineering evidence")
+        if engineering["mode"] != context.engineering_contract["mode"] \
+                or engineering["device"] != context.device:
+            raise ContractError("engineering evidence mode/device mismatch")
+        if any(engineering[key] is not False for key in (
+            "protected_data_touched", "scientific_output_created",
+            "scientific_training_occurred",
+        )):
+            raise ContractError("engineering contract cannot touch data, train, or publish science")
+        fixture = engineering["fixture"]
+        if fixture is not None:
+            fields = {"batch", "channels", "height", "width"}
+            if not isinstance(fixture, dict) or set(fixture) != fields \
+                    or not all(isinstance(item, int) and not isinstance(item, bool) and item > 0
+                               for item in fixture.values()):
+                raise ContractError("engineering fixture is invalid")
+        value["engineering"] = engineering
     _validate_result_size(value)
     atomic_json(context.result_path, value)
 

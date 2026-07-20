@@ -21,6 +21,8 @@ from route_runtime_contract import (
     RUNTIME_SPEC_DIRECTORY,
     safe_join,
     validate_asset_manifest,
+    validate_model_capability,
+    validate_precision_certificate,
     validate_runtime_spec,
 )
 
@@ -127,13 +129,16 @@ def resolve_asset_path(value: str, *, repo: Path, run_root: Path, output: Path) 
 
 
 def verify_assets(asset_manifest: dict[str, Any] | None, *, repo: Path,
-                  run_root: Path, output: Path) -> list[dict[str, Any]]:
+                  run_root: Path, output: Path, contract_only: bool = False) -> list[dict[str, Any]]:
     global VERIFIED_ASSETS
     VERIFIED_ASSETS = []
     if asset_manifest is None:
         return []
     observed = []
-    for item in asset_manifest["assets"]:
+    selected = asset_manifest["assets"]
+    if contract_only:
+        selected = [item for item in selected if item["contract_access"]]
+    for item in selected:
         path = resolve_asset_path(item["path"], repo=repo, run_root=run_root, output=output)
         if path.is_symlink():
             raise LifecycleError(f"asset cannot be a symlink: {item['id']}", phase="asset_preflight")
@@ -195,12 +200,17 @@ def context_value(*, phase: str, env: dict[str, str], spec: dict[str, Any],
         "result_path": str(phase_output / f"{phase}_result.json"),
         "status_path": str(status),
         "heartbeat_path": str(heartbeat),
-        "device": "cpu" if phase == "contract" else ("cuda" if env["GPU"] else "cpu"),
+        "device": (
+            "cuda" if phase == "contract"
+            and spec["engineering_contract"]["mode"] == "gpu_synthetic_no_data"
+            else ("cpu" if phase == "contract" else ("cuda" if env["GPU"] else "cpu"))
+        ),
         "total_units": spec["total_units"],
         "evidence_role": spec["evidence_role"],
         "resume_policy": spec["resume_policy"],
         "protected_data_permissions": permissions,
         "assets": context_assets,
+        "engineering_contract": spec["engineering_contract"],
     }
 
 
@@ -238,7 +248,11 @@ def run_program(*, phase: str, context_path: Path, entrypoint: Path,
     command_env.update(spec["environment"])
     command_env["PYTHONUNBUFFERED"] = "1"
     command_env["CONVIR_CONTRACT_ONLY"] = "1" if phase == "contract" else "0"
-    command_env["CUDA_VISIBLE_DEVICES"] = "" if phase == "contract" else env["GPU"]
+    contract_gpu = (
+        phase == "contract"
+        and spec["engineering_contract"]["mode"] == "gpu_synthetic_no_data"
+    )
+    command_env["CUDA_VISIBLE_DEVICES"] = env["GPU"] if contract_gpu or phase == "run" else ""
     with log_path.open("a", encoding="utf-8") as log:
         process = subprocess.Popen(
             [str(REMOTE_PYTHON), str(entrypoint), phase, "--context", str(context_path)],
@@ -259,11 +273,13 @@ def run_program(*, phase: str, context_path: Path, entrypoint: Path,
 
 def validate_contract_result(path: Path, spec: dict[str, Any]) -> dict[str, Any]:
     value = load_json(path)
-    expected = {
+    legacy_expected = {
         "schema_version", "route_id", "operation_id", "phase", "ok", "checks",
         "output_contract_checked", "finalizer_contract_checked",
         "confirmation_images_targets_outcomes_touched", "canary_touched", "locked_test_touched",
     }
+    expected = legacy_expected if spec["engineering_contract"]["legacy_implicit_contract"] \
+        else legacy_expected | {"engineering"}
     if not isinstance(value, dict) or set(value) != expected:
         raise LifecycleError("contract result has an invalid field contract", phase="contract")
     required_true = (
@@ -282,6 +298,31 @@ def validate_contract_result(path: Path, spec: dict[str, Any]) -> dict[str, Any]
     )
     if not all(required_true):
         raise LifecycleError("contract result did not pass", phase="contract")
+    if "engineering" in expected:
+        engineering = value["engineering"]
+        capability = spec.get("_validated_capability_profile")
+        if engineering.get("mode") != spec["engineering_contract"]["mode"]:
+            raise LifecycleError("engineering mode mismatch", phase="contract")
+        if engineering.get("device") not in {"cpu", "cuda"}:
+            raise LifecycleError("engineering device is invalid", phase="contract")
+        expected_device = (
+            "cuda" if spec["engineering_contract"]["mode"] == "gpu_synthetic_no_data"
+            else "cpu"
+        )
+        if engineering.get("device") != expected_device:
+            raise LifecycleError("engineering device differs from the frozen mode", phase="contract")
+        if engineering.get("protected_data_touched") is not False \
+                or engineering.get("scientific_output_created") is not False \
+                or engineering.get("scientific_training_occurred") is not False:
+            raise LifecycleError("engineering contract crossed a scientific boundary", phase="contract")
+        if spec["engineering_contract"]["mode"] != "metadata_only":
+            fixture = engineering.get("fixture")
+            minimum = capability.get("minimum_fixture") if isinstance(capability, dict) else None
+            if not isinstance(fixture, dict) or not isinstance(minimum, dict) \
+                    or any(fixture.get(key, 0) < minimum[key] for key in minimum):
+                raise LifecycleError("engineering fixture is below the capability minimum", phase="contract")
+            if engineering.get("production_path_exercised") is not True:
+                raise LifecycleError("engineering contract did not exercise the production path", phase="contract")
     return value
 
 
@@ -488,7 +529,19 @@ def lifecycle() -> int:
         asset_manifest = validate_asset_manifest(
             load_json(repo / spec["asset_manifest_relpath"]), spec,
         )
-    assets = verify_assets(asset_manifest, repo=repo, run_root=run_root, output=output)
+    capability_path = spec["engineering_contract"]["capability_profile_relpath"]
+    if capability_path is not None:
+        spec["_validated_capability_profile"] = validate_model_capability(
+            load_json(repo / capability_path), spec, asset_manifest,
+        )
+    precision_path = spec["precision_contract"]["certificate_relpath"]
+    if precision_path is not None:
+        validate_precision_certificate(load_json(repo / precision_path), spec)
+    strict_phased_assets = spec["schema_version"] >= 2
+    assets = verify_assets(
+        asset_manifest, repo=repo, run_root=run_root, output=output,
+        contract_only=strict_phased_assets,
+    )
     output.mkdir(parents=True)
     (output / "control").mkdir()
     atomic_json(
@@ -504,7 +557,8 @@ def lifecycle() -> int:
     telemetry(repo, env, status, "contract", "contract_start", 0, 1)
     rc = run_program(
         phase="contract", context_path=contract_context_path, entrypoint=entrypoint,
-        spec=spec, env=env, log_path=runtime_log, timeout=min(spec["timeout_seconds"], 300),
+        spec=spec, env=env, log_path=runtime_log,
+        timeout=min(spec["timeout_seconds"], spec["engineering_contract"]["max_seconds"]),
     )
     if rc:
         raise LifecycleError(f"contract program failed rc={rc}", phase="contract")
@@ -512,6 +566,11 @@ def lifecycle() -> int:
     if (output / "workload").exists():
         raise LifecycleError("contract program created workload output", phase="contract")
     telemetry(repo, env, status, "contract", "contract_pass", 1, 1)
+    if strict_phased_assets:
+        assets = verify_assets(
+            asset_manifest, repo=repo, run_root=run_root, output=output,
+            contract_only=False,
+        )
     run_context = context_value(
         phase="run", env=env, spec=spec, output=output,
         status=status, heartbeat=heartbeat, assets=assets,

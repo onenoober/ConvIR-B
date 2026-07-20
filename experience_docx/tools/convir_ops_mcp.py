@@ -19,9 +19,10 @@ from pathlib import Path
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "4.3.2"
+SERVER_VERSION = "5.0.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
+SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5}
 REMOTE_HOST = "convir-4090"
 REMOTE_BASE = "/sda/home/wangyuxin/ConvIR-B"
 REMOTE_REPOS = f"{REMOTE_BASE}/repos"
@@ -81,6 +82,15 @@ def emit(value):
 
 
 def text_result(text, *, is_error=False, structured=None):
+    if structured is not None:
+        keys = (
+            "operation_state", "status", "state", "marker", "route_id",
+            "operation_id", "run_id", "decision", "authorizes", "ok",
+            "failure_class", "failure_phase", "audit_digest",
+        )
+        summary = {key: structured[key] for key in keys if key in structured}
+        summary["structured_content_available"] = True
+        text = json.dumps(summary, sort_keys=True, separators=(",", ":"))
     value = {"content": [{"type": "text", "text": text}], "isError": is_error}
     if structured is not None:
         value["structuredContent"] = structured
@@ -199,6 +209,122 @@ def first_operation_from_card(text):
     if not match:
         raise ToolError("route card must contain one exact First operation field")
     return require_token(match.group(1), "First operation")
+
+
+def validate_scientific_contract(value, route_id, operation_id, operation):
+    expected = {
+        "schema_version", "route_id", "operation_id", "question",
+        "population", "intervention", "primary_estimand", "controls",
+        "uncertainty", "gates", "competing_explanation",
+        "terminal_mapping", "disabled_actions",
+    }
+    if not isinstance(value, dict) or set(value) != expected or value["schema_version"] != 1:
+        raise ToolError("scientific contract has an invalid top-level contract")
+    if value["route_id"] != route_id or value["operation_id"] != operation_id:
+        raise ToolError("scientific contract identity mismatch")
+    for key in ("question", "competing_explanation"):
+        if not isinstance(value[key], str) or not 16 <= len(value[key]) <= 2048:
+            raise ToolError(f"scientific contract {key} must contain 16-2048 characters")
+    population = value["population"]
+    population_fields = {
+        "evidence_role", "grouping_unit", "independent_group_count",
+        "allow_confirmation", "allow_canary", "allow_locked_test",
+    }
+    if not isinstance(population, dict) or set(population) != population_fields:
+        raise ToolError("scientific contract population is invalid")
+    role = require_enum(
+        population["evidence_role"], "population.evidence_role",
+        {"engineering_debug", "development_screening", "confirmation", "sealed_final"},
+    )
+    require_token(population["grouping_unit"], "population.grouping_unit")
+    require_int(population["independent_group_count"], "population.independent_group_count", 0, 10_000_000)
+    permissions = {
+        key: require_bool(population[key], f"population.{key}")
+        for key in ("allow_confirmation", "allow_canary", "allow_locked_test")
+    }
+    if permissions["allow_locked_test"] and role != "sealed_final":
+        raise ToolError("scientific contract locked test requires sealed_final role")
+    if permissions["allow_confirmation"] and role not in {"confirmation", "sealed_final"}:
+        raise ToolError("scientific contract confirmation access requires confirmation/sealed role")
+    intervention = value["intervention"]
+    if not isinstance(intervention, dict) or set(intervention) != {
+        "primary_variable", "reference", "matched_budget", "fixed_factors",
+    }:
+        raise ToolError("scientific contract intervention is invalid")
+    for key in ("primary_variable", "reference", "matched_budget"):
+        if not isinstance(intervention[key], str) or not intervention[key].strip():
+            raise ToolError(f"scientific contract intervention.{key} is empty")
+    fixed = intervention["fixed_factors"]
+    if not isinstance(fixed, list) or not fixed \
+            or any(not isinstance(item, str) or not item.strip() for item in fixed):
+        raise ToolError("scientific contract fixed_factors is empty")
+    estimand = value["primary_estimand"]
+    if not isinstance(estimand, dict) or set(estimand) != {
+        "id", "metric", "direction", "aggregation", "unit",
+    }:
+        raise ToolError("scientific contract primary_estimand is invalid")
+    require_token(estimand["id"], "primary_estimand.id")
+    require_enum(estimand["direction"], "primary_estimand.direction", {"higher", "lower"})
+    for key in ("metric", "aggregation", "unit"):
+        if not isinstance(estimand[key], str) or not estimand[key].strip():
+            raise ToolError(f"primary_estimand.{key} is empty")
+    controls = value["controls"]
+    if not isinstance(controls, list) or not controls \
+            or any(not isinstance(item, str) or not item.strip() for item in controls):
+        raise ToolError("scientific contract requires at least one matched/negative control")
+    uncertainty = value["uncertainty"]
+    if not isinstance(uncertainty, dict) or set(uncertainty) != {
+        "method", "confidence_level", "independent_unit",
+    } or uncertainty["confidence_level"] != 0.95:
+        raise ToolError("scientific contract uncertainty is invalid")
+    for key in ("method", "independent_unit"):
+        if not isinstance(uncertainty[key], str) or not uncertainty[key].strip():
+            raise ToolError(f"scientific contract uncertainty.{key} is empty")
+    gates = value["gates"]
+    if not isinstance(gates, list) or not gates:
+        raise ToolError("scientific contract requires at least one gate")
+    gate_ids = set()
+    for index, gate in enumerate(gates):
+        fields = {"id", "type", "estimand", "direction", "threshold", "decision_role"}
+        if not isinstance(gate, dict) or set(gate) != fields:
+            raise ToolError(f"scientific contract gates[{index}] is invalid")
+        identifier = require_token(gate["id"], f"gates[{index}].id")
+        if identifier in gate_ids:
+            raise ToolError("scientific contract gate ids must be unique")
+        gate_ids.add(identifier)
+        require_enum(gate["type"], f"gates[{index}].type", {
+            "integrity", "materiality", "safety", "coverage", "precision",
+        })
+        require_enum(gate["direction"], f"gates[{index}].direction", {"min", "max", "equal"})
+        require_enum(gate["decision_role"], f"gates[{index}].decision_role", {
+            "decisive", "inconclusive_only", "descriptive",
+        })
+        threshold = gate["threshold"]
+        if not isinstance(threshold, (int, float, bool, str)) \
+                or isinstance(threshold, str) and not threshold.strip():
+            raise ToolError(f"scientific contract gates[{index}].threshold is invalid")
+        if not isinstance(gate["estimand"], str) or not gate["estimand"].strip():
+            raise ToolError(f"scientific contract gates[{index}].estimand is empty")
+    terminal_mapping = value["terminal_mapping"]
+    if not isinstance(terminal_mapping, dict) or set(terminal_mapping) != {
+        "pass", "fail", "inconclusive",
+    }:
+        raise ToolError("scientific contract terminal_mapping is invalid")
+    allowed = require_terminal_tuples(operation["allowed_terminal_tuples"])
+    for label in ("pass", "fail", "inconclusive"):
+        terminal = require_terminal_tuple(terminal_mapping[label], f"terminal_mapping.{label}")
+        if terminal not in allowed:
+            raise ToolError(f"scientific contract {label} terminal is absent from allowed tuples")
+        if role in {"engineering_debug", "development_screening"} \
+                and terminal["authorizes"] in {
+                    "PROMOTION", "DEPLOYMENT", "LOCKED_TEST", "SEALED_FINAL",
+                }:
+            raise ToolError("development evidence cannot directly authorize promotion/final use")
+    disabled = value["disabled_actions"]
+    if not isinstance(disabled, list) or not disabled \
+            or any(not isinstance(item, str) or not item.strip() for item in disabled):
+        raise ToolError("scientific contract disabled_actions is empty")
+    return value
 
 
 def q(value):
@@ -492,14 +618,17 @@ def ensure_commit(repo, commit):
 
 
 def parse_manifest(value, branch, route_commit, current_main, bare_repo, operation_id):
-    expected_top = {
+    legacy_top = {
         "schema_version", "route_id", "rules_commit",
         "route_card_relpath", "operations",
     }
-    if not isinstance(value, dict) or set(value) != expected_top:
+    current_top = legacy_top | {"scientific_contract_relpath"}
+    if not isinstance(value, dict) or value.get("schema_version") not in SUPPORTED_MANIFEST_SCHEMA_VERSIONS:
+        raise ToolError("route operations manifest has an unsupported schema")
+    manifest_schema = value["schema_version"]
+    expected_top = legacy_top if manifest_schema == 4 else current_top
+    if set(value) != expected_top:
         raise ToolError("route operations manifest has an invalid top-level contract")
-    if value.get("schema_version") != SCHEMA_VERSION:
-        raise ToolError(f"route operations manifest must use schema {SCHEMA_VERSION}")
     route_id = require_token(value["route_id"], "route_id")
     rules_commit = require_sha(value["rules_commit"], "rules_commit", SHA40)
     route_card = require_relpath(
@@ -507,6 +636,16 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
         prefix="experience_docx/experiment_cards/",
     )
     route_card_blob = blob_sha(bare_repo, route_commit, route_card)
+    scientific_contract = None
+    scientific_contract_blob = None
+    scientific_contract_value = None
+    if manifest_schema == 5:
+        scientific_contract = require_relpath(
+            value["scientific_contract_relpath"], "scientific_contract_relpath", ".json",
+            prefix="experience_docx/scientific_contracts/",
+        )
+        scientific_contract_blob = blob_sha(bare_repo, route_commit, scientific_contract)
+        scientific_contract_value = json.loads(git_show(bare_repo, route_commit, scientific_contract))
     operations = value["operations"]
     if not isinstance(operations, dict) or not 1 <= len(operations) <= 8:
         raise ToolError("operations must contain 1-8 entries")
@@ -522,6 +661,10 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
     }
     if not isinstance(operation, dict) or set(operation) != operation_fields:
         raise ToolError("selected operation has an invalid field contract")
+    if manifest_schema == 5:
+        scientific_contract_value = validate_scientific_contract(
+            scientific_contract_value, route_id, operation_id, operation,
+        )
     runner = require_relpath(
         operation["runner_relpath"], "runner_relpath", ".sh",
         prefix="experience_docx/tools/run_",
@@ -544,8 +687,14 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
         actual = {key: prior.get(key) for key in prior_tuple}
         if prior.get("route_id") != route_id or actual != prior_tuple:
             raise ToolError("prior closeout does not match its sealed terminal tuple")
-    elif first_operation_from_card(git_show(bare_repo, route_commit, route_card)) != operation_id:
-        raise ToolError("selected operation is not the frozen first operation")
+    elif manifest_schema == 4:
+        if first_operation_from_card(git_show(bare_repo, route_commit, route_card)) != operation_id:
+            raise ToolError("selected operation is not the frozen first operation")
+    else:
+        if not isinstance(scientific_contract_value, dict) \
+                or scientific_contract_value.get("route_id") != route_id \
+                or scientific_contract_value.get("operation_id") != operation_id:
+            raise ToolError("scientific contract identity or first operation mismatch")
     recorded_rules = rule_bundle_digest(bare_repo, rules_commit)
     current_rules = rule_bundle_digest(bare_repo, current_main)
     if recorded_rules != current_rules:
@@ -566,6 +715,7 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
         raise ToolError("closeout_filename must end with _closeout.json")
     context = {
         "schema_version": SCHEMA_VERSION,
+        "route_manifest_schema_version": manifest_schema,
         "branch": branch,
         "route_branch_commit": route_commit,
         "current_rules_commit": current_main,
@@ -574,6 +724,12 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
         "run_root": f"{REMOTE_RUNS}/{route_id}",
         "route_card_relpath": route_card,
         "route_card_blob": route_card_blob,
+        "scientific_contract_relpath": scientific_contract,
+        "scientific_contract_blob": scientific_contract_blob,
+        "scientific_contract_digest": (
+            canonical_digest(scientific_contract_value)
+            if scientific_contract_value is not None else None
+        ),
         "rules_commit": rules_commit,
         "rules_bundle_digest": recorded_rules,
         "runner_relpath": runner,
@@ -627,6 +783,8 @@ def load_operation(args):
         if len(manifest_raw.encode()) > MAX_MANIFEST_BYTES:
             raise ToolError("route_operations.json exceeds 16 KiB")
         manifest = json.loads(manifest_raw)
+        if manifest.get("schema_version") not in SUPPORTED_MANIFEST_SCHEMA_VERSIONS:
+            raise ToolError("route manifest schema is unsupported")
         rules_commit = manifest.get("rules_commit") if isinstance(manifest, dict) else None
         if isinstance(rules_commit, str) and SHA40.fullmatch(rules_commit):
             ensure_commit(bare_repo, rules_commit)
@@ -1580,6 +1738,79 @@ def sha256_file(path):
     return digest.hexdigest()
 
 
+def _git_json_blob(repo, ref, relpath):
+    completed = subprocess.run(
+        ["git", "-C", str(repo), "show", f"{ref}:{relpath}"],
+        capture_output=True, timeout=30, check=False,
+    )
+    if completed.returncode:
+        return None
+    try:
+        return json.loads(completed.stdout)
+    except json.JSONDecodeError:
+        return None
+
+
+def authoritative_snapshot(repo, route_id, ref):
+    """Return one bounded authority record without reading Markdown history."""
+    index_path = "experience_docx/EXPERIMENT_TERMINAL_INDEX.jsonl"
+    completed = subprocess.run(
+        ["git", "-C", str(repo), "show", f"{ref}:{index_path}"],
+        capture_output=True, timeout=30, check=False,
+    )
+    if completed.returncode:
+        return {"status": "TERMINAL_INDEX_UNAVAILABLE", "route_id": route_id}
+    matches = []
+    try:
+        for raw in completed.stdout.decode("utf-8").splitlines():
+            if not raw.strip():
+                continue
+            item = json.loads(raw)
+            if isinstance(item, dict) and item.get("route_id") == route_id:
+                matches.append(item)
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return {"status": "TERMINAL_INDEX_INVALID", "route_id": route_id}
+    if not matches:
+        return {"status": "NO_TERMINAL_RECORD", "route_id": route_id}
+    record = matches[-1]
+    conclusion = _git_json_blob(repo, ref, record.get("conclusion_path", ""))
+    closeout = _git_json_blob(repo, ref, record.get("closeout_path", ""))
+    protected = {}
+    if isinstance(closeout, dict):
+        protected = {
+            "confirmation_touched": bool(closeout.get("confirmation_images_targets_outcomes_touched")),
+            "canary_touched": bool(closeout.get("canary_touched")),
+            "locked_test_touched": bool(closeout.get("locked_test_touched")),
+        }
+    snapshot = {
+        "status": "AUTHORITATIVE_SNAPSHOT_OK",
+        "route_id": route_id,
+        "operation_id": record.get("operation_id"),
+        "run_id": record.get("run_id"),
+        "state": record.get("state"),
+        "decision": record.get("decision"),
+        "authorizes": record.get("authorizes"),
+        "route_commit": record.get("route_commit"),
+        "receipt": record.get("receipt"),
+        "contract_path": record.get("contract_path"),
+        "closeout_path": record.get("closeout_path"),
+        "conclusion_path": record.get("conclusion_path"),
+        "result_path_count": len(record.get("result_paths", [])),
+        "protected_access": protected,
+    }
+    if isinstance(conclusion, dict):
+        snapshot.update({
+            "primary_result": conclusion.get("primary_result"),
+            "competing_explanation": conclusion.get("competing_explanation"),
+            "limitations": conclusion.get("limitations", []),
+        })
+    raw = json.dumps(snapshot, sort_keys=True, separators=(",", ":")).encode()
+    if len(raw) > 8192:
+        snapshot.pop("limitations", None)
+        snapshot["limitations_omitted"] = True
+    return snapshot
+
+
 def tool_evidence_fetch(args):
     try:
         context = evidence_context(args)
@@ -1639,19 +1870,43 @@ def tool_git_evidence_status(args):
         remote = run_local([*prefix, "ls-remote", "github", "refs/heads/main"], timeout=60, phase="github_ref_fetch").split()
         if len(remote) != 2 or not SHA40.fullmatch(remote[0]):
             raise ToolError("GitHub main is malformed", failure_class="command_infra")
+        detail = args.get("detail", "summary")
+        if detail not in {"summary", "route", "full"}:
+            raise ToolError("detail must be summary, route, or full")
         status = run_local([*prefix, "status", "--short"], timeout=30, phase="git_status")
-        changed = status.splitlines()[:100] if status else []
+        changed_all = status.splitlines() if status else []
         route_prefix = f"experience_docx/experiment_logs/{route_id}/"
+        route_changed = [line for line in changed_all if route_prefix in line]
+
+        def compact_check(arguments):
+            result = inspect_local(arguments)
+            lines = result.get("output", "").splitlines()
+            return {
+                "ok": result.get("ok") is True,
+                "returncode": result.get("returncode"),
+                "issue_line_count": len(lines),
+                "first_issue": lines[0][:512] if lines else "",
+            }
+
         value = {
             "local_repo": str(repo), "branch": branch, "head": head,
             "github_main_local": local_main, "github_main_remote": remote[0],
             "github_main_ref_fresh": local_main == remote[0],
-            "worktree_clean": not status, "changed_paths": changed,
-            "route_evidence_changes": [line for line in changed if route_prefix in line],
-            "diff_check": inspect_local([*prefix, "diff", "--check"]),
-            "cached_diff_check": inspect_local([*prefix, "diff", "--cached", "--check"]),
+            "worktree_clean": not status,
+            "changed_path_count": len(changed_all),
+            "route_evidence_change_count": len(route_changed),
+            "diff_check": compact_check([*prefix, "diff", "--check"]),
+            "cached_diff_check": compact_check([*prefix, "diff", "--cached", "--check"]),
+            "authoritative_snapshot": authoritative_snapshot(repo, route_id, "github/main"),
+            "detail_level": detail,
             "git_mutations_performed": False,
         }
+        if detail in {"route", "full"}:
+            value["route_evidence_changes"] = route_changed[:100]
+            value["route_evidence_changes_truncated"] = len(route_changed) > 100
+        if detail == "full":
+            value["changed_paths"] = changed_all[:100]
+            value["changed_paths_truncated"] = len(changed_all) > 100
         return text_result(json.dumps(value, indent=2), structured=value)
     except Exception as exc:
         return failure_result("GIT_STATUS_FAILED", exc, "git_status")
@@ -1659,7 +1914,7 @@ def tool_git_evidence_status(args):
 
 TOOLS = {
     "convir_route_plan": {
-        "description": "Read and seal one schema-v4 operation from the exact GitHub route commit without contacting the cloud.",
+        "description": "Read and seal one legacy or canonical-contract route through the stable schema-v4 control protocol without contacting the cloud.",
         "inputSchema": {
             "type": "object",
             "required": ["schema_version", "branch", "route_branch_commit", "operation_id"],
@@ -1712,10 +1967,13 @@ TOOLS = {
         "handler": tool_evidence_fetch,
     },
     "convir_git_status": {
-        "description": "Read-only worktree and GitHub-main freshness audit; never fetch, stage, commit, or push.",
+        "description": "Read-only compact worktree, GitHub-main freshness, and authoritative route snapshot audit; defaults to a token-bounded summary and never mutates Git.",
         "inputSchema": {
             "type": "object", "required": ["route_id", "local_repo"],
-            "properties": {"route_id": {"type": "string"}, "local_repo": {"type": "string"}},
+            "properties": {
+                "route_id": {"type": "string"}, "local_repo": {"type": "string"},
+                "detail": {"enum": ["summary", "route", "full"], "default": "summary"},
+            },
             "additionalProperties": False,
         },
         "handler": tool_git_evidence_status,
