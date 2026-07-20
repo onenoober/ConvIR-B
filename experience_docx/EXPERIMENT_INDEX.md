@@ -1,6 +1,6 @@
 # ConvIR-B Haze4K Experiment Index
 
-Date: 2026-07-19
+Date: 2026-07-20
 
 Status: evidence index plus official architecture anchor registry.
 
@@ -110,6 +110,30 @@ leaving experimental code on the route branches.
 Use this index first when asking what happened, which route is still relevant,
 and where the evidence lives. Use the listed source branch or commit only when
 you need the exact runnable code snapshot.
+
+### 2026-07-20 R14 cross-route cloud evidence audit
+
+The latest formal model terminal remains R13
+`COMPLETED_GATE_FAIL / R13_A0_RELATIVE_CONTEXT_UTILITY_FAIL_STOP / NONE`. A
+read-only audit at
+`convir-4090:/sda/home/wangyuxin/ConvIR-B/runs/haze4k_v5_r14_cross_route_cloud_evidence_audit_20260720/r14-cross-route-audit-r2`
+reproduces every decisive R10-R12 4,000-draw bootstrap point and interval from
+raw cloud rows with maximum absolute difference `0.0`, and verifies all
+closeout-bound R10-R13 Git artifacts by SHA-256. R13 has no persisted row-level
+prediction/action-map artifact and is therefore compact-hash verified only.
+
+With the exact privileged regional budget, R11 exact tile-action accuracy is
+`51.1271%` and remains `50.4706%` for true best-second margin `>=0.02 dB`;
+utility Pearson correlation is `0.2914`. R5 post-hoc gap attribution separates
+`0.057708 dB` fixed-coverage, `0.046351 dB` coverage-ranking and `0.020481 dB`
+direction loss. R12 retains modest action-specific signal but fails conversion:
+AUROC `0.7221`, top-20% capture `0.4437`, ECE `0.2134`. The exact selector/critic
+family remains closed; problem definition, region/action semantics and real-domain
+alignment now form an upstream strategic bottleneck.
+
+The audit changed no terminal, trained no model, loaded no checkpoint and
+touched no confirmation, canary or locked-test role. Evidence is in
+`experience_docx/experiment_logs/haze4k_v5_r14_cross_route_cloud_evidence_audit_20260720/`.
 
 ### 2026-07-19 R11 cloud raw evidence audit
 

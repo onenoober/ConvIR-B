@@ -1,18 +1,25 @@
 # Haze4K CHD-RM Family Summary
 
-Date: 2026-07-19
+Date: 2026-07-20
 
-Status: R5-A0 r2 is the latest machine terminal. It completed normally and
-failed the frozen spatial candidate-response safety contract. R4B's
-receipt-bound post-hoc audit and R5's preregistered development screen jointly
-narrow the functional bottleneck; the family remains closed and authorizes no
-next stage.
+Status: R13 is the latest formal machine terminal. It completed normally as
+`R13_A0_RELATIVE_CONTEXT_UTILITY_FAIL_STOP / NONE`. The exact R5-R13
+selector/critic/context family is closed and authorizes no next stage.
 
 The later R11 cloud raw audit is post-hoc and cutoff-bound. It exactly
 reproduces the formal R11 FAIL, verifies 768/768 cache identities, and narrows
 the interpretation to weak candidate-conditioned signed-utility placement plus
 uncalibrated action-conditional downside. It does not replace the current
 machine terminal, reopen a route or authorize protected-data access.
+
+The 2026-07-20 R14 cross-route audit then reproduced all decisive R10-R12 raw
+row bootstraps exactly and verified R10-R13 compact evidence hashes. It finds
+that R11 fails action placement even with the exact privileged budget, including
+high-margin tiles, so decision/coverage repair is secondary to missing or
+compressed candidate-specific signed utility. It also strengthens the upstream
+concern that fixed PSNR, 8x8 regions, action semantics and Haze4K-only evidence
+do not identify the intended real nonuniform-haze target. R14 is read-only and
+does not replace the R13 terminal.
 
 ## Current Read
 
@@ -74,7 +81,11 @@ machine terminal, reopen a route or authorize protected-data access.
 
 ## Decision
 
-Latest decision: `R5_A0_SPATIAL_RESPONSE_FUTILITY_OR_SAFETY_FAIL_STOP`.
+Latest decision: `R13_A0_RELATIVE_CONTEXT_UTILITY_FAIL_STOP`.
+
+R14 audit decision: exact R5-R13 paradigm remains closed; total objective
+requires strategic reconstruction. This is evidence interpretation, not a new
+model terminal.
 
 Prior R4B decision retained for history: `R4B_A1_SETWISE_MECHANISM_FUTILITY_STOP`.
 
