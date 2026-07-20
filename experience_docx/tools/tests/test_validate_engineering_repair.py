@@ -1,12 +1,79 @@
 """Tests for conservative same-contract engineering repair classification."""
 
 import ast
+import json
+import subprocess
+import tempfile
 import unittest
+from pathlib import Path
 
 import validate_engineering_repair as REPAIR
 
 
 class EngineeringRepairTests(unittest.TestCase):
+    @staticmethod
+    def _git(repo: Path, *args: str) -> str:
+        completed = subprocess.run(
+            ["/usr/bin/git", *args], cwd=repo, text=True,
+            capture_output=True, check=True,
+        )
+        return completed.stdout.strip()
+
+    def _make_classifier_fixture(
+        self, root: Path, *, changed_rationale: bool,
+    ) -> tuple[Path, str, str]:
+        operation = "REPAIR_TEST"
+        repo = root / "repo"
+        repo.mkdir()
+        self._git(repo, "init", "--quiet")
+        self._git(repo, "config", "user.name", "repair-test")
+        self._git(repo, "config", "user.email", "repair-test@localhost")
+        card = "experience_docx/experiment_cards/repair-test.md"
+        spec = f"experience_docx/route_runtime_specs/{operation}.json"
+        entrypoint = "experience_docx/tools/repair_test_entrypoint.py"
+        for relpath in (card, spec, entrypoint, "experience_docx/route_operations.json"):
+            (repo / relpath).parent.mkdir(parents=True, exist_ok=True)
+        manifest = {
+            "schema_version": 1,
+            "route_id": "repair_test_route",
+            "rules_commit": "a" * 40,
+            "route_card_relpath": card,
+            "operations": {operation: {"output_id": "repair-test-r1"}},
+        }
+        (repo / "experience_docx/route_operations.json").write_text(
+            json.dumps(manifest), encoding="utf-8",
+        )
+        (repo / spec).write_text(
+            json.dumps({"entrypoint_relpath": entrypoint}), encoding="utf-8",
+        )
+        (repo / entrypoint).write_text("def run(value):\n    return value\n", encoding="utf-8")
+        (repo / card).write_text(
+            "Scientific rationale is frozen.\n\nTerminal authority is frozen.\n",
+            encoding="utf-8",
+        )
+        self._git(repo, "add", ".")
+        self._git(repo, "commit", "--quiet", "-m", "base")
+        base = self._git(repo, "rev-parse", "HEAD")
+
+        manifest["operations"][operation]["output_id"] = "repair-test-r2"
+        (repo / "experience_docx/route_operations.json").write_text(
+            json.dumps(manifest), encoding="utf-8",
+        )
+        rationale = (
+            "Scientific rationale and threshold are changed."
+            if changed_rationale else "Scientific rationale is frozen."
+        )
+        (repo / card).write_text(
+            rationale
+            + "\n\n- Same-contract engineering repair: finalizer binding only"
+            + "\n\nTerminal authority is frozen.\n",
+            encoding="utf-8",
+        )
+        self._git(repo, "add", ".")
+        self._git(repo, "commit", "--quiet", "-m", "candidate")
+        candidate = self._git(repo, "rev-parse", "HEAD")
+        return repo, base, candidate
+
     def test_symbol_qualification_and_contract_fixture_are_safe(self):
         before = b'''\
 import old_module
@@ -94,6 +161,26 @@ def run(value):
             REPAIR.normalize_card(before, "run-r1", "run-r1"),
             REPAIR.normalize_card(after, "run-r1", "run-r2"),
         )
+
+    def test_full_classifier_allows_paragraph_repair_note(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            repo, base, candidate = self._make_classifier_fixture(
+                Path(temporary), changed_rationale=False,
+            )
+            report = REPAIR.validate(repo, base, candidate, "REPAIR_TEST")
+        self.assertEqual("AUTO_REPAIR_ELIGIBLE", report["status"])
+        self.assertTrue(report["scientific_contract_unchanged"])
+
+    def test_full_classifier_rejects_scientific_rationale_change(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            repo, base, candidate = self._make_classifier_fixture(
+                Path(temporary), changed_rationale=True,
+            )
+            with self.assertRaisesRegex(
+                REPAIR.RepairError,
+                "route card changed beyond output identity and repair note",
+            ):
+                REPAIR.validate(repo, base, candidate, "REPAIR_TEST")
 
 
 if __name__ == "__main__":
