@@ -70,3 +70,24 @@ milestones. It appends phase=workload and event=workload_progress with bounded
 completed_units and total_units to status.txt. The MCP also accepts legacy
 route-specific keys matching NAME_PROGRESS, so completed A1 routes remain
 observable without preserving a route-specific parser.
+
+## 2026-07-20 Windows Git against a WSL UNC audit worktree
+
+Invalid form:
+
+```powershell
+git show <ref>:<path>
+```
+
+when the PowerShell working directory is a `\\wsl.localhost\...` worktree.
+Windows Git rejected the repository as dubious ownership before reading the
+blob. This is `FAILED_COMMAND`, not experiment evidence.
+
+Corrected form:
+
+```powershell
+wsl.exe -d Ubuntu-22.04 --exec /usr/bin/git -C /home/ubuntu/workspace/<worktree> show <ref>:<path>
+```
+
+Use fixed WSL argv or `convirctl.py repo-show`; never add a Windows Git
+`safe.directory` exception for a WSL worktree.
