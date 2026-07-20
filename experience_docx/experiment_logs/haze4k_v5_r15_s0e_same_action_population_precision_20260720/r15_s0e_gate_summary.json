@@ -1,0 +1,37 @@
+{
+  "authorizes": "R15_S3_REFORMULATION_ONLY",
+  "decision": "R15_S0E_REAL_ACTION_HEADROOM_FAIL_STRATEGIC_RESET",
+  "decisive_fail": true,
+  "gates": {
+    "bidirectional_fraction_lcb95": false,
+    "both_operators_positive": true,
+    "both_strata_material": false,
+    "mixed_fraction_lcb95": false,
+    "region_gain_ci_half_width": true,
+    "region_gain_lcb95": false,
+    "region_minus_global_cvar5_lcb95": true,
+    "region_minus_global_lcb95": false,
+    "region_minus_shuffle_lcb95": false,
+    "zero_hard": true,
+    "zero_severe": true
+  },
+  "passes": false,
+  "region_gain_ci_half_width_db": 0.000985799083063438,
+  "region_hard_images": 0,
+  "region_severe_images": 0,
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "structural_checks": {
+    "complete_population": true,
+    "gt_after_complete_manifest": true,
+    "local_materiality": true,
+    "local_safety": true,
+    "paired_operators": true,
+    "prior_terminal_authorized": true,
+    "protected_roles_untouched": true,
+    "r10_action_tuple_exact": true,
+    "shuffle_histograms_exact": true,
+    "shuffle_pixel_area_exact": true,
+    "two_pass_replay_exact": true
+  }
+}

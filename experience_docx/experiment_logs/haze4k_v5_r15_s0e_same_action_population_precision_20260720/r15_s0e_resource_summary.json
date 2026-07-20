@@ -1,0 +1,12 @@
+{
+  "maximum_resident_set_mib": 1210.78125,
+  "model_forward_images": 110,
+  "operator_action_units": 220,
+  "peak_gpu_memory_mib": 5647.2919921875,
+  "per_stratum_bootstrap_draws": 4000,
+  "primary_bootstrap_draws": 4000,
+  "schema_version": 1,
+  "total_bootstrap_draws": 12000,
+  "training_occurred": false,
+  "wall_seconds": 355.4155346462503
+}

@@ -1,0 +1,18 @@
+{
+  "canary_touched": false,
+  "checkpoint_selected": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "data_role": "development_screening_previously_used_by_v2_7",
+  "eligible_as_final_external_validation": false,
+  "gt_first_open_after_complete_pass1_seal": true,
+  "locked_test_touched": false,
+  "pass1_image_count": 55,
+  "pass1_manifest_sha256": "9c41952a8f8b950a2c86ed5fde299a7b8a9a5635a100208e33c22fc2ca78eeef",
+  "route_commit": "b1cc5fc7bc9919394682b278dd864170217a089b",
+  "s0a_terminal_sha256": "faa1c7e932ee186f75239af54064622b2f7baf4982a91e3098ad18e80f8af939",
+  "sample_excluded": false,
+  "schema_version": 1,
+  "threshold_selected": false,
+  "training_occurred": false,
+  "two_pass_replay_failures": []
+}
