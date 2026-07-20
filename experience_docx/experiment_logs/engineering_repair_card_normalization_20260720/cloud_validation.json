@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "status": "CLOUD_VALIDATION_PASS",
+  "validation_role": "engineering_control_tool_regression",
+  "host": "convir-4090",
+  "branch": "codex/engineering-repair-card-normalization-20260720",
+  "commit": "75af114055717f02aeb9169efb69e9173de86b69",
+  "script": "experience_docx/tools/test_engineering_repair_card_normalization_cloud.sh",
+  "script_git_blob": "655e0024565962561bdaa6926a7f9d14e8046058",
+  "script_sha256": "3bcec2f140555ee9f51eac5bbc86542639a1f0f21482a7daa6fc69692829c831",
+  "tests_run": 8,
+  "tests_failed": 0,
+  "required_positive_case": "standard repair note with one blank line on each side normalizes as unchanged",
+  "required_negative_case": "scientific rationale change next to a repair note remains distinguishable",
+  "success_marker": "ENGINEERING_REPAIR_CARD_NORMALIZATION_CLOUD_OK",
+  "protected_data_accessed": false,
+  "model_runtime_executed": false,
+  "scientific_terminal_affected": false
+}
