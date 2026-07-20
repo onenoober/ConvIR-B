@@ -124,7 +124,7 @@ def scientific_contract():
         "question": "Does the compact control plane preserve every frozen scientific boundary?",
         "population": {
             "evidence_role": "engineering_debug", "grouping_unit": "fixture",
-            "independent_group_count": 0, "allow_confirmation": False,
+            "independent_group_count": 100, "allow_confirmation": False,
             "allow_canary": False, "allow_locked_test": False,
         },
         "intervention": {
@@ -158,6 +158,11 @@ def scientific_contract():
 
 
 class FinalSlimTests(unittest.TestCase):
+    def git(self, repo, *args):
+        return subprocess.run(
+            ["git", *args], cwd=repo, text=True, capture_output=True, check=True,
+        ).stdout.strip()
+
     def test_legacy_runtime_spec_remains_compatible(self):
         from test_route_runtime_contract import spec as legacy_spec, manifest as legacy_manifest
         value = CONTRACT.validate_runtime_spec(legacy_spec(), legacy_manifest(), "S0")
@@ -212,6 +217,55 @@ class FinalSlimTests(unittest.TestCase):
             OPS.validate_scientific_contract(
                 broken, "final_slim", "ACCEPT", broken_operation,
             )
+
+    def test_committed_bundle_is_revalidated_at_plan_boundary(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+            self.git(repo, "init", "-q")
+            self.git(repo, "config", "user.name", "test")
+            self.git(repo, "config", "user.email", "test@example.com")
+            files = {
+                "experience_docx/route_runtime_specs/ACCEPT.json": runtime(),
+                "experience_docx/route_assets/ACCEPT.json": assets(),
+                "experience_docx/model_capabilities/final_slim.json": capability(),
+                "experience_docx/precision_certificates/final_slim.json": precision(),
+                "experience_docx/scientific_contracts/ACCEPT.json": scientific_contract(),
+            }
+            for relpath, value in files.items():
+                path = repo / relpath
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps(value), encoding="utf-8")
+            self.git(repo, "add", ".")
+            self.git(repo, "commit", "-qm", "bundle")
+            commit = self.git(repo, "rev-parse", "HEAD")
+            route_manifest = {
+                "schema_version": 5, "route_id": "final_slim",
+                "operations": {"ACCEPT": operation()},
+                "scientific_contract_relpaths": {
+                    "ACCEPT": "experience_docx/scientific_contracts/ACCEPT.json",
+                },
+            }
+            context = {
+                "route_manifest_schema_version": 5,
+                "scientific_contract_relpath": "experience_docx/scientific_contracts/ACCEPT.json",
+            }
+            spec = OPS.validate_committed_operation_bundle(
+                str(repo), commit, route_manifest, "ACCEPT", context,
+            )
+            self.assertEqual(2, spec["schema_version"])
+            self.assertEqual("final_slim_gpu", context["capability_profile_id"])
+            bad = copy.deepcopy(scientific_contract())
+            bad["population"]["evidence_role"] = "development_screening"
+            (repo / "experience_docx/scientific_contracts/ACCEPT.json").write_text(
+                json.dumps(bad), encoding="utf-8",
+            )
+            self.git(repo, "add", ".")
+            self.git(repo, "commit", "-qm", "tamper role")
+            tampered = self.git(repo, "rev-parse", "HEAD")
+            with self.assertRaises(OPS.ToolError):
+                OPS.validate_committed_operation_bundle(
+                    str(repo), tampered, route_manifest, "ACCEPT", dict(context),
+                )
 
     def test_structured_result_text_is_token_bounded(self):
         structured = {

@@ -81,3 +81,12 @@ Corrected form: invoke `wsl.exe -d Ubuntu-22.04 --exec /usr/bin/git -C
 <absolute-linux-worktree> ...` with literal argv. The final-slim control-plane
 acceptance must retain a regression proving that the normal experiment path is
 fully MCP-owned and never requires Windows Git against a WSL UNC path.
+
+### 2026-07-20 WSL tool-path boundary
+
+Invalid form: assume `/usr/bin/rg` exists inside WSL. The fixed exec failed
+before searching or mutating anything because that absolute binary is absent.
+
+Corrected form: use the available host `rg` for workspace searches, or a
+literal PowerShell `Select-String` for Windows-owned Codex configuration. Never
+substitute an unverified absolute executable path.

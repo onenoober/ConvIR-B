@@ -120,5 +120,8 @@ PY
 mkdir -p "$evidence_root"
 cp "$work/acceptance.json" "$evidence_root/acceptance-${candidate}.json"
 cp "$work/r16-audit.json" "$evidence_root/r16-compatibility-${candidate}.json"
+printf 'CONVIR_OPS_V5_FINAL_SLIM_ACCEPTANCE_JSON_BEGIN\n'
+cat "$work/acceptance.json"
+printf '\nCONVIR_OPS_V5_FINAL_SLIM_ACCEPTANCE_JSON_END\n'
 printf 'CONVIR_OPS_V5_FINAL_SLIM_CLOUD_OK candidate=%s tests=%s tools=6 summary_max=512 model_calls=0 gpu_access=0 protected_data_access=0\n' \
   "$candidate" "$tests"
