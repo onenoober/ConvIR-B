@@ -1,0 +1,72 @@
+{
+  "authorizes": "R15_S0A_EVIDENCE_COMPLETION_ONLY",
+  "competing_explanation": "A valid action transport does not establish target alignment; insufficient image-level precision does not establish action failure.",
+  "decision": "R15_S0A_MEASUREMENT_INPUT_INCONCLUSIVE_STOP",
+  "gate_reasons": {
+    "data": {
+      "gt_opened_after_action_seal": true,
+      "ids_exact": true,
+      "native_sizes_exact": true,
+      "pair_count_exact": true,
+      "preflight_status_ok": true,
+      "rgb_modes": true,
+      "within_role_hashes_unique": true
+    },
+    "precision": {
+      "concordance_precision_arithmetically_reachable": true,
+      "grouping_unit": "paired_image_id",
+      "image_count": 55,
+      "mean_gain_precision_qualified_by_proxy": false,
+      "minimum_concordance_fraction_for_gates": 0.8363636363636363,
+      "minimum_concordant_images_for_gates": 46,
+      "nested_units_not_independent": [
+        "region",
+        "action",
+        "operator",
+        "rater"
+      ],
+      "proxy_required_image_count_for_0p020_db_half_width": 546,
+      "proxy_role": "planning_only_different_action_family_not_a_scientific_endpoint",
+      "schema_version": 1,
+      "v27_different_action_family_proxy_sd_db": 0.2382824182732212,
+      "v27_proxy_mean_ci_half_width_db": 0.06297363248532997,
+      "zero_event_exact_ucb95": 0.0530110549512538,
+      "zero_event_precision_pass": true
+    },
+    "source": {
+      "r10_actions_exact": false,
+      "r10_source_exact": true,
+      "r10_terminal_pass": true,
+      "r14_route_closed": true,
+      "r3_source_exact": true
+    },
+    "transport": {
+      "exact_noop_identity": true,
+      "exact_sign_symmetry": true,
+      "finite_native_renders": true,
+      "nonzero_action": true,
+      "operators_complete": true
+    }
+  },
+  "limitations": [
+    "one pre-outcome runtime probe only",
+    "NH-HAZE already used for development",
+    "v2.7 variance proxy uses a different action family",
+    "no semantic or human labels collected"
+  ],
+  "operation_id": "R15_S0A_MEASUREMENT_QUALIFICATION",
+  "primary_result": {
+    "authorizes": "R15_S0A_EVIDENCE_COMPLETION_ONLY",
+    "data_valid": true,
+    "decision": "R15_S0A_MEASUREMENT_INPUT_INCONCLUSIVE_STOP",
+    "old_terminals_changed": false,
+    "precision_qualified": false,
+    "schema_version": 1,
+    "source_valid": false,
+    "state": "COMPLETED_GATE_INCONCLUSIVE",
+    "transport_valid": true
+  },
+  "route_id": "haze4k_v5_r15_real_target_region_action_identifiability_20260720",
+  "run_id": "r15-s0a-measurement-qualification-r1",
+  "schema_version": 1
+}

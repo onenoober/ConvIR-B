@@ -1,0 +1,21 @@
+{
+  "concordance_precision_arithmetically_reachable": true,
+  "grouping_unit": "paired_image_id",
+  "image_count": 55,
+  "mean_gain_precision_qualified_by_proxy": false,
+  "minimum_concordance_fraction_for_gates": 0.8363636363636363,
+  "minimum_concordant_images_for_gates": 46,
+  "nested_units_not_independent": [
+    "region",
+    "action",
+    "operator",
+    "rater"
+  ],
+  "proxy_required_image_count_for_0p020_db_half_width": 546,
+  "proxy_role": "planning_only_different_action_family_not_a_scientific_endpoint",
+  "schema_version": 1,
+  "v27_different_action_family_proxy_sd_db": 0.2382824182732212,
+  "v27_proxy_mean_ci_half_width_db": 0.06297363248532997,
+  "zero_event_exact_ucb95": 0.0530110549512538,
+  "zero_event_precision_pass": true
+}

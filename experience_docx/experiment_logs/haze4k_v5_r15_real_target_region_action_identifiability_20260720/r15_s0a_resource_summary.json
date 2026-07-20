@@ -1,0 +1,10 @@
+{
+  "maximum_resident_set_mib": 1221.51953125,
+  "model_forward_images": 1,
+  "operator_count": 2,
+  "pair_files_hashed": 110,
+  "peak_gpu_memory_mib": 5483.79638671875,
+  "schema_version": 1,
+  "training_occurred": false,
+  "wall_seconds": 17.621030091308057
+}
