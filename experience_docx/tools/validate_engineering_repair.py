@@ -122,11 +122,27 @@ def normalize_card(raw: bytes, old_output: str, new_output: str) -> str:
         lines = raw.decode("utf-8").splitlines()
     except UnicodeDecodeError as exc:
         raise RepairError("route card is not UTF-8") from exc
-    kept = [
-        line.replace(new_output, old_output)
-        for line in lines
-        if not line.startswith(REPAIR_NOTE_PREFIXES)
-    ]
+    kept: list[str] = []
+    skip_one_adjacent_blank = False
+    for index, line in enumerate(lines):
+        if line.startswith(REPAIR_NOTE_PREFIXES):
+            # A standard repair note is commonly inserted as its own Markdown
+            # paragraph. Removing only the note would then leave two adjacent
+            # blank lines where the original card had one. Absorb exactly the
+            # following blank in that local pattern; do not collapse blank
+            # lines elsewhere in the scientific card.
+            skip_one_adjacent_blank = bool(
+                kept
+                and not kept[-1].strip()
+                and index + 1 < len(lines)
+                and not lines[index + 1].strip()
+            )
+            continue
+        if skip_one_adjacent_blank:
+            skip_one_adjacent_blank = False
+            if not line.strip():
+                continue
+        kept.append(line.replace(new_output, old_output))
     return "\n".join(kept).strip()
 
 

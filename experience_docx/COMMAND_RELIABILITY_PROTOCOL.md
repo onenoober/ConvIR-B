@@ -91,6 +91,15 @@ Corrected form: use the available host `rg` for workspace searches, or a
 literal PowerShell `Select-String` for Windows-owned Codex configuration. Never
 substitute an unverified absolute executable path.
 
+### 2026-07-20 WSL exec commit-message boundary
+
+Invalid form: pass an unquoted multi-word commit message through PowerShell to
+`wsl.exe --exec /usr/bin/git ... commit -m`; the words after the first were
+delivered as pathspec arguments and Git made no commit.
+
+Corrected form: use one literal argv token for the message at this boundary,
+or invoke an argument-array transport that preserves the complete message.
+
 ### 2026-07-20 MCP runtime-activation workspace boundary
 
 Invalid local probe: piping three JSON-RPC objects from a PowerShell array

@@ -71,6 +71,30 @@ def run(value):
             REPAIR.normalize_card(after, "run-r1", "run-r2"),
         )
 
+    def test_card_allows_paragraph_repair_note_without_blank_line_false_positive(self):
+        before = b"Scientific rationale is frozen.\n\nTerminal authority is frozen.\n"
+        after = (
+            b"Scientific rationale is frozen.\n\n"
+            b"- Same-contract engineering repair: finalizer binding only\n\n"
+            b"Terminal authority is frozen.\n"
+        )
+        self.assertEqual(
+            REPAIR.normalize_card(before, "run-r1", "run-r1"),
+            REPAIR.normalize_card(after, "run-r1", "run-r2"),
+        )
+
+    def test_card_still_rejects_scientific_rationale_change_near_repair_note(self):
+        before = b"Scientific rationale is frozen.\n\nTerminal authority is frozen.\n"
+        after = (
+            b"Scientific rationale and threshold are changed.\n\n"
+            b"- Same-contract engineering repair: finalizer binding only\n\n"
+            b"Terminal authority is frozen.\n"
+        )
+        self.assertNotEqual(
+            REPAIR.normalize_card(before, "run-r1", "run-r1"),
+            REPAIR.normalize_card(after, "run-r1", "run-r2"),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
