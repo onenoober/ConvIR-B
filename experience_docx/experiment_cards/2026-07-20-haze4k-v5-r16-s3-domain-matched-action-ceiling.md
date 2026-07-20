@@ -163,15 +163,15 @@ threshold change or model work is allowed.
 - First operation: R16_S3_DOMAIN_MATCHED_ACTION_CEILING
 - Expected wall time and monitor profile: 3,600 seconds with the \`standard\` profile.
 - Complete-unit resume policy: \`none\`; recovery, if engineering-authorized, must use a new output id under the same scientific contract.
-- Cloud workspace/run/output/status/closeout: MCP-owned fresh workspace on convir-4090; output \`r16-s3-domain-matched-action-ceiling-r3\`; generic status/heartbeat/runtime log; closeout \`r16_s3_domain_matched_action_ceiling_closeout.json\`.
+- Cloud workspace/run/output/status/closeout: MCP-owned fresh workspace on convir-4090; output \`r16-s3-domain-matched-action-ceiling-r4\`; generic status/heartbeat/runtime log; closeout \`r16_s3_domain_matched_action_ceiling_closeout.json\`.
 - Compact Git evidence and cloud-only raw artifacts: Git retains the card, typed closeout and eight declared compact identity/endpoint/policy/bootstrap/strata/gate/resource/conclusion files; per-image rows, action hashes, tensors, images, weights and logs remain cloud-only.
 
 | Operation | Evidence role/scope | Gate | Pass authorizes |
 | --- | --- | --- | --- |
 | \`R16_S3_DOMAIN_MATCHED_ACTION_CEILING\` | training-overlap privileged capacity ceiling | frozen materiality, specificity, safety, coverage and precision | independent-real-development action qualification contract only |
 
-- Same-contract engineering repair: r1 failed before workload because the 64x64 CPU production fixture shrank below ConvIR-B's fixed reflect-padding support; r2 changed only that fixture to 256x256. r2 then exposed a distinct CPU-only binding issue because WDMamba's production selective-scan kernel requires CUDA; r3 binds the same module graph to WDMamba's official reference selective scan only inside the forced-CPU contract, while run-phase CUDA inference stays unchanged.
-- Output id: \`r16-s3-domain-matched-action-ceiling-r3\`.
+- Same-contract engineering repair: r1 failed before workload because the 64x64 CPU production fixture shrank below ConvIR-B's fixed reflect-padding support; r2 changed only that fixture to 256x256. r2 then exposed a distinct CPU-only binding issue because WDMamba's production selective-scan kernel requires CUDA; r3 bound the same module graph to WDMamba's official reference selective scan only inside the forced-CPU contract. r3 exposed that the existing Transformers compatibility shim must run before importing the reference scan; r4 changes only that import order. Run-phase CUDA inference remains unchanged throughout.
+- Output id: \`r16-s3-domain-matched-action-ceiling-r4\`.
 - Generic runner: unchanged
   \`experience_docx/tools/run_route_operation.sh\`.
 - Runtime spec:

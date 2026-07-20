@@ -340,6 +340,7 @@ def interval_half_width(value: dict[str, float]) -> float:
 def contract(context_path: Path) -> None:
     import numpy as np
     import torch
+    fake_optional_wdmamba_imports()
     from mamba_ssm.ops.selective_scan_interface import selective_scan_ref
 
     context = load_context(context_path, "contract")
