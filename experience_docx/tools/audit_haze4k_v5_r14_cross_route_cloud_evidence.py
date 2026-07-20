@@ -89,7 +89,16 @@ def read_csv(path: Path) -> list[dict[str, str]]:
 
 
 def write_json(path: Path, value: Any) -> None:
-    path.write_text(json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n",
+    def convert(item: Any) -> Any:
+        if isinstance(item, np.integer):
+            return int(item)
+        if isinstance(item, np.floating):
+            return float(item)
+        if isinstance(item, np.ndarray):
+            return item.tolist()
+        raise TypeError(f"unsupported JSON value: {type(item).__name__}")
+
+    path.write_text(json.dumps(value, indent=2, sort_keys=True, allow_nan=False, default=convert) + "\n",
                     encoding="utf-8")
 
 
