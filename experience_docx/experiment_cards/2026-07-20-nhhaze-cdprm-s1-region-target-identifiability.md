@@ -37,6 +37,7 @@ INCONCLUSIVE permits only the written evidence-completion action. The later
 conditional sequence is S2 exact no-op architecture, S3 grouped OOF mechanism
 validation, then one separately sealed real-domain validation; only the
 operation named by the prior typed closeout may be materialized.
+- Same-contract engineering repair: r1 failed in the protected-data-free schema-2 finalizer after all model, region and same-scale bootstrap checks; r2 adds only the required engineering-evidence binding and a fresh output id, with data, models, action, region algorithm, metrics, thresholds, gates and permissions unchanged.
 
 This note and the canonical contract are immutable after launch. Terminal
 interpretation belongs only in the conclusion JSON; the typed closeout remains

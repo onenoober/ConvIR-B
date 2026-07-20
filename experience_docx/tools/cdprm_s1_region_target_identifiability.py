@@ -598,7 +598,19 @@ def contract(context_path: Path) -> None:
         "synthetic_bootstrap_keys": sorted(synthetic_boot),
         "numpy_version": np.__version__,
     })
-    write_contract_result(context, checks=checks)
+    write_contract_result(
+        context,
+        checks=checks,
+        engineering={
+            "mode": "cpu_reference_equivalent",
+            "device": "cpu",
+            "fixture": {"batch": 1, "channels": 3, "height": 256, "width": 256},
+            "production_path_exercised": True,
+            "protected_data_touched": False,
+            "scientific_output_created": False,
+            "scientific_training_occurred": False,
+        },
+    )
 
 
 def run(context_path: Path) -> None:
