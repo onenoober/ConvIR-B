@@ -104,3 +104,16 @@ inspection script through `remote-script`, classify the existing output from
 its status/log/closeout markers, then monitor or repair only from that observed
 state. Any later remote-script invocation must give the desktop shell a timeout
 longer than the bounded inner call.
+
+## 2026-07-20 R14 evidence-sync branch check
+
+Invalid form: require a freshly cloned branch HEAD to equal the earlier project-
+memory commit exactly after the same branch had gained the committed sync
+launcher. The fail-closed check returned `R14_SYNC_BASE_COMMIT_MISMATCH` before
+copying or staging evidence.
+
+Corrected form: in a fresh sync checkout, require the project-memory commit to
+be an ancestor of the cloned audit-branch HEAD, then copy only the fixed compact
+allowlist, validate suffixes and the staged diff, commit once and push the same
+branch. This preserves lineage while allowing the committed launcher itself to
+exist after the project-memory commit.

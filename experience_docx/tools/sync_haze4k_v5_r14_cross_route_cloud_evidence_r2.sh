@@ -5,7 +5,7 @@ ROOT=/sda/home/wangyuxin/ConvIR-B
 BRANCH=codex/haze4k-v5-r14-cross-route-cloud-evidence-audit-20260720
 BASE_COMMIT=2667d59ed5537147818be566d9f2a3d5ec8944b1
 CLOUD=${ROOT}/runs/haze4k_v5_r14_cross_route_cloud_evidence_audit_20260720/r14-cross-route-audit-r2
-REPO=${ROOT}/repos/ConvIR-B-r14-evidence-sync-2667d59ed
+REPO=${ROOT}/repos/ConvIR-B-r14-evidence-sync-r2-2667d59ed
 DEST=${REPO}/experience_docx/experiment_logs/haze4k_v5_r14_cross_route_cloud_evidence_audit_20260720
 FILES=(
   input_identity.json
@@ -28,8 +28,8 @@ if [[ -e "${REPO}" ]]; then
   exit 2
 fi
 /usr/bin/git clone --branch "${BRANCH}" --single-branch git@github.com:onenoober/ConvIR-B.git "${REPO}" >/dev/null 2>&1
-if [[ "$(/usr/bin/git -C "${REPO}" rev-parse HEAD)" != "${BASE_COMMIT}" ]]; then
-  printf 'R14_SYNC_BASE_COMMIT_MISMATCH\n' >&2
+if ! /usr/bin/git -C "${REPO}" merge-base --is-ancestor "${BASE_COMMIT}" HEAD; then
+  printf 'R14_SYNC_BASE_COMMIT_NOT_ANCESTOR\n' >&2
   exit 3
 fi
 for name in "${FILES[@]}"; do
