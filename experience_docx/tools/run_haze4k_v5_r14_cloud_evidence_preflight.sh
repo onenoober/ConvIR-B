@@ -55,4 +55,22 @@ for run in "${R5}" "${R10}" "${R11}" "${R12}" "${R13}"; do
   /usr/bin/tail -n 4 "${run}/status.txt"
 done
 
+R14_ROOT=${ROOT}/runs/haze4k_v5_r14_cross_route_cloud_evidence_audit_20260720
+R14_OUTPUT=${R14_ROOT}/r14-cross-route-audit-r1
+inspect_file r14_status "${R14_OUTPUT}/status.txt"
+inspect_file r14_launcher "${R14_ROOT}/r14-cross-route-audit-r1.launcher.log"
+inspect_file r14_closeout "${R14_OUTPUT}/cloud_audit_closeout.json"
+if [[ -f "${R14_OUTPUT}/status.txt" ]]; then
+  printf 'AUDIT_R14_STATUS_TAIL\n'
+  /usr/bin/tail -n 8 "${R14_OUTPUT}/status.txt"
+fi
+if [[ -f "${R14_ROOT}/r14-cross-route-audit-r1.launcher.log" ]]; then
+  printf 'AUDIT_R14_LAUNCHER_TAIL\n'
+  /usr/bin/tail -n 20 "${R14_ROOT}/r14-cross-route-audit-r1.launcher.log"
+fi
+R14_REPO=${ROOT}/repos/ConvIR-B-r14-cross-route-audit-ca93bbb0e
+if [[ -d "${R14_REPO}/.git" ]]; then
+  printf 'AUDIT_R14_SOURCE_HEAD\t%s\n' "$(/usr/bin/git -C "${R14_REPO}" rev-parse HEAD)"
+fi
+
 printf 'R14_CLOUD_EVIDENCE_PREFLIGHT_OK\n'

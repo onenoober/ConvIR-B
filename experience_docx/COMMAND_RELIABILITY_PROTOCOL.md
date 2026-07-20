@@ -91,3 +91,16 @@ wsl.exe -d Ubuntu-22.04 --exec /usr/bin/git -C /home/ubuntu/workspace/<worktree>
 
 Use fixed WSL argv or `convirctl.py repo-show`; never add a Windows Git
 `safe.directory` exception for a WSL worktree.
+
+## 2026-07-20 R14 remote-script outer timeout
+
+Invalid form: invoking a bounded `convirctl.py remote-script` through a desktop
+shell call whose outer timeout was only five seconds. The outer process ended
+before `convirctl` could return its typed state, so the cloud state became
+unknown even though the inner timeout was 3,600 seconds.
+
+Corrected form: do not relaunch. Commit and run one fixed-path read-only
+inspection script through `remote-script`, classify the existing output from
+its status/log/closeout markers, then monitor or repair only from that observed
+state. Any later remote-script invocation must give the desktop shell a timeout
+longer than the bounded inner call.
