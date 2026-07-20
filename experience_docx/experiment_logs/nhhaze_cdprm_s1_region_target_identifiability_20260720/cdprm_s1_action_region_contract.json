@@ -1,0 +1,55 @@
+{
+  "action_alpha": 0.25,
+  "action_linf_bound": 0.25,
+  "action_semantics": "A0_NH plus 0.25 times frozen WDMamba_NH minus A0_NH residual",
+  "demand_gain_db": 0.005,
+  "demand_protection_conflict": {
+    "events": 50,
+    "lcb95": 0.9288782635358024,
+    "point": 1.0,
+    "total": 50,
+    "ucb95": 1.0
+  },
+  "descriptive_area_fractions": {
+    "conflict_area_fraction": {
+      "maximum": 0.4017333388328552,
+      "mean": 0.15393066711723805,
+      "median": 0.14400000125169754,
+      "minimum": 0.026133334264159203
+    },
+    "demand_area_fraction": {
+      "maximum": 0.9692000150680542,
+      "mean": 0.5255333337187768,
+      "median": 0.4950000047683716,
+      "minimum": 0.20200000703334808
+    },
+    "protection_area_fraction": {
+      "maximum": 0.9047999978065491,
+      "mean": 0.4548720006644726,
+      "median": 0.4557333439588547,
+      "minimum": 0.047066666185855865
+    },
+    "safe_area_fraction": {
+      "maximum": 0.7293333411216736,
+      "mean": 0.37160266503691675,
+      "median": 0.35179999470710754,
+      "minimum": 0.029066666960716248
+    }
+  },
+  "nominal_region_iterations": 5,
+  "nominal_region_resolution": [
+    75,
+    100
+  ],
+  "nonzero_safe_coverage": {
+    "events": 50,
+    "lcb95": 0.9288782635358024,
+    "point": 1.0,
+    "total": 50,
+    "ucb95": 1.0
+  },
+  "protection_harm_ratio": 1.01,
+  "region_count": 64,
+  "schema_version": 1,
+  "spatial_weight": 0.2
+}

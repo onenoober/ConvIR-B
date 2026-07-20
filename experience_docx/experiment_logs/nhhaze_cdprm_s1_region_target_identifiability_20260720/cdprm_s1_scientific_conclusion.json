@@ -1,0 +1,22 @@
+{
+  "authorizes": "CDPRM_S1_REFORMULATION_REVIEW_ONLY",
+  "competing_explanation": "The result is a GT-privileged target-definition screen for one proxy action; it cannot establish learnability or that content-adaptive regions alone cause downstream improvement.",
+  "decision": "CDPRM_S1_REGION_OR_TARGET_FAIL_STOP",
+  "gate_reasons": [
+    "Failed frozen gates: ['protection_stability', 'safe_mask_stability'].",
+    "Adaptive-minus-fixed interval: {'point': 0.0003660193619613202, 'lcb95': -0.0010277862327800957, 'ucb95': 0.0018693571126242314}.",
+    "Adaptive-minus-global and shuffle intervals: {'point': 0.05008424610267961, 'lcb95': 0.034483614936982834, 'ucb95': 0.06576534756084348} and {'point': 0.11369168819532248, 'lcb95': 0.09744325557309182, 'ucb95': 0.13297500309220892}.",
+    "Demand/protection/safe stability intervals: {'point': 0.7447289073467255, 'lcb95': 0.719426261395216, 'ucb95': 0.7700771790444851}, {'point': 0.6822428613901138, 'lcb95': 0.6525400321632624, 'ucb95': 0.7100393156409264}, {'point': 0.6291214847564697, 'lcb95': 0.587258955642581, 'ucb95': 0.6662463183701038}."
+  ],
+  "limitations": [
+    "All 50 images overlap checkpoint training and are not external validation.",
+    "The frozen action is one 0.25 endpoint interpolation and does not qualify other actions.",
+    "Demand and protection use paired GT and are unavailable at inference.",
+    "PASS authorizes only a separate zero-initialized architecture contract, not training."
+  ],
+  "operation_id": "CDPRM_S1_REGION_TARGET_IDENTIFIABILITY",
+  "primary_result": "CDP-RM S1 ended COMPLETED_GATE_FAIL: adaptive safe-region gain 0.130810 dB (LCB95 0.101135, UCB95 0.165521), with interval half-width 0.032193 dB.",
+  "route_id": "nhhaze_cdprm_s1_region_target_identifiability_20260720",
+  "run_id": "cdprm-s1-region-target-identifiability-r2",
+  "schema_version": 1
+}

@@ -1,0 +1,10 @@
+{
+  "bootstrap_draws": 4000,
+  "independent_image_groups": 50,
+  "maximum_resident_set_mib": 1858.01953125,
+  "model_forward_images": 150,
+  "peak_gpu_memory_mib": 3187.76123046875,
+  "schema_version": 1,
+  "training_occurred": false,
+  "wall_seconds": 433.2482907054946
+}

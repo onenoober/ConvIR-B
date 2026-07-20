@@ -1,0 +1,32 @@
+{
+  "demand_jaccard": {
+    "lcb95": 0.719426261395216,
+    "point": 0.7447289073467255,
+    "ucb95": 0.7700771790444851
+  },
+  "demand_protection_conflict": {
+    "events": 50,
+    "lcb95": 0.9288782635358024,
+    "point": 1.0,
+    "total": 50,
+    "ucb95": 1.0
+  },
+  "nonzero_coverage": {
+    "events": 50,
+    "lcb95": 0.9288782635358024,
+    "point": 1.0,
+    "total": 50,
+    "ucb95": 1.0
+  },
+  "protection_jaccard": {
+    "lcb95": 0.6525400321632624,
+    "point": 0.6822428613901138,
+    "ucb95": 0.7100393156409264
+  },
+  "safe_jaccard": {
+    "lcb95": 0.587258955642581,
+    "point": 0.6291214847564697,
+    "ucb95": 0.6662463183701038
+  },
+  "schema_version": 1
+}

@@ -1,0 +1,21 @@
+{
+  "canary_touched": false,
+  "checkpoint_selected": false,
+  "confirmation_touched": false,
+  "data_role": "development_screening_checkpoint_training_overlap",
+  "eligible_as_external_validation": false,
+  "gt_first_open_after_complete_replay": true,
+  "ids_51_55_opened_or_listed": false,
+  "locked_test_touched": false,
+  "pass1_image_count": 50,
+  "pass1_manifest_sha256": "a403965ae96bd2a1d75de5592824c57c995dbbb59167c31768a649c978befc33",
+  "pass2_replay_failures": [],
+  "pass3_replay_failures": [],
+  "population_manifest_sha256": "6b8e9de70250142c946164ace680c8b71f8a83ba4b9504117dc346eaf6151a4f",
+  "r16_closeout_sha256": "a993f738d399e42bbd88101bdaeadcd4ea6f86e457be4dd5f5813157457c15d4",
+  "route_commit": "14ea9d2b1658315cf3ea995484fe1545ba4e6963",
+  "sample_excluded": false,
+  "schema_version": 1,
+  "threshold_selected": false,
+  "training_occurred": false
+}

@@ -1,0 +1,121 @@
+{
+  "authorizes": "CDPRM_S1_REFORMULATION_REVIEW_ONLY",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "CDPRM_S1_REGION_OR_TARGET_FAIL_STOP",
+  "details": {
+    "adaptive_gain_db": 0.13081000555982444,
+    "adaptive_gain_lcb95_db": 0.10113474198488934,
+    "adaptive_minus_fixed_lcb95_db": -0.0010277862327800957,
+    "adaptive_minus_shuffle_lcb95_db": 0.09744325557309182,
+    "external_validation_claimed": false,
+    "hard_images": 0,
+    "safe_jaccard_lcb95": 0.587258955642581,
+    "severe_images": 0,
+    "training_occurred": false
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "cdprm_s1_action_region_contract.json": "2a9dd39316c0327ec913b1fc6359bee86a297fa01f1e7e07ac2a79a29371603b",
+    "cdprm_s1_bootstrap_summary.json": "f37dd430e6d3d146e68668f4c740d14eea17934535037e766f42f42bbf1b9a19",
+    "cdprm_s1_gate_summary.json": "cc47900dca47fbccdef6524f4f4523bd39eddedbb15394c85daa33283c83e8b4",
+    "cdprm_s1_identity_and_access.json": "c45815d0b86bfeedacf7d22ee23d36e551e122628fd89f7a8b37ce730e008a94",
+    "cdprm_s1_resource_summary.json": "6949bfbea33ab91dcd245f12f8a90157cd8211320202c7197f39807a74592be0",
+    "cdprm_s1_scientific_conclusion.json": "7fb97ca21da549d2c14cf5a9bd880494d91b72195c1b451ab12d08578e3875b0",
+    "cdprm_s1_stability_summary.json": "0041d854eedad04831e500ffa6e1449d0997c777185dbd90d61ef7a8124de22d"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "CDPRM_S1_REGION_TARGET_IDENTIFIABILITY",
+  "returncode": 0,
+  "route_commit": "14ea9d2b1658315cf3ea995484fe1545ba4e6963",
+  "route_id": "nhhaze_cdprm_s1_region_target_identifiability_20260720",
+  "run_id": "cdprm-s1-region-target-identifiability-r2",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "a0_nhhaze_checkpoint",
+      "kind": "file",
+      "sha256": "aab6a72613781900a23c3922ad2dd60f6b0d563018e33ae75162bcf3338f5bac"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "nhhaze_data",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "population_manifest",
+      "kind": "file",
+      "sha256": "6b8e9de70250142c946164ace680c8b71f8a83ba4b9504117dc346eaf6151a4f"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "r16_closeout",
+      "kind": "file",
+      "sha256": "a993f738d399e42bbd88101bdaeadcd4ea6f86e457be4dd5f5813157457c15d4"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "wdmamba_arch_source",
+      "kind": "file",
+      "sha256": "8cda6ae6aefc7d89793611d45d72a9df8a48beae9aed26d7b40a72a51efb48bd"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "wdmamba_denet_source",
+      "kind": "file",
+      "sha256": "c932f2efb3fdb857b401eff47774139f5625f0ac7f8458e5876369c8b3eabbf9"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "wdmamba_nhhaze_checkpoint",
+      "kind": "file",
+      "sha256": "e097524f466b24f32843867911f9cbd47be8d51e61e5e345f8a27c22c73d5c5a"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "wdmamba_registry_source",
+      "kind": "file",
+      "sha256": "21c23bd3bf727eb2decd99035120fc47316db92486d73116cca18e9fa8b6c854"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "wdmamba_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "wdmamba_ublock_source",
+      "kind": "file",
+      "sha256": "5ad2c9d372c5bdf318bf203e0761e44f3802894338bd2ef4fc66b5878ac8c8ff"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "wdmamba_wavelet_source",
+      "kind": "file",
+      "sha256": "3ec4506afd8914998d592d4022ca81ed259e364a27fdc88167f79634475ace7f"
+    }
+  ]
+}

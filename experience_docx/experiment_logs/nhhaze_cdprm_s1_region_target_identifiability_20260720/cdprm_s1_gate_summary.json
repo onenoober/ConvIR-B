@@ -1,0 +1,34 @@
+{
+  "authorizes": "CDPRM_S1_REFORMULATION_REVIEW_ONLY",
+  "decision": "CDPRM_S1_REGION_OR_TARGET_FAIL_STOP",
+  "decisive_fail": true,
+  "gates": {
+    "adaptive_materiality": true,
+    "demand_stability": true,
+    "dual_target_necessity": true,
+    "fixed_grid_noninferiority": true,
+    "nonzero_coverage": true,
+    "precision": true,
+    "protection_stability": false,
+    "regional_specificity": true,
+    "safe_mask_stability": false,
+    "spatial_specificity": true,
+    "tail_safety": true,
+    "zero_severe_hard": true
+  },
+  "hard_images": 0,
+  "primary_ci_half_width_db": 0.0321932746108322,
+  "schema_version": 1,
+  "severe_images": 0,
+  "state": "COMPLETED_GATE_FAIL",
+  "structural_checks": {
+    "full_replay_before_gt": true,
+    "population_complete": true,
+    "population_exact_01_50": true,
+    "protected_ids_51_55_untouched": true,
+    "protected_roles_untouched": true,
+    "r16_authorization_exact": true,
+    "scoring_replay_exact": true,
+    "training_absent": true
+  }
+}
