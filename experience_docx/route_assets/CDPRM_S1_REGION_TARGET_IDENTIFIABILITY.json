@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "route_id": "nhhaze_cdprm_s1_region_target_identifiability_20260720",
+  "operation_id": "CDPRM_S1_REGION_TARGET_IDENTIFIABILITY",
+  "assets": [
+    {"id": "r16_closeout", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720/r16_s3_domain_matched_action_ceiling_closeout.json", "sha256": "a993f738d399e42bbd88101bdaeadcd4ea6f86e457be4dd5f5813157457c15d4", "access_role": "development_screening", "contract_access": true},
+    {"id": "population_manifest", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/route_assets_data/CDPRM_S1_NHHAZE_DEVELOPMENT_IDS.json", "sha256": "6b8e9de70250142c946164ace680c8b71f8a83ba4b9504117dc346eaf6151a4f", "access_role": "development_screening", "contract_access": true},
+    {"id": "nhhaze_data", "kind": "directory", "path": "/sda/home/wangyuxin/ConvIR-B/datasets/NH-HAZE", "access_role": "development_screening", "contract_access": false},
+    {"id": "official_anchor", "kind": "git_checkout", "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor", "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898", "require_clean": true, "access_role": "development_screening", "contract_access": true},
+    {"id": "a0_nhhaze_checkpoint", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/nhhaze-base.pkl", "sha256": "aab6a72613781900a23c3922ad2dd60f6b0d563018e33ae75162bcf3338f5bac", "access_role": "development_screening", "contract_access": true},
+    {"id": "wdmamba_nhhaze_checkpoint", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/WDMamba_ckpts/NH_20.83.pth", "sha256": "e097524f466b24f32843867911f9cbd47be8d51e61e5e345f8a27c22c73d5c5a", "access_role": "development_screening", "contract_access": true},
+    {"id": "wdmamba_root", "kind": "directory", "path": "/sda/home/wangyuxin/ConvIR-B/repos/external_experts/WDMamba", "access_role": "development_screening", "contract_access": true},
+    {"id": "wdmamba_registry_source", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/external_experts/WDMamba/basicsr/utils/registry.py", "sha256": "21c23bd3bf727eb2decd99035120fc47316db92486d73116cca18e9fa8b6c854", "access_role": "development_screening", "contract_access": true},
+    {"id": "wdmamba_ublock_source", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/external_experts/WDMamba/basicsr/archs/Ublock.py", "sha256": "5ad2c9d372c5bdf318bf203e0761e44f3802894338bd2ef4fc66b5878ac8c8ff", "access_role": "development_screening", "contract_access": true},
+    {"id": "wdmamba_denet_source", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/external_experts/WDMamba/basicsr/archs/detail_enhance_net.py", "sha256": "c932f2efb3fdb857b401eff47774139f5625f0ac7f8458e5876369c8b3eabbf9", "access_role": "development_screening", "contract_access": true},
+    {"id": "wdmamba_wavelet_source", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/external_experts/WDMamba/basicsr/archs/wavelet.py", "sha256": "3ec4506afd8914998d592d4022ca81ed259e364a27fdc88167f79634475ace7f", "access_role": "development_screening", "contract_access": true},
+    {"id": "wdmamba_arch_source", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/external_experts/WDMamba/basicsr/archs/wavemamba_arch.py", "sha256": "8cda6ae6aefc7d89793611d45d72a9df8a48beae9aed26d7b40a72a51efb48bd", "access_role": "development_screening", "contract_access": true}
+  ]
+}

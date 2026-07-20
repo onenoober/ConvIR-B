@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "certificate_id": "cdprm_s1_primary_gain_precision",
+  "estimand": "mean adaptive safe-region PSNR gain over A0 no-op",
+  "method": "normal_mean",
+  "confidence_level": 0.95,
+  "target_half_width": 0.07,
+  "planning_sd": 0.24,
+  "independent_groups_available": 50,
+  "independent_groups_required": 46,
+  "feasible": true,
+  "source_role": "development_screening",
+  "source_reference": "Conservative planning SD from the archived R16 NH-HAZE image-bootstrap region-gain interval; no CDP-RM outcome was observed."
+}

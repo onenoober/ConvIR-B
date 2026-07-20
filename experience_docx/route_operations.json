@@ -1,0 +1,32 @@
+{
+  "schema_version": 5,
+  "route_id": "nhhaze_cdprm_s1_region_target_identifiability_20260720",
+  "rules_commit": "e1215f0f37330ca281c8570e26debea4c33b757e",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-20-nhhaze-cdprm-s1-region-target-identifiability.md",
+  "scientific_contract_relpaths": {
+    "CDPRM_S1_REGION_TARGET_IDENTIFIABILITY": "experience_docx/scientific_contracts/CDPRM_S1_REGION_TARGET_IDENTIFIABILITY.json"
+  },
+  "operations": {
+    "CDPRM_S1_REGION_TARGET_IDENTIFIABILITY": {
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "mode": "cdprm_s1_region_target_identifiability",
+      "require_gpu": true,
+      "output_id": "cdprm-s1-region-target-identifiability-r1",
+      "closeout_filename": "cdprm_s1_region_target_identifiability_closeout.json",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "allowed_terminal_tuples": [
+        {"state": "COMPLETED_GATE_PASS", "decision": "CDPRM_S1_REGION_TARGET_IDENTIFIABILITY_PASS", "authorizes": "CDPRM_S2_NOOP_ARCHITECTURE_CONTRACT_ONLY"},
+        {"state": "COMPLETED_GATE_FAIL", "decision": "CDPRM_S1_REGION_OR_TARGET_FAIL_STOP", "authorizes": "CDPRM_S1_REFORMULATION_REVIEW_ONLY"},
+        {"state": "COMPLETED_INCONCLUSIVE", "decision": "CDPRM_S1_EVIDENCE_INCONCLUSIVE_STOP", "authorizes": "CDPRM_S1_EVIDENCE_COMPLETION_ONLY"},
+        {"state": "FAILED_ENGINEERING", "decision": null, "authorizes": "NONE"}
+      ],
+      "workspace_policy": "fresh_route",
+      "output_policy": "new",
+      "monitor_profile": "standard",
+      "heartbeat_timeout_seconds": 900,
+      "min_free_gpu_mib": 16000,
+      "max_gpu_utilization_pct": 20
+    }
+  }
+}

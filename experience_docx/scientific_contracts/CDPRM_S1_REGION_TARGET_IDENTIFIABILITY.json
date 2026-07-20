@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "route_id": "nhhaze_cdprm_s1_region_target_identifiability_20260720",
+  "operation_id": "CDPRM_S1_REGION_TARGET_IDENTIFIABILITY",
+  "question": "Does a frozen content-adaptive 64-region unit with one nonnegative bounded domain-matched action yield stable, material and protection-aware regional targets beyond fixed-grid and spatial controls?",
+  "population": {
+    "evidence_role": "development_screening",
+    "grouping_unit": "nhhaze_image",
+    "independent_group_count": 50,
+    "allow_confirmation": false,
+    "allow_canary": false,
+    "allow_locked_test": false
+  },
+  "intervention": {
+    "primary_variable": "region_unit_identity",
+    "reference": "fixed floor-boundary 8x8 regions",
+    "matched_budget": "64 regions, identical A0_NH baseline, identical 0.25*(WDMamba_NH-A0_NH) action, identical demand/protection thresholds and controls",
+    "fixed_factors": [
+      "NH-HAZE ids 01-50 only",
+      "A0 and WDMamba checkpoint identities",
+      "action alpha 0.25",
+      "64 regions",
+      "five deterministic region iterations",
+      "demand gain 0.005 dB",
+      "gradient/chroma harm ratio 1.01",
+      "16 exact-area spatial shifts",
+      "4000 image bootstrap draws seed 3407"
+    ]
+  },
+  "primary_estimand": {
+    "id": "adaptive_safe_region_gain",
+    "metric": "paired image-mean PSNR gain of the GT-privileged demand-and-not-protection adaptive-region oracle over A0 no-op",
+    "direction": "higher",
+    "aggregation": "image-grouped mean with paired bootstrap percentile interval",
+    "unit": "image"
+  },
+  "controls": [
+    "A0 no-op",
+    "same-action safe whole-image oracle",
+    "matched 64-region fixed 8x8 oracle",
+    "16 exact-active-area toroidal spatial shifts",
+    "predeclared quantized-and-offset adaptive-region perturbation"
+  ],
+  "uncertainty": {
+    "method": "4000-draw paired image bootstrap plus exact Clopper-Pearson image-fraction intervals",
+    "confidence_level": 0.95,
+    "independent_unit": "NH-HAZE image"
+  },
+  "gates": [
+    {"id": "adaptive_materiality", "type": "materiality", "estimand": "adaptive safe-region gain LCB95 dB", "direction": "min", "threshold": 0.02, "decision_role": "decisive"},
+    {"id": "spatial_specificity", "type": "materiality", "estimand": "adaptive minus spatial-shuffle LCB95 dB", "direction": "min", "threshold": 0.005, "decision_role": "decisive"},
+    {"id": "regional_specificity", "type": "materiality", "estimand": "adaptive minus safe-global LCB95 dB", "direction": "min", "threshold": 0.005, "decision_role": "decisive"},
+    {"id": "fixed_grid_noninferiority", "type": "materiality", "estimand": "adaptive minus fixed-grid LCB95 dB", "direction": "min", "threshold": -0.005, "decision_role": "decisive"},
+    {"id": "demand_stability", "type": "materiality", "estimand": "nominal-versus-perturbed demand-mask image-mean Jaccard LCB95", "direction": "min", "threshold": 0.7, "decision_role": "decisive"},
+    {"id": "protection_stability", "type": "materiality", "estimand": "nominal-versus-perturbed protection-mask image-mean Jaccard LCB95", "direction": "min", "threshold": 0.7, "decision_role": "decisive"},
+    {"id": "safe_mask_stability", "type": "materiality", "estimand": "nominal-versus-perturbed safe-mask image-mean Jaccard LCB95", "direction": "min", "threshold": 0.7, "decision_role": "decisive"},
+    {"id": "nonzero_coverage", "type": "coverage", "estimand": "fraction of images with at least 1 percent safe active area LCB95", "direction": "min", "threshold": 0.5, "decision_role": "decisive"},
+    {"id": "dual_target_necessity", "type": "coverage", "estimand": "fraction of images containing at least one demand-and-protection conflict region LCB95", "direction": "min", "threshold": 0.1, "decision_role": "decisive"},
+    {"id": "tail_safety", "type": "safety", "estimand": "adaptive safe-region CVaR5 gain LCB95 dB", "direction": "min", "threshold": -0.005, "decision_role": "decisive"},
+    {"id": "zero_severe_hard", "type": "safety", "estimand": "adaptive safe-region severe and hard image counts", "direction": "equal", "threshold": 0, "decision_role": "decisive"},
+    {"id": "precision", "type": "precision", "estimand": "primary gain interval half-width dB", "direction": "max", "threshold": 0.07, "decision_role": "decisive"}
+  ],
+  "competing_explanation": "Any apparent advantage may come from GT-privileged action selection or one frozen proxy action rather than an intrinsically better region unit; PASS therefore authorizes only no-op architecture qualification, not training or a deployable claim.",
+  "terminal_mapping": {
+    "pass": {"state": "COMPLETED_GATE_PASS", "decision": "CDPRM_S1_REGION_TARGET_IDENTIFIABILITY_PASS", "authorizes": "CDPRM_S2_NOOP_ARCHITECTURE_CONTRACT_ONLY"},
+    "fail": {"state": "COMPLETED_GATE_FAIL", "decision": "CDPRM_S1_REGION_OR_TARGET_FAIL_STOP", "authorizes": "CDPRM_S1_REFORMULATION_REVIEW_ONLY"},
+    "inconclusive": {"state": "COMPLETED_INCONCLUSIVE", "decision": "CDPRM_S1_EVIDENCE_INCONCLUSIVE_STOP", "authorizes": "CDPRM_S1_EVIDENCE_COMPLETION_ONLY"}
+  },
+  "disabled_actions": [
+    "model training or fitting",
+    "region-count, action-alpha, checkpoint or threshold search",
+    "old selector/critic/context continuation",
+    "NH-HAZE ids 51-55 access",
+    "confirmation, canary or locked-test access",
+    "external-validation or deployment claim",
+    "treating privileged oracle headroom as learnability"
+  ]
+}

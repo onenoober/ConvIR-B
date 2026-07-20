@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "route_id": "nhhaze_cdprm_s1_region_target_identifiability_20260720",
+  "operation_id": "CDPRM_S1_REGION_TARGET_IDENTIFIABILITY",
+  "entrypoint_relpath": "experience_docx/tools/cdprm_s1_region_target_identifiability.py",
+  "asset_manifest_relpath": "experience_docx/route_assets/CDPRM_S1_REGION_TARGET_IDENTIFIABILITY.json",
+  "timeout_seconds": 3600,
+  "expected_wall_seconds": 1200,
+  "total_units": 4150,
+  "evidence_role": "development_screening",
+  "resume_policy": "none",
+  "protected_data_permissions": {
+    "allow_confirmation": false,
+    "allow_canary": false,
+    "allow_locked_test": false
+  },
+  "environment": {
+    "CONVIR_ROUTE_ACTION_ALPHA": "0.25",
+    "CONVIR_ROUTE_REGION_COUNT": "64",
+    "CONVIR_ROUTE_REGION_ITERATIONS": "5",
+    "CONVIR_ROUTE_DEMAND_GAIN_DB": "0.005",
+    "CONVIR_ROUTE_HARM_RATIO": "1.01",
+    "CONVIR_ROUTE_SHUFFLE_REPLICATES": "16",
+    "CONVIR_ROUTE_BOOTSTRAP_DRAWS": "4000",
+    "CONVIR_ROUTE_BOOTSTRAP_SEED": "3407"
+  },
+  "evidence_files": [
+    {"source_relpath": "workload/cdprm_s1_identity_and_access.json", "destination_filename": "cdprm_s1_identity_and_access.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/cdprm_s1_action_region_contract.json", "destination_filename": "cdprm_s1_action_region_contract.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/cdprm_s1_bootstrap_summary.json", "destination_filename": "cdprm_s1_bootstrap_summary.json", "required": true, "max_bytes": 262144},
+    {"source_relpath": "workload/cdprm_s1_stability_summary.json", "destination_filename": "cdprm_s1_stability_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/cdprm_s1_gate_summary.json", "destination_filename": "cdprm_s1_gate_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/cdprm_s1_resource_summary.json", "destination_filename": "cdprm_s1_resource_summary.json", "required": true, "max_bytes": 131072},
+    {"source_relpath": "workload/cdprm_s1_scientific_conclusion.json", "destination_filename": "cdprm_s1_scientific_conclusion.json", "required": true, "max_bytes": 262144}
+  ],
+  "engineering_contract": {
+    "mode": "cpu_reference_equivalent",
+    "capability_profile_relpath": "experience_docx/model_capabilities/CDPRM_S1_REGION_TARGET_IDENTIFIABILITY.json",
+    "max_seconds": 900
+  },
+  "precision_contract": {
+    "mode": "formal_precision",
+    "certificate_relpath": "experience_docx/precision_certificates/CDPRM_S1_REGION_TARGET_IDENTIFIABILITY.json",
+    "rationale": "Pre-run independent-image precision feasibility derived conservatively from archived R16 uncertainty."
+  }
+}

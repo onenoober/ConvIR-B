@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "profile_id": "cdprm_s1_cpu_reference_models",
+  "contract_mode": "cpu_reference_equivalent",
+  "minimum_fixture": {"batch": 1, "channels": 3, "height": 256, "width": 256},
+  "bound_assets": [
+    {"id": "official_anchor", "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"},
+    {"id": "a0_nhhaze_checkpoint", "identity": "aab6a72613781900a23c3922ad2dd60f6b0d563018e33ae75162bcf3338f5bac"},
+    {"id": "wdmamba_nhhaze_checkpoint", "identity": "e097524f466b24f32843867911f9cbd47be8d51e61e5e345f8a27c22c73d5c5a"},
+    {"id": "wdmamba_registry_source", "identity": "21c23bd3bf727eb2decd99035120fc47316db92486d73116cca18e9fa8b6c854"},
+    {"id": "wdmamba_ublock_source", "identity": "5ad2c9d372c5bdf318bf203e0761e44f3802894338bd2ef4fc66b5878ac8c8ff"},
+    {"id": "wdmamba_denet_source", "identity": "c932f2efb3fdb857b401eff47774139f5625f0ac7f8458e5876369c8b3eabbf9"},
+    {"id": "wdmamba_wavelet_source", "identity": "3ec4506afd8914998d592d4022ca81ed259e364a27fdc88167f79634475ace7f"},
+    {"id": "wdmamba_arch_source", "identity": "8cda6ae6aefc7d89793611d45d72a9df8a48beae9aed26d7b40a72a51efb48bd"}
+  ],
+  "compatibility_imports": [
+    "Transformers generation-output compatibility shim before mamba_ssm selective_scan_ref import",
+    "WDMamba official selective_scan_ref bound only during CPU engineering contract"
+  ],
+  "production_path_statement": "The contract constructs the exact frozen ConvIR-B NH and WDMamba NH module graphs, loads their exact checkpoints, runs the same bounded endpoint-interpolation action, and executes the same 64-region algorithm plus 50-group/4000-draw finalizer on protected-data-free inputs. CUDA production inference remains unchanged.",
+  "protected_data_prohibited": true,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}
