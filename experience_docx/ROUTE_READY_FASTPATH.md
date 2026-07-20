@@ -1,6 +1,6 @@
 # Route-Ready Fast Path
 
-Date: 2026-07-17
+Date: 2026-07-20
 
 Status: generic runtime adopted after the CPU-only r2 E2E closeout in
 `experiment_cards/2026-07-17-route-ready-fastpath-validation.md`. The
@@ -15,16 +15,17 @@ generic runtime bundle remain unchanged.
 
 For a new route, create only:
 
-1. one launch-ready route card;
-2. one schema-v4 `route_operations.json`;
-3. one runtime spec per listed operation under `route_runtime_specs/`;
-4. one Python entrypoint implementing `contract --context <json>` and
+1. one schema-v1 canonical scientific JSON under `scientific_contracts/`;
+2. one <=8 KiB rationale/pointer route note;
+3. one schema-v5 `route_operations.json`;
+4. one runtime schema-v2 spec per listed operation under `route_runtime_specs/`;
+5. one Python entrypoint implementing `contract --context <json>` and
    `run --context <json>`;
-5. one typed asset manifest under `route_assets/` only when external assets are
+6. one typed asset manifest under `route_assets/` only when external assets are
    required.
 
-Do not create an evidence README. The route card is the immutable launch-time
-contract. Terminal interpretation belongs only in the science-fastpath
+Do not create an evidence README. The canonical JSON is the immutable machine
+scientific contract; the route note owns rationale only. Terminal interpretation belongs only in the science-fastpath
 conclusion JSON, while the typed closeout and formal result files own machine
 evidence.
 
@@ -54,8 +55,8 @@ python3 experience_docx/tools/validate_route_ready.py \
 ```
 
 The gate rejects unstaged or untracked input. It invokes the exact MCP
-`parse_manifest`, validates every operation in the manifest, runs the existing
-launch-ready card validator, compares the generic runtime bundle byte-for-byte
+`parse_manifest`, validates every operation and canonical contract, checks the
+short route note, compares the generic runtime bundle byte-for-byte
 with current GitHub main, compiles Python/Bash syntax, validates runtime/asset
 schemas, checks the entrypoint interface, and proves that all published
 evidence and closeout filenames are route-wide unique.
@@ -72,7 +73,7 @@ returned operation/output identity with zero mismatches, then one immediate
 `convir_route_start` when start authorization is already `YES`. Do not insert
 `convir_git_status` between push and plan by default; reserve it for an
 uncertain checkout, a reopened task, or an evidence-sync worktree. Runtime
-identity, cloud paths, resources, assets, CPU-only contract execution,
+identity, cloud paths, resources, assets, device-aware no-data contract execution,
 telemetry, timeout, evidence publication, and typed closeout are owned by MCP
 plus the generic lifecycle. Do not repeat those checks manually. Observe at
 the frozen expected end with `convir_route_finish`; an active healthy run needs
@@ -87,10 +88,8 @@ returns the original launch receipt, proves a clean unchanged retry, or stops
 as ambiguous.
 
 From Windows, use fixed WSL argv such as `wsl.exe --exec /usr/bin/git -C
-<absolute-wsl-path> ...`; do not use nested `bash -lc` quoting. Read the known
-index, family summary, route card, and route evidence directory directly. Do
-not run broad repository searches when those authoritative paths already
-identify the required files.
+<absolute-wsl-path> ...`; do not use nested `bash -lc` quoting. Use the compact
+authoritative snapshot first and read only its referenced files.
 
 `--bootstrap-runtime-bundle` is valid only for the first infrastructure branch
 that introduces this bundle. It still requires every already-present main file
@@ -109,7 +108,9 @@ the CPU contract. Confirmation, canary, and sealed-final assets can never be
 exposed to that phase, and their run-phase delivery requires the matching
 runtime permission.
 
-`contract(context_path)` is CPU-only, runs before expensive work, must validate
+`contract(context_path)` is protected-data-free and runs before expensive work.
+It uses `metadata_only`, `cpu_exact`, `cpu_reference_equivalent`, or
+`gpu_synthetic_no_data` from an identity-bound capability profile, and must validate
 the entrypoint's synthetic output/finalizer contract, and cannot create
 `workload/` or touch confirmation, canary, or locked-test data. `run(context_path)`
 owns only route science and writes one typed run result. The generic lifecycle

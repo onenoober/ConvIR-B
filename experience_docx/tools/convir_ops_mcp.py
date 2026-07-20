@@ -17,6 +17,15 @@ import uuid
 from contextlib import contextmanager
 from pathlib import Path
 
+from route_runtime_contract import (
+    ContractError as RuntimeContractError,
+    runtime_spec_relpath,
+    validate_asset_manifest,
+    validate_model_capability,
+    validate_precision_certificate,
+    validate_runtime_spec,
+)
+
 
 SERVER_NAME = "convir-ops"
 SERVER_VERSION = "5.0.0"
@@ -327,6 +336,68 @@ def validate_scientific_contract(value, route_id, operation_id, operation):
     return value
 
 
+def validate_contract_runtime_alignment(contract, spec, precision=None):
+    population = contract["population"]
+    if population["evidence_role"] != spec["evidence_role"]:
+        raise ToolError("scientific/runtime evidence roles differ")
+    permissions = {
+        "allow_confirmation": population["allow_confirmation"],
+        "allow_canary": population["allow_canary"],
+        "allow_locked_test": population["allow_locked_test"],
+    }
+    if permissions != spec["protected_data_permissions"]:
+        raise ToolError("scientific/runtime protected permissions differ")
+    if precision is not None \
+            and population["independent_group_count"] != precision["independent_groups_available"]:
+        raise ToolError("scientific/precision independent group counts differ")
+
+
+def validate_committed_operation_bundle(bare_repo, route_commit, manifest,
+                                        operation_id, context):
+    try:
+        spec_path = runtime_spec_relpath(operation_id)
+        spec_raw = git_show(bare_repo, route_commit, spec_path)
+        spec = validate_runtime_spec(json.loads(spec_raw), manifest, operation_id)
+        if context["route_manifest_schema_version"] == 5 and spec["schema_version"] != 2:
+            raise ToolError("canonical manifest requires runtime schema 2")
+        asset = None
+        if spec["asset_manifest_relpath"] is not None:
+            asset = validate_asset_manifest(
+                json.loads(git_show(bare_repo, route_commit, spec["asset_manifest_relpath"])),
+                spec,
+            )
+        capability = None
+        capability_path = spec["engineering_contract"]["capability_profile_relpath"]
+        if capability_path is not None:
+            capability = validate_model_capability(
+                json.loads(git_show(bare_repo, route_commit, capability_path)), spec, asset,
+            )
+        precision = None
+        precision_path = spec["precision_contract"]["certificate_relpath"]
+        if precision_path is not None:
+            precision = validate_precision_certificate(
+                json.loads(git_show(bare_repo, route_commit, precision_path)), spec,
+            )
+        if context["route_manifest_schema_version"] == 5:
+            contract = validate_scientific_contract(
+                json.loads(git_show(
+                    bare_repo, route_commit, context["scientific_contract_relpath"],
+                )),
+                manifest["route_id"], operation_id, manifest["operations"][operation_id],
+            )
+            validate_contract_runtime_alignment(contract, spec, precision)
+        context.update({
+            "runtime_spec_digest": hashlib.sha256(spec_raw.encode()).hexdigest(),
+            "engineering_contract_mode": spec["engineering_contract"]["mode"],
+            "precision_mode": spec["precision_contract"]["mode"],
+            "capability_profile_id": None if capability is None else capability["profile_id"],
+            "precision_certificate_id": None if precision is None else precision["certificate_id"],
+        })
+        return spec
+    except (RuntimeContractError, json.JSONDecodeError) as exc:
+        raise ToolError(f"committed operation bundle is invalid: {exc}") from exc
+
+
 def q(value):
     return shlex.quote(str(value))
 
@@ -622,7 +693,7 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
         "schema_version", "route_id", "rules_commit",
         "route_card_relpath", "operations",
     }
-    current_top = legacy_top | {"scientific_contract_relpath"}
+    current_top = legacy_top | {"scientific_contract_relpaths"}
     if not isinstance(value, dict) or value.get("schema_version") not in SUPPORTED_MANIFEST_SCHEMA_VERSIONS:
         raise ToolError("route operations manifest has an unsupported schema")
     manifest_schema = value["schema_version"]
@@ -640,8 +711,11 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
     scientific_contract_blob = None
     scientific_contract_value = None
     if manifest_schema == 5:
+        contract_paths = value["scientific_contract_relpaths"]
+        if not isinstance(contract_paths, dict) or set(contract_paths) != set(value["operations"]):
+            raise ToolError("scientific contract paths must map every operation exactly")
         scientific_contract = require_relpath(
-            value["scientific_contract_relpath"], "scientific_contract_relpath", ".json",
+            contract_paths[operation_id], "scientific_contract_relpaths operation", ".json",
             prefix="experience_docx/scientific_contracts/",
         )
         scientific_contract_blob = blob_sha(bare_repo, route_commit, scientific_contract)
@@ -790,6 +864,9 @@ def load_operation(args):
             ensure_commit(bare_repo, rules_commit)
         context = parse_manifest(
             manifest, branch, route_commit, refs["refs/heads/main"], bare_repo, operation_id
+        )
+        validate_committed_operation_bundle(
+            bare_repo, route_commit, manifest, operation_id, context,
         )
     return manifest, operation_id, context
 

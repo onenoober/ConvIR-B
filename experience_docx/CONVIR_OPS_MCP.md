@@ -1,10 +1,10 @@
 # Convir Operations MCP
 
-Date: 2026-07-16
+Date: 2026-07-20
 
-Status: schema v4; server `4.3.2` retains exactly six tools and the existing
-route schema. Start performs one bounded startup verification, and ordinary
-engineering failures authorize one same-contract repair candidate automatically.
+Status: final-slim server `5.0.0` retains exactly six tools and stable control
+protocol schema 4. It reads immutable historical manifest schema 4 and uses
+canonical manifest schema 5 plus runtime schema 2 for new routes.
 
 `convir-ops` is a restricted local stdio bridge to `convir-4090`. It accepts
 only a GitHub route branch, exact commit, and operation id. It never accepts an
@@ -24,7 +24,7 @@ route validator or a route-specific shell surface.
 | `convir_route_finish` | observe at most 60 seconds, validate closeout, and auto-authorize one same-contract repair |
 | `convir_evidence_list` | list eligible compact evidence for a receipt |
 | `convir_evidence_fetch` | fetch an explicit allowlist with SHA-256 checks |
-| `convir_git_status` | read-only evidence-worktree/GitHub audit |
+| `convir_git_status` | token-bounded worktree/GitHub audit plus authoritative route snapshot |
 
 Do not add generic shell, SSH, cleanup, retry, watcher, commit, push,
 authorization-file, validator or model-routing tools.
@@ -36,10 +36,11 @@ contract remains limited to unchanged Git-tracked scripts for manual actions.
 
 ## Manifest
 
-Fixed path: `experience_docx/route_operations.json`; maximum 16 KiB. Top level:
+Fixed path: `experience_docx/route_operations.json`; maximum 16 KiB. New-route top level:
 
 ```text
-schema_version, route_id, rules_commit, route_card_relpath, operations
+schema_version=5, route_id, rules_commit, route_card_relpath,
+scientific_contract_relpaths, operations
 ```
 
 One operation contains exactly:
@@ -51,13 +52,19 @@ workspace_policy, output_policy, monitor_profile, heartbeat_timeout_seconds,
 min_free_gpu_mib, max_gpu_utilization_pct
 ```
 
-The exact route commit already fixes the card and runner. MCP derives their
+`scientific_contract_relpaths` maps every operation id to one immutable canonical
+JSON. Each canonical scientific JSON owns the question, population/grouping,
+intervention, primary estimand, controls, uncertainty, gates, competing
+explanation, terminal mapping and disabled actions. The <=8 KiB Markdown card
+is only a rationale/pointer and is never parsed for scientific fields.
+The exact route commit fixes the contract, card and runner. MCP derives their
 blob/SHA values and the canonical-rule bundle digest directly from Git; route
 authors do not copy these digests into the manifest. `rules_commit` records the
 GitHub-main rules used for design. Planning accepts it only when its canonical
 bundle still equals current main.
 
-The first operation has no prior closeout and must be named by the card. Every
+The first operation has no prior closeout and must be named by the canonical
+contract. Every
 later operation binds one prior closeout and exact
 `state/decision/authorizes` tuple. No initial/intermediate authorization file is
 valid.

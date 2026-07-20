@@ -29,14 +29,16 @@ Every route-ready operation uses the unchanged
 The route-specific Python entrypoint implements only `contract --context` and
 `run --context`; it receives every path and verified asset through
 `RouteContext`. The generic lifecycle uses the explicit cloud Python, performs
-identity/asset/output preflight, executes the CPU-only synthetic contract before
-expensive work, captures stdout/stderr, enforces timeout/protected-data/result
+identity/asset/output preflight, executes the declared protected-data-free
+engineering contract before expensive work, captures stdout/stderr, enforces timeout/protected-data/result
 contracts, publishes compact evidence write-once, and writes one closeout bound
 to route id, run id, route commit, runner SHA-256, evidence role, and allowed
 terminal tuple.
 
 The contract phase validates route-specific input/no-op/shape/finite and
-output/finalizer behavior that is safe on CPU, and cannot create `workload/`.
+output/finalizer behavior and cannot create `workload/`. Runtime schema 2
+requires one identity-bound mode: metadata-only, CPU exact, CPU reference
+equivalent, or GPU synthetic with no scientific data, training or result.
 Scientific computation belongs only to the run phase. Route-specific shell
 lifecycle, closeout, telemetry, output-path, timeout, and evidence-copy code is
 not allowed by default.
@@ -48,8 +50,8 @@ that fixture result for an unchanged exercised path; do not add another
 route-specific smoke layer.
 
 For any operation whose cost or termination depends on sample count, group
-count, candidate count, graph size, search depth, or matrix dimension, the CPU
-contract must also execute a protected-data-free synthetic probe at the same
+count, candidate count, graph size, search depth, or matrix dimension, the
+engineering contract must also execute a protected-data-free synthetic probe at the same
 asymptotic scale as the formal workload. Freeze and check maximum iterations,
 wall time and peak-memory class before launch. A tiny functional fixture proves
 determinism/correctness only and cannot support an ETA or launch-ready claim.

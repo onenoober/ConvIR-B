@@ -167,7 +167,7 @@ def inspect_card(repo: Path, snapshot: str, relpath: str) -> tuple[list[str], st
 
 
 def inspect_slim_card(repo: Path, snapshot: str, relpath: str, *, route_id: str,
-                      contract_relpath: str) -> tuple[list[str], str]:
+                      contract_directory: str) -> tuple[list[str], str]:
     raw = show(repo, snapshot, relpath)
     errors = []
     if len(raw) > 8192:
@@ -182,8 +182,8 @@ def inspect_slim_card(repo: Path, snapshot: str, relpath: str, *, route_id: str,
         errors.append("canonical route note requires Status: PLANNED")
     if f"- Route id: {route_id}" not in text:
         errors.append("canonical route note route_id mismatch")
-    if f"- Scientific contract: {contract_relpath}" not in text:
-        errors.append("canonical route note contract pointer mismatch")
+    if f"- Scientific contracts: {contract_directory}" not in text:
+        errors.append("canonical route note contract-directory pointer mismatch")
     if not __import__("re").search(r"(?m)^## Scientific rationale\s*$", text):
         errors.append("canonical route note requires one Scientific rationale section")
     if any(token in text for token in ("<TBD>", "TODO", "【填写】")):
@@ -271,7 +271,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                 card_errors, card_digest = inspect_slim_card(
                     repo, snapshot, route_card_relpath,
                     route_id=manifest.get("route_id"),
-                    contract_relpath=manifest.get("scientific_contract_relpath"),
+                    contract_directory="experience_docx/scientific_contracts/",
                 )
             else:
                 card_errors, card_digest = inspect_card(
@@ -341,24 +341,12 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                     json.dumps(precision, sort_keys=True, separators=(",", ":")).encode()
                 ).hexdigest()
             if manifest_schema == 5:
-                contract_path = manifest["scientific_contract_relpath"]
+                contract_path = manifest["scientific_contract_relpaths"][operation_id]
                 contract = ops.validate_scientific_contract(
                     json.loads(show(repo, snapshot, contract_path)),
                     manifest["route_id"], operation_id, operation,
                 )
-                population = contract["population"]
-                if population["evidence_role"] != spec["evidence_role"]:
-                    raise ReadyError(f"{operation_id}: evidence role differs across contracts")
-                permission_map = {
-                    "allow_confirmation": population["allow_confirmation"],
-                    "allow_canary": population["allow_canary"],
-                    "allow_locked_test": population["allow_locked_test"],
-                }
-                if permission_map != spec["protected_data_permissions"]:
-                    raise ReadyError(f"{operation_id}: protected permissions differ across contracts")
-                if precision_path is not None \
-                        and population["independent_group_count"] != precision["independent_groups_available"]:
-                    raise ReadyError(f"{operation_id}: independent group count differs across contracts")
+                ops.validate_contract_runtime_alignment(contract, spec, precision)
             engineering = {"state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE"}
             if engineering not in context["allowed_terminal_tuples"]:
                 raise ReadyError(f"{operation_id} must allow the generic engineering closeout")

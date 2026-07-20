@@ -26,13 +26,13 @@ model structure or initialization, checkpoint/asset identity, metrics,
 thresholds, seed, optimizer, epoch/budget, scientific question, or algorithmic
 constants/control flow. A repeated same-root failure requires user review.
 
-For normal scientific terminals, run `prepare_terminal_archive.py` once from
-the receipt-fetched route worktree into one clean reusable main archive
-worktree. The tool reads the frozen runtime spec and closeout SHA-256 manifest,
-requires every formal result, validates JSON/CSV/text and identities, stages
-only the complete compact bundle, writes one JSONL index record, and may commit,
-push and verify once. Do not repeat its diff, suffix, size, parse, hash or remote
-identity checks manually.
+For normal scientific terminals, run `prepare_terminal_archive.py` once into one
+clean reusable main archive worktree. By default it uses the receipt to fetch
+only the compact allowlist into an ephemeral directory, validates the frozen
+contract/runtime/closeout/result hashes, stages the complete bundle, writes one
+JSONL record, commits, pushes and verifies remote main. `--prepare-only` is an
+explicit review pause; `--local-evidence-only` forbids receipt transfer. Do not
+repeat diff, suffix, size, parse, hash, blob or remote identity checks manually.
 
 Do not require a route README, family-summary edit, route-card result rewrite or
 Markdown-index prose update. The launch card is retained unchanged as the

@@ -1,6 +1,6 @@
 # Science Fastpath
 
-Date: 2026-07-18
+Date: 2026-07-20
 
 Status: adopted as the single default general experiment workflow after the
 cloud acceptance in experiment_logs/science_fastpath_validation_20260718/.
@@ -13,35 +13,29 @@ handling. The fastpath does not reduce experimental scope, samples, folds,
 seeds, epochs, controls, uncertainty estimation, GPU budget, or protected-data
 separation.
 
-## Seven Steps
+## Five State Transitions
 
-1. REVIEW: read the current index record, direct parent closeout, and current
-   cloud state. Decide whether the stage is authorized, already answered, or
-   conflicts with existing evidence. Do not perform broad repository or log
-   searches.
-2. FREEZE: write one launch-ready route card as the human-readable scientific
-   contract. Freeze the question, population, analysis unit, evidence roles,
-   data permissions, intervention, matched controls, required ablations,
-   strongest competing explanation, metrics, uncertainty, thresholds,
-   split/fold/seed/checkpoint/training budget, operation/output/commit identity,
-   and all terminal authorizations.
-3. VALIDATE: run one staged route-ready gate. Add one production-path
-   engineering fixture only when model, loss, data processing, metric, or
-   nontrivial algorithm code changed. Reuse an unchanged exercised-path result.
-4. START: push one route commit, seal one plan, and start once. Dynamic path,
-   asset, permission, resource, output-conflict, runtime and identity checks are
-   owned by MCP and the generic lifecycle. Do not repeat them manually.
-5. RUN: require one real workload-progress observation. Call finish near the
-   frozen ETA; if still healthy, call it at most once more. Do not create a
-   watcher, scan unrelated logs, or interpret partial scientific outcomes.
-6. DECIDE: after all planned units finish, compute the frozen gates once.
+1. SNAPSHOT: use the compact authoritative snapshot, direct parent closeout and
+   only referenced evidence. Do not load the full Markdown index/history by
+   default. Decide whether the stage is authorized, answered or conflicting.
+2. CONTRACT: new routes use one schema-5 canonical scientific JSON plus a <=8
+   KiB rationale note. Freeze the question, population/grouping, evidence roles,
+   permissions, intervention, controls, estimand, uncertainty, gates, competing
+   explanation and all terminal mappings. Formal precision requires a pre-run
+   feasibility certificate. Changed production paths require one SHA/commit-bound
+   capability profile and device-aware synthetic contract.
+3. EXECUTE: run one staged route-ready gate, push one commit, plan once and
+   start once. Require one positive workload-progress observation, then finish
+   near the frozen ETA. Never duplicate validator/lifecycle checks, create a
+   watcher, scan unrelated logs or interpret partial outcomes.
+4. DECIDE: after all planned units finish, compute the frozen gates once.
    Require complete folds/seeds/cells/controls, valid uncertainty, and matching
    protected-data access. Publish one typed closeout plus one scientific
    conclusion. Scientific FAIL is terminal, never an engineering retry.
-7. ARCHIVE: run prepare_terminal_archive.py once. It retains the frozen
-   contract, typed closeout, all required compact result files and one complete
-   conclusion, updates one machine terminal index, and may perform one commit,
-   one push and one remote-commit verification. Stop when it succeeds.
+5. ARCHIVE: run `prepare_terminal_archive.py` once. The default receipt-bound
+   path fetches only compact evidence, validates all identities, updates one
+   machine terminal record, commits, pushes and verifies remote main. Stop when
+   it succeeds; `--prepare-only` is an explicit review exception.
 
 ## GitHub Evidence Contract
 

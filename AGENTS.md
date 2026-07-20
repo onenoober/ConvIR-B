@@ -18,26 +18,24 @@
 ## One Finite Workflow
 
 Follow `experience_docx/SCIENCE_FASTPATH.md` as the single default workflow:
-REVIEW, FREEZE, VALIDATE, START, RUN, DECIDE, ARCHIVE.
+SNAPSHOT, CONTRACT, EXECUTE, DECIDE, ARCHIVE.
 
-1. Read only the current terminal index record, direct parent closeout, frozen
-   contract and current cloud state needed for the next decision.
-2. Freeze the complete scientific contract once. Preserve experimental scope,
-   controls, uncertainty, protected-data isolation, identities and terminal
-   actions; AI/token cost reduction never reduces the experiment.
-3. Run one staged route-ready gate. Use a risk-triggered production-path
-   engineering fixture only for a changed path and reuse unchanged validation.
-4. Commit/push once, plan once and start once through the bounded MCP tools.
-   Do not manually repeat checks owned by the validator or generic lifecycle.
-5. Confirm real workload progress once and finish near the frozen ETA. Do not
-   create watchers, broad log scans or interim scientific interpretations.
-6. Interpret complete evidence once. A typed closeout is the only stage
-   authorization; scientific FAIL is never an engineering retry.
-7. Use `prepare_terminal_archive.py` once to retain the launch contract, typed
-   closeout, every required/hash-bound compact result, one scientific conclusion
-   and one machine index record on GitHub main. Stop after commit/push identity
-   verification. Do not perform heartbeat, branch, worktree, output, directory
-   or historical cleanup as part of experiment completion.
+1. SNAPSHOT: call compact `convir_git_status` for the target route. Read its
+   authoritative snapshot, direct parent closeout and only referenced files.
+   Do not read the full Markdown index or family history by default.
+2. CONTRACT: new routes use manifest schema 5, one canonical scientific JSON,
+   one <=8 KiB rationale note and runtime schema 2. Freeze every control, gate,
+   uncertainty rule, data role and terminal action. Formal precision needs a
+   pre-run feasibility certificate; a changed production path needs one
+   identity-bound capability profile and matching device-aware synthetic contract.
+3. EXECUTE: run one route-ready gate, commit/push once, plan once and start
+   once. Confirm positive workload progress once and finish near the frozen ETA.
+   Never repeat checks owned by the validator/lifecycle or create a watcher.
+4. DECIDE: interpret complete evidence once. The typed closeout alone
+   authorizes a next stage; scientific FAIL is never an engineering retry.
+5. ARCHIVE: call `prepare_terminal_archive.py` once. Its default receipt-bound
+   path fetches compact evidence, verifies, commits, pushes and verifies remote
+   main. Stop on success; `--prepare-only` is an explicit review exception.
 
 The existing manifest/runtime-spec/asset files remain machine interfaces and
 may be generated or validated mechanically. They are not separate documentation
@@ -79,7 +77,8 @@ repair policy below and is not a scientific terminal archive.
 - Windows calls WSL only as `wsl.exe -d Ubuntu-22.04 --exec` plus a fixed Linux
   program and literal argv. Never use Windows Git on the WSL UNC worktree and
   never place PowerShell, WSL, and SSH syntax in one command string.
-- Standard route lifecycle uses `convir-ops` v4. Any uncovered cloud action uses
+- Standard route lifecycle uses `convir-ops` v5.0 with stable six-tool protocol
+  schema 4 and canonical route-manifest schema 5. Any uncovered cloud action uses
   one committed, unchanged Bash file through `experience_docx/tools/convirctl.py
   remote-script`; no inline SSH command or untracked script is valid.
 - Before any write, bind the task to the requested worktree with
@@ -92,6 +91,7 @@ repair policy below and is not a scientific terminal archive.
 ## Documentation Ownership
 
 Keep one canonical source per rule. `experience_docx/README.md` routes reads.
-Historical route checkouts and incident documents preserve provenance only and
-must not restore old dispatcher, authorization-file, validator/selfproof,
-monitoring, or sync behavior.
+Historical schema-4 routes, runtime schema-1 files, route checkouts and incident
+documents preserve immutable provenance only. They are never migrated merely to
+adopt v5 and must not restore old dispatcher, authorization-file,
+validator/selfproof, monitoring or sync behavior.

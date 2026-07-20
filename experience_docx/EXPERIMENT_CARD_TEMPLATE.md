@@ -4,52 +4,18 @@ Date: <YYYY-MM-DD>
 
 Status: PLANNED
 
-## Identity
+- Route id: <route_id>
+- Scientific contracts: experience_docx/scientific_contracts/
+- Source branch/commit: <branch@sha>
+- Protected-data policy: <short pointer; canonical permissions live in JSON>
 
-- Route id:
-- Question:
-- Rules commit:
-- Source branch/commit:
-- Route branch:
-- Locked test/canary policy:
+## Scientific rationale
 
-## Scientific Contract
+<Why this is the smallest discriminating operation, why its controls are fair,
+and why PASS/FAIL/INCONCLUSIVE change different written actions. Do not repeat
+the machine fields from the canonical JSON.>
 
-- Population and analysis/grouping unit:
-- Intervention or factor contrast and reference:
-- Primary outcome, direction and aggregation:
-- Preferred mechanism and strongest competing explanation:
-- Evidence roles and candidate/freeze point:
-- Primary gate, uncertainty and threshold source:
-- `PASS` authorizes:
-- `INCONCLUSIVE` authorizes:
-- `FAIL` stops:
-
-## Implementation Contract
-
-- Exact change and disabled mechanisms:
-- Checkpoint/load/init/freeze contract:
-- Input whitelist and prohibited inputs: <Deployable inputs; exclude filename/group/fold IDs and role-leaking fields>
-- Dataset/split/preprocessing/metric identities:
-- Matched baseline and budget:
-- Resource/cost limits or descriptive-only rationale:
-- Runner and required assets:
-- Runtime spec and `contract --context` / `run --context` entrypoint:
-- Representative engineering fixture or metadata-only exemption: <Exact path and minimum valid synthetic shape|exemption and code/runtime/asset reuse identity>
-
-## Operations And Evidence
-
-| Operation | Evidence role/scope | Gate | Pass authorizes |
-| --- | --- | --- | --- |
-| | | | |
-
-- First operation:
-- Expected wall time and monitor profile: <Duration and short|standard profile>
-- Complete-unit resume policy:
-- Cloud workspace/run/output/status/closeout:
-- Compact Git evidence and cloud-only raw artifacts:
-- Required engineering terminal tuple: `FAILED_ENGINEERING / null / NONE`
-
-The card is immutable after launch. Do not append terminal results here.
-Write the single scientific interpretation to the conclusion JSON required by
-`SCIENCE_FASTPATH.md`; the typed closeout remains the terminal authority.
+This note and the canonical contract are immutable after launch. Terminal
+interpretation belongs only in the conclusion JSON; the typed closeout remains
+the terminal authority. Historical manifest-schema-4 cards keep their original
+full format and are never rewritten.

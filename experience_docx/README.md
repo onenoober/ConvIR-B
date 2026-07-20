@@ -6,13 +6,13 @@ Read only the source needed for the next decision.
 
 | Need | Canonical source |
 | --- | --- |
-| current status/result | `EXPERIMENT_TERMINAL_INDEX.jsonl` -> exact contract/closeout/conclusion/results -> current cloud state when active |
+| current status/result | compact `convir_git_status.authoritative_snapshot` -> referenced contract/closeout/conclusion/results; read the full terminal index only for conflict repair |
 | default experiment workflow | `SCIENCE_FASTPATH.md` |
 | model qualification | `MODEL_QUALIFICATION_PROTOCOL.md` |
 | scientific design/gates | `EXPERIMENT_GOVERNANCE_PROTOCOL.md` |
 | fastest safe route build/launch | `ROUTE_READY_FASTPATH.md` |
 | route amendment/assets/fixture/evidence helpers | `ROUTE_FLOW_TOOLS.md` |
-| new or changed route | `MODEL_EXPERIMENT_START_CHECKLIST.md` and `EXPERIMENT_CARD_TEMPLATE.md` |
+| new or changed route | `ROUTE_READY_FASTPATH.md`; schema-5 canonical scientific contract plus the short `EXPERIMENT_CARD_TEMPLATE.md` note |
 | cloud launch/monitor/closeout | `MODEL_RUN_OPERATIONS_PROTOCOL.md` and `CONVIR_OPS_MCP.md` |
 | low-cost generic liveness telemetry | `GENERIC_RUN_MONITORING_PROTOCOL.md` |
 | command transport | `COMMAND_RELIABILITY_PROTOCOL.md`; validation evidence in `COMMAND_TRANSPORT_V1_VALIDATION.md` |
