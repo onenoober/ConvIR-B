@@ -1,27 +1,27 @@
 {
   "schema_version": 4,
-  "route_id": "haze4k_v5_r15_s0e_same_action_population_precision_20260720",
+  "route_id": "haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720",
   "rules_commit": "7080dc2c44006f5b62c6a3d302e025c2fb046778",
-  "route_card_relpath": "experience_docx/experiment_cards/2026-07-20-haze4k-v5-r15-s0e-same-action-population-precision.md",
+  "route_card_relpath": "experience_docx/experiment_cards/2026-07-20-haze4k-v5-r16-s3-domain-matched-action-ceiling.md",
   "operations": {
-    "R15_S0E_SAME_ACTION_POPULATION_PRECISION": {
+    "R16_S3_DOMAIN_MATCHED_ACTION_CEILING": {
       "runner_relpath": "experience_docx/tools/run_route_operation.sh",
-      "mode": "r15_s0e_same_action_population_precision",
+      "mode": "r16_s3_domain_matched_action_ceiling",
       "require_gpu": true,
-      "output_id": "r15-s0e-same-action-population-r1",
-      "closeout_filename": "r15_s0e_same_action_population_precision_closeout.json",
+      "output_id": "r16-s3-domain-matched-action-ceiling-r1",
+      "closeout_filename": "r16_s3_domain_matched_action_ceiling_closeout.json",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
       "allowed_terminal_tuples": [
-        {"state":"COMPLETED_GATE_PASS","decision":"R15_S0E_SAME_ACTION_POPULATION_PRECISION_PASS","authorizes":"R15_S0B_IDENTIFIABILITY_MEASUREMENT_CONTRACT_REVIEW_ONLY"},
-        {"state":"COMPLETED_GATE_INCONCLUSIVE","decision":"R15_S0E_SAME_ACTION_OR_PRECISION_INCONCLUSIVE_STOP","authorizes":"R15_REAL_DEVELOPMENT_EVIDENCE_COMPLETION_ONLY"},
-        {"state":"COMPLETED_GATE_FAIL","decision":"R15_S0E_REAL_ACTION_HEADROOM_FAIL_STRATEGIC_RESET","authorizes":"R15_S3_REFORMULATION_ONLY"},
+        {"state":"COMPLETED_GATE_PASS","decision":"R16_S3_DOMAIN_MATCHED_ACTION_CEILING_PASS","authorizes":"R16_INDEPENDENT_REAL_DEVELOPMENT_ACTION_QUALIFICATION_CONTRACT_ONLY"},
+        {"state":"COMPLETED_GATE_INCONCLUSIVE","decision":"R16_S3_PRIVILEGED_CAPACITY_INCONCLUSIVE_STOP","authorizes":"R16_PRIVILEGED_CAPACITY_EVIDENCE_COMPLETION_ONLY"},
+        {"state":"COMPLETED_GATE_FAIL","decision":"R16_S3_DOMAIN_MATCHED_ACTION_CEILING_FAIL_STRATEGIC_RESET","authorizes":"R16_REGION_TARGET_SUPERVISION_REFORMULATION_ONLY"},
         {"state":"FAILED_ENGINEERING","decision":null,"authorizes":"NONE"}
       ],
       "workspace_policy": "fresh_route",
       "output_policy": "new",
       "monitor_profile": "standard",
-      "heartbeat_timeout_seconds": 600,
+      "heartbeat_timeout_seconds": 900,
       "min_free_gpu_mib": 18000,
       "max_gpu_utilization_pct": 10
     }

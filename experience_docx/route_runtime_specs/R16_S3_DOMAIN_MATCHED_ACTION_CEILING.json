@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720",
+  "operation_id": "R16_S3_DOMAIN_MATCHED_ACTION_CEILING",
+  "entrypoint_relpath": "experience_docx/tools/r16_s3_domain_matched_action_ceiling.py",
+  "asset_manifest_relpath": "experience_docx/route_assets/R16_S3_DOMAIN_MATCHED_ACTION_CEILING.json",
+  "timeout_seconds": 7200,
+  "expected_wall_seconds": 3600,
+  "total_units": 12150,
+  "evidence_role": "development_screening",
+  "resume_policy": "none",
+  "protected_data_permissions": {"allow_confirmation":false,"allow_canary":false,"allow_locked_test":false},
+  "environment": {
+    "CONVIR_ROUTE_BOOTSTRAP_DRAWS": "4000",
+    "CONVIR_ROUTE_BOOTSTRAP_SEED": "3407",
+    "CONVIR_ROUTE_GRID": "8",
+    "CONVIR_ROUTE_SHUFFLE_REPLICATES": "16",
+    "CONVIR_ROUTE_LOCAL_GAIN_DB": "0.005",
+    "CONVIR_ROUTE_ABSOLUTE_GAIN_DB": "0.020",
+    "CONVIR_ROUTE_INCREMENT_GAIN_DB": "0.005",
+    "CONVIR_ROUTE_TAIL_MARGIN_DB": "-0.005",
+    "CONVIR_ROUTE_SEVERE_GAIN_DB": "-0.2",
+    "CONVIR_ROUTE_HARD_GAIN_DB": "-0.5",
+    "CONVIR_ROUTE_MIXED_FRACTION": "0.25",
+    "CONVIR_ROUTE_BIDIRECTIONAL_FRACTION": "0.10",
+    "CONVIR_ROUTE_CI_HALF_WIDTH_MAX_DB": "0.020"
+  },
+  "evidence_files": [
+    {"source_relpath":"workload/r16_s3_identity_and_access.json","destination_filename":"r16_s3_identity_and_access.json","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r16_s3_endpoint_action_summary.json","destination_filename":"r16_s3_endpoint_action_summary.json","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r16_s3_policy_summary.csv","destination_filename":"r16_s3_policy_summary.csv","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r16_s3_bootstrap_summary.json","destination_filename":"r16_s3_bootstrap_summary.json","required":true,"max_bytes":262144},
+    {"source_relpath":"workload/r16_s3_strata_operator_summary.json","destination_filename":"r16_s3_strata_operator_summary.json","required":true,"max_bytes":262144},
+    {"source_relpath":"workload/r16_s3_gate_summary.json","destination_filename":"r16_s3_gate_summary.json","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r16_s3_resource_summary.json","destination_filename":"r16_s3_resource_summary.json","required":true,"max_bytes":131072},
+    {"source_relpath":"workload/r16_s3_scientific_conclusion.json","destination_filename":"r16_s3_scientific_conclusion.json","required":true,"max_bytes":262144}
+  ]
+}

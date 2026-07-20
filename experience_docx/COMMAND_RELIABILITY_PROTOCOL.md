@@ -133,6 +133,29 @@ PowerShell/WSL/SSH command string, which split the format and made `stat` treat
 `%s` as a path. These are `FAILED_COMMAND`, never repository, cloud-asset or
 experiment evidence.
 
+## 2026-07-20 R16 local WSL reader boundary
+
+Invalid forms observed while opening R16 were (1) grouping three independent
+WSL repository reads in one JavaScript \`Promise.all\`, so one malformed regex
+reader discarded the other completed outputs, and (2) invoking the desktop
+application's Windows \`rg\` path from WSL, which failed with \`Permission
+denied\`. The regex reader also nested double quotes around a parenthesized
+alternation inside \`bash -lc\`, so Bash received a syntactically invalid command.
+These are \`FAILED_COMMAND\`, never repository or experiment evidence.
+
+Corrected form: issue independent bounded fixed-argv reads, use PowerShell
+\`Get-Content\` for literal local files, and use \`/usr/bin/git -C <worktree>
+grep\` or the repository readers when WSL has no native \`rg\`. Do not use
+\`bash -lc\`, cross-shell regex quoting, or the Windows application \`rg\` binary
+inside WSL. Require the read command's explicit exit code before using its
+output.
+
+An additional invalid reader passed Git's unquoted
+\`--format=%(refname:short)\` through PowerShell; PowerShell interpreted the
+parenthesized atom before WSL received it. The corrected branch read is the
+fixed-argv \`git branch -a\` form without formatting syntax. When formatted Git
+output is essential, use \`convirctl.py git-state\` or a committed script.
+
 Corrected form: keep independent identity probes in independent bounded calls
 and use fixed `wsl.exe --exec /usr/bin/ssh ... <argv>` whenever the remote
 command has no shell syntax. If a format string or pipeline is needed, place it
