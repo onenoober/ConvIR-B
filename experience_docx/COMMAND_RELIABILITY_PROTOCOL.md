@@ -93,6 +93,18 @@ substitute an unverified absolute executable path.
 
 ### 2026-07-20 MCP runtime-activation workspace boundary
 
+Invalid local probe: piping three JSON-RPC objects from a PowerShell array
+directly into a WSL stdio MCP process returned only two responses and provided
+no trustworthy activation result. Local runtime probing also exceeded the
+repository's syntax-only local role, so it was stopped and not used as
+evidence.
+
+Canonical replacement: commit the bounded activation script unchanged and run
+it on `convir-4090` through `convirctl.py remote-script`. The cloud script
+starts a fresh stdio server, sends all three JSON-RPC requests from one Python
+payload, requires exactly three response IDs, and emits an explicit
+`CONVIR_OPS_V5_RUNTIME_ACTIVATION_OK` marker.
+
 Invalid form: call `convir_git_status` against a fresh checkout under `/tmp`
 during cloud-side stdio activation validation. The MCP correctly returned a
 fail-closed structured tool error because the checkout was outside the trusted
