@@ -117,3 +117,9 @@ be an ancestor of the cloned audit-branch HEAD, then copy only the fixed compact
 allowlist, validate suffixes and the staged diff, commit once and push the same
 branch. This preserves lineage while allowing the committed launcher itself to
 exist after the project-memory commit.
+
+The next sync attempt reached the commit boundary but failed because the cloud
+fresh clone had no repository or global author identity. The corrected form is
+to set the existing local project identity (`Codex <codex@openai.com>`) only in
+that dedicated sync repository, revalidate the already-staged compact allowlist,
+then commit and push once. Do not set cloud global Git configuration.
