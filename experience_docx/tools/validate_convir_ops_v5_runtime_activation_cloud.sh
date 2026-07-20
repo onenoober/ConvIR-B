@@ -15,7 +15,8 @@ seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
 python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
 evidence_root=/sda/home/wangyuxin/ConvIR-B/runs/convir_ops_v5_final_slim_acceptance_20260720
 route_id=haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720
-work=$(mktemp -d /tmp/convir-ops-v5-runtime-activation.XXXXXX)
+mkdir -p /sda/home/wangyuxin/ConvIR-B/runtime
+work=$(mktemp -d /sda/home/wangyuxin/ConvIR-B/runtime/convir-ops-v5-runtime-activation.XXXXXX)
 trap 'rm -rf -- "$work"' EXIT
 
 printf 'CONVIR_OPS_V5_RUNTIME_ACTIVATION_STAGE=checkout\n'
@@ -91,6 +92,7 @@ assert all("error" not in responses[index] for index in (1, 2, 3)), responses
 initialize = responses[1]["result"]
 tools = responses[2]["result"]["tools"]
 call = responses[3]["result"]
+assert call["isError"] is False, call
 structured = call["structuredContent"]
 summary = call["content"][0]["text"]
 expected_tools = {

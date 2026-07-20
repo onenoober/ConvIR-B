@@ -90,3 +90,17 @@ before searching or mutating anything because that absolute binary is absent.
 Corrected form: use the available host `rg` for workspace searches, or a
 literal PowerShell `Select-String` for Windows-owned Codex configuration. Never
 substitute an unverified absolute executable path.
+
+### 2026-07-20 MCP runtime-activation workspace boundary
+
+Invalid form: call `convir_git_status` against a fresh checkout under `/tmp`
+during cloud-side stdio activation validation. The MCP correctly returned a
+fail-closed structured tool error because the checkout was outside the trusted
+project workspace; the first validation wrapper then read success-only fields
+without checking `isError`.
+
+Corrected form: place the disposable validation checkout below
+`/sda/home/wangyuxin/ConvIR-B/runtime/`, keep the same immutable candidate
+commit, and assert `isError == false` before reading success-only structured
+fields. This is a transport/workspace correction only and cannot change MCP
+code, scientific data, metrics, thresholds, or historical evidence.
