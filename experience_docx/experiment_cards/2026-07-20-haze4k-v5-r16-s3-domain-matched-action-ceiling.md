@@ -163,14 +163,15 @@ threshold change or model work is allowed.
 - First operation: R16_S3_DOMAIN_MATCHED_ACTION_CEILING
 - Expected wall time and monitor profile: 3,600 seconds with the \`standard\` profile.
 - Complete-unit resume policy: \`none\`; recovery, if engineering-authorized, must use a new output id under the same scientific contract.
-- Cloud workspace/run/output/status/closeout: MCP-owned fresh workspace on convir-4090; output \`r16-s3-domain-matched-action-ceiling-r1\`; generic status/heartbeat/runtime log; closeout \`r16_s3_domain_matched_action_ceiling_closeout.json\`.
+- Cloud workspace/run/output/status/closeout: MCP-owned fresh workspace on convir-4090; output \`r16-s3-domain-matched-action-ceiling-r2\`; generic status/heartbeat/runtime log; closeout \`r16_s3_domain_matched_action_ceiling_closeout.json\`.
 - Compact Git evidence and cloud-only raw artifacts: Git retains the card, typed closeout and eight declared compact identity/endpoint/policy/bootstrap/strata/gate/resource/conclusion files; per-image rows, action hashes, tensors, images, weights and logs remain cloud-only.
 
 | Operation | Evidence role/scope | Gate | Pass authorizes |
 | --- | --- | --- | --- |
 | \`R16_S3_DOMAIN_MATCHED_ACTION_CEILING\` | training-overlap privileged capacity ceiling | frozen materiality, specificity, safety, coverage and precision | independent-real-development action qualification contract only |
 
-- Output id: \`r16-s3-domain-matched-action-ceiling-r1\`.
+- Same-contract engineering repair: r1 failed before workload because the 64x64 CPU production fixture shrank below ConvIR-B's fixed reflect-padding support; r2 changes only that protected-data-free contract fixture to 256x256 and uses a new output identity.
+- Output id: \`r16-s3-domain-matched-action-ceiling-r2\`.
 - Generic runner: unchanged
   \`experience_docx/tools/run_route_operation.sh\`.
 - Runtime spec:

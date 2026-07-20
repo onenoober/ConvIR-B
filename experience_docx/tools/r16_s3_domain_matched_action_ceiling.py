@@ -350,15 +350,15 @@ def contract(context_path: Path) -> None:
     device = torch.device("cpu")
     a0, wdmamba = build_models(context, device)
     values_first = generate_actions(
-        torch.linspace(0.0, 1.0, 3 * 64 * 64, dtype=torch.float32)
-        .reshape(1, 3, 64, 64),
+        torch.linspace(0.0, 1.0, 3 * 256 * 256, dtype=torch.float32)
+        .reshape(1, 3, 256, 256),
         a0,
         wdmamba,
     )
     first_identity = action_identity(values_first)
     values_second = generate_actions(
-        torch.linspace(0.0, 1.0, 3 * 64 * 64, dtype=torch.float32)
-        .reshape(1, 3, 64, 64),
+        torch.linspace(0.0, 1.0, 3 * 256 * 256, dtype=torch.float32)
+        .reshape(1, 3, 256, 256),
         a0,
         wdmamba,
     )
@@ -384,7 +384,7 @@ def contract(context_path: Path) -> None:
             bool(torch.isfinite(value).all()) for value in values_first.values()
         ),
         "strict_signed_action_symmetry": first_identity["sign_symmetry_max_abs"] == 0.0,
-        "endpoint_shapes_exact": first_identity["shape"] == [1, 3, 64, 64],
+        "endpoint_shapes_exact": first_identity["shape"] == [1, 3, 256, 256],
         "full_group_scale": len(groups) == len(rows) == 50,
         "paired_replay_lanes": all(set(group) == set(OPERATORS) for group in groups.values()),
         "full_bootstrap_work_class": all(
