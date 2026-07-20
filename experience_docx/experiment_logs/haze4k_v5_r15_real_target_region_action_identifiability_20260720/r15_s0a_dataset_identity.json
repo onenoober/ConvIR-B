@@ -1,0 +1,19 @@
+{
+  "checks": {
+    "gt_opened_after_action_seal": true,
+    "ids_exact": true,
+    "native_sizes_exact": true,
+    "pair_count_exact": true,
+    "preflight_status_ok": true,
+    "rgb_modes": true,
+    "within_role_hashes_unique": true
+  },
+  "cloud_only_pair_hash_rows": true,
+  "eligible_as_final_independent_external_validation": false,
+  "image_ids_sha256": "c37dacee8f6f087065a3ebcf2a02a0c7513825461cc28123da3f5bd087a85233",
+  "pair_count": 55,
+  "pair_file_manifest_sha256": "764107307da03659e16602dff977023cb81b9a1bed929603709b2bc0990250b3",
+  "probe_id": "14",
+  "role": "development_screening_previously_used_by_v2_7",
+  "schema_version": 1
+}

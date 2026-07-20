@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k_v5_r15_real_target_region_action_identifiability_20260720",
+  "operation_id": "R15_S0A_MEASUREMENT_QUALIFICATION",
+  "run_id": "r15-s0a-measurement-qualification-r1",
+  "decision": "R15_S0A_MEASUREMENT_INPUT_INCONCLUSIVE_STOP",
+  "authorizes": "R15_S0A_EVIDENCE_COMPLETION_ONLY",
+  "primary_result": "All 55 NH-HAZE development pairs and the native-resolution R10 three-action production-path probe were valid, but S0B is not authorized because the compact R10 action tuple check did not resolve from the selected summary field and the 55-image different-family planning proxy gives a mean-gain CI half-width of 0.062974 dB, above the frozen 0.020 dB precision requirement.",
+  "gate_reasons": [
+    "Data integrity passed: 55 unique paired RGB images, exact ids 01-55, all 1600x1200, no pair or role hash duplicates, and GT was opened only after the action manifest was sealed.",
+    "Action transport passed on the pre-outcome SHA-selected image 14 for D_ref and D_rep: finite native-resolution renders, exact no-op, exact positive/negative latent sign symmetry and nonzero response.",
+    "Source code hashes, R10 terminal PASS and R14 route closure matched, but the action list was absent from the selected compact distribution field, so source_valid remained false pending read-only identity completion.",
+    "Image-level precision did not qualify: the different-action-family v2.7 proxy SD was 0.238282 dB and implied a 0.062974 dB mean CI half-width for 55 images; nested regions, actions, operators or raters may not inflate the independent sample count.",
+    "The zero-event exact UCB95 was 0.053011 and the concordance gate was arithmetically reachable only at 46 or more concordant images, but these two facts cannot rescue the failed mean-precision qualification."
+  ],
+  "competing_explanation": "The valid single-image transport weakens a categorical action-incompatibility claim, but it does not establish target alignment or population-wide support; the precision failure may reflect the different v2.7 action-family proxy rather than the actual R10 action distribution.",
+  "limitations": [
+    "Only one pre-outcome action-transport probe was run; no population utility was estimated.",
+    "NH-HAZE was already used by v2.7 and is development_screening, not an independent external validation population.",
+    "The precision proxy uses a different action family and is planning evidence only.",
+    "No semantic haze/protection labels or human naturalness ratings were collected.",
+    "This terminal does not alter R13/R14 or authorize training, S0B, confirmation, canary or locked-test access."
+  ]
+}

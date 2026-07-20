@@ -1,0 +1,211 @@
+{
+  "authorizes": "R15_S0A_EVIDENCE_COMPLETION_ONLY",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "R15_S0A_MEASUREMENT_INPUT_INCONCLUSIVE_STOP",
+  "details": {
+    "data_valid": true,
+    "pair_manifest_sha256": "764107307da03659e16602dff977023cb81b9a1bed929603709b2bc0990250b3",
+    "precision_qualified": false,
+    "probe_id": "14",
+    "source_valid": false,
+    "training_occurred": false,
+    "transport_valid": true
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "r15_s0a_action_transport.json": "0eb0a5c533a4fd7ffd4e3caff4609fac5b8bb433f081762fbd1c884bc173db8a",
+    "r15_s0a_dataset_identity.json": "602857963f0fec76e12f1f933fcc18b5a641dbd92d5afba13869c05c85abfcf2",
+    "r15_s0a_precision_feasibility.json": "080776a32d01e1716bae250ea8e55c3a09a27b2d57326896302434180cc2c912",
+    "r15_s0a_provenance_and_access.json": "7b102f27bfcde061455fbf5097d98600662bf756868b2b55de1f5160ecc16aff",
+    "r15_s0a_qualification_summary.json": "c94048d02780781fc6e6c7f3c2009506c6842f1c929dfdf28aa73404181acd52",
+    "r15_s0a_resource_summary.json": "1f73a5bfa717e5ed6b60a4a22e11ad5d67242f1fd8652463be41c7e21baa8205",
+    "r15_s0a_scientific_conclusion.json": "091fc5488bfd1c2d04bdc59c410df37c68b7233dbf24a9acdf582f35eb7fcbe7"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "R15_S0A_MEASUREMENT_QUALIFICATION",
+  "returncode": 0,
+  "route_commit": "fa774910fdcd8ea114fa4b30bde8d17e2e551ac1",
+  "route_id": "haze4k_v5_r15_real_target_region_action_identifiability_20260720",
+  "run_id": "r15-s0a-measurement-qualification-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_INCONCLUSIVE",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "commit": "d4f8d0936869c822ae19b5c21172efc2eb973dd8",
+      "contract_access": false,
+      "id": "a1f_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "bounds",
+      "kind": "file",
+      "sha256": "485ea12ff14c33b87105a50b6d118a9937c7e7f1b113062fe03d91eef3c9cc21"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "control_checkpoint",
+      "kind": "file",
+      "sha256": "08207119a5cf9e5c439dd2cb81b99029ade1861f2739d31e75f2f9f78d57c0f2"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "d7c_artifact",
+      "kind": "file",
+      "sha256": "09f449232024395cf64db15a2a0efa0f12d3e0e049e1da3d67229a3dc5729361"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "density_artifact",
+      "kind": "file",
+      "sha256": "1ffce13dccb41d96a47c2b5275f87bf2fdb73c226a190cfa240e5c71c1ec326f"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "final_state",
+      "kind": "file",
+      "sha256": "ed0832f220996af3fd8e617b7d04d643dc6ca052a3603adee99d59e78fd1e125"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "fresh_split_manifest",
+      "kind": "file",
+      "sha256": "c8c00fefc965ded3389b6311fc67ea521e1f3174f27793688544abe09dc420e7"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "nhhaze_data",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "operator_d_ref",
+      "kind": "file",
+      "sha256": "3c5ed807cc0cb25170720fe2b8f34cbe81b7bbc3857f7a3f1423f73d77cd6692"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "operator_d_rep",
+      "kind": "file",
+      "sha256": "3843471c6f4c130495ee6f6d62193c4235d9c89061621288ecb8d7455944ae62"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "operator_manifest",
+      "kind": "file",
+      "sha256": "1d2ffa499128ad08a272d67c5439583900afe8ef87fb3256193ad5fe21c3af84"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r10_action_distribution",
+      "kind": "file",
+      "sha256": "6074ae9d78877c02e3e015493e5d445501d925f96db82ba64fa2a1b7b579683b"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r10_closeout",
+      "kind": "file",
+      "sha256": "fefc2c21fcbe4a215928e495920be2f4c698b0308de61236a22405d198718968"
+    },
+    {
+      "access_role": "development_screening",
+      "commit": "c455577905efa8bb6f5c0daa84c3ec43c2ee6ff5",
+      "contract_access": false,
+      "id": "r10_source_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "r14_conclusion",
+      "kind": "file",
+      "sha256": "bced8420ed1e3768ed8fe91b9c5963b05bb8e1164d13e724dbb5810c0e321a59"
+    },
+    {
+      "access_role": "development_screening",
+      "commit": "207581b4abfff2224bc21d4d1ae4ad5c26118936",
+      "contract_access": false,
+      "id": "r3_source_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reference_oof_rows",
+      "kind": "file",
+      "sha256": "b4a10184fab77b0045440dc88530d000a892acf2105a6295d5ad8a488c67ecb1"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "trace_manifest",
+      "kind": "file",
+      "sha256": "370f3f46b949391a8200c50b893561d78608adfef3c59f9ba2f76dd84a155780"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "v27_pairs",
+      "kind": "file",
+      "sha256": "ceb00719d944a9c10bd61663794c32bf4e422a721af2266955b78921521e9103"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "v27_per_image",
+      "kind": "file",
+      "sha256": "241f42d9277d76698834cba4168748e79c83fd56af0cb301a28c656462211b9f"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "v27_preflight",
+      "kind": "file",
+      "sha256": "e83290f2f5ca481dd032ab1196e70ca0993aad9cdd2a4b39960f350a6b61e5c0"
+    },
+    {
+      "access_role": "development_screening",
+      "commit": "555fd008e29f02128564f2fad41d0095ee44f5ea",
+      "contract_access": false,
+      "id": "v3p_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "development_screening",
+      "commit": "2860f580bb25cc75ec9ade56378af6d77f5c8d8b",
+      "contract_access": false,
+      "id": "v3s_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "development_screening",
+      "commit": "3caddcc5265732e5be77e3404119a28cb28c11e6",
+      "contract_access": false,
+      "id": "v3z_checkout",
+      "kind": "git_checkout"
+    }
+  ]
+}

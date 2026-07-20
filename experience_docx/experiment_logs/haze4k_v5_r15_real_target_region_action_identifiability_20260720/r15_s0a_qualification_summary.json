@@ -1,0 +1,11 @@
+{
+  "authorizes": "R15_S0A_EVIDENCE_COMPLETION_ONLY",
+  "data_valid": true,
+  "decision": "R15_S0A_MEASUREMENT_INPUT_INCONCLUSIVE_STOP",
+  "old_terminals_changed": false,
+  "precision_qualified": false,
+  "schema_version": 1,
+  "source_valid": false,
+  "state": "COMPLETED_GATE_INCONCLUSIVE",
+  "transport_valid": true
+}

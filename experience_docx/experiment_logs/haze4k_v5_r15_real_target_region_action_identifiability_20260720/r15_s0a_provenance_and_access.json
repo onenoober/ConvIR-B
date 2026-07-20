@@ -1,0 +1,15 @@
+{
+  "canary_touched": false,
+  "checkpoint_selected": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "data_role": "development_screening",
+  "gt_first_open_after_action_manifest_seal": true,
+  "locked_test_touched": false,
+  "nhhaze_previously_used_by_v2_7": true,
+  "probe_selected_from_outcomes": false,
+  "route_commit": "fa774910fdcd8ea114fa4b30bde8d17e2e551ac1",
+  "sample_excluded": false,
+  "schema_version": 1,
+  "threshold_selected": false,
+  "training_occurred": false
+}

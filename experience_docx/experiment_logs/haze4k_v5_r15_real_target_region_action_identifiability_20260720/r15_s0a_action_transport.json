@@ -1,0 +1,61 @@
+{
+  "actions": [
+    "reference_noop",
+    "state_positive_full",
+    "state_negative_full"
+  ],
+  "gt_used_to_generate_action": false,
+  "operator_evidence": {
+    "D_ref": {
+      "finite": true,
+      "maximum_action_abs": 0.009389327839016914,
+      "maximum_render_delta_abs": 0.0023473501205444336,
+      "native_shape": true,
+      "noop_identity_max_abs": 0.0,
+      "render_shape": [
+        1,
+        3,
+        1200,
+        1600
+      ],
+      "sign_symmetry_max_abs": 0.0,
+      "support_fraction": 0.00021354167256504297
+    },
+    "D_rep": {
+      "finite": true,
+      "maximum_action_abs": 0.009389548562467098,
+      "maximum_render_delta_abs": 0.002347409725189209,
+      "native_shape": true,
+      "noop_identity_max_abs": 0.0,
+      "render_shape": [
+        1,
+        3,
+        1200,
+        1600
+      ],
+      "sign_symmetry_max_abs": 0.0,
+      "support_fraction": 0.00021354167256504297
+    }
+  },
+  "operators": [
+    "D_ref",
+    "D_rep"
+  ],
+  "probe_id": "14",
+  "schema_version": 1,
+  "source_checks": {
+    "r10_actions_exact": false,
+    "r10_source_exact": true,
+    "r10_terminal_pass": true,
+    "r14_route_closed": true,
+    "r3_source_exact": true
+  },
+  "transport_checks": {
+    "exact_noop_identity": true,
+    "exact_sign_symmetry": true,
+    "finite_native_renders": true,
+    "nonzero_action": true,
+    "operators_complete": true
+  },
+  "utility_estimated": false
+}
