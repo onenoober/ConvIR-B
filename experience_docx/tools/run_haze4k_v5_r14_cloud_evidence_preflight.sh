@@ -43,9 +43,16 @@ inspect_file r10_closeout "${R10}/r10_a0_fixed_region_action_feasibility_closeou
 inspect_file r11_closeout "${R11}/r11_a0_regional_action_observability_closeout.json"
 inspect_file r12_closeout "${R12}/r12_a0_action_conditioned_downside_observability_closeout.json"
 inspect_file r13_closeout "${R13}/r13_a0_image_relative_context_observability_closeout.json"
+inspect_file r5_workload_closeout "${R5}/workload/r5_a0_spatial_response_sufficiency_closeout.json"
+inspect_file r10_workload_closeout "${R10}/workload/r10_a0_fixed_region_action_feasibility_closeout.json"
+inspect_file r11_workload_closeout "${R11}/workload/r11_a0_regional_action_observability_closeout.json"
+inspect_file r12_workload_closeout "${R12}/workload/r12_a0_action_conditioned_downside_observability_closeout.json"
+inspect_file r13_workload_closeout "${R13}/workload/r13_a0_image_relative_context_observability_closeout.json"
 
 for run in "${R5}" "${R10}" "${R11}" "${R12}" "${R13}"; do
   inspect_file run_status "${run}/status.txt"
+  printf 'AUDIT_STATUS_TAIL\t%s\n' "${run}"
+  /usr/bin/tail -n 4 "${run}/status.txt"
 done
 
 printf 'R14_CLOUD_EVIDENCE_PREFLIGHT_OK\n'
