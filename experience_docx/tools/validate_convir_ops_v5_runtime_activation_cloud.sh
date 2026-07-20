@@ -39,6 +39,7 @@ PYTHONPATH="$work/repo/experience_docx/tools" "$python" - \
   "$work/repo" "$candidate" "$route_id" \
   "$evidence_root/runtime-activation-$candidate.json" <<'PY'
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -72,11 +73,14 @@ requests = [
     },
 ]
 payload = "".join(json.dumps(item, separators=(",", ":")) + "\n" for item in requests)
+server_env = os.environ.copy()
+server_env["CONVIR_OPS_LOCAL_WORKSPACE_ROOT"] = str(Path(repo).parent)
 completed = subprocess.run(
     [sys.executable, str(server)],
     input=payload,
     text=True,
     capture_output=True,
+    env=server_env,
     timeout=30,
     check=True,
 )

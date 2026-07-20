@@ -99,8 +99,14 @@ fail-closed structured tool error because the checkout was outside the trusted
 project workspace; the first validation wrapper then read success-only fields
 without checking `isError`.
 
-Corrected form: place the disposable validation checkout below
-`/sda/home/wangyuxin/ConvIR-B/runtime/`, keep the same immutable candidate
-commit, and assert `isError == false` before reading success-only structured
-fields. This is a transport/workspace correction only and cannot change MCP
-code, scientific data, metrics, thresholds, or historical evidence.
+First incomplete correction: placing the disposable validation checkout below
+`/sda/home/wangyuxin/ConvIR-B/runtime/` still left the server's default local
+workspace root at `/home/ubuntu/workspace`; the server again failed closed.
+
+Canonical correction: keep the disposable checkout below the cloud project
+runtime root and set `CONVIR_OPS_LOCAL_WORKSPACE_ROOT` for the validation
+subprocess only to that checkout's parent directory. Production retains its
+default `/home/ubuntu/workspace` boundary. The wrapper also asserts
+`isError == false` before reading success-only structured fields. This is a
+transport/workspace correction only and cannot change MCP code, scientific
+data, metrics, thresholds, or historical evidence.
