@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/convir_only_rdpcm_s0_20260721.json",
-  "experiment_spec_sha256": "2fe6f413927171d1e0d9a6b81c7b459a7818510a879da59b9dd1c1676295bc56",
+  "experiment_spec_sha256": "36a98a240f178e79ad81f7931ea185f09b18c902e1f9230c5314f8dcc6b901ea",
   "operations": {
     "RDPCM_S0_ARCHITECTURE_QUALIFICATION": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 4096,
       "mode": "s0_qualification",
       "monitor_profile": "short",
-      "output_id": "rdpcm-s0-architecture-qualification-r1",
+      "output_id": "rdpcm-s0-architecture-qualification-r2",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,

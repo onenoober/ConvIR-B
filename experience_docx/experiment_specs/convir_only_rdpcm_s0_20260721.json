@@ -12,7 +12,7 @@
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "s0_qualification",
         "require_gpu": true,
-        "output_id": "rdpcm-s0-architecture-qualification-r1",
+        "output_id": "rdpcm-s0-architecture-qualification-r2",
         "closeout_filename": "rdpcm_s0_architecture_qualification_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
@@ -95,7 +95,7 @@
         "intervention": {
           "primary_variable": "CONVIR_ONLY_RDPCM_V1",
           "reference": "official_ConvIR_B_anchor",
-          "matched_budget": "one identical 1x3x64x64 synthetic CUDA fixture with zero optimizer steps",
+        "matched_budget": "one identical 1x3x256x256 synthetic CUDA fixture with zero optimizer steps",
           "fixed_factors": [
             "insertion Decoder[0] output before first decoder upsample and skip fusion",
             "128 input channels and 32 hidden channels",
@@ -235,7 +235,7 @@
       "capability": {
         "profile_id": "convir_only_rdpcm_v1_gpu_synthetic",
         "contract_mode": "gpu_synthetic_no_data",
-        "minimum_fixture": {"batch": 1, "channels": 3, "height": 64, "width": 64},
+        "minimum_fixture": {"batch": 1, "channels": 3, "height": 256, "width": 256},
         "bound_assets": [
           {"id": "official_anchor", "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"},
           {"id": "official_checkpoint", "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"},

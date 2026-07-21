@@ -25,7 +25,7 @@ from route_program_api import (
 )
 
 
-FIXTURE = {"batch": 1, "channels": 3, "height": 64, "width": 64}
+FIXTURE = {"batch": 1, "channels": 3, "height": 256, "width": 256}
 ANCHOR_COMMIT = "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
 CHECKPOINT_SHA256 = "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
 MODEL_SOURCE_SHA256 = "0ba530b66c65a14695223215931ca6e4463ee3cd5d65ae64e0e6cb764d07f4e6"
