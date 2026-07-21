@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "status": "FAILED_ENGINEERING",
+  "adoption_status": "NOT_ADOPTED",
+  "phase": "P0_DIAGNOSTIC_DISCARD_TEST_COLLECTION",
+  "server": "convir-4090",
+  "tested_commit": "5f77e9f87554a9b83c7484c4b036b8d00aaaf5e1",
+  "script_sha256": "d159c21f55056f4c8cb46bed32ed3bdc5c22c8075b4ebc255caf7529cebba404",
+  "failure_class": "command_infra",
+  "failure_phase": "unittest_collection",
+  "cause": "Legacy sibling imports were unavailable because the validation script omitted the committed tools and tests directories from PYTHONPATH.",
+  "tests_started": false,
+  "scientific_data_touched": false,
+  "protected_data_touched": false,
+  "result_used_for_adoption": false,
+  "repair_scope": "validation script import path only"
+}

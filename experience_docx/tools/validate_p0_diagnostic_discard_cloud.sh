@@ -40,6 +40,7 @@ test -z "$(/usr/bin/git -C "$REPO" status --porcelain)"
 printf 'state=RUNNING\nbranch=%s\ncommit=%s\n' "$BRANCH" "$REMOTE_COMMIT" > "$STATUS"
 
 cd "$REPO"
+PYTHONPATH="$REPO/experience_docx/tools:$REPO/experience_docx/tools/tests" \
 "$PYTHON" -m unittest -v \
   experience_docx.tools.tests.test_convir_ops_mcp \
   experience_docx.tools.tests.test_convir_ops_v5_final_slim \

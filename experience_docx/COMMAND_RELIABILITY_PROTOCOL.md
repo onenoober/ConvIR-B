@@ -153,3 +153,16 @@ before reading a trustworthy result and made no repository change.
 Corrected form: issue one Select-String -SimpleMatch call per literal term, or
 use convirctl.py repo-search for committed content. Treat a zero-match exit as
 a successful read result and keep syntax/diff checks in separate commands.
+
+### 2026-07-21 cloud unittest import-path boundary
+
+Invalid form: invoke package-qualified unittest modules from the repository
+root when legacy test modules import sibling tools and tests as top-level
+modules. Collection stopped with ModuleNotFoundError before those test bodies
+ran; this is FAILED_ENGINEERING and no acceptance conclusion is permitted.
+
+Corrected form: keep the same committed test list and exact candidate commit,
+but set PYTHONPATH to the committed experience_docx/tools and
+experience_docx/tools/tests directories in the validation script. Use a new
+commit-bound output directory, preserve the failed status/log, and rerun the
+entire gate once.
