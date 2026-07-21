@@ -1,0 +1,40 @@
+{
+  "assets": [
+    {
+      "access_role": "unrestricted",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor",
+      "kind": "git_checkout",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor",
+      "require_clean": true
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "rdpcm_model_source",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/Dehazing/ITS/models/ConvIR.py",
+      "sha256": "0ba530b66c65a14695223215931ca6e4463ee3cd5d65ae64e0e6cb764d07f4e6"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "authoritative_review",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/reformulation_reviews/2026-07-21-convir-only-rdpcm-reformulation-review.json",
+      "sha256": "3d3346823e083290c958e0879ee0c8f139ef6a465ee8624919c001dd90fb90c0"
+    }
+  ],
+  "operation_id": "RDPCM_S0_ARCHITECTURE_QUALIFICATION",
+  "route_id": "convir_only_rdpcm_s0_20260721",
+  "schema_version": 1
+}

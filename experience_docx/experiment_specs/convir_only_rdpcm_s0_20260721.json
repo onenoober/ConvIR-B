@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "route_id": "convir_only_rdpcm_s0_20260721",
+  "rules_commit": "eef18709c62e53219a9b5bf7f23747af013b69e0",
+  "title": "ConvIR-only RDPCM v1 no-data architecture qualification",
+  "rationale": "The authoritative reformulation review permits only one protected-data-free S0 route-authoring step. This route freezes one 128-channel bottleneck insertion, a 32-channel continuous bounded demand-protection module, exact identity initialization, strict official-checkpoint reuse, a two-stage no-op and gradient contract, and fixed parameter and memory limits. It makes no learnability, restoration, training, or external-validity claim.",
+  "first_operation": "RDPCM_S0_ARCHITECTURE_QUALIFICATION",
+  "program_contract_relpath": "experience_docx/research_programs/convir_only_rdpcm.json",
+  "operations": {
+    "RDPCM_S0_ARCHITECTURE_QUALIFICATION": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "s0_qualification",
+        "require_gpu": true,
+        "output_id": "rdpcm-s0-architecture-qualification-r1",
+        "closeout_filename": "rdpcm_s0_architecture_qualification_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "allowed_terminal_tuples": [
+          {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "RDPCM_S0_ARCHITECTURE_QUALIFIED",
+            "authorizes": "ONE_SMALL_HAZE4K_DEVELOPMENT_MECHANISM_DISCRIMINATION_CONTRACT_ONLY"
+          },
+          {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "RDPCM_S0_QUALIFICATION_FAIL",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "RDPCM_S0_QUALIFICATION_INCONCLUSIVE",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "FAILED_ENGINEERING",
+            "decision": null,
+            "authorizes": "NONE"
+          }
+        ],
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "short",
+        "heartbeat_timeout_seconds": 180,
+        "min_free_gpu_mib": 4096,
+        "max_gpu_utilization_pct": 90
+      },
+      "program_authorization": {
+        "program_id": "convir_only_rdpcm",
+        "stage_id": "s0_engineering",
+        "family_id": "selector_critic_family",
+        "mechanism_type": "orthogonal",
+        "evidence_role": "engineering_debug",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {"role": "official_model", "use": "baseline", "anchor_id": "official_anchor"},
+          {"role": "official_model", "use": "initialization", "anchor_id": "official_checkpoint"},
+          {"role": "review_authority", "use": "diagnostic", "anchor_id": "rdpcm_review"}
+        ],
+        "adjacent_sequence": null,
+        "orthogonal_changes": [
+          {
+            "dimension": "decision_semantics",
+            "reason": "Direct continuous bounded modulation replaces candidate-action choice and abstention."
+          },
+          {
+            "dimension": "dependency_structure",
+            "reason": "The route uses only official ConvIR-B and removes all WDMamba action-system dependency."
+          },
+          {
+            "dimension": "target_representation",
+            "reason": "Continuous demand pressure and protection attenuation replace unstable hard region labels."
+          },
+          {
+            "dimension": "intervention_locus",
+            "reason": "One fixed internal bottleneck feature intervention replaces post-hoc regional endpoint actions."
+          }
+        ],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Can frozen CONVIR_ONLY_RDPCM_V1 satisfy its protected-data-free architecture and identity qualification contract?",
+        "population": {
+          "evidence_role": "engineering_debug",
+          "grouping_unit": "deterministic_synthetic_fixture",
+          "independent_group_count": 1,
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "CONVIR_ONLY_RDPCM_V1",
+          "reference": "official_ConvIR_B_anchor",
+          "matched_budget": "one identical 1x3x64x64 synthetic CUDA fixture with zero optimizer steps",
+          "fixed_factors": [
+            "insertion Decoder[0] output before first decoder upsample and skip fusion",
+            "128 input channels and 32 hidden channels",
+            "0.25 tanh output-gate modulation bound",
+            "output gate initialized to zero",
+            "controlled activation output_gate equals 0.1 with no parameter update",
+            "41699 new parameters with 50000 maximum",
+            "512 MiB peak allocated-memory increment maximum",
+            "no-op tolerance atol 0 and rtol 0",
+            "seed 20260721"
+          ]
+        },
+        "primary_estimand": {
+          "id": "all_s0_checks",
+          "metric": "all frozen S0 architecture checks pass",
+          "direction": "higher",
+          "aggregation": "logical conjunction over required checks",
+          "unit": "qualification_contract"
+        },
+        "controls": [
+          "official ConvIR-B exact checkpoint-loaded output",
+          "RDPCM candidate with module disabled",
+          "RDPCM candidate after controlled activation is restored to zero gate"
+        ],
+        "uncertainty": {
+          "method": "deterministic complete engineering contract",
+          "confidence_level": 0.95,
+          "independent_unit": "qualification_contract"
+        },
+        "gates": [
+          {
+            "id": "all_required_checks",
+            "type": "integrity",
+            "estimand": "all frozen S0 architecture checks pass",
+            "direction": "equal",
+            "threshold": true,
+            "decision_role": "decisive"
+          }
+        ],
+        "competing_explanation": "A nominal no-op may hide broken checkpoint reuse or upstream gradient disconnection rather than establish an integration-capable module.",
+        "terminal_mapping": {
+          "pass": {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "RDPCM_S0_ARCHITECTURE_QUALIFIED",
+            "authorizes": "ONE_SMALL_HAZE4K_DEVELOPMENT_MECHANISM_DISCRIMINATION_CONTRACT_ONLY"
+          },
+          "fail": {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "RDPCM_S0_QUALIFICATION_FAIL",
+            "authorizes": "NONE"
+          },
+          "inconclusive": {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "RDPCM_S0_QUALIFICATION_INCONCLUSIVE",
+            "authorizes": "NONE"
+          }
+        },
+        "disabled_actions": [
+          "training",
+          "scientific data access",
+          "Haze4K access",
+          "NH-HAZE access",
+          "confirmation access",
+          "canary access",
+          "locked-test access",
+          "module effectiveness claim",
+          "architecture or hyperparameter search"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/run_convir_only_rdpcm_s0.py",
+        "timeout_seconds": 900,
+        "expected_wall_seconds": 300,
+        "total_units": 1,
+        "evidence_role": "engineering_debug",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {
+          "CONVIR_ROUTE_RDPCM_DEFINITION": "CONVIR_ONLY_RDPCM_V1"
+        },
+        "evidence_files": [
+          {
+            "source_relpath": "workload/rdpcm_s0_summary.json",
+            "destination_filename": "rdpcm_s0_summary.json",
+            "required": true,
+            "max_bytes": 1048576
+          }
+        ],
+        "engineering_contract": {
+          "mode": "gpu_synthetic_no_data",
+          "max_seconds": 600
+        },
+        "precision_contract": {
+          "mode": "not_applicable",
+          "rationale": "S0 is a deterministic engineering qualification with no scientific estimand."
+        }
+      },
+      "assets": [
+        {
+          "id": "official_anchor",
+          "kind": "git_checkout",
+          "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor",
+          "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+          "require_clean": true,
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "official_checkpoint",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+          "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "rdpcm_model_source",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/Dehazing/ITS/models/ConvIR.py",
+          "sha256": "0ba530b66c65a14695223215931ca6e4463ee3cd5d65ae64e0e6cb764d07f4e6",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        },
+        {
+          "id": "authoritative_review",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/reformulation_reviews/2026-07-21-convir-only-rdpcm-reformulation-review.json",
+          "sha256": "3d3346823e083290c958e0879ee0c8f139ef6a465ee8624919c001dd90fb90c0",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        }
+      ],
+      "capability": {
+        "profile_id": "convir_only_rdpcm_v1_gpu_synthetic",
+        "contract_mode": "gpu_synthetic_no_data",
+        "minimum_fixture": {"batch": 1, "channels": 3, "height": 64, "width": 64},
+        "bound_assets": [
+          {"id": "official_anchor", "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"},
+          {"id": "official_checkpoint", "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"},
+          {"id": "rdpcm_model_source", "identity": "0ba530b66c65a14695223215931ca6e4463ee3cd5d65ae64e0e6cb764d07f4e6"},
+          {"id": "authoritative_review", "identity": "3d3346823e083290c958e0879ee0c8f139ef6a465ee8624919c001dd90fb90c0"}
+        ],
+        "compatibility_imports": ["torch", "Dehazing.ITS.models.ConvIR"],
+        "production_path_statement": "The exact official ConvIR-B base graph plus the frozen RDPCM production insertion runs forward and backward on one synthetic CUDA tensor.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true
+      },
+      "precision": null
+    }
+  }
+}
