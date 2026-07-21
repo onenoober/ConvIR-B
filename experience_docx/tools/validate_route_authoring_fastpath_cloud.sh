@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+on_error() {
+  rc=$?
+  printf 'ROUTE_AUTHORING_FASTPATH_CLOUD_FAILED line=%s command=%q rc=%s\n' "$1" "$2" "$rc" >&2
+  exit "$rc"
+}
+trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
+
 branch=main
-baseline=dd17b42237bee1cc2663a75b91bdc1dd85c48f74
+baseline=39eded234afb890946c189599009ffe1b81b90c9
 github=git@github.com:onenoober/ConvIR-B.git
 seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
 python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
