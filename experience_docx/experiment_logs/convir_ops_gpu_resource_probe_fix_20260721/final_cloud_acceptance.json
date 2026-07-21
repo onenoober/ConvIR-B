@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "status": "COMPLETED_GATE_PASS",
+  "decision": "CONVIR_OPS_GPU_RESOURCE_PROBE_FIX_ACCEPTED",
+  "candidate_commit": "a46dcb72a96ada284a547bed8165511e8ce6827f",
+  "candidate_source_sha256": "0d10d630bbaba161ad254ed135ee9d5cf14b02260386b3826580e35147085597",
+  "validation_commit": "1261fbac81351332568060284578e76262fdba8f",
+  "validation_script_sha256": "ab23a9ab51e72433b9cfeb3e936e03d8abcfee16426359c02f125bc900fd63ca",
+  "cloud_host": "convir-4090",
+  "cloud_python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "server_version": "5.1.0",
+  "control_protocol_schema": 4,
+  "supported_manifest_schemas": [4, 5, 6],
+  "tool_count": 6,
+  "tests_passed": 181,
+  "gpu_query_binary": "/usr/bin/nvidia-smi",
+  "gpu_gate": {
+    "min_free_gpu_mib": 4096,
+    "max_gpu_utilization_pct": 90
+  },
+  "real_gpu_probe": {
+    "selected_gpu": 0,
+    "free_mib": 20965,
+    "utilization_pct": 0,
+    "total_gpu_count": 8
+  },
+  "typed_states_verified": [
+    "GPU_RESOURCE_PROBE_FAILED",
+    "RESOURCE_WAIT_REQUIRED",
+    "GPU_OK"
+  ],
+  "query_failure_and_unparseable_are_distinct": true,
+  "gpu_zero_selection_verified": true,
+  "second_probe_precedes_workspace_creation": true,
+  "runner_started": false,
+  "gpu_workload_executed": false,
+  "dataset_access": false,
+  "checkpoint_access": false,
+  "confirmation_access": false,
+  "canary_access": false,
+  "locked_test_access": false
+}
