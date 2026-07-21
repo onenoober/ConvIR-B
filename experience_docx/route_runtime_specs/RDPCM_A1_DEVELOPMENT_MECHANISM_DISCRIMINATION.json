@@ -1,0 +1,38 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/convir_only_rdpcm_a1_20260721__RDPCM_A1_DEVELOPMENT_MECHANISM_DISCRIMINATION.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/convir_only_rdpcm_a1_20260721__RDPCM_A1_DEVELOPMENT_MECHANISM_DISCRIMINATION.json",
+    "max_seconds": 900,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/run_convir_only_rdpcm_a1.py",
+  "environment": {
+    "CONVIR_ROUTE_RDPCM_DEFINITION": "CONVIR_ONLY_RDPCM_V1"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "rdpcm_a1_summary.json",
+      "max_bytes": 1048576,
+      "required": true,
+      "source_relpath": "workload/rdpcm_a1_summary.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 10800,
+  "operation_id": "RDPCM_A1_DEVELOPMENT_MECHANISM_DISCRIMINATION",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/convir_only_rdpcm_a1_20260721__RDPCM_A1_DEVELOPMENT_MECHANISM_DISCRIMINATION.json",
+    "mode": "formal_precision",
+    "rationale": "The 300 group-disjoint development scenes exceed the prospectively calculated 246 groups needed for a 0.015 dB mean-difference half-width under the conservative archived planning SD of 0.12 dB."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "convir_only_rdpcm_a1_20260721",
+  "schema_version": 2,
+  "timeout_seconds": 21600,
+  "total_units": 7
+}

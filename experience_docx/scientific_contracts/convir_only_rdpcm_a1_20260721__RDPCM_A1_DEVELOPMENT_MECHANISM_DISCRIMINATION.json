@@ -1,0 +1,147 @@
+{
+  "competing_explanation": "Any apparent benefit may come only from added parameters, nonlinear capacity, checkpoint drift, training-budget differences, or seed noise rather than spatially varying demand-protection modulation; the exactly matched global-uniform arm, official baseline, paired seeds, frozen backbone, and fixed final-step evaluation address these alternatives.",
+  "controls": [
+    "A0 official ConvIR-B checkpoint for absolute benefit and harm",
+    "A1 identical-parameter global-uniform RDPCM control at the frozen insertion",
+    "A2 spatial CONVIR_ONLY_RDPCM_V1 at the frozen insertion"
+  ],
+  "disabled_actions": [
+    "Haze4K test access",
+    "confirmation access",
+    "canary access",
+    "locked-test access",
+    "NH-HAZE access",
+    "ConvIR-B backbone fine-tuning",
+    "hard demand protection or safe-mask labels",
+    "selector critic candidate bank abstention coverage or risk threshold",
+    "checkpoint selection or early stopping",
+    "insertion width depth seed learning-rate threshold schedule or loss-weight search",
+    "promotion deployment or generalization claim"
+  ],
+  "gates": [
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "LCB95 of mean paired A2 minus A1 PSNR",
+      "id": "spatial_materiality_pass",
+      "threshold": 0.03,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "UCB95 of mean paired A2 minus A1 PSNR",
+      "id": "spatial_futility_fail",
+      "threshold": 0.01,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "LCB95 of mean A2 minus A0 PSNR",
+      "id": "absolute_nonharm_pass",
+      "threshold": 0.0,
+      "type": "safety"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "UCB95 of mean A2 minus A0 PSNR",
+      "id": "absolute_harm_fail",
+      "threshold": 0.0,
+      "type": "safety"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "Bottom-five-percent mean per-group A2 minus A0 PSNR",
+      "id": "absolute_cvar5_pass",
+      "threshold": -0.1,
+      "type": "safety"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "Bottom-five-percent mean per-group A2 minus A0 PSNR",
+      "id": "absolute_cvar5_fail",
+      "threshold": -0.2,
+      "type": "safety"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "Minimum of the three seed-specific mean A2 minus A1 PSNR values",
+      "id": "paired_seed_stability_pass",
+      "threshold": 0.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "Minimum of the three seed-specific mean A2 minus A1 PSNR values",
+      "id": "paired_seed_instability_fail",
+      "threshold": -0.01,
+      "type": "integrity"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "A0 official ConvIR-B checkpoint unchanged",
+      "A1 global-uniform control uses the exact RDPCM parameter graph and averages post-nonlinearity demand protection and residual fields to 1x1 before broadcast",
+      "A2 spatial CONVIR_ONLY_RDPCM_V1 retains post-nonlinearity fields at native bottleneck resolution",
+      "insertion is Decoder[0] output before first decoder upsample and skip fusion",
+      "128 input channels, 32 hidden channels, 0.25 tanh output-gate bound, zero output-gate initialization",
+      "ConvIR-B parameters frozen; only RDPCM parameters trainable",
+      "Haze4K train only; 512 deterministic training groups and 300 clean-reference-disjoint development groups",
+      "seeds 3407, 7777, and 20260721 with paired initialization and paired deterministic batches",
+      "AdamW learning rate 0.0002, betas 0.9 and 0.999, epsilon 1e-8, zero weight decay, gradient norm cap 1.0",
+      "official three-scale L1 plus 0.1 times three-scale complex FFT L1",
+      "600 fixed optimizer steps, batch 4, deterministic 256x256 paired crop and horizontal flip",
+      "no validation checkpoint selection, early stopping, architecture search, threshold search, or hyperparameter rescue"
+    ],
+    "matched_budget": "Three paired seeds; 600 AdamW steps per arm and seed; batch 4; final-step evaluation only; 41,699 trainable RDPCM parameters per learned arm; frozen official ConvIR-B backbone.",
+    "primary_variable": "RDPCM_spatial_variation",
+    "reference": "parameter_matched_global_uniform_RDPCM"
+  },
+  "operation_id": "RDPCM_A1_DEVELOPMENT_MECHANISM_DISCRIMINATION",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "Haze4K_train_clean_reference_group",
+    "independent_group_count": 300
+  },
+  "primary_estimand": {
+    "aggregation": "Mean over 300 independent groups with a 10000-replicate paired group bootstrap",
+    "direction": "higher",
+    "id": "spatial_minus_global_psnr_db",
+    "metric": "Per clean-reference group PSNR(A2 spatial) minus PSNR(A1 global), averaged within group across the three paired seeds",
+    "unit": "dB"
+  },
+  "question": "Under identical parameters, insertion, initialization, frozen ConvIR-B backbone, optimizer, schedule, data, seeds, steps, loss, and evidence role, does spatial CONVIR_ONLY_RDPCM_V1 outperform the same RDPCM branch made global-uniform?",
+  "route_id": "convir_only_rdpcm_a1_20260721",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "RDPCM_A1_SPATIAL_MECHANISM_FAIL_CLOSE_V1",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "PREREGISTERED_EVIDENCE_COMPLETION_ONLY",
+      "decision": "RDPCM_A1_SPATIAL_MECHANISM_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "ONE_INDEPENDENT_REAL_DOMAIN_VALIDATION_CONTRACT_ONLY",
+      "decision": "RDPCM_A1_SPATIAL_MECHANISM_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "Haze4K_train_clean_reference_group",
+    "method": "10000-replicate percentile bootstrap over clean-reference groups; the three paired seeds remain coupled and are averaged within each resampled group"
+  }
+}

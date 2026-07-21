@@ -1,0 +1,63 @@
+{
+  "assets": [
+    {
+      "access_role": "unrestricted",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor",
+      "kind": "git_checkout",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor",
+      "require_clean": true
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "rdpcm_model_source",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/Dehazing/ITS/models/ConvIR.py",
+      "sha256": "efd964e904d20389deebcda082cac5618b11d3c9a92ee68772b592b13cbf6fe8"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "authoritative_review",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/reformulation_reviews/2026-07-21-convir-only-rdpcm-reformulation-review.json",
+      "sha256": "3d3346823e083290c958e0879ee0c8f139ef6a465ee8624919c001dd90fb90c0"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "s0_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/convir_only_rdpcm_s0_20260721/rdpcm_s0_architecture_qualification_closeout.json",
+      "sha256": "8b523082bc1e8229a07af507af6407d3d05aad33cd7713953d79f0fe63e50346"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "split_contract",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/data_contracts/haze4k_rdpcm_a1_split_seed3407.json",
+      "sha256": "7596b775f170f9491af238b95e88a7fcfc737ff1ef68a3a56b8529ecde6c6d0d"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_development",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K"
+    }
+  ],
+  "operation_id": "RDPCM_A1_DEVELOPMENT_MECHANISM_DISCRIMINATION",
+  "route_id": "convir_only_rdpcm_a1_20260721",
+  "schema_version": 1
+}

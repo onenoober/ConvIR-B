@@ -1,0 +1,338 @@
+{
+  "schema_version": 1,
+  "route_id": "convir_only_rdpcm_a1_20260721",
+  "rules_commit": "539e17e9eaf997e60aa755f18e0426bdcfcfc5f0",
+  "title": "ConvIR-only RDPCM v1 Haze4K development mechanism discrimination",
+  "rationale": "S0 qualified the exact no-op, checkpoint reuse, bounded modulation, gradient reachability, trainable scope, parameter count, and memory behavior of CONVIR_ONLY_RDPCM_V1. This separately frozen development contract asks the only authorized next question: whether spatial variation itself provides reproducible restoration value beyond the identical 41,699-parameter module made global-uniform at the same insertion. It uses only a group-disjoint subset of Haze4K train, freezes the official ConvIR-B backbone, forbids checkpoint selection and hyperparameter search, and permanently closes V1 on a complete scientific FAIL.",
+  "first_operation": "RDPCM_A1_DEVELOPMENT_MECHANISM_DISCRIMINATION",
+  "program_contract_relpath": "experience_docx/research_programs/convir_only_rdpcm.json",
+  "operations": {
+    "RDPCM_A1_DEVELOPMENT_MECHANISM_DISCRIMINATION": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "development_screening",
+        "require_gpu": true,
+        "output_id": "rdpcm-a1-development-mechanism-discrimination-r1",
+        "closeout_filename": "rdpcm_a1_development_mechanism_discrimination_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "allowed_terminal_tuples": [
+          {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "RDPCM_A1_SPATIAL_MECHANISM_PASS",
+            "authorizes": "ONE_INDEPENDENT_REAL_DOMAIN_VALIDATION_CONTRACT_ONLY"
+          },
+          {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "RDPCM_A1_SPATIAL_MECHANISM_FAIL_CLOSE_V1",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "RDPCM_A1_SPATIAL_MECHANISM_INCONCLUSIVE",
+            "authorizes": "PREREGISTERED_EVIDENCE_COMPLETION_ONLY"
+          },
+          {
+            "state": "FAILED_ENGINEERING",
+            "decision": null,
+            "authorizes": "NONE"
+          }
+        ],
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 600,
+        "min_free_gpu_mib": 12000,
+        "max_gpu_utilization_pct": 90
+      },
+      "program_authorization": {
+        "program_id": "convir_only_rdpcm",
+        "stage_id": "a1_development",
+        "family_id": "rdpcm_continuous_modulation_family",
+        "mechanism_type": "adjacent",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {"role": "official_model", "use": "baseline", "anchor_id": "official_anchor"},
+          {"role": "official_model", "use": "initialization", "anchor_id": "official_checkpoint"},
+          {"role": "official_model", "use": "comparison", "anchor_id": "official_anchor"},
+          {"role": "review_authority", "use": "diagnostic", "anchor_id": "rdpcm_review"},
+          {"role": "s0_authority", "use": "diagnostic", "anchor_id": "rdpcm_s0_pass"},
+          {"role": "development_data", "use": "training", "anchor_id": "haze4k_train_split"},
+          {"role": "development_data", "use": "evaluation", "anchor_id": "haze4k_train_split"}
+        ],
+        "adjacent_sequence": 1,
+        "orthogonal_changes": [],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Under identical parameters, insertion, initialization, frozen ConvIR-B backbone, optimizer, schedule, data, seeds, steps, loss, and evidence role, does spatial CONVIR_ONLY_RDPCM_V1 outperform the same RDPCM branch made global-uniform?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "Haze4K_train_clean_reference_group",
+          "independent_group_count": 300,
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "RDPCM_spatial_variation",
+          "reference": "parameter_matched_global_uniform_RDPCM",
+          "matched_budget": "Three paired seeds; 600 AdamW steps per arm and seed; batch 4; final-step evaluation only; 41,699 trainable RDPCM parameters per learned arm; frozen official ConvIR-B backbone.",
+          "fixed_factors": [
+            "A0 official ConvIR-B checkpoint unchanged",
+            "A1 global-uniform control uses the exact RDPCM parameter graph and averages post-nonlinearity demand protection and residual fields to 1x1 before broadcast",
+            "A2 spatial CONVIR_ONLY_RDPCM_V1 retains post-nonlinearity fields at native bottleneck resolution",
+            "insertion is Decoder[0] output before first decoder upsample and skip fusion",
+            "128 input channels, 32 hidden channels, 0.25 tanh output-gate bound, zero output-gate initialization",
+            "ConvIR-B parameters frozen; only RDPCM parameters trainable",
+            "Haze4K train only; 512 deterministic training groups and 300 clean-reference-disjoint development groups",
+            "seeds 3407, 7777, and 20260721 with paired initialization and paired deterministic batches",
+            "AdamW learning rate 0.0002, betas 0.9 and 0.999, epsilon 1e-8, zero weight decay, gradient norm cap 1.0",
+            "official three-scale L1 plus 0.1 times three-scale complex FFT L1",
+            "600 fixed optimizer steps, batch 4, deterministic 256x256 paired crop and horizontal flip",
+            "no validation checkpoint selection, early stopping, architecture search, threshold search, or hyperparameter rescue"
+          ]
+        },
+        "primary_estimand": {
+          "id": "spatial_minus_global_psnr_db",
+          "metric": "Per clean-reference group PSNR(A2 spatial) minus PSNR(A1 global), averaged within group across the three paired seeds",
+          "direction": "higher",
+          "aggregation": "Mean over 300 independent groups with a 10000-replicate paired group bootstrap",
+          "unit": "dB"
+        },
+        "controls": [
+          "A0 official ConvIR-B checkpoint for absolute benefit and harm",
+          "A1 identical-parameter global-uniform RDPCM control at the frozen insertion",
+          "A2 spatial CONVIR_ONLY_RDPCM_V1 at the frozen insertion"
+        ],
+        "uncertainty": {
+          "method": "10000-replicate percentile bootstrap over clean-reference groups; the three paired seeds remain coupled and are averaged within each resampled group",
+          "confidence_level": 0.95,
+          "independent_unit": "Haze4K_train_clean_reference_group"
+        },
+        "gates": [
+          {
+            "id": "spatial_materiality_pass",
+            "type": "materiality",
+            "estimand": "LCB95 of mean paired A2 minus A1 PSNR",
+            "direction": "min",
+            "threshold": 0.03,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "spatial_futility_fail",
+            "type": "materiality",
+            "estimand": "UCB95 of mean paired A2 minus A1 PSNR",
+            "direction": "max",
+            "threshold": 0.01,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "absolute_nonharm_pass",
+            "type": "safety",
+            "estimand": "LCB95 of mean A2 minus A0 PSNR",
+            "direction": "min",
+            "threshold": 0.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "absolute_harm_fail",
+            "type": "safety",
+            "estimand": "UCB95 of mean A2 minus A0 PSNR",
+            "direction": "max",
+            "threshold": 0.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "absolute_cvar5_pass",
+            "type": "safety",
+            "estimand": "Bottom-five-percent mean per-group A2 minus A0 PSNR",
+            "direction": "min",
+            "threshold": -0.1,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "absolute_cvar5_fail",
+            "type": "safety",
+            "estimand": "Bottom-five-percent mean per-group A2 minus A0 PSNR",
+            "direction": "max",
+            "threshold": -0.2,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "paired_seed_stability_pass",
+            "type": "integrity",
+            "estimand": "Minimum of the three seed-specific mean A2 minus A1 PSNR values",
+            "direction": "min",
+            "threshold": 0.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "paired_seed_instability_fail",
+            "type": "integrity",
+            "estimand": "Minimum of the three seed-specific mean A2 minus A1 PSNR values",
+            "direction": "max",
+            "threshold": -0.01,
+            "decision_role": "decisive"
+          }
+        ],
+        "competing_explanation": "Any apparent benefit may come only from added parameters, nonlinear capacity, checkpoint drift, training-budget differences, or seed noise rather than spatially varying demand-protection modulation; the exactly matched global-uniform arm, official baseline, paired seeds, frozen backbone, and fixed final-step evaluation address these alternatives.",
+        "terminal_mapping": {
+          "pass": {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "RDPCM_A1_SPATIAL_MECHANISM_PASS",
+            "authorizes": "ONE_INDEPENDENT_REAL_DOMAIN_VALIDATION_CONTRACT_ONLY"
+          },
+          "fail": {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "RDPCM_A1_SPATIAL_MECHANISM_FAIL_CLOSE_V1",
+            "authorizes": "NONE"
+          },
+          "inconclusive": {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "RDPCM_A1_SPATIAL_MECHANISM_INCONCLUSIVE",
+            "authorizes": "PREREGISTERED_EVIDENCE_COMPLETION_ONLY"
+          }
+        },
+        "disabled_actions": [
+          "Haze4K test access",
+          "confirmation access",
+          "canary access",
+          "locked-test access",
+          "NH-HAZE access",
+          "ConvIR-B backbone fine-tuning",
+          "hard demand protection or safe-mask labels",
+          "selector critic candidate bank abstention coverage or risk threshold",
+          "checkpoint selection or early stopping",
+          "insertion width depth seed learning-rate threshold schedule or loss-weight search",
+          "promotion deployment or generalization claim"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/run_convir_only_rdpcm_a1.py",
+        "timeout_seconds": 21600,
+        "expected_wall_seconds": 10800,
+        "total_units": 7,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {
+          "CONVIR_ROUTE_RDPCM_DEFINITION": "CONVIR_ONLY_RDPCM_V1"
+        },
+        "evidence_files": [
+          {
+            "source_relpath": "workload/rdpcm_a1_summary.json",
+            "destination_filename": "rdpcm_a1_summary.json",
+            "required": true,
+            "max_bytes": 1048576
+          }
+        ],
+        "engineering_contract": {
+          "mode": "gpu_synthetic_no_data",
+          "max_seconds": 900
+        },
+        "precision_contract": {
+          "mode": "formal_precision",
+          "rationale": "The 300 group-disjoint development scenes exceed the prospectively calculated 246 groups needed for a 0.015 dB mean-difference half-width under the conservative archived planning SD of 0.12 dB."
+        }
+      },
+      "assets": [
+        {
+          "id": "official_anchor",
+          "kind": "git_checkout",
+          "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor",
+          "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+          "require_clean": true,
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "official_checkpoint",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+          "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "rdpcm_model_source",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/Dehazing/ITS/models/ConvIR.py",
+          "sha256": "efd964e904d20389deebcda082cac5618b11d3c9a92ee68772b592b13cbf6fe8",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        },
+        {
+          "id": "authoritative_review",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/reformulation_reviews/2026-07-21-convir-only-rdpcm-reformulation-review.json",
+          "sha256": "3d3346823e083290c958e0879ee0c8f139ef6a465ee8624919c001dd90fb90c0",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        },
+        {
+          "id": "s0_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/convir_only_rdpcm_s0_20260721/rdpcm_s0_architecture_qualification_closeout.json",
+          "sha256": "8b523082bc1e8229a07af507af6407d3d05aad33cd7713953d79f0fe63e50346",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        },
+        {
+          "id": "split_contract",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/data_contracts/haze4k_rdpcm_a1_split_seed3407.json",
+          "sha256": "7596b775f170f9491af238b95e88a7fcfc737ff1ef68a3a56b8529ecde6c6d0d",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "haze4k_development",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+          "access_role": "development_screening",
+          "contract_access": false
+        }
+      ],
+      "capability": {
+        "profile_id": "convir_only_rdpcm_v1_spatial_global_matched_gpu",
+        "contract_mode": "gpu_synthetic_no_data",
+        "minimum_fixture": {"batch": 1, "channels": 3, "height": 256, "width": 256},
+        "bound_assets": [
+          {"id": "official_anchor", "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"},
+          {"id": "official_checkpoint", "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"},
+          {"id": "rdpcm_model_source", "identity": "efd964e904d20389deebcda082cac5618b11d3c9a92ee68772b592b13cbf6fe8"},
+          {"id": "authoritative_review", "identity": "3d3346823e083290c958e0879ee0c8f139ef6a465ee8624919c001dd90fb90c0"},
+          {"id": "s0_closeout", "identity": "8b523082bc1e8229a07af507af6407d3d05aad33cd7713953d79f0fe63e50346"}
+        ],
+        "compatibility_imports": ["torch", "numpy", "PIL", "Dehazing.ITS.models.ConvIR"],
+        "production_path_statement": "The exact official ConvIR-B graph plus both the frozen spatial RDPCM and its parameter-identical post-nonlinearity global-uniform control run forward and backward on one 256x256 synthetic CUDA fixture with bitwise initial identity.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true
+      },
+      "precision": {
+        "certificate_id": "convir_only_rdpcm_a1_primary_precision",
+        "estimand": "Mean paired clean-reference-group PSNR difference between spatial and global-uniform RDPCM",
+        "method": "normal_mean",
+        "confidence_level": 0.95,
+        "target_half_width": 0.015,
+        "planning_sd": 0.12,
+        "independent_groups_available": 300,
+        "independent_groups_required": 246,
+        "feasible": true,
+        "source_role": "development_screening",
+        "source_reference": "Conservative planning bound from archived CDPRM S1 adaptive-minus-global development uncertainty; fixed before any RDPCM A1 outcome."
+      }
+    }
+  }
+}

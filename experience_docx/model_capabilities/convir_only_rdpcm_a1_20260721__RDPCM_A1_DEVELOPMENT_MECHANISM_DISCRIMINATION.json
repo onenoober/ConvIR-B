@@ -1,0 +1,43 @@
+{
+  "bound_assets": [
+    {
+      "id": "official_anchor",
+      "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+    },
+    {
+      "id": "official_checkpoint",
+      "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "id": "rdpcm_model_source",
+      "identity": "efd964e904d20389deebcda082cac5618b11d3c9a92ee68772b592b13cbf6fe8"
+    },
+    {
+      "id": "authoritative_review",
+      "identity": "3d3346823e083290c958e0879ee0c8f139ef6a465ee8624919c001dd90fb90c0"
+    },
+    {
+      "id": "s0_closeout",
+      "identity": "8b523082bc1e8229a07af507af6407d3d05aad33cd7713953d79f0fe63e50346"
+    }
+  ],
+  "compatibility_imports": [
+    "torch",
+    "numpy",
+    "PIL",
+    "Dehazing.ITS.models.ConvIR"
+  ],
+  "contract_mode": "gpu_synthetic_no_data",
+  "minimum_fixture": {
+    "batch": 1,
+    "channels": 3,
+    "height": 256,
+    "width": 256
+  },
+  "production_path_statement": "The exact official ConvIR-B graph plus both the frozen spatial RDPCM and its parameter-identical post-nonlinearity global-uniform control run forward and backward on one 256x256 synthetic CUDA fixture with bitwise initial identity.",
+  "profile_id": "convir_only_rdpcm_v1_spatial_global_matched_gpu",
+  "protected_data_prohibited": true,
+  "schema_version": 1,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}

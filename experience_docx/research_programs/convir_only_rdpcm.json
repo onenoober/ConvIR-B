@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "program_id": "convir_only_rdpcm",
-  "objective": "Qualify one falsifiable official-ConvIR-B-only continuous bounded regional modulation definition before any scientific-data use or training.",
+  "objective": "Determine whether one frozen official-ConvIR-B-only continuous spatial demand-protection modulation mechanism has reproducible development value beyond an exactly parameter-matched global-uniform modulation control, before any independent real-domain validation.",
   "source_anchors": [
     {
       "id": "official_anchor",
@@ -17,21 +17,33 @@
       "id": "rdpcm_review",
       "reference": "experience_docx/reformulation_reviews/2026-07-21-convir-only-rdpcm-reformulation-review.json sha256 3d3346823e083290c958e0879ee0c8f139ef6a465ee8624919c001dd90fb90c0",
       "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "rdpcm_s0_pass",
+      "reference": "experience_docx/experiment_logs/convir_only_rdpcm_s0_20260721/rdpcm_s0_architecture_qualification_closeout.json sha256 8b523082bc1e8229a07af507af6407d3d05aad33cd7713953d79f0fe63e50346",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "haze4k_train_split",
+      "reference": "experience_docx/data_contracts/haze4k_rdpcm_a1_split_seed3407.json sha256 7596b775f170f9491af238b95e88a7fcfc737ff1ef68a3a56b8529ecde6c6d0d",
+      "allowed_uses": ["training", "evaluation"]
     }
   ],
   "dependency_roles": {
     "official_model": ["baseline", "initialization", "comparison"],
-    "review_authority": ["diagnostic"]
+    "review_authority": ["diagnostic"],
+    "s0_authority": ["diagnostic"],
+    "development_data": ["training", "evaluation"]
   },
   "stages": {
-    "s0_engineering": {
-      "evidence_roles": ["engineering_debug"],
+    "a1_development": {
+      "evidence_roles": ["development_screening"],
       "protected_permissions": {
         "allow_confirmation": false,
         "allow_canary": false,
         "allow_locked_test": false
       },
-      "route_families": ["selector_critic_family"]
+      "route_families": ["rdpcm_continuous_modulation_family"]
     }
   },
   "route_families": {
@@ -42,6 +54,14 @@
       "state": "closed",
       "close_condition": "The R5-R13 selector critic and context family is terminally closed to adjacent feature threshold coverage and risk-gate variants.",
       "reopen_evidence_types": ["new_observable_information", "independent_target_validation"]
+    },
+    "rdpcm_continuous_modulation_family": {
+      "core_assumption": "Frozen CONVIR_ONLY_RDPCM_V1 spatially varying continuous modulation contributes restoration value beyond the same module made global-uniform.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "One complete valid development-screening FAIL permanently closes CONVIR_ONLY_RDPCM_V1 and forbids architecture, position, seed, optimizer, schedule, threshold, or loss-weight rescue.",
+      "reopen_evidence_types": ["independent_real_domain_signal", "new_mechanism_evidence"]
     }
   },
   "orthogonal_dimensions": [

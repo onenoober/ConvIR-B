@@ -1,22 +1,22 @@
 {
-  "experiment_spec_relpath": "experience_docx/experiment_specs/convir_only_rdpcm_s0_20260721.json",
-  "experiment_spec_sha256": "36a98a240f178e79ad81f7931ea185f09b18c902e1f9230c5314f8dcc6b901ea",
+  "experiment_spec_relpath": "experience_docx/experiment_specs/convir_only_rdpcm_a1_20260721.json",
+  "experiment_spec_sha256": "98a2ab086273f6770cef04d23209783af2ac3dad52693ba0fa022f537bc70a6b",
   "operations": {
-    "RDPCM_S0_ARCHITECTURE_QUALIFICATION": {
+    "RDPCM_A1_DEVELOPMENT_MECHANISM_DISCRIMINATION": {
       "allowed_terminal_tuples": [
         {
-          "authorizes": "ONE_SMALL_HAZE4K_DEVELOPMENT_MECHANISM_DISCRIMINATION_CONTRACT_ONLY",
-          "decision": "RDPCM_S0_ARCHITECTURE_QUALIFIED",
+          "authorizes": "ONE_INDEPENDENT_REAL_DOMAIN_VALIDATION_CONTRACT_ONLY",
+          "decision": "RDPCM_A1_SPATIAL_MECHANISM_PASS",
           "state": "COMPLETED_GATE_PASS"
         },
         {
           "authorizes": "NONE",
-          "decision": "RDPCM_S0_QUALIFICATION_FAIL",
+          "decision": "RDPCM_A1_SPATIAL_MECHANISM_FAIL_CLOSE_V1",
           "state": "COMPLETED_GATE_FAIL"
         },
         {
-          "authorizes": "NONE",
-          "decision": "RDPCM_S0_QUALIFICATION_INCONCLUSIVE",
+          "authorizes": "PREREGISTERED_EVIDENCE_COMPLETION_ONLY",
+          "decision": "RDPCM_A1_SPATIAL_MECHANISM_INCONCLUSIVE",
           "state": "COMPLETED_INCONCLUSIVE"
         },
         {
@@ -25,13 +25,13 @@
           "state": "FAILED_ENGINEERING"
         }
       ],
-      "closeout_filename": "rdpcm_s0_architecture_qualification_closeout.json",
-      "heartbeat_timeout_seconds": 180,
+      "closeout_filename": "rdpcm_a1_development_mechanism_discrimination_closeout.json",
+      "heartbeat_timeout_seconds": 600,
       "max_gpu_utilization_pct": 90,
-      "min_free_gpu_mib": 4096,
-      "mode": "s0_qualification",
-      "monitor_profile": "short",
-      "output_id": "rdpcm-s0-architecture-qualification-r2",
+      "min_free_gpu_mib": 12000,
+      "mode": "development_screening",
+      "monitor_profile": "standard",
+      "output_id": "rdpcm-a1-development-mechanism-discrimination-r1",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
@@ -41,12 +41,12 @@
     }
   },
   "program_contract_relpath": "experience_docx/research_programs/convir_only_rdpcm.json",
-  "program_contract_sha256": "e85e1dc343b8ef064c0c63f00c050df3712290094037dd4840d0af9c5c084a44",
-  "route_card_relpath": "experience_docx/experiment_cards/convir_only_rdpcm_s0_20260721.md",
-  "route_id": "convir_only_rdpcm_s0_20260721",
-  "rules_commit": "eef18709c62e53219a9b5bf7f23747af013b69e0",
+  "program_contract_sha256": "c5181fc6be1f45ed057214abd5bd22f185e28974736f36dbddf84c68d7a0211f",
+  "route_card_relpath": "experience_docx/experiment_cards/convir_only_rdpcm_a1_20260721.md",
+  "route_id": "convir_only_rdpcm_a1_20260721",
+  "rules_commit": "539e17e9eaf997e60aa755f18e0426bdcfcfc5f0",
   "schema_version": 6,
   "scientific_contract_relpaths": {
-    "RDPCM_S0_ARCHITECTURE_QUALIFICATION": "experience_docx/scientific_contracts/convir_only_rdpcm_s0_20260721__RDPCM_S0_ARCHITECTURE_QUALIFICATION.json"
+    "RDPCM_A1_DEVELOPMENT_MECHANISM_DISCRIMINATION": "experience_docx/scientific_contracts/convir_only_rdpcm_a1_20260721__RDPCM_A1_DEVELOPMENT_MECHANISM_DISCRIMINATION.json"
   }
 }

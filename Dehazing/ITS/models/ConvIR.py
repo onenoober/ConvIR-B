@@ -57,11 +57,15 @@ class FAM(nn.Module):
 class RDPCM(nn.Module):
     """Frozen v1 continuous demand-protection modulation at 128 channels."""
 
-    def __init__(self, channel=128, hidden=32, modulation_bound=0.25):
+    def __init__(self, channel=128, hidden=32, modulation_bound=0.25,
+                 spatial_mode='spatial'):
         super(RDPCM, self).__init__()
         if channel != 128 or hidden != 32 or modulation_bound != 0.25:
             raise ValueError("CONVIR_ONLY_RDPCM_V1 constants are frozen")
         self.modulation_bound = float(modulation_bound)
+        if spatial_mode not in {'spatial', 'global_uniform'}:
+            raise ValueError("spatial_mode must be 'spatial' or 'global_uniform'")
+        self.spatial_mode = spatial_mode
         self.shared = nn.Sequential(
             nn.Conv2d(channel, hidden, kernel_size=1, bias=True),
             nn.GELU(),
@@ -72,13 +76,21 @@ class RDPCM(nn.Module):
         self.output_gate = nn.Parameter(torch.zeros(()))
         self.enabled = True
 
-    def forward(self, x):
-        if not self.enabled:
-            return x
+    def modulation_components(self, x):
         hidden = self.shared(x)
         demand_pressure = torch.sigmoid(self.demand(hidden))
         protection_attenuation = torch.sigmoid(-self.protection(hidden))
         delta = torch.tanh(self.residual(hidden))
+        if self.spatial_mode == 'global_uniform':
+            demand_pressure = F.adaptive_avg_pool2d(demand_pressure, 1)
+            protection_attenuation = F.adaptive_avg_pool2d(protection_attenuation, 1)
+            delta = F.adaptive_avg_pool2d(delta, 1)
+        return demand_pressure, protection_attenuation, delta
+
+    def forward(self, x):
+        if not self.enabled:
+            return x
+        demand_pressure, protection_attenuation, delta = self.modulation_components(x)
         scale = self.modulation_bound * torch.tanh(self.output_gate)
         return x + scale * demand_pressure * protection_attenuation * delta
 
@@ -135,9 +147,17 @@ class ConvIR(nn.Module):
         if rdpcm_mode == 'off':
             self.RDPCM = nn.Identity()
         elif rdpcm_mode == 'v1':
-            self.RDPCM = RDPCM(channel=base_channel * 4, hidden=32, modulation_bound=0.25)
+            self.RDPCM = RDPCM(
+                channel=base_channel * 4, hidden=32, modulation_bound=0.25,
+                spatial_mode='spatial',
+            )
+        elif rdpcm_mode == 'global_v1':
+            self.RDPCM = RDPCM(
+                channel=base_channel * 4, hidden=32, modulation_bound=0.25,
+                spatial_mode='global_uniform',
+            )
         else:
-            raise ValueError("rdpcm_mode must be 'off' or frozen 'v1'")
+            raise ValueError("rdpcm_mode must be 'off', frozen 'v1', or matched 'global_v1'")
 
     def forward(self, x):
         x_2 = F.interpolate(x, scale_factor=0.5)

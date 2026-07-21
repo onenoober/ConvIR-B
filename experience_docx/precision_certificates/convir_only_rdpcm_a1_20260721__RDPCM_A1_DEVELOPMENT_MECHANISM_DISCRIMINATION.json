@@ -1,0 +1,14 @@
+{
+  "certificate_id": "convir_only_rdpcm_a1_primary_precision",
+  "confidence_level": 0.95,
+  "estimand": "Mean paired clean-reference-group PSNR difference between spatial and global-uniform RDPCM",
+  "feasible": true,
+  "independent_groups_available": 300,
+  "independent_groups_required": 246,
+  "method": "normal_mean",
+  "planning_sd": 0.12,
+  "schema_version": 1,
+  "source_reference": "Conservative planning bound from archived CDPRM S1 adaptive-minus-global development uncertainty; fixed before any RDPCM A1 outcome.",
+  "source_role": "development_screening",
+  "target_half_width": 0.015
+}
