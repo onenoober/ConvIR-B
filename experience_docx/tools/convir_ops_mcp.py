@@ -37,6 +37,7 @@ REMOTE_BASE = "/sda/home/wangyuxin/ConvIR-B"
 REMOTE_REPOS = f"{REMOTE_BASE}/repos"
 REMOTE_RUNS = f"{REMOTE_BASE}/runs"
 REMOTE_PYTHON = f"{REMOTE_BASE}/envs/convir-cu121/bin/python"
+NVIDIA_SMI = "/usr/bin/nvidia-smi"
 CLOUD_GIT_SEED = f"{REMOTE_REPOS}/ConvIR-B-official-arch-anchor"
 GITHUB_URL = "git@github.com:onenoober/ConvIR-B.git"
 SSH = "/usr/bin/ssh"
@@ -72,6 +73,8 @@ MAX_EVIDENCE_BYTES = 1024 * 1024
 MAX_MANIFEST_BYTES = 16 * 1024
 MAX_CLOSEOUT_BYTES = 64 * 1024
 MAX_DIAGNOSTIC_TEXT_BYTES = 4096
+GPU_SUMMARY_LIMIT = 8
+GPU_PROBE_RETRY_DELAY_SECONDS = 2
 SAFE_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
 SAFE_BRANCH = re.compile(r"^codex/[A-Za-z0-9][A-Za-z0-9_.\-/]{0,191}$")
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
@@ -1083,34 +1086,178 @@ def verify_live_context(context):
             raise ToolError("canonical rules changed after planning; create one fresh plan")
 
 
-def gpu_probe_body(context):
+def gpu_probe_body(context, gpu_index=None):
+    """Return a strict, bounded GPU query that preserves failure identity."""
     return "\n".join([
+        f"NVIDIA_SMI={q(NVIDIA_SMI)}",
         f"MIN_FREE={int(context['min_free_gpu_mib'])}",
         f"MAX_UTIL={int(context['max_gpu_utilization_pct'])}",
-        'GPU_INDEX=""',
+        f"GPU_TARGET={q(gpu_index if gpu_index is not None else '')}",
+        f"GPU_SUMMARY_LIMIT={GPU_SUMMARY_LIMIT}",
+        'test -x "$NVIDIA_SMI" || { echo "CONVIR_OPS_GPU_QUERY_FAILED reason=binary_missing"; exit 76; }',
+        'GPU_QUERY_OUT=$(mktemp)',
+        'GPU_QUERY_ERR=$(mktemp)',
+        "trap 'rm -f -- \"$GPU_QUERY_OUT\" \"$GPU_QUERY_ERR\"' EXIT",
+        'LAST_KIND=unknown',
+        'LAST_QUERY_RC=0',
+        'LAST_QUERY_ERR_BYTES=0',
+        'LAST_QUERY_ERR_SHA=none',
+        'LAST_QUERY_ERR_TEXT=none',
+        'LAST_PARSED=""',
         'for attempt in 1 2; do',
-        '  GPU_INDEX=$(nvidia-smi --query-gpu=index,memory.free,utilization.gpu --format=csv,noheader,nounits 2>/dev/null | awk -F, -v min="$MIN_FREE" -v max="$MAX_UTIL" \'{gsub(/ /,"",$1); gsub(/ /,"",$2); gsub(/ /,"",$3); if ($2 >= min && $3 <= max) {print $1; exit}}\' || true)',
-        '  test -n "$GPU_INDEX" && break',
-        '  test "$attempt" = 2 || sleep 2',
+        '  : >"$GPU_QUERY_OUT"',
+        '  : >"$GPU_QUERY_ERR"',
+        '  GPU_ARGS=(--query-gpu=index,memory.free,utilization.gpu --format=csv,noheader,nounits)',
+        '  test -z "$GPU_TARGET" || GPU_ARGS=(-i "$GPU_TARGET" "${GPU_ARGS[@]}")',
+        '  LAST_QUERY_RC=0',
+        '  "$NVIDIA_SMI" "${GPU_ARGS[@]}" >"$GPU_QUERY_OUT" 2>"$GPU_QUERY_ERR" || LAST_QUERY_RC=$?',
+        '  if test "$LAST_QUERY_RC" -ne 0; then',
+        '    LAST_KIND=query_failed',
+        '    LAST_QUERY_ERR_BYTES=$(wc -c <"$GPU_QUERY_ERR")',
+        "    LAST_QUERY_ERR_SHA=$(sha256sum \"$GPU_QUERY_ERR\" | awk '{print $1}')",
+        '    LAST_QUERY_ERR_TEXT=$(<"$GPU_QUERY_ERR")',
+        "    LAST_QUERY_ERR_TEXT=${LAST_QUERY_ERR_TEXT//$'\r'/ }",
+        "    LAST_QUERY_ERR_TEXT=${LAST_QUERY_ERR_TEXT//$'\n'/ }",
+        '    LAST_QUERY_ERR_TEXT=${LAST_QUERY_ERR_TEXT:0:512}',
+        '  else',
+        '    PARSE_RC=0',
+        "    LAST_PARSED=$(awk -F, -v min=\"$MIN_FREE\" -v max=\"$MAX_UTIL\" -v target=\"$GPU_TARGET\" -v limit=\"$GPU_SUMMARY_LIMIT\" '",
+        '      function trim(value) { gsub(/^[[:space:]]+|[[:space:]]+$/, "", value); return value }',
+        '      {',
+        '        if (NF != 3) { bad=1; next }',
+        '        idx=trim($1); free=trim($2); util=trim($3)',
+        '        if (idx !~ /^[0-9]+$/ || free !~ /^[0-9]+$/ || util !~ /^[0-9]+$/) { bad=1; next }',
+        '        if (seen[idx]++ || util + 0 > 100 || (target != "" && idx != target)) { bad=1; next }',
+        '        total++',
+        '        if (shown < limit) {',
+        '          summary = summary (shown ? ";" : "") idx ":" (free + 0) ":" (util + 0)',
+        '          shown++',
+        '        }',
+        '        if (selected == "" && free + 0 >= min && util + 0 <= max) selected=idx',
+        '      }',
+        '      END {',
+        '        if (bad || total == 0) exit 65',
+        '        printf "CONVIR_OPS_GPU_SUMMARY rows=%d total=%d data=%s\n", shown, total, summary',
+        '        if (selected != "") printf "CONVIR_OPS_GPU_OK index=%s\n", selected',
+        '        else print "CONVIR_OPS_RESOURCE_WAIT_REQUIRED"',
+        "      }' \"$GPU_QUERY_OUT\") || PARSE_RC=$?",
+        '    if test "$PARSE_RC" -ne 0; then',
+        '      LAST_KIND=unparseable',
+        "    elif printf '%s\\n' \"$LAST_PARSED\" | grep -q '^CONVIR_OPS_GPU_OK index=[0-9]\\+$'; then",
+        '      LAST_KIND=ok',
+        '      break',
+        '    else',
+        '      LAST_KIND=resource_wait',
+        '    fi',
+        '  fi',
+        f'  test "$attempt" = 2 || sleep {GPU_PROBE_RETRY_DELAY_SECONDS}',
         'done',
-        'test -n "$GPU_INDEX" || { echo CONVIR_OPS_RESOURCE_WAIT_REQUIRED; exit 75; }',
-        'echo "CONVIR_OPS_GPU_OK index=$GPU_INDEX"',
+        'case "$LAST_KIND" in',
+        "  ok) printf '%s\\n' \"$LAST_PARSED\" ;;",
+        "  resource_wait) printf '%s\\n' \"$LAST_PARSED\"; exit 75 ;;",
+        '  unparseable) echo "CONVIR_OPS_GPU_QUERY_UNPARSEABLE"; exit 77 ;;',
+        "  query_failed) printf 'CONVIR_OPS_GPU_QUERY_FAILED rc=%s stderr_bytes=%s stderr_sha256=%s stderr_text=%s\\n' \"$LAST_QUERY_RC\" \"$LAST_QUERY_ERR_BYTES\" \"$LAST_QUERY_ERR_SHA\" \"$LAST_QUERY_ERR_TEXT\"; exit 76 ;;",
+        '  *) echo "CONVIR_OPS_GPU_QUERY_FAILED reason=internal_state"; exit 76 ;;',
+        'esac',
     ])
 
 
-def parse_gpu(output):
-    match = re.search(r"(?m)^CONVIR_OPS_GPU_OK index=(\d+)$", output)
-    if not match:
+def parse_gpu_summary(output):
+    summaries = re.findall(
+        r"(?m)^CONVIR_OPS_GPU_SUMMARY rows=(\d+) total=(\d+) data=([0-9:;]*)$",
+        output,
+    )
+    if len(summaries) != 1:
         raise ToolError(
-            "GPU probe returned no eligible device",
+            "GPU probe summary is missing, duplicated, or malformed",
             failure_phase="resource_preflight",
             failure_class="command_infra",
         )
-    return int(match.group(1))
+    rows_text, total_text, data = summaries[0]
+    rows, total = int(rows_text), int(total_text)
+    records = []
+    if data:
+        for item in data.split(";"):
+            fields = item.split(":")
+            if len(fields) != 3 or any(not field.isdigit() for field in fields):
+                raise ToolError(
+                    "GPU summary record is malformed",
+                    failure_phase="resource_preflight", failure_class="command_infra",
+                )
+            records.append({
+                "index": int(fields[0]), "free_mib": int(fields[1]),
+                "utilization_pct": int(fields[2]),
+            })
+    if rows != len(records) or not 1 <= rows <= GPU_SUMMARY_LIMIT or total < rows:
+        raise ToolError(
+            "GPU summary cardinality is invalid",
+            failure_phase="resource_preflight", failure_class="command_infra",
+        )
+    if len({item["index"] for item in records}) != len(records) or any(
+            item["utilization_pct"] > 100 for item in records):
+        raise ToolError(
+            "GPU summary values are invalid",
+            failure_phase="resource_preflight", failure_class="command_infra",
+        )
+    return {
+        "rows": records, "total_gpu_count": total,
+        "summary_truncated": total > rows,
+    }
+
+
+def parse_gpu(output):
+    summary = parse_gpu_summary(output)
+    matches = re.findall(r"(?m)^CONVIR_OPS_GPU_OK index=(\d+)$", output)
+    if len(matches) != 1:
+        raise ToolError(
+            "GPU probe success marker is missing, duplicated, or malformed",
+            failure_phase="resource_preflight", failure_class="command_infra",
+        )
+    selected = int(matches[0])
+    if not summary["summary_truncated"] and selected not in {
+            item["index"] for item in summary["rows"]}:
+        raise ToolError(
+            "selected GPU is absent from the complete summary",
+            failure_phase="resource_preflight", failure_class="command_infra",
+        )
+    summary["index"] = selected
+    return summary
+
+
+def gpu_probe_failure(exc):
+    detail = str(exc)
+    observed = {"runner_started": False}
+    if "CONVIR_OPS_RESOURCE_WAIT_REQUIRED" in detail:
+        try:
+            observed["gpu_summary"] = parse_gpu_summary(detail)
+        except ToolError:
+            pass
+        return typed_failure(
+            "RESOURCE_WAIT_REQUIRED", "command_infra",
+            "no GPU currently satisfies the frozen resource gate",
+            observed=observed, expected={"runner_started": False},
+            next_actions=["convir_route_start"], retry_after_seconds=30,
+            failure_phase="resource_preflight",
+        )
+    if "CONVIR_OPS_GPU_QUERY_UNPARSEABLE" in detail:
+        message = "nvidia-smi output did not satisfy the strict GPU metrics contract"
+    elif "CONVIR_OPS_GPU_QUERY_FAILED" in detail:
+        marker = re.search(r"CONVIR_OPS_GPU_QUERY_FAILED[^\r\n]*", detail)
+        message = marker.group(0) if marker else "nvidia-smi query failed"
+    else:
+        message = safe_diagnostic_text(detail, 1024)
+    return typed_failure(
+        "GPU_RESOURCE_PROBE_FAILED", "command_infra", message,
+        observed=observed, expected={"runner_started": False},
+        next_actions=["engineering_review_once"], failure_phase="resource_preflight",
+    )
 
 
 def atomic_start_body(context, gpu_index):
-    lines = [
+    lines = []
+    if gpu_index is not None:
+        lines.extend(gpu_probe_body(context, gpu_index).splitlines())
+    lines.extend([
         f"REMOTE_REPO={q(context['remote_repo'])}",
         f"GITHUB_URL={q(GITHUB_URL)}",
         f"GIT_SEED={q(CLOUD_GIT_SEED)}",
@@ -1159,14 +1306,7 @@ def atomic_start_body(context, gpu_index):
         '  test -d "$OUTPUT_PATH"',
         '  test ! -e "$CLOSEOUT"',
         'fi',
-    ]
-    if gpu_index is not None:
-        lines.extend([
-            f"MIN_FREE={int(context['min_free_gpu_mib'])}",
-            f"MAX_UTIL={int(context['max_gpu_utilization_pct'])}",
-            'GPU_OK=$(nvidia-smi -i "$GPU_INDEX" --query-gpu=memory.free,utilization.gpu --format=csv,noheader,nounits 2>/dev/null | awk -F, -v min="$MIN_FREE" -v max="$MAX_UTIL" \'{gsub(/ /,"",$1); gsub(/ /,"",$2); if ($1 >= min && $2 <= max) print "yes"}\')',
-            'test "$GPU_OK" = yes || { echo CONVIR_OPS_RESOURCE_WAIT_REQUIRED; exit 75; }',
-        ])
+    ])
     lines.extend([
         f'tmux new-session -d -s "$SESSION" env EXPECTED_ROUTE_COMMIT="$EXPECTED_COMMIT" RUNNER_SHA256="$EXPECTED_RUNNER_SHA" MODE={q(context["mode"])} REMOTE_REPO="$REMOTE_REPO" RUN_ROOT="$RUN_ROOT" OUTPUT_PATH="$OUTPUT_PATH" RUN_ID={q(context["output_id"])} OUTPUT_ID={q(context["output_id"])} GPU="$GPU_INDEX" bash "$REMOTE_REPO/$RUNNER"',
         'trap - ERR',
@@ -1407,17 +1547,13 @@ def tool_start(args):
             gpu_index = None
             if context["require_gpu"]:
                 try:
-                    gpu_index = parse_gpu(
+                    gpu_probe = parse_gpu(
                         run_remote(gpu_probe_body(context), timeout=30, phase="resource_preflight")
                     )
+                    gpu_index = gpu_probe["index"]
+                    record["gpu_summary"] = gpu_probe
                 except ToolError as exc:
-                    return typed_failure(
-                        "RESOURCE_WAIT_REQUIRED", "command_infra", str(exc),
-                        expected={"runner_started": False},
-                        next_actions=["convir_route_start"],
-                        retry_after_seconds=30,
-                        failure_phase="resource_preflight",
-                    )
+                    return gpu_probe_failure(exc)
             record["gpu_index"] = gpu_index
             record["attempted"] = True
             try:
@@ -1425,15 +1561,13 @@ def tool_start(args):
                     atomic_start_body(context, gpu_index), timeout=150, phase="launch_command"
                 )
             except ToolError as exc:
-                if "CONVIR_OPS_RESOURCE_WAIT_REQUIRED" in str(exc) and "CONVIR_OPS_FRESH_WORKSPACE_CLEANED" in str(exc):
+                if any(marker in str(exc) for marker in (
+                        "CONVIR_OPS_RESOURCE_WAIT_REQUIRED",
+                        "CONVIR_OPS_GPU_QUERY_FAILED",
+                        "CONVIR_OPS_GPU_QUERY_UNPARSEABLE",
+                )):
                     record["attempted"] = False
-                    return typed_failure(
-                        "RESOURCE_WAIT_REQUIRED", "command_infra", "resource changed before launch",
-                        expected={"runner_started": False},
-                        next_actions=["convir_route_start"],
-                        retry_after_seconds=30,
-                        failure_phase="resource_preflight",
-                    )
+                    return gpu_probe_failure(exc)
                 return typed_failure(
                     "START_STATE_UNKNOWN", "command_infra", str(exc),
                     observed={"remote_repo": context["remote_repo"], "runner_started": "unknown"},

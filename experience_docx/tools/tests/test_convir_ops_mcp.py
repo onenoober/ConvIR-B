@@ -103,6 +103,25 @@ class ConvirOpsV4Tests(unittest.TestCase):
     def tearDown(self):
         self.state.cleanup()
 
+    def run_fake_gpu_probe(self, fake_body=None, *, gpu_index=None):
+        with tempfile.TemporaryDirectory() as root:
+            binary = Path(root) / "nvidia-smi"
+            if fake_body is not None:
+                binary.write_text(
+                    "#!/usr/bin/env bash\nset -euo pipefail\n" + fake_body + "\n",
+                    encoding="utf-8",
+                )
+                binary.chmod(0o755)
+            with (
+                patch.object(OPS, "NVIDIA_SMI", str(binary)),
+                patch.object(OPS, "GPU_PROBE_RETRY_DELAY_SECONDS", 0),
+            ):
+                body = OPS.gpu_probe_body(context(require_gpu=True), gpu_index)
+            return subprocess.run(
+                ["/bin/bash", "-c", "set -euo pipefail\n" + body],
+                text=True, capture_output=True, timeout=10,
+            )
+
     def parse(self, value=None, operation_id="S0"):
         with (
             patch.object(OPS, "git_show", side_effect=lambda _repo, _commit, path: "- First operation: S0\n" if path.endswith("a1x.md") else "runner"),
@@ -183,6 +202,9 @@ class ConvirOpsV4Tests(unittest.TestCase):
     def test_unknown_start_recovery_bodies_have_valid_bash_syntax(self):
         for body in (
             OPS.atomic_start_body(context(), None),
+            OPS.gpu_probe_body(context(require_gpu=True)),
+            OPS.gpu_probe_body(context(require_gpu=True), 0),
+            OPS.atomic_start_body(context(require_gpu=True), 0),
             OPS.unknown_start_inspection_body(context()),
             OPS.abandoned_start_cleanup_body(context()),
         ):
@@ -192,6 +214,76 @@ class ConvirOpsV4Tests(unittest.TestCase):
             )
             self.assertEqual(0, completed.returncode, completed.stderr)
         self.assertIn("clone --quiet --shared --no-checkout", OPS.atomic_start_body(context(), None))
+
+    def test_gpu_probe_selects_gpu_zero_and_preserves_summary(self):
+        completed = self.run_fake_gpu_probe(
+            "printf '0, 21312, 0\n1, 12848, 47\n'"
+        )
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        value = OPS.parse_gpu(completed.stdout)
+        self.assertEqual(0, value["index"])
+        self.assertEqual(2, value["total_gpu_count"])
+        self.assertEqual(21312, value["rows"][0]["free_mib"])
+
+    def test_gpu_probe_selects_first_device_that_satisfies_both_gates(self):
+        completed = self.run_fake_gpu_probe(
+            "printf '0, 11000, 0\n1, 15000, 9\n2, 16000, 5\n'"
+        )
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        self.assertEqual(1, OPS.parse_gpu(completed.stdout)["index"])
+
+    def test_gpu_probe_true_resource_wait_is_typed_and_retryable(self):
+        completed = self.run_fake_gpu_probe(
+            "printf '0, 11000, 0\n1, 15000, 11\n'"
+        )
+        self.assertEqual(75, completed.returncode, completed.stderr)
+        error = OPS.ToolError(
+            completed.stdout, failure_phase="resource_preflight",
+            failure_class="command_infra",
+        )
+        value = payload(OPS.gpu_probe_failure(error))
+        self.assertEqual("RESOURCE_WAIT_REQUIRED", value["operation_state"])
+        self.assertFalse(value["observed"]["runner_started"])
+        self.assertEqual(2, value["observed"]["gpu_summary"]["total_gpu_count"])
+        self.assertEqual(["convir_route_start"], value["allowed_next_actions"])
+
+    def test_gpu_probe_missing_binary_is_not_resource_wait(self):
+        completed = self.run_fake_gpu_probe()
+        self.assertEqual(76, completed.returncode, completed.stderr)
+        self.assertIn("CONVIR_OPS_GPU_QUERY_FAILED reason=binary_missing", completed.stdout)
+        value = payload(OPS.gpu_probe_failure(OPS.ToolError(completed.stdout)))
+        self.assertEqual("GPU_RESOURCE_PROBE_FAILED", value["operation_state"])
+        self.assertEqual(["engineering_review_once"], value["allowed_next_actions"])
+
+    def test_gpu_probe_nonzero_query_preserves_bounded_failure_identity(self):
+        completed = self.run_fake_gpu_probe("echo 'driver query failed' >&2\nexit 9")
+        self.assertEqual(76, completed.returncode, completed.stderr)
+        self.assertRegex(
+            completed.stdout,
+            r"^CONVIR_OPS_GPU_QUERY_FAILED rc=9 stderr_bytes=20 stderr_sha256=[0-9a-f]{64} stderr_text=driver query failed\n$",
+        )
+        self.assertLessEqual(len(completed.stdout.encode()), 1024)
+
+    def test_gpu_probe_malformed_query_is_not_resource_wait(self):
+        completed = self.run_fake_gpu_probe("printf '0, N/A, 0\n'")
+        self.assertEqual(77, completed.returncode, completed.stderr)
+        self.assertEqual("CONVIR_OPS_GPU_QUERY_UNPARSEABLE\n", completed.stdout)
+        value = payload(OPS.gpu_probe_failure(OPS.ToolError(completed.stdout)))
+        self.assertEqual("GPU_RESOURCE_PROBE_FAILED", value["operation_state"])
+
+    def test_gpu_probe_summary_is_bounded(self):
+        rows = "".join(f"printf '{index}, 20000, 0\\n'\n" for index in range(10))
+        completed = self.run_fake_gpu_probe(rows)
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        value = OPS.parse_gpu(completed.stdout)
+        self.assertEqual(10, value["total_gpu_count"])
+        self.assertEqual(OPS.GPU_SUMMARY_LIMIT, len(value["rows"]))
+        self.assertTrue(value["summary_truncated"])
+
+    def test_atomic_gpu_recheck_precedes_workspace_creation_and_uses_fixed_binary(self):
+        body = OPS.atomic_start_body(context(require_gpu=True), 0)
+        self.assertLess(body.index("NVIDIA_SMI=/usr/bin/nvidia-smi"), body.index("REMOTE_REPO="))
+        self.assertNotIn("nvidia-smi --query-gpu", body)
 
     def test_first_operation_requires_exact_card_field(self):
         self.assertEqual("S0", OPS.first_operation_from_card("- First operation: S0\n"))
@@ -362,12 +454,30 @@ class ConvirOpsV4Tests(unittest.TestCase):
     def test_resource_wait_is_retryable_before_launch_attempt(self):
         plan = {"context": context(require_gpu=True), "issued_at": int(time.time()), "expires_at": int(time.time()) + 60, "nonce": "n"}
         token = OPS.write_new_record("plan", plan, {"receipt": None})
-        error = OPS.ToolError("no gpu", failure_phase="resource_preflight", failure_class="command_infra")
+        error = OPS.ToolError(
+            "CONVIR_OPS_GPU_SUMMARY rows=1 total=1 data=0:1000:99\n"
+            "CONVIR_OPS_RESOURCE_WAIT_REQUIRED",
+            failure_phase="resource_preflight", failure_class="command_infra",
+        )
         with patch.object(OPS, "verify_live_context"), patch.object(OPS, "run_remote", side_effect=error):
             first = payload(OPS.tool_start({"plan_token": token}))
             second = payload(OPS.tool_start({"plan_token": token}))
         self.assertEqual("RESOURCE_WAIT_REQUIRED", first["operation_state"])
         self.assertEqual("RESOURCE_WAIT_REQUIRED", second["operation_state"])
+        self.assertFalse(first["observed"]["runner_started"])
+
+    def test_gpu_query_failure_is_not_misclassified_as_resource_wait(self):
+        plan = {"context": context(require_gpu=True), "issued_at": int(time.time()), "expires_at": int(time.time()) + 60, "nonce": "n"}
+        token = OPS.write_new_record("plan", plan, {"receipt": None})
+        error = OPS.ToolError(
+            "resource_preflight failed rc=76: CONVIR_OPS_GPU_QUERY_FAILED rc=9 stderr_bytes=20 stderr_sha256=" + "a" * 64,
+            failure_phase="resource_preflight", failure_class="command_infra",
+        )
+        with patch.object(OPS, "verify_live_context"), patch.object(OPS, "run_remote", side_effect=error):
+            result = payload(OPS.tool_start({"plan_token": token}))
+        self.assertEqual("GPU_RESOURCE_PROBE_FAILED", result["operation_state"])
+        self.assertFalse(result["observed"]["runner_started"])
+        self.assertEqual(["engineering_review_once"], result["allowed_next_actions"])
 
     def test_dead_session_closes_finish_and_cannot_be_polled_again(self):
         receipt_payload = {
