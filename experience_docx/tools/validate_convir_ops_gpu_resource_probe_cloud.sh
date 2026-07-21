@@ -9,7 +9,7 @@ on_error() {
 trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
 
 branch=codex/convir-ops-gpu-resource-probe-fix-20260721
-candidate=18f28ff9443de774125007909fbd8da2ccf37354
+candidate=a46dcb72a96ada284a547bed8165511e8ce6827f
 base=d5eef4977f11561a660f31e2bb4fb56035bb56bb
 github=git@github.com:onenoober/ConvIR-B.git
 seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
