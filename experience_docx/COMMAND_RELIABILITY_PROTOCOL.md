@@ -131,3 +131,16 @@ default `/home/ubuntu/workspace` boundary. The wrapper also asserts
 `isError == false` before reading success-only structured fields. This is a
 transport/workspace correction only and cannot change MCP code, scientific
 data, metrics, thresholds, or historical evidence.
+
+### 2026-07-21 PowerShell command-string metacharacter boundary
+
+Invalid form: construct a PowerShell command string containing a nested
+`bash -lc` body with a regular-expression alternation pipe. PowerShell parsed
+the pipe before WSL received the intended literal command, so the read-only
+inspection failed before repository access and made no filesystem change.
+
+Canonical correction: use `convirctl.py repo-show`, `repo-list`, or
+`repo-search` with literal argv for repository reads. When a fixed executable
+must be invoked through WSL, use `wsl.exe --exec` with literal arguments and no
+cross-shell metacharacters. A read failure never authorizes an alternate local
+runtime command.
