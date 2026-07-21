@@ -330,6 +330,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                 capability_digest = __import__("hashlib").sha256(
                     json.dumps(capability, sort_keys=True, separators=(",", ":")).encode()
                 ).hexdigest()
+            precision = None
             precision_digest = None
             precision_path = spec["precision_contract"]["certificate_relpath"]
             precision_feasible = None

@@ -89,6 +89,16 @@ def main():
         source = Path(READY.__file__).read_text(encoding="utf-8")
         self.assertNotIn("experiment_logs/{manifest['route_id']}/README.md", source)
 
+    def test_optional_precision_is_initialized_for_not_applicable_contracts(self):
+        source = Path(READY.__file__).read_text(encoding="utf-8")
+        initialization = source.index("            precision = None\n")
+        conditional = source.index("            if precision_path is not None:\n")
+        alignment = source.index(
+            "                ops.validate_contract_runtime_alignment(contract, spec, precision)\n"
+        )
+        self.assertLess(initialization, conditional)
+        self.assertLess(conditional, alignment)
+
 
 if __name__ == "__main__":
     unittest.main()
