@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "status": "ADOPTED",
+  "github_remote": "git@github.com:onenoober/ConvIR-B.git",
+  "ref": "refs/heads/main",
+  "verified_commit": "cab300c1e98cc2e308e0cf73528f7b7bf30e6772",
+  "accepted_implementation_commit": "0a085540b417bb0002bb388b54ba2e166243c2e1",
+  "implementation_acceptance": "COMPLETED_GATE_PASS",
+  "evidence_complete_acceptance": "COMPLETED_GATE_PASS",
+  "non_force_fast_forward": true,
+  "protected_data_touched": false,
+  "scientific_authorization": "NONE"
+}

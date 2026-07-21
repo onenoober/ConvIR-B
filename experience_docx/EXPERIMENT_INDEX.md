@@ -6,7 +6,7 @@ Status: evidence index plus official architecture anchor registry.
 
 ## Operations Infrastructure Validation
 
-The generic P0/P1 research-governance fast path is adoption-authorized after a
+The generic P0/P1 research-governance fast path is adopted after a
 fresh `convir-4090` checkout passed 171/171 tests at
 `0a085540b417bb0002bb388b54ba2e166243c2e1`. It introduces program-owned
 adjacent budgets, orthogonal escape, evidence-backed reopen and amendment; one
@@ -15,8 +15,8 @@ receipt-bound no-data discard; isolated route workspaces; a deterministic
 non-authoritative policy read index; and exact-identity engineering capability
 reuse. Historical schemas 4/5 remain supported and the MCP remains exactly six
 tools. The acceptance accessed no model, GPU, dataset, checkpoint or protected
-data. Adoption is effective only when the implementation and typed closeout are
-on GitHub main. See
+data. Adoption became effective when the implementation and typed closeout
+reached GitHub `main@cab300c1e98cc2e308e0cf73528f7b7bf30e6772`. See
 `experiment_cards/2026-07-21-p0-p1-research-governance-fastpath.md` and
 `experiment_logs/p0_p1_research_governance_fastpath_20260721/`.
 

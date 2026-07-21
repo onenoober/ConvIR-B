@@ -5,8 +5,7 @@ Date: 2026-07-21
 Status: generic run monitoring, the route-ready generic runtime, schema-v4
 v4.3.2 engineering auto-repair path, and command-reliability hardening are
 adopted after fresh-process and isolated cloud acceptance. The P0/P1 research-
-governance fast path is adoption-authorized pending integration of its exact
-implementation and closeout into GitHub main.
+governance fast path is adopted on GitHub main.
 
 ## Current Verdict
 
@@ -21,6 +20,9 @@ a receipt-bound terminal that proves no scientific/protected data touch, while
 capability reuse saves engineering qualification only under six exact identity
 matches. Policy snapshots route reading but never replace authority sources.
 The acceptance used no model, GPU, dataset, checkpoint or protected role.
+Adoption became effective at
+`main@cab300c1e98cc2e308e0cf73528f7b7bf30e6772`, where the tested
+implementation and typed adoption closeout first coexisted.
 
 The v4.3.2 update changes only control-plane startup reporting and ordinary
 engineering-failure handling. A launch command no longer produces a green

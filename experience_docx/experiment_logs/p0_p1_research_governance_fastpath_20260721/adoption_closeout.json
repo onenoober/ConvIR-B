@@ -4,6 +4,8 @@
   "terminal_decision": "P0_P1_RESEARCH_GOVERNANCE_ADOPTION_AUTHORIZED",
   "authorizes": "MAIN_ADOPTION_OF_GENERIC_P0_P1_CONTROL_PLANE",
   "effective_when": "GitHub main contains the accepted implementation and this closeout",
+  "adoption_effective": true,
+  "adoption_effective_main_commit": "cab300c1e98cc2e308e0cf73528f7b7bf30e6772",
   "accepted_implementation_commit": "0a085540b417bb0002bb388b54ba2e166243c2e1",
   "accepted_phases": [
     {"phase": "P0_PROGRAM_CONTRACT", "tests": 12, "result": "PASS"},

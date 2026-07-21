@@ -2,8 +2,8 @@
 
 Date: 2026-07-21
 
-Status: adoption authorized; effective when the accepted implementation and
-closeout reach GitHub `main`.
+Status: adopted on GitHub main. Adoption became effective at
+`cab300c1e98cc2e308e0cf73528f7b7bf30e6772`.
 
 ## Purpose
 

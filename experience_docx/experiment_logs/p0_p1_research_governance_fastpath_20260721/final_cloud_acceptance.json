@@ -26,5 +26,13 @@
   "confirmation_access": 0,
   "canary_access": 0,
   "locked_test_access": 0,
-  "duplicate_run_guard_verified": true
+  "duplicate_run_guard_verified": true,
+  "evidence_complete_revalidation": {
+    "tested_commit": "cab300c1e98cc2e308e0cf73528f7b7bf30e6772",
+    "status": "COMPLETED_GATE_PASS",
+    "tests_run": 171,
+    "failures": 0,
+    "errors": 0,
+    "marker": "P0_P1_GOVERNANCE_FINAL_CLOUD_OK"
+  }
 }
