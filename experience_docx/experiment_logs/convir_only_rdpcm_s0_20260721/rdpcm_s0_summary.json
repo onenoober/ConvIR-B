@@ -1,0 +1,147 @@
+{
+  "authorizes": "ONE_SMALL_HAZE4K_DEVELOPMENT_MECHANISM_DISCRIMINATION_CONTRACT_ONLY",
+  "canary_touched": false,
+  "confirmation_touched": false,
+  "contract_details": {
+    "base_peak_memory_bytes": 143582720,
+    "bounded_function": "0.25*tanh(output_gate)*sigmoid(demand)*sigmoid(-protection)*tanh(residual)",
+    "branch_depth_convolutions": {
+      "demand": 1,
+      "protection": 1,
+      "residual": 1,
+      "shared": 1
+    },
+    "candidate_peak_memory_bytes": 568269312,
+    "channel": 128,
+    "controlled_activation_gate": 0.1,
+    "controlled_activation_gradients": {
+      "demand": {
+        "max_abs": 3.3046781027223915e-05,
+        "min_of_max_abs": 2.6471766432223376e-06,
+        "tensor_count": 2
+      },
+      "output_gate": {
+        "max_abs": 0.0006738904630765319,
+        "min_of_max_abs": 0.0006738904630765319,
+        "tensor_count": 1
+      },
+      "protection": {
+        "max_abs": 3.28874375554733e-05,
+        "min_of_max_abs": 2.634365500853164e-06,
+        "tensor_count": 2
+      },
+      "residual": {
+        "max_abs": 0.0010582908289507031,
+        "min_of_max_abs": 7.916764297988266e-05,
+        "tensor_count": 2
+      },
+      "shared": {
+        "max_abs": 0.00011060151155106723,
+        "min_of_max_abs": 6.943165499251336e-05,
+        "tensor_count": 2
+      }
+    },
+    "disabled_noop": [
+      {
+        "noop_atol": 0.0,
+        "noop_max_abs": 0.0,
+        "noop_rtol": 0.0
+      },
+      {
+        "noop_atol": 0.0,
+        "noop_max_abs": 0.0,
+        "noop_rtol": 0.0
+      },
+      {
+        "noop_atol": 0.0,
+        "noop_max_abs": 0.0,
+        "noop_rtol": 0.0
+      }
+    ],
+    "finite": {
+      "finite_element_count": 258048,
+      "finite_tensor_count": 3
+    },
+    "hidden_width": 32,
+    "initial_gradient": {
+      "all_other_rdpcm_gradients_required_nonzero": false,
+      "max_abs": 0.0006803707801736891,
+      "required_parameter": "RDPCM.output_gate"
+    },
+    "initial_noop": [
+      {
+        "noop_atol": 0.0,
+        "noop_max_abs": 0.0,
+        "noop_rtol": 0.0
+      },
+      {
+        "noop_atol": 0.0,
+        "noop_max_abs": 0.0,
+        "noop_rtol": 0.0
+      },
+      {
+        "noop_atol": 0.0,
+        "noop_max_abs": 0.0,
+        "noop_rtol": 0.0
+      }
+    ],
+    "initial_output_gate": 0.0,
+    "insertion_location": "Decoder[0]_output_before_feat_extract[3]_and_skip_fusion",
+    "load": {
+      "allowed_missing_key_count": 9,
+      "allowed_missing_keys": [
+        "RDPCM.demand.bias",
+        "RDPCM.demand.weight",
+        "RDPCM.output_gate",
+        "RDPCM.protection.bias",
+        "RDPCM.protection.weight",
+        "RDPCM.residual.bias",
+        "RDPCM.residual.weight",
+        "RDPCM.shared.0.bias",
+        "RDPCM.shared.0.weight"
+      ],
+      "checkpoint_key_count": 602,
+      "final_strict_load": true,
+      "loaded_official_key_count": 602,
+      "shape_mismatch_keys": [],
+      "unexpected_keys": []
+    },
+    "memory_increment_bytes": 424686592,
+    "memory_increment_limit_bytes": 536870912,
+    "modulation_bound": 0.25,
+    "module_definition_id": "CONVIR_ONLY_RDPCM_V1",
+    "optimizer_steps": 0,
+    "restored_noop": [
+      {
+        "noop_atol": 0.0,
+        "noop_max_abs": 0.0,
+        "noop_rtol": 0.0
+      },
+      {
+        "noop_atol": 0.0,
+        "noop_max_abs": 0.0,
+        "noop_rtol": 0.0
+      },
+      {
+        "noop_atol": 0.0,
+        "noop_max_abs": 0.0,
+        "noop_rtol": 0.0
+      }
+    ],
+    "scientific_data_touched": false,
+    "scope": {
+      "parameter_count": 8672364,
+      "trainable_name_sha256": "58de838571277275a65179ed08a3680c848a580b3bdeaf4ecf7c244776dab47c",
+      "trainable_parameter_count": 41699,
+      "trainable_tensor_count": 9
+    }
+  },
+  "decision": "RDPCM_S0_ARCHITECTURE_QUALIFIED",
+  "engineering_only": true,
+  "locked_test_touched": false,
+  "operation_id": "RDPCM_S0_ARCHITECTURE_QUALIFICATION",
+  "route_id": "convir_only_rdpcm_s0_20260721",
+  "schema_version": 1,
+  "scientific_data_touched": false,
+  "training_occurred": false
+}

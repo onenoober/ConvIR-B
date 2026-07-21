@@ -1,0 +1,22 @@
+{
+  "route_id": "convir_only_rdpcm_s0_20260721",
+  "operation_id": "RDPCM_S0_ARCHITECTURE_QUALIFICATION",
+  "run_id": "rdpcm-s0-architecture-qualification-r2",
+  "decision": "RDPCM_S0_ARCHITECTURE_QUALIFIED",
+  "authorizes": "ONE_SMALL_HAZE4K_DEVELOPMENT_MECHANISM_DISCRIMINATION_CONTRACT_ONLY",
+  "primary_result": "CONVIR_ONLY_RDPCM_V1 passed the frozen protected-data-free S0 architecture qualification after the approved 256x256 production-path fixture repair: exact official-checkpoint reuse, strict identity no-op, controlled gradient reachability, finite outputs, trainable scope, parameter limit, and memory-increment limit all passed with zero optimizer steps.",
+  "gate_reasons": [
+    "All 602 official checkpoint keys loaded, with exactly the 9 declared RDPCM keys absent from the official checkpoint and no unexpected or shape-mismatched keys.",
+    "Initial, disabled, and restored RDPCM states were bitwise identical to the official ConvIR-B outputs at all three scales with atol=0 and rtol=0.",
+    "The exact-no-op initialization delivered a finite nonzero gradient to RDPCM.output_gate; controlled activation delivered finite nonzero gradients to shared, demand, protection, residual, and output_gate groups.",
+    "The frozen RDPCM trainable scope contained 41699 parameters, below the 50000 limit.",
+    "Peak allocated-memory increment was 424686592 bytes, below the 536870912-byte limit.",
+    "No optimizer step, training, scientific data, confirmation, canary, or locked-test access occurred."
+  ],
+  "competing_explanation": "The result rules out the preregistered explanation that an apparent no-op merely hides broken checkpoint reuse or disconnected upstream gradients, but it does not rule out failure to learn useful spatial modulation or failure to improve restoration quality.",
+  "limitations": [
+    "This is one deterministic synthetic CUDA engineering qualification, not a restoration-effect experiment.",
+    "The approved fixture repair changed only the protected-data-free production-path fixture from 64x64 to the smallest standard 256x256 geometry that satisfies the official ConvIR reflection-padding constraints.",
+    "PASS authorizes only one small Haze4K development mechanism-discrimination contract; it does not authorize training now, confirmation, NH-HAZE, locked-test use, promotion, deployment, or an effectiveness claim."
+  ]
+}
