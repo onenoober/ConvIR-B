@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "status": "COMPLETED_GATE_PASS",
+  "adoption_status": "NOT_YET_ADOPTED",
+  "phase": "P0_DIAGNOSTIC_AND_RECEIPT_BOUND_DISCARD",
+  "server": "convir-4090",
+  "branch": "codex/p0-p1-research-governance-fastpath-20260721",
+  "tested_commit": "8e1abb6102dce6781520423818afa2cd6761d08e",
+  "script_relpath": "experience_docx/tools/validate_p0_diagnostic_discard_cloud.sh",
+  "script_sha256": "273329325d712f5f86b878f65fb9b7e6fd4b41521501e24e01840c49ef406016",
+  "tests_run": 58,
+  "failures": 0,
+  "errors": 0,
+  "prior_engineering_attempts": [
+    "5f77e9f87554a9b83c7484c4b036b8d00aaaf5e1: unittest collection path failure",
+    "83dd7558b51cabfcdbfbf2e6f4f2a2ee55a6cfdc: duplicate fixture receipt identity"
+  ],
+  "marker": "P0_DIAGNOSTIC_DISCARD_CLOUD_OK",
+  "verified_boundaries": [
+    "bounded and redacted engineering diagnostics",
+    "control-only status summary",
+    "receipt-bound discard success for verified no-data engineering failures",
+    "scientific terminal discard rejection",
+    "scientific/protected/unknown data-touch discard rejection",
+    "tampered or shared path discard rejection",
+    "repair/archive and legacy-state migration compatibility",
+    "exact six-tool MCP surface"
+  ],
+  "protected_data_touched": false,
+  "model_runtime_touched": false,
+  "scientific_terminal_affected": false
+}
