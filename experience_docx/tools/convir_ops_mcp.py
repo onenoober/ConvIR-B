@@ -28,7 +28,7 @@ from route_runtime_contract import (
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "5.0.0"
+SERVER_VERSION = "5.1.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}
@@ -46,9 +46,13 @@ MAX_REMOTE_CAPTURE_BYTES = 64 * 1024
 ROUTE_OPERATIONS_RELPATH = "experience_docx/route_operations.json"
 RULE_BUNDLE_RELPATHS = (
     "AGENTS.md",
+    "experience_docx/SCIENCE_FASTPATH.md",
+    "experience_docx/ROUTE_READY_FASTPATH.md",
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md",
     "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md",
+    "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md",
     "experience_docx/CONVIR_OPS_MCP.md",
+    "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md",
 )
 LOCAL_WORKSPACE_ROOT = Path(
     os.environ.get("CONVIR_OPS_LOCAL_WORKSPACE_ROOT", "/home/ubuntu/workspace")

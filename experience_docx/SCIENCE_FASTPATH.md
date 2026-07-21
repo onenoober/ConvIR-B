@@ -18,12 +18,20 @@ separation.
 1. SNAPSHOT: use the compact authoritative snapshot, direct parent closeout and
    only referenced evidence. Do not load the full Markdown index/history by
    default. Decide whether the stage is authorized, answered or conflicting.
-2. CONTRACT: new routes use one schema-5 canonical scientific JSON plus a <=8
-   KiB rationale note. Freeze the question, population/grouping, evidence roles,
+2. CONTRACT: new routes author one research-program contract and one experiment
+   spec. The deterministic compiler emits manifest schema 6, canonical scientific
+   JSON, runtime/asset/capability/precision contracts and a <=8 KiB rationale
+   note. Freeze the question, population/grouping, evidence roles,
    permissions, intervention, controls, estimand, uncertainty, gates, competing
    explanation and all terminal mappings. Formal precision requires a pre-run
    feasibility certificate. Changed production paths require one SHA/commit-bound
    capability profile and device-aware synthetic contract.
+
+The compiler removes duplicated identity/path authoring only. It never chooses
+the question, model, dataset, primary variable, threshold, control, terminal, or
+authorization. Route-ready and MCP recompile from the committed program/spec and
+reject any byte-level derived-file drift. Historical schema 4/5 routes remain
+readable and are not migrated.
 3. EXECUTE: run one staged route-ready gate, push one commit, plan once and
    start once. Require one positive workload-progress observation, then finish
    near the frozen ETA. Never duplicate validator/lifecycle checks, create a
@@ -86,7 +94,17 @@ identity or authorization.
 - Nontrivial bounded algorithm change: correctness plus a representative
   problem-size termination/resource bound.
 - Unchanged exercised production path: reuse the prior engineering result; no
-  reassurance smoke or fixture rerun.
+  reassurance smoke or fixture rerun, but only when all six capability-registry
+  identity fields match exactly. Reuse is engineering-only.
+
+## Anti-Dead-End Route Gate
+
+An adjacent family consumes only its program-defined budget; there is no global
+two-attempt rule. Exhaustion closes adjacent variants sharing the core
+assumption. A substantively orthogonal route may proceed by naming an allowed
+change dimension, and a closed family may reopen only with an allowed new
+evidence type whose committed path exists. Evidence-bound formal amendments
+make scientific governance revisable without silent post-hoc relaxation.
 
 ## Explicit Non-Work
 

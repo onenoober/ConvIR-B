@@ -1,10 +1,11 @@
 # Convir Operations MCP
 
-Date: 2026-07-20
+Date: 2026-07-21
 
-Status: final-slim server `5.0.0` retains exactly six tools and stable control
+Status: governance-fastpath server `5.1.0` retains exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4 and uses
-canonical manifest schema 5 plus runtime schema 2 for new routes.
+immutable historical manifest schema 5 plus compiled manifest schema 6 and
+runtime schema 2 for new routes.
 
 `convir-ops` is a restricted local stdio bridge to `convir-4090`. It accepts
 only a GitHub route branch, exact commit, and operation id. It never accepts an
@@ -39,8 +40,10 @@ contract remains limited to unchanged Git-tracked scripts for manual actions.
 Fixed path: `experience_docx/route_operations.json`; maximum 16 KiB. New-route top level:
 
 ```text
-schema_version=5, route_id, rules_commit, route_card_relpath,
-scientific_contract_relpaths, operations
+schema_version=6, route_id, rules_commit, route_card_relpath,
+scientific_contract_relpaths, program_contract_relpath,
+program_contract_sha256, experiment_spec_relpath, experiment_spec_sha256,
+operations
 ```
 
 One operation contains exactly:
@@ -62,6 +65,13 @@ blob/SHA values and the canonical-rule bundle digest directly from Git; route
 authors do not copy these digests into the manifest. `rules_commit` records the
 GitHub-main rules used for design. Planning accepts it only when its canonical
 bundle still equals current main.
+
+For schema 6, the route author edits the research-program contract, one
+experiment spec and the route entrypoint. The deterministic compiler emits the
+remaining route files. Route-ready and planning recompile the committed sources
+and reject any generated-file drift. Program governance distinguishes adjacent,
+orthogonal and evidence-backed reopen mechanisms; it does not impose one global
+experiment-count limit.
 
 The first operation has no prior closeout and must be named by the canonical
 contract. Every
@@ -103,6 +113,12 @@ the failure immediately. Evidence list/fetch remain locked. The external
 repairs from sensitive scientific/data/model changes before commit/push/start.
 Explicit `archive` still unlocks compact failure evidence but no relaunch.
 
+Engineering diagnostics are bounded, redacted and control-only. Explicit
+discard remains inside convir_route_finish and requires a validated receipt-
+bound engineering closeout, verified no scientific/protected data touch, an
+inactive session, exact derived repo/run/output/closeout identities and post-
+delete absence. Scientific terminals and shared assets are never eligible.
+
 Evidence tools allow only top-level `.json/.csv/.md/.txt` files up to 1 MiB.
 They require a scientific validated closeout or an explicit engineering
 `archive` resolution and never stage, commit, or push.
@@ -111,7 +127,8 @@ They require a scientific validated closeout or an explicit engineering
 
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. After an update, restart the host and verify version
-`4.3.2`, source SHA-256, exactly six tools, and the startup/repair states.
+`5.1.0`, source SHA-256, exactly six tools, schema 4/5/6 parsing, and the
+startup/repair/discard states.
 
 Only an engineering receipt carrying `v43_migrated_at` may change its automatic
 legacy `archive` resolution to an explicit user-selected `repair`. A normal

@@ -13,16 +13,19 @@ generic runtime bundle remain unchanged.
 
 ## Default Bundle
 
-For a new route, create only:
+For a new route, author only:
 
-1. one schema-v1 canonical scientific JSON under `scientific_contracts/`;
-2. one <=8 KiB rationale/pointer route note;
-3. one schema-v5 `route_operations.json`;
-4. one runtime schema-v2 spec per listed operation under `route_runtime_specs/`;
-5. one Python entrypoint implementing `contract --context <json>` and
-   `run --context <json>`;
-6. one typed asset manifest under `route_assets/` only when external assets are
-   required.
+1. one research-program contract under research_programs/;
+2. one schema-v1 experiment spec under experiment_specs/; and
+3. one Python entrypoint implementing contract(context_path) and
+   run(context_path).
+
+Run experiment_spec_compiler.py --write once to deterministically emit the
+schema-v6 route manifest, canonical scientific JSON, short rationale note,
+runtime schema-v2 spec and any declared asset/capability/precision contracts.
+The compiler does not select any scientific field. Do not hand-edit generated
+files; route-ready and MCP recompile the committed sources and reject byte
+drift. Historical manifest schema 4/5 routes remain supported and unmodified.
 
 Do not create an evidence README. The canonical JSON is the immutable machine
 scientific contract; the route note owns rationale only. Terminal interpretation belongs only in the science-fastpath
@@ -34,14 +37,11 @@ Every operation uses the unchanged
 route-specific shell lifecycle, validator, dispatcher, watcher, authorization
 file, receipt, closeout writer, or output-path wrapper.
 
-Materialize only the operation currently authorized to run. Freeze the later
-stage sequence and stop rules in the route card, but do not prebuild dormant
-runtime specs, entrypoints, or asset manifests. Add a later operation only
-after its prerequisite closeout authorizes it, unless it is already authorized
-and shares the exact frozen implementation without result-dependent changes.
-Use `prepare_next_operation.py` only after the exact prerequisite closeout and
-`build_route_asset_manifest.py` only from an explicit identity request; their
-contracts and one-pass commands are in `ROUTE_FLOW_TOOLS.md`.
+Materialize only the operation currently authorized to run. Freeze later-stage
+stop rules in the experiment spec, but do not prebuild unauthorized workload
+code. For schema 6, add an authorized later operation by editing the one spec
+and recompiling; prepare_next_operation.py remains a historical schema-4/5
+helper and cannot become a second schema-6 writer.
 
 ## One Gate Before One Push
 
@@ -60,6 +60,9 @@ short route note, compares the generic runtime bundle byte-for-byte
 with current GitHub main, compiles Python/Bash syntax, validates runtime/asset
 schemas, checks the entrypoint interface, and proves that all published
 evidence and closeout filenames are route-wide unique.
+For schema 6 it additionally validates the program/spec SHA values, route-family
+mechanism authorization and exact deterministic regeneration of every derived
+file.
 
 Do not run separate `py_compile`, JSON formatting/parse, `git diff --check`,
 card, manifest, runtime-spec, or asset-schema checks before this gate. They are
@@ -153,6 +156,9 @@ or repair may reuse that result when those identities and the exercised path
 are unchanged; do not repeat it merely for reassurance. The
 same-asymptotic-scale probe above remains additionally required when formal
 cost or termination depends on problem size.
+An unchanged fixture may be reused only through a six-field exact capability-
+registry match. This is engineering qualification only; it cannot authorize
+scientific PASS, protected data access or promotion.
 
 The fixed output layout is:
 
@@ -191,6 +197,10 @@ python3 experience_docx/tools/validate_engineering_repair.py \
 normal route-ready/commit/push/plan/start path.
 `SENSITIVE_REPAIR_REVIEW_REQUIRED` pauses before state-changing actions.
 `archive` permits compact failure evidence sync but no repair/relaunch. The
+explicit discard resolution is narrower: it requires a receipt-bound validated
+engineering terminal, verified no scientific/protected data touch, exact paths,
+an inactive session and post-delete checks. It never applies to scientific
+terminals or shared assets.
 cloud failure closeout remains required for provenance and diagnosis, but its
 creation is not Git evidence sync. Do not change data, metrics, thresholds,
 gates, or scientific scope. Re-run the staged gate only when the card,

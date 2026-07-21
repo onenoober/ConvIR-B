@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "status": "COMPLETED_GATE_PASS",
+  "adoption_status": "NOT_YET_ADOPTED",
+  "phase": "P1_WORKSPACE_POLICY_SNAPSHOT_CAPABILITY_REGISTRY",
+  "server": "convir-4090",
+  "branch": "codex/p0-p1-research-governance-fastpath-20260721",
+  "tested_commit": "c0ae7c88b108fe4282066919df9d29ff9d5254d3",
+  "script_relpath": "experience_docx/tools/validate_p1_infrastructure_cloud.sh",
+  "script_sha256": "d72892ad9e746428cdada7d6f227e7326b18c4ba4c00283044887f105a65d706",
+  "tests_run": 13,
+  "failures": 0,
+  "errors": 0,
+  "marker": "P1_INFRASTRUCTURE_CLOUD_OK",
+  "verified_boundaries": [
+    "dirty source checkout cannot contaminate isolated route checkout",
+    "project remote main and push role are explicit",
+    "existing, escaped, nested and wrong-base destinations are rejected",
+    "policy snapshot is deterministic but never authority",
+    "any authoritative rule or snapshot mutation invalidates the snapshot",
+    "all six capability identity fields must match exactly",
+    "engineering reuse never carries scientific authorization",
+    "missing or hash-mismatched qualification evidence is rejected"
+  ],
+  "protected_data_touched": false,
+  "model_runtime_touched": false,
+  "scientific_terminal_affected": false
+}
