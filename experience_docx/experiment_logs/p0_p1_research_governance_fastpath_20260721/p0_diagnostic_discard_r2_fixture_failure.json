@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "status": "FAILED_ENGINEERING",
+  "adoption_status": "NOT_ADOPTED",
+  "phase": "P0_DIAGNOSTIC_DISCARD_TEST_FIXTURE",
+  "server": "convir-4090",
+  "tested_commit": "83dd7558b51cabfcdbfbf2e6f4f2a2ee55a6cfdc",
+  "script_sha256": "273329325d712f5f86b878f65fb9b7e6fd4b41521501e24e01840c49ef406016",
+  "tests_run": 58,
+  "tests_passed": 56,
+  "assertion_failures": 0,
+  "fixture_errors": 2,
+  "failure_class": "test_fixture_identity",
+  "cause": "The discard helper generated identical signed receipt payloads within one test, correctly triggering the existing token-collision guard before discard logic was reached.",
+  "implementation_assertion_failed": false,
+  "scientific_data_touched": false,
+  "protected_data_touched": false,
+  "result_used_for_adoption": false,
+  "repair_scope": "make simulated receipt issued_at unique"
+}

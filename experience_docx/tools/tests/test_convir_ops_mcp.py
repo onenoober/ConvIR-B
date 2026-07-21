@@ -650,7 +650,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             "receipt",
             {
                 "context": ctx, "gpu_index": None,
-                "launch_digest": "f" * 64, "issued_at": 1,
+                "launch_digest": "f" * 64, "issued_at": time.time_ns(),
             },
             {
                 "launched": True, "finish_calls": 1,
