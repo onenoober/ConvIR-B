@@ -25,8 +25,8 @@
   "minimum_fixture": {
     "batch": 1,
     "channels": 3,
-    "height": 64,
-    "width": 64
+    "height": 256,
+    "width": 256
   },
   "production_path_statement": "The exact official ConvIR-B base graph plus the frozen RDPCM production insertion runs forward and backward on one synthetic CUDA tensor.",
   "profile_id": "convir_only_rdpcm_v1_gpu_synthetic",

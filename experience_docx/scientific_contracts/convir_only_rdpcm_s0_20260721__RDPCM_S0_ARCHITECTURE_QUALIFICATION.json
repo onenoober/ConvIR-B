@@ -38,7 +38,7 @@
       "no-op tolerance atol 0 and rtol 0",
       "seed 20260721"
     ],
-    "matched_budget": "one identical 1x3x64x64 synthetic CUDA fixture with zero optimizer steps",
+    "matched_budget": "one identical 1x3x256x256 synthetic CUDA fixture with zero optimizer steps",
     "primary_variable": "CONVIR_ONLY_RDPCM_V1",
     "reference": "official_ConvIR_B_anchor"
   },
