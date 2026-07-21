@@ -1,12 +1,26 @@
 # Operations Infrastructure Summary
 
-Date: 2026-07-18
+Date: 2026-07-21
 
 Status: generic run monitoring, the route-ready generic runtime, schema-v4
 v4.3.2 engineering auto-repair path, and command-reliability hardening are
-adopted after fresh-process and isolated cloud acceptance.
+adopted after fresh-process and isolated cloud acceptance. The P0/P1 research-
+governance fast path is adoption-authorized pending integration of its exact
+implementation and closeout into GitHub main.
 
 ## Current Verdict
+
+The P0/P1 fast path passed focused gates of 12/12, 44/44, 58/58 and 13/13, then
+the complete 171-test cloud suite at
+`0a085540b417bb0002bb388b54ba2e166243c2e1`. It preserves the stable six-tool
+MCP and historical manifest schemas 4/5 while adding schema 6 generated from a
+single experiment spec. Research programs declare their own adjacent budgets;
+orthogonal routes, evidence-backed reopen and formal amendment prevent a family
+stop from becoming a global dead end. Engineering discard is allowed only for
+a receipt-bound terminal that proves no scientific/protected data touch, while
+capability reuse saves engineering qualification only under six exact identity
+matches. Policy snapshots route reading but never replace authority sources.
+The acceptance used no model, GPU, dataset, checkpoint or protected role.
 
 The v4.3.2 update changes only control-plane startup reporting and ordinary
 engineering-failure handling. A launch command no longer produces a green

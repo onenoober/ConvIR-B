@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "status": "COMPLETED_GATE_PASS",
+  "terminal_decision": "P0_P1_RESEARCH_GOVERNANCE_ADOPTION_AUTHORIZED",
+  "authorizes": "MAIN_ADOPTION_OF_GENERIC_P0_P1_CONTROL_PLANE",
+  "effective_when": "GitHub main contains the accepted implementation and this closeout",
+  "accepted_implementation_commit": "0a085540b417bb0002bb388b54ba2e166243c2e1",
+  "accepted_phases": [
+    {"phase": "P0_PROGRAM_CONTRACT", "tests": 12, "result": "PASS"},
+    {"phase": "P0_SPEC_COMPILER_AND_SCHEMA6", "tests": 44, "result": "PASS"},
+    {"phase": "P0_DIAGNOSTIC_AND_RECEIPT_BOUND_DISCARD", "tests": 58, "result": "PASS"},
+    {"phase": "P1_WORKSPACE_POLICY_SNAPSHOT_CAPABILITY_REGISTRY", "tests": 13, "result": "PASS"},
+    {"phase": "FINAL_FULL_SUITE", "tests": 171, "result": "PASS"}
+  ],
+  "preserved_engineering_failures": [
+    {
+      "commit": "5f77e9f87554a9b83c7484c4b036b8d00aaaf5e1",
+      "class": "command_infra",
+      "used_for_adoption": false
+    },
+    {
+      "commit": "83dd7558b51cabfcdbfbf2e6f4f2a2ee55a6cfdc",
+      "class": "test_fixture_identity",
+      "used_for_adoption": false
+    }
+  ],
+  "adopted_boundaries": [
+    "program-owned adjacent budgets rather than a global experiment cap",
+    "orthogonal route escape from a closed adjacent family",
+    "evidence-backed reopen of a closed family",
+    "formal evidence-bound amendment",
+    "single-source experiment spec compiled deterministically to schema 6",
+    "bounded redacted engineering diagnostics",
+    "receipt-bound discard only for verified no-data engineering terminals",
+    "isolated clean route workspace",
+    "deterministic policy read index that is not policy authority",
+    "exact-identity engineering capability reuse without scientific inheritance"
+  ],
+  "compatibility": {
+    "historical_manifest_schemas": [4, 5],
+    "new_manifest_schema": 6,
+    "mcp_protocol_schema": 4,
+    "mcp_tool_count": 6
+  },
+  "scientific_authorization": "NONE",
+  "protected_data_touched": false,
+  "model_runtime_touched": false,
+  "scope_limit": "generic research governance and control-plane infrastructure only"
+}

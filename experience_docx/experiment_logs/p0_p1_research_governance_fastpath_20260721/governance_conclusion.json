@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "conclusion": "Adopt the generic P0/P1 governance fast path after main integration.",
+  "why": [
+    "The full 171-test cloud suite passed on the exact accepted implementation.",
+    "Positive, negative, compatibility, response-bound and fresh stdio MCP boundaries were exercised.",
+    "The design reduces duplicated authoring and qualification without converting a family stop into a global research stop.",
+    "No model, GPU, dataset, checkpoint or protected role was accessed."
+  ],
+  "not_claimed": [
+    "scientific superiority",
+    "authorization to train or evaluate a model",
+    "authorization to access confirmation, canary or locked-test roles",
+    "reuse of engineering qualification as scientific evidence"
+  ],
+  "revalidate_if": [
+    "the six-tool MCP surface changes",
+    "route manifest or program/spec schemas change incompatibly",
+    "discard eligibility or protected-data policy changes",
+    "capability identity fields or scientific inheritance rules change",
+    "policy snapshot is treated as authority rather than a read index"
+  ]
+}
