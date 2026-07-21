@@ -144,3 +144,12 @@ Canonical correction: use `convirctl.py repo-show`, `repo-list`, or
 must be invoked through WSL, use `wsl.exe --exec` with literal arguments and no
 cross-shell metacharacters. A read failure never authorizes an alternate local
 runtime command.
+
+Invalid follow-up form: pass multiple quoted patterns containing nested square
+brackets to one PowerShell Select-String command string. PowerShell split the
+intended patterns into positional arguments, so the compatibility scan failed
+before reading a trustworthy result and made no repository change.
+
+Corrected form: issue one Select-String -SimpleMatch call per literal term, or
+use convirctl.py repo-search for committed content. Treat a zero-match exit as
+a successful read result and keep syntax/diff checks in separate commands.

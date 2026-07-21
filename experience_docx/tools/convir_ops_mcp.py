@@ -67,6 +67,7 @@ MAX_FINISH_WINDOWS = 64
 MAX_EVIDENCE_BYTES = 1024 * 1024
 MAX_MANIFEST_BYTES = 16 * 1024
 MAX_CLOSEOUT_BYTES = 64 * 1024
+MAX_DIAGNOSTIC_TEXT_BYTES = 4096
 SAFE_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
 SAFE_BRANCH = re.compile(r"^codex/[A-Za-z0-9][A-Za-z0-9_.\-/]{0,191}$")
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
@@ -96,6 +97,7 @@ def text_result(text, *, is_error=False, structured=None):
             "operation_state", "status", "state", "marker", "route_id",
             "operation_id", "run_id", "decision", "authorizes", "ok",
             "failure_class", "failure_phase", "audit_digest",
+            "plan_token", "receipt", "retry_after_seconds",
         )
         summary = {key: structured[key] for key in keys if key in structured}
         summary["structured_content_available"] = True
@@ -120,7 +122,7 @@ def typed_result(ok, state, failure_class="none", *, observed=None, expected=Non
         "failure_class": failure_class,
         "observed": observed or {},
         "expected": expected or {},
-        "mismatches": mismatches or [],
+        "mismatches": [safe_diagnostic_text(item, 1024) for item in (mismatches or [])],
         "allowed_next_actions": next_actions or [],
     }
     value.update(extra)
@@ -129,7 +131,47 @@ def typed_result(ok, state, failure_class="none", *, observed=None, expected=Non
 
 
 def typed_failure(state, failure_class, message, **kwargs):
-    return typed_result(False, state, failure_class, mismatches=[message], **kwargs)
+    return typed_result(
+        False, state, failure_class,
+        mismatches=[safe_diagnostic_text(message, 1024)], **kwargs,
+    )
+
+
+def safe_diagnostic_text(value, maximum=MAX_DIAGNOSTIC_TEXT_BYTES):
+    text = str(value).replace("\x00", "")
+    text = re.sub(
+        r"(?i)\b(token|password|secret|api[_-]?key)\s*[:=]\s*\S+",
+        r"\1=<redacted>", text,
+    )
+    text = re.sub(
+        r"(?<![A-Za-z0-9_.-])(?:/sda/home|/home|/mnt|[A-Za-z]:\\)[^\s:'\"]+",
+        "<path>", text,
+    )
+    lines = [line.rstrip() for line in text.splitlines()[-20:]]
+    return "\n".join(lines).encode("utf-8", errors="replace")[-maximum:].decode(
+        "utf-8", errors="replace",
+    )
+
+
+def safe_status_summary(status):
+    allowed = {
+        "phase", "event", "state", "completed_units", "total_units",
+        "completed", "total",
+    }
+    records = []
+    for line in str(status).splitlines()[-20:]:
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(value, dict):
+            continue
+        compact = {key: value[key] for key in allowed if key in value}
+        if compact:
+            records.append(compact)
+    return safe_diagnostic_text(
+        json.dumps(records[-8:], sort_keys=True, separators=(",", ":")), 2048,
+    )
 
 
 def failure_result(state, exc, default_phase):
@@ -1471,7 +1513,7 @@ def authorize_engineering_auto_repair(token, closeout):
 
 def resolve_engineering_failure(token, resolution):
     resolution = require_enum(
-        resolution, "engineering_failure_resolution", {"repair", "archive"},
+        resolution, "engineering_failure_resolution", {"repair", "archive", "discard"},
     )
     with locked_record("receipt", token) as record:
         if not record.get("launched"):
@@ -1497,6 +1539,42 @@ def resolve_engineering_failure(token, resolution):
         closeout = record.get("terminal_closeout")
         if not isinstance(closeout, dict) or closeout.get("terminal_tuple", {}).get("state") != "FAILED_ENGINEERING":
             raise ToolError("receipt has no validated engineering closeout", failure_class="evidence")
+        if resolution == "discard":
+            diagnostic = closeout.get("engineering_diagnostic")
+            if not isinstance(diagnostic, dict):
+                raise ToolError("engineering diagnostic is unavailable", failure_class="evidence")
+            if diagnostic.get("scientific_data_touched") is not False \
+                    or diagnostic.get("protected_data_touched") is not False:
+                raise ToolError(
+                    "discard requires verified absence of scientific and protected data access",
+                    failure_phase="engineering_discard", failure_class="evidence",
+                )
+            context = record["payload"]["context"]
+            validate_discard_context(context)
+            output = run_remote(
+                engineering_discard_body(context, closeout), timeout=60,
+                phase="engineering_discard",
+            )
+            if output.splitlines().count("CONVIR_OPS_ENGINEERING_DISCARD_OK") != 1:
+                raise ToolError(
+                    "engineering discard marker is missing",
+                    failure_phase="engineering_discard", failure_class="command_infra",
+                )
+            record["engineering_failure_resolution"] = "discard"
+            record["finish_closed"] = "ENGINEERING_DISCARDED"
+            return typed_result(
+                True, "ENGINEERING_DISCARDED",
+                observed={
+                    "resolution": "discard", "receipt_bound": True,
+                    "deleted": ["remote_route_workspace", "operation_output"],
+                    "postcheck": {
+                        "remote_route_workspace_absent": True,
+                        "operation_output_absent": True,
+                    },
+                },
+                next_actions=["record_discard_audit_only"],
+                archive_authorized=False, relaunch_authorized=False,
+            )
         record["engineering_failure_resolution"] = resolution
         if resolution == "repair":
             if migrated_archive_repair:
@@ -1519,6 +1597,71 @@ def resolve_engineering_failure(token, resolution):
             next_actions=["convir_evidence_list", "convir_evidence_fetch", "archive_compact_failure_evidence"],
             archive_authorized=True, relaunch_authorized=False,
         )
+
+
+def validate_discard_context(context):
+    remote_repo = Path(context["remote_repo"])
+    run_root = Path(context["run_root"])
+    output_path = Path(context["output_path"])
+    if remote_repo.parent != Path(REMOTE_REPOS) or remote_repo == Path(CLOUD_GIT_SEED):
+        raise ToolError("discard remote workspace is outside its dedicated root")
+    if run_root.parent != Path(REMOTE_RUNS) or output_path.parent != run_root:
+        raise ToolError("discard output is outside its receipt-bound run root")
+    if remote_repo.name in {"ConvIR-B-official-arch-anchor", "main"}:
+        raise ToolError("discard cannot target a shared or anchor workspace")
+    expected_repo = derive_remote_repo(context["route_id"], context["output_id"])
+    expected_run = f"{REMOTE_RUNS}/{context['route_id']}"
+    if str(remote_repo) != expected_repo or str(run_root) != expected_run \
+            or str(output_path) != f"{expected_run}/{context['output_id']}":
+        raise ToolError("discard paths do not match the receipt identity")
+    expected_closeout = (
+        remote_repo / "experience_docx" / "experiment_logs" /
+        context["route_id"] / context["closeout_filename"]
+    )
+    if Path(context["closeout_path"]) != expected_closeout:
+        raise ToolError("discard closeout path does not match the receipt identity")
+
+
+def engineering_discard_body(context, closeout):
+    validate_discard_context(context)
+    identity = closeout["identity"]
+    return "\n".join([
+        f"REMOTE_REPO={q(context['remote_repo'])}",
+        f"OUTPUT_PATH={q(context['output_path'])}",
+        f"RUN_ROOT={q(context['run_root'])}",
+        f"REPO_ROOT={q(REMOTE_REPOS)}",
+        f"RUNS_ROOT={q(REMOTE_RUNS)}",
+        f"SESSION={q(context['session'])}",
+        f"CLOSEOUT={q(context['closeout_path'])}",
+        f"EXPECTED_COMMIT={q(identity['route_commit'])}",
+        f"EXPECTED_CLOSEOUT_SHA={q(closeout['closeout_sha256'])}",
+        f"EXPECTED_ROUTE={q(identity['route_id'])}",
+        f"EXPECTED_RUN={q(identity['run_id'])}",
+        'test "$(dirname "$REMOTE_REPO")" = "$REPO_ROOT"',
+        'test "$(dirname "$RUN_ROOT")" = "$RUNS_ROOT"',
+        'test "$(dirname "$OUTPUT_PATH")" = "$RUN_ROOT"',
+        'test "$REMOTE_REPO" != "$REPO_ROOT/ConvIR-B-official-arch-anchor"',
+        'tmux has-session -t "$SESSION" 2>/dev/null && exit 92 || true',
+        'test -d "$REMOTE_REPO/.git"',
+        'test "$(git -C "$REMOTE_REPO" rev-parse HEAD)" = "$EXPECTED_COMMIT"',
+        'test -f "$CLOSEOUT"',
+        'test "$(sha256sum "$CLOSEOUT" | awk \'{print $1}\')" = "$EXPECTED_CLOSEOUT_SHA"',
+        'if test -e "$OUTPUT_PATH"; then',
+        f'  {q(REMOTE_PYTHON)} - "$OUTPUT_PATH/control/lifecycle_identity.json" "$EXPECTED_ROUTE" "$EXPECTED_RUN" "$EXPECTED_COMMIT" <<\'PY\'',
+        'import json, sys',
+        'value = json.load(open(sys.argv[1], encoding="utf-8"))',
+        'assert value["route_id"] == sys.argv[2]',
+        'assert value["run_id"] == sys.argv[3]',
+        'assert value["route_commit"] == sys.argv[4]',
+        'PY',
+        '  rm -rf -- "$OUTPUT_PATH"',
+        'fi',
+        'rm -rf -- "$REMOTE_REPO"',
+        'rmdir "$RUN_ROOT" 2>/dev/null || true',
+        'test ! -e "$OUTPUT_PATH"',
+        'test ! -e "$REMOTE_REPO"',
+        'echo CONVIR_OPS_ENGINEERING_DISCARD_OK',
+    ])
 
 
 def record_stale_observation(token):
@@ -1671,12 +1814,22 @@ def parse_closeout(context, output):
                         "id", "kind", "access_role", "contract_access", "sha256", "commit",
                     ) if key in item
                 })
+        traceback_tail = details.get("traceback_tail")
+        workload_started = details.get("workload_started")
+        scientific_touched = details.get("scientific_data_touched")
+        protected_touched = details.get("protected_data_touched")
         result["engineering_diagnostic"] = {
             "failure_phase": value.get("failure_phase") if isinstance(value.get("failure_phase"), str) else None,
             "returncode": value.get("returncode") if isinstance(value.get("returncode"), int) else None,
-            "error_type": error_type[:128] if isinstance(error_type, str) else None,
-            "error_message": error_message[:2048] if isinstance(error_message, str) else None,
+            "exception_type": safe_diagnostic_text(error_type, 128) if isinstance(error_type, str) else None,
+            "exception_message": safe_diagnostic_text(error_message, 2048) if isinstance(error_message, str) else None,
+            "traceback_tail": safe_diagnostic_text(traceback_tail, 4096) if isinstance(traceback_tail, str) else None,
+            "last_status": None,
             "verified_assets": safe_assets,
+            "workload_started": workload_started if isinstance(workload_started, bool) else None,
+            "scientific_data_touched": scientific_touched if isinstance(scientific_touched, bool) else None,
+            "protected_data_touched": protected_touched if isinstance(protected_touched, bool) else None,
+            "suggested_repair_class": engineering_failure_class(value.get("failure_phase")),
         }
     return result
 
@@ -1717,6 +1870,9 @@ def tool_finish(args):
         closeout = parse_closeout(context, output)
         if closeout:
             if closeout["terminal_tuple"]["state"] == "FAILED_ENGINEERING":
+                closeout["engineering_diagnostic"]["last_status"] = safe_status_summary(
+                    monitor["status"],
+                )
                 authorize_engineering_auto_repair(token, closeout)
                 failure_phase = closeout["engineering_diagnostic"]["failure_phase"]
                 return typed_failure(
@@ -2068,7 +2224,7 @@ TOOLS = {
             "type": "object", "required": ["receipt"],
             "properties": {
                 "receipt": {"type": "string"},
-                "engineering_failure_resolution": {"enum": ["repair", "archive"]},
+                "engineering_failure_resolution": {"enum": ["repair", "archive", "discard"]},
             },
             "additionalProperties": False,
         },

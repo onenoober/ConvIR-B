@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "status": "COMPLETED_GATE_PASS",
+  "adoption_status": "NOT_YET_ADOPTED",
+  "phase": "P0_SPEC_COMPILER_AND_SCHEMA6",
+  "server": "convir-4090",
+  "branch": "codex/p0-p1-research-governance-fastpath-20260721",
+  "tested_commit": "cef4b45bcba6b184c6d9fee15ac7cb13e3b8f6c7",
+  "script_relpath": "experience_docx/tools/validate_p0_spec_compiler_cloud.sh",
+  "script_sha256": "bf5e35622ada35b199968c5a591432c1445313ed18edbf11fe1fbc12e4e5851d",
+  "test_modules": [
+    "test_experiment_spec_compiler",
+    "test_research_program_contract",
+    "test_convir_ops_v5_final_slim",
+    "test_validate_route_ready",
+    "test_route_runtime_contract"
+  ],
+  "tests_run": 44,
+  "failures": 0,
+  "errors": 0,
+  "marker": "P0_SPEC_COMPILER_CLOUD_OK",
+  "verified_boundaries": [
+    "deterministic byte-identical compilation",
+    "schema-6 program and experiment source identity",
+    "derived-file drift rejection at plan boundary",
+    "scientific decision omission rejection",
+    "program/scientific/runtime role alignment",
+    "adjacent exhaustion with orthogonal escape",
+    "historical schema 4 and 5 compatibility",
+    "existing final-slim and runtime-contract compatibility"
+  ],
+  "protected_data_touched": false,
+  "model_runtime_touched": false,
+  "scientific_terminal_affected": false
+}

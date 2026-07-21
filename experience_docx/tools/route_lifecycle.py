@@ -11,6 +11,7 @@ import signal
 import subprocess
 import sys
 import tempfile
+import traceback
 from pathlib import Path
 from typing import Any
 
@@ -35,12 +36,27 @@ REQUIRED_ENV = {
 }
 MAX_CLOSEOUT_BYTES = 64 * 1024
 VERIFIED_ASSETS: list[dict[str, Any]] = []
+WORKLOAD_STARTED = False
 
 
 class LifecycleError(RuntimeError):
     def __init__(self, message: str, *, phase: str):
         super().__init__(message)
         self.phase = phase
+
+
+def safe_diagnostic_text(value: Any, maximum: int) -> str:
+    text = str(value).replace("\x00", "")
+    text = __import__("re").sub(
+        r"(?i)\b(token|password|secret|api[_-]?key)\s*[:=]\s*\S+",
+        r"\1=<redacted>", text,
+    )
+    text = __import__("re").sub(
+        r"(?<![A-Za-z0-9_.-])(?:/sda/home|/home|/mnt)/[^\s:'\"]+",
+        "<path>", text,
+    )
+    text = "\n".join(line.rstrip() for line in text.splitlines()[-20:])
+    return text[-maximum:]
 
 
 def sha256(path: Path) -> str:
@@ -490,8 +506,9 @@ def write_closeout(*, env: dict[str, str], spec: dict[str, Any], operation: dict
 
 
 def lifecycle() -> int:
-    global VERIFIED_ASSETS
+    global VERIFIED_ASSETS, WORKLOAD_STARTED
     VERIFIED_ASSETS = []
+    WORKLOAD_STARTED = False
     env = require_environment()
     repo, run_root, output = validate_lifecycle_paths(env)
     manifest_path = repo / "experience_docx/route_operations.json"
@@ -579,6 +596,7 @@ def lifecycle() -> int:
     atomic_json(run_context_path, run_context)
     start_sidecar(repo, env, heartbeat, spec["total_units"])
     telemetry(repo, env, status, "workload", "workload_start", 0, spec["total_units"])
+    WORKLOAD_STARTED = True
     rc = run_program(
         phase="run", context_path=run_context_path, entrypoint=entrypoint,
         spec=spec, env=env, log_path=runtime_log, timeout=spec["timeout_seconds"],
@@ -630,10 +648,34 @@ def main() -> None:
                     owns_output = output_owned_by_run(output, env, spec)
             evidence_root = repo / "experience_docx/experiment_logs" / spec["route_id"]
             evidence_root.mkdir(parents=True, exist_ok=True)
-            message = " ".join(str(exc).split())[:2048]
+            message = safe_diagnostic_text(" ".join(str(exc).split()), 2048)
+            scientific_roles = {
+                "development_screening", "confirmation", "canary", "sealed_final",
+            }
+            protected_roles = {"confirmation", "canary", "sealed_final"}
+            observed_roles = {
+                item.get("access_role") for item in VERIFIED_ASSETS if isinstance(item, dict)
+            }
+            current_role = spec.get("evidence_role") if isinstance(spec, dict) else None
             failure = {
                 "state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE",
-                "details": {"error_type": type(exc).__name__, "error_message": message},
+                "details": {
+                    "error_type": type(exc).__name__,
+                    "error_message": message,
+                    "traceback_tail": safe_diagnostic_text(
+                        "".join(traceback.format_exception(type(exc), exc, exc.__traceback__)),
+                        4096,
+                    ),
+                    "workload_started": WORKLOAD_STARTED,
+                    "scientific_data_touched": bool(
+                        observed_roles & scientific_roles
+                        or WORKLOAD_STARTED and current_role in scientific_roles
+                    ),
+                    "protected_data_touched": bool(
+                        observed_roles & protected_roles
+                        or WORKLOAD_STARTED and current_role in protected_roles
+                    ),
+                },
             }
             if {key: failure[key] for key in ("state", "decision", "authorizes")} \
                     not in operation["allowed_terminal_tuples"]:
@@ -647,7 +689,11 @@ def main() -> None:
             )
         except BaseException as closeout_exc:
             print(f"GENERIC_ROUTE_CLOSEOUT_FAILED {type(closeout_exc).__name__}: {closeout_exc}", file=sys.stderr)
-        print(f"GENERIC_ROUTE_OPERATION_FAILED {type(exc).__name__}: {exc}", file=sys.stderr)
+        print(
+            f"GENERIC_ROUTE_OPERATION_FAILED {type(exc).__name__}: "
+            f"{safe_diagnostic_text(exc, 2048)}",
+            file=sys.stderr,
+        )
         raise SystemExit(1)
 
 

@@ -619,6 +619,132 @@ class ConvirOpsV4Tests(unittest.TestCase):
             evidence = OPS.tool_evidence_manifest({"receipt": receipt})["structuredContent"]
         self.assertEqual("README.md", evidence["files"][0]["name"])
 
+    def discardable_receipt(self, **diagnostic_overrides):
+        ctx = context()
+        ctx.update({
+            "remote_repo": OPS.derive_remote_repo("a1x", "a1x-s0-r1"),
+            "run_root": f"{OPS.REMOTE_RUNS}/a1x",
+            "output_path": f"{OPS.REMOTE_RUNS}/a1x/a1x-s0-r1",
+        })
+        ctx["closeout_path"] = (
+            f"{ctx['remote_repo']}/experience_docx/experiment_logs/a1x/s0_closeout.json"
+        )
+        diagnostic = {
+            "failure_phase": "asset_preflight",
+            "workload_started": False,
+            "scientific_data_touched": False,
+            "protected_data_touched": False,
+        }
+        diagnostic.update(diagnostic_overrides)
+        closeout = {
+            "identity": {
+                "route_id": "a1x", "run_id": "a1x-s0-r1",
+                "route_commit": "a" * 40, "runner_sha256": "e" * 64,
+            },
+            "terminal_tuple": engineering_terminal(),
+            "closeout_sha256": "1" * 64,
+            "closeout_filename": "s0_closeout.json",
+            "engineering_diagnostic": diagnostic,
+        }
+        receipt = OPS.write_new_record(
+            "receipt",
+            {
+                "context": ctx, "gpu_index": None,
+                "launch_digest": "f" * 64, "issued_at": 1,
+            },
+            {
+                "launched": True, "finish_calls": 1,
+                "finish_closed": "ENGINEERING_REVIEW_REQUIRED",
+                "monitor_stale_count": 0, "terminal_closeout": closeout,
+                "engineering_failure_resolution": None,
+            },
+        )
+        return receipt
+
+    def test_receipt_bound_engineering_discard_requires_verified_no_data_touch(self):
+        receipt = self.discardable_receipt()
+        with patch.object(OPS, "run_remote", return_value="CONVIR_OPS_ENGINEERING_DISCARD_OK") as remote:
+            result = payload(OPS.tool_finish({
+                "receipt": receipt, "engineering_failure_resolution": "discard",
+            }))
+        self.assertEqual("ENGINEERING_DISCARDED", result["operation_state"])
+        self.assertTrue(result["observed"]["receipt_bound"])
+        self.assertTrue(result["observed"]["postcheck"]["remote_route_workspace_absent"])
+        self.assertIn("EXPECTED_CLOSEOUT_SHA", remote.call_args.args[0])
+
+        for field in ("scientific_data_touched", "protected_data_touched"):
+            receipt = self.discardable_receipt(**{field: True})
+            with patch.object(OPS, "run_remote") as remote:
+                result = payload(OPS.tool_finish({
+                    "receipt": receipt, "engineering_failure_resolution": "discard",
+                }))
+            self.assertEqual("FINISH_REJECTED", result["operation_state"])
+            remote.assert_not_called()
+
+    def test_engineering_discard_rejects_unknown_touch_state_and_path_tamper(self):
+        receipt = self.discardable_receipt(scientific_data_touched=None)
+        with patch.object(OPS, "run_remote") as remote:
+            result = payload(OPS.tool_finish({
+                "receipt": receipt, "engineering_failure_resolution": "discard",
+            }))
+        self.assertEqual("FINISH_REJECTED", result["operation_state"])
+        remote.assert_not_called()
+
+        receipt = self.discardable_receipt()
+        with OPS.locked_record("receipt", receipt) as record:
+            record["payload"]["context"]["remote_repo"] = OPS.CLOUD_GIT_SEED
+        with patch.object(OPS, "run_remote") as remote:
+            result = payload(OPS.tool_finish({
+                "receipt": receipt, "engineering_failure_resolution": "discard",
+            }))
+        self.assertEqual("FINISH_REJECTED", result["operation_state"])
+        remote.assert_not_called()
+
+    def test_scientific_terminal_cannot_be_discarded(self):
+        receipt = self.discardable_receipt()
+        with OPS.locked_record("receipt", receipt) as record:
+            record["terminal_closeout"]["terminal_tuple"] = terminal()
+        with patch.object(OPS, "run_remote") as remote:
+            result = payload(OPS.tool_finish({
+                "receipt": receipt, "engineering_failure_resolution": "discard",
+            }))
+        self.assertEqual("FINISH_REJECTED", result["operation_state"])
+        remote.assert_not_called()
+
+    def test_engineering_diagnostic_is_bounded_redacted_and_control_only(self):
+        raw = json.dumps({
+            "route_id": "a1x", "run_id": "a1x-s0-r1",
+            "route_commit": "a" * 40, "runner_sha256": "e" * 64,
+            **engineering_terminal(), "failure_phase": "workload", "returncode": 1,
+            "verified_assets": [],
+            "details": {
+                "error_type": "LifecycleError",
+                "error_message": "/sda/home/private/model.py token=supersecret failed",
+                "traceback_tail": ("/home/private/file.py password=hunter2\n" * 400),
+                "workload_started": True,
+                "scientific_data_touched": False,
+                "protected_data_touched": False,
+            },
+        }, separators=(",", ":")).encode()
+        output = (
+            "CONVIR_OPS_CLOSEOUT_SHA256=" + __import__("hashlib").sha256(raw).hexdigest()
+            + "\nCONVIR_OPS_CLOSEOUT_BEGIN\n" + raw.decode() + "\nCONVIR_OPS_CLOSEOUT_END\n"
+        )
+        parsed = OPS.parse_closeout(context(), output)["engineering_diagnostic"]
+        rendered = json.dumps(parsed)
+        self.assertNotIn("supersecret", rendered)
+        self.assertNotIn("hunter2", rendered)
+        self.assertNotIn("/sda/home", rendered)
+        self.assertNotIn("/home/private", rendered)
+        self.assertLessEqual(len(parsed["traceback_tail"].encode()), 4096)
+        status = OPS.safe_status_summary(
+            '{"phase":"workload","event":"workload_progress","completed_units":1,'
+            '"metric":99.9,"image":"secret.png"}'
+        )
+        self.assertIn("completed_units", status)
+        self.assertNotIn("metric", status)
+        self.assertNotIn("secret.png", status)
+
     def test_auto_migrated_engineering_archive_can_be_reopened_for_repair(self):
         closeout = {
             "identity": {}, "terminal_tuple": engineering_terminal(),
@@ -747,7 +873,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertEqual(4, plan["inputSchema"]["properties"]["schema_version"]["const"])
         finish = next(item for item in tools if item["name"] == "convir_route_finish")
         self.assertEqual(
-            ["repair", "archive"],
+            ["repair", "archive", "discard"],
             finish["inputSchema"]["properties"]["engineering_failure_resolution"]["enum"],
         )
 
