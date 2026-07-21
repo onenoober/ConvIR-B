@@ -1,0 +1,37 @@
+{
+  "bound_assets": [
+    {
+      "id": "official_anchor",
+      "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+    },
+    {
+      "id": "official_checkpoint",
+      "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "id": "rdpcm_model_source",
+      "identity": "0ba530b66c65a14695223215931ca6e4463ee3cd5d65ae64e0e6cb764d07f4e6"
+    },
+    {
+      "id": "authoritative_review",
+      "identity": "3d3346823e083290c958e0879ee0c8f139ef6a465ee8624919c001dd90fb90c0"
+    }
+  ],
+  "compatibility_imports": [
+    "torch",
+    "Dehazing.ITS.models.ConvIR"
+  ],
+  "contract_mode": "gpu_synthetic_no_data",
+  "minimum_fixture": {
+    "batch": 1,
+    "channels": 3,
+    "height": 64,
+    "width": 64
+  },
+  "production_path_statement": "The exact official ConvIR-B base graph plus the frozen RDPCM production insertion runs forward and backward on one synthetic CUDA tensor.",
+  "profile_id": "convir_only_rdpcm_v1_gpu_synthetic",
+  "protected_data_prohibited": true,
+  "schema_version": 1,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}

@@ -1,160 +1,50 @@
 # Branch Experiment Sync Protocol
 
-Date: 2026-06-01
+Date: 2026-07-16
 
-Status: required workflow for future GitHub experiment branches; GitHub is the first-priority archive for completed cloud experiment text evidence.
+Scientific/safety terminal archive follows `SCIENCE_FASTPATH.md`. GitHub main
+retains the exact launch contract, typed closeout, every required and
+closeout-hash-bound compact result, one complete scientific conclusion, and
+one machine terminal index record. This is a result-and-evidence archive, not
+a verdict-only registry. Raw runtime artifacts stay on cloud.
 
+`FAILED_ENGINEERING` is the exception. Its validated closeout immediately
+enters `ENGINEERING_AUTO_REPAIR_AUTHORIZED`; perform one read-only diagnosis and
+prepare one repair candidate. Before commit or push, run
+`validate_engineering_repair.py`. `AUTO_REPAIR_ELIGIBLE` permits the normal
+one-gate, one-commit, one-push repair path without another user decision.
+`SENSITIVE_REPAIR_REVIEW_REQUIRED` pauses for user review before commit, push,
+plan or start. Keep failed-run compact evidence cloud-only. After an eligible
+repair passes, sync the successful replacement evidence; do not also sync the
+superseded failed bundle by default. An explicit `archive` choice fetches only
+compact failure evidence. The cloud closeout remains required provenance, not
+Git evidence sync. An engineering failure alone does not change a family
+verdict or justify a central-index scientific entry.
 
-## Priority Rule
+Never silently auto-repair population/data roles, protected-data permissions,
+model structure or initialization, checkpoint/asset identity, metrics,
+thresholds, seed, optimizer, epoch/budget, scientific question, or algorithmic
+constants/control flow. A repeated same-root failure requires user review.
 
-For cloud experiments on the current authorized runtime host, normally
-`convir-4090`, GitHub sync is the first-priority archival step after training,
-evaluation, post-run watchers, or audits finish. A cloud run is not considered
-closed until its text evidence is copied into
-`experience_docx/`, the route/index/family documentation is updated, and those
-text artifacts are pushed to GitHub, unless the user explicitly pauses or
-forbids the push. The cloud copy is the runtime source; GitHub is the durable
-read/share source.
+For normal scientific terminals, run `prepare_terminal_archive.py` once into one
+clean reusable main archive worktree. By default it uses the receipt to fetch
+only the compact allowlist into an ephemeral directory, validates the frozen
+contract/runtime/closeout/result hashes, stages the complete bundle, writes one
+JSONL record, commits, pushes and verifies remote main. `--prepare-only` is an
+explicit review pause; `--local-evidence-only` forbids receipt transfer. Do not
+repeat diff, suffix, size, parse, hash, blob or remote identity checks manually.
 
-For experiment status, result, decision, and route-memory reads, use the GitHub
-`main` copy or the explicitly named GitHub route branch copy. Do not infer the
-current research state from a local checkout, local `experience_docx/`, or local
-git status; those are only editing/sync staging surfaces and may be dirty,
-stale, or on the wrong branch.
+Do not require a route README, family-summary edit, route-card result rewrite or
+Markdown-index prose update. The launch card is retained unchanged as the
+contract; one conclusion JSON owns the scientific interpretation. Formal
+fold/cell/operator/bootstrap/risk/strata files remain in GitHub whenever they
+participate in a gate or interpretation. Reject code, binaries, datasets,
+weights, images, arrays, archives, broad logs, raw predictions/features/actions,
+large tables and unrelated paths.
 
-## Purpose
+After a successful terminal push, stop. Heartbeat deletion, branch deletion,
+worktree deletion, output cleanup and evidence reorganization are separate
+maintenance actions and are not part of an experiment closeout.
 
-Use this protocol whenever an experiment runs on a `codex/*` branch and the
-result should become readable from GitHub. The goal is to keep `main` as the
-stable reading and evidence entry point without repeatedly merging experimental
-code branches.
-
-## Roles
-
-| Location | Role |
-| --- | --- |
-| `main` | Stable entry point, current experiment index, text evidence, route summaries, reusable protocols. |
-| `codex/<route>` | Runnable experiment snapshot for code, commands, and branch-specific implementation. |
-| `experience_docx/experiment_cards/` | One route card per experiment or audit. |
-| `experience_docx/experiment_logs/<route_id>/` | Text evidence copied from cloud/local runs. |
-| `docs/ai_text_packages/<route_id>/` | Compact AI-readable package when a route needs public link analysis. |
-
-## Required Branch Pattern
-
-1. Start new model or loss experiments on a dedicated `codex/<route>` branch or
-   worktree.
-2. Keep the branch runnable and self-contained for reproduction.
-3. Do not treat a route branch as the final reader-facing archive.
-4. When the experiment is complete, sync its evidence back to `main` using the
-   evidence-only process below.
-
-## Evidence-Only Sync Rule
-
-Sync these paths from the route branch to `main`:
-
-- `experience_docx/experiment_cards/<date-route>.md`
-- `experience_docx/experiment_logs/<route_id>/README.md`
-- `experience_docx/experiment_logs/<route_id>/*.md`
-- `experience_docx/experiment_logs/<route_id>/*.json`
-- `experience_docx/experiment_logs/<route_id>/*.csv`
-- `experience_docx/experiment_logs/<route_id>/*.log`
-- `experience_docx/experiment_logs/<route_id>/*.txt`
-- `experience_docx/experiment_logs/<route_id>/*.out`
-- `experience_docx/experiment_logs/<route_id>/*.sh`
-- `experience_docx/family_summaries/*.md` when the route changes a family
-  verdict, do-not-repeat rule, or reopen condition.
-- `docs/ai_text_packages/<route_id>/` when a compact public text package is
-  useful.
-
-Do not sync these paths by default:
-
-- `Dehazing/ITS/main.py`
-- `Dehazing/ITS/train.py`
-- `Dehazing/ITS/models/`
-- checkpoints, model weights, images, datasets, arrays, archives, or raw
-  inference outputs.
-
-Experimental code should enter `main` only after a separate promotion decision.
-Failed, diagnostic, or exploratory route code stays on its route branch.
-
-## Sync Steps
-
-From a clean local checkout:
-
-```bash
-git fetch github '+refs/heads/*:refs/remotes/github/*'
-git switch main
-git pull --ff-only github main
-git switch -c codex/<route>-evidence-sync
-
-git restore --source=github/codex/<route> -- \
-  experience_docx/experiment_cards/<date-route>.md \
-  experience_docx/experiment_logs/<route_id>
-
-# Add this only when the route has a compact package.
-git restore --source=github/codex/<route> -- \
-  docs/ai_text_packages/<route_id>
-```
-
-Then update:
-
-- `experience_docx/EXPERIMENT_INDEX.md`
-- `experience_docx/family_summaries/<family>_summary.md` when the route changes
-  a family-level verdict or reopening condition;
-- `docs/ai_text_packages/<summary_or_route>/` if the route should be compactly
-  readable by AI from a public link.
-
-## Required README For Each Evidence Directory
-
-Every `experience_docx/experiment_logs/<route_id>/` directory must contain a
-`README.md` with:
-
-- route card path;
-- central index path;
-- primary JSON/CSV/log files;
-- key metric summary;
-- decision label or route status.
-
-## Audit Before Push
-
-Run these checks before pushing:
-
-```bash
-git status --short
-git diff --check -- experience_docx docs
-git diff --cached --name-only | grep -E '^(Dehazing/|models/)' && exit 1 || true
-git diff --cached --name-only | grep -Ei '\.(pkl|pth|pt|ckpt|onnx|png|jpg|jpeg|bmp|gif|webp|npy|npz|mat|zip|tar|gz|7z|rar)$' && exit 1 || true
-```
-
-Also parse JSON and CSV evidence when practical.
-
-## Push And Verify
-
-Push the evidence sync branch or fast-forward `main` only after the audit:
-
-```bash
-git push github HEAD:main
-git ls-remote --heads github main
-git ls-tree -r --name-only github/main -- experience_docx/EXPERIMENT_INDEX.md
-curl -fsSL https://raw.githubusercontent.com/onenoober/ConvIR-B/main/experience_docx/EXPERIMENT_INDEX.md
-```
-
-If the route has an AI text package, verify at least one raw package file too.
-
-## Branch Cleanup
-
-After evidence is readable from `main`:
-
-- delete temporary evidence-sync branches;
-- delete route branches that are strict ancestors of retained leaf branches;
-- keep at most the runnable leaf branches needed to reproduce still-relevant
-  code snapshots.
-
-Do not delete a route branch if it is the only runnable snapshot for a route
-that may need exact reproduction.
-
-## Decision Rule
-
-If a future route is diagnostic or failed, sync evidence to `main` but keep code
-off `main`. If a route is promotion-ready, first write the promotion decision
-and then open a separate code integration task.
+`validate_evidence_sync.py` remains only for explicit engineering-failure
+archive and legacy bundles that cannot satisfy the science-fastpath schema.

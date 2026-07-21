@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "program_id": "convir_only_rdpcm",
+  "objective": "Qualify one falsifiable official-ConvIR-B-only continuous bounded regional modulation definition before any scientific-data use or training.",
+  "source_anchors": [
+    {
+      "id": "official_anchor",
+      "reference": "github/codex/haze4k-official-arch-anchor@3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "allowed_uses": ["baseline", "initialization", "comparison"]
+    },
+    {
+      "id": "official_checkpoint",
+      "reference": "haze4k-base.pkl sha256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "allowed_uses": ["baseline", "initialization"]
+    },
+    {
+      "id": "rdpcm_review",
+      "reference": "experience_docx/reformulation_reviews/2026-07-21-convir-only-rdpcm-reformulation-review.json sha256 3d3346823e083290c958e0879ee0c8f139ef6a465ee8624919c001dd90fb90c0",
+      "allowed_uses": ["diagnostic"]
+    }
+  ],
+  "dependency_roles": {
+    "official_model": ["baseline", "initialization", "comparison"],
+    "review_authority": ["diagnostic"]
+  },
+  "stages": {
+    "s0_engineering": {
+      "evidence_roles": ["engineering_debug"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["selector_critic_family"]
+    }
+  },
+  "route_families": {
+    "selector_critic_family": {
+      "core_assumption": "A candidate-action selector or critic can safely choose or abstain among regional restoration actions.",
+      "adjacent_budget": 9,
+      "attempts_used": 9,
+      "state": "closed",
+      "close_condition": "The R5-R13 selector critic and context family is terminally closed to adjacent feature threshold coverage and risk-gate variants.",
+      "reopen_evidence_types": ["new_observable_information", "independent_target_validation"]
+    }
+  },
+  "orthogonal_dimensions": [
+    "decision_semantics",
+    "dependency_structure",
+    "target_representation",
+    "intervention_locus"
+  ],
+  "amendments": []
+}

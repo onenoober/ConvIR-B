@@ -53,8 +53,37 @@ class FAM(nn.Module):
     def forward(self, x1, x2):
         return self.merge(torch.cat([x1, x2], dim=1))
 
+
+class RDPCM(nn.Module):
+    """Frozen v1 continuous demand-protection modulation at 128 channels."""
+
+    def __init__(self, channel=128, hidden=32, modulation_bound=0.25):
+        super(RDPCM, self).__init__()
+        if channel != 128 or hidden != 32 or modulation_bound != 0.25:
+            raise ValueError("CONVIR_ONLY_RDPCM_V1 constants are frozen")
+        self.modulation_bound = float(modulation_bound)
+        self.shared = nn.Sequential(
+            nn.Conv2d(channel, hidden, kernel_size=1, bias=True),
+            nn.GELU(),
+        )
+        self.demand = nn.Conv2d(hidden, 1, kernel_size=3, padding=1, bias=True)
+        self.protection = nn.Conv2d(hidden, 1, kernel_size=3, padding=1, bias=True)
+        self.residual = nn.Conv2d(hidden, channel, kernel_size=3, padding=1, bias=True)
+        self.output_gate = nn.Parameter(torch.zeros(()))
+        self.enabled = True
+
+    def forward(self, x):
+        if not self.enabled:
+            return x
+        hidden = self.shared(x)
+        demand_pressure = torch.sigmoid(self.demand(hidden))
+        protection_attenuation = torch.sigmoid(-self.protection(hidden))
+        delta = torch.tanh(self.residual(hidden))
+        scale = self.modulation_bound * torch.tanh(self.output_gate)
+        return x + scale * demand_pressure * protection_attenuation * delta
+
 class ConvIR(nn.Module):
-    def __init__(self, version, data):
+    def __init__(self, version, data, rdpcm_mode='off'):
         super(ConvIR, self).__init__()
         
         if version == 'small':
@@ -103,6 +132,12 @@ class ConvIR(nn.Module):
         self.SCM1 = SCM(base_channel * 4)
         self.FAM2 = FAM(base_channel * 2)
         self.SCM2 = SCM(base_channel * 2)
+        if rdpcm_mode == 'off':
+            self.RDPCM = nn.Identity()
+        elif rdpcm_mode == 'v1':
+            self.RDPCM = RDPCM(channel=base_channel * 4, hidden=32, modulation_bound=0.25)
+        else:
+            raise ValueError("rdpcm_mode must be 'off' or frozen 'v1'")
 
     def forward(self, x):
         x_2 = F.interpolate(x, scale_factor=0.5)
@@ -124,6 +159,7 @@ class ConvIR(nn.Module):
         z = self.Encoder[2](z)
 
         z = self.Decoder[0](z)
+        z = self.RDPCM(z)
         z_ = self.ConvsOut[0](z)
         # 128
         z = self.feat_extract[3](z)
@@ -146,10 +182,10 @@ class ConvIR(nn.Module):
         return outputs
 
 
-def build_net(version, data, fam_mode='original'):
+def build_net(version, data, fam_mode='original', rdpcm_mode='off'):
     if fam_mode != 'original':
         raise ValueError(
             "Official ConvIR-B anchor only supports fam_mode='original'. "
             "Create a route branch for architecture variants."
         )
-    return ConvIR(version, data)
+    return ConvIR(version, data, rdpcm_mode=rdpcm_mode)

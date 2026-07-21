@@ -1,0 +1,86 @@
+{
+  "competing_explanation": "A nominal no-op may hide broken checkpoint reuse or upstream gradient disconnection rather than establish an integration-capable module.",
+  "controls": [
+    "official ConvIR-B exact checkpoint-loaded output",
+    "RDPCM candidate with module disabled",
+    "RDPCM candidate after controlled activation is restored to zero gate"
+  ],
+  "disabled_actions": [
+    "training",
+    "scientific data access",
+    "Haze4K access",
+    "NH-HAZE access",
+    "confirmation access",
+    "canary access",
+    "locked-test access",
+    "module effectiveness claim",
+    "architecture or hyperparameter search"
+  ],
+  "gates": [
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "all frozen S0 architecture checks pass",
+      "id": "all_required_checks",
+      "threshold": true,
+      "type": "integrity"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "insertion Decoder[0] output before first decoder upsample and skip fusion",
+      "128 input channels and 32 hidden channels",
+      "0.25 tanh output-gate modulation bound",
+      "output gate initialized to zero",
+      "controlled activation output_gate equals 0.1 with no parameter update",
+      "41699 new parameters with 50000 maximum",
+      "512 MiB peak allocated-memory increment maximum",
+      "no-op tolerance atol 0 and rtol 0",
+      "seed 20260721"
+    ],
+    "matched_budget": "one identical 1x3x64x64 synthetic CUDA fixture with zero optimizer steps",
+    "primary_variable": "CONVIR_ONLY_RDPCM_V1",
+    "reference": "official_ConvIR_B_anchor"
+  },
+  "operation_id": "RDPCM_S0_ARCHITECTURE_QUALIFICATION",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "engineering_debug",
+    "grouping_unit": "deterministic_synthetic_fixture",
+    "independent_group_count": 1
+  },
+  "primary_estimand": {
+    "aggregation": "logical conjunction over required checks",
+    "direction": "higher",
+    "id": "all_s0_checks",
+    "metric": "all frozen S0 architecture checks pass",
+    "unit": "qualification_contract"
+  },
+  "question": "Can frozen CONVIR_ONLY_RDPCM_V1 satisfy its protected-data-free architecture and identity qualification contract?",
+  "route_id": "convir_only_rdpcm_s0_20260721",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "RDPCM_S0_QUALIFICATION_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "NONE",
+      "decision": "RDPCM_S0_QUALIFICATION_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "ONE_SMALL_HAZE4K_DEVELOPMENT_MECHANISM_DISCRIMINATION_CONTRACT_ONLY",
+      "decision": "RDPCM_S0_ARCHITECTURE_QUALIFIED",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "qualification_contract",
+    "method": "deterministic complete engineering contract"
+  }
+}

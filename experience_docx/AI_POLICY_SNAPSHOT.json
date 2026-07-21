@@ -1,0 +1,119 @@
+{
+  "change_routes": {
+    "cloud_control": {
+      "read_full": [
+        "AGENTS.md",
+        "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md",
+        "experience_docx/CONVIR_OPS_MCP.md"
+      ],
+      "snapshot_is_authority": false
+    },
+    "evidence_archive": {
+      "read_full": [
+        "AGENTS.md",
+        "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md",
+        "experience_docx/SCIENCE_FASTPATH.md"
+      ],
+      "snapshot_is_authority": false
+    },
+    "governance_change": {
+      "read_full": [
+        "AGENTS.md",
+        "experience_docx/SCIENCE_FASTPATH.md",
+        "experience_docx/ROUTE_READY_FASTPATH.md",
+        "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md",
+        "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md",
+        "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md",
+        "experience_docx/CONVIR_OPS_MCP.md",
+        "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md"
+      ],
+      "snapshot_is_authority": false
+    },
+    "model_or_training": {
+      "read_full": [
+        "AGENTS.md",
+        "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md",
+        "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md"
+      ],
+      "snapshot_is_authority": false
+    },
+    "read_only_audit": {
+      "read_full": [
+        "AGENTS.md",
+        "experience_docx/SCIENCE_FASTPATH.md"
+      ],
+      "snapshot_is_authority": false
+    },
+    "route_authoring": {
+      "read_full": [
+        "AGENTS.md",
+        "experience_docx/ROUTE_READY_FASTPATH.md",
+        "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md"
+      ],
+      "snapshot_is_authority": false
+    }
+  },
+  "default_runtime_host": "convir-4090",
+  "full_rule_read_required_when": [
+    "the change class route lists the file",
+    "the snapshot hash differs from the repository source",
+    "the request changes governance, protected data, or scientific authorization",
+    "rules conflict or the change class is unknown"
+  ],
+  "local_runtime_allowed": false,
+  "protected_roles_fail_closed": [
+    "confirmation",
+    "canary",
+    "locked_test"
+  ],
+  "route_mechanisms": [
+    "adjacent",
+    "orthogonal",
+    "reopen"
+  ],
+  "rules_bundle_sha256": "a3daa9e6f0c9ae77b2df7d06dbcb6e073513f4dcef6f25ee9efc82e3af7f1aa5",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "schema_version": 1,
+  "snapshot_role": "deterministic_read_index_not_policy_authority",
+  "sources": {
+    "AGENTS.md": {
+      "bytes": 7526,
+      "sha256": "86ed86422de530b1e3288632ea74f51b45f534636def4dc49890a7a2d1403b85"
+    },
+    "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md": {
+      "bytes": 3023,
+      "sha256": "b3b1096460f57e9ef5ccead81c245e6f657e4d77b078d4268aa43a850f241e7c"
+    },
+    "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md": {
+      "bytes": 9141,
+      "sha256": "eea87edcddff9f36ede7096a3375101c6024afd4c2943ddaee7c57eac47de0a5"
+    },
+    "experience_docx/CONVIR_OPS_MCP.md": {
+      "bytes": 8562,
+      "sha256": "a39f12a3f04f34f1fa16ae39dcc52433958bcfca7485b5157889f1fd07ab19ce"
+    },
+    "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
+      "bytes": 5887,
+      "sha256": "6814febce63781c8b961c78bdcba060afa908621a09e6322c0dd109845322072"
+    },
+    "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md": {
+      "bytes": 7129,
+      "sha256": "ef1e14a29cc9b9cefe26fbf46c899b00c3f8878238e7c720b1ce164cc8956d56"
+    },
+    "experience_docx/ROUTE_READY_FASTPATH.md": {
+      "bytes": 10595,
+      "sha256": "35112a777342dc59a6a5c95f9ecb8649f0c4cc257655bbc77275601aa2599e9a"
+    },
+    "experience_docx/SCIENCE_FASTPATH.md": {
+      "bytes": 7249,
+      "sha256": "d65e0bef58c25fe95fd242f8ad743e7ad0708e0d27a4558b25ebf75c9d2139dd"
+    }
+  },
+  "workflow": [
+    "SNAPSHOT",
+    "CONTRACT",
+    "EXECUTE",
+    "DECIDE",
+    "ARCHIVE"
+  ]
+}

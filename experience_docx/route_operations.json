@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/convir_only_rdpcm_s0_20260721.json",
+  "experiment_spec_sha256": "2fe6f413927171d1e0d9a6b81c7b459a7818510a879da59b9dd1c1676295bc56",
+  "operations": {
+    "RDPCM_S0_ARCHITECTURE_QUALIFICATION": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "ONE_SMALL_HAZE4K_DEVELOPMENT_MECHANISM_DISCRIMINATION_CONTRACT_ONLY",
+          "decision": "RDPCM_S0_ARCHITECTURE_QUALIFIED",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "RDPCM_S0_QUALIFICATION_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "RDPCM_S0_QUALIFICATION_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "rdpcm_s0_architecture_qualification_closeout.json",
+      "heartbeat_timeout_seconds": 180,
+      "max_gpu_utilization_pct": 90,
+      "min_free_gpu_mib": 4096,
+      "mode": "s0_qualification",
+      "monitor_profile": "short",
+      "output_id": "rdpcm-s0-architecture-qualification-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/convir_only_rdpcm.json",
+  "program_contract_sha256": "e85e1dc343b8ef064c0c63f00c050df3712290094037dd4840d0af9c5c084a44",
+  "route_card_relpath": "experience_docx/experiment_cards/convir_only_rdpcm_s0_20260721.md",
+  "route_id": "convir_only_rdpcm_s0_20260721",
+  "rules_commit": "eef18709c62e53219a9b5bf7f23747af013b69e0",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "RDPCM_S0_ARCHITECTURE_QUALIFICATION": "experience_docx/scientific_contracts/convir_only_rdpcm_s0_20260721__RDPCM_S0_ARCHITECTURE_QUALIFICATION.json"
+  }
+}

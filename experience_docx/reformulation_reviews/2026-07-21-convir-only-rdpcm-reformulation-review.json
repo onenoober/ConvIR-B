@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "artifact_type": "typed_reformulation_review",
+  "review_id": "convir_only_rdpcm_reformulation_review_20260721",
+  "review_date": "2026-07-21",
+  "evidence_cutoff": "2026-07-21 Asia/Shanghai",
+  "source_main_commit": "7465a6be85a8771d92d73e7a44ecc58ddd1536ad",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "rules_bundle_sha256": "a3daa9e6f0c9ae77b2df7d06dbcb6e073513f4dcef6f25ee9efc82e3af7f1aa5",
+  "review_question": "Does the archived CDPRM S1, R16, and closed R5-R13 selector/critic evidence justify a falsifiable orthogonal research program for one official-ConvIR-B-only continuous bounded regional modulation definition whose sole first operation is a protected-data-free no-data S0 architecture qualification?",
+  "parent_authority": {
+    "route_id": "nhhaze_cdprm_s1_region_target_identifiability_20260720",
+    "operation_id": "CDPRM_S1_REGION_TARGET_IDENTIFIABILITY",
+    "state": "COMPLETED_GATE_FAIL",
+    "decision": "CDPRM_S1_REGION_OR_TARGET_FAIL_STOP",
+    "authorizes": "CDPRM_S1_REFORMULATION_REVIEW_ONLY",
+    "route_commit": "14ea9d2b1658315cf3ea995484fe1545ba4e6963"
+  },
+  "evidence_refs": [
+    "experience_docx/experiment_logs/nhhaze_cdprm_s1_region_target_identifiability_20260720/cdprm_s1_region_target_identifiability_closeout.json",
+    "experience_docx/experiment_logs/nhhaze_cdprm_s1_region_target_identifiability_20260720/cdprm_s1_scientific_conclusion.json",
+    "experience_docx/experiment_logs/nhhaze_cdprm_s1_region_target_identifiability_20260720/cdprm_s1_bootstrap_summary.json",
+    "experience_docx/experiment_logs/nhhaze_cdprm_s1_region_target_identifiability_20260720/cdprm_s1_gate_summary.json",
+    "experience_docx/experiment_logs/nhhaze_cdprm_s1_region_target_identifiability_20260720/cdprm_s1_identity_and_access.json",
+    "experience_docx/experiment_logs/nhhaze_cdprm_s1_region_target_identifiability_20260720/cdprm_s1_stability_summary.json",
+    "experience_docx/experiment_logs/haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720/r16_s3_domain_matched_action_ceiling_closeout.json",
+    "experience_docx/experiment_logs/haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720/r16_s3_scientific_conclusion.json",
+    "experience_docx/experiment_logs/haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720/r16_s3_gate_summary.json",
+    "experience_docx/family_summaries/chd_rm_family_summary.md"
+  ],
+  "evidence_sha256": {
+    "experience_docx/experiment_logs/nhhaze_cdprm_s1_region_target_identifiability_20260720/cdprm_s1_region_target_identifiability_closeout.json": "3b8c28ebfcd2a4f5b265ae3a91863d92904bb08db59e047c704cea28900e341f",
+    "experience_docx/experiment_logs/nhhaze_cdprm_s1_region_target_identifiability_20260720/cdprm_s1_scientific_conclusion.json": "7fb97ca21da549d2c14cf5a9bd880494d91b72195c1b451ab12d08578e3875b0",
+    "experience_docx/experiment_logs/nhhaze_cdprm_s1_region_target_identifiability_20260720/cdprm_s1_bootstrap_summary.json": "f37dd430e6d3d146e68668f4c740d14eea17934535037e766f42f42bbf1b9a19",
+    "experience_docx/experiment_logs/nhhaze_cdprm_s1_region_target_identifiability_20260720/cdprm_s1_gate_summary.json": "cc47900dca47fbccdef6524f4f4523bd39eddedbb15394c85daa33283c83e8b4",
+    "experience_docx/experiment_logs/nhhaze_cdprm_s1_region_target_identifiability_20260720/cdprm_s1_identity_and_access.json": "c45815d0b86bfeedacf7d22ee23d36e551e122628fd89f7a8b37ce730e008a94",
+    "experience_docx/experiment_logs/nhhaze_cdprm_s1_region_target_identifiability_20260720/cdprm_s1_stability_summary.json": "0041d854eedad04831e500ffa6e1449d0997c777185dbd90d61ef7a8124de22d",
+    "experience_docx/experiment_logs/haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720/r16_s3_domain_matched_action_ceiling_closeout.json": "a993f738d399e42bbd88101bdaeadcd4ea6f86e457be4dd5f5813157457c15d4",
+    "experience_docx/experiment_logs/haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720/r16_s3_scientific_conclusion.json": "483f20925c68babd90c3d4bee13a789cafcdf1aa41028e5e951f31334b98ace6",
+    "experience_docx/experiment_logs/haze4k_v5_r16_s3_domain_matched_action_ceiling_20260720/r16_s3_gate_summary.json": "bf86b034567cda01544b1fcde7ca792e272cb133d0b2d031f3592d98efdca441",
+    "experience_docx/family_summaries/chd_rm_family_summary.md": "3308ed16392c866d83bf3104200be7607a5835d146e3ce82cea395d669cee9c7"
+  },
+  "authorization_activation": {
+    "content_assessment": "ACCEPTED",
+    "activation_condition": "This review becomes authoritative only when this exact JSON blob is reachable from github/main and every evidence_refs path at source_main_commit matches evidence_sha256.",
+    "before_activation": {
+      "authorization_effective": false,
+      "s0_route_authoring_allowed": false,
+      "s0_execution_allowed": false
+    },
+    "after_activation": {
+      "authorization_effective": true,
+      "s0_route_authoring_allowed": true,
+      "s0_execution_allowed": false
+    },
+    "required_route_binding": "The future research-program contract and schema-1 experiment spec must bind this review path and its GitHub-main blob SHA-256."
+  },
+  "candidate_program": {
+    "provisional_name": "ConvIR-only RDPCM",
+    "expanded_name": "Region Demand-Protection Collaborative Modulation",
+    "module_definition_id": "CONVIR_ONLY_RDPCM_V1",
+    "status": "accepted_for_definition_freeze_and_s0_route_authoring_after_github_activation",
+    "core_hypothesis": "A single internal official-ConvIR-B module can represent spatially varying restoration demand and conservative protection as continuous bounded fields and apply a zero-initialized residual modulation without selecting among candidate restoration actions.",
+    "required_form": "F_out = F + gamma(x, F) * DeltaF, with gamma spatial, continuous, explicitly bounded, and initialized so the complete module is an exact no-op.",
+    "fixed_constraints": [
+      "Use the immutable official ConvIR-B architecture anchor and official checkpoint as baseline and initialization only.",
+      "Use exactly one preregistered insertion location inside ConvIR-B; insertion location is not a search dimension.",
+      "Do not depend on WDMamba at inference, training, supervision, action definition, or module construction.",
+      "Do not construct candidate actions and do not use a selector, critic, abstention gate, coverage threshold, or risk threshold.",
+      "Represent demand as a continuous signed or nonnegative bounded modulation pressure, not a binary demand mask.",
+      "Represent protection as continuous attenuation of permitted modulation magnitude, not a binary protection or safe-mask class.",
+      "Do not expose GT-derived demand, protection, or safe masks as runtime inputs. Future supervision, if ever authorized, must be separately frozen and cannot silently restore the failed hard-label definitions.",
+      "Initialize the new residual/modulation path to exact identity behavior and require official checkpoint tensors to load with exact key and shape identity.",
+      "Permit missing checkpoint keys only under one declared RDPCM module prefix; permit no unexpected keys and no shape mismatch for official tensors.",
+      "The schema-1 S0 spec must freeze the exact insertion layer, module width and depth, bounded function and numeric bounds, initialization constants, parameter and memory limits, numerical no-op tolerance, and gradient-reachability procedure before S0; do not search them after observing S0 or later scientific results."
+    ],
+    "orthogonal_dimensions": [
+      {
+        "dimension": "decision_semantics",
+        "change": "Replace discrete candidate-action selection and abstention with direct continuous bounded feature modulation."
+      },
+      {
+        "dimension": "dependency_structure",
+        "change": "Replace the ConvIR-B/WDMamba compound action system with one official-ConvIR-B-only internal module."
+      },
+      {
+        "dimension": "target_representation",
+        "change": "Replace unstable hard demand/protection/safe labels with continuous bounded demand pressure and conservative protection attenuation."
+      },
+      {
+        "dimension": "intervention_locus",
+        "change": "Move from post-hoc regional endpoint actions to one fixed internal ConvIR-B feature intervention."
+      }
+    ]
+  },
+  "criterion_findings": [
+    {
+      "criterion": "escape_failed_selector_critic_assumption",
+      "result": "PASS",
+      "finding": "CONVIR_ONLY_RDPCM_V1 has no candidate bank, selector, critic, coverage rule, abstention decision, or WDMamba dependency. It shares only the broad regional-heterogeneity question with R5-R13, not the closed family's core action-selection assumption. It is therefore orthogonal, not a reopen or adjacent retune."
+    },
+    {
+      "criterion": "continuous_bounded_modulation_supported",
+      "result": "PASS_WITH_CLAIM_LIMIT",
+      "finding": "R16 retained privileged regional headroom of +0.123429 dB with LCB95 +0.065142, and CDPRM S1 retained +0.130810 dB with LCB95 +0.101135. CDPRM spatial specificity and regional specificity passed, while adaptive regions did not improve over fixed 8x8 (point +0.000366 dB, LCB95 -0.001028). This supports testing one fixed-location continuous modulation mechanism, but does not establish learnability, deployability, or module effectiveness."
+    },
+    {
+      "criterion": "avoid_unstable_hard_labels",
+      "result": "PASS_BY_REFORMULATION",
+      "finding": "Demand stability passed (Jaccard LCB95 0.719426), but protection and safe-mask stability failed (LCB95 0.652540 and 0.587259). The accepted definition therefore prohibits hard demand/protection/safe classes and thresholds. Demand and protection are continuous modulation semantics; future target/loss definitions remain unauthorized until separately frozen."
+    },
+    {
+      "criterion": "rule_out_parameter_only_explanation",
+      "result": "PASS_FOR_FUTURE_DISCRIMINATION_CONTRACT",
+      "finding": "One fixed insertion point plus an official ConvIR-B baseline and a parameter/compute-matched global-uniform modulation control can distinguish spatial variation from added parameters and nonlinear capacity, provided all three arms share the same checkpoint, initialization, trainable scope, optimizer, schedule, data, seeds, and budget. S0 does not make this scientific comparison."
+    },
+    {
+      "criterion": "permanent_negative_closure",
+      "result": "PASS",
+      "finding": "This review authorizes creation of a closeable CONVIR_ONLY_RDPCM_V1 definition; it is not yet the fully frozen object. The schema-1 S0 spec must freeze its insertion point, module form, bounds, initialization, width/depth, resource limits, no-op tolerance, gradient procedure, controls, and later discrimination contrast before evidence. Only then can a future valid scientific FAIL close that exact definition and forbid position, width, depth, seed, learning-rate, threshold, or loss-weight rescue. A no-data S0 engineering failure is not scientific evidence and permits only the bounded same-contract repair policy."
+    },
+    {
+      "criterion": "retain_independent_real_domain_validation",
+      "result": "PASS",
+      "finding": "The program retains a later independent real non-uniform-haze validation stage, but only after S0 and a separately frozen development discrimination stage. NH-HAZE 01-50 remain training-overlap development evidence; NH-HAZE 51-55, Haze4K locked test, confirmation, canary, and locked-test roles remain sealed and are not authorized by this review."
+    },
+    {
+      "criterion": "pass_authorization_is_s0_only",
+      "result": "PASS",
+      "finding": "After GitHub activation, the sole next action is authoring and statically validating a protected-data-free synthetic/no-data S0 route. S0 execution remains unauthorized until the frozen schema-1 spec, compiled schema-6 bundle, route-ready gate, route commit/push, and MCP plan identities all match. This review authorizes no training, scientific data access, effectiveness claim, candidate comparison, confirmation, canary, locked test, or external validation."
+    }
+  ],
+  "falsification_contract": {
+    "s0_engineering_question": "Can CONVIR_ONLY_RDPCM_V1 be integrated at its single frozen location while preserving official ConvIR-B identity at initialization and satisfying exact checkpoint loading, bounded parameterization, trainable-scope, gradient-reachability, finite-forward, and resource-increment contracts without scientific or protected data?",
+    "s0_required_checks": [
+      "exact official checkpoint partial load with missing keys restricted to the declared RDPCM prefix",
+      "zero unexpected keys and zero official-tensor shape mismatches",
+      "initial output numerical identity to official ConvIR-B under a frozen tolerance",
+      "strict module-disabled no-op",
+      "shape-correct finite synthetic forward",
+      "exact frozen and trainable parameter scopes",
+      "at exact no-op initialization, finite gradients with the preregistered requirement limited to the parameters mathematically reachable under the frozen identity parameterization",
+      "after one preregistered deterministic synthetic activation that does not update parameters or use scientific data, nonzero finite gradients to every declared trainable RDPCM component",
+      "frozen parameter-count and peak-memory increment bounds",
+      "confirmation, canary, locked-test, Haze4K scientific data, and NH-HAZE data untouched"
+    ],
+    "future_scientific_discrimination_if_separately_authorized": {
+      "question": "Under matched parameters, compute, training budget, and evidence roles, does spatially varying continuous demand-protection modulation outperform global-uniform modulation?",
+      "controls": [
+        "official ConvIR-B",
+        "parameter/compute-matched global-uniform modulation at the same insertion point",
+        "CONVIR_ONLY_RDPCM_V1 spatial continuous modulation"
+      ],
+      "authorization_status": "NOT_AUTHORIZED_BY_THIS_REVIEW"
+    },
+    "permanent_scientific_fail_action": "Close CONVIR_ONLY_RDPCM_V1. Preserve only a genuinely orthogonal reformulation supported by new evidence; do not rescue this definition by nearby architecture or training hyperparameter search."
+  },
+  "decision": "PASS",
+  "state": "COMPLETED_REVIEW_PASS",
+  "authorizes": "RDPCM_S0_ROUTE_AUTHORING_AND_STATIC_VALIDATION_ONLY_AFTER_GITHUB_ACTIVATION",
+  "authorization_scope": {
+    "allowed": [
+      "Create one research-program contract that records the closed selector/critic family and CONVIR_ONLY_RDPCM_V1 as an orthogonal route.",
+      "Create one schema-1 experiment spec whose sole materialized operation is the no-data S0 qualification and which freezes the complete CONVIR_ONLY_RDPCM_V1 definition.",
+      "From the immutable github/codex/haze4k-official-arch-anchor, create fresh isolated local and cloud route workspaces.",
+      "Deterministically compile the schema-1 spec to a schema-6 route bundle and run the one route-ready gate.",
+      "Commit and push the route only after the route-ready gate passes, then obtain one identity-matching MCP plan."
+    ],
+    "prohibited": [
+      "training",
+      "Haze4K development scientific-data access",
+      "NH-HAZE data access",
+      "confirmation access",
+      "canary access",
+      "locked-test access",
+      "module effectiveness or generalization claims",
+      "WDMamba restoration or dependency",
+      "selector, critic, action-bank, threshold, coverage, or risk-gate continuation",
+      "insertion-position, width, depth, seed, learning-rate, threshold, or loss-weight search"
+    ],
+    "s0_execution_prerequisites": [
+      "this exact review is authoritative on github/main",
+      "the program contract and schema-1 spec bind the authoritative review path and SHA-256",
+      "the complete CONVIR_ONLY_RDPCM_V1 definition and non-contradictory no-op/gradient procedure are frozen",
+      "the deterministic schema-6 bundle passes the one route-ready gate",
+      "the exact route commit is pushed",
+      "MCP plan returns matching operation, output, branch, commit, and authorization identities"
+    ],
+    "s0_pass_authorizes": "ONE_SEPARATELY_FROZEN_SMALL_HAZE4K_DEVELOPMENT_MECHANISM_DISCRIMINATION_CONTRACT_ONLY",
+    "s0_fail_authorizes": "SAME_CONTRACT_ENGINEERING_REPAIR_ONLY",
+    "s0_inconclusive_authorizes": "S0_IDENTITY_PRECISION_OR_ENGINEERING_EVIDENCE_COMPLETION_ONLY"
+  },
+  "claim_limits": [
+    "This is a research-program and S0-qualification PASS, not a scientific module-effectiveness PASS.",
+    "R16 and CDPRM S1 are privileged/development evidence with checkpoint-training overlap and cannot establish external validity.",
+    "The archived endpoint interventions do not prove that a learnable continuous internal modulation will reproduce their gains.",
+    "CONVIR_ONLY_RDPCM_V1 becomes a falsifiable fixed object only after its complete structural, numerical, resource, no-op, and gradient fields are frozen in the schema-1 S0 spec.",
+    "Demand and protection target/loss definitions for training are not authorized or selected by this review.",
+    "No protected role or scientific dataset is opened by this decision."
+  ]
+}

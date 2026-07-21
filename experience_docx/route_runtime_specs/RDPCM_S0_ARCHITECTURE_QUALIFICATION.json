@@ -1,0 +1,38 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/convir_only_rdpcm_s0_20260721__RDPCM_S0_ARCHITECTURE_QUALIFICATION.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/convir_only_rdpcm_s0_20260721__RDPCM_S0_ARCHITECTURE_QUALIFICATION.json",
+    "max_seconds": 600,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/run_convir_only_rdpcm_s0.py",
+  "environment": {
+    "CONVIR_ROUTE_RDPCM_DEFINITION": "CONVIR_ONLY_RDPCM_V1"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "rdpcm_s0_summary.json",
+      "max_bytes": 1048576,
+      "required": true,
+      "source_relpath": "workload/rdpcm_s0_summary.json"
+    }
+  ],
+  "evidence_role": "engineering_debug",
+  "expected_wall_seconds": 300,
+  "operation_id": "RDPCM_S0_ARCHITECTURE_QUALIFICATION",
+  "precision_contract": {
+    "certificate_relpath": null,
+    "mode": "not_applicable",
+    "rationale": "S0 is a deterministic engineering qualification with no scientific estimand."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "convir_only_rdpcm_s0_20260721",
+  "schema_version": 2,
+  "timeout_seconds": 900,
+  "total_units": 1
+}
