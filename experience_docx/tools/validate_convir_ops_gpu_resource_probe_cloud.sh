@@ -35,11 +35,13 @@ printf 'CONVIR_OPS_GPU_RESOURCE_PROBE_STAGE=compile\n'
 printf 'CONVIR_OPS_GPU_RESOURCE_PROBE_STAGE=full_regression\n'
 stdout="$work/unittest.stdout"
 stderr="$work/unittest.stderr"
+trap - ERR
 set +e
 PYTHONPATH="$tools" "$python" -m unittest discover \
   -s "$tools/tests" -p 'test_*.py' >"$stdout" 2>"$stderr"
 rc=$?
 set -e
+trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
 if [[ $rc -ne 0 ]]; then
   tail -n 200 "$stdout" >&2 || true
   tail -n 200 "$stderr" >&2 || true
