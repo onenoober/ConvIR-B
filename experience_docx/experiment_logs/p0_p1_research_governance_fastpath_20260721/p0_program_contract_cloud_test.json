@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "status": "COMPLETED_GATE_PASS",
+  "adoption_status": "NOT_YET_ADOPTED",
+  "phase": "P0_PROGRAM_CONTRACT",
+  "server": "convir-4090",
+  "branch": "codex/p0-p1-research-governance-fastpath-20260721",
+  "tested_commit": "771e290fd42172d24341b24ea3931944f6c51868",
+  "script_relpath": "experience_docx/tools/validate_p0_program_contract_cloud.sh",
+  "script_sha256": "bba269511dbad45d219f4192c71042f9891f5ec1970ae15820b7bc376b6f9202",
+  "test_module": "experience_docx.tools.tests.test_research_program_contract",
+  "tests_run": 12,
+  "failures": 0,
+  "errors": 0,
+  "marker": "P0_PROGRAM_CONTRACT_CLOUD_OK",
+  "positive_boundaries": [
+    "program-defined adjacent budget",
+    "orthogonal escape from a closed adjacent family",
+    "evidence-backed family reopen",
+    "evidence-backed dependency-use amendment"
+  ],
+  "negative_boundaries": [
+    "exhausted adjacent budget rejection",
+    "closed-family adjacent-route rejection",
+    "unapproved orthogonal dimension rejection",
+    "missing or unapproved reopen evidence rejection",
+    "dependency-role overreach rejection",
+    "protected-stage permission overreach rejection"
+  ],
+  "protected_data_touched": false,
+  "model_runtime_touched": false,
+  "scientific_terminal_affected": false
+}

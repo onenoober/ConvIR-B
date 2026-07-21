@@ -31,7 +31,7 @@ SERVER_NAME = "convir-ops"
 SERVER_VERSION = "5.0.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
-SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5}
+SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}
 REMOTE_HOST = "convir-4090"
 REMOTE_BASE = "/sda/home/wangyuxin/ConvIR-B"
 REMOTE_REPOS = f"{REMOTE_BASE}/repos"
@@ -358,7 +358,7 @@ def validate_committed_operation_bundle(bare_repo, route_commit, manifest,
         spec_path = runtime_spec_relpath(operation_id)
         spec_raw = git_show(bare_repo, route_commit, spec_path)
         spec = validate_runtime_spec(json.loads(spec_raw), manifest, operation_id)
-        if context["route_manifest_schema_version"] == 5 and spec["schema_version"] != 2:
+        if context["route_manifest_schema_version"] >= 5 and spec["schema_version"] != 2:
             raise ToolError("canonical manifest requires runtime schema 2")
         asset = None
         if spec["asset_manifest_relpath"] is not None:
@@ -378,7 +378,7 @@ def validate_committed_operation_bundle(bare_repo, route_commit, manifest,
             precision = validate_precision_certificate(
                 json.loads(git_show(bare_repo, route_commit, precision_path)), spec,
             )
-        if context["route_manifest_schema_version"] == 5:
+        if context["route_manifest_schema_version"] >= 5:
             contract = validate_scientific_contract(
                 json.loads(git_show(
                     bare_repo, route_commit, context["scientific_contract_relpath"],
@@ -601,6 +601,14 @@ def git_show_bytes(repo, commit, path):
     return result.stdout
 
 
+def git_object_exists(repo, commit, path):
+    result = subprocess.run(
+        ["git", "-C", repo, "cat-file", "-e", f"{commit}:{path}"],
+        capture_output=True, timeout=30, check=False,
+    )
+    return result.returncode == 0
+
+
 def rule_bundle_digest(repo, commit):
     digest = hashlib.sha256()
     for path in RULE_BUNDLE_RELPATHS:
@@ -694,10 +702,16 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
         "route_card_relpath", "operations",
     }
     current_top = legacy_top | {"scientific_contract_relpaths"}
+    compiled_top = current_top | {
+        "program_contract_relpath", "program_contract_sha256",
+        "experiment_spec_relpath", "experiment_spec_sha256",
+    }
     if not isinstance(value, dict) or value.get("schema_version") not in SUPPORTED_MANIFEST_SCHEMA_VERSIONS:
         raise ToolError("route operations manifest has an unsupported schema")
     manifest_schema = value["schema_version"]
-    expected_top = legacy_top if manifest_schema == 4 else current_top
+    expected_top = {
+        4: legacy_top, 5: current_top, 6: compiled_top,
+    }[manifest_schema]
     if set(value) != expected_top:
         raise ToolError("route operations manifest has an invalid top-level contract")
     route_id = require_token(value["route_id"], "route_id")
@@ -710,7 +724,7 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
     scientific_contract = None
     scientific_contract_blob = None
     scientific_contract_value = None
-    if manifest_schema == 5:
+    if manifest_schema >= 5:
         contract_paths = value["scientific_contract_relpaths"]
         if not isinstance(contract_paths, dict) or set(contract_paths) != set(value["operations"]):
             raise ToolError("scientific contract paths must map every operation exactly")
@@ -735,7 +749,7 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
     }
     if not isinstance(operation, dict) or set(operation) != operation_fields:
         raise ToolError("selected operation has an invalid field contract")
-    if manifest_schema == 5:
+    if manifest_schema >= 5:
         scientific_contract_value = validate_scientific_contract(
             scientific_contract_value, route_id, operation_id, operation,
         )
@@ -769,6 +783,43 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
                 or scientific_contract_value.get("route_id") != route_id \
                 or scientific_contract_value.get("operation_id") != operation_id:
             raise ToolError("scientific contract identity or first operation mismatch")
+    if manifest_schema == 6:
+        program_path = require_relpath(
+            value["program_contract_relpath"], "program_contract_relpath", ".json",
+            prefix="experience_docx/research_programs/",
+        )
+        spec_path = require_relpath(
+            value["experiment_spec_relpath"], "experiment_spec_relpath", ".json",
+            prefix="experience_docx/experiment_specs/",
+        )
+        program_raw = git_show_bytes(bare_repo, route_commit, program_path)
+        spec_raw = git_show_bytes(bare_repo, route_commit, spec_path)
+        if hashlib.sha256(program_raw).hexdigest() != require_sha(
+                value["program_contract_sha256"], "program_contract_sha256", SHA256):
+            raise ToolError("program contract SHA-256 mismatch")
+        if hashlib.sha256(spec_raw).hexdigest() != require_sha(
+                value["experiment_spec_sha256"], "experiment_spec_sha256", SHA256):
+            raise ToolError("experiment spec SHA-256 mismatch")
+        try:
+            import experiment_spec_compiler as compiler
+            bundle = compiler.compile_bundle(
+                spec_relpath=spec_path,
+                spec_raw=spec_raw,
+                program_raw=program_raw,
+                evidence_exists=lambda relpath: git_object_exists(
+                    bare_repo, route_commit, relpath,
+                ),
+            )
+        except Exception as exc:
+            if isinstance(exc, ToolError):
+                raise
+            raise ToolError(f"compiled experiment bundle is invalid: {exc}") from exc
+        mismatches = [
+            relpath for relpath, expected in bundle.items()
+            if git_show_bytes(bare_repo, route_commit, relpath) != expected
+        ]
+        if mismatches:
+            raise ToolError(f"compiled experiment bundle drift: {mismatches[:8]}")
     recorded_rules = rule_bundle_digest(bare_repo, rules_commit)
     current_rules = rule_bundle_digest(bare_repo, current_main)
     if recorded_rules != current_rules:

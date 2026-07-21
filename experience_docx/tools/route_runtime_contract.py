@@ -25,6 +25,8 @@ RUNTIME_BUNDLE_RELPATHS = (
     "experience_docx/tools/route_program_api.py",
     "experience_docx/tools/route_runtime_contract.py",
     "experience_docx/tools/run_telemetry.py",
+    "experience_docx/tools/research_program_contract.py",
+    "experience_docx/tools/experiment_spec_compiler.py",
 )
 EVIDENCE_ROLES = {
     "engineering_debug", "development_screening", "confirmation", "sealed_final",

@@ -267,7 +267,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
     route_card_relpath = manifest.get("route_card_relpath")
     if isinstance(route_card_relpath, str):
         try:
-            if manifest_schema == 5:
+            if manifest_schema >= 5:
                 card_errors, card_digest = inspect_slim_card(
                     repo, snapshot, route_card_relpath,
                     route_id=manifest.get("route_id"),
@@ -307,7 +307,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
             )
             spec_path = runtime_spec_relpath(operation_id)
             spec = validate_runtime_spec(json.loads(show(repo, snapshot, spec_path)), manifest, operation_id)
-            if manifest_schema == 5 and spec["schema_version"] != 2:
+            if manifest_schema >= 5 and spec["schema_version"] != 2:
                 raise ReadyError(f"{operation_id}: canonical manifest requires runtime schema 2")
             entrypoint_raw = show(repo, snapshot, spec["entrypoint_relpath"])
             check_entrypoint(entrypoint_raw, spec["entrypoint_relpath"])
@@ -340,7 +340,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                 precision_digest = __import__("hashlib").sha256(
                     json.dumps(precision, sort_keys=True, separators=(",", ":")).encode()
                 ).hexdigest()
-            if manifest_schema == 5:
+            if manifest_schema >= 5:
                 contract_path = manifest["scientific_contract_relpaths"][operation_id]
                 contract = ops.validate_scientific_contract(
                     json.loads(show(repo, snapshot, contract_path)),
@@ -378,7 +378,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                 "precision_certificate_digest": precision_digest,
                 "precision_mode": spec["precision_contract"]["mode"],
                 "precision_feasible": precision_feasible,
-                "canonical_scientific_contract": manifest_schema == 5,
+                "canonical_scientific_contract": manifest_schema >= 5,
                 "contract_phase_required": True,
                 "generic_failure_closeout": True,
             }
