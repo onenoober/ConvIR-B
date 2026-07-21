@@ -82,11 +82,7 @@ valid.
 ## Finite State
 
 Start checks resources before creating a fresh workspace and again immediately
-before launch. GPU checks use fixed `/usr/bin/nvidia-smi`, strict numeric CSV
-parsing, and a bounded index/free-MiB/utilization summary. Query failure and
-unparseable output are typed probe failures with `runner_started=false`; only a
-successful query with no device meeting both frozen gates returns retryable
-resource wait. Fresh workspaces use the immutable cloud anchor as a local shared
+before launch. Fresh workspaces use the immutable cloud anchor as a local shared
 object seed and fetch only the exact route branch tip, avoiding a full GitHub
 history clone on every route. Resource wait may reuse the unchanged plan. Any timeout after
 the launch boundary becomes `START_STATE_UNKNOWN` and forbids a second launch.
