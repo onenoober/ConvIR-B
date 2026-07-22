@@ -11,7 +11,7 @@ fi
 echo "RESIDE_INVENTORY_ROOT=$DATA_ROOT"
 /bin/df -B1 "$DATA_ROOT"
 
-for tool in 7zz 7z unzip unrar rar; do
+for tool in 7zz 7z unzip zip zipinfo bsdtar tar unrar-free unrar rar python3; do
   if command -v "$tool" >/dev/null 2>&1; then
     printf 'RESIDE_TOOL=%s\n' "$(command -v "$tool")"
   fi
