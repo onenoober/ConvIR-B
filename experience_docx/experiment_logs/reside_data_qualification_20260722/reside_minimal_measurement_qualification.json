@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "audit_id": "reside-data-qualification-20260722",
+  "audit_date": "2026-07-22",
+  "audit_scope": "RESIDE identity, scene/variant mapping, synthetic field readability, and conservative overlap with Haze4K/SOTS",
+  "data_mutations_performed": false,
+  "training_evaluation_inference_performed": false,
+  "source_identity": {
+    "base_main_commit": "cbc37744e96641350eaae4b24ba1ea5a95b72303",
+    "qualification_audit_commit": "4efbc7f3ebde96bad1e011e500d49bcc68c648f4",
+    "qualification_script": "experience_docx/tools/audit_reside_measurement_qualification_convir4090.sh",
+    "qualification_script_sha256": "8765f1651edad6dcd1fe545ab42eb3df6fd069aaac33eae9c677ffa366955d64",
+    "depth_reader_audit_commit": "42afe3b77c2b759c896ae7c14346aefb678a4888",
+    "depth_reader_script": "experience_docx/tools/inventory_reside_measurement_readers_convir4090.sh",
+    "depth_reader_script_sha256": "354ce7e4ed74a04de9e11a0606872e89b1007dfe553650078ed82d188208c970"
+  },
+  "dataset_identity": {
+    "root": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE",
+    "archive_manifest_line_count": 26,
+    "archive_manifest_sha256": "27348952347a0f94ac33105d5e6ce11b4ce4e2b0fab68b583b978752b5b78be0",
+    "layout_record_sha256": "f025a8e6e3f43c9b924c0986b866ed28e5644dd7a7ec7b056ae311c83764d5dc",
+    "pairing_report_sha256": "afdefd2887437d929e00239e932bd76e7504d9838c2a3c58c33ce13f91f4150a",
+    "pairing_marker_present": true
+  },
+  "structural_integrity": {
+    "status": "PASS",
+    "its_train": {
+      "clear_scenes": 10000,
+      "hazy_images": 100000,
+      "transmission_images": 100000,
+      "hazy_variants_per_scene": 10
+    },
+    "its_validation": {
+      "clear_scenes": 1000,
+      "hazy_images": 10000,
+      "transmission_images": 10000,
+      "hazy_variants_per_scene": 10
+    },
+    "ots": {
+      "clear_scenes": 8970,
+      "hazy_images": 313950,
+      "depth_files": 8970,
+      "hazy_variants_per_scene": 35
+    },
+    "sots_indoor": {
+      "clear_scenes": 50,
+      "hazy_images": 500,
+      "hazy_variants_per_scene": 10
+    },
+    "sots_outdoor": {
+      "clear_scenes": 492,
+      "hazy_images": 500,
+      "hazy_variants_per_scene_min": 1,
+      "hazy_variants_per_scene_max": 2
+    }
+  },
+  "synthetic_measurement_fields": {
+    "status": "PASS_WITH_CONSTRUCT_LIMIT",
+    "its_train_transmission": {
+      "deterministic_sample_count": 64,
+      "all_finite": true,
+      "all_spatially_variable": true,
+      "all_aligned_to_paired_images": true,
+      "physical_pairing_unique_best_count": 64,
+      "physical_reconstruction_rmse_median": 0.002560911863194248,
+      "sample_selection_digest": "a1dadb79a6a81586fb81ae298264e0766e8785a9a8f61cd57a1a977bef9e4ae7",
+      "mapping_digest": "beb6921224a7810b39edb99bfb76063224e5bc1eb6b754e36e9b987813fb708a"
+    },
+    "its_validation_transmission": {
+      "deterministic_sample_count": 32,
+      "all_finite": true,
+      "all_spatially_variable": true,
+      "all_aligned_to_paired_images": true,
+      "physical_pairing_unique_best_count": 32,
+      "physical_reconstruction_rmse_median": 0.002341085587182128,
+      "sample_selection_digest": "c49b42fcf4d4c8848d0bb825e844a018d8ab2391798c1df89c8390f4c46ed9e9",
+      "mapping_digest": "368ed2ccf1ddd12a9d81fd3ffbc4a1a3a5729e519164585b0e94a3aa1f993d6c"
+    },
+    "ots_depth": {
+      "paired_scene_id_count": 8970,
+      "format": "MATLAB v7.3/HDF5",
+      "available_reader": "/usr/bin/octave",
+      "python_hdf5_reader_available": false,
+      "deterministic_sample": "0001.mat",
+      "field": "depth",
+      "shape": [413, 550],
+      "all_finite": true,
+      "min": 2.13136482239,
+      "max": 4.01819992065,
+      "spatial_std": 0.363814883437
+    },
+    "construct_limit": "These checks establish synthetic field availability and pairing only. Depth-derived transmission is not equivalent to real spatially varying scattering, and no real-haze local proxy has been calibrated."
+  },
+  "scene_independence": {
+    "matching_rule": "Conservative strict perceptual match: dHash Hamming <=2, pHash Hamming <=6, 32x32 grayscale correlation >=0.995, and maximum RGB-mean difference <=0.04; exact match is SHA-256 equality after deterministic 64x64 RGB canonicalization.",
+    "haze4k": {
+      "gt_file_count": 4000,
+      "unique_canonical_scene_count": 1000,
+      "strict_matches_to_reside_ots": 458,
+      "exact_canonical_matches": 0,
+      "mapping_digest": "f7716b6753fffc45e7f44a392eb339a49f753ae1f0fd65f032dcb1571b4a3ade",
+      "ots_exclusion_id_set_digest": "bcc24f5a9b74e5fa381b3311b061b1d0837665f4897cc3e918c5b4160497e621",
+      "provenance_expected_ots_scene_count": 500,
+      "unresolved_source_mapping_count": 42,
+      "interpretation": "458 is a verified conservative minimum, not proof that only 458 Haze4K scenes came from OTS."
+    },
+    "sots": {
+      "unique_scene_count": 542,
+      "strict_matches_to_reside_ots": 492,
+      "exact_canonical_matches": 492,
+      "matched_component": "all 492 SOTS-outdoor clear scenes",
+      "mapping_digest": "570ed259190477a445b3ba77e779771d7c03e56b7fd7c35353303368b8c43829",
+      "ots_exclusion_id_set_digest": "ef87654fcf0581f998b5e593eb6ec1cd670b9422f38cbdbca48f0452da6b0da5"
+    },
+    "conservative_union": {
+      "verified_ots_exclusion_scene_count": 920,
+      "eligible_ots_scene_count_after_verified_exclusions": 8050,
+      "qualification_limit": "Do not treat this as complete Haze4K-OTS deduplication until the remaining 42 provenance-expected Haze4K outdoor sources are mapped or conservatively excluded."
+    }
+  },
+  "decision": {
+    "reside_structural_use": "AUTHORIZED_WITH_ROLE_AND_EXCLUSION_CONTROLS",
+    "its_training_role": "ELIGIBLE_FOR_SCENE_LEVEL_SUBSAMPLING",
+    "ots_training_role": "BLOCKED_IDENTIFICATION_PENDING_42_SOURCE_MAPPINGS",
+    "sots_indoor_role": "ELIGIBLE_AS_FROZEN_PUBLIC_SECONDARY_TEST",
+    "sots_outdoor_role": "NOT_INDEPENDENT_OF_FULL_OTS; REQUIRES_EXCLUSION_OF_THE_492_SOTS_OUTDOOR_SOURCE_SCENES_BEFORE_TRAINING",
+    "mechanism_claim_status": "BLOCKED_MEASUREMENT_PENDING_INDEPENDENT_LOCAL_PROXY_CALIBRATION",
+    "predictive_route_status_if_mechanism_is_exploratory": "BLOCKED_PRECISION_PENDING_MARGIN_RUN_COUNT_AND_CLUSTER_COUNT",
+    "safe_immediate_design": "Use scene-sampled ITS only for the initial RESIDE training route, keep SOTS-indoor frozen as public secondary evaluation, and do not use OTS/SOTS-outdoor until the remaining provenance mapping is closed."
+  },
+  "marker": "RESIDE_MINIMAL_MEASUREMENT_QUALIFICATION_RECORDED"
+}
