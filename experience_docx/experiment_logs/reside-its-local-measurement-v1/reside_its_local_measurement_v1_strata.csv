@@ -1,0 +1,7 @@
+split,severity,independent_scenes,tau_mean,tau_median,true_rmse_mean,permuted_rmse_mean,negative_control_improvement_mean,negative_control_pass_rate,q_pass_rate
+definition,light,0,,,,,,,
+definition,middle,0,,,,,,,
+definition,heavy,0,,,,,,,
+validation,light,0,,,,,,,
+validation,middle,0,,,,,,,
+validation,heavy,0,,,,,,,

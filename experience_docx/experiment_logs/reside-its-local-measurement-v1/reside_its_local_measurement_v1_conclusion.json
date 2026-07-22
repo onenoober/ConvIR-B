@@ -1,0 +1,21 @@
+{
+  "route_id": "reside-its-local-measurement-v1",
+  "operation_id": "ITS_CALIBRATE",
+  "run_id": "reside-its-local-measurement-v1-phase-a",
+  "decision": "ITS_LOCAL_MEASUREMENT_INCONCLUSIVE",
+  "authorizes": "MEASUREMENT_SUPPLEMENT_ONLY",
+  "primary_result": "No validation-scene measurement estimate is available: all 1,000 definition scenes and all 1,000 validation scenes were excluded because the entrypoint incorrectly required haze and transmission filename stems to be identical.",
+  "gate_reasons": [
+    "The qualified RESIDE identity and all frozen dataset counts matched.",
+    "The entrypoint's direct filename-stem mapping was false for the organized ITS files.",
+    "Zero independent scenes completed measurement, so every precision, coverage, q-recovery, and negative-control gate is uninformative.",
+    "Only a mapping-only measurement supplement is authorized; model selection and indoor baseline behavior measurement remain unauthorized."
+  ],
+  "competing_explanation": "The prior read-only qualification found physically reconstructable ITS haze/transmission pairing, so the zero-scene result is consistent with a reader mapping error rather than absence of usable paired data; that explanation must be tested by a frozen physical-reconstruction mapping supplement.",
+  "limitations": [
+    "This terminal provides no evidence for or against the q measurement, the transmission construct, restoration-demand heterogeneity, or ConvIR-B behavior.",
+    "The 2,000 selected clear scenes establish intended sample capacity only; they do not count as measured independent observations.",
+    "No model training, inference, SOTS, OTS, Haze4K test, NH-HAZE, outdoor, canary, confirmation, or locked-test access occurred.",
+    "Outdoor and real-haze calibration remain mandatory independent stages even if the mapping supplement later passes."
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "authorizes": "MEASUREMENT_SUPPLEMENT_ONLY",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "ITS_LOCAL_MEASUREMENT_INCONCLUSIVE",
+  "details": {
+    "gate_reasons": [
+      "qualified ITS count or haze/transmission mapping integrity changed"
+    ],
+    "joint_qualification_lower_95": 0.0,
+    "outdoor_calibration_required": true,
+    "summary_file": "measurement_summary.json",
+    "validation_scenes": 0
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "reside_its_local_measurement_v1_strata.csv": "e821cc38b2de476f911304bc6087e9d7c59743849d0cabc5331ef1213e43a777",
+    "reside_its_local_measurement_v1_summary.json": "8a8b4e2a3ce8b5bb1c65d96d859f123a8d51327b6ef86369ac01009599666f2c"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "ITS_CALIBRATE",
+  "returncode": 0,
+  "route_commit": "65511099feb2a32011edb6bab41e598a63d1fe42",
+  "route_id": "reside-its-local-measurement-v1",
+  "run_id": "reside-its-local-measurement-v1-phase-a",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_INCONCLUSIVE",
+  "verified_assets": [
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "reside_qualification",
+      "kind": "file",
+      "sha256": "f7cbac42e8510489351149412e5ad27a0278db0d3c52963d609abb8ba352714c"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory"
+    }
+  ]
+}
