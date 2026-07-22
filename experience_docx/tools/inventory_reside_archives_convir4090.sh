@@ -79,6 +79,27 @@ if [[ -d "$STAGE" ]]; then
   done
   if [[ -f "$STAGE/.combined/depth.full.zip" ]]; then
     printf 'RESIDE_STAGE_DEPTH_COMBINED_BYTES=%s\n' "$(/usr/bin/stat -c %s "$STAGE/.combined/depth.full.zip")"
+    /usr/bin/python3 -c '
+import collections
+import zipfile
+
+path = "/sda/home/wangyuxin/ConvIR-B/datasets/.RESIDE.prepare-20260722/.combined/depth.full.zip"
+with zipfile.ZipFile(path) as archive:
+    infos = archive.infolist()
+    methods = collections.Counter(info.compress_type for info in infos)
+    encrypted = sum(bool(info.flag_bits & 1) for info in infos)
+    first = infos[0]
+    print(f"RESIDE_STAGE_DEPTH_ZIP_ENTRIES={len(infos)}")
+    print("RESIDE_STAGE_DEPTH_ZIP_METHODS=" + ",".join(f"{key}:{value}" for key, value in sorted(methods.items())))
+    print(f"RESIDE_STAGE_DEPTH_ZIP_ENCRYPTED={encrypted}")
+    print(f"RESIDE_STAGE_DEPTH_ZIP_FIRST={first.filename}|method={first.compress_type}|flags={first.flag_bits}")
+    try:
+        with archive.open(first) as stream:
+            stream.read(1)
+        print("RESIDE_STAGE_DEPTH_ZIP_FIRST_READ=OK")
+    except Exception as error:
+        print(f"RESIDE_STAGE_DEPTH_ZIP_FIRST_READ={type(error).__name__}:{error}")
+'
   fi
   if [[ -f "$STAGE/ARCHIVE_SHA256SUMS.txt" ]]; then
     printf 'RESIDE_STAGE_SHA256_LINES=%s\n' "$(/usr/bin/wc -l < "$STAGE/ARCHIVE_SHA256SUMS.txt")"
