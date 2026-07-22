@@ -69,7 +69,13 @@ if [[ -d "$STAGE" ]]; then
     "$STAGE/official/ITS/val/trans" \
     "$STAGE/official/OTS_ALPHA/clear_images" \
     "$STAGE/official/OTS_ALPHA/depth" \
-    "$STAGE/official/OTS_ALPHA/OTS"; do
+    "$STAGE/official/OTS_ALPHA/OTS" \
+    "$STAGE/official/SOTS/nyuhaze500/gt" \
+    "$STAGE/official/SOTS/nyuhaze500/hazy" \
+    "$STAGE/official/SOTS/indoor/gt" \
+    "$STAGE/official/SOTS/indoor/hazy" \
+    "$STAGE/official/SOTS/outdoor/gt" \
+    "$STAGE/official/SOTS/outdoor/hazy"; do
     if [[ -d "$path" ]]; then
       printf 'RESIDE_STAGE_FILE_COUNT=%s\t%s\n' \
         "$(/usr/bin/find "$path" -maxdepth 1 -type f -printf x | /usr/bin/wc -c)" "$path"
