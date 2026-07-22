@@ -438,7 +438,17 @@ def strict_matches(
             )
 
     ordered = sorted(records)
-    right_exclusion_ids = sorted({f"{record[3]}:{record[4]}" for record in ordered})
+    right_exclusion_by_source: dict[str, list[str]] = defaultdict(list)
+    for record in ordered:
+        right_exclusion_by_source[record[3]].append(record[4])
+    right_exclusion_by_source = {
+        source: sorted(set(ids)) for source, ids in sorted(right_exclusion_by_source.items())
+    }
+    right_exclusion_ids = sorted(
+        f"{source}:{scene}"
+        for source, ids in right_exclusion_by_source.items()
+        for scene in ids
+    )
     return {
         "left_file_count": sum(len(value) for value in left_groups.values()),
         "left_unique_canonical_scene_count": len(left_groups),
@@ -446,8 +456,8 @@ def strict_matches(
         "strict_perceptual_left_scene_count": len(strict_left_groups),
         "strict_match_record_count": len(ordered),
         "right_exclusion_scene_count": len(right_exclusion_ids),
-        "right_exclusion_ids": right_exclusion_ids[:1000],
-        "right_exclusion_ids_truncated": len(right_exclusion_ids) > 1000,
+        "right_exclusion_ids_by_source": right_exclusion_by_source,
+        "right_exclusion_ids_truncated": False,
         "right_exclusion_ids_digest": digest_lines(right_exclusion_ids),
         "mapping_digest": digest_lines("|".join(record) for record in ordered),
         "examples": [
@@ -457,9 +467,9 @@ def strict_matches(
                 "right_source": record[3],
                 "right_id": record[4],
             }
-            for record in ordered[:example_limit]
+            for record in ordered[: min(example_limit, 5)]
         ],
-        "examples_truncated": len(ordered) > example_limit,
+        "examples_truncated": len(ordered) > min(example_limit, 5),
     }
 
 
@@ -518,6 +528,32 @@ haze4k_items, haze4k_by_canonical = unique_fingerprints(
         "HAZE4K_TEST": haze4k_test_gt,
     }
 )
+haze4k_vs_reside_train = strict_matches(haze4k_by_canonical, reside_train_items)
+sots_vs_reside_train = strict_matches(sots_by_canonical, reside_train_items)
+haze4k_exclusions = haze4k_vs_reside_train["right_exclusion_ids_by_source"]
+sots_exclusions = sots_vs_reside_train["right_exclusion_ids_by_source"]
+compact_haze4k_match = {
+    key: value
+    for key, value in haze4k_vs_reside_train.items()
+    if key != "right_exclusion_ids_by_source"
+}
+compact_sots_match = {
+    key: value
+    for key, value in sots_vs_reside_train.items()
+    if key != "right_exclusion_ids_by_source"
+}
+exclusion_union_by_source = {
+    source: sorted(set(haze4k_exclusions.get(source, [])) | set(sots_exclusions.get(source, [])))
+    for source in sorted(set(haze4k_exclusions) | set(sots_exclusions))
+}
+
+eligibility_after_exclusion = {
+    "RESIDE_ITS_TRAIN": len(its_train_clear)
+    - len(exclusion_union_by_source.get("RESIDE_ITS_TRAIN", [])),
+    "RESIDE_ITS_VAL": len(its_val_clear)
+    - len(exclusion_union_by_source.get("RESIDE_ITS_VAL", [])),
+    "RESIDE_OTS": len(ots_clear) - len(exclusion_union_by_source.get("RESIDE_OTS", [])),
+}
 
 result = {
     "schema_version": 1,
@@ -566,8 +602,10 @@ result = {
         "reside_train_unique_canonical_scene_count": len(reside_train_by_canonical),
         "sots_clear_file_count": len(sots_items),
         "sots_unique_canonical_scene_count": len(sots_by_canonical),
-        "haze4k_vs_reside_train": strict_matches(haze4k_by_canonical, reside_train_items),
-        "sots_vs_reside_train": strict_matches(sots_by_canonical, reside_train_items),
+        "haze4k_vs_reside_train": compact_haze4k_match,
+        "sots_vs_reside_train": compact_sots_match,
+        "exclusion_union_by_source": exclusion_union_by_source,
+        "eligible_clear_scene_count_after_conservative_exclusion": eligibility_after_exclusion,
         "matching_rule": {
             "exact": "SHA-256 equality after deterministic 64x64 RGB canonicalization",
             "strict_perceptual": (
@@ -594,6 +632,19 @@ result = {
     "marker": "RESIDE_MINIMAL_MEASUREMENT_QUALIFICATION_OK",
 }
 
-print(json.dumps(result, indent=2, sort_keys=True))
+print(json.dumps(result, sort_keys=True, separators=(",", ":")))
+summary = {
+    "haze4k_unique_scenes": len(haze4k_by_canonical),
+    "haze4k_matched_to_reside_train": haze4k_vs_reside_train["strict_perceptual_left_scene_count"],
+    "sots_unique_scenes": len(sots_by_canonical),
+    "sots_matched_to_reside_train": sots_vs_reside_train["strict_perceptual_left_scene_count"],
+    "union_exclusions_by_source": {
+        source: len(ids) for source, ids in exclusion_union_by_source.items()
+    },
+    "eligible_after_exclusion": eligibility_after_exclusion,
+    "haze4k_mapping_digest": haze4k_vs_reside_train["mapping_digest"],
+    "sots_mapping_digest": sots_vs_reside_train["mapping_digest"],
+}
+print("RESIDE_AUDIT_SUMMARY=" + json.dumps(summary, sort_keys=True, separators=(",", ":")))
 print("RESIDE_MINIMAL_MEASUREMENT_QUALIFICATION_OK")
 PY
