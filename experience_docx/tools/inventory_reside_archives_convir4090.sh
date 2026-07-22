@@ -58,4 +58,31 @@ for path in "$DATA_ROOT/RESIDE" "$DATA_ROOT/.RESIDE.prepare-20260722"; do
   fi
 done
 
+STAGE=$DATA_ROOT/.RESIDE.prepare-20260722
+if [[ -d "$STAGE" ]]; then
+  for path in \
+    "$STAGE/official/ITS/train/ITS_clear" \
+    "$STAGE/official/ITS/train/ITS_haze" \
+    "$STAGE/official/ITS/train/ITS_trans" \
+    "$STAGE/official/ITS/val/clear" \
+    "$STAGE/official/ITS/val/haze" \
+    "$STAGE/official/ITS/val/trans" \
+    "$STAGE/official/OTS_ALPHA/clear_images" \
+    "$STAGE/official/OTS_ALPHA/depth" \
+    "$STAGE/official/OTS_ALPHA/OTS"; do
+    if [[ -d "$path" ]]; then
+      printf 'RESIDE_STAGE_FILE_COUNT=%s\t%s\n' \
+        "$(/usr/bin/find "$path" -maxdepth 1 -type f -printf x | /usr/bin/wc -c)" "$path"
+    else
+      printf 'RESIDE_STAGE_DIR_ABSENT=%s\n' "$path"
+    fi
+  done
+  if [[ -f "$STAGE/.combined/depth.full.zip" ]]; then
+    printf 'RESIDE_STAGE_DEPTH_COMBINED_BYTES=%s\n' "$(/usr/bin/stat -c %s "$STAGE/.combined/depth.full.zip")"
+  fi
+  if [[ -f "$STAGE/ARCHIVE_SHA256SUMS.txt" ]]; then
+    printf 'RESIDE_STAGE_SHA256_LINES=%s\n' "$(/usr/bin/wc -l < "$STAGE/ARCHIVE_SHA256SUMS.txt")"
+  fi
+fi
+
 echo "RESIDE_ARCHIVE_INVENTORY_OK"
