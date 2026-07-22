@@ -29,13 +29,10 @@ count_files() {
   /usr/bin/find "$path" -maxdepth 1 -type f -iname "$pattern" -printf x | /usr/bin/wc -c
 }
 
-if command -v 7zz >/dev/null 2>&1; then
-  SEVEN_ZIP=$(command -v 7zz)
-elif command -v 7z >/dev/null 2>&1; then
-  SEVEN_ZIP=$(command -v 7z)
-else
-  fail "7z/7zz is not installed on convir-4090"
-fi
+ZIP=/usr/bin/zip
+UNZIP=/usr/bin/unzip
+[[ -x "$ZIP" ]] || fail "missing required tool $ZIP"
+[[ -x "$UNZIP" ]] || fail "missing required tool $UNZIP"
 
 [[ -d "$DATA_ROOT" ]] || fail "missing data root $DATA_ROOT"
 [[ ! -e "$FINAL" && ! -L "$FINAL" ]] || fail "refusing to overwrite existing target $FINAL"
@@ -72,8 +69,54 @@ for index in 001 002 003 004 005 006 007 008 009 010 011; do
 done
 
 echo "RESIDE_PREPARE_ARCHIVES_OK"
-printf 'RESIDE_7ZIP=%s\n' "$SEVEN_ZIP"
+printf 'RESIDE_ZIP_TOOL=%s\n' "$ZIP"
+printf 'RESIDE_UNZIP_TOOL=%s\n' "$UNZIP"
 printf 'RESIDE_FREE_BYTES=%s\n' "$free_bytes"
+
+RAR_EXTRACTOR=
+for candidate in /usr/bin/unrar-free /usr/bin/unrar /usr/local/bin/unar; do
+  if [[ -x "$candidate" ]]; then
+    RAR_EXTRACTOR=$candidate
+    break
+  fi
+done
+
+TOOL_TMP=
+cleanup_tools() {
+  if [[ -n "$TOOL_TMP" ]]; then
+    case "$TOOL_TMP" in
+      /tmp/reside-unrar.*) /bin/rm -rf -- "$TOOL_TMP" ;;
+      *) echo "RESIDE_TOOL_CLEANUP_REFUSED=$TOOL_TMP" >&2 ;;
+    esac
+  fi
+}
+trap cleanup_tools EXIT
+
+if [[ -z "$RAR_EXTRACTOR" ]]; then
+  [[ -x /usr/bin/apt-get ]] || fail "no RAR extractor and apt-get is unavailable"
+  [[ -x /usr/bin/dpkg-deb ]] || fail "no RAR extractor and dpkg-deb is unavailable"
+  TOOL_TMP=$(/usr/bin/mktemp -d /tmp/reside-unrar.XXXXXX)
+  (
+    cd "$TOOL_TMP"
+    /usr/bin/apt-get download unrar-free >/dev/null
+  )
+  mapfile -t UNRAR_DEBS < <(/usr/bin/find "$TOOL_TMP" -maxdepth 1 -type f -name 'unrar-free_*.deb' -print)
+  [[ ${#UNRAR_DEBS[@]} -eq 1 ]] || fail "expected one downloaded unrar-free package, found ${#UNRAR_DEBS[@]}"
+  /usr/bin/dpkg-deb -x "${UNRAR_DEBS[0]}" "$TOOL_TMP/root"
+  mapfile -t UNRAR_BINS < <(/usr/bin/find "$TOOL_TMP/root" -type f -name 'unrar-free' -perm -u+x -print)
+  [[ ${#UNRAR_BINS[@]} -eq 1 ]] || fail "downloaded package did not expose one unrar-free binary"
+  RAR_EXTRACTOR=${UNRAR_BINS[0]}
+fi
+printf 'RESIDE_RAR_EXTRACTOR=%s\n' "$RAR_EXTRACTOR"
+
+if [[ -z "$TOOL_TMP" ]]; then
+  TOOL_TMP=$(/usr/bin/mktemp -d /tmp/reside-unrar.XXXXXX)
+fi
+"$UNZIP" -p "$SOTS_ZIP" SOTS/indoor.rar > "$TOOL_TMP/indoor.rar"
+require_file "$TOOL_TMP/indoor.rar"
+"$RAR_EXTRACTOR" t "$TOOL_TMP/indoor.rar"
+/bin/rm -- "$TOOL_TMP/indoor.rar"
+echo "RESIDE_RAR_PREFLIGHT_OK"
 
 /bin/mkdir -p \
   "$STAGE/official" \
@@ -83,7 +126,8 @@ printf 'RESIDE_FREE_BYTES=%s\n' "$free_bytes"
   "$STAGE/convir/reside-indoor/test" \
   "$STAGE/convir/reside-outdoor/train" \
   "$STAGE/convir/reside-outdoor/test" \
-  "$STAGE/.sots_outer"
+  "$STAGE/.sots_outer" \
+  "$STAGE/.combined"
 
 echo "RESIDE_SHA256_BEGIN"
 {
@@ -96,31 +140,42 @@ echo "RESIDE_SHA256_BEGIN"
 echo "RESIDE_SHA256_OK"
 
 echo "RESIDE_EXTRACT_ITS_BEGIN"
-"$SEVEN_ZIP" x -y "$ITS_ZIP" "-o$STAGE/official"
+"$ZIP" -q -s 0 "$ITS_ZIP" --out "$STAGE/.combined/ITS.full.zip"
+"$UNZIP" -q "$STAGE/.combined/ITS.full.zip" -d "$STAGE/official"
+/bin/rm -- "$STAGE/.combined/ITS.full.zip"
 echo "RESIDE_EXTRACT_ITS_OK"
 
 echo "RESIDE_EXTRACT_OTS_CLEAR_BEGIN"
-"$SEVEN_ZIP" x -y "$CLEAR_ZIP" "-o$STAGE/official/OTS_ALPHA"
+"$UNZIP" -q "$CLEAR_ZIP" -d "$STAGE/official/OTS_ALPHA"
 echo "RESIDE_EXTRACT_OTS_CLEAR_OK"
 
 echo "RESIDE_EXTRACT_OTS_DEPTH_BEGIN"
-"$SEVEN_ZIP" x -y "$DEPTH_FIRST" "-o$STAGE/official/OTS_ALPHA/depth"
+/bin/cat "$DEPTH_DIR"/depth.zip.001 "$DEPTH_DIR"/depth.zip.002 > "$STAGE/.combined/depth.full.zip"
+"$UNZIP" -q "$STAGE/.combined/depth.full.zip" -d "$STAGE/official/OTS_ALPHA/depth"
+/bin/rm -- "$STAGE/.combined/depth.full.zip"
 echo "RESIDE_EXTRACT_OTS_DEPTH_OK"
 
 echo "RESIDE_EXTRACT_OTS_HAZE_BEGIN"
-"$SEVEN_ZIP" x -y "$OTS_FIRST" "-o$STAGE/official/OTS_ALPHA"
+/bin/cat \
+  "$OTS_DIR"/OTS.zip.001 "$OTS_DIR"/OTS.zip.002 "$OTS_DIR"/OTS.zip.003 \
+  "$OTS_DIR"/OTS.zip.004 "$OTS_DIR"/OTS.zip.005 "$OTS_DIR"/OTS.zip.006 \
+  "$OTS_DIR"/OTS.zip.007 "$OTS_DIR"/OTS.zip.008 "$OTS_DIR"/OTS.zip.009 \
+  "$OTS_DIR"/OTS.zip.010 "$OTS_DIR"/OTS.zip.011 > "$STAGE/.combined/OTS.full.zip"
+"$UNZIP" -q "$STAGE/.combined/OTS.full.zip" -d "$STAGE/official/OTS_ALPHA"
+/bin/rm -- "$STAGE/.combined/OTS.full.zip"
 echo "RESIDE_EXTRACT_OTS_HAZE_OK"
 
 echo "RESIDE_EXTRACT_SOTS_OUTER_BEGIN"
-"$SEVEN_ZIP" x -y "$SOTS_ZIP" "-o$STAGE/.sots_outer"
+"$UNZIP" -q "$SOTS_ZIP" -d "$STAGE/.sots_outer"
 INDOOR_RAR=$STAGE/.sots_outer/SOTS/indoor.rar
 OUTDOOR_ZIP=$STAGE/.sots_outer/SOTS/outdoor.zip
 require_file "$INDOOR_RAR"
 require_file "$OUTDOOR_ZIP"
-"$SEVEN_ZIP" x -y "$INDOOR_RAR" "-o$STAGE/official/SOTS"
-"$SEVEN_ZIP" x -y "$OUTDOOR_ZIP" "-o$STAGE/official/SOTS"
+"$RAR_EXTRACTOR" x -o+ "$INDOOR_RAR" "$STAGE/official/SOTS/"
+"$UNZIP" -q "$OUTDOOR_ZIP" -d "$STAGE/official/SOTS"
 /bin/rm -- "$INDOOR_RAR" "$OUTDOOR_ZIP"
 /bin/rmdir -- "$STAGE/.sots_outer/SOTS" "$STAGE/.sots_outer"
+/bin/rmdir -- "$STAGE/.combined"
 echo "RESIDE_EXTRACT_SOTS_OK"
 
 ITS_TRAIN_CLEAR=$STAGE/official/ITS/train/ITS_clear
@@ -180,7 +235,8 @@ done
 
 SOTS_INDOOR_GT_COUNT=$(count_files "$SOTS_INDOOR_GT" '*')
 SOTS_INDOOR_HAZY_COUNT=$(count_files "$SOTS_INDOOR_HAZY" '*')
-(( SOTS_INDOOR_GT_COUNT > 0 && SOTS_INDOOR_HAZY_COUNT > 0 )) || fail "empty SOTS indoor split"
+[[ "$SOTS_INDOOR_GT_COUNT" == 50 ]] || fail "SOTS indoor GT count mismatch: expected 50, found $SOTS_INDOOR_GT_COUNT"
+[[ "$SOTS_INDOOR_HAZY_COUNT" == 500 ]] || fail "SOTS indoor hazy count mismatch: expected 500, found $SOTS_INDOOR_HAZY_COUNT"
 
 /bin/ln -s ../../../official/ITS/train/ITS_clear "$STAGE/convir/reside-indoor/train/gt"
 /bin/ln -s ../../../official/ITS/train/ITS_haze "$STAGE/convir/reside-indoor/train/hazy"
