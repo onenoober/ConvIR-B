@@ -1,22 +1,22 @@
 {
-  "experiment_spec_relpath": "experience_docx/experiment_specs/reside-its-local-measurement-v1.json",
-  "experiment_spec_sha256": "99bd4243a0dbad01484b4482d9e9af97ab0f78d2016c32c95fc2d6a8cff24132",
+  "experiment_spec_relpath": "experience_docx/experiment_specs/reside-its-local-measurement-mapping-v1.json",
+  "experiment_spec_sha256": "11e7afee55687a257d68f8c35e9c653f301b9c1a3e86e5d297ec0fa562f572fc",
   "operations": {
-    "ITS_CALIBRATE": {
+    "MEASUREMENT_SUPPLEMENT_ONLY": {
       "allowed_terminal_tuples": [
         {
           "authorizes": "CONVIRB_INDOOR_BASELINE_MEASUREMENT",
-          "decision": "ITS_LOCAL_MEASUREMENT_PASS",
+          "decision": "ITS_LOCAL_MEASUREMENT_MAPPING_PASS",
           "state": "COMPLETED_GATE_PASS"
         },
         {
           "authorizes": "NONE",
-          "decision": "ITS_LOCAL_MEASUREMENT_FAIL",
+          "decision": "ITS_LOCAL_MEASUREMENT_MAPPING_FAIL",
           "state": "COMPLETED_GATE_FAIL"
         },
         {
-          "authorizes": "MEASUREMENT_SUPPLEMENT_ONLY",
-          "decision": "ITS_LOCAL_MEASUREMENT_INCONCLUSIVE",
+          "authorizes": "NONE",
+          "decision": "ITS_LOCAL_MEASUREMENT_MAPPING_INCONCLUSIVE",
           "state": "COMPLETED_INCONCLUSIVE"
         },
         {
@@ -25,13 +25,13 @@
           "state": "FAILED_ENGINEERING"
         }
       ],
-      "closeout_filename": "reside_its_local_measurement_v1_closeout.json",
+      "closeout_filename": "reside_its_local_measurement_mapping_v1_closeout.json",
       "heartbeat_timeout_seconds": 240,
       "max_gpu_utilization_pct": 100,
       "min_free_gpu_mib": 0,
       "mode": "measurement_calibration",
       "monitor_profile": "standard",
-      "output_id": "reside-its-local-measurement-v1-phase-a",
+      "output_id": "reside-its-local-measurement-mapping-v1-phase-a",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
@@ -40,13 +40,13 @@
       "workspace_policy": "fresh_route"
     }
   },
-  "program_contract_relpath": "experience_docx/research_programs/reside_local_measurement.json",
-  "program_contract_sha256": "0f0625927e9efa330e38aaf65a9c9e797a0b5172ed90bd68eccff0b171846c99",
-  "route_card_relpath": "experience_docx/experiment_cards/reside-its-local-measurement-v1.md",
-  "route_id": "reside-its-local-measurement-v1",
-  "rules_commit": "cbc37744e96641350eaae4b24ba1ea5a95b72303",
+  "program_contract_relpath": "experience_docx/research_programs/reside_local_measurement_mapping.json",
+  "program_contract_sha256": "afc5e5c31ff05b79ef7f8b1c564ac1101a5a396fe13c65629ae4f894b8d11d4b",
+  "route_card_relpath": "experience_docx/experiment_cards/reside-its-local-measurement-mapping-v1.md",
+  "route_id": "reside-its-local-measurement-mapping-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
   "schema_version": 6,
   "scientific_contract_relpaths": {
-    "ITS_CALIBRATE": "experience_docx/scientific_contracts/reside-its-local-measurement-v1__ITS_CALIBRATE.json"
+    "MEASUREMENT_SUPPLEMENT_ONLY": "experience_docx/scientific_contracts/reside-its-local-measurement-mapping-v1__MEASUREMENT_SUPPLEMENT_ONLY.json"
   }
 }

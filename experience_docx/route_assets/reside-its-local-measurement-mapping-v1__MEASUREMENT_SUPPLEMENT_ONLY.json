@@ -1,0 +1,30 @@
+{
+  "assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "reside_qualification",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside_data_qualification_20260722/reside_minimal_measurement_qualification.json",
+      "sha256": "f7cbac42e8510489351149412e5ad27a0278db0d3c52963d609abb8ba352714c"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_inconclusive_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-local-measurement-v1/reside_its_local_measurement_v1_closeout.json",
+      "sha256": "ed125de5fb956de0017c2236e2e0bb800c1da312aeba111559d13bb6c90f26ef"
+    }
+  ],
+  "operation_id": "MEASUREMENT_SUPPLEMENT_ONLY",
+  "route_id": "reside-its-local-measurement-mapping-v1",
+  "schema_version": 1
+}
