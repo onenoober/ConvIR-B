@@ -17,6 +17,30 @@ for tool in 7zz 7z unzip zip zipinfo bsdtar tar unrar-free unrar rar python3; do
   fi
 done
 
+for path in \
+  /usr/local/bin/7zz /usr/local/bin/7z /usr/local/bin/bsdtar /usr/local/bin/unar \
+  /sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/7zz \
+  /sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/7z \
+  /sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/bsdtar \
+  /sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/unar; do
+  if [[ -x "$path" ]]; then
+    printf 'RESIDE_FIXED_TOOL=%s\n' "$path"
+  fi
+done
+
+if [[ -x /usr/bin/dpkg-query ]]; then
+  for package in p7zip-full p7zip-rar libarchive-tools unrar-free unar; do
+    if /usr/bin/dpkg-query -W -f='${Status}' "$package" 2>/dev/null | /usr/bin/grep -q 'install ok installed'; then
+      printf 'RESIDE_INSTALLED_PACKAGE=%s\n' "$package"
+    fi
+  done
+fi
+
+if [[ -x /sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python ]]; then
+  /sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python -c \
+    'import importlib.util; print("RESIDE_PYTHON_MODULES=" + ",".join(name for name in ("rarfile","libarchive","py7zr") if importlib.util.find_spec(name)))'
+fi
+
 echo "RESIDE_ARCHIVE_CANDIDATES_BEGIN"
 /usr/bin/find "$DATA_ROOT" -maxdepth 5 -type f \
   \( -name 'ITS.zip' -o -name 'ITS.z[0-9][0-9]' \
