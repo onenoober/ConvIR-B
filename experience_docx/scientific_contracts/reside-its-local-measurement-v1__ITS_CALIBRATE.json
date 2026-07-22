@@ -1,0 +1,128 @@
+{
+  "competing_explanation": "Apparent local sensitivity may be a tautology of residual algebra or content-correlated transmission rather than a useful restoration-demand construct; controlled alpha recovery, permutation separation, and confound summaries address but do not eliminate this risk.",
+  "controls": [
+    "known residual scales alpha=-0.5,-0.25,0,0.25,0.5,1",
+    "deterministic cross-scene transmission permutation within split and severity",
+    "separate absolute-error handling for low-denominator near-clear regions",
+    "brightness, gradient, and saturation association audit"
+  ],
+  "disabled_actions": [
+    "model or module selection",
+    "training, inference, or official baseline evaluation",
+    "SOTS, Haze4K test, NH-HAZE, OTS, or outdoor data access",
+    "real-haze, outdoor, causal, perceptual-quality, or deployment extrapolation",
+    "treating patches, regions, severities, or haze variants as independent samples"
+  ],
+  "gates": [
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "independent ITS validation scenes completed",
+      "id": "validation_scene_count",
+      "threshold": 1000,
+      "type": "precision"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "canonical clear-scene overlap between sampled train and validation",
+      "id": "split_overlap",
+      "threshold": 0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "min",
+      "estimand": "Wilson lower bound for validation scenes with tau heavy-minus-light at least 0.05",
+      "id": "severity_coverage",
+      "threshold": 0.9,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "min",
+      "estimand": "Wilson lower bound for validation scenes with identifiable local q cells in all three severities",
+      "id": "identifiable_region_coverage",
+      "threshold": 0.9,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "Wilson lower bound for validation scenes whose identifiable q cells recover every frozen alpha within 1e-5",
+      "id": "controlled_q_recovery",
+      "threshold": 0.99,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "Wilson lower bound for validation scenes where true transmission lowers reconstruction RMSE by more than 0.005 for at least two severities",
+      "id": "paired_transmission_negative_control",
+      "threshold": 0.85,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "Wilson lower bound for the joint validation scene qualification proportion",
+      "id": "primary_scene_qualification",
+      "threshold": 0.85,
+      "type": "materiality"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "scene sampling salt",
+      "alpha grid",
+      "tau transform",
+      "region quantiles",
+      "q denominator guard",
+      "cross-scene permutation"
+    ],
+    "matched_budget": "same scenes, three transmission-selected severities, fixed resolution and alpha grid",
+    "primary_variable": "controlled_residual_scale_alpha",
+    "reference": "known Y_alpha equals J plus alpha times I minus J"
+  },
+  "operation_id": "ITS_CALIBRATE",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "clear_scene",
+    "independent_group_count": 1000
+  },
+  "primary_estimand": {
+    "aggregation": "scene-clustered proportion with a two-sided 95 percent Wilson interval",
+    "direction": "higher",
+    "id": "scene_measurement_qualification_rate",
+    "metric": "proportion of validation clear scenes satisfying controlled q recovery and paired-transmission separation",
+    "unit": "independent_clear_scene"
+  },
+  "question": "Across independent synthetic indoor ITS validation scenes, does the frozen local q measurement recover controlled restoration direction while the paired transmission field beats a cross-scene permutation negative control?",
+  "route_id": "reside-its-local-measurement-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "ITS_LOCAL_MEASUREMENT_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "MEASUREMENT_SUPPLEMENT_ONLY",
+      "decision": "ITS_LOCAL_MEASUREMENT_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "CONVIRB_INDOOR_BASELINE_MEASUREMENT",
+      "decision": "ITS_LOCAL_MEASUREMENT_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "clear_scene",
+    "method": "scene-clustered proportions with two-sided 95 percent Wilson intervals; nested variants and regions never increase n"
+  }
+}

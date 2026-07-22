@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "program_id": "reside_local_measurement",
+  "objective": "Qualify a continuous local restoration-direction measurement before any dehazing module or training route is selected.",
+  "source_anchors": [
+    {
+      "id": "reside_qualification_20260722",
+      "reference": "experience_docx/experiment_logs/reside_data_qualification_20260722/reside_minimal_measurement_qualification.json",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    }
+  ],
+  "dependency_roles": {
+    "qualified_reside": [
+      "diagnostic"
+    ]
+  },
+  "stages": {
+    "measurement_calibration": {
+      "evidence_roles": [
+        "development_screening"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "synthetic_indoor_local_measurement"
+      ]
+    }
+  },
+  "route_families": {
+    "synthetic_indoor_local_measurement": {
+      "core_assumption": "Paired ITS transmission fields can calibrate a directional local restoration measurement for synthetic indoor haze only.",
+      "adjacent_budget": 2,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close if controlled q recovery or paired-transmission negative-control separation fails under the frozen scene-level protocol.",
+      "reopen_evidence_types": [
+        "new_measurement_field",
+        "independent_construct_validation"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "target_domain",
+    "measurement_target",
+    "measurement_field",
+    "region_definition"
+  ],
+  "amendments": []
+}

@@ -1,0 +1,267 @@
+{
+  "schema_version": 1,
+  "route_id": "reside-its-local-measurement-v1",
+  "rules_commit": "cbc37744e96641350eaae4b24ba1ea5a95b72303",
+  "title": "RESIDE ITS local measurement calibration with sufficient scene coverage",
+  "rationale": "Use a deterministic 1,000-scene ITS-train definition sample and all 1,000 ITS-validation scenes, with light/middle/heavy transmission-selected variants per scene. The validation scene is the independent unit; variants and regions are nested. Passing authorizes only official ConvIR-B indoor baseline behavior measurement. Outdoor and real-haze calibration remain mandatory independent stages and receive no authorization here.",
+  "first_operation": "ITS_CALIBRATE",
+  "program_contract_relpath": "experience_docx/research_programs/reside_local_measurement.json",
+  "operations": {
+    "ITS_CALIBRATE": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "measurement_calibration",
+        "require_gpu": false,
+        "output_id": "reside-its-local-measurement-v1-phase-a",
+        "closeout_filename": "reside_its_local_measurement_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "allowed_terminal_tuples": [
+          {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "ITS_LOCAL_MEASUREMENT_PASS",
+            "authorizes": "CONVIRB_INDOOR_BASELINE_MEASUREMENT"
+          },
+          {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "ITS_LOCAL_MEASUREMENT_FAIL",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "ITS_LOCAL_MEASUREMENT_INCONCLUSIVE",
+            "authorizes": "MEASUREMENT_SUPPLEMENT_ONLY"
+          },
+          {
+            "state": "FAILED_ENGINEERING",
+            "decision": null,
+            "authorizes": "NONE"
+          }
+        ],
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 240,
+        "min_free_gpu_mib": 0,
+        "max_gpu_utilization_pct": 100
+      },
+      "program_authorization": {
+        "program_id": "reside_local_measurement",
+        "stage_id": "measurement_calibration",
+        "family_id": "synthetic_indoor_local_measurement",
+        "mechanism_type": "adjacent",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {
+            "role": "qualified_reside",
+            "use": "diagnostic",
+            "anchor_id": "reside_qualification_20260722"
+          }
+        ],
+        "adjacent_sequence": 1,
+        "orthogonal_changes": [],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Across independent synthetic indoor ITS validation scenes, does the frozen local q measurement recover controlled restoration direction while the paired transmission field beats a cross-scene permutation negative control?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "clear_scene",
+          "independent_group_count": 1000,
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "controlled_residual_scale_alpha",
+          "reference": "known Y_alpha equals J plus alpha times I minus J",
+          "matched_budget": "same scenes, three transmission-selected severities, fixed resolution and alpha grid",
+          "fixed_factors": [
+            "scene sampling salt",
+            "alpha grid",
+            "tau transform",
+            "region quantiles",
+            "q denominator guard",
+            "cross-scene permutation"
+          ]
+        },
+        "primary_estimand": {
+          "id": "scene_measurement_qualification_rate",
+          "metric": "proportion of validation clear scenes satisfying controlled q recovery and paired-transmission separation",
+          "direction": "higher",
+          "aggregation": "scene-clustered proportion with a two-sided 95 percent Wilson interval",
+          "unit": "independent_clear_scene"
+        },
+        "controls": [
+          "known residual scales alpha=-0.5,-0.25,0,0.25,0.5,1",
+          "deterministic cross-scene transmission permutation within split and severity",
+          "separate absolute-error handling for low-denominator near-clear regions",
+          "brightness, gradient, and saturation association audit"
+        ],
+        "uncertainty": {
+          "method": "scene-clustered proportions with two-sided 95 percent Wilson intervals; nested variants and regions never increase n",
+          "confidence_level": 0.95,
+          "independent_unit": "clear_scene"
+        },
+        "gates": [
+          {
+            "id": "validation_scene_count",
+            "type": "precision",
+            "estimand": "independent ITS validation scenes completed",
+            "direction": "equal",
+            "threshold": 1000,
+            "decision_role": "inconclusive_only"
+          },
+          {
+            "id": "split_overlap",
+            "type": "integrity",
+            "estimand": "canonical clear-scene overlap between sampled train and validation",
+            "direction": "equal",
+            "threshold": 0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "severity_coverage",
+            "type": "coverage",
+            "estimand": "Wilson lower bound for validation scenes with tau heavy-minus-light at least 0.05",
+            "direction": "min",
+            "threshold": 0.9,
+            "decision_role": "inconclusive_only"
+          },
+          {
+            "id": "identifiable_region_coverage",
+            "type": "coverage",
+            "estimand": "Wilson lower bound for validation scenes with identifiable local q cells in all three severities",
+            "direction": "min",
+            "threshold": 0.9,
+            "decision_role": "inconclusive_only"
+          },
+          {
+            "id": "controlled_q_recovery",
+            "type": "materiality",
+            "estimand": "Wilson lower bound for validation scenes whose identifiable q cells recover every frozen alpha within 1e-5",
+            "direction": "min",
+            "threshold": 0.99,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "paired_transmission_negative_control",
+            "type": "materiality",
+            "estimand": "Wilson lower bound for validation scenes where true transmission lowers reconstruction RMSE by more than 0.005 for at least two severities",
+            "direction": "min",
+            "threshold": 0.85,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "primary_scene_qualification",
+            "type": "materiality",
+            "estimand": "Wilson lower bound for the joint validation scene qualification proportion",
+            "direction": "min",
+            "threshold": 0.85,
+            "decision_role": "decisive"
+          }
+        ],
+        "competing_explanation": "Apparent local sensitivity may be a tautology of residual algebra or content-correlated transmission rather than a useful restoration-demand construct; controlled alpha recovery, permutation separation, and confound summaries address but do not eliminate this risk.",
+        "terminal_mapping": {
+          "pass": {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "ITS_LOCAL_MEASUREMENT_PASS",
+            "authorizes": "CONVIRB_INDOOR_BASELINE_MEASUREMENT"
+          },
+          "fail": {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "ITS_LOCAL_MEASUREMENT_FAIL",
+            "authorizes": "NONE"
+          },
+          "inconclusive": {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "ITS_LOCAL_MEASUREMENT_INCONCLUSIVE",
+            "authorizes": "MEASUREMENT_SUPPLEMENT_ONLY"
+          }
+        },
+        "disabled_actions": [
+          "model or module selection",
+          "training, inference, or official baseline evaluation",
+          "SOTS, Haze4K test, NH-HAZE, OTS, or outdoor data access",
+          "real-haze, outdoor, causal, perceptual-quality, or deployment extrapolation",
+          "treating patches, regions, severities, or haze variants as independent samples"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/calibrate_reside_its_local_measurement.py",
+        "timeout_seconds": 3600,
+        "expected_wall_seconds": 900,
+        "total_units": 4000,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {
+          "CONVIR_ROUTE_ITS_IMAGE_SIZE": "96",
+          "CONVIR_ROUTE_ITS_WORKERS": "8"
+        },
+        "evidence_files": [
+          {
+            "source_relpath": "workload/measurement_summary.json",
+            "destination_filename": "reside_its_local_measurement_v1_summary.json",
+            "required": true,
+            "max_bytes": 131072
+          },
+          {
+            "source_relpath": "workload/aggregate_strata.csv",
+            "destination_filename": "reside_its_local_measurement_v1_strata.csv",
+            "required": true,
+            "max_bytes": 65536
+          }
+        ],
+        "engineering_contract": {
+          "mode": "metadata_only",
+          "max_seconds": 120
+        },
+        "precision_contract": {
+          "mode": "formal_precision",
+          "rationale": "A full 1,000-scene validation census exceeds the frozen worst-case Bernoulli precision requirement."
+        }
+      },
+      "assets": [
+        {
+          "id": "reside_root",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "reside_qualification",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside_data_qualification_20260722/reside_minimal_measurement_qualification.json",
+          "sha256": "f7cbac42e8510489351149412e5ad27a0278db0d3c52963d609abb8ba352714c",
+          "access_role": "unrestricted",
+          "contract_access": true
+        }
+      ],
+      "capability": null,
+      "precision": {
+        "certificate_id": "reside_its_local_measurement_v1_precision",
+        "estimand": "validation-scene measurement qualification proportion",
+        "method": "binomial_worst_case",
+        "confidence_level": 0.95,
+        "target_half_width": 0.035,
+        "planning_sd": 0.5,
+        "independent_groups_available": 1000,
+        "independent_groups_required": 784,
+        "feasible": true,
+        "source_role": "unrestricted",
+        "source_reference": "Worst-case Bernoulli standard deviation 0.5 fixed analytically before outcome access."
+      }
+    }
+  }
+}

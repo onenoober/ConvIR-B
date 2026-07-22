@@ -1,0 +1,45 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/reside-its-local-measurement-v1__ITS_CALIBRATE.json",
+  "engineering_contract": {
+    "capability_profile_relpath": null,
+    "max_seconds": 120,
+    "mode": "metadata_only"
+  },
+  "entrypoint_relpath": "experience_docx/tools/calibrate_reside_its_local_measurement.py",
+  "environment": {
+    "CONVIR_ROUTE_ITS_IMAGE_SIZE": "96",
+    "CONVIR_ROUTE_ITS_WORKERS": "8"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "reside_its_local_measurement_v1_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/measurement_summary.json"
+    },
+    {
+      "destination_filename": "reside_its_local_measurement_v1_strata.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/aggregate_strata.csv"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 900,
+  "operation_id": "ITS_CALIBRATE",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/reside-its-local-measurement-v1__ITS_CALIBRATE.json",
+    "mode": "formal_precision",
+    "rationale": "A full 1,000-scene validation census exceeds the frozen worst-case Bernoulli precision requirement."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "reside-its-local-measurement-v1",
+  "schema_version": 2,
+  "timeout_seconds": 3600,
+  "total_units": 4000
+}
