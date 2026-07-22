@@ -1,0 +1,319 @@
+{
+  "aggregates": {
+    "definition": {
+      "completed_scene_count": 1000,
+      "controlled_q_recovery": {
+        "estimate": 0.997,
+        "lower": 0.9912169859464969,
+        "successes": 997,
+        "total": 1000,
+        "upper": 0.9989792161188614
+      },
+      "expected_scene_count": 1000,
+      "identifiable_scene_coverage": {
+        "estimate": 0.997,
+        "lower": 0.9912169859464969,
+        "successes": 997,
+        "total": 1000,
+        "upper": 0.9989792161188614
+      },
+      "joint_qualification": {
+        "estimate": 0.997,
+        "lower": 0.9912169859464969,
+        "successes": 997,
+        "total": 1000,
+        "upper": 0.9989792161188614
+      },
+      "local_content_associations_descriptive": {
+        "tau_gradient": {
+          "max": 0.39459786460774254,
+          "mean": 0.02753897410153715,
+          "median": 0.037923127745975074,
+          "min": -0.4465295617333817,
+          "q05": -0.19927023805301766,
+          "q95": 0.21863582580064747
+        },
+        "tau_luminance": {
+          "max": 0.6824297313912364,
+          "mean": 0.03255033748290243,
+          "median": 0.02705624537423828,
+          "min": -0.677860863019078,
+          "q05": -0.40015739744845713,
+          "q95": 0.47288095641708994
+        },
+        "tau_saturation": {
+          "max": 0.802356607063504,
+          "mean": -0.04606707072463124,
+          "median": -0.041916687235550504,
+          "min": -0.6591483164481625,
+          "q05": -0.4602226021276189,
+          "q95": 0.33933988893349853
+        }
+      },
+      "maximum_q_error": {
+        "max": 2.7232660571030465e-12,
+        "mean": 3.6721181650989365e-14,
+        "median": 7.771561172376096e-15,
+        "min": 4.440892098500626e-16,
+        "q05": 2.1094237467877974e-15,
+        "q95": 9.526823774308447e-14
+      },
+      "negative_control_separation": {
+        "estimate": 1.0,
+        "lower": 0.996173241514445,
+        "successes": 1000,
+        "total": 1000,
+        "upper": 1.0
+      },
+      "scene_level_content_associations": {
+        "tau_vs_mean_gradient": 0.1647956694854177,
+        "tau_vs_mean_luminance": -0.0731541294501484,
+        "tau_vs_mean_saturation": -0.011219031207186593
+      },
+      "severity_coverage": {
+        "estimate": 1.0,
+        "lower": 0.996173241514445,
+        "successes": 1000,
+        "total": 1000,
+        "upper": 1.0
+      },
+      "tau_range": {
+        "max": 1.1597032631888937,
+        "mean": 0.7078083645742291,
+        "median": 0.7146698237215425,
+        "min": 0.20591074959215672,
+        "q05": 0.43728997386728263,
+        "q95": 0.9557634402665913
+      }
+    },
+    "validation": {
+      "completed_scene_count": 1000,
+      "controlled_q_recovery": {
+        "estimate": 0.969,
+        "lower": 0.9563345039877078,
+        "successes": 969,
+        "total": 1000,
+        "upper": 0.9780759965528414
+      },
+      "expected_scene_count": 1000,
+      "identifiable_scene_coverage": {
+        "estimate": 0.969,
+        "lower": 0.9563345039877078,
+        "successes": 969,
+        "total": 1000,
+        "upper": 0.9780759965528414
+      },
+      "joint_qualification": {
+        "estimate": 0.969,
+        "lower": 0.9563345039877078,
+        "successes": 969,
+        "total": 1000,
+        "upper": 0.9780759965528414
+      },
+      "local_content_associations_descriptive": {
+        "tau_gradient": {
+          "max": 0.3725836621708292,
+          "mean": 0.03864979861706609,
+          "median": 0.043011364443855976,
+          "min": -0.2341540367421752,
+          "q05": -0.16113679184926494,
+          "q95": 0.2727173467903492
+        },
+        "tau_luminance": {
+          "max": 0.7128185040001666,
+          "mean": 0.1555475493276644,
+          "median": 0.16213660552531783,
+          "min": -0.5150286252530151,
+          "q05": -0.29737875025448784,
+          "q95": 0.6114684224996323
+        },
+        "tau_saturation": {
+          "max": 0.5293045850577859,
+          "mean": -0.1653445445727456,
+          "median": -0.18179962221290416,
+          "min": -0.7591063878986523,
+          "q05": -0.5085544394827419,
+          "q95": 0.32664516987273734
+        }
+      },
+      "maximum_q_error": {
+        "max": 4.285460875053104e-14,
+        "mean": 7.033373883302829e-15,
+        "median": 4.9404924595819466e-15,
+        "min": 3.3306690738754696e-16,
+        "q05": 1.5543122344752192e-15,
+        "q95": 2.0433654768226e-14
+      },
+      "negative_control_separation": {
+        "estimate": 1.0,
+        "lower": 0.996173241514445,
+        "successes": 1000,
+        "total": 1000,
+        "upper": 1.0
+      },
+      "scene_level_content_associations": {
+        "tau_vs_mean_gradient": 0.262359483078125,
+        "tau_vs_mean_luminance": 0.010677693616699404,
+        "tau_vs_mean_saturation": -0.008759184869506506
+      },
+      "severity_coverage": {
+        "estimate": 1.0,
+        "lower": 0.996173241514445,
+        "successes": 1000,
+        "total": 1000,
+        "upper": 1.0
+      },
+      "tau_range": {
+        "max": 1.248799844140393,
+        "mean": 0.8000651431560414,
+        "median": 0.8040327808434289,
+        "min": 0.27987343301399936,
+        "q05": 0.5482949217421055,
+        "q95": 1.0444746195952708
+      }
+    }
+  },
+  "dataset_identity": {
+    "count_integrity": true,
+    "mapping_candidate_integrity": true,
+    "observed_counts": {
+      "train_clear": 10000,
+      "train_transmissions": 100000,
+      "train_variants": 100000,
+      "validation_clear": 1000,
+      "validation_transmissions": 10000,
+      "validation_variants": 10000
+    },
+    "observed_identity": {
+      "archive_manifest_sha256": "27348952347a0f94ac33105d5e6ce11b4ce4e2b0fab68b583b978752b5b78be0",
+      "layout_record_sha256": "f025a8e6e3f43c9b924c0986b866ed28e5644dd7a7ec7b056ae311c83764d5dc",
+      "pairing_report_sha256": "afdefd2887437d929e00239e932bd76e7504d9838c2a3c58c33ce13f91f4150a"
+    },
+    "qualified_identity_match": true,
+    "root": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE"
+  },
+  "failure_counts": {
+    "definition": 0,
+    "validation": 0
+  },
+  "failures": {
+    "definition": [],
+    "validation": []
+  },
+  "gates": {
+    "controlled_q_recovery": false,
+    "identifiable_region_coverage": true,
+    "paired_transmission_negative_control": true,
+    "physical_mapping_coverage": true,
+    "primary_scene_qualification": true,
+    "severity_coverage": true,
+    "split_overlap_zero": true,
+    "validation_scene_count": true
+  },
+  "limitations": [
+    "Passing supports an L1 synthetic-indoor measurement/mechanism-feasibility claim only.",
+    "Controlled q recovery validates direction and implementation but is algebraic, not causal evidence.",
+    "Transmission is synthetic optical thickness and is not a validated real-haze restoration-demand label.",
+    "Brightness, gradient, and saturation associations are descriptive and may indicate construct confounding.",
+    "Outdoor and real-haze calibration remain mandatory independent stages; no ITS result is transported to them.",
+    "No model, insertion site, loss, hyperparameter, training run, inference, SOTS, OTS, Haze4K test, or NH-HAZE access occurred."
+  ],
+  "marker": "RESIDE_ITS_LOCAL_MEASUREMENT_MAPPING_SUPPLEMENT_COMPLETE",
+  "measurement": {
+    "controlled_alpha_grid": [
+      -0.5,
+      -0.25,
+      0.0,
+      0.25,
+      0.5,
+      1.0
+    ],
+    "near_clear_rule": "q is not used for low-denominator cells; finite absolute error is recorded instead",
+    "negative_control_margin": 0.005,
+    "q": "<Y-J,I-J>/(||I-J||^2+1e-12)",
+    "q_denominator_mse_minimum": 1e-05,
+    "q_tolerance": 1e-05,
+    "tau": "-log(clip(t,1/255,1)); synthetic optical thickness only"
+  },
+  "measurement_scope": "synthetic indoor ITS only",
+  "operation_id": "MEASUREMENT_SUPPLEMENT_ONLY",
+  "physical_mapping": {
+    "aggregates": {
+      "definition": {
+        "best_reconstruction_rmse": {
+          "max": 0.006230808165607541,
+          "mean": 0.002154487740160391,
+          "median": 0.0018366557126408287,
+          "min": 0.0013212342660029832,
+          "q05": 0.0014832143561662467,
+          "q95": 0.003847822067421714
+        },
+        "best_to_second_ratio": {
+          "max": 0.9997941858046991,
+          "mean": 0.46463261849097875,
+          "median": 0.3891283246098739,
+          "min": 0.015456419838356179,
+          "q05": 0.07436025658680005,
+          "q95": 0.9803121678127649
+        },
+        "mapped_scene_count": 1000,
+        "mapped_variant_count": 3000,
+        "mapping_digest": "87fd2b2489a336c387159d529bebc128e58fa3e1f2dcb0399484e2ea62ec1288"
+      },
+      "validation": {
+        "best_reconstruction_rmse": {
+          "max": 0.003531467079879654,
+          "mean": 0.0017937170798186747,
+          "median": 0.0017242914846320443,
+          "min": 0.0013278146958490475,
+          "q05": 0.0014832515260738664,
+          "q95": 0.0022832288600288823
+        },
+        "best_to_second_ratio": {
+          "max": 0.9994628989477674,
+          "mean": 0.39696417587440486,
+          "median": 0.3065404325497029,
+          "min": 0.013707171065159635,
+          "q05": 0.05939279502366659,
+          "q95": 0.9653167868080907
+        },
+        "mapped_scene_count": 1000,
+        "mapped_variant_count": 3000,
+        "mapping_digest": "3a9837b2f0a315fd164de4be1461778f7e4a23b99d35065ef9b1814f9168193a"
+      }
+    },
+    "method": "For each selected transmission and ten same-scene haze candidates, fit constant RGB airlight under I=J*t+A*(1-t) at 96x96 and choose the unique minimum reconstruction RMSE.",
+    "unique_minimum_gap": 1e-08
+  },
+  "route_id": "reside-its-local-measurement-mapping-v1",
+  "run_id": "reside-its-local-measurement-mapping-v1-phase-a",
+  "sampling": {
+    "definition_available_scenes": 10000,
+    "definition_scene_digest": "069a292323e8beed5fcb96aafacb9632b0f83a6c1897662f629a111bdd683d5c",
+    "definition_selected_scenes": 1000,
+    "effective_independent_scene_count": 2000,
+    "effective_independent_unit": "clear_scene",
+    "nested_pair_count": 6000,
+    "permutation_shift": 503,
+    "selection_salt_sha256": "8980eae70fcf65b82fb52d495247ec94e4dee705b84740bb9768870b7d54daaa",
+    "severity_selection": "rank ten paired transmission fields by mean tau=-log(clip(t,1/255,1)); choose first, index four, and last",
+    "validation_available_scenes": 1000,
+    "validation_scene_digest": "c1fb77922f9cacd17eb0870732f6d9b43e37d9e39b424620d02b81f508b40289",
+    "validation_selected_scenes": 1000,
+    "variants_per_scene": 3
+  },
+  "schema_version": 1,
+  "split_overlap": {
+    "canonical_overlap_count": 0,
+    "overlap_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "supplement_scope": "haze/transmission physical mapping only",
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "ITS_LOCAL_MEASUREMENT_MAPPING_FAIL",
+    "gate_reasons": [
+      "controlled q-recovery Wilson lower bound is below 0.99"
+    ],
+    "state": "COMPLETED_GATE_FAIL"
+  }
+}

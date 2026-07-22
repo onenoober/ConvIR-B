@@ -1,0 +1,23 @@
+{
+  "route_id": "reside-its-local-measurement-mapping-v1",
+  "operation_id": "MEASUREMENT_SUPPLEMENT_ONLY",
+  "run_id": "reside-its-local-measurement-mapping-v1-phase-a",
+  "decision": "ITS_LOCAL_MEASUREMENT_MAPPING_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "The physical mapping supplement completed all 1,000 independent validation scenes and 3,000 selected validation variants, but controlled q recovery was 969/1,000 scenes with a two-sided Wilson 95 percent interval of [0.956335, 0.978076]. Its lower bound was below the frozen 0.99 gate, so the route ended COMPLETED_GATE_FAIL and does not authorize ConvIR-B indoor baseline behavior measurement.",
+  "gate_reasons": [
+    "Qualified dataset identity, all frozen counts, same-scene candidate multiplicities, 1,000-scene validation completion, 3,000-variant physical mapping, zero recorded failures, and zero definition-validation canonical overlap all passed.",
+    "Severity coverage was 1,000/1,000 with Wilson lower 0.996173, and identifiable-region coverage was 969/1,000 with Wilson lower 0.956335, above its separate 0.90 coverage gate.",
+    "Paired-transmission negative-control separation was 1,000/1,000 with Wilson lower 0.996173, and joint scene qualification was 969/1,000 with Wilson lower 0.956335, above the frozen 0.85 gate.",
+    "Controlled q recovery was 969/1,000 with Wilson lower 0.956335, below the decisive 0.99 threshold; this single frozen failure determines the terminal FAIL.",
+    "The typed closeout authorizes NONE, so no model selection, training, inference, official indoor baseline measurement, or additional adjacent mapping supplement is authorized."
+  ],
+  "competing_explanation": "Reported q errors in identifiable cells were numerically negligible (validation maximum 4.29e-14), while the same 31 scenes drove both incomplete identifiable-region coverage and controlled-q scene failure. The failed 0.99 gate may therefore reflect limited local identifiability under the frozen region and denominator definition rather than incorrect q algebra. This post-result distinction cannot relax or reinterpret the preregistered FAIL; it can only motivate a separately governed orthogonal measurement-field or region-definition question.",
+  "limitations": [
+    "This is development-screening evidence for synthetic indoor ITS only, not confirmation, causal evidence, perceptual validation, or deployment evidence.",
+    "The physical mapping chooses the unique minimum-RMSE haze under a synthetic constant-RGB-airlight model; some best-to-second ratios were close to one, so uniqueness does not establish broad real-haze construct validity.",
+    "Transmission is synthetic optical thickness and cannot be transported to outdoor or real-haze restoration demand.",
+    "No model, module, checkpoint, training, inference, SOTS, OTS, Haze4K test, NH-HAZE, outdoor, canary, confirmation, or locked-test data were used.",
+    "Outdoor calibration remains a mandatory independent route, and this indoor FAIL neither supplies nor invalidates an outdoor measurement design."
+  ]
+}
