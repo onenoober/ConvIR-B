@@ -28,6 +28,22 @@ check_count() {
   printf 'RESIDE_AUDIT_COUNT=%s\t%s\n' "$actual" "$label"
 }
 
+check_images() {
+  local label=$1
+  local path=$2
+  local expected=$3
+  local all_files
+  local image_files
+  [[ -d "$path" ]] || fail "missing directory $path"
+  all_files=$(/usr/bin/find "$path" -maxdepth 1 -type f -printf x | /usr/bin/wc -c)
+  image_files=$(/usr/bin/find "$path" -maxdepth 1 -type f \
+    \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.bmp' -o -iname '*.tif' -o -iname '*.tiff' \) \
+    -printf x | /usr/bin/wc -c)
+  [[ "$all_files" == "$expected" ]] || fail "$label expected $expected files, found $all_files"
+  [[ "$image_files" == "$expected" ]] || fail "$label contains non-image or unsupported-extension files"
+  printf 'RESIDE_AUDIT_COUNT=%s\t%s\n' "$all_files" "$label"
+}
+
 [[ -d "$FINAL" ]] || fail "missing final dataset root $FINAL"
 [[ ! -e "$STAGE" && ! -L "$STAGE" ]] || fail "staging directory still exists: $STAGE"
 [[ -f "$FINAL/ARCHIVE_SHA256SUMS.txt" ]] || fail "missing archive SHA-256 manifest"
@@ -45,10 +61,10 @@ check_count ITS_VAL_TRANS "$FINAL/official/ITS/val/trans" '*.png' 10000
 check_count OTS_CLEAR "$FINAL/official/OTS_ALPHA/clear_images" '*.jpg' 8970
 check_count OTS_DEPTH "$FINAL/official/OTS_ALPHA/depth" '*.mat' 8970
 check_count OTS_HAZE "$FINAL/official/OTS_ALPHA/OTS" '*.jpg' 313950
-check_count SOTS_INDOOR_GT "$FINAL/official/SOTS/indoor/gt" '*.png' 50
-check_count SOTS_INDOOR_HAZY "$FINAL/official/SOTS/indoor/hazy" '*.png' 500
-check_count SOTS_OUTDOOR_GT "$FINAL/official/SOTS/outdoor/gt" '*.png' 492
-check_count SOTS_OUTDOOR_HAZY "$FINAL/official/SOTS/outdoor/hazy" '*.png' 500
+check_images SOTS_INDOOR_GT "$FINAL/official/SOTS/indoor/gt" 50
+check_images SOTS_INDOOR_HAZY "$FINAL/official/SOTS/indoor/hazy" 500
+check_images SOTS_OUTDOOR_GT "$FINAL/official/SOTS/outdoor/gt" 492
+check_images SOTS_OUTDOOR_HAZY "$FINAL/official/SOTS/outdoor/hazy" 500
 
 for link in \
   "$FINAL/convir/reside-indoor/train/gt" \
