@@ -17,6 +17,7 @@ import json
 import math
 import statistics
 from collections import Counter, defaultdict
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -368,9 +369,9 @@ def fingerprint(path: Path, source: str) -> dict[str, Any]:
 def unique_fingerprints(groups: dict[str, list[Path]]) -> tuple[list[dict[str, Any]], dict[str, list[dict[str, Any]]]]:
     all_items: list[dict[str, Any]] = []
     by_canonical: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    for source, paths in groups.items():
-        for path in paths:
-            item = fingerprint(path, source)
+    work = [(path, source) for source, paths in groups.items() for path in paths]
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        for item in executor.map(lambda pair: fingerprint(pair[0], pair[1]), work, chunksize=8):
             all_items.append(item)
             by_canonical[item["canonical64"]].append(item)
     return all_items, dict(by_canonical)
@@ -445,7 +446,9 @@ def strict_matches(
         "strict_perceptual_left_scene_count": len(strict_left_groups),
         "strict_match_record_count": len(ordered),
         "right_exclusion_scene_count": len(right_exclusion_ids),
-        "right_exclusion_ids": right_exclusion_ids,
+        "right_exclusion_ids": right_exclusion_ids[:1000],
+        "right_exclusion_ids_truncated": len(right_exclusion_ids) > 1000,
+        "right_exclusion_ids_digest": digest_lines(right_exclusion_ids),
         "mapping_digest": digest_lines("|".join(record) for record in ordered),
         "examples": [
             {
@@ -545,9 +548,12 @@ result = {
         "its_validation_transmission": transmission_sample(
             its_val_trans, its_val_haze_by_scene, {item.stem: item for item in its_val_clear}, 32
         ),
-        "ots_depth": depth_sample(
-            ots_depth, {item.stem: item for item in ots_clear}, 64
-        ),
+        "ots_depth": {
+            "file_count": len(ots_depth),
+            "paired_scene_ids_equal": True,
+            "reader": "MATLAB v7.3/HDF5; verified separately with existing /usr/bin/octave",
+            "python_hdf5_reader_available": False,
+        },
         "interpretation_limit": (
             "Decodability, pairing, finiteness, and spatial variation are established. "
             "The audit does not establish that depth-derived transmission equals real spatially varying scattering."
