@@ -115,6 +115,31 @@ def variant_summary(items: list[Path], clear_items: list[Path]) -> dict[str, Any
     }
 
 
+def cross_field_filename_summary(left: list[Path], right: list[Path]) -> dict[str, Any]:
+    left_stems = {item.stem for item in left}
+    right_stems = {item.stem for item in right}
+    left_by_scene = Counter(scene_id(item) for item in left)
+    right_by_scene = Counter(scene_id(item) for item in right)
+    if left_by_scene != right_by_scene:
+        fail(
+            f"cross-field scene/variant counts differ: {left[0].parent} vs {right[0].parent}"
+        )
+    left_only = sorted(left_stems - right_stems)
+    right_only = sorted(right_stems - left_stems)
+    return {
+        "left_file_count": len(left),
+        "right_file_count": len(right),
+        "exact_stem_intersection_count": len(left_stems & right_stems),
+        "exact_stem_sets_equal": left_stems == right_stems,
+        "scene_variant_counts_equal": True,
+        "scene_count": len(left_by_scene),
+        "left_only_examples": left_only[:5],
+        "right_only_examples": right_only[:5],
+        "left_stem_set_digest": digest_lines(left_stems),
+        "right_stem_set_digest": digest_lines(right_stems),
+    }
+
+
 def evenly_spaced(items: list[Path], count: int) -> list[Path]:
     if not items:
         fail("cannot sample an empty file list")
@@ -124,7 +149,7 @@ def evenly_spaced(items: list[Path], count: int) -> list[Path]:
 
 
 def transmission_sample(
-    items: list[Path], image_by_stem: dict[str, Path], count: int
+    items: list[Path], haze_by_scene: dict[str, list[Path]], clear_by_stem: dict[str, Path], count: int
 ) -> dict[str, Any]:
     chosen = evenly_spaced(items, count)
     modes: Counter[str] = Counter()
@@ -134,21 +159,63 @@ def transmission_sample(
     stds: list[float] = []
     channel_mismatch = 0
     alignment: Counter[str] = Counter()
+    physical_mappings: list[str] = []
+    best_rmses: list[float] = []
+    best_to_second_ratios: list[float] = []
+    strictly_better_count = 0
     for path in chosen:
         with Image.open(path) as image:
             modes[image.mode] += 1
             array = np.asarray(image)
+            trans_small = (
+                np.asarray(image.convert("L").resize((96, 96), RESAMPLE), dtype=np.float64)
+                / 255.0
+            )
         shapes[str(tuple(array.shape))] += 1
         if array.ndim == 3:
             if not np.array_equal(array[..., 0], array[..., -1]):
                 channel_mismatch += 1
             array = array[..., 0]
-        image_path = image_by_stem.get(path.stem)
-        if image_path is None:
-            fail(f"missing image paired to transmission field: {path}")
-        with Image.open(image_path) as paired_image:
-            expected_hw = (paired_image.height, paired_image.width)
+        scene = scene_id(path)
+        clear_path = clear_by_stem.get(scene)
+        candidates = haze_by_scene.get(scene, [])
+        if clear_path is None or not candidates:
+            fail(f"missing clear/haze scene paired to transmission field: {path}")
+        with Image.open(clear_path) as clear_image:
+            expected_hw = (clear_image.height, clear_image.width)
+            clear_small = (
+                np.asarray(clear_image.convert("RGB").resize((96, 96), RESAMPLE), dtype=np.float64)
+                / 255.0
+            )
         alignment["direct_hw" if tuple(array.shape[:2]) == expected_hw else "other"] += 1
+        one_minus_t = 1.0 - trans_small[..., None]
+        denominator = float(np.sum(one_minus_t * one_minus_t))
+        if denominator <= 1e-9:
+            fail(f"transmission field cannot identify airlight: {path}")
+        candidate_errors: list[tuple[float, str]] = []
+        for haze_path in candidates:
+            with Image.open(haze_path) as haze_image:
+                haze_small = (
+                    np.asarray(haze_image.convert("RGB").resize((96, 96), RESAMPLE), dtype=np.float64)
+                    / 255.0
+                )
+            numerator = np.sum(
+                (haze_small - clear_small * trans_small[..., None]) * one_minus_t,
+                axis=(0, 1),
+            )
+            airlight = np.clip(numerator / denominator, 0.0, 1.0)
+            reconstructed = clear_small * trans_small[..., None] + airlight * one_minus_t
+            rmse = float(np.sqrt(np.mean((haze_small - reconstructed) ** 2)))
+            candidate_errors.append((rmse, haze_path.stem))
+        candidate_errors.sort()
+        best_rmse, best_stem = candidate_errors[0]
+        second_rmse = candidate_errors[1][0] if len(candidate_errors) > 1 else math.inf
+        ratio = best_rmse / second_rmse if math.isfinite(second_rmse) and second_rmse > 0 else 0.0
+        if best_rmse < second_rmse:
+            strictly_better_count += 1
+        best_rmses.append(best_rmse)
+        best_to_second_ratios.append(ratio)
+        physical_mappings.append(f"{path.stem}|{best_stem}|{best_rmse:.12g}|{second_rmse:.12g}")
         array = np.asarray(array, dtype=np.float64)
         if array.size == 0 or not np.isfinite(array).all():
             fail(f"invalid transmission array: {path}")
@@ -173,6 +240,19 @@ def transmission_sample(
         "spatial_std_max": max(stds),
         "spatially_variable_count": sum(value > 0 for value in stds),
         "all_finite": True,
+        "physical_pairing": {
+            "method": (
+                "Within each scene, fit constant RGB airlight for every haze candidate under "
+                "I=J*t+A*(1-t) on deterministic 96x96 images and select minimum reconstruction RMSE."
+            ),
+            "strictly_better_count": strictly_better_count,
+            "best_rmse_min": min(best_rmses),
+            "best_rmse_median": statistics.median(best_rmses),
+            "best_rmse_max": max(best_rmses),
+            "best_to_second_ratio_median": statistics.median(best_to_second_ratios),
+            "best_to_second_ratio_max": max(best_to_second_ratios),
+            "mapping_digest": digest_lines(physical_mappings),
+        },
     }
 
 
@@ -405,12 +485,16 @@ sots_outdoor_haze = image_files(RESIDE / "official/SOTS/outdoor/hazy")
 haze4k_train_gt = image_files(HAZE4K / "train/gt")
 haze4k_test_gt = image_files(HAZE4K / "test/gt")
 
-if {item.stem for item in its_train_haze} != {item.stem for item in its_train_trans}:
-    fail("ITS train haze/transmission filename sets differ")
-if {item.stem for item in its_val_haze} != {item.stem for item in its_val_trans}:
-    fail("ITS validation haze/transmission filename sets differ")
 if {item.stem for item in ots_clear} != {item.stem for item in ots_depth}:
     fail("OTS clear/depth scene ID sets differ")
+its_train_field_names = cross_field_filename_summary(its_train_haze, its_train_trans)
+its_val_field_names = cross_field_filename_summary(its_val_haze, its_val_trans)
+its_train_haze_by_scene: dict[str, list[Path]] = defaultdict(list)
+its_val_haze_by_scene: dict[str, list[Path]] = defaultdict(list)
+for item in its_train_haze:
+    its_train_haze_by_scene[scene_id(item)].append(item)
+for item in its_val_haze:
+    its_val_haze_by_scene[scene_id(item)].append(item)
 
 reside_train_items, reside_train_by_canonical = unique_fingerprints(
     {
@@ -453,11 +537,13 @@ result = {
         "sots_outdoor": variant_summary(sots_outdoor_haze, sots_outdoor_gt),
     },
     "measurement_fields": {
+        "its_train_haze_transmission_filename_mapping": its_train_field_names,
+        "its_validation_haze_transmission_filename_mapping": its_val_field_names,
         "its_train_transmission": transmission_sample(
-            its_train_trans, {item.stem: item for item in its_train_haze}, 64
+            its_train_trans, its_train_haze_by_scene, {item.stem: item for item in its_train_clear}, 64
         ),
         "its_validation_transmission": transmission_sample(
-            its_val_trans, {item.stem: item for item in its_val_haze}, 32
+            its_val_trans, its_val_haze_by_scene, {item.stem: item for item in its_val_clear}, 32
         ),
         "ots_depth": depth_sample(
             ots_depth, {item.stem: item for item in ots_clear}, 64
