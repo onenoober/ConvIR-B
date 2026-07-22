@@ -1,0 +1,431 @@
+{
+  "aggregates": {
+    "definition": {
+      "completed_scene_count": 0,
+      "controlled_q_recovery": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 0,
+        "upper": 1.0
+      },
+      "expected_scene_count": 1000,
+      "identifiable_scene_coverage": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 0,
+        "upper": 1.0
+      },
+      "joint_qualification": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 0,
+        "upper": 1.0
+      },
+      "local_content_associations_descriptive": {
+        "tau_gradient": {
+          "max": null,
+          "mean": null,
+          "median": null,
+          "min": null,
+          "q05": null,
+          "q95": null
+        },
+        "tau_luminance": {
+          "max": null,
+          "mean": null,
+          "median": null,
+          "min": null,
+          "q05": null,
+          "q95": null
+        },
+        "tau_saturation": {
+          "max": null,
+          "mean": null,
+          "median": null,
+          "min": null,
+          "q05": null,
+          "q95": null
+        }
+      },
+      "maximum_q_error": {
+        "max": null,
+        "mean": null,
+        "median": null,
+        "min": null,
+        "q05": null,
+        "q95": null
+      },
+      "negative_control_separation": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 0,
+        "upper": 1.0
+      },
+      "scene_level_content_associations": {
+        "tau_vs_mean_gradient": null,
+        "tau_vs_mean_luminance": null,
+        "tau_vs_mean_saturation": null
+      },
+      "severity_coverage": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 0,
+        "upper": 1.0
+      },
+      "tau_range": {
+        "max": null,
+        "mean": null,
+        "median": null,
+        "min": null,
+        "q05": null,
+        "q95": null
+      }
+    },
+    "validation": {
+      "completed_scene_count": 0,
+      "controlled_q_recovery": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 0,
+        "upper": 1.0
+      },
+      "expected_scene_count": 1000,
+      "identifiable_scene_coverage": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 0,
+        "upper": 1.0
+      },
+      "joint_qualification": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 0,
+        "upper": 1.0
+      },
+      "local_content_associations_descriptive": {
+        "tau_gradient": {
+          "max": null,
+          "mean": null,
+          "median": null,
+          "min": null,
+          "q05": null,
+          "q95": null
+        },
+        "tau_luminance": {
+          "max": null,
+          "mean": null,
+          "median": null,
+          "min": null,
+          "q05": null,
+          "q95": null
+        },
+        "tau_saturation": {
+          "max": null,
+          "mean": null,
+          "median": null,
+          "min": null,
+          "q05": null,
+          "q95": null
+        }
+      },
+      "maximum_q_error": {
+        "max": null,
+        "mean": null,
+        "median": null,
+        "min": null,
+        "q05": null,
+        "q95": null
+      },
+      "negative_control_separation": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 0,
+        "upper": 1.0
+      },
+      "scene_level_content_associations": {
+        "tau_vs_mean_gradient": null,
+        "tau_vs_mean_luminance": null,
+        "tau_vs_mean_saturation": null
+      },
+      "severity_coverage": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 0,
+        "upper": 1.0
+      },
+      "tau_range": {
+        "max": null,
+        "mean": null,
+        "median": null,
+        "min": null,
+        "q05": null,
+        "q95": null
+      }
+    }
+  },
+  "dataset_identity": {
+    "count_integrity": true,
+    "mapping_integrity": false,
+    "observed_counts": {
+      "train_clear": 10000,
+      "train_transmissions": 100000,
+      "train_variants": 100000,
+      "validation_clear": 1000,
+      "validation_transmissions": 10000,
+      "validation_variants": 10000
+    },
+    "observed_identity": {
+      "archive_manifest_sha256": "27348952347a0f94ac33105d5e6ce11b4ce4e2b0fab68b583b978752b5b78be0",
+      "layout_record_sha256": "f025a8e6e3f43c9b924c0986b866ed28e5644dd7a7ec7b056ae311c83764d5dc",
+      "pairing_report_sha256": "afdefd2887437d929e00239e932bd76e7504d9838c2a3c58c33ce13f91f4150a"
+    },
+    "qualified_identity_match": true,
+    "root": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE"
+  },
+  "failure_counts": {
+    "definition": 1000,
+    "validation": 1000
+  },
+  "failures": {
+    "definition": [
+      {
+        "reason": "missing paired haze image for 8093_03",
+        "scene_id": "8093"
+      },
+      {
+        "reason": "missing paired haze image for 1715_02",
+        "scene_id": "1715"
+      },
+      {
+        "reason": "missing paired haze image for 9175_01",
+        "scene_id": "9175"
+      },
+      {
+        "reason": "missing paired haze image for 2790_10",
+        "scene_id": "2790"
+      },
+      {
+        "reason": "missing paired haze image for 1903_03",
+        "scene_id": "1903"
+      },
+      {
+        "reason": "missing paired haze image for 9127_01",
+        "scene_id": "9127"
+      },
+      {
+        "reason": "missing paired haze image for 7259_05",
+        "scene_id": "7259"
+      },
+      {
+        "reason": "missing paired haze image for 8399_08",
+        "scene_id": "8399"
+      },
+      {
+        "reason": "missing paired haze image for 0930_08",
+        "scene_id": "0930"
+      },
+      {
+        "reason": "missing paired haze image for 8674_08",
+        "scene_id": "8674"
+      },
+      {
+        "reason": "missing paired haze image for 6773_07",
+        "scene_id": "6773"
+      },
+      {
+        "reason": "missing paired haze image for 5752_09",
+        "scene_id": "5752"
+      },
+      {
+        "reason": "missing paired haze image for 7397_05",
+        "scene_id": "7397"
+      },
+      {
+        "reason": "missing paired haze image for 3228_01",
+        "scene_id": "3228"
+      },
+      {
+        "reason": "missing paired haze image for 3274_03",
+        "scene_id": "3274"
+      },
+      {
+        "reason": "missing paired haze image for 7612_03",
+        "scene_id": "7612"
+      },
+      {
+        "reason": "missing paired haze image for 0942_08",
+        "scene_id": "0942"
+      },
+      {
+        "reason": "missing paired haze image for 2062_03",
+        "scene_id": "2062"
+      },
+      {
+        "reason": "missing paired haze image for 2328_02",
+        "scene_id": "2328"
+      },
+      {
+        "reason": "missing paired haze image for 0691_02",
+        "scene_id": "0691"
+      }
+    ],
+    "validation": [
+      {
+        "reason": "missing paired haze image for 10752_06",
+        "scene_id": "10752"
+      },
+      {
+        "reason": "missing paired haze image for 10176_02",
+        "scene_id": "10176"
+      },
+      {
+        "reason": "missing paired haze image for 10621_03",
+        "scene_id": "10621"
+      },
+      {
+        "reason": "missing paired haze image for 10325_07",
+        "scene_id": "10325"
+      },
+      {
+        "reason": "missing paired haze image for 10764_09",
+        "scene_id": "10764"
+      },
+      {
+        "reason": "missing paired haze image for 10526_06",
+        "scene_id": "10526"
+      },
+      {
+        "reason": "missing paired haze image for 10241_05",
+        "scene_id": "10241"
+      },
+      {
+        "reason": "missing paired haze image for 10196_09",
+        "scene_id": "10196"
+      },
+      {
+        "reason": "missing paired haze image for 10362_08",
+        "scene_id": "10362"
+      },
+      {
+        "reason": "missing paired haze image for 10443_01",
+        "scene_id": "10443"
+      },
+      {
+        "reason": "missing paired haze image for 10288_09",
+        "scene_id": "10288"
+      },
+      {
+        "reason": "missing paired haze image for 10240_10",
+        "scene_id": "10240"
+      },
+      {
+        "reason": "missing paired haze image for 10590_10",
+        "scene_id": "10590"
+      },
+      {
+        "reason": "missing paired haze image for 10304_05",
+        "scene_id": "10304"
+      },
+      {
+        "reason": "missing paired haze image for 10173_05",
+        "scene_id": "10173"
+      },
+      {
+        "reason": "missing paired haze image for 10394_07",
+        "scene_id": "10394"
+      },
+      {
+        "reason": "missing paired haze image for 10776_05",
+        "scene_id": "10776"
+      },
+      {
+        "reason": "missing paired haze image for 10922_10",
+        "scene_id": "10922"
+      },
+      {
+        "reason": "missing paired haze image for 10075_02",
+        "scene_id": "10075"
+      },
+      {
+        "reason": "missing paired haze image for 10066_08",
+        "scene_id": "10066"
+      }
+    ]
+  },
+  "gates": {
+    "controlled_q_recovery": false,
+    "identifiable_region_coverage": false,
+    "paired_transmission_negative_control": false,
+    "primary_scene_qualification": false,
+    "severity_coverage": false,
+    "split_overlap_zero": true,
+    "validation_scene_count": false
+  },
+  "limitations": [
+    "Passing supports an L1 synthetic-indoor measurement/mechanism-feasibility claim only.",
+    "Controlled q recovery validates direction and implementation but is algebraic, not causal evidence.",
+    "Transmission is synthetic optical thickness and is not a validated real-haze restoration-demand label.",
+    "Brightness, gradient, and saturation associations are descriptive and may indicate construct confounding.",
+    "Outdoor and real-haze calibration remain mandatory independent stages; no ITS result is transported to them.",
+    "No model, insertion site, loss, hyperparameter, training run, inference, SOTS, OTS, Haze4K test, or NH-HAZE access occurred."
+  ],
+  "marker": "RESIDE_ITS_LOCAL_MEASUREMENT_V1_COMPLETE",
+  "measurement": {
+    "controlled_alpha_grid": [
+      -0.5,
+      -0.25,
+      0.0,
+      0.25,
+      0.5,
+      1.0
+    ],
+    "near_clear_rule": "q is not used for low-denominator cells; finite absolute error is recorded instead",
+    "negative_control_margin": 0.005,
+    "q": "<Y-J,I-J>/(||I-J||^2+1e-12)",
+    "q_denominator_mse_minimum": 1e-05,
+    "q_tolerance": 1e-05,
+    "tau": "-log(clip(t,1/255,1)); synthetic optical thickness only"
+  },
+  "measurement_scope": "synthetic indoor ITS only",
+  "operation_id": "ITS_CALIBRATE",
+  "route_id": "reside-its-local-measurement-v1",
+  "run_id": "reside-its-local-measurement-v1-phase-a",
+  "sampling": {
+    "definition_available_scenes": 10000,
+    "definition_scene_digest": "069a292323e8beed5fcb96aafacb9632b0f83a6c1897662f629a111bdd683d5c",
+    "definition_selected_scenes": 1000,
+    "effective_independent_scene_count": 0,
+    "effective_independent_unit": "clear_scene",
+    "nested_pair_count": 0,
+    "permutation_shift": 503,
+    "selection_salt_sha256": "8980eae70fcf65b82fb52d495247ec94e4dee705b84740bb9768870b7d54daaa",
+    "severity_selection": "rank ten paired transmission fields by mean tau=-log(clip(t,1/255,1)); choose first, index four, and last",
+    "validation_available_scenes": 1000,
+    "validation_scene_digest": "c1fb77922f9cacd17eb0870732f6d9b43e37d9e39b424620d02b81f508b40289",
+    "validation_selected_scenes": 1000,
+    "variants_per_scene": 3
+  },
+  "schema_version": 1,
+  "split_overlap": {
+    "canonical_overlap_count": 0,
+    "overlap_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "terminal": {
+    "authorizes": "MEASUREMENT_SUPPLEMENT_ONLY",
+    "decision": "ITS_LOCAL_MEASUREMENT_INCONCLUSIVE",
+    "gate_reasons": [
+      "qualified ITS count or haze/transmission mapping integrity changed"
+    ],
+    "state": "COMPLETED_INCONCLUSIVE"
+  }
+}
