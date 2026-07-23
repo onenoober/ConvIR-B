@@ -1,0 +1,21 @@
+{
+  "authorizes": "SOTS_OTS_LOCAL_ERROR_MEASUREMENT_CONTRACT",
+  "competing_explanation": "Matching counts alone could have hidden a changed or incomplete data copy; the ordered aggregate SHA-256 binds every supported image path, size and content identity. This still does not establish model quality, source independence from OTS training data or unseen-domain generalization.",
+  "decision": "SOTS_OTS_ASSET_AUDIT_PASS",
+  "gate_reasons": [
+    "The fixed ots-base.pkl file exists, is nonempty and has SHA-256 dc28713ad92af0a2594b1964451602614e1b24a1e898647a6cf41c94e9e533e6.",
+    "SOTS-Outdoor contains exactly 492 GT images and 500 hazy images.",
+    "All 500 hazy images map to 492 GT source groups with zero unmapped hazy images and zero unused GT images.",
+    "The complete ordered SOTS-Outdoor file census has aggregate SHA-256 ac6921cc9a2afd32c9976465fd9a50555dce2f217f8f4ddb0614c907f681e5b2."
+  ],
+  "limitations": [
+    "No model was loaded and no inference, restoration metric or training was performed.",
+    "The audit does not establish that SOTS clear sources are independent of OTS training sources.",
+    "SOTS-Outdoor may support official-domain diagnostic measurement but cannot by itself support a strict unseen-generalization claim.",
+    "The pass authorizes only the separately frozen local GT-error measurement contract."
+  ],
+  "operation_id": "SOTS_OTS_ASSET_AUDIT",
+  "primary_result": "The exact official OTS checkpoint and the complete paired SOTS-Outdoor copy satisfy the frozen identity, count, source-pairing and aggregate-digest gates, so they are qualified for authoring the next local GT-error diagnostic contract.",
+  "route_id": "sots-ots-asset-audit-v1",
+  "run_id": "sots-ots-asset-audit-v1-r1"
+}

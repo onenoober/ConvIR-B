@@ -1,0 +1,46 @@
+{
+  "authorizes": "SOTS_OTS_LOCAL_ERROR_MEASUREMENT_CONTRACT",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "SOTS_OTS_ASSET_AUDIT_PASS",
+  "details": {
+    "checkpoint_sha256": "dc28713ad92af0a2594b1964451602614e1b24a1e898647a6cf41c94e9e533e6",
+    "dataset_sha256": "ac6921cc9a2afd32c9976465fd9a50555dce2f217f8f4ddb0614c907f681e5b2",
+    "gate_reasons": [
+      "checkpoint identity, exact SOTS counts, complete pairing and aggregate digest passed"
+    ],
+    "gt_images": 492,
+    "hazy_images": 500,
+    "model_execution_occurred": false,
+    "source_groups": 492,
+    "summary_file": "asset_audit.json"
+  },
+  "evidence_role": "engineering_debug",
+  "evidence_sha256": {
+    "sots_ots_asset_audit_v1_summary.json": "2c4ac338bbe63a6768420cbd9b249273ad229d1933b5d2425a9dd7ccd8ea7b59"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "SOTS_OTS_ASSET_AUDIT",
+  "returncode": 0,
+  "route_commit": "8d2e1507a3646d52a5a75473e131adef8510f5ad",
+  "route_id": "sots-ots-asset-audit-v1",
+  "run_id": "sots-ots-asset-audit-v1-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "verified_assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": false,
+      "id": "checkpoint_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory"
+    }
+  ]
+}

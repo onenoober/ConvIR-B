@@ -1,0 +1,44 @@
+{
+  "checkpoint": {
+    "bytes": 34797069,
+    "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/ots-base.pkl",
+    "sha256": "dc28713ad92af0a2594b1964451602614e1b24a1e898647a6cf41c94e9e533e6"
+  },
+  "checks": {
+    "aggregate_digest": true,
+    "checkpoint_identity": true,
+    "sots_counts": true,
+    "source_pairing": true
+  },
+  "limitations": [
+    "This is an engineering identity audit and contains no model-quality result.",
+    "The audit does not establish scene independence from OTS training sources.",
+    "No model load, inference, training or restoration metric occurred."
+  ],
+  "marker": "SOTS_OTS_ASSET_AUDIT_V1_COMPLETE",
+  "operation_id": "SOTS_OTS_ASSET_AUDIT",
+  "route_id": "sots-ots-asset-audit-v1",
+  "run_id": "sots-ots-asset-audit-v1-r1",
+  "schema_version": 1,
+  "sots_outdoor": {
+    "aggregate_sha256": "ac6921cc9a2afd32c9976465fd9a50555dce2f217f8f4ddb0614c907f681e5b2",
+    "gt_images": 492,
+    "hazy_images": 500,
+    "root": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/outdoor",
+    "unique_source_groups": 492,
+    "unmapped_hazy_count": 0,
+    "unused_gt_count": 0,
+    "variant_count_histogram": {
+      "1": 484,
+      "2": 8
+    }
+  },
+  "terminal": {
+    "authorizes": "SOTS_OTS_LOCAL_ERROR_MEASUREMENT_CONTRACT",
+    "decision": "SOTS_OTS_ASSET_AUDIT_PASS",
+    "gate_reasons": [
+      "checkpoint identity, exact SOTS counts, complete pairing and aggregate digest passed"
+    ],
+    "state": "COMPLETED_GATE_PASS"
+  }
+}
