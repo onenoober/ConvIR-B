@@ -1,0 +1,238 @@
+{
+  "construct_prevalence": {
+    "any": {
+      "estimate": 0.12,
+      "lower": 0.0772684043967938,
+      "successes": 18,
+      "total": 150,
+      "upper": 0.18170966135395242
+    },
+    "low_demand_harm": {
+      "estimate": 0.06666666666666667,
+      "lower": 0.03661146073480972,
+      "successes": 10,
+      "total": 150,
+      "upper": 0.11836352652481316
+    },
+    "signed_overshoot": {
+      "estimate": 0.07333333333333333,
+      "lower": 0.04143838680502927,
+      "successes": 11,
+      "total": 150,
+      "upper": 0.12653698526598406
+    },
+    "under_recovery": {
+      "estimate": 0.0,
+      "lower": 0.0,
+      "successes": 0,
+      "total": 150,
+      "upper": 0.02497113914571871
+    }
+  },
+  "demand_contrast_secondary": {
+    "direction_was_not_a_gate": true,
+    "paired_scene_mean_high_minus_low_material_overshoot_fraction": {
+      "estimate": -0.15058585858585857,
+      "lower": -0.1754621212121212,
+      "resamples": 20000,
+      "scene_count": 150,
+      "seed": 20260723,
+      "upper": -0.1274107954545455
+    }
+  },
+  "global_competence": {
+    "passed": true,
+    "required_lower_95": 0.8,
+    "scene_mean_psnr_gain": {
+      "estimate": 21.716092189099665,
+      "lower": 21.036536361283567,
+      "resamples": 20000,
+      "scene_count": 150,
+      "seed": 20260723,
+      "upper": 22.402318841997378
+    },
+    "scene_prevalence": {
+      "estimate": 1.0,
+      "lower": 0.9750288608542812,
+      "successes": 150,
+      "total": 150,
+      "upper": 1.0
+    }
+  },
+  "identity_and_coverage": {
+    "completed_clear_scenes": 150,
+    "completed_nested_variants": 600,
+    "expected_split_assignment_digest": "7b21d3af455475f7bb29198081a2ef2e651cffaac6149fd27741863c765b4efc",
+    "failure_count": 0,
+    "failures": [],
+    "integrity_checks": {
+      "complete_internal_development_inference": true,
+      "complete_pairing_and_clear_decode": true,
+      "frozen_split_reproduced": true,
+      "no_training": true,
+      "official_test_excluded": true,
+      "parent_split_authorization": true,
+      "train_only_asset_scope": true
+    },
+    "observed_split_assignment_digest": "7b21d3af455475f7bb29198081a2ef2e651cffaac6149fd27741863c765b4efc"
+  },
+  "limitations": [
+    "This is Haze4K train-derived development-screening evidence for one fixed official checkpoint, not official-test confirmation or deployment evidence.",
+    "GT-derived demand and error labels are measurement-only quantities and are unavailable as deployment inputs.",
+    "Signed RGB projection and MSE materiality are operational constructs, not direct proofs of perceptual over-dehazing, haze density, or causal mechanism.",
+    "The high-versus-low demand contrast is reported without assuming monotonicity or a required direction.",
+    "Passing authorizes only a non-deployable bounded local-action oracle, not proxy fitting or module design."
+  ],
+  "marker": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_V1_COMPLETE",
+  "measurement": {
+    "demand_score": "paired input-versus-GT RGB MSE per tile",
+    "edge_rule": "reflect-pad bottom and right to a multiple of 32",
+    "high_and_low_region_fraction": 0.2,
+    "low_demand_harm": {
+      "absolute_mse_increase_min": 1.5378700499807765e-05,
+      "evaluated_region": "lowest-demand 20 percent of tiles",
+      "output_to_input_error_ratio_min": 1.1
+    },
+    "scene_aggregation": "arithmetic mean within clear scene followed by equal-weight scene inference",
+    "scene_repeatability_rule": "the same construct is material in at least three of four nested haze variants",
+    "signed_overshoot": {
+      "alpha_min": 1.05,
+      "evaluated_region": "all tiles; high/low demand contrast is secondary",
+      "projected_absolute_margin": 0.00392156862745098
+    },
+    "signed_projection_alpha": "dot(prediction-input, GT-input)/(squared_norm(GT-input)+1e-8)",
+    "tile_size_pixels": 32,
+    "tile_stride_pixels": 32,
+    "under_recovery": {
+      "alpha_max": 0.8,
+      "evaluated_region": "highest-demand 20 percent of tiles",
+      "output_to_input_error_ratio_min": 0.25
+    },
+    "variant_material_fraction_margin": 0.2
+  },
+  "operation_id": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASURE",
+  "primary_estimand": {
+    "independent_unit": "canonical_clear_scene",
+    "material_prevalence_margin": 0.2,
+    "stable_any_material_local_error_prevalence": {
+      "estimate": 0.12,
+      "lower": 0.0772684043967938,
+      "successes": 18,
+      "total": 150,
+      "upper": 0.18170966135395242
+    }
+  },
+  "route_id": "haze4k-train-baseline-local-error-v1",
+  "run_id": "haze4k-train-baseline-local-error-v1-phase-a",
+  "schema_version": 1,
+  "scope": "fixed official Haze4K ConvIR-B on 150 train-derived internal-development clear scenes and 600 nested haze variants; official test excluded",
+  "secondary_scene_aggregates": {
+    "all_material_overshoot_fraction": {
+      "count": 150,
+      "max": 0.4985207100591716,
+      "mean": 0.09713727810650888,
+      "median": 0.07692307692307693,
+      "min": 0.0008333333333333334,
+      "q10": 0.017416666666666667,
+      "q25": 0.03833333333333333,
+      "q75": 0.12606508875739644,
+      "q90": 0.19393491124260354
+    },
+    "high_alpha_mean": {
+      "count": 150,
+      "max": 1.0406354975072203,
+      "mean": 0.9690781648105083,
+      "median": 0.9822173852419859,
+      "min": 0.814819367041948,
+      "q10": 0.9108051839308055,
+      "q25": 0.9520415399459201,
+      "q75": 0.9960085336066571,
+      "q90": 1.0009375458331333
+    },
+    "high_material_overshoot_fraction": {
+      "count": 150,
+      "max": 0.6439393939393939,
+      "mean": 0.031414141414141415,
+      "median": 0.0,
+      "min": 0.0,
+      "q10": 0.0,
+      "q25": 0.0,
+      "q75": 0.029166666666666667,
+      "q90": 0.07958333333333331
+    },
+    "high_under_recovery_fraction": {
+      "count": 150,
+      "max": 0.1590909090909091,
+      "mean": 0.0027121212121212126,
+      "median": 0.0,
+      "min": 0.0,
+      "q10": 0.0,
+      "q25": 0.0,
+      "q75": 0.0,
+      "q90": 0.0
+    },
+    "input_psnr": {
+      "count": 150,
+      "max": 29.41928907266033,
+      "mean": 17.18848067181063,
+      "median": 17.139928219656973,
+      "min": 9.834783677892508,
+      "q10": 12.772083248078072,
+      "q25": 14.764258487640072,
+      "q75": 19.240519659842462,
+      "q90": 20.81843002706921
+    },
+    "low_alpha_mean": {
+      "count": 150,
+      "max": 1.3785533288626919,
+      "mean": 0.9126539397984241,
+      "median": 0.9398797843961094,
+      "min": 0.26060728756650015,
+      "q10": 0.7440987985886358,
+      "q25": 0.8476466120132968,
+      "q75": 0.987557771023374,
+      "q90": 1.0271103907486436
+    },
+    "low_demand_harm_fraction": {
+      "count": 150,
+      "max": 0.5583333333333332,
+      "mean": 0.08414646464646464,
+      "median": 0.045454545454545456,
+      "min": 0.0,
+      "q10": 0.0,
+      "q25": 0.0,
+      "q75": 0.10776515151515151,
+      "q90": 0.22272727272727255
+    },
+    "low_material_overshoot_fraction": {
+      "count": 150,
+      "max": 0.7045454545454546,
+      "mean": 0.182,
+      "median": 0.13333333333333333,
+      "min": 0.0,
+      "q10": 0.020833333333333332,
+      "q25": 0.06884469696969697,
+      "q75": 0.2744318181818182,
+      "q90": 0.4174242424242424
+    },
+    "output_psnr": {
+      "count": 150,
+      "max": 49.12542916271998,
+      "mean": 38.9045728609103,
+      "median": 38.66653492625839,
+      "min": 29.197122878665972,
+      "q10": 33.542610829328886,
+      "q25": 35.83964691277629,
+      "q75": 42.42594514941828,
+      "q90": 44.01750358775883
+    }
+  },
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_FAIL",
+    "gate_reasons": [
+      "the 95 percent upper bound for stable material local-error prevalence was below the frozen 0.20 margin"
+    ],
+    "state": "COMPLETED_GATE_FAIL"
+  }
+}

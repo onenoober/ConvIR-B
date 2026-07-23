@@ -1,0 +1,24 @@
+{
+  "route_id": "haze4k-train-baseline-local-error-v1",
+  "operation_id": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASURE",
+  "run_id": "haze4k-train-baseline-local-error-v1-phase-a",
+  "decision": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "The fixed official Haze4K ConvIR-B baseline completed all 600 nested haze-variant inferences for all 150 frozen internal-development clear scenes with zero failures, no training, and no official-test access. Eighteen of 150 scenes met the preregistered stable-any-material-local-error rule, an estimated prevalence of 0.120 with 95 percent Wilson interval [0.0773, 0.1817]. Because the interval upper bound is below the frozen 0.20 materiality margin, this measurement does not authorize the bounded local-action oracle.",
+  "gate_reasons": [
+    "all train-only identity, pairing, split-reproduction, checkpoint, inference, coverage, no-training, and official-test-exclusion checks passed",
+    "the baseline was globally competent in 150 of 150 scenes, with 95 percent Wilson lower bound 0.9750 above the frozen 0.80 prerequisite",
+    "stable high-demand under-recovery occurred in 0 of 150 scenes, with 95 percent upper bound 0.0250",
+    "stable signed overshoot occurred in 11 of 150 scenes, estimated prevalence 0.0733 with 95 percent interval [0.0414, 0.1265]",
+    "stable low-demand harm occurred in 10 of 150 scenes, estimated prevalence 0.0667 with 95 percent interval [0.0366, 0.1184]",
+    "stable-any-material-local-error prevalence was 18 of 150 and its 95 percent upper bound 0.1817 was below the frozen 0.20 gate"
+  ],
+  "competing_explanation": "The preregistered scene-stability gate is intentionally stricter than the existence of affected tiles. Continuous summaries still show nonzero local overshoot, especially in low-demand tiles: the scene-mean high-minus-low material-overshoot fraction was -0.1506 with paired scene-bootstrap 95 percent interval [-0.1755, -0.1274]. This may reflect RGB-MSE/projection construct behavior, content or padding geometry, or a real low-demand vulnerability, but this route cannot distinguish those explanations or treat the construct as a deployable risk signal.",
+  "limitations": [
+    "This is train-derived development-screening evidence for one fixed official checkpoint, not Haze4K official-test confirmation, NH-HAZE validation, or deployment evidence.",
+    "GT-derived demand and local-error labels are measurement-only quantities and cannot be used as deployment inputs.",
+    "Signed RGB projection and MSE thresholds operationalize local crossing and harm but do not by themselves establish perceptual over-dehazing or a causal haze mechanism.",
+    "The FAIL applies to the frozen prevalence and repeatability contract; it does not prove that every local-error construct or independently validated measurement field is absent.",
+    "The typed closeout authorizes no oracle, proxy fitting, module design, threshold relaxation, or automatic follow-up experiment."
+  ]
+}
