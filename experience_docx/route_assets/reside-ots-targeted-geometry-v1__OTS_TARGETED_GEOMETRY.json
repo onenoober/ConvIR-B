@@ -1,0 +1,61 @@
+{
+  "assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_reside_qualification",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside_data_qualification_20260722/reside_minimal_measurement_qualification.json",
+      "sha256": "f7cbac42e8510489351149412e5ad27a0278db0d3c52963d609abb8ba352714c"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-outdoor-full-retrieval-v1/reside_ots_outdoor_full_retrieval_v1_closeout.json",
+      "sha256": "43cba334c911bba675e1c6b5cc04036cd1c5fb91642aa0ed41570a12a10b3312"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-outdoor-full-retrieval-v1/reside_ots_outdoor_full_retrieval_v1_summary.json",
+      "sha256": "80a78b2cd53afa2e42bec0ee427490e4e18fae44ccd8e9d13ced34d1ef21407d"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_mapping",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-outdoor-full-retrieval-v1/reside_ots_outdoor_full_retrieval_v1_mapping.csv",
+      "sha256": "5011624fadce85d5289ff7bfdfcfd1f166260eff0ce3c67509c91cdde467efd3"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_exclusions",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-outdoor-full-retrieval-v1/reside_ots_outdoor_full_retrieval_v1_exclusions.txt",
+      "sha256": "f01d9b1f4ee4ad353d845c63cee50874aea4692efb9c02a27123e8c52c4ccb88"
+    }
+  ],
+  "operation_id": "OTS_TARGETED_GEOMETRY",
+  "route_id": "reside-ots-targeted-geometry-v1",
+  "schema_version": 1
+}

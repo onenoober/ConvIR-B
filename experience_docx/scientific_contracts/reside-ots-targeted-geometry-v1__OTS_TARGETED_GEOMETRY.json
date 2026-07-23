@@ -1,0 +1,148 @@
+{
+  "competing_explanation": "Global correlation near-ties can arise from duplicate or near-duplicate OTS members of the same source family. Local geometry can verify the family relationship without identifying one privileged filename; multiple accepted members must therefore all be excluded. Failure means only that this frozen geometric method did not resolve a target.",
+  "controls": [
+    "positive pairs Haze4K train 101 to OTS 0870, Haze4K train 133 to OTS 7267, and Haze4K test 417 to OTS 6360",
+    "negative cross-pairs train 101 to OTS 7267, train 133 to OTS 6360, and test 417 to OTS 0870",
+    "parent terminal, summary, mapping, and 959-ID provisional exclusion asset are exact SHA-256-bound inputs",
+    "Haze4K test 69 to OTS 0354 and train 977 to OTS 1964 retain their parent global-match diagnostics but must independently pass geometry",
+    "a geometry FAIL is a method limitation, not proof that an underlying source relationship is absent"
+  ],
+  "disabled_actions": [
+    "model or module selection",
+    "training, inference, dehazing evaluation, or outcome metric computation",
+    "treating keypoints or local matches as independent scientific samples",
+    "requiring three target relationships to yield three previously unseen OTS IDs",
+    "adapting shortlist size, feature settings, thresholds, controls, or gates after results",
+    "claiming mapping infeasibility from a geometric FAIL",
+    "executing outdoor measurement before a PASS closeout"
+  ],
+  "gates": [
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "parent terminal, summary, mapping, and exclusion identities and counts match",
+      "id": "parent_identity",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "qualified RESIDE identity and frozen Haze4K and OTS file counts match",
+      "id": "dataset_identity",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "accepted proportion among three fixed positive source pairs",
+      "id": "positive_control_recall",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "rejected proportion among three fixed negative cross-pairs",
+      "id": "negative_control_specificity",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "Haze4K test 69 to OTS 0354 passes the frozen geometric rule",
+      "id": "target_69_relationship",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "Haze4K train 977 to OTS 1964 passes the frozen geometric rule",
+      "id": "target_977_relationship",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "at least one of the frozen top-eight Haze4K train 937 candidates passes the geometric rule and OTS 0230 is present in the shortlist",
+      "id": "target_937_relationship",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "resolved expected Haze4K outdoor source relationships",
+      "id": "relationship_completeness",
+      "threshold": 42,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "OTS clear scenes remaining after deduplicated verified exclusions",
+      "id": "eligible_ots_capacity",
+      "threshold": 6000,
+      "type": "coverage"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "RootSIFT descriptors from OpenCV SIFT with nfeatures 8000, contrast threshold 0.01, edge threshold 10, sigma 1.6",
+      "bidirectional Lowe ratio 0.75 and reciprocal correspondence intersection",
+      "RANSAC homography reprojection threshold 4 pixels, confidence 0.995, and 5,000 iterations",
+      "acceptance requires at least 20 reciprocal correspondences, at least 15 homography inliers, and inlier ratio at least 0.35",
+      "Haze4K train 937 shortlist is the fixed top eight within the prior top-64 pHash retrieval ordered by global multi-view correlation",
+      "all accepted train-937 candidates are conservatively treated as the same verified source family and excluded",
+      "no threshold, candidate-count, or control adaptation after target results"
+    ],
+    "matched_budget": "three fixed positive pairs, three fixed cross-pair negatives, two fixed target pairs, and the top eight frozen global-retrieval candidates for Haze4K train 937",
+    "primary_variable": "geometrically_verified_ots_source_relationship",
+    "reference": "39 parent-verified new relationships plus three uncounted target relationships, with parent mapping and exclusion identities byte-bound"
+  },
+  "operation_id": "OTS_TARGETED_GEOMETRY",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "canonical_clear_source_scene_relationship",
+    "independent_group_count": 3
+  },
+  "primary_estimand": {
+    "aggregation": "deterministic relationship count followed by OTS-ID set deduplication",
+    "direction": "higher",
+    "id": "resolved_expected_haze4k_outdoor_relationship_count",
+    "metric": "39 parent-verified relationships plus the number of the three target Haze4K source relationships accepted by the frozen geometric rule",
+    "unit": "canonical_clear_source_scene_relationship"
+  },
+  "question": "Do frozen local-feature and RANSAC geometry checks resolve Haze4K test 69, Haze4K train 977, and Haze4K train 937 to OTS source identities, while positive and negative controls separate and the deduplicated exclusion union preserves at least 6,000 OTS scenes?",
+  "route_id": "reside-ots-targeted-geometry-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "OTS_TARGETED_GEOMETRY_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "NONE",
+      "decision": "OTS_TARGETED_GEOMETRY_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "OTS_OUTDOOR_MEASUREMENT_DESIGN",
+      "decision": "OTS_TARGETED_GEOMETRY_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "canonical_clear_source_scene_relationship",
+    "method": "deterministic targeted identity audit with exact relationship and exclusion-set counts; no nested keypoint or match is treated as an independent scientific sample"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "certificate_id": "reside_ots_targeted_geometry_v1_census",
+  "confidence_level": 0.95,
+  "estimand": "resolution of the three remaining Haze4K-to-OTS source relationships",
+  "feasible": true,
+  "independent_groups_available": 3,
+  "independent_groups_required": 3,
+  "method": "binomial_worst_case",
+  "planning_sd": 0.5,
+  "schema_version": 1,
+  "source_reference": "All three relationships identified by the parent diagnostic are included; no sample estimate is substituted for the exact gate.",
+  "source_role": "unrestricted",
+  "target_half_width": 0.6
+}

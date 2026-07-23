@@ -1,0 +1,48 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/reside-ots-targeted-geometry-v1__OTS_TARGETED_GEOMETRY.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/reside-ots-targeted-geometry-v1__OTS_TARGETED_GEOMETRY.json",
+    "max_seconds": 120,
+    "mode": "cpu_exact"
+  },
+  "entrypoint_relpath": "experience_docx/tools/resolve_reside_ots_targeted_geometry.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "reside_ots_targeted_geometry_v1_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/targeted_geometry_summary.json"
+    },
+    {
+      "destination_filename": "reside_ots_targeted_geometry_v1_pairs.csv",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/geometric_pairs.csv"
+    },
+    {
+      "destination_filename": "reside_ots_targeted_geometry_v1_exclusions.txt",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/ots_exclusion_ids.txt"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 420,
+  "operation_id": "OTS_TARGETED_GEOMETRY",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/reside-ots-targeted-geometry-v1__OTS_TARGETED_GEOMETRY.json",
+    "mode": "descriptive_capacity",
+    "rationale": "This is a deterministic census of the three remaining target relationships with fixed controls; the certificate records all three independent target groups as required and available."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "reside-ots-targeted-geometry-v1",
+  "schema_version": 2,
+  "timeout_seconds": 1800,
+  "total_units": 8987
+}

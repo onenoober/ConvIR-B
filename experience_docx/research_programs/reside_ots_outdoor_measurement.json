@@ -23,6 +23,13 @@
       "allowed_uses": [
         "diagnostic"
       ]
+    },
+    {
+      "id": "ots_full_retrieval_fail",
+      "reference": "experience_docx/experiment_logs/reside-ots-outdoor-full-retrieval-v1/reside_ots_outdoor_full_retrieval_v1_conclusion.json",
+      "allowed_uses": [
+        "diagnostic"
+      ]
     }
   ],
   "dependency_roles": {
@@ -33,6 +40,9 @@
       "diagnostic"
     ],
     "prior_overlap_terminal": [
+      "diagnostic"
+    ],
+    "prior_full_retrieval_terminal": [
       "diagnostic"
     ]
   },
@@ -48,7 +58,8 @@
       },
       "route_families": [
         "ots_overlap_resolution",
-        "ots_full_retrieval"
+        "ots_full_retrieval",
+        "ots_targeted_geometry"
       ]
     },
     "outdoor_measurement_design": {
@@ -86,6 +97,17 @@
       "reopen_evidence_types": [
         "official_source_manifest",
         "independent_geometric_mapping"
+      ]
+    },
+    "ots_targeted_geometry": {
+      "core_assumption": "Independent local-feature geometry can resolve the three source relationships left uncounted by the full-query matcher, while treating already-excluded OTS identities as valid resolved relationships rather than requiring three new unique IDs.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close if frozen positive and negative geometric controls do not separate, any of the three target source relationships remains unresolved, or the final deduplicated exclusion union leaves fewer than 6,000 eligible OTS scenes.",
+      "reopen_evidence_types": [
+        "official_source_manifest",
+        "independent_manual_registration"
       ]
     },
     "synthetic_outdoor_measurement": {
