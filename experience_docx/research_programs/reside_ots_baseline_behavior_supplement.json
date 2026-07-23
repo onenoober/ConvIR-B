@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "program_id": "reside_ots_baseline_behavior_supplement",
+  "objective": "Complete the once-authorized OTS official-baseline behavior measurement supplement by correcting only the aspect-ratio-dependent resize incompatibility that prevented 218 of 625 frozen scenes from reaching the official ConvIR-B forward path.",
+  "source_anchors": [
+    {
+      "id": "baseline_behavior_inconclusive",
+      "reference": "experience_docx/experiment_logs/reside-ots-baseline-behavior-v1/reside_ots_baseline_behavior_v1_closeout.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "official_haze4k_checkpoint",
+      "reference": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "allowed_uses": ["baseline"]
+    }
+  ],
+  "dependency_roles": {
+    "supplement_authorization": ["diagnostic"],
+    "official_model": ["baseline"]
+  },
+  "stages": {
+    "baseline_behavior_supplement": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["synthetic_outdoor_baseline_behavior_supplement"]
+    }
+  },
+  "route_families": {
+    "synthetic_outdoor_baseline_behavior_supplement": {
+      "core_assumption": "The frozen 625-scene OTS baseline behavior estimand remains interpretable when every scene uses one aspect-ratio-preserving resize rule that guarantees the minimum internal spatial support required by the unchanged official model.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after this one supplement regardless of PASS, FAIL, or INCONCLUSIVE; no repeated preprocessing search is authorized.",
+      "reopen_evidence_types": ["independent_region_labels", "new_measurement_field"]
+    }
+  },
+  "orthogonal_dimensions": ["measurement_field", "region_definition", "target_domain"],
+  "amendments": []
+}

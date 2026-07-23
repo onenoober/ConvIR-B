@@ -1,0 +1,14 @@
+{
+  "certificate_id": "reside_ots_baseline_behavior_supplement_v1_scene_prevalence",
+  "confidence_level": 0.95,
+  "estimand": "tau-aligned scene mismatch prevalence",
+  "feasible": true,
+  "independent_groups_available": 625,
+  "independent_groups_required": 601,
+  "method": "binomial_worst_case",
+  "planning_sd": 0.5,
+  "schema_version": 1,
+  "source_reference": "The archived parent scene list contains exactly 625 independent clear scenes; ceil(1.96^2*0.25/0.04^2)=601.",
+  "source_role": "development_screening",
+  "target_half_width": 0.04
+}
