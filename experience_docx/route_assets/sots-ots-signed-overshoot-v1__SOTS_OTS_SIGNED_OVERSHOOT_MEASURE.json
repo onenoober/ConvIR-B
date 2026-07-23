@@ -34,13 +34,13 @@
     {
       "access_role": "unrestricted",
       "contract_access": true,
-      "id": "parent_closeout",
+      "id": "prior_local_error_closeout",
       "kind": "file",
-      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/sots-ots-asset-audit-v1/sots_ots_asset_audit_v1_closeout.json",
-      "sha256": "2772599de94979be9486b752b2bfc6fc3cb887e49c498a5d70249681b4db6c56"
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/sots-ots-local-error-measurement-v2/sots_ots_local_error_measurement_v2_closeout.json",
+      "sha256": "8e1a4a6c2e4dc0572977fac58db20e1e9dbd6bcdea353bcee808e72984245943"
     }
   ],
-  "operation_id": "SOTS_OTS_LOCAL_ERROR_MEASURE",
-  "route_id": "sots-ots-local-error-measurement-v1",
+  "operation_id": "SOTS_OTS_SIGNED_OVERSHOOT_MEASURE",
+  "route_id": "sots-ots-signed-overshoot-v1",
   "schema_version": 1
 }

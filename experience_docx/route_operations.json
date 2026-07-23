@@ -1,22 +1,22 @@
 {
-  "experiment_spec_relpath": "experience_docx/experiment_specs/sots-ots-local-error-measurement-v1.json",
-  "experiment_spec_sha256": "7852c3d6e7ace3df91f82139641fa4e86fbca9dabb8a3470235b1cd26e76e4c0",
+  "experiment_spec_relpath": "experience_docx/experiment_specs/sots-ots-signed-overshoot-v1.json",
+  "experiment_spec_sha256": "61d3f5a27cac3eebc5ddaf262c51698edc6cdad163636a947a4f4ce338dd0693",
   "operations": {
-    "SOTS_OTS_LOCAL_ERROR_MEASURE": {
+    "SOTS_OTS_SIGNED_OVERSHOOT_MEASURE": {
       "allowed_terminal_tuples": [
         {
-          "authorizes": "SOTS_LOCAL_ERROR_MECHANISM_DESIGN_REVIEW",
-          "decision": "SOTS_LOCAL_GT_ERROR_MISMATCH_PASS",
+          "authorizes": "HIGH_DEMAND_OVERSHOOT_MECHANISM_REVIEW",
+          "decision": "SOTS_HIGH_DEMAND_SIGNED_OVERSHOOT_PASS",
           "state": "COMPLETED_GATE_PASS"
         },
         {
           "authorizes": "NONE",
-          "decision": "SOTS_LOCAL_GT_ERROR_MISMATCH_FAIL",
+          "decision": "SOTS_HIGH_DEMAND_SIGNED_OVERSHOOT_FAIL",
           "state": "COMPLETED_GATE_FAIL"
         },
         {
-          "authorizes": "SOTS_LOCAL_ERROR_MEASUREMENT_SUPPLEMENT_ONLY",
-          "decision": "SOTS_LOCAL_GT_ERROR_MISMATCH_INCONCLUSIVE",
+          "authorizes": "SOTS_SIGNED_OVERSHOOT_SUPPLEMENT_ONLY",
+          "decision": "SOTS_HIGH_DEMAND_SIGNED_OVERSHOOT_INCONCLUSIVE",
           "state": "COMPLETED_INCONCLUSIVE"
         },
         {
@@ -25,13 +25,13 @@
           "state": "FAILED_ENGINEERING"
         }
       ],
-      "closeout_filename": "sots_ots_local_error_measurement_v1_closeout.json",
+      "closeout_filename": "sots_ots_signed_overshoot_v1_closeout.json",
       "heartbeat_timeout_seconds": 600,
       "max_gpu_utilization_pct": 90,
       "min_free_gpu_mib": 8192,
-      "mode": "paired_gt_local_error_measurement",
+      "mode": "paired_gt_signed_overshoot_measurement",
       "monitor_profile": "standard",
-      "output_id": "sots-ots-local-error-measurement-v1-r1-repair-1",
+      "output_id": "sots-ots-signed-overshoot-v1-r1",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
@@ -40,13 +40,13 @@
       "workspace_policy": "fresh_route"
     }
   },
-  "program_contract_relpath": "experience_docx/research_programs/sots_ots_local_error.json",
-  "program_contract_sha256": "52fd8f7e4ead832c7bf49fe0ca6183509ae3601742544efa2bc3ab3eb6fefb20",
-  "route_card_relpath": "experience_docx/experiment_cards/sots-ots-local-error-measurement-v1.md",
-  "route_id": "sots-ots-local-error-measurement-v1",
-  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "program_contract_relpath": "experience_docx/research_programs/sots_ots_signed_overshoot.json",
+  "program_contract_sha256": "c9b34ad75e42008d017f198d6c03770003b9f37c6e6f905940af06e7398f17d1",
+  "route_card_relpath": "experience_docx/experiment_cards/sots-ots-signed-overshoot-v1.md",
+  "route_id": "sots-ots-signed-overshoot-v1",
+  "rules_commit": "66f00c8a3226fe7ae68eae623a0147fe1e68e3b3",
   "schema_version": 6,
   "scientific_contract_relpaths": {
-    "SOTS_OTS_LOCAL_ERROR_MEASURE": "experience_docx/scientific_contracts/sots-ots-local-error-measurement-v1__SOTS_OTS_LOCAL_ERROR_MEASURE.json"
+    "SOTS_OTS_SIGNED_OVERSHOOT_MEASURE": "experience_docx/scientific_contracts/sots-ots-signed-overshoot-v1__SOTS_OTS_SIGNED_OVERSHOOT_MEASURE.json"
   }
 }

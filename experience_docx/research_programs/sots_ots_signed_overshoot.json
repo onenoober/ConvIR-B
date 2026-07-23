@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "program_id": "sots_ots_signed_overshoot",
+  "objective": "Determine whether the fixed official OTS ConvIR-B baseline materially overshoots paired clear GT along the true input-to-GT restoration direction in high-demand SOTS-Outdoor regions.",
+  "source_anchors": [
+    {
+      "id": "sots_ots_asset_audit_pass",
+      "reference": "experience_docx/experiment_logs/sots-ots-asset-audit-v1/sots_ots_asset_audit_v1_closeout.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "official_ots_checkpoint",
+      "reference": "dc28713ad92af0a2594b1964451602614e1b24a1e898647a6cf41c94e9e533e6",
+      "allowed_uses": ["baseline"]
+    },
+    {
+      "id": "prior_local_mismatch_fail",
+      "reference": "experience_docx/experiment_logs/sots-ots-local-error-measurement-v2/sots_ots_local_error_measurement_v2_conclusion.json",
+      "allowed_uses": ["diagnostic"]
+    }
+  ],
+  "dependency_roles": {
+    "qualified_assets": ["diagnostic"],
+    "official_model": ["baseline"],
+    "prior_negative_diagnostic": ["diagnostic"]
+  },
+  "stages": {
+    "signed_overshoot_measurement": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["paired_gt_signed_overshoot"]
+    }
+  },
+  "route_families": {
+    "paired_gt_signed_overshoot": {
+      "core_assumption": "Signed projection of model change onto the paired input-to-GT direction distinguishes restoration toward GT from material overshoot beyond GT in high-demand regions.",
+      "adjacent_budget": 0,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the complete preregistered SOTS signed-overshoot prevalence estimate reaches a scientific terminal.",
+      "reopen_evidence_types": ["independent_real_haze_evidence", "independent_region_labels"]
+    }
+  },
+  "orthogonal_dimensions": [
+    "measurement_target",
+    "target_domain",
+    "baseline_identity",
+    "region_definition"
+  ],
+  "amendments": []
+}

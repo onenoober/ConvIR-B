@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Measure local paired-GT error behavior of the official OTS ConvIR-B model."""
+"""Measure signed high-demand paired-GT overshoot of official OTS ConvIR-B."""
 
 from __future__ import annotations
 
@@ -35,15 +35,16 @@ TOTAL_UNITS = 1492
 IMAGE_SUFFIXES = {".bmp", ".jpeg", ".jpg", ".png", ".tif", ".tiff"}
 CHECKPOINT_SHA256 = "dc28713ad92af0a2594b1964451602614e1b24a1e898647a6cf41c94e9e533e6"
 DATASET_SHA256 = "ac6921cc9a2afd32c9976465fd9a50555dce2f217f8f4ddb0614c907f681e5b2"
-PARENT_CLOSEOUT_SHA256 = "2772599de94979be9486b752b2bfc6fc3cb887e49c498a5d70249681b4db6c56"
+PARENT_CLOSEOUT_SHA256 = "8e1a4a6c2e4dc0572977fac58db20e1e9dbd6bcdea353bcee808e72984245943"
 MODEL_SOURCE_SHA256 = "140cec905c64f429359d675fff46d9ae77465d7dc972879c458095beb0d63a6d"
 MODEL_LAYERS_SHA256 = "023e27cb28b9ba13663dda0cd7da181e2f28f60a67c833bc1933e6d5b1ebd580"
 PARAMETER_COUNT = 8630665
 TILE_SIZE = 32
 REGION_FRACTION = 0.20
-CORRECTION_IMBALANCE_MARGIN = 0.10
-ALIGNMENT_MARGIN = 0.05
-MISMATCH_PREVALENCE_MARGIN = 0.20
+ALPHA_MARGIN = 1.05
+ABSOLUTE_OVERSHOOT_MARGIN = 1.0 / 255.0
+HIGH_TILE_FRACTION_MARGIN = 0.20
+OVERSHOOT_PREVALENCE_MARGIN = 0.20
 GLOBAL_COMPETENCE_MARGIN = 0.80
 EPSILON = 1e-8
 
@@ -128,18 +129,22 @@ def image_array(path: Path) -> np.ndarray:
     return array
 
 
-def error_tiles(error_map: np.ndarray) -> np.ndarray:
-    height, width = error_map.shape
+def pad_image(array: np.ndarray) -> np.ndarray:
+    height, width = array.shape[:2]
     pad_height = (-height) % TILE_SIZE
     pad_width = (-width) % TILE_SIZE
-    padded = np.pad(
-        error_map, ((0, pad_height), (0, pad_width)), mode="reflect",
+    return np.pad(
+        array, ((0, pad_height), (0, pad_width), (0, 0)), mode="reflect",
     )
+
+
+def image_tiles(array: np.ndarray) -> np.ndarray:
+    padded = pad_image(array)
     grid_height = padded.shape[0] // TILE_SIZE
     grid_width = padded.shape[1] // TILE_SIZE
     return padded.reshape(
-        grid_height, TILE_SIZE, grid_width, TILE_SIZE,
-    ).mean(axis=(1, 3), dtype=np.float64)
+        grid_height, TILE_SIZE, grid_width, TILE_SIZE, 3,
+    ).transpose(0, 2, 1, 3, 4)
 
 
 def region_indices(score_tiles: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -151,15 +156,25 @@ def region_indices(score_tiles: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return order[:region_count], order[-region_count:]
 
 
-def correction(
-    input_tiles: np.ndarray, output_tiles: np.ndarray, indices: np.ndarray,
-) -> tuple[float, float, float]:
-    flat_input = input_tiles.reshape(-1)
-    flat_output = output_tiles.reshape(-1)
-    input_error = float(np.mean(flat_input[indices]))
-    output_error = float(np.mean(flat_output[indices]))
-    relative = (input_error - output_error) / (input_error + EPSILON)
-    return input_error, output_error, float(relative)
+def signed_tile_metrics(
+    hazy: np.ndarray, clear: np.ndarray, prediction: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    hazy_tiles = image_tiles(hazy).astype(np.float64)
+    clear_tiles = image_tiles(clear).astype(np.float64)
+    prediction_tiles = image_tiles(prediction).astype(np.float64)
+    direction = clear_tiles - hazy_tiles
+    change = prediction_tiles - hazy_tiles
+    denominator = np.sum(direction * direction, axis=(2, 3, 4))
+    numerator = np.sum(change * direction, axis=(2, 3, 4))
+    alpha = numerator / (denominator + EPSILON)
+    demand_mse = denominator / float(TILE_SIZE * TILE_SIZE * 3)
+    demand_rms = np.sqrt(demand_mse)
+    overshoot_magnitude = np.maximum(alpha - 1.0, 0.0) * demand_rms
+    material = (
+        (alpha >= ALPHA_MARGIN)
+        & (overshoot_magnitude >= ABSOLUTE_OVERSHOOT_MARGIN)
+    )
+    return demand_mse, alpha, overshoot_magnitude, material
 
 
 def variant_measurement(
@@ -174,54 +189,41 @@ def variant_measurement(
         raise RuntimeError("non-finite paired error map")
     input_mse = float(np.mean(input_error_map))
     output_mse = float(np.mean(output_error_map))
-    input_tiles = error_tiles(input_error_map)
-    output_tiles = error_tiles(output_error_map)
-
-    low_indices, high_indices = region_indices(input_tiles)
-    low_input, low_output, low_correction = correction(
-        input_tiles, output_tiles, low_indices,
+    demand_mse, alpha, overshoot_magnitude, material = signed_tile_metrics(
+        hazy, clear, prediction,
     )
-    high_input, high_output, high_correction = correction(
-        input_tiles, output_tiles, high_indices,
-    )
-    true_imbalance = low_correction - high_correction
-
-    rotated_scores = np.flip(input_tiles, axis=(0, 1))
-    control_low_indices, control_high_indices = region_indices(rotated_scores)
-    _, _, control_low_correction = correction(
-        input_tiles, output_tiles, control_low_indices,
-    )
-    _, _, control_high_correction = correction(
-        input_tiles, output_tiles, control_high_indices,
-    )
-    control_imbalance = control_low_correction - control_high_correction
-    alignment_separation = true_imbalance - control_imbalance
-    variant_mismatch = (
-        true_imbalance >= CORRECTION_IMBALANCE_MARGIN
-        and alignment_separation >= ALIGNMENT_MARGIN
-    )
+    if not all(np.isfinite(item).all() for item in (
+        demand_mse, alpha, overshoot_magnitude,
+    )):
+        raise RuntimeError("non-finite signed tile metric")
+    low_indices, high_indices = region_indices(demand_mse)
+    flat_alpha = alpha.reshape(-1)
+    flat_overshoot = overshoot_magnitude.reshape(-1)
+    flat_material = material.reshape(-1)
+    high_material_fraction = float(np.mean(flat_material[high_indices]))
+    low_material_fraction = float(np.mean(flat_material[low_indices]))
     return {
         "height": int(clear.shape[0]),
         "width": int(clear.shape[1]),
-        "tile_count": int(input_tiles.size),
+        "tile_count": int(demand_mse.size),
+        "high_tile_count": int(high_indices.size),
         "input_mse": input_mse,
         "output_mse": output_mse,
         "input_psnr": -10.0 * math.log10(max(input_mse, 1e-12)),
         "output_psnr": -10.0 * math.log10(max(output_mse, 1e-12)),
         "output_ssim": float(output_ssim),
         "global_improvement": output_mse < input_mse,
-        "low_input_error": low_input,
-        "low_output_error": low_output,
-        "high_input_error": high_input,
-        "high_output_error": high_output,
-        "low_correction": low_correction,
-        "high_correction": high_correction,
-        "true_imbalance": true_imbalance,
-        "control_imbalance": control_imbalance,
-        "alignment_separation": alignment_separation,
-        "low_excess_harm": (low_output - low_input) / (input_mse + EPSILON),
-        "high_residual_ratio": high_output / (high_input + EPSILON),
-        "variant_mismatch": variant_mismatch,
+        "high_demand_mse": float(np.mean(demand_mse.reshape(-1)[high_indices])),
+        "low_demand_mse": float(np.mean(demand_mse.reshape(-1)[low_indices])),
+        "high_alpha_mean": float(np.mean(flat_alpha[high_indices])),
+        "high_alpha_median": float(np.median(flat_alpha[high_indices])),
+        "low_alpha_mean": float(np.mean(flat_alpha[low_indices])),
+        "low_alpha_median": float(np.median(flat_alpha[low_indices])),
+        "high_material_overshoot_fraction": high_material_fraction,
+        "low_material_overshoot_fraction": low_material_fraction,
+        "high_projected_overshoot_mean": float(np.mean(flat_overshoot[high_indices])),
+        "high_projected_overshoot_max": float(np.max(flat_overshoot[high_indices])),
+        "variant_high_demand_overshoot": high_material_fraction >= HIGH_TILE_FRACTION_MARGIN,
     }
 
 
@@ -315,46 +317,50 @@ def group_measurement(records: list[dict[str, Any]]) -> dict[str, Any]:
         "input_psnr": mean_key(records, "input_psnr"),
         "output_psnr": mean_key(records, "output_psnr"),
         "output_ssim": mean_key(records, "output_ssim"),
-        "low_input_error": mean_key(records, "low_input_error"),
-        "low_output_error": mean_key(records, "low_output_error"),
-        "high_input_error": mean_key(records, "high_input_error"),
-        "high_output_error": mean_key(records, "high_output_error"),
-        "low_correction": mean_key(records, "low_correction"),
-        "high_correction": mean_key(records, "high_correction"),
-        "true_imbalance": mean_key(records, "true_imbalance"),
-        "control_imbalance": mean_key(records, "control_imbalance"),
-        "alignment_separation": mean_key(records, "alignment_separation"),
-        "low_excess_harm": mean_key(records, "low_excess_harm"),
-        "high_residual_ratio": mean_key(records, "high_residual_ratio"),
+        "high_demand_mse": mean_key(records, "high_demand_mse"),
+        "low_demand_mse": mean_key(records, "low_demand_mse"),
+        "high_alpha_mean": mean_key(records, "high_alpha_mean"),
+        "high_alpha_median": mean_key(records, "high_alpha_median"),
+        "low_alpha_mean": mean_key(records, "low_alpha_mean"),
+        "low_alpha_median": mean_key(records, "low_alpha_median"),
+        "high_material_overshoot_fraction": mean_key(
+            records, "high_material_overshoot_fraction",
+        ),
+        "low_material_overshoot_fraction": mean_key(
+            records, "low_material_overshoot_fraction",
+        ),
+        "high_projected_overshoot_mean": mean_key(
+            records, "high_projected_overshoot_mean",
+        ),
+        "high_projected_overshoot_max": mean_key(
+            records, "high_projected_overshoot_max",
+        ),
     }
     group["globally_competent"] = group["output_mse"] < group["input_mse"]
-    group["low_region_harmed"] = group["low_output_error"] > group["low_input_error"]
-    group["group_mismatch"] = (
-        group["true_imbalance"] >= CORRECTION_IMBALANCE_MARGIN
-        and group["alignment_separation"] >= ALIGNMENT_MARGIN
+    group["group_high_demand_overshoot"] = (
+        group["high_material_overshoot_fraction"] >= HIGH_TILE_FRACTION_MARGIN
     )
     return group
 
 
 def stratum_row(name: str, groups: list[dict[str, Any]]) -> dict[str, Any]:
     count = len(groups)
-    mismatches = sum(bool(group["group_mismatch"]) for group in groups)
+    overshot = sum(bool(group["group_high_demand_overshoot"]) for group in groups)
     competent = sum(bool(group["globally_competent"]) for group in groups)
-    harmed = sum(bool(group["low_region_harmed"]) for group in groups)
     return {
         "stratum": name,
         "source_groups": count,
         "nested_variants": sum(int(group["variant_count"]) for group in groups),
-        "mismatch_count": mismatches,
-        "mismatch_rate": mismatches / count if count else "",
+        "overshoot_group_count": overshot,
+        "overshoot_group_rate": overshot / count if count else "",
         "global_competence_count": competent,
         "global_competence_rate": competent / count if count else "",
-        "low_region_harm_count": harmed,
-        "low_region_harm_rate": harmed / count if count else "",
-        "true_imbalance_mean": float(np.mean([group["true_imbalance"] for group in groups])) if groups else "",
-        "true_imbalance_median": float(np.median([group["true_imbalance"] for group in groups])) if groups else "",
-        "control_imbalance_median": float(np.median([group["control_imbalance"] for group in groups])) if groups else "",
-        "alignment_separation_median": float(np.median([group["alignment_separation"] for group in groups])) if groups else "",
+        "high_overshoot_fraction_mean": float(np.mean([group["high_material_overshoot_fraction"] for group in groups])) if groups else "",
+        "high_overshoot_fraction_median": float(np.median([group["high_material_overshoot_fraction"] for group in groups])) if groups else "",
+        "high_alpha_mean": float(np.mean([group["high_alpha_mean"] for group in groups])) if groups else "",
+        "high_alpha_median": float(np.median([group["high_alpha_median"] for group in groups])) if groups else "",
+        "low_alpha_median": float(np.median([group["low_alpha_median"] for group in groups])) if groups else "",
+        "high_projected_overshoot_mean": float(np.mean([group["high_projected_overshoot_mean"] for group in groups])) if groups else "",
         "input_psnr_median": float(np.median([group["input_psnr"] for group in groups])) if groups else "",
         "output_psnr_median": float(np.median([group["output_psnr"] for group in groups])) if groups else "",
         "output_ssim_median": float(np.median([group["output_ssim"] for group in groups])) if groups else "",
@@ -379,48 +385,46 @@ def finalize(
         and len(variants) == EXPECTED_HAZY
         and not failures
     )
-    mismatch_count = sum(bool(group["group_mismatch"]) for group in groups)
+    overshoot_count = sum(bool(group["group_high_demand_overshoot"]) for group in groups)
     competence_count = sum(bool(group["globally_competent"]) for group in groups)
-    harm_count = sum(bool(group["low_region_harmed"]) for group in groups)
-    mismatch_interval = wilson(mismatch_count, EXPECTED_GROUPS)
+    overshoot_interval = wilson(overshoot_count, EXPECTED_GROUPS)
     competence_interval = wilson(competence_count, EXPECTED_GROUPS)
-    harm_interval = wilson(harm_count, EXPECTED_GROUPS)
     globally_competent = float(competence_interval["lower"]) >= GLOBAL_COMPETENCE_MARGIN
 
     if not parent_identity or not dataset_identity or not coverage_complete:
         state = "COMPLETED_INCONCLUSIVE"
-        decision = "SOTS_LOCAL_GT_ERROR_MISMATCH_INCONCLUSIVE"
-        authorizes = "SOTS_LOCAL_ERROR_MEASUREMENT_SUPPLEMENT_ONLY"
+        decision = "SOTS_HIGH_DEMAND_SIGNED_OVERSHOOT_INCONCLUSIVE"
+        authorizes = "SOTS_SIGNED_OVERSHOOT_SUPPLEMENT_ONLY"
         gate_reasons = [
-            "parent authorization, exact asset identity, pairing, finite inference, or complete source coverage failed"
+            "prior diagnostic, exact asset identity, pairing, finite inference, or complete source coverage failed"
         ]
     elif not globally_competent:
         state = "COMPLETED_INCONCLUSIVE"
-        decision = "SOTS_LOCAL_GT_ERROR_MISMATCH_INCONCLUSIVE"
-        authorizes = "SOTS_LOCAL_ERROR_MEASUREMENT_SUPPLEMENT_ONLY"
+        decision = "SOTS_HIGH_DEMAND_SIGNED_OVERSHOOT_INCONCLUSIVE"
+        authorizes = "SOTS_SIGNED_OVERSHOOT_SUPPLEMENT_ONLY"
         gate_reasons = [
             "official OTS baseline lacked the frozen minimum global SOTS competence"
         ]
-    elif float(mismatch_interval["lower"]) >= MISMATCH_PREVALENCE_MARGIN:
+    elif float(overshoot_interval["lower"]) >= OVERSHOOT_PREVALENCE_MARGIN:
         state = "COMPLETED_GATE_PASS"
-        decision = "SOTS_LOCAL_GT_ERROR_MISMATCH_PASS"
-        authorizes = "SOTS_LOCAL_ERROR_MECHANISM_DESIGN_REVIEW"
+        decision = "SOTS_HIGH_DEMAND_SIGNED_OVERSHOOT_PASS"
+        authorizes = "HIGH_DEMAND_OVERSHOOT_MECHANISM_REVIEW"
         gate_reasons = [
-            "paired-GT local mismatch prevalence lower 95 percent bound met the frozen material margin"
+            "high-demand signed-overshoot prevalence lower 95 percent bound met the frozen material margin"
         ]
-    elif float(mismatch_interval["upper"]) < MISMATCH_PREVALENCE_MARGIN:
+    elif float(overshoot_interval["upper"]) < OVERSHOOT_PREVALENCE_MARGIN:
         state = "COMPLETED_GATE_FAIL"
-        decision = "SOTS_LOCAL_GT_ERROR_MISMATCH_FAIL"
+        decision = "SOTS_HIGH_DEMAND_SIGNED_OVERSHOOT_FAIL"
         authorizes = "NONE"
         gate_reasons = [
-            "paired-GT local mismatch prevalence upper 95 percent bound was below the frozen material margin"
+            "high-demand signed-overshoot prevalence upper 95 percent bound was below the frozen material margin"
         ]
     else:
         state = "COMPLETED_INCONCLUSIVE"
-        decision = "SOTS_LOCAL_GT_ERROR_MISMATCH_INCONCLUSIVE"
-        authorizes = "SOTS_LOCAL_ERROR_MEASUREMENT_SUPPLEMENT_ONLY"
+        decision = "SOTS_HIGH_DEMAND_SIGNED_OVERSHOOT_INCONCLUSIVE"
+        authorizes = "SOTS_SIGNED_OVERSHOOT_SUPPLEMENT_ONLY"
         gate_reasons = [
-            "paired-GT local mismatch prevalence interval crossed the frozen material margin"
+            "high-demand signed-overshoot prevalence interval crossed the frozen material margin"
         ]
 
     summary = {
@@ -430,7 +434,7 @@ def finalize(
         "run_id": context.run_id,
         "scope": "fixed official OTS ConvIR-B on development-screening SOTS-Outdoor paired images",
         "dataset_identity": {
-            "parent_authorization_match": parent_identity,
+            "prior_diagnostic_identity_match": parent_identity,
             "pairing_and_count_match": bool(pairing.get("pairing_and_count_match")),
             "aggregate_digest_match": dataset_digest == DATASET_SHA256,
             "observed_aggregate_sha256": dataset_digest,
@@ -443,17 +447,15 @@ def finalize(
         "measurement": {
             "tile_size_pixels": TILE_SIZE,
             "region_fraction": REGION_FRACTION,
-            "relative_correction": "(regional input MSE - regional output MSE)/(regional input MSE + 1e-8)",
-            "group_mismatch_margins": {
-                "true_low_minus_high_correction": CORRECTION_IMBALANCE_MARGIN,
-                "true_minus_rotated_control_imbalance": ALIGNMENT_MARGIN,
-            },
-            "negative_control": "within-image 180-degree rotation of the tile input-error score field",
+            "projection_coefficient": "dot(prediction-input, GT-input)/(squared_norm(GT-input)+1e-8)",
+            "alpha_margin": ALPHA_MARGIN,
+            "absolute_projected_overshoot_margin": ABSOLUTE_OVERSHOOT_MARGIN,
+            "high_tile_fraction_margin": HIGH_TILE_FRACTION_MARGIN,
             "variant_aggregation": "arithmetic mean within clear-source group before group classification",
         },
         "primary_estimand": {
-            "paired_gt_local_mismatch_prevalence": mismatch_interval,
-            "material_margin": MISMATCH_PREVALENCE_MARGIN,
+            "high_demand_signed_overshoot_prevalence": overshoot_interval,
+            "material_margin": OVERSHOOT_PREVALENCE_MARGIN,
         },
         "global_competence": {
             "source_group_prevalence": competence_interval,
@@ -464,14 +466,13 @@ def finalize(
             "input_psnr": aggregate(group["input_psnr"] for group in groups),
             "output_psnr": aggregate(group["output_psnr"] for group in groups),
             "output_ssim": aggregate(group["output_ssim"] for group in groups),
-            "low_error_relative_correction": aggregate(group["low_correction"] for group in groups),
-            "high_error_relative_correction": aggregate(group["high_correction"] for group in groups),
-            "true_correction_imbalance": aggregate(group["true_imbalance"] for group in groups),
-            "rotated_control_imbalance": aggregate(group["control_imbalance"] for group in groups),
-            "alignment_separation": aggregate(group["alignment_separation"] for group in groups),
-            "low_error_region_harm_prevalence": harm_interval,
-            "low_error_excess_harm": aggregate(group["low_excess_harm"] for group in groups),
-            "high_error_residual_ratio": aggregate(group["high_residual_ratio"] for group in groups),
+            "high_demand_alpha_mean": aggregate(group["high_alpha_mean"] for group in groups),
+            "high_demand_alpha_median": aggregate(group["high_alpha_median"] for group in groups),
+            "low_demand_alpha_median": aggregate(group["low_alpha_median"] for group in groups),
+            "high_demand_material_overshoot_fraction": aggregate(group["high_material_overshoot_fraction"] for group in groups),
+            "low_demand_material_overshoot_fraction": aggregate(group["low_material_overshoot_fraction"] for group in groups),
+            "high_demand_projected_overshoot_mean": aggregate(group["high_projected_overshoot_mean"] for group in groups),
+            "high_demand_projected_overshoot_max": aggregate(group["high_projected_overshoot_max"] for group in groups),
         },
         "failure_count": len(failures),
         "failures": failures[:20],
@@ -483,28 +484,28 @@ def finalize(
         },
         "limitations": [
             "This is development-screening diagnosis for one fixed official OTS ConvIR-B instance and cannot be reused as unseen confirmation evidence.",
-            "Paired input error is model-output-independent but is not a pure haze-density or restoration-demand label.",
-            "The rotated control reduces a simple spatial-content explanation but does not establish a causal mechanism.",
+            "Paired input error is model-output-independent but is not a pure haze-density or perceptual restoration-demand label.",
+            "Signed RGB projection operationalizes crossing beyond GT but does not by itself prove perceptual over-dehazing.",
             "Clear-source overlap with OTS training is not excluded, so the result cannot establish unseen-source generalization.",
             "No module, training, Haze4K outcome, NH-HAZE, confirmation, canary or locked-test evidence was used.",
         ],
-        "marker": "SOTS_OTS_LOCAL_ERROR_MEASUREMENT_V1_COMPLETE",
+        "marker": "SOTS_OTS_SIGNED_OVERSHOOT_V1_COMPLETE",
     }
-    atomic_json(output_file(context, "local_error_summary.json"), summary)
+    atomic_json(output_file(context, "signed_overshoot_summary.json"), summary)
 
     fields = [
-        "stratum", "source_groups", "nested_variants", "mismatch_count",
-        "mismatch_rate", "global_competence_count", "global_competence_rate",
-        "low_region_harm_count", "low_region_harm_rate", "true_imbalance_mean",
-        "true_imbalance_median", "control_imbalance_median",
-        "alignment_separation_median", "input_psnr_median", "output_psnr_median",
+        "stratum", "source_groups", "nested_variants", "overshoot_group_count",
+        "overshoot_group_rate", "global_competence_count", "global_competence_rate",
+        "high_overshoot_fraction_mean", "high_overshoot_fraction_median",
+        "high_alpha_mean", "high_alpha_median", "low_alpha_median",
+        "high_projected_overshoot_mean", "input_psnr_median", "output_psnr_median",
         "output_ssim_median",
     ]
     rows = [stratum_row("all", groups)]
     for count in sorted({int(group["variant_count"]) for group in groups}):
         subset = [group for group in groups if int(group["variant_count"]) == count]
         rows.append(stratum_row(f"variant_count_{count}", subset))
-    with output_file(context, "local_error_strata.csv").open(
+    with output_file(context, "signed_overshoot_strata.csv").open(
         "w", encoding="utf-8", newline="",
     ) as stream:
         writer = csv.DictWriter(stream, fieldnames=fields)
@@ -512,17 +513,17 @@ def finalize(
         writer.writerows(rows)
 
     write_workload_progress(
-        context, completed_units=completed_units, stage="local_error_finalize",
+        context, completed_units=completed_units, stage="signed_overshoot_finalize",
     )
     return {
         "state": state,
         "decision": decision,
         "authorizes": authorizes,
         "details": {
-            "summary_file": "local_error_summary.json",
+            "summary_file": "signed_overshoot_summary.json",
             "independent_source_groups": len(groups),
             "nested_hazy_variants": len(variants),
-            "mismatch_prevalence": mismatch_interval,
+            "signed_overshoot_prevalence": overshoot_interval,
             "global_competence": competence_interval,
             "gate_reasons": gate_reasons,
             "training_occurred": False,
@@ -535,9 +536,9 @@ def contract(context_path: Path) -> None:
     context = load_context(context_path, "contract")
     prepare_phase_output(context)
     if context.device != "cuda" or any(context.protected_data_permissions.values()):
-        raise RuntimeError("local-error contract requires CUDA and no protected-data permission")
-    if context.assets["sots_outdoor"].contract_access:
-        raise RuntimeError("scientific SOTS data must not be exposed to the contract phase")
+        raise RuntimeError("signed-overshoot contract requires CUDA and no protected-data permission")
+    if "sots_outdoor" in context.assets:
+        raise RuntimeError("scientific SOTS data must be absent from the contract phase")
     torch, model = load_official_model(context)
     height, width = 256, 320
     yy, xx = np.mgrid[0:height, 0:width].astype(np.float32)
@@ -550,8 +551,11 @@ def contract(context_path: Path) -> None:
         torch, model, hazy.astype(np.float32), clear.astype(np.float32), context.device,
     )
     measured = variant_measurement(hazy, clear, prediction, output_ssim)
-    perfect = variant_measurement(hazy, clear, clear, 1.0)
     unchanged = variant_measurement(hazy, clear, hazy, 0.0)
+    exact = variant_measurement(hazy, clear, clear, 1.0)
+    extended = variant_measurement(
+        hazy, clear, hazy + 1.10 * (clear - hazy), 0.0,
+    )
     numeric = [
         float(value) for value in measured.values()
         if isinstance(value, (int, float)) and not isinstance(value, bool)
@@ -561,21 +565,24 @@ def contract(context_path: Path) -> None:
         "official_parameter_count": True,
         "three_scale_finite_forward": bool(np.isfinite(prediction).all()),
         "finalizer_finite": bool(numeric and np.isfinite(numeric).all()),
-        "perfect_output_reference": bool(
-            perfect["output_mse"] == 0.0
-            and perfect["global_improvement"]
-            and perfect["low_correction"] > 0.99
-            and perfect["high_correction"] > 0.99
-            and not perfect["variant_mismatch"]
-        ),
         "unchanged_output_reference": bool(
             abs(float(unchanged["output_mse"]) - float(unchanged["input_mse"])) < 1e-12
-            and abs(float(unchanged["low_correction"])) < 1e-7
-            and abs(float(unchanged["high_correction"])) < 1e-7
+            and abs(float(unchanged["high_alpha_mean"])) < 1e-7
+            and unchanged["high_material_overshoot_fraction"] == 0.0
+        ),
+        "exact_gt_projection_reference": bool(
+            exact["output_mse"] == 0.0
+            and exact["global_improvement"]
+            and abs(float(exact["high_alpha_mean"]) - 1.0) < 1e-6
+            and exact["high_material_overshoot_fraction"] == 0.0
+        ),
+        "ten_percent_extension_reference": bool(
+            abs(float(extended["high_alpha_mean"]) - 1.10) < 1e-5
+            and extended["high_material_overshoot_fraction"] == 1.0
         ),
         "wilson_reference": abs(float(wilson(98, 492)["estimate"]) - (98 / 492)) < 1e-12,
     }
-    atomic_json(output_file(context, "local_error_contract_details.json"), {
+    atomic_json(output_file(context, "signed_overshoot_contract_details.json"), {
         "parameter_count": PARAMETER_COUNT,
         "fixture": {"batch": 1, "channels": 3, "height": height, "width": width},
         "measurement_keys": sorted(measured),
@@ -599,17 +606,17 @@ def run(context_path: Path) -> None:
     context = load_context(context_path, "run")
     prepare_phase_output(context)
     sots = asset_path(context, "sots_outdoor", kind="directory")
-    parent_closeout_path = asset_path(context, "parent_closeout", kind="file")
-    if context.assets["parent_closeout"].sha256 != PARENT_CLOSEOUT_SHA256:
-        raise RuntimeError("parent closeout identity changed")
+    parent_closeout_path = asset_path(context, "prior_local_error_closeout", kind="file")
+    if context.assets["prior_local_error_closeout"].sha256 != PARENT_CLOSEOUT_SHA256:
+        raise RuntimeError("prior local-error closeout identity changed")
     parent = json.loads(parent_closeout_path.read_text(encoding="utf-8"))
     parent_identity = (
-        parent.get("state") == "COMPLETED_GATE_PASS"
-        and parent.get("decision") == "SOTS_OTS_ASSET_AUDIT_PASS"
-        and parent.get("authorizes") == "SOTS_OTS_LOCAL_ERROR_MEASUREMENT_CONTRACT"
-        and parent.get("details", {}).get("checkpoint_sha256") == CHECKPOINT_SHA256
-        and parent.get("details", {}).get("dataset_sha256") == DATASET_SHA256
-        and parent.get("details", {}).get("source_groups") == EXPECTED_GROUPS
+        parent.get("state") == "COMPLETED_GATE_FAIL"
+        and parent.get("decision") == "SOTS_LOCAL_GT_ERROR_MISMATCH_FAIL"
+        and parent.get("authorizes") == "NONE"
+        and parent.get("details", {}).get("independent_source_groups") == EXPECTED_GROUPS
+        and parent.get("details", {}).get("nested_hazy_variants") == EXPECTED_HAZY
+        and parent.get("details", {}).get("training_occurred") is False
     )
 
     gt_dir = sots / "gt"

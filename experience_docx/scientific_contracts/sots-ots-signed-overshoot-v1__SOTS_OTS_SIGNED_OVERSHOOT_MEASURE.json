@@ -1,16 +1,18 @@
 {
-  "competing_explanation": "Paired input-to-GT error can include scene texture, color, compression or alignment effects and is not a pure haze-density label. Relative correction also shares its denominator with region selection. The within-image rotated control and global-competence prerequisite reduce, but do not eliminate, these explanations. Passing would establish only a descriptive SOTS-domain behavior of this fixed model, not a causal haze mechanism or proof that a new module will help.",
+  "competing_explanation": "Projection beyond paired GT along the input-to-GT vector operationalizes directional overshoot but does not prove perceptual over-dehazing: RGB GT may contain alignment, color or compression differences, clipping can hide larger excursions, and SOTS clear-source overlap with OTS training is not excluded. Passing would establish a descriptive paired-GT overshoot pattern for this fixed model, not a causal haze mechanism or automatic need for a new module.",
   "controls": [
     "strict identity-bound official OTS checkpoint and official production graph",
     "full-image input-to-output MSE improvement as a global-competence prerequisite",
-    "paired GT defines tile degradation before and independently of model output",
-    "within-image 180-degree tile-score rotation as a marginal-score-preserving spatial negative control",
+    "paired GT defines both restoration direction and high-demand regions independently of model output",
+    "alpha equals zero for unchanged input, one for exact GT, and 1.10 for a synthetic ten-percent extension beyond GT",
+    "absolute 1/255 projected-overshoot guard excludes numerically trivial crossings",
     "all hazy variants nested and averaged within the original clear-source group"
   ],
   "disabled_actions": [
     "training, fine-tuning, module insertion, loss selection, threshold tuning or candidate selection during this route",
-    "using model output to define input-error regions or source groups",
-    "treating paired input error as a pure haze-density label or treating spatial association as causal mechanism evidence",
+    "using model output to define high-demand regions or source groups",
+    "interpreting unsigned MSE improvement alone as overshoot",
+    "treating paired RGB projection as a pure perceptual dehazing-strength label or causal mechanism evidence",
     "treating SOTS outcomes as strict unseen-source generalization because clear-source overlap with OTS training is not excluded",
     "relabeling SOTS as confirmation or sealed-final evidence after this development-screening use",
     "Haze4K outcome, NH-HAZE, confirmation, canary or locked-test access",
@@ -20,8 +22,8 @@
     {
       "decision_role": "inconclusive_only",
       "direction": "equal",
-      "estimand": "parent authorization, checkpoint, model sources, complete SOTS pairing and aggregate dataset identity match",
-      "id": "parent_and_asset_identity",
+      "estimand": "checkpoint, model sources, prior completed local-error closeout, complete SOTS pairing and aggregate dataset identity match",
+      "id": "asset_and_prior_identity",
       "threshold": 1.0,
       "type": "integrity"
     },
@@ -44,8 +46,8 @@
     {
       "decision_role": "decisive",
       "direction": "min",
-      "estimand": "Wilson interval for paired-GT local mismatch prevalence with the rotated-control margin embedded in every group indicator",
-      "id": "material_local_mismatch_prevalence",
+      "estimand": "Wilson interval for source-group high-demand signed-overshoot prevalence",
+      "id": "material_high_demand_overshoot_prevalence",
       "threshold": 0.2,
       "type": "materiality"
     }
@@ -56,20 +58,21 @@
       "SOTS-Outdoor aggregate dataset SHA-256 is ac6921cc9a2afd32c9976465fd9a50555dce2f217f8f4ddb0614c907f681e5b2",
       "all 492 GT images and all 500 paired hazy images are used at original resolution with no scientific-data resizing",
       "official Dehazing.OTS build_net('base') is strictly loaded from checkpoint state_dict['model']; input is reflect-padded to a multiple of 32 and model(input)[2] is cropped and clipped to [0,1]",
-      "pixel input and output errors are mean RGB squared errors against paired clear GT",
-      "local rankings use non-overlapping 32 by 32 error tiles after reflection padding only the error maps to a multiple of 32",
-      "true low and high regions are the exact bottom and top 20 percent of tile input error with stable row-major tie breaking",
-      "regional relative correction is (mean input error minus mean output error) divided by mean input error plus 1e-8",
-      "the negative control rotates the tile input-error score field 180 degrees before forming regions while leaving input and output errors spatially fixed",
-      "a source group is a mismatch when its variant-mean true low-minus-high correction is at least 0.10 and its variant-mean true-minus-control imbalance is at least 0.05",
+      "non-overlapping 32 by 32 tiles are formed after reflect-padding all image arrays only to a multiple of 32",
+      "high-demand tiles are the exact top 20 percent of tile mean RGB input-to-GT squared error with stable row-major tie breaking",
+      "for each tile, signed projection coefficient alpha is dot(prediction-input, GT-input) divided by squared norm(GT-input) plus 1e-8",
+      "signed projected overshoot magnitude is max(alpha minus 1, zero) times the RMS norm of GT-input in the tile",
+      "a tile is materially overshot only when alpha is at least 1.05 and projected overshoot magnitude is at least 1/255",
+      "a hazy variant is high-demand overshot when at least 20 percent of its high-demand tiles are materially overshot",
+      "a source group is high-demand overshot when the arithmetic mean high-demand overshot-tile fraction across its variants is at least 20 percent",
       "multiple hazy variants are averaged within their clear-source group before the group indicator; variants, tiles and pixels are never independent samples",
       "missing or failed source groups remain visible and prevent a definitive PASS or FAIL"
     ],
     "matched_budget": "all 500 hazy variants nested within exactly 492 clear-source groups; one fixed official checkpoint; zero training or model selection",
-    "primary_variable": "official_ots_convir_b_relative_error_correction_by_paired_gt_input_error_tile",
-    "reference": "paired hazy input versus clear GT, with true input-error regions compared against the same tile-error field rotated 180 degrees within image"
+    "primary_variable": "official_ots_convir_b_signed_projection_beyond_paired_gt_in_high_input_error_tiles",
+    "reference": "paired hazy input to clear GT direction, with high-demand tiles defined before inference from the top 20 percent of paired input MSE"
   },
-  "operation_id": "SOTS_OTS_LOCAL_ERROR_MEASURE",
+  "operation_id": "SOTS_OTS_SIGNED_OVERSHOOT_MEASURE",
   "population": {
     "allow_canary": false,
     "allow_confirmation": false,
@@ -81,27 +84,27 @@
   "primary_estimand": {
     "aggregation": "source-group binary indicator with two-sided Wilson 95 percent interval",
     "direction": "higher",
-    "id": "paired_gt_local_mismatch_prevalence",
-    "metric": "proportion of 492 independent clear-source groups meeting both frozen correction-imbalance and rotated-control-separation margins",
+    "id": "high_demand_signed_overshoot_group_prevalence",
+    "metric": "proportion of 492 independent clear-source groups whose variant-mean materially overshot fraction among high-demand tiles is at least 0.20",
     "unit": "sots_outdoor_clear_source_group"
   },
-  "question": "Across the 492 independent SOTS-Outdoor clear-source groups, does the fixed official OTS ConvIR-B baseline show a material paired-GT local restoration mismatch in which high-input-error regions receive weaker relative correction than low-input-error regions, beyond a within-image rotated spatial control?",
-  "route_id": "sots-ots-local-error-measurement-v1",
+  "question": "Across 492 independent SOTS-Outdoor clear-source groups, does the fixed official OTS ConvIR-B baseline show materially prevalent signed overshoot beyond paired GT in the highest-demand 20 percent of input-error tiles?",
+  "route_id": "sots-ots-signed-overshoot-v1",
   "schema_version": 1,
   "terminal_mapping": {
     "fail": {
       "authorizes": "NONE",
-      "decision": "SOTS_LOCAL_GT_ERROR_MISMATCH_FAIL",
+      "decision": "SOTS_HIGH_DEMAND_SIGNED_OVERSHOOT_FAIL",
       "state": "COMPLETED_GATE_FAIL"
     },
     "inconclusive": {
-      "authorizes": "SOTS_LOCAL_ERROR_MEASUREMENT_SUPPLEMENT_ONLY",
-      "decision": "SOTS_LOCAL_GT_ERROR_MISMATCH_INCONCLUSIVE",
+      "authorizes": "SOTS_SIGNED_OVERSHOOT_SUPPLEMENT_ONLY",
+      "decision": "SOTS_HIGH_DEMAND_SIGNED_OVERSHOOT_INCONCLUSIVE",
       "state": "COMPLETED_INCONCLUSIVE"
     },
     "pass": {
-      "authorizes": "SOTS_LOCAL_ERROR_MECHANISM_DESIGN_REVIEW",
-      "decision": "SOTS_LOCAL_GT_ERROR_MISMATCH_PASS",
+      "authorizes": "HIGH_DEMAND_OVERSHOOT_MECHANISM_REVIEW",
+      "decision": "SOTS_HIGH_DEMAND_SIGNED_OVERSHOOT_PASS",
       "state": "COMPLETED_GATE_PASS"
     }
   },

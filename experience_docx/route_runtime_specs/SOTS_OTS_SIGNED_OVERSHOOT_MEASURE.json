@@ -1,0 +1,42 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/sots-ots-signed-overshoot-v1__SOTS_OTS_SIGNED_OVERSHOOT_MEASURE.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/sots-ots-signed-overshoot-v1__SOTS_OTS_SIGNED_OVERSHOOT_MEASURE.json",
+    "max_seconds": 300,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/measure_sots_ots_signed_overshoot.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "sots_ots_signed_overshoot_v1_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/signed_overshoot_summary.json"
+    },
+    {
+      "destination_filename": "sots_ots_signed_overshoot_v1_strata.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/signed_overshoot_strata.csv"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 1800,
+  "operation_id": "SOTS_OTS_SIGNED_OVERSHOOT_MEASURE",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/sots-ots-signed-overshoot-v1__SOTS_OTS_SIGNED_OVERSHOOT_MEASURE.json",
+    "mode": "formal_precision",
+    "rationale": "All 492 source groups exceed the 475 groups required for a worst-case two-sided 95 percent binomial-proportion half-width of 0.045."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "sots-ots-signed-overshoot-v1",
+  "schema_version": 2,
+  "timeout_seconds": 5400,
+  "total_units": 1492
+}
