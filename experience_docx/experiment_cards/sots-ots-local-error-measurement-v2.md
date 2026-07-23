@@ -2,10 +2,10 @@
 
 Status: PLANNED
 
-- Route id: sots-ots-local-error-measurement-v1
+- Route id: sots-ots-local-error-measurement-v2
 - First operation: SOTS_OTS_LOCAL_ERROR_MEASURE
 - Program contract: experience_docx/research_programs/sots_ots_local_error.json
-- Experiment spec: experience_docx/experiment_specs/sots-ots-local-error-measurement-v1.json
+- Experiment spec: experience_docx/experiment_specs/sots-ots-local-error-measurement-v2.json
 - Scientific contracts: experience_docx/scientific_contracts/
 
 ## Scientific rationale

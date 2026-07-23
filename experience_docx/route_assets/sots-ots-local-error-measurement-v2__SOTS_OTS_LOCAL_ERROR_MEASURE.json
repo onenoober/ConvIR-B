@@ -41,6 +41,6 @@
     }
   ],
   "operation_id": "SOTS_OTS_LOCAL_ERROR_MEASURE",
-  "route_id": "sots-ots-local-error-measurement-v1",
+  "route_id": "sots-ots-local-error-measurement-v2",
   "schema_version": 1
 }

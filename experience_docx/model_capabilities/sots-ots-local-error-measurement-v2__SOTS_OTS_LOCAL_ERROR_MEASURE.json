@@ -28,7 +28,7 @@
     "width": 320
   },
   "production_path_statement": "The exact official Dehazing.OTS build_net('base') graph strictly loads the official OTS checkpoint and executes the production reflect-pad-to-32, model(input)[2], crop, clip, paired-GT tile metric and result-finalizer path on one synthetic CUDA tensor without scientific data.",
-  "profile_id": "official_ots_convir_b_sots_inference_gpu_v1",
+  "profile_id": "official_ots_convir_b_sots_inference_gpu_v2",
   "protected_data_prohibited": true,
   "schema_version": 1,
   "scientific_output_prohibited": true,

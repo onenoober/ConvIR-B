@@ -488,7 +488,7 @@ def finalize(
             "Clear-source overlap with OTS training is not excluded, so the result cannot establish unseen-source generalization.",
             "No module, training, Haze4K outcome, NH-HAZE, confirmation, canary or locked-test evidence was used.",
         ],
-        "marker": "SOTS_OTS_LOCAL_ERROR_MEASUREMENT_V1_COMPLETE",
+        "marker": "SOTS_OTS_LOCAL_ERROR_MEASUREMENT_V2_COMPLETE",
     }
     atomic_json(output_file(context, "local_error_summary.json"), summary)
 
@@ -536,8 +536,8 @@ def contract(context_path: Path) -> None:
     prepare_phase_output(context)
     if context.device != "cuda" or any(context.protected_data_permissions.values()):
         raise RuntimeError("local-error contract requires CUDA and no protected-data permission")
-    if context.assets["sots_outdoor"].contract_access:
-        raise RuntimeError("scientific SOTS data must not be exposed to the contract phase")
+    if "sots_outdoor" in context.assets:
+        raise RuntimeError("scientific SOTS data must be absent from the contract phase")
     torch, model = load_official_model(context)
     height, width = 256, 320
     yy, xx = np.mgrid[0:height, 0:width].astype(np.float32)

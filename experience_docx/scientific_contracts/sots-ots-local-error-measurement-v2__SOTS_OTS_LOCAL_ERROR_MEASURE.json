@@ -86,7 +86,7 @@
     "unit": "sots_outdoor_clear_source_group"
   },
   "question": "Across the 492 independent SOTS-Outdoor clear-source groups, does the fixed official OTS ConvIR-B baseline show a material paired-GT local restoration mismatch in which high-input-error regions receive weaker relative correction than low-input-error regions, beyond a within-image rotated spatial control?",
-  "route_id": "sots-ots-local-error-measurement-v1",
+  "route_id": "sots-ots-local-error-measurement-v2",
   "schema_version": 1,
   "terminal_mapping": {
     "fail": {

@@ -1,5 +1,5 @@
 {
-  "certificate_id": "sots_ots_local_error_v1_group_prevalence",
+  "certificate_id": "sots_ots_local_error_v2_group_prevalence",
   "confidence_level": 0.95,
   "estimand": "paired-GT local mismatch prevalence",
   "feasible": true,
