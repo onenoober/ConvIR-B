@@ -240,10 +240,10 @@ def load_official_model(context):
         if context.assets[asset_id].sha256 != expected:
             raise RuntimeError(f"verified identity changed for {asset_id}")
 
-    repo_root = model_source.parents[3]
-    if str(repo_root) not in sys.path:
-        sys.path.insert(0, str(repo_root))
-    from Dehazing.OTS.models.ConvIR import build_net
+    ots_root = context.remote_repo / "Dehazing" / "OTS"
+    if str(ots_root) not in sys.path:
+        sys.path.insert(0, str(ots_root))
+    from models.ConvIR import build_net
 
     module = sys.modules[build_net.__module__]
     if Path(module.__file__).resolve() != model_source.resolve():
