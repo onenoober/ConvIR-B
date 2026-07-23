@@ -1,0 +1,20 @@
+{
+  "route_id": "sots-ots-demand-specific-overshoot-v1",
+  "operation_id": "SOTS_OTS_DEMAND_SPECIFIC_OVERSHOOT_MEASURE",
+  "run_id": "sots-ots-demand-specific-overshoot-v1-r2",
+  "decision": "SOTS_HIGH_DEMAND_OVERSHOOT_SPECIFICITY_INCONCLUSIVE",
+  "authorizes": "SOTS_DEMAND_SPECIFICITY_SUPPLEMENT_ONLY",
+  "primary_result": "All 492 clear-source groups and 500 nested hazy variants were paired and finite. The equal-weight source-group mean high-demand minus low-demand materially overshot-tile fraction was -0.0238409 (approximately -2.384 percentage points), with a fixed-seed 10000-resample paired bootstrap 95 percent interval of [-0.0514760, 0.0034120]. The result does not support a material high-demand-specific excess of at least 5 percentage points, but the predeclared strict nonpositive-sign FAIL bound was not met because the interval upper bound remained slightly above zero.",
+  "gate_reasons": [
+    "parent signed-overshoot identity, complete SOTS pairing, aggregate dataset digest, and finite coverage all passed",
+    "global competence passed: 492 of 492 source groups improved full-image MSE, Wilson lower 95 percent bound 0.99225",
+    "paired-bootstrap interval supported neither the frozen material positive difference threshold of +0.05 nor the stricter nonpositive-sign FAIL rule"
+  ],
+  "competing_explanation": "The paired contrast is a descriptive comparison of signed RGB projection crossings ranked by input-to-GT error; it is not a causal haze-demand effect or a pure perceptual over-dehazing label. GT alignment, color and compression differences, clipping, and possible clear-source overlap with OTS training remain alternative explanations.",
+  "limitations": [
+    "This is development-screening evidence that reuses the same SOTS population and fixed official OTS checkpoint as the parent measurement, not independent confirmation or sealed-final evidence.",
+    "High-demand overshoot was not greater on average: the descriptive high and low means were 0.1786753 and 0.2025161, respectively; 227 groups had negative differences, 191 positive, and 74 ties.",
+    "The frozen decision is inconclusive about any strictly positive high-demand specificity even though a practically material +5 percentage-point excess is excluded by the bootstrap upper bound.",
+    "No module, training, Haze4K outcome, NH-HAZE, confirmation, canary or locked-test evidence was used."
+  ]
+}

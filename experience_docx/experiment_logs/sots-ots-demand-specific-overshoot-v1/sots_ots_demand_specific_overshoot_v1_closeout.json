@@ -1,0 +1,82 @@
+{
+  "authorizes": "SOTS_DEMAND_SPECIFICITY_SUPPLEMENT_ONLY",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "SOTS_HIGH_DEMAND_OVERSHOOT_SPECIFICITY_INCONCLUSIVE",
+  "details": {
+    "gate_reasons": [
+      "paired-bootstrap interval supported neither a material positive difference nor a nonpositive difference"
+    ],
+    "global_competence": {
+      "estimate": 1.0,
+      "lower": 0.9922523644647806,
+      "successes": 492,
+      "total": 492,
+      "upper": 0.9999999999999999
+    },
+    "independent_source_groups": 492,
+    "nested_hazy_variants": 500,
+    "paired_high_minus_low": {
+      "estimate": -0.023840873503012807,
+      "lower": -0.051475967467477464,
+      "resamples": 10000,
+      "seed": 3407,
+      "source_groups": 492,
+      "upper": 0.0034120299393141803
+    },
+    "sots_development_screening_only": true,
+    "summary_file": "demand_specific_overshoot_summary.json",
+    "training_occurred": false
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "sots_ots_demand_specific_overshoot_v1_strata.csv": "45fc3ae439db25014033f6772825091a14706ad8e7ad0239737aca5853f1266c",
+    "sots_ots_demand_specific_overshoot_v1_summary.json": "8dd82d42a6dfd48a0ef4b4727c3300d529171bdf836acf082ba77f7b8bceafe1"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "SOTS_OTS_DEMAND_SPECIFIC_OVERSHOOT_MEASURE",
+  "returncode": 0,
+  "route_commit": "791d327c908d1b61281cb8938336b9014032b521",
+  "route_id": "sots-ots-demand-specific-overshoot-v1",
+  "run_id": "sots-ots-demand-specific-overshoot-v1-r2",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_INCONCLUSIVE",
+  "verified_assets": [
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "sha256": "023e27cb28b9ba13663dda0cd7da181e2f28f60a67c833bc1933e6d5b1ebd580"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "sha256": "140cec905c64f429359d675fff46d9ae77465d7dc972879c458095beb0d63a6d"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "dc28713ad92af0a2594b1964451602614e1b24a1e898647a6cf41c94e9e533e6"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_signed_overshoot_closeout",
+      "kind": "file",
+      "sha256": "84751b04ea08c375a831649698a190064b8636828673ad9b4c1c4dff93b58bc8"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "sots_outdoor",
+      "kind": "directory"
+    }
+  ]
+}

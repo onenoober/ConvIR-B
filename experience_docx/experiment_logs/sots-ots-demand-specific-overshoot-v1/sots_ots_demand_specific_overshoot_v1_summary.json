@@ -1,0 +1,124 @@
+{
+  "dataset_identity": {
+    "aggregate_digest_match": true,
+    "completed_nested_variants": 500,
+    "completed_source_groups": 492,
+    "expected_nested_variants": 500,
+    "expected_source_groups": 492,
+    "observed_aggregate_sha256": "ac6921cc9a2afd32c9976465fd9a50555dce2f217f8f4ddb0614c907f681e5b2",
+    "pairing_and_count_match": true,
+    "parent_signed_overshoot_identity_match": true,
+    "variant_count_histogram": {
+      "1": 484,
+      "2": 8
+    }
+  },
+  "failure_count": 0,
+  "failures": [],
+  "global_competence": {
+    "passed": true,
+    "required_lower_95": 0.8,
+    "source_group_prevalence": {
+      "estimate": 1.0,
+      "lower": 0.9922523644647806,
+      "successes": 492,
+      "total": 492,
+      "upper": 0.9999999999999999
+    }
+  },
+  "limitations": [
+    "This reuses SOTS development-screening evidence and is not independent confirmation or sealed-final evidence.",
+    "Paired input error ranks restoration demand operationally but is not a pure haze-density or perceptual-demand label.",
+    "Signed RGB projection operationalizes crossing beyond GT but does not by itself prove perceptual over-dehazing.",
+    "Clear-source overlap with OTS training is not excluded, so the result cannot establish unseen-source generalization.",
+    "No module, training, Haze4K outcome, NH-HAZE, confirmation, canary or locked-test evidence was used."
+  ],
+  "marker": "SOTS_OTS_DEMAND_SPECIFIC_OVERSHOOT_V1_COMPLETE",
+  "measurement": {
+    "absolute_projected_overshoot_margin": 0.00392156862745098,
+    "alpha_margin": 1.05,
+    "contrast": "source-group mean high-demand material-overshoot fraction minus low-demand material-overshoot fraction",
+    "projection_coefficient": "dot(prediction-input, GT-input)/(squared_norm(GT-input)+1e-8)",
+    "region_fraction": 0.2,
+    "tile_size_pixels": 32,
+    "variant_aggregation": "arithmetic mean within clear-source group before equal-weight source-group inference"
+  },
+  "operation_id": "SOTS_OTS_DEMAND_SPECIFIC_OVERSHOOT_MEASURE",
+  "paired_direction": {
+    "negative": {
+      "estimate": 0.4613821138211382,
+      "lower": 0.41780142923159475,
+      "successes": 227,
+      "total": 492,
+      "upper": 0.5055611930251903
+    },
+    "positive": {
+      "estimate": 0.3882113821138211,
+      "lower": 0.34617247789606903,
+      "successes": 191,
+      "total": 492,
+      "upper": 0.4319824812683091
+    },
+    "tie": {
+      "estimate": 0.15040650406504066,
+      "lower": 0.1215339732586836,
+      "successes": 74,
+      "total": 492,
+      "upper": 0.1846960808553722
+    },
+    "zero_tolerance": 1e-12
+  },
+  "primary_estimand": {
+    "material_specificity_margin": 0.05,
+    "nonpositive_fail_margin": 0.0,
+    "paired_mean_high_minus_low_material_overshoot_fraction": {
+      "estimate": -0.023840873503012807,
+      "lower": -0.051475967467477464,
+      "resamples": 10000,
+      "seed": 3407,
+      "source_groups": 492,
+      "upper": 0.0034120299393141803
+    }
+  },
+  "route_id": "sots-ots-demand-specific-overshoot-v1",
+  "run_id": "sots-ots-demand-specific-overshoot-v1-r2",
+  "schema_version": 1,
+  "scope": "fixed official OTS ConvIR-B on development-screening SOTS-Outdoor paired images",
+  "secondary_group_aggregates": {
+    "high_demand_material_overshoot_fraction": {
+      "count": 492,
+      "max": 1.0,
+      "mean": 0.17867526097423644,
+      "median": 0.06521739130434782,
+      "min": 0.0,
+      "q25": 0.0,
+      "q75": 0.2391304347826087
+    },
+    "low_demand_material_overshoot_fraction": {
+      "count": 492,
+      "max": 1.0,
+      "mean": 0.20251613447724925,
+      "median": 0.07728304027226318,
+      "min": 0.0,
+      "q25": 0.0,
+      "q75": 0.30434782608695654
+    },
+    "paired_high_minus_low_difference": {
+      "count": 492,
+      "max": 1.0,
+      "mean": -0.023840873503012807,
+      "median": 0.0,
+      "min": -0.9024390243902439,
+      "q25": -0.15217391304347827,
+      "q75": 0.10869565217391303
+    }
+  },
+  "terminal": {
+    "authorizes": "SOTS_DEMAND_SPECIFICITY_SUPPLEMENT_ONLY",
+    "decision": "SOTS_HIGH_DEMAND_OVERSHOOT_SPECIFICITY_INCONCLUSIVE",
+    "gate_reasons": [
+      "paired-bootstrap interval supported neither a material positive difference nor a nonpositive difference"
+    ],
+    "state": "COMPLETED_INCONCLUSIVE"
+  }
+}
