@@ -1,0 +1,161 @@
+{
+  "dataset_identity": {
+    "aggregate_digest_match": true,
+    "completed_nested_variants": 500,
+    "completed_source_groups": 492,
+    "expected_nested_variants": 500,
+    "expected_source_groups": 492,
+    "observed_aggregate_sha256": "ac6921cc9a2afd32c9976465fd9a50555dce2f217f8f4ddb0614c907f681e5b2",
+    "pairing_and_count_match": true,
+    "prior_diagnostic_identity_match": true,
+    "variant_count_histogram": {
+      "1": 484,
+      "2": 8
+    }
+  },
+  "failure_count": 0,
+  "failures": [],
+  "global_competence": {
+    "passed": true,
+    "required_lower_95": 0.8,
+    "source_group_prevalence": {
+      "estimate": 1.0,
+      "lower": 0.9922523644647806,
+      "successes": 492,
+      "total": 492,
+      "upper": 0.9999999999999999
+    }
+  },
+  "limitations": [
+    "This is development-screening diagnosis for one fixed official OTS ConvIR-B instance and cannot be reused as unseen confirmation evidence.",
+    "Paired input error is model-output-independent but is not a pure haze-density or perceptual restoration-demand label.",
+    "Signed RGB projection operationalizes crossing beyond GT but does not by itself prove perceptual over-dehazing.",
+    "Clear-source overlap with OTS training is not excluded, so the result cannot establish unseen-source generalization.",
+    "No module, training, Haze4K outcome, NH-HAZE, confirmation, canary or locked-test evidence was used."
+  ],
+  "marker": "SOTS_OTS_SIGNED_OVERSHOOT_V1_COMPLETE",
+  "measurement": {
+    "absolute_projected_overshoot_margin": 0.00392156862745098,
+    "alpha_margin": 1.05,
+    "high_tile_fraction_margin": 0.2,
+    "projection_coefficient": "dot(prediction-input, GT-input)/(squared_norm(GT-input)+1e-8)",
+    "region_fraction": 0.2,
+    "tile_size_pixels": 32,
+    "variant_aggregation": "arithmetic mean within clear-source group before group classification"
+  },
+  "operation_id": "SOTS_OTS_SIGNED_OVERSHOOT_MEASURE",
+  "primary_estimand": {
+    "high_demand_signed_overshoot_prevalence": {
+      "estimate": 0.28252032520325204,
+      "lower": 0.24454037123727074,
+      "successes": 139,
+      "total": 492,
+      "upper": 0.32387018568251974
+    },
+    "material_margin": 0.2
+  },
+  "route_id": "sots-ots-signed-overshoot-v1",
+  "run_id": "sots-ots-signed-overshoot-v1-r1",
+  "schema_version": 1,
+  "scope": "fixed official OTS ConvIR-B on development-screening SOTS-Outdoor paired images",
+  "secondary_group_aggregates": {
+    "high_demand_alpha_mean": {
+      "count": 492,
+      "max": 1.526311778480853,
+      "mean": 1.0073599843740835,
+      "median": 0.996960787107299,
+      "min": 0.7896194161434673,
+      "q25": 0.9810940662544295,
+      "q75": 1.0212951595132167
+    },
+    "high_demand_alpha_median": {
+      "count": 492,
+      "max": 1.5481867205193445,
+      "mean": 1.0064019846643864,
+      "median": 0.9961719021696214,
+      "min": 0.8001839904712107,
+      "q25": 0.9797382218888697,
+      "q75": 1.0175708743748253
+    },
+    "high_demand_material_overshoot_fraction": {
+      "count": 492,
+      "max": 1.0,
+      "mean": 0.17867526097423644,
+      "median": 0.06521739130434782,
+      "min": 0.0,
+      "q25": 0.0,
+      "q75": 0.2391304347826087
+    },
+    "high_demand_projected_overshoot_max": {
+      "count": 492,
+      "max": 0.12442504357971612,
+      "mean": 0.023188174754559112,
+      "median": 0.01845948286061578,
+      "min": 0.0,
+      "q25": 0.00996274172845663,
+      "q75": 0.031102907574261818
+    },
+    "high_demand_projected_overshoot_mean": {
+      "count": 492,
+      "max": 0.06636450308031351,
+      "mean": 0.00619036812279694,
+      "median": 0.002994983175009791,
+      "min": 0.0,
+      "q25": 0.0008971357460846737,
+      "q75": 0.007071871022738835
+    },
+    "input_psnr": {
+      "count": 492,
+      "max": 27.209035749432537,
+      "mean": 15.951967719009444,
+      "median": 15.843169971385649,
+      "min": 8.896187862811503,
+      "q25": 13.658498686118111,
+      "q75": 17.94874766136814
+    },
+    "low_demand_alpha_median": {
+      "count": 492,
+      "max": 2.591776538221705,
+      "mean": 0.9349332808238872,
+      "median": 0.9743635329017991,
+      "min": -1.5840177973721543,
+      "q25": 0.8811761946030647,
+      "q75": 1.0365710014041085
+    },
+    "low_demand_material_overshoot_fraction": {
+      "count": 492,
+      "max": 1.0,
+      "mean": 0.20251613447724925,
+      "median": 0.07728304027226318,
+      "min": 0.0,
+      "q25": 0.0,
+      "q75": 0.30434782608695654
+    },
+    "output_psnr": {
+      "count": 492,
+      "max": 46.683800759198164,
+      "mean": 37.40346331743802,
+      "median": 37.930221602040106,
+      "min": 22.793745724580063,
+      "q25": 35.385767230818125,
+      "q75": 40.03329998857416
+    },
+    "output_ssim": {
+      "count": 492,
+      "max": 0.9986740946769714,
+      "mean": 0.9938089650699763,
+      "median": 0.9950728118419647,
+      "min": 0.9496878981590271,
+      "q25": 0.9926230758428574,
+      "q75": 0.996456503868103
+    }
+  },
+  "terminal": {
+    "authorizes": "HIGH_DEMAND_OVERSHOOT_MECHANISM_REVIEW",
+    "decision": "SOTS_HIGH_DEMAND_SIGNED_OVERSHOOT_PASS",
+    "gate_reasons": [
+      "high-demand signed-overshoot prevalence lower 95 percent bound met the frozen material margin"
+    ],
+    "state": "COMPLETED_GATE_PASS"
+  }
+}

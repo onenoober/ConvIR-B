@@ -1,0 +1,22 @@
+{
+  "route_id": "sots-ots-signed-overshoot-v1",
+  "operation_id": "SOTS_OTS_SIGNED_OVERSHOOT_MEASURE",
+  "run_id": "sots-ots-signed-overshoot-v1-r1",
+  "decision": "SOTS_HIGH_DEMAND_SIGNED_OVERSHOOT_PASS",
+  "authorizes": "HIGH_DEMAND_OVERSHOOT_MECHANISM_REVIEW",
+  "primary_result": "A total of 139 of 492 independent SOTS-Outdoor clear-source groups met the frozen high-demand signed-overshoot definition. The prevalence estimate was 0.28252032520325204 with a two-sided Wilson 95 percent interval of [0.24454037123727074, 0.32387018568251974], whose lower bound exceeds the preregistered 0.20 materiality margin. The global-competence prerequisite passed in 492 of 492 groups with a Wilson lower bound of 0.9922523644647806.",
+  "gate_reasons": [
+    "All 492 clear-source groups and all 500 nested hazy variants completed with exact dataset, checkpoint, model-source and prior-diagnostic identities and no inference failures.",
+    "The official OTS baseline improved full-image MSE in all 492 source groups, so the overshoot result is not attributable to failure of the frozen global-competence prerequisite.",
+    "The Wilson lower 95 percent bound for source-group high-demand signed-overshoot prevalence was 0.24454037123727074, above the frozen 0.20 materiality margin.",
+    "The pass is heterogeneous rather than universal: the median high-demand materially overshot-tile fraction across source groups was 0.06521739130434782, while 139 groups crossed the frozen 0.20 group threshold."
+  ],
+  "competing_explanation": "Signed RGB projection beyond paired GT establishes an operational local crossing but does not prove perceptual over-dehazing or a high-demand-specific mechanism. The mean materially overshot-tile fraction was 0.17867526097423644 in high-demand regions and 0.20251613447724925 in low-demand regions, so the current result is also compatible with a broader local overshoot tendency rather than overshoot caused specifically by high restoration demand. RGB GT may include alignment, color or compression differences, output clipping can conceal larger excursions, and SOTS clear-source overlap with OTS training was not excluded.",
+  "limitations": [
+    "This is development-screening evidence for one fixed official OTS ConvIR-B checkpoint on SOTS-Outdoor and is not unseen confirmation or sealed-final evidence.",
+    "The result supports materially prevalent high-demand local overshoot in a subset of source groups; it does not show that every image or the typical high-demand tile is over-dehazed.",
+    "The source-group median high-demand alpha was approximately 0.9962, close to exact GT, so the PASS is driven by spatially heterogeneous overshot tiles rather than a uniform global extension beyond GT.",
+    "Low-demand material overshoot was not lower than high-demand overshoot in the descriptive aggregate, so high-demand specificity remains unestablished and requires a direct paired contrast before module design.",
+    "No training, module selection, Haze4K outcome, NH-HAZE, confirmation, canary or locked-test evidence was used."
+  ]
+}
