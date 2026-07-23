@@ -1,0 +1,126 @@
+{
+  "competing_explanation": "Even a positive paired difference would remain a descriptive association with input-error rank rather than proof that haze demand causally creates over-dehazing. A nonpositive difference would support a broader local overshoot tendency, but paired RGB GT can still contain alignment, color or compression differences, output clipping can hide excursions, and SOTS clear-source overlap with OTS training is not excluded.",
+  "controls": [
+    "strict identity-bound official OTS checkpoint and official production graph",
+    "full-image input-to-output MSE improvement as a global-competence prerequisite",
+    "paired high and low regions are selected within the same hazy variant from model-output-independent input-to-GT error",
+    "the parent signed-overshoot closeout identity and complete SOTS aggregate identity must match",
+    "a protected-data-free reference case independently checks variant averaging, contrast direction and source-group equal weighting",
+    "all hazy variants remain nested within their original clear-source group"
+  ],
+  "disabled_actions": [
+    "training, fine-tuning, module insertion, loss selection, threshold tuning or candidate selection during this route",
+    "changing the parent tile, region, alpha or absolute materiality definitions after observing the paired result",
+    "treating tiles, pixels or hazy variants as independent samples",
+    "interpreting a positive association as a causal haze mechanism or automatic module requirement",
+    "treating SOTS outcomes as strict unseen-source generalization because clear-source overlap with OTS training is not excluded",
+    "relabeling SOTS as confirmation or sealed-final evidence after this development-screening use",
+    "Haze4K outcome, NH-HAZE, confirmation, canary or locked-test access",
+    "changing image membership, preprocessing, grouping, metrics, margins, bootstrap seed, resample count, controls or terminal rules after outcomes"
+  ],
+  "gates": [
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "checkpoint, model sources, parent signed-overshoot closeout, complete SOTS pairing and aggregate dataset identity match",
+      "id": "asset_and_parent_identity",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "independent source groups with every paired variant and finite inference",
+      "id": "complete_source_coverage",
+      "threshold": 492,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "min",
+      "estimand": "Wilson lower 95 percent bound for source groups whose variant-mean full-image output MSE is below input MSE",
+      "id": "global_sots_competence",
+      "threshold": 0.8,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "paired-bootstrap interval for the source-group mean high-minus-low materially overshot-tile fraction",
+      "id": "material_high_demand_specificity",
+      "threshold": 0.05,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "paired-bootstrap upper 95 percent bound for the same high-minus-low contrast",
+      "id": "absence_of_positive_specificity",
+      "threshold": 0.0,
+      "type": "materiality"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "checkpoint SHA-256 is dc28713ad92af0a2594b1964451602614e1b24a1e898647a6cf41c94e9e533e6",
+      "SOTS-Outdoor aggregate dataset SHA-256 is ac6921cc9a2afd32c9976465fd9a50555dce2f217f8f4ddb0614c907f681e5b2",
+      "all 492 GT images and all 500 paired hazy images are used at original resolution with no scientific-data resizing",
+      "official Dehazing.OTS build_net('base') is strictly loaded from checkpoint state_dict['model']; input is reflect-padded to a multiple of 32 and model(input)[2] is cropped and clipped to [0,1]",
+      "non-overlapping 32 by 32 tiles are formed after reflect-padding image arrays only to a multiple of 32",
+      "high-demand and low-demand tiles are respectively the exact top and bottom 20 percent of tile mean RGB input-to-GT squared error with stable row-major tie breaking",
+      "for each tile, signed projection coefficient alpha is dot(prediction-input, GT-input) divided by squared norm(GT-input) plus 1e-8",
+      "signed projected overshoot magnitude is max(alpha minus 1, zero) times the RMS norm of GT-input in the tile",
+      "a tile is materially overshot only when alpha is at least 1.05 and projected overshoot magnitude is at least 1/255",
+      "for each hazy variant the contrast is high-demand materially overshot-tile fraction minus low-demand materially overshot-tile fraction",
+      "multiple hazy variants are averaged within their clear-source group before inference; every clear-source group has equal weight",
+      "the primary estimate is the arithmetic mean of 492 source-group contrasts",
+      "uncertainty is a two-sided percentile bootstrap with seed 3407 and 10000 resamples of the 492 source groups",
+      "direction counts use an absolute zero tolerance of 1e-12 and two-sided Wilson 95 percent intervals",
+      "missing or failed source groups remain visible and prevent a definitive PASS or FAIL"
+    ],
+    "matched_budget": "all 500 hazy variants nested within exactly 492 clear-source groups; one fixed official checkpoint; zero training or model selection",
+    "primary_variable": "within_source_high_minus_low_material_signed_overshoot_fraction",
+    "reference": "lowest-demand 20 percent of paired input-error tiles within the same hazy variant and clear-source group"
+  },
+  "operation_id": "SOTS_OTS_DEMAND_SPECIFIC_OVERSHOOT_MEASURE",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "sots_outdoor_clear_source_group",
+    "independent_group_count": 492
+  },
+  "primary_estimand": {
+    "aggregation": "equal-weight source-group mean with fixed-seed 10000-resample paired percentile bootstrap 95 percent interval",
+    "direction": "higher",
+    "id": "mean_source_group_high_minus_low_material_overshoot_fraction",
+    "metric": "mean within-source-group difference in materially overshot-tile fraction, high-demand minus low-demand",
+    "unit": "sots_outdoor_clear_source_group"
+  },
+  "question": "Across 492 independent SOTS-Outdoor clear-source groups, is the materially overshot-tile fraction at least 5 percentage points higher in the highest-demand 20 percent of tiles than in the lowest-demand 20 percent within the same source groups?",
+  "route_id": "sots-ots-demand-specific-overshoot-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "BROAD_LOCAL_OVERSHOOT_REVIEW",
+      "decision": "SOTS_HIGH_DEMAND_OVERSHOOT_SPECIFICITY_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "SOTS_DEMAND_SPECIFICITY_SUPPLEMENT_ONLY",
+      "decision": "SOTS_HIGH_DEMAND_OVERSHOOT_SPECIFICITY_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "HIGH_DEMAND_SPECIFIC_OVERSHOOT_MODULE_REVIEW",
+      "decision": "SOTS_HIGH_DEMAND_OVERSHOOT_SPECIFICITY_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "sots_outdoor_clear_source_group",
+    "method": "two-sided percentile paired bootstrap over 492 independent clear-source groups with seed 3407 and 10000 resamples; variants, tiles and pixels remain nested"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/sots-ots-demand-specific-overshoot-v1__SOTS_OTS_DEMAND_SPECIFIC_OVERSHOOT_MEASURE.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/sots-ots-demand-specific-overshoot-v1__SOTS_OTS_DEMAND_SPECIFIC_OVERSHOOT_MEASURE.json",
+    "max_seconds": 300,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/measure_sots_ots_demand_specific_overshoot.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "sots_ots_demand_specific_overshoot_v1_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/demand_specific_overshoot_summary.json"
+    },
+    {
+      "destination_filename": "sots_ots_demand_specific_overshoot_v1_strata.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/demand_specific_overshoot_strata.csv"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 1800,
+  "operation_id": "SOTS_OTS_DEMAND_SPECIFIC_OVERSHOOT_MEASURE",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/sots-ots-demand-specific-overshoot-v1__SOTS_OTS_DEMAND_SPECIFIC_OVERSHOOT_MEASURE.json",
+    "mode": "formal_precision",
+    "rationale": "Using the conservative bound SD<=1 for a contrast in [-1,1], 492 groups give a normal-approximation 95 percent half-width no larger than 1.96/sqrt(492)=0.0884, below the frozen 0.09 feasibility target; the full available SOTS population is used."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "sots-ots-demand-specific-overshoot-v1",
+  "schema_version": 2,
+  "timeout_seconds": 5400,
+  "total_units": 1492
+}

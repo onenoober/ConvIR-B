@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "program_id": "sots_ots_demand_specific_overshoot",
+  "objective": "Determine whether paired-GT material overshoot is specifically more frequent in high-restoration-demand than low-restoration-demand regions for the fixed official OTS ConvIR-B baseline on SOTS-Outdoor.",
+  "source_anchors": [
+    {
+      "id": "signed_overshoot_parent_pass",
+      "reference": "experience_docx/experiment_logs/sots-ots-signed-overshoot-v1/sots_ots_signed_overshoot_v1_closeout.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "official_ots_checkpoint",
+      "reference": "dc28713ad92af0a2594b1964451602614e1b24a1e898647a6cf41c94e9e533e6",
+      "allowed_uses": ["baseline"]
+    }
+  ],
+  "dependency_roles": {
+    "prior_signed_measurement": ["diagnostic"],
+    "official_model": ["baseline"]
+  },
+  "stages": {
+    "demand_specificity_measurement": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["paired_high_vs_low_demand_overshoot"]
+    }
+  },
+  "route_families": {
+    "paired_high_vs_low_demand_overshoot": {
+      "core_assumption": "A source-group-paired high-minus-low contrast can distinguish high-demand-specific overshoot from a broader local overshoot tendency.",
+      "adjacent_budget": 0,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the complete preregistered paired SOTS contrast reaches a scientific terminal.",
+      "reopen_evidence_types": ["independent_real_haze_evidence", "independent_region_labels"]
+    }
+  },
+  "orthogonal_dimensions": [
+    "comparison_target",
+    "target_domain",
+    "baseline_identity",
+    "region_definition"
+  ],
+  "amendments": []
+}

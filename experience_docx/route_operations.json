@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/sots-ots-demand-specific-overshoot-v1.json",
+  "experiment_spec_sha256": "84422554fed829e87e1856d4c4c931948422ee8ef1309b5d25d80826613d1e02",
+  "operations": {
+    "SOTS_OTS_DEMAND_SPECIFIC_OVERSHOOT_MEASURE": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "HIGH_DEMAND_SPECIFIC_OVERSHOOT_MODULE_REVIEW",
+          "decision": "SOTS_HIGH_DEMAND_OVERSHOOT_SPECIFICITY_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "BROAD_LOCAL_OVERSHOOT_REVIEW",
+          "decision": "SOTS_HIGH_DEMAND_OVERSHOOT_SPECIFICITY_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "SOTS_DEMAND_SPECIFICITY_SUPPLEMENT_ONLY",
+          "decision": "SOTS_HIGH_DEMAND_OVERSHOOT_SPECIFICITY_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "sots_ots_demand_specific_overshoot_v1_closeout.json",
+      "heartbeat_timeout_seconds": 600,
+      "max_gpu_utilization_pct": 90,
+      "min_free_gpu_mib": 8192,
+      "mode": "paired_gt_demand_specific_overshoot_measurement",
+      "monitor_profile": "standard",
+      "output_id": "sots-ots-demand-specific-overshoot-v1-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/sots_ots_demand_specific_overshoot.json",
+  "program_contract_sha256": "32849c05d839a6b0bde7f8a6416770db4d63304cd4392a50453bac2f53bae243",
+  "route_card_relpath": "experience_docx/experiment_cards/sots-ots-demand-specific-overshoot-v1.md",
+  "route_id": "sots-ots-demand-specific-overshoot-v1",
+  "rules_commit": "b7990fe7213a32cc21ef75a0603b624585ed5044",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "SOTS_OTS_DEMAND_SPECIFIC_OVERSHOOT_MEASURE": "experience_docx/scientific_contracts/sots-ots-demand-specific-overshoot-v1__SOTS_OTS_DEMAND_SPECIFIC_OVERSHOOT_MEASURE.json"
+  }
+}
