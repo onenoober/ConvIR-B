@@ -1,0 +1,245 @@
+{
+  "aggregates": {
+    "definition": {
+      "completed_scene_count": 375,
+      "expected_scene_count": 375,
+      "heterogeneity_pass": {
+        "estimate": 1.0,
+        "lower": 0.9898599830318142,
+        "successes": 375,
+        "total": 375,
+        "upper": 1.0
+      },
+      "joint_qualification": {
+        "estimate": 0.9946666666666667,
+        "lower": 0.980765289438186,
+        "successes": 373,
+        "total": 375,
+        "upper": 0.9985361871079557
+      },
+      "negative_control_improvement": {
+        "max": 0.1120671784301455,
+        "mean": 0.03566728762106295,
+        "median": 0.03280333094160806,
+        "min": -0.00021808702494308801,
+        "q05": 0.015352109067754312,
+        "q95": 0.06303134234719875
+      },
+      "negative_control_pass": {
+        "estimate": 0.9946666666666667,
+        "lower": 0.980765289438186,
+        "successes": 373,
+        "total": 375,
+        "upper": 0.9985361871079557
+      },
+      "permuted_rmse_median": {
+        "max": 0.11405072070550999,
+        "mean": 0.038078203911914146,
+        "median": 0.03530175267229054,
+        "min": 0.0070071019962517685,
+        "q05": 0.01796134803419704,
+        "q95": 0.06573772245352888
+      },
+      "reconstruction_pass": {
+        "estimate": 0.9973333333333333,
+        "lower": 0.9850516171342512,
+        "successes": 374,
+        "total": 375,
+        "upper": 0.9995291126547268
+      },
+      "reversed_rmse_median": {
+        "max": 0.6315713963628411,
+        "mean": 0.4927751993779145,
+        "median": 0.4941285563223467,
+        "min": 0.15036134457648312,
+        "q05": 0.3950321277166057,
+        "q95": 0.5824225831429762
+      },
+      "tau_range_heavy": {
+        "max": 0.8832016825675965,
+        "mean": 0.3923307920614878,
+        "median": 0.37620105743408205,
+        "min": 0.11319867372512818,
+        "q05": 0.18773377776145936,
+        "q95": 0.6562622159719468
+      },
+      "true_rmse_median": {
+        "max": 0.025558736129521566,
+        "mean": 0.0024109162908511994,
+        "median": 0.002275114806002186,
+        "min": 0.0018093555714829297,
+        "q05": 0.001989058917900034,
+        "q95": 0.002990177948755604
+      },
+      "true_rmse_q95": {
+        "max": 0.04279374647016046,
+        "mean": 0.002759319481633719,
+        "median": 0.002491457801421024,
+        "min": 0.0019105034494703206,
+        "q05": 0.00210595126481113,
+        "q95": 0.0038094428113825975
+      }
+    },
+    "validation": {
+      "completed_scene_count": 625,
+      "expected_scene_count": 625,
+      "heterogeneity_pass": {
+        "estimate": 1.0,
+        "lower": 0.9938912125356713,
+        "successes": 625,
+        "total": 625,
+        "upper": 1.0
+      },
+      "joint_qualification": {
+        "estimate": 1.0,
+        "lower": 0.9938912125356713,
+        "successes": 625,
+        "total": 625,
+        "upper": 1.0
+      },
+      "negative_control_improvement": {
+        "max": 0.09976047902220239,
+        "mean": 0.034831885510164674,
+        "median": 0.03244390154869716,
+        "min": 0.00652597177733766,
+        "q05": 0.015275447695702939,
+        "q95": 0.06603599240126569
+      },
+      "negative_control_pass": {
+        "estimate": 1.0,
+        "lower": 0.9938912125356713,
+        "successes": 625,
+        "total": 625,
+        "upper": 1.0
+      },
+      "permuted_rmse_median": {
+        "max": 0.10286889974067666,
+        "mean": 0.03720522848215552,
+        "median": 0.03477841650854436,
+        "min": 0.008635144545215549,
+        "q05": 0.01740133835056629,
+        "q95": 0.0686147421981211
+      },
+      "reconstruction_pass": {
+        "estimate": 1.0,
+        "lower": 0.9938912125356713,
+        "successes": 625,
+        "total": 625,
+        "upper": 1.0
+      },
+      "reversed_rmse_median": {
+        "max": 0.641048528667592,
+        "mean": 0.49482699037585126,
+        "median": 0.4966342981663886,
+        "min": 0.3461942862140996,
+        "q05": 0.41038503780606583,
+        "q95": 0.583492909699995
+      },
+      "tau_range_heavy": {
+        "max": 0.9426527500152588,
+        "mean": 0.38605284367561343,
+        "median": 0.36477944850921634,
+        "min": 0.12357004284858704,
+        "q05": 0.1851314687728882,
+        "q95": 0.6589004158973693
+      },
+      "true_rmse_median": {
+        "max": 0.019535827618817787,
+        "mean": 0.0023733429719908473,
+        "median": 0.002269860707097662,
+        "min": 0.0017471932622591317,
+        "q05": 0.0019755408032232423,
+        "q95": 0.0030064720684326355
+      },
+      "true_rmse_q95": {
+        "max": 0.03179678824093305,
+        "mean": 0.002687347082856538,
+        "median": 0.0024859555434282275,
+        "min": 0.001911031637693258,
+        "q05": 0.0021152634336525336,
+        "q95": 0.003803591425741539
+      }
+    }
+  },
+  "dataset_identity": {
+    "clear_scenes": 8970,
+    "count_and_grid_integrity": true,
+    "depth_files": 8970,
+    "eligible_scenes": 8006,
+    "excluded_scenes": 964,
+    "exclusion_digest": "5ba09f2b49f0d8d1846fb3638e58a93d340de26be977ea84efb5526e14c39ecd",
+    "haze_variants": 313950,
+    "parent_identity_match": true,
+    "root": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE"
+  },
+  "definition_mapping": {
+    "a_first_beta_second_median_rmse": 0.002275114806002186,
+    "completed_scenes": 375,
+    "passed": true,
+    "reversed_mapping_median_rmse": 0.4941285563223467
+  },
+  "failure_count": 0,
+  "failures": [],
+  "gates": {
+    "dataset_identity": true,
+    "definition_token_mapping": true,
+    "joint_scene_qualification": true,
+    "parent_authorization": true,
+    "split_disjointness": true,
+    "validation_scene_count": true
+  },
+  "limitations": [
+    "Passing supports an L1 synthetic-outdoor optical-thickness measurement claim only.",
+    "OTS depth and beta are generation fields, not validated real-haze restoration-demand labels.",
+    "The permuted-depth control tests spatial information beyond global airlight and beta, but it is not causal evidence.",
+    "No model, training, inference, SOTS, Haze4K outcome, NH-HAZE, confirmation, canary, or locked-test data were used."
+  ],
+  "marker": "RESIDE_OTS_OUTDOOR_MEASUREMENT_V1_COMPLETE",
+  "measurement": {
+    "airlight_grid": [
+      0.8,
+      0.85,
+      0.9,
+      0.95,
+      1.0
+    ],
+    "beta_grid": [
+      0.04,
+      0.06,
+      0.08,
+      0.1,
+      0.12,
+      0.16,
+      0.2
+    ],
+    "filename_mapping": "scene_airlight_beta",
+    "negative_control": "validation depth circularly shifted by 313 independent scenes",
+    "reconstruction": "I_hat=J*transmission+A*(1-transmission)",
+    "tau": "beta times official OTS scene depth; synthetic optical thickness only",
+    "transmission": "exp(-beta times depth)"
+  },
+  "measurement_scope": "synthetic outdoor OTS optical thickness only",
+  "operation_id": "OTS_OUTDOOR_CALIBRATE",
+  "route_id": "reside-ots-outdoor-measurement-v1",
+  "run_id": "reside-ots-outdoor-measurement-v1-phase-a",
+  "sampling": {
+    "definition_scene_digest": "49db61c46a3b904b6db2a4cfd92f829e888ca1068c64f0c8256e4d21b553b4c5",
+    "definition_scenes": 375,
+    "effective_independent_unit": "original OTS clear scene",
+    "permutation_shift": 313,
+    "selected_scene_digest": "92f5cd61c6e81c2adc3efed6428e5dc198c4f28f46061fcee5836ac97ce99c94",
+    "selection_salt_sha256": "766d841cbcd8c824bf7c5f13068c4d2124f897b4c28406886ce46a701d753780",
+    "validation_scene_digest": "3a291609dafec8c4fe642f3d6ce1f9042bde7de7ea71feabb91a283a46b93bb1",
+    "validation_scenes": 625,
+    "variants_per_scene": 35
+  },
+  "schema_version": 1,
+  "terminal": {
+    "authorizes": "OTS_BASELINE_BEHAVIOR_MEASUREMENT_DESIGN",
+    "decision": "OTS_OUTDOOR_MEASUREMENT_PASS",
+    "gate_reasons": [
+      "all frozen source-identity, token-mapping, coverage, reconstruction, heterogeneity, negative-control and precision gates passed"
+    ],
+    "state": "COMPLETED_GATE_PASS"
+  }
+}

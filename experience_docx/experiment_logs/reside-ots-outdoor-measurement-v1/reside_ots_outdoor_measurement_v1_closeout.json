@@ -1,0 +1,54 @@
+{
+  "authorizes": "OTS_BASELINE_BEHAVIOR_MEASUREMENT_DESIGN",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "OTS_OUTDOOR_MEASUREMENT_PASS",
+  "details": {
+    "definition_token_mapping_passed": true,
+    "gate_reasons": [
+      "all frozen source-identity, token-mapping, coverage, reconstruction, heterogeneity, negative-control and precision gates passed"
+    ],
+    "joint_qualification_lower_95": 0.9938912125356713,
+    "summary_file": "measurement_summary.json",
+    "synthetic_outdoor_only": true,
+    "validation_scenes": 625
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "reside_ots_outdoor_measurement_v1_scenes.txt": "106d56154311b16af495ae1ccfe5ef960ddbeea2fc534baa7499ce207db566f1",
+    "reside_ots_outdoor_measurement_v1_strata.csv": "f9d8dfc13608a2646420e882711b8d25c572a14643a393f59e3f30972f293231",
+    "reside_ots_outdoor_measurement_v1_summary.json": "a03294b82c9354be304b93d76fa38c95a218b85c8f8de3d41991e538f10c01fc"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "OTS_OUTDOOR_CALIBRATE",
+  "returncode": 0,
+  "route_commit": "50f32375f1e5525ca28446c404c1b074cf6b77ee",
+  "route_id": "reside-ots-outdoor-measurement-v1",
+  "run_id": "reside-ots-outdoor-measurement-v1-phase-a",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "verified_assets": [
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_closeout",
+      "kind": "file",
+      "sha256": "348f255a4a99dca898a7457ccbd5f0b1a50516db6109233b8b431251f9a672f3"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_exclusions",
+      "kind": "file",
+      "sha256": "d7526849879cf8650af545db20a5e4555cb0eb1931973612af98a5897f2e03d2"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory"
+    }
+  ]
+}

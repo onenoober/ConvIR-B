@@ -1,0 +1,24 @@
+{
+  "route_id": "reside-ots-outdoor-measurement-v1",
+  "operation_id": "OTS_OUTDOOR_CALIBRATE",
+  "run_id": "reside-ots-outdoor-measurement-v1-phase-a",
+  "decision": "OTS_OUTDOOR_MEASUREMENT_PASS",
+  "authorizes": "OTS_BASELINE_BEHAVIOR_MEASUREMENT_DESIGN",
+  "primary_result": "All 625 independent validation scenes jointly passed the frozen reconstruction, local optical-thickness heterogeneity, and permuted-depth separation rules, giving a two-sided Wilson 95 percent lower bound of 0.993891, above the preregistered 0.90 gate. The official scene-airlight-beta filename interpretation was independently fixed on 375 definition scenes: its median reconstruction RMSE was 0.002275 versus 0.494129 under the reversed token interpretation.",
+  "gate_reasons": [
+    "The parent OTS source-qualification tuple and exact 964-scene exclusion asset matched, leaving the authorized 8,006-scene disjoint OTS pool.",
+    "The official OTS identities and complete factorial layout matched: 8,970 clear scenes, 8,970 depth fields, 313,950 haze variants, and 35 variants per scene.",
+    "All 1,000 selected clear scenes completed with no exclusions: 375 definition scenes and 625 disjoint validation scenes.",
+    "Every validation scene passed reconstruction; the scene median true-depth RMSE was 0.002270 and the maximum scene median was 0.019536, below the frozen 0.025 rule.",
+    "Every validation scene passed local heterogeneity; the minimum heavy-beta tau q95-q05 range was 0.123570, above the frozen 0.050 rule.",
+    "Every validation scene passed the spatial negative control; the minimum permuted-minus-true median RMSE was 0.006526, above the frozen 0.005 margin.",
+    "The validation joint qualification rate was 625/625 with Wilson 95 percent interval [0.993891, 1.000000]."
+  ],
+  "competing_explanation": "Global airlight and beta tokens alone could have produced low apparent error without useful local depth information. The circularly permuted independent-scene depth control was materially worse on every validation scene, so that explanation does not account for the observed reconstruction under the frozen measurement. This discrimination is synthetic and associational; it is not causal validation of real-haze restoration demand.",
+  "limitations": [
+    "This is L1 development-screening evidence for RESIDE OTS synthetic outdoor optical thickness only.",
+    "OTS depth and beta are official generation fields, not validated labels for real spatially varying scattering or restoration demand.",
+    "The result authorizes only a separately frozen official ConvIR-B outdoor baseline-behavior measurement design; it does not authorize model selection, module design, or training.",
+    "No model, checkpoint, training, inference, SOTS outcome, Haze4K outcome, NH-HAZE, confirmation, canary, or locked-test evidence was accessed."
+  ]
+}
