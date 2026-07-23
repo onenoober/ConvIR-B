@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "route_id": "reside-ots-baseline-behavior-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "title": "Official ConvIR-B OTS synthetic-outdoor baseline behavior measurement",
+  "rationale": "The parent route qualified the official OTS tau=beta*depth field on 625 independent validation scenes and authorized only a separately frozen official-baseline behavior design. This route reuses those exact 625 scene IDs, fixes three official beta severities (0.04, 0.10, 0.20) at airlight 0.90, and runs the immutable official Haze4K ConvIR-B checkpoint once per variant. The model output never defines tau. The primary scene-level mismatch indicator requires materially weaker relative error correction in the true high-tau than low-tau region and separation from a 180-degree spatially rotated tau control in at least two of three severities. Full-image PSNR/SSIM and low-tau excess-error harm are secondary. All inference is development-screening only and cannot establish a causal mechanism or real-haze behavior.",
+  "first_operation": "OTS_BASELINE_BEHAVIOR_MEASURE",
+  "program_contract_relpath": "experience_docx/research_programs/reside_ots_baseline_behavior.json",
+  "operations": {
+    "OTS_BASELINE_BEHAVIOR_MEASURE": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "baseline_behavior_measurement",
+        "require_gpu": true,
+        "output_id": "reside-ots-baseline-behavior-v1-phase-a",
+        "closeout_filename": "reside_ots_baseline_behavior_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "allowed_terminal_tuples": [
+          {"state": "COMPLETED_GATE_PASS", "decision": "OTS_BASELINE_LOCAL_MISMATCH_PASS", "authorizes": "OUTDOOR_LOCAL_MISMATCH_MECHANISM_DESIGN_REVIEW"},
+          {"state": "COMPLETED_GATE_FAIL", "decision": "OTS_BASELINE_LOCAL_MISMATCH_FAIL", "authorizes": "NONE"},
+          {"state": "COMPLETED_INCONCLUSIVE", "decision": "OTS_BASELINE_LOCAL_MISMATCH_INCONCLUSIVE", "authorizes": "OTS_BASELINE_MEASUREMENT_SUPPLEMENT_ONLY"},
+          {"state": "FAILED_ENGINEERING", "decision": null, "authorizes": "NONE"}
+        ],
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 600,
+        "min_free_gpu_mib": 8192,
+        "max_gpu_utilization_pct": 90
+      },
+      "program_authorization": {
+        "program_id": "reside_ots_baseline_behavior",
+        "stage_id": "baseline_behavior_measurement",
+        "family_id": "synthetic_outdoor_baseline_behavior",
+        "mechanism_type": "adjacent",
+        "evidence_role": "development_screening",
+        "protected_permissions": {"allow_confirmation": false, "allow_canary": false, "allow_locked_test": false},
+        "dependencies": [
+          {"role": "qualified_measurement", "use": "diagnostic", "anchor_id": "ots_outdoor_measurement_pass"},
+          {"role": "official_model", "use": "baseline", "anchor_id": "official_haze4k_checkpoint"}
+        ],
+        "adjacent_sequence": 1,
+        "orthogonal_changes": [],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "On the exact 625 qualified OTS validation scenes, does the fixed official Haze4K ConvIR-B baseline show a material and tau-aligned local restoration mismatch, after requiring adequate global OTS competence and separation from a spatially rotated tau negative control?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "original_ots_clear_scene",
+          "independent_group_count": 625,
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "official_haze4k_convir_b_relative_error_correction_by_qualified_ots_tau_region",
+          "reference": "paired hazy input versus clear GT, with true tau regions compared against the same tau field rotated 180 degrees within scene",
+          "matched_budget": "625 independent scenes times exactly three nested official variants; one fixed checkpoint; zero training or model selection",
+          "fixed_factors": [
+            "scene membership is exactly the 625 validation IDs archived by reside-ots-outdoor-measurement-v1",
+            "official variants are airlight 0.90 crossed with beta 0.04, 0.10, and 0.20",
+            "each image preserves aspect ratio with long edge at most 320 pixels and is reflect-padded to a multiple of 32 for official inference",
+            "official build_net('base','Haze4K') is strictly loaded from checkpoint state_dict['model'] and model(input)[2] is cropped and clipped to [0,1]",
+            "pixel input error is mean RGB squared error between hazy input and clear GT; output error replaces input with clipped model output",
+            "relative correction is (mean input error minus mean output error) divided by mean input error, with fixed epsilon 1e-8",
+            "true low and high regions are the within-scene bottom and top 20 percent of tau; the negative control rotates tau 180 degrees before forming the same quantiles",
+            "a variant mismatch requires true low-minus-high relative correction at least 0.10 and true-minus-control imbalance at least 0.05",
+            "a scene mismatch requires the variant rule in at least two of the three fixed beta severities",
+            "pixels, regions, beta variants, and metrics are nested summaries and never independent samples",
+            "missing or failed scene inference remains visible and cannot be silently excluded"
+          ]
+        },
+        "primary_estimand": {
+          "id": "tau_aligned_scene_mismatch_prevalence",
+          "metric": "proportion of 625 independent OTS clear scenes meeting the frozen tau-aligned mismatch indicator in at least two of three severities",
+          "direction": "higher",
+          "aggregation": "scene-level binary indicator with two-sided Wilson 95 percent interval",
+          "unit": "original_ots_clear_scene"
+        },
+        "controls": [
+          "strict identity-bound official checkpoint and official production graph",
+          "full-image input-to-output MSE improvement as an OTS global-competence prerequisite",
+          "180-degree spatial rotation of tau within the same scene as a marginal-distribution-preserving negative control",
+          "paired clear GT and identical resize/crop for input, output, depth, and regions",
+          "all three beta variants nested within the original clear scene"
+        ],
+        "uncertainty": {
+          "method": "two-sided Wilson 95 percent intervals over independent original clear scenes; severity and pixel summaries remain nested",
+          "confidence_level": 0.95,
+          "independent_unit": "original_ots_clear_scene"
+        },
+        "gates": [
+          {"id": "parent_and_asset_identity", "type": "integrity", "estimand": "parent terminal tuple, 625-scene list, official checkpoint and exact model-source identities match", "direction": "equal", "threshold": 1.0, "decision_role": "inconclusive_only"},
+          {"id": "complete_scene_coverage", "type": "coverage", "estimand": "independent scenes with all three fixed variants, aligned depth and finite inference", "direction": "equal", "threshold": 625, "decision_role": "inconclusive_only"},
+          {"id": "global_ots_competence", "type": "integrity", "estimand": "Wilson lower 95 percent bound for scenes whose full-image output MSE is below input MSE in at least two of three severities", "direction": "min", "threshold": 0.80, "decision_role": "inconclusive_only"},
+          {"id": "material_mismatch_prevalence", "type": "materiality", "estimand": "Wilson interval for tau-aligned scene mismatch prevalence", "direction": "min", "threshold": 0.20, "decision_role": "decisive"},
+          {"id": "negative_control_separation", "type": "integrity", "estimand": "included in every variant indicator as true low-high correction imbalance minus rotated-tau imbalance", "direction": "min", "threshold": 0.05, "decision_role": "decisive"}
+        ],
+        "competing_explanation": "Any apparent high-versus-low difference could reflect spatial image content or model error rather than the qualified tau field. The within-scene 180-degree tau rotation preserves each scene's tau distribution while breaking its spatial alignment. Passing still identifies only a descriptive synthetic-domain behavior of one fixed model instance; it does not prove that tau causes the error or that a particular module will repair it.",
+        "terminal_mapping": {
+          "pass": {"state": "COMPLETED_GATE_PASS", "decision": "OTS_BASELINE_LOCAL_MISMATCH_PASS", "authorizes": "OUTDOOR_LOCAL_MISMATCH_MECHANISM_DESIGN_REVIEW"},
+          "fail": {"state": "COMPLETED_GATE_FAIL", "decision": "OTS_BASELINE_LOCAL_MISMATCH_FAIL", "authorizes": "NONE"},
+          "inconclusive": {"state": "COMPLETED_INCONCLUSIVE", "decision": "OTS_BASELINE_LOCAL_MISMATCH_INCONCLUSIVE", "authorizes": "OTS_BASELINE_MEASUREMENT_SUPPLEMENT_ONLY"}
+        },
+        "disabled_actions": [
+          "training, fine-tuning, module insertion, candidate selection, loss selection, or hyperparameter search",
+          "using model output to define tau or region membership",
+          "treating a spatial association as causal mechanism evidence",
+          "treating OTS synthetic optical thickness as a validated real-haze restoration-demand label",
+          "SOTS, Haze4K outcome, NH-HAZE, confirmation, canary, or locked-test access",
+          "changing scene membership, variants, regions, metrics, margins, controls, or terminal rules after outcomes"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/measure_reside_ots_baseline_behavior.py",
+        "timeout_seconds": 7200,
+        "expected_wall_seconds": 2400,
+        "total_units": 2500,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {"allow_confirmation": false, "allow_canary": false, "allow_locked_test": false},
+        "environment": {"CONVIR_ROUTE_OTS_LONG_EDGE": "320"},
+        "evidence_files": [
+          {"source_relpath": "workload/baseline_behavior_summary.json", "destination_filename": "reside_ots_baseline_behavior_v1_summary.json", "required": true, "max_bytes": 131072},
+          {"source_relpath": "workload/aggregate_strata.csv", "destination_filename": "reside_ots_baseline_behavior_v1_strata.csv", "required": true, "max_bytes": 65536},
+          {"source_relpath": "workload/validation_scene_ids.txt", "destination_filename": "reside_ots_baseline_behavior_v1_scenes.txt", "required": true, "max_bytes": 65536}
+        ],
+        "engineering_contract": {"mode": "gpu_synthetic_no_data", "max_seconds": 300},
+        "precision_contract": {"mode": "formal_precision", "rationale": "The exact 625-scene parent validation set exceeds the worst-case 601 independent groups needed for a two-sided 95 percent proportion half-width of 0.04."}
+      },
+      "assets": [
+        {"id": "reside_root", "kind": "directory", "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE", "access_role": "development_screening", "contract_access": false},
+        {"id": "official_checkpoint", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl", "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088", "access_role": "unrestricted", "contract_access": true},
+        {"id": "model_source", "kind": "file", "path": "{REMOTE_REPO}/Dehazing/ITS/models/ConvIR.py", "sha256": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd", "access_role": "unrestricted", "contract_access": true},
+        {"id": "model_layers", "kind": "file", "path": "{REMOTE_REPO}/Dehazing/ITS/models/layers.py", "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4", "access_role": "unrestricted", "contract_access": true},
+        {"id": "parent_closeout", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-outdoor-measurement-v1/reside_ots_outdoor_measurement_v1_closeout.json", "sha256": "eb4fade9215db551d0fd602a5e0966736815cc0c900a4670fc23f938df5d8932", "access_role": "unrestricted", "contract_access": true},
+        {"id": "parent_scenes", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-outdoor-measurement-v1/reside_ots_outdoor_measurement_v1_scenes.txt", "sha256": "106d56154311b16af495ae1ccfe5ef960ddbeea2fc534baa7499ce207db566f1", "access_role": "unrestricted", "contract_access": true}
+      ],
+      "capability": {
+        "profile_id": "official_haze4k_convir_b_ots_inference_gpu_v1",
+        "contract_mode": "gpu_synthetic_no_data",
+        "minimum_fixture": {"batch": 1, "channels": 3, "height": 256, "width": 320},
+        "bound_assets": [
+          {"id": "official_checkpoint", "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"},
+          {"id": "model_source", "identity": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"},
+          {"id": "model_layers", "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"}
+        ],
+        "compatibility_imports": ["torch", "PIL", "numpy", "pytorch_msssim", "Dehazing.ITS.models.ConvIR"],
+        "production_path_statement": "The exact official build_net('base','Haze4K') graph strictly loads the official checkpoint and executes the production pad-to-32, model(input)[2], crop, clip, metric and result-finalizer path on one synthetic CUDA tensor without scientific data.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true
+      },
+      "precision": {
+        "certificate_id": "reside_ots_baseline_behavior_v1_scene_prevalence",
+        "estimand": "tau-aligned scene mismatch prevalence",
+        "method": "binomial_worst_case",
+        "confidence_level": 0.95,
+        "target_half_width": 0.04,
+        "planning_sd": 0.5,
+        "independent_groups_available": 625,
+        "independent_groups_required": 601,
+        "feasible": true,
+        "source_role": "development_screening",
+        "source_reference": "The parent route archived exactly 625 independent validation clear scenes; ceil(1.96^2*0.25/0.04^2)=601."
+      }
+    }
+  }
+}

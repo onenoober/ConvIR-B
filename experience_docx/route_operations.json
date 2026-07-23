@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/reside-ots-baseline-behavior-v1.json",
+  "experiment_spec_sha256": "332c9b55bfd8c69e0ba302a31dba88cb8e41414b367455bf683bfffd180c0ebb",
+  "operations": {
+    "OTS_BASELINE_BEHAVIOR_MEASURE": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "OUTDOOR_LOCAL_MISMATCH_MECHANISM_DESIGN_REVIEW",
+          "decision": "OTS_BASELINE_LOCAL_MISMATCH_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "OTS_BASELINE_LOCAL_MISMATCH_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "OTS_BASELINE_MEASUREMENT_SUPPLEMENT_ONLY",
+          "decision": "OTS_BASELINE_LOCAL_MISMATCH_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "reside_ots_baseline_behavior_v1_closeout.json",
+      "heartbeat_timeout_seconds": 600,
+      "max_gpu_utilization_pct": 90,
+      "min_free_gpu_mib": 8192,
+      "mode": "baseline_behavior_measurement",
+      "monitor_profile": "standard",
+      "output_id": "reside-ots-baseline-behavior-v1-phase-a",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/reside_ots_baseline_behavior.json",
+  "program_contract_sha256": "d14357a4247787824429e03612d12c91f35cb67259f10a1d39e1dd71cfd6ce5c",
+  "route_card_relpath": "experience_docx/experiment_cards/reside-ots-baseline-behavior-v1.md",
+  "route_id": "reside-ots-baseline-behavior-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "OTS_BASELINE_BEHAVIOR_MEASURE": "experience_docx/scientific_contracts/reside-ots-baseline-behavior-v1__OTS_BASELINE_BEHAVIOR_MEASURE.json"
+  }
+}

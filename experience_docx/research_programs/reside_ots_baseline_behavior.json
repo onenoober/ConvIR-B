@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "program_id": "reside_ots_baseline_behavior",
+  "objective": "Measure whether the fixed official Haze4K ConvIR-B baseline exhibits a material tau-aligned local restoration mismatch on the qualified RESIDE OTS synthetic-outdoor development domain before any candidate mechanism, module, or training decision.",
+  "source_anchors": [
+    {
+      "id": "ots_outdoor_measurement_pass",
+      "reference": "experience_docx/experiment_logs/reside-ots-outdoor-measurement-v1/reside_ots_outdoor_measurement_v1_closeout.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "official_haze4k_checkpoint",
+      "reference": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "allowed_uses": ["baseline"]
+    }
+  ],
+  "dependency_roles": {
+    "qualified_measurement": ["diagnostic"],
+    "official_model": ["baseline"]
+  },
+  "stages": {
+    "baseline_behavior_measurement": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["synthetic_outdoor_baseline_behavior"]
+    }
+  },
+  "route_families": {
+    "synthetic_outdoor_baseline_behavior": {
+      "core_assumption": "The qualified OTS tau field and paired clear target can describe whether a fixed official baseline leaves spatially aligned relative restoration mismatch without using its own output to define tau.",
+      "adjacent_budget": 2,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close if the official baseline lacks adequate global OTS competence, the tau-aligned mismatch prevalence is below the frozen material threshold, or the negative control does not separate.",
+      "reopen_evidence_types": ["independent_region_labels", "new_measurement_field"]
+    }
+  },
+  "orthogonal_dimensions": ["target_domain", "baseline_identity", "measurement_target", "region_definition"],
+  "amendments": []
+}

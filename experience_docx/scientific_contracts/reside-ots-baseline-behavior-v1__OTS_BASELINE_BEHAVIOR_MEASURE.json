@@ -1,0 +1,119 @@
+{
+  "competing_explanation": "Any apparent high-versus-low difference could reflect spatial image content or model error rather than the qualified tau field. The within-scene 180-degree tau rotation preserves each scene's tau distribution while breaking its spatial alignment. Passing still identifies only a descriptive synthetic-domain behavior of one fixed model instance; it does not prove that tau causes the error or that a particular module will repair it.",
+  "controls": [
+    "strict identity-bound official checkpoint and official production graph",
+    "full-image input-to-output MSE improvement as an OTS global-competence prerequisite",
+    "180-degree spatial rotation of tau within the same scene as a marginal-distribution-preserving negative control",
+    "paired clear GT and identical resize/crop for input, output, depth, and regions",
+    "all three beta variants nested within the original clear scene"
+  ],
+  "disabled_actions": [
+    "training, fine-tuning, module insertion, candidate selection, loss selection, or hyperparameter search",
+    "using model output to define tau or region membership",
+    "treating a spatial association as causal mechanism evidence",
+    "treating OTS synthetic optical thickness as a validated real-haze restoration-demand label",
+    "SOTS, Haze4K outcome, NH-HAZE, confirmation, canary, or locked-test access",
+    "changing scene membership, variants, regions, metrics, margins, controls, or terminal rules after outcomes"
+  ],
+  "gates": [
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "parent terminal tuple, 625-scene list, official checkpoint and exact model-source identities match",
+      "id": "parent_and_asset_identity",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "independent scenes with all three fixed variants, aligned depth and finite inference",
+      "id": "complete_scene_coverage",
+      "threshold": 625,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "min",
+      "estimand": "Wilson lower 95 percent bound for scenes whose full-image output MSE is below input MSE in at least two of three severities",
+      "id": "global_ots_competence",
+      "threshold": 0.8,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "Wilson interval for tau-aligned scene mismatch prevalence",
+      "id": "material_mismatch_prevalence",
+      "threshold": 0.2,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "included in every variant indicator as true low-high correction imbalance minus rotated-tau imbalance",
+      "id": "negative_control_separation",
+      "threshold": 0.05,
+      "type": "integrity"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "scene membership is exactly the 625 validation IDs archived by reside-ots-outdoor-measurement-v1",
+      "official variants are airlight 0.90 crossed with beta 0.04, 0.10, and 0.20",
+      "each image preserves aspect ratio with long edge at most 320 pixels and is reflect-padded to a multiple of 32 for official inference",
+      "official build_net('base','Haze4K') is strictly loaded from checkpoint state_dict['model'] and model(input)[2] is cropped and clipped to [0,1]",
+      "pixel input error is mean RGB squared error between hazy input and clear GT; output error replaces input with clipped model output",
+      "relative correction is (mean input error minus mean output error) divided by mean input error, with fixed epsilon 1e-8",
+      "true low and high regions are the within-scene bottom and top 20 percent of tau; the negative control rotates tau 180 degrees before forming the same quantiles",
+      "a variant mismatch requires true low-minus-high relative correction at least 0.10 and true-minus-control imbalance at least 0.05",
+      "a scene mismatch requires the variant rule in at least two of the three fixed beta severities",
+      "pixels, regions, beta variants, and metrics are nested summaries and never independent samples",
+      "missing or failed scene inference remains visible and cannot be silently excluded"
+    ],
+    "matched_budget": "625 independent scenes times exactly three nested official variants; one fixed checkpoint; zero training or model selection",
+    "primary_variable": "official_haze4k_convir_b_relative_error_correction_by_qualified_ots_tau_region",
+    "reference": "paired hazy input versus clear GT, with true tau regions compared against the same tau field rotated 180 degrees within scene"
+  },
+  "operation_id": "OTS_BASELINE_BEHAVIOR_MEASURE",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "original_ots_clear_scene",
+    "independent_group_count": 625
+  },
+  "primary_estimand": {
+    "aggregation": "scene-level binary indicator with two-sided Wilson 95 percent interval",
+    "direction": "higher",
+    "id": "tau_aligned_scene_mismatch_prevalence",
+    "metric": "proportion of 625 independent OTS clear scenes meeting the frozen tau-aligned mismatch indicator in at least two of three severities",
+    "unit": "original_ots_clear_scene"
+  },
+  "question": "On the exact 625 qualified OTS validation scenes, does the fixed official Haze4K ConvIR-B baseline show a material and tau-aligned local restoration mismatch, after requiring adequate global OTS competence and separation from a spatially rotated tau negative control?",
+  "route_id": "reside-ots-baseline-behavior-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "OTS_BASELINE_LOCAL_MISMATCH_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "OTS_BASELINE_MEASUREMENT_SUPPLEMENT_ONLY",
+      "decision": "OTS_BASELINE_LOCAL_MISMATCH_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "OUTDOOR_LOCAL_MISMATCH_MECHANISM_DESIGN_REVIEW",
+      "decision": "OTS_BASELINE_LOCAL_MISMATCH_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "original_ots_clear_scene",
+    "method": "two-sided Wilson 95 percent intervals over independent original clear scenes; severity and pixel summaries remain nested"
+  }
+}

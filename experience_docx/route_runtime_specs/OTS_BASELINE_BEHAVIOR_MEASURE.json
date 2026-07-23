@@ -1,0 +1,50 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/reside-ots-baseline-behavior-v1__OTS_BASELINE_BEHAVIOR_MEASURE.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/reside-ots-baseline-behavior-v1__OTS_BASELINE_BEHAVIOR_MEASURE.json",
+    "max_seconds": 300,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/measure_reside_ots_baseline_behavior.py",
+  "environment": {
+    "CONVIR_ROUTE_OTS_LONG_EDGE": "320"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "reside_ots_baseline_behavior_v1_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/baseline_behavior_summary.json"
+    },
+    {
+      "destination_filename": "reside_ots_baseline_behavior_v1_strata.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/aggregate_strata.csv"
+    },
+    {
+      "destination_filename": "reside_ots_baseline_behavior_v1_scenes.txt",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/validation_scene_ids.txt"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 2400,
+  "operation_id": "OTS_BASELINE_BEHAVIOR_MEASURE",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/reside-ots-baseline-behavior-v1__OTS_BASELINE_BEHAVIOR_MEASURE.json",
+    "mode": "formal_precision",
+    "rationale": "The exact 625-scene parent validation set exceeds the worst-case 601 independent groups needed for a two-sided 95 percent proportion half-width of 0.04."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "reside-ots-baseline-behavior-v1",
+  "schema_version": 2,
+  "timeout_seconds": 7200,
+  "total_units": 2500
+}
