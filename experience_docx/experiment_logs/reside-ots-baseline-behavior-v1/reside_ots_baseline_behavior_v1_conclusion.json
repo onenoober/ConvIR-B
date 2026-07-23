@@ -1,0 +1,22 @@
+{
+  "route_id": "reside-ots-baseline-behavior-v1",
+  "operation_id": "OTS_BASELINE_BEHAVIOR_MEASURE",
+  "run_id": "reside-ots-baseline-behavior-v1-phase-a",
+  "decision": "OTS_BASELINE_LOCAL_MISMATCH_INCONCLUSIVE",
+  "authorizes": "OTS_BASELINE_MEASUREMENT_SUPPLEMENT_ONLY",
+  "primary_result": "The frozen 625-scene measurement could not be interpreted because only 407 independent scenes completed all three variants. The other 218 scenes failed before a complete scene estimate when long-edge-320 resizing made the short edge too small for an internal official ConvIR-B reflection pad. The required complete-scene coverage gate therefore failed and no PASS or FAIL conclusion about tau-aligned local mismatch is authorized.",
+  "gate_reasons": [
+    "Parent closeout, 625-scene list, selected OTS variants, official checkpoint, model source, and paired depth identities all matched.",
+    "The protected-data-free GPU contract strictly loaded the official checkpoint and passed the exact production forward and result-finalizer checks.",
+    "Only 407/625 independent scenes and 1,221/1,875 nested variants completed; 218 scenes failed with the same internal reflection-padding size condition after the frozen resize.",
+    "The diagnostic complete-case mismatch estimate was 22/625 under the predeclared missing-as-failure denominator, but it is not a valid scientific terminal because the complete-scene coverage and global-competence prerequisites were not met.",
+    "The typed terminal therefore authorizes only one measurement supplement with unchanged population, model, variants, estimand, margins, controls, and evidence role."
+  ],
+  "competing_explanation": "The incomplete result cannot distinguish absence of tau-aligned mismatch from bias induced by aspect-ratio-dependent scene failure. A valid supplement must remove only that deterministic preprocessing incompatibility and recompute all 625 scenes consistently; it must not reuse only the favorable or completed subset.",
+  "limitations": [
+    "This is an incomplete L1 development-screening measurement, not evidence for or against a candidate mechanism.",
+    "The 407 completed scenes cannot replace the frozen 625-scene population because completion depended on image aspect ratio after resizing.",
+    "No training, module selection, SOTS, Haze4K outcome, NH-HAZE, confirmation, canary, or locked-test data were accessed.",
+    "The only authorized next action is a preprocessing-only measurement supplement; thresholds and scientific definitions remain frozen."
+  ]
+}

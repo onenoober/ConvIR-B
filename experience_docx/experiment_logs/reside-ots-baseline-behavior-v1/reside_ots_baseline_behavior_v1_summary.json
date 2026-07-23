@@ -1,0 +1,228 @@
+{
+  "dataset_identity": {
+    "completed_independent_scenes": 407,
+    "completed_nested_variants": 1221,
+    "expected_independent_scenes": 625,
+    "parent_identity_match": true,
+    "parent_scene_list_match": true,
+    "selected_variant_and_pairing_match": true
+  },
+  "failure_count": 218,
+  "failures": [
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 7, 10]",
+      "scene_id": "8769"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 7, 10]",
+      "scene_id": "8595"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 6, 10]",
+      "scene_id": "2982"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 7, 10]",
+      "scene_id": "7893"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 7, 10]",
+      "scene_id": "7459"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 7, 10]",
+      "scene_id": "8457"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 7, 10]",
+      "scene_id": "5296"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 6, 10]",
+      "scene_id": "4614"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 6, 10]",
+      "scene_id": "5963"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 7, 10]",
+      "scene_id": "5404"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 6, 10]",
+      "scene_id": "8711"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 7, 10]",
+      "scene_id": "8077"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 7, 10]",
+      "scene_id": "6696"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 6, 10]",
+      "scene_id": "7455"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 7, 10]",
+      "scene_id": "8516"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 6, 10]",
+      "scene_id": "3616"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 7, 10]",
+      "scene_id": "4917"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 7, 10]",
+      "scene_id": "8283"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 7, 10]",
+      "scene_id": "6872"
+    },
+    {
+      "reason": "Padding size should be less than the corresponding input dimension, but got: padding (7, 7) at dimension 2 of input [1, 128, 6, 10]",
+      "scene_id": "6677"
+    }
+  ],
+  "global_competence": {
+    "passed": false,
+    "required_lower_95": 0.8,
+    "scene_prevalence": {
+      "estimate": 0.6288,
+      "lower": 0.5902444898144633,
+      "successes": 393,
+      "total": 625,
+      "upper": 0.6657818865347257
+    }
+  },
+  "limitations": [
+    "This is L1 descriptive development-screening evidence for one fixed model instance on OTS synthetic outdoor optical thickness.",
+    "The spatial negative control weakens a content-only explanation but does not identify tau as a causal mechanism.",
+    "The official checkpoint was trained for Haze4K, so inadequate global OTS competence makes local behavior uninterpretable rather than a scientific failure.",
+    "No candidate module, training, SOTS, Haze4K outcome, NH-HAZE, confirmation, canary, or locked-test evidence was used."
+  ],
+  "marker": "RESIDE_OTS_BASELINE_BEHAVIOR_V1_COMPLETE",
+  "measurement": {
+    "airlight": 0.9,
+    "betas": [
+      0.04,
+      0.1,
+      0.2
+    ],
+    "negative_control": "within-scene 180-degree spatial rotation of tau",
+    "region_quantiles": {
+      "high_min": 0.8,
+      "low_max": 0.2
+    },
+    "relative_correction": "(regional input MSE - regional output MSE)/(regional input MSE + 1e-8)",
+    "scene_required_variant_count": 2,
+    "tau": "beta times official OTS depth; model-output-independent synthetic optical thickness",
+    "variant_mismatch_margins": {
+      "true_low_minus_high_correction": 0.1,
+      "true_minus_rotated_tau_imbalance": 0.05
+    }
+  },
+  "operation_id": "OTS_BASELINE_BEHAVIOR_MEASURE",
+  "primary_estimand": {
+    "material_margin": 0.2,
+    "tau_aligned_scene_mismatch_prevalence": {
+      "estimate": 0.0352,
+      "lower": 0.023358687419603664,
+      "successes": 22,
+      "total": 625,
+      "upper": 0.05272004140723645
+    }
+  },
+  "route_id": "reside-ots-baseline-behavior-v1",
+  "run_id": "reside-ots-baseline-behavior-v1-phase-a",
+  "schema_version": 1,
+  "scope": "fixed official Haze4K ConvIR-B on development-screening OTS synthetic outdoor scenes",
+  "secondary_aggregates": {
+    "alignment_separation": {
+      "max": 301.4638723341649,
+      "mean": -2.266840724436248,
+      "median": -0.11567749739305344,
+      "min": -220.06271389183087,
+      "q05": -11.653939148644188,
+      "q95": 1.261366470592395
+    },
+    "high_tau_relative_correction": {
+      "max": 0.9980208615086189,
+      "mean": 0.6738022668410228,
+      "median": 0.9538411106767144,
+      "min": -21.45829182233631,
+      "q05": -0.1946608864734536,
+      "q95": 0.9933936517262059
+    },
+    "input_psnr": {
+      "max": 31.100068709096323,
+      "mean": 18.649193300319904,
+      "median": 17.8787125526928,
+      "min": 8.844729127747513,
+      "q05": 11.303782765185739,
+      "q95": 26.895717636205525
+    },
+    "low_tau_excess_harm": {
+      "max": 137.94178006983378,
+      "mean": 1.5414784271876456,
+      "median": 0.013818840251531126,
+      "min": 0.0,
+      "q05": 0.0,
+      "q95": 5.55631848096765
+    },
+    "low_tau_relative_correction": {
+      "max": 0.99867295421734,
+      "mean": -0.8408512806170119,
+      "median": 0.8162326430860355,
+      "min": -137.94178006983378,
+      "q05": -5.279675928384659,
+      "q95": 0.9858863637831252
+    },
+    "output_psnr": {
+      "max": 41.138759984942716,
+      "mean": 28.079136831972313,
+      "median": 28.210145040286754,
+      "min": 15.088173795333804,
+      "q05": 20.679590855911094,
+      "q95": 34.731071112900935
+    },
+    "output_ssim": {
+      "max": 0.9975870847702026,
+      "mean": 0.9670155769386416,
+      "median": 0.9758105278015137,
+      "min": 0.717464804649353,
+      "q05": 0.9200829267501831,
+      "q95": 0.9921998381614685
+    },
+    "rotated_tau_correction_imbalance": {
+      "max": 198.38556119519214,
+      "mean": 0.7521871769782135,
+      "median": 0.022594716659583236,
+      "min": -281.48458853402593,
+      "q05": -1.1626087359561765,
+      "q95": 5.113509797931016
+    },
+    "true_correction_imbalance": {
+      "max": 19.979283800138973,
+      "mean": -1.514653547458035,
+      "median": -0.0889117342203688,
+      "min": -134.1987833346866,
+      "q05": -5.600825083684956,
+      "q95": 0.32901294550993315
+    }
+  },
+  "terminal": {
+    "authorizes": "OTS_BASELINE_MEASUREMENT_SUPPLEMENT_ONLY",
+    "decision": "OTS_BASELINE_LOCAL_MISMATCH_INCONCLUSIVE",
+    "gate_reasons": [
+      "parent, dataset, selected-variant, depth, or complete-scene identity/coverage failed"
+    ],
+    "state": "COMPLETED_INCONCLUSIVE"
+  }
+}
