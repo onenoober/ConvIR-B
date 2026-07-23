@@ -1,0 +1,110 @@
+{
+  "competing_explanation": "Apparent local heterogeneity may reflect RGB-MSE/projection construct choice, content and padding geometry, or correlated synthetic variants rather than a haze-specific causal mechanism or a deployable risk signal.",
+  "controls": [
+    "exact parent split closeout identity and authorization",
+    "exact Haze4K train-only path, 3,000 paired observations, 750 canonical scenes, and frozen assignment digest",
+    "synthetic unchanged, exact-GT, partial-recovery, strong-overshoot, and low-demand-harm reference cases",
+    "strict official checkpoint load, frozen parameter scope, finite three-scale forward, and finite finalizer",
+    "global competence prerequisite based on output MSE below input MSE within clear scene",
+    "scene-level aggregation and resampling; tiles and haze variants never count as independent groups"
+  ],
+  "disabled_actions": [
+    "Haze4K official-test file, target, prediction, or metric access",
+    "NH-HAZE, confirmation, canary, or locked-test access",
+    "training, fitting, proxy selection, structure selection, or threshold adaptation",
+    "claiming paired input error is pure haze density or a deployment-available feature",
+    "claiming signed RGB projection alone proves perceptual over-dehazing or causal mechanism",
+    "assuming high-demand or low-demand regions must have a monotonic error direction",
+    "treating tiles, haze variants, or clear aliases as independent statistical groups",
+    "automatically continuing into oracle, proxy, or module execution"
+  ],
+  "gates": [
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "parent authorization, frozen split identity, 150 complete scenes, 600 finite variant inferences, no official-test access, and no training",
+      "id": "train_only_identity_and_complete_coverage",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "lower 95 percent Wilson bound for scenes whose mean output MSE is below mean input MSE",
+      "id": "global_baseline_competence",
+      "threshold": 0.8,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "95 percent Wilson interval for stable-any-material-local-error scene prevalence",
+      "id": "stable_material_local_error_prevalence",
+      "threshold": 0.2,
+      "type": "materiality"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "official haze4k-base.pkl SHA-256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "official ConvIR-B base graph with 8,630,665 frozen parameters and strict checkpoint load",
+      "Haze4K train only; official test absent",
+      "canonical scene SHA-256 over clear width, height, and decoded RGB bytes",
+      "split salt haze4k-local-error-qualification-v2 and assignment digest 7b21d3af455475f7bb29198081a2ef2e651cffaac6149fd27741863c765b4efc",
+      "32-by-32 nonoverlapping tiles with bottom-right reflection padding",
+      "paired input-versus-GT RGB MSE defines demand; lowest and highest 20 percent tile regions are disjoint",
+      "under-recovery requires alpha at most 0.80 and output-to-input tile error ratio at least 0.25 in high-demand tiles",
+      "signed overshoot requires alpha at least 1.05 and projected magnitude at least 1/255 over all tiles",
+      "low-demand harm requires output-to-input tile error ratio at least 1.10 and MSE increase at least squared 1/255",
+      "a construct is variant-material when at least 20 percent of its eligible tiles qualify",
+      "a construct is scene-stable when variant-material in at least three of four haze variants",
+      "under-recovery, signed overshoot, and low-demand harm are parallel preregistered constructs",
+      "high-minus-low demand overshoot contrast is secondary and has no required direction",
+      "20,000 scene-level bootstrap resamples with seed 20260723 for continuous paired summaries"
+    ],
+    "matched_budget": "one frozen official ConvIR-B inference for each of 600 nested haze variants, zero training steps",
+    "primary_variable": "fixed_official_convir_b_local_error_phenotype",
+    "reference": "paired hazy input and ground-truth clear image within the frozen internal-development split"
+  },
+  "operation_id": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASURE",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "canonical_clear_scene",
+    "independent_group_count": 150
+  },
+  "primary_estimand": {
+    "aggregation": "four variants summarized within scene followed by equal-weight Wilson inference across 150 scenes",
+    "direction": "higher",
+    "id": "stable_any_material_local_error_prevalence",
+    "metric": "proportion of 150 canonical clear scenes with at least one preregistered construct material in three or four nested haze variants",
+    "unit": "canonical_clear_scene"
+  },
+  "question": "On the 150 canonical Haze4K train internal-development scenes, does fixed official ConvIR-B exhibit a material prevalence of repeatable local under-recovery, signed overshoot, or low-demand harm while remaining globally competent?",
+  "route_id": "haze4k-train-baseline-local-error-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "HAZE4K_TRAIN_LOCAL_ERROR_SUPPLEMENT_ONLY",
+      "decision": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "HAZE4K_TRAIN_BOUNDED_LOCAL_ACTION_ORACLE",
+      "decision": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "canonical_clear_scene",
+    "method": "two-sided 95 percent Wilson intervals for scene prevalences and paired 20,000-resample bootstrap over canonical clear scenes for continuous contrasts"
+  }
+}

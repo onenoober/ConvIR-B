@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-train-baseline-local-error-v1.json",
+  "experiment_spec_sha256": "8afb66cdeb62b365001919c5cc286fc58af51f30bcff8751c036fbbc0734758b",
+  "operations": {
+    "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASURE": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "HAZE4K_TRAIN_BOUNDED_LOCAL_ACTION_ORACLE",
+          "decision": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "HAZE4K_TRAIN_LOCAL_ERROR_SUPPLEMENT_ONLY",
+          "decision": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "haze4k_train_baseline_local_error_v1_closeout.json",
+      "heartbeat_timeout_seconds": 600,
+      "max_gpu_utilization_pct": 95,
+      "min_free_gpu_mib": 4096,
+      "mode": "baseline_local_error_measurement",
+      "monitor_profile": "standard",
+      "output_id": "haze4k-train-baseline-local-error-v1-phase-a",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_local_error_qualification_v3.json",
+  "program_contract_sha256": "1a5337b52397c834680f0a14b32e5591fc054924fb59d453ed705aeffa50a14f",
+  "route_card_relpath": "experience_docx/experiment_cards/haze4k-train-baseline-local-error-v1.md",
+  "route_id": "haze4k-train-baseline-local-error-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASURE": "experience_docx/scientific_contracts/haze4k-train-baseline-local-error-v1__HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASURE.json"
+  }
+}

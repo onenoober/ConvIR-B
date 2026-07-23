@@ -1,0 +1,44 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/haze4k-train-baseline-local-error-v1__HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASURE.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/haze4k-train-baseline-local-error-v1__HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASURE.json",
+    "max_seconds": 900,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/measure_haze4k_train_baseline_local_error.py",
+  "environment": {
+    "CONVIR_ROUTE_HAZE4K_MEASURE_WORKERS": "8"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "haze4k_train_baseline_local_error_v1_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_baseline_local_error_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_train_baseline_local_error_v1_strata.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/haze4k_baseline_local_error_strata.csv"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 1800,
+  "operation_id": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASURE",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/haze4k-train-baseline-local-error-v1__HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASURE.json",
+    "mode": "formal_precision",
+    "rationale": "All 150 independent development scenes are used. A worst-case 95 percent prevalence half-width target of 0.081 requires 147 scenes, so the frozen census is feasible; four nested variants do not increase n."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "haze4k-train-baseline-local-error-v1",
+  "schema_version": 2,
+  "timeout_seconds": 7200,
+  "total_units": 603
+}
