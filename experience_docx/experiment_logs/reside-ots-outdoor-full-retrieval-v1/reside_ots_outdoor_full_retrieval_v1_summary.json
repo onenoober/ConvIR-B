@@ -1,0 +1,112 @@
+{
+  "dataset_identity": {
+    "count_integrity": true,
+    "haze4k_unique_canonical_groups": 1000,
+    "observed_identity": {
+      "archive_manifest_sha256": "27348952347a0f94ac33105d5e6ce11b4ce4e2b0fab68b583b978752b5b78be0",
+      "layout_record_sha256": "f025a8e6e3f43c9b924c0986b866ed28e5644dd7a7ec7b056ae311c83764d5dc",
+      "pairing_report_sha256": "afdefd2887437d929e00239e932bd76e7504d9838c2a3c58c33ce13f91f4150a"
+    },
+    "qualified_identity_match": true
+  },
+  "exclusion_pool": {
+    "authorized_exclusion_digest": null,
+    "eligible_ots_scenes": 8011,
+    "full_exclusion_count": 959,
+    "full_exclusion_digest": "3cb5104120bcad2d7b03e4ed333508fa59d896b2d2e9301f38c5f22ef87edefe",
+    "minimum_required_eligible_scenes": 6000,
+    "new_exclusion_count": 39,
+    "parent_exclusion_count": 920
+  },
+  "full_query_result": {
+    "interpretation_limit": "A FAIL means only that this frozen full-query matcher did not identify a safe exact 42-source exclusion set; it is not an infeasibility certificate.",
+    "prequalified_groups": 41,
+    "queried_strict_unmatched_groups": 542,
+    "score": {
+      "max": 0.9999814629554749,
+      "median": 0.6396230161190033,
+      "min": 0.3302658796310425,
+      "q05": 0.40293560922145844,
+      "q95": 0.9999546945095062
+    },
+    "score_gap": {
+      "max": 0.542823314666748,
+      "median": 0.019979625940322876,
+      "min": 6.103515625e-05,
+      "q05": 0.0010829538106918335,
+      "q95": 0.11766709685325606
+    },
+    "unique_new_ots_ids": 39,
+    "verified_new_ots_mappings": 39,
+    "verified_reverse_gap": {
+      "max": 0.5966346263885498,
+      "median": 0.11813861131668091,
+      "min": 0.048412859439849854,
+      "q05": 0.052153223752975465,
+      "q95": 0.41450670361518865
+    }
+  },
+  "gates": {
+    "dataset_identity": true,
+    "eligible_ots_capacity": true,
+    "known_top_k_recall": true,
+    "known_top_one_recovery": true,
+    "negative_control_specificity": true,
+    "new_mapping_completeness": false,
+    "new_mapping_disjointness": true,
+    "new_mapping_mutual_nearest": false,
+    "new_mapping_uniqueness": false,
+    "parent_exclusion_union_reproduced": true,
+    "parent_terminal_identity": true,
+    "prequalified_bound": true,
+    "sots_outdoor_exclusion_reproduced": true,
+    "strict_haze4k_ots_reproduced": true
+  },
+  "limitations": [
+    "The operation qualifies source identity only and does not validate an outdoor measurement field.",
+    "Haze4K GT and SOTS GT images are used only for source identity; no model outcome is evaluated.",
+    "The frozen matcher can fail without proving that the provenance mapping is absent.",
+    "No training, inference, checkpoint selection, confirmation outcome, canary, or locked-test metric is accessed."
+  ],
+  "marker": "RESIDE_OTS_FULL_RETRIEVAL_COMPLETE",
+  "matcher_calibration": {
+    "known_positive_count": 458,
+    "known_top_k_recovered": 458,
+    "known_top_one_recovered": 458,
+    "known_top_one_score": {
+      "max": 0.999995231628418,
+      "median": 0.9999726116657257,
+      "min": 0.9997521638870239,
+      "q05": 0.9999180018901825,
+      "q95": 0.9999886751174927
+    },
+    "method": "frozen top-64 symmetric seven-view pHash retrieval with maximum multi-view normalized grayscale correlation",
+    "minimum_correlation": 0.98,
+    "minimum_score_gap": 0.005,
+    "negative_control_count": 50,
+    "negative_controls_admitted": 0
+  },
+  "operation_id": "OTS_FULL_RETRIEVAL",
+  "route_id": "reside-ots-outdoor-full-retrieval-v1",
+  "run_id": "reside-ots-outdoor-full-retrieval-v1-phase-a",
+  "schema_version": 1,
+  "scope": "full 542-query Haze4K-to-RESIDE-OTS source identity audit",
+  "strict_reproduction": {
+    "ots_exclusion_digest": "bcc24f5a9b74e5fa381b3311b061b1d0837665f4897cc3e918c5b4160497e621",
+    "ots_only_mapping_digest": "f7716b6753fffc45e7f44a392eb339a49f753ae1f0fd65f032dcb1571b4a3ade",
+    "parent_union_reproduced": true,
+    "sots_outdoor_exclusion_digest": "ef87654fcf0581f998b5e593eb6ec1cd670b9422f38cbdbca48f0452da6b0da5",
+    "strict_ots_groups": 458,
+    "strict_unmatched_groups": 542
+  },
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "OTS_FULL_RETRIEVAL_FAIL",
+    "gate_reasons": [
+      "new_mapping_completeness",
+      "new_mapping_uniqueness",
+      "new_mapping_mutual_nearest"
+    ],
+    "state": "COMPLETED_GATE_FAIL"
+  }
+}
