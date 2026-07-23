@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-train-data-audit-v1.json",
+  "experiment_spec_sha256": "ad1c4013598e5593ebd6956c0010751d4a572f9aa19d02ebdd3d6d9c048abeaa",
+  "operations": {
+    "HAZE4K_TRAIN_DATA_AUDIT": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASUREMENT",
+          "decision": "HAZE4K_TRAIN_DATA_AUDIT_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "HAZE4K_TRAIN_DATA_AUDIT_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "HAZE4K_TRAIN_DATA_AUDIT_SUPPLEMENT_ONLY",
+          "decision": "HAZE4K_TRAIN_DATA_AUDIT_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "haze4k_train_data_audit_v1_closeout.json",
+      "heartbeat_timeout_seconds": 240,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "dataset_qualification",
+      "monitor_profile": "standard",
+      "output_id": "haze4k-train-data-audit-v1-phase-a",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_local_error_qualification.json",
+  "program_contract_sha256": "adcb9c923d00fce720c9cb5b2037a68dc3cd88081dd8eb17cf124bf841830098",
+  "route_card_relpath": "experience_docx/experiment_cards/haze4k-train-data-audit-v1.md",
+  "route_id": "haze4k-train-data-audit-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "HAZE4K_TRAIN_DATA_AUDIT": "experience_docx/scientific_contracts/haze4k-train-data-audit-v1__HAZE4K_TRAIN_DATA_AUDIT.json"
+  }
+}

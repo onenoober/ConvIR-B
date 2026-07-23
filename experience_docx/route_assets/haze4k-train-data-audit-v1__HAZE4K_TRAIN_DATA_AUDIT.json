@@ -1,0 +1,22 @@
+{
+  "assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "sots_parent_conclusion",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/sots-ots-demand-specific-overshoot-v1/sots_ots_demand_specific_overshoot_v1_conclusion.json",
+      "sha256": "a9acfa6e68a6740954068d735bde2b6ad5b12e007a5f4d255bb0f366c4ad1b17"
+    }
+  ],
+  "operation_id": "HAZE4K_TRAIN_DATA_AUDIT",
+  "route_id": "haze4k-train-data-audit-v1",
+  "schema_version": 1
+}

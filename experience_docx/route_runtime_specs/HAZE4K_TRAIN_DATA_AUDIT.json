@@ -1,0 +1,48 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/haze4k-train-data-audit-v1__HAZE4K_TRAIN_DATA_AUDIT.json",
+  "engineering_contract": {
+    "capability_profile_relpath": null,
+    "max_seconds": 120,
+    "mode": "metadata_only"
+  },
+  "entrypoint_relpath": "experience_docx/tools/audit_haze4k_train_data.py",
+  "environment": {
+    "CONVIR_ROUTE_HAZE4K_AUDIT_WORKERS": "8",
+    "CONVIR_ROUTE_HAZE4K_EXPECTED_CLEAR": "3000",
+    "CONVIR_ROUTE_HAZE4K_EXPECTED_HAZY": "3000",
+    "CONVIR_ROUTE_HAZE4K_INTERNAL_DEV_SCENES": "600",
+    "CONVIR_ROUTE_HAZE4K_SPLIT_SALT": "haze4k-local-error-qualification-v1"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "haze4k_train_data_audit_v1_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_train_data_audit_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_train_data_audit_v1_strata.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/haze4k_train_data_audit_strata.csv"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 300,
+  "operation_id": "HAZE4K_TRAIN_DATA_AUDIT",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/haze4k-train-data-audit-v1__HAZE4K_TRAIN_DATA_AUDIT.json",
+    "mode": "descriptive_capacity",
+    "rationale": "The route audits the complete 3,000-pair Haze4K train population and deterministically assigns every canonical clear scene; integrity gates use exact census counts."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "haze4k-train-data-audit-v1",
+  "schema_version": 2,
+  "timeout_seconds": 1200,
+  "total_units": 4
+}
