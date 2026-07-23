@@ -1,0 +1,37 @@
+{
+  "assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_reside_qualification",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside_data_qualification_20260722/reside_minimal_measurement_qualification.json",
+      "sha256": "f7cbac42e8510489351149412e5ad27a0278db0d3c52963d609abb8ba352714c"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "indoor_measurement_fail",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-local-measurement-mapping-v1/reside_its_local_measurement_mapping_v1_conclusion.json",
+      "sha256": "9d1238ab247d6139f8c167d4861e7ffecd313b8f92d28eb1096002adca3ebd99"
+    }
+  ],
+  "operation_id": "OTS_OVERLAP_RESOLUTION",
+  "route_id": "reside-ots-outdoor-overlap-resolution-v1",
+  "schema_version": 1
+}

@@ -1,0 +1,341 @@
+{
+  "schema_version": 1,
+  "route_id": "reside-ots-outdoor-overlap-resolution-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "title": "RESIDE OTS outdoor source-overlap resolution",
+  "rationale": "RESIDE OTS is the most suitable mainstream outdoor pool, but the prior qualification conservatively blocked it because only 458 of 500 provenance-expected Haze4K outdoor sources were mapped. This read-only source-identity operation first reproduces the archived strict mappings, then requires a fixed multi-view matcher to recover every known OTS source before resolving all 42 remaining sources with unique, mutual, thresholded matches. Passing creates an exact exclusion asset and authorizes only a subsequent outdoor measurement design on a deterministic 1,000-scene definition subset and 1,000-scene validation subset. It does not transport the failed indoor q gate or authorize training, inference, or evaluation.",
+  "first_operation": "OTS_OVERLAP_RESOLUTION",
+  "program_contract_relpath": "experience_docx/research_programs/reside_ots_outdoor_measurement.json",
+  "operations": {
+    "OTS_OVERLAP_RESOLUTION": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "dataset_qualification",
+        "require_gpu": false,
+        "output_id": "reside-ots-outdoor-overlap-resolution-v1-phase-a",
+        "closeout_filename": "reside_ots_outdoor_overlap_resolution_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "allowed_terminal_tuples": [
+          {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "OTS_OVERLAP_RESOLUTION_PASS",
+            "authorizes": "OTS_OUTDOOR_MEASUREMENT_DESIGN"
+          },
+          {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "OTS_OVERLAP_RESOLUTION_FAIL",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "OTS_OVERLAP_RESOLUTION_INCONCLUSIVE",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "FAILED_ENGINEERING",
+            "decision": null,
+            "authorizes": "NONE"
+          }
+        ],
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 300,
+        "min_free_gpu_mib": 0,
+        "max_gpu_utilization_pct": 100
+      },
+      "program_authorization": {
+        "program_id": "reside_ots_outdoor_measurement",
+        "stage_id": "outdoor_source_qualification",
+        "family_id": "ots_overlap_resolution",
+        "mechanism_type": "orthogonal",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {
+            "role": "qualified_reside",
+            "use": "diagnostic",
+            "anchor_id": "reside_qualification_20260722"
+          },
+          {
+            "role": "indoor_construct_limit",
+            "use": "diagnostic",
+            "anchor_id": "indoor_measurement_mapping_fail"
+          }
+        ],
+        "adjacent_sequence": null,
+        "orthogonal_changes": [
+          {
+            "dimension": "target_domain",
+            "reason": "The route changes from synthetic indoor ITS measurement to source qualification for the independent synthetic outdoor OTS domain."
+          }
+        ],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Can a frozen multi-view source matcher that first recovers every archived strict Haze4K-OTS mapping uniquely close all 42 remaining provenance-expected OTS source mappings while retaining a sufficiently large OTS pool for independent outdoor measurement design?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "canonical_clear_source_scene",
+          "independent_group_count": 1000,
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "candidate_ots_source_identity",
+          "reference": "the 458 previously verified strict Haze4K-OTS source groups and 492 exact SOTS-outdoor-to-OTS source groups",
+          "matched_budget": "all 1,000 canonical Haze4K clear groups, 8,970 OTS clear scenes, fixed seven views, top-64 retrieval, and no adaptive threshold change",
+          "fixed_factors": [
+            "64x64 RGB canonical digest",
+            "dHash Hamming threshold 2",
+            "pHash Hamming threshold 6",
+            "strict grayscale correlation threshold 0.995",
+            "strict RGB-mean difference threshold 0.04",
+            "seven fixed full and crop views",
+            "symmetric multi-view pHash top-64 retrieval",
+            "maximum multi-view normalized grayscale correlation",
+            "unresolved correlation floor 0.98",
+            "best-versus-second score gap 0.005",
+            "one-to-one mutual nearest-neighbour requirement"
+          ]
+        },
+        "primary_estimand": {
+          "id": "verified_unresolved_source_mapping_count",
+          "metric": "number of the 42 previously unresolved Haze4K outdoor source groups receiving unique thresholded mutual OTS mappings after full recovery of known mappings",
+          "direction": "higher",
+          "aggregation": "deterministic census count over canonical clear-source groups",
+          "unit": "canonical_clear_source_scene"
+        },
+        "controls": [
+          "byte-identical prior RESIDE qualification record",
+          "exact reproduction of the archived strict Haze4K mapping and OTS exclusion digests",
+          "100 percent top-64 recall and top-one recovery on all 458 known strict OTS mappings",
+          "exact reproduction of all 492 SOTS-outdoor OTS exclusions",
+          "one-to-one and bidirectional nearest-neighbour checks for the 42 unresolved groups",
+          "explicit statement that matcher failure is not an infeasibility certificate"
+        ],
+        "uncertainty": {
+          "method": "deterministic full-population identity audit; no sampling interval is used for integrity gates",
+          "confidence_level": 0.95,
+          "independent_unit": "canonical_clear_source_scene"
+        },
+        "gates": [
+          {
+            "id": "dataset_identity",
+            "type": "integrity",
+            "estimand": "qualified RESIDE hashes and frozen RESIDE/Haze4K/SOTS counts match",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "inconclusive_only"
+          },
+          {
+            "id": "prior_strict_mapping_reproduced",
+            "type": "integrity",
+            "estimand": "archived strict mapping and OTS exclusion digests plus 500 indoor, 458 outdoor, and 42 unresolved group counts reproduce",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "inconclusive_only"
+          },
+          {
+            "id": "sots_outdoor_overlap_reproduced",
+            "type": "integrity",
+            "estimand": "all 492 exact SOTS-outdoor source exclusions reproduce",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "inconclusive_only"
+          },
+          {
+            "id": "known_match_top_k_recall",
+            "type": "integrity",
+            "estimand": "proportion of 458 known strict OTS mappings present in the fixed top-64 candidate set",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "known_match_top_one_recovery",
+            "type": "integrity",
+            "estimand": "proportion of 458 known strict OTS mappings recovered as the robust matcher top-one result",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "unresolved_mapping_completeness",
+            "type": "integrity",
+            "estimand": "verified mappings among the 42 previously unresolved source groups",
+            "direction": "equal",
+            "threshold": 42,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "unresolved_mapping_uniqueness",
+            "type": "integrity",
+            "estimand": "unique selected OTS sources among the 42 unresolved groups",
+            "direction": "equal",
+            "threshold": 42,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "unresolved_mapping_score_floor",
+            "type": "integrity",
+            "estimand": "minimum robust multi-view correlation among unresolved mappings",
+            "direction": "min",
+            "threshold": 0.98,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "unresolved_mapping_gap_floor",
+            "type": "integrity",
+            "estimand": "minimum best-versus-second robust score gap among unresolved mappings",
+            "direction": "min",
+            "threshold": 0.005,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "unresolved_mapping_mutual_nearest",
+            "type": "integrity",
+            "estimand": "proportion of unresolved mappings satisfying the frozen bidirectional nearest-neighbour rule",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "eligible_ots_capacity",
+            "type": "coverage",
+            "estimand": "OTS clear scenes remaining after the complete Haze4K and SOTS-outdoor exclusion union",
+            "direction": "min",
+            "threshold": 6000,
+            "decision_role": "decisive"
+          }
+        ],
+        "competing_explanation": "The remaining 42 Haze4K sources may differ from OTS through crop, resize, compression, or color transforms that defeat the frozen global multi-view matcher. A failure therefore identifies a limitation of this retrieval method, not proof that the provenance mapping or a safe OTS pool is impossible.",
+        "terminal_mapping": {
+          "pass": {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "OTS_OVERLAP_RESOLUTION_PASS",
+            "authorizes": "OTS_OUTDOOR_MEASUREMENT_DESIGN"
+          },
+          "fail": {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "OTS_OVERLAP_RESOLUTION_FAIL",
+            "authorizes": "NONE"
+          },
+          "inconclusive": {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "OTS_OVERLAP_RESOLUTION_INCONCLUSIVE",
+            "authorizes": "NONE"
+          }
+        },
+        "disabled_actions": [
+          "model or module selection",
+          "training, inference, dehazing evaluation, or metric computation on model outputs",
+          "use of Haze4K or SOTS-outdoor as scientific outcome evidence",
+          "adapting views, top-k, thresholds, or matching rules after unresolved results are observed",
+          "claiming mapping infeasibility from a matcher FAIL",
+          "transporting the failed indoor q definition or thresholds into outdoor measurement",
+          "outdoor measurement execution before a PASS closeout"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/resolve_reside_ots_outdoor_overlap.py",
+        "timeout_seconds": 7200,
+        "expected_wall_seconds": 2400,
+        "total_units": 25962,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {
+          "CONVIR_ROUTE_OTS_WORKERS": "8",
+          "CONVIR_ROUTE_OTS_MATCH_TOPK": "64",
+          "CONVIR_ROUTE_OTS_MIN_CORRELATION": "0.98",
+          "CONVIR_ROUTE_OTS_MIN_SCORE_GAP": "0.005"
+        },
+        "evidence_files": [
+          {
+            "source_relpath": "workload/overlap_resolution_summary.json",
+            "destination_filename": "reside_ots_outdoor_overlap_resolution_v1_summary.json",
+            "required": true,
+            "max_bytes": 131072
+          },
+          {
+            "source_relpath": "workload/unresolved_source_mapping.csv",
+            "destination_filename": "reside_ots_outdoor_overlap_resolution_v1_mapping.csv",
+            "required": true,
+            "max_bytes": 65536
+          },
+          {
+            "source_relpath": "workload/ots_exclusion_ids.txt",
+            "destination_filename": "reside_ots_outdoor_overlap_resolution_v1_exclusions.txt",
+            "required": true,
+            "max_bytes": 65536
+          }
+        ],
+        "engineering_contract": {
+          "mode": "metadata_only",
+          "max_seconds": 120
+        },
+        "precision_contract": {
+          "mode": "descriptive_capacity",
+          "rationale": "The operation audits the full 1,000-group Haze4K source population and records capacity explicitly; its integrity decisions still require exact deterministic counts."
+        }
+      },
+      "assets": [
+        {
+          "id": "reside_root",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "haze4k_root",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "prior_reside_qualification",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside_data_qualification_20260722/reside_minimal_measurement_qualification.json",
+          "sha256": "f7cbac42e8510489351149412e5ad27a0278db0d3c52963d609abb8ba352714c",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "indoor_measurement_fail",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-local-measurement-mapping-v1/reside_its_local_measurement_mapping_v1_conclusion.json",
+          "sha256": "9d1238ab247d6139f8c167d4861e7ffecd313b8f92d28eb1096002adca3ebd99",
+          "access_role": "unrestricted",
+          "contract_access": true
+        }
+      ],
+      "capability": null,
+      "precision": {
+        "certificate_id": "reside_ots_outdoor_overlap_resolution_v1_capacity",
+        "estimand": "Haze4K canonical source-group mapping proportion",
+        "method": "binomial_worst_case",
+        "confidence_level": 0.95,
+        "target_half_width": 0.035,
+        "planning_sd": 0.5,
+        "independent_groups_available": 1000,
+        "independent_groups_required": 784,
+        "feasible": true,
+        "source_role": "unrestricted",
+        "source_reference": "Worst-case Bernoulli standard deviation 0.5; the route observes the full 1,000 canonical Haze4K source groups."
+      }
+    }
+  }
+}

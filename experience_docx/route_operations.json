@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/reside-ots-outdoor-overlap-resolution-v1.json",
+  "experiment_spec_sha256": "7179fc78f64eb26256d85831fe2d0cb166c1f921c9da4c3e4d754fc1d719815b",
+  "operations": {
+    "OTS_OVERLAP_RESOLUTION": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "OTS_OUTDOOR_MEASUREMENT_DESIGN",
+          "decision": "OTS_OVERLAP_RESOLUTION_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "OTS_OVERLAP_RESOLUTION_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "OTS_OVERLAP_RESOLUTION_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "reside_ots_outdoor_overlap_resolution_v1_closeout.json",
+      "heartbeat_timeout_seconds": 300,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "dataset_qualification",
+      "monitor_profile": "standard",
+      "output_id": "reside-ots-outdoor-overlap-resolution-v1-phase-a",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/reside_ots_outdoor_measurement.json",
+  "program_contract_sha256": "2cc6c6677bd87c8eaad6bed815c267ed9c087abf0eb43eff3ccfca7ca59c4692",
+  "route_card_relpath": "experience_docx/experiment_cards/reside-ots-outdoor-overlap-resolution-v1.md",
+  "route_id": "reside-ots-outdoor-overlap-resolution-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "OTS_OVERLAP_RESOLUTION": "experience_docx/scientific_contracts/reside-ots-outdoor-overlap-resolution-v1__OTS_OVERLAP_RESOLUTION.json"
+  }
+}
