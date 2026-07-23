@@ -1,0 +1,24 @@
+{
+  "route_id": "reside-ots-outdoor-overlap-resolution-v1",
+  "operation_id": "OTS_OVERLAP_RESOLUTION",
+  "run_id": "reside-ots-outdoor-overlap-resolution-v1-phase-a",
+  "decision": "OTS_OVERLAP_RESOLUTION_INCONCLUSIVE",
+  "authorizes": "NONE",
+  "primary_result": "The full 25,962-unit source audit reproduced the archived Haze4K strict-mapping digest, the 458 strict Haze4K-OTS exclusions, and all 492 exact SOTS-outdoor exclusions, with matching dataset identities and counts. It also showed that zero Haze4K canonical groups strictly match ITS, not the assumed 500. Consequently 542 Haze4K groups remain unmatched by the strict rule; the prior value 42 is only the difference between 500 provenance-expected OTS sources and 458 verified OTS matches, not an identified 42-group subset. The preregistered matcher therefore skipped retrieval and the route ended COMPLETED_INCONCLUSIVE.",
+  "gate_reasons": [
+    "All qualified RESIDE hashes and frozen counts matched, including 8,970 OTS clear/depth scenes, 313,950 OTS hazy images, 4,000 Haze4K GT files forming 1,000 canonical groups, and 492 SOTS-outdoor clear scenes.",
+    "The prior strict Haze4K mapping digest and 458-scene OTS exclusion digest reproduced exactly, and all 492 SOTS-outdoor exact source exclusions reproduced.",
+    "The route's assumption that 500 Haze4K groups would be assigned to ITS by the same strict rule was false: the observed count was zero, leaving 542 strict-unmatched Haze4K groups rather than an identified set of 42.",
+    "Because the frozen robust matcher was defined only for 458 known OTS groups plus 42 already identified unresolved groups, its prior-identity gate failed and retrieval was correctly skipped; it provides no matcher performance evidence.",
+    "The candidate 920-scene exclusion union leaves 8,050 OTS scenes, but it remains unauthorized because the provenance-expected 42 additional OTS sources have not been identified.",
+    "The typed closeout authorizes NONE, so no OTS measurement, training, inference, evaluation, or automatic source-mapping supplement is authorized."
+  ],
+  "competing_explanation": "The 42 remaining provenance-expected OTS sources may be embedded within the 542 strict-unmatched Haze4K groups because both indoor and outdoor source images can differ from RESIDE under transformations beyond the strict fingerprint rule. A separately frozen method could search all 542 groups against OTS and require exactly 42 unique, calibrated matches, or an official source manifest could resolve them directly. This result does not establish that those mappings are absent.",
+  "limitations": [
+    "The robust multi-view retrieval stage did not execute, so no conclusion about its recall, scores, uniqueness, or mutual-nearest behavior is available.",
+    "The 42-scene provenance shortfall cannot be converted into a known query subset without additional source-classification evidence.",
+    "This operation qualifies source identity only and does not define or validate an outdoor measurement field.",
+    "No model, training, inference, checkpoint, dehazing output, canary, confirmation, or locked-test evidence was accessed.",
+    "The failed indoor q definition was not transported to OTS, and OTS remains blocked for measurement or training until source exclusion is complete."
+  ]
+}
