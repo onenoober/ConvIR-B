@@ -1,0 +1,21 @@
+{
+  "route_id": "sots-ots-local-error-measurement-v2",
+  "operation_id": "SOTS_OTS_LOCAL_ERROR_MEASURE",
+  "run_id": "sots-ots-local-error-measurement-v2-r1",
+  "decision": "SOTS_LOCAL_GT_ERROR_MISMATCH_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "Zero of 492 independent SOTS-Outdoor clear-source groups met the frozen paired-GT local mismatch definition. The prevalence estimate was 0.0 with a two-sided Wilson 95 percent interval of [0.0, 0.007747635535219311], whose upper bound is below the preregistered 0.20 materiality margin. The global-competence prerequisite passed in 492 of 492 groups with a Wilson lower bound of 0.9922523644647806.",
+  "gate_reasons": [
+    "All 492 clear-source groups and all 500 nested hazy variants completed with exact dataset, checkpoint, model-source and parent-closeout identities and no inference failures.",
+    "The official OTS baseline improved full-image MSE in all 492 source groups, so the negative result cannot be attributed to failure of the frozen global-competence prerequisite.",
+    "The paired-GT local mismatch prevalence upper 95 percent bound was 0.007747635535219311, below the frozen 0.20 materiality margin.",
+    "The observed correction direction was generally opposite to the target pattern: median relative correction was approximately 0.9972 in high-input-error regions and 0.9744 in low-input-error regions."
+  ],
+  "competing_explanation": "The paired input-to-GT error ranking is a descriptive mixture of haze, scene texture, color, compression and alignment effects rather than a pure restoration-demand label, and relative correction shares its denominator with that ranking. SOTS clear-source overlap with OTS training was not excluded. These limitations can explain strong global performance or aspects of the regional contrast, but they do not convert the preregistered zero-of-492 result into support for the tested mismatch definition.",
+  "limitations": [
+    "This is development-screening evidence for one fixed official OTS ConvIR-B checkpoint on SOTS-Outdoor and is not unseen confirmation or sealed-final evidence.",
+    "The result rejects only the frozen directional mismatch definition and 0.20 prevalence claim; it does not establish absence of every form of local restoration error.",
+    "Twelve of 492 groups showed low-input-error-region harm, with a prevalence estimate of 0.024390243902439025, but this was secondary and did not satisfy the primary mismatch definition.",
+    "No training, module selection, Haze4K outcome, NH-HAZE, confirmation, canary or locked-test evidence was used."
+  ]
+}

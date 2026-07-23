@@ -1,0 +1,170 @@
+{
+  "dataset_identity": {
+    "aggregate_digest_match": true,
+    "completed_nested_variants": 500,
+    "completed_source_groups": 492,
+    "expected_nested_variants": 500,
+    "expected_source_groups": 492,
+    "observed_aggregate_sha256": "ac6921cc9a2afd32c9976465fd9a50555dce2f217f8f4ddb0614c907f681e5b2",
+    "pairing_and_count_match": true,
+    "parent_authorization_match": true,
+    "variant_count_histogram": {
+      "1": 484,
+      "2": 8
+    }
+  },
+  "failure_count": 0,
+  "failures": [],
+  "global_competence": {
+    "passed": true,
+    "required_lower_95": 0.8,
+    "source_group_prevalence": {
+      "estimate": 1.0,
+      "lower": 0.9922523644647806,
+      "successes": 492,
+      "total": 492,
+      "upper": 0.9999999999999999
+    }
+  },
+  "limitations": [
+    "This is development-screening diagnosis for one fixed official OTS ConvIR-B instance and cannot be reused as unseen confirmation evidence.",
+    "Paired input error is model-output-independent but is not a pure haze-density or restoration-demand label.",
+    "The rotated control reduces a simple spatial-content explanation but does not establish a causal mechanism.",
+    "Clear-source overlap with OTS training is not excluded, so the result cannot establish unseen-source generalization.",
+    "No module, training, Haze4K outcome, NH-HAZE, confirmation, canary or locked-test evidence was used."
+  ],
+  "marker": "SOTS_OTS_LOCAL_ERROR_MEASUREMENT_V2_COMPLETE",
+  "measurement": {
+    "group_mismatch_margins": {
+      "true_low_minus_high_correction": 0.1,
+      "true_minus_rotated_control_imbalance": 0.05
+    },
+    "negative_control": "within-image 180-degree rotation of the tile input-error score field",
+    "region_fraction": 0.2,
+    "relative_correction": "(regional input MSE - regional output MSE)/(regional input MSE + 1e-8)",
+    "tile_size_pixels": 32,
+    "variant_aggregation": "arithmetic mean within clear-source group before group classification"
+  },
+  "operation_id": "SOTS_OTS_LOCAL_ERROR_MEASURE",
+  "primary_estimand": {
+    "material_margin": 0.2,
+    "paired_gt_local_mismatch_prevalence": {
+      "estimate": 0.0,
+      "lower": 0.0,
+      "successes": 0,
+      "total": 492,
+      "upper": 0.007747635535219311
+    }
+  },
+  "route_id": "sots-ots-local-error-measurement-v2",
+  "run_id": "sots-ots-local-error-measurement-v2-r1",
+  "schema_version": 1,
+  "scope": "fixed official OTS ConvIR-B on development-screening SOTS-Outdoor paired images",
+  "secondary_group_aggregates": {
+    "alignment_separation": {
+      "count": 492,
+      "max": 0.05175238898018386,
+      "mean": -0.18103575755713705,
+      "median": -0.027740928335383164,
+      "min": -11.412867058573127,
+      "q25": -0.08330684432026703,
+      "q75": -0.011676702116389576
+    },
+    "high_error_relative_correction": {
+      "count": 492,
+      "max": 0.999742482059541,
+      "mean": 0.9927783900867331,
+      "median": 0.9971886289131433,
+      "min": 0.6952208417925062,
+      "q25": 0.9942419859419004,
+      "q75": 0.998310149261446
+    },
+    "high_error_residual_ratio": {
+      "count": 492,
+      "max": 0.30477822050265113,
+      "mean": 0.007221384020926774,
+      "median": 0.002811164055895635,
+      "min": 0.00025747003557692773,
+      "q25": 0.0016897501951036189,
+      "q75": 0.005757840586840892
+    },
+    "input_psnr": {
+      "count": 492,
+      "max": 27.209035749432537,
+      "mean": 15.951967719009444,
+      "median": 15.843169971385649,
+      "min": 8.896187862811503,
+      "q25": 13.658498686118111,
+      "q75": 17.94874766136814
+    },
+    "low_error_excess_harm": {
+      "count": 492,
+      "max": 0.08093387783689768,
+      "mean": -0.11141141761475129,
+      "median": -0.0738417944556579,
+      "min": -0.6162097281925197,
+      "q25": -0.17313831731224735,
+      "q75": -0.02716948477402536
+    },
+    "low_error_region_harm_prevalence": {
+      "estimate": 0.024390243902439025,
+      "lower": 0.01400612543474002,
+      "successes": 12,
+      "total": 492,
+      "upper": 0.042144064464614925
+    },
+    "low_error_relative_correction": {
+      "count": 492,
+      "max": 0.9985218646510978,
+      "mean": 0.8361402188015795,
+      "median": 0.9744226222286911,
+      "min": -10.263071456622303,
+      "q25": 0.9236175577891677,
+      "q75": 0.9865332583043558
+    },
+    "output_psnr": {
+      "count": 492,
+      "max": 46.683800759198164,
+      "mean": 37.403463317211084,
+      "median": 37.930221602040106,
+      "min": 22.793745724580063,
+      "q25": 35.385767230818125,
+      "q75": 40.03329996527927
+    },
+    "output_ssim": {
+      "count": 492,
+      "max": 0.9986741542816162,
+      "mean": 0.9938089646459595,
+      "median": 0.9950728118419647,
+      "min": 0.9496878981590271,
+      "q25": 0.9926230758428574,
+      "q75": 0.996456503868103
+    },
+    "rotated_control_imbalance": {
+      "count": 492,
+      "max": 1.8339457726704542,
+      "mean": 0.024397586271983462,
+      "median": 0.0033830931908820916,
+      "min": -0.1082454541737834,
+      "q25": -0.000557607266577359,
+      "q75": 0.014500445580597238
+    },
+    "true_correction_imbalance": {
+      "count": 492,
+      "max": 0.046814172849281355,
+      "mean": -0.1566381712851536,
+      "median": -0.02101634886213527,
+      "min": -11.260483950798733,
+      "q25": -0.06968327232060434,
+      "q75": -0.009612162874498065
+    }
+  },
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "SOTS_LOCAL_GT_ERROR_MISMATCH_FAIL",
+    "gate_reasons": [
+      "paired-GT local mismatch prevalence upper 95 percent bound was below the frozen material margin"
+    ],
+    "state": "COMPLETED_GATE_FAIL"
+  }
+}

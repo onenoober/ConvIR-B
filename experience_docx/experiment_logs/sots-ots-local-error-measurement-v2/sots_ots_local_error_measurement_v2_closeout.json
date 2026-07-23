@@ -1,0 +1,81 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "SOTS_LOCAL_GT_ERROR_MISMATCH_FAIL",
+  "details": {
+    "gate_reasons": [
+      "paired-GT local mismatch prevalence upper 95 percent bound was below the frozen material margin"
+    ],
+    "global_competence": {
+      "estimate": 1.0,
+      "lower": 0.9922523644647806,
+      "successes": 492,
+      "total": 492,
+      "upper": 0.9999999999999999
+    },
+    "independent_source_groups": 492,
+    "mismatch_prevalence": {
+      "estimate": 0.0,
+      "lower": 0.0,
+      "successes": 0,
+      "total": 492,
+      "upper": 0.007747635535219311
+    },
+    "nested_hazy_variants": 500,
+    "sots_development_screening_only": true,
+    "summary_file": "local_error_summary.json",
+    "training_occurred": false
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "sots_ots_local_error_measurement_v2_strata.csv": "f6838c122be3168454fb9fb12bdfc9a000d76a08a4d56123dbd9722007d580e4",
+    "sots_ots_local_error_measurement_v2_summary.json": "17ae89e8303456eb27359a683683b450dc9d3f799e18417895ffc98807694f08"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "SOTS_OTS_LOCAL_ERROR_MEASURE",
+  "returncode": 0,
+  "route_commit": "acba725b68894cbf3b10985efdde73751414718a",
+  "route_id": "sots-ots-local-error-measurement-v2",
+  "run_id": "sots-ots-local-error-measurement-v2-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "verified_assets": [
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "sha256": "023e27cb28b9ba13663dda0cd7da181e2f28f60a67c833bc1933e6d5b1ebd580"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "sha256": "140cec905c64f429359d675fff46d9ae77465d7dc972879c458095beb0d63a6d"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "dc28713ad92af0a2594b1964451602614e1b24a1e898647a6cf41c94e9e533e6"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_closeout",
+      "kind": "file",
+      "sha256": "2772599de94979be9486b752b2bfc6fc3cb887e49c498a5d70249681b4db6c56"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "sots_outdoor",
+      "kind": "directory"
+    }
+  ]
+}
