@@ -1,0 +1,53 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "HAZE4K_TRAIN_DATA_AUDIT_FAIL",
+  "details": {
+    "canonical_scenes": 750,
+    "clear_files": 3000,
+    "gate_reasons": [
+      "canonical_scene_count",
+      "clear_alias_count",
+      "frozen_split_counts"
+    ],
+    "hazy_files": 3000,
+    "internal_development_scenes": 600,
+    "model_or_checkpoint_accessed": false,
+    "official_test_accessed": false,
+    "split_assignment_digest": "4fa14ef1577b9228b669d133a1d848458abe9b2f3db3a7482ff513e8fa451544",
+    "strata_file": "haze4k_train_data_audit_strata.csv",
+    "summary_file": "haze4k_train_data_audit_summary.json",
+    "training_scenes": 150
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "haze4k_train_data_audit_v1_strata.csv": "3e31c644419f8a794fe7b58258f7da0a6d2e2527b0f9b20d38c2d5aae0158c71",
+    "haze4k_train_data_audit_v1_summary.json": "03a0abd98fbd3a6c3c1f45183b0df1142c32aff777db4854536d55b35ddb33ce"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "HAZE4K_TRAIN_DATA_AUDIT",
+  "returncode": 0,
+  "route_commit": "dc537d3fbaef0ffe797794e2066ba4de079095aa",
+  "route_id": "haze4k-train-data-audit-v1",
+  "run_id": "haze4k-train-data-audit-v1-phase-a",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "sots_parent_conclusion",
+      "kind": "file",
+      "sha256": "a9acfa6e68a6740954068d735bde2b6ad5b12e007a5f4d255bb0f366c4ad1b17"
+    }
+  ]
+}

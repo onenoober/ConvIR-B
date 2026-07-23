@@ -1,0 +1,109 @@
+{
+  "asset_scope": {
+    "confirmation_permissions_enabled": false,
+    "official_test_asset_delivered": false,
+    "scope_ok": true,
+    "train_directory_name": "train"
+  },
+  "filename_generation_metadata": {
+    "interpretation_limit": "Filename tokens and depth-induced transmission variation do not by themselves establish spatially varying atmospheric-light or scattering coefficients.",
+    "parse_rate": 1.0,
+    "parsed_two_numeric_suffix_count": 3000,
+    "semantic_status": "observed_numeric_tokens_only_no_physical_semantics_assigned",
+    "suffix_position_1": {
+      "count": 3000,
+      "max": 1.0,
+      "min": 0.5,
+      "unique": 51
+    },
+    "suffix_position_2": {
+      "count": 3000,
+      "max": 2.0,
+      "min": 0.5,
+      "unique": 151
+    }
+  },
+  "frozen_split": {
+    "assignment_digest": "4fa14ef1577b9228b669d133a1d848458abe9b2f3db3a7482ff513e8fa451544",
+    "assignment_rows_archived": false,
+    "internal_development_scene_count": 600,
+    "ranking": "SHA-256(salt + vertical-bar + canonical_scene_digest), then digest",
+    "salt": "haze4k-local-error-qualification-v1",
+    "training_scene_count": 150
+  },
+  "gates": {
+    "canonical_scene_count": false,
+    "clear_alias_count": false,
+    "clear_file_count": true,
+    "decode_rate": true,
+    "dimension_alignment_rate": true,
+    "directory_contract": true,
+    "filename_token_parse_rate": true,
+    "frozen_split_counts": false,
+    "hazy_file_count": true,
+    "scene_token_collision_count": true,
+    "train_only_asset_scope": true,
+    "unique_pairing_rate": true
+  },
+  "limitations": [
+    "This operation audits Haze4K train only and makes no Haze4K official-test claim.",
+    "The official baseline test metric was reproduced before this program; candidate test outcomes remain unseen and receive no access here.",
+    "No model, checkpoint, training, inference, local-error measurement, oracle, proxy, module, NH-HAZE, confirmation, canary, or locked-test data is used.",
+    "The audit reports filename-token syntax but does not identify their physical meaning without authoritative generation metadata.",
+    "Only aggregate evidence and a split-assignment digest are archived; no per-image or per-scene table is published."
+  ],
+  "marker": "HAZE4K_TRAIN_DATA_AUDIT_COMPLETE",
+  "operation_id": "HAZE4K_TRAIN_DATA_AUDIT",
+  "pairing": {
+    "clear_decode_failures": 0,
+    "decodable_pair_count": 3000,
+    "decode_rate": 1.0,
+    "dimension_aligned_pair_count": 3000,
+    "dimension_alignment_rate": 1.0,
+    "hazy_decode_failures": 0,
+    "missing_pair_count": 0,
+    "orphan_clear_count": 0,
+    "redundant_candidate_count": 0,
+    "unique_pair_rate": 1.0,
+    "uniquely_paired": 3000
+  },
+  "route_id": "haze4k-train-data-audit-v1",
+  "run_id": "haze4k-train-data-audit-v1-phase-a",
+  "scene_grouping": {
+    "canonical_scene_count": 750,
+    "canonical_scene_definition": "SHA-256 over width, height, and decoded RGB bytes of the clear target",
+    "clear_alias_count": 2250,
+    "scene_token_collision_count": 0,
+    "variant_count_histogram": {
+      "4": 750
+    }
+  },
+  "schema_version": 1,
+  "scope": "Haze4K train-only data qualification; official test excluded",
+  "structure": {
+    "clear_file_count": 3000,
+    "hazy_file_count": 3000,
+    "input_directory_candidates": [
+      "haze"
+    ],
+    "label_directory_candidates": [
+      "gt"
+    ],
+    "metadata_file_count": 2,
+    "metadata_files": [
+      ".DS_Store",
+      "haze/.DS_Store"
+    ],
+    "metadata_files_truncated": false
+  },
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "HAZE4K_TRAIN_DATA_AUDIT_FAIL",
+    "gate_reasons": [
+      "canonical_scene_count",
+      "clear_alias_count",
+      "frozen_split_counts"
+    ],
+    "state": "COMPLETED_GATE_FAIL"
+  }
+}

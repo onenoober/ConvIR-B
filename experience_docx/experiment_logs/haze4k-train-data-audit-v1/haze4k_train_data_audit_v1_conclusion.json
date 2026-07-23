@@ -1,0 +1,22 @@
+{
+  "route_id": "haze4k-train-data-audit-v1",
+  "operation_id": "HAZE4K_TRAIN_DATA_AUDIT",
+  "run_id": "haze4k-train-data-audit-v1-phase-a",
+  "decision": "HAZE4K_TRAIN_DATA_AUDIT_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "The train-only audit found 3,000 hazy files and 3,000 clear files, with 3,000 deterministic loader-selected pairs, 6,000 decoded images, and 3,000 dimension-aligned pairs. Canonical grouping by clear-image dimensions and decoded RGB bytes yielded 750 independent clear-scene digests, not the 3,000 scenes frozen in the contract; each digest occurred in four clear filenames, producing 2,250 additional clear aliases. The frozen 2,400/600 scene split therefore produced 150 training scenes and 600 internal-development scenes and failed its scene-count gates.",
+  "gate_reasons": [
+    "train-only scope, directory discovery, pairing, decoding, dimension alignment, filename-token syntax, and scene-token collision checks passed",
+    "canonical_scene_count failed: 750 canonical clear-scene digests were observed against the frozen 3,000",
+    "clear_alias_count failed: 2,250 additional clear filenames shared canonical RGB digests",
+    "frozen_split_counts failed because the observed population could only yield 150 training scenes and 600 internal-development scenes under the frozen ranking"
+  ],
+  "competing_explanation": "The four identical decoded clear targets per digest may be repeated ground-truth files associated with four haze variants, aliases created by the dataset packaging process, or another undocumented generation convention. Pixel identity establishes the frozen canonical grouping rule but does not by itself establish original-scene provenance or the physical meaning of the two numeric filename suffixes.",
+  "limitations": [
+    "This is a Haze4K train-only development-screening audit and makes no official-test or candidate-performance claim.",
+    "The previously reproduced official ConvIR-B test metric is background only; no candidate, threshold, proxy, module, checkpoint, or test outcome was accessed.",
+    "No local-error measurement, oracle, proxy, module, NH-HAZE, confirmation, canary, or locked-test data was used, so no later stage is authorized by this closeout.",
+    "The canonical scene count is defined by decoded RGB bytes and dimensions; authoritative dataset-generation metadata could support a future evidence-bound contract amendment, but would not retroactively change this terminal result.",
+    "Only aggregate evidence and a split-assignment digest were retained; no per-image or per-scene table was published."
+  ]
+}

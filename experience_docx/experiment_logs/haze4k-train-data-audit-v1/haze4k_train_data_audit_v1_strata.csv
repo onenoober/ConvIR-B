@@ -1,0 +1,10 @@
+stratum,observed,reference,rate
+hazy_files,3000,3000,1.0
+clear_files,3000,3000,1.0
+uniquely_paired,3000,3000,1.0
+decoded_images,6000,6000,1.0
+dimension_aligned_pairs,3000,3000,1.0
+canonical_clear_scenes,750,3000,0.25
+filename_tokens_parsed,3000,3000,1.0
+training_scenes,150,2400,0.0625
+internal_development_scenes,600,600,1.0
