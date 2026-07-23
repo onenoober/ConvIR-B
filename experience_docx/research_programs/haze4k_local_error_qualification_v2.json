@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "program_id": "haze4k_local_error_qualification",
+  "objective": "Qualify Haze4K scene-grouped development evidence, fixed-baseline local errors, bounded oracle headroom, proxy learnability, and only then a trainable spatial restoration module without using official-test candidate outcomes during development.",
+  "source_anchors": [
+    {
+      "id": "haze4k_train_scene_identity_audit_20260723",
+      "reference": "experience_docx/experiment_logs/haze4k-train-data-audit-v1/haze4k_train_data_audit_v1_conclusion.json",
+      "allowed_uses": ["diagnostic"]
+    }
+  ],
+  "dependency_roles": {
+    "prior_scene_identity_evidence": ["diagnostic"]
+  },
+  "stages": {
+    "train_data_qualification": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["haze4k_train_data_integrity"]
+    },
+    "baseline_local_error_measurement": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["haze4k_baseline_local_error"]
+    },
+    "bounded_oracle_headroom": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["haze4k_local_action_oracle"]
+    },
+    "proxy_learnability": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["haze4k_local_action_proxy"]
+    },
+    "module_development": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["bounded_spatial_restoration_module"]
+    },
+    "haze4k_candidate_confirmation": {
+      "evidence_roles": ["confirmation"],
+      "protected_permissions": {
+        "allow_confirmation": true,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["haze4k_candidate_confirmation"]
+    },
+    "nh_haze_external_validation": {
+      "evidence_roles": ["sealed_final"],
+      "protected_permissions": {
+        "allow_confirmation": true,
+        "allow_canary": false,
+        "allow_locked_test": true
+      },
+      "route_families": ["nh_haze_external_validation"]
+    }
+  },
+  "route_families": {
+    "haze4k_train_data_integrity": {
+      "core_assumption": "Haze4K train can be paired and grouped by canonical clear content without accessing the official test split.",
+      "adjacent_budget": 1,
+      "attempts_used": 1,
+      "state": "closed",
+      "close_condition": "Close after the frozen 3000-scene assumption is tested; reopen only with independently archived scene-identity evidence.",
+      "reopen_evidence_types": ["independent_scene_identity_audit"]
+    },
+    "haze4k_baseline_local_error": {
+      "core_assumption": "Fixed official ConvIR-B predictions on Haze4K internal-development scenes contain stable local restoration errors measurable at clear-scene level.",
+      "adjacent_budget": 2,
+      "attempts_used": 0,
+      "state": "paused",
+      "close_condition": "Close if local error prevalence, direction, or scene-level stability fails the frozen measurement gates.",
+      "reopen_evidence_types": ["new_measurement_field", "independent_construct_validation"]
+    },
+    "haze4k_local_action_oracle": {
+      "core_assumption": "A bounded non-deployable keep, weaken, or strengthen action oracle has material scene-level headroom over uniform adjustment.",
+      "adjacent_budget": 2,
+      "attempts_used": 0,
+      "state": "paused",
+      "close_condition": "Close if bounded spatial actions do not improve the frozen primary estimand while satisfying tail-harm gates.",
+      "reopen_evidence_types": ["new_action_space", "independent_oracle_bound"]
+    },
+    "haze4k_local_action_proxy": {
+      "core_assumption": "Input or intermediate features can predict bounded local restoration actions or harm risk under scene-grouped cross-validation.",
+      "adjacent_budget": 2,
+      "attempts_used": 0,
+      "state": "paused",
+      "close_condition": "Close if grouped out-of-fold prediction fails utility and calibration gates against shuffled and spatially uniform controls.",
+      "reopen_evidence_types": ["new_predictive_feature_family", "independent_proxy_target"]
+    },
+    "bounded_spatial_restoration_module": {
+      "core_assumption": "A learnable network-internal bounded spatial regulator can exploit qualified local state and risk signals beyond parameter-matched spatially uniform controls.",
+      "adjacent_budget": 3,
+      "attempts_used": 0,
+      "state": "paused",
+      "close_condition": "Close if fair module variants cannot improve scene-level restoration quality without violating frozen harm limits.",
+      "reopen_evidence_types": ["new_mechanistic_signal", "independent_failure_decomposition"]
+    },
+    "haze4k_candidate_confirmation": {
+      "core_assumption": "A completely frozen candidate can improve the candidate-unseen Haze4K official test relative to the official baseline.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "paused",
+      "close_condition": "Close after the single frozen candidate confirmation use regardless of terminal decision.",
+      "reopen_evidence_types": ["new_independent_confirmation_dataset"]
+    },
+    "nh_haze_external_validation": {
+      "core_assumption": "A Haze4K-confirmed frozen candidate retains directionally consistent utility and bounded tail harm on untouched NH-HAZE images.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "paused",
+      "close_condition": "Close after the single sealed NH-HAZE evaluation regardless of terminal decision.",
+      "reopen_evidence_types": ["new_real_nonhomogeneous_dataset", "external_replication"]
+    }
+  },
+  "orthogonal_dimensions": [
+    "target_domain",
+    "data_role",
+    "scene_identity_rule",
+    "measurement_target",
+    "local_action_space",
+    "predictive_feature_family",
+    "model_structure"
+  ],
+  "amendments": []
+}

@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-train-scene-split-v2.json",
+  "experiment_spec_sha256": "b0c9dc8c76c1e125a6ded7661b707fd176673cf54b9d860e4adad98c16b0cd4e",
+  "operations": {
+    "HAZE4K_TRAIN_SCENE_SPLIT_QUALIFY": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASUREMENT",
+          "decision": "HAZE4K_TRAIN_SCENE_SPLIT_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "HAZE4K_TRAIN_SCENE_SPLIT_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "HAZE4K_TRAIN_SCENE_SPLIT_SUPPLEMENT_ONLY",
+          "decision": "HAZE4K_TRAIN_SCENE_SPLIT_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "haze4k_train_scene_split_v2_closeout.json",
+      "heartbeat_timeout_seconds": 240,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "dataset_qualification",
+      "monitor_profile": "standard",
+      "output_id": "haze4k-train-scene-split-v2-phase-a",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_local_error_qualification_v2.json",
+  "program_contract_sha256": "5de7dfba4e37e682ee99d404df98e85353c4442c37cc70f8366d65a3d202e609",
+  "route_card_relpath": "experience_docx/experiment_cards/haze4k-train-scene-split-v2.md",
+  "route_id": "haze4k-train-scene-split-v2",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "HAZE4K_TRAIN_SCENE_SPLIT_QUALIFY": "experience_docx/scientific_contracts/haze4k-train-scene-split-v2__HAZE4K_TRAIN_SCENE_SPLIT_QUALIFY.json"
+  }
+}

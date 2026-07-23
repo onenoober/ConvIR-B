@@ -1,0 +1,271 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k-train-scene-split-v2",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "title": "Haze4K 750-scene train and internal-development split qualification",
+  "rationale": "The archived train-only audit established 750 canonical clear scenes, each with four nested haze variants, rather than 3,000 independent scenes. This evidence-backed reopen validates a deterministic 600-scene training and 150-scene internal-development split while retaining all 3,000 hazy observations. It accesses only Haze4K train, never official test or any model checkpoint. Passing authorizes a separate fixed-official-weight local-error measurement route on the 150 internal-development scenes.",
+  "first_operation": "HAZE4K_TRAIN_SCENE_SPLIT_QUALIFY",
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_local_error_qualification_v2.json",
+  "operations": {
+    "HAZE4K_TRAIN_SCENE_SPLIT_QUALIFY": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "dataset_qualification",
+        "require_gpu": false,
+        "output_id": "haze4k-train-scene-split-v2-phase-a",
+        "closeout_filename": "haze4k_train_scene_split_v2_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "allowed_terminal_tuples": [
+          {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "HAZE4K_TRAIN_SCENE_SPLIT_PASS",
+            "authorizes": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASUREMENT"
+          },
+          {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "HAZE4K_TRAIN_SCENE_SPLIT_FAIL",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "HAZE4K_TRAIN_SCENE_SPLIT_INCONCLUSIVE",
+            "authorizes": "HAZE4K_TRAIN_SCENE_SPLIT_SUPPLEMENT_ONLY"
+          },
+          {
+            "state": "FAILED_ENGINEERING",
+            "decision": null,
+            "authorizes": "NONE"
+          }
+        ],
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 240,
+        "min_free_gpu_mib": 0,
+        "max_gpu_utilization_pct": 100
+      },
+      "program_authorization": {
+        "program_id": "haze4k_local_error_qualification",
+        "stage_id": "train_data_qualification",
+        "family_id": "haze4k_train_data_integrity",
+        "mechanism_type": "reopen",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {
+            "role": "prior_scene_identity_evidence",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_train_scene_identity_audit_20260723"
+          }
+        ],
+        "adjacent_sequence": null,
+        "orthogonal_changes": [],
+        "reopen_evidence": [
+          {
+            "type": "independent_scene_identity_audit",
+            "relpath": "experience_docx/experiment_logs/haze4k-train-data-audit-v1/haze4k_train_data_audit_v1_conclusion.json"
+          }
+        ]
+      },
+      "scientific_contract": {
+        "question": "Can the observed 750 canonical Haze4K train clear scenes, each with four nested haze variants, be deterministically partitioned into 600 training scenes and 150 internal-development scenes with complete variant containment and no official-test access?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "canonical_clear_scene",
+          "independent_group_count": 750,
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "canonical_scene_grouped_600_150_partition",
+          "reference": "archived train-only audit showing 750 decoded-RGB clear-scene digests with four haze variants per digest",
+          "matched_budget": "all 3,000 Haze4K train haze observations grouped into all 750 canonical clear scenes",
+          "fixed_factors": [
+            "official loader exact-name then first-token same-extension then first-token PNG precedence",
+            "canonical scene SHA-256 over clear-image width, height, and decoded RGB bytes",
+            "split salt haze4k-local-error-qualification-v2",
+            "rank by SHA-256 of split salt and canonical scene digest then digest",
+            "first 150 ranked scenes internal_development and remaining 600 training",
+            "all four haze variants of each canonical scene remain in one role",
+            "aggregate evidence and assignment digest only with no per-image table"
+          ]
+        },
+        "primary_estimand": {
+          "id": "scene_grouped_partition_integrity",
+          "metric": "proportion of 750 canonical clear scenes assigned to exactly one frozen role with all four haze variants contained in that role",
+          "direction": "higher",
+          "aggregation": "deterministic full-train census at canonical clear-scene level",
+          "unit": "canonical_clear_scene"
+        },
+        "controls": [
+          "exact 3,000 haze and 3,000 clear file counts",
+          "complete deterministic loader pairing, decode, and dimension alignment",
+          "exact 750 canonical clear-scene digests and 2,250 additional clear aliases",
+          "exactly four paired haze variants per canonical scene",
+          "scene-role disjointness and complete observation coverage",
+          "asset path restricted to train and protected permissions disabled"
+        ],
+        "uncertainty": {
+          "method": "deterministic census integrity audit; no sampling interval is used and variants never increase the independent scene count",
+          "confidence_level": 0.95,
+          "independent_unit": "canonical_clear_scene"
+        },
+        "gates": [
+          {
+            "id": "train_only_asset_scope",
+            "type": "integrity",
+            "estimand": "route asset resolves exactly to train with protected permissions disabled",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "complete_file_and_pair_census",
+            "type": "integrity",
+            "estimand": "3,000 haze and clear files are paired, decoded, and dimension aligned",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "canonical_scene_count",
+            "type": "integrity",
+            "estimand": "canonical clear-scene RGB digests",
+            "direction": "equal",
+            "threshold": 750,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "four_variants_per_scene",
+            "type": "integrity",
+            "estimand": "canonical scenes with exactly four paired haze observations",
+            "direction": "equal",
+            "threshold": 750,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "frozen_role_counts",
+            "type": "integrity",
+            "estimand": "600 training and 150 internal-development scenes",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "variant_containment_and_coverage",
+            "type": "integrity",
+            "estimand": "all 3,000 haze observations inherit exactly one role from their canonical scene",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          }
+        ],
+        "competing_explanation": "Decoded RGB identity validates the frozen canonical grouping rule but does not establish original capture provenance or physical filename-token semantics; the four aliases may reflect dataset packaging rather than distinct clear captures.",
+        "terminal_mapping": {
+          "pass": {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "HAZE4K_TRAIN_SCENE_SPLIT_PASS",
+            "authorizes": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASUREMENT"
+          },
+          "fail": {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "HAZE4K_TRAIN_SCENE_SPLIT_FAIL",
+            "authorizes": "NONE"
+          },
+          "inconclusive": {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "HAZE4K_TRAIN_SCENE_SPLIT_INCONCLUSIVE",
+            "authorizes": "HAZE4K_TRAIN_SCENE_SPLIT_SUPPLEMENT_ONLY"
+          }
+        },
+        "disabled_actions": [
+          "Haze4K official-test file, target, prediction, or metric access",
+          "model construction, checkpoint loading, training, inference, or evaluation",
+          "local-error, oracle, proxy, module, threshold, or checkpoint selection",
+          "NH-HAZE, SOTS, ITS, OTS, confirmation, canary, or locked-test access",
+          "treating haze variants or clear aliases as independent scenes",
+          "assigning physical semantics to filename suffixes"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/qualify_haze4k_train_scene_split.py",
+        "timeout_seconds": 1200,
+        "expected_wall_seconds": 300,
+        "total_units": 4,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {
+          "CONVIR_ROUTE_HAZE4K_SPLIT_WORKERS": "8",
+          "CONVIR_ROUTE_HAZE4K_EXPECTED_SCENES": "750",
+          "CONVIR_ROUTE_HAZE4K_TRAINING_SCENES": "600",
+          "CONVIR_ROUTE_HAZE4K_DEVELOPMENT_SCENES": "150",
+          "CONVIR_ROUTE_HAZE4K_SPLIT_SALT": "haze4k-local-error-qualification-v2"
+        },
+        "evidence_files": [
+          {
+            "source_relpath": "workload/haze4k_train_scene_split_summary.json",
+            "destination_filename": "haze4k_train_scene_split_v2_summary.json",
+            "required": true,
+            "max_bytes": 131072
+          },
+          {
+            "source_relpath": "workload/haze4k_train_scene_split_strata.csv",
+            "destination_filename": "haze4k_train_scene_split_v2_strata.csv",
+            "required": true,
+            "max_bytes": 65536
+          }
+        ],
+        "engineering_contract": {
+          "mode": "metadata_only",
+          "max_seconds": 120
+        },
+        "precision_contract": {
+          "mode": "descriptive_capacity",
+          "rationale": "The operation observes all 750 archived canonical train scenes and all 3,000 nested haze observations; split gates use exact census counts."
+        }
+      },
+      "assets": [
+        {
+          "id": "haze4k_train",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "prior_scene_audit_conclusion",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-train-data-audit-v1/haze4k_train_data_audit_v1_conclusion.json",
+          "sha256": "cf819aaf4fcd3a7829698b3bcc7f0564c694ecb7e012241b5b11c8455b00ccc7",
+          "access_role": "unrestricted",
+          "contract_access": true
+        }
+      ],
+      "capability": null,
+      "precision": {
+        "certificate_id": "haze4k_train_scene_split_v2_capacity",
+        "estimand": "canonical clear-scene partition integrity proportion",
+        "method": "binomial_worst_case",
+        "confidence_level": 0.95,
+        "target_half_width": 0.04,
+        "planning_sd": 0.5,
+        "independent_groups_available": 750,
+        "independent_groups_required": 601,
+        "feasible": true,
+        "source_role": "unrestricted",
+        "source_reference": "Worst-case Bernoulli standard deviation 0.5 fixed analytically; the operation observes all 750 canonical train scenes."
+      }
+    }
+  }
+}

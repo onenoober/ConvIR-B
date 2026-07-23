@@ -1,0 +1,22 @@
+{
+  "assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_scene_audit_conclusion",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-train-data-audit-v1/haze4k_train_data_audit_v1_conclusion.json",
+      "sha256": "cf819aaf4fcd3a7829698b3bcc7f0564c694ecb7e012241b5b11c8455b00ccc7"
+    }
+  ],
+  "operation_id": "HAZE4K_TRAIN_SCENE_SPLIT_QUALIFY",
+  "route_id": "haze4k-train-scene-split-v2",
+  "schema_version": 1
+}

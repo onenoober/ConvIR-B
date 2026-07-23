@@ -1,0 +1,124 @@
+{
+  "competing_explanation": "Decoded RGB identity validates the frozen canonical grouping rule but does not establish original capture provenance or physical filename-token semantics; the four aliases may reflect dataset packaging rather than distinct clear captures.",
+  "controls": [
+    "exact 3,000 haze and 3,000 clear file counts",
+    "complete deterministic loader pairing, decode, and dimension alignment",
+    "exact 750 canonical clear-scene digests and 2,250 additional clear aliases",
+    "exactly four paired haze variants per canonical scene",
+    "scene-role disjointness and complete observation coverage",
+    "asset path restricted to train and protected permissions disabled"
+  ],
+  "disabled_actions": [
+    "Haze4K official-test file, target, prediction, or metric access",
+    "model construction, checkpoint loading, training, inference, or evaluation",
+    "local-error, oracle, proxy, module, threshold, or checkpoint selection",
+    "NH-HAZE, SOTS, ITS, OTS, confirmation, canary, or locked-test access",
+    "treating haze variants or clear aliases as independent scenes",
+    "assigning physical semantics to filename suffixes"
+  ],
+  "gates": [
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "route asset resolves exactly to train with protected permissions disabled",
+      "id": "train_only_asset_scope",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "3,000 haze and clear files are paired, decoded, and dimension aligned",
+      "id": "complete_file_and_pair_census",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "canonical clear-scene RGB digests",
+      "id": "canonical_scene_count",
+      "threshold": 750,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "canonical scenes with exactly four paired haze observations",
+      "id": "four_variants_per_scene",
+      "threshold": 750,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "600 training and 150 internal-development scenes",
+      "id": "frozen_role_counts",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "all 3,000 haze observations inherit exactly one role from their canonical scene",
+      "id": "variant_containment_and_coverage",
+      "threshold": 1.0,
+      "type": "integrity"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "official loader exact-name then first-token same-extension then first-token PNG precedence",
+      "canonical scene SHA-256 over clear-image width, height, and decoded RGB bytes",
+      "split salt haze4k-local-error-qualification-v2",
+      "rank by SHA-256 of split salt and canonical scene digest then digest",
+      "first 150 ranked scenes internal_development and remaining 600 training",
+      "all four haze variants of each canonical scene remain in one role",
+      "aggregate evidence and assignment digest only with no per-image table"
+    ],
+    "matched_budget": "all 3,000 Haze4K train haze observations grouped into all 750 canonical clear scenes",
+    "primary_variable": "canonical_scene_grouped_600_150_partition",
+    "reference": "archived train-only audit showing 750 decoded-RGB clear-scene digests with four haze variants per digest"
+  },
+  "operation_id": "HAZE4K_TRAIN_SCENE_SPLIT_QUALIFY",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "canonical_clear_scene",
+    "independent_group_count": 750
+  },
+  "primary_estimand": {
+    "aggregation": "deterministic full-train census at canonical clear-scene level",
+    "direction": "higher",
+    "id": "scene_grouped_partition_integrity",
+    "metric": "proportion of 750 canonical clear scenes assigned to exactly one frozen role with all four haze variants contained in that role",
+    "unit": "canonical_clear_scene"
+  },
+  "question": "Can the observed 750 canonical Haze4K train clear scenes, each with four nested haze variants, be deterministically partitioned into 600 training scenes and 150 internal-development scenes with complete variant containment and no official-test access?",
+  "route_id": "haze4k-train-scene-split-v2",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "HAZE4K_TRAIN_SCENE_SPLIT_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "HAZE4K_TRAIN_SCENE_SPLIT_SUPPLEMENT_ONLY",
+      "decision": "HAZE4K_TRAIN_SCENE_SPLIT_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASUREMENT",
+      "decision": "HAZE4K_TRAIN_SCENE_SPLIT_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "canonical_clear_scene",
+    "method": "deterministic census integrity audit; no sampling interval is used and variants never increase the independent scene count"
+  }
+}

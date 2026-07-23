@@ -1,0 +1,14 @@
+{
+  "certificate_id": "haze4k_train_scene_split_v2_capacity",
+  "confidence_level": 0.95,
+  "estimand": "canonical clear-scene partition integrity proportion",
+  "feasible": true,
+  "independent_groups_available": 750,
+  "independent_groups_required": 601,
+  "method": "binomial_worst_case",
+  "planning_sd": 0.5,
+  "schema_version": 1,
+  "source_reference": "Worst-case Bernoulli standard deviation 0.5 fixed analytically; the operation observes all 750 canonical train scenes.",
+  "source_role": "unrestricted",
+  "target_half_width": 0.04
+}

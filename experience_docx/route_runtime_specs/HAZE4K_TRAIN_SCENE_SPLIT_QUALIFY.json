@@ -1,0 +1,48 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/haze4k-train-scene-split-v2__HAZE4K_TRAIN_SCENE_SPLIT_QUALIFY.json",
+  "engineering_contract": {
+    "capability_profile_relpath": null,
+    "max_seconds": 120,
+    "mode": "metadata_only"
+  },
+  "entrypoint_relpath": "experience_docx/tools/qualify_haze4k_train_scene_split.py",
+  "environment": {
+    "CONVIR_ROUTE_HAZE4K_DEVELOPMENT_SCENES": "150",
+    "CONVIR_ROUTE_HAZE4K_EXPECTED_SCENES": "750",
+    "CONVIR_ROUTE_HAZE4K_SPLIT_SALT": "haze4k-local-error-qualification-v2",
+    "CONVIR_ROUTE_HAZE4K_SPLIT_WORKERS": "8",
+    "CONVIR_ROUTE_HAZE4K_TRAINING_SCENES": "600"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "haze4k_train_scene_split_v2_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_train_scene_split_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_train_scene_split_v2_strata.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/haze4k_train_scene_split_strata.csv"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 300,
+  "operation_id": "HAZE4K_TRAIN_SCENE_SPLIT_QUALIFY",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/haze4k-train-scene-split-v2__HAZE4K_TRAIN_SCENE_SPLIT_QUALIFY.json",
+    "mode": "descriptive_capacity",
+    "rationale": "The operation observes all 750 archived canonical train scenes and all 3,000 nested haze observations; split gates use exact census counts."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "haze4k-train-scene-split-v2",
+  "schema_version": 2,
+  "timeout_seconds": 1200,
+  "total_units": 4
+}
