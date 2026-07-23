@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "program_id": "reside_ots_outdoor_measurement",
+  "objective": "Qualify a mainstream, sufficiently large, Haze4K- and SOTS-outdoor-disjoint RESIDE OTS source-scene pool for a synthetic-outdoor local optical-thickness measurement without importing the failed indoor q gate.",
+  "source_anchors": [
+    {
+      "id": "ots_targeted_geometry_pass",
+      "reference": "experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_closeout.json",
+      "allowed_uses": ["diagnostic"]
+    }
+  ],
+  "dependency_roles": {
+    "outdoor_source_qualification": ["diagnostic"]
+  },
+  "stages": {
+    "outdoor_measurement_design": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["synthetic_outdoor_measurement"]
+    }
+  },
+  "route_families": {
+    "synthetic_outdoor_measurement": {
+      "core_assumption": "A disjoint OTS clear-scene pool with paired MATLAB v7.3 depth and full-factorial official haze variants can support a separately defined synthetic-outdoor local optical-thickness measurement.",
+      "adjacent_budget": 2,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close if the frozen outdoor field lacks scene-level reconstruction, local-heterogeneity coverage, precision, or permuted-depth negative-control separation.",
+      "reopen_evidence_types": ["new_measurement_field", "independent_construct_validation"]
+    }
+  },
+  "orthogonal_dimensions": ["target_domain", "measurement_target", "measurement_field", "region_definition"],
+  "amendments": []
+}

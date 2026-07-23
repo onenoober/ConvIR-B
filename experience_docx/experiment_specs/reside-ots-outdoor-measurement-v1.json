@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "route_id": "reside-ots-outdoor-measurement-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "title": "RESIDE OTS synthetic-outdoor local optical-thickness qualification",
+  "rationale": "The direct parent resolved all 42 expected Haze4K outdoor source relationships and authorized an 8,006-scene OTS pool after a conservative 964-scene exclusion union. OTS is a mainstream outdoor synthetic dehazing source with 35 official haze variants and one MATLAB v7.3/HDF5 depth field per clear scene. This route uses a deterministic 1,000-scene subset: 375 definition scenes freeze the two filename-token roles and 625 disjoint validation scenes supply formal scene-level uncertainty. Every selected scene uses all 35 nested variants. Depth is read with the already available cloud Octave executable, while all statistics remain scene-level. The estimand is synthetic optical-thickness measurement qualification only, not real-haze restoration demand.",
+  "first_operation": "OTS_OUTDOOR_CALIBRATE",
+  "program_contract_relpath": "experience_docx/research_programs/reside_ots_outdoor_measurement.json",
+  "operations": {
+    "OTS_OUTDOOR_CALIBRATE": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "dataset_qualification",
+        "require_gpu": false,
+        "output_id": "reside-ots-outdoor-measurement-v1-phase-a",
+        "closeout_filename": "reside_ots_outdoor_measurement_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "allowed_terminal_tuples": [
+          {"state": "COMPLETED_GATE_PASS", "decision": "OTS_OUTDOOR_MEASUREMENT_PASS", "authorizes": "OTS_BASELINE_BEHAVIOR_MEASUREMENT_DESIGN"},
+          {"state": "COMPLETED_GATE_FAIL", "decision": "OTS_OUTDOOR_MEASUREMENT_FAIL", "authorizes": "NONE"},
+          {"state": "COMPLETED_INCONCLUSIVE", "decision": "OTS_OUTDOOR_MEASUREMENT_INCONCLUSIVE", "authorizes": "OTS_MEASUREMENT_SUPPLEMENT_ONLY"},
+          {"state": "FAILED_ENGINEERING", "decision": null, "authorizes": "NONE"}
+        ],
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 600,
+        "min_free_gpu_mib": 0,
+        "max_gpu_utilization_pct": 100
+      },
+      "program_authorization": {
+        "program_id": "reside_ots_outdoor_measurement",
+        "stage_id": "outdoor_measurement_design",
+        "family_id": "synthetic_outdoor_measurement",
+        "mechanism_type": "adjacent",
+        "evidence_role": "development_screening",
+        "protected_permissions": {"allow_confirmation": false, "allow_canary": false, "allow_locked_test": false},
+        "dependencies": [
+          {"role": "outdoor_source_qualification", "use": "diagnostic", "anchor_id": "ots_targeted_geometry_pass"}
+        ],
+        "adjacent_sequence": 1,
+        "orthogonal_changes": [],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "On a deterministic scene-disjoint subset of the authorized OTS pool, does the official depth-plus-filename-parameter field reconstruct the official haze variants, retain local spatial heterogeneity, and outperform a permuted-depth negative control with sufficient scene-level coverage and precision?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "original_ots_clear_scene",
+          "independent_group_count": 1000,
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "depth_derived_synthetic_optical_thickness_tau_equals_beta_times_depth",
+          "reference": "official clear/haze pairing, scalar airlight and scattering coefficient tokens, and a circularly permuted scene-depth negative control",
+          "matched_budget": "375 definition scenes plus 625 validation scenes; all 35 official variants nested within every selected scene; no Haze4K, SOTS, model, or output metric access",
+          "fixed_factors": [
+            "eligible scene IDs are the 8,970 official OTS clear IDs minus the exact 964-ID parent exclusion asset",
+            "selection is the first 1,000 scene IDs after SHA-256 ordering with salt reside-ots-outdoor-measurement-v1",
+            "the first 375 selected scenes are definition and the remaining 625 are validation",
+            "each selected scene must contain exactly the full factorial airlight grid 0.80, 0.85, 0.90, 0.95, 1.00 and beta grid 0.04, 0.06, 0.08, 0.10, 0.12, 0.16, 0.20",
+            "MATLAB v7.3 depth is read by /usr/bin/octave, aligned to the clear image, and linearly resampled to 96 by 96",
+            "clear and haze images are bilinearly resampled to 96 by 96 and normalized to [0,1]",
+            "definition compares the preregistered A-first-beta-second token mapping with its reversed alternative; validation always uses A-first-beta-second",
+            "the validation negative control circularly shifts the ordered depth list by 313 scenes",
+            "no pixel, patch, haze variant, or depth cell is treated as an independent statistical sample"
+          ]
+        },
+        "primary_estimand": {
+          "id": "validation_joint_scene_qualification_rate",
+          "metric": "proportion of 625 validation clear scenes simultaneously passing reconstruction, local optical-thickness heterogeneity, and permuted-depth separation",
+          "direction": "higher",
+          "aggregation": "scene-level joint indicator with two-sided Wilson 95 percent interval",
+          "unit": "original_ots_clear_scene"
+        },
+        "controls": [
+          "reversed filename-token mapping on definition scenes",
+          "validation depth fields circularly shifted by 313 independent scenes",
+          "exact parent closeout and 964-scene exclusion identities",
+          "complete 35-cell official parameter grid per scene",
+          "all exclusions and missing cells remain failures under the frozen policy"
+        ],
+        "uncertainty": {
+          "method": "two-sided Wilson 95 percent intervals over independent original clear scenes; variants and pixels are nested summaries only",
+          "confidence_level": 0.95,
+          "independent_unit": "original_ots_clear_scene"
+        },
+        "gates": [
+          {"id": "parent_authorization", "type": "integrity", "estimand": "parent terminal tuple, 964 exclusions, exclusion digest, and 8,006 eligible-scene capacity match", "direction": "equal", "threshold": 1.0, "decision_role": "inconclusive_only"},
+          {"id": "dataset_identity", "type": "integrity", "estimand": "8,970 clear, 8,970 depth, 313,950 haze files, paired scene IDs, and complete 35-cell grids match", "direction": "equal", "threshold": 1.0, "decision_role": "inconclusive_only"},
+          {"id": "definition_token_mapping", "type": "integrity", "estimand": "A-first-beta-second definition median reconstruction RMSE is at most 0.025 and at most half the reversed-mapping median", "direction": "equal", "threshold": 1.0, "decision_role": "decisive"},
+          {"id": "validation_scene_count", "type": "coverage", "estimand": "independent validation clear scenes with complete measurements", "direction": "equal", "threshold": 625, "decision_role": "decisive"},
+          {"id": "joint_scene_qualification", "type": "precision", "estimand": "Wilson lower 95 percent bound for validation joint qualification; reconstruction requires scene median RMSE at most 0.025 and scene 95th-percentile RMSE at most 0.050, heterogeneity requires 0.20 times the depth q95-q05 range at least 0.050, and negative control requires permuted-minus-true median RMSE at least 0.005", "direction": "min", "threshold": 0.90, "decision_role": "decisive"},
+          {"id": "split_disjointness", "type": "integrity", "estimand": "definition-validation scene overlap", "direction": "equal", "threshold": 0, "decision_role": "decisive"}
+        ],
+        "competing_explanation": "Low reconstruction error could follow from global airlight and beta tokens even if the spatial depth field adds no local information. The permuted-depth control tests that alternative. Passing remains synthetic OTS optical-thickness validity only; it cannot establish a real-haze restoration-demand construct.",
+        "terminal_mapping": {
+          "pass": {"state": "COMPLETED_GATE_PASS", "decision": "OTS_OUTDOOR_MEASUREMENT_PASS", "authorizes": "OTS_BASELINE_BEHAVIOR_MEASUREMENT_DESIGN"},
+          "fail": {"state": "COMPLETED_GATE_FAIL", "decision": "OTS_OUTDOOR_MEASUREMENT_FAIL", "authorizes": "NONE"},
+          "inconclusive": {"state": "COMPLETED_INCONCLUSIVE", "decision": "OTS_OUTDOOR_MEASUREMENT_INCONCLUSIVE", "authorizes": "OTS_MEASUREMENT_SUPPLEMENT_ONLY"}
+        },
+        "disabled_actions": [
+          "transporting the failed indoor q definition or threshold to OTS",
+          "calling depth-derived tau real-haze restoration demand or causal mechanism evidence",
+          "model, module, loss, threshold, or hyperparameter selection",
+          "training, inference, SOTS evaluation, Haze4K outcome evaluation, or NH-HAZE access",
+          "treating haze variants, patches, pixels, or depth cells as independent samples",
+          "changing sample membership, token roles, permutation, margins, or gates after results"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/calibrate_reside_ots_outdoor_measurement.py",
+        "timeout_seconds": 7200,
+        "expected_wall_seconds": 1800,
+        "total_units": 37000,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {"allow_confirmation": false, "allow_canary": false, "allow_locked_test": false},
+        "environment": {"CONVIR_ROUTE_OTS_IMAGE_SIZE": "96", "CONVIR_ROUTE_OTS_WORKERS": "8"},
+        "evidence_files": [
+          {"source_relpath": "workload/measurement_summary.json", "destination_filename": "reside_ots_outdoor_measurement_v1_summary.json", "required": true, "max_bytes": 131072},
+          {"source_relpath": "workload/aggregate_strata.csv", "destination_filename": "reside_ots_outdoor_measurement_v1_strata.csv", "required": true, "max_bytes": 65536},
+          {"source_relpath": "workload/selected_scene_ids.txt", "destination_filename": "reside_ots_outdoor_measurement_v1_scenes.txt", "required": true, "max_bytes": 65536}
+        ],
+        "engineering_contract": {"mode": "cpu_exact", "max_seconds": 120},
+        "precision_contract": {"mode": "formal_precision", "rationale": "The 625-scene validation split gives a worst-case two-sided 95 percent proportion half-width below 0.04 while retaining 375 independent definition scenes for token-role qualification."}
+      },
+      "assets": [
+        {"id": "reside_root", "kind": "directory", "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE", "access_role": "development_screening", "contract_access": false},
+        {"id": "parent_closeout", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_closeout.json", "sha256": "348f255a4a99dca898a7457ccbd5f0b1a50516db6109233b8b431251f9a672f3", "access_role": "unrestricted", "contract_access": true},
+        {"id": "parent_exclusions", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_exclusions.txt", "sha256": "d7526849879cf8650af545db20a5e4555cb0eb1931973612af98a5897f2e03d2", "access_role": "unrestricted", "contract_access": true}
+      ],
+      "capability": {
+        "profile_id": "reside_ots_outdoor_measurement_cpu_v1",
+        "contract_mode": "cpu_exact",
+        "minimum_fixture": {"batch": 35, "channels": 3, "height": 96, "width": 96},
+        "bound_assets": [{"id": "parent_closeout", "identity": "348f255a4a99dca898a7457ccbd5f0b1a50516db6109233b8b431251f9a672f3"}],
+        "compatibility_imports": ["numpy", "PIL", "scipy"],
+        "production_path_statement": "The CPU contract exercises the exact optical reconstruction, filename-token comparison, scene qualification, Wilson interval, negative-control and Octave float32 transport functions on synthetic data without reading scientific assets.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true
+      },
+      "precision": {
+        "certificate_id": "reside_ots_outdoor_measurement_v1_scene_proportion",
+        "estimand": "validation joint scene qualification proportion",
+        "method": "binomial_worst_case",
+        "confidence_level": 0.95,
+        "target_half_width": 0.04,
+        "planning_sd": 0.5,
+        "independent_groups_available": 1000,
+        "independent_groups_required": 601,
+        "feasible": true,
+        "source_role": "development_screening",
+        "source_reference": "The parent-authorized 8,006-scene pool supplies 625 independent validation scenes; the normal-approximation worst-case requirement ceil(1.96 squared times 0.25 divided by 0.04 squared) is 601."
+      }
+    }
+  }
+}

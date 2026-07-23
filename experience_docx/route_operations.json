@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/reside-ots-outdoor-measurement-v1.json",
+  "experiment_spec_sha256": "e74515d35ffbdae493251de9c2d302c87a5e1df7ff80b268205f0859b128cba6",
+  "operations": {
+    "OTS_OUTDOOR_CALIBRATE": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "OTS_BASELINE_BEHAVIOR_MEASUREMENT_DESIGN",
+          "decision": "OTS_OUTDOOR_MEASUREMENT_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "OTS_OUTDOOR_MEASUREMENT_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "OTS_MEASUREMENT_SUPPLEMENT_ONLY",
+          "decision": "OTS_OUTDOOR_MEASUREMENT_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "reside_ots_outdoor_measurement_v1_closeout.json",
+      "heartbeat_timeout_seconds": 600,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "dataset_qualification",
+      "monitor_profile": "standard",
+      "output_id": "reside-ots-outdoor-measurement-v1-phase-a",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/reside_ots_outdoor_measurement.json",
+  "program_contract_sha256": "cefc6a0b712d37ec91bd54dc0382cec21df3ef6db7721e16c5b1b3bdfdae5c7d",
+  "route_card_relpath": "experience_docx/experiment_cards/reside-ots-outdoor-measurement-v1.md",
+  "route_id": "reside-ots-outdoor-measurement-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "OTS_OUTDOOR_CALIBRATE": "experience_docx/scientific_contracts/reside-ots-outdoor-measurement-v1__OTS_OUTDOOR_CALIBRATE.json"
+  }
+}

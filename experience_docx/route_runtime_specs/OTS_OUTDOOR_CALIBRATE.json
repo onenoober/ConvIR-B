@@ -1,0 +1,51 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/reside-ots-outdoor-measurement-v1__OTS_OUTDOOR_CALIBRATE.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/reside-ots-outdoor-measurement-v1__OTS_OUTDOOR_CALIBRATE.json",
+    "max_seconds": 120,
+    "mode": "cpu_exact"
+  },
+  "entrypoint_relpath": "experience_docx/tools/calibrate_reside_ots_outdoor_measurement.py",
+  "environment": {
+    "CONVIR_ROUTE_OTS_IMAGE_SIZE": "96",
+    "CONVIR_ROUTE_OTS_WORKERS": "8"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "reside_ots_outdoor_measurement_v1_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/measurement_summary.json"
+    },
+    {
+      "destination_filename": "reside_ots_outdoor_measurement_v1_strata.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/aggregate_strata.csv"
+    },
+    {
+      "destination_filename": "reside_ots_outdoor_measurement_v1_scenes.txt",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/selected_scene_ids.txt"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 1800,
+  "operation_id": "OTS_OUTDOOR_CALIBRATE",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/reside-ots-outdoor-measurement-v1__OTS_OUTDOOR_CALIBRATE.json",
+    "mode": "formal_precision",
+    "rationale": "The 625-scene validation split gives a worst-case two-sided 95 percent proportion half-width below 0.04 while retaining 375 independent definition scenes for token-role qualification."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "reside-ots-outdoor-measurement-v1",
+  "schema_version": 2,
+  "timeout_seconds": 7200,
+  "total_units": 37000
+}
