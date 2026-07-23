@@ -16,6 +16,13 @@
       "allowed_uses": [
         "diagnostic"
       ]
+    },
+    {
+      "id": "ots_overlap_inconclusive",
+      "reference": "experience_docx/experiment_logs/reside-ots-outdoor-overlap-resolution-v1/reside_ots_outdoor_overlap_resolution_v1_conclusion.json",
+      "allowed_uses": [
+        "diagnostic"
+      ]
     }
   ],
   "dependency_roles": {
@@ -23,6 +30,9 @@
       "diagnostic"
     ],
     "indoor_construct_limit": [
+      "diagnostic"
+    ],
+    "prior_overlap_terminal": [
       "diagnostic"
     ]
   },
@@ -37,7 +47,8 @@
         "allow_locked_test": false
       },
       "route_families": [
-        "ots_overlap_resolution"
+        "ots_overlap_resolution",
+        "ots_full_retrieval"
       ]
     },
     "outdoor_measurement_design": {
@@ -61,6 +72,17 @@
       "attempts_used": 0,
       "state": "open",
       "close_condition": "Close if the frozen robust retrieval method cannot reproduce the verified mappings or uniquely resolve all 42 remaining sources.",
+      "reopen_evidence_types": [
+        "official_source_manifest",
+        "independent_geometric_mapping"
+      ]
+    },
+    "ots_full_retrieval": {
+      "core_assumption": "Searching all 542 strict-unmatched Haze4K source groups against OTS can identify exactly the 42 provenance-expected outdoor sources under frozen positive-control, negative-control, uniqueness, mutual-nearest, and capacity gates.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close if the frozen full-query retrieval cannot recover its known OTS controls, admits any negative control, or cannot uniquely identify exactly 42 additional OTS sources.",
       "reopen_evidence_types": [
         "official_source_manifest",
         "independent_geometric_mapping"

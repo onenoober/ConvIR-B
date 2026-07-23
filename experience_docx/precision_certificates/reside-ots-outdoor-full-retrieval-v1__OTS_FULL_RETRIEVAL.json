@@ -1,0 +1,14 @@
+{
+  "certificate_id": "reside_ots_full_retrieval_v1_capacity",
+  "confidence_level": 0.95,
+  "estimand": "strict-unmatched Haze4K source-group mapping proportion",
+  "feasible": true,
+  "independent_groups_available": 542,
+  "independent_groups_required": 385,
+  "method": "binomial_worst_case",
+  "planning_sd": 0.5,
+  "schema_version": 1,
+  "source_reference": "Worst-case Bernoulli standard deviation 0.5; the route observes all 542 strict-unmatched canonical Haze4K source groups.",
+  "source_role": "unrestricted",
+  "target_half_width": 0.05
+}

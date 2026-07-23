@@ -1,0 +1,191 @@
+{
+  "competing_explanation": "The remaining 42 outdoor sources may differ from OTS through transformations not handled by the frozen global multi-view matcher, or the public provenance count may not map one-to-one to this local copy. A FAIL therefore identifies a limitation of the frozen retrieval method, not absence of the underlying source relationship.",
+  "controls": [
+    "byte-bound parent closeout, parent summary, parent exclusion list, and original RESIDE qualification",
+    "exact reproduction of 458 strict Haze4K-OTS mappings and 492 exact SOTS-outdoor exclusions",
+    "100 percent top-64 and top-one recovery on all 458 known OTS positive controls",
+    "zero accepted matches among all 50 SOTS-indoor clear-scene negative controls",
+    "one-to-one forward and reverse nearest-neighbour checks",
+    "explicit statement that a matcher FAIL is not an infeasibility certificate"
+  ],
+  "disabled_actions": [
+    "model or module selection",
+    "training, inference, dehazing evaluation, or metric computation on model outputs",
+    "use of Haze4K or SOTS images as scientific outcome evidence",
+    "adapting views, top-k, thresholds, controls, or matching rules after results",
+    "claiming source-mapping infeasibility from a matcher FAIL",
+    "transporting the failed indoor q definition or thresholds into outdoor measurement",
+    "outdoor measurement execution before a PASS closeout"
+  ],
+  "gates": [
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "qualified RESIDE hashes and frozen RESIDE/Haze4K/SOTS counts match",
+      "id": "dataset_identity",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "parent state, decision, authorization, summary, and exclusion assets match",
+      "id": "parent_terminal_identity",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "458 strict OTS groups and 542 strict-unmatched Haze4K groups reproduce",
+      "id": "strict_haze4k_ots_reproduced",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "all 492 SOTS-outdoor exact OTS source exclusions reproduce",
+      "id": "sots_outdoor_exclusion_reproduced",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "the 920-scene parent exclusion union reproduces exactly",
+      "id": "parent_exclusion_union_reproduced",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "proportion of 458 known positive controls present in the fixed top-64 set",
+      "id": "known_top_k_recall",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "proportion of 458 known positive controls recovered at top one",
+      "id": "known_top_one_recovery",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "proportion of 50 indoor negative controls rejected by the frozen acceptance rule",
+      "id": "negative_control_specificity",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "number of forward-prequalified full-query candidates",
+      "id": "prequalified_bound",
+      "threshold": 128,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "verified additional OTS source mappings among all 542 strict-unmatched queries",
+      "id": "new_mapping_completeness",
+      "threshold": 42,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "unique OTS source ids among verified additional mappings",
+      "id": "new_mapping_uniqueness",
+      "threshold": 42,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "verified additional OTS source ids outside the parent 920-scene exclusion union",
+      "id": "new_mapping_disjointness",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "proportion of 42 additional mappings satisfying forward and reverse nearest-neighbour rules",
+      "id": "new_mapping_mutual_nearest",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "OTS clear scenes remaining after the complete verified exclusion union",
+      "id": "eligible_ots_capacity",
+      "threshold": 6000,
+      "type": "coverage"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "canonical grouping of all 4,000 Haze4K GT files into 1,000 source scenes",
+      "strict OTS identity reproduction with dHash, pHash, grayscale correlation, and RGB-mean gates",
+      "seven fixed full and crop views",
+      "symmetric multi-view pHash top-64 retrieval",
+      "maximum multi-view normalized grayscale correlation",
+      "correlation floor 0.98",
+      "forward and reverse score-gap floor 0.005",
+      "one-to-one mutual-nearest requirement",
+      "maximum 128 prequalified candidates before reverse matching"
+    ],
+    "matched_budget": "all 542 strict-unmatched Haze4K source groups, all 8,970 OTS clear scenes, fixed seven views, top-64 retrieval, and no adaptive threshold change",
+    "primary_variable": "full_query_candidate_ots_source_identity",
+    "reference": "the 458 verified strict Haze4K-OTS mappings, 50 SOTS-indoor negative-control scenes, and 920 verified Haze4K/SOTS-outdoor OTS exclusions from the parent terminal"
+  },
+  "operation_id": "OTS_FULL_RETRIEVAL",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "canonical_clear_source_scene",
+    "independent_group_count": 542
+  },
+  "primary_estimand": {
+    "aggregation": "deterministic census count over canonical clear-source groups",
+    "direction": "higher",
+    "id": "verified_new_ots_source_mapping_count",
+    "metric": "number of all 542 strict-unmatched Haze4K source groups that receive a unique, thresholded, bidirectional OTS source match outside the parent exclusion set",
+    "unit": "canonical_clear_source_scene"
+  },
+  "question": "Can the frozen full-query matcher search all 542 strict-unmatched official Haze4K source groups and identify exactly 42 additional unique OTS sources while recovering every known OTS positive control, rejecting all indoor negative controls, and preserving sufficient OTS capacity?",
+  "route_id": "reside-ots-outdoor-full-retrieval-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "OTS_FULL_RETRIEVAL_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "NONE",
+      "decision": "OTS_FULL_RETRIEVAL_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "OTS_OUTDOOR_MEASUREMENT_DESIGN",
+      "decision": "OTS_FULL_RETRIEVAL_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "canonical_clear_source_scene",
+    "method": "deterministic full-population identity audit; integrity and mapping decisions use exact census counts without treating nested images or views as independent samples"
+  }
+}

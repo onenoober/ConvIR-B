@@ -1,0 +1,53 @@
+{
+  "assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_reside_qualification",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside_data_qualification_20260722/reside_minimal_measurement_qualification.json",
+      "sha256": "f7cbac42e8510489351149412e5ad27a0278db0d3c52963d609abb8ba352714c"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_overlap_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-outdoor-overlap-resolution-v1/reside_ots_outdoor_overlap_resolution_v1_closeout.json",
+      "sha256": "da35f3ba215bc3d1806a53fbd50c2832577d42a7d4ae0166d9f34ecce071c52b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_overlap_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-outdoor-overlap-resolution-v1/reside_ots_outdoor_overlap_resolution_v1_summary.json",
+      "sha256": "b21675f41e7a2559b313d645a435688d749969214dd4c408faaa496235721da8"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_overlap_exclusions",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-outdoor-overlap-resolution-v1/reside_ots_outdoor_overlap_resolution_v1_exclusions.txt",
+      "sha256": "00655084ccc8aa4773b1033e54cba58935b8ff918041fdccde7f578d98f40988"
+    }
+  ],
+  "operation_id": "OTS_FULL_RETRIEVAL",
+  "route_id": "reside-ots-outdoor-full-retrieval-v1",
+  "schema_version": 1
+}
