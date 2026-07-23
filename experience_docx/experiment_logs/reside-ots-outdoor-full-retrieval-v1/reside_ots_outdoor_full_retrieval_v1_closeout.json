@@ -1,0 +1,78 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "OTS_FULL_RETRIEVAL_FAIL",
+  "details": {
+    "eligible_ots_scenes": 8011,
+    "exclusion_digest": "3cb5104120bcad2d7b03e4ed333508fa59d896b2d2e9301f38c5f22ef87edefe",
+    "gate_reasons": [
+      "new_mapping_completeness",
+      "new_mapping_uniqueness",
+      "new_mapping_mutual_nearest"
+    ],
+    "outdoor_measurement_executed": false,
+    "queried_unmatched_groups": 542,
+    "summary_file": "full_retrieval_summary.json",
+    "verified_new_ots_mappings": 39
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "reside_ots_outdoor_full_retrieval_v1_exclusions.txt": "f01d9b1f4ee4ad353d845c63cee50874aea4692efb9c02a27123e8c52c4ccb88",
+    "reside_ots_outdoor_full_retrieval_v1_mapping.csv": "5011624fadce85d5289ff7bfdfcfd1f166260eff0ce3c67509c91cdde467efd3",
+    "reside_ots_outdoor_full_retrieval_v1_negative_controls.csv": "b621e9ec5be5e5272497edf64b2acac08e0317b44e4c390b0cf3ae321b583a73",
+    "reside_ots_outdoor_full_retrieval_v1_summary.json": "80a78b2cd53afa2e42bec0ee427490e4e18fae44ccd8e9d13ced34d1ef21407d"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "OTS_FULL_RETRIEVAL",
+  "returncode": 0,
+  "route_commit": "26f99f0176eb9c3e16728d39f8cd863e724290a1",
+  "route_id": "reside-ots-outdoor-full-retrieval-v1",
+  "run_id": "reside-ots-outdoor-full-retrieval-v1-phase-a",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_overlap_closeout",
+      "kind": "file",
+      "sha256": "da35f3ba215bc3d1806a53fbd50c2832577d42a7d4ae0166d9f34ecce071c52b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_overlap_exclusions",
+      "kind": "file",
+      "sha256": "00655084ccc8aa4773b1033e54cba58935b8ff918041fdccde7f578d98f40988"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_overlap_summary",
+      "kind": "file",
+      "sha256": "b21675f41e7a2559b313d645a435688d749969214dd4c408faaa496235721da8"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_reside_qualification",
+      "kind": "file",
+      "sha256": "f7cbac42e8510489351149412e5ad27a0278db0d3c52963d609abb8ba352714c"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "route_id": "reside-ots-outdoor-full-retrieval-v1",
+  "operation_id": "OTS_FULL_RETRIEVAL",
+  "run_id": "reside-ots-outdoor-full-retrieval-v1-phase-a",
+  "decision": "OTS_FULL_RETRIEVAL_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "The complete 542-group strict-unmatched Haze4K query census produced 41 forward-prequalified candidates and 39 unique bidirectionally verified new OTS source mappings, below the frozen exact requirement of 42. The route therefore ended COMPLETED_GATE_FAIL and does not authorize OTS outdoor measurement design, training, inference, or evaluation.",
+  "gate_reasons": [
+    "Dataset hashes and frozen counts matched; all 1,000 canonical Haze4K source groups, 8,970 OTS clear scenes, 50 SOTS-indoor negative controls, and 492 SOTS-outdoor overlap controls completed.",
+    "The 458 strict Haze4K-OTS mappings, 542 strict-unmatched groups, 492 SOTS-outdoor exclusions, and parent 920-scene exclusion union reproduced exactly.",
+    "All 458 known OTS positive controls were recovered in both top-64 and top-one, and none of the 50 SOTS-indoor negative controls was admitted.",
+    "The new-mapping completeness, uniqueness, and mutual-nearest gates failed because only 39 unique bidirectionally verified mappings were available instead of exactly 42.",
+    "The provisional 959-scene exclusion union would leave 8,011 OTS scenes and passes the 6,000-scene capacity gate, but it is not an authorized exclusion asset because the mapping gate failed.",
+    "The typed closeout authorizes NONE; the 39 mappings cannot be used to silently relax the preregistered source-independence requirement."
+  ],
+  "competing_explanation": "The three missing provenance-expected OTS sources may differ from this OTS copy through transformations not represented by the frozen seven-view global matcher, or the published provenance count may not map one-to-one to the local scene identities. This scientific FAIL establishes only that the frozen full-query matcher did not close all 42 mappings; it is not an infeasibility certificate.",
+  "limitations": [
+    "This route qualifies source identity only and does not define or validate an outdoor local measurement field.",
+    "The 39 verified mappings and 959-scene provisional union remain diagnostic because the exact-42 gate failed.",
+    "A next source-identity route requires a permitted new evidence type such as an official source manifest or independent geometric mapping; threshold tuning or another adjacent run is not authorized.",
+    "Haze4K and SOTS GT images were used only for source identity, not model evaluation, and no training, inference, checkpoint selection, confirmation outcome, canary, or locked-test metric was accessed."
+  ]
+}
