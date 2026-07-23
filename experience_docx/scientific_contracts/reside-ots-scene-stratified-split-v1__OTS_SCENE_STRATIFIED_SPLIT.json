@@ -1,0 +1,166 @@
+{
+  "competing_explanation": "Apparent balance by file number or random image sampling could hide scene duplication, depth/content holes, or an underpowered model-development split. The full-census feature and grid audit distinguishes those failures before any training. Passing does not validate the later local-degradation construct.",
+  "controls": [
+    "exact parent PASS terminal and exact 964-ID authorized exclusion asset",
+    "full official counts of 8,970 clear files, 8,970 depth files, and 313,950 hazy files",
+    "every eligible scene has one clear image, one readable numeric two-dimensional depth field, and the same 35-member haze suffix grid",
+    "role lists are exactly disjoint and their union equals all 8,006 eligible scene IDs",
+    "synthetic full-scale protected-data-free allocator must terminate within the frozen bound and reproduce exact quotas",
+    "a coverage FAIL means only this frozen allocation method failed, not that no adequate OTS subset exists"
+  ],
+  "disabled_actions": [
+    "model or module selection, training, inference, or dehazing outcome evaluation",
+    "using SOTS, Haze4K, or NH-HAZE outcomes to choose the split",
+    "treating haze variants, pixels, patches, or depth locations as independent scenes",
+    "calling the filename parameter-grid order a validated local haze or restoration-demand label",
+    "releasing reserve scenes without a later preregistered trigger",
+    "using measurement-validation scenes to select a proxy, threshold, or measurement definition",
+    "adapting role counts, descriptors, margins, or the five-variant recipe after results"
+  ],
+  "gates": [
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "parent state, decision, authorization, exclusion count, and exclusion digest match",
+      "id": "parent_authorization",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "official OTS clear, depth, and haze counts and eligible scene pairing are complete",
+      "id": "dataset_pairing",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "proportion of 8,006 eligible depth MAT files containing a finite numeric two-dimensional field",
+      "id": "depth_field_availability",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "proportion of eligible scenes having the identical official 35-member, two-parameter, 5 by 7 haze grid",
+      "id": "haze_grid_completeness",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "all five exact frozen role counts match",
+      "id": "role_counts",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "role lists are pairwise disjoint and their union is the full eligible pool",
+      "id": "scene_disjointness",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "worst role-feature empirical CDF gap",
+      "id": "worst_cdf_gap",
+      "threshold": 0.08,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "largest absolute role versus pool mean difference divided by the pool standard deviation",
+      "id": "worst_standardized_mean_difference",
+      "threshold": 0.1,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "minimum within-role fraction in any frozen marginal quartile of the four allocation descriptors",
+      "id": "marginal_quartile_coverage",
+      "threshold": 0.15,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "minimum within-role fraction below the pool tenth percentile or above the pool ninetieth percentile for any of eight descriptors",
+      "id": "tail_coverage",
+      "threshold": 0.05,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "fixed five-variant recipe exists and yields 20,000 training plus 2,500 development-validation hazy pairs",
+      "id": "training_haze_budget",
+      "threshold": 1.0,
+      "type": "coverage"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "role counts: training 4,000; model-development validation 500; measurement definition 1,000; measurement validation 1,000; reserve 1,506",
+      "scene descriptors: clear luminance mean and standard deviation, clear gradient energy and colorfulness, log-depth mean and standard deviation, log-depth interdecile range, and normalized depth-gradient energy",
+      "four equal-frequency marginal bins for clear luminance mean, clear gradient energy, log-depth mean, and log-depth interdecile range",
+      "deterministic SHA-256 ordering within joint strata and weighted-deficit allocation over a round-robin stratum traversal",
+      "coverage gates compare every role with the full eligible pool using all eight descriptors",
+      "training and model-development validation use five fixed parameter-grid points: four corners plus the center of the official 5 by 7 grid",
+      "measurement-definition and measurement-validation roles retain all 35 haze variants per scene",
+      "reserve scenes remain unused unless a later preregistered precision or failure rule explicitly releases them"
+    ],
+    "matched_budget": "all 8,006 eligible clear/depth pairs and filename metadata for all 313,950 official OTS hazy files; no model outcome or SOTS/NH-HAZE outcome",
+    "primary_variable": "deterministic_scene_role_assignment",
+    "reference": "the full 8,006-scene OTS pool authorized by the targeted-geometry PASS and its exact 964-ID exclusion asset"
+  },
+  "operation_id": "OTS_SCENE_STRATIFIED_SPLIT",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "OTS_clear_source_scene",
+    "independent_group_count": 8006
+  },
+  "primary_estimand": {
+    "aggregation": "maximum over five roles and eight descriptors",
+    "direction": "lower",
+    "id": "worst_role_feature_cdf_gap",
+    "metric": "maximum two-sample empirical CDF gap between any frozen role and the complete eligible pool across the eight frozen scene descriptors",
+    "unit": "OTS_clear_source_scene"
+  },
+  "question": "Can the complete authorized 8,006-scene OTS pool be deterministically partitioned into computationally bounded, mutually exclusive development roles while every role preserves frozen content/depth coverage and the official haze-parameter grid remains complete?",
+  "route_id": "reside-ots-scene-stratified-split-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "OTS_SCENE_STRATIFIED_SPLIT_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "NONE",
+      "decision": "OTS_SCENE_STRATIFIED_SPLIT_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "OTS_OUTDOOR_MEASUREMENT_DEFINITION",
+      "decision": "OTS_SCENE_STRATIFIED_SPLIT_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "OTS_clear_source_scene",
+    "method": "deterministic full-population allocation audit; no patch, pixel, haze variant, or depth location is treated as an independent scene"
+  }
+}

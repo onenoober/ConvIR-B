@@ -1,0 +1,14 @@
+{
+  "certificate_id": "reside_ots_scene_stratified_split_v1_capacity",
+  "confidence_level": 0.95,
+  "estimand": "minimum role-level scene proportion",
+  "feasible": true,
+  "independent_groups_available": 8006,
+  "independent_groups_required": 385,
+  "method": "binomial_worst_case",
+  "planning_sd": 0.5,
+  "schema_version": 1,
+  "source_reference": "The frozen smallest role contains 500 independent OTS clear source scenes; nested haze variants are excluded from this count.",
+  "source_role": "unrestricted",
+  "target_half_width": 0.05
+}

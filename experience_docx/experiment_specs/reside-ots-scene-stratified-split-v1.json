@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "route_id": "reside-ots-scene-stratified-split-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "title": "RESIDE OTS scene-stratified role and haze-budget design",
+  "rationale": "The authorized OTS exclusion union leaves 8,006 source-independent outdoor clear scenes, but using all 280,210 associated hazy images would be unnecessarily expensive. This route freezes scene roles before model work: 4,000 training scenes, 500 model-development validation scenes, 1,000 measurement-definition scenes, 1,000 measurement-validation scenes, and 1,506 reserve scenes. Allocation uses only clear-image content and paired-depth descriptors, never model outcomes. Training and model-development roles use five fixed haze-parameter grid points per scene; both measurement roles retain access to all 35 variants so later measurement validity is not constrained by this compute reduction. Passing authorizes only an outdoor measurement-definition route and reusable data-role manifests, not model selection or training.",
+  "first_operation": "OTS_SCENE_STRATIFIED_SPLIT",
+  "program_contract_relpath": "experience_docx/research_programs/reside_ots_data_pool_design.json",
+  "operations": {
+    "OTS_SCENE_STRATIFIED_SPLIT": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "dataset_qualification",
+        "require_gpu": false,
+        "output_id": "reside-ots-scene-stratified-split-v1-phase-a",
+        "closeout_filename": "reside_ots_scene_stratified_split_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "allowed_terminal_tuples": [
+          {"state": "COMPLETED_GATE_PASS", "decision": "OTS_SCENE_STRATIFIED_SPLIT_PASS", "authorizes": "OTS_OUTDOOR_MEASUREMENT_DEFINITION"},
+          {"state": "COMPLETED_GATE_FAIL", "decision": "OTS_SCENE_STRATIFIED_SPLIT_FAIL", "authorizes": "NONE"},
+          {"state": "COMPLETED_INCONCLUSIVE", "decision": "OTS_SCENE_STRATIFIED_SPLIT_INCONCLUSIVE", "authorizes": "NONE"},
+          {"state": "FAILED_ENGINEERING", "decision": null, "authorizes": "NONE"}
+        ],
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 300,
+        "min_free_gpu_mib": 0,
+        "max_gpu_utilization_pct": 100
+      },
+      "program_authorization": {
+        "program_id": "reside_ots_data_pool_design",
+        "stage_id": "scene_pool_design",
+        "family_id": "scene_stratified_partition",
+        "mechanism_type": "adjacent",
+        "evidence_role": "development_screening",
+        "protected_permissions": {"allow_confirmation": false, "allow_canary": false, "allow_locked_test": false},
+        "dependencies": [
+          {"role": "authorized_ots_pool", "use": "diagnostic", "anchor_id": "targeted_geometry_pass"}
+        ],
+        "adjacent_sequence": 1,
+        "orthogonal_changes": [],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Can the complete authorized 8,006-scene OTS pool be deterministically partitioned into computationally bounded, mutually exclusive development roles while every role preserves frozen content/depth coverage and the official haze-parameter grid remains complete?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "OTS_clear_source_scene",
+          "independent_group_count": 8006,
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "deterministic_scene_role_assignment",
+          "reference": "the full 8,006-scene OTS pool authorized by the targeted-geometry PASS and its exact 964-ID exclusion asset",
+          "matched_budget": "all 8,006 eligible clear/depth pairs and filename metadata for all 313,950 official OTS hazy files; no model outcome or SOTS/NH-HAZE outcome",
+          "fixed_factors": [
+            "role counts: training 4,000; model-development validation 500; measurement definition 1,000; measurement validation 1,000; reserve 1,506",
+            "scene descriptors: clear luminance mean and standard deviation, clear gradient energy and colorfulness, log-depth mean and standard deviation, log-depth interdecile range, and normalized depth-gradient energy",
+            "four equal-frequency marginal bins for clear luminance mean, clear gradient energy, log-depth mean, and log-depth interdecile range",
+            "deterministic SHA-256 ordering within joint strata and weighted-deficit allocation over a round-robin stratum traversal",
+            "coverage gates compare every role with the full eligible pool using all eight descriptors",
+            "training and model-development validation use five fixed parameter-grid points: four corners plus the center of the official 5 by 7 grid",
+            "measurement-definition and measurement-validation roles retain all 35 haze variants per scene",
+            "reserve scenes remain unused unless a later preregistered precision or failure rule explicitly releases them"
+          ]
+        },
+        "primary_estimand": {
+          "id": "worst_role_feature_cdf_gap",
+          "metric": "maximum two-sample empirical CDF gap between any frozen role and the complete eligible pool across the eight frozen scene descriptors",
+          "direction": "lower",
+          "aggregation": "maximum over five roles and eight descriptors",
+          "unit": "OTS_clear_source_scene"
+        },
+        "controls": [
+          "exact parent PASS terminal and exact 964-ID authorized exclusion asset",
+          "full official counts of 8,970 clear files, 8,970 depth files, and 313,950 hazy files",
+          "every eligible scene has one clear image, one readable numeric two-dimensional depth field, and the same 35-member haze suffix grid",
+          "role lists are exactly disjoint and their union equals all 8,006 eligible scene IDs",
+          "synthetic full-scale protected-data-free allocator must terminate within the frozen bound and reproduce exact quotas",
+          "a coverage FAIL means only this frozen allocation method failed, not that no adequate OTS subset exists"
+        ],
+        "uncertainty": {
+          "method": "deterministic full-population allocation audit; no patch, pixel, haze variant, or depth location is treated as an independent scene",
+          "confidence_level": 0.95,
+          "independent_unit": "OTS_clear_source_scene"
+        },
+        "gates": [
+          {"id": "parent_authorization", "type": "integrity", "estimand": "parent state, decision, authorization, exclusion count, and exclusion digest match", "direction": "equal", "threshold": 1.0, "decision_role": "inconclusive_only"},
+          {"id": "dataset_pairing", "type": "integrity", "estimand": "official OTS clear, depth, and haze counts and eligible scene pairing are complete", "direction": "equal", "threshold": 1.0, "decision_role": "inconclusive_only"},
+          {"id": "depth_field_availability", "type": "integrity", "estimand": "proportion of 8,006 eligible depth MAT files containing a finite numeric two-dimensional field", "direction": "equal", "threshold": 1.0, "decision_role": "inconclusive_only"},
+          {"id": "haze_grid_completeness", "type": "integrity", "estimand": "proportion of eligible scenes having the identical official 35-member, two-parameter, 5 by 7 haze grid", "direction": "equal", "threshold": 1.0, "decision_role": "inconclusive_only"},
+          {"id": "role_counts", "type": "integrity", "estimand": "all five exact frozen role counts match", "direction": "equal", "threshold": 1.0, "decision_role": "decisive"},
+          {"id": "scene_disjointness", "type": "integrity", "estimand": "role lists are pairwise disjoint and their union is the full eligible pool", "direction": "equal", "threshold": 1.0, "decision_role": "decisive"},
+          {"id": "worst_cdf_gap", "type": "coverage", "estimand": "worst role-feature empirical CDF gap", "direction": "max", "threshold": 0.08, "decision_role": "decisive"},
+          {"id": "worst_standardized_mean_difference", "type": "coverage", "estimand": "largest absolute role versus pool mean difference divided by the pool standard deviation", "direction": "max", "threshold": 0.10, "decision_role": "decisive"},
+          {"id": "marginal_quartile_coverage", "type": "coverage", "estimand": "minimum within-role fraction in any frozen marginal quartile of the four allocation descriptors", "direction": "min", "threshold": 0.15, "decision_role": "decisive"},
+          {"id": "tail_coverage", "type": "coverage", "estimand": "minimum within-role fraction below the pool tenth percentile or above the pool ninetieth percentile for any of eight descriptors", "direction": "min", "threshold": 0.05, "decision_role": "decisive"},
+          {"id": "training_haze_budget", "type": "coverage", "estimand": "fixed five-variant recipe exists and yields 20,000 training plus 2,500 development-validation hazy pairs", "direction": "equal", "threshold": 1.0, "decision_role": "decisive"}
+        ],
+        "competing_explanation": "Apparent balance by file number or random image sampling could hide scene duplication, depth/content holes, or an underpowered model-development split. The full-census feature and grid audit distinguishes those failures before any training. Passing does not validate the later local-degradation construct.",
+        "terminal_mapping": {
+          "pass": {"state": "COMPLETED_GATE_PASS", "decision": "OTS_SCENE_STRATIFIED_SPLIT_PASS", "authorizes": "OTS_OUTDOOR_MEASUREMENT_DEFINITION"},
+          "fail": {"state": "COMPLETED_GATE_FAIL", "decision": "OTS_SCENE_STRATIFIED_SPLIT_FAIL", "authorizes": "NONE"},
+          "inconclusive": {"state": "COMPLETED_INCONCLUSIVE", "decision": "OTS_SCENE_STRATIFIED_SPLIT_INCONCLUSIVE", "authorizes": "NONE"}
+        },
+        "disabled_actions": [
+          "model or module selection, training, inference, or dehazing outcome evaluation",
+          "using SOTS, Haze4K, or NH-HAZE outcomes to choose the split",
+          "treating haze variants, pixels, patches, or depth locations as independent scenes",
+          "calling the filename parameter-grid order a validated local haze or restoration-demand label",
+          "releasing reserve scenes without a later preregistered trigger",
+          "using measurement-validation scenes to select a proxy, threshold, or measurement definition",
+          "adapting role counts, descriptors, margins, or the five-variant recipe after results"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/design_reside_ots_scene_stratified_split.py",
+        "timeout_seconds": 2400,
+        "expected_wall_seconds": 900,
+        "total_units": 8007,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {"allow_confirmation": false, "allow_canary": false, "allow_locked_test": false},
+        "environment": {},
+        "evidence_files": [
+          {"source_relpath": "workload/split_summary.json", "destination_filename": "reside_ots_scene_stratified_split_v1_summary.json", "required": true, "max_bytes": 131072},
+          {"source_relpath": "workload/coverage_audit.csv", "destination_filename": "reside_ots_scene_stratified_split_v1_coverage.csv", "required": true, "max_bytes": 131072},
+          {"source_relpath": "workload/training_scene_ids.txt", "destination_filename": "reside_ots_scene_stratified_split_v1_training.txt", "required": true, "max_bytes": 65536},
+          {"source_relpath": "workload/model_development_scene_ids.txt", "destination_filename": "reside_ots_scene_stratified_split_v1_model_development.txt", "required": true, "max_bytes": 65536},
+          {"source_relpath": "workload/measurement_definition_scene_ids.txt", "destination_filename": "reside_ots_scene_stratified_split_v1_measurement_definition.txt", "required": true, "max_bytes": 65536},
+          {"source_relpath": "workload/measurement_validation_scene_ids.txt", "destination_filename": "reside_ots_scene_stratified_split_v1_measurement_validation.txt", "required": true, "max_bytes": 65536},
+          {"source_relpath": "workload/reserve_scene_ids.txt", "destination_filename": "reside_ots_scene_stratified_split_v1_reserve.txt", "required": true, "max_bytes": 65536},
+          {"source_relpath": "workload/haze_variant_recipe.json", "destination_filename": "reside_ots_scene_stratified_split_v1_haze_recipe.json", "required": true, "max_bytes": 65536}
+        ],
+        "engineering_contract": {"mode": "cpu_exact", "max_seconds": 120},
+        "precision_contract": {
+          "mode": "descriptive_capacity",
+          "rationale": "The smallest role contains 500 independent source scenes, exceeding the worst-case Bernoulli requirement of 385 for a 0.05 two-sided planning half-width at 95 percent confidence. This is capacity evidence only, not power for a future model effect."
+        }
+      },
+      "assets": [
+        {"id": "reside_root", "kind": "directory", "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE", "access_role": "development_screening", "contract_access": false},
+        {"id": "parent_closeout", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_closeout.json", "sha256": "348f255a4a99dca898a7457ccbd5f0b1a50516db6109233b8b431251f9a672f3", "access_role": "unrestricted", "contract_access": true},
+        {"id": "authorized_exclusions", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_exclusions.txt", "sha256": "d7526849879cf8650af545db20a5e4555cb0eb1931973612af98a5897f2e03d2", "access_role": "unrestricted", "contract_access": true}
+      ],
+      "capability": {
+        "profile_id": "reside_ots_scene_stratified_split_cpu_v1",
+        "contract_mode": "cpu_exact",
+        "minimum_fixture": {"batch": 8006, "channels": 8, "height": 1, "width": 5},
+        "bound_assets": [
+          {"id": "parent_closeout", "identity": "348f255a4a99dca898a7457ccbd5f0b1a50516db6109233b8b431251f9a672f3"}
+        ],
+        "compatibility_imports": ["numpy", "PIL", "scipy.io"],
+        "production_path_statement": "The CPU contract executes the exact 8,006-item quantile-binning, stratum round-robin, weighted-deficit allocation, disjointness, and coverage calculations on synthetic descriptors without reading scientific data.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true
+      },
+      "precision": {
+        "certificate_id": "reside_ots_scene_stratified_split_v1_capacity",
+        "estimand": "minimum role-level scene proportion",
+        "method": "binomial_worst_case",
+        "confidence_level": 0.95,
+        "target_half_width": 0.05,
+        "planning_sd": 0.5,
+        "independent_groups_available": 8006,
+        "independent_groups_required": 385,
+        "feasible": true,
+        "source_role": "unrestricted",
+        "source_reference": "The frozen smallest role contains 500 independent OTS clear source scenes; nested haze variants are excluded from this count."
+      }
+    }
+  }
+}

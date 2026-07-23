@@ -1,0 +1,78 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/reside-ots-scene-stratified-split-v1__OTS_SCENE_STRATIFIED_SPLIT.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/reside-ots-scene-stratified-split-v1__OTS_SCENE_STRATIFIED_SPLIT.json",
+    "max_seconds": 120,
+    "mode": "cpu_exact"
+  },
+  "entrypoint_relpath": "experience_docx/tools/design_reside_ots_scene_stratified_split.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "reside_ots_scene_stratified_split_v1_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/split_summary.json"
+    },
+    {
+      "destination_filename": "reside_ots_scene_stratified_split_v1_coverage.csv",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/coverage_audit.csv"
+    },
+    {
+      "destination_filename": "reside_ots_scene_stratified_split_v1_training.txt",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/training_scene_ids.txt"
+    },
+    {
+      "destination_filename": "reside_ots_scene_stratified_split_v1_model_development.txt",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/model_development_scene_ids.txt"
+    },
+    {
+      "destination_filename": "reside_ots_scene_stratified_split_v1_measurement_definition.txt",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/measurement_definition_scene_ids.txt"
+    },
+    {
+      "destination_filename": "reside_ots_scene_stratified_split_v1_measurement_validation.txt",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/measurement_validation_scene_ids.txt"
+    },
+    {
+      "destination_filename": "reside_ots_scene_stratified_split_v1_reserve.txt",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/reserve_scene_ids.txt"
+    },
+    {
+      "destination_filename": "reside_ots_scene_stratified_split_v1_haze_recipe.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/haze_variant_recipe.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 900,
+  "operation_id": "OTS_SCENE_STRATIFIED_SPLIT",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/reside-ots-scene-stratified-split-v1__OTS_SCENE_STRATIFIED_SPLIT.json",
+    "mode": "descriptive_capacity",
+    "rationale": "The smallest role contains 500 independent source scenes, exceeding the worst-case Bernoulli requirement of 385 for a 0.05 two-sided planning half-width at 95 percent confidence. This is capacity evidence only, not power for a future model effect."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "reside-ots-scene-stratified-split-v1",
+  "schema_version": 2,
+  "timeout_seconds": 2400,
+  "total_units": 8007
+}

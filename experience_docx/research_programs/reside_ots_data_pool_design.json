@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "program_id": "reside_ots_data_pool_design",
+  "objective": "Freeze a computationally economical but coverage-qualified scene-level OTS development pool that preserves independent outdoor scenes for training, model-development validation, measurement definition, measurement validation, and preregistered expansion.",
+  "source_anchors": [
+    {
+      "id": "targeted_geometry_pass",
+      "reference": "experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_conclusion.json",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    }
+  ],
+  "dependency_roles": {
+    "authorized_ots_pool": [
+      "diagnostic"
+    ]
+  },
+  "stages": {
+    "scene_pool_design": {
+      "evidence_roles": [
+        "development_screening"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "scene_stratified_partition"
+      ]
+    },
+    "outdoor_measurement_design": {
+      "evidence_roles": [
+        "development_screening"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "outdoor_measurement_definition"
+      ]
+    }
+  },
+  "route_families": {
+    "scene_stratified_partition": {
+      "core_assumption": "The authorized 8,006-scene OTS pool contains complete clear, depth, and haze-parameter assets and can be partitioned by frozen scene-level content and depth features into computationally bounded, mutually exclusive roles without material coverage loss.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close if required fields are missing, exact role counts or scene-level disjointness fail, or the frozen deterministic stratifier exceeds any role-specific coverage margin.",
+      "reopen_evidence_types": [
+        "additional_official_metadata",
+        "independent_scene_semantics"
+      ]
+    },
+    "outdoor_measurement_definition": {
+      "core_assumption": "A disjoint OTS measurement-definition pool with paired depth and controlled haze variants can support a separately frozen local outdoor degradation measurement.",
+      "adjacent_budget": 2,
+      "attempts_used": 0,
+      "state": "paused",
+      "close_condition": "Close if a separately specified outdoor measurement lacks construct validity, reliability, coverage, or precision.",
+      "reopen_evidence_types": [
+        "new_measurement_field",
+        "independent_construct_validation"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "scene_allocation_method",
+    "role_capacity",
+    "coverage_feature_set",
+    "haze_variant_budget"
+  ],
+  "amendments": []
+}

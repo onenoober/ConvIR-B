@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/reside-ots-scene-stratified-split-v1.json",
+  "experiment_spec_sha256": "5fed7f8e3e93c1803156b4faf1968d2b74fcc44fdd9f07c59787df3eb8a7cb71",
+  "operations": {
+    "OTS_SCENE_STRATIFIED_SPLIT": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "OTS_OUTDOOR_MEASUREMENT_DEFINITION",
+          "decision": "OTS_SCENE_STRATIFIED_SPLIT_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "OTS_SCENE_STRATIFIED_SPLIT_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "OTS_SCENE_STRATIFIED_SPLIT_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "reside_ots_scene_stratified_split_v1_closeout.json",
+      "heartbeat_timeout_seconds": 300,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "dataset_qualification",
+      "monitor_profile": "standard",
+      "output_id": "reside-ots-scene-stratified-split-v1-phase-a",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/reside_ots_data_pool_design.json",
+  "program_contract_sha256": "fd3f4c9b1435b10c1efc29f05f1ec0a0cea76ff8b0cacd7aad5ea78813122258",
+  "route_card_relpath": "experience_docx/experiment_cards/reside-ots-scene-stratified-split-v1.md",
+  "route_id": "reside-ots-scene-stratified-split-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "OTS_SCENE_STRATIFIED_SPLIT": "experience_docx/scientific_contracts/reside-ots-scene-stratified-split-v1__OTS_SCENE_STRATIFIED_SPLIT.json"
+  }
+}
