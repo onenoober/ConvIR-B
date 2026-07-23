@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/sots-ots-local-error-measurement-v1.json",
-  "experiment_spec_sha256": "4a2ebc269ed06de41af0facdd55376b17a1bdc5c357bd699bec201d3430e1521",
+  "experiment_spec_sha256": "7852c3d6e7ace3df91f82139641fa4e86fbca9dabb8a3470235b1cd26e76e4c0",
   "operations": {
     "SOTS_OTS_LOCAL_ERROR_MEASURE": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 8192,
       "mode": "paired_gt_local_error_measurement",
       "monitor_profile": "standard",
-      "output_id": "sots-ots-local-error-measurement-v1-r1",
+      "output_id": "sots-ots-local-error-measurement-v1-r1-repair-1",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
