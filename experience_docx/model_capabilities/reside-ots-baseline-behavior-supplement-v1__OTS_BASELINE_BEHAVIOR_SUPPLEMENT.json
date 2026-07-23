@@ -24,10 +24,10 @@
   "minimum_fixture": {
     "batch": 1,
     "channels": 3,
-    "height": 64,
-    "width": 1024
+    "height": 256,
+    "width": 320
   },
-  "production_path_statement": "The exact official graph strictly loads the official checkpoint and executes the corrected target-size, pad-to-32, model(input)[2], crop, clip, metric and finalizer path on a 64x1024 synthetic CUDA fixture without scientific data.",
+  "production_path_statement": "The exact official graph strictly loads the official checkpoint and executes the unchanged content resize plus deterministic reflect-extension of 32x320 and 320x32 synthetic content tensors to 256x320 and 320x256 CUDA model canvases, model(input)[2], exact content crop, clip, metric and finalizer path without scientific data.",
   "profile_id": "official_haze4k_convir_b_ots_extreme_aspect_gpu_v1",
   "protected_data_prohibited": true,
   "schema_version": 1,

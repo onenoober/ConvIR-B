@@ -97,14 +97,11 @@ def image_files(path: Path) -> list[Path]:
     return sorted(item for item in path.iterdir() if item.is_file() and item.suffix.lower() in suffixes)
 
 
-def target_size(path: Path, long_edge: int, min_short_edge: int) -> tuple[int, int]:
+def target_size(path: Path, long_edge: int) -> tuple[int, int]:
     with Image.open(path) as image:
         width, height = image.size
     scale = min(1.0, float(long_edge) / max(width, height))
-    scale = max(scale, float(min_short_edge) / min(width, height))
-    target_width = max(min_short_edge, int(math.ceil(width * scale)))
-    target_height = max(min_short_edge, int(math.ceil(height * scale)))
-    return target_width, target_height
+    return max(32, int(round(width * scale))), max(32, int(round(height * scale)))
 
 
 def image_array(path: Path, size: tuple[int, int]) -> np.ndarray:
@@ -239,15 +236,30 @@ def load_official_model(context):
     return torch, model
 
 
-def infer(torch, model, hazy: np.ndarray, device: str):
-    import torch.nn.functional as functional
+def reflection_indices(length: int, target: int) -> np.ndarray:
+    if length < 2 or target < length:
+        raise ValueError(f"invalid reflection extent: length={length}, target={target}")
+    positions = np.arange(target, dtype=np.int64)
+    period = 2 * length - 2
+    folded = positions % period
+    return np.where(folded < length, folded, period - folded).astype(np.int64)
 
-    tensor = torch.from_numpy(np.transpose(hazy, (2, 0, 1)).copy()).unsqueeze(0).to(device)
-    height, width = tensor.shape[-2:]
-    pad_height, pad_width = (-height) % 32, (-width) % 32
-    padded = functional.pad(tensor, (0, pad_width, 0, pad_height), mode="reflect")
+
+def safe_model_canvas(image: np.ndarray, model_min_edge: int = 256) -> np.ndarray:
+    height, width = image.shape[:2]
+    target_height = int(math.ceil(max(height, model_min_edge) / 32.0) * 32)
+    target_width = int(math.ceil(max(width, model_min_edge) / 32.0) * 32)
+    rows = reflection_indices(height, target_height)
+    columns = reflection_indices(width, target_width)
+    return image[rows[:, None], columns[None, :], :]
+
+
+def infer(torch, model, hazy: np.ndarray, device: str, model_min_edge: int = 256):
+    height, width = hazy.shape[:2]
+    canvas = safe_model_canvas(hazy, model_min_edge=model_min_edge)
+    tensor = torch.from_numpy(np.transpose(canvas, (2, 0, 1)).copy()).unsqueeze(0).to(device)
     with torch.inference_mode():
-        outputs = model(padded)
+        outputs = model(tensor)
         if not isinstance(outputs, list) or len(outputs) != 3:
             raise RuntimeError("official three-scale output contract changed")
         prediction = outputs[2][:, :, :height, :width].clamp(0.0, 1.0)
@@ -264,22 +276,58 @@ def contract(context_path: Path) -> None:
     torch, model = load_official_model(context)
     from pytorch_msssim import ssim
 
-    height, width = 64, 1024
-    yy, xx = np.mgrid[0:height, 0:width].astype(np.float32)
-    clear = np.stack((xx / width, yy / height, (xx + yy) / (width + height)), axis=-1)
-    depth = 1.0 + xx / width + 0.5 * yy / height
-    transmission = np.exp(-0.10 * depth).astype(np.float32)
-    hazy = (clear * transmission[..., None] + AIRLIGHT * (1.0 - transmission[..., None])).astype(np.float32)
-    prediction_tensor = infer(torch, model, hazy, context.device)
-    clear_tensor = torch.from_numpy(np.transpose(clear, (2, 0, 1)).copy()).unsqueeze(0).to(context.device)
-    ssim_value = float(ssim(prediction_tensor, clear_tensor, data_range=1.0, size_average=True).item())
-    prediction = np.transpose(prediction_tensor.squeeze(0).cpu().numpy(), (1, 2, 0))
-    measured = variant_measurement(hazy, clear, prediction, depth, 0.10, ssim_value)
-    perfect = variant_measurement(hazy, clear, clear, depth, 0.10, 1.0)
+    fixture_results = []
+    perfect = None
+    for content_height, content_width in ((32, 320), (320, 32)):
+        yy, xx = np.mgrid[0:content_height, 0:content_width].astype(np.float32)
+        clear = np.stack((
+            xx / content_width,
+            yy / content_height,
+            (xx + yy) / (content_width + content_height),
+        ), axis=-1)
+        depth = 1.0 + xx / content_width + 0.5 * yy / content_height
+        transmission = np.exp(-0.10 * depth).astype(np.float32)
+        hazy = (
+            clear * transmission[..., None]
+            + AIRLIGHT * (1.0 - transmission[..., None])
+        ).astype(np.float32)
+        prediction_tensor = infer(torch, model, hazy, context.device)
+        clear_tensor = torch.from_numpy(
+            np.transpose(clear, (2, 0, 1)).copy()
+        ).unsqueeze(0).to(context.device)
+        ssim_value = float(ssim(
+            prediction_tensor, clear_tensor, data_range=1.0, size_average=True,
+        ).item())
+        prediction = np.transpose(
+            prediction_tensor.squeeze(0).cpu().numpy(), (1, 2, 0),
+        )
+        fixture_results.append(
+            variant_measurement(hazy, clear, prediction, depth, 0.10, ssim_value)
+        )
+        perfect = variant_measurement(hazy, clear, clear, depth, 0.10, 1.0)
+
+    reference = np.arange(289 * 317 * 3, dtype=np.float32).reshape(289, 317, 3)
+    reference_tensor = torch.from_numpy(
+        np.transpose(reference, (2, 0, 1)).copy()
+    ).unsqueeze(0)
+    import torch.nn.functional as functional
+    torch_padded = functional.pad(reference_tensor, (0, 3, 0, 31), mode="reflect")
+    torch_reference = np.transpose(torch_padded.squeeze(0).numpy(), (1, 2, 0))
+    canvas_reference = safe_model_canvas(reference, model_min_edge=256)
+    reflection_reference_match = bool(np.array_equal(canvas_reference, torch_reference))
+    measured = fixture_results[0]
     checks = {
         "strict_official_checkpoint_load": True,
         "official_parameter_count": True,
-        "extreme_aspect_three_scale_forward": bool(np.isfinite(prediction).all()),
+        "both_formal_aspect_boundaries_forward": all(
+            all(
+                isinstance(value, bool)
+                or (isinstance(value, (int, float)) and math.isfinite(float(value)))
+                for value in result.values()
+            )
+            for result in fixture_results
+        ),
+        "reflection_matches_torch_when_one_pass_valid": reflection_reference_match,
         "finalizer_finite": all(
             isinstance(value, bool) or (isinstance(value, (int, float)) and math.isfinite(float(value)))
             for value in measured.values()
@@ -292,7 +340,14 @@ def contract(context_path: Path) -> None:
     }
     atomic_json(output_file(context, "supplement_contract_details.json"), {
         "parameter_count": PARAMETER_COUNT,
-        "fixture": {"batch": 1, "channels": 3, "height": height, "width": width},
+        "content_fixtures": [
+            {"batch": 1, "channels": 3, "height": 32, "width": 320},
+            {"batch": 1, "channels": 3, "height": 320, "width": 32}
+        ],
+        "model_canvas_fixtures": [
+            {"batch": 1, "channels": 3, "height": 256, "width": 320},
+            {"batch": 1, "channels": 3, "height": 320, "width": 256}
+        ],
         "measurement_keys": sorted(measured),
     })
     write_contract_result(
@@ -300,7 +355,7 @@ def contract(context_path: Path) -> None:
         engineering={
             "mode": "gpu_synthetic_no_data",
             "device": "cuda",
-            "fixture": {"batch": 1, "channels": 3, "height": height, "width": width},
+            "fixture": {"batch": 1, "channels": 3, "height": 256, "width": 320},
             "production_path_exercised": True,
             "protected_data_touched": False,
             "scientific_output_created": False,
@@ -362,8 +417,8 @@ def run(context_path: Path) -> None:
     write_workload_progress(context, completed_units=100, stage="dataset_identity")
 
     long_edge = int(os.environ.get("CONVIR_ROUTE_OTS_LONG_EDGE", "320"))
-    min_short_edge = int(os.environ.get("CONVIR_ROUTE_OTS_MIN_SHORT_EDGE", "64"))
-    if long_edge != 320 or min_short_edge != 64:
+    model_min_edge = int(os.environ.get("CONVIR_ROUTE_OTS_MODEL_MIN_EDGE", "256"))
+    if long_edge != 320 or model_min_edge != 256:
         raise RuntimeError("frozen supplement sizing changed")
     sizes: dict[str, tuple[int, int]] = {}
     raw_root = output_file(context, "depth_resized")
@@ -373,9 +428,7 @@ def run(context_path: Path) -> None:
     for scene_id in validation_ids:
         with Image.open(clear_by_id[scene_id]) as image:
             source_width, source_height = image.size
-        width, height = target_size(clear_by_id[scene_id], long_edge, min_short_edge)
-        if min(width, height) < min_short_edge:
-            raise RuntimeError(f"short-edge sizing contract failed: {scene_id}")
+        width, height = target_size(clear_by_id[scene_id], long_edge)
         sizes[scene_id] = (width, height)
         max_target_long_edge = max(max_target_long_edge, width, height)
         entries.append((
@@ -397,7 +450,9 @@ def run(context_path: Path) -> None:
             variant_records = []
             for beta in BETAS:
                 hazy = image_array(selected_haze[scene_id][beta], (width, height))
-                prediction_tensor = infer(torch, model, hazy, context.device)
+                prediction_tensor = infer(
+                    torch, model, hazy, context.device, model_min_edge=model_min_edge,
+                )
                 clear_tensor = torch.from_numpy(
                     np.transpose(clear, (2, 0, 1)).copy()
                 ).unsqueeze(0).to(context.device)
@@ -482,8 +537,10 @@ def run(context_path: Path) -> None:
         },
         "preprocessing_supplement": {
             "long_edge_nominal_cap": long_edge,
-            "minimum_short_edge": min_short_edge,
+            "model_canvas_minimum_edge": model_min_edge,
             "maximum_observed_target_long_edge": max_target_long_edge,
+            "content_resize_unchanged_from_parent": True,
+            "padded_pixels_in_scientific_metrics": False,
             "all_625_scenes_recomputed": True,
             "parent_outcomes_pooled": False,
         },

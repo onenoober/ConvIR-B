@@ -31,7 +31,7 @@
   },
   "route_families": {
     "synthetic_outdoor_baseline_behavior_supplement": {
-      "core_assumption": "The frozen 625-scene OTS baseline behavior estimand remains interpretable when every scene uses one aspect-ratio-preserving resize rule that guarantees the minimum internal spatial support required by the unchanged official model.",
+      "core_assumption": "The frozen 625-scene OTS baseline behavior estimand remains interpretable when content keeps the parent aspect-ratio-preserving resize and only the model canvas is reflect-extended to the minimum internal spatial support required by the unchanged official graph; padded pixels are cropped before every scientific measurement.",
       "adjacent_budget": 1,
       "attempts_used": 0,
       "state": "open",

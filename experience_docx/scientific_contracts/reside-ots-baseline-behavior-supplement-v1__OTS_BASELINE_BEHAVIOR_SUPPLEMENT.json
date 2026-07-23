@@ -5,7 +5,8 @@
     "full-image input-to-output MSE improvement as the unchanged OTS global-competence prerequisite",
     "180-degree spatial rotation of tau within scene as the unchanged marginal-distribution-preserving negative control",
     "paired clear GT and identical resize/crop for input, output, depth, and regions",
-    "an extreme 64x1024 GPU no-data fixture that exercises the corrected preprocessing contract"
+    "32x320 and 320x32 synthetic-content GPU no-data fixtures that exercise both formal aspect-ratio boundaries, safe model canvases and exact content crop",
+    "a protected-data-free elementwise reference proving safe canvas extension equals the former PyTorch bottom-right reflection pad whenever the former one-pass pad is valid"
   ],
   "disabled_actions": [
     "any change beyond the minimum-short-edge preprocessing compatibility correction",
@@ -62,8 +63,9 @@
     "fixed_factors": [
       "scene membership is exactly the 625 IDs archived by reside-ots-baseline-behavior-v1",
       "official variants remain airlight 0.90 crossed with beta 0.04, 0.10, and 0.20",
-      "the sole parent-contract change preserves aspect ratio, initially caps the long edge at 320 pixels, and then increases scale only when needed to make the short edge at least 64 pixels",
-      "the resized image is reflect-padded to a multiple of 32 for official inference",
+      "content preprocessing remains the parent rule: preserve aspect ratio, cap the long edge at 320 pixels, and never upscale source content",
+      "the sole parent-contract change reflect-extends only the bottom and right model canvas to at least 256 pixels per dimension and then to a multiple of 32, derived from the official 1/4-scale then pool-8 then ReflectionPad2d(7) path",
+      "model prediction is cropped to the exact unpadded content size before every GT, depth, tau, region, PSNR, SSIM or mismatch calculation; padded pixels never enter an estimand",
       "official build_net('base','Haze4K') is strictly loaded from checkpoint state_dict['model'] and model(input)[2] is cropped and clipped to [0,1]",
       "pixel input error is mean RGB squared error between hazy input and clear GT; output error replaces input with clipped model output",
       "relative correction remains (mean input error minus mean output error) divided by mean input error with epsilon 1e-8",

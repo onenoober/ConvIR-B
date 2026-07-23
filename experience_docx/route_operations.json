@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/reside-ots-baseline-behavior-supplement-v1.json",
-  "experiment_spec_sha256": "4af72f6854bb230a37ff6861bd4d77f89b90b7d2f59f751a2bc57dfc085f0627",
+  "experiment_spec_sha256": "8c6531cf73cce6498f0c8cf5dd4ed6b20aeab5df0038d7fd66070f3636013c91",
   "operations": {
     "OTS_BASELINE_BEHAVIOR_SUPPLEMENT": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 8192,
       "mode": "baseline_behavior_measurement",
       "monitor_profile": "standard",
-      "output_id": "reside-ots-baseline-behavior-supplement-v1-phase-a",
+      "output_id": "reside-ots-baseline-behavior-supplement-v1-phase-a-repair-1",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
@@ -41,7 +41,7 @@
     }
   },
   "program_contract_relpath": "experience_docx/research_programs/reside_ots_baseline_behavior_supplement.json",
-  "program_contract_sha256": "05e64161c734d1a80a164afa25b0e4fb49b1f9d3a17d891d16866542ef8808b1",
+  "program_contract_sha256": "59af788b9ac6c1448770bd00bb869f98e429f7c10b395f76993a3e7ec758bfcb",
   "route_card_relpath": "experience_docx/experiment_cards/reside-ots-baseline-behavior-supplement-v1.md",
   "route_id": "reside-ots-baseline-behavior-supplement-v1",
   "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",

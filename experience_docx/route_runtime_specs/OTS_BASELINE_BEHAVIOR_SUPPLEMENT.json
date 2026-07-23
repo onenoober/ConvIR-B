@@ -8,7 +8,7 @@
   "entrypoint_relpath": "experience_docx/tools/measure_reside_ots_baseline_behavior_supplement.py",
   "environment": {
     "CONVIR_ROUTE_OTS_LONG_EDGE": "320",
-    "CONVIR_ROUTE_OTS_MIN_SHORT_EDGE": "64"
+    "CONVIR_ROUTE_OTS_MODEL_MIN_EDGE": "256"
   },
   "evidence_files": [
     {

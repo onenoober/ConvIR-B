@@ -3,7 +3,7 @@
   "route_id": "reside-ots-baseline-behavior-supplement-v1",
   "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
   "title": "Official ConvIR-B OTS baseline behavior complete-scene supplement",
-  "rationale": "The direct parent ended INCONCLUSIVE solely because a long-edge-320 resize made the short edge too small for an internal official ConvIR-B reflection pad in 218 aspect-ratio-extreme scenes. Parent and dataset identities matched, the GPU contract passed, and 407 scenes completed, but those diagnostic outcomes cannot substitute for the frozen 625-scene population. This one supplement recomputes all 625 scenes and all three frozen variants with the sole change that aspect ratio is preserved while the short edge is at least 64 pixels; the nominal 320-pixel long-edge cap may be exceeded only as needed to meet that minimum. An extreme 64x1024 GPU no-data fixture now exercises the exact official forward path. Model, population, variants, regions, estimand, margins, negative control, uncertainty, and terminal rules remain unchanged.",
+  "rationale": "The direct parent ended INCONCLUSIVE solely because a long-edge-320 resize made the short edge too small for an internal official ConvIR-B reflection pad in 218 aspect-ratio-extreme scenes. Parent and dataset identities matched, the GPU contract passed, and 407 scenes completed, but those diagnostic outcomes cannot substitute for the frozen 625-scene population. This one supplement recomputes all 625 scenes and all three frozen variants while preserving the parent's aspect-ratio-preserving content resize exactly. The sole change reflect-extends the bottom and right model canvas to at least 256 pixels per dimension and then to a multiple of 32; prediction is cropped back to the unpadded content before GT, depth, tau, region, PSNR, SSIM or mismatch measurement. The 256 model-canvas minimum follows directly from the unchanged production graph: a 1/4-scale feature is pooled by 8 before ReflectionPad2d(7), so the pooled dimension must be at least 8. Synthetic 32x320 and 320x32 content fixtures cover both exact formal aspect-ratio boundaries and exercise 256x320 and 320x256 CUDA model canvases. Model, content resolution, population, variants, regions, estimand, margins, negative control, uncertainty, and terminal rules remain unchanged.",
   "first_operation": "OTS_BASELINE_BEHAVIOR_SUPPLEMENT",
   "program_contract_relpath": "experience_docx/research_programs/reside_ots_baseline_behavior_supplement.json",
   "operations": {
@@ -12,7 +12,7 @@
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "baseline_behavior_measurement",
         "require_gpu": true,
-        "output_id": "reside-ots-baseline-behavior-supplement-v1-phase-a",
+        "output_id": "reside-ots-baseline-behavior-supplement-v1-phase-a-repair-1",
         "closeout_filename": "reside_ots_baseline_behavior_supplement_v1_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
@@ -61,8 +61,9 @@
           "fixed_factors": [
             "scene membership is exactly the 625 IDs archived by reside-ots-baseline-behavior-v1",
             "official variants remain airlight 0.90 crossed with beta 0.04, 0.10, and 0.20",
-            "the sole parent-contract change preserves aspect ratio, initially caps the long edge at 320 pixels, and then increases scale only when needed to make the short edge at least 64 pixels",
-            "the resized image is reflect-padded to a multiple of 32 for official inference",
+            "content preprocessing remains the parent rule: preserve aspect ratio, cap the long edge at 320 pixels, and never upscale source content",
+            "the sole parent-contract change reflect-extends only the bottom and right model canvas to at least 256 pixels per dimension and then to a multiple of 32, derived from the official 1/4-scale then pool-8 then ReflectionPad2d(7) path",
+            "model prediction is cropped to the exact unpadded content size before every GT, depth, tau, region, PSNR, SSIM or mismatch calculation; padded pixels never enter an estimand",
             "official build_net('base','Haze4K') is strictly loaded from checkpoint state_dict['model'] and model(input)[2] is cropped and clipped to [0,1]",
             "pixel input error is mean RGB squared error between hazy input and clear GT; output error replaces input with clipped model output",
             "relative correction remains (mean input error minus mean output error) divided by mean input error with epsilon 1e-8",
@@ -85,7 +86,8 @@
           "full-image input-to-output MSE improvement as the unchanged OTS global-competence prerequisite",
           "180-degree spatial rotation of tau within scene as the unchanged marginal-distribution-preserving negative control",
           "paired clear GT and identical resize/crop for input, output, depth, and regions",
-          "an extreme 64x1024 GPU no-data fixture that exercises the corrected preprocessing contract"
+          "32x320 and 320x32 synthetic-content GPU no-data fixtures that exercise both formal aspect-ratio boundaries, safe model canvases and exact content crop",
+          "a protected-data-free elementwise reference proving safe canvas extension equals the former PyTorch bottom-right reflection pad whenever the former one-pass pad is valid"
         ],
         "uncertainty": {
           "method": "two-sided Wilson 95 percent intervals over the same 625 independent original clear scenes; severity and pixels remain nested",
@@ -123,7 +125,7 @@
         "evidence_role": "development_screening",
         "resume_policy": "none",
         "protected_data_permissions": {"allow_confirmation": false, "allow_canary": false, "allow_locked_test": false},
-        "environment": {"CONVIR_ROUTE_OTS_LONG_EDGE": "320", "CONVIR_ROUTE_OTS_MIN_SHORT_EDGE": "64"},
+        "environment": {"CONVIR_ROUTE_OTS_LONG_EDGE": "320", "CONVIR_ROUTE_OTS_MODEL_MIN_EDGE": "256"},
         "evidence_files": [
           {"source_relpath": "workload/baseline_behavior_summary.json", "destination_filename": "reside_ots_baseline_behavior_supplement_v1_summary.json", "required": true, "max_bytes": 131072},
           {"source_relpath": "workload/aggregate_strata.csv", "destination_filename": "reside_ots_baseline_behavior_supplement_v1_strata.csv", "required": true, "max_bytes": 65536},
@@ -143,14 +145,14 @@
       "capability": {
         "profile_id": "official_haze4k_convir_b_ots_extreme_aspect_gpu_v1",
         "contract_mode": "gpu_synthetic_no_data",
-        "minimum_fixture": {"batch": 1, "channels": 3, "height": 64, "width": 1024},
+        "minimum_fixture": {"batch": 1, "channels": 3, "height": 256, "width": 320},
         "bound_assets": [
           {"id": "official_checkpoint", "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"},
           {"id": "model_source", "identity": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"},
           {"id": "model_layers", "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"}
         ],
         "compatibility_imports": ["torch", "PIL", "numpy", "pytorch_msssim", "Dehazing.ITS.models.ConvIR"],
-        "production_path_statement": "The exact official graph strictly loads the official checkpoint and executes the corrected target-size, pad-to-32, model(input)[2], crop, clip, metric and finalizer path on a 64x1024 synthetic CUDA fixture without scientific data.",
+        "production_path_statement": "The exact official graph strictly loads the official checkpoint and executes the unchanged content resize plus deterministic reflect-extension of 32x320 and 320x32 synthetic content tensors to 256x320 and 320x256 CUDA model canvases, model(input)[2], exact content crop, clip, metric and finalizer path without scientific data.",
         "protected_data_prohibited": true,
         "scientific_output_prohibited": true,
         "scientific_training_prohibited": true
