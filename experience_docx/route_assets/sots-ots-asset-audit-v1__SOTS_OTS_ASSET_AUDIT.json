@@ -1,0 +1,21 @@
+{
+  "assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": false,
+      "id": "checkpoint_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE"
+    }
+  ],
+  "operation_id": "SOTS_OTS_ASSET_AUDIT",
+  "route_id": "sots-ots-asset-audit-v1",
+  "schema_version": 1
+}

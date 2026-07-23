@@ -1,0 +1,104 @@
+{
+  "competing_explanation": "Correct counts alone could hide a changed data copy, which is why the aggregate digest includes every ordered file path, size and content SHA-256. This audit cannot establish model quality, generalization or scientific validity.",
+  "controls": [
+    "all file identities use SHA-256",
+    "unsupported non-image files are excluded from image counts but reported",
+    "every GT source must be referenced and every hazy image must resolve to exactly one GT source",
+    "only aggregate counts and digests are published; no image content or per-file table is archived"
+  ],
+  "disabled_actions": [
+    "model construction, checkpoint load or inference",
+    "image restoration metric calculation",
+    "training, module design or threshold selection",
+    "Haze4K, NH-HAZE, confirmation, canary or locked-test outcome access",
+    "archiving image bytes, checkpoint bytes or per-file identity tables"
+  ],
+  "gates": [
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "ots-base.pkl exists, is nonempty and has a 64-hex SHA-256 identity",
+      "id": "checkpoint_identity",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "direct image counts in SOTS-Outdoor gt and hazy",
+      "id": "sots_counts",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "500 hazy images map completely to exactly 492 unique GT source groups and all GT sources are used",
+      "id": "source_pairing",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "ordered file identity census produces one deterministic 64-hex aggregate SHA-256",
+      "id": "aggregate_digest",
+      "threshold": 1.0,
+      "type": "integrity"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "checkpoint path is /sda/home/wangyuxin/ConvIR-B/checkpoints/official/ots-base.pkl",
+      "SOTS root is /sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/outdoor",
+      "only supported image files directly below gt and hazy are counted",
+      "a hazy filename maps to the GT stem before its first underscore",
+      "the aggregate dataset digest binds ordered relative path, byte size and file SHA-256",
+      "no image-derived metric, model load, inference, training or protected evidence access is allowed"
+    ],
+    "matched_budget": "one complete deterministic metadata and SHA-256 census with zero model execution",
+    "primary_variable": "asset_identity_and_pairing_integrity",
+    "reference": "the user-provided fixed checkpoint and finalized RESIDE SOTS-Outdoor directory layout"
+  },
+  "operation_id": "SOTS_OTS_ASSET_AUDIT",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "engineering_debug",
+    "grouping_unit": "asset_file_and_source_group",
+    "independent_group_count": 492
+  },
+  "primary_estimand": {
+    "aggregation": "all required integrity checks must pass",
+    "direction": "higher",
+    "id": "asset_qualification_pass",
+    "metric": "binary conjunction of checkpoint identity availability, exact file counts, complete source pairing and deterministic aggregate digest",
+    "unit": "asset_contract"
+  },
+  "question": "Do the exact cloud assets provide one hashable ots-base.pkl file and a complete SOTS-Outdoor copy with 500 hazy images paired to 492 unique clear-source groups?",
+  "route_id": "sots-ots-asset-audit-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "SOTS_OTS_ASSET_AUDIT_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "NONE",
+      "decision": "SOTS_OTS_ASSET_AUDIT_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "SOTS_OTS_LOCAL_ERROR_MEASUREMENT_CONTRACT",
+      "decision": "SOTS_OTS_ASSET_AUDIT_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "asset_file_and_source_group",
+    "method": "deterministic complete asset census"
+  }
+}

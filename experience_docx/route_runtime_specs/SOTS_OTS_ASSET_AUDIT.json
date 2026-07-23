@@ -1,0 +1,36 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/sots-ots-asset-audit-v1__SOTS_OTS_ASSET_AUDIT.json",
+  "engineering_contract": {
+    "capability_profile_relpath": null,
+    "max_seconds": 60,
+    "mode": "metadata_only"
+  },
+  "entrypoint_relpath": "experience_docx/tools/audit_sots_ots_assets.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "sots_ots_asset_audit_v1_summary.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/asset_audit.json"
+    }
+  ],
+  "evidence_role": "engineering_debug",
+  "expected_wall_seconds": 180,
+  "operation_id": "SOTS_OTS_ASSET_AUDIT",
+  "precision_contract": {
+    "certificate_relpath": null,
+    "mode": "not_applicable",
+    "rationale": "This operation is a deterministic complete asset census with no sampled scientific estimand."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "sots-ots-asset-audit-v1",
+  "schema_version": 2,
+  "timeout_seconds": 1800,
+  "total_units": 993
+}

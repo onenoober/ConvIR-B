@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "route_id": "sots-ots-asset-audit-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "title": "Official OTS checkpoint and SOTS-Outdoor asset qualification",
+  "rationale": "The next scientific measurement must bind one exact ots-base.pkl file and one exact SOTS-Outdoor paired dataset. This route performs only a deterministic checkpoint hash, image-file census, source-group pairing check and aggregate dataset digest. It does not load the model, run inference, compute restoration metrics or access protected confirmation evidence. Passing authorizes only authoring the separately frozen SOTS local-error measurement contract.",
+  "first_operation": "SOTS_OTS_ASSET_AUDIT",
+  "program_contract_relpath": "experience_docx/research_programs/sots_ots_asset_audit.json",
+  "operations": {
+    "SOTS_OTS_ASSET_AUDIT": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "asset_identity_audit",
+        "require_gpu": false,
+        "output_id": "sots-ots-asset-audit-v1-r1",
+        "closeout_filename": "sots_ots_asset_audit_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "allowed_terminal_tuples": [
+          {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "SOTS_OTS_ASSET_AUDIT_PASS",
+            "authorizes": "SOTS_OTS_LOCAL_ERROR_MEASUREMENT_CONTRACT"
+          },
+          {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "SOTS_OTS_ASSET_AUDIT_FAIL",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "SOTS_OTS_ASSET_AUDIT_INCONCLUSIVE",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "FAILED_ENGINEERING",
+            "decision": null,
+            "authorizes": "NONE"
+          }
+        ],
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "short",
+        "heartbeat_timeout_seconds": 180,
+        "min_free_gpu_mib": 0,
+        "max_gpu_utilization_pct": 100
+      },
+      "program_authorization": {
+        "program_id": "sots_ots_asset_audit",
+        "stage_id": "asset_qualification",
+        "family_id": "sots_ots_identity",
+        "mechanism_type": "adjacent",
+        "evidence_role": "engineering_debug",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {
+            "role": "asset_identity_source",
+            "use": "diagnostic",
+            "anchor_id": "user_provided_ots_checkpoint_and_reside"
+          }
+        ],
+        "adjacent_sequence": 1,
+        "orthogonal_changes": [],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Do the exact cloud assets provide one hashable ots-base.pkl file and a complete SOTS-Outdoor copy with 500 hazy images paired to 492 unique clear-source groups?",
+        "population": {
+          "evidence_role": "engineering_debug",
+          "grouping_unit": "asset_file_and_source_group",
+          "independent_group_count": 492,
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "asset_identity_and_pairing_integrity",
+          "reference": "the user-provided fixed checkpoint and finalized RESIDE SOTS-Outdoor directory layout",
+          "matched_budget": "one complete deterministic metadata and SHA-256 census with zero model execution",
+          "fixed_factors": [
+            "checkpoint path is /sda/home/wangyuxin/ConvIR-B/checkpoints/official/ots-base.pkl",
+            "SOTS root is /sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/outdoor",
+            "only supported image files directly below gt and hazy are counted",
+            "a hazy filename maps to the GT stem before its first underscore",
+            "the aggregate dataset digest binds ordered relative path, byte size and file SHA-256",
+            "no image-derived metric, model load, inference, training or protected evidence access is allowed"
+          ]
+        },
+        "primary_estimand": {
+          "id": "asset_qualification_pass",
+          "metric": "binary conjunction of checkpoint identity availability, exact file counts, complete source pairing and deterministic aggregate digest",
+          "direction": "higher",
+          "aggregation": "all required integrity checks must pass",
+          "unit": "asset_contract"
+        },
+        "controls": [
+          "all file identities use SHA-256",
+          "unsupported non-image files are excluded from image counts but reported",
+          "every GT source must be referenced and every hazy image must resolve to exactly one GT source",
+          "only aggregate counts and digests are published; no image content or per-file table is archived"
+        ],
+        "uncertainty": {
+          "method": "deterministic complete asset census",
+          "confidence_level": 0.95,
+          "independent_unit": "asset_file_and_source_group"
+        },
+        "gates": [
+          {
+            "id": "checkpoint_identity",
+            "type": "integrity",
+            "estimand": "ots-base.pkl exists, is nonempty and has a 64-hex SHA-256 identity",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "sots_counts",
+            "type": "integrity",
+            "estimand": "direct image counts in SOTS-Outdoor gt and hazy",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "source_pairing",
+            "type": "integrity",
+            "estimand": "500 hazy images map completely to exactly 492 unique GT source groups and all GT sources are used",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "aggregate_digest",
+            "type": "integrity",
+            "estimand": "ordered file identity census produces one deterministic 64-hex aggregate SHA-256",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          }
+        ],
+        "competing_explanation": "Correct counts alone could hide a changed data copy, which is why the aggregate digest includes every ordered file path, size and content SHA-256. This audit cannot establish model quality, generalization or scientific validity.",
+        "terminal_mapping": {
+          "pass": {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "SOTS_OTS_ASSET_AUDIT_PASS",
+            "authorizes": "SOTS_OTS_LOCAL_ERROR_MEASUREMENT_CONTRACT"
+          },
+          "fail": {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "SOTS_OTS_ASSET_AUDIT_FAIL",
+            "authorizes": "NONE"
+          },
+          "inconclusive": {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "SOTS_OTS_ASSET_AUDIT_INCONCLUSIVE",
+            "authorizes": "NONE"
+          }
+        },
+        "disabled_actions": [
+          "model construction, checkpoint load or inference",
+          "image restoration metric calculation",
+          "training, module design or threshold selection",
+          "Haze4K, NH-HAZE, confirmation, canary or locked-test outcome access",
+          "archiving image bytes, checkpoint bytes or per-file identity tables"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/audit_sots_ots_assets.py",
+        "timeout_seconds": 1800,
+        "expected_wall_seconds": 180,
+        "total_units": 993,
+        "evidence_role": "engineering_debug",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {},
+        "evidence_files": [
+          {
+            "source_relpath": "workload/asset_audit.json",
+            "destination_filename": "sots_ots_asset_audit_v1_summary.json",
+            "required": true,
+            "max_bytes": 65536
+          }
+        ],
+        "engineering_contract": {
+          "mode": "metadata_only",
+          "max_seconds": 60
+        },
+        "precision_contract": {
+          "mode": "not_applicable",
+          "rationale": "This operation is a deterministic complete asset census with no sampled scientific estimand."
+        }
+      },
+      "assets": [
+        {
+          "id": "checkpoint_root",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official",
+          "access_role": "engineering_debug",
+          "contract_access": false
+        },
+        {
+          "id": "reside_root",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE",
+          "access_role": "engineering_debug",
+          "contract_access": false
+        }
+      ],
+      "capability": null,
+      "precision": null
+    }
+  }
+}

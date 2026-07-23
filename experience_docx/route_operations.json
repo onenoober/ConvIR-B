@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/sots-ots-asset-audit-v1.json",
+  "experiment_spec_sha256": "4f00e05e6b7875a42a3dba936ab6d8936d0dae2825e7ab49b2a87552bdddc964",
+  "operations": {
+    "SOTS_OTS_ASSET_AUDIT": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "SOTS_OTS_LOCAL_ERROR_MEASUREMENT_CONTRACT",
+          "decision": "SOTS_OTS_ASSET_AUDIT_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "SOTS_OTS_ASSET_AUDIT_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "SOTS_OTS_ASSET_AUDIT_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "sots_ots_asset_audit_v1_closeout.json",
+      "heartbeat_timeout_seconds": 180,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "asset_identity_audit",
+      "monitor_profile": "short",
+      "output_id": "sots-ots-asset-audit-v1-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/sots_ots_asset_audit.json",
+  "program_contract_sha256": "67c8a65801ce0c2f05a0b728b2064ca000463f7fe6f49487d022d6a112efa0e9",
+  "route_card_relpath": "experience_docx/experiment_cards/sots-ots-asset-audit-v1.md",
+  "route_id": "sots-ots-asset-audit-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "SOTS_OTS_ASSET_AUDIT": "experience_docx/scientific_contracts/sots-ots-asset-audit-v1__SOTS_OTS_ASSET_AUDIT.json"
+  }
+}
