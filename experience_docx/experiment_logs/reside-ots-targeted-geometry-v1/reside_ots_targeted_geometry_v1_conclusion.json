@@ -1,0 +1,24 @@
+{
+  "route_id": "reside-ots-targeted-geometry-v1",
+  "operation_id": "OTS_TARGETED_GEOMETRY",
+  "run_id": "reside-ots-targeted-geometry-v1-phase-a",
+  "decision": "OTS_TARGETED_GEOMETRY_PASS",
+  "authorizes": "OTS_OUTDOOR_MEASUREMENT_DESIGN",
+  "primary_result": "All 42 expected Haze4K outdoor source relationships are now resolved under the frozen relationship-first definition. Haze4K test 69 maps to already-excluded OTS 0354, Haze4K train 977 maps to already-excluded OTS 1964, and Haze4K train 937 maps to a geometrically coherent eight-member OTS source family containing 0230. Conservatively excluding all accepted family members produces an authorized 964-scene deduplicated exclusion union and leaves 8,006 eligible OTS scenes, above the frozen 6,000-scene capacity gate.",
+  "gate_reasons": [
+    "The parent terminal, summary, mapping and 959-scene provisional exclusion identities matched exactly, including 39 previously verified new relationships and the three targeted parent diagnostic rows.",
+    "The qualified RESIDE identity, all 8,970 OTS clear scenes and all 4,000 Haze4K GT files matched the frozen dataset contract.",
+    "All three positive geometric controls passed and all three unrelated cross-pair negative controls were rejected.",
+    "Haze4K test 69 to OTS 0354 passed with 649 homography inliers among 652 reciprocal RootSIFT correspondences; Haze4K train 977 to OTS 1964 passed with 652 of 655.",
+    "Every member of the frozen top-eight Haze4K train 937 shortlist passed the geometric source rule; OTS 0230 ranked first with 512 homography inliers among 517 reciprocal correspondences. The eight members are treated as one source family and all excluded.",
+    "The corrected gate resolves 42 source relationships before deduplicating OTS IDs; it does not require each relationship to contribute a previously unseen OTS filename.",
+    "The final 964-scene exclusion union leaves 8,006 eligible OTS scenes and authorizes only a separately frozen outdoor measurement design."
+  ],
+  "competing_explanation": "The prior apparent three-source shortfall was mostly an estimand error: two valid source relationships pointed to OTS IDs already excluded through other overlaps, while the third pointed to a family of near-duplicate OTS images. Local geometric evidence separates this explanation from matcher failure without privileging one filename inside the family.",
+  "limitations": [
+    "This route qualifies source independence and capacity only; it does not validate an outdoor local-haze or restoration-demand measurement.",
+    "The eight train-937 OTS members are conservatively classified as one geometric source family; the route does not claim which filename is the canonical original.",
+    "ITS remains suitable as a mainstream indoor training source, but its failed q-recovery gate still blocks the previous indoor local-region measurement definition.",
+    "No model training, inference, checkpoint selection, dehazing outcome, confirmation, canary or locked-test metric was accessed."
+  ]
+}

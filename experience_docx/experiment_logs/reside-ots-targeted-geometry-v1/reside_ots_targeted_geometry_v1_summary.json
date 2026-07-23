@@ -1,0 +1,130 @@
+{
+  "controls": {
+    "negative_accepted": 0,
+    "negative_count": 3,
+    "positive_accepted": 3,
+    "positive_count": 3
+  },
+  "dataset_identity": {
+    "haze4k_gt_images": 4000,
+    "observed_identity": {
+      "archive_manifest_sha256": "27348952347a0f94ac33105d5e6ce11b4ce4e2b0fab68b583b978752b5b78be0",
+      "layout_record_sha256": "f025a8e6e3f43c9b924c0986b866ed28e5644dd7a7ec7b056ae311c83764d5dc",
+      "pairing_report_sha256": "afdefd2887437d929e00239e932bd76e7504d9838c2a3c58c33ce13f91f4150a"
+    },
+    "ots_clear_scenes": 8970,
+    "qualified_identity_match": true
+  },
+  "exclusion_pool": {
+    "accepted_target_937_family_ids": [
+      "0015",
+      "0159",
+      "0160",
+      "0230",
+      "0281",
+      "0478",
+      "0653",
+      "0766"
+    ],
+    "authorized_exclusion_digest": "5ba09f2b49f0d8d1846fb3638e58a93d340de26be977ea84efb5526e14c39ecd",
+    "deduplicated_exclusion_count": 964,
+    "deduplicated_exclusion_digest": "5ba09f2b49f0d8d1846fb3638e58a93d340de26be977ea84efb5526e14c39ecd",
+    "eligible_ots_scenes": 8006,
+    "minimum_required_eligible_scenes": 6000,
+    "parent_provisional_count": 959
+  },
+  "gates": {
+    "dataset_identity": true,
+    "eligible_ots_capacity": true,
+    "negative_control_specificity": true,
+    "parent_identity": true,
+    "positive_control_recall": true,
+    "relationship_completeness": true,
+    "target_69_relationship": true,
+    "target_937_relationship": true,
+    "target_977_relationship": true
+  },
+  "limitations": [
+    "The operation qualifies source relationships only and does not validate an outdoor local measurement field.",
+    "Multiple geometrically accepted train-937 candidates are treated conservatively as one source family and all excluded.",
+    "A geometric FAIL is a method limitation, not proof that a source relationship is absent.",
+    "No training, inference, checkpoint selection, dehazing outcome, confirmation, canary, or locked-test metric is accessed."
+  ],
+  "marker": "RESIDE_OTS_TARGETED_GEOMETRY_COMPLETE",
+  "method": {
+    "correspondence": "bidirectional ratio-filtered reciprocal intersection",
+    "descriptor": "RootSIFT",
+    "lowe_ratio": 0.75,
+    "minimum_homography_inlier_ratio": 0.35,
+    "minimum_homography_inliers": 15,
+    "minimum_reciprocal_matches": 20,
+    "ransac_confidence": 0.995,
+    "ransac_iterations": 5000,
+    "ransac_reprojection_pixels": 4.0,
+    "sift_contrast_threshold": 0.01,
+    "sift_edge_threshold": 10,
+    "sift_features": 8000,
+    "sift_sigma": 1.6,
+    "target_937_shortlist_size": 8
+  },
+  "operation_id": "OTS_TARGETED_GEOMETRY",
+  "parent_identity": {
+    "matched": true,
+    "provisional_exclusion_count": 959,
+    "verified_relationships": 39
+  },
+  "route_id": "reside-ots-targeted-geometry-v1",
+  "run_id": "reside-ots-targeted-geometry-v1-phase-a",
+  "schema_version": 1,
+  "scope": "targeted geometric resolution of three Haze4K-to-OTS source relationships",
+  "target_relationships": {
+    "expected_relationships": 42,
+    "haze4k_test_69": {
+      "already_excluded": true,
+      "ots_ids": [
+        "0354"
+      ],
+      "resolved": true
+    },
+    "haze4k_train_937": {
+      "accepted_source_family_ids": [
+        "0015",
+        "0159",
+        "0160",
+        "0230",
+        "0281",
+        "0478",
+        "0653",
+        "0766"
+      ],
+      "ots_0230_in_shortlist": true,
+      "resolved": true,
+      "shortlist_ids": [
+        "0230",
+        "0160",
+        "0653",
+        "0015",
+        "0281",
+        "0159",
+        "0478",
+        "0766"
+      ]
+    },
+    "haze4k_train_977": {
+      "already_excluded": true,
+      "ots_ids": [
+        "1964"
+      ],
+      "resolved": true
+    },
+    "resolved_expected_relationships": 42
+  },
+  "terminal": {
+    "authorizes": "OTS_OUTDOOR_MEASUREMENT_DESIGN",
+    "decision": "OTS_TARGETED_GEOMETRY_PASS",
+    "gate_reasons": [
+      "all_frozen_identity_control_relationship_and_capacity_gates_passed"
+    ],
+    "state": "COMPLETED_GATE_PASS"
+  }
+}

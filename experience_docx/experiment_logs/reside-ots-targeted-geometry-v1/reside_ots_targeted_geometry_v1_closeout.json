@@ -1,0 +1,92 @@
+{
+  "authorizes": "OTS_OUTDOOR_MEASUREMENT_DESIGN",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "OTS_TARGETED_GEOMETRY_PASS",
+  "details": {
+    "accepted_target_937_source_family_ids": [
+      "0015",
+      "0159",
+      "0160",
+      "0230",
+      "0281",
+      "0478",
+      "0653",
+      "0766"
+    ],
+    "deduplicated_exclusion_count": 964,
+    "eligible_ots_scenes": 8006,
+    "exclusion_digest": "5ba09f2b49f0d8d1846fb3638e58a93d340de26be977ea84efb5526e14c39ecd",
+    "gate_reasons": [
+      "all_frozen_identity_control_relationship_and_capacity_gates_passed"
+    ],
+    "outdoor_measurement_executed": false,
+    "resolved_expected_relationships": 42,
+    "summary_file": "targeted_geometry_summary.json"
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "reside_ots_targeted_geometry_v1_exclusions.txt": "d7526849879cf8650af545db20a5e4555cb0eb1931973612af98a5897f2e03d2",
+    "reside_ots_targeted_geometry_v1_pairs.csv": "9c17f7d85c2e015946de546f0af8b2d61518104b5e3200c6da5851caeb7a0349",
+    "reside_ots_targeted_geometry_v1_summary.json": "1d087dbc9ade15f1a8a9a0862a5a00a09ad28d64d55697a620f88f17fd4a42ff"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "OTS_TARGETED_GEOMETRY",
+  "returncode": 0,
+  "route_commit": "44914553da3babda1c3157bd44b108112c358a89",
+  "route_id": "reside-ots-targeted-geometry-v1",
+  "run_id": "reside-ots-targeted-geometry-v1-phase-a",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_closeout",
+      "kind": "file",
+      "sha256": "43cba334c911bba675e1c6b5cc04036cd1c5fb91642aa0ed41570a12a10b3312"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_exclusions",
+      "kind": "file",
+      "sha256": "f01d9b1f4ee4ad353d845c63cee50874aea4692efb9c02a27123e8c52c4ccb88"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_mapping",
+      "kind": "file",
+      "sha256": "5011624fadce85d5289ff7bfdfcfd1f166260eff0ce3c67509c91cdde467efd3"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_summary",
+      "kind": "file",
+      "sha256": "80a78b2cd53afa2e42bec0ee427490e4e18fae44ccd8e9d13ced34d1ef21407d"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_reside_qualification",
+      "kind": "file",
+      "sha256": "f7cbac42e8510489351149412e5ad27a0278db0d3c52963d609abb8ba352714c"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory"
+    }
+  ]
+}
