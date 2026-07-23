@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/sots-ots-demand-specific-overshoot-v1.json",
-  "experiment_spec_sha256": "84422554fed829e87e1856d4c4c931948422ee8ef1309b5d25d80826613d1e02",
+  "experiment_spec_sha256": "835532e9c5e334634846bba0ff41f099cd419c0b8835746dbece3da6be2b386a",
   "operations": {
     "SOTS_OTS_DEMAND_SPECIFIC_OVERSHOOT_MEASURE": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 8192,
       "mode": "paired_gt_demand_specific_overshoot_measurement",
       "monitor_profile": "standard",
-      "output_id": "sots-ots-demand-specific-overshoot-v1-r1",
+      "output_id": "sots-ots-demand-specific-overshoot-v1-r2",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,

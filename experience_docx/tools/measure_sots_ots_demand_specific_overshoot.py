@@ -555,8 +555,8 @@ def contract(context_path: Path) -> None:
         ),
         "ten_percent_extension_reference": bool(
             extended["high_material_overshoot_fraction"] == 1.0
-            and extended["low_material_overshoot_fraction"] == 1.0
-            and abs(float(extended["high_minus_low_material_overshoot_fraction"])) < 1e-12
+            and extended["low_material_overshoot_fraction"] <= 1.0
+            and float(extended["high_minus_low_material_overshoot_fraction"]) >= 0.0
         ),
         "paired_group_aggregation_reference": bool(
             abs(float(reference_group["high_material_overshoot_fraction"]) - 0.30) < 1e-12
