@@ -1,0 +1,46 @@
+{
+  "assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "sots_outdoor",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/outdoor"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/ots-base.pkl",
+      "sha256": "dc28713ad92af0a2594b1964451602614e1b24a1e898647a6cf41c94e9e533e6"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/Dehazing/OTS/models/ConvIR.py",
+      "sha256": "140cec905c64f429359d675fff46d9ae77465d7dc972879c458095beb0d63a6d"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/Dehazing/OTS/models/layers.py",
+      "sha256": "023e27cb28b9ba13663dda0cd7da181e2f28f60a67c833bc1933e6d5b1ebd580"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/sots-ots-asset-audit-v1/sots_ots_asset_audit_v1_closeout.json",
+      "sha256": "2772599de94979be9486b752b2bfc6fc3cb887e49c498a5d70249681b4db6c56"
+    }
+  ],
+  "operation_id": "SOTS_OTS_LOCAL_ERROR_MEASURE",
+  "route_id": "sots-ots-local-error-measurement-v1",
+  "schema_version": 1
+}
