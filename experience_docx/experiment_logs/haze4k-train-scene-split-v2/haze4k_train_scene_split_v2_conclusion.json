@@ -1,0 +1,22 @@
+{
+  "route_id": "haze4k-train-scene-split-v2",
+  "operation_id": "HAZE4K_TRAIN_SCENE_SPLIT_QUALIFY",
+  "run_id": "haze4k-train-scene-split-v2-phase-a",
+  "decision": "HAZE4K_TRAIN_SCENE_SPLIT_PASS",
+  "authorizes": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASUREMENT",
+  "primary_result": "All frozen train-only qualification gates passed. The complete 3,000-haze and 3,000-clear census yielded 3,000 deterministic loader-selected, decodable, dimension-aligned pairs grouped into exactly 750 canonical clear scenes, each with exactly four nested haze observations. The fixed-salt ranking assigned 600 scenes and 2,400 haze observations to training and 150 scenes and 600 haze observations to internal development, with complete role disjointness and coverage.",
+  "gate_reasons": [
+    "train-only asset scope passed with official test absent and all protected permissions disabled",
+    "all 3,000 haze and clear files paired, decoded, and aligned",
+    "exactly 750 canonical clear scenes and exactly four haze observations per scene were recovered",
+    "the deterministic 600/150 scene split retained all 3,000 observations without cross-role scene leakage",
+    "the assignment digest is 7b21d3af455475f7bb29198081a2ef2e651cffaac6149fd27741863c765b4efc"
+  ],
+  "competing_explanation": "Decoded RGB identity validates the frozen canonical grouping and leakage-control rule but does not establish original capture provenance or the physical meaning of the numeric filename suffixes; the four clear aliases may reflect dataset packaging.",
+  "limitations": [
+    "This is Haze4K train-only development-screening evidence and makes no official-test or model-performance claim.",
+    "All 3,000 haze observations remain available, but uncertainty and downstream resampling must treat 750 clear scenes, not files or variants, as independent.",
+    "The previously reproduced official ConvIR-B test metric remains baseline background only; no test outcome, model, or checkpoint was accessed.",
+    "Only aggregate counts and the assignment digest were archived; downstream routes must reproduce assignments from the frozen salt and canonical rule."
+  ]
+}
