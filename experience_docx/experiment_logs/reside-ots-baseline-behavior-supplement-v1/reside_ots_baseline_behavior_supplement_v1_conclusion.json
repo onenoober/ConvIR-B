@@ -1,0 +1,25 @@
+{
+  "route_id": "reside-ots-baseline-behavior-supplement-v1",
+  "operation_id": "OTS_BASELINE_BEHAVIOR_SUPPLEMENT",
+  "run_id": "reside-ots-baseline-behavior-supplement-v1-phase-a-repair-1",
+  "decision": "OTS_BASELINE_LOCAL_MISMATCH_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "All 625 frozen independent OTS validation scenes and all 1,875 nested variants completed with zero failure. The official Haze4K ConvIR-B baseline met the global OTS-competence prerequisite in 609/625 scenes, with Wilson 95 percent lower bound 0.958822 above 0.80. Only 48/625 scenes met the frozen tau-aligned local-mismatch indicator, for prevalence 0.0768 and Wilson 95 percent interval [0.058414, 0.100357]. Because even the upper bound was below the preregistered 0.20 material margin, the frozen OTS synthetic-outdoor local-mismatch claim failed.",
+  "gate_reasons": [
+    "The parent INCONCLUSIVE tuple and supplement-only authorization matched exactly, as did the 625-scene list, official checkpoint, model source, model layers and selected OTS pairings.",
+    "The repair preserved the parent content resize, reflect-extended only the model canvas to the official graph's minimum safe support, cropped prediction before every scientific measurement, and recomputed all 625 scenes without pooling parent outcomes.",
+    "Complete coverage passed: 625 independent scenes, 1,875 nested variants and zero failed scenes.",
+    "Global OTS competence passed: 609/625 scenes improved full-image MSE in at least two of three severities; Wilson 95 percent interval was [0.958822, 0.984182].",
+    "The primary tau-aligned scene-mismatch prevalence was 48/625 = 0.0768 with Wilson 95 percent interval [0.058414, 0.100357], whose upper bound was below the frozen 0.20 materiality margin.",
+    "Severity-level mismatch rates were 0.1456 at beta 0.04, 0.0752 at beta 0.10 and 0.0432 at beta 0.20; the required scene rule remained at least two of three severities.",
+    "Median true low-minus-high relative correction was negative at every severity, so the aggregate direction was more correction in high-tau than low-tau regions rather than the preregistered high-tau under-restoration pattern."
+  ],
+  "competing_explanation": "The initial research concern may arise in real nonuniform haze, a different degradation construct, different region labels, or a different baseline, but it is not materially prevalent under this qualified OTS tau field and frozen official-baseline definition. The rotated-tau control remains descriptive rather than causal, and the result does not establish that tau causes restoration behavior.",
+  "limitations": [
+    "This is L1 development-screening evidence for one fixed official Haze4K ConvIR-B instance on RESIDE OTS synthetic outdoor optical thickness only.",
+    "The FAIL stops the current OTS tau-aligned mismatch continuation and authorizes no threshold revision, module design, training or same-question retry.",
+    "Secondary relative-harm ratios can become large where low-tau input error is near zero; they are descriptive and did not replace the frozen primary scene indicator.",
+    "The result does not rule out local restoration mismatch under real nonuniform haze, independently validated region labels, another degradation variable, or another model instance.",
+    "No SOTS outcome, Haze4K outcome, NH-HAZE, confirmation, canary or locked-test evidence was accessed, and no training occurred."
+  ]
+}

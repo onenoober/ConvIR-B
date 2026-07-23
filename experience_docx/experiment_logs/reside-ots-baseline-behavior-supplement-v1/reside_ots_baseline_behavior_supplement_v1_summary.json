@@ -1,0 +1,160 @@
+{
+  "dataset_identity": {
+    "completed_independent_scenes": 625,
+    "completed_nested_variants": 1875,
+    "expected_independent_scenes": 625,
+    "parent_scene_list_match": true,
+    "selected_variant_and_pairing_match": true
+  },
+  "failure_count": 0,
+  "failures": [],
+  "global_competence": {
+    "passed": true,
+    "required_lower_95": 0.8,
+    "scene_prevalence": {
+      "estimate": 0.9744,
+      "lower": 0.9588220874819002,
+      "successes": 609,
+      "total": 625,
+      "upper": 0.9841818949719447
+    }
+  },
+  "limitations": [
+    "This is L1 descriptive development-screening evidence for one fixed model on OTS synthetic outdoor optical thickness.",
+    "The rotated-tau control is descriptive and does not identify a causal mechanism.",
+    "This supplement exhausts the authorized preprocessing correction and cannot authorize another retry.",
+    "No training, candidate module, SOTS, Haze4K outcome, NH-HAZE, confirmation, canary, or locked-test evidence was used."
+  ],
+  "marker": "RESIDE_OTS_BASELINE_BEHAVIOR_SUPPLEMENT_V1_COMPLETE",
+  "measurement": {
+    "airlight": 0.9,
+    "betas": [
+      0.04,
+      0.1,
+      0.2
+    ],
+    "negative_control": "within-scene 180-degree spatial rotation of tau",
+    "region_quantiles": {
+      "high_min": 0.8,
+      "low_max": 0.2
+    },
+    "relative_correction": "(regional input MSE - regional output MSE)/(regional input MSE + 1e-8)",
+    "scene_required_variant_count": 2,
+    "tau": "beta times official OTS depth; model-output-independent synthetic optical thickness",
+    "variant_mismatch_margins": {
+      "true_low_minus_high_correction": 0.1,
+      "true_minus_rotated_tau_imbalance": 0.05
+    }
+  },
+  "operation_id": "OTS_BASELINE_BEHAVIOR_SUPPLEMENT",
+  "parent": {
+    "authorized_action": "OTS_BASELINE_MEASUREMENT_SUPPLEMENT_ONLY",
+    "decision": "OTS_BASELINE_LOCAL_MISMATCH_INCONCLUSIVE",
+    "identity_match": true
+  },
+  "preprocessing_supplement": {
+    "all_625_scenes_recomputed": true,
+    "content_resize_unchanged_from_parent": true,
+    "long_edge_nominal_cap": 320,
+    "maximum_observed_target_long_edge": 320,
+    "model_canvas_minimum_edge": 256,
+    "padded_pixels_in_scientific_metrics": false,
+    "parent_outcomes_pooled": false
+  },
+  "primary_estimand": {
+    "material_margin": 0.2,
+    "tau_aligned_scene_mismatch_prevalence": {
+      "estimate": 0.0768,
+      "lower": 0.05841365706850174,
+      "successes": 48,
+      "total": 625,
+      "upper": 0.10035682064130622
+    }
+  },
+  "route_id": "reside-ots-baseline-behavior-supplement-v1",
+  "run_id": "reside-ots-baseline-behavior-supplement-v1-phase-a-repair-1",
+  "schema_version": 1,
+  "scope": "complete frozen official Haze4K ConvIR-B measurement on OTS synthetic outdoor scenes",
+  "secondary_aggregates": {
+    "alignment_separation": {
+      "max": 301.4638723341649,
+      "mean": -1.69423354746242,
+      "median": -0.08693039963062654,
+      "min": -220.06271389183087,
+      "q05": -8.214619274730547,
+      "q95": 1.31301532357104
+    },
+    "high_tau_relative_correction": {
+      "max": 0.9980208615086189,
+      "mean": 0.636633494232788,
+      "median": 0.9471366333598654,
+      "min": -69.22506741596762,
+      "q05": -0.24216894984648124,
+      "q95": 0.9930852628198182
+    },
+    "input_psnr": {
+      "max": 32.22662261748607,
+      "mean": 18.73789460140899,
+      "median": 17.972162580232794,
+      "min": 8.44012546722648,
+      "q05": 11.323620725520136,
+      "q95": 27.02305142534425
+    },
+    "low_tau_excess_harm": {
+      "max": 137.94178006983378,
+      "mean": 1.240249282226173,
+      "median": 0.007146209477549458,
+      "min": 0.0,
+      "q05": 0.0,
+      "q95": 4.195501049664923
+    },
+    "low_tau_relative_correction": {
+      "max": 0.9992631466432226,
+      "mean": -0.5186488311720238,
+      "median": 0.8345590322501276,
+      "min": -137.94178006983378,
+      "q05": -4.141142267507909,
+      "q95": 0.9874071036692351
+    },
+    "output_psnr": {
+      "max": 41.14169544051069,
+      "mean": 28.12907740625605,
+      "median": 28.177273011862525,
+      "min": 15.088173795333804,
+      "q05": 20.970577168504466,
+      "q95": 34.86716305598991
+    },
+    "output_ssim": {
+      "max": 0.9975870847702026,
+      "mean": 0.9682799231211344,
+      "median": 0.9765381217002869,
+      "min": 0.717464804649353,
+      "q05": 0.9213123202323914,
+      "q95": 0.992750209569931
+    },
+    "rotated_tau_correction_imbalance": {
+      "max": 198.38556119519214,
+      "mean": 0.538951222057608,
+      "median": 0.013565734416473352,
+      "min": -281.48458853402593,
+      "q05": -1.1508130980044462,
+      "q95": 4.17116327623842
+    },
+    "true_correction_imbalance": {
+      "max": 69.64810949059459,
+      "mean": -1.155282325404812,
+      "median": -0.0683641655418109,
+      "min": -134.1987833346866,
+      "q05": -4.360328369026454,
+      "q95": 0.43913703391374864
+    }
+  },
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "OTS_BASELINE_LOCAL_MISMATCH_FAIL",
+    "gate_reasons": [
+      "mismatch prevalence upper 95 percent bound was below the frozen material margin"
+    ],
+    "state": "COMPLETED_GATE_FAIL"
+  }
+}
