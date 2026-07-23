@@ -1,0 +1,56 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": null,
+  "details": {
+    "error_message": "contract program failed rc=1",
+    "error_type": "LifecycleError",
+    "protected_data_touched": false,
+    "scientific_data_touched": false,
+    "traceback_tail": "Traceback (most recent call last):\n  File \"<path>\", line 623, in main\n    raise SystemExit(lifecycle())\n  File \"<path>\", line 581, in lifecycle\n    raise LifecycleError(f\"contract program failed rc={rc}\", phase=\"contract\")\nLifecycleError: contract program failed rc=1",
+    "workload_started": false
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {},
+  "failure_phase": "contract",
+  "locked_test_touched": false,
+  "operation_id": "SOTS_OTS_LOCAL_ERROR_MEASURE",
+  "returncode": 1,
+  "route_commit": "84ba2494ec697b70ba7ce9a4f86129e5d2b58714",
+  "route_id": "sots-ots-local-error-measurement-v1",
+  "run_id": "sots-ots-local-error-measurement-v1-r1-repair-1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "FAILED_ENGINEERING",
+  "verified_assets": [
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "sha256": "023e27cb28b9ba13663dda0cd7da181e2f28f60a67c833bc1933e6d5b1ebd580"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "sha256": "140cec905c64f429359d675fff46d9ae77465d7dc972879c458095beb0d63a6d"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "dc28713ad92af0a2594b1964451602614e1b24a1e898647a6cf41c94e9e533e6"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_closeout",
+      "kind": "file",
+      "sha256": "2772599de94979be9486b752b2bfc6fc3cb887e49c498a5d70249681b4db6c56"
+    }
+  ]
+}
