@@ -1,0 +1,113 @@
+{
+  "competing_explanation": "Paired input-to-GT error can include scene texture, color, compression or alignment effects and is not a pure haze-density label. Relative correction also shares its denominator with region selection. The within-image rotated control and global-competence prerequisite reduce, but do not eliminate, these explanations. Passing would establish only a descriptive SOTS-domain behavior of this fixed model, not a causal haze mechanism or proof that a new module will help.",
+  "controls": [
+    "strict identity-bound official OTS checkpoint and official production graph",
+    "full-image input-to-output MSE improvement as a global-competence prerequisite",
+    "paired GT defines tile degradation before and independently of model output",
+    "within-image 180-degree tile-score rotation as a marginal-score-preserving spatial negative control",
+    "all hazy variants nested and averaged within the original clear-source group"
+  ],
+  "disabled_actions": [
+    "training, fine-tuning, module insertion, loss selection, threshold tuning or candidate selection during this route",
+    "using model output to define input-error regions or source groups",
+    "treating paired input error as a pure haze-density label or treating spatial association as causal mechanism evidence",
+    "treating SOTS outcomes as strict unseen-source generalization because clear-source overlap with OTS training is not excluded",
+    "relabeling SOTS as confirmation or sealed-final evidence after this development-screening use",
+    "Haze4K outcome, NH-HAZE, confirmation, canary or locked-test access",
+    "changing image membership, preprocessing, grouping, metrics, margins, controls or terminal rules after outcomes"
+  ],
+  "gates": [
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "parent authorization, checkpoint, model sources, complete SOTS pairing and aggregate dataset identity match",
+      "id": "parent_and_asset_identity",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "independent source groups with every paired variant and finite inference",
+      "id": "complete_source_coverage",
+      "threshold": 492,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "min",
+      "estimand": "Wilson lower 95 percent bound for source groups whose variant-mean full-image output MSE is below input MSE",
+      "id": "global_sots_competence",
+      "threshold": 0.8,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "Wilson interval for paired-GT local mismatch prevalence with the rotated-control margin embedded in every group indicator",
+      "id": "material_local_mismatch_prevalence",
+      "threshold": 0.2,
+      "type": "materiality"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "checkpoint SHA-256 is dc28713ad92af0a2594b1964451602614e1b24a1e898647a6cf41c94e9e533e6",
+      "SOTS-Outdoor aggregate dataset SHA-256 is ac6921cc9a2afd32c9976465fd9a50555dce2f217f8f4ddb0614c907f681e5b2",
+      "all 492 GT images and all 500 paired hazy images are used at original resolution with no scientific-data resizing",
+      "official Dehazing.OTS build_net('base') is strictly loaded from checkpoint state_dict['model']; input is reflect-padded to a multiple of 32 and model(input)[2] is cropped and clipped to [0,1]",
+      "pixel input and output errors are mean RGB squared errors against paired clear GT",
+      "local rankings use non-overlapping 32 by 32 error tiles after reflection padding only the error maps to a multiple of 32",
+      "true low and high regions are the exact bottom and top 20 percent of tile input error with stable row-major tie breaking",
+      "regional relative correction is (mean input error minus mean output error) divided by mean input error plus 1e-8",
+      "the negative control rotates the tile input-error score field 180 degrees before forming regions while leaving input and output errors spatially fixed",
+      "a source group is a mismatch when its variant-mean true low-minus-high correction is at least 0.10 and its variant-mean true-minus-control imbalance is at least 0.05",
+      "multiple hazy variants are averaged within their clear-source group before the group indicator; variants, tiles and pixels are never independent samples",
+      "missing or failed source groups remain visible and prevent a definitive PASS or FAIL"
+    ],
+    "matched_budget": "all 500 hazy variants nested within exactly 492 clear-source groups; one fixed official checkpoint; zero training or model selection",
+    "primary_variable": "official_ots_convir_b_relative_error_correction_by_paired_gt_input_error_tile",
+    "reference": "paired hazy input versus clear GT, with true input-error regions compared against the same tile-error field rotated 180 degrees within image"
+  },
+  "operation_id": "SOTS_OTS_LOCAL_ERROR_MEASURE",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "sots_outdoor_clear_source_group",
+    "independent_group_count": 492
+  },
+  "primary_estimand": {
+    "aggregation": "source-group binary indicator with two-sided Wilson 95 percent interval",
+    "direction": "higher",
+    "id": "paired_gt_local_mismatch_prevalence",
+    "metric": "proportion of 492 independent clear-source groups meeting both frozen correction-imbalance and rotated-control-separation margins",
+    "unit": "sots_outdoor_clear_source_group"
+  },
+  "question": "Across the 492 independent SOTS-Outdoor clear-source groups, does the fixed official OTS ConvIR-B baseline show a material paired-GT local restoration mismatch in which high-input-error regions receive weaker relative correction than low-input-error regions, beyond a within-image rotated spatial control?",
+  "route_id": "sots-ots-local-error-measurement-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "SOTS_LOCAL_GT_ERROR_MISMATCH_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "SOTS_LOCAL_ERROR_MEASUREMENT_SUPPLEMENT_ONLY",
+      "decision": "SOTS_LOCAL_GT_ERROR_MISMATCH_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "SOTS_LOCAL_ERROR_MECHANISM_DESIGN_REVIEW",
+      "decision": "SOTS_LOCAL_GT_ERROR_MISMATCH_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "sots_outdoor_clear_source_group",
+    "method": "two-sided Wilson 95 percent intervals over 492 independent clear-source groups; variants, tiles and pixels remain nested"
+  }
+}

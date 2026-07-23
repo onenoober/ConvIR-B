@@ -1,0 +1,36 @@
+{
+  "bound_assets": [
+    {
+      "id": "official_checkpoint",
+      "identity": "dc28713ad92af0a2594b1964451602614e1b24a1e898647a6cf41c94e9e533e6"
+    },
+    {
+      "id": "model_source",
+      "identity": "140cec905c64f429359d675fff46d9ae77465d7dc972879c458095beb0d63a6d"
+    },
+    {
+      "id": "model_layers",
+      "identity": "023e27cb28b9ba13663dda0cd7da181e2f28f60a67c833bc1933e6d5b1ebd580"
+    }
+  ],
+  "compatibility_imports": [
+    "torch",
+    "PIL",
+    "numpy",
+    "pytorch_msssim",
+    "Dehazing.OTS.models.ConvIR"
+  ],
+  "contract_mode": "gpu_synthetic_no_data",
+  "minimum_fixture": {
+    "batch": 1,
+    "channels": 3,
+    "height": 256,
+    "width": 320
+  },
+  "production_path_statement": "The exact official Dehazing.OTS build_net('base') graph strictly loads the official OTS checkpoint and executes the production reflect-pad-to-32, model(input)[2], crop, clip, paired-GT tile metric and result-finalizer path on one synthetic CUDA tensor without scientific data.",
+  "profile_id": "official_ots_convir_b_sots_inference_gpu_v1",
+  "protected_data_prohibited": true,
+  "schema_version": 1,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}
