@@ -1,0 +1,112 @@
+{
+  "dataset_identity": {
+    "count_integrity": true,
+    "haze4k_unique_canonical_scene_count": 1000,
+    "observed_counts": {
+      "haze4k_gt": 4000,
+      "its_train_clear": 10000,
+      "its_validation_clear": 1000,
+      "ots_clear": 8970,
+      "ots_depth": 8970,
+      "ots_hazy": 313950,
+      "sots_outdoor_gt": 492
+    },
+    "observed_identity": {
+      "archive_manifest_sha256": "27348952347a0f94ac33105d5e6ce11b4ce4e2b0fab68b583b978752b5b78be0",
+      "layout_record_sha256": "f025a8e6e3f43c9b924c0986b866ed28e5644dd7a7ec7b056ae311c83764d5dc",
+      "pairing_report_sha256": "afdefd2887437d929e00239e932bd76e7504d9838c2a3c58c33ce13f91f4150a"
+    },
+    "qualified_identity_match": true
+  },
+  "exclusion_pool": {
+    "authorized_exclusion_digest": null,
+    "candidate_union_exclusion_count": 920,
+    "candidate_union_exclusion_digest": "f759ee76ac749c832828cc60914cbe20cfd419135702b992da631463c2d1e753",
+    "eligible_ots_scene_count": 8050,
+    "future_design_capacity": "1,000 definition scenes plus 1,000 validation scenes, leaving at least 4,000 eligible OTS scenes untouched when the capacity gate passes",
+    "minimum_required_eligible_scenes": 6000,
+    "resolved_haze4k_ots_ids": 0,
+    "sots_outdoor_ots_ids": 492,
+    "strict_haze4k_ots_ids": 458
+  },
+  "gates": {
+    "dataset_identity": true,
+    "eligible_ots_capacity": true,
+    "known_match_top_k_recall": false,
+    "known_match_top_one_recovery": false,
+    "prior_strict_mapping_reproduced": false,
+    "sots_outdoor_overlap_reproduced": true,
+    "unresolved_mapping_completeness": false,
+    "unresolved_mapping_gap_floor": false,
+    "unresolved_mapping_mutual_nearest": false,
+    "unresolved_mapping_score_floor": false,
+    "unresolved_mapping_uniqueness": false
+  },
+  "limitations": [
+    "This operation qualifies source identity and capacity only; it does not validate an outdoor measurement field.",
+    "Haze4K and SOTS-outdoor clear images are used only for source exclusion, not for model evaluation or threshold selection.",
+    "No indoor q result is transported to the outdoor domain.",
+    "No model, training, inference, checkpoint, hazy test outcome, canary, confirmation, or locked-test data is accessed."
+  ],
+  "marker": "RESIDE_OTS_OUTDOOR_OVERLAP_RESOLUTION_COMPLETE",
+  "operation_id": "OTS_OVERLAP_RESOLUTION",
+  "robust_retrieval": {
+    "candidate_score": {
+      "max": null,
+      "median": null,
+      "min": null,
+      "q05": null,
+      "q95": null
+    },
+    "candidate_score_gap": {
+      "max": null,
+      "median": null,
+      "min": null,
+      "q05": null,
+      "q95": null
+    },
+    "interpretation_limit": "A FAIL means only that this frozen retrieval method did not close the mapping; it does not prove that an OTS source mapping is absent.",
+    "known_strict_mapping_count": 458,
+    "known_top_k_recovered": 0,
+    "known_top_one_recovered": 0,
+    "known_top_one_score": {
+      "max": null,
+      "median": null,
+      "min": null,
+      "q05": null,
+      "q95": null
+    },
+    "method": "Top-64 by minimum symmetric multi-view pHash distance, then maximum normalized grayscale correlation across seven fixed full/crop views.",
+    "minimum_correlation": 0.98,
+    "minimum_score_gap": 0.005,
+    "mutual_nearest_count": 0,
+    "top_k": 64,
+    "unique_selected_ots_count": 0,
+    "unresolved_candidate_count": 0,
+    "verified_unresolved_count": 0
+  },
+  "route_id": "reside-ots-outdoor-overlap-resolution-v1",
+  "run_id": "reside-ots-outdoor-overlap-resolution-v1-phase-a",
+  "schema_version": 1,
+  "scope": "RESIDE OTS source-scene qualification for synthetic outdoor design",
+  "strict_reproduction": {
+    "cross_source_ambiguous_group_count": 0,
+    "indoor_haze4k_group_count": 0,
+    "mapping_digest": "f7716b6753fffc45e7f44a392eb339a49f753ae1f0fd65f032dcb1571b4a3ade",
+    "ots_exclusion_digest": "bcc24f5a9b74e5fa381b3311b061b1d0837665f4897cc3e918c5b4160497e621",
+    "ots_haze4k_group_count": 458,
+    "prior_reproduced": false,
+    "sots_ots_exclusion_digest": "ef87654fcf0581f998b5e593eb6ec1cd670b9422f38cbdbca48f0452da6b0da5",
+    "sots_outdoor_exact_group_count": 492,
+    "sots_prior_reproduced": true,
+    "unresolved_haze4k_group_count": 542
+  },
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "OTS_OVERLAP_RESOLUTION_INCONCLUSIVE",
+    "gate_reasons": [
+      "prior_strict_mapping_reproduced"
+    ],
+    "state": "COMPLETED_INCONCLUSIVE"
+  }
+}

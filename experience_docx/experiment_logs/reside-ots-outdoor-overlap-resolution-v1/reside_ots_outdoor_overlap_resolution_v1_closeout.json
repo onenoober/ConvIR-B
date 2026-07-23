@@ -1,0 +1,61 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "OTS_OVERLAP_RESOLUTION_INCONCLUSIVE",
+  "details": {
+    "eligible_ots_scenes": 8050,
+    "exclusion_digest": "f759ee76ac749c832828cc60914cbe20cfd419135702b992da631463c2d1e753",
+    "gate_reasons": [
+      "prior_strict_mapping_reproduced"
+    ],
+    "outdoor_measurement_executed": false,
+    "strict_ots_mappings": 458,
+    "summary_file": "overlap_resolution_summary.json",
+    "verified_unresolved_mappings": 0
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "reside_ots_outdoor_overlap_resolution_v1_exclusions.txt": "00655084ccc8aa4773b1033e54cba58935b8ff918041fdccde7f578d98f40988",
+    "reside_ots_outdoor_overlap_resolution_v1_mapping.csv": "1ca65cbe53c2feb510f67d7b110815779d119d606a83b3f1b4404ae9e0580033",
+    "reside_ots_outdoor_overlap_resolution_v1_summary.json": "b21675f41e7a2559b313d645a435688d749969214dd4c408faaa496235721da8"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "OTS_OVERLAP_RESOLUTION",
+  "returncode": 0,
+  "route_commit": "03f8e22491391d999e1a583ac72ab4ce41298c07",
+  "route_id": "reside-ots-outdoor-overlap-resolution-v1",
+  "run_id": "reside-ots-outdoor-overlap-resolution-v1-phase-a",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_INCONCLUSIVE",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "indoor_measurement_fail",
+      "kind": "file",
+      "sha256": "9d1238ab247d6139f8c167d4861e7ffecd313b8f92d28eb1096002adca3ebd99"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_reside_qualification",
+      "kind": "file",
+      "sha256": "f7cbac42e8510489351149412e5ad27a0278db0d3c52963d609abb8ba352714c"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory"
+    }
+  ]
+}
