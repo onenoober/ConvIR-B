@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k-test-scene-split-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "title": "Outcome-blind Haze4K official-test scene grouping and 100/150 role isolation",
+  "rationale": "The official ConvIR-B checkpoint was trained on Haze4K train and its aggregate official-test metric was previously reproduced, so train-only local-error prevalence cannot answer whether the same constructs appear on unseen Haze4K scenes. This qualification performs one complete but outcome-blind official-test structure census, freezes a deterministic 100-scene development-screening and 150-scene candidate-confirmation partition, and materializes physically separated role assets. It loads no model or checkpoint and computes no restoration result or metric. The full test is baseline-exposed but remains candidate-unseen for this research route.",
+  "first_operation": "HAZE4K_TEST_SCENE_SPLIT_QUALIFY",
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_test_local_error_replication_v1.json",
+  "operations": {
+    "HAZE4K_TEST_SCENE_SPLIT_QUALIFY": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "dataset_qualification",
+        "require_gpu": false,
+        "output_id": "haze4k-test-scene-split-v1-phase-a",
+        "closeout_filename": "haze4k_test_scene_split_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "allowed_terminal_tuples": [
+          {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "HAZE4K_TEST_SCENE_SPLIT_PASS",
+            "authorizes": "HAZE4K_TEST_DEVELOPMENT_LOCAL_ERROR_REPLICATION"
+          },
+          {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "HAZE4K_TEST_SCENE_SPLIT_FAIL",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "HAZE4K_TEST_SCENE_SPLIT_INCONCLUSIVE",
+            "authorizes": "HAZE4K_TEST_SCENE_SPLIT_SUPPLEMENT_ONLY"
+          },
+          {
+            "state": "FAILED_ENGINEERING",
+            "decision": null,
+            "authorizes": "NONE"
+          }
+        ],
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 240,
+        "min_free_gpu_mib": 0,
+        "max_gpu_utilization_pct": 100
+      },
+      "program_authorization": {
+        "program_id": "haze4k_test_local_error_replication",
+        "stage_id": "test_data_qualification",
+        "family_id": "haze4k_test_role_integrity",
+        "mechanism_type": "adjacent",
+        "evidence_role": "confirmation",
+        "protected_permissions": {
+          "allow_confirmation": true,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [],
+        "adjacent_sequence": 1,
+        "orthogonal_changes": [],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Can the Haze4K official test be outcome-blindly grouped into exactly 250 canonical clear scenes with four nested haze variants each and deterministically isolated into 100 development-screening scenes and 150 candidate-confirmation scenes before any present-route model result is inspected?",
+        "population": {
+          "evidence_role": "confirmation",
+          "grouping_unit": "canonical_clear_scene",
+          "independent_group_count": 250,
+          "allow_confirmation": true,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "outcome_blind_canonical_scene_grouped_100_150_partition",
+          "reference": "complete Haze4K official-test file census with no model, checkpoint, prediction, restoration metric, local-error metric, threshold analysis, or candidate comparison",
+          "matched_budget": "all 1,000 official-test haze observations and paired clear targets used only for pairing, decode, dimension, canonical identity, deterministic role assignment, and isolation",
+          "fixed_factors": [
+            "official loader exact-name then first-token same-extension then first-token PNG precedence",
+            "canonical scene SHA-256 over clear-image width, height, and decoded RGB bytes",
+            "split salt haze4k-test-local-error-replication-v1",
+            "rank by SHA-256 of split salt and canonical scene digest then digest",
+            "first 100 ranked scenes development_screening and remaining 150 candidate_confirmation",
+            "all four haze variants of each canonical scene remain in one role",
+            "development and candidate-confirmation files are hard-linked into disjoint route-owned role directories",
+            "only aggregate counts and assignment digests are publishable; per-image role rows remain cloud-only"
+          ]
+        },
+        "primary_estimand": {
+          "id": "outcome_blind_test_role_integrity",
+          "metric": "proportion of 250 canonical clear scenes assigned to exactly one frozen role with all four haze variants contained and accessible only through the corresponding isolated role asset",
+          "direction": "higher",
+          "aggregation": "deterministic complete official-test census at canonical clear-scene level",
+          "unit": "canonical_clear_scene"
+        },
+        "controls": [
+          "exact 1,000 haze and 1,000 clear file counts",
+          "complete deterministic loader pairing, decode, and dimension alignment",
+          "exact 250 canonical decoded-RGB clear-scene digests",
+          "exactly four paired haze variants per canonical scene",
+          "100/150 scene-role disjointness and complete observation coverage",
+          "isolated role assets contain 400/600 haze-clear pairs and no cross-role canonical digest",
+          "entrypoint imports no model code and asset list contains no checkpoint"
+        ],
+        "uncertainty": {
+          "method": "deterministic census integrity audit; no sampling interval is used and haze variants never increase the independent scene count",
+          "confidence_level": 0.95,
+          "independent_unit": "canonical_clear_scene"
+        },
+        "gates": [
+          {
+            "id": "confirmation_structure_only_scope",
+            "type": "integrity",
+            "estimand": "the only delivered scientific asset is the official-test directory under confirmation permission and the entrypoint contains no model or metric path",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "complete_file_pair_decode_alignment_census",
+            "type": "integrity",
+            "estimand": "all 1,000 haze and 1,000 clear files are paired, decoded, and dimension aligned",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "canonical_scene_and_variant_structure",
+            "type": "integrity",
+            "estimand": "exactly 250 canonical scenes have exactly four paired haze observations each",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "frozen_role_counts_and_containment",
+            "type": "integrity",
+            "estimand": "100 development and 150 candidate-confirmation scenes are disjoint and cover all 1,000 observations",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "isolated_role_asset_integrity",
+            "type": "integrity",
+            "estimand": "route-owned development and candidate-confirmation directories contain only their assigned 400 and 600 exact-name haze-clear pairs with assignment metadata",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          }
+        ],
+        "competing_explanation": "Decoded RGB identity validates the frozen leakage-control rule but does not establish original capture provenance or physical filename-token semantics; the four clear aliases may be packaging duplicates. The full official test is baseline-exposed because the official checkpoint aggregate metric was reproduced, so only candidate outcomes—not baseline exposure—remain unseen.",
+        "terminal_mapping": {
+          "pass": {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "HAZE4K_TEST_SCENE_SPLIT_PASS",
+            "authorizes": "HAZE4K_TEST_DEVELOPMENT_LOCAL_ERROR_REPLICATION"
+          },
+          "fail": {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "HAZE4K_TEST_SCENE_SPLIT_FAIL",
+            "authorizes": "NONE"
+          },
+          "inconclusive": {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "HAZE4K_TEST_SCENE_SPLIT_INCONCLUSIVE",
+            "authorizes": "HAZE4K_TEST_SCENE_SPLIT_SUPPLEMENT_ONLY"
+          }
+        },
+        "disabled_actions": [
+          "model construction, checkpoint loading, training, inference, or prediction access",
+          "PSNR, SSIM, LPIPS, color, local-error, overshoot, undershoot, oracle, proxy, threshold, or candidate computation",
+          "visual inspection or per-image failure interpretation",
+          "using the 150 candidate-confirmation scenes for the authorized development replication",
+          "publishing per-image role assignments, images, arrays, or decoded pixel data",
+          "treating haze variants or clear aliases as independent scenes",
+          "allowing old Haze4K route outcomes to select this split or its thresholds",
+          "NH-HAZE or any other dataset access"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/qualify_haze4k_test_scene_split.py",
+        "timeout_seconds": 1200,
+        "expected_wall_seconds": 300,
+        "total_units": 5,
+        "evidence_role": "confirmation",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": true,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {
+          "CONVIR_ROUTE_HAZE4K_TEST_SPLIT_WORKERS": "8",
+          "CONVIR_ROUTE_HAZE4K_TEST_EXPECTED_FILES": "1000",
+          "CONVIR_ROUTE_HAZE4K_TEST_EXPECTED_SCENES": "250",
+          "CONVIR_ROUTE_HAZE4K_TEST_DEVELOPMENT_SCENES": "100",
+          "CONVIR_ROUTE_HAZE4K_TEST_CONFIRMATION_SCENES": "150",
+          "CONVIR_ROUTE_HAZE4K_TEST_SPLIT_SALT": "haze4k-test-local-error-replication-v1"
+        },
+        "evidence_files": [
+          {
+            "source_relpath": "workload/haze4k_test_scene_split_summary.json",
+            "destination_filename": "haze4k_test_scene_split_v1_summary.json",
+            "required": true,
+            "max_bytes": 131072
+          },
+          {
+            "source_relpath": "workload/haze4k_test_scene_split_strata.csv",
+            "destination_filename": "haze4k_test_scene_split_v1_strata.csv",
+            "required": true,
+            "max_bytes": 65536
+          }
+        ],
+        "engineering_contract": {
+          "mode": "metadata_only",
+          "max_seconds": 120
+        },
+        "precision_contract": {
+          "mode": "formal_precision",
+          "rationale": "The operation observes all 250 canonical official-test scenes and all 1,000 nested haze observations; structural gates use exact census counts."
+        }
+      },
+      "assets": [
+        {
+          "id": "haze4k_official_test",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test",
+          "access_role": "confirmation",
+          "contract_access": false
+        }
+      ],
+      "capability": null,
+      "precision": {
+        "certificate_id": "haze4k_test_scene_split_v1_capacity",
+        "estimand": "canonical clear-scene role-integrity proportion",
+        "method": "binomial_worst_case",
+        "confidence_level": 0.95,
+        "target_half_width": 0.065,
+        "planning_sd": 0.5,
+        "independent_groups_available": 250,
+        "independent_groups_required": 228,
+        "feasible": true,
+        "source_role": "unrestricted",
+        "source_reference": "Worst-case Bernoulli standard deviation 0.5 fixed analytically; the operation observes all 250 canonical official-test scenes."
+      }
+    }
+  }
+}

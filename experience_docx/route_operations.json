@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-test-scene-split-v1.json",
+  "experiment_spec_sha256": "7347935b4165547f492aab82e633a21997b1f7159f368b212b3bb615988c898c",
+  "operations": {
+    "HAZE4K_TEST_SCENE_SPLIT_QUALIFY": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "HAZE4K_TEST_DEVELOPMENT_LOCAL_ERROR_REPLICATION",
+          "decision": "HAZE4K_TEST_SCENE_SPLIT_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "HAZE4K_TEST_SCENE_SPLIT_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "HAZE4K_TEST_SCENE_SPLIT_SUPPLEMENT_ONLY",
+          "decision": "HAZE4K_TEST_SCENE_SPLIT_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "haze4k_test_scene_split_v1_closeout.json",
+      "heartbeat_timeout_seconds": 240,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "dataset_qualification",
+      "monitor_profile": "standard",
+      "output_id": "haze4k-test-scene-split-v1-phase-a",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_test_local_error_replication_v1.json",
+  "program_contract_sha256": "ceff3efc047d50e37944313eb4821b65be16cae10d46f9cbc58d8ebae440d431",
+  "route_card_relpath": "experience_docx/experiment_cards/haze4k-test-scene-split-v1.md",
+  "route_id": "haze4k-test-scene-split-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "HAZE4K_TEST_SCENE_SPLIT_QUALIFY": "experience_docx/scientific_contracts/haze4k-test-scene-split-v1__HAZE4K_TEST_SCENE_SPLIT_QUALIFY.json"
+  }
+}

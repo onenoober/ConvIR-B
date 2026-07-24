@@ -1,0 +1,14 @@
+{
+  "assets": [
+    {
+      "access_role": "confirmation",
+      "contract_access": false,
+      "id": "haze4k_official_test",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test"
+    }
+  ],
+  "operation_id": "HAZE4K_TEST_SCENE_SPLIT_QUALIFY",
+  "route_id": "haze4k-test-scene-split-v1",
+  "schema_version": 1
+}
