@@ -1,0 +1,160 @@
+{
+  "competing_explanation": "Any positive OOF result may reflect prediction of content-dependent RGB-MSE residual corrections, synthetic Haze4K regularities, the official checkpoint's calibration, the chosen decoder representation, hard 32-pixel tiling, or the three selected scales rather than a physical haze mechanism. Cross-fitted output-space predictability does not prove that a trainable network-internal module can reproduce the actions, preserve perceptual quality, or transfer to real haze.",
+  "controls": [
+    "official ConvIR-B keep output with no spatial adjustment",
+    "identical learned tile utility predictor collapsed by pixel-area averaging to one uniform image action",
+    "identical ridge fitted after deterministic permutation of paired action-utility target rows inside each outer training partition",
+    "observable image-plus-output moments without decoder features",
+    "hazy-input-only moments without official output or decoder features",
+    "GT-privileged three-action spatial oracle from the direct parent is an ineligible upper bound and is never a deployment input",
+    "all four variants of a clear scene remain together in every outer and inner split",
+    "outer test targets and outcomes remain untouched by fitting and inner selection until final replay",
+    "synthetic exact graph, decoder hook, target, ridge, threshold, spatial replay, uniform control, SSIM, and same-asymptotic-scale finalizer contract"
+  ],
+  "disabled_actions": [
+    "delivering or accessing the protected 150-scene candidate-confirmation asset",
+    "accessing NH-HAZE or any sealed external validation data",
+    "training or selecting a network module, changing ConvIR-B weights, or claiming this ridge proxy is the final method",
+    "using GT-derived targets, demand, oracle actions, or error maps as OOF test inputs or deployment inputs",
+    "selecting features, alpha, threshold, action set, tile size, metric, or safety margin after outer-test outcomes are observed",
+    "claiming tile action accuracy alone establishes restoration utility",
+    "claiming the selected feature family identifies a causal or physical haze mechanism",
+    "treating variants, tiles, pixels, or clear aliases as independent statistical units",
+    "automatically continuing into module implementation, confirmation, or NH-HAZE after PASS"
+  ],
+  "gates": [
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "exact parent authorization, isolated 100-scene role, 400 fixed-checkpoint inferences, complete five outer scene folds with all selection inside training scenes, complete OOF image replay, no confirmation asset, and no network training",
+      "id": "authorized_isolated_nested_crossfit_complete",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "lower 95 percent scene-bootstrap bound for OOF spatial-proxy minus official-keep delta PSNR in dB",
+      "id": "material_oof_gain_over_keep",
+      "threshold": 0.1,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "lower 95 percent scene-bootstrap bound for OOF spatial-proxy minus identical-predictor uniform-action delta PSNR in dB",
+      "id": "material_oof_spatial_specificity",
+      "threshold": 0.1,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "lower 95 percent scene-bootstrap bound for OOF spatial-proxy minus shuffled-training-target spatial proxy delta PSNR in dB",
+      "id": "material_oof_shuffle_falsification",
+      "threshold": 0.1,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "lower 95 percent Wilson bound for scenes with OOF spatial-proxy minus keep mean delta PSNR at least +0.10 dB",
+      "id": "broad_oof_benefit",
+      "threshold": 0.2,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "upper 95 percent Wilson bound for scenes whose mean OOF spatial-proxy minus keep delta PSNR is at most -0.10 dB",
+      "id": "psnr_tail_safety",
+      "threshold": 0.1,
+      "type": "safety"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "upper 95 percent Wilson bound for scenes whose mean OOF spatial-proxy minus keep RGB SSIM is at most -0.005",
+      "id": "ssim_tail_safety",
+      "threshold": 0.1,
+      "type": "safety"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "upper 95 percent Wilson bound for scenes whose mean OOF spatial-proxy minus keep absolute RGB channel-bias is at least 1/255",
+      "id": "color_tail_safety",
+      "threshold": 0.1,
+      "type": "safety"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "only the isolated 100-scene development_screening asset is delivered; the protected 150-scene candidate_confirmation asset is absent",
+      "exact parent COMPLETED_GATE_PASS authorizing HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY",
+      "official haze4k-base.pkl SHA-256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "official ConvIR-B base graph with 8,630,665 frozen parameters and strict checkpoint load",
+      "action formula clip(hazy plus scale times official_prediction minus hazy, 0, 1)",
+      "action set keep 1.0, weaken 0.8, strengthen 1.2 on origin-aligned 32-pixel tiles",
+      "GT target is the clipped normalized per-tile RGB-MSE advantage of weaken and strengthen relative to keep and is computed only for training targets and scoring",
+      "outer split is five deterministic 20-scene folds; all four haze variants for a canonical clear scene remain in one fold",
+      "within each outer fold, four deterministic scene folds select ridge alpha from 0.0001, 0.001, 0.01, 0.1, 1.0 and action threshold from 0, 0.0025, 0.005, 0.01, 0.02, 2.0",
+      "inner selection admits only configurations with scene PSNR-harm prevalence at most 0.05 and maximizes the fixed sum of spatial-minus-keep and spatial-minus-uniform mean delta PSNR",
+      "threshold 2.0 is a deterministic keep-only fallback because predicted normalized utilities are clipped to [-1,1]",
+      "primary proxy input is 40 fixed local moments of hazy image, official prediction, and their residual plus 64 mean/std moments from frozen Decoder[2] features",
+      "ridge rows are pixel-area weighted and normalized so every canonical scene and each of its four variants contribute equally",
+      "same-predictor uniform control area-averages the two predicted action utilities over each image before applying the identical threshold once",
+      "shuffled-target control permutes paired action-utility target rows within the outer training partition and refits the identical ridge using the already inner-selected alpha and threshold",
+      "observable-only and hazy-input-only feature families use the same outer folds, selected alpha, selected threshold, action set, and OOF images as descriptive ablations",
+      "right and bottom boundary tiles use valid pixels only and are never independent groups",
+      "four nested variants are averaged within canonical clear scene before equal-weight scene inference",
+      "PSNR is primary utility; RGB SSIM and mean absolute RGB channel-bias are safety metrics",
+      "20,000 paired scene bootstrap resamples with seeds 20260726, 20260727, and 20260728; two-sided 95 percent Wilson intervals for prevalence gates",
+      "all decisive utility claims form a conjunction, so no candidate can pass by selecting only one favorable contrast"
+    ],
+    "matched_budget": "one frozen official ConvIR-B inference per each of 400 nested variants; all primary, uniform, shuffled-target, observable-only, and input-only policies use the same prediction, action set, folds, and OOF images; no network or module training",
+    "primary_variable": "five-fold outer-scene-cross-fitted spatial bounded action selected by a weighted low-capacity multi-output ridge proxy",
+    "reference": "official ConvIR-B keep output; co-primary spatial-specificity reference is the identical proxy area-averaged to one uniform action per image"
+  },
+  "operation_id": "HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "canonical_clear_scene",
+    "independent_group_count": 100
+  },
+  "primary_estimand": {
+    "aggregation": "compute OOF variant metrics after all selection and fitting, average four variants within canonical clear scene, then equal-weight paired inference across 100 scenes",
+    "direction": "higher",
+    "id": "oof_spatial_proxy_safe_utility_and_specificity",
+    "metric": "joint evidence that the lower 95 percent scene-bootstrap bounds for OOF spatial-minus-keep, spatial-minus-same-predictor-uniform, and spatial-minus-shuffled-target delta PSNR each reach +0.10 dB; the Wilson lower bound for scenes gaining at least +0.10 dB over keep reaches 0.20; and every frozen harm upper bound remains below 0.10",
+    "unit": "canonical_clear_scene"
+  },
+  "question": "On the isolated 100-scene Haze4K official-test development partition, can a low-capacity proxy using only deployment-visible hazy input, fixed official prediction, and frozen official decoder features select spatial keep, weaken, or strengthen actions that produce material and safe OOF scene-level restoration benefit beyond no adjustment and beyond the identical predictor collapsed to one uniform image action?",
+  "route_id": "haze4k-test-local-action-proxy-predictability-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY_SUPPLEMENT_ONLY",
+      "decision": "HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "HAZE4K_LOCAL_ACTION_MODULE_CONTRACT_REVIEW_ONLY",
+      "decision": "HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "canonical_clear_scene",
+    "method": "paired 20,000-resample bootstrap over canonical scenes for each mean delta PSNR and two-sided 95 percent Wilson intervals for material-benefit and harm prevalences"
+  }
+}

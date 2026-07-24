@@ -1,0 +1,14 @@
+{
+  "certificate_id": "haze4k_test_local_action_proxy_predictability_v1_precision",
+  "confidence_level": 0.95,
+  "estimand": "scene-level OOF material-benefit and safety-harm prevalence",
+  "feasible": true,
+  "independent_groups_available": 100,
+  "independent_groups_required": 100,
+  "method": "binomial_worst_case",
+  "planning_sd": 0.5,
+  "schema_version": 1,
+  "source_reference": "Worst-case Bernoulli standard deviation 0.5 fixed analytically; all 100 canonical development scenes are scored once OOF and four haze variants or tiles do not increase independent n.",
+  "source_role": "unrestricted",
+  "target_half_width": 0.098
+}
