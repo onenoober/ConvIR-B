@@ -1,0 +1,62 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-test-development-local-error-replication-v1.json",
+  "experiment_spec_sha256": "4ffc58d1feef1de02a7b11abad98801ba61bad99621366123433d32ac6a69db6",
+  "operations": {
+    "HAZE4K_TEST_DEVELOPMENT_LOCAL_ERROR_REPLICATE": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE",
+          "decision": "HAZE4K_TEST_LOCAL_ERROR_REPLICATION_ORACLE_QUALIFIED",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NH_HAZE_DEVELOPMENT_CONSTRUCT_AUDIT",
+          "decision": "HAZE4K_TEST_LOCAL_ERROR_PATTERN_REPLICATED_ORACLE_NOT_QUALIFIED",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "HAZE4K_TEST_LOCAL_ERROR_REPLICATION_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "HAZE4K_TEST_LOCAL_ERROR_SUPPLEMENT_ONLY",
+          "decision": "HAZE4K_TEST_LOCAL_ERROR_PATTERN_REPLICATED_ORACLE_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "HAZE4K_TEST_LOCAL_ERROR_SUPPLEMENT_ONLY",
+          "decision": "HAZE4K_TEST_LOCAL_ERROR_REPLICATION_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "haze4k_test_development_local_error_replication_v1_closeout.json",
+      "heartbeat_timeout_seconds": 600,
+      "max_gpu_utilization_pct": 95,
+      "min_free_gpu_mib": 4096,
+      "mode": "baseline_local_error_measurement",
+      "monitor_profile": "standard",
+      "output_id": "haze4k-test-development-local-error-replication-v1-phase-a",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_test_local_error_measurement_v1.json",
+  "program_contract_sha256": "ded903b327425e452d4445318df671a68052284cb1714caba12384405b75c771",
+  "route_card_relpath": "experience_docx/experiment_cards/haze4k-test-development-local-error-replication-v1.md",
+  "route_id": "haze4k-test-development-local-error-replication-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "HAZE4K_TEST_DEVELOPMENT_LOCAL_ERROR_REPLICATE": "experience_docx/scientific_contracts/haze4k-test-development-local-error-replication-v1__HAZE4K_TEST_DEVELOPMENT_LOCAL_ERROR_REPLICATE.json"
+  }
+}

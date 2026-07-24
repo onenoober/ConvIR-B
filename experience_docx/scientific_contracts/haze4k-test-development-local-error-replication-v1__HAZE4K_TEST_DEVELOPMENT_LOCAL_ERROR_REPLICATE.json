@@ -1,0 +1,130 @@
+{
+  "competing_explanation": "Agreement may arise from shared RGB-MSE/projection definitions, synthetic-image content, tiling, or official-model calibration rather than a haze-specific causal mechanism or deployment-predictable risk signal.",
+  "controls": [
+    "exact parent split PASS identity, authorization, assignment digest, and 100-scene count",
+    "exact isolated asset counts of 400 haze and 400 exact-name clear files grouped into 100 scenes with four variants each",
+    "candidate-confirmation asset absent from the asset manifest and runtime context",
+    "synthetic unchanged, exact-GT, partial-recovery, strong-overshoot, Wilson-direction, and bootstrap-direction reference cases",
+    "strict official checkpoint load, frozen parameters, finite three-scale forward, and zero training",
+    "scene-level aggregation; tiles and variants never count as independent groups"
+  ],
+  "disabled_actions": [
+    "delivering or accessing the 150-scene candidate-confirmation asset",
+    "training, fitting, threshold adaptation, proxy selection, structure selection, or oracle execution",
+    "claiming paired input error is pure haze density or deployment-available",
+    "claiming signed projection proves perceptual over-dehazing or causality",
+    "treating tiles, variants, or clear aliases as independent groups",
+    "automatically continuing into an oracle, NH-HAZE audit, proxy, or module"
+  ],
+  "gates": [
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "parent authorization, exact isolated role, 100 complete scenes, 400 finite inferences, no candidate-confirmation asset, and no training",
+      "id": "isolated_development_identity_and_complete_coverage",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "lower 95 percent Wilson bound for globally improved scenes",
+      "id": "global_baseline_competence",
+      "threshold": 0.8,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "lower Wilson bound for scene-level high-demand material signed overshoot",
+      "id": "signed_overshoot_exists",
+      "threshold": 0.05,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "upper Wilson bound for scene-level high-demand under-recovery",
+      "id": "high_demand_under_recovery_not_prevalent",
+      "threshold": 0.2,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "upper paired-bootstrap bound for high-minus-low material overshoot fraction",
+      "id": "overshoot_not_high_demand_specific",
+      "threshold": 0.05,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "lower Wilson bound for any strict stable local error; this gate selects the authorized next stage separately from pattern replication",
+      "id": "oracle_qualification_separate",
+      "threshold": 0.2,
+      "type": "materiality"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "only the isolated 100-scene development_screening asset is delivered; the 150-scene candidate_confirmation asset is absent",
+      "official haze4k-base.pkl SHA-256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "official ConvIR-B base graph with 8,630,665 frozen parameters and strict checkpoint load",
+      "canonical scene SHA-256 over clear width, height, and decoded RGB bytes",
+      "split salt haze4k-test-local-error-replication-v1 and assignment digest 6ca5174470dad2b4eef4ae15c5a13a99d8ae9fc0bc2ea1116b199c4d4bc05582",
+      "32-by-32 nonoverlapping tiles with bottom-right reflection padding",
+      "paired input-versus-GT RGB MSE ranks lowest and highest 20 percent tile regions",
+      "under-recovery requires alpha at most 0.80 and output-to-input error ratio at least 0.25 in high-demand tiles",
+      "signed overshoot requires alpha at least 1.05 and projected magnitude at least 1/255",
+      "low-demand harm requires error ratio at least 1.10 and MSE increase at least squared 1/255",
+      "a scene-level replication construct uses the mean tile fraction across four variants and a 20 percent material threshold",
+      "a strict stable construct is variant-material in at least three of four variants",
+      "20,000 paired scene bootstrap resamples with seed 20260724"
+    ],
+    "matched_budget": "one frozen official ConvIR-B inference for each of 400 nested variants, zero training steps",
+    "primary_variable": "fixed_official_convir_b_cross_synthetic_local_error_pattern",
+    "reference": "SOTS signed-overshoot and demand-specificity development evidence under the same 32-pixel tile, paired-demand, alpha, and projected-margin definitions"
+  },
+  "operation_id": "HAZE4K_TEST_DEVELOPMENT_LOCAL_ERROR_REPLICATE",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "canonical_clear_scene",
+    "independent_group_count": 100
+  },
+  "primary_estimand": {
+    "aggregation": "four variants summarized within canonical scene followed by equal-weight Wilson or paired scene-bootstrap inference across 100 scenes",
+    "direction": "higher",
+    "id": "cross_synthetic_local_error_pattern_replication",
+    "metric": "joint scene-level evidence that high-demand signed overshoot lower 95 percent bound is at least 0.05, high-demand under-recovery upper bound is below 0.20, and high-minus-low overshoot upper bootstrap bound is below 0.05",
+    "unit": "canonical_clear_scene"
+  },
+  "question": "On the isolated 100-scene Haze4K official-test development partition, does fixed official ConvIR-B reproduce the SOTS pattern of material signed overshoot without prevalent high-demand under-recovery or high-demand-specific overshoot, and are stable local errors prevalent enough to qualify a bounded non-deployable action oracle?",
+  "route_id": "haze4k-test-development-local-error-replication-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "HAZE4K_TEST_LOCAL_ERROR_REPLICATION_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "HAZE4K_TEST_LOCAL_ERROR_SUPPLEMENT_ONLY",
+      "decision": "HAZE4K_TEST_LOCAL_ERROR_REPLICATION_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE",
+      "decision": "HAZE4K_TEST_LOCAL_ERROR_REPLICATION_ORACLE_QUALIFIED",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "canonical_clear_scene",
+    "method": "two-sided 95 percent Wilson intervals for scene prevalences and paired 20,000-resample bootstrap over canonical scenes for the high-minus-low contrast"
+  }
+}

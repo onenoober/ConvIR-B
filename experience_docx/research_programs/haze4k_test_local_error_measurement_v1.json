@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "program_id": "haze4k_test_local_error_measurement",
+  "objective": "Replicate fixed-baseline local-error constructs on the outcome-blind isolated Haze4K official-test development partition, distinguish cross-synthetic pattern replication from oracle qualification, and keep the candidate-confirmation partition unavailable during development.",
+  "source_anchors": [
+    {
+      "id": "haze4k_test_scene_split_20260724",
+      "reference": "experience_docx/experiment_logs/haze4k-test-scene-split-v1/haze4k_test_scene_split_v1_r1_closeout.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "sots_ots_signed_overshoot_20260723",
+      "reference": "experience_docx/experiment_logs/sots-ots-signed-overshoot-v1/sots_ots_signed_overshoot_v1_conclusion.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "sots_ots_demand_specificity_20260723",
+      "reference": "experience_docx/experiment_logs/sots-ots-demand-specific-overshoot-v1/sots_ots_demand_specific_overshoot_v1_conclusion.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "official_haze4k_convir_b",
+      "reference": "official Haze4K ConvIR-B checkpoint SHA-256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "allowed_uses": ["baseline"]
+    }
+  ],
+  "dependency_roles": {
+    "split_authorization": ["diagnostic"],
+    "cross_domain_measurement_reference": ["diagnostic"],
+    "official_model": ["baseline"]
+  },
+  "stages": {
+    "development_replication": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["haze4k_test_local_error_replication"]
+    },
+    "bounded_oracle": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["haze4k_test_local_action_oracle"]
+    },
+    "nh_haze_construct_audit": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["nh_haze_construct_audit"]
+    }
+  },
+  "route_families": {
+    "haze4k_test_local_error_replication": {
+      "core_assumption": "The fixed official Haze4K ConvIR-B exhibits a SOTS-consistent local-error pattern on the isolated 100-scene Haze4K test development partition.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the single frozen 100-scene replication regardless of terminal decision.",
+      "reopen_evidence_types": ["new_independent_construct_validation", "new_target_domain"]
+    },
+    "haze4k_test_local_action_oracle": {
+      "core_assumption": "Stable local errors occur often enough that a bounded non-deployable keep, weaken, or strengthen action oracle may have material scene-level headroom.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "paused",
+      "close_condition": "Close after one frozen bounded-action oracle or if the replication does not authorize it.",
+      "reopen_evidence_types": ["new_action_space", "independent_oracle_bound"]
+    },
+    "nh_haze_construct_audit": {
+      "core_assumption": "The operational local-error constructs remain measurable and interpretable on an explicitly development-role real nonhomogeneous-haze subset without using sealed external validation.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "paused",
+      "close_condition": "Close after one frozen real-domain construct audit; it cannot replace later sealed NH-HAZE validation.",
+      "reopen_evidence_types": ["new_real_domain_construct", "external_replication"]
+    }
+  },
+  "orthogonal_dimensions": ["target_domain", "data_role", "measurement_target", "local_action_space", "model_structure"],
+  "amendments": []
+}

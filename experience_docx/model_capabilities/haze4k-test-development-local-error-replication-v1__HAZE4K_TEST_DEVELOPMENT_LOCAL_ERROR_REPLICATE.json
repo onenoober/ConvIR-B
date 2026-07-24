@@ -1,0 +1,39 @@
+{
+  "bound_assets": [
+    {
+      "id": "official_checkpoint",
+      "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "id": "model_source",
+      "identity": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+    },
+    {
+      "id": "model_layers",
+      "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "id": "measurement_entrypoint",
+      "identity": "f34a1b03cdd82bf03dd4b19060121bab402841f4f893e1e50ebc8131502042ae"
+    }
+  ],
+  "compatibility_imports": [
+    "torch",
+    "numpy",
+    "PIL",
+    "Dehazing.ITS.models.ConvIR"
+  ],
+  "contract_mode": "gpu_synthetic_no_data",
+  "minimum_fixture": {
+    "batch": 1,
+    "channels": 3,
+    "height": 256,
+    "width": 320
+  },
+  "production_path_statement": "The exact official Haze4K ConvIR-B graph is strict-loaded, frozen, run through its three-scale CUDA forward, and finalized by the same local measurement, scene aggregation, Wilson, and paired-bootstrap path on a no-data synthetic fixture.",
+  "profile_id": "haze4k_test_development_local_error_gpu_synthetic",
+  "protected_data_prohibited": true,
+  "schema_version": 1,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}
