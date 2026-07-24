@@ -1,0 +1,10 @@
+stratum,observed,reference,rate
+hazy_files,1000,1000,1.0
+clear_files,1000,1000,1.0
+loader_selected_pairs,1000,1000,1.0
+canonical_scenes,250,250,1.0
+four_variant_scenes,250,250,1.0
+development_scenes,100,100,1.0
+candidate_confirmation_scenes,150,150,1.0
+development_observations,400,400,1.0
+candidate_confirmation_observations,600,600,1.0

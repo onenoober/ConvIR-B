@@ -1,0 +1,22 @@
+{
+  "route_id": "haze4k-test-scene-split-v1",
+  "operation_id": "HAZE4K_TEST_SCENE_SPLIT_QUALIFY",
+  "run_id": "haze4k-test-scene-split-v1-phase-a-r1",
+  "decision": "HAZE4K_TEST_SCENE_SPLIT_PASS",
+  "authorizes": "HAZE4K_TEST_DEVELOPMENT_LOCAL_ERROR_REPLICATION",
+  "primary_result": "The outcome-blind complete Haze4K official-test census passed every frozen structural and isolation gate. All 1,000 haze and 1,000 clear files paired, decoded, and aligned; decoded-RGB identity yielded exactly 250 canonical clear scenes with four haze variants each. Fixed-salt ranking assigned 100 scenes and 400 observations to development screening and 150 scenes and 600 observations to candidate confirmation, with disjoint exact hard-linked role assets and assignment digest 6ca5174470dad2b4eef4ae15c5a13a99d8ae9fc0bc2ea1116b199c4d4bc05582.",
+  "gate_reasons": [
+    "all 1,000 haze and 1,000 clear files were loader-paired, decoded, and dimension aligned without failure",
+    "the complete census recovered exactly 250 canonical decoded-RGB clear scenes and exactly four haze observations per scene",
+    "the frozen salt produced disjoint 100-scene development and 150-scene candidate-confirmation roles covering all 1,000 observations",
+    "both route-owned role assets passed exact count, same-file identity, exact-name pairing, and cross-role containment checks",
+    "no model, checkpoint, inference, restoration metric, local-error metric, threshold analysis, or candidate comparison was accessed"
+  ],
+  "competing_explanation": "Decoded RGB equality is a valid deterministic leakage-control identity but does not establish original capture provenance or the physical meaning of filename suffixes. The four clear aliases may reflect dataset packaging. The full test is also baseline-exposed through prior reproduction of the official aggregate ConvIR-B metric, so the preserved status is candidate-unseen rather than wholly outcome-unseen.",
+  "limitations": [
+    "This qualification is structure-only and contains no evidence about local restoration errors or image quality.",
+    "Only the 100-scene development asset is authorized for the next fixed-baseline replication; the 150-scene candidate-confirmation asset remains prohibited for development.",
+    "Per-image assignments and role assets remain cloud-only; GitHub retains only aggregate evidence and the assignment digest.",
+    "Canonical scene grouping prevents duplicated-clear leakage but does not assert independent acquisition provenance."
+  ]
+}

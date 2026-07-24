@@ -1,0 +1,103 @@
+{
+  "asset_scope": {
+    "canary_or_locked_test_permission_enabled": false,
+    "confirmation_permission_enabled": true,
+    "model_or_checkpoint_asset_delivered": false,
+    "scope_ok": true,
+    "test_directory_name": "test"
+  },
+  "census": {
+    "clear_decode_failures": 0,
+    "clear_files": 1000,
+    "decodable_pairs": 1000,
+    "dimension_aligned_pairs": 1000,
+    "hazy_decode_failures": 0,
+    "hazy_files": 1000,
+    "loader_selected_pairs": 1000
+  },
+  "exposure_class": "baseline_exposed_candidate_unseen",
+  "forbidden_outcomes": {
+    "candidate_comparison_performed": false,
+    "inference_or_prediction_accessed": false,
+    "local_error_or_threshold_computed": false,
+    "model_or_checkpoint_accessed": false,
+    "restoration_metric_computed": false
+  },
+  "frozen_split": {
+    "assignment_digest": "6ca5174470dad2b4eef4ae15c5a13a99d8ae9fc0bc2ea1116b199c4d4bc05582",
+    "assignment_rows_published": false,
+    "candidate_confirmation_observation_count": 600,
+    "candidate_confirmation_scene_count": 150,
+    "development_observation_count": 400,
+    "development_scene_count": 100,
+    "ranking": "SHA-256(salt + vertical-bar + canonical_scene_digest), then digest",
+    "salt": "haze4k-test-local-error-replication-v1"
+  },
+  "gates": {
+    "canonical_scene_and_variant_structure": true,
+    "complete_file_pair_decode_alignment_census": true,
+    "confirmation_structure_only_scope": true,
+    "frozen_role_counts_and_containment": true,
+    "isolated_role_asset_integrity": true
+  },
+  "isolated_role_assets": {
+    "candidate_confirmation": {
+      "asset_relpath": "role_assets/candidate_confirmation",
+      "assignment_digest": "6ca5174470dad2b4eef4ae15c5a13a99d8ae9fc0bc2ea1116b199c4d4bc05582",
+      "canonical_scene_count": 150,
+      "clear_file_count": 600,
+      "exact_name_pairing": true,
+      "haze_file_count": 600,
+      "observation_count": 600,
+      "per_image_rows_included": false,
+      "role": "candidate_confirmation",
+      "samefile_pair_count": 600,
+      "schema_version": 1,
+      "split_salt": "haze4k-test-local-error-replication-v1"
+    },
+    "development_screening": {
+      "asset_relpath": "role_assets/development_screening",
+      "assignment_digest": "6ca5174470dad2b4eef4ae15c5a13a99d8ae9fc0bc2ea1116b199c4d4bc05582",
+      "canonical_scene_count": 100,
+      "clear_file_count": 400,
+      "exact_name_pairing": true,
+      "haze_file_count": 400,
+      "observation_count": 400,
+      "per_image_rows_included": false,
+      "role": "development_screening",
+      "samefile_pair_count": 400,
+      "schema_version": 1,
+      "split_salt": "haze4k-test-local-error-replication-v1"
+    }
+  },
+  "limitations": [
+    "The full official test is baseline-exposed because its aggregate official ConvIR-B metric was previously reproduced; this operation preserves only candidate-unseen status.",
+    "Decoded RGB identity defines the leakage-control group but does not establish capture provenance or filename-token physics.",
+    "The qualification is structure-only and makes no local-error or restoration-quality claim.",
+    "Only the 100-scene development asset may be delivered to the authorized replication; the 150-scene candidate-confirmation asset remains prohibited until a frozen-candidate confirmation route.",
+    "Per-image assignments remain cloud-only and are not part of compact GitHub evidence."
+  ],
+  "marker": "HAZE4K_TEST_SCENE_SPLIT_QUALIFICATION_COMPLETE",
+  "operation_id": "HAZE4K_TEST_SCENE_SPLIT_QUALIFY",
+  "route_id": "haze4k-test-scene-split-v1",
+  "run_id": "haze4k-test-scene-split-v1-phase-a-r1",
+  "scene_grouping": {
+    "canonical_definition": "SHA-256 over width, height, and decoded RGB bytes of the clear target",
+    "canonical_scene_count": 250,
+    "clear_alias_count": 750,
+    "four_variant_scene_count": 250,
+    "variant_count_histogram": {
+      "4": 250
+    }
+  },
+  "schema_version": 1,
+  "scope": "Haze4K official-test outcome-blind structure census and 100/150 role isolation",
+  "terminal": {
+    "authorizes": "HAZE4K_TEST_DEVELOPMENT_LOCAL_ERROR_REPLICATION",
+    "decision": "HAZE4K_TEST_SCENE_SPLIT_PASS",
+    "gate_reasons": [
+      "all frozen outcome-blind census, 250-scene structure, 100/150 containment, and isolated-role asset gates passed"
+    ],
+    "state": "COMPLETED_GATE_PASS"
+  }
+}

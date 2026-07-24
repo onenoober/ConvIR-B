@@ -1,0 +1,46 @@
+{
+  "authorizes": "HAZE4K_TEST_DEVELOPMENT_LOCAL_ERROR_REPLICATION",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": true,
+  "decision": "HAZE4K_TEST_SCENE_SPLIT_PASS",
+  "details": {
+    "candidate_confirmation_asset_relpath": "workload/role_assets/candidate_confirmation",
+    "candidate_confirmation_observations": 600,
+    "candidate_confirmation_scenes": 150,
+    "canonical_scenes": 250,
+    "development_asset_relpath": "workload/role_assets/development_screening",
+    "development_observations": 400,
+    "development_scenes": 100,
+    "gate_reasons": [
+      "all frozen outcome-blind census, 250-scene structure, 100/150 containment, and isolated-role asset gates passed"
+    ],
+    "model_or_checkpoint_accessed": false,
+    "restoration_outcomes_accessed": false,
+    "split_assignment_digest": "6ca5174470dad2b4eef4ae15c5a13a99d8ae9fc0bc2ea1116b199c4d4bc05582",
+    "strata_file": "haze4k_test_scene_split_strata.csv",
+    "summary_file": "haze4k_test_scene_split_summary.json"
+  },
+  "evidence_role": "confirmation",
+  "evidence_sha256": {
+    "haze4k_test_scene_split_v1_strata.csv": "34024ac78231ab8704c87a22680df9fd732d6a1692e030771bca54bd8acfadd6",
+    "haze4k_test_scene_split_v1_summary.json": "656407f3183f92e75e357004b04b505d2b92cd4b0f4b02b3c6a22aef57d069cf"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "HAZE4K_TEST_SCENE_SPLIT_QUALIFY",
+  "returncode": 0,
+  "route_commit": "7625058878f24927e6ed8a69287884759f337dea",
+  "route_id": "haze4k-test-scene-split-v1",
+  "run_id": "haze4k-test-scene-split-v1-phase-a-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "verified_assets": [
+    {
+      "access_role": "confirmation",
+      "contract_access": false,
+      "id": "haze4k_official_test",
+      "kind": "directory"
+    }
+  ]
+}
