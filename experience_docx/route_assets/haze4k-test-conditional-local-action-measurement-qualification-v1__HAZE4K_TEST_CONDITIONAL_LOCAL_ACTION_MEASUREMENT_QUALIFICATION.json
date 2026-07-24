@@ -1,0 +1,102 @@
+{
+  "assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_test_development",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-test-scene-split-v1/haze4k-test-scene-split-v1-phase-a-r1/workload/role_assets/development_screening"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_oracle_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-bounded-local-action-oracle-v1/haze4k_test_bounded_local_action_oracle_v1_closeout.json",
+      "sha256": "96357cbaaee5aa338fb0f9c9835a975a27e7f048c78a096fd644e6acdd3e383c"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_oracle_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-bounded-local-action-oracle-v1/haze4k_test_bounded_local_action_oracle_v1_summary.json",
+      "sha256": "794ef27733f51f2fa70fab5c94bc661564d7b988ef4247a1b26e33a21b4de7cb"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_proxy_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-local-action-proxy-predictability-v1/haze4k_test_local_action_proxy_predictability_v1_closeout.json",
+      "sha256": "c12a4b013db12b0828823ae8cba7fe8a51208971d29e667966635c157a67cba4"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_proxy_conclusion",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-local-action-proxy-predictability-v1/haze4k_test_local_action_proxy_predictability_v1_conclusion.json",
+      "sha256": "c8419d0b0d23b079b55b3490c54347033fa79221bcc035d995d5e55dcaa1695b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_measurement_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-local-action-measurement-qualification-v1/haze4k_test_local_action_measurement_qualification_v1_closeout.json",
+      "sha256": "ee323807f1addb504b866d74f198e94d2df34cce458abafcd7e84e4c4b801163"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_measurement_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-local-action-measurement-qualification-v1/haze4k_test_local_action_measurement_qualification_v1_summary.json",
+      "sha256": "97ac2086751c5e6ef1f08c0ee0f6777045c347503c9be24d2d82506645bbbcbe"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_measurement_conclusion",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-local-action-measurement-qualification-v1/haze4k_test_local_action_measurement_qualification_v1_conclusion.json",
+      "sha256": "5bd16cdef5c238c2cdea107028c259b0f31847c90dae05b5055929b8ae5225b5"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/Dehazing/ITS/models/ConvIR.py",
+      "sha256": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/Dehazing/ITS/models/layers.py",
+      "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "measurement_entrypoint",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_test_conditional_local_action_measurement_qualification.py",
+      "sha256": "9146144cbda7dc3763751b1f5a9c9316deeede8d6a7faedd330b06d0c88987cb"
+    }
+  ],
+  "operation_id": "HAZE4K_TEST_CONDITIONAL_LOCAL_ACTION_MEASUREMENT_QUALIFICATION",
+  "route_id": "haze4k-test-conditional-local-action-measurement-qualification-v1",
+  "schema_version": 1
+}

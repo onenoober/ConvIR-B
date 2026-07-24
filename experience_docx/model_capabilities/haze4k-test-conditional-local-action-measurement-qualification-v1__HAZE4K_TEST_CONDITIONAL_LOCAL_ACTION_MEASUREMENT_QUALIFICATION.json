@@ -1,0 +1,39 @@
+{
+  "bound_assets": [
+    {
+      "id": "official_checkpoint",
+      "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "id": "model_source",
+      "identity": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+    },
+    {
+      "id": "model_layers",
+      "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "id": "measurement_entrypoint",
+      "identity": "9146144cbda7dc3763751b1f5a9c9316deeede8d6a7faedd330b06d0c88987cb"
+    }
+  ],
+  "compatibility_imports": [
+    "torch",
+    "numpy",
+    "PIL",
+    "Dehazing.ITS.models.ConvIR"
+  ],
+  "contract_mode": "gpu_synthetic_no_data",
+  "minimum_fixture": {
+    "batch": 1,
+    "channels": 3,
+    "height": 256,
+    "width": 320
+  },
+  "production_path_statement": "The strict-loaded frozen official Haze4K ConvIR-B graph and exact three residual actions execute on a device-aware no-data fixture, followed by four shifted tile summaries, source-only piecewise-constant geometric projection into each held-out grid, GT-oracle regret, fixed circular-shift control, same-support non-clipped sensitivity, whole-image PSNR/SSIM/color metrics, complete-scene bootstrap, Wilson intervals, and typed terminal finalization.",
+  "profile_id": "haze4k_test_conditional_local_action_measurement_qualification_gpu_synthetic",
+  "protected_data_prohibited": true,
+  "schema_version": 1,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}

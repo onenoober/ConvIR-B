@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "program_id": "haze4k_local_action_measurement_qualification",
+  "objective": "Determine which bounded Haze4K three-action GT utility target, if any, has adequate measurement stability without selecting a predictor, changing the official model, or accessing protected data.",
+  "source_anchors": [
+    {
+      "id": "haze4k_bounded_oracle_closeout_20260725",
+      "reference": "experience_docx/experiment_logs/haze4k-test-bounded-local-action-oracle-v1/haze4k_test_bounded_local_action_oracle_v1_closeout.json",
+      "allowed_uses": ["diagnostic", "action_definition"]
+    },
+    {
+      "id": "haze4k_bounded_oracle_summary_20260725",
+      "reference": "experience_docx/experiment_logs/haze4k-test-bounded-local-action-oracle-v1/haze4k_test_bounded_local_action_oracle_v1_summary.json",
+      "allowed_uses": ["diagnostic", "supervision"]
+    },
+    {
+      "id": "haze4k_proxy_terminal_20260726",
+      "reference": "experience_docx/experiment_logs/haze4k-test-local-action-proxy-predictability-v1/haze4k_test_local_action_proxy_predictability_v1_closeout.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "haze4k_proxy_conclusion_20260726",
+      "reference": "experience_docx/experiment_logs/haze4k-test-local-action-proxy-predictability-v1/haze4k_test_local_action_proxy_predictability_v1_conclusion.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "haze4k_cross_variant_measurement_terminal_20260730",
+      "reference": "experience_docx/experiment_logs/haze4k-test-local-action-measurement-qualification-v1/haze4k_test_local_action_measurement_qualification_v1_closeout.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "haze4k_cross_variant_measurement_summary_20260730",
+      "reference": "experience_docx/experiment_logs/haze4k-test-local-action-measurement-qualification-v1/haze4k_test_local_action_measurement_qualification_v1_summary.json",
+      "allowed_uses": ["diagnostic", "comparison"]
+    },
+    {
+      "id": "haze4k_cross_variant_measurement_conclusion_20260730",
+      "reference": "experience_docx/experiment_logs/haze4k-test-local-action-measurement-qualification-v1/haze4k_test_local_action_measurement_qualification_v1_conclusion.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "official_haze4k_convir_b",
+      "reference": "official Haze4K ConvIR-B checkpoint SHA-256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "allowed_uses": ["baseline"]
+    }
+  ],
+  "dependency_roles": {
+    "oracle_authorization": ["diagnostic", "action_definition"],
+    "oracle_measurement": ["diagnostic", "supervision"],
+    "proxy_terminal": ["diagnostic"],
+    "proxy_interpretation": ["diagnostic"],
+    "prior_measurement_terminal": ["diagnostic"],
+    "prior_measurement_result": ["diagnostic", "comparison"],
+    "prior_measurement_interpretation": ["diagnostic"],
+    "official_model": ["baseline"]
+  },
+  "stages": {
+    "measurement_qualification": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "haze4k_local_action_measurement_stability",
+        "haze4k_conditional_local_action_grid_stability"
+      ]
+    }
+  },
+  "route_families": {
+    "haze4k_local_action_measurement_stability": {
+      "core_assumption": "A leave-one-haze-variant action field can retain the fixed three-action GT utility under reasonable grid, clipping, SSIM, and color measurement perturbations.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the single frozen 100-scene cross-variant measurement supplement regardless of terminal decision.",
+      "reopen_evidence_types": ["independent_measurement_repeat", "new_measurement_error_bound"]
+    },
+    "haze4k_conditional_local_action_grid_stability": {
+      "core_assumption": "Within each observed haze condition, source-grid tile-aggregated RGB-MSE utilities projected only by fixed geometric overlap can retain the three-action GT oracle value on a held-out grid origin.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the single frozen 100-scene conditional grid-stability supplement regardless of terminal decision.",
+      "reopen_evidence_types": ["independent_measurement_repeat", "new_precision_bound", "new_spatial_unit"]
+    }
+  },
+  "orthogonal_dimensions": [
+    "measurement_target",
+    "grid_definition",
+    "metric_family",
+    "target_domain"
+  ],
+  "amendments": [
+    {
+      "id": "close_cross_variant_measurement_family_20260730",
+      "reason": "The receipt-bound terminal evidence completed the sole frozen cross-variant supplement and therefore triggered its declared family close condition.",
+      "evidence_refs": [
+        "experience_docx/experiment_logs/haze4k-test-local-action-measurement-qualification-v1/haze4k_test_local_action_measurement_qualification_v1_closeout.json",
+        "experience_docx/experiment_logs/haze4k-test-local-action-measurement-qualification-v1/haze4k_test_local_action_measurement_qualification_v1_conclusion.json"
+      ],
+      "approved_scope": "Close only the completed cross-variant measurement family; preserve the orthogonal measurement_target dimension.",
+      "changes": [
+        {
+          "kind": "family_state",
+          "target": "haze4k_local_action_measurement_stability",
+          "value": "closed"
+        }
+      ]
+    }
+  ]
+}

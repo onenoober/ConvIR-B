@@ -1,0 +1,14 @@
+{
+  "certificate_id": "haze4k_test_conditional_local_action_measurement_qualification_v1_precision",
+  "confidence_level": 0.95,
+  "estimand": "mean canonical-scene worst-held-out-grid conditional PSNR regret",
+  "feasible": false,
+  "independent_groups_available": 100,
+  "independent_groups_required": 1065,
+  "method": "normal_mean",
+  "planning_sd": 0.8324269295441421,
+  "schema_version": 1,
+  "source_reference": "The closest pre-existing proxy is the archived parent route's canonical-scene regret SD 0.8324269295 dB under the same action set, metric, four origins, n=100 grouping, and max-grid/mean-variant aggregation. It is used conservatively because the new conditional target variance is unknown before launch.",
+  "source_role": "development_screening",
+  "target_half_width": 0.05
+}
