@@ -1,0 +1,70 @@
+{
+  "assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_test_development",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-test-scene-split-v1/haze4k-test-scene-split-v1-phase-a-r1/workload/role_assets/development_screening"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_conditional_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-conditional-local-action-measurement-qualification-v1/haze4k_test_conditional_local_action_measurement_qualification_v1_closeout.json",
+      "sha256": "d63ace91dad6cbab3cff8a18c37c01a705ea5cd7e1ccab9da1317bc3ee4a0bca"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_conditional_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-conditional-local-action-measurement-qualification-v1/haze4k_test_conditional_local_action_measurement_qualification_v1_summary.json",
+      "sha256": "ca00a1365f7e804e0254936569b28ec11f038514252e3c73a283740b03e03517"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_conditional_conclusion",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-conditional-local-action-measurement-qualification-v1/haze4k_test_conditional_local_action_measurement_qualification_v1_conclusion.json",
+      "sha256": "1de48c122a1621922de4602c8ef732bb00f66d735ae5eb2ebd1f7a03e422d543"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/Dehazing/ITS/models/ConvIR.py",
+      "sha256": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/Dehazing/ITS/models/layers.py",
+      "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "measurement_entrypoint",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_test_conditional_taper_grid_measurement_qualification.py",
+      "sha256": "2e5835cff886353843c4ed599eff6382e26343d960787b0f42061152a33329b7"
+    }
+  ],
+  "operation_id": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_MEASUREMENT_QUALIFICATION",
+  "route_id": "haze4k-test-conditional-taper-grid-measurement-qualification-v1",
+  "schema_version": 1
+}

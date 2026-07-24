@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Qualify a haze-conditional local-action target across grid repeats."""
+"""Qualify a fixed taper projection for haze-conditional local utility."""
 
 from __future__ import annotations
 
@@ -43,6 +43,9 @@ PROXY_CONCLUSION_SHA256 = "c8419d0b0d23b079b55b3490c54347033fa79221bcc035d995d5e
 PRIOR_MEASUREMENT_CLOSEOUT_SHA256 = "ee323807f1addb504b866d74f198e94d2df34cce458abafcd7e84e4c4b801163"
 PRIOR_MEASUREMENT_SUMMARY_SHA256 = "97ac2086751c5e6ef1f08c0ee0f6777045c347503c9be24d2d82506645bbbcbe"
 PRIOR_MEASUREMENT_CONCLUSION_SHA256 = "5bd16cdef5c238c2cdea107028c259b0f31847c90dae05b5055929b8ae5225b5"
+PARENT_CONDITIONAL_CLOSEOUT_SHA256 = "d63ace91dad6cbab3cff8a18c37c01a705ea5cd7e1ccab9da1317bc3ee4a0bca"
+PARENT_CONDITIONAL_SUMMARY_SHA256 = "ca00a1365f7e804e0254936569b28ec11f038514252e3c73a283740b03e03517"
+PARENT_CONDITIONAL_CONCLUSION_SHA256 = "1de48c122a1621922de4602c8ef732bb00f66d735ae5eb2ebd1f7a03e422d543"
 CHECKPOINT_SHA256 = "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
 MODEL_SOURCE_SHA256 = "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
 MODEL_LAYERS_SHA256 = "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
@@ -55,6 +58,8 @@ BOOTSTRAP_SEEDS = {
 }
 REGRET_MARGIN_DB = 0.10
 PRECISION_DISTANCE_DB = 0.05
+BOX_CONTROL_EXPECTED_REGRET_DB = 0.1423354325027467
+BOX_CONTROL_TOLERANCE_DB = 1e-8
 MATERIAL_GAIN_DB = 0.10
 MIN_MATERIAL_SCENE_PREVALENCE = 0.20
 SSIM_HARM_MARGIN = 0.005
@@ -63,6 +68,7 @@ MAX_HARM_PREVALENCE = 0.10
 EPSILON = 1e-12
 NUMERICAL_TIE_TOLERANCE = 1e-12
 KEEP_DIAGNOSTIC_ERROR_BOUND = 64.0 * np.finfo(np.float64).eps
+BOUNDARY_DIAGNOSTIC_BAND_PIXELS = 4
 
 
 def image_files(directory: Path) -> list[Path]:
@@ -373,15 +379,47 @@ def tile_margin_summary(
     }
 
 
+def raised_cosine_tile_weight(height: int, width: int) -> np.ndarray:
+    """Return a strictly-positive separable half-sample raised-cosine window."""
+    if height <= 0 or width <= 0:
+        raise ValueError("tile weight requires positive dimensions")
+    row_phase = (np.arange(height, dtype=np.float64) + 0.5) / height
+    column_phase = (np.arange(width, dtype=np.float64) + 0.5) / width
+    row_weight = np.sin(np.pi * row_phase) ** 2
+    column_weight = np.sin(np.pi * column_phase) ** 2
+    weight = row_weight[:, None] * column_weight[None, :]
+    if not np.isfinite(weight).all() or not bool(np.all(weight > 0.0)):
+        raise RuntimeError("raised-cosine weight is not finite and strictly positive")
+    return weight
+
+
+def tile_boundary_mask(
+    tiles: list[list[tuple[int, int, int, int]]], height: int, width: int, band: int,
+) -> np.ndarray:
+    """Mark a fixed-width band around internal held-out-grid boundaries."""
+    mask = np.zeros((height, width), dtype=bool)
+    row_boundaries = sorted({bottom for row in tiles for _, bottom, _, _ in row if bottom < height})
+    column_boundaries = sorted({right for row in tiles for _, _, _, right in row if right < width})
+    for boundary in row_boundaries:
+        mask[max(0, boundary - band):min(height, boundary + band), :] = True
+    for boundary in column_boundaries:
+        mask[:, max(0, boundary - band):min(width, boundary + band)] = True
+    return mask
+
+
 def project_grid_scores(
     grids: list[dict[str, Any]], variant_index: int, held_out_index: int,
     table_key: str, valid_key: str | None, pixel_mask: np.ndarray | None = None,
+    *, projection: str = "taper",
 ) -> tuple[np.ndarray, np.ndarray, bool, float]:
     target_tiles = grids[held_out_index]["tiles"]
     height = target_tiles[-1][-1][1]
     width = target_tiles[-1][-1][3]
+    if projection not in {"box", "taper"}:
+        raise ValueError("projection must be box or taper")
     dense_sum = np.zeros((height, width, len(ACTION_SET)), dtype=np.float64)
-    dense_count = np.zeros((height, width), dtype=np.int16)
+    dense_weight = np.zeros((height, width), dtype=np.float64)
+    dense_contributors = np.zeros((height, width), dtype=np.int16)
     source_count = len(grids) - 1
     for grid_index, grid in enumerate(grids):
         if grid_index == held_out_index:
@@ -396,22 +434,36 @@ def project_grid_scores(
             for column_index, (top, bottom, left, right) in enumerate(row):
                 if not bool(valid[row_index, column_index]):
                     continue
-                if pixel_mask is None:
-                    dense_sum[top:bottom, left:right] += scores[row_index, column_index]
-                    dense_count[top:bottom, left:right] += 1
-                else:
-                    support = pixel_mask[top:bottom, left:right]
-                    sum_region = dense_sum[top:bottom, left:right]
-                    count_region = dense_count[top:bottom, left:right]
-                    sum_region[support] += scores[row_index, column_index]
-                    count_region[support] += 1
+                tile_height, tile_width = bottom - top, right - left
+                weight = (
+                    raised_cosine_tile_weight(tile_height, tile_width)
+                    if projection == "taper"
+                    else np.ones((tile_height, tile_width), dtype=np.float64)
+                )
+                support = (
+                    np.ones((tile_height, tile_width), dtype=bool)
+                    if pixel_mask is None else pixel_mask[top:bottom, left:right]
+                )
+                sum_region = dense_sum[top:bottom, left:right]
+                weight_region = dense_weight[top:bottom, left:right]
+                contributor_region = dense_contributors[top:bottom, left:right]
+                sum_region[support] += weight[support, None] * scores[row_index, column_index]
+                weight_region[support] += weight[support]
+                contributor_region[support] += 1
 
     if pixel_mask is None:
-        projection_complete = bool(np.all(dense_count == source_count))
+        projection_complete = bool(
+            np.all(dense_contributors == source_count)
+            and np.all(np.isfinite(dense_weight))
+            and np.all(dense_weight > 0.0)
+        )
     else:
         projection_complete = bool(
-            np.all(dense_count[pixel_mask] == source_count)
-            and np.all(dense_count[~pixel_mask] == 0)
+            np.all(dense_contributors[pixel_mask] == source_count)
+            and np.all(dense_contributors[~pixel_mask] == 0)
+            and np.all(np.isfinite(dense_weight[pixel_mask]))
+            and np.all(dense_weight[pixel_mask] > 0.0)
+            and np.all(dense_weight[~pixel_mask] == 0.0)
         )
     target_scores = np.zeros(
         (len(target_tiles), len(target_tiles[0]), len(ACTION_SET)), dtype=np.float64,
@@ -419,18 +471,18 @@ def project_grid_scores(
     target_valid = np.zeros(target_scores.shape[:2], dtype=bool)
     for row_index, row in enumerate(target_tiles):
         for column_index, (top, bottom, left, right) in enumerate(row):
-            counts = dense_count[top:bottom, left:right]
-            support = counts > 0
+            weights = dense_weight[top:bottom, left:right]
+            support = weights > 0.0
             if not bool(np.any(support)):
                 continue
-            pixel_scores = dense_sum[top:bottom, left:right][support] / counts[support, None]
+            pixel_scores = dense_sum[top:bottom, left:right][support] / weights[support, None]
             target_scores[row_index, column_index] = np.mean(pixel_scores, axis=0)
             target_valid[row_index, column_index] = True
     return (
         target_scores,
         target_valid,
         projection_complete,
-        float(np.mean(dense_count > 0)),
+        float(np.mean(dense_weight > 0.0)),
     )
 
 
@@ -455,34 +507,64 @@ def projection_reference_check() -> bool:
             "tables": [{"utility": scores}],
         })
 
-    source_count = len(grids) - 1
     for held_out_index, target_grid in enumerate(grids):
-        actual, valid, complete, coverage = project_grid_scores(
-            grids, 0, held_out_index, "utility", None,
+        for projection in ("box", "taper"):
+            actual, valid, complete, coverage = project_grid_scores(
+                grids, 0, held_out_index, "utility", None, projection=projection,
+            )
+            dense_sum = np.zeros((height, width, len(ACTION_SET)), dtype=np.float64)
+            dense_weight = np.zeros((height, width), dtype=np.float64)
+            dense_contributors = np.zeros((height, width), dtype=np.int16)
+            for source_index, source_grid in enumerate(grids):
+                if source_index == held_out_index:
+                    continue
+                source_scores = source_grid["tables"][0]["utility"]
+                for source_row, source_tiles in enumerate(source_grid["tiles"]):
+                    for source_column, (top, bottom, left, right) in enumerate(source_tiles):
+                        weight = (
+                            raised_cosine_tile_weight(bottom - top, right - left)
+                            if projection == "taper"
+                            else np.ones((bottom - top, right - left), dtype=np.float64)
+                        )
+                        dense_sum[top:bottom, left:right] += (
+                            weight[..., None] * source_scores[source_row, source_column]
+                        )
+                        dense_weight[top:bottom, left:right] += weight
+                        dense_contributors[top:bottom, left:right] += 1
+            if not bool(np.all(dense_contributors == len(grids) - 1)):
+                return False
+            if not bool(np.all(dense_weight > 0.0)):
+                return False
+            dense_scores = dense_sum / dense_weight[..., None]
+            expected = np.zeros_like(actual)
+            for target_row, target_tiles in enumerate(target_grid["tiles"]):
+                for target_column, (top, bottom, left, right) in enumerate(target_tiles):
+                    expected[target_row, target_column] = np.mean(
+                        dense_scores[top:bottom, left:right], axis=(0, 1),
+                    )
+            if not complete or coverage != 1.0 or not bool(np.all(valid)):
+                return False
+            if not np.allclose(
+                actual, expected, rtol=0.0, atol=KEEP_DIAGNOSTIC_ERROR_BOUND,
+            ):
+                return False
+
+        constant_grids = []
+        constant_score = np.asarray((0.0, 0.125, -0.25), dtype=np.float64)
+        for grid in grids:
+            rows, columns = len(grid["tiles"]), len(grid["tiles"][0])
+            scores = np.broadcast_to(
+                constant_score, (rows, columns, len(ACTION_SET)),
+            ).copy()
+            constant_grids.append({
+                "offset": grid["offset"], "tiles": grid["tiles"],
+                "tables": [{"utility": scores}],
+            })
+        constant_actual, _, constant_complete, _ = project_grid_scores(
+            constant_grids, 0, held_out_index, "utility", None, projection="taper",
         )
-        expected = np.zeros_like(actual)
-        for target_row, target_tiles in enumerate(target_grid["tiles"]):
-            for target_column, target_tile in enumerate(target_tiles):
-                top, bottom, left, right = target_tile
-                target_area = (bottom - top) * (right - left)
-                total = np.zeros(len(ACTION_SET), dtype=np.float64)
-                for source_index, source_grid in enumerate(grids):
-                    if source_index == held_out_index:
-                        continue
-                    source_scores = source_grid["tables"][0]["utility"]
-                    for source_row, source_tiles in enumerate(source_grid["tiles"]):
-                        for source_column, source_tile in enumerate(source_tiles):
-                            source_top, source_bottom, source_left, source_right = source_tile
-                            overlap = max(0, min(bottom, source_bottom) - max(top, source_top)) \
-                                * max(0, min(right, source_right) - max(left, source_left))
-                            total += source_scores[source_row, source_column] * overlap
-                expected[target_row, target_column] = total / (
-                    source_count * target_area
-                )
-        if not complete or coverage != 1.0 or not bool(np.all(valid)):
-            return False
-        if not np.allclose(
-            actual, expected, rtol=0.0, atol=KEEP_DIAGNOSTIC_ERROR_BOUND,
+        if not constant_complete or not np.allclose(
+            constant_actual, constant_score, rtol=0.0, atol=KEEP_DIAGNOSTIC_ERROR_BOUND,
         ):
             return False
     return True
@@ -500,16 +582,21 @@ def conditional_grid_measurement(
     tiles = target_grid["tiles"]
     target = prepared[variant_index]
     source_scores, source_valid, projection_complete, _ = project_grid_scores(
-        grids, variant_index, held_out_index, "utility", None,
+        grids, variant_index, held_out_index, "utility", None, projection="taper",
+    )
+    box_scores, box_valid, box_projection_complete, _ = project_grid_scores(
+        grids, variant_index, held_out_index, "utility", None, projection="box",
     )
     source_common_scores, source_common_valid, common_projection_complete, common_projection_coverage = project_grid_scores(
         grids, variant_index, held_out_index, "common_utility", "common_valid",
-        target["common_nonclipped"],
+        target["common_nonclipped"], projection="taper",
     )
     transferred_actions = select_actions(source_scores, source_valid)
+    box_actions = select_actions(box_scores, box_valid)
     nonclipped_actions = select_actions(source_common_scores, source_common_valid)
     oracle_actions = select_actions(target_grid["tables"][variant_index]["utility"])
     transferred, dense_actions = compose_action_field(target, tiles, transferred_actions)
+    box_transferred, box_dense_actions = compose_action_field(target, tiles, box_actions)
     nonclipped, _ = compose_action_field(target, tiles, nonclipped_actions)
     oracle, oracle_dense_actions = compose_action_field(target, tiles, oracle_actions)
     shifted_actions = np.roll(dense_actions, shift=(TILE_SIZE, TILE_SIZE), axis=(0, 1))
@@ -518,6 +605,7 @@ def conditional_grid_measurement(
 
     oracle_psnr = psnr_from_mse(mse(oracle, target["clear"]))
     transferred_psnr = psnr_from_mse(mse(transferred, target["clear"]))
+    box_transferred_psnr = psnr_from_mse(mse(box_transferred, target["clear"]))
     uniform_psnr = psnr_from_mse(mse(uniform, target["clear"]))
     shifted_psnr = psnr_from_mse(mse(shifted, target["clear"]))
     nonclipped_psnr = psnr_from_mse(mse(
@@ -527,8 +615,11 @@ def conditional_grid_measurement(
         target["common_uniform_output"], target["clear"], target["common_nonclipped"],
     ))
     regret = oracle_psnr - transferred_psnr
+    box_regret = oracle_psnr - box_transferred_psnr
     if regret < -1e-8:
         raise RuntimeError("held-out GT oracle was worse than the transferred action field")
+    if box_regret < -1e-8:
+        raise RuntimeError("held-out GT oracle was worse than the box control field")
     uniform_ssim, transferred_ssim = rgb_ssim(
         torch, [uniform, transferred], target["clear"], device,
     )
@@ -536,8 +627,35 @@ def conditional_grid_measurement(
     selected_clip = np.zeros(dense_actions.shape, dtype=bool)
     for action_index, clip_mask in enumerate(target["clip_masks"]):
         selected_clip |= (dense_actions == action_index) & clip_mask
+    boundary_mask = np.zeros(dense_actions.shape, dtype=bool)
+    for source_index, source_grid in enumerate(grids):
+        if source_index != held_out_index:
+            boundary_mask |= tile_boundary_mask(
+                source_grid["tiles"], dense_actions.shape[0], dense_actions.shape[1],
+                BOUNDARY_DIAGNOSTIC_BAND_PIXELS,
+            )
+    interior_mask = ~boundary_mask
+    action_disagreement = dense_actions != box_dense_actions
+    if not bool(np.any(boundary_mask)) or not bool(np.any(interior_mask)):
+        raise RuntimeError("boundary diagnostic masks are empty")
+    boundary_regret = psnr_from_mse(mse(oracle, target["clear"], boundary_mask)) - (
+        psnr_from_mse(mse(transferred, target["clear"], boundary_mask))
+    )
+    interior_regret = psnr_from_mse(mse(oracle, target["clear"], interior_mask)) - (
+        psnr_from_mse(mse(transferred, target["clear"], interior_mask))
+    )
     return {
         "regret_psnr_db": max(0.0, regret),
+        "box_regret_psnr_db": max(0.0, box_regret),
+        "taper_minus_box_psnr_db": transferred_psnr - box_transferred_psnr,
+        "boundary_band_regret_psnr_db": boundary_regret,
+        "interior_regret_psnr_db": interior_regret,
+        "boundary_action_disagreement_fraction": float(np.mean(
+            action_disagreement[boundary_mask],
+        )),
+        "interior_action_disagreement_fraction": float(np.mean(
+            action_disagreement[interior_mask],
+        )),
         "transferred_minus_uniform_psnr_db": transferred_psnr - uniform_psnr,
         "aligned_minus_shifted_psnr_db": transferred_psnr - shifted_psnr,
         "nonclipped_source_minus_uniform_psnr_db": (
@@ -557,6 +675,7 @@ def conditional_grid_measurement(
             dense_actions == oracle_dense_actions,
         )),
         "source_grid_projection_complete": projection_complete,
+        "box_source_grid_projection_complete": box_projection_complete,
         "common_source_projection_complete": common_projection_complete,
         "keep_structural_identity": bool(np.array_equal(
             target["candidates"][0], target["prediction"],
@@ -600,6 +719,12 @@ def scene_measurement(
 
     mean_keys = (
         "regret_psnr_db",
+        "box_regret_psnr_db",
+        "taper_minus_box_psnr_db",
+        "boundary_band_regret_psnr_db",
+        "interior_regret_psnr_db",
+        "boundary_action_disagreement_fraction",
+        "interior_action_disagreement_fraction",
         "transferred_minus_uniform_psnr_db",
         "aligned_minus_shifted_psnr_db",
         "nonclipped_source_minus_uniform_psnr_db",
@@ -634,6 +759,10 @@ def scene_measurement(
                 bool(record["source_grid_projection_complete"])
                 for record in target_records
             ),
+            "box_source_grid_projection_complete": all(
+                bool(record["box_source_grid_projection_complete"])
+                for record in target_records
+            ),
             "common_source_projection_complete": all(
                 bool(record["common_source_projection_complete"])
                 for record in target_records
@@ -653,6 +782,24 @@ def scene_measurement(
         })
     return {
         "regret_psnr_db": max(record["regret_psnr_db"] for record in grid_records),
+        "box_regret_psnr_db": max(
+            record["box_regret_psnr_db"] for record in grid_records
+        ),
+        "taper_minus_box_psnr_db": min(
+            record["taper_minus_box_psnr_db"] for record in grid_records
+        ),
+        "boundary_band_regret_psnr_db": max(
+            record["boundary_band_regret_psnr_db"] for record in grid_records
+        ),
+        "interior_regret_psnr_db": max(
+            record["interior_regret_psnr_db"] for record in grid_records
+        ),
+        "boundary_action_disagreement_fraction": float(np.mean([
+            record["boundary_action_disagreement_fraction"] for record in grid_records
+        ])),
+        "interior_action_disagreement_fraction": float(np.mean([
+            record["interior_action_disagreement_fraction"] for record in grid_records
+        ])),
         "robust_gain_psnr_db": min(
             record["transferred_minus_uniform_psnr_db"] for record in grid_records
         ),
@@ -692,6 +839,9 @@ def scene_measurement(
         ])),
         "source_grid_projection_complete": all(
             record["source_grid_projection_complete"] for record in grid_records
+        ),
+        "box_source_grid_projection_complete": all(
+            record["box_source_grid_projection_complete"] for record in grid_records
         ),
         "common_source_projection_complete": all(
             record["common_source_projection_complete"] for record in grid_records
@@ -772,6 +922,14 @@ def evaluate_gates(
     regret = scene_bootstrap(
         (scene["regret_psnr_db"] for scene in scenes), BOOTSTRAP_SEEDS["regret"],
     ) if scenes else None
+    box_regret = scene_bootstrap(
+        (scene["box_regret_psnr_db"] for scene in scenes),
+        BOOTSTRAP_SEEDS["regret"],
+    ) if scenes else None
+    taper_minus_box = scene_bootstrap(
+        (scene["taper_minus_box_psnr_db"] for scene in scenes),
+        BOOTSTRAP_SEEDS["regret"],
+    ) if scenes else None
     aligned_shift = scene_bootstrap(
         (scene["aligned_minus_shifted_psnr_db"] for scene in scenes),
         BOOTSTRAP_SEEDS["aligned_shift"],
@@ -825,34 +983,36 @@ def evaluate_gates(
     if not complete:
         terminal = {
             "state": "COMPLETED_INCONCLUSIVE",
-            "decision": "HAZE4K_TEST_CONDITIONAL_GRID_STABILITY_INCONCLUSIVE",
+            "decision": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_STABILITY_INCONCLUSIVE",
             "authorizes": "STAGE1_REASSESSMENT_ONLY",
             "gate_reasons": ["complete 100-scene conditional measurement integrity was not established"],
         }
     elif regret_fail or coverage_fail or negative_control_fail or nonclipped_fail or safety_fail:
         terminal = {
             "state": "COMPLETED_GATE_FAIL",
-            "decision": "HAZE4K_TEST_CONDITIONAL_GRID_STABILITY_FAIL",
+            "decision": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_STABILITY_FAIL",
             "authorizes": "NONE",
             "gate_reasons": ["at least one frozen conditional measurement-validity interval clearly failed"],
         }
     elif precision_pass and coverage_pass and negative_control_pass and nonclipped_pass and safety_pass:
         terminal = {
             "state": "COMPLETED_GATE_PASS",
-            "decision": "HAZE4K_TEST_CONDITIONAL_GRID_STABILITY_SCREEN_PASS",
+            "decision": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_STABILITY_SCREEN_PASS",
             "authorizes": "STAGE1_REASSESSMENT_ONLY",
             "gate_reasons": ["the frozen regret, precision, coverage, negative-control, clipping, and safety gates all passed"],
         }
     else:
         terminal = {
             "state": "COMPLETED_INCONCLUSIVE",
-            "decision": "HAZE4K_TEST_CONDITIONAL_GRID_STABILITY_INCONCLUSIVE",
+            "decision": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_STABILITY_INCONCLUSIVE",
             "authorizes": "STAGE1_REASSESSMENT_ONLY",
             "gate_reasons": ["at least one frozen interval crossed its margin or the achieved regret precision exceeded 0.05 dB"],
         }
     return {
         "complete": complete,
         "regret": regret,
+        "box_regret": box_regret,
+        "taper_minus_box": taper_minus_box,
         "aligned_shift": aligned_shift,
         "nonclipped_gain": nonclipped_gain,
         "benefit": benefit,
@@ -880,7 +1040,7 @@ def finalize(
         "route_id": context.route_id,
         "operation_id": context.operation_id,
         "run_id": context.run_id,
-        "scope": "Haze-conditional GT local-action grid-repeat qualification on isolated 100-scene Haze4K development partition",
+        "scope": "Haze-conditional raised-cosine taper projection qualification on the isolated 100-scene Haze4K development partition",
         "identity_and_coverage": {
             "integrity_checks": integrity,
             "completed_scenes": len(scenes),
@@ -895,7 +1055,8 @@ def finalize(
             "actions": [{"name": name, "scale": scale} for name, scale in ACTION_SET],
             "formula": "clip(hazy + scale * (official_prediction - hazy), 0, 1)",
             "haze_condition_role": "each of four haze variants is analyzed as a substantive observed condition; no utility transfers across variants",
-            "leave_one_grid_out": "within each haze condition, geometrically project source-grid tile-mean RGB-MSE utility as piecewise-constant fields into each held-out grid tile before action selection",
+            "leave_one_grid_out": "within each haze condition, project source-grid tile-mean RGB-MSE utility with fixed strictly-positive half-sample raised-cosine weights, normalize the three source grids per pixel as a partition of unity, and average only then within each held-out tile",
+            "matched_control": "the archived equal-weight box projection is recomputed from the same inference and must reproduce its parent mean regret within 1e-8 dB",
             "grid_offsets": [list(offset) for offset in GRID_OFFSETS],
             "primary_scene_value": "maximum held-out-grid regret after equal averaging of the four separately conditioned haze variants",
             "independent_unit": "canonical_clear_scene",
@@ -905,7 +1066,15 @@ def finalize(
             "scene_mean_regret_psnr_db": evaluated["regret"],
             "maximum_upper_bound_db": REGRET_MARGIN_DB,
             "maximum_upper_distance_db": PRECISION_DISTANCE_DB,
-            "pre_run_precision_mode": "descriptive_capacity because prior SD 0.83243 dB implies n=1065 for a conservative 0.05 dB normal half-width",
+            "pre_run_precision_mode": "formal normal-mean feasibility: parent conditional-regret scene SD 0.1060556714 dB requires 18 independent scenes for a two-sided 0.05 dB half-width; n=100 is feasible",
+        },
+        "matched_box_control": {
+            "scene_mean_box_regret_psnr_db": evaluated["box_regret"],
+            "scene_mean_taper_minus_box_psnr_db": evaluated["taper_minus_box"],
+            "expected_parent_box_regret_db": BOX_CONTROL_EXPECTED_REGRET_DB,
+            "absolute_reproduction_tolerance_db": BOX_CONTROL_TOLERANCE_DB,
+            "reproduction_pass": integrity.get("matched_box_parent_control", False),
+            "decision_role": "integrity for box reproduction; taper-minus-box is diagnostic only",
         },
         "coverage": {
             "material_scene_gain_db": MATERIAL_GAIN_DB,
@@ -924,6 +1093,15 @@ def finalize(
             "common_source_projection_complete_all": all(
                 scene["common_source_projection_complete"] for scene in scenes
             ) if scenes else False,
+            "box_source_grid_projection_complete_all": all(
+                scene["box_source_grid_projection_complete"] for scene in scenes
+            ) if scenes else False,
+            "matched_box_parent_control_mean_regret_db": (
+                float(np.mean([scene["box_regret_psnr_db"] for scene in scenes]))
+                if scenes else None
+            ),
+            "matched_box_parent_control_expected_regret_db": BOX_CONTROL_EXPECTED_REGRET_DB,
+            "matched_box_parent_control_tolerance_db": BOX_CONTROL_TOLERANCE_DB,
             "nonclipped_affine_manipulation_exact_all": all(
                 scene["affine_manipulation_exact"] for scene in scenes
             ) if scenes else False,
@@ -948,6 +1126,12 @@ def finalize(
             key: aggregate(scene[key] for scene in scenes)
             for key in (
                 "regret_psnr_db",
+                "box_regret_psnr_db",
+                "taper_minus_box_psnr_db",
+                "boundary_band_regret_psnr_db",
+                "interior_regret_psnr_db",
+                "boundary_action_disagreement_fraction",
+                "interior_action_disagreement_fraction",
                 "robust_gain_psnr_db",
                 "aligned_minus_shifted_psnr_db",
                 "nonclipped_source_minus_uniform_psnr_db",
@@ -962,21 +1146,37 @@ def finalize(
                 "hard_action_agreement_fraction",
             )
         },
+        "per_origin_diagnostics": {
+            str(tuple(GRID_OFFSETS[origin_index])): {
+                key: aggregate(
+                    scene["grid_records"][origin_index][key] for scene in scenes
+                )
+                for key in (
+                    "regret_psnr_db", "box_regret_psnr_db",
+                    "taper_minus_box_psnr_db",
+                    "boundary_band_regret_psnr_db", "interior_regret_psnr_db",
+                    "boundary_action_disagreement_fraction",
+                    "interior_action_disagreement_fraction",
+                    "selected_clip_pixel_fraction",
+                )
+            }
+            for origin_index in range(len(GRID_OFFSETS))
+        },
         "gates": evaluated["gates"],
         "terminal": terminal,
         "limitations": [
             "This is development-screening measurement evidence from 100 canonical synthetic Haze4K scenes.",
-            "The archived related regret SD makes formal 0.05 dB planning precision infeasible at n=100, so the route records descriptive capacity and requires stage-1 reassessment even after a gate pass.",
+            "The parent conditional-regret scene SD supports the frozen 0.05 dB precision target at n=100, but the result remains development-screening evidence.",
             "GT selects source-grid utilities and held-out-grid oracle outcomes within the same haze condition; no result establishes deployment-time predictability.",
-            "A pass qualifies only grid-repeat stability conditional on observed haze and cannot overturn the archived cross-variant instability or tail-safety result.",
+            "A pass qualifies only this fixed raised-cosine source-utility projection conditional on observed haze and cannot overturn archived cross-variant instability.",
             "RGB reconstruction utility and limited SSIM/color safety do not establish perceptual quality or physical haze state.",
             "The result is specific to the fixed three residual scales and four declared 32-pixel grid origins.",
             "The protected candidate-confirmation asset and NH-HAZE were not delivered or accessed.",
         ],
-        "marker": "HAZE4K_TEST_CONDITIONAL_LOCAL_ACTION_MEASUREMENT_QUALIFICATION_COMPLETE",
+        "marker": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_MEASUREMENT_QUALIFICATION_COMPLETE",
     }
-    summary_name = "haze4k_test_conditional_local_action_measurement_qualification_v1_summary.json"
-    strata_name = "haze4k_test_conditional_local_action_measurement_qualification_v1_strata.csv"
+    summary_name = "haze4k_test_conditional_taper_grid_measurement_qualification_v1_summary.json"
+    strata_name = "haze4k_test_conditional_taper_grid_measurement_qualification_v1_strata.csv"
     atomic_json(output_file(context, summary_name), summary)
     rows = [
         {
@@ -988,6 +1188,26 @@ def finalize(
             "lower_one_sided_95": evaluated["regret"]["lower_one_sided_95"] if evaluated["regret"] else "",
             "upper_one_sided_95": evaluated["regret"]["upper_one_sided_95"] if evaluated["regret"] else "",
             "threshold": REGRET_MARGIN_DB,
+        },
+        {
+            "estimand": "scene_mean_worst_held_out_grid_box_control_regret_psnr_db",
+            "method": "scene_bootstrap",
+            "scenes": EXPECTED_SCENES,
+            "events": "",
+            "estimate": evaluated["box_regret"]["estimate"] if evaluated["box_regret"] else "",
+            "lower_one_sided_95": evaluated["box_regret"]["lower_one_sided_95"] if evaluated["box_regret"] else "",
+            "upper_one_sided_95": evaluated["box_regret"]["upper_one_sided_95"] if evaluated["box_regret"] else "",
+            "threshold": BOX_CONTROL_EXPECTED_REGRET_DB,
+        },
+        {
+            "estimand": "scene_mean_worst_grid_taper_minus_box_psnr_db",
+            "method": "scene_bootstrap",
+            "scenes": EXPECTED_SCENES,
+            "events": "",
+            "estimate": evaluated["taper_minus_box"]["estimate"] if evaluated["taper_minus_box"] else "",
+            "lower_one_sided_95": evaluated["taper_minus_box"]["lower_one_sided_95"] if evaluated["taper_minus_box"] else "",
+            "upper_one_sided_95": evaluated["taper_minus_box"]["upper_one_sided_95"] if evaluated["taper_minus_box"] else "",
+            "threshold": "diagnostic_only",
         },
         {
             "estimand": "robust_material_gain_scene_prevalence",
@@ -1068,7 +1288,7 @@ def contract(context_path: Path) -> None:
     if "haze4k_test_development" in context.assets:
         raise RuntimeError("scientific development data must be absent from contract phase")
     torch, model = load_official_model(context)
-    height, width = 256, 320
+    height, width = 1200, 1600
     yy, xx = np.mgrid[0:height, 0:width].astype(np.float32)
     clear = np.stack(
         (
@@ -1094,15 +1314,14 @@ def contract(context_path: Path) -> None:
     repeated = [synthetic_scene for _ in range(EXPECTED_SCENES)]
     exercised = evaluate_gates(
         {
-            "parent_oracle_evidence": True,
-            "closed_proxy_evidence": True,
-            "prior_measurement_terminal_evidence": True,
+            "parent_conditional_terminal_evidence": True,
             "isolated_development_asset_only": True,
             "complete_100_scene_400_variant_grouping": True,
             "complete_finite_inference_and_measurement": True,
             "candidate_confirmation_asset_not_delivered": True,
             "no_training": True,
             "measurement_controls_structural": True,
+            "matched_box_parent_control": True,
         },
         repeated,
         [],
@@ -1116,8 +1335,9 @@ def contract(context_path: Path) -> None:
         "four_shifted_grids_complete": len(synthetic_scene["grid_records"]) == len(GRID_OFFSETS),
         "keep_structural_identity": synthetic_scene["keep_structural_identity"],
         "source_grid_projection_complete": synthetic_scene["source_grid_projection_complete"],
+        "box_source_grid_projection_complete": synthetic_scene["box_source_grid_projection_complete"],
         "common_source_projection_complete": synthetic_scene["common_source_projection_complete"],
-        "source_tile_geometric_projection_reference": projection_reference_check(),
+        "source_tile_box_and_taper_projection_reference": projection_reference_check(),
         "source_projection_not_oracle_clone": (
             synthetic_scene["regret_psnr_db"] > 0.0
             and synthetic_scene["hard_action_agreement_fraction"] < 1.0
@@ -1155,69 +1375,42 @@ def run(context_path: Path) -> None:
     context = load_context(context_path, "run")
     prepare_phase_output(context)
     development_root = asset_path(context, "haze4k_test_development", kind="directory")
-    oracle_closeout_path = asset_path(context, "prior_oracle_closeout", kind="file")
-    oracle_summary_path = asset_path(context, "prior_oracle_summary", kind="file")
-    proxy_closeout_path = asset_path(context, "prior_proxy_closeout", kind="file")
-    proxy_conclusion_path = asset_path(context, "prior_proxy_conclusion", kind="file")
-    measurement_closeout_path = asset_path(
-        context, "prior_measurement_closeout", kind="file",
+    parent_closeout_path = asset_path(
+        context, "parent_conditional_closeout", kind="file",
     )
-    measurement_summary_path = asset_path(
-        context, "prior_measurement_summary", kind="file",
+    parent_summary_path = asset_path(
+        context, "parent_conditional_summary", kind="file",
     )
-    measurement_conclusion_path = asset_path(
-        context, "prior_measurement_conclusion", kind="file",
+    parent_conclusion_path = asset_path(
+        context, "parent_conditional_conclusion", kind="file",
     )
     expected_assets = {
-        "prior_oracle_closeout": ORACLE_CLOSEOUT_SHA256,
-        "prior_oracle_summary": ORACLE_SUMMARY_SHA256,
-        "prior_proxy_closeout": PROXY_CLOSEOUT_SHA256,
-        "prior_proxy_conclusion": PROXY_CONCLUSION_SHA256,
-        "prior_measurement_closeout": PRIOR_MEASUREMENT_CLOSEOUT_SHA256,
-        "prior_measurement_summary": PRIOR_MEASUREMENT_SUMMARY_SHA256,
-        "prior_measurement_conclusion": PRIOR_MEASUREMENT_CONCLUSION_SHA256,
+        "parent_conditional_closeout": PARENT_CONDITIONAL_CLOSEOUT_SHA256,
+        "parent_conditional_summary": PARENT_CONDITIONAL_SUMMARY_SHA256,
+        "parent_conditional_conclusion": PARENT_CONDITIONAL_CONCLUSION_SHA256,
     }
     for identifier, identity in expected_assets.items():
         if context.assets[identifier].sha256 != identity:
             raise RuntimeError(f"formal evidence identity changed for {identifier}")
-    oracle_closeout = json.loads(oracle_closeout_path.read_text(encoding="utf-8"))
-    oracle_summary = json.loads(oracle_summary_path.read_text(encoding="utf-8"))
-    proxy_closeout = json.loads(proxy_closeout_path.read_text(encoding="utf-8"))
-    proxy_conclusion = json.loads(proxy_conclusion_path.read_text(encoding="utf-8"))
-    measurement_closeout = json.loads(
-        measurement_closeout_path.read_text(encoding="utf-8"),
-    )
-    measurement_summary = json.loads(
-        measurement_summary_path.read_text(encoding="utf-8"),
-    )
-    measurement_conclusion = json.loads(
-        measurement_conclusion_path.read_text(encoding="utf-8"),
-    )
-    oracle_ok = (
-        oracle_closeout.get("state") == "COMPLETED_GATE_PASS"
-        and oracle_closeout.get("decision") == "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE_HEADROOM_PASS"
-        and oracle_closeout.get("authorizes") == "HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY"
-        and oracle_summary.get("identity_and_coverage", {}).get("assignment_digest")
-        == SPLIT_ASSIGNMENT_DIGEST
-    )
-    proxy_ok = (
-        proxy_closeout.get("state") == "COMPLETED_GATE_FAIL"
-        and proxy_closeout.get("decision") == "HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY_FAIL"
-        and proxy_closeout.get("authorizes") == "NONE"
-        and proxy_conclusion.get("authorizes") == "NONE"
-    )
-    prior_measurement_ok = (
-        measurement_closeout.get("state") == "COMPLETED_INCONCLUSIVE"
-        and measurement_closeout.get("decision")
-        == "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_INCONCLUSIVE"
-        and measurement_closeout.get("authorizes") == "STAGE1_REASSESSMENT_ONLY"
-        and measurement_summary.get("identity_and_coverage", {}).get("completed_scenes")
+    parent_closeout = json.loads(parent_closeout_path.read_text(encoding="utf-8"))
+    parent_summary = json.loads(parent_summary_path.read_text(encoding="utf-8"))
+    parent_conclusion = json.loads(parent_conclusion_path.read_text(encoding="utf-8"))
+    parent_conditional_ok = (
+        parent_closeout.get("state") == "COMPLETED_GATE_FAIL"
+        and parent_closeout.get("decision")
+        == "HAZE4K_TEST_CONDITIONAL_GRID_STABILITY_FAIL"
+        and parent_closeout.get("authorizes") == "NONE"
+        and parent_summary.get("identity_and_coverage", {}).get("completed_scenes")
         == EXPECTED_SCENES
-        and measurement_summary.get("identity_and_coverage", {}).get("completed_variants")
+        and parent_summary.get("identity_and_coverage", {}).get("completed_variants")
         == EXPECTED_VARIANTS
-        and measurement_conclusion.get("decision")
-        == "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_INCONCLUSIVE"
-        and measurement_conclusion.get("authorizes") == "STAGE1_REASSESSMENT_ONLY"
+        and parent_summary.get("identity_and_coverage", {}).get("assignment_digest")
+        == SPLIT_ASSIGNMENT_DIGEST
+        and abs(
+            float(parent_summary["primary_regret"]["scene_mean_regret_psnr_db"]["estimate"])
+            - BOX_CONTROL_EXPECTED_REGRET_DB
+        ) <= BOX_CONTROL_TOLERANCE_DB
+        and parent_conclusion.get("authorizes") == "NONE"
     )
     scope_ok = (
         development_root.name == "development_screening"
@@ -1258,7 +1451,7 @@ def run(context_path: Path) -> None:
     write_workload_progress(context, completed_units=2, stage="canonical_scene_grouping")
 
     scenes: list[dict[str, Any]] = []
-    if oracle_ok and proxy_ok and prior_measurement_ok and scope_ok and dataset_ok:
+    if parent_conditional_ok and scope_ok and dataset_ok:
         torch, model = load_official_model(context)
         attempted = 0
         for digest in sorted(variants_by_digest):
@@ -1291,9 +1484,7 @@ def run(context_path: Path) -> None:
                     })
 
     integrity = {
-        "parent_oracle_evidence": oracle_ok,
-        "closed_proxy_evidence": proxy_ok,
-        "prior_measurement_terminal_evidence": prior_measurement_ok,
+        "parent_conditional_terminal_evidence": parent_conditional_ok,
         "isolated_development_asset_only": scope_ok,
         "complete_100_scene_400_variant_grouping": dataset_ok,
         "complete_finite_inference_and_measurement": len(scenes) == EXPECTED_SCENES and not failures,
@@ -1302,14 +1493,22 @@ def run(context_path: Path) -> None:
         "measurement_controls_structural": all(
             scene["keep_structural_identity"]
             and scene["source_grid_projection_complete"]
+            and scene["box_source_grid_projection_complete"]
             and scene["common_source_projection_complete"]
             and scene["affine_manipulation_exact"]
             for scene in scenes
         ) if scenes else False,
+        "matched_box_parent_control": (
+            len(scenes) == EXPECTED_SCENES
+            and abs(
+                float(np.mean([scene["box_regret_psnr_db"] for scene in scenes]))
+                - BOX_CONTROL_EXPECTED_REGRET_DB
+            ) <= BOX_CONTROL_TOLERANCE_DB
+        ),
     }
     result = finalize(context, integrity, scenes, failures)
     write_workload_progress(
-        context, completed_units=403, stage="scene_level_conditional_measurement_finalize",
+        context, completed_units=403, stage="scene_level_conditional_taper_measurement_finalize",
     )
     write_run_result(
         context,

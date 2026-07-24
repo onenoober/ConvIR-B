@@ -1,0 +1,161 @@
+{
+  "competing_explanation": "A pass would show only that a fixed translation-reduced source-utility projection qualifies under this synthetic development measurement. A fail with box reproduction would reject simple raised-cosine taper as sufficient and motivate a separately authorized spatial-unit reconstruction; it would not prove local utility absent or continuous actions necessary. Boundary diagnostics can support but not uniquely identify seam aliasing. No result identifies deployment-visible predictability, physical haze mechanisms, real-domain transport, or perceptual optimality.",
+  "controls": [
+    "strictly positive finite taper weights, exactly three source contributors, nonzero denominator, full image support, and constant-utility invariance are structural gates",
+    "the matched box control must reproduce archived parent mean regret within 1e-8 dB from the same inference and utility tables",
+    "keep scale 1.0 must reproduce the official prediction by exact structural array identity",
+    "weaken and strengthen outputs must equal the declared affine residual transformation on every non-clipped pixel",
+    "every shifted source and held-out grid must cover each valid pixel exactly once",
+    "the held-out GT per-tile oracle must not have higher RGB MSE than either frozen transferred action field",
+    "a 32-pixel circular shift preserves taper action frequencies but breaks registered local alignment",
+    "common non-clipped support uses the same action-neutral mask for source selection and scoring",
+    "whole-image SSIM and color evaluation prevents invalid additive tile interpretation",
+    "hard action agreement, boundary bands, held-out origins, clipping strata, and taper-minus-box change are diagnostic only"
+  ],
+  "disabled_actions": [
+    "delivering or accessing the 150-scene candidate-confirmation asset or NH-HAZE",
+    "training, proxy fitting, module construction, representation selection, classifier selection, or threshold adaptation",
+    "using raw per-pixel GT utility, held-out-grid GT utility, target outcomes, clipping, content, or learned signals to choose taper weights",
+    "blending action outputs or creating any continuous effective action scale",
+    "changing the official model, checkpoint, action scales, grid origins, metric definitions, margins, controls, or terminal mappings after launch",
+    "using boundary, origin, clipping, hard-agreement, or taper-minus-box diagnostics as an undeclared decision gate",
+    "claiming a taper-grid screen pass establishes overall measurement qualification, deployment-time prediction, representation sufficiency, a physical mechanism, perceptual optimality, or real-domain validity",
+    "treating haze conditions, grids, tiles, pixels, metrics, taper or box repeats as independent statistical units",
+    "automatically entering Stage 2; every terminal must first rerun Stage-1 design qualification"
+  ],
+  "gates": [
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "exact parent evidence identities, isolated 100-scene role, 400 finite inferences, taper and box projection structure, matched box reproduction, keep/affine controls, no protected asset, and no training",
+      "id": "authorized_isolated_development_complete",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "one-sided 95 percent complete-scene bootstrap upper bound for worst-held-out-grid taper PSNR regret in dB",
+      "id": "primary_conditional_taper_regret",
+      "threshold": 0.1,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand": "distance from the primary point estimate to its one-sided 95 percent upper bound in dB",
+      "id": "achieved_regret_precision",
+      "threshold": 0.05,
+      "type": "precision"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "Wilson lower bound for scenes whose minimum-grid taper-minus-GT-best-uniform PSNR is at least 0.10 dB",
+      "id": "robust_material_scene_coverage",
+      "threshold": 0.2,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "one-sided 95 percent complete-scene bootstrap lower bound for worst-grid aligned-minus-circularly-shifted taper PSNR in dB",
+      "id": "aligned_location_negative_control",
+      "threshold": 0.0,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "one-sided 95 percent complete-scene bootstrap lower bound for worst-grid common-nonclipped taper-minus-GT-best-uniform PSNR in dB",
+      "id": "nonclipped_direction",
+      "threshold": 0.0,
+      "type": "safety"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "upper 95 percent Wilson bound for scenes whose worst-grid mean taper-minus-uniform RGB SSIM is at most -0.005",
+      "id": "ssim_tail_safety",
+      "threshold": 0.1,
+      "type": "safety"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "upper 95 percent Wilson bound for scenes whose worst-grid taper-minus-uniform absolute RGB channel-bias is at least 1/255",
+      "id": "color_tail_safety",
+      "threshold": 0.1,
+      "type": "safety"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "only the isolated 100-scene development_screening asset is delivered; candidate confirmation and NH-HAZE remain absent",
+      "official haze4k-base.pkl SHA-256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "official ConvIR-B base graph with 8,630,665 frozen parameters and strict checkpoint load",
+      "action formula clip(hazy + scale times (official_prediction minus hazy), 0, 1)",
+      "hard action set weaken 0.8, keep 1.0, and strengthen 1.2 with exact ties resolved to keep by fixed action order",
+      "the four haze variants are substantive observed conditions and are analyzed separately; no utility transfers across variants",
+      "grid origins remain exactly (0,0), (0,16), (16,0), and (16,16) pixels with the same valid boundary tiles",
+      "each source grid computes the same tile-mean RGB-MSE utility for each action and holds the value constant over its tile",
+      "the only changed factor is the source-field projection weight: each tile uses the strictly-positive separable window sin(pi*(i+0.5)/height)^2 times sin(pi*(j+0.5)/width)^2 over its actual support",
+      "the three source weights are normalized at each pixel as a partition of unity before averaging projected utility over each held-out tile",
+      "no action outputs are blended; the selected held-out-tile action remains one of the same three hard scales",
+      "the archived equal-weight box projection is recomputed from the same utility tables and must reproduce parent mean regret 0.1423354325027467 dB within 1e-8 dB",
+      "raw per-pixel GT error fields and held-out-grid utility are prohibited from source action selection and taper weights",
+      "each grid origin is held out once; its GT tile oracle is used only after both taper and box action fields are frozen",
+      "primary scene regret is the maximum held-out-grid taper regret after equal averaging of four conditioned haze variants",
+      "negative control circularly shifts only the dense taper action field by 32 pixels on both axes while preserving action frequencies",
+      "non-clipping sensitivity selects taper actions and scores taper-minus-uniform PSNR on the same action-common non-clipped pixels",
+      "keep scale 1.0 uses structural array identity; duplicate MSE subtraction is diagnostic only against 64 float64 epsilons",
+      "RGB MSE defines action utility and PSNR defines primary outcome; whole-image RGB SSIM and absolute channel-bias define safety",
+      "20,000 complete-scene bootstrap resamples use fixed seeds 20260801, 20260802, and 20260803",
+      "four haze conditions, tiles, pixels, grid origins, metrics, taper and box repeats never increase independent n"
+    ],
+    "matched_budget": "one frozen official ConvIR-B inference per each of 400 nested haze conditions followed by deterministic replay of the same three actions; taper and box fields share every inference and utility table",
+    "primary_variable": "source-grid tile-mean RGB-MSE utility projected with fixed strictly-positive separable half-sample raised-cosine weights and normalized across the other three grid origins per pixel before held-out-tile averaging",
+    "reference": "the same haze condition's held-out-grid GT-selected per-tile oracle over weaken 0.8, keep 1.0, and strengthen 1.2"
+  },
+  "operation_id": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_MEASUREMENT_QUALIFICATION",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "canonical_clear_scene",
+    "independent_group_count": 100
+  },
+  "primary_estimand": {
+    "aggregation": "within each canonical scene and held-out grid average four separately conditioned haze-variant regrets, take the maximum across four held-out grids, then equal-weight complete-scene bootstrap across 100 scenes",
+    "direction": "lower",
+    "id": "worst_held_out_grid_conditional_taper_psnr_regret",
+    "metric": "mean canonical-scene maximum-held-out-grid GT-oracle-minus-taper-action PSNR regret after averaging four conditioned haze variants; pass requires one-sided 95 percent scene-bootstrap upper bound below 0.10 dB and upper-bound distance at most 0.05 dB",
+    "unit": "canonical_clear_scene"
+  },
+  "question": "On the isolated 100-scene Haze4K development partition, does a fixed source-only raised-cosine taper projection of conditional three-action GT utility have less than 0.10 dB worst-held-out-grid PSNR regret with adequate precision, matched box reproduction, location specificity, non-clipping direction, and SSIM/color safety?",
+  "route_id": "haze4k-test-conditional-taper-grid-measurement-qualification-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_STABILITY_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "STAGE1_REASSESSMENT_ONLY",
+      "decision": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_STABILITY_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "STAGE1_REASSESSMENT_ONLY",
+      "decision": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_STABILITY_SCREEN_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "canonical_clear_scene",
+    "method": "20,000-resample complete-scene bootstrap for continuous means and two-sided 95 percent Wilson intervals for material-benefit and harm prevalences; achieved regret upper-bound distance is reported explicitly"
+  }
+}
