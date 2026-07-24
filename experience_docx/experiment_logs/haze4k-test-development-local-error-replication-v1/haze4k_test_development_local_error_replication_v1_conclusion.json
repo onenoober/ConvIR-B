@@ -1,0 +1,33 @@
+{
+  "route_id": "haze4k-test-development-local-error-replication-v1",
+  "operation_id": "HAZE4K_TEST_DEVELOPMENT_LOCAL_ERROR_REPLICATE",
+  "run_id": "haze4k-test-development-local-error-replication-v1-phase-a",
+  "decision": "HAZE4K_TEST_LOCAL_ERROR_REPLICATION_ORACLE_QUALIFIED",
+  "authorizes": "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE",
+  "primary_result": "On the isolated 100-canonical-scene Haze4K official-test development partition, fixed official ConvIR-B reproduced the frozen SOTS-consistent local-error pattern and independently passed the stricter oracle-qualification gate. Material high-demand signed overshoot occurred in 23/100 scenes (Wilson 95% CI 0.1584 to 0.3215), whereas material high-demand under-recovery occurred in 4/100 scenes (0.0157 to 0.0984). The scene-paired high-minus-low overshoot fraction was -0.1342 with a 20,000-resample 95% bootstrap interval of -0.1800 to -0.0856, excluding both high-demand specificity and the predeclared +0.05 margin. A strict local-error construct repeated in at least three of four haze variants in 50/100 scenes (Wilson 95% CI 0.4038 to 0.5962), whose lower bound exceeded the frozen 0.20 oracle-qualification margin.",
+  "gate_reasons": [
+    "all 100 canonical clear scenes and 400 nested haze variants completed finite fixed-checkpoint inference with no failures or training",
+    "the lower Wilson bound for high-demand signed overshoot was 0.1584, exceeding the frozen 0.05 existence margin",
+    "the upper Wilson bound for high-demand under-recovery was 0.0984, below the frozen 0.20 non-prevalence margin",
+    "the upper paired-bootstrap bound for high-minus-low overshoot was -0.0856, below the frozen +0.05 specificity margin",
+    "the lower Wilson bound for any strict stable local error was 0.4038, exceeding the frozen 0.20 oracle-qualification margin",
+    "the 150-scene candidate-confirmation asset was not delivered or accessed"
+  ],
+  "secondary_results": {
+    "stable_signed_overshoot": "35/100 scenes; Wilson 95% CI 0.2636 to 0.4475",
+    "stable_low_demand_harm": "29/100 scenes; Wilson 95% CI 0.2101 to 0.3854",
+    "stable_under_recovery": "1/100 scenes; Wilson 95% CI 0.0018 to 0.0545",
+    "global_baseline_competence": "100/100 scenes improved over the hazy input in mean MSE; Wilson lower bound 0.9630",
+    "mean_high_demand_overshoot_tile_fraction": 0.13738636363636364,
+    "mean_low_demand_overshoot_tile_fraction": 0.27154545454545453
+  },
+  "scientific_interpretation": "The Haze4K development evidence supports a repeatable and potentially actionable local-error heterogeneity, but it contradicts a simple rule that stronger-demand regions generally need more restoration or overshoot more. The next authorized experiment is a non-deployment bounded local-action oracle comparing spatially selective keep, weaken, and strengthen actions against matched uniform actions. Module design, proxy fitting, and candidate-confirmation evaluation remain unauthorized until oracle headroom is measured.",
+  "competing_explanation": "Replication may partly reflect the shared RGB-MSE ranking, 32-pixel tiling, signed projection definition, synthetic content, or calibration of the official checkpoint rather than a haze-specific causal mechanism. Stable GT-measured errors establish intervention headroom eligibility, not deployment-time predictability or perceptual validity.",
+  "limitations": [
+    "This is development-screening evidence from 100 isolated Haze4K official-test scenes; it is not candidate confirmation or NH-HAZE external validation.",
+    "The 400 haze variants are nested within 100 canonical clear scenes and were never treated as independent statistical units.",
+    "GT-derived demand and error constructs are measurement-only and cannot be used as deployment inputs.",
+    "Signed RGB projection is an operational error construct, not proof of perceptual over-dehazing, physical haze causality, or the correct local action.",
+    "Oracle qualification authorizes only the frozen non-deployment oracle experiment; it does not authorize module selection, proxy training, confirmation access, or a mechanism claim."
+  ]
+}

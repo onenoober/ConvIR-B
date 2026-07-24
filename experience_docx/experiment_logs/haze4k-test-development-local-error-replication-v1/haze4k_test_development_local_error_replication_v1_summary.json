@@ -1,0 +1,151 @@
+{
+  "cross_domain_pattern": {
+    "high_demand_overshoot_scene_prevalence": {
+      "estimate": 0.23,
+      "lower": 0.15843154746876406,
+      "successes": 23,
+      "total": 100,
+      "upper": 0.32154564856827694
+    },
+    "high_demand_under_recovery_scene_prevalence": {
+      "estimate": 0.04,
+      "lower": 0.015663050551848016,
+      "successes": 4,
+      "total": 100,
+      "upper": 0.09837217232607373
+    },
+    "high_minus_low_overshoot_fraction": {
+      "estimate": -0.1341590909090909,
+      "lower": -0.1800152462121212,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260724,
+      "upper": -0.08558285984848489
+    },
+    "margins": {
+      "high_specificity_upper_max": 0.05,
+      "overshoot_lower_min": 0.05,
+      "under_recovery_upper_max": 0.2
+    },
+    "passed": true
+  },
+  "global_competence": {
+    "passed": true,
+    "scene_prevalence": {
+      "estimate": 1.0,
+      "lower": 0.9630051925239981,
+      "successes": 100,
+      "total": 100,
+      "upper": 0.9999999999999999
+    }
+  },
+  "identity_and_coverage": {
+    "assignment_digest": "6ca5174470dad2b4eef4ae15c5a13a99d8ae9fc0bc2ea1116b199c4d4bc05582",
+    "candidate_confirmation_asset_delivered": false,
+    "completed_scenes": 100,
+    "completed_variants": 400,
+    "failure_count": 0,
+    "failures": [],
+    "integrity_checks": {
+      "candidate_confirmation_asset_not_delivered": true,
+      "complete_100_scene_400_variant_grouping": true,
+      "complete_finite_inference": true,
+      "isolated_development_asset_only": true,
+      "no_training": true,
+      "parent_split_authorization": true
+    }
+  },
+  "limitations": [
+    "This is development-screening evidence; the 150-scene candidate-confirmation asset was not delivered.",
+    "GT-derived demand and error labels are measurement-only and unavailable at deployment.",
+    "Signed RGB projection is an operational construct, not a causal or perceptual proof.",
+    "Pattern replication and oracle qualification are separate gates."
+  ],
+  "marker": "HAZE4K_TEST_DEVELOPMENT_LOCAL_ERROR_REPLICATION_COMPLETE",
+  "measurement": {
+    "alpha_min_overshoot": 1.05,
+    "projected_absolute_margin": 0.00392156862745098,
+    "region_fraction": 0.2,
+    "scene_repeatability": "same construct material in at least three of four variants",
+    "tile_size": 32,
+    "variant_material_fraction": 0.2
+  },
+  "operation_id": "HAZE4K_TEST_DEVELOPMENT_LOCAL_ERROR_REPLICATE",
+  "oracle_qualification": {
+    "failed": false,
+    "passed": true,
+    "stable_any_lower_min": 0.2,
+    "stable_construct_prevalence": {
+      "stable_any_local_error": {
+        "estimate": 0.5,
+        "lower": 0.40382982859014716,
+        "successes": 50,
+        "total": 100,
+        "upper": 0.5961701714098528
+      },
+      "stable_low_demand_harm": {
+        "estimate": 0.29,
+        "lower": 0.21014706973984146,
+        "successes": 29,
+        "total": 100,
+        "upper": 0.38539074940007934
+      },
+      "stable_signed_overshoot": {
+        "estimate": 0.35,
+        "lower": 0.2636410465347802,
+        "successes": 35,
+        "total": 100,
+        "upper": 0.4474573957080203
+      },
+      "stable_under_recovery": {
+        "estimate": 0.01,
+        "lower": 0.0017673865655472645,
+        "successes": 1,
+        "total": 100,
+        "upper": 0.0544875247609346
+      }
+    }
+  },
+  "route_id": "haze4k-test-development-local-error-replication-v1",
+  "run_id": "haze4k-test-development-local-error-replication-v1-phase-a",
+  "schema_version": 1,
+  "scope": "fixed official Haze4K ConvIR-B on isolated 100-scene Haze4K official-test development partition",
+  "secondary_scene_aggregates": {
+    "high_material_overshoot_fraction": {
+      "count": 100,
+      "mean": 0.13738636363636364,
+      "median": 0.02291666666666667,
+      "q25": 0.0,
+      "q75": 0.18323863636363635
+    },
+    "input_psnr": {
+      "count": 100,
+      "mean": 16.941040345364865,
+      "median": 16.39881816815572,
+      "q25": 14.201692152052988,
+      "q75": 19.186266417367634
+    },
+    "low_material_overshoot_fraction": {
+      "count": 100,
+      "mean": 0.27154545454545453,
+      "median": 0.22083333333333333,
+      "q25": 0.10587121212121212,
+      "q75": 0.45615530303030305
+    },
+    "output_psnr": {
+      "count": 100,
+      "mean": 33.380693566290866,
+      "median": 32.740332030318854,
+      "q25": 28.868976485670792,
+      "q75": 38.79935880873985
+    }
+  },
+  "terminal": {
+    "authorizes": "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE",
+    "decision": "HAZE4K_TEST_LOCAL_ERROR_REPLICATION_ORACLE_QUALIFIED",
+    "gate_reasons": [
+      "SOTS-consistent pattern replicated and stable-any-local-error lower bound met 0.20"
+    ],
+    "state": "COMPLETED_GATE_PASS"
+  }
+}
