@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-test-local-action-measurement-qualification-v1.json",
+  "experiment_spec_sha256": "a0c693570d87a067210edb2356744fdf813177f4a5994283abb9fa32f1acc268",
+  "operations": {
+    "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFICATION": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "STAGE1_REASSESSMENT_ONLY",
+          "decision": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFIED",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "STAGE1_REASSESSMENT_ONLY",
+          "decision": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "haze4k_test_local_action_measurement_qualification_v1_closeout.json",
+      "heartbeat_timeout_seconds": 900,
+      "max_gpu_utilization_pct": 95,
+      "min_free_gpu_mib": 4096,
+      "mode": "local_action_measurement_qualification",
+      "monitor_profile": "standard",
+      "output_id": "haze4k-test-local-action-measurement-qualification-v1-phase-a",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_local_action_measurement_qualification_v1.json",
+  "program_contract_sha256": "e5d7b03f6c63952e84628ce5db3b85c8c8d86845937d3d13e766d091d760ff23",
+  "route_card_relpath": "experience_docx/experiment_cards/haze4k-test-local-action-measurement-qualification-v1.md",
+  "route_id": "haze4k-test-local-action-measurement-qualification-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFICATION": "experience_docx/scientific_contracts/haze4k-test-local-action-measurement-qualification-v1__HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFICATION.json"
+  }
+}

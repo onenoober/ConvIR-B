@@ -1,0 +1,150 @@
+{
+  "competing_explanation": "A large original GT oracle gain may be unstable across nested haze versions, depend on hard 32-pixel boundaries or clipping, optimize RGB reconstruction rather than perceptual quality, or rely on privileged target access that does not identify deployment-visible information. Conversely, a stable target would still not show that any representation or predictor can recover it out of scene.",
+  "controls": [
+    "keep scale 1.0 must reproduce the official prediction and have exactly zero duplicate utility",
+    "non-clipped pixels must obey the exact residual-scale manipulation",
+    "every shifted grid must cover each valid pixel exactly once",
+    "held-out GT per-tile oracle must not have higher RGB MSE than the transferred action field",
+    "a 32-pixel circularly shifted dense action map preserves action frequencies but breaks local position alignment",
+    "common non-clipped support checks whether action direction survives removal of clipping-induced rank changes",
+    "whole-image SSIM and color evaluation prevents invalid additive tile interpretation",
+    "strict scene-level aggregation prevents variants, tiles, pixels, or grids from becoming independent samples"
+  ],
+  "disabled_actions": [
+    "delivering or accessing the 150-scene candidate-confirmation asset or NH-HAZE",
+    "training, proxy fitting, module construction, representation selection, classifier selection, or threshold adaptation",
+    "changing the official model, checkpoint, action scales, grid origins, metric definitions, margins, controls, or terminal mappings after launch",
+    "claiming stable GT utility identifies deployment-time predictability, representation insufficiency, a physical haze mechanism, or perceptual optimality",
+    "treating haze variants, tiles, pixels, grids, or metric repeats as independent statistical units",
+    "automatically entering stage 2; every terminal must first rerun the stage-1 design qualification"
+  ],
+  "gates": [
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "exact oracle and proxy terminal identities, isolated 100-scene role, 400 finite inferences, complete four-grid measurement, no protected asset, and no training",
+      "id": "authorized_isolated_development_complete",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "one-sided 95 percent complete-scene bootstrap upper bound for worst-grid leave-one-variant-out PSNR regret in dB",
+      "id": "primary_regret_equivalence",
+      "threshold": 0.1,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand": "distance from primary point estimate to its one-sided 95 percent upper bound in dB",
+      "id": "achieved_regret_precision",
+      "threshold": 0.05,
+      "type": "precision"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "Wilson lower bound for scenes whose minimum-grid transferred-minus-GT-best-uniform PSNR is at least 0.10 dB",
+      "id": "robust_material_scene_coverage",
+      "threshold": 0.2,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "one-sided 95 percent complete-scene bootstrap lower bound for worst-grid aligned-minus-circularly-shifted PSNR in dB",
+      "id": "aligned_location_negative_control",
+      "threshold": 0.0,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "one-sided 95 percent complete-scene bootstrap lower bound for worst-grid common-nonclipped-source-minus-GT-best-uniform PSNR in dB",
+      "id": "nonclipped_direction",
+      "threshold": 0.0,
+      "type": "safety"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "upper 95 percent Wilson bound for scenes whose worst-grid mean transferred-minus-uniform RGB SSIM is at most -0.005",
+      "id": "ssim_tail_safety",
+      "threshold": 0.1,
+      "type": "safety"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "upper 95 percent Wilson bound for scenes whose worst-grid transferred-minus-uniform absolute RGB channel-bias is at least 1/255",
+      "id": "color_tail_safety",
+      "threshold": 0.1,
+      "type": "safety"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "only the isolated 100-scene development_screening asset is delivered; candidate confirmation and NH-HAZE remain absent",
+      "official haze4k-base.pkl SHA-256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "official ConvIR-B base graph with 8,630,665 frozen parameters and strict checkpoint load",
+      "action formula clip(hazy + scale times (official_prediction minus hazy), 0, 1)",
+      "action set weaken 0.8, keep 1.0, and strengthen 1.2 with exact ties resolved to keep by fixed action order",
+      "per-tile action selection maximizes mean continuous per-pixel RGB-MSE improvement over the other three registered haze variants",
+      "each of four haze variants is held out once and scored only after its source action field is fixed",
+      "grid origins are exactly (0,0), (0,16), (16,0), and (16,16) pixels with valid boundary pixels weighted by area",
+      "primary scene regret is the maximum across grids after averaging the four held-out variant regrets",
+      "material scene coverage uses the minimum across grids of transferred-minus-GT-best-uniform PSNR averaged over variants",
+      "negative control circularly shifts the dense transferred action field by 32 pixels on both axes while preserving its pixel action frequencies",
+      "non-clipping sensitivity selects source actions only from pixels common to all three unclipped candidate outputs and uses keep for an empty tile support",
+      "RGB MSE defines action utility and PSNR defines primary outcome; whole-image RGB SSIM and absolute channel-bias define safety",
+      "20,000 complete-scene bootstrap resamples use fixed seeds 20260729, 20260730, and 20260731",
+      "four variants, tiles, pixels, grids, and metrics remain nested repeats and never increase independent n"
+    ],
+    "matched_budget": "one frozen official ConvIR-B inference per each of 400 nested variants followed by deterministic replay of the same three actions over four fixed 32-pixel grid origins; zero training or fitting",
+    "primary_variable": "leave-one-haze-variant-out transferred local action field versus the held-out variant GT per-tile oracle",
+    "reference": "held-out-variant GT-selected per-tile best action from the identical weaken 0.8, keep 1.0, and strengthen 1.2 set"
+  },
+  "operation_id": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFICATION",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "canonical_clear_scene",
+    "independent_group_count": 100
+  },
+  "primary_estimand": {
+    "aggregation": "for each grid average four held-out variant regrets, take the maximum grid regret within canonical scene, then equal-weight complete-scene bootstrap across all 100 scenes",
+    "direction": "lower",
+    "id": "worst_grid_leave_one_variant_out_psnr_regret",
+    "metric": "mean canonical-scene maximum-grid held-out GT-oracle-minus-transferred PSNR regret, qualified only when its one-sided 95 percent scene-bootstrap upper bound is below 0.10 dB and the upper-bound distance from the point estimate is at most 0.05 dB",
+    "unit": "canonical_clear_scene"
+  },
+  "question": "On the isolated 100-scene Haze4K development partition, is the fixed three-action GT utility stable enough that an action field selected from three haze variants has less than 0.10 dB worst-grid PSNR regret on the held-out fourth variant, with adequate achieved precision, material scene coverage, location specificity, non-clipping direction, and SSIM/color safety?",
+  "route_id": "haze4k-test-local-action-measurement-qualification-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "STAGE1_REASSESSMENT_ONLY",
+      "decision": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "STAGE1_REASSESSMENT_ONLY",
+      "decision": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFIED",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "canonical_clear_scene",
+    "method": "20,000-resample complete-scene bootstrap for continuous means and two-sided 95 percent Wilson intervals for material-benefit and harm prevalences; achieved regret upper-bound distance is reported explicitly"
+  }
+}

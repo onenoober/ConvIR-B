@@ -1,0 +1,14 @@
+{
+  "certificate_id": "haze4k_test_local_action_measurement_qualification_v1_precision",
+  "confidence_level": 0.95,
+  "estimand": "mean canonical-scene worst-grid leave-one-variant-out PSNR regret",
+  "feasible": false,
+  "independent_groups_available": 100,
+  "independent_groups_required": 1695,
+  "method": "normal_mean",
+  "planning_sd": 1.05,
+  "schema_version": 1,
+  "source_reference": "Conservative planning SD 1.05 dB was derived before this run from the frozen parent bounded-oracle scene-bootstrap interval; the much narrower closed-proxy interval was not used to claim feasibility for the new regret estimand.",
+  "source_role": "development_screening",
+  "target_half_width": 0.05
+}

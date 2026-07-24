@@ -1,0 +1,404 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k-test-local-action-measurement-qualification-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "title": "Haze4K local-action target measurement qualification",
+  "rationale": "The frozen Haze4K development oracle established large GT-privileged spatial headroom, while the closed proxy family failed to realize it out of scene. This orthogonal supplement does not change the model, action set, representation, classifier, or protected-data policy. It measures whether continuous local-action utility learned from three nested haze variants transfers to the held-out fourth variant across four fixed grid origins, while preserving location specificity, non-clipping direction, SSIM, and color safety. The target regret scene variance is unavailable before this run, so pre-run precision is recorded honestly as descriptive capacity; every terminal returns to stage 1 and never directly authorizes stage 2.",
+  "first_operation": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFICATION",
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_local_action_measurement_qualification_v1.json",
+  "operations": {
+    "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFICATION": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "local_action_measurement_qualification",
+        "require_gpu": true,
+        "output_id": "haze4k-test-local-action-measurement-qualification-v1-phase-a",
+        "closeout_filename": "haze4k_test_local_action_measurement_qualification_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "allowed_terminal_tuples": [
+          {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFIED",
+            "authorizes": "STAGE1_REASSESSMENT_ONLY"
+          },
+          {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_FAIL",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_INCONCLUSIVE",
+            "authorizes": "STAGE1_REASSESSMENT_ONLY"
+          },
+          {
+            "state": "FAILED_ENGINEERING",
+            "decision": null,
+            "authorizes": "NONE"
+          }
+        ],
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 900,
+        "min_free_gpu_mib": 4096,
+        "max_gpu_utilization_pct": 95
+      },
+      "program_authorization": {
+        "program_id": "haze4k_local_action_measurement_qualification",
+        "stage_id": "measurement_qualification",
+        "family_id": "haze4k_local_action_measurement_stability",
+        "mechanism_type": "orthogonal",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {
+            "role": "oracle_authorization",
+            "use": "action_definition",
+            "anchor_id": "haze4k_bounded_oracle_closeout_20260725"
+          },
+          {
+            "role": "oracle_measurement",
+            "use": "supervision",
+            "anchor_id": "haze4k_bounded_oracle_summary_20260725"
+          },
+          {
+            "role": "proxy_terminal",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_proxy_terminal_20260726"
+          },
+          {
+            "role": "proxy_interpretation",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_proxy_conclusion_20260726"
+          },
+          {
+            "role": "official_model",
+            "use": "baseline",
+            "anchor_id": "official_haze4k_convir_b"
+          }
+        ],
+        "adjacent_sequence": null,
+        "orthogonal_changes": [
+          {
+            "dimension": "measurement_target",
+            "reason": "This route replaces proxy-family tuning with a direct cross-variant and measurement-perturbation qualification of the frozen continuous GT utility target."
+          }
+        ],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "On the isolated 100-scene Haze4K development partition, is the fixed three-action GT utility stable enough that an action field selected from three haze variants has less than 0.10 dB worst-grid PSNR regret on the held-out fourth variant, with adequate achieved precision, material scene coverage, location specificity, non-clipping direction, and SSIM/color safety?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "canonical_clear_scene",
+          "independent_group_count": 100,
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "leave-one-haze-variant-out transferred local action field versus the held-out variant GT per-tile oracle",
+          "reference": "held-out-variant GT-selected per-tile best action from the identical weaken 0.8, keep 1.0, and strengthen 1.2 set",
+          "matched_budget": "one frozen official ConvIR-B inference per each of 400 nested variants followed by deterministic replay of the same three actions over four fixed 32-pixel grid origins; zero training or fitting",
+          "fixed_factors": [
+            "only the isolated 100-scene development_screening asset is delivered; candidate confirmation and NH-HAZE remain absent",
+            "official haze4k-base.pkl SHA-256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+            "official ConvIR-B base graph with 8,630,665 frozen parameters and strict checkpoint load",
+            "action formula clip(hazy + scale times (official_prediction minus hazy), 0, 1)",
+            "action set weaken 0.8, keep 1.0, and strengthen 1.2 with exact ties resolved to keep by fixed action order",
+            "per-tile action selection maximizes mean continuous per-pixel RGB-MSE improvement over the other three registered haze variants",
+            "each of four haze variants is held out once and scored only after its source action field is fixed",
+            "grid origins are exactly (0,0), (0,16), (16,0), and (16,16) pixels with valid boundary pixels weighted by area",
+            "primary scene regret is the maximum across grids after averaging the four held-out variant regrets",
+            "material scene coverage uses the minimum across grids of transferred-minus-GT-best-uniform PSNR averaged over variants",
+            "negative control circularly shifts the dense transferred action field by 32 pixels on both axes while preserving its pixel action frequencies",
+            "non-clipping sensitivity selects source actions only from pixels common to all three unclipped candidate outputs and uses keep for an empty tile support",
+            "RGB MSE defines action utility and PSNR defines primary outcome; whole-image RGB SSIM and absolute channel-bias define safety",
+            "20,000 complete-scene bootstrap resamples use fixed seeds 20260729, 20260730, and 20260731",
+            "four variants, tiles, pixels, grids, and metrics remain nested repeats and never increase independent n"
+          ]
+        },
+        "primary_estimand": {
+          "id": "worst_grid_leave_one_variant_out_psnr_regret",
+          "metric": "mean canonical-scene maximum-grid held-out GT-oracle-minus-transferred PSNR regret, qualified only when its one-sided 95 percent scene-bootstrap upper bound is below 0.10 dB and the upper-bound distance from the point estimate is at most 0.05 dB",
+          "direction": "lower",
+          "aggregation": "for each grid average four held-out variant regrets, take the maximum grid regret within canonical scene, then equal-weight complete-scene bootstrap across all 100 scenes",
+          "unit": "canonical_clear_scene"
+        },
+        "controls": [
+          "keep scale 1.0 must reproduce the official prediction and have exactly zero duplicate utility",
+          "non-clipped pixels must obey the exact residual-scale manipulation",
+          "every shifted grid must cover each valid pixel exactly once",
+          "held-out GT per-tile oracle must not have higher RGB MSE than the transferred action field",
+          "a 32-pixel circularly shifted dense action map preserves action frequencies but breaks local position alignment",
+          "common non-clipped support checks whether action direction survives removal of clipping-induced rank changes",
+          "whole-image SSIM and color evaluation prevents invalid additive tile interpretation",
+          "strict scene-level aggregation prevents variants, tiles, pixels, or grids from becoming independent samples"
+        ],
+        "uncertainty": {
+          "method": "20,000-resample complete-scene bootstrap for continuous means and two-sided 95 percent Wilson intervals for material-benefit and harm prevalences; achieved regret upper-bound distance is reported explicitly",
+          "confidence_level": 0.95,
+          "independent_unit": "canonical_clear_scene"
+        },
+        "gates": [
+          {
+            "id": "authorized_isolated_development_complete",
+            "type": "integrity",
+            "estimand": "exact oracle and proxy terminal identities, isolated 100-scene role, 400 finite inferences, complete four-grid measurement, no protected asset, and no training",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "primary_regret_equivalence",
+            "type": "materiality",
+            "estimand": "one-sided 95 percent complete-scene bootstrap upper bound for worst-grid leave-one-variant-out PSNR regret in dB",
+            "direction": "max",
+            "threshold": 0.10,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "achieved_regret_precision",
+            "type": "precision",
+            "estimand": "distance from primary point estimate to its one-sided 95 percent upper bound in dB",
+            "direction": "max",
+            "threshold": 0.05,
+            "decision_role": "inconclusive_only"
+          },
+          {
+            "id": "robust_material_scene_coverage",
+            "type": "coverage",
+            "estimand": "Wilson lower bound for scenes whose minimum-grid transferred-minus-GT-best-uniform PSNR is at least 0.10 dB",
+            "direction": "min",
+            "threshold": 0.20,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "aligned_location_negative_control",
+            "type": "materiality",
+            "estimand": "one-sided 95 percent complete-scene bootstrap lower bound for worst-grid aligned-minus-circularly-shifted PSNR in dB",
+            "direction": "min",
+            "threshold": 0.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "nonclipped_direction",
+            "type": "safety",
+            "estimand": "one-sided 95 percent complete-scene bootstrap lower bound for worst-grid common-nonclipped-source-minus-GT-best-uniform PSNR in dB",
+            "direction": "min",
+            "threshold": 0.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "ssim_tail_safety",
+            "type": "safety",
+            "estimand": "upper 95 percent Wilson bound for scenes whose worst-grid mean transferred-minus-uniform RGB SSIM is at most -0.005",
+            "direction": "max",
+            "threshold": 0.10,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "color_tail_safety",
+            "type": "safety",
+            "estimand": "upper 95 percent Wilson bound for scenes whose worst-grid transferred-minus-uniform absolute RGB channel-bias is at least 1/255",
+            "direction": "max",
+            "threshold": 0.10,
+            "decision_role": "decisive"
+          }
+        ],
+        "competing_explanation": "A large original GT oracle gain may be unstable across nested haze versions, depend on hard 32-pixel boundaries or clipping, optimize RGB reconstruction rather than perceptual quality, or rely on privileged target access that does not identify deployment-visible information. Conversely, a stable target would still not show that any representation or predictor can recover it out of scene.",
+        "terminal_mapping": {
+          "pass": {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFIED",
+            "authorizes": "STAGE1_REASSESSMENT_ONLY"
+          },
+          "fail": {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_FAIL",
+            "authorizes": "NONE"
+          },
+          "inconclusive": {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_INCONCLUSIVE",
+            "authorizes": "STAGE1_REASSESSMENT_ONLY"
+          }
+        },
+        "disabled_actions": [
+          "delivering or accessing the 150-scene candidate-confirmation asset or NH-HAZE",
+          "training, proxy fitting, module construction, representation selection, classifier selection, or threshold adaptation",
+          "changing the official model, checkpoint, action scales, grid origins, metric definitions, margins, controls, or terminal mappings after launch",
+          "claiming stable GT utility identifies deployment-time predictability, representation insufficiency, a physical haze mechanism, or perceptual optimality",
+          "treating haze variants, tiles, pixels, grids, or metric repeats as independent statistical units",
+          "automatically entering stage 2; every terminal must first rerun the stage-1 design qualification"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/run_haze4k_test_local_action_measurement_qualification.py",
+        "timeout_seconds": 10800,
+        "expected_wall_seconds": 3600,
+        "total_units": 403,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {},
+        "evidence_files": [
+          {
+            "source_relpath": "workload/haze4k_test_local_action_measurement_qualification_v1_summary.json",
+            "destination_filename": "haze4k_test_local_action_measurement_qualification_v1_summary.json",
+            "required": true,
+            "max_bytes": 262144
+          },
+          {
+            "source_relpath": "workload/haze4k_test_local_action_measurement_qualification_v1_strata.csv",
+            "destination_filename": "haze4k_test_local_action_measurement_qualification_v1_strata.csv",
+            "required": true,
+            "max_bytes": 65536
+          }
+        ],
+        "engineering_contract": {
+          "mode": "gpu_synthetic_no_data",
+          "max_seconds": 900
+        },
+        "precision_contract": {
+          "mode": "descriptive_capacity",
+          "rationale": "The primary regret scene SD is unavailable before this supplement. A conservative 1.05 dB planning SD from the related parent oracle interval makes the frozen 0.05 dB half-width infeasible at n=100; achieved precision is therefore a preregistered inconclusive-only gate and every outcome returns to stage 1."
+        }
+      },
+      "assets": [
+        {
+          "id": "haze4k_test_development",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-test-scene-split-v1/haze4k-test-scene-split-v1-phase-a-r1/workload/role_assets/development_screening",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "prior_oracle_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-bounded-local-action-oracle-v1/haze4k_test_bounded_local_action_oracle_v1_closeout.json",
+          "sha256": "96357cbaaee5aa338fb0f9c9835a975a27e7f048c78a096fd644e6acdd3e383c",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "prior_oracle_summary",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-bounded-local-action-oracle-v1/haze4k_test_bounded_local_action_oracle_v1_summary.json",
+          "sha256": "794ef27733f51f2fa70fab5c94bc661564d7b988ef4247a1b26e33a21b4de7cb",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "prior_proxy_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-local-action-proxy-predictability-v1/haze4k_test_local_action_proxy_predictability_v1_closeout.json",
+          "sha256": "c12a4b013db12b0828823ae8cba7fe8a51208971d29e667966635c157a67cba4",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "prior_proxy_conclusion",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-local-action-proxy-predictability-v1/haze4k_test_local_action_proxy_predictability_v1_conclusion.json",
+          "sha256": "c8419d0b0d23b079b55b3490c54347033fa79221bcc035d995d5e55dcaa1695b",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "official_checkpoint",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+          "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "model_source",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/Dehazing/ITS/models/ConvIR.py",
+          "sha256": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "model_layers",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/Dehazing/ITS/models/layers.py",
+          "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "measurement_entrypoint",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_test_local_action_measurement_qualification.py",
+          "sha256": "9d659721a771ad1e84e2c94ca2ac300dbe92a88ee83e7c44e32368d17e512a91",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        }
+      ],
+      "capability": {
+        "profile_id": "haze4k_test_local_action_measurement_qualification_gpu_synthetic",
+        "contract_mode": "gpu_synthetic_no_data",
+        "minimum_fixture": {
+          "batch": 1,
+          "channels": 3,
+          "height": 256,
+          "width": 320
+        },
+        "bound_assets": [
+          {
+            "id": "official_checkpoint",
+            "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+          },
+          {
+            "id": "model_source",
+            "identity": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+          },
+          {
+            "id": "model_layers",
+            "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+          },
+          {
+            "id": "measurement_entrypoint",
+            "identity": "9d659721a771ad1e84e2c94ca2ac300dbe92a88ee83e7c44e32368d17e512a91"
+          }
+        ],
+        "compatibility_imports": [
+          "torch",
+          "numpy",
+          "PIL",
+          "Dehazing.ITS.models.ConvIR"
+        ],
+        "production_path_statement": "The exact official Haze4K ConvIR-B graph is strict-loaded and frozen, then the exact leave-one-variant continuous-utility selection, four shifted grids, GT-oracle regret, circular-shift negative control, non-clipped support sensitivity, whole-image PSNR/SSIM/color metrics, complete-scene bootstrap, Wilson intervals, and terminal finalizer execute on a device-aware no-data fixture.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true
+      },
+      "precision": {
+        "certificate_id": "haze4k_test_local_action_measurement_qualification_v1_precision",
+        "estimand": "mean canonical-scene worst-grid leave-one-variant-out PSNR regret",
+        "method": "normal_mean",
+        "confidence_level": 0.95,
+        "target_half_width": 0.05,
+        "planning_sd": 1.05,
+        "independent_groups_available": 100,
+        "independent_groups_required": 1695,
+        "feasible": false,
+        "source_role": "development_screening",
+        "source_reference": "Conservative planning SD 1.05 dB was derived before this run from the frozen parent bounded-oracle scene-bootstrap interval; the much narrower closed-proxy interval was not used to claim feasibility for the new regret estimand."
+      }
+    }
+  }
+}

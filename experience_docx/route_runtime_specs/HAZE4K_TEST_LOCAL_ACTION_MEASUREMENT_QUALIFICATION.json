@@ -1,0 +1,42 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/haze4k-test-local-action-measurement-qualification-v1__HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFICATION.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/haze4k-test-local-action-measurement-qualification-v1__HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFICATION.json",
+    "max_seconds": 900,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/run_haze4k_test_local_action_measurement_qualification.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "haze4k_test_local_action_measurement_qualification_v1_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_test_local_action_measurement_qualification_v1_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_test_local_action_measurement_qualification_v1_strata.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/haze4k_test_local_action_measurement_qualification_v1_strata.csv"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 3600,
+  "operation_id": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFICATION",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/haze4k-test-local-action-measurement-qualification-v1__HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFICATION.json",
+    "mode": "descriptive_capacity",
+    "rationale": "The primary regret scene SD is unavailable before this supplement. A conservative 1.05 dB planning SD from the related parent oracle interval makes the frozen 0.05 dB half-width infeasible at n=100; achieved precision is therefore a preregistered inconclusive-only gate and every outcome returns to stage 1."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "haze4k-test-local-action-measurement-qualification-v1",
+  "schema_version": 2,
+  "timeout_seconds": 10800,
+  "total_units": 403
+}
