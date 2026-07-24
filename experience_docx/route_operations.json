@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-test-local-action-proxy-predictability-v1.json",
-  "experiment_spec_sha256": "f2182ff4737dfbaa06fab29d1a3089ed2c8c6cd446ba769e1bf7ca68b544ab4f",
+  "experiment_spec_sha256": "7661b96b3bb57bbef1f7d9fac50e6c42f1018586d8e680c73eee8545986986f9",
   "operations": {
     "HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 4096,
       "mode": "nested_scene_cross_fitted_proxy",
       "monitor_profile": "standard",
-      "output_id": "haze4k-test-local-action-proxy-predictability-v1-phase-a",
+      "output_id": "haze4k-test-local-action-proxy-predictability-v1-phase-a-r1",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,

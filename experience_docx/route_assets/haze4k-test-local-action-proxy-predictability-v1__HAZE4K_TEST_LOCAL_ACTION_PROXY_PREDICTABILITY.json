@@ -53,7 +53,7 @@
       "id": "proxy_entrypoint",
       "kind": "file",
       "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_test_local_action_proxy_predictability.py",
-      "sha256": "ec4c9ce8f8804f464b07c11fed33d2ced1bb688bd61dec254625521fb0266129"
+      "sha256": "0efbc6009bb00f2b93347b6dc268ca6e0fc05c6ff756f3b5e5036bea8f88efa4"
     }
   ],
   "operation_id": "HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY",

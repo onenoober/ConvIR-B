@@ -812,12 +812,7 @@ def contract(context_path: Path) -> None:
         engineering={
             "mode": "gpu_synthetic_no_data", "device": context.device,
             "fixture": {"batch": 1, "channels": 3, "height": 256, "width": 320},
-            "production_path_exercised": {
-                "strict_model_and_decoder_hook": True,
-                "tile_features_targets_ridge_actions_replay": True,
-                "same_asymptotic_scale_rows": sum(record["features"].shape[0] for record in probe_records),
-                "projected_five_outer_fold_seconds": elapsed * OUTER_FOLDS,
-            },
+            "production_path_exercised": True,
             "protected_data_touched": False, "scientific_output_created": False,
             "scientific_training_occurred": False,
         },
