@@ -1,0 +1,14 @@
+{
+  "certificate_id": "haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_precision",
+  "confidence_level": 0.95,
+  "estimand": "mean canonical-scene worst-held-out-partition conditional content-aligned PSNR regret",
+  "feasible": true,
+  "independent_groups_available": 100,
+  "independent_groups_required": 15,
+  "method": "normal_mean",
+  "planning_sd": 0.09852132954789333,
+  "schema_version": 1,
+  "source_reference": "The directly matched archived taper projection used the same model, data, actions, metric, four phases, grouping, maximum-partition and mean-variant aggregation and observed canonical-scene regret SD 0.09852132954789333 dB.",
+  "source_role": "development_screening",
+  "target_half_width": 0.05
+}

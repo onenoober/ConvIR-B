@@ -1,0 +1,43 @@
+{
+  "bound_assets": [
+    {
+      "id": "official_checkpoint",
+      "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "id": "model_source",
+      "identity": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+    },
+    {
+      "id": "model_layers",
+      "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "id": "measurement_entrypoint",
+      "identity": "0444ba16f85878febce9e39489ed6117e6356e45c42fd1b8ad3f04d538d922bc"
+    }
+  ],
+  "compatibility_imports": [
+    "torch",
+    "numpy",
+    "PIL",
+    "skimage.color",
+    "skimage.filters",
+    "skimage.morphology",
+    "skimage.segmentation",
+    "Dehazing.ITS.models.ConvIR"
+  ],
+  "contract_mode": "gpu_synthetic_no_data",
+  "minimum_fixture": {
+    "batch": 1,
+    "channels": 3,
+    "height": 1200,
+    "width": 1600
+  },
+  "production_path_statement": "The strict-loaded frozen official Haze4K ConvIR-B graph executes four actual forward passes on device-aware 1200 by 1600 no-data haze fixtures; each exact model output then traverses the three hard residual actions, four hazy-only edge-watershed partitions, source-region utility lifting, held-out-region oracle regret, matched taper replay, circular-shift control, same-support non-clipped sensitivity, whole-image PSNR/SSIM/color metrics, same-phase boundary diagnostics, complete-scene bootstrap, Wilson intervals, and typed terminal finalization under a frozen full-scale time bound.",
+  "profile_id": "haze4k_test_conditional_content_aligned_region_measurement_qualification_gpu_synthetic",
+  "protected_data_prohibited": true,
+  "schema_version": 1,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}

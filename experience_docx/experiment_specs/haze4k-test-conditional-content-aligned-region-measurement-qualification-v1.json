@@ -1,0 +1,408 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k-test-conditional-content-aligned-region-measurement-qualification-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "title": "Haze4K conditional content-aligned region measurement qualification",
+  "rationale": "The archived taper route precisely failed: mean worst-held-out-partition regret was 0.134003 dB and its one-sided 95 percent lower bound 0.118104 dB remained above the frozen 0.10 dB maximum, while matched box reproduction and achieved precision passed. Its same-origin diagnostics did not support simple boundary tapering as sufficient and left mismatch of the fixed content-agnostic spatial unit unresolved. This orthogonal Stage-1 route changes only grid_definition to a deterministic source-only edge-watershed region unit. It keeps the official model, 100 development scenes, 400 nested haze variants, three hard actions, four phases, RGB-MSE/PSNR target, 0.10 dB margin, uncertainty, controls, and safety gates frozen. The taper path is recomputed from the same inference and must reproduce its archived mean within 1e-8 dB. No terminal authorizes Stage 2.",
+  "first_operation": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_MEASUREMENT_QUALIFICATION",
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_conditional_content_aligned_region_measurement_qualification_v1.json",
+  "operations": {
+    "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_MEASUREMENT_QUALIFICATION": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "conditional_content_aligned_region_measurement_qualification",
+        "require_gpu": true,
+        "output_id": "haze4k-test-conditional-content-aligned-region-measurement-qualification-v1-phase-a",
+        "closeout_filename": "haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "allowed_terminal_tuples": [
+          {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_STABILITY_SCREEN_PASS",
+            "authorizes": "STAGE1_REASSESSMENT_ONLY"
+          },
+          {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_STABILITY_FAIL",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_STABILITY_INCONCLUSIVE",
+            "authorizes": "STAGE1_REASSESSMENT_ONLY"
+          },
+          {
+            "state": "FAILED_ENGINEERING",
+            "decision": null,
+            "authorizes": "NONE"
+          }
+        ],
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 900,
+        "min_free_gpu_mib": 4096,
+        "max_gpu_utilization_pct": 95
+      },
+      "program_authorization": {
+        "program_id": "haze4k_local_action_measurement_qualification",
+        "stage_id": "measurement_qualification",
+        "family_id": "haze4k_conditional_local_action_grid_stability",
+        "mechanism_type": "orthogonal",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {
+            "role": "parent_taper_terminal",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_conditional_taper_terminal_20260724"
+          },
+          {
+            "role": "parent_taper_result",
+            "use": "comparison",
+            "anchor_id": "haze4k_conditional_taper_summary_20260724"
+          },
+          {
+            "role": "parent_taper_interpretation",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_conditional_taper_conclusion_20260724"
+          },
+          {
+            "role": "official_model",
+            "use": "baseline",
+            "anchor_id": "official_haze4k_convir_b"
+          }
+        ],
+        "adjacent_sequence": null,
+        "orthogonal_changes": [
+          {
+            "dimension": "grid_definition",
+            "reason": "Replace only the fixed content-agnostic tile/taper spatial unit with a source-only edge-watershed region partition while preserving model, data, actions, outcomes, margins, controls, grouping, and terminal mappings."
+          }
+        ],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "On the isolated 100-scene Haze4K development partition, does a deterministic source-only content-aligned region projection of conditional three-action GT utility have less than 0.10 dB worst-held-out-partition PSNR regret with adequate precision, exact taper reproduction, location specificity, non-clipping direction, and SSIM/color safety?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "canonical_clear_scene",
+          "independent_group_count": 100,
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "source-region mean RGB-MSE utility projected through four deterministic hazy-only edge-watershed partitions with fixed 32-pixel marker spacing and phases (0,0), (0,16), (16,0), and (16,16)",
+          "reference": "the same haze condition's held-out-region GT-selected oracle over weaken 0.8, keep 1.0, and strengthen 1.2",
+          "matched_budget": "one frozen official ConvIR-B inference per each of 400 nested haze conditions followed by deterministic replay of the same three actions; content-aligned and taper controls share every inference",
+          "fixed_factors": [
+            "only the isolated 100-scene development_screening asset is delivered; candidate confirmation and NH-HAZE remain absent",
+            "official haze4k-base.pkl SHA-256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+            "official ConvIR-B base graph with 8,630,665 frozen parameters and strict checkpoint load",
+            "action formula clip(hazy + scale times (official_prediction minus hazy), 0, 1)",
+            "hard action set weaken 0.8, keep 1.0, and strengthen 1.2 with exact ties resolved to keep by fixed action order",
+            "the four haze variants are substantive observed conditions and are analyzed separately; no utility transfers across variants",
+            "the sole scientific change is grid_definition: each partition is skimage watershed on the Sobel gradient of hazy grayscale with connectivity 1, no watershed line, fixed 32-pixel marker spacing, and one of four fixed phases",
+            "partition construction receives hazy RGB only and never GT, official prediction, per-pixel error, clipping, source utility, held-out utility, or outcome",
+            "each source partition computes region-mean RGB-MSE utility for the same three actions and lifts that value uniformly to its region",
+            "the three source utility fields are averaged per pixel before averaging within each held-out region and selecting one hard action",
+            "no action outputs or action scales are blended; every selected region action remains one of the same three hard scales",
+            "the archived taper projection is recomputed from the same inference and must reproduce parent mean regret 0.1340031213991598 dB within 1e-8 dB",
+            "each partition phase is held out once; its GT region oracle is used only after the transferred hard action field is frozen",
+            "primary scene regret is the maximum held-out-partition content-aligned regret after equal averaging of four conditioned haze variants",
+            "negative control circularly shifts only the dense content-aligned action field by 32 pixels on both axes while preserving action frequencies",
+            "non-clipping sensitivity selects content-aligned actions and scores transferred-minus-uniform PSNR on the same action-common non-clipped pixels",
+            "same-phase boundary and interior regret use the held-out partition selected by that scene's worst primary regret and are diagnostic only",
+            "keep scale 1.0 uses structural array identity; duplicate MSE subtraction is diagnostic only against 64 float64 epsilons",
+            "RGB MSE defines action utility and PSNR defines primary outcome; whole-image RGB SSIM and absolute channel-bias define safety",
+            "20,000 complete-scene bootstrap resamples use fixed seeds 20260801, 20260802, and 20260803",
+            "four haze conditions, partitions, regions, pixels, metrics, and matched taper repeats never increase independent n"
+          ]
+        },
+        "primary_estimand": {
+          "id": "worst_held_out_partition_conditional_content_aligned_psnr_regret",
+          "metric": "mean canonical-scene maximum-held-out-partition GT-oracle-minus-content-aligned-action PSNR regret after averaging four conditioned haze variants; pass requires one-sided 95 percent scene-bootstrap upper bound below 0.10 dB and upper-bound distance at most 0.05 dB",
+          "direction": "lower",
+          "aggregation": "within each canonical scene and held-out partition average four separately conditioned haze-variant regrets, take the maximum across four held-out partitions, then equal-weight complete-scene bootstrap across 100 scenes",
+          "unit": "canonical_clear_scene"
+        },
+        "controls": [
+          "four deterministic marker phases, contiguous nonempty labels, full pixel coverage, exactly three source contributors, finite region utilities, and constant-utility projection invariance are structural gates",
+          "an independently calculated small region-projection reference verifies direction, source exclusion, pixel lifting, held-out aggregation, and complete coverage",
+          "the matched taper control must reproduce archived parent mean regret within 1e-8 dB from the same official inferences",
+          "the gpu_synthetic_no_data fixture must pass each actual model output through all three actions, content-aligned partitions, taper control, held-out scoring, uncertainty, and terminal finalization at full 1200 by 1600 format",
+          "keep scale 1.0 must reproduce the official prediction by exact structural array identity",
+          "weaken and strengthen outputs must equal the declared affine residual transformation on every non-clipped pixel",
+          "the held-out GT region oracle must not have higher RGB MSE than the frozen transferred action field",
+          "a 32-pixel circular shift preserves action frequencies but breaks registered local alignment",
+          "common non-clipped support uses the same action-neutral mask for source selection and scoring",
+          "whole-image SSIM and color evaluation prevents invalid additive region interpretation",
+          "hard action agreement, same-phase boundary/interior contrast, held-out phases, clipping strata, region counts, and content-aligned-minus-taper change are diagnostic only"
+        ],
+        "uncertainty": {
+          "method": "20,000-resample complete-scene bootstrap for continuous means and two-sided 95 percent Wilson intervals for material-benefit and harm prevalences; achieved regret upper-bound distance is reported explicitly",
+          "confidence_level": 0.95,
+          "independent_unit": "canonical_clear_scene"
+        },
+        "gates": [
+          {
+            "id": "authorized_isolated_development_complete",
+            "type": "integrity",
+            "estimand": "exact taper evidence identities, isolated 100-scene role, 400 finite inferences, deterministic content-aligned partition and projection structure, matched taper reproduction, keep/affine controls, no protected asset, and no training",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "primary_conditional_content_aligned_regret",
+            "type": "materiality",
+            "estimand": "one-sided 95 percent complete-scene bootstrap upper bound for worst-held-out-partition content-aligned PSNR regret in dB",
+            "direction": "max",
+            "threshold": 0.10,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "achieved_regret_precision",
+            "type": "precision",
+            "estimand": "distance from the primary point estimate to its one-sided 95 percent upper bound in dB",
+            "direction": "max",
+            "threshold": 0.05,
+            "decision_role": "inconclusive_only"
+          },
+          {
+            "id": "robust_material_scene_coverage",
+            "type": "coverage",
+            "estimand": "Wilson lower bound for scenes whose minimum-partition content-aligned-minus-GT-best-uniform PSNR is at least 0.10 dB",
+            "direction": "min",
+            "threshold": 0.20,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "aligned_location_negative_control",
+            "type": "materiality",
+            "estimand": "one-sided 95 percent complete-scene bootstrap lower bound for worst-partition aligned-minus-circularly-shifted content-aligned PSNR in dB",
+            "direction": "min",
+            "threshold": 0.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "nonclipped_direction",
+            "type": "safety",
+            "estimand": "one-sided 95 percent complete-scene bootstrap lower bound for worst-partition common-nonclipped content-aligned-minus-GT-best-uniform PSNR in dB",
+            "direction": "min",
+            "threshold": 0.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "ssim_tail_safety",
+            "type": "safety",
+            "estimand": "upper 95 percent Wilson bound for scenes whose worst-partition mean content-aligned-minus-uniform RGB SSIM is at most -0.005",
+            "direction": "max",
+            "threshold": 0.10,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "color_tail_safety",
+            "type": "safety",
+            "estimand": "upper 95 percent Wilson bound for scenes whose worst-partition content-aligned-minus-uniform absolute RGB channel-bias is at least 1/255",
+            "direction": "max",
+            "threshold": 0.10,
+            "decision_role": "decisive"
+          }
+        ],
+        "competing_explanation": "A pass would show only that this fixed hazy-only edge-watershed spatial unit makes the three-action synthetic development target measurement-stable. A fail with exact taper reproduction would reject this one content-aligned region construction as sufficient and shift the next Stage-1 choice to measurement_target or metric_family; it would not prove every content-adaptive unit invalid or continuous actions necessary. No result identifies deployment-visible predictability, a physical haze mechanism, real-domain transport, or perceptual optimality.",
+        "terminal_mapping": {
+          "pass": {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_STABILITY_SCREEN_PASS",
+            "authorizes": "STAGE1_REASSESSMENT_ONLY"
+          },
+          "fail": {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_STABILITY_FAIL",
+            "authorizes": "NONE"
+          },
+          "inconclusive": {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_STABILITY_INCONCLUSIVE",
+            "authorizes": "STAGE1_REASSESSMENT_ONLY"
+          }
+        },
+        "disabled_actions": [
+          "delivering or accessing the 150-scene candidate-confirmation asset or NH-HAZE",
+          "training, proxy fitting, module construction, representation selection, classifier selection, or threshold adaptation",
+          "using GT, official prediction, reconstruction errors, clipping, source utility, held-out utility, or outcomes to create or tune region partitions",
+          "changing watershed algorithm, edge input, connectivity, marker spacing, marker phases, region cleanup, or projection weights after seeing formal results",
+          "blending action outputs or creating any continuous effective action scale",
+          "changing the official model, checkpoint, action scales, metric definitions, margins, controls, or terminal mappings after launch",
+          "using boundary, phase, clipping, hard-agreement, region-count, or content-aligned-minus-taper diagnostics as an undeclared decision gate",
+          "claiming a content-aligned screen pass establishes overall measurement qualification, deployment-time prediction, representation sufficiency, a physical mechanism, perceptual optimality, or real-domain validity",
+          "treating haze conditions, partitions, regions, pixels, metrics, or taper repeats as independent statistical units",
+          "automatically entering Stage 2; every terminal must first rerun Stage-1 design qualification"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/run_haze4k_test_conditional_content_aligned_region_measurement_qualification.py",
+        "timeout_seconds": 14400,
+        "expected_wall_seconds": 7200,
+        "total_units": 403,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {},
+        "evidence_files": [
+          {
+            "source_relpath": "workload/haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_summary.json",
+            "destination_filename": "haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_summary.json",
+            "required": true,
+            "max_bytes": 262144
+          },
+          {
+            "source_relpath": "workload/haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_strata.csv",
+            "destination_filename": "haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_strata.csv",
+            "required": true,
+            "max_bytes": 65536
+          }
+        ],
+        "engineering_contract": {
+          "mode": "gpu_synthetic_no_data",
+          "max_seconds": 900
+        },
+        "precision_contract": {
+          "mode": "formal_precision",
+          "rationale": "The directly matched taper-regret scene SD is 0.0985213295 dB. The canonical two-sided-normal planning calculation requires 15 independent scenes for a 0.05 dB half-width, so frozen n=100 is feasible without counting variants, partitions, regions, pixels, metrics, or taper repeats."
+        }
+      },
+      "assets": [
+        {
+          "id": "haze4k_test_development",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-test-scene-split-v1/haze4k-test-scene-split-v1-phase-a-r1/workload/role_assets/development_screening",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "parent_taper_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-conditional-taper-grid-measurement-qualification-v1/haze4k_test_conditional_taper_grid_measurement_qualification_v1_closeout.json",
+          "sha256": "a41759573c5d8ccf1db09f30ac59ecf67cf9f09072d79122e625d8f8fa4af497",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "parent_taper_summary",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-conditional-taper-grid-measurement-qualification-v1/haze4k_test_conditional_taper_grid_measurement_qualification_v1_summary.json",
+          "sha256": "6ca61e3473ef1c92eca1415523b56c7b592bf5c663f03b5b01214861409619fb",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "parent_taper_conclusion",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-conditional-taper-grid-measurement-qualification-v1/haze4k_test_conditional_taper_grid_measurement_qualification_v1_conclusion.json",
+          "sha256": "3fe676574c1f0126409be55cd9eaef7a71830f80fc857553d581c596514ce8f8",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "official_checkpoint",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+          "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "model_source",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/Dehazing/ITS/models/ConvIR.py",
+          "sha256": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "model_layers",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/Dehazing/ITS/models/layers.py",
+          "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "measurement_entrypoint",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_test_conditional_content_aligned_region_measurement_qualification.py",
+        "sha256": "0444ba16f85878febce9e39489ed6117e6356e45c42fd1b8ad3f04d538d922bc",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        }
+      ],
+      "capability": {
+        "profile_id": "haze4k_test_conditional_content_aligned_region_measurement_qualification_gpu_synthetic",
+        "contract_mode": "gpu_synthetic_no_data",
+        "minimum_fixture": {
+          "batch": 1,
+          "channels": 3,
+          "height": 1200,
+          "width": 1600
+        },
+        "bound_assets": [
+          {
+            "id": "official_checkpoint",
+            "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+          },
+          {
+            "id": "model_source",
+            "identity": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+          },
+          {
+            "id": "model_layers",
+            "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+          },
+          {
+            "id": "measurement_entrypoint",
+          "identity": "0444ba16f85878febce9e39489ed6117e6356e45c42fd1b8ad3f04d538d922bc"
+          }
+        ],
+        "compatibility_imports": [
+          "torch",
+          "numpy",
+          "PIL",
+          "skimage.color",
+          "skimage.filters",
+          "skimage.morphology",
+          "skimage.segmentation",
+          "Dehazing.ITS.models.ConvIR"
+        ],
+        "production_path_statement": "The strict-loaded frozen official Haze4K ConvIR-B graph executes four actual forward passes on device-aware 1200 by 1600 no-data haze fixtures; each exact model output then traverses the three hard residual actions, four hazy-only edge-watershed partitions, source-region utility lifting, held-out-region oracle regret, matched taper replay, circular-shift control, same-support non-clipped sensitivity, whole-image PSNR/SSIM/color metrics, same-phase boundary diagnostics, complete-scene bootstrap, Wilson intervals, and typed terminal finalization under a frozen full-scale time bound.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true
+      },
+      "precision": {
+        "certificate_id": "haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_precision",
+        "estimand": "mean canonical-scene worst-held-out-partition conditional content-aligned PSNR regret",
+        "method": "normal_mean",
+        "confidence_level": 0.95,
+        "target_half_width": 0.05,
+        "planning_sd": 0.09852132954789333,
+        "independent_groups_available": 100,
+        "independent_groups_required": 15,
+        "feasible": true,
+        "source_role": "development_screening",
+        "source_reference": "The directly matched archived taper projection used the same model, data, actions, metric, four phases, grouping, maximum-partition and mean-variant aggregation and observed canonical-scene regret SD 0.09852132954789333 dB."
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-test-conditional-content-aligned-region-measurement-qualification-v1.json",
+  "experiment_spec_sha256": "90cd0f4579652a6a9bc486388e2973f86d673994ab9657535dbd8f52c3e51c61",
+  "operations": {
+    "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_MEASUREMENT_QUALIFICATION": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "STAGE1_REASSESSMENT_ONLY",
+          "decision": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_STABILITY_SCREEN_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_STABILITY_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "STAGE1_REASSESSMENT_ONLY",
+          "decision": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_STABILITY_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_closeout.json",
+      "heartbeat_timeout_seconds": 900,
+      "max_gpu_utilization_pct": 95,
+      "min_free_gpu_mib": 4096,
+      "mode": "conditional_content_aligned_region_measurement_qualification",
+      "monitor_profile": "standard",
+      "output_id": "haze4k-test-conditional-content-aligned-region-measurement-qualification-v1-phase-a",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_conditional_content_aligned_region_measurement_qualification_v1.json",
+  "program_contract_sha256": "b61ec385c3b31e1d0500142451d37d199f58563869a3497e9fde42b865c9c425",
+  "route_card_relpath": "experience_docx/experiment_cards/haze4k-test-conditional-content-aligned-region-measurement-qualification-v1.md",
+  "route_id": "haze4k-test-conditional-content-aligned-region-measurement-qualification-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_MEASUREMENT_QUALIFICATION": "experience_docx/scientific_contracts/haze4k-test-conditional-content-aligned-region-measurement-qualification-v1__HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_MEASUREMENT_QUALIFICATION.json"
+  }
+}
