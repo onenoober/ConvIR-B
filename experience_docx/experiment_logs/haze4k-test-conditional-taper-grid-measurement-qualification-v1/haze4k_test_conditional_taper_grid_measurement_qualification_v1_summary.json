@@ -1,0 +1,723 @@
+{
+  "controls": {
+    "aligned_minus_circularly_shifted_psnr_db": {
+      "estimate": 1.898100516034896,
+      "lower_one_sided_95": 1.7410141134376398,
+      "lower_two_sided_95": 1.7112385833419161,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260802,
+      "upper_distance": 0.15977126138707298,
+      "upper_one_sided_95": 2.057871777421969,
+      "upper_two_sided_95": 2.085657712232267
+    },
+    "box_source_grid_projection_complete_all": true,
+    "common_source_projection_complete_all": true,
+    "keep_duplicate_utility_diagnostic_error_bound": 1.4210854715202004e-14,
+    "keep_duplicate_utility_within_diagnostic_bound": true,
+    "keep_structural_identity_all": true,
+    "matched_box_parent_control_expected_regret_db": 0.1423354325027467,
+    "matched_box_parent_control_mean_regret_db": 0.1423354325027467,
+    "matched_box_parent_control_tolerance_db": 1e-08,
+    "maximum_absolute_keep_duplicate_utility": 3.469446951953614e-18,
+    "nonclipped_affine_manipulation_exact_all": true,
+    "nonclipped_source_minus_uniform_psnr_db": {
+      "estimate": 1.8807482479735855,
+      "lower_one_sided_95": 1.705138487333769,
+      "lower_two_sided_95": 1.673008090148258,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260803,
+      "upper_distance": 0.17696570571989434,
+      "upper_one_sided_95": 2.05771395369348,
+      "upper_two_sided_95": 2.09125667291603
+    },
+    "source_grid_projection_complete_all": true
+  },
+  "coverage": {
+    "material_scene_gain_db": 0.1,
+    "minimum_prevalence_lower_bound": 0.2,
+    "robust_material_scene_prevalence": {
+      "estimate": 0.97,
+      "lower": 0.915479219195973,
+      "successes": 97,
+      "total": 100,
+      "upper": 0.9897456617765851
+    }
+  },
+  "gates": {
+    "aligned_location_negative_control": true,
+    "material_scene_coverage": true,
+    "nonclipped_direction": true,
+    "primary_regret_and_precision": false,
+    "ssim_and_color_safety": true
+  },
+  "identity_and_coverage": {
+    "assignment_digest": "6ca5174470dad2b4eef4ae15c5a13a99d8ae9fc0bc2ea1116b199c4d4bc05582",
+    "candidate_confirmation_asset_delivered": false,
+    "completed_scenes": 100,
+    "completed_variants": 400,
+    "failure_count": 0,
+    "failures": [],
+    "integrity_checks": {
+      "candidate_confirmation_asset_not_delivered": true,
+      "complete_100_scene_400_variant_grouping": true,
+      "complete_finite_inference_and_measurement": true,
+      "isolated_development_asset_only": true,
+      "matched_box_parent_control": true,
+      "measurement_controls_structural": true,
+      "no_training": true,
+      "parent_conditional_terminal_evidence": true
+    },
+    "network_or_proxy_training_occurred": false
+  },
+  "limitations": [
+    "This is development-screening measurement evidence from 100 canonical synthetic Haze4K scenes.",
+    "The parent conditional-regret scene SD supports the frozen 0.05 dB precision target at n=100, but the result remains development-screening evidence.",
+    "GT selects source-grid utilities and held-out-grid oracle outcomes within the same haze condition; no result establishes deployment-time predictability.",
+    "A pass qualifies only this fixed raised-cosine source-utility projection conditional on observed haze and cannot overturn archived cross-variant instability.",
+    "RGB reconstruction utility and limited SSIM/color safety do not establish perceptual quality or physical haze state.",
+    "The result is specific to the fixed three residual scales and four declared 32-pixel grid origins.",
+    "The protected candidate-confirmation asset and NH-HAZE were not delivered or accessed."
+  ],
+  "marker": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_MEASUREMENT_QUALIFICATION_COMPLETE",
+  "matched_box_control": {
+    "absolute_reproduction_tolerance_db": 1e-08,
+    "decision_role": "integrity for box reproduction; taper-minus-box is diagnostic only",
+    "expected_parent_box_regret_db": 0.1423354325027467,
+    "reproduction_pass": true,
+    "scene_mean_box_regret_psnr_db": {
+      "estimate": 0.1423354325027467,
+      "lower_one_sided_95": 0.12525425339253765,
+      "lower_two_sided_95": 0.12231189063013413,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260801,
+      "upper_distance": 0.017585337244534066,
+      "upper_one_sided_95": 0.15992076974728076,
+      "upper_two_sided_95": 0.16375219774144048
+    },
+    "scene_mean_taper_minus_box_psnr_db": {
+      "estimate": 0.0015047852165511611,
+      "lower_one_sided_95": 0.0009707709410824998,
+      "lower_two_sided_95": 0.0008863377800857888,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260801,
+      "upper_distance": 0.000584685122322115,
+      "upper_one_sided_95": 0.002089470338873276,
+      "upper_two_sided_95": 0.002217193004744297
+    }
+  },
+  "measurement_contract": {
+    "actions": [
+      {
+        "name": "keep",
+        "scale": 1.0
+      },
+      {
+        "name": "weaken",
+        "scale": 0.8
+      },
+      {
+        "name": "strengthen",
+        "scale": 1.2
+      }
+    ],
+    "formula": "clip(hazy + scale * (official_prediction - hazy), 0, 1)",
+    "grid_offsets": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        16
+      ],
+      [
+        16,
+        0
+      ],
+      [
+        16,
+        16
+      ]
+    ],
+    "haze_condition_role": "each of four haze variants is analyzed as a substantive observed condition; no utility transfers across variants",
+    "independent_unit": "canonical_clear_scene",
+    "leave_one_grid_out": "within each haze condition, project source-grid tile-mean RGB-MSE utility with fixed strictly-positive half-sample raised-cosine weights, normalize the three source grids per pixel as a partition of unity, and average only then within each held-out tile",
+    "matched_control": "the archived equal-weight box projection is recomputed from the same inference and must reproduce its parent mean regret within 1e-8 dB",
+    "nested_repeats": "four observed haze conditions, tiles, pixels, grid origins, and metrics never increase n",
+    "primary_scene_value": "maximum held-out-grid regret after equal averaging of the four separately conditioned haze variants"
+  },
+  "operation_id": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_MEASUREMENT_QUALIFICATION",
+  "per_origin_diagnostics": {
+    "(0, 0)": {
+      "boundary_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.008532072368421052,
+        "mean": 0.0025845873539047395,
+        "median": 0.0024378598007486836,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.005917930008500991,
+        "sd": 0.0019776870440274103
+      },
+      "boundary_band_regret_psnr_db": {
+        "count": 100,
+        "max": 0.2876075116515633,
+        "mean": 0.08614114882637285,
+        "median": 0.06483279742555981,
+        "min": 0.0017754500101325732,
+        "q05": 0.008579112499731511,
+        "q95": 0.2203170198485973,
+        "sd": 0.07054262192593247
+      },
+      "box_regret_psnr_db": {
+        "count": 100,
+        "max": 0.39554530559306045,
+        "mean": 0.10247180745106381,
+        "median": 0.08209578029820275,
+        "min": 0.0018925813089136767,
+        "q05": 0.015757783286098448,
+        "q95": 0.2616070665104706,
+        "sd": 0.08141501044618593
+      },
+      "interior_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.00952292899408284,
+        "mean": 0.002779490942695264,
+        "median": 0.0025570416994492528,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.0063070155121765,
+        "sd": 0.0020542286886260906
+      },
+      "interior_regret_psnr_db": {
+        "count": 100,
+        "max": 0.555343915942057,
+        "mean": 0.12265836925801948,
+        "median": 0.10431323974759854,
+        "min": 0.0016399254914176709,
+        "q05": 0.014904391379322935,
+        "q95": 0.2828892295939556,
+        "sd": 0.09818191592592644
+      },
+      "regret_psnr_db": {
+        "count": 100,
+        "max": 0.33464738012766126,
+        "mean": 0.09571542272182271,
+        "median": 0.07855256479672379,
+        "min": 0.0017384680021130805,
+        "q05": 0.009512984589746365,
+        "q95": 0.24206392098752577,
+        "sd": 0.0756167764810517
+      },
+      "selected_clip_pixel_fraction": {
+        "count": 100,
+        "max": 0.20211875,
+        "mean": 0.013090778320312498,
+        "median": 0.006171468098958334,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.04942390624999999,
+        "sd": 0.02491911295285045
+      },
+      "taper_minus_box_psnr_db": {
+        "count": 100,
+        "max": 0.06089792546539918,
+        "mean": 0.006756384729241089,
+        "median": 0.0033168934064091715,
+        "min": -0.00018945838711115215,
+        "q05": 0.0,
+        "q95": 0.024039429541304797,
+        "sd": 0.010009165615983955
+      }
+    },
+    "(0, 16)": {
+      "boundary_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.008223684210526315,
+        "mean": 0.002458452024081172,
+        "median": 0.001700198356474922,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.005619517543859649,
+        "sd": 0.0019952708302515094
+      },
+      "boundary_band_regret_psnr_db": {
+        "count": 100,
+        "max": 0.34957218874350104,
+        "mean": 0.09292322532334063,
+        "median": 0.0700279487022355,
+        "min": 0.0018531473125431575,
+        "q05": 0.00907870133686326,
+        "q95": 0.2356345872029566,
+        "sd": 0.0774349425607995
+      },
+      "box_regret_psnr_db": {
+        "count": 100,
+        "max": 0.3683531885334279,
+        "mean": 0.10933367715052782,
+        "median": 0.08693565565858918,
+        "min": 0.0020317807248453335,
+        "q05": 0.01060952918091349,
+        "q95": 0.2777487294186463,
+        "sd": 0.08540971594431923
+      },
+      "interior_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.0073964497041420114,
+        "mean": 0.0025689889152184136,
+        "median": 0.002286694479490128,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.005901680175419812,
+        "sd": 0.0019799078173519777
+      },
+      "interior_regret_psnr_db": {
+        "count": 100,
+        "max": 0.43685962886133467,
+        "mean": 0.13069144450248274,
+        "median": 0.10188537400862208,
+        "min": 0.0023166950761632776,
+        "q05": 0.014410695756606317,
+        "q95": 0.3010591249263718,
+        "sd": 0.0996863653049652
+      },
+      "regret_psnr_db": {
+        "count": 100,
+        "max": 0.35661381816459325,
+        "mean": 0.10270995037466228,
+        "median": 0.08231131336790432,
+        "min": 0.0019803803747757698,
+        "q05": 0.010573599691519053,
+        "q95": 0.24397774316650717,
+        "sd": 0.08063754143164499
+      },
+      "selected_clip_pixel_fraction": {
+        "count": 100,
+        "max": 0.202096875,
+        "mean": 0.013296895182291664,
+        "median": 0.006946207682291667,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.051539962565104146,
+        "sd": 0.025166167227326983
+      },
+      "taper_minus_box_psnr_db": {
+        "count": 100,
+        "max": 0.04764435860088767,
+        "mean": 0.006623726775865518,
+        "median": 0.002148260938517055,
+        "min": -0.0038107711602055616,
+        "q05": 0.0,
+        "q95": 0.02399493587567658,
+        "sd": 0.009776958726469756
+      }
+    },
+    "(16, 0)": {
+      "boundary_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.01000548245614035,
+        "mean": 0.0023726942691011314,
+        "median": 0.001700198356474922,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.006181469298245613,
+        "sd": 0.002006717487381567
+      },
+      "boundary_band_regret_psnr_db": {
+        "count": 100,
+        "max": 0.36290936855642286,
+        "mean": 0.09109346505979697,
+        "median": 0.07453097461887204,
+        "min": 0.0006766001494753482,
+        "q05": 0.0077654883716898665,
+        "q95": 0.22539736685962436,
+        "sd": 0.07006951542424421
+      },
+      "box_regret_psnr_db": {
+        "count": 100,
+        "max": 0.44367872018359833,
+        "mean": 0.10728478547845736,
+        "median": 0.08787445123311599,
+        "min": 0.0025698668821316772,
+        "q05": 0.01244711245793364,
+        "q95": 0.23391638542204216,
+        "sd": 0.08162815665123084
+      },
+      "interior_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.011464497041420118,
+        "mean": 0.0025247047821451685,
+        "median": 0.0018491124260355029,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.006323964497041418,
+        "sd": 0.0020969417937929213
+      },
+      "interior_regret_psnr_db": {
+        "count": 100,
+        "max": 0.5442587971961963,
+        "mean": 0.12885151633097258,
+        "median": 0.10429903156063247,
+        "min": 0.002706540885074382,
+        "q05": 0.012792191949835585,
+        "q95": 0.29675277580083037,
+        "sd": 0.10001285794484309
+      },
+      "regret_psnr_db": {
+        "count": 100,
+        "max": 0.40761227267898725,
+        "mean": 0.10094702724024016,
+        "median": 0.08582317065483513,
+        "min": 0.002175077187648533,
+        "q05": 0.010924938659590834,
+        "q95": 0.2311253284884334,
+        "sd": 0.07676900349906204
+      },
+      "selected_clip_pixel_fraction": {
+        "count": 100,
+        "max": 0.20149531249999997,
+        "mean": 0.013036784505208333,
+        "median": 0.006250211588541667,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.051086617838541654,
+        "sd": 0.02473951665731391
+      },
+      "taper_minus_box_psnr_db": {
+        "count": 100,
+        "max": 0.043471919279850724,
+        "mean": 0.006337758238217192,
+        "median": 0.0033662979435482576,
+        "min": -0.004316826689620967,
+        "q05": 0.0,
+        "q95": 0.025341133307790496,
+        "sd": 0.008705196311389326
+      }
+    },
+    "(16, 16)": {
+      "boundary_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.01230126096491228,
+        "mean": 0.0026543499188117995,
+        "median": 0.0017621847548880702,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.007128583404174931,
+        "sd": 0.0021634265655665267
+      },
+      "boundary_band_regret_psnr_db": {
+        "count": 100,
+        "max": 0.3553744597132038,
+        "mean": 0.09507262526554601,
+        "median": 0.07306453503663857,
+        "min": 0.0017497520807454592,
+        "q05": 0.009572989004613675,
+        "q95": 0.24536686589998055,
+        "sd": 0.07656043880833756
+      },
+      "box_regret_psnr_db": {
+        "count": 100,
+        "max": 0.4558682359348367,
+        "mean": 0.11316755970261017,
+        "median": 0.0924163518660337,
+        "min": 0.0018451906059961942,
+        "q05": 0.012382913125694018,
+        "q95": 0.28583487892996867,
+        "sd": 0.0893045476051865
+      },
+      "interior_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.014145710059171597,
+        "mean": 0.00276410082798337,
+        "median": 0.0020898898505114084,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.007045118343195264,
+        "sd": 0.002289310185541906
+      },
+      "interior_regret_psnr_db": {
+        "count": 100,
+        "max": 0.5006593830794479,
+        "mean": 0.1379302752923696,
+        "median": 0.10946523648181872,
+        "min": 0.0021001796666286765,
+        "q05": 0.012008400442086176,
+        "q95": 0.3412397471079277,
+        "sd": 0.1110976193677023
+      },
+      "regret_psnr_db": {
+        "count": 100,
+        "max": 0.3918366396597879,
+        "mean": 0.1061668764232287,
+        "median": 0.08613326833174284,
+        "min": 0.0018454490706227844,
+        "q05": 0.010409855851355055,
+        "q95": 0.2612850711889922,
+        "sd": 0.08369198959034202
+      },
+      "selected_clip_pixel_fraction": {
+        "count": 100,
+        "max": 0.20491562500000002,
+        "mean": 0.013289809895833336,
+        "median": 0.006690983072916667,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.05352741699218749,
+        "sd": 0.02514270718766246
+      },
+      "taper_minus_box_psnr_db": {
+        "count": 100,
+        "max": 0.06403159627504884,
+        "mean": 0.007000683279381477,
+        "median": 0.003110766768484652,
+        "min": -0.0005269123784827912,
+        "q05": 0.0,
+        "q95": 0.02568812524249092,
+        "sd": 0.010412595836560961
+      }
+    }
+  },
+  "primary_regret": {
+    "maximum_upper_bound_db": 0.1,
+    "maximum_upper_distance_db": 0.05,
+    "pre_run_precision_mode": "formal normal-mean feasibility: parent conditional-regret scene SD 0.1060556714 dB requires 18 independent scenes for a two-sided 0.05 dB half-width; n=100 is feasible",
+    "scene_mean_regret_psnr_db": {
+      "estimate": 0.1340031213991598,
+      "lower_one_sided_95": 0.11810429992018522,
+      "lower_two_sided_95": 0.11520415927515108,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260801,
+      "upper_distance": 0.016334606805215646,
+      "upper_one_sided_95": 0.15033772820437544,
+      "upper_two_sided_95": 0.1538163544516359
+    }
+  },
+  "route_id": "haze4k-test-conditional-taper-grid-measurement-qualification-v1",
+  "run_id": "haze4k-test-conditional-taper-grid-measurement-qualification-v1-phase-a",
+  "safety": {
+    "color_harm_definition": "worst-grid scene mean transferred-minus-uniform RGB mean-bias at least 0.00392156862745098",
+    "color_harm_prevalence": {
+      "estimate": 0.03,
+      "lower": 0.010254338223414816,
+      "successes": 3,
+      "total": 100,
+      "upper": 0.08452078080402699
+    },
+    "maximum_harm_upper_bound": 0.1,
+    "ssim_harm_definition": "worst-grid scene mean transferred-minus-uniform SSIM at most -0.005",
+    "ssim_harm_prevalence": {
+      "estimate": 0.04,
+      "lower": 0.015663050551848016,
+      "successes": 4,
+      "total": 100,
+      "upper": 0.09837217232607373
+    }
+  },
+  "schema_version": 1,
+  "scope": "Haze-conditional raised-cosine taper projection qualification on the isolated 100-scene Haze4K development partition",
+  "secondary_scene_aggregates": {
+    "aligned_minus_shifted_psnr_db": {
+      "count": 100,
+      "max": 4.242263504257881,
+      "mean": 1.898100516034896,
+      "median": 1.908846170579785,
+      "min": 0.023265053145555825,
+      "q05": 0.3995158384997994,
+      "q95": 3.5014756555995485,
+      "sd": 0.9569252211544502
+    },
+    "boundary_action_disagreement_fraction": {
+      "count": 100,
+      "max": 0.006587513706140351,
+      "mean": 0.00251752089147471,
+      "median": 0.0024124496496447977,
+      "min": 0.00021252479455936526,
+      "q05": 0.0006094299954512238,
+      "q95": 0.004857741215641823,
+      "sd": 0.0014107170845997373
+    },
+    "boundary_band_regret_psnr_db": {
+      "count": 100,
+      "max": 0.36290936855642286,
+      "mean": 0.12335526599361718,
+      "median": 0.10242325013719178,
+      "min": 0.001975184230336602,
+      "q05": 0.014942607435106538,
+      "q95": 0.2877072416674979,
+      "sd": 0.09184579217390602
+    },
+    "box_regret_psnr_db": {
+      "count": 100,
+      "max": 0.4558682359348367,
+      "mean": 0.1423354325027467,
+      "median": 0.11775120674815209,
+      "min": 0.0025698668821316772,
+      "q05": 0.018431830347786216,
+      "q95": 0.3333204665119121,
+      "sd": 0.10605567135120934
+    },
+    "common_nonclipped_pixel_fraction": {
+      "count": 100,
+      "max": 0.9999921875,
+      "mean": 0.8824509208984375,
+      "median": 0.9035407389322917,
+      "min": 0.5514990234375,
+      "q05": 0.686043416341146,
+      "q95": 0.998331953125,
+      "sd": 0.10880680467135267
+    },
+    "common_source_projection_coverage_fraction": {
+      "count": 100,
+      "max": 0.9999921875,
+      "mean": 0.8824509208984375,
+      "median": 0.9035407389322917,
+      "min": 0.5514990234375,
+      "q05": 0.686043416341146,
+      "q95": 0.998331953125,
+      "sd": 0.10880680467135267
+    },
+    "exact_near_tie_pixel_fraction": {
+      "count": 100,
+      "max": 0.004,
+      "mean": 4e-05,
+      "median": 0.0,
+      "min": 0.0,
+      "q05": 0.0,
+      "q95": 0.0,
+      "sd": 0.0004
+    },
+    "hard_action_agreement_fraction": {
+      "count": 100,
+      "max": 0.988125,
+      "mean": 0.9396603541666666,
+      "median": 0.9421677083333333,
+      "min": 0.8647916666666667,
+      "q05": 0.896883125,
+      "q95": 0.9757578124999999,
+      "sd": 0.024956392026964938
+    },
+    "interior_action_disagreement_fraction": {
+      "count": 100,
+      "max": 0.007373335798816568,
+      "mean": 0.002659321367010553,
+      "median": 0.0025136417505435315,
+      "min": 0.0001966955153422502,
+      "q05": 0.00063503409000973,
+      "q95": 0.005080276357199055,
+      "sd": 0.001461657008027505
+    },
+    "interior_regret_psnr_db": {
+      "count": 100,
+      "max": 0.555343915942057,
+      "mean": 0.17619711171729008,
+      "median": 0.1518027646100104,
+      "min": 0.002706540885074382,
+      "q05": 0.024418965537974915,
+      "q95": 0.4153880936773711,
+      "sd": 0.1284879054036251
+    },
+    "mean_top_two_mse_margin": {
+      "count": 100,
+      "max": 0.004000798022785527,
+      "mean": 0.0009270130040596935,
+      "median": 0.0008119702881127313,
+      "min": 6.0394242664030314e-05,
+      "q05": 0.00015563422348139597,
+      "q95": 0.0020729142890063036,
+      "sd": 0.0006474871558256004
+    },
+    "nonclipped_source_minus_uniform_psnr_db": {
+      "count": 100,
+      "max": 5.033911895361232,
+      "mean": 1.8807482479735855,
+      "median": 1.8468585169653053,
+      "min": 0.014452417671374285,
+      "q05": 0.2533183383604913,
+      "q95": 3.5725245865332247,
+      "sd": 1.0824696180455962
+    },
+    "nonkeep_pixel_fraction": {
+      "count": 100,
+      "max": 0.9533,
+      "mean": 0.4860494374999999,
+      "median": 0.4736270833333333,
+      "min": 0.006041666666666667,
+      "q05": 0.08765885416666666,
+      "q95": 0.9305149999999999,
+      "sd": 0.2555794591760584
+    },
+    "regret_psnr_db": {
+      "count": 100,
+      "max": 0.40761227267898725,
+      "mean": 0.1340031213991598,
+      "median": 0.10891599076356862,
+      "min": 0.002175077187648533,
+      "q05": 0.018179934551166666,
+      "q95": 0.3091799235561123,
+      "sd": 0.09852132954789333
+    },
+    "robust_gain_psnr_db": {
+      "count": 100,
+      "max": 4.709641218873733,
+      "mean": 1.7943132738631087,
+      "median": 1.7083366313119428,
+      "min": 0.016422398709788233,
+      "q05": 0.21911209150147282,
+      "q95": 3.2953978162798037,
+      "sd": 1.024838750820633
+    },
+    "selected_clip_pixel_fraction": {
+      "count": 100,
+      "max": 0.20265664062500002,
+      "mean": 0.013178566975911458,
+      "median": 0.006587398274739583,
+      "min": 0.0,
+      "q05": 0.0,
+      "q95": 0.0511164493815104,
+      "sd": 0.024978678771596353
+    },
+    "taper_minus_box_psnr_db": {
+      "count": 100,
+      "max": 0.01986590945700506,
+      "mean": 0.0015047852165511611,
+      "median": 3.702498519020381e-05,
+      "min": -0.004316826689620967,
+      "q05": -0.00020633108667973403,
+      "q95": 0.007154024918949359,
+      "sd": 0.0033973501674982275
+    },
+    "transferred_minus_uniform_color_bias": {
+      "count": 100,
+      "max": 0.011519501456398332,
+      "mean": -0.0020509364424574697,
+      "median": -0.0012589100824795425,
+      "min": -0.013091516094613568,
+      "q05": -0.010078889450754979,
+      "q95": 0.002157062661532222,
+      "sd": 0.0039959260576425204
+    },
+    "transferred_minus_uniform_ssim": {
+      "count": 100,
+      "max": 0.0633099228143692,
+      "mean": 4.805445671081543e-05,
+      "median": -0.0007151588797569275,
+      "min": -0.00942113995552063,
+      "q05": -0.003757672756910324,
+      "q95": 0.0068399496376514435,
+      "sd": 0.007147960013335073
+    }
+  },
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_STABILITY_FAIL",
+    "gate_reasons": [
+      "at least one frozen conditional measurement-validity interval clearly failed"
+    ],
+    "state": "COMPLETED_GATE_FAIL"
+  }
+}

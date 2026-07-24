@@ -1,0 +1,26 @@
+{
+  "route_id": "haze4k-test-conditional-taper-grid-measurement-qualification-v1",
+  "operation_id": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_MEASUREMENT_QUALIFICATION",
+  "run_id": "haze4k-test-conditional-taper-grid-measurement-qualification-v1-phase-a",
+  "decision": "HAZE4K_TEST_CONDITIONAL_TAPER_GRID_STABILITY_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "All 100 canonical Haze4K development scenes and 400 nested haze conditions completed with exact structural controls and matched parent-box reproduction. Mean worst-held-out-grid taper PSNR regret was 0.1340 dB; its one-sided 95 percent scene-bootstrap lower and upper bounds were 0.1181 and 0.1503 dB. The lower bound remained above the frozen 0.10 dB maximum, while the achieved upper-bound distance was 0.0163 dB versus the 0.05 dB precision limit. This is a precise scientific FAIL: fixed raised-cosine taper reduced regret slightly but did not qualify the spatial measurement target.",
+  "gate_reasons": [
+    "The primary regret clearly failed: the one-sided 95 percent lower bound was 0.1181 dB, above the frozen 0.10 dB maximum; achieved precision itself passed at 0.0163 dB.",
+    "The matched equal-weight box control reproduced the archived parent mean regret exactly at 0.1423354325 dB within the frozen 1e-8 dB tolerance, so the observed taper contrast is identity-valid.",
+    "Taper improved PSNR over box by only 0.00150 dB on average, with one-sided 95 percent bounds 0.00097 to 0.00209 dB; this was diagnostic and could not rescue the primary gate.",
+    "All source taper and box projections, partition-of-unity structure, keep identity, non-clipped affine manipulation, complete 100-scene grouping, and no-training/protected-data controls passed.",
+    "Material coverage passed in 97/100 scenes with Wilson lower bound 0.9155 above 0.20.",
+    "Location specificity and non-clipping direction passed with one-sided 95 percent lower bounds 1.7410 dB and 1.7051 dB.",
+    "SSIM and color tail safety passed: harm occurred in 4/100 and 3/100 scenes, with Wilson upper bounds 0.0984 and 0.0845 below 0.10."
+  ],
+  "competing_explanation": "The exact box reproduction and small positive taper contrast show that translation-reduced utility weighting has a real but insufficient effect. Residual error was not concentrated at registered tile seams: mean boundary-band regret was 0.1234 dB versus 0.1762 dB in interiors, and taper-versus-box action disagreement was similarly rare at boundaries and interiors. The evidence therefore does not support simple boundary tapering as the main repair. It remains consistent with mismatch of the fixed content-agnostic spatial unit, the three-action target, or GT reconstruction utility, but it does not identify which explanation is causal.",
+  "limitations": [
+    "This is development-screening evidence from 100 canonical synthetic Haze4K scenes, not confirmation or real-haze external validation.",
+    "The four haze variants, grid origins, tiles, pixels, taper and box repeats, and metrics are nested or crossed measurements and do not increase independent n.",
+    "Boundary-band diagnostics used one preregistered four-pixel band and were non-decisive; they cannot prove the absence of every boundary mechanism.",
+    "GT defines source utility and the held-out oracle, so the result does not identify deployment-time predictability or a physical haze mechanism.",
+    "RGB reconstruction, SSIM, and channel-bias endpoints do not establish general perceptual quality.",
+    "The conclusion is specific to the fixed three hard scales, four 32-pixel grid origins, and raised-cosine utility projection. It authorizes no Stage 2 experiment or protected-data access."
+  ]
+}
