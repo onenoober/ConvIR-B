@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-test-scene-split-v1.json",
-  "experiment_spec_sha256": "7347935b4165547f492aab82e633a21997b1f7159f368b212b3bb615988c898c",
+  "experiment_spec_sha256": "5ba474e34cb9a20e20c6d79640f9804b55d31e02b186a003da2fd15c6b9c42ff",
   "operations": {
     "HAZE4K_TEST_SCENE_SPLIT_QUALIFY": {
       "allowed_terminal_tuples": [
@@ -25,13 +25,13 @@
           "state": "FAILED_ENGINEERING"
         }
       ],
-      "closeout_filename": "haze4k_test_scene_split_v1_closeout.json",
+      "closeout_filename": "haze4k_test_scene_split_v1_r1_closeout.json",
       "heartbeat_timeout_seconds": 240,
       "max_gpu_utilization_pct": 100,
       "min_free_gpu_mib": 0,
       "mode": "dataset_qualification",
       "monitor_profile": "standard",
-      "output_id": "haze4k-test-scene-split-v1-phase-a",
+      "output_id": "haze4k-test-scene-split-v1-phase-a-r1",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,

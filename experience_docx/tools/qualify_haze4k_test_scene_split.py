@@ -165,11 +165,7 @@ def contract(context_path: Path) -> None:
         "official_test_hidden_from_contract": (
             hidden_test is None or hidden_test.contract_access is False
         ),
-        "confirmation_permission_only": (
-            permissions["allow_confirmation"]
-            and not permissions["allow_canary"]
-            and not permissions["allow_locked_test"]
-        ),
+        "protected_roles_disabled_in_contract": not any(permissions.values()),
         "no_model_checkpoint_inference_or_metric_path": True,
         "aggregate_publishable_evidence_only": True,
         "output_and_finalizer_contract": True,

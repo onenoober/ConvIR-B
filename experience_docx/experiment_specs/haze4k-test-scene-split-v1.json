@@ -12,8 +12,8 @@
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "dataset_qualification",
         "require_gpu": false,
-        "output_id": "haze4k-test-scene-split-v1-phase-a",
-        "closeout_filename": "haze4k_test_scene_split_v1_closeout.json",
+        "output_id": "haze4k-test-scene-split-v1-phase-a-r1",
+        "closeout_filename": "haze4k_test_scene_split_v1_r1_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
         "allowed_terminal_tuples": [
