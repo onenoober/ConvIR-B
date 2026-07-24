@@ -1,0 +1,272 @@
+{
+  "controls": {
+    "aligned_minus_circularly_shifted_psnr_db": {
+      "estimate": 1.6414731430481277,
+      "lower_one_sided_95": 1.474741592425116,
+      "lower_two_sided_95": 1.4417916947563263,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260730,
+      "upper_distance": 0.1659768007800575,
+      "upper_one_sided_95": 1.8074499438281852,
+      "upper_two_sided_95": 1.8413490692563403
+    },
+    "maximum_absolute_keep_duplicate_utility": 1.6263032587282567e-18,
+    "nonclipped_source_minus_uniform_psnr_db": {
+      "estimate": 0.7972846506812735,
+      "lower_one_sided_95": 0.6255810106938965,
+      "lower_two_sided_95": 0.5939051312718198,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260731,
+      "upper_distance": 0.17362391973270264,
+      "upper_one_sided_95": 0.9709085704139762,
+      "upper_two_sided_95": 1.0047649840471256
+    }
+  },
+  "coverage": {
+    "material_scene_gain_db": 0.1,
+    "minimum_prevalence_lower_bound": 0.2,
+    "robust_material_scene_prevalence": {
+      "estimate": 0.78,
+      "lower": 0.6892946528499969,
+      "successes": 78,
+      "total": 100,
+      "upper": 0.849988254963442
+    }
+  },
+  "gates": {
+    "aligned_location_negative_control": true,
+    "material_scene_coverage": true,
+    "nonclipped_direction": true,
+    "primary_regret_and_precision": false,
+    "ssim_and_color_safety": false
+  },
+  "identity_and_coverage": {
+    "assignment_digest": "6ca5174470dad2b4eef4ae15c5a13a99d8ae9fc0bc2ea1116b199c4d4bc05582",
+    "candidate_confirmation_asset_delivered": false,
+    "completed_scenes": 100,
+    "completed_variants": 400,
+    "failure_count": 0,
+    "failures": [],
+    "integrity_checks": {
+      "candidate_confirmation_asset_not_delivered": true,
+      "closed_proxy_evidence": true,
+      "complete_100_scene_400_variant_grouping": true,
+      "complete_finite_inference_and_measurement": true,
+      "isolated_development_asset_only": true,
+      "measurement_controls_exact": false,
+      "no_training": true,
+      "parent_oracle_evidence": true
+    },
+    "network_or_proxy_training_occurred": false
+  },
+  "limitations": [
+    "This is development-screening measurement evidence from 100 canonical synthetic Haze4K scenes.",
+    "The pre-run continuous-regret variance was unavailable, so the route records descriptive capacity and requires stage-1 reassessment even after a gate pass.",
+    "GT selects source utilities and held-out oracle outcomes; no result establishes deployment-time predictability.",
+    "RGB reconstruction utility and limited SSIM/color safety do not establish perceptual quality or physical haze state.",
+    "The result is specific to the fixed three residual scales and four declared 32-pixel grid origins.",
+    "The protected candidate-confirmation asset and NH-HAZE were not delivered or accessed."
+  ],
+  "marker": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFICATION_COMPLETE",
+  "measurement_contract": {
+    "actions": [
+      {
+        "name": "keep",
+        "scale": 1.0
+      },
+      {
+        "name": "weaken",
+        "scale": 0.8
+      },
+      {
+        "name": "strengthen",
+        "scale": 1.2
+      }
+    ],
+    "formula": "clip(hazy + scale * (official_prediction - hazy), 0, 1)",
+    "grid_offsets": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        16
+      ],
+      [
+        16,
+        0
+      ],
+      [
+        16,
+        16
+      ]
+    ],
+    "independent_unit": "canonical_clear_scene",
+    "leave_one_variant_out": "mean continuous per-pixel RGB-MSE utility over the other three variants selects each tile action",
+    "nested_repeats": "four haze variants, tiles, pixels, grid offsets, and metrics never increase n",
+    "primary_scene_value": "maximum across grids of mean four-held-out-variant GT-oracle-minus-transferred PSNR regret"
+  },
+  "operation_id": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFICATION",
+  "primary_regret": {
+    "maximum_upper_bound_db": 0.1,
+    "maximum_upper_distance_db": 0.05,
+    "pre_run_precision_mode": "descriptive_capacity because the target regret scene SD was unavailable before this supplement",
+    "scene_mean_regret_psnr_db": {
+      "estimate": 1.026853659254072,
+      "lower_one_sided_95": 0.8959647563475902,
+      "lower_two_sided_95": 0.8718004853326352,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260729,
+      "upper_distance": 0.14509970749963097,
+      "upper_one_sided_95": 1.171953366753703,
+      "upper_two_sided_95": 1.2021321238398535
+    }
+  },
+  "route_id": "haze4k-test-local-action-measurement-qualification-v1",
+  "run_id": "haze4k-test-local-action-measurement-qualification-v1-phase-a",
+  "safety": {
+    "color_harm_definition": "worst-grid scene mean transferred-minus-uniform RGB mean-bias at least 0.00392156862745098",
+    "color_harm_prevalence": {
+      "estimate": 0.09,
+      "lower": 0.04807199516388488,
+      "successes": 9,
+      "total": 100,
+      "upper": 0.16226374696643667
+    },
+    "maximum_harm_upper_bound": 0.1,
+    "ssim_harm_definition": "worst-grid scene mean transferred-minus-uniform SSIM at most -0.005",
+    "ssim_harm_prevalence": {
+      "estimate": 0.12,
+      "lower": 0.06999337365267776,
+      "successes": 12,
+      "total": 100,
+      "upper": 0.19812268002908368
+    }
+  },
+  "schema_version": 1,
+  "scope": "GT-derived local-action measurement qualification on isolated 100-scene Haze4K development partition",
+  "secondary_scene_aggregates": {
+    "aligned_minus_shifted_psnr_db": {
+      "count": 100,
+      "max": 5.027000021349554,
+      "mean": 1.6414731430481277,
+      "median": 1.5323310053750592,
+      "min": -0.21612621702876655,
+      "q05": 0.2692968533358474,
+      "q95": 3.5372222294920577,
+      "sd": 1.0234773146859097
+    },
+    "common_nonclipped_pixel_fraction": {
+      "count": 100,
+      "max": 0.9999921875000001,
+      "mean": 0.8824509208984375,
+      "median": 0.9035407389322916,
+      "min": 0.5514990234374999,
+      "q05": 0.6860434163411459,
+      "q95": 0.998331953125,
+      "sd": 0.10880680467135269
+    },
+    "exact_near_tie_pixel_fraction": {
+      "count": 100,
+      "max": 0.0,
+      "mean": 0.0,
+      "median": 0.0,
+      "min": 0.0,
+      "q05": 0.0,
+      "q95": 0.0,
+      "sd": 0.0
+    },
+    "mean_top_two_mse_margin": {
+      "count": 100,
+      "max": 0.003976226851980276,
+      "mean": 0.0008972697964095239,
+      "median": 0.000737319071378232,
+      "min": 5.684780714369847e-05,
+      "q05": 0.0001564029862825422,
+      "q95": 0.0020138964221759394,
+      "sd": 0.0006370473873809647
+    },
+    "nonclipped_source_minus_uniform_psnr_db": {
+      "count": 100,
+      "max": 4.0093174871079444,
+      "mean": 0.7972846506812735,
+      "median": 0.7446688244329156,
+      "min": -1.6238884573728898,
+      "q05": -0.8553288404175268,
+      "q95": 2.387713487018731,
+      "sd": 1.0493271335593712
+    },
+    "nonkeep_pixel_fraction": {
+      "count": 100,
+      "max": 0.9988,
+      "mean": 0.4638359374999999,
+      "median": 0.4448958333333334,
+      "min": 0.010208333333333333,
+      "q05": 0.10097656249999999,
+      "q95": 0.92824,
+      "sd": 0.2453400007529332
+    },
+    "regret_psnr_db": {
+      "count": 100,
+      "max": 5.301324377264876,
+      "mean": 1.026853659254072,
+      "median": 0.8271492081967651,
+      "min": 0.009546064071396465,
+      "q05": 0.0983099736733335,
+      "q95": 2.3318567325291424,
+      "sd": 0.8324269295441421
+    },
+    "robust_gain_psnr_db": {
+      "count": 100,
+      "max": 4.001703779847418,
+      "mean": 0.8978667559193483,
+      "median": 0.7919564871690339,
+      "min": -1.6238884573728898,
+      "q05": -0.6169119250404783,
+      "q95": 2.54135794519778,
+      "sd": 1.0271366284293781
+    },
+    "selected_clip_pixel_fraction": {
+      "count": 100,
+      "max": 0.213036328125,
+      "mean": 0.014961367594401045,
+      "median": 0.006325,
+      "min": 0.0,
+      "q05": 0.0,
+      "q95": 0.05211974446614581,
+      "sd": 0.029036013515892932
+    },
+    "transferred_minus_uniform_color_bias": {
+      "count": 100,
+      "max": 0.014992586757695246,
+      "mean": -0.0005258310586357119,
+      "median": -0.00029752910709808446,
+      "min": -0.012613399408885746,
+      "q05": -0.00920407548704537,
+      "q95": 0.005519315531418899,
+      "sd": 0.004524027553993638
+    },
+    "transferred_minus_uniform_ssim": {
+      "count": 100,
+      "max": 0.06271503865718842,
+      "mean": -0.0015870273113250733,
+      "median": -0.0019674748182296753,
+      "min": -0.0129365473985672,
+      "q05": -0.00921795666217804,
+      "q95": 0.00506719499826431,
+      "sd": 0.007413145945834757
+    }
+  },
+  "terminal": {
+    "authorizes": "STAGE1_REASSESSMENT_ONLY",
+    "decision": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_INCONCLUSIVE",
+    "gate_reasons": [
+      "complete 100-scene measurement integrity was not established"
+    ],
+    "state": "COMPLETED_INCONCLUSIVE"
+  }
+}

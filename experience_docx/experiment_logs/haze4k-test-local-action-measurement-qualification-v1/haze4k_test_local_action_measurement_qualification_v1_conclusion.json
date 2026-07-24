@@ -1,0 +1,24 @@
+{
+  "route_id": "haze4k-test-local-action-measurement-qualification-v1",
+  "operation_id": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_QUALIFICATION",
+  "run_id": "haze4k-test-local-action-measurement-qualification-v1-phase-a",
+  "decision": "HAZE4K_TEST_LOCAL_ACTION_MEASUREMENT_INCONCLUSIVE",
+  "authorizes": "STAGE1_REASSESSMENT_ONLY",
+  "primary_result": "All 100 canonical Haze4K development scenes and 400 nested haze variants completed, but the frozen measurement qualification did not pass. Mean worst-grid leave-one-haze-variant-out PSNR regret was 1.0269 dB; its one-sided 95% complete-scene bootstrap upper bound was 1.1720 dB, above the frozen 0.10 dB maximum, and its 0.1451 dB upper-bound distance exceeded the frozen 0.05 dB achieved-precision limit. The typed terminal is INCONCLUSIVE, rather than FAIL, because the preregistered exact measurement-control gate required duplicate keep utility to equal numerical zero and observed a maximum absolute residual of 1.6263e-18. This terminal authorizes only a stage-1 reassessment and does not authorize stage 2.",
+  "gate_reasons": [
+    "The exact measurement-control gate did not pass: maximum absolute duplicate keep utility was 1.6263e-18 rather than exactly zero, so complete measurement integrity was not established under the frozen rule.",
+    "The primary regret gate did not pass: the one-sided 95% upper bound was 1.1720 dB versus the 0.10 dB maximum, and achieved upper-bound distance was 0.1451 dB versus the 0.05 dB limit.",
+    "Material scene coverage passed: 78/100 scenes gained at least 0.10 dB over the GT-best uniform action under every grid, with Wilson lower bound 0.6893 above 0.20.",
+    "Location specificity and non-clipping direction controls passed: their one-sided 95% lower bounds were 1.4747 dB and 0.6256 dB, respectively, both above zero.",
+    "The SSIM and color tail-safety gate did not pass: harm occurred in 12/100 and 9/100 scenes, with Wilson upper bounds 0.1981 and 0.1623 above the 0.10 limit.",
+    "No training occurred, and candidate-confirmation data, NH-HAZE, canary data, and locked-test data were not delivered or accessed."
+  ],
+  "competing_explanation": "The exact-control failure is consistent with floating-point cancellation at a scale of 1.6e-18, but that tolerance was not preregistered and cannot be waived after observing the result. Independently, the large held-out-oracle regret and failed tail-safety bounds indicate that a source action field can preserve broad local benefit and location specificity while remaining materially unstable across haze variants and harmful for a non-negligible scene tail. Thus the result is not explained simply by an absence of local structure, and it does not support treating the current GT-derived action target as measurement-qualified.",
+  "limitations": [
+    "This is development-screening evidence from 100 canonical synthetic Haze4K scenes, not candidate confirmation or real-haze external validation.",
+    "The primary regret scene variance was unavailable before launch; the preregistered precision certificate classified n=100 as descriptive capacity rather than feasible formal precision.",
+    "GT selected source utilities and held-out oracle outcomes, so no result identifies deployment-visible predictability or a physical haze mechanism.",
+    "The typed INCONCLUSIVE terminal must stand despite the tiny exact-zero residual; changing the numerical tolerance after observing it would be a new contract.",
+    "RGB reconstruction, SSIM, and channel-bias endpoints do not establish general perceptual quality, and conclusions remain specific to the three fixed scales and four grid origins."
+  ]
+}
