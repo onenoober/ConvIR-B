@@ -1,0 +1,167 @@
+{
+  "action_contract": {
+    "actions": [
+      {
+        "name": "keep",
+        "scale": 1.0
+      },
+      {
+        "name": "weaken",
+        "scale": 0.8
+      },
+      {
+        "name": "strengthen",
+        "scale": 1.2
+      }
+    ],
+    "formula": "clip(hazy + scale * (official_prediction - hazy), 0, 1)",
+    "spatial_grid_pixels": 32,
+    "spatial_policy": "GT-selected action independently per origin-aligned tile; boundary tiles use valid pixels only",
+    "uniform_reference": "GT-selected per-image best action from the identical action set"
+  },
+  "action_usage": {
+    "best_uniform_variant_counts": {
+      "keep": 287,
+      "strengthen": 72,
+      "weaken": 41
+    },
+    "spatial_tile_counts": {
+      "keep": 48405,
+      "strengthen": 23142,
+      "weaken": 19633
+    },
+    "spatial_tile_fractions": {
+      "keep": 0.5308729984645756,
+      "strengthen": 0.2538056591357754,
+      "weaken": 0.21532134239964903
+    },
+    "total_spatial_tiles": 91180
+  },
+  "identity_and_coverage": {
+    "assignment_digest": "6ca5174470dad2b4eef4ae15c5a13a99d8ae9fc0bc2ea1116b199c4d4bc05582",
+    "candidate_confirmation_asset_delivered": false,
+    "completed_scenes": 100,
+    "completed_variants": 400,
+    "failure_count": 0,
+    "failures": [],
+    "integrity_checks": {
+      "candidate_confirmation_asset_not_delivered": true,
+      "complete_100_scene_400_variant_grouping": true,
+      "complete_finite_inference_and_oracle": true,
+      "identical_bounded_action_set_for_uniform_and_spatial": true,
+      "isolated_development_asset_only": true,
+      "no_training": true,
+      "parent_oracle_authorization": true
+    },
+    "training_occurred": false
+  },
+  "limitations": [
+    "This is a non-deployable GT-privileged development oracle, not a learned predictor or module.",
+    "The action family is limited to three residual scales and does not prove the optimum over other action spaces or insertion locations.",
+    "The per-image best uniform reference is also GT-privileged; the primary contrast isolates spatial selection within this frozen family.",
+    "An 11-by-11 uniform-window RGB SSIM is used as a frozen safety metric and does not replace perceptual validation.",
+    "The 150-scene candidate-confirmation asset was not delivered or accessed."
+  ],
+  "marker": "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE_COMPLETE",
+  "operation_id": "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE",
+  "primary_spatial_vs_best_uniform": {
+    "material_scene_gain_db": 0.1,
+    "material_scene_prevalence": {
+      "estimate": 0.98,
+      "lower": 0.9299868370580063,
+      "successes": 98,
+      "total": 100,
+      "upper": 0.9944981477650318
+    },
+    "minimum_lower_bound_db": 0.1,
+    "minimum_prevalence_lower_bound": 0.2,
+    "scene_mean_delta_psnr_db": {
+      "estimate": 1.9346579123786583,
+      "lower": 1.7318534248588806,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260725,
+      "upper": 2.141813479299887
+    },
+    "utility_passed": true
+  },
+  "route_id": "haze4k-test-bounded-local-action-oracle-v1",
+  "run_id": "haze4k-test-bounded-local-action-oracle-v1-phase-a",
+  "safety": {
+    "color_harm_definition": "scene-mean spatial-minus-uniform RGB mean-bias at least 0.00392156862745098",
+    "color_harm_prevalence": {
+      "estimate": 0.03,
+      "lower": 0.010254338223414816,
+      "successes": 3,
+      "total": 100,
+      "upper": 0.08452078080402699
+    },
+    "maximum_harm_upper_bound": 0.1,
+    "safety_passed": true,
+    "ssim_harm_definition": "scene-mean spatial-minus-uniform SSIM at most -0.005",
+    "ssim_harm_prevalence": {
+      "estimate": 0.04,
+      "lower": 0.015663050551848016,
+      "successes": 4,
+      "total": 100,
+      "upper": 0.09837217232607373
+    }
+  },
+  "schema_version": 1,
+  "scope": "GT-privileged bounded local-action oracle on isolated 100-scene Haze4K official-test development partition",
+  "secondary_scene_aggregates": {
+    "spatial_minus_baseline_psnr_db": {
+      "count": 100,
+      "mean": 2.5592531407136665,
+      "median": 2.5327965182866317,
+      "q10": 1.1023457469800688,
+      "q25": 1.636679576662071,
+      "q75": 3.3770049811181755,
+      "q90": 4.086350286023442
+    },
+    "spatial_minus_uniform_color_bias": {
+      "count": 100,
+      "mean": -0.002234356749249527,
+      "median": -0.0012371457440371835,
+      "q10": -0.00883214935245851,
+      "q25": -0.003084355448566083,
+      "q75": -0.000149459369250888,
+      "q90": 0.0012416187628185907
+    },
+    "spatial_minus_uniform_psnr_db": {
+      "count": 100,
+      "mean": 1.9346579123786583,
+      "median": 1.8541685456518686,
+      "q10": 0.4609977566434202,
+      "q25": 1.26616026031495,
+      "q75": 2.610761047684206,
+      "q90": 3.328200712426536
+    },
+    "spatial_minus_uniform_ssim": {
+      "count": 100,
+      "mean": -9.145349264144898e-05,
+      "median": -0.0007959306240081787,
+      "q10": -0.0033124804496765135,
+      "q25": -0.002202153205871582,
+      "q75": 1.8894672393798828e-05,
+      "q90": 0.0022768840193748484
+    },
+    "uniform_minus_baseline_psnr_db": {
+      "count": 100,
+      "mean": 0.6245952283350082,
+      "median": 8.881784197001252e-16,
+      "q10": -8.881784197001252e-16,
+      "q25": 0.0,
+      "q75": 0.9240347709832908,
+      "q90": 2.1597148387494833
+    }
+  },
+  "terminal": {
+    "authorizes": "HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY",
+    "decision": "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE_HEADROOM_PASS",
+    "gate_reasons": [
+      "spatial oracle exceeded the per-image best uniform oracle by the frozen materiality and breadth margins while passing both harm gates"
+    ],
+    "state": "COMPLETED_GATE_PASS"
+  }
+}

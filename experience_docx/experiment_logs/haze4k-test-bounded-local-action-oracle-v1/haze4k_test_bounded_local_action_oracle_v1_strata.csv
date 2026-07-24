@@ -1,0 +1,5 @@
+stratum,kind,scenes,events,estimate,lower_95,upper_95,threshold
+scene_mean_spatial_minus_uniform_psnr_db,paired_bootstrap,100,,1.9346579123786583,1.7318534248588806,2.141813479299887,0.1
+materially_benefited_scene,wilson,100,98,0.98,0.9299868370580063,0.9944981477650318,0.2
+ssim_harmed_scene,wilson,100,4,0.04,0.015663050551848016,0.09837217232607373,0.1
+color_harmed_scene,wilson,100,3,0.03,0.010254338223414816,0.08452078080402699,0.1

@@ -1,0 +1,42 @@
+{
+  "route_id": "haze4k-test-bounded-local-action-oracle-v1",
+  "operation_id": "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE",
+  "run_id": "haze4k-test-bounded-local-action-oracle-v1-phase-a",
+  "decision": "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE_HEADROOM_PASS",
+  "authorizes": "HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY",
+  "primary_result": "On the isolated 100-canonical-scene, 400-variant Haze4K official-test development partition, the GT-selected 32-by-32 spatial oracle exceeded the GT-selected per-image best uniform oracle from the identical keep/weaken/strengthen action set by a scene-mean 1.9347 dB PSNR (20,000-resample scene bootstrap 95% CI 1.7319 to 2.1418 dB). The lower confidence bound exceeded the frozen +0.10 dB utility threshold. Ninety-eight of 100 scenes achieved at least +0.10 dB spatial-over-uniform gain (Wilson 95% CI 0.9300 to 0.9945), whose lower bound exceeded the frozen 0.20 breadth threshold. Both frozen harm gates passed: SSIM harm occurred in 4/100 scenes (Wilson upper bound 0.0984) and color-bias harm in 3/100 scenes (Wilson upper bound 0.0845), each below the 0.10 maximum upper-bound threshold.",
+  "gate_reasons": [
+    "all 100 canonical clear scenes and 400 nested haze variants completed fixed-checkpoint inference and bounded-oracle evaluation with no failures and no training",
+    "the scene-bootstrap lower bound for spatial-minus-best-uniform PSNR was +1.7319 dB, exceeding the frozen +0.10 dB threshold",
+    "the Wilson lower bound for scenes gaining at least +0.10 dB was 0.9300, exceeding the frozen 0.20 prevalence threshold",
+    "the Wilson upper bound for scene-level SSIM harm was 0.0984, below the frozen 0.10 safety threshold",
+    "the Wilson upper bound for scene-level color-bias harm was 0.0845, below the frozen 0.10 safety threshold",
+    "the 150-scene candidate-confirmation asset was not delivered or accessed"
+  ],
+  "secondary_results": {
+    "spatial_minus_official_baseline_scene_mean_psnr_db": 2.5592531407136665,
+    "best_uniform_minus_official_baseline_scene_mean_psnr_db": 0.6245952283350082,
+    "spatial_minus_best_uniform_scene_mean_ssim": -0.00009145349264144898,
+    "spatial_minus_best_uniform_scene_mean_color_bias": -0.002234356749249527,
+    "best_uniform_variant_counts": {
+      "keep": 287,
+      "weaken": 41,
+      "strengthen": 72
+    },
+    "spatial_tile_action_fractions": {
+      "keep": 0.5308729984645756,
+      "weaken": 0.21532134239964903,
+      "strengthen": 0.2538056591357754
+    }
+  },
+  "scientific_interpretation": "Within the frozen output-residual action family, spatially varying selection has large and widespread counterfactual headroom beyond an already GT-privileged per-image uniform choice. The coexistence of keep, weaken, and strengthen selections supports a state-dependent action problem rather than a fixed stronger-is-better or weaker-is-safer rule. This result qualifies only the next proxy-predictability experiment: whether hazy input or frozen intermediate features can predict useful local actions or harm risk under scene-level cross-validation. It does not yet establish deployability, justify a specific module, or authorize candidate-confirmation or NH-HAZE access.",
+  "competing_explanation": "The measured gain may reflect GT optimization of local RGB-MSE over many tiles, content- or regression-error correction, synthetic Haze4K characteristics, the chosen 32-pixel grid, or the official checkpoint's output residual geometry rather than a haze-specific causal mechanism. Tilewise oracle choices are unavailable at deployment and may overstate realizable benefit when action prediction errors, spatial smoothing, perceptual objectives, or network-internal insertion constraints are introduced.",
+  "limitations": [
+    "This is development-screening evidence from 100 isolated Haze4K official-test scenes; it is not the protected 150-scene candidate confirmation or NH-HAZE external validation.",
+    "The 400 haze variants are nested within 100 canonical clear scenes; their results were averaged within scene before statistical inference and they are not 400 independent statistical units.",
+    "The oracle uses GT to choose both the per-image uniform reference and each local action and is therefore non-deployable.",
+    "The tested action family contains only output-residual scales 0.8, 1.0, and 1.2 on an origin-aligned 32-by-32 grid; it does not identify an optimal action space, tile scale, smoothing rule, insertion site, loss, or architecture.",
+    "PSNR is the primary oracle objective and the frozen SSIM and color gates provide limited safety evidence; perceptual quality and real-haze validity remain unconfirmed.",
+    "A headroom PASS authorizes only a separately contracted proxy-predictability test and does not authorize module training, structural selection, confirmation access, or causal mechanism claims."
+  ]
+}
