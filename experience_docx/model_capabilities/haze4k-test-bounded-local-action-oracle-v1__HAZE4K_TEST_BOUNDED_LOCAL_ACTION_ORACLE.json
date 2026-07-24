@@ -1,0 +1,39 @@
+{
+  "bound_assets": [
+    {
+      "id": "official_checkpoint",
+      "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "id": "model_source",
+      "identity": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+    },
+    {
+      "id": "model_layers",
+      "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "id": "oracle_entrypoint",
+      "identity": "8963323f50ad79905ddbb60e3e566b9bcd6ba8b0ce76abdd9bcff7a40c056407"
+    }
+  ],
+  "compatibility_imports": [
+    "torch",
+    "numpy",
+    "PIL",
+    "Dehazing.ITS.models.ConvIR"
+  ],
+  "contract_mode": "gpu_synthetic_no_data",
+  "minimum_fixture": {
+    "batch": 1,
+    "channels": 3,
+    "height": 256,
+    "width": 320
+  },
+  "production_path_statement": "The exact official Haze4K ConvIR-B graph is strict-loaded and frozen, followed by the exact production uniform and 32-pixel spatial bounded-action enumeration, RGB MSE/PSNR, RGB SSIM, color-bias, scene aggregation, Wilson, bootstrap, and terminal finalizer paths on a device-aware no-data fixture.",
+  "profile_id": "haze4k_test_bounded_local_action_oracle_gpu_synthetic",
+  "protected_data_prohibited": true,
+  "schema_version": 1,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}

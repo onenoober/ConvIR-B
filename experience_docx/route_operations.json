@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-test-bounded-local-action-oracle-v1.json",
+  "experiment_spec_sha256": "43e6d4772d7a31fd62f11b4460cdfba05021b787a2c624a5fb6973281c37e425",
+  "operations": {
+    "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY",
+          "decision": "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE_HEADROOM_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE_HEADROOM_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE_SUPPLEMENT_ONLY",
+          "decision": "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "haze4k_test_bounded_local_action_oracle_v1_closeout.json",
+      "heartbeat_timeout_seconds": 600,
+      "max_gpu_utilization_pct": 95,
+      "min_free_gpu_mib": 4096,
+      "mode": "bounded_local_action_oracle",
+      "monitor_profile": "standard",
+      "output_id": "haze4k-test-bounded-local-action-oracle-v1-phase-a",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_test_bounded_local_action_oracle_v1.json",
+  "program_contract_sha256": "4a5caf2e179c253f8b5deeb7f24df5488863af1844c5853d6999cf859b15745e",
+  "route_card_relpath": "experience_docx/experiment_cards/haze4k-test-bounded-local-action-oracle-v1.md",
+  "route_id": "haze4k-test-bounded-local-action-oracle-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE": "experience_docx/scientific_contracts/haze4k-test-bounded-local-action-oracle-v1__HAZE4K_TEST_BOUNDED_LOCAL_ACTION_ORACLE.json"
+  }
+}
