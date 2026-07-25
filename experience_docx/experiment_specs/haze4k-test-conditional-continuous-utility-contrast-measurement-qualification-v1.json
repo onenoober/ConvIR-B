@@ -1,0 +1,339 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k-test-conditional-continuous-utility-contrast-measurement-qualification-v1",
+  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "title": "Haze4K conditional continuous-utility measurement qualification",
+  "rationale": "The archived taper and content-aligned routes precisely rejected hard-action regret targets but did not directly test whether their underlying continuous utility contrasts are stable. This orthogonal Stage-1 route changes only measurement_target. Before the full 100-scene qualification is materialized, the first operation runs a fixed 32-scene variance-only precision supplement. It withholds the primary mean and uses the conservative maximum of a one-sided chi-square and scene-bootstrap SD upper bound. Only a bound supporting the frozen 0.025 dB precision distance at n=100 authorizes the full operation; otherwise the route stops as BLOCKED_PRECISION. Model, checkpoint, actions, metric, taper carrier, grouping, data role, and protected-data prohibitions remain frozen.",
+  "first_operation": "HAZE4K_TEST_CONDITIONAL_CONTINUOUS_UTILITY_PRECISION_PILOT",
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_conditional_continuous_utility_measurement_qualification_v1.json",
+  "operations": {
+    "HAZE4K_TEST_CONDITIONAL_CONTINUOUS_UTILITY_PRECISION_PILOT": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "conditional_continuous_utility_precision_pilot",
+        "require_gpu": true,
+        "output_id": "haze4k-test-conditional-continuous-utility-contrast-measurement-qualification-v1-precision-pilot-r1",
+        "closeout_filename": "haze4k_test_conditional_continuous_utility_precision_pilot_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "allowed_terminal_tuples": [
+          {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "HAZE4K_CONTINUOUS_UTILITY_PRECISION_FEASIBLE",
+            "authorizes": "FULL_CONTINUOUS_UTILITY_MEASUREMENT_ONLY"
+          },
+          {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "HAZE4K_CONTINUOUS_UTILITY_BLOCKED_PRECISION",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "HAZE4K_CONTINUOUS_UTILITY_PRECISION_INCONCLUSIVE",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "FAILED_ENGINEERING",
+            "decision": null,
+            "authorizes": "NONE"
+          }
+        ],
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 900,
+        "min_free_gpu_mib": 4096,
+        "max_gpu_utilization_pct": 95
+      },
+      "program_authorization": {
+        "program_id": "haze4k_local_action_measurement_qualification",
+        "stage_id": "measurement_qualification",
+        "family_id": "haze4k_continuous_utility_measurement_stability",
+        "mechanism_type": "orthogonal",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {
+            "role": "parent_taper_terminal",
+            "use": "comparison",
+            "anchor_id": "haze4k_taper_terminal_20260724"
+          },
+          {
+            "role": "parent_taper_interpretation",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_taper_conclusion_20260724"
+          },
+          {
+            "role": "direct_parent_terminal",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_content_terminal_20260725"
+          },
+          {
+            "role": "direct_parent_interpretation",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_content_conclusion_20260725"
+          },
+          {
+            "role": "official_model",
+            "use": "baseline",
+            "anchor_id": "official_haze4k_convir_b"
+          }
+        ],
+        "adjacent_sequence": null,
+        "orthogonal_changes": [
+          {
+            "dimension": "measurement_target",
+            "reason": "Replace the discontinuous hard-action regret target with two keep-referenced continuous PSNR utility contrasts while preserving the verified taper spatial carrier and every other scientific factor."
+          }
+        ],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Can a fixed variance-only pilot certify that 100 canonical Haze4K development scenes can estimate the frozen continuous-utility error within a 0.025 dB one-sided precision distance, without examining or publishing the primary mean?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "canonical_clear_scene",
+          "independent_group_count": 32,
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "dispersion of scene-level worst-held-out-phase area-weighted L-infinity error between source-taper-projected and held-out two-dimensional keep-referenced PSNR utility contrasts",
+          "reference": "maximum planning SD 0.12755336423116348 dB implied by a 0.025 dB normal-mean half-width at 100 independent scenes",
+          "matched_budget": "32 canonical scenes selected by a frozen salted SHA-256 order, four nested haze variants per scene, one official inference per variant, and no result-adaptive extension",
+          "fixed_factors": [
+            "the full 100-scene development asset is validated before a fixed first-32 salted-SHA-256 subset is selected",
+            "the subset selection uses public salt haze4k-continuous-utility-precision-pilot-v1 and never inspects images or outcomes",
+            "official checkpoint SHA-256 is 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+            "actions remain clip(hazy + scale times (official_prediction minus hazy), 0, 1) at scales keep 1.0, weaken 0.8, and strengthen 1.2",
+            "for each tile and non-keep action the continuous utility is 10 log10(MSE_keep divided by MSE_action); keep is exactly zero",
+            "grid origins remain exactly (0,0), (0,16), (16,0), and (16,16) with 32-pixel tiles and the verified strictly-positive normalized raised-cosine taper",
+            "each phase is held out once; only the other three source phases contribute to its projected utility",
+            "within a held-out phase the two-action absolute contrast error uses L-infinity, tiles are weighted by pixel area, four haze variants are equally averaged, and the worst of four phases is the scene value",
+            "only scene-value dispersion, its chi-square SD bound, its bootstrap SD bound, and feasibility are published; the primary mean is withheld",
+            "the conservative planning SD is the maximum of the one-sided 95 percent chi-square and nonparametric 20000-resample scene-bootstrap SD upper bounds",
+            "future feasibility requires conservative planning SD no greater than 0.12755336423116348 dB and required n no greater than 100",
+            "the future target gate remains 0.05 dB because an L-infinity contrast error epsilon gives an approximate 2 epsilon plug-in action-regret bound against the existing 0.10 dB limit",
+            "haze variants, actions, phases, tiles, pixels and bootstrap resamples never increase independent n",
+            "candidate confirmation, NH-HAZE, canary, locked test, training, fitting, threshold tuning and metric-family changes are prohibited"
+          ]
+        },
+        "primary_estimand": {
+          "id": "continuous_utility_scene_error_planning_sd_upper_bound",
+          "metric": "maximum of a one-sided 95 percent chi-square SD upper bound and a 20000-resample scene-bootstrap 95th-percentile SD upper bound, in dB",
+          "direction": "lower",
+          "aggregation": "compute one frozen worst-phase continuous-utility error for each of 32 independent canonical scenes; never publish their mean; estimate dispersion and compare its conservative upper bound with the n=100 planning limit",
+          "unit": "canonical_clear_scene"
+        },
+        "controls": [
+          "direct parent terminal and verified taper production-path identities must match exactly",
+          "all 400 development pairs and 100 canonical-scene groups must be complete before pilot selection",
+          "the fixed salted-hash selection must contain exactly 32 scenes and 128 nested variants",
+          "keep output is structurally identical to the official prediction and non-keep actions obey the affine manipulation on every non-clipped pixel",
+          "an independent small reference case verifies dB direction, keep zero, held-out exclusion, taper projection, area weighting, L-infinity action aggregation, variant averaging, worst-phase aggregation, and terminal mapping",
+          "the primary mean is absent from compact evidence and terminal logic",
+          "no protected asset is delivered and no model or proxy is trained"
+        ],
+        "uncertainty": {
+          "method": "one-sided 95 percent chi-square SD bound with 31 degrees of freedom plus a 20000-resample canonical-scene bootstrap SD upper bound at fixed seed 20260811; use the larger bound",
+          "confidence_level": 0.95,
+          "independent_unit": "canonical_clear_scene"
+        },
+        "gates": [
+          {
+            "id": "authorized_variance_pilot_integrity",
+            "type": "integrity",
+            "estimand": "exact evidence identities, complete 100-scene source population, fixed 32-scene subset, 128 finite official inferences, reference checks, no protected access, no training, and primary mean withheld",
+            "direction": "equal",
+            "threshold": 1.0,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "future_full_route_precision_feasibility",
+            "type": "precision",
+            "estimand": "conservative one-sided 95 percent planning SD upper bound in dB",
+            "direction": "max",
+            "threshold": 0.12755336423116348,
+            "decision_role": "decisive"
+          }
+        ],
+        "competing_explanation": "A precision PASS proves only that the frozen 100-scene experiment is capable of resolving the 0.05 dB utility-error margin at the required precision; it says nothing about whether the mean utility error will pass. A precision FAIL is BLOCKED_PRECISION, not evidence that continuous utility itself is unstable. Approximate-normal chi-square calibration is guarded by the larger nonparametric bootstrap SD bound but remains development-screening planning evidence.",
+        "terminal_mapping": {
+          "pass": {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "HAZE4K_CONTINUOUS_UTILITY_PRECISION_FEASIBLE",
+            "authorizes": "FULL_CONTINUOUS_UTILITY_MEASUREMENT_ONLY"
+          },
+          "fail": {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "HAZE4K_CONTINUOUS_UTILITY_BLOCKED_PRECISION",
+            "authorizes": "NONE"
+          },
+          "inconclusive": {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "HAZE4K_CONTINUOUS_UTILITY_PRECISION_INCONCLUSIVE",
+            "authorizes": "NONE"
+          }
+        },
+        "disabled_actions": [
+          "publishing, interpreting, or gating on the pilot primary mean",
+          "using pilot scenes as independent confirmation or adding them to the future n=100",
+          "changing the 0.05 dB target-error margin, 0.025 dB precision distance, subset size, selection salt, SD bound, actions, metric, taper, grids, data, or terminal mapping after launch",
+          "materializing or launching the full operation unless this exact typed terminal authorizes FULL_CONTINUOUS_UTILITY_MEASUREMENT_ONLY",
+          "accessing confirmation, NH-HAZE, canary, locked-test or other protected evidence",
+          "training a model or proxy, choosing a representation, changing metric family, tuning taper or grid definitions, or entering Stage 2"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/run_haze4k_test_conditional_continuous_utility_precision_pilot.py",
+        "timeout_seconds": 7200,
+        "expected_wall_seconds": 1800,
+        "total_units": 131,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {},
+        "evidence_files": [
+          {
+            "source_relpath": "workload/haze4k_test_conditional_continuous_utility_precision_pilot_v1_summary.json",
+            "destination_filename": "haze4k_test_conditional_continuous_utility_precision_pilot_v1_summary.json",
+            "required": true,
+            "max_bytes": 131072
+          }
+        ],
+        "engineering_contract": {
+          "mode": "gpu_synthetic_no_data",
+          "max_seconds": 900
+        },
+        "precision_contract": {
+          "mode": "descriptive_capacity",
+          "rationale": "This operation is the formal variance supplement for the new estimand. A conservative maximum allowable planning SD of 0.1275533642 dB requires 25 groups for a 0.05 dB descriptive half-width, so the fixed 32-scene pilot has adequate capacity without counting nested repeats. Its result, not this capacity calculation, decides future n=100 feasibility at 0.025 dB."
+        }
+      },
+      "assets": [
+        {
+          "id": "haze4k_test_development",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-test-scene-split-v1/haze4k-test-scene-split-v1-phase-a-r1/workload/role_assets/development_screening",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "parent_content_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-conditional-content-aligned-region-measurement-qualification-v1/haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_closeout.json",
+          "sha256": "2188ace2cd45bd7e3fa253afc56235c6130054ac94218134cea97c25452289e0",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "parent_content_conclusion",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-conditional-content-aligned-region-measurement-qualification-v1/haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_conclusion.json",
+          "sha256": "9d0339970f649035c674851e0aae0c805a35f161b1051b0559627a57eaf3debb",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "official_checkpoint",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+          "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "model_source",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/Dehazing/ITS/models/ConvIR.py",
+          "sha256": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "model_layers",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/Dehazing/ITS/models/layers.py",
+          "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "parent_taper_runner",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_test_conditional_taper_grid_measurement_qualification.py",
+          "sha256": "2e5835cff886353843c4ed599eff6382e26343d960787b0f42061152a33329b7",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "measurement_entrypoint",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_test_conditional_continuous_utility_precision_pilot.py",
+          "sha256": "3e93031098cadacf6a2707ad80366a27e38d741396a274af5d68f486efad6de6",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        }
+      ],
+      "capability": {
+        "profile_id": "haze4k_conditional_continuous_utility_precision_pilot_gpu_synthetic",
+        "contract_mode": "gpu_synthetic_no_data",
+        "minimum_fixture": {
+          "batch": 1,
+          "channels": 3,
+          "height": 1200,
+          "width": 1600
+        },
+        "bound_assets": [
+          {
+            "id": "official_checkpoint",
+            "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+          },
+          {
+            "id": "model_source",
+            "identity": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+          },
+          {
+            "id": "model_layers",
+            "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+          },
+          {
+            "id": "parent_taper_runner",
+            "identity": "2e5835cff886353843c4ed599eff6382e26343d960787b0f42061152a33329b7"
+          },
+          {
+            "id": "measurement_entrypoint",
+            "identity": "3e93031098cadacf6a2707ad80366a27e38d741396a274af5d68f486efad6de6"
+          }
+        ],
+        "compatibility_imports": ["torch", "numpy", "PIL", "Dehazing.ITS.models.ConvIR"],
+        "production_path_statement": "The strict-loaded frozen official Haze4K ConvIR-B executes on a 1200 by 1600 protected-data-free CUDA fixture, then the exact production action replay, four taper phases, keep-referenced dB contrasts, held-out exclusion, area-weighted L-infinity aggregation, variance bounds, feasibility gate and typed finalizer execute through the imported SHA-bound verified taper path plus the new entrypoint.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true
+      },
+      "precision": {
+        "certificate_id": "haze4k_conditional_continuous_utility_precision_pilot_capacity_v1",
+        "estimand": "descriptive capacity for the 32-scene continuous-utility variance supplement",
+        "method": "normal_mean",
+        "confidence_level": 0.95,
+        "target_half_width": 0.05,
+        "planning_sd": 0.12755336423116348,
+        "independent_groups_available": 32,
+        "independent_groups_required": 25,
+        "feasible": true,
+        "source_role": "unrestricted",
+        "source_reference": "The planning SD is the algebraic maximum compatible with a 0.025 dB normal-mean half-width at the frozen future n=100; it is a result-independent design bound, not an observed utility result."
+      }
+    }
+  }
+}

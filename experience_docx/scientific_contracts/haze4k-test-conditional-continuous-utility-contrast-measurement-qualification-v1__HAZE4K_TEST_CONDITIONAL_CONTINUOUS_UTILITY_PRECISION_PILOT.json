@@ -1,0 +1,100 @@
+{
+  "competing_explanation": "A precision PASS proves only that the frozen 100-scene experiment is capable of resolving the 0.05 dB utility-error margin at the required precision; it says nothing about whether the mean utility error will pass. A precision FAIL is BLOCKED_PRECISION, not evidence that continuous utility itself is unstable. Approximate-normal chi-square calibration is guarded by the larger nonparametric bootstrap SD bound but remains development-screening planning evidence.",
+  "controls": [
+    "direct parent terminal and verified taper production-path identities must match exactly",
+    "all 400 development pairs and 100 canonical-scene groups must be complete before pilot selection",
+    "the fixed salted-hash selection must contain exactly 32 scenes and 128 nested variants",
+    "keep output is structurally identical to the official prediction and non-keep actions obey the affine manipulation on every non-clipped pixel",
+    "an independent small reference case verifies dB direction, keep zero, held-out exclusion, taper projection, area weighting, L-infinity action aggregation, variant averaging, worst-phase aggregation, and terminal mapping",
+    "the primary mean is absent from compact evidence and terminal logic",
+    "no protected asset is delivered and no model or proxy is trained"
+  ],
+  "disabled_actions": [
+    "publishing, interpreting, or gating on the pilot primary mean",
+    "using pilot scenes as independent confirmation or adding them to the future n=100",
+    "changing the 0.05 dB target-error margin, 0.025 dB precision distance, subset size, selection salt, SD bound, actions, metric, taper, grids, data, or terminal mapping after launch",
+    "materializing or launching the full operation unless this exact typed terminal authorizes FULL_CONTINUOUS_UTILITY_MEASUREMENT_ONLY",
+    "accessing confirmation, NH-HAZE, canary, locked-test or other protected evidence",
+    "training a model or proxy, choosing a representation, changing metric family, tuning taper or grid definitions, or entering Stage 2"
+  ],
+  "gates": [
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "exact evidence identities, complete 100-scene source population, fixed 32-scene subset, 128 finite official inferences, reference checks, no protected access, no training, and primary mean withheld",
+      "id": "authorized_variance_pilot_integrity",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "conservative one-sided 95 percent planning SD upper bound in dB",
+      "id": "future_full_route_precision_feasibility",
+      "threshold": 0.12755336423116348,
+      "type": "precision"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "the full 100-scene development asset is validated before a fixed first-32 salted-SHA-256 subset is selected",
+      "the subset selection uses public salt haze4k-continuous-utility-precision-pilot-v1 and never inspects images or outcomes",
+      "official checkpoint SHA-256 is 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "actions remain clip(hazy + scale times (official_prediction minus hazy), 0, 1) at scales keep 1.0, weaken 0.8, and strengthen 1.2",
+      "for each tile and non-keep action the continuous utility is 10 log10(MSE_keep divided by MSE_action); keep is exactly zero",
+      "grid origins remain exactly (0,0), (0,16), (16,0), and (16,16) with 32-pixel tiles and the verified strictly-positive normalized raised-cosine taper",
+      "each phase is held out once; only the other three source phases contribute to its projected utility",
+      "within a held-out phase the two-action absolute contrast error uses L-infinity, tiles are weighted by pixel area, four haze variants are equally averaged, and the worst of four phases is the scene value",
+      "only scene-value dispersion, its chi-square SD bound, its bootstrap SD bound, and feasibility are published; the primary mean is withheld",
+      "the conservative planning SD is the maximum of the one-sided 95 percent chi-square and nonparametric 20000-resample scene-bootstrap SD upper bounds",
+      "future feasibility requires conservative planning SD no greater than 0.12755336423116348 dB and required n no greater than 100",
+      "the future target gate remains 0.05 dB because an L-infinity contrast error epsilon gives an approximate 2 epsilon plug-in action-regret bound against the existing 0.10 dB limit",
+      "haze variants, actions, phases, tiles, pixels and bootstrap resamples never increase independent n",
+      "candidate confirmation, NH-HAZE, canary, locked test, training, fitting, threshold tuning and metric-family changes are prohibited"
+    ],
+    "matched_budget": "32 canonical scenes selected by a frozen salted SHA-256 order, four nested haze variants per scene, one official inference per variant, and no result-adaptive extension",
+    "primary_variable": "dispersion of scene-level worst-held-out-phase area-weighted L-infinity error between source-taper-projected and held-out two-dimensional keep-referenced PSNR utility contrasts",
+    "reference": "maximum planning SD 0.12755336423116348 dB implied by a 0.025 dB normal-mean half-width at 100 independent scenes"
+  },
+  "operation_id": "HAZE4K_TEST_CONDITIONAL_CONTINUOUS_UTILITY_PRECISION_PILOT",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "canonical_clear_scene",
+    "independent_group_count": 32
+  },
+  "primary_estimand": {
+    "aggregation": "compute one frozen worst-phase continuous-utility error for each of 32 independent canonical scenes; never publish their mean; estimate dispersion and compare its conservative upper bound with the n=100 planning limit",
+    "direction": "lower",
+    "id": "continuous_utility_scene_error_planning_sd_upper_bound",
+    "metric": "maximum of a one-sided 95 percent chi-square SD upper bound and a 20000-resample scene-bootstrap 95th-percentile SD upper bound, in dB",
+    "unit": "canonical_clear_scene"
+  },
+  "question": "Can a fixed variance-only pilot certify that 100 canonical Haze4K development scenes can estimate the frozen continuous-utility error within a 0.025 dB one-sided precision distance, without examining or publishing the primary mean?",
+  "route_id": "haze4k-test-conditional-continuous-utility-contrast-measurement-qualification-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "HAZE4K_CONTINUOUS_UTILITY_BLOCKED_PRECISION",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "NONE",
+      "decision": "HAZE4K_CONTINUOUS_UTILITY_PRECISION_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "FULL_CONTINUOUS_UTILITY_MEASUREMENT_ONLY",
+      "decision": "HAZE4K_CONTINUOUS_UTILITY_PRECISION_FEASIBLE",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "canonical_clear_scene",
+    "method": "one-sided 95 percent chi-square SD bound with 31 degrees of freedom plus a 20000-resample canonical-scene bootstrap SD upper bound at fixed seed 20260811; use the larger bound"
+  }
+}

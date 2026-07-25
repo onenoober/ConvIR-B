@@ -1,0 +1,14 @@
+{
+  "certificate_id": "haze4k_conditional_continuous_utility_precision_pilot_capacity_v1",
+  "confidence_level": 0.95,
+  "estimand": "descriptive capacity for the 32-scene continuous-utility variance supplement",
+  "feasible": true,
+  "independent_groups_available": 32,
+  "independent_groups_required": 25,
+  "method": "normal_mean",
+  "planning_sd": 0.12755336423116348,
+  "schema_version": 1,
+  "source_reference": "The planning SD is the algebraic maximum compatible with a 0.025 dB normal-mean half-width at the frozen future n=100; it is a result-independent design bound, not an observed utility result.",
+  "source_role": "unrestricted",
+  "target_half_width": 0.05
+}

@@ -1,0 +1,43 @@
+{
+  "bound_assets": [
+    {
+      "id": "official_checkpoint",
+      "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "id": "model_source",
+      "identity": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+    },
+    {
+      "id": "model_layers",
+      "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "id": "parent_taper_runner",
+      "identity": "2e5835cff886353843c4ed599eff6382e26343d960787b0f42061152a33329b7"
+    },
+    {
+      "id": "measurement_entrypoint",
+      "identity": "3e93031098cadacf6a2707ad80366a27e38d741396a274af5d68f486efad6de6"
+    }
+  ],
+  "compatibility_imports": [
+    "torch",
+    "numpy",
+    "PIL",
+    "Dehazing.ITS.models.ConvIR"
+  ],
+  "contract_mode": "gpu_synthetic_no_data",
+  "minimum_fixture": {
+    "batch": 1,
+    "channels": 3,
+    "height": 1200,
+    "width": 1600
+  },
+  "production_path_statement": "The strict-loaded frozen official Haze4K ConvIR-B executes on a 1200 by 1600 protected-data-free CUDA fixture, then the exact production action replay, four taper phases, keep-referenced dB contrasts, held-out exclusion, area-weighted L-infinity aggregation, variance bounds, feasibility gate and typed finalizer execute through the imported SHA-bound verified taper path plus the new entrypoint.",
+  "profile_id": "haze4k_conditional_continuous_utility_precision_pilot_gpu_synthetic",
+  "protected_data_prohibited": true,
+  "schema_version": 1,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}

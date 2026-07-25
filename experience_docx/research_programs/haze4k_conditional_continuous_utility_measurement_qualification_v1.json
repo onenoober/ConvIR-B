@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "program_id": "haze4k_local_action_measurement_qualification",
+  "objective": "Determine whether the bounded Haze4K local-action measurement target is stable enough for later prediction research without changing the official model, selecting a predictor, or accessing protected data.",
+  "source_anchors": [
+    {
+      "id": "haze4k_taper_terminal_20260724",
+      "reference": "experience_docx/experiment_logs/haze4k-test-conditional-taper-grid-measurement-qualification-v1/haze4k_test_conditional_taper_grid_measurement_qualification_v1_closeout.json",
+      "allowed_uses": ["diagnostic", "comparison"]
+    },
+    {
+      "id": "haze4k_taper_conclusion_20260724",
+      "reference": "experience_docx/experiment_logs/haze4k-test-conditional-taper-grid-measurement-qualification-v1/haze4k_test_conditional_taper_grid_measurement_qualification_v1_conclusion.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "haze4k_content_terminal_20260725",
+      "reference": "experience_docx/experiment_logs/haze4k-test-conditional-content-aligned-region-measurement-qualification-v1/haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_closeout.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "haze4k_content_conclusion_20260725",
+      "reference": "experience_docx/experiment_logs/haze4k-test-conditional-content-aligned-region-measurement-qualification-v1/haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_conclusion.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "official_haze4k_convir_b",
+      "reference": "official Haze4K ConvIR-B checkpoint SHA-256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "allowed_uses": ["baseline"]
+    }
+  ],
+  "dependency_roles": {
+    "parent_taper_terminal": ["diagnostic", "comparison"],
+    "parent_taper_interpretation": ["diagnostic"],
+    "direct_parent_terminal": ["diagnostic"],
+    "direct_parent_interpretation": ["diagnostic"],
+    "official_model": ["baseline"]
+  },
+  "stages": {
+    "measurement_qualification": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["haze4k_continuous_utility_measurement_stability"]
+    }
+  },
+  "route_families": {
+    "haze4k_continuous_utility_measurement_stability": {
+      "core_assumption": "The fixed taper carrier may preserve two keep-referenced continuous PSNR utility contrasts even though hard local action decisions were unstable.",
+      "adjacent_budget": 0,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the frozen precision supplement and, only if authorized, the single full 100-scene continuous-utility measurement operation.",
+      "reopen_evidence_types": ["independent_measurement_repeat", "new_precision_bound", "new_measurement_error_bound"]
+    }
+  },
+  "orthogonal_dimensions": ["measurement_target", "metric_family", "target_domain"],
+  "amendments": []
+}
