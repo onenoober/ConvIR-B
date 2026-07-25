@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/reside-its-targeted-direct-geometry-v1.json",
+  "experiment_spec_sha256": "57ee792e3224956e8009f1b9108978317de1e88a4d9783699919f507dcd367be",
+  "operations": {
+    "ITS_TARGETED_DIRECT_RELATIONSHIP": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "ITS_DIRECT_FAMILY_EXCLUSION_DESIGN",
+          "decision": "ITS_TARGETED_DIRECT_RELATIONSHIP_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "ITS_TARGETED_DIRECT_RELATIONSHIP_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "ITS_TARGETED_DIRECT_RELATIONSHIP_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "reside_its_targeted_direct_geometry_v1_closeout.json",
+      "heartbeat_timeout_seconds": 300,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "dataset_qualification",
+      "monitor_profile": "standard",
+      "output_id": "reside-its-targeted-direct-geometry-v1-phase-a",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/reside_its_targeted_direct_relationship_v1.json",
+  "program_contract_sha256": "a1b5b1fdff901fc57f4b6c4df05b2461fdbd3374e2e31543926012eb695b2aa3",
+  "route_card_relpath": "experience_docx/experiment_cards/reside-its-targeted-direct-geometry-v1.md",
+  "route_id": "reside-its-targeted-direct-geometry-v1",
+  "rules_commit": "b413526ded0174a6ee7aae3149875bba43916629",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "ITS_TARGETED_DIRECT_RELATIONSHIP": "experience_docx/scientific_contracts/reside-its-targeted-direct-geometry-v1__ITS_TARGETED_DIRECT_RELATIONSHIP.json"
+  }
+}

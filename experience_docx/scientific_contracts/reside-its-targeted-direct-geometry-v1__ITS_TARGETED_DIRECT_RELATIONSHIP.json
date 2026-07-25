@@ -1,0 +1,185 @@
+{
+  "competing_explanation": "The 74 unresolved provenance relationships may require transformations, composites or source-family evidence outside planar local geometry. A qualification or census FAIL therefore identifies the limit of this exact bounded direct matcher, not absence of overlap or a guarantee that ITS is unseen.",
+  "controls": [
+    "parent closeout, conclusion, summary and 1,000-row relationship table are exact SHA-256-bound inputs",
+    "qualified RESIDE hashes and exact 11,000 ITS and 4,000 Haze4K file counts",
+    "all 426 parent-accepted relationships recall at least one accepted ITS ID within top 64",
+    "all 64 deterministic crop-perspective-JPEG ITS controls recall their source within top 64",
+    "all 64 deterministically sampled real direct Haze4K-to-ITS positive pairs pass ORB plus spatially distributed RootSIFT geometry",
+    "none of 64 deterministic crossed indoor pairs passes the same direct rule",
+    "all three qualified OTS positive pairs pass and all three crossed OTS negative pairs fail",
+    "formal search is not executed after any accuracy or 900-second qualification failure",
+    "a relationship count above or below 500 is a method-specific failure and never triggers threshold adjustment"
+  ],
+  "disabled_actions": [
+    "model selection, training, inference, dehazing evaluation or outcome metrics",
+    "creating or authorizing an ITS exclusion asset in this route",
+    "ITS-to-ITS transitive family propagation",
+    "searching any of the 574 unresolved queries after a failed accuracy or control-cost qualification gate",
+    "changing retrieval, geometry, spatial support, control, threshold, candidate-count or time-budget settings after results",
+    "stopping when the relationship count reaches 500",
+    "counting descriptors, matches or candidate scenes as independent relationships",
+    "claiming absence of overlap, unseen status or mapping infeasibility from a method-specific FAIL",
+    "ITS measurement execution before a later exclusion design receives its own PASS closeout"
+  ],
+  "gates": [
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "parent identities, terminal and exact 426 accepted plus 574 unresolved row counts match",
+      "id": "parent_evidence_identity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "frozen RESIDE hashes and 11,000 ITS plus 4,000 Haze4K file counts match",
+      "id": "dataset_identity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "the parent evidence names exactly 1,000 unique canonical Haze4K groups and representatives",
+      "id": "haze4k_group_integrity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "proportion of 426 inherited accepted relationships recalling at least one accepted ITS ID in top 64",
+      "id": "known_relationship_top64_recall",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "proportion of 64 deterministic local-transform controls recalling their ITS source in top 64",
+      "id": "local_transform_top64_recall",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "accepted proportion among 64 deterministic real direct positive controls",
+      "id": "direct_positive_acceptance",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "rejected proportion among 64 deterministic crossed indoor controls",
+      "id": "direct_negative_specificity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "three qualified OTS positives pass and three crossed negatives fail",
+      "id": "ots_geometry_controls",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "qualification stage elapsed seconds",
+      "id": "control_cost_bound",
+      "threshold": 900,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "fixed unresolved Haze4K groups executed after qualification",
+      "id": "targeted_queries_complete",
+      "threshold": 574,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "complete application elapsed seconds",
+      "id": "full_cost_bound",
+      "threshold": 1800,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "total inherited plus newly accepted direct relationships",
+      "id": "relationship_completeness",
+      "threshold": 500,
+      "type": "integrity"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "the parent relationships file fixes exactly 426 accepted and 574 unresolved canonical Haze4K source groups before this route",
+      "ORB nfeatures 1600, scaleFactor 1.2, nlevels 8, edgeThreshold 19, patchSize 31 and FAST threshold 10",
+      "the response-ranked top 512 ORB descriptors from every ITS scene and Haze4K query are used",
+      "OpenCV FLANN LSH uses 12 tables, 20-bit keys, multi-probe level 2, checks 64 and eight neighbours per query descriptor",
+      "candidate scenes are ranked by descriptor-vote count, mean Hamming distance and stable source ID, with a fixed top-64 shortlist",
+      "the inherited ORB homography prefilter uses Lowe ratio 0.80, RANSAC reprojection 5 pixels, confidence 0.995 and 3000 iterations, requiring 10 reciprocal matches, 8 inliers and 0.25 inlier ratio",
+      "at most eight ORB-passing candidates per query receive final RootSIFT verification",
+      "RootSIFT uses nfeatures 8000, contrast 0.01, edge 10, sigma 1.6, Lowe ratio 0.75, RANSAC 4 pixels, confidence 0.995 and 5000 iterations, requiring 20 reciprocal matches, 15 inliers and 0.35 inlier ratio",
+      "final RootSIFT inliers must cover at least 0.01 of each image hull area and at least four cells in a fixed 4 by 4 grid on each image",
+      "all 426 inherited accepted relationships must recall at least one accepted ITS ID within top 64 before any unresolved query is searched",
+      "64 fixed local-transform retrieval controls, 64 fixed true direct pairs, 64 fixed crossed indoor negatives and six fixed OTS controls must all separate exactly before formal search",
+      "the qualification stage must complete within 900 seconds and the complete application within 1800 seconds",
+      "only direct Haze4K-to-ITS candidate edges are tested; ITS-to-ITS transitive expansion is prohibited",
+      "500 is a provenance-derived expectation and cannot adapt thresholds, shortlist sizes or early stopping"
+    ],
+    "matched_budget": "one 900-second qualification stage followed only on qualification PASS by one bounded census of 574 queries, with an 1,800-second total application budget and a 3,000-second lifecycle hard timeout",
+    "primary_variable": "directly_retrieved_and_geometrically_verified_its_source_relationship",
+    "reference": "the fixed 574 parent-unresolved Haze4K source groups against all 11,000 official ITS clear scenes, with 426 parent-resolved relationships inherited diagnostically"
+  },
+  "operation_id": "ITS_TARGETED_DIRECT_RELATIONSHIP",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "canonical_haze4k_clear_source_relationship",
+    "independent_group_count": 574
+  },
+  "primary_estimand": {
+    "aggregation": "deterministic relationship count by canonical Haze4K source group before ITS-ID deduplication",
+    "direction": "higher",
+    "id": "completed_direct_haze4k_its_relationship_count",
+    "metric": "426 inherited parent relationships plus the number of the 574 fixed unresolved Haze4K groups with at least one candidate accepted by the frozen direct rule",
+    "unit": "canonical_haze4k_clear_source_relationship"
+  },
+  "question": "After an exact accuracy-and-cost qualification gate, can a bounded multi-probe ORB retriever plus direct spatially distributed RootSIFT geometry resolve exactly the 74 additional Haze4K-to-ITS relationships needed to complete the provenance-expected set of 500, without ITS-to-ITS propagation?",
+  "route_id": "reside-its-targeted-direct-geometry-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "ITS_TARGETED_DIRECT_RELATIONSHIP_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "NONE",
+      "decision": "ITS_TARGETED_DIRECT_RELATIONSHIP_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "ITS_DIRECT_FAMILY_EXCLUSION_DESIGN",
+      "decision": "ITS_TARGETED_DIRECT_RELATIONSHIP_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "canonical_haze4k_clear_source_relationship",
+    "method": "deterministic census of all 574 unresolved canonical Haze4K groups; descriptors, matches and candidate ITS scenes are nested evidence and never increase independent n"
+  }
+}

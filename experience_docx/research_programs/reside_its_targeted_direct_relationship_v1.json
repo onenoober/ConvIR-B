@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "program_id": "reside_its_targeted_direct_relationship",
+  "objective": "Rapidly and accurately complete the provenance-expected Haze4K-to-RESIDE-ITS source relationship set using only direct Haze4K-anchored evidence, before any separate family-exclusion design.",
+  "source_anchors": [
+    {
+      "id": "reside_its_geometric_terminal_20260725",
+      "reference": "experience_docx/experiment_logs/reside-its-geometric-source-exclusion-v1/reside_its_geometric_source_exclusion_v1_conclusion.json",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    }
+  ],
+  "dependency_roles": {
+    "prior_direct_relationship_evidence": [
+      "diagnostic"
+    ]
+  },
+  "stages": {
+    "targeted_relationship_completion": {
+      "evidence_roles": [
+        "development_screening"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "its_haze4k_targeted_direct_relationship"
+      ]
+    }
+  },
+  "route_families": {
+    "its_haze4k_targeted_direct_relationship": {
+      "core_assumption": "A bounded multi-probe local-descriptor retriever followed by direct Haze4K-anchored spatially distributed RootSIFT geometry can recover the provenance-expected relationship set without transitive ITS-to-ITS propagation.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after this single retrieval-qualified, cost-bounded direct relationship completion census; any recall, specificity, runtime, or relationship-count failure is method-specific.",
+      "reopen_evidence_types": [
+        "official_source_manifest",
+        "independent_source_mapping"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "source_identity_method",
+    "relationship_expansion_rule",
+    "stage_scope"
+  ],
+  "amendments": []
+}

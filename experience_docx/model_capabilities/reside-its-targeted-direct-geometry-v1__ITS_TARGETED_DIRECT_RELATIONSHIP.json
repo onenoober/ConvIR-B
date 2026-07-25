@@ -1,0 +1,30 @@
+{
+  "bound_assets": [
+    {
+      "id": "entrypoint_source",
+      "identity": "85af107585a3550f659cbf5b64d099cb659d614a9bd7d5aa877e24b7b6ec238d"
+    },
+    {
+      "id": "parent_relationships",
+      "identity": "9cba5de2611c498e07b556bf6e2cd9a7ef2b7a0fc036506dbafba722b5a8a975"
+    }
+  ],
+  "compatibility_imports": [
+    "cv2",
+    "numpy",
+    "PIL"
+  ],
+  "contract_mode": "cpu_exact",
+  "minimum_fixture": {
+    "batch": 11000,
+    "channels": 1000,
+    "height": 512,
+    "width": 32
+  },
+  "production_path_statement": "The protected-data-free CPU contract builds the exact 12-table multi-probe LSH production retriever over 11,000 reference scenes with 512 descriptors each, executes all 1,000 query descriptor sets through the exact top-64 ranking, and exercises the exact ORB and spatially distributed RootSIFT geometry finalizer on transformed and unrelated synthetic images. The entrypoint source and parent relationship evidence are identity-bound.",
+  "profile_id": "reside_its_targeted_direct_relationship_cpu_v1",
+  "protected_data_prohibited": true,
+  "schema_version": 1,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}

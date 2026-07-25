@@ -1,0 +1,44 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/reside-its-targeted-direct-geometry-v1__ITS_TARGETED_DIRECT_RELATIONSHIP.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/reside-its-targeted-direct-geometry-v1__ITS_TARGETED_DIRECT_RELATIONSHIP.json",
+    "max_seconds": 900,
+    "mode": "cpu_exact"
+  },
+  "entrypoint_relpath": "experience_docx/tools/resolve_reside_its_targeted_direct_relationship.py",
+  "environment": {
+    "CONVIR_ROUTE_ITS_TARGETED_WORKERS": "8"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "reside_its_targeted_direct_geometry_v1_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/targeted_direct_relationship_summary.json"
+    },
+    {
+      "destination_filename": "reside_its_targeted_direct_geometry_v1_relationships.csv",
+      "max_bytes": 1048576,
+      "required": true,
+      "source_relpath": "workload/targeted_direct_relationships.csv"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 1200,
+  "operation_id": "ITS_TARGETED_DIRECT_RELATIONSHIP",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/reside-its-targeted-direct-geometry-v1__ITS_TARGETED_DIRECT_RELATIONSHIP.json",
+    "mode": "descriptive_capacity",
+    "rationale": "The operation observes the full fixed set of 574 unresolved canonical Haze4K groups. Relationship completeness is an exact census count and no nested descriptor, match or candidate is treated as an independent group."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "reside-its-targeted-direct-geometry-v1",
+  "schema_version": 2,
+  "timeout_seconds": 3000,
+  "total_units": 13198
+}

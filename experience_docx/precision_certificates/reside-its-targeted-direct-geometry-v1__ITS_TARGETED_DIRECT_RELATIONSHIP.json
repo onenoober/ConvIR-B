@@ -1,0 +1,14 @@
+{
+  "certificate_id": "reside_its_targeted_direct_relationship_v1_census",
+  "confidence_level": 0.95,
+  "estimand": "resolution status of every parent-unresolved canonical Haze4K-to-ITS relationship",
+  "feasible": true,
+  "independent_groups_available": 574,
+  "independent_groups_required": 385,
+  "method": "binomial_worst_case",
+  "planning_sd": 0.5,
+  "schema_version": 1,
+  "source_reference": "All 574 parent-unresolved canonical Haze4K groups are included; the decisive relationship-count gate uses their exact census rather than a sample estimate.",
+  "source_role": "unrestricted",
+  "target_half_width": 0.05
+}

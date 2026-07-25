@@ -1,0 +1,61 @@
+{
+  "assets": [
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-geometric-source-exclusion-v1/reside_its_geometric_source_exclusion_v1_closeout.json",
+      "sha256": "17fba6d6ccfd46accebc3f585aaa93febeb753b300346e39591232ce00ae95c8"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-geometric-source-exclusion-v1/reside_its_geometric_source_exclusion_v1_summary.json",
+      "sha256": "70a164fb18b596ab34d5467c20d12ba7825cdf6df7f0860327d7a16f5acc55b8"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_relationships",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-geometric-source-exclusion-v1/reside_its_geometric_source_exclusion_v1_relationships.csv",
+      "sha256": "9cba5de2611c498e07b556bf6e2cd9a7ef2b7a0fc036506dbafba722b5a8a975"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_conclusion",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-geometric-source-exclusion-v1/reside_its_geometric_source_exclusion_v1_conclusion.json",
+      "sha256": "2c9adaea9efdde768a735b2249ec84759dc7e5f2bb3c33a53e57ae393042cc44"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "entrypoint_source",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/tools/resolve_reside_its_targeted_direct_relationship.py",
+      "sha256": "85af107585a3550f659cbf5b64d099cb659d614a9bd7d5aa877e24b7b6ec238d"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K"
+    }
+  ],
+  "operation_id": "ITS_TARGETED_DIRECT_RELATIONSHIP",
+  "route_id": "reside-its-targeted-direct-geometry-v1",
+  "schema_version": 1
+}
