@@ -1,0 +1,71 @@
+{
+  "estimand": "SD of canonical-scene equally phase-integrated area-weighted L-infinity error for two keep-referenced continuous PSNR utility contrasts",
+  "future_frozen_gate": {
+    "fail": "one-sided 95 percent LCB above 0.05 dB",
+    "inconclusive": "interval crosses 0.05 dB or upper-bound distance exceeds 0.025 dB",
+    "pass": "one-sided 95 percent UCB below 0.05 dB",
+    "population": "uniform random draw over the four frozen grid origins within each unseen canonical scene",
+    "utility_error_margin_db": 0.05
+  },
+  "identity_and_integrity": {
+    "checks": {
+      "blocked_parent_terminal_exact": true,
+      "complete_32_scene_128_variant_pilot": true,
+      "complete_dataset_before_fixed_subset": true,
+      "isolated_development_asset_only": true,
+      "keep_and_affine_controls": true,
+      "legacy_worst_phase_sd_exactly_reproduced": true,
+      "no_training_or_protected_access": true,
+      "same_fixed_hash_selection_as_parent": true
+    },
+    "failure_count": 0,
+    "failures": []
+  },
+  "limitations": [
+    "The estimand applies only to the predeclared equal mixture of four grid origins; it does not bound a fixed or worst origin.",
+    "The same 32 development scenes support paired variance diagnosis but are not confirmation and do not increase independent n.",
+    "All primary means are withheld; feasibility cannot establish target stability.",
+    "Training-overlap data, confirmation, NH-HAZE, canary, and locked test are not accessed or counted.",
+    "No result authorizes Stage 2, training, model selection, or deployment."
+  ],
+  "marker": "HAZE4K_PHASE_INTEGRATED_CONTINUOUS_UTILITY_PRECISION_PILOT_COMPLETE",
+  "operation_id": "HAZE4K_TEST_PHASE_INTEGRATED_CONTINUOUS_UTILITY_PRECISION_PILOT",
+  "phase_integrated_precision_feasibility": {
+    "bootstrap_one_sided_95_sd_upper_db": 0.40568017150227675,
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 20260811,
+    "chi_square_one_sided_95_sd_upper_db": 0.4158532372887723,
+    "conservative_planning_sd_db": 0.4158532372887723,
+    "feasible": false,
+    "future_independent_scenes_available": 100,
+    "future_independent_scenes_required": 1063,
+    "future_target_half_width_db": 0.025,
+    "maximum_planning_sd_db": 0.12755336423116348,
+    "pilot_scene_count": 32,
+    "primary_mean_withheld": true,
+    "sample_sd_db": 0.3279587013562393
+  },
+  "route_id": "haze4k-test-phase-integrated-continuous-utility-measurement-v1",
+  "run_id": "haze4k-test-phase-integrated-continuous-utility-measurement-v1-precision-pilot-r1",
+  "schema_version": 1,
+  "scope": "Variance-only development-screening precision supplement for a predeclared uniform-random grid-origin estimand; all primary means are withheld.",
+  "selection": {
+    "independent_scenes": 32,
+    "method": "same first 32 canonical scene digests under the frozen parent salt",
+    "nested_variants": 128,
+    "salt": "haze4k-continuous-utility-precision-pilot-v1",
+    "selection_digest": "4ea1d74df4ccc89b4df95c51271d13b2a16a5b9c62aa74b69babad092ca83d61"
+  },
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "HAZE4K_PHASE_INTEGRATED_CONTINUOUS_UTILITY_BLOCKED_PRECISION",
+    "state": "COMPLETED_GATE_FAIL"
+  },
+  "variance_attribution": {
+    "legacy_worst_phase_sample_sd_db": 0.3503289895035461,
+    "mean_within_scene_phase_sd_db": 0.0651948823975466,
+    "phase_integrated_sample_sd_db": 0.3279587013562393,
+    "phase_integrated_to_worst_sample_variance_ratio": 0.8763672979009683,
+    "primary_means_withheld": true
+  }
+}

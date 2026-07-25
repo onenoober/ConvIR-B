@@ -1,0 +1,24 @@
+{
+  "route_id": "haze4k-test-phase-integrated-continuous-utility-measurement-v1",
+  "operation_id": "HAZE4K_TEST_PHASE_INTEGRATED_CONTINUOUS_UTILITY_PRECISION_PILOT",
+  "run_id": "haze4k-test-phase-integrated-continuous-utility-measurement-v1-precision-pilot-r1",
+  "decision": "HAZE4K_PHASE_INTEGRATED_CONTINUOUS_UTILITY_BLOCKED_PRECISION",
+  "authorizes": "NONE",
+  "primary_result": "The preregistered variance-only pilot completed all 32 canonical development scenes and 128 nested haze variants with every identity, selection, parent-reproduction, keep/affine, no-training, and protected-data control passing. The parent worst-phase sample SD was exactly reproduced at 0.350329 dB. Equal integration over the four frozen grid origins reduced the sample SD only to 0.327959 dB, with one-sided 95 percent bootstrap and chi-square SD upper bounds of 0.405680 and 0.415853 dB. The conservative planning SD was therefore 0.415853 dB versus the frozen maximum 0.127553 dB. Approximately 1063 independent scenes would be required for the 0.025 dB precision distance, while only 100 eligible unseen development scenes are available. The phase-integrated full measurement operation is blocked for precision.",
+  "gate_reasons": [
+    "All eight integrity checks passed: the blocked parent terminal and evidence identities, complete source population, exact parent salted-hash subset, 32-scene/128-variant completion, keep and affine manipulation, exact parent worst-phase SD reproduction, isolated development role, no training, and no protected access were valid.",
+    "The conservative one-sided 95 percent planning SD upper bound was 0.415853 dB, exceeding the frozen 0.127553 dB maximum by about 3.26 times.",
+    "The independently computed bootstrap SD upper bound was also high at 0.405680 dB, so the decision is not driven only by approximate-normal chi-square calibration.",
+    "The frozen precision calculation required 1063 independent scenes for a 0.025 dB distance, exceeding the 100 eligible unseen development scenes.",
+    "Equal phase integration retained 87.64 percent of the parent sample variance; removing the worst-phase maximum was therefore insufficient to resolve the precision bottleneck.",
+    "The pilot deliberately withheld every primary mean, so no target-stability PASS or FAIL was computed."
+  ],
+  "competing_explanation": "The paired result rules out worst-phase maximization as a sufficient explanation for the original precision failure: equal phase integration reduced sample variance by only 12.36 percent, while mean within-scene phase SD was 0.065195 dB. The remaining dispersion is consistent with genuine between-scene heterogeneity or other scene-level components shared across phases. This pilot cannot uniquely decompose those shared components because it was variance-only and published no per-scene values or primary means. Further changes to aggregation, margin, population, or uncertainty would be new Stage-1 estimands rather than repairs of either terminal.",
+  "limitations": [
+    "The estimand applies only to a predeclared uniform mixture over four frozen grid origins; it does not bound any fixed origin or the worst origin.",
+    "The 32 scenes are the exact development-screening subset used by the parent pilot, enabling paired diagnosis but providing neither confirmation nor additional independent evidence.",
+    "All primary means were withheld, so this result cannot determine whether mean phase-integrated utility error is below or above 0.05 dB.",
+    "Haze variants, phases, tiles, pixels, actions, and bootstrap draws are nested or repeated measurements and cannot increase independent scene n.",
+    "Haze4K training scenes overlap checkpoint training and were neither accessed nor counted; this terminal authorizes no full 100-scene operation, Stage 2, confirmation data, NH-HAZE, training, model selection, or deployment claim."
+  ]
+}
