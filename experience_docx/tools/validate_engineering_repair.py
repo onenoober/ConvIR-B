@@ -40,6 +40,17 @@ def git(repo: Path, *args: str) -> str:
     return completed.stdout.strip()
 
 
+def git_porcelain(repo: Path) -> str:
+    completed = subprocess.run(
+        [GIT, "status", "--porcelain=v1", "--untracked-files=all"],
+        cwd=repo, text=True, capture_output=True, timeout=60, check=False,
+    )
+    if completed.returncode:
+        detail = (completed.stdout + completed.stderr).strip()[:4096]
+        raise RepairError(f"git status --porcelain=v1 failed: {detail}")
+    return completed.stdout.rstrip("\n")
+
+
 def staged_snapshot(repo: Path) -> str:
     if subprocess.run([GIT, "diff", "--quiet"], cwd=repo).returncode:
         raise RepairError("unstaged tracked changes exist")
@@ -77,7 +88,7 @@ def worktree_candidate_snapshot(repo: Path, candidate_paths: list[str]) -> str:
         raise RepairError("real Git index must be clean before worktree-candidate classification")
     original_head = git(repo, "rev-parse", "HEAD")
     original_index_tree = git(repo, "write-tree")
-    status = git(repo, "status", "--porcelain=v1", "--untracked-files=all")
+    status = git_porcelain(repo)
     observed = set()
     for line in status.splitlines():
         if len(line) < 4 or " -> " in line[3:]:
@@ -122,7 +133,7 @@ def worktree_candidate_snapshot(repo: Path, candidate_paths: list[str]) -> str:
         raise RepairError("worktree-candidate classification changed the real Git index")
     if git(repo, "rev-parse", "HEAD") != original_head \
             or git(repo, "write-tree") != original_index_tree \
-            or git(repo, "status", "--porcelain=v1", "--untracked-files=all") != status:
+            or git_porcelain(repo) != status:
         raise RepairError("worktree-candidate classification changed repository state")
     return snapshot
 

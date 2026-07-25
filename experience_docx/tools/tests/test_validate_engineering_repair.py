@@ -28,6 +28,14 @@ class EngineeringRepairTests(unittest.TestCase):
         )
         return completed.stdout.strip()
 
+    @staticmethod
+    def _status(repo: Path) -> str:
+        completed = subprocess.run(
+            ["/usr/bin/git", "status", "--porcelain=v1", "--untracked-files=all"],
+            cwd=repo, text=True, capture_output=True, check=True,
+        )
+        return completed.stdout.rstrip("\n")
+
     def _make_classifier_fixture(
         self, root: Path, *, changed_rationale: bool,
     ) -> tuple[Path, str, str]:
@@ -143,7 +151,7 @@ class EngineeringRepairTests(unittest.TestCase):
             path = repo / relpath
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(raw)
-        paths = sorted(filter(None, self._git(repo, "status", "--porcelain").splitlines()))
+        paths = sorted(filter(None, self._status(repo).splitlines()))
         changed_paths = sorted(line[3:] for line in paths)
         candidate = None
         if commit_candidate:
