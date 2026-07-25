@@ -1,0 +1,89 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_STABILITY_FAIL",
+  "details": {
+    "candidate_confirmation_asset_delivered": false,
+    "gate_reasons": [
+      "at least one frozen conditional measurement-validity interval clearly failed"
+    ],
+    "independent_scenes": 100,
+    "nested_variants": 400,
+    "network_or_proxy_training_occurred": false,
+    "strata_file": "haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_strata.csv",
+    "summary_file": "haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_summary.json"
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_strata.csv": "9c2112e644ccf4d9d82c441e8844473268614c4cfa163e7fe6ba4a651cacc003",
+    "haze4k_test_conditional_content_aligned_region_measurement_qualification_v1_summary.json": "26ab6313888f992f738bdd4049a55115f84ecd376bd3c1bd9815e79e64eb0b33"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_MEASUREMENT_QUALIFICATION",
+  "returncode": 0,
+  "route_commit": "c236d600c8d2e3d47c52e91db6622decedd88d69",
+  "route_id": "haze4k-test-conditional-content-aligned-region-measurement-qualification-v1",
+  "run_id": "haze4k-test-conditional-content-aligned-region-measurement-qualification-v1-phase-a-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_test_development",
+      "kind": "directory"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "measurement_entrypoint",
+      "kind": "file",
+      "sha256": "12ce06fae88310ce0ce2233bdbea3bf50dd21d806814721a815843dc8fcca0c0"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "sha256": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_taper_closeout",
+      "kind": "file",
+      "sha256": "a41759573c5d8ccf1db09f30ac59ecf67cf9f09072d79122e625d8f8fa4af497"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_taper_conclusion",
+      "kind": "file",
+      "sha256": "3fe676574c1f0126409be55cd9eaef7a71830f80fc857553d581c596514ce8f8"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_taper_summary",
+      "kind": "file",
+      "sha256": "6ca61e3473ef1c92eca1415523b56c7b592bf5c663f03b5b01214861409619fb"
+    }
+  ]
+}

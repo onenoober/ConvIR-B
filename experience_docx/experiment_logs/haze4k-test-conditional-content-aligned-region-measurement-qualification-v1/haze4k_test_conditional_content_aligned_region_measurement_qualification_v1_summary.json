@@ -1,0 +1,763 @@
+{
+  "controls": {
+    "aligned_minus_circularly_shifted_psnr_db": {
+      "estimate": 1.8859834175784584,
+      "lower_one_sided_95": 1.7218200563560713,
+      "lower_two_sided_95": 1.6882037791476847,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260802,
+      "upper_distance": 0.16584458940347524,
+      "upper_one_sided_95": 2.0518280069819337,
+      "upper_two_sided_95": 2.084884428255911
+    },
+    "common_source_region_projection_complete_all": true,
+    "keep_duplicate_utility_diagnostic_error_bound": 1.4210854715202004e-14,
+    "keep_duplicate_utility_within_diagnostic_bound": true,
+    "keep_structural_identity_all": true,
+    "matched_taper_parent_control_expected_regret_db": 0.1340031213991598,
+    "matched_taper_parent_control_mean_regret_db": 0.1340031213991598,
+    "matched_taper_parent_control_tolerance_db": 1e-08,
+    "maximum_absolute_keep_duplicate_utility": 3.469446951953614e-18,
+    "nonclipped_affine_manipulation_exact_all": true,
+    "nonclipped_source_minus_uniform_psnr_db": {
+      "estimate": 1.49334079645856,
+      "lower_one_sided_95": 1.3474321795198005,
+      "lower_two_sided_95": 1.3209837794482129,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260803,
+      "upper_distance": 0.1466588796303856,
+      "upper_one_sided_95": 1.6399996760889457,
+      "upper_two_sided_95": 1.6680629351923864
+    },
+    "source_region_projection_complete_all": true
+  },
+  "coverage": {
+    "material_scene_gain_db": 0.1,
+    "minimum_prevalence_lower_bound": 0.2,
+    "robust_material_scene_prevalence": {
+      "estimate": 0.97,
+      "lower": 0.915479219195973,
+      "successes": 97,
+      "total": 100,
+      "upper": 0.9897456617765851
+    }
+  },
+  "gates": {
+    "aligned_location_negative_control": true,
+    "material_scene_coverage": true,
+    "nonclipped_direction": true,
+    "primary_regret_and_precision": false,
+    "ssim_and_color_safety": true
+  },
+  "identity_and_coverage": {
+    "assignment_digest": "6ca5174470dad2b4eef4ae15c5a13a99d8ae9fc0bc2ea1116b199c4d4bc05582",
+    "candidate_confirmation_asset_delivered": false,
+    "completed_scenes": 100,
+    "completed_variants": 400,
+    "failure_count": 0,
+    "failures": [],
+    "integrity_checks": {
+      "candidate_confirmation_asset_not_delivered": true,
+      "complete_100_scene_400_variant_grouping": true,
+      "complete_finite_inference_and_measurement": true,
+      "isolated_development_asset_only": true,
+      "matched_taper_parent_control": true,
+      "measurement_controls_structural": true,
+      "no_training": true,
+      "parent_taper_terminal_evidence": true
+    },
+    "network_or_proxy_training_occurred": false
+  },
+  "limitations": [
+    "This is development-screening measurement evidence from 100 canonical synthetic Haze4K scenes.",
+    "The directly matched taper-regret scene SD supports the frozen 0.05 dB precision target at n=100, but the result remains development-screening evidence.",
+    "GT selects source-region utilities and held-out-region oracle outcomes within the same haze condition; no result establishes deployment-time predictability.",
+    "A pass qualifies only this fixed source-only edge-watershed measurement target conditional on observed haze and cannot overturn archived cross-variant instability.",
+    "RGB reconstruction utility and limited SSIM/color safety do not establish perceptual quality or physical haze state.",
+    "The result is specific to the fixed three residual scales, Sobel edge cost, 32-pixel marker spacing, and four declared marker phases.",
+    "The protected candidate-confirmation asset and NH-HAZE were not delivered or accessed."
+  ],
+  "marker": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_MEASUREMENT_QUALIFICATION_COMPLETE",
+  "matched_taper_control": {
+    "absolute_reproduction_tolerance_db": 1e-08,
+    "decision_role": "integrity for taper reproduction; content-aligned minus taper contrast is diagnostic only",
+    "expected_parent_taper_regret_db": 0.1340031213991598,
+    "reproduction_pass": true,
+    "scene_mean_taper_control_minus_content_aligned_regret_psnr_db": {
+      "estimate": -0.05783373426792597,
+      "lower_one_sided_95": -0.0736878031070306,
+      "lower_two_sided_95": -0.07688239802198049,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260801,
+      "upper_distance": 0.015667274803652792,
+      "upper_one_sided_95": -0.04216645946427318,
+      "upper_two_sided_95": -0.0393209056727559
+    },
+    "scene_mean_taper_control_regret_psnr_db": {
+      "estimate": 0.1340031213991598,
+      "lower_one_sided_95": 0.11810429992018522,
+      "lower_two_sided_95": 0.11520415927515108,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260801,
+      "upper_distance": 0.016334606805215646,
+      "upper_one_sided_95": 0.15033772820437544,
+      "upper_two_sided_95": 0.1538163544516359
+    }
+  },
+  "measurement_contract": {
+    "actions": [
+      {
+        "name": "keep",
+        "scale": 1.0
+      },
+      {
+        "name": "weaken",
+        "scale": 0.8
+      },
+      {
+        "name": "strengthen",
+        "scale": 1.2
+      }
+    ],
+    "formula": "clip(hazy + scale * (official_prediction - hazy), 0, 1)",
+    "haze_condition_role": "each of four haze variants is analyzed as a substantive observed condition; no utility transfers across variants",
+    "independent_unit": "canonical_clear_scene",
+    "leave_one_partition_out": "within each haze condition, construct four edge-watershed partitions from hazy RGB only, lift region-mean RGB-MSE utility from three source partitions to pixels, average source scores, freeze the hard action field, and score only then on the held-out partition",
+    "matched_control": "the archived raised-cosine taper projection is recomputed from the same official inferences and must reproduce its parent mean regret within 1e-8 dB",
+    "nested_repeats": "four observed haze conditions, regions, pixels, partition phases, and metrics never increase n",
+    "partition_phases": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        16
+      ],
+      [
+        16,
+        0
+      ],
+      [
+        16,
+        16
+      ]
+    ],
+    "primary_scene_value": "maximum held-out-partition regret after equal averaging of the four separately conditioned haze variants",
+    "region_algorithm": "skimage edge-watershed with Sobel grayscale elevation, fixed 32-pixel marker spacing, connectivity 1, no watershed line, and no GT or outcome input"
+  },
+  "operation_id": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_MEASUREMENT_QUALIFICATION",
+  "per_partition_diagnostics": {
+    "(0, 0)": {
+      "boundary_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.15503320130904868,
+        "mean": 0.06474671922962713,
+        "median": 0.05959482148561713,
+        "min": 0.008769168830761198,
+        "q05": 0.022715572030098823,
+        "q95": 0.10975209809221435,
+        "sd": 0.02910477072722012
+      },
+      "boundary_band_regret_psnr_db": {
+        "count": 100,
+        "max": 0.5555393949999718,
+        "mean": 0.12993098462738967,
+        "median": 0.10698055045200716,
+        "min": -0.02560102133239006,
+        "q05": 0.005702087678207547,
+        "q95": 0.29749975524070577,
+        "sd": 0.10427086789126558
+      },
+      "boundary_minus_interior_regret_psnr_db": {
+        "count": 100,
+        "max": 0.33643812133828455,
+        "mean": 0.012392630967340263,
+        "median": 0.017662406506224304,
+        "min": -0.3638334480311949,
+        "q05": -0.1653035407547761,
+        "q95": 0.1491177612366824,
+        "sd": 0.1006782505247334
+      },
+      "interior_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.15524952228699976,
+        "mean": 0.047158967180805075,
+        "median": 0.04067291249707326,
+        "min": 0.006015590119050413,
+        "q05": 0.010873198685329096,
+        "q95": 0.09101906285469716,
+        "sd": 0.02669668869418234
+      },
+      "interior_regret_psnr_db": {
+        "count": 100,
+        "max": 0.4667063425424036,
+        "mean": 0.1175383536600494,
+        "median": 0.08599943968715884,
+        "min": -0.03725742732765447,
+        "q05": 0.006397291366796232,
+        "q95": 0.32546393371409094,
+        "sd": 0.11284489204599987
+      },
+      "region_count": {
+        "count": 100,
+        "max": 300.0,
+        "mean": 214.2,
+        "median": 144.0,
+        "min": 144.0,
+        "q05": 144.0,
+        "q95": 300.0,
+        "sd": 78.0
+      },
+      "regret_psnr_db": {
+        "count": 100,
+        "max": 0.5207926070609687,
+        "mean": 0.12401325710642806,
+        "median": 0.09582158366246185,
+        "min": 0.002277768025486182,
+        "q05": 0.014271342834223735,
+        "q95": 0.29293651334258747,
+        "sd": 0.0961357287998416
+      },
+      "selected_clip_pixel_fraction": {
+        "count": 100,
+        "max": 0.21073906250000002,
+        "mean": 0.014881702473958335,
+        "median": 0.004746321614583333,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.04746573567708332,
+        "sd": 0.027555490918331302
+      }
+    },
+    "(0, 16)": {
+      "boundary_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.15804619121248287,
+        "mean": 0.07500314442961215,
+        "median": 0.07366295333469404,
+        "min": 0.006262964840680841,
+        "q05": 0.030796622506408643,
+        "q95": 0.11971918007802727,
+        "sd": 0.02970672336052402
+      },
+      "boundary_band_regret_psnr_db": {
+        "count": 100,
+        "max": 0.4143700366834473,
+        "mean": 0.13247939718226887,
+        "median": 0.1156373251768743,
+        "min": -0.05062982400462701,
+        "q05": 0.012965068694542748,
+        "q95": 0.3706349953791997,
+        "sd": 0.10426388484335236
+      },
+      "boundary_minus_interior_regret_psnr_db": {
+        "count": 100,
+        "max": 0.26357306144525694,
+        "mean": -0.0020941048771970115,
+        "median": 0.008516942569823716,
+        "min": -0.5122444015125698,
+        "q05": -0.21399123815665816,
+        "q95": 0.18294333430400997,
+        "sd": 0.1157206774475078
+      },
+      "interior_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.12981631923308337,
+        "mean": 0.051004505095374846,
+        "median": 0.046568964896721146,
+        "min": 0.0027807040345860755,
+        "q05": 0.017038741952772985,
+        "q95": 0.0938819839854014,
+        "sd": 0.024914648476230136
+      },
+      "interior_regret_psnr_db": {
+        "count": 100,
+        "max": 0.6923742802161605,
+        "mean": 0.1345735020594659,
+        "median": 0.0970186516495537,
+        "min": 4.041880288596644e-05,
+        "q05": 0.004469370159000752,
+        "q95": 0.41651195879450964,
+        "sd": 0.13232573992178898
+      },
+      "region_count": {
+        "count": 100,
+        "max": 300.0,
+        "mean": 220.8,
+        "median": 156.0,
+        "min": 156.0,
+        "q05": 156.0,
+        "q95": 300.0,
+        "sd": 72.0
+      },
+      "regret_psnr_db": {
+        "count": 100,
+        "max": 0.44494811091779773,
+        "mean": 0.13185261715946037,
+        "median": 0.10801245450231711,
+        "min": 0.0005281551447557931,
+        "q05": 0.01508003452953215,
+        "q95": 0.3445602742727323,
+        "sd": 0.10144600390607991
+      },
+      "selected_clip_pixel_fraction": {
+        "count": 100,
+        "max": 0.20805,
+        "mean": 0.016056429036458333,
+        "median": 0.007773193359375,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.04717267252604167,
+        "sd": 0.027168096936878206
+      }
+    },
+    "(16, 0)": {
+      "boundary_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.16549052791291552,
+        "mean": 0.07433887501469093,
+        "median": 0.07502230903594534,
+        "min": 0.002903186148484758,
+        "q05": 0.031798412060681264,
+        "q95": 0.12967973890574053,
+        "sd": 0.030588234756826378
+      },
+      "boundary_band_regret_psnr_db": {
+        "count": 100,
+        "max": 0.616815736792713,
+        "mean": 0.15005008073028286,
+        "median": 0.13620682106467497,
+        "min": -0.017679488776840557,
+        "q05": 0.01321374555108652,
+        "q95": 0.3455605931904225,
+        "sd": 0.1150557226413553
+      },
+      "boundary_minus_interior_regret_psnr_db": {
+        "count": 100,
+        "max": 0.4138376467851739,
+        "mean": 0.025092701840606288,
+        "median": 0.01534634117640632,
+        "min": -0.23438924704957387,
+        "q05": -0.13294477507252553,
+        "q95": 0.16065734623299663,
+        "sd": 0.0989232932631899
+      },
+      "interior_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.1261501927530697,
+        "mean": 0.04918991296232317,
+        "median": 0.04482968658010791,
+        "min": 0.0014264853024689688,
+        "q05": 0.017659865521972427,
+        "q95": 0.09253852696198259,
+        "sd": 0.02423618870905404
+      },
+      "interior_regret_psnr_db": {
+        "count": 100,
+        "max": 0.462385151356564,
+        "mean": 0.12495737888967656,
+        "median": 0.09846094712318099,
+        "min": -0.0009914518281846085,
+        "q05": 0.0077664612995122185,
+        "q95": 0.3140339101595944,
+        "sd": 0.10195746477732856
+      },
+      "region_count": {
+        "count": 100,
+        "max": 300.0,
+        "mean": 220.8,
+        "median": 156.0,
+        "min": 156.0,
+        "q05": 156.0,
+        "q95": 300.0,
+        "sd": 72.0
+      },
+      "regret_psnr_db": {
+        "count": 100,
+        "max": 0.45409265222331463,
+        "mean": 0.13912388993984057,
+        "median": 0.11700328977484409,
+        "min": 0.0004866588511474035,
+        "q05": 0.01981496641480307,
+        "q95": 0.29806097055166736,
+        "sd": 0.09799704222626375
+      },
+      "selected_clip_pixel_fraction": {
+        "count": 100,
+        "max": 0.21166093749999998,
+        "mean": 0.016316947265625,
+        "median": 0.008156901041666666,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.04859485351562499,
+        "sd": 0.027240069674548846
+      }
+    },
+    "(16, 16)": {
+      "boundary_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.19436192827420457,
+        "mean": 0.07607999285111677,
+        "median": 0.07262799352472696,
+        "min": 0.007700722501400524,
+        "q05": 0.019647425474933852,
+        "q95": 0.1318371110818752,
+        "sd": 0.03536104586071905
+      },
+      "boundary_band_regret_psnr_db": {
+        "count": 100,
+        "max": 0.4739708798429767,
+        "mean": 0.12967252857035372,
+        "median": 0.1020826370488086,
+        "min": 0.004744301996666422,
+        "q05": 0.014698009396920009,
+        "q95": 0.3349908744696155,
+        "sd": 0.10071921345641952
+      },
+      "boundary_minus_interior_regret_psnr_db": {
+        "count": 100,
+        "max": 0.20292753775606798,
+        "mean": -0.0034814368103192007,
+        "median": 0.011109041291834654,
+        "min": -0.3880537821036434,
+        "q05": -0.1495940727463146,
+        "q95": 0.11196385828752745,
+        "sd": 0.08868938221931323
+      },
+      "interior_action_disagreement_fraction": {
+        "count": 100,
+        "max": 0.17997551467090356,
+        "mean": 0.05224806594222765,
+        "median": 0.04372841058138707,
+        "min": 0.0035574645417859054,
+        "q05": 0.014722554028768818,
+        "q95": 0.1069395865396131,
+        "sd": 0.029947997292590536
+      },
+      "interior_regret_psnr_db": {
+        "count": 100,
+        "max": 0.7187065126458005,
+        "mean": 0.13315396538067292,
+        "median": 0.09537735939484993,
+        "min": -0.008355027857506414,
+        "q05": 0.004266051552145101,
+        "q95": 0.3681633206652184,
+        "sd": 0.13458892891545454
+      },
+      "region_count": {
+        "count": 100,
+        "max": 300.0,
+        "mean": 227.95,
+        "median": 169.0,
+        "min": 169.0,
+        "q05": 169.0,
+        "q95": 300.0,
+        "sd": 65.5
+      },
+      "regret_psnr_db": {
+        "count": 100,
+        "max": 0.5321451333213396,
+        "mean": 0.13008785967756734,
+        "median": 0.10041354356724952,
+        "min": 0.003161481335004268,
+        "q05": 0.010107579350488073,
+        "q95": 0.3552433081364733,
+        "sd": 0.10691775093242697
+      },
+      "selected_clip_pixel_fraction": {
+        "count": 100,
+        "max": 0.20927812499999998,
+        "mean": 0.0165003251953125,
+        "median": 0.00874755859375,
+        "min": 0.0,
+        "q05": 0.0,
+        "q95": 0.048054845377604155,
+        "sd": 0.027054535610111778
+      }
+    }
+  },
+  "primary_regret": {
+    "maximum_upper_bound_db": 0.1,
+    "maximum_upper_distance_db": 0.05,
+    "pre_run_precision_mode": "formal normal-mean feasibility: directly matched taper-regret scene SD 0.0985213295 dB requires 15 independent scenes for a two-sided 0.05 dB half-width; n=100 is feasible",
+    "scene_mean_regret_psnr_db": {
+      "estimate": 0.19183685566708575,
+      "lower_one_sided_95": 0.17138729565902588,
+      "lower_two_sided_95": 0.16726821679424966,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260801,
+      "upper_distance": 0.021029813005169123,
+      "upper_one_sided_95": 0.21286666867225487,
+      "upper_two_sided_95": 0.21710974873263106
+    }
+  },
+  "route_id": "haze4k-test-conditional-content-aligned-region-measurement-qualification-v1",
+  "run_id": "haze4k-test-conditional-content-aligned-region-measurement-qualification-v1-phase-a-r1",
+  "safety": {
+    "color_harm_definition": "worst-partition scene mean transferred-minus-uniform RGB mean-bias at least 0.00392156862745098",
+    "color_harm_prevalence": {
+      "estimate": 0.02,
+      "lower": 0.005501852234968185,
+      "successes": 2,
+      "total": 100,
+      "upper": 0.07001316294199365
+    },
+    "maximum_harm_upper_bound": 0.1,
+    "ssim_harm_definition": "worst-partition scene mean transferred-minus-uniform SSIM at most -0.005",
+    "ssim_harm_prevalence": {
+      "estimate": 0.04,
+      "lower": 0.015663050551848016,
+      "successes": 4,
+      "total": 100,
+      "upper": 0.09837217232607373
+    }
+  },
+  "schema_version": 1,
+  "scope": "Haze-conditional source-only edge-watershed region qualification on the isolated 100-scene Haze4K development partition",
+  "secondary_scene_aggregates": {
+    "aligned_minus_shifted_psnr_db": {
+      "count": 100,
+      "max": 4.611869099532033,
+      "mean": 1.8859834175784584,
+      "median": 1.8302816165950788,
+      "min": 0.10362745368468484,
+      "q05": 0.33105505318799267,
+      "q95": 3.4597392807961116,
+      "sd": 1.0075037522594315
+    },
+    "boundary_action_disagreement_fraction": {
+      "count": 100,
+      "max": 0.19436192827420457,
+      "mean": 0.08218535403630634,
+      "median": 0.08172611593336246,
+      "min": 0.007700722501400524,
+      "q05": 0.03494552525316569,
+      "q95": 0.12464917006401591,
+      "sd": 0.031626628929970486
+    },
+    "boundary_band_regret_psnr_db": {
+      "count": 100,
+      "max": 0.616815736792713,
+      "mean": 0.19010192141475662,
+      "median": 0.17498279332391586,
+      "min": -0.05062982400462701,
+      "q05": 0.015428409185540292,
+      "q95": 0.4247956858167767,
+      "sd": 0.13253379883303143
+    },
+    "boundary_minus_interior_regret_psnr_db": {
+      "count": 100,
+      "max": 0.4138376467851739,
+      "mean": -0.004355387027813818,
+      "median": 0.002959973540040739,
+      "min": -0.5122444015125698,
+      "q05": -0.25384479338413424,
+      "q95": 0.1610041978917559,
+      "sd": 0.14063633370138415
+    },
+    "common_nonclipped_pixel_fraction": {
+      "count": 100,
+      "max": 0.9999921875,
+      "mean": 0.8824509208984375,
+      "median": 0.9035407389322917,
+      "min": 0.5514990234375,
+      "q05": 0.686043416341146,
+      "q95": 0.998331953125,
+      "sd": 0.10880680467135267
+    },
+    "common_source_projection_coverage_fraction": {
+      "count": 100,
+      "max": 0.9999921875,
+      "mean": 0.8824509208984375,
+      "median": 0.9035407389322917,
+      "min": 0.5514990234375,
+      "q05": 0.686043416341146,
+      "q95": 0.998331953125,
+      "sd": 0.10880680467135267
+    },
+    "exact_near_tie_pixel_fraction": {
+      "count": 100,
+      "max": 0.001262890625,
+      "mean": 1.2628906249999999e-05,
+      "median": 0.0,
+      "min": 0.0,
+      "q05": 0.0,
+      "q95": 0.0,
+      "sd": 0.0001262890625
+    },
+    "hard_action_agreement_fraction": {
+      "count": 100,
+      "max": 0.9928988281250001,
+      "mean": 0.9373143601888022,
+      "median": 0.9396566772460937,
+      "min": 0.8633154296874999,
+      "q05": 0.8897591654459636,
+      "q95": 0.9709337247721352,
+      "sd": 0.024360390099072263
+    },
+    "interior_action_disagreement_fraction": {
+      "count": 100,
+      "max": 0.17997551467090356,
+      "mean": 0.05778040443016629,
+      "median": 0.05475401463311605,
+      "min": 0.0035574645417859054,
+      "q05": 0.02186125395429681,
+      "q95": 0.10242688142661457,
+      "sd": 0.028558659914674156
+    },
+    "interior_regret_psnr_db": {
+      "count": 100,
+      "max": 0.7187065126458005,
+      "mean": 0.1944573084425705,
+      "median": 0.15872221214696225,
+      "min": -0.0009914518281846085,
+      "q05": 0.024840041326714427,
+      "q95": 0.4763455344864068,
+      "sd": 0.1589289581176751
+    },
+    "maximum_region_area": {
+      "count": 100,
+      "max": 18868.3125,
+      "mean": 13187.846875,
+      "median": 13216.3125,
+      "min": 9538.6875,
+      "q05": 10414.115625,
+      "q95": 16688.828125,
+      "sd": 1945.4880280201535
+    },
+    "mean_top_two_mse_margin": {
+      "count": 100,
+      "max": 0.0040025805572288155,
+      "mean": 0.0009136191411379584,
+      "median": 0.0007832103049725623,
+      "min": 6.220402202159671e-05,
+      "q05": 0.00015404416952391502,
+      "q95": 0.002038823363565303,
+      "sd": 0.0006500258925660795
+    },
+    "minimum_region_area": {
+      "count": 100,
+      "max": 1.0,
+      "mean": 1.0,
+      "median": 1.0,
+      "min": 1.0,
+      "q05": 1.0,
+      "q95": 1.0,
+      "sd": 0.0
+    },
+    "nonclipped_source_minus_uniform_psnr_db": {
+      "count": 100,
+      "max": 3.9686992614384184,
+      "mean": 1.49334079645856,
+      "median": 1.5019308754559266,
+      "min": 0.007017514918560508,
+      "q05": 0.1408903218534136,
+      "q95": 3.0360621077737138,
+      "sd": 0.8971888224787248
+    },
+    "nonkeep_pixel_fraction": {
+      "count": 100,
+      "max": 0.99150625,
+      "mean": 0.4831148595377604,
+      "median": 0.4484011962890625,
+      "min": 0.006558837890624999,
+      "q05": 0.11089795939127604,
+      "q95": 0.94169447265625,
+      "sd": 0.2629331978292604
+    },
+    "region_count": {
+      "count": 100,
+      "max": 300.0,
+      "mean": 220.9375,
+      "median": 156.25,
+      "min": 156.25,
+      "q05": 156.25,
+      "q95": 300.0,
+      "sd": 71.875
+    },
+    "regret_psnr_db": {
+      "count": 100,
+      "max": 0.5321451333213396,
+      "mean": 0.19183685566708575,
+      "median": 0.17798588542276628,
+      "min": 0.003161481335004268,
+      "q05": 0.02833573653472863,
+      "q95": 0.42615969743833,
+      "sd": 0.1263790495288558
+    },
+    "robust_gain_psnr_db": {
+      "count": 100,
+      "max": 3.994646652982242,
+      "mean": 1.4684858427332006,
+      "median": 1.5044867102494757,
+      "min": 0.009979412538685395,
+      "q05": 0.15277361989142219,
+      "q95": 3.0224224171291305,
+      "sd": 0.8696820599816594
+    },
+    "selected_clip_pixel_fraction": {
+      "count": 100,
+      "max": 0.20993203124999998,
+      "mean": 0.01593885099283854,
+      "median": 0.00696678466796875,
+      "min": 0.0,
+      "q05": 1.1132812500000002e-06,
+      "q95": 0.047806012776692705,
+      "sd": 0.02715808923720348
+    },
+    "taper_control_minus_content_aligned_regret_psnr_db": {
+      "count": 100,
+      "max": 0.20029882975764934,
+      "mean": -0.05783373426792597,
+      "median": -0.04794446506995165,
+      "min": -0.3453589325720605,
+      "q05": -0.2549549731022667,
+      "q95": 0.07301642439488967,
+      "sd": 0.09549115059831786
+    },
+    "taper_control_regret_psnr_db": {
+      "count": 100,
+      "max": 0.40761227267898725,
+      "mean": 0.1340031213991598,
+      "median": 0.10891599076356862,
+      "min": 0.002175077187648533,
+      "q05": 0.018179934551166666,
+      "q95": 0.3091799235561123,
+      "sd": 0.09852132954789333
+    },
+    "transferred_minus_uniform_color_bias": {
+      "count": 100,
+      "max": 0.010149546999989737,
+      "mean": -0.0021664036601460675,
+      "median": -0.0012556718091635277,
+      "min": -0.015187901188877004,
+      "q05": -0.009879216355639717,
+      "q95": 0.0017650377489129422,
+      "sd": 0.004044291040524783
+    },
+    "transferred_minus_uniform_ssim": {
+      "count": 100,
+      "max": 0.06433264911174774,
+      "mean": 0.0005475485324859619,
+      "median": -0.00022257864475250244,
+      "min": -0.007416382431983948,
+      "q05": -0.003377127647399902,
+      "q95": 0.005415078252553937,
+      "sd": 0.00702481458157865
+    }
+  },
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_STABILITY_FAIL",
+    "gate_reasons": [
+      "at least one frozen conditional measurement-validity interval clearly failed"
+    ],
+    "state": "COMPLETED_GATE_FAIL"
+  }
+}
