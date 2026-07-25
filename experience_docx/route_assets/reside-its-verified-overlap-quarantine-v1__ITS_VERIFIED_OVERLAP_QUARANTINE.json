@@ -38,7 +38,7 @@
       "id": "entrypoint_source",
       "kind": "file",
       "path": "{REMOTE_REPO}/experience_docx/tools/build_reside_its_verified_overlap_quarantine.py",
-      "sha256": "36cdb4266e90cc307897c41a16e761b24add40a44ddc77657257b05081aa411a"
+      "sha256": "a5f833d554b1e922fee58bc40aa2c6ee3d824d58eddaf303b581579378576466"
     },
     {
       "access_role": "development_screening",

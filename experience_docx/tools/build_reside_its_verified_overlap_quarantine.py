@@ -301,7 +301,7 @@ def run(context_path: Path) -> None:
         "schema_version": 1,
         "route_id": "reside-its-verified-overlap-quarantine-v1",
         "operation_id": "ITS_VERIFIED_OVERLAP_QUARANTINE",
-        "run_id": context.output_id,
+        "run_id": context.run_id,
         "scope": "verified direct Haze4K exposure quarantine for official RESIDE ITS",
         "parent_evidence": {
             "terminal": "COMPLETED_GATE_FAIL",
