@@ -1,0 +1,29 @@
+{
+  "assets": [
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "ots_source_identity_method_anchor",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_conclusion.json",
+      "sha256": "5a74e832cbaf27474a2ab5c58bc47c765dee6cea05020e997e660bc3b09bc8b5"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K"
+    }
+  ],
+  "operation_id": "ITS_SOURCE_EXCLUSION",
+  "route_id": "reside-its-source-exclusion-v1",
+  "schema_version": 1
+}

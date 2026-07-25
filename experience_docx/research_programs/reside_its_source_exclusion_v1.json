@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "program_id": "reside_its_source_exclusion",
+  "objective": "Create a reusable scene-level exclusion asset that removes every verified Haze4K source relationship from RESIDE ITS before evaluating the frozen Haze4K ConvIR-B checkpoint in the synthetic-indoor target domain.",
+  "source_anchors": [
+    {
+      "id": "reside_ots_source_identity_terminal_20260725",
+      "reference": "experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_conclusion.json",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    }
+  ],
+  "dependency_roles": {
+    "prior_source_identity_method": [
+      "diagnostic"
+    ]
+  },
+  "stages": {
+    "source_identity_qualification": {
+      "evidence_roles": [
+        "development_screening"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "its_haze4k_source_exclusion"
+      ]
+    }
+  },
+  "route_families": {
+    "its_haze4k_source_exclusion": {
+      "core_assumption": "A frozen full-census multi-view and geometric source matcher can recover all provenance-expected indoor Haze4K source relationships in ITS and conservatively exclude every accepted near-duplicate family.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the single frozen full-census identity audit; failure to recover every expected relationship establishes only a method-specific failure and does not certify absence of overlap.",
+      "reopen_evidence_types": [
+        "official_source_manifest",
+        "independent_geometric_mapping"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "target_domain",
+    "source_identity_method"
+  ],
+  "amendments": []
+}

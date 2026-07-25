@@ -1,0 +1,317 @@
+{
+  "schema_version": 1,
+  "route_id": "reside-its-source-exclusion-v1",
+  "rules_commit": "b413526ded0174a6ee7aae3149875bba43916629",
+  "title": "RESIDE ITS scene-level source exclusion qualification",
+  "rationale": "The current Haze4K continuous-utility route has never used ITS outcomes for selection, but that fact alone does not make all ITS scenes unseen by the Haze4K checkpoint. This source-identity-only route audits every canonical Haze4K source group against every ITS clear scene with a frozen multi-view matcher and conservative family exclusion. It publishes an exact reusable exclusion list only if all 500 provenance-expected indoor source relationships are recovered while positive and negative controls pass. No model, inference, outcome metric, threshold tuning, or protected data is used.",
+  "first_operation": "ITS_SOURCE_EXCLUSION",
+  "program_contract_relpath": "experience_docx/research_programs/reside_its_source_exclusion_v1.json",
+  "operations": {
+    "ITS_SOURCE_EXCLUSION": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "dataset_qualification",
+        "require_gpu": false,
+        "output_id": "reside-its-source-exclusion-v1-phase-a",
+        "closeout_filename": "reside_its_source_exclusion_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "allowed_terminal_tuples": [
+          {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "ITS_SOURCE_EXCLUSION_PASS",
+            "authorizes": "ITS_DISJOINT_MEASUREMENT_DESIGN"
+          },
+          {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "ITS_SOURCE_EXCLUSION_FAIL",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "ITS_SOURCE_EXCLUSION_INCONCLUSIVE",
+            "authorizes": "NONE"
+          },
+          {
+            "state": "FAILED_ENGINEERING",
+            "decision": null,
+            "authorizes": "NONE"
+          }
+        ],
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 600,
+        "min_free_gpu_mib": 0,
+        "max_gpu_utilization_pct": 100
+      },
+      "program_authorization": {
+        "program_id": "reside_its_source_exclusion",
+        "stage_id": "source_identity_qualification",
+        "family_id": "its_haze4k_source_exclusion",
+        "mechanism_type": "orthogonal",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {
+            "role": "prior_source_identity_method",
+            "use": "diagnostic",
+            "anchor_id": "reside_ots_source_identity_terminal_20260725"
+          }
+        ],
+        "adjacent_sequence": null,
+        "orthogonal_changes": [
+          {
+            "dimension": "target_domain",
+            "reason": "This route changes from Haze4K measurement qualification to source-identity qualification for the independent RESIDE ITS synthetic-indoor target domain."
+          }
+        ],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Can a frozen full-census matcher identify every provenance-expected indoor Haze4K source relationship in RESIDE ITS, conservatively exclude all accepted ITS source families, and leave enough independent ITS clear scenes for a separately frozen unseen-domain measurement?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "canonical_clear_source_scene",
+          "independent_group_count": 1000,
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "candidate_its_source_identity",
+          "reference": "all 1,000 canonical Haze4K clear-source groups and every official ITS clear scene",
+          "matched_budget": "full deterministic census with fixed seven views, top-64 retrieval, fixed score gates, bidirectional matching, and no result-adaptive extension",
+          "fixed_factors": [
+            "Haze4K 4,000 GT files grouped by decoded 64x64 RGB canonical digest into exactly 1,000 source scenes",
+            "ITS train and validation clear scenes kept as separate named assets but searched jointly",
+            "seven fixed full and crop views",
+            "symmetric multi-view pHash top-64 retrieval",
+            "maximum multi-view normalized grayscale correlation",
+            "forward and reverse correlation floor 0.98 and score-gap floor 0.005",
+            "one-to-one mutual-nearest requirement",
+            "accepted candidate families expanded by exact canonical identity or pHash distance zero with correlation at least 0.995",
+            "all 1,000 fixed resize-plus-JPEG Haze4K identity controls must recover their original canonical source at top 64 and top one",
+            "SOTS-outdoor scenes act as negative controls for admission to ITS",
+            "500 indoor source relationships are required; a lower count is a method-specific FAIL, not proof that overlap is absent"
+          ]
+        },
+        "primary_estimand": {
+          "id": "verified_haze4k_its_source_relationship_count",
+          "metric": "number of canonical Haze4K source groups receiving an accepted bidirectional ITS source relationship under the frozen matcher",
+          "direction": "higher",
+          "aggregation": "deterministic full-census count over canonical clear-source groups",
+          "unit": "canonical_clear_source_scene"
+        },
+        "controls": [
+          "qualified RESIDE layout hashes and all frozen directory counts",
+          "exact Haze4K canonical-group count and four-alias grouping",
+          "top-64 and top-one recovery of every fixed transformed Haze4K identity control",
+          "zero accepted ITS mappings among all 492 SOTS-outdoor negative controls",
+          "one-to-one forward and reverse nearest-neighbour checks",
+          "explicit statement that matcher failure is not an infeasibility certificate"
+        ],
+        "uncertainty": {
+          "method": "deterministic full-population identity audit; integrity decisions use exact census counts and nested views never increase independent n",
+          "confidence_level": 0.95,
+          "independent_unit": "canonical_clear_source_scene"
+        },
+        "gates": [
+          {
+            "id": "dataset_identity",
+            "type": "integrity",
+            "estimand": "frozen RESIDE hashes, 11,000 ITS clear scenes, 4,000 Haze4K GT files, and 492 SOTS-outdoor controls match",
+            "direction": "equal",
+            "threshold": 1,
+            "decision_role": "inconclusive_only"
+          },
+          {
+            "id": "haze4k_group_integrity",
+            "type": "integrity",
+            "estimand": "1,000 canonical Haze4K source groups with four aliases each",
+            "direction": "equal",
+            "threshold": 1,
+            "decision_role": "inconclusive_only"
+          },
+          {
+            "id": "transformed_positive_top_k_recall",
+            "type": "integrity",
+            "estimand": "proportion of fixed transformed Haze4K identity controls whose original source is present in top 64",
+            "direction": "equal",
+            "threshold": 1,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "transformed_positive_top_one_recovery",
+            "type": "integrity",
+            "estimand": "proportion of fixed transformed Haze4K identity controls recovering the original source at top one",
+            "direction": "equal",
+            "threshold": 1,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "negative_control_specificity",
+            "type": "integrity",
+            "estimand": "proportion of 492 SOTS-outdoor controls rejected by ITS acceptance",
+            "direction": "equal",
+            "threshold": 1,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "source_relationship_completeness",
+            "type": "integrity",
+            "estimand": "accepted Haze4K-to-ITS source relationships",
+            "direction": "equal",
+            "threshold": 500,
+            "decision_role": "decisive"
+          },
+          {
+            "id": "eligible_its_capacity",
+            "type": "coverage",
+            "estimand": "ITS clear scenes remaining after conservative family exclusion",
+            "direction": "min",
+            "threshold": 6000,
+            "decision_role": "decisive"
+          }
+        ],
+        "competing_explanation": "ITS and Haze4K source images may differ by crop, resize, compression, color transform, or near-duplicate family membership beyond the frozen global matcher. A FAIL therefore identifies a limitation of this method, not proof that no safe ITS pool exists.",
+        "terminal_mapping": {
+          "pass": {
+            "state": "COMPLETED_GATE_PASS",
+            "decision": "ITS_SOURCE_EXCLUSION_PASS",
+            "authorizes": "ITS_DISJOINT_MEASUREMENT_DESIGN"
+          },
+          "fail": {
+            "state": "COMPLETED_GATE_FAIL",
+            "decision": "ITS_SOURCE_EXCLUSION_FAIL",
+            "authorizes": "NONE"
+          },
+          "inconclusive": {
+            "state": "COMPLETED_INCONCLUSIVE",
+            "decision": "ITS_SOURCE_EXCLUSION_INCONCLUSIVE",
+            "authorizes": "NONE"
+          }
+        },
+        "disabled_actions": [
+          "model or module selection",
+          "training, inference, dehazing evaluation, or metric computation on model outputs",
+          "using ITS, Haze4K, OTS, or SOTS images as outcome evidence",
+          "adapting views, top-k, thresholds, family expansion, controls, or matching rules after results",
+          "claiming absence of source overlap or mapping infeasibility from a matcher FAIL",
+          "combining future ITS scenes with Haze4K scenes as one target population",
+          "ITS measurement execution before a PASS closeout"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/resolve_reside_its_source_exclusion.py",
+        "timeout_seconds": 10800,
+        "expected_wall_seconds": 3600,
+        "total_units": 17984,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {
+          "CONVIR_ROUTE_ITS_SOURCE_WORKERS": "8"
+        },
+        "evidence_files": [
+          {
+            "source_relpath": "workload/its_source_exclusion_summary.json",
+            "destination_filename": "reside_its_source_exclusion_v1_summary.json",
+            "required": true,
+            "max_bytes": 131072
+          },
+          {
+            "source_relpath": "workload/haze4k_its_source_mapping.csv",
+            "destination_filename": "reside_its_source_exclusion_v1_mapping.csv",
+            "required": true,
+            "max_bytes": 524288
+          },
+          {
+            "source_relpath": "workload/its_exclusion_ids.txt",
+            "destination_filename": "reside_its_source_exclusion_v1_exclusions.txt",
+            "required": true,
+            "max_bytes": 524288
+          }
+        ],
+        "engineering_contract": {
+          "mode": "cpu_exact",
+          "max_seconds": 180
+        },
+        "precision_contract": {
+          "mode": "descriptive_capacity",
+          "rationale": "The operation observes the complete 1,000-group Haze4K source census and all 11,000 ITS clear scenes; identity and capacity decisions use exact counts rather than sampling intervals."
+        }
+      },
+      "assets": [
+        {
+          "id": "ots_source_identity_method_anchor",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_conclusion.json",
+          "sha256": "5a74e832cbaf27474a2ab5c58bc47c765dee6cea05020e997e660bc3b09bc8b5",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "reside_root",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "haze4k_root",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+          "access_role": "development_screening",
+          "contract_access": false
+        }
+      ],
+      "capability": {
+        "profile_id": "reside_its_source_exclusion_cpu_v1",
+        "contract_mode": "cpu_exact",
+        "minimum_fixture": {
+          "batch": 1000,
+          "channels": 7,
+          "height": 1,
+          "width": 11000
+        },
+        "bound_assets": [
+          {
+            "id": "ots_source_identity_method_anchor",
+            "identity": "5a74e832cbaf27474a2ab5c58bc47c765dee6cea05020e997e660bc3b09bc8b5"
+          }
+        ],
+        "compatibility_imports": [
+          "numpy",
+          "PIL",
+          "scipy.fft"
+        ],
+        "production_path_statement": "The CPU contract executes the exact multi-view pHash candidate-order implementation at the full 1,000-query by 11,000-candidate work scale with seven views and top-64 selection, without reading scientific data.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true
+      },
+      "precision": {
+        "certificate_id": "reside_its_source_exclusion_v1_capacity",
+        "estimand": "Haze4K source-group relationship proportion",
+        "method": "binomial_worst_case",
+        "confidence_level": 0.95,
+        "target_half_width": 0.035,
+        "planning_sd": 0.5,
+        "independent_groups_available": 1000,
+        "independent_groups_required": 784,
+        "feasible": true,
+        "source_role": "unrestricted",
+        "source_reference": "Worst-case Bernoulli standard deviation 0.5; the route observes all 1,000 canonical Haze4K source groups."
+      }
+    }
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "competing_explanation": "ITS and Haze4K source images may differ by crop, resize, compression, color transform, or near-duplicate family membership beyond the frozen global matcher. A FAIL therefore identifies a limitation of this method, not proof that no safe ITS pool exists.",
+  "controls": [
+    "qualified RESIDE layout hashes and all frozen directory counts",
+    "exact Haze4K canonical-group count and four-alias grouping",
+    "top-64 and top-one recovery of every fixed transformed Haze4K identity control",
+    "zero accepted ITS mappings among all 492 SOTS-outdoor negative controls",
+    "one-to-one forward and reverse nearest-neighbour checks",
+    "explicit statement that matcher failure is not an infeasibility certificate"
+  ],
+  "disabled_actions": [
+    "model or module selection",
+    "training, inference, dehazing evaluation, or metric computation on model outputs",
+    "using ITS, Haze4K, OTS, or SOTS images as outcome evidence",
+    "adapting views, top-k, thresholds, family expansion, controls, or matching rules after results",
+    "claiming absence of source overlap or mapping infeasibility from a matcher FAIL",
+    "combining future ITS scenes with Haze4K scenes as one target population",
+    "ITS measurement execution before a PASS closeout"
+  ],
+  "gates": [
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "frozen RESIDE hashes, 11,000 ITS clear scenes, 4,000 Haze4K GT files, and 492 SOTS-outdoor controls match",
+      "id": "dataset_identity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "1,000 canonical Haze4K source groups with four aliases each",
+      "id": "haze4k_group_integrity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "proportion of fixed transformed Haze4K identity controls whose original source is present in top 64",
+      "id": "transformed_positive_top_k_recall",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "proportion of fixed transformed Haze4K identity controls recovering the original source at top one",
+      "id": "transformed_positive_top_one_recovery",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "proportion of 492 SOTS-outdoor controls rejected by ITS acceptance",
+      "id": "negative_control_specificity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "accepted Haze4K-to-ITS source relationships",
+      "id": "source_relationship_completeness",
+      "threshold": 500,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "ITS clear scenes remaining after conservative family exclusion",
+      "id": "eligible_its_capacity",
+      "threshold": 6000,
+      "type": "coverage"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "Haze4K 4,000 GT files grouped by decoded 64x64 RGB canonical digest into exactly 1,000 source scenes",
+      "ITS train and validation clear scenes kept as separate named assets but searched jointly",
+      "seven fixed full and crop views",
+      "symmetric multi-view pHash top-64 retrieval",
+      "maximum multi-view normalized grayscale correlation",
+      "forward and reverse correlation floor 0.98 and score-gap floor 0.005",
+      "one-to-one mutual-nearest requirement",
+      "accepted candidate families expanded by exact canonical identity or pHash distance zero with correlation at least 0.995",
+      "all 1,000 fixed resize-plus-JPEG Haze4K identity controls must recover their original canonical source at top 64 and top one",
+      "SOTS-outdoor scenes act as negative controls for admission to ITS",
+      "500 indoor source relationships are required; a lower count is a method-specific FAIL, not proof that overlap is absent"
+    ],
+    "matched_budget": "full deterministic census with fixed seven views, top-64 retrieval, fixed score gates, bidirectional matching, and no result-adaptive extension",
+    "primary_variable": "candidate_its_source_identity",
+    "reference": "all 1,000 canonical Haze4K clear-source groups and every official ITS clear scene"
+  },
+  "operation_id": "ITS_SOURCE_EXCLUSION",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "canonical_clear_source_scene",
+    "independent_group_count": 1000
+  },
+  "primary_estimand": {
+    "aggregation": "deterministic full-census count over canonical clear-source groups",
+    "direction": "higher",
+    "id": "verified_haze4k_its_source_relationship_count",
+    "metric": "number of canonical Haze4K source groups receiving an accepted bidirectional ITS source relationship under the frozen matcher",
+    "unit": "canonical_clear_source_scene"
+  },
+  "question": "Can a frozen full-census matcher identify every provenance-expected indoor Haze4K source relationship in RESIDE ITS, conservatively exclude all accepted ITS source families, and leave enough independent ITS clear scenes for a separately frozen unseen-domain measurement?",
+  "route_id": "reside-its-source-exclusion-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "ITS_SOURCE_EXCLUSION_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "NONE",
+      "decision": "ITS_SOURCE_EXCLUSION_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "ITS_DISJOINT_MEASUREMENT_DESIGN",
+      "decision": "ITS_SOURCE_EXCLUSION_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "canonical_clear_source_scene",
+    "method": "deterministic full-population identity audit; integrity decisions use exact census counts and nested views never increase independent n"
+  }
+}
