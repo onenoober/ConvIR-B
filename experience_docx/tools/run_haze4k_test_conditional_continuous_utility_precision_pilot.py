@@ -284,7 +284,6 @@ def contract(context_path: Path) -> None:
             "fixture": {"batch": 1, "channels": 3, "height": height, "width": width},
             "production_path_exercised": True, "protected_data_touched": False,
             "scientific_output_created": False, "scientific_training_occurred": False,
-            "reference_checks": references,
         },
     )
 

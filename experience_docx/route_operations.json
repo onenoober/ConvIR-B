@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-test-conditional-continuous-utility-contrast-measurement-qualification-v1.json",
-  "experiment_spec_sha256": "897a7b14021efc037d1a60094f43d6b261022389743d4ddb72fec021a46d5ef4",
+  "experiment_spec_sha256": "ea4cb882ed01e9dad3ce11184112a07e96f87ad906ffe7a8bfa44bd4d03a10e0",
   "operations": {
     "HAZE4K_TEST_CONDITIONAL_CONTINUOUS_UTILITY_PRECISION_PILOT": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 4096,
       "mode": "conditional_continuous_utility_precision_pilot",
       "monitor_profile": "standard",
-      "output_id": "haze4k-test-conditional-continuous-utility-contrast-measurement-qualification-v1-precision-pilot-r1",
+      "output_id": "haze4k-test-conditional-continuous-utility-contrast-measurement-qualification-v1-precision-pilot-r2",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
