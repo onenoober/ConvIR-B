@@ -578,7 +578,7 @@ def contract(context_path: Path) -> None:
         synthetic_features.append({
             "full_id": f"SYNTHETIC:{scene:05d}",
             "descriptors": generator.integers(
-                0, 256, size=(64, 32), dtype=np.uint8,
+                0, 256, size=(ORB_INDEX_FEATURES, 32), dtype=np.uint8,
             ),
             "phashes": generator.integers(0, 256, size=(7, 8), dtype=np.uint8),
         })
@@ -586,7 +586,9 @@ def contract(context_path: Path) -> None:
     retrieval_sizes = []
     for _ in range(EXPECTED_HAZE4K_GROUPS):
         query = {
-            "descriptors": generator.integers(0, 256, size=(64, 32), dtype=np.uint8),
+            "descriptors": generator.integers(
+                0, 256, size=(ORB_INDEX_FEATURES, 32), dtype=np.uint8,
+            ),
             "phashes": generator.integers(0, 256, size=(7, 8), dtype=np.uint8),
         }
         result = index.retrieve(query)
@@ -634,7 +636,12 @@ def contract(context_path: Path) -> None:
         engineering={
             "mode": "cpu_exact",
             "device": "cpu",
-            "fixture": {"batch": 11000, "channels": 8, "height": 64, "width": 32},
+            "fixture": {
+                "batch": 11000,
+                "channels": 8,
+                "height": ORB_INDEX_FEATURES,
+                "width": 32,
+            },
             "production_path_exercised": True,
             "protected_data_touched": False,
             "scientific_output_created": False,

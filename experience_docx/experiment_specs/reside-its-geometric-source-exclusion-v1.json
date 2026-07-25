@@ -12,7 +12,7 @@
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "dataset_qualification",
         "require_gpu": false,
-        "output_id": "reside-its-geometric-source-exclusion-v1-phase-a",
+        "output_id": "reside-its-geometric-source-exclusion-v1-phase-a-repair1",
         "closeout_filename": "reside_its_geometric_source_exclusion_v1_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
@@ -376,7 +376,7 @@
           "numpy",
           "PIL"
         ],
-        "production_path_statement": "The CPU contract executes the exact four-table multi-index builder and retriever at 11,000 reference scenes and 1,000 queries with synthetic ORB descriptors, plus the exact final RootSIFT-RANSAC positive and negative fixture, without reading scientific data.",
+        "production_path_statement": "The CPU contract executes the exact eight-table multi-index builder and retriever at 11,000 reference scenes and 1,000 queries with 384 synthetic ORB descriptors per scene, plus the exact final RootSIFT-RANSAC positive and negative fixture, without reading scientific data.",
         "protected_data_prohibited": true,
         "scientific_output_prohibited": true,
         "scientific_training_prohibited": true
