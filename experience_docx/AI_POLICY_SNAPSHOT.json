@@ -71,18 +71,18 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "a3daa9e6f0c9ae77b2df7d06dbcb6e073513f4dcef6f25ee9efc82e3af7f1aa5",
-  "rules_commit": "a5e49ea096a72403e44c12347f25d942748f1a07",
+  "rules_bundle_sha256": "6cbd3f568f82e99c971df69c89dbc41e3386d68d0851e2f8131dca34d6e67b5d",
+  "rules_commit": "b413526ded0174a6ee7aae3149875bba43916629",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "sources": {
     "AGENTS.md": {
-      "bytes": 7526,
-      "sha256": "86ed86422de530b1e3288632ea74f51b45f534636def4dc49890a7a2d1403b85"
+      "bytes": 7680,
+      "sha256": "51ba0bcb7bcf02f320ad81f02d0cd5be8884b905f3be3e4234fdeba9b1b2fbc2"
     },
     "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md": {
-      "bytes": 3023,
-      "sha256": "b3b1096460f57e9ef5ccead81c245e6f657e4d77b078d4268aa43a850f241e7c"
+      "bytes": 3197,
+      "sha256": "9fd65a503c0fc9c582f1683c94e31f0be5afded0fa75edb079558c26dbaaae15"
     },
     "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md": {
       "bytes": 9141,
@@ -97,12 +97,12 @@
       "sha256": "6814febce63781c8b961c78bdcba060afa908621a09e6322c0dd109845322072"
     },
     "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md": {
-      "bytes": 7129,
-      "sha256": "ef1e14a29cc9b9cefe26fbf46c899b00c3f8878238e7c720b1ce164cc8956d56"
+      "bytes": 7376,
+      "sha256": "4f22d7df3faafdaad32de38bf12353c793f5bc3e7d13d6022835ef61c73fa0db"
     },
     "experience_docx/ROUTE_READY_FASTPATH.md": {
-      "bytes": 10595,
-      "sha256": "35112a777342dc59a6a5c95f9ecb8649f0c4cc257655bbc77275601aa2599e9a"
+      "bytes": 11068,
+      "sha256": "ed4e9ebb435b299970a5bb43c481ea89cc79572c9ac476b08384d89ba2cff10a"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
       "bytes": 7249,
