@@ -1,0 +1,23 @@
+{
+  "route_id": "haze4k-test-conditional-continuous-utility-contrast-measurement-qualification-v1",
+  "operation_id": "HAZE4K_TEST_CONDITIONAL_CONTINUOUS_UTILITY_PRECISION_PILOT",
+  "run_id": "haze4k-test-conditional-continuous-utility-contrast-measurement-qualification-v1-precision-pilot-r2",
+  "decision": "HAZE4K_CONTINUOUS_UTILITY_BLOCKED_PRECISION",
+  "authorizes": "NONE",
+  "primary_result": "The preregistered variance-only pilot completed all 32 canonical development scenes and 128 nested haze variants with every identity, grouping, keep/affine, no-training, and protected-data control passing. The scene-level continuous-utility error SD was 0.350329 dB. Its one-sided 95 percent bootstrap and chi-square SD upper bounds were 0.431961 and 0.444219 dB, so the conservative planning SD was 0.444219 dB versus the frozen maximum 0.127553 dB. Under the frozen normal-mean calculation, approximately 1213 independent scenes would be required for a 0.025 dB precision distance, while only 100 are available. The full continuous-utility qualification operation is therefore blocked for precision.",
+  "gate_reasons": [
+    "All seven integrity checks passed: the direct parent terminal, complete source population, fixed hash selection, 32-scene/128-variant completion, keep and affine manipulation, isolated development role, no training, and no protected access were valid.",
+    "The conservative one-sided 95 percent planning SD upper bound was 0.444219 dB, exceeding the frozen 0.127553 dB maximum by about 3.48 times.",
+    "The bootstrap SD upper bound was independently high at 0.431961 dB, so the decision is not driven only by the approximate-normal chi-square calibration.",
+    "The frozen precision calculation required 1213 independent scenes for a 0.025 dB distance, exceeding the 100-scene development limit.",
+    "The pilot deliberately withheld the primary mean; no target-stability PASS or FAIL was computed."
+  ],
+  "competing_explanation": "The result establishes inadequate precision for the currently frozen scene-mean estimand at n=100, not instability of the continuous utility target itself. Large between-scene heterogeneity may reflect the worst-phase aggregation, L-infinity action aggregation, genuine scene heterogeneity, or their interaction. Because the pilot was variance-only and published no primary mean or per-scene outcomes, it cannot distinguish those explanations. Changing the estimand, aggregation, margin, or uncertainty method would be a new Stage-1 measurement contract rather than a repair of this terminal.",
+  "limitations": [
+    "The 32 pilot scenes are a fixed subset of the same 100 development scenes and are neither confirmation data nor additional independent evidence.",
+    "The primary continuous-utility error mean was withheld by design, so this result cannot establish whether the target error is below or above 0.05 dB.",
+    "The 1213-scene requirement is the frozen normal-mean planning calculation using the conservative SD upper bound; it is not a universal minimum for every possible estimand.",
+    "Haze variants, phases, tiles, pixels, actions, and bootstrap draws are nested or repeated measurements and cannot increase independent n.",
+    "This development-screening terminal authorizes no full 100-scene operation, Stage 2, confirmation data, NH-HAZE, training, model selection, or deployment claim."
+  ]
+}

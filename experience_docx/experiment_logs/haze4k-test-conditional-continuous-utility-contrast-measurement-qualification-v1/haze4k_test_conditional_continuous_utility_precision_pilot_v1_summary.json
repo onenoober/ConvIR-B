@@ -1,0 +1,61 @@
+{
+  "estimand": "SD of canonical-scene worst-held-out-phase area-weighted L-infinity error for two keep-referenced continuous PSNR utility contrasts",
+  "future_frozen_gate": {
+    "fail": "one-sided 95 percent LCB above 0.05 dB",
+    "inconclusive": "interval crosses 0.05 dB or upper-bound distance exceeds 0.025 dB",
+    "pass": "one-sided 95 percent UCB below 0.05 dB",
+    "utility_error_margin_db": 0.05
+  },
+  "identity_and_integrity": {
+    "checks": {
+      "complete_32_scene_128_variant_pilot": true,
+      "complete_dataset_before_fixed_subset": true,
+      "direct_parent_terminal_exact": true,
+      "fixed_hash_selection_complete": true,
+      "isolated_development_asset_only": true,
+      "keep_and_affine_controls": true,
+      "no_training_or_protected_access": true
+    },
+    "failure_count": 0,
+    "failures": []
+  },
+  "limitations": [
+    "The pilot uses 32 of the same 100 development scenes and cannot serve as confirmation or increase future independent n.",
+    "Only the dispersion needed for pre-run precision planning is released; the primary mean and target verdict remain unexamined.",
+    "The chi-square SD bound assumes approximately normal scene values; the gate conservatively also requires the nonparametric bootstrap SD upper bound.",
+    "No result authorizes Stage 2, confirmation data, NH-HAZE, training, model selection, or deployment claims."
+  ],
+  "marker": "HAZE4K_CONTINUOUS_UTILITY_PRECISION_PILOT_COMPLETE",
+  "operation_id": "HAZE4K_TEST_CONDITIONAL_CONTINUOUS_UTILITY_PRECISION_PILOT",
+  "precision_feasibility": {
+    "bootstrap_one_sided_95_sd_upper_db": 0.4319612596329138,
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 20260811,
+    "chi_square_one_sided_95_sd_upper_db": 0.444218872067388,
+    "conservative_planning_sd_db": 0.444218872067388,
+    "feasible": false,
+    "future_independent_scenes_available": 100,
+    "future_independent_scenes_required": 1213,
+    "future_target_half_width_db": 0.025,
+    "maximum_planning_sd_db": 0.12755336423116348,
+    "pilot_scene_count": 32,
+    "primary_mean_withheld": true,
+    "sample_sd_db": 0.3503289895035461
+  },
+  "route_id": "haze4k-test-conditional-continuous-utility-contrast-measurement-qualification-v1",
+  "run_id": "haze4k-test-conditional-continuous-utility-contrast-measurement-qualification-v1-precision-pilot-r2",
+  "schema_version": 1,
+  "scope": "Variance-only internal development-screening precision supplement; primary mean is withheld and no target qualification is decided.",
+  "selection": {
+    "independent_scenes": 32,
+    "method": "first 32 canonical scene digests after SHA-256 ordering with a frozen public salt",
+    "nested_variants": 128,
+    "salt": "haze4k-continuous-utility-precision-pilot-v1",
+    "selection_digest": "4ea1d74df4ccc89b4df95c51271d13b2a16a5b9c62aa74b69babad092ca83d61"
+  },
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "HAZE4K_CONTINUOUS_UTILITY_BLOCKED_PRECISION",
+    "state": "COMPLETED_GATE_FAIL"
+  }
+}
