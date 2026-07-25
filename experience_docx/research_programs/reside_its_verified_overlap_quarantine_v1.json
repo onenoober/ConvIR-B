@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "program_id": "reside_its_verified_overlap_quarantine",
+  "objective": "Create a reusable, exposure-tiered quarantine asset from already verified direct Haze4K-to-RESIDE-ITS relationships without claiming complete Haze4K-ITS disjointness or requiring a conjectured relationship total.",
+  "source_anchors": [
+    {
+      "id": "reside_its_geometric_terminal_20260725",
+      "reference": "experience_docx/experiment_logs/reside-its-geometric-source-exclusion-v1/reside_its_geometric_source_exclusion_v1_conclusion.json",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    }
+  ],
+  "dependency_roles": {
+    "verified_direct_relationship_evidence": [
+      "diagnostic"
+    ]
+  },
+  "stages": {
+    "verified_overlap_quarantine": {
+      "evidence_roles": [
+        "development_screening"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "its_verified_direct_overlap_quarantine"
+      ]
+    }
+  },
+  "route_families": {
+    "its_verified_direct_overlap_quarantine": {
+      "core_assumption": "Direct Haze4K-anchored relationships already accepted by the frozen parent geometry rule can conservatively define known-overlap quarantine tiers even though the parent did not prove relationship completeness or a valid transitive ITS family closure.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after one exact evidence-identity, tier-count, official-ID-membership and remaining-capacity census.",
+      "reopen_evidence_types": [
+        "official_source_manifest",
+        "independently_verified_direct_relationships"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "authorization_target",
+    "quarantine_scope",
+    "exposure_role"
+  ],
+  "amendments": []
+}

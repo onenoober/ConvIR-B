@@ -1,0 +1,157 @@
+{
+  "competing_explanation": "Additional Haze4K-to-ITS overlaps may remain among the 574 parent-unresolved groups, while some directly accepted IDs may be visually duplicated members rather than one privileged source filename. The assets therefore define conservative known-overlap quarantine populations and cannot support a claim of complete unseen-scene disjointness.",
+  "controls": [
+    "parent closeout, conclusion, summary and relationship table are exact SHA-256-bound inputs",
+    "the parent terminal remains a method-specific FAIL and is used only for its verified direct diagnostic rows",
+    "the qualified RESIDE archive hashes and exact 10,000 ITS-train plus 1,000 ITS-validation counts must reproduce",
+    "all 2,187 union IDs must occur exactly in the official ITS split-qualified ID set",
+    "the 1,653 training-tier IDs comprise exactly 1,498 ITS-train and 155 ITS-validation IDs",
+    "the 2,187 union IDs comprise exactly 2,032 ITS-train and 155 ITS-validation IDs",
+    "the Haze4K-train and Haze4K-test derived ID sets have zero intersection",
+    "non-PASS terminal states publish empty authorized exclusion files"
+  ],
+  "disabled_actions": [
+    "new image matching or source relationship search",
+    "requiring or forcing exactly 500 Haze4K-to-ITS relationships",
+    "ITS-to-ITS transitive family expansion",
+    "claiming that rejected parent queries prove absence of overlap",
+    "claiming complete Haze4K-ITS source disjointness or a sealed unseen test population",
+    "model selection, training, inference, dehazing evaluation or outcome metrics",
+    "confirmation, canary or locked-test access",
+    "measurement execution before a PASS closeout and a separately frozen measurement design"
+  ],
+  "gates": [
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "parent closeout and conclusion identities and terminal tuple match",
+      "id": "parent_terminal_identity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "parent table contains 1,000 rows, 426 accepted relationships, 574 rejected relationships and 2,187 accepted candidate IDs",
+      "id": "parent_count_identity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "parent table contains 1,000 unique canonical group digests and Haze4K representatives",
+      "id": "parent_group_integrity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "qualified RESIDE hashes and exact 10,000 ITS-train plus 1,000 ITS-validation clear scenes match",
+      "id": "dataset_identity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "every accepted parent row names at least one unique accepted ITS ID and its best ID belongs to that set",
+      "id": "direct_evidence_integrity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "relationship, exposure-tier, split and intersection counts equal the frozen 302, 124, 1,653, 534 and 2,187 values",
+      "id": "tier_count_identity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "proportion of union quarantine IDs present in the official split-qualified ITS identifier set",
+      "id": "official_its_membership",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "official ITS clear scenes remaining after training-exposure quarantine",
+      "id": "train_scope_capacity",
+      "threshold": 6000,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "official ITS clear scenes remaining after training-plus-selection-exposure quarantine",
+      "id": "train_selection_scope_capacity",
+      "threshold": 6000,
+      "type": "coverage"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "only parent rows with accepted=True contribute IDs",
+      "HAZE4K_TRAIN rows define the training-exposure tier",
+      "the union of HAZE4K_TRAIN and HAZE4K_TEST rows defines the training-plus-selection-exposure tier",
+      "accepted ITS IDs remain split-qualified full identifiers such as ITS_TRAIN:id or ITS_VALIDATION:id",
+      "the parent evidence must contain exactly 302 accepted HAZE4K_TRAIN relationships and 124 accepted HAZE4K_TEST relationships",
+      "the training tier must contain exactly 1,653 unique ITS IDs and the union tier exactly 2,187 unique ITS IDs",
+      "all quarantined IDs must exist in the qualified official ITS copy",
+      "each tier must leave at least 6,000 official ITS clear scenes",
+      "no conjectured total source-relationship count is a gate",
+      "no rejected parent query is interpreted as evidence of absence",
+      "no ITS-to-ITS transitive family propagation is allowed",
+      "a PASS claims known verified overlap quarantine only, never complete Haze4K-ITS disjointness"
+    ],
+    "matched_budget": "one deterministic metadata and official-ID membership census with no image decoding, image matching, model inference or family propagation",
+    "primary_variable": "verified_direct_haze4k_exposure_quarantine_membership",
+    "reference": "all 11,000 official ITS clear-scene identifiers and the exact archived 1,000-row parent relationship evidence"
+  },
+  "operation_id": "ITS_VERIFIED_OVERLAP_QUARANTINE",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "official_its_clear_scene_identifier",
+    "independent_group_count": 11000
+  },
+  "primary_estimand": {
+    "aggregation": "deterministic set subtraction on split-qualified official ITS scene identifiers",
+    "direction": "higher",
+    "id": "eligible_its_scenes_after_train_selection_exposure_quarantine",
+    "metric": "number of official ITS clear-scene identifiers remaining after removing the union of direct IDs verified against Haze4K training and test or selection sources",
+    "unit": "official_its_clear_scene_identifier"
+  },
+  "question": "Do the 426 Haze4K-to-ITS relationships directly accepted by the frozen parent geometry rule yield exact training-exposure and training-plus-selection-exposure quarantine assets whose IDs all belong to the qualified official 11,000-scene ITS copy and whose complements retain at least 6,000 scenes?",
+  "route_id": "reside-its-verified-overlap-quarantine-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "ITS_VERIFIED_OVERLAP_QUARANTINE_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "NONE",
+      "decision": "ITS_VERIFIED_OVERLAP_QUARANTINE_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "ITS_KNOWN_OVERLAP_QUARANTINED_MEASUREMENT_DESIGN",
+      "decision": "ITS_VERIFIED_OVERLAP_QUARANTINE_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "official_its_clear_scene_identifier",
+    "method": "deterministic full-population identifier census; no sampling uncertainty is asserted and the result does not estimate residual unidentified overlap"
+  }
+}

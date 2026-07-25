@@ -1,0 +1,54 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/reside-its-verified-overlap-quarantine-v1__ITS_VERIFIED_OVERLAP_QUARANTINE.json",
+  "engineering_contract": {
+    "capability_profile_relpath": null,
+    "max_seconds": 30,
+    "mode": "metadata_only"
+  },
+  "entrypoint_relpath": "experience_docx/tools/build_reside_its_verified_overlap_quarantine.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "reside_its_verified_overlap_quarantine_v1_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/verified_overlap_quarantine_summary.json"
+    },
+    {
+      "destination_filename": "reside_its_verified_overlap_quarantine_v1_relationships.csv",
+      "max_bytes": 1048576,
+      "required": true,
+      "source_relpath": "workload/verified_overlap_relationships.csv"
+    },
+    {
+      "destination_filename": "reside_its_verified_overlap_quarantine_v1_train_exclusions.txt",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/train_exposure_exclusions.txt"
+    },
+    {
+      "destination_filename": "reside_its_verified_overlap_quarantine_v1_train_selection_exclusions.txt",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/train_selection_exposure_exclusions.txt"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 60,
+  "operation_id": "ITS_VERIFIED_OVERLAP_QUARANTINE",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/reside-its-verified-overlap-quarantine-v1__ITS_VERIFIED_OVERLAP_QUARANTINE.json",
+    "mode": "descriptive_capacity",
+    "rationale": "This operation deterministically transforms complete archived direct-relationship evidence into two identifier sets and verifies every ID against the full official ITS census; it estimates no sampled quantity or residual-overlap rate."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "reside-its-verified-overlap-quarantine-v1",
+  "schema_version": 2,
+  "timeout_seconds": 600,
+  "total_units": 11000
+}

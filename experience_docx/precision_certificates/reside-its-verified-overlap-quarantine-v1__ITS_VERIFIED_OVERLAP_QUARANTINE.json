@@ -1,0 +1,14 @@
+{
+  "certificate_id": "reside_its_verified_overlap_quarantine_v1_census",
+  "confidence_level": 0.95,
+  "estimand": "official ITS clear-scene membership remaining after verified direct-overlap quarantine",
+  "feasible": true,
+  "independent_groups_available": 11000,
+  "independent_groups_required": 9604,
+  "method": "binomial_worst_case",
+  "planning_sd": 0.5,
+  "schema_version": 1,
+  "source_reference": "All 11,000 official split-qualified ITS clear-scene identifiers are enumerated; the formal capacity gate uses the exact census count rather than a sample estimate.",
+  "source_role": "unrestricted",
+  "target_half_width": 0.01
+}
