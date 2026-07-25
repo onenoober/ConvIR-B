@@ -1831,8 +1831,6 @@ def contract(context_path: Path) -> None:
             "mode": "gpu_synthetic_no_data",
             "device": "cuda",
             "fixture": {"batch": 1, "channels": 3, "height": height, "width": width},
-            "full_scale_fixture_max_seconds": CONTRACT_MAX_SECONDS,
-            "full_scale_fixture_elapsed_seconds": time.monotonic() - started_at,
             "production_path_exercised": True,
             "protected_data_touched": False,
             "scientific_output_created": False,

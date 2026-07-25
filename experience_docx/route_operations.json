@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-test-conditional-content-aligned-region-measurement-qualification-v1.json",
-  "experiment_spec_sha256": "90cd0f4579652a6a9bc486388e2973f86d673994ab9657535dbd8f52c3e51c61",
+  "experiment_spec_sha256": "04e5c0f12d67d0992bd755267f7536ccaca8f72223885cc74690834c5075d686",
   "operations": {
     "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_MEASUREMENT_QUALIFICATION": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 4096,
       "mode": "conditional_content_aligned_region_measurement_qualification",
       "monitor_profile": "standard",
-      "output_id": "haze4k-test-conditional-content-aligned-region-measurement-qualification-v1-phase-a",
+      "output_id": "haze4k-test-conditional-content-aligned-region-measurement-qualification-v1-phase-a-r1",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
