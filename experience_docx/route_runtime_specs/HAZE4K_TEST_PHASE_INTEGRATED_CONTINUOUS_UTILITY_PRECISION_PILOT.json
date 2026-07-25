@@ -1,0 +1,36 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/haze4k-test-phase-integrated-continuous-utility-measurement-v1__HAZE4K_TEST_PHASE_INTEGRATED_CONTINUOUS_UTILITY_PRECISION_PILOT.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/haze4k-test-phase-integrated-continuous-utility-measurement-v1__HAZE4K_TEST_PHASE_INTEGRATED_CONTINUOUS_UTILITY_PRECISION_PILOT.json",
+    "max_seconds": 900,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/run_haze4k_test_phase_integrated_continuous_utility_precision_pilot.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "haze4k_test_phase_integrated_continuous_utility_precision_pilot_v1_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_test_phase_integrated_continuous_utility_precision_pilot_v1_summary.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 1800,
+  "operation_id": "HAZE4K_TEST_PHASE_INTEGRATED_CONTINUOUS_UTILITY_PRECISION_PILOT",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/haze4k-test-phase-integrated-continuous-utility-measurement-v1__HAZE4K_TEST_PHASE_INTEGRATED_CONTINUOUS_UTILITY_PRECISION_PILOT.json",
+    "mode": "descriptive_capacity",
+    "rationale": "This is the formal variance supplement for the new estimand. The algebraic maximum planning SD compatible with a 0.025 dB distance at future n=100 implies a 25-group capacity check at a 0.05 dB descriptive distance; the fixed 32-scene pilot therefore has adequate capacity without counting nested repeats. Its observed conservative SD bound, not this certificate, decides future feasibility."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "haze4k-test-phase-integrated-continuous-utility-measurement-v1",
+  "schema_version": 2,
+  "timeout_seconds": 7200,
+  "total_units": 131
+}
