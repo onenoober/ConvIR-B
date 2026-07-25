@@ -33,10 +33,10 @@ tools=$work/repo/experience_docx/tools
   "$tools/tests/test_route_lifecycle.py"
 
 printf 'CONTROL_PLANE_HARDENING_STAGE=targeted_regression\n'
-PYTHONPATH="$tools" "$python" -m unittest -v \
-  experience_docx.tools.tests.test_validate_route_ready \
-  experience_docx.tools.tests.test_validate_engineering_repair \
-  experience_docx.tools.tests.test_route_lifecycle
+PYTHONPATH="$tools:$tools/tests" "$python" -m unittest -v \
+  test_validate_route_ready \
+  test_validate_engineering_repair \
+  test_route_lifecycle
 
 printf 'CONTROL_PLANE_HARDENING_STAGE=full_control_plane_regression\n'
 stdout=$work/unittest.stdout
