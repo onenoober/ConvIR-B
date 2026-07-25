@@ -1,0 +1,24 @@
+{
+  "route_id": "reside-its-geometric-source-exclusion-v1",
+  "operation_id": "ITS_GEOMETRIC_SOURCE_EXCLUSION",
+  "run_id": "reside-its-geometric-source-exclusion-v1-phase-a-repair1",
+  "decision": "ITS_GEOMETRIC_SOURCE_EXCLUSION_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "The frozen local-geometric census completed all 17,990 declared units without an engineering failure. Dataset and parent identities, all 1,000 resize-JPEG controls, all 1,000 local-transform retrieval controls, all 64 local RootSIFT controls, all six inherited Haze4K-ITS controls, three OTS positives, three crossed OTS negatives, and all 492 SOTS-Outdoor negatives passed. The method resolved 426 of 500 provenance-expected Haze4K-to-ITS source relationships and produced 2,187 direct provisional ITS candidate IDs. Its transitive ITS-to-ITS family expansion then reached 4,001 members, exceeding the frozen 4,000-member bound. Relationship completeness and family expansion bound therefore failed; the formal exclusion list is empty.",
+  "gate_reasons": [
+    "Source-relationship completeness failed because 426 rather than exactly 500 provenance-expected relationships were resolved.",
+    "Among 574 unresolved queries, 573 produced no candidate that passed the ORB geometric prefilter and only one reached RootSIFT before failing, locating the remaining bottleneck before final RootSIFT acceptance.",
+    "The transitive family graph reached 4,001 provisional members and 17,524 accepted family edges, exceeding its frozen 4,000-member resource and validity bound.",
+    "The provisional 6,999-scene remaining capacity passed the 6,000-scene threshold, but it was calculated at a truncated family expansion and cannot authorize an exclusion asset.",
+    "All frozen identity, transformed-positive, inherited-positive, OTS geometry and SOTS negative controls passed; no model or outcome was accessed."
+  ],
+  "competing_explanation": "The local verifier recovered far more relations than the prior global matcher, but exact-subkey ORB retrieval can miss descriptors after small bit changes, while transitive approximate geometric similarity is not an equivalence relation and can percolate across many visually related ITS scenes. A direct Haze4K-anchored, multi-probe retrieval design can discriminate these two mechanisms without repeating the full census or using unconstrained ITS-to-ITS closure.",
+  "limitations": [
+    "This route qualifies source identity only and does not validate model behavior or an ITS measurement target.",
+    "The 426 resolved relationships and 2,187 direct candidate IDs remain diagnostic evidence because the route terminal is FAIL.",
+    "The 4,001-member truncated transitive component must not be interpreted as one true source family.",
+    "The unresolved set contains 574 Haze4K groups; provenance predicts that roughly 74 additional relationships may be present, but their identities are not known in advance.",
+    "A follow-up must freeze a new retrieval method and direct-anchor family rule before reading its unresolved-query results; it cannot lower the final geometry thresholds or tune to force a total of 500.",
+    "No claim of absent overlap, unseen-scene status, measurement independence or downstream authorization follows from this terminal."
+  ]
+}

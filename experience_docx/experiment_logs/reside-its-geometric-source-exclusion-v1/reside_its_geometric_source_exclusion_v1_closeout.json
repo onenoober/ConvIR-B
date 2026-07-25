@@ -1,0 +1,77 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "ITS_GEOMETRIC_SOURCE_EXCLUSION_FAIL",
+  "details": {
+    "accepted_relationships": 426,
+    "authorized_exclusion_count": 0,
+    "eligible_its_clear_scenes": 6999,
+    "exclusion_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "gate_reasons": [
+      "source_relationship_completeness",
+      "family_expansion_bound"
+    ],
+    "model_or_outcome_accessed": false,
+    "provisional_family_members": 4001,
+    "summary_file": "its_geometric_source_exclusion_summary.json"
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "reside_its_geometric_source_exclusion_v1_exclusions.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "reside_its_geometric_source_exclusion_v1_relationships.csv": "9cba5de2611c498e07b556bf6e2cd9a7ef2b7a0fc036506dbafba722b5a8a975",
+    "reside_its_geometric_source_exclusion_v1_summary.json": "70a164fb18b596ab34d5467c20d12ba7825cdf6df7f0860327d7a16f5acc55b8"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "ITS_GEOMETRIC_SOURCE_EXCLUSION",
+  "returncode": 0,
+  "route_commit": "b816a50cf11a08e7c6e368185c02966349028acd",
+  "route_id": "reside-its-geometric-source-exclusion-v1",
+  "run_id": "reside-its-geometric-source-exclusion-v1-phase-a-repair1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "ots_geometry_conclusion",
+      "kind": "file",
+      "sha256": "5a74e832cbaf27474a2ab5c58bc47c765dee6cea05020e997e660bc3b09bc8b5"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_its_conclusion",
+      "kind": "file",
+      "sha256": "bcffa09ecb51148781b590c2357c48e9f9d5383d4baa704daf782e024e1473b2"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "prior_its_mapping",
+      "kind": "file",
+      "sha256": "b48ce1ca394308f7223498f780a647da1b9725656a6d7aa9511ae8c86162fb95"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "prior_its_summary",
+      "kind": "file",
+      "sha256": "bf8d815e93ebabb8d8cee51fd9a5efd8232fa7fd46d48cf4725fd68bc1334b74"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory"
+    }
+  ]
+}

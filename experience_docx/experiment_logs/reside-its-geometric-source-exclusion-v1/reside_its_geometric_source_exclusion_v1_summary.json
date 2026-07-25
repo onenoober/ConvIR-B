@@ -1,0 +1,152 @@
+{
+  "controls": {
+    "local_geometry_acceptance_rate": 1.0,
+    "local_geometry_count": 64,
+    "local_geometry_inliers": {
+      "max": 2751.0,
+      "median": 905.0,
+      "min": 253.0,
+      "q05": 358.8,
+      "q95": 2419.65
+    },
+    "local_geometry_passes": 64,
+    "local_transform_recall_rate": 1.0,
+    "local_transform_top_96": 1000,
+    "ots_negative_accepted": 0,
+    "ots_positive_accepted": 3,
+    "resize_jpeg_top_96": 1000,
+    "resize_jpeg_top_one": 1000,
+    "sots_admitted": 0,
+    "sots_final_verifications": 0,
+    "sots_queries": 492
+  },
+  "dataset_identity": {
+    "counts": {
+      "haze4k_gt": 4000,
+      "its_train_clear": 10000,
+      "its_validation_clear": 1000,
+      "sots_outdoor": 492
+    },
+    "expected": {
+      "archive_manifest_sha256": "27348952347a0f94ac33105d5e6ce11b4ce4e2b0fab68b583b978752b5b78be0",
+      "layout_record_sha256": "f025a8e6e3f43c9b924c0986b866ed28e5644dd7a7ec7b056ae311c83764d5dc",
+      "pairing_report_sha256": "afdefd2887437d929e00239e932bd76e7504d9838c2a3c58c33ce13f91f4150a"
+    },
+    "matched": true,
+    "observed": {
+      "archive_manifest_sha256": "27348952347a0f94ac33105d5e6ce11b4ce4e2b0fab68b583b978752b5b78be0",
+      "layout_record_sha256": "f025a8e6e3f43c9b924c0986b866ed28e5644dd7a7ec7b056ae311c83764d5dc",
+      "pairing_report_sha256": "afdefd2887437d929e00239e932bd76e7504d9838c2a3c58c33ce13f91f4150a"
+    }
+  },
+  "family_exclusion": {
+    "accepted_family_edges": 17524,
+    "authorized_exclusion_count": 0,
+    "authorized_exclusion_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bounded": false,
+    "eligible_its_clear_scenes": 6999,
+    "maximum_members": 4000,
+    "provisional_family_members": 4001,
+    "seed_count": 2187
+  },
+  "gates": {
+    "dataset_identity": true,
+    "eligible_its_capacity": true,
+    "family_expansion_bound": false,
+    "haze4k_group_integrity": true,
+    "local_transform_control_recall": true,
+    "local_transform_geometry_acceptance": true,
+    "ots_geometry_controls": true,
+    "parent_evidence_identity": true,
+    "prior_six_relationship_controls": true,
+    "resize_jpeg_control_recall": true,
+    "sots_negative_specificity": true,
+    "source_relationship_completeness": false
+  },
+  "haze4k_grouping": {
+    "alias_histogram": {
+      "4": 1000
+    },
+    "canonical_groups": 1000,
+    "matched": true
+  },
+  "limitations": [
+    "This route qualifies source identity only and does not validate model behavior or an ITS measurement target.",
+    "The expected 500 relationships are provenance-derived and were not used to tune thresholds or stop retrieval.",
+    "A scientific FAIL is method-specific and cannot establish absence of source overlap or unseen-scene status.",
+    "The exclusion asset is nonempty and reusable only under COMPLETED_GATE_PASS.",
+    "No training, inference, dehazing outcome, confirmation, canary or locked-test evidence was accessed."
+  ],
+  "marker": "RESIDE_ITS_GEOMETRIC_SOURCE_EXCLUSION_V1_COMPLETE",
+  "method": {
+    "final_rootsift": {
+      "lowe_ratio": 0.75,
+      "maximum_verified_per_query": 8,
+      "minimum_inlier_ratio": 0.35,
+      "minimum_inliers": 15,
+      "minimum_reciprocal": 20,
+      "ransac_reprojection": 4.0
+    },
+    "orb_prefilter": {
+      "lowe_ratio": 0.8,
+      "minimum_inlier_ratio": 0.25,
+      "minimum_inliers": 8,
+      "minimum_reciprocal": 10,
+      "ransac_reprojection": 5.0
+    },
+    "retrieval": {
+      "descriptor": "ORB",
+      "detected_features": 1200,
+      "index_offsets": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        28
+      ],
+      "indexed_features": 384,
+      "orb_retrieval_k": 96,
+      "phash_retrieval_k": 32,
+      "prefilter_max_candidates": 48
+    }
+  },
+  "operation_id": "ITS_GEOMETRIC_SOURCE_EXCLUSION",
+  "parent_evidence": {
+    "accepted_control_pairs": 6,
+    "matched": true,
+    "prior_controls_reaccepted": 6,
+    "prior_controls_recalled": 6
+  },
+  "relationships": {
+    "accepted_candidate_ids": 2187,
+    "accepted_relationships": 426,
+    "accepted_train": 405,
+    "accepted_validation": 21,
+    "expected_relationships": 500,
+    "interpretation_limit": "A shortfall is a failure of this frozen two-stage matcher, not proof that the remaining relationships or source overlap are absent.",
+    "queried_haze4k_groups": 1000,
+    "rootsift_inliers": {
+      "max": 2031.0,
+      "median": 538.5,
+      "min": 22.0,
+      "q05": 137.5,
+      "q95": 1383.0
+    }
+  },
+  "route_id": "reside-its-geometric-source-exclusion-v1",
+  "run_id": "reside-its-geometric-source-exclusion-v1-phase-a-repair1",
+  "schema_version": 1,
+  "scope": "full Haze4K-to-RESIDE-ITS local-geometric source census",
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "ITS_GEOMETRIC_SOURCE_EXCLUSION_FAIL",
+    "gate_reasons": [
+      "source_relationship_completeness",
+      "family_expansion_bound"
+    ],
+    "state": "COMPLETED_GATE_FAIL"
+  }
+}
