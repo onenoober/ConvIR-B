@@ -1,0 +1,79 @@
+{
+  "authorizes": "ITS_KNOWN_OVERLAP_QUARANTINED_MEASUREMENT_DESIGN",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "ITS_VERIFIED_OVERLAP_QUARANTINE_PASS",
+  "details": {
+    "complete_disjointness_claimed": false,
+    "eligible_train_scope": 9347,
+    "eligible_train_selection_scope": 8813,
+    "gate_reasons": [],
+    "model_or_outcome_accessed": false,
+    "summary_file": "verified_overlap_quarantine_summary.json",
+    "train_exclusion_count": 1653,
+    "train_exposure_exclusions_file": "train_exposure_exclusions.txt",
+    "train_selection_exclusion_count": 2187,
+    "train_selection_exposure_exclusions_file": "train_selection_exposure_exclusions.txt",
+    "verified_relationships_file": "verified_overlap_relationships.csv"
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "reside_its_verified_overlap_quarantine_v1_relationships.csv": "c17e1a651e7f7021109a48bbd663dd710a2f62a20179c385e39803fabdfe7f1e",
+    "reside_its_verified_overlap_quarantine_v1_summary.json": "3817a2a2778cec848ba1cfb1be64863bf30f47f2434f6d54819c6a8f346c47e9",
+    "reside_its_verified_overlap_quarantine_v1_train_exclusions.txt": "98e813f8a210f3ac4c96938c9ee76d8b5f33a08b0cc6d18d34a600674d5a3423",
+    "reside_its_verified_overlap_quarantine_v1_train_selection_exclusions.txt": "c4dddbcf214c301ffa6d3879217e6336024119bb07d0f9c1f929ac040aa0dda3"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "ITS_VERIFIED_OVERLAP_QUARANTINE",
+  "returncode": 0,
+  "route_commit": "64ef2e47c60dbbfdb9df471b0b5bb53e116819bb",
+  "route_id": "reside-its-verified-overlap-quarantine-v1",
+  "run_id": "reside-its-verified-overlap-quarantine-v1-phase-a-repair1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "verified_assets": [
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "entrypoint_source",
+      "kind": "file",
+      "sha256": "a5f833d554b1e922fee58bc40aa2c6ee3d824d58eddaf303b581579378576466"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_closeout",
+      "kind": "file",
+      "sha256": "17fba6d6ccfd46accebc3f585aaa93febeb753b300346e39591232ce00ae95c8"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_conclusion",
+      "kind": "file",
+      "sha256": "2c9adaea9efdde768a735b2249ec84759dc7e5f2bb3c33a53e57ae393042cc44"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_relationships",
+      "kind": "file",
+      "sha256": "9cba5de2611c498e07b556bf6e2cd9a7ef2b7a0fc036506dbafba722b5a8a975"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_summary",
+      "kind": "file",
+      "sha256": "70a164fb18b596ab34d5467c20d12ba7825cdf6df7f0860327d7a16f5acc55b8"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory"
+    }
+  ]
+}

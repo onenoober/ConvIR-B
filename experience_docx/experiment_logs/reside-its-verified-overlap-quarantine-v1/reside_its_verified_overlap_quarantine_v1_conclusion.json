@@ -1,0 +1,20 @@
+{
+  "authorizes": "ITS_KNOWN_OVERLAP_QUARANTINED_MEASUREMENT_DESIGN",
+  "competing_explanation": "Additional Haze4K-to-ITS overlaps may remain among the 574 parent-unresolved groups, and some directly accepted ITS IDs may be visually duplicated members rather than one privileged source filename. The assets therefore define conservative known-overlap quarantine populations, not complete source disjointness.",
+  "decision": "ITS_VERIFIED_OVERLAP_QUARANTINE_PASS",
+  "gate_reasons": [
+    "All nine frozen identity, direct-evidence, official-membership, tier-count and capacity gates passed.",
+    "The training-exposure complement retained 9,347 official ITS scenes and the training-plus-selection-exposure complement retained 8,813, both above the frozen minimum of 6,000."
+  ],
+  "limitations": [
+    "The conjectured total of 500 indoor relationships was not used as a gate.",
+    "No ITS-to-ITS transitive family expansion was used.",
+    "The assets quarantine verified direct overlaps only and do not prove that no additional Haze4K-to-ITS overlap remains.",
+    "Future measurement must describe its population as known-overlap-quarantined rather than fully source-disjoint.",
+    "No image content, model, inference, training, outcome metric, confirmation, canary or locked-test evidence was accessed."
+  ],
+  "operation_id": "ITS_VERIFIED_OVERLAP_QUARANTINE",
+  "primary_result": "The deterministic census verified all 426 accepted direct Haze4K-to-ITS relationships against the qualified 11,000-scene official ITS copy. The Haze4K-training exposure tier quarantines 1,653 ITS IDs and leaves 9,347 eligible scenes. The training-plus-selection exposure tier quarantines 2,187 ITS IDs and leaves 8,813 eligible scenes. All frozen gates passed, so these two assets are authorized for a separately frozen known-overlap-quarantined measurement design.",
+  "route_id": "reside-its-verified-overlap-quarantine-v1",
+  "run_id": "reside-its-verified-overlap-quarantine-v1-phase-a-repair1"
+}

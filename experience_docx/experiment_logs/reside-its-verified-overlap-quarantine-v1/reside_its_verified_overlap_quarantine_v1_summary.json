@@ -1,0 +1,82 @@
+{
+  "claim_boundary": "The assets quarantine all direct overlaps verified by the parent geometry route. They do not prove that no additional Haze4K-to-ITS overlap remains.",
+  "dataset_identity": {
+    "expected": {
+      "archive_manifest_sha256": "27348952347a0f94ac33105d5e6ce11b4ce4e2b0fab68b583b978752b5b78be0",
+      "layout_record_sha256": "f025a8e6e3f43c9b924c0986b866ed28e5644dd7a7ec7b056ae311c83764d5dc",
+      "pairing_report_sha256": "afdefd2887437d929e00239e932bd76e7504d9838c2a3c58c33ce13f91f4150a"
+    },
+    "its_train_clear": 10000,
+    "its_validation_clear": 1000,
+    "matched": true,
+    "observed": {
+      "archive_manifest_sha256": "27348952347a0f94ac33105d5e6ce11b4ce4e2b0fab68b583b978752b5b78be0",
+      "layout_record_sha256": "f025a8e6e3f43c9b924c0986b866ed28e5644dd7a7ec7b056ae311c83764d5dc",
+      "pairing_report_sha256": "afdefd2887437d929e00239e932bd76e7504d9838c2a3c58c33ce13f91f4150a"
+    }
+  },
+  "gates": {
+    "dataset_identity": true,
+    "direct_evidence_integrity": true,
+    "official_its_membership": true,
+    "parent_count_identity": true,
+    "parent_group_integrity": true,
+    "parent_terminal_identity": true,
+    "tier_count_identity": true,
+    "train_scope_capacity": true,
+    "train_selection_scope_capacity": true
+  },
+  "limitations": [
+    "The conjectured total of 500 indoor relationships is not used as a gate.",
+    "No ITS-to-ITS transitive family expansion is used.",
+    "The train tier supports model-training exposure control; the union tier additionally controls Haze4K test or selection exposure.",
+    "Future measurement must describe its population as known-overlap-quarantined rather than fully source-disjoint.",
+    "No image content, model, inference, training, outcome metric, confirmation, canary or locked-test evidence is accessed."
+  ],
+  "marker": "RESIDE_ITS_VERIFIED_OVERLAP_QUARANTINE_V1_COMPLETE",
+  "operation_id": "ITS_VERIFIED_OVERLAP_QUARANTINE",
+  "parent_evidence": {
+    "accepted_relationships": 426,
+    "rejected_relationships_not_interpreted": 574,
+    "terminal": "COMPLETED_GATE_FAIL",
+    "use": "diagnostic direct relationships only"
+  },
+  "quarantine_tiers": {
+    "counts": {
+      "test_relationships": 124,
+      "test_scope_ids": 534,
+      "train_relationships": 302,
+      "train_scope_ids": 1653,
+      "train_scope_its_train_ids": 1498,
+      "train_scope_its_validation_ids": 155,
+      "train_test_id_intersection": 0,
+      "union_ids": 2187,
+      "union_its_train_ids": 2032,
+      "union_its_validation_ids": 155
+    },
+    "train_and_selection_exposure": {
+      "authorized_exclusion_ids": 2187,
+      "eligible_its_scenes": 8813,
+      "haze4k_relationships": 426,
+      "provisional_exclusion_ids": 2187,
+      "sha256": "c4dddbcf214c301ffa6d3879217e6336024119bb07d0f9c1f929ac040aa0dda3"
+    },
+    "train_exposure": {
+      "authorized_exclusion_ids": 1653,
+      "eligible_its_scenes": 9347,
+      "haze4k_relationships": 302,
+      "provisional_exclusion_ids": 1653,
+      "sha256": "98e813f8a210f3ac4c96938c9ee76d8b5f33a08b0cc6d18d34a600674d5a3423"
+    }
+  },
+  "route_id": "reside-its-verified-overlap-quarantine-v1",
+  "run_id": "reside-its-verified-overlap-quarantine-v1-phase-a-repair1",
+  "schema_version": 1,
+  "scope": "verified direct Haze4K exposure quarantine for official RESIDE ITS",
+  "terminal": {
+    "authorizes": "ITS_KNOWN_OVERLAP_QUARANTINED_MEASUREMENT_DESIGN",
+    "decision": "ITS_VERIFIED_OVERLAP_QUARANTINE_PASS",
+    "gate_reasons": [],
+    "state": "COMPLETED_GATE_PASS"
+  }
+}
