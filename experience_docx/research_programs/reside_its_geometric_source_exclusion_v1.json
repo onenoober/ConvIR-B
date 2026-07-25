@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "program_id": "reside_its_geometric_source_exclusion",
+  "objective": "Create a reusable scene-level exclusion asset that removes every locally and geometrically verified Haze4K source relationship from RESIDE ITS before any separately frozen unseen-domain measurement.",
+  "source_anchors": [
+    {
+      "id": "reside_its_global_matcher_terminal_20260725",
+      "reference": "experience_docx/experiment_logs/reside-its-source-exclusion-v1/reside_its_source_exclusion_v1_conclusion.json",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "reside_ots_geometry_terminal_20260725",
+      "reference": "experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_conclusion.json",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    }
+  ],
+  "dependency_roles": {
+    "prior_global_matcher_terminal": [
+      "diagnostic"
+    ],
+    "qualified_geometry_method": [
+      "diagnostic"
+    ]
+  },
+  "stages": {
+    "geometric_source_identity_qualification": {
+      "evidence_roles": [
+        "development_screening"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "its_haze4k_local_geometry_exclusion"
+      ]
+    }
+  },
+  "route_families": {
+    "its_haze4k_local_geometry_exclusion": {
+      "core_assumption": "A frozen local-descriptor retrieval and bidirectional RootSIFT-RANSAC verifier can recover all provenance-expected indoor Haze4K source relationships in ITS and conservatively close each accepted near-duplicate family.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after this single frozen local-geometric census; a shortfall is method-specific and cannot certify absence of overlap or unseen status.",
+      "reopen_evidence_types": [
+        "official_source_manifest",
+        "independent_source_mapping"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "source_identity_method"
+  ],
+  "amendments": []
+}

@@ -1,0 +1,53 @@
+{
+  "assets": [
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_its_conclusion",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-source-exclusion-v1/reside_its_source_exclusion_v1_conclusion.json",
+      "sha256": "bcffa09ecb51148781b590c2357c48e9f9d5383d4baa704daf782e024e1473b2"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "prior_its_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-source-exclusion-v1/reside_its_source_exclusion_v1_summary.json",
+      "sha256": "bf8d815e93ebabb8d8cee51fd9a5efd8232fa7fd46d48cf4725fd68bc1334b74"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "prior_its_mapping",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-source-exclusion-v1/reside_its_source_exclusion_v1_mapping.csv",
+      "sha256": "b48ce1ca394308f7223498f780a647da1b9725656a6d7aa9511ae8c86162fb95"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "ots_geometry_conclusion",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_conclusion.json",
+      "sha256": "5a74e832cbaf27474a2ab5c58bc47c765dee6cea05020e997e660bc3b09bc8b5"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K"
+    }
+  ],
+  "operation_id": "ITS_GEOMETRIC_SOURCE_EXCLUSION",
+  "route_id": "reside-its-geometric-source-exclusion-v1",
+  "schema_version": 1
+}

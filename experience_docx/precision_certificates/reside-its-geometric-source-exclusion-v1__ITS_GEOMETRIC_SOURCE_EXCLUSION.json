@@ -1,0 +1,14 @@
+{
+  "certificate_id": "reside_its_geometric_source_exclusion_v1_capacity",
+  "confidence_level": 0.95,
+  "estimand": "Haze4K source-group relationship proportion",
+  "feasible": true,
+  "independent_groups_available": 1000,
+  "independent_groups_required": 784,
+  "method": "binomial_worst_case",
+  "planning_sd": 0.5,
+  "schema_version": 1,
+  "source_reference": "Worst-case Bernoulli standard deviation 0.5; all 1,000 canonical Haze4K source groups are observed.",
+  "source_role": "unrestricted",
+  "target_half_width": 0.035
+}

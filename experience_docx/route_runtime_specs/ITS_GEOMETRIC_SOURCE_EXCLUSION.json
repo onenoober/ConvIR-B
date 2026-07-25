@@ -1,0 +1,50 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/reside-its-geometric-source-exclusion-v1__ITS_GEOMETRIC_SOURCE_EXCLUSION.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/reside-its-geometric-source-exclusion-v1__ITS_GEOMETRIC_SOURCE_EXCLUSION.json",
+    "max_seconds": 300,
+    "mode": "cpu_exact"
+  },
+  "entrypoint_relpath": "experience_docx/tools/resolve_reside_its_geometric_source_exclusion.py",
+  "environment": {
+    "CONVIR_ROUTE_ITS_GEOMETRY_WORKERS": "8"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "reside_its_geometric_source_exclusion_v1_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/its_geometric_source_exclusion_summary.json"
+    },
+    {
+      "destination_filename": "reside_its_geometric_source_exclusion_v1_relationships.csv",
+      "max_bytes": 1048576,
+      "required": true,
+      "source_relpath": "workload/haze4k_its_geometric_relationships.csv"
+    },
+    {
+      "destination_filename": "reside_its_geometric_source_exclusion_v1_exclusions.txt",
+      "max_bytes": 524288,
+      "required": true,
+      "source_relpath": "workload/its_geometric_exclusion_ids.txt"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 7200,
+  "operation_id": "ITS_GEOMETRIC_SOURCE_EXCLUSION",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/reside-its-geometric-source-exclusion-v1__ITS_GEOMETRIC_SOURCE_EXCLUSION.json",
+    "mode": "descriptive_capacity",
+    "rationale": "The operation observes the complete 1,000-group source census and all 11,000 ITS clear scenes. Relationship completeness and remaining capacity are exact counts, not sampled estimates."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "reside-its-geometric-source-exclusion-v1",
+  "schema_version": 2,
+  "timeout_seconds": 21600,
+  "total_units": 17990
+}

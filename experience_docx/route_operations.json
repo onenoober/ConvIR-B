@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/reside-its-geometric-source-exclusion-v1.json",
+  "experiment_spec_sha256": "6f5b7fdaf6fb38b9d2909988f0e9f849c419d5c6846bcc6bbb0526f96a6b5b53",
+  "operations": {
+    "ITS_GEOMETRIC_SOURCE_EXCLUSION": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "ITS_DISJOINT_MEASUREMENT_DESIGN",
+          "decision": "ITS_GEOMETRIC_SOURCE_EXCLUSION_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "ITS_GEOMETRIC_SOURCE_EXCLUSION_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "ITS_GEOMETRIC_SOURCE_EXCLUSION_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "reside_its_geometric_source_exclusion_v1_closeout.json",
+      "heartbeat_timeout_seconds": 900,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "dataset_qualification",
+      "monitor_profile": "standard",
+      "output_id": "reside-its-geometric-source-exclusion-v1-phase-a",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/reside_its_geometric_source_exclusion_v1.json",
+  "program_contract_sha256": "004f81b4106d18c944a9294459a53ea93b850d0cc382bc2608262f609c07f8f7",
+  "route_card_relpath": "experience_docx/experiment_cards/reside-its-geometric-source-exclusion-v1.md",
+  "route_id": "reside-its-geometric-source-exclusion-v1",
+  "rules_commit": "b413526ded0174a6ee7aae3149875bba43916629",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "ITS_GEOMETRIC_SOURCE_EXCLUSION": "experience_docx/scientific_contracts/reside-its-geometric-source-exclusion-v1__ITS_GEOMETRIC_SOURCE_EXCLUSION.json"
+  }
+}

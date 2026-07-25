@@ -1,0 +1,186 @@
+{
+  "competing_explanation": "Even local descriptors may fail when the current ITS copy differs through severe crop, synthesis, retouching, composite content, or a source-family transformation outside planar geometry. A FAIL therefore identifies the limit of this frozen two-stage matcher; it does not prove that the remaining relationships or overlap are absent.",
+  "controls": [
+    "qualified RESIDE hashes and exact directory counts",
+    "exact 1,000 Haze4K canonical groups with four aliases each",
+    "all prior six accepted Haze4K-ITS relationships recalled and reaccepted",
+    "all 1,000 resize-plus-JPEG controls recovered at top one and top 96",
+    "at least 99 percent of the fixed center-crop, mild-perspective and JPEG controls recovered within top 96",
+    "at least 99 percent of 64 deterministically selected crop-perspective controls accepted by final RootSIFT-RANSAC verification",
+    "all three OTS qualified positive pairs accepted and all three crossed negative pairs rejected",
+    "zero final geometric admissions among all 492 SOTS-outdoor negative controls",
+    "explicit method-specific failure wording and no result-adaptive threshold or shortlist changes"
+  ],
+  "disabled_actions": [
+    "model or module selection",
+    "training, inference, dehazing evaluation, or model-output metrics",
+    "using any image as outcome evidence",
+    "changing descriptors, shortlist sizes, controls, thresholds, relationship count or family rule after observing results",
+    "stopping retrieval when the accepted count reaches 500",
+    "counting aliases, descriptors, candidates or family members as independent scenes",
+    "claiming absence of overlap, unseen status or mapping infeasibility from a matcher FAIL",
+    "using a provisional exclusion list unless the terminal is COMPLETED_GATE_PASS",
+    "ITS measurement execution before a PASS closeout"
+  ],
+  "gates": [
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "frozen RESIDE hashes and 11,000 ITS, 4,000 Haze4K and 492 SOTS-outdoor file counts",
+      "id": "dataset_identity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "archived prior ITS FAIL evidence and successful OTS geometry conclusion match their SHA-256 identities",
+      "id": "parent_evidence_identity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "1,000 canonical Haze4K source groups with four aliases each",
+      "id": "haze4k_group_integrity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "proportion of 1,000 fixed resize-JPEG controls recovered at top one and top 96",
+      "id": "resize_jpeg_control_recall",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "proportion of 1,000 fixed crop-perspective-JPEG controls recovered within top 96",
+      "id": "local_transform_control_recall",
+      "threshold": 0.99,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "proportion of 64 deterministic crop-perspective controls accepted by final geometry",
+      "id": "local_transform_geometry_acceptance",
+      "threshold": 0.99,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "prior six accepted Haze4K-ITS relations recalled and geometrically reaccepted",
+      "id": "prior_six_relationship_controls",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "three qualified positive OTS pairs accepted and three crossed negatives rejected",
+      "id": "ots_geometry_controls",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "proportion of 492 SOTS-outdoor queries with no accepted ITS candidate",
+      "id": "sots_negative_specificity",
+      "threshold": 1,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "geometrically resolved Haze4K-to-ITS source relationships",
+      "id": "source_relationship_completeness",
+      "threshold": 500,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand": "transitive accepted ITS family closure completes without exceeding 4,000 members",
+      "id": "family_expansion_bound",
+      "threshold": 1,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand": "ITS clear scenes remaining after transitive geometric family exclusion",
+      "id": "eligible_its_capacity",
+      "threshold": 6000,
+      "type": "coverage"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "Haze4K 4,000 GT aliases grouped by decoded 64x64 RGB digest into exactly 1,000 source scenes",
+      "ITS train and validation searched jointly while preserving their split labels",
+      "ORB nfeatures 1200, scaleFactor 1.2, nlevels 8, edgeThreshold 19, patchSize 31 and FAST threshold 10",
+      "the response-ranked top 384 ORB descriptors per scene enter the bounded reference index",
+      "eight exact 16-bit ORB descriptor subkeys at byte offsets 0, 4, 8, 12, 16, 20, 24 and 28 with per-scene key deduplication",
+      "top-96 ORB-vote retrieval union top-32 seven-view pHash fallback",
+      "the top 24 ORB-vote and top 24 pHash candidates form a deduplicated at-most-48 candidate geometric prefilter and at most the top eight receive expensive final verification",
+      "ORB prefilter uses Lowe ratio 0.80, RANSAC reprojection 5 pixels, confidence 0.995 and 3000 iterations, requiring at least 10 reciprocal matches, 8 inliers and 0.25 inlier ratio",
+      "final acceptance requires both the ORB prefilter and the final RootSIFT-RANSAC rule",
+      "the six archived accepted Haze4K-ITS pairs are fixed inherited control candidates for their corresponding queries before this run",
+      "final RootSIFT constants inherited exactly from the successful OTS geometric route: nfeatures 8000, contrast 0.01, edge 10, sigma 1.6, Lowe ratio 0.75, RANSAC 4 pixels, confidence 0.995, 5000 iterations, at least 20 reciprocal matches, 15 inliers and 0.35 inlier ratio",
+      "relationship-first counting before deduplicating ITS IDs; multiple Haze4K relations may resolve to the same accepted ITS family",
+      "accepted seed families expanded transitively through the same retrieval and final geometry rule; all accepted family members are excluded",
+      "500 is a provenance-derived relationship expectation, not a target used to calibrate any threshold",
+      "failure to recover 500 is method-specific and cannot establish absence of overlap or unseen-scene status"
+    ],
+    "matched_budget": "one deterministic census with fixed eight-table 16-bit ORB multi-index retrieval, fixed pHash fallback, fixed ORB homography ranking, at most eight RootSIFT verifications per query, and bounded transitive family closure",
+    "primary_variable": "locally_and_geometrically_verified_its_source_family",
+    "reference": "all 1,000 canonical Haze4K clear-source groups against all 11,000 official ITS clear scenes"
+  },
+  "operation_id": "ITS_GEOMETRIC_SOURCE_EXCLUSION",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "canonical_clear_source_scene",
+    "independent_group_count": 1000
+  },
+  "primary_estimand": {
+    "aggregation": "deterministic full-census relationship count before ITS-family deduplication",
+    "direction": "higher",
+    "id": "geometrically_resolved_haze4k_its_source_relationship_count",
+    "metric": "number of canonical Haze4K source groups with at least one ITS candidate accepted by the frozen bidirectional RootSIFT-RANSAC rule",
+    "unit": "canonical_clear_source_scene"
+  },
+  "question": "Can a frozen two-stage local-geometric census explain all 500 provenance-expected indoor Haze4K source relationships in official RESIDE ITS, close every accepted ITS near-duplicate family, and leave at least 6,000 eligible clear scenes?",
+  "route_id": "reside-its-geometric-source-exclusion-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "ITS_GEOMETRIC_SOURCE_EXCLUSION_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "NONE",
+      "decision": "ITS_GEOMETRIC_SOURCE_EXCLUSION_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "ITS_DISJOINT_MEASUREMENT_DESIGN",
+      "decision": "ITS_GEOMETRIC_SOURCE_EXCLUSION_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "canonical_clear_source_scene",
+    "method": "deterministic full-population source census; exact counts are used and aliases, descriptors, candidates and family members never increase independent n"
+  }
+}
