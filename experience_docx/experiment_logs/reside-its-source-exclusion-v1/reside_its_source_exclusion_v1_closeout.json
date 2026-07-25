@@ -1,0 +1,54 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "ITS_SOURCE_EXCLUSION_FAIL",
+  "details": {
+    "accepted_relationships": 6,
+    "authorized_exclusion_count": 0,
+    "eligible_its_clear_scenes": 10994,
+    "exclusion_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "gate_reasons": [
+      "source_relationship_completeness"
+    ],
+    "model_or_outcome_accessed": false,
+    "summary_file": "its_source_exclusion_summary.json"
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "reside_its_source_exclusion_v1_exclusions.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "reside_its_source_exclusion_v1_mapping.csv": "b48ce1ca394308f7223498f780a647da1b9725656a6d7aa9511ae8c86162fb95",
+    "reside_its_source_exclusion_v1_summary.json": "bf8d815e93ebabb8d8cee51fd9a5efd8232fa7fd46d48cf4725fd68bc1334b74"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "ITS_SOURCE_EXCLUSION",
+  "returncode": 0,
+  "route_commit": "4d922a699d4ec41ab626ef9f434df83ae332584c",
+  "route_id": "reside-its-source-exclusion-v1",
+  "run_id": "reside-its-source-exclusion-v1-phase-a",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_FAIL",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "ots_source_identity_method_anchor",
+      "kind": "file",
+      "sha256": "5a74e832cbaf27474a2ab5c58bc47c765dee6cea05020e997e660bc3b09bc8b5"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory"
+    }
+  ]
+}

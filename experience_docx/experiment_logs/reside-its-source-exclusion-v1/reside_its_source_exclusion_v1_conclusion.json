@@ -1,0 +1,23 @@
+{
+  "route_id": "reside-its-source-exclusion-v1",
+  "operation_id": "ITS_SOURCE_EXCLUSION",
+  "run_id": "reside-its-source-exclusion-v1-phase-a",
+  "decision": "ITS_SOURCE_EXCLUSION_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "The frozen full-census matcher completed all 17,984 work units without an engineering failure. Dataset identity, Haze4K four-alias grouping, 1,000 of 1,000 transformed-positive top-64 and top-one recoveries, and rejection of all 492 SOTS-Outdoor negative controls passed. Only 6 of the 500 provenance-expected Haze4K-to-ITS source relationships were accepted, all in ITS train, so source-relationship completeness failed. The six provisional family candidates are not an authorized exclusion asset; the published exclusion list is empty.",
+  "gate_reasons": [
+    "The qualified RESIDE and Haze4K identities matched the frozen contract: 10,000 ITS-train clear scenes, 1,000 ITS-validation clear scenes, 4,000 Haze4K GT aliases grouped into exactly 1,000 canonical four-alias sources, and 492 SOTS-Outdoor negative controls.",
+    "All 1,000 fixed resize-and-JPEG transformed positives were recovered both at top one and within the frozen top-64 shortlist, while none of the 492 unrelated SOTS-Outdoor negatives was accepted.",
+    "The frozen symmetric seven-view pHash and normalized-correlation rule accepted only 6 of the 500 provenance-expected indoor source relationships; therefore source_relationship_completeness was the sole failed gate.",
+    "The six accepted relationships leave 10,994 provisional eligible ITS clear scenes, but no exclusion IDs are authorized under COMPLETED_GATE_FAIL.",
+    "No model, training, inference, dehazing outcome, confirmation, canary, or locked-test metric was accessed."
+  ],
+  "competing_explanation": "The method is well calibrated for its frozen global resize-and-JPEG control family but can miss source relations involving crop, framing, local geometric change, stronger recompression, or near-duplicate source families. This method-specific failure does not show that the remaining 494 expected relationships are absent and does not establish that the remaining ITS scenes are unseen by the Haze4K checkpoint.",
+  "limitations": [
+    "This route qualifies source identity only; it does not validate an ITS measurement target or model behavior.",
+    "The expected count of 500 is a provenance-derived source-lineage expectation, not a threshold calibrated from the observed matcher output.",
+    "The six accepted relations are diagnostic candidates only and cannot be used as a formal exclusion asset because the completeness gate failed.",
+    "A new local-geometric method must use an independently frozen contract and controls; its thresholds cannot be tuned to force recovery of 500 relationships.",
+    "No claim of absence of overlap, unseen-scene status, measurement independence, promotion, or downstream authorization follows from this terminal."
+  ]
+}

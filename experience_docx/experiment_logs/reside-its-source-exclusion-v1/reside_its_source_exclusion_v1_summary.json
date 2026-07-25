@@ -1,0 +1,130 @@
+{
+  "controls": {
+    "sots_outdoor_negative_count": 492,
+    "sots_outdoor_negative_score": {
+      "max": 0.9516167640686035,
+      "median": 0.7886189222335815,
+      "min": 0.38272204995155334,
+      "q05": 0.5421648323535919,
+      "q95": 0.8989540010690689
+    },
+    "sots_outdoor_negatives_admitted": 0,
+    "transformed_positive_count": 1000,
+    "transformed_positive_gap": {
+      "max": 0.6498637199401855,
+      "median": 0.2879946529865265,
+      "min": 0.007078051567077637,
+      "q05": 0.058070608973503114,
+      "q95": 0.5236375033855437
+    },
+    "transformed_positive_score": {
+      "max": 0.9999955892562866,
+      "median": 0.9999855756759644,
+      "min": 0.9998902082443237,
+      "q05": 0.9999626070261002,
+      "q95": 0.999992847442627
+    },
+    "transformed_positive_top_k_recovered": 1000,
+    "transformed_positive_top_one_recovered": 1000
+  },
+  "dataset_identity": {
+    "count_integrity": true,
+    "counts": {
+      "haze4k_gt": 4000,
+      "its_train_clear": 10000,
+      "its_validation_clear": 1000,
+      "sots_outdoor_gt": 492
+    },
+    "expected": {
+      "archive_manifest_sha256": "27348952347a0f94ac33105d5e6ce11b4ce4e2b0fab68b583b978752b5b78be0",
+      "layout_record_sha256": "f025a8e6e3f43c9b924c0986b866ed28e5644dd7a7ec7b056ae311c83764d5dc",
+      "pairing_report_sha256": "afdefd2887437d929e00239e932bd76e7504d9838c2a3c58c33ce13f91f4150a"
+    },
+    "identity_match": true,
+    "observed": {
+      "archive_manifest_sha256": "27348952347a0f94ac33105d5e6ce11b4ce4e2b0fab68b583b978752b5b78be0",
+      "layout_record_sha256": "f025a8e6e3f43c9b924c0986b866ed28e5644dd7a7ec7b056ae311c83764d5dc",
+      "pairing_report_sha256": "afdefd2887437d929e00239e932bd76e7504d9838c2a3c58c33ce13f91f4150a"
+    }
+  },
+  "exclusion_asset": {
+    "authorized": false,
+    "authorized_exclusion_count": 0,
+    "authorized_exclusion_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "eligible_its_clear_scenes": 10994,
+    "family_size": {
+      "max": 1.0,
+      "median": 1.0,
+      "min": 1.0,
+      "q05": 1.0,
+      "q95": 1.0
+    },
+    "provisional_family_exclusion_count": 6
+  },
+  "gates": {
+    "dataset_identity": true,
+    "eligible_its_capacity": true,
+    "haze4k_group_integrity": true,
+    "negative_control_specificity": true,
+    "source_relationship_completeness": false,
+    "transformed_positive_top_k_recall": true,
+    "transformed_positive_top_one_recovery": true
+  },
+  "haze4k_grouping": {
+    "alias_histogram": {
+      "4": 1000
+    },
+    "canonical_group_count": 1000,
+    "group_integrity": true
+  },
+  "limitations": [
+    "This operation qualifies source identity only; it does not validate an ITS measurement target or model behavior.",
+    "The transformed positive controls validate the frozen matcher under one fixed resize/JPEG family and do not prove invariance to every source transformation.",
+    "A scientific FAIL is method-specific and cannot be interpreted as absence of Haze4K-ITS overlap.",
+    "The exclusion list is nonempty and authorized only under COMPLETED_GATE_PASS.",
+    "No model, training, inference, dehazing outcome, confirmation, canary, or locked-test metric is accessed."
+  ],
+  "marker": "RESIDE_ITS_SOURCE_EXCLUSION_V1_COMPLETE",
+  "matcher": {
+    "family_rule": "pHash distance zero plus canonical identity or correlation >=0.995 and max RGB-mean difference <=0.04",
+    "method": "symmetric seven-view pHash top-64 retrieval, maximum normalized grayscale correlation, fixed forward/reverse score gates, and mutual nearest neighbour",
+    "minimum_correlation": 0.98,
+    "minimum_score_gap": 0.005,
+    "top_k": 64
+  },
+  "operation_id": "ITS_SOURCE_EXCLUSION",
+  "route_id": "reside-its-source-exclusion-v1",
+  "run_id": "reside-its-source-exclusion-v1-phase-a",
+  "schema_version": 1,
+  "scope": "full Haze4K-to-RESIDE-ITS source identity census",
+  "source_relationships": {
+    "accepted_relationships": 6,
+    "accepted_train": 6,
+    "accepted_validation": 0,
+    "expected_relationships": 500,
+    "forward_gap": {
+      "max": 0.5404380559921265,
+      "median": 0.029930830001831055,
+      "min": 0.0,
+      "q05": 0.001506367325782776,
+      "q95": 0.25051571875810613
+    },
+    "forward_score": {
+      "max": 0.9930374622344971,
+      "median": 0.794015645980835,
+      "min": 0.3680225908756256,
+      "q05": 0.531073248386383,
+      "q95": 0.9522253453731536
+    },
+    "interpretation_limit": "A FAIL means only that the frozen matcher did not close the complete expected source relation set; it is not an absence-of-overlap or infeasibility certificate.",
+    "queried_haze4k_groups": 1000
+  },
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "ITS_SOURCE_EXCLUSION_FAIL",
+    "gate_reasons": [
+      "source_relationship_completeness"
+    ],
+    "state": "COMPLETED_GATE_FAIL"
+  }
+}
