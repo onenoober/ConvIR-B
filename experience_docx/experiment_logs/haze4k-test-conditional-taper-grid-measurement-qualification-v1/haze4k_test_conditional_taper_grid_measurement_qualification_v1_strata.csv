@@ -1,0 +1,9 @@
+estimand,method,scenes,events,estimate,lower_one_sided_95,upper_one_sided_95,threshold
+scene_mean_worst_held_out_grid_conditional_regret_psnr_db,scene_bootstrap,100,,0.1340031213991598,0.11810429992018522,0.15033772820437544,0.1
+scene_mean_worst_held_out_grid_box_control_regret_psnr_db,scene_bootstrap,100,,0.1423354325027467,0.12525425339253765,0.15992076974728076,0.1423354325027467
+scene_mean_worst_grid_taper_minus_box_psnr_db,scene_bootstrap,100,,0.0015047852165511611,0.0009707709410824998,0.002089470338873276,diagnostic_only
+robust_material_gain_scene_prevalence,wilson,100,97,0.97,0.915479219195973,0.9897456617765851,0.2
+aligned_minus_circular_shifted_psnr_db,scene_bootstrap,100,,1.898100516034896,1.7410141134376398,2.057871777421969,0.0
+nonclipped_source_minus_uniform_psnr_db,scene_bootstrap,100,,1.8807482479735855,1.705138487333769,2.05771395369348,0.0
+ssim_harm_scene_prevalence,wilson,100,4,0.04,0.015663050551848016,0.09837217232607373,0.1
+color_harm_scene_prevalence,wilson,100,3,0.03,0.010254338223414816,0.08452078080402699,0.1

@@ -1,0 +1,26 @@
+{
+  "route_id": "haze4k-test-conditional-content-aligned-region-measurement-qualification-v1",
+  "operation_id": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_MEASUREMENT_QUALIFICATION",
+  "run_id": "haze4k-test-conditional-content-aligned-region-measurement-qualification-v1-phase-a-r1",
+  "decision": "HAZE4K_TEST_CONDITIONAL_CONTENT_ALIGNED_REGION_STABILITY_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "All 100 canonical Haze4K development scenes and 400 nested haze conditions completed with exact structural controls and exact matched taper reproduction. Mean worst-held-out-partition content-aligned PSNR regret was 0.19184 dB; its one-sided 95 percent scene-bootstrap lower and upper bounds were 0.17139 and 0.21287 dB. The lower bound was clearly above the frozen 0.10 dB maximum, while the achieved upper-bound distance was 0.02103 dB versus the 0.05 dB precision limit. This is a precise scientific FAIL: the fixed hazy-only Sobel edge-watershed region construction does not qualify the conditional three-action measurement target.",
+  "gate_reasons": [
+    "The primary regret clearly failed: the one-sided 95 percent lower bound was 0.17139 dB, above the frozen 0.10 dB maximum; achieved precision itself passed at 0.02103 dB.",
+    "The matched taper control reproduced its archived parent mean regret exactly at 0.1340031214 dB within the frozen 1e-8 dB tolerance, establishing identity-valid comparison.",
+    "Content-aligned regret was worse than taper by 0.05783 dB on average: taper-minus-content-aligned regret had one-sided 95 percent bounds -0.07369 to -0.04217 dB.",
+    "All 100 scenes, 400 variants, source and common-support region projections, keep identity, affine manipulation, no-training, and protected-data controls passed.",
+    "Material coverage passed in 97/100 scenes with Wilson lower bound 0.91548 above 0.20.",
+    "Location specificity and non-clipping direction passed with one-sided 95 percent lower bounds 1.72182 dB and 1.34743 dB.",
+    "SSIM and color safety passed: harm occurred in 4/100 and 2/100 scenes, with Wilson upper bounds 0.09837 and 0.07001 below 0.10."
+  ],
+  "competing_explanation": "The exact taper reproduction rules out parent-path drift, while the clearly worse content-aligned contrast rejects this fixed edge-watershed spatial unit as a repair. Residual regret was not concentrated at the declared region boundaries: mean boundary-band regret was 0.19010 dB versus 0.19446 dB in interiors, and mean boundary-minus-interior regret was -0.00436 dB. Clipping, location specificity, material coverage, and limited SSIM/color safety also passed. The partitions were highly imbalanced, with singleton minimum regions in every scene and mean maximum region area about 13188 pixels, so phase-sensitive or poorly corresponding region support remains a plausible diagnostic explanation, but the experiment does not identify it causally. The evidence shifts scientific reassessment away from further minor grid-definition repairs and toward an independently authorized measurement_target or metric_family hypothesis; it does not authorize either route or prove all content-adaptive partitions invalid.",
+  "limitations": [
+    "This is development-screening evidence from 100 canonical synthetic Haze4K scenes, not confirmation or real-haze external validation.",
+    "The four haze variants, regions, pixels, partition phases, taper repeats, and metrics are nested or crossed measurements and do not increase independent n.",
+    "Boundary and region-size diagnostics were descriptive only and cannot establish the causal source of instability.",
+    "GT defines source-region utility and the held-out-region oracle, so the result does not identify deployment-time predictability or a physical haze mechanism.",
+    "RGB reconstruction, SSIM, and channel-bias endpoints do not establish general perceptual quality.",
+    "The conclusion is specific to three hard residual scales, Sobel grayscale elevation, fixed 32-pixel marker spacing, connectivity 1, and four declared marker phases. It authorizes no Stage 2 experiment or protected-data access."
+  ]
+}
