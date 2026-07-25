@@ -15,6 +15,13 @@ import prepare_terminal_archive as ARCHIVE  # noqa: E402
 
 
 class TerminalArchiveTests(unittest.TestCase):
+    def test_empty_exclusion_asset_is_valid_text(self):
+        self.assertEqual("", ARCHIVE.checked_text(b"", "route_exclusions.txt"))
+
+    def test_other_empty_text_evidence_is_rejected(self):
+        with self.assertRaises(ARCHIVE.TerminalArchiveError):
+            ARCHIVE.checked_text(b"", "formal_results.txt")
+
     def git(self, repo: Path, *args: str) -> str:
         return subprocess.run(
             ["git", *args], cwd=repo, text=True, capture_output=True, check=True,

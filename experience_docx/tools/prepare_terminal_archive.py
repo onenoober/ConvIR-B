@@ -61,7 +61,10 @@ def safe_relative(value: str, *, prefix: str | None = None) -> PurePosixPath:
 
 
 def checked_text(raw: bytes, relpath: str) -> str:
-    if not 1 <= len(raw) <= MAX_FILE_BYTES:
+    empty_exclusion_asset = (
+        not raw and PurePosixPath(relpath).name.endswith("_exclusions.txt")
+    )
+    if (not raw and not empty_exclusion_asset) or len(raw) > MAX_FILE_BYTES:
         raise TerminalArchiveError(f"file size is outside limits: {relpath}")
     if b"\0" in raw:
         raise TerminalArchiveError(f"binary content is forbidden: {relpath}")
