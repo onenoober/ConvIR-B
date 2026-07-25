@@ -5,12 +5,16 @@ from __future__ import annotations
 
 import argparse
 import ast
+import hashlib
 import json
+import os
 import subprocess
+import tempfile
 from pathlib import Path
 from typing import Any
 
 import convir_ops_mcp as ops
+import experiment_spec_compiler as compiler
 from route_runtime_contract import runtime_spec_relpath
 
 
@@ -57,6 +61,72 @@ def staged_snapshot(repo: Path) -> str:
     return completed.stdout.strip()
 
 
+def worktree_candidate_snapshot(repo: Path, candidate_paths: list[str]) -> str:
+    """Create an ephemeral candidate commit without touching the real Git index."""
+    if not candidate_paths:
+        raise RepairError("worktree-candidate requires at least one --candidate-path")
+    normalized = []
+    for value in candidate_paths:
+        path = Path(value)
+        if path.is_absolute() or ".." in path.parts or value in {"", "."}:
+            raise RepairError(f"candidate path is not repository-relative: {value}")
+        normalized.append(path.as_posix())
+    if len(normalized) != len(set(normalized)):
+        raise RepairError("candidate paths must be unique")
+    if subprocess.run([GIT, "diff", "--cached", "--quiet"], cwd=repo).returncode:
+        raise RepairError("real Git index must be clean before worktree-candidate classification")
+    original_head = git(repo, "rev-parse", "HEAD")
+    original_index_tree = git(repo, "write-tree")
+    status = git(repo, "status", "--porcelain=v1", "--untracked-files=all")
+    observed = set()
+    for line in status.splitlines():
+        if len(line) < 4 or " -> " in line[3:]:
+            raise RepairError("renamed or unparseable worktree candidate path")
+        observed.add(line[3:])
+    requested = set(normalized)
+    if observed != requested:
+        raise RepairError(
+            f"worktree changes must exactly match --candidate-path values: "
+            f"unlisted={sorted(observed - requested)} absent={sorted(requested - observed)}"
+        )
+    with tempfile.TemporaryDirectory(prefix="engineering-repair-index-") as temporary:
+        index = str(Path(temporary) / "index")
+        environment = {**os.environ, "GIT_INDEX_FILE": index}
+
+        def isolated(*args: str, input_text: str | None = None) -> str:
+            completed = subprocess.run(
+                [GIT, *args], cwd=repo, env=environment, input=input_text, text=True,
+                capture_output=True, timeout=60, check=False,
+            )
+            if completed.returncode:
+                detail = (completed.stdout + completed.stderr).strip()[:4096]
+                raise RepairError(f"temporary-index git {' '.join(args)} failed: {detail}")
+            return completed.stdout.strip()
+
+        isolated("read-tree", "HEAD")
+        isolated("add", "-A", "--", *normalized)
+        isolated("diff", "--cached", "--check")
+        tree = isolated("write-tree")
+        parent = git(repo, "rev-parse", "HEAD")
+        environment.update({
+            "GIT_AUTHOR_NAME": "repair-gate",
+            "GIT_AUTHOR_EMAIL": "repair-gate@localhost",
+            "GIT_COMMITTER_NAME": "repair-gate",
+            "GIT_COMMITTER_EMAIL": "repair-gate@localhost",
+        })
+        snapshot = isolated(
+            "commit-tree", tree, "-p", parent,
+            input_text="engineering repair worktree candidate\n",
+        )
+    if subprocess.run([GIT, "diff", "--cached", "--quiet"], cwd=repo).returncode:
+        raise RepairError("worktree-candidate classification changed the real Git index")
+    if git(repo, "rev-parse", "HEAD") != original_head \
+            or git(repo, "write-tree") != original_index_tree \
+            or git(repo, "status", "--porcelain=v1", "--untracked-files=all") != status:
+        raise RepairError("worktree-candidate classification changed repository state")
+    return snapshot
+
+
 def show(repo: Path, commit: str, relpath: str) -> bytes:
     completed = subprocess.run(
         [GIT, "show", f"{commit}:{relpath}"], cwd=repo,
@@ -75,6 +145,14 @@ def load_json(repo: Path, commit: str, relpath: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise RepairError(f"JSON must be an object: {relpath}")
     return value
+
+
+def show_optional(repo: Path, commit: str, relpath: str) -> bytes | None:
+    completed = subprocess.run(
+        [GIT, "show", f"{commit}:{relpath}"], cwd=repo,
+        capture_output=True, timeout=30, check=False,
+    )
+    return completed.stdout if completed.returncode == 0 else None
 
 
 def call_leaf(node: ast.AST) -> str:
@@ -172,6 +250,101 @@ def validate_asset_repair(base: dict[str, Any], candidate: dict[str, Any]) -> li
     return changed
 
 
+def _sha256(raw: bytes) -> str:
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _entrypoint_asset(operation: dict[str, Any], entrypoint: str) -> dict[str, Any]:
+    matches = [
+        item for item in operation.get("assets", [])
+        if isinstance(item, dict) and item.get("kind") == "file"
+        and item.get("path") == f"{{REMOTE_REPO}}/{entrypoint}"
+    ]
+    if len(matches) != 1:
+        raise RepairError("schema-6 source must bind exactly one entrypoint file asset")
+    return matches[0]
+
+
+def _normalize_schema6_source(source: dict[str, Any], operation_id: str,
+                              old_output: str, entrypoint_sha: str) -> dict[str, Any]:
+    value = json.loads(json.dumps(source))
+    operation = value["operations"][operation_id]
+    operation["operation"]["output_id"] = old_output
+    entrypoint = operation["runtime"]["entrypoint_relpath"]
+    asset = _entrypoint_asset(operation, entrypoint)
+    asset["sha256"] = entrypoint_sha
+    bound = [
+        item for item in operation["capability"]["bound_assets"]
+        if item.get("id") == asset["id"]
+    ]
+    if len(bound) != 1:
+        raise RepairError("schema-6 capability must bind the entrypoint asset exactly once")
+    bound[0]["identity"] = entrypoint_sha
+    return value
+
+
+def validate_schema6_repair(repo: Path, base: str, snapshot: str, operation_id: str,
+                            old_manifest: dict[str, Any], new_manifest: dict[str, Any],
+                            old_output: str, new_output: str) -> dict[str, Any]:
+    stable_manifest_fields = {
+        "schema_version", "route_id", "rules_commit", "route_card_relpath",
+        "scientific_contract_relpaths", "program_contract_relpath",
+        "program_contract_sha256", "experiment_spec_relpath",
+    }
+    if {key: old_manifest.get(key) for key in stable_manifest_fields} != \
+            {key: new_manifest.get(key) for key in stable_manifest_fields}:
+        raise RepairError("schema-6 route/program/scientific identity changed")
+    for path in old_manifest["scientific_contract_relpaths"].values():
+        if show(repo, base, path) != show(repo, snapshot, path):
+            raise RepairError("canonical scientific contract changed")
+    program_path = old_manifest["program_contract_relpath"]
+    program_raw = show(repo, base, program_path)
+    if program_raw != show(repo, snapshot, program_path):
+        raise RepairError("research program contract changed")
+    spec_path = old_manifest["experiment_spec_relpath"]
+    old_spec_raw = show(repo, base, spec_path)
+    new_spec_raw = show(repo, snapshot, spec_path)
+    old_source = json.loads(old_spec_raw)
+    new_source = json.loads(new_spec_raw)
+    old_entrypoint = old_source["operations"][operation_id]["runtime"]["entrypoint_relpath"]
+    new_entrypoint = new_source["operations"][operation_id]["runtime"]["entrypoint_relpath"]
+    if old_entrypoint != new_entrypoint:
+        raise RepairError("schema-6 entrypoint path changed")
+    old_entrypoint_raw = show(repo, base, old_entrypoint)
+    new_entrypoint_raw = show(repo, snapshot, new_entrypoint)
+    if old_entrypoint_raw == new_entrypoint_raw:
+        raise RepairError("schema-6 repair did not change the entrypoint binding")
+    if normalized_entrypoint(old_entrypoint_raw) != normalized_entrypoint(new_entrypoint_raw):
+        raise RepairError("entrypoint algorithm/control-flow/constants changed")
+    old_sha, new_sha = _sha256(old_entrypoint_raw), _sha256(new_entrypoint_raw)
+    if _normalize_schema6_source(old_source, operation_id, old_output, old_sha) != \
+            _normalize_schema6_source(new_source, operation_id, old_output, old_sha):
+        raise RepairError(
+            "experiment spec changed beyond output and synchronized entrypoint identity"
+        )
+    if new_manifest.get("experiment_spec_sha256") != _sha256(new_spec_raw):
+        raise RepairError("schema-6 experiment spec identity is not synchronized")
+    bundle = compiler.compile_bundle(
+        spec_relpath=spec_path, spec_raw=new_spec_raw, program_raw=program_raw,
+        evidence_exists=lambda path: show_optional(repo, snapshot, path) is not None,
+    )
+    mismatches = compiler.compare_bundle(
+        bundle, lambda path: show(repo, snapshot, path),
+    )
+    if mismatches:
+        raise RepairError("schema-6 generated bundle is not deterministic: " + "; ".join(mismatches))
+    changed_paths = set(filter(None, git(repo, "diff", "--name-only", base, snapshot).splitlines()))
+    allowed = set(bundle) | {spec_path, old_entrypoint}
+    unexpected = sorted(changed_paths - allowed)
+    if unexpected:
+        raise RepairError(f"unexpected schema-6 repair paths: {unexpected}")
+    return {
+        "asset_path_repairs": [],
+        "entrypoint_symbol_binding_only": True,
+        "schema6_compiler_regeneration_verified": True,
+    }
+
+
 def validate(repo: Path, base: str, snapshot: str, operation_id: str) -> dict[str, Any]:
     base = git(repo, "rev-parse", f"{base}^{{commit}}")
     manifest_path = ops.ROUTE_OPERATIONS_RELPATH
@@ -192,6 +365,24 @@ def validate(repo: Path, base: str, snapshot: str, operation_id: str) -> dict[st
     if {key: value for key, value in old_operation.items() if key != "output_id"} != \
             {key: value for key, value in new_operation.items() if key != "output_id"}:
         raise RepairError("operation contract changed beyond output identity")
+
+    if old_manifest.get("schema_version") == 6 and new_manifest.get("schema_version") == 6:
+        schema6 = validate_schema6_repair(
+            repo, base, snapshot, operation_id, old_manifest, new_manifest,
+            old_output, new_output,
+        )
+        return {
+            "schema_version": 1,
+            "status": "AUTO_REPAIR_ELIGIBLE",
+            "base_commit": base,
+            "snapshot_commit": snapshot,
+            "operation_id": operation_id,
+            "old_output_id": old_output,
+            "new_output_id": new_output,
+            **schema6,
+            "scientific_contract_unchanged": True,
+            "sensitive_review_required": False,
+        }
 
     spec_path = runtime_spec_relpath(operation_id)
     if show(repo, base, spec_path) != show(repo, snapshot, spec_path):
@@ -243,12 +434,21 @@ def main() -> None:
     parser.add_argument("--repo", type=Path, default=Path.cwd())
     parser.add_argument("--base", required=True)
     parser.add_argument("--operation", required=True)
-    parser.add_argument("--snapshot", choices=("staged", "HEAD"), default="staged")
+    parser.add_argument(
+        "--snapshot", choices=("staged", "worktree-candidate", "HEAD"),
+        default="staged",
+    )
+    parser.add_argument("--candidate-path", action="append", default=[])
     parser.add_argument("--report", type=Path)
     args = parser.parse_args()
     repo = args.repo.resolve()
     try:
-        snapshot = staged_snapshot(repo) if args.snapshot == "staged" else git(repo, "rev-parse", "HEAD")
+        if args.snapshot == "staged":
+            snapshot = staged_snapshot(repo)
+        elif args.snapshot == "worktree-candidate":
+            snapshot = worktree_candidate_snapshot(repo, args.candidate_path)
+        else:
+            snapshot = git(repo, "rev-parse", "HEAD")
         report = validate(repo, args.base, snapshot, args.operation)
     except (RepairError, KeyError, TypeError, ValueError) as exc:
         report = {

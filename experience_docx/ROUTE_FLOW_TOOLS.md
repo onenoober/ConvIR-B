@@ -12,13 +12,18 @@ inputs and must stay outside the route worktree, normally under `/tmp`.
 
 ## Classify One Engineering Repair
 
-After `ENGINEERING_AUTO_REPAIR_AUTHORIZED`, diagnose once, prepare one staged
+After `ENGINEERING_AUTO_REPAIR_AUTHORIZED`, diagnose once, prepare one unstaged
 candidate with a new output identity, and run:
 
 ```text
 python3 experience_docx/tools/validate_engineering_repair.py \
-  --repo . --base <failed-route-commit> --operation <OPERATION_ID>
+  --repo . --base <failed-route-commit> --operation <OPERATION_ID> \
+  --snapshot worktree-candidate \
+  --candidate-path <EXACT_CHANGED_PATH> [--candidate-path <EXACT_CHANGED_PATH> ...]
 ```
+
+The gate builds an isolated temporary index from `HEAD` plus only those exact
+paths, rejects unlisted changes, and verifies the real index remains clean.
 
 The gate freezes route/runtime/data/permission/seed/budget contracts and asset
 identities. It allows immutable-identity file/Git path relocation, output

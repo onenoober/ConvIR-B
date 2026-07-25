@@ -59,6 +59,19 @@ def safe_diagnostic_text(value: Any, maximum: int) -> str:
     return text[-maximum:]
 
 
+def diagnostic_log_tail(path: Path, maximum: int = 3072) -> str:
+    """Read and sanitize only a bounded subprocess-log tail."""
+    try:
+        with path.open("rb") as stream:
+            stream.seek(0, os.SEEK_END)
+            size = stream.tell()
+            stream.seek(max(0, size - 16 * 1024))
+            raw = stream.read(16 * 1024)
+    except OSError:
+        return ""
+    return safe_diagnostic_text(raw.decode("utf-8", errors="replace"), maximum)
+
+
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -578,7 +591,9 @@ def lifecycle() -> int:
         timeout=min(spec["timeout_seconds"], spec["engineering_contract"]["max_seconds"]),
     )
     if rc:
-        raise LifecycleError(f"contract program failed rc={rc}", phase="contract")
+        tail = diagnostic_log_tail(runtime_log)
+        detail = f"; program_tail={tail}" if tail else ""
+        raise LifecycleError(f"contract program failed rc={rc}{detail}", phase="contract")
     validate_contract_result(Path(contract_context["result_path"]), spec)
     if (output / "workload").exists():
         raise LifecycleError("contract program created workload output", phase="contract")

@@ -11,7 +11,9 @@ a verdict-only registry. Raw runtime artifacts stay on cloud.
 `FAILED_ENGINEERING` is the exception. Its validated closeout immediately
 enters `ENGINEERING_AUTO_REPAIR_AUTHORIZED`; perform one read-only diagnosis and
 prepare one repair candidate. Before commit or push, run
-`validate_engineering_repair.py`. `AUTO_REPAIR_ELIGIBLE` permits the normal
+`validate_engineering_repair.py --snapshot worktree-candidate` with every exact
+changed path named by `--candidate-path`. Its isolated temporary index is not
+real staging and must leave the real index clean. `AUTO_REPAIR_ELIGIBLE` permits the normal
 one-gate, one-commit, one-push repair path without another user decision.
 `SENSITIVE_REPAIR_REVIEW_REQUIRED` pauses for user review before commit, push,
 plan or start. Keep failed-run compact evidence cloud-only. After an eligible

@@ -190,8 +190,16 @@ once, prepare one candidate with a new output identity, then run:
 
 ```text
 python3 experience_docx/tools/validate_engineering_repair.py \
-  --repo . --base <failed-route-commit> --operation <OPERATION_ID>
+  --repo . --base <failed-route-commit> --operation <OPERATION_ID> \
+  --snapshot worktree-candidate \
+  --candidate-path <EXACT_CHANGED_PATH> [--candidate-path <EXACT_CHANGED_PATH> ...]
 ```
+
+`worktree-candidate` copies only the explicitly named candidate paths into a
+tool-owned temporary index, rejects any unlisted worktree change, creates the
+ephemeral classification commit, and verifies that the real index stayed clean.
+This is classifier input, not staging; real staging remains forbidden until the
+gate returns `AUTO_REPAIR_ELIGIBLE`.
 
 `AUTO_REPAIR_ELIGIBLE` proceeds without another repair prompt through the
 normal route-ready/commit/push/plan/start path.

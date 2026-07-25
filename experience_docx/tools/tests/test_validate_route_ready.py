@@ -26,10 +26,59 @@ def main():
         run(None)
 '''
 
+SCHEMA2_ENGINEERING = b'''\
+from route_program_api import load_context, write_contract_result, write_run_result
+def contract(context_path):
+    context = load_context(context_path, "contract")
+    engineering = {
+        "mode": "gpu_synthetic_no_data", "device": "cuda",
+        "fixture": {"batch": 1, "channels": 3, "height": 8, "width": 8},
+        "production_path_exercised": True, "protected_data_touched": False,
+        "scientific_output_created": False, "scientific_training_occurred": False,
+    }
+    write_contract_result(context, checks={"ok": True}, engineering=engineering)
+def run(context_path):
+    context = load_context(context_path, "run")
+    write_run_result(context, state="PASS", decision="PASS", authorizes="NEXT")
+def main():
+    option = "--context"
+    if option:
+        contract(None)
+    else:
+        run(None)
+'''
+
 
 class RouteReadyTests(unittest.TestCase):
     def test_standard_entrypoint_interface_passes(self):
         READY.check_entrypoint(GOOD, "experience_docx/tools/program.py")
+
+    def test_schema2_complete_engineering_dict_passes(self):
+        READY.check_entrypoint(
+            SCHEMA2_ENGINEERING, "experience_docx/tools/program.py",
+            require_engineering=True,
+        )
+
+    def test_schema2_unknown_engineering_field_is_rejected_prelaunch(self):
+        raw = SCHEMA2_ENGINEERING.replace(
+            b'"scientific_training_occurred": False,',
+            b'"scientific_training_occurred": False, "reference_checks": {},',
+        )
+        with self.assertRaisesRegex(READY.ReadyError, "reference_checks"):
+            READY.check_entrypoint(raw, "program.py", require_engineering=True)
+
+    def test_schema2_missing_engineering_payload_is_rejected_prelaunch(self):
+        with self.assertRaisesRegex(READY.ReadyError, "requires engineering evidence"):
+            READY.check_entrypoint(GOOD, "program.py", require_engineering=True)
+
+    def test_schema2_engineering_dict_mutation_is_rejected_prelaunch(self):
+        raw = SCHEMA2_ENGINEERING.replace(
+            b'    write_contract_result(context, checks={"ok": True}, engineering=engineering)',
+            b'    engineering["reference_checks"] = {}\n'
+            b'    write_contract_result(context, checks={"ok": True}, engineering=engineering)',
+        )
+        with self.assertRaisesRegex(READY.ReadyError, "cannot be mutated"):
+            READY.check_entrypoint(raw, "program.py", require_engineering=True)
 
     def test_positional_output_entrypoint_is_rejected(self):
         with self.assertRaises(READY.ReadyError):

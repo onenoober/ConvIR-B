@@ -1,13 +1,22 @@
 """Tests for conservative same-contract engineering repair classification."""
 
 import ast
+import copy
+import hashlib
 import json
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
+
+TOOLS = Path(__file__).parents[1]
+TESTS = Path(__file__).parent
+sys.path[:0] = [str(TOOLS), str(TESTS)]
 import validate_engineering_repair as REPAIR
+import experiment_spec_compiler as COMPILER
+from test_experiment_spec_compiler import compile_sources, sources
 
 
 class EngineeringRepairTests(unittest.TestCase):
@@ -73,6 +82,75 @@ class EngineeringRepairTests(unittest.TestCase):
         self._git(repo, "commit", "--quiet", "-m", "candidate")
         candidate = self._git(repo, "rev-parse", "HEAD")
         return repo, base, candidate
+
+    def _make_schema6_fixture(
+        self, root: Path, *, change_run: bool = False, commit_candidate: bool = True,
+    ) -> tuple[Path, str, str | None, list[str]]:
+        repo = root / "schema6-repo"
+        repo.mkdir()
+        self._git(repo, "init", "--quiet")
+        self._git(repo, "config", "user.name", "repair-test")
+        self._git(repo, "config", "user.email", "repair-test@localhost")
+        program, spec = sources()
+        operation = spec["operations"]["ACCEPT"]
+        entrypoint = operation["runtime"]["entrypoint_relpath"]
+        before = (
+            "def contract(context_path):\n"
+            "    payload = {'reference_checks': {}}\n"
+            "    return payload\n"
+            "def run(context_path):\n"
+            "    return 1\n"
+        ).encode()
+        old_sha = hashlib.sha256(before).hexdigest()
+        operation["operation"]["output_id"] = "final-slim-r1"
+        operation["assets"][0].update({
+            "path": f"{{REMOTE_REPO}}/{entrypoint}", "sha256": old_sha,
+        })
+        operation["capability"]["bound_assets"][0]["identity"] = old_sha
+        spec_raw, program_raw, bundle = compile_sources(program, spec)
+        source_paths = {
+            "experience_docx/research_programs/final_slim.json": program_raw,
+            "experience_docx/experiment_specs/final_slim.json": spec_raw,
+            entrypoint: before,
+        }
+        for relpath, raw in {**source_paths, **bundle}.items():
+            path = repo / relpath
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(raw)
+        self._git(repo, "add", ".")
+        self._git(repo, "commit", "--quiet", "-m", "base")
+        base = self._git(repo, "rev-parse", "HEAD")
+
+        candidate_spec = copy.deepcopy(spec)
+        candidate_operation = candidate_spec["operations"]["ACCEPT"]
+        candidate_operation["operation"]["output_id"] = "final-slim-r2"
+        after = (
+            "def contract(context_path):\n"
+            "    return {}\n"
+            "def run(context_path):\n"
+            f"    return {2 if change_run else 1}\n"
+        ).encode()
+        new_sha = hashlib.sha256(after).hexdigest()
+        candidate_operation["assets"][0]["sha256"] = new_sha
+        candidate_operation["capability"]["bound_assets"][0]["identity"] = new_sha
+        candidate_spec_raw, _, candidate_bundle = compile_sources(program, candidate_spec)
+        candidate_files = {
+            "experience_docx/experiment_specs/final_slim.json": candidate_spec_raw,
+            entrypoint: after,
+            **candidate_bundle,
+        }
+        for relpath, raw in candidate_files.items():
+            path = repo / relpath
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(raw)
+        paths = sorted(filter(None, self._git(repo, "status", "--porcelain").splitlines()))
+        changed_paths = sorted(line[3:] for line in paths)
+        candidate = None
+        if commit_candidate:
+            self._git(repo, "add", ".")
+            self._git(repo, "commit", "--quiet", "-m", "candidate")
+            candidate = self._git(repo, "rev-parse", "HEAD")
+        return repo, base, candidate, changed_paths
 
     def test_symbol_qualification_and_contract_fixture_are_safe(self):
         before = b'''\
@@ -181,6 +259,40 @@ def run(value):
                 "route card changed beyond output identity and repair note",
             ):
                 REPAIR.validate(repo, base, candidate, "REPAIR_TEST")
+
+    def test_schema6_compiler_synchronized_entrypoint_repair_is_eligible(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            repo, base, candidate, _ = self._make_schema6_fixture(Path(temporary))
+            report = REPAIR.validate(repo, base, candidate, "ACCEPT")
+        self.assertEqual("AUTO_REPAIR_ELIGIBLE", report["status"])
+        self.assertTrue(report["schema6_compiler_regeneration_verified"])
+
+    def test_schema6_run_change_remains_sensitive(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            repo, base, candidate, _ = self._make_schema6_fixture(
+                Path(temporary), change_run=True,
+            )
+            with self.assertRaisesRegex(REPAIR.RepairError, "algorithm/control-flow/constants"):
+                REPAIR.validate(repo, base, candidate, "ACCEPT")
+
+    def test_worktree_candidate_uses_temporary_index_only(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            repo, base, _, paths = self._make_schema6_fixture(
+                Path(temporary), commit_candidate=False,
+            )
+            self.assertEqual("", self._git(repo, "diff", "--cached", "--name-only"))
+            snapshot = REPAIR.worktree_candidate_snapshot(repo, paths)
+            self.assertEqual("", self._git(repo, "diff", "--cached", "--name-only"))
+            report = REPAIR.validate(repo, base, snapshot, "ACCEPT")
+        self.assertEqual("AUTO_REPAIR_ELIGIBLE", report["status"])
+
+    def test_worktree_candidate_rejects_unlisted_change(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            repo, _, _, paths = self._make_schema6_fixture(
+                Path(temporary), commit_candidate=False,
+            )
+            with self.assertRaisesRegex(REPAIR.RepairError, "unlisted"):
+                REPAIR.worktree_candidate_snapshot(repo, paths[:-1])
 
 
 if __name__ == "__main__":

@@ -97,6 +97,8 @@ repair policy below and is not a scientific terminal archive.
   or relaunch until the repair gate classifies the candidate. Sensitive changes
   and a repeated root cause stop for the user; explicit `archive` is the only
   path that unlocks failure evidence.
+  The repair gate's tool-owned temporary Git index is an isolated classifier
+  input and is not real staging; it must leave the worktree index unchanged.
 
 Explicit discard is allowed only for a receipt-bound validated engineering
 terminal with verified absence of scientific/protected data touch, no active

@@ -215,5 +215,20 @@ class LifecycleTests(unittest.TestCase):
                 LIFE.verify_assets(assets, repo=root, run_root=root, output=root / "output")
             self.assertEqual(["first"], [item["id"] for item in LIFE.VERIFIED_ASSETS])
 
+    def test_program_log_tail_is_bounded_and_redacted(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "runtime.log"
+            path.write_text(
+                "discarded\n" * 5000
+                + "api_key=do-not-expose /sda/home/private/route.py\n"
+                + "ContractError: schema-2 contract requires complete engineering evidence\n",
+                encoding="utf-8",
+            )
+            tail = LIFE.diagnostic_log_tail(path, 512)
+            self.assertLessEqual(len(tail), 512)
+            self.assertNotIn("do-not-expose", tail)
+            self.assertNotIn("/sda/home/private", tail)
+            self.assertIn("schema-2 contract requires complete engineering evidence", tail)
+
 if __name__ == "__main__":
     unittest.main()

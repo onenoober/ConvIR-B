@@ -117,7 +117,79 @@ def check_bash(raw: bytes, relpath: str) -> None:
         raise ReadyError(f"Bash syntax failed: {relpath}: {completed.stderr.decode(errors='replace')}")
 
 
-def check_entrypoint(raw: bytes, relpath: str) -> None:
+ENGINEERING_EVIDENCE_FIELDS = {
+    "mode", "device", "fixture", "production_path_exercised",
+    "protected_data_touched", "scientific_output_created",
+    "scientific_training_occurred",
+}
+
+
+def _inline_dict_fields(node: ast.AST, assignments: dict[str, list[ast.AST]]) -> set[str]:
+    if isinstance(node, ast.Name):
+        candidates = assignments.get(node.id, [])
+        if len(candidates) != 1:
+            raise ReadyError(
+                "schema-2 engineering evidence must be one inline or single-assignment dict"
+            )
+        node = candidates[0]
+    if not isinstance(node, ast.Dict) or any(key is None for key in node.keys):
+        raise ReadyError(
+            "schema-2 engineering evidence must be one inline or single-assignment dict"
+        )
+    fields = []
+    for key in node.keys:
+        if not isinstance(key, ast.Constant) or not isinstance(key.value, str):
+            raise ReadyError("schema-2 engineering evidence keys must be literal strings")
+        fields.append(key.value)
+    if len(fields) != len(set(fields)):
+        raise ReadyError("schema-2 engineering evidence contains duplicate fields")
+    return set(fields)
+
+
+def _check_engineering_writer(function: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+    assignments: dict[str, list[ast.AST]] = {}
+    for node in ast.walk(function):
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name):
+                    assignments.setdefault(target.id, []).append(node.value)
+        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) \
+                and node.value is not None:
+            assignments.setdefault(node.target.id, []).append(node.value)
+    writers = [
+        node for node in ast.walk(function)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "write_contract_result"
+    ]
+    for writer in writers:
+        if any(keyword.arg is None for keyword in writer.keywords):
+            raise ReadyError("schema-2 write_contract_result cannot use **kwargs")
+        engineering = [
+            keyword.value for keyword in writer.keywords if keyword.arg == "engineering"
+        ]
+        if len(engineering) != 1:
+            raise ReadyError("schema-2 write_contract_result requires engineering evidence")
+        if isinstance(engineering[0], ast.Name):
+            name = engineering[0].id
+            for node in ast.walk(function):
+                if isinstance(node, ast.Subscript) and isinstance(node.ctx, ast.Store) \
+                        and isinstance(node.value, ast.Name) and node.value.id == name:
+                    raise ReadyError("schema-2 engineering evidence cannot be mutated")
+                if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) \
+                        and isinstance(node.func.value, ast.Name) \
+                        and node.func.value.id == name:
+                    raise ReadyError("schema-2 engineering evidence cannot be mutated")
+        fields = _inline_dict_fields(engineering[0], assignments)
+        if fields != ENGINEERING_EVIDENCE_FIELDS:
+            missing = sorted(ENGINEERING_EVIDENCE_FIELDS - fields)
+            unknown = sorted(fields - ENGINEERING_EVIDENCE_FIELDS)
+            raise ReadyError(
+                f"schema-2 engineering evidence fields differ: missing={missing} unknown={unknown}"
+            )
+
+
+def check_entrypoint(raw: bytes, relpath: str, *, require_engineering: bool = False) -> None:
     check_python(raw, relpath)
     tree = ast.parse(raw.decode("utf-8"), filename=relpath)
     strings = {node.value for node in ast.walk(tree) if isinstance(node, ast.Constant) and isinstance(node.value, str)}
@@ -148,6 +220,8 @@ def check_entrypoint(raw: bytes, relpath: str) -> None:
             for node in calls
         ):
             raise ReadyError(f"entrypoint {phase} must load its exact context phase")
+        if phase == "contract" and require_engineering:
+            _check_engineering_writer(function)
     main_function = functions.get("main")
     main_calls = set() if main_function is None else {
         call_name(node) for node in ast.walk(main_function) if isinstance(node, ast.Call)
@@ -310,7 +384,10 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
             if manifest_schema >= 5 and spec["schema_version"] != 2:
                 raise ReadyError(f"{operation_id}: canonical manifest requires runtime schema 2")
             entrypoint_raw = show(repo, snapshot, spec["entrypoint_relpath"])
-            check_entrypoint(entrypoint_raw, spec["entrypoint_relpath"])
+            check_entrypoint(
+                entrypoint_raw, spec["entrypoint_relpath"],
+                require_engineering=spec["schema_version"] >= 2,
+            )
             asset_digest = None
             asset = None
             if spec["asset_manifest_relpath"] is not None:

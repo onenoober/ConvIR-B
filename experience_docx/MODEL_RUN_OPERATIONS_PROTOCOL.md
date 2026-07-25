@@ -109,13 +109,17 @@ FAILED_ENGINEERING
 
 The MCP keeps evidence locked. `validate_engineering_repair.py` permits only a
 new output identity, immutable-identity file/Git path relocation, import/symbol
-binding repair with unchanged arguments/control flow, and protected-data-free
-contract fixture additions. It rejects data-directory changes and any runtime
+binding repair with unchanged arguments/control flow, protected-data-free
+contract fixture additions, and schema-6 compiler-deterministic regeneration
+of synchronized entrypoint asset/capability identities. It rejects
+data-directory changes and any runtime
 spec, permission, seed/budget, algorithm constant/control-flow, model or asset
 identity change. An eligible repair uses the normal single route-ready gate,
 commit/push, plan and existing start authorization without another user repair
 prompt. A sensitive repair pauses before commit/push/start. `archive` unlocks
 only compact failure evidence. A repeated same-root failure stops for review.
+Before classification, `worktree-candidate` uses only an isolated temporary Git
+index and exact path allowlist; the real index must remain clean.
 
 Failure closeouts must retain the identities of assets successfully verified
 before the failure. An empty list means verification did not complete, not
