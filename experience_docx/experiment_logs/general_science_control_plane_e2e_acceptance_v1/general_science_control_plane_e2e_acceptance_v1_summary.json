@@ -1,0 +1,12 @@
+{
+  "acceptance_kind": "generic_control_plane_no_data",
+  "checkpoint_access": 0,
+  "dataset_access": 0,
+  "external_assets_read": 0,
+  "model_calls": 0,
+  "operation_id": "ACCEPT",
+  "protected_data_touched": false,
+  "route_id": "general_science_control_plane_e2e_acceptance_v1",
+  "run_id": "general-science-control-plane-e2e-acceptance-v1-r1",
+  "schema_version": 1
+}

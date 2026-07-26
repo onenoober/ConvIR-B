@@ -1,0 +1,33 @@
+{
+  "authorizes": "ARCHIVE_ONLY",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "CONTROL_PLANE_E2E_ACCEPTANCE_PASS",
+  "decision_rule_id": "safe_lifecycle_passes",
+  "details": {
+    "acceptance_kind": "generic_control_plane_no_data",
+    "scientific_authorization": "NONE"
+  },
+  "evidence_role": "engineering_debug",
+  "evidence_sha256": {
+    "general_science_control_plane_e2e_acceptance_v1_summary.json": "c6a97028f1128334e6b33c8d25e1fa07d41f7f6d3805f00e428322fe5e0762e3"
+  },
+  "failure_phase": null,
+  "family_effect": "advance",
+  "gate_outcomes": {
+    "integrity": "pass",
+    "lifecycle_safety": "safe"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "archive_control_plane_acceptance",
+  "operation_id": "ACCEPT",
+  "returncode": 0,
+  "route_commit": "57fec121007a5c9a8c2c90b12bc68e581b38f577",
+  "route_id": "general_science_control_plane_e2e_acceptance_v1",
+  "run_id": "general-science-control-plane-e2e-acceptance-v1-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_GATE_PASS",
+  "terminal_label": "pass",
+  "verified_assets": []
+}

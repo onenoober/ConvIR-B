@@ -1,0 +1,21 @@
+{
+  "route_id": "general_science_control_plane_e2e_acceptance_v1",
+  "operation_id": "ACCEPT",
+  "run_id": "general-science-control-plane-e2e-acceptance-v1-r1",
+  "state": "COMPLETED_GATE_PASS",
+  "decision": "CONTROL_PLANE_E2E_ACCEPTANCE_PASS",
+  "authorizes": "ARCHIVE_ONLY",
+  "primary_result": "The generic zero-data control-plane acceptance completed its one-unit schema-2 lifecycle with integrity=pass and lifecycle_safety=safe. It accessed no external assets, datasets, checkpoints, protected data, or model calls.",
+  "gate_reasons": [
+    "The receipt-bound closeout records integrity=pass.",
+    "The receipt-bound closeout records lifecycle_safety=safe.",
+    "The schema-2 completion ledger covers the single planned metadata-only workload unit.",
+    "The summary records zero dataset, checkpoint, external-asset, and model access."
+  ],
+  "competing_explanation": "A metadata-only lifecycle acceptance cannot establish correctness, performance, or scientific validity for any model, dataset, metric, or protected-data workflow; it only tests the generic control-plane path exercised by this frozen contract.",
+  "limitations": [
+    "This is engineering-only, zero-data evidence and grants no scientific performance authorization.",
+    "It does not qualify any model, checkpoint, dataset, metric implementation, or protected-data access path.",
+    "The only permitted follow-up from this terminal is archival of this acceptance evidence."
+  ]
+}
