@@ -56,11 +56,13 @@ PYTHONPATH="$tools" "$python" "$tools/policy_snapshot.py" \
 printf 'CONTROL_PLANE_EFFICIENCY_V1_STAGE=full_regression\n'
 stdout=$work/unittest.stdout
 stderr=$work/unittest.stderr
+trap - ERR
 set +e
 PYTHONPATH="$tools:$tests" "$python" -m unittest discover \
   -s "$tests" -p 'test_*.py' >"$stdout" 2>"$stderr"
 rc=$?
 set -e
+trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
 if [[ $rc -ne 0 ]]; then
   tail -n 200 "$stdout" >&2 || true
   tail -n 200 "$stderr" >&2 || true
