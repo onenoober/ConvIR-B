@@ -1,0 +1,250 @@
+{
+  "schema_version": 2,
+  "route_id": "general_science_control_plane_e2e_acceptance_v1",
+  "rules_commit": "88daa3d6ddee2edfc92a60560f24d1fbd79e2513",
+  "title": "General Science Control Plane E2E Acceptance v1",
+  "rationale": "Exercise one complete generic lifecycle with zero external assets, no data access, no model call, and no scientific performance claim.",
+  "first_operation": "ACCEPT",
+  "program_contract_relpath": "experience_docx/research_programs/general_science_control_plane_e2e_acceptance_v1.json",
+  "operations": {
+    "ACCEPT": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "e2e_acceptance",
+        "require_gpu": false,
+        "output_id": "general-science-control-plane-e2e-acceptance-v1-r1",
+        "closeout_filename": "general_science_control_plane_e2e_acceptance_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "short",
+        "heartbeat_timeout_seconds": 180,
+        "min_free_gpu_mib": 0,
+        "max_gpu_utilization_pct": 100
+      },
+      "program_authorization": {
+        "program_id": "general_science_control_plane_acceptance",
+        "stage_id": "acceptance",
+        "family_id": "lifecycle_acceptance",
+        "mechanism_type": "adjacent",
+        "evidence_role": "engineering_debug",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [],
+        "adjacent_sequence": 1,
+        "orthogonal_changes": [],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Does the generic control plane complete the frozen no-data lifecycle while preserving every protected-data boundary?",
+        "population": {
+          "evidence_role": "engineering_debug",
+          "grouping_unit": "control_record",
+          "independent_group_count": 0,
+          "strata": [
+            {
+              "id": "no_data",
+              "independent_group_count": 0
+            }
+          ],
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "generic_control_plane_lifecycle",
+          "reference": "frozen schema-2 acceptance contract",
+          "matched_budget": "one metadata-only lifecycle operation",
+          "fixed_factors": [
+            "no external assets",
+            "no protected data",
+            "no model execution"
+          ]
+        },
+        "primary_estimand": {
+          "id": "lifecycle_completion",
+          "metric_id": "control_plane_terminal_integrity",
+          "direction": "higher",
+          "aggregation": "one typed terminal over the frozen no-data control record",
+          "unit": "control_record",
+          "strata": [
+            "no_data"
+          ]
+        },
+        "controls": [
+          "generic runner identity",
+          "write-once completion ledger"
+        ],
+        "uncertainty": {
+          "id": "deterministic_control_validation",
+          "method_id": "frozen_boolean_control_checks",
+          "confidence_level": 0.95,
+          "independent_unit": "control_record",
+          "comparison_family": "no_data_lifecycle"
+        },
+        "gates": [
+          {
+            "id": "integrity",
+            "type": "integrity",
+            "estimand_id": "lifecycle_completion",
+            "reference": "frozen identity, output, ledger, and protected-data controls",
+            "direction": "equal",
+            "threshold": true,
+            "uncertainty_id": "deterministic_control_validation",
+            "comparison_family": "no_data_lifecycle",
+            "decision_role": "validity_veto",
+            "outcomes": [
+              "pass",
+              "fail",
+              "invalid"
+            ],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "lifecycle_safety",
+            "type": "safety",
+            "estimand_id": "lifecycle_completion",
+            "reference": "metadata-only operation reports no model, data, or protected access",
+            "direction": "min",
+            "threshold": true,
+            "uncertainty_id": "deterministic_control_validation",
+            "comparison_family": "no_data_lifecycle",
+            "decision_role": "decisive",
+            "outcomes": [
+              "safe",
+              "unsafe",
+              "indeterminate",
+              "invalid"
+            ],
+            "neutral_outcome": "safe"
+          }
+        ],
+        "competing_explanation": "A route-specific shortcut could appear successful without exercising the generic lifecycle and archive boundaries.",
+        "decision_table": {
+          "terminal_actions": {
+            "pass": {
+              "terminal": {
+                "state": "COMPLETED_GATE_PASS",
+                "decision": "CONTROL_PLANE_E2E_ACCEPTANCE_PASS",
+                "authorizes": "ARCHIVE_ONLY"
+              },
+              "next_action_id": "archive_control_plane_acceptance",
+              "family_effect": "advance"
+            },
+            "fail": {
+              "terminal": {
+                "state": "COMPLETED_GATE_FAIL",
+                "decision": "CONTROL_PLANE_E2E_ACCEPTANCE_FAIL",
+                "authorizes": "NONE"
+              },
+              "next_action_id": "stop_control_plane_acceptance",
+              "family_effect": "stop"
+            },
+            "inconclusive": {
+              "terminal": {
+                "state": "COMPLETED_INCONCLUSIVE",
+                "decision": "CONTROL_PLANE_E2E_ACCEPTANCE_INCONCLUSIVE",
+                "authorizes": "NONE"
+              },
+              "next_action_id": "inspect_control_plane_acceptance",
+              "family_effect": "allow_predeclared_evidence"
+            }
+          },
+          "rules": [
+            {
+              "id": "integrity_veto",
+              "when": {
+                "integrity": [
+                  "fail",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "unsafe_lifecycle_fails",
+              "when": {
+                "integrity": [
+                  "pass"
+                ],
+                "lifecycle_safety": [
+                  "unsafe"
+                ]
+              },
+              "terminal": "fail"
+            },
+            {
+              "id": "safe_lifecycle_passes",
+              "when": {
+                "integrity": [
+                  "pass"
+                ],
+                "lifecycle_safety": [
+                  "safe"
+                ]
+              },
+              "terminal": "pass"
+            },
+            {
+              "id": "unresolved_lifecycle_is_inconclusive",
+              "when": {
+                "integrity": [
+                  "pass"
+                ],
+                "lifecycle_safety": [
+                  "indeterminate",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            }
+          ]
+        },
+        "disabled_actions": [
+          "dataset access",
+          "checkpoint access",
+          "model execution",
+          "scientific performance claim"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/run_general_science_control_plane_e2e_acceptance.py",
+        "timeout_seconds": 180,
+        "expected_wall_seconds": 50,
+        "total_units": 1,
+        "evidence_role": "engineering_debug",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {},
+        "evidence_files": [
+          {
+            "source_relpath": "workload/acceptance_summary.json",
+            "destination_filename": "general_science_control_plane_e2e_acceptance_v1_summary.json",
+            "required": true,
+            "max_bytes": 65536
+          }
+        ],
+        "engineering_contract": {
+          "mode": "metadata_only",
+          "max_seconds": 30,
+          "cost_contract": null
+        },
+        "precision_contract": {
+          "mode": "not_applicable",
+          "rationale": "Zero-data engineering acceptance has no statistical estimand."
+        }
+      },
+      "assets": null,
+      "capability": null,
+      "precision": null
+    }
+  }
+}

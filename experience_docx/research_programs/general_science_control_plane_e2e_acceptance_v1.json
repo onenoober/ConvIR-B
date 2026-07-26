@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "program_id": "general_science_control_plane_acceptance",
+  "objective": "Verify the generic control-plane lifecycle with a zero-data, engineering-only acceptance route.",
+  "source_anchors": [
+    {
+      "id": "deployed_control_plane",
+      "reference": "GitHub main control-plane commit 88daa3d6ddee2edfc92a60560f24d1fbd79e2513.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    }
+  ],
+  "dependency_roles": {
+    "control_plane": [
+      "diagnostic"
+    ]
+  },
+  "stages": {
+    "acceptance": {
+      "evidence_roles": [
+        "engineering_debug"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "lifecycle_acceptance"
+      ]
+    }
+  },
+  "route_families": {
+    "lifecycle_acceptance": {
+      "core_assumption": "The generic control plane can seal and archive one data-free lifecycle without route-specific infrastructure.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the predeclared no-data lifecycle acceptance reaches a typed terminal.",
+      "reopen_evidence_types": [
+        "new_control_plane_revision"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "control_plane_semantics"
+  ],
+  "amendments": []
+}
