@@ -2,11 +2,13 @@
 
 import hashlib
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 TOOLS = Path(__file__).parents[1]
@@ -144,6 +146,13 @@ class TerminalArchiveTests(unittest.TestCase):
         return ARCHIVE.audit_source(
             repo, commit, "route", closeout, card, conclusion, "1" * 64,
         )
+
+    def receipt_copy(self, source, destination: Path) -> dict:
+        repo, _, closeout, _, _ = source
+        evidence = repo / "experience_docx/experiment_logs/route"
+        for filename in (Path(closeout).name, "formal_results.csv"):
+            shutil.copyfile(evidence / filename, destination / filename)
+        return {}
 
     def test_complete_bundle_is_staged_once(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -288,6 +297,72 @@ class TerminalArchiveTests(unittest.TestCase):
                     destination, "refs/remotes/github/main", self.audit(source),
                 )
 
+    def test_archive_base_ref_cannot_select_a_local_main_branch(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.source(root)
+            destination = self.destination(root)
+            with self.assertRaises(ARCHIVE.TerminalArchiveError):
+                ARCHIVE.prepare_destination(destination, "main", self.audit(source))
+
+    def test_receipt_evidence_overrides_tampered_local_closeout(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.source(root)
+            repo, commit, closeout, card, conclusion = source
+            trusted = root / "receipt"
+            trusted.mkdir()
+            self.receipt_copy(source, trusted)
+            local_closeout = repo / closeout
+            tampered = json.loads(local_closeout.read_text(encoding="utf-8"))
+            tampered["decision"] = "TAMPERED_LOCAL_DECISION"
+            local_closeout.write_text(json.dumps(tampered), encoding="utf-8")
+            audit = ARCHIVE.audit_source(
+                repo, commit, "route", closeout, card, conclusion, "1" * 64,
+                evidence_dir_override=trusted,
+                conclusion_dir_override=repo / Path(closeout).parent,
+            )
+            self.assertEqual("A1_PASS", audit["decision"])
+
+    def test_default_cli_fetches_receipt_evidence_when_local_evidence_exists(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.source(root)
+            destination = self.destination(root)
+            remote = root / "github.git"
+            subprocess.run(["git", "init", "--bare", "-q", remote], check=True)
+            self.git(destination, "remote", "add", "github", str(remote))
+            self.git(destination, "push", "-q", "github", "HEAD:main")
+            repo, commit, closeout, card, conclusion = source
+            trusted = root / "receipt"
+            trusted.mkdir()
+            self.receipt_copy(source, trusted)
+            local_closeout = repo / closeout
+            tampered = json.loads(local_closeout.read_text(encoding="utf-8"))
+            tampered["decision"] = "TAMPERED_LOCAL_DECISION"
+            local_closeout.write_text(json.dumps(tampered), encoding="utf-8")
+
+            def fetch(receipt, evidence_dir):
+                self.assertEqual("1" * 64, receipt)
+                for filename in (Path(closeout).name, "formal_results.csv"):
+                    shutil.copyfile(trusted / filename, evidence_dir / filename)
+                return {}
+
+            arguments = [
+                "prepare_terminal_archive.py",
+                "--source-repo", str(repo), "--source-ref", commit,
+                "--route-id", "route", "--closeout", closeout,
+                "--contract", card, "--conclusion", conclusion,
+                "--receipt", "1" * 64, "--destination-repo", str(destination),
+            ]
+            with mock.patch.object(ARCHIVE, "fetch_receipt_evidence", side_effect=fetch) as mocked:
+                with mock.patch.object(sys, "argv", arguments):
+                    ARCHIVE.main()
+            mocked.assert_called_once()
+            index = (destination / ARCHIVE.INDEX_PATH).read_text(encoding="utf-8")
+            self.assertIn("A1_PASS", index)
+            self.assertNotIn("TAMPERED_LOCAL_DECISION", index)
+
     def test_conflicting_terminal_identity_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -321,11 +396,42 @@ class TerminalArchiveTests(unittest.TestCase):
                 destination, "refs/remotes/github/main", audit,
             )
             final = ARCHIVE.finalize_destination(
-                destination, "route", prepared["staged_paths"],
+                destination, "route", prepared["staged_paths"], audit,
             )
             self.assertEqual("TERMINAL_ARCHIVE_PUSHED", final["status"])
             self.assertEqual(final["evidence_commit"], final["remote_commit"])
             self.assertEqual([], final["remaining_operator_steps"])
+            self.assertEqual("", self.git(destination, "status", "--porcelain"))
+
+    def test_finalize_recovers_one_concurrent_main_fast_forward(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.source(root)
+            destination = self.destination(root)
+            remote = root / "github.git"
+            subprocess.run(["git", "init", "--bare", "-q", remote], check=True)
+            self.git(destination, "remote", "add", "github", str(remote))
+            self.git(destination, "push", "-q", "github", "HEAD:main")
+            audit = self.audit(source)
+            prepared = ARCHIVE.prepare_destination(
+                destination, "refs/remotes/github/main", audit,
+            )
+            concurrent = root / "concurrent"
+            subprocess.run(
+                ["git", "clone", "-q", "--branch", "main", str(remote), concurrent],
+                check=True,
+            )
+            self.git(concurrent, "config", "user.name", "test")
+            self.git(concurrent, "config", "user.email", "test@example.com")
+            (concurrent / "CONCURRENT.md").write_text("advance\n", encoding="utf-8")
+            self.git(concurrent, "add", "CONCURRENT.md")
+            self.git(concurrent, "commit", "-qm", "concurrent advance")
+            self.git(concurrent, "push", "-q", "origin", "main")
+            final = ARCHIVE.finalize_destination(
+                destination, "route", prepared["staged_paths"], audit,
+            )
+            self.assertTrue(final["concurrent_main_advance_recovered"])
+            self.assertEqual(final["evidence_commit"], final["remote_commit"])
             self.assertEqual("", self.git(destination, "status", "--porcelain"))
 
     def test_cli_commit_and_push_is_single_archive_path(self):
@@ -338,16 +444,22 @@ class TerminalArchiveTests(unittest.TestCase):
             self.git(destination, "remote", "add", "github", str(remote))
             self.git(destination, "push", "-q", "github", "HEAD:main")
             repo, commit, closeout, card, conclusion = source
-            command = [
-                sys.executable, str(TOOLS / "prepare_terminal_archive.py"),
+            arguments = [
+                "prepare_terminal_archive.py",
                 "--source-repo", str(repo), "--source-ref", commit,
                 "--route-id", "route", "--closeout", closeout,
                 "--contract", card, "--conclusion", conclusion,
                 "--receipt", "1" * 64, "--destination-repo", str(destination),
-                "--base-ref", "refs/remotes/github/main", "--commit-and-push",
+                "--commit-and-push",
             ]
-            completed = subprocess.run(command, text=True, capture_output=True, check=True)
-            self.assertIn("TERMINAL_ARCHIVE_OK", completed.stdout)
+
+            def fetch(receipt, evidence_dir):
+                self.assertEqual("1" * 64, receipt)
+                return self.receipt_copy(source, evidence_dir)
+
+            with mock.patch.object(ARCHIVE, "fetch_receipt_evidence", side_effect=fetch):
+                with mock.patch.object(sys, "argv", arguments):
+                    ARCHIVE.main()
             self.assertEqual("", self.git(destination, "status", "--porcelain"))
 
 

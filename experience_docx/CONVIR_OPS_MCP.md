@@ -197,6 +197,12 @@ Only an engineering receipt carrying `v43_migrated_at` may change its automatic
 legacy `archive` resolution to an explicit user-selected `repair`. A normal
 v4.3 archive decision remains terminal and cannot be reopened.
 
+## Historical Adoption Records
+
+The records below preserve provenance for prior server versions only. They do
+not define the current server version, registration target, tool surface, or
+operating workflow; those are specified above.
+
 The 2026-07-16 adoption audit verified the registered executable at
 `main@dca94d71c9fe73e4e93910b0587927c79ab7023c`: version `4.1.0`, source
 SHA-256 `dc07ac60056b5e7da52f045419f196c82f6a19a64255408504056b1329ecc2ae`,

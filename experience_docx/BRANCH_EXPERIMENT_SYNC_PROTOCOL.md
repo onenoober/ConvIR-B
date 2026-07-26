@@ -30,12 +30,14 @@ thresholds, seed, optimizer, epoch/budget, scientific question, or algorithmic
 constants/control flow. A repeated same-root failure requires user review.
 
 For normal scientific terminals, run `prepare_terminal_archive.py` once into one
-clean reusable main archive worktree. By default it uses the receipt to fetch
-only the compact allowlist into an ephemeral directory, validates the frozen
+clean reusable main archive worktree. By default it always uses the receipt to
+fetch only the compact allowlist into an ephemeral directory, validates the frozen
 contract/runtime/closeout/result hashes, stages the complete bundle, writes one
 terminal JSONL record, registers any new exact engineering qualification,
-commits, pushes and verifies remote main. `--prepare-only` is an
-explicit review pause; `--local-evidence-only` forbids receipt transfer. Do not
+commits, pushes and verifies remote main. One concurrent fast-forward of remote
+main may rebuild the complete bundle from the new base and retry push once; a
+second conflict stops. `--prepare-only` is an explicit review pause;
+`--local-evidence-only` is audit-only and forbids receipt transfer. Do not
 repeat diff, suffix, size, parse, hash, blob or remote identity checks manually.
 
 Schema-2 terminal index records bind the contract, closeout, conclusion, formal

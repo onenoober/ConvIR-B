@@ -71,26 +71,26 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "7f851d76d0b1499fbbe0b21d155e824e8125d4283a9d49ee6831564cae136a50",
+  "rules_bundle_sha256": "e2974764c1d40e7e795384ce9c5b4b9427da0631dca70550d1996858f611f1eb",
   "rules_commit": "6ea250db99f971f1221ce67df8fcdb4d9c5492f9",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "sources": {
     "AGENTS.md": {
-      "bytes": 9315,
-      "sha256": "ea86dcac6e57763f62c2c3754b9e08acd0290d6bc2a633115b99122086ff7649"
+      "bytes": 9338,
+      "sha256": "a3912f012a2a5d7386d30d2e627e8ef8efecd12c193466a90cc99bdbee4facb0"
     },
     "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md": {
-      "bytes": 3762,
-      "sha256": "cecc2abc84ed98940ce95d309c1f68e76ebaa693297e8fc6a4ec686d9d294542"
+      "bytes": 3926,
+      "sha256": "6ed26a9294a9f879e03d90ffbf0c9d9a3e82210ab06c81b1fcb597f6c772ef09"
     },
     "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md": {
       "bytes": 9676,
       "sha256": "61752a24ce2e71d5d2d08fe3171ce5b50c25c1b3478af4ae547b68c2edb1b802"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
-      "bytes": 12396,
-      "sha256": "f09e4ec0bd47ebc0486f21da39d48fb3595e68cd3b7457d355fa9faf8e34fa62"
+      "bytes": 12631,
+      "sha256": "d4d44a8a28607e4f695529bcc0e2146b8ab29699efef782fb7bbd59d72a6706f"
     },
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
       "bytes": 7174,
@@ -105,8 +105,8 @@
       "sha256": "5ea55330442259885ad03d3c750bb768ee0341ffc560e2b1433498e014afe1a3"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
-      "bytes": 9921,
-      "sha256": "f415cf4f9150a77b8f669066c6079d2e3cce1db1c080b772338dfca2a82d39f9"
+      "bytes": 10185,
+      "sha256": "f41eb670139404b42fb3ce421d39f4f0aa95579d16d0421a3673ec5c8ee5525f"
     }
   },
   "workflow": [

@@ -65,11 +65,15 @@ decisive FAIL; `descriptive` cannot affect the terminal.
    protected-data access. Publish one typed closeout plus one scientific
    conclusion. Scientific FAIL is terminal, never an engineering retry.
 5. ARCHIVE: run `prepare_terminal_archive.py` once. The default receipt-bound
-   path fetches only compact evidence, validates all identities, preserves a
+   path always fetches only compact closeout/result evidence into an ephemeral
+   directory, validates all identities, preserves a
    SHA-256 inventory and compact copy of the complete launch bundle, registers
    a newly passed engineering qualification when applicable, updates one
-   machine terminal record, commits, pushes and verifies remote main. Stop when
-   it succeeds; `--prepare-only` is an explicit review exception.
+   machine terminal record, commits, pushes and verifies remote main. A single
+   concurrent fast-forward of main gets one deterministic rebuild/retry; a
+   second conflict stops with a typed archive blocker. Stop when it succeeds;
+   `--prepare-only` is an explicit review exception. `--local-evidence-only`
+   is audit-only and cannot create an archive.
 
 ## GitHub Evidence Contract
 

@@ -35,6 +35,9 @@ MAX_EVIDENCE_FILES = 48
 MAX_FILE_BYTES = 1024 * 1024
 TOKEN = re.compile(r"^[A-Za-z0-9_.-]{1,128}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
+ARCHIVE_REMOTE = "github"
+ARCHIVE_TARGET_REF = "main"
+ARCHIVE_BASE_REF = "refs/remotes/github/main"
 
 
 class TerminalArchiveError(RuntimeError):
@@ -343,6 +346,7 @@ def audit_source(
     *,
     existing_archive: bool = False,
     evidence_dir_override: Path | None = None,
+    conclusion_dir_override: Path | None = None,
 ) -> dict[str, Any]:
     source_repo = source_repo.resolve()
     if not TOKEN.fullmatch(route_id):
@@ -373,6 +377,7 @@ def audit_source(
     validate_contract(contract_raw, contract_relpath, route_id)
 
     evidence_dir = evidence_dir_override or (source_repo / closeout_path.parent)
+    conclusion_dir = conclusion_dir_override or evidence_dir
     closeout_file = evidence_dir / closeout_path.name
     if not closeout_file.is_file():
         raise TerminalArchiveError(f"closeout is missing from source worktree: {closeout_relpath}")
@@ -425,7 +430,7 @@ def audit_source(
         **contract_payloads,
     }
     if conclusion_relpath is not None:
-        conclusion_file = evidence_dir / PurePosixPath(conclusion_relpath).name
+        conclusion_file = conclusion_dir / PurePosixPath(conclusion_relpath).name
         if not conclusion_file.is_file():
             raise TerminalArchiveError(
                 f"scientific conclusion is missing: {conclusion_relpath}"
@@ -576,6 +581,10 @@ def prepare_destination(
     base_ref: str,
     audit: dict[str, Any],
 ) -> dict[str, Any]:
+    if base_ref != ARCHIVE_BASE_REF:
+        raise TerminalArchiveError(
+            f"archive base_ref must be {ARCHIVE_BASE_REF}: {base_ref}"
+        )
     destination_repo = destination_repo.resolve()
     if git(destination_repo, "status", "--porcelain"):
         raise TerminalArchiveError("destination archive worktree must be clean")
@@ -670,14 +679,34 @@ def prepare_destination(
     }
 
 
+def refresh_remote_target(
+    destination_repo: Path, *, remote: str, target_ref: str,
+) -> tuple[str, str]:
+    remote_ref = f"refs/remotes/{remote}/{target_ref}"
+    git(
+        destination_repo, "fetch", remote,
+        f"refs/heads/{target_ref}:{remote_ref}",
+    )
+    return remote_ref, git(destination_repo, "rev-parse", remote_ref)
+
+
 def finalize_destination(
     destination_repo: Path,
     route_id: str,
     expected_paths: list[str],
+    audit: dict[str, Any],
     *,
-    remote: str = "github",
-    target_ref: str = "main",
+    base_ref: str = ARCHIVE_BASE_REF,
+    remote: str = ARCHIVE_REMOTE,
+    target_ref: str = ARCHIVE_TARGET_REF,
+    recovery_attempted: bool = False,
 ) -> dict[str, Any]:
+    if base_ref != ARCHIVE_BASE_REF:
+        raise TerminalArchiveError(
+            f"archive base_ref must be {ARCHIVE_BASE_REF}: {base_ref}"
+        )
+    if remote != ARCHIVE_REMOTE or target_ref != ARCHIVE_TARGET_REF:
+        raise TerminalArchiveError("archive destination must be github/main")
     destination_repo = destination_repo.resolve()
     staged = git(destination_repo, "diff", "--cached", "--name-only").splitlines()
     if staged != expected_paths or not staged:
@@ -686,9 +715,65 @@ def finalize_destination(
         raise TerminalArchiveError("unstaged tracked changes appeared before finalize")
     if git(destination_repo, "ls-files", "--others", "--exclude-standard"):
         raise TerminalArchiveError("untracked files appeared before finalize")
+    base_commit = git(destination_repo, "rev-parse", base_ref)
     git(destination_repo, "commit", "-m", f"Archive terminal evidence for {route_id}")
     evidence_commit = git(destination_repo, "rev-parse", "HEAD")
-    git(destination_repo, "push", remote, f"HEAD:{target_ref}")
+    try:
+        git(destination_repo, "push", remote, f"HEAD:{target_ref}")
+    except TerminalArchiveError as push_error:
+        if recovery_attempted:
+            raise TerminalArchiveError(
+                "ARCHIVE_CONCURRENT_MAIN_ADVANCE recovery push failed: "
+                + str(push_error)
+            ) from push_error
+        remote_ref, remote_commit = refresh_remote_target(
+            destination_repo, remote=remote, target_ref=target_ref,
+        )
+        if remote_commit == evidence_commit:
+            return {
+                "status": "TERMINAL_ARCHIVE_PUSHED",
+                "evidence_commit": evidence_commit,
+                "remote": remote,
+                "target_ref": target_ref,
+                "remote_commit": remote_commit,
+                "push_verified_after_transport_error": True,
+                "remaining_operator_steps": [],
+            }
+        if remote_commit == base_commit:
+            raise push_error
+        if git(destination_repo, "merge-base", base_commit, remote_commit) != base_commit:
+            raise TerminalArchiveError(
+                "ARCHIVE_CONCURRENT_MAIN_ADVANCE is not a fast-forward"
+            ) from push_error
+        changed_paths = git(
+            destination_repo, "diff", "--name-only",
+            f"{base_commit}..{evidence_commit}",
+        ).splitlines()
+        if changed_paths != expected_paths:
+            raise TerminalArchiveError(
+                "ARCHIVE_CONCURRENT_MAIN_ADVANCE local commit changed unexpected paths"
+            ) from push_error
+        git(destination_repo, "checkout", "--detach", remote_ref)
+        recovered = prepare_destination(destination_repo, base_ref, audit)
+        if not recovered["staged_paths"]:
+            return {
+                "status": "TERMINAL_ARCHIVE_ALREADY_PRESENT",
+                "evidence_commit": remote_commit,
+                "remote": remote,
+                "target_ref": target_ref,
+                "remote_commit": remote_commit,
+                "concurrent_main_advance_recovered": True,
+                "initial_evidence_commit": evidence_commit,
+                "remaining_operator_steps": [],
+            }
+        final = finalize_destination(
+            destination_repo, route_id, recovered["staged_paths"], audit,
+            base_ref=base_ref, remote=remote, target_ref=target_ref,
+            recovery_attempted=True,
+        )
+        final["concurrent_main_advance_recovered"] = True
+        final["initial_evidence_commit"] = evidence_commit
+        return final
     remote_line = git(
         destination_repo, "ls-remote", "--heads", remote, f"refs/heads/{target_ref}",
     )
@@ -723,26 +808,30 @@ def main() -> None:
     parser.add_argument("--audit-only", action="store_true")
     parser.add_argument("--existing-archive", action="store_true")
     parser.add_argument("--destination-repo", type=Path)
-    parser.add_argument("--base-ref", default="refs/remotes/github/main")
+    parser.add_argument(
+        "--base-ref", default=ARCHIVE_BASE_REF, choices=[ARCHIVE_BASE_REF],
+    )
     parser.add_argument("--commit-and-push", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--prepare-only", action="store_true")
     parser.add_argument("--local-evidence-only", action="store_true")
-    parser.add_argument("--remote", default="github")
-    parser.add_argument("--target-ref", default="main")
+    parser.add_argument("--remote", default=ARCHIVE_REMOTE, choices=[ARCHIVE_REMOTE])
+    parser.add_argument(
+        "--target-ref", default=ARCHIVE_TARGET_REF, choices=[ARCHIVE_TARGET_REF],
+    )
     parser.add_argument("--report", type=Path)
     args = parser.parse_args()
     if args.existing_archive and not args.audit_only:
         parser.error("--existing-archive is audit-only")
     if args.prepare_only and args.commit_and_push:
         parser.error("--prepare-only conflicts with --commit-and-push")
+    if args.local_evidence_only and not args.audit_only:
+        parser.error("--local-evidence-only is audit-only")
     if not args.audit_only and args.destination_repo is None:
         parser.error("--destination-repo is required unless --audit-only is used")
     try:
-        closeout_local = args.source_repo / args.closeout
-        fetch_needed = not closeout_local.is_file() and not args.local_evidence_only
         with tempfile.TemporaryDirectory(prefix="terminal-evidence-") as temporary:
             evidence_override = None
-            if fetch_needed:
+            if not args.local_evidence_only:
                 evidence_override = Path(temporary)
                 fetch_receipt_evidence(args.receipt, evidence_override)
             audit = audit_source(
@@ -750,6 +839,9 @@ def main() -> None:
                 args.closeout, args.contract, args.conclusion, args.receipt,
                 existing_archive=args.existing_archive,
                 evidence_dir_override=evidence_override,
+                conclusion_dir_override=(
+                    args.source_repo / PurePosixPath(args.closeout).parent
+                ),
             )
         report = serializable(audit)
         if not args.audit_only:
@@ -761,6 +853,8 @@ def main() -> None:
                     args.destination_repo,
                     args.route_id,
                     report["archive"]["staged_paths"],
+                    audit,
+                    base_ref=args.base_ref,
                     remote=args.remote,
                     target_ref=args.target_ref,
                 )

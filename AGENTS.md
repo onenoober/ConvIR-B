@@ -56,7 +56,7 @@ hash changes.
    the frozen terminal once. Interpret complete evidence once. The typed closeout alone
    authorizes a next stage; scientific FAIL is never an engineering retry.
 5. ARCHIVE: call `prepare_terminal_archive.py` once. Its default receipt-bound
-   path fetches compact evidence, preserves the compact launch-contract bundle,
+   path always fetches compact closeout/result evidence, preserves the compact launch-contract bundle,
    registers a new engineering qualification when applicable, verifies,
    commits, pushes and verifies remote
    main. Stop on success; `--prepare-only` is an explicit review exception.
