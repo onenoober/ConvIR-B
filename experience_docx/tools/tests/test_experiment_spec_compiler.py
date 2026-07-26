@@ -150,7 +150,9 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
         )
         self.assertEqual("EXPERIMENT_SPEC_INVALID", result["status"])
         paths = {item["path"] for item in result["errors"]}
-        self.assertTrue({"operations.ACCEPT", "operations.SECOND"} <= paths)
+        self.assertTrue(any(path.startswith("operations.ACCEPT.") for path in paths))
+        self.assertTrue(any(path.startswith("operations.SECOND.") for path in paths))
+        self.assertGreaterEqual(len(paths), 2)
         self.assertTrue(all(set(item) == {"path", "code", "message"} for item in result["errors"]))
 
     def test_new_authoring_requires_an_explicit_cost_strategy(self):
