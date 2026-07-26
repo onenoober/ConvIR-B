@@ -1,0 +1,132 @@
+{
+  "competing_explanation": "A cross-domain disagreement may reflect genuine indoor-versus-outdoor synthetic population heterogeneity, the fixed worst-phase aggregation, or the L-infinity action aggregation. Separate simultaneous estimates distinguish that from the false precision obtained by pooling nested variants or treating ITS and OTS scenes as one exchangeable population, but they do not establish real-haze transport or complete source disjointness.",
+  "controls": [
+    "the ITS quarantine PASS, OTS targeted-geometry PASS, Haze4K precision FAIL and ITS q-mapping FAIL terminal tuples and SHA-256 identities must match exactly",
+    "all 11,000 official ITS and 8,970 official OTS clear-scene IDs and their expected 10 and 35 same-scene haze multiplicities must reproduce before selection",
+    "all 2,187 ITS and 964 OTS excluded IDs must belong to their official scene sets and complements must equal 8,813 and 8,006",
+    "the fixed salted selections must contain exactly 1,587 distinct nonexcluded clear scenes and four nested variants per scene in each stratum",
+    "keep output is structurally identical to the official prediction and non-keep actions obey the affine manipulation on every nonclipped pixel",
+    "the protected-data-free device-aware contract strictly loads the exact official checkpoint, executes the formal 12,696-inference iteration count on a fixed 256x320 synthetic fixture, checks a frozen 840-second wall bound and 8,192-MiB peak-CUDA-memory class, and traverses exact continuous utility, interval and terminal finalizer paths",
+    "an independent reference verifies dB direction, keep zero, held-out exclusion, taper projection, area weighting, L-infinity action aggregation, variant averaging and worst-phase aggregation",
+    "no protected asset is delivered and no training, fitting, threshold tuning or model selection occurs"
+  ],
+  "disabled_actions": [
+    "claiming ITS or OTS is fully source-disjoint from Haze4K",
+    "treating multiple haze variants, phases, tiles, pixels, actions or bootstrap draws as independent samples",
+    "pooling ITS and OTS scenes by sample count to replace either stratum gate",
+    "including archived Haze4K pilot scenes in the new independent n",
+    "changing the 0.05 dB margin, 0.025 dB precision distance, 1,587-scene counts, four-variant rule, selection salt, uncertainty, actions, metric, taper, grids, preprocessing or terminal mapping after launch",
+    "using, repairing, reopening or reinterpreting the failed ITS q-region measurement construct",
+    "new image retrieval, RootSIFT, provenance matching, forcing 500 ITS relationships or ITS-to-ITS transitive expansion",
+    "model selection, training, fine-tuning, module design, confirmation, NH-HAZE, canary, locked-test, real-haze or deployment claims",
+    "revisiting the taper route or optimizing its aggregation from these results"
+  ],
+  "gates": [
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "all four archived parent terminal tuples, exact exclusion identities, official dataset counts, checkpoint and restored helper identities match",
+      "id": "parent_and_asset_identity",
+      "threshold": 1.0,
+      "type": "integrity"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "equal",
+      "estimand": "each of 1,587 independent clear scenes per stratum completes all four selected variants and one finite scene value",
+      "id": "complete_nested_scene_coverage",
+      "threshold": 3174,
+      "type": "coverage"
+    },
+    {
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand": "maximum mean-to-bound distance in each simultaneous stratum interval, in dB",
+      "id": "simultaneous_precision",
+      "threshold": 0.025,
+      "type": "precision"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "ITS original-clear-scene mean continuous-utility error simultaneous interval",
+      "id": "its_continuous_utility",
+      "threshold": 0.05,
+      "type": "materiality"
+    },
+    {
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand": "OTS original-clear-scene mean continuous-utility error simultaneous interval",
+      "id": "ots_continuous_utility",
+      "threshold": 0.05,
+      "type": "materiality"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "ITS uses only the 8,813-scene complement of the archived TRAIN_AND_SELECTION_EXPOSURE 2,187-ID exclusion asset",
+      "OTS uses only the 8,006-scene complement of the archived final 964-ID targeted-geometry exclusion asset",
+      "both populations are described as known-overlap-quarantined and never fully source-disjoint",
+      "ITS and OTS are separate primary strata and are never sample-size-pooled as exchangeable observations",
+      "the primary estimand is the maximum of the two separately estimated stratum means, so both strata must pass",
+      "scene selection and within-scene four-variant selection use only public salted SHA-256 order over IDs and filenames before any image decoding or outcome",
+      "the original clear scene is the only independent analysis unit; haze variants, phases, tiles, pixels, actions and bootstrap draws are nested repeats",
+      "official checkpoint SHA-256 remains 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "actions remain clip(hazy + scale times (official_prediction minus hazy), 0, 1) at keep 1.0, weaken 0.8 and strengthen 1.2",
+      "for each tile and non-keep action utility remains 10 log10(MSE_keep divided by MSE_action); keep is exactly zero",
+      "grid origins remain (0,0), (0,16), (16,0) and (16,16), with 32-pixel tiles and the verified strictly-positive normalized raised-cosine taper",
+      "each phase is held out once; only the other three phases contribute to its projected utility",
+      "within phase the two-action absolute contrast error uses L-infinity, tiles use pixel-area weights, four haze variants are equally averaged and the worst of four phases is the scene value",
+      "content preprocessing preserves aspect ratio, caps the long edge at 320 pixels without upscaling, reflect-extends the model canvas only to at least 256 pixels and a multiple of 32, and crops predictions before every estimand",
+      "each stratum interval is the conservative envelope of a normal simultaneous interval with Bonferroni critical value 2.241402727604947 and a 20,000-resample scene bootstrap 98.75 percent two-sided interval",
+      "the original 0.05 dB margin and 0.025 dB precision target never change",
+      "the archived Haze4K scenes are not included and do not increase the new independent n",
+      "the failed ITS q-region construct, transmission-based local regions and its 0.99 recovery gate are not used"
+    ],
+    "matched_budget": "1,587 salted-hash-selected eligible original clear scenes per stratum, four salted-hash-selected nested official haze variants per scene, one official inference per variant, and no result-adaptive extension",
+    "primary_variable": "maximum of separate ITS and OTS scene-mean worst-held-out-phase area-weighted L-infinity errors between source-taper-projected and held-out two-dimensional keep-referenced PSNR utility contrasts",
+    "reference": "the unchanged 0.05 dB continuous-utility error margin with simultaneous 95 percent stratum intervals and 0.025 dB maximum mean-to-bound distance"
+  },
+  "operation_id": "RESIDE_KNOWN_OVERLAP_CONTINUOUS_UTILITY_MEASURE",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "original_clear_scene",
+    "independent_group_count": 3174
+  },
+  "primary_estimand": {
+    "aggregation": "compute one value per original clear scene after equal averaging of four nested official haze variants; estimate ITS and OTS means separately; take the larger stratum mean; never pool by scene count",
+    "direction": "lower",
+    "id": "maximum_stratified_continuous_utility_scene_mean_error",
+    "metric": "maximum of the separately estimated ITS and OTS means of original-clear-scene worst-held-out-phase area-weighted L-infinity continuous PSNR utility contrast error, in dB",
+    "unit": "original_clear_scene"
+  },
+  "question": "On separately reported RESIDE ITS indoor and OTS outdoor known-overlap-quarantined synthetic-scene populations, is the frozen Haze4K ConvIR-B continuous-utility contrast error below 0.05 dB in both strata with simultaneous 95 percent precision distance no larger than 0.025 dB?",
+  "route_id": "reside-known-overlap-continuous-utility-measurement-v1",
+  "schema_version": 1,
+  "terminal_mapping": {
+    "fail": {
+      "authorizes": "NONE",
+      "decision": "RESIDE_CONTINUOUS_UTILITY_MEASUREMENT_FAIL",
+      "state": "COMPLETED_GATE_FAIL"
+    },
+    "inconclusive": {
+      "authorizes": "NONE",
+      "decision": "RESIDE_CONTINUOUS_UTILITY_MEASUREMENT_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    },
+    "pass": {
+      "authorizes": "STRATIFIED_CONTINUOUS_UTILITY_RESULT_ONLY",
+      "decision": "RESIDE_CONTINUOUS_UTILITY_MEASUREMENT_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "independent_unit": "original_clear_scene",
+    "method": "separate simultaneous familywise-95-percent ITS and OTS mean intervals: conservative envelope of normal intervals with Bonferroni z=2.241402727604947 and 20,000-resample original-clear-scene bootstrap 1.25th and 98.75th percentiles at fixed seeds 20260903 and 20260904"
+  }
+}

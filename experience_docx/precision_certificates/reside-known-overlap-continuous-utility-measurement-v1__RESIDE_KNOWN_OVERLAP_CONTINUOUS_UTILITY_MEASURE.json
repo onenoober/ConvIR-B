@@ -1,0 +1,14 @@
+{
+  "certificate_id": "reside_known_overlap_continuous_utility_per_stratum_feasibility_v1",
+  "confidence_level": 0.95,
+  "estimand": "route-wide count of independent original-clear-scene groups under a fixed 1,587-ITS plus 1,587-OTS allocation; the scientific contract separately freezes the stricter per-stratum simultaneous design",
+  "feasible": true,
+  "independent_groups_available": 3174,
+  "independent_groups_required": 1213,
+  "method": "normal_mean",
+  "planning_sd": 0.444218872067388,
+  "schema_version": 1,
+  "source_reference": "The archived pilot planning SD is 0.444218872067388 dB. The schema base calculation is 1,213 groups. The route analyzes 3,174 independent scenes under a fixed nonpoolable allocation of 1,587 ITS and 1,587 OTS. The scientific contract adds the stricter Bonferroni requirement of 1,587 per stratum without changing the 0.025 dB target; the eligible capacities are 8,813 ITS and 8,006 OTS.",
+  "source_role": "development_screening",
+  "target_half_width": 0.025
+}

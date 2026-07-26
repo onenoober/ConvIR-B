@@ -1,0 +1,42 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/reside-known-overlap-continuous-utility-measurement-v1__RESIDE_KNOWN_OVERLAP_CONTINUOUS_UTILITY_MEASURE.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/reside-known-overlap-continuous-utility-measurement-v1__RESIDE_KNOWN_OVERLAP_CONTINUOUS_UTILITY_MEASURE.json",
+    "max_seconds": 900,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/run_reside_known_overlap_continuous_utility_measurement.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "reside_known_overlap_continuous_utility_measurement_v1_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/reside_known_overlap_continuous_utility_measurement_v1_summary.json"
+    },
+    {
+      "destination_filename": "reside_known_overlap_continuous_utility_measurement_v1_strata.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/reside_known_overlap_continuous_utility_measurement_v1_strata.csv"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 14400,
+  "operation_id": "RESIDE_KNOWN_OVERLAP_CONTINUOUS_UTILITY_MEASURE",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/reside-known-overlap-continuous-utility-measurement-v1__RESIDE_KNOWN_OVERLAP_CONTINUOUS_UTILITY_MEASURE.json",
+    "mode": "formal_precision",
+    "rationale": "For two simultaneously reported strata, Bonferroni familywise 95 percent uses z=2.241402727604947. With archived conservative planning SD 0.444218872067388 dB and unchanged target distance 0.025 dB, ceil((z*SD/distance)^2)=1,587 independent original clear scenes per stratum. ITS has 8,813 and OTS 8,006 eligible scenes after exact archived quarantine, so both capacities pass without counting nested variants."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "reside-known-overlap-continuous-utility-measurement-v1",
+  "schema_version": 2,
+  "timeout_seconds": 43200,
+  "total_units": 12698
+}

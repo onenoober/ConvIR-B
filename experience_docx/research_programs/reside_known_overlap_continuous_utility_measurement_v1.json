@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "program_id": "reside_known_overlap_continuous_utility_measurement",
+  "objective": "Measure the frozen Haze4K ConvIR-B continuous-utility contrast error on large RESIDE ITS and OTS known-overlap-quarantined synthetic-scene populations without changing the target, margin, precision distance, model, checkpoint, or independent analysis unit.",
+  "source_anchors": [
+    {
+      "id": "haze4k_continuous_utility_precision_terminal",
+      "reference": "experience_docx/experiment_logs/haze4k-test-conditional-continuous-utility-contrast-measurement-qualification-v1/haze4k_test_conditional_continuous_utility_precision_pilot_v1_closeout.json",
+      "allowed_uses": ["diagnostic", "comparison"]
+    },
+    {
+      "id": "its_verified_overlap_quarantine_terminal",
+      "reference": "experience_docx/experiment_logs/reside-its-verified-overlap-quarantine-v1/reside_its_verified_overlap_quarantine_v1_closeout.json",
+      "allowed_uses": ["evaluation"]
+    },
+    {
+      "id": "ots_targeted_geometry_terminal",
+      "reference": "experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_closeout.json",
+      "allowed_uses": ["evaluation"]
+    },
+    {
+      "id": "its_q_mapping_fail_terminal",
+      "reference": "experience_docx/experiment_logs/reside-its-local-measurement-mapping-v1/reside_its_local_measurement_mapping_v1_closeout.json",
+      "allowed_uses": ["diagnostic"]
+    },
+    {
+      "id": "official_haze4k_convir_b",
+      "reference": "official Haze4K ConvIR-B checkpoint SHA-256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+      "allowed_uses": ["baseline"]
+    }
+  ],
+  "dependency_roles": {
+    "frozen_continuous_utility_target": ["diagnostic", "comparison"],
+    "its_known_overlap_quarantine": ["evaluation"],
+    "ots_known_overlap_quarantine": ["evaluation"],
+    "blocked_its_q_construct": ["diagnostic"],
+    "official_model": ["baseline"]
+  },
+  "stages": {
+    "measurement_qualification": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["reside_known_overlap_continuous_utility"]
+    }
+  },
+  "route_families": {
+    "reside_known_overlap_continuous_utility": {
+      "core_assumption": "The unchanged two-contrast continuous-utility target can be estimated precisely on large, separately reported indoor ITS and outdoor OTS known-overlap-quarantined scene populations.",
+      "adjacent_budget": 0,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the single frozen ITS-and-OTS stratified measurement terminal.",
+      "reopen_evidence_types": ["new_independent_dataset", "new_measurement_error_bound"]
+    }
+  },
+  "orthogonal_dimensions": ["target_domain", "population", "stratification"],
+  "amendments": []
+}

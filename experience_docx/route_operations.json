@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/reside-known-overlap-continuous-utility-measurement-v1.json",
+  "experiment_spec_sha256": "b3403dc09d2fed02cc5a09ca18d50bdba146b238c0c1db2156234b6a776c3314",
+  "operations": {
+    "RESIDE_KNOWN_OVERLAP_CONTINUOUS_UTILITY_MEASURE": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "STRATIFIED_CONTINUOUS_UTILITY_RESULT_ONLY",
+          "decision": "RESIDE_CONTINUOUS_UTILITY_MEASUREMENT_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "RESIDE_CONTINUOUS_UTILITY_MEASUREMENT_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "RESIDE_CONTINUOUS_UTILITY_MEASUREMENT_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "reside_known_overlap_continuous_utility_measurement_v1_closeout.json",
+      "heartbeat_timeout_seconds": 1800,
+      "max_gpu_utilization_pct": 90,
+      "min_free_gpu_mib": 8192,
+      "mode": "stratified_continuous_utility_measurement",
+      "monitor_profile": "standard",
+      "output_id": "reside-known-overlap-continuous-utility-measurement-v1-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/reside_known_overlap_continuous_utility_measurement_v1.json",
+  "program_contract_sha256": "ad32de6b2f564cf268385644767be8c5bdf92bf584ba18ca6f6d1aef587524ff",
+  "route_card_relpath": "experience_docx/experiment_cards/reside-known-overlap-continuous-utility-measurement-v1.md",
+  "route_id": "reside-known-overlap-continuous-utility-measurement-v1",
+  "rules_commit": "b413526ded0174a6ee7aae3149875bba43916629",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "RESIDE_KNOWN_OVERLAP_CONTINUOUS_UTILITY_MEASURE": "experience_docx/scientific_contracts/reside-known-overlap-continuous-utility-measurement-v1__RESIDE_KNOWN_OVERLAP_CONTINUOUS_UTILITY_MEASURE.json"
+  }
+}
