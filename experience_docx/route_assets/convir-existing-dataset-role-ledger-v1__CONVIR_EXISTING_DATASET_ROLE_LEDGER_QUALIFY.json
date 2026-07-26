@@ -1,0 +1,134 @@
+{
+  "assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "haze4k_train_split_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-train-scene-split-v2/haze4k_train_scene_split_v2_closeout.json",
+      "sha256": "dde7f4654674f776d2f2b0a687128019e477eea7b29fb8d69f01d621aa6c5887"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "haze4k_train_split_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-train-scene-split-v2/haze4k_train_scene_split_v2_summary.json",
+      "sha256": "a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "haze4k_test_split_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-scene-split-v1/haze4k_test_scene_split_v1_r1_closeout.json",
+      "sha256": "d3dbd88b25eee35c5922b2459a2f48b39b3fc8f686588cde9edb1d9f267f8a9f"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "haze4k_test_split_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-scene-split-v1/haze4k_test_scene_split_v1_summary.json",
+      "sha256": "656407f3183f92e75e357004b04b505d2b92cd4b0f4b02b3c6a22aef57d069cf"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "its_quarantine_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-verified-overlap-quarantine-v1/reside_its_verified_overlap_quarantine_v1_closeout.json",
+      "sha256": "a638a78a3dc7a7af82cef030ae67268c0064a08185464e5772681e61ec04010e"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "its_quarantine_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-verified-overlap-quarantine-v1/reside_its_verified_overlap_quarantine_v1_summary.json",
+      "sha256": "3817a2a2778cec848ba1cfb1be64863bf30f47f2434f6d54819c6a8f346c47e9"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "its_exclusions",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-verified-overlap-quarantine-v1/reside_its_verified_overlap_quarantine_v1_train_selection_exclusions.txt",
+      "sha256": "c4dddbcf214c301ffa6d3879217e6336024119bb07d0f9c1f929ac040aa0dda3"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "ots_quarantine_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_closeout.json",
+      "sha256": "348f255a4a99dca898a7457ccbd5f0b1a50516db6109233b8b431251f9a672f3"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "ots_quarantine_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_summary.json",
+      "sha256": "1d087dbc9ade15f1a8a9a0862a5a00a09ad28d64d55697a620f88f17fd4a42ff"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "ots_exclusions",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_exclusions.txt",
+      "sha256": "d7526849879cf8650af545db20a5e4555cb0eb1931973612af98a5897f2e03d2"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "reside_measurement_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-known-overlap-continuous-utility-measurement-v1/reside_known_overlap_continuous_utility_measurement_v1_closeout.json",
+      "sha256": "560cac7b257fe0441519f4b2ed7dea77cd0e9d5d7646bbbfac8f2cc782dca99a"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "reside_measurement_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-known-overlap-continuous-utility-measurement-v1/reside_known_overlap_continuous_utility_measurement_v1_summary.json",
+      "sha256": "3f28c223f4f4a8a01fc435ee1de2baa5a0a488b9541c897f3fb676999c0d3946"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "nhhaze_exposure_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r15_s0e_same_action_population_precision_20260720/r15_s0e_same_action_population_precision_closeout.json",
+      "sha256": "6aaec2c9536f7cc5676d5056f43475def8d4bda1e381242dae6eba0c8f8c4434"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "nhhaze_identity",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r15_s0e_same_action_population_precision_20260720/r15_s0e_identity_and_access.json",
+      "sha256": "3f61c7bd3c4e736f7413c6705ad0b2d9dc9eba9072fc0c16cd85240b871af059"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "entrypoint_source",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/tools/qualify_convir_existing_dataset_role_ledger.py",
+      "sha256": "1388c250a886ee2f6eccf5531be7ebe86853b5066d4ecd93d6cfef01b579277d"
+    }
+  ],
+  "operation_id": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_QUALIFY",
+  "route_id": "convir-existing-dataset-role-ledger-v1",
+  "schema_version": 2
+}

@@ -1,0 +1,599 @@
+{
+  "schema_version": 2,
+  "route_id": "convir-existing-dataset-role-ledger-v1",
+  "rules_commit": "f2c89867569b8c15af8a37fbb4695b2f6727ff63",
+  "title": "ConvIR Existing Dataset Role Ledger v1",
+  "rationale": "Qualify one outcome-blind role and exposure ledger for all currently available datasets before any further measurement is authored. Reconstruct the previously exposed ITS and OTS scenes from the frozen salted selection, preserve the Haze4K candidate-confirmation role without reading it, classify all NH-Haze scenes as development-only, and certify whether the remaining original-clear-scene pools can meet the unchanged 0.025 dB precision target without pooling nested haze variants or silently changing the 0.05 dB utility margin.",
+  "first_operation": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_QUALIFY",
+  "program_contract_relpath": "experience_docx/research_programs/convir_existing_dataset_governance_v1.json",
+  "operations": {
+    "CONVIR_EXISTING_DATASET_ROLE_LEDGER_QUALIFY": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "dataset_role_ledger_qualification",
+        "require_gpu": false,
+        "output_id": "convir-existing-dataset-role-ledger-v1-r1",
+        "closeout_filename": "convir_existing_dataset_role_ledger_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "short",
+        "heartbeat_timeout_seconds": 180,
+        "min_free_gpu_mib": 0,
+        "max_gpu_utilization_pct": 100
+      },
+      "program_authorization": {
+        "program_id": "convir_existing_dataset_governance_v1",
+        "stage_id": "dataset_governance",
+        "family_id": "existing_dataset_role_ledger",
+        "mechanism_type": "adjacent",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {
+            "role": "dataset_role_evidence",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_train_scene_split_terminal"
+          },
+          {
+            "role": "dataset_role_evidence",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_test_scene_split_terminal"
+          },
+          {
+            "role": "dataset_role_evidence",
+            "use": "diagnostic",
+            "anchor_id": "its_verified_quarantine_terminal"
+          },
+          {
+            "role": "dataset_role_evidence",
+            "use": "diagnostic",
+            "anchor_id": "ots_verified_quarantine_terminal"
+          },
+          {
+            "role": "dataset_role_evidence",
+            "use": "diagnostic",
+            "anchor_id": "reside_continuous_utility_terminal"
+          },
+          {
+            "role": "variance_planning_evidence",
+            "use": "evaluation",
+            "anchor_id": "reside_continuous_utility_terminal"
+          },
+          {
+            "role": "dataset_role_evidence",
+            "use": "diagnostic",
+            "anchor_id": "nhhaze_development_exposure_terminal"
+          }
+        ],
+        "adjacent_sequence": 1,
+        "orthogonal_changes": [],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Can the existing ConvIR dataset inventory be partitioned into verified exclusions, historical development exposure, protected confirmation, and stable unassigned scene pools with enough independent ITS and OTS scenes for a later contract that preserves the frozen precision target?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "original_clear_scene",
+          "independent_group_count": 13645,
+          "strata": [
+            {
+              "id": "ITS",
+              "independent_group_count": 7226
+            },
+            {
+              "id": "OTS",
+              "independent_group_count": 6419
+            }
+          ],
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "deterministic scene role classification and stable unassigned-pool ordering",
+          "reference": "archived dataset-role terminals, authorized known-overlap exclusions, and the exact prior RESIDE salted selection",
+          "matched_budget": "one metadata-only census of the 11,000 ITS and 8,970 OTS official clear-scene namespaces",
+          "fixed_factors": [
+            "original clear scene is the independent analysis unit",
+            "same-scene haze variants are nested repeats and never independent samples",
+            "ITS and OTS remain separately reported synthetic-domain strata",
+            "known-overlap quarantine is not described as full source disjointness",
+            "the utility margin remains 0.05 dB",
+            "the precision target remains 0.025 dB",
+            "Haze4K candidate-confirmation images, targets, and outcomes remain unread",
+            "NH-Haze remains development-only"
+          ]
+        },
+        "primary_estimand": {
+          "id": "unassigned_scene_capacity",
+          "metric_id": "independent_unassigned_scene_count",
+          "direction": "higher",
+          "aggregation": "separate ITS and OTS remaining-scene counts after exact known-overlap exclusion and exact historical-exposure reconstruction; both strata must meet their assurance-adjusted requirements",
+          "unit": "original_clear_scene",
+          "strata": [
+            "ITS",
+            "OTS"
+          ]
+        },
+        "controls": [
+          "GitHub-main parent terminal identities and SHA-256-bound compact evidence",
+          "exact official clear-scene namespace counts",
+          "authorized exclusion membership and count checks",
+          "reproduction of both archived 1,587-scene selection digests",
+          "pairwise-disjoint excluded, historically exposed, and unassigned roles",
+          "stable salted order digest for each unassigned pool",
+          "no image decode, checkpoint access, model call, training, inference, or outcome computation"
+        ],
+        "uncertainty": {
+          "id": "simultaneous_capacity_assurance",
+          "method_id": "normal_mean_two_stratum_sd_upper_bound",
+          "confidence_level": 0.95,
+          "independent_unit": "original_clear_scene",
+          "comparison_family": "its_ots_capacity_family"
+        },
+        "gates": [
+          {
+            "id": "evidence_identity",
+            "type": "integrity",
+            "estimand_id": "unassigned_scene_capacity",
+            "reference": "all six archived dataset-role and variance-planning evidence groups match their frozen terminal tuples, counts, salts, digests, thresholds, and SDs",
+            "direction": "equal",
+            "threshold": true,
+            "uncertainty_id": "simultaneous_capacity_assurance",
+            "comparison_family": "its_ots_capacity_family",
+            "decision_role": "validity_veto",
+            "outcomes": [
+              "pass",
+              "fail",
+              "invalid"
+            ],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "namespace_reconstruction",
+            "type": "coverage",
+            "estimand_id": "unassigned_scene_capacity",
+            "reference": "exact 11,000-scene ITS and 8,970-scene OTS clear namespaces with unique authorized exclusions contained in their official namespace",
+            "direction": "equal",
+            "threshold": true,
+            "uncertainty_id": "simultaneous_capacity_assurance",
+            "comparison_family": "its_ots_capacity_family",
+            "decision_role": "validity_veto",
+            "outcomes": [
+              "pass",
+              "fail",
+              "invalid"
+            ],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "role_disjointness",
+            "type": "integrity",
+            "estimand_id": "unassigned_scene_capacity",
+            "reference": "excluded, historically exposed, and unassigned roles form exact disjoint partitions and reproduce both frozen historical selection digests",
+            "direction": "equal",
+            "threshold": true,
+            "uncertainty_id": "simultaneous_capacity_assurance",
+            "comparison_family": "its_ots_capacity_family",
+            "decision_role": "validity_veto",
+            "outcomes": [
+              "pass",
+              "fail",
+              "invalid"
+            ],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "remaining_capacity",
+            "type": "materiality",
+            "estimand_id": "unassigned_scene_capacity",
+            "reference": "both unassigned strata meet the assurance-adjusted independent-scene requirement",
+            "direction": "min",
+            "threshold": "ITS>=3215_and_OTS>=2369",
+            "uncertainty_id": "simultaneous_capacity_assurance",
+            "comparison_family": "its_ots_capacity_family",
+            "decision_role": "decisive",
+            "outcomes": [
+              "favorable",
+              "unfavorable",
+              "indeterminate",
+              "invalid"
+            ],
+            "neutral_outcome": "favorable"
+          },
+          {
+            "id": "future_precision_feasibility",
+            "type": "precision",
+            "estimand_id": "unassigned_scene_capacity",
+            "reference": "two-stratum simultaneous normal-mean planning with a 1.05 SD assurance multiplier",
+            "direction": "max",
+            "threshold": 0.025,
+            "uncertainty_id": "simultaneous_capacity_assurance",
+            "comparison_family": "its_ots_capacity_family",
+            "decision_role": "inconclusive_only",
+            "outcomes": [
+              "met",
+              "unmet",
+              "invalid"
+            ],
+            "neutral_outcome": "met"
+          }
+        ],
+        "competing_explanation": "A nominally large dataset can still provide insufficient fresh evidence if known overlaps, prior development exposure, duplicated clear targets, or nested haze variants are incorrectly counted as independent scenes.",
+        "decision_table": {
+          "terminal_actions": {
+            "pass": {
+              "terminal": {
+                "state": "COMPLETED_GATE_PASS",
+                "decision": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_PASS",
+                "authorizes": "UNIFIED_DEVELOPMENT_CONTRACT_AUTHORING_ONLY"
+              },
+              "next_action_id": "author_unified_development_contract",
+              "family_effect": "advance"
+            },
+            "fail": {
+              "terminal": {
+                "state": "COMPLETED_GATE_FAIL",
+                "decision": "CONVIR_EXISTING_DATASET_CAPACITY_FAIL",
+                "authorizes": "NONE"
+              },
+              "next_action_id": "stop_capacity_dependent_program",
+              "family_effect": "stop"
+            },
+            "inconclusive": {
+              "terminal": {
+                "state": "COMPLETED_INCONCLUSIVE",
+                "decision": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_INCONCLUSIVE",
+                "authorizes": "DATA_ROLE_EVIDENCE_REPAIR_REVIEW_ONLY"
+              },
+              "next_action_id": "repair_dataset_role_evidence",
+              "family_effect": "allow_predeclared_evidence"
+            }
+          },
+          "rules": [
+            {
+              "id": "evidence_identity_veto",
+              "when": {
+                "evidence_identity": [
+                  "fail",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "namespace_veto_after_valid_evidence",
+              "when": {
+                "evidence_identity": [
+                  "pass"
+                ],
+                "namespace_reconstruction": [
+                  "fail",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "role_veto_after_valid_namespace",
+              "when": {
+                "evidence_identity": [
+                  "pass"
+                ],
+                "namespace_reconstruction": [
+                  "pass"
+                ],
+                "role_disjointness": [
+                  "fail",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "valid_capacity_failure",
+              "when": {
+                "evidence_identity": [
+                  "pass"
+                ],
+                "namespace_reconstruction": [
+                  "pass"
+                ],
+                "role_disjointness": [
+                  "pass"
+                ],
+                "remaining_capacity": [
+                  "unfavorable"
+                ]
+              },
+              "terminal": "fail"
+            },
+            {
+              "id": "unresolved_capacity",
+              "when": {
+                "evidence_identity": [
+                  "pass"
+                ],
+                "namespace_reconstruction": [
+                  "pass"
+                ],
+                "role_disjointness": [
+                  "pass"
+                ],
+                "remaining_capacity": [
+                  "indeterminate",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "qualified_capacity_and_precision",
+              "when": {
+                "evidence_identity": [
+                  "pass"
+                ],
+                "namespace_reconstruction": [
+                  "pass"
+                ],
+                "role_disjointness": [
+                  "pass"
+                ],
+                "remaining_capacity": [
+                  "favorable"
+                ],
+                "future_precision_feasibility": [
+                  "met"
+                ]
+              },
+              "terminal": "pass"
+            },
+            {
+              "id": "capacity_without_precision",
+              "when": {
+                "evidence_identity": [
+                  "pass"
+                ],
+                "namespace_reconstruction": [
+                  "pass"
+                ],
+                "role_disjointness": [
+                  "pass"
+                ],
+                "remaining_capacity": [
+                  "favorable"
+                ],
+                "future_precision_feasibility": [
+                  "unmet",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            }
+          ]
+        },
+        "disabled_actions": [
+          "image content decode",
+          "Haze4K candidate-confirmation access",
+          "checkpoint or model access",
+          "training or inference",
+          "scientific outcome recomputation",
+          "sample-size-weighted ITS and OTS pooling",
+          "treating haze variants, tiles, regions, pixels, actions, or resamples as independent samples",
+          "claiming complete Haze4K-to-ITS source disjointness",
+          "claiming NH-Haze as fresh external confirmation",
+          "starting a downstream measurement"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/qualify_convir_existing_dataset_role_ledger.py",
+        "timeout_seconds": 300,
+        "expected_wall_seconds": 60,
+        "total_units": 2,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {},
+        "evidence_files": [
+          {
+            "source_relpath": "workload/convir_existing_dataset_role_ledger_v1_summary.json",
+            "destination_filename": "convir_existing_dataset_role_ledger_v1_summary.json",
+            "required": true,
+            "max_bytes": 65536
+          }
+        ],
+        "engineering_contract": {
+          "mode": "metadata_only",
+          "max_seconds": 30,
+          "cost_contract": null
+        },
+        "precision_contract": {
+          "mode": "descriptive_capacity",
+          "rationale": "Certify future independent-scene capacity without executing the continuous-utility measurement."
+        }
+      },
+      "assets": [
+        {
+          "id": "reside_root",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "haze4k_train_split_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-train-scene-split-v2/haze4k_train_scene_split_v2_closeout.json",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "dde7f4654674f776d2f2b0a687128019e477eea7b29fb8d69f01d621aa6c5887"
+        },
+        {
+          "id": "haze4k_train_split_summary",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-train-scene-split-v2/haze4k_train_scene_split_v2_summary.json",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9"
+        },
+        {
+          "id": "haze4k_test_split_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-scene-split-v1/haze4k_test_scene_split_v1_r1_closeout.json",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "d3dbd88b25eee35c5922b2459a2f48b39b3fc8f686588cde9edb1d9f267f8a9f"
+        },
+        {
+          "id": "haze4k_test_split_summary",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-scene-split-v1/haze4k_test_scene_split_v1_summary.json",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "656407f3183f92e75e357004b04b505d2b92cd4b0f4b02b3c6a22aef57d069cf"
+        },
+        {
+          "id": "its_quarantine_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-verified-overlap-quarantine-v1/reside_its_verified_overlap_quarantine_v1_closeout.json",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "a638a78a3dc7a7af82cef030ae67268c0064a08185464e5772681e61ec04010e"
+        },
+        {
+          "id": "its_quarantine_summary",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-verified-overlap-quarantine-v1/reside_its_verified_overlap_quarantine_v1_summary.json",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "3817a2a2778cec848ba1cfb1be64863bf30f47f2434f6d54819c6a8f346c47e9"
+        },
+        {
+          "id": "its_exclusions",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-its-verified-overlap-quarantine-v1/reside_its_verified_overlap_quarantine_v1_train_selection_exclusions.txt",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "c4dddbcf214c301ffa6d3879217e6336024119bb07d0f9c1f929ac040aa0dda3"
+        },
+        {
+          "id": "ots_quarantine_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_closeout.json",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "348f255a4a99dca898a7457ccbd5f0b1a50516db6109233b8b431251f9a672f3"
+        },
+        {
+          "id": "ots_quarantine_summary",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_summary.json",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "1d087dbc9ade15f1a8a9a0862a5a00a09ad28d64d55697a620f88f17fd4a42ff"
+        },
+        {
+          "id": "ots_exclusions",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-ots-targeted-geometry-v1/reside_ots_targeted_geometry_v1_exclusions.txt",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "d7526849879cf8650af545db20a5e4555cb0eb1931973612af98a5897f2e03d2"
+        },
+        {
+          "id": "reside_measurement_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-known-overlap-continuous-utility-measurement-v1/reside_known_overlap_continuous_utility_measurement_v1_closeout.json",
+          "access_role": "development_screening",
+          "contract_access": true,
+          "sha256": "560cac7b257fe0441519f4b2ed7dea77cd0e9d5d7646bbbfac8f2cc782dca99a"
+        },
+        {
+          "id": "reside_measurement_summary",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-known-overlap-continuous-utility-measurement-v1/reside_known_overlap_continuous_utility_measurement_v1_summary.json",
+          "access_role": "development_screening",
+          "contract_access": true,
+          "sha256": "3f28c223f4f4a8a01fc435ee1de2baa5a0a488b9541c897f3fb676999c0d3946"
+        },
+        {
+          "id": "nhhaze_exposure_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r15_s0e_same_action_population_precision_20260720/r15_s0e_same_action_population_precision_closeout.json",
+          "access_role": "development_screening",
+          "contract_access": true,
+          "sha256": "6aaec2c9536f7cc5676d5056f43475def8d4bda1e381242dae6eba0c8f8c4434"
+        },
+        {
+          "id": "nhhaze_identity",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k_v5_r15_s0e_same_action_population_precision_20260720/r15_s0e_identity_and_access.json",
+          "access_role": "development_screening",
+          "contract_access": true,
+          "sha256": "3f61c7bd3c4e736f7413c6705ad0b2d9dc9eba9072fc0c16cd85240b871af059"
+        },
+        {
+          "id": "entrypoint_source",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/tools/qualify_convir_existing_dataset_role_ledger.py",
+          "access_role": "engineering_debug",
+          "contract_access": true,
+          "sha256": "1388c250a886ee2f6eccf5531be7ebe86853b5066d4ecd93d6cfef01b579277d"
+        }
+      ],
+      "capability": null,
+      "precision": {
+        "certificate_id": "convir_existing_dataset_role_ledger_capacity_v1",
+        "route_id": "convir-existing-dataset-role-ledger-v1",
+        "operation_id": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_QUALIFY",
+        "primary_estimand_id": "unassigned_scene_capacity",
+        "independent_unit": "original_clear_scene",
+        "comparison_family": "its_ots_capacity_family",
+        "method": "normal_mean",
+        "confidence_level": 0.95,
+        "critical_value": 2.241402727604947,
+        "target_half_width": 0.025,
+        "assurance": {
+          "method_id": "chi_square_lower_tail_concentration",
+          "probability": 0.95,
+          "planning_sd_rule": "Use each archived 1,587-scene sample SD multiplied by 1.05. For 1,586 degrees of freedom this exceeds the one-sided 95 percent normal-theory SD multiplier obtained from the chi-square lower-tail concentration bound."
+        },
+        "strata": [
+          {
+            "id": "ITS",
+            "independent_groups_available": 7226,
+            "independent_groups_planned": 3215,
+            "planning_sd": 0.602251735447599,
+            "planning_sd_upper_bound": 0.632364322219979,
+            "independent_groups_required": 3215,
+            "feasible": true,
+            "source_reference": "reside-known-overlap-continuous-utility-measurement-v1 archived ITS sample SD, with the frozen 1.05 assurance multiplier"
+          },
+          {
+            "id": "OTS",
+            "independent_groups_available": 6419,
+            "independent_groups_planned": 2369,
+            "planning_sd": 0.5170106753649101,
+            "planning_sd_upper_bound": 0.5428612091331556,
+            "independent_groups_required": 2369,
+            "feasible": true,
+            "source_reference": "reside-known-overlap-continuous-utility-measurement-v1 archived OTS sample SD, with the frozen 1.05 assurance multiplier"
+          }
+        ],
+        "feasible": true,
+        "source_role": "development_screening",
+        "source_reference": "GitHub-main archived RESIDE continuous-utility summary and the deterministic role-ledger reconstruction contract"
+      }
+    }
+  }
+}

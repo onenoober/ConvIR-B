@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/convir-existing-dataset-role-ledger-v1.json",
+  "experiment_spec_sha256": "ce502d55d9966f8ef1705877143aea5577215944acb519bc7d8a2bcc21d344db",
+  "operations": {
+    "CONVIR_EXISTING_DATASET_ROLE_LEDGER_QUALIFY": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "UNIFIED_DEVELOPMENT_CONTRACT_AUTHORING_ONLY",
+          "decision": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "CONVIR_EXISTING_DATASET_CAPACITY_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "DATA_ROLE_EVIDENCE_REPAIR_REVIEW_ONLY",
+          "decision": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "convir_existing_dataset_role_ledger_v1_closeout.json",
+      "heartbeat_timeout_seconds": 180,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "dataset_role_ledger_qualification",
+      "monitor_profile": "short",
+      "output_id": "convir-existing-dataset-role-ledger-v1-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/convir_existing_dataset_governance_v1.json",
+  "program_contract_sha256": "de714db3ede47238774ef732726585f89e6707c9b358243acc8f12db552318d5",
+  "route_card_relpath": "experience_docx/experiment_cards/convir-existing-dataset-role-ledger-v1.md",
+  "route_id": "convir-existing-dataset-role-ledger-v1",
+  "rules_commit": "f2c89867569b8c15af8a37fbb4695b2f6727ff63",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "CONVIR_EXISTING_DATASET_ROLE_LEDGER_QUALIFY": "experience_docx/scientific_contracts/convir-existing-dataset-role-ledger-v1__CONVIR_EXISTING_DATASET_ROLE_LEDGER_QUALIFY.json"
+  }
+}
