@@ -29,26 +29,36 @@ hash changes.
 1. SNAPSHOT: call compact `convir_git_status` for the target route. Read its
    authoritative snapshot, direct parent closeout and only referenced files.
    Do not read the full Markdown index or family history by default.
-2. CONTRACT: new routes use one schema-1 experiment spec compiled to manifest
+2. CONTRACT: new routes use one schema-2 experiment spec compiled to manifest
    schema 6, canonical scientific JSON, one <=8 KiB rationale note and runtime
-   schema 2. Freeze every control, gate,
-   uncertainty rule, data role and terminal action. Formal precision needs a
-   pre-run feasibility certificate; a changed production path needs one
+   schema 2. Freeze every control, typed gate outcome, complete mutually
+   exclusive decision table, uncertainty rule, data role and terminal action.
+   Failed identity/integrity/coverage uses `validity_veto`; precision uses
+   `inconclusive_only` and cannot hide a decisive scientific FAIL.
+   Formal precision needs a primary-estimand and stratum-bound pre-run
+   feasibility certificate using a frozen planning-SD upper bound; a changed production path needs one
    identity-bound capability profile and matching device-aware synthetic contract.
    Run the compiler's aggregate lint before derivation. Any cost/termination
    claim also freezes a machine-validated cost strategy: use a same-scale probe
    for adaptive/nonlinear work, or fixed-linear extrapolation only for an exact
    fixed-count production map with bounded shape and constant memory.
-   Historical manifest schema 4/5 routes remain immutable and supported.
+   New typed asset manifests use schema 2. Historical experiment-spec,
+   scientific and asset schema 1 plus manifest schema 4/5 routes remain
+   immutable and supported.
 3. EXECUTE: run one route-ready gate, commit/push once, plan once and start
    once. Confirm positive workload progress once and finish near the frozen ETA.
+   Every new scientific schema-2 run records each completed workload unit in
+   the generic SHA-bound ledger; finalization requires exact `total_units` coverage.
    Honor returned retry/not-before timestamps; an early repeated finish returns
    cached state and must not become polling.
    Never repeat checks owned by the validator/lifecycle or create a watcher.
-4. DECIDE: interpret complete evidence once. The typed closeout alone
+4. DECIDE: route code writes typed gate outcomes; the generic lifecycle derives
+   the frozen terminal once. Interpret complete evidence once. The typed closeout alone
    authorizes a next stage; scientific FAIL is never an engineering retry.
 5. ARCHIVE: call `prepare_terminal_archive.py` once. Its default receipt-bound
-   path fetches compact evidence, verifies, commits, pushes and verifies remote
+   path fetches compact evidence, preserves the compact launch-contract bundle,
+   registers a new engineering qualification when applicable, verifies,
+   commits, pushes and verifies remote
    main. Stop on success; `--prepare-only` is an explicit review exception.
 
 The existing manifest/runtime-spec/asset files remain machine interfaces and
@@ -71,6 +81,9 @@ repair policy below and is not a scientific terminal archive.
   class and input-contract SHA in capability_registry.jsonl. A match saves only
   the duplicate engineering qualification; it never carries scientific PASS,
   data permission, promotion, or deployment authorization.
+- New capability profiles bind those six identities to committed asset
+  identities. Route-ready and plan report reuse, and the lifecycle skips the
+  engineering contract only for one unique registry match.
 
 ## Flexible Route-Family Governance
 
@@ -105,6 +118,10 @@ repair policy below and is not a scientific terminal archive.
   path that unlocks failure evidence.
   The repair gate's tool-owned temporary Git index is an isolated classifier
   input and is not real staging; it must leave the worktree index unchanged.
+- `complete_units` recovery uses the generic fsync'd unit ledger with unique
+  unit/input/output identities, one hash-bound `completed_unit_ledger` asset,
+  and verified output files. A completed count without that exact evidence is
+  not resumable.
 
 Explicit discard is allowed only for a receipt-bound validated engineering
 terminal with verified absence of scientific/protected data touch, no active
@@ -117,7 +134,7 @@ GitHub evidence.
 - Windows calls WSL only as `wsl.exe -d Ubuntu-22.04 --exec` plus a fixed Linux
   program and literal argv. Never use Windows Git on the WSL UNC worktree and
   never place PowerShell, WSL, and SSH syntax in one command string.
-- Standard route lifecycle uses `convir-ops` v5.2 with stable six-tool protocol
+- Standard route lifecycle uses `convir-ops` v5.3 with stable six-tool protocol
   schema 4 and canonical route-manifest schema 6. Any uncovered cloud action uses
   one committed, unchanged Bash file through `experience_docx/tools/convirctl.py
   remote-script`; no inline SSH command or untracked script is valid.

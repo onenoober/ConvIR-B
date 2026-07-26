@@ -15,6 +15,7 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 import convir_ops_mcp as ops
+import capability_registry
 
 
 GIT = "/usr/bin/git"
@@ -154,15 +155,92 @@ def required_runtime_evidence(
     return required
 
 
+def launch_contract_bundle(
+    repo: Path, route_commit: str, route_id: str, operation_id: str,
+) -> tuple[dict[str, bytes], list[dict[str, Any]], dict[str, Any] | None]:
+    manifest_path = "experience_docx/route_operations.json"
+    manifest_raw = git_blob(repo, route_commit, manifest_path)
+    try:
+        manifest = json.loads(manifest_raw)
+    except json.JSONDecodeError as exc:
+        raise TerminalArchiveError("invalid route operations manifest") from exc
+    if manifest.get("schema_version") != 6:
+        return {}, [], None
+    if manifest.get("route_id") != route_id:
+        raise TerminalArchiveError("launch bundle route identity mismatch")
+    operation = manifest.get("operations", {}).get(operation_id)
+    if not isinstance(operation, dict):
+        raise TerminalArchiveError("launch bundle operation is missing")
+    prior_closeout = operation.get("prior_closeout_relpath")
+    prior_terminal = operation.get("prior_terminal_tuple")
+    if (prior_closeout is None) != (prior_terminal is None):
+        raise TerminalArchiveError("launch bundle prior terminal binding is incomplete")
+    if prior_closeout is not None:
+        safe_relative(prior_closeout, prefix=LOG_PREFIX)
+        if not isinstance(prior_terminal, dict) or set(prior_terminal) != {
+            "state", "decision", "authorizes",
+        }:
+            raise TerminalArchiveError("launch bundle prior terminal tuple is invalid")
+    spec_path = f"experience_docx/route_runtime_specs/{operation_id}.json"
+    try:
+        runtime = json.loads(git_blob(repo, route_commit, spec_path))
+    except json.JSONDecodeError as exc:
+        raise TerminalArchiveError("invalid route runtime spec") from exc
+    paths = {
+        "manifest.json": manifest_path,
+        "route_note.md": manifest.get("route_card_relpath"),
+        "experiment_spec.json": manifest.get("experiment_spec_relpath"),
+        "program_contract.json": manifest.get("program_contract_relpath"),
+        "scientific_contract.json": manifest.get(
+            "scientific_contract_relpaths", {}
+        ).get(operation_id),
+        "runtime_spec.json": spec_path,
+        "asset_manifest.json": runtime.get("asset_manifest_relpath"),
+        "capability_profile.json": runtime.get(
+            "engineering_contract", {}
+        ).get("capability_profile_relpath"),
+        "precision_certificate.json": runtime.get(
+            "precision_contract", {}
+        ).get("certificate_relpath"),
+    }
+    required_names = {
+        "manifest.json", "route_note.md", "experiment_spec.json",
+        "program_contract.json", "scientific_contract.json", "runtime_spec.json",
+    }
+    if any(not isinstance(paths[name], str) for name in required_names):
+        raise TerminalArchiveError("canonical launch contract bundle is incomplete")
+    payloads = {}
+    records = []
+    root = f"{LOG_PREFIX}{route_id}/launch_contract/{operation_id}"
+    for archive_name, source_path in paths.items():
+        if source_path is None:
+            continue
+        safe_relative(source_path)
+        raw = git_blob(repo, route_commit, source_path)
+        checked_text(raw, source_path)
+        destination = f"{root}/{archive_name}"
+        payloads[destination] = raw
+        records.append({
+            "path": destination,
+            "source_path": source_path,
+            "bytes": len(raw),
+            "sha256": hashlib.sha256(raw).hexdigest(),
+        })
+    return payloads, records, {
+        "prior_closeout_path": prior_closeout,
+        "prior_terminal_tuple": prior_terminal,
+    }
+
+
 def validate_conclusion(raw: bytes, relpath: str, closeout: dict[str, Any]) -> None:
     value = inspect_structured(raw, relpath)
     required = {
-        "route_id", "operation_id", "run_id", "decision", "authorizes",
+        "route_id", "operation_id", "run_id", "state", "decision", "authorizes",
         "primary_result", "gate_reasons", "competing_explanation", "limitations",
     }
     if not isinstance(value, dict) or not required.issubset(value):
         raise TerminalArchiveError(f"scientific conclusion is incomplete: {relpath}")
-    for key in ("route_id", "operation_id", "run_id", "decision", "authorizes"):
+    for key in ("route_id", "operation_id", "run_id", "state", "decision", "authorizes"):
         if value.get(key) != closeout.get(key):
             raise TerminalArchiveError(f"scientific conclusion {key} mismatch")
     if not isinstance(value["primary_result"], str) or not value["primary_result"].strip():
@@ -186,6 +264,72 @@ def validate_evidence_name(filename: str) -> None:
     lowered = filename.lower()
     if any(token in lowered for token in FORBIDDEN_NAME_TOKENS):
         raise TerminalArchiveError(f"raw/cloud-only evidence is forbidden: {filename}")
+
+
+def capability_registry_record(
+    closeout: dict[str, Any], closeout_path: PurePosixPath,
+    payloads: dict[str, bytes],
+) -> dict[str, Any] | None:
+    metadata = closeout.get("capability_qualification")
+    if metadata is None:
+        return None
+    if not isinstance(metadata, dict) or set(metadata) != {
+        "qualification_id", "identity_sha256", "evidence_filename", "status",
+        "scientific_authorization",
+    }:
+        raise TerminalArchiveError("capability qualification metadata is invalid")
+    filename = metadata["evidence_filename"]
+    if not isinstance(filename, str):
+        raise TerminalArchiveError("capability qualification filename is invalid")
+    validate_evidence_name(filename)
+    relpath = f"{closeout_path.parent.as_posix()}/{filename}"
+    raw = payloads.get(relpath)
+    if raw is None:
+        raise TerminalArchiveError("capability qualification evidence is missing")
+    value = inspect_structured(raw, relpath)
+    expected = {
+        "schema_version", "qualification_id", "identity", "identity_sha256",
+        "status", "contract_mode", "route_id", "operation_id", "run_id",
+        "route_commit", "engineering_evidence", "scientific_authorization",
+        "protected_data_touched",
+    }
+    if not isinstance(value, dict) or set(value) != expected \
+            or value["schema_version"] != 1:
+        raise TerminalArchiveError("capability qualification evidence is invalid")
+    for key in ("route_id", "operation_id", "run_id", "route_commit"):
+        if value[key] != closeout.get(key):
+            raise TerminalArchiveError(f"capability qualification {key} mismatch")
+    try:
+        identity = capability_registry.validate_identity(value["identity"])
+        identity_sha = capability_registry.identity_digest(identity)
+    except capability_registry.CapabilityRegistryError as exc:
+        raise TerminalArchiveError(str(exc)) from exc
+    if value["identity_sha256"] != identity_sha \
+            or metadata["identity_sha256"] != identity_sha \
+            or value["qualification_id"] != metadata["qualification_id"] \
+            or value["status"] != metadata["status"] \
+            or value["status"] != "PASSED_ENGINEERING" \
+            or value["scientific_authorization"] != "NONE" \
+            or metadata["scientific_authorization"] != "NONE" \
+            or value["protected_data_touched"] is not False \
+            or not isinstance(value["engineering_evidence"], dict):
+        raise TerminalArchiveError("capability qualification boundary is invalid")
+    record = {
+        "schema_version": 1,
+        "qualification_id": value["qualification_id"],
+        "identity": identity,
+        "identity_sha256": identity_sha,
+        "status": "PASSED_ENGINEERING",
+        "contract_mode": value["contract_mode"],
+        "evidence_relpath": relpath,
+        "evidence_sha256": hashlib.sha256(raw).hexdigest(),
+        "scientific_authorization": "NONE",
+        "protected_data_touched": False,
+    }
+    try:
+        return capability_registry.validate_record(record)
+    except capability_registry.CapabilityRegistryError as exc:
+        raise TerminalArchiveError(str(exc)) from exc
 
 
 def audit_source(
@@ -265,6 +409,9 @@ def audit_source(
     required_evidence = required_runtime_evidence(
         source_repo, route_commit, route_id, operation_id,
     )
+    contract_payloads, contract_bundle, prior_terminal_record = launch_contract_bundle(
+        source_repo, route_commit, route_id, operation_id,
+    )
     missing_required = sorted(required_evidence - set(evidence_sha))
     if missing_required:
         raise TerminalArchiveError(
@@ -275,6 +422,7 @@ def audit_source(
     payloads: dict[str, bytes] = {
         contract_relpath: contract_raw,
         closeout_relpath: closeout_raw,
+        **contract_payloads,
     }
     if conclusion_relpath is not None:
         conclusion_file = evidence_dir / PurePosixPath(conclusion_relpath).name
@@ -308,9 +456,10 @@ def audit_source(
             "bytes": len(raw),
             "sha256": actual_sha,
         })
+    registry_record = capability_registry_record(closeout, closeout_path, payloads)
 
     return {
-        "schema_version": 1,
+        "schema_version": 2 if contract_bundle else 1,
         "status": "TERMINAL_SOURCE_AUDIT_OK",
         "route_id": route_id,
         "operation_id": closeout.get("operation_id"),
@@ -325,6 +474,9 @@ def audit_source(
         "closeout_path": closeout_relpath,
         "conclusion_path": conclusion_relpath,
         "result_files": files,
+        "contract_bundle": contract_bundle,
+        "prior_terminal_record": prior_terminal_record,
+        "capability_registry_record": registry_record,
         "payloads": payloads,
         "checks": {
             "contract_bound": True,
@@ -338,6 +490,7 @@ def audit_source(
             "legacy_conclusion_waiver": existing_archive and conclusion_relpath is None,
             "compact_text_only": True,
             "verdict_only_archive_rejected": True,
+            "full_launch_contract_bundle": bool(contract_bundle),
         },
     }
 
@@ -369,8 +522,8 @@ def fetch_receipt_evidence(receipt: str, destination: Path) -> dict[str, dict[st
 
 
 def index_record(audit: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "schema_version": 1,
+    record = {
+        "schema_version": 2 if audit.get("contract_bundle") else 1,
         "route_id": audit["route_id"],
         "operation_id": audit["operation_id"],
         "run_id": audit["run_id"],
@@ -384,6 +537,21 @@ def index_record(audit: dict[str, Any]) -> dict[str, Any]:
         "conclusion_path": audit["conclusion_path"],
         "result_paths": [item["path"] for item in audit["result_files"]],
     }
+    if audit.get("contract_bundle"):
+        record["contract_bundle"] = audit["contract_bundle"]
+        record["prior_terminal_record"] = audit["prior_terminal_record"]
+        record["result_files"] = audit["result_files"]
+        payloads = audit["payloads"]
+        record["contract_sha256"] = hashlib.sha256(
+            payloads[audit["contract_path"]]
+        ).hexdigest()
+        record["closeout_sha256"] = hashlib.sha256(
+            payloads[audit["closeout_path"]]
+        ).hexdigest()
+        record["conclusion_sha256"] = hashlib.sha256(
+            payloads[audit["conclusion_path"]]
+        ).hexdigest()
+    return record
 
 
 def read_index(raw: bytes) -> list[dict[str, Any]]:
@@ -446,6 +614,33 @@ def prepare_destination(
             for item in records
         )
         planned[INDEX_PATH] = index_raw
+
+    new_capability = audit.get("capability_registry_record")
+    if new_capability is not None:
+        registry_file = destination_repo / capability_registry.REGISTRY_RELPATH
+        registry_raw = registry_file.read_bytes() if registry_file.exists() else b""
+        try:
+            existing_capabilities = capability_registry.load_records(
+                registry_raw.decode("utf-8").splitlines(),
+                evidence_exists=lambda relpath: (destination_repo / relpath).is_file(),
+                read_evidence=lambda relpath: (destination_repo / relpath).read_bytes(),
+            )
+            reuse = capability_registry.lookup(
+                existing_capabilities, new_capability["identity"],
+            )
+        except (
+            UnicodeDecodeError, OSError, capability_registry.CapabilityRegistryError,
+        ) as exc:
+            raise TerminalArchiveError(f"capability registry is invalid: {exc}") from exc
+        if reuse["engineering_reuse_authorized"] is False:
+            if any(
+                item["qualification_id"] == new_capability["qualification_id"]
+                for item in existing_capabilities
+            ):
+                raise TerminalArchiveError("capability qualification_id conflicts")
+            planned[capability_registry.REGISTRY_RELPATH] = (
+                registry_raw + capability_registry.canonical_bytes(new_capability)
+            )
 
     for relpath, raw in planned.items():
         target = destination_repo / relpath

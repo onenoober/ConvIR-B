@@ -17,6 +17,8 @@ import uuid
 from contextlib import contextmanager
 from pathlib import Path
 
+import capability_registry
+import scientific_contract as science_contract
 from route_runtime_contract import (
     ContractError as RuntimeContractError,
     runtime_spec_relpath,
@@ -28,7 +30,7 @@ from route_runtime_contract import (
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "5.2.0"
+SERVER_VERSION = "5.3.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}
@@ -270,6 +272,28 @@ def first_operation_from_card(text):
 
 
 def validate_scientific_contract(value, route_id, operation_id, operation):
+    if isinstance(value, dict) and value.get("schema_version") == 2:
+        try:
+            contract = science_contract.validate_scientific_contract_v2(
+                value, route_id, operation_id,
+            )
+            scientific = science_contract.scientific_terminal_tuples(contract)
+        except science_contract.ScientificContractError as exc:
+            raise ToolError(str(exc)) from exc
+        engineering = {
+            "state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE",
+        }
+        allowed = require_terminal_tuples(operation["allowed_terminal_tuples"])
+        expected = [*scientific, engineering]
+        if {
+            canonical_digest(item) for item in allowed
+        } != {
+            canonical_digest(item) for item in expected
+        }:
+            raise ToolError(
+                "scientific schema 2 allowed terminal tuples must be derived exactly"
+            )
+        return contract
     expected = {
         "schema_version", "route_id", "operation_id", "question",
         "population", "intervention", "primary_estimand", "controls",
@@ -396,9 +420,16 @@ def validate_contract_runtime_alignment(contract, spec, precision=None):
     }
     if permissions != spec["protected_data_permissions"]:
         raise ToolError("scientific/runtime protected permissions differ")
-    if precision is not None \
-            and population["independent_group_count"] != precision["independent_groups_available"]:
-        raise ToolError("scientific/precision independent group counts differ")
+    if precision is not None:
+        if precision.get("schema_version") == 2:
+            if contract.get("schema_version") != 2:
+                raise ToolError("precision schema 2 requires scientific schema 2")
+            if precision["primary_estimand_id"] != contract["primary_estimand"]["id"]:
+                raise ToolError("scientific/precision primary estimands differ")
+            if precision["independent_unit"] != contract["primary_estimand"]["unit"]:
+                raise ToolError("scientific/precision independent units differ")
+        elif population["independent_group_count"] != precision["independent_groups_available"]:
+            raise ToolError("scientific/precision independent group counts differ")
 
 
 def validate_committed_operation_bundle(bare_repo, route_commit, manifest,
@@ -416,17 +447,31 @@ def validate_committed_operation_bundle(bare_repo, route_commit, manifest,
                 spec,
             )
         capability = None
+        capability_reuse = None
         capability_path = spec["engineering_contract"]["capability_profile_relpath"]
         if capability_path is not None:
             capability = validate_model_capability(
                 json.loads(git_show(bare_repo, route_commit, capability_path)), spec, asset,
             )
-        precision = None
-        precision_path = spec["precision_contract"]["certificate_relpath"]
-        if precision_path is not None:
-            precision = validate_precision_certificate(
-                json.loads(git_show(bare_repo, route_commit, precision_path)), spec,
-            )
+            if capability.get("schema_version") == 2:
+                try:
+                    records = capability_registry.load_records(
+                        git_show(
+                            bare_repo, route_commit, capability_registry.REGISTRY_RELPATH,
+                        ).splitlines(),
+                        evidence_exists=lambda relpath: bool(
+                            git_show_bytes(bare_repo, route_commit, relpath)
+                        ),
+                        read_evidence=lambda relpath: git_show_bytes(
+                            bare_repo, route_commit, relpath,
+                        ),
+                    )
+                    capability_reuse = capability_registry.lookup(
+                        records, capability["reuse_identity"],
+                    )
+                except capability_registry.CapabilityRegistryError as exc:
+                    raise ToolError(f"capability registry is invalid: {exc}") from exc
+        contract = None
         if context["route_manifest_schema_version"] >= 5:
             contract = validate_scientific_contract(
                 json.loads(git_show(
@@ -434,6 +479,14 @@ def validate_committed_operation_bundle(bare_repo, route_commit, manifest,
                 )),
                 manifest["route_id"], operation_id, manifest["operations"][operation_id],
             )
+        precision = None
+        precision_path = spec["precision_contract"]["certificate_relpath"]
+        if precision_path is not None:
+            precision = validate_precision_certificate(
+                json.loads(git_show(bare_repo, route_commit, precision_path)), spec,
+                contract,
+            )
+        if contract is not None:
             validate_contract_runtime_alignment(contract, spec, precision)
         context.update({
             "runtime_spec_digest": hashlib.sha256(spec_raw.encode()).hexdigest(),
@@ -442,6 +495,7 @@ def validate_committed_operation_bundle(bare_repo, route_commit, manifest,
             "expected_wall_seconds": spec["expected_wall_seconds"],
             "precision_mode": spec["precision_contract"]["mode"],
             "capability_profile_id": None if capability is None else capability["profile_id"],
+            "capability_reuse": capability_reuse,
             "precision_certificate_id": None if precision is None else precision["certificate_id"],
         })
         return spec
@@ -845,6 +899,14 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
         )
         program_raw = git_show_bytes(bare_repo, route_commit, program_path)
         spec_raw = git_show_bytes(bare_repo, route_commit, spec_path)
+        try:
+            source_spec = json.loads(spec_raw)
+        except json.JSONDecodeError as exc:
+            raise ToolError("experiment spec JSON is invalid") from exc
+        if not isinstance(source_spec, dict) or source_spec.get("schema_version") != 2:
+            raise ToolError(
+                "runnable manifest schema 6 requires experiment spec schema 2"
+            )
         if hashlib.sha256(program_raw).hexdigest() != require_sha(
                 value["program_contract_sha256"], "program_contract_sha256", SHA256):
             raise ToolError("program contract SHA-256 mismatch")
@@ -2248,6 +2310,132 @@ def _git_json_blob(repo, ref, relpath):
         return None
 
 
+def _terminal_tuple_from_record(record):
+    return {
+        key: record.get(key) for key in ("state", "decision", "authorizes")
+    }
+
+
+def _select_terminal_leaf(records):
+    if len(records) == 1 and records[0].get("schema_version") != 2:
+        return records[0]
+    if any(record.get("schema_version") != 2 for record in records):
+        return None
+    by_closeout = {}
+    operation_ids = set()
+    run_ids = set()
+    for record in records:
+        closeout_path = record.get("closeout_path")
+        operation_id = record.get("operation_id")
+        run_id = record.get("run_id")
+        binding = record.get("prior_terminal_record")
+        if not isinstance(closeout_path, str) or closeout_path in by_closeout \
+                or not isinstance(operation_id, str) or operation_id in operation_ids \
+                or not isinstance(run_id, str) or run_id in run_ids \
+                or not isinstance(binding, dict) or set(binding) != {
+                    "prior_closeout_path", "prior_terminal_tuple",
+                }:
+            return None
+        by_closeout[closeout_path] = record
+        operation_ids.add(operation_id)
+        run_ids.add(run_id)
+    referenced = set()
+    roots = []
+    for record in records:
+        binding = record["prior_terminal_record"]
+        parent_path = binding["prior_closeout_path"]
+        prior_tuple = binding["prior_terminal_tuple"]
+        if parent_path is None:
+            if prior_tuple is not None:
+                return None
+            roots.append(record)
+            continue
+        parent = by_closeout.get(parent_path)
+        if parent is None or prior_tuple != _terminal_tuple_from_record(parent):
+            return None
+        referenced.add(parent_path)
+    leaves = [
+        record for path, record in by_closeout.items() if path not in referenced
+    ]
+    if len(roots) != 1 or len(leaves) != 1:
+        return None
+    visited = set()
+    cursor = leaves[0]
+    while cursor is not None:
+        path = cursor["closeout_path"]
+        if path in visited:
+            return None
+        visited.add(path)
+        parent_path = cursor["prior_terminal_record"]["prior_closeout_path"]
+        cursor = None if parent_path is None else by_closeout.get(parent_path)
+    return leaves[0] if len(visited) == len(records) else None
+
+
+def _snapshot_blob(repo, ref, relpath):
+    if not isinstance(relpath, str) or not relpath:
+        return None
+    completed = subprocess.run(
+        ["git", "-C", str(repo), "show", f"{ref}:{relpath}"],
+        capture_output=True, timeout=30, check=False,
+    )
+    return completed.stdout if completed.returncode == 0 else None
+
+
+def _snapshot_blob_matches(repo, ref, item):
+    if not isinstance(item, dict) or set(item) != {"path", "bytes", "sha256"}:
+        return False
+    raw = _snapshot_blob(repo, ref, item["path"])
+    return raw is not None \
+        and isinstance(item["bytes"], int) and not isinstance(item["bytes"], bool) \
+        and item["bytes"] >= 0 and len(raw) == item["bytes"] \
+        and isinstance(item["sha256"], str) and SHA256.fullmatch(item["sha256"]) \
+        and hashlib.sha256(raw).hexdigest() == item["sha256"]
+
+
+def _snapshot_launch_binding_matches(repo, ref, record, contract_bundle):
+    route_id = record.get("route_id")
+    operation_id = record.get("operation_id")
+    if not isinstance(route_id, str) or not SAFE_TOKEN.fullmatch(route_id) \
+            or not isinstance(operation_id, str) or not SAFE_TOKEN.fullmatch(operation_id):
+        return False
+    manifest_path = (
+        f"experience_docx/experiment_logs/{route_id}/launch_contract/"
+        f"{operation_id}/manifest.json"
+    )
+    manifest_items = [
+        item for item in contract_bundle
+        if isinstance(item, dict) and item.get("path") == manifest_path
+        and item.get("source_path") == ROUTE_OPERATIONS_RELPATH
+    ]
+    if len(manifest_items) != 1:
+        return False
+    raw = _snapshot_blob(repo, ref, manifest_path)
+    try:
+        manifest = json.loads(raw) if raw is not None else None
+    except json.JSONDecodeError:
+        return False
+    if not isinstance(manifest, dict) or manifest.get("schema_version") != 6 \
+            or manifest.get("route_id") != route_id:
+        return False
+    operation = manifest.get("operations", {}).get(operation_id)
+    binding = record.get("prior_terminal_record")
+    if not isinstance(operation, dict) or not isinstance(binding, dict):
+        return False
+    if operation.get("prior_closeout_relpath") != binding.get("prior_closeout_path") \
+            or operation.get("prior_terminal_tuple") != binding.get("prior_terminal_tuple"):
+        return False
+    prior = binding.get("prior_terminal_tuple")
+    if prior is not None and (
+        not isinstance(prior, dict)
+        or prior.get("state") != "COMPLETED_GATE_PASS"
+        or prior.get("authorizes") != operation_id
+    ):
+        return False
+    return _terminal_tuple_from_record(record) in operation.get(
+        "allowed_terminal_tuples", []
+    )
+
+
 def authoritative_snapshot(repo, route_id, ref):
     """Return one bounded authority record without reading Markdown history."""
     index_path = "experience_docx/EXPERIMENT_TERMINAL_INDEX.jsonl"
@@ -2269,9 +2457,83 @@ def authoritative_snapshot(repo, route_id, ref):
         return {"status": "TERMINAL_INDEX_INVALID", "route_id": route_id}
     if not matches:
         return {"status": "NO_TERMINAL_RECORD", "route_id": route_id}
-    record = matches[-1]
+    record = _select_terminal_leaf(matches)
+    if record is None:
+        return {
+            "status": "TERMINAL_RECORD_AMBIGUOUS",
+            "route_id": route_id,
+            "terminal_record_count": len(matches),
+            "operation_ids": sorted({
+                str(item.get("operation_id")) for item in matches
+            }),
+        }
     conclusion = _git_json_blob(repo, ref, record.get("conclusion_path", ""))
     closeout = _git_json_blob(repo, ref, record.get("closeout_path", ""))
+    identity_fields = (
+        "route_id", "operation_id", "run_id", "state", "decision", "authorizes",
+    )
+    if not isinstance(closeout, dict) or any(
+        closeout.get(key) != record.get(key) for key in identity_fields
+    ):
+        return {"status": "TERMINAL_CLOSEOUT_INVALID", "route_id": route_id}
+    if record.get("schema_version") == 2 \
+            and closeout.get("route_commit") != record.get("route_commit"):
+        return {"status": "TERMINAL_CLOSEOUT_INVALID", "route_id": route_id}
+    if record.get("schema_version") == 2 and not isinstance(conclusion, dict):
+        return {"status": "TERMINAL_CONCLUSION_INVALID", "route_id": route_id}
+    conclusion_fields = identity_fields if record.get("schema_version") == 2 else (
+        "route_id", "operation_id", "run_id", "decision", "authorizes",
+    )
+    if isinstance(conclusion, dict) and any(
+            conclusion.get(key) != record.get(key) for key in conclusion_fields):
+        return {"status": "TERMINAL_CONCLUSION_INVALID", "route_id": route_id}
+    contract_bundle = record.get("contract_bundle", [])
+    if not isinstance(contract_bundle, list):
+        return {"status": "TERMINAL_CONTRACT_BUNDLE_INVALID", "route_id": route_id}
+    if record.get("schema_version") == 2 and not contract_bundle:
+        return {"status": "TERMINAL_CONTRACT_BUNDLE_INVALID", "route_id": route_id}
+    bundle_paths = [
+        item.get("path") for item in contract_bundle if isinstance(item, dict)
+    ]
+    if len(bundle_paths) != len(set(bundle_paths)):
+        return {"status": "TERMINAL_CONTRACT_BUNDLE_INVALID", "route_id": route_id}
+    for item in contract_bundle:
+        if not isinstance(item, dict) or set(item) != {
+            "path", "source_path", "bytes", "sha256",
+        }:
+            return {"status": "TERMINAL_CONTRACT_BUNDLE_INVALID", "route_id": route_id}
+        if not isinstance(item["source_path"], str) or not _snapshot_blob_matches(
+            repo, ref, {key: item[key] for key in ("path", "bytes", "sha256")},
+        ):
+            return {"status": "TERMINAL_CONTRACT_BUNDLE_INVALID", "route_id": route_id}
+    if record.get("schema_version") == 2 and not _snapshot_launch_binding_matches(
+            repo, ref, record, contract_bundle):
+        return {"status": "TERMINAL_LAUNCH_BINDING_INVALID", "route_id": route_id}
+    result_files = record.get("result_files", [])
+    if record.get("schema_version") == 2:
+        primary_files = (
+            ("contract_path", "contract_sha256"),
+            ("closeout_path", "closeout_sha256"),
+            ("conclusion_path", "conclusion_sha256"),
+        )
+        if any(
+            not isinstance(record.get(digest_key), str)
+            or not SHA256.fullmatch(record[digest_key])
+            or (raw := _snapshot_blob(repo, ref, record.get(path_key))) is None
+            or hashlib.sha256(raw).hexdigest() != record[digest_key]
+            for path_key, digest_key in primary_files
+        ):
+            return {"status": "TERMINAL_PRIMARY_EVIDENCE_INVALID", "route_id": route_id}
+        if not isinstance(result_files, list) or not result_files or any(
+            not _snapshot_blob_matches(repo, ref, item) for item in result_files
+        ):
+            return {"status": "TERMINAL_RESULT_EVIDENCE_INVALID", "route_id": route_id}
+        result_paths = [
+            item.get("path") for item in result_files if isinstance(item, dict)
+        ]
+        if len(result_paths) != len(set(result_paths)) \
+                or record.get("result_paths") != result_paths:
+            return {"status": "TERMINAL_RESULT_EVIDENCE_INVALID", "route_id": route_id}
     protected = {}
     if isinstance(closeout, dict):
         protected = {
@@ -2292,7 +2554,12 @@ def authoritative_snapshot(repo, route_id, ref):
         "contract_path": record.get("contract_path"),
         "closeout_path": record.get("closeout_path"),
         "conclusion_path": record.get("conclusion_path"),
-        "result_path_count": len(record.get("result_paths", [])),
+        "result_path_count": len(
+            result_files if record.get("schema_version") == 2
+            else record.get("result_paths", [])
+        ),
+        "contract_bundle_file_count": len(contract_bundle),
+        "contract_bundle_verified": bool(contract_bundle),
         "protected_access": protected,
     }
     if isinstance(conclusion, dict):

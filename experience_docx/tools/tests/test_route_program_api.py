@@ -1,6 +1,7 @@
 """Unit tests for route context and atomic program results."""
 
 import json
+import hashlib
 import sys
 import tempfile
 import unittest
@@ -59,6 +60,21 @@ class RouteProgramApiTests(unittest.TestCase):
                 value, state="COMPLETED_GATE_PASS", decision="PASS", authorizes="NEXT",
             )
             self.assertEqual("PASS", json.loads(value.result_path.read_text())["decision"])
+
+    def test_gate_result_cannot_choose_a_terminal(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            value = self.load(root, "run")
+            API.prepare_phase_output(value)
+            API.write_gate_result(
+                value,
+                gate_outcomes={"materiality": "unfavorable", "precision": "unmet"},
+            )
+            result = json.loads(value.result_path.read_text())
+            self.assertEqual(2, result["schema_version"])
+            self.assertNotIn("state", result)
+            self.assertNotIn("decision", result)
+            self.assertNotIn("authorizes", result)
 
     def test_result_path_cannot_escape_output(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -161,6 +177,72 @@ class RouteProgramApiTests(unittest.TestCase):
                 API.write_contract_progress(
                     run, completed_iterations=1, total_iterations=1, stage="invalid",
                 )
+
+    def test_complete_units_ledger_is_identity_bound_and_write_once(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            value = context(root, "run")
+            value["resume_policy"] = "complete_units"
+            value["total_units"] = 2
+            prior_outputs = root / "resume_outputs"
+            prior_outputs.mkdir()
+            prior_output = prior_outputs / "prior.json"
+            prior_output.write_text("prior\n", encoding="utf-8")
+            prior_sha = hashlib.sha256(prior_output.read_bytes()).hexdigest()
+            ledger_asset = root / "resume_ledger.jsonl"
+            ledger_asset.write_text(json.dumps({
+                "schema_version": 2,
+                "unit_id": "scene-0",
+                "input_sha256": "b" * 64,
+                "output_asset_id": "completed_unit_outputs",
+                "output_relpath": "prior.json",
+                "output_sha256": prior_sha,
+            }, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+            value["assets"] = [
+                {
+                    "id": "completed_unit_ledger", "kind": "file",
+                    "path": str(ledger_asset), "access_role": "unrestricted",
+                    "contract_access": False,
+                    "sha256": hashlib.sha256(ledger_asset.read_bytes()).hexdigest(),
+                },
+                {
+                    "id": "completed_unit_outputs", "kind": "directory",
+                    "path": str(prior_outputs), "access_role": "unrestricted",
+                    "contract_access": False,
+                },
+            ]
+            path = root / "runs/r1/control/run_context.json"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(value), encoding="utf-8")
+            loaded = API.load_context(path, "run")
+            self.assertEqual(["scene-0"], list(API.load_completed_unit_ledger(loaded)))
+            API.prepare_phase_output(loaded)
+            output = loaded.phase_output_path / "scene-1.json"
+            output.write_text("new\n", encoding="utf-8")
+            API.record_completed_unit(
+                loaded, unit_id="scene-1", input_sha256="c" * 64,
+                output_relpath="scene-1.json",
+            )
+            ledger = API.load_completed_unit_ledger(loaded)
+            self.assertEqual(["scene-0", "scene-1"], list(ledger))
+            with self.assertRaisesRegex(API.ContractError, "already recorded"):
+                API.record_completed_unit(
+                    loaded, unit_id="scene-1", input_sha256="c" * 64,
+                    output_relpath="scene-1.json",
+                )
+
+    def test_fresh_scientific_run_records_every_completed_unit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            loaded = self.load(root, "run")
+            API.prepare_phase_output(loaded)
+            output = loaded.phase_output_path / "scene.json"
+            output.write_text("result\n", encoding="utf-8")
+            API.record_completed_unit(
+                loaded, unit_id="scene", input_sha256="f" * 64,
+                output_relpath="scene.json",
+            )
+            self.assertEqual(["scene"], list(API.load_completed_unit_ledger(loaded)))
 
 
 if __name__ == "__main__":

@@ -76,10 +76,23 @@ class RuntimeContractTests(unittest.TestCase):
         value = spec()
         value["resume_policy"] = "complete_units"
         value["asset_manifest_relpath"] = "experience_docx/route_assets/S0.json"
+        normalized = CONTRACT.validate_runtime_spec(value, manifest(), "S0")
+        self.assertEqual("complete_units", normalized["resume_policy"])
+        assets = {
+            "schema_version": 2, "route_id": "route", "operation_id": "S0",
+            "assets": [{
+                "id": "completed_unit_ledger", "kind": "file",
+                "path": "/tmp/completed_units.jsonl", "sha256": "a" * 64,
+                "access_role": "unrestricted", "contract_access": False,
+            }],
+        }
         self.assertEqual(
-            "complete_units",
-            CONTRACT.validate_runtime_spec(value, manifest(), "S0")["resume_policy"],
+            "completed_unit_ledger",
+            CONTRACT.validate_asset_manifest(assets, normalized)["assets"][0]["id"],
         )
+        assets["assets"][0]["id"] = "untyped_resume_file"
+        with self.assertRaisesRegex(CONTRACT.ContractError, "completed_unit_ledger"):
+            CONTRACT.validate_asset_manifest(assets, normalized)
 
     def test_evidence_path_cannot_escape_workload(self):
         value = spec()

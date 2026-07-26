@@ -1,6 +1,7 @@
 """Focused acceptance tests for the final-slim experiment control plane."""
 
 import copy
+import hashlib
 import json
 import subprocess
 import sys
@@ -288,10 +289,16 @@ class FinalSlimTests(unittest.TestCase):
             index = repo / "experience_docx/EXPERIMENT_TERMINAL_INDEX.jsonl"
             conclusion.parent.mkdir(parents=True)
             conclusion.write_text(json.dumps({
+                "route_id": "route", "operation_id": "A0", "run_id": "r1",
+                "state": "COMPLETED_GATE_PASS", "decision": "PASS",
+                "authorizes": "NONE",
                 "primary_result": "pass", "competing_explanation": "none",
                 "limitations": ["engineering only"],
             }))
             closeout.write_text(json.dumps({
+                "route_id": "route", "operation_id": "A0", "run_id": "r1",
+                "state": "COMPLETED_GATE_PASS", "decision": "PASS",
+                "authorizes": "NONE",
                 "confirmation_images_targets_outcomes_touched": False,
                 "canary_touched": False, "locked_test_touched": False,
             }))
@@ -310,6 +317,123 @@ class FinalSlimTests(unittest.TestCase):
             snapshot = OPS.authoritative_snapshot(repo, "route", "HEAD")
             self.assertEqual("AUTHORITATIVE_SNAPSHOT_OK", snapshot["status"])
             self.assertEqual("pass", snapshot["primary_result"])
+
+    def test_authoritative_snapshot_rejects_ambiguous_terminal_records(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+            subprocess.run(["git", "config", "user.name", "test"], cwd=repo, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "test@example.com"],
+                cwd=repo, check=True,
+            )
+            index = repo / "experience_docx/EXPERIMENT_TERMINAL_INDEX.jsonl"
+            index.parent.mkdir(parents=True)
+            records = [
+                {
+                    "route_id": "route", "operation_id": operation_id,
+                    "run_id": run_id, "route_commit": commit,
+                    "receipt": receipt, "state": "COMPLETED_GATE_PASS",
+                    "decision": "PASS", "authorizes": "NONE",
+                }
+                for operation_id, run_id, commit, receipt in (
+                    ("A0", "r0", "a" * 40, "b" * 64),
+                    ("A1", "r1", "c" * 40, "d" * 64),
+                )
+            ]
+            index.write_text(
+                "".join(json.dumps(item) + "\n" for item in records),
+                encoding="utf-8",
+            )
+            subprocess.run(["git", "add", "."], cwd=repo, check=True)
+            subprocess.run(["git", "commit", "-qm", "ambiguous"], cwd=repo, check=True)
+            snapshot = OPS.authoritative_snapshot(repo, "route", "HEAD")
+            self.assertEqual("TERMINAL_RECORD_AMBIGUOUS", snapshot["status"])
+
+    def test_terminal_leaf_selection_accepts_one_complete_operation_chain(self):
+        root = {
+            "schema_version": 2,
+            "route_id": "route", "operation_id": "A0", "run_id": "r0",
+            "state": "COMPLETED_GATE_PASS", "decision": "PASS",
+            "authorizes": "A1", "closeout_path": "logs/a0_closeout.json",
+            "prior_terminal_record": {
+                "prior_closeout_path": None, "prior_terminal_tuple": None,
+            },
+        }
+        leaf = {
+            "schema_version": 2,
+            "route_id": "route", "operation_id": "A1", "run_id": "r1",
+            "state": "COMPLETED_GATE_FAIL", "decision": "FAIL",
+            "authorizes": "NONE", "closeout_path": "logs/a1_closeout.json",
+            "prior_terminal_record": {
+                "prior_closeout_path": root["closeout_path"],
+                "prior_terminal_tuple": {
+                    "state": root["state"], "decision": root["decision"],
+                    "authorizes": root["authorizes"],
+                },
+            },
+        }
+        self.assertEqual(leaf, OPS._select_terminal_leaf([root, leaf]))
+        branch = dict(leaf)
+        branch["operation_id"] = "A2"
+        branch["run_id"] = "r2"
+        branch["closeout_path"] = "logs/a2_closeout.json"
+        self.assertIsNone(OPS._select_terminal_leaf([root, leaf, branch]))
+
+    def test_snapshot_launch_binding_matches_the_archived_manifest(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+            subprocess.run(["git", "config", "user.name", "test"], cwd=repo, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "test@example.com"],
+                cwd=repo, check=True,
+            )
+            prior = {
+                "state": "COMPLETED_GATE_PASS", "decision": "A0_PASS",
+                "authorizes": "A1",
+            }
+            current = {
+                "state": "COMPLETED_GATE_FAIL", "decision": "A1_FAIL",
+                "authorizes": "NONE",
+            }
+            archived = repo / (
+                "experience_docx/experiment_logs/route/launch_contract/A1/manifest.json"
+            )
+            archived.parent.mkdir(parents=True)
+            archived.write_text(json.dumps({
+                "schema_version": 6,
+                "route_id": "route",
+                "operations": {
+                    "A1": {
+                        "prior_closeout_relpath": "logs/a0_closeout.json",
+                        "prior_terminal_tuple": prior,
+                        "allowed_terminal_tuples": [current],
+                    },
+                },
+            }), encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=repo, check=True)
+            subprocess.run(["git", "commit", "-qm", "launch"], cwd=repo, check=True)
+            raw = archived.read_bytes()
+            bundle = [{
+                "path": str(archived.relative_to(repo)),
+                "source_path": OPS.ROUTE_OPERATIONS_RELPATH,
+                "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest(),
+            }]
+            record = {
+                "route_id": "route", "operation_id": "A1", **current,
+                "prior_terminal_record": {
+                    "prior_closeout_path": "logs/a0_closeout.json",
+                    "prior_terminal_tuple": prior,
+                },
+            }
+            self.assertTrue(
+                OPS._snapshot_launch_binding_matches(repo, "HEAD", record, bundle)
+            )
+            record["prior_terminal_record"]["prior_closeout_path"] = "logs/other.json"
+            self.assertFalse(
+                OPS._snapshot_launch_binding_matches(repo, "HEAD", record, bundle)
+            )
 
 
 if __name__ == "__main__":

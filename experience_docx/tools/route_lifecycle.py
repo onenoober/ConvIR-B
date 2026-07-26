@@ -15,7 +15,9 @@ import traceback
 from pathlib import Path
 from typing import Any
 
-from route_program_api import atomic_json
+import capability_registry
+import scientific_contract as science_contract
+from route_program_api import atomic_json, load_completed_unit_ledger, load_context
 from route_runtime_contract import (
     ContractError,
     GENERIC_RUNNER_RELPATH,
@@ -412,21 +414,52 @@ def validate_contract_result(path: Path, spec: dict[str, Any]) -> dict[str, Any]
     return value
 
 
-def validate_run_result(path: Path, spec: dict[str, Any], operation: dict[str, Any]) -> dict[str, Any]:
+def validate_run_result(
+    path: Path, spec: dict[str, Any], operation: dict[str, Any],
+    scientific: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     value = load_json(path)
-    expected = {
-        "schema_version", "route_id", "operation_id", "phase", "state", "decision",
-        "authorizes", "details", "confirmation_images_targets_outcomes_touched",
-        "canary_touched", "locked_test_touched",
-    }
-    if not isinstance(value, dict) or set(value) != expected:
-        raise LifecycleError("run result has an invalid field contract", phase="finalize")
-    if value["schema_version"] != 1 or value["route_id"] != spec["route_id"] \
-            or value["operation_id"] != spec["operation_id"] or value["phase"] != "run":
-        raise LifecycleError("run result identity mismatch", phase="finalize")
-    terminal = {key: value[key] for key in ("state", "decision", "authorizes")}
-    if terminal not in operation["allowed_terminal_tuples"]:
-        raise LifecycleError("run result terminal tuple is not allowed", phase="finalize")
+    if scientific is not None and scientific.get("schema_version") == 2:
+        expected = {
+            "schema_version", "route_id", "operation_id", "phase",
+            "gate_outcomes", "details",
+            "confirmation_images_targets_outcomes_touched", "canary_touched",
+            "locked_test_touched",
+        }
+        if not isinstance(value, dict) or set(value) != expected:
+            raise LifecycleError(
+                "schema-2 gate result has an invalid field contract", phase="finalize",
+            )
+        if value["schema_version"] != 2 or value["route_id"] != spec["route_id"] \
+                or value["operation_id"] != spec["operation_id"] \
+                or value["phase"] != "run":
+            raise LifecycleError("gate result identity mismatch", phase="finalize")
+        try:
+            terminal = science_contract.evaluate_gate_outcomes(
+                scientific, value["gate_outcomes"],
+            )
+        except science_contract.ScientificContractError as exc:
+            raise LifecycleError(str(exc), phase="finalize") from exc
+        if {key: terminal[key] for key in ("state", "decision", "authorizes")} \
+                not in operation["allowed_terminal_tuples"]:
+            raise LifecycleError(
+                "derived gate terminal tuple is not allowed", phase="finalize",
+            )
+        value = {**value, **terminal}
+    else:
+        expected = {
+            "schema_version", "route_id", "operation_id", "phase", "state", "decision",
+            "authorizes", "details", "confirmation_images_targets_outcomes_touched",
+            "canary_touched", "locked_test_touched",
+        }
+        if not isinstance(value, dict) or set(value) != expected:
+            raise LifecycleError("run result has an invalid field contract", phase="finalize")
+        if value["schema_version"] != 1 or value["route_id"] != spec["route_id"] \
+                or value["operation_id"] != spec["operation_id"] or value["phase"] != "run":
+            raise LifecycleError("run result identity mismatch", phase="finalize")
+        terminal = {key: value[key] for key in ("state", "decision", "authorizes")}
+        if terminal not in operation["allowed_terminal_tuples"]:
+            raise LifecycleError("run result terminal tuple is not allowed", phase="finalize")
     permissions = spec["protected_data_permissions"]
     touched = {
         "allow_confirmation": value["confirmation_images_targets_outcomes_touched"],
@@ -532,10 +565,12 @@ def write_closeout(*, env: dict[str, str], spec: dict[str, Any], operation: dict
                    evidence_sha256: dict[str, str], failure_phase: str | None = None,
                    returncode: int = 0,
                    verified_assets: list[dict[str, Any]] | None = None,
+                   capability_reuse: dict[str, Any] | None = None,
+                   capability_qualification: dict[str, Any] | None = None,
                    write_local_copy: bool = True) -> Path:
     asset_identities = verified_asset_identities(verified_assets)
     closeout = {
-        "schema_version": 1,
+        "schema_version": 2 if "terminal_label" in result else 1,
         "route_id": spec["route_id"],
         "operation_id": spec["operation_id"],
         "run_id": env["RUN_ID"],
@@ -556,6 +591,16 @@ def write_closeout(*, env: dict[str, str], spec: dict[str, Any], operation: dict
         "failure_phase": failure_phase,
         "returncode": returncode,
     }
+    if capability_reuse is not None:
+        closeout["capability_reuse"] = capability_reuse
+    if capability_qualification is not None:
+        closeout["capability_qualification"] = capability_qualification
+    for key in (
+        "terminal_label", "decision_rule_id", "gate_outcomes",
+        "next_action_id", "family_effect",
+    ):
+        if key in result:
+            closeout[key] = result[key]
     closeout_size = len(
         (json.dumps(closeout, indent=2, sort_keys=True) + "\n").encode("utf-8")
     )
@@ -575,6 +620,95 @@ def write_closeout(*, env: dict[str, str], spec: dict[str, Any], operation: dict
     return destination
 
 
+def resolve_capability_reuse(
+    repo: Path, capability: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if not isinstance(capability, dict) or capability.get("schema_version") != 2:
+        return None
+    registry_path = repo / capability_registry.REGISTRY_RELPATH
+    if not registry_path.is_file() or registry_path.is_symlink():
+        raise LifecycleError("capability registry is unavailable", phase="contract")
+    try:
+        records = capability_registry.load_records(
+            registry_path.read_text(encoding="utf-8").splitlines(),
+            evidence_exists=lambda relpath: (repo / relpath).is_file(),
+            read_evidence=lambda relpath: (repo / relpath).read_bytes(),
+        )
+        return capability_registry.lookup(records, capability["reuse_identity"])
+    except (OSError, UnicodeDecodeError, capability_registry.CapabilityRegistryError) as exc:
+        raise LifecycleError(
+            f"capability registry is invalid: {exc}", phase="contract",
+        ) from exc
+
+
+def observed_device_class(env: dict[str, str], capability: dict[str, Any]) -> str:
+    expected = capability["reuse_identity"]["device_class"]
+    if capability["contract_mode"] != "gpu_synthetic_no_data":
+        observed = "cpu"
+    else:
+        probe_env = os.environ.copy()
+        probe_env["CUDA_VISIBLE_DEVICES"] = env["GPU"]
+        completed = subprocess.run(
+            [
+                str(REMOTE_PYTHON), "-c",
+                "import torch; a,b=torch.cuda.get_device_capability(0); "
+                "print(f'cuda_sm{a}{b}')",
+            ],
+            cwd=env["REMOTE_REPO"], env=probe_env, text=True,
+            capture_output=True, timeout=60, check=False,
+        )
+        observed = completed.stdout.strip()
+        if completed.returncode or not observed.startswith("cuda_sm"):
+            raise LifecycleError("cannot verify CUDA device class", phase="contract")
+    if observed != expected:
+        raise LifecycleError(
+            f"capability device class mismatch: expected={expected} observed={observed}",
+            phase="contract",
+        )
+    return observed
+
+
+def publish_capability_qualification(
+    *, evidence_root: Path, operation: dict[str, Any], env: dict[str, str],
+    spec: dict[str, Any], capability: dict[str, Any],
+    contract_result: dict[str, Any],
+) -> tuple[dict[str, Any], str, str]:
+    identity = capability["reuse_identity"]
+    identity_sha = capability_registry.identity_digest(identity)
+    qualification_id = f"cap_{identity_sha[:24]}"
+    filename = operation["closeout_filename"].replace(
+        "_closeout.json", "_capability_qualification.json",
+    )
+    if filename == operation["closeout_filename"]:
+        raise LifecycleError(
+            "closeout filename cannot derive capability evidence", phase="evidence",
+        )
+    value = {
+        "schema_version": 1,
+        "qualification_id": qualification_id,
+        "identity": identity,
+        "identity_sha256": identity_sha,
+        "status": "PASSED_ENGINEERING",
+        "contract_mode": capability["contract_mode"],
+        "route_id": spec["route_id"],
+        "operation_id": spec["operation_id"],
+        "run_id": env["RUN_ID"],
+        "route_commit": env["EXPECTED_ROUTE_COMMIT"],
+        "engineering_evidence": contract_result["engineering"],
+        "scientific_authorization": "NONE",
+        "protected_data_touched": False,
+    }
+    destination = evidence_root / filename
+    atomic_json(destination, value)
+    return ({
+        "qualification_id": qualification_id,
+        "identity_sha256": identity_sha,
+        "evidence_filename": filename,
+        "status": "PASSED_ENGINEERING",
+        "scientific_authorization": "NONE",
+    }, filename, sha256(destination))
+
+
 def lifecycle() -> int:
     global VERIFIED_ASSETS, WORKLOAD_STARTED
     VERIFIED_ASSETS = []
@@ -587,6 +721,17 @@ def lifecycle() -> int:
     env["ROUTE_ID"] = manifest["route_id"]
     spec_path = repo / RUNTIME_SPEC_DIRECTORY / f"{operation_id}.json"
     spec = validate_runtime_spec(load_json(spec_path), manifest, operation_id)
+    scientific = None
+    scientific_path = manifest.get("scientific_contract_relpaths", {}).get(operation_id)
+    if scientific_path is not None:
+        scientific_value = load_json(repo / scientific_path)
+        if scientific_value.get("schema_version") == 2:
+            try:
+                scientific = science_contract.validate_scientific_contract_v2(
+                    scientific_value, spec["route_id"], operation_id,
+                )
+            except science_contract.ScientificContractError as exc:
+                raise LifecycleError(str(exc), phase="contract") from exc
     entrypoint = repo / spec["entrypoint_relpath"]
     evidence_root = repo / "experience_docx/experiment_logs" / spec["route_id"]
     status = output / "status.txt"
@@ -617,13 +762,27 @@ def lifecycle() -> int:
             load_json(repo / spec["asset_manifest_relpath"]), spec,
         )
     capability_path = spec["engineering_contract"]["capability_profile_relpath"]
+    capability_reuse = None
+    capability = None
     if capability_path is not None:
         spec["_validated_capability_profile"] = validate_model_capability(
             load_json(repo / capability_path), spec, asset_manifest,
         )
+        capability = spec["_validated_capability_profile"]
+        if capability.get("schema_version") == 2:
+            observed_device_class(env, capability)
+            capability_reuse = resolve_capability_reuse(repo, capability)
+            qualification_filename = operation["closeout_filename"].replace(
+                "_closeout.json", "_capability_qualification.json",
+            )
+            if (evidence_root / qualification_filename).exists():
+                raise LifecycleError(
+                    "capability qualification evidence already exists",
+                    phase="output_preflight",
+                )
     precision_path = spec["precision_contract"]["certificate_relpath"]
     if precision_path is not None:
-        validate_precision_certificate(load_json(repo / precision_path), spec)
+        validate_precision_certificate(load_json(repo / precision_path), spec, scientific)
     strict_phased_assets = spec["schema_version"] >= 2
     assets = verify_assets(
         asset_manifest, repo=repo, run_root=run_root, output=output,
@@ -635,26 +794,36 @@ def lifecycle() -> int:
         output / "control/lifecycle_identity.json",
         lifecycle_identity(env, spec),
     )
-    contract_context = context_value(
-        phase="contract", env=env, spec=spec, output=output,
-        status=status, heartbeat=heartbeat, assets=assets,
-    )
-    contract_context_path = output / "control/contract_context.json"
-    atomic_json(contract_context_path, contract_context)
-    telemetry(repo, env, status, "contract", "contract_start", 0, 1)
-    rc = run_program(
-        phase="contract", context_path=contract_context_path, entrypoint=entrypoint,
-        spec=spec, env=env, log_path=runtime_log,
-        timeout=min(spec["timeout_seconds"], spec["engineering_contract"]["max_seconds"]),
-    )
-    if rc:
-        tail = diagnostic_log_tail(runtime_log)
-        detail = f"; program_tail={tail}" if tail else ""
-        raise LifecycleError(f"contract program failed rc={rc}{detail}", phase="contract")
-    validate_contract_result(Path(contract_context["result_path"]), spec)
-    if (output / "workload").exists():
-        raise LifecycleError("contract program created workload output", phase="contract")
-    telemetry(repo, env, status, "contract", "contract_pass", 1, 1)
+    contract_result = None
+    if capability_reuse is not None \
+            and capability_reuse["engineering_reuse_authorized"] is True:
+        atomic_json(output / "control/capability_reuse.json", capability_reuse)
+        telemetry(repo, env, status, "contract", "contract_exact_reuse", 1, 1)
+    else:
+        contract_context = context_value(
+            phase="contract", env=env, spec=spec, output=output,
+            status=status, heartbeat=heartbeat, assets=assets,
+        )
+        contract_context_path = output / "control/contract_context.json"
+        atomic_json(contract_context_path, contract_context)
+        telemetry(repo, env, status, "contract", "contract_start", 0, 1)
+        rc = run_program(
+            phase="contract", context_path=contract_context_path, entrypoint=entrypoint,
+            spec=spec, env=env, log_path=runtime_log,
+            timeout=min(
+                spec["timeout_seconds"], spec["engineering_contract"]["max_seconds"],
+            ),
+        )
+        if rc:
+            tail = diagnostic_log_tail(runtime_log)
+            detail = f"; program_tail={tail}" if tail else ""
+            raise LifecycleError(f"contract program failed rc={rc}{detail}", phase="contract")
+        contract_result = validate_contract_result(
+            Path(contract_context["result_path"]), spec,
+        )
+        if (output / "workload").exists():
+            raise LifecycleError("contract program created workload output", phase="contract")
+        telemetry(repo, env, status, "contract", "contract_pass", 1, 1)
     if strict_phased_assets:
         assets = verify_assets(
             asset_manifest, repo=repo, run_root=run_root, output=output,
@@ -675,8 +844,30 @@ def lifecycle() -> int:
     )
     if rc:
         raise LifecycleError(f"run program failed rc={rc}", phase="workload")
-    result = validate_run_result(Path(run_context["result_path"]), spec, operation)
+    result = validate_run_result(
+        Path(run_context["result_path"]), spec, operation, scientific,
+    )
+    if scientific is not None and scientific.get("schema_version") == 2 \
+            and spec["total_units"] > 0:
+        ledger = load_completed_unit_ledger(load_context(run_context_path, "run"))
+        if len(ledger) != spec["total_units"]:
+            raise LifecycleError(
+                "completed-unit ledger does not cover total_units", phase="finalize",
+            )
     evidence = copy_evidence(spec, output, evidence_root)
+    capability_qualification = None
+    if capability is not None and capability.get("schema_version") == 2 \
+            and capability_reuse is not None \
+            and capability_reuse["engineering_reuse_authorized"] is False:
+        if contract_result is None:
+            raise LifecycleError(
+                "new capability qualification lacks contract evidence", phase="evidence",
+            )
+        capability_qualification, filename, digest = publish_capability_qualification(
+            evidence_root=evidence_root, operation=operation, env=env, spec=spec,
+            capability=capability, contract_result=contract_result,
+        )
+        evidence[filename] = digest
     telemetry(
         repo, env, status, "terminal", "workload_end",
         spec["total_units"], spec["total_units"],
@@ -685,7 +876,8 @@ def lifecycle() -> int:
     write_closeout(
         env=env, spec=spec, operation=operation, output=output,
         evidence_root=evidence_root, result=result, evidence_sha256=evidence,
-        verified_assets=assets,
+        verified_assets=assets, capability_reuse=capability_reuse,
+        capability_qualification=capability_qualification,
     )
     return 0
 

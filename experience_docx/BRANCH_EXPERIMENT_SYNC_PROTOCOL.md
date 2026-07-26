@@ -1,9 +1,10 @@
 # Branch Experiment Sync Protocol
 
-Date: 2026-07-16
+Date: 2026-07-26
 
 Scientific/safety terminal archive follows `SCIENCE_FASTPATH.md`. GitHub main
-retains the exact launch contract, typed closeout, every required and
+retains a SHA-256 inventory and compact copy of the complete launch contract
+bundle, typed closeout, every required and
 closeout-hash-bound compact result, one complete scientific conclusion, and
 one machine terminal index record. This is a result-and-evidence archive, not
 a verdict-only registry. Raw runtime artifacts stay on cloud.
@@ -32,9 +33,17 @@ For normal scientific terminals, run `prepare_terminal_archive.py` once into one
 clean reusable main archive worktree. By default it uses the receipt to fetch
 only the compact allowlist into an ephemeral directory, validates the frozen
 contract/runtime/closeout/result hashes, stages the complete bundle, writes one
-JSONL record, commits, pushes and verifies remote main. `--prepare-only` is an
+terminal JSONL record, registers any new exact engineering qualification,
+commits, pushes and verifies remote main. `--prepare-only` is an
 explicit review pause; `--local-evidence-only` forbids receipt transfer. Do not
 repeat diff, suffix, size, parse, hash, blob or remote identity checks manually.
+
+Schema-2 terminal index records bind the contract, closeout, conclusion, formal
+results and archived launch bundle by SHA-256 and record the direct prior
+closeout plus its terminal tuple. The authoritative snapshot verifies every
+bound blob and selects the unique terminal leaf of that chain. Missing parents,
+branches, cycles, duplicate paths or disconnected records fail closed as
+ambiguous; a valid multi-operation route is not treated as a conflict.
 
 Do not require a route README, family-summary edit, route-card result rewrite or
 Markdown-index prose update. The launch card is retained unchanged as the

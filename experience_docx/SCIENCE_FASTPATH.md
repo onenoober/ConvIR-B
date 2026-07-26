@@ -1,6 +1,6 @@
 # Science Fastpath
 
-Date: 2026-07-20
+Date: 2026-07-26
 
 Status: adopted as the single default general experiment workflow after the
 cloud acceptance in experiment_logs/science_fastpath_validation_20260718/.
@@ -18,14 +18,21 @@ separation.
 1. SNAPSHOT: use the compact authoritative snapshot, direct parent closeout and
    only referenced evidence. Do not load the full Markdown index/history by
    default. Decide whether the stage is authorized, answered or conflicting.
-2. CONTRACT: new routes author one research-program contract and one experiment
-   spec. The deterministic compiler emits manifest schema 6, canonical scientific
+2. CONTRACT: new routes author one research-program contract and one schema-2
+   experiment spec. The deterministic compiler emits manifest schema 6, canonical scientific
    JSON, runtime/asset/capability/precision contracts and a <=8 KiB rationale
-   note. Freeze the question, population/grouping, evidence roles,
+   note. New typed asset manifests use schema 2. Historical experiment-spec,
+   scientific and asset schema 1 plus manifest schema 4/5 remain immutable and
+   readable. Freeze the question, population/grouping, evidence roles,
    permissions, intervention, controls, estimand, uncertainty, gates, competing
-   explanation and all terminal mappings. Formal precision requires a pre-run
-   feasibility certificate. Changed production paths require one SHA/commit-bound
-   capability profile and device-aware synthetic contract. Run one aggregate
+   explanation, finite typed gate outcomes, a complete mutually exclusive
+   decision table and all terminal actions. Every PASS/FAIL/INCONCLUSIVE action
+   must differ in authorization, next action, or family effect. Formal precision
+   requires a primary-estimand and stratum-bound pre-run feasibility certificate
+   using a planning-SD upper bound and a critical value no smaller than the
+   simultaneous Bonferroni bound for the frozen comparison family. Changed
+   production paths require one SHA/commit-bound capability profile and
+   device-aware synthetic contract. Run one aggregate
    authoring lint before derivation so independent schema, authorization, role,
    precision and engineering errors are returned together. A cost-dependent
    operation must freeze a machine-checkable cost strategy: adaptive/search/
@@ -38,18 +45,29 @@ the question, model, dataset, primary variable, threshold, control, terminal, or
 authorization. Route-ready and MCP recompile from the committed program/spec and
 reject any byte-level derived-file drift. Historical schema 4/5 routes remain
 readable and are not migrated.
+
+Decision roles are typed: `validity_veto` makes any failed identity, integrity
+or coverage gate override all scientific outcomes to INCONCLUSIVE;
+`inconclusive_only` precision may block a provisional PASS but cannot hide a
+decisive FAIL; `descriptive` cannot affect the terminal.
+
 3. EXECUTE: run one staged route-ready gate, push one commit, plan once and
    start once. Require one positive workload-progress observation, then finish
-   near the frozen ETA. Obey the returned retry/not-before time; calls inside
+   near the frozen ETA. Every new scientific schema-2 run records each completed
+   workload unit with input/output SHA-256 and must cover exact `total_units`
+   before terminal derivation. Obey the returned retry/not-before time; calls inside
    that window return cached status without consuming observation budget. Never
    duplicate validator/lifecycle checks, create a
    watcher, scan unrelated logs or interpret partial outcomes.
-4. DECIDE: after all planned units finish, compute the frozen gates once.
+4. DECIDE: after all planned units finish, route code publishes typed gate
+   outcomes only and the generic lifecycle resolves the frozen decision table once.
    Require complete folds/seeds/cells/controls, valid uncertainty, and matching
    protected-data access. Publish one typed closeout plus one scientific
    conclusion. Scientific FAIL is terminal, never an engineering retry.
 5. ARCHIVE: run `prepare_terminal_archive.py` once. The default receipt-bound
-   path fetches only compact evidence, validates all identities, updates one
+   path fetches only compact evidence, validates all identities, preserves a
+   SHA-256 inventory and compact copy of the complete launch bundle, registers
+   a newly passed engineering qualification when applicable, updates one
    machine terminal record, commits, pushes and verifies remote main. Stop when
    it succeeds; `--prepare-only` is an explicit review exception.
 
@@ -64,8 +82,9 @@ Each terminal archive retains:
 - every compact result bound by the closeout SHA-256 manifest;
 - one conclusion JSON containing the primary result, gate reasons, competing
   explanation, limitations and next authorization; and
-- one JSONL index record pointing to the contract, closeout, conclusion, result
-  files, receipt and launch commit.
+- one JSONL index record binding the contract, closeout, conclusion, formal
+  result files, launch-contract bundle, direct parent terminal, receipt and
+  launch commit by path, size and SHA-256.
 
 Formal fold/cell/operator/bootstrap/risk/strata results remain separate JSON or
 CSV files when they participate in a gate or scientific interpretation. They
@@ -82,7 +101,7 @@ identity conflicts, binary/large artifacts and stale main destinations.
 
 One top-level JSON file under the route evidence directory replaces repeated
 result prose across the route card, README, family summary and central Markdown
-index. It contains route_id, operation_id, run_id, decision, authorizes,
+index. It contains route_id, operation_id, run_id, state, decision, authorizes,
 primary_result, gate_reasons, competing_explanation and limitations.
 
 The typed closeout remains the machine terminal authority. The conclusion is
@@ -104,6 +123,19 @@ identity or authorization.
 - Unchanged exercised production path: reuse the prior engineering result; no
   reassurance smoke or fixture rerun, but only when all six capability-registry
   identity fields match exactly. Reuse is engineering-only.
+
+An exact unique registry match causes zero duplicate contract execution. A
+mismatch executes the frozen contract once and publishes compact qualification
+evidence for registration during terminal archive. Device class is verified on
+the execution host; reuse never carries scientific authorization.
+
+Every new scientific schema-2 workload uses this completion ledger.
+`complete_units` always starts in a fresh output and additionally may import only a
+hash-bound unrestricted run-only `completed_unit_ledger` asset whose unit,
+input, output-asset, output-path and output SHA-256 records are unique and whose
+referenced output files verify. Newly completed outputs are hashed by the
+generic API and fsync'd into the copied ledger. Counts alone never authorize
+skipping work.
 
 ## Anti-Dead-End Route Gate
 

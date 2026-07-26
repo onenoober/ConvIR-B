@@ -1,6 +1,6 @@
 # Command Reliability Protocol
 
-Date: 2026-07-18
+Date: 2026-07-26
 
 This protocol is the single command-boundary contract. It covers the failure
 classes observed during A1 and earlier runs without retaining incident-specific
@@ -13,7 +13,7 @@ shell recipes as operating instructions.
 | Windows to WSL file, Git, or fixed program | wsl.exe -d Ubuntu-22.04 --exec followed by an absolute Linux program and literal argv | Windows Git on a WSL UNC path; bash -lc; nested quoting |
 | Task/worktree binding | convirctl.py task-context --repo <repo> --cwd <cwd> | relying on the PowerShell or editor cwd |
 | Repository read | convirctl.py repo-show, repo-list, or repo-search | cross-shell grep, sed, head, regex, or git-show pipelines |
-| Standard plan/start/finish/evidence | the six bounded convir-ops v4 tools | generic SSH, dispatcher, watcher, or per-poll task |
+| Standard plan/start/finish/evidence | the six bounded convir-ops tools under stable protocol schema 4 | generic SSH, dispatcher, watcher, or per-poll task |
 | Cloud action not covered by MCP | one committed, unchanged .sh through convirctl.py remote-script | inline SSH, heredoc across shells, untracked or dirty scripts |
 | Git/branch/SHA preflight | convirctl.py git-state | parsing human-formatted status text |
 | File identity | convirctl.py sha256 | filename or mtime |

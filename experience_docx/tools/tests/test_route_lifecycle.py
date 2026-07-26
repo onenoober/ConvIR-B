@@ -10,7 +10,10 @@ from pathlib import Path
 TOOLS = Path(__file__).parents[1]
 sys.path.insert(0, str(TOOLS))
 import route_lifecycle as LIFE  # noqa: E402
+import scientific_contract as SCIENCE  # noqa: E402
+import capability_registry as REGISTRY  # noqa: E402
 from test_route_runtime_contract import manifest, spec  # noqa: E402
+from test_scientific_contract import contract as scientific_contract  # noqa: E402
 import route_runtime_contract as CONTRACT  # noqa: E402
 
 
@@ -78,6 +81,35 @@ class LifecycleTests(unittest.TestCase):
             path.write_text(json.dumps(result))
             with self.assertRaises(LIFE.LifecycleError):
                 LIFE.validate_run_result(path, runtime, value["operations"]["S0"])
+
+    def test_schema2_lifecycle_derives_fail_from_gate_outcomes(self):
+        _, runtime = self.normalized()
+        scientific = SCIENCE.validate_scientific_contract_v2(
+            scientific_contract(), "route", "S0",
+        )
+        operation = {
+            "allowed_terminal_tuples": [
+                *SCIENCE.scientific_terminal_tuples(scientific),
+                {"state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE"},
+            ],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "result.json"
+            path.write_text(json.dumps({
+                "schema_version": 2, "route_id": "route", "operation_id": "S0",
+                "phase": "run",
+                "gate_outcomes": {
+                    "materiality": "unfavorable", "precision": "unmet",
+                },
+                "details": {},
+                "confirmation_images_targets_outcomes_touched": False,
+                "canary_touched": False, "locked_test_touched": False,
+            }))
+            result = LIFE.validate_run_result(
+                path, runtime, operation, scientific,
+            )
+            self.assertEqual("COMPLETED_GATE_FAIL", result["state"])
+            self.assertEqual("bad_side_fails", result["decision_rule_id"])
 
     def test_evidence_copy_rejects_existing_destination(self):
         _, runtime = self.normalized()
@@ -253,6 +285,43 @@ class LifecycleTests(unittest.TestCase):
             self.assertNotIn("do-not-expose", tail)
             self.assertNotIn("/sda/home/private", tail)
             self.assertIn("schema-2 contract requires complete engineering evidence", tail)
+
+    def test_exact_capability_registry_match_authorizes_engineering_reuse_only(self):
+        identity = {
+            "source_commit": "a" * 40,
+            "code_path_sha256": "b" * 64,
+            "checkpoint_sha256": "c" * 64,
+            "runtime_environment_sha256": "d" * 64,
+            "device_class": "cuda_sm89",
+            "input_contract_sha256": "e" * 64,
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+            evidence = repo / "experience_docx/experiment_logs/q/evidence.json"
+            evidence.parent.mkdir(parents=True)
+            evidence.write_text("{}\n", encoding="utf-8")
+            record = {
+                "schema_version": 1, "qualification_id": "qualification_1",
+                "identity": identity,
+                "identity_sha256": REGISTRY.identity_digest(identity),
+                "status": "PASSED_ENGINEERING",
+                "contract_mode": "gpu_synthetic_no_data",
+                "evidence_relpath": str(evidence.relative_to(repo)),
+                "evidence_sha256": LIFE.sha256(evidence),
+                "scientific_authorization": "NONE",
+                "protected_data_touched": False,
+            }
+            registry = repo / REGISTRY.REGISTRY_RELPATH
+            registry.parent.mkdir(parents=True, exist_ok=True)
+            registry.write_text(json.dumps(record) + "\n", encoding="utf-8")
+            result = LIFE.resolve_capability_reuse(
+                repo, {
+                    "schema_version": 2,
+                    "reuse_identity": identity,
+                },
+            )
+            self.assertTrue(result["engineering_reuse_authorized"])
+            self.assertEqual("NONE", result["scientific_authorization"])
 
 if __name__ == "__main__":
     unittest.main()

@@ -48,6 +48,14 @@ def main():
         run(None)
 '''
 
+SCIENTIFIC_SCHEMA2 = SCHEMA2_ENGINEERING.replace(
+    b"write_run_result",
+    b"write_gate_result",
+).replace(
+    b'write_gate_result(context, state="PASS", decision="PASS", authorizes="NEXT")',
+    b'write_gate_result(context, gate_outcomes={"materiality": "favorable"})',
+)
+
 
 class RouteReadyTests(unittest.TestCase):
     def test_standard_entrypoint_interface_passes(self):
@@ -58,6 +66,33 @@ class RouteReadyTests(unittest.TestCase):
             SCHEMA2_ENGINEERING, "experience_docx/tools/program.py",
             require_engineering=True,
         )
+
+    def test_scientific_schema2_requires_gate_writer(self):
+        READY.check_entrypoint(
+            SCIENTIFIC_SCHEMA2, "experience_docx/tools/program.py",
+            require_engineering=True, scientific_schema=2,
+        )
+        with self.assertRaisesRegex(READY.ReadyError, "write_gate_result"):
+            READY.check_entrypoint(
+                SCHEMA2_ENGINEERING, "experience_docx/tools/program.py",
+                require_engineering=True, scientific_schema=2,
+            )
+
+    def test_unknown_context_field_is_rejected_prelaunch(self):
+        raw = SCIENTIFIC_SCHEMA2.replace(
+            b'    write_gate_result(context, gate_outcomes={"materiality": "favorable"})',
+            b'    output_id = context.output_id\n'
+            b'    write_gate_result(context, gate_outcomes={"materiality": "favorable"})',
+        )
+        with self.assertRaisesRegex(READY.ReadyError, "unknown RouteContext field: output_id"):
+            READY.check_entrypoint(raw, "program.py", scientific_schema=2)
+
+    def test_complete_units_requires_generic_ledger_calls(self):
+        with self.assertRaisesRegex(READY.ReadyError, "completed-unit ledger"):
+            READY.check_entrypoint(
+                SCIENTIFIC_SCHEMA2, "program.py", scientific_schema=2,
+                require_unit_ledger=True,
+            )
 
     def test_schema2_unknown_engineering_field_is_rejected_prelaunch(self):
         raw = SCHEMA2_ENGINEERING.replace(

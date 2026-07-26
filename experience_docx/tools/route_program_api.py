@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import fcntl
+import hashlib
 import json
 import os
 import tempfile
@@ -12,6 +14,7 @@ from typing import Any
 
 from route_runtime_contract import (
     ASSET_ACCESS_ROLES,
+    COMPLETE_UNIT_LEDGER_ASSET_ID,
     CONTEXT_SCHEMA_VERSION,
     EVIDENCE_ROLES,
     RESUME_POLICIES,
@@ -34,6 +37,8 @@ LEGACY_CONTEXT_FIELDS = {
 }
 CONTEXT_FIELDS = LEGACY_CONTEXT_FIELDS | {"engineering_contract"}
 MAX_RESULT_BYTES = 32 * 1024
+UNIT_LEDGER_FILENAME = "completed_units.jsonl"
+CURRENT_WORKLOAD_ASSET_ID = "CURRENT_WORKLOAD"
 
 
 @dataclass(frozen=True)
@@ -314,6 +319,181 @@ def write_contract_progress(
     print(line, flush=True)
 
 
+def _unit_ledger_path(context: RouteContext) -> Path:
+    if context.phase != "run":
+        raise ContractError("completed-unit ledger requires run context")
+    return context.phase_output_path / UNIT_LEDGER_FILENAME
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _durable_sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+        os.fsync(stream.fileno())
+    return digest.hexdigest()
+
+
+def _completed_output_path(
+    context: RouteContext, output_asset_id: str, output_relpath: str,
+    *, allow_current: bool,
+) -> Path:
+    relpath = require_relpath(output_relpath, "completed-unit output_relpath")
+    if output_asset_id == CURRENT_WORKLOAD_ASSET_ID:
+        if not allow_current:
+            raise ContractError("preloaded completed units cannot reference the fresh workload")
+        root = context.phase_output_path
+    else:
+        asset_id = require_token(output_asset_id, "completed-unit output_asset_id")
+        asset = context.assets.get(asset_id)
+        if asset is None or asset.kind not in {"directory", "git_checkout"}:
+            raise ContractError(
+                "completed-unit output_asset_id must reference a directory or Git asset"
+            )
+        root = asset.path
+    output = safe_join(root, relpath)
+    if not output.is_file() or output.is_symlink():
+        raise ContractError("completed-unit output file is unavailable")
+    return output
+
+
+def _parse_unit_ledger(
+    raw: str, context: RouteContext, *, verify_outputs: bool,
+    allow_current: bool,
+) -> dict[str, dict[str, Any]]:
+    records = {}
+    input_identities = set()
+    output_locations = set()
+    for number, line in enumerate(raw.splitlines(), start=1):
+        if not line.strip():
+            raise ContractError(f"completed-unit ledger line {number} is empty")
+        try:
+            item = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ContractError(f"completed-unit ledger line {number} is invalid") from exc
+        if not isinstance(item, dict) or set(item) != {
+            "schema_version", "unit_id", "input_sha256", "output_asset_id",
+            "output_relpath", "output_sha256",
+        } or item["schema_version"] != 2:
+            raise ContractError(f"completed-unit ledger line {number} has an invalid contract")
+        unit_id = require_token(item["unit_id"], f"ledger line {number} unit_id")
+        input_sha = item["input_sha256"]
+        output_sha = item["output_sha256"]
+        output_asset_id = require_token(
+            item["output_asset_id"], f"ledger line {number} output_asset_id",
+        )
+        output_relpath = require_relpath(
+            item["output_relpath"], f"ledger line {number} output_relpath",
+        )
+        if not isinstance(input_sha, str) or not SHA256.fullmatch(input_sha) \
+                or not isinstance(output_sha, str) or not SHA256.fullmatch(output_sha):
+            raise ContractError(f"completed-unit ledger line {number} has an invalid identity")
+        output_location = (output_asset_id, output_relpath)
+        if unit_id in records or input_sha in input_identities \
+                or output_location in output_locations:
+            raise ContractError("completed-unit ledger contains a duplicate unit identity")
+        if verify_outputs:
+            output = _completed_output_path(
+                context, output_asset_id, output_relpath,
+                allow_current=allow_current,
+            )
+            if _sha256_file(output) != output_sha:
+                raise ContractError("completed-unit output SHA-256 mismatch")
+        records[unit_id] = item
+        input_identities.add(input_sha)
+        output_locations.add(output_location)
+    if len(records) > context.total_units:
+        raise ContractError("completed-unit ledger exceeds total_units")
+    return records
+
+
+def _preloaded_unit_ledger(context: RouteContext) -> tuple[str, bool]:
+    if context.resume_policy != "complete_units":
+        return "", True
+    asset = context.assets.get(COMPLETE_UNIT_LEDGER_ASSET_ID)
+    if asset is None or asset.kind != "file":
+        raise ContractError("completed_unit_ledger file asset is unavailable")
+    return asset.path.read_text(encoding="utf-8"), False
+
+
+def load_completed_unit_ledger(context: RouteContext) -> dict[str, dict[str, Any]]:
+    """Load exact completed identities, including verified recovery assets."""
+    path = _unit_ledger_path(context)
+    if path.exists():
+        if not path.is_file() or path.is_symlink():
+            raise ContractError("completed-unit ledger path is invalid")
+        raw = path.read_text(encoding="utf-8")
+        allow_current = True
+    else:
+        raw, allow_current = _preloaded_unit_ledger(context)
+    return _parse_unit_ledger(
+        raw, context, verify_outputs=True, allow_current=allow_current,
+    )
+
+
+def record_completed_unit(
+    context: RouteContext, *, unit_id: str, input_sha256: str,
+    output_relpath: str,
+) -> None:
+    """Append one fsync'd unit identity after its output is durably completed."""
+    path = _unit_ledger_path(context)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    output_relpath = require_relpath(output_relpath, "output_relpath")
+    output = _completed_output_path(
+        context, CURRENT_WORKLOAD_ASSET_ID, output_relpath, allow_current=True,
+    )
+    record = {
+        "schema_version": 2,
+        "unit_id": require_token(unit_id, "unit_id"),
+        "input_sha256": input_sha256,
+        "output_asset_id": CURRENT_WORKLOAD_ASSET_ID,
+        "output_relpath": output_relpath,
+        "output_sha256": _durable_sha256_file(output),
+    }
+    if not isinstance(input_sha256, str) or not SHA256.fullmatch(input_sha256) \
+            or not SHA256.fullmatch(record["output_sha256"]):
+        raise ContractError("completed-unit input/output identities must be SHA-256")
+    raw = json.dumps(record, sort_keys=True, separators=(",", ":")) + "\n"
+    descriptor = os.open(path, os.O_RDWR | os.O_CREAT | os.O_APPEND, 0o600)
+    with os.fdopen(descriptor, "r+", encoding="utf-8") as stream:
+        fcntl.flock(stream.fileno(), fcntl.LOCK_EX)
+        stream.seek(0)
+        existing_raw = stream.read()
+        if not existing_raw:
+            existing_raw, _ = _preloaded_unit_ledger(context)
+            if existing_raw and not existing_raw.endswith("\n"):
+                raise ContractError("preloaded completed-unit ledger lacks a final newline")
+            stream.seek(0)
+            stream.write(existing_raw)
+            stream.flush()
+            os.fsync(stream.fileno())
+        existing = _parse_unit_ledger(
+            existing_raw, context, verify_outputs=False, allow_current=True,
+        )
+        if record["unit_id"] in existing \
+                or any(item["input_sha256"] == input_sha256 for item in existing.values()) \
+                or any(
+                    item["output_asset_id"] == CURRENT_WORKLOAD_ASSET_ID
+                    and item["output_relpath"] == output_relpath
+                    for item in existing.values()
+                ):
+            raise ContractError("completed-unit identity was already recorded")
+        if len(existing) >= context.total_units:
+            raise ContractError("completed-unit ledger is already complete")
+        stream.seek(0, os.SEEK_END)
+        stream.write(raw)
+        stream.flush()
+        os.fsync(stream.fileno())
+
+
 def write_contract_result(context: RouteContext, *, checks: dict[str, bool],
                           engineering: dict[str, Any] | None = None) -> None:
     if context.phase != "contract" or not checks \
@@ -421,6 +601,49 @@ def write_run_result(
         "state": state,
         "decision": decision,
         "authorizes": authorizes,
+        "details": details or {},
+        **touched,
+    }
+    _validate_result_size(value)
+    atomic_json(context.result_path, value)
+
+
+def write_gate_result(
+    context: RouteContext,
+    *,
+    gate_outcomes: dict[str, str],
+    details: dict[str, Any] | None = None,
+    confirmation_images_targets_outcomes_touched: bool = False,
+    canary_touched: bool = False,
+    locked_test_touched: bool = False,
+) -> None:
+    """Write schema-2 observations without accepting a caller-chosen terminal."""
+    if context.phase != "run":
+        raise ContractError("gate result requires run context")
+    if not isinstance(gate_outcomes, dict) or not 1 <= len(gate_outcomes) <= 8:
+        raise ContractError("gate_outcomes must contain 1-8 entries")
+    normalized_outcomes = {}
+    for gate_id, outcome in gate_outcomes.items():
+        normalized_outcomes[
+            require_token(gate_id, "gate_outcomes gate id")
+        ] = require_token(outcome, f"gate_outcomes.{gate_id}")
+    if details is not None and not isinstance(details, dict):
+        raise ContractError("gate result details must be an object")
+    touched = {
+        "confirmation_images_targets_outcomes_touched": (
+            confirmation_images_targets_outcomes_touched
+        ),
+        "canary_touched": canary_touched,
+        "locked_test_touched": locked_test_touched,
+    }
+    if not all(isinstance(item, bool) for item in touched.values()):
+        raise ContractError("protected-data touched fields must be boolean")
+    value = {
+        "schema_version": 2,
+        "route_id": context.route_id,
+        "operation_id": context.operation_id,
+        "phase": "run",
+        "gate_outcomes": normalized_outcomes,
         "details": details or {},
         **touched,
     }

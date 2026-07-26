@@ -36,7 +36,8 @@ class TerminalArchiveTests(unittest.TestCase):
 
     def source(self, root: Path, *, include_results=True, bad_hash=False,
                verdict_only=False, forbidden=False,
-               incomplete_conclusion=False) -> tuple[Path, str, str, str, str]:
+               incomplete_conclusion=False,
+               canonical=False) -> tuple[Path, str, str, str, str]:
         repo = self.init_repo(root / "source")
         route_id = "route"
         card = "experience_docx/experiment_cards/route.md"
@@ -46,10 +47,19 @@ class TerminalArchiveTests(unittest.TestCase):
         self.git(repo, "add", card)
         operation_id = "A1"
         operations = {
-            "schema_version": 4,
+            "schema_version": 6 if canonical else 4,
             "route_id": route_id,
             "operations": {operation_id: {}},
         }
+        if canonical:
+            operations.update({
+                "route_card_relpath": card,
+                "experiment_spec_relpath": "experience_docx/experiment_specs/route.json",
+                "program_contract_relpath": "experience_docx/research_programs/route.json",
+                "scientific_contract_relpaths": {
+                    operation_id: "experience_docx/scientific_contracts/route__A1.json",
+                },
+            })
         manifest = repo / "experience_docx/route_operations.json"
         manifest.write_text(json.dumps(operations), encoding="utf-8")
         spec = {
@@ -60,11 +70,28 @@ class TerminalArchiveTests(unittest.TestCase):
                 "required": True,
             }],
         }
+        if canonical:
+            spec.update({
+                "asset_manifest_relpath": None,
+                "engineering_contract": {"capability_profile_relpath": None},
+                "precision_contract": {"certificate_relpath": None},
+            })
         spec_path = repo / f"experience_docx/route_runtime_specs/{operation_id}.json"
         spec_path.parent.mkdir(parents=True)
         spec_path.write_text(json.dumps(spec), encoding="utf-8")
+        generated = []
+        if canonical:
+            for relpath in (
+                "experience_docx/experiment_specs/route.json",
+                "experience_docx/research_programs/route.json",
+                "experience_docx/scientific_contracts/route__A1.json",
+            ):
+                path = repo / relpath
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps({"route_id": route_id}), encoding="utf-8")
+                generated.append(relpath)
         self.git(repo, "add", "experience_docx/route_operations.json",
-                 f"experience_docx/route_runtime_specs/{operation_id}.json")
+                 f"experience_docx/route_runtime_specs/{operation_id}.json", *generated)
         self.git(repo, "commit", "-qm", "contract")
         commit = self.git(repo, "rev-parse", "HEAD")
         evidence = repo / "experience_docx/experiment_logs/route"
@@ -91,6 +118,7 @@ class TerminalArchiveTests(unittest.TestCase):
             "route_id": route_id,
             "operation_id": operation_id,
             "run_id": "a1-r1",
+            "state": "COMPLETED_GATE_PASS",
             "decision": "A1_PASS",
             "authorizes": "NONE",
             "primary_result": "gain LCB95 passed",
@@ -133,6 +161,91 @@ class TerminalArchiveTests(unittest.TestCase):
             self.assertIn("experience_docx/experiment_logs/route/formal_results.csv", staged)
             self.assertIn("experience_docx/experiment_logs/route/a1_conclusion.json", staged)
             self.assertNotIn("experience_docx/experiment_logs/route/README.md", staged)
+
+    def test_schema6_archive_preserves_full_launch_contract_bundle(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.source(root, canonical=True)
+            destination = self.destination(root)
+            audit = self.audit(source)
+            self.assertEqual(2, audit["schema_version"])
+            self.assertEqual(6, len(audit["contract_bundle"]))
+            report = ARCHIVE.prepare_destination(
+                destination, "refs/remotes/github/main", audit,
+            )
+            staged = set(report["staged_paths"])
+            self.assertIn(
+                "experience_docx/experiment_logs/route/launch_contract/A1/manifest.json",
+                staged,
+            )
+            record = ARCHIVE.index_record(audit)
+            self.assertEqual(2, record["schema_version"])
+            self.assertEqual(6, len(record["contract_bundle"]))
+            self.assertEqual(
+                {"prior_closeout_path": None, "prior_terminal_tuple": None},
+                record["prior_terminal_record"],
+            )
+            self.assertEqual(1, len(record["result_files"]))
+            self.assertEqual(64, len(record["closeout_sha256"]))
+            self.assertEqual(64, len(record["conclusion_sha256"]))
+
+    def test_archive_registers_new_engineering_capability_once(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.source(root)
+            repo, commit, closeout_rel, _, _ = source
+            identity = {
+                "source_commit": "a" * 40,
+                "code_path_sha256": "b" * 64,
+                "checkpoint_sha256": "c" * 64,
+                "runtime_environment_sha256": "d" * 64,
+                "device_class": "cuda_sm89",
+                "input_contract_sha256": "e" * 64,
+            }
+            identity_sha = ARCHIVE.capability_registry.identity_digest(identity)
+            filename = "a1_capability_qualification.json"
+            qualification = {
+                "schema_version": 1,
+                "qualification_id": f"cap_{identity_sha[:24]}",
+                "identity": identity,
+                "identity_sha256": identity_sha,
+                "status": "PASSED_ENGINEERING",
+                "contract_mode": "gpu_synthetic_no_data",
+                "route_id": "route", "operation_id": "A1", "run_id": "a1-r1",
+                "route_commit": commit,
+                "engineering_evidence": {"production_path_exercised": True},
+                "scientific_authorization": "NONE",
+                "protected_data_touched": False,
+            }
+            evidence = repo / "experience_docx/experiment_logs/route" / filename
+            evidence.write_text(json.dumps(qualification), encoding="utf-8")
+            closeout_path = repo / closeout_rel
+            closeout = json.loads(closeout_path.read_text(encoding="utf-8"))
+            closeout["evidence_sha256"][filename] = hashlib.sha256(
+                evidence.read_bytes()
+            ).hexdigest()
+            closeout["capability_qualification"] = {
+                "qualification_id": qualification["qualification_id"],
+                "identity_sha256": identity_sha,
+                "evidence_filename": filename,
+                "status": "PASSED_ENGINEERING",
+                "scientific_authorization": "NONE",
+            }
+            closeout_path.write_text(json.dumps(closeout), encoding="utf-8")
+            destination = self.destination(root)
+            audit = self.audit(source)
+            report = ARCHIVE.prepare_destination(
+                destination, "refs/remotes/github/main", audit,
+            )
+            self.assertIn(
+                ARCHIVE.capability_registry.REGISTRY_RELPATH,
+                report["staged_paths"],
+            )
+            registry = destination / ARCHIVE.capability_registry.REGISTRY_RELPATH
+            records = ARCHIVE.capability_registry.load_records(
+                registry.read_text(encoding="utf-8").splitlines(),
+            )
+            self.assertEqual(1, len(records))
 
     def test_missing_formal_result_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:

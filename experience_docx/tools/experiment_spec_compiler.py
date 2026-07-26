@@ -16,11 +16,13 @@ from typing import Any, Callable
 
 import convir_ops_mcp as ops
 import research_program_contract as program_contract
+import scientific_contract as science_contract
 from route_runtime_contract import (
     ContractError,
     MODEL_CAPABILITY_DIRECTORY,
     PRECISION_CERTIFICATE_DIRECTORY,
     RUNTIME_SPEC_DIRECTORY,
+    capability_input_contract_sha256,
     validate_asset_manifest,
     validate_model_capability,
     validate_precision_certificate,
@@ -47,10 +49,24 @@ OPERATION_SOURCE_FIELDS = {
     "operation", "program_authorization", "scientific_contract", "runtime",
     "assets", "capability", "precision",
 }
-SCIENTIFIC_SOURCE_FIELDS = {
+SCIENTIFIC_SOURCE_FIELDS_V1 = {
     "question", "population", "intervention", "primary_estimand", "controls",
     "uncertainty", "gates", "competing_explanation", "terminal_mapping",
     "disabled_actions",
+}
+SCIENTIFIC_SOURCE_FIELDS_V2 = {
+    "question", "population", "intervention", "primary_estimand", "controls",
+    "uncertainty", "gates", "competing_explanation", "decision_table",
+    "disabled_actions",
+}
+SOURCE_OPERATION_FIELDS_V2 = {
+    "runner_relpath", "mode", "require_gpu", "output_id",
+    "closeout_filename", "prior_closeout_relpath", "prior_terminal_tuple",
+    "workspace_policy", "output_policy", "monitor_profile",
+    "heartbeat_timeout_seconds", "min_free_gpu_mib", "max_gpu_utilization_pct",
+}
+GENERIC_ENGINEERING_TERMINAL = {
+    "state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE",
 }
 RUNTIME_SOURCE_FIELDS = {
     "entrypoint_relpath", "timeout_seconds", "expected_wall_seconds", "total_units",
@@ -149,6 +165,26 @@ def _route_card(spec: dict[str, Any]) -> bytes:
     return raw
 
 
+def _scientific_source_fields(spec_schema: int) -> set[str]:
+    return (
+        SCIENTIFIC_SOURCE_FIELDS_V2
+        if spec_schema == 2 else SCIENTIFIC_SOURCE_FIELDS_V1
+    )
+
+
+def _compile_operation_v2(
+    value: Any, scientific: dict[str, Any], name: str,
+) -> dict[str, Any]:
+    operation = _object(value, SOURCE_OPERATION_FIELDS_V2, name)
+    return {
+        **operation,
+        "allowed_terminal_tuples": [
+            *science_contract.scientific_terminal_tuples(scientific),
+            dict(GENERIC_ENGINEERING_TERMINAL),
+        ],
+    }
+
+
 def _lint_error(path: str, code: str, message: Any) -> dict[str, str]:
     safe_message = " ".join(str(message).split())[:1024]
     return {"path": path, "code": code, "message": safe_message}
@@ -183,12 +219,13 @@ def _append_lint(errors: list[dict[str, str]], path: str, exc: Any,
 def _lint_operation_components(
     *, errors: list[dict[str, str]], route_id: str, operation_id: str,
     item: dict[str, Any], effective_program: dict[str, Any] | None,
-    evidence_exists: Callable[[str], bool] | None,
+    evidence_exists: Callable[[str], bool] | None, spec_schema: int,
 ) -> None:
     """Aggregate independent component errors for one source operation."""
     prefix = f"operations.{operation_id}"
-    operation = item["operation"]
-    if not isinstance(operation, dict):
+    operation_source = item["operation"]
+    operation = operation_source
+    if not isinstance(operation_source, dict):
         _append_lint(errors, f"{prefix}.operation", "must be an object", "INVALID_TYPE")
         operation = None
 
@@ -204,19 +241,33 @@ def _lint_operation_components(
     scientific = None
     try:
         scientific_source = _object(
-            item["scientific_contract"], SCIENTIFIC_SOURCE_FIELDS,
+            item["scientific_contract"], _scientific_source_fields(spec_schema),
             f"{prefix}.scientific_contract",
         )
-        if operation is not None:
+        scientific_value = {
+            "schema_version": spec_schema, "route_id": route_id,
+            "operation_id": operation_id, **scientific_source,
+        }
+        if spec_schema == 2:
+            scientific = science_contract.validate_scientific_contract_v2(
+                scientific_value, route_id, operation_id,
+            )
+            if operation is not None:
+                operation = _compile_operation_v2(
+                    operation_source, scientific, f"{prefix}.operation",
+                )
+        elif operation is not None:
             scientific = ops.validate_scientific_contract(
-                {
-                    "schema_version": 1, "route_id": route_id,
-                    "operation_id": operation_id, **scientific_source,
-                },
+                scientific_value,
                 route_id, operation_id, operation,
             )
-    except (ExperimentSpecError, ops.ToolError, KeyError, TypeError, ValueError) as exc:
+    except (
+        ExperimentSpecError, ops.ToolError, science_contract.ScientificContractError,
+        KeyError, TypeError, ValueError,
+    ) as exc:
         _append_lint(errors, f"{prefix}.scientific_contract", exc, "SCIENTIFIC_CONTRACT_INVALID")
+        if spec_schema == 2:
+            operation = None
 
     runtime_source = None
     engineering = None
@@ -290,7 +341,7 @@ def _lint_operation_components(
         if item["assets"] is not None:
             try:
                 asset = validate_asset_manifest({
-                    "schema_version": 1, "route_id": route_id,
+                    "schema_version": spec_schema, "route_id": route_id,
                     "operation_id": operation_id, "assets": item["assets"],
                 }, validated_runtime)
             except (ContractError, KeyError, TypeError, ValueError) as exc:
@@ -298,14 +349,16 @@ def _lint_operation_components(
         if item["capability"] is not None and (item["assets"] is None or asset is not None):
             try:
                 validate_model_capability(
-                    {"schema_version": 1, **item["capability"]}, validated_runtime, asset,
+                    {"schema_version": spec_schema, **item["capability"]},
+                    validated_runtime, asset,
                 )
             except (ContractError, KeyError, TypeError, ValueError) as exc:
                 _append_lint(errors, f"{prefix}.capability", exc, "CAPABILITY_CONTRACT_INVALID")
         if item["precision"] is not None:
             try:
                 precision = validate_precision_certificate(
-                    {"schema_version": 1, **item["precision"]}, validated_runtime,
+                    {"schema_version": spec_schema, **item["precision"]},
+                    validated_runtime, scientific,
                 )
             except (ContractError, KeyError, TypeError, ValueError) as exc:
                 _append_lint(errors, f"{prefix}.precision", exc, "PRECISION_CONTRACT_INVALID")
@@ -361,8 +414,8 @@ def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
     if unexpected:
         errors.append(_lint_error("experiment_spec", "UNEXPECTED_FIELDS", f"unexpected fields: {unexpected}"))
     checks = (
-        ("schema_version", lambda: source.get("schema_version") == 1
-         or (_ for _ in ()).throw(ExperimentSpecError("must equal 1"))),
+        ("schema_version", lambda: source.get("schema_version") in {1, 2}
+         or (_ for _ in ()).throw(ExperimentSpecError("must equal 1 or 2"))),
         ("route_id", lambda: _token(source.get("route_id"), "route_id")),
         ("rules_commit", lambda: isinstance(source.get("rules_commit"), str)
          and SHA40.fullmatch(source["rules_commit"])
@@ -436,6 +489,7 @@ def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
                 item=operations[operation_id],
                 effective_program=effective_program if program_ok else None,
                 evidence_exists=evidence_exists,
+                spec_schema=source["schema_version"],
             )
         if not errors and len(structurally_valid_operations) == len(operations):
             try:
@@ -464,8 +518,9 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ExperimentSpecError(f"source JSON is invalid: {exc}") from exc
     spec = _object(source, SOURCE_FIELDS, "experiment spec")
-    if spec["schema_version"] != 1:
-        raise ExperimentSpecError("experiment spec schema_version must be 1")
+    if spec["schema_version"] not in {1, 2}:
+        raise ExperimentSpecError("experiment spec schema_version must be 1 or 2")
+    spec_schema = spec["schema_version"]
     route_id = _token(spec["route_id"], "route_id")
     if spec_relpath != expected_spec_relpath(route_id):
         raise ExperimentSpecError("experiment spec path does not match route_id")
@@ -495,10 +550,9 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
     for operation_id, source_operation in operations.items():
         _token(operation_id, "operation_id")
         item = _object(source_operation, OPERATION_SOURCE_FIELDS, f"operations.{operation_id}")
-        operation = item["operation"]
-        if not isinstance(operation, dict):
+        operation_source = item["operation"]
+        if not isinstance(operation_source, dict):
             raise ExperimentSpecError(f"operations.{operation_id}.operation must be an object")
-        manifest_operations[operation_id] = operation
         claim = item["program_authorization"]
         try:
             program_contract.validate_route_authorization(
@@ -513,16 +567,32 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
             route_invariant = invariant
         elif invariant != route_invariant:
             raise ExperimentSpecError("all operations must share one route-level mechanism claim")
-        scientific_path = _scientific_path(route_id, operation_id)
-        scientific_paths[operation_id] = scientific_path
         scientific_source = _object(
-            item["scientific_contract"], SCIENTIFIC_SOURCE_FIELDS,
+            item["scientific_contract"], _scientific_source_fields(spec_schema),
             f"operations.{operation_id}.scientific_contract",
         )
         scientific = {
-            "schema_version": 1, "route_id": route_id, "operation_id": operation_id,
+            "schema_version": spec_schema, "route_id": route_id,
+            "operation_id": operation_id,
             **scientific_source,
         }
+        if spec_schema == 2:
+            try:
+                scientific = science_contract.validate_scientific_contract_v2(
+                    scientific, route_id, operation_id,
+                )
+            except science_contract.ScientificContractError as exc:
+                raise ExperimentSpecError(
+                    f"operations.{operation_id} scientific contract is invalid: {exc}"
+                ) from exc
+            operation = _compile_operation_v2(
+                operation_source, scientific, f"operations.{operation_id}.operation",
+            )
+        else:
+            operation = operation_source
+        manifest_operations[operation_id] = operation
+        scientific_path = _scientific_path(route_id, operation_id)
+        scientific_paths[operation_id] = scientific_path
         runtime_source = _object(
             item["runtime"], RUNTIME_SOURCE_FIELDS, f"operations.{operation_id}.runtime",
         )
@@ -559,19 +629,21 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
             asset = None
             if item["assets"] is not None:
                 asset = validate_asset_manifest({
-                    "schema_version": 1, "route_id": route_id,
+                    "schema_version": spec_schema, "route_id": route_id,
                     "operation_id": operation_id, "assets": item["assets"],
                 }, validated_runtime)
                 generated[asset_path] = json_bytes(asset)
             if item["capability"] is not None:
                 capability = validate_model_capability(
-                    {"schema_version": 1, **item["capability"]}, validated_runtime, asset,
+                    {"schema_version": spec_schema, **item["capability"]},
+                    validated_runtime, asset,
                 )
                 generated[capability_path] = json_bytes(capability)
             precision = None
             if item["precision"] is not None:
                 precision = validate_precision_certificate(
-                    {"schema_version": 1, **item["precision"]}, validated_runtime,
+                    {"schema_version": spec_schema, **item["precision"]},
+                    validated_runtime, scientific,
                 )
                 generated[precision_path] = json_bytes({
                     key: value for key, value in precision.items()

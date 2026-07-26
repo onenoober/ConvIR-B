@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 import convir_ops_mcp as ops
+import capability_registry
 import validate_experiment_card as card_validator
 from route_runtime_contract import (
     GENERIC_RUNNER_RELPATH,
@@ -122,6 +123,14 @@ ENGINEERING_EVIDENCE_FIELDS = {
     "protected_data_touched", "scientific_output_created",
     "scientific_training_occurred",
 }
+ROUTE_CONTEXT_FIELDS = {
+    "phase", "route_id", "operation_id", "run_id", "route_commit",
+    "runner_sha256", "entrypoint_relpath", "remote_repo", "run_root",
+    "output_path", "phase_output_path", "result_path", "status_path",
+    "heartbeat_path", "device", "total_units", "evidence_role",
+    "resume_policy", "protected_data_permissions", "assets",
+    "engineering_contract",
+}
 
 
 def _inline_dict_fields(node: ast.AST, assignments: dict[str, list[ast.AST]]) -> set[str]:
@@ -189,7 +198,33 @@ def _check_engineering_writer(function: ast.FunctionDef | ast.AsyncFunctionDef) 
             )
 
 
-def check_entrypoint(raw: bytes, relpath: str, *, require_engineering: bool = False) -> None:
+def _check_context_attributes(
+    function: ast.FunctionDef | ast.AsyncFunctionDef,
+) -> None:
+    context_names = set()
+    for node in ast.walk(function):
+        if isinstance(node, ast.Assign) and isinstance(node.value, ast.Call) \
+                and isinstance(node.value.func, ast.Name) \
+                and node.value.func.id == "load_context":
+            context_names.update(
+                target.id for target in node.targets if isinstance(target, ast.Name)
+            )
+        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) \
+                and isinstance(node.value, ast.Call) \
+                and isinstance(node.value.func, ast.Name) \
+                and node.value.func.id == "load_context":
+            context_names.add(node.target.id)
+    for node in ast.walk(function):
+        if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name) \
+                and node.value.id in context_names \
+                and node.attr not in ROUTE_CONTEXT_FIELDS:
+            raise ReadyError(f"unknown RouteContext field: {node.attr}")
+
+
+def check_entrypoint(
+    raw: bytes, relpath: str, *, require_engineering: bool = False,
+    scientific_schema: int = 1, require_unit_ledger: bool = False,
+) -> None:
     check_python(raw, relpath)
     tree = ast.parse(raw.decode("utf-8"), filename=relpath)
     strings = {node.value for node in ast.walk(tree) if isinstance(node, ast.Constant) and isinstance(node.value, str)}
@@ -201,8 +236,8 @@ def check_entrypoint(raw: bytes, relpath: str, *, require_engineering: bool = Fa
     def call_name(node: ast.Call) -> str | None:
         return node.func.id if isinstance(node.func, ast.Name) else None
 
-    for phase, writer in (("contract", "write_contract_result"),
-                          ("run", "write_run_result")):
+    run_writer = "write_gate_result" if scientific_schema == 2 else "write_run_result"
+    for phase, writer in (("contract", "write_contract_result"), ("run", run_writer)):
         function = functions.get(phase)
         if function is None:
             raise ReadyError(f"entrypoint must define {phase}(context_path)")
@@ -222,6 +257,18 @@ def check_entrypoint(raw: bytes, relpath: str, *, require_engineering: bool = Fa
             raise ReadyError(f"entrypoint {phase} must load its exact context phase")
         if phase == "contract" and require_engineering:
             _check_engineering_writer(function)
+        _check_context_attributes(function)
+        if phase == "run" and scientific_schema == 2 \
+                and any(call_name(node) == "write_run_result" for node in calls):
+            raise ReadyError("scientific schema 2 cannot call write_run_result")
+        if phase == "run" and require_unit_ledger:
+            observed = {call_name(node) for node in calls}
+            if not {
+                "load_completed_unit_ledger", "record_completed_unit",
+            } <= observed:
+                raise ReadyError(
+                    "scientific schema-2 run must load and record the completed-unit ledger"
+                )
     main_function = functions.get("main")
     main_calls = set() if main_function is None else {
         call_name(node) for node in ast.walk(main_function) if isinstance(node, ast.Call)
@@ -384,10 +431,6 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
             if manifest_schema >= 5 and spec["schema_version"] != 2:
                 raise ReadyError(f"{operation_id}: canonical manifest requires runtime schema 2")
             entrypoint_raw = show(repo, snapshot, spec["entrypoint_relpath"])
-            check_entrypoint(
-                entrypoint_raw, spec["entrypoint_relpath"],
-                require_engineering=spec["schema_version"] >= 2,
-            )
             asset_digest = None
             asset = None
             if spec["asset_manifest_relpath"] is not None:
@@ -398,6 +441,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                     json.dumps(asset, sort_keys=True, separators=(",", ":")).encode()
                 ).hexdigest()
             capability_digest = None
+            capability_reuse = None
             capability_path = spec["engineering_contract"]["capability_profile_relpath"]
             if capability_path is not None:
                 capability_raw = show(repo, snapshot, capability_path)
@@ -407,24 +451,58 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                 capability_digest = __import__("hashlib").sha256(
                     json.dumps(capability, sort_keys=True, separators=(",", ":")).encode()
                 ).hexdigest()
-            precision = None
-            precision_digest = None
-            precision_path = spec["precision_contract"]["certificate_relpath"]
-            precision_feasible = None
-            if precision_path is not None:
-                precision_raw = show(repo, snapshot, precision_path)
-                precision = validate_precision_certificate(json.loads(precision_raw), spec)
-                precision_feasible = precision["feasible"]
-                precision_digest = __import__("hashlib").sha256(
-                    json.dumps(precision, sort_keys=True, separators=(",", ":")).encode()
-                ).hexdigest()
+                if capability.get("schema_version") == 2:
+                    registry_raw = show(
+                        repo, snapshot, capability_registry.REGISTRY_RELPATH,
+                    )
+                    try:
+                        records = capability_registry.load_records(
+                            registry_raw.decode("utf-8").splitlines(),
+                            evidence_exists=lambda relpath: (
+                                show_optional(repo, snapshot, relpath) is not None
+                            ),
+                            read_evidence=lambda relpath: show(repo, snapshot, relpath),
+                        )
+                        capability_reuse = capability_registry.lookup(
+                            records, capability["reuse_identity"],
+                        )
+                    except (
+                        UnicodeDecodeError, capability_registry.CapabilityRegistryError,
+                    ) as exc:
+                        raise ReadyError(f"capability registry is invalid: {exc}") from exc
+            contract = None
             if manifest_schema >= 5:
                 contract_path = manifest["scientific_contract_relpaths"][operation_id]
                 contract = ops.validate_scientific_contract(
                     json.loads(show(repo, snapshot, contract_path)),
                     manifest["route_id"], operation_id, operation,
                 )
+            precision = None
+            precision_digest = None
+            precision_path = spec["precision_contract"]["certificate_relpath"]
+            precision_feasible = None
+            if precision_path is not None:
+                precision_raw = show(repo, snapshot, precision_path)
+                precision = validate_precision_certificate(
+                    json.loads(precision_raw), spec, contract,
+                )
+                precision_feasible = precision["feasible"]
+                precision_digest = __import__("hashlib").sha256(
+                    json.dumps(precision, sort_keys=True, separators=(",", ":")).encode()
+                ).hexdigest()
+            if contract is not None:
                 ops.validate_contract_runtime_alignment(contract, spec, precision)
+            check_entrypoint(
+                entrypoint_raw, spec["entrypoint_relpath"],
+                require_engineering=spec["schema_version"] >= 2,
+                scientific_schema=(
+                    contract["schema_version"] if contract is not None else 1
+                ),
+                require_unit_ledger=(
+                    contract is not None and contract["schema_version"] == 2
+                    and spec["total_units"] > 0
+                ),
+            )
             engineering = {"state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE"}
             if engineering not in context["allowed_terminal_tuples"]:
                 raise ReadyError(f"{operation_id} must allow the generic engineering closeout")
@@ -452,12 +530,16 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                 "entrypoint_sha256": __import__("hashlib").sha256(entrypoint_raw).hexdigest(),
                 "asset_manifest_digest": asset_digest,
                 "model_capability_digest": capability_digest,
+                "capability_reuse": capability_reuse,
                 "engineering_contract_mode": spec["engineering_contract"]["mode"],
                 "precision_certificate_digest": precision_digest,
                 "precision_mode": spec["precision_contract"]["mode"],
                 "precision_feasible": precision_feasible,
                 "canonical_scientific_contract": manifest_schema >= 5,
-                "contract_phase_required": True,
+                "contract_phase_required": not (
+                    isinstance(capability_reuse, dict)
+                    and capability_reuse.get("engineering_reuse_authorized") is True
+                ),
                 "generic_failure_closeout": True,
             }
         except (ops.ToolError, ContractError, json.JSONDecodeError) as exc:

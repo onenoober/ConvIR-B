@@ -1,11 +1,13 @@
 # Convir Operations MCP
 
-Date: 2026-07-21
+Date: 2026-07-26
 
-Status: governance-fastpath server `5.2.0` retains exactly six tools and stable control
+Status: governance-fastpath server `5.3.0` retains exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4 and uses
 immutable historical manifest schema 5 plus compiled manifest schema 6 and
-runtime schema 2 for new routes.
+runtime schema 2 for new routes. New experiment specs, scientific contracts and
+typed asset manifests use schema 2; historical schema 1 remains readable and is
+not migrated.
 
 `convir-ops` is a restricted local stdio bridge to `convir-4090`. It accepts
 only a GitHub route branch, exact commit, and operation id. It never accepts an
@@ -55,6 +57,11 @@ workspace_policy, output_policy, monitor_profile, heartbeat_timeout_seconds,
 min_free_gpu_mib, max_gpu_utilization_pct
 ```
 
+For source experiment schema 2, the author does not provide
+`allowed_terminal_tuples`. The compiler derives exactly the three scientific
+tuples from the canonical terminal actions and adds only the generic
+`FAILED_ENGINEERING / null / NONE` tuple.
+
 `scientific_contract_relpaths` maps every operation id to one immutable canonical
 JSON. Each canonical scientific JSON owns the question, population/grouping,
 intervention, primary estimand, controls, uncertainty, gates, competing
@@ -72,6 +79,15 @@ remaining route files. Route-ready and planning recompile the committed sources
 and reject any generated-file drift. Program governance distinguishes adjacent,
 orthogonal and evidence-backed reopen mechanisms; it does not impose one global
 experiment-count limit.
+
+Scientific schema 2 freezes finite typed outcomes for every gate and one
+complete mutually exclusive decision table. `validity_veto` makes failed
+identity, integrity or coverage invalidate all scientific outcomes;
+`inconclusive_only` precision cannot hide a decisive FAIL; descriptive gates
+cannot affect a terminal. Route code writes `gate_outcomes`; the generic lifecycle derives state, decision,
+authorization, next action and family effect. Each terminal action must be
+operationally distinct. Historical scientific schema 1 retains its typed
+terminal writer.
 
 The authoring compiler provides a write-free aggregate lint that returns stable
 path/code/message errors across independently checkable operations. New
@@ -139,12 +155,43 @@ Evidence tools allow only top-level `.json/.csv/.md/.txt` files up to 1 MiB.
 They require a scientific validated closeout or an explicit engineering
 `archive` resolution and never stage, commit, or push.
 
+## Capability Reuse And Recovery
+
+A schema-2 capability profile binds source commit, production-code SHA-256,
+checkpoint SHA-256, runtime-environment SHA-256, device class and a mechanically
+derived input-contract SHA-256 to committed asset identities. Route-ready and
+plan query `capability_registry.jsonl`. One unique exact match skips contract
+execution; any mismatch executes the frozen contract once. Cloud verifies the
+actual CUDA compute-capability class before reuse. New qualification evidence is
+compact and registered only by terminal archive. Every reuse result carries
+`scientific_authorization: NONE`.
+
+Every nonempty scientific schema-2 workload must finish with exact
+`total_units` coverage in the generic completion ledger. `complete_units`
+remains a fresh-output transition and additionally requires a hash-bound
+unrestricted run-only `completed_unit_ledger` file asset. The generic API and
+lifecycle verify unique unit/input/output bindings and each referenced output
+SHA-256, fsync newly completed rows and require exact `total_units` coverage.
+A count without that ledger and output evidence is not reusable.
+
+The schema-2 terminal index stores SHA-256 bindings for the contract, closeout,
+conclusion, formal results and compact launch-contract bundle, plus the direct
+parent closeout and terminal tuple. `convir_git_status` verifies those blobs and
+selects the unique leaf of a complete parent chain. Branches, cycles, missing
+parents, disconnected terminals and hash mismatches fail closed. Legitimate
+multi-operation chains remain readable.
+
 ## Registration
 
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. After an update, restart the host and verify version
-`5.2.0`, source SHA-256, exactly six tools, schema 4/5/6 parsing, and the
+`5.3.0`, source SHA-256, exactly six tools, schema 4/5/6 parsing, and the
 startup/repair/discard states.
+
+The stdio server is a long-lived process and never hot-updates from Git. A
+running task may continue on its already loaded source. Normal host restart or a
+new task loads the updated main worktree; bounded acceptance uses a fresh
+process and must not terminate another active task merely to force activation.
 
 Only an engineering receipt carrying `v43_migrated_at` may change its automatic
 legacy `archive` resolution to an explicit user-selected `repair`. A normal

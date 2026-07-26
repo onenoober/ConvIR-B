@@ -1,6 +1,6 @@
 # Model Run Operations Protocol
 
-Date: 2026-07-16
+Date: 2026-07-26
 
 ## Launch Order
 
@@ -35,6 +35,14 @@ contracts, publishes compact evidence write-once, and writes one closeout bound
 to route id, run id, route commit, runner SHA-256, evidence role, and allowed
 terminal tuple.
 
+New scientific schema-2 entrypoints publish typed gate outcomes only. The
+lifecycle loads the canonical contract, resolves its complete decision table,
+and alone chooses the state, decision, authorization, next action and family
+effect. Historical scientific schema-1 terminal writers remain supported.
+Every nonempty schema-2 workload records unique completed-unit input/output
+identities, and the lifecycle refuses terminal derivation until the ledger
+covers exactly `total_units`.
+
 The contract phase validates route-specific input/no-op/shape/finite and
 output/finalizer behavior and cannot create `workload/`. Runtime schema 2
 requires one identity-bound mode: metadata-only, CPU exact, CPU reference
@@ -46,8 +54,12 @@ not allowed by default.
 The representative engineering fixture and its metadata-only exemptions are
 defined once in `ROUTE_READY_FASTPATH.md`. Generic assertions are provided by
 `route_engineering_fixture.py` and documented in `ROUTE_FLOW_TOOLS.md`. Reuse
-that fixture result for an unchanged exercised path; do not add another
-route-specific smoke layer.
+that fixture result for an unchanged exercised path only through a unique exact
+six-field capability-registry match; do not add another route-specific smoke
+layer. Route-ready and plan expose the match, cloud verifies device class, and
+the lifecycle skips the contract execution entirely. A mismatch runs the frozen
+contract once and publishes a qualification for terminal-archive registration.
+Reuse remains engineering-only and authorizes no science or protected data.
 
 For any operation whose cost or termination depends on sample count, group
 count, candidate count, graph size, search depth, or matrix dimension, the
@@ -67,10 +79,13 @@ metadata-only sidecar may atomically replace `heartbeat.json`, while the runner
 appends milestone-only `status.txt`. Telemetry never reads scientific outputs
 or controls the workload; the runner remains the sole closeout owner.
 
-Recovery uses a new output. A `complete_units` route may consume only a
-predeclared complete-unit asset with matching identity; an incomplete unit
-restarts. In-place `exact_resume` is not part of fast-path v1. Recovery cannot
-reveal confirmation results early or change the scientific contract.
+Recovery uses a new output. A `complete_units` route may consume only the
+predeclared hash-bound `completed_unit_ledger` file asset. Its unique unit/input/
+output-asset/output-path/output-SHA records are verified against actual files;
+new rows are file-locked and fsync'd after the generic API hashes the completed
+output. An incomplete or mismatched unit restarts. In-place `exact_resume` is
+not part of fast-path v1. Recovery cannot reveal confirmation results early or
+change the scientific contract.
 
 ## Observe And Stop
 

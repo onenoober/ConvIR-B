@@ -7,13 +7,16 @@ import hashlib
 import json
 import math
 import re
+from statistics import NormalDist
 from pathlib import Path
 from typing import Any
 
+import capability_registry
 
 SPEC_SCHEMA_VERSION = 2
 LEGACY_SPEC_SCHEMA_VERSION = 1
-ASSET_SCHEMA_VERSION = 1
+ASSET_SCHEMA_VERSION = 2
+SUPPORTED_ASSET_SCHEMA_VERSIONS = {1, 2}
 CONTEXT_SCHEMA_VERSION = 1
 GENERIC_RUNNER_RELPATH = "experience_docx/tools/run_route_operation.sh"
 RUNTIME_SPEC_DIRECTORY = "experience_docx/route_runtime_specs"
@@ -27,6 +30,8 @@ RUNTIME_BUNDLE_RELPATHS = (
     "experience_docx/tools/run_telemetry.py",
     "experience_docx/tools/research_program_contract.py",
     "experience_docx/tools/experiment_spec_compiler.py",
+    "experience_docx/tools/scientific_contract.py",
+    "experience_docx/tools/capability_registry.py",
 )
 EVIDENCE_ROLES = {
     "engineering_debug", "development_screening", "confirmation", "sealed_final",
@@ -52,6 +57,7 @@ ENGINEERING_WORKLOAD_CLASSES = {
     "fixed_iteration_map", "adaptive_search", "variable_graph_or_matrix",
 }
 PRECISION_MODES = {"formal_precision", "descriptive_capacity", "not_applicable"}
+COMPLETE_UNIT_LEDGER_ASSET_ID = "completed_unit_ledger"
 
 
 class ContractError(ValueError):
@@ -447,6 +453,18 @@ def validate_runtime_spec(value: Any, manifest: dict[str, Any], operation_id: st
     }
 
 
+def capability_input_contract_sha256(
+    *, contract_mode: str, minimum_fixture: dict[str, int],
+    compatibility_imports: list[str], cost_contract: dict[str, Any] | None,
+) -> str:
+    return canonical_digest({
+        "contract_mode": contract_mode,
+        "minimum_fixture": minimum_fixture,
+        "compatibility_imports": compatibility_imports,
+        "cost_contract": cost_contract,
+    })
+
+
 def validate_model_capability(value: Any, spec: dict[str, Any],
                               asset_manifest: dict[str, Any] | None) -> dict[str, Any]:
     expected = {
@@ -455,7 +473,10 @@ def validate_model_capability(value: Any, spec: dict[str, Any],
         "protected_data_prohibited", "scientific_output_prohibited",
         "scientific_training_prohibited",
     }
-    if not isinstance(value, dict) or set(value) != expected or value["schema_version"] != 1:
+    schema = value.get("schema_version") if isinstance(value, dict) else None
+    if schema == 2:
+        expected = expected | {"reuse_identity"}
+    if not isinstance(value, dict) or set(value) != expected or schema not in {1, 2}:
         raise ContractError("model capability profile has an invalid top-level contract")
     mode = value["contract_mode"]
     if mode != spec["engineering_contract"]["mode"] or mode == "metadata_only":
@@ -509,17 +530,205 @@ def validate_model_capability(value: Any, spec: dict[str, Any],
             raise ContractError(
                 "gpu synthetic contract can expose only unrestricted/engineering assets"
             )
-    return {
-        "schema_version": 1, "profile_id": require_token(value["profile_id"], "profile_id"),
+    result = {
+        "schema_version": schema, "profile_id": require_token(value["profile_id"], "profile_id"),
         "contract_mode": mode, "minimum_fixture": normalized_fixture,
         "bound_assets": normalized_bound, "compatibility_imports": imports,
         "production_path_statement": statement,
         "protected_data_prohibited": True, "scientific_output_prohibited": True,
         "scientific_training_prohibited": True,
     }
+    if schema == 2:
+        try:
+            identity = capability_registry.validate_identity(value["reuse_identity"])
+        except capability_registry.CapabilityRegistryError as exc:
+            raise ContractError(str(exc)) from exc
+        bound_identities = {item["identity"] for item in normalized_bound}
+        if identity["source_commit"] not in bound_identities:
+            raise ContractError("capability source_commit is not bound to an asset")
+        for key in (
+            "code_path_sha256", "checkpoint_sha256", "runtime_environment_sha256",
+        ):
+            if identity[key] not in bound_identities:
+                raise ContractError(f"capability {key} is not bound to an asset")
+        expected_input = capability_input_contract_sha256(
+            contract_mode=mode,
+            minimum_fixture=normalized_fixture,
+            compatibility_imports=imports,
+            cost_contract=spec["engineering_contract"].get("cost_contract"),
+        )
+        if identity["input_contract_sha256"] != expected_input:
+            raise ContractError("capability input_contract_sha256 mismatch")
+        result["reuse_identity"] = identity
+    return result
 
 
-def validate_precision_certificate(value: Any, spec: dict[str, Any]) -> dict[str, Any]:
+def _validate_precision_certificate_v2(
+    value: Any, spec: dict[str, Any], scientific: dict[str, Any] | None,
+) -> dict[str, Any]:
+    expected = {
+        "schema_version", "certificate_id", "route_id", "operation_id",
+        "primary_estimand_id", "independent_unit", "comparison_family",
+        "method", "confidence_level", "critical_value", "target_half_width",
+        "assurance", "strata", "feasible", "source_role", "source_reference",
+    }
+    if not isinstance(value, dict) or set(value) != expected:
+        raise ContractError("precision schema 2 has an invalid top-level contract")
+    if scientific is None or scientific.get("schema_version") != 2:
+        raise ContractError("precision schema 2 requires scientific schema 2")
+    if value["route_id"] != spec["route_id"] \
+            or value["operation_id"] != spec["operation_id"]:
+        raise ContractError("precision certificate identity mismatch")
+    estimand = scientific["primary_estimand"]
+    uncertainty = scientific["uncertainty"]
+    if value["primary_estimand_id"] != estimand["id"]:
+        raise ContractError("precision certificate primary estimand mismatch")
+    if value["independent_unit"] != estimand["unit"] \
+            or value["independent_unit"] != uncertainty["independent_unit"]:
+        raise ContractError("precision certificate independent unit mismatch")
+    if value["comparison_family"] != uncertainty["comparison_family"]:
+        raise ContractError("precision certificate comparison family mismatch")
+    confidence = require_number(
+        value["confidence_level"], "confidence_level", 0.500000001, 0.999999999,
+    )
+    if confidence != uncertainty["confidence_level"]:
+        raise ContractError("precision certificate confidence level mismatch")
+    method = value["method"]
+    if method not in {"normal_mean", "binomial_worst_case"}:
+        raise ContractError("precision certificate method is invalid")
+    critical = require_number(value["critical_value"], "critical_value", 0.01, 20.0)
+    family_size = len(scientific["population"]["strata"])
+    simultaneous_critical = NormalDist().inv_cdf(
+        1.0 - (1.0 - confidence) / (2.0 * family_size)
+    )
+    if critical + 1e-12 < simultaneous_critical:
+        raise ContractError(
+            "precision critical_value is below the simultaneous Bonferroni "
+            "confidence bound"
+        )
+    half = require_number(
+        value["target_half_width"], "target_half_width", 1e-12, 1e6,
+    )
+    precision_gates = [
+        gate for gate in scientific["gates"] if gate["type"] == "precision"
+    ]
+    if len(precision_gates) != 1 or any(
+        isinstance(gate["threshold"], bool)
+        or not isinstance(gate["threshold"], (int, float))
+        or float(gate["threshold"]) != half
+        for gate in precision_gates
+    ):
+        raise ContractError("precision target does not match the scientific precision gate")
+    assurance = value["assurance"]
+    if not isinstance(assurance, dict) or set(assurance) != {
+        "method_id", "probability", "planning_sd_rule",
+    }:
+        raise ContractError("precision assurance has an invalid field contract")
+    assurance_value = require_number(
+        assurance["probability"], "assurance.probability", 0.500000001, 0.999999999,
+    )
+    planning_rule = assurance["planning_sd_rule"]
+    if not isinstance(planning_rule, str) or not 16 <= len(planning_rule.strip()) <= 1024:
+        raise ContractError("assurance.planning_sd_rule must contain 16-1024 characters")
+    assurance_value_normalized = {
+        "method_id": require_token(assurance["method_id"], "assurance.method_id"),
+        "probability": assurance_value,
+        "planning_sd_rule": planning_rule.strip(),
+    }
+    population_strata = {
+        item["id"]: item["independent_group_count"]
+        for item in scientific["population"]["strata"]
+    }
+    strata = value["strata"]
+    if not isinstance(strata, list) or not strata:
+        raise ContractError("precision strata must be a non-empty list")
+    normalized_strata = []
+    seen = set()
+    for index, item in enumerate(strata):
+        name = f"strata[{index}]"
+        fields = {
+            "id", "independent_groups_available", "independent_groups_planned",
+            "planning_sd", "planning_sd_upper_bound",
+            "independent_groups_required", "feasible", "source_reference",
+        }
+        if not isinstance(item, dict) or set(item) != fields:
+            raise ContractError(f"{name} has an invalid field contract")
+        identifier = require_token(item["id"], f"{name}.id")
+        if identifier in seen or identifier not in population_strata:
+            raise ContractError("precision stratum ids must exactly match the population")
+        seen.add(identifier)
+        available = require_int(
+            item["independent_groups_available"],
+            f"{name}.independent_groups_available", 1, 10_000_000,
+        )
+        if available != population_strata[identifier]:
+            raise ContractError(f"{name} available groups differ from the population")
+        planned = require_int(
+            item["independent_groups_planned"],
+            f"{name}.independent_groups_planned", 1, available,
+        )
+        planning_sd = require_number(item["planning_sd"], f"{name}.planning_sd", 1e-12, 1e6)
+        upper_sd = require_number(
+            item["planning_sd_upper_bound"], f"{name}.planning_sd_upper_bound",
+            planning_sd, 1e6,
+        )
+        if method == "binomial_worst_case" and (planning_sd != 0.5 or upper_sd != 0.5):
+            raise ContractError("binomial_worst_case requires planning SD and upper bound 0.5")
+        required = math.ceil((critical * upper_sd / half) ** 2)
+        if item["independent_groups_required"] != required:
+            raise ContractError(
+                f"{name} required groups do not match the frozen upper-bound calculation"
+            )
+        feasible = planned >= required
+        if item["feasible"] is not feasible:
+            raise ContractError(f"{name} feasibility flag is inconsistent")
+        source = item["source_reference"]
+        if not isinstance(source, str) or not 8 <= len(source.strip()) <= 512:
+            raise ContractError(f"{name}.source_reference must contain 8-512 characters")
+        normalized_strata.append({
+            "id": identifier,
+            "independent_groups_available": available,
+            "independent_groups_planned": planned,
+            "planning_sd": planning_sd,
+            "planning_sd_upper_bound": upper_sd,
+            "independent_groups_required": required,
+            "feasible": feasible,
+            "source_reference": source.strip(),
+        })
+    if seen != set(population_strata):
+        raise ContractError("precision stratum ids must exactly match the population")
+    feasible = all(item["feasible"] for item in normalized_strata)
+    if value["feasible"] is not feasible:
+        raise ContractError("precision feasibility flag is inconsistent")
+    if spec["precision_contract"]["mode"] == "formal_precision" and not feasible:
+        raise ContractError("formal precision route is infeasible in at least one stratum")
+    role = value["source_role"]
+    if role not in {"unrestricted", "engineering_debug", "development_screening"}:
+        raise ContractError("precision planning cannot consume protected evidence roles")
+    reference = value["source_reference"]
+    if not isinstance(reference, str) or not 8 <= len(reference.strip()) <= 512:
+        raise ContractError("precision certificate source_reference is invalid")
+    return {
+        **value,
+        "certificate_id": require_token(value["certificate_id"], "certificate_id"),
+        "primary_estimand_id": estimand["id"],
+        "independent_unit": estimand["unit"],
+        "comparison_family": uncertainty["comparison_family"],
+        "confidence_level": confidence,
+        "critical_value": critical,
+        "target_half_width": half,
+        "assurance": assurance_value_normalized,
+        "strata": normalized_strata,
+        "feasible": feasible,
+        "source_reference": reference.strip(),
+    }
+
+
+def validate_precision_certificate(
+    value: Any, spec: dict[str, Any], scientific: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    if isinstance(value, dict) and value.get("schema_version") == 2:
+        return _validate_precision_certificate_v2(value, spec, scientific)
     expected = {
         "schema_version", "certificate_id", "estimand", "method",
         "confidence_level", "target_half_width", "planning_sd",
@@ -568,8 +777,11 @@ def validate_asset_manifest(value: Any, spec: dict[str, Any]) -> dict[str, Any]:
     expected = {"schema_version", "route_id", "operation_id", "assets"}
     if not isinstance(value, dict) or set(value) != expected:
         raise ContractError("asset manifest has an invalid top-level contract")
-    if value["schema_version"] != ASSET_SCHEMA_VERSION:
-        raise ContractError(f"asset manifest must use schema {ASSET_SCHEMA_VERSION}")
+    asset_schema = value["schema_version"]
+    if asset_schema not in SUPPORTED_ASSET_SCHEMA_VERSIONS:
+        raise ContractError(
+            f"asset manifest must use one of {sorted(SUPPORTED_ASSET_SCHEMA_VERSIONS)}"
+        )
     if value["route_id"] != spec["route_id"] or value["operation_id"] != spec["operation_id"]:
         raise ContractError("asset manifest identity mismatch")
     assets = value["assets"]
@@ -625,8 +837,18 @@ def validate_asset_manifest(value: Any, spec: dict[str, Any]) -> dict[str, Any]:
                 "require_clean": require_bool(item["require_clean"], f"{name}.require_clean"),
             })
         result.append(normalized)
+    if asset_schema == 2 and spec["resume_policy"] == "complete_units":
+        ledger = [
+            item for item in result if item["id"] == COMPLETE_UNIT_LEDGER_ASSET_ID
+        ]
+        if len(ledger) != 1 or ledger[0]["kind"] != "file" \
+                or ledger[0]["contract_access"] is not False \
+                or ledger[0]["access_role"] != "unrestricted":
+            raise ContractError(
+                "complete_units requires one unrestricted run-only completed_unit_ledger file asset"
+            )
     return {
-        "schema_version": ASSET_SCHEMA_VERSION,
+        "schema_version": asset_schema,
         "route_id": spec["route_id"],
         "operation_id": spec["operation_id"],
         "assets": result,

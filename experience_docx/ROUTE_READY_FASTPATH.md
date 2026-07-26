@@ -1,6 +1,6 @@
 # Route-Ready Fast Path
 
-Date: 2026-07-20
+Date: 2026-07-26
 
 Status: generic runtime adopted after the CPU-only r2 E2E closeout in
 `experiment_cards/2026-07-17-route-ready-fastpath-validation.md`. The
@@ -16,7 +16,7 @@ generic runtime bundle remain unchanged.
 For a new route, author only:
 
 1. one research-program contract under research_programs/;
-2. one schema-v1 experiment spec under experiment_specs/; and
+2. one schema-v2 experiment spec under experiment_specs/; and
 3. one Python entrypoint implementing contract(context_path) and
    run(context_path).
 
@@ -27,7 +27,9 @@ schema-v6 route manifest, canonical scientific JSON, short rationale note,
 runtime schema-v2 spec and any declared asset/capability/precision contracts.
 The compiler does not select any scientific field. Do not hand-edit generated
 files; route-ready and MCP recompile the committed sources and reject byte
-drift. Historical manifest schema 4/5 routes remain supported and unmodified.
+drift. New typed asset manifests use schema 2. Historical experiment-spec,
+scientific and asset schema 1 plus manifest schema 4/5 routes remain supported
+and unmodified.
 
 Do not create an evidence README. The canonical JSON is the immutable machine
 scientific contract; the route note owns rationale only. Terminal interpretation belongs only in the science-fastpath
@@ -92,6 +94,14 @@ Repeat that same sealed start once: its built-in metadata-only recovery either
 returns the original launch receipt, proves a clean unchanged retry, or stops
 as ambiguous.
 
+Route-ready and plan report capability-registry lookup. One unique exact match
+of source commit, production-code SHA-256, checkpoint SHA-256, runtime-
+environment SHA-256, device class and mechanically derived input-contract
+SHA-256 makes contract execution unnecessary. The contract entrypoint remains
+statically valid as the fail-closed fallback for a later miss. Device class is
+verified on cloud before reuse, and reuse always reports scientific
+authorization `NONE`.
+
 From Windows, use fixed WSL argv such as `wsl.exe --exec /usr/bin/git -C
 <absolute-wsl-path> ...`; do not use nested `bash -lc` quoting. Use the compact
 authoritative snapshot first and read only its referenced files.
@@ -113,13 +123,18 @@ the CPU contract. Confirmation, canary, and sealed-final assets can never be
 exposed to that phase, and their run-phase delivery requires the matching
 runtime permission.
 
-`contract(context_path)` is protected-data-free and runs before expensive work.
+`contract(context_path)` is protected-data-free and runs before expensive work
+unless the exact capability lookup above succeeds.
 It uses `metadata_only`, `cpu_exact`, `cpu_reference_equivalent`, or
 `gpu_synthetic_no_data` from an identity-bound capability profile, and must validate
 the entrypoint's synthetic output/finalizer contract, and cannot create
-`workload/` or touch confirmation, canary, or locked-test data. `run(context_path)`
-owns only route science and writes one typed run result. The generic lifecycle
-alone owns:
+`workload/` or touch confirmation, canary, or locked-test data. For scientific
+schema 2, `run(context_path)` calls `write_gate_result` with exact typed gate
+outcomes and cannot choose a state, decision or authorization; the generic
+lifecycle applies the complete frozen decision table. Historical scientific
+schema 1 continues to use `write_run_result`. A nonempty schema-2 workload must
+also load and record the generic completed-unit ledger; finalization requires
+exact `total_units` coverage. The generic lifecycle alone owns:
 
 For algorithms whose termination or cost depends on formal problem size, the
 runtime engineering contract freezes `cost_contract`. `same_scale_probe`
@@ -194,8 +209,12 @@ must not alter an existing output directory.
 ## Recovery And Revalidation
 
 The v1 fast path supports `none` and `complete_units`. Both launch into a new
-output. `complete_units` means a new run may consume a preregistered, verified
-complete-unit asset; it never means in-place reuse of an ambiguous output.
+output. `complete_units` requires one hash-bound unrestricted run-only file
+asset named `completed_unit_ledger`. Every ledger row binds one unique unit and
+input SHA-256 to an output asset/path/SHA-256; the generic API verifies imported
+outputs, hashes each newly completed output itself, appends under a file lock and
+fsyncs the ledger. Finalization requires exactly `total_units` verified rows.
+It never means in-place reuse of an ambiguous output or trust in a count alone.
 `exact_resume` is rejected at the staged gate until the schema-v4 control plane
 has a receipt-bound transition that can prove it safely.
 

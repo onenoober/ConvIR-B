@@ -1,6 +1,6 @@
 # Experiment Governance Protocol
 
-Date: 2026-07-16
+Date: 2026-07-26
 
 This is the single scientific-design and gate authority. Operational mechanics
 belong to `MODEL_RUN_OPERATIONS_PROTOCOL.md`.
@@ -13,6 +13,16 @@ direction and aggregation. State the preferred mechanism, strongest competing
 explanation, cheapest discriminating observation, matched baseline/budget,
 data roles, locked-test policy, and the exact actions for pass, inconclusive and
 fail.
+
+For new routes, enumerate finite typed outcomes for every gate and freeze one
+complete, mutually exclusive decision table over their Cartesian product.
+`inconclusive_only` precision evidence may turn a provisional PASS into
+INCONCLUSIVE, but must never hide an already decisive FAIL or create a FAIL.
+Identity, integrity and coverage gates use `validity_veto`: any non-passing
+outcome forces INCONCLUSIVE because the scientific comparison is invalid.
+Descriptive gates cannot change the terminal. Each terminal maps to a distinct
+authorization, next action, or family effect; changing only the label has no
+decision value.
 
 Choose the smallest experiment that can change a written next action. Do not
 run an experiment whose failure would leave the same choices unresolved.
@@ -61,6 +71,15 @@ margin and a pre-result precision target. Use full available evaluation data
 when feasible. Equivalence or preservation requires a predeclared margin and
 interval; failure to reject zero is not equivalence.
 
+A formal precision certificate binds route, operation, primary estimand,
+independent unit, comparison family, confidence level and every population
+stratum. It freezes available, planned and required independent groups per
+stratum and calculates required capacity from a pre-result planning-SD upper
+bound and a critical value no smaller than the simultaneous Bonferroni
+confidence bound for all frozen strata. Route-wide totals, repeated variants,
+tiles, or spatial regions cannot
+substitute for independent stratum counts.
+
 ## Gate Contract
 
 Each formal gate names: gate type, estimand/unit, reference, metric direction,
@@ -91,7 +110,9 @@ group, or a clearly labeled leakage-ineligible upper bound. A deployable image
 policy requires image-level replay and tail/cumulative risk; block metrics alone
 cannot authorize it.
 
-After launch, only monitor, execute a frozen branch, stop at a written gate, or
+After launch, route code records observations and typed gate outcomes only; the
+generic lifecycle resolves the decision table and writes the terminal. Only
+monitor, execute a frozen branch, stop at a written gate, or
 resume the exact contract. Never change scope, metrics, data, thresholds or
 comparison family after seeing results. Engineering failure has `decision:null`
 and is not scientific evidence.
