@@ -1,0 +1,37 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/convir-existing-dataset-role-ledger-v1__CONVIR_EXISTING_DATASET_ROLE_LEDGER_QUALIFY.json",
+  "engineering_contract": {
+    "capability_profile_relpath": null,
+    "cost_contract": null,
+    "max_seconds": 30,
+    "mode": "metadata_only"
+  },
+  "entrypoint_relpath": "experience_docx/tools/qualify_convir_existing_dataset_role_ledger.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "convir_existing_dataset_role_ledger_v1_summary.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/convir_existing_dataset_role_ledger_v1_summary.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 60,
+  "operation_id": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_QUALIFY",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/convir-existing-dataset-role-ledger-v1__CONVIR_EXISTING_DATASET_ROLE_LEDGER_QUALIFY.json",
+    "mode": "descriptive_capacity",
+    "rationale": "Certify future independent-scene capacity without executing the continuous-utility measurement."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "convir-existing-dataset-role-ledger-v1",
+  "schema_version": 2,
+  "timeout_seconds": 300,
+  "total_units": 2
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "route_id": "convir-existing-dataset-role-ledger-v1",
+  "operation_id": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_QUALIFY",
+  "run_id": "convir-existing-dataset-role-ledger-v1-r1",
+  "state": "COMPLETED_GATE_PASS",
+  "decision": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_PASS",
+  "authorizes": "UNIFIED_DEVELOPMENT_CONTRACT_AUTHORING_ONLY",
+  "primary_result": "The existing dataset inventory has a reproducible outcome-blind role ledger and sufficient unassigned known-overlap-quarantined capacity for a later, separately frozen development contract: ITS has 7,226 unassigned original-clear-scene units versus 3,215 required, and OTS has 6,419 versus 2,369 required, while preserving the 0.05 dB utility margin and 0.025 dB precision target.",
+  "gate_reasons": [
+    "All six archived parent-evidence identity checks passed.",
+    "The complete official ITS and OTS clear-scene namespaces and authorized exclusions were reconstructed exactly.",
+    "Excluded, historically exposed, and unassigned scene roles form disjoint complete partitions in both strata and reproduce both frozen historical-selection digests.",
+    "Both strata exceed their simultaneous 95 percent assurance-adjusted independent-scene requirements."
+  ],
+  "competing_explanation": "The favorable capacity result would be artificial if known overlaps, historically exposed scenes, duplicate clear targets, or nested haze variants were counted as fresh independent units; the qualified ledger excludes or labels those cases and uses only original clear scenes as independent units.",
+  "limitations": [
+    "ITS and OTS are known-overlap-quarantined populations, not fully source-disjoint populations.",
+    "The remaining 574 unresolved ITS parent groups are not interpreted as non-overlaps.",
+    "ITS and OTS remain separate indoor and outdoor synthetic strata; no sample-size-weighted exchangeable pooling is authorized.",
+    "All 55 NH-Haze scenes remain development-only, and the 150 Haze4K candidate-confirmation scenes remain protected and unread.",
+    "This qualification did not train a model, run inference, decode image content, claim scenes for a future run, or estimate continuous utility.",
+    "The terminal authorizes only authoring a later typed development contract with frozen offsets, counts, estimand, gates, and data roles; it does not authorize measurement, model selection, confirmation, or deployment."
+  ]
+}

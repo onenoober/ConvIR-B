@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "program_id": "convir_existing_dataset_governance_v1",
+  "objective": "Maintain an outcome-blind scene-level role and exposure ledger for the existing Haze4K, RESIDE ITS, RESIDE OTS, and NH-Haze datasets before authoring further development measurements.",
+  "source_anchors": [
+    {
+      "id": "haze4k_train_scene_split_terminal",
+      "reference": "GitHub-main terminal evidence for haze4k-train-scene-split-v2.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "haze4k_test_scene_split_terminal",
+      "reference": "GitHub-main terminal evidence for haze4k-test-scene-split-v1.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "its_verified_quarantine_terminal",
+      "reference": "GitHub-main terminal evidence and authorized exclusion asset for reside-its-verified-overlap-quarantine-v1.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "ots_verified_quarantine_terminal",
+      "reference": "GitHub-main terminal evidence and authorized exclusion asset for reside-ots-targeted-geometry-v1.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "reside_continuous_utility_terminal",
+      "reference": "GitHub-main terminal evidence for reside-known-overlap-continuous-utility-measurement-v1, including the frozen selection identities and observed stratum SDs.",
+      "allowed_uses": [
+        "diagnostic",
+        "evaluation"
+      ]
+    },
+    {
+      "id": "nhhaze_development_exposure_terminal",
+      "reference": "GitHub-main terminal and identity evidence for haze4k_v5_r15_s0e_same_action_population_precision_20260720.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    }
+  ],
+  "dependency_roles": {
+    "dataset_role_evidence": [
+      "diagnostic"
+    ],
+    "variance_planning_evidence": [
+      "evaluation"
+    ]
+  },
+  "stages": {
+    "dataset_governance": {
+      "evidence_roles": [
+        "development_screening"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "existing_dataset_role_ledger"
+      ]
+    }
+  },
+  "route_families": {
+    "existing_dataset_role_ledger": {
+      "core_assumption": "Archived role assignments, known-overlap exclusions, and salted historical selections are sufficient to reconstruct a non-overlapping unassigned scene pool without reading protected outcomes.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the single metadata-only role-ledger qualification reaches a typed terminal.",
+      "reopen_evidence_types": [
+        "new_dataset_or_exposure_evidence"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "dataset_scope",
+    "precision_model"
+  ],
+  "amendments": []
+}

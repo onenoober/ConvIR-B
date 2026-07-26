@@ -1,0 +1,141 @@
+{
+  "evidence_identity_checks": {
+    "haze4k_test_terminal": true,
+    "haze4k_train_terminal": true,
+    "its_quarantine_terminal": true,
+    "nhhaze_development_only": true,
+    "ots_quarantine_terminal": true,
+    "reside_measurement_terminal": true
+  },
+  "fixed_dataset_roles": {
+    "haze4k_test": {
+      "assignment_digest": "6ca5174470dad2b4eef4ae15c5a13a99d8ae9fc0bc2ea1116b199c4d4bc05582",
+      "candidate_confirmation_scenes": 150,
+      "historical_development_scenes": 100,
+      "independent_scenes": 250,
+      "protected_confirmation_preserved": true,
+      "role": "split_development_and_candidate_confirmation"
+    },
+    "haze4k_train": {
+      "assignment_digest": "7b21d3af455475f7bb29198081a2ef2e651cffaac6149fd27741863c765b4efc",
+      "independent_scenes": 750,
+      "internal_development_scenes": 150,
+      "role": "development_only",
+      "training_scenes": 600
+    },
+    "nhhaze": {
+      "eligible_as_final_external_validation": false,
+      "historical_development_scenes": 55,
+      "independent_scenes": 55,
+      "role": "development_only",
+      "unassigned_scenes": 0
+    }
+  },
+  "future_claim_protocol": {
+    "allocation_salt": "convir-existing-dataset-role-ledger-v1",
+    "authorization_required": "a later typed contract must freeze offset, count, estimand, gates, and data role before measurement",
+    "claim_status": "no scene is claimed or exposed by this qualification route",
+    "claim_unit": "contiguous offset and count within each stratum-specific unassigned order",
+    "ordering": "SHA-256(salt + vertical-bar + stratum + -unassigned-scenes + vertical-bar + scene_id), then scene_id"
+  },
+  "image_content_decoded": false,
+  "independent_unit": "original_clear_scene",
+  "limitations": [
+    "ITS and OTS are known-overlap-quarantined populations, not fully source-disjoint populations.",
+    "The remaining 574 unresolved ITS parent groups are not interpreted as non-overlaps.",
+    "Haze variants, tiles, regions, pixels, actions, and resamples never increase the independent scene count.",
+    "NH-Haze is development-only because all 55 scenes participated in prior decisions.",
+    "The Haze4K 150-scene candidate-confirmation role is preserved without reading its images, targets, or outcomes.",
+    "This route authorizes contract authoring only and does not authorize a measurement, training run, model selection, confirmation, or deployment claim."
+  ],
+  "marker": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_V1_COMPLETE",
+  "model_or_checkpoint_accessed": false,
+  "namespace_and_role_checks": {
+    "ITS": {
+      "all_exclusions_official": true,
+      "allocation_order_complete": true,
+      "eligible_count": true,
+      "eligible_partition": true,
+      "exclusion_count": true,
+      "exclusion_rows_unique": true,
+      "historical_count": true,
+      "historical_digest": true,
+      "official_count": true,
+      "official_partition": true,
+      "unassigned_count": true
+    },
+    "OTS": {
+      "all_exclusions_official": true,
+      "allocation_order_complete": true,
+      "eligible_count": true,
+      "eligible_partition": true,
+      "exclusion_count": true,
+      "exclusion_rows_unique": true,
+      "historical_count": true,
+      "historical_digest": true,
+      "official_count": true,
+      "official_partition": true,
+      "unassigned_count": true
+    }
+  },
+  "operation_id": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_QUALIFY",
+  "precision_feasibility": {
+    "feasible": true,
+    "method": "normal mean with two-stratum simultaneous 95 percent critical value",
+    "planning_sd_assurance_multiplier": 1.05,
+    "planning_sd_rule": "Multiply each observed 1,587-scene sample SD by 1.05, a conservative bound above the one-sided 95 percent normal-theory SD multiplier implied by the chi-square lower-tail concentration bound.",
+    "simultaneous_critical_value": 2.241402727604947,
+    "target_half_width_db": 0.025,
+    "utility_margin_db": 0.05
+  },
+  "protected_data_touched": false,
+  "raw_cloud_ledger": {
+    "archived_to_github": false,
+    "filename": "reside_scene_role_ledger.jsonl",
+    "rows": 19970,
+    "sha256": "2f387c0992c1f0717b75cdfacea0c39d6d11e8b98ad8a8d3e5c513d572b001b2"
+  },
+  "reporting_policy": {
+    "ITS": "separate indoor synthetic stratum",
+    "OTS": "separate outdoor synthetic stratum",
+    "cross_dataset_estimand": "only a separately predeclared stratified estimand such as the maximum of stratum means",
+    "pooling": "no sample-size-weighted exchangeable pooling"
+  },
+  "reside_strata": {
+    "ITS": {
+      "capacity_feasible": true,
+      "capacity_margin_scenes": 4011,
+      "future_formal_scene_requirement": 3215,
+      "historical_development_exposure_scenes": 1587,
+      "historical_exposure_digest": "29b68fb172c766cf50a5e2193f6e3809db9037426784bc356b585596ab675775",
+      "known_overlap_excluded_scenes": 2187,
+      "known_overlap_quarantined_eligible_scenes": 8813,
+      "official_scenes": 11000,
+      "planning_sd_db": 0.602251735447599,
+      "planning_sd_upper_bound_db": 0.632364322219979,
+      "unassigned_allocation_order_digest": "95b4e43baf6774d334bd12d4ea7fec276899e64b7a0df318242205bd2a586a2e",
+      "unassigned_membership_digest": "a420e4c875bc269ca0e05a78c4115c1b6849712f3b9e4b36d829e12727f1f17f",
+      "unassigned_scenes": 7226
+    },
+    "OTS": {
+      "capacity_feasible": true,
+      "capacity_margin_scenes": 4050,
+      "future_formal_scene_requirement": 2369,
+      "historical_development_exposure_scenes": 1587,
+      "historical_exposure_digest": "084274e75172fdb90df2489af8c440527226e6176db99648cb0c98873dc56fec",
+      "known_overlap_excluded_scenes": 964,
+      "known_overlap_quarantined_eligible_scenes": 8006,
+      "official_scenes": 8970,
+      "planning_sd_db": 0.5170106753649101,
+      "planning_sd_upper_bound_db": 0.5428612091331556,
+      "unassigned_allocation_order_digest": "30781973b08e38e4dbc68b60200dfe83172293ba06cdd6518c44cb70dd9d5a06",
+      "unassigned_membership_digest": "65f6210891a9f72f696084346af7220c486eb07a3bfa36ef924a3108015e415f",
+      "unassigned_scenes": 6419
+    }
+  },
+  "route_id": "convir-existing-dataset-role-ledger-v1",
+  "run_id": "convir-existing-dataset-role-ledger-v1-r1",
+  "schema_version": 1,
+  "scope": "outcome-blind role and exposure qualification for the existing ConvIR dataset inventory",
+  "training_or_inference_occurred": false
+}

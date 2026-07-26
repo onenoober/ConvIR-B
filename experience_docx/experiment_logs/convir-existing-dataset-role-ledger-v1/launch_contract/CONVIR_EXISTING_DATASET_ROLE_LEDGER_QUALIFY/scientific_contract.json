@@ -1,0 +1,319 @@
+{
+  "competing_explanation": "A nominally large dataset can still provide insufficient fresh evidence if known overlaps, prior development exposure, duplicated clear targets, or nested haze variants are incorrectly counted as independent scenes.",
+  "controls": [
+    "GitHub-main parent terminal identities and SHA-256-bound compact evidence",
+    "exact official clear-scene namespace counts",
+    "authorized exclusion membership and count checks",
+    "reproduction of both archived 1,587-scene selection digests",
+    "pairwise-disjoint excluded, historically exposed, and unassigned roles",
+    "stable salted order digest for each unassigned pool",
+    "no image decode, checkpoint access, model call, training, inference, or outcome computation"
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "evidence_identity_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "namespace_veto_after_valid_evidence",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "namespace_reconstruction": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "role_veto_after_valid_namespace",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "namespace_reconstruction": [
+            "pass"
+          ],
+          "role_disjointness": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "valid_capacity_failure",
+        "terminal": "fail",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "namespace_reconstruction": [
+            "pass"
+          ],
+          "remaining_capacity": [
+            "unfavorable"
+          ],
+          "role_disjointness": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "unresolved_capacity",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "namespace_reconstruction": [
+            "pass"
+          ],
+          "remaining_capacity": [
+            "indeterminate",
+            "invalid"
+          ],
+          "role_disjointness": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "qualified_capacity_and_precision",
+        "terminal": "pass",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "future_precision_feasibility": [
+            "met"
+          ],
+          "namespace_reconstruction": [
+            "pass"
+          ],
+          "remaining_capacity": [
+            "favorable"
+          ],
+          "role_disjointness": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "capacity_without_precision",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "future_precision_feasibility": [
+            "unmet",
+            "invalid"
+          ],
+          "namespace_reconstruction": [
+            "pass"
+          ],
+          "remaining_capacity": [
+            "favorable"
+          ],
+          "role_disjointness": [
+            "pass"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "stop",
+        "next_action_id": "stop_capacity_dependent_program",
+        "terminal": {
+          "authorizes": "NONE",
+          "decision": "CONVIR_EXISTING_DATASET_CAPACITY_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "allow_predeclared_evidence",
+        "next_action_id": "repair_dataset_role_evidence",
+        "terminal": {
+          "authorizes": "DATA_ROLE_EVIDENCE_REPAIR_REVIEW_ONLY",
+          "decision": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "advance",
+        "next_action_id": "author_unified_development_contract",
+        "terminal": {
+          "authorizes": "UNIFIED_DEVELOPMENT_CONTRACT_AUTHORING_ONLY",
+          "decision": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "image content decode",
+    "Haze4K candidate-confirmation access",
+    "checkpoint or model access",
+    "training or inference",
+    "scientific outcome recomputation",
+    "sample-size-weighted ITS and OTS pooling",
+    "treating haze variants, tiles, regions, pixels, actions, or resamples as independent samples",
+    "claiming complete Haze4K-to-ITS source disjointness",
+    "claiming NH-Haze as fresh external confirmation",
+    "starting a downstream measurement"
+  ],
+  "gates": [
+    {
+      "comparison_family": "its_ots_capacity_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "unassigned_scene_capacity",
+      "id": "evidence_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "all six archived dataset-role and variance-planning evidence groups match their frozen terminal tuples, counts, salts, digests, thresholds, and SDs",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "simultaneous_capacity_assurance"
+    },
+    {
+      "comparison_family": "its_ots_capacity_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "unassigned_scene_capacity",
+      "id": "namespace_reconstruction",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "exact 11,000-scene ITS and 8,970-scene OTS clear namespaces with unique authorized exclusions contained in their official namespace",
+      "threshold": true,
+      "type": "coverage",
+      "uncertainty_id": "simultaneous_capacity_assurance"
+    },
+    {
+      "comparison_family": "its_ots_capacity_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "unassigned_scene_capacity",
+      "id": "role_disjointness",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "excluded, historically exposed, and unassigned roles form exact disjoint partitions and reproduce both frozen historical selection digests",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "simultaneous_capacity_assurance"
+    },
+    {
+      "comparison_family": "its_ots_capacity_family",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "unassigned_scene_capacity",
+      "id": "remaining_capacity",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "both unassigned strata meet the assurance-adjusted independent-scene requirement",
+      "threshold": "ITS>=3215_and_OTS>=2369",
+      "type": "materiality",
+      "uncertainty_id": "simultaneous_capacity_assurance"
+    },
+    {
+      "comparison_family": "its_ots_capacity_family",
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand_id": "unassigned_scene_capacity",
+      "id": "future_precision_feasibility",
+      "neutral_outcome": "met",
+      "outcomes": [
+        "met",
+        "unmet",
+        "invalid"
+      ],
+      "reference": "two-stratum simultaneous normal-mean planning with a 1.05 SD assurance multiplier",
+      "threshold": 0.025,
+      "type": "precision",
+      "uncertainty_id": "simultaneous_capacity_assurance"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "original clear scene is the independent analysis unit",
+      "same-scene haze variants are nested repeats and never independent samples",
+      "ITS and OTS remain separately reported synthetic-domain strata",
+      "known-overlap quarantine is not described as full source disjointness",
+      "the utility margin remains 0.05 dB",
+      "the precision target remains 0.025 dB",
+      "Haze4K candidate-confirmation images, targets, and outcomes remain unread",
+      "NH-Haze remains development-only"
+    ],
+    "matched_budget": "one metadata-only census of the 11,000 ITS and 8,970 OTS official clear-scene namespaces",
+    "primary_variable": "deterministic scene role classification and stable unassigned-pool ordering",
+    "reference": "archived dataset-role terminals, authorized known-overlap exclusions, and the exact prior RESIDE salted selection"
+  },
+  "operation_id": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_QUALIFY",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "original_clear_scene",
+    "independent_group_count": 13645,
+    "strata": [
+      {
+        "id": "ITS",
+        "independent_group_count": 7226
+      },
+      {
+        "id": "OTS",
+        "independent_group_count": 6419
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "separate ITS and OTS remaining-scene counts after exact known-overlap exclusion and exact historical-exposure reconstruction; both strata must meet their assurance-adjusted requirements",
+    "direction": "higher",
+    "id": "unassigned_scene_capacity",
+    "metric_id": "independent_unassigned_scene_count",
+    "strata": [
+      "ITS",
+      "OTS"
+    ],
+    "unit": "original_clear_scene"
+  },
+  "question": "Can the existing ConvIR dataset inventory be partitioned into verified exclusions, historical development exposure, protected confirmation, and stable unassigned scene pools with enough independent ITS and OTS scenes for a later contract that preserves the frozen precision target?",
+  "route_id": "convir-existing-dataset-role-ledger-v1",
+  "schema_version": 2,
+  "uncertainty": {
+    "comparison_family": "its_ots_capacity_family",
+    "confidence_level": 0.95,
+    "id": "simultaneous_capacity_assurance",
+    "independent_unit": "original_clear_scene",
+    "method_id": "normal_mean_two_stratum_sd_upper_bound"
+  }
+}

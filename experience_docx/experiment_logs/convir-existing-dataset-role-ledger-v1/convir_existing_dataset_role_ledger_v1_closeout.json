@@ -1,0 +1,159 @@
+{
+  "authorizes": "UNIFIED_DEVELOPMENT_CONTRACT_AUTHORING_ONLY",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_PASS",
+  "decision_rule_id": "qualified_capacity_and_precision",
+  "details": {
+    "protected_data_touched": false,
+    "raw_cloud_ledger_file": "reside_scene_role_ledger.jsonl",
+    "raw_cloud_ledger_sha256": "2f387c0992c1f0717b75cdfacea0c39d6d11e8b98ad8a8d3e5c513d572b001b2",
+    "required_scenes": {
+      "ITS": 3215,
+      "OTS": 2369
+    },
+    "summary_file": "convir_existing_dataset_role_ledger_v1_summary.json",
+    "training_or_inference_occurred": false,
+    "unassigned_scenes": {
+      "ITS": 7226,
+      "OTS": 6419
+    }
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "convir_existing_dataset_role_ledger_v1_summary.json": "6353eb0f485437d9879e8adec4ca5833c17769cd97c514caf428cef22d3e0ea2"
+  },
+  "failure_phase": null,
+  "family_effect": "advance",
+  "gate_outcomes": {
+    "evidence_identity": "pass",
+    "future_precision_feasibility": "met",
+    "namespace_reconstruction": "pass",
+    "remaining_capacity": "favorable",
+    "role_disjointness": "pass"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "author_unified_development_contract",
+  "operation_id": "CONVIR_EXISTING_DATASET_ROLE_LEDGER_QUALIFY",
+  "returncode": 0,
+  "route_commit": "30f0f050a18336c02854e201c64332ace741ead4",
+  "route_id": "convir-existing-dataset-role-ledger-v1",
+  "run_id": "convir-existing-dataset-role-ledger-v1-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_GATE_PASS",
+  "terminal_label": "pass",
+  "verified_assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "entrypoint_source",
+      "kind": "file",
+      "sha256": "1388c250a886ee2f6eccf5531be7ebe86853b5066d4ecd93d6cfef01b579277d"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "haze4k_test_split_closeout",
+      "kind": "file",
+      "sha256": "d3dbd88b25eee35c5922b2459a2f48b39b3fc8f686588cde9edb1d9f267f8a9f"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "haze4k_test_split_summary",
+      "kind": "file",
+      "sha256": "656407f3183f92e75e357004b04b505d2b92cd4b0f4b02b3c6a22aef57d069cf"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "haze4k_train_split_closeout",
+      "kind": "file",
+      "sha256": "dde7f4654674f776d2f2b0a687128019e477eea7b29fb8d69f01d621aa6c5887"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "haze4k_train_split_summary",
+      "kind": "file",
+      "sha256": "a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "its_exclusions",
+      "kind": "file",
+      "sha256": "c4dddbcf214c301ffa6d3879217e6336024119bb07d0f9c1f929ac040aa0dda3"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "its_quarantine_closeout",
+      "kind": "file",
+      "sha256": "a638a78a3dc7a7af82cef030ae67268c0064a08185464e5772681e61ec04010e"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "its_quarantine_summary",
+      "kind": "file",
+      "sha256": "3817a2a2778cec848ba1cfb1be64863bf30f47f2434f6d54819c6a8f346c47e9"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "nhhaze_exposure_closeout",
+      "kind": "file",
+      "sha256": "6aaec2c9536f7cc5676d5056f43475def8d4bda1e381242dae6eba0c8f8c4434"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "nhhaze_identity",
+      "kind": "file",
+      "sha256": "3f61c7bd3c4e736f7413c6705ad0b2d9dc9eba9072fc0c16cd85240b871af059"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "ots_exclusions",
+      "kind": "file",
+      "sha256": "d7526849879cf8650af545db20a5e4555cb0eb1931973612af98a5897f2e03d2"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "ots_quarantine_closeout",
+      "kind": "file",
+      "sha256": "348f255a4a99dca898a7457ccbd5f0b1a50516db6109233b8b431251f9a672f3"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "ots_quarantine_summary",
+      "kind": "file",
+      "sha256": "1d087dbc9ade15f1a8a9a0862a5a00a09ad28d64d55697a620f88f17fd4a42ff"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "reside_measurement_closeout",
+      "kind": "file",
+      "sha256": "560cac7b257fe0441519f4b2ed7dea77cd0e9d5d7646bbbfac8f2cc782dca99a"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": true,
+      "id": "reside_measurement_summary",
+      "kind": "file",
+      "sha256": "3f28c223f4f4a8a01fc435ee1de2baa5a0a488b9541c897f3fb676999c0d3946"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory"
+    }
+  ]
+}
