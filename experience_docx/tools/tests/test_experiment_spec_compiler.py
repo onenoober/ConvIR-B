@@ -142,7 +142,7 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
         second["operation"]["closeout_filename"] = "final_slim_second_closeout.json"
         spec["operations"]["SECOND"] = second
         first["runtime"]["evidence_role"] = "development_screening"
-        second["runtime"]["engineering_contract"]["cost_contract"]["workload_class"] = "adaptive_search"
+        second["runtime"]["engineering_contract"]["cost_contract"]["workload_class"] = "unknown"
         result = COMPILER.lint_bundle(
             spec_relpath="experience_docx/experiment_specs/final_slim.json",
             spec_raw=COMPILER.json_bytes(spec), program_raw=COMPILER.json_bytes(program),

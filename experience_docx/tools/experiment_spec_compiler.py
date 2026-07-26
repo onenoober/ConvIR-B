@@ -47,6 +47,18 @@ OPERATION_SOURCE_FIELDS = {
     "operation", "program_authorization", "scientific_contract", "runtime",
     "assets", "capability", "precision",
 }
+SCIENTIFIC_SOURCE_FIELDS = {
+    "question", "population", "intervention", "primary_estimand", "controls",
+    "uncertainty", "gates", "competing_explanation", "terminal_mapping",
+    "disabled_actions",
+}
+RUNTIME_SOURCE_FIELDS = {
+    "entrypoint_relpath", "timeout_seconds", "expected_wall_seconds", "total_units",
+    "evidence_role", "resume_policy", "protected_data_permissions", "environment",
+    "evidence_files", "engineering_contract", "precision_contract",
+}
+ENGINEERING_SOURCE_FIELDS = {"mode", "max_seconds", "cost_contract"}
+PRECISION_CONTRACT_SOURCE_FIELDS = {"mode", "rationale"}
 
 
 def json_bytes(value: Any) -> bytes:
@@ -163,6 +175,162 @@ def _lint_code(message: str) -> str:
     return "CONTRACT_INVALID"
 
 
+def _append_lint(errors: list[dict[str, str]], path: str, exc: Any,
+                 code: str | None = None) -> None:
+    errors.append(_lint_error(path, code or _lint_code(str(exc)), exc))
+
+
+def _lint_operation_components(
+    *, errors: list[dict[str, str]], route_id: str, operation_id: str,
+    item: dict[str, Any], effective_program: dict[str, Any] | None,
+    evidence_exists: Callable[[str], bool] | None,
+) -> None:
+    """Aggregate independent component errors for one source operation."""
+    prefix = f"operations.{operation_id}"
+    operation = item["operation"]
+    if not isinstance(operation, dict):
+        _append_lint(errors, f"{prefix}.operation", "must be an object", "INVALID_TYPE")
+        operation = None
+
+    claim = item["program_authorization"]
+    if effective_program is not None:
+        try:
+            program_contract.validate_route_authorization(
+                effective_program, claim, evidence_exists=evidence_exists,
+            )
+        except (program_contract.ProgramContractError, KeyError, TypeError, ValueError) as exc:
+            _append_lint(errors, f"{prefix}.program_authorization", exc, "PROGRAM_AUTHORIZATION_INVALID")
+
+    scientific = None
+    try:
+        scientific_source = _object(
+            item["scientific_contract"], SCIENTIFIC_SOURCE_FIELDS,
+            f"{prefix}.scientific_contract",
+        )
+        if operation is not None:
+            scientific = ops.validate_scientific_contract(
+                {
+                    "schema_version": 1, "route_id": route_id,
+                    "operation_id": operation_id, **scientific_source,
+                },
+                route_id, operation_id, operation,
+            )
+    except (ExperimentSpecError, ops.ToolError, KeyError, TypeError, ValueError) as exc:
+        _append_lint(errors, f"{prefix}.scientific_contract", exc, "SCIENTIFIC_CONTRACT_INVALID")
+
+    runtime_source = None
+    engineering = None
+    precision_contract_source = None
+    try:
+        runtime_source = _object(
+            item["runtime"], RUNTIME_SOURCE_FIELDS, f"{prefix}.runtime",
+        )
+    except (ExperimentSpecError, KeyError, TypeError, ValueError) as exc:
+        _append_lint(errors, f"{prefix}.runtime", exc, "RUNTIME_CONTRACT_INVALID")
+    if runtime_source is not None:
+        try:
+            engineering = _object(
+                runtime_source["engineering_contract"], ENGINEERING_SOURCE_FIELDS,
+                f"{prefix}.runtime.engineering_contract",
+            )
+            if engineering["mode"] != "metadata_only" and engineering["cost_contract"] is None:
+                raise ExperimentSpecError("cost_contract is required for non-metadata authoring")
+        except (ExperimentSpecError, KeyError, TypeError, ValueError) as exc:
+            _append_lint(
+                errors, f"{prefix}.runtime.engineering_contract", exc,
+                "ENGINEERING_CONTRACT_INVALID",
+            )
+            engineering = None
+        try:
+            precision_contract_source = _object(
+                runtime_source["precision_contract"], PRECISION_CONTRACT_SOURCE_FIELDS,
+                f"{prefix}.runtime.precision_contract",
+            )
+        except (ExperimentSpecError, KeyError, TypeError, ValueError) as exc:
+            _append_lint(
+                errors, f"{prefix}.runtime.precision_contract", exc,
+                "PRECISION_CONTRACT_INVALID",
+            )
+            precision_contract_source = None
+
+    validated_runtime = None
+    asset = None
+    precision = None
+    if operation is not None and runtime_source is not None \
+            and engineering is not None and precision_contract_source is not None:
+        asset_path = None if item["assets"] is None \
+            else f"{ASSET_DIRECTORY}/{route_id}__{operation_id}.json"
+        capability_path = None if item["capability"] is None \
+            else _capability_path(route_id, operation_id)
+        precision_path = None if item["precision"] is None \
+            else _precision_path(route_id, operation_id)
+        runtime = {
+            "schema_version": 2, "route_id": route_id, "operation_id": operation_id,
+            **{
+                key: value for key, value in runtime_source.items()
+                if key not in {"engineering_contract", "precision_contract"}
+            },
+            "asset_manifest_relpath": asset_path,
+            "engineering_contract": {
+                **engineering, "capability_profile_relpath": capability_path,
+            },
+            "precision_contract": {
+                **precision_contract_source, "certificate_relpath": precision_path,
+            },
+        }
+        try:
+            validated_runtime = validate_runtime_spec(
+                runtime, {"route_id": route_id, "operations": {operation_id: operation}},
+                operation_id,
+            )
+        except (ContractError, KeyError, TypeError, ValueError) as exc:
+            _append_lint(errors, f"{prefix}.runtime", exc, "RUNTIME_CONTRACT_INVALID")
+
+    if validated_runtime is not None:
+        if item["assets"] is not None:
+            try:
+                asset = validate_asset_manifest({
+                    "schema_version": 1, "route_id": route_id,
+                    "operation_id": operation_id, "assets": item["assets"],
+                }, validated_runtime)
+            except (ContractError, KeyError, TypeError, ValueError) as exc:
+                _append_lint(errors, f"{prefix}.assets", exc, "ASSET_CONTRACT_INVALID")
+        if item["capability"] is not None and (item["assets"] is None or asset is not None):
+            try:
+                validate_model_capability(
+                    {"schema_version": 1, **item["capability"]}, validated_runtime, asset,
+                )
+            except (ContractError, KeyError, TypeError, ValueError) as exc:
+                _append_lint(errors, f"{prefix}.capability", exc, "CAPABILITY_CONTRACT_INVALID")
+        if item["precision"] is not None:
+            try:
+                precision = validate_precision_certificate(
+                    {"schema_version": 1, **item["precision"]}, validated_runtime,
+                )
+            except (ContractError, KeyError, TypeError, ValueError) as exc:
+                _append_lint(errors, f"{prefix}.precision", exc, "PRECISION_CONTRACT_INVALID")
+        if scientific is not None:
+            try:
+                ops.validate_contract_runtime_alignment(
+                    scientific, validated_runtime, precision,
+                )
+            except (ops.ToolError, KeyError, TypeError, ValueError) as exc:
+                _append_lint(errors, f"{prefix}.alignment", exc)
+        if isinstance(claim, dict) and scientific is not None:
+            try:
+                permissions = claim["protected_permissions"]
+                if claim["evidence_role"] != validated_runtime["evidence_role"] \
+                        or claim["evidence_role"] != scientific["population"]["evidence_role"]:
+                    raise ExperimentSpecError("program/scientific/runtime roles differ")
+                if permissions != validated_runtime["protected_data_permissions"] \
+                        or permissions != {
+                            key: scientific["population"][key] for key in permissions
+                        }:
+                    raise ExperimentSpecError("program/scientific/runtime permissions differ")
+            except (ExperimentSpecError, KeyError, TypeError, ValueError) as exc:
+                _append_lint(errors, f"{prefix}.alignment", exc)
+
+
 def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
                 evidence_exists: Callable[[str], bool] | None = None) -> dict[str, Any]:
     """Return stable, aggregate authoring diagnostics without writing files."""
@@ -219,12 +387,13 @@ def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
         except ExperimentSpecError as exc:
             errors.append(_lint_error("experiment_spec_relpath", "IDENTITY_MISMATCH", exc))
     try:
-        program_contract.validate_program_contract(
+        effective_program = program_contract.validate_program_contract(
             program_source, evidence_exists=evidence_exists,
         )
         program_ok = True
     except program_contract.ProgramContractError as exc:
         program_ok = False
+        effective_program = None
         errors.append(_lint_error("program_contract", "PROGRAM_CONTRACT_INVALID", exc))
     operations = source.get("operations")
     if not isinstance(operations, dict) or not operations:
@@ -260,23 +429,15 @@ def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
         }
         for item in errors
     )
-    if top_ready and program_ok:
-        semantic_errors = 0
+    if top_ready:
         for operation_id in structurally_valid_operations:
-            isolated = dict(source)
-            isolated["first_operation"] = operation_id
-            isolated["operations"] = {operation_id: operations[operation_id]}
-            try:
-                compile_bundle(
-                    spec_relpath=spec_relpath, spec_raw=json_bytes(isolated),
-                    program_raw=program_raw, evidence_exists=evidence_exists,
-                )
-            except (ExperimentSpecError, KeyError, TypeError, ValueError) as exc:
-                semantic_errors += 1
-                errors.append(_lint_error(
-                    f"operations.{operation_id}", _lint_code(str(exc)), exc,
-                ))
-        if not semantic_errors and len(structurally_valid_operations) == len(operations):
+            _lint_operation_components(
+                errors=errors, route_id=route_id, operation_id=operation_id,
+                item=operations[operation_id],
+                effective_program=effective_program if program_ok else None,
+                evidence_exists=evidence_exists,
+            )
+        if not errors and len(structurally_valid_operations) == len(operations):
             try:
                 compile_bundle(
                     spec_relpath=spec_relpath, spec_raw=spec_raw,
@@ -354,30 +515,26 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
             raise ExperimentSpecError("all operations must share one route-level mechanism claim")
         scientific_path = _scientific_path(route_id, operation_id)
         scientific_paths[operation_id] = scientific_path
-        scientific_source = _object(item["scientific_contract"], {
-            "question", "population", "intervention", "primary_estimand", "controls",
-            "uncertainty", "gates", "competing_explanation", "terminal_mapping",
-            "disabled_actions",
-        }, f"operations.{operation_id}.scientific_contract")
+        scientific_source = _object(
+            item["scientific_contract"], SCIENTIFIC_SOURCE_FIELDS,
+            f"operations.{operation_id}.scientific_contract",
+        )
         scientific = {
             "schema_version": 1, "route_id": route_id, "operation_id": operation_id,
             **scientific_source,
         }
-        runtime_source = _object(item["runtime"], {
-            "entrypoint_relpath", "timeout_seconds", "expected_wall_seconds", "total_units",
-            "evidence_role", "resume_policy", "protected_data_permissions", "environment",
-            "evidence_files", "engineering_contract", "precision_contract",
-        }, f"operations.{operation_id}.runtime")
-        engineering = _object(runtime_source["engineering_contract"], {
-            "mode", "max_seconds", "cost_contract",
-        },
+        runtime_source = _object(
+            item["runtime"], RUNTIME_SOURCE_FIELDS, f"operations.{operation_id}.runtime",
+        )
+        engineering = _object(
+            runtime_source["engineering_contract"], ENGINEERING_SOURCE_FIELDS,
                                f"operations.{operation_id}.runtime.engineering_contract")
         if engineering["mode"] != "metadata_only" and engineering["cost_contract"] is None:
             raise ExperimentSpecError(
                 f"operations.{operation_id}.runtime.engineering_contract.cost_contract is required"
             )
         precision_contract_source = _object(
-            runtime_source["precision_contract"], {"mode", "rationale"},
+            runtime_source["precision_contract"], PRECISION_CONTRACT_SOURCE_FIELDS,
             f"operations.{operation_id}.runtime.precision_contract",
         )
         asset_path = None if item["assets"] is None \
