@@ -1,0 +1,120 @@
+{
+  "complete_scene_coverage": true,
+  "completed_inferences": 12696,
+  "dataset_identity": {
+    "ITS": {
+      "checks": {
+        "all_exclusions_are_official": true,
+        "eligible_count": true,
+        "exclusion_count": true,
+        "official_clear_count": true,
+        "official_variant_count": true,
+        "ten_variants_per_scene": true
+      },
+      "counts": {
+        "its_train_clear": 10000,
+        "its_train_variants": 100000,
+        "its_validation_clear": 1000,
+        "its_validation_variants": 10000
+      }
+    },
+    "OTS": {
+      "checks": {
+        "all_exclusions_are_official": true,
+        "all_variants_parse": true,
+        "eligible_count": true,
+        "exclusion_count": true,
+        "official_clear_count": true,
+        "official_variant_count": true,
+        "thirty_five_variants_per_scene": true
+      },
+      "parse_failures": []
+    }
+  },
+  "estimand": {
+    "familywise_confidence": 0.95,
+    "per_stratum": "mean original-clear-scene worst-held-out-phase area-weighted L-infinity error for two keep-referenced continuous PSNR utility contrasts",
+    "precision_distance_db": 0.025,
+    "primary": "maximum of the separately estimated ITS and OTS stratum means; no sample-size-weighted pooling",
+    "simultaneous_z": 2.241402727604947,
+    "utility_margin_db": 0.05
+  },
+  "failure_count": 0,
+  "failures": [],
+  "limitations": [
+    "The populations quarantine verified known overlaps only and are not claimed fully source-disjoint.",
+    "ITS and OTS are separate synthetic-domain strata; neither is transported to real haze and they are not pooled as exchangeable scenes.",
+    "Haze variants, phases, tiles, pixels, actions and bootstrap draws are nested and never increase independent n.",
+    "The failed ITS q construct is not used, reopened or reinterpreted by this continuous-utility route.",
+    "This development-screening measurement cannot authorize training, model selection, confirmation, canary, locked-test or deployment use."
+  ],
+  "marker": "RESIDE_KNOWN_OVERLAP_CONTINUOUS_UTILITY_MEASUREMENT_COMPLETE",
+  "operation_id": "RESIDE_KNOWN_OVERLAP_CONTINUOUS_UTILITY_MEASURE",
+  "parent_identity_checks": {
+    "its_q_construct_remains_blocked": true,
+    "its_quarantine_terminal": true,
+    "ots_quarantine_terminal": true,
+    "precision_pilot_terminal": true
+  },
+  "route_id": "reside-known-overlap-continuous-utility-measurement-v1",
+  "run_id": "reside-known-overlap-continuous-utility-measurement-v1-repair1",
+  "schema_version": 1,
+  "scope": "separately reported ITS indoor and OTS outdoor known-overlap-quarantined synthetic-scene populations",
+  "selection": {
+    "checks": {
+      "exact_scene_count_per_stratum": true,
+      "exact_variant_count_per_scene": true,
+      "selected_scenes_not_excluded": true
+    },
+    "independent_unit": "original_clear_scene",
+    "method": "first 1,587 eligible clear-scene IDs and first four same-scene official haze filenames after namespace-specific salted SHA-256 ordering",
+    "nested_variants_per_scene": 4,
+    "salt": "reside-known-overlap-continuous-utility-measurement-v1",
+    "scene_digests": {
+      "ITS": "29b68fb172c766cf50a5e2193f6e3809db9037426784bc356b585596ab675775",
+      "OTS": "084274e75172fdb90df2489af8c440527226e6176db99648cb0c98873dc56fec"
+    },
+    "scenes_per_stratum": 1587
+  },
+  "strata": {
+    "ITS": {
+      "bootstrap_lower_db": 0.8558599676054481,
+      "bootstrap_resamples": 20000,
+      "bootstrap_seed": 20260903,
+      "bootstrap_upper_db": 0.9238485154876688,
+      "independent_scenes": 1587,
+      "lower_db": 0.8558599676054481,
+      "mean_db": 0.8898195655737419,
+      "nested_variants": 6348,
+      "normal_simultaneous_distance_db": 0.03388515627125224,
+      "precision_distance_db": 0.03402894991392691,
+      "sample_sd_db": 0.602251735447599,
+      "upper_db": 0.9238485154876688,
+      "utility_margin_db": 0.05
+    },
+    "OTS": {
+      "bootstrap_lower_db": 1.037236506272186,
+      "bootstrap_resamples": 20000,
+      "bootstrap_seed": 20260904,
+      "bootstrap_upper_db": 1.094624535984438,
+      "independent_scenes": 1587,
+      "lower_db": 1.0365580937651073,
+      "mean_db": 1.0656472378845931,
+      "nested_variants": 6348,
+      "normal_simultaneous_distance_db": 0.029089144119485794,
+      "precision_distance_db": 0.02908914411948582,
+      "sample_sd_db": 0.5170106753649101,
+      "upper_db": 1.094736382004079,
+      "utility_margin_db": 0.05
+    }
+  },
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "RESIDE_CONTINUOUS_UTILITY_MEASUREMENT_INCONCLUSIVE",
+    "gate_reasons": [
+      "ITS precision distance exceeds 0.025 dB",
+      "OTS precision distance exceeds 0.025 dB"
+    ],
+    "state": "COMPLETED_INCONCLUSIVE"
+  }
+}

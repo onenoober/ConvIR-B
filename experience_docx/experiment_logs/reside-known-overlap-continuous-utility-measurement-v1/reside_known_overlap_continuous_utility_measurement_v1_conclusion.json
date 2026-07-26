@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "route_id": "reside-known-overlap-continuous-utility-measurement-v1",
+  "operation_id": "RESIDE_KNOWN_OVERLAP_CONTINUOUS_UTILITY_MEASURE",
+  "run_id": "reside-known-overlap-continuous-utility-measurement-v1-repair1",
+  "state": "COMPLETED_INCONCLUSIVE",
+  "decision": "RESIDE_CONTINUOUS_UTILITY_MEASUREMENT_INCONCLUSIVE",
+  "authorizes": "NONE",
+  "primary_result": "All 1,587 independent original-clear-scene groups and four nested haze variants per scene completed in each separately reported known-overlap-quarantined stratum. ITS mean continuous-utility error was 0.8898195655737419 dB with simultaneous interval [0.8558599676054481, 0.9238485154876688] and precision distance 0.03402894991392691 dB. OTS mean error was 1.0656472378845931 dB with simultaneous interval [1.0365580937651073, 1.094736382004079] and precision distance 0.02908914411948582 dB. Although both intervals lie wholly above the frozen 0.05 dB utility margin, the predeclared precision-first terminal mapping requires COMPLETED_INCONCLUSIVE because both precision distances exceed 0.025 dB; the result must not be retrospectively relabeled FAIL.",
+  "gate_reasons": [
+    "ITS precision distance 0.03402894991392691 dB exceeds the frozen 0.025 dB target.",
+    "OTS precision distance 0.02908914411948582 dB exceeds the frozen 0.025 dB target."
+  ],
+  "competing_explanation": "The archived Haze4K planning SD of 0.444218872067388 dB underestimated the realized between-scene variation in both target-domain strata: ITS sample SD was 0.602251735447599 dB and OTS sample SD was 0.5170106753649101 dB. The larger observed errors may also reflect genuine indoor/outdoor synthetic-domain heterogeneity or the frozen worst-phase and L-infinity aggregation, but this route does not alter those estimands or identify which explanation dominates.",
+  "limitations": [
+    "The populations quarantine verified known overlaps only and are not fully source-disjoint from Haze4K.",
+    "ITS and OTS are separate synthetic-domain strata; they are not pooled as exchangeable scenes and do not establish transport to real haze.",
+    "Haze variants, phases, tiles, pixels, actions and bootstrap draws are nested repeats and never increase the independent sample count.",
+    "The frozen precision-first terminal mapping forbids a post hoc scientific FAIL despite both reported intervals lying above 0.05 dB.",
+    "This development-screening terminal authorizes no training, model selection, confirmation, canary, locked-test, deployment or next-stage experiment."
+  ]
+}
