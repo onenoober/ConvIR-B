@@ -35,9 +35,15 @@ hash changes.
    uncertainty rule, data role and terminal action. Formal precision needs a
    pre-run feasibility certificate; a changed production path needs one
    identity-bound capability profile and matching device-aware synthetic contract.
+   Run the compiler's aggregate lint before derivation. Any cost/termination
+   claim also freezes a machine-validated cost strategy: use a same-scale probe
+   for adaptive/nonlinear work, or fixed-linear extrapolation only for an exact
+   fixed-count production map with bounded shape and constant memory.
    Historical manifest schema 4/5 routes remain immutable and supported.
 3. EXECUTE: run one route-ready gate, commit/push once, plan once and start
    once. Confirm positive workload progress once and finish near the frozen ETA.
+   Honor returned retry/not-before timestamps; an early repeated finish returns
+   cached state and must not become polling.
    Never repeat checks owned by the validator/lifecycle or create a watcher.
 4. DECIDE: interpret complete evidence once. The typed closeout alone
    authorizes a next stage; scientific FAIL is never an engineering retry.
@@ -111,7 +117,7 @@ GitHub evidence.
 - Windows calls WSL only as `wsl.exe -d Ubuntu-22.04 --exec` plus a fixed Linux
   program and literal argv. Never use Windows Git on the WSL UNC worktree and
   never place PowerShell, WSL, and SSH syntax in one command string.
-- Standard route lifecycle uses `convir-ops` v5.1 with stable six-tool protocol
+- Standard route lifecycle uses `convir-ops` v5.2 with stable six-tool protocol
   schema 4 and canonical route-manifest schema 6. Any uncovered cloud action uses
   one committed, unchanged Bash file through `experience_docx/tools/convirctl.py
   remote-script`; no inline SSH command or untracked script is valid.

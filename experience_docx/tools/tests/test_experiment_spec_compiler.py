@@ -40,6 +40,13 @@ def sources(rules_commit="a" * 40):
         "engineering_contract": {
             "mode": runtime()["engineering_contract"]["mode"],
             "max_seconds": runtime()["engineering_contract"]["max_seconds"],
+            "cost_contract": {
+                "strategy": "same_scale_probe",
+                "workload_class": "fixed_iteration_map",
+                "formal_iterations": 1,
+                "max_wall_seconds": 60,
+                "max_peak_memory_mib": 512,
+            },
         },
         "precision_contract": {
             "mode": runtime()["precision_contract"]["mode"],
@@ -125,6 +132,61 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
         del spec["operations"]["ACCEPT"]["scientific_contract"]["gates"]
         with self.assertRaises(COMPILER.ExperimentSpecError):
             compile_sources(program, spec)
+
+    def test_lint_aggregates_independent_authoring_errors(self):
+        program, spec = sources()
+        first = spec["operations"]["ACCEPT"]
+        second = copy.deepcopy(first)
+        second["operation"]["mode"] = "second"
+        second["operation"]["output_id"] = "final-slim-second"
+        second["operation"]["closeout_filename"] = "final_slim_second_closeout.json"
+        spec["operations"]["SECOND"] = second
+        first["runtime"]["evidence_role"] = "development_screening"
+        second["runtime"]["engineering_contract"]["cost_contract"]["workload_class"] = "adaptive_search"
+        result = COMPILER.lint_bundle(
+            spec_relpath="experience_docx/experiment_specs/final_slim.json",
+            spec_raw=COMPILER.json_bytes(spec), program_raw=COMPILER.json_bytes(program),
+            evidence_exists=lambda _: True,
+        )
+        self.assertEqual("EXPERIMENT_SPEC_INVALID", result["status"])
+        paths = {item["path"] for item in result["errors"]}
+        self.assertTrue({"operations.ACCEPT", "operations.SECOND"} <= paths)
+        self.assertTrue(all(set(item) == {"path", "code", "message"} for item in result["errors"]))
+
+    def test_new_authoring_requires_an_explicit_cost_strategy(self):
+        program, spec = sources()
+        spec["operations"]["ACCEPT"]["runtime"]["engineering_contract"]["cost_contract"] = None
+        lint = COMPILER.lint_bundle(
+            spec_relpath="experience_docx/experiment_specs/final_slim.json",
+            spec_raw=COMPILER.json_bytes(spec), program_raw=COMPILER.json_bytes(program),
+            evidence_exists=lambda _: True,
+        )
+        self.assertTrue(lint["errors"])
+
+    def test_write_is_atomic_when_aggregate_lint_fails(self):
+        program, spec = sources()
+        spec["operations"]["ACCEPT"]["runtime"]["evidence_role"] = "development_screening"
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+            spec_path = repo / "experience_docx/experiment_specs/final_slim.json"
+            program_path = repo / "experience_docx/research_programs/final_slim.json"
+            spec_path.parent.mkdir(parents=True)
+            program_path.parent.mkdir(parents=True)
+            spec_path.write_bytes(COMPILER.json_bytes(spec))
+            program_path.write_bytes(COMPILER.json_bytes(program))
+            completed = subprocess.run(
+                [
+                    sys.executable, str(TOOLS / "experiment_spec_compiler.py"),
+                    "--repo", str(repo), "--spec",
+                    "experience_docx/experiment_specs/final_slim.json", "--write",
+                ],
+                text=True, capture_output=True, check=False,
+            )
+            self.assertEqual(2, completed.returncode)
+            report = json.loads(completed.stdout)
+            self.assertEqual("EXPERIMENT_SPEC_INVALID", report["status"])
+            self.assertFalse((repo / COMPILER.MANIFEST_RELPATH).exists())
+            self.assertFalse((repo / "experience_docx/route_runtime_specs/ACCEPT.json").exists())
 
     def test_compiler_rejects_adjacent_budget_overrun_but_allows_orthogonal_escape(self):
         program, spec = sources()

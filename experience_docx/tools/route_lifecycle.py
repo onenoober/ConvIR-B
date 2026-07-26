@@ -40,9 +40,11 @@ WORKLOAD_STARTED = False
 
 
 class LifecycleError(RuntimeError):
-    def __init__(self, message: str, *, phase: str):
+    def __init__(self, message: str, *, phase: str,
+                 control_diagnostic: dict[str, Any] | None = None):
         super().__init__(message)
         self.phase = phase
+        self.control_diagnostic = control_diagnostic
 
 
 def safe_diagnostic_text(value: Any, maximum: int) -> str:
@@ -70,6 +72,21 @@ def diagnostic_log_tail(path: Path, maximum: int = 3072) -> str:
     except OSError:
         return ""
     return safe_diagnostic_text(raw.decode("utf-8", errors="replace"), maximum)
+
+
+def safe_control_diagnostic(value: Any) -> dict[str, Any]:
+    """Keep only bounded, non-scientific lifecycle diagnostics."""
+    if not isinstance(value, dict):
+        return {}
+    failed = value.get("failed_contract_checks")
+    if not isinstance(failed, list):
+        return {}
+    result = []
+    token = __import__("re").compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
+    for item in failed[:32]:
+        if isinstance(item, str) and token.fullmatch(item):
+            result.append(item)
+    return {"failed_contract_checks": sorted(set(result))} if result else {}
 
 
 def sha256(path: Path) -> str:
@@ -326,7 +343,16 @@ def validate_contract_result(path: Path, spec: dict[str, Any]) -> dict[str, Any]
         and all(item is True for item in value["checks"].values()),
     )
     if not all(required_true):
-        raise LifecycleError("contract result did not pass", phase="contract")
+        failed = []
+        if isinstance(value.get("checks"), dict):
+            failed = [
+                key for key, passed in value["checks"].items()
+                if isinstance(key, str) and passed is False
+            ]
+        raise LifecycleError(
+            "contract result did not pass", phase="contract",
+            control_diagnostic={"failed_contract_checks": failed},
+        )
     if "engineering" in expected:
         engineering = value["engineering"]
         capability = spec.get("_validated_capability_profile")
@@ -352,6 +378,37 @@ def validate_contract_result(path: Path, spec: dict[str, Any]) -> dict[str, Any]
                 raise LifecycleError("engineering fixture is below the capability minimum", phase="contract")
             if engineering.get("production_path_exercised") is not True:
                 raise LifecycleError("engineering contract did not exercise the production path", phase="contract")
+        cost_contract = spec["engineering_contract"].get("cost_contract")
+        if cost_contract is not None:
+            cost = engineering.get("cost")
+            if not isinstance(cost, dict) or set(cost) != {
+                "observed_iterations", "observed_wall_seconds",
+                "observed_peak_memory_mib",
+            }:
+                raise LifecycleError("engineering cost evidence is invalid", phase="contract")
+            expected_iterations = (
+                cost_contract["formal_iterations"]
+                if cost_contract["strategy"] == "same_scale_probe"
+                else cost_contract["probe_iterations"]
+            )
+            if cost.get("observed_iterations") != expected_iterations:
+                raise LifecycleError("engineering cost iteration count mismatch", phase="contract")
+            wall = cost.get("observed_wall_seconds")
+            peak = cost.get("observed_peak_memory_mib")
+            if not isinstance(wall, (int, float)) or isinstance(wall, bool) or wall < 0 \
+                    or not isinstance(peak, (int, float)) or isinstance(peak, bool) or peak < 0:
+                raise LifecycleError("engineering cost measurements are invalid", phase="contract")
+            wall_limit = (
+                cost_contract["max_wall_seconds"]
+                if cost_contract["strategy"] == "same_scale_probe"
+                else cost_contract["fixed_overhead_seconds"]
+                + cost_contract["probe_iterations"]
+                * cost_contract["max_seconds_per_iteration"]
+            )
+            if wall > wall_limit + 1e-9:
+                raise LifecycleError("engineering cost wall-time bound failed", phase="contract")
+            if peak > cost_contract["max_peak_memory_mib"]:
+                raise LifecycleError("engineering cost memory bound failed", phase="contract")
     return value
 
 
@@ -689,6 +746,9 @@ def main() -> None:
                     "protected_data_touched": bool(
                         observed_roles & protected_roles
                         or WORKLOAD_STARTED and current_role in protected_roles
+                    ),
+                    **safe_control_diagnostic(
+                        getattr(exc, "control_diagnostic", None)
                     ),
                 },
             }

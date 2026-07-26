@@ -71,6 +71,14 @@ completed_units and total_units to status.txt. The MCP also accepts legacy
 route-specific keys matching NAME_PROGRESS, so completed A1 routes remain
 observable without preserving a route-specific parser.
 
+Long engineering contracts use `write_contract_progress`, whose exact status
+fields are phase, event, stage, completed_iterations and total_iterations. Any
+extra field makes the milestone ineligible for MCP parsing, preventing metrics,
+outcomes, data ids or scientific values from entering control telemetry. A
+finish result carrying retry-after/not-before is a command boundary: calls made
+before not-before return cached status, do not contact the cloud and do not
+consume the finite observation budget.
+
 ### 2026-07-20 WSL worktree Git boundary
 
 Invalid form: invoking the Windows `git` selected by PowerShell while using a

@@ -28,7 +28,7 @@ from route_runtime_contract import (
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "5.1.0"
+SERVER_VERSION = "5.2.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}
@@ -438,6 +438,8 @@ def validate_committed_operation_bundle(bare_repo, route_commit, manifest,
         context.update({
             "runtime_spec_digest": hashlib.sha256(spec_raw.encode()).hexdigest(),
             "engineering_contract_mode": spec["engineering_contract"]["mode"],
+            "engineering_max_seconds": spec["engineering_contract"]["max_seconds"],
+            "expected_wall_seconds": spec["expected_wall_seconds"],
             "precision_mode": spec["precision_contract"]["mode"],
             "capability_profile_id": None if capability is None else capability["profile_id"],
             "precision_certificate_id": None if precision is None else precision["certificate_id"],
@@ -1428,6 +1430,7 @@ def issue_receipt(context, gpu_index, launch_output):
             "launched": True, "finish_calls": 0, "finish_closed": None,
             "monitor_stale_count": 0, "terminal_closeout": None,
             "engineering_failure_resolution": None, "workload_verified": False,
+            "finish_not_before_unix": 0, "pending_finish_response": None,
         },
     )
 
@@ -1618,6 +1621,11 @@ def begin_finish(token):
             raise ToolError("receipt has no successful launch")
         if record.get("finish_closed"):
             raise ToolError(f"finish is closed: {record['finish_closed']}")
+        now = int(time.time())
+        not_before = record.get("finish_not_before_unix", 0)
+        cached = record.get("pending_finish_response")
+        if isinstance(not_before, int) and now < not_before and isinstance(cached, dict):
+            return None, cached
         calls = record.get("finish_calls", 0)
         if not isinstance(calls, int) or calls < 0:
             raise ToolError("receipt finish counter is invalid", failure_class="command_infra")
@@ -1625,10 +1633,18 @@ def begin_finish(token):
             record["finish_closed"] = "OBSERVATION_BUDGET_EXHAUSTED"
             raise ToolError("finish observation budget is exhausted")
         record["finish_calls"] = calls + 1
+        record["finish_not_before_unix"] = 0
+        record["pending_finish_response"] = None
         context = dict(record["payload"]["context"])
         context["_receipt_issued_at"] = int(record["payload"]["issued_at"])
         context["_monitor_stale_count"] = int(record.get("monitor_stale_count", 0))
-        return context
+        return context, None
+
+
+def cache_finish_response(token, response, not_before):
+    with locked_record("receipt", token) as record:
+        record["finish_not_before_unix"] = int(not_before)
+        record["pending_finish_response"] = response
 
 
 def close_finish(token, state):
@@ -1910,6 +1926,33 @@ def workload_progress(status):
     return {"completed_units": best_completed, "total_units": best_total}
 
 
+def contract_progress(status):
+    """Return the strongest bounded contract progress milestone."""
+    best = {"stage": None, "completed_iterations": 0, "total_iterations": 0}
+    for line in status.splitlines():
+        try:
+            value = json.loads(line)
+        except (json.JSONDecodeError, TypeError):
+            continue
+        if not isinstance(value, dict) or value.get("phase") != "contract" \
+                or value.get("event") != "contract_progress" or set(value) != {
+                    "phase", "event", "stage", "completed_iterations", "total_iterations",
+                }:
+            continue
+        completed = value.get("completed_iterations")
+        total = value.get("total_iterations")
+        stage = value.get("stage")
+        if isinstance(completed, int) and isinstance(total, int) \
+                and 0 <= completed <= total and total > 0 \
+                and isinstance(stage, str) and SAFE_TOKEN.fullmatch(stage) \
+                and completed >= best["completed_iterations"]:
+            best = {
+                "stage": stage, "completed_iterations": completed,
+                "total_iterations": total,
+            }
+    return best
+
+
 def record_workload_verified(token):
     with locked_record("receipt", token) as record:
         record["workload_verified"] = True
@@ -1956,6 +1999,13 @@ def parse_closeout(context, output):
         workload_started = details.get("workload_started")
         scientific_touched = details.get("scientific_data_touched")
         protected_touched = details.get("protected_data_touched")
+        failed_checks = details.get("failed_contract_checks")
+        if not isinstance(failed_checks, list):
+            failed_checks = []
+        failed_checks = [
+            item for item in failed_checks[:32]
+            if isinstance(item, str) and SAFE_TOKEN.fullmatch(item)
+        ]
         result["engineering_diagnostic"] = {
             "failure_phase": value.get("failure_phase") if isinstance(value.get("failure_phase"), str) else None,
             "returncode": value.get("returncode") if isinstance(value.get("returncode"), int) else None,
@@ -1967,6 +2017,7 @@ def parse_closeout(context, output):
             "workload_started": workload_started if isinstance(workload_started, bool) else None,
             "scientific_data_touched": scientific_touched if isinstance(scientific_touched, bool) else None,
             "protected_data_touched": protected_touched if isinstance(protected_touched, bool) else None,
+            "failed_contract_checks": sorted(set(failed_checks)),
             "suggested_repair_class": engineering_failure_class(value.get("failure_phase")),
         }
     return result
@@ -1989,7 +2040,9 @@ def tool_finish(args):
         resolution = args.get("engineering_failure_resolution")
         if resolution is not None:
             return resolve_engineering_failure(token, resolution)
-        context = begin_finish(token)
+        context, cached = begin_finish(token)
+        if cached is not None:
+            return cached
         profile = MONITOR_PROFILES[context["monitor_profile"]]
         output = run_remote(
             monitor_body(context, profile),
@@ -2038,18 +2091,40 @@ def tool_finish(args):
         progress = workload_progress(monitor["status"])
         if progress["completed_units"] > 0:
             record_workload_verified(token)
-            return typed_result(
+            now = int(time.time())
+            expected_end = now + max(30, context.get("expected_wall_seconds", 30))
+            retry_after = expected_end - now
+            result = typed_result(
                 True, "RUNNING_VERIFIED",
                 observed={**monitor, "workload_progress": progress},
                 next_actions=["wait_until_expected_end_then_convir_route_finish"],
                 receipt=token, workload_verified=True,
+                retry_after_seconds=retry_after,
+                not_before_unix=now + retry_after,
+                expected_phase_end_unix=expected_end,
             )
-        return typed_result(
+            cache_finish_response(token, result, now + retry_after)
+            return result
+        now = int(time.time())
+        retry_after = 30
+        expected_phase_end = max(
+            now + retry_after,
+            context["_receipt_issued_at"]
+            + context.get("engineering_max_seconds", retry_after),
+        )
+        result = typed_result(
             True, "LAUNCHED_PENDING_VERIFICATION",
-            observed={**monitor, "workload_progress": progress},
+            observed={
+                **monitor, "workload_progress": progress,
+                "contract_progress": contract_progress(monitor["status"]),
+            },
             next_actions=["convir_route_finish_after_startup_interval"],
             receipt=token, workload_verified=False,
+            retry_after_seconds=retry_after, not_before_unix=now + retry_after,
+            expected_phase_end_unix=expected_phase_end,
         )
+        cache_finish_response(token, result, now + retry_after)
+        return result
     except (json.JSONDecodeError, TypeError) as exc:
         return failure_result("FINISH_INVALID", ToolError(str(exc), failure_class="evidence"), "closeout")
     except Exception as exc:

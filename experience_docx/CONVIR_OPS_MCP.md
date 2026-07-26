@@ -2,7 +2,7 @@
 
 Date: 2026-07-21
 
-Status: governance-fastpath server `5.1.0` retains exactly six tools and stable control
+Status: governance-fastpath server `5.2.0` retains exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4 and uses
 immutable historical manifest schema 5 plus compiled manifest schema 6 and
 runtime schema 2 for new routes.
@@ -73,6 +73,15 @@ and reject any generated-file drift. Program governance distinguishes adjacent,
 orthogonal and evidence-backed reopen mechanisms; it does not impose one global
 experiment-count limit.
 
+The authoring compiler provides a write-free aggregate lint that returns stable
+path/code/message errors across independently checkable operations. New
+non-metadata authoring must also declare one machine-validated cost strategy.
+Adaptive/nonlinear work uses `same_scale_probe`; the narrower
+`fixed_linear_extrapolation` requires fixed-count exact production execution,
+no search schedule, bounded shapes, constant memory and a conservative formal
+bound. Historical runtime schema 1 and earlier schema-2 contracts remain
+readable and are not migrated.
+
 The first operation has no prior closeout and must be named by the canonical
 contract. Every
 later operation binds one prior closeout and exact
@@ -98,6 +107,13 @@ the workload and leaves the receipt open for later closeout validation. A dead
 session without closeout or a validated closeout closes `finish`. Healthy
 receipts have a hard maximum of 64 observation windows, preventing an unbounded
 watcher loop.
+
+Pending and running finish results return `retry_after_seconds`,
+`not_before_unix` and `expected_phase_end_unix`. Before not-before, the same
+receipt returns its cached typed state without SSH or an observation-window
+charge. Contract progress accepts only stage plus bounded completed/total
+iteration counts. Contract failure diagnostics may add bounded failed-check
+tokens; data identifiers, metrics, outcomes and scientific values are forbidden.
 
 A successful launch command is not a successful experiment start. Start spends
 one bounded monitor window and returns `RUNNING_VERIFIED` only after positive
@@ -127,7 +143,7 @@ They require a scientific validated closeout or an explicit engineering
 
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. After an update, restart the host and verify version
-`5.1.0`, source SHA-256, exactly six tools, schema 4/5/6 parsing, and the
+`5.2.0`, source SHA-256, exactly six tools, schema 4/5/6 parsing, and the
 startup/repair/discard states.
 
 Only an engineering receipt carrying `v43_migrated_at` may change its automatic

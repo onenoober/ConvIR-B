@@ -92,6 +92,8 @@ def context(require_gpu=False):
         "min_free_gpu_mib": 12000 if require_gpu else 0,
         "max_gpu_utilization_pct": 10 if require_gpu else 100,
         "session": "convir-a1x-s0",
+        "engineering_max_seconds": 120,
+        "expected_wall_seconds": 60,
     }
 
 
@@ -542,6 +544,44 @@ class ConvirOpsV4Tests(unittest.TestCase):
             result = payload(OPS.tool_start({"plan_token": token}))
         self.assertEqual("LAUNCHED_PENDING_VERIFICATION", result["operation_state"])
         self.assertFalse(result["workload_verified"])
+        self.assertEqual(30, result["retry_after_seconds"])
+        self.assertIn("not_before_unix", result)
+        self.assertIn("expected_phase_end_unix", result)
+
+    def test_finish_throttle_returns_cached_result_without_remote_or_budget_use(self):
+        ctx = context()
+        receipt_payload = {
+            "context": ctx, "gpu_index": None,
+            "launch_digest": "f" * 64, "issued_at": int(time.time()),
+        }
+        cached = OPS.typed_result(
+            True, "LAUNCHED_PENDING_VERIFICATION", receipt="r",
+            retry_after_seconds=30, not_before_unix=int(time.time()) + 30,
+        )
+        receipt = OPS.write_new_record(
+            "receipt", receipt_payload,
+            {
+                "launched": True, "finish_calls": 1, "finish_closed": None,
+                "finish_not_before_unix": int(time.time()) + 30,
+                "pending_finish_response": cached,
+            },
+        )
+        with patch.object(OPS, "run_remote") as remote:
+            result = payload(OPS.tool_finish({"receipt": receipt}))
+        self.assertEqual("LAUNCHED_PENDING_VERIFICATION", result["operation_state"])
+        remote.assert_not_called()
+        with OPS.locked_record("receipt", receipt) as record:
+            self.assertEqual(1, record["finish_calls"])
+
+    def test_contract_progress_parser_rejects_scientific_or_untyped_payloads(self):
+        status = "\n".join((
+            '{"phase":"contract","event":"contract_progress","stage":"probe","completed_iterations":4,"total_iterations":8}',
+            '{"phase":"contract","event":"contract_progress","stage":"bad stage","completed_iterations":8,"total_iterations":8,"metric":0.1}',
+        ))
+        self.assertEqual(
+            {"stage": "probe", "completed_iterations": 4, "total_iterations": 8},
+            OPS.contract_progress(status),
+        )
 
     def test_start_accepts_a1_machine_readable_progress_envelope(self):
         plan = {
@@ -974,7 +1014,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("5.1.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("5.2.0", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")

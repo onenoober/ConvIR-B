@@ -137,6 +137,31 @@ class RouteProgramApiTests(unittest.TestCase):
                     run, completed_units=2, stage="invalid",
                 )
 
+    def test_contract_progress_is_control_only_and_phase_bound(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            contract = self.load(root, "contract")
+            API.write_contract_progress(
+                contract, completed_iterations=4, total_iterations=8,
+                stage="synthetic_probe",
+            )
+            progress = json.loads(contract.status_path.read_text(encoding="utf-8"))
+            self.assertEqual("contract", progress["phase"])
+            self.assertEqual("contract_progress", progress["event"])
+            self.assertEqual(4, progress["completed_iterations"])
+            self.assertEqual(8, progress["total_iterations"])
+            self.assertEqual(
+                {"phase", "event", "stage", "completed_iterations", "total_iterations"},
+                set(progress),
+            )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            run = self.load(root, "run")
+            with self.assertRaises(API.ContractError):
+                API.write_contract_progress(
+                    run, completed_iterations=1, total_iterations=1, stage="invalid",
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

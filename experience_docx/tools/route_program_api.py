@@ -289,6 +289,31 @@ def write_workload_progress(
     print(line, flush=True)
 
 
+def write_contract_progress(
+    context: RouteContext, *, completed_iterations: int,
+    total_iterations: int, stage: str,
+) -> None:
+    """Append one bounded control-only contract progress milestone."""
+    if context.phase != "contract":
+        raise ContractError("contract progress requires contract context")
+    total = require_int(total_iterations, "total_iterations", 1, 10_000_000)
+    completed = require_int(
+        completed_iterations, "completed_iterations", 0, total,
+    )
+    value = {
+        "phase": "contract",
+        "event": "contract_progress",
+        "stage": require_token(stage, "stage"),
+        "completed_iterations": completed,
+        "total_iterations": total,
+    }
+    line = json.dumps(value, sort_keys=True, separators=(",", ":"))
+    with context.status_path.open("a", encoding="utf-8") as stream:
+        stream.write(line + "\n")
+        stream.flush()
+    print(line, flush=True)
+
+
 def write_contract_result(context: RouteContext, *, checks: dict[str, bool],
                           engineering: dict[str, Any] | None = None) -> None:
     if context.phase != "contract" or not checks \
@@ -314,6 +339,9 @@ def write_contract_result(context: RouteContext, *, checks: dict[str, bool],
             "protected_data_touched", "scientific_output_created",
             "scientific_training_occurred",
         }
+        cost_contract = context.engineering_contract.get("cost_contract")
+        if cost_contract is not None:
+            expected.add("cost")
         if not isinstance(engineering, dict) or set(engineering) != expected:
             raise ContractError("schema-2 contract requires complete engineering evidence")
         if engineering["mode"] != context.engineering_contract["mode"] \
@@ -331,6 +359,29 @@ def write_contract_result(context: RouteContext, *, checks: dict[str, bool],
                     or not all(isinstance(item, int) and not isinstance(item, bool) and item > 0
                                for item in fixture.values()):
                 raise ContractError("engineering fixture is invalid")
+        if cost_contract is not None:
+            cost = engineering["cost"]
+            cost_fields = {
+                "observed_iterations", "observed_wall_seconds",
+                "observed_peak_memory_mib",
+            }
+            if not isinstance(cost, dict) or set(cost) != cost_fields:
+                raise ContractError("engineering cost evidence has an invalid field contract")
+            expected_iterations = (
+                cost_contract["formal_iterations"]
+                if cost_contract["strategy"] == "same_scale_probe"
+                else cost_contract["probe_iterations"]
+            )
+            if require_int(
+                cost["observed_iterations"], "observed_iterations", 1, 100_000_000,
+            ) != expected_iterations:
+                raise ContractError("engineering cost evidence iteration count mismatch")
+            wall = cost["observed_wall_seconds"]
+            peak = cost["observed_peak_memory_mib"]
+            if not isinstance(wall, (int, float)) or isinstance(wall, bool) or wall < 0:
+                raise ContractError("observed_wall_seconds is invalid")
+            if not isinstance(peak, (int, float)) or isinstance(peak, bool) or peak < 0:
+                raise ContractError("observed_peak_memory_mib is invalid")
         value["engineering"] = engineering
     _validate_result_size(value)
     atomic_json(context.result_path, value)

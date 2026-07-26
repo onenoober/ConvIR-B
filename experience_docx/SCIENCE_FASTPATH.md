@@ -25,7 +25,13 @@ separation.
    permissions, intervention, controls, estimand, uncertainty, gates, competing
    explanation and all terminal mappings. Formal precision requires a pre-run
    feasibility certificate. Changed production paths require one SHA/commit-bound
-   capability profile and device-aware synthetic contract.
+   capability profile and device-aware synthetic contract. Run one aggregate
+   authoring lint before derivation so independent schema, authorization, role,
+   precision and engineering errors are returned together. A cost-dependent
+   operation must freeze a machine-checkable cost strategy: adaptive/search/
+   graph/matrix work uses a same-scale protected-data-free probe; fixed-linear
+   extrapolation is allowed only for a fixed-count exact production map with
+   fixed or conservatively bounded shapes and constant memory.
 
 The compiler removes duplicated identity/path authoring only. It never chooses
 the question, model, dataset, primary variable, threshold, control, terminal, or
@@ -34,7 +40,9 @@ reject any byte-level derived-file drift. Historical schema 4/5 routes remain
 readable and are not migrated.
 3. EXECUTE: run one staged route-ready gate, push one commit, plan once and
    start once. Require one positive workload-progress observation, then finish
-   near the frozen ETA. Never duplicate validator/lifecycle checks, create a
+   near the frozen ETA. Obey the returned retry/not-before time; calls inside
+   that window return cached status without consuming observation budget. Never
+   duplicate validator/lifecycle checks, create a
    watcher, scan unrelated logs or interpret partial outcomes.
 4. DECIDE: after all planned units finish, compute the frozen gates once.
    Require complete folds/seeds/cells/controls, valid uncertainty, and matching

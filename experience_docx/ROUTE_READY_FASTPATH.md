@@ -20,7 +20,9 @@ For a new route, author only:
 3. one Python entrypoint implementing contract(context_path) and
    run(context_path).
 
-Run experiment_spec_compiler.py --write once to deterministically emit the
+Run `experiment_spec_compiler.py --lint-all` once while authoring. It returns
+all independently detectable errors as stable path/code/message JSON and never
+writes derived files. After a clean lint, run `--write` once to deterministically emit the
 schema-v6 route manifest, canonical scientific JSON, short rationale note,
 runtime schema-v2 spec and any declared asset/capability/precision contracts.
 The compiler does not select any scientific field. Do not hand-edit generated
@@ -120,9 +122,22 @@ owns only route science and writes one typed run result. The generic lifecycle
 alone owns:
 
 For algorithms whose termination or cost depends on formal problem size, the
-contract must include a protected-data-free same-asymptotic-scale probe and
-verify a frozen iteration/time/memory bound. Small functional fixtures remain
-useful for determinism but do not validate ETA or launch readiness.
+runtime engineering contract freezes `cost_contract`. `same_scale_probe`
+executes the formal iteration count and verifies wall-time and peak-memory
+bounds. `fixed_linear_extrapolation` is accepted only when enums prove an exact
+fixed-count production map, no candidate search, fixed termination, fixed or
+bounded shapes and constant memory; its probe count, per-iteration ceiling,
+fixed overhead, safety factor and formal bound are mechanically checked. Any
+adaptive search, graph/matrix-size dependence or data-dependent termination
+must use `same_scale_probe`. Free-form rationale cannot waive this gate. Small
+functional fixtures remain useful for determinism but do not validate ETA or
+launch readiness.
+
+Long contract phases call `write_contract_progress` only with stage and bounded
+iteration counts. The status contract forbids data ids, metrics, outcomes and
+scientific values. On contract failure, the typed engineering diagnostic may
+return only bounded failed-check names in addition to existing redacted control
+metadata.
 
 - fresh-output and identity preflight;
 - exact asset verification and resolved asset delivery;

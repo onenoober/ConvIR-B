@@ -37,6 +37,30 @@ class LifecycleTests(unittest.TestCase):
             with self.assertRaises(LIFE.LifecycleError):
                 LIFE.validate_contract_result(path, runtime)
 
+    def test_contract_failure_exposes_only_bounded_failed_check_names(self):
+        _, runtime = self.normalized()
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "result.json"
+            value = {
+                "schema_version": 1, "route_id": "route", "operation_id": "S0",
+                "phase": "contract", "ok": False,
+                "checks": {"paths": True, "memory_bound": False},
+                "output_contract_checked": True, "finalizer_contract_checked": True,
+                "confirmation_images_targets_outcomes_touched": False,
+                "canary_touched": False, "locked_test_touched": False,
+            }
+            path.write_text(json.dumps(value))
+            with self.assertRaises(LIFE.LifecycleError) as raised:
+                LIFE.validate_contract_result(path, runtime)
+            self.assertEqual(
+                {"failed_contract_checks": ["memory_bound"]},
+                raised.exception.control_diagnostic,
+            )
+            self.assertEqual(
+                {"failed_contract_checks": ["memory_bound"]},
+                LIFE.safe_control_diagnostic(raised.exception.control_diagnostic),
+            )
+
     def test_run_result_must_match_allowed_tuple(self):
         value, runtime = self.normalized()
         with tempfile.TemporaryDirectory() as directory:

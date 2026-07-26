@@ -51,9 +51,14 @@ route-specific smoke layer.
 
 For any operation whose cost or termination depends on sample count, group
 count, candidate count, graph size, search depth, or matrix dimension, the
-engineering contract must also execute a protected-data-free synthetic probe at the same
-asymptotic scale as the formal workload. Freeze and check maximum iterations,
-wall time and peak-memory class before launch. A tiny functional fixture proves
+engineering contract freezes a machine-readable cost strategy. Adaptive search,
+data-dependent termination, dynamic candidates and graph/matrix-size work must
+execute a protected-data-free `same_scale_probe` at the formal iteration count.
+`fixed_linear_extrapolation` is narrower: it requires the exact production path,
+a fixed iteration map, no candidate schedule, fixed termination, bounded batch/
+shape, constant memory, a smaller frozen probe, conservative safety factor and
+a mechanically sufficient formal wall-time bound. Both strategies report exact
+observed iterations, wall time and peak memory. A tiny functional fixture proves
 determinism/correctness only and cannot support an ETA or launch-ready claim.
 Do not compensate for an unbounded algorithm by merely increasing timeout.
 
@@ -78,7 +83,10 @@ experiment. An engineering closeout during this window is returned directly by
 `start`, so preflight or unit-zero failure cannot stay silent until the ETA.
 
 `convir_route_finish` observes one window: `short` is 30 seconds and `standard`
-is 60 seconds. A healthy active run may be observed again near its frozen ETA.
+is 60 seconds. Pending/verified results return retry-after, not-before and
+expected-phase-end timestamps. A repeated call before not-before returns the
+cached typed state without a cloud call or observation-budget charge. A healthy
+active run may be observed again near its frozen ETA.
 A stale active heartbeat is an infrastructure warning and leaves the receipt
 open for later terminal closeout validation; it never stops or restarts the
 workload. A dead session without closeout gets one engineering inspection and
@@ -123,7 +131,9 @@ index and exact path allowlist; the real index must remain clean.
 
 Failure closeouts must retain the identities of assets successfully verified
 before the failure. An empty list means verification did not complete, not
-merely that the workload failed later.
+merely that the workload failed later. Contract failures also retain bounded
+failed-check names when available; no scientific value, sample identifier or
+raw log is eligible for that diagnostic.
 
 Raw logs, checkpoints, images, arrays, predictions and large tables remain in
 the cloud run root. GitHub retains the complete compact text evidence needed to

@@ -135,6 +135,56 @@ class RuntimeContractTests(unittest.TestCase):
         with self.assertRaises(CONTRACT.ContractError):
             CONTRACT.validate_asset_manifest(assets, normalized)
 
+    def schema2(self):
+        value = spec()
+        value["schema_version"] = 2
+        value["engineering_contract"] = {
+            "mode": "cpu_exact",
+            "capability_profile_relpath": "experience_docx/model_capabilities/route.json",
+            "max_seconds": 120,
+        }
+        value["precision_contract"] = {
+            "mode": "not_applicable", "certificate_relpath": None,
+            "rationale": "Engineering-only fixture has no precision estimand.",
+        }
+        return value
+
+    def test_historical_schema2_engineering_contract_remains_supported(self):
+        normalized = CONTRACT.validate_runtime_spec(self.schema2(), manifest(), "S0")
+        self.assertIsNone(normalized["engineering_contract"]["cost_contract"])
+
+    def test_fixed_linear_cost_contract_is_mechanically_bounded(self):
+        value = self.schema2()
+        value["engineering_contract"]["cost_contract"] = {
+            "strategy": "fixed_linear_extrapolation",
+            "workload_class": "fixed_iteration_map",
+            "formal_iterations": 1000,
+            "probe_iterations": 100,
+            "max_seconds_per_iteration": 0.01,
+            "fixed_overhead_seconds": 1.0,
+            "safety_factor": 2.0,
+            "formal_max_wall_seconds": 21,
+            "max_peak_memory_mib": 512,
+            "memory_scaling": "constant",
+            "batch_shape_policy": "bounded",
+            "termination_policy": "fixed_count",
+            "candidate_schedule": "none",
+            "production_path": "exact",
+        }
+        normalized = CONTRACT.validate_runtime_spec(value, manifest(), "S0")
+        self.assertEqual(
+            "fixed_linear_extrapolation",
+            normalized["engineering_contract"]["cost_contract"]["strategy"],
+        )
+        broken = copy.deepcopy(value)
+        broken["engineering_contract"]["cost_contract"]["termination_policy"] = "data_dependent"
+        with self.assertRaises(CONTRACT.ContractError):
+            CONTRACT.validate_runtime_spec(broken, manifest(), "S0")
+        broken = copy.deepcopy(value)
+        broken["engineering_contract"]["cost_contract"]["formal_max_wall_seconds"] = 20
+        with self.assertRaises(CONTRACT.ContractError):
+            CONTRACT.validate_runtime_spec(broken, manifest(), "S0")
+
 
 if __name__ == "__main__":
     unittest.main()

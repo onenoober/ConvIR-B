@@ -47,6 +47,10 @@ ENGINEERING_CONTRACT_MODES = {
     "metadata_only", "cpu_exact", "cpu_reference_equivalent",
     "gpu_synthetic_no_data",
 }
+ENGINEERING_COST_STRATEGIES = {"same_scale_probe", "fixed_linear_extrapolation"}
+ENGINEERING_WORKLOAD_CLASSES = {
+    "fixed_iteration_map", "adaptive_search", "variable_graph_or_matrix",
+}
 PRECISION_MODES = {"formal_precision", "descriptive_capacity", "not_applicable"}
 
 
@@ -75,6 +79,13 @@ def require_int(value: Any, name: str, minimum: int, maximum: int) -> int:
     if not isinstance(value, int) or isinstance(value, bool) or not minimum <= value <= maximum:
         raise ContractError(f"{name} must be in [{minimum}, {maximum}]")
     return value
+
+
+def require_number(value: Any, name: str, minimum: float, maximum: float) -> float:
+    if not isinstance(value, (int, float)) or isinstance(value, bool) \
+            or not math.isfinite(float(value)) or not minimum <= float(value) <= maximum:
+        raise ContractError(f"{name} must be in [{minimum}, {maximum}]")
+    return float(value)
 
 
 def require_relpath(value: Any, name: str, *, prefix: str | None = None,
@@ -159,14 +170,108 @@ def _validate_evidence_files(value: Any) -> list[dict[str, Any]]:
     return result
 
 
+def _validate_cost_contract(value: Any) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ContractError("engineering_contract.cost_contract must be an object")
+    strategy = value.get("strategy")
+    if strategy not in ENGINEERING_COST_STRATEGIES:
+        raise ContractError(
+            f"cost_contract.strategy must be one of {sorted(ENGINEERING_COST_STRATEGIES)}"
+        )
+    common = {"strategy", "workload_class", "formal_iterations", "max_peak_memory_mib"}
+    workload_class = value.get("workload_class")
+    if workload_class not in ENGINEERING_WORKLOAD_CLASSES:
+        raise ContractError("cost_contract.workload_class is invalid")
+    normalized = {
+        "strategy": strategy,
+        "workload_class": workload_class,
+        "formal_iterations": require_int(
+            value.get("formal_iterations"), "cost_contract.formal_iterations",
+            1, 100_000_000,
+        ),
+        "max_peak_memory_mib": require_int(
+            value.get("max_peak_memory_mib"), "cost_contract.max_peak_memory_mib",
+            1, 1_048_576,
+        ),
+    }
+    if strategy == "same_scale_probe":
+        expected = common | {"max_wall_seconds"}
+        if set(value) != expected:
+            raise ContractError("same_scale_probe cost contract has an invalid field contract")
+        normalized["max_wall_seconds"] = require_int(
+            value["max_wall_seconds"], "cost_contract.max_wall_seconds", 1, 7 * 24 * 3600,
+        )
+        return normalized
+    expected = common | {
+        "probe_iterations", "max_seconds_per_iteration", "fixed_overhead_seconds",
+        "safety_factor", "formal_max_wall_seconds", "memory_scaling",
+        "batch_shape_policy", "termination_policy", "candidate_schedule",
+        "production_path",
+    }
+    if set(value) != expected:
+        raise ContractError("fixed_linear_extrapolation cost contract has an invalid field contract")
+    required_enums = {
+        "workload_class": "fixed_iteration_map",
+        "memory_scaling": "constant",
+        "termination_policy": "fixed_count",
+        "candidate_schedule": "none",
+        "production_path": "exact",
+    }
+    if any(value.get(key) != expected_value for key, expected_value in required_enums.items()):
+        raise ContractError(
+            "fixed linear extrapolation requires a fixed-count exact production map with constant memory"
+        )
+    if value.get("batch_shape_policy") not in {"fixed", "bounded"}:
+        raise ContractError("fixed linear extrapolation requires fixed or bounded batch shapes")
+    probe = require_int(
+        value["probe_iterations"], "cost_contract.probe_iterations", 1,
+        normalized["formal_iterations"],
+    )
+    if probe >= normalized["formal_iterations"]:
+        raise ContractError("fixed linear probe must be smaller than the formal iteration count")
+    seconds_per_iteration = require_number(
+        value["max_seconds_per_iteration"],
+        "cost_contract.max_seconds_per_iteration", 0.000001, 86_400,
+    )
+    overhead = require_number(
+        value["fixed_overhead_seconds"],
+        "cost_contract.fixed_overhead_seconds", 0, 86_400,
+    )
+    safety = require_number(value["safety_factor"], "cost_contract.safety_factor", 1.25, 10)
+    formal_bound = require_int(
+        value["formal_max_wall_seconds"],
+        "cost_contract.formal_max_wall_seconds", 1, 7 * 24 * 3600,
+    )
+    computed_bound = overhead + safety * normalized["formal_iterations"] * seconds_per_iteration
+    if formal_bound + 1e-9 < computed_bound:
+        raise ContractError("formal_max_wall_seconds is below the mechanical linear bound")
+    normalized.update({
+        "probe_iterations": probe,
+        "max_seconds_per_iteration": seconds_per_iteration,
+        "fixed_overhead_seconds": overhead,
+        "safety_factor": safety,
+        "formal_max_wall_seconds": formal_bound,
+        "memory_scaling": "constant",
+        "batch_shape_policy": value["batch_shape_policy"],
+        "termination_policy": "fixed_count",
+        "candidate_schedule": "none",
+        "production_path": "exact",
+    })
+    return normalized
+
+
 def _validate_engineering_contract(value: Any, *, legacy: bool) -> dict[str, Any]:
     if legacy:
         return {
             "mode": "cpu_exact", "capability_profile_relpath": None,
-            "max_seconds": 300, "legacy_implicit_contract": True,
+            "max_seconds": 300, "cost_contract": None,
+            "legacy_implicit_contract": True,
         }
-    expected = {"mode", "capability_profile_relpath", "max_seconds"}
-    if not isinstance(value, dict) or set(value) != expected:
+    legacy_expected = {"mode", "capability_profile_relpath", "max_seconds"}
+    current_expected = legacy_expected | {"cost_contract"}
+    if not isinstance(value, dict) or frozenset(value) not in {
+        frozenset(legacy_expected), frozenset(current_expected),
+    }:
         raise ContractError("engineering_contract has an invalid field contract")
     mode = value["mode"]
     if mode not in ENGINEERING_CONTRACT_MODES:
@@ -183,6 +288,10 @@ def _validate_engineering_contract(value: Any, *, legacy: bool) -> dict[str, Any
     return {
         "mode": mode, "capability_profile_relpath": profile,
         "max_seconds": require_int(value["max_seconds"], "engineering_contract.max_seconds", 1, 900),
+        "cost_contract": (
+            _validate_cost_contract(value["cost_contract"])
+            if value.get("cost_contract") is not None else None
+        ),
         "legacy_implicit_contract": False,
     }
 
@@ -295,6 +404,27 @@ def validate_runtime_spec(value: Any, manifest: dict[str, Any], operation_id: st
     )
     if engineering["mode"] == "gpu_synthetic_no_data" and not operation.get("require_gpu"):
         raise ContractError("gpu synthetic contract requires a GPU operation")
+    cost = engineering["cost_contract"]
+    if cost is not None:
+        if engineering["mode"] == "metadata_only":
+            raise ContractError("metadata-only engineering cannot declare an iteration cost contract")
+        if operation.get("require_gpu") and engineering["mode"] != "gpu_synthetic_no_data":
+            raise ContractError("GPU route cost qualification must use gpu_synthetic_no_data")
+        if cost["strategy"] == "same_scale_probe":
+            if cost["max_wall_seconds"] > engineering["max_seconds"]:
+                raise ContractError("same-scale probe exceeds engineering_contract.max_seconds")
+        else:
+            probe_bound = (
+                cost["fixed_overhead_seconds"]
+                + cost["probe_iterations"] * cost["max_seconds_per_iteration"]
+            )
+            if probe_bound > engineering["max_seconds"]:
+                raise ContractError("fixed linear probe exceeds engineering_contract.max_seconds")
+            if cost["formal_max_wall_seconds"] > expected_wall:
+                raise ContractError("fixed linear formal bound exceeds expected_wall_seconds")
+        if operation.get("require_gpu") \
+                and cost["max_peak_memory_mib"] > operation.get("min_free_gpu_mib", 0):
+            raise ContractError("cost memory bound exceeds the frozen GPU free-memory gate")
     precision = _validate_precision_contract(
         value.get("precision_contract"), legacy=legacy, role=role, permissions=permissions,
     )
