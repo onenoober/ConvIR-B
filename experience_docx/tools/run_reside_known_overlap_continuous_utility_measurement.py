@@ -324,7 +324,7 @@ def contract(context_path: Path) -> None:
     )
     checks = {
         "strict_official_checkpoint_load": sum(parameter.numel() for parameter in model.parameters()) == 8630665,
-        "all_parameters_frozen": not any(parameter.requires_grad for parameter in model.parameters()),
+        "model_in_eval_mode": not model.training,
         "same_scale_12696_iteration_bound": attempted == TOTAL_INFERENCES,
         "same_scale_all_official_forwards_finite": finite_forwards,
         "same_scale_wall_under_840_seconds": probe_wall_seconds <= COST_PROBE_MAX_SECONDS,

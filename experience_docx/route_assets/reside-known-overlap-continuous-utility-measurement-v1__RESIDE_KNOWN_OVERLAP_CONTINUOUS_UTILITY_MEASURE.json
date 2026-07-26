@@ -109,7 +109,7 @@
       "id": "entrypoint_source",
       "kind": "file",
       "path": "{REMOTE_REPO}/experience_docx/tools/run_reside_known_overlap_continuous_utility_measurement.py",
-      "sha256": "feb18a7f8adad4e8a60efcbd31698d076a4b54fa7c2008aa0223812c7bf96130"
+      "sha256": "f1a81bd441c423bd5aabba2938e7fdc0ab7791301b6e65c91c81ca8974922dce"
     },
     {
       "access_role": "engineering_debug",

@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/reside-known-overlap-continuous-utility-measurement-v1.json",
-  "experiment_spec_sha256": "b3403dc09d2fed02cc5a09ca18d50bdba146b238c0c1db2156234b6a776c3314",
+  "experiment_spec_sha256": "5022d9ee9e7a3258cd6fa1894e1aa9ccf7594e097a5764c2aa1d8d1da7b4c7fb",
   "operations": {
     "RESIDE_KNOWN_OVERLAP_CONTINUOUS_UTILITY_MEASURE": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 8192,
       "mode": "stratified_continuous_utility_measurement",
       "monitor_profile": "standard",
-      "output_id": "reside-known-overlap-continuous-utility-measurement-v1-r1",
+      "output_id": "reside-known-overlap-continuous-utility-measurement-v1-repair1",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
