@@ -9,7 +9,7 @@ import math
 import re
 from statistics import NormalDist
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import capability_registry
 
@@ -853,3 +853,42 @@ def validate_asset_manifest(value: Any, spec: dict[str, Any]) -> dict[str, Any]:
         "operation_id": spec["operation_id"],
         "assets": result,
     }
+
+
+def repository_asset_identity_errors(
+    asset_manifest: dict[str, Any], read_repo_file: Callable[[str], bytes],
+) -> list[str]:
+    """Verify SHA identities for file assets delivered from the route checkout."""
+    token = "{REMOTE_REPO}/"
+    errors = []
+    for index, asset in enumerate(asset_manifest.get("assets", [])):
+        path = asset.get("path")
+        if asset.get("kind") != "file" or not isinstance(path, str) \
+                or not path.startswith(token):
+            continue
+        relpath = path[len(token):]
+        try:
+            require_relpath(relpath, f"assets[{index}].path")
+            raw = read_repo_file(relpath)
+        except Exception as exc:
+            errors.append(
+                f"assets[{index}] {asset.get('id')!r} cannot read repository file "
+                f"{relpath!r}: {exc}"
+            )
+            continue
+        observed = hashlib.sha256(raw).hexdigest()
+        declared = asset.get("sha256")
+        if declared != observed:
+            errors.append(
+                f"assets[{index}] {asset.get('id')!r} SHA-256 mismatch for "
+                f"{relpath!r}: declared {declared}, observed {observed}"
+            )
+    return errors
+
+
+def validate_repository_asset_identities(
+    asset_manifest: dict[str, Any], read_repo_file: Callable[[str], bytes],
+) -> None:
+    errors = repository_asset_identity_errors(asset_manifest, read_repo_file)
+    if errors:
+        raise ContractError("repository-bound asset identity errors: " + "; ".join(errors))

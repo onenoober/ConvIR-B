@@ -23,6 +23,7 @@ from route_runtime_contract import (
     PRECISION_CERTIFICATE_DIRECTORY,
     RUNTIME_SPEC_DIRECTORY,
     capability_input_contract_sha256,
+    repository_asset_identity_errors,
     validate_asset_manifest,
     validate_model_capability,
     validate_precision_certificate,
@@ -219,7 +220,8 @@ def _append_lint(errors: list[dict[str, str]], path: str, exc: Any,
 def _lint_operation_components(
     *, errors: list[dict[str, str]], route_id: str, operation_id: str,
     item: dict[str, Any], effective_program: dict[str, Any] | None,
-    evidence_exists: Callable[[str], bool] | None, spec_schema: int,
+    evidence_exists: Callable[[str], bool] | None,
+    read_repo_file: Callable[[str], bytes] | None, spec_schema: int,
 ) -> None:
     """Aggregate independent component errors for one source operation."""
     prefix = f"operations.{operation_id}"
@@ -344,6 +346,12 @@ def _lint_operation_components(
                     "schema_version": spec_schema, "route_id": route_id,
                     "operation_id": operation_id, "assets": item["assets"],
                 }, validated_runtime)
+                if read_repo_file is not None:
+                    for message in repository_asset_identity_errors(asset, read_repo_file):
+                        _append_lint(
+                            errors, f"{prefix}.assets", message,
+                            "REPO_ASSET_IDENTITY_MISMATCH",
+                        )
             except (ContractError, KeyError, TypeError, ValueError) as exc:
                 _append_lint(errors, f"{prefix}.assets", exc, "ASSET_CONTRACT_INVALID")
         if item["capability"] is not None and (item["assets"] is None or asset is not None):
@@ -385,7 +393,8 @@ def _lint_operation_components(
 
 
 def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
-                evidence_exists: Callable[[str], bool] | None = None) -> dict[str, Any]:
+                evidence_exists: Callable[[str], bool] | None = None,
+                read_repo_file: Callable[[str], bytes] | None = None) -> dict[str, Any]:
     """Return stable, aggregate authoring diagnostics without writing files."""
     errors: list[dict[str, str]] = []
     try:
@@ -489,6 +498,7 @@ def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
                 item=operations[operation_id],
                 effective_program=effective_program if program_ok else None,
                 evidence_exists=evidence_exists,
+                read_repo_file=read_repo_file,
                 spec_schema=source["schema_version"],
             )
         if not errors and len(structurally_valid_operations) == len(operations):
@@ -745,6 +755,7 @@ def lint_from_repo(repo: Path, spec_relpath: str) -> dict[str, Any]:
     return lint_bundle(
         spec_relpath=spec_relpath, spec_raw=spec_raw, program_raw=program_raw,
         evidence_exists=lambda relpath: (repo / relpath).is_file(),
+        read_repo_file=lambda relpath: (repo / relpath).read_bytes(),
     )
 
 

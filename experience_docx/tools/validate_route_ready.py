@@ -10,7 +10,7 @@ import os
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import convir_ops_mcp as ops
 import capability_registry
@@ -19,6 +19,7 @@ from route_runtime_contract import (
     GENERIC_RUNNER_RELPATH,
     RUNTIME_BUNDLE_RELPATHS,
     ContractError,
+    repository_asset_identity_errors,
     runtime_spec_relpath,
     validate_asset_manifest,
     validate_model_capability,
@@ -288,6 +289,30 @@ def check_entrypoint(
         raise ReadyError("entrypoint main must dispatch contract/run with --context")
 
 
+def independent_operation_errors(
+    *, asset: dict[str, Any] | None,
+    read_repo_file: Callable[[str], bytes], entrypoint_raw: bytes,
+    entrypoint_relpath: str, require_engineering: bool,
+    scientific_schema: int, require_unit_ledger: bool,
+    require_cost_evidence: bool,
+) -> list[str]:
+    """Collect independent repository-asset and entrypoint authoring errors."""
+    errors = []
+    if asset is not None:
+        errors.extend(repository_asset_identity_errors(asset, read_repo_file))
+    try:
+        check_entrypoint(
+            entrypoint_raw, entrypoint_relpath,
+            require_engineering=require_engineering,
+            scientific_schema=scientific_schema,
+            require_unit_ledger=require_unit_ledger,
+            require_cost_evidence=require_cost_evidence,
+        )
+    except ReadyError as exc:
+        errors.append(str(exc))
+    return errors
+
+
 def inspect_card(repo: Path, snapshot: str, relpath: str) -> tuple[list[str], str]:
     raw = show(repo, snapshot, relpath)
     with tempfile.TemporaryDirectory(prefix="route-ready-card-") as temporary:
@@ -426,6 +451,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
         repo, snapshot, current_main, bootstrap,
     )
     reports = {}
+    operation_validation_errors = []
     published_names: dict[str, str] = {}
     for operation_id, operation in operations.items():
         claim_published_name(
@@ -502,8 +528,11 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                 ).hexdigest()
             if contract is not None:
                 ops.validate_contract_runtime_alignment(contract, spec, precision)
-            check_entrypoint(
-                entrypoint_raw, spec["entrypoint_relpath"],
+            independent_errors = independent_operation_errors(
+                asset=asset,
+                read_repo_file=lambda relpath: show(repo, snapshot, relpath),
+                entrypoint_raw=entrypoint_raw,
+                entrypoint_relpath=spec["entrypoint_relpath"],
                 require_engineering=spec["schema_version"] >= 2,
                 scientific_schema=(
                     contract["schema_version"] if contract is not None else 1
@@ -533,6 +562,8 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                         raise ReadyError(
                             f"{operation_id} would overwrite existing evidence: {filename}"
                         )
+            if independent_errors:
+                raise ReadyError("; ".join(independent_errors))
             reports[operation_id] = {
                 "mode": context["mode"],
                 "output_id": context["output_id"],
@@ -555,8 +586,12 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                 ),
                 "generic_failure_closeout": True,
             }
-        except (ops.ToolError, ContractError, json.JSONDecodeError) as exc:
-            raise ReadyError(f"{operation_id}: {exc}") from exc
+        except (ReadyError, ops.ToolError, ContractError, json.JSONDecodeError) as exc:
+            operation_validation_errors.append(f"{operation_id}: {exc}")
+    if operation_validation_errors:
+        raise ReadyError(
+            "operation validation errors: " + " | ".join(operation_validation_errors)
+        )
     return {
         "schema_version": 1,
         "status": "ROUTE_READY",

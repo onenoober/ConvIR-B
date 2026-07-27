@@ -300,6 +300,24 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
         self.assertGreaterEqual(len(paths), 2)
         self.assertTrue(all(set(item) == {"path", "code", "message"} for item in result["errors"]))
 
+    def test_lint_aggregates_repo_asset_sha_and_role_errors(self):
+        program, spec = sources()
+        item = spec["operations"]["ACCEPT"]
+        item["assets"][0]["path"] = "{REMOTE_REPO}/models/source.py"
+        item["runtime"]["evidence_role"] = "development_screening"
+        result = COMPILER.lint_bundle(
+            spec_relpath="experience_docx/experiment_specs/final_slim.json",
+            spec_raw=COMPILER.json_bytes(spec), program_raw=COMPILER.json_bytes(program),
+            evidence_exists=lambda _: True,
+            read_repo_file=lambda _: b"current source bytes",
+        )
+        self.assertEqual("EXPERIMENT_SPEC_INVALID", result["status"])
+        codes = {item["code"] for item in result["errors"]}
+        self.assertIn("REPO_ASSET_IDENTITY_MISMATCH", codes)
+        self.assertTrue(
+            {"ROLE_ALIGNMENT", "CONTRACT_INVALID", "RUNTIME_CONTRACT_INVALID"} & codes
+        )
+
     def test_new_authoring_requires_an_explicit_cost_strategy(self):
         program, spec = sources()
         spec["operations"]["ACCEPT"]["runtime"]["engineering_contract"]["cost_contract"] = None

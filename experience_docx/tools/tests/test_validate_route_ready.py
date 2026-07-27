@@ -94,6 +94,27 @@ class RouteReadyTests(unittest.TestCase):
                 require_engineering=True,
             )
 
+    def test_repo_asset_and_entrypoint_errors_are_reported_together(self):
+        asset = {
+            "assets": [{
+                "id": "model_source", "kind": "file",
+                "path": "{REMOTE_REPO}/models/model.py", "sha256": "a" * 64,
+            }],
+        }
+        errors = READY.independent_operation_errors(
+            asset=asset,
+            read_repo_file=lambda _: b"current model source",
+            entrypoint_raw=SCHEMA2_ENGINEERING,
+            entrypoint_relpath="experience_docx/tools/program.py",
+            require_engineering=True,
+            scientific_schema=1,
+            require_unit_ledger=False,
+            require_cost_evidence=True,
+        )
+        self.assertEqual(2, len(errors))
+        self.assertTrue(any("SHA-256 mismatch" in error for error in errors))
+        self.assertTrue(any("missing=['cost']" in error for error in errors))
+
     def test_scientific_schema2_requires_gate_writer(self):
         READY.check_entrypoint(
             SCIENTIFIC_SCHEMA2, "experience_docx/tools/program.py",

@@ -1,6 +1,7 @@
 """Unit tests for the declarative route runtime contract."""
 
 import copy
+import hashlib
 import sys
 import unittest
 from pathlib import Path
@@ -115,6 +116,39 @@ class RuntimeContractTests(unittest.TestCase):
         broken["assets"][0]["sha256"] = "bad"
         with self.assertRaises(CONTRACT.ContractError):
             CONTRACT.validate_asset_manifest(broken, normalized)
+
+    def test_repository_file_asset_identities_are_verified_together(self):
+        normalized = CONTRACT.validate_runtime_spec(spec(), manifest(), "S0")
+        assets = {
+            "schema_version": 1, "route_id": "route", "operation_id": "S0",
+            "assets": [
+                {
+                    "id": "model_source", "kind": "file",
+                    "path": "{REMOTE_REPO}/models/model.py", "sha256": "a" * 64,
+                    "access_role": "unrestricted", "contract_access": True,
+                },
+                {
+                    "id": "missing_source", "kind": "file",
+                    "path": "{REMOTE_REPO}/models/missing.py", "sha256": "b" * 64,
+                    "access_role": "unrestricted", "contract_access": True,
+                },
+                {
+                    "id": "external_checkpoint", "kind": "file",
+                    "path": "/tmp/checkpoint.pkl", "sha256": "c" * 64,
+                    "access_role": "unrestricted", "contract_access": True,
+                },
+            ],
+        }
+        validated = CONTRACT.validate_asset_manifest(assets, normalized)
+        files = {"models/model.py": b"current model source"}
+        errors = CONTRACT.repository_asset_identity_errors(
+            validated, files.__getitem__,
+        )
+        self.assertEqual(2, len(errors))
+        self.assertIn(hashlib.sha256(files["models/model.py"]).hexdigest(), errors[0])
+        self.assertTrue(any("missing_source" in error for error in errors))
+        with self.assertRaisesRegex(CONTRACT.ContractError, "repository-bound asset"):
+            CONTRACT.validate_repository_asset_identities(validated, files.__getitem__)
 
     def test_asset_path_must_be_absolute_or_rooted(self):
         normalized = CONTRACT.validate_runtime_spec(spec(), manifest(), "S0")
