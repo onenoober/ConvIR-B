@@ -1,0 +1,60 @@
+{
+  "comparison_family": "haze4k_train_oof_four_endpoint_family",
+  "independent_unit": "original_clear_scene",
+  "intervals": {
+    "p_deweighted_minus_keep_psnr_db": {
+      "critical_value": 2.4977054744123737,
+      "estimate": 0.01588803386437212,
+      "family_size": 4,
+      "lower": -0.0008041322948712776,
+      "max_half_width": 0.020383605561120947,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260727,
+      "upper": 0.036271639425493066
+    },
+    "p_deweighted_minus_q_weighted_psnr_db": {
+      "critical_value": 2.4977054744123737,
+      "estimate": 0.014481665835898017,
+      "family_size": 4,
+      "lower": 0.00019210029236132943,
+      "max_half_width": 0.017143541673375777,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260728,
+      "upper": 0.03162520750927379
+    },
+    "p_deweighted_minus_shuffled_psnr_db": {
+      "critical_value": 2.4977054744123737,
+      "estimate": 0.03502341785426451,
+      "family_size": 4,
+      "lower": 0.01569469651114333,
+      "max_half_width": 0.0233945353363864,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260730,
+      "upper": 0.058417953190650906
+    },
+    "p_deweighted_minus_uniform_psnr_db": {
+      "critical_value": 2.4977054744123737,
+      "estimate": 0.01588803386437212,
+      "family_size": 4,
+      "lower": -0.000744124518230524,
+      "max_half_width": 0.020433101229350416,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260729,
+      "upper": 0.036321135093722534
+    }
+  },
+  "material_scene_prevalence": {
+    "critical_value": 2.4977054744123737,
+    "estimate": 0.04,
+    "family_size": 4,
+    "lower": 0.024299251207036614,
+    "successes": 24,
+    "total": 600,
+    "upper": 0.06516806193287934
+  },
+  "schema_version": 1
+}

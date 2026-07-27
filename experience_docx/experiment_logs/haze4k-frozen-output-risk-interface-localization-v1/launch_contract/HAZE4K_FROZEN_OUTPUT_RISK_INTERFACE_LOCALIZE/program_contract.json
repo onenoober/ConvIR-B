@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "program_id": "haze4k_frozen_output_risk_interface_localization_v1",
+  "objective": "Determine whether the weighted-BCE probability semantics of the frozen observable harm head, rather than absence of observable signal, caused near-total abstention, and localize any remaining utility and risk regret before protected confirmation or cross-domain measurement is authored.",
+  "source_anchors": [
+    {
+      "id": "observable_decomposition_terminal",
+      "reference": "GitHub-main terminal evidence for haze4k-observable-signal-calibration-decomposition-v1 at route commit 72698dfae556a6364d4e6de33735a8d5a99e43bb and receipt 612e38e1bc6e7b70b07604b494102b35eb420e482cdbc21b9e8784a509c1e7e1.",
+      "allowed_uses": [
+        "diagnostic",
+        "evaluation",
+        "comparison"
+      ]
+    },
+    {
+      "id": "observable_decomposition_launch_contract",
+      "reference": "GitHub-main archived launch contract for the frozen shared predictor, positive harm weight 2.0, risk threshold 0.10, action scales, data roles, and uncertainty family.",
+      "allowed_uses": [
+        "action_definition",
+        "diagnostic",
+        "comparison"
+      ]
+    },
+    {
+      "id": "observable_decomposition_raw_inventory",
+      "reference": "GitHub-main compact SHA inventory for the cloud-only parent scene caches, raw predictions, checkpoints, and replay summaries.",
+      "allowed_uses": [
+        "diagnostic",
+        "evaluation"
+      ]
+    },
+    {
+      "id": "haze4k_train_split_terminal",
+      "reference": "GitHub-main terminal evidence for the frozen 600 OOF-training and 150 nuisance-calibration original-clear-scene roles.",
+      "allowed_uses": [
+        "diagnostic",
+        "evaluation"
+      ]
+    },
+    {
+      "id": "haze4k_test_split_terminal",
+      "reference": "GitHub-main terminal evidence for the isolated 100-scene historical-development stress role and untouched 150-scene candidate-confirmation role.",
+      "allowed_uses": [
+        "diagnostic",
+        "evaluation"
+      ]
+    },
+    {
+      "id": "bounded_local_action_oracle_terminal",
+      "reference": "GitHub-main terminal evidence for the GT-privileged keep, weaken, and strengthen action headroom.",
+      "allowed_uses": [
+        "action_definition",
+        "diagnostic",
+        "comparison"
+      ]
+    },
+    {
+      "id": "official_architecture_anchor",
+      "reference": "Immutable github/codex/haze4k-official-arch-anchor at 3b4da35440c8c26a7d1bcaf1daf342e11d9a3898.",
+      "allowed_uses": [
+        "initialization"
+      ]
+    }
+  ],
+  "dependency_roles": {
+    "parent_authorization": [
+      "diagnostic"
+    ],
+    "frozen_output_evidence": [
+      "diagnostic",
+      "evaluation",
+      "comparison"
+    ],
+    "dataset_role_evidence": [
+      "diagnostic",
+      "evaluation"
+    ],
+    "mechanism_evidence": [
+      "action_definition",
+      "diagnostic",
+      "comparison"
+    ],
+    "model_initialization": [
+      "initialization"
+    ]
+  },
+  "stages": {
+    "probability_semantics_localization": {
+      "evidence_roles": [
+        "development_screening"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "weighted_bce_probability_semantics"
+      ]
+    }
+  },
+  "route_families": {
+    "weighted_bce_probability_semantics": {
+      "core_assumption": "For a harm head trained with constant positive-class BCE weight 2.0, converting q=sigmoid(z) to p=q/(2-q) before the unchanged 0.10 risk gate can recover a nondegenerate, safe, and materially useful policy from the already frozen observable predictions.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the single frozen-output probability-semantics localization route reaches a typed terminal; no threshold search or same-output adjacent retry is permitted.",
+      "reopen_evidence_types": [
+        "new_probability_calibration_evidence",
+        "new_observable_representation_evidence",
+        "new_independent_domain_evidence"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "observable_representation",
+    "learner_loss",
+    "dataset_scope",
+    "action_family",
+    "measurement_estimand"
+  ],
+  "amendments": []
+}

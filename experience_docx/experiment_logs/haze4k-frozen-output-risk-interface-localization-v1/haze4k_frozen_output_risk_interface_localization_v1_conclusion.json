@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k-frozen-output-risk-interface-localization-v1",
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZE",
+  "run_id": "haze4k-frozen-output-risk-interface-localization-v1-repair1",
+  "state": "COMPLETED_GATE_FAIL",
+  "decision": "HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZATION_FAIL",
+  "authorizes": "OBSERVABLE_REPRESENTATION_OR_LEARNER_CONTRACT_AUTHORING_ONLY",
+  "primary_result": "The deweighted p=q/(2-q) policy gained 0.015888 dB over keep across 600 independent Haze4K-train OOF original-clear scenes, with a simultaneous 95% interval of [-0.000804, 0.036272] dB. Its material-scene prevalence was 0.0400 with interval [0.02430, 0.06517]. Both upper bounds are below the frozen 0.05 dB utility and 0.20 prevalence requirements. Precision passed with maximum simultaneous half-width 0.023395 dB, so the unfavorable utility result is decisive rather than sample-precision limited.",
+  "gate_reasons": [
+    "Evidence identity, all frozen scene roles, complete parent raw inventory, exact archived-q action reproduction, finite metrics, and exact 701-unit ledger coverage passed; candidate-confirmation, NH-Haze, ITS, and OTS were not read.",
+    "The algebraic probability correction was real: p improved Brier score over q by 0.005029 with interval [0.003969, 0.006091], and improved utility over archived q by 0.014482 dB with simultaneous interval [0.000192, 0.031625].",
+    "The corrected interface still failed activation: only 40/600 scenes were active, with prevalence interval [0.04725, 0.09328], and scene-block action-area coverage interval [0.001661, 0.004350]; both upper bounds are below the frozen 0.20 and 0.01 floors.",
+    "The candidate beat the shuffled map by 0.035023 dB with simultaneous interval [0.015695, 0.058418], showing nonrandom spatial information, but it did not beat keep or uniform with a positive lower bound and remained far below the material utility threshold.",
+    "Image-level replay harm bounds were below 0.10 in OOF and test-development stress populations, but selected-area harm remained indeterminate: OOF estimate 0.2496 with interval [0.0702, 0.4715], and test-development estimate 0.1311 with interval [0, 0.7826]. Sparse action coverage therefore cannot support a safety claim.",
+    "The privileged GT/GT control remained strongly favorable at 1.6498 dB mean gain with interval [1.5287, 1.7751] and 98.5% material-scene prevalence, proving that the action family still has substantial non-deployable headroom.",
+    "Regret decomposition was exact and localized both interfaces as limiting: risk Shapley regret was 0.9390 dB and utility Shapley regret was 0.6949 dB out of a 1.6339 dB total oracle gap. Observable utility plus GT risk recovered 0.2673 dB, whereas GT utility plus observable risk recovered only 0.0232 dB, making observable risk the larger immediate bottleneck without absolving utility representation."
+  ],
+  "competing_explanation": "The weighted-BCE probability interpretation did contribute to near-total abstention, because its exact inverse improved calibration, activation, and utility relative to archived q. It was not the main sufficient cause. The remaining failure is consistent with weak decision-tail ranking and representation in the observable risk head, together with a smaller but material observable utility limitation. Fold variation and the positive shuffled-map contrast show that some spatial signal exists, while the privileged controls show that the frozen observable interface captures too little of the available action headroom. Sparse selection also leaves selected-area safety unresolved.",
+  "limitations": [
+    "All evidence is development_screening; candidate-confirmation, canary, locked-test, NH-Haze, RESIDE ITS, and RESIDE OTS were not read.",
+    "The 600 OOF original-clear scenes are the only primary independent units; tiles and haze variants are nested and never increase sample size.",
+    "The 100 test-development scenes are secondary stress evidence with four variants averaged within scene, and the 150 archived calibration scenes remain nuisance-only.",
+    "The algebraic p=q/(2-q) correction is exact only under the ideal constant-weighted-BCE population relation and does not establish finite-model calibration.",
+    "GT-risk, GT-utility, and GT/GT controls are privileged and non-deployable; they localize regret but do not define a trainable mechanism.",
+    "The FAIL closes the frozen weighted-BCE probability-semantics family. It does not prove observable learning impossible; it authorizes only a substantively new observable representation or learner contract. Threshold relaxation, confirmation, cross-dataset execution, promotion, and deployment remain unauthorized."
+  ]
+}

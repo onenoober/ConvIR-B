@@ -1,0 +1,50 @@
+{
+  "identity": "utility_shapley_regret + risk_shapley_regret equals total_oracle_gap scene by scene",
+  "independent_unit": "original_clear_scene",
+  "maximum_identity_error": 0.0,
+  "risk_shapley_regret": {
+    "critical_value": 2.2414027276049464,
+    "estimate": 0.9390381216057845,
+    "family_size": 2,
+    "lower": 0.8606607677469305,
+    "max_half_width": 0.08171071095431548,
+    "resamples": 100000,
+    "scene_count": 600,
+    "seed": 20260799,
+    "upper": 1.0207488325601
+  },
+  "schema_version": 1,
+  "semantic_recovery": {
+    "critical_value": 2.4977054744123737,
+    "estimate": 0.014481665835898017,
+    "family_size": 4,
+    "lower": 0.00019210029236132943,
+    "max_half_width": 0.017143541673375777,
+    "resamples": 100000,
+    "scene_count": 600,
+    "seed": 20260728,
+    "upper": 0.03162520750927379
+  },
+  "total_oracle_gap": {
+    "critical_value": 2.2414027276049464,
+    "estimate": 1.6339453234177288,
+    "family_size": 2,
+    "lower": 1.5162264171348925,
+    "max_half_width": 0.12270464261316816,
+    "resamples": 100000,
+    "scene_count": 600,
+    "seed": 20260797,
+    "upper": 1.756649966030897
+  },
+  "utility_shapley_regret": {
+    "critical_value": 2.2414027276049464,
+    "estimate": 0.6949072018119443,
+    "family_size": 2,
+    "lower": 0.6450899944869085,
+    "max_half_width": 0.05170989962797223,
+    "resamples": 100000,
+    "scene_count": 600,
+    "seed": 20260798,
+    "upper": 0.7466171014399166
+  }
+}

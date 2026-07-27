@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-frozen-output-risk-interface-localization-v1.json",
+  "experiment_spec_sha256": "02929d6b34be65509b27f26144044fff2f953cf1edde67ca2b455ff0513b6224",
+  "operations": {
+    "HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZE": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "HAZE4K_PROBABILITY_SEMANTIC_CANDIDATE_CONFIRMATION_CONTRACT_AUTHORING_ONLY",
+          "decision": "HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZATION_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "OBSERVABLE_REPRESENTATION_OR_LEARNER_CONTRACT_AUTHORING_ONLY",
+          "decision": "HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZATION_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "FROZEN_OUTPUT_RISK_INTERFACE_EVIDENCE_REVIEW_ONLY",
+          "decision": "HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZATION_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "haze4k_frozen_output_risk_interface_localization_v1_closeout.json",
+      "heartbeat_timeout_seconds": 900,
+      "max_gpu_utilization_pct": 10,
+      "min_free_gpu_mib": 16000,
+      "mode": "frozen_output_risk_interface_localization",
+      "monitor_profile": "standard",
+      "output_id": "haze4k-frozen-output-risk-interface-localization-v1-repair1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_frozen_output_risk_interface_localization_v1.json",
+  "program_contract_sha256": "aad528c539b91a0ead468b06a6b312ba259f9b4ca8f82891917c131bc2e0bcf6",
+  "route_card_relpath": "experience_docx/experiment_cards/haze4k-frozen-output-risk-interface-localization-v1.md",
+  "route_id": "haze4k-frozen-output-risk-interface-localization-v1",
+  "rules_commit": "ca78b49c7ad2248f39a18d7a67a2367745bcc5f9",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZE": "experience_docx/scientific_contracts/haze4k-frozen-output-risk-interface-localization-v1__HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZE.json"
+  }
+}

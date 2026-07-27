@@ -1,0 +1,36 @@
+{
+  "parent_inventory": {
+    "classes": {
+      "head_checkpoint": {
+        "file_count": 6,
+        "inventory_sha256": "c8d57a38c25f35425fcf738e29949930e8d30afbe815a8fdb756e9a04a3db614",
+        "total_bytes": 2374926
+      },
+      "raw_prediction": {
+        "file_count": 1000,
+        "inventory_sha256": "b8cafe916935d51e2daabc2e802785d369174c1dec92ccf5998a0d1362dabd01",
+        "total_bytes": 50706241
+      },
+      "scene_cache": {
+        "file_count": 750,
+        "inventory_sha256": "56338779c5e422efdc167e8847f6ae6cd0cefd4bd566075f9a178c5702b031cd",
+        "total_bytes": 2180019000
+      },
+      "scene_replay": {
+        "file_count": 100,
+        "inventory_sha256": "0fe39f187464c7240a76eb4d082a9d22e29ecc69ad4c209292cb28a838613d99",
+        "total_bytes": 640966
+      }
+    },
+    "file_count": 1856,
+    "inventory_sha256": "301264df5f2aa5f8ac68d79e5e145edbcf1008cf43ca827cca66768021573a91",
+    "total_bytes": 2233741133
+  },
+  "parent_receipt": "612e38e1bc6e7b70b07604b494102b35eb420e482cdbc21b9e8784a509c1e7e1",
+  "parent_route_commit": "72698dfae556a6364d4e6de33735a8d5a99e43bb",
+  "parent_route_id": "haze4k-observable-signal-calibration-decomposition-v1",
+  "raw_retention_scope": "cloud_only",
+  "schema_version": 1,
+  "unit_output_count": 700,
+  "unit_output_inventory_sha256": "b395fc938b348b375a89e4bff0c481165f1590d2fb4612f89cfa4279e20bfc94"
+}

@@ -1,0 +1,332 @@
+{
+  "data_roles": {
+    "candidate_confirmation_touched": false,
+    "haze4k_test_development_nested_variants": 400,
+    "haze4k_test_development_stress": 100,
+    "haze4k_train_fixed_calibration_nuisance": 150,
+    "haze4k_train_oof": 600,
+    "nh_haze_touched": false,
+    "reside_its_ots_touched": false
+  },
+  "formal_intervals": {
+    "p_deweighted_minus_keep_psnr_db": {
+      "critical_value": 2.4977054744123737,
+      "estimate": 0.01588803386437212,
+      "family_size": 4,
+      "lower": -0.0008041322948712776,
+      "max_half_width": 0.020383605561120947,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260727,
+      "upper": 0.036271639425493066
+    },
+    "p_deweighted_minus_q_weighted_psnr_db": {
+      "critical_value": 2.4977054744123737,
+      "estimate": 0.014481665835898017,
+      "family_size": 4,
+      "lower": 0.00019210029236132943,
+      "max_half_width": 0.017143541673375777,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260728,
+      "upper": 0.03162520750927379
+    },
+    "p_deweighted_minus_shuffled_psnr_db": {
+      "critical_value": 2.4977054744123737,
+      "estimate": 0.03502341785426451,
+      "family_size": 4,
+      "lower": 0.01569469651114333,
+      "max_half_width": 0.0233945353363864,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260730,
+      "upper": 0.058417953190650906
+    },
+    "p_deweighted_minus_uniform_psnr_db": {
+      "critical_value": 2.4977054744123737,
+      "estimate": 0.01588803386437212,
+      "family_size": 4,
+      "lower": -0.000744124518230524,
+      "max_half_width": 0.020433101229350416,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260729,
+      "upper": 0.036321135093722534
+    }
+  },
+  "frozen_interface": {
+    "action_scales": {
+      "keep": 1.0,
+      "strengthen": 1.2,
+      "weaken": 0.8
+    },
+    "anti_abstention_active_scene_lcb": 0.2,
+    "anti_abstention_area_lcb": 0.01,
+    "candidate_is_predeclared_not_assumed_calibrated": true,
+    "candidate_probability": "p=q/(2-q)",
+    "precision_target_db": 0.025,
+    "risk_acceptance_max": 0.1,
+    "utility_margin_db": 0.05,
+    "weighted_score": "q=sigmoid(z) from positive-class BCE weight 2.0"
+  },
+  "gate_outcomes": {
+    "corrected_actionable_utility": "unfavorable",
+    "evidence_identity": "pass",
+    "interface_activation": "unfavorable",
+    "oracle_headroom_control": "favorable",
+    "precision": "met",
+    "probability_semantics_diagnostic": "favorable",
+    "scene_role_and_coverage": "pass",
+    "selected_area_and_image_safety": "indeterminate"
+  },
+  "identity_checks": {
+    "archived_raw_inventory_id": true,
+    "observed_raw_inventory_id": true,
+    "parent_conclusion": true,
+    "parent_entrypoint_identity": true,
+    "parent_receipt_reference": true,
+    "parent_route_commit": true,
+    "parent_summary": true,
+    "parent_terminal_tuple": true,
+    "positive_weight_frozen": true,
+    "raw_file_count": true,
+    "raw_prediction_count": true,
+    "risk_threshold_frozen": true,
+    "scene_cache_count": true,
+    "summary_raw_inventory_id": true
+  },
+  "independent_unit": "original_clear_scene",
+  "interface_activation": {
+    "active_scene_interval": {
+      "critical_value": 2.2414027276049464,
+      "estimate": 0.06666666666666667,
+      "family_size": 2,
+      "lower": 0.04725149683596058,
+      "successes": 40,
+      "total": 600,
+      "upper": 0.09327830393456896
+    },
+    "coverage_interval": {
+      "critical_value": 2.2414027276049464,
+      "estimate": 0.002880666666666667,
+      "family_size": 2,
+      "lower": 0.001660663888888889,
+      "max_half_width": 0.0014688888888888885,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260747,
+      "upper": 0.004349555555555555
+    },
+    "outcome": "unfavorable"
+  },
+  "limitations": [
+    "All evidence is development_screening; candidate-confirmation, canary, locked-test, NH-Haze, ITS, and OTS data were not read.",
+    "The candidate p=q/(2-q) is the exact class-weight inverse under the ideal weighted-BCE population optimum, but this route does not assume the finite learned head is calibrated.",
+    "The 600 OOF original clear scenes are the only primary independent units; tiles and haze variants are nested and never increase sample size.",
+    "The 100 test-development scenes are secondary stress evidence with four variants averaged within scene.",
+    "The archived 150 calibration scenes remain nuisance-only and do not increase primary sample size.",
+    "GT-risk and GT-utility controls are privileged and non-deployable; they localize regret only.",
+    "A precision miss can block a provisional PASS but cannot hide a decisive utility, activation, or safety FAIL."
+  ],
+  "marker": "HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZATION_COMPLETE",
+  "material_scene_prevalence": {
+    "critical_value": 2.4977054744123737,
+    "estimate": 0.04,
+    "family_size": 4,
+    "lower": 0.024299251207036614,
+    "successes": 24,
+    "total": 600,
+    "upper": 0.06516806193287934
+  },
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZE",
+  "oracle_control": {
+    "gain_interval": {
+      "critical_value": 2.2414027276049464,
+      "estimate": 1.6498333572821011,
+      "family_size": 2,
+      "lower": 1.528704649160144,
+      "max_half_width": 0.12525131688670244,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260777,
+      "upper": 1.7750846741688036
+    },
+    "material_scene_prevalence": {
+      "critical_value": 2.2414027276049464,
+      "estimate": 0.985,
+      "family_size": 2,
+      "lower": 0.9691869621129605,
+      "successes": 591,
+      "total": 600,
+      "upper": 0.9927585301015622
+    },
+    "outcome": "favorable"
+  },
+  "precision": {
+    "candidate_variance_not_reused_from_parent_abstention": true,
+    "observed_max_simultaneous_half_width_db": 0.0233945353363864,
+    "outcome": "met",
+    "planning_sd_upper_bound_db": 0.2358753949,
+    "target_half_width_db": 0.025
+  },
+  "probability_semantics": {
+    "outcome": "favorable",
+    "p_brier_interval": {
+      "critical_value": 2.2414027276049464,
+      "estimate": 0.09989894263644766,
+      "family_size": 2,
+      "lower": 0.09456278795639667,
+      "max_half_width": 0.005450350361923317,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260788,
+      "upper": 0.10534929299837098
+    },
+    "q_brier_interval": {
+      "critical_value": 2.2414027276049464,
+      "estimate": 0.1049277040283481,
+      "family_size": 2,
+      "lower": 0.099205130034718,
+      "max_half_width": 0.005852734590855321,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260787,
+      "upper": 0.11078043861920342
+    },
+    "q_minus_p_brier_interval": {
+      "critical_value": 1.9599639845400536,
+      "estimate": 0.005028761391900438,
+      "family_size": 1,
+      "lower": 0.0039688425869198645,
+      "max_half_width": 0.0010626396537200431,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260789,
+      "upper": 0.006091401045620481
+    }
+  },
+  "raw_reuse_inventory": {
+    "classes": {
+      "head_checkpoint": {
+        "file_count": 6,
+        "inventory_sha256": "c8d57a38c25f35425fcf738e29949930e8d30afbe815a8fdb756e9a04a3db614",
+        "total_bytes": 2374926
+      },
+      "raw_prediction": {
+        "file_count": 1000,
+        "inventory_sha256": "b8cafe916935d51e2daabc2e802785d369174c1dec92ccf5998a0d1362dabd01",
+        "total_bytes": 50706241
+      },
+      "scene_cache": {
+        "file_count": 750,
+        "inventory_sha256": "56338779c5e422efdc167e8847f6ae6cd0cefd4bd566075f9a178c5702b031cd",
+        "total_bytes": 2180019000
+      },
+      "scene_replay": {
+        "file_count": 100,
+        "inventory_sha256": "0fe39f187464c7240a76eb4d082a9d22e29ecc69ad4c209292cb28a838613d99",
+        "total_bytes": 640966
+      }
+    },
+    "file_count": 1856,
+    "inventory_sha256": "301264df5f2aa5f8ac68d79e5e145edbcf1008cf43ca827cca66768021573a91",
+    "total_bytes": 2233741133
+  },
+  "role_and_coverage_checks": {
+    "all_scene_metrics_finite": true,
+    "candidate_confirmation_absent": true,
+    "completed_unit_ledger_coverage": true,
+    "four_variants_nested_within_test_scene": true,
+    "nh_haze_absent": true,
+    "parent_raw_inventory_complete": true,
+    "q_action_reproduction": true,
+    "reside_its_ots_absent": true,
+    "test_assignment_digest": true,
+    "test_scene_count": true,
+    "train_assignment_digest": true,
+    "train_role_counts": true,
+    "train_role_disjointness": true
+  },
+  "route_id": "haze4k-frozen-output-risk-interface-localization-v1",
+  "run_id": "haze4k-frozen-output-risk-interface-localization-v1-repair1",
+  "safety": {
+    "haze4k_test_development_stress": {
+      "color_harm": {
+        "critical_value": 2.734368786533176,
+        "estimate": 0.0,
+        "family_size": 8,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.0695664046813737
+      },
+      "psnr_harm": {
+        "critical_value": 2.734368786533176,
+        "estimate": 0.0,
+        "family_size": 8,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.0695664046813737
+      },
+      "selected_area_harm": {
+        "estimate": 0.13114754098360656,
+        "family_size": 8,
+        "lower": 0.0,
+        "resamples": 99976,
+        "scene_count": 100,
+        "seed": 20260767,
+        "upper": 0.782608695652174
+      },
+      "ssim_harm": {
+        "critical_value": 2.734368786533176,
+        "estimate": 0.0,
+        "family_size": 8,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.0695664046813737
+      }
+    },
+    "haze4k_train_oof": {
+      "color_harm": {
+        "critical_value": 2.734368786533176,
+        "estimate": 0.0,
+        "family_size": 8,
+        "lower": 8.673617379884035e-19,
+        "successes": 0,
+        "total": 600,
+        "upper": 0.012307915293647227
+      },
+      "psnr_harm": {
+        "critical_value": 2.734368786533176,
+        "estimate": 0.01,
+        "family_size": 8,
+        "lower": 0.0034523310095733034,
+        "successes": 6,
+        "total": 600,
+        "upper": 0.02860942597820098
+      },
+      "selected_area_harm": {
+        "estimate": 0.2495755517826825,
+        "family_size": 8,
+        "lower": 0.07020459279469578,
+        "resamples": 100000,
+        "scene_count": 600,
+        "seed": 20260757,
+        "upper": 0.4715108605309979
+      },
+      "ssim_harm": {
+        "critical_value": 2.734368786533176,
+        "estimate": 0.0033333333333333335,
+        "family_size": 8,
+        "lower": 0.000599934378292798,
+        "successes": 2,
+        "total": 600,
+        "upper": 0.018292594813396783
+      }
+    }
+  },
+  "schema_version": 2,
+  "scope": "development-only frozen-output weighted-BCE probability-semantics localization"
+}

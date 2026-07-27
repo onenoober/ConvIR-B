@@ -1,0 +1,165 @@
+{
+  "assets": [
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor",
+      "require_clean": true
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "localization_entrypoint",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_frozen_output_risk_interface_localization.py",
+      "sha256": "4a0c738bfdd1fcb95e94ffd8b505c8b9cfc9d336ab66ed22a87e560d1d82e953"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/runtime_environments/convir_4090_cu121_observable_utility_v1.json",
+      "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor/Dehazing/ITS/models/ConvIR.py",
+      "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor/Dehazing/ITS/models/layers.py",
+      "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-observable-signal-calibration-decomposition-v1/haze4k_observable_signal_calibration_decomposition_v1_closeout.json",
+      "sha256": "40d9d02f491b3df27bb424b5592d18887924ad403eaaac7908d609ff5af910b6"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_conclusion",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-observable-signal-calibration-decomposition-v1/haze4k_observable_signal_calibration_decomposition_v1_conclusion.json",
+      "sha256": "84c670d3d0379fe4d04eb9bb4c6ef2d8aa1938c47492d1879059d3e393415b03"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-observable-signal-calibration-decomposition-v1/haze4k_observable_signal_calibration_decomposition_v1_summary.json",
+      "sha256": "4f65d983951c8aa9c55778f61d0d9ee0b22a1db273dca564ee9a37f03096ff04"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_raw_inventory",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-observable-signal-calibration-decomposition-v1/haze4k_observable_signal_calibration_decomposition_v1_raw_inventory.json",
+      "sha256": "87a626e802de928f5cb1df0e56dd1c7b57cb4b71c4c9ac598406a31fb680e2b6"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_experiment_spec",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-observable-signal-calibration-decomposition-v1/launch_contract/HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSE/experiment_spec.json",
+      "sha256": "d7ffe0635b58e000bbe45a6bab9d3ec7b9df9de9ae0dd464c07e3178c75b02c6"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "train_split_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-train-scene-split-v2/haze4k_train_scene_split_v2_closeout.json",
+      "sha256": "dde7f4654674f776d2f2b0a687128019e477eea7b29fb8d69f01d621aa6c5887"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "train_split_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-train-scene-split-v2/haze4k_train_scene_split_v2_summary.json",
+      "sha256": "a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "test_split_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-scene-split-v1/haze4k_test_scene_split_v1_r1_closeout.json",
+      "sha256": "d3dbd88b25eee35c5922b2459a2f48b39b3fc8f686588cde9edb1d9f267f8a9f"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "test_split_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-scene-split-v1/haze4k_test_scene_split_v1_summary.json",
+      "sha256": "656407f3183f92e75e357004b04b505d2b92cd4b0f4b02b3c6a22aef57d069cf"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_oracle_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-bounded-local-action-oracle-v1/haze4k_test_bounded_local_action_oracle_v1_closeout.json",
+      "sha256": "96357cbaaee5aa338fb0f9c9835a975a27e7f048c78a096fd644e6acdd3e383c"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_oracle_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-bounded-local-action-oracle-v1/haze4k_test_bounded_local_action_oracle_v1_summary.json",
+      "sha256": "794ef27733f51f2fa70fab5c94bc661564d7b988ef4247a1b26e33a21b4de7cb"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "parent_raw_output",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-observable-signal-calibration-decomposition-v1/haze4k-observable-signal-calibration-decomposition-v1"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_test_development",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-test-scene-split-v1/haze4k-test-scene-split-v1-phase-a-r1/workload/role_assets/development_screening"
+    }
+  ],
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZE",
+  "route_id": "haze4k-frozen-output-risk-interface-localization-v1",
+  "schema_version": 2
+}

@@ -1,0 +1,11 @@
+estimate,metric,population,scene_count
+0.1049277040283481,q_brier,haze4k_train_oof,600
+0.09989894263644766,p_brier,haze4k_train_oof,600
+0.9090881123505716,q_mean,haze4k_train_oof,600
+0.8551611448166156,p_mean,haze4k_train_oof,600
+0.852528111111111,harm_mean,haze4k_train_oof,600
+0.2097334743999416,q_brier,haze4k_test_development_stress,100
+0.19477534963373216,p_brier,haze4k_test_development_stress,100
+0.9183996728226866,q_mean,haze4k_test_development_stress,100
+0.868124656819736,p_mean,haze4k_test_development_stress,100
+0.7399643333333333,harm_mean,haze4k_test_development_stress,100
