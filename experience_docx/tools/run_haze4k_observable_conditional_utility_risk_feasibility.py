@@ -10,6 +10,7 @@ import json
 import math
 import os
 import sys
+import time
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Iterable
@@ -828,8 +829,11 @@ def evidence_identity(context) -> dict[str, bool]:
 def contract(context_path: Path) -> None:
     context = load_context(context_path, "contract")
     prepare_phase_output(context)
+    started = time.monotonic()
     import torch
 
+    if context.device == "cuda":
+        torch.cuda.reset_peak_memory_stats()
     checks = evidence_identity(context)
     runtime_environment = asset_path(context, "runtime_environment", kind="file")
     entrypoint = asset_path(context, "observable_entrypoint", kind="file")
@@ -909,6 +913,11 @@ def contract(context_path: Path) -> None:
         actions = choose_actions(lower, upper)
         output = apply_spatial(hazy, extracted["prediction"], actions)
         finite_eval = finite_eval and bool(np.isfinite(output).all())
+    elapsed = time.monotonic() - started
+    peak = (
+        float(torch.cuda.max_memory_allocated() / (1024 * 1024))
+        if context.device == "cuda" else 0.0
+    )
     checks.update({
         "official_graph_strict_loaded": sum(parameter.numel() for parameter in model.parameters()) == PARAMETER_COUNT,
         "observable_feature_shape": extracted["features"].shape[0] == FEATURE_CHANNELS,
@@ -929,6 +938,11 @@ def contract(context_path: Path) -> None:
             "protected_data_touched": False,
             "scientific_output_created": False,
             "scientific_training_occurred": False,
+            "cost": {
+                "observed_iterations": PROBE_COST_ITERATIONS,
+                "observed_wall_seconds": elapsed,
+                "observed_peak_memory_mib": peak,
+            },
         },
     )
 

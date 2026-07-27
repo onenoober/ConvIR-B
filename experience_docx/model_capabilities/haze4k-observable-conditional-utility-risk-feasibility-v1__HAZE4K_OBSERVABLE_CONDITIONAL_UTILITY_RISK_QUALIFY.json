@@ -6,7 +6,7 @@
     },
     {
       "id": "observable_entrypoint",
-      "identity": "a0504a4513289ac3c6308fd177f5c8e661008556c182a4bbe8a6f608cd022202"
+      "identity": "e3aadd88d88f82a55807f8e9b0d9c3577ed277fc84ed9ed54f833d155add684f"
     },
     {
       "id": "official_checkpoint",
@@ -42,7 +42,7 @@
   "protected_data_prohibited": true,
   "reuse_identity": {
     "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
-    "code_path_sha256": "a0504a4513289ac3c6308fd177f5c8e661008556c182a4bbe8a6f608cd022202",
+    "code_path_sha256": "e3aadd88d88f82a55807f8e9b0d9c3577ed277fc84ed9ed54f833d155add684f",
     "device_class": "cuda_sm89",
     "input_contract_sha256": "f52387decc845b84a7f452942c53f3b7ebf3b75dd642bc375623f0b6507bd495",
     "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",

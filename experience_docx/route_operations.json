@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-observable-conditional-utility-risk-feasibility-v1.json",
-  "experiment_spec_sha256": "f1c7ed47c08ee89bab88a61c3ddbd88cff27ef24ec5a0e828a0bf94afc661547",
+  "experiment_spec_sha256": "2f7c6ed1d77411afa853447560e35d623e6f1971ccf227ac5f6eda03020686fc",
   "operations": {
     "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_QUALIFY": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 16000,
       "mode": "observable_conditional_utility_risk_feasibility",
       "monitor_profile": "standard",
-      "output_id": "haze4k-observable-conditional-utility-risk-feasibility-v1-repair1",
+      "output_id": "haze4k-observable-conditional-utility-risk-feasibility-v1-repair2",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,

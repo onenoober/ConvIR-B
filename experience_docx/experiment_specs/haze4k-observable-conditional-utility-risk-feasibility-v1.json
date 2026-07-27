@@ -12,7 +12,7 @@
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "observable_conditional_utility_risk_feasibility",
         "require_gpu": true,
-        "output_id": "haze4k-observable-conditional-utility-risk-feasibility-v1-repair1",
+        "output_id": "haze4k-observable-conditional-utility-risk-feasibility-v1-repair2",
         "closeout_filename": "haze4k_observable_conditional_utility_risk_feasibility_v1_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
@@ -482,7 +482,7 @@
           "id": "observable_entrypoint",
           "kind": "file",
           "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_observable_conditional_utility_risk_feasibility.py",
-          "sha256": "a0504a4513289ac3c6308fd177f5c8e661008556c182a4bbe8a6f608cd022202",
+          "sha256": "e3aadd88d88f82a55807f8e9b0d9c3577ed277fc84ed9ed54f833d155add684f",
           "access_role": "engineering_debug",
           "contract_access": true
         },
@@ -629,7 +629,7 @@
           },
           {
             "id": "observable_entrypoint",
-            "identity": "a0504a4513289ac3c6308fd177f5c8e661008556c182a4bbe8a6f608cd022202"
+            "identity": "e3aadd88d88f82a55807f8e9b0d9c3577ed277fc84ed9ed54f833d155add684f"
           },
           {
             "id": "official_checkpoint",
@@ -659,7 +659,7 @@
         "scientific_training_prohibited": true,
         "reuse_identity": {
           "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
-          "code_path_sha256": "a0504a4513289ac3c6308fd177f5c8e661008556c182a4bbe8a6f608cd022202",
+          "code_path_sha256": "e3aadd88d88f82a55807f8e9b0d9c3577ed277fc84ed9ed54f833d155add684f",
           "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
           "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
           "device_class": "cuda_sm89",
