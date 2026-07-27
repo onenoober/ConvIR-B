@@ -64,7 +64,7 @@ runner_rel = "experience_docx/tools/run_route_operation.sh"
 runner = remote_repo / runner_rel
 lifecycle = remote_repo / "experience_docx/tools/route_lifecycle.py"
 closeout = remote_repo / "experience_docx/experiment_logs" / route_id / "e2e_closeout.json"
-session = ops.derive_session(route_id, "s0", "0" * 40, run_id)
+session = None
 
 assert remote_repo.parent == Path(ops.REMOTE_REPOS)
 assert run_root.parent == Path(ops.REMOTE_RUNS)
@@ -93,6 +93,7 @@ try:
     commit = subprocess.check_output([
         "/usr/bin/git", "-C", str(remote_repo), "rev-parse", "HEAD",
     ], text=True).strip()
+    session = ops.derive_session(route_id, "s0", commit, run_id)
     runner_sha = hashlib.sha256(runner.read_bytes()).hexdigest()
     identity = {
         "schema_version": 1, "route_id": route_id, "operation_id": "S0",
@@ -167,10 +168,11 @@ try:
     )
     assert session_check.returncode != 0
 finally:
-    subprocess.run(
-        [ops.REMOTE_TMUX, "kill-session", "-t", session],
-        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-    )
+    if session is not None:
+        subprocess.run(
+            [ops.REMOTE_TMUX, "kill-session", "-t", session],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
     if remote_repo.exists():
         assert remote_repo.parent == Path(ops.REMOTE_REPOS)
         shutil.rmtree(remote_repo)
