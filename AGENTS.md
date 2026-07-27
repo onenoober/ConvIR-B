@@ -38,7 +38,8 @@ hash changes.
    Formal precision needs a primary-estimand and stratum-bound pre-run
    feasibility certificate using a frozen planning-SD upper bound; a changed production path needs one
    identity-bound capability profile and matching device-aware synthetic contract.
-   Run the compiler's aggregate lint before derivation. Any cost/termination
+   Use the compiler's atomic `--finalize`: it runs one aggregate lint and writes
+   the complete derived bundle only when the source is clean. Any cost/termination
    claim also freezes a machine-validated cost strategy: use a same-scale probe
    for adaptive/nonlinear work, or fixed-linear extrapolation only for an exact
    fixed-count production map with bounded shape and constant memory.
@@ -110,6 +111,11 @@ repair policy below and is not a scientific terminal archive.
 - One command-boundary class gets one deterministic correction. One engineering
   root cause gets one repair cycle. A repeated same-class/root failure stops
   that operation with one blocker.
+- Before any commit, push, plan or start, a pure local authoring task may apply
+  one finite repair batch across distinct stable aggregate-lint
+  `path/code/message` tuples. Repeating the same tuple stops authoring. This
+  exception never applies to cloud, transport, runtime, protected data,
+  engineering repair or unknown launch state.
 - A timeout after the launch boundary is unknown state and forbids a second
   launch. Repeat the same sealed start call once only for its built-in
   metadata inspection and receipt recovery/clean-retry decision. A dead session
@@ -139,7 +145,7 @@ GitHub evidence.
 - Windows calls WSL only as `wsl.exe -d Ubuntu-22.04 --exec` plus a fixed Linux
   program and literal argv. Never use Windows Git on the WSL UNC worktree and
   never place PowerShell, WSL, and SSH syntax in one command string.
-- Standard route lifecycle uses `convir-ops` v5.3 with stable six-tool protocol
+- Standard route lifecycle uses `convir-ops` v5.4.0 with stable six-tool protocol
   schema 4 and canonical route-manifest schema 6. Any uncovered cloud action uses
   one committed, unchanged Bash file through `experience_docx/tools/convirctl.py
   remote-script`; no inline SSH command or untracked script is valid.

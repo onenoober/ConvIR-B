@@ -1973,7 +1973,7 @@ def parse_monitor(output):
 
 
 def workload_progress(status):
-    """Return the strongest machine-readable positive workload progress."""
+    """Return the strongest machine-readable workload count and capacity."""
     best_completed = 0
     best_total = 0
 
@@ -1993,9 +1993,15 @@ def workload_progress(status):
             } or progress_envelope
             completed = value.get("completed_units", value.get("completed"))
             total = value.get("total_units", value.get("total"))
-            if in_workload and isinstance(completed, int) and completed > best_completed:
+            valid_total = (
+                total if isinstance(total, int) and total >= completed else 0
+            ) if isinstance(completed, int) else 0
+            if in_workload and isinstance(completed, int) and completed >= 0 \
+                    and (completed > best_completed or (
+                        completed == best_completed and valid_total > best_total
+                    )):
                 best_completed = completed
-                best_total = total if isinstance(total, int) and total >= completed else 0
+                best_total = valid_total
             for item in value.values():
                 visit(item, in_workload)
         elif isinstance(value, list):
@@ -2039,9 +2045,12 @@ def contract_progress(status):
 
 def progress_stage(status):
     """Extract only a typed, token-safe control stage from status telemetry."""
-    best = {"completed": -1, "stage": None}
+    best = {
+        "workload": {"seen": False, "completed": -1, "stage": None},
+        "other": {"seen": False, "completed": -1, "stage": None},
+    }
 
-    def visit(value, typed=False):
+    def visit(value, phase_hint=None):
         if isinstance(value, dict):
             envelope = any(
                 isinstance(key, str)
@@ -2051,33 +2060,42 @@ def progress_stage(status):
             )
             phase = value.get("phase")
             event = value.get("event")
-            current_typed = typed or phase in {"contract", "workload", "terminal"} \
+            workload = phase_hint == "workload" or phase == "workload" \
                 or event in {
-                    "contract_progress", "workload_start", "workload_progress",
-                    "workload_pass", "workload_end",
+                    "workload_start", "workload_progress", "workload_pass",
+                    "workload_end",
                 } or envelope
+            typed = workload or phase_hint == "other" \
+                or phase in {"contract", "terminal"} \
+                or event == "contract_progress"
+            current = "workload" if workload else "other"
+            if typed:
+                best[current]["seen"] = True
             stage = value.get("stage")
             completed = value.get(
                 "completed_units", value.get(
                     "completed", value.get("completed_iterations", 0),
                 ),
             )
-            if current_typed and isinstance(stage, str) \
+            if typed and isinstance(stage, str) \
                     and SAFE_TOKEN.fullmatch(stage) \
-                    and isinstance(completed, int) and completed >= best["completed"]:
-                best.update(completed=completed, stage=stage)
+                    and isinstance(completed, int) \
+                    and completed >= best[current]["completed"]:
+                best[current].update(completed=completed, stage=stage)
             for item in value.values():
-                visit(item, current_typed)
+                visit(item, current if typed else phase_hint)
         elif isinstance(value, list):
             for item in value:
-                visit(item, typed)
+                visit(item, phase_hint)
 
     for line in status.splitlines():
         try:
             visit(json.loads(line))
         except (json.JSONDecodeError, TypeError):
             continue
-    return best["stage"]
+    if best["workload"]["seen"]:
+        return best["workload"]["stage"] or "workload"
+    return best["other"]["stage"]
 
 
 def validate_operator_context(context):

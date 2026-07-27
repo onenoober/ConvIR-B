@@ -11,6 +11,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import tempfile
 from pathlib import Path
 from typing import Any, Callable
 
@@ -217,6 +219,55 @@ def _append_lint(errors: list[dict[str, str]], path: str, exc: Any,
     errors.append(_lint_error(path, code or _lint_code(str(exc)), exc))
 
 
+def _source_text_hygiene_errors(raw: bytes, path: str) -> list[dict[str, str]]:
+    errors = []
+    if raw.startswith(b"\xef\xbb\xbf"):
+        errors.append(_lint_error(path, "SOURCE_TEXT_BOM", "UTF-8 BOM is forbidden"))
+    if b"\r" in raw:
+        errors.append(_lint_error(path, "SOURCE_TEXT_NEWLINE", "use LF newlines only"))
+    if not raw.endswith(b"\n"):
+        errors.append(_lint_error(
+            path, "SOURCE_TEXT_FINAL_NEWLINE", "exactly one final newline is required",
+        ))
+    elif raw.endswith(b"\n\n"):
+        errors.append(_lint_error(
+            path, "SOURCE_TEXT_TRAILING_BLANK_LINE",
+            "trailing blank lines are forbidden",
+        ))
+    if any(line.endswith((b" ", b"\t")) for line in raw.splitlines()):
+        errors.append(_lint_error(
+            path, "SOURCE_TEXT_TRAILING_WHITESPACE",
+            "trailing spaces or tabs are forbidden",
+        ))
+    return errors
+
+
+def _capability_with_derived_input_identity(
+    value: Any, *, spec_schema: int, runtime: dict[str, Any],
+) -> Any:
+    """Fill only the mechanically determined schema-2 input identity."""
+    if spec_schema != 2 or not isinstance(value, dict):
+        return value
+    identity = value.get("reuse_identity")
+    if not isinstance(identity, dict) or "input_contract_sha256" in identity:
+        return value
+    required = {"contract_mode", "minimum_fixture", "compatibility_imports"}
+    if not required <= set(value):
+        return value
+    return {
+        **value,
+        "reuse_identity": {
+            **identity,
+            "input_contract_sha256": capability_input_contract_sha256(
+                contract_mode=value["contract_mode"],
+                minimum_fixture=value["minimum_fixture"],
+                compatibility_imports=value["compatibility_imports"],
+                cost_contract=runtime["engineering_contract"].get("cost_contract"),
+            ),
+        },
+    }
+
+
 def _lint_operation_components(
     *, errors: list[dict[str, str]], route_id: str, operation_id: str,
     item: dict[str, Any], effective_program: dict[str, Any] | None,
@@ -356,8 +407,12 @@ def _lint_operation_components(
                 _append_lint(errors, f"{prefix}.assets", exc, "ASSET_CONTRACT_INVALID")
         if item["capability"] is not None and (item["assets"] is None or asset is not None):
             try:
+                capability_source = _capability_with_derived_input_identity(
+                    item["capability"], spec_schema=spec_schema,
+                    runtime=validated_runtime,
+                )
                 validate_model_capability(
-                    {"schema_version": spec_schema, **item["capability"]},
+                    {"schema_version": spec_schema, **capability_source},
                     validated_runtime, asset,
                 )
             except (ContractError, KeyError, TypeError, ValueError) as exc:
@@ -411,6 +466,8 @@ def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
             "status": "EXPERIMENT_SPEC_INVALID",
             "errors": [_lint_error("program_contract", "INVALID_JSON", exc)],
         }
+    errors.extend(_source_text_hygiene_errors(spec_raw, "experiment_spec.source_text"))
+    errors.extend(_source_text_hygiene_errors(program_raw, "program_contract.source_text"))
     if not isinstance(source, dict):
         return {
             "status": "EXPERIMENT_SPEC_INVALID",
@@ -644,8 +701,12 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
                 }, validated_runtime)
                 generated[asset_path] = json_bytes(asset)
             if item["capability"] is not None:
+                capability_source = _capability_with_derived_input_identity(
+                    item["capability"], spec_schema=spec_schema,
+                    runtime=validated_runtime,
+                )
                 capability = validate_model_capability(
-                    {"schema_version": spec_schema, **item["capability"]},
+                    {"schema_version": spec_schema, **capability_source},
                     validated_runtime, asset,
                 )
                 generated[capability_path] = json_bytes(capability)
@@ -759,6 +820,49 @@ def lint_from_repo(repo: Path, spec_relpath: str) -> dict[str, Any]:
     )
 
 
+def write_bundle_atomic(repo: Path, bundle: dict[str, bytes]) -> None:
+    """Install a complete derived bundle and restore prior bytes on failure."""
+    repo = repo.resolve()
+    previous: dict[str, bytes | None] = {}
+    installed: list[str] = []
+    with tempfile.TemporaryDirectory(prefix=".experiment-spec-finalize-", dir=repo) as raw_tmp:
+        temporary = Path(raw_tmp)
+        staged = temporary / "staged"
+        rollback = temporary / "rollback"
+        for relpath, raw in bundle.items():
+            candidate = staged / relpath
+            candidate.parent.mkdir(parents=True, exist_ok=True)
+            candidate.write_bytes(raw)
+            destination = repo / relpath
+            previous[relpath] = destination.read_bytes() if destination.is_file() else None
+        try:
+            for relpath in bundle:
+                destination = repo / relpath
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                os.replace(staged / relpath, destination)
+                installed.append(relpath)
+        except OSError as exc:
+            rollback_errors = []
+            for relpath in reversed(installed):
+                destination = repo / relpath
+                prior = previous[relpath]
+                try:
+                    if prior is None:
+                        destination.unlink(missing_ok=True)
+                    else:
+                        restored = rollback / relpath
+                        restored.parent.mkdir(parents=True, exist_ok=True)
+                        restored.write_bytes(prior)
+                        os.replace(restored, destination)
+                except OSError as rollback_exc:
+                    rollback_errors.append(f"{relpath}: {rollback_exc}")
+            if rollback_errors:
+                raise ExperimentSpecError(
+                    "bundle install and rollback failed: " + "; ".join(rollback_errors)
+                ) from exc
+            raise ExperimentSpecError(f"bundle install failed and was rolled back: {exc}") from exc
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, default=Path.cwd())
@@ -767,9 +871,10 @@ def main() -> None:
     action.add_argument("--check", action="store_true")
     action.add_argument("--write", action="store_true")
     action.add_argument("--lint-all", action="store_true")
+    action.add_argument("--finalize", action="store_true")
     args = parser.parse_args()
     lint = lint_from_repo(args.repo, args.spec)
-    if args.lint_all or args.write:
+    if args.lint_all or args.write or args.finalize:
         if lint["errors"]:
             print(json.dumps(lint, sort_keys=True))
             raise SystemExit(2)
@@ -785,11 +890,12 @@ def main() -> None:
             raise SystemExit("; ".join(mismatches))
         print(json.dumps({"status": "EXPERIMENT_SPEC_BUNDLE_OK", "files": len(bundle)}))
         return
-    for relpath, raw in bundle.items():
-        destination = args.repo.resolve() / relpath
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_bytes(raw)
-    print(json.dumps({"status": "EXPERIMENT_SPEC_BUNDLE_WRITTEN", "files": len(bundle)}))
+    write_bundle_atomic(args.repo, bundle)
+    status = (
+        "EXPERIMENT_SPEC_BUNDLE_FINALIZED"
+        if args.finalize else "EXPERIMENT_SPEC_BUNDLE_WRITTEN"
+    )
+    print(json.dumps({"status": status, "files": len(bundle)}))
 
 
 if __name__ == "__main__":

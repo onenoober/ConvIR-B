@@ -9,7 +9,7 @@ on_error() {
 trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
 
 branch=codex/convir-control-plane-efficiency-v1
-base=85a8c1a46bd1f3ced110bd2a050aec5ed6eeee7b
+base=ed884b4ebd3b0f733381093058f3f694c454f390
 github=git@github.com:onenoober/ConvIR-B.git
 seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
 python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
@@ -27,6 +27,9 @@ git -C "$work/repo" checkout --quiet --detach "$candidate"
 test -z "$(git -C "$work/repo" status --porcelain)"
 git -C "$work/repo" diff --quiet "$base" "$candidate" -- experience_docx/experiment_logs
 git -C "$work/repo" diff --check "$base" "$candidate"
+runtime_environment=$work/repo/experience_docx/runtime_environments/convir_4090_cu121_observable_utility_v1.json
+test "$(sha256sum "$runtime_environment" | cut -d' ' -f1)" = \
+  35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b
 
 tools=$work/repo/experience_docx/tools
 tests=$tools/tests
@@ -103,13 +106,13 @@ expected = {
     "convir_route_plan", "convir_route_start", "convir_route_finish",
     "convir_evidence_list", "convir_evidence_fetch", "convir_git_status",
 }
-assert initialize["serverInfo"]["version"] == "5.2.0", initialize
+assert initialize["serverInfo"]["version"] == "5.4.0", initialize
 assert len(tools) == 6 and {item["name"] for item in tools} == expected, tools
 
 import convir_ops_mcp as ops
 assert ops.SCHEMA_VERSION == 4
 assert ops.SUPPORTED_MANIFEST_SCHEMA_VERSIONS == {4, 5, 6}
-assert ops.SERVER_VERSION == "5.2.0"
+assert ops.SERVER_VERSION == "5.4.0"
 assert len(ops.TOOLS) == 6
 print(json.dumps({
     "candidate_commit": candidate,
@@ -119,8 +122,11 @@ print(json.dumps({
     "manifest_schemas": sorted(ops.SUPPORTED_MANIFEST_SCHEMA_VERSIONS),
     "tool_count": len(ops.TOOLS),
     "aggregate_lint": "PASS",
+    "atomic_finalize": "PASS",
+    "capability_input_identity_derivation": "PASS",
     "cost_contract": "PASS",
     "contract_progress_and_diagnostic": "PASS",
+    "zero_capacity_and_stage_precedence": "PASS",
     "finish_throttle": "PASS",
     "historical_runtime_compatibility": "PASS",
     "experiment_logs_modified": False,

@@ -50,6 +50,13 @@ cloud actions use only a committed remote-script. Verification steps that
 cross GitHub, SSH, and heartbeat boundaries must be separate bounded actions
 with their own marker, timeout, and failure location.
 
+Before commit, push, plan or start, pure local authoring may consume one finite
+repair batch containing distinct aggregate-lint `path/code/message` tuples.
+This lets independent mechanical defects be corrected together instead of
+requiring one user round trip per field. The same tuple cannot recur, and the
+batch cannot include cloud, transport, runtime, protected-data, scientific-
+authorization, engineering-repair or unknown-state failures.
+
 ### 2026-07-19 evidence-sync staging audit boundary
 
 Invalid form: a PowerShell double-quoted `wsl ... bash -lc` command embedded
@@ -69,7 +76,10 @@ Route entrypoints should call write_workload_progress from route_program_api for
 milestones. It appends phase=workload and event=workload_progress with bounded
 completed_units and total_units to status.txt. The MCP also accepts legacy
 route-specific keys matching NAME_PROGRESS, so completed A1 routes remain
-observable without preserving a route-specific parser.
+observable without preserving a route-specific parser. A valid zero-completion
+milestone preserves its declared `total_units`; after any workload milestone,
+the displayed stage comes from workload telemetry or the generic `workload`
+stage and cannot fall back to an earlier contract stage.
 
 Long engineering contracts use `write_contract_progress`, whose exact status
 fields are phase, event, stage, completed_iterations and total_iterations. Any

@@ -549,6 +549,10 @@ class ConvirOpsV4Tests(unittest.TestCase):
             result = payload(OPS.tool_start({"plan_token": token}))
         self.assertEqual("LAUNCHED_PENDING_VERIFICATION", result["operation_state"])
         self.assertFalse(result["workload_verified"])
+        self.assertEqual(
+            {"completed_units": 0, "total_units": 10},
+            result["observed"]["workload_progress"],
+        )
         self.assertEqual(30, result["retry_after_seconds"])
         self.assertIn("not_before_unix", result)
         self.assertIn("expected_phase_end_unix", result)
@@ -756,15 +760,29 @@ class ConvirOpsV4Tests(unittest.TestCase):
             result["observed"]["workload_progress"],
         )
 
-    def test_progress_parser_rejects_untyped_or_zero_progress(self):
+    def test_progress_parser_rejects_untyped_and_preserves_zero_capacity(self):
         status = "\n".join((
             '{"message":"completed_units","completed_units":99,"total_units":100}',
             '{"route_progress":{"completed_units":50,"total_units":100}}',
             '{"R3_A2_PROGRESS":{"completed_units":0,"total_units":10}}',
         ))
         self.assertEqual(
-            {"completed_units": 0, "total_units": 0}, OPS.workload_progress(status)
+            {"completed_units": 0, "total_units": 10}, OPS.workload_progress(status)
         )
+
+    def test_progress_stage_prefers_workload_after_contract_completion(self):
+        status = "\n".join((
+            '{"phase":"contract","event":"contract_progress","stage":"probe",'
+            '"completed_iterations":100,"total_iterations":100}',
+            '{"phase":"workload","event":"workload_start",'
+            '"completed_units":0,"total_units":851}',
+        ))
+        self.assertEqual("workload", OPS.progress_stage(status))
+        status += (
+            '\n{"phase":"workload","event":"workload_progress",'
+            '"stage":"scene_extract","completed_units":1,"total_units":851}'
+        )
+        self.assertEqual("scene_extract", OPS.progress_stage(status))
 
     def test_start_surfaces_early_engineering_failure_and_auto_authorizes_repair(self):
         plan = {

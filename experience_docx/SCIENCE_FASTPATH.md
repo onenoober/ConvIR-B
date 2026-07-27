@@ -32,9 +32,11 @@ separation.
    using a planning-SD upper bound and a critical value no smaller than the
    simultaneous Bonferroni bound for the frozen comparison family. Changed
    production paths require one SHA/commit-bound capability profile and
-   device-aware synthetic contract. Run one aggregate
-   authoring lint before derivation so independent schema, authorization, role,
-   precision and engineering errors are returned together. A cost-dependent
+   device-aware synthetic contract. Use one atomic compiler `--finalize`; it
+   returns independent schema, authorization, role, precision, engineering and
+   source-text errors together, derives the capability input-contract identity
+   mechanically, and writes the complete bundle only after a clean result. A
+   caller-supplied mismatching identity is rejected. A cost-dependent
    operation must freeze a machine-checkable cost strategy: adaptive/search/
    graph/matrix work uses a same-scale protected-data-free probe; fixed-linear
    extrapolation is allowed only for a fixed-count exact production map with

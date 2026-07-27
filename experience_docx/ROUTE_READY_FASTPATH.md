@@ -20,11 +20,14 @@ For a new route, author only:
 3. one Python entrypoint implementing contract(context_path) and
    run(context_path).
 
-Run `experiment_spec_compiler.py --lint-all` once while authoring. It returns
-all independently detectable errors as stable path/code/message JSON and never
-writes derived files. After a clean lint, run `--write` once to deterministically emit the
-schema-v6 route manifest, canonical scientific JSON, short rationale note,
-runtime schema-v2 spec and any declared asset/capability/precision contracts.
+Run `experiment_spec_compiler.py --finalize` once per authoring attempt. It
+returns all independently detectable errors as stable path/code/message JSON,
+including source-text hygiene, and writes nothing on a failed aggregate lint.
+After a clean result it atomically installs the schema-v6 route manifest,
+canonical scientific JSON, short rationale note, runtime schema-v2 spec and any
+declared asset/capability/precision contracts. The capability input-contract
+SHA-256 is derived from the normalized runtime cost contract; an omitted value
+is filled and an explicitly wrong value is rejected.
 The compiler does not select any scientific field. Do not hand-edit generated
 files; route-ready and MCP recompile the committed sources and reject byte
 drift. New typed asset manifests use schema 2. Historical experiment-spec,

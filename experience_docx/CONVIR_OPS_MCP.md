@@ -89,8 +89,11 @@ authorization, next action and family effect. Each terminal action must be
 operationally distinct. Historical scientific schema 1 retains its typed
 terminal writer.
 
-The authoring compiler provides a write-free aggregate lint that returns stable
-path/code/message errors across independently checkable operations. New
+The authoring compiler's atomic `--finalize` returns stable path/code/message
+errors across independently checkable operations and source-text hygiene, then
+writes the complete derived bundle only after a clean result. It mechanically
+derives the capability input-contract SHA-256 while rejecting an explicit
+mismatch. New
 non-metadata authoring must also declare one machine-validated cost strategy.
 Adaptive/nonlinear work uses `same_scale_probe`; the narrower
 `fixed_linear_extrapolation` requires fixed-count exact production execution,
@@ -135,7 +138,9 @@ interval. It returns only token-safe stage, completed/total units, exact-session
 activity, heartbeat age/source, `snapshot_at_unix`, `cached`, and whether current
 health is claimed. It never returns a metric, loss, sample/data id, action
 distribution, gate outcome or scientific decision. A cached response preserves
-the old snapshot time and explicitly makes no current-health claim. A closeout
+the old snapshot time and explicitly makes no current-health claim. Valid
+workload `0/N` telemetry retains `N`, and workload stage takes precedence
+over an earlier contract stage once workload telemetry has appeared. A closeout
 detected before ETA returns `TERMINAL_DETECTED`, clears the sealed not-before
 cache and allows immediate normal finish; it does not read or reveal the
 scientific tuple. A dead exact session without closeout returns

@@ -9,7 +9,7 @@ on_error() {
 trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
 
 branch=codex/convir-control-plane-efficiency-v1
-base=85a8c1a46bd1f3ced110bd2a050aec5ed6eeee7b
+base=ed884b4ebd3b0f733381093058f3f694c454f390
 github=git@github.com:onenoober/ConvIR-B.git
 seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
 python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python

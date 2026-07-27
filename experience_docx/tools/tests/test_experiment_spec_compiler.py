@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 TOOLS = Path(__file__).parents[1]
@@ -215,6 +216,23 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
         self.assertEqual(2, route_assets["schema_version"])
         self.assertEqual("scene_mean_error", precision["primary_estimand_id"])
 
+    def test_schema2_mechanically_derives_capability_input_identity(self):
+        program, spec = sources_v2()
+        identity = spec["operations"]["ACCEPT"]["capability"]["reuse_identity"]
+        expected = identity.pop("input_contract_sha256")
+        _, _, bundle = compile_sources(program, spec)
+        capability_path = "experience_docx/model_capabilities/final_slim__ACCEPT.json"
+        generated = json.loads(bundle[capability_path])
+        self.assertEqual(expected, generated["reuse_identity"]["input_contract_sha256"])
+
+    def test_schema2_rejects_an_explicit_wrong_capability_input_identity(self):
+        program, spec = sources_v2()
+        spec["operations"]["ACCEPT"]["capability"]["reuse_identity"][
+            "input_contract_sha256"
+        ] = "0" * 64
+        with self.assertRaises(COMPILER.ExperimentSpecError):
+            compile_sources(program, spec)
+
     def test_schema2_lint_rejects_precision_first_precedence(self):
         program, spec = sources_v2()
         rules = spec["operations"]["ACCEPT"]["scientific_contract"]["decision_table"]["rules"]
@@ -318,6 +336,20 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             {"ROLE_ALIGNMENT", "CONTRACT_INVALID", "RUNTIME_CONTRACT_INVALID"} & codes
         )
 
+    def test_lint_reports_source_text_hygiene_with_other_errors(self):
+        program, spec = sources()
+        spec["operations"]["ACCEPT"]["runtime"]["evidence_role"] = "development_screening"
+        result = COMPILER.lint_bundle(
+            spec_relpath="experience_docx/experiment_specs/final_slim.json",
+            spec_raw=COMPILER.json_bytes(spec) + b"\n",
+            program_raw=COMPILER.json_bytes(program), evidence_exists=lambda _: True,
+        )
+        codes = {item["code"] for item in result["errors"]}
+        self.assertIn("SOURCE_TEXT_TRAILING_BLANK_LINE", codes)
+        self.assertTrue(
+            {"ROLE_ALIGNMENT", "CONTRACT_INVALID", "RUNTIME_CONTRACT_INVALID"} & codes
+        )
+
     def test_new_authoring_requires_an_explicit_cost_strategy(self):
         program, spec = sources()
         spec["operations"]["ACCEPT"]["runtime"]["engineering_contract"]["cost_contract"] = None
@@ -328,7 +360,7 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
         )
         self.assertTrue(lint["errors"])
 
-    def test_write_is_atomic_when_aggregate_lint_fails(self):
+    def test_finalize_is_atomic_when_aggregate_lint_fails(self):
         program, spec = sources()
         spec["operations"]["ACCEPT"]["runtime"]["evidence_role"] = "development_screening"
         with tempfile.TemporaryDirectory() as directory:
@@ -343,7 +375,7 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
                 [
                     sys.executable, str(TOOLS / "experiment_spec_compiler.py"),
                     "--repo", str(repo), "--spec",
-                    "experience_docx/experiment_specs/final_slim.json", "--write",
+                    "experience_docx/experiment_specs/final_slim.json", "--finalize",
                 ],
                 text=True, capture_output=True, check=False,
             )
@@ -352,6 +384,31 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             self.assertEqual("EXPERIMENT_SPEC_INVALID", report["status"])
             self.assertFalse((repo / COMPILER.MANIFEST_RELPATH).exists())
             self.assertFalse((repo / "experience_docx/route_runtime_specs/ACCEPT.json").exists())
+
+    def test_atomic_bundle_install_restores_prior_files_after_failure(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+            first = "experience_docx/generated/first.json"
+            second = "experience_docx/generated/second.json"
+            (repo / first).parent.mkdir(parents=True)
+            (repo / first).write_bytes(b"old\n")
+            real_replace = COMPILER.os.replace
+            calls = 0
+
+            def fail_second_install(source, destination):
+                nonlocal calls
+                calls += 1
+                if calls == 2:
+                    raise OSError("injected install failure")
+                return real_replace(source, destination)
+
+            with patch.object(COMPILER.os, "replace", side_effect=fail_second_install):
+                with self.assertRaises(COMPILER.ExperimentSpecError):
+                    COMPILER.write_bundle_atomic(
+                        repo, {first: b"new first\n", second: b"new second\n"},
+                    )
+            self.assertEqual(b"old\n", (repo / first).read_bytes())
+            self.assertFalse((repo / second).exists())
 
     def test_compiler_rejects_adjacent_budget_overrun_but_allows_orthogonal_escape(self):
         program, spec = sources()
