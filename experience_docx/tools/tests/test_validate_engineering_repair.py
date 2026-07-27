@@ -115,6 +115,7 @@ class EngineeringRepairTests(unittest.TestCase):
             "path": f"{{REMOTE_REPO}}/{entrypoint}", "sha256": old_sha,
         })
         operation["capability"]["bound_assets"][0]["identity"] = old_sha
+        operation["capability"]["reuse_identity"]["code_path_sha256"] = old_sha
         spec_raw, program_raw, bundle = compile_sources(program, spec)
         source_paths = {
             "experience_docx/research_programs/final_slim.json": program_raw,
@@ -141,6 +142,7 @@ class EngineeringRepairTests(unittest.TestCase):
         new_sha = hashlib.sha256(after).hexdigest()
         candidate_operation["assets"][0]["sha256"] = new_sha
         candidate_operation["capability"]["bound_assets"][0]["identity"] = new_sha
+        candidate_operation["capability"]["reuse_identity"]["code_path_sha256"] = new_sha
         candidate_spec_raw, _, candidate_bundle = compile_sources(program, candidate_spec)
         candidate_files = {
             "experience_docx/experiment_specs/final_slim.json": candidate_spec_raw,

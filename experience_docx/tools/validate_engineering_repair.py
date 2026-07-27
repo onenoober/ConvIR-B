@@ -291,6 +291,7 @@ def _normalize_schema6_source(source: dict[str, Any], operation_id: str,
     if len(bound) != 1:
         raise RepairError("schema-6 capability must bind the entrypoint asset exactly once")
     bound[0]["identity"] = entrypoint_sha
+    operation["capability"]["reuse_identity"]["code_path_sha256"] = entrypoint_sha
     return value
 
 
