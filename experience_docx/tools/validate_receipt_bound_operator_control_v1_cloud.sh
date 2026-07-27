@@ -3,11 +3,34 @@ set -euo pipefail
 
 BASE=/sda/home/wangyuxin/ConvIR-B
 PYTHON=$BASE/envs/convir-cu121/bin/python
-REPO=${CONVIR_VALIDATION_REPO:?CONVIR_VALIDATION_REPO is required}
+REMOTE_URL=git@github.com:onenoober/ConvIR-B.git
+BRANCH=codex/receipt-bound-operator-control-v1
+SEED=$BASE/repos/ConvIR-B-official-arch-anchor
+REMOTE_LINE=$(/usr/bin/git ls-remote "$REMOTE_URL" "refs/heads/$BRANCH")
+read -r COMMIT REMOTE_REF <<< "$REMOTE_LINE"
+test "$REMOTE_REF" = "refs/heads/$BRANCH"
+[[ "$COMMIT" =~ ^[0-9a-f]{40}$ ]]
+WORK=$(mktemp -d "$BASE/runs/operator-control-validation.XXXXXXXX")
+case "$WORK" in "$BASE/runs/operator-control-validation."*) ;; *) exit 91 ;; esac
+REPO=$WORK/repo
 TOOLS=$REPO/experience_docx/tools
 
+cleanup() {
+  code=$?
+  trap - EXIT
+  case "$WORK" in "$BASE/runs/operator-control-validation."*) rm -rf -- "$WORK" ;; *) code=91 ;; esac
+  exit "$code"
+}
+trap cleanup EXIT
+
 test -x "$PYTHON"
-test -d "$REPO/.git"
+test -d "$SEED/.git" || test -f "$SEED/HEAD"
+/usr/bin/git clone --quiet --no-checkout --reference-if-able "$SEED" "$REMOTE_URL" "$REPO"
+/usr/bin/git -C "$REPO" fetch --quiet --no-tags "$REMOTE_URL" \
+  "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+/usr/bin/git -C "$REPO" checkout --quiet --detach "$COMMIT"
+test "$(/usr/bin/git -C "$REPO" rev-parse HEAD)" = "$COMMIT"
+test -z "$(/usr/bin/git -C "$REPO" status --porcelain)"
 
 "$PYTHON" -m py_compile \
   "$TOOLS/convir_ops_mcp.py" \
@@ -158,4 +181,4 @@ finally:
 print("RECEIPT_BOUND_OPERATOR_CONTROL_E2E_OK")
 PY
 
-printf 'state=COMPLETED_GATE_PASS\nmarker=RECEIPT_BOUND_OPERATOR_CONTROL_V1_CLOUD_OK\n'
+printf 'state=COMPLETED_GATE_PASS\ncommit=%s\nmarker=RECEIPT_BOUND_OPERATOR_CONTROL_V1_CLOUD_OK\n' "$COMMIT"
