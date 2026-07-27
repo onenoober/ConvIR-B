@@ -1,0 +1,437 @@
+{
+  "competing_explanation": "A raw policy can appear useful because of privileged target leakage, tile pseudoreplication, scene-specific overfit, or uncontrolled multiplicity; conversely, full abstention can be caused by weak observable signal, utility correction, risk correction, their interaction, or a genuine utility-risk conflict.",
+  "controls": [
+    "GitHub-main parent FAIL closeout, conclusion, summary, gate, training-calibration, and scene-metric identities",
+    "immutable official architecture anchor and strict official checkpoint load",
+    "balanced five-fold OOF with training-only action-wise constant baselines",
+    "P11 exact all-keep and parent calibration reproduction control",
+    "GT-privileged same-population spatial oracle versus GT best-uniform positive control",
+    "deterministic within-scene prediction-target permutation negative control",
+    "exact keep identity, same-predictor uniform, and fixed-seed within-image action-map shuffle controls",
+    "complete image replay for PSNR, RGB SSIM, and RGB mean-bias safety",
+    "cloud-only checkpoint, raw-prediction, target, action-map, and SHA inventory retention",
+    "candidate-confirmation asset absent from contract and run contexts"
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "identity_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "coverage_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "scene_role_and_coverage": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "oracle_control_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "unfavorable",
+            "indeterminate",
+            "invalid"
+          ],
+          "scene_role_and_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "raw_utility_decisive_failure",
+        "terminal": "fail",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "favorable"
+          ],
+          "raw_actionable_utility": [
+            "unfavorable"
+          ],
+          "scene_role_and_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "raw_utility_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "favorable"
+          ],
+          "raw_actionable_utility": [
+            "indeterminate",
+            "invalid"
+          ],
+          "scene_role_and_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "raw_safety_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "favorable"
+          ],
+          "raw_actionable_utility": [
+            "favorable"
+          ],
+          "raw_image_replay_safety": [
+            "unsafe",
+            "indeterminate",
+            "invalid"
+          ],
+          "scene_role_and_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "suppression_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "calibration_suppression_specificity": [
+            "unfavorable",
+            "indeterminate",
+            "invalid"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "favorable"
+          ],
+          "raw_actionable_utility": [
+            "favorable"
+          ],
+          "raw_image_replay_safety": [
+            "safe"
+          ],
+          "scene_role_and_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "calibration_bottleneck_precise",
+        "terminal": "pass",
+        "when": {
+          "calibration_suppression_specificity": [
+            "favorable"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "favorable"
+          ],
+          "precision": [
+            "met"
+          ],
+          "raw_actionable_utility": [
+            "favorable"
+          ],
+          "raw_image_replay_safety": [
+            "safe"
+          ],
+          "scene_role_and_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "calibration_bottleneck_imprecise",
+        "terminal": "inconclusive",
+        "when": {
+          "calibration_suppression_specificity": [
+            "favorable"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "favorable"
+          ],
+          "precision": [
+            "unmet",
+            "invalid"
+          ],
+          "raw_actionable_utility": [
+            "favorable"
+          ],
+          "raw_image_replay_safety": [
+            "safe"
+          ],
+          "scene_role_and_coverage": [
+            "pass"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "stop",
+        "next_action_id": "author_observable_representation_or_learner_contract",
+        "terminal": {
+          "authorizes": "OBSERVABLE_REPRESENTATION_OR_LEARNER_CONTRACT_AUTHORING_ONLY",
+          "decision": "HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSITION_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "allow_predeclared_evidence",
+        "next_action_id": "review_predeclared_decomposition_evidence",
+        "terminal": {
+          "authorizes": "OBSERVABLE_SIGNAL_CALIBRATION_EVIDENCE_REVIEW_ONLY",
+          "decision": "HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSITION_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "advance",
+        "next_action_id": "author_observable_calibration_risk_interface_contract",
+        "terminal": {
+          "authorizes": "OBSERVABLE_CALIBRATION_RISK_INTERFACE_CONTRACT_AUTHORING_ONLY",
+          "decision": "HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSITION_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "candidate-confirmation, canary, locked-test, NH-Haze, ITS, or OTS access",
+    "architecture, feature, optimizer, epoch, loss-weight, threshold, action-scale, calibration-quantile, fold, variant, or policy search",
+    "separate training or model selection for P00, P10, P01, or P11",
+    "using GT, GT-derived utility, or GT-derived harm as an inference input",
+    "treating haze variants, tiles, actions, pixels, folds, or resamples as independent samples",
+    "changing the 0.05 dB utility margin, 0.10 risk limit, or 0.025 dB precision target",
+    "interpreting training fit, partial-policy attribution, or the GT oracle as confirmation or deployment evidence",
+    "committing datasets, weights, checkpoints, images, arrays, raw predictions, features, or action maps to GitHub",
+    "starting ITS or OTS measurement, promotion, deployment, or claiming source disjointness"
+  ],
+  "gates": [
+    {
+      "comparison_family": "haze4k_train_oof_five_endpoint_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "oof_raw_spatial_utility_gain",
+      "id": "evidence_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "all frozen terminal, source, checkpoint, runtime, and parent-result identities match exactly",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "haze4k_train_oof_five_endpoint_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "oof_raw_spatial_utility_gain",
+      "id": "scene_role_and_coverage",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "exact 600/150 train roles, balanced five-fold OOF, 100 complete four-variant stress groups, 851 units, complete cloud raw inventory, and exact P11 parent-mechanism reproduction",
+      "threshold": true,
+      "type": "coverage",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "haze4k_train_oof_five_endpoint_family",
+      "decision_role": "validity_veto",
+      "direction": "min",
+      "estimand_id": "oof_raw_spatial_utility_gain",
+      "id": "oracle_headroom_control",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "GT-privileged spatial-minus-best-uniform LCB exceeds 0.05 dB and its material-scene Wilson LCB exceeds 0.20",
+      "threshold": "oracle_uniform_lcb_gt_0.05_and_material_prevalence_lcb_gt_0.20",
+      "type": "materiality",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "haze4k_train_oof_five_endpoint_family",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "oof_raw_spatial_utility_gain",
+      "id": "raw_actionable_utility",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "P00 gain LCB exceeds 0.05 dB, material prevalence LCB exceeds 0.20, and spatial-over-uniform and spatial-over-shuffle LCBs exceed zero; unfavorable requires a corresponding UCB at or below its threshold",
+      "threshold": "four_conjunctive_lower_bounds_for_favorable_and_any_matching_upper_bound_for_unfavorable",
+      "type": "materiality",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "haze4k_train_oof_five_endpoint_family",
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand_id": "oof_raw_spatial_utility_gain",
+      "id": "raw_image_replay_safety",
+      "neutral_outcome": "safe",
+      "outcomes": [
+        "safe",
+        "unsafe",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "for P00 in OOF and test-development separately, simultaneous Wilson UCB is at most 0.10 for PSNR, SSIM, and color harm; unsafe requires an LCB above 0.10",
+      "threshold": 0.1,
+      "type": "safety",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "haze4k_train_oof_five_endpoint_family",
+      "decision_role": "inconclusive_only",
+      "direction": "min",
+      "estimand_id": "oof_raw_spatial_utility_gain",
+      "id": "calibration_suppression_specificity",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "with valid P11 all-keep reproduction, the P00 simultaneous gain LCB exceeds 0.05 dB; P10 and P01 localize utility, risk, or joint suppression descriptively",
+      "threshold": "p11_all_keep_and_p00_minus_p11_lcb_gt_0.05",
+      "type": "materiality",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "haze4k_train_oof_five_endpoint_family",
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand_id": "oof_raw_spatial_utility_gain",
+      "id": "precision",
+      "neutral_outcome": "met",
+      "outcomes": [
+        "met",
+        "unmet",
+        "invalid"
+      ],
+      "reference": "maximum distance from each of five fold-stratified Bonferroni paired-bootstrap estimates to either simultaneous interval endpoint",
+      "threshold": 0.025,
+      "type": "precision",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "haze4k_train_oof_five_endpoint_family",
+      "decision_role": "descriptive",
+      "direction": "max",
+      "estimand_id": "oof_raw_spatial_utility_gain",
+      "id": "training_fit_diagnostic",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "per-fold training-fit utility MAE improvement over a training-only constant baseline",
+      "threshold": "positive_in_at_least_four_of_five_folds_for_either_action",
+      "type": "materiality",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "official ConvIR-B base backbone, Haze4K checkpoint, and 104-channel observable representation remain frozen",
+      "one shared Conv2d 104-to-64-to-64-to-4 head is trained once per fold and once for secondary stress; policies never receive separate training",
+      "actions remain keep 1.0, weaken 0.8, and strengthen 1.2",
+      "training remains 12 epochs with AdamW 0.0003, weight decay 0.0001, gradient clipping 1.0, utility Huber beta 0.25, risk weight 0.5, and positive weight 2.0",
+      "calibration remains the finite-sample 95 percent upper quantile of nonnegative scene-mean utility and risk residuals",
+      "utility margin remains 0.05 dB, risk acceptance remains 0.10, and formal precision remains 0.025 dB",
+      "P00, P10, P01, and P11 share every raw prediction, image, target, correction, and action set",
+      "original clear scene is the only independent analysis unit",
+      "bootstrap resamples within each OOF fold and combines the five fold means equally",
+      "haze variants, tiles, actions, folds, pixels, and bootstrap draws never increase sample size",
+      "the 150 calibration scenes are nuisance-only and the 100 test-development scenes are historical secondary stress only",
+      "candidate-confirmation, NH-Haze, ITS, and OTS remain unread"
+    ],
+    "matched_budget": "one outcome-blind haze variant for each of 600 OOF scenes and 150 fixed calibration scenes; all four variants averaged within each of 100 secondary test-development scenes",
+    "primary_variable": "four predeclared raw-versus-corrected policies sharing one frozen observable utility-risk predictor",
+    "reference": "official keep output, same-predictor image-uniform action, within-image shuffled action map, P11 historical mechanism, and GT-privileged positive control"
+  },
+  "operation_id": "HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSE",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "original_clear_scene",
+    "independent_group_count": 600,
+    "strata": [
+      {
+        "id": "haze4k_train_oof",
+        "independent_group_count": 600
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "five-fold OOF mean over 600 original-clear scenes, one outcome-blind selected haze variant per scene, with fold-stratified paired bootstrap",
+    "direction": "higher",
+    "id": "oof_raw_spatial_utility_gain",
+    "metric_id": "scene_mean_p00_spatial_minus_keep_psnr_db",
+    "strata": [
+      "haze4k_train_oof"
+    ],
+    "unit": "original_clear_scene"
+  },
+  "question": "Does the frozen shared observable predictor contain safe and material raw OOF action signal that is specifically suppressed by the archived calibration interface, or is the raw signal itself insufficient under the frozen representation and learner?",
+  "route_id": "haze4k-observable-signal-calibration-decomposition-v1",
+  "schema_version": 2,
+  "uncertainty": {
+    "comparison_family": "haze4k_train_oof_five_endpoint_family",
+    "confidence_level": 0.95,
+    "id": "scene_level_simultaneous_uncertainty",
+    "independent_unit": "original_clear_scene",
+    "method_id": "fold_stratified_paired_bootstrap_and_bonferroni_wilson"
+  }
+}
