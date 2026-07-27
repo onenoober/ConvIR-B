@@ -16,7 +16,7 @@ TESTS = Path(__file__).parent
 sys.path[:0] = [str(TOOLS), str(TESTS)]
 import validate_engineering_repair as REPAIR
 import experiment_spec_compiler as COMPILER
-from test_experiment_spec_compiler import compile_sources, sources
+from test_experiment_spec_compiler import compile_sources, sources_v2
 
 
 class EngineeringRepairTests(unittest.TestCase):
@@ -99,7 +99,7 @@ class EngineeringRepairTests(unittest.TestCase):
         self._git(repo, "init", "--quiet")
         self._git(repo, "config", "user.name", "repair-test")
         self._git(repo, "config", "user.email", "repair-test@localhost")
-        program, spec = sources()
+        program, spec = sources_v2()
         operation = spec["operations"]["ACCEPT"]
         entrypoint = operation["runtime"]["entrypoint_relpath"]
         before = (
@@ -111,10 +111,17 @@ class EngineeringRepairTests(unittest.TestCase):
         ).encode()
         old_sha = hashlib.sha256(before).hexdigest()
         operation["operation"]["output_id"] = "final-slim-r1"
-        operation["assets"][0].update({
+        entrypoint_asset = next(
+            item for item in operation["assets"] if item["id"] == "code"
+        )
+        entrypoint_asset.update({
             "path": f"{{REMOTE_REPO}}/{entrypoint}", "sha256": old_sha,
         })
-        operation["capability"]["bound_assets"][0]["identity"] = old_sha
+        entrypoint_binding = next(
+            item for item in operation["capability"]["bound_assets"]
+            if item["id"] == "code"
+        )
+        entrypoint_binding["identity"] = old_sha
         operation["capability"]["reuse_identity"]["code_path_sha256"] = old_sha
         spec_raw, program_raw, bundle = compile_sources(program, spec)
         source_paths = {
@@ -140,8 +147,13 @@ class EngineeringRepairTests(unittest.TestCase):
             f"    return {2 if change_run else 1}\n"
         ).encode()
         new_sha = hashlib.sha256(after).hexdigest()
-        candidate_operation["assets"][0]["sha256"] = new_sha
-        candidate_operation["capability"]["bound_assets"][0]["identity"] = new_sha
+        next(
+            item for item in candidate_operation["assets"] if item["id"] == "code"
+        )["sha256"] = new_sha
+        next(
+            item for item in candidate_operation["capability"]["bound_assets"]
+            if item["id"] == "code"
+        )["identity"] = new_sha
         candidate_operation["capability"]["reuse_identity"]["code_path_sha256"] = new_sha
         candidate_spec_raw, _, candidate_bundle = compile_sources(program, candidate_spec)
         candidate_files = {
