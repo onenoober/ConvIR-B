@@ -1,6 +1,6 @@
 # Experiment Governance Protocol
 
-Date: 2026-07-26
+Date: 2026-07-27
 
 This is the single scientific-design and gate authority. Operational mechanics
 belong to `MODEL_RUN_OPERATIONS_PROTOCOL.md`.
@@ -112,10 +112,14 @@ cannot authorize it.
 
 After launch, route code records observations and typed gate outcomes only; the
 generic lifecycle resolves the decision table and writes the terminal. Only
-monitor, execute a frozen branch, stop at a written gate, or
-resume the exact contract. Never change scope, metrics, data, thresholds or
-comparison family after seeing results. Engineering failure has `decision:null`
-and is not scientific evidence.
+execute the frozen branch, inspect receipt-bound result-blind control telemetry,
+stop at a written scientific gate, explicitly cancel through the identity-bound
+lifecycle, or resume the exact contract when separately authorized. Human
+progress refresh and cancellation are legitimate controls; they must not expose
+partial outcomes or mutate scope, metrics, data, thresholds or comparison
+family. Cancellation has `CANCELLED_BY_OPERATOR / null / NONE`, cannot be
+interpreted scientifically and does not authorize reuse or relaunch.
+Engineering failure has `decision:null` and is not scientific evidence.
 
 A feasibility claim must be identified by the method used to decide it. If a
 heuristic search, greedy assignment, approximate solver, or local optimizer

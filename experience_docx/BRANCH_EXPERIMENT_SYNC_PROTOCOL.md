@@ -1,6 +1,6 @@
 # Branch Experiment Sync Protocol
 
-Date: 2026-07-26
+Date: 2026-07-27
 
 Scientific/safety terminal archive follows `SCIENCE_FASTPATH.md`. GitHub main
 retains a SHA-256 inventory and compact copy of the complete launch contract
@@ -23,6 +23,14 @@ superseded failed bundle by default. An explicit `archive` choice fetches only
 compact failure evidence. The cloud closeout remains required provenance, not
 Git evidence sync. An engineering failure alone does not change a family
 verdict or justify a central-index scientific entry.
+
+`CANCELLED_BY_OPERATOR / null / NONE` is a separate control terminal. Keep its
+receipt-bound closeout and request provenance in cloud control state; it is not
+a scientific terminal and does not enter `prepare_terminal_archive.py`, the
+scientific terminal index, capability registration, engineering repair, or
+evidence fetch. Partial result files remain non-interpretable and non-reusable.
+A later run requires a new declared run identity and normal authorization; the
+cancellation itself never authorizes relaunch.
 
 Never silently auto-repair population/data roles, protected-data permissions,
 model structure or initialization, checkpoint/asset identity, metrics,

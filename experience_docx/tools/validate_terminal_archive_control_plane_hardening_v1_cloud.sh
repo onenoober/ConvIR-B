@@ -99,7 +99,7 @@ expected_tools = {
     "convir_evidence_list", "convir_evidence_fetch", "convir_git_status",
 }
 assert set(responses) == {1, 2}, responses
-assert responses[1]["result"]["serverInfo"]["version"] == "5.3.0"
+assert responses[1]["result"]["serverInfo"]["version"] == "5.4.0"
 assert {item["name"] for item in responses[2]["result"]["tools"]} == expected_tools
 PY
 

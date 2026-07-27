@@ -46,11 +46,16 @@ hash changes.
    scientific and asset schema 1 plus manifest schema 4/5 routes remain
    immutable and supported.
 3. EXECUTE: run one route-ready gate, commit/push once, plan once and start
-   once. Confirm positive workload progress once and finish near the frozen ETA.
+   once. Confirm positive workload progress once. The frozen ETA is a cost
+   estimate, not an observation embargo. At operator request, use only the
+   receipt-bound result-blind progress refresh or terminal probe; each response
+   must name its snapshot time and cached/current status. Explicit cancellation
+   is allowed only through receipt-bound lifecycle control, never by PID.
    Every new scientific schema-2 run records each completed workload unit in
    the generic SHA-bound ledger; finalization requires exact `total_units` coverage.
-   Honor returned retry/not-before timestamps; an early repeated finish returns
-   cached state and must not become polling.
+   Retry/not-before timestamps govern full sealed finish windows only. They do
+   not block the bounded result-blind refresh, early terminal detection, or
+   operator cancellation. Do not turn refresh into a watcher.
    Never repeat checks owned by the validator/lifecycle or create a watcher.
 4. DECIDE: route code writes typed gate outcomes; the generic lifecycle derives
    the frozen terminal once. Interpret complete evidence once. The typed closeout alone

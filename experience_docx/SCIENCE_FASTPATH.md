@@ -1,6 +1,6 @@
 # Science Fastpath
 
-Date: 2026-07-26
+Date: 2026-07-27
 
 Status: adopted as the single default general experiment workflow after the
 cloud acceptance in experiment_logs/science_fastpath_validation_20260718/.
@@ -52,11 +52,17 @@ or coverage gate override all scientific outcomes to INCONCLUSIVE;
 decisive FAIL; `descriptive` cannot affect the terminal.
 
 3. EXECUTE: run one staged route-ready gate, push one commit, plan once and
-   start once. Require one positive workload-progress observation, then finish
-   near the frozen ETA. Every new scientific schema-2 run records each completed
+   start once. Require one positive workload-progress observation. ETA remains
+   a frozen cost forecast, not a prohibition on human observation. A receipt
+   holder may request a bounded result-blind progress snapshot, an early
+   terminal probe, or explicit cancellation at any time. Every new scientific schema-2 run records each completed
    workload unit with input/output SHA-256 and must cover exact `total_units`
-   before terminal derivation. Obey the returned retry/not-before time; calls inside
-   that window return cached status without consuming observation budget. Never
+   before scientific terminal derivation. Retry/not-before controls only full
+   sealed finish windows; progress-only refresh bypasses it, is rate-limited,
+   and must expose only stage/count/activity/heartbeat age plus snapshot and
+   cache identity. Cancellation must bind receipt, route, run, commit, runner,
+   workspace, output, session and process identity, then write
+   `CANCELLED_BY_OPERATOR / null / NONE`. Never
    duplicate validator/lifecycle checks, create a
    watcher, scan unrelated logs or interpret partial outcomes.
 4. DECIDE: after all planned units finish, route code publishes typed gate

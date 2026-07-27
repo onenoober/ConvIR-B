@@ -92,13 +92,13 @@ expected_tools = {
     "convir_route_plan", "convir_route_start", "convir_route_finish",
     "convir_evidence_list", "convir_evidence_fetch", "convir_git_status",
 }
-assert initialize["serverInfo"]["version"] == "5.3.0", initialize
+assert initialize["serverInfo"]["version"] == "5.4.0", initialize
 assert initialize["protocolVersion"] == "2024-11-05", initialize
 expected_source_sha = hashlib.sha256(server.read_bytes()).hexdigest()
 assert initialize["serverInfo"]["sourceSha256"] == expected_source_sha, initialize
 assert len(tools) == 6 and {item["name"] for item in tools} == expected_tools, tools
 assert status["isError"] is False, status
-print("GENERAL_SCIENCE_CONTROL_PLANE_FRESH_MCP_OK version=5.3.0 tools=6")
+print("GENERAL_SCIENCE_CONTROL_PLANE_FRESH_MCP_OK version=5.4.0 tools=6")
 PY
 
 echo "GENERAL_SCIENCE_CONTROL_PLANE_ACCEPTANCE_OK commit=${head}"

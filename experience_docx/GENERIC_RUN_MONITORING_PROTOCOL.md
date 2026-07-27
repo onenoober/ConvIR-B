@@ -1,6 +1,6 @@
 # Generic Run Monitoring Protocol
 
-Date: 2026-07-16
+Date: 2026-07-27
 
 Status: adopted for future long cloud operations. The reviewed generic files
 are on GitHub `main@dca94d71c9fe73e4e93910b0587927c79ab7023c`, and the
@@ -65,27 +65,41 @@ that exact process disappears.
 then to receipt launch time. One call observes a bounded 30- or 60-second
 window.
 
-- Healthy active: return `MONITOR_OBSERVED`; inspect again only near the frozen
-  expected end.
+- Healthy active sealed finish: return the frozen running state and normally
+  finish near the expected end.
+- Operator progress: `progress_only` may refresh before ETA with a separate
+  15-second minimum interval and finite budget. Return only stage, completed/
+  total units, exact-session activity, heartbeat age/source, snapshot time and
+  cached/current identity. Never expose outcomes, metrics or data ids.
+- Early terminal: the progress probe reports `TERMINAL_DETECTED`, clears the
+  sealed not-before cache and permits immediate closeout validation without
+  revealing the tuple in the probe.
 - Stale active: return `MONITOR_STALE` as monitoring/infrastructure evidence.
   The receipt remains open so a later typed closeout can still be validated.
-  Do not poll repeatedly; wait until the expected end or perform the single
-  allowed engineering review.
+  Do not create a watcher; the operator may later request another bounded
+  result-blind snapshot or perform the single allowed engineering review.
 - Dead without closeout: close as `CLOSEOUT_MISSING` and allow one engineering
   review.
 - Typed closeout: validate route/run/commit/runner identity, allowed terminal
   tuple, and SHA-256, then close the receipt.
+- Operator cancel: validate receipt-derived route/run/commit/runner/repo/output/
+  session and exact process owner/environment/command/start ticks; write the
+  request, terminate gracefully, then revalidate before bounded escalation.
+  Never accept a PID input. Close as
+  `CANCELLED_BY_OPERATOR / null / NONE` and keep evidence locked.
 
-Staleness never changes the scientific decision, triggers relaunch, or
-authorizes termination. The receipt retains the finite maximum of 64 total
-observation windows as a hard misuse guard.
+Staleness never changes the scientific decision, triggers relaunch, or by
+itself authorizes termination. The receipt retains 64 sealed finish windows
+plus a separate finite progress-refresh budget as hard misuse guards. Explicit
+human cancellation is an independent control action and never a scientific
+decision.
 
 ## Default Timing
 
 | Operation | Heartbeat interval | Stale threshold | Model-visible checks |
 | --- | ---: | ---: | --- |
-| smoke/preflight | 30-60 seconds | at least 3 intervals | launch plus one expected-end check |
-| long train/eval/formal | 60 seconds | 300 seconds | launch plus one expected-end check; one later check only if still healthy |
+| smoke/preflight | 30-60 seconds | at least 3 intervals | launch plus sealed finish; result-blind refresh on operator request |
+| long train/eval/formal | 60 seconds | 300 seconds | launch plus sealed finish; bounded result-blind refresh or cancel on operator request |
 
 An operation may choose a longer interval when individual kernels routinely
 block CPU scheduling, but must keep the stale threshold at least three times

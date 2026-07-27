@@ -1,8 +1,8 @@
 # Convir Operations MCP
 
-Date: 2026-07-26
+Date: 2026-07-27
 
-Status: governance-fastpath server `5.3.0` retains exactly six tools and stable control
+Status: governance-fastpath server `5.4.0` retains exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4 and uses
 immutable historical manifest schema 5 plus compiled manifest schema 6 and
 runtime schema 2 for new routes. New experiment specs, scientific contracts and
@@ -24,7 +24,7 @@ route validator or a route-specific shell surface.
 | --- | --- |
 | `convir_route_plan` | validate and seal one committed operation; no cloud call |
 | `convir_route_start` | run one sealed plan and return verified, pending, or early-failure state with a receipt |
-| `convir_route_finish` | observe at most 60 seconds, validate closeout, and auto-authorize one same-contract repair |
+| `convir_route_finish` | sealed finish, result-blind progress/terminal probe, receipt-bound cancellation, closeout validation and one same-contract repair state machine |
 | `convir_evidence_list` | list eligible compact evidence for a receipt |
 | `convir_evidence_fetch` | fetch an explicit allowlist with SHA-256 checks |
 | `convir_git_status` | token-bounded worktree/GitHub audit plus authoritative route snapshot |
@@ -124,12 +124,45 @@ session without closeout or a validated closeout closes `finish`. Healthy
 receipts have a hard maximum of 64 observation windows, preventing an unbounded
 watcher loop.
 
-Pending and running finish results return `retry_after_seconds`,
-`not_before_unix` and `expected_phase_end_unix`. Before not-before, the same
-receipt returns its cached typed state without SSH or an observation-window
-charge. Contract progress accepts only stage plus bounded completed/total
-iteration counts. Contract failure diagnostics may add bounded failed-check
-tokens; data identifiers, metrics, outcomes and scientific values are forbidden.
+Pending and running sealed-finish results return `retry_after_seconds`,
+`not_before_unix` and `expected_phase_end_unix`. Before not-before, another
+sealed call returns its cached typed state without SSH or an observation-window
+charge. ETA and not-before do not block operator control.
+
+`observation_mode=progress_only` performs one immediate result-blind snapshot
+with a separate maximum of 256 cloud observations and a 15-second minimum
+interval. It returns only token-safe stage, completed/total units, exact-session
+activity, heartbeat age/source, `snapshot_at_unix`, `cached`, and whether current
+health is claimed. It never returns a metric, loss, sample/data id, action
+distribution, gate outcome or scientific decision. A cached response preserves
+the old snapshot time and explicitly makes no current-health claim. A closeout
+detected before ETA returns `TERMINAL_DETECTED`, clears the sealed not-before
+cache and allows immediate normal finish; it does not read or reveal the
+scientific tuple. A dead exact session without closeout returns
+`CLOSEOUT_MISSING` immediately. No resident watcher is allowed.
+
+`operator_action=cancel` is also available before ETA and accepts no PID,
+session, path or command argument from the caller. The receipt derives route,
+run, commit, runner, repo, output, closeout and session. Cloud then validates
+the lifecycle identity file, exact Git/runner identity, tmux pane command,
+environment, owner and Linux start ticks, writes one idempotent cancellation
+request, and signals only that lifecycle. The lifecycle gracefully terminates
+its bound child process group and writes a cancellation closeout. After a
+30-second grace period the controller may terminate only the previously
+captured and revalidated process tree, waits another bounded interval, and
+uses the lifecycle control schema to finalize the closeout if an older runner
+cannot do so. PID reuse or identity drift fails closed. One same-request repeat
+is allowed after unknown transport state.
+
+The cancellation tuple is always
+`CANCELLED_BY_OPERATOR / null / NONE`. It is a control terminal outside the
+scientific contract's allowed tuples and never authorizes scientific
+interpretation, engineering repair, archive, promotion, relaunch or reuse of
+partial evidence. If a scientific or engineering closeout won the race before
+the cancellation signal, that original terminal is preserved and returned.
+Contract progress accepts only stage plus bounded completed/total iteration
+counts. Contract failure diagnostics may add bounded failed-check tokens; data
+identifiers, metrics, outcomes and scientific values are forbidden.
 
 A successful launch command is not a successful experiment start. Start spends
 one bounded monitor window and returns `RUNNING_VERIFIED` only after positive
@@ -153,7 +186,8 @@ delete absence. Scientific terminals and shared assets are never eligible.
 
 Evidence tools allow only top-level `.json/.csv/.md/.txt` files up to 1 MiB.
 They require a scientific validated closeout or an explicit engineering
-`archive` resolution and never stage, commit, or push.
+`archive` resolution and never stage, commit, or push. A cancellation receipt
+does not unlock evidence tools.
 
 ## Capability Reuse And Recovery
 
@@ -185,8 +219,8 @@ multi-operation chains remain readable.
 
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. After an update, restart the host and verify version
-`5.3.0`, source SHA-256, exactly six tools, schema 4/5/6 parsing, and the
-startup/repair/discard states.
+`5.4.0`, source SHA-256, exactly six tools, schema 4/5/6 parsing, and the
+startup/progress/cancel/repair/discard states.
 
 The stdio server is a long-lived process and never hot-updates from Git. A
 running task may continue on its already loaded source. Normal host restart or a

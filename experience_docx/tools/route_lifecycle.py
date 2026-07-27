@@ -39,6 +39,8 @@ REQUIRED_ENV = {
 MAX_CLOSEOUT_BYTES = 64 * 1024
 VERIFIED_ASSETS: list[dict[str, Any]] = []
 WORKLOAD_STARTED = False
+ACTIVE_PROGRAM: subprocess.Popen | None = None
+OPERATOR_CANCEL_REQUEST_PATH: Path | None = None
 
 
 class LifecycleError(RuntimeError):
@@ -47,6 +49,22 @@ class LifecycleError(RuntimeError):
         super().__init__(message)
         self.phase = phase
         self.control_diagnostic = control_diagnostic
+
+
+class OperatorCancelled(BaseException):
+    def __init__(self, signum: int):
+        super().__init__(f"operator cancellation signal {signum}")
+        self.signum = signum
+
+
+def operator_cancel_signal(signum: int, _frame: Any) -> None:
+    request = OPERATOR_CANCEL_REQUEST_PATH
+    if request is None or not request.is_file():
+        raise LifecycleError(
+            "termination signal lacks a receipt-bound operator request",
+            phase="workload" if WORKLOAD_STARTED else "lifecycle",
+        )
+    raise OperatorCancelled(signum)
 
 
 def safe_diagnostic_text(value: Any, maximum: int) -> str:
@@ -292,6 +310,7 @@ def start_sidecar(repo: Path, env: dict[str, str], heartbeat: Path,
 def run_program(*, phase: str, context_path: Path, entrypoint: Path,
                 spec: dict[str, Any], env: dict[str, str], log_path: Path,
                 timeout: int) -> int:
+    global ACTIVE_PROGRAM
     command_env = os.environ.copy()
     command_env.update(spec["environment"])
     command_env["PYTHONUNBUFFERED"] = "1"
@@ -307,8 +326,36 @@ def run_program(*, phase: str, context_path: Path, entrypoint: Path,
             cwd=env["REMOTE_REPO"], env=command_env, stdout=log,
             stderr=subprocess.STDOUT, start_new_session=True,
         )
+        ACTIVE_PROGRAM = process
+        active_path = context_path.parent / "active_program.json"
+        atomic_json(active_path, {
+            "schema_version": 1,
+            "route_id": spec["route_id"],
+            "operation_id": spec["operation_id"],
+            "run_id": env["RUN_ID"],
+            "route_commit": env["EXPECTED_ROUTE_COMMIT"],
+            "phase": phase,
+            "pid": process.pid,
+            "pgid": process.pid,
+            "entrypoint": str(entrypoint),
+            "context_path": str(context_path),
+        })
         try:
             return process.wait(timeout=timeout)
+        except OperatorCancelled:
+            try:
+                os.killpg(process.pid, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+            try:
+                process.wait(timeout=15)
+            except subprocess.TimeoutExpired:
+                try:
+                    os.killpg(process.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+                process.wait(timeout=10)
+            raise
         except subprocess.TimeoutExpired:
             os.killpg(process.pid, signal.SIGTERM)
             try:
@@ -317,6 +364,12 @@ def run_program(*, phase: str, context_path: Path, entrypoint: Path,
                 os.killpg(process.pid, signal.SIGKILL)
                 process.wait(timeout=30)
             return 124
+        finally:
+            ACTIVE_PROGRAM = None
+            try:
+                active_path.unlink()
+            except FileNotFoundError:
+                pass
 
 
 def validate_contract_result(path: Path, spec: dict[str, Any]) -> dict[str, Any]:
@@ -710,9 +763,10 @@ def publish_capability_qualification(
 
 
 def lifecycle() -> int:
-    global VERIFIED_ASSETS, WORKLOAD_STARTED
+    global VERIFIED_ASSETS, WORKLOAD_STARTED, OPERATOR_CANCEL_REQUEST_PATH
     VERIFIED_ASSETS = []
     WORKLOAD_STARTED = False
+    OPERATOR_CANCEL_REQUEST_PATH = None
     env = require_environment()
     repo, run_root, output = validate_lifecycle_paths(env)
     manifest_path = repo / "experience_docx/route_operations.json"
@@ -790,6 +844,7 @@ def lifecycle() -> int:
     )
     output.mkdir(parents=True)
     (output / "control").mkdir()
+    OPERATOR_CANCEL_REQUEST_PATH = output / "control/operator_cancel_request.json"
     atomic_json(
         output / "control/lifecycle_identity.json",
         lifecycle_identity(env, spec),
@@ -882,11 +937,143 @@ def lifecycle() -> int:
     return 0
 
 
+def cancellation_progress(status: Path) -> dict[str, Any]:
+    result: dict[str, Any] = {
+        "completed_units": 0, "total_units": 0, "stage": None,
+    }
+
+    def visit(value: Any, typed: bool = False) -> None:
+        if isinstance(value, dict):
+            envelope = any(
+                isinstance(key, str)
+                and __import__("re").fullmatch(r"[A-Z][A-Z0-9_]{0,63}_PROGRESS", key)
+                and isinstance(item, dict)
+                for key, item in value.items()
+            )
+            current_typed = typed or value.get("phase") in {
+                "contract", "workload", "terminal",
+            } or envelope
+            completed = value.get("completed_units", value.get("completed"))
+            total = value.get("total_units", value.get("total"))
+            if current_typed and isinstance(completed, int) \
+                    and completed >= result["completed_units"]:
+                result["completed_units"] = completed
+                result["total_units"] = (
+                    total if isinstance(total, int) and total >= completed else 0
+                )
+            stage = value.get("stage")
+            if current_typed and isinstance(stage, str) \
+                    and __import__("re").fullmatch(
+                        r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", stage,
+                    ):
+                result["stage"] = stage
+            for item in value.values():
+                visit(item, current_typed)
+        elif isinstance(value, list):
+            for item in value:
+                visit(item, typed)
+
+    try:
+        lines = status.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return result
+    for line in lines[-100:]:
+        try:
+            visit(json.loads(line))
+        except (json.JSONDecodeError, TypeError):
+            continue
+    return result
+
+
+def finalize_operator_cancellation(exc: OperatorCancelled) -> None:
+    env = require_environment()
+    repo, _, output = validate_lifecycle_paths(env)
+    manifest = load_json(repo / "experience_docx/route_operations.json")
+    operation_id, operation = infer_operation(manifest, env)
+    env["ROUTE_ID"] = manifest["route_id"]
+    spec = validate_runtime_spec(
+        load_json(repo / RUNTIME_SPEC_DIRECTORY / f"{operation_id}.json"),
+        manifest, operation_id,
+    )
+    request_path = output / "control/operator_cancel_request.json"
+    request = load_json(request_path)
+    expected = {
+        "schema_version": 1,
+        "route_id": spec["route_id"],
+        "run_id": env["RUN_ID"],
+        "route_commit": env["EXPECTED_ROUTE_COMMIT"],
+        "runner_sha256": env["RUNNER_SHA256"],
+        "action": "cancel",
+    }
+    if not isinstance(request, dict) or any(
+            request.get(key) != value for key, value in expected.items()):
+        raise LifecycleError(
+            "operator cancellation request identity mismatch",
+            phase="operator_cancel",
+        )
+    request_id = request.get("request_id")
+    requested_at = request.get("requested_at_unix")
+    if not isinstance(request_id, str) \
+            or not __import__("re").fullmatch(r"[0-9a-f]{32}", request_id) \
+            or not isinstance(requested_at, int):
+        raise LifecycleError(
+            "operator cancellation request is malformed",
+            phase="operator_cancel",
+        )
+    evidence_root = repo / "experience_docx/experiment_logs" / spec["route_id"]
+    evidence_root.mkdir(parents=True, exist_ok=True)
+    closeout_path = evidence_root / operation["closeout_filename"]
+    if closeout_path.exists():
+        return
+    progress = cancellation_progress(output / "status.txt")
+    role = spec.get("evidence_role")
+    result = {
+        "state": "CANCELLED_BY_OPERATOR",
+        "decision": None,
+        "authorizes": "NONE",
+        "confirmation_images_targets_outcomes_touched": (
+            WORKLOAD_STARTED and role == "confirmation"
+        ),
+        "canary_touched": WORKLOAD_STARTED and role == "canary",
+        "locked_test_touched": WORKLOAD_STARTED and role == "sealed_final",
+        "details": {
+            "request_id": request_id,
+            "requested_at_unix": requested_at,
+            **progress,
+            "termination_mode": "graceful",
+            "signal": exc.signum,
+            "workload_started": WORKLOAD_STARTED,
+            "scientific_result_interpretable": False,
+            "partial_scientific_evidence_reuse_authorized": False,
+        },
+    }
+    write_closeout(
+        env=env, spec=spec, operation=operation, output=output,
+        evidence_root=evidence_root, result=result, evidence_sha256={},
+        failure_phase="operator_cancel", returncode=130,
+        verified_assets=VERIFIED_ASSETS,
+        write_local_copy=output_owned_by_run(output, env, spec),
+    )
+
+
 def main() -> None:
+    signal.signal(signal.SIGTERM, operator_cancel_signal)
+    signal.signal(signal.SIGINT, operator_cancel_signal)
     try:
         raise SystemExit(lifecycle())
     except SystemExit:
         raise
+    except OperatorCancelled as exc:
+        try:
+            finalize_operator_cancellation(exc)
+        except BaseException as closeout_exc:
+            print(
+                f"GENERIC_ROUTE_CANCEL_CLOSEOUT_FAILED "
+                f"{type(closeout_exc).__name__}: {closeout_exc}",
+                file=sys.stderr,
+            )
+        print("GENERIC_ROUTE_OPERATION_CANCELLED", file=sys.stderr)
+        raise SystemExit(130)
     except BaseException as exc:
         try:
             env = require_environment()

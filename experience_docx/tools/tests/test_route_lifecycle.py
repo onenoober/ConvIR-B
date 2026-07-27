@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 TOOLS = Path(__file__).parents[1]
@@ -213,6 +214,100 @@ class LifecycleTests(unittest.TestCase):
                     evidence_root=evidence, result=result, evidence_sha256={},
                 )
             self.assertEqual("old-local", local.read_text())
+
+    def test_operator_signal_requires_a_receipt_bound_request(self):
+        with tempfile.TemporaryDirectory() as directory:
+            request = Path(directory) / "operator_cancel_request.json"
+            prior = LIFE.OPERATOR_CANCEL_REQUEST_PATH
+            LIFE.OPERATOR_CANCEL_REQUEST_PATH = request
+            try:
+                with self.assertRaises(LIFE.LifecycleError):
+                    LIFE.operator_cancel_signal(__import__("signal").SIGTERM, None)
+                request.write_text("{}")
+                with self.assertRaises(LIFE.OperatorCancelled):
+                    LIFE.operator_cancel_signal(__import__("signal").SIGTERM, None)
+            finally:
+                LIFE.OPERATOR_CANCEL_REQUEST_PATH = prior
+
+    def test_cancellation_progress_is_typed_and_result_blind(self):
+        with tempfile.TemporaryDirectory() as directory:
+            status = Path(directory) / "status.txt"
+            status.write_text("\n".join((
+                '{"R3_PROGRESS":{"stage":"extract","completed_units":7,'
+                '"total_units":10,"metric":99.9,"sample_id":"secret"}}',
+                '{"message":"untyped","completed_units":999,"total_units":999}',
+            )))
+            self.assertEqual(
+                {"completed_units": 7, "total_units": 10, "stage": "extract"},
+                LIFE.cancellation_progress(status),
+            )
+
+    def test_lifecycle_writes_non_scientific_operator_cancellation_closeout(self):
+        value, runtime = self.normalized()
+        operation = value["operations"]["S0"]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repo = root / "repo"
+            output = root / "runs/route/route-r1"
+            control = output / "control"
+            control.mkdir(parents=True)
+            (repo / "experience_docx").mkdir(parents=True)
+            (repo / "experience_docx/route_operations.json").write_text(
+                json.dumps(value)
+            )
+            runtime_path = repo / CONTRACT.RUNTIME_SPEC_DIRECTORY / "S0.json"
+            runtime_path.parent.mkdir(parents=True)
+            runtime_path.write_text("{}")
+            env = {
+                "RUN_ID": "route-r1", "OUTPUT_ID": "route-r1",
+                "EXPECTED_ROUTE_COMMIT": "a" * 40,
+                "RUNNER_SHA256": "b" * 64, "MODE": "s0",
+                "REMOTE_REPO": str(repo), "RUN_ROOT": str(root / "runs/route"),
+                "OUTPUT_PATH": str(output), "GPU": "",
+            }
+            (control / "lifecycle_identity.json").write_text(
+                json.dumps(LIFE.lifecycle_identity(env, runtime))
+            )
+            request_id = "1" * 32
+            (control / "operator_cancel_request.json").write_text(json.dumps({
+                "schema_version": 1, "request_id": request_id,
+                "route_id": runtime["route_id"], "run_id": env["RUN_ID"],
+                "route_commit": env["EXPECTED_ROUTE_COMMIT"],
+                "runner_sha256": env["RUNNER_SHA256"],
+                "requested_at_unix": 123, "action": "cancel",
+            }))
+            (output / "status.txt").write_text(
+                '{"phase":"workload","event":"workload_progress",'
+                '"completed_units":4,"total_units":10}\n'
+            )
+            prior_started = LIFE.WORKLOAD_STARTED
+            LIFE.WORKLOAD_STARTED = True
+            try:
+                with (
+                    patch.object(LIFE, "require_environment", return_value=env),
+                    patch.object(
+                        LIFE, "validate_lifecycle_paths",
+                        return_value=(repo, root / "runs/route", output),
+                    ),
+                    patch.object(LIFE, "infer_operation", return_value=("S0", operation)),
+                    patch.object(LIFE, "validate_runtime_spec", return_value=runtime),
+                ):
+                    LIFE.finalize_operator_cancellation(
+                        LIFE.OperatorCancelled(__import__("signal").SIGTERM)
+                    )
+            finally:
+                LIFE.WORKLOAD_STARTED = prior_started
+            closeout = json.loads((
+                repo / "experience_docx/experiment_logs" /
+                runtime["route_id"] / operation["closeout_filename"]
+            ).read_text())
+            self.assertEqual("CANCELLED_BY_OPERATOR", closeout["state"])
+            self.assertIsNone(closeout["decision"])
+            self.assertEqual("NONE", closeout["authorizes"])
+            self.assertEqual(4, closeout["details"]["completed_units"])
+            self.assertFalse(
+                closeout["details"]["scientific_result_interpretable"]
+            )
 
     def test_verified_asset_identity_survives_failure_closeout_path(self):
         value, runtime = self.normalized()

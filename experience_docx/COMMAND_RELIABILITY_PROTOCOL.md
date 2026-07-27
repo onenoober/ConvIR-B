@@ -1,6 +1,6 @@
 # Command Reliability Protocol
 
-Date: 2026-07-26
+Date: 2026-07-27
 
 This protocol is the single command-boundary contract. It covers the failure
 classes observed during A1 and earlier runs without retaining incident-specific
@@ -13,7 +13,7 @@ shell recipes as operating instructions.
 | Windows to WSL file, Git, or fixed program | wsl.exe -d Ubuntu-22.04 --exec followed by an absolute Linux program and literal argv | Windows Git on a WSL UNC path; bash -lc; nested quoting |
 | Task/worktree binding | convirctl.py task-context --repo <repo> --cwd <cwd> | relying on the PowerShell or editor cwd |
 | Repository read | convirctl.py repo-show, repo-list, or repo-search | cross-shell grep, sed, head, regex, or git-show pipelines |
-| Standard plan/start/finish/evidence | the six bounded convir-ops tools under stable protocol schema 4 | generic SSH, dispatcher, watcher, or per-poll task |
+| Standard plan/start/finish/progress/cancel/evidence | the six bounded convir-ops tools under stable protocol schema 4 | generic SSH, manual PID signals, dispatcher, watcher, or per-poll task |
 | Cloud action not covered by MCP | one committed, unchanged .sh through convirctl.py remote-script | inline SSH, heredoc across shells, untracked or dirty scripts |
 | Git/branch/SHA preflight | convirctl.py git-state | parsing human-formatted status text |
 | File identity | convirctl.py sha256 | filename or mtime |
@@ -75,9 +75,31 @@ Long engineering contracts use `write_contract_progress`, whose exact status
 fields are phase, event, stage, completed_iterations and total_iterations. Any
 extra field makes the milestone ineligible for MCP parsing, preventing metrics,
 outcomes, data ids or scientific values from entering control telemetry. A
-finish result carrying retry-after/not-before is a command boundary: calls made
-before not-before return cached status, do not contact the cloud and do not
-consume the finite observation budget.
+sealed finish result carrying retry-after/not-before is a command boundary:
+another sealed call before not-before returns cached status, does not contact
+the cloud and does not consume the finite finish-window budget. It does not
+block `observation_mode=progress_only`, whose separately bounded and rate-
+limited response contains only a token-safe stage, completed/total counts,
+session activity, heartbeat age/source, snapshot time and an explicit cached
+flag. Cached heartbeat age is never a current-health claim.
+
+## Receipt-Bound Human Control
+
+Human observation and cancellation are supported control-plane actions, not
+exceptions to governance. `operator_action=cancel` accepts only the launch
+receipt. The MCP derives and verifies route, run, commit, runner SHA-256,
+workspace, output, closeout and tmux session, then verifies the exact lifecycle
+process environment, command line, owner and Linux start ticks before signaling
+it. PID-only input and manually assembled kill commands are invalid.
+
+Cancellation first writes an identity-bound request, asks the lifecycle to
+terminate its child process group and waits a bounded grace period. Forced
+termination is allowed only after revalidating the same captured identities;
+PID reuse or any mismatch fails closed. The terminal is
+`CANCELLED_BY_OPERATOR / null / NONE`, is idempotent, and carries no scientific,
+repair, promotion, archive or partial-evidence-reuse authorization. A transport
+timeout is cancellation state unknown; repeat the same receipt-bound cancel
+once for inspection/recovery, never issue an unrelated signal.
 
 ### 2026-07-20 WSL worktree Git boundary
 

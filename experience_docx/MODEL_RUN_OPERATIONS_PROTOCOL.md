@@ -1,6 +1,6 @@
 # Model Run Operations Protocol
 
-Date: 2026-07-26
+Date: 2026-07-27
 
 ## Launch Order
 
@@ -101,11 +101,28 @@ experiment. An engineering closeout during this window is returned directly by
 is 60 seconds. Pending/verified results return retry-after, not-before and
 expected-phase-end timestamps. A repeated call before not-before returns the
 cached typed state without a cloud call or observation-budget charge. A healthy
-active run may be observed again near its frozen ETA.
+active run does not require a watcher, but the receipt holder may request an
+immediate `progress_only` snapshot at any time. This path has its own finite
+budget and minimum interval, exposes only result-blind stage/count/activity/
+heartbeat metadata, and labels cached state with its original snapshot time.
+It also probes for a closeout or a dead session, so ETA is never an embargo on
+terminal/failure discovery.
 A stale active heartbeat is an infrastructure warning and leaves the receipt
 open for later terminal closeout validation; it never stops or restarts the
 workload. A dead session without closeout gets one engineering inspection and
 then stops. Never create a watcher loop or task per poll.
+
+The human operator may explicitly cancel an active run through the same receipt.
+Cancellation is not a scientific gate and does not require waiting for ETA. It
+must verify the exact route/run/commit/runner/workspace/output/session and Linux
+process identity, write the request before signaling, attempt graceful lifecycle
+termination first, and revalidate the captured process tree before bounded
+escalation. PID-only cancellation is forbidden. The typed terminal is
+`CANCELLED_BY_OPERATOR / null / NONE`; completed-unit count is retained for
+audit, but partial outputs are not interpretable or reusable and evidence tools
+remain locked. Cancellation is idempotent and never becomes
+`FAILED_ENGINEERING`. If the route reached a genuine closeout first, preserve
+that closeout rather than overwriting it.
 
 Failure classes stay distinct: command/transport, preflight/resource,
 engineering/runtime, evidence/closeout, and scientific/safety gate. Use one

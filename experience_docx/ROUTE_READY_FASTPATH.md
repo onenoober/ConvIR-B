@@ -1,6 +1,6 @@
 # Route-Ready Fast Path
 
-Date: 2026-07-26
+Date: 2026-07-27
 
 Status: generic runtime adopted after the CPU-only r2 E2E closeout in
 `experiment_cards/2026-07-17-route-ready-fastpath-validation.md`. The
@@ -82,9 +82,13 @@ returned operation/output identity with zero mismatches, then one immediate
 uncertain checkout, a reopened task, or an evidence-sync worktree. Runtime
 identity, cloud paths, resources, assets, device-aware no-data contract execution,
 telemetry, timeout, evidence publication, and typed closeout are owned by MCP
-plus the generic lifecycle. Do not repeat those checks manually. Observe at
-the frozen expected end with `convir_route_finish`; an active healthy run needs
-no resident model watcher. `RUNNING_VERIFIED` is the only nonterminal start
+plus the generic lifecycle. Do not repeat those checks manually. The frozen
+expected end is a cost forecast. Full sealed finish normally occurs there, but
+an operator may use receipt-bound `progress_only` refresh, early terminal probe,
+or cancellation before it; no resident model watcher is allowed. The refresh
+is result-blind and separately rate/budget bounded. Cancellation accepts no PID
+and must preserve `CANCELLED_BY_OPERATOR / null / NONE` with no scientific or
+relaunch authorization. `RUNNING_VERIFIED` is the only nonterminal start
 state that permits telling the user the experiment is normally running.
 `LAUNCHED_PENDING_VERIFICATION` means only that the process exists; call one
 later finish after the startup interval and report any early failure

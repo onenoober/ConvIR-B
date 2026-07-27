@@ -30,6 +30,10 @@ def engineering_terminal():
     return {"state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE"}
 
 
+def cancelled_terminal():
+    return {"state": "CANCELLED_BY_OPERATOR", "decision": None, "authorizes": "NONE"}
+
+
 def operation(**overrides):
     value = {
         "runner_relpath": "experience_docx/tools/run_a1x.sh",
@@ -68,6 +72,7 @@ def context(require_gpu=False):
         "route_branch_commit": "a" * 40,
         "current_rules_commit": "b" * 40,
         "route_id": "a1x",
+        "operation_id": "S0",
         "remote_repo": "/remote/a1x",
         "run_root": "/runs/a1x",
         "route_card_relpath": "experience_docx/experiment_cards/a1x.md",
@@ -573,6 +578,150 @@ class ConvirOpsV4Tests(unittest.TestCase):
         with OPS.locked_record("receipt", receipt) as record:
             self.assertEqual(1, record["finish_calls"])
 
+    def test_progress_only_bypasses_eta_and_redacts_scientific_status(self):
+        receipt = OPS.write_new_record(
+            "receipt",
+            {
+                "context": context(), "gpu_index": None,
+                "launch_digest": "f" * 64, "issued_at": int(time.time()) - 10,
+            },
+            {
+                "launched": True, "finish_calls": 1, "finish_closed": None,
+                "finish_not_before_unix": int(time.time()) + 3600,
+                "pending_finish_response": OPS.typed_result(
+                    True, "RUNNING_VERIFIED", receipt="sealed",
+                ),
+            },
+        )
+        remote_output = (
+            f"CONVIR_OPS_OPERATOR_OBSERVATION snapshot_at={int(time.time())} "
+            "active=true terminal=false heartbeat_age=2 heartbeat_source=heartbeat\n"
+            "CONVIR_OPS_STATUS_BEGIN\n"
+            '{"R3_PROGRESS":{"stage":"outcome_blind_scene_extraction",'
+            '"completed_units":31,"total_units":851,"metric":99.9,'
+            '"sample_id":"secret"}}\n'
+            "CONVIR_OPS_STATUS_END\n"
+        )
+        with patch.object(OPS, "validate_operator_context"), patch.object(
+            OPS, "run_remote", return_value=remote_output,
+        ) as remote:
+            result = payload(OPS.tool_finish({
+                "receipt": receipt, "observation_mode": "progress_only",
+            }))
+        self.assertEqual("PROGRESS_REFRESHED", result["operation_state"])
+        self.assertEqual(31, result["observed"]["completed_units"])
+        self.assertEqual("outcome_blind_scene_extraction", result["observed"]["stage"])
+        self.assertFalse(result["observed"]["cached"])
+        self.assertNotIn("metric", json.dumps(result))
+        self.assertNotIn("secret", json.dumps(result))
+        remote.assert_called_once()
+        with OPS.locked_record("receipt", receipt) as record:
+            self.assertEqual(1, record["finish_calls"])
+            self.assertEqual(1, record["operator_observation_calls"])
+
+    def test_progress_only_rate_limit_returns_explicit_cached_snapshot(self):
+        snapshot = {
+            "snapshot_at_unix": int(time.time()), "active": True,
+            "terminal": False, "heartbeat_age_seconds": 3,
+            "heartbeat_source": "heartbeat", "stage": "extract",
+            "workload_progress": {"completed_units": 4, "total_units": 10},
+        }
+        receipt = OPS.write_new_record(
+            "receipt",
+            {
+                "context": context(), "gpu_index": None,
+                "launch_digest": "f" * 64, "issued_at": int(time.time()) - 10,
+            },
+            {
+                "launched": True, "finish_calls": 0, "finish_closed": None,
+                "operator_observation_calls": 1,
+                "operator_observation_not_before_unix": int(time.time()) + 10,
+                "operator_observation_cache": snapshot,
+            },
+        )
+        with patch.object(OPS, "run_remote") as remote:
+            result = payload(OPS.tool_finish({
+                "receipt": receipt, "observation_mode": "progress_only",
+            }))
+        self.assertEqual("PROGRESS_REFRESH_CACHED", result["operation_state"])
+        self.assertTrue(result["observed"]["cached"])
+        self.assertFalse(result["observed"]["current_health_claimed"])
+        remote.assert_not_called()
+
+    def test_progress_terminal_probe_unlocks_formal_finish_before_eta(self):
+        receipt = OPS.write_new_record(
+            "receipt",
+            {
+                "context": context(), "gpu_index": None,
+                "launch_digest": "f" * 64, "issued_at": int(time.time()) - 10,
+            },
+            {
+                "launched": True, "finish_calls": 1, "finish_closed": None,
+                "finish_not_before_unix": int(time.time()) + 3600,
+                "pending_finish_response": OPS.typed_result(
+                    True, "RUNNING_VERIFIED", receipt="sealed",
+                ),
+            },
+        )
+        probe = (
+            f"CONVIR_OPS_OPERATOR_OBSERVATION snapshot_at={int(time.time())} "
+            "active=false terminal=true heartbeat_age=1 heartbeat_source=status\n"
+            "CONVIR_OPS_STATUS_BEGIN\nCONVIR_OPS_STATUS_END\n"
+        )
+        with patch.object(OPS, "validate_operator_context"), patch.object(
+            OPS, "run_remote", return_value=probe,
+        ):
+            result = payload(OPS.tool_finish({
+                "receipt": receipt, "observation_mode": "progress_only",
+            }))
+        self.assertEqual("TERMINAL_DETECTED", result["operation_state"])
+        self.assertNotIn("decision", json.dumps(result["observed"]))
+        with OPS.locked_record("receipt", receipt) as record:
+            self.assertEqual(0, record["finish_not_before_unix"])
+            self.assertIsNone(record["pending_finish_response"])
+            self.assertTrue(record["operator_terminal_detected"])
+        raw = json.dumps({
+            "route_id": "a1x", "run_id": "a1x-s0-r1",
+            "route_commit": "a" * 40, "runner_sha256": "e" * 64,
+            **terminal(),
+        }, separators=(",", ":")).encode()
+        finish_output = (
+            "CONVIR_OPS_MONITOR polls=1 active=false terminal=true stale=false "
+            "heartbeat_age=1 heartbeat_source=status\n"
+            "CONVIR_OPS_STATUS_BEGIN\nCONVIR_OPS_STATUS_END\n"
+            "CONVIR_OPS_CLOSEOUT_SHA256="
+            + __import__("hashlib").sha256(raw).hexdigest()
+            + "\nCONVIR_OPS_CLOSEOUT_BEGIN\n" + raw.decode()
+            + "\nCONVIR_OPS_CLOSEOUT_END\n"
+        )
+        with patch.object(OPS, "run_remote", return_value=finish_output):
+            finished = payload(OPS.tool_finish({"receipt": receipt}))
+        self.assertEqual("CLOSEOUT_VALIDATED", finished["operation_state"])
+
+    def test_progress_only_detects_dead_session_without_waiting_for_eta(self):
+        receipt = OPS.write_new_record(
+            "receipt",
+            {
+                "context": context(), "gpu_index": None,
+                "launch_digest": "f" * 64, "issued_at": int(time.time()) - 10,
+            },
+            {"launched": True, "finish_calls": 0, "finish_closed": None},
+        )
+        probe = (
+            f"CONVIR_OPS_OPERATOR_OBSERVATION snapshot_at={int(time.time())} "
+            "active=false terminal=false heartbeat_age=5 heartbeat_source=status\n"
+            "CONVIR_OPS_STATUS_BEGIN\nCONVIR_OPS_STATUS_END\n"
+        )
+        with patch.object(OPS, "validate_operator_context"), patch.object(
+            OPS, "run_remote", return_value=probe,
+        ):
+            result = payload(OPS.tool_finish({
+                "receipt": receipt, "observation_mode": "progress_only",
+            }))
+        self.assertEqual("CLOSEOUT_MISSING", result["operation_state"])
+        with OPS.locked_record("receipt", receipt) as record:
+            self.assertEqual("CLOSEOUT_MISSING", record["finish_closed"])
+
     def test_contract_progress_parser_rejects_scientific_or_untyped_payloads(self):
         status = "\n".join((
             '{"phase":"contract","event":"contract_progress","stage":"probe","completed_iterations":4,"total_iterations":8}',
@@ -971,6 +1120,128 @@ class ConvirOpsV4Tests(unittest.TestCase):
         with self.assertRaises(OPS.ToolError):
             OPS.parse_closeout(ctx, output.replace('"run_id":"a1x-s0-r1"', '"run_id":"other"'))
 
+    def test_operator_cancellation_is_receipt_bound_typed_and_idempotent(self):
+        request_id = "1" * 32
+        receipt = OPS.write_new_record(
+            "receipt",
+            {
+                "context": context(), "gpu_index": None,
+                "launch_digest": "f" * 64, "issued_at": int(time.time()) - 10,
+            },
+            {
+                "launched": True, "finish_calls": 1, "finish_closed": None,
+                "operator_cancel_attempts": 0,
+                "operator_cancel_request_id": request_id,
+            },
+        )
+        raw = json.dumps({
+            "route_id": "a1x", "run_id": "a1x-s0-r1",
+            "route_commit": "a" * 40, "runner_sha256": "e" * 64,
+            **cancelled_terminal(),
+            "details": {
+                "request_id": request_id, "requested_at_unix": 123,
+                "completed_units": 37, "total_units": 851,
+                "stage": "outcome_blind_scene_extraction",
+                "termination_mode": "graceful",
+                "scientific_result_interpretable": False,
+            },
+        }, separators=(",", ":")).encode()
+        output = (
+            f"CONVIR_OPS_CANCEL snapshot_at={int(time.time())} active=false "
+            "terminal=true mode=graceful\n"
+            "CONVIR_OPS_CLOSEOUT_SHA256="
+            + __import__("hashlib").sha256(raw).hexdigest()
+            + "\nCONVIR_OPS_CLOSEOUT_BEGIN\n" + raw.decode()
+            + "\nCONVIR_OPS_CLOSEOUT_END\n"
+        )
+        with patch.object(OPS, "validate_operator_context"), patch.object(
+            OPS, "run_remote", return_value=output,
+        ) as remote:
+            first = payload(OPS.tool_finish({
+                "receipt": receipt, "operator_action": "cancel",
+            }))
+            second = payload(OPS.tool_finish({
+                "receipt": receipt, "operator_action": "cancel",
+            }))
+        self.assertEqual("CANCELLED_BY_OPERATOR", first["operation_state"])
+        self.assertEqual(37, first["observed"]["completed_units"])
+        self.assertFalse(first["observed"]["scientific_result_interpretable"])
+        self.assertTrue(second["observed"]["cached"])
+        self.assertEqual("NONE", first["scientific_authorization"])
+        remote.assert_called_once()
+        blocked = payload(OPS.tool_evidence_manifest({"receipt": receipt}))
+        self.assertEqual("EVIDENCE_MANIFEST_FAILED", blocked["operation_state"])
+
+    def test_operator_cancellation_rejects_request_or_receipt_mismatch(self):
+        ctx = context()
+        raw = json.dumps({
+            "route_id": "a1x", "run_id": "other",
+            "route_commit": "a" * 40, "runner_sha256": "e" * 64,
+            **cancelled_terminal(),
+            "details": {"request_id": "1" * 32},
+        }, separators=(",", ":")).encode()
+        output = (
+            "CONVIR_OPS_CLOSEOUT_SHA256="
+            + __import__("hashlib").sha256(raw).hexdigest()
+            + "\nCONVIR_OPS_CLOSEOUT_BEGIN\n" + raw.decode()
+            + "\nCONVIR_OPS_CLOSEOUT_END\n"
+        )
+        with self.assertRaises(OPS.ToolError):
+            OPS.parse_closeout(ctx, output)
+
+        raw = json.dumps({
+            "route_id": "a1x", "run_id": "a1x-s0-r1",
+            "route_commit": "a" * 40, "runner_sha256": "e" * 64,
+            **cancelled_terminal(),
+            "details": {"request_id": "2" * 32},
+        }, separators=(",", ":")).encode()
+        output = (
+            f"CONVIR_OPS_CANCEL snapshot_at={int(time.time())} active=false "
+            "terminal=true mode=forced\nCONVIR_OPS_CLOSEOUT_SHA256="
+            + __import__("hashlib").sha256(raw).hexdigest()
+            + "\nCONVIR_OPS_CLOSEOUT_BEGIN\n" + raw.decode()
+            + "\nCONVIR_OPS_CLOSEOUT_END\n"
+        )
+        receipt = OPS.write_new_record(
+            "receipt",
+            {"context": ctx, "gpu_index": None, "launch_digest": "f" * 64, "issued_at": 1},
+            {
+                "launched": True, "finish_closed": None,
+                "operator_cancel_request_id": "1" * 32,
+                "operator_cancel_attempts": 0,
+            },
+        )
+        with patch.object(OPS, "validate_operator_context"), patch.object(
+            OPS, "run_remote", return_value=output,
+        ):
+            result = payload(OPS.tool_finish({
+                "receipt": receipt, "operator_action": "cancel",
+            }))
+        self.assertEqual("FINISH_REJECTED", result["operation_state"])
+        self.assertEqual("evidence", result["failure_class"])
+
+    def test_operator_control_has_no_pid_input_and_actions_are_exclusive(self):
+        body_context = context()
+        with patch.object(OPS, "validate_operator_context"):
+            body = OPS.operator_cancel_body(body_context, "1" * 32)
+        self.assertIn("lifecycle_identity.json", body)
+        self.assertIn("EXPECTED_ROUTE_COMMIT", body)
+        self.assertIn("RUNNER_SHA256", body)
+        self.assertIn("operator_cancel_request.json", body)
+        self.assertIn("SIGTERM", body)
+        self.assertIn("SIGKILL", body)
+
+        receipt = OPS.write_new_record(
+            "receipt",
+            {"context": context(), "gpu_index": None, "launch_digest": "f" * 64, "issued_at": 1},
+            {"launched": True, "finish_closed": None},
+        )
+        result = payload(OPS.tool_finish({
+            "receipt": receipt, "operator_action": "cancel",
+            "observation_mode": "progress_only",
+        }))
+        self.assertEqual("FINISH_REJECTED", result["operation_state"])
+
     def test_engineering_closeout_allows_null_decision_but_cannot_authorize_next_stage(self):
         failure = {"state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE"}
         self.assertEqual(failure, OPS.require_terminal_tuples([failure])[0])
@@ -1014,7 +1285,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("5.3.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("5.4.0", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")
@@ -1026,6 +1297,15 @@ class ConvirOpsV4Tests(unittest.TestCase):
             ["repair", "archive", "discard"],
             finish["inputSchema"]["properties"]["engineering_failure_resolution"]["enum"],
         )
+        self.assertEqual(
+            ["observe", "cancel"],
+            finish["inputSchema"]["properties"]["operator_action"]["enum"],
+        )
+        self.assertEqual(
+            ["sealed", "progress_only"],
+            finish["inputSchema"]["properties"]["observation_mode"]["enum"],
+        )
+        self.assertNotIn("pid", finish["inputSchema"]["properties"])
 
 
 if __name__ == "__main__":

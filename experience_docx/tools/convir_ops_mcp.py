@@ -30,7 +30,7 @@ from route_runtime_contract import (
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "5.3.0"
+SERVER_VERSION = "5.4.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}
@@ -44,6 +44,7 @@ CLOUD_GIT_SEED = f"{REMOTE_REPOS}/ConvIR-B-official-arch-anchor"
 GITHUB_URL = "git@github.com:onenoober/ConvIR-B.git"
 SSH = "/usr/bin/ssh"
 REMOTE_BASH = "/bin/bash"
+REMOTE_TMUX = "/usr/bin/tmux"
 MAX_REMOTE_SCRIPT_BYTES = 256 * 1024
 MAX_REMOTE_CAPTURE_BYTES = 64 * 1024
 ROUTE_OPERATIONS_RELPATH = "experience_docx/route_operations.json"
@@ -71,6 +72,10 @@ STATE_DIR = Path(
 ).expanduser().resolve()
 PLAN_TTL_SECONDS = 15 * 60
 MAX_FINISH_WINDOWS = 64
+MAX_OPERATOR_OBSERVATIONS = 256
+OPERATOR_OBSERVATION_MIN_INTERVAL_SECONDS = 15
+OPERATOR_CANCEL_GRACE_SECONDS = 30
+OPERATOR_CANCEL_FORCE_SECONDS = 10
 MAX_EVIDENCE_BYTES = 1024 * 1024
 MAX_MANIFEST_BYTES = 16 * 1024
 MAX_CLOSEOUT_BYTES = 64 * 1024
@@ -85,6 +90,9 @@ ALLOWED_EVIDENCE_SUFFIXES = {".json", ".csv", ".md", ".txt"}
 MONITOR_PROFILES = {
     "short": {"max_polls": 3, "interval_seconds": 10},
     "standard": {"max_polls": 4, "interval_seconds": 15},
+}
+OPERATOR_CANCEL_TERMINAL = {
+    "state": "CANCELLED_BY_OPERATOR", "decision": None, "authorizes": "NONE",
 }
 
 
@@ -958,6 +966,7 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
         "route_branch_commit": route_commit,
         "current_rules_commit": current_main,
         "route_id": route_id,
+        "operation_id": operation_id,
         "remote_repo": derive_remote_repo(route_id, output_id),
         "run_root": f"{REMOTE_RUNS}/{route_id}",
         "route_card_relpath": route_card,
@@ -1333,6 +1342,7 @@ def atomic_start_body(context, gpu_index):
         f"OUTPUT_PATH={q(context['output_path'])}",
         f"CLOSEOUT={q(context['closeout_path'])}",
         f"SESSION={q(context['session'])}",
+        f"TMUX={q(REMOTE_TMUX)}",
         f"WORKSPACE_POLICY={q(context['workspace_policy'])}",
         f"OUTPUT_POLICY={q(context['output_policy'])}",
         f"GPU_INDEX={q(gpu_index if gpu_index is not None else '')}",
@@ -1362,7 +1372,7 @@ def atomic_start_body(context, gpu_index):
         'test -f "$REMOTE_REPO/$RUNNER"',
         'RUNNER_SHA=$(sha256sum "$REMOTE_REPO/$RUNNER" | awk \'{print $1}\')',
         'test "$RUNNER_SHA" = "$EXPECTED_RUNNER_SHA"',
-        'tmux has-session -t "$SESSION" 2>/dev/null && { echo CONVIR_OPS_SESSION_CONFLICT; exit 73; } || true',
+        '"$TMUX" has-session -t "$SESSION" 2>/dev/null && { echo CONVIR_OPS_SESSION_CONFLICT; exit 73; } || true',
         'if test "$OUTPUT_POLICY" = new; then',
         '  test ! -e "$OUTPUT_PATH"',
         '  test ! -e "$CLOSEOUT"',
@@ -1372,7 +1382,7 @@ def atomic_start_body(context, gpu_index):
         'fi',
     ])
     lines.extend([
-        f'tmux new-session -d -s "$SESSION" env EXPECTED_ROUTE_COMMIT="$EXPECTED_COMMIT" RUNNER_SHA256="$EXPECTED_RUNNER_SHA" MODE={q(context["mode"])} REMOTE_REPO="$REMOTE_REPO" RUN_ROOT="$RUN_ROOT" OUTPUT_PATH="$OUTPUT_PATH" RUN_ID={q(context["output_id"])} OUTPUT_ID={q(context["output_id"])} GPU="$GPU_INDEX" bash "$REMOTE_REPO/$RUNNER"',
+        f'"$TMUX" new-session -d -s "$SESSION" env EXPECTED_ROUTE_COMMIT="$EXPECTED_COMMIT" RUNNER_SHA256="$EXPECTED_RUNNER_SHA" MODE={q(context["mode"])} REMOTE_REPO="$REMOTE_REPO" RUN_ROOT="$RUN_ROOT" OUTPUT_PATH="$OUTPUT_PATH" RUN_ID={q(context["output_id"])} OUTPUT_ID={q(context["output_id"])} GPU="$GPU_INDEX" bash "$REMOTE_REPO/$RUNNER"',
         'trap - ERR',
         'echo "CONVIR_OPS_LAUNCH_OK session=$SESSION gpu=\${GPU_INDEX:-none}"',
     ])
@@ -1389,6 +1399,7 @@ def unknown_start_inspection_body(context):
         f"OUTPUT_PATH={q(context['output_path'])}",
         f"CLOSEOUT={q(context['closeout_path'])}",
         f"SESSION={q(context['session'])}",
+        f"TMUX={q(REMOTE_TMUX)}",
         f"ROUTE_ID={q(context['route_id'])}",
         f"RUN_ID={q(context['output_id'])}",
         'repo=absent; runner=absent; dirty=-1',
@@ -1404,7 +1415,7 @@ def unknown_start_inspection_body(context):
         '  runner_sha=$(sha256sum "$REMOTE_REPO/$RUNNER" | awk \'{print $1}\')',
         '  if test "$runner_sha" = "$EXPECTED_RUNNER_SHA"; then runner=exact; else runner=mismatch; fi',
         'fi',
-        'active=false; tmux has-session -t "$SESSION" 2>/dev/null && active=true || true',
+        'active=false; "$TMUX" has-session -t "$SESSION" 2>/dev/null && active=true || true',
         'output=absent; test ! -d "$OUTPUT_PATH" || output=present',
         'identity_path="$OUTPUT_PATH/control/lifecycle_identity.json"',
         f'json_states=$({q(REMOTE_PYTHON)} - "$identity_path" "$CLOSEOUT" "$ROUTE_ID" "$RUN_ID" "$EXPECTED_COMMIT" "$EXPECTED_RUNNER_SHA" <<\'PY\'',
@@ -1463,6 +1474,7 @@ def abandoned_start_cleanup_body(context):
         f"OUTPUT_PATH={q(context['output_path'])}",
         f"CLOSEOUT={q(context['closeout_path'])}",
         f"SESSION={q(context['session'])}",
+        f"TMUX={q(REMOTE_TMUX)}",
         f"REPO_ROOT={q(REMOTE_REPOS)}",
         'case "$REMOTE_REPO" in "$REPO_ROOT"/*) ;; *) exit 91 ;; esac',
         'test -d "$REMOTE_REPO/.git"',
@@ -1470,7 +1482,7 @@ def abandoned_start_cleanup_body(context):
         'test "$(git -C "$REMOTE_REPO" branch --show-current)" = "$EXPECTED_BRANCH"',
         'test -z "$(git -C "$REMOTE_REPO" status --porcelain)"',
         'test "$(sha256sum "$REMOTE_REPO/$RUNNER" | awk \'{print $1}\')" = "$EXPECTED_RUNNER_SHA"',
-        'tmux has-session -t "$SESSION" 2>/dev/null && exit 92 || true',
+        '"$TMUX" has-session -t "$SESSION" 2>/dev/null && exit 92 || true',
         'test ! -e "$OUTPUT_PATH"',
         'test ! -e "$CLOSEOUT"',
         'rm -rf -- "$REMOTE_REPO"',
@@ -1493,6 +1505,13 @@ def issue_receipt(context, gpu_index, launch_output):
             "monitor_stale_count": 0, "terminal_closeout": None,
             "engineering_failure_resolution": None, "workload_verified": False,
             "finish_not_before_unix": 0, "pending_finish_response": None,
+            "operator_observation_calls": 0,
+            "operator_observation_not_before_unix": 0,
+            "operator_observation_cache": None,
+            "operator_terminal_detected": False,
+            "operator_cancel_attempts": 0,
+            "operator_cancel_request_id": None,
+            "operator_cancel_state": None,
         },
     )
 
@@ -1686,7 +1705,9 @@ def begin_finish(token):
         now = int(time.time())
         not_before = record.get("finish_not_before_unix", 0)
         cached = record.get("pending_finish_response")
-        if isinstance(not_before, int) and now < not_before and isinstance(cached, dict):
+        terminal_detected = record.get("operator_terminal_detected") is True
+        if not terminal_detected and isinstance(not_before, int) \
+                and now < not_before and isinstance(cached, dict):
             return None, cached
         calls = record.get("finish_calls", 0)
         if not isinstance(calls, int) or calls < 0:
@@ -1697,6 +1718,7 @@ def begin_finish(token):
         record["finish_calls"] = calls + 1
         record["finish_not_before_unix"] = 0
         record["pending_finish_response"] = None
+        record["operator_terminal_detected"] = False
         context = dict(record["payload"]["context"])
         context["_receipt_issued_at"] = int(record["payload"]["issued_at"])
         context["_monitor_stale_count"] = int(record.get("monitor_stale_count", 0))
@@ -2015,6 +2037,277 @@ def contract_progress(status):
     return best
 
 
+def progress_stage(status):
+    """Extract only a typed, token-safe control stage from status telemetry."""
+    best = {"completed": -1, "stage": None}
+
+    def visit(value, typed=False):
+        if isinstance(value, dict):
+            envelope = any(
+                isinstance(key, str)
+                and re.fullmatch(r"[A-Z][A-Z0-9_]{0,63}_PROGRESS", key)
+                and isinstance(item, dict)
+                for key, item in value.items()
+            )
+            phase = value.get("phase")
+            event = value.get("event")
+            current_typed = typed or phase in {"contract", "workload", "terminal"} \
+                or event in {
+                    "contract_progress", "workload_start", "workload_progress",
+                    "workload_pass", "workload_end",
+                } or envelope
+            stage = value.get("stage")
+            completed = value.get(
+                "completed_units", value.get(
+                    "completed", value.get("completed_iterations", 0),
+                ),
+            )
+            if current_typed and isinstance(stage, str) \
+                    and SAFE_TOKEN.fullmatch(stage) \
+                    and isinstance(completed, int) and completed >= best["completed"]:
+                best.update(completed=completed, stage=stage)
+            for item in value.values():
+                visit(item, current_typed)
+        elif isinstance(value, list):
+            for item in value:
+                visit(item, typed)
+
+    for line in status.splitlines():
+        try:
+            visit(json.loads(line))
+        except (json.JSONDecodeError, TypeError):
+            continue
+    return best["stage"]
+
+
+def validate_operator_context(context):
+    remote_repo = Path(context["remote_repo"])
+    run_root = Path(context["run_root"])
+    output_path = Path(context["output_path"])
+    closeout_path = Path(context["closeout_path"])
+    if remote_repo.parent != Path(REMOTE_REPOS) or remote_repo == Path(CLOUD_GIT_SEED):
+        raise ToolError("operator control remote workspace is outside its dedicated root")
+    if run_root.parent != Path(REMOTE_RUNS) or output_path.parent != run_root:
+        raise ToolError("operator control output is outside its receipt-bound run root")
+    expected_repo = derive_remote_repo(context["route_id"], context["output_id"])
+    if str(remote_repo) != expected_repo \
+            or str(run_root) != f"{REMOTE_RUNS}/{context['route_id']}" \
+            or str(output_path) != f"{run_root}/{context['output_id']}":
+        raise ToolError("operator control paths do not match the receipt identity")
+    expected_closeout = (
+        remote_repo / "experience_docx" / "experiment_logs" /
+        context["route_id"] / context["closeout_filename"]
+    )
+    if closeout_path != expected_closeout:
+        raise ToolError("operator control closeout path does not match the receipt identity")
+    expected_session = derive_session(
+        context["route_id"], context["mode"],
+        context["route_branch_commit"], context["output_id"],
+    )
+    if context["session"] != expected_session:
+        raise ToolError("operator control session does not match the receipt identity")
+
+
+def operator_observation_body(context):
+    validate_operator_context(context)
+    status = f"{context['output_path']}/status.txt"
+    heartbeat = f"{context['output_path']}/heartbeat.json"
+    identity = f"{context['output_path']}/control/lifecycle_identity.json"
+    return "\n".join([
+        f"REMOTE_REPO={q(context['remote_repo'])}",
+        f"EXPECTED_COMMIT={q(context['route_branch_commit'])}",
+        f"RUNNER={q(context['runner_relpath'])}",
+        f"EXPECTED_RUNNER_SHA={q(context['runner_sha256'])}",
+        f"ROUTE_ID={q(context['route_id'])}",
+        f"RUN_ID={q(context['output_id'])}",
+        f"OUTPUT_PATH={q(context['output_path'])}",
+        f"IDENTITY={q(identity)}",
+        f"STATUS={q(status)}",
+        f"HEARTBEAT={q(heartbeat)}",
+        f"CLOSEOUT={q(context['closeout_path'])}",
+        f"SESSION={q(context['session'])}",
+        f"TMUX={q(REMOTE_TMUX)}",
+        f"LAUNCHED_AT={int(context.get('_receipt_issued_at', int(time.time())))}",
+        'test -d "$REMOTE_REPO/.git"',
+        'test "$(git -C "$REMOTE_REPO" rev-parse HEAD)" = "$EXPECTED_COMMIT"',
+        'test "$(sha256sum "$REMOTE_REPO/$RUNNER" | awk \'{print $1}\')" = "$EXPECTED_RUNNER_SHA"',
+        'if test -e "$OUTPUT_PATH"; then',
+        '  test -f "$IDENTITY"',
+        f'  {q(REMOTE_PYTHON)} - "$IDENTITY" "$ROUTE_ID" "$RUN_ID" "$EXPECTED_COMMIT" "$EXPECTED_RUNNER_SHA" <<\'PY\'',
+        'import json, sys',
+        'value = json.load(open(sys.argv[1], encoding="utf-8"))',
+        'expected = {"route_id": sys.argv[2], "run_id": sys.argv[3], "route_commit": sys.argv[4], "runner_sha256": sys.argv[5]}',
+        'assert all(value.get(key) == item for key, item in expected.items())',
+        'PY',
+        'fi',
+        'snapshot_at=$(date +%s)',
+        'active=false; "$TMUX" has-session -t "$SESSION" 2>/dev/null && active=true || true',
+        'terminal=false; test ! -f "$CLOSEOUT" || terminal=true',
+        'if test -f "$HEARTBEAT"; then heartbeat_source=heartbeat; heartbeat_age=$(( snapshot_at - $(stat -c %Y "$HEARTBEAT") ));',
+        'elif test -f "$STATUS"; then heartbeat_source=status; heartbeat_age=$(( snapshot_at - $(stat -c %Y "$STATUS") ));',
+        'else heartbeat_source=launch; heartbeat_age=$(( snapshot_at - LAUNCHED_AT )); fi',
+        'echo "CONVIR_OPS_OPERATOR_OBSERVATION snapshot_at=$snapshot_at active=$active terminal=$terminal heartbeat_age=$heartbeat_age heartbeat_source=$heartbeat_source"',
+        'echo CONVIR_OPS_STATUS_BEGIN',
+        'test ! -f "$STATUS" || tail -n 20 "$STATUS"',
+        'echo CONVIR_OPS_STATUS_END',
+    ])
+
+
+def parse_operator_observation(output):
+    meta = re.search(
+        r"(?m)^CONVIR_OPS_OPERATOR_OBSERVATION snapshot_at=(\d+) active=(true|false) terminal=(true|false) heartbeat_age=(-?\d+) heartbeat_source=(heartbeat|status|launch)$",
+        output,
+    )
+    begin = output.find("CONVIR_OPS_STATUS_BEGIN")
+    end = output.find("CONVIR_OPS_STATUS_END")
+    if not meta or begin < 0 or end < begin:
+        raise ToolError(
+            "operator observation markers are missing",
+            failure_phase="operator_observation", failure_class="command_infra",
+        )
+    return {
+        "snapshot_at_unix": int(meta.group(1)),
+        "active": meta.group(2) == "true",
+        "terminal": meta.group(3) == "true",
+        "heartbeat_age_seconds": int(meta.group(4)),
+        "heartbeat_source": meta.group(5),
+        "status": output[
+            begin + len("CONVIR_OPS_STATUS_BEGIN"):end
+        ].strip()[:4096],
+    }
+
+
+def begin_operator_observation(token):
+    with locked_record("receipt", token) as record:
+        if not record.get("launched"):
+            raise ToolError("receipt has no successful launch")
+        if record.get("finish_closed"):
+            raise ToolError(f"finish is closed: {record['finish_closed']}")
+        now = int(time.time())
+        not_before = record.get("operator_observation_not_before_unix", 0)
+        cached = record.get("operator_observation_cache")
+        if isinstance(not_before, int) and now < not_before \
+                and isinstance(cached, dict):
+            return None, dict(cached)
+        calls = record.get("operator_observation_calls", 0)
+        if not isinstance(calls, int) or calls < 0:
+            raise ToolError(
+                "operator observation counter is invalid",
+                failure_class="command_infra",
+            )
+        if calls >= MAX_OPERATOR_OBSERVATIONS:
+            raise ToolError(
+                "operator observation budget is exhausted; formal finish and cancellation remain available",
+                failure_phase="operator_observation", failure_class="contract",
+            )
+        record["operator_observation_calls"] = calls + 1
+        context = dict(record["payload"]["context"])
+        context["_receipt_issued_at"] = int(record["payload"]["issued_at"])
+        return context, None
+
+
+def cache_operator_observation(token, snapshot):
+    with locked_record("receipt", token) as record:
+        record["operator_observation_not_before_unix"] = (
+            int(snapshot["snapshot_at_unix"])
+            + OPERATOR_OBSERVATION_MIN_INTERVAL_SECONDS
+        )
+        record["operator_observation_cache"] = snapshot
+
+
+def mark_operator_terminal_detected(token, snapshot):
+    with locked_record("receipt", token) as record:
+        record["operator_terminal_detected"] = True
+        record["finish_not_before_unix"] = 0
+        record["pending_finish_response"] = None
+        record["operator_observation_cache"] = snapshot
+
+
+def operator_progress_result(token, snapshot, *, cached):
+    progress = snapshot["workload_progress"]
+    observed = {
+        "stage": snapshot.get("stage"),
+        "completed_units": progress["completed_units"],
+        "total_units": progress["total_units"],
+        "active": snapshot["active"],
+        "heartbeat_age_seconds": snapshot["heartbeat_age_seconds"],
+        "heartbeat_source": snapshot["heartbeat_source"],
+        "snapshot_at_unix": snapshot["snapshot_at_unix"],
+        "cached": cached,
+        "current_health_claimed": not cached,
+    }
+    if snapshot.get("stale") is True:
+        return typed_failure(
+            "PROGRESS_STALE", "command_infra",
+            "heartbeat exceeded the sealed limit",
+            observed=observed,
+            next_actions=["convir_route_finish_progress_only", "engineering_review_once"],
+            failure_phase="operator_observation", receipt_remains_open=True,
+            receipt=token, result_blind=True, cached=cached,
+            snapshot_at_unix=snapshot["snapshot_at_unix"],
+        )
+    state = "PROGRESS_REFRESH_CACHED" if cached else "PROGRESS_REFRESHED"
+    return typed_result(
+        True, state, observed=observed,
+        next_actions=["convir_route_finish_progress_only", "convir_route_finish_cancel"],
+        receipt=token, result_blind=True, cached=cached,
+        snapshot_at_unix=snapshot["snapshot_at_unix"],
+        retry_after_seconds=max(
+            0,
+            snapshot["snapshot_at_unix"]
+            + OPERATOR_OBSERVATION_MIN_INTERVAL_SECONDS - int(time.time()),
+        ),
+    )
+
+
+def observe_operator_progress(token):
+    context, cached = begin_operator_observation(token)
+    if cached is not None:
+        return operator_progress_result(token, cached, cached=True)
+    output = run_remote(
+        operator_observation_body(context), timeout=30,
+        phase="operator_observation",
+    )
+    observed = parse_operator_observation(output)
+    status = observed.pop("status")
+    progress = workload_progress(status)
+    snapshot = {
+        **observed,
+        "stage": progress_stage(status),
+        "workload_progress": progress,
+        "stale": observed["heartbeat_age_seconds"]
+        >= int(context["heartbeat_timeout_seconds"]),
+    }
+    if snapshot["terminal"]:
+        mark_operator_terminal_detected(token, snapshot)
+        return typed_result(
+            True, "TERMINAL_DETECTED",
+            observed={
+                key: snapshot[key] for key in (
+                    "active", "snapshot_at_unix", "heartbeat_age_seconds",
+                    "heartbeat_source",
+                )
+            },
+            next_actions=["convir_route_finish"], receipt=token,
+            result_blind=True, cached=False,
+            snapshot_at_unix=snapshot["snapshot_at_unix"],
+        )
+    if not snapshot["active"]:
+        close_finish(token, "CLOSEOUT_MISSING")
+        return typed_failure(
+            "CLOSEOUT_MISSING", "evidence", "session ended without closeout",
+            observed={
+                "active": False, "terminal": False,
+                "snapshot_at_unix": snapshot["snapshot_at_unix"],
+                "cached": False,
+            },
+            next_actions=["engineering_review_once"],
+            failure_phase="closeout", receipt=token, result_blind=True,
+        )
+    cache_operator_observation(token, snapshot)
+    return operator_progress_result(token, snapshot, cached=False)
+
+
 def record_workload_verified(token):
     with locked_record("receipt", token) as record:
         record["workload_verified"] = True
@@ -2033,7 +2326,8 @@ def parse_closeout(context, output):
     if not isinstance(value, dict) or {key: value.get(key) for key in expected_identity} != expected_identity:
         raise ToolError("closeout provenance mismatch", failure_class="evidence")
     terminal = {key: value.get(key) for key in ("state", "decision", "authorizes")}
-    if terminal not in context["allowed_terminal_tuples"]:
+    if terminal not in context["allowed_terminal_tuples"] \
+            and terminal != OPERATOR_CANCEL_TERMINAL:
         raise ToolError("closeout terminal tuple is not allowed", failure_class="evidence")
     match = re.search(r"(?m)^CONVIR_OPS_CLOSEOUT_SHA256=([0-9a-f]{64})$", output)
     if not match:
@@ -2082,6 +2376,25 @@ def parse_closeout(context, output):
             "failed_contract_checks": sorted(set(failed_checks)),
             "suggested_repair_class": engineering_failure_class(value.get("failure_phase")),
         }
+    elif terminal == OPERATOR_CANCEL_TERMINAL:
+        details = value.get("details") if isinstance(value.get("details"), dict) else {}
+        result["operator_cancellation"] = {
+            "request_id": details.get("request_id")
+            if isinstance(details.get("request_id"), str) else None,
+            "requested_at_unix": details.get("requested_at_unix")
+            if isinstance(details.get("requested_at_unix"), int) else None,
+            "completed_units": details.get("completed_units")
+            if isinstance(details.get("completed_units"), int) else 0,
+            "total_units": details.get("total_units")
+            if isinstance(details.get("total_units"), int) else 0,
+            "stage": details.get("stage")
+            if isinstance(details.get("stage"), str)
+            and SAFE_TOKEN.fullmatch(details["stage"]) else None,
+            "termination_mode": details.get("termination_mode")
+            if details.get("termination_mode") in {"graceful", "forced", "control_finalize"}
+            else None,
+            "scientific_result_interpretable": False,
+        }
     return result
 
 
@@ -2096,12 +2409,366 @@ def engineering_failure_class(phase):
     return "engineering_runtime"
 
 
+def operator_cancel_body(context, request_id):
+    validate_operator_context(context)
+    identity = f"{context['output_path']}/control/lifecycle_identity.json"
+    request = f"{context['output_path']}/control/operator_cancel_request.json"
+    targets = f"{context['output_path']}/control/operator_cancel_targets.json"
+    status = f"{context['output_path']}/status.txt"
+    lifecycle = f"{context['remote_repo']}/experience_docx/tools/route_lifecycle.py"
+    return "\n".join([
+        f"REMOTE_REPO={q(context['remote_repo'])}",
+        f"RUN_ROOT={q(context['run_root'])}",
+        f"OUTPUT_PATH={q(context['output_path'])}",
+        f"CLOSEOUT={q(context['closeout_path'])}",
+        f"IDENTITY={q(identity)}",
+        f"REQUEST={q(request)}",
+        f"TARGETS={q(targets)}",
+        f"STATUS={q(status)}",
+        f"SESSION={q(context['session'])}",
+        f"TMUX={q(REMOTE_TMUX)}",
+        f"ROUTE_ID={q(context['route_id'])}",
+        f"RUN_ID={q(context['output_id'])}",
+        f"MODE={q(context.get('operation_id', context['mode']))}",
+        f"EXPECTED_COMMIT={q(context['route_branch_commit'])}",
+        f"RUNNER={q(context['runner_relpath'])}",
+        f"EXPECTED_RUNNER_SHA={q(context['runner_sha256'])}",
+        f"LIFECYCLE={q(lifecycle)}",
+        f"REQUEST_ID={q(request_id)}",
+        f"GRACE={OPERATOR_CANCEL_GRACE_SECONDS}",
+        f"FORCE_WAIT={OPERATOR_CANCEL_FORCE_SECONDS}",
+        'test -d "$REMOTE_REPO/.git"',
+        'test "$(dirname "$REMOTE_REPO")" = ' + q(REMOTE_REPOS),
+        'test "$(dirname "$RUN_ROOT")" = ' + q(REMOTE_RUNS),
+        'test "$(dirname "$OUTPUT_PATH")" = "$RUN_ROOT"',
+        'test "$(git -C "$REMOTE_REPO" rev-parse HEAD)" = "$EXPECTED_COMMIT"',
+        'test -f "$REMOTE_REPO/$RUNNER"',
+        'test "$(sha256sum "$REMOTE_REPO/$RUNNER" | awk \'{print $1}\')" = "$EXPECTED_RUNNER_SHA"',
+        'test -f "$IDENTITY"',
+        'active=false; terminal=false; termination_mode=none; snapshot_at=$(date +%s)',
+        'if test -f "$CLOSEOUT"; then',
+        '  terminal=true; termination_mode=already_terminal',
+        'elif "$TMUX" has-session -t "$SESSION" 2>/dev/null; then',
+        '  active=true',
+        '  pane_pid=$("$TMUX" display-message -p -t "$SESSION" "#{pane_pid}")',
+        f'  {q(REMOTE_PYTHON)} - "$REMOTE_REPO" "$OUTPUT_PATH" "$IDENTITY" "$REQUEST" "$TARGETS" "$ROUTE_ID" "$RUN_ID" "$EXPECTED_COMMIT" "$EXPECTED_RUNNER_SHA" "$RUNNER" "$SESSION" "$pane_pid" "$REQUEST_ID" {q(REMOTE_PYTHON)} "$LIFECYCLE" <<\'PY\'',
+        'import json, os, signal, sys, time',
+        'from pathlib import Path',
+        'repo, output, identity_path, request_path, targets_path = map(Path, sys.argv[1:6])',
+        'route_id, run_id, commit, runner_sha, runner_rel, session = sys.argv[6:12]',
+        'pane_pid, request_id, remote_python, lifecycle = int(sys.argv[12]), sys.argv[13], sys.argv[14], sys.argv[15]',
+        'def atomic(path, value):',
+        '    path.parent.mkdir(parents=True, exist_ok=True)',
+        '    temp = path.with_name(path.name + ".tmp." + request_id)',
+        '    raw = (json.dumps(value, indent=2, sort_keys=True) + "\\n").encode()',
+        '    fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)',
+        '    try:',
+        '        with os.fdopen(fd, "wb") as stream: stream.write(raw); stream.flush(); os.fsync(stream.fileno())',
+        '        os.replace(temp, path)',
+        '    finally:',
+        '        try: temp.unlink()',
+        '        except FileNotFoundError: pass',
+        'def proc(pid):',
+        '    root = Path("/proc") / str(pid)',
+        '    stat = (root / "stat").read_text().split()',
+        '    cmd = (root / "cmdline").read_bytes().rstrip(b"\\0").decode().split("\\0")',
+        '    env = {}',
+        '    for item in (root / "environ").read_bytes().split(b"\\0"):',
+        '        if b"=" in item:',
+        '            key, value = item.split(b"=", 1); env[key.decode()] = value.decode()',
+        '    return {"pid": pid, "ppid": int(stat[3]), "pgid": int(stat[4]), "sid": int(stat[5]), "start_ticks": int(stat[21]), "cmdline": cmd, "env": env, "uid": root.stat().st_uid}',
+        'identity = json.loads(identity_path.read_text())',
+        'expected = {"route_id": route_id, "run_id": run_id, "route_commit": commit, "runner_sha256": runner_sha}',
+        'assert all(identity.get(key) == value for key, value in expected.items())',
+        'pane = proc(pane_pid)',
+        'assert pane["uid"] == os.getuid()',
+        'assert pane["cmdline"] == [remote_python, lifecycle]',
+        'for key, value in {"RUN_ID": run_id, "OUTPUT_PATH": str(output), "EXPECTED_ROUTE_COMMIT": commit, "RUNNER_SHA256": runner_sha}.items(): assert pane["env"].get(key) == value',
+        'request_value = {"schema_version": 1, "request_id": request_id, **expected, "session": session, "requested_at_unix": int(time.time()), "action": "cancel"}',
+        'if request_path.exists():',
+        '    prior = json.loads(request_path.read_text())',
+        '    assert all(prior.get(key) == value for key, value in request_value.items() if key != "requested_at_unix")',
+        '    request_value = prior',
+        'else: atomic(request_path, request_value)',
+        'children = []',
+        'child_file = Path("/proc") / str(pane_pid) / "task" / str(pane_pid) / "children"',
+        'for token in child_file.read_text().split() if child_file.exists() else []:',
+        '    try: child = proc(int(token))',
+        '    except FileNotFoundError: continue',
+        '    assert child["ppid"] == pane_pid and child["uid"] == os.getuid()',
+        '    assert child["cmdline"] and child["cmdline"][0] == remote_python',
+        '    assert any(arg.startswith(str(repo) + "/") or arg.startswith(str(output) + "/") for arg in child["cmdline"][1:])',
+        '    for key, value in {"RUN_ID": run_id, "EXPECTED_ROUTE_COMMIT": commit}.items(): assert child["env"].get(key) == value',
+        '    children.append({key: child[key] for key in ("pid", "pgid", "sid", "start_ticks", "cmdline")})',
+        'target_value = {"schema_version": 1, "request_id": request_id, "session": session, "lifecycle": {key: pane[key] for key in ("pid", "start_ticks", "cmdline")}, "children": children}',
+        'if targets_path.exists():',
+        '    prior = json.loads(targets_path.read_text())',
+        '    assert prior.get("request_id") == request_id and prior.get("session") == session',
+        '    assert prior.get("lifecycle") == target_value["lifecycle"]',
+        'else: atomic(targets_path, target_value)',
+        'os.kill(pane_pid, signal.SIGTERM)',
+        'PY',
+        '  n=0',
+        '  for n in $(seq 1 "$GRACE"); do',
+        '    test ! -f "$CLOSEOUT" || break',
+        '    "$TMUX" has-session -t "$SESSION" 2>/dev/null || break',
+        '    sleep 1',
+        '  done',
+        '  if test -f "$CLOSEOUT"; then',
+        '    terminal=true; active=false; termination_mode=graceful',
+        '  else',
+        f'    {q(REMOTE_PYTHON)} - "$REMOTE_REPO" "$OUTPUT_PATH" "$CLOSEOUT" "$IDENTITY" "$REQUEST" "$TARGETS" "$STATUS" "$ROUTE_ID" "$RUN_ID" "$MODE" "$EXPECTED_COMMIT" "$EXPECTED_RUNNER_SHA" "$SESSION" "$REQUEST_ID" "$FORCE_WAIT" {q(REMOTE_PYTHON)} "$LIFECYCLE" <<\'PY\'',
+        'import hashlib, json, os, re, signal, subprocess, sys, time',
+        'from pathlib import Path',
+        'repo, output, closeout, identity_path, request_path, targets_path, status_path = map(Path, sys.argv[1:8])',
+        'route_id, run_id, mode, commit, runner_sha, session, request_id = sys.argv[8:15]',
+        'force_wait, remote_python, lifecycle = int(sys.argv[15]), sys.argv[16], sys.argv[17]',
+        'request = json.loads(request_path.read_text()); targets = json.loads(targets_path.read_text())',
+        'assert request["request_id"] == request_id and targets["request_id"] == request_id',
+        'identity = json.loads(identity_path.read_text())',
+        'assert identity.get("route_id") == route_id and identity.get("run_id") == run_id and identity.get("route_commit") == commit and identity.get("runner_sha256") == runner_sha',
+        'def current(item):',
+        '    root = Path("/proc") / str(item["pid"])',
+        '    try:',
+        '        stat = (root / "stat").read_text().split()',
+        '        cmd = (root / "cmdline").read_bytes().rstrip(b"\\0").decode().split("\\0")',
+        '        return root.stat().st_uid == os.getuid() and int(stat[21]) == item["start_ticks"] and cmd == item["cmdline"]',
+        '    except FileNotFoundError: return False',
+        'escalated = False',
+        'for child in targets["children"]:',
+        '    if not current(child): continue',
+        '    escalated = True',
+        '    if child["pgid"] == child["pid"] and child["sid"] == child["pid"]: os.killpg(child["pgid"], signal.SIGTERM)',
+        '    else: os.kill(child["pid"], signal.SIGTERM)',
+        'lifecycle_target = targets["lifecycle"]',
+        'if current(lifecycle_target): escalated = True; os.kill(lifecycle_target["pid"], signal.SIGTERM)',
+        'deadline = time.time() + force_wait',
+        'while time.time() < deadline and any(current(item) for item in [lifecycle_target, *targets["children"]]): time.sleep(0.25)',
+        'for child in targets["children"]:',
+        '    if not current(child): continue',
+        '    if child["pgid"] == child["pid"] and child["sid"] == child["pid"]: os.killpg(child["pgid"], signal.SIGKILL)',
+        '    else: os.kill(child["pid"], signal.SIGKILL)',
+        'if current(lifecycle_target): os.kill(lifecycle_target["pid"], signal.SIGKILL)',
+        'time.sleep(1)',
+        'assert not any(current(item) for item in [lifecycle_target, *targets["children"]])',
+        'if closeout.exists(): raise SystemExit(0)',
+        'completed = total = 0; stage = None',
+        'def visit(value, typed=False):',
+        '    global completed, total, stage',
+        '    if isinstance(value, dict):',
+        '        envelope = any(isinstance(k, str) and re.fullmatch(r"[A-Z][A-Z0-9_]{0,63}_PROGRESS", k) and isinstance(v, dict) for k, v in value.items())',
+        '        typed = typed or value.get("phase") in {"contract", "workload", "terminal"} or envelope',
+        '        c = value.get("completed_units", value.get("completed")); t = value.get("total_units", value.get("total"))',
+        '        if typed and isinstance(c, int) and c >= completed: completed = c; total = t if isinstance(t, int) and t >= c else 0',
+        '        s = value.get("stage")',
+        '        if typed and isinstance(s, str) and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", s): stage = s',
+        '        for item in value.values(): visit(item, typed)',
+        '    elif isinstance(value, list):',
+        '        for item in value: visit(item, typed)',
+        'if status_path.exists():',
+        '    for line in status_path.read_text(errors="replace").splitlines()[-100:]:',
+        '        try: visit(json.loads(line))',
+        '        except (json.JSONDecodeError, TypeError): pass',
+        'closeout_value = {"schema_version": 1, "route_id": route_id, "operation_id": mode, "run_id": run_id, "route_commit": commit, "runner_sha256": runner_sha, "state": "CANCELLED_BY_OPERATOR", "decision": None, "authorizes": "NONE", "evidence_role": "operator_control", "confirmation_images_targets_outcomes_touched": None, "canary_touched": None, "locked_test_touched": None, "evidence_sha256": {}, "verified_assets": [], "details": {"request_id": request_id, "requested_at_unix": request["requested_at_unix"], "completed_units": completed, "total_units": total, "stage": stage, "termination_mode": "forced" if escalated else "control_finalize", "scientific_result_interpretable": False, "partial_scientific_evidence_reuse_authorized": False}, "failure_phase": "operator_cancel", "returncode": 130}',
+        'raw = (json.dumps(closeout_value, indent=2, sort_keys=True) + "\\n").encode()',
+        'temp = closeout.with_name(closeout.name + ".tmp." + request_id)',
+        'fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)',
+        'with os.fdopen(fd, "wb") as stream: stream.write(raw); stream.flush(); os.fsync(stream.fileno())',
+        'try: os.link(temp, closeout)',
+        'except FileExistsError: pass',
+        'finally: temp.unlink(missing_ok=True)',
+        'local = output / "control" / closeout.name',
+        'if not local.exists():',
+        '    try: os.link(closeout, local)',
+        '    except FileExistsError: pass',
+        'PY',
+        '    terminal=true; active=false; termination_mode=forced',
+        '  fi',
+        'fi',
+        'snapshot_at=$(date +%s)',
+        'echo "CONVIR_OPS_CANCEL snapshot_at=$snapshot_at active=$active terminal=$terminal mode=$termination_mode"',
+        'if test -f "$CLOSEOUT"; then',
+        f'  {q(REMOTE_PYTHON)} - "$CLOSEOUT" <<\'PY\'',
+        'import hashlib, json, sys',
+        'raw = open(sys.argv[1], "rb").read(65537)',
+        'assert len(raw) <= 65536',
+        'value = json.loads(raw)',
+        'print("CONVIR_OPS_CLOSEOUT_SHA256=" + hashlib.sha256(raw).hexdigest())',
+        'print("CONVIR_OPS_CLOSEOUT_BEGIN")',
+        'print(json.dumps(value, sort_keys=True, separators=(",", ":")))',
+        'print("CONVIR_OPS_CLOSEOUT_END")',
+        'PY',
+        'fi',
+    ])
+
+
+def parse_operator_cancel(output):
+    match = re.search(
+        r"(?m)^CONVIR_OPS_CANCEL snapshot_at=(\d+) active=(true|false) terminal=(true|false) mode=(already_terminal|graceful|forced|none)$",
+        output,
+    )
+    if not match:
+        raise ToolError(
+            "operator cancellation markers are missing",
+            failure_phase="operator_cancel", failure_class="command_infra",
+        )
+    return {
+        "snapshot_at_unix": int(match.group(1)),
+        "active": match.group(2) == "true",
+        "terminal": match.group(3) == "true",
+        "termination_mode": match.group(4),
+    }
+
+
+def begin_operator_cancel(token):
+    with locked_record("receipt", token) as record:
+        if not record.get("launched"):
+            raise ToolError("receipt has no successful launch")
+        if record.get("finish_closed") == "CANCELLED_BY_OPERATOR" \
+                and isinstance(record.get("terminal_closeout"), dict):
+            return None, record["terminal_closeout"], record.get("operator_cancel_request_id")
+        if record.get("finish_closed"):
+            raise ToolError(f"finish is closed: {record['finish_closed']}")
+        attempts = record.get("operator_cancel_attempts", 0)
+        if not isinstance(attempts, int) or attempts < 0:
+            raise ToolError("operator cancellation counter is invalid", failure_class="command_infra")
+        if attempts >= 2:
+            raise ToolError(
+                "operator cancellation recovery budget is exhausted",
+                failure_phase="operator_cancel", failure_class="command_infra",
+            )
+        request_id = record.get("operator_cancel_request_id")
+        if request_id is None:
+            request_id = uuid.uuid4().hex
+            record["operator_cancel_request_id"] = request_id
+        if not isinstance(request_id, str) or not re.fullmatch(r"[0-9a-f]{32}", request_id):
+            raise ToolError("operator cancellation request identity is invalid", failure_class="command_infra")
+        record["operator_cancel_attempts"] = attempts + 1
+        record["operator_cancel_state"] = "REQUESTED"
+        context = dict(record["payload"]["context"])
+        context["_receipt_issued_at"] = int(record["payload"]["issued_at"])
+        return context, None, request_id
+
+
+def record_operator_cancel_unknown(token):
+    with locked_record("receipt", token) as record:
+        record["operator_cancel_state"] = "STATE_UNKNOWN"
+
+
+def close_operator_cancel(token, closeout):
+    with locked_record("receipt", token) as record:
+        record["terminal_closeout"] = closeout
+        record["finish_closed"] = "CANCELLED_BY_OPERATOR"
+        record["operator_cancel_state"] = "CANCELLED"
+        record["finish_not_before_unix"] = 0
+        record["pending_finish_response"] = None
+
+
+def operator_cancel_result(token, closeout, request_id, *, cached=False):
+    cancellation = closeout.get("operator_cancellation", {})
+    return typed_result(
+        True, "CANCELLED_BY_OPERATOR",
+        observed={
+            "request_id": cancellation.get("request_id") or request_id,
+            "requested_at_unix": cancellation.get("requested_at_unix"),
+            "completed_units": cancellation.get("completed_units", 0),
+            "total_units": cancellation.get("total_units", 0),
+            "stage": cancellation.get("stage"),
+            "termination_mode": cancellation.get("termination_mode"),
+            "cached": cached,
+            "scientific_result_interpretable": False,
+        },
+        next_actions=["preserve_cancellation_audit", "design_new_run_if_needed"],
+        receipt=token, archive_authorized=False, relaunch_authorized=False,
+        scientific_authorization="NONE", cached=cached,
+    )
+
+
+def cancel_operator_route(token):
+    context, cached_closeout, request_id = begin_operator_cancel(token)
+    if cached_closeout is not None:
+        return operator_cancel_result(
+            token, cached_closeout, request_id, cached=True,
+        )
+    try:
+        output = run_remote(
+            operator_cancel_body(context, request_id),
+            timeout=OPERATOR_CANCEL_GRACE_SECONDS + OPERATOR_CANCEL_FORCE_SECONDS + 30,
+            phase="operator_cancel",
+        )
+    except ToolError:
+        record_operator_cancel_unknown(token)
+        raise
+    observed = parse_operator_cancel(output)
+    closeout = parse_closeout(context, output)
+    if closeout is None:
+        if not observed["active"] and not observed["terminal"]:
+            close_finish(token, "CLOSEOUT_MISSING")
+            return typed_failure(
+                "CLOSEOUT_MISSING", "evidence",
+                "session ended before cancellation and has no closeout",
+                observed={**observed, "request_id": request_id},
+                next_actions=["engineering_review_once"],
+                failure_phase="closeout", receipt=token,
+            )
+        raise ToolError(
+            "operator cancellation did not produce a closeout",
+            failure_phase="operator_cancel", failure_class="evidence",
+        )
+    terminal = closeout["terminal_tuple"]
+    if terminal == OPERATOR_CANCEL_TERMINAL:
+        cancellation = closeout.get("operator_cancellation", {})
+        if cancellation.get("request_id") != request_id:
+            raise ToolError(
+                "operator cancellation closeout request identity mismatch",
+                failure_phase="operator_cancel", failure_class="evidence",
+            )
+        close_operator_cancel(token, closeout)
+        return operator_cancel_result(token, closeout, request_id)
+    if terminal["state"] == "FAILED_ENGINEERING":
+        closeout["engineering_diagnostic"]["last_status"] = None
+        authorize_engineering_auto_repair(token, closeout)
+        failure_phase = closeout["engineering_diagnostic"]["failure_phase"]
+        return typed_failure(
+            "ENGINEERING_AUTO_REPAIR_AUTHORIZED",
+            engineering_failure_class(failure_phase),
+            "the route reached an engineering terminal before cancellation took effect",
+            observed={"closeout": closeout, **observed},
+            next_actions=["inspect_failure_once", "prepare_one_same_contract_engineering_repair"],
+            failure_phase=failure_phase, archive_authorized=False,
+            relaunch_authorized=False, receipt=token,
+        )
+    close_scientific_finish(token, closeout)
+    return typed_result(
+        True, "CLOSEOUT_VALIDATED",
+        observed={"closeout": closeout, **observed},
+        next_actions=["scientific_review_or_archive"], receipt=token,
+    )
+
+
 def tool_finish(args):
     token = args.get("receipt")
     try:
         resolution = args.get("engineering_failure_resolution")
+        operator_action = args.get("operator_action", "observe")
+        observation_mode = args.get("observation_mode", "sealed")
+        if operator_action not in {"observe", "cancel"}:
+            raise ToolError("operator_action must be observe or cancel")
+        if observation_mode not in {"sealed", "progress_only"}:
+            raise ToolError("observation_mode must be sealed or progress_only")
+        if resolution is not None and (
+                operator_action != "observe" or observation_mode != "sealed"):
+            raise ToolError(
+                "engineering failure resolution cannot be combined with operator control"
+            )
         if resolution is not None:
             return resolve_engineering_failure(token, resolution)
+        if operator_action == "cancel":
+            if observation_mode != "sealed":
+                raise ToolError("cancellation cannot be combined with progress_only")
+            return cancel_operator_route(token)
+        if observation_mode == "progress_only":
+            return observe_operator_progress(token)
         context, cached = begin_finish(token)
         if cached is not None:
             return cached
@@ -2699,12 +3366,18 @@ TOOLS = {
         "handler": tool_start,
     },
     "convir_route_finish": {
-        "description": "Observe one sealed window, validate closeout provenance, and automatically authorize one same-contract engineering repair while keeping sensitive changes and archive decisions explicit.",
+        "description": "Observe a sealed window, refresh result-blind progress, detect an early terminal, or perform receipt-bound operator cancellation; validate every closeout and keep scientific decisions explicit.",
         "inputSchema": {
             "type": "object", "required": ["receipt"],
             "properties": {
                 "receipt": {"type": "string"},
                 "engineering_failure_resolution": {"enum": ["repair", "archive", "discard"]},
+                "operator_action": {
+                    "enum": ["observe", "cancel"], "default": "observe",
+                },
+                "observation_mode": {
+                    "enum": ["sealed", "progress_only"], "default": "sealed",
+                },
             },
             "additionalProperties": False,
         },
