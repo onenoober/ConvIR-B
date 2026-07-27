@@ -33,6 +33,12 @@ class ConvirctlTests(unittest.TestCase):
         self.git("init", "-b", "main")
         self.git("config", "user.email", "command-test@example.invalid")
         self.git("config", "user.name", "Command Transport Test")
+        self.github = self.root / "github.git"
+        subprocess.run(
+            ["/usr/bin/git", "init", "--bare", str(self.github)],
+            capture_output=True, check=True,
+        )
+        self.git("remote", "add", "github", str(self.github))
         self.fake_ssh = self.root / "fake ssh"
         self.fake_ssh.write_text(
             """#!/bin/bash
@@ -82,6 +88,7 @@ esac
         path.write_bytes(raw)
         self.git("add", "--", relative)
         self.git("commit", "-m", f"add {relative}")
+        self.git("push", "--force", "github", "HEAD:main")
         return path
 
     def call(self, *args):
@@ -276,6 +283,23 @@ esac
         self.assertEqual(
             self.call("remote-script", "--script", str(untracked))["state"],
             "REJECTED",
+        )
+
+    def test_remote_script_rejects_unpushed_head_and_unrelated_dirty_state(self):
+        script = self.commit_file("remote.sh", b"set -euo pipefail\necho ok\n")
+        unrelated = self.repo / "unrelated.txt"
+        unrelated.write_text("dirty\n", encoding="utf-8")
+        self.assertEqual(
+            "REJECTED",
+            self.call("remote-script", "--script", str(script))["state"],
+        )
+        unrelated.unlink()
+        self.commit_file("local-only.txt", b"not yet remote\n")
+        self.git("reset", "--soft", "HEAD~1")
+        self.git("commit", "-m", "different unpushed head")
+        self.assertEqual(
+            "REJECTED",
+            self.call("remote-script", "--script", str(script))["state"],
         )
 
     def test_remote_script_rejects_binary_and_oversized_content(self):

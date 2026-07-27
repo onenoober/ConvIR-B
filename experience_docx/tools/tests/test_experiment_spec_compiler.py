@@ -410,6 +410,48 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             self.assertEqual(b"old\n", (repo / first).read_bytes())
             self.assertFalse((repo / second).exists())
 
+    def test_repo_compilation_rejects_absolute_parent_and_symlink_sources(self):
+        program, spec = sources()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repo = root / "repo"
+            repo.mkdir()
+            outside = root / "outside.json"
+            outside.write_bytes(COMPILER.json_bytes(spec))
+            with self.assertRaises(COMPILER.ExperimentSpecError):
+                COMPILER.compile_from_repo(repo, str(outside))
+
+            spec_path = repo / "experience_docx/experiment_specs/final_slim.json"
+            spec_path.parent.mkdir(parents=True)
+            escaped = copy.deepcopy(spec)
+            escaped["program_contract_relpath"] = "../../outside.json"
+            spec_path.write_bytes(COMPILER.json_bytes(escaped))
+            with self.assertRaises(COMPILER.ExperimentSpecError):
+                COMPILER.compile_from_repo(
+                    repo, "experience_docx/experiment_specs/final_slim.json",
+                )
+
+            spec_path.unlink()
+            spec_path.symlink_to(outside)
+            with self.assertRaises(COMPILER.ExperimentSpecError):
+                COMPILER.compile_from_repo(
+                    repo, "experience_docx/experiment_specs/final_slim.json",
+                )
+
+    def test_bundle_install_rejects_symlink_parent_escape(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repo = root / "repo"
+            outside = root / "outside"
+            repo.mkdir()
+            outside.mkdir()
+            (repo / "experience_docx").symlink_to(outside, target_is_directory=True)
+            with self.assertRaises(COMPILER.ExperimentSpecError):
+                COMPILER.write_bundle_atomic(
+                    repo, {"experience_docx/generated/result.json": b"value\n"},
+                )
+            self.assertFalse((outside / "generated/result.json").exists())
+
     def test_compiler_rejects_adjacent_budget_overrun_but_allows_orthogonal_escape(self):
         program, spec = sources()
         program["route_families"]["selector_family"]["adjacent_budget"] = 1

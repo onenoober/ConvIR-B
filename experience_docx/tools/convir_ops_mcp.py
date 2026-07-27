@@ -8,6 +8,7 @@ import json
 import os
 import re
 import shlex
+import stat
 import subprocess
 import sys
 import tempfile
@@ -1045,16 +1046,25 @@ def load_operation(args):
 
 
 def state_secret():
-    STATE_DIR.mkdir(mode=0o700, parents=True, exist_ok=True)
+    ensure_state_directory()
     path = STATE_DIR / "hmac.key"
     try:
-        fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+        fd = os.open(
+            path,
+            os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW | os.O_CLOEXEC,
+            0o600,
+        )
     except FileExistsError:
-        value = path.read_bytes()
+        fd = secure_state_file_descriptor(path, os.O_RDONLY, "MCP signing key")
+        with os.fdopen(fd, "rb") as handle:
+            value = handle.read(33)
     else:
         value = os.urandom(32)
         with os.fdopen(fd, "wb") as handle:
             handle.write(value)
+            handle.flush()
+            os.fsync(handle.fileno())
+        fsync_directory(STATE_DIR)
     if len(value) != 32:
         raise ToolError("MCP signing key is invalid", failure_class="command_infra")
     return value
@@ -1065,6 +1075,74 @@ def sign(payload):
     return hmac.new(state_secret(), raw, hashlib.sha256).hexdigest()
 
 
+def ensure_state_directory():
+    STATE_DIR.mkdir(mode=0o700, parents=True, exist_ok=True)
+    try:
+        observed = STATE_DIR.lstat()
+    except OSError as exc:
+        raise ToolError("MCP state directory is unavailable", failure_class="command_infra") from exc
+    if not stat.S_ISDIR(observed.st_mode) or stat.S_ISLNK(observed.st_mode) \
+            or observed.st_uid != os.getuid() or stat.S_IMODE(observed.st_mode) != 0o700:
+        raise ToolError(
+            "MCP state directory must be an owned non-symlink 0700 directory",
+            failure_class="command_infra",
+        )
+
+
+def fsync_directory(path):
+    descriptor = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def secure_state_file_descriptor(path, flags, name):
+    ensure_state_directory()
+    try:
+        descriptor = os.open(path, flags | os.O_NOFOLLOW | os.O_CLOEXEC)
+    except OSError as exc:
+        raise ToolError(f"{name} is unavailable", failure_class="command_infra") from exc
+    observed = os.fstat(descriptor)
+    if not stat.S_ISREG(observed.st_mode) or observed.st_uid != os.getuid() \
+            or stat.S_IMODE(observed.st_mode) != 0o600:
+        os.close(descriptor)
+        raise ToolError(
+            f"{name} must be an owned non-symlink 0600 regular file",
+            failure_class="command_infra",
+        )
+    return descriptor
+
+
+def record_mac(value):
+    protected = {key: item for key, item in value.items() if key != "record_mac"}
+    raw = b"convir-ops-record-v2\0" + json.dumps(
+        protected, sort_keys=True, separators=(",", ":"),
+    ).encode()
+    return hmac.new(state_secret(), raw, hashlib.sha256).hexdigest()
+
+
+def seal_record(value):
+    value["record_schema_version"] = 2
+    value["record_mac"] = record_mac(value)
+
+
+def verify_or_migrate_record(value):
+    if value.get("record_schema_version") == 2:
+        observed = value.get("record_mac")
+        if not isinstance(observed, str) or not hmac.compare_digest(observed, record_mac(value)):
+            raise ToolError("record state integrity check failed")
+        revision = value.get("revision")
+        if not isinstance(revision, int) or revision < 0:
+            raise ToolError("record revision is invalid")
+        return
+    if "record_schema_version" in value or "record_mac" in value or "revision" in value:
+        raise ToolError("record state integrity contract is invalid")
+    value["revision"] = 0
+    value["legacy_state_migrated_at"] = int(time.time())
+    seal_record(value)
+
+
 def record_path(kind, token):
     require_sha(token, kind, SHA256)
     return STATE_DIR / f"{kind}-{token}.json"
@@ -1073,30 +1151,44 @@ def record_path(kind, token):
 def write_new_record(kind, payload, extra):
     token = sign(payload)
     path = record_path(kind, token)
-    STATE_DIR.mkdir(mode=0o700, parents=True, exist_ok=True)
+    ensure_state_directory()
+    value = {"payload": payload, **extra, "revision": 0}
+    seal_record(value)
     try:
-        fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+        fd = os.open(
+            path,
+            os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW | os.O_CLOEXEC,
+            0o600,
+        )
     except FileExistsError as exc:
         raise ToolError(f"{kind} token collision", failure_class="command_infra") from exc
     with os.fdopen(fd, "w", encoding="utf-8") as handle:
-        json.dump({"payload": payload, **extra}, handle, sort_keys=True, separators=(",", ":"))
+        json.dump(value, handle, sort_keys=True, separators=(",", ":"))
+        handle.flush()
+        os.fsync(handle.fileno())
+    fsync_directory(STATE_DIR)
     return token
 
 
 @contextmanager
 def locked_record(kind, token):
     path = record_path(kind, token)
-    if not path.is_file():
-        raise ToolError(f"{kind} is unknown or expired")
-    with path.open("r+", encoding="utf-8") as handle:
+    try:
+        descriptor = secure_state_file_descriptor(path, os.O_RDWR, f"{kind} record")
+    except ToolError as exc:
+        raise ToolError(f"{kind} is unknown, expired, or insecure") from exc
+    with os.fdopen(descriptor, "r+", encoding="utf-8") as handle:
         fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
         try:
             value = json.load(handle)
             if not hmac.compare_digest(token, sign(value.get("payload"))):
                 raise ToolError(f"{kind} integrity check failed")
+            verify_or_migrate_record(value)
             try:
                 yield value
             finally:
+                value["revision"] += 1
+                seal_record(value)
                 handle.seek(0)
                 handle.truncate()
                 json.dump(value, handle, sort_keys=True, separators=(",", ":"))
@@ -1689,10 +1781,22 @@ def evidence_context(args):
                 "evidence access requires a validated terminal closeout",
                 failure_phase="evidence_manifest", failure_class="contract",
             )
+        terminal_closeout = record.get("terminal_closeout")
+        if not isinstance(terminal_closeout, dict) \
+                or terminal_closeout.get("closeout_filename") \
+                != record["payload"]["context"]["closeout_filename"] \
+                or not isinstance(terminal_closeout.get("closeout_sha256"), str) \
+                or not SHA256.fullmatch(terminal_closeout["closeout_sha256"]):
+            raise ToolError(
+                "receipt lacks an exact validated closeout binding",
+                failure_phase="evidence_manifest", failure_class="evidence",
+            )
         context = record["payload"]["context"]
     return {
         **context,
         "evidence_dir": f"{context['remote_repo']}/experience_docx/experiment_logs/{context['route_id']}",
+        "validated_closeout_filename": terminal_closeout["closeout_filename"],
+        "validated_closeout_sha256": terminal_closeout["closeout_sha256"],
     }
 
 
@@ -2889,16 +2993,29 @@ def validate_evidence_name(name):
 
 
 def evidence_manifest_body(context, names=None):
+    closeout_name = validate_evidence_name(context["validated_closeout_filename"])
+    closeout_sha = require_sha(
+        context["validated_closeout_sha256"], "validated_closeout_sha256", SHA256,
+    )
     lines = [
         "export LC_ALL=C",
         f"EVIDENCE_DIR={q(context['evidence_dir'])}",
         'test -d "$EVIDENCE_DIR"',
+        'test ! -L "$EVIDENCE_DIR"',
+        'test "$(readlink -f -- "$EVIDENCE_DIR")" = "$EVIDENCE_DIR"',
+        f'VALIDATED_CLOSEOUT="$EVIDENCE_DIR/{closeout_name}"',
+        'test -f "$VALIDATED_CLOSEOUT"',
+        'test ! -L "$VALIDATED_CLOSEOUT"',
+        'test "$(readlink -f -- "$VALIDATED_CLOSEOUT")" = "$VALIDATED_CLOSEOUT"',
+        f'test "$(sha256sum "$VALIDATED_CLOSEOUT" | awk \'{{print $1}}\')" = {q(closeout_sha)}',
     ]
     if names is None:
         lines.extend([
             'shopt -s nullglob',
             'for path in "$EVIDENCE_DIR"/*; do',
             '  test -f "$path" || continue',
+            '  test ! -L "$path" || continue',
+            '  test "$(readlink -f -- "$path")" = "$path" || continue',
             '  name=$(basename "$path")',
             '  [[ "$name" =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}\.(json|csv|md|txt)$ ]] || continue',
             '  case "$name" in *cloud_only*|*CLOUD_ONLY*) continue ;; esac',
@@ -2913,6 +3030,8 @@ def evidence_manifest_body(context, names=None):
             lines.extend([
                 f'path="$EVIDENCE_DIR/{name}"',
                 'test -f "$path"',
+                'test ! -L "$path"',
+                'test "$(readlink -f -- "$path")" = "$path"',
                 'size=$(wc -c < "$path")',
                 f'test "$size" -le {MAX_EVIDENCE_BYTES}',
                 'read -r digest _ < <(sha256sum "$path")',
@@ -2971,7 +3090,38 @@ def validate_local_repo(value):
         raise ToolError("local_repo must stay under the workspace root") from exc
     if not (path / ".git").exists():
         raise ToolError("local_repo must be a Git worktree")
+    top = run_local(
+        ["git", "-C", str(path), "rev-parse", "--show-toplevel"],
+        timeout=30, phase="local_repo_identity",
+    )
+    if Path(top).resolve() != path:
+        raise ToolError("local_repo must be the exact Git worktree root")
     return path
+
+
+def ensure_real_directory_chain(root, relative):
+    root = Path(root).resolve(strict=True)
+    relative = Path(relative)
+    if relative.is_absolute() or ".." in relative.parts:
+        raise ToolError("destination directory is outside the repository")
+    current = root
+    for part in relative.parts:
+        current = current / part
+        try:
+            current.mkdir(mode=0o700)
+        except FileExistsError:
+            pass
+        try:
+            observed = current.lstat()
+        except OSError as exc:
+            raise ToolError("destination directory is unavailable") from exc
+        if stat.S_ISLNK(observed.st_mode) or not stat.S_ISDIR(observed.st_mode):
+            raise ToolError("destination directory cannot contain symlinks")
+    try:
+        current.resolve(strict=True).relative_to(root)
+    except ValueError as exc:
+        raise ToolError("destination directory escaped the repository") from exc
+    return current
 
 
 def sha256_file(path):
@@ -3275,12 +3425,17 @@ def tool_evidence_fetch(args):
         )
         if set(records) != set(names):
             raise ToolError("evidence allowlist did not match exactly", failure_class="command_infra")
-        destination_dir = local_repo / "experience_docx" / "experiment_logs" / context["route_id"]
-        destination_dir.mkdir(parents=True, exist_ok=True)
+        destination_dir = ensure_real_directory_chain(
+            local_repo,
+            Path("experience_docx") / "experiment_logs" / context["route_id"],
+        )
         fetched, verified, pending = [], [], []
         for name in names:
             destination = destination_dir / name
-            if destination.exists():
+            if os.path.lexists(destination):
+                observed = destination.lstat()
+                if stat.S_ISLNK(observed.st_mode) or not stat.S_ISREG(observed.st_mode):
+                    raise ToolError(f"refusing non-regular destination {name}")
                 if sha256_file(destination) != records[name]["sha256"]:
                     raise ToolError(f"refusing to overwrite mismatched {name}")
                 verified.append(name)
@@ -3292,7 +3447,13 @@ def tool_evidence_fetch(args):
                 run_local(["scp", *sources, stage], timeout=300, phase="evidence_transfer")
                 for name in pending:
                     source = Path(stage) / name
-                    if not source.is_file() or sha256_file(source) != records[name]["sha256"]:
+                    try:
+                        observed = source.lstat()
+                    except OSError as exc:
+                        raise ToolError(f"downloaded evidence is missing: {name}") from exc
+                    if stat.S_ISLNK(observed.st_mode) or not stat.S_ISREG(observed.st_mode) \
+                            or source.resolve(strict=True).parent != Path(stage).resolve(strict=True) \
+                            or sha256_file(source) != records[name]["sha256"]:
                         raise ToolError(f"downloaded evidence hash mismatch: {name}", failure_class="command_infra")
                     try:
                         os.link(source, destination_dir / name)

@@ -507,6 +507,17 @@ def committed_script_identity(script):
     committed_blob = git_output(repo, "rev-parse", f"HEAD:{relative}")
     if working_blob != committed_blob:
         raise ControlError("remote script must match the committed Git blob")
+    changed = git_output(repo, "status", "--porcelain").splitlines()
+    if changed:
+        raise ControlError("remote script requires a clean Git worktree")
+    branch = git_output(repo, "branch", "--show-current")
+    if not branch or not SAFE_BRANCH.fullmatch(branch) or unsafe_git_name(branch):
+        raise ControlError("remote script requires one safe named branch")
+    head = git_output(repo, "rev-parse", "HEAD")
+    remote_ref = f"refs/heads/{branch}"
+    fields = git_output(repo, "ls-remote", "github", remote_ref).split()
+    if len(fields) != 2 or fields[0] != head or fields[1] != remote_ref:
+        raise ControlError("remote script HEAD must match its GitHub branch")
     blob_size_text = git_output(repo, "cat-file", "-s", f"HEAD:{relative}")
     try:
         blob_size = int(blob_size_text)
@@ -518,7 +529,9 @@ def committed_script_identity(script):
     identity = {
         "repo": str(repo),
         "relative_path": relative,
-        "repo_head": git_output(repo, "rev-parse", "HEAD"),
+        "repo_head": head,
+        "branch": branch,
+        "github_ref": remote_ref,
         "git_blob": committed_blob,
     }
     return identity, committed_raw

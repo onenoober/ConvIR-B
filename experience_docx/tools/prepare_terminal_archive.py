@@ -125,6 +125,7 @@ def validate_contract(raw: bytes, relpath: str, route_id: str) -> None:
 
 def required_runtime_evidence(
     repo: Path, route_commit: str, route_id: str, operation_id: str,
+    closeout: dict[str, Any],
 ) -> set[str]:
     manifest_path = "experience_docx/route_operations.json"
     try:
@@ -136,6 +137,12 @@ def required_runtime_evidence(
     operation = manifest.get("operations", {}).get(operation_id)
     if not isinstance(operation, dict):
         raise TerminalArchiveError("closeout operation is absent from route operations")
+    terminal = {
+        key: closeout.get(key) for key in ("state", "decision", "authorizes")
+    }
+    allowed = operation.get("allowed_terminal_tuples")
+    if not isinstance(allowed, list) or terminal not in allowed:
+        raise TerminalArchiveError("closeout terminal tuple is outside the frozen contract")
     spec_path = f"experience_docx/route_runtime_specs/{operation_id}.json"
     try:
         spec = json.loads(git_blob(repo, route_commit, spec_path))
@@ -143,6 +150,18 @@ def required_runtime_evidence(
         raise TerminalArchiveError("invalid route runtime spec") from exc
     if spec.get("route_id") != route_id or spec.get("operation_id") != operation_id:
         raise TerminalArchiveError("runtime spec identity mismatch")
+    if closeout.get("evidence_role") != spec.get("evidence_role"):
+        raise TerminalArchiveError("closeout evidence role differs from the runtime contract")
+    permissions = spec.get("protected_data_permissions")
+    touched = {
+        "allow_confirmation": closeout.get("confirmation_images_targets_outcomes_touched"),
+        "allow_canary": closeout.get("canary_touched"),
+        "allow_locked_test": closeout.get("locked_test_touched"),
+    }
+    if not isinstance(permissions, dict) or any(
+        value is not True and value is not False for value in touched.values()
+    ) or any(touched[key] and permissions.get(key) is not True for key in touched):
+        raise TerminalArchiveError("closeout protected-data access violates the runtime contract")
     required = set()
     for item in spec.get("evidence_files", []):
         if not isinstance(item, dict):
@@ -347,6 +366,8 @@ def audit_source(
     existing_archive: bool = False,
     evidence_dir_override: Path | None = None,
     conclusion_dir_override: Path | None = None,
+    expected_closeout_filename: str | None = None,
+    expected_closeout_sha256: str | None = None,
 ) -> dict[str, Any]:
     source_repo = source_repo.resolve()
     if not TOKEN.fullmatch(route_id):
@@ -382,6 +403,14 @@ def audit_source(
     if not closeout_file.is_file():
         raise TerminalArchiveError(f"closeout is missing from source worktree: {closeout_relpath}")
     closeout_raw = closeout_file.read_bytes()
+    if (expected_closeout_filename is None) != (expected_closeout_sha256 is None):
+        raise TerminalArchiveError("receipt closeout binding is incomplete")
+    if expected_closeout_filename is not None:
+        if closeout_path.name != expected_closeout_filename \
+                or not isinstance(expected_closeout_sha256, str) \
+                or not SHA256.fullmatch(expected_closeout_sha256) \
+                or hashlib.sha256(closeout_raw).hexdigest() != expected_closeout_sha256:
+            raise TerminalArchiveError("receipt-bound closeout identity mismatch")
     closeout = inspect_structured(closeout_raw, closeout_relpath)
     if not isinstance(closeout, dict):
         raise TerminalArchiveError("closeout must be a JSON object")
@@ -412,7 +441,7 @@ def audit_source(
     if not isinstance(operation_id, str) or not TOKEN.fullmatch(operation_id):
         raise TerminalArchiveError("closeout operation_id is missing or invalid")
     required_evidence = required_runtime_evidence(
-        source_repo, route_commit, route_id, operation_id,
+        source_repo, route_commit, route_id, operation_id, closeout,
     )
     contract_payloads, contract_bundle, prior_terminal_record = launch_contract_bundle(
         source_repo, route_commit, route_id, operation_id,
@@ -500,7 +529,7 @@ def audit_source(
     }
 
 
-def fetch_receipt_evidence(receipt: str, destination: Path) -> dict[str, dict[str, Any]]:
+def fetch_receipt_evidence(receipt: str, destination: Path) -> dict[str, Any]:
     """Fetch only the MCP compact allowlist into an ephemeral directory."""
     try:
         context = ops.evidence_context({"receipt": receipt})
@@ -521,7 +550,11 @@ def fetch_receipt_evidence(receipt: str, destination: Path) -> dict[str, dict[st
             if not path.is_file() or path.stat().st_size != record["bytes"] \
                     or hashlib.sha256(path.read_bytes()).hexdigest() != record["sha256"]:
                 raise TerminalArchiveError(f"receipt evidence identity mismatch: {name}")
-        return records
+        return {
+            "records": records,
+            "closeout_filename": context["validated_closeout_filename"],
+            "closeout_sha256": context["validated_closeout_sha256"],
+        }
     except ops.ToolError as exc:
         raise TerminalArchiveError(f"receipt evidence fetch failed: {exc}") from exc
 
@@ -831,9 +864,10 @@ def main() -> None:
     try:
         with tempfile.TemporaryDirectory(prefix="terminal-evidence-") as temporary:
             evidence_override = None
+            receipt_binding = None
             if not args.local_evidence_only:
                 evidence_override = Path(temporary)
-                fetch_receipt_evidence(args.receipt, evidence_override)
+                receipt_binding = fetch_receipt_evidence(args.receipt, evidence_override)
             audit = audit_source(
                 args.source_repo, args.source_ref, args.route_id,
                 args.closeout, args.contract, args.conclusion, args.receipt,
@@ -841,6 +875,12 @@ def main() -> None:
                 evidence_dir_override=evidence_override,
                 conclusion_dir_override=(
                     args.source_repo / PurePosixPath(args.closeout).parent
+                ),
+                expected_closeout_filename=(
+                    receipt_binding["closeout_filename"] if receipt_binding else None
+                ),
+                expected_closeout_sha256=(
+                    receipt_binding["closeout_sha256"] if receipt_binding else None
                 ),
             )
         report = serializable(audit)

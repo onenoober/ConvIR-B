@@ -34,6 +34,13 @@ def cancelled_terminal():
     return {"state": "CANCELLED_BY_OPERATOR", "decision": None, "authorizes": "NONE"}
 
 
+def closeout_binding(sha="1" * 64):
+    return {
+        "identity": {}, "terminal_tuple": terminal(),
+        "closeout_sha256": sha, "closeout_filename": "s0_closeout.json",
+    }
+
+
 def operation(**overrides):
     value = {
         "runner_relpath": "experience_docx/tools/run_a1x.sh",
@@ -1275,7 +1282,10 @@ class ConvirOpsV4Tests(unittest.TestCase):
         receipt_payload = {"context": context(), "gpu_index": None, "launch_digest": "f" * 64, "issued_at": 1}
         receipt = OPS.write_new_record(
             "receipt", receipt_payload,
-            {"launched": True, "finish_closed": "CLOSEOUT_VALIDATED"},
+            {
+                "launched": True, "finish_closed": "CLOSEOUT_VALIDATED",
+                "terminal_closeout": closeout_binding(),
+            },
         )
         remote = "README.md\t12\t" + "a" * 64 + "\nCONVIR_OPS_EVIDENCE_MANIFEST_OK\nCONVIR_REMOTE_SCRIPT_OK"
         with patch.object(OPS, "run_remote", return_value=remote):
@@ -1292,6 +1302,60 @@ class ConvirOpsV4Tests(unittest.TestCase):
         with self.assertRaises(OPS.ToolError):
             with OPS.locked_record("plan", token):
                 pass
+
+    def test_mutable_record_state_tampering_is_rejected(self):
+        token = OPS.write_new_record(
+            "receipt",
+            {"context": context(), "issued_at": 1, "launch_digest": "f" * 64},
+            {"launched": True, "finish_closed": None},
+        )
+        path = OPS.record_path("receipt", token)
+        value = json.loads(path.read_text())
+        value["finish_closed"] = "CLOSEOUT_VALIDATED"
+        path.write_text(json.dumps(value))
+        path.chmod(0o600)
+        with self.assertRaises(OPS.ToolError):
+            with OPS.locked_record("receipt", token):
+                pass
+
+    def test_state_directory_mode_and_key_symlink_fail_closed(self):
+        Path(self.state.name).chmod(0o755)
+        with self.assertRaises(OPS.ToolError):
+            OPS.state_secret()
+        Path(self.state.name).chmod(0o700)
+        target = Path(self.state.name).parent / "external-key"
+        target.write_bytes(b"x" * 32)
+        target.chmod(0o600)
+        key = OPS.STATE_DIR / "hmac.key"
+        key.symlink_to(target)
+        try:
+            with self.assertRaises(OPS.ToolError):
+                OPS.state_secret()
+        finally:
+            target.unlink(missing_ok=True)
+
+    def test_evidence_manifest_rejects_symlinks_and_binds_closeout_sha(self):
+        body = OPS.evidence_manifest_body({
+            **context(),
+            "evidence_dir": "/remote/a1x/experience_docx/experiment_logs/a1x",
+            "validated_closeout_filename": "s0_closeout.json",
+            "validated_closeout_sha256": "1" * 64,
+        })
+        self.assertIn('test ! -L "$EVIDENCE_DIR"', body)
+        self.assertIn('test ! -L "$VALIDATED_CLOSEOUT"', body)
+        self.assertIn("1" * 64, body)
+
+    def test_local_evidence_destination_rejects_symlink_chain(self):
+        with tempfile.TemporaryDirectory() as root:
+            repo = Path(root) / "repo"
+            outside = Path(root) / "outside"
+            repo.mkdir()
+            outside.mkdir()
+            (repo / "experience_docx").symlink_to(outside, target_is_directory=True)
+            with self.assertRaises(OPS.ToolError):
+                OPS.ensure_real_directory_chain(
+                    repo, Path("experience_docx") / "experiment_logs" / "a1x",
+                )
 
     def test_stdio_exposes_exact_six_schema_v4_tools(self):
         requests = [

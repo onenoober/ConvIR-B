@@ -177,7 +177,8 @@ engineering closeout directly when startup fails.
 
 A validated `FAILED_ENGINEERING / null / NONE` closeout does not enter the
 scientific/archive path. Start/finish records
-`ENGINEERING_AUTO_REPAIR_AUTHORIZED` in the HMAC-protected receipt and returns
+`ENGINEERING_AUTO_REPAIR_AUTHORIZED` in a revisioned receipt whose complete
+mutable state is HMAC-protected and returns
 the failure immediately. Evidence list/fetch remain locked. The external
 `validate_engineering_repair.py` gate distinguishes same-contract mechanical
 repairs from sensitive scientific/data/model changes before commit/push/start.
@@ -189,7 +190,10 @@ bound engineering closeout, verified no scientific/protected data touch, an
 inactive session, exact derived repo/run/output/closeout identities and post-
 delete absence. Scientific terminals and shared assets are never eligible.
 
-Evidence tools allow only top-level `.json/.csv/.md/.txt` files up to 1 MiB.
+Evidence tools allow only non-symlink top-level `.json/.csv/.md/.txt` files up
+to 1 MiB. The evidence root must remain the exact receipt workspace, and every
+access rechecks the validated closeout filename and SHA-256 stored in the
+receipt before listing or fetching any file.
 They require a scientific validated closeout or an explicit engineering
 `archive` resolution and never stage, commit, or push. A cancellation receipt
 does not unlock evidence tools.

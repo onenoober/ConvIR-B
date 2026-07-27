@@ -14,7 +14,7 @@ shell recipes as operating instructions.
 | Task/worktree binding | convirctl.py task-context --repo <repo> --cwd <cwd> | relying on the PowerShell or editor cwd |
 | Repository read | convirctl.py repo-show, repo-list, or repo-search | cross-shell grep, sed, head, regex, or git-show pipelines |
 | Standard plan/start/finish/progress/cancel/evidence | the six bounded convir-ops tools under stable protocol schema 4 | generic SSH, manual PID signals, dispatcher, watcher, or per-poll task |
-| Cloud action not covered by MCP | one committed, unchanged .sh through convirctl.py remote-script | inline SSH, heredoc across shells, untracked or dirty scripts |
+| Non-experiment infrastructure validation/diagnostic not covered by MCP | one clean, committed and same-branch GitHub-bound .sh through convirctl.py remote-script | experiment launch/stop/delete/evidence/protected-data access; inline SSH; heredoc across shells; untracked or dirty scripts |
 | Git/branch/SHA preflight | convirctl.py git-state | parsing human-formatted status text |
 | File identity | convirctl.py sha256 | filename or mtime |
 | Result state | JSON, status.txt, typed closeout, and explicit *_OK marker | silence or terminal appearance |
@@ -23,11 +23,16 @@ shell recipes as operating instructions.
 
 convirctl.py uses argument arrays and fixed /usr/bin/git, /usr/bin/ssh,
 /bin/bash, and host convir-4090. It has no arbitrary remote-command surface.
-remote-script accepts only an absolute unchanged Git-tracked Bash file, removes
+remote-script accepts only an absolute unchanged Git-tracked Bash file from a
+clean worktree whose HEAD exactly matches the same named GitHub branch, removes
 UTF-8 BOM and CRLF, requires the first executable line to be set -euo pipefail,
 runs bash -n, preserves the remote exit code, and caps each output stream at
 64 KiB. A timeout after remote execution begins is REMOTE_STATE_UNKNOWN and
 allows inspection once, never a blind retry.
+
+remote-script is not an alternative lifecycle. It cannot launch, stop, delete,
+resume or fetch experiment state and cannot access scientific or protected data.
+Such behavior requires the receipt-bound convir-ops tool that owns that action.
 
 task-context fails closed when the requested cwd is not the requested worktree;
 all writes must be explicitly bound to the local_repo path. The repo-show,

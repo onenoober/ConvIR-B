@@ -51,7 +51,13 @@ class TerminalArchiveTests(unittest.TestCase):
         operations = {
             "schema_version": 6 if canonical else 4,
             "route_id": route_id,
-            "operations": {operation_id: {}},
+            "operations": {operation_id: {
+                "allowed_terminal_tuples": [{
+                    "state": "COMPLETED_GATE_PASS",
+                    "decision": "A1_PASS",
+                    "authorizes": "NONE",
+                }],
+            }},
         }
         if canonical:
             operations.update({
@@ -67,6 +73,12 @@ class TerminalArchiveTests(unittest.TestCase):
         spec = {
             "route_id": route_id,
             "operation_id": operation_id,
+            "evidence_role": "development_screening",
+            "protected_data_permissions": {
+                "allow_confirmation": False,
+                "allow_canary": False,
+                "allow_locked_test": False,
+            },
             "evidence_files": [{
                 "destination_filename": "formal_results.csv",
                 "required": True,
@@ -111,6 +123,10 @@ class TerminalArchiveTests(unittest.TestCase):
             "state": "COMPLETED_GATE_PASS",
             "decision": "A1_PASS",
             "authorizes": "NONE",
+            "evidence_role": "development_screening",
+            "confirmation_images_targets_outcomes_touched": False,
+            "canary_touched": False,
+            "locked_test_touched": False,
             "evidence_sha256": {} if verdict_only else {filename: expected},
         }
         closeout_rel = "experience_docx/experiment_logs/route/a1_closeout.json"
@@ -152,7 +168,12 @@ class TerminalArchiveTests(unittest.TestCase):
         evidence = repo / "experience_docx/experiment_logs/route"
         for filename in (Path(closeout).name, "formal_results.csv"):
             shutil.copyfile(evidence / filename, destination / filename)
-        return {}
+        closeout_file = destination / Path(closeout).name
+        return {
+            "records": {},
+            "closeout_filename": closeout_file.name,
+            "closeout_sha256": hashlib.sha256(closeout_file.read_bytes()).hexdigest(),
+        }
 
     def test_complete_bundle_is_staged_once(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -324,6 +345,29 @@ class TerminalArchiveTests(unittest.TestCase):
             )
             self.assertEqual("A1_PASS", audit["decision"])
 
+    def test_receipt_bound_closeout_substitution_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.source(root)
+            repo, commit, closeout, card, conclusion = source
+            trusted = root / "receipt"
+            trusted.mkdir()
+            binding = self.receipt_copy(source, trusted)
+            closeout_file = trusted / Path(closeout).name
+            changed = json.loads(closeout_file.read_text(encoding="utf-8"))
+            changed["decision"] = "SUBSTITUTED"
+            closeout_file.write_text(json.dumps(changed), encoding="utf-8")
+            with self.assertRaisesRegex(
+                ARCHIVE.TerminalArchiveError, "receipt-bound closeout identity mismatch",
+            ):
+                ARCHIVE.audit_source(
+                    repo, commit, "route", closeout, card, conclusion, "1" * 64,
+                    evidence_dir_override=trusted,
+                    conclusion_dir_override=repo / Path(closeout).parent,
+                    expected_closeout_filename=binding["closeout_filename"],
+                    expected_closeout_sha256=binding["closeout_sha256"],
+                )
+
     def test_default_cli_fetches_receipt_evidence_when_local_evidence_exists(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -346,7 +390,12 @@ class TerminalArchiveTests(unittest.TestCase):
                 self.assertEqual("1" * 64, receipt)
                 for filename in (Path(closeout).name, "formal_results.csv"):
                     shutil.copyfile(trusted / filename, evidence_dir / filename)
-                return {}
+                closeout_file = evidence_dir / Path(closeout).name
+                return {
+                    "records": {},
+                    "closeout_filename": closeout_file.name,
+                    "closeout_sha256": hashlib.sha256(closeout_file.read_bytes()).hexdigest(),
+                }
 
             arguments = [
                 "prepare_terminal_archive.py",

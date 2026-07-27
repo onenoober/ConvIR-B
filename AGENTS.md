@@ -146,9 +146,11 @@ GitHub evidence.
   program and literal argv. Never use Windows Git on the WSL UNC worktree and
   never place PowerShell, WSL, and SSH syntax in one command string.
 - Standard route lifecycle uses `convir-ops` v5.4.0 with stable six-tool protocol
-  schema 4 and canonical route-manifest schema 6. Any uncovered cloud action uses
-  one committed, unchanged Bash file through `experience_docx/tools/convirctl.py
-  remote-script`; no inline SSH command or untracked script is valid.
+  schema 4 and canonical route-manifest schema 6. A non-experiment infrastructure
+  validation or diagnostic not covered by MCP may use one committed, unchanged,
+  GitHub-bound Bash file through `experience_docx/tools/convirctl.py remote-script`.
+  It cannot launch, stop, delete or fetch experiment state, or access scientific
+  or protected data. No inline SSH command or untracked script is valid.
 - Before any write, bind the task to the requested worktree with
   `convirctl.py task-context`. Use `repo-show`, `repo-list`, and `repo-search`
   for literal, ref-bound reads instead of cross-shell `grep`, `sed`, or `git

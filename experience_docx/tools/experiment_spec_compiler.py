@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 import os
+import stat
 import tempfile
 from pathlib import Path
 from typing import Any, Callable
@@ -117,6 +118,77 @@ def _relpath(value: Any, name: str, directory: str) -> str:
             or not value.endswith(".json"):
         raise ExperimentSpecError(f"{name} must stay below {directory}/ and end in .json")
     return value
+
+
+def _safe_repo_relpath(value: Any, name: str) -> str:
+    if not isinstance(value, str) or not value or "\\" in value:
+        raise ExperimentSpecError(f"{name} must be a repository-relative path")
+    path = Path(value)
+    if path.is_absolute() or any(part in {"", ".", ".."} for part in path.parts):
+        raise ExperimentSpecError(f"{name} must be a safe repository-relative path")
+    return path.as_posix()
+
+
+def _repo_member(repo: Path, relpath: str, name: str, *, must_be_file: bool = False) -> Path:
+    repo = repo.resolve(strict=True)
+    relpath = _safe_repo_relpath(relpath, name)
+    current = repo
+    parts = Path(relpath).parts
+    for index, part in enumerate(parts):
+        current = current / part
+        if not os.path.lexists(current):
+            if must_be_file or index < len(parts) - 1:
+                raise ExperimentSpecError(f"{name} is unavailable: {relpath}")
+            break
+        observed = current.lstat()
+        if stat.S_ISLNK(observed.st_mode):
+            raise ExperimentSpecError(f"{name} cannot contain symlinks: {relpath}")
+        if index < len(parts) - 1 and not stat.S_ISDIR(observed.st_mode):
+            raise ExperimentSpecError(f"{name} parent is not a directory: {relpath}")
+    try:
+        current.resolve(strict=must_be_file).relative_to(repo)
+    except (OSError, ValueError) as exc:
+        raise ExperimentSpecError(f"{name} escapes the repository: {relpath}") from exc
+    if must_be_file:
+        observed = current.lstat()
+        if not stat.S_ISREG(observed.st_mode):
+            raise ExperimentSpecError(f"{name} is not a regular file: {relpath}")
+    return current
+
+
+def _repo_read_bytes(repo: Path, relpath: str, name: str) -> bytes:
+    return _repo_member(repo, relpath, name, must_be_file=True).read_bytes()
+
+
+def _repo_file_exists(repo: Path, relpath: str) -> bool:
+    try:
+        _repo_member(repo, relpath, "evidence path", must_be_file=True)
+    except ExperimentSpecError:
+        return False
+    return True
+
+
+def _ensure_repo_parent(repo: Path, relpath: str, name: str) -> Path:
+    repo = repo.resolve(strict=True)
+    relpath = _safe_repo_relpath(relpath, name)
+    current = repo
+    for part in Path(relpath).parts[:-1]:
+        current = current / part
+        try:
+            current.mkdir()
+        except FileExistsError:
+            pass
+        observed = current.lstat()
+        if stat.S_ISLNK(observed.st_mode) or not stat.S_ISDIR(observed.st_mode):
+            raise ExperimentSpecError(f"{name} parent cannot be a symlink or file: {relpath}")
+    destination = current / Path(relpath).name
+    if os.path.lexists(destination) and stat.S_ISLNK(destination.lstat().st_mode):
+        raise ExperimentSpecError(f"{name} cannot overwrite a symlink: {relpath}")
+    try:
+        current.resolve(strict=True).relative_to(repo)
+    except ValueError as exc:
+        raise ExperimentSpecError(f"{name} escapes the repository: {relpath}") from exc
+    return destination
 
 
 def expected_spec_relpath(route_id: str) -> str:
@@ -771,26 +843,30 @@ def compare_bundle(bundle: dict[str, bytes], read_bytes: Callable[[str], bytes])
 
 
 def compile_from_repo(repo: Path, spec_relpath: str) -> dict[str, bytes]:
-    repo = repo.resolve()
-    spec_path = repo / spec_relpath
-    spec_raw = spec_path.read_bytes()
+    repo = repo.resolve(strict=True)
+    spec_relpath = _relpath(spec_relpath, "experiment spec", SPEC_DIRECTORY)
+    spec_raw = _repo_read_bytes(repo, spec_relpath, "experiment spec")
     source = json.loads(spec_raw)
     program_relpath = source.get("program_contract_relpath")
     if not isinstance(program_relpath, str):
         raise ExperimentSpecError("program_contract_relpath is missing")
+    program_relpath = _relpath(
+        program_relpath, "program_contract_relpath", PROGRAM_DIRECTORY,
+    )
     return compile_bundle(
         spec_relpath=spec_relpath,
         spec_raw=spec_raw,
-        program_raw=(repo / program_relpath).read_bytes(),
-        evidence_exists=lambda relpath: (repo / relpath).is_file(),
+        program_raw=_repo_read_bytes(repo, program_relpath, "program contract"),
+        evidence_exists=lambda relpath: _repo_file_exists(repo, relpath),
     )
 
 
 def lint_from_repo(repo: Path, spec_relpath: str) -> dict[str, Any]:
-    repo = repo.resolve()
+    repo = repo.resolve(strict=True)
     try:
-        spec_raw = (repo / spec_relpath).read_bytes()
-    except OSError as exc:
+        spec_relpath = _relpath(spec_relpath, "experiment spec", SPEC_DIRECTORY)
+        spec_raw = _repo_read_bytes(repo, spec_relpath, "experiment spec")
+    except (OSError, ExperimentSpecError) as exc:
         return {
             "status": "EXPERIMENT_SPEC_INVALID",
             "errors": [_lint_error("experiment_spec", "READ_FAILED", exc)],
@@ -807,22 +883,25 @@ def lint_from_repo(repo: Path, spec_relpath: str) -> dict[str, Any]:
         program_raw = b"null\n"
     else:
         try:
-            program_raw = (repo / program_relpath).read_bytes()
-        except OSError as exc:
+            program_relpath = _relpath(
+                program_relpath, "program_contract_relpath", PROGRAM_DIRECTORY,
+            )
+            program_raw = _repo_read_bytes(repo, program_relpath, "program contract")
+        except (OSError, ExperimentSpecError) as exc:
             return {
                 "status": "EXPERIMENT_SPEC_INVALID",
                 "errors": [_lint_error("program_contract_relpath", "READ_FAILED", exc)],
             }
     return lint_bundle(
         spec_relpath=spec_relpath, spec_raw=spec_raw, program_raw=program_raw,
-        evidence_exists=lambda relpath: (repo / relpath).is_file(),
-        read_repo_file=lambda relpath: (repo / relpath).read_bytes(),
+        evidence_exists=lambda relpath: _repo_file_exists(repo, relpath),
+        read_repo_file=lambda relpath: _repo_read_bytes(repo, relpath, "repository evidence"),
     )
 
 
 def write_bundle_atomic(repo: Path, bundle: dict[str, bytes]) -> None:
     """Install a complete derived bundle and restore prior bytes on failure."""
-    repo = repo.resolve()
+    repo = repo.resolve(strict=True)
     previous: dict[str, bytes | None] = {}
     installed: list[str] = []
     with tempfile.TemporaryDirectory(prefix=".experiment-spec-finalize-", dir=repo) as raw_tmp:
@@ -830,21 +909,22 @@ def write_bundle_atomic(repo: Path, bundle: dict[str, bytes]) -> None:
         staged = temporary / "staged"
         rollback = temporary / "rollback"
         for relpath, raw in bundle.items():
+            relpath = _safe_repo_relpath(relpath, "generated bundle path")
             candidate = staged / relpath
             candidate.parent.mkdir(parents=True, exist_ok=True)
             candidate.write_bytes(raw)
-            destination = repo / relpath
+            destination = _ensure_repo_parent(repo, relpath, "generated bundle path")
             previous[relpath] = destination.read_bytes() if destination.is_file() else None
         try:
             for relpath in bundle:
-                destination = repo / relpath
-                destination.parent.mkdir(parents=True, exist_ok=True)
+                relpath = _safe_repo_relpath(relpath, "generated bundle path")
+                destination = _ensure_repo_parent(repo, relpath, "generated bundle path")
                 os.replace(staged / relpath, destination)
                 installed.append(relpath)
         except OSError as exc:
             rollback_errors = []
             for relpath in reversed(installed):
-                destination = repo / relpath
+                destination = _ensure_repo_parent(repo, relpath, "generated bundle path")
                 prior = previous[relpath]
                 try:
                     if prior is None:
@@ -884,7 +964,10 @@ def main() -> None:
     bundle = compile_from_repo(args.repo, args.spec)
     if args.check:
         mismatches = compare_bundle(
-            bundle, lambda relpath: (args.repo.resolve() / relpath).read_bytes(),
+            bundle,
+            lambda relpath: _repo_read_bytes(
+                args.repo.resolve(strict=True), relpath, "generated bundle path",
+            ),
         )
         if mismatches:
             raise SystemExit("; ".join(mismatches))
