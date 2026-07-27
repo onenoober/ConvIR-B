@@ -1,0 +1,106 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/haze4k-frozen-output-risk-interface-localization-v1__HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZE.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/haze4k-frozen-output-risk-interface-localization-v1__HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZE.json",
+    "cost_contract": {
+      "batch_shape_policy": "bounded",
+      "candidate_schedule": "none",
+      "fixed_overhead_seconds": 720,
+      "formal_iterations": 1800,
+      "formal_max_wall_seconds": 7200,
+      "max_peak_memory_mib": 14336,
+      "max_seconds_per_iteration": 1.8,
+      "memory_scaling": "constant",
+      "probe_iterations": 8,
+      "production_path": "exact",
+      "safety_factor": 2,
+      "strategy": "fixed_linear_extrapolation",
+      "termination_policy": "fixed_count",
+      "workload_class": "fixed_iteration_map"
+    },
+    "max_seconds": 900,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/run_haze4k_frozen_output_risk_interface_localization.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "haze4k_frozen_output_risk_interface_localization_v1_summary.json",
+      "max_bytes": 524288,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_risk_interface_localization_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_risk_interface_localization_v1_gate_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_risk_interface_localization_gate_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_risk_interface_localization_v1_formal_intervals.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_risk_interface_localization_formal_intervals.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_risk_interface_localization_v1_regret_decomposition.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_risk_interface_localization_regret_decomposition.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_risk_interface_localization_v1_policy_summary.csv",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_risk_interface_localization_policy_summary.csv"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_risk_interface_localization_v1_fold_stability.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_risk_interface_localization_fold_stability.csv"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_risk_interface_localization_v1_risk_frontier.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_risk_interface_localization_risk_frontier.csv"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_risk_interface_localization_v1_calibration_diagnostics.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_risk_interface_localization_calibration_diagnostics.csv"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_risk_interface_localization_v1_replay_safety.csv",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_risk_interface_localization_replay_safety.csv"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_risk_interface_localization_v1_raw_reuse_inventory.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_risk_interface_localization_raw_reuse_inventory.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 7200,
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZE",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/haze4k-frozen-output-risk-interface-localization-v1__HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZE.json",
+    "mode": "formal_precision",
+    "rationale": "The 600-scene OOF stratum exceeds the frozen 556-scene requirement for the four-endpoint Bonferroni family under the archived 0.2358753949 dB planning-SD upper bound. Candidate variance is not inferred from the parent's near-abstaining P00; observed simultaneous precision remains an explicit inconclusive-only gate and cannot hide decisive failure."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "haze4k-frozen-output-risk-interface-localization-v1",
+  "schema_version": 2,
+  "timeout_seconds": 9000,
+  "total_units": 701
+}
