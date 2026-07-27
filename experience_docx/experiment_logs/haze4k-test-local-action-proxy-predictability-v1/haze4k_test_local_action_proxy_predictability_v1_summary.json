@@ -1,0 +1,272 @@
+{
+  "action_usage": {
+    "keep": {
+      "fraction": 0.9905571397236236,
+      "tiles": 90319
+    },
+    "strengthen": {
+      "fraction": 0.009442860276376398,
+      "tiles": 861
+    },
+    "weaken": {
+      "fraction": 0.0,
+      "tiles": 0
+    }
+  },
+  "fold_selection": [
+    {
+      "candidate_count": 30,
+      "outer_fold": 0,
+      "outer_test_harm_rate": 0.15,
+      "outer_test_keep_fraction": 0.9834915185783522,
+      "outer_test_mean_spatial_minus_keep": 0.029346688548176347,
+      "outer_test_mean_spatial_minus_uniform": 0.029346688548176347,
+      "outer_test_scenes": 20,
+      "outer_test_strengthen_fraction": 0.01650848142164782,
+      "outer_test_weaken_fraction": 0.0,
+      "selected_alpha": 1.0,
+      "selected_inner_harm_rate": 0.05,
+      "selected_inner_mean_spatial_minus_keep": 0.03467275325921511,
+      "selected_inner_mean_spatial_minus_uniform": 0.03467275325921511,
+      "selected_threshold": 0.01
+    },
+    {
+      "candidate_count": 30,
+      "outer_fold": 1,
+      "outer_test_harm_rate": 0.1,
+      "outer_test_keep_fraction": 0.9852976476236198,
+      "outer_test_mean_spatial_minus_keep": 0.030711040637889077,
+      "outer_test_mean_spatial_minus_uniform": 0.030711040637889077,
+      "outer_test_scenes": 20,
+      "outer_test_strengthen_fraction": 0.01470235237638022,
+      "outer_test_weaken_fraction": 0.0,
+      "selected_alpha": 1.0,
+      "selected_inner_harm_rate": 0.05,
+      "selected_inner_mean_spatial_minus_keep": 0.039517525590021606,
+      "selected_inner_mean_spatial_minus_uniform": 0.039517525590021606,
+      "selected_threshold": 0.0
+    },
+    {
+      "candidate_count": 30,
+      "outer_fold": 2,
+      "outer_test_harm_rate": 0.0,
+      "outer_test_keep_fraction": 1.0,
+      "outer_test_mean_spatial_minus_keep": 0.0,
+      "outer_test_mean_spatial_minus_uniform": 0.0,
+      "outer_test_scenes": 20,
+      "outer_test_strengthen_fraction": 0.0,
+      "outer_test_weaken_fraction": 0.0,
+      "selected_alpha": 1.0,
+      "selected_inner_harm_rate": 0.0,
+      "selected_inner_mean_spatial_minus_keep": 0.0,
+      "selected_inner_mean_spatial_minus_uniform": 0.0,
+      "selected_threshold": 2.0
+    },
+    {
+      "candidate_count": 30,
+      "outer_fold": 3,
+      "outer_test_harm_rate": 0.0,
+      "outer_test_keep_fraction": 1.0,
+      "outer_test_mean_spatial_minus_keep": 0.0,
+      "outer_test_mean_spatial_minus_uniform": 0.0,
+      "outer_test_scenes": 20,
+      "outer_test_strengthen_fraction": 0.0,
+      "outer_test_weaken_fraction": 0.0,
+      "selected_alpha": 1.0,
+      "selected_inner_harm_rate": 0.0,
+      "selected_inner_mean_spatial_minus_keep": 0.0,
+      "selected_inner_mean_spatial_minus_uniform": 0.0,
+      "selected_threshold": 2.0
+    },
+    {
+      "candidate_count": 30,
+      "outer_fold": 4,
+      "outer_test_harm_rate": 0.05,
+      "outer_test_keep_fraction": 0.9831859436816384,
+      "outer_test_mean_spatial_minus_keep": 0.015164157851288485,
+      "outer_test_mean_spatial_minus_uniform": 0.015164157851288485,
+      "outer_test_scenes": 20,
+      "outer_test_strengthen_fraction": 0.016814056318361647,
+      "outer_test_weaken_fraction": 0.0,
+      "selected_alpha": 1.0,
+      "selected_inner_harm_rate": 0.05,
+      "selected_inner_mean_spatial_minus_keep": 0.019654478671495244,
+      "selected_inner_mean_spatial_minus_uniform": 0.019654478671495244,
+      "selected_threshold": 0.0025
+    }
+  ],
+  "identity_and_coverage": {
+    "assignment_digest": "6ca5174470dad2b4eef4ae15c5a13a99d8ae9fc0bc2ea1116b199c4d4bc05582",
+    "candidate_confirmation_asset_delivered": false,
+    "completed_scenes": 100,
+    "completed_variants": 400,
+    "inner_folds": 4,
+    "integrity_checks": {
+      "all_selection_inside_outer_training_scenes": true,
+      "candidate_confirmation_asset_not_delivered": true,
+      "complete_100_scene_400_variant_grouping": true,
+      "complete_oof_image_replay": true,
+      "complete_single_official_inference_per_variant": true,
+      "five_outer_scene_folds_complete": true,
+      "isolated_development_asset_only": true,
+      "no_network_or_module_training": true,
+      "parent_proxy_authorization": true
+    },
+    "network_training_occurred": false,
+    "outer_folds": 5,
+    "proxy_fitting_occurred": true
+  },
+  "limitations": [
+    "This is development-screening proxy fitting and OOF replay, not module training or candidate confirmation.",
+    "GT is used only inside outer-training partitions for targets and inner selection; the OOF test policy receives no GT-derived input.",
+    "The low-capacity ridge, feature moments, three residual scales, hard 32-pixel grid, and selected thresholds do not identify an optimal module.",
+    "The frozen decoder feature can encode synthetic Haze4K or official-checkpoint regularities that may not transfer to real haze.",
+    "PSNR is primary; the frozen SSIM and color gates do not replace later perceptual and real-domain validation.",
+    "The protected 150-scene candidate-confirmation asset and NH-HAZE were not delivered or accessed."
+  ],
+  "marker": "HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY_COMPLETE",
+  "predictor_contract": {
+    "action_formula": "clip(hazy + scale * (official_prediction - hazy), 0, 1)",
+    "action_threshold_grid": [
+      0.0,
+      0.0025,
+      0.005,
+      0.01,
+      0.02,
+      2.0
+    ],
+    "alpha_grid": [
+      0.0001,
+      0.001,
+      0.01,
+      0.1,
+      1.0
+    ],
+    "inner_selection": "four scene folds choose alpha and conservative action threshold from frozen grids using only outer-training scenes",
+    "outer_split": "five deterministic folds of 20 canonical clear scenes; all four variants remain in one fold",
+    "primary_family": "weighted multi-output ridge over 40 deployment-visible local image/output features plus 64 pooled frozen Decoder[2] moments",
+    "shuffle_control": "permute paired action-utility targets across outer-training tile rows and refit the identical ridge with selected alpha and threshold",
+    "targets": "GT-derived clipped normalized tile MSE advantage of weaken 0.8 and strengthen 1.2 relative to keep; GT unavailable to test prediction",
+    "uniform_control": "area-average the identical tile utility predictions within each image and apply the identical threshold once"
+  },
+  "primary": {
+    "material_scene_prevalence": {
+      "estimate": 0.04,
+      "lower": 0.015663050551848016,
+      "successes": 4,
+      "total": 100,
+      "upper": 0.09837217232607373
+    },
+    "spatial_minus_keep_scene_mean_delta_psnr_db": {
+      "estimate": 0.015044381199279897,
+      "lower": -0.01414189266766464,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260726,
+      "upper": 0.05202896350172862
+    },
+    "spatial_minus_same_predictor_uniform_scene_mean_delta_psnr_db": {
+      "estimate": 0.015044381199279897,
+      "lower": -0.014180057358977684,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260727,
+      "upper": 0.05122279162152635
+    },
+    "spatial_minus_shuffled_target_scene_mean_delta_psnr_db": {
+      "estimate": 0.015044381199279897,
+      "lower": -0.01419667229503939,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260728,
+      "upper": 0.05198065543702632
+    },
+    "utility_passed": false
+  },
+  "safety": {
+    "color_harm_prevalence": {
+      "estimate": 0.01,
+      "lower": 0.0017673865655472645,
+      "successes": 1,
+      "total": 100,
+      "upper": 0.0544875247609346
+    },
+    "maximum_harm_upper_bound": 0.1,
+    "psnr_harm_prevalence": {
+      "estimate": 0.06,
+      "lower": 0.02778574526665662,
+      "successes": 6,
+      "total": 100,
+      "upper": 0.12476968531222507
+    },
+    "safety_passed": false,
+    "ssim_harm_prevalence": {
+      "estimate": 0.01,
+      "lower": 0.0017673865655472645,
+      "successes": 1,
+      "total": 100,
+      "upper": 0.0544875247609346
+    }
+  },
+  "schema_version": 1,
+  "scope": "nested scene-cross-fitted low-capacity proxy on isolated 100-scene Haze4K official-test development partition",
+  "secondary": {
+    "input_only_minus_keep_psnr_db": {
+      "count": 100,
+      "mean": 0.0,
+      "median": 0.0,
+      "q10": 0.0,
+      "q90": 0.0
+    },
+    "observable_only_minus_keep_psnr_db": {
+      "count": 100,
+      "mean": 0.0,
+      "median": 0.0,
+      "q10": 0.0,
+      "q90": 0.0
+    },
+    "oracle_action_agreement": {
+      "count": 100,
+      "mean": 0.49285266666666666,
+      "median": 0.5251999999999999,
+      "q10": 0.11536000000000002,
+      "q90": 0.7947500000000003
+    },
+    "same_predictor_uniform_minus_keep_psnr_db": {
+      "count": 100,
+      "mean": 0.0,
+      "median": 0.0,
+      "q10": 0.0,
+      "q90": 0.0
+    },
+    "shuffled_target_minus_keep_psnr_db": {
+      "count": 100,
+      "mean": 0.0,
+      "median": 0.0,
+      "q10": 0.0,
+      "q90": 0.0
+    },
+    "spatial_minus_keep_color_bias": {
+      "count": 100,
+      "mean": 1.673732349151072e-05,
+      "median": 0.0,
+      "q10": -5.072212389980702e-07,
+      "q90": 5.44130823733113e-05
+    },
+    "spatial_minus_keep_ssim": {
+      "count": 100,
+      "mean": -0.0003355337679386139,
+      "median": 0.0,
+      "q10": -0.0010559737682342529,
+      "q90": 0.0
+    }
+  },
+  "terminal": {
+    "authorizes": "NONE",
+    "decision": "HAZE4K_TEST_LOCAL_ACTION_PROXY_PREDICTABILITY_FAIL",
+    "gate_reasons": [
+      "at least one frozen utility or safety interval established futility, harm, or incomplete integrity"
+    ],
+    "state": "COMPLETED_GATE_FAIL"
+  }
+}

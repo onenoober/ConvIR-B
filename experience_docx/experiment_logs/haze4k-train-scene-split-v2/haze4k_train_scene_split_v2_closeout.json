@@ -1,0 +1,51 @@
+{
+  "authorizes": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASUREMENT",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "HAZE4K_TRAIN_SCENE_SPLIT_PASS",
+  "details": {
+    "canonical_scenes": 750,
+    "gate_reasons": [
+      "all frozen 750-scene grouping, 600/150 role, containment, and coverage gates passed"
+    ],
+    "internal_development_observations": 600,
+    "internal_development_scenes": 150,
+    "model_or_checkpoint_accessed": false,
+    "official_test_accessed": false,
+    "split_assignment_digest": "7b21d3af455475f7bb29198081a2ef2e651cffaac6149fd27741863c765b4efc",
+    "strata_file": "haze4k_train_scene_split_strata.csv",
+    "summary_file": "haze4k_train_scene_split_summary.json",
+    "training_observations": 2400,
+    "training_scenes": 600
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "haze4k_train_scene_split_v2_strata.csv": "2a8936698e51b1d9841ca3d37007f0b94d9941fbba5534cd48b205a0b9603487",
+    "haze4k_train_scene_split_v2_summary.json": "a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9"
+  },
+  "failure_phase": null,
+  "locked_test_touched": false,
+  "operation_id": "HAZE4K_TRAIN_SCENE_SPLIT_QUALIFY",
+  "returncode": 0,
+  "route_commit": "2309914810c77867794771496bab51fa7a45fd6e",
+  "route_id": "haze4k-train-scene-split-v2",
+  "run_id": "haze4k-train-scene-split-v2-phase-a",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "COMPLETED_GATE_PASS",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_scene_audit_conclusion",
+      "kind": "file",
+      "sha256": "cf819aaf4fcd3a7829698b3bcc7f0564c694ecb7e012241b5b11c8455b00ccc7"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "asset_scope": {
+    "official_test_asset_delivered": false,
+    "protected_permissions_enabled": false,
+    "scope_ok": true,
+    "train_directory_name": "train"
+  },
+  "census": {
+    "clear_decode_failures": 0,
+    "clear_files": 3000,
+    "decodable_pairs": 3000,
+    "dimension_aligned_pairs": 3000,
+    "hazy_decode_failures": 0,
+    "hazy_files": 3000,
+    "loader_selected_pairs": 3000
+  },
+  "frozen_split": {
+    "assignment_digest": "7b21d3af455475f7bb29198081a2ef2e651cffaac6149fd27741863c765b4efc",
+    "assignment_rows_archived": false,
+    "internal_development_observation_count": 600,
+    "internal_development_scene_count": 150,
+    "ranking": "SHA-256(salt + vertical-bar + canonical_scene_digest), then digest",
+    "salt": "haze4k-local-error-qualification-v2",
+    "training_observation_count": 2400,
+    "training_scene_count": 600
+  },
+  "gates": {
+    "canonical_scene_count": true,
+    "complete_file_and_pair_census": true,
+    "four_variants_per_scene": true,
+    "frozen_role_counts": true,
+    "train_only_asset_scope": true,
+    "variant_containment_and_coverage": true
+  },
+  "limitations": [
+    "The operation uses Haze4K train only and makes no official-test or model-performance claim.",
+    "Decoded RGB identity defines canonical grouping but does not establish capture provenance or filename-token physics.",
+    "All 3,000 haze observations are retained, while variants remain nested within 750 independent scenes.",
+    "Only aggregate counts and an assignment digest are archived; no per-image assignment table is published."
+  ],
+  "marker": "HAZE4K_TRAIN_SCENE_SPLIT_QUALIFICATION_COMPLETE",
+  "operation_id": "HAZE4K_TRAIN_SCENE_SPLIT_QUALIFY",
+  "route_id": "haze4k-train-scene-split-v2",
+  "run_id": "haze4k-train-scene-split-v2-phase-a",
+  "scene_grouping": {
+    "canonical_definition": "SHA-256 over width, height, and decoded RGB bytes of the clear target",
+    "canonical_scene_count": 750,
+    "clear_alias_count": 2250,
+    "four_variant_scene_count": 750,
+    "variant_count_histogram": {
+      "4": 750
+    }
+  },
+  "schema_version": 1,
+  "scope": "Haze4K train-only 750-scene split qualification; official test excluded",
+  "terminal": {
+    "authorizes": "HAZE4K_TRAIN_BASELINE_LOCAL_ERROR_MEASUREMENT",
+    "decision": "HAZE4K_TRAIN_SCENE_SPLIT_PASS",
+    "gate_reasons": [
+      "all frozen 750-scene grouping, 600/150 role, containment, and coverage gates passed"
+    ],
+    "state": "COMPLETED_GATE_PASS"
+  }
+}

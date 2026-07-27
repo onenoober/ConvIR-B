@@ -1,0 +1,703 @@
+{
+  "schema_version": 2,
+  "route_id": "haze4k-observable-conditional-utility-risk-feasibility-v1",
+  "rules_commit": "38f7aebf63d6b0611c31115c27c89c7b01c31008",
+  "title": "Haze4K Observable Conditional Utility-Risk Feasibility v1",
+  "rationale": "Qualify one materially new contextual utility-risk head without reopening the failed weighted-ridge family or consuming protected confirmation data. The official ConvIR-B backbone remains frozen. A five-fold original-clear-scene OOF design on the 600 Haze4K training-role scenes estimates deployable spatial utility; the separate 150-scene train internal-development role supplies fixed calibration only; and the already exposed 100-scene Haze4K test-development role supplies a frozen-candidate stress test. The contract preserves the 0.05 dB utility margin and 0.025 dB precision target, counts no haze variant or tile as an independent sample, and permits a PASS to authorize only ITS/OTS cross-domain contract authoring.",
+  "first_operation": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_QUALIFY",
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_observable_conditional_utility_risk_v1.json",
+  "operations": {
+    "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_QUALIFY": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "observable_conditional_utility_risk_feasibility",
+        "require_gpu": true,
+        "output_id": "haze4k-observable-conditional-utility-risk-feasibility-v1-r1",
+        "closeout_filename": "haze4k_observable_conditional_utility_risk_feasibility_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 900,
+        "min_free_gpu_mib": 16000,
+        "max_gpu_utilization_pct": 10
+      },
+      "program_authorization": {
+        "program_id": "haze4k_observable_conditional_utility_risk_v1",
+        "stage_id": "observable_mechanism_qualification",
+        "family_id": "contextual_utility_risk_head",
+        "mechanism_type": "adjacent",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {
+            "role": "parent_authorization",
+            "use": "diagnostic",
+            "anchor_id": "existing_dataset_role_ledger_terminal"
+          },
+          {
+            "role": "dataset_role_evidence",
+            "use": "training",
+            "anchor_id": "haze4k_train_split_terminal"
+          },
+          {
+            "role": "dataset_role_evidence",
+            "use": "supervision",
+            "anchor_id": "haze4k_train_split_terminal"
+          },
+          {
+            "role": "dataset_role_evidence",
+            "use": "evaluation",
+            "anchor_id": "haze4k_test_split_terminal"
+          },
+          {
+            "role": "mechanism_evidence",
+            "use": "action_definition",
+            "anchor_id": "bounded_local_action_oracle_terminal"
+          },
+          {
+            "role": "mechanism_evidence",
+            "use": "evaluation",
+            "anchor_id": "local_action_proxy_failure_terminal"
+          },
+          {
+            "role": "model_initialization",
+            "use": "initialization",
+            "anchor_id": "official_architecture_anchor"
+          }
+        ],
+        "adjacent_sequence": 1,
+        "orthogonal_changes": [],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Can a single frozen contextual head, using only the hazy image, official ConvIR-B output, and frozen Decoder[2] features at inference, deliver precise scene-level spatial utility beyond keep and matched controls while calibrated abstention keeps image-replay harm below the frozen limits?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "original_clear_scene",
+          "independent_group_count": 600,
+          "strata": [
+            {
+              "id": "haze4k_train_oof",
+              "independent_group_count": 600
+            }
+          ],
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "fixed contextual continuous-utility and harm-risk head with calibrated keep abstention",
+          "reference": "official keep output, the identical predictor collapsed to one image-uniform action, and a within-image shuffled spatial action map",
+          "matched_budget": "one outcome-blind haze variant for each of 600 primary OOF scenes and 150 fixed calibration scenes; all four nested variants averaged within each of 100 secondary test-development scenes",
+          "fixed_factors": [
+            "official ConvIR-B base backbone and Haze4K checkpoint remain frozen",
+            "observable head architecture is Conv2d 104-to-64, GroupNorm, GELU, Conv2d 64-to-64, GroupNorm, GELU, and Conv2d 64-to-4",
+            "actions remain keep 1.0, weaken 0.8, and strengthen 1.2 under clip(hazy + scale times official residual, 0, 1)",
+            "continuous tile target is PSNR change versus keep clipped to plus or minus 3 dB",
+            "harm target is action utility at or below minus 0.10 dB",
+            "training uses 12 fixed epochs, AdamW at 0.0003, weight decay 0.0001, and gradient norm clipping at 1.0",
+            "calibration uses the finite-sample 95 percent upper quantile of nonnegative scene-mean utility and risk residuals",
+            "an action requires corrected utility above 0.05 dB and corrected harm risk at most 0.10; otherwise the policy keeps",
+            "original clear scene is the only independent analysis unit",
+            "haze variants, tiles, actions, pixels, folds, and bootstrap resamples never increase sample size",
+            "the protected 150-scene Haze4K candidate-confirmation role, NH-Haze, ITS, and OTS remain unread"
+          ]
+        },
+        "primary_estimand": {
+          "id": "oof_spatial_utility_gain",
+          "metric_id": "scene_mean_spatial_minus_keep_psnr_db",
+          "direction": "higher",
+          "aggregation": "five-fold OOF original-clear-scene mean over one outcome-blind selected haze variant per Haze4K training-role scene",
+          "unit": "original_clear_scene",
+          "strata": [
+            "haze4k_train_oof"
+          ]
+        },
+        "controls": [
+          "exact GitHub-main parent, split, oracle, and failed-proxy terminal identities",
+          "immutable official architecture anchor and strict official checkpoint load",
+          "deterministic five-fold scene grouping with 120 OOF scenes per fold",
+          "fixed 150-scene calibration role excluded from gradient fitting and primary estimation",
+          "same-predictor image-uniform action control",
+          "within-image shuffled spatial action-map control with identical action counts",
+          "complete image replay for PSNR, RGB SSIM, and RGB mean-bias safety",
+          "candidate-confirmation asset absent from both contract and run contexts"
+        ],
+        "uncertainty": {
+          "id": "scene_level_familywise_uncertainty",
+          "method_id": "paired_scene_bootstrap_and_wilson",
+          "confidence_level": 0.95,
+          "independent_unit": "original_clear_scene",
+          "comparison_family": "haze4k_train_oof_family"
+        },
+        "gates": [
+          {
+            "id": "evidence_identity",
+            "type": "integrity",
+            "estimand_id": "oof_spatial_utility_gain",
+            "reference": "all frozen terminal, source, checkpoint, and runtime identities match exactly",
+            "direction": "equal",
+            "threshold": true,
+            "uncertainty_id": "scene_level_familywise_uncertainty",
+            "comparison_family": "haze4k_train_oof_family",
+            "decision_role": "validity_veto",
+            "outcomes": [
+              "pass",
+              "fail",
+              "invalid"
+            ],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "scene_role_and_coverage",
+            "type": "coverage",
+            "estimand_id": "oof_spatial_utility_gain",
+            "reference": "exact 600/150 train roles, balanced five-fold OOF, one selected train variant per scene, and 100 complete four-variant test-development scene groups",
+            "direction": "equal",
+            "threshold": true,
+            "uncertainty_id": "scene_level_familywise_uncertainty",
+            "comparison_family": "haze4k_train_oof_family",
+            "decision_role": "validity_veto",
+            "outcomes": [
+              "pass",
+              "fail",
+              "invalid"
+            ],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "utility_and_spatial_specificity",
+            "type": "materiality",
+            "estimand_id": "oof_spatial_utility_gain",
+            "reference": "OOF utility LCB above 0.05 dB, material-scene Wilson LCB above 0.20, both spatial-control LCBs above zero, and frozen test-development point gain at least 0.025 dB",
+            "direction": "min",
+            "threshold": "oof_gain_lcb_gt_0.05_and_prevalence_lcb_gt_0.20_and_uniform_lcb_gt_0_and_shuffle_lcb_gt_0_and_test_point_ge_0.025",
+            "uncertainty_id": "scene_level_familywise_uncertainty",
+            "comparison_family": "haze4k_train_oof_family",
+            "decision_role": "decisive",
+            "outcomes": [
+              "favorable",
+              "unfavorable",
+              "indeterminate",
+              "invalid"
+            ],
+            "neutral_outcome": "favorable"
+          },
+          {
+            "id": "image_replay_safety",
+            "type": "safety",
+            "estimand_id": "oof_spatial_utility_gain",
+            "reference": "for OOF and test-development scenes separately, Wilson UCB95 is at most 0.10 for PSNR loss at least 0.10 dB, SSIM loss at least 0.005, and color-bias increase at least 1/255",
+            "direction": "max",
+            "threshold": 0.10,
+            "uncertainty_id": "scene_level_familywise_uncertainty",
+            "comparison_family": "haze4k_train_oof_family",
+            "decision_role": "decisive",
+            "outcomes": [
+              "safe",
+              "unsafe",
+              "indeterminate",
+              "invalid"
+            ],
+            "neutral_outcome": "safe"
+          },
+          {
+            "id": "precision",
+            "type": "precision",
+            "estimand_id": "oof_spatial_utility_gain",
+            "reference": "maximum distance from the OOF paired-bootstrap point estimate to either 95 percent interval endpoint",
+            "direction": "max",
+            "threshold": 0.025,
+            "uncertainty_id": "scene_level_familywise_uncertainty",
+            "comparison_family": "haze4k_train_oof_family",
+            "decision_role": "inconclusive_only",
+            "outcomes": [
+              "met",
+              "unmet",
+              "invalid"
+            ],
+            "neutral_outcome": "met"
+          }
+        ],
+        "competing_explanation": "The large privileged oracle gain may be predominantly target-conditioned optimization information rather than an observable haze-state signal; a contextual nonlinear head can also appear useful by learning synthetic-scene regularities without spatial specificity or cross-split safety.",
+        "decision_table": {
+          "terminal_actions": {
+            "pass": {
+              "terminal": {
+                "state": "COMPLETED_GATE_PASS",
+                "decision": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_PASS",
+                "authorizes": "ITS_OTS_OBSERVABLE_ACTION_CROSS_DOMAIN_CONTRACT_AUTHORING_ONLY"
+              },
+              "next_action_id": "author_its_ots_cross_domain_measurement_contract",
+              "family_effect": "advance"
+            },
+            "fail": {
+              "terminal": {
+                "state": "COMPLETED_GATE_FAIL",
+                "decision": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_FAIL",
+                "authorizes": "NONE"
+              },
+              "next_action_id": "stop_contextual_utility_risk_family",
+              "family_effect": "stop"
+            },
+            "inconclusive": {
+              "terminal": {
+                "state": "COMPLETED_INCONCLUSIVE",
+                "decision": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_INCONCLUSIVE",
+                "authorizes": "OBSERVABLE_UTILITY_RISK_EVIDENCE_REVIEW_ONLY"
+              },
+              "next_action_id": "review_predeclared_evidence_issue",
+              "family_effect": "allow_predeclared_evidence"
+            }
+          },
+          "rules": [
+            {
+              "id": "evidence_identity_veto",
+              "when": {
+                "evidence_identity": [
+                  "fail",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "scene_role_veto_after_valid_identity",
+              "when": {
+                "evidence_identity": [
+                  "pass"
+                ],
+                "scene_role_and_coverage": [
+                  "fail",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "valid_materiality_failure",
+              "when": {
+                "evidence_identity": [
+                  "pass"
+                ],
+                "scene_role_and_coverage": [
+                  "pass"
+                ],
+                "utility_and_spatial_specificity": [
+                  "unfavorable"
+                ]
+              },
+              "terminal": "fail"
+            },
+            {
+              "id": "valid_safety_failure_after_materiality",
+              "when": {
+                "evidence_identity": [
+                  "pass"
+                ],
+                "scene_role_and_coverage": [
+                  "pass"
+                ],
+                "utility_and_spatial_specificity": [
+                  "favorable"
+                ],
+                "image_replay_safety": [
+                  "unsafe"
+                ]
+              },
+              "terminal": "fail"
+            },
+            {
+              "id": "qualified_safe_and_precise",
+              "when": {
+                "evidence_identity": [
+                  "pass"
+                ],
+                "scene_role_and_coverage": [
+                  "pass"
+                ],
+                "utility_and_spatial_specificity": [
+                  "favorable"
+                ],
+                "image_replay_safety": [
+                  "safe"
+                ],
+                "precision": [
+                  "met"
+                ]
+              },
+              "terminal": "pass"
+            },
+            {
+              "id": "qualified_safe_but_imprecise",
+              "when": {
+                "evidence_identity": [
+                  "pass"
+                ],
+                "scene_role_and_coverage": [
+                  "pass"
+                ],
+                "utility_and_spatial_specificity": [
+                  "favorable"
+                ],
+                "image_replay_safety": [
+                  "safe"
+                ],
+                "precision": [
+                  "unmet",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "unresolved_safety",
+              "when": {
+                "evidence_identity": [
+                  "pass"
+                ],
+                "scene_role_and_coverage": [
+                  "pass"
+                ],
+                "utility_and_spatial_specificity": [
+                  "favorable"
+                ],
+                "image_replay_safety": [
+                  "indeterminate",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "unresolved_materiality",
+              "when": {
+                "evidence_identity": [
+                  "pass"
+                ],
+                "scene_role_and_coverage": [
+                  "pass"
+                ],
+                "utility_and_spatial_specificity": [
+                  "indeterminate",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            }
+          ]
+        },
+        "disabled_actions": [
+          "candidate-confirmation, canary, locked-test, NH-Haze, ITS, or OTS access",
+          "architecture, feature, optimizer, epoch, loss-weight, threshold, action-scale, calibration-quantile, fold, or variant search",
+          "using GT, GT-derived utility, or GT-derived risk as inference input",
+          "treating haze variants, tiles, actions, pixels, folds, or resamples as independent samples",
+          "changing the 0.05 dB utility margin or 0.025 dB precision target",
+          "sample-size-weighted pooling across dataset roles",
+          "claiming source disjointness, deployment readiness, promotion, or external confirmation",
+          "starting an ITS or OTS measurement without a later typed route-ready contract"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/run_haze4k_observable_conditional_utility_risk_feasibility.py",
+        "timeout_seconds": 43200,
+        "expected_wall_seconds": 39095,
+        "total_units": 851,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {},
+        "evidence_files": [
+          {
+            "source_relpath": "workload/haze4k_observable_conditional_utility_risk_feasibility_summary.json",
+            "destination_filename": "haze4k_observable_conditional_utility_risk_feasibility_v1_summary.json",
+            "required": true,
+            "max_bytes": 262144
+          },
+          {
+            "source_relpath": "workload/haze4k_observable_conditional_utility_risk_scene_metrics.csv",
+            "destination_filename": "haze4k_observable_conditional_utility_risk_feasibility_v1_scene_metrics.csv",
+            "required": true,
+            "max_bytes": 524288
+          },
+          {
+            "source_relpath": "workload/haze4k_observable_conditional_utility_risk_training_calibration.csv",
+            "destination_filename": "haze4k_observable_conditional_utility_risk_feasibility_v1_training_calibration.csv",
+            "required": true,
+            "max_bytes": 65536
+          },
+          {
+            "source_relpath": "workload/haze4k_observable_conditional_utility_risk_gate_summary.json",
+            "destination_filename": "haze4k_observable_conditional_utility_risk_feasibility_v1_gate_summary.json",
+            "required": true,
+            "max_bytes": 65536
+          }
+        ],
+        "engineering_contract": {
+          "mode": "gpu_synthetic_no_data",
+          "max_seconds": 600,
+          "cost_contract": {
+            "strategy": "fixed_linear_extrapolation",
+            "workload_class": "fixed_iteration_map",
+            "formal_iterations": 39050,
+            "max_peak_memory_mib": 12288,
+            "probe_iterations": 160,
+            "max_seconds_per_iteration": 0.5,
+            "fixed_overhead_seconds": 45.0,
+            "safety_factor": 2.0,
+            "formal_max_wall_seconds": 39095,
+            "memory_scaling": "constant",
+            "batch_shape_policy": "bounded",
+            "termination_policy": "fixed_count",
+            "candidate_schedule": "none",
+            "production_path": "exact"
+          }
+        },
+        "precision_contract": {
+          "mode": "formal_precision",
+          "rationale": "The 600-scene OOF primary estimand exceeds the assurance-adjusted 342-scene requirement derived before this run from the archived failed proxy interval."
+        }
+      },
+      "assets": [
+        {
+          "id": "official_anchor_checkout",
+          "kind": "git_checkout",
+          "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor",
+          "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+          "require_clean": true,
+          "access_role": "engineering_debug",
+          "contract_access": true
+        },
+        {
+          "id": "observable_entrypoint",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_observable_conditional_utility_risk_feasibility.py",
+          "sha256": "a680f1a11ce3687bfc7588fc6633f1067513c2f7306206bcf27f66b2915a480e",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        },
+        {
+          "id": "runtime_environment",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/runtime_environments/convir_4090_cu121_observable_utility_v1.json",
+          "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        },
+        {
+          "id": "official_checkpoint",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+          "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "model_source",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/Dehazing/ITS/models/ConvIR.py",
+          "sha256": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "model_layers",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/Dehazing/ITS/models/layers.py",
+          "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "role_ledger_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/convir-existing-dataset-role-ledger-v1/convir_existing_dataset_role_ledger_v1_closeout.json",
+          "sha256": "54027119140165b981f8f464c898065430d1be7cbc297b472ca3c347560859c5",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "role_ledger_summary",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/convir-existing-dataset-role-ledger-v1/convir_existing_dataset_role_ledger_v1_summary.json",
+          "sha256": "6353eb0f485437d9879e8adec4ca5833c17769cd97c514caf428cef22d3e0ea2",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "train_split_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-train-scene-split-v2/haze4k_train_scene_split_v2_closeout.json",
+          "sha256": "dde7f4654674f776d2f2b0a687128019e477eea7b29fb8d69f01d621aa6c5887",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "train_split_summary",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-train-scene-split-v2/haze4k_train_scene_split_v2_summary.json",
+          "sha256": "a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "test_split_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-scene-split-v1/haze4k_test_scene_split_v1_r1_closeout.json",
+          "sha256": "d3dbd88b25eee35c5922b2459a2f48b39b3fc8f686588cde9edb1d9f267f8a9f",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "test_split_summary",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-scene-split-v1/haze4k_test_scene_split_v1_summary.json",
+          "sha256": "656407f3183f92e75e357004b04b505d2b92cd4b0f4b02b3c6a22aef57d069cf",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "prior_proxy_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-local-action-proxy-predictability-v1/haze4k_test_local_action_proxy_predictability_v1_closeout.json",
+          "sha256": "c12a4b013db12b0828823ae8cba7fe8a51208971d29e667966635c157a67cba4",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "prior_proxy_summary",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-local-action-proxy-predictability-v1/haze4k_test_local_action_proxy_predictability_v1_summary.json",
+          "sha256": "052e2b20b12dde785db3929df0f353713592a340ccafa9d48f50646706501bc7",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "prior_oracle_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-bounded-local-action-oracle-v1/haze4k_test_bounded_local_action_oracle_v1_closeout.json",
+          "sha256": "96357cbaaee5aa338fb0f9c9835a975a27e7f048c78a096fd644e6acdd3e383c",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "prior_oracle_summary",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-bounded-local-action-oracle-v1/haze4k_test_bounded_local_action_oracle_v1_summary.json",
+          "sha256": "794ef27733f51f2fa70fab5c94bc661564d7b988ef4247a1b26e33a21b4de7cb",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "haze4k_train",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "haze4k_test_development",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-test-scene-split-v1/haze4k-test-scene-split-v1-phase-a-r1/workload/role_assets/development_screening",
+          "access_role": "development_screening",
+          "contract_access": false
+        }
+      ],
+      "capability": {
+        "profile_id": "haze4k_observable_conditional_utility_risk_gpu_v1",
+        "contract_mode": "gpu_synthetic_no_data",
+        "minimum_fixture": {
+          "batch": 1,
+          "channels": 3,
+          "height": 256,
+          "width": 320
+        },
+        "bound_assets": [
+          {
+            "id": "official_anchor_checkout",
+            "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+          },
+          {
+            "id": "observable_entrypoint",
+            "identity": "a680f1a11ce3687bfc7588fc6633f1067513c2f7306206bcf27f66b2915a480e"
+          },
+          {
+            "id": "official_checkpoint",
+            "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+          },
+          {
+            "id": "runtime_environment",
+            "identity": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+          },
+          {
+            "id": "model_source",
+            "identity": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+          },
+          {
+            "id": "model_layers",
+            "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+          }
+        ],
+        "compatibility_imports": [
+          "numpy",
+          "PIL",
+          "torch"
+        ],
+        "production_path_statement": "The exact frozen official ConvIR-B feature path, contextual utility-risk head forward and backward path, calibrated abstention, and complete-image replay execute on bounded synthetic CUDA tensors without dataset access or scientific output.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true,
+        "reuse_identity": {
+          "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+          "code_path_sha256": "a680f1a11ce3687bfc7588fc6633f1067513c2f7306206bcf27f66b2915a480e",
+          "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+          "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
+          "device_class": "cuda_sm89",
+          "input_contract_sha256": "f52387decc845b84a7f452942c53f3b7ebf3b75dd642bc375623f0b6507bd495"
+        }
+      },
+      "precision": {
+        "certificate_id": "haze4k_observable_conditional_utility_risk_precision_v1",
+        "route_id": "haze4k-observable-conditional-utility-risk-feasibility-v1",
+        "operation_id": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_QUALIFY",
+        "primary_estimand_id": "oof_spatial_utility_gain",
+        "independent_unit": "original_clear_scene",
+        "comparison_family": "haze4k_train_oof_family",
+        "method": "normal_mean",
+        "confidence_level": 0.95,
+        "critical_value": 1.959963984540054,
+        "target_half_width": 0.025,
+        "assurance": {
+          "method_id": "archived_interval_inversion_with_sd_multiplier",
+          "probability": 0.95,
+          "planning_sd_rule": "Invert the larger archived 100-scene failed-proxy bootstrap half-width at z=1.959963984540054 to obtain 0.1887003159 dB, then multiply by the frozen conservative 1.25 assurance factor."
+        },
+        "strata": [
+          {
+            "id": "haze4k_train_oof",
+            "independent_groups_available": 600,
+            "independent_groups_planned": 600,
+            "planning_sd": 0.1887003159,
+            "planning_sd_upper_bound": 0.2358753949,
+            "independent_groups_required": 342,
+            "feasible": true,
+            "source_reference": "Archived Haze4K 100-scene local-action proxy bootstrap interval: estimate 0.0150443812 dB, lower -0.0141418927 dB, upper 0.0520289635 dB."
+          }
+        ],
+        "feasible": true,
+        "source_role": "development_screening",
+        "source_reference": "GitHub-main archived haze4k-test-local-action-proxy-predictability-v1 summary, used only for pre-run variance planning."
+      }
+    }
+  }
+}

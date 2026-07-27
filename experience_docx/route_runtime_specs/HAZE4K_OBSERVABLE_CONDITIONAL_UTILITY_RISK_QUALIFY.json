@@ -1,0 +1,70 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/haze4k-observable-conditional-utility-risk-feasibility-v1__HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_QUALIFY.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/haze4k-observable-conditional-utility-risk-feasibility-v1__HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_QUALIFY.json",
+    "cost_contract": {
+      "batch_shape_policy": "bounded",
+      "candidate_schedule": "none",
+      "fixed_overhead_seconds": 45.0,
+      "formal_iterations": 39050,
+      "formal_max_wall_seconds": 39095,
+      "max_peak_memory_mib": 12288,
+      "max_seconds_per_iteration": 0.5,
+      "memory_scaling": "constant",
+      "probe_iterations": 160,
+      "production_path": "exact",
+      "safety_factor": 2.0,
+      "strategy": "fixed_linear_extrapolation",
+      "termination_policy": "fixed_count",
+      "workload_class": "fixed_iteration_map"
+    },
+    "max_seconds": 600,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/run_haze4k_observable_conditional_utility_risk_feasibility.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "haze4k_observable_conditional_utility_risk_feasibility_v1_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_conditional_utility_risk_feasibility_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_observable_conditional_utility_risk_feasibility_v1_scene_metrics.csv",
+      "max_bytes": 524288,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_conditional_utility_risk_scene_metrics.csv"
+    },
+    {
+      "destination_filename": "haze4k_observable_conditional_utility_risk_feasibility_v1_training_calibration.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_conditional_utility_risk_training_calibration.csv"
+    },
+    {
+      "destination_filename": "haze4k_observable_conditional_utility_risk_feasibility_v1_gate_summary.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_conditional_utility_risk_gate_summary.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 39095,
+  "operation_id": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_QUALIFY",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/haze4k-observable-conditional-utility-risk-feasibility-v1__HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_QUALIFY.json",
+    "mode": "formal_precision",
+    "rationale": "The 600-scene OOF primary estimand exceeds the assurance-adjusted 342-scene requirement derived before this run from the archived failed proxy interval."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "haze4k-observable-conditional-utility-risk-feasibility-v1",
+  "schema_version": 2,
+  "timeout_seconds": 43200,
+  "total_units": 851
+}

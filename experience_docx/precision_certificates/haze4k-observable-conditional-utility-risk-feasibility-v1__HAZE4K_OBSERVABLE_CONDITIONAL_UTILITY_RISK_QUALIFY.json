@@ -1,0 +1,33 @@
+{
+  "assurance": {
+    "method_id": "archived_interval_inversion_with_sd_multiplier",
+    "planning_sd_rule": "Invert the larger archived 100-scene failed-proxy bootstrap half-width at z=1.959963984540054 to obtain 0.1887003159 dB, then multiply by the frozen conservative 1.25 assurance factor.",
+    "probability": 0.95
+  },
+  "certificate_id": "haze4k_observable_conditional_utility_risk_precision_v1",
+  "comparison_family": "haze4k_train_oof_family",
+  "confidence_level": 0.95,
+  "critical_value": 1.959963984540054,
+  "feasible": true,
+  "independent_unit": "original_clear_scene",
+  "method": "normal_mean",
+  "operation_id": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_QUALIFY",
+  "primary_estimand_id": "oof_spatial_utility_gain",
+  "route_id": "haze4k-observable-conditional-utility-risk-feasibility-v1",
+  "schema_version": 2,
+  "source_reference": "GitHub-main archived haze4k-test-local-action-proxy-predictability-v1 summary, used only for pre-run variance planning.",
+  "source_role": "development_screening",
+  "strata": [
+    {
+      "feasible": true,
+      "id": "haze4k_train_oof",
+      "independent_groups_available": 600,
+      "independent_groups_planned": 600,
+      "independent_groups_required": 342,
+      "planning_sd": 0.1887003159,
+      "planning_sd_upper_bound": 0.2358753949,
+      "source_reference": "Archived Haze4K 100-scene local-action proxy bootstrap interval: estimate 0.0150443812 dB, lower -0.0141418927 dB, upper 0.0520289635 dB."
+    }
+  ],
+  "target_half_width": 0.025
+}
