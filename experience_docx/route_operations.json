@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-frozen-output-risk-interface-localization-v1.json",
-  "experiment_spec_sha256": "620035187b4ba9acefc62534149ed7ddb2e5e0cf7692876ca14095df477530aa",
+  "experiment_spec_sha256": "02929d6b34be65509b27f26144044fff2f953cf1edde67ca2b455ff0513b6224",
   "operations": {
     "HAZE4K_FROZEN_OUTPUT_RISK_INTERFACE_LOCALIZE": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 16000,
       "mode": "frozen_output_risk_interface_localization",
       "monitor_profile": "standard",
-      "output_id": "haze4k-frozen-output-risk-interface-localization-v1",
+      "output_id": "haze4k-frozen-output-risk-interface-localization-v1-repair1",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,

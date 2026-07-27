@@ -15,7 +15,7 @@
       "id": "localization_entrypoint",
       "kind": "file",
       "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_frozen_output_risk_interface_localization.py",
-      "sha256": "bea99ae85c80bbaadf25fa1933efdec516dc0260d2109086e5d0e64b7e8e270d"
+      "sha256": "4a0c738bfdd1fcb95e94ffd8b505c8b9cfc9d336ab66ed22a87e560d1d82e953"
     },
     {
       "access_role": "engineering_debug",

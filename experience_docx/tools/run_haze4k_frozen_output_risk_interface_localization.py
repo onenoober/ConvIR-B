@@ -1457,8 +1457,9 @@ def contract(context_path: Path) -> None:
         actions = policy_actions(raw, f"fixture-{index}")
         replay = apply_spatial(hazy, prediction, actions[MAIN_POLICY])
         scores = rgb_ssim(torch, [prediction, replay], clear, context.device)
-        checks["policy_fixture"] = checks["policy_fixture"] and (
-            actions["q_weighted"].sum() == 0
+        checks["policy_fixture"] = bool(
+            checks["policy_fixture"]
+            and actions["q_weighted"].sum() == 0
             and actions["p_deweighted"].sum() > 0
         )
         checks["image_replay_fixture"] = checks["image_replay_fixture"] and all(
