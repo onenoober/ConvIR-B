@@ -1,0 +1,187 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "capability_qualification": {
+    "evidence_filename": "haze4k_observable_conditional_utility_risk_feasibility_v1_capability_qualification.json",
+    "identity_sha256": "7ab9421a667bb93e7dd63508d3689896d35d2516c7e7a57c741b738dcb9ab2cf",
+    "qualification_id": "cap_7ab9421a667bb93e7dd63508",
+    "scientific_authorization": "NONE",
+    "status": "PASSED_ENGINEERING"
+  },
+  "capability_reuse": {
+    "engineering_reuse_authorized": false,
+    "identity_sha256": "7ab9421a667bb93e7dd63508d3689896d35d2516c7e7a57c741b738dcb9ab2cf",
+    "scientific_authorization": "NONE",
+    "status": "CAPABILITY_REUSE_MISS"
+  },
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_FAIL",
+  "decision_rule_id": "valid_materiality_failure",
+  "details": {
+    "candidate_confirmation_touched": false,
+    "completed_unit_ledger_count": 851,
+    "fixed_calibration_scenes": 150,
+    "gate_summary_file": "haze4k_observable_conditional_utility_risk_gate_summary.json",
+    "independent_oof_scenes": 600,
+    "nested_test_variants": 400,
+    "network_training_occurred": true,
+    "scene_metrics_file": "haze4k_observable_conditional_utility_risk_scene_metrics.csv",
+    "summary_file": "haze4k_observable_conditional_utility_risk_feasibility_summary.json",
+    "test_development_stress_scenes": 100,
+    "training_calibration_file": "haze4k_observable_conditional_utility_risk_training_calibration.csv"
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "haze4k_observable_conditional_utility_risk_feasibility_v1_capability_qualification.json": "db8be17d9fa75ffc5e733e1b34fa4ae23d8992e2b2aa8051bb3beefd7b0f3892",
+    "haze4k_observable_conditional_utility_risk_feasibility_v1_gate_summary.json": "7cf8fa570e411038c65bf462faf0d5230f53dca2a99c3bb3ff751f59eaeeeb50",
+    "haze4k_observable_conditional_utility_risk_feasibility_v1_scene_metrics.csv": "3736651ff6eedfc8aca0e690bfc163792848037255bea0115509573fdbd00505",
+    "haze4k_observable_conditional_utility_risk_feasibility_v1_summary.json": "d7dd7740c98abfe3203647cad44d61645e9ea4bb76be79e67ba83ca64ecdd2c4",
+    "haze4k_observable_conditional_utility_risk_feasibility_v1_training_calibration.csv": "8ee9175c558afd89759336fc98fe90159fda75e3cfae31ac59ff6abc90d9e2bd"
+  },
+  "failure_phase": null,
+  "family_effect": "stop",
+  "gate_outcomes": {
+    "evidence_identity": "pass",
+    "image_replay_safety": "safe",
+    "precision": "met",
+    "scene_role_and_coverage": "pass",
+    "utility_and_spatial_specificity": "unfavorable"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "stop_contextual_utility_risk_family",
+  "operation_id": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_QUALIFY",
+  "returncode": 0,
+  "route_commit": "1b9e935bfcb436929dbd16720bc0f3a7e6b3eed2",
+  "route_id": "haze4k-observable-conditional-utility-risk-feasibility-v1",
+  "run_id": "haze4k-observable-conditional-utility-risk-feasibility-v1-repair2",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_GATE_FAIL",
+  "terminal_label": "fail",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_test_development",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "observable_entrypoint",
+      "kind": "file",
+      "sha256": "e3aadd88d88f82a55807f8e9b0d9c3577ed277fc84ed9ed54f833d155add684f"
+    },
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_oracle_closeout",
+      "kind": "file",
+      "sha256": "96357cbaaee5aa338fb0f9c9835a975a27e7f048c78a096fd644e6acdd3e383c"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_oracle_summary",
+      "kind": "file",
+      "sha256": "794ef27733f51f2fa70fab5c94bc661564d7b988ef4247a1b26e33a21b4de7cb"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_proxy_closeout",
+      "kind": "file",
+      "sha256": "c12a4b013db12b0828823ae8cba7fe8a51208971d29e667966635c157a67cba4"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_proxy_summary",
+      "kind": "file",
+      "sha256": "052e2b20b12dde785db3929df0f353713592a340ccafa9d48f50646706501bc7"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "role_ledger_closeout",
+      "kind": "file",
+      "sha256": "54027119140165b981f8f464c898065430d1be7cbc297b472ca3c347560859c5"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "role_ledger_summary",
+      "kind": "file",
+      "sha256": "6353eb0f485437d9879e8adec4ca5833c17769cd97c514caf428cef22d3e0ea2"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "test_split_closeout",
+      "kind": "file",
+      "sha256": "d3dbd88b25eee35c5922b2459a2f48b39b3fc8f686588cde9edb1d9f267f8a9f"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "test_split_summary",
+      "kind": "file",
+      "sha256": "656407f3183f92e75e357004b04b505d2b92cd4b0f4b02b3c6a22aef57d069cf"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "train_split_closeout",
+      "kind": "file",
+      "sha256": "dde7f4654674f776d2f2b0a687128019e477eea7b29fb8d69f01d621aa6c5887"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "train_split_summary",
+      "kind": "file",
+      "sha256": "a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9"
+    }
+  ]
+}

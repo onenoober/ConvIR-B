@@ -1,0 +1,332 @@
+{
+  "competing_explanation": "The large privileged oracle gain may be predominantly target-conditioned optimization information rather than an observable haze-state signal; a contextual nonlinear head can also appear useful by learning synthetic-scene regularities without spatial specificity or cross-split safety.",
+  "controls": [
+    "exact GitHub-main parent, split, oracle, and failed-proxy terminal identities",
+    "immutable official architecture anchor and strict official checkpoint load",
+    "deterministic five-fold scene grouping with 120 OOF scenes per fold",
+    "fixed 150-scene calibration role excluded from gradient fitting and primary estimation",
+    "same-predictor image-uniform action control",
+    "within-image shuffled spatial action-map control with identical action counts",
+    "complete image replay for PSNR, RGB SSIM, and RGB mean-bias safety",
+    "candidate-confirmation asset absent from both contract and run contexts"
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "evidence_identity_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "scene_role_veto_after_valid_identity",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "scene_role_and_coverage": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "valid_materiality_failure",
+        "terminal": "fail",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "scene_role_and_coverage": [
+            "pass"
+          ],
+          "utility_and_spatial_specificity": [
+            "unfavorable"
+          ]
+        }
+      },
+      {
+        "id": "valid_safety_failure_after_materiality",
+        "terminal": "fail",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "image_replay_safety": [
+            "unsafe"
+          ],
+          "scene_role_and_coverage": [
+            "pass"
+          ],
+          "utility_and_spatial_specificity": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "qualified_safe_and_precise",
+        "terminal": "pass",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "image_replay_safety": [
+            "safe"
+          ],
+          "precision": [
+            "met"
+          ],
+          "scene_role_and_coverage": [
+            "pass"
+          ],
+          "utility_and_spatial_specificity": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "qualified_safe_but_imprecise",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "image_replay_safety": [
+            "safe"
+          ],
+          "precision": [
+            "unmet",
+            "invalid"
+          ],
+          "scene_role_and_coverage": [
+            "pass"
+          ],
+          "utility_and_spatial_specificity": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "unresolved_safety",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "image_replay_safety": [
+            "indeterminate",
+            "invalid"
+          ],
+          "scene_role_and_coverage": [
+            "pass"
+          ],
+          "utility_and_spatial_specificity": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "unresolved_materiality",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "scene_role_and_coverage": [
+            "pass"
+          ],
+          "utility_and_spatial_specificity": [
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "stop",
+        "next_action_id": "stop_contextual_utility_risk_family",
+        "terminal": {
+          "authorizes": "NONE",
+          "decision": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "allow_predeclared_evidence",
+        "next_action_id": "review_predeclared_evidence_issue",
+        "terminal": {
+          "authorizes": "OBSERVABLE_UTILITY_RISK_EVIDENCE_REVIEW_ONLY",
+          "decision": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "advance",
+        "next_action_id": "author_its_ots_cross_domain_measurement_contract",
+        "terminal": {
+          "authorizes": "ITS_OTS_OBSERVABLE_ACTION_CROSS_DOMAIN_CONTRACT_AUTHORING_ONLY",
+          "decision": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "candidate-confirmation, canary, locked-test, NH-Haze, ITS, or OTS access",
+    "architecture, feature, optimizer, epoch, loss-weight, threshold, action-scale, calibration-quantile, fold, or variant search",
+    "using GT, GT-derived utility, or GT-derived risk as inference input",
+    "treating haze variants, tiles, actions, pixels, folds, or resamples as independent samples",
+    "changing the 0.05 dB utility margin or 0.025 dB precision target",
+    "sample-size-weighted pooling across dataset roles",
+    "claiming source disjointness, deployment readiness, promotion, or external confirmation",
+    "starting an ITS or OTS measurement without a later typed route-ready contract"
+  ],
+  "gates": [
+    {
+      "comparison_family": "haze4k_train_oof_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "oof_spatial_utility_gain",
+      "id": "evidence_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "all frozen terminal, source, checkpoint, and runtime identities match exactly",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "scene_level_familywise_uncertainty"
+    },
+    {
+      "comparison_family": "haze4k_train_oof_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "oof_spatial_utility_gain",
+      "id": "scene_role_and_coverage",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "exact 600/150 train roles, balanced five-fold OOF, one selected train variant per scene, and 100 complete four-variant test-development scene groups",
+      "threshold": true,
+      "type": "coverage",
+      "uncertainty_id": "scene_level_familywise_uncertainty"
+    },
+    {
+      "comparison_family": "haze4k_train_oof_family",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "oof_spatial_utility_gain",
+      "id": "utility_and_spatial_specificity",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "OOF utility LCB above 0.05 dB, material-scene Wilson LCB above 0.20, both spatial-control LCBs above zero, and frozen test-development point gain at least 0.025 dB",
+      "threshold": "oof_gain_lcb_gt_0.05_and_prevalence_lcb_gt_0.20_and_uniform_lcb_gt_0_and_shuffle_lcb_gt_0_and_test_point_ge_0.025",
+      "type": "materiality",
+      "uncertainty_id": "scene_level_familywise_uncertainty"
+    },
+    {
+      "comparison_family": "haze4k_train_oof_family",
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand_id": "oof_spatial_utility_gain",
+      "id": "image_replay_safety",
+      "neutral_outcome": "safe",
+      "outcomes": [
+        "safe",
+        "unsafe",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "for OOF and test-development scenes separately, Wilson UCB95 is at most 0.10 for PSNR loss at least 0.10 dB, SSIM loss at least 0.005, and color-bias increase at least 1/255",
+      "threshold": 0.1,
+      "type": "safety",
+      "uncertainty_id": "scene_level_familywise_uncertainty"
+    },
+    {
+      "comparison_family": "haze4k_train_oof_family",
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand_id": "oof_spatial_utility_gain",
+      "id": "precision",
+      "neutral_outcome": "met",
+      "outcomes": [
+        "met",
+        "unmet",
+        "invalid"
+      ],
+      "reference": "maximum distance from the OOF paired-bootstrap point estimate to either 95 percent interval endpoint",
+      "threshold": 0.025,
+      "type": "precision",
+      "uncertainty_id": "scene_level_familywise_uncertainty"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "official ConvIR-B base backbone and Haze4K checkpoint remain frozen",
+      "observable head architecture is Conv2d 104-to-64, GroupNorm, GELU, Conv2d 64-to-64, GroupNorm, GELU, and Conv2d 64-to-4",
+      "actions remain keep 1.0, weaken 0.8, and strengthen 1.2 under clip(hazy + scale times official residual, 0, 1)",
+      "continuous tile target is PSNR change versus keep clipped to plus or minus 3 dB",
+      "harm target is action utility at or below minus 0.10 dB",
+      "training uses 12 fixed epochs, AdamW at 0.0003, weight decay 0.0001, and gradient norm clipping at 1.0",
+      "calibration uses the finite-sample 95 percent upper quantile of nonnegative scene-mean utility and risk residuals",
+      "an action requires corrected utility above 0.05 dB and corrected harm risk at most 0.10; otherwise the policy keeps",
+      "original clear scene is the only independent analysis unit",
+      "haze variants, tiles, actions, pixels, folds, and bootstrap resamples never increase sample size",
+      "the protected 150-scene Haze4K candidate-confirmation role, NH-Haze, ITS, and OTS remain unread"
+    ],
+    "matched_budget": "one outcome-blind haze variant for each of 600 primary OOF scenes and 150 fixed calibration scenes; all four nested variants averaged within each of 100 secondary test-development scenes",
+    "primary_variable": "fixed contextual continuous-utility and harm-risk head with calibrated keep abstention",
+    "reference": "official keep output, the identical predictor collapsed to one image-uniform action, and a within-image shuffled spatial action map"
+  },
+  "operation_id": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_QUALIFY",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "original_clear_scene",
+    "independent_group_count": 600,
+    "strata": [
+      {
+        "id": "haze4k_train_oof",
+        "independent_group_count": 600
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "five-fold OOF original-clear-scene mean over one outcome-blind selected haze variant per Haze4K training-role scene",
+    "direction": "higher",
+    "id": "oof_spatial_utility_gain",
+    "metric_id": "scene_mean_spatial_minus_keep_psnr_db",
+    "strata": [
+      "haze4k_train_oof"
+    ],
+    "unit": "original_clear_scene"
+  },
+  "question": "Can a single frozen contextual head, using only the hazy image, official ConvIR-B output, and frozen Decoder[2] features at inference, deliver precise scene-level spatial utility beyond keep and matched controls while calibrated abstention keeps image-replay harm below the frozen limits?",
+  "route_id": "haze4k-observable-conditional-utility-risk-feasibility-v1",
+  "schema_version": 2,
+  "uncertainty": {
+    "comparison_family": "haze4k_train_oof_family",
+    "confidence_level": 0.95,
+    "id": "scene_level_familywise_uncertainty",
+    "independent_unit": "original_clear_scene",
+    "method_id": "paired_scene_bootstrap_and_wilson"
+  }
+}

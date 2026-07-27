@@ -1,0 +1,26 @@
+{
+  "gate_outcomes": {
+    "evidence_identity": "pass",
+    "image_replay_safety": "safe",
+    "precision": "met",
+    "scene_role_and_coverage": "pass",
+    "utility_and_spatial_specificity": "unfavorable"
+  },
+  "materiality_checks": {
+    "oof_material_prevalence_lcb": false,
+    "oof_spatial_over_shuffle_lcb": false,
+    "oof_spatial_over_uniform_lcb": false,
+    "oof_utility_lcb_above_margin": false,
+    "test_development_transfer_point": false
+  },
+  "precision_met": true,
+  "safety_checks": {
+    "oof_color_harm_ucb": true,
+    "oof_psnr_harm_ucb": true,
+    "oof_ssim_harm_ucb": true,
+    "test_development_color_harm_ucb": true,
+    "test_development_psnr_harm_ucb": true,
+    "test_development_ssim_harm_ucb": true
+  },
+  "schema_version": 1
+}

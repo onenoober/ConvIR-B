@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k-observable-conditional-utility-risk-feasibility-v1",
+  "operation_id": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_QUALIFY",
+  "run_id": "haze4k-observable-conditional-utility-risk-feasibility-v1-repair2",
+  "state": "COMPLETED_GATE_FAIL",
+  "decision": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "The frozen observable utility-risk head selected keep for all 600 independent Haze4K-train OOF scenes and all 100 independent Haze4K test-development stress scenes. Material-scene prevalence was 0 in both populations, and the estimated spatial utility advantage over keep, uniform, and shuffled controls was effectively 0 dB. The mechanism therefore produced no nonzero safe actionable utility under the frozen 0.05 dB utility margin and 0.10 risk limit.",
+  "gate_reasons": [
+    "Evidence identity, scene-role separation, complete 851-unit ledger coverage, and image-replay safety all passed.",
+    "The frozen precision target was met, so insufficient precision does not explain or soften this FAIL.",
+    "All OOF materiality checks failed: material prevalence, utility above the 0.05 dB margin, spatial-over-uniform utility, and spatial-over-shuffled utility had no positive lower-bound support.",
+    "The predeclared Haze4K test-development transfer point also failed, while all harm upper-bound checks passed only because the head abstained to keep on every scene.",
+    "The frozen decision table consequently classified utility_and_spatial_specificity as unfavorable and closed the contextual utility-risk family with no next-stage authorization."
+  ],
+  "competing_explanation": "The all-keep result is compatible with at least three mechanisms that this frozen qualification cannot separate: the observable inputs may not contain enough information to predict useful local actions, the trained head may have failed to extract an available signal, or the finite-sample calibration and abstention rule may be conservative enough to suppress weak predictions. Regardless of which explanation dominates, the predeclared combined mechanism did not demonstrate actionable utility and cannot support ITS/OTS measurement execution.",
+  "limitations": [
+    "All evidence is development-only; no candidate-confirmation, canary, locked-test, NH-Haze, RESIDE ITS, or RESIDE OTS data were read.",
+    "The primary estimand uses one outcome-blind selected haze variant per original clear Haze4K-train scene; test-development variants are nested and averaged within each original clear scene.",
+    "The fixed 150-scene Haze4K calibration set is a shared nuisance resource and is not counted as an independent primary-estimand sample.",
+    "The FAIL applies to the frozen observable inputs, head architecture, training schedule, action scales, finite-sample calibration, 0.05 dB utility margin, and 0.10 risk limit; it does not prove that every conceivable observable mechanism is impossible.",
+    "No engineering retry, threshold relaxation, cross-dataset execution, promotion, deployment, or scientific reuse is authorized by this terminal."
+  ]
+}

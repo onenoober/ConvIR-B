@@ -1,0 +1,227 @@
+{
+  "data_roles": {
+    "haze4k_test_candidate_confirmation_touched": false,
+    "haze4k_test_development_stress": 100,
+    "haze4k_train_fixed_calibration": 150,
+    "haze4k_train_training": 600,
+    "nh_haze_touched": false,
+    "reside_its_ots_touched": false
+  },
+  "gate_outcomes": {
+    "evidence_identity": "pass",
+    "image_replay_safety": "safe",
+    "precision": "met",
+    "scene_role_and_coverage": "pass",
+    "utility_and_spatial_specificity": "unfavorable"
+  },
+  "head_contract": {
+    "abstention": "keep unless corrected utility exceeds 0.05 dB and corrected risk is at most 0.10",
+    "action_scales": {
+      "keep": 1.0,
+      "strengthen": 1.2,
+      "weaken": 0.8
+    },
+    "architecture": "Conv2d(104,64,3)-GroupNorm-GELU-Conv2d(64,64,3)-GroupNorm-GELU-Conv2d(64,4,1)",
+    "calibration": "95 percent finite-sample upper quantile of nonnegative scene-mean utility and risk residuals",
+    "epochs": 12,
+    "gradient_clip_norm": 1.0,
+    "inputs": "hazy image, official output, and frozen Decoder[2] features only",
+    "learning_rate": 0.0003,
+    "outputs": "weaken/strengthen continuous utility and harm logits",
+    "risk_acceptance_max": 0.1,
+    "target_clip_db": 3.0,
+    "utility_margin_db": 0.05,
+    "weight_decay": 0.0001
+  },
+  "identity_checks": {
+    "parent_authorization": true,
+    "prior_oracle_closeout": true,
+    "prior_oracle_summary": true,
+    "prior_proxy_closeout": true,
+    "prior_proxy_summary": true,
+    "role_ledger_closeout": true,
+    "role_ledger_summary": true,
+    "test_split_closeout": true,
+    "test_split_summary": true,
+    "train_split_closeout": true,
+    "train_split_summary": true
+  },
+  "independent_unit": "original_clear_scene",
+  "limitations": [
+    "All evidence is development-only; no protected candidate-confirmation scene was delivered or read.",
+    "The 600-scene OOF estimand uses one outcome-blind selected haze variant per original clear scene.",
+    "The four test-development haze variants are nested repeats and are averaged within each original clear scene.",
+    "The fixed Haze4K calibration set is shared across OOF folds as a nuisance calibration resource and is not counted in the primary estimand.",
+    "A PASS authorizes only an ITS/OTS cross-domain contract, not measurement execution, promotion, deployment, or a source-disjoint claim."
+  ],
+  "marker": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_FEASIBILITY_COMPLETE",
+  "materiality_checks": {
+    "oof_material_prevalence_lcb": false,
+    "oof_spatial_over_shuffle_lcb": false,
+    "oof_spatial_over_uniform_lcb": false,
+    "oof_utility_lcb_above_margin": false,
+    "test_development_transfer_point": false
+  },
+  "operation_id": "HAZE4K_OBSERVABLE_CONDITIONAL_UTILITY_RISK_QUALIFY",
+  "precision": {
+    "met": true,
+    "observed_max_half_width_db": 0.0,
+    "target_half_width_db": 0.025
+  },
+  "primary_haze4k_train_oof": {
+    "action_fractions": {
+      "keep_fraction": 1.0,
+      "strengthen_fraction": 0.0,
+      "weaken_fraction": 0.0
+    },
+    "harm_prevalence": {
+      "color": {
+        "estimate": 0.0,
+        "lower": 4.336808689942018e-19,
+        "successes": 0,
+        "total": 600,
+        "upper": 0.00636170101370071
+      },
+      "psnr": {
+        "estimate": 0.0,
+        "lower": 4.336808689942018e-19,
+        "successes": 0,
+        "total": 600,
+        "upper": 0.00636170101370071
+      },
+      "ssim": {
+        "estimate": 0.0,
+        "lower": 4.336808689942018e-19,
+        "successes": 0,
+        "total": 600,
+        "upper": 0.00636170101370071
+      }
+    },
+    "material_scene_prevalence": {
+      "estimate": 0.0,
+      "lower": 4.336808689942018e-19,
+      "successes": 0,
+      "total": 600,
+      "upper": 0.00636170101370071
+    },
+    "scene_count": 600,
+    "spatial_minus_keep_psnr_db": {
+      "estimate": 0.0,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 20000,
+      "scene_count": 600,
+      "seed": 20260726,
+      "upper": 0.0
+    },
+    "spatial_minus_shuffled_psnr_db": {
+      "estimate": 0.0,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 20000,
+      "scene_count": 600,
+      "seed": 20260728,
+      "upper": 0.0
+    },
+    "spatial_minus_uniform_psnr_db": {
+      "estimate": 0.0,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 20000,
+      "scene_count": 600,
+      "seed": 20260727,
+      "upper": 0.0
+    }
+  },
+  "role_and_coverage_checks": {
+    "balanced_oof_folds": true,
+    "candidate_confirmation_absent": true,
+    "complete_oof_replay": true,
+    "complete_test_development_stress": true,
+    "complete_train_extraction": true,
+    "completed_unit_ledger_coverage": true,
+    "four_variants_nested_within_test_scene": true,
+    "one_outcome_blind_variant_per_train_scene": true,
+    "test_assignment_digest": true,
+    "train_assignment_digest": true,
+    "train_role_counts": true,
+    "train_role_disjointness": true
+  },
+  "route_id": "haze4k-observable-conditional-utility-risk-feasibility-v1",
+  "run_id": "haze4k-observable-conditional-utility-risk-feasibility-v1-repair2",
+  "safety_checks": {
+    "oof_color_harm_ucb": true,
+    "oof_psnr_harm_ucb": true,
+    "oof_ssim_harm_ucb": true,
+    "test_development_color_harm_ucb": true,
+    "test_development_psnr_harm_ucb": true,
+    "test_development_ssim_harm_ucb": true
+  },
+  "schema_version": 1,
+  "scope": "development-only observable contextual utility-risk qualification",
+  "secondary_haze4k_test_development_stress": {
+    "action_fractions": {
+      "keep_fraction": 1.0,
+      "strengthen_fraction": 0.0,
+      "weaken_fraction": 0.0
+    },
+    "harm_prevalence": {
+      "color": {
+        "estimate": 0.0,
+        "lower": 3.469446951953614e-18,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.03699349820698568
+      },
+      "psnr": {
+        "estimate": 0.0,
+        "lower": 3.469446951953614e-18,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.03699349820698568
+      },
+      "ssim": {
+        "estimate": 0.0,
+        "lower": 3.469446951953614e-18,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.03699349820698568
+      }
+    },
+    "material_scene_prevalence": {
+      "estimate": 0.0,
+      "lower": 3.469446951953614e-18,
+      "successes": 0,
+      "total": 100,
+      "upper": 0.03699349820698568
+    },
+    "scene_count": 100,
+    "spatial_minus_keep_psnr_db": {
+      "estimate": 3.552713678800501e-17,
+      "lower": -1.7763568394002506e-16,
+      "max_half_width": 2.1316282072803007e-16,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260736,
+      "upper": 2.486899575160351e-16
+    },
+    "spatial_minus_shuffled_psnr_db": {
+      "estimate": 0.0,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260738,
+      "upper": 0.0
+    },
+    "spatial_minus_uniform_psnr_db": {
+      "estimate": 0.0,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 20000,
+      "scene_count": 100,
+      "seed": 20260737,
+      "upper": 0.0
+    }
+  }
+}
