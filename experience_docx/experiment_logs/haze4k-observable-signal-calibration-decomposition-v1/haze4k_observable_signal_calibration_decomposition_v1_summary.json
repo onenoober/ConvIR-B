@@ -1,0 +1,774 @@
+{
+  "data_roles": {
+    "haze4k_test_candidate_confirmation_touched": false,
+    "haze4k_test_development_stress": 100,
+    "haze4k_train_fixed_calibration": 150,
+    "haze4k_train_oof": 600,
+    "nh_haze_touched": false,
+    "reside_its_ots_touched": false
+  },
+  "formal_continuous_family": {
+    "bootstrap_resamples": 100000,
+    "critical_value": 2.5758293035489,
+    "family_size": 5,
+    "fields": [
+      "p00_spatial_minus_keep_psnr_db",
+      "p10_spatial_minus_keep_psnr_db",
+      "p01_spatial_minus_keep_psnr_db",
+      "p00_spatial_minus_uniform_psnr_db",
+      "p00_spatial_minus_shuffled_psnr_db"
+    ],
+    "intervals": {
+      "p00_spatial_minus_keep_psnr_db": {
+        "estimate": 0.0014063680284741053,
+        "family_size": 5,
+        "lower": -0.0038525914723217276,
+        "max_half_width": 0.006467361937585365,
+        "resamples": 100000,
+        "scene_count": 600,
+        "seed": 20260726,
+        "stratified_by": "oof_fold",
+        "tail_probability": 0.005,
+        "upper": 0.00787372996605947
+      },
+      "p00_spatial_minus_shuffled_psnr_db": {
+        "estimate": 0.007209577253517043,
+        "family_size": 5,
+        "lower": -0.00012433050469692122,
+        "max_half_width": 0.011526641536372145,
+        "resamples": 100000,
+        "scene_count": 600,
+        "seed": 20260726,
+        "stratified_by": "oof_fold",
+        "tail_probability": 0.005,
+        "upper": 0.018736218789889188
+      },
+      "p00_spatial_minus_uniform_psnr_db": {
+        "estimate": 0.0014063680284741053,
+        "family_size": 5,
+        "lower": -0.0038525914723217276,
+        "max_half_width": 0.006467361937585365,
+        "resamples": 100000,
+        "scene_count": 600,
+        "seed": 20260726,
+        "stratified_by": "oof_fold",
+        "tail_probability": 0.005,
+        "upper": 0.00787372996605947
+      },
+      "p01_spatial_minus_keep_psnr_db": {
+        "estimate": 0.0,
+        "family_size": 5,
+        "lower": 0.0,
+        "max_half_width": 0.0,
+        "resamples": 100000,
+        "scene_count": 600,
+        "seed": 20260726,
+        "stratified_by": "oof_fold",
+        "tail_probability": 0.005,
+        "upper": 0.0
+      },
+      "p10_spatial_minus_keep_psnr_db": {
+        "estimate": 0.0014063680284741053,
+        "family_size": 5,
+        "lower": -0.0038525914723217276,
+        "max_half_width": 0.006467361937585365,
+        "resamples": 100000,
+        "scene_count": 600,
+        "seed": 20260726,
+        "stratified_by": "oof_fold",
+        "tail_probability": 0.005,
+        "upper": 0.00787372996605947
+      }
+    }
+  },
+  "gate_outcomes": {
+    "calibration_suppression_specificity": "unfavorable",
+    "evidence_identity": "pass",
+    "oracle_headroom_control": "favorable",
+    "precision": "met",
+    "raw_actionable_utility": "unfavorable",
+    "raw_image_replay_safety": "safe",
+    "scene_role_and_coverage": "pass",
+    "training_fit_diagnostic": "favorable"
+  },
+  "identity_checks": {
+    "parent_all_keep_oof": true,
+    "parent_all_keep_test_development": true,
+    "parent_closeout": true,
+    "parent_conclusion": true,
+    "parent_gate_summary": true,
+    "parent_scene_metrics": true,
+    "parent_summary": true,
+    "parent_terminal_tuple": true,
+    "parent_training_calibration": true,
+    "prior_oracle_closeout": true,
+    "prior_oracle_summary": true,
+    "prior_proxy_closeout": true,
+    "prior_proxy_summary": true,
+    "test_split_closeout": true,
+    "test_split_summary": true,
+    "train_split_closeout": true,
+    "train_split_summary": true
+  },
+  "independent_unit": "original_clear_scene",
+  "limitations": [
+    "All evidence is development-only; no candidate-confirmation, canary, locked-test, NH-Haze, RESIDE ITS, or RESIDE OTS data were read.",
+    "The 600-scene OOF estimand uses one outcome-blind selected haze variant per original clear scene.",
+    "The four test-development haze variants are nested repeats and are averaged within each original clear scene.",
+    "The fixed 150-scene calibration set is a shared nuisance resource and is not counted in the primary estimand.",
+    "The GT oracle is a privileged positive control and cannot support deployment or promotion.",
+    "The precision feasibility certificate is conditional on its archived planning-SD assumption; the observed simultaneous half-width remains decisive.",
+    "A PASS authorizes calibration/risk-interface contract authoring only, never ITS/OTS execution, promotion, deployment, or a source-disjoint claim."
+  ],
+  "marker": "HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSITION_COMPLETE",
+  "operation_id": "HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSE",
+  "oracle_control": {
+    "intervals": {
+      "gt_spatial_minus_keep_psnr_db": {
+        "estimate": 1.649833357282101,
+        "family_size": 2,
+        "lower": 1.52837756326455,
+        "max_half_width": 0.12496771435957577,
+        "resamples": 100000,
+        "scene_count": 600,
+        "seed": 20260826,
+        "stratified_by": "oof_fold",
+        "tail_probability": 0.0125,
+        "upper": 1.7748010716416767
+      },
+      "gt_spatial_minus_uniform_psnr_db": {
+        "estimate": 1.649833357282101,
+        "family_size": 2,
+        "lower": 1.52837756326455,
+        "max_half_width": 0.12496771435957577,
+        "resamples": 100000,
+        "scene_count": 600,
+        "seed": 20260826,
+        "stratified_by": "oof_fold",
+        "tail_probability": 0.0125,
+        "upper": 1.7748010716416767
+      }
+    },
+    "material_prevalence": {
+      "critical_value": 2.5758293035489,
+      "estimate": 0.985,
+      "family_size": 5,
+      "lower": 0.9659209956844219,
+      "successes": 591,
+      "total": 600,
+      "upper": 0.9934699052692644
+    },
+    "outcome": "favorable"
+  },
+  "parent_reproduction": {
+    "checks": {
+      "all_p11_scene_gains_zero": true,
+      "all_p11_scenes_keep": true,
+      "keep_identity_control": true,
+      "parent_training_calibration_match": true
+    },
+    "max_absolute_scene_gain_db": 3.552713678800501e-15,
+    "max_nonkeep_area_fraction": 0.0,
+    "tolerance": 1e-12,
+    "training_calibration": {
+      "fields": [
+        "final_loss",
+        "utility_correction_weaken",
+        "utility_correction_strengthen",
+        "risk_correction_weaken",
+        "risk_correction_strengthen"
+      ],
+      "matched": true,
+      "maximum_absolute_difference": 0.0,
+      "model_count": 6,
+      "tolerance": 1e-06
+    }
+  },
+  "policy_contract": {
+    "GT": "privileged positive control only; never an inference input",
+    "P00": "raw utility plus raw risk",
+    "P01": "raw utility plus risk-corrected",
+    "P10": "utility-corrected plus raw risk",
+    "P11": "utility-corrected plus risk-corrected historical mechanism",
+    "action_scales": {
+      "keep": 1.0,
+      "strengthen": 1.2,
+      "weaken": 0.8
+    },
+    "risk_acceptance_max": 0.1,
+    "shared_predictor": true,
+    "utility_margin_db": 0.05
+  },
+  "policy_summaries": [
+    {
+      "color_harm_lower": 0.0,
+      "color_harm_prevalence": 0.0,
+      "color_harm_upper": 0.015545562976907418,
+      "formal_gain_lower": -0.0038525914723217276,
+      "formal_gain_upper": 0.00787372996605947,
+      "keep_fraction": 0.9997157777777779,
+      "material_scene_prevalence": 0.0033333333333333335,
+      "material_scene_prevalence_lower": 0.0006510448404100349,
+      "material_scene_prevalence_upper": 0.016879922567842605,
+      "policy": "P00",
+      "population": "haze4k_train_oof",
+      "psnr_harm_lower": 0.0001463862111433685,
+      "psnr_harm_prevalence": 0.0016666666666666668,
+      "psnr_harm_upper": 0.018680691555841025,
+      "scene_count": 600,
+      "spatial_minus_keep_psnr_db": 0.0014063680284741053,
+      "spatial_minus_shuffled_psnr_db": 0.007209577253517043,
+      "spatial_minus_uniform_psnr_db": 0.0014063680284741053,
+      "ssim_harm_lower": 0.0,
+      "ssim_harm_prevalence": 0.0,
+      "ssim_harm_upper": 0.015545562976907418,
+      "strengthen_fraction": 0.0002842222222222221,
+      "weaken_fraction": 0.0
+    },
+    {
+      "color_harm_lower": 0.0,
+      "color_harm_prevalence": 0.0,
+      "color_harm_upper": 0.015545562976907418,
+      "formal_gain_lower": -0.0038525914723217276,
+      "formal_gain_upper": 0.00787372996605947,
+      "keep_fraction": 0.9997157777777779,
+      "material_scene_prevalence": 0.0033333333333333335,
+      "material_scene_prevalence_lower": 0.0006510448404100349,
+      "material_scene_prevalence_upper": 0.016879922567842605,
+      "policy": "P10",
+      "population": "haze4k_train_oof",
+      "psnr_harm_lower": 0.0001463862111433685,
+      "psnr_harm_prevalence": 0.0016666666666666668,
+      "psnr_harm_upper": 0.018680691555841025,
+      "scene_count": 600,
+      "spatial_minus_keep_psnr_db": 0.0014063680284741053,
+      "spatial_minus_shuffled_psnr_db": 0.006092910218323606,
+      "spatial_minus_uniform_psnr_db": 0.0014063680284741053,
+      "ssim_harm_lower": 0.0,
+      "ssim_harm_prevalence": 0.0,
+      "ssim_harm_upper": 0.015545562976907418,
+      "strengthen_fraction": 0.0002842222222222221,
+      "weaken_fraction": 0.0
+    },
+    {
+      "color_harm_lower": 0.0,
+      "color_harm_prevalence": 0.0,
+      "color_harm_upper": 0.015545562976907418,
+      "formal_gain_lower": 0.0,
+      "formal_gain_upper": 0.0,
+      "keep_fraction": 1.0,
+      "material_scene_prevalence": 0.0,
+      "material_scene_prevalence_lower": 0.0,
+      "material_scene_prevalence_upper": 0.010937215511663727,
+      "policy": "P01",
+      "population": "haze4k_train_oof",
+      "psnr_harm_lower": 0.0,
+      "psnr_harm_prevalence": 0.0,
+      "psnr_harm_upper": 0.015545562976907418,
+      "scene_count": 600,
+      "spatial_minus_keep_psnr_db": 0.0,
+      "spatial_minus_shuffled_psnr_db": 0.0,
+      "spatial_minus_uniform_psnr_db": 0.0,
+      "ssim_harm_lower": 0.0,
+      "ssim_harm_prevalence": 0.0,
+      "ssim_harm_upper": 0.015545562976907418,
+      "strengthen_fraction": 0.0,
+      "weaken_fraction": 0.0
+    },
+    {
+      "color_harm_lower": 0.0,
+      "color_harm_prevalence": 0.0,
+      "color_harm_upper": 0.015545562976907418,
+      "keep_fraction": 1.0,
+      "material_scene_prevalence": 0.0,
+      "material_scene_prevalence_lower": 0.0,
+      "material_scene_prevalence_upper": 0.010937215511663727,
+      "policy": "P11",
+      "population": "haze4k_train_oof",
+      "psnr_harm_lower": 0.0,
+      "psnr_harm_prevalence": 0.0,
+      "psnr_harm_upper": 0.015545562976907418,
+      "scene_count": 600,
+      "spatial_minus_keep_psnr_db": 0.0,
+      "spatial_minus_shuffled_psnr_db": 0.0,
+      "spatial_minus_uniform_psnr_db": 0.0,
+      "ssim_harm_lower": 0.0,
+      "ssim_harm_prevalence": 0.0,
+      "ssim_harm_upper": 0.015545562976907418,
+      "strengthen_fraction": 0.0,
+      "weaken_fraction": 0.0
+    },
+    {
+      "keep_fraction": 0.7140186666666665,
+      "material_scene_prevalence": 0.985,
+      "material_scene_prevalence_lower": 0.9659209956844219,
+      "material_scene_prevalence_upper": 0.9934699052692644,
+      "oracle_uniform_lower": 1.52837756326455,
+      "oracle_uniform_upper": 1.7748010716416767,
+      "policy": "GT",
+      "population": "haze4k_train_oof",
+      "scene_count": 600,
+      "spatial_minus_keep_psnr_db": 1.649833357282101,
+      "spatial_minus_shuffled_psnr_db": 4.979422617005419,
+      "spatial_minus_uniform_psnr_db": 1.649833357282101,
+      "strengthen_fraction": 0.19073488888888884,
+      "weaken_fraction": 0.09524644444444441
+    },
+    {
+      "color_harm_lower": 0.0,
+      "color_harm_prevalence": 0.0,
+      "color_harm_upper": 0.08654632141180972,
+      "keep_fraction": 0.998352,
+      "material_scene_prevalence": 0.03,
+      "material_scene_prevalence_lower": 0.007612169301778604,
+      "material_scene_prevalence_upper": 0.11087527715109498,
+      "policy": "P00",
+      "population": "haze4k_test_development_stress",
+      "psnr_harm_lower": 0.0,
+      "psnr_harm_prevalence": 0.0,
+      "psnr_harm_upper": 0.08654632141180972,
+      "scene_count": 100,
+      "spatial_minus_keep_psnr_db": 0.007572976494161558,
+      "spatial_minus_shuffled_psnr_db": 0.005059557589967554,
+      "spatial_minus_uniform_psnr_db": 0.007572976494161523,
+      "ssim_harm_lower": 0.0,
+      "ssim_harm_prevalence": 0.0,
+      "ssim_harm_upper": 0.08654632141180972,
+      "strengthen_fraction": 0.0016479999999999995,
+      "weaken_fraction": 0.0
+    },
+    {
+      "color_harm_lower": 0.0,
+      "color_harm_prevalence": 0.0,
+      "color_harm_upper": 0.08654632141180972,
+      "keep_fraction": 0.998352,
+      "material_scene_prevalence": 0.03,
+      "material_scene_prevalence_lower": 0.007612169301778604,
+      "material_scene_prevalence_upper": 0.11087527715109498,
+      "policy": "P10",
+      "population": "haze4k_test_development_stress",
+      "psnr_harm_lower": 0.0,
+      "psnr_harm_prevalence": 0.0,
+      "psnr_harm_upper": 0.08654632141180972,
+      "scene_count": 100,
+      "spatial_minus_keep_psnr_db": 0.007572976494161558,
+      "spatial_minus_shuffled_psnr_db": 0.00570333189916429,
+      "spatial_minus_uniform_psnr_db": 0.007572976494161523,
+      "ssim_harm_lower": 0.0,
+      "ssim_harm_prevalence": 0.0,
+      "ssim_harm_upper": 0.08654632141180972,
+      "strengthen_fraction": 0.0016479999999999995,
+      "weaken_fraction": 0.0
+    },
+    {
+      "color_harm_lower": 0.0,
+      "color_harm_prevalence": 0.0,
+      "color_harm_upper": 0.08654632141180972,
+      "keep_fraction": 1.0,
+      "material_scene_prevalence": 0.0,
+      "material_scene_prevalence_lower": 0.0,
+      "material_scene_prevalence_upper": 0.06222068771582295,
+      "policy": "P01",
+      "population": "haze4k_test_development_stress",
+      "psnr_harm_lower": 0.0,
+      "psnr_harm_prevalence": 0.0,
+      "psnr_harm_upper": 0.08654632141180972,
+      "scene_count": 100,
+      "spatial_minus_keep_psnr_db": 3.552713678800501e-17,
+      "spatial_minus_shuffled_psnr_db": 0.0,
+      "spatial_minus_uniform_psnr_db": 0.0,
+      "ssim_harm_lower": 0.0,
+      "ssim_harm_prevalence": 0.0,
+      "ssim_harm_upper": 0.08654632141180972,
+      "strengthen_fraction": 0.0,
+      "weaken_fraction": 0.0
+    },
+    {
+      "color_harm_lower": 0.0,
+      "color_harm_prevalence": 0.0,
+      "color_harm_upper": 0.08654632141180972,
+      "keep_fraction": 1.0,
+      "material_scene_prevalence": 0.0,
+      "material_scene_prevalence_lower": 0.0,
+      "material_scene_prevalence_upper": 0.06222068771582295,
+      "policy": "P11",
+      "population": "haze4k_test_development_stress",
+      "psnr_harm_lower": 0.0,
+      "psnr_harm_prevalence": 0.0,
+      "psnr_harm_upper": 0.08654632141180972,
+      "scene_count": 100,
+      "spatial_minus_keep_psnr_db": 3.552713678800501e-17,
+      "spatial_minus_shuffled_psnr_db": 0.0,
+      "spatial_minus_uniform_psnr_db": 0.0,
+      "ssim_harm_lower": 0.0,
+      "ssim_harm_prevalence": 0.0,
+      "ssim_harm_upper": 0.08654632141180972,
+      "strengthen_fraction": 0.0,
+      "weaken_fraction": 0.0
+    },
+    {
+      "keep_fraction": 0.49472266666666664,
+      "material_scene_prevalence": 0.99,
+      "material_scene_prevalence_lower": 0.9201988714650057,
+      "material_scene_prevalence_upper": 0.9988248545734876,
+      "policy": "GT",
+      "population": "haze4k_test_development_stress",
+      "scene_count": 100,
+      "spatial_minus_keep_psnr_db": 2.5590103067937138,
+      "spatial_minus_shuffled_psnr_db": 4.284728856438548,
+      "spatial_minus_uniform_psnr_db": 2.4415692406737883,
+      "strengthen_fraction": 0.27961166666666665,
+      "weaken_fraction": 0.2256656666666666
+    }
+  ],
+  "precision": {
+    "met": true,
+    "observed_max_simultaneous_half_width_db": 0.011526641536372145,
+    "planning_assumption": "conditional on the predeclared 0.2358753949 dB planning-SD upper bound inherited from the archived proxy interval",
+    "target_half_width_db": 0.025
+  },
+  "raw_artifact_inventory": {
+    "classes": {
+      "head_checkpoint": {
+        "file_count": 6,
+        "inventory_sha256": "c8d57a38c25f35425fcf738e29949930e8d30afbe815a8fdb756e9a04a3db614",
+        "total_bytes": 2374926
+      },
+      "raw_prediction": {
+        "file_count": 1000,
+        "inventory_sha256": "b8cafe916935d51e2daabc2e802785d369174c1dec92ccf5998a0d1362dabd01",
+        "total_bytes": 50706241
+      },
+      "scene_cache": {
+        "file_count": 750,
+        "inventory_sha256": "56338779c5e422efdc167e8847f6ae6cd0cefd4bd566075f9a178c5702b031cd",
+        "total_bytes": 2180019000
+      },
+      "scene_replay": {
+        "file_count": 100,
+        "inventory_sha256": "0fe39f187464c7240a76eb4d082a9d22e29ecc69ad4c209292cb28a838613d99",
+        "total_bytes": 640966
+      }
+    },
+    "file_count": 1856,
+    "github_exclusions": [
+      "datasets",
+      "weights",
+      "checkpoints",
+      "images",
+      "arrays",
+      "raw_predictions",
+      "feature_tables",
+      "action_maps"
+    ],
+    "head_checkpoints": [
+      {
+        "bytes": 395746,
+        "relative_path": "workload/head_checkpoints/oof_fold_0.pt",
+        "sha256": "3991c9c087cc95eb37bfcdd98dfe467dfb455df43ae21bac45c6556cdef436c6"
+      },
+      {
+        "bytes": 395746,
+        "relative_path": "workload/head_checkpoints/oof_fold_1.pt",
+        "sha256": "8f68b497f98e2bb70efa6d7e367fffd21efb7f20341d377eec9ab98a52e1d16a"
+      },
+      {
+        "bytes": 395746,
+        "relative_path": "workload/head_checkpoints/oof_fold_2.pt",
+        "sha256": "ca76b2402c6708ab3e4de08451da32f9459fdaa4dfa0480cf06934a255dd0ff9"
+      },
+      {
+        "bytes": 395746,
+        "relative_path": "workload/head_checkpoints/oof_fold_3.pt",
+        "sha256": "d292efc025d1cdc04d1084f7c2e92b1c230c72e029793483cc92eac8640863fd"
+      },
+      {
+        "bytes": 395746,
+        "relative_path": "workload/head_checkpoints/oof_fold_4.pt",
+        "sha256": "9f038da95305979321743ef78c9f91458b1087297b347c52e3041495006ec48a"
+      },
+      {
+        "bytes": 396196,
+        "relative_path": "workload/head_checkpoints/frozen_test_development_candidate.pt",
+        "sha256": "746922db4dc75122298dcc04cf5f603fa168e23578425fde4e7050d58ce38ea3"
+      }
+    ],
+    "inventory_sha256": "301264df5f2aa5f8ac68d79e5e145edbcf1008cf43ca827cca66768021573a91",
+    "raw_retention_scope": "cloud_only",
+    "schema_version": 1,
+    "total_bytes": 2233741133
+  },
+  "role_and_coverage_checks": {
+    "balanced_oof_folds": true,
+    "candidate_confirmation_absent": true,
+    "complete_oof_replay": true,
+    "complete_test_development_stress": true,
+    "complete_train_extraction": true,
+    "completed_unit_ledger_coverage": true,
+    "four_variants_nested_within_test_scene": true,
+    "keep_identity_control": true,
+    "nh_haze_absent": true,
+    "one_outcome_blind_variant_per_train_scene": true,
+    "raw_artifact_inventory_complete": true,
+    "reside_its_ots_absent": true,
+    "test_assignment_digest": true,
+    "train_assignment_digest": true,
+    "train_role_counts": true,
+    "train_role_disjointness": true
+  },
+  "route_id": "haze4k-observable-signal-calibration-decomposition-v1",
+  "run_id": "haze4k-observable-signal-calibration-decomposition-v1",
+  "safety_intervals": {
+    "haze4k_test_development_stress": {
+      "P00": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        }
+      },
+      "P01": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        }
+      },
+      "P10": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        }
+      },
+      "P11": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        }
+      }
+    },
+    "haze4k_train_oof": {
+      "P00": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0016666666666666668,
+          "family_size": 24,
+          "lower": 0.0001463862111433685,
+          "successes": 1,
+          "total": 600,
+          "upper": 0.018680691555841025
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        }
+      },
+      "P01": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        }
+      },
+      "P10": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0016666666666666668,
+          "family_size": 24,
+          "lower": 0.0001463862111433685,
+          "successes": 1,
+          "total": 600,
+          "upper": 0.018680691555841025
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        }
+      },
+      "P11": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        }
+      }
+    }
+  },
+  "schema_version": 2,
+  "scope": "development-only raw-signal and calibration decomposition",
+  "signal_diagnostics": {
+    "calibration_attribution": "either_correction_sufficient",
+    "fit_positive_fold_counts": {
+      "strengthen": 5,
+      "weaken": 5
+    },
+    "oof_signal": "oof_signal_present",
+    "partial_policy_states": {
+      "P01": "futile",
+      "P10": "futile"
+    },
+    "training_fit": "fit_present"
+  }
+}

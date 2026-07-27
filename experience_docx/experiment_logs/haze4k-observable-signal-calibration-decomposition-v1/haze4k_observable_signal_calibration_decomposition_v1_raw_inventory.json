@@ -1,0 +1,71 @@
+{
+  "classes": {
+    "head_checkpoint": {
+      "file_count": 6,
+      "inventory_sha256": "c8d57a38c25f35425fcf738e29949930e8d30afbe815a8fdb756e9a04a3db614",
+      "total_bytes": 2374926
+    },
+    "raw_prediction": {
+      "file_count": 1000,
+      "inventory_sha256": "b8cafe916935d51e2daabc2e802785d369174c1dec92ccf5998a0d1362dabd01",
+      "total_bytes": 50706241
+    },
+    "scene_cache": {
+      "file_count": 750,
+      "inventory_sha256": "56338779c5e422efdc167e8847f6ae6cd0cefd4bd566075f9a178c5702b031cd",
+      "total_bytes": 2180019000
+    },
+    "scene_replay": {
+      "file_count": 100,
+      "inventory_sha256": "0fe39f187464c7240a76eb4d082a9d22e29ecc69ad4c209292cb28a838613d99",
+      "total_bytes": 640966
+    }
+  },
+  "file_count": 1856,
+  "github_exclusions": [
+    "datasets",
+    "weights",
+    "checkpoints",
+    "images",
+    "arrays",
+    "raw_predictions",
+    "feature_tables",
+    "action_maps"
+  ],
+  "head_checkpoints": [
+    {
+      "bytes": 395746,
+      "relative_path": "workload/head_checkpoints/oof_fold_0.pt",
+      "sha256": "3991c9c087cc95eb37bfcdd98dfe467dfb455df43ae21bac45c6556cdef436c6"
+    },
+    {
+      "bytes": 395746,
+      "relative_path": "workload/head_checkpoints/oof_fold_1.pt",
+      "sha256": "8f68b497f98e2bb70efa6d7e367fffd21efb7f20341d377eec9ab98a52e1d16a"
+    },
+    {
+      "bytes": 395746,
+      "relative_path": "workload/head_checkpoints/oof_fold_2.pt",
+      "sha256": "ca76b2402c6708ab3e4de08451da32f9459fdaa4dfa0480cf06934a255dd0ff9"
+    },
+    {
+      "bytes": 395746,
+      "relative_path": "workload/head_checkpoints/oof_fold_3.pt",
+      "sha256": "d292efc025d1cdc04d1084f7c2e92b1c230c72e029793483cc92eac8640863fd"
+    },
+    {
+      "bytes": 395746,
+      "relative_path": "workload/head_checkpoints/oof_fold_4.pt",
+      "sha256": "9f038da95305979321743ef78c9f91458b1087297b347c52e3041495006ec48a"
+    },
+    {
+      "bytes": 396196,
+      "relative_path": "workload/head_checkpoints/frozen_test_development_candidate.pt",
+      "sha256": "746922db4dc75122298dcc04cf5f603fa168e23578425fde4e7050d58ce38ea3"
+    }
+  ],
+  "inventory_sha256": "301264df5f2aa5f8ac68d79e5e145edbcf1008cf43ca827cca66768021573a91",
+  "raw_retention_scope": "cloud_only",
+  "schema_version": 1,
+  "total_bytes": 2233741133
+}

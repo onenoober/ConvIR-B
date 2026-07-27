@@ -1,0 +1,40 @@
+{
+  "contract_mode": "gpu_synthetic_no_data",
+  "engineering_evidence": {
+    "cost": {
+      "observed_iterations": 160,
+      "observed_peak_memory_mib": 164.78271484375,
+      "observed_wall_seconds": 9.569115626625717
+    },
+    "device": "cuda",
+    "fixture": {
+      "batch": 1,
+      "channels": 3,
+      "height": 256,
+      "width": 320
+    },
+    "mode": "gpu_synthetic_no_data",
+    "production_path_exercised": true,
+    "protected_data_touched": false,
+    "scientific_output_created": false,
+    "scientific_training_occurred": false
+  },
+  "identity": {
+    "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "code_path_sha256": "4d421c4a9123a000e4679837e597275d1faffbd29219a4b63b4bc1286a667812",
+    "device_class": "cuda_sm89",
+    "input_contract_sha256": "334e872f5fab370e78f319aa9a1224cadf242c17aa8218669bc3b14243a6ceb1",
+    "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
+    "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+  },
+  "identity_sha256": "83fe35093ab26e6fded39afa5b94190a1bdbd2f58059e50284ce804343b25380",
+  "operation_id": "HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSE",
+  "protected_data_touched": false,
+  "qualification_id": "cap_83fe35093ab26e6fded39afa",
+  "route_commit": "72698dfae556a6364d4e6de33735a8d5a99e43bb",
+  "route_id": "haze4k-observable-signal-calibration-decomposition-v1",
+  "run_id": "haze4k-observable-signal-calibration-decomposition-v1",
+  "schema_version": 1,
+  "scientific_authorization": "NONE",
+  "status": "PASSED_ENGINEERING"
+}

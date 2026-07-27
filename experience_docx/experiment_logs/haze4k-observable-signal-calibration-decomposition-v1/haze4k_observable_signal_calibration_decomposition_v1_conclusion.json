@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k-observable-signal-calibration-decomposition-v1",
+  "operation_id": "HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSE",
+  "run_id": "haze4k-observable-signal-calibration-decomposition-v1",
+  "state": "COMPLETED_GATE_FAIL",
+  "decision": "HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSITION_FAIL",
+  "authorizes": "OBSERVABLE_REPRESENTATION_OR_LEARNER_CONTRACT_AUTHORING_ONLY",
+  "primary_result": "The raw P00 observable policy produced a mean spatial utility gain of 0.001406 dB over keep across 600 independent Haze4K-train OOF scenes, with a simultaneous 95% interval of [-0.003853, 0.007874] dB and material-scene prevalence 0.00333 (upper bound 0.01688). The interval is precise and wholly below the frozen 0.05 dB materiality threshold. P10 was identical, while P01 and P11 selected keep everywhere. Calibration decomposition therefore did not recover actionable utility from the frozen observable learner.",
+  "gate_reasons": [
+    "Evidence identity, scene-role separation, parent reproduction, complete 851-unit ledger coverage, and the frozen precision target all passed.",
+    "The raw P00 policy failed materiality: its gain upper bound was 0.007874 dB, material-scene prevalence upper bound was 0.01688, and spatial-over-uniform and spatial-over-shuffled lower bounds were not positive.",
+    "P10 remained futile, P01 and P11 selected keep everywhere, and the calibration-suppression-specificity gate was unfavorable; removing either correction did not produce a useful policy.",
+    "Image-replay safety was acceptable, but safe near-total abstention cannot compensate for failure of the decisive utility gate.",
+    "The privileged GT oracle remained strongly favorable at 1.6498 dB mean gain with 98.5% material-scene prevalence, so the result does not indicate absence of spatial action headroom.",
+    "Training-fit and within-scene permutation diagnostics found observable signal for both actions, localizing the next permitted work to a new observable representation or learner contract rather than threshold relaxation or cross-dataset execution."
+  ],
+  "competing_explanation": "The frozen features and learner contain measurable association with local action targets, but their calibrated decision values are too weak or poorly ranked at the action boundary to convert that association into scene-level utility. The result is also compatible with loss-target mismatch, insufficient representation of the oracle-relevant spatial factors, or a learner whose average fit does not preserve decision-critical tails. It is not compatible with calibration alone being the sole bottleneck, because both one-correction partial policies remained futile.",
+  "limitations": [
+    "All evidence is development-only; no candidate-confirmation, canary, locked-test, NH-Haze, RESIDE ITS, or RESIDE OTS data were read.",
+    "The 600-scene OOF estimand uses one outcome-blind selected haze variant per original clear scene; the four test-development variants are nested and averaged within scene.",
+    "The fixed 150-scene calibration population is a shared nuisance resource and is not counted as an independent primary-estimand sample.",
+    "The GT policy is privileged and non-deployable; it demonstrates headroom but does not identify a trainable observable mechanism.",
+    "The FAIL applies to the frozen observable representation, shared learner, loss and decision interface, action scales, 0.05 dB utility margin, and 0.10 risk limit; it does not prove that every observable learner is impossible.",
+    "Only authoring of a substantively new observable representation or learner contract is authorized. ITS/OTS execution, threshold relaxation, promotion, deployment, and scientific reuse of partial policies remain unauthorized."
+  ]
+}

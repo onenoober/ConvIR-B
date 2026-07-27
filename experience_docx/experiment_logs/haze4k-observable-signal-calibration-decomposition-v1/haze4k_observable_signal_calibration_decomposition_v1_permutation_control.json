@@ -1,0 +1,158 @@
+{
+  "independent_unit": "original_clear_scene",
+  "metrics": [
+    {
+      "action": "weaken",
+      "critical_value": 3.1969502291312533,
+      "estimate": 0.21740117702966194,
+      "family_size": 36,
+      "lower": 0.19294085171177178,
+      "max_half_width": 0.024460325317890157,
+      "metric": "permuted_utility_mae_improvement",
+      "population": "haze4k_train_oof",
+      "scene_count": 600,
+      "upper": 0.2418615023475521
+    },
+    {
+      "action": "weaken",
+      "critical_value": 3.1969502291312533,
+      "estimate": 0.5027921513864888,
+      "family_size": 36,
+      "lower": 0.4885034518071221,
+      "max_half_width": 0.014288699579366702,
+      "metric": "permuted_beneficial_auc",
+      "population": "haze4k_train_oof",
+      "scene_count": 568,
+      "upper": 0.5170808509658555
+    },
+    {
+      "action": "weaken",
+      "critical_value": 3.1969502291312533,
+      "estimate": 0.00035444573904566234,
+      "family_size": 36,
+      "lower": -0.03778284282474956,
+      "max_half_width": 0.03813728856379522,
+      "metric": "permuted_top_fraction_utility_lift",
+      "population": "haze4k_train_oof",
+      "scene_count": 600,
+      "upper": 0.03849173430284088
+    },
+    {
+      "action": "weaken",
+      "critical_value": 3.1969502291312533,
+      "estimate": 1.4754389368950929,
+      "family_size": 36,
+      "lower": 1.318043028464817,
+      "max_half_width": 0.1573959084302758,
+      "metric": "observed_minus_permuted_top_lift",
+      "population": "haze4k_train_oof",
+      "scene_count": 600,
+      "upper": 1.6328348453253687
+    },
+    {
+      "action": "weaken",
+      "critical_value": 3.1969502291312533,
+      "estimate": -0.00762930708292443,
+      "family_size": 36,
+      "lower": -0.009125668901862661,
+      "max_half_width": 0.001496361818938232,
+      "metric": "permuted_risk_brier_improvement",
+      "population": "haze4k_train_oof",
+      "scene_count": 600,
+      "upper": -0.006132945263986197
+    },
+    {
+      "action": "weaken",
+      "critical_value": 3.1969502291312533,
+      "estimate": 0.5010401611325319,
+      "family_size": 36,
+      "lower": 0.48851709094961115,
+      "max_half_width": 0.012523070182920752,
+      "metric": "permuted_risk_auc",
+      "population": "haze4k_train_oof",
+      "scene_count": 569,
+      "upper": 0.5135632313154527
+    },
+    {
+      "action": "strengthen",
+      "critical_value": 3.1969502291312533,
+      "estimate": 0.33488575610684346,
+      "family_size": 36,
+      "lower": 0.27904187504977057,
+      "max_half_width": 0.055843881057072865,
+      "metric": "permuted_utility_mae_improvement",
+      "population": "haze4k_train_oof",
+      "scene_count": 600,
+      "upper": 0.39072963716391634
+    },
+    {
+      "action": "strengthen",
+      "critical_value": 3.1969502291312533,
+      "estimate": 0.4989909854323182,
+      "family_size": 36,
+      "lower": 0.4881518538075093,
+      "max_half_width": 0.010839131624808858,
+      "metric": "permuted_beneficial_auc",
+      "population": "haze4k_train_oof",
+      "scene_count": 595,
+      "upper": 0.509830117057127
+    },
+    {
+      "action": "strengthen",
+      "critical_value": 3.1969502291312533,
+      "estimate": -0.0014686630251860692,
+      "family_size": 36,
+      "lower": -0.05323182264819285,
+      "max_half_width": 0.05176315962300678,
+      "metric": "permuted_top_fraction_utility_lift",
+      "population": "haze4k_train_oof",
+      "scene_count": 600,
+      "upper": 0.05029449659782071
+    },
+    {
+      "action": "strengthen",
+      "critical_value": 3.1969502291312533,
+      "estimate": 1.4961465293725382,
+      "family_size": 36,
+      "lower": 1.3300891166565005,
+      "max_half_width": 0.16605741271603763,
+      "metric": "observed_minus_permuted_top_lift",
+      "population": "haze4k_train_oof",
+      "scene_count": 600,
+      "upper": 1.662203942088576
+    },
+    {
+      "action": "strengthen",
+      "critical_value": 3.1969502291312533,
+      "estimate": -0.007045317394935893,
+      "family_size": 36,
+      "lower": -0.012202168819181736,
+      "max_half_width": 0.005156851424245842,
+      "metric": "permuted_risk_brier_improvement",
+      "population": "haze4k_train_oof",
+      "scene_count": 600,
+      "upper": -0.0018884659706900507
+    },
+    {
+      "action": "strengthen",
+      "critical_value": 3.1969502291312533,
+      "estimate": 0.4972936867794029,
+      "family_size": 36,
+      "lower": 0.48754236299528186,
+      "max_half_width": 0.009751323784121019,
+      "metric": "permuted_risk_auc",
+      "population": "haze4k_train_oof",
+      "scene_count": 595,
+      "upper": 0.5070450105635239
+    }
+  ],
+  "oof_signal_diagnostic": "oof_signal_present",
+  "permutation": "deterministic within-scene prediction permutation; tiles never counted as independent samples",
+  "salt": "haze4k-observable-signal-calibration-decomposition-v1-permutation",
+  "schema_version": 1,
+  "signal_absent_actions": [],
+  "signal_present_actions": [
+    "weaken",
+    "strengthen"
+  ]
+}

@@ -1,0 +1,307 @@
+{
+  "gate_outcomes": {
+    "calibration_suppression_specificity": "unfavorable",
+    "evidence_identity": "pass",
+    "oracle_headroom_control": "favorable",
+    "precision": "met",
+    "raw_actionable_utility": "unfavorable",
+    "raw_image_replay_safety": "safe",
+    "scene_role_and_coverage": "pass",
+    "training_fit_diagnostic": "favorable"
+  },
+  "parent_reproduction": {
+    "all_p11_scene_gains_zero": true,
+    "all_p11_scenes_keep": true,
+    "keep_identity_control": true,
+    "parent_training_calibration_match": true
+  },
+  "precision_met": true,
+  "raw_materiality": {
+    "favorable": false,
+    "futile": true,
+    "gain": {
+      "estimate": 0.0014063680284741053,
+      "family_size": 5,
+      "lower": -0.0038525914723217276,
+      "max_half_width": 0.006467361937585365,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260726,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.005,
+      "upper": 0.00787372996605947
+    },
+    "material_prevalence": {
+      "critical_value": 2.5758293035489,
+      "estimate": 0.0033333333333333335,
+      "family_size": 5,
+      "lower": 0.0006510448404100349,
+      "successes": 2,
+      "total": 600,
+      "upper": 0.016879922567842605
+    },
+    "spatial_over_shuffle": {
+      "estimate": 0.007209577253517043,
+      "family_size": 5,
+      "lower": -0.00012433050469692122,
+      "max_half_width": 0.011526641536372145,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260726,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.005,
+      "upper": 0.018736218789889188
+    },
+    "spatial_over_uniform": {
+      "estimate": 0.0014063680284741053,
+      "family_size": 5,
+      "lower": -0.0038525914723217276,
+      "max_half_width": 0.006467361937585365,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260726,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.005,
+      "upper": 0.00787372996605947
+    }
+  },
+  "raw_safety": {
+    "haze4k_test_development_stress": {
+      "P00": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        }
+      },
+      "P01": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        }
+      },
+      "P10": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        }
+      },
+      "P11": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 100,
+          "upper": 0.08654632141180972
+        }
+      }
+    },
+    "haze4k_train_oof": {
+      "P00": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0016666666666666668,
+          "family_size": 24,
+          "lower": 0.0001463862111433685,
+          "successes": 1,
+          "total": 600,
+          "upper": 0.018680691555841025
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        }
+      },
+      "P01": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        }
+      },
+      "P10": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0016666666666666668,
+          "family_size": 24,
+          "lower": 0.0001463862111433685,
+          "successes": 1,
+          "total": 600,
+          "upper": 0.018680691555841025
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        }
+      },
+      "P11": {
+        "color": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        },
+        "psnr": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        },
+        "ssim": {
+          "critical_value": 3.0780880728421613,
+          "estimate": 0.0,
+          "family_size": 24,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 600,
+          "upper": 0.015545562976907418
+        }
+      }
+    }
+  },
+  "schema_version": 2
+}

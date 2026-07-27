@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-observable-signal-calibration-decomposition-v1.json",
+  "experiment_spec_sha256": "d7ffe0635b58e000bbe45a6bab9d3ec7b9df9de9ae0dd464c07e3178c75b02c6",
+  "operations": {
+    "HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSE": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "OBSERVABLE_CALIBRATION_RISK_INTERFACE_CONTRACT_AUTHORING_ONLY",
+          "decision": "HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSITION_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "OBSERVABLE_REPRESENTATION_OR_LEARNER_CONTRACT_AUTHORING_ONLY",
+          "decision": "HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSITION_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "OBSERVABLE_SIGNAL_CALIBRATION_EVIDENCE_REVIEW_ONLY",
+          "decision": "HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSITION_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "haze4k_observable_signal_calibration_decomposition_v1_closeout.json",
+      "heartbeat_timeout_seconds": 900,
+      "max_gpu_utilization_pct": 10,
+      "min_free_gpu_mib": 16000,
+      "mode": "observable_signal_calibration_decomposition",
+      "monitor_profile": "standard",
+      "output_id": "haze4k-observable-signal-calibration-decomposition-v1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_observable_conditional_utility_risk_v1.json",
+  "program_contract_sha256": "1a659c63709b1b44fe20ed6e1d834f8a63a320f9887b1e838a154e0c12c38c71",
+  "route_card_relpath": "experience_docx/experiment_cards/haze4k-observable-signal-calibration-decomposition-v1.md",
+  "route_id": "haze4k-observable-signal-calibration-decomposition-v1",
+  "rules_commit": "3559e26d2f7f0d11cba00ccbac29e83836b0f76f",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSE": "experience_docx/scientific_contracts/haze4k-observable-signal-calibration-decomposition-v1__HAZE4K_OBSERVABLE_SIGNAL_CALIBRATION_DECOMPOSE.json"
+  }
+}
