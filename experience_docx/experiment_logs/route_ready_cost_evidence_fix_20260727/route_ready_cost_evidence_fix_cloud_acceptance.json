@@ -1,0 +1,22 @@
+{
+  "baseline_main_commit": "38f7aebf63d6b0611c31115c27c89c7b01c31008",
+  "candidate_commit": "0abe8d4a46497c14b2bb4da48f9f9f4ccd7a354f",
+  "checks": {
+    "all_tool_tests_passed": true,
+    "diff_allowlist_passed": true,
+    "mcp_and_runtime_api_unchanged": true,
+    "targeted_python_compile_passed": true
+  },
+  "cloud_host": "convir-4090",
+  "decision": "ROUTE_READY_COST_EVIDENCE_SCHEMA_FIX_ADOPTED",
+  "gpu_access": 0,
+  "marker": "ROUTE_READY_COST_EVIDENCE_FIX_CLOUD_OK",
+  "model_calls": 0,
+  "protected_data_access": 0,
+  "schema_version": 1,
+  "script_git_blob": "42c909dede81593f50336c7fcf8a06956d146af5",
+  "script_relpath": "experience_docx/tools/validate_route_ready_cost_evidence_fix_cloud.sh",
+  "script_sha256": "5425944d4ecbe59bf4d3a1fbf783b9232e10a6e222e851e8762682db3447bc37",
+  "status": "PASS",
+  "test_count": 237
+}
