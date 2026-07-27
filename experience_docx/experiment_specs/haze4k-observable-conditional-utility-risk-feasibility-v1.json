@@ -12,7 +12,7 @@
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "observable_conditional_utility_risk_feasibility",
         "require_gpu": true,
-        "output_id": "haze4k-observable-conditional-utility-risk-feasibility-v1-r1",
+        "output_id": "haze4k-observable-conditional-utility-risk-feasibility-v1-repair1",
         "closeout_filename": "haze4k_observable_conditional_utility_risk_feasibility_v1_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
@@ -482,7 +482,7 @@
           "id": "observable_entrypoint",
           "kind": "file",
           "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_observable_conditional_utility_risk_feasibility.py",
-          "sha256": "a680f1a11ce3687bfc7588fc6633f1067513c2f7306206bcf27f66b2915a480e",
+          "sha256": "a0504a4513289ac3c6308fd177f5c8e661008556c182a4bbe8a6f608cd022202",
           "access_role": "engineering_debug",
           "contract_access": true
         },
@@ -506,7 +506,7 @@
           "id": "model_source",
           "kind": "file",
           "path": "{REMOTE_REPO}/Dehazing/ITS/models/ConvIR.py",
-          "sha256": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd",
+          "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005",
           "access_role": "unrestricted",
           "contract_access": true
         },
@@ -629,7 +629,7 @@
           },
           {
             "id": "observable_entrypoint",
-            "identity": "a680f1a11ce3687bfc7588fc6633f1067513c2f7306206bcf27f66b2915a480e"
+            "identity": "a0504a4513289ac3c6308fd177f5c8e661008556c182a4bbe8a6f608cd022202"
           },
           {
             "id": "official_checkpoint",
@@ -641,7 +641,7 @@
           },
           {
             "id": "model_source",
-            "identity": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+            "identity": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
           },
           {
             "id": "model_layers",
@@ -659,7 +659,7 @@
         "scientific_training_prohibited": true,
         "reuse_identity": {
           "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
-          "code_path_sha256": "a680f1a11ce3687bfc7588fc6633f1067513c2f7306206bcf27f66b2915a480e",
+          "code_path_sha256": "a0504a4513289ac3c6308fd177f5c8e661008556c182a4bbe8a6f608cd022202",
           "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
           "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
           "device_class": "cuda_sm89",
