@@ -48,6 +48,13 @@ def main():
         run(None)
 '''
 
+SCHEMA2_ENGINEERING_COST = SCHEMA2_ENGINEERING.replace(
+    b'"scientific_output_created": False, "scientific_training_occurred": False,',
+    b'"scientific_output_created": False, "scientific_training_occurred": False,\n'
+    b'        "cost": {"observed_iterations": 10, "observed_wall_seconds": 1.0,\n'
+    b'                 "observed_peak_memory_mib": 128.0},',
+)
+
 SCIENTIFIC_SCHEMA2 = SCHEMA2_ENGINEERING.replace(
     b"write_run_result",
     b"write_gate_result",
@@ -66,6 +73,26 @@ class RouteReadyTests(unittest.TestCase):
             SCHEMA2_ENGINEERING, "experience_docx/tools/program.py",
             require_engineering=True,
         )
+
+    def test_schema2_complete_cost_engineering_dict_passes(self):
+        READY.check_entrypoint(
+            SCHEMA2_ENGINEERING_COST, "experience_docx/tools/program.py",
+            require_engineering=True, require_cost_evidence=True,
+        )
+
+    def test_schema2_cost_contract_requires_cost_evidence(self):
+        with self.assertRaisesRegex(READY.ReadyError, "missing=\\['cost'\\]"):
+            READY.check_entrypoint(
+                SCHEMA2_ENGINEERING, "experience_docx/tools/program.py",
+                require_engineering=True, require_cost_evidence=True,
+            )
+
+    def test_schema2_cost_evidence_requires_cost_contract(self):
+        with self.assertRaisesRegex(READY.ReadyError, "unknown=\\['cost'\\]"):
+            READY.check_entrypoint(
+                SCHEMA2_ENGINEERING_COST, "experience_docx/tools/program.py",
+                require_engineering=True,
+            )
 
     def test_scientific_schema2_requires_gate_writer(self):
         READY.check_entrypoint(

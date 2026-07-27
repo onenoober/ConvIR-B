@@ -155,7 +155,11 @@ def _inline_dict_fields(node: ast.AST, assignments: dict[str, list[ast.AST]]) ->
     return set(fields)
 
 
-def _check_engineering_writer(function: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+def _check_engineering_writer(
+    function: ast.FunctionDef | ast.AsyncFunctionDef,
+    *,
+    require_cost_evidence: bool = False,
+) -> None:
     assignments: dict[str, list[ast.AST]] = {}
     for node in ast.walk(function):
         if isinstance(node, ast.Assign):
@@ -189,10 +193,13 @@ def _check_engineering_writer(function: ast.FunctionDef | ast.AsyncFunctionDef) 
                         and isinstance(node.func.value, ast.Name) \
                         and node.func.value.id == name:
                     raise ReadyError("schema-2 engineering evidence cannot be mutated")
+        expected_fields = set(ENGINEERING_EVIDENCE_FIELDS)
+        if require_cost_evidence:
+            expected_fields.add("cost")
         fields = _inline_dict_fields(engineering[0], assignments)
-        if fields != ENGINEERING_EVIDENCE_FIELDS:
-            missing = sorted(ENGINEERING_EVIDENCE_FIELDS - fields)
-            unknown = sorted(fields - ENGINEERING_EVIDENCE_FIELDS)
+        if fields != expected_fields:
+            missing = sorted(expected_fields - fields)
+            unknown = sorted(fields - expected_fields)
             raise ReadyError(
                 f"schema-2 engineering evidence fields differ: missing={missing} unknown={unknown}"
             )
@@ -224,6 +231,7 @@ def _check_context_attributes(
 def check_entrypoint(
     raw: bytes, relpath: str, *, require_engineering: bool = False,
     scientific_schema: int = 1, require_unit_ledger: bool = False,
+    require_cost_evidence: bool = False,
 ) -> None:
     check_python(raw, relpath)
     tree = ast.parse(raw.decode("utf-8"), filename=relpath)
@@ -256,7 +264,9 @@ def check_entrypoint(
         ):
             raise ReadyError(f"entrypoint {phase} must load its exact context phase")
         if phase == "contract" and require_engineering:
-            _check_engineering_writer(function)
+            _check_engineering_writer(
+                function, require_cost_evidence=require_cost_evidence,
+            )
         _check_context_attributes(function)
         if phase == "run" and scientific_schema == 2 \
                 and any(call_name(node) == "write_run_result" for node in calls):
@@ -501,6 +511,9 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                 require_unit_ledger=(
                     contract is not None and contract["schema_version"] == 2
                     and spec["total_units"] > 0
+                ),
+                require_cost_evidence=(
+                    spec["engineering_contract"].get("cost_contract") is not None
                 ),
             )
             engineering = {"state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE"}
