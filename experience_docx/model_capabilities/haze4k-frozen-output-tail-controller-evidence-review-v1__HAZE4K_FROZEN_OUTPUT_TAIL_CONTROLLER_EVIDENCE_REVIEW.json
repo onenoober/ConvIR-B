@@ -6,7 +6,7 @@
     },
     {
       "id": "review_entrypoint",
-      "identity": "e8a443e03e702f86e8ea504df7d1f5c3ad1335dd05bebd51d27a963bff6434c4"
+      "identity": "1b34a8c961da2162f2ed0a0edefde5f573ab6a26264b24031107662effb140e3"
     },
     {
       "id": "current_raw_inventory",
@@ -33,7 +33,7 @@
   "protected_data_prohibited": true,
   "reuse_identity": {
     "checkpoint_sha256": "fdebfc7cdad65d355b551fcca9f4fa4130e468525c35c96557e2f6b67ae0e188",
-    "code_path_sha256": "e8a443e03e702f86e8ea504df7d1f5c3ad1335dd05bebd51d27a963bff6434c4",
+    "code_path_sha256": "1b34a8c961da2162f2ed0a0edefde5f573ab6a26264b24031107662effb140e3",
     "device_class": "cpu",
     "input_contract_sha256": "0ddc63233aff3c65083e9e0c0640816de426d9c133967ca63b94f410546a7852",
     "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",

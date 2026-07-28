@@ -15,7 +15,7 @@
       "id": "review_entrypoint",
       "kind": "file",
       "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_frozen_output_tail_controller_evidence_review.py",
-      "sha256": "e8a443e03e702f86e8ea504df7d1f5c3ad1335dd05bebd51d27a963bff6434c4"
+      "sha256": "1b34a8c961da2162f2ed0a0edefde5f573ab6a26264b24031107662effb140e3"
     },
     {
       "access_role": "engineering_debug",
