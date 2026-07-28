@@ -385,6 +385,43 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             self.assertFalse((repo / COMPILER.MANIFEST_RELPATH).exists())
             self.assertFalse((repo / "experience_docx/route_runtime_specs/ACCEPT.json").exists())
 
+    def test_schema1_is_read_only_and_cannot_write_a_new_bundle(self):
+        program, spec = sources()
+        for action in ("--write", "--finalize"):
+            with self.subTest(action=action), tempfile.TemporaryDirectory() as directory:
+                repo = Path(directory)
+                spec_path = repo / "experience_docx/experiment_specs/final_slim.json"
+                program_path = repo / "experience_docx/research_programs/final_slim.json"
+                spec_path.parent.mkdir(parents=True)
+                program_path.parent.mkdir(parents=True)
+                spec_path.write_bytes(COMPILER.json_bytes(spec))
+                program_path.write_bytes(COMPILER.json_bytes(program))
+                completed = subprocess.run(
+                    [
+                        sys.executable, str(TOOLS / "experiment_spec_compiler.py"),
+                        "--repo", str(repo), "--spec",
+                        "experience_docx/experiment_specs/final_slim.json", action,
+                    ],
+                    text=True, capture_output=True, check=False,
+                )
+                self.assertEqual(2, completed.returncode)
+                report = json.loads(completed.stdout)
+                self.assertIn(
+                    {
+                        "path": "schema_version",
+                        "code": "CURRENT_SCHEMA_REQUIRED",
+                        "message": (
+                            "new experiment authoring requires schema_version 2; "
+                            "schema_version 1 is historical read-only compatibility"
+                        ),
+                    },
+                    report["errors"],
+                )
+                self.assertFalse((repo / COMPILER.MANIFEST_RELPATH).exists())
+                self.assertFalse(
+                    (repo / "experience_docx/route_runtime_specs/ACCEPT.json").exists()
+                )
+
     def test_atomic_bundle_install_restores_prior_files_after_failure(self):
         with tempfile.TemporaryDirectory() as directory:
             repo = Path(directory)

@@ -861,7 +861,9 @@ def compile_from_repo(repo: Path, spec_relpath: str) -> dict[str, bytes]:
     )
 
 
-def lint_from_repo(repo: Path, spec_relpath: str) -> dict[str, Any]:
+def lint_from_repo(
+    repo: Path, spec_relpath: str, *, require_current_schema: bool = False,
+) -> dict[str, Any]:
     repo = repo.resolve(strict=True)
     try:
         spec_relpath = _relpath(spec_relpath, "experiment spec", SPEC_DIRECTORY)
@@ -892,11 +894,33 @@ def lint_from_repo(repo: Path, spec_relpath: str) -> dict[str, Any]:
                 "status": "EXPERIMENT_SPEC_INVALID",
                 "errors": [_lint_error("program_contract_relpath", "READ_FAILED", exc)],
             }
-    return lint_bundle(
+    result = lint_bundle(
         spec_relpath=spec_relpath, spec_raw=spec_raw, program_raw=program_raw,
         evidence_exists=lambda relpath: _repo_file_exists(repo, relpath),
         read_repo_file=lambda relpath: _repo_read_bytes(repo, relpath, "repository evidence"),
     )
+    if require_current_schema and (
+        not isinstance(source, dict) or source.get("schema_version") != 2
+    ):
+        errors = [
+            *result["errors"],
+            _lint_error(
+                "schema_version", "CURRENT_SCHEMA_REQUIRED",
+                "new experiment authoring requires schema_version 2; "
+                "schema_version 1 is historical read-only compatibility",
+            ),
+        ]
+        result = {
+            "status": "EXPERIMENT_SPEC_INVALID",
+            "errors": sorted(
+                {
+                    (item["path"], item["code"], item["message"]): item
+                    for item in errors
+                }.values(),
+                key=lambda item: (item["path"], item["code"], item["message"]),
+            ),
+        }
+    return result
 
 
 def write_bundle_atomic(repo: Path, bundle: dict[str, bytes]) -> None:
@@ -953,7 +977,10 @@ def main() -> None:
     action.add_argument("--lint-all", action="store_true")
     action.add_argument("--finalize", action="store_true")
     args = parser.parse_args()
-    lint = lint_from_repo(args.repo, args.spec)
+    lint = lint_from_repo(
+        args.repo, args.spec,
+        require_current_schema=args.write or args.finalize,
+    )
     if args.lint_all or args.write or args.finalize:
         if lint["errors"]:
             print(json.dumps(lint, sort_keys=True))
