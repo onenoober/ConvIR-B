@@ -1,0 +1,121 @@
+{
+  "intervals": {
+    "gt_gt": {
+      "estimate": 1.649833357282101,
+      "family_size": 6,
+      "lower": 1.5093232005729302,
+      "max_half_width": 0.14848316724706012,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20262030,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.004166666666666667,
+      "upper": 1.798316524529161
+    },
+    "gt_utility_observable_risk": {
+      "estimate": 0.001327463431916279,
+      "family_size": 6,
+      "lower": 0.0002406102815276503,
+      "max_half_width": 0.001573548154440048,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20262029,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.004166666666666667,
+      "upper": 0.002901011586356327
+    },
+    "observable_utility_gt_risk": {
+      "estimate": 0.02407710043926684,
+      "family_size": 6,
+      "lower": 0.01899028281110993,
+      "max_half_width": 0.005948355249319595,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20262028,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.004166666666666667,
+      "upper": 0.030025455688586434
+    },
+    "parent_p11": {
+      "estimate": 0.0,
+      "family_size": 6,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20262026,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.004166666666666667,
+      "upper": 0.0
+    },
+    "raw_p00": {
+      "estimate": 0.007565438474094259,
+      "family_size": 6,
+      "lower": -0.0033504059930229723,
+      "max_half_width": 0.013766544734502765,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20262027,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.004166666666666667,
+      "upper": 0.021331983208597024
+    },
+    "selected": {
+      "estimate": 0.0003163438901473492,
+      "family_size": 6,
+      "lower": -0.002634324459855468,
+      "max_half_width": 0.002950668350002817,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20262031,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.004166666666666667,
+      "upper": 0.0024553135966561015
+    }
+  },
+  "oracle": {
+    "gain": {
+      "estimate": 1.649833357282101,
+      "family_size": 2,
+      "lower": 1.5293755943873075,
+      "max_half_width": 0.12569825854625516,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20261931,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.0125,
+      "upper": 1.775531615828356
+    },
+    "material_scene": {
+      "critical_value": 2.2414027276049464,
+      "estimate": 0.985,
+      "family_size": 2,
+      "lower": 0.9691869621129605,
+      "successes": 591,
+      "total": 600,
+      "upper": 0.9927585301015622
+    }
+  },
+  "schema_version": 1,
+  "selected_candidate": {
+    "action_area_estimate": 4.266666666666665e-05,
+    "action_area_lower": 0.0,
+    "actionable": false,
+    "active_scene_lower": 0.00039015296878931044,
+    "area_cap": 0.01,
+    "candidate_id": "R0_L1__weighted_q__raw__setwise__cap_0p01",
+    "cell": "R0_L1",
+    "coverage_admissible": false,
+    "gain_estimate": 2.685643865832224e-05,
+    "gain_lower": -7.768291521450071e-05,
+    "gain_upper": 0.0001313957925311452,
+    "material_scene_lower": 0.0,
+    "risk_margin_upper": 1.2341439203164593e-05,
+    "risk_method": "weighted_q",
+    "safety_admissible": true,
+    "selected_harm_estimate": 0.0,
+    "selected_harm_upper": 0.0,
+    "selector": "setwise",
+    "utility_method": "raw"
+  }
+}

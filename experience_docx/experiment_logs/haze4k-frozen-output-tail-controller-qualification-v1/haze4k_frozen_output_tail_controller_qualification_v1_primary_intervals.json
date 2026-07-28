@@ -1,0 +1,111 @@
+{
+  "action_area": {
+    "estimate": 0.00013000496546743104,
+    "family_size": 2,
+    "lower": 5.1411521689235715e-05,
+    "resamples": 100000,
+    "selected_area_positive": true,
+    "stratified_by": "fold",
+    "upper": 0.0002271998534194494
+  },
+  "active_scene": {
+    "critical_value": 2.2414027276049464,
+    "estimate": 0.023333333333333334,
+    "family_size": 2,
+    "lower": 0.012977187527074718,
+    "successes": 14,
+    "total": 600,
+    "upper": 0.04160559332050776
+  },
+  "comparison_family_size": 4,
+  "intervals": {
+    "candidate_minus_keep_psnr_db": {
+      "estimate": 0.0003163438901473492,
+      "family_size": 4,
+      "lower": -0.0024312978359416646,
+      "max_half_width": 0.002747641726089014,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20261926,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.002360873699664764
+    },
+    "candidate_minus_permuted_psnr_db": {
+      "estimate": 0.0011435942975440703,
+      "family_size": 4,
+      "lower": -0.0001928349446745362,
+      "max_half_width": 0.0017332960832971216,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20261926,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.002876890380841192
+    },
+    "candidate_minus_shuffled_psnr_db": {
+      "estimate": -6.404154499386746e-05,
+      "family_size": 4,
+      "lower": -0.002437433927151024,
+      "max_half_width": 0.0023733923821571564,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20261926,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.001697510349576903
+    },
+    "candidate_minus_uniform_psnr_db": {
+      "estimate": 0.0003163438901473492,
+      "family_size": 4,
+      "lower": -0.0024312978359416646,
+      "max_half_width": 0.002747641726089014,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20261926,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.002360873699664764
+    }
+  },
+  "material_scene": {
+    "critical_value": 2.4977054744123737,
+    "estimate": 0.008333333333333333,
+    "family_size": 4,
+    "lower": 0.0028743590322829957,
+    "successes": 5,
+    "total": 600,
+    "upper": 0.02391135609914891
+  },
+  "schema_version": 1,
+  "selected_candidate": {
+    "action_area_estimate": 4.266666666666665e-05,
+    "action_area_lower": 0.0,
+    "actionable": false,
+    "active_scene_lower": 0.00039015296878931044,
+    "area_cap": 0.01,
+    "candidate_id": "R0_L1__weighted_q__raw__setwise__cap_0p01",
+    "cell": "R0_L1",
+    "coverage_admissible": false,
+    "gain_estimate": 2.685643865832224e-05,
+    "gain_lower": -7.768291521450071e-05,
+    "gain_upper": 0.0001313957925311452,
+    "material_scene_lower": 0.0,
+    "risk_margin_upper": 1.2341439203164593e-05,
+    "risk_method": "weighted_q",
+    "safety_admissible": true,
+    "selected_harm_estimate": 0.0,
+    "selected_harm_upper": 0.0,
+    "selector": "setwise",
+    "utility_method": "raw"
+  },
+  "selected_harm": {
+    "estimate": 0.3888888888888889,
+    "family_size": 8,
+    "lower": 0.0,
+    "resamples": 100000,
+    "selected_area_positive": true,
+    "stratified_by": "fold",
+    "upper": 0.8
+  }
+}

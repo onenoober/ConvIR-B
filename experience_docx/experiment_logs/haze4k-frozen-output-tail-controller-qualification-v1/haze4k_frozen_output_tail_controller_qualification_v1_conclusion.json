@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k-frozen-output-tail-controller-qualification-v1",
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFY",
+  "run_id": "haze4k-frozen-output-tail-controller-qualification-v1-r1",
+  "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFICATION_INCONCLUSIVE",
+  "authorizes": "FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_ONLY",
+  "primary_result": "All 748 planned units completed, but the frozen R0_L1 weighted-q/raw/setwise controller was not qualified. Candidate-minus-keep PSNR was +0.000316 dB with multiplicity-adjusted interval [-0.002431, +0.002361] dB. It activated on 14/600 OOF scenes (2.33%) and 0.0130% of image area, while the frozen selected candidate was non-actionable and coverage-inadmissible. The terminal is inconclusive because the recomputed raw predictions also failed the predeclared <=1e-6 reconstruction identity tolerance.",
+  "gate_reasons": [
+    "Coverage and selection integrity passed: the 150-scene calibration selection was hash-frozen before parsing the 600 formal OOF outcome arrays, all 748 ledger units completed, and the 100-scene nested test-development stress was complete.",
+    "Parent inventory identity passed for all 10,285 files and 5,225,583,075 bytes, including class-level inventories and checkpoint inventory.",
+    "Evidence identity failed solely because raw_prediction_reconstruction was false; parent action reconstruction and every other declared identity check passed.",
+    "Actionable utility was unfavorable and declared futile: candidate-minus-keep was +0.000316 dB with interval [-0.002431, +0.002361] dB, and comparisons against permuted, shuffled, and uniform controls did not establish a robust advantage.",
+    "Activation was unfavorable: the formal OOF controller acted on 14/600 scenes and an estimated 0.000130 image-area fraction; the frozen selected candidate had zero lower confidence bounds for action area and material-scene coverage.",
+    "Selected-area safety was indeterminate: selected-action harm was estimated at 0.388889 with interval [0, 0.8] in OOF evidence, despite only 1/600 image-level PSNR harms and no image-level color or SSIM harms.",
+    "Precision was sufficient for the null result: the maximum simultaneous half-width was 0.002748 dB against the predeclared 0.025 dB target, so collecting more samples solely to narrow this interval is not the primary remedy.",
+    "The 100-scene test-development stress corroborated weak activation and negligible utility: 2/100 active scenes, +0.000208 dB gain with interval [-0.000173, +0.000588] dB, and zero selected-action harm.",
+    "Mechanism controls remained favorable: GT-risk with observable utility gained +0.024077 dB with interval [+0.018990, +0.030025] dB, while the GT/GT oracle gained +1.649833 dB with interval [+1.529376, +1.775532] dB and was material on 591/600 scenes.",
+    "No confirmation, canary, locked-test, or cross-domain data were touched, and the CUDA production-path capability qualification passed."
+  ],
+  "competing_explanation": "The controls show that useful tail headroom exists, but the deployable observable risk signal and its conservative setwise coverage rule suppress nearly all actions. This makes risk localization/calibration and coverage the leading scientific bottleneck, rather than insufficient statistical precision or absence of oracle opportunity. However, the compact evidence does not report the magnitude or location of the failed raw-prediction reconstruction check, so numerical nondeterminism near 1e-6 cannot yet be distinguished from a material prediction-identity mismatch. That identity uncertainty vetoes qualification even though the selected controller independently failed utility and activation gates.",
+  "limitations": [
+    "All outcomes are development-screening evidence; confirmation, canary, locked-test, NH-Haze, ITS, and OTS were not read.",
+    "The 600 OOF original-clear scenes are the only formal independent units; tiles, actions, folds, seeds, and variants do not increase n.",
+    "The OOF population has been adaptively reused across prior routes, so this route cannot provide confirmation evidence.",
+    "The selected-action harm interval is weakly identified because the controller acted on a very small image area and few scenes.",
+    "The compact terminal evidence records only raw_prediction_reconstruction=false, not the maximum absolute discrepancy, affected utility/risk channel, cell, fold, scene, seed, dtype, or repeatability.",
+    "Raw predictions, arrays, feature tables, and action maps remain cloud-only and are intentionally excluded from GitHub."
+  ],
+  "required_evidence_review": [
+    "Recover the already-computed maximum absolute reconstruction discrepancy separately for utility and risk without relaunching or changing the scientific contract.",
+    "Identify the maximizing cell, fold, scene, seed or ensemble, tensor dtype, device path, and parent-file SHA-256, then determine whether the mismatch is bounded numerical nondeterminism or a material asset/code-path identity violation.",
+    "Do not interpret an identity-only correction as a scientific retry or as evidence that the frozen controller is useful; utility and activation remain independently unfavorable."
+  ]
+}

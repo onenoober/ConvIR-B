@@ -1,0 +1,586 @@
+{
+  "image_safety": {
+    "color_harm": {
+      "critical_value": 2.734368786533176,
+      "estimate": 0.0,
+      "family_size": 8,
+      "lower": 0.0,
+      "successes": 0,
+      "total": 100,
+      "upper": 0.0695664046813737
+    },
+    "psnr_harm": {
+      "critical_value": 2.734368786533176,
+      "estimate": 0.0,
+      "family_size": 8,
+      "lower": 0.0,
+      "successes": 0,
+      "total": 100,
+      "upper": 0.0695664046813737
+    },
+    "ssim_harm": {
+      "critical_value": 2.734368786533176,
+      "estimate": 0.0,
+      "family_size": 8,
+      "lower": 0.0,
+      "successes": 0,
+      "total": 100,
+      "upper": 0.0695664046813737
+    }
+  },
+  "per_cell": {
+    "R0_L0": {
+      "action_area": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 2.263083451202263e-05,
+        "family_size": 1,
+        "lower": 0.0,
+        "selected_area_positive": true,
+        "upper": 5.405524036133321e-05
+      },
+      "active_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.02,
+        "family_size": 1,
+        "lower": 0.005501967550162357,
+        "successes": 2,
+        "total": 100,
+        "upper": 0.07001179072854387
+      },
+      "gain": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.00012836237966676206,
+        "family_size": 1,
+        "lower": -5.0302977452741014e-05,
+        "max_half_width": 0.00017866535711950308,
+        "scene_count": 100,
+        "upper": 0.0003070277367862651
+      },
+      "material_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.03699349820698566
+      },
+      "risk_margin": {
+        "critical_value": 1.9599639845400536,
+        "estimate": -3.2000000000000003e-06,
+        "family_size": 1,
+        "lower": -7.612436943059882e-06,
+        "max_half_width": 4.412436943059882e-06,
+        "scene_count": 100,
+        "upper": 1.2124369430598817e-06
+      },
+      "scene_count": 100,
+      "selected_harm": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "selected_area_positive": true,
+        "upper": 0.0
+      }
+    },
+    "R0_L1": {
+      "action_area": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 3.9603960396039605e-05,
+        "family_size": 1,
+        "lower": 0.0,
+        "selected_area_positive": true,
+        "upper": 9.946316705270169e-05
+      },
+      "active_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.02,
+        "family_size": 1,
+        "lower": 0.005501967550162357,
+        "successes": 2,
+        "total": 100,
+        "upper": 0.07001179072854387
+      },
+      "gain": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.00020750904196142555,
+        "family_size": 1,
+        "lower": -9.121900134940355e-05,
+        "max_half_width": 0.0002987280433108291,
+        "scene_count": 100,
+        "upper": 0.0005062370852722546
+      },
+      "material_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.03699349820698566
+      },
+      "risk_margin": {
+        "critical_value": 1.9599639845400536,
+        "estimate": -5.600000000000001e-06,
+        "family_size": 1,
+        "lower": -1.4014321258925002e-05,
+        "max_half_width": 8.414321258925001e-06,
+        "scene_count": 100,
+        "upper": 2.8143212589250008e-06
+      },
+      "scene_count": 100,
+      "selected_harm": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "selected_area_positive": true,
+        "upper": 0.0
+      }
+    },
+    "R0_L2": {
+      "action_area": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.00039603960396039607,
+        "family_size": 1,
+        "lower": 0.00016945199717388433,
+        "selected_area_positive": true,
+        "upper": 0.0006226272107469078
+      },
+      "active_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.13,
+        "family_size": 1,
+        "lower": 0.0775716742724051,
+        "successes": 13,
+        "total": 100,
+        "upper": 0.20980351440076425
+      },
+      "gain": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.003055197110002775,
+        "family_size": 1,
+        "lower": 0.0001998791922145633,
+        "max_half_width": 0.0028553179177882118,
+        "scene_count": 100,
+        "upper": 0.005910515027790986
+      },
+      "material_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.02,
+        "family_size": 1,
+        "lower": 0.005501967550162357,
+        "successes": 2,
+        "total": 100,
+        "upper": 0.07001179072854387
+      },
+      "risk_margin": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 1.829999999999999e-05,
+        "family_size": 1,
+        "lower": -7.46968201603884e-05,
+        "max_half_width": 9.29968201603884e-05,
+        "scene_count": 100,
+        "upper": 0.0001112968201603884
+      },
+      "scene_count": 100,
+      "selected_harm": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.12857142857142856,
+        "family_size": 1,
+        "lower": 0.0,
+        "selected_area_positive": true,
+        "upper": 0.2951957560653101
+      }
+    },
+    "R1_L0": {
+      "action_area": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "selected_area_positive": true,
+        "upper": 0.0
+      },
+      "active_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.03699349820698566
+      },
+      "gain": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "max_half_width": 0.0,
+        "scene_count": 100,
+        "upper": 0.0
+      },
+      "material_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.03699349820698566
+      },
+      "risk_margin": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "max_half_width": 0.0,
+        "scene_count": 100,
+        "upper": 0.0
+      },
+      "scene_count": 100,
+      "selected_harm": {
+        "estimate": null,
+        "family_size": 1,
+        "lower": null,
+        "selected_area_positive": false,
+        "upper": null
+      }
+    },
+    "R1_L1": {
+      "action_area": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0001867043847241867,
+        "family_size": 1,
+        "lower": 2.534449612993719e-05,
+        "selected_area_positive": true,
+        "upper": 0.00034806427331843617
+      },
+      "active_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.06,
+        "family_size": 1,
+        "lower": 0.027786123963188185,
+        "successes": 6,
+        "total": 100,
+        "upper": 0.12476815445895917
+      },
+      "gain": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0012839452943720978,
+        "family_size": 1,
+        "lower": 0.00024902858976175906,
+        "max_half_width": 0.0010349167046103387,
+        "scene_count": 100,
+        "upper": 0.0023188619989824365
+      },
+      "material_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.03699349820698566
+      },
+      "risk_margin": {
+        "critical_value": 1.9599639845400536,
+        "estimate": -1.0400000000000004e-05,
+        "family_size": 1,
+        "lower": -4.07660850128181e-05,
+        "max_half_width": 3.036608501281809e-05,
+        "scene_count": 100,
+        "upper": 1.9966085012818086e-05
+      },
+      "scene_count": 100,
+      "selected_harm": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.06060606060606061,
+        "family_size": 1,
+        "lower": 0.0,
+        "selected_area_positive": true,
+        "upper": 0.1694982446388664
+      }
+    },
+    "R1_L2": {
+      "action_area": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0029363507779349364,
+        "family_size": 1,
+        "lower": 0.0,
+        "selected_area_positive": true,
+        "upper": 0.006600385751291306
+      },
+      "active_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.07,
+        "family_size": 1,
+        "lower": 0.03431926106727268,
+        "successes": 7,
+        "total": 100,
+        "upper": 0.13749514739073498
+      },
+      "gain": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.01692181841600126,
+        "family_size": 1,
+        "lower": -0.004233075859926626,
+        "max_half_width": 0.021154894275927885,
+        "scene_count": 100,
+        "upper": 0.038076712691929145
+      },
+      "material_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.03,
+        "family_size": 1,
+        "lower": 0.010254524024038925,
+        "successes": 3,
+        "total": 100,
+        "upper": 0.08451936429052759
+      },
+      "risk_margin": {
+        "critical_value": 1.9599639845400536,
+        "estimate": -0.00018966666666666662,
+        "family_size": 1,
+        "lower": -0.0007740049447414169,
+        "max_half_width": 0.0005843382780747503,
+        "scene_count": 100,
+        "upper": 0.00039467161140808364
+      },
+      "scene_count": 100,
+      "selected_harm": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.05394990366088632,
+        "family_size": 1,
+        "lower": 0.0,
+        "selected_area_positive": true,
+        "upper": 0.15106627883058393
+      }
+    },
+    "R2_L0": {
+      "action_area": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "selected_area_positive": true,
+        "upper": 0.0
+      },
+      "active_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.03699349820698566
+      },
+      "gain": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "max_half_width": 0.0,
+        "scene_count": 100,
+        "upper": 0.0
+      },
+      "material_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.03699349820698566
+      },
+      "risk_margin": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "max_half_width": 0.0,
+        "scene_count": 100,
+        "upper": 0.0
+      },
+      "scene_count": 100,
+      "selected_harm": {
+        "estimate": null,
+        "family_size": 1,
+        "lower": null,
+        "selected_area_positive": false,
+        "upper": null
+      }
+    },
+    "R2_L1": {
+      "action_area": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 6.78925035360679e-05,
+        "family_size": 1,
+        "lower": 0.0,
+        "selected_area_positive": true,
+        "upper": 0.0001379842399374971
+      },
+      "active_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.04,
+        "family_size": 1,
+        "lower": 0.01566330399154762,
+        "successes": 4,
+        "total": 100,
+        "upper": 0.09837071435887917
+      },
+      "gain": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0005183130861036565,
+        "family_size": 1,
+        "lower": -0.00022990119659497643,
+        "max_half_width": 0.0007482142826986329,
+        "scene_count": 100,
+        "upper": 0.0012665273688022894
+      },
+      "material_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0,
+        "family_size": 1,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.03699349820698566
+      },
+      "risk_margin": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 6.4000000000000006e-06,
+        "family_size": 1,
+        "lower": -2.3473447734576513e-05,
+        "max_half_width": 2.9873447734576513e-05,
+        "scene_count": 100,
+        "upper": 3.6273447734576516e-05
+      },
+      "scene_count": 100,
+      "selected_harm": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.16666666666666666,
+        "family_size": 1,
+        "lower": 0.0,
+        "selected_area_positive": true,
+        "upper": 0.48572305994568976
+      }
+    },
+    "R2_L2": {
+      "action_area": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.00033946251768033947,
+        "family_size": 1,
+        "lower": 0.00015004980816225847,
+        "selected_area_positive": true,
+        "upper": 0.0005288752271984205
+      },
+      "active_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.17,
+        "family_size": 1,
+        "lower": 0.1089356611405993,
+        "successes": 17,
+        "total": 100,
+        "upper": 0.2554800476760112
+      },
+      "gain": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.0030416784031654675,
+        "family_size": 1,
+        "lower": -0.00012969840229150797,
+        "max_half_width": 0.0031713768054569755,
+        "scene_count": 100,
+        "upper": 0.0062130552086224426
+      },
+      "material_scene": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.02,
+        "family_size": 1,
+        "lower": 0.005501967550162357,
+        "successes": 2,
+        "total": 100,
+        "upper": 0.07001179072854387
+      },
+      "risk_margin": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 3.2e-05,
+        "family_size": 1,
+        "lower": -2.9114519117117334e-05,
+        "max_half_width": 6.111451911711733e-05,
+        "scene_count": 100,
+        "upper": 9.311451911711734e-05
+      },
+      "scene_count": 100,
+      "selected_harm": {
+        "critical_value": 1.9599639845400536,
+        "estimate": 0.16666666666666666,
+        "family_size": 1,
+        "lower": 0.03810913306571351,
+        "selected_area_positive": true,
+        "upper": 0.2952242002676198
+      }
+    }
+  },
+  "schema_version": 1,
+  "selected_candidate": {
+    "action_area_estimate": 4.266666666666665e-05,
+    "action_area_lower": 0.0,
+    "actionable": false,
+    "active_scene_lower": 0.00039015296878931044,
+    "area_cap": 0.01,
+    "candidate_id": "R0_L1__weighted_q__raw__setwise__cap_0p01",
+    "cell": "R0_L1",
+    "coverage_admissible": false,
+    "gain_estimate": 2.685643865832224e-05,
+    "gain_lower": -7.768291521450071e-05,
+    "gain_upper": 0.0001313957925311452,
+    "material_scene_lower": 0.0,
+    "risk_margin_upper": 1.2341439203164593e-05,
+    "risk_method": "weighted_q",
+    "safety_admissible": true,
+    "selected_harm_estimate": 0.0,
+    "selected_harm_upper": 0.0,
+    "selector": "setwise",
+    "utility_method": "raw"
+  },
+  "selected_controller": {
+    "action_area": {
+      "estimate": 3.9603960396039605e-05,
+      "family_size": 2,
+      "lower": 0.0,
+      "resamples": 100000,
+      "selected_area_positive": true,
+      "stratified_by": "fold",
+      "upper": 0.00012366498032602587
+    },
+    "active_scene": {
+      "critical_value": 2.2414027276049464,
+      "estimate": 0.02,
+      "family_size": 2,
+      "lower": 0.004688518418034297,
+      "successes": 2,
+      "total": 100,
+      "upper": 0.08123370856202985
+    },
+    "gain": {
+      "critical_value": 2.4977054744123737,
+      "estimate": 0.00020750904196142555,
+      "family_size": 4,
+      "lower": -0.00017317890691078322,
+      "max_half_width": 0.0003806879488722088,
+      "scene_count": 100,
+      "upper": 0.0005881969908336344
+    },
+    "selected_harm": {
+      "estimate": 0.0,
+      "family_size": 8,
+      "lower": 0.0,
+      "resamples": 100000,
+      "selected_area_positive": true,
+      "stratified_by": "fold",
+      "upper": 0.0
+    }
+  }
+}

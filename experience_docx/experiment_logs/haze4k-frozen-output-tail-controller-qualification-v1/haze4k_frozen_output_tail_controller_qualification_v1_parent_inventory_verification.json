@@ -1,0 +1,47 @@
+{
+  "checks": {
+    "checkpoint_inventory": true,
+    "class_inventory": true,
+    "expected_inventory_file_identity": true,
+    "file_count": true,
+    "overall_inventory_identity": true,
+    "total_bytes": true
+  },
+  "matched": true,
+  "observed": {
+    "classes": {
+      "head_checkpoint": {
+        "file_count": 135,
+        "inventory_sha256": "1574e9dcff515919e3e791bcd673662b0ca2ee517bb29e61cdb27eac5695af17",
+        "total_bytes": 93663978
+      },
+      "oof_cell_prediction": {
+        "file_count": 5400,
+        "inventory_sha256": "fc14236509d00992ae1b354eb73debf4b1f62cdb1e1aaf3c9d964bc55f045b78",
+        "total_bytes": 49041477
+      },
+      "scene_cache": {
+        "file_count": 750,
+        "inventory_sha256": "7d498d790b0f4d26fa87a901485423ba97a2d498bc96c6e4f21fef6a09284382",
+        "total_bytes": 3341602500
+      },
+      "test_cell_prediction": {
+        "file_count": 3600,
+        "inventory_sha256": "6cdfd0dd7db6c0ff37b5892d70a27d20485857645ed1e1a4716f19eebcfa6e52",
+        "total_bytes": 15045120
+      },
+      "test_scene_cache": {
+        "file_count": 400,
+        "inventory_sha256": "af72b61f572ee20c38cd72eeaf2df17ea2169f3a25898e7f8f2d900784fa8c54",
+        "total_bytes": 1726230000
+      }
+    },
+    "file_count": 10285,
+    "inventory_sha256": "f70b492d5b6cf16fc8a2dbc43a1e049556a8f4c6365726bc7eec9102b3e2cd28",
+    "total_bytes": 5225583075
+  },
+  "parent_receipt": "ce6d9f96bab31b3c46ea5d7024e259e8d016cc4362be30b65d94f57f8d61ecaa",
+  "parent_route_commit": "b4ce59309a12b68e79dbfc8534a1b106e162110a",
+  "parent_route_id": "haze4k-observable-tail-factorial-v1",
+  "schema_version": 1
+}

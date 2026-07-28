@@ -1,0 +1,169 @@
+{
+  "authorizes": "FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_ONLY",
+  "canary_touched": false,
+  "capability_qualification": {
+    "evidence_filename": "haze4k_frozen_output_tail_controller_qualification_v1_capability_qualification.json",
+    "identity_sha256": "3b3012e952c0ecad02c8acab82c2ff3fe1ee41f48d14a23e51c8cb5cd55ec4d6",
+    "qualification_id": "cap_3b3012e952c0ecad02c8acab",
+    "scientific_authorization": "NONE",
+    "status": "PASSED_ENGINEERING"
+  },
+  "capability_reuse": {
+    "engineering_reuse_authorized": false,
+    "identity_sha256": "3b3012e952c0ecad02c8acab82c2ff3fe1ee41f48d14a23e51c8cb5cd55ec4d6",
+    "scientific_authorization": "NONE",
+    "status": "CAPABILITY_REUSE_MISS"
+  },
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFICATION_INCONCLUSIVE",
+  "decision_rule_id": "identity_veto",
+  "details": {
+    "bootstrap_resamples": 100000,
+    "calibration_controller_scenes": 150,
+    "calibration_tail_file": "haze4k_frozen_output_tail_controller_calibration_tail.csv",
+    "candidate_confirmation_touched": false,
+    "completed_unit_ledger_count": 748,
+    "controller_effects_file": "haze4k_frozen_output_tail_controller_effects.csv",
+    "controls_file": "haze4k_frozen_output_tail_controller_controls.json",
+    "factorial_cells": 9,
+    "fold_seed_tail_file": "haze4k_frozen_output_tail_controller_fold_seed_tail.csv",
+    "folds": 5,
+    "formal_family_size": 4,
+    "gate_summary_file": "haze4k_frozen_output_tail_controller_gate_summary.json",
+    "independent_oof_scenes": 600,
+    "paired_seeds": 3,
+    "parent_inventory_verification_file": "parent_inventory_verification.json",
+    "primary_estimate_db": 0.0003163438901473492,
+    "primary_intervals_file": "haze4k_frozen_output_tail_controller_primary_intervals.json",
+    "raw_inventory_file": "haze4k_frozen_output_tail_controller_raw_inventory.json",
+    "risk_coverage_frontier_file": "haze4k_frozen_output_tail_controller_risk_coverage_frontier.csv",
+    "selected_area_cap": 0.01,
+    "selected_candidate_id": "R0_L1__weighted_q__raw__setwise__cap_0p01",
+    "selected_cell": "R0_L1",
+    "selected_risk_method": "weighted_q",
+    "selected_selector": "setwise",
+    "selected_utility_method": "raw",
+    "selection_file": "haze4k_frozen_output_tail_controller_selection_freeze.json",
+    "selection_freeze_sha256": "06420d49c3e1a4000ede155d7e8d441f9c7b98414152d16644fb6f50e1b906e9",
+    "summary_file": "haze4k_frozen_output_tail_controller_summary.json",
+    "test_development_stress_scenes": 100,
+    "test_stress_file": "haze4k_frozen_output_tail_controller_test_stress.json"
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "haze4k_frozen_output_tail_controller_qualification_v1_calibration_tail.csv": "187e8032bc85592a81ad4070eee097a010ffda54de23e0f4d0967356c191c62a",
+    "haze4k_frozen_output_tail_controller_qualification_v1_candidate_table.csv": "76695d645e676cd2e806e07a9884bf7c2d4a35a101404f113fb4216a08e29ba7",
+    "haze4k_frozen_output_tail_controller_qualification_v1_capability_qualification.json": "ad4566ebd76ead2ad221579c6d8d947434a68b826fd782d4f22180736ed05a7f",
+    "haze4k_frozen_output_tail_controller_qualification_v1_controls.json": "380ea9cc1de4394ddb9c667592c48972ea49e169aac33d1e83f174411e3b870e",
+    "haze4k_frozen_output_tail_controller_qualification_v1_effects.csv": "3fd86714cd5f9e4f107a4350b7875ef710bf2be465d01b74f382a6c8b4c90b25",
+    "haze4k_frozen_output_tail_controller_qualification_v1_fold_seed_tail.csv": "55a938a05104fec5ba06b82e4251d5886584ad3d6c33ca57e6fb6e5e715b873e",
+    "haze4k_frozen_output_tail_controller_qualification_v1_gate_summary.json": "ef5af047fe7e795b58db742de8ec127fa431c3d25345d6902d4dba4a61f3d199",
+    "haze4k_frozen_output_tail_controller_qualification_v1_parent_inventory_verification.json": "a1a11a4e3001820bb1fac4cb14164d9b4c3d83a73ffe30ffcda98e93000e797b",
+    "haze4k_frozen_output_tail_controller_qualification_v1_primary_intervals.json": "2d92b9d895693b305d771aa73e377411b6a82ed623916fbab64cf670b4c3f47d",
+    "haze4k_frozen_output_tail_controller_qualification_v1_raw_inventory.json": "fdebfc7cdad65d355b551fcca9f4fa4130e468525c35c96557e2f6b67ae0e188",
+    "haze4k_frozen_output_tail_controller_qualification_v1_risk_coverage_frontier.csv": "95b74960a27ddb938bbbba459001f4ad209578130ec6011e54ee7b8af01a1abd",
+    "haze4k_frozen_output_tail_controller_qualification_v1_selected_calibration_scenes.csv": "aa59b7aa62c9d1d6752888461aa48db63a38babbd9f250faf30c9914ef3c4733",
+    "haze4k_frozen_output_tail_controller_qualification_v1_selection_freeze.json": "06420d49c3e1a4000ede155d7e8d441f9c7b98414152d16644fb6f50e1b906e9",
+    "haze4k_frozen_output_tail_controller_qualification_v1_summary.json": "4b1232bf30ac9dd1a623b12fdde61d5e1d035a1959eb052114ab10ab21669024",
+    "haze4k_frozen_output_tail_controller_qualification_v1_test_stress.json": "45f6b5d4c5c410b4560af64e8ded79725297b0a848860906dc13ce664ae8fb08"
+  },
+  "failure_phase": null,
+  "family_effect": "allow_predeclared_evidence",
+  "gate_outcomes": {
+    "coverage_and_selection_integrity": "pass",
+    "evidence_identity": "fail",
+    "low_risk_tail_mechanism_diagnostic": "favorable",
+    "oracle_headroom_control": "favorable",
+    "precision": "met",
+    "selected_area_and_image_safety": "indeterminate",
+    "selected_controller_actionable_utility": "unfavorable",
+    "selected_controller_activation": "unfavorable"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "review_frozen_output_tail_controller_evidence",
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFY",
+  "returncode": 0,
+  "route_commit": "4ab3443359e352a2e1ad3590cc6f4b326e899f07",
+  "route_id": "haze4k-frozen-output-tail-controller-qualification-v1",
+  "run_id": "haze4k-frozen-output-tail-controller-qualification-v1-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_INCONCLUSIVE",
+  "terminal_label": "inconclusive",
+  "verified_assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "controller_entrypoint",
+      "kind": "file",
+      "sha256": "b892caa106d3a5e8052e09076a69a3e29bb844fc47af7c040a5373169133bd96"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_test_development",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory"
+    },
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_closeout",
+      "kind": "file",
+      "sha256": "de8771b362d8ead69cc536a8d4e490b464310821f80dcf99344abf9c8483c167"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_conclusion",
+      "kind": "file",
+      "sha256": "33535b0db4579b8f86083c06e18dd0493888cce3d4c605e081d3dfa0069a1169"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_raw_inventory",
+      "kind": "file",
+      "sha256": "9a5249f66c994f9c94245145cc65e02da643ada71cc047cd5144db475b3c66ff"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "parent_raw_workspace",
+      "kind": "directory"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "test_split_summary",
+      "kind": "file",
+      "sha256": "656407f3183f92e75e357004b04b505d2b92cd4b0f4b02b3c6a22aef57d069cf"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "train_split_summary",
+      "kind": "file",
+      "sha256": "a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9"
+    }
+  ]
+}

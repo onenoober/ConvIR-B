@@ -1,0 +1,39 @@
+{
+  "classes": {
+    "calibration_prediction": {
+      "file_count": 45,
+      "inventory_sha256": "0b726b5f9d2abd1a6ff1cbe231591ae492b6b0e651c157d18f49cfa58bfc9d30",
+      "total_bytes": 85823910
+    },
+    "oof_controller_scene": {
+      "file_count": 600,
+      "inventory_sha256": "d01aeee4098777b908f299f35f71bf7b04f8dd328651656f8ad34383a9e50a7f",
+      "total_bytes": 96926085
+    },
+    "test_controller_scene": {
+      "file_count": 100,
+      "inventory_sha256": "d9696582f43e8f4f5fe7e58eccd2f4429f99ef2d9744b348f92d81083bb966bd",
+      "total_bytes": 870320
+    }
+  },
+  "file_count": 745,
+  "github_exclusions": [
+    "datasets",
+    "weights",
+    "checkpoints",
+    "images",
+    "arrays",
+    "raw_predictions",
+    "feature_tables",
+    "action_maps"
+  ],
+  "head_checkpoints": [],
+  "inventory_sha256": "6851661520aef8367dafa34633f63d6620e41fbc06ddffe839d85f21171f8602",
+  "raw_retention_scope": "cloud_only",
+  "schema_version": 1,
+  "total_bytes": 183620315,
+  "upstream_parent_file_count": 10285,
+  "upstream_parent_inventory_sha256": "f70b492d5b6cf16fc8a2dbc43a1e049556a8f4c6365726bc7eec9102b3e2cd28",
+  "upstream_parent_receipt": "ce6d9f96bab31b3c46ea5d7024e259e8d016cc4362be30b65d94f57f8d61ecaa",
+  "upstream_parent_total_bytes": 5225583075
+}

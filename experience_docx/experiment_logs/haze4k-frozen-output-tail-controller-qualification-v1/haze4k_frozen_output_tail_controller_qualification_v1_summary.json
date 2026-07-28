@@ -1,0 +1,655 @@
+{
+  "action_area": {
+    "estimate": 0.00013000496546743104,
+    "family_size": 2,
+    "lower": 5.1411521689235715e-05,
+    "resamples": 100000,
+    "selected_area_positive": true,
+    "stratified_by": "fold",
+    "upper": 0.0002271998534194494
+  },
+  "active_scene": {
+    "critical_value": 2.2414027276049464,
+    "estimate": 0.023333333333333334,
+    "family_size": 2,
+    "lower": 0.012977187527074718,
+    "successes": 14,
+    "total": 600,
+    "upper": 0.04160559332050776
+  },
+  "controls": {
+    "gt_gt": {
+      "estimate": 1.649833357282101,
+      "family_size": 6,
+      "lower": 1.5093232005729302,
+      "max_half_width": 0.14848316724706012,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20262030,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.004166666666666667,
+      "upper": 1.798316524529161
+    },
+    "gt_utility_observable_risk": {
+      "estimate": 0.001327463431916279,
+      "family_size": 6,
+      "lower": 0.0002406102815276503,
+      "max_half_width": 0.001573548154440048,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20262029,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.004166666666666667,
+      "upper": 0.002901011586356327
+    },
+    "observable_utility_gt_risk": {
+      "estimate": 0.02407710043926684,
+      "family_size": 6,
+      "lower": 0.01899028281110993,
+      "max_half_width": 0.005948355249319595,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20262028,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.004166666666666667,
+      "upper": 0.030025455688586434
+    },
+    "parent_p11": {
+      "estimate": 0.0,
+      "family_size": 6,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20262026,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.004166666666666667,
+      "upper": 0.0
+    },
+    "raw_p00": {
+      "estimate": 0.007565438474094259,
+      "family_size": 6,
+      "lower": -0.0033504059930229723,
+      "max_half_width": 0.013766544734502765,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20262027,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.004166666666666667,
+      "upper": 0.021331983208597024
+    },
+    "selected": {
+      "estimate": 0.0003163438901473492,
+      "family_size": 6,
+      "lower": -0.002634324459855468,
+      "max_half_width": 0.002950668350002817,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20262031,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.004166666666666667,
+      "upper": 0.0024553135966561015
+    }
+  },
+  "coverage_checks": {
+    "calibration_units": true,
+    "factorial_frontier": true,
+    "fold_seed_stability": true,
+    "formal_oof_scenes": true,
+    "heldout_calibration_scenes": true,
+    "prefinal_completed_unit_ledger": true,
+    "selection_frozen_before_formal_oof": true,
+    "test_stress_scenes": true
+  },
+  "data_roles": {
+    "calibration_controller_selection": 150,
+    "canary_touched": false,
+    "candidate_confirmation_touched": false,
+    "cross_domain_touched": false,
+    "formal_oof_development": 600,
+    "locked_test_touched": false,
+    "test_development_stress": 100,
+    "test_nested_variants": 400
+  },
+  "evidence_role": "development_screening",
+  "gate_outcomes": {
+    "coverage_and_selection_integrity": "pass",
+    "evidence_identity": "fail",
+    "low_risk_tail_mechanism_diagnostic": "favorable",
+    "oracle_headroom_control": "favorable",
+    "precision": "met",
+    "selected_area_and_image_safety": "indeterminate",
+    "selected_controller_actionable_utility": "unfavorable",
+    "selected_controller_activation": "unfavorable"
+  },
+  "identity_checks": {
+    "balanced_calibration_folds": true,
+    "balanced_oof_folds": true,
+    "canary_absent": true,
+    "candidate_confirmation_absent": true,
+    "cross_domain_absent": true,
+    "image_tile_gain_identity": true,
+    "locked_test_absent": true,
+    "parent_action_reconstruction": true,
+    "parent_conclusion": true,
+    "parent_inventory": true,
+    "parent_receipt_contract": true,
+    "parent_route": true,
+    "parent_route_commit": true,
+    "parent_terminal": true,
+    "raw_prediction_reconstruction": false,
+    "test_assignment": true,
+    "test_role": true,
+    "train_assignment": true,
+    "train_roles": true
+  },
+  "image_safety": {
+    "haze4k_test_development": {
+      "color_harm": {
+        "critical_value": 2.734368786533176,
+        "estimate": 0.0,
+        "family_size": 8,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.0695664046813737
+      },
+      "psnr_harm": {
+        "critical_value": 2.734368786533176,
+        "estimate": 0.0,
+        "family_size": 8,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.0695664046813737
+      },
+      "ssim_harm": {
+        "critical_value": 2.734368786533176,
+        "estimate": 0.0,
+        "family_size": 8,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.0695664046813737
+      }
+    },
+    "haze4k_train_oof": {
+      "color_harm": {
+        "critical_value": 2.734368786533176,
+        "estimate": 0.0,
+        "family_size": 8,
+        "lower": 8.673617379884035e-19,
+        "successes": 0,
+        "total": 600,
+        "upper": 0.012307915293647227
+      },
+      "psnr_harm": {
+        "critical_value": 2.734368786533176,
+        "estimate": 0.0016666666666666668,
+        "family_size": 8,
+        "lower": 0.00017789724471166304,
+        "successes": 1,
+        "total": 600,
+        "upper": 0.01542232499795674
+      },
+      "ssim_harm": {
+        "critical_value": 2.734368786533176,
+        "estimate": 0.0,
+        "family_size": 8,
+        "lower": 8.673617379884035e-19,
+        "successes": 0,
+        "total": 600,
+        "upper": 0.012307915293647227
+      }
+    }
+  },
+  "independent_unit": "original_clear_scene",
+  "limitations": [
+    "All evidence is development-screening; confirmation, canary, locked-test, NH-Haze, ITS, and OTS were not read.",
+    "The 600 OOF original-clear scenes are the only formal independent units; tiles, actions, folds, seeds, and variants never increase n.",
+    "The 150 calibration scenes fit probability maps and select the controller through five 120-fit/30-holdout folds; they do not enter the formal OOF estimate.",
+    "The 100 test-development scenes are secondary stress evidence and their four variants are averaged within scene.",
+    "GT-risk, GT-utility, and GT/GT controls are privileged localization instruments and are non-deployable.",
+    "The OOF population has been adaptively reused across prior routes and remains development screening even when this route is precise."
+  ],
+  "marker": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFICATION_COMPLETE",
+  "material_scene": {
+    "critical_value": 2.4977054744123737,
+    "estimate": 0.008333333333333333,
+    "family_size": 4,
+    "lower": 0.0028743590322829957,
+    "successes": 5,
+    "total": 600,
+    "upper": 0.02391135609914891
+  },
+  "new_raw_output_inventory": {
+    "classes": {
+      "calibration_prediction": {
+        "file_count": 45,
+        "inventory_sha256": "0b726b5f9d2abd1a6ff1cbe231591ae492b6b0e651c157d18f49cfa58bfc9d30",
+        "total_bytes": 85823910
+      },
+      "oof_controller_scene": {
+        "file_count": 600,
+        "inventory_sha256": "d01aeee4098777b908f299f35f71bf7b04f8dd328651656f8ad34383a9e50a7f",
+        "total_bytes": 96926085
+      },
+      "test_controller_scene": {
+        "file_count": 100,
+        "inventory_sha256": "d9696582f43e8f4f5fe7e58eccd2f4429f99ef2d9744b348f92d81083bb966bd",
+        "total_bytes": 870320
+      }
+    },
+    "file_count": 745,
+    "github_exclusions": [
+      "datasets",
+      "weights",
+      "checkpoints",
+      "images",
+      "arrays",
+      "raw_predictions",
+      "feature_tables",
+      "action_maps"
+    ],
+    "head_checkpoints": [],
+    "inventory_sha256": "6851661520aef8367dafa34633f63d6620e41fbc06ddffe839d85f21171f8602",
+    "raw_retention_scope": "cloud_only",
+    "schema_version": 1,
+    "total_bytes": 183620315,
+    "upstream_parent_file_count": 10285,
+    "upstream_parent_inventory_sha256": "f70b492d5b6cf16fc8a2dbc43a1e049556a8f4c6365726bc7eec9102b3e2cd28",
+    "upstream_parent_receipt": "ce6d9f96bab31b3c46ea5d7024e259e8d016cc4362be30b65d94f57f8d61ecaa",
+    "upstream_parent_total_bytes": 5225583075
+  },
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFY",
+  "oracle_control": {
+    "gain": {
+      "estimate": 1.649833357282101,
+      "family_size": 2,
+      "lower": 1.5293755943873075,
+      "max_half_width": 0.12569825854625516,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20261931,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.0125,
+      "upper": 1.775531615828356
+    },
+    "material_scene": {
+      "critical_value": 2.2414027276049464,
+      "estimate": 0.985,
+      "family_size": 2,
+      "lower": 0.9691869621129605,
+      "successes": 591,
+      "total": 600,
+      "upper": 0.9927585301015622
+    },
+    "outcome": "favorable"
+  },
+  "per_cell_candidates": {
+    "R0_L0": {
+      "action_area_estimate": 4.266666666666665e-05,
+      "action_area_lower": 0.0,
+      "actionable": false,
+      "active_scene_lower": 0.00039015296878931044,
+      "area_cap": 0.01,
+      "candidate_id": "R0_L0__weighted_q__raw__setwise__cap_0p01",
+      "cell": "R0_L0",
+      "coverage_admissible": false,
+      "gain_estimate": 0.00024921771298078095,
+      "gain_lower": -0.0007208684186962566,
+      "gain_upper": 0.0012193038446578187,
+      "material_scene_lower": 0.0,
+      "risk_margin_upper": 1.2341439203164593e-05,
+      "risk_method": "weighted_q",
+      "safety_admissible": true,
+      "selected_harm_estimate": 0.0,
+      "selected_harm_upper": 0.0,
+      "selector": "setwise",
+      "utility_method": "raw"
+    },
+    "R0_L1": {
+      "action_area_estimate": 4.266666666666665e-05,
+      "action_area_lower": 0.0,
+      "actionable": false,
+      "active_scene_lower": 0.00039015296878931044,
+      "area_cap": 0.01,
+      "candidate_id": "R0_L1__weighted_q__raw__setwise__cap_0p01",
+      "cell": "R0_L1",
+      "coverage_admissible": false,
+      "gain_estimate": 2.685643865832224e-05,
+      "gain_lower": -7.768291521450071e-05,
+      "gain_upper": 0.0001313957925311452,
+      "material_scene_lower": 0.0,
+      "risk_margin_upper": 1.2341439203164593e-05,
+      "risk_method": "weighted_q",
+      "safety_admissible": true,
+      "selected_harm_estimate": 0.0,
+      "selected_harm_upper": 0.0,
+      "selector": "setwise",
+      "utility_method": "raw"
+    },
+    "R0_L2": {
+      "action_area_estimate": 0.0007253333333333331,
+      "action_area_lower": 0.0,
+      "actionable": false,
+      "active_scene_lower": 0.031313450610975735,
+      "area_cap": 0.01,
+      "candidate_id": "R0_L2__scene_isotonic__raw__setwise__cap_0p01",
+      "cell": "R0_L2",
+      "coverage_admissible": false,
+      "gain_estimate": 0.0064019039472309625,
+      "gain_lower": -0.0022565278653809574,
+      "gain_upper": 0.015060335759842882,
+      "material_scene_lower": 0.01788164465807339,
+      "risk_margin_upper": 0.00016858379876955387,
+      "risk_method": "scene_isotonic",
+      "safety_admissible": false,
+      "selected_harm_estimate": 0.08823529411764706,
+      "selected_harm_upper": 0.33139462005613657,
+      "selector": "setwise",
+      "utility_method": "raw"
+    },
+    "R1_L0": {
+      "action_area_estimate": 8.53333333333333e-05,
+      "action_area_lower": 0.0,
+      "actionable": false,
+      "active_scene_lower": 0.0014095204015511509,
+      "area_cap": 0.01,
+      "candidate_id": "R1_L0__weighted_q__raw__setwise__cap_0p01",
+      "cell": "R1_L0",
+      "coverage_admissible": false,
+      "gain_estimate": 0.0009074633487543217,
+      "gain_lower": -0.001826172384077434,
+      "gain_upper": 0.0036410990815860774,
+      "material_scene_lower": 0.00039015296878931044,
+      "risk_margin_upper": 1.4875125737236504e-05,
+      "risk_method": "weighted_q",
+      "safety_admissible": true,
+      "selected_harm_estimate": 0.0,
+      "selected_harm_upper": 0.0,
+      "selector": "setwise",
+      "utility_method": "raw"
+    },
+    "R1_L1": {
+      "action_area_estimate": 0.0003626666666666665,
+      "action_area_lower": 0.0,
+      "actionable": false,
+      "active_scene_lower": 0.012024917634855872,
+      "area_cap": 0.01,
+      "candidate_id": "R1_L1__deweighted_probability__raw__setwise__cap_0p01",
+      "cell": "R1_L1",
+      "coverage_admissible": false,
+      "gain_estimate": 0.005020218691695649,
+      "gain_lower": -0.0033224407725718184,
+      "gain_upper": 0.013362878155963116,
+      "material_scene_lower": 0.006942967260933977,
+      "risk_margin_upper": 1.7131036787568037e-05,
+      "risk_method": "deweighted_probability",
+      "safety_admissible": true,
+      "selected_harm_estimate": 0.0,
+      "selected_harm_upper": 0.0,
+      "selector": "setwise",
+      "utility_method": "raw"
+    },
+    "R1_L2": {
+      "action_area_estimate": 0.0031786666666666664,
+      "action_area_lower": 0.0,
+      "actionable": false,
+      "active_scene_lower": 0.006942967260933977,
+      "area_cap": 1.0,
+      "candidate_id": "R1_L2__scene_platt__raw__setwise__cap_1p0",
+      "cell": "R1_L2",
+      "coverage_admissible": false,
+      "gain_estimate": 0.03704607965223299,
+      "gain_lower": -0.08846088709901939,
+      "gain_upper": 0.1625530464034854,
+      "material_scene_lower": 0.004769559848227287,
+      "risk_margin_upper": 0.0006287029306981331,
+      "risk_method": "scene_platt",
+      "safety_admissible": false,
+      "selected_harm_estimate": 0.04026845637583892,
+      "selected_harm_upper": 0.17818222500479614,
+      "selector": "setwise",
+      "utility_method": "raw"
+    },
+    "R2_L0": {
+      "action_area_estimate": 4.266666666666665e-05,
+      "action_area_lower": 0.0,
+      "actionable": false,
+      "active_scene_lower": 0.00039015296878931044,
+      "area_cap": 0.01,
+      "candidate_id": "R2_L0__weighted_q__raw__setwise__cap_0p01",
+      "cell": "R2_L0",
+      "coverage_admissible": false,
+      "gain_estimate": 0.0003359153142610848,
+      "gain_lower": -0.0009716433816480716,
+      "gain_upper": 0.0016434740101702412,
+      "material_scene_lower": 0.00039015296878931044,
+      "risk_margin_upper": 1.234143920316459e-05,
+      "risk_method": "weighted_q",
+      "safety_admissible": true,
+      "selected_harm_estimate": 0.0,
+      "selected_harm_upper": 0.0,
+      "selector": "setwise",
+      "utility_method": "raw"
+    },
+    "R2_L1": {
+      "action_area_estimate": 0.00012799999999999997,
+      "action_area_lower": 0.0,
+      "actionable": false,
+      "active_scene_lower": 0.002902419241980002,
+      "area_cap": 0.01,
+      "candidate_id": "R2_L1__weighted_q__raw__setwise__cap_0p01",
+      "cell": "R2_L1",
+      "coverage_admissible": false,
+      "gain_estimate": 0.0017822975290643277,
+      "gain_lower": -0.0025659742455079746,
+      "gain_upper": 0.0061305693036366295,
+      "material_scene_lower": 0.0014095204015511509,
+      "risk_margin_upper": 1.5772369982643356e-05,
+      "risk_method": "weighted_q",
+      "safety_admissible": true,
+      "selected_harm_estimate": 0.0,
+      "selected_harm_upper": 0.0,
+      "selector": "setwise",
+      "utility_method": "raw"
+    },
+    "R2_L2": {
+      "action_area_estimate": 0.0006853333333333332,
+      "action_area_lower": 0.0,
+      "actionable": false,
+      "active_scene_lower": 0.031313450610975735,
+      "area_cap": 0.01,
+      "candidate_id": "R2_L2__scene_isotonic__raw__setwise__cap_0p01",
+      "cell": "R2_L2",
+      "coverage_admissible": false,
+      "gain_estimate": 0.010102388273726587,
+      "gain_lower": -0.006434835408980596,
+      "gain_upper": 0.02663961195643377,
+      "material_scene_lower": 0.021046506823534136,
+      "risk_margin_upper": 0.00014155743414507883,
+      "risk_method": "scene_isotonic",
+      "safety_admissible": false,
+      "selected_harm_estimate": 0.062256809338521395,
+      "selected_harm_upper": 0.30019704420627197,
+      "selector": "setwise",
+      "utility_method": "raw"
+    }
+  },
+  "precision": {
+    "met": true,
+    "observed_max_simultaneous_half_width_db": 0.002747641726089014,
+    "target_half_width_db": 0.025
+  },
+  "primary_intervals": {
+    "candidate_minus_keep_psnr_db": {
+      "estimate": 0.0003163438901473492,
+      "family_size": 4,
+      "lower": -0.0024312978359416646,
+      "max_half_width": 0.002747641726089014,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20261926,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.002360873699664764
+    },
+    "candidate_minus_permuted_psnr_db": {
+      "estimate": 0.0011435942975440703,
+      "family_size": 4,
+      "lower": -0.0001928349446745362,
+      "max_half_width": 0.0017332960832971216,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20261926,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.002876890380841192
+    },
+    "candidate_minus_shuffled_psnr_db": {
+      "estimate": -6.404154499386746e-05,
+      "family_size": 4,
+      "lower": -0.002437433927151024,
+      "max_half_width": 0.0023733923821571564,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20261926,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.001697510349576903
+    },
+    "candidate_minus_uniform_psnr_db": {
+      "estimate": 0.0003163438901473492,
+      "family_size": 4,
+      "lower": -0.0024312978359416646,
+      "max_half_width": 0.002747641726089014,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20261926,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.002360873699664764
+    }
+  },
+  "route_id": "haze4k-frozen-output-tail-controller-qualification-v1",
+  "run_id": "haze4k-frozen-output-tail-controller-qualification-v1-r1",
+  "schema_version": 2,
+  "scope": "receipt-bound frozen-output low-risk-tail controller qualification",
+  "selected_candidate": {
+    "action_area_estimate": 4.266666666666665e-05,
+    "action_area_lower": 0.0,
+    "actionable": false,
+    "active_scene_lower": 0.00039015296878931044,
+    "area_cap": 0.01,
+    "candidate_id": "R0_L1__weighted_q__raw__setwise__cap_0p01",
+    "cell": "R0_L1",
+    "coverage_admissible": false,
+    "gain_estimate": 2.685643865832224e-05,
+    "gain_lower": -7.768291521450071e-05,
+    "gain_upper": 0.0001313957925311452,
+    "material_scene_lower": 0.0,
+    "risk_margin_upper": 1.2341439203164593e-05,
+    "risk_method": "weighted_q",
+    "safety_admissible": true,
+    "selected_harm_estimate": 0.0,
+    "selected_harm_upper": 0.0,
+    "selector": "setwise",
+    "utility_method": "raw"
+  },
+  "selected_harm": {
+    "estimate": 0.3888888888888889,
+    "family_size": 8,
+    "lower": 0.0,
+    "resamples": 100000,
+    "selected_area_positive": true,
+    "stratified_by": "fold",
+    "upper": 0.8
+  },
+  "selection_freeze_sha256": "06420d49c3e1a4000ede155d7e8d441f9c7b98414152d16644fb6f50e1b906e9",
+  "test_development": {
+    "action_area": {
+      "estimate": 3.9603960396039605e-05,
+      "family_size": 2,
+      "lower": 0.0,
+      "resamples": 100000,
+      "selected_area_positive": true,
+      "stratified_by": "fold",
+      "upper": 0.00012366498032602587
+    },
+    "active_scene": {
+      "critical_value": 2.2414027276049464,
+      "estimate": 0.02,
+      "family_size": 2,
+      "lower": 0.004688518418034297,
+      "successes": 2,
+      "total": 100,
+      "upper": 0.08123370856202985
+    },
+    "gain": {
+      "critical_value": 2.4977054744123737,
+      "estimate": 0.00020750904196142555,
+      "family_size": 4,
+      "lower": -0.00017317890691078322,
+      "max_half_width": 0.0003806879488722088,
+      "scene_count": 100,
+      "upper": 0.0005881969908336344
+    },
+    "selected_harm": {
+      "estimate": 0.0,
+      "family_size": 8,
+      "lower": 0.0,
+      "resamples": 100000,
+      "selected_area_positive": true,
+      "stratified_by": "fold",
+      "upper": 0.0
+    }
+  },
+  "upstream_raw_inventory": {
+    "checks": {
+      "checkpoint_inventory": true,
+      "class_inventory": true,
+      "expected_inventory_file_identity": true,
+      "file_count": true,
+      "overall_inventory_identity": true,
+      "total_bytes": true
+    },
+    "matched": true,
+    "observed": {
+      "classes": {
+        "head_checkpoint": {
+          "file_count": 135,
+          "inventory_sha256": "1574e9dcff515919e3e791bcd673662b0ca2ee517bb29e61cdb27eac5695af17",
+          "total_bytes": 93663978
+        },
+        "oof_cell_prediction": {
+          "file_count": 5400,
+          "inventory_sha256": "fc14236509d00992ae1b354eb73debf4b1f62cdb1e1aaf3c9d964bc55f045b78",
+          "total_bytes": 49041477
+        },
+        "scene_cache": {
+          "file_count": 750,
+          "inventory_sha256": "7d498d790b0f4d26fa87a901485423ba97a2d498bc96c6e4f21fef6a09284382",
+          "total_bytes": 3341602500
+        },
+        "test_cell_prediction": {
+          "file_count": 3600,
+          "inventory_sha256": "6cdfd0dd7db6c0ff37b5892d70a27d20485857645ed1e1a4716f19eebcfa6e52",
+          "total_bytes": 15045120
+        },
+        "test_scene_cache": {
+          "file_count": 400,
+          "inventory_sha256": "af72b61f572ee20c38cd72eeaf2df17ea2169f3a25898e7f8f2d900784fa8c54",
+          "total_bytes": 1726230000
+        }
+      },
+      "file_count": 10285,
+      "inventory_sha256": "f70b492d5b6cf16fc8a2dbc43a1e049556a8f4c6365726bc7eec9102b3e2cd28",
+      "total_bytes": 5225583075
+    },
+    "parent_receipt": "ce6d9f96bab31b3c46ea5d7024e259e8d016cc4362be30b65d94f57f8d61ecaa",
+    "parent_route_commit": "b4ce59309a12b68e79dbfc8534a1b106e162110a",
+    "parent_route_id": "haze4k-observable-tail-factorial-v1",
+    "schema_version": 1
+  }
+}
