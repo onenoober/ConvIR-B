@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-frozen-output-tail-controller-qualification-v1.json",
+  "experiment_spec_sha256": "cbf8a991e92c1fdb1ea5808179eab60c680c6ea0040d98c733fff014ca76b27f",
+  "operations": {
+    "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFY": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "HAZE4K_TAIL_CONTROLLER_CONFIRMATION_PRECISION_CERTIFICATE_AUTHORING_ONLY",
+          "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFICATION_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "DECISION_FOCUSED_LOW_RISK_CONTROLLER_TRAINING_CONTRACT_AUTHORING_ONLY",
+          "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFICATION_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_ONLY",
+          "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFICATION_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "haze4k_frozen_output_tail_controller_qualification_v1_closeout.json",
+      "heartbeat_timeout_seconds": 900,
+      "max_gpu_utilization_pct": 10,
+      "min_free_gpu_mib": 16000,
+      "mode": "frozen_output_tail_controller_qualification",
+      "monitor_profile": "standard",
+      "output_id": "haze4k-frozen-output-tail-controller-qualification-v1-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_frozen_output_tail_controller_qualification_v1.json",
+  "program_contract_sha256": "50b5a61183cba13f0f2c30efd7da7994a1f314e1e89b0a15bf235ae5e60103bf",
+  "route_card_relpath": "experience_docx/experiment_cards/haze4k-frozen-output-tail-controller-qualification-v1.md",
+  "route_id": "haze4k-frozen-output-tail-controller-qualification-v1",
+  "rules_commit": "bc738f57db2863a6a9ba6b693f61ad0550c7e6da",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFY": "experience_docx/scientific_contracts/haze4k-frozen-output-tail-controller-qualification-v1__HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFY.json"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "bound_assets": [
+    {
+      "id": "official_anchor_checkout",
+      "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+    },
+    {
+      "id": "controller_entrypoint",
+      "identity": "b892caa106d3a5e8052e09076a69a3e29bb844fc47af7c040a5373169133bd96"
+    },
+    {
+      "id": "parent_raw_inventory",
+      "identity": "9a5249f66c994f9c94245145cc65e02da643ada71cc047cd5144db475b3c66ff"
+    },
+    {
+      "id": "runtime_environment",
+      "identity": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    }
+  ],
+  "compatibility_imports": [
+    "numpy",
+    "PIL",
+    "torch"
+  ],
+  "contract_mode": "gpu_synthetic_no_data",
+  "minimum_fixture": {
+    "batch": 1,
+    "channels": 104,
+    "height": 6,
+    "width": 8
+  },
+  "production_path_statement": "The exact frozen FactorialHead reconstruction, seed and ensemble prediction, scene-balanced Platt and isotonic calibration, weighted-q and applicable deweighting, tilewise and setwise selectors, scene-level uncertainty, compact evidence finalizer, and 748-unit ledger execute on bounded synthetic CUDA tensors without scientific data.",
+  "profile_id": "haze4k_frozen_output_tail_controller_gpu_v1",
+  "protected_data_prohibited": true,
+  "reuse_identity": {
+    "checkpoint_sha256": "9a5249f66c994f9c94245145cc65e02da643ada71cc047cd5144db475b3c66ff",
+    "code_path_sha256": "b892caa106d3a5e8052e09076a69a3e29bb844fc47af7c040a5373169133bd96",
+    "device_class": "cuda_sm89",
+    "input_contract_sha256": "31813aa7a404eb41cce4b818ddf33af475cd41d55d3f25287b03b2a474fbcd1e",
+    "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
+    "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+  },
+  "schema_version": 2,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}

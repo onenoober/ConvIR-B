@@ -1,0 +1,93 @@
+{
+  "assets": [
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor",
+      "require_clean": true
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "controller_entrypoint",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_frozen_output_tail_controller_qualification.py",
+      "sha256": "b892caa106d3a5e8052e09076a69a3e29bb844fc47af7c040a5373169133bd96"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/runtime_environments/convir_4090_cu121_observable_utility_v1.json",
+      "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-observable-tail-factorial-v1/haze4k_observable_tail_factorial_v1_closeout.json",
+      "sha256": "de8771b362d8ead69cc536a8d4e490b464310821f80dcf99344abf9c8483c167"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_conclusion",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-observable-tail-factorial-v1/haze4k_observable_tail_factorial_v1_conclusion.json",
+      "sha256": "33535b0db4579b8f86083c06e18dd0493888cce3d4c605e081d3dfa0069a1169"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_raw_inventory",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-observable-tail-factorial-v1/haze4k_observable_tail_factorial_v1_raw_inventory.json",
+      "sha256": "9a5249f66c994f9c94245145cc65e02da643ada71cc047cd5144db475b3c66ff"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "train_split_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-train-scene-split-v2/haze4k_train_scene_split_v2_summary.json",
+      "sha256": "a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "test_split_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-scene-split-v1/haze4k_test_scene_split_v1_summary.json",
+      "sha256": "656407f3183f92e75e357004b04b505d2b92cd4b0f4b02b3c6a22aef57d069cf"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "parent_raw_workspace",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-observable-tail-factorial-v1/haze4k-observable-tail-factorial-v1-r2"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_test_development",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-test-scene-split-v1/haze4k-test-scene-split-v1-phase-a-r1/workload/role_assets/development_screening"
+    }
+  ],
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFY",
+  "route_id": "haze4k-frozen-output-tail-controller-qualification-v1",
+  "schema_version": 2
+}

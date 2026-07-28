@@ -1,0 +1,130 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/haze4k-frozen-output-tail-controller-qualification-v1__HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFY.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/haze4k-frozen-output-tail-controller-qualification-v1__HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFY.json",
+    "cost_contract": {
+      "batch_shape_policy": "bounded",
+      "candidate_schedule": "none",
+      "fixed_overhead_seconds": 600,
+      "formal_iterations": 90450,
+      "formal_max_wall_seconds": 14400,
+      "max_peak_memory_mib": 12288,
+      "max_seconds_per_iteration": 0.045,
+      "memory_scaling": "constant",
+      "probe_iterations": 180,
+      "production_path": "exact",
+      "safety_factor": 3,
+      "strategy": "fixed_linear_extrapolation",
+      "termination_policy": "fixed_count",
+      "workload_class": "fixed_iteration_map"
+    },
+    "max_seconds": 900,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/run_haze4k_frozen_output_tail_controller_qualification.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_summary.json",
+      "max_bytes": 1048576,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_gate_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_gate_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_selection_freeze.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_selection_freeze.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_candidate_table.csv",
+      "max_bytes": 524288,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_candidate_table.csv"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_selected_calibration_scenes.csv",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_selected_calibration_scenes.csv"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_primary_intervals.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_primary_intervals.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_risk_coverage_frontier.csv",
+      "max_bytes": 524288,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_risk_coverage_frontier.csv"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_fold_seed_tail.csv",
+      "max_bytes": 524288,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_fold_seed_tail.csv"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_calibration_tail.csv",
+      "max_bytes": 1048576,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_calibration_tail.csv"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_effects.csv",
+      "max_bytes": 524288,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_effects.csv"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_controls.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_controls.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_test_stress.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_test_stress.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_raw_inventory.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_raw_inventory.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_parent_inventory_verification.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/parent_inventory_verification.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 14400,
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFY",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/haze4k-frozen-output-tail-controller-qualification-v1__HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFY.json",
+    "mode": "formal_precision",
+    "rationale": "The 600-scene OOF stratum exceeds the frozen 556-scene requirement for the four-endpoint family under planning-SD upper bound 0.2358753949 dB; the disjoint 150-scene role selects the controller. Safety is conditional: the 0.20 active floor gives at least 120 active scenes, above the approximate 98-scene requirement for 0.05 harm-rate slack. Observed utility precision and scene-block safety intervals remain mandatory."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "haze4k-frozen-output-tail-controller-qualification-v1",
+  "schema_version": 2,
+  "timeout_seconds": 21600,
+  "total_units": 748
+}

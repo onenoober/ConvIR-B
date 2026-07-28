@@ -1,0 +1,404 @@
+{
+  "schema_version": 2,
+  "route_id": "haze4k-frozen-output-tail-controller-qualification-v1",
+  "rules_commit": "bc738f57db2863a6a9ba6b693f61ad0550c7e6da",
+  "title": "Haze4K Frozen-Output Tail Controller Qualification v1",
+  "rationale": "The archived 3x3 observable representation-by-learner factorial decisively failed under one shared corrected tilewise controller, but that veto makes the zero-gain cell outcomes non-diagnostic about raw low-risk-tail quality. Independent evidence shows apparently useful global risk ranking alongside approximately 25 percent harm in the selected low-risk tail, so average AUC and Brier score are not adequate safety evidence. This orthogonal development route reuses the receipt-bound 9-cell, 5-fold, 3-seed outputs without retraining ConvIR or the heads. It verifies all 10,285 upstream files and their 5.23 GB SHA inventory, reconstructs seed and ensemble predictions from the frozen checkpoints and scene caches, and confines probability fitting and controller selection to the fixed 150-scene calibration role. Weighted q, exact p=q/(2-q) for applicable L0/L1 heads, scene-balanced Platt and isotonic probability maps, and the historical one-sided correction are compared with raw and corrected utility. A tilewise controller is the control; the substantive mechanism is a scene-level setwise selector whose selected prefix must satisfy a predicted 0.10 area-weighted risk budget. One candidate is hash-frozen before formal OOF arrays are parsed. All nine cells then receive complete 600-scene risk-coverage, harm, gain, fold, and seed evaluation; the selected candidate receives exact image replay, uniform, shuffle, joint permutation, mixed-GT, GT/GT, and 100-scene nested test-development stress controls. Confirmation, canary, locked-test, NH-Haze, ITS, and OTS remain unread.",
+  "first_operation": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFY",
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_frozen_output_tail_controller_qualification_v1.json",
+  "operations": {
+    "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFY": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "frozen_output_tail_controller_qualification",
+        "require_gpu": true,
+        "output_id": "haze4k-frozen-output-tail-controller-qualification-v1-r1",
+        "closeout_filename": "haze4k_frozen_output_tail_controller_qualification_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 900,
+        "min_free_gpu_mib": 16000,
+        "max_gpu_utilization_pct": 10
+      },
+      "program_authorization": {
+        "program_id": "haze4k_frozen_output_tail_controller_qualification_v1",
+        "stage_id": "frozen_output_controller_development",
+        "family_id": "low_risk_tail_end_to_end_controller_qualification",
+        "mechanism_type": "orthogonal",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {"role": "parent_authorization", "use": "diagnostic", "anchor_id": "observable_tail_factorial_terminal"},
+          {"role": "frozen_prediction_evidence", "use": "evaluation", "anchor_id": "observable_tail_factorial_terminal"},
+          {"role": "frozen_prediction_evidence", "use": "comparison", "anchor_id": "observable_tail_factorial_terminal"},
+          {"role": "frozen_prediction_evidence", "use": "evaluation", "anchor_id": "observable_tail_factorial_terminal"},
+          {"role": "dataset_role_evidence", "use": "training", "anchor_id": "haze4k_train_split_terminal"},
+          {"role": "dataset_role_evidence", "use": "supervision", "anchor_id": "haze4k_train_split_terminal"},
+          {"role": "dataset_role_evidence", "use": "evaluation", "anchor_id": "haze4k_train_split_terminal"},
+          {"role": "dataset_role_evidence", "use": "evaluation", "anchor_id": "haze4k_test_split_terminal"},
+          {"role": "mechanism_evidence", "use": "action_definition", "anchor_id": "bounded_local_action_oracle_terminal"},
+          {"role": "model_provenance", "use": "initialization", "anchor_id": "official_architecture_anchor"}
+        ],
+        "adjacent_sequence": null,
+        "orthogonal_changes": [
+          {
+            "dimension": "end_to_end_controller",
+            "reason": "Replaces the closed shared tilewise veto with a nested, policy-level setwise selective-risk controller while freezing every upstream representation, learner, checkpoint, action, dataset role, and scientific threshold."
+          },
+          {
+            "dimension": "risk_probability_semantics",
+            "reason": "Separates weighted-q control, exact L0/L1 deweighting, proper scene-balanced probability calibration, and the historical one-sided correction instead of treating one corrected score as all cells' tail capability."
+          }
+        ],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Does any frozen observable-tail factorial cell support a nondegenerate, low-harm, materially useful local-action policy after risk probability semantics are calibrated by scene and action selection is controlled at the policy-set level?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "original_clear_scene",
+          "independent_group_count": 600,
+          "strata": [{"id": "haze4k_train_oof", "independent_group_count": 600}],
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "one hash-frozen cell, risk-probability method, utility method, setwise selector, and area cap selected only from five-fold held-out predictions on the 150 calibration-controller scenes",
+          "reference": "keep, exact historical P11 tilewise veto, raw P00 tilewise control, same-predictor whole-image uniform action, within-image selected-action shuffle, within-image joint score permutation, observable-utility plus GT-risk, GT-utility plus observable-risk, and GT/GT",
+          "matched_budget": "nine frozen cells, five frozen OOF folds, three paired seeds, 150 calibration-controller scenes, 600 formal OOF-development scenes, and 100 historical test-development scenes with four variants nested within scene",
+          "fixed_factors": [
+            "the official ConvIR-B base architecture, official Haze4K checkpoint, keep output, actions 1.0/0.8/1.2, all 135 trained heads, and every scene cache remain byte frozen through parent receipt and raw inventory",
+            "all 10,285 parent raw files, 5,225,583,075 bytes, five class inventories, 135 checkpoint identities, route commit, receipt, and terminal authorization are verified before scientific processing",
+            "the 150 calibration scenes use five fixed folds; each controller prediction is calibrated on 120 scenes and evaluated on the disjoint 30, so every calibration scene contributes once to selection",
+            "weighted q is the control; exact p=q/(2-q) is allowed only for L0/L1 weighted-BCE heads; action-specific Platt and isotonic maps use equal total weight per scene and pixel-area weights only within scene",
+            "raw utility and the historical 95-percentile one-sided lower utility correction are the only utility modes",
+            "tilewise selection requires utility above 0.05 dB and risk at most 0.10; setwise selection ranks one action per tile and takes a deterministic prefix with area-weighted predicted risk at most 0.10 and one frozen cap from 0.01/0.02/0.05/0.10/0.20/1.0",
+            "the candidate freeze is written and SHA-256 bound before any 600-scene OOF prediction or cache array is parsed; result-blind inventory hashing and dataset identity enumeration do not expose outcomes",
+            "formal intervals and gates use original-clear scenes as independent units; tiles, pixels, actions, folds, seeds, candidate policies, and four test variants never increase independent n",
+            "gain margin 0.05 dB, harm boundary -0.10 dB, selected-harm limit 0.10, active-scene floor 0.20, action-area floor 0.01, image-harm limit 0.10, and precision 0.025 dB remain frozen",
+            "candidate-confirmation, canary, locked-test, NH-Haze, RESIDE ITS, and RESIDE OTS remain unread"
+          ]
+        },
+        "primary_estimand": {
+          "id": "selected_controller_oof_utility_gain",
+          "metric_id": "scene_mean_selected_controller_minus_keep_psnr_db",
+          "direction": "higher",
+          "aggregation": "five-fold OOF mean over 600 original-clear scenes with fold-stratified paired bootstrap after the 150-scene controller freeze",
+          "unit": "original_clear_scene",
+          "strata": ["haze4k_train_oof"]
+        },
+        "controls": [
+          "GitHub-main parent closeout, conclusion, raw inventory, route commit, receipt, train/test role summaries, and immutable architecture provenance",
+          "full parent inventory rehash and exact reconstruction of stored ensemble utility, risk, and P11 action maps from all 135 checkpoints and scene caches",
+          "weighted-q, exact applicable deweighting, scene-balanced Platt, scene-balanced isotonic, and historical one-sided risk controls",
+          "raw and historical one-sided lower utility controls",
+          "historical tilewise P11 and raw P00 controller reproduction",
+          "same-predictor whole-image uniform, within-image action shuffle, and joint score-permutation controls",
+          "observable-utility plus GT-risk, GT-utility plus observable-risk, and tilewise GT/GT privileged localization controls",
+          "selected-area harm with scene-block ratio bootstrap and complete-image PSNR, RGB SSIM, and RGB mean-bias safety on OOF and test-development separately",
+          "per-cell risk-coverage frontiers, fold/seed tail stability, low-tail calibration bins, and paired risk-target-by-selector interaction effects",
+          "cloud-only calibration predictions, ensemble/seed OOF predictions, selected/control action maps, test action maps, and SHA inventory",
+          "candidate-confirmation asset absent from contract and run contexts"
+        ],
+        "uncertainty": {
+          "id": "scene_level_controller_uncertainty",
+          "method_id": "fold_stratified_paired_bootstrap_scene_block_ratio_bootstrap_and_bonferroni_wilson",
+          "confidence_level": 0.95,
+          "independent_unit": "original_clear_scene",
+          "comparison_family": "selected_controller_four_endpoint_family"
+        },
+        "gates": [
+          {
+            "id": "evidence_identity",
+            "type": "integrity",
+            "estimand_id": "selected_controller_oof_utility_gain",
+            "reference": "all parent terminal, receipt, inventory, checkpoint, cache, split, entrypoint, reconstruction, and protected-asset identities match exactly",
+            "direction": "equal",
+            "threshold": true,
+            "uncertainty_id": "scene_level_controller_uncertainty",
+            "comparison_family": "selected_controller_four_endpoint_family",
+            "decision_role": "validity_veto",
+            "outcomes": ["pass", "fail", "invalid"],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "coverage_and_selection_integrity",
+            "type": "coverage",
+            "estimand_id": "selected_controller_oof_utility_gain",
+            "reference": "exact 9-cell, 5-fold, 3-seed, 150-calibration, 600-OOF, 100-by-4-test, pre-outcome freeze, frontier, fold-seed, and 748-unit coverage",
+            "direction": "equal",
+            "threshold": true,
+            "uncertainty_id": "scene_level_controller_uncertainty",
+            "comparison_family": "selected_controller_four_endpoint_family",
+            "decision_role": "validity_veto",
+            "outcomes": ["pass", "fail", "invalid"],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "oracle_headroom_control",
+            "type": "materiality",
+            "estimand_id": "selected_controller_oof_utility_gain",
+            "reference": "tilewise GT/GT OOF gain LCB exceeds 0.05 dB and material-scene Wilson LCB exceeds 0.20",
+            "direction": "min",
+            "threshold": "oracle_gain_lcb_gt_0.05_and_material_scene_lcb_gt_0.20",
+            "uncertainty_id": "scene_level_controller_uncertainty",
+            "comparison_family": "selected_controller_four_endpoint_family",
+            "decision_role": "validity_veto",
+            "outcomes": ["favorable", "unfavorable", "indeterminate", "invalid"],
+            "neutral_outcome": "favorable"
+          },
+          {
+            "id": "selected_controller_actionable_utility",
+            "type": "materiality",
+            "estimand_id": "selected_controller_oof_utility_gain",
+            "reference": "selected-controller gain LCB exceeds 0.05 dB, material-scene LCB exceeds 0.20, and selected-minus-uniform, shuffle, and permutation LCBs all exceed zero; unfavorable requires any matching UCB at or below threshold",
+            "direction": "min",
+            "threshold": "five_conjunctive_lower_bounds_for_favorable_and_any_matching_upper_bound_for_unfavorable",
+            "uncertainty_id": "scene_level_controller_uncertainty",
+            "comparison_family": "selected_controller_four_endpoint_family",
+            "decision_role": "decisive",
+            "outcomes": ["favorable", "unfavorable", "indeterminate", "invalid"],
+            "neutral_outcome": "favorable"
+          },
+          {
+            "id": "selected_controller_activation",
+            "type": "materiality",
+            "estimand_id": "selected_controller_oof_utility_gain",
+            "reference": "scene-block action-area LCB exceeds 0.01 and active-scene Wilson LCB exceeds 0.20; unfavorable requires a corresponding UCB at or below its floor",
+            "direction": "min",
+            "threshold": "action_area_lcb_gt_0.01_and_active_scene_lcb_gt_0.20",
+            "uncertainty_id": "scene_level_controller_uncertainty",
+            "comparison_family": "selected_controller_four_endpoint_family",
+            "decision_role": "decisive",
+            "outcomes": ["favorable", "unfavorable", "indeterminate", "invalid"],
+            "neutral_outcome": "favorable"
+          },
+          {
+            "id": "selected_area_and_image_safety",
+            "type": "safety",
+            "estimand_id": "selected_controller_oof_utility_gain",
+            "reference": "for OOF and test-development separately, selected-area harm ratio UCB and PSNR, SSIM, and color scene-harm Wilson UCB are at most 0.10; unsafe requires any matching LCB above 0.10 and zero selected area is indeterminate",
+            "direction": "max",
+            "threshold": 0.1,
+            "uncertainty_id": "scene_level_controller_uncertainty",
+            "comparison_family": "selected_controller_four_endpoint_family",
+            "decision_role": "decisive",
+            "outcomes": ["safe", "unsafe", "indeterminate", "invalid"],
+            "neutral_outcome": "safe"
+          },
+          {
+            "id": "precision",
+            "type": "precision",
+            "estimand_id": "selected_controller_oof_utility_gain",
+            "reference": "maximum distance from each of four fold-stratified Bonferroni paired-bootstrap estimates to either simultaneous endpoint",
+            "direction": "max",
+            "threshold": 0.025,
+            "uncertainty_id": "scene_level_controller_uncertainty",
+            "comparison_family": "selected_controller_four_endpoint_family",
+            "decision_role": "inconclusive_only",
+            "outcomes": ["met", "unmet", "invalid"],
+            "neutral_outcome": "met"
+          },
+          {
+            "id": "low_risk_tail_mechanism_diagnostic",
+            "type": "materiality",
+            "estimand_id": "selected_controller_oof_utility_gain",
+            "reference": "all-cell risk-coverage and harm frontiers plus paired risk-target, selector, and interaction effects",
+            "direction": "max",
+            "threshold": 0.0,
+            "uncertainty_id": "scene_level_controller_uncertainty",
+            "comparison_family": "selected_controller_four_endpoint_family",
+            "decision_role": "descriptive",
+            "outcomes": ["favorable", "unfavorable", "indeterminate", "invalid"],
+            "neutral_outcome": "favorable"
+          }
+        ],
+        "competing_explanation": "An apparent recovery can arise from calibration-role overfit, a few active scenes, area-cap sparsity, seed or fold instability, score permutation artifacts, or privileged target leakage rather than a deployable low-risk tail. Conversely, a valid failure after probability-semantics and setwise controls would show that the frozen observable heads do not identify a sufficiently precise safe tail, and would justify authoring a genuinely decision-focused controller-training contract rather than another threshold or post-hoc calibration retry.",
+        "decision_table": {
+          "terminal_actions": {
+            "pass": {
+              "terminal": {
+                "state": "COMPLETED_GATE_PASS",
+                "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFICATION_PASS",
+                "authorizes": "HAZE4K_TAIL_CONTROLLER_CONFIRMATION_PRECISION_CERTIFICATE_AUTHORING_ONLY"
+              },
+              "next_action_id": "author_tail_controller_confirmation_precision_certificate",
+              "family_effect": "advance"
+            },
+            "fail": {
+              "terminal": {
+                "state": "COMPLETED_GATE_FAIL",
+                "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFICATION_FAIL",
+                "authorizes": "DECISION_FOCUSED_LOW_RISK_CONTROLLER_TRAINING_CONTRACT_AUTHORING_ONLY"
+              },
+              "next_action_id": "author_decision_focused_low_risk_controller_training_contract",
+              "family_effect": "stop"
+            },
+            "inconclusive": {
+              "terminal": {
+                "state": "COMPLETED_INCONCLUSIVE",
+                "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFICATION_INCONCLUSIVE",
+                "authorizes": "FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_ONLY"
+              },
+              "next_action_id": "review_frozen_output_tail_controller_evidence",
+              "family_effect": "allow_predeclared_evidence"
+            }
+          },
+          "rules": [
+            {"id": "identity_veto", "when": {"evidence_identity": ["fail", "invalid"]}, "terminal": "inconclusive"},
+            {"id": "coverage_veto", "when": {"evidence_identity": ["pass"], "coverage_and_selection_integrity": ["fail", "invalid"]}, "terminal": "inconclusive"},
+            {"id": "oracle_unresolved", "when": {"evidence_identity": ["pass"], "coverage_and_selection_integrity": ["pass"], "oracle_headroom_control": ["unfavorable", "indeterminate", "invalid"]}, "terminal": "inconclusive"},
+            {"id": "utility_fail", "when": {"evidence_identity": ["pass"], "coverage_and_selection_integrity": ["pass"], "oracle_headroom_control": ["favorable"], "selected_controller_actionable_utility": ["unfavorable"]}, "terminal": "fail"},
+            {"id": "utility_unresolved", "when": {"evidence_identity": ["pass"], "coverage_and_selection_integrity": ["pass"], "oracle_headroom_control": ["favorable"], "selected_controller_actionable_utility": ["indeterminate", "invalid"]}, "terminal": "inconclusive"},
+            {"id": "activation_fail", "when": {"evidence_identity": ["pass"], "coverage_and_selection_integrity": ["pass"], "oracle_headroom_control": ["favorable"], "selected_controller_actionable_utility": ["favorable"], "selected_controller_activation": ["unfavorable"]}, "terminal": "fail"},
+            {"id": "activation_unresolved", "when": {"evidence_identity": ["pass"], "coverage_and_selection_integrity": ["pass"], "oracle_headroom_control": ["favorable"], "selected_controller_actionable_utility": ["favorable"], "selected_controller_activation": ["indeterminate", "invalid"]}, "terminal": "inconclusive"},
+            {"id": "safety_fail", "when": {"evidence_identity": ["pass"], "coverage_and_selection_integrity": ["pass"], "oracle_headroom_control": ["favorable"], "selected_controller_actionable_utility": ["favorable"], "selected_controller_activation": ["favorable"], "selected_area_and_image_safety": ["unsafe"]}, "terminal": "fail"},
+            {"id": "safety_unresolved", "when": {"evidence_identity": ["pass"], "coverage_and_selection_integrity": ["pass"], "oracle_headroom_control": ["favorable"], "selected_controller_actionable_utility": ["favorable"], "selected_controller_activation": ["favorable"], "selected_area_and_image_safety": ["indeterminate", "invalid"]}, "terminal": "inconclusive"},
+            {"id": "precision_unresolved", "when": {"evidence_identity": ["pass"], "coverage_and_selection_integrity": ["pass"], "oracle_headroom_control": ["favorable"], "selected_controller_actionable_utility": ["favorable"], "selected_controller_activation": ["favorable"], "selected_area_and_image_safety": ["safe"], "precision": ["unmet", "invalid"]}, "terminal": "inconclusive"},
+            {"id": "pass", "when": {"evidence_identity": ["pass"], "coverage_and_selection_integrity": ["pass"], "oracle_headroom_control": ["favorable"], "selected_controller_actionable_utility": ["favorable"], "selected_controller_activation": ["favorable"], "selected_area_and_image_safety": ["safe"], "precision": ["met"]}, "terminal": "pass"}
+          ]
+        },
+        "disabled_actions": [
+          "changing cells, folds, seeds, probability methods, utility methods, selector, area caps, action scales, thresholds, data roles, candidate rule, or uncertainty after launch",
+          "parsing any 600-scene OOF prediction or cache outcome before the selection file is written and SHA-256 frozen",
+          "treating pixels, tiles, actions, folds, seeds, candidate policies, or four nested test variants as independent units",
+          "reading Haze4K candidate-confirmation, canary, locked-test, NH-Haze, ITS, or OTS data",
+          "retraining ConvIR, any frozen head, or a new controller within this qualification route",
+          "committing raw predictions, caches, checkpoints, images, arrays, action maps, or per-scene/per-tile tables",
+          "starting protected confirmation without a new formal precision certificate and typed PASS authorization",
+          "claiming deployment, promotion, or cross-domain generalization from development-screening evidence"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/run_haze4k_frozen_output_tail_controller_qualification.py",
+        "timeout_seconds": 21600,
+        "expected_wall_seconds": 14400,
+        "total_units": 748,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {},
+        "evidence_files": [
+          {"source_relpath": "workload/haze4k_frozen_output_tail_controller_summary.json", "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_summary.json", "required": true, "max_bytes": 1048576},
+          {"source_relpath": "workload/haze4k_frozen_output_tail_controller_gate_summary.json", "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_gate_summary.json", "required": true, "max_bytes": 262144},
+          {"source_relpath": "workload/haze4k_frozen_output_tail_controller_selection_freeze.json", "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_selection_freeze.json", "required": true, "max_bytes": 262144},
+          {"source_relpath": "workload/haze4k_frozen_output_tail_controller_candidate_table.csv", "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_candidate_table.csv", "required": true, "max_bytes": 524288},
+          {"source_relpath": "workload/haze4k_frozen_output_tail_controller_selected_calibration_scenes.csv", "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_selected_calibration_scenes.csv", "required": true, "max_bytes": 262144},
+          {"source_relpath": "workload/haze4k_frozen_output_tail_controller_primary_intervals.json", "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_primary_intervals.json", "required": true, "max_bytes": 262144},
+          {"source_relpath": "workload/haze4k_frozen_output_tail_controller_risk_coverage_frontier.csv", "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_risk_coverage_frontier.csv", "required": true, "max_bytes": 524288},
+          {"source_relpath": "workload/haze4k_frozen_output_tail_controller_fold_seed_tail.csv", "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_fold_seed_tail.csv", "required": true, "max_bytes": 524288},
+          {"source_relpath": "workload/haze4k_frozen_output_tail_controller_calibration_tail.csv", "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_calibration_tail.csv", "required": true, "max_bytes": 1048576},
+          {"source_relpath": "workload/haze4k_frozen_output_tail_controller_effects.csv", "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_effects.csv", "required": true, "max_bytes": 524288},
+          {"source_relpath": "workload/haze4k_frozen_output_tail_controller_controls.json", "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_controls.json", "required": true, "max_bytes": 262144},
+          {"source_relpath": "workload/haze4k_frozen_output_tail_controller_test_stress.json", "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_test_stress.json", "required": true, "max_bytes": 262144},
+          {"source_relpath": "workload/haze4k_frozen_output_tail_controller_raw_inventory.json", "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_raw_inventory.json", "required": true, "max_bytes": 131072},
+          {"source_relpath": "workload/parent_inventory_verification.json", "destination_filename": "haze4k_frozen_output_tail_controller_qualification_v1_parent_inventory_verification.json", "required": true, "max_bytes": 131072}
+        ],
+        "engineering_contract": {
+          "mode": "gpu_synthetic_no_data",
+          "max_seconds": 900,
+          "cost_contract": {
+            "strategy": "fixed_linear_extrapolation",
+            "workload_class": "fixed_iteration_map",
+            "formal_iterations": 90450,
+            "max_peak_memory_mib": 12288,
+            "probe_iterations": 180,
+            "max_seconds_per_iteration": 0.045,
+            "fixed_overhead_seconds": 600,
+            "safety_factor": 3,
+            "formal_max_wall_seconds": 14400,
+            "memory_scaling": "constant",
+            "batch_shape_policy": "bounded",
+            "termination_policy": "fixed_count",
+            "candidate_schedule": "none",
+            "production_path": "exact"
+          }
+        },
+        "precision_contract": {
+          "mode": "formal_precision",
+          "rationale": "The 600-scene OOF stratum exceeds the frozen 556-scene requirement for the four-endpoint family under planning-SD upper bound 0.2358753949 dB; the disjoint 150-scene role selects the controller. Safety is conditional: the 0.20 active floor gives at least 120 active scenes, above the approximate 98-scene requirement for 0.05 harm-rate slack. Observed utility precision and scene-block safety intervals remain mandatory."
+        }
+      },
+      "assets": [
+        {"id": "official_anchor_checkout", "kind": "git_checkout", "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor", "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898", "require_clean": true, "access_role": "engineering_debug", "contract_access": true},
+        {"id": "controller_entrypoint", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_frozen_output_tail_controller_qualification.py", "sha256": "b892caa106d3a5e8052e09076a69a3e29bb844fc47af7c040a5373169133bd96", "access_role": "engineering_debug", "contract_access": true},
+        {"id": "runtime_environment", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/runtime_environments/convir_4090_cu121_observable_utility_v1.json", "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b", "access_role": "engineering_debug", "contract_access": true},
+        {"id": "parent_closeout", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-observable-tail-factorial-v1/haze4k_observable_tail_factorial_v1_closeout.json", "sha256": "de8771b362d8ead69cc536a8d4e490b464310821f80dcf99344abf9c8483c167", "access_role": "unrestricted", "contract_access": true},
+        {"id": "parent_conclusion", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-observable-tail-factorial-v1/haze4k_observable_tail_factorial_v1_conclusion.json", "sha256": "33535b0db4579b8f86083c06e18dd0493888cce3d4c605e081d3dfa0069a1169", "access_role": "unrestricted", "contract_access": true},
+        {"id": "parent_raw_inventory", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-observable-tail-factorial-v1/haze4k_observable_tail_factorial_v1_raw_inventory.json", "sha256": "9a5249f66c994f9c94245145cc65e02da643ada71cc047cd5144db475b3c66ff", "access_role": "unrestricted", "contract_access": true},
+        {"id": "train_split_summary", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-train-scene-split-v2/haze4k_train_scene_split_v2_summary.json", "sha256": "a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9", "access_role": "unrestricted", "contract_access": true},
+        {"id": "test_split_summary", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-test-scene-split-v1/haze4k_test_scene_split_v1_summary.json", "sha256": "656407f3183f92e75e357004b04b505d2b92cd4b0f4b02b3c6a22aef57d069cf", "access_role": "unrestricted", "contract_access": true},
+        {"id": "parent_raw_workspace", "kind": "directory", "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-observable-tail-factorial-v1/haze4k-observable-tail-factorial-v1-r2", "access_role": "development_screening", "contract_access": false},
+        {"id": "haze4k_train", "kind": "directory", "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train", "access_role": "development_screening", "contract_access": false},
+        {"id": "haze4k_test_development", "kind": "directory", "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-test-scene-split-v1/haze4k-test-scene-split-v1-phase-a-r1/workload/role_assets/development_screening", "access_role": "development_screening", "contract_access": false}
+      ],
+      "capability": {
+        "profile_id": "haze4k_frozen_output_tail_controller_gpu_v1",
+        "contract_mode": "gpu_synthetic_no_data",
+        "minimum_fixture": {"batch": 1, "channels": 104, "height": 6, "width": 8},
+        "bound_assets": [
+          {"id": "official_anchor_checkout", "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"},
+          {"id": "controller_entrypoint", "identity": "b892caa106d3a5e8052e09076a69a3e29bb844fc47af7c040a5373169133bd96"},
+          {"id": "parent_raw_inventory", "identity": "9a5249f66c994f9c94245145cc65e02da643ada71cc047cd5144db475b3c66ff"},
+          {"id": "runtime_environment", "identity": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"}
+        ],
+        "compatibility_imports": ["numpy", "PIL", "torch"],
+        "production_path_statement": "The exact frozen FactorialHead reconstruction, seed and ensemble prediction, scene-balanced Platt and isotonic calibration, weighted-q and applicable deweighting, tilewise and setwise selectors, scene-level uncertainty, compact evidence finalizer, and 748-unit ledger execute on bounded synthetic CUDA tensors without scientific data.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true,
+        "reuse_identity": {
+          "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+          "code_path_sha256": "b892caa106d3a5e8052e09076a69a3e29bb844fc47af7c040a5373169133bd96",
+          "checkpoint_sha256": "9a5249f66c994f9c94245145cc65e02da643ada71cc047cd5144db475b3c66ff",
+          "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
+          "device_class": "cuda_sm89"
+        }
+      },
+      "precision": {
+        "certificate_id": "haze4k_frozen_output_tail_controller_precision_v1",
+        "route_id": "haze4k-frozen-output-tail-controller-qualification-v1",
+        "operation_id": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_QUALIFY",
+        "primary_estimand_id": "selected_controller_oof_utility_gain",
+        "independent_unit": "original_clear_scene",
+        "comparison_family": "selected_controller_four_endpoint_family",
+        "method": "normal_mean",
+        "confidence_level": 0.95,
+        "critical_value": 2.4977054744123737,
+        "target_half_width": 0.025,
+        "assurance": {
+          "method_id": "archived_interval_inversion_with_sd_multiplier_conditional_safety_feasibility",
+          "probability": 0.95,
+          "planning_sd_rule": "Use archived interval-inversion SD 0.1887003159 dB with frozen 1.25 multiplier, yielding planning-SD upper bound 0.2358753949 dB. The selected controller is frozen on a disjoint 150-scene role. Safety is conditionally feasible only if the 0.20 active-scene floor and approximately 0.05 harm-rate slack are achieved; observed scene-block safety intervals remain mandatory."
+        },
+        "strata": [
+          {
+            "id": "haze4k_train_oof",
+            "independent_groups_available": 600,
+            "independent_groups_planned": 600,
+            "planning_sd": 0.1887003159,
+            "planning_sd_upper_bound": 0.2358753949,
+            "independent_groups_required": 556,
+            "feasible": true,
+            "source_reference": "GitHub-main archived four-endpoint parent precision contract; candidate selection is confined to the disjoint calibration-controller role and observed OOF variance is re-estimated."
+          }
+        ],
+        "feasible": true,
+        "source_role": "development_screening",
+        "source_reference": "GitHub-main haze4k-observable-tail-factorial-v1 terminal, raw inventory, and archived planning-SD evidence."
+      }
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "program_id": "haze4k_frozen_output_tail_controller_qualification_v1",
+  "objective": "Determine whether any receipt-bound observable-tail factorial cell contains a genuinely useful low-risk action tail once weighted-risk semantics, nested scene-balanced probability calibration, and policy-level setwise selection are separated from the failed shared corrected tilewise veto, before authorizing any new controller training or protected confirmation.",
+  "source_anchors": [
+    {
+      "id": "observable_tail_factorial_terminal",
+      "reference": "GitHub-main terminal evidence for haze4k-observable-tail-factorial-v1 at route commit b4ce59309a12b68e79dbfc8534a1b106e162110a, receipt ce6d9f96bab31b3c46ea5d7024e259e8d016cc4362be30b65d94f57f8d61ecaa, and raw inventory f70b492d5b6cf16fc8a2dbc43a1e049556a8f4c6365726bc7eec9102b3e2cd28.",
+      "allowed_uses": ["diagnostic", "comparison", "evaluation"]
+    },
+    {
+      "id": "haze4k_train_split_terminal",
+      "reference": "GitHub-main terminal evidence for the fixed 600 OOF-development and 150 calibration-controller original-clear-scene roles.",
+      "allowed_uses": ["diagnostic", "training", "supervision", "evaluation"]
+    },
+    {
+      "id": "haze4k_test_split_terminal",
+      "reference": "GitHub-main terminal evidence for the isolated 100-scene historical-development stress role and untouched candidate-confirmation role.",
+      "allowed_uses": ["diagnostic", "evaluation"]
+    },
+    {
+      "id": "bounded_local_action_oracle_terminal",
+      "reference": "GitHub-main terminal evidence for GT-privileged keep, weaken, and strengthen action headroom.",
+      "allowed_uses": ["action_definition", "diagnostic", "comparison"]
+    },
+    {
+      "id": "official_architecture_anchor",
+      "reference": "Immutable github/codex/haze4k-official-arch-anchor at 3b4da35440c8c26a7d1bcaf1daf342e11d9a3898, retained only as the upstream identity of the frozen factorial checkpoints and scene caches.",
+      "allowed_uses": ["initialization"]
+    }
+  ],
+  "dependency_roles": {
+    "parent_authorization": ["diagnostic"],
+    "frozen_prediction_evidence": ["diagnostic", "comparison", "evaluation"],
+    "dataset_role_evidence": ["diagnostic", "training", "supervision", "evaluation"],
+    "mechanism_evidence": ["action_definition", "diagnostic", "comparison"],
+    "model_provenance": ["initialization"]
+  },
+  "stages": {
+    "frozen_output_controller_development": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["low_risk_tail_end_to_end_controller_qualification"]
+    }
+  },
+  "route_families": {
+    "low_risk_tail_end_to_end_controller_qualification": {
+      "core_assumption": "At least one frozen observable factorial cell has a useful raw low-risk tail that the shared one-sided corrected tilewise veto concealed, and a nested scene-balanced probability map plus policy-level setwise risk budget can recover it without changing the model, data, action family, thresholds, or protected-data scope.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after one receipt-bound 9-cell, 5-fold, 3-seed controller qualification reaches a typed terminal; no post-outcome method, area-cap, threshold, data-role, or comparison expansion is allowed.",
+      "reopen_evidence_types": [
+        "new_independent_low_risk_tail_labels",
+        "new_action_family_evidence",
+        "new_controller_training_evidence"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "end_to_end_controller",
+    "risk_probability_semantics",
+    "policy_level_selection",
+    "action_family",
+    "dataset_scope"
+  ],
+  "amendments": []
+}
