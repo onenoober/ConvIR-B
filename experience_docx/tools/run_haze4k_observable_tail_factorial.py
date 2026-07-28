@@ -1790,8 +1790,8 @@ def stratified_bootstrap_family(
     family_size: int,
     seed: int,
 ) -> dict[str, dict[str, Any]]:
-    if family_size != len(fields):
-        raise RuntimeError("formal family size must equal the frozen field count")
+    if family_size < len(fields):
+        raise RuntimeError("formal family size must cover the evaluated field count")
     folds = sorted({int(row["fold"]) for row in rows})
     if folds != list(range(OOF_FOLDS)):
         raise RuntimeError("formal bootstrap requires the five frozen OOF folds")
@@ -3844,6 +3844,17 @@ def contract(context_path: Path) -> None:
                 total_iterations=PROBE_COST_ITERATIONS,
                 stage="synthetic_tail_factorial",
             )
+    partitioned_family_rows = [
+        {"fold": fold, "partitioned_metric": float(index) / 1000.0}
+        for fold in range(OOF_FOLDS)
+        for index in range(TRAINING_SCENES // OOF_FOLDS)
+    ]
+    partitioned_family_interval = stratified_bootstrap_family(
+        partitioned_family_rows,
+        ["partitioned_metric"],
+        family_size=FACTORIAL_FAMILY_SIZE,
+        seed=BOOTSTRAP_SEED + 999,
+    )["partitioned_metric"]
     checks.update({
         "probe_iteration_count": completed_iterations == PROBE_COST_ITERATIONS,
         "base_feature_shape": extracted["features"].shape[0] == FEATURE_CHANNELS,
@@ -3855,6 +3866,12 @@ def contract(context_path: Path) -> None:
         "three_seed_path": len(finite_cells) == len(CELL_IDS) * len(SEED_OFFSETS),
         "finite_predictions_and_replay": all(finite_cells),
         "synthetic_training_response": all(loss_decreased),
+        "partitioned_comparison_family": (
+            partitioned_family_interval["scene_count"] == TRAINING_SCENES
+            and partitioned_family_interval["family_size"] == FACTORIAL_FAMILY_SIZE
+            and math.isfinite(partitioned_family_interval["lower"])
+            and math.isfinite(partitioned_family_interval["upper"])
+        ),
     })
     elapsed = time.monotonic() - started
     write_contract_result(

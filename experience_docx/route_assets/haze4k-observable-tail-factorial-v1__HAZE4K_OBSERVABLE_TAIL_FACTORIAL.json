@@ -15,7 +15,7 @@
       "id": "factorial_entrypoint",
       "kind": "file",
       "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_observable_tail_factorial.py",
-      "sha256": "a9207aff2802184047805cfd91b4b38db34321373dadb57147cc78e8489102c5"
+      "sha256": "4abd3cc213bfaf4f16bfae37252cdf821834771e7b2964cc078617e3a40676fb"
     },
     {
       "access_role": "engineering_debug",
