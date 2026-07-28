@@ -1,0 +1,118 @@
+{
+  "assets": [
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor",
+      "require_clean": true
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "review_entrypoint",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_frozen_output_tail_controller_evidence_review.py",
+      "sha256": "1311555578e3f2c02424611976401bd20f86e2145e96f0bd3884056612cf3210"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "parent_qualification_entrypoint",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_frozen_output_tail_controller_qualification.py",
+      "sha256": "b892caa106d3a5e8052e09076a69a3e29bb844fc47af7c040a5373169133bd96"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/runtime_environments/convir_4090_cu121_observable_utility_v1.json",
+      "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k_frozen_output_tail_controller_qualification_v1_closeout.json",
+      "sha256": "54b61f0f96d7442ec73b70b950090762631220c1ed2f01654b8f01b55cdaeac1"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_conclusion",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k_frozen_output_tail_controller_qualification_v1_conclusion.json",
+      "sha256": "4a1f6292759766e406cebc566230ecac60ed580d2ea87cba539ab1e0531ba682"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k_frozen_output_tail_controller_qualification_v1_summary.json",
+      "sha256": "4b1232bf30ac9dd1a623b12fdde61d5e1d035a1959eb052114ab10ab21669024"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_gate_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k_frozen_output_tail_controller_qualification_v1_gate_summary.json",
+      "sha256": "ef5af047fe7e795b58db742de8ec127fa431c3d25345d6902d4dba4a61f3d199"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_selection_freeze",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k_frozen_output_tail_controller_qualification_v1_selection_freeze.json",
+      "sha256": "06420d49c3e1a4000ede155d7e8d441f9c7b98414152d16644fb6f50e1b906e9"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "current_raw_inventory",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k_frozen_output_tail_controller_qualification_v1_raw_inventory.json",
+      "sha256": "fdebfc7cdad65d355b551fcca9f4fa4130e468525c35c96557e2f6b67ae0e188"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_inventory_verification",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k_frozen_output_tail_controller_qualification_v1_parent_inventory_verification.json",
+      "sha256": "a1a11a4e3001820bb1fac4cb14164d9b4c3d83a73ffe30ffcda98e93000e797b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "upstream_raw_inventory",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-observable-tail-factorial-v1/haze4k_observable_tail_factorial_v1_raw_inventory.json",
+      "sha256": "9a5249f66c994f9c94245145cc65e02da643ada71cc047cd5144db475b3c66ff"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "current_raw_workspace",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k-frozen-output-tail-controller-qualification-v1-r1"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "upstream_raw_workspace",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-observable-tail-factorial-v1/haze4k-observable-tail-factorial-v1-r2"
+    }
+  ],
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW",
+  "route_id": "haze4k-frozen-output-tail-controller-evidence-review-v1",
+  "schema_version": 2
+}

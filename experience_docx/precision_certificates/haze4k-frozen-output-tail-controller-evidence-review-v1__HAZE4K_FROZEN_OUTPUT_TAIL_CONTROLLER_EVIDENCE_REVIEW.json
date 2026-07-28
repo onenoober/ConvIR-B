@@ -1,0 +1,33 @@
+{
+  "assurance": {
+    "method_id": "worst_case_binomial_planning",
+    "planning_sd_rule": "Use the worst-case Bernoulli standard deviation 0.5 with the frozen two-channel critical value; array elements remain finite-population census detail.",
+    "probability": 0.95
+  },
+  "certificate_id": "haze4k_frozen_output_tail_controller_evidence_review_precision_v1",
+  "comparison_family": "utility_risk_reconstruction_identity",
+  "confidence_level": 0.95,
+  "critical_value": 2.2414027276049464,
+  "feasible": true,
+  "independent_unit": "original_clear_scene",
+  "method": "binomial_worst_case",
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW",
+  "primary_estimand_id": "scene_reconstruction_mismatch_prevalence",
+  "route_id": "haze4k-frozen-output-tail-controller-evidence-review-v1",
+  "schema_version": 2,
+  "source_reference": "GitHub-main parent terminal and raw inventory establish 600 independent OOF original-clear scenes; worst-case binomial planning is outcome independent.",
+  "source_role": "development_screening",
+  "strata": [
+    {
+      "feasible": true,
+      "id": "haze4k_train_oof",
+      "independent_groups_available": 600,
+      "independent_groups_planned": 600,
+      "independent_groups_required": 503,
+      "planning_sd": 0.5,
+      "planning_sd_upper_bound": 0.5,
+      "source_reference": "The frozen parent qualification contains exactly 600 OOF original-clear scenes before this evidence review reads any arrays."
+    }
+  ],
+  "target_half_width": 0.05
+}

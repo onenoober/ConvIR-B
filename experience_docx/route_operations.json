@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-frozen-output-tail-controller-evidence-review-v1.json",
+  "experiment_spec_sha256": "6864882a57151b2d6bfeb98ee214299eb46f7928f22d6d8ee6e6526d6524faa4",
+  "operations": {
+    "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "DECISION_FOCUSED_CONTROLLER_CONTRACT_AUTHORING_ONLY",
+          "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_closeout.json",
+      "heartbeat_timeout_seconds": 900,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "frozen_output_tail_controller_evidence_review",
+      "monitor_profile": "short",
+      "output_id": "haze4k-frozen-output-tail-controller-evidence-review-v1-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_frozen_output_tail_controller_evidence_review_v1.json",
+  "program_contract_sha256": "203884d6d7adf1bdb532de465fbdd667a30b3a168343d78a37baf48bf860724b",
+  "route_card_relpath": "experience_docx/experiment_cards/haze4k-frozen-output-tail-controller-evidence-review-v1.md",
+  "route_id": "haze4k-frozen-output-tail-controller-evidence-review-v1",
+  "rules_commit": "27658f5dceb0e7e697b20c7a0714792fca05b66a",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW": "experience_docx/scientific_contracts/haze4k-frozen-output-tail-controller-evidence-review-v1__HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW.json"
+  }
+}

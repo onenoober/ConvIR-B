@@ -1,0 +1,88 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/haze4k-frozen-output-tail-controller-evidence-review-v1__HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/haze4k-frozen-output-tail-controller-evidence-review-v1__HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW.json",
+    "cost_contract": {
+      "batch_shape_policy": "bounded",
+      "candidate_schedule": "none",
+      "fixed_overhead_seconds": 120,
+      "formal_iterations": 5400,
+      "formal_max_wall_seconds": 3600,
+      "max_peak_memory_mib": 2048,
+      "max_seconds_per_iteration": 0.1,
+      "memory_scaling": "constant",
+      "probe_iterations": 18,
+      "production_path": "exact",
+      "safety_factor": 3,
+      "strategy": "fixed_linear_extrapolation",
+      "termination_policy": "fixed_count",
+      "workload_class": "fixed_iteration_map"
+    },
+    "max_seconds": 900,
+    "mode": "cpu_exact"
+  },
+  "entrypoint_relpath": "experience_docx/tools/run_haze4k_frozen_output_tail_controller_evidence_review.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_summary.json",
+      "max_bytes": 1048576,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_evidence_review_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_gate_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_evidence_review_gate_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_quantiles.csv",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_evidence_review_quantiles.csv"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_threshold_counts.csv",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_evidence_review_threshold_counts.csv"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_worst_points.json",
+      "max_bytes": 524288,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_evidence_review_worst_points.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_action_replay.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_evidence_review_action_replay.json"
+    },
+    {
+      "destination_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_inventory.json",
+      "max_bytes": 524288,
+      "required": true,
+      "source_relpath": "workload/haze4k_frozen_output_tail_controller_evidence_review_inventory.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 3600,
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/haze4k-frozen-output-tail-controller-evidence-review-v1__HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW.json",
+    "mode": "formal_precision",
+    "rationale": "The 600 independent OOF scenes exceed the frozen 503-scene worst-case binomial requirement for a 0.05 half-width under critical value 2.2414027276; all array elements are additionally compared as a finite-population census."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "haze4k-frozen-output-tail-controller-evidence-review-v1",
+  "schema_version": 2,
+  "timeout_seconds": 5400,
+  "total_units": 602
+}
