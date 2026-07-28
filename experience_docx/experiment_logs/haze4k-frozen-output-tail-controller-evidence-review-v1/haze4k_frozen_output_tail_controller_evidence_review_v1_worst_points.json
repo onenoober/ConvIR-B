@@ -1,0 +1,208 @@
+{
+  "comparison_device_path": "numpy_cpu_float64_subtraction",
+  "comparison_level": "saved_ensemble",
+  "nonfinite_elements": {
+    "saved_seed_ensemble:risk": 0,
+    "saved_seed_ensemble:utility": 0,
+    "upstream_vs_current:risk": 0,
+    "upstream_vs_current:utility": 0
+  },
+  "production_source_device_class": "cuda_sm89",
+  "schema_version": 1,
+  "seed_level_reconstruction_from_upstream": "not_available_from_saved_upstream_ensemble_files",
+  "structural_anomaly_counts": {},
+  "worst_points": [
+    {
+      "absolute_error": 5.960464477539063e-08,
+      "action": 0,
+      "action_name": "weaken",
+      "cell": "R0_L0",
+      "checkpoint_files": [
+        {
+          "bytes": 395552,
+          "relative_path": "workload/head_checkpoints/R0_L0_fold_0_seed_0.pt",
+          "seed_index": 0,
+          "sha256": "e9cd97ff8b860c369194e7b444fd4c333b8c30aa5cc3b144f808211b8e6ae147"
+        },
+        {
+          "bytes": 395552,
+          "relative_path": "workload/head_checkpoints/R0_L0_fold_0_seed_1.pt",
+          "seed_index": 1,
+          "sha256": "cf560b38a2e27eb7552793dd0fb23a9c45429d36ea029e585e707b74843ce5f9"
+        },
+        {
+          "bytes": 395552,
+          "relative_path": "workload/head_checkpoints/R0_L0_fold_0_seed_2.pt",
+          "seed_index": 2,
+          "sha256": "41f2bf3a351371f4f202f796da5dc17774dbec0048a2e76352986865df4ea397"
+        }
+      ],
+      "column": 0,
+      "comparison_device_path": "numpy_cpu_float64_subtraction",
+      "comparison_file_id": "R0_L0|0|0062f17865656805ebaebdc80b8f3a3c67126f09bf2ce9eff5116ef6fbeb4ac8",
+      "current_dtype": "float32",
+      "current_file_relpath": "workload/oof_controller_scenes/fold_0_0062f17865656805ebaebdc8.npz",
+      "current_file_sha256": "17d2a570bcc1f514ed5d82bede420c7e8d0d7f72e0ffc7be6d022549bf7ce77e",
+      "current_value": 0.9891161322593689,
+      "fold": 0,
+      "metric": "risk",
+      "production_source_device_class": "cuda_sm89",
+      "reference_dtype": "float32",
+      "reference_file_relpath": "workload/raw_predictions/haze4k_train_oof/R0_L0/fold_0_0062f17865656805ebaebdc8.npz",
+      "reference_file_sha256": "0abb2b25bf9487e0a0901c4f28270bcc12f61e1dffa3dae949b89747f6335ea4",
+      "reference_value": 0.9891161918640137,
+      "row": 0,
+      "scene": "0062f17865656805ebaebdc80b8f3a3c67126f09bf2ce9eff5116ef6fbeb4ac8",
+      "shape": [
+        2,
+        13,
+        13
+      ],
+      "source": "saved_seed_ensemble"
+    },
+    {
+      "absolute_error": 4.76837158203125e-07,
+      "action": 1,
+      "action_name": "strengthen",
+      "cell": "R0_L0",
+      "checkpoint_files": [
+        {
+          "bytes": 395552,
+          "relative_path": "workload/head_checkpoints/R0_L0_fold_0_seed_0.pt",
+          "seed_index": 0,
+          "sha256": "e9cd97ff8b860c369194e7b444fd4c333b8c30aa5cc3b144f808211b8e6ae147"
+        },
+        {
+          "bytes": 395552,
+          "relative_path": "workload/head_checkpoints/R0_L0_fold_0_seed_1.pt",
+          "seed_index": 1,
+          "sha256": "cf560b38a2e27eb7552793dd0fb23a9c45429d36ea029e585e707b74843ce5f9"
+        },
+        {
+          "bytes": 395552,
+          "relative_path": "workload/head_checkpoints/R0_L0_fold_0_seed_2.pt",
+          "seed_index": 2,
+          "sha256": "41f2bf3a351371f4f202f796da5dc17774dbec0048a2e76352986865df4ea397"
+        }
+      ],
+      "column": 9,
+      "comparison_device_path": "numpy_cpu_float64_subtraction",
+      "comparison_file_id": "R0_L0|0|967d9fe93b6532eb818069564e313ec5db25aff1e1a6aef8aee7486be750b92d",
+      "current_dtype": "float32",
+      "current_file_relpath": "workload/oof_controller_scenes/fold_0_967d9fe93b6532eb81806956.npz",
+      "current_file_sha256": "da92dfd3b1f16f3aa9301f00a30cb96b64f4ecd6de12853ac84b180b33fbe3cc",
+      "current_value": 4.137826919555664,
+      "fold": 0,
+      "metric": "utility",
+      "production_source_device_class": "cuda_sm89",
+      "reference_dtype": "float32",
+      "reference_file_relpath": "workload/raw_predictions/haze4k_train_oof/R0_L0/fold_0_967d9fe93b6532eb81806956.npz",
+      "reference_file_sha256": "2c430f2a26f12ea8867816339e06c6333be6d7a874dffdb4c7d2b101d6d0c063",
+      "reference_value": 4.137827396392822,
+      "row": 2,
+      "scene": "967d9fe93b6532eb818069564e313ec5db25aff1e1a6aef8aee7486be750b92d",
+      "shape": [
+        2,
+        13,
+        13
+      ],
+      "source": "saved_seed_ensemble"
+    },
+    {
+      "absolute_error": 7.426738739013672e-05,
+      "action": 1,
+      "action_name": "strengthen",
+      "cell": "R2_L2",
+      "checkpoint_files": [
+        {
+          "bytes": 906452,
+          "relative_path": "workload/head_checkpoints/R2_L2_fold_2_seed_0.pt",
+          "seed_index": 0,
+          "sha256": "9378702a51ddb5008bab0dd6d1fa940c695ee15605dc2275f6d8d385296e296f"
+        },
+        {
+          "bytes": 906452,
+          "relative_path": "workload/head_checkpoints/R2_L2_fold_2_seed_1.pt",
+          "seed_index": 1,
+          "sha256": "4ee29311ebcfa2d4007e681abfabf00cfb21190ed29ff16a8a80da6b1949cd4a"
+        },
+        {
+          "bytes": 906452,
+          "relative_path": "workload/head_checkpoints/R2_L2_fold_2_seed_2.pt",
+          "seed_index": 2,
+          "sha256": "b0d6fa06362f2636226fb69ebd400f8ebaa0d24dc54b531c402217f4d48a9ca0"
+        }
+      ],
+      "column": 14,
+      "comparison_device_path": "numpy_cpu_float64_subtraction",
+      "comparison_file_id": "R2_L2|2|6d03f8169fc54abad2bf8f10446c1ef6e7721da7fc70480a12ba31b034d77cf5",
+      "current_dtype": "float32",
+      "current_file_relpath": "workload/oof_controller_scenes/fold_2_6d03f8169fc54abad2bf8f10.npz",
+      "current_file_sha256": "c252b0f6b04b7edd2bf584b95a5be9f039d2146ad6cd6dfccc560d9624eeb0f4",
+      "current_value": 0.8236216306686401,
+      "fold": 2,
+      "metric": "risk",
+      "production_source_device_class": "cuda_sm89",
+      "reference_dtype": "float32",
+      "reference_file_relpath": "workload/raw_predictions/haze4k_train_oof/R2_L2/fold_2_6d03f8169fc54abad2bf8f10.npz",
+      "reference_file_sha256": "b0696b0e9126066d4a136eb9b37323b093f0a48182c23d0e072a406383b626d9",
+      "reference_value": 0.8236958980560303,
+      "row": 0,
+      "scene": "6d03f8169fc54abad2bf8f10446c1ef6e7721da7fc70480a12ba31b034d77cf5",
+      "shape": [
+        2,
+        15,
+        20
+      ],
+      "source": "upstream_vs_current"
+    },
+    {
+      "absolute_error": 0.000347137451171875,
+      "action": 1,
+      "action_name": "strengthen",
+      "cell": "R2_L1",
+      "checkpoint_files": [
+        {
+          "bytes": 1052874,
+          "relative_path": "workload/head_checkpoints/R2_L1_fold_2_seed_0.pt",
+          "seed_index": 0,
+          "sha256": "5879b444c93892805e2cad0dce1a1f3ab5da1b0b343d516a4c0ac4be898d825d"
+        },
+        {
+          "bytes": 1052874,
+          "relative_path": "workload/head_checkpoints/R2_L1_fold_2_seed_1.pt",
+          "seed_index": 1,
+          "sha256": "9970155381108003ec253049bba8173d90cdd441303caf600584282b7a22758f"
+        },
+        {
+          "bytes": 1052874,
+          "relative_path": "workload/head_checkpoints/R2_L1_fold_2_seed_2.pt",
+          "seed_index": 2,
+          "sha256": "1087df08972109877584e4bf00ec742575fb5bd41459130e794adff85f287b47"
+        }
+      ],
+      "column": 13,
+      "comparison_device_path": "numpy_cpu_float64_subtraction",
+      "comparison_file_id": "R2_L1|2|33c637904fa6d9429f7f7a938716934e8b465978629cd278893c96cff5945eb3",
+      "current_dtype": "float32",
+      "current_file_relpath": "workload/oof_controller_scenes/fold_2_33c637904fa6d9429f7f7a93.npz",
+      "current_file_sha256": "52ef54e721715db41bdf2f872cb3b12318e032739bb7dd1d6c3e1ee913e6af6b",
+      "current_value": -0.36001065373420715,
+      "fold": 2,
+      "metric": "utility",
+      "production_source_device_class": "cuda_sm89",
+      "reference_dtype": "float32",
+      "reference_file_relpath": "workload/raw_predictions/haze4k_train_oof/R2_L1/fold_2_33c637904fa6d9429f7f7a93.npz",
+      "reference_file_sha256": "59aca067fd15de7564f2a7e862667bde4f2e2c8014234eec9764d2da01e29581",
+      "reference_value": -0.36035779118537903,
+      "row": 7,
+      "scene": "33c637904fa6d9429f7f7a938716934e8b465978629cd278893c96cff5945eb3",
+      "shape": [
+        2,
+        15,
+        20
+      ],
+      "source": "upstream_vs_current"
+    }
+  ]
+}

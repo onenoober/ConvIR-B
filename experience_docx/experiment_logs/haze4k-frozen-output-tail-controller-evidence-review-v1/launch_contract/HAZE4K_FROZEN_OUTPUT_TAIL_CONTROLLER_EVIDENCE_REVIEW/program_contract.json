@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "program_id": "haze4k_frozen_output_tail_controller_evidence_review_v1",
+  "objective": "Classify the receipt-bound raw-prediction reconstruction failure from the completed frozen-output tail-controller qualification by comparing all saved OOF ensemble arrays with their upstream saved predictions, checking saved-seed ensemble consistency, and testing whether any discrepancy changes the frozen selected action policy or terminal scientific gates.",
+  "source_anchors": [
+    {
+      "id": "tail_controller_qualification_terminal",
+      "reference": "GitHub-main terminal evidence for haze4k-frozen-output-tail-controller-qualification-v1 at route commit 4ab3443359e352a2e1ad3590cc6f4b326e899f07 and receipt 56e89b4a6646c26e6c2d9a42db9769a428ffe086a34d8bd519cab6e19bc95575.",
+      "allowed_uses": ["diagnostic", "comparison", "evaluation"]
+    },
+    {
+      "id": "observable_tail_factorial_raw_inventory",
+      "reference": "Receipt-bound cloud raw inventory for haze4k-observable-tail-factorial-v1, including all 5400 OOF prediction files, 135 head checkpoints, and 750 scene caches.",
+      "allowed_uses": ["diagnostic", "comparison", "evaluation"]
+    },
+    {
+      "id": "official_architecture_anchor",
+      "reference": "Immutable github/codex/haze4k-official-arch-anchor at 3b4da35440c8c26a7d1bcaf1daf342e11d9a3898, retained only as upstream model provenance for the already-saved predictions.",
+      "allowed_uses": ["initialization"]
+    }
+  ],
+  "dependency_roles": {
+    "parent_authorization": ["diagnostic"],
+    "frozen_prediction_evidence": ["diagnostic", "comparison", "evaluation"],
+    "model_provenance": ["initialization"]
+  },
+  "stages": {
+    "receipt_bound_evidence_review": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["frozen_output_reconstruction_identity_review"]
+    }
+  },
+  "route_families": {
+    "frozen_output_reconstruction_identity_review": {
+      "core_assumption": "The saved upstream and qualification arrays contain enough receipt-bound evidence to distinguish bounded decision-invariant numerical discrepancy from material prediction-identity failure without inference, retraining, threshold changes, or protected-data access.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after one complete 600-scene by 9-cell ensemble census, saved-seed consistency audit, and frozen selected-action replay reaches a typed terminal.",
+      "reopen_evidence_types": [
+        "new_device_determinism_trace",
+        "new_upstream_single_seed_prediction_evidence",
+        "new_receipt_identity_evidence"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "evidence_identity_resolution",
+    "device_numerical_trace",
+    "single_seed_provenance"
+  ],
+  "amendments": []
+}

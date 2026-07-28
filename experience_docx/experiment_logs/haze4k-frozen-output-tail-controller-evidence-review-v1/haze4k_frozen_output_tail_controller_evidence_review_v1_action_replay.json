@@ -1,0 +1,33 @@
+{
+  "actions_decision_invariant": true,
+  "area_cap": 0.01,
+  "calibrated_risk_identity": "weighted_q_is_the_saved_raw_risk_array",
+  "maximum_selected_area_weighted_risk_difference": 0.0,
+  "maximum_selected_area_weighted_utility_difference": 0.0,
+  "pair_mismatch_elements": {
+    "current_vs_upstream_replay": 0,
+    "saved_vs_current_replay": 0,
+    "saved_vs_upstream_replay": 0
+  },
+  "pair_mismatch_scenes": {},
+  "parent_gate_outcomes": {
+    "coverage_and_selection_integrity": "pass",
+    "evidence_identity": "fail",
+    "low_risk_tail_mechanism_diagnostic": "favorable",
+    "oracle_headroom_control": "favorable",
+    "precision": "met",
+    "selected_area_and_image_safety": "indeterminate",
+    "selected_controller_actionable_utility": "unfavorable",
+    "selected_controller_activation": "unfavorable"
+  },
+  "parent_qualification_retroactively_passed": false,
+  "risk_method": "weighted_q",
+  "schema_version": 1,
+  "selected_candidate_id": "R0_L1__weighted_q__raw__setwise__cap_0p01",
+  "selected_cell": "R0_L1",
+  "selection_freeze_sha256": "06420d49c3e1a4000ede155d7e8d441f9c7b98414152d16644fb6f50e1b906e9",
+  "selection_frozen_before_formal_oof": true,
+  "selector": "setwise",
+  "terminal_scientific_gates_decision_invariant": true,
+  "utility_method": "raw"
+}

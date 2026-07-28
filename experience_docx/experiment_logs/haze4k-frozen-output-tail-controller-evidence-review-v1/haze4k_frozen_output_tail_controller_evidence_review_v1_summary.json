@@ -1,0 +1,147 @@
+{
+  "action_replay": {
+    "actions_decision_invariant": true,
+    "area_cap": 0.01,
+    "calibrated_risk_identity": "weighted_q_is_the_saved_raw_risk_array",
+    "maximum_selected_area_weighted_risk_difference": 0.0,
+    "maximum_selected_area_weighted_utility_difference": 0.0,
+    "pair_mismatch_elements": {
+      "current_vs_upstream_replay": 0,
+      "saved_vs_current_replay": 0,
+      "saved_vs_upstream_replay": 0
+    },
+    "pair_mismatch_scenes": {},
+    "parent_gate_outcomes": {
+      "coverage_and_selection_integrity": "pass",
+      "evidence_identity": "fail",
+      "low_risk_tail_mechanism_diagnostic": "favorable",
+      "oracle_headroom_control": "favorable",
+      "precision": "met",
+      "selected_area_and_image_safety": "indeterminate",
+      "selected_controller_actionable_utility": "unfavorable",
+      "selected_controller_activation": "unfavorable"
+    },
+    "parent_qualification_retroactively_passed": false,
+    "risk_method": "weighted_q",
+    "schema_version": 1,
+    "selected_candidate_id": "R0_L1__weighted_q__raw__setwise__cap_0p01",
+    "selected_cell": "R0_L1",
+    "selection_freeze_sha256": "06420d49c3e1a4000ede155d7e8d441f9c7b98414152d16644fb6f50e1b906e9",
+    "selection_frozen_before_formal_oof": true,
+    "selector": "setwise",
+    "terminal_scientific_gates_decision_invariant": true,
+    "utility_method": "raw"
+  },
+  "compact_evidence_files": {
+    "action_replay": "haze4k_frozen_output_tail_controller_evidence_review_action_replay.json",
+    "gate_summary": "haze4k_frozen_output_tail_controller_evidence_review_gate_summary.json",
+    "inventory": "haze4k_frozen_output_tail_controller_evidence_review_inventory.json",
+    "quantiles": "haze4k_frozen_output_tail_controller_evidence_review_quantiles.csv",
+    "threshold_counts": "haze4k_frozen_output_tail_controller_evidence_review_threshold_counts.csv",
+    "worst_points": "haze4k_frozen_output_tail_controller_evidence_review_worst_points.json"
+  },
+  "comparison_population": {
+    "cells": 9,
+    "comparison_level": "saved_ensemble",
+    "ensemble_comparison_files": 5400,
+    "metrics": [
+      "utility",
+      "risk"
+    ],
+    "scenes": 600
+  },
+  "coverage_checks": {
+    "comparison_files": true,
+    "current_oof_scenes": true,
+    "factorial_cells": true,
+    "folds": true,
+    "scene_diagnostic_files": true,
+    "selected_action_replays": true,
+    "unique_scene_identities": true
+  },
+  "discrepancy_class": "material_identity_failure",
+  "evidence_role": "development_screening",
+  "gate_outcomes": {
+    "coverage": "pass",
+    "evidence_identity": "pass",
+    "precision": "met",
+    "reconstruction_materiality": "unfavorable"
+  },
+  "independent_unit": "original_clear_scene",
+  "input_identity_checks": {
+    "closeout_sha256": true,
+    "conclusion_identity": true,
+    "conclusion_sha256": true,
+    "current_raw_inventory": true,
+    "gate_sha256": true,
+    "parent_gate_copy": true,
+    "parent_identity_failure_is_scoped": true,
+    "parent_inventory_copy": true,
+    "parent_inventory_verification_sha256": true,
+    "protected_assets_absent": true,
+    "route_commit": true,
+    "route_identity": true,
+    "selected_candidate": true,
+    "selection_sha256": true,
+    "selection_time_isolation": true,
+    "summary_sha256": true,
+    "terminal": true,
+    "upstream_raw_inventory": true
+  },
+  "interpretation_boundary": {
+    "bounded_discrepancy_authorization_ceiling": "decision-focused controller contract authoring only",
+    "parent_qualification_retroactively_passed": false,
+    "scientific_utility_and_activation_parent_outcomes_unchanged": true
+  },
+  "limitations": [
+    "All arrays are development-screening evidence; no confirmation, canary, locked-test, or cross-domain data were read.",
+    "The 600 original-clear scenes are the only independent units; cells, files, tiles, actions, and elements do not increase n.",
+    "The upstream files save ensemble predictions, so an upstream single-seed discrepancy cannot be reconstructed from those files alone.",
+    "A bounded decision-invariant discrepancy cannot retroactively qualify the parent controller because utility and activation were independently unfavorable."
+  ],
+  "marker": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_COMPLETE",
+  "maximum_saved_seed_ensemble_absolute_error": 4.76837158203125e-07,
+  "maximum_upstream_current_absolute_error": 0.000347137451171875,
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW",
+  "precision": {
+    "available_scenes": 600,
+    "critical_value": 2.2414027276049464,
+    "met": true,
+    "method": "binomial_worst_case",
+    "observed_half_width": 0.008303616273687697,
+    "required_scenes": 503,
+    "target_half_width": 0.05
+  },
+  "production_comparison_boundary": {
+    "comparison_path": "NumPy CPU with float64 subtraction",
+    "saved_array_dtype_expected": "float32",
+    "single_seed_upstream_reconstruction": "not available from ensemble-only upstream files",
+    "upstream_and_current_prediction_source": "cuda_sm89"
+  },
+  "raw_scene_diagnostics": {
+    "directory": "raw_scene_cell_diagnostics",
+    "file_count": 600,
+    "inventory_sha256": "f7db20caf77c502b2dcba49337d92c53c884da3437237311adef05c42aacce16",
+    "retention": "cloud_only"
+  },
+  "route_id": "haze4k-frozen-output-tail-controller-evidence-review-v1",
+  "run_id": "haze4k-frozen-output-tail-controller-evidence-review-v1-r3",
+  "scene_mismatch_prevalence": {
+    "critical_value": 2.2414027276049464,
+    "estimate": 1.0,
+    "family_size": 2,
+    "lower": 0.9916963837263123,
+    "successes": 600,
+    "total": 600,
+    "upper": 1.0
+  },
+  "schema_version": 1,
+  "scope": "receipt-bound frozen-output tail-controller evidence review",
+  "time_isolation": {
+    "review_changed_thresholds_or_gates": false,
+    "review_read_calibration_predictions": false,
+    "review_reran_candidate_selection": false,
+    "selection_freeze_sha256": "06420d49c3e1a4000ede155d7e8d441f9c7b98414152d16644fb6f50e1b906e9",
+    "selection_frozen_before_parent_formal_oof": true
+  }
+}

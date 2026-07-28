@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k-frozen-output-tail-controller-evidence-review-v1",
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW",
+  "run_id": "haze4k-frozen-output-tail-controller-evidence-review-v1-r3",
+  "state": "COMPLETED_GATE_FAIL",
+  "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "All 602 planned units completed across 600 independent original-clear scenes and all 9 factorial cells. The saved current ensemble is internally consistent with the three saved seed arrays (maximum absolute error 4.76837158203125e-7), but the upstream and current saved ensembles differ materially: maximum utility error was 3.47137451171875e-4 and maximum risk error was 7.426738739013672e-5. Upstream-current mismatches above 1e-6 occurred in all 600 scenes, and utility mismatches above 1e-4 occurred in 260 scenes. The frozen R0_L1 weighted-q/raw/setwise/cap-0.01 action replay nevertheless had zero action mismatches and zero selected area-weighted utility or risk difference. The frozen-output identity claim therefore fails, while the parent controller remains scientifically unqualified for its independent unfavorable utility and activation results.",
+  "gate_reasons": [
+    "Evidence identity passed: the route, parent terminal, selection freeze, current inventory, upstream inventory, entrypoints, runtime environment, and protected-data exclusions all matched their frozen identities.",
+    "Coverage passed: 600 unique scenes, all folds, all 9 cells, all 5,400 ensemble comparison files, every selected action replay, and all 602 completed-unit ledger records were present.",
+    "Precision was met: 600 independent scenes exceeded the required 503, and the simultaneous worst-case prevalence half-width was 0.0083036 against the frozen 0.05 target. Additional scenes are not the primary remedy.",
+    "Reconstruction materiality was unfavorable because the maximum upstream-current error was 3.47137451171875e-4, above the frozen 1e-4 material-identity threshold.",
+    "The mismatch was population-wide rather than an isolated outlier: 600/600 scenes had at least one discrepancy, with a simultaneous prevalence interval of [0.991696, 1.0].",
+    "The current saved ensemble was internally reproducible from its three saved seed arrays: no saved-seed discrepancy exceeded 1e-6, no nonfinite values were found, and no structural anomalies were detected.",
+    "The discrepancy was decision-invariant for the frozen controller: all three pairwise action replays had zero mismatched elements, and selected area-weighted utility and risk differences were both zero.",
+    "The parent route cannot be retroactively qualified because its selected-controller actionable utility and activation gates were independently unfavorable, regardless of the reconstruction identity failure.",
+    "No confirmation, canary, locked-test, cross-domain, or protected data were touched; all evidence is development-screening only."
+  ],
+  "competing_explanation": "The current artifacts are internally coherent at float32 rounding scale, so simple averaging error in the current three-seed ensemble is not a plausible explanation for the material discrepancy. The upstream-current difference is confined to three cells but appears in every scene, which is more consistent with a systematic production-path, code-version, checkpoint-binding, or numerical-environment difference than with insufficient sample size or a few corrupt files. However, upstream files retain only ensemble predictions, so this evidence cannot localize the discrepancy to an upstream seed or distinguish exact code/asset drift from reproducible device-level numerical divergence. The unchanged frozen actions show that this identity failure did not alter the reviewed controller decision, but decision invariance does not satisfy the frozen-output identity contract.",
+  "limitations": [
+    "All arrays are development-screening evidence; no confirmation, canary, locked-test, NH-Haze, ITS, OTS, or other cross-domain data were read.",
+    "The 600 original-clear scenes are the only independent units; cells, folds, files, tiles, actions, and more than five million compared elements do not increase the effective sample size.",
+    "The upstream artifacts contain ensemble predictions but not corresponding per-seed prediction arrays, preventing seed-level attribution of the upstream-current discrepancy.",
+    "The comparison uses NumPy CPU float64 subtraction on float32 arrays produced on CUDA sm89; it measures saved-output disagreement but does not by itself identify the production operation that introduced it.",
+    "Raw scene-cell diagnostics remain cloud-only; GitHub retains the aggregate distribution, threshold, worst-point, inventory, action-replay, and terminal evidence needed for this decision.",
+    "The route reviewed one already-frozen controller and cannot establish usefulness for a newly designed controller or risk-localization method."
+  ],
+  "next_action": "Stop the frozen-prediction claim and do not retry this scientific route. Any future controller work must use a new authorized route with an explicitly identity-stable production contract; this terminal authorizes no next stage."
+}

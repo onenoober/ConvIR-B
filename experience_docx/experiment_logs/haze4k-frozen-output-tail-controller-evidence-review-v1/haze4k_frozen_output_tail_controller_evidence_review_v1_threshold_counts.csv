@@ -1,0 +1,13 @@
+cell_count,comparison_file_count,current_file_count,element_count,metric,scene_count,source,threshold_strictly_greater_than
+0,0,0,0,utility,0,saved_seed_ensemble,1e-06
+0,0,0,0,utility,0,saved_seed_ensemble,1e-05
+0,0,0,0,utility,0,saved_seed_ensemble,0.0001
+0,0,0,0,risk,0,saved_seed_ensemble,1e-06
+0,0,0,0,risk,0,saved_seed_ensemble,1e-05
+0,0,0,0,risk,0,saved_seed_ensemble,0.0001
+3,1796,600,138044,utility,600,upstream_vs_current,1e-06
+3,1469,591,22783,utility,591,upstream_vs_current,1e-05
+3,340,260,622,utility,260,upstream_vs_current,0.0001
+3,1708,600,41397,risk,600,upstream_vs_current,1e-06
+3,654,356,2072,risk,356,upstream_vs_current,1e-05
+0,0,0,0,risk,0,upstream_vs_current,0.0001

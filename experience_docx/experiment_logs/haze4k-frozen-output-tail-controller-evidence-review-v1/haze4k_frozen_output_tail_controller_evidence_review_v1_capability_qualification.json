@@ -1,0 +1,40 @@
+{
+  "contract_mode": "cpu_exact",
+  "engineering_evidence": {
+    "cost": {
+      "observed_iterations": 18,
+      "observed_peak_memory_mib": 0.0,
+      "observed_wall_seconds": 0.006299604661762714
+    },
+    "device": "cpu",
+    "fixture": {
+      "batch": 1,
+      "channels": 2,
+      "height": 4,
+      "width": 5
+    },
+    "mode": "cpu_exact",
+    "production_path_exercised": true,
+    "protected_data_touched": false,
+    "scientific_output_created": false,
+    "scientific_training_occurred": false
+  },
+  "identity": {
+    "checkpoint_sha256": "fdebfc7cdad65d355b551fcca9f4fa4130e468525c35c96557e2f6b67ae0e188",
+    "code_path_sha256": "1b34a8c961da2162f2ed0a0edefde5f573ab6a26264b24031107662effb140e3",
+    "device_class": "cpu",
+    "input_contract_sha256": "0ddc63233aff3c65083e9e0c0640816de426d9c133967ca63b94f410546a7852",
+    "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
+    "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+  },
+  "identity_sha256": "c975f6e921805d8c6f8dd81692f8fc8dc5b4b20dcce8ef39da5629acf63cfc65",
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW",
+  "protected_data_touched": false,
+  "qualification_id": "cap_c975f6e921805d8c6f8dd816",
+  "route_commit": "c3ae9a99640a32e0c0ce0b06af8b099fd7c2a647",
+  "route_id": "haze4k-frozen-output-tail-controller-evidence-review-v1",
+  "run_id": "haze4k-frozen-output-tail-controller-evidence-review-v1-r3",
+  "schema_version": 1,
+  "scientific_authorization": "NONE",
+  "status": "PASSED_ENGINEERING"
+}

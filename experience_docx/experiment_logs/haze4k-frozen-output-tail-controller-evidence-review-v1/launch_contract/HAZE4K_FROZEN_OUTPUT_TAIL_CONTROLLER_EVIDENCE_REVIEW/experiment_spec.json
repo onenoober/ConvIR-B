@@ -1,0 +1,545 @@
+{
+  "schema_version": 2,
+  "route_id": "haze4k-frozen-output-tail-controller-evidence-review-v1",
+  "rules_commit": "27658f5dceb0e7e697b20c7a0714792fca05b66a",
+  "title": "Haze4K Frozen-Output Tail-Controller Evidence Review v1",
+  "rationale": "The completed tail-controller qualification is scientifically unfavorable on utility and activation but terminally inconclusive because its full reconstruction pass exceeded the frozen 1e-6 identity tolerance. Compact evidence omitted the discrepancy magnitude, location, dtype, file and checkpoint identities, saved-seed consistency, and whether the difference can change the frozen selected actions. This finite receipt-bound review resolves that uncertainty without inference or retraining. It rehashes both cloud workspaces, compares all 600 by 9 saved ensemble utility/risk file pairs, checks current ensembles against their saved three-seed means, and replays the frozen R0_L1 weighted-q/raw/setwise/cap-0.01 actions using upstream frozen tile areas. Scene-level mismatch prevalence supplies formal precision while complete array comparison remains a finite-population census. Raw scene-cell diagnostics remain cloud-only; compact aggregate evidence retains all quantities required for the typed decision.",
+  "first_operation": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW",
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_frozen_output_tail_controller_evidence_review_v1.json",
+  "operations": {
+    "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "frozen_output_tail_controller_evidence_review",
+        "require_gpu": false,
+        "output_id": "haze4k-frozen-output-tail-controller-evidence-review-v1-r3",
+        "closeout_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "short",
+        "heartbeat_timeout_seconds": 900,
+        "min_free_gpu_mib": 0,
+        "max_gpu_utilization_pct": 100
+      },
+      "program_authorization": {
+        "program_id": "haze4k_frozen_output_tail_controller_evidence_review_v1",
+        "stage_id": "receipt_bound_evidence_review",
+        "family_id": "frozen_output_reconstruction_identity_review",
+        "mechanism_type": "adjacent",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {
+            "role": "parent_authorization",
+            "use": "diagnostic",
+            "anchor_id": "tail_controller_qualification_terminal"
+          },
+          {
+            "role": "frozen_prediction_evidence",
+            "use": "diagnostic",
+            "anchor_id": "tail_controller_qualification_terminal"
+          },
+          {
+            "role": "frozen_prediction_evidence",
+            "use": "comparison",
+            "anchor_id": "observable_tail_factorial_raw_inventory"
+          },
+          {
+            "role": "frozen_prediction_evidence",
+            "use": "evaluation",
+            "anchor_id": "observable_tail_factorial_raw_inventory"
+          },
+          {
+            "role": "model_provenance",
+            "use": "initialization",
+            "anchor_id": "official_architecture_anchor"
+          }
+        ],
+        "adjacent_sequence": 1,
+        "orthogonal_changes": [],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Is the parent raw-prediction reconstruction failure a bounded decision-invariant numerical discrepancy rather than a material saved-prediction identity failure?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "original_clear_scene",
+          "independent_group_count": 600,
+          "strata": [
+            {
+              "id": "haze4k_train_oof",
+              "independent_group_count": 600
+            }
+          ],
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "absolute difference between each saved qualification ensemble utility/risk array and its receipt-bound upstream factorial ensemble array",
+          "reference": "the upstream saved float32 ensemble utility/risk arrays that were the parent qualification reconstruction target",
+          "matched_budget": "all 600 OOF original-clear scenes, all nine cells, both utility and risk channels, and the exact corresponding fold-specific three-checkpoint identities",
+          "fixed_factors": [
+            "the parent receipt, route commit, selection freeze SHA, selected R0_L1 weighted-q/raw/setwise/cap-0.01 candidate, thresholds, gates, and data roles remain frozen",
+            "both cloud raw workspaces are fully rehashed against their archived inventories before comparison",
+            "comparison is at the saved ensemble level because upstream raw files do not contain single-seed predictions",
+            "current saved ensembles are separately compared with the mean of their three saved seed arrays",
+            "all differences are computed on CPU by NumPy float64 subtraction from saved float32 arrays; their production source is CUDA sm89",
+            "the frozen selected action map is replayed from current and upstream R0_L1 raw utility and weighted-q risk using the upstream frozen scene-cache tile areas",
+            "the candidate selection is not rerun and calibration predictions are not read; the parent selection freeze predates its formal OOF array parse",
+            "original-clear scenes are the only independent units; cells, files, tiles, actions, and elements never increase n",
+            "confirmation, canary, locked-test, NH-Haze, ITS, OTS, images, targets, model inference, and training remain out of scope"
+          ]
+        },
+        "primary_estimand": {
+          "id": "scene_reconstruction_mismatch_prevalence",
+          "metric_id": "scene_any_utility_or_risk_absolute_error_gt_1e_6",
+          "direction": "lower",
+          "aggregation": "prevalence over 600 original-clear scenes where any saved ensemble element across nine cells and two metrics strictly exceeds 1e-6",
+          "unit": "original_clear_scene",
+          "strata": ["haze4k_train_oof"]
+        },
+        "controls": [
+          "GitHub-main parent closeout, conclusion, summary, gate summary, selection freeze, raw inventory and inventory verification identities",
+          "complete current 745-file and upstream 10285-file cloud inventory rehash",
+          "saved current ensemble versus saved three-seed mean consistency for utility and risk",
+          "strict exceedance counts at 1e-6, 1e-5 and 1e-4 by element, cell, scene and file",
+          "finite-element p50, p90, p95, p99, p99.9 and maximum errors separately for utility and risk",
+          "maximizing cell, fold, hashed scene, action, row, column, dtype, current/upstream file SHA and three checkpoint SHAs",
+          "current-versus-saved, upstream-versus-saved and current-versus-upstream selected-action replay",
+          "weighted-q selected-area risk and raw-utility difference checks",
+          "cloud-only per-scene by-cell diagnostics and compact raw diagnostic inventory"
+        ],
+        "uncertainty": {
+          "id": "scene_mismatch_prevalence_uncertainty",
+          "method_id": "bonferroni_wilson_scene_prevalence_with_finite_population_array_census",
+          "confidence_level": 0.95,
+          "independent_unit": "original_clear_scene",
+          "comparison_family": "utility_risk_reconstruction_identity"
+        },
+        "gates": [
+          {
+            "id": "evidence_identity",
+            "type": "integrity",
+            "estimand_id": "scene_reconstruction_mismatch_prevalence",
+            "reference": "all parent compact artifacts and both receipt-bound raw workspace inventories match their frozen identities",
+            "direction": "equal",
+            "threshold": true,
+            "uncertainty_id": "scene_mismatch_prevalence_uncertainty",
+            "comparison_family": "utility_risk_reconstruction_identity",
+            "decision_role": "validity_veto",
+            "outcomes": ["pass", "fail", "invalid"],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "coverage",
+            "type": "coverage",
+            "estimand_id": "scene_reconstruction_mismatch_prevalence",
+            "reference": "exact 600-scene by 9-cell utility/risk census, five folds, 600 selected-action replays, and one cloud diagnostic per scene",
+            "direction": "equal",
+            "threshold": true,
+            "uncertainty_id": "scene_mismatch_prevalence_uncertainty",
+            "comparison_family": "utility_risk_reconstruction_identity",
+            "decision_role": "validity_veto",
+            "outcomes": ["pass", "fail", "invalid"],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "reconstruction_materiality",
+            "type": "materiality",
+            "estimand_id": "scene_reconstruction_mismatch_prevalence",
+            "reference": "favorable requires max in (1e-6,1e-5], saved-seed consistency <=1e-6, finite float32 shape identity, and zero selected-action or terminal-gate changes; unfavorable requires max >1e-4, nonfinite/shape/dtype failure, saved-seed inconsistency >1e-6, or any selected-action change; all other values are indeterminate",
+            "direction": "max",
+            "threshold": "bounded_decision_invariant_discrepancy_classification",
+            "uncertainty_id": "scene_mismatch_prevalence_uncertainty",
+            "comparison_family": "utility_risk_reconstruction_identity",
+            "decision_role": "decisive",
+            "outcomes": ["favorable", "unfavorable", "indeterminate", "invalid"],
+            "neutral_outcome": "favorable"
+          },
+          {
+            "id": "precision",
+            "type": "precision",
+            "estimand_id": "scene_reconstruction_mismatch_prevalence",
+            "reference": "maximum Wilson distance for scene mismatch prevalence under the frozen two-channel critical value",
+            "direction": "max",
+            "threshold": 0.05,
+            "uncertainty_id": "scene_mismatch_prevalence_uncertainty",
+            "comparison_family": "utility_risk_reconstruction_identity",
+            "decision_role": "inconclusive_only",
+            "outcomes": ["met", "unmet", "invalid"],
+            "neutral_outcome": "met"
+          }
+        ],
+        "competing_explanation": "The original failure may be a bounded CUDA repeatability effect, an intermediate unexplained discrepancy, a material asset or dtype mismatch, or a one-off event that cannot be reproduced from the saved arrays; action replay separates numerical difference from decision impact.",
+        "decision_table": {
+          "terminal_actions": {
+            "pass": {
+              "terminal": {
+                "state": "COMPLETED_GATE_PASS",
+                "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_PASS",
+                "authorizes": "DECISION_FOCUSED_CONTROLLER_CONTRACT_AUTHORING_ONLY"
+              },
+              "next_action_id": "author_decision_focused_controller_contract",
+              "family_effect": "advance"
+            },
+            "fail": {
+              "terminal": {
+                "state": "COMPLETED_GATE_FAIL",
+                "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_FAIL",
+                "authorizes": "NONE"
+              },
+              "next_action_id": "stop_frozen_prediction_claim",
+              "family_effect": "stop"
+            },
+            "inconclusive": {
+              "terminal": {
+                "state": "COMPLETED_INCONCLUSIVE",
+                "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_INCONCLUSIVE",
+                "authorizes": "NONE"
+              },
+              "next_action_id": "obtain_external_reconstruction_identity_evidence",
+              "family_effect": "record_only"
+            }
+          },
+          "rules": [
+            {
+              "id": "parent_or_workspace_identity_invalid",
+              "when": {
+                "evidence_identity": ["fail", "invalid"]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "coverage_invalid",
+              "when": {
+                "evidence_identity": ["pass"],
+                "coverage": ["fail", "invalid"]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "material_identity_failure",
+              "when": {
+                "evidence_identity": ["pass"],
+                "coverage": ["pass"],
+                "reconstruction_materiality": ["unfavorable"]
+              },
+              "terminal": "fail"
+            },
+            {
+              "id": "bounded_decision_invariant_and_precise",
+              "when": {
+                "evidence_identity": ["pass"],
+                "coverage": ["pass"],
+                "reconstruction_materiality": ["favorable"],
+                "precision": ["met"]
+              },
+              "terminal": "pass"
+            },
+            {
+              "id": "bounded_but_imprecise",
+              "when": {
+                "evidence_identity": ["pass"],
+                "coverage": ["pass"],
+                "reconstruction_materiality": ["favorable"],
+                "precision": ["unmet", "invalid"]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "unresolved_discrepancy_class",
+              "when": {
+                "evidence_identity": ["pass"],
+                "coverage": ["pass"],
+                "reconstruction_materiality": ["indeterminate", "invalid"]
+              },
+              "terminal": "inconclusive"
+            }
+          ]
+        },
+        "disabled_actions": [
+          "no model inference or training",
+          "no probability calibration or candidate reselection",
+          "no threshold or gate changes",
+          "no confirmation, canary, locked-test, or cross-domain access",
+          "no parent terminal rewrite or retroactive qualification",
+          "no result-adaptive extension"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/run_haze4k_frozen_output_tail_controller_evidence_review.py",
+        "timeout_seconds": 5400,
+        "expected_wall_seconds": 3600,
+        "total_units": 602,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {},
+        "evidence_files": [
+          {
+            "source_relpath": "workload/haze4k_frozen_output_tail_controller_evidence_review_summary.json",
+            "destination_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_summary.json",
+            "required": true,
+            "max_bytes": 1048576
+          },
+          {
+            "source_relpath": "workload/haze4k_frozen_output_tail_controller_evidence_review_gate_summary.json",
+            "destination_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_gate_summary.json",
+            "required": true,
+            "max_bytes": 262144
+          },
+          {
+            "source_relpath": "workload/haze4k_frozen_output_tail_controller_evidence_review_quantiles.csv",
+            "destination_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_quantiles.csv",
+            "required": true,
+            "max_bytes": 262144
+          },
+          {
+            "source_relpath": "workload/haze4k_frozen_output_tail_controller_evidence_review_threshold_counts.csv",
+            "destination_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_threshold_counts.csv",
+            "required": true,
+            "max_bytes": 262144
+          },
+          {
+            "source_relpath": "workload/haze4k_frozen_output_tail_controller_evidence_review_worst_points.json",
+            "destination_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_worst_points.json",
+            "required": true,
+            "max_bytes": 524288
+          },
+          {
+            "source_relpath": "workload/haze4k_frozen_output_tail_controller_evidence_review_action_replay.json",
+            "destination_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_action_replay.json",
+            "required": true,
+            "max_bytes": 262144
+          },
+          {
+            "source_relpath": "workload/haze4k_frozen_output_tail_controller_evidence_review_inventory.json",
+            "destination_filename": "haze4k_frozen_output_tail_controller_evidence_review_v1_inventory.json",
+            "required": true,
+            "max_bytes": 524288
+          }
+        ],
+        "engineering_contract": {
+          "mode": "cpu_exact",
+          "max_seconds": 900,
+          "cost_contract": {
+            "strategy": "fixed_linear_extrapolation",
+            "workload_class": "fixed_iteration_map",
+            "formal_iterations": 5400,
+            "max_peak_memory_mib": 2048,
+            "probe_iterations": 18,
+            "max_seconds_per_iteration": 0.1,
+            "fixed_overhead_seconds": 120,
+            "safety_factor": 3,
+            "formal_max_wall_seconds": 3600,
+            "memory_scaling": "constant",
+            "batch_shape_policy": "bounded",
+            "termination_policy": "fixed_count",
+            "candidate_schedule": "none",
+            "production_path": "exact"
+          }
+        },
+        "precision_contract": {
+          "mode": "formal_precision",
+          "rationale": "The 600 independent OOF scenes exceed the frozen 503-scene worst-case binomial requirement for a 0.05 half-width under critical value 2.2414027276; all array elements are additionally compared as a finite-population census."
+        }
+      },
+      "assets": [
+        {
+          "id": "official_anchor_checkout",
+          "kind": "git_checkout",
+          "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor",
+          "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+          "require_clean": true,
+          "access_role": "engineering_debug",
+          "contract_access": true
+        },
+        {
+          "id": "review_entrypoint",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_frozen_output_tail_controller_evidence_review.py",
+          "sha256": "1b34a8c961da2162f2ed0a0edefde5f573ab6a26264b24031107662effb140e3",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        },
+        {
+          "id": "parent_qualification_entrypoint",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_frozen_output_tail_controller_qualification.py",
+          "sha256": "b892caa106d3a5e8052e09076a69a3e29bb844fc47af7c040a5373169133bd96",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        },
+        {
+          "id": "runtime_environment",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/runtime_environments/convir_4090_cu121_observable_utility_v1.json",
+          "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        },
+        {
+          "id": "parent_closeout",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k_frozen_output_tail_controller_qualification_v1_closeout.json",
+          "sha256": "54b61f0f96d7442ec73b70b950090762631220c1ed2f01654b8f01b55cdaeac1",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "parent_conclusion",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k_frozen_output_tail_controller_qualification_v1_conclusion.json",
+          "sha256": "4a1f6292759766e406cebc566230ecac60ed580d2ea87cba539ab1e0531ba682",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "parent_summary",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k_frozen_output_tail_controller_qualification_v1_summary.json",
+          "sha256": "4b1232bf30ac9dd1a623b12fdde61d5e1d035a1959eb052114ab10ab21669024",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "parent_gate_summary",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k_frozen_output_tail_controller_qualification_v1_gate_summary.json",
+          "sha256": "ef5af047fe7e795b58db742de8ec127fa431c3d25345d6902d4dba4a61f3d199",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "parent_selection_freeze",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k_frozen_output_tail_controller_qualification_v1_selection_freeze.json",
+          "sha256": "06420d49c3e1a4000ede155d7e8d441f9c7b98414152d16644fb6f50e1b906e9",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "current_raw_inventory",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k_frozen_output_tail_controller_qualification_v1_raw_inventory.json",
+          "sha256": "fdebfc7cdad65d355b551fcca9f4fa4130e468525c35c96557e2f6b67ae0e188",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "parent_inventory_verification",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k_frozen_output_tail_controller_qualification_v1_parent_inventory_verification.json",
+          "sha256": "a1a11a4e3001820bb1fac4cb14164d9b4c3d83a73ffe30ffcda98e93000e797b",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "upstream_raw_inventory",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/experiment_logs/haze4k-observable-tail-factorial-v1/haze4k_observable_tail_factorial_v1_raw_inventory.json",
+          "sha256": "9a5249f66c994f9c94245145cc65e02da643ada71cc047cd5144db475b3c66ff",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "current_raw_workspace",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-frozen-output-tail-controller-qualification-v1/haze4k-frozen-output-tail-controller-qualification-v1-r1",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "upstream_raw_workspace",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/runs/haze4k-observable-tail-factorial-v1/haze4k-observable-tail-factorial-v1-r2",
+          "access_role": "development_screening",
+          "contract_access": false
+        }
+      ],
+      "capability": {
+        "profile_id": "haze4k_frozen_output_tail_controller_evidence_review_cpu_v1",
+        "contract_mode": "cpu_exact",
+        "minimum_fixture": {
+          "batch": 1,
+          "channels": 2,
+          "height": 4,
+          "width": 5
+        },
+        "bound_assets": [
+          {
+            "id": "official_anchor_checkout",
+            "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+          },
+          {
+            "id": "review_entrypoint",
+            "identity": "1b34a8c961da2162f2ed0a0edefde5f573ab6a26264b24031107662effb140e3"
+          },
+          {
+            "id": "current_raw_inventory",
+            "identity": "fdebfc7cdad65d355b551fcca9f4fa4130e468525c35c96557e2f6b67ae0e188"
+          },
+          {
+            "id": "runtime_environment",
+            "identity": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+          }
+        ],
+        "compatibility_imports": ["numpy", "PIL"],
+        "production_path_statement": "The exact saved-array shape/dtype/finite checks, float64 NumPy differences, quantiles, strict threshold counts, saved-seed ensemble reconstruction, setwise selector replay, scene prevalence interval, compact evidence finalization, and 602-unit ledger execute on bounded synthetic CPU arrays without scientific data.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true,
+        "reuse_identity": {
+          "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+          "code_path_sha256": "1b34a8c961da2162f2ed0a0edefde5f573ab6a26264b24031107662effb140e3",
+          "checkpoint_sha256": "fdebfc7cdad65d355b551fcca9f4fa4130e468525c35c96557e2f6b67ae0e188",
+          "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
+          "device_class": "cpu"
+        }
+      },
+      "precision": {
+        "certificate_id": "haze4k_frozen_output_tail_controller_evidence_review_precision_v1",
+        "route_id": "haze4k-frozen-output-tail-controller-evidence-review-v1",
+        "operation_id": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW",
+        "primary_estimand_id": "scene_reconstruction_mismatch_prevalence",
+        "independent_unit": "original_clear_scene",
+        "comparison_family": "utility_risk_reconstruction_identity",
+        "method": "binomial_worst_case",
+        "confidence_level": 0.95,
+        "critical_value": 2.2414027276049464,
+        "target_half_width": 0.05,
+        "assurance": {
+          "method_id": "worst_case_binomial_planning",
+          "probability": 0.95,
+          "planning_sd_rule": "Use the worst-case Bernoulli standard deviation 0.5 with the frozen two-channel critical value; array elements remain finite-population census detail."
+        },
+        "strata": [
+          {
+            "id": "haze4k_train_oof",
+            "independent_groups_available": 600,
+            "independent_groups_planned": 600,
+            "planning_sd": 0.5,
+            "planning_sd_upper_bound": 0.5,
+            "independent_groups_required": 503,
+            "feasible": true,
+            "source_reference": "The frozen parent qualification contains exactly 600 OOF original-clear scenes before this evidence review reads any arrays."
+          }
+        ],
+        "feasible": true,
+        "source_role": "development_screening",
+        "source_reference": "GitHub-main parent terminal and raw inventory establish 600 independent OOF original-clear scenes; worst-case binomial planning is outcome independent."
+      }
+    }
+  }
+}

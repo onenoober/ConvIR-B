@@ -1,0 +1,268 @@
+{
+  "competing_explanation": "The original failure may be a bounded CUDA repeatability effect, an intermediate unexplained discrepancy, a material asset or dtype mismatch, or a one-off event that cannot be reproduced from the saved arrays; action replay separates numerical difference from decision impact.",
+  "controls": [
+    "GitHub-main parent closeout, conclusion, summary, gate summary, selection freeze, raw inventory and inventory verification identities",
+    "complete current 745-file and upstream 10285-file cloud inventory rehash",
+    "saved current ensemble versus saved three-seed mean consistency for utility and risk",
+    "strict exceedance counts at 1e-6, 1e-5 and 1e-4 by element, cell, scene and file",
+    "finite-element p50, p90, p95, p99, p99.9 and maximum errors separately for utility and risk",
+    "maximizing cell, fold, hashed scene, action, row, column, dtype, current/upstream file SHA and three checkpoint SHAs",
+    "current-versus-saved, upstream-versus-saved and current-versus-upstream selected-action replay",
+    "weighted-q selected-area risk and raw-utility difference checks",
+    "cloud-only per-scene by-cell diagnostics and compact raw diagnostic inventory"
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "parent_or_workspace_identity_invalid",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "coverage_invalid",
+        "terminal": "inconclusive",
+        "when": {
+          "coverage": [
+            "fail",
+            "invalid"
+          ],
+          "evidence_identity": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "material_identity_failure",
+        "terminal": "fail",
+        "when": {
+          "coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "reconstruction_materiality": [
+            "unfavorable"
+          ]
+        }
+      },
+      {
+        "id": "bounded_decision_invariant_and_precise",
+        "terminal": "pass",
+        "when": {
+          "coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "precision": [
+            "met"
+          ],
+          "reconstruction_materiality": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "bounded_but_imprecise",
+        "terminal": "inconclusive",
+        "when": {
+          "coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "precision": [
+            "unmet",
+            "invalid"
+          ],
+          "reconstruction_materiality": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "unresolved_discrepancy_class",
+        "terminal": "inconclusive",
+        "when": {
+          "coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "reconstruction_materiality": [
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "stop",
+        "next_action_id": "stop_frozen_prediction_claim",
+        "terminal": {
+          "authorizes": "NONE",
+          "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "record_only",
+        "next_action_id": "obtain_external_reconstruction_identity_evidence",
+        "terminal": {
+          "authorizes": "NONE",
+          "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "advance",
+        "next_action_id": "author_decision_focused_controller_contract",
+        "terminal": {
+          "authorizes": "DECISION_FOCUSED_CONTROLLER_CONTRACT_AUTHORING_ONLY",
+          "decision": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "no model inference or training",
+    "no probability calibration or candidate reselection",
+    "no threshold or gate changes",
+    "no confirmation, canary, locked-test, or cross-domain access",
+    "no parent terminal rewrite or retroactive qualification",
+    "no result-adaptive extension"
+  ],
+  "gates": [
+    {
+      "comparison_family": "utility_risk_reconstruction_identity",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "scene_reconstruction_mismatch_prevalence",
+      "id": "evidence_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "all parent compact artifacts and both receipt-bound raw workspace inventories match their frozen identities",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "scene_mismatch_prevalence_uncertainty"
+    },
+    {
+      "comparison_family": "utility_risk_reconstruction_identity",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "scene_reconstruction_mismatch_prevalence",
+      "id": "coverage",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "exact 600-scene by 9-cell utility/risk census, five folds, 600 selected-action replays, and one cloud diagnostic per scene",
+      "threshold": true,
+      "type": "coverage",
+      "uncertainty_id": "scene_mismatch_prevalence_uncertainty"
+    },
+    {
+      "comparison_family": "utility_risk_reconstruction_identity",
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand_id": "scene_reconstruction_mismatch_prevalence",
+      "id": "reconstruction_materiality",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "favorable requires max in (1e-6,1e-5], saved-seed consistency <=1e-6, finite float32 shape identity, and zero selected-action or terminal-gate changes; unfavorable requires max >1e-4, nonfinite/shape/dtype failure, saved-seed inconsistency >1e-6, or any selected-action change; all other values are indeterminate",
+      "threshold": "bounded_decision_invariant_discrepancy_classification",
+      "type": "materiality",
+      "uncertainty_id": "scene_mismatch_prevalence_uncertainty"
+    },
+    {
+      "comparison_family": "utility_risk_reconstruction_identity",
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand_id": "scene_reconstruction_mismatch_prevalence",
+      "id": "precision",
+      "neutral_outcome": "met",
+      "outcomes": [
+        "met",
+        "unmet",
+        "invalid"
+      ],
+      "reference": "maximum Wilson distance for scene mismatch prevalence under the frozen two-channel critical value",
+      "threshold": 0.05,
+      "type": "precision",
+      "uncertainty_id": "scene_mismatch_prevalence_uncertainty"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "the parent receipt, route commit, selection freeze SHA, selected R0_L1 weighted-q/raw/setwise/cap-0.01 candidate, thresholds, gates, and data roles remain frozen",
+      "both cloud raw workspaces are fully rehashed against their archived inventories before comparison",
+      "comparison is at the saved ensemble level because upstream raw files do not contain single-seed predictions",
+      "current saved ensembles are separately compared with the mean of their three saved seed arrays",
+      "all differences are computed on CPU by NumPy float64 subtraction from saved float32 arrays; their production source is CUDA sm89",
+      "the frozen selected action map is replayed from current and upstream R0_L1 raw utility and weighted-q risk using the upstream frozen scene-cache tile areas",
+      "the candidate selection is not rerun and calibration predictions are not read; the parent selection freeze predates its formal OOF array parse",
+      "original-clear scenes are the only independent units; cells, files, tiles, actions, and elements never increase n",
+      "confirmation, canary, locked-test, NH-Haze, ITS, OTS, images, targets, model inference, and training remain out of scope"
+    ],
+    "matched_budget": "all 600 OOF original-clear scenes, all nine cells, both utility and risk channels, and the exact corresponding fold-specific three-checkpoint identities",
+    "primary_variable": "absolute difference between each saved qualification ensemble utility/risk array and its receipt-bound upstream factorial ensemble array",
+    "reference": "the upstream saved float32 ensemble utility/risk arrays that were the parent qualification reconstruction target"
+  },
+  "operation_id": "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "original_clear_scene",
+    "independent_group_count": 600,
+    "strata": [
+      {
+        "id": "haze4k_train_oof",
+        "independent_group_count": 600
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "prevalence over 600 original-clear scenes where any saved ensemble element across nine cells and two metrics strictly exceeds 1e-6",
+    "direction": "lower",
+    "id": "scene_reconstruction_mismatch_prevalence",
+    "metric_id": "scene_any_utility_or_risk_absolute_error_gt_1e_6",
+    "strata": [
+      "haze4k_train_oof"
+    ],
+    "unit": "original_clear_scene"
+  },
+  "question": "Is the parent raw-prediction reconstruction failure a bounded decision-invariant numerical discrepancy rather than a material saved-prediction identity failure?",
+  "route_id": "haze4k-frozen-output-tail-controller-evidence-review-v1",
+  "schema_version": 2,
+  "uncertainty": {
+    "comparison_family": "utility_risk_reconstruction_identity",
+    "confidence_level": 0.95,
+    "id": "scene_mismatch_prevalence_uncertainty",
+    "independent_unit": "original_clear_scene",
+    "method_id": "bonferroni_wilson_scene_prevalence_with_finite_population_array_census"
+  }
+}

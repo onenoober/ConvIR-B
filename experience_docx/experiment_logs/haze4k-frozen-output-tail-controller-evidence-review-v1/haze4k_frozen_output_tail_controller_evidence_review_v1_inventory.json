@@ -1,0 +1,136 @@
+{
+  "github_retention_scope": "compact_aggregate_gate_evidence_only",
+  "input_verification": {
+    "current_raw_workspace": {
+      "checks": {
+        "class_inventory": true,
+        "expected_inventory_file_identity": true,
+        "file_count": true,
+        "inventory_sha256": true,
+        "total_bytes": true
+      },
+      "matched": true,
+      "observed": {
+        "classes": {
+          "calibration_prediction": {
+            "file_count": 45,
+            "inventory_sha256": "0b726b5f9d2abd1a6ff1cbe231591ae492b6b0e651c157d18f49cfa58bfc9d30",
+            "total_bytes": 85823910
+          },
+          "oof_controller_scene": {
+            "file_count": 600,
+            "inventory_sha256": "d01aeee4098777b908f299f35f71bf7b04f8dd328651656f8ad34383a9e50a7f",
+            "total_bytes": 96926085
+          },
+          "test_controller_scene": {
+            "file_count": 100,
+            "inventory_sha256": "d9696582f43e8f4f5fe7e58eccd2f4429f99ef2d9744b348f92d81083bb966bd",
+            "total_bytes": 870320
+          }
+        },
+        "file_count": 745,
+        "inventory_sha256": "6851661520aef8367dafa34633f63d6620e41fbc06ddffe839d85f21171f8602",
+        "total_bytes": 183620315
+      },
+      "receipt": "56e89b4a6646c26e6c2d9a42db9769a428ffe086a34d8bd519cab6e19bc95575",
+      "route_id": "haze4k-frozen-output-tail-controller-qualification-v1",
+      "schema_version": 1
+    },
+    "parent_identity_checks": {
+      "closeout_sha256": true,
+      "conclusion_identity": true,
+      "conclusion_sha256": true,
+      "gate_sha256": true,
+      "parent_gate_copy": true,
+      "parent_identity_failure_is_scoped": true,
+      "parent_inventory_copy": true,
+      "parent_inventory_verification_sha256": true,
+      "protected_assets_absent": true,
+      "route_commit": true,
+      "route_identity": true,
+      "selected_candidate": true,
+      "selection_sha256": true,
+      "selection_time_isolation": true,
+      "summary_sha256": true,
+      "terminal": true
+    },
+    "parent_receipt": "56e89b4a6646c26e6c2d9a42db9769a428ffe086a34d8bd519cab6e19bc95575",
+    "parent_route_commit": "4ab3443359e352a2e1ad3590cc6f4b326e899f07",
+    "parent_route_id": "haze4k-frozen-output-tail-controller-qualification-v1",
+    "schema_version": 1,
+    "upstream_raw_workspace": {
+      "checks": {
+        "checkpoint_inventory": true,
+        "class_inventory": true,
+        "expected_inventory_file_identity": true,
+        "file_count": true,
+        "overall_inventory_identity": true,
+        "total_bytes": true
+      },
+      "matched": true,
+      "observed": {
+        "classes": {
+          "head_checkpoint": {
+            "file_count": 135,
+            "inventory_sha256": "1574e9dcff515919e3e791bcd673662b0ca2ee517bb29e61cdb27eac5695af17",
+            "total_bytes": 93663978
+          },
+          "oof_cell_prediction": {
+            "file_count": 5400,
+            "inventory_sha256": "fc14236509d00992ae1b354eb73debf4b1f62cdb1e1aaf3c9d964bc55f045b78",
+            "total_bytes": 49041477
+          },
+          "scene_cache": {
+            "file_count": 750,
+            "inventory_sha256": "7d498d790b0f4d26fa87a901485423ba97a2d498bc96c6e4f21fef6a09284382",
+            "total_bytes": 3341602500
+          },
+          "test_cell_prediction": {
+            "file_count": 3600,
+            "inventory_sha256": "6cdfd0dd7db6c0ff37b5892d70a27d20485857645ed1e1a4716f19eebcfa6e52",
+            "total_bytes": 15045120
+          },
+          "test_scene_cache": {
+            "file_count": 400,
+            "inventory_sha256": "af72b61f572ee20c38cd72eeaf2df17ea2169f3a25898e7f8f2d900784fa8c54",
+            "total_bytes": 1726230000
+          }
+        },
+        "file_count": 10285,
+        "inventory_sha256": "f70b492d5b6cf16fc8a2dbc43a1e049556a8f4c6365726bc7eec9102b3e2cd28",
+        "total_bytes": 5225583075
+      },
+      "parent_receipt": "ce6d9f96bab31b3c46ea5d7024e259e8d016cc4362be30b65d94f57f8d61ecaa",
+      "parent_route_commit": "b4ce59309a12b68e79dbfc8534a1b106e162110a",
+      "parent_route_id": "haze4k-observable-tail-factorial-v1",
+      "schema_version": 1
+    }
+  },
+  "raw_retention_scope": "cloud_only",
+  "raw_scene_diagnostic_inventory": {
+    "classes": {
+      "scene_cell_diagnostic": {
+        "file_count": 600,
+        "inventory_sha256": "e2fd42ee26f92841951a7a497bb0afcb77f4d1a82e52ca4c3cd777c6c023dd25",
+        "total_bytes": 13393549
+      }
+    },
+    "file_count": 600,
+    "github_exclusions": [
+      "datasets",
+      "weights",
+      "checkpoints",
+      "images",
+      "arrays",
+      "raw_predictions",
+      "feature_tables",
+      "action_maps"
+    ],
+    "head_checkpoints": [],
+    "inventory_sha256": "f7db20caf77c502b2dcba49337d92c53c884da3437237311adef05c42aacce16",
+    "raw_retention_scope": "cloud_only",
+    "schema_version": 1,
+    "total_bytes": 13393549
+  },
+  "schema_version": 1
+}

@@ -1,0 +1,28 @@
+{
+  "action_mismatch_count": 0,
+  "actions_decision_invariant": true,
+  "discrepancy_class": "material_identity_failure",
+  "gate_outcomes": {
+    "coverage": "pass",
+    "evidence_identity": "pass",
+    "precision": "met",
+    "reconstruction_materiality": "unfavorable"
+  },
+  "maximum_saved_seed_ensemble_absolute_error": 4.76837158203125e-07,
+  "maximum_upstream_current_absolute_error": 0.000347137451171875,
+  "nonfinite_element_count": 0,
+  "precision_half_width": 0.008303616273687697,
+  "precision_target_half_width": 0.05,
+  "scene_mismatch_prevalence": {
+    "critical_value": 2.2414027276049464,
+    "estimate": 1.0,
+    "family_size": 2,
+    "lower": 0.9916963837263123,
+    "successes": 600,
+    "total": 600,
+    "upper": 1.0
+  },
+  "schema_version": 1,
+  "structural_anomaly_count": 0,
+  "terminal_scientific_gates_decision_invariant": true
+}
