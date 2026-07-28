@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "program_id": "haze4k_observable_tail_factorial_v1",
+  "objective": "Determine whether a substantively new observable representation, a decision-aligned learner, or their interaction can recover the low-risk high-utility local-action tail that the frozen weighted-BCE probability-semantics family failed to rank, before any protected confirmation or cross-domain execution is authored.",
+  "source_anchors": [
+    {
+      "id": "risk_interface_localization_terminal",
+      "reference": "GitHub-main terminal evidence for haze4k-frozen-output-risk-interface-localization-v1 at route commit 1ad0e732e1007cc324defb68dd0d2bd5e2db12d4 and receipt 1238610079a67496f4484b46ad101a3a95279a26e88bbd0ed2b7b0e783e80126.",
+      "allowed_uses": ["diagnostic", "comparison"]
+    },
+    {
+      "id": "observable_decomposition_baseline",
+      "reference": "GitHub-main archived training, calibration, raw-signal, and complete-image replay evidence for the exact 104-channel shared Huber and weighted-BCE baseline.",
+      "allowed_uses": ["diagnostic", "comparison", "evaluation"]
+    },
+    {
+      "id": "haze4k_train_split_terminal",
+      "reference": "GitHub-main terminal evidence for the frozen 600 OOF-training and 150 calibration-selection original-clear-scene roles.",
+      "allowed_uses": ["diagnostic", "training", "supervision", "evaluation"]
+    },
+    {
+      "id": "haze4k_test_split_terminal",
+      "reference": "GitHub-main terminal evidence for the isolated 100-scene historical-development stress role and untouched 150-scene candidate-confirmation role.",
+      "allowed_uses": ["diagnostic", "evaluation"]
+    },
+    {
+      "id": "bounded_local_action_oracle_terminal",
+      "reference": "GitHub-main terminal evidence for the GT-privileged keep, weaken, and strengthen action headroom.",
+      "allowed_uses": ["action_definition", "diagnostic", "comparison"]
+    },
+    {
+      "id": "official_architecture_anchor",
+      "reference": "Immutable github/codex/haze4k-official-arch-anchor at 3b4da35440c8c26a7d1bcaf1daf342e11d9a3898.",
+      "allowed_uses": ["initialization"]
+    }
+  ],
+  "dependency_roles": {
+    "parent_authorization": ["diagnostic"],
+    "baseline_evidence": ["diagnostic", "comparison", "evaluation"],
+    "dataset_role_evidence": ["diagnostic", "training", "supervision", "evaluation"],
+    "mechanism_evidence": ["action_definition", "diagnostic", "comparison"],
+    "model_initialization": ["initialization"]
+  },
+  "stages": {
+    "observable_tail_factorial_development": {
+      "evidence_roles": ["development_screening"],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": ["observable_tail_representation_learner_factorial"]
+    }
+  },
+  "route_families": {
+    "observable_tail_representation_learner_factorial": {
+      "core_assumption": "Deployment-visible within-tile residual shape, multiscale ConvIR context, and deterministic transform disagreement, paired with separated or distributional decision-tail learning, can rank enough genuinely beneficial low-harm actions to pass fixed utility, activation, and replay-safety gates.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the frozen 3x3 representation-by-learner development factorial reaches a typed terminal; seeds, folds, cells, and descriptive controls cannot be expanded after launch.",
+      "reopen_evidence_types": [
+        "new_observable_sensor_evidence",
+        "new_action_family_evidence",
+        "new_independent_domain_evidence"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "observable_representation",
+    "learner_loss",
+    "action_family",
+    "dataset_scope",
+    "measurement_estimand"
+  ],
+  "amendments": []
+}

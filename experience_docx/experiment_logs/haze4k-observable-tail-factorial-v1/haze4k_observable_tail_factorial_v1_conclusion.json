@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "route_id": "haze4k-observable-tail-factorial-v1",
+  "operation_id": "HAZE4K_OBSERVABLE_TAIL_FACTORIAL",
+  "run_id": "haze4k-observable-tail-factorial-v1-r2",
+  "state": "COMPLETED_GATE_FAIL",
+  "decision": "HAZE4K_OBSERVABLE_TAIL_FACTORIAL_FAIL",
+  "authorizes": "NEW_ACTION_FAMILY_OR_END_TO_END_CONTROLLER_CONTRACT_AUTHORING_ONLY",
+  "primary_result": "The selected R0_L0 cell was inadmissible and gained exactly 0.0 dB over keep across 600 independent Haze4K-train OOF scenes, with simultaneous 95% interval [0.0, 0.0] dB. All nine frozen representation-by-learner cells had the same zero gain and zero action area. The selected cell activated on 0/600 OOF scenes, with simultaneous prevalence upper bound 0.01231, and on 0/100 test-development scenes, with upper bound 0.06957. Precision was met, but only because the policy always abstained; actionable utility and activation were decisively unfavorable.",
+  "gate_reasons": [
+    "Evidence identity, factorial completeness, frozen selection integrity, baseline reproduction, and exact 852-unit ledger coverage passed. The baseline reproduction matched all recorded fields with maximum absolute difference 0, showing that the engineering repair did not change the frozen scientific baseline.",
+    "Every one of the nine R0L0 through R2L2 cells produced zero OOF gain, zero action area, and no active scene. The independent test-development stress population also produced zero gain and zero action area, so neither the three observable representations nor the three learner variants overcame abstention.",
+    "The selected R0_L0 policy had zero gain relative to baseline, keep, shuffled, and uniform controls, with all four simultaneous intervals exactly [0.0, 0.0] dB. This is a utility FAIL rather than a precision-limited or ambiguous result.",
+    "Image-level harm indicators were zero only because no action was selected. Selected-area harm is undefined and the selected-area/image-safety gate is therefore indeterminate; abstention cannot establish action safety.",
+    "The privileged GT/GT controller retained substantial non-deployable headroom at 1.64983 dB with simultaneous interval [1.51548, 1.78916]. The action problem therefore remains scientifically open even though this observable factorial failed.",
+    "Observable utility paired with GT risk recovered 0.20634 dB with interval [0.14500, 0.27649], and the utility-only control recovered 0.11854 dB with interval [0.04908, 0.19421]. Observable utility thus contains usable signal when the risk veto is removed or replaced.",
+    "GT utility paired with observable risk still recovered exactly 0.0 dB. Together with the complete abstention of all nine factorial cells, this localizes the immediate bottleneck to the observable risk interface or its conservative correction/controller coupling rather than to absent oracle headroom or wholly absent observable utility signal."
+  ],
+  "competing_explanation": "The failure could have arisen from insufficient utility representation, insufficient risk representation, weak learner capacity, or genuinely absent action headroom. The cross-controls reject the last explanation and make utility-only failure insufficient: GT/GT is strongly favorable, observable utility becomes useful with GT risk, and GT utility remains fully vetoed by observable risk. The 3x3 factorial also rejects the tested representation and learner variants as sufficient fixes. The evidence is therefore most consistent with an observable-risk veto, potentially caused by the risk target, tail representation, one-sided calibration correction, or end-to-end decision coupling; this experiment does not distinguish those sub-causes.",
+  "limitations": [
+    "All scientific evidence is development_screening. Candidate-confirmation, canary, locked-test, NH-Haze, RESIDE ITS, and RESIDE OTS were not read.",
+    "The 600 Haze4K-train OOF scenes are the primary independent units. The 100 test-development scenes are secondary stress evidence, and nested variants do not increase independent sample size.",
+    "Because every tested cell abstained, selected-area safety is unidentifiable. Zero observed image harm is vacuous and cannot authorize confirmation or deployment.",
+    "The privileged GT-risk, GT-utility, and GT/GT controls are non-deployable localization instruments. Their favorable values do not provide a runnable controller.",
+    "The factorial covers only the three frozen observable representations and three frozen learner variants. It does not prove that all observable risk models or all end-to-end controllers must fail.",
+    "The raw runtime inventory contains 10,285 cloud-only files totaling 5,225,583,075 bytes; datasets, checkpoints, images, arrays, predictions, feature tables, and action maps remain excluded from GitHub.",
+    "This FAIL stops the current factorial route and authorizes only contract authoring for a substantively new action family or an end-to-end controller. Threshold relaxation, direct confirmation, promotion, cross-dataset execution, and deployment remain unauthorized."
+  ]
+}

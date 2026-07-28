@@ -1,0 +1,234 @@
+{
+  "authorizes": "NEW_ACTION_FAMILY_OR_END_TO_END_CONTROLLER_CONTRACT_AUTHORING_ONLY",
+  "canary_touched": false,
+  "capability_qualification": {
+    "evidence_filename": "haze4k_observable_tail_factorial_v1_capability_qualification.json",
+    "identity_sha256": "276dcc252f1019bd916c58a035e5043d54371862c770128517554d749cb52582",
+    "qualification_id": "cap_276dcc252f1019bd916c58a0",
+    "scientific_authorization": "NONE",
+    "status": "PASSED_ENGINEERING"
+  },
+  "capability_reuse": {
+    "engineering_reuse_authorized": false,
+    "identity_sha256": "276dcc252f1019bd916c58a035e5043d54371862c770128517554d749cb52582",
+    "scientific_authorization": "NONE",
+    "status": "CAPABILITY_REUSE_MISS"
+  },
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "HAZE4K_OBSERVABLE_TAIL_FACTORIAL_FAIL",
+  "decision_rule_id": "utility_fail",
+  "details": {
+    "bootstrap_resamples": 100000,
+    "calibration_selection_scenes": 150,
+    "candidate_confirmation_touched": false,
+    "completed_unit_ledger_count": 852,
+    "factorial_cells": 9,
+    "factorial_cells_file": "haze4k_observable_tail_factorial_cells.csv",
+    "factorial_effects_file": "haze4k_observable_tail_factorial_effects.csv",
+    "folds": 5,
+    "formal_family_size": 4,
+    "gate_summary_file": "haze4k_observable_tail_factorial_gate_summary.json",
+    "independent_oof_scenes": 600,
+    "nested_test_variants": 400,
+    "paired_seeds": 3,
+    "primary_estimate_db": 0.0,
+    "primary_intervals_file": "haze4k_observable_tail_factorial_primary_intervals.json",
+    "raw_inventory_file": "haze4k_observable_tail_factorial_raw_inventory.json",
+    "selected_cell": "R0_L0",
+    "selection_file": "haze4k_observable_tail_factorial_selection_freeze.json",
+    "selection_freeze_sha256": "c7f0b5a81fa81b45c223b062015a8c19bead1a4ef63f236da0a9317415a2f376",
+    "summary_file": "haze4k_observable_tail_factorial_summary.json",
+    "tail_safety_file": "haze4k_observable_tail_factorial_tail_safety.json",
+    "test_development_stress_scenes": 100
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "haze4k_observable_tail_factorial_v1_baseline_reproduction.json": "7dedcaddc6d1c9f588e7f68160306b56b4f1456f2b072f8c00b0d0bae533aa86",
+    "haze4k_observable_tail_factorial_v1_calibration.csv": "2b0645eeb176e942101a519254a42d1e22db7bedb9f9d1e19e17ea16b551ef8d",
+    "haze4k_observable_tail_factorial_v1_capability_qualification.json": "de64ad5ea6020acea6cc8bf3046489ab45f9eb53f3eb21fb0bcd7f147e5eb7dd",
+    "haze4k_observable_tail_factorial_v1_cells.csv": "3b70b0924090b9ef1ba4d22a27b3cc2d4539f14057ee654939ef875401f76c2e",
+    "haze4k_observable_tail_factorial_v1_effects.csv": "5d68922964327d52769b72810587a306155a8b4b6be786a63f4dcaddaeb5d8b1",
+    "haze4k_observable_tail_factorial_v1_fold_seed_completeness.csv": "2eae980a423081df19211d060bacf05524d6a6df343ed238b7bc987f26ff8a01",
+    "haze4k_observable_tail_factorial_v1_gate_summary.json": "13cc85faaca6bc5bb0a5c7a3926d9110e2a8d232442716100a61a6c50bc63425",
+    "haze4k_observable_tail_factorial_v1_oof_r0_scene_cells.csv": "c1fc027d7efa8737edae8781e592bfc98a42750b39191f76d522258065bb73d7",
+    "haze4k_observable_tail_factorial_v1_oof_r1_scene_cells.csv": "891c47adddc9de823d2d56c83db861843d0dd470363793f91ce03a0037009bb4",
+    "haze4k_observable_tail_factorial_v1_oof_r2_scene_cells.csv": "63e4961174c73550b411cf08ff429a586fcbc2c70725c49611cb34b60e937d22",
+    "haze4k_observable_tail_factorial_v1_primary_intervals.json": "6e31d1af6f3e00d69661eadac7dfffd343693bed73b19d2150ce81326e150f5c",
+    "haze4k_observable_tail_factorial_v1_privileged_controls.json": "4e8c5f2e65640aa441c327ff90dd63e0c704e019be3ea2fde6e8e814d24a3196",
+    "haze4k_observable_tail_factorial_v1_raw_inventory.json": "9a5249f66c994f9c94245145cc65e02da643ada71cc047cd5144db475b3c66ff",
+    "haze4k_observable_tail_factorial_v1_selection_freeze.json": "c7f0b5a81fa81b45c223b062015a8c19bead1a4ef63f236da0a9317415a2f376",
+    "haze4k_observable_tail_factorial_v1_summary.json": "95a6deb9c765d1cb002cd3dcd1b0e967f704e21f9f68da57057b904b08ef433a",
+    "haze4k_observable_tail_factorial_v1_tail_safety.json": "177c7d027000d9d6f588d9f4929a95c2e191884da256be84606c5b11b9537a39",
+    "haze4k_observable_tail_factorial_v1_test_scene_cells.csv": "2231a3486a8c1c81650ae60139aa36fcc562ce4ad65a2b3ac638e6b79685a7bd"
+  },
+  "failure_phase": null,
+  "family_effect": "stop",
+  "gate_outcomes": {
+    "evidence_identity": "pass",
+    "factorial_completeness_and_selection_integrity": "pass",
+    "factorial_mechanism_diagnostic": "favorable",
+    "oracle_headroom_control": "favorable",
+    "precision": "met",
+    "selected_area_and_image_safety": "indeterminate",
+    "selected_candidate_actionable_utility": "unfavorable",
+    "selected_candidate_activation": "unfavorable"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "author_orthogonal_action_family_or_end_to_end_controller_contract",
+  "operation_id": "HAZE4K_OBSERVABLE_TAIL_FACTORIAL",
+  "returncode": 0,
+  "route_commit": "b4ce59309a12b68e79dbfc8534a1b106e162110a",
+  "route_id": "haze4k-observable-tail-factorial-v1",
+  "run_id": "haze4k-observable-tail-factorial-v1-r2",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_GATE_FAIL",
+  "terminal_label": "fail",
+  "verified_assets": [
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "baseline_calibration_diagnostics",
+      "kind": "file",
+      "sha256": "37cc4826861ecde5c77cc461fa8fc967ce35e9f94372391d3caf23326b367841"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "baseline_training_diagnostics",
+      "kind": "file",
+      "sha256": "c3652a6663887a4c79137eed93ced86d74d0387da5dcaedc2e7bdc5dee0a3344"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "factorial_entrypoint",
+      "kind": "file",
+      "sha256": "4abd3cc213bfaf4f16bfae37252cdf821834771e7b2964cc078617e3a40676fb"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_test_development",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+    },
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_closeout",
+      "kind": "file",
+      "sha256": "aabf8ed0efbb2ed6606cf2baf9e09bb226087ea5ddf57000429797a9e6c26b21"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_conclusion",
+      "kind": "file",
+      "sha256": "77bcd87cd5c54d23993164ed3f9f3c8436a9f50213f51caecb49699256945cc6"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_formal_intervals",
+      "kind": "file",
+      "sha256": "64b4828c9bcef9ab1a13e970b72438c5c39e15cce18e1ea39f185b56e5704836"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_regret_decomposition",
+      "kind": "file",
+      "sha256": "f7806a6664466fbfe935680a1ca6df92943237a140b405641e60166a7f4a66ac"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_summary",
+      "kind": "file",
+      "sha256": "ef4f560f5983092b4e478d912e07d4e46bf514243b83116af52ce3c1dd6f0fbf"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_oracle_closeout",
+      "kind": "file",
+      "sha256": "96357cbaaee5aa338fb0f9c9835a975a27e7f048c78a096fd644e6acdd3e383c"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "prior_oracle_summary",
+      "kind": "file",
+      "sha256": "794ef27733f51f2fa70fab5c94bc661564d7b988ef4247a1b26e33a21b4de7cb"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "test_split_closeout",
+      "kind": "file",
+      "sha256": "d3dbd88b25eee35c5922b2459a2f48b39b3fc8f686588cde9edb1d9f267f8a9f"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "test_split_summary",
+      "kind": "file",
+      "sha256": "656407f3183f92e75e357004b04b505d2b92cd4b0f4b02b3c6a22aef57d069cf"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "train_split_closeout",
+      "kind": "file",
+      "sha256": "dde7f4654674f776d2f2b0a687128019e477eea7b29fb8d69f01d621aa6c5887"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "train_split_summary",
+      "kind": "file",
+      "sha256": "a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9"
+    }
+  ]
+}

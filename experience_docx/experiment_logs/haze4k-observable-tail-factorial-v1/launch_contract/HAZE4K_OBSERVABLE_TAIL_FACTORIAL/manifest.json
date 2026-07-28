@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-observable-tail-factorial-v1.json",
+  "experiment_spec_sha256": "191cac6a85326013b727438298c79d45045b06182ef558bb783f0f3eda0ac87f",
+  "operations": {
+    "HAZE4K_OBSERVABLE_TAIL_FACTORIAL": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "HAZE4K_TAIL_FACTORIAL_PRECISION_CERTIFICATE_AUTHORING_ONLY",
+          "decision": "HAZE4K_OBSERVABLE_TAIL_FACTORIAL_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NEW_ACTION_FAMILY_OR_END_TO_END_CONTROLLER_CONTRACT_AUTHORING_ONLY",
+          "decision": "HAZE4K_OBSERVABLE_TAIL_FACTORIAL_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "OBSERVABLE_TAIL_FACTORIAL_EVIDENCE_REVIEW_ONLY",
+          "decision": "HAZE4K_OBSERVABLE_TAIL_FACTORIAL_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "haze4k_observable_tail_factorial_v1_closeout.json",
+      "heartbeat_timeout_seconds": 900,
+      "max_gpu_utilization_pct": 10,
+      "min_free_gpu_mib": 16000,
+      "mode": "observable_tail_factorial",
+      "monitor_profile": "standard",
+      "output_id": "haze4k-observable-tail-factorial-v1-r2",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_observable_tail_factorial_v1.json",
+  "program_contract_sha256": "afacfc648bf525e3cde916b4ee6f54fed40c81800483c6f25395d9ae97b5b75b",
+  "route_card_relpath": "experience_docx/experiment_cards/haze4k-observable-tail-factorial-v1.md",
+  "route_id": "haze4k-observable-tail-factorial-v1",
+  "rules_commit": "291fc6648d12238d2452c39a4ed5f3a197e772a1",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "HAZE4K_OBSERVABLE_TAIL_FACTORIAL": "experience_docx/scientific_contracts/haze4k-observable-tail-factorial-v1__HAZE4K_OBSERVABLE_TAIL_FACTORIAL.json"
+  }
+}

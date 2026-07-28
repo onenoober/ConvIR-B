@@ -1,0 +1,40 @@
+{
+  "contract_mode": "gpu_synthetic_no_data",
+  "engineering_evidence": {
+    "cost": {
+      "observed_iterations": 354,
+      "observed_peak_memory_mib": 441.80078125,
+      "observed_wall_seconds": 11.507191042415798
+    },
+    "device": "cuda",
+    "fixture": {
+      "batch": 1,
+      "channels": 3,
+      "height": 384,
+      "width": 512
+    },
+    "mode": "gpu_synthetic_no_data",
+    "production_path_exercised": true,
+    "protected_data_touched": false,
+    "scientific_output_created": false,
+    "scientific_training_occurred": false
+  },
+  "identity": {
+    "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "code_path_sha256": "4abd3cc213bfaf4f16bfae37252cdf821834771e7b2964cc078617e3a40676fb",
+    "device_class": "cuda_sm89",
+    "input_contract_sha256": "2c1e81e543ba882f5d19a939b16c406a819e18163735e6200183c65c8adb0e40",
+    "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
+    "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+  },
+  "identity_sha256": "276dcc252f1019bd916c58a035e5043d54371862c770128517554d749cb52582",
+  "operation_id": "HAZE4K_OBSERVABLE_TAIL_FACTORIAL",
+  "protected_data_touched": false,
+  "qualification_id": "cap_276dcc252f1019bd916c58a0",
+  "route_commit": "b4ce59309a12b68e79dbfc8534a1b106e162110a",
+  "route_id": "haze4k-observable-tail-factorial-v1",
+  "run_id": "haze4k-observable-tail-factorial-v1-r2",
+  "schema_version": 1,
+  "scientific_authorization": "NONE",
+  "status": "PASSED_ENGINEERING"
+}

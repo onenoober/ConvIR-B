@@ -1,0 +1,10 @@
+cell,learner,oof_gain,oof_gain_lower,oof_gain_upper,representation,selected,selection_action_area_lower,selection_active_scene_lower,selection_admissible,selection_gain,selection_gain_lower,selection_gain_upper,selection_selected_harm_upper,test_stress_gain,test_stress_gain_lower,test_stress_gain_upper
+R0_L0,L0,0.0,0.0,0.0,R0,True,0.0,0.0,False,0.0,0.0,0.0,,0.0,0.0,0.0
+R0_L1,L1,0.0,0.0,0.0,R0,False,0.0,0.0,False,0.0,0.0,0.0,,0.0,0.0,0.0
+R0_L2,L2,0.0,0.0,0.0,R0,False,0.0,0.0,False,0.0,0.0,0.0,,0.0,0.0,0.0
+R1_L0,L0,0.0,0.0,0.0,R1,False,0.0,0.0,False,0.0,0.0,0.0,,0.0,0.0,0.0
+R1_L1,L1,0.0,0.0,0.0,R1,False,0.0,0.0,False,0.0,0.0,0.0,,0.0,0.0,0.0
+R1_L2,L2,0.0,0.0,0.0,R1,False,0.0,0.0,False,0.0,0.0,0.0,,0.0,0.0,0.0
+R2_L0,L0,0.0,0.0,0.0,R2,False,0.0,0.0,False,0.0,0.0,0.0,,0.0,0.0,0.0
+R2_L1,L1,0.0,0.0,0.0,R2,False,0.0,0.0,False,0.0,0.0,0.0,,0.0,0.0,0.0
+R2_L2,L2,0.0,0.0,0.0,R2,False,0.0,0.0,False,0.0,0.0,0.0,,0.0,0.0,0.0

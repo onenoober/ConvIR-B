@@ -1,0 +1,154 @@
+{
+  "haze4k_test_development_stress": {
+    "action_area": {
+      "critical_value": 2.734368786533176,
+      "estimate": 0.0,
+      "family_size": 8,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "scene_count": 100,
+      "upper": 0.0
+    },
+    "active_scene": {
+      "critical_value": 2.734368786533176,
+      "estimate": 0.0,
+      "family_size": 8,
+      "lower": 0.0,
+      "successes": 0,
+      "total": 100,
+      "upper": 0.0695664046813737
+    },
+    "gain": {
+      "critical_value": 2.734368786533176,
+      "estimate": 0.0,
+      "family_size": 8,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "scene_count": 100,
+      "upper": 0.0
+    },
+    "image_safety": {
+      "color": {
+        "critical_value": 3.0780880728421613,
+        "estimate": 0.0,
+        "family_size": 24,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.08654632141180972
+      },
+      "psnr": {
+        "critical_value": 3.0780880728421613,
+        "estimate": 0.0,
+        "family_size": 24,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.08654632141180972
+      },
+      "ssim": {
+        "critical_value": 3.0780880728421613,
+        "estimate": 0.0,
+        "family_size": 24,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 100,
+        "upper": 0.08654632141180972
+      }
+    },
+    "material_scene": {
+      "critical_value": 2.734368786533176,
+      "estimate": 0.0,
+      "family_size": 8,
+      "lower": 0.0,
+      "successes": 0,
+      "total": 100,
+      "upper": 0.0695664046813737
+    },
+    "scene_count": 100,
+    "selected_area_harm": {
+      "estimate": null,
+      "lower": null,
+      "resamples": 100000,
+      "selected_area_positive": false,
+      "upper": null
+    }
+  },
+  "haze4k_train_oof": {
+    "action_area": {
+      "critical_value": 2.734368786533176,
+      "estimate": 0.0,
+      "family_size": 8,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "scene_count": 600,
+      "upper": 0.0
+    },
+    "active_scene": {
+      "critical_value": 2.734368786533176,
+      "estimate": 0.0,
+      "family_size": 8,
+      "lower": 8.673617379884035e-19,
+      "successes": 0,
+      "total": 600,
+      "upper": 0.012307915293647227
+    },
+    "gain": {
+      "critical_value": 2.734368786533176,
+      "estimate": 0.0,
+      "family_size": 8,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "scene_count": 600,
+      "upper": 0.0
+    },
+    "image_safety": {
+      "color": {
+        "critical_value": 3.0780880728421613,
+        "estimate": 0.0,
+        "family_size": 24,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 600,
+        "upper": 0.015545562976907418
+      },
+      "psnr": {
+        "critical_value": 3.0780880728421613,
+        "estimate": 0.0,
+        "family_size": 24,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 600,
+        "upper": 0.015545562976907418
+      },
+      "ssim": {
+        "critical_value": 3.0780880728421613,
+        "estimate": 0.0,
+        "family_size": 24,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 600,
+        "upper": 0.015545562976907418
+      }
+    },
+    "material_scene": {
+      "critical_value": 2.734368786533176,
+      "estimate": 0.0,
+      "family_size": 8,
+      "lower": 8.673617379884035e-19,
+      "successes": 0,
+      "total": 600,
+      "upper": 0.012307915293647227
+    },
+    "scene_count": 600,
+    "selected_area_harm": {
+      "estimate": null,
+      "lower": null,
+      "resamples": 100000,
+      "selected_area_positive": false,
+      "upper": null
+    }
+  },
+  "schema_version": 1,
+  "selected_cell": "R0_L0"
+}

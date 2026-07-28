@@ -1,0 +1,650 @@
+{
+  "differences": [
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 1.2553080961729088,
+      "field": "first_epoch_total_loss",
+      "model": "oof_fold_0",
+      "observed": 1.2553080961729088
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.9107145464164205,
+      "field": "final_epoch_total_loss",
+      "model": "oof_fold_0",
+      "observed": 0.9107145464164205
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.9907785672694445,
+      "field": "first_epoch_utility_loss",
+      "model": "oof_fold_0",
+      "observed": 0.9907785672694445
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.7204875463619829,
+      "field": "final_epoch_utility_loss",
+      "model": "oof_fold_0",
+      "observed": 0.7204875463619829
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.5290590580708037,
+      "field": "first_epoch_risk_loss",
+      "model": "oof_fold_0",
+      "observed": 0.5290590580708037
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.3804539975166942,
+      "field": "final_epoch_risk_loss",
+      "model": "oof_fold_0",
+      "observed": 0.3804539975166942
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.12229370296001435,
+      "field": "utility_correction",
+      "model": "oof_fold_0",
+      "observed": 0.12229370296001435
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.034836476993560794,
+      "field": "risk_correction",
+      "model": "oof_fold_0",
+      "observed": 0.034836476993560794
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 1.2553080961729088,
+      "field": "first_epoch_total_loss",
+      "model": "oof_fold_0",
+      "observed": 1.2553080961729088
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.9107145464164205,
+      "field": "final_epoch_total_loss",
+      "model": "oof_fold_0",
+      "observed": 0.9107145464164205
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.9907785672694445,
+      "field": "first_epoch_utility_loss",
+      "model": "oof_fold_0",
+      "observed": 0.9907785672694445
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.7204875463619829,
+      "field": "final_epoch_utility_loss",
+      "model": "oof_fold_0",
+      "observed": 0.7204875463619829
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.5290590580708037,
+      "field": "first_epoch_risk_loss",
+      "model": "oof_fold_0",
+      "observed": 0.5290590580708037
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.3804539975166942,
+      "field": "final_epoch_risk_loss",
+      "model": "oof_fold_0",
+      "observed": 0.3804539975166942
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.7430357133865356,
+      "field": "utility_correction",
+      "model": "oof_fold_0",
+      "observed": 0.7430357133865356
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.12747088518142702,
+      "field": "risk_correction",
+      "model": "oof_fold_0",
+      "observed": 0.12747088518142702
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 1.2437054871736715,
+      "field": "first_epoch_total_loss",
+      "model": "oof_fold_1",
+      "observed": 1.2437054871736715
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.89673539903791,
+      "field": "final_epoch_total_loss",
+      "model": "oof_fold_1",
+      "observed": 0.89673539903791
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.9842734718074401,
+      "field": "first_epoch_utility_loss",
+      "model": "oof_fold_1",
+      "observed": 0.9842734718074401
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.707300449036605,
+      "field": "final_epoch_utility_loss",
+      "model": "oof_fold_1",
+      "observed": 0.707300449036605
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.5188640285438547,
+      "field": "first_epoch_risk_loss",
+      "model": "oof_fold_1",
+      "observed": 0.5188640285438547
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.3788699006816993,
+      "field": "final_epoch_risk_loss",
+      "model": "oof_fold_1",
+      "observed": 0.3788699006816993
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.07173976383209227,
+      "field": "utility_correction",
+      "model": "oof_fold_1",
+      "observed": 0.07173976383209227
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.03471564521789551,
+      "field": "risk_correction",
+      "model": "oof_fold_1",
+      "observed": 0.03471564521789551
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 1.2437054871736715,
+      "field": "first_epoch_total_loss",
+      "model": "oof_fold_1",
+      "observed": 1.2437054871736715
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.89673539903791,
+      "field": "final_epoch_total_loss",
+      "model": "oof_fold_1",
+      "observed": 0.89673539903791
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.9842734718074401,
+      "field": "first_epoch_utility_loss",
+      "model": "oof_fold_1",
+      "observed": 0.9842734718074401
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.707300449036605,
+      "field": "final_epoch_utility_loss",
+      "model": "oof_fold_1",
+      "observed": 0.707300449036605
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.5188640285438547,
+      "field": "first_epoch_risk_loss",
+      "model": "oof_fold_1",
+      "observed": 0.5188640285438547
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.3788699006816993,
+      "field": "final_epoch_risk_loss",
+      "model": "oof_fold_1",
+      "observed": 0.3788699006816993
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.6373911393851042,
+      "field": "utility_correction",
+      "model": "oof_fold_1",
+      "observed": 0.6373911393851042
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.10185619258880615,
+      "field": "risk_correction",
+      "model": "oof_fold_1",
+      "observed": 0.10185619258880615
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 1.2321961641622086,
+      "field": "first_epoch_total_loss",
+      "model": "oof_fold_2",
+      "observed": 1.2321961641622086
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.8955574803364773,
+      "field": "final_epoch_total_loss",
+      "model": "oof_fold_2",
+      "observed": 0.8955574803364773
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.9634408486851801,
+      "field": "first_epoch_utility_loss",
+      "model": "oof_fold_2",
+      "observed": 0.9634408486851801
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.708351701653252,
+      "field": "final_epoch_utility_loss",
+      "model": "oof_fold_2",
+      "observed": 0.708351701653252
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.5375106335617602,
+      "field": "first_epoch_risk_loss",
+      "model": "oof_fold_2",
+      "observed": 0.5375106335617602
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.374411559298945,
+      "field": "final_epoch_risk_loss",
+      "model": "oof_fold_2",
+      "observed": 0.374411559298945
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.11085084066390995,
+      "field": "utility_correction",
+      "model": "oof_fold_2",
+      "observed": 0.11085084066390995
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.06456193714141847,
+      "field": "risk_correction",
+      "model": "oof_fold_2",
+      "observed": 0.06456193714141847
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 1.2321961641622086,
+      "field": "first_epoch_total_loss",
+      "model": "oof_fold_2",
+      "observed": 1.2321961641622086
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.8955574803364773,
+      "field": "final_epoch_total_loss",
+      "model": "oof_fold_2",
+      "observed": 0.8955574803364773
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.9634408486851801,
+      "field": "first_epoch_utility_loss",
+      "model": "oof_fold_2",
+      "observed": 0.9634408486851801
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.708351701653252,
+      "field": "final_epoch_utility_loss",
+      "model": "oof_fold_2",
+      "observed": 0.708351701653252
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.5375106335617602,
+      "field": "first_epoch_risk_loss",
+      "model": "oof_fold_2",
+      "observed": 0.5375106335617602
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.374411559298945,
+      "field": "final_epoch_risk_loss",
+      "model": "oof_fold_2",
+      "observed": 0.374411559298945
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.5313719963669776,
+      "field": "utility_correction",
+      "model": "oof_fold_2",
+      "observed": 0.5313719963669776
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.11243534617424011,
+      "field": "risk_correction",
+      "model": "oof_fold_2",
+      "observed": 0.11243534617424011
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 1.2922900572729608,
+      "field": "first_epoch_total_loss",
+      "model": "oof_fold_3",
+      "observed": 1.2922900572729608
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.9080970377661288,
+      "field": "final_epoch_total_loss",
+      "model": "oof_fold_3",
+      "observed": 0.9080970377661288
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 1.0208309314058472,
+      "field": "first_epoch_utility_loss",
+      "model": "oof_fold_3",
+      "observed": 1.0208309314058472
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.7183723640666965,
+      "field": "final_epoch_utility_loss",
+      "model": "oof_fold_3",
+      "observed": 0.7183723640666965
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.5429182566857587,
+      "field": "first_epoch_risk_loss",
+      "model": "oof_fold_3",
+      "observed": 0.5429182566857587
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.3794493471737951,
+      "field": "final_epoch_risk_loss",
+      "model": "oof_fold_3",
+      "observed": 0.3794493471737951
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.17633528995513914,
+      "field": "utility_correction",
+      "model": "oof_fold_3",
+      "observed": 0.17633528995513914
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.04353836011886597,
+      "field": "risk_correction",
+      "model": "oof_fold_3",
+      "observed": 0.04353836011886597
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 1.2922900572729608,
+      "field": "first_epoch_total_loss",
+      "model": "oof_fold_3",
+      "observed": 1.2922900572729608
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.9080970377661288,
+      "field": "final_epoch_total_loss",
+      "model": "oof_fold_3",
+      "observed": 0.9080970377661288
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 1.0208309314058472,
+      "field": "first_epoch_utility_loss",
+      "model": "oof_fold_3",
+      "observed": 1.0208309314058472
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.7183723640666965,
+      "field": "final_epoch_utility_loss",
+      "model": "oof_fold_3",
+      "observed": 0.7183723640666965
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.5429182566857587,
+      "field": "first_epoch_risk_loss",
+      "model": "oof_fold_3",
+      "observed": 0.5429182566857587
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.3794493471737951,
+      "field": "final_epoch_risk_loss",
+      "model": "oof_fold_3",
+      "observed": 0.3794493471737951
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.24328948716322585,
+      "field": "utility_correction",
+      "model": "oof_fold_3",
+      "observed": 0.24328948716322585
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.060681033039093016,
+      "field": "risk_correction",
+      "model": "oof_fold_3",
+      "observed": 0.060681033039093016
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 1.2528817485397061,
+      "field": "first_epoch_total_loss",
+      "model": "oof_fold_4",
+      "observed": 1.2528817485397061
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.9103920520399698,
+      "field": "final_epoch_total_loss",
+      "model": "oof_fold_4",
+      "observed": 0.9103920520399698
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.976552682587256,
+      "field": "first_epoch_utility_loss",
+      "model": "oof_fold_4",
+      "observed": 0.976552682587256
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.7200227392730691,
+      "field": "final_epoch_utility_loss",
+      "model": "oof_fold_4",
+      "observed": 0.7200227392730691
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.5526581301353872,
+      "field": "first_epoch_risk_loss",
+      "model": "oof_fold_4",
+      "observed": 0.5526581301353872
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.38073862253610663,
+      "field": "final_epoch_risk_loss",
+      "model": "oof_fold_4",
+      "observed": 0.38073862253610663
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.017297833061218265,
+      "field": "utility_correction",
+      "model": "oof_fold_4",
+      "observed": 0.017297833061218265
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "weaken",
+      "expected": 0.028260794639587406,
+      "field": "risk_correction",
+      "model": "oof_fold_4",
+      "observed": 0.028260794639587406
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 1.2528817485397061,
+      "field": "first_epoch_total_loss",
+      "model": "oof_fold_4",
+      "observed": 1.2528817485397061
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.9103920520399698,
+      "field": "final_epoch_total_loss",
+      "model": "oof_fold_4",
+      "observed": 0.9103920520399698
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.976552682587256,
+      "field": "first_epoch_utility_loss",
+      "model": "oof_fold_4",
+      "observed": 0.976552682587256
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.7200227392730691,
+      "field": "final_epoch_utility_loss",
+      "model": "oof_fold_4",
+      "observed": 0.7200227392730691
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.5526581301353872,
+      "field": "first_epoch_risk_loss",
+      "model": "oof_fold_4",
+      "observed": 0.5526581301353872
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.38073862253610663,
+      "field": "final_epoch_risk_loss",
+      "model": "oof_fold_4",
+      "observed": 0.38073862253610663
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.21920224151611328,
+      "field": "utility_correction",
+      "model": "oof_fold_4",
+      "observed": 0.21920224151611328
+    },
+    {
+      "absolute_difference": 0.0,
+      "action": "strengthen",
+      "expected": 0.07395744214057921,
+      "field": "risk_correction",
+      "model": "oof_fold_4",
+      "observed": 0.07395744214057921
+    }
+  ],
+  "expected_rows": 10,
+  "matched": true,
+  "maximum_absolute_difference": 0.0,
+  "observed_rows": 10,
+  "schema_version": 1,
+  "tolerance": 1e-06
+}

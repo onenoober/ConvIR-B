@@ -1,0 +1,165 @@
+{
+  "factorial_intervals": {
+    "R0_L0": {
+      "estimate": 0.0,
+      "family_size": 9,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260826,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "upper": 0.0
+    },
+    "R0_L1": {
+      "estimate": 0.0,
+      "family_size": 9,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260827,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "upper": 0.0
+    },
+    "R0_L2": {
+      "estimate": 0.0,
+      "family_size": 9,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260828,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "upper": 0.0
+    },
+    "R1_L0": {
+      "estimate": 0.0,
+      "family_size": 9,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260829,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "upper": 0.0
+    },
+    "R1_L1": {
+      "estimate": 0.0,
+      "family_size": 9,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260830,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "upper": 0.0
+    },
+    "R1_L2": {
+      "estimate": 0.0,
+      "family_size": 9,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260831,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "upper": 0.0
+    },
+    "R2_L0": {
+      "estimate": 0.0,
+      "family_size": 9,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260832,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "upper": 0.0
+    },
+    "R2_L1": {
+      "estimate": 0.0,
+      "family_size": 9,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260833,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "upper": 0.0
+    },
+    "R2_L2": {
+      "estimate": 0.0,
+      "family_size": 9,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260834,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "upper": 0.0
+    }
+  },
+  "family_size": 4,
+  "intervals": {
+    "candidate_minus_baseline_psnr_db": {
+      "estimate": 0.0,
+      "family_size": 4,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260726,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.0
+    },
+    "candidate_minus_keep_psnr_db": {
+      "estimate": 0.0,
+      "family_size": 4,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260726,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.0
+    },
+    "candidate_minus_shuffled_psnr_db": {
+      "estimate": 0.0,
+      "family_size": 4,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260726,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.0
+    },
+    "candidate_minus_uniform_psnr_db": {
+      "estimate": 0.0,
+      "family_size": 4,
+      "lower": 0.0,
+      "max_half_width": 0.0,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260726,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.0
+    }
+  },
+  "schema_version": 1,
+  "selected_cell": "R0_L0"
+}
