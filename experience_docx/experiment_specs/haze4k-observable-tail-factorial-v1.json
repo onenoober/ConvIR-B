@@ -12,7 +12,7 @@
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "observable_tail_factorial",
         "require_gpu": true,
-        "output_id": "haze4k-observable-tail-factorial-v1",
+        "output_id": "haze4k-observable-tail-factorial-v1-r1",
         "closeout_filename": "haze4k_observable_tail_factorial_v1_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
@@ -334,7 +334,7 @@
       },
       "assets": [
         {"id": "official_anchor_checkout", "kind": "git_checkout", "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor", "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898", "require_clean": true, "access_role": "engineering_debug", "contract_access": true},
-        {"id": "factorial_entrypoint", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_observable_tail_factorial.py", "sha256": "969f99be252c9dfafd7381b85ceae7db5dcd50d6f6bab0aca0a1edb0e040841f", "access_role": "engineering_debug", "contract_access": true},
+        {"id": "factorial_entrypoint", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/tools/run_haze4k_observable_tail_factorial.py", "sha256": "a9207aff2802184047805cfd91b4b38db34321373dadb57147cc78e8489102c5", "access_role": "engineering_debug", "contract_access": true},
         {"id": "runtime_environment", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/runtime_environments/convir_4090_cu121_observable_utility_v1.json", "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b", "access_role": "engineering_debug", "contract_access": true},
         {"id": "official_checkpoint", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl", "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088", "access_role": "unrestricted", "contract_access": true},
         {"id": "model_source", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor/Dehazing/ITS/models/ConvIR.py", "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005", "access_role": "unrestricted", "contract_access": true},
@@ -361,7 +361,7 @@
         "minimum_fixture": {"batch": 1, "channels": 3, "height": 256, "width": 320},
         "bound_assets": [
           {"id": "official_anchor_checkout", "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"},
-          {"id": "factorial_entrypoint", "identity": "969f99be252c9dfafd7381b85ceae7db5dcd50d6f6bab0aca0a1edb0e040841f"},
+          {"id": "factorial_entrypoint", "identity": "a9207aff2802184047805cfd91b4b38db34321373dadb57147cc78e8489102c5"},
           {"id": "official_checkpoint", "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"},
           {"id": "runtime_environment", "identity": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"},
           {"id": "model_source", "identity": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"},
@@ -374,7 +374,7 @@
         "scientific_training_prohibited": true,
         "reuse_identity": {
           "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
-          "code_path_sha256": "969f99be252c9dfafd7381b85ceae7db5dcd50d6f6bab0aca0a1edb0e040841f",
+          "code_path_sha256": "a9207aff2802184047805cfd91b4b38db34321373dadb57147cc78e8489102c5",
           "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
           "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
           "device_class": "cuda_sm89"

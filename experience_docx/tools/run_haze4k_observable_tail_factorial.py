@@ -3773,7 +3773,7 @@ def contract(context_path: Path) -> None:
     })
     torch, model = load_official_model(context)
     generator = np.random.default_rng(TRAINING_SEED)
-    hazy = generator.uniform(0.05, 0.95, size=(256, 320, 3)).astype(np.float32)
+    hazy = generator.uniform(0.05, 0.95, size=(384, 512, 3)).astype(np.float32)
     clear = np.clip(
         hazy + generator.normal(scale=0.03, size=hazy.shape), 0.0, 1.0,
     ).astype(np.float32)
@@ -3863,7 +3863,7 @@ def contract(context_path: Path) -> None:
         engineering={
             "mode": "gpu_synthetic_no_data",
             "device": context.device,
-            "fixture": {"batch": 1, "channels": 3, "height": 256, "width": 320},
+            "fixture": {"batch": 1, "channels": 3, "height": 384, "width": 512},
             "production_path_exercised": True,
             "protected_data_touched": False,
             "scientific_output_created": False,

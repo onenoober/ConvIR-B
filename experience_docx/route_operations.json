@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-observable-tail-factorial-v1.json",
-  "experiment_spec_sha256": "378727dda3301704f069f7471e9e9829f93104aa52ccd0a0ad97ca471444c9c2",
+  "experiment_spec_sha256": "ee3818405a01f1b21b90151eb640cbe6b62f5053d83d8d292c271ad9e7d34ec0",
   "operations": {
     "HAZE4K_OBSERVABLE_TAIL_FACTORIAL": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 16000,
       "mode": "observable_tail_factorial",
       "monitor_profile": "standard",
-      "output_id": "haze4k-observable-tail-factorial-v1",
+      "output_id": "haze4k-observable-tail-factorial-v1-r1",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
