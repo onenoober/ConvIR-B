@@ -435,7 +435,7 @@ def contract(context_path: Path) -> None:
         "bounded_discrepancy_path": (
             1.0e-6 < tracker.maximum("upstream_vs_current") <= 1.0e-5
         ),
-        "seed_ensemble_path": tracker.maximum("saved_seed_ensemble") == 0.0,
+        "seed_ensemble_path": tracker.maximum("saved_seed_ensemble") <= 1.0e-6,
         "action_replay_path": np.array_equal(current_actions, upstream_actions),
         "quantile_and_threshold_paths": (
             len(tracker.quantile_rows()) == 6

@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-frozen-output-tail-controller-evidence-review-v1.json",
-  "experiment_spec_sha256": "6864882a57151b2d6bfeb98ee214299eb46f7928f22d6d8ee6e6526d6524faa4",
+  "experiment_spec_sha256": "5b0b536b335b0263e8910d7fd87c14685038ca872a70a120443bd8a4b4cde1ba",
   "operations": {
     "HAZE4K_FROZEN_OUTPUT_TAIL_CONTROLLER_EVIDENCE_REVIEW": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 0,
       "mode": "frozen_output_tail_controller_evidence_review",
       "monitor_profile": "short",
-      "output_id": "haze4k-frozen-output-tail-controller-evidence-review-v1-r1",
+      "output_id": "haze4k-frozen-output-tail-controller-evidence-review-v1-r2",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
