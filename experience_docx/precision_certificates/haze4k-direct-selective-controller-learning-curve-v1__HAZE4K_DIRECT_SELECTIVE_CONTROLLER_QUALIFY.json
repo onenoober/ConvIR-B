@@ -1,0 +1,33 @@
+{
+  "assurance": {
+    "method_id": "external_sd_upper_bound",
+    "planning_sd_rule": "Use the frozen pre-run upper confidence bound for the Haze4K train OOF scene-level PSNR-gain standard deviation.",
+    "probability": 0.8
+  },
+  "certificate_id": "haze4k_direct_selective_controller_precision_v1",
+  "comparison_family": "direct_controller_four_endpoint_family",
+  "confidence_level": 0.95,
+  "critical_value": 2.4977054744123737,
+  "feasible": true,
+  "independent_unit": "original_clear_scene",
+  "method": "normal_mean",
+  "operation_id": "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_QUALIFY",
+  "primary_estimand_id": "joint_full_data_oof_gain",
+  "route_id": "haze4k-direct-selective-controller-learning-curve-v1",
+  "schema_version": 2,
+  "source_reference": "GitHub-main parent four-endpoint interval inversion; the 0.2358753949 dB planning-SD upper bound and Bonferroni critical value were frozen before this route.",
+  "source_role": "development_screening",
+  "strata": [
+    {
+      "feasible": true,
+      "id": "haze4k_train_oof",
+      "independent_groups_available": 600,
+      "independent_groups_planned": 600,
+      "independent_groups_required": 556,
+      "planning_sd": 0.1887003159,
+      "planning_sd_upper_bound": 0.2358753949,
+      "source_reference": "GitHub-main parent four-endpoint interval inversion with the frozen Haze4K OOF scene-level planning-SD upper bound."
+    }
+  ],
+  "target_half_width": 0.025
+}

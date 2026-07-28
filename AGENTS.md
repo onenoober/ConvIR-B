@@ -1,131 +1,167 @@
 # Agent Instructions
 
-## Hard Rules
+## Non-Negotiable Boundaries
 
-- Local WSL = editing and syntax/compile-only checks. Do not run tests, smoke
-  tests, training, evaluation, inference, demos, or runtime commands locally.
-- Runtime validation runs only on `convir-4090` unless the user explicitly
-  overrides a specific command. If unavailable, report it; do not fall back
-  locally.
-- Use explicit cloud Python paths, especially
-  `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`.
-- GitHub `main` = durable compact evidence archive and current experiment
-  status source. Cloud = runtime/raw-output source. Local = editing/sync
-  staging only.
-- Do not commit checkpoints, weights, datasets, images, arrays, archives, raw
-  inference outputs, large per-image tables, selected-action tables, or raw
-  feature tables by default.
-- `github/codex/haze4k-official-arch-anchor` is immutable. New model-structure
-  routes must branch from it.
-- For experiment status, result, decision, and route-memory questions, read
-  GitHub `main` or the named GitHub branch directly. Do not use the local
-  working tree, local `experience_docx/`, or local git state as project memory;
-  they may be dirty, stale, or on the wrong branch. Local reads are allowed only
-  for editing, syntax/compile-only checks, sync staging, and verifying whether a
-  local operation is safe.
-- Do not treat chat history as authoritative evidence.
-- New rule text must follow the repository document layers in
-  `experience_docx/README.md`. Keep one canonical source per rule; other files
-  should link to that source instead of copying the rule body. Do not mix
-  runtime rules, design guidance, historical troubleshooting, branch cleanup, or
-  experiment evidence in the same document section.
+- Local WSL is for editing and syntax/compile checks only. Run tests, smoke,
+  training, evaluation, inference, demos, and runtime validation only on
+  `convir-4090`, using
+  `/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python`. If the host is
+  unavailable, stop the runtime action; never fall back locally.
+- GitHub `main` owns current rules and terminal compact evidence. A named route
+  branch owns runnable route code and intermediate compact evidence. Cloud owns
+  raw runtime state. Chat and local worktrees are not experiment memory.
+- `github/codex/haze4k-official-arch-anchor` is immutable. Every new
+  model-structure route starts from it in fresh local and cloud workspaces.
+- Do not commit datasets, weights, checkpoints, images, arrays, archives, raw
+  inference outputs, or large per-sample/feature/action tables.
 
-## Universal Route Workflow
+## One Finite Workflow
 
-This is the default execution flow for later reasoning and action. Use this
-order for every new route, method, architecture, loss, selector,
-teacher/distillation plan, or runtime experiment unless a stricter task-specific
-protocol applies. Do not skip ahead to coding or launching because a previous
-chat already seems to imply the answer.
+Follow `experience_docx/SCIENCE_FASTPATH.md` as the single default workflow:
+SNAPSHOT, CONTRACT, EXECUTE, DECIDE, ARCHIVE.
 
-1. Fact-source gate: first identify the authoritative sources for the task.
-   For research state, use GitHub `main` or the named GitHub branch plus current
-   cloud runtime state; use attachments only as task input. Treat local files as
-   editable/sync staging unless the task is explicitly local editing.
-2. Route-identity gate: decide whether this is a new route, a continuation, a
-   rescue, an ablation, or an evidence sync. Record what is explicitly not
-   allowed before work starts, especially forbidden continuations, selector
-   probes, canary expansion, and locked-test access.
-3. Resource-preflight gate: before any cloud launch, verify cloud branch/commit,
-   workspace, explicit Python, dataset/split, checkpoint/teacher assets, output
-   root, command script, status/log paths, tmux/session conflicts, and locked-test
-   policy. If a required asset is missing, classify the blocker; do not silently
-   substitute a different local or cloud source.
-4. Metric-contract gate: define the exact baseline, sample/crop/split pairing,
-   metric direction, gate thresholds, and comparison scope before running. Ensure
-   before/after/base metrics are computed on the same data view; rerun rather
-   than interpret if the metric contract is wrong.
-5. Transport gate: use stable PowerShell -> WSL -> SSH transfer patterns from
-   `COMMAND_RELIABILITY_QUICKSTART.md`. Prefer `tar`/`scp`/`rsync` or stable
-   script bodies with explicit `*_OK` markers over ad hoc nested quoting; read
-   the longer command protocol only for failed or unfamiliar boundary cases.
-6. Stage-gate execution: run the smallest phase that answers the current
-   question. Launch later phases only when the written previous gate authorizes
-   them; never use locked test, canary expansion, or broad queues as a debugging
-   shortcut.
-7. Closeout and archive gate: after the last authorized phase, write the final
-   decision into the route card, evidence README, closeout JSON, central index,
-   and family summary as applicable. Keep runnable code on the route branch and
-   sync only compact text evidence to GitHub `main` unless a separate promotion
-   decision says otherwise.
+Read experience_docx/AI_POLICY_SNAPSHOT.json first as a compact deterministic
+read index. It is never policy authority: read every full rule file routed by
+the active change class, and read the full authoritative set for governance,
+protected-data, scientific-authorization, conflict, unknown-class, or snapshot-
+hash changes.
 
-## Read Budget
+1. SNAPSHOT: call compact `convir_git_status` for the target route. Read its
+   authoritative snapshot, direct parent closeout and only referenced files.
+   Do not read the full Markdown index or family history by default.
+2. CONTRACT: new routes use one schema-2 experiment spec compiled to manifest
+   schema 6, canonical scientific JSON, one <=8 KiB rationale note and runtime
+   schema 2. Freeze every control, typed gate outcome, complete mutually
+   exclusive decision table, uncertainty rule, data role and terminal action.
+   Failed identity/integrity/coverage uses `validity_veto`; precision uses
+   `inconclusive_only` and cannot hide a decisive scientific FAIL.
+   Formal precision needs a primary-estimand and stratum-bound pre-run
+   feasibility certificate using a frozen planning-SD upper bound; a changed production path needs one
+   identity-bound capability profile and matching device-aware synthetic contract.
+   Use the compiler's atomic `--finalize`: it runs one aggregate lint and writes
+   the complete derived bundle only when the source is clean. Any cost/termination
+   claim also freezes a machine-validated cost strategy: use a same-scale probe
+   for adaptive/nonlinear work, or fixed-linear extrapolation only for an exact
+   fixed-count production map with bounded shape and constant memory.
+   New typed asset manifests use schema 2. Historical experiment-spec,
+   scientific and asset schema 1 plus manifest schema 4/5 routes remain
+   immutable and supported.
+3. EXECUTE: run one route-ready gate, commit/push once, plan once and start
+   once. Confirm positive workload progress once. The frozen ETA is a cost
+   estimate, not an observation embargo. At operator request, use only the
+   receipt-bound result-blind progress refresh or terminal probe; each response
+   must name its snapshot time and cached/current status. Explicit cancellation
+   is allowed only through receipt-bound lifecycle control, never by PID.
+   Every new scientific schema-2 run records each completed workload unit in
+   the generic SHA-bound ledger; finalization requires exact `total_units` coverage.
+   Retry/not-before timestamps govern full sealed finish windows only. They do
+   not block the bounded result-blind refresh, early terminal detection, or
+   operator cancellation. Do not turn refresh into a watcher.
+   Never repeat checks owned by the validator/lifecycle or create a watcher.
+4. DECIDE: route code writes typed gate outcomes; the generic lifecycle derives
+   the frozen terminal once. Interpret complete evidence once. The typed closeout alone
+   authorizes a next stage; scientific FAIL is never an engineering retry.
+5. ARCHIVE: call `prepare_terminal_archive.py` once. Its default receipt-bound
+   path always fetches compact closeout/result evidence, preserves the compact launch-contract bundle,
+   registers a new engineering qualification when applicable, verifies,
+   commits, pushes and verifies remote
+   main. Stop on success; `--prepare-only` is an explicit review exception.
 
-Read the smallest useful set; do not open all governance docs by default. Use
-`rg` and targeted excerpts. Stop reading once the task is grounded.
+The existing manifest/runtime-spec/asset files remain machine interfaces and
+may be generated or validated mechanically. They are not separate documentation
+tasks. A route README and family-summary rewrite are not required for normal
+terminal archive. Engineering failure continues to use the bounded same-contract
+repair policy below and is not a scientific terminal archive.
 
-### Adaptive Context Expansion
+## Model Qualification And Cost
 
-Use a small starting context, then expand only at decision points. The
-non-negotiable gates remain fact source, route identity, resource preflight,
-metric contract, stage authorization, and closeout/archive.
+- Honor an explicit user model/effort pin. Check model qualification only when
+  the user asks or the active model is unknown/below the repository floor.
+- Keep one qualified task for design, implementation, launch, monitoring,
+  interpretation, and archive. Do not create dispatcher children, per-stage
+  model tasks, or automatic model switches.
+- If the current model is insufficient, stop before the next write or launch
+  and issue one explicit handoff under `MODEL_QUALIFICATION_PROTOCOL.md`.
+- Reuse an engineering capability qualification only through an exact match of
+  source commit, code-path SHA, checkpoint SHA, runtime-environment SHA, device
+  class and input-contract SHA in capability_registry.jsonl. A match saves only
+  the duplicate engineering qualification; it never carries scientific PASS,
+  data permission, promotion, or deployment authorization.
+- New capability profiles bind those six identities to committed asset
+  identities. Route-ready and plan report reuse, and the lifecycle skips the
+  engineering contract only for one unique registry match.
 
-- Start with the router plus the minimum current-route evidence needed for the
-  question.
-- Expand to the relevant L2 protocol before new route start, cloud launch,
-  runtime monitoring, evidence sync, or command execution.
-- Expand to route card, family summary, evidence README/log status, and cloud
-  state before interpreting results or deciding pass/fail/pause/promote.
-- Expand to historical archives only for command-boundary failures, old cloud
-  provenance, or branch-cleanup tasks.
-- Never use context minimization to skip locked-test policy, forbidden-flow
-  checks, metric alignment, resource preflight, or written stage gates.
+## Flexible Route-Family Governance
 
-| Task | Read |
-| --- | --- |
-| Experiment status/result/decision | GitHub `main`/named GitHub branch copy of `EXPERIMENT_INDEX.md`, then only the relevant family summary, route card, and evidence README/log dir |
-| Cloud command, monitoring, sync, PowerShell/WSL/SSH | `COMMAND_RELIABILITY_QUICKSTART.md`; read `COMMAND_RELIABILITY_PROTOCOL.md` only for failed or unfamiliar command-boundary cases |
-| Training, smoke, eval, inference, post-run audit | `MODEL_RUN_OPERATIONS_PROTOCOL.md` |
-| Evidence sync to GitHub | `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md`, affected index/card/family/README |
-| New Haze4K architecture/fine-tune route | `Haze4K_ARCH_FINETUNE_WORKFLOW.md`, partial-load/init/freeze rules |
-| New experiment family/governance | Relevant sections only from `README.md`, governance/checklist/design/template docs |
+- A research program owns its route-family budgets and states. There is no
+  repository-wide fixed experiment-count limit.
+- An adjacent route shares a family core assumption and consumes its declared
+  budget. An orthogonal route names a permitted substantive change dimension
+  and does not consume the closed family's adjacent budget. A reopen route
+  requires a closed family plus an allowed, verifiably present new evidence type.
+- A formal evidence-bound amendment may change a program budget, stage scope,
+  dependency use, family state, reopen evidence type, or orthogonal dimension.
+  Validators check identity, scope, and evidence presence; they do not choose
+  the scientific judgment. Closing one family never globally closes the problem.
 
-## Sync Gates
+## Finite Recovery
 
-- Sync only valuable compact text evidence, not raw artifacts or broad outputs.
-- Use a clean `github/main` worktree, stage explicit paths, and follow
-  `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` for path selection, checks, push, and
-  verification.
+- Inspect before mutation. Never overwrite an active session, output, or
+  historical workspace.
+- One command-boundary class gets one deterministic correction. One engineering
+  root cause gets one repair cycle. A repeated same-class/root failure stops
+  that operation with one blocker.
+- Before any commit, push, plan or start, a pure local authoring task may apply
+  one finite repair batch across distinct stable aggregate-lint
+  `path/code/message` tuples. Repeating the same tuple stops authoring. This
+  exception never applies to cloud, transport, runtime, protected data,
+  engineering repair or unknown launch state.
+- A timeout after the launch boundary is unknown state and forbids a second
+  launch. Repeat the same sealed start call once only for its built-in
+  metadata inspection and receipt recovery/clean-retry decision. A dead session
+  without closeout is inspected once and never polled repeatedly.
+- Engineering failure never changes data, metric, threshold, gate, locked-test
+  policy, or scientific authorization.
+- A validated ordinary engineering failure gets one deterministic same-contract
+  repair cycle automatically. Do not fetch, stage, push, update project memory,
+  or relaunch until the repair gate classifies the candidate. Sensitive changes
+  and a repeated root cause stop for the user; explicit `archive` is the only
+  path that unlocks failure evidence.
+  The repair gate's tool-owned temporary Git index is an isolated classifier
+  input and is not real staging; it must leave the worktree index unchanged.
+- `complete_units` recovery uses the generic fsync'd unit ledger with unique
+  unit/input/output identities, one hash-bound `completed_unit_ledger` asset,
+  and verified output files. A completed count without that exact evidence is
+  not resumable.
 
-## Cloud Gates
+Explicit discard is allowed only for a receipt-bound validated engineering
+terminal with verified absence of scientific/protected data touch, no active
+session, exact derived paths and post-delete checks. It cannot delete a
+scientific terminal, shared checkout, anchor, dataset, checkpoint, branch, or
+GitHub evidence.
 
-- Before launch, satisfy the resource-preflight and metric-contract gates in
-  the Universal Route Workflow and `MODEL_RUN_OPERATIONS_PROTOCOL.md`.
-- Do not overwrite active sessions, output dirs, or model names; inspect first.
-- Every cloud run needs a durable command script, heartbeat/status, stdout/stderr
-  capture, and compact evidence closeout.
-- Distinguish infra/preflight/training/eval/scientific-gate failures explicitly.
+## Three-End Command Boundary
 
-## Command Reliability
+- Windows calls WSL only as `wsl.exe -d Ubuntu-22.04 --exec` plus a fixed Linux
+  program and literal argv. Never use Windows Git on the WSL UNC worktree and
+  never place PowerShell, WSL, and SSH syntax in one command string.
+- Standard route lifecycle uses `convir-ops` v5.4.0 with stable six-tool protocol
+  schema 4 and canonical route-manifest schema 6. A non-experiment infrastructure
+  validation or diagnostic not covered by MCP may use one committed, unchanged,
+  GitHub-bound Bash file through `experience_docx/tools/convirctl.py remote-script`.
+  It cannot launch, stop, delete or fetch experiment state, or access scientific
+  or protected data. No inline SSH command or untracked script is valid.
+- Before any write, bind the task to the requested worktree with
+  `convirctl.py task-context`. Use `repo-show`, `repo-list`, and `repo-search`
+  for literal, ref-bound reads instead of cross-shell `grep`, `sed`, or `git
+  show` pipelines.
+- Use explicit binaries, JSON/status/closeout markers, and SHA-256 identity. A
+  remote timeout is unknown state with one inspection and no blind retry.
 
-- For PowerShell -> WSL -> SSH, prefer a small Bash script piped through WSL/SSH
-  over fragile nested quoting.
-- Monitoring/sync/audit commands should print `*_OK` or write a status file.
-- If quoting, CRLF, PATH, or shell-boundary failures occur, record the invalid
-  and corrected forms in the reliability protocol. Use
-  `COMMAND_RELIABILITY_QUICKSTART.md` for current defaults and the longer
-  protocol only for historical troubleshooting.
+## Documentation Ownership
 
-When docs and conversation conflict, prefer current GitHub evidence docs and
-current cloud runtime state; do not resolve research status from the local
-working tree. State uncertainty and cite the GitHub path or cloud path used.
+Keep one canonical source per rule. `experience_docx/README.md` routes reads.
+Historical schema-4 routes, runtime schema-1 files, route checkouts and incident
+documents preserve immutable provenance only. They are never migrated merely to
+adopt v5 and must not restore old dispatcher, authorization-file,
+validator/selfproof, monitoring or sync behavior.

@@ -1,0 +1,490 @@
+{
+  "competing_explanation": "A gain can arise from encoder capacity, seed or fold instability, dense unsafe activation, spatial action priors, or overfitting rather than decision alignment; the matched separate-head arm, frozen-feature ablation, shuffled replay, scene-level OOF design, tail metrics, and subgroup diagnostics address these alternatives. Conversely, a flat 75-to-100 percent curve with failed absolute utility despite favorable oracle feasibility supports structural observability or action-family limitation, while a positive paired slope supports but does not prove data limitation.",
+  "controls": [
+    "GitHub-main parent terminal, summary, raw inventory, train split, action oracle, official anchor, checkpoint, and runtime identities",
+    "full SHA-256 recomputation of all 750 parent scene caches and 400 parent test-development variant caches before training",
+    "nested group-respecting 120/240/360/480 subsets with five outer folds and three deterministic paired seeds",
+    "parameter-matched separate utility/risk-head arm at every train size",
+    "100-percent-data base-feature direct-policy ablation",
+    "explicit keep action and deterministic within-scene shuffled-action replay",
+    "selected-area harm, image-level PSNR, RGB SSIM, RGB color-bias, CVaR, severe-harm, action-distribution, subgroup-tail, seed, and fold diagnostics",
+    "cloud-only checkpoints, raw unit predictions, unit receipts, and SHA inventory"
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "identity_invalid",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "coverage_invalid",
+        "terminal": "inconclusive",
+        "when": {
+          "coverage": [
+            "fail",
+            "invalid"
+          ],
+          "evidence_identity": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "target_unfavorable",
+        "terminal": "fail",
+        "when": {
+          "coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "target_feasibility": [
+            "unfavorable"
+          ]
+        }
+      },
+      {
+        "id": "target_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "target_feasibility": [
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "utility_unfavorable",
+        "terminal": "fail",
+        "when": {
+          "actionable_utility": [
+            "unfavorable"
+          ],
+          "coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "target_feasibility": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "utility_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "actionable_utility": [
+            "indeterminate",
+            "invalid"
+          ],
+          "coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "target_feasibility": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "activation_unfavorable",
+        "terminal": "fail",
+        "when": {
+          "actionable_utility": [
+            "favorable"
+          ],
+          "activation": [
+            "unfavorable"
+          ],
+          "coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "target_feasibility": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "activation_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "actionable_utility": [
+            "favorable"
+          ],
+          "activation": [
+            "indeterminate",
+            "invalid"
+          ],
+          "coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "target_feasibility": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "safety_unsafe",
+        "terminal": "fail",
+        "when": {
+          "actionable_utility": [
+            "favorable"
+          ],
+          "activation": [
+            "favorable"
+          ],
+          "coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "tail_safety": [
+            "unsafe"
+          ],
+          "target_feasibility": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "safety_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "actionable_utility": [
+            "favorable"
+          ],
+          "activation": [
+            "favorable"
+          ],
+          "coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "tail_safety": [
+            "indeterminate",
+            "invalid"
+          ],
+          "target_feasibility": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "precision_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "actionable_utility": [
+            "favorable"
+          ],
+          "activation": [
+            "favorable"
+          ],
+          "coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "precision": [
+            "unmet",
+            "invalid"
+          ],
+          "tail_safety": [
+            "safe"
+          ],
+          "target_feasibility": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "all_decisive_gates_pass",
+        "terminal": "pass",
+        "when": {
+          "actionable_utility": [
+            "favorable"
+          ],
+          "activation": [
+            "favorable"
+          ],
+          "coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "precision": [
+            "met"
+          ],
+          "tail_safety": [
+            "safe"
+          ],
+          "target_feasibility": [
+            "favorable"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "stop",
+        "next_action_id": "review_data_scale_or_action_family_evidence",
+        "terminal": {
+          "authorizes": "DATA_SCALE_OR_ACTION_FAMILY_EVIDENCE_REVIEW_ONLY",
+          "decision": "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "record_only",
+        "next_action_id": "review_direct_controller_evidence",
+        "terminal": {
+          "authorizes": "DIRECT_CONTROLLER_EVIDENCE_REVIEW_ONLY",
+          "decision": "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "advance",
+        "next_action_id": "author_direct_controller_confirmation_contract",
+        "terminal": {
+          "authorizes": "DIRECT_CONTROLLER_CONFIRMATION_CONTRACT_AUTHORING_ONLY",
+          "decision": "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "changing the official ConvIR-B architecture, checkpoint, action scales, renderer, utility threshold, harm threshold, activation floors, or precision target",
+    "using hard oracle-argmax labels as the primary target",
+    "using a separate risk-veto head as the candidate controller",
+    "using synthetic haze parameters, filenames, or GT-derived deployment inputs",
+    "reading candidate-confirmation, canary, locked-test, NH-Haze, ITS, or OTS data",
+    "treating tiles, actions, variants, folds, seeds, checkpoints, or bootstrap draws as independent samples",
+    "allowing a favorable learning-curve slope to override a failed absolute utility, activation, safety, or precision gate"
+  ],
+  "gates": [
+    {
+      "comparison_family": "direct_controller_four_endpoint_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "joint_full_data_oof_gain",
+      "id": "evidence_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "Exact GitHub parent, raw cache, dataset role, official source, checkpoint, runtime, and entrypoint identities",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "direct_controller_simultaneous_intervals"
+    },
+    {
+      "comparison_family": "direct_controller_four_endpoint_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "joint_full_data_oof_gain",
+      "id": "coverage",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "Complete 135-model arm by train-size by fold by seed grid, nested subsets, 600-scene OOF ensembles, and 137-unit ledger",
+      "threshold": true,
+      "type": "coverage",
+      "uncertainty_id": "direct_controller_simultaneous_intervals"
+    },
+    {
+      "comparison_family": "direct_controller_four_endpoint_family",
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand_id": "joint_full_data_oof_gain",
+      "id": "target_feasibility",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "Pre-training 150-scene effective-positive count and oracle selective coverage with bounded selected harm",
+      "threshold": true,
+      "type": "materiality",
+      "uncertainty_id": "direct_controller_simultaneous_intervals"
+    },
+    {
+      "comparison_family": "direct_controller_four_endpoint_family",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "joint_full_data_oof_gain",
+      "id": "actionable_utility",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "Joint 480-scene-arm 600-scene OOF PSNR-gain simultaneous lower bound against keep",
+      "threshold": 0.05,
+      "type": "materiality",
+      "uncertainty_id": "direct_controller_simultaneous_intervals"
+    },
+    {
+      "comparison_family": "direct_controller_four_endpoint_family",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "joint_full_data_oof_gain",
+      "id": "activation",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "Joint 480-scene-arm action-area lower bound and active-scene Wilson lower bound",
+      "threshold": "action_area_lcb_ge_0.01_and_active_scene_lcb_ge_0.20",
+      "type": "materiality",
+      "uncertainty_id": "direct_controller_simultaneous_intervals"
+    },
+    {
+      "comparison_family": "direct_controller_four_endpoint_family",
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand_id": "joint_full_data_oof_gain",
+      "id": "tail_safety",
+      "neutral_outcome": "safe",
+      "outcomes": [
+        "safe",
+        "unsafe",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "Selected-area harm ratio and image-level PSNR, RGB SSIM, and color-bias harm upper bounds",
+      "threshold": 0.1,
+      "type": "safety",
+      "uncertainty_id": "direct_controller_simultaneous_intervals"
+    },
+    {
+      "comparison_family": "direct_controller_four_endpoint_family",
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand_id": "joint_full_data_oof_gain",
+      "id": "precision",
+      "neutral_outcome": "met",
+      "outcomes": [
+        "met",
+        "unmet",
+        "invalid"
+      ],
+      "reference": "Joint full-data OOF gain simultaneous half-width",
+      "threshold": 0.025,
+      "type": "precision",
+      "uncertainty_id": "direct_controller_simultaneous_intervals"
+    },
+    {
+      "comparison_family": "direct_controller_four_endpoint_family",
+      "decision_role": "descriptive",
+      "direction": "min",
+      "estimand_id": "joint_full_data_oof_gain",
+      "id": "data_scale_diagnostic",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "Paired 75-percent to 100-percent joint-controller OOF gain slope",
+      "threshold": 0.0,
+      "type": "materiality",
+      "uncertainty_id": "direct_controller_simultaneous_intervals"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "the official ConvIR-B base architecture, Haze4K checkpoint, renderer, keep output, and action residual scales 0.8 and 1.2 remain frozen",
+      "the deployment input contains only observable ConvIR output, internal feature, shape, multiscale context, and deterministic flip/scale disagreement tensors",
+      "GT-derived utility and harm are supervision and evaluation targets only and never enter the controller input",
+      "joint targets are soft risk-adjusted action distributions rather than hard oracle-argmax labels",
+      "keep is an explicit no-op and rejection action in the same three-way policy",
+      "the separate-head arm shares the encoder and optimization budget and differs by less than one percent in parameters",
+      "the frozen-feature arm runs only at 480 training scenes and isolates learned-encoder value",
+      "each outer fold contains 120 OOF scenes and nested deterministic 120/240/360/480 scene subsets from its disjoint 480-scene training partition",
+      "five folds, three paired seeds, tiles, actions, haze variants, and bootstrap draws never increase independent n",
+      "the 150-scene target-feasibility role and 100-scene four-variant stability role never enter model fitting or the primary OOF estimand",
+      "gain 0.05 dB, harm boundary -0.10 dB, harm UCB 0.10, active-scene floor 0.20, action-area floor 0.01, and precision 0.025 dB remain frozen",
+      "candidate-confirmation, canary, locked-test, NH-Haze, ITS, and OTS remain unread"
+    ],
+    "matched_budget": "five fixed scene folds, three paired seeds, 24 fixed epochs, nested 120/240/360/480 training scenes per 480-scene outer-training partition, 600 OOF scenes, 150 disjoint target-feasibility scenes, and 100 four-variant target-stability scenes",
+    "primary_variable": "joint observable encoder plus soft direct keep/weaken/strengthen decision objective",
+    "reference": "parameter-matched separate utility/risk heads, a full-data base-feature direct-policy ablation, keep, deterministic within-scene shuffle, and GT-privileged target-feasibility and oracle controls"
+  },
+  "operation_id": "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_QUALIFY",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "original_clear_scene",
+    "independent_group_count": 600,
+    "strata": [
+      {
+        "id": "haze4k_train_oof",
+        "independent_group_count": 600
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "five-fold OOF mean over 600 original-clear scenes with fold-stratified paired bootstrap",
+    "direction": "higher",
+    "id": "joint_full_data_oof_gain",
+    "metric_id": "scene_psnr_gain_db",
+    "strata": [
+      "haze4k_train_oof"
+    ],
+    "unit": "original_clear_scene"
+  },
+  "question": "Can a jointly trained observable encoder and direct three-action policy recover material Haze4K OOF gain with nondegenerate activation and bounded tail harm, and does the nested learning curve support data limitation rather than structural saturation?",
+  "route_id": "haze4k-direct-selective-controller-learning-curve-v1",
+  "schema_version": 2,
+  "uncertainty": {
+    "comparison_family": "direct_controller_four_endpoint_family",
+    "confidence_level": 0.95,
+    "id": "direct_controller_simultaneous_intervals",
+    "independent_unit": "original_clear_scene",
+    "method_id": "fold_stratified_paired_scene_bootstrap"
+  }
+}
