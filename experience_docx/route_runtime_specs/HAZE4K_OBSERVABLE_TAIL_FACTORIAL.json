@@ -1,0 +1,142 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/haze4k-observable-tail-factorial-v1__HAZE4K_OBSERVABLE_TAIL_FACTORIAL.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/haze4k-observable-tail-factorial-v1__HAZE4K_OBSERVABLE_TAIL_FACTORIAL.json",
+    "cost_contract": {
+      "batch_shape_policy": "bounded",
+      "candidate_schedule": "none",
+      "fixed_overhead_seconds": 600,
+      "formal_iterations": 882600,
+      "formal_max_wall_seconds": 61200,
+      "max_peak_memory_mib": 14336,
+      "max_seconds_per_iteration": 0.022,
+      "memory_scaling": "constant",
+      "probe_iterations": 354,
+      "production_path": "exact",
+      "safety_factor": 3,
+      "strategy": "fixed_linear_extrapolation",
+      "termination_policy": "fixed_count",
+      "workload_class": "fixed_iteration_map"
+    },
+    "max_seconds": 900,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/run_haze4k_observable_tail_factorial.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_summary.json",
+      "max_bytes": 524288,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_gate_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_gate_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_selection_freeze.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_selection_freeze.json"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_primary_intervals.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_primary_intervals.json"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_cells.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_cells.csv"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_effects.csv",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_effects.csv"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_fold_seed_completeness.csv",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_fold_seed_completeness.csv"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_calibration.csv",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_calibration.csv"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_baseline_reproduction.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_baseline_reproduction.json"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_privileged_controls.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_privileged_controls.json"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_tail_safety.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_tail_safety.json"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_test_scene_cells.csv",
+      "max_bytes": 524288,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_test_scene_cells.csv"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_oof_r0_scene_cells.csv",
+      "max_bytes": 1048576,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_oof_r0_scene_cells.csv"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_oof_r1_scene_cells.csv",
+      "max_bytes": 1048576,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_oof_r1_scene_cells.csv"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_oof_r2_scene_cells.csv",
+      "max_bytes": 1048576,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_oof_r2_scene_cells.csv"
+    },
+    {
+      "destination_filename": "haze4k_observable_tail_factorial_v1_raw_inventory.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/haze4k_observable_tail_factorial_raw_inventory.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 61200,
+  "operation_id": "HAZE4K_OBSERVABLE_TAIL_FACTORIAL",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/haze4k-observable-tail-factorial-v1__HAZE4K_OBSERVABLE_TAIL_FACTORIAL.json",
+    "mode": "formal_precision",
+    "rationale": "The 600-scene OOF stratum exceeds the frozen 556-scene requirement for a four-endpoint Bonferroni family under planning-SD upper bound 0.2358753949 dB. Candidate selection uses a disjoint role, and observed simultaneous precision remains an explicit inconclusive-only gate."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "haze4k-observable-tail-factorial-v1",
+  "schema_version": 2,
+  "timeout_seconds": 72000,
+  "total_units": 852
+}

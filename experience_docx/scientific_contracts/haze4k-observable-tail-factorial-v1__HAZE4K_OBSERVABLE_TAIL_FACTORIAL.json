@@ -1,0 +1,479 @@
+{
+  "competing_explanation": "An apparent winning cell can be caused by selection overfit, seed instability, fold leakage, increased parameter count, sparse abstention, or transform-disagreement shortcuts rather than genuine tail ranking. Conversely, a valid failure can mean the deployment-visible ConvIR output and internal features do not identify the safe action tail even when the learner is decision aligned, while privileged controls continue to show nondeployable headroom.",
+  "controls": [
+    "GitHub-main latest parent closeout, conclusion, summary, formal interval, regret, split, oracle, and exact baseline training/calibration identities",
+    "immutable official architecture anchor and strict checkpoint/model-source load",
+    "exact first-seed R0L0 fold loss and 150-scene correction reproduction within 1e-6",
+    "complete 3x3 by five-fold by three-seed checkpoint and prediction grid",
+    "hash-frozen selection before any formal OOF result replay",
+    "keep identity, exact baseline, same-predictor uniform, deterministic shuffle, and joint prediction-permutation controls",
+    "utility-only, observable-utility plus GT-risk, GT-utility plus observable-risk, and GT/GT privileged localization controls",
+    "selected-area harm with scene-block ratio bootstrap and complete-image PSNR, RGB SSIM, and RGB mean-bias safety",
+    "cloud-only caches, checkpoints, raw cell predictions, action maps, and SHA inventory",
+    "candidate-confirmation asset absent from contract and run contexts"
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "identity_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "coverage_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "factorial_completeness_and_selection_integrity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "oracle_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "factorial_completeness_and_selection_integrity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "unfavorable",
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "utility_fail",
+        "terminal": "fail",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "factorial_completeness_and_selection_integrity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "favorable"
+          ],
+          "selected_candidate_actionable_utility": [
+            "unfavorable"
+          ]
+        }
+      },
+      {
+        "id": "utility_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "factorial_completeness_and_selection_integrity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "favorable"
+          ],
+          "selected_candidate_actionable_utility": [
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "activation_fail",
+        "terminal": "fail",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "factorial_completeness_and_selection_integrity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "favorable"
+          ],
+          "selected_candidate_actionable_utility": [
+            "favorable"
+          ],
+          "selected_candidate_activation": [
+            "unfavorable"
+          ]
+        }
+      },
+      {
+        "id": "activation_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "factorial_completeness_and_selection_integrity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "favorable"
+          ],
+          "selected_candidate_actionable_utility": [
+            "favorable"
+          ],
+          "selected_candidate_activation": [
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "safety_fail",
+        "terminal": "fail",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "factorial_completeness_and_selection_integrity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "favorable"
+          ],
+          "selected_area_and_image_safety": [
+            "unsafe"
+          ],
+          "selected_candidate_actionable_utility": [
+            "favorable"
+          ],
+          "selected_candidate_activation": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "safety_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "factorial_completeness_and_selection_integrity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "favorable"
+          ],
+          "selected_area_and_image_safety": [
+            "indeterminate",
+            "invalid"
+          ],
+          "selected_candidate_actionable_utility": [
+            "favorable"
+          ],
+          "selected_candidate_activation": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "precision_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "factorial_completeness_and_selection_integrity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "favorable"
+          ],
+          "precision": [
+            "unmet",
+            "invalid"
+          ],
+          "selected_area_and_image_safety": [
+            "safe"
+          ],
+          "selected_candidate_actionable_utility": [
+            "favorable"
+          ],
+          "selected_candidate_activation": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "pass",
+        "terminal": "pass",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "factorial_completeness_and_selection_integrity": [
+            "pass"
+          ],
+          "oracle_headroom_control": [
+            "favorable"
+          ],
+          "precision": [
+            "met"
+          ],
+          "selected_area_and_image_safety": [
+            "safe"
+          ],
+          "selected_candidate_actionable_utility": [
+            "favorable"
+          ],
+          "selected_candidate_activation": [
+            "favorable"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "stop",
+        "next_action_id": "author_orthogonal_action_family_or_end_to_end_controller_contract",
+        "terminal": {
+          "authorizes": "NEW_ACTION_FAMILY_OR_END_TO_END_CONTROLLER_CONTRACT_AUTHORING_ONLY",
+          "decision": "HAZE4K_OBSERVABLE_TAIL_FACTORIAL_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "allow_predeclared_evidence",
+        "next_action_id": "review_predeclared_tail_factorial_evidence",
+        "terminal": {
+          "authorizes": "OBSERVABLE_TAIL_FACTORIAL_EVIDENCE_REVIEW_ONLY",
+          "decision": "HAZE4K_OBSERVABLE_TAIL_FACTORIAL_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "advance",
+        "next_action_id": "author_selected_tail_candidate_confirmation_precision_certificate",
+        "terminal": {
+          "authorizes": "HAZE4K_TAIL_FACTORIAL_PRECISION_CERTIFICATE_AUTHORING_ONLY",
+          "decision": "HAZE4K_OBSERVABLE_TAIL_FACTORIAL_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "changing cells, folds, paired seeds, epochs, optimizer, loss weights, bins, action scales, thresholds, data roles, selection rule, or uncertainty after launch",
+    "reading formal OOF outcomes before the selection file is written and hashed",
+    "using the 150 calibration-selection scenes or four nested test variants as additional formal independent units",
+    "reading Haze4K candidate-confirmation, canary, locked-test, NH-Haze, ITS, or OTS data",
+    "committing raw predictions, caches, checkpoints, images, arrays, action maps, or unbounded per-tile tables",
+    "starting protected confirmation without a new formal precision certificate proving the required independent scene count is feasible",
+    "claiming promotion, deployment, or cross-domain generalization from development-screening evidence"
+  ],
+  "gates": [
+    {
+      "comparison_family": "selected_candidate_four_endpoint_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "selected_oof_tail_policy_utility_gain",
+      "id": "evidence_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "all parent, split, source, checkpoint, runtime, baseline, and entrypoint identities match exactly",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "selected_candidate_four_endpoint_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "selected_oof_tail_policy_utility_gain",
+      "id": "factorial_completeness_and_selection_integrity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "exact 9-cell, 5-fold, 3-seed, 750-extraction, 150-selection, 600-OOF, 100-by-4-stress, baseline-reproduction, freeze-before-outcome, and 852-unit coverage",
+      "threshold": true,
+      "type": "coverage",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "selected_candidate_four_endpoint_family",
+      "decision_role": "validity_veto",
+      "direction": "min",
+      "estimand_id": "selected_oof_tail_policy_utility_gain",
+      "id": "oracle_headroom_control",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "GT/GT OOF gain LCB exceeds 0.05 dB and material-scene Wilson LCB exceeds 0.20",
+      "threshold": "oracle_gain_lcb_gt_0.05_and_material_scene_lcb_gt_0.20",
+      "type": "materiality",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "selected_candidate_four_endpoint_family",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "selected_oof_tail_policy_utility_gain",
+      "id": "selected_candidate_actionable_utility",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "selected candidate gain LCB exceeds 0.05 dB, material-scene LCB exceeds 0.20, and selected-minus-exact-baseline, uniform, and shuffle LCBs exceed zero; unfavorable requires any matching UCB at or below its threshold",
+      "threshold": "five_conjunctive_lower_bounds_for_favorable_and_any_matching_upper_bound_for_unfavorable",
+      "type": "materiality",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "selected_candidate_four_endpoint_family",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "selected_oof_tail_policy_utility_gain",
+      "id": "selected_candidate_activation",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "scene-block action-area LCB is at least 0.01 and active-scene Wilson LCB is at least 0.20; unfavorable requires a corresponding UCB below its floor",
+      "threshold": "action_area_lcb_ge_0.01_and_active_scene_lcb_ge_0.20",
+      "type": "materiality",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "selected_candidate_four_endpoint_family",
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand_id": "selected_oof_tail_policy_utility_gain",
+      "id": "selected_area_and_image_safety",
+      "neutral_outcome": "safe",
+      "outcomes": [
+        "safe",
+        "unsafe",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "for OOF and test-development separately, selected-area harm ratio UCB and PSNR, SSIM, and color scene-harm Wilson UCB are at most 0.10; unsafe requires any matching LCB above 0.10 and zero selected area is indeterminate",
+      "threshold": 0.1,
+      "type": "safety",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "selected_candidate_four_endpoint_family",
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand_id": "selected_oof_tail_policy_utility_gain",
+      "id": "precision",
+      "neutral_outcome": "met",
+      "outcomes": [
+        "met",
+        "unmet",
+        "invalid"
+      ],
+      "reference": "maximum distance from each of four fold-stratified Bonferroni paired-bootstrap estimates to either simultaneous endpoint",
+      "threshold": 0.025,
+      "type": "precision",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "selected_candidate_four_endpoint_family",
+      "decision_role": "descriptive",
+      "direction": "max",
+      "estimand_id": "selected_oof_tail_policy_utility_gain",
+      "id": "factorial_mechanism_diagnostic",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "nine simultaneous cell intervals plus representation, learner, and interaction contrasts",
+      "threshold": 0.0,
+      "type": "materiality",
+      "uncertainty_id": "scene_level_simultaneous_uncertainty"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "the official ConvIR-B base architecture, Haze4K checkpoint, keep output, actions 1.0/0.8/1.2, and original-clear-scene grouping remain frozen",
+      "R0 is exactly the archived 104-channel mean/std tile representation",
+      "R1 adds a learned shape-preserving encoding of 8x8 observable subtiles before deterministic 4x4 pooling to the 32x32 action grid",
+      "R2 adds R1, learned multiscale tile context, and deterministic horizontal-flip plus 0.75-scale output disagreement",
+      "L0 exactly reproduces the shared two-layer 64-channel Huber/weighted-BCE head",
+      "L1 uses separate utility and risk branches with otherwise matched losses",
+      "L2 uses seven utility bins whose fixed edges include -0.10 dB harm and +0.05 dB material utility, with distributional, ordinal, expectation, and derived harm losses",
+      "each cell uses five fixed group folds and three paired deterministic seeds; seed, fold, cell, tile, variant, action, and bootstrap draw never increase independent n",
+      "for each fold, 120 of 150 calibration scenes fit one-sided utility/risk corrections and the disjoint 30 select the cell; all 150 contribute exactly once to selection",
+      "the candidate-selection file is written and SHA-256 frozen before formal OOF replay or aggregation",
+      "all nine cells receive 600-scene OOF and 100-scene nested test-development PSNR replay; only the selected cell and exact baseline require full control replay",
+      "utility margin 0.05 dB, harm boundary -0.10 dB, risk limit 0.10, active-scene floor 0.20, action-area floor 0.01, safety prevalence 0.10, and precision 0.025 dB remain frozen",
+      "candidate-confirmation, canary, locked-test, NH-Haze, ITS, and OTS remain unread"
+    ],
+    "matched_budget": "nine cells, five fixed scene folds, three paired seeds, 12 fixed epochs, 600 OOF scenes, 150 calibration-selection scenes, and 100 historical test-development scenes with four variants nested within scene",
+    "primary_variable": "one candidate selected from the frozen R0/R1/R2 by L0/L1/L2 factorial using only group-cross-fitted calibration-selection scenes",
+    "reference": "exact R0L0 baseline reproduction, keep, same-predictor uniform, within-image shuffle, joint prediction permutation, utility-only, observable-utility plus GT-risk, GT-utility plus observable-risk, and GT/GT"
+  },
+  "operation_id": "HAZE4K_OBSERVABLE_TAIL_FACTORIAL",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "original_clear_scene",
+    "independent_group_count": 600,
+    "strata": [
+      {
+        "id": "haze4k_train_oof",
+        "independent_group_count": 600
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "five-fold OOF mean over 600 original-clear scenes with fold-stratified paired bootstrap after the 150-scene selection freeze",
+    "direction": "higher",
+    "id": "selected_oof_tail_policy_utility_gain",
+    "metric_id": "scene_mean_selected_candidate_minus_keep_psnr_db",
+    "strata": [
+      "haze4k_train_oof"
+    ],
+    "unit": "original_clear_scene"
+  },
+  "question": "Can a frozen observable representation-by-learner factorial recover a nondegenerate, low-harm, materially useful local-action tail on independent OOF scenes after candidate selection is confined to the 150-scene calibration role?",
+  "route_id": "haze4k-observable-tail-factorial-v1",
+  "schema_version": 2,
+  "uncertainty": {
+    "comparison_family": "selected_candidate_four_endpoint_family",
+    "confidence_level": 0.95,
+    "id": "scene_level_simultaneous_uncertainty",
+    "independent_unit": "original_clear_scene",
+    "method_id": "fold_stratified_paired_bootstrap_scene_block_ratio_bootstrap_and_bonferroni_wilson"
+  }
+}
