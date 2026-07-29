@@ -2,13 +2,13 @@
   "audit_date": "2026-07-29",
   "audited_github_main_commit": "828a104de89cdce9062f6b7be1909c94824d40b6",
   "authorizes": [
-    "FRESH_TASK_ACTIVATION_CHECK"
+    "PHASE4A_CLOUD_INVENTORY_CONTRACT_AND_SYNTHETIC_IMPLEMENTATION_ONLY"
   ],
   "component": "convir-evidence-review",
-  "decision": "REGISTRATION_CONFIGURED_ACTIVATION_PENDING",
+  "decision": "REGISTERED_ACTIVE",
   "does_not_authorize": [
-    "REGISTERED_ACTIVE_CLAIM",
-    "PHASE4_CLOUD_INVENTORY",
+    "PHASE4B_EXISTING_CLOUD_RUNTIME_PILOT",
+    "UNBOUNDED_CLOUD_SCAN",
     "EXPERIMENT_OR_SCIENTIFIC_ACTION"
   ],
   "main_adoption": {
@@ -82,8 +82,43 @@
   "schema_version": 1,
   "scientific_completeness": "not_assessed",
   "verification": {
+    "activation_check": {
+      "catalog_query": {
+        "coverage": "indexed",
+        "has_more": true,
+        "limit": 5,
+        "returned_count": 5,
+        "state": "CATALOG_ENTRIES_OK",
+        "terms": [
+          "haze4k"
+        ],
+        "total_count": 35
+      },
+      "catalog_summary": {
+        "catalog_entry_count": 232,
+        "catalog_sha256": "9c3aa318d1c39ff0b1c0550fb57f7a3fa761be287b773a58937cc0bdfcdfb0dc",
+        "git_mutations_performed": false,
+        "snapshot_commit": "9c76e3503a220a274a647c7153d335001fec8a47",
+        "state": "CATALOG_SUMMARY_OK"
+      },
+      "cloud_runtime_access": 0,
+      "current_task_tool_count": 2,
+      "current_task_tool_names": [
+        "convir_evidence_catalog_summary",
+        "convir_evidence_catalog_query"
+      ],
+      "dataset_access": 0,
+      "fresh_task_date": "2026-07-29",
+      "gpu_access": 0,
+      "model_calls": 0,
+      "protected_data_access": 0,
+      "server_version": "1.0.0",
+      "server_version_verification": "exact_configured_source_constant_bound_by_accepted_source_sha256",
+      "source_identity_match": true,
+      "status": "PASS"
+    },
     "codex_config_query_passed": true,
-    "fresh_task_activation": "PENDING",
+    "fresh_task_activation": "PASS",
     "fresh_task_required_checks": [
       "SERVER_VERSION_1_0_0",
       "EXACT_TWO_TOOLS",

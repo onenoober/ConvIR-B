@@ -4,10 +4,11 @@ Date: 2026-07-29
 
 Status: Phase 3 GitHub-only source passed committed cloud acceptance at
 `ea088ea28d56f034395f53212c6e259b290d87fc`. Presence of the adjacent
-acceptance record on GitHub `main` completes source adoption. At the recorded
-2026-07-29 registration check, the inspected Codex global MCP configuration on
-this host pointed at that exact source and reported enabled; a fresh-task
-activation check remains pending.
+acceptance record on GitHub `main` completes source adoption. The 2026-07-29
+fresh-task activation check passed on this host with the exact accepted source,
+server version `1.0.0` verified from that SHA-bound source constant, and exactly
+two exposed tools. The current tool responses do not expose separate MCP
+initialization-version metadata.
 
 ## Purpose
 
@@ -81,8 +82,10 @@ without inventing a retroactive acceptance. Phase 3's durable 283-test
 full-suite acceptance covers the unchanged Phase 1/2 implementation, so no
 reassurance rerun is required.
 
-The task process used for this check predates registration and cannot prove
-host activation. A new task must verify server version `1.0.0`, exactly two
-tools, all three source SHA-256 identities bound by the Phase 3 acceptance, one
-summary and one bounded query before any active-server claim. Phase 4 remains
-unauthorized.
+The registered server is active on this host. Its fresh task fixed GitHub main
+to `9c76e3503a220a274a647c7153d335001fec8a47`, returned the compact catalog
+summary, and completed one five-entry bounded query without Git mutation.
+
+This authorizes Phase 4A contract authoring and synthetic implementation only.
+It does not authorize access to an existing cloud experiment runtime, a real
+cloud reconciliation pilot, an unbounded cloud scan, or any scientific action.
