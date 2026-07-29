@@ -1,0 +1,82 @@
+{
+  "accepted_date": "2026-07-29",
+  "authorizes": [
+    "GITHUB_MAIN_INTEGRATION",
+    "PHASE4B_FIXED_HOST_TRANSPORT_CONTRACT_AUTHORING_ONLY"
+  ],
+  "baseline_main_commit": "915e93ef24eb6121614e7d4e93e084b874e7ee66",
+  "candidate_branch": "codex/convir-evidence-review-phase4a",
+  "candidate_commit": "1c456b2ffc6d734ed7356a18fd14cffff87fafd6",
+  "checks": {
+    "authoritative_conclusion_validation_passed": true,
+    "diff_allowlist_passed": true,
+    "full_tool_suite_passed": true,
+    "github_schema2_terminal_bindings_passed": true,
+    "hard_scan_limits_passed": true,
+    "no_follow_descriptor_traversal_passed": true,
+    "runtime_schema2_authority_reused": true,
+    "source_identity_passed": true,
+    "synthetic_cloud_inventory_suite_passed": true,
+    "tracked_worktree_index_refs_and_config_unchanged": true,
+    "two_tool_mcp_surface_unchanged": true
+  },
+  "cloud_host": "convir-4090",
+  "component": "convir-evidence-review",
+  "conclusion_schema_observation": {
+    "current_schema_version": 2,
+    "github_main_current_v2_count": 0,
+    "github_main_legacy_unversioned_count": 1,
+    "github_main_legacy_v1_count": 7,
+    "github_main_schema2_terminal_count": 8,
+    "legacy_handling": "EXPLICIT_READ_ONLY_NO_REWRITE"
+  },
+  "dataset_access": 0,
+  "decision": "CONVIR_EVIDENCE_REVIEW_PHASE4A_ACCEPTED_FOR_GITHUB_MAIN_INTEGRATION",
+  "does_not_authorize": [
+    "PHASE4B_EXISTING_CLOUD_RUNTIME_PILOT",
+    "MCP_CLOUD_INVENTORY_REGISTRATION",
+    "PRODUCTION_CLOUD_TRANSPORT",
+    "UNBOUNDED_CLOUD_SCAN",
+    "EXPERIMENT_OR_SCIENTIFIC_ACTION"
+  ],
+  "existing_experiment_runtime_state_access": 0,
+  "focused_test_count": 18,
+  "full_test_count": 301,
+  "github_main_commit": "915e93ef24eb6121614e7d4e93e084b874e7ee66",
+  "gpu_access": 0,
+  "marker": "CONVIR_EVIDENCE_REVIEW_PHASE4A_CLOUD_OK",
+  "mcp_git_mutations": 0,
+  "model_calls": 0,
+  "protected_data_access": 0,
+  "record_type": "non_experiment_infrastructure_acceptance",
+  "schema_version": 1,
+  "scientific_completeness": "not_assessed",
+  "source_identity": {
+    "experience_docx/tools/convir_evidence_catalog.py": {
+      "git_blob": "ec105e97134d0f781ef6a2496b11360f835ff5c7",
+      "sha256": "d354410b1465af361b26eae664942c70d3ebb6a466fe8c2cca30e785b1fb12b3"
+    },
+    "experience_docx/tools/convir_evidence_cloud_inventory.py": {
+      "git_blob": "e75578fd6a87dc3f4d47c774a97318dde2510ab6",
+      "sha256": "25d1182e72183514e613d4274d3711d6843f757a0b4fbb7060c17f384879ee0b"
+    },
+    "experience_docx/tools/prepare_terminal_archive.py": {
+      "git_blob": "d3433f3aa782f02c51b06589834f9caaa801afe7",
+      "sha256": "98b0276b02750fb007a1102e4621ab79b90a1d3d46bf2889413dd8539ca98cc1"
+    },
+    "experience_docx/tools/route_runtime_contract.py": {
+      "git_blob": "afb3ce61921013b0ccf18dbb1f623b3ee9d757a3",
+      "sha256": "168024c1c60f85f7d7df528a57520cfc6038e711618919fa1b62b6f85395ae8a"
+    },
+    "experience_docx/tools/tests/test_convir_evidence_cloud_inventory.py": {
+      "git_blob": "7c457a99f9a844908f03fdafa8305004310140fe",
+      "sha256": "ef4d14f34ca777577012eed70e33bc2d8f64244d798cb92cb70336a1f1652bf5"
+    }
+  },
+  "status": "PASS",
+  "tool_count": 2,
+  "validation_script_git_blob": "058310dc414ad4124af3a462440bc1d32c81ca48",
+  "validation_script_relpath": "experience_docx/tools/validate_convir_evidence_review_phase4a_cloud.sh",
+  "validation_script_sha256": "bc74121a0b4c5b9bfc774da2fe9a364b47a65962d1877ed0d5cf59c5c83b73fd",
+  "validation_temp_workspace_used": true
+}

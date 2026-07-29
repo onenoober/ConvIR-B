@@ -7,8 +7,10 @@ Status: Phase 3 GitHub-only source passed committed cloud acceptance at
 acceptance record on GitHub `main` completes source adoption. The 2026-07-29
 fresh-task activation check passed on this host with the exact accepted source,
 server version `1.0.0` verified from that SHA-bound source constant, and exactly
-two exposed tools. Phase 4A is a candidate transport-free cloud-inventory core;
-it is not registered or exposed by MCP. The current tool responses do not expose
+two exposed tools. Phase 4A's transport-free cloud-inventory core passed its
+committed cloud acceptance at `1c456b2ffc6d734ed7356a18fd14cffff87fafd6`;
+the compact record is `CONVIR_EVIDENCE_REVIEW_PHASE4A_ACCEPTANCE.json`. It is
+not registered or exposed by MCP. The current tool responses do not expose
 separate MCP initialization-version metadata.
 
 ## Purpose
