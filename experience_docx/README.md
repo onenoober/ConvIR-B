@@ -7,6 +7,7 @@ Read only the source needed for the next decision.
 | Need | Canonical source |
 | --- | --- |
 | current status/result | compact `convir_git_status.authoritative_snapshot` -> referenced contract/closeout/conclusion/results; read the full terminal index only for conflict repair |
+| cross-route evidence discovery | `CONVIR_EVIDENCE_REVIEW.md`; catalog summary -> filtered query -> explicit reads of only selected evidence |
 | default experiment workflow | `SCIENCE_FASTPATH.md` |
 | model qualification | `MODEL_QUALIFICATION_PROTOCOL.md` |
 | scientific design/gates | `EXPERIMENT_GOVERNANCE_PROTOCOL.md` |
