@@ -8,6 +8,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 import convir_evidence_review_mcp as review
 
@@ -36,6 +37,72 @@ def evidence_files(record):
         record["closeout_path"]: b"not read",
         record["conclusion_path"]: b"not read",
         record["result_paths"][0]: b"not read",
+    }
+
+
+def cloud_binding(commit, catalog_sha256, *, raw_inventory_authorized=True):
+    terminal_sha256 = "d" * 64
+    return {
+        "eligible": True,
+        "state": "TERMINAL_BINDING_VERIFIED",
+        "snapshot_commit": commit,
+        "catalog_sha256": catalog_sha256,
+        "terminal_index_sha256": "e" * 64,
+        "terminal_record_sha256": terminal_sha256,
+        "route_id": "route-a",
+        "operation_id": "A0",
+        "run_id": "run-a",
+        "output_id": "run-a",
+        "mode": "synthetic",
+        "session": "convir-route-a-synthetic-run-a-0123456789ab",
+        "route_commit": "b" * 40,
+        "manifest_sha256": "1" * 64,
+        "runtime_spec_sha256": "2" * 64,
+        "closeout_sha256": "3" * 64,
+        "runner_sha256": "4" * 64,
+        "run_root": f"{review.inventory.REMOTE_RUNS}/route-a/run-a",
+        "raw_inventory_authorized": raw_inventory_authorized,
+        "raw_inventory_exclusion_reason": (
+            None if raw_inventory_authorized else
+            "protected_or_unknown_role_permission_or_touch"
+        ),
+        "expected_lifecycle_identity": {
+            "schema_version": 1,
+            "route_id": "route-a",
+            "operation_id": "A0",
+            "run_id": "run-a",
+            "route_commit": "b" * 40,
+            "runner_sha256": "4" * 64,
+        },
+        "expected_evidence": [{
+            "source_relpath": "workload/metric.json",
+            "destination_filename": "metric.json",
+            "github_path": "experience_docx/experiment_logs/route-a/metric.json",
+            "bytes": 12,
+            "sha256": "5" * 64,
+            "max_bytes": 4096,
+            "required": True,
+        }],
+        "optional_evidence": [],
+        "unmapped_results": [],
+    }
+
+
+def remote_summary(binding, inventory_sha256="6" * 64):
+    return {
+        "schema_version": 1,
+        "ok": True,
+        "operation": "cloud-inventory",
+        "state": "INVENTORY_READY",
+        "exit_code": 0,
+        "identity": review._binding_identity(binding),
+        "declared_run_root": binding["run_root"],
+        "scope": "bound_run_root",
+        "root_binding_enforced": True,
+        "discovery_completeness": "complete",
+        "scientific_completeness": "not_assessed",
+        "inventory_sha256": inventory_sha256,
+        "entry_count": 3,
     }
 
 
@@ -94,19 +161,33 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             "params": {"name": name, "arguments": arguments},
         })
 
-    def test_server_exposes_exact_two_read_only_tools(self):
+    def test_server_exposes_exact_four_read_only_tools(self):
         initialized = review.handle({
             "method": "initialize",
             "params": {"protocolVersion": "2024-11-05"},
         })
         self.assertEqual("convir-evidence-review", initialized["serverInfo"]["name"])
-        self.assertEqual("1.0.0", initialized["serverInfo"]["version"])
+        self.assertEqual("1.1.0", initialized["serverInfo"]["version"])
         listed = review.handle({"method": "tools/list", "params": {}})
         self.assertEqual(
-            ["convir_evidence_catalog_summary", "convir_evidence_catalog_query"],
+            [
+                "convir_evidence_catalog_summary",
+                "convir_evidence_catalog_query",
+                "convir_evidence_cloud_inventory_summary",
+                "convir_evidence_cloud_inventory_query",
+            ],
             [tool["name"] for tool in listed["tools"]],
         )
         self.assertTrue(all("outputSchema" in tool for tool in listed["tools"]))
+        forbidden = {
+            "host", "command", "remote_path", "run_root", "cloud_available",
+            "active_session", "scan_limits",
+        }
+        cloud_tools = listed["tools"][2:]
+        self.assertTrue(all(
+            forbidden.isdisjoint(tool["inputSchema"]["properties"])
+            for tool in cloud_tools
+        ))
 
     def test_summary_freezes_symbolic_ref_before_repository_moves(self):
         record = terminal_record()
@@ -286,6 +367,216 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         )
         self.assertTrue(untrusted["isError"])
         self.assertEqual("GITHUB_REMOTE_UNTRUSTED", untrusted["structuredContent"]["state"])
+
+    def test_cloud_summary_query_rescan_cursor_and_drift_are_identity_bound(self):
+        record = terminal_record()
+        commit = self.commit_snapshot(record)
+        catalog_sha256 = review.catalog.load_catalog(
+            self.repo, commit
+        )["catalog_sha256"]
+        binding = cloud_binding(commit, catalog_sha256)
+        inventory_sha256 = "6" * 64
+        entries = [
+            {
+                "scope": "raw_output",
+                "relative_path": f"workload/item-{index}-\"\\\x01.json",
+                "artifact_class": "raw_artifact",
+                "extension": ".json",
+                "file_type": "file",
+                "bytes": index,
+                "github_path": None,
+                "github_bytes": None,
+                "github_sha256": None,
+                "cloud_sha256": None,
+                "identity_basis": "metadata_only",
+                "reconciliation_state": "CLOUD_ONLY",
+                "policy_assessment": "expected_cloud_only_raw_artifact",
+            }
+            for index in range(3)
+        ]
+
+        def fixed_remote(request):
+            if request["operation"] == "summary":
+                return remote_summary(binding, inventory_sha256)
+            query = request["query"]
+            if query["inventory_sha256"] != inventory_sha256:
+                return {
+                    "ok": False,
+                    "operation": "cloud-inventory-query",
+                    "state": "INVENTORY_DRIFT",
+                    "exit_code": 3,
+                    "scientific_completeness": "not_assessed",
+                }
+            query_sha256 = review.inventory.inventory_query_sha256(
+                review._binding_identity(binding),
+                inventory_sha256,
+                query["reconciliation_states"],
+                query["terms"],
+            )
+            selected = entries[
+                query["offset"]:query["offset"] + query["limit"]
+            ]
+            end = query["offset"] + len(selected)
+            return {
+                "schema_version": 1,
+                "ok": True,
+                "operation": "cloud-inventory-query",
+                "state": "INVENTORY_ENTRIES_OK",
+                "exit_code": 0,
+                "snapshot_commit": commit,
+                "terminal_record_sha256": binding["terminal_record_sha256"],
+                "inventory_sha256": inventory_sha256,
+                "query_sha256": query_sha256,
+                "reconciliation_states": query["reconciliation_states"],
+                "terms": query["terms"],
+                "offset": query["offset"],
+                "returned_count": len(selected),
+                "total_count": len(entries),
+                "entries": selected,
+                "page_sha256": review.inventory.canonical_sha256(selected),
+                "complete": end == len(entries),
+                "has_more": end != len(entries),
+                "next_offset": None if end == len(entries) else end,
+                "discovery_completeness": "complete",
+                "scientific_completeness": "not_assessed",
+            }
+
+        base_args = {
+            "local_repo": str(self.repo),
+            "snapshot_commit": commit,
+            "catalog_sha256": catalog_sha256,
+            "terminal_record_sha256": binding["terminal_record_sha256"],
+        }
+        with mock.patch.object(
+            review.inventory, "prepare_terminal_binding", return_value=binding
+        ), mock.patch.object(review, "_run_fixed_remote", side_effect=fixed_remote) as transport:
+            summary = self.call(
+                "convir_evidence_cloud_inventory_summary", base_args
+            )
+            self.assertFalse(summary["isError"])
+            self.assertEqual(
+                inventory_sha256, summary["structuredContent"]["inventory_sha256"]
+            )
+
+            first = self.call(
+                "convir_evidence_cloud_inventory_query",
+                {**base_args, "inventory_sha256": inventory_sha256, "limit": 2},
+            )
+            self.assertFalse(first["isError"])
+            self.assertEqual(2, first["structuredContent"]["returned_count"])
+            cursor = first["structuredContent"]["next_cursor"]
+            self.assertIsNotNone(cursor)
+            second = self.call(
+                "convir_evidence_cloud_inventory_query",
+                {
+                    **base_args,
+                    "inventory_sha256": inventory_sha256,
+                    "cursor": cursor,
+                    "limit": 2,
+                },
+            )
+            self.assertFalse(second["isError"])
+            self.assertEqual(2, second["structuredContent"]["offset"])
+            self.assertTrue(second["structuredContent"]["complete"])
+
+            drift = self.call(
+                "convir_evidence_cloud_inventory_query",
+                {**base_args, "inventory_sha256": "7" * 64},
+            )
+            self.assertTrue(drift["isError"])
+            self.assertEqual("INVENTORY_DRIFT", drift["structuredContent"]["state"])
+            self.assertEqual(4, transport.call_count)
+
+    def test_protected_binding_returns_without_cloud_transport(self):
+        record = terminal_record()
+        commit = self.commit_snapshot(record)
+        catalog_sha256 = review.catalog.load_catalog(
+            self.repo, commit
+        )["catalog_sha256"]
+        binding = cloud_binding(
+            commit, catalog_sha256, raw_inventory_authorized=False
+        )
+        args = {
+            "local_repo": str(self.repo),
+            "snapshot_commit": commit,
+            "catalog_sha256": catalog_sha256,
+            "terminal_record_sha256": binding["terminal_record_sha256"],
+        }
+        with mock.patch.object(
+            review.inventory, "prepare_terminal_binding", return_value=binding
+        ), mock.patch.object(review, "_run_fixed_remote") as transport:
+            summary = self.call(
+                "convir_evidence_cloud_inventory_summary", args
+            )
+            self.assertFalse(summary["isError"])
+            self.assertEqual("NOT_INVENTORIED", summary["structuredContent"]["state"])
+            query = self.call(
+                "convir_evidence_cloud_inventory_query",
+                {
+                    **args,
+                    "inventory_sha256": summary["structuredContent"]["inventory_sha256"],
+                },
+            )
+            self.assertFalse(query["isError"])
+            self.assertTrue(all(
+                item["reconciliation_state"] == "NOT_INVENTORIED"
+                for item in query["structuredContent"]["entries"]
+            ))
+            transport.assert_not_called()
+
+    def test_full_jsonrpc_budget_shrinks_escaped_cloud_entries(self):
+        binding = cloud_binding("a" * 40, "b" * 64)
+        inventory_sha256 = "c" * 64
+        states = list(review.inventory.RECONCILIATION_STATES)
+        terms = ["\\\"\x01"]
+        query_sha256 = review.inventory.inventory_query_sha256(
+            review._binding_identity(binding), inventory_sha256, states, terms
+        )
+        entries = [
+            {
+                "scope": "raw_output",
+                "relative_path": ("\\\"\x01" * 80) + f"-{index}",
+                "reconciliation_state": "CLOUD_ONLY",
+            }
+            for index in range(100)
+        ]
+        page = {
+            "schema_version": 1,
+            "ok": True,
+            "operation": "cloud-inventory-query",
+            "state": "INVENTORY_ENTRIES_OK",
+            "exit_code": 0,
+            "snapshot_commit": binding["snapshot_commit"],
+            "terminal_record_sha256": binding["terminal_record_sha256"],
+            "inventory_sha256": inventory_sha256,
+            "query_sha256": query_sha256,
+            "reconciliation_states": states,
+            "terms": terms,
+            "offset": 0,
+            "returned_count": len(entries),
+            "total_count": len(entries),
+            "entries": entries,
+            "next_offset": None,
+            "discovery_completeness": "complete",
+            "scientific_completeness": "not_assessed",
+        }
+        result = review._bounded_cloud_query(
+            page,
+            binding,
+            query_sha256,
+            review.TRUSTED_REMOTE_URLS[0],
+            binding["snapshot_commit"],
+        )
+        self.assertLess(result["structuredContent"]["returned_count"], 100)
+        envelope = {
+            "jsonrpc": "2.0",
+            "id": review.MAX_REQUEST_ID_PLACEHOLDER,
+            "result": result,
+        }
+        self.assertLessEqual(
+            len(review.canonical_bytes(envelope)) + 1,
+            review.MAX_JSONRPC_RESPONSE_BYTES,
+        )
 
     def test_mcp_result_budget_and_fresh_stdio_handshake(self):
         record = terminal_record()

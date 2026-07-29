@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import subprocess
+import sys
 import tempfile
 import tracemalloc
 import unittest
@@ -106,6 +107,7 @@ class SyntheticTerminal:
             "operations": {
                 self.operation_id: {
                     "output_id": output_id,
+                    "mode": "synthetic",
                     "closeout_filename": manifest_closeout,
                     "runner_relpath": "experience_docx/tools/run_route_operation.sh",
                     "require_gpu": False,
@@ -362,6 +364,8 @@ class EvidenceCloudInventoryTests(unittest.TestCase):
         binding = self.fixture.prepare(snapshot)
         self.assertTrue(binding["eligible"])
         self.assertEqual(self.fixture.run_id, binding["output_id"])
+        self.assertEqual("synthetic", binding["mode"])
+        self.assertTrue(binding["session"].startswith("convir-route-a-synthetic"))
         self.assertEqual(
             f"{inventory.REMOTE_RUNS}/{self.fixture.route_id}/{self.fixture.run_id}",
             binding["run_root"],
@@ -382,6 +386,77 @@ class EvidenceCloudInventoryTests(unittest.TestCase):
         )
         self.assertEqual(7, len(records[0]["contract_bundle"]))
         self.assertEqual(1, len(records[0]["result_files"]))
+
+    def test_remote_worker_rescans_private_synthetic_root_and_rejects_drift(self):
+        snapshot = self.fixture.build()
+        binding = self.fixture.prepare(snapshot)
+        run_root = self.fixture.run_root(self.temp.name, binding)
+        request = {
+            "schema_version": 1,
+            "operation": "summary",
+            "binding": binding,
+            "adapter_root": str(run_root),
+            "root_binding_enforced": False,
+            "expected_session": binding["session"],
+            "query": None,
+        }
+        with mock.patch.object(inventory, "_session_state", return_value="inactive"):
+            summary = inventory.remote_worker(request)
+        self.assertTrue(summary["ok"])
+        self.assertFalse(summary["root_binding_enforced"])
+        self.assertNotIn("_entries", summary)
+
+        query_request = dict(request)
+        query_request["operation"] = "query"
+        query_request["query"] = {
+            "inventory_sha256": summary["inventory_sha256"],
+            "reconciliation_states": list(inventory.RECONCILIATION_STATES),
+            "terms": ["metric"],
+            "offset": 0,
+            "limit": 100,
+        }
+        with mock.patch.object(inventory, "_session_state", return_value="inactive"):
+            page = inventory.remote_worker(query_request)
+        self.assertTrue(page["ok"])
+        self.assertGreaterEqual(page["returned_count"], 1)
+        self.assertEqual(summary["inventory_sha256"], page["inventory_sha256"])
+
+        query_request["query"] = dict(query_request["query"])
+        query_request["query"]["inventory_sha256"] = "f" * 64
+        with mock.patch.object(inventory, "_session_state", return_value="inactive"):
+            with self.assertRaises(inventory.InventoryError) as raised:
+                inventory.remote_worker(query_request)
+        self.assertEqual("INVENTORY_DRIFT", raised.exception.state)
+
+    def test_remote_worker_stdio_uses_committed_stdlib_source(self):
+        snapshot = self.fixture.build()
+        binding = self.fixture.prepare(snapshot)
+        run_root = self.fixture.run_root(self.temp.name, binding)
+        request = {
+            "schema_version": 1,
+            "operation": "summary",
+            "binding": binding,
+            "adapter_root": str(run_root),
+            "root_binding_enforced": False,
+            "expected_session": binding["session"],
+            "query": None,
+        }
+        source = Path(inventory.__file__).resolve()
+        completed = subprocess.run(
+            [sys.executable, str(source), "--remote-worker"],
+            input=json.dumps(request),
+            text=True,
+            capture_output=True,
+            check=True,
+            timeout=30,
+        )
+        response = json.loads(completed.stdout)
+        self.assertEqual(
+            hashlib.sha256(source.read_bytes()).hexdigest(),
+            response["worker_source_sha256"],
+        )
+        self.assertTrue(response["result"]["ok"])
+        self.assertNotIn("_entries", response["result"])
 
     def test_historical_conclusion_schemas_remain_explicit_and_readable(self):
         for schema_version, expected_state in (

@@ -9,15 +9,12 @@ import json
 import os
 import re
 import stat
+import subprocess
+import sys
 import time
 from collections import Counter
 from pathlib import Path, PurePosixPath
 from typing import Any
-
-import convir_evidence_catalog as catalog
-import convirctl
-import prepare_terminal_archive
-import route_runtime_contract
 
 
 REMOTE_BASE = "/sda/home/wangyuxin/ConvIR-B"
@@ -33,6 +30,9 @@ MAX_RELATIVE_PATH_BYTES = 16 * 1024 * 1024
 MAX_SCAN_SECONDS = 60
 MAX_QUERY_ENTRIES = 100
 MAX_QUERY_VALUE_BYTES = 8 * 1024
+MAX_REMOTE_REQUEST_BYTES = 4 * 1024 * 1024
+MAX_REMOTE_RESPONSE_BYTES = 64 * 1024
+REMOTE_TMUX = "/usr/bin/tmux"
 CURSOR_OPERATION = "evidence-cloud-inventory-query"
 SAFE_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
@@ -106,6 +106,8 @@ def _require_relpath(value: Any, name: str, *,
 def _git_blob(repo: Path, commit: str, relpath: str, *, maximum: int,
               expected_bytes: int | None = None,
               expected_sha256: str | None = None) -> bytes:
+    import convir_evidence_catalog as catalog
+
     relpath = _require_relpath(relpath, "GitHub blob path")
     try:
         oid = catalog.git_text(repo, "rev-parse", "--verify", f"{commit}:{relpath}")
@@ -181,6 +183,11 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
                              catalog_sha256: str,
                              terminal_record_sha256: str) -> dict[str, Any]:
     """Resolve and fully verify one schema-2 terminal from an immutable snapshot."""
+    import convir_evidence_catalog as catalog
+    import convir_ops_mcp
+    import prepare_terminal_archive
+    import route_runtime_contract
+
     snapshot_commit = _require_sha(snapshot_commit, SHA40, "snapshot_commit")
     catalog_sha256 = _require_sha(catalog_sha256, SHA256, "catalog_sha256")
     terminal_record_sha256 = _require_sha(
@@ -345,6 +352,7 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
     if not isinstance(operation, dict):
         raise InventoryError("manifest operation is absent", state="IDENTITY_CONFLICT")
     output_id = _require_token(operation.get("output_id"), "output_id")
+    mode = _require_token(operation.get("mode"), "mode")
     if output_id != run_id:
         raise InventoryError(
             "manifest output_id differs from terminal run_id",
@@ -602,6 +610,10 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
         "operation_id": operation_id,
         "run_id": run_id,
         "output_id": output_id,
+        "mode": mode,
+        "session": convir_ops_mcp.derive_session(
+            route_id, mode, route_commit, output_id
+        ),
         "route_commit": route_commit,
         "manifest_sha256": hashlib.sha256(manifest_raw).hexdigest(),
         "runtime_spec_sha256": hashlib.sha256(runtime_raw).hexdigest(),
@@ -1141,10 +1153,12 @@ def _inventory(binding: dict[str, Any], *, state: str,
         key: binding.get(key) for key in (
             "snapshot_commit", "catalog_sha256", "terminal_index_sha256",
             "terminal_record_sha256", "route_id", "operation_id", "run_id",
-            "output_id", "route_commit", "manifest_sha256",
+            "output_id", "mode", "session", "route_commit", "manifest_sha256",
             "runtime_spec_sha256", "closeout_sha256", "runner_sha256",
         )
     }
+    root_binding_enforced = binding.get("_root_binding_enforced") is True
+    scope = "bound_run_root" if root_binding_enforced else "adapter_owned_root"
     stable_scan = {
         key: (scan or {}).get(key, 0) for key in (
             "entry_count", "file_count", "directory_count", "total_file_bytes",
@@ -1155,8 +1169,8 @@ def _inventory(binding: dict[str, Any], *, state: str,
         "schema_version": 1,
         "identity": identity,
         "state": state,
-        "scope": "adapter_owned_root",
-        "root_binding_enforced": False,
+        "scope": scope,
+        "root_binding_enforced": root_binding_enforced,
         "discovery_completeness": discovery_completeness,
         "limits": limits,
         "scan": stable_scan,
@@ -1172,8 +1186,8 @@ def _inventory(binding: dict[str, Any], *, state: str,
         "exit_code": 3 if is_error else 0,
         "identity": identity,
         "declared_run_root": binding.get("run_root"),
-        "scope": "adapter_owned_root",
-        "root_binding_enforced": False,
+        "scope": scope,
+        "root_binding_enforced": root_binding_enforced,
         "limits": limits,
         "discovery_completeness": discovery_completeness,
         "scientific_completeness": "not_assessed",
@@ -1198,9 +1212,13 @@ def _inventory(binding: dict[str, Any], *, state: str,
 def _scan_adapter_root(binding: dict[str, Any], adapter_root: str | Path, *,
                        cloud_available: bool = True,
                        active_session: bool = False,
+                       root_binding_enforced: bool = False,
                        limits: dict[str, int] | None = None) -> dict[str, Any]:
     """Scan a synthetic adapter-owned root without asserting production scope."""
     limits = _limits(limits)
+    if isinstance(binding, dict):
+        binding = dict(binding)
+        binding["_root_binding_enforced"] = root_binding_enforced
     if not isinstance(binding, dict) or binding.get("eligible") is not True:
         return _inventory(
             binding if isinstance(binding, dict) else {},
@@ -1476,20 +1494,15 @@ def inventory_summary(inventory: dict[str, Any]) -> dict[str, Any]:
     return {key: value for key, value in inventory.items() if key != "_entries"}
 
 
-def inventory_query(inventory: dict[str, Any], *, inventory_sha256: str,
-                    reconciliation_states: list[str] | None = None,
-                    terms: list[str] | None = None, cursor: str | None = None,
-                    limit: int = 20) -> dict[str, Any]:
-    inventory_sha256 = _require_sha(
-        inventory_sha256, SHA256, "inventory_sha256"
-    )
-    if inventory.get("inventory_sha256") != inventory_sha256:
-        raise InventoryError(
-            "inventory identity differs", state="INVENTORY_DRIFT", exit_code=3
-        )
+def normalize_query_arguments(
+    reconciliation_states: list[str] | None,
+    terms: list[str] | None,
+    limit: int,
+) -> tuple[list[str], list[str], int]:
     states = list(RECONCILIATION_STATES) \
         if reconciliation_states is None else reconciliation_states
-    if not isinstance(states, list) or any(state not in RECONCILIATION_STATES for state in states):
+    if not isinstance(states, list) \
+            or any(state not in RECONCILIATION_STATES for state in states):
         raise InventoryError(
             "reconciliation_states is invalid", state="ARGUMENTS_INVALID", exit_code=2
         )
@@ -1498,10 +1511,46 @@ def inventory_query(inventory: dict[str, Any], *, inventory_sha256: str,
     if not isinstance(terms, list) or len(terms) > 8 \
             or any(not isinstance(term, str) or not term or len(term) > 128 for term in terms):
         raise InventoryError("terms is invalid", state="ARGUMENTS_INVALID", exit_code=2)
-    terms = [term.casefold() for term in terms]
+    normalized_terms = [term.casefold() for term in terms]
     if not isinstance(limit, int) or isinstance(limit, bool) \
             or not 1 <= limit <= MAX_QUERY_ENTRIES:
         raise InventoryError("limit must be in [1, 100]", state="ARGUMENTS_INVALID", exit_code=2)
+    return states, normalized_terms, limit
+
+
+def inventory_query_sha256(
+    identity: dict[str, Any], inventory_sha256: str,
+    reconciliation_states: list[str], terms: list[str],
+) -> str:
+    return canonical_sha256({
+        "snapshot_commit": identity["snapshot_commit"],
+        "terminal_record_sha256": identity["terminal_record_sha256"],
+        "manifest_sha256": identity["manifest_sha256"],
+        "runtime_spec_sha256": identity["runtime_spec_sha256"],
+        "inventory_sha256": inventory_sha256,
+        "reconciliation_states": reconciliation_states,
+        "terms": terms,
+    })
+
+
+def inventory_query_page(
+    inventory: dict[str, Any], *, inventory_sha256: str,
+    reconciliation_states: list[str] | None = None,
+    terms: list[str] | None = None, offset: int = 0,
+    limit: int = 20,
+) -> dict[str, Any]:
+    inventory_sha256 = _require_sha(
+        inventory_sha256, SHA256, "inventory_sha256"
+    )
+    if inventory.get("inventory_sha256") != inventory_sha256:
+        raise InventoryError(
+            "inventory identity differs", state="INVENTORY_DRIFT", exit_code=3
+        )
+    states, terms, limit = normalize_query_arguments(
+        reconciliation_states, terms, limit
+    )
+    if not isinstance(offset, int) or isinstance(offset, bool) or offset < 0:
+        raise InventoryError("offset is invalid", state="ARGUMENTS_INVALID", exit_code=2)
     candidates = []
     for entry in inventory.get("_entries", []):
         if entry["reconciliation_state"] not in states:
@@ -1510,45 +1559,15 @@ def inventory_query(inventory: dict[str, Any], *, inventory_sha256: str,
         if all(term in searchable for term in terms):
             candidates.append(entry)
     identity = inventory["identity"]
-    query_sha256 = canonical_sha256({
-        "snapshot_commit": identity["snapshot_commit"],
-        "terminal_record_sha256": identity["terminal_record_sha256"],
-        "manifest_sha256": identity["manifest_sha256"],
-        "runtime_spec_sha256": identity["runtime_spec_sha256"],
-        "inventory_sha256": inventory_sha256,
-        "reconciliation_states": states,
-        "terms": terms,
-    })
-    offset = 0
-    if cursor is not None:
-        try:
-            decoded = convirctl.decode_repo_cursor(
-                cursor, CURSOR_OPERATION, query_sha256
-            )
-        except convirctl.ControlError as exc:
-            raise InventoryError(
-                str(exc), state=exc.state, exit_code=exc.exit_code
-            ) from exc
-        if decoded["commit"] != identity["snapshot_commit"] \
-                or decoded["object_id"] != inventory_sha256[:40]:
-            raise InventoryError(
-                "inventory cursor identity differs",
-                state="REPO_CURSOR_IDENTITY_MISMATCH",
-            )
-        offset = decoded["position"]
+    query_sha256 = inventory_query_sha256(
+        identity, inventory_sha256, states, terms
+    )
     if offset > len(candidates) or (offset == len(candidates) and offset != 0):
         raise InventoryError("inventory cursor is outside results", state="REPO_CURSOR_INVALID")
     selected = candidates[offset:offset + limit]
     while True:
         end = offset + len(selected)
         complete = end == len(candidates)
-        next_cursor = None if complete else convirctl.encode_repo_cursor(
-            CURSOR_OPERATION,
-            identity["snapshot_commit"],
-            query_sha256,
-            end,
-            inventory_sha256[:40],
-        )
         value = {
             "schema_version": 1,
             "ok": True,
@@ -1568,7 +1587,7 @@ def inventory_query(inventory: dict[str, Any], *, inventory_sha256: str,
             "page_sha256": canonical_sha256(selected),
             "complete": complete,
             "has_more": not complete,
-            "next_cursor": next_cursor,
+            "next_offset": None if complete else end,
             "discovery_completeness": inventory["discovery_completeness"],
             "scientific_completeness": "not_assessed",
         }
@@ -1580,3 +1599,218 @@ def inventory_query(inventory: dict[str, Any], *, inventory_sha256: str,
                 state="ENTRY_TOO_LARGE",
             )
         selected.pop()
+
+
+def inventory_query(inventory: dict[str, Any], *, inventory_sha256: str,
+                    reconciliation_states: list[str] | None = None,
+                    terms: list[str] | None = None, cursor: str | None = None,
+                    limit: int = 20) -> dict[str, Any]:
+    import convirctl
+
+    states, normalized_terms, limit = normalize_query_arguments(
+        reconciliation_states, terms, limit
+    )
+    identity = inventory["identity"]
+    query_sha256 = inventory_query_sha256(
+        identity, inventory_sha256, states, normalized_terms
+    )
+    offset = 0
+    if cursor is not None:
+        try:
+            decoded = convirctl.decode_repo_cursor(
+                cursor, CURSOR_OPERATION, query_sha256
+            )
+        except convirctl.ControlError as exc:
+            raise InventoryError(
+                str(exc), state=exc.state, exit_code=exc.exit_code
+            ) from exc
+        if decoded["commit"] != identity["snapshot_commit"] \
+                or decoded["object_id"] != inventory_sha256[:40]:
+            raise InventoryError(
+                "inventory cursor identity differs",
+                state="REPO_CURSOR_IDENTITY_MISMATCH",
+            )
+        offset = decoded["position"]
+    value = inventory_query_page(
+        inventory,
+        inventory_sha256=inventory_sha256,
+        reconciliation_states=states,
+        terms=normalized_terms,
+        offset=offset,
+        limit=limit,
+    )
+    next_offset = value.pop("next_offset")
+    value["next_cursor"] = None if next_offset is None else convirctl.encode_repo_cursor(
+        CURSOR_OPERATION,
+        identity["snapshot_commit"],
+        value["query_sha256"],
+        next_offset,
+        inventory_sha256[:40],
+    )
+    return value
+
+
+def _session_state(session: str) -> str:
+    try:
+        completed = subprocess.run(
+            [REMOTE_TMUX, "has-session", "-t", session],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=10,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return "unknown"
+    if completed.returncode == 0:
+        return "active"
+    if completed.returncode == 1:
+        return "inactive"
+    return "unknown"
+
+
+def _worker_failure(exc: Exception, operation: str) -> dict[str, Any]:
+    if isinstance(exc, InventoryError):
+        state = exc.state
+        exit_code = exc.exit_code
+    else:
+        state = "REMOTE_STATE_UNKNOWN"
+        exit_code = 70
+    return {
+        "ok": False,
+        "operation": operation,
+        "state": state,
+        "exit_code": exit_code,
+        "error": str(exc).encode("utf-8", errors="replace")[:2048].decode(
+            "utf-8", errors="ignore"
+        ),
+        "scientific_completeness": "not_assessed",
+    }
+
+
+def remote_worker(request: dict[str, Any]) -> dict[str, Any]:
+    expected_fields = {
+        "schema_version", "operation", "binding", "adapter_root",
+        "root_binding_enforced", "expected_session", "query",
+    }
+    if not isinstance(request, dict) or set(request) != expected_fields \
+            or request.get("schema_version") != 1:
+        raise InventoryError(
+            "remote worker request is invalid", state="ARGUMENTS_INVALID", exit_code=2
+        )
+    operation = request["operation"]
+    if operation not in {"summary", "query"}:
+        raise InventoryError(
+            "remote worker operation is invalid", state="ARGUMENTS_INVALID", exit_code=2
+        )
+    binding = request["binding"]
+    if not isinstance(binding, dict) or binding.get("eligible") is not True \
+            or binding.get("raw_inventory_authorized") is not True:
+        raise InventoryError(
+            "remote worker received an ineligible binding", state="IDENTITY_CONFLICT"
+        )
+    session = _require_token(request["expected_session"], "expected_session")
+    if binding.get("session") != session:
+        raise InventoryError("session identity differs", state="IDENTITY_CONFLICT")
+    adapter_root = request["adapter_root"]
+    if not isinstance(adapter_root, str):
+        raise InventoryError(
+            "adapter root is invalid", state="ARGUMENTS_INVALID", exit_code=2
+        )
+    root = Path(adapter_root)
+    if not root.is_absolute() or ".." in root.parts:
+        raise InventoryError(
+            "adapter root is invalid", state="ARGUMENTS_INVALID", exit_code=2
+        )
+    root_binding_enforced = request["root_binding_enforced"]
+    if root_binding_enforced is not True and root_binding_enforced is not False:
+        raise InventoryError(
+            "root binding flag is invalid", state="ARGUMENTS_INVALID", exit_code=2
+        )
+    if root_binding_enforced and adapter_root != binding.get("run_root"):
+        raise InventoryError("run root identity differs", state="IDENTITY_CONFLICT")
+
+    before = _session_state(session)
+    if before == "active":
+        result = _scan_adapter_root(
+            binding, root, active_session=True,
+            root_binding_enforced=root_binding_enforced,
+        )
+    elif before == "unknown":
+        result = _scan_adapter_root(
+            binding, root, cloud_available=False,
+            root_binding_enforced=root_binding_enforced,
+        )
+    else:
+        result = _scan_adapter_root(
+            binding, root, root_binding_enforced=root_binding_enforced
+        )
+        after = _session_state(session)
+        if after == "active":
+            result = _scan_adapter_root(
+                binding, root, active_session=True,
+                root_binding_enforced=root_binding_enforced,
+            )
+        elif after == "unknown":
+            result = _scan_adapter_root(
+                binding, root, cloud_available=False,
+                root_binding_enforced=root_binding_enforced,
+            )
+
+    if operation == "summary" or result.get("ok") is not True:
+        return inventory_summary(result)
+    query = request["query"]
+    if not isinstance(query, dict) or set(query) != {
+        "inventory_sha256", "reconciliation_states", "terms", "offset", "limit"
+    }:
+        raise InventoryError(
+            "remote query request is invalid", state="ARGUMENTS_INVALID", exit_code=2
+        )
+    return inventory_query_page(
+        result,
+        inventory_sha256=query["inventory_sha256"],
+        reconciliation_states=query["reconciliation_states"],
+        terms=query["terms"],
+        offset=query["offset"],
+        limit=query["limit"],
+    )
+
+
+def remote_worker_main() -> None:
+    source_sha256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    operation = "cloud-inventory-worker"
+    try:
+        raw = sys.stdin.buffer.read(MAX_REMOTE_REQUEST_BYTES + 1)
+        if len(raw) > MAX_REMOTE_REQUEST_BYTES:
+            raise InventoryError(
+                "remote worker request exceeds its bound",
+                state="ARGUMENTS_INVALID", exit_code=2,
+            )
+        request = _json_object(raw, "remote worker request")
+        operation = f"cloud-inventory-{request.get('operation', 'worker')}"
+        result = remote_worker(request)
+    except Exception as exc:
+        result = _worker_failure(exc, operation)
+    response = {
+        "worker_source_sha256": source_sha256,
+        "result": result,
+    }
+    encoded = canonical_bytes(response) + b"\n"
+    if len(encoded) > MAX_REMOTE_RESPONSE_BYTES:
+        response = {
+            "worker_source_sha256": source_sha256,
+            "result": _worker_failure(
+                InventoryError(
+                    "remote worker response exceeds its bound",
+                    state="RESPONSE_TOO_LARGE", exit_code=3,
+                ),
+                operation,
+            ),
+        }
+        encoded = canonical_bytes(response) + b"\n"
+    sys.stdout.buffer.write(encoded)
+    sys.stdout.buffer.flush()
+
+
+if __name__ == "__main__" and sys.argv[1:] == ["--remote-worker"]:
+    remote_worker_main()

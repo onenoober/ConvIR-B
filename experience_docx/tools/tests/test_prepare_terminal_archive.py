@@ -39,7 +39,8 @@ class TerminalArchiveTests(unittest.TestCase):
     def source(self, root: Path, *, include_results=True, bad_hash=False,
                verdict_only=False, forbidden=False,
                incomplete_conclusion=False,
-               canonical=False) -> tuple[Path, str, str, str, str]:
+               canonical=False, conclusion_schema=2, closeout_schema=2) \
+            -> tuple[Path, str, str, str, str]:
         repo = self.init_repo(root / "source")
         route_id = "route"
         card = "experience_docx/experiment_cards/route.md"
@@ -129,6 +130,8 @@ class TerminalArchiveTests(unittest.TestCase):
             "locked_test_touched": False,
             "evidence_sha256": {} if verdict_only else {filename: expected},
         }
+        if closeout_schema is not None:
+            closeout["schema_version"] = closeout_schema
         closeout_rel = "experience_docx/experiment_logs/route/a1_closeout.json"
         (repo / closeout_rel).write_text(json.dumps(closeout), encoding="utf-8")
         conclusion_rel = "experience_docx/experiment_logs/route/a1_conclusion.json"
@@ -144,6 +147,8 @@ class TerminalArchiveTests(unittest.TestCase):
             "competing_explanation": "matched control did not explain the gain",
             "limitations": [] if incomplete_conclusion else ["development population only"],
         }
+        if conclusion_schema is not None:
+            conclusion["schema_version"] = conclusion_schema
         (repo / conclusion_rel).write_text(json.dumps(conclusion), encoding="utf-8")
         if include_results:
             (evidence / filename).write_bytes(result)
@@ -306,6 +311,36 @@ class TerminalArchiveTests(unittest.TestCase):
             source = self.source(Path(directory), incomplete_conclusion=True)
             with self.assertRaises(ARCHIVE.TerminalArchiveError):
                 self.audit(source)
+
+    def test_schema6_new_conclusion_requires_schema_version_two(self):
+        for schema_version in (None, 1, 3):
+            with self.subTest(schema_version=schema_version):
+                with tempfile.TemporaryDirectory() as directory:
+                    source = self.source(
+                        Path(directory), canonical=True,
+                        conclusion_schema=schema_version,
+                    )
+                    with self.assertRaises(ARCHIVE.TerminalArchiveError):
+                        self.audit(source)
+
+    def test_schema6_closeout_requires_schema_version_two(self):
+        for schema_version in (None, 1, 3):
+            with self.subTest(schema_version=schema_version):
+                with tempfile.TemporaryDirectory() as directory:
+                    source = self.source(
+                        Path(directory), canonical=True,
+                        closeout_schema=schema_version,
+                    )
+                    with self.assertRaises(ARCHIVE.TerminalArchiveError):
+                        self.audit(source)
+
+    def test_legacy_archive_read_keeps_historical_conclusion_compatible(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = self.source(
+                Path(directory), canonical=False, conclusion_schema=None
+            )
+            audit = self.audit(source)
+            self.assertEqual(1, audit["schema_version"])
 
     def test_dirty_destination_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:

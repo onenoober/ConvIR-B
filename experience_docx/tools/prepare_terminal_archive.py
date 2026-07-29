@@ -254,8 +254,18 @@ def launch_contract_bundle(
     }
 
 
-def validate_conclusion(raw: bytes, relpath: str, closeout: dict[str, Any]) -> None:
+def validate_conclusion(
+    raw: bytes, relpath: str, closeout: dict[str, Any], *,
+    required_schema_version: int | None = None,
+) -> None:
     value = inspect_structured(raw, relpath)
+    if required_schema_version is not None and (
+        not isinstance(value, dict)
+        or value.get("schema_version") != required_schema_version
+    ):
+        raise TerminalArchiveError(
+            f"scientific conclusion schema_version must equal {required_schema_version}"
+        )
     required = {
         "route_id", "operation_id", "run_id", "state", "decision", "authorizes",
         "primary_result", "gate_reasons", "competing_explanation", "limitations",
@@ -446,6 +456,10 @@ def audit_source(
     contract_payloads, contract_bundle, prior_terminal_record = launch_contract_bundle(
         source_repo, route_commit, route_id, operation_id,
     )
+    if contract_bundle and closeout.get("schema_version") != 2:
+        raise TerminalArchiveError(
+            "schema-6 terminal closeout schema_version must equal 2"
+        )
     missing_required = sorted(required_evidence - set(evidence_sha))
     if missing_required:
         raise TerminalArchiveError(
@@ -465,7 +479,10 @@ def audit_source(
                 f"scientific conclusion is missing: {conclusion_relpath}"
             )
         conclusion_raw = conclusion_file.read_bytes()
-        validate_conclusion(conclusion_raw, conclusion_relpath, closeout)
+        validate_conclusion(
+            conclusion_raw, conclusion_relpath, closeout,
+            required_schema_version=2 if contract_bundle else None,
+        )
         payloads[conclusion_relpath] = conclusion_raw
     for filename, expected_sha in sorted(evidence_sha.items()):
         if not isinstance(filename, str) or not isinstance(expected_sha, str):
