@@ -22,7 +22,7 @@
       "current_engineering_validation": "SUPERSEDED_PASS_BY_PHASE3_FULL_SUITE",
       "implementation_commit": "3e9e8368a6383e6319e58b8993d1bb065fe5f56b",
       "implementation_in_main": true,
-      "standalone_cloud_receipt_persisted": false,
+      "standalone_cloud_acceptance_record_persisted": false,
       "standalone_gate_event_from_github": "NOT_INDEPENDENTLY_VERIFIABLE"
     },
     "phase2": {
@@ -32,7 +32,7 @@
         "d6ad035c1dc02af92612fce8cfac56c18a4b3034"
       ],
       "implementation_in_main": true,
-      "standalone_cloud_receipt_persisted": false,
+      "standalone_cloud_acceptance_record_persisted": false,
       "standalone_gate_event_from_github": "NOT_INDEPENDENTLY_VERIFIABLE"
     },
     "phase3": {
@@ -57,8 +57,23 @@
     "config_scope": "global_current_host",
     "enabled": true,
     "name": "convir_evidence_review",
-    "source_git_blob": "c2dc6e10aa190f575e64c9b691c04ac5b178c816",
-    "source_sha256": "160edf7d2ef1ad79a96b96104490779c72b732c0887884120ca5e3989fbd940b",
+    "source_identity": {
+      "catalog": {
+        "git_blob": "e829f37738217344947de89036dfb2546b4c22cf",
+        "path": "experience_docx/tools/convir_evidence_catalog.py",
+        "sha256": "8fc036e2c197761fd8ad0b11d63fbac06393787bfda84d1780639fe2316e8f04"
+      },
+      "server": {
+        "git_blob": "c2dc6e10aa190f575e64c9b691c04ac5b178c816",
+        "path": "experience_docx/tools/convir_evidence_review_mcp.py",
+        "sha256": "160edf7d2ef1ad79a96b96104490779c72b732c0887884120ca5e3989fbd940b"
+      },
+      "transport": {
+        "git_blob": "a8c4c7a2ade81988ffc2911ccb12681f29ca7143",
+        "path": "experience_docx/tools/convirctl.py",
+        "sha256": "fef987d6480d1a9ff326f1a1354df515a09da74f96ae037b4de632659fc95672"
+      }
+    },
     "transport": "stdio",
     "worktree_clean_at_check": true,
     "worktree_head_at_check": "828a104de89cdce9062f6b7be1909c94824d40b6",
@@ -69,7 +84,14 @@
   "verification": {
     "codex_config_query_passed": true,
     "fresh_task_activation": "PENDING",
+    "fresh_task_required_checks": [
+      "SERVER_VERSION_1_0_0",
+      "EXACT_TWO_TOOLS",
+      "SERVER_CATALOG_TRANSPORT_SHA256_MATCH",
+      "CATALOG_SUMMARY",
+      "BOUNDED_CATALOG_QUERY"
+    ],
     "local_wsl_runtime_validation_performed": false,
-    "source_sha256_passed": true
+    "registered_source_identity_passed": true
   }
 }

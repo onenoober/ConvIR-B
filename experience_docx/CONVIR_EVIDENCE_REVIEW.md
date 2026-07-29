@@ -4,9 +4,10 @@ Date: 2026-07-29
 
 Status: Phase 3 GitHub-only source passed committed cloud acceptance at
 `ea088ea28d56f034395f53212c6e259b290d87fc`. Presence of the adjacent
-acceptance record on GitHub `main` completes source adoption. The inspected
-Codex global MCP configuration on this host now points at that exact source and
-reports enabled; a fresh-task activation check remains pending.
+acceptance record on GitHub `main` completes source adoption. At the recorded
+2026-07-29 registration check, the inspected Codex global MCP configuration on
+this host pointed at that exact source and reported enabled; a fresh-task
+activation check remains pending.
 
 ## Purpose
 
@@ -75,11 +76,13 @@ server, authorize Phase 4 cloud inventory, or support any scientific claim.
 
 The compact registration and prior-phase audit record is
 `CONVIR_EVIDENCE_REVIEW_REGISTRATION_CHECK.json`. It records the enabled stdio
-configuration and the historical Phase 1/2 receipt gap without inventing a
-retroactive acceptance. Phase 3's durable 283-test full-suite acceptance covers
-the unchanged Phase 1/2 implementation, so no reassurance rerun is required.
+configuration and the historical Phase 1/2 standalone acceptance-record gap
+without inventing a retroactive acceptance. Phase 3's durable 283-test
+full-suite acceptance covers the unchanged Phase 1/2 implementation, so no
+reassurance rerun is required.
 
 The task process used for this check predates registration and cannot prove
 host activation. A new task must verify server version `1.0.0`, exactly two
-tools, one summary and one bounded query before any active-server claim. Phase
-4 remains unauthorized.
+tools, all three source SHA-256 identities bound by the Phase 3 acceptance, one
+summary and one bounded query before any active-server claim. Phase 4 remains
+unauthorized.
