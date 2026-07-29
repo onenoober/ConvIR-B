@@ -67,26 +67,29 @@ bash -n "$tools/validate_convir_evidence_review_phase4a_cloud.sh"
 
 focused_stdout=$work/focused.stdout
 focused_stderr=$work/focused.stderr
-set +e
-TMPDIR="$work/tmp" PYTHONPATH="$tools:$tests" "$python" -m unittest \
-  test_convir_evidence_cloud_inventory >"$focused_stdout" 2>"$focused_stderr"
-focused_rc=$?
-set -e
+if TMPDIR="$work/tmp" PYTHONPATH="$tools:$tests" "$python" -m unittest \
+    test_convir_evidence_cloud_inventory \
+    >"$focused_stdout" 2>"$focused_stderr"; then
+  focused_rc=0
+else
+  focused_rc=$?
+fi
 if [[ $focused_rc -ne 0 ]]; then
   tail -n 120 "$focused_stdout" >&2 || true
   tail -n 120 "$focused_stderr" >&2 || true
   exit "$focused_rc"
 fi
 focused_count=$(sed -nE 's/^Ran ([0-9]+) tests?.*/\1/p' "$focused_stderr" | tail -n 1)
-test "$focused_count" = 12
+test "$focused_count" = 16
 
 stdout=$work/unittest.stdout
 stderr=$work/unittest.stderr
-set +e
-TMPDIR="$work/tmp" PYTHONPATH="$tools:$tests" "$python" -m unittest discover \
-  -s "$tests" -p 'test_*.py' >"$stdout" 2>"$stderr"
-rc=$?
-set -e
+if TMPDIR="$work/tmp" PYTHONPATH="$tools:$tests" "$python" -m unittest discover \
+    -s "$tests" -p 'test_*.py' >"$stdout" 2>"$stderr"; then
+  rc=0
+else
+  rc=$?
+fi
 if [[ $rc -ne 0 ]]; then
   tail -n 120 "$stdout" >&2 || true
   tail -n 120 "$stderr" >&2 || true
@@ -94,7 +97,7 @@ if [[ $rc -ne 0 ]]; then
 fi
 test_count=$(sed -nE 's/^Ran ([0-9]+) tests?.*/\1/p' "$stderr" | tail -n 1)
 [[ "$test_count" =~ ^[0-9]+$ ]]
-test "$test_count" -ge 295
+test "$test_count" -ge 299
 
 TMPDIR="$work/tmp" CONVIR_EVIDENCE_LOCAL_WORKSPACE_ROOT="$runtime_root" \
 PYTHONPATH="$tools" "$python" - "$server" "$work/repo" "$main_tip" <<'PY'

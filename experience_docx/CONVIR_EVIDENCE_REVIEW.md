@@ -58,21 +58,27 @@ accepts one immutable GitHub-main snapshot and one exact schema-2 terminal-recor
 SHA-256. It verifies the archived manifest, runtime spec, closeout, conclusion,
 formal results and their SHA/byte identities, including:
 
+- canonical route-card, evidence-root, launch-contract and result archive paths;
 - manifest `output_id == terminal run_id`;
 - manifest closeout filename equals the terminal closeout basename;
 - route, operation, run, commit and terminal tuple agree across records;
 - every closeout evidence hash equals one archived result; and
-- the runtime source mapping is unique and complete for required formal files.
+- the full schema-2 runtime contract passes the repository's authoritative
+  validator and is complete for required formal files.
 
 Only that chain may derive
 `/sda/home/wangyuxin/ConvIR-B/runs/{route_id}/{output_id}`. The transport-free
 scanner then accepts an internally resolved root for synthetic testing. It
 requires an inactive output, exact `control/lifecycle_identity.json`, no
 symlink or special-file traversal, and fixed entry/depth/path/time limits. It
-reads only the lifecycle identity and runtime-declared compact evidence to
-verify SHA-256. An optional declaration absent from GitHub remains an explicit
-inventory entry and is never silently folded into generic raw files. All other
-raw artifacts contribute bounded metadata only.
+opens and pins the absolute root and every traversed directory, then uses
+descriptor-relative no-follow opens for traversal and formal reads. Directory
+and file identities are checked across each use, caller limits may only reduce
+the compiled hard limits, and a directory is collected only up to the remaining
+entry budget. It reads only the lifecycle identity and runtime-declared compact
+evidence to verify SHA-256. An optional declaration absent from GitHub remains
+an explicit inventory entry and is never silently folded into generic raw
+files. All other raw artifacts contribute bounded metadata only.
 
 Reconciliation entries use `MATCHED`, `GITHUB_ONLY`, `CLOUD_ONLY`,
 `IDENTITY_CONFLICT`, `CLOUD_UNAVAILABLE` or `NOT_INVENTORIED`. `GITHUB_ONLY` and
@@ -83,7 +89,10 @@ absence. Confirmation, canary, locked/sealed, any protected-data permission or
 any recorded protected-data touch is `NOT_INVENTORIED`.
 
 Summary returns only identity, scope, completeness, counts, issues and inventory
-SHA-256. Query returns bounded filtered entries with an identity-bound cursor.
+SHA-256. Phase 4A reports `scope=adapter_owned_root`, the separately declared
+run root, and `root_binding_enforced=false`; it cannot be mistaken for the
+future production adapter. Query returns bounded filtered entries with an
+identity-bound cursor.
 The private Phase 4A value budget is 8 KiB. A Phase 4B MCP adapter must still
 shrink against the actual repeated text/structured JSON-RPC envelope and prove
 the complete response, including escaped caller terms, stays within 32 KiB.
@@ -95,7 +104,9 @@ experiment or claims that the saved evidence is scientifically sufficient.
 Phase 4B requires a separately accepted fixed-host transport with no caller
 host, path or command. Its first real pilot must name one eligible schema-2
 terminal-record SHA in advance, derive exactly one inactive run root, and keep
-protected roles fail-closed. A complete synthetic Phase 4A acceptance authorizes
+protected roles fail-closed. The adapter must mechanically prove that its actual
+root equals the identity-derived run root before it can claim production scope.
+A complete synthetic Phase 4A acceptance authorizes
 only that contract work; it does not authorize access to existing `/runs`, MCP
 registration of cloud tools, broad route enumeration or scientific review.
 

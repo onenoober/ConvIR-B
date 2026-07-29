@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import errno
 import hashlib
 import json
 import os
@@ -15,6 +16,7 @@ from typing import Any
 
 import convir_evidence_catalog as catalog
 import convirctl
+import route_runtime_contract
 
 
 REMOTE_BASE = "/sda/home/wangyuxin/ConvIR-B"
@@ -59,7 +61,9 @@ class InventoryError(RuntimeError):
 
 
 class _ScanStopped(RuntimeError):
-    pass
+    def __init__(self, issue: str, *, state: str | None = None):
+        super().__init__(issue)
+        self.state = state
 
 
 def canonical_bytes(value: Any) -> bytes:
@@ -113,8 +117,13 @@ def _git_blob(repo: Path, commit: str, relpath: str, *, maximum: int,
             state="IDENTITY_CONFLICT",
         ) from exc
     if size < 0 or size > maximum:
+        message = (
+            "terminal GitHub evidence exceeds its aggregate bound"
+            if maximum < MAX_GITHUB_FILE_BYTES
+            else f"GitHub evidence blob exceeds its bound: {relpath}"
+        )
         raise InventoryError(
-            f"GitHub evidence blob exceeds its bound: {relpath}",
+            message,
             state="IDENTITY_CONFLICT",
         )
     if expected_bytes is not None and size != expected_bytes:
@@ -217,6 +226,31 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
         record["route_commit"], SHA40, "route_commit", state="IDENTITY_CONFLICT",
         exit_code=3,
     )
+    evidence_root = f"experience_docx/experiment_logs/{route_id}"
+    closeout_path = _require_relpath(record["closeout_path"], "closeout_path")
+    conclusion_path = _require_relpath(record["conclusion_path"], "conclusion_path")
+    contract_path = _require_relpath(record["contract_path"], "contract_path")
+    if not contract_path.startswith("experience_docx/experiment_cards/") \
+            or not contract_path.endswith(".md"):
+        raise InventoryError(
+            "terminal contract path is not canonical",
+            state="IDENTITY_CONFLICT",
+        )
+    if PurePosixPath(closeout_path).parent.as_posix() != evidence_root \
+            or PurePosixPath(conclusion_path).parent.as_posix() != evidence_root:
+        raise InventoryError(
+            "terminal closeout or conclusion is outside its canonical evidence root",
+            state="IDENTITY_CONFLICT",
+        )
+    for item in record["result_files"]:
+        result_path = _require_relpath(item["path"], "result_files[].path")
+        if PurePosixPath(result_path).parent.as_posix() != evidence_root:
+            raise InventoryError(
+                "terminal result is outside its canonical evidence root",
+                state="IDENTITY_CONFLICT",
+            )
+    runtime_source_path = f"{RUNTIME_SPEC_PREFIX}{operation_id}.json"
+    launch_contract_root = f"{evidence_root}/launch_contract/{operation_id}"
     total_github_bytes = 0
 
     def read_github_blob(relpath: str, *, expected_bytes: int | None = None,
@@ -239,33 +273,21 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
         total_github_bytes += len(raw)
         return raw
 
-    evidence_root = PurePosixPath(record["closeout_path"]).parent.as_posix()
-    evidence_prefix = f"{evidence_root}/"
-    archived_paths = [
-        record["closeout_path"], record["conclusion_path"],
-        *(item["path"] for item in record["contract_bundle"]),
-        *(item["path"] for item in record["result_files"]),
-    ]
-    if any(not path.startswith(evidence_prefix) for path in archived_paths):
-        raise InventoryError(
-            "terminal archive paths span evidence directories",
-            state="IDENTITY_CONFLICT",
-        )
-
     contract_raw = read_github_blob(
-        record["contract_path"],
+        contract_path,
         expected_sha256=record["contract_sha256"],
     )
     closeout_raw = read_github_blob(
-        record["closeout_path"],
+        closeout_path,
         expected_sha256=record["closeout_sha256"],
     )
     conclusion_raw = read_github_blob(
-        record["conclusion_path"],
+        conclusion_path,
         expected_sha256=record["conclusion_sha256"],
     )
 
     bundle_payloads: dict[str, bytes] = {}
+    bundle_archive_paths: dict[str, str] = {}
     for item in record["contract_bundle"]:
         raw = read_github_blob(
             item["path"],
@@ -281,6 +303,9 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
                 state="IDENTITY_CONFLICT",
             )
         bundle_payloads[source_path] = raw
+        bundle_archive_paths[source_path] = _require_relpath(
+            item["path"], "contract_bundle[].path"
+        )
     for item in record["result_files"]:
         read_github_blob(
             item["path"],
@@ -289,7 +314,6 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
         )
 
     manifest_raw = bundle_payloads.get(MANIFEST_SOURCE_PATH)
-    runtime_source_path = f"{RUNTIME_SPEC_PREFIX}{operation_id}.json"
     runtime_raw = bundle_payloads.get(runtime_source_path)
     if manifest_raw is None or runtime_raw is None:
         return _not_inventoried_binding(
@@ -306,6 +330,11 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
         )
     if manifest.get("route_id") != route_id:
         raise InventoryError("manifest route_id differs", state="IDENTITY_CONFLICT")
+    if manifest.get("route_card_relpath") != contract_path:
+        raise InventoryError(
+            "manifest route card differs from terminal contract path",
+            state="IDENTITY_CONFLICT",
+        )
     operations = manifest.get("operations")
     if not isinstance(operations, dict):
         raise InventoryError(
@@ -320,15 +349,88 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
             "manifest output_id differs from terminal run_id",
             state="IDENTITY_CONFLICT",
         )
-    closeout_name = PurePosixPath(record["closeout_path"]).name
+    closeout_name = PurePosixPath(closeout_path).name
     if operation.get("closeout_filename") != closeout_name:
         raise InventoryError(
             "manifest closeout filename differs from terminal record",
             state="IDENTITY_CONFLICT",
         )
-    if runtime.get("route_id") != route_id \
-            or runtime.get("operation_id") != operation_id:
-        raise InventoryError("runtime spec identity differs", state="IDENTITY_CONFLICT")
+    terminal_tuple = {
+        "state": record["state"],
+        "decision": record["decision"],
+        "authorizes": record["authorizes"],
+    }
+    if terminal_tuple not in operation.get("allowed_terminal_tuples", []):
+        raise InventoryError(
+            "terminal tuple is not authorized by the archived manifest",
+            state="IDENTITY_CONFLICT",
+        )
+    try:
+        runtime = route_runtime_contract.validate_runtime_spec(
+            runtime, manifest, operation_id
+        )
+    except route_runtime_contract.ContractError as exc:
+        raise InventoryError(
+            f"archived runtime spec is invalid: {exc}",
+            state="IDENTITY_CONFLICT",
+        ) from exc
+    scientific_relpaths = manifest.get("scientific_contract_relpaths")
+    if not isinstance(scientific_relpaths, dict):
+        raise InventoryError(
+            "manifest scientific contract paths are invalid",
+            state="IDENTITY_CONFLICT",
+        )
+    canonical_bundle = {
+        "manifest.json": MANIFEST_SOURCE_PATH,
+        "route_note.md": manifest.get("route_card_relpath"),
+        "experiment_spec.json": manifest.get("experiment_spec_relpath"),
+        "program_contract.json": manifest.get("program_contract_relpath"),
+        "scientific_contract.json": scientific_relpaths.get(operation_id),
+        "runtime_spec.json": runtime_source_path,
+        "asset_manifest.json": runtime.get("asset_manifest_relpath"),
+        "capability_profile.json": runtime["engineering_contract"].get(
+            "capability_profile_relpath"
+        ),
+        "precision_certificate.json": runtime["precision_contract"].get(
+            "certificate_relpath"
+        ),
+    }
+    required_bundle_names = {
+        "manifest.json", "route_note.md", "experiment_spec.json",
+        "program_contract.json", "scientific_contract.json", "runtime_spec.json",
+    }
+    if any(
+        not isinstance(canonical_bundle[name], str)
+        for name in required_bundle_names
+    ):
+        raise InventoryError(
+            "canonical launch contract bundle is incomplete",
+            state="IDENTITY_CONFLICT",
+        )
+    expected_bundle_paths: dict[str, str] = {}
+    for archive_name, source_path in canonical_bundle.items():
+        if source_path is None:
+            continue
+        source_path = _require_relpath(
+            source_path, f"canonical bundle source {archive_name}"
+        )
+        if source_path in expected_bundle_paths:
+            raise InventoryError(
+                "canonical launch contract sources are ambiguous",
+                state="IDENTITY_CONFLICT",
+            )
+        expected_bundle_paths[source_path] = \
+            f"{launch_contract_root}/{archive_name}"
+    if bundle_archive_paths != expected_bundle_paths:
+        raise InventoryError(
+            "terminal contract bundle paths are not canonical",
+            state="IDENTITY_CONFLICT",
+        )
+    if bundle_payloads.get(contract_path) != contract_raw:
+        raise InventoryError(
+            "archived route note differs from the terminal contract",
+            state="IDENTITY_CONFLICT",
+        )
 
     closeout = _json_object(closeout_raw, "archived closeout")
     if closeout.get("schema_version") != 2 or conclusion.get("schema_version") != 1:
@@ -415,49 +517,12 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
     expected_evidence = []
     optional_evidence = []
     mapped_names = set()
-    mapped_sources = set()
-    declared_names = set()
     declarations = runtime.get("evidence_files")
-    if not isinstance(declarations, list) or not declarations:
-        raise InventoryError(
-            "runtime spec declares no compact evidence", state="IDENTITY_CONFLICT"
-        )
-    for index, item in enumerate(declarations):
-        if not isinstance(item, dict):
-            raise InventoryError(
-                f"runtime evidence_files[{index}] is invalid",
-                state="IDENTITY_CONFLICT",
-            )
-        source_relpath = _require_relpath(
-            item.get("source_relpath"), f"evidence_files[{index}].source_relpath"
-        )
-        destination = item.get("destination_filename")
-        if not isinstance(destination, str) \
-                or PurePosixPath(destination).name != destination:
-            raise InventoryError(
-                f"evidence_files[{index}].destination_filename is invalid",
-                state="IDENTITY_CONFLICT",
-            )
-        if source_relpath in mapped_sources or destination in declared_names:
-            raise InventoryError(
-                "runtime evidence mapping is ambiguous",
-                state="IDENTITY_CONFLICT",
-            )
-        mapped_sources.add(source_relpath)
-        declared_names.add(destination)
-        required = item.get("required")
-        maximum = item.get("max_bytes")
-        if required is not True and required is not False:
-            raise InventoryError(
-                f"evidence_files[{index}].required is invalid",
-                state="IDENTITY_CONFLICT",
-            )
-        if not isinstance(maximum, int) or isinstance(maximum, bool) \
-                or not 1 <= maximum <= MAX_GITHUB_FILE_BYTES:
-            raise InventoryError(
-                f"evidence_files[{index}].max_bytes is invalid",
-                state="IDENTITY_CONFLICT",
-            )
+    for item in declarations:
+        source_relpath = item["source_relpath"]
+        destination = item["destination_filename"]
+        required = item["required"]
+        maximum = item["max_bytes"]
         result_record = result_by_name.get(destination)
         if required and result_record is None:
             raise InventoryError(
@@ -544,10 +609,16 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
             "runner_sha256": runner_sha256,
         },
         "expected_evidence": sorted(
-            expected_evidence, key=lambda value: value["source_relpath"]
+            expected_evidence,
+            key=lambda value: (
+                value["source_relpath"], value["destination_filename"]
+            ),
         ),
         "optional_evidence": sorted(
-            optional_evidence, key=lambda value: value["source_relpath"]
+            optional_evidence,
+            key=lambda value: (
+                value["source_relpath"], value["destination_filename"]
+            ),
         ),
         "unmapped_results": sorted(
             unmapped_results, key=lambda value: value["github_path"]
@@ -560,180 +631,416 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
 
 
 def _limits(value: dict[str, int] | None) -> dict[str, int]:
-    result = {
+    hard = {
         "max_entries": MAX_SCAN_ENTRIES,
         "max_depth": MAX_SCAN_DEPTH,
         "max_relative_path_bytes": MAX_RELATIVE_PATH_BYTES,
         "max_seconds": MAX_SCAN_SECONDS,
     }
+    result = dict(hard)
     if value is not None:
         if not isinstance(value, dict) or set(value) - set(result):
-            raise InventoryError("scan limits have an invalid field contract")
+            raise InventoryError(
+                "scan limits have an invalid field contract",
+                state="ARGUMENTS_INVALID", exit_code=2,
+            )
+        for key, item in value.items():
+            if not isinstance(item, int) or isinstance(item, bool) \
+                    or not 1 <= item <= hard[key]:
+                raise InventoryError(
+                    f"scan limit {key} must be in [1, {hard[key]}]",
+                    state="ARGUMENTS_INVALID", exit_code=2,
+                )
         result.update(value)
-    for key, item in result.items():
-        if not isinstance(item, int) or isinstance(item, bool) or item < 1:
-            raise InventoryError(f"scan limit {key} must be a positive integer")
     return result
 
 
 def _safe_path_text(relative: str) -> bytes:
     if any(ord(char) < 32 or ord(char) == 127 for char in relative):
-        raise _ScanStopped("PATH_CONTROL_CHARACTER")
+        raise _ScanStopped(
+            "PATH_CONTROL_CHARACTER", state="IDENTITY_CONFLICT"
+        )
     try:
         return relative.encode("utf-8", errors="strict")
     except UnicodeEncodeError as exc:
-        raise _ScanStopped("PATH_NOT_UTF8") from exc
+        raise _ScanStopped("PATH_NOT_UTF8", state="IDENTITY_CONFLICT") from exc
 
 
-def _path_chain_has_symlink(path: Path) -> bool:
-    current = Path(path.anchor)
-    for part in path.parts[1:]:
-        current /= part
-        try:
-            metadata = current.lstat()
-        except FileNotFoundError:
-            return False
-        if stat.S_ISLNK(metadata.st_mode):
-            return True
-    return False
-
-
-def _same_file_identity(path: Path, expected: os.stat_result) -> bool:
-    try:
-        observed = path.lstat()
-    except OSError:
-        return False
+def _directory_flags() -> int:
     return (
-        observed.st_dev == expected.st_dev
-        and observed.st_ino == expected.st_ino
-        and stat.S_IFMT(observed.st_mode) == stat.S_IFMT(expected.st_mode)
-        and observed.st_size == expected.st_size
-        and observed.st_mtime_ns == expected.st_mtime_ns
+        os.O_RDONLY
+        | getattr(os, "O_CLOEXEC", 0)
+        | getattr(os, "O_DIRECTORY", 0)
+        | getattr(os, "O_NOFOLLOW", 0)
     )
 
 
-def _walk_metadata(root: Path, limits: dict[str, int]) -> dict[str, Any]:
-    started = time.monotonic()
-    files: dict[str, dict[str, Any]] = {}
-    directories = 0
-    total_bytes = 0
-    entry_count = 0
-    relative_path_bytes = 0
-    issues = []
-    stack: list[tuple[Path, str, int]] = [(root, "", 0)]
-    complete = True
-    try:
-        while stack:
-            if time.monotonic() - started > limits["max_seconds"]:
-                raise _ScanStopped("SCAN_TIME_LIMIT")
-            directory, prefix, parent_depth = stack.pop()
-            try:
-                with os.scandir(directory) as iterator:
-                    children = list(iterator)
-            except OSError as exc:
-                raise _ScanStopped(f"DIRECTORY_UNREADABLE:{type(exc).__name__}") from exc
-            children.sort(key=lambda item: item.name)
-            next_directories = []
-            for child in children:
-                relative = f"{prefix}/{child.name}" if prefix else child.name
-                encoded = _safe_path_text(relative)
-                depth = parent_depth + 1
-                entry_count += 1
-                relative_path_bytes += len(encoded)
-                if entry_count > limits["max_entries"]:
-                    raise _ScanStopped("ENTRY_LIMIT")
-                if relative_path_bytes > limits["max_relative_path_bytes"]:
-                    raise _ScanStopped("PATH_BYTE_LIMIT")
-                if depth > limits["max_depth"]:
-                    raise _ScanStopped("DEPTH_LIMIT")
-                try:
-                    metadata = child.stat(follow_symlinks=False)
-                except OSError as exc:
-                    raise _ScanStopped(f"LSTAT_FAILED:{type(exc).__name__}") from exc
-                mode = metadata.st_mode
-                if stat.S_ISLNK(mode):
-                    files[relative] = {
-                        "file_type": "symlink", "bytes": 0,
-                        "device": metadata.st_dev, "inode": metadata.st_ino,
-                    }
-                    raise _ScanStopped("SYMLINK_PRESENT")
-                if stat.S_ISDIR(mode):
-                    directories += 1
-                    if depth >= limits["max_depth"]:
-                        try:
-                            with os.scandir(child.path) as iterator:
-                                has_children = next(iterator, None) is not None
-                        except OSError as exc:
-                            raise _ScanStopped(
-                                f"DIRECTORY_UNREADABLE:{type(exc).__name__}"
-                            ) from exc
-                        if has_children:
-                            raise _ScanStopped("DEPTH_LIMIT")
-                    else:
-                        next_directories.append((Path(child.path), relative, depth))
-                elif stat.S_ISREG(mode):
-                    total_bytes += metadata.st_size
-                    files[relative] = {
-                        "file_type": "file", "bytes": metadata.st_size,
-                        "device": metadata.st_dev, "inode": metadata.st_ino,
-                    }
-                else:
-                    files[relative] = {
-                        "file_type": "special", "bytes": 0,
-                        "device": metadata.st_dev, "inode": metadata.st_ino,
-                    }
-                    raise _ScanStopped("SPECIAL_FILE_PRESENT")
-            stack.extend(reversed(next_directories))
-    except _ScanStopped as exc:
-        complete = False
-        issues.append(str(exc))
+def _file_flags() -> int:
+    return os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+
+
+def _file_type(mode: int) -> str:
+    if stat.S_ISDIR(mode):
+        return "directory"
+    if stat.S_ISREG(mode):
+        return "file"
+    if stat.S_ISLNK(mode):
+        return "symlink"
+    return "special"
+
+
+def _stat_metadata(observed: os.stat_result) -> dict[str, Any]:
+    file_type = _file_type(observed.st_mode)
     return {
-        "complete": complete,
-        "issues": issues,
-        "files": files,
-        "entry_count": entry_count,
-        "file_count": len(files),
-        "directory_count": directories,
-        "total_file_bytes": total_bytes,
-        "relative_path_bytes": relative_path_bytes,
-        "elapsed_seconds": round(time.monotonic() - started, 6),
+        "file_type": file_type,
+        "bytes": observed.st_size if file_type == "file" else 0,
+        "device": observed.st_dev,
+        "inode": observed.st_ino,
+        "mode_type": stat.S_IFMT(observed.st_mode),
+        "stat_size": observed.st_size,
+        "mtime_ns": observed.st_mtime_ns,
+        "ctime_ns": observed.st_ctime_ns,
     }
 
 
-def _read_nofollow(path: Path, *, maximum: int,
-                   expected_metadata: dict[str, Any] | None = None) -> bytes:
-    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+def _metadata_matches(expected: dict[str, Any], observed: os.stat_result, *,
+                      stable: bool) -> bool:
+    actual = _stat_metadata(observed)
+    fields = ["device", "inode", "mode_type"]
+    if stable:
+        fields.extend(["stat_size", "mtime_ns", "ctime_ns"])
+    elif expected.get("file_type") == "file":
+        fields.append("stat_size")
+    return all(expected.get(field) == actual[field] for field in fields)
+
+
+def _access_error(message: str, exc: OSError) -> InventoryError:
+    identity_errnos = {
+        errno.ENOENT, errno.ENOTDIR, errno.ELOOP, errno.EISDIR,
+    }
+    state = "IDENTITY_CONFLICT" if exc.errno in identity_errnos \
+        else "CLOUD_UNAVAILABLE"
+    return InventoryError(
+        f"{message}: {type(exc).__name__}", state=state, exit_code=3
+    )
+
+
+def _fstat_or_error(descriptor: int, message: str) -> os.stat_result:
     try:
-        descriptor = os.open(path, flags)
+        return os.fstat(descriptor)
     except OSError as exc:
-        raise InventoryError(
-            f"bounded file read failed: {type(exc).__name__}",
-            state="IDENTITY_CONFLICT",
-        ) from exc
+        raise _access_error(message, exc) from exc
+
+
+def _open_directory_at(parent_fd: int, name: str,
+                       expected: dict[str, Any]) -> int:
+    try:
+        descriptor = os.open(name, _directory_flags(), dir_fd=parent_fd)
+    except OSError as exc:
+        raise _access_error("directory open failed", exc) from exc
     try:
         observed = os.fstat(descriptor)
-        if not stat.S_ISREG(observed.st_mode) or observed.st_size > maximum:
-            raise InventoryError("bounded file read contract failed", state="IDENTITY_CONFLICT")
-        if expected_metadata is not None and (
-            observed.st_dev != expected_metadata["device"]
-            or observed.st_ino != expected_metadata["inode"]
-            or observed.st_size != expected_metadata["bytes"]
-        ):
-            raise InventoryError("file identity changed during scan", state="IDENTITY_CONFLICT")
+    except OSError as exc:
+        os.close(descriptor)
+        raise _access_error("directory identity read failed", exc) from exc
+    if not stat.S_ISDIR(observed.st_mode) \
+            or not _metadata_matches(expected, observed, stable=True):
+        os.close(descriptor)
+        raise InventoryError(
+            "directory identity changed during inventory",
+            state="IDENTITY_CONFLICT",
+        )
+    return descriptor
+
+
+def _open_adapter_root(root: Path) -> tuple[int, dict[str, Any]] | None:
+    if not root.is_absolute() or ".." in root.parts:
+        raise InventoryError(
+            "internal scan root must be an absolute normalized path",
+            state="ARGUMENTS_INVALID", exit_code=2,
+        )
+    try:
+        descriptor = os.open("/", _directory_flags())
+    except OSError as exc:
+        raise _access_error("filesystem root open failed", exc) from exc
+    try:
+        for part in root.parts[1:]:
+            parent_before = _fstat_or_error(
+                descriptor, "root parent identity read failed"
+            )
+            try:
+                observed = os.stat(part, dir_fd=descriptor, follow_symlinks=False)
+            except FileNotFoundError:
+                parent_after = _fstat_or_error(
+                    descriptor, "root parent identity reread failed"
+                )
+                parent_metadata = _stat_metadata(parent_before)
+                if not _metadata_matches(parent_metadata, parent_after, stable=True):
+                    raise InventoryError(
+                        "root parent changed while proving absence",
+                        state="IDENTITY_CONFLICT",
+                    )
+                os.close(descriptor)
+                return None
+            except OSError as exc:
+                raise _access_error("root path stat failed", exc) from exc
+            metadata = _stat_metadata(observed)
+            if metadata["file_type"] != "directory":
+                raise InventoryError(
+                    "root path contains a non-directory component",
+                    state="IDENTITY_CONFLICT",
+                )
+            child = _open_directory_at(descriptor, part, metadata)
+            os.close(descriptor)
+            descriptor = child
+        return descriptor, _stat_metadata(_fstat_or_error(
+            descriptor, "root identity read failed"
+        ))
+    except Exception:
+        os.close(descriptor)
+        raise
+
+
+def _read_file_at(parent_fd: int, name: str, *, maximum: int,
+                  expected: dict[str, Any]) -> bytes:
+    try:
+        descriptor = os.open(name, _file_flags(), dir_fd=parent_fd)
+    except OSError as exc:
+        raise _access_error("bounded file open failed", exc) from exc
+    try:
+        try:
+            before = os.fstat(descriptor)
+        except OSError as exc:
+            raise _access_error("bounded file identity read failed", exc) from exc
+        if not stat.S_ISREG(before.st_mode) or before.st_size > maximum \
+                or not _metadata_matches(expected, before, stable=True):
+            raise InventoryError(
+                "bounded file identity differs", state="IDENTITY_CONFLICT"
+            )
         chunks = []
         remaining = maximum + 1
         while remaining:
-            block = os.read(descriptor, min(1024 * 1024, remaining))
+            try:
+                block = os.read(descriptor, min(1024 * 1024, remaining))
+            except OSError as exc:
+                raise _access_error("bounded file read failed", exc) from exc
             if not block:
                 break
             chunks.append(block)
             remaining -= len(block)
         raw = b"".join(chunks)
-        if len(raw) > maximum or len(raw) != observed.st_size:
-            raise InventoryError("bounded file size changed", state="IDENTITY_CONFLICT")
+        try:
+            after = os.fstat(descriptor)
+        except OSError as exc:
+            raise _access_error("bounded file identity reread failed", exc) from exc
+        if len(raw) > maximum or len(raw) != before.st_size \
+                or not _metadata_matches(_stat_metadata(before), after, stable=True):
+            raise InventoryError(
+                "bounded file changed during read", state="IDENTITY_CONFLICT"
+            )
         return raw
     finally:
         os.close(descriptor)
+
+
+def _read_relative_file(root_fd: int, relative: str, *, maximum: int,
+                        expected: dict[str, Any],
+                        nodes: dict[str, dict[str, Any]]) -> bytes:
+    parts = PurePosixPath(relative).parts
+    descriptor = os.dup(root_fd)
+    try:
+        prefix = []
+        for part in parts[:-1]:
+            prefix.append(part)
+            directory = "/".join(prefix)
+            metadata = nodes.get(directory)
+            if metadata is None or metadata.get("file_type") != "directory":
+                raise InventoryError(
+                    "formal evidence ancestor identity differs",
+                    state="IDENTITY_CONFLICT",
+                )
+            child = _open_directory_at(descriptor, part, metadata)
+            os.close(descriptor)
+            descriptor = child
+        return _read_file_at(
+            descriptor, parts[-1], maximum=maximum, expected=expected
+        )
+    finally:
+        os.close(descriptor)
+
+
+def _read_lifecycle_identity(root_fd: int) \
+        -> tuple[bytes, dict[str, Any], dict[str, Any]]:
+    try:
+        control_stat = os.stat("control", dir_fd=root_fd, follow_symlinks=False)
+    except OSError as exc:
+        raise _access_error("control directory stat failed", exc) from exc
+    control = _stat_metadata(control_stat)
+    if control["file_type"] != "directory":
+        raise InventoryError(
+            "control directory type differs", state="IDENTITY_CONFLICT"
+        )
+    control_fd = _open_directory_at(root_fd, "control", control)
+    try:
+        try:
+            identity_stat = os.stat(
+                "lifecycle_identity.json", dir_fd=control_fd,
+                follow_symlinks=False,
+            )
+        except OSError as exc:
+            raise _access_error(
+                "lifecycle identity stat failed", exc
+            ) from exc
+        identity = _stat_metadata(identity_stat)
+        if identity["file_type"] != "file":
+            raise InventoryError(
+                "lifecycle identity type differs", state="IDENTITY_CONFLICT"
+            )
+        raw = _read_file_at(
+            control_fd, "lifecycle_identity.json",
+            maximum=MAX_LIFECYCLE_IDENTITY_BYTES, expected=identity,
+        )
+        return raw, control, identity
+    finally:
+        os.close(control_fd)
+
+
+def _walk_metadata(root_fd: int, root_metadata: dict[str, Any],
+                   limits: dict[str, int]) -> dict[str, Any]:
+    started = time.monotonic()
+    deadline = started + limits["max_seconds"]
+    nodes: dict[str, dict[str, Any]] = {}
+    directories = 0
+    total_bytes = 0
+    entry_count = 0
+    relative_path_bytes = 0
+
+    def stop_for_os(issue: str, exc: OSError) -> None:
+        error = _access_error(issue, exc)
+        raise _ScanStopped(str(error), state=error.state) from exc
+
+    def check_deadline() -> None:
+        if time.monotonic() > deadline:
+            raise _ScanStopped("SCAN_TIME_LIMIT")
+
+    def directory_has_children(descriptor: int,
+                               expected: dict[str, Any]) -> bool:
+        check_deadline()
+        try:
+            with os.scandir(descriptor) as iterator:
+                child = next(iterator, None)
+        except OSError as exc:
+            stop_for_os("DIRECTORY_UNREADABLE", exc)
+        after = os.fstat(descriptor)
+        if not _metadata_matches(expected, after, stable=True):
+            raise _ScanStopped(
+                "DIRECTORY_CHANGED", state="IDENTITY_CONFLICT"
+            )
+        return child is not None
+
+    def walk(descriptor: int, prefix: str, parent_depth: int,
+             expected: dict[str, Any]) -> None:
+        nonlocal directories, total_bytes, entry_count, relative_path_bytes
+        check_deadline()
+        if not _metadata_matches(expected, os.fstat(descriptor), stable=True):
+            raise _ScanStopped(
+                "DIRECTORY_CHANGED", state="IDENTITY_CONFLICT"
+            )
+        children: list[tuple[str, str, int, dict[str, Any]]] = []
+        try:
+            with os.scandir(descriptor) as iterator:
+                while True:
+                    check_deadline()
+                    try:
+                        child = next(iterator)
+                    except StopIteration:
+                        break
+                    if entry_count >= limits["max_entries"]:
+                        raise _ScanStopped("ENTRY_LIMIT")
+                    relative = f"{prefix}/{child.name}" if prefix else child.name
+                    encoded = _safe_path_text(relative)
+                    if relative_path_bytes + len(encoded) \
+                            > limits["max_relative_path_bytes"]:
+                        raise _ScanStopped("PATH_BYTE_LIMIT")
+                    depth = parent_depth + 1
+                    if depth > limits["max_depth"]:
+                        raise _ScanStopped("DEPTH_LIMIT")
+                    try:
+                        observed = child.stat(follow_symlinks=False)
+                    except OSError as exc:
+                        stop_for_os("LSTAT_FAILED", exc)
+                    metadata = _stat_metadata(observed)
+                    entry_count += 1
+                    relative_path_bytes += len(encoded)
+                    nodes[relative] = metadata
+                    children.append((child.name, relative, depth, metadata))
+                    if metadata["file_type"] == "file":
+                        total_bytes += metadata["bytes"]
+                    elif metadata["file_type"] == "directory":
+                        directories += 1
+                    elif metadata["file_type"] == "symlink":
+                        raise _ScanStopped(
+                            "SYMLINK_PRESENT", state="IDENTITY_CONFLICT"
+                        )
+                    else:
+                        raise _ScanStopped(
+                            "SPECIAL_FILE_PRESENT", state="IDENTITY_CONFLICT"
+                        )
+        except _ScanStopped:
+            raise
+        except OSError as exc:
+            stop_for_os("DIRECTORY_UNREADABLE", exc)
+        for name, relative, depth, metadata in sorted(children):
+            if metadata["file_type"] != "directory":
+                continue
+            try:
+                child_fd = _open_directory_at(descriptor, name, metadata)
+            except InventoryError as exc:
+                raise _ScanStopped(str(exc), state=exc.state) from exc
+            try:
+                if depth >= limits["max_depth"]:
+                    if directory_has_children(child_fd, metadata):
+                        raise _ScanStopped("DEPTH_LIMIT")
+                else:
+                    walk(child_fd, relative, depth, metadata)
+            finally:
+                os.close(child_fd)
+        if not _metadata_matches(expected, os.fstat(descriptor), stable=True):
+            raise _ScanStopped(
+                "DIRECTORY_CHANGED", state="IDENTITY_CONFLICT"
+            )
+
+    complete = True
+    issues = []
+    failure_state = None
+    descriptor = os.dup(root_fd)
+    try:
+        walk(descriptor, "", 0, root_metadata)
+    except _ScanStopped as exc:
+        complete = False
+        issues.append(str(exc))
+        failure_state = exc.state
+    except OSError as exc:
+        complete = False
+        error = _access_error("SCAN_IO_FAILED", exc)
+        issues.append(str(error))
+        failure_state = error.state
+    finally:
+        os.close(descriptor)
+    return {
+        "complete": complete,
+        "issues": issues,
+        "failure_state": failure_state,
+        "nodes": nodes,
+        "entry_count": entry_count,
+        "file_count": sum(
+            item["file_type"] != "directory" for item in nodes.values()
+        ),
+        "directory_count": directories,
+        "total_file_bytes": total_bytes,
+        "relative_path_bytes": relative_path_bytes,
+        "elapsed_seconds": round(time.monotonic() - started, 6),
+    }
 
 
 def _expected_entry(item: dict[str, Any], state: str,
@@ -827,6 +1134,8 @@ def _inventory(binding: dict[str, Any], *, state: str,
         "schema_version": 1,
         "identity": identity,
         "state": state,
+        "scope": "adapter_owned_root",
+        "root_binding_enforced": False,
         "discovery_completeness": discovery_completeness,
         "limits": limits,
         "scan": stable_scan,
@@ -841,8 +1150,9 @@ def _inventory(binding: dict[str, Any], *, state: str,
         "state": state,
         "exit_code": 3 if is_error else 0,
         "identity": identity,
-        "run_root": binding.get("run_root"),
-        "scope": "exact_terminal_raw_output",
+        "declared_run_root": binding.get("run_root"),
+        "scope": "adapter_owned_root",
+        "root_binding_enforced": False,
         "limits": limits,
         "discovery_completeness": discovery_completeness,
         "scientific_completeness": "not_assessed",
@@ -864,11 +1174,11 @@ def _inventory(binding: dict[str, Any], *, state: str,
     }
 
 
-def _scan_exact_run_root(binding: dict[str, Any], root_value: str | Path, *,
-                         cloud_available: bool = True,
-                         active_session: bool = False,
-                         limits: dict[str, int] | None = None) -> dict[str, Any]:
-    """Scan an adapter-owned root. This private core performs no transport."""
+def _scan_adapter_root(binding: dict[str, Any], adapter_root: str | Path, *,
+                       cloud_available: bool = True,
+                       active_session: bool = False,
+                       limits: dict[str, int] | None = None) -> dict[str, Any]:
+    """Scan a synthetic adapter-owned root without asserting production scope."""
     limits = _limits(limits)
     if not isinstance(binding, dict) or binding.get("eligible") is not True:
         return _inventory(
@@ -915,225 +1225,230 @@ def _scan_exact_run_root(binding: dict[str, Any], root_value: str | Path, *,
             scan=None, limits=limits, issues=["ACTIVE_SESSION"],
         )
 
-    root = Path(root_value)
-    if not root.is_absolute():
-        raise InventoryError(
-            "internal scan root must be absolute", state="ARGUMENTS_INVALID",
-            exit_code=2,
-        )
+    root = Path(adapter_root)
     try:
-        path_chain_has_symlink = _path_chain_has_symlink(root)
-    except OSError as exc:
+        opened = _open_adapter_root(root)
+    except InventoryError as exc:
+        if exc.state == "ARGUMENTS_INVALID":
+            raise
+        entry_state = (
+            "IDENTITY_CONFLICT"
+            if exc.state == "IDENTITY_CONFLICT" else "CLOUD_UNAVAILABLE"
+        )
         return _inventory(
-            binding, state="CLOUD_UNAVAILABLE",
-            discovery_completeness="unavailable",
-            entries=scoped_entries("CLOUD_UNAVAILABLE"),
+            binding, state=entry_state,
+            discovery_completeness=(
+                "partial" if entry_state == "IDENTITY_CONFLICT" else "unavailable"
+            ),
+            entries=scoped_entries(entry_state),
             scan=None, limits=limits,
-            issues=[f"PATH_CHAIN_LSTAT_FAILED:{type(exc).__name__}"],
+            issues=[f"ROOT_OPEN_FAILED:{type(exc).__name__}"],
         )
-    if path_chain_has_symlink:
-        return _inventory(
-            binding, state="IDENTITY_CONFLICT",
-            discovery_completeness="partial",
-            entries=scoped_entries("IDENTITY_CONFLICT"),
-            scan=None, limits=limits, issues=["PATH_COMPONENT_SYMLINK"],
-        )
-    try:
-        root_metadata = root.lstat()
-    except FileNotFoundError:
+    if opened is None:
         return _inventory(
             binding, state="INVENTORY_READY",
             discovery_completeness="complete",
             entries=scoped_entries("GITHUB_ONLY", "NOT_INVENTORIED"),
             scan=None, limits=limits, issues=[],
         )
-    except OSError as exc:
-        return _inventory(
-            binding, state="CLOUD_UNAVAILABLE",
-            discovery_completeness="unavailable",
-            entries=scoped_entries("CLOUD_UNAVAILABLE"),
-            scan=None, limits=limits,
-            issues=[f"ROOT_LSTAT_FAILED:{type(exc).__name__}"],
-        )
-    if not stat.S_ISDIR(root_metadata.st_mode):
-        return _inventory(
-            binding, state="IDENTITY_CONFLICT",
-            discovery_completeness="partial",
-            entries=scoped_entries("IDENTITY_CONFLICT"),
-            scan=None, limits=limits, issues=["ROOT_TYPE_INVALID"],
-        )
-
-    control_path = root / "control"
-    identity_path = control_path / "lifecycle_identity.json"
+    root_fd, root_metadata = opened
     try:
-        identity_chain_has_symlink = _path_chain_has_symlink(identity_path)
-    except OSError as exc:
-        return _inventory(
-            binding, state="CLOUD_UNAVAILABLE",
-            discovery_completeness="unavailable",
-            entries=scoped_entries("CLOUD_UNAVAILABLE"),
-            scan=None, limits=limits,
-            issues=[f"IDENTITY_PATH_LSTAT_FAILED:{type(exc).__name__}"],
-        )
-    if identity_chain_has_symlink:
-        return _inventory(
-            binding, state="IDENTITY_CONFLICT",
-            discovery_completeness="partial",
-            entries=scoped_entries("IDENTITY_CONFLICT"),
-            scan=None, limits=limits, issues=["PATH_COMPONENT_SYMLINK"],
-        )
-    try:
-        control_metadata = control_path.lstat()
-        if stat.S_ISLNK(control_metadata.st_mode) \
-                or not stat.S_ISDIR(control_metadata.st_mode):
-            raise InventoryError(
-                "control directory type differs", state="IDENTITY_CONFLICT"
-            )
-        identity_metadata = identity_path.lstat()
-        if stat.S_ISLNK(identity_metadata.st_mode) \
-                or not stat.S_ISREG(identity_metadata.st_mode):
-            raise InventoryError("lifecycle identity type differs", state="IDENTITY_CONFLICT")
-        identity_raw = _read_nofollow(
-            identity_path, maximum=MAX_LIFECYCLE_IDENTITY_BYTES,
-            expected_metadata={
-                "device": identity_metadata.st_dev,
-                "inode": identity_metadata.st_ino,
-                "bytes": identity_metadata.st_size,
-            },
-        )
-        observed_identity = _json_object(identity_raw, "lifecycle identity")
-        if observed_identity != binding["expected_lifecycle_identity"]:
-            raise InventoryError("lifecycle identity differs", state="IDENTITY_CONFLICT")
-    except (FileNotFoundError, OSError, InventoryError) as exc:
-        return _inventory(
-            binding, state="IDENTITY_CONFLICT",
-            discovery_completeness="partial",
-            entries=scoped_entries("IDENTITY_CONFLICT"),
-            scan=None, limits=limits,
-            issues=[f"LIFECYCLE_IDENTITY_INVALID:{type(exc).__name__}"],
-        )
-
-    scan = _walk_metadata(root, limits)
-    complete = scan["complete"]
-    files = scan["files"]
-    entries = []
-    expected_paths = set()
-    identity_conflict = any(
-        issue in {"SYMLINK_PRESENT", "SPECIAL_FILE_PRESENT"}
-        for issue in scan["issues"]
-    )
-    try:
-        identity_stable = _read_nofollow(
-            identity_path, maximum=MAX_LIFECYCLE_IDENTITY_BYTES,
-            expected_metadata={
-                "device": identity_metadata.st_dev,
-                "inode": identity_metadata.st_ino,
-                "bytes": identity_metadata.st_size,
-            },
-        ) == identity_raw
-    except InventoryError:
-        identity_stable = False
-    if not _same_file_identity(root, root_metadata) \
-            or not _same_file_identity(control_path, control_metadata) \
-            or not _same_file_identity(identity_path, identity_metadata) \
-            or not identity_stable:
-        complete = False
-        identity_conflict = True
-        scan["complete"] = False
-        scan["issues"].append("SCAN_ROOT_IDENTITY_CHANGED")
-    for item in binding["expected_evidence"]:
-        relative = item["source_relpath"]
-        expected_paths.add(relative)
-        metadata = files.get(relative)
-        if metadata is None:
-            entries.append(_expected_entry(
-                item, "GITHUB_ONLY" if complete else "NOT_INVENTORIED"
-            ))
-            continue
-        if metadata["file_type"] != "file":
-            entries.append(_expected_entry(item, "IDENTITY_CONFLICT", metadata))
-            identity_conflict = True
-            continue
         try:
-            raw = _read_nofollow(
-                root / PurePosixPath(relative), maximum=item["max_bytes"],
-                expected_metadata=metadata,
+            identity_raw, control_metadata, identity_metadata = \
+                _read_lifecycle_identity(root_fd)
+            observed_identity = _json_object(identity_raw, "lifecycle identity")
+            if observed_identity != binding["expected_lifecycle_identity"]:
+                raise InventoryError(
+                    "lifecycle identity differs", state="IDENTITY_CONFLICT"
+                )
+        except InventoryError as exc:
+            entry_state = (
+                "CLOUD_UNAVAILABLE"
+                if exc.state == "CLOUD_UNAVAILABLE" else "IDENTITY_CONFLICT"
             )
-            observed_sha = hashlib.sha256(raw).hexdigest()
-            cloud = {
-                **metadata,
-                "sha256": observed_sha,
-                "identity_basis": "sha256",
-            }
-            if len(raw) == item["bytes"] and observed_sha == item["sha256"]:
-                entries.append(_expected_entry(item, "MATCHED", cloud))
+            return _inventory(
+                binding, state=entry_state,
+                discovery_completeness=(
+                    "unavailable" if entry_state == "CLOUD_UNAVAILABLE" else "partial"
+                ),
+                entries=scoped_entries(entry_state),
+                scan=None, limits=limits,
+                issues=[f"LIFECYCLE_IDENTITY_INVALID:{type(exc).__name__}"],
+            )
+
+        scan = _walk_metadata(root_fd, root_metadata, limits)
+        complete = scan["complete"]
+        nodes = scan["nodes"]
+        entries = []
+        expected_paths = set()
+        identity_conflict = scan["failure_state"] == "IDENTITY_CONFLICT"
+        cloud_unavailable = scan["failure_state"] == "CLOUD_UNAVAILABLE"
+        try:
+            stable_raw, stable_control, stable_identity = \
+                _read_lifecycle_identity(root_fd)
+            if stable_raw != identity_raw or stable_control != control_metadata \
+                    or stable_identity != identity_metadata \
+                    or not _metadata_matches(
+                        root_metadata,
+                        _fstat_or_error(root_fd, "root identity reread failed"),
+                        stable=True,
+                    ):
+                raise InventoryError(
+                    "root or lifecycle identity changed during inventory",
+                    state="IDENTITY_CONFLICT",
+                )
+        except InventoryError as exc:
+            complete = False
+            scan["complete"] = False
+            scan["issues"].append("SCAN_ROOT_IDENTITY_CHANGED")
+            if exc.state == "CLOUD_UNAVAILABLE":
+                cloud_unavailable = True
             else:
-                entries.append(_expected_entry(item, "IDENTITY_CONFLICT", cloud))
                 identity_conflict = True
-        except InventoryError:
-            entries.append(_expected_entry(item, "IDENTITY_CONFLICT", metadata))
-            identity_conflict = True
 
-    for item in binding["optional_evidence"]:
-        relative = item["source_relpath"]
-        expected_paths.add(relative)
-        metadata = files.get(relative)
-        if metadata is None:
-            entries.append(_optional_entry(item, "NOT_INVENTORIED"))
-        elif metadata["file_type"] != "file":
-            entries.append(_optional_entry(item, "IDENTITY_CONFLICT", metadata))
-            identity_conflict = True
-        else:
-            entries.append(_optional_entry(
-                item, "CLOUD_ONLY" if complete else "NOT_INVENTORIED", metadata
-            ))
+        def collision_for(relative: str) -> dict[str, Any] | None:
+            parts = PurePosixPath(relative).parts
+            prefix = []
+            for part in parts[:-1]:
+                prefix.append(part)
+                ancestor = nodes.get("/".join(prefix))
+                if ancestor is None:
+                    return None
+                if ancestor["file_type"] != "directory":
+                    return ancestor
+            exact = nodes.get(relative)
+            if exact is not None and exact["file_type"] != "file":
+                return exact
+            return None
 
-    for relative, metadata in sorted(files.items()):
-        if relative in expected_paths:
-            continue
-        policy = (
-            "expected_control_identity"
-            if relative == "control/lifecycle_identity.json"
-            else "expected_cloud_only_raw_artifact"
+        missing_state = (
+            "GITHUB_ONLY" if complete else
+            "CLOUD_UNAVAILABLE" if cloud_unavailable else "NOT_INVENTORIED"
         )
-        entry_state = (
-            "IDENTITY_CONFLICT"
-            if metadata["file_type"] in {"symlink", "special"}
-            else ("CLOUD_ONLY" if complete else "NOT_INVENTORIED")
+        for item in binding["expected_evidence"]:
+            relative = item["source_relpath"]
+            expected_paths.add(relative)
+            collision = collision_for(relative)
+            if collision is not None:
+                entries.append(_expected_entry(
+                    item, "IDENTITY_CONFLICT", collision
+                ))
+                identity_conflict = True
+                continue
+            metadata = nodes.get(relative)
+            if metadata is None:
+                entries.append(_expected_entry(item, missing_state))
+                continue
+            try:
+                raw = _read_relative_file(
+                    root_fd, relative, maximum=item["max_bytes"],
+                    expected=metadata, nodes=nodes,
+                )
+                observed_sha = hashlib.sha256(raw).hexdigest()
+                cloud = {
+                    **metadata,
+                    "sha256": observed_sha,
+                    "identity_basis": "sha256",
+                }
+                if len(raw) == item["bytes"] and observed_sha == item["sha256"]:
+                    entries.append(_expected_entry(item, "MATCHED", cloud))
+                else:
+                    entries.append(_expected_entry(
+                        item, "IDENTITY_CONFLICT", cloud
+                    ))
+                    identity_conflict = True
+            except InventoryError as exc:
+                entry_state = (
+                    "CLOUD_UNAVAILABLE"
+                    if exc.state == "CLOUD_UNAVAILABLE" else "IDENTITY_CONFLICT"
+                )
+                entries.append(_expected_entry(item, entry_state, metadata))
+                complete = False
+                if entry_state == "CLOUD_UNAVAILABLE":
+                    cloud_unavailable = True
+                else:
+                    identity_conflict = True
+
+        for item in binding["optional_evidence"]:
+            relative = item["source_relpath"]
+            expected_paths.add(relative)
+            collision = collision_for(relative)
+            if collision is not None:
+                entries.append(_optional_entry(
+                    item, "IDENTITY_CONFLICT", collision
+                ))
+                identity_conflict = True
+                continue
+            metadata = nodes.get(relative)
+            if metadata is None:
+                entries.append(_optional_entry(
+                    item,
+                    "CLOUD_UNAVAILABLE" if cloud_unavailable else "NOT_INVENTORIED",
+                ))
+            else:
+                entries.append(_optional_entry(
+                    item, "CLOUD_ONLY" if complete else "NOT_INVENTORIED",
+                    metadata,
+                ))
+
+        for relative, metadata in sorted(nodes.items()):
+            if metadata["file_type"] == "directory" or relative in expected_paths:
+                continue
+            policy = (
+                "expected_control_identity"
+                if relative == "control/lifecycle_identity.json"
+                else "expected_cloud_only_raw_artifact"
+            )
+            if metadata["file_type"] in {"symlink", "special"}:
+                entry_state = "IDENTITY_CONFLICT"
+            elif complete:
+                entry_state = "CLOUD_ONLY"
+            elif cloud_unavailable:
+                entry_state = "CLOUD_UNAVAILABLE"
+            else:
+                entry_state = "NOT_INVENTORIED"
+            entries.append({
+                "scope": "raw_output",
+                "relative_path": relative,
+                "artifact_class": (
+                    "control_identity" if policy == "expected_control_identity"
+                    else "raw_artifact"
+                ),
+                "extension": PurePosixPath(relative).suffix.lower(),
+                "file_type": metadata["file_type"],
+                "bytes": metadata["bytes"],
+                "github_path": None,
+                "github_bytes": None,
+                "github_sha256": None,
+                "cloud_sha256": (
+                    hashlib.sha256(identity_raw).hexdigest()
+                    if relative == "control/lifecycle_identity.json" else None
+                ),
+                "identity_basis": (
+                    "verified_control_identity"
+                    if relative == "control/lifecycle_identity.json"
+                    else "metadata_only"
+                ),
+                "reconciliation_state": entry_state,
+                "policy_assessment": policy,
+            })
+        entries.extend(archive_only)
+        state = (
+            "IDENTITY_CONFLICT" if identity_conflict else
+            "CLOUD_UNAVAILABLE" if cloud_unavailable else
+            "INVENTORY_READY" if complete else "INVENTORY_INCOMPLETE"
         )
-        entries.append({
-            "scope": "raw_output",
-            "relative_path": relative,
-            "artifact_class": (
-                "control_identity" if policy == "expected_control_identity"
-                else "raw_artifact"
-            ),
-            "extension": PurePosixPath(relative).suffix.lower(),
-            "file_type": metadata["file_type"],
-            "bytes": metadata["bytes"],
-            "github_path": None,
-            "github_bytes": None,
-            "github_sha256": None,
-            "cloud_sha256": (
-                hashlib.sha256(identity_raw).hexdigest()
-                if relative == "control/lifecycle_identity.json" else None
-            ),
-            "identity_basis": (
-                "verified_control_identity"
-                if relative == "control/lifecycle_identity.json" else "metadata_only"
-            ),
-            "reconciliation_state": entry_state,
-            "policy_assessment": policy,
-        })
-    entries.extend(archive_only)
-    state = "IDENTITY_CONFLICT" if identity_conflict else (
-        "INVENTORY_READY" if complete else "INVENTORY_INCOMPLETE"
-    )
-    return _inventory(
-        binding, state=state,
-        discovery_completeness="complete" if complete else "partial",
-        entries=entries, scan=scan, limits=limits, issues=scan["issues"],
-    )
+        discovery = (
+            "partial" if identity_conflict else
+            "unavailable" if cloud_unavailable else
+            "complete" if complete else "partial"
+        )
+        return _inventory(
+            binding, state=state, discovery_completeness=discovery,
+            entries=entries, scan=scan, limits=limits, issues=scan["issues"],
+        )
+    finally:
+        os.close(root_fd)
 
 
 def inventory_summary(inventory: dict[str, Any]) -> dict[str, Any]:
