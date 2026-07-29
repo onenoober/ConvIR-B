@@ -1,0 +1,107 @@
+{
+  "schema_version": 2,
+  "pilot_id": "convir-evidence-review-phase4b-real-pilot-v2",
+  "status": "AUTHORIZED_AND_FROZEN_FOR_ONE_REPLACEMENT_EXECUTION",
+  "purpose": "Replace only the unrecoverable validation transport outcome of v1 without repeating v1 or changing its access scope.",
+  "implementation_commit": "df1308a367b14dcb36f240ed459da39f93339836",
+  "source_base_commit": "9d660a379da858177170e949f3cf074ee3c13f9c",
+  "superseded_pilot_outcome": "experience_docx/CONVIR_EVIDENCE_REVIEW_PHASE4B_REAL_PILOT_V1_OUTCOME.json",
+  "github_binding": {
+    "snapshot_commit": "e4ddd62ef1e6b45bec6f70b5197ef6a72de43531",
+    "catalog_sha256": "d13cdfd1a13b15f6f085155dfc77630145ee539ea7bb9143d3be88db6dbebff2",
+    "terminal_record_sha256": "7c896f414cb3f9d1feb07e9b8817685b3fcfea6e7225bbb887ab073e740c4530"
+  },
+  "terminal": {
+    "route_id": "general_science_control_plane_e2e_acceptance_v1",
+    "operation_id": "ACCEPT",
+    "run_id": "general-science-control-plane-e2e-acceptance-v1-r1",
+    "route_commit": "57fec121007a5c9a8c2c90b12bc68e581b38f577",
+    "terminal_schema_version": 2,
+    "closeout_schema_version": 2,
+    "conclusion_schema_version": null,
+    "conclusion_schema_state": "LEGACY_UNVERSIONED",
+    "evidence_role": "engineering_debug",
+    "protected_data_permissions": {
+      "allow_confirmation": false,
+      "allow_canary": false,
+      "allow_locked_test": false
+    },
+    "protected_data_touched": {
+      "confirmation_images_targets_outcomes_touched": false,
+      "canary_touched": false,
+      "locked_test_touched": false
+    },
+    "derived_run_root": "/sda/home/wangyuxin/ConvIR-B/runs/general_science_control_plane_e2e_acceptance_v1/general-science-control-plane-e2e-acceptance-v1-r1",
+    "expected_formal_evidence": "workload/acceptance_summary.json"
+  },
+  "execution": {
+    "host": "convir-4090",
+    "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+    "summary_calls": 1,
+    "query_calls": 1,
+    "query": {
+      "reconciliation_states": [
+        "MATCHED"
+      ],
+      "terms": [
+        "workload/acceptance_summary.json"
+      ],
+      "limit": 5,
+      "inventory_binding": "EXACT_SUMMARY_INVENTORY_SHA256"
+    },
+    "persistent_inventory_cache": false,
+    "retry_after_cloud_access_boundary": false,
+    "validation_script": "experience_docx/tools/validate_convir_evidence_review_phase4b_real_pilot_v2_cloud.sh",
+    "receipt_inspection_script": "experience_docx/tools/inspect_convir_evidence_review_phase4b_real_pilot_v2_receipt_cloud.sh"
+  },
+  "durable_receipt": {
+    "schema_version": 2,
+    "path": "/sda/home/wangyuxin/ConvIR-B/runtime/convir-evidence-review/receipts/convir-evidence-review-phase4b-real-pilot-v2.json",
+    "write_semantics": "EXCLUSIVE_ATOMIC_FSYNCED_SINGLE_CREATE",
+    "may_overwrite": false,
+    "retained_after_temporary_workspace_cleanup": true,
+    "inspection_calls": 1,
+    "pass_requires_valid_receipt": true
+  },
+  "allowed_access": [
+    "GITHUB_MAIN_ARCHIVED_TERMINAL_BUNDLE",
+    "DERIVED_RUN_ROOT_METADATA",
+    "LIFECYCLE_IDENTITY",
+    "DECLARED_COMPACT_FORMAL_EVIDENCE_BYTES",
+    "DERIVED_TMUX_SESSION_STATE",
+    "DEDICATED_RUNTIME_RECEIPT_CREATE"
+  ],
+  "forbidden_access": [
+    "OTHER_RUN_ROOTS",
+    "CONFIRMATION",
+    "CANARY",
+    "LOCKED_TEST",
+    "DATASETS",
+    "MODELS",
+    "CHECKPOINTS",
+    "GPU",
+    "RAW_ARTIFACT_CONTENTS",
+    "GIT_MUTATION",
+    "RUN_ROOT_WRITE"
+  ],
+  "acceptance_gates": [
+    "EXACT_SCHEMA2_TERMINAL_AND_CLOSEOUT_BINDING",
+    "READ_ONLY_LEGACY_UNVERSIONED_CONCLUSION_COMPATIBILITY",
+    "ENGINEERING_DEBUG_ROLE_WITH_ALL_PROTECTED_PERMISSIONS_FALSE",
+    "ALL_PROTECTED_TOUCH_FLAGS_FALSE",
+    "EXACT_DERIVED_RUN_ROOT_AND_SESSION",
+    "INACTIVE_SESSION_BEFORE_AND_AFTER_EACH_SCAN",
+    "BOUND_RUN_ROOT_WITH_COMPLETE_INVENTORY",
+    "DECLARED_FORMAL_EVIDENCE_MATCHED_BY_SHA256",
+    "QUERY_RESCAN_MATCHES_SUMMARY_INVENTORY_SHA256",
+    "EACH_JSONRPC_ENVELOPE_AT_MOST_32768_BYTES",
+    "NO_GIT_OR_RUN_ROOT_MUTATION",
+    "TEMPORARY_WORKSPACE_REMOVED_BEFORE_PASS_RECEIPT",
+    "VALID_SCHEMA2_PASS_RECEIPT_PERSISTED_AND_HASHED"
+  ],
+  "terminal_actions": {
+    "pass": "AUTHORIZE_PHASE4B_REGISTRATION_AND_MAIN_ARCHIVE",
+    "fail": "DO_NOT_REGISTER_OR_ARCHIVE_PHASE4B",
+    "unknown_state": "INSPECT_THE_DURABLE_RECEIPT_ONCE; WITHOUT_A_VALID_PASS_RECEIPT_DO_NOT_ACCEPT_OR_REPEAT_V2"
+  }
+}
