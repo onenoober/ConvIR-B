@@ -10,8 +10,12 @@ server version `1.0.0` verified from that SHA-bound source constant, and exactly
 two exposed tools. Phase 4A's transport-free cloud-inventory core passed its
 committed cloud acceptance at `1c456b2ffc6d734ed7356a18fd14cffff87fafd6`;
 the compact record is `CONVIR_EVIDENCE_REVIEW_PHASE4A_ACCEPTANCE.json`. It is
-not registered or exposed by MCP. The current tool responses do not expose
-separate MCP initialization-version metadata.
+not registered or exposed by MCP. Phase 4B implementation and one bounded real
+pilot are accepted by CONVIR_EVIDENCE_REVIEW_PHASE4B_ACCEPTANCE.json. The
+candidate exposes exactly four tools at version 1.1.0; final activation still
+requires main integration, registration and a fresh-task WSL-to-cloud check.
+The current tool responses do not expose separate MCP initialization-version
+metadata.
 
 ## Purpose
 
@@ -117,13 +121,14 @@ command, cloud path, run root, session state or scan limit. Query calls rescan
 the same terminal and require the exact prior `inventory_sha256`; Phase 4B has
 no persistent cache or hidden review state.
 
-Implementation, a real pilot and registration are three separate gates. The
-implementation gate may use synthetic temporary roots only. A later pilot must
-be explicitly authorized and predeclare one inactive, unprotected schema-2
-terminal-record SHA. Registration requires a separately accepted pilot. In all
-stages the adapter derives exactly one root, checks the derived lifecycle
-session before and after scanning, refuses protected roles before SSH, and
-budgets the complete repeated text/structured JSON-RPC envelope to 32 KiB.
+Implementation and the bounded real pilot have passed as separate gates.
+Implementation acceptance covers the fixed SSH adapter; the real pilot covers
+the same committed worker against one predeclared inactive, unprotected
+schema-2 terminal and exact hash-bound query. Registration and a fresh-task
+WSL-to-cloud call remain the final activation gate. The adapter derives exactly
+one root, checks the derived lifecycle session before and after scanning,
+refuses protected roles before SSH, and budgets the complete repeated
+text/structured JSON-RPC envelope to 32 KiB.
 
 Phase 4A acceptance authorizes this contract work only. It does not authorize
 access to existing `/runs`, MCP registration, broad route enumeration or
