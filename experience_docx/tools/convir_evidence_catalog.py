@@ -113,6 +113,19 @@ def validate_file_records(records, name, unmodeled, expected_fields):
     return paths
 
 
+def _private_file_record(record, *, include_source_path=False):
+    value = {
+        "path": require_relpath(record["path"], "private file record path"),
+        "bytes": record["bytes"],
+        "sha256": record["sha256"],
+    }
+    if include_source_path:
+        value["source_path"] = require_relpath(
+            record["source_path"], "private file record source_path"
+        )
+    return value
+
+
 def validate_prior_record(value, unmodeled):
     if not isinstance(value, dict) or not PRIOR_RECORD_FIELDS.issubset(value):
         raise CatalogError("prior_terminal_record has an invalid field contract")
@@ -221,6 +234,19 @@ def normalize_terminal_record(value, line_number, raw_line):
         "prior_closeout_path": parent_path,
         "prior_terminal_tuple": parent_tuple,
         "unmodeled_fields": sorted(set(unmodeled)),
+        # Private identity material for bounded follow-on verifiers. Public
+        # catalog responses continue to use terminal_summary's allowlist.
+        "contract_bundle": [
+            _private_file_record(item, include_source_path=True)
+            for item in value.get("contract_bundle", [])
+        ],
+        "result_files": [
+            _private_file_record(item)
+            for item in value.get("result_files", [])
+        ],
+        "contract_sha256": value.get("contract_sha256"),
+        "closeout_sha256": value.get("closeout_sha256"),
+        "conclusion_sha256": value.get("conclusion_sha256"),
     }
 
 
@@ -515,7 +541,7 @@ def git_text(repo, *args):
     return strict_text(git_bytes(repo, list(args), limit=4096), "Git output").strip()
 
 
-def load_catalog(repo_value, commit):
+def load_terminal_records(repo_value, commit):
     repo = Path(repo_value)
     if not repo.is_absolute():
         raise CatalogError("repo must be absolute", state="ARGUMENTS_INVALID", exit_code=2)
@@ -541,6 +567,17 @@ def load_catalog(repo_value, commit):
     if len(index_raw) != index_size:
         raise CatalogError("terminal index size changed", state="SOURCE_IDENTITY_MISMATCH")
 
+    return repo, parse_terminal_index(index_raw), {
+        "path": INDEX_PATH,
+        "blob_oid": index_oid,
+        "bytes": index_size,
+        "sha256": hashlib.sha256(index_raw).hexdigest(),
+    }
+
+
+def load_catalog(repo_value, commit):
+    repo, records, index_identity = load_terminal_records(repo_value, commit)
+
     tree_oid = git_text(repo, "rev-parse", "--verify", f"{commit}:{LOG_ROOT}")
     require_sha(tree_oid, SHA40, "experiment log tree")
     if git_text(repo, "cat-file", "-t", tree_oid) != "tree":
@@ -558,15 +595,9 @@ def load_catalog(repo_value, commit):
     if len(paths) != len(set(paths)):
         raise CatalogError("experiment log tree contains duplicate paths")
 
-    records = parse_terminal_index(index_raw)
     return build_catalog(
         snapshot_commit=commit,
-        index_identity={
-            "path": INDEX_PATH,
-            "blob_oid": index_oid,
-            "bytes": index_size,
-            "sha256": hashlib.sha256(index_raw).hexdigest(),
-        },
+        index_identity=index_identity,
         tree_identity={
             "path": LOG_ROOT,
             "tree_oid": tree_oid,

@@ -7,8 +7,9 @@ Status: Phase 3 GitHub-only source passed committed cloud acceptance at
 acceptance record on GitHub `main` completes source adoption. The 2026-07-29
 fresh-task activation check passed on this host with the exact accepted source,
 server version `1.0.0` verified from that SHA-bound source constant, and exactly
-two exposed tools. The current tool responses do not expose separate MCP
-initialization-version metadata.
+two exposed tools. Phase 4A is a candidate transport-free cloud-inventory core;
+it is not registered or exposed by MCP. The current tool responses do not expose
+separate MCP initialization-version metadata.
 
 ## Purpose
 
@@ -50,15 +51,53 @@ contents.
 - `convir-ops` remains unchanged with exactly six lifecycle tools and protocol
   schema 4.
 
-## Deferred Cloud Inventory
+## Phase 4A Cloud-Inventory Core
 
-Cloud evidence remains required for a complete review loop, but it is not a
-filesystem-wide browse operation. A later phase must first define a compact
-receipt/closeout-bound artifact inventory with explicit scanned scope,
-identities, exclusions and completeness state. Reconciliation must distinguish
-`MATCHED`, `GITHUB_ONLY`, `CLOUD_ONLY`, `IDENTITY_CONFLICT`,
-`CLOUD_UNAVAILABLE` and `NOT_INVENTORIED`; an absent scan result is never proof
-that an artifact does not exist.
+Phase 4A adds no MCP tool and performs no production transport. Its private core
+accepts one immutable GitHub-main snapshot and one exact schema-2 terminal-record
+SHA-256. It verifies the archived manifest, runtime spec, closeout, conclusion,
+formal results and their SHA/byte identities, including:
+
+- manifest `output_id == terminal run_id`;
+- manifest closeout filename equals the terminal closeout basename;
+- route, operation, run, commit and terminal tuple agree across records;
+- every closeout evidence hash equals one archived result; and
+- the runtime source mapping is unique and complete for required formal files.
+
+Only that chain may derive
+`/sda/home/wangyuxin/ConvIR-B/runs/{route_id}/{output_id}`. The transport-free
+scanner then accepts an internally resolved root for synthetic testing. It
+requires an inactive output, exact `control/lifecycle_identity.json`, no
+symlink or special-file traversal, and fixed entry/depth/path/time limits. It
+reads only the lifecycle identity and runtime-declared compact evidence to
+verify SHA-256. An optional declaration absent from GitHub remains an explicit
+inventory entry and is never silently folded into generic raw files. All other
+raw artifacts contribute bounded metadata only.
+
+Reconciliation entries use `MATCHED`, `GITHUB_ONLY`, `CLOUD_ONLY`,
+`IDENTITY_CONFLICT`, `CLOUD_UNAVAILABLE` or `NOT_INVENTORIED`. `GITHUB_ONLY` and
+`CLOUD_ONLY` require a complete scan. Missing roots are `GITHUB_ONLY` only when
+the host/path check itself was available and complete; unavailable, active,
+protected, unknown-role, redirected or bounded-incomplete scopes never infer
+absence. Confirmation, canary, locked/sealed, any protected-data permission or
+any recorded protected-data touch is `NOT_INVENTORIED`.
+
+Summary returns only identity, scope, completeness, counts, issues and inventory
+SHA-256. Query returns bounded filtered entries with an identity-bound cursor.
+The private Phase 4A value budget is 8 KiB. A Phase 4B MCP adapter must still
+shrink against the actual repeated text/structured JSON-RPC envelope and prove
+the complete response, including escaped caller terms, stays within 32 KiB.
+Both always report `scientific_completeness=not_assessed`; neither interprets an
+experiment or claims that the saved evidence is scientifically sufficient.
+
+## Phase 4B Gate
+
+Phase 4B requires a separately accepted fixed-host transport with no caller
+host, path or command. Its first real pilot must name one eligible schema-2
+terminal-record SHA in advance, derive exactly one inactive run root, and keep
+protected roles fail-closed. A complete synthetic Phase 4A acceptance authorizes
+only that contract work; it does not authorize access to existing `/runs`, MCP
+registration of cloud tools, broad route enumeration or scientific review.
 
 ## Phase 3 Acceptance
 
