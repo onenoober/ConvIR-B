@@ -1,0 +1,75 @@
+{
+  "audit_date": "2026-07-29",
+  "audited_github_main_commit": "828a104de89cdce9062f6b7be1909c94824d40b6",
+  "authorizes": [
+    "FRESH_TASK_ACTIVATION_CHECK"
+  ],
+  "component": "convir-evidence-review",
+  "decision": "REGISTRATION_CONFIGURED_ACTIVATION_PENDING",
+  "does_not_authorize": [
+    "REGISTERED_ACTIVE_CLAIM",
+    "PHASE4_CLOUD_INVENTORY",
+    "EXPERIMENT_OR_SCIENTIFIC_ACTION"
+  ],
+  "main_adoption": {
+    "adoption_commit": "828a104de89cdce9062f6b7be1909c94824d40b6",
+    "cloud_accepted_source_commit": "ea088ea28d56f034395f53212c6e259b290d87fc",
+    "source_blobs_unchanged_by_adoption": true,
+    "status": "COMPLETE"
+  },
+  "phase_audit": {
+    "phase1": {
+      "current_engineering_validation": "SUPERSEDED_PASS_BY_PHASE3_FULL_SUITE",
+      "implementation_commit": "3e9e8368a6383e6319e58b8993d1bb065fe5f56b",
+      "implementation_in_main": true,
+      "standalone_cloud_receipt_persisted": false,
+      "standalone_gate_event_from_github": "NOT_INDEPENDENTLY_VERIFIABLE"
+    },
+    "phase2": {
+      "current_engineering_validation": "SUPERSEDED_PASS_BY_PHASE3_FULL_SUITE",
+      "implementation_commits": [
+        "fa589be91ffe448f8b3264398b2364971ed68aaf",
+        "d6ad035c1dc02af92612fce8cfac56c18a4b3034"
+      ],
+      "implementation_in_main": true,
+      "standalone_cloud_receipt_persisted": false,
+      "standalone_gate_event_from_github": "NOT_INDEPENDENTLY_VERIFIABLE"
+    },
+    "phase3": {
+      "acceptance_record": "experience_docx/CONVIR_EVIDENCE_REVIEW_ACCEPTANCE.json",
+      "candidate_commit": "ea088ea28d56f034395f53212c6e259b290d87fc",
+      "full_suite_test_count": 283,
+      "includes_unchanged_phase1_phase2_tests": true,
+      "status": "PASS"
+    }
+  },
+  "record_type": "non_experiment_infrastructure_registration_check",
+  "registered_config": {
+    "args": [
+      "-d",
+      "Ubuntu-22.04",
+      "--exec",
+      "/usr/bin/python3",
+      "/home/ubuntu/workspace/ConvIR-B-evidence-review-main-adoption/experience_docx/tools/convir_evidence_review_mcp.py"
+    ],
+    "codex_cli_version": "0.144.2",
+    "command": "C:\\Windows\\System32\\wsl.exe",
+    "config_scope": "global_current_host",
+    "enabled": true,
+    "name": "convir_evidence_review",
+    "source_git_blob": "c2dc6e10aa190f575e64c9b691c04ac5b178c816",
+    "source_sha256": "160edf7d2ef1ad79a96b96104490779c72b732c0887884120ca5e3989fbd940b",
+    "transport": "stdio",
+    "worktree_clean_at_check": true,
+    "worktree_head_at_check": "828a104de89cdce9062f6b7be1909c94824d40b6",
+    "worktree_remote_main_at_check": "828a104de89cdce9062f6b7be1909c94824d40b6"
+  },
+  "schema_version": 1,
+  "scientific_completeness": "not_assessed",
+  "verification": {
+    "codex_config_query_passed": true,
+    "fresh_task_activation": "PENDING",
+    "local_wsl_runtime_validation_performed": false,
+    "source_sha256_passed": true
+  }
+}
