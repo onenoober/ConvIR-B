@@ -45,7 +45,7 @@ git -C "$work/repo" checkout --quiet --detach "$candidate"
 test -z "$(git -C "$work/repo" status --porcelain)"
 
 changed=$(git -C "$work/repo" diff --name-only "$baseline" "$candidate")
-expected=$'experience_docx/CONVIR_EVIDENCE_REVIEW_PHASE4B_CONTRACT.json\nexperience_docx/tools/convir_evidence_cloud_inventory.py\nexperience_docx/tools/convir_evidence_review_mcp.py\nexperience_docx/tools/inspect_convir_evidence_review_phase4b_cloud.sh\nexperience_docx/tools/prepare_terminal_archive.py\nexperience_docx/tools/tests/test_convir_evidence_cloud_inventory.py\nexperience_docx/tools/tests/test_convir_evidence_review_mcp.py\nexperience_docx/tools/tests/test_prepare_terminal_archive.py\nexperience_docx/tools/validate_convir_evidence_review_phase4b_cloud.sh'
+expected=$'experience_docx/CONVIR_EVIDENCE_REVIEW.md\nexperience_docx/CONVIR_EVIDENCE_REVIEW_PHASE4B_CONTRACT.json\nexperience_docx/tools/convir_evidence_cloud_inventory.py\nexperience_docx/tools/convir_evidence_review_mcp.py\nexperience_docx/tools/inspect_convir_evidence_review_phase4b_cloud.sh\nexperience_docx/tools/prepare_terminal_archive.py\nexperience_docx/tools/tests/test_convir_evidence_cloud_inventory.py\nexperience_docx/tools/tests/test_convir_evidence_review_mcp.py\nexperience_docx/tools/tests/test_prepare_terminal_archive.py\nexperience_docx/tools/validate_convir_evidence_review_phase4b_cloud.sh'
 [[ "$changed" == "$expected" ]]
 
 refs_before=$work/git-refs.before
