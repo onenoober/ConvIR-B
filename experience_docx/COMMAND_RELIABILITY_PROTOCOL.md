@@ -49,6 +49,18 @@ for a boundary class. A repeated class stops the operation with both the
 invalid and canonical forms recorded. Transport repair cannot change data,
 metrics, thresholds, seeds, budgets, evidence roles, or authorization.
 
+An intermediate command, tool, transport, syntax, or validation error is not
+an experiment terminal and is never archived merely because it occurred.
+Inspect it once, locate the failing boundary, and apply only the finite
+correction authorized here. Do not create an incident document, experiment-log
+entry, evidence bundle, terminal-index record, or cleanup task unless the user
+explicitly requests that record or an authorized terminal workflow requires
+it. Experiment content or runtime state discovered incidentally but unrelated
+to the scoped task must not be inspected further, modified, synchronized, or
+archived; ignore it unless it blocks the requested operation or a safety
+boundary. This rule does not suppress a genuine lifecycle closeout or other
+record explicitly required by an authorized experiment terminal.
+
 The normal correction is to use the selection table, not to add another shell
 layer. Internally generated MCP bodies use the fixed host and shell; manual
 cloud actions use only a committed remote-script. Verification steps that

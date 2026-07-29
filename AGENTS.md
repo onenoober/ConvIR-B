@@ -108,6 +108,12 @@ repair policy below and is not a scientific terminal archive.
 
 - Inspect before mutation. Never overwrite an active session, output, or
   historical workspace.
+- An intermediate command, tool, or validation error is not an archive event.
+  Diagnose it once and apply only the bounded correction; do not create an
+  incident, evidence, experiment-log, or archive record unless an authorized
+  terminal workflow or the user explicitly requires one. Ignore unrelated
+  experiment content or state discovered incidentally unless it blocks the
+  scoped task or a safety boundary.
 - One command-boundary class gets one deterministic correction. One engineering
   root cause gets one repair cycle. A repeated same-class/root failure stops
   that operation with one blocker.
