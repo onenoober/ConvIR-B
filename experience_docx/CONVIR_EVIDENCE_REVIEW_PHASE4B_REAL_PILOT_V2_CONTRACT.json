@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "pilot_id": "convir-evidence-review-phase4b-real-pilot-v2",
-  "status": "AUTHORIZED_AND_FROZEN_FOR_ONE_REPLACEMENT_EXECUTION",
+  "status": "AUTHORIZED_FOR_ONE_SAME_CONTRACT_ENGINEERING_REPAIR",
   "purpose": "Replace only the unrecoverable validation transport outcome of v1 without repeating v1 or changing its access scope.",
   "implementation_commit": "df1308a367b14dcb36f240ed459da39f93339836",
   "source_base_commit": "9d660a379da858177170e949f3cf074ee3c13f9c",
@@ -51,12 +51,16 @@
     },
     "persistent_inventory_cache": false,
     "retry_after_cloud_access_boundary": false,
+    "repair_cycle": 1,
+    "repair_scope": "VALIDATION_TRANSPORT_ONLY",
+    "repair_transport": "CLOUD_LOCAL_SAME_COMMIT_REMOTE_WORKER",
+    "production_transport_changed": false,
     "validation_script": "experience_docx/tools/validate_convir_evidence_review_phase4b_real_pilot_v2_cloud.sh",
     "receipt_inspection_script": "experience_docx/tools/inspect_convir_evidence_review_phase4b_real_pilot_v2_receipt_cloud.sh"
   },
   "durable_receipt": {
     "schema_version": 2,
-    "path": "/sda/home/wangyuxin/ConvIR-B/runtime/convir-evidence-review/receipts/convir-evidence-review-phase4b-real-pilot-v2.json",
+    "path": "/sda/home/wangyuxin/ConvIR-B/runtime/convir-evidence-review/receipts/convir-evidence-review-phase4b-real-pilot-v2-repair1.json",
     "write_semantics": "EXCLUSIVE_ATOMIC_FSYNCED_SINGLE_CREATE",
     "may_overwrite": false,
     "retained_after_temporary_workspace_cleanup": true,

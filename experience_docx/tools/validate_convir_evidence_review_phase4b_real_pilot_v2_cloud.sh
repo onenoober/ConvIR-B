@@ -12,7 +12,7 @@ seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
 python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
 runtime_root=/sda/home/wangyuxin/ConvIR-B/runtime
 receipt_dir=$runtime_root/convir-evidence-review/receipts
-receipt_path=$receipt_dir/convir-evidence-review-phase4b-real-pilot-v2.json
+receipt_path=$receipt_dir/convir-evidence-review-phase4b-real-pilot-v2-repair1.json
 
 work=
 stage=bootstrap
@@ -53,7 +53,7 @@ if outcome:
     outcome["temporary_workspace_removed"] = os.environ["RECEIPT_WORK_REMOVED"] == "true"
 payload = {
     "schema_version": 2,
-    "receipt_id": "convir-evidence-review-phase4b-real-pilot-v2-receipt",
+    "receipt_id": "convir-evidence-review-phase4b-real-pilot-v2-repair1-receipt",
     "pilot_id": "convir-evidence-review-phase4b-real-pilot-v2",
     "state": os.environ["RECEIPT_STATE"],
     "accepted": os.environ["RECEIPT_ACCEPTED"] == "true",
@@ -211,7 +211,7 @@ candidate = sys.argv[4]
 result_path = Path(sys.argv[5])
 
 assert predecl["schema_version"] == 2
-assert predecl["status"] == "AUTHORIZED_AND_FROZEN_FOR_ONE_REPLACEMENT_EXECUTION"
+assert predecl["status"] == "AUTHORIZED_FOR_ONE_SAME_CONTRACT_ENGINEERING_REPAIR"
 assert predecl["implementation_commit"] == "df1308a367b14dcb36f240ed459da39f93339836"
 assert predecl["source_base_commit"] == "9d660a379da858177170e949f3cf074ee3c13f9c"
 github = predecl["github_binding"]
@@ -225,6 +225,10 @@ assert github == {
 assert execution["summary_calls"] == 1
 assert execution["query_calls"] == 1
 assert execution["retry_after_cloud_access_boundary"] is False
+assert execution["repair_cycle"] == 1
+assert execution["repair_scope"] == "VALIDATION_TRANSPORT_ONLY"
+assert execution["repair_transport"] == "CLOUD_LOCAL_SAME_COMMIT_REMOTE_WORKER"
+assert execution["production_transport_changed"] is False
 
 binding = inventory.prepare_terminal_binding(
     repo,
@@ -247,8 +251,22 @@ assert binding["protected_data_permissions"] == terminal["protected_data_permiss
 assert binding["protected_data_touched"] == terminal["protected_data_touched"]
 assert binding["run_root"] == terminal["derived_run_root"]
 
+launcher = """
+import convir_evidence_cloud_inventory as inventory
+import convir_evidence_review_mcp as review
+
+assert review.REMOTE_HOST == "convir-4090"
+assert review.REMOTE_PYTHON == "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python"
+assert review.SSH == "/usr/bin/ssh"
+
+def cloud_local_same_commit_worker(request):
+    return inventory.remote_worker(request)
+
+review._run_fixed_remote = cloud_local_same_commit_worker
+review.main()
+"""
 process = subprocess.Popen(
-    [sys.executable, str(server)],
+    [sys.executable, "-c", launcher],
     stdin=subprocess.PIPE,
     stdout=subprocess.PIPE,
     stderr=subprocess.PIPE,
@@ -304,7 +322,7 @@ try:
             "arguments": base_arguments,
         },
     })
-    assert summary_result["isError"] is False
+    assert summary_result["isError"] is False, json.dumps(summary_result, sort_keys=True)
     summary = summary_result["structuredContent"]
     assert json.loads(summary_result["content"][0]["text"]) == summary
     assert summary["ok"] is True
@@ -335,7 +353,7 @@ try:
             "arguments": query_arguments,
         },
     })
-    assert query_result["isError"] is False
+    assert query_result["isError"] is False, json.dumps(query_result, sort_keys=True)
     query = query_result["structuredContent"]
     assert json.loads(query_result["content"][0]["text"]) == query
     assert query["ok"] is True
@@ -372,6 +390,8 @@ result = {
     "query_entries": 1,
     "summary_calls": 1,
     "query_calls": 1,
+    "repair_cycle": 1,
+    "repair_transport": "CLOUD_LOCAL_SAME_COMMIT_REMOTE_WORKER",
     "tools": 4,
     "terminal_schema_version": 2,
     "closeout_schema_version": 2,

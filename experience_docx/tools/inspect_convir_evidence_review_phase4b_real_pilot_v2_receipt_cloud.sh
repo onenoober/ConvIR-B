@@ -2,7 +2,7 @@
 set -euo pipefail
 
 python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
-receipt=/sda/home/wangyuxin/ConvIR-B/runtime/convir-evidence-review/receipts/convir-evidence-review-phase4b-real-pilot-v2.json
+receipt=/sda/home/wangyuxin/ConvIR-B/runtime/convir-evidence-review/receipts/convir-evidence-review-phase4b-real-pilot-v2-repair1.json
 
 "$python" - "$receipt" <<'PY'
 import hashlib
@@ -27,7 +27,7 @@ assert len(data) == info.st_size
 assert len(data) <= 16384
 receipt = json.loads(data)
 assert receipt["schema_version"] == 2
-assert receipt["receipt_id"] == "convir-evidence-review-phase4b-real-pilot-v2-receipt"
+assert receipt["receipt_id"] == "convir-evidence-review-phase4b-real-pilot-v2-repair1-receipt"
 assert receipt["pilot_id"] == "convir-evidence-review-phase4b-real-pilot-v2"
 assert receipt["github_binding"] == {
     "snapshot_commit": "e4ddd62ef1e6b45bec6f70b5197ef6a72de43531",
@@ -43,6 +43,8 @@ if state == "PHASE4B_REAL_PILOT_PASS":
     assert outcome["query_entries"] == 1
     assert outcome["matched_count"] >= 1
     assert outcome["temporary_workspace_removed"] is True
+    assert outcome["repair_cycle"] == 1
+    assert outcome["repair_transport"] == "CLOUD_LOCAL_SAME_COMMIT_REMOTE_WORKER"
     assert all(value == 0 for value in receipt["access_observed"].values())
 else:
     assert receipt["accepted"] is False
