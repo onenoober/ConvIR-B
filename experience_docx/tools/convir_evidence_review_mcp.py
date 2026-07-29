@@ -17,7 +17,7 @@ import convirctl
 
 
 SERVER_NAME = "convir-evidence-review"
-SERVER_VERSION = "1.1.0"
+SERVER_VERSION = "1.2.0"
 WORKSPACE_ROOT_ENV = "CONVIR_EVIDENCE_LOCAL_WORKSPACE_ROOT"
 DEFAULT_WORKSPACE_ROOT = "/home/ubuntu/workspace"
 TRUSTED_REMOTE_NAME = "github"
@@ -290,6 +290,25 @@ def tool_catalog_summary(args):
             remote_url,
             commit,
         )
+        return bounded_mcp_result(value)
+    except Exception as exc:
+        return bounded_mcp_result(failure_value(operation, exc))
+
+
+def tool_completeness_receipt(args):
+    operation = "completeness-receipt"
+    try:
+        repo = validate_repo(args.get("local_repo"))
+        requested_commit = args.get("snapshot_commit")
+        if requested_commit is None:
+            remote_url, commit = trusted_main_identity(repo)
+            tip = commit
+        else:
+            commit, remote_url, tip = require_main_history_commit(
+                repo, requested_commit
+            )
+        value = catalog.completeness_receipt(catalog.load_catalog(repo, commit))
+        add_github_identity(value, remote_url, tip)
         return bounded_mcp_result(value)
     except Exception as exc:
         return bounded_mcp_result(failure_value(operation, exc))
@@ -700,6 +719,26 @@ TOOLS = {
         },
         "outputSchema": OUTPUT_SCHEMA,
         "handler": tool_catalog_summary,
+    },
+    "convir_evidence_completeness_receipt": {
+        "description": (
+            "Return one compact schema-2 receipt that partitions the complete "
+            "commit-bound GitHub catalog and reports every unresolved discovery "
+            "class without reading result contents."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "required": ["local_repo"],
+            "properties": {
+                "local_repo": {"type": "string"},
+                "snapshot_commit": {
+                    "type": "string", "pattern": "^[0-9a-f]{40}$",
+                },
+            },
+            "additionalProperties": False,
+        },
+        "outputSchema": OUTPUT_SCHEMA,
+        "handler": tool_completeness_receipt,
     },
     "convir_evidence_catalog_query": {
         "description": (

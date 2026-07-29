@@ -630,6 +630,162 @@ def summary_response(catalog):
     return value
 
 
+def completeness_receipt(catalog_value):
+    """Return a compact receipt for GitHub catalog discovery completeness."""
+    header = catalog_value.get("header")
+    entries = catalog_value.get("entries")
+    if not isinstance(header, dict) or not isinstance(entries, list):
+        raise CatalogError("catalog has an invalid completeness input")
+
+    tree = header.get("experiment_log_tree")
+    terminal_index = header.get("terminal_index")
+    if not isinstance(tree, dict) or not isinstance(terminal_index, dict):
+        raise CatalogError("catalog source identities are missing")
+
+    entry_counts = Counter()
+    routes = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            raise CatalogError("catalog contains a non-object entry")
+        coverage = entry.get("index_coverage")
+        kind = entry.get("record_kind")
+        if coverage not in {"INDEXED", "UNINDEXED"}:
+            raise CatalogError("catalog entry has an unknown index partition")
+        if kind not in {"evidence_directory", "loose_file"}:
+            raise CatalogError("catalog entry has an unknown record kind")
+        if coverage == "INDEXED" and kind != "evidence_directory":
+            raise CatalogError("only evidence directories may be indexed")
+        if coverage == "UNINDEXED" and (
+            entry.get("routes") or entry.get("terminal_assessment") != "NOT_ASSESSED"
+        ):
+            raise CatalogError("unindexed catalog entry was implicitly assessed")
+        entry_counts[(coverage, kind)] += 1
+        routes.extend(entry.get("routes", []))
+
+    indexed_entries = sum(
+        count for (coverage, _), count in entry_counts.items()
+        if coverage == "INDEXED"
+    )
+    unindexed_entries = len(entries) - indexed_entries
+    indexed_directories = entry_counts[("INDEXED", "evidence_directory")]
+    unindexed_directories = entry_counts[("UNINDEXED", "evidence_directory")]
+    loose_files = entry_counts[("UNINDEXED", "loose_file")]
+    expected_entry_counts = {
+        "catalog_entry_count": len(entries),
+        "directory_count": indexed_directories + unindexed_directories,
+        "indexed_directory_count": indexed_directories,
+        "unindexed_directory_count": unindexed_directories,
+        "loose_file_count": loose_files,
+    }
+    if any(tree.get(key) != value for key, value in expected_entry_counts.items()):
+        raise CatalogError("catalog entry partitions differ from the tree summary")
+
+    terminals = []
+    resolution_counts = Counter()
+    for route in routes:
+        if not isinstance(route, dict) or not isinstance(route.get("terminals"), list):
+            raise CatalogError("catalog route has an invalid terminal summary")
+        if route.get("terminal_record_count") != len(route["terminals"]):
+            raise CatalogError("catalog route terminal count differs")
+        terminals.extend(route["terminals"])
+        resolution_counts[route.get("terminal_resolution")] += 1
+
+    schema_counts = Counter(str(item.get("schema_version")) for item in terminals)
+    binding_counts = Counter(item.get("binding_level") for item in terminals)
+    unmodeled_record_count = sum(bool(item.get("unmodeled_fields")) for item in terminals)
+    expected_terminal_values = {
+        "record_count": len(terminals),
+        "route_count": len(routes),
+        "schema_counts": dict(sorted(schema_counts.items())),
+        "binding_counts": dict(sorted(binding_counts.items())),
+        "unmodeled_record_count": unmodeled_record_count,
+        "terminal_resolution_counts": dict(sorted(resolution_counts.items())),
+    }
+    if any(terminal_index.get(key) != value for key, value in expected_terminal_values.items()):
+        raise CatalogError("catalog terminal partitions differ from the index summary")
+
+    unresolved_routes = [
+        route for route in routes if route.get("selected_operation_id") is None
+    ]
+    ambiguous_legacy_routes = sum(
+        route.get("terminal_resolution") == "AMBIGUOUS_LEGACY"
+        for route in unresolved_routes
+    )
+    invalid_terminal_routes = sum(
+        route.get("terminal_resolution") == "INVALID_CHAIN"
+        for route in unresolved_routes
+    )
+    other_unresolved_routes = (
+        len(unresolved_routes) - ambiguous_legacy_routes - invalid_terminal_routes
+    )
+    unresolved_counts = {
+        "unclassified_unindexed_entries": unindexed_entries,
+        "path_only_legacy_terminal_records": binding_counts["path_only_legacy"],
+        "ambiguous_legacy_routes": ambiguous_legacy_routes,
+        "invalid_terminal_routes": invalid_terminal_routes,
+        "other_unresolved_terminal_routes": other_unresolved_routes,
+        "unmodeled_terminal_records": unmodeled_record_count,
+    }
+    review_completeness = (
+        "incomplete" if any(unresolved_counts.values()) else "complete"
+    )
+
+    terminal_identity = {
+        key: terminal_index.get(key)
+        for key in ("path", "blob_oid", "bytes", "sha256")
+    }
+    tree_identity = {
+        key: tree.get(key)
+        for key in (
+            "path", "tree_oid", "path_collection_sha256", "tracked_file_count",
+        )
+    }
+    value = response(
+        "completeness-receipt", "PROJECT_GITHUB_COMPLETENESS_RECEIPT_OK",
+        schema_version=2,
+        snapshot_commit=header.get("snapshot_commit"),
+        receipt_scope="github_project_catalog",
+        source_scope=list(header.get("source_scope", [])),
+        excluded_sources=sorted(set(
+            [*header.get("excluded_sources", []), "result_contents"]
+        )),
+        source_identities={
+            "catalog_sha256": catalog_value.get("catalog_sha256"),
+            "collection_sha256": catalog_value.get("collection_sha256"),
+            "terminal_index": terminal_identity,
+            "experiment_log_tree": tree_identity,
+        },
+        entry_partition={
+            "catalog_entries": len(entries),
+            "indexed_entries": indexed_entries,
+            "unindexed_entries": unindexed_entries,
+            "evidence_directories": indexed_directories + unindexed_directories,
+            "indexed_directories": indexed_directories,
+            "unindexed_directories": unindexed_directories,
+            "loose_files": loose_files,
+            "partition_complete": indexed_entries + unindexed_entries == len(entries),
+        },
+        terminal_partition={
+            "terminal_records": len(terminals),
+            "routes": len(routes),
+            "resolved_routes": len(routes) - len(unresolved_routes),
+            "unresolved_routes": len(unresolved_routes),
+            "schema_counts": dict(sorted(schema_counts.items())),
+            "binding_counts": dict(sorted(binding_counts.items())),
+            "terminal_resolution_counts": dict(sorted(resolution_counts.items())),
+        },
+        unresolved_counts=unresolved_counts,
+        unresolved_reason_counts_are_nonexclusive=True,
+        review_completeness=review_completeness,
+        scientific_completeness="not_assessed",
+        git_mutations_performed=False,
+    )
+    value["receipt_sha256"] = canonical_sha256(value)
+    if len(canonical_bytes(value)) + 1 > MAX_RESPONSE_BYTES:
+        raise CatalogError("completeness receipt exceeds the response budget")
+    return value
+
+
 def catalog_cursor_position(catalog, args, query_sha256):
     if args.cursor is None:
         return 0
@@ -761,6 +917,7 @@ def parser():
     root.add_argument("--commit", required=True, type=exact_commit)
     commands = root.add_subparsers(dest="operation", required=True)
     commands.add_parser("summary")
+    commands.add_parser("receipt")
     entries = commands.add_parser("entries")
     entries.add_argument(
         "--coverage", choices=("indexed", "unindexed", "all"), default="indexed"
@@ -778,8 +935,12 @@ def main(argv=None):
         args = parser().parse_args(raw_args)
         operation = f"catalog-{args.operation}"
         catalog = load_catalog(args.repo, args.commit)
-        value = summary_response(catalog) if args.operation == "summary" \
-            else entries_response(catalog, args)
+        if args.operation == "summary":
+            value = summary_response(catalog)
+        elif args.operation == "receipt":
+            value = completeness_receipt(catalog)
+        else:
+            value = entries_response(catalog, args)
     except CatalogError as exc:
         value = response(
             operation, exc.state, ok=False, exit_code=exc.exit_code, error=str(exc)

@@ -148,6 +148,36 @@ class EvidenceCatalogTests(unittest.TestCase):
         self.assertEqual(loose["file_name"], "root_helper.sh")
         self.assertEqual(loose["terminal_assessment"], "NOT_ASSESSED")
 
+        receipt = catalog.completeness_receipt(value)
+        self.assertEqual(2, receipt["schema_version"])
+        self.assertEqual("incomplete", receipt["review_completeness"])
+        self.assertEqual(
+            {
+                "catalog_entries": 3,
+                "indexed_entries": 1,
+                "unindexed_entries": 2,
+                "evidence_directories": 2,
+                "indexed_directories": 1,
+                "unindexed_directories": 1,
+                "loose_files": 1,
+                "partition_complete": True,
+            },
+            receipt["entry_partition"],
+        )
+        self.assertEqual(
+            2, receipt["unresolved_counts"]["unclassified_unindexed_entries"]
+        )
+        self.assertEqual(
+            1, receipt["unresolved_counts"]["path_only_legacy_terminal_records"]
+        )
+        self.assertEqual(
+            receipt["receipt_sha256"],
+            catalog.completeness_receipt(value)["receipt_sha256"],
+        )
+        unhashed = dict(receipt)
+        del unhashed["receipt_sha256"]
+        self.assertEqual(receipt["receipt_sha256"], catalog.canonical_sha256(unhashed))
+
     def test_terminal_resolution_preserves_valid_chain_and_legacy_ambiguity(self):
         root = schema2_record("route-chain", "A0", "run-a0", "route-chain", "a")
         prior = {
@@ -179,6 +209,16 @@ class EvidenceCatalogTests(unittest.TestCase):
         self.assertIsNone(routes["route-legacy"]["selected_operation_id"])
         self.assertEqual(len(routes["route-legacy"]["terminals"]), 2)
 
+        receipt = catalog.completeness_receipt(value)
+        self.assertEqual(
+            1, receipt["unresolved_counts"]["ambiguous_legacy_routes"]
+        )
+        self.assertEqual(1, receipt["terminal_partition"]["unresolved_routes"])
+        self.assertEqual(
+            {"path_only_legacy": 2, "sha256_manifest": 2},
+            receipt["terminal_partition"]["binding_counts"],
+        )
+
         duplicate_run = schema2_record(
             "route-chain", "A2", "run-a1", "route-chain", "e",
             prior={
@@ -198,6 +238,32 @@ class EvidenceCatalogTests(unittest.TestCase):
         self.assertEqual(
             catalog.select_terminal_leaf(parsed)[1], "INVALID_CHAIN"
         )
+
+    def test_schema2_only_catalog_has_a_complete_stable_cli_receipt(self):
+        record = schema2_record("route-a", "A0", "run-a", "route-a", "a")
+        commit = self.commit_snapshot([record], evidence_files(record))
+        receipt = self.call(
+            "--repo", str(self.repo), "--commit", commit, "receipt"
+        )
+        self.assertTrue(receipt["ok"])
+        self.assertEqual("complete", receipt["review_completeness"])
+        self.assertEqual(0, receipt["terminal_partition"]["unresolved_routes"])
+        self.assertFalse(any(receipt["unresolved_counts"].values()))
+        self.assertEqual(
+            receipt["source_identities"]["catalog_sha256"],
+            catalog.load_catalog(self.repo, commit)["catalog_sha256"],
+        )
+        self.assertLessEqual(
+            len(catalog.canonical_bytes(receipt)) + 1, catalog.MAX_RESPONSE_BYTES
+        )
+
+    def test_completeness_receipt_rejects_partition_drift(self):
+        record = common_record("route-a", "A0", "run-a", "route-a", "a")
+        commit = self.commit_snapshot([record], evidence_files(record))
+        value = catalog.load_catalog(self.repo, commit)
+        value["entries"][0]["index_coverage"] = "UNKNOWN"
+        with self.assertRaisesRegex(catalog.CatalogError, "unknown index partition"):
+            catalog.completeness_receipt(value)
 
     def test_schema2_single_record_must_still_have_a_valid_root(self):
         record = schema2_record("route-a", "A0", "run-a", "route-a", "a")

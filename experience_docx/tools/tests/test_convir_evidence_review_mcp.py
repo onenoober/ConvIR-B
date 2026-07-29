@@ -161,17 +161,18 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             "params": {"name": name, "arguments": arguments},
         })
 
-    def test_server_exposes_exact_four_read_only_tools(self):
+    def test_server_exposes_exact_five_read_only_tools(self):
         initialized = review.handle({
             "method": "initialize",
             "params": {"protocolVersion": "2024-11-05"},
         })
         self.assertEqual("convir-evidence-review", initialized["serverInfo"]["name"])
-        self.assertEqual("1.1.0", initialized["serverInfo"]["version"])
+        self.assertEqual("1.2.0", initialized["serverInfo"]["version"])
         listed = review.handle({"method": "tools/list", "params": {}})
         self.assertEqual(
             [
                 "convir_evidence_catalog_summary",
+                "convir_evidence_completeness_receipt",
                 "convir_evidence_catalog_query",
                 "convir_evidence_cloud_inventory_summary",
                 "convir_evidence_cloud_inventory_query",
@@ -183,11 +184,73 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             "host", "command", "remote_path", "run_root", "cloud_available",
             "active_session", "scan_limits",
         }
-        cloud_tools = listed["tools"][2:]
+        cloud_tools = [
+            tool for tool in listed["tools"]
+            if "cloud_inventory" in tool["name"]
+        ]
         self.assertTrue(all(
             forbidden.isdisjoint(tool["inputSchema"]["properties"])
             for tool in cloud_tools
         ))
+
+    def test_completeness_receipt_is_main_bound_stable_and_transport_free(self):
+        record = terminal_record()
+        first = self.commit_snapshot(
+            record,
+            {"experience_docx/experiment_logs/legacy/summary.json": b"not read"},
+        )
+        with mock.patch.object(review, "_run_fixed_remote") as transport:
+            latest = self.call(
+                "convir_evidence_completeness_receipt",
+                {"local_repo": str(self.repo)},
+            )
+        transport.assert_not_called()
+        self.assertFalse(latest["isError"])
+        value = latest["structuredContent"]
+        self.assertEqual(2, value["schema_version"])
+        self.assertEqual(first, value["snapshot_commit"])
+        self.assertEqual("incomplete", value["review_completeness"])
+        self.assertEqual(2, value["entry_partition"]["catalog_entries"])
+        self.assertEqual(1, value["entry_partition"]["unindexed_entries"])
+        self.assertEqual(
+            1, value["unresolved_counts"]["path_only_legacy_terminal_records"]
+        )
+        self.assertIn("result_contents", value["excluded_sources"])
+        self.assertFalse(value["git_mutations_performed"])
+        self.assertLessEqual(
+            len(review.canonical_bytes(latest)), review.MAX_TOOL_RESULT_BYTES
+        )
+        self.assertEqual(value, json.loads(latest["content"][0]["text"]))
+
+        second = self.commit_snapshot(
+            record,
+            {"experience_docx/experiment_logs/new-history/summary.json": b"new"},
+            "moved ref",
+        )
+        self.assertNotEqual(first, second)
+        pinned = self.call(
+            "convir_evidence_completeness_receipt",
+            {"local_repo": str(self.repo), "snapshot_commit": first},
+        )
+        self.assertFalse(pinned["isError"])
+        self.assertEqual(value["receipt_sha256"], pinned["structuredContent"]["receipt_sha256"])
+        self.assertEqual(first, pinned["structuredContent"]["snapshot_commit"])
+
+        route_only = self.commit_snapshot(
+            record,
+            {"experience_docx/experiment_logs/route-only/summary.json": b"local"},
+            "unpublished route commit",
+            publish_main=False,
+        )
+        rejected = self.call(
+            "convir_evidence_completeness_receipt",
+            {"local_repo": str(self.repo), "snapshot_commit": route_only},
+        )
+        self.assertTrue(rejected["isError"])
+        self.assertEqual(
+            "SNAPSHOT_OUTSIDE_GITHUB_MAIN",
+            rejected["structuredContent"]["state"],
+        )
 
     def test_summary_freezes_symbolic_ref_before_repository_moves(self):
         record = terminal_record()

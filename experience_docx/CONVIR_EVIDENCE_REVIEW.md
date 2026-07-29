@@ -20,24 +20,28 @@ responses do not expose separate MCP initialization-version metadata.
 
 `convir-evidence-review` is a separate read-only MCP for cross-route evidence
 discovery. It keeps review outside the experiment-control surface and exposes
-only the compact catalog accepted in Phase 2.
+compact, identity-bound discovery records rather than bulk experiment data.
 
 | Tool | Purpose |
 | --- | --- |
 | `convir_evidence_catalog_summary` | freeze the trusted `refs/remotes/github/main` ref to an immutable commit and return catalog/index/tree identities plus coverage counts |
+| `convir_evidence_completeness_receipt` | return one schema-2 project GitHub receipt with exact indexed, unindexed, legacy and unresolved partitions for the current or an exact main-history commit |
 | `convir_evidence_catalog_query` | query that exact GitHub-main-history commit with bounded filters and an identity-bound cursor |
+| `convir_evidence_cloud_inventory_summary` | reconcile one exact eligible schema-2 terminal with its fixed inactive cloud run root |
+| `convir_evidence_cloud_inventory_query` | rescan and page the same run root only while its inventory identity remains unchanged |
 
 The normal read sequence is: establish the freshness of the local
 `refs/remotes/github/main` snapshot through the repository-approved GitHub read
-path, call summary, use filtered queries, then explicitly `repo-show` only the
-selected closeout, conclusion or result files. The MCP never fetches, so every
-response reports `ref_freshness=not_assessed`; neither tool reads result
+path, call summary and the completeness receipt, use filtered queries, then
+explicitly `repo-show` only the selected closeout, conclusion or result files.
+The MCP never fetches, so every response reports
+`ref_freshness=not_assessed`; catalog and receipt tools do not read result
 contents.
 
 ## Boundaries
 
-- The server reads only the terminal index and Git path names under
-  `experience_docx/experiment_logs` at one resolved commit.
+- The GitHub discovery tools read only the terminal index and Git path names
+  under `experience_docx/experiment_logs` at one resolved commit.
 - The repository must expose the trusted `github` remote identity and
   `refs/remotes/github/main`. Summary accepts no caller-selected ref. Every
   query requires an exact 40-character commit and rejects commits outside that
@@ -55,6 +59,24 @@ contents.
   interpretations.
 - `convir-ops` remains unchanged with exactly six lifecycle tools and protocol
   schema 4.
+
+## P0 Project Completeness Receipt
+
+The candidate P0 layer adds one compact fifth tool at server version `1.2.0`.
+It mechanically verifies that every catalog entry belongs to exactly one
+indexed or unindexed partition, then reports terminal schema, binding and chain
+resolution counts. Unindexed entries remain unclassified; schema-1 path-only
+records remain legacy; ambiguous or invalid chains remain unresolved. Any such
+count makes `review_completeness=incomplete`.
+
+The receipt schema is exactly 2 and binds the snapshot commit, catalog and entry
+collection hashes, terminal-index blob/SHA-256 and experiment-log tree/path
+collection. Its own SHA-256 covers the canonical receipt before the hash field
+is added. `scientific_completeness` remains `not_assessed`, and result contents,
+route branches and cloud runtime are explicit exclusions. The tool performs no
+Git mutation or cloud access. This phase does not add a comparison engine,
+change experiment schemas, classify historical directories or register the
+candidate server.
 
 ## Phase 4A Cloud-Inventory Core
 
