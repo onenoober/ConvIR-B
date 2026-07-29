@@ -5,7 +5,7 @@
   "purpose": "Replace only the unrecoverable validation transport outcome of v1 without repeating v1 or changing its access scope.",
   "implementation_commit": "df1308a367b14dcb36f240ed459da39f93339836",
   "source_base_commit": "9d660a379da858177170e949f3cf074ee3c13f9c",
-  "superseded_pilot_outcome": "experience_docx/CONVIR_EVIDENCE_REVIEW_PHASE4B_REAL_PILOT_V1_OUTCOME.json",
+  "supersedes_pilot_id": "convir-evidence-review-phase4b-real-pilot-v1",
   "github_binding": {
     "snapshot_commit": "e4ddd62ef1e6b45bec6f70b5197ef6a72de43531",
     "catalog_sha256": "d13cdfd1a13b15f6f085155dfc77630145ee539ea7bb9143d3be88db6dbebff2",
