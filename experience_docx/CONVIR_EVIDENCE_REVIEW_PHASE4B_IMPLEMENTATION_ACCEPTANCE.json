@@ -1,0 +1,64 @@
+{
+  "schema_version": 2,
+  "acceptance_id": "convir-evidence-review-phase4b-implementation-v1",
+  "status": "PHASE4B_IMPLEMENTATION_ACCEPTED",
+  "candidate_commit": "186efb03fbc23e290c9b3648e762af4dc375eb52",
+  "parent_github_main_commit": "e4ddd62ef1e6b45bec6f70b5197ef6a72de43531",
+  "server": {
+    "name": "convir-evidence-review",
+    "version": "1.1.0",
+    "tool_count": 4,
+    "new_tools": [
+      "convir_evidence_cloud_inventory_summary",
+      "convir_evidence_cloud_inventory_query"
+    ]
+  },
+  "cloud_acceptance": {
+    "host": "convir-4090",
+    "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+    "script": "experience_docx/tools/validate_convir_evidence_review_phase4b_cloud.sh",
+    "script_git_blob": "f5bcb0254a55ff7e1ed68741252545c9d3de7657",
+    "script_sha256": "4559c8088fc2471fad98ba6654ea8f687b5612d080b5de70b81323958ceb3312",
+    "marker": "CONVIR_EVIDENCE_REVIEW_PHASE4B_CLOUD_OK",
+    "focused_tests": 51,
+    "full_suite_tests": 309,
+    "fresh_stdio_tools": 4
+  },
+  "accepted_properties": [
+    "FIXED_HOST_AND_PYTHON",
+    "SCHEMA2_TERMINAL_AND_CLOSEOUT_BINDING",
+    "NEW_SCHEMA2_CONCLUSION_ENFORCEMENT",
+    "LEGACY_CONCLUSION_READ_COMPATIBILITY",
+    "NO_SSH_FOR_PROTECTED_OR_INELIGIBLE_BINDINGS",
+    "INACTIVE_SESSION_CHECK_BEFORE_AND_AFTER_SCAN",
+    "RESCAN_AND_EXACT_INVENTORY_SHA256_QUERY",
+    "FULL_JSONRPC_32K_RESPONSE_BUDGET",
+    "NO_PERSISTENT_CACHE",
+    "NO_CALLER_CONTROLLED_HOST_PATH_COMMAND_OR_SCAN_LIMIT"
+  ],
+  "access_observed": {
+    "existing_run_root_access": 0,
+    "dataset_access": 0,
+    "model_access": 0,
+    "gpu_access": 0,
+    "protected_data_access": 0,
+    "git_mutations_by_mcp": 0
+  },
+  "bounded_recovery": {
+    "outer_wait_timeout": "INSPECTED_CLEAN_BEFORE_RETRY",
+    "validation_allowlist_mismatch": "REPAIRED_BEFORE_TEST_EXECUTION",
+    "scientific_or_data_contract_changed": false
+  },
+  "next_gate": {
+    "stage": "PHASE4B_REAL_PILOT",
+    "requires": "SEPARATE_EXPLICIT_AUTHORIZATION",
+    "scope": "ONE_PREDECLARED_INACTIVE_UNPROTECTED_SCHEMA2_TERMINAL",
+    "forbidden": [
+      "CONFIRMATION",
+      "CANARY",
+      "LOCKED_TEST",
+      "DATASET_OR_MODEL_ACCESS",
+      "MCP_REGISTRATION"
+    ]
+  }
+}
