@@ -15,7 +15,8 @@
     "route_commit": "57fec121007a5c9a8c2c90b12bc68e581b38f577",
     "terminal_schema_version": 2,
     "closeout_schema_version": 2,
-    "conclusion_schema_version": 2,
+    "conclusion_schema_version": null,
+    "conclusion_schema_state": "LEGACY_UNVERSIONED",
     "evidence_role": "engineering_debug",
     "protected_data_permissions": {
       "allow_confirmation": false,
@@ -69,7 +70,8 @@
     "RUN_ROOT_WRITE"
   ],
   "acceptance_gates": [
-    "EXACT_SCHEMA2_TERMINAL_BINDING",
+    "EXACT_SCHEMA2_TERMINAL_AND_CLOSEOUT_BINDING",
+    "READ_ONLY_LEGACY_UNVERSIONED_CONCLUSION_COMPATIBILITY",
     "ENGINEERING_DEBUG_ROLE_WITH_ALL_PROTECTED_PERMISSIONS_FALSE",
     "ALL_PROTECTED_TOUCH_FLAGS_FALSE",
     "EXACT_DERIVED_RUN_ROOT_AND_SESSION",

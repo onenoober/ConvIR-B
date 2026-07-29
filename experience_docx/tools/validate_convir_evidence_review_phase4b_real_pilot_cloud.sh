@@ -108,7 +108,8 @@ assert binding["eligible"] is True
 assert binding["raw_inventory_authorized"] is True
 assert binding["terminal_schema_version"] == 2
 assert binding["closeout_schema_version"] == 2
-assert binding["conclusion_schema_version"] == 2
+assert binding["conclusion_schema_version"] is None
+assert binding["conclusion_schema_state"] == "LEGACY_UNVERSIONED"
 assert binding["route_id"] == terminal["route_id"]
 assert binding["operation_id"] == terminal["operation_id"]
 assert binding["run_id"] == terminal["run_id"]
