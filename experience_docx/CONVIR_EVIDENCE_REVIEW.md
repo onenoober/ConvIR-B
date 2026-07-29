@@ -110,14 +110,24 @@ experiment or claims that the saved evidence is scientifically sufficient.
 
 ## Phase 4B Gate
 
-Phase 4B requires a separately accepted fixed-host transport with no caller
-host, path or command. Its first real pilot must name one eligible schema-2
-terminal-record SHA in advance, derive exactly one inactive run root, and keep
-protected roles fail-closed. The adapter must mechanically prove that its actual
-root equals the identity-derived run root before it can claim production scope.
-A complete synthetic Phase 4A acceptance authorizes
-only that contract work; it does not authorize access to existing `/runs`, MCP
-registration of cloud tools, broad route enumeration or scientific review.
+The frozen machine contract is
+`CONVIR_EVIDENCE_REVIEW_PHASE4B_CONTRACT.json`. It adds exactly two proposed
+tools: one inventory summary and one filtered query. Neither accepts a host,
+command, cloud path, run root, session state or scan limit. Query calls rescan
+the same terminal and require the exact prior `inventory_sha256`; Phase 4B has
+no persistent cache or hidden review state.
+
+Implementation, a real pilot and registration are three separate gates. The
+implementation gate may use synthetic temporary roots only. A later pilot must
+be explicitly authorized and predeclare one inactive, unprotected schema-2
+terminal-record SHA. Registration requires a separately accepted pilot. In all
+stages the adapter derives exactly one root, checks the derived lifecycle
+session before and after scanning, refuses protected roles before SSH, and
+budgets the complete repeated text/structured JSON-RPC envelope to 32 KiB.
+
+Phase 4A acceptance authorizes this contract work only. It does not authorize
+access to existing `/runs`, MCP registration, broad route enumeration or
+scientific review.
 
 ## Phase 3 Acceptance
 

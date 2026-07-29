@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "contract_id": "convir-evidence-review-phase4b-fixed-host-transport-v1",
+  "status": "FROZEN_FOR_IMPLEMENTATION_REVIEW",
+  "parent_acceptance": {
+    "path": "experience_docx/CONVIR_EVIDENCE_REVIEW_PHASE4A_ACCEPTANCE.json",
+    "github_main_commit": "e4ddd62ef1e6b45bec6f70b5197ef6a72de43531"
+  },
+  "scope": {
+    "authorized_now": [
+      "CONTRACT_REVIEW"
+    ],
+    "proposed_after_contract_acceptance": [
+      "FIXED_HOST_ADAPTER_IMPLEMENTATION",
+      "SYNTHETIC_CLOUD_ACCEPTANCE"
+    ],
+    "forbidden": [
+      "EXISTING_RUN_ROOT_ACCESS",
+      "MCP_REGISTRATION",
+      "UNBOUNDED_SCAN",
+      "DATASET_OR_MODEL_ACCESS",
+      "PROTECTED_ROLE_ACCESS",
+      "SCIENTIFIC_INTERPRETATION"
+    ]
+  },
+  "mcp_surface": {
+    "server_version_target": "1.1.0",
+    "tool_count_target": 4,
+    "existing_tools_unchanged": [
+      "convir_evidence_catalog_summary",
+      "convir_evidence_catalog_query"
+    ],
+    "new_tools": {
+      "convir_evidence_cloud_inventory_summary": {
+        "required": [
+          "local_repo",
+          "snapshot_commit",
+          "catalog_sha256",
+          "terminal_record_sha256"
+        ],
+        "optional": []
+      },
+      "convir_evidence_cloud_inventory_query": {
+        "required": [
+          "local_repo",
+          "snapshot_commit",
+          "catalog_sha256",
+          "terminal_record_sha256",
+          "inventory_sha256"
+        ],
+        "optional": [
+          "reconciliation_states",
+          "terms",
+          "cursor",
+          "limit"
+        ]
+      }
+    },
+    "forbidden_caller_arguments": [
+      "host",
+      "command",
+      "remote_path",
+      "run_root",
+      "cloud_available",
+      "active_session",
+      "scan_limits"
+    ],
+    "query_semantics": "RESCAN_AND_REQUIRE_EXACT_INVENTORY_SHA256",
+    "persistent_cache": false
+  },
+  "fixed_transport": {
+    "host": "convir-4090",
+    "ssh_binary": "/usr/bin/ssh",
+    "remote_shell": "/bin/bash",
+    "remote_python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+    "runs_root": "/sda/home/wangyuxin/ConvIR-B/runs",
+    "temporary_root": "/sda/home/wangyuxin/ConvIR-B/runtime/convir-evidence-review",
+    "worker_source": "COMMITTED_SERVER_BOUND_STANDALONE_STDLIB_SOURCE",
+    "request_encoding": "CANONICAL_JSON_FROM_VERIFIED_TERMINAL_BINDING",
+    "caller_supplied_shell_or_source": false,
+    "synthetic_root_injection": "PRIVATE_TEST_ONLY_NOT_IN_MCP_SCHEMA",
+    "writes_under_runs": false,
+    "git_mutations": false,
+    "stdout_limit_bytes": 65536,
+    "stderr_limit_bytes": 65536,
+    "timeout_seconds": 90
+  },
+  "identity_and_access": {
+    "terminal_record_schema_version": 2,
+    "closeout_schema_version": 2,
+    "new_conclusion_schema_version": 2,
+    "legacy_conclusion_modes": [
+      "LEGACY_V1",
+      "LEGACY_UNVERSIONED"
+    ],
+    "run_root_derivation": "runs_root/route_id/output_id",
+    "root_binding_required": true,
+    "session_derivation": "REUSE_CONVIR_OPS_DERIVE_SESSION",
+    "inactive_session_checks": [
+      "BEFORE_ROOT_OPEN",
+      "AFTER_SCAN"
+    ],
+    "protected_scope_action": "RETURN_NOT_INVENTORIED_WITHOUT_SSH",
+    "unknown_or_incomplete_identity_action": "FAIL_CLOSED_WITHOUT_SSH"
+  },
+  "inventory_contract": {
+    "hard_limits_source": "PHASE4A_COMPILED_LIMITS_ONLY",
+    "summary_exposes_entries": false,
+    "query_limit_maximum": 100,
+    "query_term_maximum": 8,
+    "response_scientific_completeness": "not_assessed",
+    "top_level_error_states": [
+      "ARGUMENTS_INVALID",
+      "IDENTITY_CONFLICT",
+      "INVENTORY_DRIFT",
+      "CLOUD_UNAVAILABLE",
+      "REMOTE_STATE_UNKNOWN",
+      "RESPONSE_TOO_LARGE"
+    ],
+    "non_error_non_inventory_state": "NOT_INVENTORIED",
+    "jsonrpc_response_limit_bytes": 32768,
+    "response_budget_includes": [
+      "REQUEST_ID",
+      "TEXT_CONTENT",
+      "STRUCTURED_CONTENT",
+      "JSON_ESCAPING",
+      "TRAILING_NEWLINE"
+    ]
+  },
+  "pre_registration_dependencies": [
+    {
+      "id": "FUTURE_CONCLUSION_SCHEMA_V2_ENFORCEMENT",
+      "required_change": "TERMINAL_ARCHIVE_REQUIRES_SCHEMA_VERSION_2_FOR_NEW_CONCLUSIONS",
+      "historical_action": "READ_ONLY_NO_REWRITE"
+    }
+  ],
+  "acceptance_sequence": [
+    {
+      "stage": "PHASE4B_IMPLEMENTATION",
+      "allowed_input": "SYNTHETIC_TEMP_ROOTS_ONLY",
+      "required_result": "COMMITTED_FULL_SUITE_AND_FRESH_STDIO_PASS"
+    },
+    {
+      "stage": "PHASE4B_REAL_PILOT",
+      "prerequisite": "SEPARATE_EXPLICIT_AUTHORIZATION",
+      "allowed_input": "ONE_PREDECLARED_INACTIVE_UNPROTECTED_SCHEMA2_TERMINAL"
+    },
+    {
+      "stage": "PHASE4B_REGISTRATION",
+      "prerequisite": "SEPARATE_PILOT_ACCEPTANCE",
+      "required_result": "FRESH_TASK_EXACT_SOURCE_AND_FOUR_TOOL_PASS"
+    }
+  ]
+}
