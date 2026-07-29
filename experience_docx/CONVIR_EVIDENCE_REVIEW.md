@@ -2,8 +2,10 @@
 
 Date: 2026-07-29
 
-Status: Phase 3 GitHub-only candidate. It is not registered or adopted on
-GitHub `main` yet.
+Status: Phase 3 GitHub-only source passed committed cloud acceptance at
+`ea088ea28d56f034395f53212c6e259b290d87fc`. Presence of the adjacent
+acceptance record on GitHub `main` completes source adoption; MCP registration
+remains pending.
 
 ## Purpose
 
@@ -57,10 +59,13 @@ that an artifact does not exist.
 
 ## Phase 3 Acceptance
 
-Adopt this server only after one committed cloud gate proves deterministic
+The committed cloud gate passed 283 tests on `convir-4090`, including
 trusted-main freezing, main-history rejection, exact pagination, cursor drift
 rejection, all-coverage default, zero-match success, loose-file discovery,
-typed failures, text/structured equivalence, complete JSON-RPC response bounds,
-fresh-stdio activation and no Git/cloud/data/GPU mutation. Registration remains
-separate and may occur only after the accepted code is available from GitHub
-`main`.
+typed failures, text/structured equivalence, complete JSON-RPC response bounds
+and fresh-stdio activation. The compact identity and authorization record is
+`CONVIR_EVIDENCE_REVIEW_ACCEPTANCE.json`.
+
+This acceptance authorizes GitHub `main` source integration and a separate
+post-main registration check only. It does not establish an active registered
+server, authorize Phase 4 cloud inventory, or support any scientific claim.
