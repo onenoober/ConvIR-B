@@ -58,19 +58,25 @@ test "$test_count" -ge 277
 
 summary=$work/summary.json
 entries=$work/entries.json
+loose=$work/loose.json
 PYTHONPATH="$tools" "$python" "$tools/convir_evidence_catalog.py" \
   --repo "$work/repo" --commit "$candidate" summary >"$summary"
 PYTHONPATH="$tools" "$python" "$tools/convir_evidence_catalog.py" \
   --repo "$work/repo" --commit "$candidate" entries \
   --coverage indexed --term haze4k --limit 5 >"$entries"
-PYTHONPATH="$tools" "$python" - "$summary" "$entries" "$candidate" <<'PY'
+PYTHONPATH="$tools" "$python" "$tools/convir_evidence_catalog.py" \
+  --repo "$work/repo" --commit "$candidate" entries \
+  --coverage unindexed --term run_v2f_f4b_tail_rescue_matrix.sh \
+  --limit 1 >"$loose"
+PYTHONPATH="$tools" "$python" - "$summary" "$entries" "$loose" "$candidate" <<'PY'
 import json
 import sys
 from pathlib import Path
 
 summary = json.loads(Path(sys.argv[1]).read_bytes())
 entries = json.loads(Path(sys.argv[2]).read_bytes())
-candidate = sys.argv[3]
+loose = json.loads(Path(sys.argv[3]).read_bytes())
+candidate = sys.argv[4]
 assert summary["ok"] is True
 header = summary["header"]
 assert header["snapshot_commit"] == candidate
@@ -87,17 +93,25 @@ assert header["terminal_index"]["sha256"] == "97ff689d00fb13d2af0c4fe2c2f6ce9c2c
 tree = header["experiment_log_tree"]
 assert tree["tree_oid"] == "feff0048a4e7123306330e9b0b2025b48a2fe12b"
 assert tree["tracked_file_count"] == 4011
-assert tree["directory_count"] == 232
+assert tree["catalog_entry_count"] == 232
+assert tree["directory_count"] == 231
 assert tree["indexed_directory_count"] == 54
-assert tree["unindexed_directory_count"] == 178
+assert tree["unindexed_directory_count"] == 177
+assert tree["loose_file_count"] == 1
 assert entries["ok"] is True
 assert entries["total_count"] > entries["returned_count"] > 0
 assert entries["returned_count"] <= 5
+assert loose["ok"] is True
+assert loose["total_count"] == loose["returned_count"] == 1
+assert loose["entries"][0]["record_kind"] == "loose_file"
+assert loose["entries"][0]["file_name"] == "run_v2f_f4b_tail_rescue_matrix.sh"
+assert loose["entries"][0]["terminal_assessment"] == "NOT_ASSESSED"
 assert len(Path(sys.argv[1]).read_bytes()) <= 32768
 assert len(Path(sys.argv[2]).read_bytes()) <= 32768
+assert len(Path(sys.argv[3]).read_bytes()) <= 32768
 PY
 
 git -C "$work/repo" diff --check "$baseline" "$candidate"
 git -C "$work/repo" diff --quiet
-printf 'CONVIR_EVIDENCE_REVIEW_PHASE2_CLOUD_OK candidate=%s baseline=%s tests=%s records=55 routes=54 directories=232 indexed=54 unindexed=178 model_calls=0 gpu_access=0 dataset_access=0 protected_data_access=0\n' \
+printf 'CONVIR_EVIDENCE_REVIEW_PHASE2_CLOUD_OK candidate=%s baseline=%s tests=%s records=55 routes=54 entries=232 directories=231 indexed=54 unindexed=177 loose=1 model_calls=0 gpu_access=0 dataset_access=0 protected_data_access=0\n' \
   "$candidate" "$baseline" "$test_count"

@@ -120,21 +120,33 @@ class EvidenceCatalogTests(unittest.TestCase):
                 "experience_docx/experiment_logs/legacy/legacy_closeout.json": b"old",
                 "experience_docx/experiment_logs/legacy/metric_summary.csv": b"x",
                 "experience_docx/experiment_logs/legacy/notes.txt": b"note",
+                "experience_docx/experiment_logs/root_helper.sh": b"unread",
             },
         )
         value = catalog.load_catalog(self.repo, commit)
         header = value["header"]
         self.assertEqual(header["terminal_index"]["record_count"], 1)
         self.assertEqual(header["experiment_log_tree"]["directory_count"], 2)
+        self.assertEqual(header["experiment_log_tree"]["catalog_entry_count"], 3)
         self.assertEqual(header["experiment_log_tree"]["indexed_directory_count"], 1)
         self.assertEqual(header["experiment_log_tree"]["unindexed_directory_count"], 1)
+        self.assertEqual(header["experiment_log_tree"]["loose_file_count"], 1)
         self.assertEqual(header["scientific_completeness"], "not_assessed")
-        legacy = next(item for item in value["entries"] if item["directory_name"] == "legacy")
+        legacy = next(
+            item for item in value["entries"]
+            if item.get("directory_name") == "legacy"
+        )
         self.assertEqual(legacy["terminal_assessment"], "NOT_ASSESSED")
         self.assertEqual(
             legacy["marker_counts"],
             {"closeout_named": 1, "conclusion_named": 0, "summary_named": 1},
         )
+        loose = next(
+            item for item in value["entries"]
+            if item["record_kind"] == "loose_file"
+        )
+        self.assertEqual(loose["file_name"], "root_helper.sh")
+        self.assertEqual(loose["terminal_assessment"], "NOT_ASSESSED")
 
     def test_terminal_resolution_preserves_valid_chain_and_legacy_ambiguity(self):
         root = schema2_record("route-chain", "A0", "run-a0", "route-chain", "a")

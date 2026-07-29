@@ -448,6 +448,16 @@ def build_catalog(*, snapshot_commit, index_identity, tree_identity, records, pa
         })
 
     indexed_count = sum(entry["index_coverage"] == "INDEXED" for entry in entries)
+    entries.extend({
+        "record_kind": "loose_file",
+        "file_name": name,
+        "file_path": f"{LOG_ROOT}/{name}",
+        "index_coverage": "UNINDEXED",
+        "terminal_assessment": "NOT_ASSESSED",
+        "marker_counts": marker_counts([name]),
+        "marker_basis": "git_path_names_only",
+        "routes": [],
+    } for name in sorted(loose_files))
     header = {
         "record_kind": "catalog_header",
         "schema_version": 1,
@@ -468,9 +478,10 @@ def build_catalog(*, snapshot_commit, index_identity, tree_identity, records, pa
         "experiment_log_tree": {
             **tree_identity,
             "tracked_file_count": len(paths),
-            "directory_count": len(entries),
+            "catalog_entry_count": len(entries),
+            "directory_count": len(group_paths),
             "indexed_directory_count": indexed_count,
-            "unindexed_directory_count": len(entries) - indexed_count,
+            "unindexed_directory_count": len(group_paths) - indexed_count,
             "loose_file_count": len(loose_files),
         },
     }
