@@ -12,10 +12,9 @@ committed cloud acceptance at `1c456b2ffc6d734ed7356a18fd14cffff87fafd6`;
 the compact record is `CONVIR_EVIDENCE_REVIEW_PHASE4A_ACCEPTANCE.json`. It is
 not registered or exposed by MCP. Phase 4B implementation and one bounded real
 pilot are accepted by CONVIR_EVIDENCE_REVIEW_PHASE4B_ACCEPTANCE.json. The
-candidate exposes exactly four tools at version 1.1.0; final activation still
-requires main integration, registration and a fresh-task WSL-to-cloud check.
-The current tool responses do not expose separate MCP initialization-version
-metadata.
+registered server exposes exactly four tools at version 1.1.0. Main integration,
+registration and the fresh-task WSL-to-cloud check are complete. The tool
+responses do not expose separate MCP initialization-version metadata.
 
 ## Purpose
 
@@ -124,11 +123,12 @@ no persistent cache or hidden review state.
 Implementation and the bounded real pilot have passed as separate gates.
 Implementation acceptance covers the fixed SSH adapter; the real pilot covers
 the same committed worker against one predeclared inactive, unprotected
-schema-2 terminal and exact hash-bound query. Registration and a fresh-task
-WSL-to-cloud call remain the final activation gate. The adapter derives exactly
-one root, checks the derived lifecycle session before and after scanning,
-refuses protected roles before SSH, and budgets the complete repeated
-text/structured JSON-RPC envelope to 32 KiB.
+schema-2 terminal and exact hash-bound query. The registered fresh task
+completed the final WSL-to-cloud activation gate with one summary and one exact
+inventory-SHA-bound query. The adapter derives exactly one root, checks the
+derived lifecycle session before and after scanning, refuses protected roles
+before SSH, and budgets the complete repeated text/structured JSON-RPC envelope
+to 32 KiB.
 
 Phase 4A acceptance authorizes this contract work only. It does not authorize
 access to existing `/runs`, MCP registration, broad route enumeration or
@@ -156,10 +156,12 @@ without inventing a retroactive acceptance. Phase 3's durable 283-test
 full-suite acceptance covers the unchanged Phase 1/2 implementation, so no
 reassurance rerun is required.
 
-The registered server is active on this host. Its fresh task fixed GitHub main
-to `9c76e3503a220a274a647c7153d335001fec8a47`, returned the compact catalog
-summary, and completed one five-entry bounded query without Git mutation.
+The registered server is active on this host at GitHub main
+`f473c71d792008835371a56563b1c9322dadadea`, source version `1.1.0`, with
+exactly four tools. Its fresh task completed one bounded real inventory summary
+and one hash-bound query without Git or run-root mutation. The schema-2
+registration record is `CONVIR_EVIDENCE_REVIEW_REGISTRATION_CHECK.json`.
 
-This authorizes Phase 4A contract authoring and synthetic implementation only.
-It does not authorize access to an existing cloud experiment runtime, a real
-cloud reconciliation pilot, an unbounded cloud scan, or any scientific action.
+This authorizes bounded GitHub discovery and identity-bound inventory of an
+inactive, unprotected terminal. It does not authorize scientific
+interpretation, unbounded scans, protected-data access or experiment mutation.
