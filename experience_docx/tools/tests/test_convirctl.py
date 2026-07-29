@@ -102,6 +102,53 @@ esac
         self.assertIn("marker", value)
         return value
 
+    def assert_repo_page_contract(self, value):
+        serialized = json.dumps(
+            value, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+        self.assertLessEqual(len(serialized), convirctl.MAX_REPO_RESPONSE_BYTES)
+        self.assertTrue(value["page_complete"])
+        self.assertEqual(value["complete"], value["terminal_page"])
+        self.assertEqual(value["has_more"], not value["complete"])
+        self.assertEqual(value["truncated"], not value["complete"])
+        self.assertFalse(value["capture_truncated"])
+        self.assertEqual(value["scientific_completeness"], "not_assessed")
+        self.assertEqual(value["snapshot_commit"], value["commit"])
+        if value["complete"]:
+            self.assertIsNone(value["next_cursor"])
+        else:
+            self.assertIsInstance(value["next_cursor"], str)
+
+    def collect_repo_show(self, relative, *, page_bytes=65536):
+        cursor = None
+        parts = []
+        pages = []
+        expected_start = 0
+        while True:
+            argv = [
+                "repo-show", "--repo", str(self.repo), "--path", relative,
+                "--page-bytes", str(page_bytes),
+            ]
+            if cursor is not None:
+                argv.extend(["--cursor", cursor])
+            page = self.call(*argv)
+            self.assertTrue(page["ok"])
+            self.assert_repo_page_contract(page)
+            self.assertEqual(page["page_start_byte"], expected_start)
+            self.assertEqual(
+                hashlib.sha256(page["content"].encode("utf-8")).hexdigest(),
+                page["page_sha256"],
+            )
+            self.assertEqual(page["collection_sha256"], page["content_sha256"])
+            parts.append(page["content"])
+            pages.append(page)
+            expected_start = page["page_end_byte"]
+            if page["complete"]:
+                break
+            cursor = page["next_cursor"]
+            self.assertLess(len(pages), 1000)
+        return "".join(parts), pages
+
     def test_argument_errors_are_json_and_shell_metacharacters_are_data(self):
         invalid = self.call("sha256", "--file")
         self.assertEqual(invalid["state"], "ARGUMENTS_INVALID")
@@ -213,6 +260,9 @@ esac
         )
         self.assertTrue(shown["ok"])
         self.assertIn("literal | $() {commit}", shown["content"])
+        self.assertTrue(shown["complete"])
+        self.assertFalse(shown["truncated"])
+        self.assert_repo_page_contract(shown)
 
         found = self.call(
             "repo-search", "--repo", str(self.repo),
@@ -232,11 +282,197 @@ esac
         )
         self.assertTrue(listed["ok"])
         self.assertEqual(["notes/literal name.txt"], listed["paths"])
+        self.assertTrue(listed["complete"])
+        self.assertEqual(listed["total_count"], 1)
+        self.assert_repo_page_contract(listed)
 
         unsafe = self.call(
             "repo-show", "--repo", str(self.repo), "--path", "../outside.txt",
         )
         self.assertEqual("REJECTED", unsafe["state"])
+
+    def test_repo_show_pages_long_jsonl_and_large_csv_exactly(self):
+        jsonl = "".join(
+            json.dumps(
+                {"id": index, "text": ("x" * 240) + ("\u96fe" if index % 7 == 0 else "")},
+                ensure_ascii=False, sort_keys=True,
+            ) + "\n"
+            for index in range(700)
+        ).encode("utf-8")
+        self.commit_file("evidence/index.jsonl", jsonl)
+        rebuilt_jsonl, jsonl_pages = self.collect_repo_show("evidence/index.jsonl")
+        self.assertEqual(rebuilt_jsonl.encode("utf-8"), jsonl)
+        self.assertGreater(len(jsonl_pages), 1)
+        self.assertEqual(
+            {page["content_sha256"] for page in jsonl_pages},
+            {hashlib.sha256(jsonl).hexdigest()},
+        )
+
+        csv_raw = (
+            "id,value\n1," + ("z" * 480_000) + "\u96fe\n2,done\n"
+        ).encode("utf-8")
+        self.commit_file("evidence/large.csv", csv_raw)
+        rebuilt_csv, csv_pages = self.collect_repo_show("evidence/large.csv")
+        self.assertEqual(rebuilt_csv.encode("utf-8"), csv_raw)
+        self.assertGreater(len(csv_pages), 4)
+        self.assertEqual(csv_pages[-1]["page_end_byte"], len(csv_raw))
+
+    def test_repo_list_pages_without_duplicates_or_omissions(self):
+        expected = []
+        for index in range(350):
+            relative = f"catalog/group-{index // 25:02d}/record-{index:04d}.txt"
+            path = self.repo / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(f"record {index}\n", encoding="utf-8")
+            expected.append(relative)
+        self.git("add", "--", "catalog")
+        self.git("commit", "-m", "add paged catalog")
+        self.git("push", "--force", "github", "HEAD:main")
+
+        cursor = None
+        observed = []
+        collection_sha = None
+        while True:
+            argv = [
+                "repo-list", "--repo", str(self.repo), "--path", "catalog",
+                "--max-results", "23",
+            ]
+            if cursor is not None:
+                argv.extend(["--cursor", cursor])
+            page = self.call(*argv)
+            self.assertTrue(page["ok"])
+            self.assert_repo_page_contract(page)
+            collection_sha = collection_sha or page["collection_sha256"]
+            self.assertEqual(page["collection_sha256"], collection_sha)
+            self.assertEqual(page["page_start"], len(observed))
+            observed.extend(page["paths"])
+            if page["complete"]:
+                self.assertEqual(page["total_count"], len(observed))
+                break
+            cursor = page["next_cursor"]
+        self.assertEqual(observed, sorted(expected))
+        self.assertEqual(len(observed), len(set(observed)))
+
+    def test_repo_path_filters_are_literal_not_pathspec_patterns(self):
+        literal = self.repo / "magic" / "*.txt"
+        literal.parent.mkdir(parents=True, exist_ok=True)
+        literal.write_text("literal target\n", encoding="utf-8")
+        (literal.parent / "other.txt").write_text("other target\n", encoding="utf-8")
+        self.git("--literal-pathspecs", "add", "--", "magic/*.txt", "magic/other.txt")
+        self.git("commit", "-m", "add literal pathspec fixtures")
+
+        listed = self.call(
+            "repo-list", "--repo", str(self.repo), "--path", "magic/*.txt",
+        )
+        self.assertTrue(listed["ok"])
+        self.assertEqual(listed["paths"], ["magic/*.txt"])
+        searched = self.call(
+            "repo-search", "--repo", str(self.repo), "--term", "target",
+            "--path", "magic/*.txt",
+        )
+        self.assertTrue(searched["ok"])
+        self.assertEqual(
+            [record["path"] for record in searched["match_records"]],
+            ["magic/*.txt"],
+        )
+
+    def test_repo_search_pages_and_bounds_oversized_lines(self):
+        lines = [f"target short {index}" for index in range(450)]
+        long_line = "target " + ("q" * 70_000) + "\u96fe"
+        lines.extend([long_line, "target final"])
+        raw = ("\n".join(lines) + "\n").encode("utf-8")
+        self.commit_file("search/matches.txt", raw)
+
+        cursor = None
+        records = []
+        while True:
+            argv = [
+                "repo-search", "--repo", str(self.repo), "--path", "search",
+                "--term", "target", "--max-results", "19",
+            ]
+            if cursor is not None:
+                argv.extend(["--cursor", cursor])
+            page = self.call(*argv)
+            self.assertTrue(page["ok"])
+            self.assert_repo_page_contract(page)
+            self.assertEqual(page["page_start"], len(records))
+            self.assertEqual(len(page["matches"]), len(page["match_records"]))
+            records.extend(page["match_records"])
+            if page["complete"]:
+                self.assertEqual(page["total_count"], len(records))
+                break
+            cursor = page["next_cursor"]
+        self.assertEqual(len(records), 452)
+        self.assertEqual(len({(item["path"], item["line"]) for item in records}), 452)
+        oversized = records[450]
+        self.assertTrue(oversized["line_truncated"])
+        self.assertEqual(oversized["line_bytes"], len(long_line.encode("utf-8")))
+        self.assertEqual(
+            oversized["line_sha256"], hashlib.sha256(long_line.encode("utf-8")).hexdigest(),
+        )
+
+    def test_repo_cursor_is_query_operation_and_snapshot_bound(self):
+        old_raw = ("old-value-" * 12_000).encode("utf-8")
+        tracked = self.repo / "paged.txt"
+        tracked.write_bytes(old_raw)
+        (self.repo / "other.txt").write_text("other\n", encoding="utf-8")
+        self.git("add", "--", "paged.txt", "other.txt")
+        self.git("commit", "-m", "add cursor fixture")
+        self.git("push", "--force", "github", "HEAD:main")
+        old_commit = self.git("rev-parse", "HEAD").stdout.strip()
+
+        first = self.call(
+            "repo-show", "--repo", str(self.repo), "--path", "paged.txt",
+            "--page-bytes", "4096",
+        )
+        cursor = first["next_cursor"]
+        self.assertIsInstance(cursor, str)
+        wrong_query = self.call(
+            "repo-show", "--repo", str(self.repo), "--path", "other.txt",
+            "--cursor", cursor,
+        )
+        self.assertEqual(wrong_query["state"], "REPO_CURSOR_IDENTITY_MISMATCH")
+        wrong_operation = self.call(
+            "repo-list", "--repo", str(self.repo), "--cursor", cursor,
+        )
+        self.assertEqual(wrong_operation["state"], "REPO_CURSOR_IDENTITY_MISMATCH")
+        tamper_at = len(cursor) // 2
+        replacement = "A" if cursor[tamper_at] != "A" else "B"
+        tampered_cursor = cursor[:tamper_at] + replacement + cursor[tamper_at + 1:]
+        malformed = self.call(
+            "repo-show", "--repo", str(self.repo), "--path", "paged.txt",
+            "--cursor", tampered_cursor,
+        )
+        self.assertEqual(malformed["state"], "REPO_CURSOR_INVALID")
+
+        tracked.write_bytes(("new-value-" * 12_000).encode("utf-8"))
+        self.git("add", "--", "paged.txt")
+        self.git("commit", "-m", "advance cursor fixture")
+        self.git("push", "--force", "github", "HEAD:main")
+        new_commit = self.git("rev-parse", "HEAD").stdout.strip()
+        continued = self.call(
+            "repo-show", "--repo", str(self.repo), "--path", "paged.txt",
+            "--cursor", cursor, "--page-bytes", "8192",
+        )
+        self.assertTrue(continued["ok"])
+        self.assertTrue(continued["snapshot_drifted"])
+        self.assertEqual(continued["commit"], old_commit)
+        self.assertEqual(continued["ref_commit"], new_commit)
+        start = continued["page_start_byte"]
+        end = continued["page_end_byte"]
+        self.assertEqual(continued["content"].encode("utf-8"), old_raw[start:end])
+        replayed = self.call(
+            "repo-show", "--repo", str(self.repo), "--path", "paged.txt",
+            "--cursor", cursor, "--page-bytes", "8192",
+        )
+        self.assertEqual(continued, replayed)
+        explicit_mismatch = self.call(
+            "repo-show", "--repo", str(self.repo), "--ref", new_commit,
+            "--path", "paged.txt", "--cursor", cursor,
+        )
+        self.assertEqual(
+            explicit_mismatch["state"], "REPO_CURSOR_IDENTITY_MISMATCH"
+        )
 
     def test_remote_script_normalizes_bom_crlf_and_preserves_stdin(self):
         raw = (

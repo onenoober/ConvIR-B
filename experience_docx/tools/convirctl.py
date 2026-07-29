@@ -2,7 +2,10 @@
 """Small argv-only transport entrypoint for ConvIR-B control operations."""
 
 import argparse
+import base64
+import binascii
 import hashlib
+import hmac
 import json
 import os
 import re
@@ -21,7 +24,19 @@ MAX_SCRIPT_BYTES = 256 * 1024
 MAX_CAPTURE_BYTES = 64 * 1024
 MAX_REPO_TEXT_BYTES = 256 * 1024
 MAX_REPO_RESULTS = 1000
+MAX_REPO_BLOB_BYTES = 16 * 1024 * 1024
+MAX_REPO_ENUMERATION_BYTES = 16 * 1024 * 1024
+MAX_REPO_RESPONSE_BYTES = 32 * 1024
+MAX_REPO_PAGE_DATA_BYTES = 12 * 1024
+DEFAULT_REPO_PAGE_BYTES = 16 * 1024
+MAX_REPO_PAGE_BYTES = 64 * 1024
+MAX_SEARCH_EXCERPT_BYTES = 1024
+MAX_REPO_CURSOR_CHARS = 2048
+REPO_CURSOR_VERSION = 1
+REPO_CURSOR_DOMAIN = b"convir-repo-page-v1\0"
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
+SHA256 = re.compile(r"^[0-9a-f]{64}$")
+SAFE_CURSOR = re.compile(r"^[A-Za-z0-9_-]+$")
 SAFE_REMOTE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 SAFE_REF = re.compile(r"^refs/(?:heads|remotes)/[A-Za-z0-9][A-Za-z0-9._/-]{0,240}$")
 SAFE_BRANCH = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]{0,240}$")
@@ -88,7 +103,7 @@ def run_argv(argv, *, input_bytes=None, timeout=60, env=None):
         ) from exc
 
 
-def run_argv_limited(argv, *, input_bytes, timeout, capture_limit):
+def run_argv_limited(argv, *, input_bytes, timeout, capture_limit, env=None):
     """Run argv without a shell while draining output into bounded buffers."""
     try:
         process = subprocess.Popen(
@@ -96,6 +111,7 @@ def run_argv_limited(argv, *, input_bytes, timeout, capture_limit):
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
+            env=env,
         )
     except OSError as exc:
         raise ControlError(
@@ -233,6 +249,206 @@ def bounded_count(value):
     return value
 
 
+def bounded_page_bytes(value):
+    try:
+        value = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("page-bytes must be an integer") from exc
+    if not 4 <= value <= MAX_REPO_PAGE_BYTES:
+        raise argparse.ArgumentTypeError(
+            f"page-bytes must be in [4, {MAX_REPO_PAGE_BYTES}]"
+        )
+    return value
+
+
+def canonical_digest(value):
+    raw = json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def serialized_json_bytes(value):
+    return len(
+        json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    )
+
+
+def encode_repo_cursor(operation, commit, query_sha256, position, object_id=None):
+    payload = {
+        "version": REPO_CURSOR_VERSION,
+        "operation": operation,
+        "commit": commit,
+        "query_sha256": query_sha256,
+        "position": position,
+        "object_id": object_id,
+    }
+    canonical = json.dumps(
+        payload, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    envelope = {
+        **payload,
+        "checksum": hashlib.sha256(REPO_CURSOR_DOMAIN + canonical).hexdigest(),
+    }
+    token = base64.urlsafe_b64encode(
+        json.dumps(envelope, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).decode("ascii").rstrip("=")
+    if len(token) > MAX_REPO_CURSOR_CHARS:
+        raise ControlError(
+            "repository cursor exceeds its size contract",
+            state="REPO_CURSOR_INVALID",
+        )
+    return token
+
+
+def decode_repo_cursor(token, operation, query_sha256):
+    if not isinstance(token, str) or not 1 <= len(token) <= MAX_REPO_CURSOR_CHARS \
+            or not SAFE_CURSOR.fullmatch(token):
+        raise ControlError("repository cursor is malformed", state="REPO_CURSOR_INVALID")
+    try:
+        padded = token + "=" * (-len(token) % 4)
+        decoded = base64.urlsafe_b64decode(padded)
+        canonical_token = base64.urlsafe_b64encode(decoded).decode("ascii").rstrip("=")
+        if canonical_token != token:
+            raise ValueError("cursor is not canonical base64url")
+        envelope = json.loads(decoded.decode("utf-8"))
+    except (ValueError, UnicodeDecodeError, json.JSONDecodeError, binascii.Error) as exc:
+        raise ControlError(
+            "repository cursor is malformed", state="REPO_CURSOR_INVALID"
+        ) from exc
+    expected = {
+        "version", "operation", "commit", "query_sha256", "position",
+        "object_id", "checksum",
+    }
+    if not isinstance(envelope, dict) or set(envelope) != expected:
+        raise ControlError(
+            "repository cursor has an invalid field contract",
+            state="REPO_CURSOR_INVALID",
+        )
+    payload = {key: envelope[key] for key in expected - {"checksum"}}
+    canonical = json.dumps(
+        payload, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    checksum = hashlib.sha256(REPO_CURSOR_DOMAIN + canonical).hexdigest()
+    if not isinstance(envelope["checksum"], str) or not hmac.compare_digest(
+        envelope["checksum"], checksum
+    ):
+        raise ControlError(
+            "repository cursor checksum mismatch", state="REPO_CURSOR_INVALID"
+        )
+    object_id = envelope["object_id"]
+    if not isinstance(envelope["version"], int) \
+            or isinstance(envelope["version"], bool) \
+            or envelope["version"] != REPO_CURSOR_VERSION \
+            or not isinstance(envelope["operation"], str) \
+            or not isinstance(envelope["commit"], str) \
+            or not SHA40.fullmatch(envelope["commit"]) \
+            or not isinstance(envelope["query_sha256"], str) \
+            or not SHA256.fullmatch(envelope["query_sha256"]) \
+            or not isinstance(envelope["position"], int) \
+            or isinstance(envelope["position"], bool) \
+            or envelope["position"] < 0 \
+            or (object_id is not None and (
+                not isinstance(object_id, str) or not SHA40.fullmatch(object_id)
+            )):
+        raise ControlError(
+            "repository cursor values are invalid", state="REPO_CURSOR_INVALID"
+        )
+    if envelope["operation"] != operation \
+            or envelope["query_sha256"] != query_sha256:
+        raise ControlError(
+            "repository cursor does not match this operation and query",
+            state="REPO_CURSOR_IDENTITY_MISMATCH",
+            failure_class="identity",
+            exit_code=3,
+        )
+    return envelope
+
+
+def repo_page_identity(repo, args, operation, query_sha256):
+    ref_commit = resolved_commit(repo, args.ref)
+    token = getattr(args, "cursor", None)
+    if token is None:
+        return ref_commit, ref_commit, 0, None, False
+    cursor = decode_repo_cursor(token, operation, query_sha256)
+    commit = cursor["commit"]
+    resolved_commit(repo, commit)
+    if SHA40.fullmatch(args.ref) and ref_commit != commit:
+        raise ControlError(
+            "explicit ref differs from the repository cursor snapshot",
+            state="REPO_CURSOR_IDENTITY_MISMATCH",
+            failure_class="identity",
+            exit_code=3,
+        )
+    return commit, ref_commit, cursor["position"], cursor["object_id"], ref_commit != commit
+
+
+def strict_utf8(raw, name):
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise ControlError(
+            f"{name} is not UTF-8 text", state="REPO_TEXT_NOT_UTF8",
+            failure_class="contract", exit_code=3,
+        ) from exc
+
+
+def utf8_prefix(raw, maximum_bytes):
+    candidate = raw[:maximum_bytes]
+    while candidate:
+        try:
+            return candidate, candidate.decode("utf-8")
+        except UnicodeDecodeError as exc:
+            if exc.reason != "unexpected end of data":
+                raise ControlError(
+                    "repository text is not UTF-8", state="REPO_TEXT_NOT_UTF8",
+                    failure_class="contract", exit_code=3,
+                ) from exc
+            candidate = candidate[:exc.start]
+    return b"", ""
+
+
+def limited_git_bytes(repo, argv, operation):
+    completed = run_argv_limited(
+        [GIT, "-C", repo, *argv], input_bytes=b"", timeout=60,
+        capture_limit=MAX_REPO_ENUMERATION_BYTES, env=git_environment(60),
+    )
+    if completed.returncode not in {0, 1}:
+        raise ControlError(
+            decode(completed.stderr).strip() or f"git {operation} failed",
+            state="GIT_COMMAND_FAILED", failure_class="command_infra",
+            exit_code=completed.returncode,
+        )
+    if len(completed.stdout) > MAX_REPO_ENUMERATION_BYTES:
+        raise ControlError(
+            "repository enumeration exceeds its internal safety bound",
+            state="REPO_ENUMERATION_TOO_LARGE", failure_class="contract",
+            exit_code=3,
+        )
+    return completed
+
+
+def bounded_string_page(items, start, maximum_results):
+    if start > len(items) or (start == len(items) and start != 0):
+        raise ControlError(
+            "repository cursor position is outside the result set",
+            state="REPO_CURSOR_INVALID",
+        )
+    selected = []
+    used = 2
+    for item in items[start:start + maximum_results]:
+        item_size = serialized_json_bytes(item) + int(bool(selected))
+        if selected and used + item_size > MAX_REPO_PAGE_DATA_BYTES:
+            break
+        if not selected and used + item_size > MAX_REPO_PAGE_DATA_BYTES:
+            raise ControlError(
+                "one repository record exceeds the response budget",
+                state="REPO_RECORD_TOO_LARGE", failure_class="contract",
+                exit_code=3,
+            )
+        selected.append(item)
+        used += item_size
+    return selected
+
+
 def decode(raw):
     return raw.decode("utf-8", errors="replace")
 
@@ -366,51 +582,149 @@ def command_task_context(args):
 def command_repo_show(args):
     repo = safe_path(args.repo, "repo", must_be_repo=True)
     relative = safe_repo_relpath(args.path)
-    commit = resolved_commit(repo, args.ref)
-    raw = git_bytes(repo, "show", f"{commit}:{relative}")
-    if len(raw) > MAX_REPO_TEXT_BYTES:
-        return result(
-            False, "repo-show", "REPO_TEXT_TOO_LARGE", failure_class="contract",
-            exit_code=3, repo=str(repo), ref=args.ref, commit=commit, path=relative,
-            size_bytes=len(raw), max_bytes=MAX_REPO_TEXT_BYTES,
+    query_sha256 = canonical_digest({"path": relative})
+    commit, ref_commit, start, cursor_object, snapshot_drifted = repo_page_identity(
+        repo, args, "repo-show", query_sha256,
+    )
+    object_id = git_output(repo, "rev-parse", f"{commit}:{relative}")
+    if not SHA40.fullmatch(object_id):
+        raise ControlError("repository path did not resolve to one blob")
+    if cursor_object is not None and cursor_object != object_id:
+        raise ControlError(
+            "repository cursor blob identity mismatch",
+            state="REPO_CURSOR_IDENTITY_MISMATCH", failure_class="identity",
+            exit_code=3,
+        )
+    if git_output(repo, "cat-file", "-t", object_id) != "blob":
+        raise ControlError(
+            "repository path is not a blob", state="REPO_PATH_NOT_BLOB",
+            failure_class="contract", exit_code=3,
         )
     try:
-        content = raw.decode("utf-8")
-    except UnicodeDecodeError:
+        size_bytes = int(git_output(repo, "cat-file", "-s", object_id))
+    except ValueError as exc:
+        raise ControlError("repository blob size is invalid") from exc
+    if size_bytes > MAX_REPO_BLOB_BYTES:
         return result(
-            False, "repo-show", "REPO_TEXT_NOT_UTF8", failure_class="contract",
-            exit_code=3, repo=str(repo), ref=args.ref, commit=commit, path=relative,
-            size_bytes=len(raw),
+            False, "repo-show", "REPO_TEXT_TOO_LARGE", failure_class="contract",
+            exit_code=3, repo=str(repo), ref=args.ref, commit=commit,
+            ref_commit=ref_commit, snapshot_drifted=snapshot_drifted,
+            path=relative, blob_oid=object_id, size_bytes=size_bytes,
+            max_bytes=MAX_REPO_BLOB_BYTES, pagination_available=False,
         )
-    return result(
-        True, "repo-show", "REPO_SHOW_OK", repo=str(repo), ref=args.ref,
-        commit=commit, path=relative, size_bytes=len(raw), content=content,
+    raw = git_bytes(repo, "show", f"{commit}:{relative}")
+    if len(raw) != size_bytes:
+        raise ControlError(
+            "repository blob size changed during the read",
+            state="REPO_BLOB_IDENTITY_MISMATCH", failure_class="identity",
+            exit_code=3,
+        )
+    strict_utf8(raw, "repository blob")
+    if start > size_bytes or (getattr(args, "cursor", None) is not None and start == size_bytes):
+        raise ControlError(
+            "repository cursor position is outside the blob",
+            state="REPO_CURSOR_INVALID",
+        )
+    if start < size_bytes and raw[start] & 0xC0 == 0x80:
+        raise ControlError(
+            "repository cursor position splits a UTF-8 character",
+            state="REPO_CURSOR_INVALID",
+        )
+    content_sha256 = hashlib.sha256(raw).hexdigest()
+    page_limit = min(
+        getattr(args, "page_bytes", DEFAULT_REPO_PAGE_BYTES),
+        max(4, size_bytes - start),
     )
+    while True:
+        page_raw, content = utf8_prefix(raw[start:], page_limit)
+        if start < size_bytes and not page_raw:
+            raise ControlError(
+                "repository page could not contain one UTF-8 character",
+                state="REPO_RESPONSE_TOO_LARGE", failure_class="contract",
+                exit_code=3,
+            )
+        end = start + len(page_raw)
+        complete = end == size_bytes
+        next_cursor = None if complete else encode_repo_cursor(
+            "repo-show", commit, query_sha256, end, object_id,
+        )
+        value = result(
+            True, "repo-show", "REPO_SHOW_OK", repo=str(repo), ref=args.ref,
+            schema_version=1, query_sha256=query_sha256,
+            commit=commit, snapshot_commit=commit, ref_commit=ref_commit,
+            snapshot_drifted=snapshot_drifted, path=relative,
+            blob_oid=object_id, content_sha256=content_sha256,
+            collection_sha256=content_sha256,
+            size_bytes=size_bytes, page_start_byte=start, page_end_byte=end,
+            page_bytes=len(page_raw), page_sha256=hashlib.sha256(page_raw).hexdigest(),
+            content=content, complete=complete, page_complete=True,
+            terminal_page=complete, has_more=not complete, next_cursor=next_cursor,
+            truncated=not complete, capture_truncated=False,
+            scientific_completeness="not_assessed",
+        )
+        if serialized_json_bytes(value) <= MAX_REPO_RESPONSE_BYTES:
+            return value
+        if page_limit <= 4:
+            raise ControlError(
+                "repository response metadata exceeds the response budget",
+                state="REPO_RESPONSE_TOO_LARGE", failure_class="contract",
+                exit_code=3,
+            )
+        page_limit = max(4, page_limit // 2)
 
 
 def command_repo_list(args):
     repo = safe_path(args.repo, "repo", must_be_repo=True)
     paths = [safe_repo_relpath(item) for item in args.path]
-    commit = resolved_commit(repo, args.ref)
-    argv = [GIT, "-C", repo, "ls-tree", "-r", "--name-only", commit]
+    query_sha256 = canonical_digest({"paths": paths})
+    commit, ref_commit, start, cursor_object, snapshot_drifted = repo_page_identity(
+        repo, args, "repo-list", query_sha256,
+    )
+    if cursor_object is not None:
+        raise ControlError(
+            "repository list cursor has an unexpected object identity",
+            state="REPO_CURSOR_INVALID",
+        )
+    argv = ["--literal-pathspecs", "ls-tree", "-r", "-z", "--name-only", commit]
     if paths:
         argv.extend(["--", *paths])
-    completed = run_argv_limited(
-        argv, input_bytes=b"", timeout=60, capture_limit=MAX_CAPTURE_BYTES,
-    )
+    completed = limited_git_bytes(repo, argv, "ls-tree")
     if completed.returncode:
         raise ControlError(
             decode(completed.stderr).strip() or "git ls-tree failed",
             state="GIT_COMMAND_FAILED", failure_class="command_infra",
             exit_code=completed.returncode,
         )
-    raw_paths = decode(completed.stdout).splitlines()
-    truncated = len(completed.stdout) > MAX_CAPTURE_BYTES or len(raw_paths) > args.max_results
-    return result(
-        True, "repo-list", "REPO_LIST_OK", repo=str(repo), ref=args.ref,
-        commit=commit, path_filters=paths, paths=raw_paths[:args.max_results],
-        result_count=min(len(raw_paths), args.max_results), truncated=truncated,
+    if completed.stdout and not completed.stdout.endswith(b"\0"):
+        raise ControlError("git ls-tree returned an incomplete record")
+    raw_paths = completed.stdout.split(b"\0")[:-1] if completed.stdout else []
+    all_paths = [strict_utf8(item, "repository path") for item in raw_paths]
+    selected = bounded_string_page(all_paths, start, args.max_results)
+    end = start + len(selected)
+    complete = end == len(all_paths)
+    next_cursor = None if complete else encode_repo_cursor(
+        "repo-list", commit, query_sha256, end,
     )
+    value = result(
+        True, "repo-list", "REPO_LIST_OK", repo=str(repo), ref=args.ref,
+        schema_version=1, query_sha256=query_sha256,
+        commit=commit, snapshot_commit=commit, ref_commit=ref_commit,
+        snapshot_drifted=snapshot_drifted, path_filters=paths, paths=selected,
+        page_start=start, page_count=len(selected), total_count=len(all_paths),
+        result_count=len(selected), collection_sha256=canonical_digest(all_paths),
+        page_sha256=canonical_digest(selected), complete=complete,
+        page_complete=True, terminal_page=complete, has_more=not complete,
+        next_cursor=next_cursor,
+        truncated=not complete, capture_truncated=False,
+        scientific_completeness="not_assessed",
+    )
+    if serialized_json_bytes(value) > MAX_REPO_RESPONSE_BYTES:
+        raise ControlError(
+            "repository list response exceeds the response budget",
+            state="REPO_RESPONSE_TOO_LARGE", failure_class="contract",
+            exit_code=3,
+        )
+    return value
 
 
 def command_repo_search(args):
@@ -423,30 +737,112 @@ def command_repo_search(args):
         terms.append(term)
     if len(terms) > 8:
         raise ControlError("repo-search accepts at most 8 literal terms")
-    commit = resolved_commit(repo, args.ref)
-    argv = [GIT, "-C", repo, "grep", "-n", "-I", "-F"]
+    query_sha256 = canonical_digest({"paths": paths, "terms": terms})
+    commit, ref_commit, start, cursor_object, snapshot_drifted = repo_page_identity(
+        repo, args, "repo-search", query_sha256,
+    )
+    if cursor_object is not None:
+        raise ControlError(
+            "repository search cursor has an unexpected object identity",
+            state="REPO_CURSOR_INVALID",
+        )
+    argv = ["--literal-pathspecs", "grep", "-n", "-I", "-F", "-z"]
     for term in terms:
         argv.extend(["-e", term])
     argv.append(commit)
     if paths:
         argv.extend(["--", *paths])
-    completed = run_argv_limited(
-        argv, input_bytes=b"", timeout=60, capture_limit=MAX_CAPTURE_BYTES,
-    )
-    if completed.returncode not in {0, 1}:
+    completed = limited_git_bytes(repo, argv, "grep")
+    records = []
+    position = 0
+    commit_prefix = f"{commit}:".encode("ascii")
+    while position < len(completed.stdout):
+        path_end = completed.stdout.find(b"\0", position)
+        line_end = completed.stdout.find(b"\0", path_end + 1)
+        content_end = completed.stdout.find(b"\n", line_end + 1)
+        if path_end < 0 or line_end < 0:
+            raise ControlError("git grep returned an incomplete record")
+        if content_end < 0:
+            content_end = len(completed.stdout)
+        raw_header = completed.stdout[position:path_end]
+        raw_line = completed.stdout[path_end + 1:line_end]
+        raw_content = completed.stdout[line_end + 1:content_end]
+        if not raw_header.startswith(commit_prefix) or not raw_line.isdigit():
+            raise ControlError("git grep returned an invalid record")
+        path = strict_utf8(raw_header[len(commit_prefix):], "repository path")
+        content = strict_utf8(raw_content, "repository search line")
+        excerpt_raw, excerpt = utf8_prefix(raw_content, MAX_SEARCH_EXCERPT_BYTES)
+        line_number = int(raw_line)
+        records.append({
+            "path": path,
+            "line": line_number,
+            "excerpt": excerpt,
+            "line_bytes": len(raw_content),
+            "line_sha256": hashlib.sha256(raw_content).hexdigest(),
+            "line_truncated": len(excerpt_raw) < len(raw_content),
+            "display": f"{commit}:{path}:{line_number}:{excerpt}",
+        })
+        position = content_end + int(content_end < len(completed.stdout))
+    if start > len(records) or (start == len(records) and start != 0):
         raise ControlError(
-            decode(completed.stderr).strip() or "git grep failed",
-            state="GIT_COMMAND_FAILED", failure_class="command_infra",
-            exit_code=completed.returncode,
+            "repository cursor position is outside the result set",
+            state="REPO_CURSOR_INVALID",
         )
-    matches = decode(completed.stdout).splitlines() if completed.returncode == 0 else []
-    truncated = len(completed.stdout) > MAX_CAPTURE_BYTES or len(matches) > args.max_results
-    return result(
-        True, "repo-search", "REPO_SEARCH_OK", repo=str(repo), ref=args.ref,
-        commit=commit, terms=terms, path_filters=paths,
-        matches=matches[:args.max_results], result_count=min(len(matches), args.max_results),
-        zero_matches=not matches, truncated=truncated,
+    selected = []
+    used = 2
+    for record in records[start:start + args.max_results]:
+        public_record = {key: value for key, value in record.items() if key != "display"}
+        item_size = serialized_json_bytes(record["display"]) \
+            + serialized_json_bytes(public_record) + 2
+        if selected and used + item_size > MAX_REPO_PAGE_DATA_BYTES:
+            break
+        if not selected and used + item_size > MAX_REPO_PAGE_DATA_BYTES:
+            raise ControlError(
+                "one repository search record exceeds the response budget",
+                state="REPO_RECORD_TOO_LARGE", failure_class="contract",
+                exit_code=3,
+            )
+        selected.append(record)
+        used += item_size
+    end = start + len(selected)
+    complete = end == len(records)
+    next_cursor = None if complete else encode_repo_cursor(
+        "repo-search", commit, query_sha256, end,
     )
+    matches = [item["display"] for item in selected]
+    match_records = [
+        {key: value for key, value in item.items() if key != "display"}
+        for item in selected
+    ]
+    collection_identity = [
+        {
+            "path": item["path"], "line": item["line"],
+            "line_bytes": item["line_bytes"], "line_sha256": item["line_sha256"],
+        }
+        for item in records
+    ]
+    value = result(
+        True, "repo-search", "REPO_SEARCH_OK", repo=str(repo), ref=args.ref,
+        schema_version=1, query_sha256=query_sha256,
+        commit=commit, snapshot_commit=commit, ref_commit=ref_commit,
+        snapshot_drifted=snapshot_drifted, terms=terms, path_filters=paths,
+        matches=matches, match_records=match_records,
+        page_start=start, page_count=len(selected), total_count=len(records),
+        result_count=len(selected), zero_matches=not records,
+        collection_sha256=canonical_digest(collection_identity),
+        page_sha256=canonical_digest(match_records), complete=complete,
+        page_complete=True, terminal_page=complete, has_more=not complete,
+        next_cursor=next_cursor,
+        truncated=not complete, capture_truncated=False,
+        scientific_completeness="not_assessed",
+    )
+    if serialized_json_bytes(value) > MAX_REPO_RESPONSE_BYTES:
+        raise ControlError(
+            "repository search response exceeds the response budget",
+            state="REPO_RESPONSE_TOO_LARGE", failure_class="contract",
+            exit_code=3,
+        )
+    return value
 
 
 def command_sha256(args):
@@ -616,6 +1012,10 @@ def parser():
     repo_show.add_argument("--repo", required=True)
     repo_show.add_argument("--ref", type=require_revision, default="HEAD")
     repo_show.add_argument("--path", required=True)
+    repo_show.add_argument("--cursor")
+    repo_show.add_argument(
+        "--page-bytes", type=bounded_page_bytes, default=DEFAULT_REPO_PAGE_BYTES,
+    )
     repo_show.set_defaults(handler=command_repo_show)
 
     repo_list = commands.add_parser("repo-list")
@@ -623,6 +1023,7 @@ def parser():
     repo_list.add_argument("--ref", type=require_revision, default="HEAD")
     repo_list.add_argument("--path", action="append", default=[])
     repo_list.add_argument("--max-results", type=bounded_count, default=200)
+    repo_list.add_argument("--cursor")
     repo_list.set_defaults(handler=command_repo_list)
 
     repo_search = commands.add_parser("repo-search")
@@ -631,6 +1032,7 @@ def parser():
     repo_search.add_argument("--term", action="append", required=True)
     repo_search.add_argument("--path", action="append", default=[])
     repo_search.add_argument("--max-results", type=bounded_count, default=200)
+    repo_search.add_argument("--cursor")
     repo_search.set_defaults(handler=command_repo_search)
 
     sha = commands.add_parser("sha256")
