@@ -12,9 +12,10 @@ committed cloud acceptance at `1c456b2ffc6d734ed7356a18fd14cffff87fafd6`;
 the compact record is `CONVIR_EVIDENCE_REVIEW_PHASE4A_ACCEPTANCE.json`. It is
 not registered or exposed by MCP. Phase 4B implementation and one bounded real
 pilot are accepted by CONVIR_EVIDENCE_REVIEW_PHASE4B_ACCEPTANCE.json. The
-registered server exposes exactly four tools at version 1.1.0. Main integration,
-registration and the fresh-task WSL-to-cloud check are complete. The tool
-responses do not expose separate MCP initialization-version metadata.
+registered server now exposes exactly five tools at version 1.2.0. Project
+completeness main integration, registration and the restarted fresh-task check
+passed at `c76b4774bb1a9fcfe59f397ffe8278d8bd7d3b96`. The tool responses do not
+expose separate MCP initialization-version metadata.
 
 ## Purpose
 
@@ -62,7 +63,7 @@ contents.
 
 ## P0 Project Completeness Receipt
 
-The candidate P0 layer adds one compact fifth tool at server version `1.2.0`.
+The adopted P0 layer adds one compact fifth tool at server version `1.2.0`.
 It mechanically verifies that every catalog entry belongs to exactly one
 indexed or unindexed partition, then reports terminal schema, binding and chain
 resolution counts. Unindexed entries remain unclassified; schema-1 path-only
@@ -75,8 +76,9 @@ collection. Its own SHA-256 covers the canonical receipt before the hash field
 is added. `scientific_completeness` remains `not_assessed`, and result contents,
 route branches and cloud runtime are explicit exclusions. The tool performs no
 Git mutation or cloud access. This phase does not add a comparison engine,
-change experiment schemas, classify historical directories or register the
-candidate server.
+change experiment schemas or classify historical directories. The restarted
+registered process returned the schema-2 receipt against the exact adopted main
+commit with 232 catalog entries, 55 terminal records and 54 routes.
 
 ## Phase 4A Cloud-Inventory Core
 
@@ -179,10 +181,12 @@ full-suite acceptance covers the unchanged Phase 1/2 implementation, so no
 reassurance rerun is required.
 
 The registered server is active on this host at GitHub main
-`f473c71d792008835371a56563b1c9322dadadea`, source version `1.1.0`, with
-exactly four tools. Its fresh task completed one bounded real inventory summary
-and one hash-bound query without Git or run-root mutation. The schema-2
-registration record is `CONVIR_EVIDENCE_REVIEW_REGISTRATION_CHECK.json`.
+`c76b4774bb1a9fcfe59f397ffe8278d8bd7d3b96`, source version `1.2.0`, with
+exactly five tools. Its restarted fresh task completed one project-completeness
+receipt with no Git, cloud or result-content access. The earlier bounded real
+inventory summary and hash-bound query remain valid for the unchanged cloud
+inventory core. The schema-2 registration record is
+`CONVIR_EVIDENCE_REVIEW_REGISTRATION_CHECK.json`.
 
 This authorizes bounded GitHub discovery and identity-bound inventory of an
 inactive, unprotected terminal. It does not authorize scientific

@@ -2,9 +2,9 @@
   "schema_version": 2,
   "record_type": "non_experiment_infrastructure_registration_check",
   "component": "convir-evidence-review",
-  "audit_date": "2026-07-29",
-  "decision": "REGISTERED_ACTIVE_PHASE4B",
-  "audited_github_main_commit": "f473c71d792008835371a56563b1c9322dadadea",
+  "audit_date": "2026-07-30",
+  "decision": "REGISTERED_ACTIVE_PROJECT_COMPLETENESS",
+  "audited_github_main_commit": "c76b4774bb1a9fcfe59f397ffe8278d8bd7d3b96",
   "phase4b_acceptance": "experience_docx/CONVIR_EVIDENCE_REVIEW_PHASE4B_ACCEPTANCE.json",
   "registered_config": {
     "name": "convir_evidence_review",
@@ -19,15 +19,15 @@
       "/home/ubuntu/workspace/ConvIR-B-evidence-review-main-adoption/experience_docx/tools/convir_evidence_review_mcp.py"
     ],
     "worktree": "/home/ubuntu/workspace/ConvIR-B-evidence-review-main-adoption",
-    "worktree_head_at_check": "f473c71d792008835371a56563b1c9322dadadea",
-    "worktree_remote_main_at_check": "f473c71d792008835371a56563b1c9322dadadea",
+    "worktree_head_at_check": "c76b4774bb1a9fcfe59f397ffe8278d8bd7d3b96",
+    "worktree_remote_main_at_check": "c76b4774bb1a9fcfe59f397ffe8278d8bd7d3b96",
     "worktree_clean_at_check": true
   },
   "source_identity": {
     "catalog": {
       "path": "experience_docx/tools/convir_evidence_catalog.py",
-      "git_blob": "ec105e97134d0f781ef6a2496b11360f835ff5c7",
-      "sha256": "d354410b1465af361b26eae664942c70d3ebb6a466fe8c2cca30e785b1fb12b3"
+      "git_blob": "6c8a125fcd7fc6c0b856aa6338d99edda6defc9a",
+      "sha256": "0c4d70c82d479869a14f0e18081fd38f4a97670e1e905db7bd9f1a080febe617"
     },
     "cloud_inventory": {
       "path": "experience_docx/tools/convir_evidence_cloud_inventory.py",
@@ -36,8 +36,8 @@
     },
     "server": {
       "path": "experience_docx/tools/convir_evidence_review_mcp.py",
-      "git_blob": "af002dfe7363b6d54c5953baad0b5ce9c64a9bfb",
-      "sha256": "630ab98ca2430e7db0fd04ecc7d63fc5bce04b0966d99cc350875aa193ad1054"
+      "git_blob": "0632b2613f3f620b03a4df0fbc92045836d9a60e",
+      "sha256": "35e6355edc2566391d876b3d1051fd3dc1c25dd44c84e08a02f4b3b58d1257be"
     },
     "transport": {
       "path": "experience_docx/tools/convirctl.py",
@@ -47,20 +47,55 @@
   },
   "fresh_task_activation": {
     "status": "PASS",
-    "server_version": "1.1.0",
-    "tool_count": 4,
+    "server_version": "1.2.0",
+    "tool_count": 5,
     "logical_tool_names": [
       "convir_evidence_catalog_summary",
+      "convir_evidence_completeness_receipt",
       "convir_evidence_catalog_query",
       "convir_evidence_cloud_inventory_summary",
       "convir_evidence_cloud_inventory_query"
     ],
     "host_call_aliases": [
       "mcp__convir_evidence_review__convir_evidence_catalog_summary",
+      "mcp__convir_evidence_review__convir_evidence_comple_3104ce0e1bd1",
       "mcp__convir_evidence_review__convir_evidence_catalog_query",
       "mcp__convir_evidence_review__convir_evidence_cloud__04bc8bbdc124",
       "mcp__convir_evidence_review__convir_evidence_cloud__907b2528c9ec"
     ]
+  },
+  "project_completeness_activation": {
+    "state": "PROJECT_GITHUB_COMPLETENESS_RECEIPT_OK",
+    "snapshot_commit": "c76b4774bb1a9fcfe59f397ffe8278d8bd7d3b96",
+    "schema_version": 2,
+    "catalog_sha256": "e83fbd5b91541825a7819232375f303188b81ce3bda92caf431c1033ee504cc7",
+    "collection_sha256": "181d09fe2c4e6080192be99a3cbc286ac44db37aee327938461fd42ec353f92a",
+    "receipt_sha256": "7ee9a4d104870c5fe5c0fc8fe243e33581160c612b5460313a6b8766e1637e09",
+    "entry_partition": {
+      "catalog_entries": 232,
+      "indexed_entries": 54,
+      "unindexed_entries": 178,
+      "indexed_directories": 54,
+      "unindexed_directories": 177,
+      "loose_files": 1,
+      "partition_complete": true
+    },
+    "terminal_partition": {
+      "terminal_records": 55,
+      "routes": 54,
+      "resolved_routes": 53,
+      "unresolved_routes": 1,
+      "schema_1_records": 47,
+      "schema_2_records": 8,
+      "path_only_legacy_records": 47,
+      "sha256_manifest_records": 8,
+      "ambiguous_legacy_routes": 1
+    },
+    "review_completeness": "incomplete",
+    "scientific_completeness": "not_assessed",
+    "git_mutations_performed": false,
+    "cloud_access": 0,
+    "result_content_access": 0
   },
   "bounded_real_activation": {
     "snapshot_commit": "e4ddd62ef1e6b45bec6f70b5197ef6a72de43531",
@@ -101,13 +136,22 @@
     "run_root_writes": 0,
     "git_mutations": 0
   },
-  "historical_registration": {
-    "server_version": "1.0.0",
-    "tool_count": 2,
-    "status": "SUPERSEDED_BY_PHASE4B"
-  },
+  "historical_registration": [
+    {
+      "server_version": "1.1.0",
+      "tool_count": 4,
+      "audited_github_main_commit": "f473c71d792008835371a56563b1c9322dadadea",
+      "status": "SUPERSEDED_BY_PROJECT_COMPLETENESS"
+    },
+    {
+      "server_version": "1.0.0",
+      "tool_count": 2,
+      "status": "SUPERSEDED_BY_PHASE4B"
+    }
+  ],
   "authorizes": [
     "BOUNDED_GITHUB_EVIDENCE_DISCOVERY",
+    "PROJECT_GITHUB_COMPLETENESS_RECEIPT",
     "IDENTITY_BOUND_INACTIVE_UNPROTECTED_CLOUD_INVENTORY"
   ],
   "does_not_authorize": [
