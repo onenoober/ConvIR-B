@@ -16,6 +16,7 @@ from typing import Any
 
 import convir_evidence_catalog as catalog
 import convirctl
+import prepare_terminal_archive
 import route_runtime_contract
 
 
@@ -433,9 +434,9 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
         )
 
     closeout = _json_object(closeout_raw, "archived closeout")
-    if closeout.get("schema_version") != 2 or conclusion.get("schema_version") != 1:
+    if closeout.get("schema_version") != 2:
         raise InventoryError(
-            "closeout or conclusion schema differs", state="IDENTITY_CONFLICT"
+            "closeout schema differs", state="IDENTITY_CONFLICT"
         )
     exact_closeout = {
         "route_id": route_id,
@@ -452,12 +453,28 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
                 f"closeout {key} differs from terminal record",
                 state="IDENTITY_CONFLICT",
             )
-    for key in ("route_id", "operation_id", "run_id", "state", "decision", "authorizes"):
-        if conclusion.get(key) != exact_closeout[key]:
-            raise InventoryError(
-                f"conclusion {key} differs from terminal record",
-                state="IDENTITY_CONFLICT",
-            )
+    try:
+        prepare_terminal_archive.validate_conclusion(
+            conclusion_raw, conclusion_path, closeout
+        )
+    except prepare_terminal_archive.TerminalArchiveError as exc:
+        raise InventoryError(
+            f"archived conclusion is invalid: {exc}",
+            state="IDENTITY_CONFLICT",
+        ) from exc
+    conclusion_schema_version = conclusion.get("schema_version")
+    if conclusion_schema_version is not None and (
+        type(conclusion_schema_version) is not int
+        or conclusion_schema_version not in {1, 2}
+    ):
+        raise InventoryError(
+            "conclusion schema is unsupported", state="IDENTITY_CONFLICT"
+        )
+    conclusion_schema_state = {
+        None: "LEGACY_UNVERSIONED",
+        1: "LEGACY_V1",
+        2: "CURRENT_V2",
+    }[conclusion_schema_version]
     runner_sha256 = _require_sha(
         closeout.get("runner_sha256"), SHA256, "closeout.runner_sha256",
         state="IDENTITY_CONFLICT", exit_code=3,
@@ -589,6 +606,10 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
         "manifest_sha256": hashlib.sha256(manifest_raw).hexdigest(),
         "runtime_spec_sha256": hashlib.sha256(runtime_raw).hexdigest(),
         "closeout_sha256": record["closeout_sha256"],
+        "terminal_schema_version": record["schema_version"],
+        "closeout_schema_version": closeout["schema_version"],
+        "conclusion_schema_version": conclusion_schema_version,
+        "conclusion_schema_state": conclusion_schema_state,
         "runner_sha256": runner_sha256,
         "closeout_filename": closeout_name,
         "evidence_role": evidence_role,

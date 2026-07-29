@@ -80,7 +80,7 @@ if [[ $focused_rc -ne 0 ]]; then
   exit "$focused_rc"
 fi
 focused_count=$(sed -nE 's/^Ran ([0-9]+) tests?.*/\1/p' "$focused_stderr" | tail -n 1)
-test "$focused_count" = 16
+test "$focused_count" = 18
 
 stdout=$work/unittest.stdout
 stderr=$work/unittest.stderr
@@ -97,7 +97,7 @@ if [[ $rc -ne 0 ]]; then
 fi
 test_count=$(sed -nE 's/^Ran ([0-9]+) tests?.*/\1/p' "$stderr" | tail -n 1)
 [[ "$test_count" =~ ^[0-9]+$ ]]
-test "$test_count" -ge 299
+test "$test_count" -ge 301
 
 TMPDIR="$work/tmp" CONVIR_EVIDENCE_LOCAL_WORKSPACE_ROOT="$runtime_root" \
 PYTHONPATH="$tools" "$python" - "$server" "$work/repo" "$main_tip" <<'PY'
@@ -120,6 +120,7 @@ assert loaded["collection_sha256"] == "181d09fe2c4e6080192be99a3cbc286ac44db37ae
 _, records, _ = catalog.load_terminal_records(repo, main_tip)
 schema2 = [record for record in records if record["schema_version"] == 2]
 assert len(schema2) == 8
+conclusion_schema_states = []
 for record in schema2:
     binding = inventory.prepare_terminal_binding(
         repo, main_tip, loaded["catalog_sha256"], record["record_sha256"]
@@ -128,9 +129,15 @@ for record in schema2:
     assert binding["state"] == "TERMINAL_BINDING_VERIFIED"
     assert binding["run_id"] == binding["output_id"]
     assert binding["scientific_completeness"] == "not_assessed"
+    assert binding["terminal_schema_version"] == 2
+    assert binding["closeout_schema_version"] == 2
+    conclusion_schema_states.append(binding["conclusion_schema_state"])
     assert binding["run_root"] == (
         f"{inventory.REMOTE_RUNS}/{binding['route_id']}/{binding['output_id']}"
     )
+assert sorted(conclusion_schema_states) == (
+    ["LEGACY_UNVERSIONED"] + ["LEGACY_V1"] * 7
+)
 
 requests = [
     {
@@ -187,5 +194,5 @@ cmp -s "$refs_before" "$refs_after"
 cmp -s "$config_before" "$config_after"
 trap - EXIT
 cleanup_work
-printf 'CONVIR_EVIDENCE_REVIEW_PHASE4A_CLOUD_OK candidate=%s github_main=%s tests=%s focused_tests=%s tools=2 schema2_bindings=8 git_mutations=0 existing_experiment_runtime_state_access=0 model_calls=0 gpu_access=0 dataset_access=0 protected_data_access=0\n' \
+printf 'CONVIR_EVIDENCE_REVIEW_PHASE4A_CLOUD_OK candidate=%s github_main=%s tests=%s focused_tests=%s tools=2 schema2_bindings=8 conclusion_v2=0 conclusion_legacy_v1=7 conclusion_legacy_unversioned=1 git_mutations=0 existing_experiment_runtime_state_access=0 model_calls=0 gpu_access=0 dataset_access=0 protected_data_access=0\n' \
   "$candidate" "$main_tip" "$test_count" "$focused_count"

@@ -54,6 +54,7 @@ class SyntheticTerminal:
     def build(self, *, terminal_schema=2, output_id=None,
               manifest_closeout=None, closeout_overrides=None,
               conclusion_overrides=None, closeout_evidence_overrides=None,
+              conclusion_schema=2,
               evidence_role="development_screening", permissions=None,
               protected_touches=None, tamper_result=False,
               include_unmapped=False, duplicate_runtime_mapping=False,
@@ -213,7 +214,6 @@ class SyntheticTerminal:
         closeout.update(closeout_overrides or {})
         closeout_raw = raw_json(closeout)
         conclusion = {
-            "schema_version": 1,
             "route_id": self.route_id,
             "operation_id": self.operation_id,
             "run_id": self.run_id,
@@ -221,7 +221,12 @@ class SyntheticTerminal:
             "decision": "A0_PASS",
             "authorizes": "NEXT_STAGE",
             "primary_result": "synthetic",
+            "gate_reasons": ["synthetic gate passed"],
+            "competing_explanation": "synthetic identity-only fixture",
+            "limitations": ["synthetic evidence only"],
         }
+        if conclusion_schema is not None:
+            conclusion["schema_version"] = conclusion_schema
         conclusion.update(conclusion_overrides or {})
         conclusion_raw = raw_json(conclusion)
         record = {
@@ -363,6 +368,10 @@ class EvidenceCloudInventoryTests(unittest.TestCase):
         )
         self.assertEqual(1, len(binding["expected_evidence"]))
         self.assertEqual("workload/metric.json", binding["expected_evidence"][0]["source_relpath"])
+        self.assertEqual(2, binding["terminal_schema_version"])
+        self.assertEqual(2, binding["closeout_schema_version"])
+        self.assertEqual(2, binding["conclusion_schema_version"])
+        self.assertEqual("CURRENT_V2", binding["conclusion_schema_state"])
 
         loaded = catalog.load_catalog(self.fixture.repo, snapshot["commit"])
         public = loaded["entries"][0]["routes"][0]["terminals"][0]
@@ -373,6 +382,44 @@ class EvidenceCloudInventoryTests(unittest.TestCase):
         )
         self.assertEqual(7, len(records[0]["contract_bundle"]))
         self.assertEqual(1, len(records[0]["result_files"]))
+
+    def test_historical_conclusion_schemas_remain_explicit_and_readable(self):
+        for schema_version, expected_state in (
+            (1, "LEGACY_V1"),
+            (None, "LEGACY_UNVERSIONED"),
+        ):
+            with self.subTest(schema_version=schema_version):
+                with tempfile.TemporaryDirectory(
+                    prefix="convir legacy conclusion "
+                ) as root:
+                    fixture = SyntheticTerminal(root)
+                    snapshot = fixture.build(conclusion_schema=schema_version)
+                    binding = fixture.prepare(snapshot)
+                    self.assertTrue(binding["eligible"])
+                    self.assertEqual(
+                        schema_version, binding["conclusion_schema_version"]
+                    )
+                    self.assertEqual(
+                        expected_state, binding["conclusion_schema_state"]
+                    )
+
+    def test_conclusion_contract_and_unknown_schema_fail_closed(self):
+        cases = (
+            {"conclusion_schema": 3},
+            {"conclusion_overrides": {"gate_reasons": []}},
+            {"conclusion_overrides": {"competing_explanation": ""}},
+            {"conclusion_overrides": {"limitations": []}},
+        )
+        for index, kwargs in enumerate(cases):
+            with self.subTest(case=index):
+                with tempfile.TemporaryDirectory(
+                    prefix="convir invalid conclusion "
+                ) as root:
+                    fixture = SyntheticTerminal(root)
+                    snapshot = fixture.build(**kwargs)
+                    with self.assertRaises(inventory.InventoryError) as caught:
+                        fixture.prepare(snapshot)
+                    self.assertEqual("IDENTITY_CONFLICT", caught.exception.state)
 
     def test_one_runtime_source_may_map_to_multiple_archived_destinations(self):
         snapshot = self.fixture.build(shared_source_mapping=True)

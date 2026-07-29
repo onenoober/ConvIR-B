@@ -66,6 +66,13 @@ formal results and their SHA/byte identities, including:
 - the full schema-2 runtime contract passes the repository's authoritative
   validator and is complete for required formal files.
 
+Terminal-record and closeout schema versions are both exactly 2. A current
+synthetic conclusion uses schema 2, while immutable historical conclusions with
+schema 1 or no version remain explicitly labeled `LEGACY_V1` or
+`LEGACY_UNVERSIONED`. Conclusion completeness and terminal identity are checked
+through the authoritative terminal-archive validator; a legacy label never
+upgrades or rewrites the archived bytes.
+
 Only that chain may derive
 `/sda/home/wangyuxin/ConvIR-B/runs/{route_id}/{output_id}`. The transport-free
 scanner then accepts an internally resolved root for synthetic testing. It
