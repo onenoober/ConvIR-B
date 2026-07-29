@@ -1,0 +1,87 @@
+{
+  "action_area_distribution": {
+    "keep": 0.7344159325928763,
+    "strengthen": 0.17600153198008425,
+    "weaken": 0.08958253542703945
+  },
+  "calibration_scene_count": 150,
+  "effective_harm_scene_count": 150,
+  "effective_positive_scene_count": 149,
+  "favorable": true,
+  "identity_checks": {
+    "parent_closeout_sha256": true,
+    "parent_inventory_class_match": true,
+    "parent_inventory_sha256": true,
+    "parent_scene_cache_inventory": true,
+    "parent_selected_zero_action": true,
+    "parent_summary_sha256": true,
+    "parent_terminal": true,
+    "parent_test_cache_inventory": true,
+    "protected_assets_absent": true,
+    "train_assignment_digest": true,
+    "train_role_counts": true,
+    "train_roles_disjoint": true
+  },
+  "oracle_selective_frontier": [
+    {
+      "coverage": 0.2655840674071237,
+      "selected_harm_ratio": 0.0,
+      "selected_utility_mean": 2.2614170382251464,
+      "threshold": 0.0
+    },
+    {
+      "coverage": 0.26484105706625816,
+      "selected_harm_ratio": 0.0,
+      "selected_utility_mean": 2.2675851795187225,
+      "threshold": 0.025
+    },
+    {
+      "coverage": 0.26319417847567983,
+      "selected_harm_ratio": 0.0,
+      "selected_utility_mean": 2.281236492508938,
+      "threshold": 0.05
+    },
+    {
+      "coverage": 0.26051321332822674,
+      "selected_harm_ratio": 0.0,
+      "selected_utility_mean": 2.3034231583065616,
+      "threshold": 0.1
+    },
+    {
+      "coverage": 0.25508234392952894,
+      "selected_harm_ratio": 0.0,
+      "selected_utility_mean": 2.348144870366081,
+      "threshold": 0.2
+    }
+  ],
+  "risk_adjusted_action_margin_db": {
+    "mean": 10.585318705249376,
+    "median": 14.899999999999999,
+    "p10": 1.7356995820999146,
+    "p90": 14.899999999999999
+  },
+  "scene_cache_identity": {
+    "directory": "workload/scene_cache",
+    "file_count": 750,
+    "inventory_sha256": "7d498d790b0f4d26fa87a901485423ba97a2d498bc96c6e4f21fef6a09284382",
+    "total_bytes": 3341602500,
+    "valid": true
+  },
+  "schema_version": 1,
+  "soft_target_entropy": {
+    "mean": 0.008405637472874448,
+    "median": 2.1021868895164673e-128,
+    "p10": 2.1021868895164673e-128,
+    "p90": 2.4078307656940897e-14
+  },
+  "test_cache_identity": {
+    "directory": "workload/test_development_cache",
+    "file_count": 400,
+    "inventory_sha256": "af72b61f572ee20c38cd72eeaf2df17ea2169f3a25898e7f8f2d900784fa8c54",
+    "total_bytes": 1726230000,
+    "valid": true
+  },
+  "variant_dominant_action_flip_rate": 0.29,
+  "variant_file_count": 400,
+  "variant_scene_count": 100
+}

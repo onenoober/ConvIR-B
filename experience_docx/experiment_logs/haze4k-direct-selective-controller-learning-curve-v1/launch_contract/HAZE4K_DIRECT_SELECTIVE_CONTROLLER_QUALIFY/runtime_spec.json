@@ -1,0 +1,103 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/haze4k-direct-selective-controller-learning-curve-v1__HAZE4K_DIRECT_SELECTIVE_CONTROLLER_QUALIFY.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/haze4k-direct-selective-controller-learning-curve-v1__HAZE4K_DIRECT_SELECTIVE_CONTROLLER_QUALIFY.json",
+    "cost_contract": {
+      "batch_shape_policy": "bounded",
+      "candidate_schedule": "none",
+      "fixed_overhead_seconds": 600,
+      "formal_iterations": 1053000,
+      "formal_max_wall_seconds": 129600,
+      "max_peak_memory_mib": 14336,
+      "max_seconds_per_iteration": 0.04,
+      "memory_scaling": "constant",
+      "probe_iterations": 9,
+      "production_path": "exact",
+      "safety_factor": 3,
+      "strategy": "fixed_linear_extrapolation",
+      "termination_policy": "fixed_count",
+      "workload_class": "fixed_iteration_map"
+    },
+    "max_seconds": 900,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/run_haze4k_direct_selective_controller_learning_curve.py",
+  "environment": {
+    "CONVIR_ROUTE_CONTROLLER_EPOCHS": "24",
+    "CONVIR_ROUTE_CONTROLLER_WORKERS": "0"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "haze4k_direct_selective_controller_learning_curve_v1_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/direct_controller_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_direct_selective_controller_learning_curve_v1_gate_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/direct_controller_gate_summary.json"
+    },
+    {
+      "destination_filename": "haze4k_direct_selective_controller_learning_curve_v1_target_feasibility.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/direct_controller_target_feasibility.json"
+    },
+    {
+      "destination_filename": "haze4k_direct_selective_controller_learning_curve_v1_curve.csv",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/direct_controller_learning_curve.csv"
+    },
+    {
+      "destination_filename": "haze4k_direct_selective_controller_learning_curve_v1_training_diagnostics.csv",
+      "max_bytes": 524288,
+      "required": true,
+      "source_relpath": "workload/direct_controller_training_diagnostics.csv"
+    },
+    {
+      "destination_filename": "haze4k_direct_selective_controller_learning_curve_v1_oof_scene_metrics.csv",
+      "max_bytes": 1048576,
+      "required": true,
+      "source_relpath": "workload/direct_controller_oof_scene_metrics.csv"
+    },
+    {
+      "destination_filename": "haze4k_direct_selective_controller_learning_curve_v1_subgroup_tails.csv",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/direct_controller_subgroup_tails.csv"
+    },
+    {
+      "destination_filename": "haze4k_direct_selective_controller_learning_curve_v1_intervals.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/direct_controller_intervals.json"
+    },
+    {
+      "destination_filename": "haze4k_direct_selective_controller_learning_curve_v1_raw_inventory.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/direct_controller_raw_inventory.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 129600,
+  "operation_id": "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_QUALIFY",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/haze4k-direct-selective-controller-learning-curve-v1__HAZE4K_DIRECT_SELECTIVE_CONTROLLER_QUALIFY.json",
+    "mode": "formal_precision",
+    "rationale": "The 600-scene OOF population exceeds a conservative 556-scene requirement obtained by inflating the archived planning-SD upper bound for the four-endpoint simultaneous family; observed OOF precision remains mandatory."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "haze4k-direct-selective-controller-learning-curve-v1",
+  "schema_version": 2,
+  "timeout_seconds": 129600,
+  "total_units": 137
+}

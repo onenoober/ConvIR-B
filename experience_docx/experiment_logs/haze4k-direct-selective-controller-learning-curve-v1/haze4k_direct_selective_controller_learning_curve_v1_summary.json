@@ -1,0 +1,1197 @@
+{
+  "coverage_checks": {
+    "completed_unit_ledger_prefinal": true,
+    "ensemble_oof_grid": true,
+    "finite_training": true,
+    "five_fold_three_seed_grid": true,
+    "nested_subsets": true,
+    "training_units": true
+  },
+  "data_roles": {
+    "candidate_confirmation_touched": false,
+    "nh_haze_touched": false,
+    "oof_scenes": 600,
+    "reside_its_ots_touched": false,
+    "target_feasibility_scenes": 150,
+    "variant_stability_scenes": 100
+  },
+  "data_scale": {
+    "interpretation": "positive lower bound supports data limitation; nonpositive upper bound supports structural saturation; otherwise unresolved",
+    "paired_75_to_100_gain_difference": {
+      "estimate": 0.016894602181898765,
+      "family_size": 1,
+      "lower": -0.02444419190332302,
+      "max_half_width": 0.041338794085221786,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260730,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.025,
+      "upper": 0.05797624456012809
+    }
+  },
+  "design": {
+    "arms": {
+      "frozen": "100-percent-data base-feature direct-policy ablation",
+      "joint": "joint observable encoder and three-action policy optimized with utility and tail harm in one decision objective",
+      "separate": "parameter-matched utility/risk-head control with explicit risk eligibility"
+    },
+    "epochs": 24,
+    "folds": 5,
+    "seeds": 3,
+    "train_sizes": [
+      120,
+      240,
+      360,
+      480
+    ],
+    "training_units": 135
+  },
+  "gate_outcomes": {
+    "actionable_utility": "indeterminate",
+    "activation": "favorable",
+    "coverage": "pass",
+    "data_scale_diagnostic": "indeterminate",
+    "evidence_identity": "pass",
+    "precision": "unmet",
+    "tail_safety": "unsafe",
+    "target_feasibility": "favorable"
+  },
+  "identity_checks": {
+    "parent_closeout_sha256": true,
+    "parent_inventory_class_match": true,
+    "parent_inventory_sha256": true,
+    "parent_scene_cache_inventory": true,
+    "parent_selected_zero_action": true,
+    "parent_summary_sha256": true,
+    "parent_terminal": true,
+    "parent_test_cache_inventory": true,
+    "protected_assets_absent": true,
+    "train_assignment_digest": true,
+    "train_role_counts": true,
+    "train_roles_disjoint": true
+  },
+  "independent_unit": "original_clear_scene",
+  "learning_curve": [
+    {
+      "action_area": 0.07396288888888888,
+      "active_scene_prevalence": 0.8333333333333334,
+      "arm": "frozen",
+      "cvar10_gain": -0.8303935375726268,
+      "estimate": 0.13030446014841868,
+      "family_size": 9,
+      "lower": 0.046632272434943924,
+      "max_half_width": 0.09175595809857587,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260828,
+      "severe_harm_prevalence": 0.155,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "train_size": 480,
+      "upper": 0.22206041824699455
+    },
+    {
+      "action_area": 0.15046199999999998,
+      "active_scene_prevalence": 0.9716666666666667,
+      "arm": "joint",
+      "cvar10_gain": -2.284258551344666,
+      "estimate": -0.2282391144280202,
+      "family_size": 9,
+      "lower": -0.34313519813512444,
+      "max_half_width": 0.11489608370710425,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260829,
+      "severe_harm_prevalence": 0.49666666666666665,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "train_size": 120,
+      "upper": -0.11353619598133106
+    },
+    {
+      "action_area": 0.1587528888888889,
+      "active_scene_prevalence": 0.9716666666666667,
+      "arm": "joint",
+      "cvar10_gain": -2.255717525972315,
+      "estimate": -0.1274139290810915,
+      "family_size": 9,
+      "lower": -0.2563753192008647,
+      "max_half_width": 0.13279899716716834,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260830,
+      "severe_harm_prevalence": 0.45666666666666667,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "train_size": 240,
+      "upper": 0.00538506808607682
+    },
+    {
+      "action_area": 0.13152711111111112,
+      "active_scene_prevalence": 0.9633333333333334,
+      "arm": "joint",
+      "cvar10_gain": -1.6571264806876764,
+      "estimate": 0.01841272009886652,
+      "family_size": 9,
+      "lower": -0.08831824534801966,
+      "max_half_width": 0.11131669212238113,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260831,
+      "severe_harm_prevalence": 0.35833333333333334,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "train_size": 360,
+      "upper": 0.12972941222124765
+    },
+    {
+      "action_area": 0.12021666666666668,
+      "active_scene_prevalence": 0.955,
+      "arm": "joint",
+      "cvar10_gain": -1.5296057114410404,
+      "estimate": 0.03530732228076529,
+      "family_size": 9,
+      "lower": -0.06538087726934821,
+      "max_half_width": 0.104755641699134,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260832,
+      "severe_harm_prevalence": 0.305,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "train_size": 480,
+      "upper": 0.14006296397989929
+    },
+    {
+      "action_area": 0.014519333333333334,
+      "active_scene_prevalence": 0.355,
+      "arm": "separate",
+      "cvar10_gain": -0.31547017764072477,
+      "estimate": 0.014822432705282142,
+      "family_size": 9,
+      "lower": -0.01366436841820112,
+      "max_half_width": 0.030014995130369405,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260833,
+      "severe_harm_prevalence": 0.055,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "train_size": 120,
+      "upper": 0.04483742783565155
+    },
+    {
+      "action_area": 0.012756,
+      "active_scene_prevalence": 0.2783333333333333,
+      "arm": "separate",
+      "cvar10_gain": -0.2802259109242796,
+      "estimate": 0.030791311062880092,
+      "family_size": 9,
+      "lower": -0.0037066037834803914,
+      "max_half_width": 0.03827867926038095,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260834,
+      "severe_harm_prevalence": 0.04,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "train_size": 240,
+      "upper": 0.06906999032326104
+    },
+    {
+      "action_area": 0.015159111111111111,
+      "active_scene_prevalence": 0.275,
+      "arm": "separate",
+      "cvar10_gain": -0.2860896093605673,
+      "estimate": 0.05132754901627549,
+      "family_size": 9,
+      "lower": 0.008690216285502341,
+      "max_half_width": 0.04845630221688462,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260835,
+      "severe_harm_prevalence": 0.045,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "train_size": 360,
+      "upper": 0.09978385123316011
+    },
+    {
+      "action_area": 0.010951777777777777,
+      "active_scene_prevalence": 0.20166666666666666,
+      "arm": "separate",
+      "cvar10_gain": -0.14333516081988004,
+      "estimate": 0.0570304590627997,
+      "family_size": 9,
+      "lower": 0.021029645305517437,
+      "max_half_width": 0.043521062690401555,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260836,
+      "severe_harm_prevalence": 0.021666666666666667,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.002777777777777778,
+      "train_size": 480,
+      "upper": 0.10055152175320126
+    }
+  ],
+  "limitations": [
+    "All outcomes are development-screening; candidate-confirmation, canary, locked-test, NH-Haze, ITS, and OTS were not read.",
+    "Only 600 original-clear scenes are independent primary units; tiles, actions, folds, seeds, and variants never increase n.",
+    "The 150 calibration-role scenes are used only for the frozen pre-training target-feasibility certificate.",
+    "The 100 historical test-development scenes are used only for four-variant target-stability diagnostics.",
+    "Raw parent caches, new checkpoints, and unit predictions remain cloud-only and are bound by SHA inventories."
+  ],
+  "marker": "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_LEARNING_CURVE_COMPLETE",
+  "matched_controls": {
+    "joint_minus_frozen": {
+      "estimate": -0.09499713786765339,
+      "family_size": 2,
+      "lower": -0.14228592989449015,
+      "max_half_width": 0.047288792026836765,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260731,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.0125,
+      "upper": -0.04986270568277835
+    },
+    "joint_minus_separate": {
+      "estimate": -0.021723136782034413,
+      "family_size": 2,
+      "lower": -0.0872494883464332,
+      "max_half_width": 0.06619587208986884,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260731,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.0125,
+      "upper": 0.044472735307834424
+    }
+  },
+  "operation_id": "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_QUALIFY",
+  "precision": {
+    "met": false,
+    "observed_half_width_db": 0.09503504091265842,
+    "target_half_width_db": 0.025
+  },
+  "primary": {
+    "action_area": {
+      "estimate": 0.12021666666666668,
+      "family_size": 4,
+      "lower": 0.10804953888888888,
+      "max_half_width": 0.012871784722222238,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260728,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.13308845138888892
+    },
+    "action_distribution": {
+      "keep": 0.8797833333333331,
+      "strengthen": 0.08977666666666664,
+      "weaken": 0.03043999999999999
+    },
+    "active_scene": {
+      "critical_value": 2.4977054744123737,
+      "estimate": 0.955,
+      "family_size": 4,
+      "lower": 0.9287734291588068,
+      "successes": 573,
+      "total": 600,
+      "upper": 0.9718621632788851
+    },
+    "cvar10_gain": -1.5296057114410404,
+    "gain": {
+      "estimate": 0.03530732228076529,
+      "family_size": 4,
+      "lower": -0.05597256137943377,
+      "max_half_width": 0.09503504091265842,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260728,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.1303423631934237
+    },
+    "image_safety": {
+      "color": {
+        "critical_value": 2.4977054744123737,
+        "estimate": 0.008333333333333333,
+        "family_size": 4,
+        "lower": 0.0028743590322829957,
+        "successes": 5,
+        "total": 600,
+        "upper": 0.02391135609914891
+      },
+      "psnr": {
+        "critical_value": 2.4977054744123737,
+        "estimate": 0.305,
+        "family_size": 4,
+        "lower": 0.2602587426522191,
+        "successes": 183,
+        "total": 600,
+        "upper": 0.3537545748744844
+      },
+      "ssim": {
+        "critical_value": 2.4977054744123737,
+        "estimate": 0.03333333333333333,
+        "family_size": 4,
+        "lower": 0.01930353736552525,
+        "successes": 20,
+        "total": 600,
+        "upper": 0.05696764987786775
+      }
+    },
+    "material_scene": {
+      "critical_value": 1.9599639845400536,
+      "estimate": 0.345,
+      "family_size": 1,
+      "lower": 0.30805774036031924,
+      "successes": 207,
+      "total": 600,
+      "upper": 0.38391438695392804
+    },
+    "selected_area_harm": {
+      "estimate": 0.4660425970456888,
+      "family_size": 4,
+      "lower": 0.42851999817000336,
+      "resamples": 100000,
+      "selected_area_positive": true,
+      "stratified_by": "fold",
+      "upper": 0.503902625129084
+    }
+  },
+  "raw_artifact_inventory": {
+    "classes": {
+      "feasibility_receipt": {
+        "file_count": 1,
+        "inventory_sha256": "d5165f6d9f0a8b52577586740c7f1ace787dfc2e2c2a421edf8e5ac1720b0e5f",
+        "total_bytes": 2542
+      },
+      "head_checkpoint": {
+        "file_count": 135,
+        "inventory_sha256": "9e4a598fff5be9a267860915fe7d47183d6836dfa2aaaca90bc0bb4c131919ed",
+        "total_bytes": 151842108
+      },
+      "unit_prediction": {
+        "file_count": 135,
+        "inventory_sha256": "8e0f925148ee7f568e6cee3f7b0f04238c019fbc67b5ba8cdc3ac28dc6328dc4",
+        "total_bytes": 5273910
+      },
+      "unit_receipt": {
+        "file_count": 135,
+        "inventory_sha256": "86d09f8afcbbbec4cb322e7a4398236672ebb60c399d57c0cb7f3dd9936b069d",
+        "total_bytes": 93806
+      }
+    },
+    "file_count": 406,
+    "github_exclusions": [
+      "datasets",
+      "weights",
+      "checkpoints",
+      "images",
+      "arrays",
+      "raw_predictions",
+      "feature_tables",
+      "action_maps"
+    ],
+    "head_checkpoints": [
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_0_seed_0.pt",
+        "sha256": "08f404a10c4e1285b4c4258f37c8f10a1a3b9991e184faa7882c1fee12c2fe10"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_0_seed_1.pt",
+        "sha256": "86de25ece5fee5efc2fc607ff986fb809b787903a0a2ae0e9f2849e77069c3f4"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_0_seed_2.pt",
+        "sha256": "9203ac8f7c6e6451f150e3663a01a836ffce2da820cdd5a287c38442139ca83f"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_0_seed_0.pt",
+        "sha256": "b94e66f9821813a1d2b3d6b535c4eaac8f3115bd30b8f02efff815d919002c58"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_0_seed_1.pt",
+        "sha256": "af7645fc6227cb5f2b8e77c3c06fc4b6caea58ae2b41707f9e7a66fc434f62b5"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_0_seed_2.pt",
+        "sha256": "c0dc92ce433d079fcb5a691256e6a540afe939a61f8d26617be3ebc21a15efa0"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_0_seed_0.pt",
+        "sha256": "bd504cdf50a8c02237b5abb323d35f3581d4ae4097d4073d06730f7d58e8351b"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_0_seed_1.pt",
+        "sha256": "5946ab729e06e87e1747b60506d66447785565b3e420d349817939469bb71d0a"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_0_seed_2.pt",
+        "sha256": "3e414f9ee593e64dbfbed370776a705d086f3bb32d2f2dc56565726c86fa78f1"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_0_seed_0.pt",
+        "sha256": "3276c4dbf17ec9a6b1250d95abd4a1cd948f53b7ed206f90943beb891ab443e4"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_0_seed_1.pt",
+        "sha256": "e1f6edcc9dbccddf2ddb9a0e2111ff24a569c2f27f17ebfda9af2833a95eeddf"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_0_seed_2.pt",
+        "sha256": "5cc9ac50467ca1953831fc93f2532963d585836b618be25aa4bdfc4ab7c6c03f"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_0_seed_0.pt",
+        "sha256": "246a49cf61edec18d2007bf2a80427315a0d2ec88a881a344bec4cf1e5b9b894"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_0_seed_1.pt",
+        "sha256": "29b54299e56bae2f77545b883fa9de9c858f8e89bed3ee63202560913cf01017"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_0_seed_2.pt",
+        "sha256": "3c1c05f505355986189d99c40c8e88101cd88b0ca226e870f069653b390210f4"
+      },
+      {
+        "bytes": 1192006,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_0_seed_0.pt",
+        "sha256": "a6ad3f953fd98991514edc05e84c7375804c5b3280acb8a2f9bf45058c309930"
+      },
+      {
+        "bytes": 1192006,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_0_seed_1.pt",
+        "sha256": "d5fd40021e9fc8f97d5ea07c84ea58e382cab8c4adcd5e82a1f1fcd3a9b759cb"
+      },
+      {
+        "bytes": 1192006,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_0_seed_2.pt",
+        "sha256": "2e958b3769b8e945703a486d12dc618637945faec668778c2c72ef473ab2240a"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_0_seed_0.pt",
+        "sha256": "e1c29403e83ba559de234d78baa79ecaeadb1ca0ed2db133a969c8140132e0e1"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_0_seed_1.pt",
+        "sha256": "a9f2fd141270c832758d9b314506a565796f499159a7fbb8fa0830d13f4e2157"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_0_seed_2.pt",
+        "sha256": "973d26108fd1064f89e7555b0e2159fd1fad38dab1a9896459df5675b2303afd"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_0_seed_0.pt",
+        "sha256": "919bc592c46c33460cc80c6743c92bc497506af20978a9241256555bd336e318"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_0_seed_1.pt",
+        "sha256": "be42096e3b8226af3f3c24893d79621906ea0768d15918ba337d28783508f038"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_0_seed_2.pt",
+        "sha256": "5536f4df7d571ce9439941ad95bf501165d9541199f1c7233392ace67b64c47c"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_0_seed_0.pt",
+        "sha256": "47ca001ea5676308e2c8717312f0af8897fac62f5173f765599470aa517328dd"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_0_seed_1.pt",
+        "sha256": "37e7f24a396bedf3a3fb8153fa28b8db32a4d4466af88504718613ead1459758"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_0_seed_2.pt",
+        "sha256": "ac418168d0b2fa3ff721dca8b9f8acaa0974aaa37b29a3a0c44b885b813bfb99"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_1_seed_0.pt",
+        "sha256": "7665382fb26d12252905a269051a8e6c13b4401ee3062dfc778f1d0e0b59a1c5"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_1_seed_1.pt",
+        "sha256": "9b6ef0db99fa9a7b40c19c34f4cfb43d12baf74c1a58f05a40cd0e8a938fc766"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_1_seed_2.pt",
+        "sha256": "b88355f9e73ec3d9c1037bd06afcd65e0d3bc32105b1c01cce415dc6dc3c00ad"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_1_seed_0.pt",
+        "sha256": "862a50056a6b35d1f01299a2cf618904c2ab05d311c3f8473be385684a39b5b5"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_1_seed_1.pt",
+        "sha256": "b2a4f867c75a33c24bde6459fa66aa44b6d63fa35d47a858a2d1acd01d7f3954"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_1_seed_2.pt",
+        "sha256": "382869b4d0665c4c536fbbe25e66bc9c4de5f43a1a77d09e205235d2f2244217"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_1_seed_0.pt",
+        "sha256": "556a26b1e6745517a68d27b8b4735153a260d279b3d5e5fe2e8ba76ccf560aed"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_1_seed_1.pt",
+        "sha256": "f228705e7c0032e6057f08776f1f1426a92c3cbb9694f664aac7657a8b47010c"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_1_seed_2.pt",
+        "sha256": "ed8cbb0929d925671d894361935ec3894b33f51ac3052f62f78ef305374ac094"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_1_seed_0.pt",
+        "sha256": "3ddb3a3904f15156168433f10d3c59678f879333df5157b913c6d010611c0db2"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_1_seed_1.pt",
+        "sha256": "306113f8d128543f7dc49453fbd6bd6aad5d6387558c83cf9951a7a569e91d6a"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_1_seed_2.pt",
+        "sha256": "08380283bc4a1242aefa4b078b5edd806582f5afb6fc77066aae6075c359a7f6"
+      },
+      {
+        "bytes": 1192006,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_1_seed_0.pt",
+        "sha256": "49cbc1a2a91e4f9a88af54c6aa021a9d58c17ec0520a2e4b3f5347072eea6106"
+      },
+      {
+        "bytes": 1192006,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_1_seed_1.pt",
+        "sha256": "c830c615ab2e9231899873befa349ffb4afd2bc35ce1fe26557e5388048b739e"
+      },
+      {
+        "bytes": 1192006,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_1_seed_2.pt",
+        "sha256": "d88a1ee3562b49f3f3bc33013e211fcca60c87987dc51523e928eacacec4b067"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_1_seed_0.pt",
+        "sha256": "abdec944f0e94ab5453c931d70cb0f02a341119f263987b7673cea8321fe71d8"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_1_seed_1.pt",
+        "sha256": "f57bdef40353ca4b8b1ebac122ec64a12e5b7abb7376806a33e1562b6fa705f9"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_1_seed_2.pt",
+        "sha256": "605a838332563d21c968b1f712f89362dbb8ea25abfc1b93d65b58b000305c57"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_1_seed_0.pt",
+        "sha256": "8e0578f41c5e37d1642d63493a9a49041570806c38a561a1d5e402fd74a86c74"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_1_seed_1.pt",
+        "sha256": "f0f6b1e096ff0f2f2fcfab150e132511850306000cca64a0efea4aea9f5c4538"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_1_seed_2.pt",
+        "sha256": "119f16d6abb0044f47afcf0be75af85d5d365b964b07c43988aabf1ae336dade"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_1_seed_0.pt",
+        "sha256": "0a8b7f300cb1d5fab600726ffe5508525a6c4b6f8ef1160dabdf226f647ace34"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_1_seed_1.pt",
+        "sha256": "8b3d39a0fae70f5a7d3eb47300d8f2439d5d278bd53bffc4e7f4c334b348569c"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_1_seed_2.pt",
+        "sha256": "f211b521b58ee222f5f86868c542a6e19f9444f69925d6201cb42bc76d669649"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_1_seed_0.pt",
+        "sha256": "4620d32f989d2f1fa3d75be270086ac3d63b2954b673fc9cc5c3a6c79e721b71"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_1_seed_1.pt",
+        "sha256": "f5617ae9f62c7872f81b56fbcdb29fa4e72c9c1ea80c77f8ef16307f5559db23"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_1_seed_2.pt",
+        "sha256": "5739426832e6fc94d7442eb9f8119425c99da4d8eec5f3dbb6ed3c6d8c58dbfa"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_2_seed_0.pt",
+        "sha256": "c55772d5174363c79cb0c04c8b802c7894a46ba826a83fe262c03658ee0e1ccf"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_2_seed_1.pt",
+        "sha256": "71defe4b4eb3adfa9faab6fd6a9a376dcab08c04514185a94b5857d288bc0224"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_2_seed_2.pt",
+        "sha256": "9e25be14270a037c796eb6329e3ae394fb5cf3afaa535f9d1500ccd7590af3a0"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_2_seed_0.pt",
+        "sha256": "9f9e8064731782bf54578c872828de92d9fb936fdd059418b13a3197735513b1"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_2_seed_1.pt",
+        "sha256": "20d12b1d80f6f40f397743f1f254b18c37e2c1968b099e8b3ad421a2fc2b56e8"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_2_seed_2.pt",
+        "sha256": "924004381ca70bfdb2e626c36f6c5a79c18a03cc27506e0104401b4822742c27"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_2_seed_0.pt",
+        "sha256": "9d917722fe62afadbd2f24e4f9049adbe59572323785aba3b226829eaa06ea75"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_2_seed_1.pt",
+        "sha256": "8325340af14eb82689373ebc27cfee5b03944bb8d2654cdbf3f8755f5058d3c1"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_2_seed_2.pt",
+        "sha256": "8ba693ed25011d371229f073a0255b976661081ae5094e7d5fdd437474a94fbf"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_2_seed_0.pt",
+        "sha256": "e333183c6f29c9a2bff95e3d3df94136edd4ecccb5ca551aab2b4931f94ffa4e"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_2_seed_1.pt",
+        "sha256": "45b3f41a78fd68698cbf67b4767a6489a33abf14b8ae0d8edeb97d2007ba3ec9"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_2_seed_2.pt",
+        "sha256": "d584cb1f50cf32ead3fbbc84e31b948bf3ee0c632a0b3e626bf50ad2047879ab"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_2_seed_0.pt",
+        "sha256": "8e78815e1d5cc6dcc3b0f595e8aaa68118677408237305ef41ed3b5f8c83412b"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_2_seed_1.pt",
+        "sha256": "7ba91f9d02e34641d3d69628a06035c5fdd0a96e229198e935078f9ff2e43e98"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_2_seed_2.pt",
+        "sha256": "62f3381a541e8b7df3a7c1374e97bc73fd907fc278971c41adb561b05214a1aa"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_2_seed_0.pt",
+        "sha256": "5981db3408c41ab4f54b7171cd98d8c26c416b0360ad1d7f337846a01d9ab8a6"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_2_seed_1.pt",
+        "sha256": "cf2c9dd85c8225f35d0af30501ca8507118b5ab13e3c26cd9dc4b50c6add830d"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_2_seed_2.pt",
+        "sha256": "e6d3bc72f40031ab86eff1195577301ccbb17d7ce2da53ed4508cfb19df1396a"
+      },
+      {
+        "bytes": 1192006,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_2_seed_0.pt",
+        "sha256": "45bf82d184effc86ed779afaf803e305358a27b6d6e3c3c1a47e409eb671d0fe"
+      },
+      {
+        "bytes": 1192006,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_2_seed_1.pt",
+        "sha256": "61ef2a4756ef3a84d57bb0bbeaf0809a75f6f1ffcf7d653a6a9a53438142adf8"
+      },
+      {
+        "bytes": 1192006,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_2_seed_2.pt",
+        "sha256": "187949d595fcf6e39bd355fc9f0a09bfabc7d7079d0b6346af0bc92c6e7a659a"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_2_seed_0.pt",
+        "sha256": "1f82d91c50f8dc490b4dbc98ed2da777deaaa06a7339fa4af262243aa4fe9db1"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_2_seed_1.pt",
+        "sha256": "e7908888025b3a68a3a02a4faaf96b485991598d060feb99d558405084dfc2ed"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_2_seed_2.pt",
+        "sha256": "932f02a002f5f4a56ca0995e701459afff840cd7f86edc107c6b4b8d39f3decc"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_2_seed_0.pt",
+        "sha256": "c0cccf3da8cd87560a7930bc440f7e148fd6561ca8d45154da007c8cac4b2c73"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_2_seed_1.pt",
+        "sha256": "e47231c831cd24eb8411995c0a17c89b84120f333075dfcf66462e0733fc5580"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_2_seed_2.pt",
+        "sha256": "90cef7810fa46746cc393a8f8ada58ed7ac167e629f8dfa739fc0227bfb0e898"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_3_seed_0.pt",
+        "sha256": "a6b8fa35839226ba54bcc3f2f43fc7ad89773cc01c18fdc4f4a3c41d266aed75"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_3_seed_1.pt",
+        "sha256": "7f8da46d21ceb150e6d8047d9ebdc4c01f5b8497543f53a6490d68d7bf436e37"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_3_seed_2.pt",
+        "sha256": "bef80886bf41944d67a785b28aa32310d559bc659f702f31ee9957bdd03cb9b7"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_3_seed_0.pt",
+        "sha256": "52b9bab288e98ac51306ff0b4eb236152b0d8d14d1afe6c81d58f0393c107a07"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_3_seed_1.pt",
+        "sha256": "cc2fea1dc491ad1ad3b2ea117935aa91e075c34dac23575ff1226adb512cfd73"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_3_seed_2.pt",
+        "sha256": "6ca77e16ac7d71ad2003d414ed66149c6c1ef5499a264e4acc03515cb6a02699"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_3_seed_0.pt",
+        "sha256": "b4295f6600799668709105b1452c18c9fb2bab1d708691958b98f533cffed136"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_3_seed_1.pt",
+        "sha256": "0bd270c8542b58996ee93c6b9521222794967d5f24b714996e49581be062eb97"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_3_seed_2.pt",
+        "sha256": "ac7ab5c9e5698f8ffd979461bb1dbae9736f389327c62cfbf9b7e6032c3c8f63"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_3_seed_0.pt",
+        "sha256": "09e78bc58eb36c1fe5f6c81cca92120f83ac9926ac31b2a5aa5c1ab8aa669fde"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_3_seed_1.pt",
+        "sha256": "504ebf2579dcdfe430d354a07a87b0e2462a735f53a086bb16d1c932f90581dc"
+      },
+      {
+        "bytes": 1191102,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_3_seed_2.pt",
+        "sha256": "ebbf7b6b52a5d402f02038c0af6138717e01cc14e51345af0c627f9fc3dea07f"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_3_seed_0.pt",
+        "sha256": "ce44d2e3a4551f37caeeea9dee3ad86c4e88e09c701d6c2a07efa2dee4751001"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_3_seed_1.pt",
+        "sha256": "2c275cdadb33ff7aa23c21797c6a833596dbbc62bd78b3d2a5ea271d506fbdd5"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_3_seed_2.pt",
+        "sha256": "4ee0efad84215b8d8c87e1160a613a892f3b4427c95d6a59b7d6992c253aaed0"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_3_seed_0.pt",
+        "sha256": "087535f7b10887a288af83fa906f9e233e3969355ed3477388cdc727ec5cf6f5"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_3_seed_1.pt",
+        "sha256": "65b7b9f603ec7ef3c0c5d63ad6cadc90466966d556d6668d4b950bb947f15632"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_3_seed_2.pt",
+        "sha256": "df7aa1349fa33bea9c7763debe9711fc446ff3923ef3aa7abed21d7cd86b73c5"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_3_seed_0.pt",
+        "sha256": "01849a5b8ec16e80adaa84da0f1fb39b19dbac4f78e31b104e0e03c1583455cf"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_3_seed_1.pt",
+        "sha256": "e8449c70033329f629354dee262bcc6ba92f77bd0b91bf9121414780afd86331"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_3_seed_2.pt",
+        "sha256": "4cc18ce3b530a600352959bf3e5ffb8535c481d9b75e793dcc5512909bffc8a4"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_3_seed_0.pt",
+        "sha256": "6c92785278cb97c7dd9681b6feedbdfaa6b384f38a558cc7c46b73d3256a2350"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_3_seed_1.pt",
+        "sha256": "8d4b97c475ede18cf569482facf8e9a9b73516df3802d8dd9f961f7e7ac21f59"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_3_seed_2.pt",
+        "sha256": "9513c1f310dd540848b0bb38a6da1e5f887351faedede812ba2d0c0c5f0558e9"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_3_seed_0.pt",
+        "sha256": "5a5136dbaaf98410cdd16cf5c7e867769b15502c93d5d754caf35f38c241082f"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_3_seed_1.pt",
+        "sha256": "01dae0204a99bfbde867de36fc5b484062e716213e97f3aec2c39c86fc499a4a"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_3_seed_2.pt",
+        "sha256": "a5fc23544ecf04f7414d5e2967bb8fdb58693517376f879e419af82e60178576"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_4_seed_0.pt",
+        "sha256": "e6fa7004cdcba2bde45ac098cf05b89f7b60bd3f7119e015909ac41762224d91"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_4_seed_1.pt",
+        "sha256": "a6d20e7b8d98b875bd28ca78694b9c23ad45715986b7ab87759fe37c010263b8"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n120_fold_4_seed_2.pt",
+        "sha256": "07eeaf3d553a1843a4f2d6763ae19ee9e0f827f60488ac78ef57c86113947ef3"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_4_seed_0.pt",
+        "sha256": "9efbabf798a5adb04c1a5840340afa22754d64659d32db4aa9a03b56e2adc59d"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_4_seed_1.pt",
+        "sha256": "5e0224837facbdbe69555672dc0ffee23b86af8d11628755fefefeb05e595863"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n240_fold_4_seed_2.pt",
+        "sha256": "92f3bb8b5531300086d493cf9c95988ba71b993588a1d7eaba46aec9dea58be7"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_4_seed_0.pt",
+        "sha256": "0038180cadb6b3d77c7b61c4a0f82e2b75792cab8a288b689b1ffda8cab440d2"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_4_seed_1.pt",
+        "sha256": "0ef8bc835ef8584cd4672c7e91672a73f81c1c6334bad5a2a7fa325ad3da90f8"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n360_fold_4_seed_2.pt",
+        "sha256": "c49da5a35f8610e3257d6ed25a1cda413f6bf356d6d4e138e46c4fbac85efc23"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_4_seed_0.pt",
+        "sha256": "d38882c0e73aa2de462fbdcc6ac36be6ff327d33637ac0766563c7f3ee4aad50"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_4_seed_1.pt",
+        "sha256": "6026caa315336528be07caef13e9334edb48fe0f84dc7891c0d6d288954db777"
+      },
+      {
+        "bytes": 1191038,
+        "relative_path": "workload/controller_checkpoints/joint_n480_fold_4_seed_2.pt",
+        "sha256": "f800c51aa2f4d0495b723308ed869e79ef4e2eb7b8a41b9c7d7ac47f07182ef6"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_4_seed_0.pt",
+        "sha256": "4390228417cf5403341ade8643cd94bb8bc143f65814f88323c9b6add2da2b46"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_4_seed_1.pt",
+        "sha256": "81b2c92a7dfe0a72cd9fe6fdf7ee1e61582304952f19b1003b682f36cf45ac17"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n120_fold_4_seed_2.pt",
+        "sha256": "e9c877337f253cc26b0f3608f2ea417fe5a449179ebcd09d3d99b2b0ef2ba64a"
+      },
+      {
+        "bytes": 1192006,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_4_seed_0.pt",
+        "sha256": "bf182f62a68b7e849cd09ac9c844428922c1dd35b0de9a0c113e4da0cd47bd92"
+      },
+      {
+        "bytes": 1192006,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_4_seed_1.pt",
+        "sha256": "50f6d5b75b1ca3b97dd325fc87e8b9b69715de0737621568ac88dde0349eb461"
+      },
+      {
+        "bytes": 1192006,
+        "relative_path": "workload/controller_checkpoints/separate_n240_fold_4_seed_2.pt",
+        "sha256": "34789fd6f1f007db10f3c43b9959e81e2d1b84a4a72eadcac204d6b599e78714"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_4_seed_0.pt",
+        "sha256": "fd17b77d3415987032578e0d3e98ac647d5a0ac14bfeb035a4356364611e451d"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_4_seed_1.pt",
+        "sha256": "016d44aaa5e056e9981d4674903824beef0d008512ccedacecfb10d92247d8a3"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n360_fold_4_seed_2.pt",
+        "sha256": "4ed7b80932a7afe7f0b575915264fd95fdad1f0458cebd8380e44b0f7eb92e41"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_4_seed_0.pt",
+        "sha256": "b45f85c62830857205125acd08018ec04287b4139e21b6914adcf41183498661"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_4_seed_1.pt",
+        "sha256": "7bed10d5a04d65957c087ceee22bf0e6f9e1ef71f2eda9e867a4affd252d72c8"
+      },
+      {
+        "bytes": 1192070,
+        "relative_path": "workload/controller_checkpoints/separate_n480_fold_4_seed_2.pt",
+        "sha256": "d3f5a55877f215bfdb5dbf86ecec2adbcfc1d1da574bb2a54968d1c884663101"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_4_seed_0.pt",
+        "sha256": "2b93831875b89d12cc42165c7f855dc5a1faef793b3dec928e309924ab3f454b"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_4_seed_1.pt",
+        "sha256": "d524774eb8e6a46c087187c847674f88abe6c78c54618ec8d93e8bcb4ac5ebd4"
+      },
+      {
+        "bytes": 590324,
+        "relative_path": "workload/controller_checkpoints/frozen_n480_fold_4_seed_2.pt",
+        "sha256": "85b49b92e487938a027fcc4f2d5fb33350c3cc258bd39ef0861e5568a497759c"
+      }
+    ],
+    "inventory_sha256": "8541072d730104e1c3e19a73a8b532094014ed1dd623a161dea75af6ef09e2fd",
+    "raw_retention_scope": "cloud_only",
+    "schema_version": 1,
+    "total_bytes": 157212366
+  },
+  "route_id": "haze4k-direct-selective-controller-learning-curve-v1",
+  "run_id": "haze4k-direct-selective-controller-learning-curve-v1-r1",
+  "schema_version": 1,
+  "scope": "development-only direct selective-controller learning curve",
+  "seed_fold_stability": {
+    "unit_gain_max": 0.24443207634110597,
+    "unit_gain_min": -0.7716319932819905,
+    "unit_gain_std": 0.19570204840600625
+  },
+  "subgroup_tails": [
+    {
+      "action_area": 0.19589244444444442,
+      "cvar10_gain": -1.0309009772244584,
+      "keep_psnr_lower": null,
+      "keep_psnr_upper": 36.19826702626397,
+      "mean_gain": 0.5818702220198089,
+      "scene_count": 150,
+      "selected_harm_ratio": 0.32559355715929295,
+      "severe_harm_prevalence": 0.18,
+      "subgroup": "keep_psnr_q1"
+    },
+    {
+      "action_area": 0.1263368888888889,
+      "cvar10_gain": -1.7816386172616627,
+      "keep_psnr_lower": 36.19826702626397,
+      "keep_psnr_upper": 39.309026686749554,
+      "mean_gain": -0.07435248062917064,
+      "scene_count": 150,
+      "selected_harm_ratio": 0.45214343488811,
+      "severe_harm_prevalence": 0.3333333333333333,
+      "subgroup": "keep_psnr_q2"
+    },
+    {
+      "action_area": 0.09619911111111112,
+      "cvar10_gain": -2.068454477995586,
+      "keep_psnr_lower": 39.309026686749554,
+      "keep_psnr_upper": 42.558963701138836,
+      "mean_gain": -0.26606914839593976,
+      "scene_count": 150,
+      "selected_harm_ratio": 0.5842836257309941,
+      "severe_harm_prevalence": 0.41333333333333333,
+      "subgroup": "keep_psnr_q3"
+    },
+    {
+      "action_area": 0.062438222222222235,
+      "cvar10_gain": -0.8679071585187387,
+      "keep_psnr_lower": 42.558963701138836,
+      "keep_psnr_upper": null,
+      "mean_gain": -0.10021930387163736,
+      "scene_count": 150,
+      "selected_harm_ratio": 0.5864675864675865,
+      "severe_harm_prevalence": 0.29333333333333333,
+      "subgroup": "keep_psnr_q4"
+    }
+  ],
+  "target_feasibility": {
+    "action_area_distribution": {
+      "keep": 0.7344159325928763,
+      "strengthen": 0.17600153198008425,
+      "weaken": 0.08958253542703945
+    },
+    "calibration_scene_count": 150,
+    "effective_harm_scene_count": 150,
+    "effective_positive_scene_count": 149,
+    "favorable": true,
+    "oracle_selective_frontier": [
+      {
+        "coverage": 0.2655840674071237,
+        "selected_harm_ratio": 0.0,
+        "selected_utility_mean": 2.2614170382251464,
+        "threshold": 0.0
+      },
+      {
+        "coverage": 0.26484105706625816,
+        "selected_harm_ratio": 0.0,
+        "selected_utility_mean": 2.2675851795187225,
+        "threshold": 0.025
+      },
+      {
+        "coverage": 0.26319417847567983,
+        "selected_harm_ratio": 0.0,
+        "selected_utility_mean": 2.281236492508938,
+        "threshold": 0.05
+      },
+      {
+        "coverage": 0.26051321332822674,
+        "selected_harm_ratio": 0.0,
+        "selected_utility_mean": 2.3034231583065616,
+        "threshold": 0.1
+      },
+      {
+        "coverage": 0.25508234392952894,
+        "selected_harm_ratio": 0.0,
+        "selected_utility_mean": 2.348144870366081,
+        "threshold": 0.2
+      }
+    ],
+    "risk_adjusted_action_margin_db": {
+      "mean": 10.585318705249376,
+      "median": 14.899999999999999,
+      "p10": 1.7356995820999146,
+      "p90": 14.899999999999999
+    },
+    "schema_version": 1,
+    "soft_target_entropy": {
+      "mean": 0.008405637472874448,
+      "median": 2.1021868895164673e-128,
+      "p10": 2.1021868895164673e-128,
+      "p90": 2.4078307656940897e-14
+    },
+    "variant_dominant_action_flip_rate": 0.29,
+    "variant_file_count": 400,
+    "variant_scene_count": 100
+  }
+}

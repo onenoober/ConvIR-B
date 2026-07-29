@@ -1,0 +1,164 @@
+{
+  "coverage_checks": {
+    "completed_unit_ledger_prefinal": true,
+    "ensemble_oof_grid": true,
+    "finite_training": true,
+    "five_fold_three_seed_grid": true,
+    "nested_subsets": true,
+    "training_units": true
+  },
+  "data_scale": {
+    "interpretation": "positive lower bound supports data limitation; nonpositive upper bound supports structural saturation; otherwise unresolved",
+    "paired_75_to_100_gain_difference": {
+      "estimate": 0.016894602181898765,
+      "family_size": 1,
+      "lower": -0.02444419190332302,
+      "max_half_width": 0.041338794085221786,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260730,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.025,
+      "upper": 0.05797624456012809
+    }
+  },
+  "gate_outcomes": {
+    "actionable_utility": "indeterminate",
+    "activation": "favorable",
+    "coverage": "pass",
+    "data_scale_diagnostic": "indeterminate",
+    "evidence_identity": "pass",
+    "precision": "unmet",
+    "tail_safety": "unsafe",
+    "target_feasibility": "favorable"
+  },
+  "identity_checks": {
+    "parent_closeout_sha256": true,
+    "parent_inventory_class_match": true,
+    "parent_inventory_sha256": true,
+    "parent_scene_cache_inventory": true,
+    "parent_selected_zero_action": true,
+    "parent_summary_sha256": true,
+    "parent_terminal": true,
+    "parent_test_cache_inventory": true,
+    "protected_assets_absent": true,
+    "train_assignment_digest": true,
+    "train_role_counts": true,
+    "train_roles_disjoint": true
+  },
+  "matched_controls": {
+    "joint_minus_frozen": {
+      "estimate": -0.09499713786765339,
+      "family_size": 2,
+      "lower": -0.14228592989449015,
+      "max_half_width": 0.047288792026836765,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260731,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.0125,
+      "upper": -0.04986270568277835
+    },
+    "joint_minus_separate": {
+      "estimate": -0.021723136782034413,
+      "family_size": 2,
+      "lower": -0.0872494883464332,
+      "max_half_width": 0.06619587208986884,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260731,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.0125,
+      "upper": 0.044472735307834424
+    }
+  },
+  "primary": {
+    "action_area": {
+      "estimate": 0.12021666666666668,
+      "family_size": 4,
+      "lower": 0.10804953888888888,
+      "max_half_width": 0.012871784722222238,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260728,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.13308845138888892
+    },
+    "action_distribution": {
+      "keep": 0.8797833333333331,
+      "strengthen": 0.08977666666666664,
+      "weaken": 0.03043999999999999
+    },
+    "active_scene": {
+      "critical_value": 2.4977054744123737,
+      "estimate": 0.955,
+      "family_size": 4,
+      "lower": 0.9287734291588068,
+      "successes": 573,
+      "total": 600,
+      "upper": 0.9718621632788851
+    },
+    "cvar10_gain": -1.5296057114410404,
+    "gain": {
+      "estimate": 0.03530732228076529,
+      "family_size": 4,
+      "lower": -0.05597256137943377,
+      "max_half_width": 0.09503504091265842,
+      "resamples": 100000,
+      "scene_count": 600,
+      "seed": 20260728,
+      "stratified_by": "oof_fold",
+      "tail_probability": 0.00625,
+      "upper": 0.1303423631934237
+    },
+    "image_safety": {
+      "color": {
+        "critical_value": 2.4977054744123737,
+        "estimate": 0.008333333333333333,
+        "family_size": 4,
+        "lower": 0.0028743590322829957,
+        "successes": 5,
+        "total": 600,
+        "upper": 0.02391135609914891
+      },
+      "psnr": {
+        "critical_value": 2.4977054744123737,
+        "estimate": 0.305,
+        "family_size": 4,
+        "lower": 0.2602587426522191,
+        "successes": 183,
+        "total": 600,
+        "upper": 0.3537545748744844
+      },
+      "ssim": {
+        "critical_value": 2.4977054744123737,
+        "estimate": 0.03333333333333333,
+        "family_size": 4,
+        "lower": 0.01930353736552525,
+        "successes": 20,
+        "total": 600,
+        "upper": 0.05696764987786775
+      }
+    },
+    "material_scene": {
+      "critical_value": 1.9599639845400536,
+      "estimate": 0.345,
+      "family_size": 1,
+      "lower": 0.30805774036031924,
+      "successes": 207,
+      "total": 600,
+      "upper": 0.38391438695392804
+    },
+    "selected_area_harm": {
+      "estimate": 0.4660425970456888,
+      "family_size": 4,
+      "lower": 0.42851999817000336,
+      "resamples": 100000,
+      "selected_area_positive": true,
+      "stratified_by": "fold",
+      "upper": 0.503902625129084
+    }
+  },
+  "schema_version": 1
+}

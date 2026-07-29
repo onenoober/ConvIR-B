@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/haze4k-direct-selective-controller-learning-curve-v1.json",
+  "experiment_spec_sha256": "4b321b383d8d6a33ffd9f884dffd731d82a07554700127b6f5068368c741a093",
+  "operations": {
+    "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_QUALIFY": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "DIRECT_CONTROLLER_CONFIRMATION_CONTRACT_AUTHORING_ONLY",
+          "decision": "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "DATA_SCALE_OR_ACTION_FAMILY_EVIDENCE_REVIEW_ONLY",
+          "decision": "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "DIRECT_CONTROLLER_EVIDENCE_REVIEW_ONLY",
+          "decision": "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "haze4k_direct_selective_controller_learning_curve_v1_closeout.json",
+      "heartbeat_timeout_seconds": 900,
+      "max_gpu_utilization_pct": 10,
+      "min_free_gpu_mib": 16000,
+      "mode": "direct_selective_controller_learning_curve",
+      "monitor_profile": "standard",
+      "output_id": "haze4k-direct-selective-controller-learning-curve-v1-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/haze4k_direct_selective_controller_learning_curve_v1.json",
+  "program_contract_sha256": "691f339f38e61699b9d0e535ae2281c665d4bbaa98274cf79ae7ae72e15eeb01",
+  "route_card_relpath": "experience_docx/experiment_cards/haze4k-direct-selective-controller-learning-curve-v1.md",
+  "route_id": "haze4k-direct-selective-controller-learning-curve-v1",
+  "rules_commit": "ca78b49c7ad2248f39a18d7a67a2367745bcc5f9",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_QUALIFY": "experience_docx/scientific_contracts/haze4k-direct-selective-controller-learning-curve-v1__HAZE4K_DIRECT_SELECTIVE_CONTROLLER_QUALIFY.json"
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "authorizes": "DIRECT_CONTROLLER_EVIDENCE_REVIEW_ONLY",
+  "canary_touched": false,
+  "capability_qualification": {
+    "evidence_filename": "haze4k_direct_selective_controller_learning_curve_v1_capability_qualification.json",
+    "identity_sha256": "a547c844c49cb6bf680a262e7c4ec3582c58e0c3394afd6d8d2fb0107d1c960e",
+    "qualification_id": "cap_a547c844c49cb6bf680a262e",
+    "scientific_authorization": "NONE",
+    "status": "PASSED_ENGINEERING"
+  },
+  "capability_reuse": {
+    "engineering_reuse_authorized": false,
+    "identity_sha256": "a547c844c49cb6bf680a262e7c4ec3582c58e0c3394afd6d8d2fb0107d1c960e",
+    "scientific_authorization": "NONE",
+    "status": "CAPABILITY_REUSE_MISS"
+  },
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_INCONCLUSIVE",
+  "decision_rule_id": "utility_unresolved",
+  "details": {
+    "candidate_confirmation_touched": false,
+    "completed_unit_ledger_count": 137,
+    "gate_summary_file": "direct_controller_gate_summary.json",
+    "independent_oof_scenes": 600,
+    "intervals_file": "direct_controller_intervals.json",
+    "learning_curve_file": "direct_controller_learning_curve.csv",
+    "oof_scene_metrics_file": "direct_controller_oof_scene_metrics.csv",
+    "primary_gain_db": 0.03530732228076529,
+    "primary_gain_lower_db": -0.05597256137943377,
+    "primary_gain_upper_db": 0.1303423631934237,
+    "raw_inventory_file": "direct_controller_raw_inventory.json",
+    "subgroup_tails_file": "direct_controller_subgroup_tails.csv",
+    "summary_file": "direct_controller_summary.json",
+    "target_feasibility_scenes": 150,
+    "training_diagnostics_file": "direct_controller_training_diagnostics.csv",
+    "training_units": 135,
+    "variant_stability_scenes": 100
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "haze4k_direct_selective_controller_learning_curve_v1_capability_qualification.json": "67f40c4a2bbbfeb76a0903c2cb537421bf0258ecbc7e21b8110a800b45c36a5b",
+    "haze4k_direct_selective_controller_learning_curve_v1_curve.csv": "0b8fa3ec5870b0bde130b66820f5f1fc0e99214eadf7dbf0a980a603cdfa369d",
+    "haze4k_direct_selective_controller_learning_curve_v1_gate_summary.json": "13b12dd670d49ea4e680c03e4320581a14893e9aa5e282c04d0ddbdbea8f460d",
+    "haze4k_direct_selective_controller_learning_curve_v1_intervals.json": "ef2d256c7b5e52f1da479efdb9e433906d56a5a515c901f94298cf828ab8541e",
+    "haze4k_direct_selective_controller_learning_curve_v1_oof_scene_metrics.csv": "1cc1bab4aea42636c3618eb1de46c060debacd199de71ff2ee1d88f9b800963c",
+    "haze4k_direct_selective_controller_learning_curve_v1_raw_inventory.json": "a7357d228047b94ac58dd30a11a94e0cf9ddfed4c2c3032f5f2b69a737ade079",
+    "haze4k_direct_selective_controller_learning_curve_v1_subgroup_tails.csv": "c25f652d70ae90a5d486f314e97ae5348e4533d6810ce5abce88b5922674c2e7",
+    "haze4k_direct_selective_controller_learning_curve_v1_summary.json": "1f7532e9bd1fbd3ba3c17c04fe99c4c406ffda22c87b9c01666a11bbaba08ab2",
+    "haze4k_direct_selective_controller_learning_curve_v1_target_feasibility.json": "ba76d42f849d42cbdae5b997fe94714e5ebd56a39065b5b8f711fc5304bc66e4",
+    "haze4k_direct_selective_controller_learning_curve_v1_training_diagnostics.csv": "61f13acc2b5b1cb358e6c2dcd4d27a00391d27aaccc6126aaff67606b7b63b86"
+  },
+  "failure_phase": null,
+  "family_effect": "record_only",
+  "gate_outcomes": {
+    "actionable_utility": "indeterminate",
+    "activation": "favorable",
+    "coverage": "pass",
+    "data_scale_diagnostic": "indeterminate",
+    "evidence_identity": "pass",
+    "precision": "unmet",
+    "tail_safety": "unsafe",
+    "target_feasibility": "favorable"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "review_direct_controller_evidence",
+  "operation_id": "HAZE4K_DIRECT_SELECTIVE_CONTROLLER_QUALIFY",
+  "returncode": 0,
+  "route_commit": "fb5ddbfcac3de1e20750cfdb7670477d0c8457b4",
+  "route_id": "haze4k-direct-selective-controller-learning-curve-v1",
+  "run_id": "haze4k-direct-selective-controller-learning-curve-v1-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_INCONCLUSIVE",
+  "terminal_label": "inconclusive",
+  "verified_assets": [
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "action_oracle_closeout",
+      "kind": "file",
+      "sha256": "96357cbaaee5aa338fb0f9c9835a975a27e7f048c78a096fd644e6acdd3e383c"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "action_oracle_summary",
+      "kind": "file",
+      "sha256": "794ef27733f51f2fa70fab5c94bc661564d7b988ef4247a1b26e33a21b4de7cb"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "controller_entrypoint",
+      "kind": "file",
+      "sha256": "96d0c10d18dc4e1c9443d81e4a47cdf4cb22cb2a5ba9461ef20114ce372d91c4"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+    },
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_closeout",
+      "kind": "file",
+      "sha256": "de8771b362d8ead69cc536a8d4e490b464310821f80dcf99344abf9c8483c167"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_raw_inventory",
+      "kind": "file",
+      "sha256": "9a5249f66c994f9c94245145cc65e02da643ada71cc047cd5144db475b3c66ff"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "parent_run_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "parent_summary",
+      "kind": "file",
+      "sha256": "95a6deb9c765d1cb002cd3dcd1b0e967f704e21f9f68da57057b904b08ef433a"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "train_split_closeout",
+      "kind": "file",
+      "sha256": "dde7f4654674f776d2f2b0a687128019e477eea7b29fb8d69f01d621aa6c5887"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "train_split_summary",
+      "kind": "file",
+      "sha256": "a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9"
+    }
+  ]
+}
