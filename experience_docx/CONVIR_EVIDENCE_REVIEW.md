@@ -4,7 +4,10 @@ Date: 2026-07-30
 
 Status: server version `1.3.0` adds the minimal evidence-bundle and bounded
 cloud-text read interfaces to the five accepted discovery/inventory tools.
-Acceptance and main activation are pending. Historical phase status follows.
+Cloud acceptance passed 317 tests at
+`18e5c6eadb7d367fa03af29f59ace0237905ca26`, and that exact commit is on
+GitHub `main`; restarted host activation remains pending. Historical phase
+status follows.
 Phase 3 GitHub-only source passed committed cloud acceptance at
 `ea088ea28d56f034395f53212c6e259b290d87fc`. Presence of the adjacent
 acceptance record on GitHub `main` completes source adoption. The 2026-07-29
