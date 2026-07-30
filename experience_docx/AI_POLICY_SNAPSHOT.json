@@ -73,8 +73,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "dcb2d3c3c28f9ff25a03b476c6d088f88f5faf2cdb28ccdb158a6c1969af3503",
-  "rules_commit": "d447f9aefde2a6314e348ed302c463e77c1e1bdd",
+  "rules_bundle_sha256": "3a827f2b80c3d1e049e70f311fe7d94d1e1c42867e6086d64a0853ca0fc9493d",
+  "rules_commit": "5978be9712dcebce1af3e2941aab7e93d17664f6",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "sources": {
@@ -83,16 +83,16 @@
       "sha256": "c5841515ddd9af8dc1d024c017e9af41955016ae15f6f34086b28d69fbc0b0c2"
     },
     "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md": {
-      "bytes": 4443,
-      "sha256": "e4b87a1f171e5ecedb7d8c022dd3bc780d9bbbfddd3358407975a0171cbbbdce"
+      "bytes": 4735,
+      "sha256": "cccbb9aff0dc34f45ebc8563e57f4f2e57127ab65478ea650d21ccd14cc6b27d"
     },
     "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md": {
       "bytes": 13057,
       "sha256": "8dcbb3d2d72e4ebd4c4be1eace6afc3ca03098b6e6bf8a2be45ea31820e103d7"
     },
     "experience_docx/CONVIR_EVIDENCE_REVIEW.md": {
-      "bytes": 13033,
-      "sha256": "08e936154c900a59e776bbc0b562255b2b4405a188a112662d32cc7fb373d062"
+      "bytes": 13342,
+      "sha256": "11aaf1090f05c6377b10ffb55cccb3bb0717a8ad793b08c1d24d1dea2577f9fc"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
       "bytes": 15495,
@@ -103,16 +103,16 @@
       "sha256": "a77315b59f23ebc224a954a3d1ead07d8f13479355d24dbed777c77e72329921"
     },
     "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md": {
-      "bytes": 10361,
-      "sha256": "a17aa6047f858e2c694acc73daf7673df41972d639783d621b6e58639c94ce07"
+      "bytes": 10624,
+      "sha256": "d67578552d34cbd78fe4ac187e652598078cef30f85771365e8cbb6777029385"
     },
     "experience_docx/ROUTE_READY_FASTPATH.md": {
       "bytes": 13852,
       "sha256": "5718e8fddc4932c33c5cf8d48e998de44669dc0edd40e585c4b2c67db1d25f11"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
-      "bytes": 11652,
-      "sha256": "8b21cf1a8affc0520e5b67acda1bbb703612df32135f140e98ff7ab4a8c52796"
+      "bytes": 12079,
+      "sha256": "112b0eafe3ffc63594ca97905b37b4d5ca4978bca032a86b1089188aa212f563"
     }
   },
   "workflow": [

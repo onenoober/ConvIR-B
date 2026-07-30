@@ -11,7 +11,7 @@ trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
 
 branch=codex/convir-evidence-review-loop-v2
 baseline=479072498570665bdad4c2ae376aa397aea6880c
-rules_commit=d447f9aefde2a6314e348ed302c463e77c1e1bdd
+rules_commit=5978be9712dcebce1af3e2941aab7e93d17664f6
 github=git@github.com:onenoober/ConvIR-B.git
 seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
 python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
