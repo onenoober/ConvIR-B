@@ -46,6 +46,7 @@ RAW_ARTIFACT_EXCLUDED_PATHS = [
 MAX_RAW_ARTIFACT_FILES = 25_000
 REVIEW_FACTS_SUFFIX = "_review_facts.json"
 MAX_REVIEW_FACTS = 128
+REVIEW_FACTS_RULES_FLOOR = "ef1f746859fba84bd76ae74525b05f918994909f"
 ARCHIVE_REMOTE = "github"
 ARCHIVE_TARGET_REF = "main"
 ARCHIVE_BASE_REF = "refs/remotes/github/main"
@@ -64,6 +65,23 @@ def git(repo: Path, *args: str) -> str:
         detail = (completed.stdout + completed.stderr).strip()[:4096]
         raise TerminalArchiveError(f"git {' '.join(args)} failed: {detail}")
     return completed.stdout.strip()
+
+
+def rules_require_review_facts(repo: Path, rules_commit: Any) -> bool:
+    if not isinstance(rules_commit, str) or not SHA40.fullmatch(rules_commit):
+        return False
+    if subprocess.run(
+        [GIT, "cat-file", "-e", f"{REVIEW_FACTS_RULES_FLOOR}^{{commit}}"],
+        cwd=repo, capture_output=True, timeout=30, check=False,
+    ).returncode:
+        return False
+    completed = subprocess.run(
+        [GIT, "merge-base", "--is-ancestor", REVIEW_FACTS_RULES_FLOOR, rules_commit],
+        cwd=repo, capture_output=True, timeout=30, check=False,
+    )
+    if completed.returncode not in {0, 1}:
+        raise TerminalArchiveError("cannot resolve review-facts rules ancestry")
+    return completed.returncode == 0
 
 
 def safe_relative(value: str, *, prefix: str | None = None) -> PurePosixPath:
@@ -684,6 +702,15 @@ def audit_source(
     contract_payloads, contract_bundle, prior_terminal_record = launch_contract_bundle(
         source_repo, route_commit, route_id, operation_id,
     )
+    try:
+        launch_manifest = json.loads(git_blob(
+            source_repo, route_commit, "experience_docx/route_operations.json",
+        ))
+    except json.JSONDecodeError as exc:
+        raise TerminalArchiveError("invalid route operations manifest") from exc
+    review_facts_required = bool(contract_bundle) and rules_require_review_facts(
+        source_repo, launch_manifest.get("rules_commit"),
+    )
     if contract_bundle and closeout.get("schema_version") != 2:
         raise TerminalArchiveError(
             "schema-6 terminal closeout schema_version must equal 2"
@@ -759,6 +786,8 @@ def audit_source(
             payloads[facts_relpath], facts_relpath, closeout, conclusion_value,
             payloads, evidence_sha, closeout_path.name,
         )
+    elif review_facts_required:
+        raise TerminalArchiveError("schema-2 terminal requires review facts")
     elif isinstance(conclusion_value, dict) and any(
         key in conclusion_value for key in ("primary_fact_ids", "gate_fact_ids")
     ):

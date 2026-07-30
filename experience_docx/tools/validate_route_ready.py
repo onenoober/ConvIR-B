@@ -34,6 +34,7 @@ class ReadyError(RuntimeError):
 
 GIT = "/usr/bin/git"
 BASH = "/bin/bash"
+REVIEW_FACTS_RULES_FLOOR = "ef1f746859fba84bd76ae74525b05f918994909f"
 GENERIC_ENGINEERING_TERMINAL = {
     "state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE",
 }
@@ -56,6 +57,23 @@ def command(repo: Path, *args: str, input_text: str | None = None) -> str:
         detail = (completed.stdout + completed.stderr).strip()[:4096]
         raise ReadyError(f"command failed: {' '.join(args)}: {detail}")
     return completed.stdout.strip()
+
+
+def rules_require_review_facts(repo: Path, rules_commit: Any) -> bool:
+    if not isinstance(rules_commit, str) or not ops.SHA40.fullmatch(rules_commit):
+        return False
+    if subprocess.run(
+        [GIT, "cat-file", "-e", f"{REVIEW_FACTS_RULES_FLOOR}^{{commit}}"],
+        cwd=repo, capture_output=True, timeout=30, check=False,
+    ).returncode:
+        return False
+    completed = subprocess.run(
+        [GIT, "merge-base", "--is-ancestor", REVIEW_FACTS_RULES_FLOOR, rules_commit],
+        cwd=repo, capture_output=True, timeout=30, check=False,
+    )
+    if completed.returncode not in {0, 1}:
+        raise ReadyError("cannot resolve review-facts rules ancestry")
+    return completed.returncode == 0
 
 
 def staged_snapshot(repo: Path) -> str:
@@ -551,13 +569,27 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
             destinations = {item["destination_filename"] for item in spec["evidence_files"]}
             if context["closeout_filename"] in destinations:
                 raise ReadyError(f"{operation_id} closeout collides with evidence filename")
+            closeout_suffix = "_closeout.json"
+            if contract is not None and contract["schema_version"] == 2:
+                if not context["closeout_filename"].endswith(closeout_suffix):
+                    raise ReadyError(f"{operation_id} closeout cannot derive raw receipt")
+                raw_receipt_name = (
+                    context["closeout_filename"][:-len(closeout_suffix)]
+                    + "_raw_artifact_receipt.json"
+                )
+                if raw_receipt_name in destinations:
+                    raise ReadyError(
+                        f"{operation_id} raw receipt collides with evidence filename"
+                    )
+                claim_published_name(
+                    published_names, raw_receipt_name,
+                    f"{operation_id} automatic raw receipt",
+                )
             if contract is not None and contract["schema_version"] == 2 \
-                    and manifest.get("rules_commit") == current_main:
-                suffix = "_closeout.json"
-                if not context["closeout_filename"].endswith(suffix):
-                    raise ReadyError(f"{operation_id} closeout cannot derive review facts")
+                    and rules_require_review_facts(repo, manifest.get("rules_commit")):
                 facts_name = (
-                    context["closeout_filename"][:-len(suffix)] + "_review_facts.json"
+                    context["closeout_filename"][:-len(closeout_suffix)]
+                    + "_review_facts.json"
                 )
                 if facts_name not in destinations:
                     raise ReadyError(
@@ -569,7 +601,15 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                 )
             if operation_id in requested:
                 evidence_prefix = f"experience_docx/experiment_logs/{manifest['route_id']}"
-                for filename in destinations | {context["closeout_filename"]}:
+                automatic_names = {
+                    context["closeout_filename"],
+                    *(
+                        [raw_receipt_name]
+                        if contract is not None and contract["schema_version"] == 2
+                        else []
+                    ),
+                }
+                for filename in destinations | automatic_names:
                     if show_optional(repo, snapshot, f"{evidence_prefix}/{filename}") is not None:
                         raise ReadyError(
                             f"{operation_id} would overwrite existing evidence: {filename}"

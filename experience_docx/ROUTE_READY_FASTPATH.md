@@ -122,6 +122,9 @@ to match exactly. Ordinary scientific routes must never use it.
 The runtime spec is the only operation-to-lifecycle adapter. It freezes the
 entrypoint, timeout, expected wall time, evidence role, protected-data
 permissions, recovery policy, environment, assets, and compact evidence files.
+New schema-2 routes inheriting the review-facts rule declare one required
+closeout-derived `*_review_facts.json` evidence destination; route-ready rejects
+its absence or any published-name collision.
 Paths are delivered through `RouteContext`; entrypoints never infer positional
 paths or derive cloud workspaces.
 

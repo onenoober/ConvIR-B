@@ -47,7 +47,7 @@ git -C "$work/repo" checkout --quiet --detach "$candidate"
 test -z "$(git -C "$work/repo" status --porcelain)"
 
 changed=$(git -C "$work/repo" diff --name-only "$baseline" "$candidate")
-expected=$'experience_docx/AI_POLICY_SNAPSHOT.json\nexperience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md\nexperience_docx/CONVIR_EVIDENCE_REVIEW.md\nexperience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md\nexperience_docx/SCIENCE_FASTPATH.md\nexperience_docx/tools/convir_evidence_cloud_inventory.py\nexperience_docx/tools/convir_evidence_review_mcp.py\nexperience_docx/tools/policy_snapshot.py\nexperience_docx/tools/prepare_terminal_archive.py\nexperience_docx/tools/route_lifecycle.py\nexperience_docx/tools/tests/test_convir_evidence_cloud_inventory.py\nexperience_docx/tools/tests/test_convir_evidence_review_mcp.py\nexperience_docx/tools/tests/test_prepare_terminal_archive.py\nexperience_docx/tools/tests/test_route_lifecycle.py\nexperience_docx/tools/validate_convir_evidence_review_main_adoption_cloud.sh'
+expected=$'experience_docx/AI_POLICY_SNAPSHOT.json\nexperience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md\nexperience_docx/CONVIR_EVIDENCE_REVIEW.md\nexperience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md\nexperience_docx/ROUTE_READY_FASTPATH.md\nexperience_docx/SCIENCE_FASTPATH.md\nexperience_docx/tools/convir_evidence_cloud_inventory.py\nexperience_docx/tools/convir_evidence_review_mcp.py\nexperience_docx/tools/policy_snapshot.py\nexperience_docx/tools/prepare_terminal_archive.py\nexperience_docx/tools/route_lifecycle.py\nexperience_docx/tools/tests/test_convir_evidence_cloud_inventory.py\nexperience_docx/tools/tests/test_convir_evidence_review_mcp.py\nexperience_docx/tools/tests/test_prepare_terminal_archive.py\nexperience_docx/tools/tests/test_route_lifecycle.py\nexperience_docx/tools/validate_convir_evidence_review_main_adoption_cloud.sh\nexperience_docx/tools/validate_route_ready.py'
 [[ "$changed" == "$expected" ]]
 
 refs_before=$work/git-refs.before
@@ -66,6 +66,7 @@ server=$tools/convir_evidence_review_mcp.py
   "$server" \
   "$tools/prepare_terminal_archive.py" \
   "$tools/route_lifecycle.py" \
+  "$tools/validate_route_ready.py" \
   "$tests/test_convir_evidence_catalog.py" \
   "$tests/test_convir_evidence_cloud_inventory.py" \
   "$tests/test_convir_evidence_review_mcp.py" \

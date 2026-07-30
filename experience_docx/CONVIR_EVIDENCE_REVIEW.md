@@ -50,6 +50,10 @@ cloud text continuation also supplies the returned full-file SHA-256. An
 unconsumed page or an explicit excluded source remains unread and cannot be
 reported as reviewed. The MCP never fetches Git, so every response reports
 `ref_freshness=not_assessed`.
+When a bundle contains `review_facts`, read it immediately after the scientific
+conclusion, then read only the formal JSON sources needed for the claims under
+review. The archive has already checked its JSON Pointers and source SHA-256;
+the MCP does not recompute or compare scientific results.
 
 ## Boundaries
 

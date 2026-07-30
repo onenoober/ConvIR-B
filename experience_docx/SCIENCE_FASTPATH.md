@@ -135,6 +135,10 @@ One top-level JSON file under the route evidence directory replaces repeated
 result prose across the route card, README, family summary and central Markdown
 index. It contains route_id, operation_id, run_id, state, decision, authorizes,
 primary_result, gate_reasons, competing_explanation and limitations.
+For routes inheriting the review-facts rule, it also names nonempty
+`primary_fact_ids` and `gate_fact_ids`. The matching closeout-derived
+`*_review_facts.json` is required compact evidence and points each key value to
+one closeout-bound JSON result by SHA-256 and JSON Pointer.
 
 The typed closeout remains the machine terminal authority. The conclusion is
 the single human/scientific interpretation and cannot change its terminal

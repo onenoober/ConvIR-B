@@ -66,6 +66,9 @@ fold/cell/operator/bootstrap/risk/strata files remain in GitHub whenever they
 participate in a gate or interpretation. Reject code, binaries, datasets,
 weights, images, arrays, archives, broad logs, raw predictions/features/actions,
 large tables and unrelated paths.
+For future review-facts routes, archive verifies every declared point, interval,
+threshold and gate against its closeout-bound JSON source before accepting the
+terminal. Historical terminals remain readable as legacy unbound evidence.
 
 After a successful terminal push, stop. Heartbeat deletion, branch deletion,
 worktree deletion, output cleanup and evidence reorganization are separate
