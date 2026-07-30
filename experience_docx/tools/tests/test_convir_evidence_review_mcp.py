@@ -205,10 +205,13 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         conclusion_raw = b"not read"
         result_raw = b"not read"
         receipt_raw = b'{"schema_version":2}\n'
+        facts_raw = b'{"schema_version":2,"facts":[]}\n'
         manifest_raw = b"{}\n"
         manifest_path = f"{prefix}/launch_contract/A0/manifest.json"
         receipt_path = f"{prefix}/route_raw_artifact_receipt.json"
+        facts_path = f"{prefix}/route_review_facts.json"
         record["result_paths"].append(receipt_path)
+        record["result_paths"].append(facts_path)
         record.update({
             "schema_version": 2,
             "contract_sha256": hashlib.sha256(contract_raw).hexdigest(),
@@ -228,6 +231,10 @@ class EvidenceReviewMcpTests(unittest.TestCase):
                 "path": receipt_path,
                 "bytes": len(receipt_raw),
                 "sha256": hashlib.sha256(receipt_raw).hexdigest(),
+            }, {
+                "path": facts_path,
+                "bytes": len(facts_raw),
+                "sha256": hashlib.sha256(facts_raw).hexdigest(),
             }],
             "prior_terminal_record": {
                 "prior_closeout_path": None,
@@ -240,6 +247,7 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             record["conclusion_path"]: conclusion_raw,
             record["result_paths"][0]: result_raw,
             receipt_path: receipt_raw,
+            facts_path: facts_raw,
             manifest_path: manifest_raw,
         })
         loaded = review.catalog.load_catalog(self.repo, commit)
@@ -292,6 +300,9 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         ))
         self.assertTrue(any(
             "raw_artifact_receipt" in item["roles"] for item in files
+        ))
+        self.assertTrue(any(
+            "review_facts" in item["roles"] for item in files
         ))
         self.assertTrue(all(item["content_returned"] is False for item in files))
 

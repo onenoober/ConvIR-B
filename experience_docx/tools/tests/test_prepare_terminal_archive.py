@@ -54,6 +54,61 @@ class TerminalArchiveTests(unittest.TestCase):
                 closeout, "a1_closeout.json",
             )
 
+    def test_review_facts_dereference_closeout_bound_json(self):
+        result = {
+            "metrics": {
+                "gain": {
+                    "point": 0.08, "lcb95": 0.06, "ucb95": 0.11,
+                    "confidence": 0.95,
+                },
+            },
+            "gates": {"utility": "PASS"},
+            "thresholds": {"gain": 0.05},
+        }
+        result_raw = json.dumps(result).encode()
+        result_sha = hashlib.sha256(result_raw).hexdigest()
+        closeout = {
+            "route_id": "route", "operation_id": "A1", "run_id": "a1-r1",
+        }
+        conclusion = {
+            "primary_fact_ids": ["gain"], "gate_fact_ids": ["gain"],
+        }
+        fact = {
+            "fact_id": "gain", "claim_id": "utility", "metric": "PSNR gain",
+            "unit": "dB", "population": "OOF scenes", "grouping": "scene",
+            "point": 0.08, "ci_lower": 0.06, "ci_upper": 0.11,
+            "confidence_level": 0.95, "threshold": 0.05,
+            "threshold_operator": ">=", "gate_outcome": "PASS",
+            "source_filename": "formal.json", "source_sha256": result_sha,
+            "json_pointers": {
+                "point": "/metrics/gain/point",
+                "ci_lower": "/metrics/gain/lcb95",
+                "ci_upper": "/metrics/gain/ucb95",
+                "confidence_level": "/metrics/gain/confidence",
+                "threshold": "/thresholds/gain",
+                "gate_outcome": "/gates/utility",
+            },
+        }
+        facts = {
+            "schema_version": 2, **closeout, "facts": [fact],
+        }
+        facts_raw = json.dumps(facts).encode()
+        parent = "experience_docx/experiment_logs/route"
+        payloads = {f"{parent}/formal.json": result_raw}
+        evidence_sha = {"formal.json": result_sha}
+        observed = ARCHIVE.validate_review_facts(
+            facts_raw, f"{parent}/a1_review_facts.json", closeout, conclusion,
+            payloads, evidence_sha, "a1_closeout.json",
+        )
+        self.assertEqual("gain", observed["facts"][0]["fact_id"])
+
+        facts["facts"][0]["point"] = 0.09
+        with self.assertRaises(ARCHIVE.TerminalArchiveError):
+            ARCHIVE.validate_review_facts(
+                json.dumps(facts).encode(), f"{parent}/a1_review_facts.json",
+                closeout, conclusion, payloads, evidence_sha, "a1_closeout.json",
+            )
+
     def git(self, repo: Path, *args: str) -> str:
         return subprocess.run(
             ["git", *args], cwd=repo, text=True, capture_output=True, check=True,

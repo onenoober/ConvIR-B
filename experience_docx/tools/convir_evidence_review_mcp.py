@@ -538,17 +538,29 @@ def _prepare_evidence_bundle(args):
         expected = expected_by_path.get(item["path"])
         unmapped = unmapped_by_path.get(item["path"])
         if expected is not None:
+            is_review_facts = Path(item["path"]).name.endswith("_review_facts.json")
             add_file(
                 item["path"], item["bytes"], item["sha256"],
-                "formal_result", source_path=expected["source_relpath"],
-                required=expected["required"], priority=30,
-                evidence_status="runtime_declared",
+                "review_facts" if is_review_facts else "formal_result",
+                source_path=expected["source_relpath"],
+                required=expected["required"],
+                priority=22 if is_review_facts else 30,
+                evidence_status=(
+                    "source_pointer_verified_facts"
+                    if is_review_facts else "runtime_declared"
+                ),
             )
         elif item["path"] == binding.get("raw_artifact_receipt_github_path"):
             add_file(
                 item["path"], item["bytes"], item["sha256"],
                 "raw_artifact_receipt", required=True, priority=25,
                 evidence_status="terminal_raw_artifact_seal",
+            )
+        elif Path(item["path"]).name.endswith("_review_facts.json"):
+            add_file(
+                item["path"], item["bytes"], item["sha256"],
+                "review_facts", required=True, priority=22,
+                evidence_status="source_pointer_verified_facts",
             )
         elif unmapped is not None:
             add_file(

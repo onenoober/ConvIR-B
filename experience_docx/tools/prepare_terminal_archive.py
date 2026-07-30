@@ -8,6 +8,7 @@ import csv
 import hashlib
 import io
 import json
+import math
 import re
 import subprocess
 import tempfile
@@ -43,6 +44,8 @@ RAW_ARTIFACT_EXCLUDED_PATHS = [
     "control", "heartbeat.json", "runtime.log", "status.txt",
 ]
 MAX_RAW_ARTIFACT_FILES = 25_000
+REVIEW_FACTS_SUFFIX = "_review_facts.json"
+MAX_REVIEW_FACTS = 128
 ARCHIVE_REMOTE = "github"
 ARCHIVE_TARGET_REF = "main"
 ARCHIVE_BASE_REF = "refs/remotes/github/main"
@@ -265,7 +268,7 @@ def launch_contract_bundle(
 def validate_conclusion(
     raw: bytes, relpath: str, closeout: dict[str, Any], *,
     required_schema_version: int | None = None,
-) -> None:
+) -> dict[str, Any]:
     value = inspect_structured(raw, relpath)
     if required_schema_version is not None and (
         not isinstance(value, dict)
@@ -292,6 +295,7 @@ def validate_conclusion(
         if not isinstance(value[key], list) or not value[key] \
                 or any(not isinstance(item, str) or not item.strip() for item in value[key]):
             raise TerminalArchiveError(f"scientific conclusion {key} is empty")
+    return value
 
 
 def validate_evidence_name(filename: str) -> None:
@@ -311,6 +315,163 @@ def raw_artifact_receipt_filename(closeout_filename: str) -> str:
     if not isinstance(closeout_filename, str) or not closeout_filename.endswith(suffix):
         raise TerminalArchiveError("closeout filename cannot derive raw artifact receipt")
     return closeout_filename[:-len(suffix)] + RAW_ARTIFACT_RECEIPT_SUFFIX
+
+
+def review_facts_filename(closeout_filename: str) -> str:
+    suffix = "_closeout.json"
+    if not isinstance(closeout_filename, str) or not closeout_filename.endswith(suffix):
+        raise TerminalArchiveError("closeout filename cannot derive review facts")
+    return closeout_filename[:-len(suffix)] + REVIEW_FACTS_SUFFIX
+
+
+def _json_primitive(value: Any, name: str) -> Any:
+    if value is None or isinstance(value, (str, bool)):
+        return value
+    if isinstance(value, int) and not isinstance(value, bool):
+        return value
+    if isinstance(value, float) and math.isfinite(value):
+        return value
+    raise TerminalArchiveError(f"review fact {name} must be one finite JSON primitive")
+
+
+def _json_pointer(value: Any, pointer: str, name: str) -> Any:
+    if not isinstance(pointer, str) or not pointer.startswith("/"):
+        raise TerminalArchiveError(f"review fact {name} JSON Pointer is invalid")
+    current = value
+    for raw_token in pointer[1:].split("/"):
+        token = raw_token.replace("~1", "/").replace("~0", "~")
+        if "~" in raw_token.replace("~0", "").replace("~1", ""):
+            raise TerminalArchiveError(f"review fact {name} JSON Pointer escape is invalid")
+        if isinstance(current, dict):
+            if token not in current:
+                raise TerminalArchiveError(f"review fact {name} JSON Pointer is absent")
+            current = current[token]
+        elif isinstance(current, list):
+            if not token.isdigit() or (len(token) > 1 and token.startswith("0")):
+                raise TerminalArchiveError(f"review fact {name} array index is invalid")
+            index = int(token)
+            if index >= len(current):
+                raise TerminalArchiveError(f"review fact {name} array index is absent")
+            current = current[index]
+        else:
+            raise TerminalArchiveError(f"review fact {name} JSON Pointer crosses a scalar")
+    return current
+
+
+def validate_review_facts(
+    raw: bytes, relpath: str, closeout: dict[str, Any], conclusion: dict[str, Any],
+    payloads: dict[str, bytes], evidence_sha256: dict[str, str],
+    closeout_filename: str,
+) -> dict[str, Any]:
+    value = inspect_structured(raw, relpath)
+    expected_top = {"schema_version", "route_id", "operation_id", "run_id", "facts"}
+    if not isinstance(value, dict) or set(value) != expected_top \
+            or value["schema_version"] != 2:
+        raise TerminalArchiveError("review facts top-level contract is invalid")
+    if PurePosixPath(relpath).name != review_facts_filename(closeout_filename):
+        raise TerminalArchiveError("review facts filename is not canonical")
+    for key in ("route_id", "operation_id", "run_id"):
+        if value[key] != closeout.get(key):
+            raise TerminalArchiveError(f"review facts {key} mismatch")
+    facts = value["facts"]
+    if not isinstance(facts, list) or not 1 <= len(facts) <= MAX_REVIEW_FACTS:
+        raise TerminalArchiveError("review facts must contain 1-128 entries")
+    expected_fact = {
+        "fact_id", "claim_id", "metric", "unit", "population", "grouping",
+        "point", "ci_lower", "ci_upper", "confidence_level", "threshold",
+        "threshold_operator", "gate_outcome", "source_filename", "source_sha256",
+        "json_pointers",
+    }
+    pointer_fields = {
+        "point", "ci_lower", "ci_upper", "confidence_level", "threshold",
+        "gate_outcome",
+    }
+    ids = set()
+    by_id = {}
+    evidence_parent = PurePosixPath(relpath).parent.as_posix()
+    for fact in facts:
+        if not isinstance(fact, dict) or set(fact) != expected_fact:
+            raise TerminalArchiveError("review fact field contract is invalid")
+        for key in ("fact_id", "claim_id"):
+            if not isinstance(fact[key], str) or not TOKEN.fullmatch(fact[key]):
+                raise TerminalArchiveError(f"review fact {key} is invalid")
+        if fact["fact_id"] in ids:
+            raise TerminalArchiveError("review fact ids must be unique")
+        ids.add(fact["fact_id"])
+        by_id[fact["fact_id"]] = fact
+        for key in ("metric", "unit", "population", "grouping"):
+            if not isinstance(fact[key], str) or not 1 <= len(fact[key].strip()) <= 256:
+                raise TerminalArchiveError(f"review fact {key} is invalid")
+        pointers = fact["json_pointers"]
+        if not isinstance(pointers, dict) or set(pointers) != pointer_fields:
+            raise TerminalArchiveError("review fact JSON Pointer contract is invalid")
+        for key in pointer_fields:
+            declared = _json_primitive(fact[key], key)
+            pointer = pointers[key]
+            if (declared is None) != (pointer is None):
+                raise TerminalArchiveError(f"review fact {key} pointer/value presence differs")
+            if pointer is not None and not isinstance(pointer, str):
+                raise TerminalArchiveError(f"review fact {key} pointer is invalid")
+        for key in ("point", "ci_lower", "ci_upper", "confidence_level", "threshold"):
+            if fact[key] is not None and (
+                not isinstance(fact[key], (int, float)) or isinstance(fact[key], bool)
+            ):
+                raise TerminalArchiveError(f"review fact {key} must be numeric")
+        if fact["gate_outcome"] is not None and (
+            not isinstance(fact["gate_outcome"], str)
+            or not TOKEN.fullmatch(fact["gate_outcome"])
+        ):
+            raise TerminalArchiveError("review fact gate_outcome is invalid")
+        if fact["point"] is None and fact["gate_outcome"] is None:
+            raise TerminalArchiveError("review fact requires a point or gate outcome")
+        if (fact["ci_lower"] is None) != (fact["ci_upper"] is None) \
+                or (fact["ci_lower"] is None) != (fact["confidence_level"] is None):
+            raise TerminalArchiveError("review fact confidence interval is incomplete")
+        if fact["ci_lower"] is not None and (
+            fact["ci_lower"] > fact["ci_upper"]
+            or not 0 < fact["confidence_level"] < 1
+        ):
+            raise TerminalArchiveError("review fact confidence interval is invalid")
+        if fact["threshold"] is None:
+            if fact["threshold_operator"] is not None:
+                raise TerminalArchiveError("review fact threshold operator lacks a threshold")
+        elif fact["threshold_operator"] not in {">", ">=", "<", "<=", "=="}:
+            raise TerminalArchiveError("review fact threshold operator is invalid")
+        source_name = fact["source_filename"]
+        if not isinstance(source_name, str) or Path(source_name).name != source_name \
+                or Path(source_name).suffix.lower() != ".json" \
+                or source_name == PurePosixPath(relpath).name:
+            raise TerminalArchiveError("review fact source filename is invalid")
+        if fact["source_sha256"] != evidence_sha256.get(source_name) \
+                or not isinstance(fact["source_sha256"], str) \
+                or not SHA256.fullmatch(fact["source_sha256"]):
+            raise TerminalArchiveError("review fact source SHA-256 is not closeout-bound")
+        source_relpath = f"{evidence_parent}/{source_name}"
+        source_raw = payloads.get(source_relpath)
+        if source_raw is None or hashlib.sha256(source_raw).hexdigest() != fact["source_sha256"]:
+            raise TerminalArchiveError("review fact source payload is absent or changed")
+        source = inspect_structured(source_raw, source_relpath)
+        for key in pointer_fields:
+            if pointers[key] is None:
+                continue
+            observed = _json_primitive(_json_pointer(source, pointers[key], key), key)
+            both_numeric = all(
+                isinstance(item, (int, float)) and not isinstance(item, bool)
+                for item in (observed, fact[key])
+            )
+            if observed != fact[key] or (
+                not both_numeric and type(observed) is not type(fact[key])
+            ):
+                raise TerminalArchiveError(f"review fact {key} differs from its source")
+    for key in ("primary_fact_ids", "gate_fact_ids"):
+        selected = conclusion.get(key)
+        if not isinstance(selected, list) or not selected \
+                or len(selected) != len(set(selected)) \
+                or any(item not in ids for item in selected):
+            raise TerminalArchiveError(f"scientific conclusion {key} is invalid")
+    if any(by_id[item]["gate_outcome"] is None for item in conclusion["gate_fact_ids"]):
+        raise TerminalArchiveError("conclusion gate facts lack gate outcomes")
+    return value
 
 
 def validate_raw_artifact_receipt(
@@ -547,11 +708,13 @@ def audit_source(
                 f"scientific conclusion is missing: {conclusion_relpath}"
             )
         conclusion_raw = conclusion_file.read_bytes()
-        validate_conclusion(
+        conclusion_value = validate_conclusion(
             conclusion_raw, conclusion_relpath, closeout,
             required_schema_version=2 if contract_bundle else None,
         )
         payloads[conclusion_relpath] = conclusion_raw
+    else:
+        conclusion_value = None
     for filename, expected_sha in sorted(evidence_sha.items()):
         if not isinstance(filename, str) or not isinstance(expected_sha, str):
             raise TerminalArchiveError("evidence_sha256 must map filenames to SHA-256 strings")
@@ -581,6 +744,25 @@ def audit_source(
             "bytes": len(raw),
             "sha256": actual_sha,
         })
+    expected_review_facts = review_facts_filename(closeout_path.name)
+    facts_candidates = sorted(
+        name for name in evidence_sha if name.endswith(REVIEW_FACTS_SUFFIX)
+    )
+    if facts_candidates and facts_candidates != [expected_review_facts]:
+        raise TerminalArchiveError("review facts filename is ambiguous or noncanonical")
+    review_facts = None
+    if expected_review_facts in evidence_sha:
+        if conclusion_value is None:
+            raise TerminalArchiveError("review facts require a scientific conclusion")
+        facts_relpath = f"{closeout_path.parent.as_posix()}/{expected_review_facts}"
+        review_facts = validate_review_facts(
+            payloads[facts_relpath], facts_relpath, closeout, conclusion_value,
+            payloads, evidence_sha, closeout_path.name,
+        )
+    elif isinstance(conclusion_value, dict) and any(
+        key in conclusion_value for key in ("primary_fact_ids", "gate_fact_ids")
+    ):
+        raise TerminalArchiveError("scientific conclusion references missing review facts")
     registry_record = capability_registry_record(closeout, closeout_path, payloads)
 
     return {
@@ -603,6 +785,7 @@ def audit_source(
         "prior_terminal_record": prior_terminal_record,
         "capability_registry_record": registry_record,
         "raw_artifact_receipt": raw_artifact_receipt,
+        "review_facts": review_facts,
         "payloads": payloads,
         "checks": {
             "contract_bound": True,
@@ -612,6 +795,8 @@ def audit_source(
             "all_result_hashes_match": True,
             "raw_artifact_receipt_valid": raw_artifact_receipt is not None,
             "raw_artifact_receipt_legacy_unsealed": raw_artifact_receipt is None,
+            "review_facts_valid": review_facts is not None,
+            "review_facts_legacy_unbound": review_facts is None,
             "single_scientific_conclusion_complete": (
                 conclusion_relpath is not None or existing_archive
             ),

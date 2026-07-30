@@ -551,6 +551,18 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
             destinations = {item["destination_filename"] for item in spec["evidence_files"]}
             if context["closeout_filename"] in destinations:
                 raise ReadyError(f"{operation_id} closeout collides with evidence filename")
+            if contract is not None and contract["schema_version"] == 2 \
+                    and manifest.get("rules_commit") == current_main:
+                suffix = "_closeout.json"
+                if not context["closeout_filename"].endswith(suffix):
+                    raise ReadyError(f"{operation_id} closeout cannot derive review facts")
+                facts_name = (
+                    context["closeout_filename"][:-len(suffix)] + "_review_facts.json"
+                )
+                if facts_name not in destinations:
+                    raise ReadyError(
+                        f"{operation_id} schema-2 route must declare {facts_name}"
+                    )
             for destination in destinations:
                 claim_published_name(
                     published_names, destination, f"{operation_id} evidence",
