@@ -20,6 +20,7 @@
       "read_full": [
         "AGENTS.md",
         "experience_docx/SCIENCE_FASTPATH.md",
+        "experience_docx/CONVIR_EVIDENCE_REVIEW.md",
         "experience_docx/ROUTE_READY_FASTPATH.md",
         "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md",
         "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md",
@@ -40,7 +41,8 @@
     "read_only_audit": {
       "read_full": [
         "AGENTS.md",
-        "experience_docx/SCIENCE_FASTPATH.md"
+        "experience_docx/SCIENCE_FASTPATH.md",
+        "experience_docx/CONVIR_EVIDENCE_REVIEW.md"
       ],
       "snapshot_is_authority": false
     },
@@ -71,8 +73,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "afff009fe092c064599569cc7e9f198195d1394e5e475f76ab456ffdf88bc0f3",
-  "rules_commit": "e18ed6e6454cc0372825c3f5a5ee9265af359e64",
+  "rules_bundle_sha256": "dcb2d3c3c28f9ff25a03b476c6d088f88f5faf2cdb28ccdb158a6c1969af3503",
+  "rules_commit": "d447f9a5afe8ebde08340a4077bfd73228ff24bc",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "sources": {
@@ -87,6 +89,10 @@
     "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md": {
       "bytes": 13057,
       "sha256": "8dcbb3d2d72e4ebd4c4be1eace6afc3ca03098b6e6bf8a2be45ea31820e103d7"
+    },
+    "experience_docx/CONVIR_EVIDENCE_REVIEW.md": {
+      "bytes": 13033,
+      "sha256": "08e936154c900a59e776bbc0b562255b2b4405a188a112662d32cc7fb373d062"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
       "bytes": 15495,
@@ -105,8 +111,8 @@
       "sha256": "5718e8fddc4932c33c5cf8d48e998de44669dc0edd40e585c4b2c67db1d25f11"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
-      "bytes": 10932,
-      "sha256": "6ffc1bb4dba88a4ff3840459bd78655298617f8b6a45d00c8d25af6f9ef317c6"
+      "bytes": 11652,
+      "sha256": "8b21cf1a8affc0520e5b67acda1bbb703612df32135f140e98ff7ab4a8c52796"
     }
   },
   "workflow": [
