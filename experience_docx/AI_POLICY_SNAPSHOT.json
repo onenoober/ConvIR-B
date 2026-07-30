@@ -74,7 +74,7 @@
     "reopen"
   ],
   "rules_bundle_sha256": "dcb2d3c3c28f9ff25a03b476c6d088f88f5faf2cdb28ccdb158a6c1969af3503",
-  "rules_commit": "d447f9a5afe8ebde08340a4077bfd73228ff24bc",
+  "rules_commit": "d447f9aefde2a6314e348ed302c463e77c1e1bdd",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "sources": {
