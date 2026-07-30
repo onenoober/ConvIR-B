@@ -1,8 +1,11 @@
 # Convir Evidence Review
 
-Date: 2026-07-29
+Date: 2026-07-30
 
-Status: Phase 3 GitHub-only source passed committed cloud acceptance at
+Status: server version `1.3.0` adds the minimal evidence-bundle and bounded
+cloud-text read interfaces to the five accepted discovery/inventory tools.
+Acceptance and main activation are pending. Historical phase status follows.
+Phase 3 GitHub-only source passed committed cloud acceptance at
 `ea088ea28d56f034395f53212c6e259b290d87fc`. Presence of the adjacent
 acceptance record on GitHub `main` completes source adoption. The 2026-07-29
 fresh-task activation check passed on this host with the exact accepted source,
@@ -28,16 +31,22 @@ compact, identity-bound discovery records rather than bulk experiment data.
 | `convir_evidence_catalog_summary` | freeze the trusted `refs/remotes/github/main` ref to an immutable commit and return catalog/index/tree identities plus coverage counts |
 | `convir_evidence_completeness_receipt` | return one schema-2 project GitHub receipt with exact indexed, unindexed, legacy and unresolved partitions for the current or an exact main-history commit |
 | `convir_evidence_catalog_query` | query that exact GitHub-main-history commit with bounded filters and an identity-bound cursor |
+| `convir_evidence_bundle` | verify one selected schema-2 terminal leaf and page the complete SHA-bound GitHub evidence-file manifest |
 | `convir_evidence_cloud_inventory_summary` | reconcile one exact eligible schema-2 terminal with its fixed inactive cloud run root |
 | `convir_evidence_cloud_inventory_query` | rescan and page the same run root only while its inventory identity remains unchanged |
+| `convir_evidence_cloud_text_read` | read one bounded UTF-8 page from an allowed text file in that exact complete inventory |
 
-The normal read sequence is: establish the freshness of the local
-`refs/remotes/github/main` snapshot through the repository-approved GitHub read
-path, call summary and the completeness receipt, use filtered queries, then
-explicitly `repo-show` only the selected closeout, conclusion or result files.
-The MCP never fetches, so every response reports
-`ref_freshness=not_assessed`; catalog and receipt tools do not read result
-contents.
+The normal read sequence is: establish the freshness of local
+`refs/remotes/github/main` through the repository-approved GitHub read path;
+call catalog summary and completeness receipt; query candidate routes; page the
+selected terminal's evidence bundle to completion; and use `repo-show` for only
+the needed GitHub files. When more detail is needed, inventory that same bound
+cloud run, query relevant text entries, and page an allowed file with
+`convir_evidence_cloud_text_read`. Every continuation uses the returned cursor;
+cloud text continuation also supplies the returned full-file SHA-256. An
+unconsumed page or an explicit excluded source remains unread and cannot be
+reported as reviewed. The MCP never fetches Git, so every response reports
+`ref_freshness=not_assessed`.
 
 ## Boundaries
 
@@ -55,9 +64,18 @@ contents.
   KiB. Oversized pages shrink only at complete-entry boundaries.
 - Unindexed directories and loose files remain `NOT_ASSESSED`. Filename markers
   never become PASS, FAIL, terminal, or scientific-completeness claims.
-- The server does not mutate Git, use SSH, inspect cloud runtime state, read
-  result contents, access datasets or protected roles, or issue scientific
-  interpretations.
+- Evidence bundles are available only for a unique selected schema-2 terminal
+  leaf whose GitHub blobs and terminal semantics verify. They return file
+  identities and roles, not contents.
+- Cloud text read accepts no host, run root, remote path root, shell or SSH
+  command. It is limited to a complete inactive unprotected bound-run inventory,
+  UTF-8 `.json`, `.jsonl`, `.csv`, `.md` or `.txt` files up to 1 MiB, and pages
+  up to 8 KiB. Binary arrays, checkpoints, weights, images and protected roles
+  remain unreadable.
+- Raw cloud text is labeled `unmapped_raw_text`; it can inform review but is not
+  formal gate evidence unless the terminal/runtime contract separately binds it.
+- The server does not mutate Git or cloud state, start experiments, access
+  datasets or protected roles, or issue scientific interpretations.
 - `convir-ops` remains unchanged with exactly six lifecycle tools and protocol
   schema 4.
 

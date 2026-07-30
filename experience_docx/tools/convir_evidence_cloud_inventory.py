@@ -30,6 +30,8 @@ MAX_RELATIVE_PATH_BYTES = 16 * 1024 * 1024
 MAX_SCAN_SECONDS = 60
 MAX_QUERY_ENTRIES = 100
 MAX_QUERY_VALUE_BYTES = 8 * 1024
+MAX_TEXT_FILE_BYTES = 1024 * 1024
+MAX_TEXT_PAGE_BYTES = 8 * 1024
 MAX_REMOTE_REQUEST_BYTES = 4 * 1024 * 1024
 MAX_REMOTE_RESPONSE_BYTES = 64 * 1024
 REMOTE_TMUX = "/usr/bin/tmux"
@@ -46,6 +48,10 @@ RECONCILIATION_STATES = (
     "NOT_INVENTORIED",
 )
 RAW_INVENTORY_EVIDENCE_ROLES = {"engineering_debug", "development_screening"}
+TEXT_READ_SUFFIXES = {".json", ".jsonl", ".csv", ".md", ".txt"}
+TEXT_READ_ARTIFACT_CLASSES = {
+    "formal_compact_evidence", "optional_compact_evidence", "raw_artifact",
+}
 PROTECTED_TOUCH_FIELDS = (
     "confirmation_images_targets_outcomes_touched",
     "canary_touched",
@@ -1206,6 +1212,7 @@ def _inventory(binding: dict[str, Any], *, state: str,
         "inventory_sha256": canonical_sha256(digest_value),
         "entry_count": len(entries),
         "_entries": entries,
+        "_nodes": dict((scan or {}).get("nodes", {})),
     }
 
 
@@ -1491,7 +1498,10 @@ def _scan_adapter_root(binding: dict[str, Any], adapter_root: str | Path, *,
 
 
 def inventory_summary(inventory: dict[str, Any]) -> dict[str, Any]:
-    return {key: value for key, value in inventory.items() if key != "_entries"}
+    return {
+        key: value for key, value in inventory.items()
+        if not key.startswith("_")
+    }
 
 
 def normalize_query_arguments(
@@ -1601,6 +1611,217 @@ def inventory_query_page(
         selected.pop()
 
 
+def cloud_text_page(
+    inventory: dict[str, Any], *, binding: dict[str, Any], adapter_root: str | Path,
+    inventory_sha256: str, relative_path: str, offset: int = 0,
+    page_bytes: int = MAX_TEXT_PAGE_BYTES,
+    expected_file_sha256: str | None = None,
+) -> dict[str, Any]:
+    """Read one bounded UTF-8 page from an exact, fully inventoried cloud file."""
+    inventory_sha256 = _require_sha(
+        inventory_sha256, SHA256, "inventory_sha256"
+    )
+    if inventory.get("inventory_sha256") != inventory_sha256:
+        raise InventoryError(
+            "inventory identity differs", state="INVENTORY_DRIFT", exit_code=3
+        )
+    if inventory.get("state") != "INVENTORY_READY" \
+            or inventory.get("discovery_completeness") != "complete" \
+            or inventory.get("root_binding_enforced") is not True:
+        raise InventoryError(
+            "cloud text requires a complete inactive bound-run inventory",
+            state="CLOUD_TEXT_NOT_INVENTORIED", exit_code=3,
+        )
+    if binding.get("raw_inventory_authorized") is not True:
+        raise InventoryError(
+            "cloud text scope is protected or not authorized",
+            state="CLOUD_TEXT_PROTECTED_SCOPE", exit_code=3,
+        )
+    relative_path = _require_relpath(
+        relative_path, "relative_path", state="ARGUMENTS_INVALID"
+    )
+    if not isinstance(offset, int) or isinstance(offset, bool) or offset < 0:
+        raise InventoryError(
+            "offset is invalid", state="ARGUMENTS_INVALID", exit_code=2
+        )
+    if not isinstance(page_bytes, int) or isinstance(page_bytes, bool) \
+            or not 4 <= page_bytes <= MAX_TEXT_PAGE_BYTES:
+        raise InventoryError(
+            f"page_bytes must be in [4, {MAX_TEXT_PAGE_BYTES}]",
+            state="ARGUMENTS_INVALID", exit_code=2,
+        )
+    if expected_file_sha256 is not None:
+        expected_file_sha256 = _require_sha(
+            expected_file_sha256, SHA256, "expected_file_sha256"
+        )
+
+    matches = [
+        item for item in inventory.get("_entries", [])
+        if item.get("scope") == "raw_output"
+        and item.get("relative_path") == relative_path
+    ]
+    if len(matches) != 1:
+        raise InventoryError(
+            "relative_path is not one exact inventory entry",
+            state="CLOUD_TEXT_NOT_INVENTORIED", exit_code=3,
+        )
+    entry = matches[0]
+    if entry.get("artifact_class") not in TEXT_READ_ARTIFACT_CLASSES \
+            or entry.get("extension") not in TEXT_READ_SUFFIXES:
+        raise InventoryError(
+            "inventory entry is not an allowed text artifact",
+            state="CLOUD_TEXT_UNSUPPORTED_FORMAT", exit_code=3,
+        )
+    allowed_states = {
+        "formal_compact_evidence": {"MATCHED"},
+        "optional_compact_evidence": {"CLOUD_ONLY"},
+        "raw_artifact": {"CLOUD_ONLY"},
+    }[entry["artifact_class"]]
+    if entry.get("reconciliation_state") not in allowed_states \
+            or entry.get("file_type") != "file":
+        raise InventoryError(
+            "inventory entry is not in a readable reconciled state",
+            state="CLOUD_TEXT_NOT_INVENTORIED", exit_code=3,
+        )
+    size = entry.get("bytes")
+    if not isinstance(size, int) or isinstance(size, bool) or size < 0 \
+            or size > MAX_TEXT_FILE_BYTES:
+        raise InventoryError(
+            "cloud text file exceeds its bounded size",
+            state="CLOUD_TEXT_FILE_TOO_LARGE", exit_code=3,
+        )
+    nodes = inventory.get("_nodes")
+    metadata = nodes.get(relative_path) if isinstance(nodes, dict) else None
+    if not isinstance(metadata, dict) or metadata.get("file_type") != "file" \
+            or metadata.get("bytes") != size:
+        raise InventoryError(
+            "cloud text metadata identity differs",
+            state="CLOUD_TEXT_IDENTITY_DRIFT", exit_code=3,
+        )
+
+    root = Path(adapter_root)
+    if str(root) != binding.get("run_root"):
+        raise InventoryError(
+            "cloud text run root identity differs",
+            state="CLOUD_TEXT_IDENTITY_DRIFT", exit_code=3,
+        )
+    opened = _open_adapter_root(root)
+    if opened is None:
+        raise InventoryError(
+            "cloud text run root is unavailable",
+            state="CLOUD_TEXT_IDENTITY_DRIFT", exit_code=3,
+        )
+    root_fd, root_metadata = opened
+    try:
+        identity_raw, control_metadata, identity_metadata = \
+            _read_lifecycle_identity(root_fd)
+        observed_identity = _json_object(identity_raw, "lifecycle identity")
+        if observed_identity != binding.get("expected_lifecycle_identity"):
+            raise InventoryError(
+                "cloud text lifecycle identity differs",
+                state="CLOUD_TEXT_IDENTITY_DRIFT", exit_code=3,
+            )
+        raw = _read_relative_file(
+            root_fd, relative_path, maximum=MAX_TEXT_FILE_BYTES,
+            expected=metadata, nodes=nodes,
+        )
+        stable_raw, stable_control, stable_identity = \
+            _read_lifecycle_identity(root_fd)
+        if stable_raw != identity_raw or stable_control != control_metadata \
+                or stable_identity != identity_metadata \
+                or not _metadata_matches(
+                    root_metadata,
+                    _fstat_or_error(root_fd, "cloud text root identity reread failed"),
+                    stable=True,
+                ):
+            raise InventoryError(
+                "cloud text root identity changed during read",
+                state="CLOUD_TEXT_IDENTITY_DRIFT", exit_code=3,
+            )
+    finally:
+        os.close(root_fd)
+
+    try:
+        raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise InventoryError(
+            "cloud text file is not UTF-8",
+            state="CLOUD_TEXT_NOT_UTF8", exit_code=3,
+        ) from exc
+    file_sha256 = hashlib.sha256(raw).hexdigest()
+    if expected_file_sha256 is not None and file_sha256 != expected_file_sha256:
+        raise InventoryError(
+            "cloud text file SHA-256 changed",
+            state="CLOUD_TEXT_IDENTITY_DRIFT", exit_code=3,
+        )
+    if entry["artifact_class"] == "formal_compact_evidence" \
+            and file_sha256 != entry.get("github_sha256"):
+        raise InventoryError(
+            "formal cloud text differs from GitHub",
+            state="CLOUD_TEXT_IDENTITY_DRIFT", exit_code=3,
+        )
+    if offset > len(raw) or (offset == len(raw) and len(raw) != 0):
+        raise InventoryError(
+            "cloud text cursor is outside the file",
+            state="REPO_CURSOR_INVALID", exit_code=3,
+        )
+    try:
+        raw[:offset].decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise InventoryError(
+            "cloud text cursor splits a UTF-8 character",
+            state="REPO_CURSOR_INVALID", exit_code=3,
+        ) from exc
+    end = min(len(raw), offset + page_bytes)
+    while end > offset:
+        try:
+            content = raw[offset:end].decode("utf-8")
+            break
+        except UnicodeDecodeError:
+            end -= 1
+    else:
+        content = ""
+    page_raw = raw[offset:end]
+    terminal_page = end == len(raw)
+    evidence_status = (
+        "formal_sha_matched"
+        if entry["artifact_class"] == "formal_compact_evidence"
+        else "optional_declared"
+        if entry["artifact_class"] == "optional_compact_evidence"
+        else "unmapped_raw_text"
+    )
+    return {
+        "schema_version": 2,
+        "ok": True,
+        "operation": "cloud-text-read",
+        "state": "CLOUD_TEXT_PAGE_OK",
+        "exit_code": 0,
+        "snapshot_commit": binding["snapshot_commit"],
+        "catalog_sha256": binding["catalog_sha256"],
+        "terminal_record_sha256": binding["terminal_record_sha256"],
+        "inventory_sha256": inventory_sha256,
+        "relative_path": relative_path,
+        "artifact_class": entry["artifact_class"],
+        "policy_assessment": entry["policy_assessment"],
+        "evidence_status": evidence_status,
+        "reconciliation_state": entry["reconciliation_state"],
+        "bytes": len(raw),
+        "file_sha256": file_sha256,
+        "identity_basis": "content_sha256",
+        "encoding": "utf-8",
+        "page_start_byte": offset,
+        "page_end_byte": end,
+        "page_bytes": len(page_raw),
+        "page_sha256": hashlib.sha256(page_raw).hexdigest(),
+        "content": content,
+        "page_complete": True,
+        "terminal_page": terminal_page,
+        "complete": terminal_page,
+        "has_more": not terminal_page,
+        "scientific_completeness": "not_assessed",
+    }
+
+
 def inventory_query(inventory: dict[str, Any], *, inventory_sha256: str,
                     reconciliation_states: list[str] | None = None,
                     terms: list[str] | None = None, cursor: str | None = None,
@@ -1694,12 +1915,12 @@ def remote_worker(request: dict[str, Any]) -> dict[str, Any]:
         "root_binding_enforced", "expected_session", "query",
     }
     if not isinstance(request, dict) or set(request) != expected_fields \
-            or request.get("schema_version") != 1:
+            or request.get("schema_version") not in {1, 2}:
         raise InventoryError(
             "remote worker request is invalid", state="ARGUMENTS_INVALID", exit_code=2
         )
     operation = request["operation"]
-    if operation not in {"summary", "query"}:
+    if operation not in {"summary", "query", "text_read"}:
         raise InventoryError(
             "remote worker operation is invalid", state="ARGUMENTS_INVALID", exit_code=2
         )
@@ -1760,6 +1981,26 @@ def remote_worker(request: dict[str, Any]) -> dict[str, Any]:
     if operation == "summary" or result.get("ok") is not True:
         return inventory_summary(result)
     query = request["query"]
+    if operation == "text_read":
+        if request.get("schema_version") != 2 or not isinstance(query, dict) \
+                or set(query) != {
+                    "inventory_sha256", "relative_path", "offset", "page_bytes",
+                    "expected_file_sha256",
+                }:
+            raise InventoryError(
+                "remote text-read request is invalid",
+                state="ARGUMENTS_INVALID", exit_code=2,
+            )
+        return cloud_text_page(
+            result,
+            binding=binding,
+            adapter_root=root,
+            inventory_sha256=query["inventory_sha256"],
+            relative_path=query["relative_path"],
+            offset=query["offset"],
+            page_bytes=query["page_bytes"],
+            expected_file_sha256=query["expected_file_sha256"],
+        )
     if not isinstance(query, dict) or set(query) != {
         "inventory_sha256", "reconciliation_states", "terms", "offset", "limit"
     }:

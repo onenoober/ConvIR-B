@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Tests for the GitHub-only convir-evidence-review MCP facade."""
 
+import hashlib
 import json
 import os
 import subprocess
@@ -61,6 +62,7 @@ def cloud_binding(commit, catalog_sha256, *, raw_inventory_authorized=True):
         "closeout_sha256": "3" * 64,
         "runner_sha256": "4" * 64,
         "run_root": f"{review.inventory.REMOTE_RUNS}/route-a/run-a",
+        "evidence_role": "development_screening",
         "raw_inventory_authorized": raw_inventory_authorized,
         "raw_inventory_exclusion_reason": (
             None if raw_inventory_authorized else
@@ -161,21 +163,23 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             "params": {"name": name, "arguments": arguments},
         })
 
-    def test_server_exposes_exact_five_read_only_tools(self):
+    def test_server_exposes_exact_seven_read_only_tools(self):
         initialized = review.handle({
             "method": "initialize",
             "params": {"protocolVersion": "2024-11-05"},
         })
         self.assertEqual("convir-evidence-review", initialized["serverInfo"]["name"])
-        self.assertEqual("1.2.0", initialized["serverInfo"]["version"])
+        self.assertEqual("1.3.0", initialized["serverInfo"]["version"])
         listed = review.handle({"method": "tools/list", "params": {}})
         self.assertEqual(
             [
                 "convir_evidence_catalog_summary",
                 "convir_evidence_completeness_receipt",
                 "convir_evidence_catalog_query",
+                "convir_evidence_bundle",
                 "convir_evidence_cloud_inventory_summary",
                 "convir_evidence_cloud_inventory_query",
+                "convir_evidence_cloud_text_read",
             ],
             [tool["name"] for tool in listed["tools"]],
         )
@@ -186,12 +190,98 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         }
         cloud_tools = [
             tool for tool in listed["tools"]
-            if "cloud_inventory" in tool["name"]
+            if "cloud_" in tool["name"]
         ]
         self.assertTrue(all(
             forbidden.isdisjoint(tool["inputSchema"]["properties"])
             for tool in cloud_tools
         ))
+
+    def test_evidence_bundle_resolves_sha_bound_leaf_and_pages_all_files(self):
+        record = terminal_record()
+        prefix = "experience_docx/experiment_logs/route-a"
+        contract_raw = b"contract\n"
+        closeout_raw = b"not read"
+        conclusion_raw = b"not read"
+        result_raw = b"not read"
+        manifest_raw = b"{}\n"
+        manifest_path = f"{prefix}/launch_contract/A0/manifest.json"
+        record.update({
+            "schema_version": 2,
+            "contract_sha256": hashlib.sha256(contract_raw).hexdigest(),
+            "closeout_sha256": hashlib.sha256(closeout_raw).hexdigest(),
+            "conclusion_sha256": hashlib.sha256(conclusion_raw).hexdigest(),
+            "contract_bundle": [{
+                "path": manifest_path,
+                "source_path": "experience_docx/route_operations.json",
+                "bytes": len(manifest_raw),
+                "sha256": hashlib.sha256(manifest_raw).hexdigest(),
+            }],
+            "result_files": [{
+                "path": record["result_paths"][0],
+                "bytes": len(result_raw),
+                "sha256": hashlib.sha256(result_raw).hexdigest(),
+            }],
+            "prior_terminal_record": {
+                "prior_closeout_path": None,
+                "prior_terminal_tuple": None,
+            },
+        })
+        commit = self.commit_snapshot(record, {
+            record["contract_path"]: contract_raw,
+            record["closeout_path"]: closeout_raw,
+            record["conclusion_path"]: conclusion_raw,
+            record["result_paths"][0]: result_raw,
+            manifest_path: manifest_raw,
+        })
+        loaded = review.catalog.load_catalog(self.repo, commit)
+        _, records, _ = review.catalog.load_terminal_records(self.repo, commit)
+        record_sha256 = records[0]["record_sha256"]
+        binding = cloud_binding(commit, loaded["catalog_sha256"])
+        binding.update({
+            "terminal_record_sha256": record_sha256,
+            "closeout_sha256": record["closeout_sha256"],
+            "expected_evidence": [{
+                "source_relpath": "workload/route_summary.json",
+                "destination_filename": "route_summary.json",
+                "github_path": record["result_paths"][0],
+                "bytes": len(result_raw),
+                "sha256": hashlib.sha256(result_raw).hexdigest(),
+                "max_bytes": 4096,
+                "required": True,
+            }],
+        })
+        arguments = {
+            "local_repo": str(self.repo),
+            "snapshot_commit": commit,
+            "catalog_sha256": loaded["catalog_sha256"],
+            "terminal_record_sha256": record_sha256,
+            "limit": 2,
+        }
+        files = []
+        with mock.patch.object(
+            review.inventory, "prepare_terminal_binding", return_value=binding
+        ), mock.patch.object(review, "_run_fixed_remote") as transport:
+            while True:
+                result = self.call("convir_evidence_bundle", arguments)
+                self.assertFalse(result["isError"])
+                value = result["structuredContent"]
+                self.assertEqual(2, value["schema_version"])
+                self.assertEqual("complete", value["bundle_completeness"])
+                files.extend(value["files"])
+                if not value["has_more"]:
+                    break
+                arguments["cursor"] = value["next_cursor"]
+        transport.assert_not_called()
+        self.assertEqual(value["total_count"], len(files))
+        self.assertEqual(len(files), len({item["path"] for item in files}))
+        self.assertTrue(any(
+            "scientific_conclusion" in item["roles"] for item in files
+        ))
+        self.assertTrue(any(
+            "formal_result" in item["roles"] for item in files
+        ))
+        self.assertTrue(all(item["content_returned"] is False for item in files))
 
     def test_completeness_receipt_is_main_bound_stable_and_transport_free(self):
         record = terminal_record()
@@ -586,6 +676,200 @@ class EvidenceReviewMcpTests(unittest.TestCase):
                 for item in query["structuredContent"]["entries"]
             ))
             transport.assert_not_called()
+
+    def test_cloud_text_read_pages_raw_utf8_and_binds_continuation_sha(self):
+        record = terminal_record()
+        commit = self.commit_snapshot(record)
+        catalog_sha256 = review.catalog.load_catalog(
+            self.repo, commit
+        )["catalog_sha256"]
+        binding = cloud_binding(commit, catalog_sha256)
+        inventory_sha256 = "6" * 64
+        relative_path = "workload/per_scene.csv"
+        raw = ("scene,value\n" + "alpha,\u96fe\\\"\n" * 80).encode("utf-8")
+        file_sha256 = hashlib.sha256(raw).hexdigest()
+
+        def fixed_remote(request):
+            self.assertEqual(2, request["schema_version"])
+            self.assertEqual("text_read", request["operation"])
+            query = request["query"]
+            self.assertEqual(inventory_sha256, query["inventory_sha256"])
+            self.assertEqual(relative_path, query["relative_path"])
+            if query["offset"]:
+                self.assertEqual(file_sha256, query["expected_file_sha256"])
+            start = query["offset"]
+            end = min(len(raw), start + query["page_bytes"])
+            while end > start:
+                try:
+                    content = raw[start:end].decode("utf-8")
+                    break
+                except UnicodeDecodeError:
+                    end -= 1
+            else:
+                content = ""
+            page_raw = raw[start:end]
+            return {
+                "schema_version": 2,
+                "ok": True,
+                "operation": "cloud-text-read",
+                "state": "CLOUD_TEXT_PAGE_OK",
+                "exit_code": 0,
+                "snapshot_commit": commit,
+                "catalog_sha256": catalog_sha256,
+                "terminal_record_sha256": binding["terminal_record_sha256"],
+                "inventory_sha256": inventory_sha256,
+                "relative_path": relative_path,
+                "artifact_class": "raw_artifact",
+                "policy_assessment": "expected_cloud_only_raw_artifact",
+                "evidence_status": "unmapped_raw_text",
+                "reconciliation_state": "CLOUD_ONLY",
+                "bytes": len(raw),
+                "file_sha256": file_sha256,
+                "identity_basis": "content_sha256",
+                "encoding": "utf-8",
+                "page_start_byte": start,
+                "page_end_byte": end,
+                "page_bytes": len(page_raw),
+                "page_sha256": hashlib.sha256(page_raw).hexdigest(),
+                "content": content,
+                "page_complete": True,
+                "terminal_page": end == len(raw),
+                "complete": end == len(raw),
+                "has_more": end != len(raw),
+                "scientific_completeness": "not_assessed",
+            }
+
+        base_args = {
+            "local_repo": str(self.repo),
+            "snapshot_commit": commit,
+            "catalog_sha256": catalog_sha256,
+            "terminal_record_sha256": binding["terminal_record_sha256"],
+            "inventory_sha256": inventory_sha256,
+            "relative_path": relative_path,
+            "page_bytes": 256,
+        }
+        observed = ""
+        arguments = dict(base_args)
+        with mock.patch.object(
+            review.inventory, "prepare_terminal_binding", return_value=binding
+        ), mock.patch.object(
+            review, "_run_fixed_remote", side_effect=fixed_remote
+        ) as transport:
+            first = self.call("convir_evidence_cloud_text_read", arguments)
+            self.assertFalse(first["isError"])
+            first_value = first["structuredContent"]
+            self.assertEqual(2, first_value["schema_version"])
+            self.assertEqual("unmapped_raw_text", first_value["evidence_status"])
+            self.assertEqual(file_sha256, first_value["file_sha256"])
+            self.assertTrue(first_value["has_more"])
+
+            missing_sha = self.call(
+                "convir_evidence_cloud_text_read",
+                {**base_args, "cursor": first_value["next_cursor"]},
+            )
+            self.assertTrue(missing_sha["isError"])
+            self.assertEqual(
+                "ARGUMENTS_INVALID", missing_sha["structuredContent"]["state"]
+            )
+
+            value = first_value
+            while True:
+                observed += value["content"]
+                if value["terminal_page"]:
+                    break
+                arguments = {
+                    **base_args,
+                    "file_sha256": file_sha256,
+                    "cursor": value["next_cursor"],
+                }
+                page = self.call("convir_evidence_cloud_text_read", arguments)
+                self.assertFalse(page["isError"])
+                value = page["structuredContent"]
+        self.assertEqual(raw.decode("utf-8"), observed)
+        self.assertGreater(transport.call_count, 1)
+
+    def test_cloud_text_read_rejects_protected_scope_without_transport(self):
+        record = terminal_record()
+        commit = self.commit_snapshot(record)
+        catalog_sha256 = review.catalog.load_catalog(
+            self.repo, commit
+        )["catalog_sha256"]
+        binding = cloud_binding(
+            commit, catalog_sha256, raw_inventory_authorized=False
+        )
+        with mock.patch.object(
+            review.inventory, "prepare_terminal_binding", return_value=binding
+        ), mock.patch.object(review, "_run_fixed_remote") as transport:
+            result = self.call("convir_evidence_cloud_text_read", {
+                "local_repo": str(self.repo),
+                "snapshot_commit": commit,
+                "catalog_sha256": catalog_sha256,
+                "terminal_record_sha256": binding["terminal_record_sha256"],
+                "inventory_sha256": "6" * 64,
+                "relative_path": "workload/details.csv",
+            })
+        self.assertTrue(result["isError"])
+        self.assertEqual(
+            "CLOUD_TEXT_PROTECTED_SCOPE", result["structuredContent"]["state"]
+        )
+        transport.assert_not_called()
+
+    def test_full_jsonrpc_budget_shrinks_cloud_text_without_skipping_bytes(self):
+        binding = cloud_binding("a" * 40, "b" * 64)
+        raw = ("\\\"\x01" * 3000).encode("utf-8")
+        file_sha256 = hashlib.sha256(raw).hexdigest()
+        value = {
+            "schema_version": 2,
+            "ok": True,
+            "operation": "cloud-text-read",
+            "state": "CLOUD_TEXT_PAGE_OK",
+            "exit_code": 0,
+            "snapshot_commit": binding["snapshot_commit"],
+            "catalog_sha256": binding["catalog_sha256"],
+            "terminal_record_sha256": binding["terminal_record_sha256"],
+            "inventory_sha256": "c" * 64,
+            "relative_path": "workload/escaped.txt",
+            "artifact_class": "raw_artifact",
+            "policy_assessment": "expected_cloud_only_raw_artifact",
+            "evidence_status": "unmapped_raw_text",
+            "reconciliation_state": "CLOUD_ONLY",
+            "bytes": len(raw),
+            "file_sha256": file_sha256,
+            "identity_basis": "content_sha256",
+            "encoding": "utf-8",
+            "page_start_byte": 0,
+            "page_end_byte": len(raw),
+            "page_bytes": len(raw),
+            "page_sha256": file_sha256,
+            "content": raw.decode("utf-8"),
+            "page_complete": True,
+            "terminal_page": True,
+            "complete": True,
+            "has_more": False,
+            "scientific_completeness": "not_assessed",
+        }
+        result = review._bounded_cloud_text(
+            value,
+            binding,
+            review.TRUSTED_REMOTE_URLS[0],
+            binding["snapshot_commit"],
+        )
+        page = result["structuredContent"]
+        self.assertLess(page["page_bytes"], len(raw))
+        self.assertEqual(page["page_end_byte"], page["page_bytes"])
+        self.assertEqual(
+            raw[:page["page_end_byte"]].decode("utf-8"), page["content"]
+        )
+        self.assertTrue(page["has_more"])
+        envelope = {
+            "jsonrpc": "2.0",
+            "id": review.MAX_REQUEST_ID_PLACEHOLDER,
+            "result": result,
+        }
+        self.assertLessEqual(
+            len(review.canonical_bytes(envelope)) + 1,
+            review.MAX_JSONRPC_RESPONSE_BYTES,
+        )
 
     def test_full_jsonrpc_budget_shrinks_escaped_cloud_entries(self):
         binding = cloud_binding("a" * 40, "b" * 64)

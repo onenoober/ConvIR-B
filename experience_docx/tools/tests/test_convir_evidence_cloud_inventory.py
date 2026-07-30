@@ -405,6 +405,7 @@ class EvidenceCloudInventoryTests(unittest.TestCase):
         self.assertTrue(summary["ok"])
         self.assertFalse(summary["root_binding_enforced"])
         self.assertNotIn("_entries", summary)
+        self.assertNotIn("_nodes", summary)
 
         query_request = dict(request)
         query_request["operation"] = "query"
@@ -427,6 +428,65 @@ class EvidenceCloudInventoryTests(unittest.TestCase):
             with self.assertRaises(inventory.InventoryError) as raised:
                 inventory.remote_worker(query_request)
         self.assertEqual("INVENTORY_DRIFT", raised.exception.state)
+
+    def test_cloud_text_reads_inventory_bound_utf8_raw_pages(self):
+        snapshot = self.fixture.build()
+        original_binding = self.fixture.prepare(snapshot)
+        run_root = self.fixture.run_root(self.temp.name, original_binding)
+        raw_text = "scene,value\nalpha,1\nbeta,\u96fe\n"
+        (run_root / "workload/details.csv").write_text(raw_text, encoding="utf-8")
+        binding = dict(original_binding)
+        binding["run_root"] = str(run_root)
+        summary_request = {
+            "schema_version": 1,
+            "operation": "summary",
+            "binding": binding,
+            "adapter_root": str(run_root),
+            "root_binding_enforced": True,
+            "expected_session": binding["session"],
+            "query": None,
+        }
+        with mock.patch.object(inventory, "_session_state", return_value="inactive"):
+            summary = inventory.remote_worker(summary_request)
+        self.assertEqual("INVENTORY_READY", summary["state"])
+
+        request = dict(summary_request)
+        request["schema_version"] = 2
+        request["operation"] = "text_read"
+        request["query"] = {
+            "inventory_sha256": summary["inventory_sha256"],
+            "relative_path": "workload/details.csv",
+            "offset": 0,
+            "page_bytes": 18,
+            "expected_file_sha256": None,
+        }
+        with mock.patch.object(inventory, "_session_state", return_value="inactive"):
+            first = inventory.remote_worker(request)
+        self.assertEqual(2, first["schema_version"])
+        self.assertEqual("unmapped_raw_text", first["evidence_status"])
+        self.assertTrue(first["has_more"])
+        self.assertEqual(
+            hashlib.sha256(raw_text.encode("utf-8")).hexdigest(),
+            first["file_sha256"],
+        )
+
+        request["query"] = dict(request["query"])
+        request["query"]["offset"] = first["page_end_byte"]
+        request["query"]["page_bytes"] = inventory.MAX_TEXT_PAGE_BYTES
+        request["query"]["expected_file_sha256"] = first["file_sha256"]
+        with mock.patch.object(inventory, "_session_state", return_value="inactive"):
+            second = inventory.remote_worker(request)
+        self.assertTrue(second["terminal_page"])
+        self.assertEqual(
+            raw_text,
+            first["content"] + second["content"],
+        )
+
+        request["query"]["expected_file_sha256"] = "f" * 64
+        with mock.patch.object(inventory, "_session_state", return_value="inactive"):
+            with self.assertRaises(inventory.InventoryError) as raised:
+                inventory.remote_worker(request)
+        self.assertEqual("CLOUD_TEXT_IDENTITY_DRIFT", raised.exception.state)
 
     def test_remote_worker_stdio_uses_committed_stdlib_source(self):
         snapshot = self.fixture.build()

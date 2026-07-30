@@ -10,7 +10,7 @@ on_error() {
 trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
 
 branch=codex/convir-evidence-review-main-adoption
-baseline=4a38751bf3f61107160dcb9348419c8106cb84ab
+baseline=c4f0e73aa153066f392e0edabc8cff341bd7673e
 rules_commit=e18ed6e6454cc0372825c3f5a5ee9265af359e64
 github=git@github.com:onenoober/ConvIR-B.git
 seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
@@ -47,7 +47,7 @@ git -C "$work/repo" checkout --quiet --detach "$candidate"
 test -z "$(git -C "$work/repo" status --porcelain)"
 
 changed=$(git -C "$work/repo" diff --name-only "$baseline" "$candidate")
-expected=$'AGENTS.md\nexperience_docx/AI_POLICY_SNAPSHOT.json\nexperience_docx/COMMAND_RELIABILITY_PROTOCOL.md\nexperience_docx/CONVIR_EVIDENCE_REVIEW.md\nexperience_docx/tools/convir_evidence_catalog.py\nexperience_docx/tools/convir_evidence_review_mcp.py\nexperience_docx/tools/tests/test_convir_evidence_catalog.py\nexperience_docx/tools/tests/test_convir_evidence_review_mcp.py\nexperience_docx/tools/validate_convir_evidence_review_completeness_cloud.sh\nexperience_docx/tools/validate_convir_evidence_review_main_adoption_cloud.sh'
+expected=$'experience_docx/CONVIR_EVIDENCE_REVIEW.md\nexperience_docx/tools/convir_evidence_cloud_inventory.py\nexperience_docx/tools/convir_evidence_review_mcp.py\nexperience_docx/tools/tests/test_convir_evidence_cloud_inventory.py\nexperience_docx/tools/tests/test_convir_evidence_review_mcp.py\nexperience_docx/tools/validate_convir_evidence_review_main_adoption_cloud.sh'
 [[ "$changed" == "$expected" ]]
 
 refs_before=$work/git-refs.before
@@ -62,8 +62,10 @@ server=$tools/convir_evidence_review_mcp.py
 "$python" -m py_compile \
   "$tools/policy_snapshot.py" \
   "$tools/convir_evidence_catalog.py" \
+  "$tools/convir_evidence_cloud_inventory.py" \
   "$server" \
   "$tests/test_convir_evidence_catalog.py" \
+  "$tests/test_convir_evidence_cloud_inventory.py" \
   "$tests/test_convir_evidence_review_mcp.py"
 bash -n "$tools/validate_convir_evidence_review_main_adoption_cloud.sh"
 "$python" "$tools/policy_snapshot.py" \
@@ -73,6 +75,7 @@ focused_stdout=$work/focused.stdout
 focused_stderr=$work/focused.stderr
 if TMPDIR="$work/tmp" PYTHONPATH="$tools:$tests" "$python" -m unittest \
     test_convir_evidence_catalog \
+    test_convir_evidence_cloud_inventory \
     test_convir_evidence_review_mcp \
     >"$focused_stdout" 2>"$focused_stderr"; then
   focused_rc=0
@@ -146,14 +149,16 @@ responses = [json.loads(line) for line in raw_lines]
 assert all("error" not in response for response in responses)
 info = responses[0]["result"]["serverInfo"]
 assert info["name"] == "convir-evidence-review"
-assert info["version"] == "1.2.0"
+assert info["version"] == "1.3.0"
 assert info["sourceSha256"] == hashlib.sha256(server.read_bytes()).hexdigest()
 assert [item["name"] for item in responses[1]["result"]["tools"]] == [
     "convir_evidence_catalog_summary",
     "convir_evidence_completeness_receipt",
     "convir_evidence_catalog_query",
+    "convir_evidence_bundle",
     "convir_evidence_cloud_inventory_summary",
     "convir_evidence_cloud_inventory_query",
+    "convir_evidence_cloud_text_read",
 ]
 result = responses[2]["result"]
 assert result["isError"] is False
@@ -183,5 +188,5 @@ cmp -s "$refs_before" "$refs_after"
 cmp -s "$config_before" "$config_after"
 trap - EXIT
 cleanup_work
-printf 'CONVIR_EVIDENCE_REVIEW_MAIN_ADOPTION_CLOUD_OK candidate=%s github_main=%s rules_commit=%s tests=%s focused_tests=%s tools=5 cloud_access=0 model_calls=0 gpu_access=0 dataset_access=0 protected_data_access=0\n' \
+printf 'CONVIR_EVIDENCE_REVIEW_MAIN_ADOPTION_CLOUD_OK candidate=%s github_main=%s rules_commit=%s tests=%s focused_tests=%s tools=7 cloud_access=0 model_calls=0 gpu_access=0 dataset_access=0 protected_data_access=0\n' \
   "$candidate" "$main_tip" "$rules_commit" "$test_count" "$focused_count"

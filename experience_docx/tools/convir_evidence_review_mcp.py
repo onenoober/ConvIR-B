@@ -17,7 +17,7 @@ import convirctl
 
 
 SERVER_NAME = "convir-evidence-review"
-SERVER_VERSION = "1.2.0"
+SERVER_VERSION = "1.3.0"
 WORKSPACE_ROOT_ENV = "CONVIR_EVIDENCE_LOCAL_WORKSPACE_ROOT"
 DEFAULT_WORKSPACE_ROOT = "/home/ubuntu/workspace"
 TRUSTED_REMOTE_NAME = "github"
@@ -31,6 +31,8 @@ MAX_REQUEST_ID_BYTES = 128
 MAX_TOOL_RESULT_BYTES = MAX_JSONRPC_RESPONSE_BYTES
 MAX_REMOTE_SCRIPT_BYTES = 256 * 1024
 MAX_REMOTE_CAPTURE_BYTES = 64 * 1024
+BUNDLE_CURSOR_OPERATION = "evidence-bundle-files"
+CLOUD_TEXT_CURSOR_OPERATION = "evidence-cloud-text-read"
 REMOTE_HOST = "convir-4090"
 REMOTE_PYTHON = "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python"
 REMOTE_BASH = "/bin/bash"
@@ -368,6 +370,327 @@ def tool_catalog_query(args):
         return bounded_mcp_result(failure_value(operation, exc))
 
 
+def _git_blob_size(repo, commit, relpath):
+    oid = catalog.git_text(repo, "rev-parse", "--verify", f"{commit}:{relpath}")
+    if not catalog.SHA40.fullmatch(oid) \
+            or catalog.git_text(repo, "cat-file", "-t", oid) != "blob":
+        raise ReviewError(
+            f"GitHub evidence is not one blob: {relpath}",
+            state="IDENTITY_CONFLICT", exit_code=3,
+        )
+    try:
+        size = int(catalog.git_text(repo, "cat-file", "-s", oid))
+    except ValueError as exc:
+        raise ReviewError(
+            f"GitHub evidence size is invalid: {relpath}",
+            state="IDENTITY_CONFLICT", exit_code=3,
+        ) from exc
+    if size < 0:
+        raise ReviewError(
+            f"GitHub evidence size is invalid: {relpath}",
+            state="IDENTITY_CONFLICT", exit_code=3,
+        )
+    return size
+
+
+def _bundle_arguments(args):
+    cursor = args.get("cursor")
+    if cursor is not None and not isinstance(cursor, str):
+        raise ReviewError("cursor must be text")
+    limit = args.get("limit", 20)
+    if not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= 100:
+        raise ReviewError("limit must be an integer in [1, 100]")
+    return cursor, limit
+
+
+def _prepare_evidence_bundle(args):
+    repo = validate_repo(args.get("local_repo"))
+    commit, remote_url, tip = require_main_history_commit(
+        repo, args.get("snapshot_commit")
+    )
+    requested_catalog_sha256 = args.get("catalog_sha256")
+    if not isinstance(requested_catalog_sha256, str) \
+            or not inventory.SHA256.fullmatch(requested_catalog_sha256):
+        raise ReviewError("catalog_sha256 has an invalid SHA identity")
+    terminal_record_sha256 = args.get("terminal_record_sha256")
+    if not isinstance(terminal_record_sha256, str) \
+            or not inventory.SHA256.fullmatch(terminal_record_sha256):
+        raise ReviewError("terminal_record_sha256 has an invalid SHA identity")
+    loaded = catalog.load_catalog(repo, commit)
+    if loaded["catalog_sha256"] != requested_catalog_sha256:
+        raise ReviewError(
+            "catalog identity differs", state="IDENTITY_CONFLICT", exit_code=3
+        )
+    _, records, _ = catalog.load_terminal_records(repo, commit)
+    matches = [
+        record for record in records
+        if record["record_sha256"] == terminal_record_sha256
+    ]
+    if len(matches) != 1:
+        raise ReviewError(
+            "terminal record is absent or ambiguous",
+            state="EVIDENCE_BUNDLE_NOT_RESOLVED", exit_code=3,
+        )
+    record = matches[0]
+    route_records = [
+        item for item in records if item["route_id"] == record["route_id"]
+    ]
+    leaf, resolution = catalog.select_terminal_leaf(route_records)
+    if leaf is None or leaf["record_sha256"] != terminal_record_sha256:
+        raise ReviewError(
+            "terminal record is not the unique selected route leaf",
+            state="EVIDENCE_BUNDLE_NOT_SELECTED_LEAF", exit_code=3,
+        )
+    if record["schema_version"] != 2:
+        raise ReviewError(
+            "terminal record is legacy path-only evidence",
+            state="EVIDENCE_BUNDLE_LEGACY_ONLY", exit_code=3,
+        )
+    binding = inventory.prepare_terminal_binding(
+        repo, commit, requested_catalog_sha256, terminal_record_sha256
+    )
+    if binding.get("eligible") is not True:
+        raise ReviewError(
+            binding.get("reason", "terminal binding is not eligible"),
+            state="EVIDENCE_BUNDLE_NOT_ELIGIBLE", exit_code=3,
+        )
+
+    files = {}
+
+    def add_file(path, size, sha256, role, *, source_path=None,
+                 required=True, priority=100, evidence_status="authoritative"):
+        path = catalog.require_relpath(path, "bundle file path")
+        item = files.get(path)
+        if item is None:
+            item = {
+                "path": path,
+                "bytes": size,
+                "sha256": sha256,
+                "roles": [],
+                "source_paths": [],
+                "required": bool(required),
+                "terminal_bound": True,
+                "evidence_status": evidence_status,
+                "read_priority": priority,
+                "content_returned": False,
+                "read_via": "convirctl_repo_show",
+            }
+            files[path] = item
+        elif item["bytes"] != size or item["sha256"] != sha256:
+            raise ReviewError(
+                f"bundle file identity conflicts: {path}",
+                state="IDENTITY_CONFLICT", exit_code=3,
+            )
+        item["roles"] = sorted(set([*item["roles"], role]))
+        if source_path is not None:
+            source_path = catalog.require_relpath(
+                source_path, "bundle source path"
+            )
+            item["source_paths"] = sorted(set([*item["source_paths"], source_path]))
+        item["required"] = item["required"] or bool(required)
+        item["read_priority"] = min(item["read_priority"], priority)
+
+    add_file(
+        record["contract_path"],
+        _git_blob_size(repo, commit, record["contract_path"]),
+        record["contract_sha256"], "route_contract", priority=60,
+    )
+    add_file(
+        record["conclusion_path"],
+        _git_blob_size(repo, commit, record["conclusion_path"]),
+        record["conclusion_sha256"], "scientific_conclusion", priority=20,
+    )
+    add_file(
+        record["closeout_path"],
+        _git_blob_size(repo, commit, record["closeout_path"]),
+        record["closeout_sha256"], "typed_closeout", priority=40,
+    )
+    contract_roles = {
+        "manifest.json": ("route_manifest", 70),
+        "route_note.md": ("route_note", 60),
+        "experiment_spec.json": ("experiment_spec", 55),
+        "program_contract.json": ("program_contract", 50),
+        "scientific_contract.json": ("scientific_contract", 10),
+        "runtime_spec.json": ("runtime_spec", 65),
+        "asset_manifest.json": ("asset_manifest", 75),
+        "capability_profile.json": ("capability_profile", 80),
+        "precision_certificate.json": ("precision_certificate", 45),
+    }
+    for item in record["contract_bundle"]:
+        archive_name = Path(item["path"]).name
+        role, priority = contract_roles.get(
+            archive_name, ("launch_contract", 90)
+        )
+        add_file(
+            item["path"], item["bytes"], item["sha256"], role,
+            source_path=item["source_path"], priority=priority,
+        )
+    expected_by_path = {
+        item["github_path"]: item for item in binding["expected_evidence"]
+    }
+    unmapped_by_path = {
+        item["github_path"]: item for item in binding["unmapped_results"]
+    }
+    for item in record["result_files"]:
+        expected = expected_by_path.get(item["path"])
+        unmapped = unmapped_by_path.get(item["path"])
+        if expected is not None:
+            add_file(
+                item["path"], item["bytes"], item["sha256"],
+                "formal_result", source_path=expected["source_relpath"],
+                required=expected["required"], priority=30,
+                evidence_status="runtime_declared",
+            )
+        elif unmapped is not None:
+            add_file(
+                item["path"], item["bytes"], item["sha256"],
+                "unmapped_formal_result", required=True, priority=35,
+                evidence_status="terminal_bound_unmapped",
+            )
+        else:
+            raise ReviewError(
+                f"terminal result mapping is incomplete: {item['path']}",
+                state="IDENTITY_CONFLICT", exit_code=3,
+            )
+    file_records = sorted(
+        files.values(), key=lambda item: (item["read_priority"], item["path"])
+    )
+    lineage = [
+        catalog.terminal_summary(item)
+        for item in sorted(route_records, key=lambda value: value["index_line"])
+    ]
+    bundle_sha256 = catalog.canonical_sha256({
+        "snapshot_commit": commit,
+        "catalog_sha256": requested_catalog_sha256,
+        "terminal_record_sha256": terminal_record_sha256,
+        "lineage": lineage,
+        "files": file_records,
+    })
+    project_receipt = catalog.completeness_receipt(loaded)
+    return {
+        "repo": repo,
+        "remote_url": remote_url,
+        "tip": tip,
+        "record": record,
+        "binding": binding,
+        "resolution": resolution,
+        "lineage": lineage,
+        "files": file_records,
+        "bundle_sha256": bundle_sha256,
+        "project_receipt": project_receipt,
+    }
+
+
+def _bundle_page(prepared, args, limit):
+    record = prepared["record"]
+    files = prepared["files"]
+    cursor, _ = _bundle_arguments(args)
+    query_sha256 = catalog.canonical_sha256({
+        "snapshot_commit": prepared["binding"]["snapshot_commit"],
+        "catalog_sha256": prepared["binding"]["catalog_sha256"],
+        "terminal_record_sha256": record["record_sha256"],
+        "bundle_sha256": prepared["bundle_sha256"],
+    })
+    offset = 0
+    if cursor is not None:
+        try:
+            decoded = convirctl.decode_repo_cursor(
+                cursor, BUNDLE_CURSOR_OPERATION, query_sha256
+            )
+        except convirctl.ControlError as exc:
+            raise ReviewError(
+                str(exc), state=exc.state, exit_code=exc.exit_code
+            ) from exc
+        if decoded["commit"] != prepared["binding"]["snapshot_commit"] \
+                or decoded["object_id"] != record["record_sha256"][:40]:
+            raise ReviewError(
+                "bundle cursor identity differs",
+                state="REPO_CURSOR_IDENTITY_MISMATCH", exit_code=3,
+            )
+        offset = decoded["position"]
+    if offset > len(files) or (offset == len(files) and offset != 0):
+        raise ReviewError(
+            "bundle cursor is outside the file manifest",
+            state="REPO_CURSOR_INVALID", exit_code=3,
+        )
+    selected = files[offset:offset + limit]
+    end = offset + len(selected)
+    terminal_page = end == len(files)
+    binding = prepared["binding"]
+    receipt = prepared["project_receipt"]
+    return {
+        "schema_version": 2,
+        "ok": True,
+        "operation": "evidence-bundle",
+        "state": "EVIDENCE_BUNDLE_OK",
+        "exit_code": 0,
+        "snapshot_commit": binding["snapshot_commit"],
+        "catalog_sha256": binding["catalog_sha256"],
+        "terminal_record_sha256": record["record_sha256"],
+        "route_id": record["route_id"],
+        "operation_id": record["operation_id"],
+        "run_id": record["run_id"],
+        "terminal_resolution": prepared["resolution"],
+        "selected_leaf": True,
+        "bundle_sha256": prepared["bundle_sha256"],
+        "bundle_completeness": "complete",
+        "project_review_completeness": receipt["review_completeness"],
+        "project_unresolved_counts": receipt["unresolved_counts"],
+        "lineage": prepared["lineage"],
+        "cloud_review": {
+            "evidence_role": binding["evidence_role"],
+            "raw_inventory_authorized": binding["raw_inventory_authorized"],
+            "exclusion_reason": binding["raw_inventory_exclusion_reason"],
+            "content_read": False,
+        },
+        "query_sha256": query_sha256,
+        "offset": offset,
+        "returned_count": len(selected),
+        "total_count": len(files),
+        "files": selected,
+        "page_sha256": catalog.canonical_sha256(selected),
+        "page_complete": True,
+        "terminal_page": terminal_page,
+        "complete": terminal_page,
+        "has_more": not terminal_page,
+        "next_cursor": None if terminal_page else convirctl.encode_repo_cursor(
+            BUNDLE_CURSOR_OPERATION,
+            binding["snapshot_commit"], query_sha256, end,
+            record["record_sha256"][:40],
+        ),
+        "content_returned": False,
+        "scientific_completeness": "not_assessed",
+        "excluded_sources": [
+            "route_branches", "cloud_binary_artifacts", "protected_data",
+            "file_contents",
+        ],
+    }
+
+
+def tool_evidence_bundle(args):
+    operation = "evidence-bundle"
+    try:
+        prepared = _prepare_evidence_bundle(args)
+        _, requested_limit = _bundle_arguments(args)
+        effective_limit = requested_limit
+        while True:
+            value = _bundle_page(prepared, args, effective_limit)
+            add_github_identity(
+                value, prepared["remote_url"], prepared["tip"]
+            )
+            result = mcp_result(value)
+            if result_fits(result):
+                return result
+            if value["returned_count"] <= 1:
+                raise ReviewError(
+                    "one bundle file record exceeds the MCP response budget",
+                    state="ENTRY_TOO_LARGE", exit_code=3,
+                )
+            effective_limit = value["returned_count"] - 1
+    except Exception as exc:
+        return bounded_mcp_result(failure_value(operation, exc))
+
+
 def _remote_script(request):
     source = base64.encodebytes(INVENTORY_SOURCE_BYTES).decode("ascii").rstrip()
     request_raw = canonical_bytes(request)
@@ -690,6 +1013,184 @@ def tool_cloud_inventory_query(args):
         return bounded_mcp_result(failure_value(operation, exc))
 
 
+def _cloud_text_query_sha256(binding, inventory_sha256, relative_path,
+                             file_sha256):
+    return catalog.canonical_sha256({
+        "snapshot_commit": binding["snapshot_commit"],
+        "terminal_record_sha256": binding["terminal_record_sha256"],
+        "inventory_sha256": inventory_sha256,
+        "relative_path": relative_path,
+        "file_sha256": file_sha256,
+    })
+
+
+def _cloud_text_arguments(args, binding):
+    inventory_sha256 = args.get("inventory_sha256")
+    if not isinstance(inventory_sha256, str) \
+            or not inventory.SHA256.fullmatch(inventory_sha256):
+        raise ReviewError("inventory_sha256 has an invalid SHA identity")
+    try:
+        relative_path = inventory._require_relpath(
+            args.get("relative_path"), "relative_path", state="ARGUMENTS_INVALID"
+        )
+    except inventory.InventoryError as exc:
+        raise ReviewError(str(exc), state=exc.state, exit_code=exc.exit_code) from exc
+    page_bytes = args.get("page_bytes", inventory.MAX_TEXT_PAGE_BYTES)
+    if not isinstance(page_bytes, int) or isinstance(page_bytes, bool) \
+            or not 256 <= page_bytes <= inventory.MAX_TEXT_PAGE_BYTES:
+        raise ReviewError(
+            f"page_bytes must be in [256, {inventory.MAX_TEXT_PAGE_BYTES}]"
+        )
+    file_sha256 = args.get("file_sha256")
+    if file_sha256 is not None and (
+        not isinstance(file_sha256, str)
+        or not inventory.SHA256.fullmatch(file_sha256)
+    ):
+        raise ReviewError("file_sha256 has an invalid SHA identity")
+    cursor = args.get("cursor")
+    if cursor is not None and not isinstance(cursor, str):
+        raise ReviewError("cursor must be text")
+    if cursor is not None and file_sha256 is None:
+        raise ReviewError("file_sha256 is required with a continuation cursor")
+    offset = 0
+    if cursor is not None:
+        query_sha256 = _cloud_text_query_sha256(
+            binding, inventory_sha256, relative_path, file_sha256
+        )
+        try:
+            decoded = convirctl.decode_repo_cursor(
+                cursor, CLOUD_TEXT_CURSOR_OPERATION, query_sha256
+            )
+        except convirctl.ControlError as exc:
+            raise ReviewError(
+                str(exc), state=exc.state, exit_code=exc.exit_code
+            ) from exc
+        if decoded["commit"] != binding["snapshot_commit"] \
+                or decoded["object_id"] != file_sha256[:40]:
+            raise ReviewError(
+                "cloud text cursor identity differs",
+                state="REPO_CURSOR_IDENTITY_MISMATCH", exit_code=3,
+            )
+        offset = decoded["position"]
+    return {
+        "inventory_sha256": inventory_sha256,
+        "relative_path": relative_path,
+        "offset": offset,
+        "page_bytes": page_bytes,
+        "expected_file_sha256": file_sha256,
+    }
+
+
+def _execute_cloud_text(binding, query):
+    if binding.get("eligible") is not True:
+        raise ReviewError(
+            binding.get("reason", "terminal binding is not eligible"),
+            state="CLOUD_TEXT_NOT_INVENTORIED", exit_code=3,
+        )
+    if binding.get("raw_inventory_authorized") is not True:
+        raise ReviewError(
+            binding.get(
+                "raw_inventory_exclusion_reason",
+                "cloud text scope is protected or not authorized",
+            ),
+            state="CLOUD_TEXT_PROTECTED_SCOPE", exit_code=3,
+        )
+    request = {
+        "schema_version": 2,
+        "operation": "text_read",
+        "binding": binding,
+        "adapter_root": binding["run_root"],
+        "root_binding_enforced": True,
+        "expected_session": binding["session"],
+        "query": query,
+    }
+    result = _run_fixed_remote(request)
+    if result.get("ok") is not True:
+        return result
+    if result.get("schema_version") != 2 \
+            or result.get("snapshot_commit") != binding["snapshot_commit"] \
+            or result.get("catalog_sha256") != binding["catalog_sha256"] \
+            or result.get("terminal_record_sha256") \
+            != binding["terminal_record_sha256"] \
+            or result.get("inventory_sha256") != query["inventory_sha256"] \
+            or result.get("relative_path") != query["relative_path"]:
+        raise ReviewError(
+            "cloud text response identity differs",
+            state="IDENTITY_CONFLICT", exit_code=3,
+        )
+    return result
+
+
+def _bounded_cloud_text(value, binding, remote_url, tip):
+    page = dict(value)
+    content = page.get("content")
+    file_sha256 = page.get("file_sha256")
+    if not isinstance(content, str) \
+            or not isinstance(file_sha256, str) \
+            or not inventory.SHA256.fullmatch(file_sha256):
+        raise ReviewError(
+            "cloud text page contract differs",
+            state="IDENTITY_CONFLICT", exit_code=3,
+        )
+    start = page.get("page_start_byte")
+    total_bytes = page.get("bytes")
+    if not isinstance(start, int) or not isinstance(total_bytes, int):
+        raise ReviewError(
+            "cloud text page offsets differ",
+            state="IDENTITY_CONFLICT", exit_code=3,
+        )
+    query_sha256 = _cloud_text_query_sha256(
+        binding, page["inventory_sha256"], page["relative_path"], file_sha256
+    )
+    while True:
+        raw = content.encode("utf-8")
+        end = start + len(raw)
+        terminal_page = end == total_bytes
+        page.update({
+            "content": content,
+            "query_sha256": query_sha256,
+            "page_end_byte": end,
+            "page_bytes": len(raw),
+            "page_sha256": hashlib.sha256(raw).hexdigest(),
+            "terminal_page": terminal_page,
+            "complete": terminal_page,
+            "has_more": not terminal_page,
+            "next_cursor": None if terminal_page else convirctl.encode_repo_cursor(
+                CLOUD_TEXT_CURSOR_OPERATION,
+                binding["snapshot_commit"], query_sha256, end,
+                file_sha256[:40],
+            ),
+            "file_read_completeness": (
+                "complete" if terminal_page else "partial"
+            ),
+            "unread_remaining_bytes": total_bytes - end,
+        })
+        add_github_identity(page, remote_url, tip)
+        result = mcp_result(page)
+        if result_fits(result):
+            return result
+        if len(content) <= 1:
+            raise ReviewError(
+                "one cloud text character exceeds the MCP response budget",
+                state="ENTRY_TOO_LARGE", exit_code=3,
+            )
+        content = content[:max(1, len(content) // 2)]
+
+
+def tool_cloud_text_read(args):
+    operation = "cloud-text-read"
+    try:
+        binding, remote_url, tip = _prepare_cloud_binding(args)
+        query = _cloud_text_arguments(args, binding)
+        value = _execute_cloud_text(binding, query)
+        if value.get("ok") is not True:
+            add_github_identity(value, remote_url, tip)
+            return bounded_mcp_result(value)
+        return _bounded_cloud_text(value, binding, remote_url, tip)
+    except Exception as exc:
+        return bounded_mcp_result(failure_value(operation, exc))
+
+
 OUTPUT_SCHEMA = {
     "type": "object",
     "required": ["ok", "operation", "state", "exit_code"],
@@ -771,6 +1272,40 @@ TOOLS = {
         "outputSchema": OUTPUT_SCHEMA,
         "handler": tool_catalog_query,
     },
+    "convir_evidence_bundle": {
+        "description": (
+            "Resolve one exact schema-2 terminal leaf and page its complete "
+            "SHA-bound GitHub contract, closeout, conclusion and result manifest "
+            "without returning file contents."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "required": [
+                "local_repo", "snapshot_commit", "catalog_sha256",
+                "terminal_record_sha256",
+            ],
+            "properties": {
+                "local_repo": {"type": "string"},
+                "snapshot_commit": {
+                    "type": "string", "pattern": "^[0-9a-f]{40}$",
+                },
+                "catalog_sha256": {
+                    "type": "string", "pattern": "^[0-9a-f]{64}$",
+                },
+                "terminal_record_sha256": {
+                    "type": "string", "pattern": "^[0-9a-f]{64}$",
+                },
+                "cursor": {"type": "string"},
+                "limit": {
+                    "type": "integer", "minimum": 1, "maximum": 100,
+                    "default": 20,
+                },
+            },
+            "additionalProperties": False,
+        },
+        "outputSchema": OUTPUT_SCHEMA,
+        "handler": tool_evidence_bundle,
+    },
     "convir_evidence_cloud_inventory_summary": {
         "description": (
             "Verify one immutable schema-2 terminal binding, then return a "
@@ -834,6 +1369,48 @@ TOOLS = {
         },
         "outputSchema": OUTPUT_SCHEMA,
         "handler": tool_cloud_inventory_query,
+    },
+    "convir_evidence_cloud_text_read": {
+        "description": (
+            "Read one bounded UTF-8 page from an exact text file already found "
+            "in a complete inactive unprotected cloud inventory; continuation "
+            "binds the file SHA-256 and never accepts a host or run root."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "required": [
+                "local_repo", "snapshot_commit", "catalog_sha256",
+                "terminal_record_sha256", "inventory_sha256", "relative_path",
+            ],
+            "properties": {
+                "local_repo": {"type": "string"},
+                "snapshot_commit": {
+                    "type": "string", "pattern": "^[0-9a-f]{40}$",
+                },
+                "catalog_sha256": {
+                    "type": "string", "pattern": "^[0-9a-f]{64}$",
+                },
+                "terminal_record_sha256": {
+                    "type": "string", "pattern": "^[0-9a-f]{64}$",
+                },
+                "inventory_sha256": {
+                    "type": "string", "pattern": "^[0-9a-f]{64}$",
+                },
+                "relative_path": {"type": "string", "minLength": 1},
+                "file_sha256": {
+                    "type": "string", "pattern": "^[0-9a-f]{64}$",
+                },
+                "cursor": {"type": "string"},
+                "page_bytes": {
+                    "type": "integer", "minimum": 256,
+                    "maximum": inventory.MAX_TEXT_PAGE_BYTES,
+                    "default": inventory.MAX_TEXT_PAGE_BYTES,
+                },
+            },
+            "additionalProperties": False,
+        },
+        "outputSchema": OUTPUT_SCHEMA,
+        "handler": tool_cloud_text_read,
     },
 }
 
