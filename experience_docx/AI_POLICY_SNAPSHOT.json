@@ -73,8 +73,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "3a827f2b80c3d1e049e70f311fe7d94d1e1c42867e6086d64a0853ca0fc9493d",
-  "rules_commit": "5978be9712dcebce1af3e2941aab7e93d17664f6",
+  "rules_bundle_sha256": "9a5c7b6cc15ea7402281989cb18749887cf7188c50b4b67aa7f02fa462f31784",
+  "rules_commit": "23a567c6a9962f18ef261cc376f3492f66db1b5c",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "sources": {
@@ -83,16 +83,16 @@
       "sha256": "c5841515ddd9af8dc1d024c017e9af41955016ae15f6f34086b28d69fbc0b0c2"
     },
     "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md": {
-      "bytes": 4735,
-      "sha256": "cccbb9aff0dc34f45ebc8563e57f4f2e57127ab65478ea650d21ccd14cc6b27d"
+      "bytes": 4970,
+      "sha256": "bee5089e6d4a2c510b7dbc0d998ac13222f4485eb58955bb5093daf7a57e0e3d"
     },
     "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md": {
       "bytes": 13057,
       "sha256": "8dcbb3d2d72e4ebd4c4be1eace6afc3ca03098b6e6bf8a2be45ea31820e103d7"
     },
     "experience_docx/CONVIR_EVIDENCE_REVIEW.md": {
-      "bytes": 13342,
-      "sha256": "11aaf1090f05c6377b10ffb55cccb3bb0717a8ad793b08c1d24d1dea2577f9fc"
+      "bytes": 13637,
+      "sha256": "392947becf6dc6a811186e318da2a4fecdae4564760e7cc8a610d2e4d5e0bcb3"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
       "bytes": 15495,
@@ -107,12 +107,12 @@
       "sha256": "d67578552d34cbd78fe4ac187e652598078cef30f85771365e8cbb6777029385"
     },
     "experience_docx/ROUTE_READY_FASTPATH.md": {
-      "bytes": 13852,
-      "sha256": "5718e8fddc4932c33c5cf8d48e998de44669dc0edd40e585c4b2c67db1d25f11"
+      "bytes": 14052,
+      "sha256": "c0b6e0fa44d189aa3a26d6754be3b640e09013fec373cd1d7794164d9894fc07"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
-      "bytes": 12079,
-      "sha256": "112b0eafe3ffc63594ca97905b37b4d5ca4978bca032a86b1089188aa212f563"
+      "bytes": 12357,
+      "sha256": "fb4a4d2744d928699063e3506e3ec73659792da66f81cb6aade77b2085b67ead"
     }
   },
   "workflow": [
