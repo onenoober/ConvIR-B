@@ -40,7 +40,7 @@ git -C "$work/repo" fetch --quiet --no-tags github \
   "+refs/heads/main:refs/remotes/github/main"
 candidate=$(git -C "$work/repo" rev-parse refs/validation/candidate)
 main_tip=$(git -C "$work/repo" rev-parse refs/remotes/github/main)
-test "$main_tip" = "$baseline"
+test "$main_tip" = "$candidate"
 git -C "$work/repo" merge-base --is-ancestor "$baseline" "$candidate"
 git -C "$work/repo" merge-base --is-ancestor "$rules_commit" "$candidate"
 git -C "$work/repo" checkout --quiet --detach "$candidate"
