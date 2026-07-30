@@ -118,6 +118,7 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         os.environ[review.WORKSPACE_ROOT_ENV] = str(self.root)
         self.git("init", "-b", "main")
         self.git("config", "user.email", "evidence-review@example.invalid")
+
         self.git("config", "user.name", "Evidence Review Test")
         self.git("remote", "add", review.TRUSTED_REMOTE_NAME, review.TRUSTED_REMOTE_URLS[0])
 
@@ -162,6 +163,21 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             "method": "tools/call",
             "params": {"name": name, "arguments": arguments},
         })
+
+    def test_binding_identity_matches_inventory_contract(self):
+        binding = cloud_binding("a" * 40, "b" * 64)
+        binding["raw_artifact_receipt_sha256"] = "7" * 64
+        binding["raw_artifact_receipt"] = {"manifest_sha256": "8" * 64}
+        generated = review.inventory._inventory(
+            binding,
+            state="INVENTORY_READY",
+            discovery_completeness="complete",
+            entries=[],
+            scan=None,
+            limits=review.inventory._limits(None),
+            issues=[],
+        )
+        self.assertEqual(review._binding_identity(binding), generated["identity"])
 
     def test_server_exposes_exact_seven_read_only_tools(self):
         initialized = review.handle({

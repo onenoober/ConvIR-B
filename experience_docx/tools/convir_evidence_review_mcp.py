@@ -857,14 +857,19 @@ def _run_fixed_remote(request):
 
 
 def _binding_identity(binding):
-    return {
+    identity = {
         key: binding.get(key) for key in (
             "snapshot_commit", "catalog_sha256", "terminal_index_sha256",
             "terminal_record_sha256", "route_id", "operation_id", "run_id",
             "output_id", "mode", "session", "route_commit", "manifest_sha256",
             "runtime_spec_sha256", "closeout_sha256", "runner_sha256",
+            "raw_artifact_receipt_sha256",
         )
     }
+    identity["raw_artifact_manifest_sha256"] = (
+        binding.get("raw_artifact_receipt") or {}
+    ).get("manifest_sha256")
+    return identity
 
 
 def _prepare_cloud_binding(args):
