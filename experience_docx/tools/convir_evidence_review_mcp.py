@@ -14,10 +14,11 @@ from types import SimpleNamespace
 import convir_evidence_catalog as catalog
 import convir_evidence_cloud_inventory as inventory
 import convirctl
+import legacy_backfill_registry as legacy
 
 
 SERVER_NAME = "convir-evidence-review"
-SERVER_VERSION = "1.4.0"
+SERVER_VERSION = "1.5.0"
 WORKSPACE_ROOT_ENV = "CONVIR_EVIDENCE_LOCAL_WORKSPACE_ROOT"
 DEFAULT_WORKSPACE_ROOT = "/home/ubuntu/workspace"
 TRUSTED_REMOTE_NAME = "github"
@@ -31,6 +32,7 @@ MAX_REQUEST_ID_BYTES = 128
 MAX_TOOL_RESULT_BYTES = MAX_JSONRPC_RESPONSE_BYTES
 MAX_REMOTE_SCRIPT_BYTES = 256 * 1024
 MAX_REMOTE_CAPTURE_BYTES = 64 * 1024
+MAX_LEGACY_REGISTRY_BYTES = 512 * 1024
 BUNDLE_CURSOR_OPERATION = "evidence-bundle-files"
 CLOUD_TEXT_CURSOR_OPERATION = "evidence-cloud-text-read"
 REMOTE_HOST = "convir-4090"
@@ -50,6 +52,9 @@ TRANSPORT_SOURCE_SHA256 = hashlib.sha256(
 INVENTORY_SOURCE_PATH = SELF_PATH.parent / "convir_evidence_cloud_inventory.py"
 INVENTORY_SOURCE_BYTES = INVENTORY_SOURCE_PATH.read_bytes()
 INVENTORY_SOURCE_SHA256 = hashlib.sha256(INVENTORY_SOURCE_BYTES).hexdigest()
+LEGACY_REGISTRY_SOURCE_SHA256 = hashlib.sha256(
+    (SELF_PATH.parent / "legacy_backfill_registry.py").read_bytes()
+).hexdigest()
 MAX_REQUEST_ID_PLACEHOLDER = "x" * (MAX_REQUEST_ID_BYTES - 2)
 
 
@@ -247,6 +252,150 @@ def add_github_identity(value, remote_url, tip):
     return value
 
 
+def load_legacy_registry(repo, commit):
+    """Load the commit-bound legacy registry when that snapshot contains it."""
+    try:
+        listing = catalog.git_bytes(
+            repo, ["--literal-pathspecs", "ls-tree", "-z", "--name-only",
+                   commit, "--", legacy.REGISTRY_PATH],
+            limit=4096,
+        )
+    except catalog.CatalogError as exc:
+        raise ReviewError(str(exc), state=exc.state, exit_code=exc.exit_code) from exc
+    if listing == b"":
+        return None
+    if listing != legacy.REGISTRY_PATH.encode("utf-8") + b"\0":
+        raise ReviewError(
+            "legacy registry path resolution is ambiguous",
+            state="LEGACY_REGISTRY_INVALID", exit_code=3,
+        )
+    try:
+        raw = catalog.git_bytes(
+            repo, ["show", f"{commit}:{legacy.REGISTRY_PATH}"],
+            limit=MAX_LEGACY_REGISTRY_BYTES,
+        )
+    except catalog.CatalogError as exc:
+        raise ReviewError(str(exc), state=exc.state, exit_code=exc.exit_code) from exc
+    try:
+        value = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ReviewError(
+            "legacy backfill registry is not valid UTF-8 JSON",
+            state="LEGACY_REGISTRY_INVALID", exit_code=3,
+        ) from exc
+    try:
+        legacy.validate_registry(value)
+    except legacy.RegistryError as exc:
+        raise ReviewError(
+            str(exc), state="LEGACY_REGISTRY_INVALID", exit_code=3
+        ) from exc
+    if value.get("generator_source_sha256") != LEGACY_REGISTRY_SOURCE_SHA256:
+        raise ReviewError(
+            "legacy registry generator identity differs",
+            state="LEGACY_REGISTRY_IDENTITY_MISMATCH", exit_code=3,
+        )
+    base_commit = value.get("snapshot_commit")
+    if not isinstance(base_commit, str) or not catalog.SHA40.fullmatch(base_commit):
+        raise ReviewError("legacy registry snapshot is invalid", state="LEGACY_REGISTRY_INVALID", exit_code=3)
+    completed = convirctl.run_argv(
+        [convirctl.GIT, "-C", repo, "merge-base", "--is-ancestor", base_commit, commit],
+        timeout=30, env=convirctl.git_environment(30),
+    )
+    if completed.returncode:
+        raise ReviewError(
+            "legacy registry snapshot is outside the selected history",
+            state="LEGACY_REGISTRY_SNAPSHOT_MISMATCH", exit_code=3,
+        )
+    try:
+        base_catalog = catalog.load_catalog(repo, base_commit)
+    except catalog.CatalogError as exc:
+        raise ReviewError(str(exc), state=exc.state, exit_code=exc.exit_code) from exc
+    source_tree = value.get("source_tree", {})
+    source_index = value.get("terminal_index", {})
+    catalog_tree = base_catalog["header"]["experiment_log_tree"]
+    catalog_index = base_catalog["header"]["terminal_index"]
+    if any(source_tree.get(key) != catalog_tree.get(key) for key in (
+        "path", "tree_oid", "path_collection_sha256", "tracked_file_count",
+    )) or any(source_index.get(key) != catalog_index.get(key) for key in (
+        "path", "blob_oid", "bytes", "sha256",
+    )):
+        raise ReviewError(
+            "legacy registry source identities differ from its frozen snapshot",
+            state="LEGACY_REGISTRY_IDENTITY_MISMATCH", exit_code=3,
+        )
+    expected_unindexed = sorted(
+        item["directory_path"] for item in base_catalog["entries"]
+        if item.get("record_kind") == "evidence_directory"
+        and item.get("index_coverage") == "UNINDEXED"
+    )
+    scope = value.get("scope", {})
+    if scope.get("unindexed_directory_count") != len(expected_unindexed) \
+            or scope.get("unindexed_directory_collection_sha256") \
+            != catalog.canonical_sha256(expected_unindexed):
+        raise ReviewError(
+            "legacy registry unindexed scope differs from its frozen snapshot",
+            state="LEGACY_REGISTRY_IDENTITY_MISMATCH", exit_code=3,
+        )
+    value["registry_source_sha256"] = LEGACY_REGISTRY_SOURCE_SHA256
+    return value
+
+
+def legacy_registry_summary(registry_value):
+    if registry_value is None:
+        return {"available": False, "state": "LEGACY_REGISTRY_NOT_PRESENT"}
+    return {
+        "available": True,
+        "state": "LEGACY_REGISTRY_VERIFIED",
+        "snapshot_commit": registry_value["snapshot_commit"],
+        "registry_sha256": registry_value["registry_sha256"],
+        "registry_source_sha256": registry_value["registry_source_sha256"],
+        "partition": registry_value["partition"],
+        "policy": registry_value["policy"],
+        "excluded_content": registry_value["excluded_content"],
+    }
+
+
+def filter_review_candidates(loaded, registry_value):
+    if registry_value is None:
+        return loaded
+    directory_records = {
+        item["directory_path"]: item for item in registry_value["directories"]
+    }
+    loose_records = {item["path"]: item for item in registry_value["loose_files"]}
+    entries = []
+    changed = False
+    for item in loaded["entries"]:
+        path = item.get("directory_path") or item.get("file_path")
+        legacy_record = directory_records.get(path)
+        if item.get("record_kind") == "loose_file":
+            if loose_records.get(path, {}).get("default_access") == "DO_NOT_READ":
+                changed = True
+                continue
+            entries.append(item)
+            continue
+        if legacy_record is not None and \
+                legacy_record.get("tracked_file_count") == item.get("tracked_file_count") \
+                and legacy_record.get("default_access") == "DO_NOT_READ":
+            changed = True
+            continue
+        if legacy_record is None or legacy_record.get("tracked_file_count") != item.get("tracked_file_count"):
+            entries.append(item)
+            continue
+        annotated = dict(item)
+        annotated["legacy_backfill"] = {
+            key: legacy_record[key] for key in (
+                "category", "default_access", "classification_reason",
+            )
+        }
+        entries.append(annotated)
+        changed = True
+    if not changed:
+        return loaded
+    copy = dict(loaded)
+    copy["entries"] = entries
+    return copy
+
+
 def mcp_result(value):
     value = dict(value)
     value["schema_version"] = 2
@@ -290,11 +439,14 @@ def tool_catalog_summary(args):
     try:
         repo = validate_repo(args.get("local_repo"))
         remote_url, commit = trusted_main_identity(repo)
+        registry_value = load_legacy_registry(repo, commit)
+        loaded = catalog.load_catalog(repo, commit)
         value = add_github_identity(
-            catalog.summary_response(catalog.load_catalog(repo, commit)),
+            catalog.summary_response(loaded),
             remote_url,
             commit,
         )
+        value["legacy_backfill"] = legacy_registry_summary(registry_value)
         return bounded_mcp_result(value)
     except Exception as exc:
         return bounded_mcp_result(failure_value(operation, exc))
@@ -312,7 +464,10 @@ def tool_completeness_receipt(args):
             commit, remote_url, tip = require_main_history_commit(
                 repo, requested_commit
             )
-        value = catalog.completeness_receipt(catalog.load_catalog(repo, commit))
+        registry_value = load_legacy_registry(repo, commit)
+        loaded = catalog.load_catalog(repo, commit)
+        value = catalog.completeness_receipt(loaded)
+        value["legacy_backfill"] = legacy_registry_summary(registry_value)
         add_github_identity(value, remote_url, tip)
         return bounded_mcp_result(value)
     except Exception as exc:
@@ -345,7 +500,8 @@ def tool_catalog_query(args):
             repo, args.get("snapshot_commit")
         )
         coverage, terms, cursor, requested_limit = query_arguments(args)
-        loaded = catalog.load_catalog(repo, commit)
+        registry_value = load_legacy_registry(repo, commit)
+        loaded = filter_review_candidates(catalog.load_catalog(repo, commit), registry_value)
         effective_limit = requested_limit
         while True:
             value = catalog.entries_response(
@@ -357,6 +513,7 @@ def tool_catalog_query(args):
                     limit=effective_limit,
                 ),
             )
+            value["legacy_backfill"] = legacy_registry_summary(registry_value)
             add_github_identity(value, remote_url, tip)
             result = mcp_result(value)
             if result_fits(result):
@@ -406,6 +563,95 @@ def _bundle_arguments(args):
     return cursor, limit
 
 
+def _prepare_legacy_evidence_bundle(
+        repo, commit, record, terminal_record_sha256, catalog_sha256,
+        remote_url, tip):
+    registry_value = load_legacy_registry(repo, commit)
+    if registry_value is None:
+        raise ReviewError(
+            "legacy backfill registry is unavailable for this snapshot",
+            state="EVIDENCE_BUNDLE_LEGACY_REGISTRY_MISSING", exit_code=3,
+        )
+    matches = [
+        item for item in registry_value["legacy_terminals"]
+        if item.get("terminal_record_sha256") == terminal_record_sha256
+    ]
+    if len(matches) != 1 or matches[0].get("backfill_status") \
+            != "LEGACY_HASH_BOUND_REVIEWABLE":
+        raise ReviewError(
+            "legacy terminal is not a unique hash-bound reviewable record",
+            state="EVIDENCE_BUNDLE_LEGACY_NOT_REVIEWABLE", exit_code=3,
+        )
+    files = []
+    for item in matches[0].get("files", []):
+        if item.get("readable") is not True:
+            raise ReviewError(
+                "legacy bundle contains an unreadable file",
+                state="EVIDENCE_BUNDLE_LEGACY_UNREADABLE", exit_code=3,
+            )
+        actual_oid = catalog.git_text(
+            repo, "rev-parse", "--verify", f"{commit}:{item['path']}"
+        )
+        actual_size = int(catalog.git_text(repo, "cat-file", "-s", actual_oid))
+        if actual_oid != item.get("blob_oid") or actual_size != item.get("bytes"):
+            raise ReviewError(
+                f"legacy bundle file identity differs: {item['path']}",
+                state="IDENTITY_CONFLICT", exit_code=3,
+            )
+        raw = catalog.git_bytes(
+            repo, ["cat-file", "blob", actual_oid],
+            limit=legacy.MAX_FILE_BYTES + 1,
+        )
+        if hashlib.sha256(raw).hexdigest() != item.get("sha256"):
+            raise ReviewError(
+                f"legacy bundle file SHA-256 differs: {item['path']}",
+                state="IDENTITY_CONFLICT", exit_code=3,
+            )
+        name = Path(item["path"]).name.lower()
+        roles = ["legacy_text_evidence"]
+        if name.endswith("_closeout.json") or name == "closeout.json":
+            roles.append("typed_closeout_legacy")
+        if "conclusion" in name:
+            roles.append("scientific_conclusion_legacy")
+        files.append({
+            "path": item["path"], "bytes": item["bytes"],
+            "sha256": item["sha256"], "blob_oid": item["blob_oid"],
+            "roles": roles, "required": True, "terminal_bound": False,
+            "evidence_status": "legacy_hash_bound", "read_priority": 40,
+            "content_returned": False, "read_via": "convirctl_repo_show",
+        })
+    files.sort(key=lambda item: (item["read_priority"], item["path"]))
+    lineage = [{
+        "schema_version": 1, "operation_id": record["operation_id"],
+        "run_id": record["run_id"], "state": record["state"],
+        "decision": record["decision"], "authorizes": record["authorizes"],
+        "route_commit": record["route_commit"], "record_sha256": record["record_sha256"],
+    }]
+    bundle_sha256 = catalog.canonical_sha256({
+        "snapshot_commit": commit, "catalog_sha256": catalog_sha256,
+        "terminal_record_sha256": terminal_record_sha256,
+        "lineage": lineage, "files": files,
+    })
+    binding = {
+        "snapshot_commit": commit,
+        "catalog_sha256": catalog_sha256,
+        "terminal_record_sha256": terminal_record_sha256,
+        "evidence_role": "legacy_hash_bound",
+        "raw_inventory_authorized": False,
+        "raw_inventory_exclusion_reason": "legacy_schema1_has_no_raw_artifact_seal",
+    }
+    return {
+        "repo": repo, "remote_url": remote_url, "tip": tip,
+        "record": record, "resolution": "LEGACY_HASH_BOUND_REVIEWABLE",
+        "lineage": lineage, "files": files, "bundle_sha256": bundle_sha256,
+        "project_receipt": catalog.completeness_receipt(
+            catalog.load_catalog(repo, commit)
+        ),
+        "binding": binding,
+        "legacy_registry": legacy_registry_summary(registry_value),
+    }
+
+
 def _prepare_evidence_bundle(args):
     repo = validate_repo(args.get("local_repo"))
     commit, remote_url, tip = require_main_history_commit(
@@ -444,10 +690,15 @@ def _prepare_evidence_bundle(args):
             "terminal record is not the unique selected route leaf",
             state="EVIDENCE_BUNDLE_NOT_SELECTED_LEAF", exit_code=3,
         )
+    if record["schema_version"] == 1:
+        return _prepare_legacy_evidence_bundle(
+            repo, commit, record, terminal_record_sha256,
+            requested_catalog_sha256, remote_url, tip,
+        )
     if record["schema_version"] != 2:
         raise ReviewError(
-            "terminal record is legacy path-only evidence",
-            state="EVIDENCE_BUNDLE_LEGACY_ONLY", exit_code=3,
+            "terminal record uses an unsupported schema",
+            state="EVIDENCE_BUNDLE_SCHEMA_UNSUPPORTED", exit_code=3,
         )
     binding = inventory.prepare_terminal_binding(
         repo, commit, requested_catalog_sha256, terminal_record_sha256
@@ -639,7 +890,7 @@ def _bundle_page(prepared, args, limit):
     terminal_page = end == len(files)
     binding = prepared["binding"]
     receipt = prepared["project_receipt"]
-    return {
+    value = {
         "schema_version": 2,
         "ok": True,
         "operation": "evidence-bundle",
@@ -654,7 +905,11 @@ def _bundle_page(prepared, args, limit):
         "terminal_resolution": prepared["resolution"],
         "selected_leaf": True,
         "bundle_sha256": prepared["bundle_sha256"],
-        "bundle_completeness": "complete",
+        "bundle_completeness": (
+            "legacy_hash_bound"
+            if prepared["resolution"] == "LEGACY_HASH_BOUND_REVIEWABLE"
+            else "complete"
+        ),
         "project_review_completeness": receipt["review_completeness"],
         "project_unresolved_counts": receipt["unresolved_counts"],
         "lineage": prepared["lineage"],
@@ -686,6 +941,16 @@ def _bundle_page(prepared, args, limit):
             "file_contents",
         ],
     }
+    if prepared["resolution"] == "LEGACY_HASH_BOUND_REVIEWABLE":
+        value.update({
+            "schema2_upgrade": False,
+            "legacy_limitations": [
+                "post_hoc_git_hash_binding",
+                "no_schema2_terminal_manifest",
+                "no_raw_artifact_seal",
+            ],
+        })
+    return value
 
 
 def tool_evidence_bundle(args):
@@ -1300,8 +1565,9 @@ TOOLS = {
     },
     "convir_evidence_bundle": {
         "description": (
-            "Resolve one exact schema-2 terminal leaf and page its complete "
-            "SHA-bound GitHub contract, closeout, conclusion and result manifest "
+            "Resolve one exact schema-2 terminal leaf or one unique registry-"
+            "backed schema-1 terminal and page its SHA-bound GitHub evidence "
+            "manifest "
             "without returning file contents."
         ),
         "inputSchema": {

@@ -47,7 +47,7 @@ git -C "$work/repo" checkout --quiet --detach "$candidate"
 test -z "$(git -C "$work/repo" status --porcelain)"
 
 changed=$(git -C "$work/repo" diff --name-only "$baseline" "$candidate")
-expected=$'experience_docx/AI_POLICY_SNAPSHOT.json\nexperience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md\nexperience_docx/CONVIR_EVIDENCE_REVIEW.md\nexperience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md\nexperience_docx/ROUTE_READY_FASTPATH.md\nexperience_docx/SCIENCE_FASTPATH.md\nexperience_docx/tools/convir_evidence_cloud_inventory.py\nexperience_docx/tools/convir_evidence_review_mcp.py\nexperience_docx/tools/policy_snapshot.py\nexperience_docx/tools/prepare_terminal_archive.py\nexperience_docx/tools/route_lifecycle.py\nexperience_docx/tools/tests/test_convir_evidence_cloud_inventory.py\nexperience_docx/tools/tests/test_convir_evidence_review_mcp.py\nexperience_docx/tools/tests/test_prepare_terminal_archive.py\nexperience_docx/tools/tests/test_route_lifecycle.py\nexperience_docx/tools/validate_convir_evidence_review_main_adoption_cloud.sh\nexperience_docx/tools/validate_route_ready.py'
+expected=$'experience_docx/AI_POLICY_SNAPSHOT.json\nexperience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md\nexperience_docx/CONVIR_EVIDENCE_REVIEW.md\nexperience_docx/LEGACY_BACKFILL_REGISTRY.json\nexperience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md\nexperience_docx/ROUTE_READY_FASTPATH.md\nexperience_docx/SCIENCE_FASTPATH.md\nexperience_docx/tools/convir_evidence_cloud_inventory.py\nexperience_docx/tools/convir_evidence_review_mcp.py\nexperience_docx/tools/legacy_backfill_registry.py\nexperience_docx/tools/policy_snapshot.py\nexperience_docx/tools/prepare_terminal_archive.py\nexperience_docx/tools/route_lifecycle.py\nexperience_docx/tools/tests/test_convir_evidence_cloud_inventory.py\nexperience_docx/tools/tests/test_convir_evidence_review_mcp.py\nexperience_docx/tools/tests/test_prepare_terminal_archive.py\nexperience_docx/tools/tests/test_route_lifecycle.py\nexperience_docx/tools/validate_convir_evidence_review_main_adoption_cloud.sh\nexperience_docx/tools/validate_route_ready.py'
 [[ "$changed" == "$expected" ]]
 
 refs_before=$work/git-refs.before
@@ -64,6 +64,7 @@ server=$tools/convir_evidence_review_mcp.py
   "$tools/convir_evidence_catalog.py" \
   "$tools/convir_evidence_cloud_inventory.py" \
   "$server" \
+  "$tools/legacy_backfill_registry.py" \
   "$tools/prepare_terminal_archive.py" \
   "$tools/route_lifecycle.py" \
   "$tools/validate_route_ready.py" \
@@ -75,6 +76,8 @@ server=$tools/convir_evidence_review_mcp.py
 bash -n "$tools/validate_convir_evidence_review_main_adoption_cloud.sh"
 "$python" "$tools/policy_snapshot.py" \
   --repo "$work/repo" --rules-commit "$rules_commit" --check >/dev/null
+"$python" "$tools/legacy_backfill_registry.py" \
+  --repo "$work/repo" --commit "$candidate" --check >/dev/null
 
 focused_stdout=$work/focused.stdout
 focused_stderr=$work/focused.stderr
@@ -122,9 +125,23 @@ import subprocess
 import sys
 from pathlib import Path
 
+import convir_evidence_catalog as catalog
+
 server = Path(sys.argv[1])
 repo = Path(sys.argv[2])
 main_tip = sys.argv[3]
+registry = json.loads(
+    (repo / "experience_docx/LEGACY_BACKFILL_REGISTRY.json").read_text(encoding="utf-8")
+)
+catalog_sha256 = catalog.load_catalog(repo, main_tip)["catalog_sha256"]
+reviewable = next(
+    item for item in registry["legacy_terminals"]
+    if item["backfill_status"] == "LEGACY_HASH_BOUND_REVIEWABLE"
+)
+ambiguous = next(
+    item for item in registry["legacy_terminals"]
+    if item["backfill_status"] == "LEGACY_HASH_BOUND_UNSELECTED"
+)
 requests = [
     {
         "jsonrpc": "2.0", "id": 1, "method": "initialize",
@@ -136,6 +153,39 @@ requests = [
         "params": {
             "name": "convir_evidence_completeness_receipt",
             "arguments": {"local_repo": str(repo)},
+        },
+    },
+    {
+        "jsonrpc": "2.0", "id": 4, "method": "tools/call",
+        "params": {
+            "name": "convir_evidence_catalog_query",
+            "arguments": {
+                "local_repo": str(repo), "snapshot_commit": main_tip,
+                "coverage": "unindexed",
+                "terms": ["cloud_py310_environment_20260610"],
+            },
+        },
+    },
+    {
+        "jsonrpc": "2.0", "id": 5, "method": "tools/call",
+        "params": {
+            "name": "convir_evidence_bundle",
+            "arguments": {
+                "local_repo": str(repo), "snapshot_commit": main_tip,
+                "catalog_sha256": catalog_sha256,
+                "terminal_record_sha256": reviewable["terminal_record_sha256"],
+            },
+        },
+    },
+    {
+        "jsonrpc": "2.0", "id": 6, "method": "tools/call",
+        "params": {
+            "name": "convir_evidence_bundle",
+            "arguments": {
+                "local_repo": str(repo), "snapshot_commit": main_tip,
+                "catalog_sha256": catalog_sha256,
+                "terminal_record_sha256": ambiguous["terminal_record_sha256"],
+            },
         },
     },
 ]
@@ -150,13 +200,13 @@ completed = subprocess.run(
 )
 assert completed.stderr == ""
 raw_lines = completed.stdout.splitlines(keepends=True)
-assert len(raw_lines) == 3
+assert len(raw_lines) == 6
 assert all(len(line.encode("utf-8")) <= 32768 for line in raw_lines)
 responses = [json.loads(line) for line in raw_lines]
 assert all("error" not in response for response in responses)
 info = responses[0]["result"]["serverInfo"]
 assert info["name"] == "convir-evidence-review"
-assert info["version"] == "1.4.0"
+assert info["version"] == "1.5.0"
 assert info["sourceSha256"] == hashlib.sha256(server.read_bytes()).hexdigest()
 assert [item["name"] for item in responses[1]["result"]["tools"]] == [
     "convir_evidence_catalog_summary",
@@ -180,7 +230,26 @@ assert value["entry_partition"]["unindexed_entries"] == 178
 assert value["terminal_partition"]["terminal_records"] == 55
 assert value["terminal_partition"]["routes"] == 54
 assert value["unresolved_counts"]["ambiguous_legacy_routes"] == 1
+assert value["legacy_backfill"]["available"] is True
+assert value["legacy_backfill"]["partition"]["legacy_hash_bound_reviewable"] == 45
+assert value["legacy_backfill"]["partition"]["legacy_hash_bound_unselected"] == 2
 assert value["git_mutations_performed"] is False
+excluded = responses[3]["result"]["structuredContent"]
+assert excluded["schema_version"] == 2
+assert excluded["returned_count"] == 0
+assert excluded["total_count"] == 0
+legacy_bundle = responses[4]["result"]
+assert legacy_bundle["isError"] is False
+legacy_value = legacy_bundle["structuredContent"]
+assert legacy_value["schema_version"] == 2
+assert legacy_value["bundle_completeness"] == "legacy_hash_bound"
+assert legacy_value["schema2_upgrade"] is False
+assert legacy_value["cloud_review"]["raw_inventory_authorized"] is False
+assert legacy_value["total_count"] > 0
+assert all(item["evidence_status"] == "legacy_hash_bound" for item in legacy_value["files"])
+ambiguous_bundle = responses[5]["result"]
+assert ambiguous_bundle["isError"] is True
+assert ambiguous_bundle["structuredContent"]["state"] == "EVIDENCE_BUNDLE_NOT_SELECTED_LEAF"
 PY
 
 git -C "$work/repo" diff --check "$baseline" "$candidate"
