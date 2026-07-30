@@ -204,8 +204,11 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         closeout_raw = b"not read"
         conclusion_raw = b"not read"
         result_raw = b"not read"
+        receipt_raw = b'{"schema_version":2}\n'
         manifest_raw = b"{}\n"
         manifest_path = f"{prefix}/launch_contract/A0/manifest.json"
+        receipt_path = f"{prefix}/route_raw_artifact_receipt.json"
+        record["result_paths"].append(receipt_path)
         record.update({
             "schema_version": 2,
             "contract_sha256": hashlib.sha256(contract_raw).hexdigest(),
@@ -221,6 +224,10 @@ class EvidenceReviewMcpTests(unittest.TestCase):
                 "path": record["result_paths"][0],
                 "bytes": len(result_raw),
                 "sha256": hashlib.sha256(result_raw).hexdigest(),
+            }, {
+                "path": receipt_path,
+                "bytes": len(receipt_raw),
+                "sha256": hashlib.sha256(receipt_raw).hexdigest(),
             }],
             "prior_terminal_record": {
                 "prior_closeout_path": None,
@@ -232,6 +239,7 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             record["closeout_path"]: closeout_raw,
             record["conclusion_path"]: conclusion_raw,
             record["result_paths"][0]: result_raw,
+            receipt_path: receipt_raw,
             manifest_path: manifest_raw,
         })
         loaded = review.catalog.load_catalog(self.repo, commit)
@@ -250,6 +258,7 @@ class EvidenceReviewMcpTests(unittest.TestCase):
                 "max_bytes": 4096,
                 "required": True,
             }],
+            "raw_artifact_receipt_github_path": receipt_path,
         })
         arguments = {
             "local_repo": str(self.repo),
@@ -280,6 +289,9 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         ))
         self.assertTrue(any(
             "formal_result" in item["roles"] for item in files
+        ))
+        self.assertTrue(any(
+            "raw_artifact_receipt" in item["roles"] for item in files
         ))
         self.assertTrue(all(item["content_returned"] is False for item in files))
 

@@ -67,6 +67,10 @@ decisive FAIL; `descriptive` cannot affect the terminal.
    `CANCELLED_BY_OPERATOR / null / NONE`. Never
    duplicate validator/lifecycle checks, create a
    watcher, scan unrelated logs or interpret partial outcomes.
+   Before a schema-2 scientific closeout, the lifecycle hashes the stable
+   `contract/` and `workload/` file set into one cloud JSONL manifest and adds
+   one compact receipt to the closeout evidence. Mutable control, heartbeat,
+   status and runtime-log files are outside this terminal seal.
 4. DECIDE: after all planned units finish, route code publishes typed gate
    outcomes only and the generic lifecycle resolves the frozen decision table once.
    Require complete folds/seeds/cells/controls, valid uncertainty, and matching
@@ -122,6 +126,8 @@ Raw logs, checkpoints, weights, datasets, predictions, images, arrays and large
 per-sample tables remain cloud-only. The archive tool rejects missing required
 results, hash mismatches, verdict-only bundles, incomplete conclusions,
 identity conflicts, binary/large artifacts and stale main destinations.
+The compact raw-artifact receipt records only manifest identity, counts, bytes
+and scope; it does not copy raw contents into GitHub.
 
 ## Scientific Conclusion Schema
 

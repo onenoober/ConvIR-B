@@ -488,6 +488,75 @@ class EvidenceCloudInventoryTests(unittest.TestCase):
                 inventory.remote_worker(request)
         self.assertEqual("CLOUD_TEXT_IDENTITY_DRIFT", raised.exception.state)
 
+    def test_terminal_manifest_seals_raw_text_for_on_demand_read(self):
+        snapshot = self.fixture.build()
+        original_binding = self.fixture.prepare(snapshot)
+        run_root = self.fixture.run_root(self.temp.name, original_binding)
+        details = run_root / "workload/details.csv"
+        details.write_text("scene,value\nalpha,1\n", encoding="utf-8")
+        manifest_rows = []
+        for relative in ("workload/details.csv", "workload/metric.json"):
+            path = run_root / relative
+            manifest_rows.append({
+                "schema_version": 2,
+                "relative_path": relative,
+                "artifact_class": "workload_output",
+                "bytes": path.stat().st_size,
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            })
+        manifest_raw = b"".join(raw_json(item) for item in manifest_rows)
+        manifest_path = run_root / inventory.RAW_ARTIFACT_MANIFEST_RELPATH
+        manifest_path.write_bytes(manifest_raw)
+        binding = dict(original_binding)
+        binding["run_root"] = str(run_root)
+        binding["raw_terminal_seal"] = "manifest_pending_cloud_verification"
+        binding["raw_artifact_receipt_sha256"] = "d" * 64
+        binding["raw_artifact_receipt"] = {
+            "schema_version": 2,
+            "route_id": self.fixture.route_id,
+            "operation_id": self.fixture.operation_id,
+            "run_id": self.fixture.run_id,
+            "route_commit": self.fixture.route_commit,
+            "manifest_relative_path": inventory.RAW_ARTIFACT_MANIFEST_RELPATH,
+            "manifest_sha256": hashlib.sha256(manifest_raw).hexdigest(),
+            "entry_count": len(manifest_rows),
+            "total_bytes": sum(item["bytes"] for item in manifest_rows),
+            "category_counts": {"contract_output": 0, "workload_output": 2},
+            "scope_roots": ["contract", "workload"],
+            "excluded_paths": [
+                "control", "heartbeat.json", "runtime.log", "status.txt",
+            ],
+        }
+        sealed = inventory._scan_adapter_root(
+            binding, run_root, root_binding_enforced=True,
+        )
+        self.assertEqual("INVENTORY_READY", sealed["state"])
+        self.assertEqual("verified", sealed["raw_terminal_seal"])
+        entry = next(
+            item for item in sealed["_entries"]
+            if item["relative_path"] == "workload/details.csv"
+        )
+        self.assertEqual("terminal_manifest_sha256", entry["identity_basis"])
+        page = inventory.cloud_text_page(
+            sealed, binding=binding, adapter_root=run_root,
+            inventory_sha256=sealed["inventory_sha256"],
+            relative_path="workload/details.csv",
+        )
+        self.assertEqual("terminal_manifest_sha_matched", page["evidence_status"])
+
+        details.write_text("scene,value\nalpha,2\n", encoding="utf-8")
+        drifted = inventory._scan_adapter_root(
+            binding, run_root, root_binding_enforced=True,
+        )
+        self.assertEqual("INVENTORY_READY", drifted["state"])
+        with self.assertRaises(inventory.InventoryError) as raised:
+            inventory.cloud_text_page(
+                drifted, binding=binding, adapter_root=run_root,
+                inventory_sha256=drifted["inventory_sha256"],
+                relative_path="workload/details.csv",
+            )
+        self.assertEqual("CLOUD_TEXT_IDENTITY_DRIFT", raised.exception.state)
+
     def test_remote_worker_stdio_uses_committed_stdlib_source(self):
         snapshot = self.fixture.build()
         binding = self.fixture.prepare(snapshot)

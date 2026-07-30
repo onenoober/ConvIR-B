@@ -8,6 +8,7 @@ import json
 import os
 import shutil
 import signal
+import stat
 import subprocess
 import sys
 import tempfile
@@ -37,6 +38,13 @@ REQUIRED_ENV = {
     "OUTPUT_PATH", "RUN_ID", "OUTPUT_ID", "GPU",
 }
 MAX_CLOSEOUT_BYTES = 64 * 1024
+RAW_ARTIFACT_MANIFEST_RELPATH = "control/raw_artifact_manifest.jsonl"
+RAW_ARTIFACT_SCOPE_ROOTS = ("contract", "workload")
+RAW_ARTIFACT_EXCLUDED_PATHS = (
+    "control", "heartbeat.json", "runtime.log", "status.txt",
+)
+MAX_RAW_ARTIFACT_FILES = 25_000
+MAX_RAW_ARTIFACT_PATH_BYTES = 16 * 1024 * 1024
 VERIFIED_ASSETS: list[dict[str, Any]] = []
 WORKLOAD_STARTED = False
 ACTIVE_PROGRAM: subprocess.Popen | None = None
@@ -115,6 +123,165 @@ def sha256(path: Path) -> str:
         for block in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def raw_artifact_receipt_filename(closeout_filename: str) -> str:
+    suffix = "_closeout.json"
+    if not isinstance(closeout_filename, str) or not closeout_filename.endswith(suffix):
+        raise LifecycleError(
+            "closeout filename cannot derive raw artifact receipt", phase="evidence",
+        )
+    return closeout_filename[:-len(suffix)] + "_raw_artifact_receipt.json"
+
+
+def _atomic_bytes(path: Path, raw: bytes) -> None:
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=path.parent,
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            stream.write(raw)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    finally:
+        try:
+            temporary.unlink()
+        except FileNotFoundError:
+            pass
+
+
+def _sha256_scanned_file(path: str, observed: os.stat_result) -> str:
+    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        descriptor = os.open(path, flags)
+    except OSError as exc:
+        raise LifecycleError("raw artifact changed before hashing", phase="evidence") from exc
+    try:
+        current = os.fstat(descriptor)
+        if not stat.S_ISREG(current.st_mode) or any(
+            getattr(current, field) != getattr(observed, field)
+            for field in ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns")
+        ):
+            raise LifecycleError("raw artifact changed before hashing", phase="evidence")
+        digest = hashlib.sha256()
+        with os.fdopen(descriptor, "rb", closefd=False) as stream:
+            for block in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(block)
+        stable = os.fstat(descriptor)
+        if any(
+            getattr(stable, field) != getattr(current, field)
+            for field in ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns")
+        ):
+            raise LifecycleError("raw artifact changed during hashing", phase="evidence")
+        return digest.hexdigest()
+    finally:
+        os.close(descriptor)
+
+
+def build_raw_artifact_manifest(output: Path) -> tuple[bytes, list[dict[str, Any]]]:
+    """Seal stable contract/workload files without including mutable control state."""
+    records: list[dict[str, Any]] = []
+    path_bytes = 0
+
+    def walk(directory: Path, relative_root: str) -> None:
+        nonlocal path_bytes
+        try:
+            with os.scandir(directory) as iterator:
+                children = sorted(iterator, key=lambda item: item.name)
+        except OSError as exc:
+            raise LifecycleError(
+                f"raw artifact scope is unreadable: {relative_root}", phase="evidence",
+            ) from exc
+        for child in children:
+            relative = f"{relative_root}/{child.name}"
+            try:
+                encoded = relative.encode("utf-8", errors="strict")
+                observed = child.stat(follow_symlinks=False)
+            except (OSError, UnicodeEncodeError) as exc:
+                raise LifecycleError(
+                    f"raw artifact identity is unreadable: {relative}", phase="evidence",
+                ) from exc
+            path_bytes += len(encoded)
+            if path_bytes > MAX_RAW_ARTIFACT_PATH_BYTES:
+                raise LifecycleError("raw artifact path inventory exceeds its bound", phase="evidence")
+            if stat.S_ISLNK(observed.st_mode):
+                raise LifecycleError(
+                    f"raw artifact cannot be a symlink: {relative}", phase="evidence",
+                )
+            if stat.S_ISDIR(observed.st_mode):
+                walk(Path(child.path), relative)
+                continue
+            if not stat.S_ISREG(observed.st_mode):
+                raise LifecycleError(
+                    f"raw artifact must be a regular file: {relative}", phase="evidence",
+                )
+            if len(records) >= MAX_RAW_ARTIFACT_FILES:
+                raise LifecycleError("raw artifact file inventory exceeds its bound", phase="evidence")
+            records.append({
+                "schema_version": 2,
+                "relative_path": relative,
+                "artifact_class": f"{relative_root}_output",
+                "bytes": observed.st_size,
+                "sha256": _sha256_scanned_file(child.path, observed),
+            })
+
+    for root_name in RAW_ARTIFACT_SCOPE_ROOTS:
+        root = output / root_name
+        if root.is_symlink():
+            raise LifecycleError(
+                f"raw artifact scope cannot be a symlink: {root_name}", phase="evidence",
+            )
+        if root.exists():
+            if not root.is_dir():
+                raise LifecycleError(
+                    f"raw artifact scope is not a directory: {root_name}", phase="evidence",
+                )
+            walk(root, root_name)
+    records.sort(key=lambda item: item["relative_path"])
+    raw = b"".join(
+        (json.dumps(item, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
+        for item in records
+    )
+    manifest_path = output / RAW_ARTIFACT_MANIFEST_RELPATH
+    if manifest_path.exists():
+        raise LifecycleError("raw artifact manifest already exists", phase="evidence")
+    _atomic_bytes(manifest_path, raw)
+    return raw, records
+
+
+def publish_raw_artifact_receipt(
+    *, output: Path, evidence_root: Path, operation: dict[str, Any],
+    env: dict[str, str], spec: dict[str, Any],
+) -> tuple[str, str]:
+    manifest_raw, records = build_raw_artifact_manifest(output)
+    category_counts = {
+        f"{root}_output": sum(
+            item["artifact_class"] == f"{root}_output" for item in records
+        )
+        for root in RAW_ARTIFACT_SCOPE_ROOTS
+    }
+    receipt = {
+        "schema_version": 2,
+        "route_id": spec["route_id"],
+        "operation_id": spec["operation_id"],
+        "run_id": env["RUN_ID"],
+        "route_commit": env["EXPECTED_ROUTE_COMMIT"],
+        "manifest_relative_path": RAW_ARTIFACT_MANIFEST_RELPATH,
+        "manifest_sha256": hashlib.sha256(manifest_raw).hexdigest(),
+        "entry_count": len(records),
+        "total_bytes": sum(item["bytes"] for item in records),
+        "category_counts": category_counts,
+        "scope_roots": list(RAW_ARTIFACT_SCOPE_ROOTS),
+        "excluded_paths": list(RAW_ARTIFACT_EXCLUDED_PATHS),
+    }
+    filename = raw_artifact_receipt_filename(operation["closeout_filename"])
+    destination = evidence_root / filename
+    if destination.exists():
+        raise LifecycleError("raw artifact receipt destination exists", phase="evidence")
+    atomic_json(destination, receipt)
+    return filename, sha256(destination)
 
 
 def git(repo: Path, *args: str) -> str:
@@ -810,6 +977,21 @@ def lifecycle() -> int:
     for item in spec["evidence_files"]:
         if (evidence_root / item["destination_filename"]).exists():
             raise LifecycleError("evidence filename already exists", phase="output_preflight")
+    if scientific is not None and scientific.get("schema_version") == 2:
+        receipt_filename = raw_artifact_receipt_filename(
+            operation["closeout_filename"]
+        )
+        if receipt_filename in {
+            item["destination_filename"] for item in spec["evidence_files"]
+        }:
+            raise LifecycleError(
+                "raw artifact receipt filename conflicts with runtime evidence",
+                phase="output_preflight",
+            )
+        if (evidence_root / receipt_filename).exists():
+            raise LifecycleError(
+                "raw artifact receipt filename already exists", phase="output_preflight",
+            )
     asset_manifest = None
     if spec["asset_manifest_relpath"] is not None:
         asset_manifest = validate_asset_manifest(
@@ -910,6 +1092,12 @@ def lifecycle() -> int:
                 "completed-unit ledger does not cover total_units", phase="finalize",
             )
     evidence = copy_evidence(spec, output, evidence_root)
+    if scientific is not None and scientific.get("schema_version") == 2:
+        filename, digest = publish_raw_artifact_receipt(
+            output=output, evidence_root=evidence_root, operation=operation,
+            env=env, spec=spec,
+        )
+        evidence[filename] = digest
     capability_qualification = None
     if capability is not None and capability.get("schema_version") == 2 \
             and capability_reuse is not None \

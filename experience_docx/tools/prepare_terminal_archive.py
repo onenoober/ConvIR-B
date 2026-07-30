@@ -35,6 +35,14 @@ MAX_EVIDENCE_FILES = 48
 MAX_FILE_BYTES = 1024 * 1024
 TOKEN = re.compile(r"^[A-Za-z0-9_.-]{1,128}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
+SHA40 = re.compile(r"^[0-9a-f]{40}$")
+RAW_ARTIFACT_RECEIPT_SUFFIX = "_raw_artifact_receipt.json"
+RAW_ARTIFACT_MANIFEST_RELPATH = "control/raw_artifact_manifest.jsonl"
+RAW_ARTIFACT_SCOPE_ROOTS = ["contract", "workload"]
+RAW_ARTIFACT_EXCLUDED_PATHS = [
+    "control", "heartbeat.json", "runtime.log", "status.txt",
+]
+MAX_RAW_ARTIFACT_FILES = 25_000
 ARCHIVE_REMOTE = "github"
 ARCHIVE_TARGET_REF = "main"
 ARCHIVE_BASE_REF = "refs/remotes/github/main"
@@ -298,6 +306,65 @@ def validate_evidence_name(filename: str) -> None:
         raise TerminalArchiveError(f"raw/cloud-only evidence is forbidden: {filename}")
 
 
+def raw_artifact_receipt_filename(closeout_filename: str) -> str:
+    suffix = "_closeout.json"
+    if not isinstance(closeout_filename, str) or not closeout_filename.endswith(suffix):
+        raise TerminalArchiveError("closeout filename cannot derive raw artifact receipt")
+    return closeout_filename[:-len(suffix)] + RAW_ARTIFACT_RECEIPT_SUFFIX
+
+
+def validate_raw_artifact_receipt(
+    raw: bytes, relpath: str, closeout: dict[str, Any], closeout_filename: str,
+) -> dict[str, Any]:
+    value = inspect_structured(raw, relpath)
+    expected_fields = {
+        "schema_version", "route_id", "operation_id", "run_id", "route_commit",
+        "manifest_relative_path", "manifest_sha256", "entry_count", "total_bytes",
+        "category_counts", "scope_roots", "excluded_paths",
+    }
+    if not isinstance(value, dict) or set(value) != expected_fields:
+        raise TerminalArchiveError("raw artifact receipt field contract is invalid")
+    expected_name = raw_artifact_receipt_filename(closeout_filename)
+    if PurePosixPath(relpath).name != expected_name:
+        raise TerminalArchiveError("raw artifact receipt filename is not canonical")
+    if value["schema_version"] != 2:
+        raise TerminalArchiveError("raw artifact receipt schema_version must equal 2")
+    for key in ("route_id", "operation_id", "run_id", "route_commit"):
+        if value[key] != closeout.get(key):
+            raise TerminalArchiveError(f"raw artifact receipt {key} mismatch")
+    if not SHA40.fullmatch(value["route_commit"]):
+        raise TerminalArchiveError("raw artifact receipt route_commit is invalid")
+    if (
+        value["manifest_relative_path"] != RAW_ARTIFACT_MANIFEST_RELPATH
+        or not SHA256.fullmatch(value["manifest_sha256"])
+    ):
+        raise TerminalArchiveError("raw artifact manifest identity is invalid")
+    for key, maximum in (("entry_count", MAX_RAW_ARTIFACT_FILES), ("total_bytes", None)):
+        item = value[key]
+        if (
+            not isinstance(item, int) or isinstance(item, bool) or item < 0
+            or (maximum is not None and item > maximum)
+        ):
+            raise TerminalArchiveError(f"raw artifact receipt {key} is invalid")
+    expected_categories = {"contract_output", "workload_output"}
+    categories = value["category_counts"]
+    if (
+        not isinstance(categories, dict) or set(categories) != expected_categories
+        or any(
+            not isinstance(item, int) or isinstance(item, bool) or item < 0
+            for item in categories.values()
+        )
+        or sum(categories.values()) != value["entry_count"]
+    ):
+        raise TerminalArchiveError("raw artifact receipt category counts are invalid")
+    if (
+        value["scope_roots"] != RAW_ARTIFACT_SCOPE_ROOTS
+        or value["excluded_paths"] != RAW_ARTIFACT_EXCLUDED_PATHS
+    ):
+        raise TerminalArchiveError("raw artifact receipt scope contract is invalid")
+    return value
+
+
 def capability_registry_record(
     closeout: dict[str, Any], closeout_path: PurePosixPath,
     payloads: dict[str, bytes],
@@ -467,6 +534,7 @@ def audit_source(
         )
 
     files: list[dict[str, Any]] = []
+    raw_artifact_receipt = None
     payloads: dict[str, bytes] = {
         contract_relpath: contract_raw,
         closeout_relpath: closeout_raw,
@@ -501,6 +569,12 @@ def audit_source(
                 f"closeout-bound evidence SHA-256 mismatch: {filename}"
             )
         relpath = f"{closeout_path.parent.as_posix()}/{filename}"
+        if filename.endswith(RAW_ARTIFACT_RECEIPT_SUFFIX):
+            if raw_artifact_receipt is not None:
+                raise TerminalArchiveError("multiple raw artifact receipts are forbidden")
+            raw_artifact_receipt = validate_raw_artifact_receipt(
+                raw, relpath, closeout, closeout_path.name,
+            )
         payloads[relpath] = raw
         files.append({
             "path": relpath,
@@ -528,6 +602,7 @@ def audit_source(
         "contract_bundle": contract_bundle,
         "prior_terminal_record": prior_terminal_record,
         "capability_registry_record": registry_record,
+        "raw_artifact_receipt": raw_artifact_receipt,
         "payloads": payloads,
         "checks": {
             "contract_bound": True,
@@ -535,6 +610,8 @@ def audit_source(
             "all_closeout_bound_results_present": True,
             "all_runtime_required_results_present": True,
             "all_result_hashes_match": True,
+            "raw_artifact_receipt_valid": raw_artifact_receipt is not None,
+            "raw_artifact_receipt_legacy_unsealed": raw_artifact_receipt is None,
             "single_scientific_conclusion_complete": (
                 conclusion_relpath is not None or existing_archive
             ),

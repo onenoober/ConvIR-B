@@ -32,6 +32,7 @@ MAX_QUERY_ENTRIES = 100
 MAX_QUERY_VALUE_BYTES = 8 * 1024
 MAX_TEXT_FILE_BYTES = 1024 * 1024
 MAX_TEXT_PAGE_BYTES = 8 * 1024
+MAX_RAW_ARTIFACT_MANIFEST_BYTES = 16 * 1024 * 1024
 MAX_REMOTE_REQUEST_BYTES = 4 * 1024 * 1024
 MAX_REMOTE_RESPONSE_BYTES = 64 * 1024
 REMOTE_TMUX = "/usr/bin/tmux"
@@ -52,6 +53,12 @@ TEXT_READ_SUFFIXES = {".json", ".jsonl", ".csv", ".md", ".txt"}
 TEXT_READ_ARTIFACT_CLASSES = {
     "formal_compact_evidence", "optional_compact_evidence", "raw_artifact",
 }
+RAW_ARTIFACT_RECEIPT_SUFFIX = "_raw_artifact_receipt.json"
+RAW_ARTIFACT_MANIFEST_RELPATH = "control/raw_artifact_manifest.jsonl"
+RAW_ARTIFACT_SCOPE_ROOTS = ("contract", "workload")
+RAW_ARTIFACT_EXCLUDED_PATHS = (
+    "control", "heartbeat.json", "runtime.log", "status.txt",
+)
 PROTECTED_TOUCH_FIELDS = (
     "confirmation_images_targets_outcomes_touched",
     "canary_touched",
@@ -165,6 +172,107 @@ def _json_object(raw: bytes, name: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise InventoryError(f"{name} must be a JSON object", state="IDENTITY_CONFLICT")
     return value
+
+
+def _raw_artifact_receipt_filename(closeout_filename: str) -> str:
+    suffix = "_closeout.json"
+    if not isinstance(closeout_filename, str) or not closeout_filename.endswith(suffix):
+        raise InventoryError(
+            "closeout filename cannot derive raw artifact receipt",
+            state="IDENTITY_CONFLICT",
+        )
+    return closeout_filename[:-len(suffix)] + RAW_ARTIFACT_RECEIPT_SUFFIX
+
+
+def _parse_raw_artifact_manifest(
+    raw: bytes, receipt: dict[str, Any],
+) -> dict[str, dict[str, Any]]:
+    if (
+        len(raw) > MAX_RAW_ARTIFACT_MANIFEST_BYTES
+        or hashlib.sha256(raw).hexdigest() != receipt["manifest_sha256"]
+    ):
+        raise InventoryError(
+            "raw artifact manifest SHA-256 differs", state="IDENTITY_CONFLICT"
+        )
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise InventoryError(
+            "raw artifact manifest is not UTF-8", state="IDENTITY_CONFLICT"
+        ) from exc
+    records: dict[str, dict[str, Any]] = {}
+    previous = None
+    category_counts = Counter()
+    total_bytes = 0
+    lines = text.splitlines()
+    if any(not line for line in lines):
+        raise InventoryError(
+            "raw artifact manifest contains a blank line", state="IDENTITY_CONFLICT"
+        )
+    for number, line in enumerate(lines, start=1):
+        try:
+            item = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise InventoryError(
+                f"raw artifact manifest line {number} is invalid JSON",
+                state="IDENTITY_CONFLICT",
+            ) from exc
+        expected = {
+            "schema_version", "relative_path", "artifact_class", "bytes", "sha256",
+        }
+        if (
+            not isinstance(item, dict) or set(item) != expected
+            or item["schema_version"] != 2
+        ):
+            raise InventoryError(
+                f"raw artifact manifest line {number} has an invalid schema",
+                state="IDENTITY_CONFLICT",
+            )
+        relative = _require_relpath(item["relative_path"], "raw manifest relative_path")
+        root = PurePosixPath(relative).parts[0]
+        if (
+            root not in RAW_ARTIFACT_SCOPE_ROOTS
+            or item["artifact_class"] != f"{root}_output"
+        ):
+            raise InventoryError(
+                f"raw artifact manifest line {number} is outside its stable scope",
+                state="IDENTITY_CONFLICT",
+            )
+        size = item["bytes"]
+        if (
+            not isinstance(size, int) or isinstance(size, bool) or size < 0
+            or not isinstance(item["sha256"], str)
+            or not SHA256.fullmatch(item["sha256"])
+        ):
+            raise InventoryError(
+                f"raw artifact manifest line {number} has an invalid identity",
+                state="IDENTITY_CONFLICT",
+            )
+        if relative in records or (previous is not None and relative <= previous):
+            raise InventoryError(
+                "raw artifact manifest paths are duplicate or unsorted",
+                state="IDENTITY_CONFLICT",
+            )
+        records[relative] = item
+        previous = relative
+        category_counts[item["artifact_class"]] += 1
+        total_bytes += size
+    expected_categories = {
+        f"{root}_output": receipt["category_counts"][f"{root}_output"]
+        for root in RAW_ARTIFACT_SCOPE_ROOTS
+    }
+    if (
+        len(records) != receipt["entry_count"]
+        or total_bytes != receipt["total_bytes"]
+        or dict(category_counts) != {
+            key: value for key, value in expected_categories.items() if value
+        }
+    ):
+        raise InventoryError(
+            "raw artifact manifest summary differs from its receipt",
+            state="IDENTITY_CONFLICT",
+        )
+    return records
 
 
 def _not_inventoried_binding(snapshot_commit: str, terminal_record_sha256: str,
@@ -320,12 +428,20 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
         bundle_archive_paths[source_path] = _require_relpath(
             item["path"], "contract_bundle[].path"
         )
+    result_payloads: dict[str, bytes] = {}
     for item in record["result_files"]:
-        read_github_blob(
+        raw = read_github_blob(
             item["path"],
             expected_bytes=item["bytes"],
             expected_sha256=item["sha256"],
         )
+        name = PurePosixPath(item["path"]).name
+        if name in result_payloads:
+            raise InventoryError(
+                "terminal result filenames are ambiguous",
+                state="IDENTITY_CONFLICT",
+            )
+        result_payloads[name] = raw
 
     manifest_raw = bundle_payloads.get(MANIFEST_SOURCE_PATH)
     runtime_raw = bundle_payloads.get(runtime_source_path)
@@ -545,6 +661,28 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
             "closeout evidence SHA manifest differs from terminal results",
             state="IDENTITY_CONFLICT",
         )
+    raw_receipt_name = _raw_artifact_receipt_filename(closeout_name)
+    raw_receipt_candidates = sorted(
+        name for name in result_payloads if name.endswith(RAW_ARTIFACT_RECEIPT_SUFFIX)
+    )
+    if raw_receipt_candidates and raw_receipt_candidates != [raw_receipt_name]:
+        raise InventoryError(
+            "raw artifact receipt filename is ambiguous or noncanonical",
+            state="IDENTITY_CONFLICT",
+        )
+    raw_artifact_receipt = None
+    raw_artifact_receipt_record = result_by_name.get(raw_receipt_name)
+    if raw_artifact_receipt_record is not None:
+        try:
+            raw_artifact_receipt = prepare_terminal_archive.validate_raw_artifact_receipt(
+                result_payloads[raw_receipt_name], raw_artifact_receipt_record["path"],
+                closeout, closeout_name,
+            )
+        except prepare_terminal_archive.TerminalArchiveError as exc:
+            raise InventoryError(
+                f"raw artifact receipt is invalid: {exc}",
+                state="IDENTITY_CONFLICT",
+            ) from exc
     expected_evidence = []
     optional_evidence = []
     mapped_names = set()
@@ -584,6 +722,8 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
             "max_bytes": maximum,
             "required": required,
         })
+    if raw_artifact_receipt_record is not None:
+        mapped_names.add(raw_receipt_name)
     if not expected_evidence:
         raise InventoryError(
             "terminal has no source-mapped compact evidence",
@@ -637,6 +777,19 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
         "raw_inventory_exclusion_reason": (
             None if raw_inventory_authorized
             else "protected_or_unknown_role_permission_or_touch"
+        ),
+        "raw_terminal_seal": (
+            "manifest_pending_cloud_verification"
+            if raw_artifact_receipt is not None else "legacy_unsealed"
+        ),
+        "raw_artifact_receipt": raw_artifact_receipt,
+        "raw_artifact_receipt_github_path": (
+            None if raw_artifact_receipt_record is None
+            else raw_artifact_receipt_record["path"]
+        ),
+        "raw_artifact_receipt_sha256": (
+            None if raw_artifact_receipt_record is None
+            else raw_artifact_receipt_record["sha256"]
         ),
         "run_root": derive_run_root(route_id, output_id),
         "expected_lifecycle_identity": {
@@ -1133,8 +1286,11 @@ def _optional_entry(item: dict[str, Any], state: str,
         "github_path": None,
         "github_bytes": None,
         "github_sha256": None,
-        "cloud_sha256": None,
-        "identity_basis": "metadata_only" if cloud is not None else "declaration_only",
+        "cloud_sha256": None if cloud is None else cloud.get("sha256"),
+        "identity_basis": (
+            "declaration_only" if cloud is None
+            else cloud.get("identity_basis", "metadata_only")
+        ),
         "reconciliation_state": state,
         "policy_assessment": "optional_runtime_evidence_without_archive",
     }
@@ -1161,8 +1317,12 @@ def _inventory(binding: dict[str, Any], *, state: str,
             "terminal_record_sha256", "route_id", "operation_id", "run_id",
             "output_id", "mode", "session", "route_commit", "manifest_sha256",
             "runtime_spec_sha256", "closeout_sha256", "runner_sha256",
+            "raw_artifact_receipt_sha256",
         )
     }
+    identity["raw_artifact_manifest_sha256"] = (
+        binding.get("raw_artifact_receipt") or {}
+    ).get("manifest_sha256")
     root_binding_enforced = binding.get("_root_binding_enforced") is True
     scope = "bound_run_root" if root_binding_enforced else "adapter_owned_root"
     stable_scan = {
@@ -1197,6 +1357,7 @@ def _inventory(binding: dict[str, Any], *, state: str,
         "limits": limits,
         "discovery_completeness": discovery_completeness,
         "scientific_completeness": "not_assessed",
+        "raw_terminal_seal": binding.get("raw_terminal_seal", "legacy_unsealed"),
         "issues": sorted(set(issues)),
         "scan": {
             **stable_scan,
@@ -1367,6 +1528,52 @@ def _scan_adapter_root(binding: dict[str, Any], adapter_root: str | Path, *,
                 return exact
             return None
 
+        raw_manifest_records: dict[str, dict[str, Any]] = {}
+        raw_receipt = binding.get("raw_artifact_receipt")
+        if raw_receipt is not None:
+            try:
+                manifest_relative = raw_receipt["manifest_relative_path"]
+                manifest_metadata = nodes.get(manifest_relative)
+                if (
+                    manifest_metadata is None
+                    or collision_for(manifest_relative) is not None
+                ):
+                    raise InventoryError(
+                        "raw artifact manifest is missing or not a file",
+                        state="IDENTITY_CONFLICT",
+                    )
+                manifest_raw = _read_relative_file(
+                    root_fd, manifest_relative,
+                    maximum=MAX_RAW_ARTIFACT_MANIFEST_BYTES,
+                    expected=manifest_metadata, nodes=nodes,
+                )
+                raw_manifest_records = _parse_raw_artifact_manifest(
+                    manifest_raw, raw_receipt,
+                )
+                stable_files = {
+                    relative for relative, metadata in nodes.items()
+                    if metadata["file_type"] == "file"
+                    and PurePosixPath(relative).parts[0] in RAW_ARTIFACT_SCOPE_ROOTS
+                }
+                if stable_files != set(raw_manifest_records) or any(
+                    nodes[relative]["bytes"] != item["bytes"]
+                    for relative, item in raw_manifest_records.items()
+                ):
+                    raise InventoryError(
+                        "stable cloud artifact paths or sizes differ from the manifest",
+                        state="IDENTITY_CONFLICT",
+                    )
+                binding["raw_terminal_seal"] = "verified"
+            except (InventoryError, KeyError, TypeError) as exc:
+                raw_manifest_records = {}
+                binding["raw_terminal_seal"] = "drifted"
+                identity_conflict = True
+                complete = False
+                scan["complete"] = False
+                scan["issues"].append(
+                    f"RAW_ARTIFACT_MANIFEST_INVALID:{type(exc).__name__}"
+                )
+
         missing_state = (
             "GITHUB_ONLY" if complete else
             "CLOUD_UNAVAILABLE" if cloud_unavailable else "NOT_INVENTORIED"
@@ -1394,9 +1601,21 @@ def _scan_adapter_root(binding: dict[str, Any], adapter_root: str | Path, *,
                 cloud = {
                     **metadata,
                     "sha256": observed_sha,
-                    "identity_basis": "sha256",
+                    "identity_basis": (
+                        "github_sha256_and_terminal_manifest_sha256"
+                        if relative in raw_manifest_records else "sha256"
+                    ),
                 }
-                if len(raw) == item["bytes"] and observed_sha == item["sha256"]:
+                manifest_item = raw_manifest_records.get(relative)
+                manifest_matches = manifest_item is None or (
+                    manifest_item["bytes"] == len(raw)
+                    and manifest_item["sha256"] == observed_sha
+                )
+                if (
+                    len(raw) == item["bytes"]
+                    and observed_sha == item["sha256"]
+                    and manifest_matches
+                ):
                     entries.append(_expected_entry(item, "MATCHED", cloud))
                 else:
                     entries.append(_expected_entry(
@@ -1432,9 +1651,16 @@ def _scan_adapter_root(binding: dict[str, Any], adapter_root: str | Path, *,
                     "CLOUD_UNAVAILABLE" if cloud_unavailable else "NOT_INVENTORIED",
                 ))
             else:
+                manifest_item = raw_manifest_records.get(relative)
+                cloud = dict(metadata)
+                if manifest_item is not None:
+                    cloud.update({
+                        "sha256": manifest_item["sha256"],
+                        "identity_basis": "terminal_manifest_sha256",
+                    })
                 entries.append(_optional_entry(
                     item, "CLOUD_ONLY" if complete else "NOT_INVENTORIED",
-                    metadata,
+                    cloud,
                 ))
 
         for relative, metadata in sorted(nodes.items()):
@@ -1443,6 +1669,10 @@ def _scan_adapter_root(binding: dict[str, Any], adapter_root: str | Path, *,
             policy = (
                 "expected_control_identity"
                 if relative == "control/lifecycle_identity.json"
+                else "terminal_raw_artifact_manifest"
+                if relative == RAW_ARTIFACT_MANIFEST_RELPATH
+                else "terminal_manifest_bound_raw_artifact"
+                if relative in raw_manifest_records
                 else "expected_cloud_only_raw_artifact"
             )
             if metadata["file_type"] in {"symlink", "special"}:
@@ -1458,6 +1688,8 @@ def _scan_adapter_root(binding: dict[str, Any], adapter_root: str | Path, *,
                 "relative_path": relative,
                 "artifact_class": (
                     "control_identity" if policy == "expected_control_identity"
+                    else "control_manifest"
+                    if policy == "terminal_raw_artifact_manifest"
                     else "raw_artifact"
                 ),
                 "extension": PurePosixPath(relative).suffix.lower(),
@@ -1469,10 +1701,15 @@ def _scan_adapter_root(binding: dict[str, Any], adapter_root: str | Path, *,
                 "cloud_sha256": (
                     hashlib.sha256(identity_raw).hexdigest()
                     if relative == "control/lifecycle_identity.json" else None
-                ),
+                ) if relative not in raw_manifest_records
+                else raw_manifest_records[relative]["sha256"],
                 "identity_basis": (
                     "verified_control_identity"
                     if relative == "control/lifecycle_identity.json"
+                    else "terminal_manifest_sha256"
+                    if relative in raw_manifest_records
+                    else "terminal_manifest_identity"
+                    if relative == RAW_ARTIFACT_MANIFEST_RELPATH
                     else "metadata_only"
                 ),
                 "reconciliation_state": entry_state,
@@ -1760,6 +1997,15 @@ def cloud_text_page(
             "formal cloud text differs from GitHub",
             state="CLOUD_TEXT_IDENTITY_DRIFT", exit_code=3,
         )
+    if (
+        entry["artifact_class"] in {"optional_compact_evidence", "raw_artifact"}
+        and entry.get("identity_basis") == "terminal_manifest_sha256"
+        and file_sha256 != entry.get("cloud_sha256")
+    ):
+        raise InventoryError(
+            "cloud text differs from the terminal raw artifact manifest",
+            state="CLOUD_TEXT_IDENTITY_DRIFT", exit_code=3,
+        )
     if offset > len(raw) or (offset == len(raw) and len(raw) != 0):
         raise InventoryError(
             "cloud text cursor is outside the file",
@@ -1786,6 +2032,8 @@ def cloud_text_page(
     evidence_status = (
         "formal_sha_matched"
         if entry["artifact_class"] == "formal_compact_evidence"
+        else "terminal_manifest_sha_matched"
+        if entry.get("identity_basis") == "terminal_manifest_sha256"
         else "optional_declared"
         if entry["artifact_class"] == "optional_compact_evidence"
         else "unmapped_raw_text"

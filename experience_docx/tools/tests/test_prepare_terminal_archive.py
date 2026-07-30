@@ -24,6 +24,36 @@ class TerminalArchiveTests(unittest.TestCase):
         with self.assertRaises(ARCHIVE.TerminalArchiveError):
             ARCHIVE.checked_text(b"", "formal_results.txt")
 
+    def test_raw_artifact_receipt_is_strictly_identity_bound(self):
+        closeout = {
+            "route_id": "route", "operation_id": "A1", "run_id": "a1-r1",
+            "route_commit": "a" * 40,
+        }
+        value = {
+            "schema_version": 2,
+            **closeout,
+            "manifest_relative_path": ARCHIVE.RAW_ARTIFACT_MANIFEST_RELPATH,
+            "manifest_sha256": "b" * 64,
+            "entry_count": 2,
+            "total_bytes": 7,
+            "category_counts": {"contract_output": 1, "workload_output": 1},
+            "scope_roots": ARCHIVE.RAW_ARTIFACT_SCOPE_ROOTS,
+            "excluded_paths": ARCHIVE.RAW_ARTIFACT_EXCLUDED_PATHS,
+        }
+        raw = json.dumps(value).encode()
+        observed = ARCHIVE.validate_raw_artifact_receipt(
+            raw, "experience_docx/experiment_logs/route/a1_raw_artifact_receipt.json",
+            closeout, "a1_closeout.json",
+        )
+        self.assertEqual("b" * 64, observed["manifest_sha256"])
+        value["entry_count"] = 3
+        with self.assertRaises(ARCHIVE.TerminalArchiveError):
+            ARCHIVE.validate_raw_artifact_receipt(
+                json.dumps(value).encode(),
+                "experience_docx/experiment_logs/route/a1_raw_artifact_receipt.json",
+                closeout, "a1_closeout.json",
+            )
+
     def git(self, repo: Path, *args: str) -> str:
         return subprocess.run(
             ["git", *args], cwd=repo, text=True, capture_output=True, check=True,

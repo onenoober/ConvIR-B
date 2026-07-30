@@ -54,6 +54,10 @@ closeout plus its terminal tuple. The authoritative snapshot verifies every
 bound blob and selects the unique terminal leaf of that chain. Missing parents,
 branches, cycles, duplicate paths or disconnected records fail closed as
 ambiguous; a valid multi-operation route is not treated as a conflict.
+When present, the closeout-bound raw-artifact receipt is archived as compact
+text and strictly checked against the terminal identity and fixed manifest
+scope. Historical terminals without it remain readable as `legacy_unsealed`;
+they are not rewritten or represented as cloud-content sealed.
 
 Do not require a route README, family-summary edit, route-card result rewrite or
 Markdown-index prose update. The launch card is retained unchanged as the

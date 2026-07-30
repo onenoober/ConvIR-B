@@ -172,3 +172,7 @@ the cloud run root. GitHub retains the complete compact text evidence needed to
 reproduce the terminal decision, as defined by `SCIENCE_FASTPATH.md`. After a
 validated typed closeout, do not call finish again or perform heartbeat/status,
 branch, worktree or output cleanup as part of experiment completion.
+For future schema-2 scientific terminals, the generic lifecycle seals regular
+files below `contract/` and `workload/` in
+`control/raw_artifact_manifest.jsonl`; the closeout binds a compact GitHub
+receipt. Symlinks, special files and identity changes fail closed.

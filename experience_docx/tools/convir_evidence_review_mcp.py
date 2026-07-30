@@ -544,6 +544,12 @@ def _prepare_evidence_bundle(args):
                 required=expected["required"], priority=30,
                 evidence_status="runtime_declared",
             )
+        elif item["path"] == binding.get("raw_artifact_receipt_github_path"):
+            add_file(
+                item["path"], item["bytes"], item["sha256"],
+                "raw_artifact_receipt", required=True, priority=25,
+                evidence_status="terminal_raw_artifact_seal",
+            )
         elif unmapped is not None:
             add_file(
                 item["path"], item["bytes"], item["sha256"],

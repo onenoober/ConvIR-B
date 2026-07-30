@@ -77,6 +77,10 @@ reported as reviewed. The MCP never fetches Git, so every response reports
   remain unreadable.
 - Raw cloud text is labeled `unmapped_raw_text`; it can inform review but is not
   formal gate evidence unless the terminal/runtime contract separately binds it.
+- A future terminal raw-artifact receipt lets inventory verify the cloud
+  manifest and stable path/byte set without bulk-reading raw files. Reading one
+  selected raw text file then checks its current SHA-256 against that terminal
+  manifest. Terminals without a receipt remain explicitly `legacy_unsealed`.
 - The server does not mutate Git or cloud state, start experiments, access
   datasets or protected roles, or issue scientific interpretations.
 - `convir-ops` remains unchanged with exactly six lifecycle tools and protocol

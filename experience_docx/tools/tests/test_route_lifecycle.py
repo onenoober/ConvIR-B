@@ -144,6 +144,50 @@ class LifecycleTests(unittest.TestCase):
                 LIFE.copy_evidence(runtime, root / "output", evidence)
             self.assertEqual([], list(evidence.iterdir()))
 
+    def test_schema2_raw_artifact_receipt_seals_stable_output_only(self):
+        value, runtime = self.normalized()
+        operation = value["operations"]["S0"]
+        env = {
+            "RUN_ID": "route-r1", "EXPECTED_ROUTE_COMMIT": "a" * 40,
+            "RUNNER_SHA256": "b" * 64,
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "output"
+            (output / "contract").mkdir(parents=True)
+            (output / "workload").mkdir()
+            (output / "control").mkdir()
+            (output / "contract/check.json").write_text('{"ok":true}\n')
+            (output / "workload/summary.json").write_text('{"gain":1}\n')
+            (output / "runtime.log").write_text("mutable\n")
+            evidence = root / "evidence"
+            evidence.mkdir()
+            filename, digest = LIFE.publish_raw_artifact_receipt(
+                output=output, evidence_root=evidence, operation=operation,
+                env=env, spec=runtime,
+            )
+            receipt = json.loads((evidence / filename).read_text())
+            manifest = (output / LIFE.RAW_ARTIFACT_MANIFEST_RELPATH).read_text()
+            rows = [json.loads(line) for line in manifest.splitlines()]
+            self.assertEqual(2, receipt["schema_version"])
+            self.assertEqual(2, receipt["entry_count"])
+            self.assertEqual(digest, LIFE.sha256(evidence / filename))
+            self.assertEqual(
+                ["contract/check.json", "workload/summary.json"],
+                [item["relative_path"] for item in rows],
+            )
+            self.assertNotIn("runtime.log", manifest)
+
+    def test_raw_artifact_manifest_rejects_symlink(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "output"
+            (output / "workload").mkdir(parents=True)
+            target = output / "target.json"
+            target.write_text("{}\n")
+            (output / "workload/link.json").symlink_to(target)
+            with self.assertRaises(LIFE.LifecycleError):
+                LIFE.build_raw_artifact_manifest(output)
+
     def test_contract_context_is_cpu_even_for_gpu_operation(self):
         _, runtime = self.normalized()
         env = {
