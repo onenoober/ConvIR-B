@@ -2,12 +2,12 @@
 
 Date: 2026-07-30
 
-Status: server version `1.3.0` adds the minimal evidence-bundle and bounded
-cloud-text read interfaces to the five accepted discovery/inventory tools.
-Cloud acceptance passed 317 tests at
-`18e5c6eadb7d367fa03af29f59ace0237905ca26`, and that exact commit is on
-GitHub `main`; restarted host activation remains pending. Historical phase
-status follows.
+Status: the restarted host exposes the seven-tool server version `1.3.0` from
+GitHub `main`. Version `1.4.0` is the schema-2 response and authoritative-review
+routing update; it retains the same seven tools and is pending its normal
+cloud validation, main integration and restarted-host activation. The accepted
+`1.3.0` source passed 317 cloud tests at
+`18e5c6eadb7d367fa03af29f59ace0237905ca26`. Historical phase status follows.
 Phase 3 GitHub-only source passed committed cloud acceptance at
 `ea088ea28d56f034395f53212c6e259b290d87fc`. Presence of the adjacent
 acceptance record on GitHub `main` completes source adoption. The 2026-07-29
@@ -18,7 +18,7 @@ committed cloud acceptance at `1c456b2ffc6d734ed7356a18fd14cffff87fafd6`;
 the compact record is `CONVIR_EVIDENCE_REVIEW_PHASE4A_ACCEPTANCE.json`. It is
 not registered or exposed by MCP. Phase 4B implementation and one bounded real
 pilot are accepted by CONVIR_EVIDENCE_REVIEW_PHASE4B_ACCEPTANCE.json. The
-registered server now exposes exactly five tools at version 1.2.0. Project
+historical Phase 4B server exposed exactly five tools at version 1.2.0. Project
 completeness main integration, registration and the restarted fresh-task check
 passed at `c76b4774bb1a9fcfe59f397ffe8278d8bd7d3b96`. The tool responses do not
 expose separate MCP initialization-version metadata.
@@ -84,7 +84,7 @@ reported as reviewed. The MCP never fetches Git, so every response reports
 
 ## P0 Project Completeness Receipt
 
-The adopted P0 layer adds one compact fifth tool at server version `1.2.0`.
+The adopted P0 layer historically added one compact fifth tool at server version `1.2.0`.
 It mechanically verifies that every catalog entry belongs to exactly one
 indexed or unindexed partition, then reports terminal schema, binding and chain
 resolution counts. Unindexed entries remain unclassified; schema-1 path-only
@@ -201,8 +201,8 @@ without inventing a retroactive acceptance. Phase 3's durable 283-test
 full-suite acceptance covers the unchanged Phase 1/2 implementation, so no
 reassurance rerun is required.
 
-The registered server is active on this host at GitHub main
-`c76b4774bb1a9fcfe59f397ffe8278d8bd7d3b96`, source version `1.2.0`, with
+The historical registration at GitHub main
+`c76b4774bb1a9fcfe59f397ffe8278d8bd7d3b96` used source version `1.2.0` with
 exactly five tools. Its restarted fresh task completed one project-completeness
 receipt with no Git, cloud or result-content access. The earlier bounded real
 inventory summary and hash-bound query remain valid for the unchanged cloud

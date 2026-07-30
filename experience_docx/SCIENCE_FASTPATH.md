@@ -85,6 +85,18 @@ decisive FAIL; `descriptive` cannot affect the terminal.
    `--prepare-only` is an explicit review exception. `--local-evidence-only`
    is audit-only and cannot create an archive.
 
+## Read-Only Review Entry
+
+A cross-route or project-level evidence review is read-only and does not add a
+sixth experiment state. Read `CONVIR_EVIDENCE_REVIEW.md`, verify the trusted
+GitHub-main ref is fresh, then use the evidence-review completeness receipt,
+catalog query and selected terminal bundle before reading only the referenced
+GitHub files. Inventory and page cloud text only for that exact eligible
+terminal. Unconsumed pages, legacy/unindexed entries and excluded cloud or
+branch sources remain explicitly unreviewed; they cannot support a claim that
+the project evidence was complete. Any new metric or computation returns to the
+normal CONTRACT workflow instead of being performed inside the review MCP.
+
 ## GitHub Evidence Contract
 
 GitHub main remains the durable scientific memory, not a verdict-only registry.

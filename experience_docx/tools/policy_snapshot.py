@@ -20,6 +20,7 @@ SHA40 = re.compile(r"^[0-9a-f]{40}$")
 POLICY_SOURCES = (
     "AGENTS.md",
     "experience_docx/SCIENCE_FASTPATH.md",
+    "experience_docx/CONVIR_EVIDENCE_REVIEW.md",
     "experience_docx/ROUTE_READY_FASTPATH.md",
     "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md",
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md",
@@ -28,7 +29,10 @@ POLICY_SOURCES = (
     "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md",
 )
 CHANGE_ROUTES = {
-    "read_only_audit": ["AGENTS.md", "experience_docx/SCIENCE_FASTPATH.md"],
+    "read_only_audit": [
+        "AGENTS.md", "experience_docx/SCIENCE_FASTPATH.md",
+        "experience_docx/CONVIR_EVIDENCE_REVIEW.md",
+    ],
     "route_authoring": [
         "AGENTS.md", "experience_docx/ROUTE_READY_FASTPATH.md",
         "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md",

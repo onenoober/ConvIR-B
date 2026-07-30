@@ -17,7 +17,7 @@ import convirctl
 
 
 SERVER_NAME = "convir-evidence-review"
-SERVER_VERSION = "1.3.0"
+SERVER_VERSION = "1.4.0"
 WORKSPACE_ROOT_ENV = "CONVIR_EVIDENCE_LOCAL_WORKSPACE_ROOT"
 DEFAULT_WORKSPACE_ROOT = "/home/ubuntu/workspace"
 TRUSTED_REMOTE_NAME = "github"
@@ -98,6 +98,7 @@ def failure_value(operation, exc):
         state = "INTERNAL_REVIEW_ERROR"
         exit_code = 70
     return {
+        "schema_version": 2,
         "ok": False,
         "operation": operation,
         "state": state,
@@ -247,6 +248,8 @@ def add_github_identity(value, remote_url, tip):
 
 
 def mcp_result(value):
+    value = dict(value)
+    value["schema_version"] = 2
     serialized = canonical_bytes(value).decode("utf-8")
     return {
         "content": [{

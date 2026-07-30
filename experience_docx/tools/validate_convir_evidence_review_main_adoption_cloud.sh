@@ -9,9 +9,9 @@ on_error() {
 }
 trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
 
-branch=codex/convir-evidence-review-main-adoption
-baseline=c4f0e73aa153066f392e0edabc8cff341bd7673e
-rules_commit=e18ed6e6454cc0372825c3f5a5ee9265af359e64
+branch=codex/convir-evidence-review-loop-v2
+baseline=479072498570665bdad4c2ae376aa397aea6880c
+rules_commit=479072498570665bdad4c2ae376aa397aea6880c
 github=git@github.com:onenoober/ConvIR-B.git
 seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
 python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
@@ -47,7 +47,7 @@ git -C "$work/repo" checkout --quiet --detach "$candidate"
 test -z "$(git -C "$work/repo" status --porcelain)"
 
 changed=$(git -C "$work/repo" diff --name-only "$baseline" "$candidate")
-expected=$'experience_docx/CONVIR_EVIDENCE_REVIEW.md\nexperience_docx/tools/convir_evidence_cloud_inventory.py\nexperience_docx/tools/convir_evidence_review_mcp.py\nexperience_docx/tools/tests/test_convir_evidence_cloud_inventory.py\nexperience_docx/tools/tests/test_convir_evidence_review_mcp.py\nexperience_docx/tools/validate_convir_evidence_review_main_adoption_cloud.sh'
+expected=$'experience_docx/AI_POLICY_SNAPSHOT.json\nexperience_docx/CONVIR_EVIDENCE_REVIEW.md\nexperience_docx/SCIENCE_FASTPATH.md\nexperience_docx/tools/convir_evidence_review_mcp.py\nexperience_docx/tools/policy_snapshot.py\nexperience_docx/tools/tests/test_convir_evidence_review_mcp.py\nexperience_docx/tools/validate_convir_evidence_review_main_adoption_cloud.sh'
 [[ "$changed" == "$expected" ]]
 
 refs_before=$work/git-refs.before
@@ -149,7 +149,7 @@ responses = [json.loads(line) for line in raw_lines]
 assert all("error" not in response for response in responses)
 info = responses[0]["result"]["serverInfo"]
 assert info["name"] == "convir-evidence-review"
-assert info["version"] == "1.3.0"
+assert info["version"] == "1.4.0"
 assert info["sourceSha256"] == hashlib.sha256(server.read_bytes()).hexdigest()
 assert [item["name"] for item in responses[1]["result"]["tools"]] == [
     "convir_evidence_catalog_summary",
