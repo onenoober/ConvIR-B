@@ -1,0 +1,54 @@
+{
+  "bound_assets": [
+    {
+      "id": "official_anchor_checkout",
+      "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+    },
+    {
+      "id": "local_need_entrypoint",
+      "identity": "8574065379564fc5eec6e66f7e9e35a3aa37a9f8c7487291cd9f15d2de7096ae"
+    },
+    {
+      "id": "runtime_environment",
+      "identity": "ede9744c12b6f154092277bb8d7b6ad1d7ade5011de3e186df19afac2a3b0fde"
+    },
+    {
+      "id": "official_checkpoint",
+      "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "id": "model_source",
+      "identity": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+    },
+    {
+      "id": "model_layers",
+      "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    }
+  ],
+  "compatibility_imports": [
+    "numpy",
+    "PIL",
+    "torch"
+  ],
+  "contract_mode": "gpu_synthetic_no_data",
+  "minimum_fixture": {
+    "batch": 1,
+    "channels": 3,
+    "height": 512,
+    "width": 512
+  },
+  "production_path_statement": "The exact frozen official ConvIR-B inference, bounded deterministic crop, five-strength residual intervention, checkerboard cross-selection, global-alpha control, shifted-target null, and scene aggregation execute on bounded synthetic CUDA tensors without dataset access or scientific output.",
+  "profile_id": "daytime_dehazing_local_restoration_need_gpu_v1",
+  "protected_data_prohibited": true,
+  "reuse_identity": {
+    "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "code_path_sha256": "8574065379564fc5eec6e66f7e9e35a3aa37a9f8c7487291cd9f15d2de7096ae",
+    "device_class": "cuda_sm89",
+    "input_contract_sha256": "3c6eb3f020cc0175a4115b76738f95d412c83da3ec13c9b0e786aa6b675fc95a",
+    "runtime_environment_sha256": "ede9744c12b6f154092277bb8d7b6ad1d7ade5011de3e186df19afac2a3b0fde",
+    "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+  },
+  "schema_version": 2,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}
