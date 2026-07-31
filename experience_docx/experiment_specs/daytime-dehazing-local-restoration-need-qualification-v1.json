@@ -12,7 +12,7 @@
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "daytime_dehazing_local_restoration_need_qualification",
         "require_gpu": true,
-        "output_id": "daytime-dehazing-local-restoration-need-qualification-v1-r1",
+        "output_id": "daytime-dehazing-local-restoration-need-qualification-v1-r2",
         "closeout_filename": "daytime_dehazing_local_restoration_need_v1_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
@@ -609,7 +609,7 @@
           "id": "local_need_entrypoint",
           "kind": "file",
           "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_local_restoration_need_v1.py",
-          "sha256": "75e4b8ad16bb448745f002f9284acd086d086676484d9c08a09fb9aff427799d",
+          "sha256": "e4a614e11c442d288513be8d7d9e19b0ecc7dbbad9bd83624adbf226986e3fec",
           "access_role": "engineering_debug",
           "contract_access": true
         },
@@ -700,7 +700,7 @@
           },
           {
             "id": "local_need_entrypoint",
-            "identity": "75e4b8ad16bb448745f002f9284acd086d086676484d9c08a09fb9aff427799d"
+            "identity": "e4a614e11c442d288513be8d7d9e19b0ecc7dbbad9bd83624adbf226986e3fec"
           },
           {
             "id": "runtime_environment",
@@ -730,7 +730,7 @@
         "scientific_training_prohibited": true,
         "reuse_identity": {
           "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
-          "code_path_sha256": "75e4b8ad16bb448745f002f9284acd086d086676484d9c08a09fb9aff427799d",
+          "code_path_sha256": "e4a614e11c442d288513be8d7d9e19b0ecc7dbbad9bd83624adbf226986e3fec",
           "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
           "runtime_environment_sha256": "ede9744c12b6f154092277bb8d7b6ad1d7ade5011de3e186df19afac2a3b0fde",
           "device_class": "cuda_sm89"

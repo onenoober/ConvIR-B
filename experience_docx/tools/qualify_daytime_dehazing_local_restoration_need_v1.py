@@ -485,14 +485,14 @@ def candidate_errors(
     region: tuple[slice, slice], mask: np.ndarray,
 ) -> tuple[np.ndarray, np.ndarray]:
     y, x = region
-    local_hazy = hazy[y, x]
-    residual = prediction[y, x] - local_hazy
-    local_target = target[y, x]
+    local_hazy = hazy[y, x].astype(np.float64)
+    residual = prediction[y, x].astype(np.float64) - local_hazy
+    local_target = target[y, x].astype(np.float64)
     sums = np.empty(len(ALPHA_GRID), dtype=np.float64)
     counts = np.empty(len(ALPHA_GRID), dtype=np.float64)
     for index, alpha in enumerate(ALPHA_GRID):
         candidate = np.clip(local_hazy + float(alpha) * residual, 0.0, 1.0)
-        error = (candidate.astype(np.float64) - local_target.astype(np.float64)) ** 2
+        error = (candidate - local_target) ** 2
         sums[index] = float(np.sum(error[mask]))
         counts[index] = float(np.count_nonzero(mask) * 3)
     return sums, counts
@@ -519,7 +519,7 @@ def dense_global_errors(
     bounds[positive] = 1.0
     breakpoints[negative] = -local_hazy[negative] / residual[negative]
     bounds[negative] = 0.0
-    active = (positive | negative) & (breakpoints > 1.0) & (breakpoints <= 1.5)
+    active = (positive | negative) & (breakpoints >= 1.0) & (breakpoints <= 1.5)
 
     bins_a = np.zeros(len(DENSE_GLOBAL_ALPHA_GRID), dtype=np.float64)
     bins_b = np.zeros(len(DENSE_GLOBAL_ALPHA_GRID), dtype=np.float64)

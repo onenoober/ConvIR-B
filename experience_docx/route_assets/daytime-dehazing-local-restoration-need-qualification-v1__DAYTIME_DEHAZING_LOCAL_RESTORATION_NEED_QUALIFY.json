@@ -15,7 +15,7 @@
       "id": "local_need_entrypoint",
       "kind": "file",
       "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_local_restoration_need_v1.py",
-      "sha256": "75e4b8ad16bb448745f002f9284acd086d086676484d9c08a09fb9aff427799d"
+      "sha256": "e4a614e11c442d288513be8d7d9e19b0ecc7dbbad9bd83624adbf226986e3fec"
     },
     {
       "access_role": "engineering_debug",
