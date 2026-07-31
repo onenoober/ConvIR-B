@@ -1,0 +1,390 @@
+{
+  "competing_explanation": "Large image and haze-variant counts can falsely imply independent evidence when clear targets repeat, source scenes cross datasets, known overlap members leak between roles, or a small real-domain set is fragmented into underpowered subsets.",
+  "controls": [
+    "GitHub-main SHA-256 identity for every reused compact scene or overlap asset",
+    "exact official per-dataset clear-scene namespace counts and complete pair/decode/dimension census",
+    "reproduction of the Haze4K 600/150 and 100/150 historical membership digests without inheriting their roles",
+    "unique and in-namespace ITS and OTS verified-overlap exclusion membership",
+    "decoded RGB width-height-payload SHA-256 canonical scene identity",
+    "one retained representative for every exact duplicate component and zero role overlap between retained components",
+    "new program role salt and fixed Hamilton rounding rule",
+    "cloud-only per-scene ledger with compact count and SHA-256 receipt",
+    "no checkpoint, model, training, inference, prediction, restoration metric, local-error metric, threshold selection, or candidate comparison"
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "evidence_identity_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "dataset_identity_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "dataset_identity": [
+            "fail",
+            "invalid"
+          ],
+          "evidence_identity": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "cross_dataset_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "cross_dataset_separation": [
+            "fail",
+            "invalid"
+          ],
+          "dataset_identity": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "role_partition_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "cross_dataset_separation": [
+            "pass"
+          ],
+          "dataset_identity": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "role_partition_coverage": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "valid_capacity_failure",
+        "terminal": "fail",
+        "when": {
+          "cross_dataset_separation": [
+            "pass"
+          ],
+          "dataset_identity": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "independent_capacity": [
+            "unfavorable"
+          ],
+          "role_partition_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "unresolved_capacity",
+        "terminal": "inconclusive",
+        "when": {
+          "cross_dataset_separation": [
+            "pass"
+          ],
+          "dataset_identity": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "independent_capacity": [
+            "indeterminate",
+            "invalid"
+          ],
+          "role_partition_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "qualified_capacity_and_precision",
+        "terminal": "pass",
+        "when": {
+          "capacity_precision": [
+            "met"
+          ],
+          "cross_dataset_separation": [
+            "pass"
+          ],
+          "dataset_identity": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "independent_capacity": [
+            "favorable"
+          ],
+          "role_partition_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "capacity_without_precision",
+        "terminal": "inconclusive",
+        "when": {
+          "capacity_precision": [
+            "unmet",
+            "invalid"
+          ],
+          "cross_dataset_separation": [
+            "pass"
+          ],
+          "dataset_identity": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "independent_capacity": [
+            "favorable"
+          ],
+          "role_partition_coverage": [
+            "pass"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "stop",
+        "next_action_id": "adjust_data_contract_or_add_independent_data",
+        "terminal": {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_CAPACITY_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "allow_predeclared_evidence",
+        "next_action_id": "complete_identity_or_overlap_evidence",
+        "terminal": {
+          "authorizes": "DATA_IDENTITY_OR_OVERLAP_EVIDENCE_COMPLETION_ONLY",
+          "decision": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "advance",
+        "next_action_id": "author_s1_utility_qualification_contract",
+        "terminal": {
+          "authorizes": "AUTHOR_S1_UTILITY_QUALIFICATION_CONTRACT_ONLY",
+          "decision": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "model or checkpoint access",
+    "training, fitting, fine-tuning, inference, prediction, or candidate comparison",
+    "restoration metric, local-error metric, utility value, or threshold computation",
+    "researcher rendering or visual inspection of confirmation or sealed-final images",
+    "inheritance of any historical dataset role, exposure label, outcome, decision, or authorization",
+    "treating haze variants, crops, regions, pixels, augmentations, or resamples as independent samples",
+    "claiming complete capture provenance or source disjointness from exact hashes or known-overlap membership",
+    "using confirmation or sealed-final role members for debugging or selection",
+    "treating S0 capacity or partition evidence as evidence that bidirectional local restoration error exists or that any mechanism is effective",
+    "starting S1 or any downstream model experiment"
+  ],
+  "gates": [
+    {
+      "comparison_family": "five_dataset_capacity_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "independent_role_capacity",
+      "id": "evidence_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "all reused Haze4K grouping and ITS/OTS verified-overlap assets match their frozen SHA-256 identities, counts, salts, and membership digests",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "exact_capacity_and_worst_case_indicator_precision"
+    },
+    {
+      "comparison_family": "five_dataset_capacity_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "independent_role_capacity",
+      "id": "dataset_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "complete directory, pairing, decode, dimension, unique scene-id, and canonical clear-scene census for all four datasets",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "exact_capacity_and_worst_case_indicator_precision"
+    },
+    {
+      "comparison_family": "five_dataset_capacity_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "independent_role_capacity",
+      "id": "cross_dataset_separation",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "all archived verified Haze4K-to-ITS/OTS members are quarantined, exact decoded-RGB duplicate components retain one representative, and no fixed Haze4K role conflict remains",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "exact_capacity_and_worst_case_indicator_precision"
+    },
+    {
+      "comparison_family": "five_dataset_capacity_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "independent_role_capacity",
+      "id": "role_partition_coverage",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "every retained scene has exactly one role and all training, development_screening, confirmation, and sealed_final canonical-digest intersections are empty",
+      "threshold": true,
+      "type": "coverage",
+      "uncertainty_id": "exact_capacity_and_worst_case_indicator_precision"
+    },
+    {
+      "comparison_family": "five_dataset_capacity_family",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "independent_role_capacity",
+      "id": "independent_capacity",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "Haze4K 600/150/100/150; each of ITS and OTS at least 3000 training, 700 development_screening, 1900 confirmation, and 1900 sealed_final; NH-Haze at least 50 sealed_final scenes",
+      "threshold": "all_dataset_by_role_minima_met",
+      "type": "materiality",
+      "uncertainty_id": "exact_capacity_and_worst_case_indicator_precision"
+    },
+    {
+      "comparison_family": "five_dataset_capacity_family",
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand_id": "independent_role_capacity",
+      "id": "capacity_precision",
+      "neutral_outcome": "met",
+      "outcomes": [
+        "met",
+        "unmet",
+        "invalid"
+      ],
+      "reference": "the smallest planned role pool in every dataset stratum can support a coarse bounded scene-level indicator check with worst-case SD 0.5 and simultaneous 95 percent half-width at most 0.20",
+      "threshold": 0.2,
+      "type": "precision",
+      "uncertainty_id": "exact_capacity_and_worst_case_indicator_precision"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "the new program declares every dataset unused for program-local model selection before this route",
+      "historical assets may establish only scene identity, grouping, deterministic partition membership, or verified overlap membership",
+      "historical performance, variance, role, exposure, PASS, FAIL, terminal action, and authorization are inadmissible",
+      "the independent unit is the original clear scene; haze variants, crops, regions, pixels, augmentations, and resamples are nested",
+      "Haze4K train reuses the 600/150 membership partition and assigns new program roles training/development_screening",
+      "Haze4K test reuses the 100/150 membership partition and assigns new program roles confirmation/sealed_final",
+      "ITS and OTS use a new SHA-256 salted order and Hamilton allocation with weights 40/10/25/25",
+      "Hamilton remainder ties use sealed_final, confirmation, development_screening, then training priority",
+      "all eligible NH-Haze scenes are assigned sealed_final and are not fragmented for development",
+      "decoded RGB hashing is structure-only machine access; no image is rendered to the researcher and no restoration outcome is computed",
+      "known-overlap control is not described as complete capture or source provenance disjointness",
+      "S0 is a dataset-contract foundation only and cannot redefine the program problem, select a mechanism, or support a claim about local restoration error or dehazing utility",
+      "the parent terminal tuple remains COMPLETED_INCONCLUSIVE / DAYTIME_DEHAZING_PROGRAM_FOUNDATION_INCONCLUSIVE / DATA_IDENTITY_OR_OVERLAP_EVIDENCE_COMPLETION_ONLY",
+      "the corrected Haze4K root is /sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K and no other dataset path, membership, salt, threshold, or gate changes"
+    ],
+    "matched_budget": "one evidence-completion census over the unchanged four-dataset S0 scope, salts, memberships, overlap exclusions, role allocation, gates, and decision table",
+    "primary_variable": "deterministic program-local clear-scene role assignment after exact-content and archived verified-overlap quarantine",
+    "reference": "parent-bound S0 contract plus a corrected Haze4K root and a complete outcome-blind identity census with no historical role, exposure, outcome, decision, or authorization inheritance"
+  },
+  "operation_id": "DAYTIME_DEHAZING_HAZE4K_IDENTITY_COMPLETE",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "original_clear_scene",
+    "independent_group_count": 17874,
+    "strata": [
+      {
+        "id": "HAZE4K_TRAIN",
+        "independent_group_count": 750
+      },
+      {
+        "id": "HAZE4K_TEST",
+        "independent_group_count": 250
+      },
+      {
+        "id": "ITS",
+        "independent_group_count": 8813
+      },
+      {
+        "id": "OTS",
+        "independent_group_count": 8006
+      },
+      {
+        "id": "NH_HAZE",
+        "independent_group_count": 55
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "minimum exact independent-scene margin over the frozen Haze4K role counts, ITS and OTS per-role minima, and at least 50 eligible NH-Haze sealed-final scenes after quarantine and exact-content deduplication",
+    "direction": "higher",
+    "id": "independent_role_capacity",
+    "metric_id": "minimum_scene_capacity_margin_by_dataset_and_role",
+    "strata": [
+      "HAZE4K_TRAIN",
+      "HAZE4K_TEST",
+      "ITS",
+      "OTS",
+      "NH_HAZE"
+    ],
+    "unit": "original_clear_scene"
+  },
+  "question": "Does completing the missing Haze4K cloud path and identity evidence under the parent-bound S0 contract establish that Haze4K, ITS, OTS, and NH-Haze support an outcome-blind, clear-scene-grouped and known-overlap-controlled program-local partition with enough mutually exclusive training, development, confirmation, and sealed-final scenes to authorize writing the S1 bidirectional-local-restoration-error utility-qualification contract?",
+  "route_id": "daytime-dehazing-haze4k-identity-v1",
+  "schema_version": 2,
+  "uncertainty": {
+    "comparison_family": "five_dataset_capacity_family",
+    "confidence_level": 0.95,
+    "id": "exact_capacity_and_worst_case_indicator_precision",
+    "independent_unit": "original_clear_scene",
+    "method_id": "full_identity_census_plus_bonferroni_worst_case_bounded_indicator_planning"
+  }
+}

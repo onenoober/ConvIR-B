@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-haze4k-identity-v1.json",
+  "experiment_spec_sha256": "8f8364effbd42f5359659d33a5d6381a0dec1dc5986095c006b91b77dd5c81a2",
+  "operations": {
+    "DAYTIME_DEHAZING_HAZE4K_IDENTITY_COMPLETE": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "AUTHOR_S1_UTILITY_QUALIFICATION_CONTRACT_ONLY",
+          "decision": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_CAPACITY_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "DATA_IDENTITY_OR_OVERLAP_EVIDENCE_COMPLETION_ONLY",
+          "decision": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "daytime_dehazing_haze4k_identity_v1_closeout.json",
+      "heartbeat_timeout_seconds": 180,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "daytime_dehazing_program_foundation_qualification",
+      "monitor_profile": "short",
+      "output_id": "daytime-dehazing-haze4k-identity-v1-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
+  "program_contract_sha256": "c98e7862107ff6ce9715844f2386f7e5f9ac0198733aae320e0bbc583ad70330",
+  "route_card_relpath": "experience_docx/experiment_cards/daytime-dehazing-haze4k-identity-v1.md",
+  "route_id": "daytime-dehazing-haze4k-identity-v1",
+  "rules_commit": "23a567c6a9962f18ef261cc376f3492f66db1b5c",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "DAYTIME_DEHAZING_HAZE4K_IDENTITY_COMPLETE": "experience_docx/scientific_contracts/daytime-dehazing-haze4k-identity-v1__DAYTIME_DEHAZING_HAZE4K_IDENTITY_COMPLETE.json"
+  }
+}

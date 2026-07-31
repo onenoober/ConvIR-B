@@ -1,0 +1,55 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/daytime-dehazing-haze4k-identity-v1__DAYTIME_DEHAZING_HAZE4K_IDENTITY_COMPLETE.json",
+  "engineering_contract": {
+    "capability_profile_relpath": null,
+    "cost_contract": null,
+    "max_seconds": 30,
+    "mode": "metadata_only"
+  },
+  "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_haze4k_identity_v1.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "daytime_dehazing_haze4k_identity_v1_summary.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_haze4k_identity_v1_summary.json"
+    },
+    {
+      "destination_filename": "daytime_dehazing_haze4k_identity_v1_identity_summary.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_haze4k_identity_v1_identity_summary.json"
+    },
+    {
+      "destination_filename": "daytime_dehazing_haze4k_identity_v1_role_summary.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_haze4k_identity_v1_role_summary.json"
+    },
+    {
+      "destination_filename": "daytime_dehazing_haze4k_identity_v1_review_facts.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_haze4k_identity_v1_review_facts.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 1200,
+  "operation_id": "DAYTIME_DEHAZING_HAZE4K_IDENTITY_COMPLETE",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/daytime-dehazing-haze4k-identity-v1__DAYTIME_DEHAZING_HAZE4K_IDENTITY_COMPLETE.json",
+    "mode": "descriptive_capacity",
+    "rationale": "Use an exact identity census for capacity and retain a conservative simultaneous indicator-precision check only to decide whether S1 contract authoring is supportable."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "daytime-dehazing-haze4k-identity-v1",
+  "schema_version": 2,
+  "timeout_seconds": 3600,
+  "total_units": 5
+}
