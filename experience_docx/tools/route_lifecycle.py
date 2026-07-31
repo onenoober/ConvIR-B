@@ -18,7 +18,12 @@ from typing import Any
 
 import capability_registry
 import scientific_contract as science_contract
-from route_program_api import atomic_json, load_completed_unit_ledger, load_context
+from route_program_api import (
+    atomic_json,
+    load_completed_unit_ledger,
+    load_context,
+    validate_review_facts_value,
+)
 from route_runtime_contract import (
     ContractError,
     GENERIC_RUNNER_RELPATH,
@@ -705,13 +710,23 @@ def copy_evidence(spec: dict[str, Any], output: Path, evidence_root: Path) -> di
     planned: list[tuple[Path, Path]] = []
     for item in spec["evidence_files"]:
         source = safe_join(output, item["source_relpath"])
+        destination = evidence_root / item["destination_filename"]
         if not source.is_file():
             if item["required"]:
                 raise LifecycleError(f"required evidence missing: {item['source_relpath']}", phase="evidence")
             continue
         if source.is_symlink() or source.stat().st_size > item["max_bytes"]:
             raise LifecycleError(f"evidence contract failed: {item['source_relpath']}", phase="evidence")
-        destination = evidence_root / item["destination_filename"]
+        if destination.name.endswith("_review_facts.json"):
+            try:
+                validate_review_facts_value(
+                    load_json(source), expected_filename=destination.name,
+                )
+            except (ContractError, json.JSONDecodeError, OSError) as exc:
+                raise LifecycleError(
+                    f"review facts contract failed: {item['source_relpath']}: {exc}",
+                    phase="evidence",
+                ) from exc
         if destination.exists():
             raise LifecycleError(f"evidence destination exists: {destination.name}", phase="evidence")
         planned.append((source, destination))

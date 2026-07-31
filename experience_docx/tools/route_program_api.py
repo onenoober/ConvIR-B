@@ -39,6 +39,16 @@ CONTEXT_FIELDS = LEGACY_CONTEXT_FIELDS | {"engineering_contract"}
 MAX_RESULT_BYTES = 32 * 1024
 UNIT_LEDGER_FILENAME = "completed_units.jsonl"
 CURRENT_WORKLOAD_ASSET_ID = "CURRENT_WORKLOAD"
+REVIEW_FACT_FIELDS = {
+    "fact_id", "claim_id", "metric", "unit", "population", "grouping",
+    "point", "ci_lower", "ci_upper", "confidence_level", "threshold",
+    "threshold_operator", "gate_outcome", "source_filename", "source_sha256",
+    "json_pointers",
+}
+REVIEW_FACT_POINTER_FIELDS = {
+    "point", "ci_lower", "ci_upper", "confidence_level", "threshold",
+    "gate_outcome",
+}
 
 
 @dataclass(frozen=True)
@@ -258,6 +268,133 @@ def prepare_phase_output(context: RouteContext) -> None:
 
 def output_file(context: RouteContext, relpath: str) -> Path:
     return safe_join(context.phase_output_path, relpath)
+
+
+def validate_review_facts_value(
+    value: Any, *, expected_filename: str | None = None,
+) -> dict[str, Any]:
+    """Validate the local review-facts contract before lifecycle publication."""
+    if not isinstance(value, dict) or set(value) != {
+        "schema_version", "route_id", "operation_id", "run_id", "facts",
+    } or value["schema_version"] != 2:
+        raise ContractError("review facts top-level contract is invalid")
+    for key in ("route_id", "operation_id", "run_id"):
+        require_token(value[key], f"review facts {key}")
+    if expected_filename is not None and (
+        not isinstance(expected_filename, str)
+        or Path(expected_filename).name != expected_filename
+        or not expected_filename.endswith("_review_facts.json")
+    ):
+        raise ContractError("review facts filename is not canonical")
+    facts = value["facts"]
+    if not isinstance(facts, list) or not 1 <= len(facts) <= 128:
+        raise ContractError("review facts must contain 1-128 entries")
+    identifiers = set()
+    for fact in facts:
+        if not isinstance(fact, dict) or set(fact) != REVIEW_FACT_FIELDS:
+            raise ContractError("review fact field contract is invalid")
+        for key in ("fact_id", "claim_id"):
+            require_token(fact[key], f"review fact {key}")
+        if fact["fact_id"] in identifiers:
+            raise ContractError("review fact ids must be unique")
+        identifiers.add(fact["fact_id"])
+        for key in ("metric", "unit", "population", "grouping"):
+            if not isinstance(fact[key], str) or not 1 <= len(fact[key].strip()) <= 256:
+                raise ContractError(f"review fact {key} is invalid")
+        pointers = fact["json_pointers"]
+        if not isinstance(pointers, dict) or set(pointers) != REVIEW_FACT_POINTER_FIELDS:
+            raise ContractError("review fact JSON Pointer contract is invalid")
+        for key in REVIEW_FACT_POINTER_FIELDS:
+            declared = fact[key]
+            pointer = pointers[key]
+            if (declared is None) != (pointer is None):
+                raise ContractError(f"review fact {key} pointer/value presence differs")
+            if pointer is not None and not isinstance(pointer, str):
+                raise ContractError(f"review fact {key} pointer is invalid")
+        for key in ("point", "ci_lower", "ci_upper", "confidence_level", "threshold"):
+            if fact[key] is not None and (
+                not isinstance(fact[key], (int, float)) or isinstance(fact[key], bool)
+            ):
+                raise ContractError(f"review fact {key} must be numeric")
+        if fact["gate_outcome"] is not None:
+            require_token(fact["gate_outcome"], "review fact gate_outcome")
+        if fact["point"] is None and fact["gate_outcome"] is None:
+            raise ContractError("review fact requires a point or gate outcome")
+        if (fact["ci_lower"] is None) != (fact["ci_upper"] is None) \
+                or (fact["ci_lower"] is None) != (fact["confidence_level"] is None):
+            raise ContractError("review fact confidence interval is incomplete")
+        if fact["ci_lower"] is not None and (
+            fact["ci_lower"] > fact["ci_upper"]
+            or not 0 < fact["confidence_level"] < 1
+        ):
+            raise ContractError("review fact confidence interval is invalid")
+        if fact["threshold"] is None:
+            if fact["threshold_operator"] is not None:
+                raise ContractError("review fact threshold operator lacks a threshold")
+        elif fact["threshold_operator"] not in {">", ">=", "<", "<=", "=="}:
+            raise ContractError("review fact threshold operator is invalid")
+        source_name = fact["source_filename"]
+        if not isinstance(source_name, str) or Path(source_name).name != source_name \
+                or Path(source_name).suffix.lower() != ".json":
+            raise ContractError("review fact source filename is invalid")
+        if expected_filename is not None and source_name == expected_filename:
+            raise ContractError("review fact cannot cite its own facts file")
+        if not isinstance(fact["source_sha256"], str) \
+                or not SHA256.fullmatch(fact["source_sha256"]):
+            raise ContractError("review fact source SHA-256 is invalid")
+    return value
+
+
+def build_gate_review_fact(
+    *, fact_id: str, metric: str, unit: str, population: str, grouping: str,
+    gate_outcome: str, source_filename: str, source_sha256: str,
+    gate_pointer: str | None = None,
+) -> dict[str, Any]:
+    """Build a typed gate fact without inventing interval precision."""
+    pointer = gate_pointer or f"/gate_outcomes/{fact_id}"
+    return {
+        "fact_id": fact_id,
+        "claim_id": fact_id,
+        "metric": metric,
+        "unit": unit,
+        "population": population,
+        "grouping": grouping,
+        "point": None,
+        "ci_lower": None,
+        "ci_upper": None,
+        "confidence_level": None,
+        "threshold": None,
+        "threshold_operator": None,
+        "gate_outcome": gate_outcome,
+        "source_filename": source_filename,
+        "source_sha256": source_sha256,
+        "json_pointers": {
+            "point": None,
+            "ci_lower": None,
+            "ci_upper": None,
+            "confidence_level": None,
+            "threshold": None,
+            "gate_outcome": pointer,
+        },
+    }
+
+
+def write_review_facts(
+    context: RouteContext, *, relpath: str, facts: list[dict[str, Any]],
+) -> None:
+    """Write one schema-2 review-facts result with bound field semantics."""
+    if context.phase != "run":
+        raise ContractError("review facts require run context")
+    relpath = require_relpath(relpath, "review facts relpath")
+    value = {
+        "schema_version": 2,
+        "route_id": context.route_id,
+        "operation_id": context.operation_id,
+        "run_id": context.run_id,
+        "facts": facts,
+    }
+    validate_review_facts_value(value, expected_filename=Path(relpath).name)
+    atomic_json(output_file(context, relpath), value)
 
 
 def asset_path(context: RouteContext, asset_id: str, *, kind: str | None = None) -> Path:

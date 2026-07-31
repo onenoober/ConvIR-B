@@ -89,6 +89,13 @@ decisive FAIL; `descriptive` cannot affect the terminal.
    `--prepare-only` is an explicit review exception. `--local-evidence-only`
    is audit-only and cannot create an archive.
 
+Before archive, `convir_evidence_list` and `convir_evidence_fetch` expose the
+receipt-bound archive contract for schema-6 scientific terminals, including the
+canonical `*_conclusion.json` path and required schema-2 fields. The archive
+tool derives that path from the validated `*_closeout.json` when `--conclusion`
+is omitted; it never writes or infers scientific content. Engineering archive
+contracts intentionally omit this scientific conclusion requirement.
+
 ## Read-Only Review Entry
 
 A cross-route or project-level evidence review is read-only and does not add a

@@ -144,6 +144,43 @@ class LifecycleTests(unittest.TestCase):
                 LIFE.copy_evidence(runtime, root / "output", evidence)
             self.assertEqual([], list(evidence.iterdir()))
 
+    def test_review_facts_preflight_rejects_unbound_confidence_without_publish(self):
+        _, runtime = self.normalized()
+        runtime["evidence_files"].append({
+            "source_relpath": "workload/route_review_facts.json",
+            "destination_filename": "route_review_facts.json",
+            "required": True,
+            "max_bytes": 4096,
+        })
+        fact = {
+            "fact_id": "materiality", "claim_id": "materiality",
+            "metric": "materiality_gate", "unit": "gate",
+            "population": "development", "grouping": "all",
+            "point": None, "ci_lower": None, "ci_upper": None,
+            "confidence_level": 0.95, "threshold": None,
+            "threshold_operator": None, "gate_outcome": "favorable",
+            "source_filename": "summary.json", "source_sha256": "c" * 64,
+            "json_pointers": {
+                "point": None, "ci_lower": None, "ci_upper": None,
+                "confidence_level": None, "threshold": None,
+                "gate_outcome": "/gate_outcomes/materiality",
+            },
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "output/workload"
+            source.mkdir(parents=True)
+            source.joinpath("summary.json").write_text("{}")
+            source.joinpath("route_review_facts.json").write_text(json.dumps({
+                "schema_version": 2, "route_id": "route",
+                "operation_id": "S0", "run_id": "r1", "facts": [fact],
+            }))
+            evidence = root / "evidence"
+            evidence.mkdir()
+            with self.assertRaisesRegex(LIFE.LifecycleError, "presence differs"):
+                LIFE.copy_evidence(runtime, root / "output", evidence)
+            self.assertEqual([], list(evidence.iterdir()))
+
     def test_schema2_raw_artifact_receipt_seals_stable_output_only(self):
         value, runtime = self.normalized()
         operation = value["operations"]["S0"]

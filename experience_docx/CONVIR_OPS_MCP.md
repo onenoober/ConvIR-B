@@ -197,6 +197,12 @@ receipt before listing or fetching any file.
 They require a scientific validated closeout or an explicit engineering
 `archive` resolution and never stage, commit, or push. A cancellation receipt
 does not unlock evidence tools.
+For a schema-6 scientific terminal, both evidence responses also return a compact
+receipt-bound `archive_contract` naming the canonical closeout and conclusion
+paths, conclusion schema version and required fields. This is a contract hint,
+not a generated conclusion: the operator must author the JSON, and archive
+derives the same canonical path when `--conclusion` is omitted. Engineering
+archive responses do not expose a scientific conclusion contract.
 
 ## Capability Reuse And Recovery
 

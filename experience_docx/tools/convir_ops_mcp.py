@@ -83,6 +83,13 @@ MAX_CLOSEOUT_BYTES = 64 * 1024
 MAX_DIAGNOSTIC_TEXT_BYTES = 4096
 GPU_SUMMARY_LIMIT = 8
 GPU_PROBE_RETRY_DELAY_SECONDS = 2
+CONCLUSION_SCHEMA_VERSION = 2
+CONCLUSION_REQUIRED_FIELDS = (
+    "schema_version", "route_id", "operation_id", "run_id", "state",
+    "decision", "authorizes", "primary_result", "gate_reasons",
+    "competing_explanation", "limitations", "primary_fact_ids",
+    "gate_fact_ids",
+)
 SAFE_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
 SAFE_BRANCH = re.compile(r"^codex/[A-Za-z0-9][A-Za-z0-9_.\-/]{0,191}$")
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
@@ -1760,6 +1767,28 @@ def tool_start(args):
         return failure_result("START_REJECTED", exc, "launch_command")
 
 
+def scientific_archive_contract(context, terminal_closeout, finish_closed):
+    """Return the operator-authored conclusion contract for new scientific routes."""
+    terminal = terminal_closeout.get("terminal_tuple", {})
+    state = terminal.get("state") if isinstance(terminal, dict) else None
+    if finish_closed != "CLOSEOUT_VALIDATED" \
+            or context.get("route_manifest_schema_version") != 6 \
+            or not isinstance(state, str) or not state.startswith("COMPLETED_"):
+        return None
+    closeout_name = context["closeout_filename"]
+    if not closeout_name.endswith("_closeout.json"):
+        raise ToolError("validated closeout filename is not canonical")
+    evidence_prefix = f"experience_docx/experiment_logs/{context['route_id']}"
+    conclusion_name = closeout_name[:-len("_closeout.json")] + "_conclusion.json"
+    return {
+        "contract_path": context["route_card_relpath"],
+        "closeout_path": f"{evidence_prefix}/{closeout_name}",
+        "conclusion_path": f"{evidence_prefix}/{conclusion_name}",
+        "conclusion_schema_version": CONCLUSION_SCHEMA_VERSION,
+        "required_conclusion_fields": list(CONCLUSION_REQUIRED_FIELDS),
+    }
+
+
 def evidence_context(args):
     token = args.get("receipt")
     with locked_record("receipt", token) as record:
@@ -1792,12 +1821,18 @@ def evidence_context(args):
                 failure_phase="evidence_manifest", failure_class="evidence",
             )
         context = record["payload"]["context"]
-    return {
+        archive_contract = scientific_archive_contract(
+            context, terminal_closeout, closed,
+        )
+    result = {
         **context,
         "evidence_dir": f"{context['remote_repo']}/experience_docx/experiment_logs/{context['route_id']}",
         "validated_closeout_filename": terminal_closeout["closeout_filename"],
         "validated_closeout_sha256": terminal_closeout["closeout_sha256"],
     }
+    if archive_contract is not None:
+        result["archive_contract"] = archive_contract
+    return result
 
 
 def begin_finish(token):
@@ -3075,6 +3110,8 @@ def tool_evidence_manifest(args):
             "files": [{"name": name, **record} for name, record in sorted(records.items())],
             "marker": "CONVIR_OPS_EVIDENCE_MANIFEST_OK",
         }
+        if "archive_contract" in context:
+            value["archive_contract"] = context["archive_contract"]
         return text_result(json.dumps(value, indent=2), structured=value)
     except Exception as exc:
         return failure_result("EVIDENCE_MANIFEST_FAILED", exc, "evidence_manifest")
@@ -3464,6 +3501,8 @@ def tool_evidence_fetch(args):
             "fetched": fetched, "already_verified": verified,
             "destination": str(destination_dir), "git_mutations_performed": False,
         }
+        if "archive_contract" in context:
+            value["archive_contract"] = context["archive_contract"]
         return text_result(json.dumps(value, indent=2), structured=value)
     except Exception as exc:
         return failure_result("EVIDENCE_FETCH_FAILED", exc, "evidence_transfer")

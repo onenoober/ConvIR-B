@@ -99,6 +99,14 @@ def safe_relative(value: str, *, prefix: str | None = None) -> PurePosixPath:
     return path
 
 
+def canonical_conclusion_relpath(closeout_relpath: str) -> str:
+    path = safe_relative(closeout_relpath)
+    suffix = "_closeout.json"
+    if not path.name.endswith(suffix):
+        raise TerminalArchiveError("closeout must end with _closeout.json")
+    return path.with_name(path.name[:-len(suffix)] + "_conclusion.json").as_posix()
+
+
 def checked_text(raw: bytes, relpath: str) -> str:
     empty_exclusion_asset = (
         not raw and PurePosixPath(relpath).name.endswith("_exclusions.txt")
@@ -1046,7 +1054,7 @@ def audit_source(
     if contract_path.suffix.lower() not in {".md", ".json"}:
         raise TerminalArchiveError("contract must be a route-card Markdown or JSON file")
     if conclusion_relpath is None and not existing_archive:
-        raise TerminalArchiveError("new terminal archives require one scientific conclusion JSON")
+        conclusion_relpath = canonical_conclusion_relpath(closeout_relpath)
     if conclusion_relpath is not None:
         conclusion_path = safe_relative(
             conclusion_relpath, prefix=f"{LOG_PREFIX}{route_id}/",

@@ -1292,6 +1292,75 @@ class ConvirOpsV4Tests(unittest.TestCase):
             result = OPS.tool_evidence_manifest({"receipt": receipt})["structuredContent"]
         self.assertEqual("README.md", result["files"][0]["name"])
 
+    def test_schema6_scientific_evidence_returns_canonical_archive_contract(self):
+        scientific_context = context()
+        scientific_context["route_manifest_schema_version"] = 6
+        receipt = OPS.write_new_record(
+            "receipt",
+            {
+                "context": scientific_context, "gpu_index": None,
+                "launch_digest": "f" * 64, "issued_at": 1,
+            },
+            {
+                "launched": True, "finish_closed": "CLOSEOUT_VALIDATED",
+                "terminal_closeout": closeout_binding(),
+            },
+        )
+        remote = "README.md\t12\t" + "a" * 64 + "\nCONVIR_OPS_EVIDENCE_MANIFEST_OK\nCONVIR_REMOTE_SCRIPT_OK"
+        with patch.object(OPS, "run_remote", return_value=remote):
+            result = OPS.tool_evidence_manifest({"receipt": receipt})["structuredContent"]
+        contract = result["archive_contract"]
+        self.assertEqual(
+            "experience_docx/experiment_logs/a1x/s0_conclusion.json",
+            contract["conclusion_path"],
+        )
+        self.assertEqual(2, contract["conclusion_schema_version"])
+        self.assertIn("primary_result", contract["required_conclusion_fields"])
+        self.assertIn("gate_fact_ids", contract["required_conclusion_fields"])
+
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+            destination = repo / "experience_docx/experiment_logs/a1x"
+            destination.mkdir(parents=True)
+            evidence = b"review data\n"
+            (destination / "README.md").write_bytes(evidence)
+            remote = (
+                f"README.md\t{len(evidence)}\t"
+                f"{OPS.hashlib.sha256(evidence).hexdigest()}\n"
+                "CONVIR_OPS_EVIDENCE_MANIFEST_OK\nCONVIR_REMOTE_SCRIPT_OK"
+            )
+            with (
+                patch.object(OPS, "run_remote", return_value=remote),
+                patch.object(OPS, "validate_local_repo", return_value=repo),
+            ):
+                fetched = OPS.tool_evidence_fetch({
+                    "receipt": receipt, "local_repo": str(repo),
+                    "files": ["README.md"],
+                })["structuredContent"]
+            self.assertEqual(contract, fetched["archive_contract"])
+
+    def test_engineering_archive_evidence_has_no_scientific_archive_contract(self):
+        engineering_context = context()
+        engineering_context["route_manifest_schema_version"] = 6
+        binding = closeout_binding()
+        binding["terminal_tuple"] = engineering_terminal()
+        receipt = OPS.write_new_record(
+            "receipt",
+            {
+                "context": engineering_context, "gpu_index": None,
+                "launch_digest": "f" * 64, "issued_at": 1,
+            },
+            {
+                "launched": True,
+                "finish_closed": "ENGINEERING_ARCHIVE_AUTHORIZED",
+                "terminal_closeout": binding,
+            },
+        )
+        remote = "README.md\t12\t" + "a" * 64 + "\nCONVIR_OPS_EVIDENCE_MANIFEST_OK\nCONVIR_REMOTE_SCRIPT_OK"
+        with patch.object(OPS, "run_remote", return_value=remote):
+            result = OPS.tool_evidence_manifest({"receipt": receipt})["structuredContent"]
+        self.assertNotIn("archive_contract", result)
+
     def test_record_tampering_is_rejected(self):
         plan = {"context": context(), "issued_at": 1, "expires_at": 2, "nonce": "n"}
         token = OPS.write_new_record("plan", plan, {"receipt": None})

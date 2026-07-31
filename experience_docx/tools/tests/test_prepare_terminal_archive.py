@@ -554,6 +554,28 @@ class TerminalArchiveTests(unittest.TestCase):
             with self.assertRaises(ARCHIVE.TerminalArchiveError):
                 self.audit(source)
 
+    def test_new_archive_defaults_to_canonical_conclusion_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = self.source(Path(directory), canonical=True)
+            repo, commit, closeout, card, conclusion = source
+            audit = ARCHIVE.audit_source(
+                repo, commit, "route", closeout, card, None, "1" * 64,
+            )
+            self.assertEqual(conclusion, audit["conclusion_path"])
+
+    def test_missing_default_conclusion_names_canonical_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = self.source(Path(directory), canonical=True)
+            repo, commit, closeout, card, conclusion = source
+            (repo / conclusion).unlink()
+            with self.assertRaisesRegex(
+                ARCHIVE.TerminalArchiveError,
+                "experience_docx/experiment_logs/route/a1_conclusion.json",
+            ):
+                ARCHIVE.audit_source(
+                    repo, commit, "route", closeout, card, None, "1" * 64,
+                )
+
     def test_schema6_new_conclusion_requires_schema_version_two(self):
         for schema_version in (None, 1, 3):
             with self.subTest(schema_version=schema_version):

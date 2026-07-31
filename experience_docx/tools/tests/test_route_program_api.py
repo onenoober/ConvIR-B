@@ -76,6 +76,48 @@ class RouteProgramApiTests(unittest.TestCase):
             self.assertNotIn("decision", result)
             self.assertNotIn("authorizes", result)
 
+    def test_gate_review_fact_has_no_invented_precision_and_is_source_bound(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            value = self.load(root, "run")
+            API.prepare_phase_output(value)
+            fact = API.build_gate_review_fact(
+                fact_id="materiality", metric="materiality_gate", unit="gate",
+                population="development", grouping="all",
+                gate_outcome="favorable", source_filename="summary.json",
+                source_sha256="c" * 64,
+            )
+            self.assertIsNone(fact["confidence_level"])
+            self.assertIsNone(fact["json_pointers"]["confidence_level"])
+            self.assertEqual(
+                "/gate_outcomes/materiality",
+                fact["json_pointers"]["gate_outcome"],
+            )
+            API.write_review_facts(
+                value, relpath="route_review_facts.json", facts=[fact],
+            )
+            written = json.loads(
+                (value.phase_output_path / "route_review_facts.json").read_text()
+            )
+            self.assertEqual([fact], written["facts"])
+
+    def test_review_facts_writer_rejects_unbound_confidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            value = self.load(root, "run")
+            API.prepare_phase_output(value)
+            fact = API.build_gate_review_fact(
+                fact_id="materiality", metric="materiality_gate", unit="gate",
+                population="development", grouping="all",
+                gate_outcome="favorable", source_filename="summary.json",
+                source_sha256="c" * 64,
+            )
+            fact["confidence_level"] = 0.95
+            with self.assertRaisesRegex(API.ContractError, "presence differs"):
+                API.write_review_facts(
+                    value, relpath="route_review_facts.json", facts=[fact],
+                )
+
     def test_result_path_cannot_escape_output(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

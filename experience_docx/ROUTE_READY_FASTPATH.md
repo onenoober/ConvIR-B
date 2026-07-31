@@ -125,6 +125,10 @@ permissions, recovery policy, environment, assets, and compact evidence files.
 New schema-2 routes inheriting the review-facts rule declare one required
 closeout-derived `*_review_facts.json` evidence destination; route-ready rejects
 its absence or any published-name collision.
+The typed gate-fact writer keeps point, interval, confidence and threshold null
+unless each value has a matching JSON Pointer; a gate outcome always carries its
+own source-bound pointer. Lifecycle evidence publication validates this contract
+before copying any file, so malformed review facts cannot create partial evidence.
 Paths are delivered through `RouteContext`; entrypoints never infer positional
 paths or derive cloud workspaces.
 
