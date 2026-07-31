@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-program-foundation-v1.json",
-  "experiment_spec_sha256": "0e736fd0eed26d1ee9a40c1c249aeee846e3ca54f6b0e707ba3626fc63a09e7a",
+  "experiment_spec_sha256": "184689519d18c80284b89820c182f05032086c56a6d8b2adc311e848870ad688",
   "operations": {
     "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_QUALIFY": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 0,
       "mode": "daytime_dehazing_program_foundation_qualification",
       "monitor_profile": "short",
-      "output_id": "daytime-dehazing-program-foundation-v1-r1",
+      "output_id": "daytime-dehazing-program-foundation-v1-r2",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,

@@ -12,7 +12,7 @@
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "daytime_dehazing_program_foundation_qualification",
         "require_gpu": false,
-        "output_id": "daytime-dehazing-program-foundation-v1-r1",
+        "output_id": "daytime-dehazing-program-foundation-v1-r2",
         "closeout_filename": "daytime_dehazing_program_foundation_v1_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
@@ -570,7 +570,7 @@
           "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_program_foundation_v1.py",
           "access_role": "engineering_debug",
           "contract_access": true,
-          "sha256": "b956098d072ec0dc65d0ddcbc82c7440604ff08721183ce2c9cfc305b21a814a"
+            "sha256": "add32077dc84825a238d48a2d6129b5647348d8057f2598ec48939bd9a5a6ced"
         }
       ],
       "capability": null,

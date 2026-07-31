@@ -36,6 +36,7 @@ OPERATION_ID = "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_QUALIFY"
 SUMMARY_NAME = "daytime_dehazing_program_foundation_v1_summary.json"
 IDENTITY_NAME = "daytime_dehazing_program_foundation_v1_identity_summary.json"
 ROLE_NAME = "daytime_dehazing_program_foundation_v1_role_summary.json"
+REVIEW_FACTS_NAME = "daytime_dehazing_program_foundation_v1_review_facts.json"
 RAW_LEDGER_NAME = "daytime_dehazing_program_foundation_v1_scene_role_ledger.jsonl"
 
 IMAGE_EXTENSIONS = {".bmp", ".jpeg", ".jpg", ".png", ".tif", ".tiff"}
@@ -323,6 +324,18 @@ def inventory_haze4k(root: Path, dataset: str) -> tuple[list[dict[str, Any]], di
             len(observations) == expected_scenes
             and set(observations.values()) == {4}
         ),
+    }
+    gate_outcomes = {
+        "evidence_identity": "pass" if evidence_identity_ok else "fail",
+        "dataset_identity": "pass" if dataset_identity_ok else "fail",
+        "cross_dataset_separation": "pass" if cross_dataset_ok else "fail",
+        "role_partition_coverage": "pass" if roles_ok else "fail",
+        "independent_capacity": (
+            "favorable" if capacity_ok else "unfavorable"
+        ) if validity_ok else "invalid",
+        "capacity_precision": (
+            "met" if capacity_ok else "unmet"
+        ) if validity_ok else "invalid",
     }
     summary = {
         "dataset": dataset,
@@ -908,6 +921,9 @@ def run(context_path: Path) -> None:
         "cross_dataset_separation_ok": cross_dataset_ok,
         "role_partition_ok": roles_ok,
         "capacity_ok": capacity_ok,
+        "capacity_gate_indicator": int(capacity_ok),
+        "capacity_gate_threshold": 1,
+        "gate_outcomes": gate_outcomes,
         "aggregate_role_counts": roles["aggregate_role_counts"],
         "raw_cloud_ledger": {
             "filename": RAW_LEDGER_NAME,
@@ -932,25 +948,62 @@ def run(context_path: Path) -> None:
         ],
         "marker": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_V1_COMPLETE",
     }
-    atomic_json(output_file(context, SUMMARY_NAME), summary)
+    summary_path = output_file(context, SUMMARY_NAME)
+    atomic_json(summary_path, summary)
+    summary_sha256 = sha256_file(summary_path)
+    review_facts = {
+        "schema_version": 2,
+        "route_id": ROUTE_ID,
+        "operation_id": OPERATION_ID,
+        "run_id": context.run_id,
+        "facts": [
+            {
+                "fact_id": gate_id,
+                "claim_id": gate_id,
+                "metric": (
+                    "all frozen dataset-by-role capacity minima met"
+                    if gate_id == "independent_capacity"
+                    else f"{gate_id} typed gate outcome"
+                ),
+                "unit": "binary indicator" if gate_id == "independent_capacity" else "typed outcome",
+                "population": "retained original clear scenes in the frozen four-dataset scope",
+                "grouping": "original clear scene",
+                "point": int(capacity_ok) if gate_id == "independent_capacity" else None,
+                "ci_lower": None,
+                "ci_upper": None,
+                "confidence_level": None,
+                "threshold": 1 if gate_id == "independent_capacity" else None,
+                "threshold_operator": ">=" if gate_id == "independent_capacity" else None,
+                "gate_outcome": gate_outcomes[gate_id],
+                "source_filename": SUMMARY_NAME,
+                "source_sha256": summary_sha256,
+                "json_pointers": {
+                    "point": "/capacity_gate_indicator" if gate_id == "independent_capacity" else None,
+                    "ci_lower": None,
+                    "ci_upper": None,
+                    "confidence_level": None,
+                    "threshold": "/capacity_gate_threshold" if gate_id == "independent_capacity" else None,
+                    "gate_outcome": f"/gate_outcomes/{gate_id}",
+                },
+            }
+            for gate_id in (
+                "evidence_identity",
+                "dataset_identity",
+                "cross_dataset_separation",
+                "role_partition_coverage",
+                "independent_capacity",
+                "capacity_precision",
+            )
+        ],
+    }
+    atomic_json(output_file(context, REVIEW_FACTS_NAME), review_facts)
     write_workload_progress(
         context, completed_units=5, stage="scene_role_contract_finalized"
     )
 
     write_gate_result(
         context,
-        gate_outcomes={
-            "evidence_identity": "pass" if evidence_identity_ok else "fail",
-            "dataset_identity": "pass" if dataset_identity_ok else "fail",
-            "cross_dataset_separation": "pass" if cross_dataset_ok else "fail",
-            "role_partition_coverage": "pass" if roles_ok else "fail",
-            "independent_capacity": (
-                "favorable" if capacity_ok else "unfavorable"
-            ) if validity_ok else "invalid",
-            "capacity_precision": (
-                "met" if capacity_ok else "unmet"
-            ) if validity_ok else "invalid",
-        },
+        gate_outcomes=gate_outcomes,
         details={
             "summary_file": SUMMARY_NAME,
             "identity_summary_file": IDENTITY_NAME,
