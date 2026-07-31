@@ -325,18 +325,6 @@ def inventory_haze4k(root: Path, dataset: str) -> tuple[list[dict[str, Any]], di
             and set(observations.values()) == {4}
         ),
     }
-    gate_outcomes = {
-        "evidence_identity": "pass" if evidence_identity_ok else "fail",
-        "dataset_identity": "pass" if dataset_identity_ok else "fail",
-        "cross_dataset_separation": "pass" if cross_dataset_ok else "fail",
-        "role_partition_coverage": "pass" if roles_ok else "fail",
-        "independent_capacity": (
-            "favorable" if capacity_ok else "unfavorable"
-        ) if validity_ok else "invalid",
-        "capacity_precision": (
-            "met" if capacity_ok else "unmet"
-        ) if validity_ok else "invalid",
-    }
     summary = {
         "dataset": dataset,
         "root_name": root.name,
@@ -907,6 +895,18 @@ def run(context_path: Path) -> None:
         output_relpath=ROLE_NAME,
     )
 
+    gate_outcomes = {
+        "evidence_identity": "pass" if evidence_identity_ok else "fail",
+        "dataset_identity": "pass" if dataset_identity_ok else "fail",
+        "cross_dataset_separation": "pass" if cross_dataset_ok else "fail",
+        "role_partition_coverage": "pass" if roles_ok else "fail",
+        "independent_capacity": (
+            "favorable" if capacity_ok else "unfavorable"
+        ) if validity_ok else "invalid",
+        "capacity_precision": (
+            "met" if capacity_ok else "unmet"
+        ) if validity_ok else "invalid",
+    }
     summary = {
         "schema_version": 1,
         "route_id": ROUTE_ID,
