@@ -1,0 +1,53 @@
+{
+  "aggregate_role_counts": {
+    "confirmation": 4173,
+    "development_screening": 1670,
+    "sealed_final": 4229,
+    "training": 6678
+  },
+  "capacity_gate_indicator": 0,
+  "capacity_gate_threshold": 1,
+  "capacity_ok": false,
+  "cross_dataset_separation_ok": true,
+  "dataset_identity_ok": false,
+  "evidence_identity_ok": false,
+  "forbidden_activity_receipt": {
+    "candidate_or_threshold_selected": false,
+    "historical_scientific_conclusion_inherited": false,
+    "inference_or_prediction_accessed": false,
+    "model_checkpoint_accessed": false,
+    "restoration_metric_computed": false,
+    "training_or_fitting_occurred": false
+  },
+  "gate_outcomes": {
+    "capacity_precision": "invalid",
+    "cross_dataset_separation": "pass",
+    "dataset_identity": "fail",
+    "evidence_identity": "fail",
+    "independent_capacity": "invalid",
+    "role_partition_coverage": "pass"
+  },
+  "identity_summary_file": "daytime_dehazing_program_foundation_v1_identity_summary.json",
+  "limitations": [
+    "Cross-dataset independence is certified only for decoded-RGB exact identity and the archived verified Haze4K-to-ITS/OTS overlap memberships.",
+    "The contract does not claim complete capture provenance or semantic source disjointness; an unfound geometric relation is not interpreted as absence of overlap.",
+    "Haze variants, crops, pixels, regions, augmentations, and resamples never increase independent scene counts.",
+    "The 55-scene NH-Haze population is kept intact as sealed-final evidence and cannot alone support a high-precision small-effect claim.",
+    "PASS authorizes only S1 contract authoring and is not evidence that a future mechanism effect has adequate precision."
+  ],
+  "marker": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_V1_COMPLETE",
+  "operation_id": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_QUALIFY",
+  "program_id": "daytime_dehazing_spatially_adaptive_restoration_v1",
+  "question_answered": "Whether the initial Haze4K, ITS, OTS, and NH-Haze inventory can support a program-local, scene-grouped, known-overlap-controlled four-role contract.",
+  "raw_cloud_ledger": {
+    "archived_to_github": false,
+    "filename": "daytime_dehazing_program_foundation_v1_scene_role_ledger.jsonl",
+    "rows": 20025,
+    "sha256": "036d91867094dcbd00538e6238e95deafc3e0b6204868961a699fb7226501d39"
+  },
+  "role_partition_ok": true,
+  "role_summary_file": "daytime_dehazing_program_foundation_v1_role_summary.json",
+  "route_id": "daytime-dehazing-program-foundation-v1",
+  "run_id": "daytime-dehazing-program-foundation-v1-r3",
+  "schema_version": 1
+}

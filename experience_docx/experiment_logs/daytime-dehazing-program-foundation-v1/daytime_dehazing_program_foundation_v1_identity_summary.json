@@ -1,0 +1,107 @@
+{
+  "historical_asset_checks": {
+    "haze4k_test_identity_only": true,
+    "haze4k_train_identity_only": true,
+    "its_verified_overlap_membership": true,
+    "ots_verified_overlap_membership": true
+  },
+  "historical_partition_membership_checks": {
+    "HAZE4K_TEST": false,
+    "HAZE4K_TRAIN": false
+  },
+  "identity_checks": {
+    "HAZE4K_TEST": false,
+    "HAZE4K_TRAIN": false,
+    "ITS": true,
+    "NH_HAZE": true,
+    "OTS": true
+  },
+  "independent_unit": "original_clear_scene",
+  "inventories": {
+    "HAZE4K_TEST": {
+      "checks": {
+        "clear_file_count": false,
+        "decode_complete": true,
+        "dimension_alignment": false,
+        "directory_layout": false,
+        "four_variants_per_scene": false,
+        "hazy_file_count": false,
+        "pairing_complete": false,
+        "scene_count": false
+      },
+      "dataset": "HAZE4K_TEST",
+      "historical_partition_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "membership_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "observation_count": 0,
+      "program_role_counts": {},
+      "root_name": "test",
+      "scene_count": 0
+    },
+    "HAZE4K_TRAIN": {
+      "checks": {
+        "clear_file_count": false,
+        "decode_complete": true,
+        "dimension_alignment": false,
+        "directory_layout": false,
+        "four_variants_per_scene": false,
+        "hazy_file_count": false,
+        "pairing_complete": false,
+        "scene_count": false
+      },
+      "dataset": "HAZE4K_TRAIN",
+      "historical_partition_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "membership_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "observation_count": 0,
+      "program_role_counts": {},
+      "root_name": "train",
+      "scene_count": 0
+    },
+    "ITS": {
+      "checks": {
+        "decode_complete": true,
+        "scene_count": true,
+        "scene_ids_unique": true
+      },
+      "dataset": "ITS",
+      "decode_failures": 0,
+      "membership_digest": "2ed08936bea5066b3447b89d6db46a33b3f99802548c7ecc74c27508b6ae72b5",
+      "scene_count": 11000
+    },
+    "NH_HAZE": {
+      "checks": {
+        "decode_complete": true,
+        "dimension_alignment": true,
+        "pairing_complete": true,
+        "scene_count": true,
+        "scene_ids_unique": true
+      },
+      "dataset": "NH_HAZE",
+      "decode_failures": 0,
+      "membership_digest": "ff80fbfb15b8ba9ed763639f495f2d23b881af1824408053687fe92a1a79a558",
+      "pair_count": 55,
+      "scene_count": 55
+    },
+    "OTS": {
+      "checks": {
+        "decode_complete": true,
+        "scene_count": true,
+        "scene_ids_unique": true
+      },
+      "dataset": "OTS",
+      "decode_failures": 0,
+      "membership_digest": "2a271cba2d2ec17fc0e8837e5c43b64d5a57e51e945ea81528ad59cc91ba53eb",
+      "scene_count": 8970
+    }
+  },
+  "operation_id": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_QUALIFY",
+  "outcome_blind_structure_access": {
+    "clear_targets_decoded_for_canonical_hash_only": true,
+    "hazy_images_decoded_for_pair_and_dimension_checks_only": true,
+    "images_rendered_or_viewed_by_researcher": false,
+    "model_checkpoint_or_prediction_accessed": false,
+    "restoration_metric_or_local_error_computed": false
+  },
+  "route_id": "daytime-dehazing-program-foundation-v1",
+  "run_id": "daytime-dehazing-program-foundation-v1-r3",
+  "schema_version": 1
+}

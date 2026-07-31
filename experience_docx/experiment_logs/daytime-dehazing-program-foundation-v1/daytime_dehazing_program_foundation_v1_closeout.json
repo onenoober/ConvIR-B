@@ -1,0 +1,121 @@
+{
+  "authorizes": "DATA_IDENTITY_OR_OVERLAP_EVIDENCE_COMPLETION_ONLY",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_INCONCLUSIVE",
+  "decision_rule_id": "evidence_identity_veto",
+  "details": {
+    "aggregate_role_counts": {
+      "confirmation": 4173,
+      "development_screening": 1670,
+      "sealed_final": 4229,
+      "training": 6678
+    },
+    "identity_summary_file": "daytime_dehazing_program_foundation_v1_identity_summary.json",
+    "program_local_prior_model_selection_exposure": false,
+    "raw_cloud_ledger_file": "daytime_dehazing_program_foundation_v1_scene_role_ledger.jsonl",
+    "raw_cloud_ledger_sha256": "036d91867094dcbd00538e6238e95deafc3e0b6204868961a699fb7226501d39",
+    "restoration_outcomes_accessed": false,
+    "role_summary_file": "daytime_dehazing_program_foundation_v1_role_summary.json",
+    "summary_file": "daytime_dehazing_program_foundation_v1_summary.json",
+    "training_or_inference_occurred": false
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "daytime_dehazing_program_foundation_v1_identity_summary.json": "9fc6c449130c8e76030d6b586ab8819bdb664757d6ea4f2d75add68c8ee13411",
+    "daytime_dehazing_program_foundation_v1_raw_artifact_receipt.json": "dc375b4c787b97e13ad2133685c775c9ec84a8a624848fdbecf5cbfcaa213211",
+    "daytime_dehazing_program_foundation_v1_review_facts.json": "d3f3ca621cf5d725456fdf708f205d388251de6bc0030541371a48f17826fd73",
+    "daytime_dehazing_program_foundation_v1_role_summary.json": "3113569b0596def63e12da80bb84d7b69e9a6cfb62e4adf801aae3e421c983e8",
+    "daytime_dehazing_program_foundation_v1_summary.json": "3fa8338ccf62617010f6eae1bce90f61eb6544d6c3095911eeeb660c4787d50e"
+  },
+  "failure_phase": null,
+  "family_effect": "allow_predeclared_evidence",
+  "gate_outcomes": {
+    "capacity_precision": "invalid",
+    "cross_dataset_separation": "pass",
+    "dataset_identity": "fail",
+    "evidence_identity": "fail",
+    "independent_capacity": "invalid",
+    "role_partition_coverage": "pass"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "complete_identity_or_overlap_evidence",
+  "operation_id": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_QUALIFY",
+  "returncode": 0,
+  "route_commit": "fde1f4bd180b9aa122a01b700c472c6ebdc6231d",
+  "route_id": "daytime-dehazing-program-foundation-v1",
+  "run_id": "daytime-dehazing-program-foundation-v1-r3",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_INCONCLUSIVE",
+  "terminal_label": "inconclusive",
+  "verified_assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "entrypoint_source",
+      "kind": "file",
+      "sha256": "1a346fbee3b3ce17a831736b9f541ffdf027f9b594ae0badb1b2d75d30f89fc9"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "haze4k_test_scene_summary",
+      "kind": "file",
+      "sha256": "656407f3183f92e75e357004b04b505d2b92cd4b0f4b02b3c6a22aef57d069cf"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "haze4k_train_scene_summary",
+      "kind": "file",
+      "sha256": "a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "its_overlap_summary",
+      "kind": "file",
+      "sha256": "3817a2a2778cec848ba1cfb1be64863bf30f47f2434f6d54819c6a8f346c47e9"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "its_verified_exclusions",
+      "kind": "file",
+      "sha256": "c4dddbcf214c301ffa6d3879217e6336024119bb07d0f9c1f929ac040aa0dda3"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "nh_haze_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "ots_overlap_summary",
+      "kind": "file",
+      "sha256": "1d087dbc9ade15f1a8a9a0862a5a00a09ad28d64d55697a620f88f17fd4a42ff"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "ots_verified_exclusions",
+      "kind": "file",
+      "sha256": "d7526849879cf8650af545db20a5e4555cb0eb1931973612af98a5897f2e03d2"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory"
+    }
+  ]
+}

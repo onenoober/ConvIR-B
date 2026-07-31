@@ -1,0 +1,130 @@
+{
+  "allocations": {
+    "ITS": {
+      "allocation_method": "SHA-256 salted scene order plus Hamilton largest remainder",
+      "allocation_salt": "daytime-dehazing-program-foundation-v1|scene-roles-v1",
+      "assignment_digest": "493820a613f871f01c7c83abbf8d443180f755b265c63cdcfd8a7371a48006e9",
+      "eligible_scene_count": 8689,
+      "hamilton_tie_priority": [
+        "sealed_final",
+        "confirmation",
+        "development_screening",
+        "training"
+      ],
+      "order_digest": "acddb561e9e3b87a74b6ae9428475053b481ce87f995c6b1ae84fed51f587620",
+      "role_counts": {
+        "confirmation": 2172,
+        "development_screening": 869,
+        "sealed_final": 2172,
+        "training": 3476
+      }
+    },
+    "OTS": {
+      "allocation_method": "SHA-256 salted scene order plus Hamilton largest remainder",
+      "allocation_salt": "daytime-dehazing-program-foundation-v1|scene-roles-v1",
+      "assignment_digest": "47ccbdc9f354e15aedd0876802c4eac5e8681c12d10ced69b68a6ead397085ea",
+      "eligible_scene_count": 8006,
+      "hamilton_tie_priority": [
+        "sealed_final",
+        "confirmation",
+        "development_screening",
+        "training"
+      ],
+      "order_digest": "aba83aeac8fc510231563a5756c5473cd59f5be56db7c731e16c3519cfb9c8ed",
+      "role_counts": {
+        "confirmation": 2001,
+        "development_screening": 801,
+        "sealed_final": 2002,
+        "training": 3202
+      }
+    }
+  },
+  "capacity_checks": {
+    "HAZE4K_TEST": false,
+    "HAZE4K_TRAIN": false,
+    "ITS": true,
+    "NH_HAZE": true,
+    "OTS": true
+  },
+  "capacity_claim": "Exact census capacity to author S1 only; S1 must freeze its own effect margin, planning-SD upper bound, comparison family, and formal precision certificate.",
+  "declaration_scope": "The new program does not inherit any historical dataset role, exposure label, model-selection use, terminal decision, PASS or FAIL, or authorization.",
+  "operation_id": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_QUALIFY",
+  "overlap_control": {
+    "claim_boundary": "Exact decoded-RGB identity plus archived verified Haze4K-to-ITS/OTS relationships; this does not prove complete capture or source provenance disjointness.",
+    "exact_component_digest": "5b5e2cc4236589a3357d7ab313852c0b3236d6bcb2e1e13bb260e0e88132b822",
+    "exact_cross_dataset_pair_matrix": {},
+    "exact_duplicate_component_count": 124,
+    "known_exclusion_counts": {
+      "ITS": 2187,
+      "OTS": 964
+    },
+    "protected_role_conflict_count": 0,
+    "protected_role_conflict_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "program_local_prior_model_selection_exposure": false,
+  "reused_historical_scope": "Scene identity, grouping, deterministic partition membership, and verified overlap membership only.",
+  "roles": {
+    "aggregate_role_counts": {
+      "confirmation": 4173,
+      "development_screening": 1670,
+      "sealed_final": 4229,
+      "training": 6678
+    },
+    "all_roles_disjoint": true,
+    "datasets": {
+      "HAZE4K_TEST": {
+        "assignment_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "eligible_scene_count": 0,
+        "excluded_scene_count": 0,
+        "role_counts": {}
+      },
+      "HAZE4K_TRAIN": {
+        "assignment_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "eligible_scene_count": 0,
+        "excluded_scene_count": 0,
+        "role_counts": {}
+      },
+      "ITS": {
+        "assignment_digest": "493820a613f871f01c7c83abbf8d443180f755b265c63cdcfd8a7371a48006e9",
+        "eligible_scene_count": 8689,
+        "excluded_scene_count": 2311,
+        "role_counts": {
+          "confirmation": 2172,
+          "development_screening": 869,
+          "sealed_final": 2172,
+          "training": 3476
+        }
+      },
+      "NH_HAZE": {
+        "assignment_digest": "293f6b306ec804696856479c06bf43a1c0308bf9f4bfbfa0fdf3a781882332ed",
+        "eligible_scene_count": 55,
+        "excluded_scene_count": 0,
+        "role_counts": {
+          "sealed_final": 55
+        }
+      },
+      "OTS": {
+        "assignment_digest": "47ccbdc9f354e15aedd0876802c4eac5e8681c12d10ced69b68a6ead397085ea",
+        "eligible_scene_count": 8006,
+        "excluded_scene_count": 964,
+        "role_counts": {
+          "confirmation": 2001,
+          "development_screening": 801,
+          "sealed_final": 2002,
+          "training": 3202
+        }
+      }
+    },
+    "role_intersection_matrix": {
+      "confirmation__sealed_final": 0,
+      "development_screening__confirmation": 0,
+      "development_screening__sealed_final": 0,
+      "training__confirmation": 0,
+      "training__development_screening": 0,
+      "training__sealed_final": 0
+    }
+  },
+  "route_id": "daytime-dehazing-program-foundation-v1",
+  "run_id": "daytime-dehazing-program-foundation-v1-r3",
+  "schema_version": 1
+}

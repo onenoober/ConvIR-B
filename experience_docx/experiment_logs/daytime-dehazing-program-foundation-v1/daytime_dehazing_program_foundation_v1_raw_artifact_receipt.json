@@ -1,0 +1,25 @@
+{
+  "category_counts": {
+    "contract_output": 1,
+    "workload_output": 7
+  },
+  "entry_count": 12,
+  "excluded_paths": [
+    "control",
+    "heartbeat.json",
+    "runtime.log",
+    "status.txt"
+  ],
+  "manifest_relative_path": "control/raw_artifact_manifest.jsonl",
+  "manifest_sha256": "f3a2317bbd615f29b6a1028a1f1f23f7d268648e1febe8686f72b6a73be04ea2",
+  "operation_id": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_QUALIFY",
+  "route_commit": "fde1f4bd180b9aa122a01b700c472c6ebdc6231d",
+  "route_id": "daytime-dehazing-program-foundation-v1",
+  "run_id": "daytime-dehazing-program-foundation-v1-r3",
+  "schema_version": 2,
+  "scope_roots": [
+    "contract",
+    "workload"
+  ],
+  "total_bytes": 11735534
+}

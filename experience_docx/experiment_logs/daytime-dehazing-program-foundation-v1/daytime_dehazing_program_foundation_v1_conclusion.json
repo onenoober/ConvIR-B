@@ -1,0 +1,35 @@
+{
+  "authorizes": "DATA_IDENTITY_OR_OVERLAP_EVIDENCE_COMPLETION_ONLY",
+  "competing_explanation": "The zero-scene Haze4K inventories are consistent with the cloud asset root not matching the frozen train/test IN-or-haze and GT directory contract; they do not establish that the Haze4K data are absent or scientifically unusable.",
+  "decision": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_INCONCLUSIVE",
+  "gate_fact_ids": [
+    "evidence_identity",
+    "dataset_identity",
+    "cross_dataset_separation",
+    "role_partition_coverage",
+    "independent_capacity",
+    "capacity_precision"
+  ],
+  "gate_reasons": [
+    "evidence_identity failed because the Haze4K train and test membership digests could not be reproduced from the zero-scene inventories.",
+    "dataset_identity failed because both Haze4K strata failed directory-layout, file-count, pairing, dimension-alignment, scene-count, and four-variant checks.",
+    "ITS, OTS, and NH-Haze identity checks passed; archived ITS and OTS overlap memberships matched their frozen identities.",
+    "cross_dataset_separation and role_partition_coverage passed, but capacity and precision remained invalid under the identity validity veto."
+  ],
+  "limitations": [
+    "No S1 contract is authorized until the Haze4K cloud identity and directory contract is completed under the same scientific question.",
+    "The passing exact-identity and known-overlap checks do not prove complete capture provenance or semantic source disjointness.",
+    "The capacity result is invalid rather than unfavorable because the Haze4K identity census was incomplete.",
+    "No model, checkpoint, inference, restoration metric, local-error metric, candidate, or threshold was accessed."
+  ],
+  "operation_id": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_QUALIFY",
+  "primary_fact_ids": [
+    "evidence_identity",
+    "dataset_identity"
+  ],
+  "primary_result": "S0 is inconclusive: the frozen cloud path contract yielded zero Haze4K train and test scenes, so Haze4K identity and historical membership could not be validated even though ITS, OTS, NH-Haze, exact-overlap control, and role disjointness checks passed.",
+  "route_id": "daytime-dehazing-program-foundation-v1",
+  "run_id": "daytime-dehazing-program-foundation-v1-r3",
+  "schema_version": 2,
+  "state": "COMPLETED_INCONCLUSIVE"
+}
