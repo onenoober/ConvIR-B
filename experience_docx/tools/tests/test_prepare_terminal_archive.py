@@ -54,6 +54,69 @@ class TerminalArchiveTests(unittest.TestCase):
                 closeout, "a1_closeout.json",
             )
 
+    def test_raw_artifact_recovery_requires_exact_identity_and_coverage(self):
+        closeout = {
+            "route_id": "route", "operation_id": "A1", "run_id": "a1-r1",
+            "route_commit": "a" * 40,
+        }
+        receipt = {
+            "schema_version": 2,
+            **closeout,
+            "manifest_relative_path": ARCHIVE.RAW_ARTIFACT_MANIFEST_RELPATH,
+            "manifest_sha256": "b" * 64,
+            "entry_count": 3,
+            "total_bytes": 11,
+            "category_counts": {"contract_output": 1, "workload_output": 1},
+            "scope_roots": ARCHIVE.RAW_ARTIFACT_SCOPE_ROOTS,
+            "excluded_paths": ARCHIVE.RAW_ARTIFACT_EXCLUDED_PATHS,
+        }
+        summary = {
+            "schema_version": 1,
+            "manifest_sha256": "b" * 64,
+            "entry_count": 3,
+            "total_bytes": 11,
+            "original_category_counts": {
+                "contract_output": 1, "workload_output": 1,
+            },
+            "recovered_category_counts": {
+                "contract_output": 1, "workload_output": 2,
+            },
+            "misclassified_nested_entry_count": 1,
+            "legacy_nested_class_pattern_exact": True,
+        }
+        proof, relpath, raw = ARCHIVE.build_raw_artifact_recovery(
+            summary=summary,
+            receipt=receipt,
+            receipt_name="a1_raw_artifact_receipt.json",
+            receipt_sha256="c" * 64,
+            closeout=closeout,
+            closeout_filename="a1_closeout.json",
+            closeout_sha256="d" * 64,
+            evidence_parent="experience_docx/experiment_logs/route",
+        )
+        self.assertEqual("RAW_ARTIFACT_RECEIPT_RECOVERED", proof["status"])
+        self.assertTrue(proof["checks"]["cloud_manifest_sha256_verified"])
+        self.assertTrue(relpath.endswith(ARCHIVE.RAW_ARTIFACT_RECOVERY_SUFFIX))
+        self.assertEqual(proof, json.loads(raw))
+
+        changed = dict(summary)
+        changed["recovered_category_counts"] = {
+            "contract_output": 1, "workload_output": 1,
+        }
+        with self.assertRaisesRegex(
+            ARCHIVE.TerminalArchiveError, "does not prove the legacy defect",
+        ):
+            ARCHIVE.build_raw_artifact_recovery(
+                summary=changed,
+                receipt=receipt,
+                receipt_name="a1_raw_artifact_receipt.json",
+                receipt_sha256="c" * 64,
+                closeout=closeout,
+                closeout_filename="a1_closeout.json",
+                closeout_sha256="d" * 64,
+                evidence_parent="experience_docx/experiment_logs/route",
+            )
+
     def test_review_facts_dereference_closeout_bound_json(self):
         result = {
             "metrics": {
@@ -487,6 +550,81 @@ class TerminalArchiveTests(unittest.TestCase):
                     expected_closeout_filename=binding["closeout_filename"],
                     expected_closeout_sha256=binding["closeout_sha256"],
                 )
+
+    def test_archive_adds_identity_bound_proof_for_legacy_nested_class_bug(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.source(root)
+            repo, commit, closeout_rel, card, conclusion = source
+            evidence = repo / Path(closeout_rel).parent
+            closeout_path = repo / closeout_rel
+            closeout = json.loads(closeout_path.read_text(encoding="utf-8"))
+            receipt_name = "a1_raw_artifact_receipt.json"
+            receipt = {
+                "schema_version": 2,
+                "route_id": "route", "operation_id": "A1", "run_id": "a1-r1",
+                "route_commit": commit,
+                "manifest_relative_path": ARCHIVE.RAW_ARTIFACT_MANIFEST_RELPATH,
+                "manifest_sha256": "b" * 64,
+                "entry_count": 3,
+                "total_bytes": 11,
+                "category_counts": {
+                    "contract_output": 1, "workload_output": 1,
+                },
+                "scope_roots": ARCHIVE.RAW_ARTIFACT_SCOPE_ROOTS,
+                "excluded_paths": ARCHIVE.RAW_ARTIFACT_EXCLUDED_PATHS,
+            }
+            receipt_path = evidence / receipt_name
+            receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+            receipt_sha = hashlib.sha256(receipt_path.read_bytes()).hexdigest()
+            closeout["evidence_sha256"][receipt_name] = receipt_sha
+            closeout_path.write_text(json.dumps(closeout), encoding="utf-8")
+            closeout_sha = hashlib.sha256(closeout_path.read_bytes()).hexdigest()
+            trusted = root / "receipt"
+            trusted.mkdir()
+            for filename in (
+                Path(closeout_rel).name, "formal_results.csv", receipt_name,
+            ):
+                shutil.copyfile(evidence / filename, trusted / filename)
+            summary = {
+                "schema_version": 1,
+                "manifest_sha256": "b" * 64,
+                "entry_count": 3,
+                "total_bytes": 11,
+                "original_category_counts": {
+                    "contract_output": 1, "workload_output": 1,
+                },
+                "recovered_category_counts": {
+                    "contract_output": 1, "workload_output": 2,
+                },
+                "misclassified_nested_entry_count": 1,
+                "legacy_nested_class_pattern_exact": True,
+            }
+            audit = ARCHIVE.audit_source(
+                repo, commit, "route", closeout_rel, card, conclusion, "1" * 64,
+                evidence_dir_override=trusted,
+                conclusion_dir_override=evidence,
+                expected_closeout_filename=Path(closeout_rel).name,
+                expected_closeout_sha256=closeout_sha,
+                raw_artifact_manifest_summary=summary,
+            )
+            recovery = audit["raw_artifact_recovery"]
+            self.assertIsNotNone(recovery)
+            self.assertFalse(audit["checks"]["raw_artifact_receipt_valid"])
+            self.assertTrue(audit["checks"]["raw_artifact_receipt_recovered"])
+            self.assertIn(recovery["path"], audit["payloads"])
+            self.assertIn(
+                recovery["path"], [item["path"] for item in audit["result_files"]],
+            )
+            destination = self.destination(root)
+            prepared = ARCHIVE.prepare_destination(
+                destination, "refs/remotes/github/main", audit,
+            )
+            self.assertIn(recovery["path"], prepared["staged_paths"])
+            self.assertEqual(
+                receipt_sha,
+                json.loads((destination / recovery["path"]).read_text())["receipt_sha256"],
+            )
 
     def test_default_cli_fetches_receipt_evidence_when_local_evidence_exists(self):
         with tempfile.TemporaryDirectory() as directory:

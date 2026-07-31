@@ -156,9 +156,11 @@ class LifecycleTests(unittest.TestCase):
             output = root / "output"
             (output / "contract").mkdir(parents=True)
             (output / "workload").mkdir()
+            (output / "workload/units").mkdir()
             (output / "control").mkdir()
             (output / "contract/check.json").write_text('{"ok":true}\n')
             (output / "workload/summary.json").write_text('{"gain":1}\n')
+            (output / "workload/units/unit-1.json").write_text('{"ok":true}\n')
             (output / "runtime.log").write_text("mutable\n")
             evidence = root / "evidence"
             evidence.mkdir()
@@ -170,13 +172,57 @@ class LifecycleTests(unittest.TestCase):
             manifest = (output / LIFE.RAW_ARTIFACT_MANIFEST_RELPATH).read_text()
             rows = [json.loads(line) for line in manifest.splitlines()]
             self.assertEqual(2, receipt["schema_version"])
-            self.assertEqual(2, receipt["entry_count"])
+            self.assertEqual(3, receipt["entry_count"])
+            self.assertEqual(
+                {"contract_output": 1, "workload_output": 2},
+                receipt["category_counts"],
+            )
+            self.assertEqual(receipt["entry_count"], sum(receipt["category_counts"].values()))
             self.assertEqual(digest, LIFE.sha256(evidence / filename))
             self.assertEqual(
-                ["contract/check.json", "workload/summary.json"],
+                [
+                    "contract/check.json", "workload/summary.json",
+                    "workload/units/unit-1.json",
+                ],
                 [item["relative_path"] for item in rows],
             )
+            self.assertEqual(
+                ["contract_output", "workload_output", "workload_output"],
+                [item["artifact_class"] for item in rows],
+            )
             self.assertNotIn("runtime.log", manifest)
+
+    def test_raw_artifact_receipt_rejects_uncovered_manifest_categories(self):
+        value, runtime = self.normalized()
+        operation = value["operations"]["S0"]
+        env = {
+            "RUN_ID": "route-r1", "EXPECTED_ROUTE_COMMIT": "a" * 40,
+            "RUNNER_SHA256": "b" * 64,
+        }
+        records = [{
+            "schema_version": 2,
+            "relative_path": "workload/units/unit-1.json",
+            "artifact_class": "workload/units_output",
+            "bytes": 2,
+            "sha256": "c" * 64,
+        }]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "output"
+            evidence = root / "evidence"
+            output.mkdir()
+            evidence.mkdir()
+            with patch.object(
+                LIFE, "build_raw_artifact_manifest", return_value=(b"{}\n", records),
+            ):
+                with self.assertRaisesRegex(
+                    LIFE.LifecycleError, "category counts do not cover",
+                ):
+                    LIFE.publish_raw_artifact_receipt(
+                        output=output, evidence_root=evidence, operation=operation,
+                        env=env, spec=runtime,
+                    )
+            self.assertEqual([], list(evidence.iterdir()))
 
     def test_raw_artifact_manifest_rejects_symlink(self):
         with tempfile.TemporaryDirectory() as directory:

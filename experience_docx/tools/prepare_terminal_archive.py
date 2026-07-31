@@ -38,12 +38,15 @@ TOKEN = re.compile(r"^[A-Za-z0-9_.-]{1,128}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 RAW_ARTIFACT_RECEIPT_SUFFIX = "_raw_artifact_receipt.json"
+RAW_ARTIFACT_RECOVERY_SUFFIX = "_raw_artifact_receipt_recovery.json"
 RAW_ARTIFACT_MANIFEST_RELPATH = "control/raw_artifact_manifest.jsonl"
 RAW_ARTIFACT_SCOPE_ROOTS = ["contract", "workload"]
 RAW_ARTIFACT_EXCLUDED_PATHS = [
     "control", "heartbeat.json", "runtime.log", "status.txt",
 ]
 MAX_RAW_ARTIFACT_FILES = 25_000
+MAX_RAW_ARTIFACT_MANIFEST_BYTES = 32 * 1024 * 1024
+RAW_ARTIFACT_RECOVERY_MARKER = "CONVIR_RAW_ARTIFACT_RECOVERY_OK"
 REVIEW_FACTS_SUFFIX = "_review_facts.json"
 MAX_REVIEW_FACTS = 128
 REVIEW_FACTS_RULES_FLOOR = "ef1f746859fba84bd76ae74525b05f918994909f"
@@ -335,6 +338,13 @@ def raw_artifact_receipt_filename(closeout_filename: str) -> str:
     return closeout_filename[:-len(suffix)] + RAW_ARTIFACT_RECEIPT_SUFFIX
 
 
+def raw_artifact_recovery_filename(closeout_filename: str) -> str:
+    suffix = "_closeout.json"
+    if not isinstance(closeout_filename, str) or not closeout_filename.endswith(suffix):
+        raise TerminalArchiveError("closeout filename cannot derive raw artifact recovery")
+    return closeout_filename[:-len(suffix)] + RAW_ARTIFACT_RECOVERY_SUFFIX
+
+
 def review_facts_filename(closeout_filename: str) -> str:
     suffix = "_closeout.json"
     if not isinstance(closeout_filename, str) or not closeout_filename.endswith(suffix):
@@ -492,7 +502,7 @@ def validate_review_facts(
     return value
 
 
-def validate_raw_artifact_receipt(
+def parse_raw_artifact_receipt(
     raw: bytes, relpath: str, closeout: dict[str, Any], closeout_filename: str,
 ) -> dict[str, Any]:
     value = inspect_structured(raw, relpath)
@@ -533,7 +543,6 @@ def validate_raw_artifact_receipt(
             not isinstance(item, int) or isinstance(item, bool) or item < 0
             for item in categories.values()
         )
-        or sum(categories.values()) != value["entry_count"]
     ):
         raise TerminalArchiveError("raw artifact receipt category counts are invalid")
     if (
@@ -542,6 +551,265 @@ def validate_raw_artifact_receipt(
     ):
         raise TerminalArchiveError("raw artifact receipt scope contract is invalid")
     return value
+
+
+def validate_raw_artifact_receipt(
+    raw: bytes, relpath: str, closeout: dict[str, Any], closeout_filename: str,
+) -> dict[str, Any]:
+    value = parse_raw_artifact_receipt(raw, relpath, closeout, closeout_filename)
+    if sum(value["category_counts"].values()) != value["entry_count"]:
+        raise TerminalArchiveError("raw artifact receipt category counts are invalid")
+    return value
+
+
+def raw_artifact_manifest_recovery_body(
+    context: dict[str, Any], receipt_name: str, receipt_sha256: str,
+    receipt: dict[str, Any],
+) -> str:
+    """Build one fixed, receipt-bound cloud verifier for the legacy class bug."""
+    validate_evidence_name(receipt_name)
+    if not SHA256.fullmatch(receipt_sha256):
+        raise TerminalArchiveError("raw artifact receipt SHA-256 is invalid")
+    manifest_sha = receipt.get("manifest_sha256")
+    if not isinstance(manifest_sha, str) or not SHA256.fullmatch(manifest_sha):
+        raise TerminalArchiveError("raw artifact manifest SHA-256 is invalid")
+    closeout_name = context["validated_closeout_filename"]
+    validate_evidence_name(closeout_name)
+    closeout_sha = context["validated_closeout_sha256"]
+    if not isinstance(closeout_sha, str) or not SHA256.fullmatch(closeout_sha):
+        raise TerminalArchiveError("receipt-bound closeout SHA-256 is invalid")
+    counts = receipt.get("category_counts")
+    if not isinstance(counts, dict) or set(counts) != {
+        "contract_output", "workload_output",
+    }:
+        raise TerminalArchiveError("raw artifact receipt categories are invalid")
+    numeric = [
+        receipt.get("entry_count"), receipt.get("total_bytes"),
+        counts["contract_output"], counts["workload_output"],
+    ]
+    if any(not isinstance(item, int) or isinstance(item, bool) or item < 0 for item in numeric):
+        raise TerminalArchiveError("raw artifact receipt counts are invalid")
+    lines = [
+        "set -euo pipefail",
+        "export LC_ALL=C",
+        f"EVIDENCE_DIR={ops.q(context['evidence_dir'])}",
+        'test -d "$EVIDENCE_DIR"',
+        'test ! -L "$EVIDENCE_DIR"',
+        'test "$(readlink -f -- "$EVIDENCE_DIR")" = "$EVIDENCE_DIR"',
+        f'VALIDATED_CLOSEOUT="$EVIDENCE_DIR/{closeout_name}"',
+        'test -f "$VALIDATED_CLOSEOUT"',
+        'test ! -L "$VALIDATED_CLOSEOUT"',
+        'test "$(readlink -f -- "$VALIDATED_CLOSEOUT")" = "$VALIDATED_CLOSEOUT"',
+        f'test "$(sha256sum "$VALIDATED_CLOSEOUT" | awk \'{{print $1}}\')" = {ops.q(closeout_sha)}',
+        f'RECEIPT="$EVIDENCE_DIR/{receipt_name}"',
+        'test -f "$RECEIPT"',
+        'test ! -L "$RECEIPT"',
+        'test "$(readlink -f -- "$RECEIPT")" = "$RECEIPT"',
+        f'test "$(sha256sum "$RECEIPT" | awk \'{{print $1}}\')" = {ops.q(receipt_sha256)}',
+        'CONTROL="$EVIDENCE_DIR/control"',
+        'test -d "$CONTROL"',
+        'test ! -L "$CONTROL"',
+        'test "$(readlink -f -- "$CONTROL")" = "$CONTROL"',
+        'MANIFEST="$CONTROL/raw_artifact_manifest.jsonl"',
+        'test -f "$MANIFEST"',
+        'test ! -L "$MANIFEST"',
+        'test "$(readlink -f -- "$MANIFEST")" = "$MANIFEST"',
+        f'test "$(wc -c < "$MANIFEST")" -le {MAX_RAW_ARTIFACT_MANIFEST_BYTES}',
+        (
+            f'{ops.q(ops.REMOTE_PYTHON)} - "$MANIFEST" {ops.q(manifest_sha)} '
+            f'{receipt["entry_count"]} {receipt["total_bytes"]} '
+            f'{counts["contract_output"]} {counts["workload_output"]} <<\'PY\''
+        ),
+        "import hashlib",
+        "import json",
+        "import re",
+        "import sys",
+        "from pathlib import Path, PurePosixPath",
+        "path = Path(sys.argv[1])",
+        "expected_sha = sys.argv[2]",
+        "expected_entries, expected_bytes, expected_contract, expected_workload = map(int, sys.argv[3:])",
+        "raw = path.read_bytes()",
+        "if hashlib.sha256(raw).hexdigest() != expected_sha:",
+        "    raise SystemExit('raw artifact manifest SHA-256 mismatch')",
+        "if raw and not raw.endswith(b'\\n'):",
+        "    raise SystemExit('raw artifact manifest is not newline terminated')",
+        "expected_fields = {'schema_version', 'relative_path', 'artifact_class', 'bytes', 'sha256'}",
+        "sha256 = re.compile(r'^[0-9a-f]{64}$')",
+        "roots = {'contract', 'workload'}",
+        "corrected = {'contract_output': 0, 'workload_output': 0}",
+        "legacy = {'contract_output': 0, 'workload_output': 0}",
+        "entry_count = 0",
+        "total_bytes = 0",
+        "nested_misclassified = 0",
+        "previous = None",
+        "for number, line in enumerate(raw.splitlines(), start=1):",
+        "    try:",
+        "        row = json.loads(line.decode('utf-8'))",
+        "    except (UnicodeDecodeError, json.JSONDecodeError) as exc:",
+        "        raise SystemExit(f'raw artifact manifest row {number} is invalid: {exc}')",
+        "    if not isinstance(row, dict) or set(row) != expected_fields or row['schema_version'] != 2:",
+        "        raise SystemExit(f'raw artifact manifest row {number} field contract is invalid')",
+        "    relative = row['relative_path']",
+        "    if not isinstance(relative, str):",
+        "        raise SystemExit(f'raw artifact manifest row {number} path is invalid')",
+        "    parsed = PurePosixPath(relative)",
+        "    if parsed.is_absolute() or '..' in parsed.parts or len(parsed.parts) < 2 or parsed.parts[0] not in roots or parsed.as_posix() != relative:",
+        "        raise SystemExit(f'raw artifact manifest row {number} path is unsafe')",
+        "    if previous is not None and relative <= previous:",
+        "        raise SystemExit('raw artifact manifest paths are duplicate or unsorted')",
+        "    previous = relative",
+        "    size = row['bytes']",
+        "    if not isinstance(size, int) or isinstance(size, bool) or size < 0:",
+        "        raise SystemExit(f'raw artifact manifest row {number} byte count is invalid')",
+        "    if not isinstance(row['sha256'], str) or not sha256.fullmatch(row['sha256']):",
+        "        raise SystemExit(f'raw artifact manifest row {number} SHA-256 is invalid')",
+        "    legacy_class = f'{parsed.parent.as_posix()}_output'",
+        "    corrected_class = f'{parsed.parts[0]}_output'",
+        "    if row['artifact_class'] != legacy_class:",
+        "        raise SystemExit(f'raw artifact manifest row {number} is not from the known legacy producer')",
+        "    if legacy_class in legacy:",
+        "        legacy[legacy_class] += 1",
+        "    corrected[corrected_class] += 1",
+        "    if legacy_class != corrected_class:",
+        "        nested_misclassified += 1",
+        "    entry_count += 1",
+        "    total_bytes += size",
+        "if entry_count != expected_entries or total_bytes != expected_bytes:",
+        "    raise SystemExit('raw artifact manifest totals differ from the receipt')",
+        "if legacy != {'contract_output': expected_contract, 'workload_output': expected_workload}:",
+        "    raise SystemExit('raw artifact manifest legacy counts differ from the receipt')",
+        "if expected_contract + expected_workload == expected_entries or nested_misclassified <= 0:",
+        "    raise SystemExit('raw artifact receipt does not exhibit the known nested-class defect')",
+        "if sum(corrected.values()) != entry_count or nested_misclassified != entry_count - sum(legacy.values()):",
+        "    raise SystemExit('raw artifact recovered categories do not cover the manifest')",
+        "print(json.dumps({",
+        "    'schema_version': 1,",
+        "    'manifest_sha256': expected_sha,",
+        "    'entry_count': entry_count,",
+        "    'total_bytes': total_bytes,",
+        "    'original_category_counts': legacy,",
+        "    'recovered_category_counts': corrected,",
+        "    'misclassified_nested_entry_count': nested_misclassified,",
+        "    'legacy_nested_class_pattern_exact': True,",
+        "}, sort_keys=True, separators=(',', ':')))",
+        "PY",
+        f"echo {RAW_ARTIFACT_RECOVERY_MARKER}",
+    ]
+    return "\n".join(lines)
+
+
+def parse_raw_artifact_manifest_summary(output: str) -> dict[str, Any]:
+    lines = [
+        line for line in output.splitlines()
+        if line not in {RAW_ARTIFACT_RECOVERY_MARKER, "CONVIR_REMOTE_SCRIPT_OK", ""}
+    ]
+    if output.splitlines().count(RAW_ARTIFACT_RECOVERY_MARKER) != 1 or len(lines) != 1:
+        raise TerminalArchiveError("raw artifact recovery output is malformed")
+    try:
+        value = json.loads(lines[0])
+    except json.JSONDecodeError as exc:
+        raise TerminalArchiveError("raw artifact recovery summary is invalid JSON") from exc
+    expected = {
+        "schema_version", "manifest_sha256", "entry_count", "total_bytes",
+        "original_category_counts", "recovered_category_counts",
+        "misclassified_nested_entry_count", "legacy_nested_class_pattern_exact",
+    }
+    if not isinstance(value, dict) or set(value) != expected or value["schema_version"] != 1:
+        raise TerminalArchiveError("raw artifact recovery summary field contract is invalid")
+    return value
+
+
+def fetch_raw_artifact_manifest_summary(
+    context: dict[str, Any], receipt_name: str, receipt_sha256: str,
+    receipt: dict[str, Any],
+) -> dict[str, Any]:
+    try:
+        output = ops.run_remote(
+            raw_artifact_manifest_recovery_body(
+                context, receipt_name, receipt_sha256, receipt,
+            ),
+            timeout=120,
+            phase="raw_artifact_recovery",
+        )
+    except ops.ToolError as exc:
+        raise TerminalArchiveError(
+            f"raw artifact manifest recovery verification failed: {exc}"
+        ) from exc
+    return parse_raw_artifact_manifest_summary(output)
+
+
+def build_raw_artifact_recovery(
+    *, summary: dict[str, Any], receipt: dict[str, Any], receipt_name: str,
+    receipt_sha256: str, closeout: dict[str, Any], closeout_filename: str,
+    closeout_sha256: str, evidence_parent: str,
+) -> tuple[dict[str, Any], str, bytes]:
+    expected_categories = {"contract_output", "workload_output"}
+    for key in ("original_category_counts", "recovered_category_counts"):
+        value = summary.get(key)
+        if not isinstance(value, dict) or set(value) != expected_categories or any(
+            not isinstance(item, int) or isinstance(item, bool) or item < 0
+            for item in value.values()
+        ):
+            raise TerminalArchiveError("raw artifact recovery category counts are invalid")
+    numeric = [
+        summary.get("entry_count"), summary.get("total_bytes"),
+        summary.get("misclassified_nested_entry_count"),
+    ]
+    if any(not isinstance(item, int) or isinstance(item, bool) or item < 0 for item in numeric):
+        raise TerminalArchiveError("raw artifact recovery totals are invalid")
+    original = summary["original_category_counts"]
+    recovered = summary["recovered_category_counts"]
+    if (
+        summary.get("schema_version") != 1
+        or summary.get("manifest_sha256") != receipt["manifest_sha256"]
+        or summary["entry_count"] != receipt["entry_count"]
+        or summary["total_bytes"] != receipt["total_bytes"]
+        or original != receipt["category_counts"]
+        or sum(original.values()) >= receipt["entry_count"]
+        or sum(recovered.values()) != receipt["entry_count"]
+        or summary["misclassified_nested_entry_count"]
+        != receipt["entry_count"] - sum(original.values())
+        or summary.get("legacy_nested_class_pattern_exact") is not True
+    ):
+        raise TerminalArchiveError("raw artifact recovery does not prove the legacy defect")
+    if not SHA256.fullmatch(receipt_sha256) or not SHA256.fullmatch(closeout_sha256):
+        raise TerminalArchiveError("raw artifact recovery identity is invalid")
+    proof = {
+        "schema_version": 1,
+        "status": "RAW_ARTIFACT_RECEIPT_RECOVERED",
+        "recovery_type": "lifecycle_nested_artifact_class_v1",
+        "route_id": closeout["route_id"],
+        "operation_id": closeout["operation_id"],
+        "run_id": closeout["run_id"],
+        "route_commit": closeout["route_commit"],
+        "closeout_filename": closeout_filename,
+        "closeout_sha256": closeout_sha256,
+        "receipt_filename": receipt_name,
+        "receipt_sha256": receipt_sha256,
+        "manifest_relative_path": receipt["manifest_relative_path"],
+        "manifest_sha256": receipt["manifest_sha256"],
+        "entry_count": receipt["entry_count"],
+        "total_bytes": receipt["total_bytes"],
+        "original_category_counts": original,
+        "recovered_category_counts": recovered,
+        "misclassified_nested_entry_count": summary["misclassified_nested_entry_count"],
+        "checks": {
+            "closeout_identity_receipt_bound": True,
+            "receipt_identity_closeout_bound": True,
+            "manifest_identity_receipt_bound": True,
+            "cloud_manifest_sha256_verified": True,
+            "legacy_nested_class_pattern_exact": True,
+            "entry_count_matches": True,
+            "total_bytes_matches": True,
+            "recovered_categories_cover_manifest": True,
+        },
+    }
+    raw = (
+        json.dumps(proof, sort_keys=True, separators=(",", ":")) + "\n"
+    ).encode("utf-8")
+    filename = raw_artifact_recovery_filename(closeout_filename)
+    relpath = f"{evidence_parent}/{filename}"
+    return proof, relpath, raw
 
 
 def capability_registry_record(
@@ -624,6 +892,7 @@ def audit_source(
     conclusion_dir_override: Path | None = None,
     expected_closeout_filename: str | None = None,
     expected_closeout_sha256: str | None = None,
+    raw_artifact_manifest_summary: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     source_repo = source_repo.resolve()
     if not TOKEN.fullmatch(route_id):
@@ -723,6 +992,9 @@ def audit_source(
 
     files: list[dict[str, Any]] = []
     raw_artifact_receipt = None
+    raw_artifact_receipt_raw = None
+    raw_artifact_receipt_relpath = None
+    raw_artifact_receipt_sha256 = None
     payloads: dict[str, bytes] = {
         contract_relpath: contract_raw,
         closeout_relpath: closeout_raw,
@@ -762,15 +1034,58 @@ def audit_source(
         if filename.endswith(RAW_ARTIFACT_RECEIPT_SUFFIX):
             if raw_artifact_receipt is not None:
                 raise TerminalArchiveError("multiple raw artifact receipts are forbidden")
-            raw_artifact_receipt = validate_raw_artifact_receipt(
+            raw_artifact_receipt = parse_raw_artifact_receipt(
                 raw, relpath, closeout, closeout_path.name,
             )
+            raw_artifact_receipt_raw = raw
+            raw_artifact_receipt_relpath = relpath
+            raw_artifact_receipt_sha256 = actual_sha
         payloads[relpath] = raw
         files.append({
             "path": relpath,
             "bytes": len(raw),
             "sha256": actual_sha,
         })
+    raw_artifact_recovery = None
+    if raw_artifact_receipt is not None:
+        category_total = sum(raw_artifact_receipt["category_counts"].values())
+        if category_total == raw_artifact_receipt["entry_count"]:
+            if raw_artifact_manifest_summary is not None:
+                raise TerminalArchiveError(
+                    "raw artifact recovery was supplied for a valid receipt"
+                )
+            validate_raw_artifact_receipt(
+                raw_artifact_receipt_raw, raw_artifact_receipt_relpath,
+                closeout, closeout_path.name,
+            )
+        else:
+            if raw_artifact_manifest_summary is None \
+                    or expected_closeout_sha256 is None:
+                raise TerminalArchiveError(
+                    "raw artifact receipt category counts are invalid"
+                )
+            proof, proof_relpath, proof_raw = build_raw_artifact_recovery(
+                summary=raw_artifact_manifest_summary,
+                receipt=raw_artifact_receipt,
+                receipt_name=PurePosixPath(raw_artifact_receipt_relpath).name,
+                receipt_sha256=raw_artifact_receipt_sha256,
+                closeout=closeout,
+                closeout_filename=closeout_path.name,
+                closeout_sha256=expected_closeout_sha256,
+                evidence_parent=closeout_path.parent.as_posix(),
+            )
+            payloads[proof_relpath] = proof_raw
+            raw_artifact_recovery = {
+                "path": proof_relpath,
+                "bytes": len(proof_raw),
+                "sha256": hashlib.sha256(proof_raw).hexdigest(),
+                "proof": proof,
+            }
+            files.append({
+                key: raw_artifact_recovery[key] for key in ("path", "bytes", "sha256")
+            })
+    elif raw_artifact_manifest_summary is not None:
+        raise TerminalArchiveError("raw artifact recovery lacks an original receipt")
     expected_review_facts = review_facts_filename(closeout_path.name)
     facts_candidates = sorted(
         name for name in evidence_sha if name.endswith(REVIEW_FACTS_SUFFIX)
@@ -814,6 +1129,7 @@ def audit_source(
         "prior_terminal_record": prior_terminal_record,
         "capability_registry_record": registry_record,
         "raw_artifact_receipt": raw_artifact_receipt,
+        "raw_artifact_recovery": raw_artifact_recovery,
         "review_facts": review_facts,
         "payloads": payloads,
         "checks": {
@@ -822,7 +1138,10 @@ def audit_source(
             "all_closeout_bound_results_present": True,
             "all_runtime_required_results_present": True,
             "all_result_hashes_match": True,
-            "raw_artifact_receipt_valid": raw_artifact_receipt is not None,
+            "raw_artifact_receipt_valid": (
+                raw_artifact_receipt is not None and raw_artifact_recovery is None
+            ),
+            "raw_artifact_receipt_recovered": raw_artifact_recovery is not None,
             "raw_artifact_receipt_legacy_unsealed": raw_artifact_receipt is None,
             "review_facts_valid": review_facts is not None,
             "review_facts_legacy_unbound": review_facts is None,
@@ -858,10 +1177,44 @@ def fetch_receipt_evidence(receipt: str, destination: Path) -> dict[str, Any]:
             if not path.is_file() or path.stat().st_size != record["bytes"] \
                     or hashlib.sha256(path.read_bytes()).hexdigest() != record["sha256"]:
                 raise TerminalArchiveError(f"receipt evidence identity mismatch: {name}")
+        raw_artifact_manifest_summary = None
+        raw_receipt_name = raw_artifact_receipt_filename(
+            context["validated_closeout_filename"]
+        )
+        if raw_receipt_name in records:
+            try:
+                raw_receipt = json.loads(
+                    (destination / raw_receipt_name).read_text(encoding="utf-8")
+                )
+            except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+                raise TerminalArchiveError(
+                    "receipt-bound raw artifact receipt is unreadable"
+                ) from exc
+            categories = raw_receipt.get("category_counts") \
+                if isinstance(raw_receipt, dict) else None
+            count_values_valid = (
+                isinstance(categories, dict)
+                and set(categories) == {"contract_output", "workload_output"}
+                and all(
+                    isinstance(item, int) and not isinstance(item, bool) and item >= 0
+                    for item in categories.values()
+                )
+                and isinstance(raw_receipt.get("entry_count"), int)
+                and not isinstance(raw_receipt.get("entry_count"), bool)
+                and raw_receipt["entry_count"] >= 0
+            )
+            if count_values_valid and sum(categories.values()) != raw_receipt["entry_count"]:
+                raw_artifact_manifest_summary = fetch_raw_artifact_manifest_summary(
+                    context,
+                    raw_receipt_name,
+                    records[raw_receipt_name]["sha256"],
+                    raw_receipt,
+                )
         return {
             "records": records,
             "closeout_filename": context["validated_closeout_filename"],
             "closeout_sha256": context["validated_closeout_sha256"],
+            "raw_artifact_manifest_summary": raw_artifact_manifest_summary,
         }
     except ops.ToolError as exc:
         raise TerminalArchiveError(f"receipt evidence fetch failed: {exc}") from exc
@@ -1189,6 +1542,10 @@ def main() -> None:
                 ),
                 expected_closeout_sha256=(
                     receipt_binding["closeout_sha256"] if receipt_binding else None
+                ),
+                raw_artifact_manifest_summary=(
+                    receipt_binding.get("raw_artifact_manifest_summary")
+                    if receipt_binding else None
                 ),
             )
         report = serializable(audit)

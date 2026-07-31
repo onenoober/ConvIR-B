@@ -185,7 +185,7 @@ def build_raw_artifact_manifest(output: Path) -> tuple[bytes, list[dict[str, Any
     records: list[dict[str, Any]] = []
     path_bytes = 0
 
-    def walk(directory: Path, relative_root: str) -> None:
+    def walk(directory: Path, relative_root: str, artifact_class: str) -> None:
         nonlocal path_bytes
         try:
             with os.scandir(directory) as iterator:
@@ -211,7 +211,7 @@ def build_raw_artifact_manifest(output: Path) -> tuple[bytes, list[dict[str, Any
                     f"raw artifact cannot be a symlink: {relative}", phase="evidence",
                 )
             if stat.S_ISDIR(observed.st_mode):
-                walk(Path(child.path), relative)
+                walk(Path(child.path), relative, artifact_class)
                 continue
             if not stat.S_ISREG(observed.st_mode):
                 raise LifecycleError(
@@ -222,7 +222,7 @@ def build_raw_artifact_manifest(output: Path) -> tuple[bytes, list[dict[str, Any
             records.append({
                 "schema_version": 2,
                 "relative_path": relative,
-                "artifact_class": f"{relative_root}_output",
+                "artifact_class": artifact_class,
                 "bytes": observed.st_size,
                 "sha256": _sha256_scanned_file(child.path, observed),
             })
@@ -238,7 +238,7 @@ def build_raw_artifact_manifest(output: Path) -> tuple[bytes, list[dict[str, Any
                 raise LifecycleError(
                     f"raw artifact scope is not a directory: {root_name}", phase="evidence",
                 )
-            walk(root, root_name)
+            walk(root, root_name, f"{root_name}_output")
     records.sort(key=lambda item: item["relative_path"])
     raw = b"".join(
         (json.dumps(item, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
@@ -262,6 +262,10 @@ def publish_raw_artifact_receipt(
         )
         for root in RAW_ARTIFACT_SCOPE_ROOTS
     }
+    if sum(category_counts.values()) != len(records):
+        raise LifecycleError(
+            "raw artifact category counts do not cover the manifest", phase="evidence",
+        )
     receipt = {
         "schema_version": 2,
         "route_id": spec["route_id"],
