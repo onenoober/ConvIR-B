@@ -15,7 +15,7 @@
       "id": "local_need_entrypoint",
       "kind": "file",
       "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_local_restoration_need_v1.py",
-      "sha256": "8574065379564fc5eec6e66f7e9e35a3aa37a9f8c7487291cd9f15d2de7096ae"
+      "sha256": "d842089ceb037252d2ad3551ec58669c0fce996fced11bb47294165d80edff5a"
     },
     {
       "access_role": "engineering_debug",
@@ -38,15 +38,15 @@
       "contract_access": true,
       "id": "model_source",
       "kind": "file",
-      "path": "{REMOTE_REPO}/Dehazing/ITS/models/ConvIR.py",
-      "sha256": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor/Dehazing/ITS/models/ConvIR.py",
+      "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
     },
     {
       "access_role": "unrestricted",
       "contract_access": true,
       "id": "model_layers",
       "kind": "file",
-      "path": "{REMOTE_REPO}/Dehazing/ITS/models/layers.py",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor/Dehazing/ITS/models/layers.py",
       "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
     },
     {

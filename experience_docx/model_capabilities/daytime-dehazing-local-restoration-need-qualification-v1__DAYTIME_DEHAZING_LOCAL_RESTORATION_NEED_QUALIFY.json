@@ -6,7 +6,7 @@
     },
     {
       "id": "local_need_entrypoint",
-      "identity": "8574065379564fc5eec6e66f7e9e35a3aa37a9f8c7487291cd9f15d2de7096ae"
+      "identity": "d842089ceb037252d2ad3551ec58669c0fce996fced11bb47294165d80edff5a"
     },
     {
       "id": "runtime_environment",
@@ -18,7 +18,7 @@
     },
     {
       "id": "model_source",
-      "identity": "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+      "identity": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
     },
     {
       "id": "model_layers",
@@ -42,7 +42,7 @@
   "protected_data_prohibited": true,
   "reuse_identity": {
     "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
-    "code_path_sha256": "8574065379564fc5eec6e66f7e9e35a3aa37a9f8c7487291cd9f15d2de7096ae",
+    "code_path_sha256": "d842089ceb037252d2ad3551ec58669c0fce996fced11bb47294165d80edff5a",
     "device_class": "cuda_sm89",
     "input_contract_sha256": "3c6eb3f020cc0175a4115b76738f95d412c83da3ec13c9b0e786aa6b675fc95a",
     "runtime_environment_sha256": "ede9744c12b6f154092277bb8d7b6ad1d7ade5011de3e186df19afac2a3b0fde",

@@ -81,7 +81,7 @@ EPSILON = 1.0e-12
 
 ANCHOR_COMMIT = "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
 CHECKPOINT_SHA256 = "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
-MODEL_SOURCE_SHA256 = "3fa227af396464a7f07ac773f92e9cdb746e0fa6ae63adef711c765a02c3d4cd"
+MODEL_SOURCE_SHA256 = "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
 MODEL_LAYERS_SHA256 = "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
 RUNTIME_ENVIRONMENT_SHA256 = "ede9744c12b6f154092277bb8d7b6ad1d7ade5011de3e186df19afac2a3b0fde"
 S0_CLOSEOUT_SHA256 = "9e132828fb98615241d5e8dea0b0fecffa542397f4ff71bf686a901ca8959346"
@@ -294,8 +294,9 @@ def load_official_model(context):
     for identifier, identity in expected.items():
         if context.assets[identifier].sha256 != identity:
             raise RuntimeError(f"verified identity changed for {identifier}")
-    if str(context.remote_repo) not in sys.path:
-        sys.path.insert(0, str(context.remote_repo))
+    anchor_root = asset_path(context, "official_anchor_checkout", kind="git_checkout")
+    if str(anchor_root) not in sys.path:
+        sys.path.insert(0, str(anchor_root))
     from Dehazing.ITS.models.ConvIR import build_net
 
     model_source = asset_path(context, "model_source", kind="file")
