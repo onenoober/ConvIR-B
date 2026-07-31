@@ -70,7 +70,10 @@ import prepare_terminal_archive as archive
 
 root = Path(sys.argv[1]) / "manifest-fixture"
 evidence = root / "evidence"
-control = evidence / "control"
+evidence.mkdir(parents=True)
+run_root = root / "runs"
+output = run_root / "a1-r1"
+control = output / "control"
 control.mkdir(parents=True)
 closeout_name = "a1_closeout.json"
 receipt_name = "a1_raw_artifact_receipt.json"
@@ -121,6 +124,9 @@ receipt_raw = json.dumps(receipt, sort_keys=True).encode()
 (evidence / receipt_name).write_bytes(receipt_raw)
 context = {
     "evidence_dir": str(evidence),
+    "run_root": str(run_root),
+    "output_path": str(output),
+    "output_id": "a1-r1",
     "validated_closeout_filename": closeout_name,
     "validated_closeout_sha256": hashlib.sha256(closeout_raw).hexdigest(),
 }

@@ -589,6 +589,18 @@ def raw_artifact_manifest_recovery_body(
     ]
     if any(not isinstance(item, int) or isinstance(item, bool) or item < 0 for item in numeric):
         raise TerminalArchiveError("raw artifact receipt counts are invalid")
+    output_id = context.get("output_id")
+    output_value = context.get("output_path")
+    run_root_value = context.get("run_root")
+    if not isinstance(output_id, str) or not TOKEN.fullmatch(output_id) \
+            or not isinstance(output_value, str) \
+            or not isinstance(run_root_value, str):
+        raise TerminalArchiveError("receipt output identity is invalid")
+    output_path = PurePosixPath(output_value)
+    run_root = PurePosixPath(run_root_value)
+    if not output_path.is_absolute() or not run_root.is_absolute() \
+            or output_path.parent != run_root or output_path.name != output_id:
+        raise TerminalArchiveError("receipt output path is invalid")
     lines = [
         "set -euo pipefail",
         "export LC_ALL=C",
@@ -606,7 +618,11 @@ def raw_artifact_manifest_recovery_body(
         'test ! -L "$RECEIPT"',
         'test "$(readlink -f -- "$RECEIPT")" = "$RECEIPT"',
         f'test "$(sha256sum "$RECEIPT" | awk \'{{print $1}}\')" = {ops.q(receipt_sha256)}',
-        'CONTROL="$EVIDENCE_DIR/control"',
+        f"OUTPUT_PATH={ops.q(output_value)}",
+        'test -d "$OUTPUT_PATH"',
+        'test ! -L "$OUTPUT_PATH"',
+        'test "$(readlink -f -- "$OUTPUT_PATH")" = "$OUTPUT_PATH"',
+        'CONTROL="$OUTPUT_PATH/control"',
         'test -d "$CONTROL"',
         'test ! -L "$CONTROL"',
         'test "$(readlink -f -- "$CONTROL")" = "$CONTROL"',

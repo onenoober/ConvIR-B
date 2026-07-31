@@ -117,6 +117,28 @@ class TerminalArchiveTests(unittest.TestCase):
                 evidence_parent="experience_docx/experiment_logs/route",
             )
 
+    def test_raw_artifact_recovery_uses_receipt_bound_output_root(self):
+        context = {
+            "evidence_dir": "/remote/repo/experience_docx/experiment_logs/route",
+            "run_root": "/remote/runs/route",
+            "output_path": "/remote/runs/route/a1-r1",
+            "output_id": "a1-r1",
+            "validated_closeout_filename": "a1_closeout.json",
+            "validated_closeout_sha256": "a" * 64,
+        }
+        receipt = {
+            "manifest_sha256": "b" * 64,
+            "entry_count": 3,
+            "total_bytes": 11,
+            "category_counts": {"contract_output": 1, "workload_output": 1},
+        }
+        body = ARCHIVE.raw_artifact_manifest_recovery_body(
+            context, "a1_raw_artifact_receipt.json", "c" * 64, receipt,
+        )
+        self.assertIn('CONTROL="$OUTPUT_PATH/control"', body)
+        self.assertIn("OUTPUT_PATH=/remote/runs/route/a1-r1", body)
+        self.assertNotIn('CONTROL="$EVIDENCE_DIR/control"', body)
+
     def test_review_facts_dereference_closeout_bound_json(self):
         result = {
             "metrics": {
