@@ -1,0 +1,25 @@
+{
+  "category_counts": {
+    "contract_output": 1,
+    "workload_output": 11
+  },
+  "entry_count": 12,
+  "excluded_paths": [
+    "control",
+    "heartbeat.json",
+    "runtime.log",
+    "status.txt"
+  ],
+  "manifest_relative_path": "control/raw_artifact_manifest.jsonl",
+  "manifest_sha256": "ebae4f61bacfd90d0b00b60e1aff9997176eab07b8a192965e78cb4ea34016a3",
+  "operation_id": "DAYTIME_DEHAZING_HAZE4K_IDENTITY_COMPLETE",
+  "route_commit": "83aea18cddd9982a024e456c3814240b5efe4f5d",
+  "route_id": "daytime-dehazing-haze4k-identity-v1",
+  "run_id": "daytime-dehazing-haze4k-identity-v1-r1",
+  "schema_version": 2,
+  "scope_roots": [
+    "contract",
+    "workload"
+  ],
+  "total_bytes": 12436296
+}

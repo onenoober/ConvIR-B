@@ -1,0 +1,73 @@
+{
+  "assurance": {
+    "method_id": "bounded_indicator_worst_case_variance",
+    "planning_sd_rule": "Use the distribution-free Bernoulli upper bound SD=0.5 for any bounded binary scene-level indicator; no historical outcome or variance estimate is used.",
+    "probability": 0.95
+  },
+  "certificate_id": "daytime_dehazing_haze4k_identity_completion_capacity_v1",
+  "comparison_family": "five_dataset_capacity_family",
+  "confidence_level": 0.95,
+  "critical_value": 2.58,
+  "feasible": true,
+  "independent_unit": "original_clear_scene",
+  "method": "binomial_worst_case",
+  "operation_id": "DAYTIME_DEHAZING_HAZE4K_IDENTITY_COMPLETE",
+  "primary_estimand_id": "independent_role_capacity",
+  "route_id": "daytime-dehazing-haze4k-identity-v1",
+  "schema_version": 2,
+  "source_reference": "Pre-run exact candidate counts and smallest planned role pools, using a worst-case bounded-indicator variance bound without outcome data; this coarse certificate does not replace S1 precision planning.",
+  "source_role": "development_screening",
+  "strata": [
+    {
+      "feasible": true,
+      "id": "HAZE4K_TRAIN",
+      "independent_groups_available": 750,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 42,
+      "planning_sd": 0.5,
+      "planning_sd_upper_bound": 0.5,
+      "source_reference": "The smaller Haze4K-train program role contains 150 development_screening scenes."
+    },
+    {
+      "feasible": true,
+      "id": "HAZE4K_TEST",
+      "independent_groups_available": 250,
+      "independent_groups_planned": 100,
+      "independent_groups_required": 42,
+      "planning_sd": 0.5,
+      "planning_sd_upper_bound": 0.5,
+      "source_reference": "The smaller Haze4K-test program role contains 100 confirmation scenes."
+    },
+    {
+      "feasible": true,
+      "id": "ITS",
+      "independent_groups_available": 8813,
+      "independent_groups_planned": 2203,
+      "independent_groups_required": 42,
+      "planning_sd": 0.5,
+      "planning_sd_upper_bound": 0.5,
+      "source_reference": "The smaller protected ITS program role contains 2,203 scenes under the frozen Hamilton allocation."
+    },
+    {
+      "feasible": true,
+      "id": "OTS",
+      "independent_groups_available": 8006,
+      "independent_groups_planned": 2001,
+      "independent_groups_required": 42,
+      "planning_sd": 0.5,
+      "planning_sd_upper_bound": 0.5,
+      "source_reference": "The smaller protected OTS program role contains 2,001 scenes under the frozen Hamilton allocation."
+    },
+    {
+      "feasible": true,
+      "id": "NH_HAZE",
+      "independent_groups_available": 55,
+      "independent_groups_planned": 55,
+      "independent_groups_required": 42,
+      "planning_sd": 0.5,
+      "planning_sd_upper_bound": 0.5,
+      "source_reference": "All 55 qualified NH-Haze scenes remain one intact sealed_final external stratum."
+    }
+  ],
+  "target_half_width": 0.2
+}

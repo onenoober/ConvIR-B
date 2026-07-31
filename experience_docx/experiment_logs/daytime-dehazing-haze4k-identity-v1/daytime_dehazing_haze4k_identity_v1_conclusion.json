@@ -1,0 +1,39 @@
+{
+  "authorizes": "AUTHOR_S1_UTILITY_QUALIFICATION_CONTRACT_ONLY",
+  "competing_explanation": "The favorable capacity result follows from correcting the Haze4K root to the documented nested dataset directory and completing the frozen identity census; it does not establish complete capture provenance, semantic source disjointness, or adequate power for any future restoration-effect estimand.",
+  "decision": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_PASS",
+  "gate_fact_ids": [
+    "evidence_identity",
+    "dataset_identity",
+    "cross_dataset_separation",
+    "role_partition_coverage",
+    "independent_capacity",
+    "capacity_precision"
+  ],
+  "gate_reasons": [
+    "evidence_identity passed because both Haze4K historical partition digests and all frozen Haze4K and overlap assets matched their declared identities.",
+    "dataset_identity passed because Haze4K train and test met every directory, file-count, pairing, decode, dimension, scene-count, and four-variant check, while ITS, OTS, and NH-Haze retained complete identity checks.",
+    "cross_dataset_separation passed after 2,187 ITS and 964 OTS known-overlap exclusions, exact decoded-RGB component control, and zero protected-role conflicts.",
+    "role_partition_coverage passed with zero intersections among training, development_screening, confirmation, and sealed_final clear-scene digests.",
+    "independent_capacity was favorable for the frozen Haze4K 600/150/100/150 roles, all ITS and OTS role minima, and 55 intact NH-Haze sealed-final scenes.",
+    "capacity_precision met the predeclared worst-case bounded-indicator S0 qualification, which is only a coarse capacity certificate and not S1 effect precision."
+  ],
+  "limitations": [
+    "The PASS certifies decoded-RGB exact identity, archived verified overlap quarantine, deterministic role separation, and capacity; it does not prove complete capture or source provenance disjointness.",
+    "The empty exact cross-dataset pair matrix does not rule out non-exact geometric or semantic source relationships.",
+    "The 55-scene NH-Haze population remains intact sealed-final evidence and cannot by itself support a high-precision small-effect claim.",
+    "S1 must freeze its own estimand, minimum meaningful effect, planning-SD upper bound, comparison family, and formal precision certificate.",
+    "No model, checkpoint, inference, restoration metric, local-error metric, candidate, or threshold was accessed, and no S1 run is authorized."
+  ],
+  "operation_id": "DAYTIME_DEHAZING_HAZE4K_IDENTITY_COMPLETE",
+  "primary_fact_ids": [
+    "dataset_identity",
+    "independent_capacity",
+    "capacity_precision"
+  ],
+  "primary_result": "S0 passes under the frozen evidence boundary: the corrected Haze4K path yielded complete 750-train-scene and 250-test-scene identities with the fixed 600/150/100/150 roles; ITS, OTS, and NH-Haze identity, overlap control, role disjointness, capacity, and coarse precision gates also passed.",
+  "route_id": "daytime-dehazing-haze4k-identity-v1",
+  "run_id": "daytime-dehazing-haze4k-identity-v1-r1",
+  "schema_version": 2,
+  "state": "COMPLETED_GATE_PASS"
+}

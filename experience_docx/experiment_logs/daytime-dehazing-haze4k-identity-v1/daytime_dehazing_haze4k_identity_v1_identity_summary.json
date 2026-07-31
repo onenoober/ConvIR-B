@@ -1,0 +1,113 @@
+{
+  "historical_asset_checks": {
+    "haze4k_test_identity_only": true,
+    "haze4k_train_identity_only": true,
+    "its_verified_overlap_membership": true,
+    "ots_verified_overlap_membership": true
+  },
+  "historical_partition_membership_checks": {
+    "HAZE4K_TEST": true,
+    "HAZE4K_TRAIN": true
+  },
+  "identity_checks": {
+    "HAZE4K_TEST": true,
+    "HAZE4K_TRAIN": true,
+    "ITS": true,
+    "NH_HAZE": true,
+    "OTS": true
+  },
+  "independent_unit": "original_clear_scene",
+  "inventories": {
+    "HAZE4K_TEST": {
+      "checks": {
+        "clear_file_count": true,
+        "decode_complete": true,
+        "dimension_alignment": true,
+        "directory_layout": true,
+        "four_variants_per_scene": true,
+        "hazy_file_count": true,
+        "pairing_complete": true,
+        "scene_count": true
+      },
+      "dataset": "HAZE4K_TEST",
+      "historical_partition_digest": "6ca5174470dad2b4eef4ae15c5a13a99d8ae9fc0bc2ea1116b199c4d4bc05582",
+      "membership_digest": "b66891f22b3bb6d38d6a9fb22c3e78f00cb41d3fc92db803f874e19ec5f901fe",
+      "observation_count": 1000,
+      "program_role_counts": {
+        "confirmation": 100,
+        "sealed_final": 150
+      },
+      "root_name": "test",
+      "scene_count": 250
+    },
+    "HAZE4K_TRAIN": {
+      "checks": {
+        "clear_file_count": true,
+        "decode_complete": true,
+        "dimension_alignment": true,
+        "directory_layout": true,
+        "four_variants_per_scene": true,
+        "hazy_file_count": true,
+        "pairing_complete": true,
+        "scene_count": true
+      },
+      "dataset": "HAZE4K_TRAIN",
+      "historical_partition_digest": "7b21d3af455475f7bb29198081a2ef2e651cffaac6149fd27741863c765b4efc",
+      "membership_digest": "2aaf483ad0c3034c09610aab7cf48cad5b4296916c985184748bdf7454da0da3",
+      "observation_count": 3000,
+      "program_role_counts": {
+        "development_screening": 150,
+        "training": 600
+      },
+      "root_name": "train",
+      "scene_count": 750
+    },
+    "ITS": {
+      "checks": {
+        "decode_complete": true,
+        "scene_count": true,
+        "scene_ids_unique": true
+      },
+      "dataset": "ITS",
+      "decode_failures": 0,
+      "membership_digest": "2ed08936bea5066b3447b89d6db46a33b3f99802548c7ecc74c27508b6ae72b5",
+      "scene_count": 11000
+    },
+    "NH_HAZE": {
+      "checks": {
+        "decode_complete": true,
+        "dimension_alignment": true,
+        "pairing_complete": true,
+        "scene_count": true,
+        "scene_ids_unique": true
+      },
+      "dataset": "NH_HAZE",
+      "decode_failures": 0,
+      "membership_digest": "ff80fbfb15b8ba9ed763639f495f2d23b881af1824408053687fe92a1a79a558",
+      "pair_count": 55,
+      "scene_count": 55
+    },
+    "OTS": {
+      "checks": {
+        "decode_complete": true,
+        "scene_count": true,
+        "scene_ids_unique": true
+      },
+      "dataset": "OTS",
+      "decode_failures": 0,
+      "membership_digest": "2a271cba2d2ec17fc0e8837e5c43b64d5a57e51e945ea81528ad59cc91ba53eb",
+      "scene_count": 8970
+    }
+  },
+  "operation_id": "DAYTIME_DEHAZING_HAZE4K_IDENTITY_COMPLETE",
+  "outcome_blind_structure_access": {
+    "clear_targets_decoded_for_canonical_hash_only": true,
+    "hazy_images_decoded_for_pair_and_dimension_checks_only": true,
+    "images_rendered_or_viewed_by_researcher": false,
+    "model_checkpoint_or_prediction_accessed": false,
+    "restoration_metric_or_local_error_computed": false
+  },
+  "route_id": "daytime-dehazing-haze4k-identity-v1",
+  "run_id": "daytime-dehazing-haze4k-identity-v1-r1",
+  "schema_version": 1
+}

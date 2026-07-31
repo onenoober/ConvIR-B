@@ -1,0 +1,121 @@
+{
+  "authorizes": "AUTHOR_S1_UTILITY_QUALIFICATION_CONTRACT_ONLY",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "DAYTIME_DEHAZING_PROGRAM_FOUNDATION_PASS",
+  "decision_rule_id": "qualified_capacity_and_precision",
+  "details": {
+    "aggregate_role_counts": {
+      "confirmation": 4273,
+      "development_screening": 1820,
+      "sealed_final": 4379,
+      "training": 7278
+    },
+    "identity_summary_file": "daytime_dehazing_haze4k_identity_v1_identity_summary.json",
+    "program_local_prior_model_selection_exposure": false,
+    "raw_cloud_ledger_file": "daytime_dehazing_haze4k_identity_v1_scene_role_ledger.jsonl",
+    "raw_cloud_ledger_sha256": "4cff8e7aecea5d8e19165ac4e725f69746342521115a3ab1f03ea1474f280960",
+    "restoration_outcomes_accessed": false,
+    "role_summary_file": "daytime_dehazing_haze4k_identity_v1_role_summary.json",
+    "summary_file": "daytime_dehazing_haze4k_identity_v1_summary.json",
+    "training_or_inference_occurred": false
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "daytime_dehazing_haze4k_identity_v1_identity_summary.json": "bde7dc3a96e4cbc57d33289fd58752325fe3113cd2a0cd48e57145819883fe65",
+    "daytime_dehazing_haze4k_identity_v1_raw_artifact_receipt.json": "29e22dbed76b39eb67d55491d23192cc7978396912033298314c55c73b7068b5",
+    "daytime_dehazing_haze4k_identity_v1_review_facts.json": "3383a32f39b8b9e97671a74dd8bec2038ac9975daa9fe75a49d3f7aa71fff548",
+    "daytime_dehazing_haze4k_identity_v1_role_summary.json": "d2262c8ba28c56a21b992c8f2c445d92099d7c9861f4263171c522c2efd8e7b1",
+    "daytime_dehazing_haze4k_identity_v1_summary.json": "bea5e67349e1746b256f8fdcd95d147877eb5fa5b3b6e54ab8e54cb8983eb08d"
+  },
+  "failure_phase": null,
+  "family_effect": "advance",
+  "gate_outcomes": {
+    "capacity_precision": "met",
+    "cross_dataset_separation": "pass",
+    "dataset_identity": "pass",
+    "evidence_identity": "pass",
+    "independent_capacity": "favorable",
+    "role_partition_coverage": "pass"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "author_s1_utility_qualification_contract",
+  "operation_id": "DAYTIME_DEHAZING_HAZE4K_IDENTITY_COMPLETE",
+  "returncode": 0,
+  "route_commit": "83aea18cddd9982a024e456c3814240b5efe4f5d",
+  "route_id": "daytime-dehazing-haze4k-identity-v1",
+  "run_id": "daytime-dehazing-haze4k-identity-v1-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_GATE_PASS",
+  "terminal_label": "pass",
+  "verified_assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "entrypoint_source",
+      "kind": "file",
+      "sha256": "4952b87779e0e81f8a938dd372ac5c8bcd5af7c93f050ac38ba1d9ac25168ac7"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "haze4k_test_scene_summary",
+      "kind": "file",
+      "sha256": "656407f3183f92e75e357004b04b505d2b92cd4b0f4b02b3c6a22aef57d069cf"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "haze4k_train_scene_summary",
+      "kind": "file",
+      "sha256": "a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "its_overlap_summary",
+      "kind": "file",
+      "sha256": "3817a2a2778cec848ba1cfb1be64863bf30f47f2434f6d54819c6a8f346c47e9"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "its_verified_exclusions",
+      "kind": "file",
+      "sha256": "c4dddbcf214c301ffa6d3879217e6336024119bb07d0f9c1f929ac040aa0dda3"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "nh_haze_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "ots_overlap_summary",
+      "kind": "file",
+      "sha256": "1d087dbc9ade15f1a8a9a0862a5a00a09ad28d64d55697a620f88f17fd4a42ff"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "ots_verified_exclusions",
+      "kind": "file",
+      "sha256": "d7526849879cf8650af545db20a5e4555cb0eb1931973612af98a5897f2e03d2"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory"
+    }
+  ]
+}
