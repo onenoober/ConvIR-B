@@ -222,12 +222,15 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         result_raw = b"not read"
         receipt_raw = b'{"schema_version":2}\n'
         facts_raw = b'{"schema_version":2,"facts":[]}\n'
+        recovery_raw = b'{"status":"REVIEW_FACTS_RECOVERED"}\n'
         manifest_raw = b"{}\n"
         manifest_path = f"{prefix}/launch_contract/A0/manifest.json"
         receipt_path = f"{prefix}/route_raw_artifact_receipt.json"
         facts_path = f"{prefix}/route_review_facts.json"
+        recovery_path = f"{prefix}/route_review_facts_recovery.json"
         record["result_paths"].append(receipt_path)
         record["result_paths"].append(facts_path)
+        record["result_paths"].append(recovery_path)
         record.update({
             "schema_version": 2,
             "contract_sha256": hashlib.sha256(contract_raw).hexdigest(),
@@ -251,10 +254,24 @@ class EvidenceReviewMcpTests(unittest.TestCase):
                 "path": facts_path,
                 "bytes": len(facts_raw),
                 "sha256": hashlib.sha256(facts_raw).hexdigest(),
+            }, {
+                "path": recovery_path,
+                "bytes": len(recovery_raw),
+                "sha256": hashlib.sha256(recovery_raw).hexdigest(),
             }],
             "prior_terminal_record": {
                 "prior_closeout_path": None,
                 "prior_terminal_tuple": None,
+            },
+            "review_facts_recovery": {
+                "status": "REVIEW_FACTS_RECOVERED",
+                "recovery_type": review.catalog.REVIEW_FACTS_RECOVERY_TYPE,
+                "proof_path": recovery_path,
+                "proof_bytes": len(recovery_raw),
+                "proof_sha256": hashlib.sha256(recovery_raw).hexdigest(),
+                "original_path": facts_path,
+                "original_sha256": hashlib.sha256(facts_raw).hexdigest(),
+                "recovered_review_facts_sha256": "9" * 64,
             },
         })
         commit = self.commit_snapshot(record, {
@@ -264,6 +281,7 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             record["result_paths"][0]: result_raw,
             receipt_path: receipt_raw,
             facts_path: facts_raw,
+            recovery_path: recovery_raw,
             manifest_path: manifest_raw,
         })
         loaded = review.catalog.load_catalog(self.repo, commit)
@@ -283,6 +301,7 @@ class EvidenceReviewMcpTests(unittest.TestCase):
                 "required": True,
             }],
             "raw_artifact_receipt_github_path": receipt_path,
+            "unmapped_results": [{"github_path": recovery_path}],
         })
         arguments = {
             "local_repo": str(self.repo),
@@ -320,6 +339,13 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         self.assertTrue(any(
             "review_facts" in item["roles"] for item in files
         ))
+        self.assertTrue(any(
+            "review_facts_recovery" in item["roles"] for item in files
+        ))
+        self.assertEqual(
+            "REVIEW_FACTS_RECOVERED",
+            value["lineage"][0]["review_facts_recovery_status"],
+        )
         self.assertTrue(all(item["content_returned"] is False for item in files))
 
     def test_completeness_receipt_is_main_bound_stable_and_transport_free(self):

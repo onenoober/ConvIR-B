@@ -194,6 +194,78 @@ class TerminalArchiveTests(unittest.TestCase):
                 closeout, conclusion, payloads, evidence_sha, "a1_closeout.json",
             )
 
+    def test_review_facts_recovery_removes_only_unbound_gate_confidence(self):
+        result = {"gate_outcomes": {"coverage": "fail"}}
+        result_raw = json.dumps(result).encode()
+        result_sha = hashlib.sha256(result_raw).hexdigest()
+        closeout = {
+            "route_id": "route", "operation_id": "A1", "run_id": "a1-r1",
+            "route_commit": "a" * 40,
+        }
+        conclusion = {
+            "primary_fact_ids": ["coverage"], "gate_fact_ids": ["coverage"],
+        }
+        fact = {
+            "fact_id": "coverage", "claim_id": "coverage",
+            "metric": "coverage typed gate outcome", "unit": "typed outcome",
+            "population": "planned scenes", "grouping": "scene",
+            "point": None, "ci_lower": None, "ci_upper": None,
+            "confidence_level": 0.95, "threshold": None,
+            "threshold_operator": None, "gate_outcome": "fail",
+            "source_filename": "summary.json", "source_sha256": result_sha,
+            "json_pointers": {
+                "point": None, "ci_lower": None, "ci_upper": None,
+                "confidence_level": None, "threshold": None,
+                "gate_outcome": "/gate_outcomes/coverage",
+            },
+        }
+        facts = {"schema_version": 2, **{k: closeout[k] for k in (
+            "route_id", "operation_id", "run_id",
+        )}, "facts": [fact]}
+        facts_raw = json.dumps(facts, sort_keys=True).encode()
+        facts_sha = hashlib.sha256(facts_raw).hexdigest()
+        parent = "experience_docx/experiment_logs/route"
+        relpath = f"{parent}/a1_review_facts.json"
+        payloads = {f"{parent}/summary.json": result_raw}
+        evidence_sha = {"summary.json": result_sha, "a1_review_facts.json": facts_sha}
+        with self.assertRaisesRegex(
+            ARCHIVE.TerminalArchiveError,
+            "confidence_level pointer/value presence differs",
+        ):
+            ARCHIVE.validate_review_facts(
+                facts_raw, relpath, closeout, conclusion, payloads,
+                evidence_sha, "a1_closeout.json",
+            )
+
+        recovered, proof, proof_relpath, proof_raw = (
+            ARCHIVE.build_review_facts_recovery(
+                raw=facts_raw, relpath=relpath, closeout=closeout,
+                conclusion=conclusion, payloads=payloads,
+                evidence_sha256=evidence_sha, closeout_filename="a1_closeout.json",
+                closeout_sha256="b" * 64,
+            )
+        )
+        self.assertIsNone(recovered["facts"][0]["confidence_level"])
+        self.assertEqual("REVIEW_FACTS_RECOVERED", proof["status"])
+        self.assertEqual(facts_sha, proof["original_review_facts_sha256"])
+        self.assertEqual(1, len(proof["changes"]))
+        self.assertTrue(proof_relpath.endswith(ARCHIVE.REVIEW_FACTS_RECOVERY_SUFFIX))
+        self.assertEqual(proof, json.loads(proof_raw))
+
+        not_pure = json.loads(facts_raw)
+        not_pure["facts"][0]["point"] = 1
+        changed_raw = json.dumps(not_pure).encode()
+        changed_sha = hashlib.sha256(changed_raw).hexdigest()
+        with self.assertRaisesRegex(
+            ARCHIVE.TerminalArchiveError, "do not exhibit the recoverable",
+        ):
+            ARCHIVE.build_review_facts_recovery(
+                raw=changed_raw, relpath=relpath, closeout=closeout,
+                conclusion=conclusion, payloads=payloads,
+                evidence_sha256={**evidence_sha, "a1_review_facts.json": changed_sha},
+                closeout_filename="a1_closeout.json", closeout_sha256="b" * 64,
+            )
+
     def git(self, repo: Path, *args: str) -> str:
         return subprocess.run(
             ["git", *args], cwd=repo, text=True, capture_output=True, check=True,
@@ -646,6 +718,78 @@ class TerminalArchiveTests(unittest.TestCase):
             self.assertEqual(
                 receipt_sha,
                 json.loads((destination / recovery["path"]).read_text())["receipt_sha256"],
+            )
+
+    def test_archive_adds_identity_bound_review_facts_recovery(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.source(root, canonical=True)
+            repo, commit, closeout_rel, card, conclusion_rel = source
+            evidence = repo / Path(closeout_rel).parent
+            summary_name = "summary.json"
+            summary_raw = json.dumps({
+                "gate_outcomes": {"coverage": "fail"},
+            }).encode()
+            (evidence / summary_name).write_bytes(summary_raw)
+            summary_sha = hashlib.sha256(summary_raw).hexdigest()
+            facts_name = "a1_review_facts.json"
+            facts = {
+                "schema_version": 2,
+                "route_id": "route", "operation_id": "A1", "run_id": "a1-r1",
+                "facts": [{
+                    "fact_id": "coverage", "claim_id": "coverage",
+                    "metric": "coverage typed gate outcome", "unit": "typed outcome",
+                    "population": "planned scenes", "grouping": "scene",
+                    "point": None, "ci_lower": None, "ci_upper": None,
+                    "confidence_level": 0.95, "threshold": None,
+                    "threshold_operator": None, "gate_outcome": "fail",
+                    "source_filename": summary_name, "source_sha256": summary_sha,
+                    "json_pointers": {
+                        "point": None, "ci_lower": None, "ci_upper": None,
+                        "confidence_level": None, "threshold": None,
+                        "gate_outcome": "/gate_outcomes/coverage",
+                    },
+                }],
+            }
+            facts_raw = json.dumps(facts, sort_keys=True).encode()
+            (evidence / facts_name).write_bytes(facts_raw)
+            conclusion_path = repo / conclusion_rel
+            conclusion = json.loads(conclusion_path.read_text(encoding="utf-8"))
+            conclusion.update({
+                "primary_fact_ids": ["coverage"], "gate_fact_ids": ["coverage"],
+            })
+            conclusion_path.write_text(json.dumps(conclusion), encoding="utf-8")
+            closeout_path = repo / closeout_rel
+            closeout = json.loads(closeout_path.read_text(encoding="utf-8"))
+            closeout["evidence_sha256"].update({
+                summary_name: summary_sha,
+                facts_name: hashlib.sha256(facts_raw).hexdigest(),
+            })
+            closeout_path.write_text(json.dumps(closeout), encoding="utf-8")
+            closeout_sha = hashlib.sha256(closeout_path.read_bytes()).hexdigest()
+            trusted = root / "receipt"
+            trusted.mkdir()
+            for filename in (
+                Path(closeout_rel).name, "formal_results.csv", summary_name, facts_name,
+            ):
+                shutil.copyfile(evidence / filename, trusted / filename)
+            audit = ARCHIVE.audit_source(
+                repo, commit, "route", closeout_rel, card, conclusion_rel, "1" * 64,
+                evidence_dir_override=trusted, conclusion_dir_override=evidence,
+                expected_closeout_filename=Path(closeout_rel).name,
+                expected_closeout_sha256=closeout_sha,
+            )
+            recovery = audit["review_facts_recovery"]
+            self.assertIsNotNone(recovery)
+            self.assertTrue(audit["checks"]["review_facts_recovered"])
+            self.assertFalse(audit["checks"]["review_facts_original_valid"])
+            self.assertEqual(facts_raw, audit["payloads"][f"{evidence.relative_to(repo).as_posix()}/{facts_name}"])
+            record = ARCHIVE.index_record(audit)
+            self.assertEqual(
+                recovery["sha256"], record["review_facts_recovery"]["proof_sha256"],
+            )
+            self.assertIn(
+                recovery["path"], [item["path"] for item in record["result_files"]],
             )
 
     def test_default_cli_fetches_receipt_evidence_when_local_evidence_exists(self):

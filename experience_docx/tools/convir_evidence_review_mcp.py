@@ -785,10 +785,23 @@ def _prepare_evidence_bundle(args):
     unmapped_by_path = {
         item["github_path"]: item for item in binding["unmapped_results"]
     }
+    review_facts_recovery = record.get("review_facts_recovery")
     for item in record["result_files"]:
         expected = expected_by_path.get(item["path"])
         unmapped = unmapped_by_path.get(item["path"])
-        if expected is not None:
+        if review_facts_recovery is not None \
+                and item["path"] == review_facts_recovery["proof_path"]:
+            if expected is not None:
+                raise ReviewError(
+                    "review facts recovery proof cannot be runtime-declared",
+                    state="IDENTITY_CONFLICT", exit_code=3,
+                )
+            add_file(
+                item["path"], item["bytes"], item["sha256"],
+                "review_facts_recovery", required=True, priority=21,
+                evidence_status="identity_bound_review_facts_recovery",
+            )
+        elif expected is not None:
             is_review_facts = Path(item["path"]).name.endswith("_review_facts.json")
             add_file(
                 item["path"], item["bytes"], item["sha256"],

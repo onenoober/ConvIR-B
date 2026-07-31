@@ -140,6 +140,18 @@ For routes inheriting the review-facts rule, it also names nonempty
 `*_review_facts.json` is required compact evidence and points each key value to
 one closeout-bound JSON result by SHA-256 and JSON Pointer.
 
+A receipt-bound archive may recover one historical `review_facts` producer
+defect only when a pure gate fact has no point, threshold or confidence
+interval, all corresponding JSON Pointers are null, its gate outcome remains
+source-bound, and the sole invalid field is an unbound numeric
+`confidence_level`. Recovery sets only that field to null and then reruns the
+unchanged schema-2 validator over every fact, source SHA-256, JSON Pointer and
+conclusion reference. The original closeout-bound bytes remain archived. A
+separate canonical proof binds the receipt-bound closeout, original facts,
+recovered facts, source identities and exact field changes, and the terminal
+index records that proof. Any other defect fails closed; route-, run-, commit-
+or SHA-specific allowlists are forbidden.
+
 The typed closeout remains the machine terminal authority. The conclusion is
 the single human/scientific interpretation and cannot change its terminal
 identity or authorization.

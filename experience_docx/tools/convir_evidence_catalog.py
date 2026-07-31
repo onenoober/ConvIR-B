@@ -32,10 +32,16 @@ SCHEMA2_FIELDS = {
     "contract_bundle", "prior_terminal_record", "result_files",
     "contract_sha256", "closeout_sha256", "conclusion_sha256",
 }
+SCHEMA2_OPTIONAL_FIELDS = {"review_facts_recovery"}
 RESULT_FILE_RECORD_FIELDS = {"path", "bytes", "sha256"}
 CONTRACT_FILE_RECORD_FIELDS = RESULT_FILE_RECORD_FIELDS | {"source_path"}
 PRIOR_RECORD_FIELDS = {"prior_closeout_path", "prior_terminal_tuple"}
 TERMINAL_TUPLE_FIELDS = {"state", "decision", "authorizes"}
+REVIEW_FACTS_RECOVERY_FIELDS = {
+    "status", "recovery_type", "proof_path", "proof_bytes", "proof_sha256",
+    "original_path", "original_sha256", "recovered_review_facts_sha256",
+}
+REVIEW_FACTS_RECOVERY_TYPE = "legacy_unbound_gate_confidence_metadata_v1"
 
 
 class CatalogError(RuntimeError):
@@ -154,6 +160,45 @@ def validate_prior_record(value, unmodeled):
     }
 
 
+def validate_review_facts_recovery(value, result_files):
+    if not isinstance(value, dict) or set(value) != REVIEW_FACTS_RECOVERY_FIELDS:
+        raise CatalogError("review_facts_recovery has an invalid field contract")
+    if value["status"] != "REVIEW_FACTS_RECOVERED" \
+            or value["recovery_type"] != REVIEW_FACTS_RECOVERY_TYPE:
+        raise CatalogError("review_facts_recovery type is invalid")
+    proof_path = require_relpath(
+        value["proof_path"], "review_facts_recovery.proof_path"
+    )
+    original_path = require_relpath(
+        value["original_path"], "review_facts_recovery.original_path"
+    )
+    if proof_path == original_path:
+        raise CatalogError("review_facts_recovery paths must differ")
+    if not PurePosixPath(proof_path).name.endswith("_review_facts_recovery.json") \
+            or not PurePosixPath(original_path).name.endswith("_review_facts.json") \
+            or PurePosixPath(proof_path).parent != PurePosixPath(original_path).parent:
+        raise CatalogError("review_facts_recovery paths are noncanonical")
+    if not isinstance(value["proof_bytes"], int) or isinstance(value["proof_bytes"], bool) \
+            or value["proof_bytes"] < 0:
+        raise CatalogError("review_facts_recovery.proof_bytes is invalid")
+    for field in (
+        "proof_sha256", "original_sha256", "recovered_review_facts_sha256",
+    ):
+        require_sha(value[field], SHA256, f"review_facts_recovery.{field}")
+    by_path = {item["path"]: item for item in result_files}
+    proof = by_path.get(proof_path)
+    original = by_path.get(original_path)
+    if proof is None or original is None:
+        raise CatalogError("review_facts_recovery files are absent from result_files")
+    if proof["bytes"] != value["proof_bytes"] \
+            or proof["sha256"] != value["proof_sha256"] \
+            or original["sha256"] != value["original_sha256"]:
+        raise CatalogError("review_facts_recovery result identity differs")
+    return {
+        field: value[field] for field in sorted(REVIEW_FACTS_RECOVERY_FIELDS)
+    }
+
+
 def normalize_terminal_record(value, line_number, raw_line):
     if not isinstance(value, dict):
         raise CatalogError(f"terminal index line {line_number} is not an object")
@@ -166,7 +211,8 @@ def normalize_terminal_record(value, line_number, raw_line):
         raise CatalogError(
             f"terminal index line {line_number} is missing fields: {','.join(missing)}"
         )
-    unmodeled = sorted(set(value) - required)
+    optional = SCHEMA2_OPTIONAL_FIELDS if schema == 2 else set()
+    unmodeled = sorted(set(value) - required - optional)
     route_id = require_text(value["route_id"], "route_id")
     operation_id = require_text(value["operation_id"], "operation_id")
     run_id = require_text(value["run_id"], "run_id")
@@ -192,6 +238,7 @@ def normalize_terminal_record(value, line_number, raw_line):
     parent_tuple = None
     contract_bundle_paths = []
     binding_level = "path_only_legacy"
+    review_facts_recovery = None
     if schema == 2:
         contract_bundle_paths = validate_file_records(
             value["contract_bundle"], "contract_bundle", unmodeled,
@@ -210,6 +257,10 @@ def normalize_terminal_record(value, line_number, raw_line):
         )
         for field in ("contract_sha256", "closeout_sha256", "conclusion_sha256"):
             require_sha(value[field], SHA256, field)
+        if "review_facts_recovery" in value:
+            review_facts_recovery = validate_review_facts_recovery(
+                value["review_facts_recovery"], value["result_files"]
+            )
         binding_level = "sha256_manifest"
 
     return {
@@ -247,6 +298,7 @@ def normalize_terminal_record(value, line_number, raw_line):
         "contract_sha256": value.get("contract_sha256"),
         "closeout_sha256": value.get("closeout_sha256"),
         "conclusion_sha256": value.get("conclusion_sha256"),
+        "review_facts_recovery": review_facts_recovery,
     }
 
 
@@ -322,7 +374,7 @@ def select_terminal_leaf(records):
 
 
 def terminal_summary(record):
-    return {
+    value = {
         "index_line": record["index_line"],
         "schema_version": record["schema_version"],
         "operation_id": record["operation_id"],
@@ -340,6 +392,11 @@ def terminal_summary(record):
         "record_sha256": record["record_sha256"],
         "unmodeled_fields": record["unmodeled_fields"],
     }
+    if record.get("review_facts_recovery") is not None:
+        value["review_facts_recovery_status"] = record[
+            "review_facts_recovery"
+        ]["status"]
+    return value
 
 
 def evidence_directory(closeout_path):

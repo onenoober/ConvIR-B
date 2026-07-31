@@ -54,6 +54,11 @@ When a bundle contains `review_facts`, read it immediately after the scientific
 conclusion, then read only the formal JSON sources needed for the claims under
 review. The archive has already checked its JSON Pointers and source SHA-256;
 the MCP does not recompute or compare scientific results.
+When the terminal lineage declares `REVIEW_FACTS_RECOVERED`, read the
+`review_facts_recovery` proof immediately after the conclusion and before the
+preserved original facts. The proof's embedded, strictly revalidated facts are
+the review view; the original file remains immutable provenance. Recovery
+eligibility and fail-closed limits are owned by `SCIENCE_FASTPATH.md`.
 
 ## Boundaries
 

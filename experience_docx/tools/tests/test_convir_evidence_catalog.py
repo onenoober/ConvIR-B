@@ -257,6 +257,46 @@ class EvidenceCatalogTests(unittest.TestCase):
             len(catalog.canonical_bytes(receipt)) + 1, catalog.MAX_RESPONSE_BYTES
         )
 
+    def test_schema2_review_facts_recovery_is_modeled_and_identity_bound(self):
+        record = schema2_record("route-a", "A0", "run-a", "route-a", "a")
+        prefix = "experience_docx/experiment_logs/route-a"
+        original_path = f"{prefix}/a0_review_facts.json"
+        proof_path = f"{prefix}/a0_review_facts_recovery.json"
+        record["result_paths"] = [original_path, proof_path]
+        record["result_files"] = [
+            {"path": original_path, "bytes": 20, "sha256": "b" * 64},
+            {"path": proof_path, "bytes": 40, "sha256": "c" * 64},
+        ]
+        record["review_facts_recovery"] = {
+            "status": "REVIEW_FACTS_RECOVERED",
+            "recovery_type": catalog.REVIEW_FACTS_RECOVERY_TYPE,
+            "proof_path": proof_path,
+            "proof_bytes": 40,
+            "proof_sha256": "c" * 64,
+            "original_path": original_path,
+            "original_sha256": "b" * 64,
+            "recovered_review_facts_sha256": "d" * 64,
+        }
+        parsed = catalog.parse_terminal_index(
+            (json.dumps(record, sort_keys=True, separators=(",", ":")) + "\n").encode()
+        )
+        self.assertEqual([], parsed[0]["unmodeled_fields"])
+        self.assertEqual(
+            "REVIEW_FACTS_RECOVERED",
+            parsed[0]["review_facts_recovery"]["status"],
+        )
+        self.assertEqual(
+            "REVIEW_FACTS_RECOVERED",
+            catalog.terminal_summary(parsed[0])["review_facts_recovery_status"],
+        )
+
+        changed = json.loads(json.dumps(record))
+        changed["review_facts_recovery"]["proof_sha256"] = "e" * 64
+        with self.assertRaisesRegex(catalog.CatalogError, "result identity differs"):
+            catalog.parse_terminal_index(
+                (json.dumps(changed, sort_keys=True, separators=(",", ":")) + "\n").encode()
+            )
+
     def test_completeness_receipt_rejects_partition_drift(self):
         record = common_record("route-a", "A0", "run-a", "route-a", "a")
         commit = self.commit_snapshot([record], evidence_files(record))

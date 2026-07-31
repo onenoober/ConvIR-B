@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import csv
 import hashlib
 import io
@@ -48,6 +49,8 @@ MAX_RAW_ARTIFACT_FILES = 25_000
 MAX_RAW_ARTIFACT_MANIFEST_BYTES = 32 * 1024 * 1024
 RAW_ARTIFACT_RECOVERY_MARKER = "CONVIR_RAW_ARTIFACT_RECOVERY_OK"
 REVIEW_FACTS_SUFFIX = "_review_facts.json"
+REVIEW_FACTS_RECOVERY_SUFFIX = "_review_facts_recovery.json"
+REVIEW_FACTS_RECOVERY_TYPE = "legacy_unbound_gate_confidence_metadata_v1"
 MAX_REVIEW_FACTS = 128
 REVIEW_FACTS_RULES_FLOOR = "ef1f746859fba84bd76ae74525b05f918994909f"
 ARCHIVE_REMOTE = "github"
@@ -352,6 +355,13 @@ def review_facts_filename(closeout_filename: str) -> str:
     return closeout_filename[:-len(suffix)] + REVIEW_FACTS_SUFFIX
 
 
+def review_facts_recovery_filename(closeout_filename: str) -> str:
+    suffix = "_closeout.json"
+    if not isinstance(closeout_filename, str) or not closeout_filename.endswith(suffix):
+        raise TerminalArchiveError("closeout filename cannot derive review facts recovery")
+    return closeout_filename[:-len(suffix)] + REVIEW_FACTS_RECOVERY_SUFFIX
+
+
 def _json_primitive(value: Any, name: str) -> Any:
     if value is None or isinstance(value, (str, bool)):
         return value
@@ -500,6 +510,117 @@ def validate_review_facts(
     if any(by_id[item]["gate_outcome"] is None for item in conclusion["gate_fact_ids"]):
         raise TerminalArchiveError("conclusion gate facts lack gate outcomes")
     return value
+
+
+def build_review_facts_recovery(
+    *, raw: bytes, relpath: str, closeout: dict[str, Any],
+    conclusion: dict[str, Any], payloads: dict[str, bytes],
+    evidence_sha256: dict[str, str], closeout_filename: str,
+    closeout_sha256: str,
+) -> tuple[dict[str, Any], dict[str, Any], str, bytes]:
+    """Recover only the legacy unbound confidence metadata on pure gate facts."""
+    if not isinstance(closeout_sha256, str) or not SHA256.fullmatch(closeout_sha256):
+        raise TerminalArchiveError("review facts recovery closeout identity is invalid")
+    original_filename = PurePosixPath(relpath).name
+    if original_filename != review_facts_filename(closeout_filename):
+        raise TerminalArchiveError("review facts recovery source filename is not canonical")
+    original_sha256 = hashlib.sha256(raw).hexdigest()
+    if evidence_sha256.get(original_filename) != original_sha256:
+        raise TerminalArchiveError("review facts recovery source is not closeout-bound")
+    original = inspect_structured(raw, relpath)
+    if not isinstance(original, dict) or not isinstance(original.get("facts"), list):
+        raise TerminalArchiveError("review facts are not eligible for recovery")
+
+    recovered = copy.deepcopy(original)
+    changes = []
+    for fact in recovered["facts"]:
+        if not isinstance(fact, dict):
+            continue
+        pointers = fact.get("json_pointers")
+        confidence = fact.get("confidence_level")
+        numeric_confidence = (
+            isinstance(confidence, (int, float))
+            and not isinstance(confidence, bool)
+            and math.isfinite(confidence)
+            and 0 < confidence < 1
+        )
+        pure_gate_with_unbound_confidence = (
+            numeric_confidence
+            and fact.get("point") is None
+            and fact.get("ci_lower") is None
+            and fact.get("ci_upper") is None
+            and fact.get("threshold") is None
+            and fact.get("threshold_operator") is None
+            and fact.get("gate_outcome") is not None
+            and isinstance(pointers, dict)
+            and pointers.get("point") is None
+            and pointers.get("ci_lower") is None
+            and pointers.get("ci_upper") is None
+            and pointers.get("confidence_level") is None
+            and pointers.get("threshold") is None
+            and pointers.get("gate_outcome") is not None
+        )
+        if pure_gate_with_unbound_confidence:
+            changes.append({
+                "fact_id": fact.get("fact_id"),
+                "field": "confidence_level",
+                "original_value": confidence,
+                "recovered_value": None,
+            })
+            fact["confidence_level"] = None
+    if not changes:
+        raise TerminalArchiveError(
+            "review facts do not exhibit the recoverable legacy confidence defect"
+        )
+
+    recovered_raw = (
+        json.dumps(recovered, sort_keys=True, separators=(",", ":")) + "\n"
+    ).encode("utf-8")
+    validated = validate_review_facts(
+        recovered_raw, relpath, closeout, conclusion, payloads,
+        evidence_sha256, closeout_filename,
+    )
+    source_bindings = sorted(
+        {
+            (fact["source_filename"], fact["source_sha256"])
+            for fact in validated["facts"]
+        }
+    )
+    proof = {
+        "schema_version": 1,
+        "status": "REVIEW_FACTS_RECOVERED",
+        "recovery_type": REVIEW_FACTS_RECOVERY_TYPE,
+        "route_id": closeout["route_id"],
+        "operation_id": closeout["operation_id"],
+        "run_id": closeout["run_id"],
+        "route_commit": closeout["route_commit"],
+        "closeout_filename": closeout_filename,
+        "closeout_sha256": closeout_sha256,
+        "original_review_facts_filename": original_filename,
+        "original_review_facts_sha256": original_sha256,
+        "recovered_review_facts_sha256": hashlib.sha256(recovered_raw).hexdigest(),
+        "recovered_serialization": "canonical_json_sort_keys_compact_newline_v1",
+        "source_bindings": [
+            {"filename": filename, "sha256": sha256}
+            for filename, sha256 in source_bindings
+        ],
+        "changes": changes,
+        "recovered_review_facts": validated,
+        "checks": {
+            "closeout_receipt_bound": True,
+            "original_review_facts_closeout_bound": True,
+            "only_unbound_gate_confidence_removed": True,
+            "recovered_review_facts_strictly_valid": True,
+            "source_bindings_unchanged": True,
+            "terminal_identity_unchanged": True,
+        },
+    }
+    proof_raw = (
+        json.dumps(proof, sort_keys=True, separators=(",", ":")) + "\n"
+    ).encode("utf-8")
+    proof_filename = review_facts_recovery_filename(closeout_filename)
+    proof_relpath = f"{PurePosixPath(relpath).parent.as_posix()}/{proof_filename}"
+    return validated, proof, proof_relpath, proof_raw
 
 
 def parse_raw_artifact_receipt(
@@ -1109,14 +1230,41 @@ def audit_source(
     if facts_candidates and facts_candidates != [expected_review_facts]:
         raise TerminalArchiveError("review facts filename is ambiguous or noncanonical")
     review_facts = None
+    review_facts_recovery = None
     if expected_review_facts in evidence_sha:
         if conclusion_value is None:
             raise TerminalArchiveError("review facts require a scientific conclusion")
         facts_relpath = f"{closeout_path.parent.as_posix()}/{expected_review_facts}"
-        review_facts = validate_review_facts(
-            payloads[facts_relpath], facts_relpath, closeout, conclusion_value,
-            payloads, evidence_sha, closeout_path.name,
-        )
+        try:
+            review_facts = validate_review_facts(
+                payloads[facts_relpath], facts_relpath, closeout, conclusion_value,
+                payloads, evidence_sha, closeout_path.name,
+            )
+        except TerminalArchiveError as original_error:
+            if expected_closeout_sha256 is None:
+                raise
+            try:
+                review_facts, proof, proof_relpath, proof_raw = (
+                    build_review_facts_recovery(
+                        raw=payloads[facts_relpath], relpath=facts_relpath,
+                        closeout=closeout, conclusion=conclusion_value,
+                        payloads=payloads, evidence_sha256=evidence_sha,
+                        closeout_filename=closeout_path.name,
+                        closeout_sha256=expected_closeout_sha256,
+                    )
+                )
+            except TerminalArchiveError:
+                raise original_error
+            payloads[proof_relpath] = proof_raw
+            review_facts_recovery = {
+                "path": proof_relpath,
+                "bytes": len(proof_raw),
+                "sha256": hashlib.sha256(proof_raw).hexdigest(),
+                "proof": proof,
+            }
+            files.append({
+                key: review_facts_recovery[key] for key in ("path", "bytes", "sha256")
+            })
     elif review_facts_required:
         raise TerminalArchiveError("schema-2 terminal requires review facts")
     elif isinstance(conclusion_value, dict) and any(
@@ -1147,6 +1295,7 @@ def audit_source(
         "raw_artifact_receipt": raw_artifact_receipt,
         "raw_artifact_recovery": raw_artifact_recovery,
         "review_facts": review_facts,
+        "review_facts_recovery": review_facts_recovery,
         "payloads": payloads,
         "checks": {
             "contract_bound": True,
@@ -1160,6 +1309,10 @@ def audit_source(
             "raw_artifact_receipt_recovered": raw_artifact_recovery is not None,
             "raw_artifact_receipt_legacy_unsealed": raw_artifact_receipt is None,
             "review_facts_valid": review_facts is not None,
+            "review_facts_original_valid": (
+                review_facts is not None and review_facts_recovery is None
+            ),
+            "review_facts_recovered": review_facts_recovery is not None,
             "review_facts_legacy_unbound": review_facts is None,
             "single_scientific_conclusion_complete": (
                 conclusion_relpath is not None or existing_archive
@@ -1266,6 +1419,24 @@ def index_record(audit: dict[str, Any]) -> dict[str, Any]:
         record["conclusion_sha256"] = hashlib.sha256(
             payloads[audit["conclusion_path"]]
         ).hexdigest()
+        recovery = audit.get("review_facts_recovery")
+        if recovery is not None:
+            proof = recovery["proof"]
+            evidence_parent = PurePosixPath(audit["closeout_path"]).parent.as_posix()
+            record["review_facts_recovery"] = {
+                "status": proof["status"],
+                "recovery_type": proof["recovery_type"],
+                "proof_path": recovery["path"],
+                "proof_bytes": recovery["bytes"],
+                "proof_sha256": recovery["sha256"],
+                "original_path": (
+                    f"{evidence_parent}/{proof['original_review_facts_filename']}"
+                ),
+                "original_sha256": proof["original_review_facts_sha256"],
+                "recovered_review_facts_sha256": (
+                    proof["recovered_review_facts_sha256"]
+                ),
+            }
     return record
 
 
