@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "environment_id": "convir_4090_cu121_local_restoration_need_v1",
+  "execution_host": "convir-4090",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "device_class": "cuda_sm89",
+  "required_imports": [
+    "numpy",
+    "PIL",
+    "torch"
+  ],
+  "production_contract": "Frozen official ConvIR-B inference and privileged development-only cross-fitted local residual-strength intervention measurement."
+}
